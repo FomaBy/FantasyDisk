@@ -1,0 +1,207 @@
+{
+  "ok": true,
+  "decision": "ready_for_image",
+  "errors": [],
+  "warnings": [],
+  "elements": [
+    {
+      "id": "frame_art",
+      "kind": "decor",
+      "rect": [
+        0,
+        0,
+        1280,
+        720
+      ],
+      "ok": true,
+      "warnings": []
+    },
+    {
+      "id": "frame_safe_area",
+      "kind": "panel",
+      "rect": [
+        133,
+        113,
+        1014,
+        494
+      ],
+      "ok": true,
+      "warnings": []
+    },
+    {
+      "id": "inner_content",
+      "kind": "zone",
+      "rect": [
+        157,
+        137,
+        966,
+        446
+      ],
+      "ok": true,
+      "warnings": []
+    },
+    {
+      "id": "title",
+      "kind": "text",
+      "rect": [
+        380,
+        141,
+        520,
+        38
+      ],
+      "ok": true,
+      "warnings": [],
+      "fit_font_size": 30
+    },
+    {
+      "id": "subtitle",
+      "kind": "text",
+      "rect": [
+        260,
+        181,
+        760,
+        28
+      ],
+      "ok": true,
+      "warnings": [],
+      "fit_font_size": 16
+    },
+    {
+      "id": "card_0",
+      "kind": "button",
+      "rect": [
+        190,
+        219,
+        286,
+        344
+      ],
+      "ok": true,
+      "warnings": []
+    },
+    {
+      "id": "card_0_icon",
+      "kind": "portrait",
+      "rect": [
+        307,
+        231,
+        52,
+        52
+      ],
+      "ok": true,
+      "warnings": []
+    },
+    {
+      "id": "card_0_title",
+      "kind": "text",
+      "rect": [
+        210,
+        289,
+        246,
+        42
+      ],
+      "ok": true,
+      "warnings": [],
+      "fit_font_size": 16
+    },
+    {
+      "id": "card_0_tier",
+      "kind": "text",
+      "rect": [
+        210,
+        337,
+        246,
+        18
+      ],
+      "ok": true,
+      "warnings": [],
+      "fit_font_size": 13
+    },
+    {
+      "id": "card_0_badges",
+      "kind": "text",
+      "rect": [
+        204,
+        361,
+        258,
+        28
+      ],
+      "ok": true,
+      "warnings": [],
+      "fit_font_size": 12
+    },
+    {
+      "id": "card_0_effect",
+      "kind": "text",
+      "rect": [
+        210,
+        395,
+        246,
+        112
+      ],
+      "ok": true,
+      "warnings": [],
+      "fit_font_size": 12
+    },
+    {
+      "id": "card_0_action",
+      "kind": "text",
+      "rect": [
+        240,
+        523,
+        186,
+        22
+      ],
+      "ok": true,
+      "warnings": [],
+      "fit_font_size": 14
+    },
+    {
+      "id": "card_1",
+      "kind": "button",
+      "rect": [
+        497,
+        219,
+        286,
+        344
+      ],
+      "ok": true,
+      "warnings": []
+    },
+    {
+      "id": "card_1_content",
+      "kind": "zone",
+      "rect": [
+        517,
+        231,
+        246,
+        314
+      ],
+      "ok": true,
+      "warnings": []
+    },
+    {
+      "id": "card_2",
+      "kind": "button",
+      "rect": [
+        804,
+        219,
+        286,
+        344
+      ],
+      "ok": true,
+      "warnings": []
+    },
+    {
+      "id": "card_2_content",
+      "kind": "zone",
+      "rect": [
+        824,
+        231,
+        246,
+        314
+      ],
+      "ok": true,
+      "warnings": []
+    }
+  ]
+}

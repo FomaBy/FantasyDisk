@@ -36,7 +36,8 @@ class StubPlayer extends Node:
 
 class StubProgression extends RefCounted:
 	var artifact_count: int = 0
-	func reward_pool(_character_id := "") -> Array:
+	# SCRUM-961: сигнатура зеркалит боевую — опциональные хвосты гейта возвышения.
+	func reward_pool(_character_id := "", _ascension_level := 0, _cross_class_ids: Array = []) -> Array:
 		var pool: Array = []
 		for i in range(artifact_count):
 			pool.append({"kind": "artifact", "id": "stub_art_%d" % i, "title": "Stub Artifact %d" % i, "weight": 1.0})
@@ -49,8 +50,20 @@ class StubGame extends RefCounted:
 	var selected_character_id: String = "berserk"
 	var rng := RandomNumberGenerator.new()
 	var PROGRESSION_DATA := StubProgression.new()
+	# Кодекс-открытия: ui_screens.gd:8964 зовёт record_codex_artifact_discovery
+	# при выдаче артефакта события (добавлено 2026-06-28, ПОСЛЕ написания гейта) —
+	# стаб обязан нести этот контракт game, иначе непустой пул падает.
+	var codex_discoveries: Array = []
+	# SCRUM-961: ui_screens._run_ascension_level/_run_cross_class_artifact_ids
+	# читают мета-возвышение и снапшот забега — стаб несёт этот контракт game.
+	var current_player: Node = null
+	var run_player_snapshot: Dictionary = {}
 	func route_scaling_stage() -> int:
 		return 0
+	func ascension_level_for(_character_id: String) -> int:
+		return 0
+	func record_codex_artifact_discovery(reward: Dictionary) -> void:
+		codex_discoveries.append(reward)
 
 
 func _initialize() -> void:

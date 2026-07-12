@@ -1,0 +1,223 @@
+{
+  "ok": true,
+  "errors": [],
+  "planning_gate": "ready_for_image",
+  "element_count": 51,
+  "state_reports": [
+    {
+      "layout": "layout.json",
+      "zones": 22,
+      "images": [
+        "docs/design/references/scrum1017_codex_navigation_icons/character_samples/berserk_alpha_bbox_crop.png",
+        "docs/design/references/scrum1017_codex_navigation_icons/character_samples/dark_mage_alpha_bbox_crop.png",
+        "docs/design/references/scrum1017_codex_navigation_icons/character_samples/guitarist_alpha_bbox_crop.png",
+        "docs/design/references/scrum1017_codex_navigation_icons/character_samples/druid_alpha_bbox_crop.png",
+        "docs/design/references/scrum1017_codex_navigation_icons/character_samples/berserk_alpha_bbox_crop.png"
+      ]
+    },
+    {
+      "layout": "layout_monsters.json",
+      "zones": 22,
+      "images": [
+        "assets/sprites/enemies/enemy_melee.png",
+        "assets/sprites/enemies/enemy_ranged.png",
+        "assets/sprites/enemies/enemy_summoner.png",
+        "assets/sprites/elites/iron_bastion.png",
+        "assets/sprites/enemies/enemy_summoner.png"
+      ]
+    },
+    {
+      "layout": "layout_artifacts.json",
+      "zones": 22,
+      "images": [
+        "assets/sprites/ui/icons/artifacts/artifact_red_whetstone.png",
+        "assets/sprites/ui/icons/artifacts/artifact_field_kit.png",
+        "assets/sprites/ui/icons/artifacts/artifact_magnetic_buckle.png",
+        "assets/sprites/ui/icons/artifacts/artifact_hawk_lens.png",
+        "assets/sprites/ui/icons/artifacts/artifact_field_kit.png"
+      ]
+    }
+  ],
+  "responsive": [
+    {
+      "viewport": [
+        1280,
+        720
+      ],
+      "scale": 0.666667,
+      "panels": {
+        "title_frame": [
+          48.0,
+          24.0,
+          226.67,
+          74.67
+        ],
+        "back_frame": [
+          1053.33,
+          30.67,
+          178.67,
+          64.0
+        ],
+        "nav_panel": [
+          48.0,
+          114.67,
+          216.0,
+          560.0
+        ],
+        "center_panel": [
+          280.0,
+          114.67,
+          413.33,
+          560.0
+        ],
+        "detail_panel": [
+          709.33,
+          114.67,
+          522.67,
+          560.0
+        ]
+      },
+      "row_image_zone": [
+        58.67,
+        64.0
+      ],
+      "detail_preview_zone": [
+        157.33,
+        165.33
+      ],
+      "nav_button": [
+        173.33,
+        69.33
+      ],
+      "panel_gaps": [
+        16.0,
+        16.0
+      ]
+    },
+    {
+      "viewport": [
+        1920,
+        1080
+      ],
+      "scale": 1.0,
+      "panels": {
+        "title_frame": [
+          72.0,
+          36.0,
+          340.0,
+          112.0
+        ],
+        "back_frame": [
+          1580.0,
+          46.0,
+          268.0,
+          96.0
+        ],
+        "nav_panel": [
+          72.0,
+          172.0,
+          324.0,
+          840.0
+        ],
+        "center_panel": [
+          420.0,
+          172.0,
+          620.0,
+          840.0
+        ],
+        "detail_panel": [
+          1064.0,
+          172.0,
+          784.0,
+          840.0
+        ]
+      },
+      "row_image_zone": [
+        88.0,
+        96.0
+      ],
+      "detail_preview_zone": [
+        236.0,
+        248.0
+      ],
+      "nav_button": [
+        260.0,
+        104.0
+      ],
+      "panel_gaps": [
+        24.0,
+        24.0
+      ]
+    },
+    {
+      "viewport": [
+        2560,
+        1440
+      ],
+      "scale": 1.333333,
+      "panels": {
+        "title_frame": [
+          96.0,
+          48.0,
+          453.33,
+          149.33
+        ],
+        "back_frame": [
+          2106.67,
+          61.33,
+          357.33,
+          128.0
+        ],
+        "nav_panel": [
+          96.0,
+          229.33,
+          432.0,
+          1120.0
+        ],
+        "center_panel": [
+          560.0,
+          229.33,
+          826.67,
+          1120.0
+        ],
+        "detail_panel": [
+          1418.67,
+          229.33,
+          1045.33,
+          1120.0
+        ]
+      },
+      "row_image_zone": [
+        117.33,
+        128.0
+      ],
+      "detail_preview_zone": [
+        314.67,
+        330.67
+      ],
+      "nav_button": [
+        346.67,
+        138.67
+      ],
+      "panel_gaps": [
+        32.0,
+        32.0
+      ]
+    }
+  ],
+  "scrollbar_lanes_1920": {
+    "center": [
+      990,
+      290,
+      18,
+      664
+    ],
+    "detail": [
+      1776,
+      632,
+      16,
+      304
+    ]
+  },
+  "frame_rule": "content zones remain inside empty frame interiors"
+}

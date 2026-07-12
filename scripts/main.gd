@@ -30,8 +30,14 @@ const ROUTE_STEPS_TO_BOSS := 8
 # игрок не мог их пропустить (любой путь проходит через ряд). 1 линия в середине акта;
 # можно поднять до 2 (ранняя + поздняя).
 const CHEST_LINE_ROWS := 1
-const ACT_COUNT := 3
-const ACT_SCALING_STAGE_OFFSET := 4
+const ACT_COUNT := 2
+# SCRUM-873: отхил при переходе в следующий акт — 70% max HP (запрошенный
+# диапазон 60–80%). Лечение (clamp по max), не установка HP в фикс. значение.
+const ACT_TRANSITION_HEAL_PERCENT := 0.7
+# The final scaling stage remains continuous when Act 1 ends: Act 2 starts at
+# the same pressure budget as the Act 1 boss and reaches the former three-act
+# finale budget without adding route rows or combat time.
+const ACT_SCALING_STAGE_OFFSET := ROUTE_STEPS_TO_BOSS
 const MIN_BRANCHES_PER_STEP := 2
 const MAX_BRANCHES_PER_STEP := 4
 const MAP_NODE_SIZE := Vector2(88, 88)
@@ -49,6 +55,11 @@ const COLLISION_LAYER_PLAYER := 1
 const COLLISION_LAYER_GROUND_ENEMY := 2
 const COLLISION_LAYER_FLYING_ENEMY := 4
 const COLLISION_LAYER_SOLID := 32
+const PLAYER_LIFECYCLE_ROLE_META := &"player_lifecycle_role"
+const PLAYER_LIFECYCLE_OWNER_META := &"player_lifecycle_owner"
+const PLAYER_LIFECYCLE_COMBAT := &"combat"
+const PLAYER_LIFECYCLE_MENU_SNAPSHOT := &"menu_snapshot"
+const TEMPORARY_PLAYER_GROUP := &"temporary_players"
 const ARENA_BACKGROUND_OPTIONS := {
 	"default": [
 		"res://assets/backgrounds/field_marsh.png",
@@ -104,6 +115,11 @@ const SCREEN_BACKGROUND_PATHS := {
 	"defeat": "res://assets/backgrounds/ui/ui_backdrop_defeat_crypt.png",
 	"end_run_confirm": "res://assets/backgrounds/ui/ui_backdrop_defeat_crypt.png",
 }
+# SCRUM-997: фоны-иллюстрации событий (пак SCRUM-998). Маппинг — файловая
+# конвенция манифеста docs/design/references/events_backgrounds_pack/manifest.json:
+# event_bg_<event.id>.png. Незамапленные id падают на общий фон "event"
+# (ui_backdrop_arcane_lab) — пул артов сойдётся с пулом событий после SCRUM-995.
+const EVENT_BACKGROUND_DIR := "res://assets/backgrounds/events"
 const GAME_CURSOR_PATH := "res://assets/sprites/ui/cursor/game_cursor.png"
 # SCRUM-592: hotspot сидит на самом верхнем-левом ВИДИМОМ пикселе острия
 # (включая сглаживание апекса в (1,1)). Прежний (2,2) указывал на первый
@@ -192,12 +208,14 @@ const MAP_NODE_DEFINITIONS := {
 		"border": Color(1.0, 0.60, 0.22, 1.0),
 	},
 	# SCRUM-610: «Алтарь жертвы» — узел постоянной сделки тело-за-силу (без боя,
-	# без арта). Переиспользует иконку костей элиты (без нового арта), отдельный
-	# кроваво-пурпурный тон под жертвенный мотив.
+	# без арта). SCRUM-994: раньше носил иконку костей элиты и читался игроком как
+	# элитный бой, хотя открывает событие — теперь переиспользует событийную
+	# «?» (как hazard); иконка map_elite_skull_bones эксклюзивна для elite_battle.
+	# Отдельный кроваво-пурпурный тон под жертвенный мотив сохранён.
 	"altar": {
 		"name": "Алтарь жертвы",
 		"icon": "ALT",
-		"icon_path": "res://assets/sprites/map_icons/map_elite_skull_bones.png",
+		"icon_path": "res://assets/sprites/map_icons/map_event_question.png",
 		"tooltip": "Алтарь жертвы\nСделка без боя: отдай часть здоровья за постоянную силу на весь забег.",
 		"color": Color(0.30, 0.06, 0.12, 0.97),
 		"border": Color(0.86, 0.20, 0.46, 1.0),
@@ -215,23 +233,23 @@ const MAP_NODE_DEFINITIONS := {
 const OBSTACLE_MAX_ATTEMPTS := 150
 const SPAWN_EDGE_PADDING := 72.0
 const SPAWN_PLAYER_SAFE_RADIUS := 420.0  # SCRUM-518: чуть шире на просторной арене (4096×2304) для комфорта старта
-const SMALL_PACK_CHANCE := 0.22
+const SMALL_PACK_CHANCE := 0.28
 const WAVE_SETTINGS := {
-	"base_spawn_count": 4,
+	"base_spawn_count": 5,
 	"spawn_count_per_stage": 1,
 	"spawn_count_per_wave_step": 1,
 	"wave_step_size": 3,
-	"normal_spawn_limit": 8,
+	"normal_spawn_limit": 10,
 	"elite_spawn_limit": 3,
 	"boss_spawn_limit": 3,
-	"base_active_cap": 20,
-	"active_cap_per_stage": 5,
-	"active_cap_per_wave_step": 2,
+	"base_active_cap": 22,
+	"active_cap_per_stage": 6,
+	"active_cap_per_wave_step": 3,
 	"elite_active_cap": 12,
 	"boss_active_cap": 12,
-	"max_active_cap": 36,
-	"spawn_pause_min": 0.8,
-	"spawn_pause_max": 1.4,
+	"max_active_cap": 48,
+	"spawn_pause_min": 0.7,
+	"spawn_pause_max": 1.2,
 	"boss_spawn_pause_min": 2.0,
 	"boss_spawn_pause_max": 3.2,
 }
@@ -277,10 +295,12 @@ const LEVEL_UP_EFFECT_SCENE := preload("res://scenes/LevelUpEffect.tscn")
 const UIIconRegistry := preload("res://scripts/ui_icon_registry.gd")
 const LEVEL_UP_MOD_DISPLAY := {
 	"damage_multiplier": "damage",
+	"magic_damage_multiplier": "magic_damage",
 	"attack_speed_multiplier": "attack_speed",
 	"max_health_flat": "health_point",
 	"move_speed_multiplier": "move_speed",
-	"aoe_radius_multiplier": "aoe_radius",
+	"sector_multiplier": "aoe_radius",
+	"aoe_radius_multiplier": "aura_radius",
 	"pickup_radius_flat": "pickup_radius",
 	"defense_flat": "defense",
 	"range_multiplier": "attack_range",
@@ -404,20 +424,32 @@ var ultimate_bar: ProgressBar = null
 var ultimate_label: Label = null
 var artifact_label: Label = null
 var level_up_button: Button = null
+# SCRUM-874: HUD-боссбар сверху экрана — цель узла (акт-босс/элитка) и её UI-ноды.
+var boss_hud_target: Node2D = null
+var boss_hud_bar: ProgressBar = null
+var boss_hud_name_label: Label = null
 var pause_stats_menu: Control = null
 var route_nodes := []
 var current_route_choice := ""
 var current_node_type := ""
 var current_combat_type := "battle"
 var current_boss_id := "rift_warden"
-# SCRUM-619: текущий бой — секретный апекс-босс конца Акта 3 (выставляется
-# SCRUM-541: set only while the post-Act-3 secret boss follow-up is active.
+# SCRUM-619/1058: текущий бой — секретный апекс-босс после финального Act 2;
+# set only while the post-final-act secret boss follow-up is active.
 var secret_boss_active := false
 var current_node_seed := 0
 var route_selected_indices := []
 var used_event_ids := []
 var current_event_definition := {}
 var pending_event_combat := {}
+# SCRUM-996: отложенный выход из «событийного» магазина (shop_after у исхода
+# события или post_combat победы событийного боя). Непустой Callable подменяет
+# штатный выход магазина (_return_to_map_after_shop_visit) на продолжение
+# событийного пути (advance/возврат с автосейвом). Живёт только в памяти и НЕ
+# сохраняется: выход из игры до завершения пути = откат к последнему автосейву
+# (норма, см. docs/design/systems/persistence.md), поэтому рестор/новый забег
+# обязаны сбрасывать поле.
+var event_shop_exit_action := Callable()
 var level_up_return_to_map := false
 # SCRUM-530: level-up, открытый с узла-события, должен вернуть на ТО ЖЕ событие, а не на
 # карту (иначе для случайного события происходит «тихий рерол» исходного набора опций).
@@ -454,6 +486,7 @@ const COMBAT_DIRECTOR_SCRIPT := preload("res://scripts/combat_director.gd")
 const META_PROGRESSION := preload("res://scripts/meta_progression.gd")
 const ACHIEVEMENTS_DATA := preload("res://scripts/achievements_data.gd")
 const GAME_SETTINGS := preload("res://scripts/game_settings.gd")
+const GAMEPLAY_SANDBOX := preload("res://scripts/gameplay_sandbox.gd")
 const RUN_AUTOSAVE := preload("res://scripts/run_autosave.gd")
 const FEEDBACK_REPORTER_SCRIPT := preload("res://scripts/feedback_reporter.gd")
 const DEV_CONSOLE_SCRIPT := preload("res://scripts/dev_console.gd")
@@ -476,12 +509,18 @@ var attribute_rerolls_left := 0
 var selected_screen_index := 0
 var selected_ascension_level := 0
 var run_ascension_difficulty := {}
+var sandbox_settings := GAMEPLAY_SANDBOX.neutral_snapshot()
+var run_sandbox_snapshot := GAMEPLAY_SANDBOX.neutral_snapshot()
+var run_sandbox_captured := false
 var audio_settings := {
 	"master_volume": 1.0,
 	"music_volume": 1.0,
 	"sfx_volume": 1.0,
+	"ui_volume": 1.0,
 	"music_enabled": false,
 	"sfx_enabled": false,
+	"mute_when_unfocused": false,
+	"low_hp_warning_enabled": true,
 }
 var input_bindings := {}
 var aim_mode := "nearest"
@@ -559,6 +598,7 @@ func _load_game_settings() -> void:
 	gamepad_bindings = (settings.get("gamepad_bindings", {}) as Dictionary).duplicate(true)
 	gamepad_deadzone = clampf(float(settings.get("gamepad_deadzone", 0.25)), 0.05, 0.5)
 	gamepad_vibration = bool(settings.get("gamepad_vibration", true))
+	sandbox_settings = GAMEPLAY_SANDBOX.snapshot_from_settings(settings)
 	# Глобальный флаг для скриптов без ссылки на game (enemy/boss slam-тряска).
 	get_tree().root.set_meta("screen_shake", screen_shake_enabled)
 	get_tree().root.set_meta("combat_feedback", combat_feedback_enabled)
@@ -569,7 +609,14 @@ func _load_game_settings() -> void:
 	get_tree().root.set_meta("gamepad_vibration", gamepad_vibration)
 	_apply_audio_settings()
 	if DisplayServer.get_name() != "headless":
-		ui._apply_video_settings()
+		if _is_editor_preview_runtime():
+			ui._apply_editor_preview_video_settings()
+		else:
+			ui._apply_video_settings()
+
+
+func _is_editor_preview_runtime() -> bool:
+	return OS.has_feature("editor")
 
 
 func save_game_settings() -> void:
@@ -594,6 +641,7 @@ func save_game_settings() -> void:
 	settings["gamepad_bindings"] = gamepad_bindings.duplicate(true)
 	settings["gamepad_deadzone"] = gamepad_deadzone
 	settings["gamepad_vibration"] = gamepad_vibration
+	GAMEPLAY_SANDBOX.write_snapshot_to_settings(settings, sandbox_settings)
 	GAME_SETTINGS.save_settings(settings)
 	get_tree().root.set_meta("combat_feedback", combat_feedback_enabled)
 	get_tree().root.set_meta("aim_mode", aim_mode)
@@ -618,12 +666,80 @@ func load_run_autosave() -> bool:
 	var state: Dictionary = RUN_AUTOSAVE.load_run()
 	if state.is_empty():
 		return false
-	_apply_run_autosave_state(state)
+	var migrated_state := migrate_run_autosave_state(state)
+	if migrated_state != state:
+		# Persist the normalized checkpoint immediately so every later preview and
+		# resume observes the two-act contract as well.
+		RUN_AUTOSAVE.save_run(migrated_state)
+	_apply_run_autosave_state(migrated_state)
 	return true
 
 
 func clear_run_autosave() -> void:
 	RUN_AUTOSAVE.clear_run()
+
+
+# SCRUM-976: публичный backend-контракт для Settings/Game (SCRUM-1025).
+func sandbox_snapshot() -> Dictionary:
+	return GAMEPLAY_SANDBOX.snapshot_from_settings(sandbox_settings)
+
+
+func sandbox_multiplier(key: String) -> float:
+	return float(sandbox_snapshot().get(key, 1.0))
+
+
+func set_sandbox_multiplier(key: String, value, persist := true) -> float:
+	var normalized := GAMEPLAY_SANDBOX.set_multiplier(sandbox_settings, key, value)
+	if persist:
+		save_game_settings()
+	return normalized
+
+
+func reset_sandbox_settings(persist := true) -> Dictionary:
+	GAMEPLAY_SANDBOX.reset_settings(sandbox_settings)
+	if persist:
+		save_game_settings()
+	return sandbox_snapshot()
+
+
+func sandbox_settings_are_neutral() -> bool:
+	return GAMEPLAY_SANDBOX.is_neutral(sandbox_settings)
+
+
+func capture_run_sandbox_snapshot() -> Dictionary:
+	run_sandbox_snapshot = sandbox_snapshot()
+	run_sandbox_captured = true
+	if not run_metrics.is_empty():
+		run_metrics["sandbox"] = run_sandbox_metadata()
+	return run_sandbox_snapshot.duplicate(true)
+
+
+func clear_run_sandbox_snapshot() -> void:
+	run_sandbox_snapshot = GAMEPLAY_SANDBOX.neutral_snapshot()
+	run_sandbox_captured = false
+
+
+func run_sandbox_metadata() -> Dictionary:
+	return GAMEPLAY_SANDBOX.run_metadata(run_sandbox_snapshot)
+
+
+func run_sandbox_is_custom() -> bool:
+	return not GAMEPLAY_SANDBOX.is_neutral(run_sandbox_snapshot)
+
+
+func run_progression_eligible() -> bool:
+	# До старта забега сохраняем legacy/neutral parity для прямых служебных и
+	# тестовых путей. Запрет существует только у реально captured custom run.
+	return not run_sandbox_captured or not run_sandbox_is_custom()
+
+
+func run_sandbox_multiplier(key: String) -> float:
+	return float(GAMEPLAY_SANDBOX.snapshot_from_settings(run_sandbox_snapshot).get(key, 1.0))
+
+
+func begin_new_run_session() -> void:
+	capture_run_sandbox_snapshot()
+	reset_run_metrics()
 
 
 # SCRUM-502 · Метрики забега (run summary). Аккумулируются по ходу прогона, обнуляются
@@ -641,6 +757,7 @@ func reset_run_metrics() -> void:
 		"final_level": 0,
 		"artifacts": [],
 		"outcome_reason": "",
+		"sandbox": run_sandbox_metadata(),
 	}
 
 
@@ -711,6 +828,8 @@ func capture_run_metrics_finals(source: Dictionary) -> void:
 # начислить разовую награду meta_points. Идемпотентно (уже открытые не начисляются).
 # Сохраняет мету только если что-то реально открылось.
 func evaluate_run_achievements() -> void:
+	if not run_progression_eligible():
+		return
 	var result: Dictionary = ACHIEVEMENTS_DATA.evaluate_run(meta_state, run_metrics)
 	if int(result.get("awarded", 0)) > 0 or not (result.get("newly_unlocked", []) as Array).is_empty():
 		META_PROGRESSION.save_state(meta_state)
@@ -723,6 +842,7 @@ func _run_autosave_state() -> Dictionary:
 		"selected_weapon_id": selected_weapon_id,
 		"selected_start_boon_id": selected_start_boon_id,
 		"selected_ascension_level": selected_ascension_level,
+		"run_act_count": ACT_COUNT,
 		"current_act": current_act,
 		"route_stage": route_stage,
 		"route_nodes": route_nodes.duplicate(true),
@@ -741,6 +861,7 @@ func _run_autosave_state() -> Dictionary:
 		"used_event_ids": used_event_ids.duplicate(true),
 		"current_event_definition": current_event_definition.duplicate(true),
 		"run_ascension_difficulty": run_ascension_difficulty.duplicate(true),
+		"run_sandbox_snapshot": run_sandbox_snapshot.duplicate(true),
 		"current_shop_items": current_shop_items.duplicate(true),
 		"current_shop_purchased": current_shop_purchased.duplicate(true),
 		"current_shop_node_key": current_shop_node_key,
@@ -751,7 +872,23 @@ func _run_autosave_state() -> Dictionary:
 	}
 
 
+func migrate_run_autosave_state(state: Dictionary) -> Dictionary:
+	var migrated := state.duplicate(true)
+	var saved_act := maxi(1, int(migrated.get("current_act", 1)))
+	if saved_act > ACT_COUNT:
+		# Legacy three-act saves resume at the equivalent final Act 2 checkpoint.
+		# Route position/build/history are preserved; only the removed act index is
+		# normalized, so no compatible player progress is discarded.
+		migrated["legacy_current_act"] = saved_act
+		migrated["current_act"] = ACT_COUNT
+	else:
+		migrated["current_act"] = clampi(saved_act, 1, ACT_COUNT)
+	migrated["run_act_count"] = ACT_COUNT
+	return migrated
+
+
 func _apply_run_autosave_state(state: Dictionary) -> void:
+	var normalized_state := migrate_run_autosave_state(state)
 	combat_active = false
 	boss_combat_active = false
 	_clear_all_game_pauses()
@@ -759,39 +896,42 @@ func _apply_run_autosave_state(state: Dictionary) -> void:
 	_clear_hud()
 	_clear_ui()
 
-	selected_character_id = str(state.get("selected_character_id", selected_character_id))
-	selected_weapon_id = str(state.get("selected_weapon_id", selected_weapon_id))
-	selected_start_boon_id = str(state.get("selected_start_boon_id", ""))
-	selected_ascension_level = int(state.get("selected_ascension_level", 0))
-	current_act = clampi(int(state.get("current_act", 1)), 1, ACT_COUNT)
-	route_stage = maxi(0, int(state.get("route_stage", 0)))
-	route_nodes = _autosave_array(state.get("route_nodes", []))
+	selected_character_id = str(normalized_state.get("selected_character_id", selected_character_id))
+	selected_weapon_id = str(normalized_state.get("selected_weapon_id", selected_weapon_id))
+	selected_start_boon_id = PROGRESSION_DATA.canonical_start_boon_id(str(normalized_state.get("selected_start_boon_id", "")))
+	selected_ascension_level = int(normalized_state.get("selected_ascension_level", 0))
+	current_act = int(normalized_state.get("current_act", 1))
+	route_stage = maxi(0, int(normalized_state.get("route_stage", 0)))
+	route_nodes = _autosave_array(normalized_state.get("route_nodes", []))
 	if route_nodes.is_empty():
 		route_nodes = route._generate_route()
 	route_stage = clampi(route_stage, 0, maxi(route_nodes.size() - 1, 0))
-	route_selected_indices = _autosave_array(state.get("route_selected_indices", []))
-	current_route_choice = str(state.get("current_route_choice", ""))
-	current_node_type = str(state.get("current_node_type", ""))
-	current_combat_type = str(state.get("current_combat_type", "battle"))
-	current_boss_id = str(state.get("current_boss_id", "rift_warden"))
-	secret_boss_active = bool(state.get("secret_boss_active", false))
-	current_node_seed = int(state.get("current_node_seed", 0))
-	run_player_snapshot = _autosave_dictionary(state.get("run_player_snapshot", {}))
-	pending_level_ups = maxi(0, int(state.get("pending_level_ups", 0)))
-	level_up_offer = _autosave_array(state.get("level_up_offer", []))
-	attribute_offer = _autosave_array(state.get("attribute_offer", []))
-	attribute_rerolls_left = maxi(0, int(state.get("attribute_rerolls_left", 0)))
-	used_event_ids = _autosave_array(state.get("used_event_ids", []))
-	current_event_definition = _autosave_dictionary(state.get("current_event_definition", {}))
+	route_selected_indices = _autosave_array(normalized_state.get("route_selected_indices", []))
+	current_route_choice = str(normalized_state.get("current_route_choice", ""))
+	current_node_type = str(normalized_state.get("current_node_type", ""))
+	current_combat_type = str(normalized_state.get("current_combat_type", "battle"))
+	current_boss_id = str(normalized_state.get("current_boss_id", "rift_warden"))
+	secret_boss_active = bool(normalized_state.get("secret_boss_active", false))
+	current_node_seed = int(normalized_state.get("current_node_seed", 0))
+	run_player_snapshot = _autosave_dictionary(normalized_state.get("run_player_snapshot", {}))
+	pending_level_ups = maxi(0, int(normalized_state.get("pending_level_ups", 0)))
+	level_up_offer = _autosave_array(normalized_state.get("level_up_offer", []))
+	attribute_offer = _autosave_array(normalized_state.get("attribute_offer", []))
+	attribute_rerolls_left = maxi(0, int(normalized_state.get("attribute_rerolls_left", 0)))
+	used_event_ids = _autosave_array(normalized_state.get("used_event_ids", []))
+	current_event_definition = _autosave_dictionary(normalized_state.get("current_event_definition", {}))
 	pending_event_combat.clear()
-	run_ascension_difficulty = _autosave_dictionary(state.get("run_ascension_difficulty", {}))
-	current_shop_items = _autosave_array(state.get("current_shop_items", []))
-	current_shop_purchased = _autosave_array(state.get("current_shop_purchased", []))
-	current_shop_node_key = str(state.get("current_shop_node_key", ""))
-	run_used_shop = bool(state.get("run_used_shop", false))
-	shop_reentry_pending = bool(state.get("shop_reentry_pending", false))
-	shop_reentry_route_stage = int(state.get("shop_reentry_route_stage", -1))
-	shop_reentry_branch_index = int(state.get("shop_reentry_branch_index", -1))
+	event_shop_exit_action = Callable()  # SCRUM-996: событийный магазин не переживает рестор
+	run_ascension_difficulty = _autosave_dictionary(normalized_state.get("run_ascension_difficulty", {}))
+	run_sandbox_snapshot = GAMEPLAY_SANDBOX.snapshot_from_settings(_autosave_dictionary(normalized_state.get("run_sandbox_snapshot", {})))
+	run_sandbox_captured = true
+	current_shop_items = _autosave_array(normalized_state.get("current_shop_items", []))
+	current_shop_purchased = _autosave_array(normalized_state.get("current_shop_purchased", []))
+	current_shop_node_key = str(normalized_state.get("current_shop_node_key", ""))
+	run_used_shop = bool(normalized_state.get("run_used_shop", false))
+	shop_reentry_pending = bool(normalized_state.get("shop_reentry_pending", false))
+	shop_reentry_route_stage = int(normalized_state.get("shop_reentry_route_stage", -1))
+	shop_reentry_branch_index = int(normalized_state.get("shop_reentry_branch_index", -1))
 
 
 func _autosave_array(value: Variant) -> Array:
@@ -861,6 +1001,13 @@ func advance_to_next_act() -> bool:
 	if current_act >= ACT_COUNT:
 		return false
 	current_act += 1
+	# SCRUM-873: отхил на переходе акта. Игрок между узлами живёт в
+	# run_player_snapshot (снят в _end_combat ДО этого вызова) — лечим снапшот,
+	# HP «переезжает» в первый бой нового акта через _restore_player_snapshot.
+	if not run_player_snapshot.is_empty():
+		var snapshot_max := maxf(float(run_player_snapshot.get("max_health", 0.0)), 0.0)
+		var snapshot_health := float(run_player_snapshot.get("health", snapshot_max))
+		run_player_snapshot["health"] = minf(snapshot_max, snapshot_health + snapshot_max * ACT_TRANSITION_HEAL_PERCENT)
 	route_stage = 0
 	route_nodes = route._generate_route()
 	route_selected_indices.clear()
@@ -871,6 +1018,7 @@ func advance_to_next_act() -> bool:
 	secret_boss_active = false
 	current_node_seed = 0
 	pending_event_combat.clear()
+	event_shop_exit_action = Callable()  # SCRUM-996: событийный магазин не тянется между актами
 	level_up_return_to_map = false
 	level_up_return_to_event = false
 	shop_reentry_pending = false
@@ -896,6 +1044,8 @@ func _load_meta_progression() -> void:
 
 
 func record_codex_discovery(category: String, content_id: String) -> void:
+	if not run_progression_eligible():
+		return
 	var id := content_id.strip_edges()
 	if id == "":
 		return
@@ -941,12 +1091,12 @@ func secret_encounter_pending() -> bool:
 	return META_PROGRESSION.secret_encounter_unlocked_for_level(selected_ascension_level)
 
 
-func resolve_act3_boss_id(base_boss_id: String) -> String:
+func resolve_final_act_boss_id(base_boss_id: String) -> String:
 	secret_boss_active = false
 	return base_boss_id
 
 
-func should_start_secret_boss_after_act3() -> bool:
+func should_start_secret_boss_after_final_act() -> bool:
 	if secret_boss_active:
 		return false
 	return current_act >= ACT_COUNT and secret_encounter_pending()
@@ -962,6 +1112,12 @@ func start_secret_boss_encounter() -> void:
 
 
 func record_boss_victory() -> void:
+	if not run_progression_eligible():
+		# Custom sandbox runs finish normally, but never write meta/ascension/class
+		# progression or secret-boss release rewards.
+		if secret_boss_active:
+			secret_boss_active = false
+		return
 	# SCRUM-620: контекст забега для челленджей класса — какое оружие и был ли магазин.
 	# used_shop=false только если за ВЕСЬ забег не куплено ни одного предмета.
 	var run_context := {
@@ -969,7 +1125,7 @@ func record_boss_victory() -> void:
 		"used_shop": run_used_shop,
 	}
 	meta_state = META_PROGRESSION.record_boss_victory(meta_state, selected_character_id, selected_ascension_level, run_context)
-	# SCRUM-619: если это был секретный бой Акта 3 — разовая мета-награда (идемпотентно).
+	# SCRUM-619: если это был секретный бой финального акта — разовая мета-награда (идемпотентно).
 	if secret_boss_active:
 		meta_state = META_PROGRESSION.record_secret_boss_victory(meta_state)
 		secret_boss_active = false
@@ -1032,14 +1188,28 @@ func apply_ascension_bonuses(player: Node) -> void:
 	# SCRUM-618: стартовый боон забега — мелкие mods в том же ключевом словаре (damage_mult,
 	# *_flat и т.п.). Складываем с накопленными (множители суммируются как доли, эффект 1.0+sum;
 	# плоские — сложением), как и древо/класс. "" = без боона (тождественность).
-	var boon_mods: Dictionary = PROGRESSION_DATA.start_boon_mods(selected_start_boon_id)
+	var boon_mods: Dictionary = PROGRESSION_DATA.start_boon_mods(selected_start_boon_id, selected_character_id)
 	for boon_key in boon_mods:
 		skill_mods[boon_key] = float(skill_mods.get(boon_key, 0.0)) + float(boon_mods[boon_key])
 	if player.has_method("apply_meta_skill_modifiers"):
 		player.apply_meta_skill_modifiers(skill_mods)
+	# SCRUM-1068: class-wide/Guild-safe modifiers stay above; every constellation
+	# branch is delivered separately by canonical weapon ID and survives run
+	# snapshots as a typed nested payload in Player.run_modifiers.
+	if player.has_method("apply_constellation_weapon_profiles"):
+		player.apply_constellation_weapon_profiles(
+			META_PROGRESSION.skill_profiles_for_class(meta_state, selected_character_id)
+		)
 	var start_gold := int(round(float(skill_mods.get("start_gold_flat", 0.0))))
 	if start_gold > 0 and player.get("money") != null:
 		player.set("money", int(player.get("money")) + start_gold)
+	# 4) Gameplay sandbox — отдельный последующий множительный слой. Он попадает
+	# в run_player_snapshot и поэтому не применяется повторно на следующих боях.
+	if run_sandbox_captured and run_mods is Dictionary:
+		run_mods["sandbox_player_damage_multiplier"] = run_sandbox_multiplier(GAMEPLAY_SANDBOX.PLAYER_DAMAGE)
+		run_mods["sandbox_player_attack_speed_multiplier"] = run_sandbox_multiplier(GAMEPLAY_SANDBOX.PLAYER_ATTACK_SPEED)
+		if player.has_method("_apply_stat_scaling"):
+			player._apply_stat_scaling(false)
 
 
 func _is_fresh_action_press(event: InputEvent, action: StringName) -> bool:
@@ -1049,6 +1219,9 @@ func _is_fresh_action_press(event: InputEvent, action: StringName) -> bool:
 	if event is InputEventJoypadButton:
 		var button_event := event as InputEventJoypadButton
 		return button_event.pressed and button_event.is_action_pressed(action)
+	if event is InputEventJoypadMotion:
+		var motion_event := event as InputEventJoypadMotion
+		return absf(motion_event.axis_value) > 0.5 and motion_event.is_action_pressed(action)
 	if event is InputEventAction:
 		var action_event := event as InputEventAction
 		return action_event.pressed and action_event.is_action_pressed(action)
@@ -1066,16 +1239,26 @@ func _input(event: InputEvent) -> void:
 	if dev_console != null and dev_console.is_console_open():
 		return
 
+	# SCRUM-1044: the battle-prayer decision is mandatory and must remain the
+	# only active overlay. Main._input runs before focused GUI controls, so guard
+	# global Escape/B/hotkeys here; unhandled navigation/accept events continue
+	# to the prayer cards through the regular GUI path.
+	if ui.has_method("_is_battle_prayer_choice_open") and ui._is_battle_prayer_choice_open():
+		if _is_fresh_action_press(event, &"pause") or _is_fresh_action_press(event, &"ui_cancel"):
+			get_viewport().set_input_as_handled()
+		return
+
 	if ui.has_method("_is_feedback_overlay_open") and ui._is_feedback_overlay_open():
-		# SCRUM-812: закрытие фидбек-оверлея с клавиши (Esc/pause) ИЛИ геймпада (B/ui_cancel).
-		var close_feedback: bool = (event is InputEventKey and event.pressed and not event.echo and event.is_action_pressed("pause")) \
-			or (not (event is InputEventKey) and event.is_action_pressed("ui_cancel"))
+		# SCRUM-846: закрытие фидбек-оверлея идет через actions, чтобы Esc/Start/B
+		# и возможный joypad-axis rebind работали одним путем.
+		var close_feedback: bool = _is_fresh_action_press(event, &"pause") \
+			or _is_fresh_action_press(event, &"ui_cancel")
 		if close_feedback:
 			ui._close_feedback_overlay()
 			get_viewport().set_input_as_handled()
 		return
 
-	if event is InputEventKey and event.pressed and not event.echo and event.is_action_pressed("feedback"):
+	if _is_fresh_action_press(event, &"feedback"):
 		var screenshot: Image = null
 		if DisplayServer.get_name() != "headless":
 			var viewport_texture := get_viewport().get_texture()
@@ -1107,7 +1290,11 @@ func _input(event: InputEvent) -> void:
 	# остаётся свободным под геймплей (dodge и т.п., ядро раскладки — SCRUM-811/814).
 	# Клавиатурный путь «pause» (Esc) ниже не меняется.
 	if not (event is InputEventKey) and event.is_action_pressed("ui_cancel"):
-		if ui.has_method("_is_run_pause_overlay_open") and ui._is_run_pause_overlay_open():
+		if ui.has_method("_is_settings_screen_open") and ui._is_settings_screen_open() and ui_escape_action.is_valid():
+			ui_escape_action.call()
+			get_viewport().set_input_as_handled()
+			return
+		elif ui.has_method("_is_run_pause_overlay_open") and ui._is_run_pause_overlay_open():
 			ui._resume_game()
 			get_viewport().set_input_as_handled()
 			return
@@ -1128,7 +1315,10 @@ func _input(event: InputEvent) -> void:
 				return
 
 	if _is_fresh_action_press(event, &"pause"):
-		if ui.has_method("_is_run_pause_overlay_open") and ui._is_run_pause_overlay_open():
+		if ui.has_method("_is_settings_screen_open") and ui._is_settings_screen_open() and ui_escape_action.is_valid():
+			ui_escape_action.call()
+			get_viewport().set_input_as_handled()
+		elif ui.has_method("_is_run_pause_overlay_open") and ui._is_run_pause_overlay_open():
 			ui._resume_game()
 			get_viewport().set_input_as_handled()
 		elif ui.has_method("_can_open_pause_dossier") and ui._can_open_pause_dossier():
@@ -1186,6 +1376,9 @@ func _process(delta: float) -> void:
 
 	# SCRUM-785: таймер тикает во ВСЕХ боях, включая боссовый (5-минутный «убей или проиграл»).
 	round_time_left -= delta
+	# SCRUM-968: scripted outro музыки за N секунд до конца раунда — по игровому
+	# таймеру (пауза не рассинхронизирует), begin_music_outro идемпотентен.
+	_update_music_outro()
 	spawn_cooldown -= delta
 
 	if spawn_cooldown <= 0.0:
@@ -1200,9 +1393,13 @@ func _process(delta: float) -> void:
 	# SCRUM-785: условия победы/поражения по типу боя.
 	var timer_expired := round_time_left <= 0.0
 	if boss_combat_active:
-		# Босс: убит — мгновенная победа; таймер вышел с живым боссом — поражение.
+		# Босс: убит — победа после короткой cinematic-задержки, чтобы death row
+		# не срезалась мгновенным _clear_world().
+		if combat.is_boss_victory_pending():
+			ui._update_hud()
+			return
 		if get_tree().get_nodes_in_group("bosses").is_empty():
-			combat._end_combat(true)
+			combat.request_boss_victory_after_death()
 		elif timer_expired:
 			combat._end_combat(false)
 	elif current_combat_type == "elite":
@@ -1278,6 +1475,23 @@ func _play_music(music_id: String) -> void:
 		audio.play_music(music_id)
 
 
+func _update_music_outro() -> void:
+	# SCRUM-968 (спека §3): музыка «музыкально затухает» к round_time_left == 0,
+	# в тишину встают стингер результата и баннер. Окно зависит от типа боя
+	# (6 c обычный / 8 c элитка+боссы) — его знает AudioManager по kind трека.
+	# Вызывается из тика боя (_process), поэтому пауза не рассинхронизирует конец.
+	if not combat_active:
+		return
+	var audio := get_node_or_null("/root/AudioManager")
+	if audio == null or not audio.has_method("begin_music_outro"):
+		return
+	var window := 6.0
+	if audio.has_method("music_outro_window"):
+		window = float(audio.music_outro_window())
+	if round_time_left > 0.0 and round_time_left <= window:
+		audio.begin_music_outro(round_time_left)
+
+
 func _cached_texture(path: String) -> Texture2D:
 	if path == "":
 		return null
@@ -1295,6 +1509,19 @@ func _cached_texture(path: String) -> Texture2D:
 			texture = image_texture
 	texture_cache[path] = texture
 	return texture
+
+
+# SCRUM-997: путь фона-иллюстрации события по event.id ("" — арта нет, UI берёт
+# общий фолбэк "event"). Словарь-маппинг не дублируется в коде: истина — файлы
+# пака SCRUM-998 (EVENT_BACKGROUND_DIR/event_bg_<id>.png), существование
+# проверяется через ResourceLoader (работает и в экспортированном .pck).
+func event_background_path(event_id: String) -> String:
+	if event_id.strip_edges() == "":
+		return ""
+	var path := "%s/event_bg_%s.png" % [EVENT_BACKGROUND_DIR, event_id]
+	if ResourceLoader.exists(path) or FileAccess.file_exists(path):
+		return path
+	return ""
 
 
 func _png_import_texture_ready(path: String) -> bool:
@@ -1330,16 +1557,24 @@ func _clear_world() -> void:
 			if is_instance_valid(node):
 				node.queue_free()
 
-	for child in get_children():
-		if child == ui_layer or child == hud_layer:
-			continue
-		if child == current_player:
-			child.queue_free()
+	# SCRUM-1071: current_player is a convenience reference, not ownership. Menu
+	# snapshots and a re-entered combat start used to leave other full Player
+	# children alive because this method only queued the referenced instance.
+	# Detach every Player owned by this Main synchronously so it immediately exits
+	# groups/physics/camera arbitration; queue_free remains deferred and safe even
+	# when cleanup is reached from the player's own died signal.
+	var owned_players := _owned_player_lifecycle_nodes(true)
+	for player_node in owned_players:
+		_retire_owned_player_node(player_node)
 
 	current_player = null
 
 
 func _clear_ui() -> void:
+	# Pause dossier may own a non-combat Player snapshot. Settings tears down the
+	# dossier before its Resume handler can release that snapshot, so lifecycle
+	# cleanup must happen centrally before pause_stats_menu loses its reference.
+	_clear_temporary_player_nodes()
 	ui_escape_action = Callable()
 	if pause_overlay_layer != null and is_instance_valid(pause_overlay_layer):
 		pause_overlay_layer.queue_free()
@@ -1348,6 +1583,87 @@ func _clear_ui() -> void:
 	if ui_layer != null and is_instance_valid(ui_layer):
 		ui_layer.queue_free()
 	ui_layer = null
+
+
+func _register_player_lifecycle_node(player_node: Node, role: StringName) -> void:
+	if player_node == null or not is_instance_valid(player_node):
+		return
+	player_node.set_meta(PLAYER_LIFECYCLE_ROLE_META, role)
+	player_node.set_meta(PLAYER_LIFECYCLE_OWNER_META, get_instance_id())
+	if role == PLAYER_LIFECYCLE_MENU_SNAPSHOT:
+		player_node.remove_from_group("player")
+		player_node.add_to_group(TEMPORARY_PLAYER_GROUP)
+		player_node.process_mode = Node.PROCESS_MODE_DISABLED
+		player_node.set_process(false)
+		player_node.set_physics_process(false)
+		player_node.set_process_input(false)
+		player_node.set_process_unhandled_input(false)
+		if player_node is CollisionObject2D:
+			(player_node as CollisionObject2D).collision_layer = 0
+			(player_node as CollisionObject2D).collision_mask = 0
+	else:
+		player_node.remove_from_group(TEMPORARY_PLAYER_GROUP)
+		if not player_node.is_in_group("player"):
+			player_node.add_to_group("player")
+	for descendant in player_node.find_children("*", "Camera2D", true, false):
+		var camera := descendant as Camera2D
+		if camera != null:
+			camera.enabled = role == PLAYER_LIFECYCLE_COMBAT
+
+
+func _clear_temporary_player_nodes() -> void:
+	for player_node in _owned_player_lifecycle_nodes(false):
+		_retire_owned_player_node(player_node)
+
+
+func _owned_player_lifecycle_nodes(include_combat_players: bool) -> Array[Node]:
+	var candidates: Array[Node] = []
+	if get_tree() != null:
+		for group_name in ["player", String(TEMPORARY_PLAYER_GROUP)]:
+			for candidate in get_tree().get_nodes_in_group(group_name):
+				if candidate is Node and candidate not in candidates:
+					candidates.append(candidate as Node)
+	if current_player != null and is_instance_valid(current_player) and current_player not in candidates:
+		candidates.append(current_player)
+	var result: Array[Node] = []
+	for candidate in candidates:
+		if candidate == null or not is_instance_valid(candidate):
+			continue
+		var owned_by_meta := int(candidate.get_meta(PLAYER_LIFECYCLE_OWNER_META, 0)) == get_instance_id()
+		var owned_by_tree := candidate == current_player or is_ancestor_of(candidate)
+		if not owned_by_meta and not owned_by_tree:
+			continue
+		var role := StringName(candidate.get_meta(PLAYER_LIFECYCLE_ROLE_META, &""))
+		# Direct event/menu helpers from older call sites may not carry lifecycle
+		# metadata yet. Any Player owned by this Main but not referenced as the live
+		# current_player is temporary/orphaned by definition and is safe to retire.
+		var is_temporary := role == PLAYER_LIFECYCLE_MENU_SNAPSHOT \
+			or candidate.is_in_group(TEMPORARY_PLAYER_GROUP) \
+			or candidate != current_player
+		if include_combat_players or is_temporary:
+			result.append(candidate)
+	return result
+
+
+func _retire_owned_player_node(player_node: Node) -> void:
+	if player_node == null or not is_instance_valid(player_node):
+		return
+	player_node.remove_from_group("player")
+	player_node.remove_from_group(TEMPORARY_PLAYER_GROUP)
+	player_node.process_mode = Node.PROCESS_MODE_DISABLED
+	player_node.set_process(false)
+	player_node.set_physics_process(false)
+	player_node.set_process_input(false)
+	player_node.set_process_unhandled_input(false)
+	for descendant in player_node.find_children("*", "Camera2D", true, false):
+		var camera := descendant as Camera2D
+		if camera != null:
+			camera.enabled = false
+	var parent := player_node.get_parent()
+	if parent != null:
+		parent.remove_child(player_node)
+	if not player_node.is_queued_for_deletion():
+		player_node.queue_free()
 
 
 func _clear_hud() -> void:
@@ -1363,6 +1679,8 @@ func _clear_hud() -> void:
 	money_label = null
 	artifact_label = null
 	level_up_button = null
+	boss_hud_bar = null
+	boss_hud_name_label = null
 	_last_hud_snapshot.clear()
 
 

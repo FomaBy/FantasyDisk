@@ -1,0 +1,28 @@
+{
+  "jira": "SCRUM-1089",
+  "pixel_lab": {
+    "source_id": "a32def07-33e5-464d-a046-4967feefa4b1",
+    "name": "scrum1089_route_map_full_fit_hud2x",
+    "tool": "create_ui_asset",
+    "size": [688, 384],
+    "source_file": "pixellab_route_map_full_fit_hud2x_688x384.png",
+    "sha256": "35c3def99312f2d51b6b7083e43143f01603f27e576821b611c361c76cd460a7",
+    "config_smoke": "PASS: get_balance returned isError=false; no secrets printed"
+  },
+  "user_reference": {
+    "source_file": "user_reference_before.png",
+    "size": [2556, 1432],
+    "sha256": "e20c233869d2d783a4b52294d13553032c6dfd1388ed0af1bf70579eda7f6a31"
+  },
+  "runtime_promotion": "none; layout reference only",
+  "prompt_contract": [
+    "D&D dark fantasy dragon layout",
+    "raised header",
+    "four-row resource HUD at twice the previous visible size",
+    "nine route columns visible simultaneously",
+    "no scrollbar",
+    "no baked text",
+    "content only inside empty safe zones"
+  ]
+}
+

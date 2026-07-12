@@ -1,0 +1,36 @@
+{
+  "canvas": {"width": 688, "height": 384},
+  "defaults": {
+    "font": "/System/Library/Fonts/Supplemental/Arial Unicode.ttf",
+    "color": "#F7E7BD",
+    "stroke_fill": "#140C0A",
+    "stroke_width": 1,
+    "line_spacing": 1.05,
+    "align": "center",
+    "valign": "middle"
+  },
+  "content": {
+    "title": "ДОСЬЕ ГЕРОЯ",
+    "hero": "ПОРТРЕТ · КЛАСС · 8 БАЗОВЫХ ЧИСЕЛ",
+    "physical": "ФИЗИЧЕСКИЙ УРОН\n14.6   1.94/с   7%   ×1.58",
+    "magic": "МАГИЯ\n2.7   621   619   616",
+    "support": "ПОДДЕРЖКА / КОНТРОЛЬ\n623   100%   97",
+    "dot": "ПЕРИОДИЧЕСКИЙ УРОН\n9.1   1.08/с",
+    "continue": "ПРОДОЛЖИТЬ",
+    "settings": "НАСТРОЙКИ",
+    "end_run": "ЗАВЕРШИТЬ ЗАБЕГ",
+    "main_menu": "ГЛАВНОЕ МЕНЮ"
+  },
+  "zones": [
+    {"id": "title", "content_key": "title", "x": 86, "y": 70, "w": 516, "h": 24, "max_font": 16, "min_font": 11, "debug_color": "#E6BF62"},
+    {"id": "hero", "content_key": "hero", "x": 86, "y": 103, "w": 143, "h": 162, "max_font": 10, "min_font": 7, "debug_color": "#76B8E8"},
+    {"id": "physical", "content_key": "physical", "x": 244, "y": 104, "w": 175, "h": 76, "max_font": 10, "min_font": 7, "debug_color": "#E56A45"},
+    {"id": "magic", "content_key": "magic", "x": 427, "y": 104, "w": 175, "h": 76, "max_font": 10, "min_font": 7, "debug_color": "#9378FF"},
+    {"id": "support", "content_key": "support", "x": 244, "y": 188, "w": 175, "h": 76, "max_font": 10, "min_font": 7, "debug_color": "#58D9F2"},
+    {"id": "dot", "content_key": "dot", "x": 427, "y": 188, "w": 175, "h": 76, "max_font": 10, "min_font": 7, "debug_color": "#75E36B"},
+    {"id": "continue", "content_key": "continue", "x": 142, "y": 278, "w": 93, "h": 26, "max_font": 9, "min_font": 7, "debug_color": "#D8D7D2"},
+    {"id": "settings", "content_key": "settings", "x": 241, "y": 278, "w": 93, "h": 26, "max_font": 9, "min_font": 7, "debug_color": "#D8D7D2"},
+    {"id": "end_run", "content_key": "end_run", "x": 340, "y": 278, "w": 100, "h": 26, "max_font": 9, "min_font": 7, "debug_color": "#D65C52"},
+    {"id": "main_menu", "content_key": "main_menu", "x": 446, "y": 278, "w": 100, "h": 26, "max_font": 9, "min_font": 7, "debug_color": "#D8D7D2"}
+  ]
+}

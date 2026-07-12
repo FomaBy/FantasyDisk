@@ -2,6 +2,7 @@ extends SceneTree
 
 const MAIN_SCENE := preload("res://scenes/Main.tscn")
 const VIEWPORTS := [
+	Vector2i(1152, 648),
 	Vector2i(1280, 720),
 	Vector2i(1536, 864),
 	Vector2i(1920, 1080),
@@ -67,7 +68,10 @@ func _capture_layout(viewport_size: Vector2i, hero_id: String, dump: PackedStrin
 		if not viewport_rect.encloses(rect):
 			_fail("Expected %s to stay in viewport at %s, got %s." % [(control as Control).name, context, rect])
 			return
-	if portrait_rect.size.x < PREVIEW_MIN_SIZE or portrait_rect.size.y < PREVIEW_MIN_SIZE:
+	# SCRUM-1063 gives the doubled controls enough horizontal room at compact
+	# tiers while retaining the dominant portrait silhouette.
+	var preview_min := PREVIEW_MIN_SIZE if viewport_size.y >= 864 else (240.0 if viewport_size.y <= 648 else 270.0)
+	if portrait_rect.size.x < preview_min or portrait_rect.size.y < preview_min:
 		_fail("Expected enlarged preview at %s, got %s." % [context, portrait_rect])
 		return
 	var slots := _visible_slots(carousel)
@@ -75,7 +79,8 @@ func _capture_layout(viewport_size: Vector2i, hero_id: String, dump: PackedStrin
 		_fail("Expected at least 3 carousel slots at %s, got %d." % [context, slots.size()])
 		return
 	var first_slot := slots[0] as Control
-	if first_slot.get_global_rect().size.x < SLOT_MIN_SIZE or first_slot.get_global_rect().size.y < SLOT_MIN_SIZE:
+	var slot_min := SLOT_MIN_SIZE if viewport_size.y > 720 else (116.0 if viewport_size.y <= 648 else 132.0)
+	if first_slot.get_global_rect().size.x < slot_min or first_slot.get_global_rect().size.y < slot_min:
 		_fail("Expected enlarged carousel slot at %s, got %s." % [context, first_slot.get_global_rect()])
 		return
 	for pair in [[portrait_rect, dossier_rect], [portrait_rect, carousel_rect], [dossier_rect, carousel_rect], [asc_rect, carousel_rect], [portrait_rect, asc_rect]]:
@@ -85,8 +90,8 @@ func _capture_layout(viewport_size: Vector2i, hero_id: String, dump: PackedStrin
 	for stat_id in ["strength", "agility", "intelligence", "perception", "energy", "knowledge", "endurance", "leadership"]:
 		var stat_button := main.find_child("HS4Stat_%s" % stat_id, true, false) as Button
 		var stat_fill := main.find_child("HS4StatBarFill_%s" % stat_id, true, false) as ColorRect
-		if stat_button == null or stat_fill == null or not stat_button.tooltip_text.contains("Формула:") or not stat_button.tooltip_text.contains("Интерпретация класса:"):
-			_fail("Expected rich stat line bar tooltip for %s at %s." % [stat_id, context])
+		if stat_button == null or stat_fill == null or not stat_button.tooltip_text.contains(" — ") or stat_button.tooltip_text.contains("Формула:"):
+			_fail("Expected concise stat line bar tooltip for %s at %s." % [stat_id, context])
 			return
 	for relevance in ["primary", "secondary", "optional"]:
 		var label := main.find_child("HS4BuildGuidance_%s" % relevance, true, false) as Label

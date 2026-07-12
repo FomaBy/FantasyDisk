@@ -33,12 +33,9 @@ const CHARACTER_ID := "berserk"
 const WEAPON_ID := "hammer"
 
 # Потолки коридора лидеров (после SCRUM-503 soft-cap, SCRUM-545 + SCRUM-602).
-# Без SCRUM-503 пик был 184356/7636, после soft-cap без radius-cap — ~13850/922.
-# SCRUM-545 ограничивает позднюю круговую зону молота до close-ring 145px.
-# SCRUM-602 дожимает AoE-потолок к медиане: сжаты upgrade-экспоненты молота
-# (aoe 1.25→1.08, dmg 1.15→1.05) + max_aoe_radius 145→115 — экспоненты больше не
-# обходят softcap. Живой пик остается в close-ring band, solo в 80px сохраняется.
-# Потолки затянуты под новый коридор с запасом на QA-флап 8s окна.
+# Новый профиль молота стартует с кругом 150px и без fixed radius cap, но Radius
+# scaling и upgrade-экспоненты всё ещё должны оставлять идеальный lvl20 билд в
+# живом коридоре лидеров, без возврата мультипликативного runaway.
 const MAX_IDEAL_20T := 3600.0    # SCRUM-602 restart band; rollback to old radius/exponents (>=4200) fails.
 const MAX_IDEAL_1T := 650.0      # Solo peak stays in corridor; damage-growth runaway fails.
 const ZERO_EPS := 0.01
@@ -147,6 +144,7 @@ func _build_artifacts(character_id: String, archetype: String, rng: RandomNumber
 
 func _dps_score(reward: Dictionary, archetype: String) -> float:
 	var multi := ["aoe", "aura", "summon"].has(archetype)
+	var melee := archetype == "melee"
 	var score := 0.0
 	var stats: Dictionary = reward.get("stats", {})
 	for stat_id in stats.keys():
@@ -166,6 +164,8 @@ func _dps_score(reward: Dictionary, archetype: String) -> float:
 					score += 18.0 * value
 				"aoe_radius_multiplier":
 					score += (42.0 if multi else 10.0) * (value - 1.0)
+				"sector_multiplier":
+					score += (36.0 if multi else (22.0 if melee else 8.0)) * (value - 1.0)
 				"range_multiplier":
 					score += (26.0 if multi else 8.0) * (value - 1.0)
 				"dot_speed_flat":

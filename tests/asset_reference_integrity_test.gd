@@ -16,6 +16,9 @@ extends SceneTree
 
 const SCAN_DIRS := ["res://scripts", "res://scenes", "res://assets"]
 const SCAN_EXTS := ["gd", "tscn", "tres"]
+const OPTIONAL_RUNTIME_CONFIGS := {
+	"res://feedback_webhook.cfg": true,
+}
 
 
 func _initialize() -> void:
@@ -76,6 +79,8 @@ func _scan_file(file_path: String, errors: Array, checked: Dictionary) -> void:
 		if checked.has(res_path):
 			continue
 		checked[res_path] = true
+		if OPTIONAL_RUNTIME_CONFIGS.has(res_path):
+			continue
 		# .uid-литералов в коде нет; .import как res:// тоже не грузят — но если кто-то
 		# сослался, проверим как файл. Существование: ресурс ИЛИ файл на диске.
 		if not (ResourceLoader.exists(res_path) or FileAccess.file_exists(res_path)):

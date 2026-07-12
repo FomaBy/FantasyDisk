@@ -1,0 +1,122 @@
+{
+  "canvas": {
+    "width": 688,
+    "height": 384
+  },
+  "policy": {
+    "min_gap": 4,
+    "allow_overlap": false
+  },
+  "content": {
+    "selected_class": "БЕРСЕРК"
+  },
+  "elements": [
+    {
+      "id": "screen_frame",
+      "kind": "panel",
+      "x": 0,
+      "y": 0,
+      "w": 688,
+      "h": 384,
+      "min_w": 640,
+      "min_h": 360
+    },
+    {
+      "id": "safe_area",
+      "kind": "zone",
+      "parent": "screen_frame",
+      "content_zone": true,
+      "x": 72,
+      "y": 52,
+      "w": 544,
+      "h": 283
+    },
+    {
+      "id": "header_controls",
+      "kind": "zone",
+      "parent": "safe_area",
+      "content_zone": true,
+      "x": 72,
+      "y": 52,
+      "w": 544,
+      "h": 37
+    },
+    {
+      "id": "body",
+      "kind": "zone",
+      "parent": "safe_area",
+      "content_zone": true,
+      "x": 72,
+      "y": 93,
+      "w": 544,
+      "h": 196
+    },
+    {
+      "id": "class_strip",
+      "kind": "list",
+      "parent": "body",
+      "content_zone": true,
+      "x": 72,
+      "y": 93,
+      "w": 49,
+      "h": 196,
+      "item_count": 9,
+      "item_h": 19,
+      "item_gap": 2,
+      "scroll": "never"
+    },
+    {
+      "id": "center_column",
+      "kind": "zone",
+      "parent": "body",
+      "content_zone": true,
+      "x": 125,
+      "y": 93,
+      "w": 365,
+      "h": 196
+    },
+    {
+      "id": "selected_class_label",
+      "kind": "text",
+      "parent": "center_column",
+      "content_zone": true,
+      "x": 225,
+      "y": 93,
+      "w": 165,
+      "h": 20,
+      "text_key": "selected_class",
+      "max_font": 15,
+      "min_font": 10
+    },
+    {
+      "id": "constellation_canvas",
+      "kind": "zone",
+      "parent": "center_column",
+      "content_zone": true,
+      "x": 125,
+      "y": 117,
+      "w": 365,
+      "h": 172
+    },
+    {
+      "id": "node_dossier",
+      "kind": "panel",
+      "parent": "body",
+      "content_zone": true,
+      "x": 494,
+      "y": 93,
+      "w": 122,
+      "h": 196
+    },
+    {
+      "id": "footer_controls",
+      "kind": "zone",
+      "parent": "safe_area",
+      "content_zone": true,
+      "x": 72,
+      "y": 293,
+      "w": 544,
+      "h": 42
+    }
+  ]
+}

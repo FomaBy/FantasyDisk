@@ -1,0 +1,30 @@
+{
+  "canvas": {"width": 688, "height": 384},
+  "defaults": {
+    "font": "/System/Library/Fonts/Supplemental/Arial Unicode.ttf",
+    "color": "#F7E7BD",
+    "stroke_fill": "#160B10",
+    "stroke_width": 2,
+    "line_spacing": 1.0,
+    "align": "center",
+    "valign": "middle"
+  },
+  "content": {
+    "counter": "1–4 из 17",
+    "prev": "‹",
+    "next": "13›",
+    "hero_1": "Берсерк",
+    "hero_2": "Солдат",
+    "hero_3": "Вор",
+    "hero_4": "Элементалист"
+  },
+  "zones": [
+    {"id": "counter", "content_key": "counter", "x": 536, "y": 220, "w": 98, "h": 16, "max_font": 13, "min_font": 10},
+    {"id": "prev", "content_key": "prev", "x": 74, "y": 283, "w": 32, "h": 46, "max_font": 38, "min_font": 26},
+    {"id": "next", "content_key": "next", "x": 582, "y": 283, "w": 32, "h": 46, "max_font": 26, "min_font": 16},
+    {"id": "hero_1", "content_key": "hero_1", "x": 144, "y": 330, "w": 84, "h": 18, "max_font": 13, "min_font": 9},
+    {"id": "hero_2", "content_key": "hero_2", "x": 252, "y": 330, "w": 84, "h": 18, "max_font": 13, "min_font": 9},
+    {"id": "hero_3", "content_key": "hero_3", "x": 360, "y": 330, "w": 84, "h": 18, "max_font": 13, "min_font": 9},
+    {"id": "hero_4", "content_key": "hero_4", "x": 468, "y": 330, "w": 84, "h": 18, "max_font": 13, "min_font": 9}
+  ]
+}

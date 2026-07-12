@@ -1,0 +1,148 @@
+{
+  "ok": true,
+  "zones": [
+    {
+      "id": "button_normal_safe",
+      "rect": [
+        40,
+        36,
+        88,
+        28
+      ],
+      "ok": true,
+      "kind": "guide"
+    },
+    {
+      "id": "button_hover_safe",
+      "rect": [
+        170,
+        36,
+        88,
+        28
+      ],
+      "ok": true,
+      "kind": "guide"
+    },
+    {
+      "id": "button_pressed_safe",
+      "rect": [
+        300,
+        36,
+        88,
+        28
+      ],
+      "ok": true,
+      "kind": "guide"
+    },
+    {
+      "id": "button_focus_safe",
+      "rect": [
+        430,
+        36,
+        88,
+        28
+      ],
+      "ok": true,
+      "kind": "guide"
+    },
+    {
+      "id": "button_disabled_safe",
+      "rect": [
+        560,
+        36,
+        88,
+        28
+      ],
+      "ok": true,
+      "kind": "guide"
+    },
+    {
+      "id": "accent_main_menu_safe",
+      "rect": [
+        104,
+        118,
+        50,
+        60
+      ],
+      "ok": true,
+      "kind": "guide"
+    },
+    {
+      "id": "accent_selection_safe",
+      "rect": [
+        214,
+        122,
+        96,
+        66
+      ],
+      "ok": true,
+      "kind": "guide"
+    },
+    {
+      "id": "accent_settings_safe",
+      "rect": [
+        375,
+        122,
+        102,
+        68
+      ],
+      "ok": true,
+      "kind": "guide"
+    },
+    {
+      "id": "accent_codex_safe",
+      "rect": [
+        563,
+        122,
+        54,
+        64
+      ],
+      "ok": true,
+      "kind": "guide"
+    },
+    {
+      "id": "accent_combat_hud_safe",
+      "rect": [
+        38,
+        276,
+        120,
+        36
+      ],
+      "ok": true,
+      "kind": "guide"
+    },
+    {
+      "id": "accent_economy_safe",
+      "rect": [
+        210,
+        280,
+        104,
+        28
+      ],
+      "ok": true,
+      "kind": "guide"
+    },
+    {
+      "id": "accent_rewards_levelup_safe",
+      "rect": [
+        393,
+        268,
+        66,
+        72
+      ],
+      "ok": true,
+      "kind": "guide"
+    },
+    {
+      "id": "accent_pause_results_safe",
+      "rect": [
+        536,
+        271,
+        108,
+        42
+      ],
+      "ok": true,
+      "kind": "guide"
+    }
+  ]
+}

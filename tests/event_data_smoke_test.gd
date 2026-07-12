@@ -158,7 +158,13 @@ func _check_events(errors: Array, valid_stats: Dictionary) -> int:
 			choice_ids[cid] = true
 			if not _player_text_ok(str(choice.get("title", "")), cid):
 				errors.append("%s: негодный title выбора" % where)
-			if not _player_text_ok(str(choice.get("description", "")), cid):
+			# SCRUM-995: hidden-карточка показывает unknown_hint вместо description
+			# (см. ui_screens._event_choice_description_text) — валидируем именно тот
+			# текст, который увидит игрок; description у hidden-выбора не обязателен.
+			if bool(choice.get("hidden", false)):
+				if not _player_text_ok(str(choice.get("unknown_hint", "")), cid):
+					errors.append("%s: hidden-выбор без годного unknown_hint" % where)
+			elif not _player_text_ok(str(choice.get("description", "")), cid):
 				errors.append("%s: негодное описание выбора" % where)
 			# Проверка характеристики -> валидный стат + ветви success/failure.
 			if choice.has("check"):
@@ -261,7 +267,7 @@ func _choice_upside(choice: Dictionary) -> float:
 
 # SCRUM-495: инвариант на уровне события. Если в событии есть И рисковые, И безопасные опции —
 # лучший апсайд рисковой не ниже лучшего апсайда безопасной (×SAFE_MARGIN). События без пары
-# (все опции одной категории, напр. hot_spring/training_dummies) пропускаются. Возвращает true,
+# (все опции одной категории, напр. sacrifice_altar/gilded_gambler) пропускаются. Возвращает true,
 # если инвариант реально проверялся (была пара risky+safe).
 func _check_event_ev(errors: Array, event: Dictionary) -> bool:
 	var choices: Array = event.get("choices", [])

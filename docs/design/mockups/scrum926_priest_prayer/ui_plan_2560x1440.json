@@ -1,0 +1,31 @@
+{
+  "canvas": {"width": 2560, "height": 1440},
+  "policy": {"min_gap": 20, "allow_overlap": false},
+  "content": {
+    "title": "Молитва перед боем", "subtitle": "Выбери одно благословение до конца этого боя",
+    "wrath_title": "Молитва кары", "wrath_desc": "+20% ко всему урону Священника до конца боя.",
+    "mending_title": "Молитва исцеления", "mending_desc": "+2 HP в секунду до конца боя.",
+    "aegis_title": "Молитва защиты", "aegis_desc": "−20% входящего урона до конца боя.",
+    "action": "Вознести молитву"
+  },
+  "elements": [
+    {"id": "modal_frame", "kind": "panel", "x": 370, "y": 250, "w": 1820, "h": 920, "min_w": 1680, "min_h": 820},
+    {"id": "title_zone", "kind": "text", "parent": "modal_frame", "content_zone": true, "x": 600, "y": 318, "w": 1360, "h": 68, "text_key": "title", "max_font": 56, "min_font": 38},
+    {"id": "subtitle_zone", "kind": "text", "parent": "modal_frame", "content_zone": true, "x": 620, "y": 396, "w": 1320, "h": 46, "text_key": "subtitle", "max_font": 30, "min_font": 21},
+    {"id": "wrath_card", "kind": "panel", "parent": "modal_frame", "content_zone": true, "x": 490, "y": 494, "w": 480, "h": 550, "min_w": 430, "min_h": 500},
+    {"id": "wrath_icon", "kind": "icon", "parent": "wrath_card", "content_zone": true, "x": 690, "y": 522, "w": 80, "h": 80},
+    {"id": "wrath_title_zone", "kind": "text", "parent": "wrath_card", "content_zone": true, "x": 530, "y": 612, "w": 400, "h": 64, "text_key": "wrath_title", "max_font": 32, "min_font": 22},
+    {"id": "wrath_desc_zone", "kind": "text", "parent": "wrath_card", "content_zone": true, "x": 530, "y": 688, "w": 400, "h": 196, "text_key": "wrath_desc", "max_font": 25, "min_font": 18, "scroll": "never"},
+    {"id": "wrath_action", "kind": "button", "parent": "wrath_card", "content_zone": true, "x": 600, "y": 948, "w": 260, "h": 64, "text_key": "action", "max_font": 24, "min_font": 17},
+    {"id": "mending_card", "kind": "panel", "parent": "modal_frame", "content_zone": true, "x": 1040, "y": 494, "w": 480, "h": 550, "min_w": 430, "min_h": 500},
+    {"id": "mending_icon", "kind": "icon", "parent": "mending_card", "content_zone": true, "x": 1240, "y": 522, "w": 80, "h": 80},
+    {"id": "mending_title_zone", "kind": "text", "parent": "mending_card", "content_zone": true, "x": 1080, "y": 612, "w": 400, "h": 64, "text_key": "mending_title", "max_font": 32, "min_font": 22},
+    {"id": "mending_desc_zone", "kind": "text", "parent": "mending_card", "content_zone": true, "x": 1080, "y": 688, "w": 400, "h": 196, "text_key": "mending_desc", "max_font": 25, "min_font": 18, "scroll": "never"},
+    {"id": "mending_action", "kind": "button", "parent": "mending_card", "content_zone": true, "x": 1150, "y": 948, "w": 260, "h": 64, "text_key": "action", "max_font": 24, "min_font": 17},
+    {"id": "aegis_card", "kind": "panel", "parent": "modal_frame", "content_zone": true, "x": 1590, "y": 494, "w": 480, "h": 550, "min_w": 430, "min_h": 500},
+    {"id": "aegis_icon", "kind": "icon", "parent": "aegis_card", "content_zone": true, "x": 1790, "y": 522, "w": 80, "h": 80},
+    {"id": "aegis_title_zone", "kind": "text", "parent": "aegis_card", "content_zone": true, "x": 1630, "y": 612, "w": 400, "h": 64, "text_key": "aegis_title", "max_font": 32, "min_font": 22},
+    {"id": "aegis_desc_zone", "kind": "text", "parent": "aegis_card", "content_zone": true, "x": 1630, "y": 688, "w": 400, "h": 196, "text_key": "aegis_desc", "max_font": 25, "min_font": 18, "scroll": "never"},
+    {"id": "aegis_action", "kind": "button", "parent": "aegis_card", "content_zone": true, "x": 1700, "y": 948, "w": 260, "h": 64, "text_key": "action", "max_font": 24, "min_font": 17}
+  ]
+}

@@ -1,0 +1,42 @@
+[gd_resource type="SpriteFrames" load_steps=9 format=3]
+
+[ext_resource type="Texture2D" path="res://assets/sprites/effects/storm_longbow/storm_longbow_release_00.png" id="1_00"]
+[ext_resource type="Texture2D" path="res://assets/sprites/effects/storm_longbow/storm_longbow_release_01.png" id="2_01"]
+[ext_resource type="Texture2D" path="res://assets/sprites/effects/storm_longbow/storm_longbow_release_02.png" id="3_02"]
+[ext_resource type="Texture2D" path="res://assets/sprites/effects/storm_longbow/storm_longbow_release_03.png" id="4_03"]
+[ext_resource type="Texture2D" path="res://assets/sprites/effects/storm_longbow/storm_longbow_release_04.png" id="5_04"]
+[ext_resource type="Texture2D" path="res://assets/sprites/effects/storm_longbow/storm_longbow_release_05.png" id="6_05"]
+[ext_resource type="Texture2D" path="res://assets/sprites/effects/storm_longbow/storm_longbow_release_06.png" id="7_06"]
+[ext_resource type="Texture2D" path="res://assets/sprites/effects/storm_longbow/storm_longbow_release_07.png" id="8_07"]
+
+[resource]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("1_00")
+}, {
+"duration": 1.0,
+"texture": ExtResource("2_01")
+}, {
+"duration": 1.0,
+"texture": ExtResource("3_02")
+}, {
+"duration": 1.0,
+"texture": ExtResource("4_03")
+}, {
+"duration": 1.0,
+"texture": ExtResource("5_04")
+}, {
+"duration": 1.0,
+"texture": ExtResource("6_05")
+}, {
+"duration": 1.0,
+"texture": ExtResource("7_06")
+}, {
+"duration": 1.0,
+"texture": ExtResource("8_07")
+}],
+"loop": false,
+"name": &"release",
+"speed": 16.0
+}]

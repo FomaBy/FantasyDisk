@@ -8,7 +8,7 @@
 script = ExtResource("1_summoner_weapon_script")
 ally_scene = ExtResource("2_ally_minion")
 summon_interval = 3.0
-max_summons = 2
+max_summons = 5
 
 [node name="WeaponVisual" type="Sprite2D" parent="."]
 z_index = 9

@@ -4,11 +4,11 @@ extends "res://tests/runtime_smoke_test.gd"
 # синтетическими joypad-событиями (InputEventJoypadButton/Motion через
 # Input.parse_input_event). Тяжёлые переходы состояния (старт боя, форс level-up/
 # смерти) выставляются напрямую (это НЕ key/mouse-события) — как в существующих smoke.
-# Единственное исключение по key-событию — сценарий (g), где по спеке требуется
+# Единственное исключение по key-событию — сценарий (h), где по спеке требуется
 # проверить классификацию устройства parse(Key)→keyboard / parse(Joy)→gamepad.
 #
-# SCRUM-824/SCRUM-825: Start/RB battle actions are now strict regressions here:
-# Start must open pause, and RB must open pending level-up through main._input.
+# SCRUM-824/SCRUM-825/SCRUM-846: Start/RB/Back battle/global actions are strict
+# regressions here: Start opens pause, RB opens pending level-up, Back opens feedback.
 
 const DEADZONE_VALUE := 0.9
 
@@ -64,13 +64,15 @@ func _initialize() -> void:
 		return
 	if not await _scenario_c_combat_move_and_pause(main):
 		return
-	if not await _scenario_d_level_up(main):
+	if not await _scenario_d_feedback(main):
 		return
-	if not await _scenario_e_death(main):
+	if not await _scenario_e_level_up(main):
 		return
-	if not await _scenario_f_settings_shoulders(main):
+	if not await _scenario_f_death(main):
 		return
-	if not await _scenario_g_device_detection(main):
+	if not await _scenario_g_settings_shoulders(main):
+		return
+	if not await _scenario_h_device_detection(main):
 		return
 
 	main.queue_free()
@@ -162,8 +164,33 @@ func _scenario_c_combat_move_and_pause(main) -> bool:
 	return true
 
 
-# (d) Level-up: форс доступности; карточка выбирается D-pad и подтверждается A.
-func _scenario_d_level_up(main) -> bool:
+# (d) Feedback: Back/Select opens the global report overlay; B/Start close it.
+func _scenario_d_feedback(main) -> bool:
+	await _joy_button(JOY_BUTTON_BACK)
+	await process_frame
+	if not main.ui._is_feedback_overlay_open():
+		_fail("SCRUM-846/SCRUM-815(d): joypad Back/Select должен открыть feedback-overlay.")
+		return false
+	await _joy_button(JOY_BUTTON_B)
+	await process_frame
+	if main.ui._is_feedback_overlay_open() or bool(main.call("_has_pause_reason", "feedback")):
+		_fail("SCRUM-846/SCRUM-815(d): B должен закрыть feedback-overlay.")
+		return false
+	await _joy_button(JOY_BUTTON_BACK)
+	await process_frame
+	if not main.ui._is_feedback_overlay_open():
+		_fail("SCRUM-846/SCRUM-815(d): повторный Back/Select должен снова открыть feedback-overlay.")
+		return false
+	await _joy_button(JOY_BUTTON_START)
+	await process_frame
+	if main.ui._is_feedback_overlay_open() or bool(main.call("_has_pause_reason", "feedback")):
+		_fail("SCRUM-846/SCRUM-815(d): Start/pause должен закрыть feedback-overlay.")
+		return false
+	return true
+
+
+# (e) Level-up: форс доступности; карточка выбирается D-pad и подтверждается A.
+func _scenario_e_level_up(main) -> bool:
 	main.set("pending_level_ups", 1)
 	await _joy_button(JOY_BUTTON_RIGHT_SHOULDER)
 	await process_frame
@@ -184,8 +211,8 @@ func _scenario_d_level_up(main) -> bool:
 	return true
 
 
-# (e) Смерть: форс экрана; A на кнопке выхода → главное меню.
-func _scenario_e_death(main) -> bool:
+# (f) Смерть: форс экрана; A на кнопке выхода → главное меню.
+func _scenario_f_death(main) -> bool:
 	main.ui._show_death_screen()
 	await process_frame
 	await process_frame
@@ -202,9 +229,9 @@ func _scenario_e_death(main) -> bool:
 	return true
 
 
-# (f) Настройки из главного меню: LB/RB листают вкладки (SCRUM-813). JOY-ребинд —
+# (g) Настройки из главного меню: LB/RB листают вкладки (SCRUM-813). JOY-ребинд —
 # scope SCRUM-816 (rebind принимает только InputEventKey), здесь не тестируется.
-func _scenario_f_settings_shoulders(main) -> bool:
+func _scenario_g_settings_shoulders(main) -> bool:
 	main.ui._show_settings_menu()
 	await process_frame
 	await process_frame
@@ -231,12 +258,12 @@ func _scenario_f_settings_shoulders(main) -> bool:
 	return true
 
 
-# (g) InputDeviceManager: parse(Key)→keyboard, parse(Joy)→gamepad (авто-переключение).
+# (h) InputDeviceManager: parse(Key)→keyboard, parse(Joy)→gamepad (авто-переключение).
 # Здесь по спеке допускается InputEventKey — это проверка классификации устройства.
-func _scenario_g_device_detection(main) -> bool:
+func _scenario_h_device_detection(main) -> bool:
 	var mgr: Node = main.get_node_or_null("/root/InputDeviceManager")
 	if mgr == null:
-		_fail("SCRUM-815(g): автолоад InputDeviceManager не найден.")
+		_fail("SCRUM-815(h): автолоад InputDeviceManager не найден.")
 		return false
 	var key := InputEventKey.new()
 	key.keycode = KEY_SPACE
@@ -244,7 +271,7 @@ func _scenario_g_device_detection(main) -> bool:
 	mgr.call("_input", key)
 	await process_frame
 	if str(mgr.call("active_kind")) != "keyboard":
-		_fail("SCRUM-815(g): после InputEventKey active_kind должен быть keyboard, получено: %s" % [mgr.call("active_kind")])
+		_fail("SCRUM-815(h): после InputEventKey active_kind должен быть keyboard, получено: %s" % [mgr.call("active_kind")])
 		return false
 	var jb := InputEventJoypadButton.new()
 	jb.button_index = JOY_BUTTON_A
@@ -252,6 +279,6 @@ func _scenario_g_device_detection(main) -> bool:
 	mgr.call("_input", jb)
 	await process_frame
 	if str(mgr.call("active_kind")) != "gamepad":
-		_fail("SCRUM-815(g): после InputEventJoypadButton active_kind должен быть gamepad, получено: %s" % [mgr.call("active_kind")])
+		_fail("SCRUM-815(h): после InputEventJoypadButton active_kind должен быть gamepad, получено: %s" % [mgr.call("active_kind")])
 		return false
 	return true

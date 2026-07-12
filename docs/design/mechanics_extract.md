@@ -2,7 +2,39 @@
 
 ## Актуальный Слой Реализации
 
-Обновлено: 2026-06-14
+### Production schema 6 — SCRUM-1067 / SCRUM-1068 runtime
+
+Новая design-спецификация созвездий хранится в
+`docs/design/reports/scrum1067_constellation_3x6_balance_spec.md`, машинный
+design manifest — `docs/design/data/scrum1067_weapon_finals_manifest.json`, а
+runtime projection — `data/meta/constellation_schema6.json`.
+
+Формула класса остаётся trio-first:
+
+```text
+weapon solo = measured_solo / target_solo
+weapon aoe = measured_5T / target_5T
+weapon crowd = mean(target_CCT_N / measured_CCT_N), N=5,10,20
+weapon defense = implemented_defense / target_defense
+class axis = mean(axis трёх canonical weapons)
+defense_for_total = min(class defense, 1.50)
+class total = mean(solo, aoe, crowd, defense_for_total)
+```
+
+Raw defense публикуется отдельно и продолжает проходить survivability/TTD gates;
+cap 1.50 действует только в агрегированном roster-comparison total.
+
+Topology: free core + `3×6` weapon-owned cost-1 nodes + two revealed/purchased
+hidden cost1 = 21 nodes / 20 spend. Все три finals действуют одновременно, но
+строго на свои weapon IDs. Полный путь `1.60–2.00×`, трио `1.60–1.90×`, roster
+total spread `≤1.15`; A5 остаётся сложнее A0 и не ускоряется более чем на 15%
+относительно A0 baseline.
+
+Manifest инстанцирует 306 branch nodes и 34 hidden profiles; каждый содержит
+scope/effect/cap/consumer/fixture. Free core явно и всегда даёт ровно +1 primary
+attribute вне 20-point spend.
+
+Обновлено: 2026-07-11
 
 Ниже сохранена выгрузка исходной таблицы механик. Этот верхний раздел фиксирует, какие механики уже перенесены в игру и как они называются в коде. Для точного текущего состояния также см. `docs/design/current_game_state.md`.
 
@@ -11,9 +43,38 @@
 - `docs/design/systems/characters_weapons.md` — текущие роли персонажей и оружия;
 - `docs/design/systems/combat.md` — runtime combat rules.
 
-Баланс SCRUM-166: `robot_magnetic_anchor`, `robot_hydraulic_press` и `robot_reactor_core`
-прогнаны через `tools/balance_harness.gd`; tuned профиль `balanced/tank` держит
-solo DPS ~40.1 и 5-target AoE DPS ~138.6, отклонение от целевого бюджета 0.0%.
+Баланс Робота (редизайн SCRUM-914/915/916/918): кит физический
+(`damage_parameter: "damage"`), формульный `tools/balance_harness.gd` держит
+`robot_magnetic_anchor`, `robot_hydraulic_press` и `robot_reactor_core` в бюджете
+профиля `balanced/tank` (ориентир: solo ~45.2 / 5-target ~138.6 DPS, отклонение ≈0%).
+
+Живой замер `tools/live_combat_harness.gd` (реальный Player+оружие по стационарному
+ОДНОСТОРОННЕМУ кластеру болванок, L1, окно 8с, без ульты — систематически НИЖЕ
+формулы) подтверждает различимые ниши трио:
+
+| Оружие | Ниша | Solo DPS | 5-target DPS | TTK(90HP) |
+| --- | --- | ---: | ---: | ---: |
+| Магнитный Якорь | point grouping — тяжёлый отложенный пулл к центру (0.85/каст, элитки/боссы не смещаются, урон полный) | 13.8 | 51.5 | 6.5с |
+| Гидравлический Пресс | line alignment — урон по ВСЕЙ ширине коридора (300), компрессия к оси (0.80/каст, элитки/боссы ×0.25) | 18.7 | 116.6 | 4.8с |
+| Реакторное Ядро | rotating 360° zone — вращающийся 4-вентильный веер (+6°/каст, ролл×0.42) | 3.8 ℹ | 20.3 ℹ | 23.4с |
+
+ℹ Реактор — документированный АРТЕФАКТ замера (`live_combat_harness.KNOWN_ARTIFACTS`):
+односторонний стационарный кластер ловит лишь ~1 лопасть из 4 и «уезжает» из-под
+неё по мере вращения → живой DPS занижен; в реальном рое вокруг героя веер бьёт
+всеми сторонами, формульный budget держит его в профиле (это ограничение геометрии
+гарнесса, НЕ недонастройка — параметры править не нужно).
+
+Class-trio (покрытие осей — в руке одно оружие за раз, не сумма):
+- **solo**: пресс 18.7 ведёт, якорь 13.8 (тяжёлый разовый хит на медленном темпе fire_interval 2.05);
+- **AoE/crowd**: пресс 116.6 (полная ширина коридора) + реактор (реальный рой — все 4 лопасти) + якорь (точечная группировка большого радиуса);
+- **defense/control**: trait «Бронекорпус» ×0.8 входящего (худший кап митигации det 87.23% / dodge-EV 94.25% < гейта 98%), пулл якоря (импульс cap 1500), компрессия пресса (элитки/боссы ×0.25), отброс реактора (knockback 135);
+- **total**: трио закрывает все оси — тяжёлый разовый удар (якорь), устойчивый линейный AoE (пресс), круговой sweep + танковость (реактор + trait).
+
+Гейты приёмки (fdengine, `tools/godot_gate.py`), зелёные: `robot_kit_test`,
+`runtime_smoke_weapon_mechanics_test`, `weapon_integrity_test` (17 классов /
+51 оружие), `global_survivability_balance_smoke_test` (митигация<98%, бессмертие
+недостижимо), `runtime_smoke_test`; Robot-секция `live_combat_harness` чиста от
+freed-lambda-captures (SCRUM-1034).
 
 ### Где Живут Данные В Коде
 
@@ -48,7 +109,7 @@ solo DPS ~40.1 и 5-target AoE DPS ~138.6, отклонение от целев�
 | Ловкость | `agility` | Скорость атаки, крит, скорость движения, уворот |
 | Интеллект | `intelligence` | Магический урон и scaling мага |
 | Восприятие | `perception` | Дальность, AoE, снаряды, radius-related параметры |
-| Энергия | `energy` | Магический/звуковой потенциал, ресурсная фантазия |
+| Энергия | `energy` | Темп уникальных механик и ультимейта, ресурсная фантазия |
 | Знание | `knowledge` | DoT, формулы магии, технические параметры |
 | Выносливость | `endurance` | HP, защита, отталкивание |
 | Лидерство | `leadership` | Ауры, призывы, поддержка |
@@ -86,8 +147,8 @@ SCRUM-256 закрепил data-driven framework `ProgressionData.CLASS_MECHANIC
 
 | Класс | Главный атрибут | Уникальная идентичность | Внутренняя логика оружий |
 | --- | --- | --- | --- |
-| Берсерк | Сила | Телесный напор: тяжелый melee press, фронтальные зоны и контроль толпы | Меч = длинный frustum, топор = широкая ближняя дуга, молот = центральный AoE slam |
-| Солдат | Восприятие | Тактическая линия огня: сектор, дистанция, подавление и удержание позиции | Винтовка = линия подавления, граната = delayed explosive, штык = brace-стойка |
+| Берсерк | Сила | Телесный напор: тяжелый melee press, фронтальные зоны и контроль толпы | Меч = узкий сектор 100°/350px, топор = сектор 180°/250px, молот = круговой slam 150px |
+| Солдат | Восприятие | Двойное действие: каждое действие оружия с шансом 50% происходит дважды (копия не рекурсивна) | Аркебуза = быстрая взрывная пуля с малым AoE, граната = медленный фитильный нюк, штык = ближний конус с редким авто-выстрелом |
 | Вор | Ловкость | Уловка и темп: рикошеты, фантомный backstab, дым и экономические трюки | Монеты = ricochet, плащ = shadow backstab без смещения героя, дым = control/evasion zone |
 | Элементалист | Интеллект | Стихийная формула: орбиты, разломы и отложенные стихийные удары | Орбы = orbit ticks, призма = rift control, метеор = delayed shard impacts |
 | Снайпер | Восприятие | Точная ликвидация: дальность, метки, kill-zone и пробивающие траектории | Винтовка = lockshot, прицел = kill-zone, патроны = split round |
@@ -96,7 +157,7 @@ SCRUM-256 закрепил data-driven framework `ProgressionData.CLASS_MECHANIC
 | Робот | Выносливость | Бронеконтур: магнитное удержание, компрессия и реакторное давление | Якорь = magnet pull, пресс = compression line, ядро = reactor vent |
 | Инженер | Лидерство | Мастерская приказов: устройства работают как управляемая команда | Ключ = sentry link, дрон = repair support, мины = route control |
 | Темный маг | Интеллект | Темная формула: проклятия, лучи, взрывы и распад пространства | Книга = double AoE projectile, череп = homing DoT curse, жезл = pierce beams |
-| Гитарист | Лидерство | Сценический контроль: ритм, волны, deploy-усилители и отталкивание | Электро = directed wave, бас = circular pulse, амп = deploy pulses |
+| Гитарист | Лидерство | «Разогрев» (SCRUM-1006): no-hit стек магического урона +2 п.п./сек до +20%, сброс при полученном ударе; кайт + деплой | Электро = узкий riff strip, бас = большое кайт-кольцо, амп = деплой-турели (SCRUM-899) |
 | Ассасин | Ловкость | Критический танец: критовые окна, теневые всплески и тонкие poison-линии | Чакрамы = boomerang corridor, кинжалы = stab flurry, струна = poison line |
 | Рейнджер | Восприятие | Охотничья стойка: подготовка, траектория и дальний контроль | Арбалет = charged shot, лук = charged fan, капкан = deploy trap |
 | Доктор | Знание | Клинический drain: лечение через урон, чума и хирургический риск | Зелье = healing link, шприц = plague DoT link, пила = melee sustain |
@@ -104,13 +165,29 @@ SCRUM-256 закрепил data-driven framework `ProgressionData.CLASS_MECHANIC
 | Рыцарь | Выносливость | Щитовая клятва: блок, контратака и удержание линии | Копье = long strip, щит = frontal bash/block, кистень = circular holy control |
 | Друид | Лидерство | Командование стаей: питомцы, тернии и тотемы под приказами | Амулет = commanded pets, посох = briar zone, тотем = support pulses |
 
+SCRUM-854/SCRUM-862/SCRUM-860/SCRUM-875 уточнили runtime-контракты: weapon signature в атаках читается как 60% alpha body layer; точная зона Берсерк-sweep остаётся outward wedge от персонажа для урона, но меч/топор больше не показывают секторный overlay в анимации, а crescent slash визуально развернут на 180 градусов; persistent pools и pressure mines живут свой duration и не заменяются новой атакой; summon limit использует Leadership, `summon_amount` усиливает профиль призывов, а бой стартует примерно с половиной лимита; Доктор больше не роллит внешние regeneration/vampirism/lifesteal rewards, включая boss completion tier-3 artifact reward, и лечится только собственными drain-оружиями; Assassin `shadow_daggers`/`venom_wire` получают capped non-healing kill-growth `shadow_momentum`.
+
+SCRUM-935 ввёл data-driven реестр class traits `ProgressionData.CLASS_TRAITS`
+(канон выбора — `docs/design/class_traits_registry.md`). Первый реализованный
+trait — «Двойное действие» Солдата: каждое действие оружия (выстрел аркебузы,
+бросок гранаты, укол штыка) с шансом `action_echo_chance` = 0.5 создаёт ОДНУ
+полную копию себя с читаемым сдвигом `action_echo_delay` = 0.18с. Ролл идёт
+per-activation (одно действие = один ролл, копия — реальное второе действие со
+своими снарядом/фитилём/конусом и своим роллом крита). Копия выполняется под
+флагом и НЕ роллит новую копию — цепочки исключены; deploy-режимы (amp/trap/
+мины/турели/дроны) из эха исключены. Хук generic: `Player.class_trait_value(key)`
++ `ClassWeapon._maybe_fire_action_echo`; эхо не переприменяет кулдаун,
+heal-on-attack и заряд. Ожидаемый выход действий ×1.5 учтён в
+`estimate_weapon_budget_for_stats` (фактор на direct/dot/pool, но не на ульту и
+призывы), поэтому `budget_tuning_for` автоматически компенсирует урон кита —
+solo/AoE-оси Солдата остаются на бюджет-целях 48/150 DPS.
+
 ### Производные Параметры
 
 | Параметр | ID в коде | Что делает |
 | --- | --- | --- |
 | Урон | `damage` | Основной физический урон |
-| Магический урон | `magic_damage` | Урон Темного мага |
-| Урон звуковой волны | `sound_wave_damage` | Урон Гитариста |
+| Магический урон | `magic_damage` | Урон магических классов (после SCRUM-898 включая Гитариста и Друида) |
 | Скорость атаки | `attack_speed` | Уменьшает интервалы атак: итоговый интервал = `base_fire_interval / attack_speed`, минимум 0.18с |
 | Возвышение | `ascension_level` | Метапрогрессия 1-5 на персонажа; кумулятивные модификаторы из `ASCENSION_LEVELS` применяются при старте забега |
 | Шанс крита | `crit_chance` | Вероятность критического удара |
@@ -120,56 +197,56 @@ SCRUM-256 закрепил data-driven framework `ProgressionData.CLASS_MECHANIC
 | Защита | `defense` | Снижает получаемый урон; с 0.1.5 использует diminishing returns и cap 62%. |
 | Максимальное здоровье | `health_point` | Max HP игрока |
 | Дальность атаки | `attack_range` | Дистанция поиска и поражения целей |
-| Радиус AoE | `aoe_radius` | Размер круговых и взрывных зон |
+| Ширина сектора | `aoe_radius` | Ширина/угол направленных area-атак; не расширяет круговые удары |
 | Радиус подбора | `pickup_radius` | Магнит опыта и денег |
 | Урон DoT | `dot_damage` | Урон тиков |
 | Скорость DoT | `dot_speed` | Частота / темп тиков |
 | Скорость снарядов | `projectile_speed` | Скорость projectile-оружия |
-| Радиус ауры | `aura_radius` | Размер аур и зон поддержки |
+| Радиус | `aura_radius` | Радиус атак, зон, аур и поддержки |
 | Сила баффов | `buff_power` | Мощность эффектов поддержки |
 | Сила отталкивания | `knockback_power` | Knockback от звуковых и силовых атак |
-| Количество призывов | `summon_amount` | Сила призывов/устройств: количество, урон, живучесть и темп summon-role оружия |
+| Количество призывов | `summon_amount` | Сила призывов/устройств: урон, живучесть, темп, lifetime и splash summon-role оружия; count-cap идет от Leadership |
 
 ### Оружие
 
 | Класс | Оружие | ID | Тип атаки | Ключевая механика |
 | --- | --- | --- | --- | --- |
-| Берсерк | Двуручный меч | `sword` | `frustum` | Усеченный замах 90°, радиус 600, base width 150, outer width 1200, interval 0.58, damage x1.15 |
-| Берсерк | Двуручный топор | `axe` | `sweep` | Дуга 140 градусов радиуса 320, damage x0.85 |
-| Берсерк | Двуручный молот | `hammer` | `circle` | Радиус 100, damage x0.55; экспоненты апгрейдов 1.25 (AoE) / 1.15 (damage), фактическая круговая зона capped at 145 px — сильный ближний AoE без экранного AFK-радиуса |
-| Солдат | Аркебуза строя | `soldier_rifle` | `suppression_burst` | 3 быстрых выстрела по линии: первая цель получает полный урон, соседи в коридоре получают reduced suppression damage |
-| Солдат | Граната с фитилем | `soldier_grenade` | `grenade_cook` | Телеграф зоны, короткая задержка фитиля, взрыв с falloff урона к краю |
-| Солдат | Штык-стойка | `soldier_bayonet` | `bayonet_brace` | Оборонительный forward brace: враг получает один укол за стойку и knockback |
+| Берсерк | Двуручный меч | `sword` | `sweep` | Сектор 100°, радиус 350, interval 0.58, damage x1.15; `sector_multiplier` расширяет угол, Radius расширяет дальность |
+| Берсерк | Двуручный топор | `axe` | `sweep` | Сектор 180° радиуса 250 по ближайшему монстру, damage x0.85; `sector_multiplier` расширяет угол, Radius расширяет дальность |
+| Берсерк | Двуручный молот | `hammer` | `circle` | Круг 150px, damage x0.55; Radius увеличивает круг, `sector_multiplier` не влияет; плотные паки получают circle target diminishing |
+| Солдат | Аркебуза строя | `soldier_rifle` | `arquebus_shot` | Частая одиночная взрывная пуля: видимый снаряд летит в цель и взрывается малым AoE (полный урон в центре, falloff к краю) |
+| Солдат | Граната с фитилем | `soldier_grenade` | `grenade_fuse` | Медленный нюк: долгий полёт (скорость полёта капится ~460) + видимый фитиль после посадки; тяжёлый взрыв с falloff, урон только на взрыве |
+| Солдат | Штык-стойка | `soldier_bayonet` | `bayonet_cone` | Ближний сектор 105° без мёртвой зоны у ног: укол+knockback каждому в конусе; редкий авто-выстрел (25% + артефакт) по цели за конусом на 70% урона |
 | Вор | Кошель Рикошета | `thief_coin_pouch` | `coin_ricochet` | Монета цепляется по ближайшим целям, урон убывает по цепи, первые попадания крадут немного золота |
 | Вор | Плащ Захода | `thief_shadow_cloak` | `shadow_backstab` | Фантомный удар за ближайшей целью наносит усиленный урон и цепляет врагов рядом, не двигая героя |
 | Вор | Дымовая Бомба | `thief_smoke_bomb` | `smoke_bomb` | Дымовая зона взрывается после короткой задержки, а Вор получает временный dodge-window |
-| Элементалист | Кольцо Трех Стихий | `elementalist_orb_ring` | `elemental_orbit` | Орбитальные стихийные сферы наносят короткие AoE-тики вокруг героя |
-| Элементалист | Призматический Фокус | `elementalist_prism_focus` | `prism_rift` | Крестовой разлом из двух лучей по ближайшей цели после короткого телеграфа |
-| Элементалист | Ядро Метеора | `elementalist_meteor_core` | `meteor_shards` | Отложенный метеорный удар и вторичные осколочные взрывы вокруг цели |
+| Элементалист | Кольцо Четырёх Стихий | `elementalist_orb_ring` | `elemental_orbit` | SCRUM-948: квадратная AoE в точке каста — тики бьют магией+физикой+ожогом и отбрасывают врагов от центра |
+| Элементалист | Призматический Фокус | `elementalist_prism_focus` | `prism_rift` | SCRUM-949: полнокартный X-разлом — диагонали пронзают арену через точку фокуса, центр бьёт бонус-AoE |
+| Элементалист | Ядро Метеора | `elementalist_meteor_core` | `meteor_shards` | SCRUM-950: самое медленное оружие игрока — телеграф+падение 1.30с, тяжёлый magic-взрыв с falloff, догорающая DoT-зона |
 | Снайпер | Винтовка Мертвого Глаза | `sniper_deadeye_rifle` | `sniper_lockshot` | Короткий прицел/телеграф, затем точный дальний луч по locked target и falloff по линии |
 | Снайпер | Прицел Наводчика | `sniper_spotter_scope` | `sniper_kill_zone` | Маркирует kill-zone у ближайшей цели и вызывает несколько точных sky-beam попаданий по врагам внутри |
-| Снайпер | Осколочные Патроны | `sniper_shatter_rounds` | `sniper_split_round` | Основной дальний выстрел раскалывается по соседним целям с убывающим уроном |
+| Снайпер | Осколочные Патроны | `sniper_shatter_rounds` | `sniper_split_round` | Основной дальний выстрел раскалывается веером по траекториям; осколки pierce до 2 целей |
 | Священник | Светлый Реликварий | `priest_reliquary` | `priest_sanctify` | Освящает ближайшую цель, затем знак взрывается по области и лечит часть нанесенного урона |
-| Священник | Кадило Обета | `priest_censer` | `priest_ward` | Несколько защитных ward-пульсов вокруг героя наносят урон врагам рядом и дают малое лечение |
-| Священник | Колокол Молитвы | `priest_chime` | `priest_prayer_chain` | Молитвенная цепь перескакивает между врагами и возвращает sustain от нанесенного урона |
+| Священник | Кадило Обета | `priest_censer` | `priest_ward` | Несколько тяжёлых ward-пульсов вокруг героя наносят урон; финал поглощает 18% одного удара за cast и отвечает retaliation без скрытого лечения |
+| Священник | Колокол Молитвы | `priest_chime` | `priest_prayer_chain` | Молитвенная цепь выбирает sustain-дугу между врагами ближе к владельцу и возвращает heal от нанесенного урона |
 | Биолог | Споровая Линза | `biologist_spore_lens` | `bio_spore_bloom` | Три расширяющихся споровых кольца выращиваются на цели и наносят убывающий урон |
 | Биолог | Инъектор Образцов | `biologist_sample_injector` | `bio_sample_dart` | Инъектор берет образец у цели, затем delayed analysis pulses бьют цель и ближайшие ткани |
 | Биолог | Семя Симбионта | `biologist_symbiote_seed` | `bio_symbiote_web` | Первичная цель связывается с соседними врагами симбиотической сетью и делит биоурон |
-| Робот | Магнитный Якорь | `robot_magnetic_anchor` | `robot_magnetic_anchor` | Ставит якорь на ближайшую цель, затем стягивает врагов к центру и бьет импульсом |
-| Робот | Гидравлический Пресс | `robot_hydraulic_press` | `robot_compression_line` | Две силовые губки сходятся по линии атаки, прижимая врагов к оси и нанося урон коридором |
-| Робот | Реакторное Ядро | `robot_reactor_core` | `robot_reactor_vent` | Четыре направленных выброса вокруг корпуса чистят ближний круг и отталкивают толпу |
-| Инженер | Ключ Часового | `engineer_sentry_wrench` | `engineer_sentry_link` | Временная турель сама выбирает цели и бьет их точечными лучами |
-| Инженер | Ремонтный Дрон | `engineer_repair_drone` | `engineer_repair_drone` | Цепная дуга по врагам возвращает часть нанесенного урона в ремонт |
-| Инженер | Минная Сетка | `engineer_pressure_mines` | `engineer_pressure_mines` | Три мины веером срабатывают отдельно при касании врагом |
-| Темный маг | Темная книга | `dark_book` | `aoe_projectile` | 2 снаряда в две ближайшие цели, взрыв по области |
-| Темный маг | Проклятый череп | `cursed_skull` | `homing_curse` | Самонаведение, 5 DoT-тиков и небольшой splash по области цели |
-| Темный маг | Темный жезл | `dark_wand` | `beam` | 2 pierce-луча веером (шаг 14 градусов) |
-| Гитарист | Электрогитара | `electric_guitar` | `sound_wave` | Широкая волна и knockback; пассив +15% attack speed |
-| Гитарист | Бас-гитара | `bass_guitar` | `pulse` | Частый слабый контроль-пульс: x0.30 урона, interval 0.85, сильный knockback |
-| Гитарист | Усилитель | `sound_amp` | `amp` | Деплой на ~7с, самостоятельные пульсы каждые 1.1с, лимит 1 + floor(Лидерство/4) |
+| Робот | Магнитный Якорь | `robot_magnetic_anchor` | `robot_magnetic_anchor` | Отложенный тяжёлый AoE-якорь в точке цели: полный урон с falloff от центра, стягивает рядовых к центру 0.85/каст (импульс cap 1500); элитки/боссы не смещаются, урон полный — группировка «точка за точкой» |
+| Робот | Гидравлический Пресс | `robot_hydraulic_press` | `robot_compression_line` | Широкий коридор: урон по ВСЕЙ ширине `suppression_width` (300, ×1.30 с «Калибратором»), прижимает рядовых к оси 0.80/каст; элитки/боссы — полный урон, резист смещения ×0.25 — выравнивание в линию |
+| Робот | Реакторное Ядро | `robot_reactor_core` | `robot_reactor_vent` | Ровно 4 вентиля 90° от МИРОВОЙ фазы (без самонаведения), паттерн +6°/каст — веер обходит круг за 15 атак; урон вентиля = ролл ×0.42, extra_projectile лишь расширяет лопасти |
+| Инженер | Ключ Часового | `engineer_sentry_wrench` | `engineer_sentry_link` | `turret_dps` (SCRUM-888): персистентные турели (жёсткий лимит 2, старейшая заменяется) автострельбой бьют залпом по разным ближайшим целям, малый capped splash; урон/темп скейлятся от Лидерства |
+| Инженер | Ремонтный Дрон | `engineer_repair_drone` | `engineer_repair_drone` | `repair_chain`: цепная дуга по врагам возвращает часть нанесенного урона в ремонт |
+| Инженер | Минная Сетка | `engineer_pressure_mines` | `engineer_pressure_mines` | `mine_grid`: три мины веером живут свой duration и тикают по врагам внутри |
+| Темный маг | Темная книга | `dark_book` | `dark_mirror_blast` | SCRUM-941: каждый каст = пара взрывов — по цели и в зеркальной точке M = 2*маг − P; оба по общим правилам урона, двойное накрытие легально |
+| Темный маг | Проклятый череп | `cursed_skull` | `skull_curse_burn` | SCRUM-940: curse-only зона — прямого урона нет; dot_ticks частых тиков dot-оси, refresh без стаков. Статы проклятия: тик = dot_damage (Знание) × curse_tick_multiplier × (1 + Интеллект × curse_int_scale), темп = dot_speed; magic/physical-множители не участвуют |
+| Темный маг | Темный жезл | `dark_wand` | `dark_chain_burst` | SCRUM-939: цепной снаряд до 3 разных целей (спад по прыжкам, без повторов), малый магический бурст по соседям каждого попадания |
+| Гитарист | Электрогитара | `electric_guitar` | `riff_strip` | Узкая полоса постоянной ширины 118 на 520 range: частые (0.55) низко-средние (x0.66) маг. хиты, без pierce-капа; пассив +15% attack speed (SCRUM-899) |
+| Гитарист | Бас-гитара | `bass_guitar` | `pulse` | Большое кольцо 330 с 1 уровня: частые (0.78) слабые (x0.26) маг. тики, сильный knockback под кайт (SCRUM-899) |
+| Гитарист | Усилитель | `sound_amp` | `amp` | `stage_pulse`: деплой на ~7с (+min(Лидерство x0.12, 3)с uptime), пульсы каждые 1.0с ÷ канон-хейст от summon_amount, лимит 1 + floor(Лидерство/4), cap 3 (SCRUM-899) |
 | Ассасин | Чакрамы | `chakrams` | `boomerang` | Коридор туда/обратно; crit-friendly, критовые попадания запускают неподвижный теневой всплеск у цели |
-| Ассасин | Теневые кинжалы | `shadow_daggers` | `stab_flurry` | Быстрые короткие multi-stabs по ближайшим целям, высокий crit + теневой burst у цели |
-| Ассасин | Ядовитая струна | `venom_wire` | `dot_beam` | Тонкая poison-линия/гаррота с DoT и теневым всплеском на крите |
+| Ассасин | Теневые кинжалы | `shadow_daggers` | `stab_flurry` | Быстрые короткие multi-stabs, высокий crit + теневой burst; normal kills дают capped `shadow_momentum` |
+| Ассасин | Ядовитая струна | `venom_wire` | `dot_beam` | Тонкая poison-линия/гаррота с DoT; normal kills refresh capped `shadow_momentum` |
 | Рейнджер | Лунный арбалет | `moon_crossbow` | `beam` | Заряжаемый piercing shot: неподвижная стойка повышает урон |
 | Рейнджер | Грозовой длинный лук | `storm_longbow` | `beam` | Заряжаемый веер дальних лучей, line control |
 | Рейнджер | Охотничий капкан | `hunter_trap` | `trap` | Deploy trap: burst + knockback; stance charge усиливает подготовку |
@@ -184,7 +261,7 @@ SCRUM-256 закрепил data-driven framework `ProgressionData.CLASS_MECHANIC
 | Рыцарь | Освященный кистень | `holy_flail` | `circle` | Medium circular heavy swing, сильнее counter damage |
 | Друид | Амулет призыва | `summon_amulet` | `summon` | Beast pack `pack_damage`: быстрые питомцы от Leadership, команды attack_target/guard |
 | Друид | Посох терний | `briar_staff` | `aoe_projectile` | Thorn zone, AoE DoT, crowd control |
-| Друид | Вороний тотем | `raven_totem` | `amp` | Totem `support_totem`: пульсы контроля/поддержки, Leadership-scaled deploy limit |
+| Друид | Вороний тотем | `raven_totem` | `amp` | Totem `support_totem`: пульсы контроля/поддержки, Leadership-scaled deploy limit, cap 3 |
 
 ### Summon / Deploy Roles
 
@@ -198,8 +275,15 @@ SCRUM-254 усилил призывателей через data-driven поля 
 | `pack_damage` | `druid/summon_amulet` | Быстрая стая: высокий темп, умеренная живучесть, малый контроль |
 | `tank_control` | `chemist/homunculus_vial` | Более плотный одиночный миньон: больше HP, медленнее, отталкивает цель |
 | `support_totem` | `druid/raven_totem` | Тотем-поддержка: deploy-пульсы, контроль и малый sustain |
-| `engineer_sentry` | `engineer/engineer_sentry_wrench` | Устройство-турель: автономные beam shots, роль считается summon archetype |
+| `engineer_sentry` | `engineer/engineer_sentry_wrench` | Устройство-турель (SCRUM-888): персистентная автострельба снарядами по ближайшим, роль считается summon archetype |
 | `support_drone` | `engineer/engineer_repair_drone` | Support chain: ремонт от урона + малый дополнительный sustain |
+
+SCRUM-859 добавил отдельный `deploy_role` для ClassWeapon-deploys: `stage_pulse`
+для Guitarist amp, `support_totem` для Druid raven, `turret_dps` для Engineer
+sentry, `repair_chain` для Engineer drone и `mine_grid` для Engineer mines.
+`max_summons_cap` применяется после Leadership scaling: amp/totem cap 3, sentry
+cap 5. Sentry shots now keep a per-cycle target memory and add small capped splash
+around the primary target.
 
 `ProgressionData.weapon_archetype()` считает оружие с `summon_role` как `summon`.
 Чистые summon-оружия (`summon_damage_multiplier` без `attack_mode`) в budget harness
@@ -244,7 +328,7 @@ SCRUM-245 добавил `scripts/status_effects.gd` как общий runtime-�
 | --- | --- | --- |
 | Физический урон | `physical_damage` | `damage`, `attack_speed`, `crit_chance`, `crit_damage_multiplier`, `knockback_power` |
 | Магия | `magic_damage` | `magic_damage`, `aoe_radius`, `projectile_speed`, `attack_range`, `range_multiplier` |
-| Звук / Контроль | `sound_control` | `sound_wave_damage`, `aura_radius`, `buff_power`, `knockback_distance` |
+| Поддержка / Контроль | `support_control` | `aura_radius`, `buff_power`, `knockback_distance` |
 | Яд / DoT | `dot_poison` | `dot_damage`, `dot_speed` |
 | Выживаемость | `survival` | `health_point`, `defense`, `dodge`, `move_speed`, `absorb`, `regeneration`, `vampiric_amount`, `vampiric_chance` |
 | Приспешники / Поддержка | `summons_support` | `summon_amount`, `pickup_radius`, `ultimate_multiplier` |
@@ -270,6 +354,19 @@ SCRUM-245 добавил `scripts/status_effects.gd` как общий runtime-�
 - артефакты.
 
 При открытии level-up окна игра должна полностью ставиться на паузу.
+
+SCRUM-871 (Level Up 3.0 Advisor): каждая карточка показывает до 3 строк «до ->
+после» по реально пересчитанным производным параметрам (dry-run награды через
+`ProgressionData.derived_parameters` от живых stats/run_modifiers/weapon_config,
+`scripts/level_up_advisor.gd`), полный список — в тултипе. Поверх набора
+считаются два честных скора: DPS-прокси (урон родного типа класса × атак/с ×
+ожидание крита + DoT-трек) и живучесть (EHP-модель боевого `take_damage`:
+absorb → защита → уворот + окно регена/вампиризма). Карточка с максимальным
+положительным приростом DPS получает риббон «ЛУЧШИЙ УРОН», с максимальным
+приростом живучести — «ВЫЖИВАНИЕ», выигравшая обе оси — «ЛУЧШИЙ ВЫБОР»; нулевые
+приросты бейджей не дают. Изоляция типов урона SCRUM-524 сохраняется: чужие
+damage-типы в дельтах не показываются. Механика выбора (3 варианта, «Позже»,
+анти-реролл, SCRUM-695 релевантность, capstone «Озарение») не изменена.
 
 ### Артефакты И Магазин
 
@@ -351,13 +448,13 @@ SCRUM-245 добавил `scripts/status_effects.gd` как общий runtime-�
 - дальнобойных врагов меньше;
 - маленькие враги иногда появляются пачками.
 
-Текущий слой реализации использует боевую арену 2560x1440 с центром `ARENA_SIZE * 0.5`. Камера боя имеет zoom 1.12 и не показывает всю арену целиком даже при разрешении окна 2560x1440.
+Текущий слой реализации использует боевую арену 4096x2304 с центром `ARENA_SIZE * 0.5`. Камера боя имеет zoom 1.12 и не показывает всю арену целиком даже при разрешении окна 2560x1440.
 
 Параметры карты и плотности:
 - ямы и колонны: отключены, активны только границы арены;
 - spawn edge padding: 72 пикселя;
-- spawn safe radius around player: 340 пикселей;
-- projectile cleanup bounds: 2560x1440 плюс margin 180 пикселей.
+- spawn safe radius around player: 420 пикселей;
+- projectile cleanup bounds: 4096x2304 плюс margin 180 пикселей.
 
 ### Stage Scale / Difficulty Economy (2026-06-12)
 
@@ -562,8 +659,8 @@ Escape открывает крупное меню характеристик:
 - **Магазин**: базовые цены уже включают pass x3.5 (пример: `shop_damage` 12 -> 42), а актуальная экономика 0.1.4 дополнительно применяет `ECONOMY_PRICE_MULTIPLIER = 1.10` внутри `stage_scaled_cost()`. Фактическая цена `shop_damage` на stage 0 — 47 золота. Артефакты в магазине стоят по тиру: Tier 1 — 30, Tier 2 — 55, Tier 3 — 95 (`COST_BY_TIER`) до stage/economy scaling.
 - **Редкость**: вес появления в наградах/магазине по тиру — 1.0 / 0.45 / 0.12 (`TIER_WEIGHTS`, weighted-выбор без возврата).
 - **Окно докачки после боя**: +1 к характеристике за `18 + 6 * route_stage` золота, затем `stage_scaled_cost`; reroll пары предложений за `6 + 2 * route_stage`, затем `stage_scaled_cost`, максимум 2 раза за окно; «Пропустить» — бесплатно.
-- **Дроп 0.1.4 (откалибровано SCRUM-507)**: rewards назначаются по `DROP_CLASS_MULTIPLIERS`: ordinary < complex < heavy < mini_elite < elite < boss. Сложные цели дают x1.3 XP / x1.6 золота, жирные (bruiser/shield) около x1.75 XP / x2.2 золота относительно базы; мини-элитки x3.6 / x3.8; элитки x8 / x8.5; босс получает fixed reward `money 43.0`, умноженный на `stage_scale`. SCRUM-507 снизил boss-money 92→43 и поднял complex/heavy золото (1.35→1.6 / 1.85→2.2), чтобы доля boss-дропа в доходе маршрута упала с ~64% до ≤50%, а ранние/средние бои перестали обесцениваться («дожить до босса»). Route-level модель SCRUM-188 (`build/route_economy_xp_model.md`) после калибровки: affordable offers в коридоре ±25% по трём маршрутам (5.7/6.5/6.9), покупательная способность high/high/healthy, доля boss-золота 47/40/49%, XP-темп сохранён (20/25/20 level-up с учётом XP-кривой SCRUM-527).
-- **XP-кривая 0.1.4**: следующий уровень считается через `ceil(current_requirement * 1.42 + 3)` вместо прежнего `ceil(req * 1.35 + 2)`, чтобы усиленный дроп сложных целей не разгонял количество level-up сверх цели.
+- **Дроп 0.1.4 + SCRUM-853 pacing**: rewards назначаются по `DROP_CLASS_MULTIPLIERS`: ordinary < complex < heavy < mini_elite < elite < boss. Сложные цели дают x1.3 XP / x1.6 золота, жирные (bruiser/shield) около x1.75 XP / x2.2 золота относительно базы; мини-элитки x3.6 / x3.8; элитки x8 / x8.5; босс получает fixed reward `money 43.0`, умноженный на `stage_scale`. SCRUM-507 снизил boss-money 92→43 и поднял complex/heavy золото (1.35→1.6 / 1.85→2.2), чтобы доля boss-дропа в доходе маршрута упала с ~64% до ≤50%, а ранние/средние бои перестали обесцениваться («дожить до босса»). SCRUM-853 per-monster drops не урезает: прогресс героя замедлен через XP requirement и проверяется отдельным 20-fight guard.
+- **XP-кривая SCRUM-853**: следующий уровень считается через `ceil(current_requirement * 1.09 + 0.8)`. Фокусная проекция `tests/monster_xp_pressure_pacing_test.gd` даёт Berserk/hammer: 726.5 kills, Act 1 lvl 14, Act 2 lvl 24, 20-fight run lvl 32; Dark Mage/dark_book: 773.9 kills, Act 1 lvl 15, Act 2 lvl 24, run lvl 32. Старая кривая SCRUM-527 `ceil(req * 1.038 + 0.8)` давала ~42-43 lvl на том же 20-fight сценарии.
 - **Сила артефактов**: tier 1 усилен x2.5 от прежних значений (например +2 к стату -> +5, +20% урона -> +50%); даунсайды НЕ усилены. Tier 2 — двойные эффекты (усилены так же). Tier 3 (6 шт.) — билдообразующие механики: `echo_blast_every`, `extra_projectile`, `low_hp_damage_bonus`, `kill_heal_percent`, `thorn_reflect_multiplier`, `dodge_rush_bonus` (реализованы в player/class_weapon/combat_director/derived_parameters).
 - **Триггерные (активные) артефакты (SCRUM-500)**: под-класс предметов с полями `active: true` +
   `trigger` (`on_low_hp`/`on_kill`/`on_crit`/`on_room_clear`/`on_take_hit`) + эффект-флаг в `mods`
@@ -579,6 +676,12 @@ Escape открывает крупное меню характеристик:
   обнуляются в `_store_player_snapshot`, чтобы бафф не «застывал» между узлами; латчи/кулдауны
   (`_lowhp_guard_used` и т.п.) сбрасываются в `configure_character`. Пометка «⚡ Активный» вшита в
   `description` (карточка не правилась). Покрытие: `tests/runtime_smoke_triggered_artifacts_test.gd`.
+
+- **SCRUM-860 kill-growth:** `shadow_momentum` is weapon-configured only on
+  `assassin/shadow_daggers` and `assassin/venom_wire`. Normal non-boss/non-elite
+  kills add/refresh up to 6 stacks for 6 seconds. Caps: +12% attack speed and
+  +9% crit damage; it never heals, never counts boss/elite kills, clears on
+  expiry/weapon swap, and leaves Doctor/Priest/Knight sustain lanes unchanged.
 - **SCRUM-606 active artifacts**: `field_kit`, `vital_siphon`, `powder_charge`, `bulwark_echo`, `duelist_spur`
   add tier-2/cost55 variants on existing hooks with `room_clear_heal_percent`, `kill_heal_percent`,
   `kill_explosion_chance`, `take_hit_pulse_chance`, and `crit_speed_burst`.
@@ -590,23 +693,23 @@ Escape открывает крупное меню характеристик:
 
 ### Универсальная Полезность Атрибутов (2026-06-12)
 
-- Карта «своего» урона класса: `CLASS_DAMAGE_PARAMETER` (berserk -> damage, dark_mage -> magic_damage, guitarist -> sound_wave_damage).
-- Старая карта скрытия `STAT_CLASS_RELEVANCE` отключена: `is_stat_relevant()` возвращает `true`, `reward_pool(character_id)` и `level_up_rewards(character_id)` больше не фильтруют «чужие» статы/награды.
+- Карта «своего» урона класса: `CLASS_DAMAGE_PARAMETER` (berserk -> damage, dark_mage/guitarist/druid -> magic_damage). SCRUM-898: звуковая ось (`sound_wave_damage`) удалена, бывшие sound-классы переведены на магический канал.
+- Старая карта скрытия `STAT_CLASS_RELEVANCE` отключена: `is_stat_relevant()` возвращает `true`, `reward_pool(character_id)` и `level_up_rewards(character_id)` больше не фильтруют «чужие» статы/награды, кроме явных class-specific исключений вроде SCRUM-854/SCRUM-862 Doctor external sustain filter, который также покрывает boss completion tier-3 artifact reward.
 - Все базовые и производные параметры могут появляться у любого класса. Если параметр не является «родным» для текущего оружия, он получает runtime-интерпретацию через `ProgressionData.CLASS_INTERPRETATIONS` и hooks в `Player`/`ClassWeapon`.
-- Превью изменений урона по-прежнему показывает классовый параметр (Магу — «Маг. урон», Гитаристу — «Звуковой урон»), но tooltip добавляет строку «Интерпретация», чтобы игрок понимал пользу чужого атрибута.
+- Превью изменений урона по-прежнему показывает классовый параметр (Магу и Гитаристу — «Маг. урон»), но tooltip добавляет строку «Интерпретация», чтобы игрок понимал пользу чужого атрибута.
 - Фиксация наборов (анти-реролл): набор level-up генерируется один раз на полученный уровень (`level_up_offer`), пара атрибутов и счетчик rerolls — в `attribute_offer`/`attribute_rerolls_left`, сбрасываются только победным флоу нового боя; ассортимент магазина уже фиксировался до ухода с узла.
 
 Матрица runtime-интерпретаций:
 
 | Атрибут / параметр | Универсальная интерпретация |
 | --- | --- |
-| `intelligence` / `magic_damage` | Физические классы получают зачарование удара: часть магического урона повторяется splash-взрывом вокруг цели. |
-| `sound_wave_damage` / `aura_radius` | Не-гитаристы получают боевой клич: периодическая волна отталкивания рядом с героем; радиус и сила берутся из sound/aura параметров. |
+| `intelligence` / `magic_damage` | Магический канал изолирован: Magic Focus усиливает только `magic_damage` и не повышает физические удары. |
+| `aura_radius` | Аура присутствия и ближний контроль пространства (SCRUM-898: звуковой боевой клич не-гитаристов удалён вместе со звуковой осью урона). |
 | `knowledge` / `dot_damage` / `dot_speed` | Не-DoT классы добавляют малое bleed/burn/poison послевкусие к обычным ударам. |
 | `leadership` / `summon_amount` | Не-саммонеры получают эхо-оружие/фантом/сокол/знамя: каждые несколько ударов происходит повторный echo hit. Друид продолжает скейлить питомцев напрямую. |
-| `energy` / `ultimate_multiplier` | Ускоряет уникальные class cooldown/циклы: charge рейнджера, crit shadow burst ассасина, block/counter рыцаря, battle shout и будущие ultimates. |
+| `energy` / `ultimate_multiplier` | Ускоряет уникальные class cooldown/циклы: charge рейнджера, crit shadow burst ассасина, block/counter рыцаря и будущие ultimates. |
 | `strength` / `damage` | Магам/контроллерам дает физическую весомость: прямой урон, knockback и устойчивость снарядов/ударов. |
-| `perception` / `attack_range` / `aoe_radius` / `pickup_radius` | Универсально расширяет дистанцию, зоны, magnet и читаемость buildcraft. |
+| `perception` / `attack_range` / `aura_radius` / `pickup_radius` | Универсально расширяет дистанцию, радиус атак/зон, magnet и читаемость buildcraft. |
 | `endurance` / `defense` / `absorb` / `health_point` | Универсальная выживаемость; блоки и контратаки дополнительно используют эти значения у танковых билдов. |
 
 SCRUM-243 закрепил карту «атрибут × архетип оружия» в
@@ -639,23 +742,22 @@ SCRUM-469 добавил class/stat-specific скалирование роста
 
 | Параметр | Формула (актуальная истина) | Реализация | Статус |
 | --- | --- | --- | --- |
-| damage | `(15*Str/10 + Int*0.18 + Per*0.10 + Energy*0.12 + Know*0.09 + End*0.08 + Lead*0.10) * weapon_mult * damage_mult * archetype_mult + flat` | derived_parameters -> физическое оружие + универсальный impact | работает |
-| magic_damage | `(14*Int/10 + Energy*0.65 + Str*0.16 + Agi*0.08 + Per*0.12 + Know*0.14 + End*0.06 + Lead*0.10) * ...` | derived -> магия/зачарование | работает |
-| sound_wave_damage | `(12*(Per+Energy)/12 + Lead*0.45 + Str*0.08 + Agi*0.08 + Int*0.09 + Know*0.10 + End*0.05) * ...` | derived -> звук/боевой клич | работает |
+| damage | `15*Str/10 * weapon_mult * damage_mult + flat` | derived_parameters -> физическое оружие; Magic modifiers не протекают в physical | работает |
+| magic_damage | `14*Int/10 * weapon_mult * damage_mult * magic_damage_multiplier + flat` | derived -> магия/зачарование (включая экс-sound оружия Гитариста/Друида); не повышает physical | работает |
 | attack_speed | `27*(Agi + Energy*0.18 + Per*0.10 + End*0.04)/100 * mult`; интервал = base_fire_interval / AS | derived -> все оружия | работает |
 | crit_chance / crit_damage_multiplier | chance = effective_crit_chance(0.04+Agi*0.0075+flat*0.75), cap 0.55; mult = clamp(1.30+Agi*0.055+flat*0.75, 1.0, 2.75) | derived -> _rolled_damage всех оружий | работает |
 | move_speed | (282 + Agi*6.2) * mult (+ dodge_rush) | derived -> player.speed | работает |
 | dodge | effective_dodge(0.02 + Agi*0.010 + flat), diminishing returns, cap 0.55 | Player.take_damage | работает |
 | defense | effective_defense(0.04 + End*0.018 + flat), diminishing returns, cap 0.62 | Player.take_damage | работает |
 | health_point | 50*End/4 + flat) * mult | derived -> max_health | работает |
-| attack_range / aoe_radius | `(weapon + Per*2.5/3.5 + малые Int/Know/End/Lead cross-бонусы) * mult` | derived -> оружия | работает |
+| attack_range / aoe_radius | `(weapon + профильные добавки) * range/radius mult`; для Берсерка геометрический рост считается от delta статов, а Radius может расширять melee-секторы/круг | derived -> оружия | работает |
 | pickup_radius | 105 + Per*7 + flat | derived -> магнит pickups | работает |
 | dot_damage / dot_speed | `(4+Know*0.65 + Int/Str/Per/Energy/Lead small cross)*mult`; speed = `0.65+Know*0.08+Energy/Agi small` | cursed_skull + universal DoT hook | работает |
 | projectile_speed | `weapon + Per*18 + Agi*9 + Energy*4 + Know*2` | derived -> снаряды | работает |
-| aura_radius | `(weapon_aoe + Lead*5 + Per/Energy/Know small) * mult` | derived (ампы/зоны/боевой клич) | работает |
+| aura_radius | `(weapon_aoe + Lead*5 + Per/Energy/Know small) * Radius mult` | derived (атаки/зоны/ампы/боевой клич) | работает |
 | buff_power | `1 + Lead*0.025 + Know*0.006 + Energy*0.004` | derived; потребители — события/бафф-эффекты | работает |
 | knockback_power | (weapon + End*4 + Lead*3) * mult | derived -> apply_knockback врагов | работает |
-| summon_amount | `Leadership + Know*0.18 + Int*0.12 + Energy*0.10` | max_summons/echo weapons/support | работает |
+| summon_amount | `Leadership + Know*0.18 + Int*0.12 + Energy*0.10` | summon profile/echo weapons/support; `max_summons` count-cap идет от Leadership | работает |
 | **absorb** | End*0.16 + softened flat; срез удара до защиты (мин. 35% проходит) | Player.take_damage | работает |
 | **regeneration** | (0.22 + positive_flat*0.45) * (0.45 + Know/12) HP/с | Player._apply_regeneration | работает |
 | **vampiric_chance** | награды, cap 0.22; источник — артефакт «Клык Пиявки» (tier 2) | Player.on_weapon_hit | работает |
@@ -776,7 +878,23 @@ Generated reports:
 - `build/global_damage_balance_report.md` — focused gate output with solo/combined DPS and 5/10/20 CCT per pair.
 - `build/balance_final_audit_0_1_5.md` — final audit summary, class viability table, crowd-clear table and standard budget table.
 
-Current final result: PASS. All 51 class+weapon pairs stay inside solo and crowd-clear corridors. Worst solo deviation: -0.1% (`doctor/plague_syringe`). Worst crowd-clear deviation: +22.0% (`doctor/plague_syringe`, 20 targets), within the +/-30% gate. Every class has at least one viable crowd-clear weapon.
+Current final result: PASS. All 51 class+weapon pairs stay inside solo and crowd-clear corridors. Worst solo deviation: -0.1% (`doctor/plague_syringe`). Worst crowd-clear deviation: +22.0% (`doctor/restore_potion`, 20 targets), within the +/-30% gate. Every class has at least one viable crowd-clear weapon.
+
+SCRUM-856 (2026-07-04) adds the class-trio identity audit in
+`docs/design/reports/full_class_rebalance_identity_audit.md`. It treats the green
+pair-level gates as a numeric baseline and routes SCRUM-857..860 toward
+mechanic-first fixes for delayed AoE, projectile/chain/split/pierce,
+melee/counter/tank, summon/deploy/turret and sustain scaling identities.
+
+SCRUM-857 (2026-07-04) implements the first projectile/chain/pierce pass without
+breaking the numeric gate: global damage smoke still passes with worst CCT
+`doctor/restore_potion/20` at +22%. Runtime contracts are covered by
+`tests/projectile_chain_pierce_identity_test.gd`: grenade damage waits for fuse,
+meteor uses a longer cast plus shard payoff, coin ricochet stays nearest-chain,
+sniper shatter uses fan trajectories with limited pierce, prayer chain prefers a
+sustain arc toward the owner, dark wand chain damage decays per hop within
+hop range, and the cursed skull zone curses without direct damage
+(SCRUM-939/940 rework).
 
 ### Survivability Scenario Harness (SCRUM-190, 2026-06-13)
 
@@ -808,9 +926,16 @@ Available helpers:
 - `nearest_many(source, origin, range_limit, count, excluded_ids)`.
 - `in_radius(source, origin, radius)` and `has_in_radius(...)`.
 - `in_corridor(source, origin, direction, width, range_limit, back_allowance)`.
-- `in_segment(source, start, finish, width)`.
+- `in_segment(source, start, finish, width, back_allowance)`.
 
-Integrated systems: `ClassWeapon`, `BerserkWeapon`, player ultimates/secondary effects, `AllyMinion`, `SummonerWeapon`. Focused check: `tests/combat_target_query_cache_test.gd`; broad regressions still run through `tests/melee_weapon_targeting_test.gd` and `tests/runtime_smoke_test.gd`.
+SCRUM-886 (2026-07-08) uses that optional `back_allowance` for player-origin
+beams/corridors/segments whose visual/damage start is offset in front of the
+player. A monster overlapping the player is no longer rejected as being behind
+the first pixel of the beam, while distant non-player-origin segments keep their
+normal geometry. Berserk melee also has a 40px close-contact rescue radius before
+strip/sweep/frustum checks.
+
+Integrated systems: `ClassWeapon`, `BerserkWeapon`, player ultimates/secondary effects, `AllyMinion`, `SummonerWeapon`. Focused checks: `tests/combat_target_query_cache_test.gd`, `tests/contact_stuck_attack_deadzone_test.gd`; broad regressions still run through `tests/melee_weapon_targeting_test.gd` and `tests/runtime_smoke_test.gd`.
 
 
 ### Историческая Выдержка Class Sheet 0.2 — Статы И Баланс (2026-06-11)
@@ -878,4 +1003,4 @@ Data-driven патч-ноуты в `scripts/patch_notes_data.gd` (`PATCH_NOTES`,
 
 Текущий пользовательский язык — русский. Data-driven глоссарий расположен в `scripts/glossary.gd`: `TERMS[term_id] = {name, desc}`, API `term_ids()`, `definition()`, `name()`, `description()`, `is_valid_term()`. Покрыты 8 базовых характеристик, основные производные параметры и ключевые механики: периодический урон, крит, уклонение, защита, радиус подбора, вампиризм, Возвышение, артефакт, тематика класса, телеграф, элитка, мини-элитка, босс, ультимейт, призыв, перезарядка.
 
-UI hook: `ui_screens.gd::_make_glossary_term_button(term_id, popup_context := false)` создает термин с пунктирной underline-меткой. В обычном экране tooltip доступен по hover; в popup-контексте tooltip показывается только при Alt+hover, чтобы не плодить вложенные подсказки. Кодекс получил вкладку «Глоссарий». Runtime smoke проверяет валидность глоссария, underline node и фактический `GlossaryTooltipPanel`.
+SCRUM-889 убрал живой UI-раздел глоссария из игрового Кодекса: вкладка «Глоссарий», списки терминов, inline term buttons и `GlossaryTooltipPanel` больше не создаются в `ui_screens.gd`. `scripts/glossary.gd` остаётся data-helper для терминологии/будущих экранов, а runtime smoke проверяет валидность данных и отсутствие glossary UI в Codex.

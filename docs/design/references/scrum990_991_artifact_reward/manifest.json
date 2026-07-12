@@ -1,0 +1,42 @@
+{
+  "jira": ["SCRUM-990", "SCRUM-991"],
+  "pixel_lab_mcp": {
+    "config_smoke": "PASS get_balance 2026-07-10/11; no secret printed or stored",
+    "tool": "create_ui_asset",
+    "asset": {
+      "id": "3929f7e7-8182-495e-a794-7565cb51afda",
+      "name": "SCRUM-990-991 Artifact Reward Gold Hall",
+      "status": "completed",
+      "size": [688, 384],
+      "seed": 990991,
+      "source_file": "docs/design/references/scrum990_991_artifact_reward/pixellab_artifact_reward_gold_hall_688x384.png",
+      "preview_file": "docs/design/previews/scrum990_991_artifact_reward/pixellab_artifact_reward_gold_hall_688x384.png",
+      "composited_preview": "docs/design/previews/scrum990_991_artifact_reward/pixellab_artifact_reward_gold_hall_688x384_composited.png",
+      "debug_overlay": "docs/design/previews/scrum990_991_artifact_reward/pixellab_artifact_reward_gold_hall_688x384_debug.png",
+      "sha256": "ba91bea6a706232d21d63ad10cd5adf70b8f02b501340d2ad051e4f8fa20bc13",
+      "decision": "accepted as component/layout reference: exactly one outer dragon-gold shell, one title well, one subtitle well and three empty card wells; no text, characters, extra controls or overlapping ornament. Neutral opaque background is not promoted."
+    }
+  },
+  "production_reuse": {
+    "reason": "explicit existing source reuse: SCRUM-990 requires the shared gold shell and polished current reward-hall background",
+    "frame": {
+      "path": "assets/sprites/ui/meta40/frame_border.png",
+      "draw_center": false,
+      "render_order": "final mouse-ignore child"
+    },
+    "background": {
+      "path": "assets/backgrounds/ui/ui_backdrop_reward_hall.png",
+      "mapping": "full-screen aspect-preserving covered"
+    },
+    "runtime_promotion": "none",
+    "openai_images_used": false
+  },
+  "qa": {
+    "responsive_ui_plans": "ready_for_image at 1280x720, 1920x1080 and 2560x1440; zero errors/warnings",
+    "compositor_report": "docs/design/mockups/scrum990_991_artifact_reward/layout_688x384.report.json (ok=true)",
+    "content_rule": "all composited and runtime copy stays inside empty title/subtitle/card wells; no ornament overlap",
+    "runtime_matrix": "elite+boss at 1280x720, 1920x1080, 2560x1440; six final captures visually reviewed PASS",
+    "tests": "focused Artifact Reward, UI no-overlap, progression/economy, route/chest/artifact, boss heal, gamepad full-flow and runtime smoke PASS",
+    "independent_review": "initial mixed-effect and Doctor-copy findings fixed; re-review found no remaining P1/P2 after full-description and fresh-capture closure"
+  }
+}

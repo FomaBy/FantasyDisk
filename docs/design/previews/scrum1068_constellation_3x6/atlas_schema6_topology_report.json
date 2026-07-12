@@ -1,0 +1,153 @@
+{
+  "schema": "fantasydisk.atlas_topology_pixel_gate.v1",
+  "issue": "SCRUM-1084",
+  "image": "docs/design/references/scrum1068_constellation_3x6/atlas_schema6_source_688x384.png",
+  "image_size": [
+    688,
+    384
+  ],
+  "graph_bounds": [
+    145,
+    95,
+    435,
+    270
+  ],
+  "expected_socket_count": 21,
+  "detected_socket_count": 21,
+  "detected_centers": [
+    {
+      "x": 288,
+      "y": 108,
+      "score": 106.799,
+      "coverage": 0.792
+    },
+    {
+      "x": 174,
+      "y": 115,
+      "score": 100.51,
+      "coverage": 0.896
+    },
+    {
+      "x": 402,
+      "y": 115,
+      "score": 116.145,
+      "coverage": 0.896
+    },
+    {
+      "x": 288,
+      "y": 130,
+      "score": 96.091,
+      "coverage": 0.729
+    },
+    {
+      "x": 386,
+      "y": 135,
+      "score": 100.738,
+      "coverage": 0.854
+    },
+    {
+      "x": 190,
+      "y": 136,
+      "score": 95.627,
+      "coverage": 0.854
+    },
+    {
+      "x": 288,
+      "y": 155,
+      "score": 100.392,
+      "coverage": 0.812
+    },
+    {
+      "x": 207,
+      "y": 158,
+      "score": 90.279,
+      "coverage": 0.833
+    },
+    {
+      "x": 368,
+      "y": 159,
+      "score": 114.06,
+      "coverage": 1.0
+    },
+    {
+      "x": 288,
+      "y": 179,
+      "score": 108.069,
+      "coverage": 0.875
+    },
+    {
+      "x": 410,
+      "y": 181,
+      "score": 96.933,
+      "coverage": 0.725
+    },
+    {
+      "x": 227,
+      "y": 183,
+      "score": 114.34,
+      "coverage": 1.0
+    },
+    {
+      "x": 165,
+      "y": 184,
+      "score": 103.509,
+      "coverage": 0.812
+    },
+    {
+      "x": 349,
+      "y": 184,
+      "score": 108.153,
+      "coverage": 0.975
+    },
+    {
+      "x": 289,
+      "y": 205,
+      "score": 108.509,
+      "coverage": 0.958
+    },
+    {
+      "x": 246,
+      "y": 207,
+      "score": 101.258,
+      "coverage": 0.875
+    },
+    {
+      "x": 328,
+      "y": 208,
+      "score": 92.761,
+      "coverage": 0.896
+    },
+    {
+      "x": 288,
+      "y": 229,
+      "score": 106.58,
+      "coverage": 0.917
+    },
+    {
+      "x": 269,
+      "y": 233,
+      "score": 100.166,
+      "coverage": 0.896
+    },
+    {
+      "x": 308,
+      "y": 233,
+      "score": 102.639,
+      "coverage": 0.833
+    },
+    {
+      "x": 288,
+      "y": 259,
+      "score": 96.584,
+      "coverage": 0.958
+    }
+  ],
+  "rules": {
+    "core": 1,
+    "weapon_rays": 3,
+    "sockets_per_ray_including_final": 6,
+    "side_spurs_total": 2,
+    "keystone_or_extra_junctions": 0
+  },
+  "ok": true
+}

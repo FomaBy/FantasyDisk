@@ -1,0 +1,24 @@
+{
+  "jsonrpc": "2.0",
+  "id": 990991,
+  "method": "tools/call",
+  "params": {
+    "name": "create_ui_asset",
+    "arguments": {
+      "name": "SCRUM-990-991 Artifact Reward Gold Hall",
+      "description": "Textless full-page FantasyDisk elite and boss artifact reward UI reference at 16:9. D&D dark fantasy dragon art direction, restrained brutal elegance, a deep vaulted trophy hall with blackened iron, dark oxblood leather, worn antique gold and muted amber braziers. Exactly one hollow ornate outer gold frame around the full screen. No opaque central modal and no second inner ornamental frame. Preserve calm empty content surfaces: one compact title zone, one compact subtitle zone and exactly three equal tall artifact reward card wells in one horizontal left-to-right row. Every card well has a quiet empty interior suitable for one icon, a two-line artifact title, tier, up to two recommendation badges, a resolved current-class effect paragraph and a small choose caption. Decorative rails, gems, dragon ornaments and light sources must remain outside all content wells. Keep the reward hall visible behind the cards. No text, no letters, no numbers, no pseudo-text, no runes resembling text, no characters, no portraits, no logos, no watermark, no circles, no fourth card, no extra buttons, no scrollbar.",
+      "width": 688,
+      "height": 384,
+      "no_background": false,
+      "seed": 990991,
+      "color_palette": "obsidian black, blackened iron, deep oxblood leather, restrained worn antique gold, muted amber braziers",
+      "pieces": [
+        {"id": "title_zone", "kind": "rounded_rect", "x": 204.3, "y": 75.2, "w": 279.5, "h": 20.3, "radius": 3, "label": "empty reward title zone"},
+        {"id": "subtitle_zone", "kind": "rounded_rect", "x": 139.8, "y": 96.5, "w": 408.5, "h": 14.9, "radius": 3, "label": "empty reward subtitle zone"},
+        {"id": "artifact_card_1", "kind": "rounded_rect", "x": 102.1, "y": 116.8, "w": 153.7, "h": 183.5, "radius": 5, "label": "empty artifact reward card well"},
+        {"id": "artifact_card_2", "kind": "rounded_rect", "x": 267.1, "y": 116.8, "w": 153.7, "h": 183.5, "radius": 5, "label": "empty artifact reward card well"},
+        {"id": "artifact_card_3", "kind": "rounded_rect", "x": 432.2, "y": 116.8, "w": 153.7, "h": 183.5, "radius": 5, "label": "empty artifact reward card well"}
+      ]
+    }
+  }
+}

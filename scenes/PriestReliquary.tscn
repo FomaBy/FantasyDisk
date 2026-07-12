@@ -10,14 +10,16 @@ weapon_id = "priest_reliquary"
 display_name = "Светлый Реликварий"
 attack_mode = "priest_sanctify"
 damage_parameter = "magic_damage"
-fire_interval = 1.22
+fire_interval = 0.72
 damage = 12.0
 attack_range = 560.0
-aoe_radius = 190.0
+aoe_radius = 150.0
 beam_width = 46.0
-grenade_delay = 0.24
+grenade_delay = 0.14
+storm_ticks = 3
+burst_interval = 0.11
+sanctify_tick_ratio = 0.38
 damage_falloff = 0.62
-heal_percent_of_damage = 0.08
 visual_color = Color(1, 0.92, 0.48, 0.42)
 
 [node name="WeaponVisual" type="Sprite2D" parent="."]

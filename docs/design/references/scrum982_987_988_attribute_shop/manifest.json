@@ -1,0 +1,46 @@
+{
+  "jira": ["SCRUM-982", "SCRUM-987", "SCRUM-988"],
+  "pipeline": "FantasyDisk UI Director -> content-zone planning gate -> PixelLab MCP create_ui_asset -> deterministic content-zone compositor -> Godot renderer matrix",
+  "planning_gate": {
+    "decision": "ready_for_image",
+    "targets": [
+      "docs/design/mockups/scrum982_987_988_attribute_shop/ui_plan_1280x720.report.json",
+      "docs/design/mockups/scrum982_987_988_attribute_shop/ui_plan_1920x1080.report.json",
+      "docs/design/mockups/scrum982_987_988_attribute_shop/ui_plan_2560x1440.report.json"
+    ],
+    "errors": 0,
+    "warnings": 0,
+    "scrollbars": "none"
+  },
+  "pixel_lab_mcp": {
+    "tool": "create_ui_asset",
+    "id": "bf62b298-1df4-40d7-baeb-8fd30ac071d3",
+    "name": "SCRUM-982-987-988 Attribute Shop Gold Shell",
+    "status": "completed",
+    "size": [688, 384],
+    "seed": 982987988,
+    "source_file": "docs/design/references/scrum982_987_988_attribute_shop/pixellab_attribute_shop_gold_shell_688x384.png",
+    "source_sha256": "5f26fb5dadad031afd673ba7b0cfe17943dac1678e6e1163369eeb22d57549a2",
+    "decision": "accepted reference: exactly one outer shell, three equal offer wells in one row, two lower action wells, title and money wells, no fourth card, no extra controls or pseudo-text"
+  },
+  "compositor": {
+    "layout": "docs/design/mockups/scrum982_987_988_attribute_shop/layout_688x384.json",
+    "report": "docs/design/mockups/scrum982_987_988_attribute_shop/layout_688x384.report.json",
+    "ok": true,
+    "preview": "docs/design/previews/scrum982_987_988_attribute_shop/pixellab_attribute_shop_gold_shell_688x384_composited.png",
+    "debug_overlay": "docs/design/previews/scrum982_987_988_attribute_shop/pixellab_attribute_shop_gold_shell_688x384_debug.png"
+  },
+  "production_reuse": {
+    "frame": "assets/sprites/ui/meta40/frame_border.png",
+    "background_id": "meta_progression",
+    "rule": "hollow frame final direct child; every control and hitbox inside exact gold_shell_inner_rect"
+  },
+  "runtime_promotion": "none: PixelLab output is design-reference evidence; production reuses the canonical shared shell and background",
+  "openai_images_used": false,
+  "runtime_evidence": [
+    "docs/design/previews/scrum982_987_988_attribute_shop/runtime/atlas_three_offers_1280x720.png",
+    "docs/design/previews/scrum982_987_988_attribute_shop/runtime/atlas_three_offers_1920x1080.png",
+    "docs/design/previews/scrum982_987_988_attribute_shop/runtime/atlas_three_offers_2560x1440.png",
+    "docs/design/previews/scrum982_987_988_attribute_shop/runtime/runtime_matrix.md"
+  ]
+}

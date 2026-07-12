@@ -485,7 +485,7 @@ static func _tempo_decision(rows: Array) -> String:
 	var lines := PackedStringArray()
 	lines.append("- Current modeled routes produce %.1f level-ups on average (range %d-%d) before/including the boss reward." % [avg_levels, min_levels, max_levels])
 	lines.append("- Buying power is healthy across the representative routes: each route can afford several shop offers or at least one post-fight attribute upgrade window without starving the run.")
-	lines.append("- SCRUM-527: XP-кривая перекалибрована (множитель 1.42→1.038, flat 3.0→0.8) так, чтобы средний забег приходил к боссу 1-го акта примерно на 20 lvl (репрезентативные balanced/shop маршруты = 20, combat-heavy = 24). Рост требуемого опыта почти линейный (req ~5→10→20→30→44), без крутого геометрического разгона.")
+	lines.append("- SCRUM-853: XP-кривая растянута после фидбека, что герой слишком быстро обгоняет монстров. Per-monster XP drops не урезались; главный pacing gate теперь отдельный 20-fight pressure projection `tests/monster_xp_pressure_pacing_test.gd` (Act 1 ~10-15, Act 2 ~20-25, final ~30-35).")
 	return "\n".join(lines)
 
 
@@ -532,5 +532,5 @@ static func _fixture_delta() -> String:
 	lines.append("| Expected gold | %.1f | %.1f | %+0.1f%% |" % [old_money, new_money, (new_money / maxf(old_money, 0.001) - 1.0) * 100.0])
 	lines.append("| Effective buying power | %.1f | %.1f | %+0.1f%% |" % [old_money, new_money / ProgressionData.ECONOMY_PRICE_MULTIPLIER, buying_power_delta])
 	lines.append("| Expected XP | %.1f | %.1f | %+0.1f%% |" % [old_xp, new_xp, xp_delta])
-	lines.append("| XP curve | `ceil(req*1.35+2)` | `ceil(req*%.2f+%.0f)` | guarded |" % [ProgressionData.XP_CURVE_MULTIPLIER, ProgressionData.XP_CURVE_FLAT])
+	lines.append("| XP curve | `ceil(req*1.35+2)` | `ceil(req*%.2f+%.1f)` | guarded |" % [ProgressionData.XP_CURVE_MULTIPLIER, ProgressionData.XP_CURVE_FLAT])
 	return "\n".join(lines)

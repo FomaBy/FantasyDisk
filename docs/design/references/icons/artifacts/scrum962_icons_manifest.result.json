@@ -1,0 +1,25 @@
+{
+ "generated": [
+  {
+   "id": "anchor_core",
+   "runtime": "assets/sprites/ui/icons/artifacts/artifact_anchor_core.png",
+   "source": "docs/design/references/icons/artifacts/anchor_core/anchor_core_source.png",
+   "alpha_bbox": [
+    57,
+    29,
+    199,
+    227
+   ],
+   "padding": [
+    57,
+    29,
+    57,
+    29
+   ],
+   "corner_alpha_max": 0,
+   "sha": "4e45c2ccdb55"
+  }
+ ],
+ "failures": [],
+ "duplicates": {}
+}

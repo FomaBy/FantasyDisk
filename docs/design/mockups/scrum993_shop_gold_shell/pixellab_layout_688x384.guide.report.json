@@ -1,0 +1,137 @@
+{
+  "ok": true,
+  "zones": [
+    {
+      "id": "frame_safe_area",
+      "rect": [
+        72,
+        60,
+        544,
+        264
+      ],
+      "ok": true,
+      "kind": "guide"
+    },
+    {
+      "id": "merchant_art_visible",
+      "rect": [
+        108,
+        60,
+        473,
+        264
+      ],
+      "ok": true,
+      "kind": "guide"
+    },
+    {
+      "id": "run_hud",
+      "rect": [
+        89,
+        74,
+        258,
+        26
+      ],
+      "ok": true,
+      "kind": "guide"
+    },
+    {
+      "id": "shop_title",
+      "rect": [
+        357,
+        69,
+        201,
+        18
+      ],
+      "ok": true,
+      "kind": "guide"
+    },
+    {
+      "id": "shop_subtitle",
+      "rect": [
+        357,
+        89,
+        201,
+        11
+      ],
+      "ok": true,
+      "kind": "guide"
+    },
+    {
+      "id": "upgrade_fab",
+      "rect": [
+        581,
+        78,
+        18,
+        18
+      ],
+      "ok": true,
+      "kind": "guide"
+    },
+    {
+      "id": "shop_item_0",
+      "rect": [
+        205,
+        116,
+        59,
+        58
+      ],
+      "ok": true,
+      "kind": "guide"
+    },
+    {
+      "id": "shop_item_1",
+      "rect": [
+        278,
+        116,
+        59,
+        58
+      ],
+      "ok": true,
+      "kind": "guide"
+    },
+    {
+      "id": "shop_item_2",
+      "rect": [
+        351,
+        116,
+        59,
+        58
+      ],
+      "ok": true,
+      "kind": "guide"
+    },
+    {
+      "id": "shop_item_3",
+      "rect": [
+        424,
+        116,
+        59,
+        58
+      ],
+      "ok": true,
+      "kind": "guide"
+    },
+    {
+      "id": "shop_tooltip",
+      "rect": [
+        247,
+        182,
+        194,
+        71
+      ],
+      "ok": true,
+      "kind": "guide"
+    },
+    {
+      "id": "shop_back",
+      "rect": [
+        280,
+        283,
+        129,
+        26
+      ],
+      "ok": true,
+      "kind": "guide"
+    }
+  ]
+}

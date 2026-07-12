@@ -1,0 +1,104 @@
+{
+  "ok": true,
+  "zones": [
+    {
+      "id": "frame_safe_area",
+      "rect": [
+        72,
+        60,
+        544,
+        264
+      ],
+      "ok": true,
+      "kind": "guide"
+    },
+    {
+      "id": "inner_content",
+      "rect": [
+        80,
+        69,
+        528,
+        247
+      ],
+      "ok": true,
+      "kind": "guide"
+    },
+    {
+      "id": "route_header",
+      "rect": [
+        80,
+        69,
+        528,
+        31
+      ],
+      "ok": true,
+      "kind": "guide"
+    },
+    {
+      "id": "route_title_progress",
+      "rect": [
+        89,
+        70,
+        251,
+        23
+      ],
+      "ok": true,
+      "kind": "guide"
+    },
+    {
+      "id": "route_resources",
+      "rect": [
+        404,
+        70,
+        195,
+        23
+      ],
+      "ok": true,
+      "kind": "guide"
+    },
+    {
+      "id": "route_scroll",
+      "rect": [
+        80,
+        106,
+        528,
+        210
+      ],
+      "ok": true,
+      "kind": "guide"
+    },
+    {
+      "id": "route_node_viewport",
+      "rect": [
+        89,
+        114,
+        476,
+        178
+      ],
+      "ok": true,
+      "kind": "guide"
+    },
+    {
+      "id": "horizontal_scrollbar_lane",
+      "rect": [
+        89,
+        300,
+        476,
+        6
+      ],
+      "ok": true,
+      "kind": "guide"
+    },
+    {
+      "id": "upgrade_fab",
+      "rect": [
+        573,
+        281,
+        26,
+        26
+      ],
+      "ok": true,
+      "kind": "guide"
+    }
+  ]
+}

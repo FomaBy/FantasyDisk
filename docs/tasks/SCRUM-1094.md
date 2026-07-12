@@ -1,0 +1,79 @@
+# SCRUM-1094 — Atlas malformed locked dossier hides purchase failure
+
+Статус: done
+Версия: 0.2.1
+Jira: SCRUM-1094
+Тип: bug
+Контур: Codex
+Роль: Back-end
+Owner: Back-end / Codex subagent
+Thread: /root/scrum1093_main_menu_version
+Combined scope: SCRUM-1093 + SCRUM-1094, identical `scripts/ui_screens.gd` lock
+Найдено QA при тестировании: `SCRUM-1091`
+Blocked issue: `SCRUM-1091`
+Locked paths: `scripts/ui_screens.gd`,
+`tests/scrum1094_atlas_failure_precedence_test.gd`, this mirror and relevant
+Atlas/UI docs.
+
+## Воспроизведение
+
+1. В runtime-проекции установить для locked schema-6 узла
+   `dossier_valid = false`, `dossier = {}`.
+2. Открыть Атлас и выбрать узел до покупки его prerequisite.
+3. Проверить `AtlasNodeDesc`, `AtlasBuyButton`, `AtlasNodeCondition`.
+
+## Ожидание / Реальность
+
+Ожидание: безопасный desc, disabled Buy и явная причина
+`Покупка отключена: требуется корректный schema-6 dossier.` имеют приоритет при
+любом node status.
+
+Реальность: desc и disabled Buy корректны, но обычная locked-state ветка сразу
+перезаписывает причину на `Нужна соседняя купленная звезда` либо currency hint.
+
+## Окружение
+
+- `origin/dev f7b9d7373`;
+- implementation `b36a650e2`;
+- Godot 4.7, isolated user data, 1280×720;
+- independent oracle: `tests/scrum1091_independent_qa_test.gd`.
+
+## Acceptance
+
+- invalid dossier condition всегда имеет приоритет над availability hints;
+- available и locked malformed nodes сохраняют явную причину блокировки;
+- Buy остаётся disabled, plausible fallback copy отсутствует;
+- focused Atlas dossier UI, no-overlap/runtime UI и full runtime smoke зелёные.
+
+## Implementation result
+
+- `scripts/ui_screens.gd` now evaluates `dossier_blocked` first and routes
+  ordinary locked/purchased hints through `elif`, so no later branch can
+  overwrite the explicit schema failure.
+- `tests/scrum1094_atlas_failure_precedence_test.gd` mutates both an available
+  and a locked schema-6 node, checks the exact safe description/condition,
+  rejects generic fallbacks and requires Buy visible+disabled.
+- Pre-integration PASS: SCRUM-1094 focused regression; SCRUM-1091 exact 357/51
+  descriptions and dossier UI matrix; migrated Meta40 Atlas; SCRUM-1067/1068
+  validators and schema final runtime gates; no-overlap; runtime UI/full smoke.
+
+Ready for independent QA on `origin/dev`.
+
+Implementation commit: `ca9b4ed5a` in `origin/dev`. After integration with QA
+base `0b069dd6c`, upstream `tests/scrum1091_independent_qa_test.gd`, focused
+SCRUM-1094 and full runtime smoke all pass.
+
+Disk cleanup: removed disposable `.godot` (~446 MiB), transient captures,
+isolated user-data roots and generated `.uid`/`.import` sidecars.
+
+## QA-Вердикт (2026-07-12)
+
+Статус: PASSED
+
+На `origin/dev 2c8b60c86` upstream
+`tests/scrum1091_independent_qa_test.gd` и focused
+`tests/scrum1094_atlas_failure_precedence_test.gd` прошли: available и
+locked malformed dossier сохраняют точные safe description/condition,
+generic hints не перезаписывают failure, Buy visible+disabled.
+Schema/balance/Atlas/no-overlap/runtime UI/gamepad/full runtime regressions PASS.
+Баги: нет.

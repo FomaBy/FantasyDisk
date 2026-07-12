@@ -31,6 +31,9 @@ const INTENSITY_RGB_MULT := 0.88
 const INTENSITY_SATURATION := 0.78
 const INTENSITY_ALPHA_MULT := 0.62
 const MAX_ATTACK_VFX_ALPHA := 0.68
+const WEAPON_SIGNATURE_BODY_ALPHA := 0.60
+const WEAPON_SIGNATURE_SHADOW_ALPHA := 0.34
+const WEAPON_SIGNATURE_RIM_ALPHA := 0.20
 const BEAM_VISUAL_WIDTH_MULT := 1.15
 const PARTICLE_DENSITY_MULT := 0.7
 
@@ -45,6 +48,13 @@ static func _additive_sprite(texture: Texture2D, color: Color) -> Sprite2D:
 	return sprite
 
 
+static func _normal_sprite(texture: Texture2D, color: Color) -> Sprite2D:
+	var sprite := Sprite2D.new()
+	sprite.texture = texture
+	sprite.modulate = color
+	return sprite
+
+
 static func _calmed_color(color: Color, alpha_multiplier := 1.0) -> Color:
 	var gray := (color.r + color.g + color.b) / 3.0
 	return Color(
@@ -55,7 +65,18 @@ static func _calmed_color(color: Color, alpha_multiplier := 1.0) -> Color:
 	)
 
 
-static func weapon_signature(scene: Node, global_pos: Vector2, weapon_id: String, radius: float, color: Color, rotation := 0.0) -> Node2D:
+static func weapon_signature(
+	scene: Node,
+	global_pos: Vector2,
+	weapon_id: String,
+	radius: float,
+	color: Color,
+	rotation := 0.0,
+	weapon_texture: Texture2D = null,
+	weapon_rotation := 0.0,
+	weapon_scale := 0.58,
+	weapon_offset := Vector2.ZERO
+) -> Node2D:
 	var texture_path := WEAPON_SIGNATURE_PATH % weapon_id
 	if not ResourceLoader.exists(texture_path):
 		return null
@@ -71,19 +92,34 @@ static func weapon_signature(scene: Node, global_pos: Vector2, weapon_id: String
 	holder.rotation = rotation
 
 	var shadow := Sprite2D.new()
+	shadow.name = "WeaponSignatureShadow"
 	shadow.texture = texture
-	shadow.modulate = Color(0.02, 0.015, 0.012, 0.24)
+	shadow.modulate = Color(0.02, 0.015, 0.012, WEAPON_SIGNATURE_SHADOW_ALPHA)
 	shadow.scale = Vector2.ONE * 0.90
 	shadow.z_index = -1
 	holder.add_child(shadow)
 
-	var sprite := _additive_sprite(texture, Color(color.r, color.g, color.b, 0.72))
+	var sprite := _normal_sprite(texture, Color(color.r, color.g, color.b, WEAPON_SIGNATURE_BODY_ALPHA))
+	sprite.name = "WeaponSignatureBody"
 	holder.add_child(sprite)
 
-	var rim := _additive_sprite(texture, Color(0.92, 0.78, 0.54, 0.14))
+	var rim := _additive_sprite(texture, Color(0.92, 0.78, 0.54, WEAPON_SIGNATURE_RIM_ALPHA))
+	rim.name = "WeaponSignatureRim"
 	rim.scale = Vector2.ONE * 1.02
 	rim.z_index = 1
 	holder.add_child(rim)
+
+	var actual_weapon: Sprite2D = null
+	if weapon_texture != null:
+		actual_weapon = Sprite2D.new()
+		actual_weapon.name = "WeaponSignatureActualWeapon"
+		actual_weapon.texture = weapon_texture
+		actual_weapon.modulate = Color(1.0, 0.94, 0.82, 0.82)
+		actual_weapon.position = weapon_offset
+		actual_weapon.rotation = weapon_rotation
+		actual_weapon.scale = Vector2.ONE * weapon_scale
+		actual_weapon.z_index = 2
+		holder.add_child(actual_weapon)
 
 	var base_scale := maxf(radius, 70.0) / 176.0
 	holder.scale = Vector2.ONE * clampf(base_scale, 0.38, 1.55)
@@ -94,20 +130,25 @@ static func weapon_signature(scene: Node, global_pos: Vector2, weapon_id: String
 	tween.tween_property(sprite, "modulate:a", 0.0, 0.22).set_delay(0.08)
 	tween.tween_property(rim, "modulate:a", 0.0, 0.18).set_delay(0.06)
 	tween.tween_property(shadow, "modulate:a", 0.0, 0.18).set_delay(0.10)
+	if actual_weapon != null:
+		tween.tween_property(actual_weapon, "modulate:a", 0.0, 0.20).set_delay(0.10)
 	tween.chain().tween_callback(holder.queue_free)
 	return holder
 
 
-static func slash(owner_node: Node2D, direction: Vector2, reach: float, color: Color) -> Node2D:
+static func slash(owner_node: Node2D, direction: Vector2, reach: float, color: Color, sprite_rotation := 0.0, lateral_scale := 1.0, visual_sweep_degrees := 0.0) -> Node2D:
 	var holder := Node2D.new()
 	holder.name = "SlashVfx"
 	holder.z_index = 11
+	holder.set_meta("visual_lateral_scale", lateral_scale)
+	holder.set_meta("visual_sweep_degrees", visual_sweep_degrees)
 	owner_node.add_child(holder)
 
 	# Непрозрачный подслой дает дуге контраст на светлом фоне.
 	var body := Sprite2D.new()
 	body.texture = SLASH_TEXTURE
 	body.position = Vector2(SLASH_TEXTURE.get_width() * 0.5 - SLASH_ORIGIN_X, 0.0)
+	body.rotation = sprite_rotation
 	body.modulate = _calmed_color(Color(color.r * 0.45, color.g * 0.45, color.b * 0.65, 0.44))
 	body.z_index = -1
 	holder.add_child(body)
@@ -115,10 +156,12 @@ static func slash(owner_node: Node2D, direction: Vector2, reach: float, color: C
 	var tint := Color(color.r, color.g, color.b, 0.9)
 	var sprite := _additive_sprite(SLASH_TEXTURE, tint)
 	sprite.position = body.position
+	sprite.rotation = sprite_rotation
 	holder.add_child(sprite)
 
 	var ghost := _additive_sprite(SLASH_TEXTURE, Color(color.r, color.g, color.b, 0.28))
 	ghost.position = sprite.position
+	ghost.rotation = sprite_rotation
 	ghost.scale = Vector2(0.92, 1.06)
 	holder.add_child(ghost)
 
@@ -126,12 +169,12 @@ static func slash(owner_node: Node2D, direction: Vector2, reach: float, color: C
 	var figure_scale: float = max(reach, 60.0) / SLASH_REACH
 	# Дуга вылетает из героя вдоль направления удара и заполняет зону поражения.
 	holder.rotation = base_angle - 0.16
-	holder.scale = Vector2(figure_scale * 0.45, figure_scale * 0.75)
+	holder.scale = Vector2(figure_scale * 0.45, figure_scale * 0.75 * maxf(lateral_scale, 0.1))
 
 	var tween := holder.create_tween()
 	tween.set_parallel(true)
 	tween.tween_property(holder, "rotation", base_angle + 0.10, 0.24).set_trans(Tween.TRANS_QUAD).set_ease(Tween.EASE_OUT)
-	tween.tween_property(holder, "scale", Vector2(figure_scale, figure_scale), 0.24).set_trans(Tween.TRANS_CUBIC).set_ease(Tween.EASE_OUT)
+	tween.tween_property(holder, "scale", Vector2(figure_scale, figure_scale * maxf(lateral_scale, 0.1)), 0.24).set_trans(Tween.TRANS_CUBIC).set_ease(Tween.EASE_OUT)
 	tween.tween_property(sprite, "modulate:a", 0.0, 0.17).set_delay(0.09)
 	tween.tween_property(ghost, "modulate:a", 0.0, 0.13).set_delay(0.12)
 	tween.tween_property(body, "modulate:a", 0.0, 0.15).set_delay(0.10)
@@ -191,27 +234,44 @@ static func hammer_slam(scene: Node, global_pos: Vector2, radius: float, color: 
 	return holder
 
 
-static func orb_projectile(scene: Node, start: Vector2, color: Color) -> Node2D:
+static func orb_projectile(scene: Node, start: Vector2, color: Color, profile := {}, travel_direction := Vector2.RIGHT) -> Node2D:
 	var holder := Node2D.new()
-	holder.name = "VoidOrbProjectile"
+	var visual_id := str(profile.get("visual_id", "")) if profile is Dictionary else ""
+	holder.name = "PlayerProjectile_%s" % (visual_id if not visual_id.is_empty() else "DevFallback")
 	holder.z_index = 11
 	scene.add_child(holder)
 	holder.global_position = start
+	holder.set_meta("projectile_visual_id", visual_id)
+	holder.set_meta("projectile_asset_path", str(profile.get("asset_path", "")) if profile is Dictionary else "")
+	var direction: Vector2 = travel_direction if travel_direction is Vector2 else Vector2.RIGHT
+	if direction.length_squared() <= 0.001:
+		direction = Vector2.RIGHT
+	var orientation := str(profile.get("forward_orientation", "right")) if profile is Dictionary else "right"
+	if orientation != "non_directional":
+		holder.rotation = direction.angle() + deg_to_rad(float(profile.get("rotation_offset_degrees", 0.0)))
 
 	var orb := Sprite2D.new()
-	orb.texture = ORB_TEXTURE
+	var asset_path := str(profile.get("asset_path", "")) if profile is Dictionary else ""
+	var profile_texture := load(asset_path) as Texture2D if not asset_path.is_empty() else null
+	orb.texture = profile_texture if profile_texture != null else ORB_TEXTURE
+	var display_size: Vector2 = profile.get("display_size", Vector2(46.0, 46.0)) if profile is Dictionary else Vector2(46.0, 46.0)
+	var texture_size := orb.texture.get_size() if orb.texture != null else Vector2.ONE
+	var base_scale := Vector2(display_size.x / maxf(texture_size.x, 1.0), display_size.y / maxf(texture_size.y, 1.0))
+	orb.scale = base_scale
 	holder.add_child(orb)
 
-	var glow := _additive_sprite(FLASH_TEXTURE, Color(color.r, color.g, color.b, 0.35))
+	var trail_palette = profile.get("trail_palette", []) if profile is Dictionary else []
+	var trail_color: Color = trail_palette[0] if trail_palette is Array and not trail_palette.is_empty() else color
+	var glow := _additive_sprite(FLASH_TEXTURE, Color(trail_color.r, trail_color.g, trail_color.b, 0.35))
 	glow.scale = Vector2.ONE * 0.8
 	glow.z_index = -1
 	holder.add_child(glow)
 
 	var pulse := holder.create_tween()
 	pulse.set_loops()
-	pulse.tween_property(orb, "scale", Vector2.ONE * 1.14, 0.12).set_trans(Tween.TRANS_SINE)
+	pulse.tween_property(orb, "scale", base_scale * 1.14, 0.12).set_trans(Tween.TRANS_SINE)
 	pulse.parallel().tween_property(glow, "rotation", TAU, 0.9)
-	pulse.tween_property(orb, "scale", Vector2.ONE * 0.92, 0.12).set_trans(Tween.TRANS_SINE)
+	pulse.tween_property(orb, "scale", base_scale * 0.92, 0.12).set_trans(Tween.TRANS_SINE)
 
 	var trail := holder.create_tween()
 	trail.set_loops()
@@ -222,18 +282,28 @@ static func orb_projectile(scene: Node, start: Vector2, color: Color) -> Node2D:
 		if current_holder == null or not current_holder.is_inside_tree() or current_holder.get_parent() == null:
 			return
 		var ghost := Sprite2D.new()
-		ghost.texture = ORB_TEXTURE
-		ghost.modulate = _calmed_color(Color(color.r, color.g, color.b, 0.34))
-		ghost.scale = Vector2.ONE * 0.72
+		ghost.texture = orb.texture
+		ghost.modulate = _calmed_color(Color(trail_color.r, trail_color.g, trail_color.b, 0.34))
+		ghost.scale = base_scale * 0.72
 		ghost.z_index = 10
 		current_holder.get_parent().add_child(ghost)
 		ghost.global_position = current_holder.global_position
+		ghost.rotation = current_holder.rotation
 		var ghost_tween := ghost.create_tween()
 		ghost_tween.set_parallel(true)
 		ghost_tween.tween_property(ghost, "modulate:a", 0.0, 0.22)
-		ghost_tween.tween_property(ghost, "scale", Vector2.ONE * 0.30, 0.22)
+		ghost_tween.tween_property(ghost, "scale", base_scale * 0.30, 0.22)
 		ghost_tween.chain().tween_callback(ghost.queue_free)
 	)
+	return holder
+
+
+static func projectile_trace(scene: Node, start: Vector2, finish: Vector2, color: Color, profile: Dictionary, duration := 0.14) -> Node2D:
+	var direction := finish - start
+	var holder := orb_projectile(scene, start, color, profile, direction)
+	var move := holder.create_tween()
+	move.tween_property(holder, "global_position", finish, maxf(duration, 0.04)).set_trans(Tween.TRANS_LINEAR)
+	move.tween_callback(holder.queue_free)
 	return holder
 
 
@@ -389,21 +459,30 @@ static func ring_pulse(scene: Node, global_pos: Vector2, radius: float, color: C
 	return holder
 
 
-static func curse_skull(scene: Node, start: Vector2, target: Vector2, color: Color, travel_time: float, on_hit: Callable) -> Node2D:
+static func curse_skull(scene: Node, start: Vector2, target: Vector2, color: Color, travel_time: float, on_hit: Callable, profile := {}) -> Node2D:
 	var holder := Node2D.new()
 	holder.name = "CurseSkullVfx"
 	holder.z_index = 11
 	scene.add_child(holder)
 	holder.global_position = start
+	var visual_id := str(profile.get("visual_id", "")) if profile is Dictionary else ""
+	holder.set_meta("projectile_visual_id", visual_id)
+	holder.set_meta("projectile_asset_path", str(profile.get("asset_path", "")) if profile is Dictionary else "")
 
-	var glow := _additive_sprite(FLASH_TEXTURE, Color(color.r, color.g, color.b, 0.36))
+	var trail_palette = profile.get("trail_palette", []) if profile is Dictionary else []
+	var trail_color: Color = trail_palette[0] if trail_palette is Array and not trail_palette.is_empty() else color
+	var glow := _additive_sprite(FLASH_TEXTURE, Color(trail_color.r, trail_color.g, trail_color.b, 0.36))
 	glow.scale = Vector2.ONE * 0.6
 	glow.z_index = -1
 	holder.add_child(glow)
 
 	var skull := Sprite2D.new()
-	skull.texture = SKULL_TEXTURE
-	skull.scale = Vector2.ONE * (34.0 / max(float(SKULL_TEXTURE.get_width()), 1.0))
+	var asset_path := str(profile.get("asset_path", "")) if profile is Dictionary else ""
+	var profile_texture := load(asset_path) as Texture2D if not asset_path.is_empty() else null
+	skull.texture = profile_texture if profile_texture != null else SKULL_TEXTURE
+	var display_size: Vector2 = profile.get("display_size", Vector2(34.0, 34.0)) if profile is Dictionary else Vector2(34.0, 34.0)
+	var texture_size := skull.texture.get_size() if skull.texture != null else Vector2.ONE
+	skull.scale = Vector2(display_size.x / maxf(texture_size.x, 1.0), display_size.y / maxf(texture_size.y, 1.0))
 	holder.add_child(skull)
 
 	var wobble := holder.create_tween()
@@ -421,9 +500,9 @@ static func curse_skull(scene: Node, start: Vector2, target: Vector2, color: Col
 		if current_holder == null or not current_holder.is_inside_tree() or current_holder.get_parent() == null:
 			return
 		var ghost := Sprite2D.new()
-		ghost.texture = SKULL_TEXTURE
+		ghost.texture = skull.texture
 		ghost.scale = skull_scale * 0.85
-		ghost.modulate = _calmed_color(Color(color.r, color.g, color.b, 0.30))
+		ghost.modulate = _calmed_color(Color(trail_color.r, trail_color.g, trail_color.b, 0.30))
 		ghost.z_index = 10
 		current_holder.get_parent().add_child(ghost)
 		ghost.global_position = current_holder.global_position

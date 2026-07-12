@@ -1,6 +1,6 @@
 # Animation
 
-Обновлено: 2026-06-29
+Обновлено: 2026-07-04
 
 Animator ownership описан в `docs/process/agent_role_boundaries_and_handoffs.md`. Back-end должен не полировать motion, а предоставлять стабильные states/API.
 
@@ -18,6 +18,38 @@ Animator ownership описан в `docs/process/agent_role_boundaries_and_hando
   and animate playable-character Hero Select previews with clockwise direction
   rotation. Historical full-frame audits remain valid as evidence, but the old
   rig/sprite-sheet animation-director skill is retired.
+- SCRUM-869 (2026-07-04) adds the repo importer
+  `tools/update_pixellab_character_animations.py` for playable-character PixelLab
+  refreshes. It reads `ProgressionData.character_ids()`, downloads the manifest
+  `pixellab_character_id` package from PixelLab, requires 8 idle rotations and
+  6+ movement frames for every direction before touching a character, normalizes
+  runtime PNGs to `512x512`, rebuilds generic and directional `SpriteFrames`,
+  updates manifests/alpha-bbox reports, and records blockers under
+  `build/qa/pixellab_character_animation_refresh/report.json`. The SCRUM-869
+  pass refreshed Assassin, Biologist, Chemist, Dark Mage, Druid, Guitarist,
+  Knight, Priest, Ranger, Robot and Thief. Current PixelLab blockers are:
+  Berserk missing south movement row completeness, Soldier missing south and
+  north-east movement row completeness, Elementalist manifest ID
+  `7a334fc4-fe8e-4dcd-b05a-3f6f6d3fdc6f` returning 404/not found, Sniper
+  missing south and north-west movement row completeness, Engineer missing north
+  movement row completeness, and Doctor missing north movement row completeness.
+  Those blocked characters stay on their already-valid live runtime packs until
+  PixelLab exposes complete data; no legacy/manual fallback was used for refreshed
+  source.
+- SCRUM-885 (2026-07-08) performs a focused Knight-only run through the same
+  importer using PixelLab character `c1a7d633-7353-4861-aea3-8d937b601cba`
+  (`FantasyDisk Knight PixelLab SCRUM-430 no-shield 2026-06-30`). It regenerated
+  Knight source/runtime frames and reports with 8 idle directions and 6-frame
+  directional `move/walk` rows; no legacy/manual fallback was used.
+- SCRUM-895 adds scene-specific PixelLab weapon-motion bridges for Berserk Axe
+  and Hammer without modifying shared hit logic. Axe uses an 8-frame broad
+  cleave pack plus exact `180° / 250px` arc choreography; Hammer uses an
+  8-frame overhead pack with authored impact frame 5, exact-radius shock ring
+  and optional backend center/scale hooks from SCRUM-1043. Sword remains on its
+  existing scene/script and is the unchanged readability reference. Source,
+  alpha/gutter report, contact sheet and live Godot capture are under
+  `docs/design/references/scrum895_berserk_axe_hammer_vfx/` and
+  `docs/design/previews/scrum895_berserk_axe_hammer_*`.
 - SCRUM-351 added `scripts/full_frame_animation_registry.gd`: a Back-end
   SpriteFrames lookup/state adapter for `hero`, `enemy`, `ally`, `elite`, and
   `boss` entity IDs. It may create `FullFrameBody` (enemies/bosses) or reuse
@@ -66,6 +98,12 @@ Animator ownership описан в `docs/process/agent_role_boundaries_and_hando
   deaths: enemies with `FullFrameBody.death` play that row before delayed
   cleanup while leaving combat groups/collisions immediately after rewards are
   emitted; missing death rows keep the existing death-ghost fallback.
+- SCRUM-865 extends the boss full-frame slice: all six live bosses now use
+  PixelLab MCP-authored runtime rows in the current boss contract, including
+  `bloodthorn_lion`. Bosses with full-frame `death` rows may remain visible for
+  up to `2.4s`, and boss victory/act transition waits `2.0s` after the boss
+  leaves combat groups so large death animations are not erased by immediate
+  world cleanup.
 - SCRUM-380 (2026-06-14) provides the complete Design source pack for explicit
   full-frame `death` rows: 19 entities, 114 transparent frames, row sheets,
   manifest `docs/design/references/scrum380_death_rows/scrum380_death_rows_manifest.json`
@@ -314,7 +352,9 @@ Audit of the animation **runtime** loaders only (no art/motion/clip changes):
   `assets/sprites/characters/knight_spriteframes.tres` exposes one-frame
   `idle_<direction>` rows plus 6-frame `move_<direction>` / `walk_<direction>`
   rows for all 8 directions. Weapons and shield remain separate weapon visuals;
-  the base Knight source has empty hands and no baked equipment.
+  the base Knight source has empty hands and no baked equipment. SCRUM-885
+  refreshed this pack from PixelLab MCP on 2026-07-08 and kept the same
+  directional runtime contract.
 - SCRUM-475 (2026-06-19) delivers the Design-source blocker for the next
   Skeleton2D/Bone2D source gate: Dark Mage and Knight now have transparent
   skeleton-source packages under
@@ -595,7 +635,7 @@ Audit of the animation **runtime** loaders only (no art/motion/clip changes):
   bone saw to weapon visuals rather than baked character art.
 - Player cutout rig использует per-character `walk_blend_rate` / `direction_blend_rate`: `berserk` двигается тяжелее, `dark_mage` мягче и с меньшим robe/body lean, `guitarist` быстрее. Pass 2026-06-12 добавил отдельные visual motion profiles для новых классов: `assassin` быстрый/резкий, `ranger` собранный, `doctor` спокойный тяжелый, `chemist` чуть нервный, `knight` тяжелый инертный, `druid` мягкий ритуальный. Pass SCRUM-168 2026-06-13 добавил `soldier`: средневесовый дисциплинированный шаг, меньше arm swing, умеренный body bob. Pass SCRUM-169 2026-06-13 добавил `thief`: легкий осторожный шаг с быстрым direction blend, меньшим bob и сдержанным переносом веса. Pass SCRUM-163 2026-06-13 добавил `elementalist`: плавный энергичный caster-step, легче Dark Mage, с выраженным breath/channel sway. Pass SCRUM-167 2026-06-13 добавил `sniper`: controlled ranged/sniper gait, low bob, low arm swing, steady aim stance without melee lunge feel. Pass SCRUM-165 2026-06-13 добавил `priest`: calm healer/support caster gait, low aggression, restrained arm swing, readable robe bob and support-caster sway. Pass SCRUM-162 2026-06-13 добавил `biologist`: careful field-scientist gait, modest bob, specimen-handling arm posture, distinct from Chemist/Doctor. Pass SCRUM-166 2026-06-13 добавил `robot`: heavy construct gait, slow inertial walk, strong mass bob, low arm swing, slower direction blend. Pass SCRUM-164 2026-06-13 добавил `engineer`: practical tinkerer gait with workshop backpack/tools, moderate bob, measured arm swing, distinct from Druid/Robot.
 - Все cutout rigs имеют контактную `GroundShadow`; на новых плоских фонах она остается основным grounding cue и не должна удаляться при будущих visual passes.
-- Berserk attack pose получает animation variant из текущего `weapon_id`: `sword` = forward thrust, `axe` = wide arc, `hammer` = overhead slam. Это только motion layer; damage shape/window остаются в weapon/backend конфигурации.
+- Berserk attack pose получает animation variant из текущего `weapon_id`: `sword` = forward thrust, `axe` = wide arc, `hammer` = overhead slam. SCRUM-880 дополнительно делает runtime VFX для `axe` визуально шире под live 180-degree / 250px sweep и добавляет actual `two_handed_axe.png` weapon overlay в signature layer. Это только motion/VFX layer; damage shape/window остаются в weapon/backend конфигурации.
 - Legacy player pass SCRUM-186 (2026-06-13) добавил bespoke 3-weapon silhouettes для старых классов без изменения gameplay: `dark_mage` (book/skull/wand casts), `guitarist` (strum/bass pulse/amp deploy), `assassin` (chakram/dagger/wire), `ranger` (crossbow/longbow/trap), `doctor` (restore/syringe/saw), `chemist` (powder/flask/vial), `knight` (spear/shield/flail), `druid` (summon/briar/totem). Smoke проверяет distinct silhouettes и socket sanity по фактическим `progression_data.gd` weapon IDs.
 - Soldier shoot pose получает animation variant из текущего `weapon_id`: `soldier_rifle` = suppression recoil, `soldier_grenade` = cook/throw, `soldier_bayonet` = defensive brace. Это только motion layer; attack modes/timing остаются в `ClassWeapon`.
 - Thief shoot pose получает animation variant из текущего `weapon_id`: `thief_coin_pouch` = быстрый щелчок монетой вперед, `thief_shadow_cloak` = сжатие и backstab-рывок, `thief_smoke_bomb` = dodge-back и низкий бросок дымовой бомбы. Это только motion layer; `coin_ricochet`, `shadow_backstab` и `smoke_bomb` gameplay остаются в Back-end.
@@ -604,6 +644,14 @@ Audit of the animation **runtime** loaders only (no art/motion/clip changes):
 - Priest shoot pose получает animation variant из текущего `weapon_id`: `priest_reliquary` = sanctify blessing hand and release, `priest_censer` = outward ward pulse gesture, `priest_chime` = lifted chime/chant pose. Это только motion layer; `priest_sanctify`, `priest_ward` и `priest_prayer_chain` gameplay/timing остаются в Back-end.
 - Biologist shoot pose получает animation variant из текущего `weapon_id`: `biologist_spore_lens` = raised inspection/bloom lens stance, `biologist_sample_injector` = precise forward dart pose, `biologist_symbiote_seed` = low planting/web gesture. Это только motion layer; `bio_spore_bloom`, `bio_sample_dart` и `bio_symbiote_web` gameplay/timing остаются в Back-end.
 - Robot shoot pose получает animation variant из текущего `weapon_id`: `robot_magnetic_anchor` = heavy plant and low pull, `robot_hydraulic_press` = forward dual-arm compression drive, `robot_reactor_core` = wide reactor vent stance. Это только motion layer; `robot_magnetic_anchor`, `robot_compression_line` и `robot_reactor_vent` gameplay/timing остаются в Back-end.
+- SCRUM-917 добавляет для `robot_hydraulic_press` отдельный PixelLab v3
+  8-frame VFX `compress`: две стальные губки и бирюзовые pressure-waves сходятся
+  с краёв широкого коридора к центральной оси. Кадр 5 играет на `0.20s` и
+  совпадает с уже существующим delayed hit SCRUM-916. Animator scene масштабирует
+  визуал под live `430x300` и `430x390` (Press Calibrator), сохраняет
+  центрированный pivot `(128,128)`, `16px` runtime gutters и нулевой edge-touch;
+  gameplay остаётся в `ClassWeapon`, а scene-specific visual bridge не меняет
+  damage/targeting/compression/cooldown.
 - Engineer shoot pose получает animation variant из текущего `weapon_id`: `engineer_sentry_wrench` = lifted wrench deploy gesture, `engineer_repair_drone` = upward drone launch/guide pose, `engineer_pressure_mines` = crouched mine placement. Это только motion layer; `engineer_sentry_link`, `engineer_repair_drone` и `engineer_pressure_mines` gameplay/timing остаются в Back-end.
 
 ## Enemy Motion
@@ -625,6 +673,19 @@ Audit of the animation **runtime** loaders only (no art/motion/clip changes):
   `bone_archon`, `ashen_colossus`, `secret_ascension_boss`, `skeletal_dragon`
   and `bloodthorn_lion` candidates remain source-only/revise-needed follow-ups.
   Evidence: `build/qa/scrum793_boss_pixellab_promotion/`.
+- SCRUM-865 (2026-07-04) completes the PixelLab-first full boss redraw pass for
+  all six live bosses (`rift_warden`, `disk_devourer`, `bone_archon`,
+  `brood_mother`, `ashen_colossus`, `bloodthorn_lion`). The initial `256x256`
+  PixelLab attempt failed against the current 8-direction max frame size, so
+  the accepted pass uses completed `170x170` source objects and imports
+  west-facing `512x512` runtime rows into the existing boss SpriteFrames
+  contract: `move` loop, `attack`/`attack_primary`, `death`, two `skill_*` rows
+  and matching `attack_*` aliases. `bloodthorn_lion` is now registered in
+  `FullFrameAnimationRegistry`; gameplay timing, damage, targeting and route
+  rotation are unchanged. Manifest:
+  `docs/design/references/bosses/boss_pixellab_full_redraw_2026_07/manifest.json`;
+  preview:
+  `docs/design/previews/boss_pixellab_full_redraw_2026_07_runtime_contact.png`.
 - SCRUM-372 (2026-06-14) добавил visual-only hook для мини-элиток: если elite instance имеет meta `mini_elite_kind` и `FullFrameAnimationRegistry.sprite_frames_for("elite", mini_elite_kind)` существует, runtime выбирает именно этот full-frame visual ID. Если SpriteFrames для mini-kind еще нет, сохраняется прежний fallback на `elite_behavior` route-элитки.
 
 ## Summon / Ally Motion
@@ -652,6 +713,30 @@ Audit of the animation **runtime** loaders only (no art/motion/clip changes):
 - SCRUM-353 padded the wolf (`druid_beast`) frame PNGs to safe `256x256` canvas
   so transparent alpha no longer touches canvas edges; registry placement is
   `scale Vector2(0.37, 0.37)`, `position Vector2(0, -37)`.
+- SCRUM-1016 (2026-07-10) adds a PixelLab-only horizontal animation contract
+  for `druid_ghost_wolf`, `druid_ghost_bear`, `druid_ghost_panther`,
+  `druid_ghost_stag`, and `druid_ghost_lion`. Each accepted SCRUM-1015
+  character UUID supplies exactly two repository/runtime directions: 6-frame
+  `move_left`/`move_right` loops at 10fps and 6-frame
+  `attack_left`/`attack_right` one-shots at 12fps. Raw PixelLab west/east frames
+  live below each `assets/sprites/allies/druid_ghost_*/pixellab_source/` tree;
+  normalized runtime frames use transparent `256x256` cells with shared center
+  X `128`, baseline Y `232`, one pack-wide scale and safe gutters. The registry
+  marks these five entries `explicit_horizontal_directions`, so `AllyMinion`
+  chooses the matching row and keeps `flip_h=false`; all older allies retain
+  their existing source-facing flip contract. Physical wolf/bear/panther rows
+  stage sweep/slam/pounce actions, while stag/lion rows stage spirit-lance/roar
+  casts. This is a visual-only hook: Summon Amulet roster, spawn weighting,
+  damage, aura and balance remain Backend SCRUM-902 scope.
+- SCRUM-1020 (2026-07-10) replaces only the failed
+  `druid_ghost_bear/move_right` row with PixelLab job
+  `1585ff64-f3e8-4db7-aa8b-fd7631a40bae` from the same accepted bear UUID
+  `6805608a-b64a-471c-a1d9-9601a3062e2f`. The six-frame grounded bear loop
+  reduces meaningful-alpha max/min discontinuity from `2.089121x` to
+  `1.083628x` while preserving `256x256`, center X `128`, baseline Y `232`,
+  10fps, explicit `move_right` and no-flip contracts. The pack builder now
+  rejects movement rows above `1.65x` as a coarse silhouette-continuity guard;
+  contact-sheet review remains mandatory and independent re-QA is pending.
 
 ## Hit / Death
 

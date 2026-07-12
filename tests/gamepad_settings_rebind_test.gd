@@ -208,13 +208,41 @@ func _test_gamepad_conflict(main) -> bool:
 	await process_frame
 	await process_frame
 
-	if not _expect(_find(main, "GamepadRebindConflictRetryButton") != null, "нет диалога конфликта геймпада"):
+	var retry_button := _find(main, "GamepadRebindConflictRetryButton") as Button
+	var back_button := _find(main, "GamepadRebindConflictBackButton") as Button
+	if not _expect(retry_button != null, "нет диалога конфликта геймпада"):
+		return false
+	if not _expect(back_button != null, "нет кнопки возврата в диалоге конфликта геймпада"):
+		return false
+	await process_frame
+	var focus_owner := root.gui_get_focus_owner()
+	if not _expect(focus_owner == retry_button, "диалог конфликта геймпада не фокусирует Retry для A/крестовины"):
+		return false
+	if not _expect(main.get("ui_escape_action") is Callable and (main.get("ui_escape_action") as Callable).is_valid(),
+			"диалог конфликта геймпада не выставляет ui_escape_action для B/Esc"):
 		return false
 	if not _expect(_action_has_joy_button("pause", JOY_BUTTON_START), "pause потерял Start при конфликте"):
 		return false
 	if not _expect(not _action_has_joy_button("pause", JOY_BUTTON_RIGHT_SHOULDER), "pause получил RB несмотря на конфликт"):
 		return false
 	if not _expect(_action_has_joy_button("open_level_up", JOY_BUTTON_RIGHT_SHOULDER), "open_level_up потерял RB"):
+		return false
+	if not _expect(str(main.get("pending_rebind_action")) == "", "конфликт геймпада должен сбрасывать pending_rebind_action"):
+		return false
+	var accept_event := InputEventJoypadButton.new()
+	accept_event.button_index = JOY_BUTTON_A
+	accept_event.pressed = true
+	main.call("_input", accept_event)
+	await process_frame
+	if not _expect(not _action_has_joy_button("pause", JOY_BUTTON_A), "A из conflict-dialog не должен назначаться на pause"):
+		return false
+	var cancel_event := InputEventJoypadButton.new()
+	cancel_event.button_index = JOY_BUTTON_B
+	cancel_event.pressed = true
+	main.call("_input", cancel_event)
+	await process_frame
+	await process_frame
+	if not _expect(_find(main, "GamepadRebindConflictRetryButton") == null, "B/ui_cancel не закрывает диалог конфликта геймпада"):
 		return false
 
 	main.ui._cancel_gamepad_rebind()

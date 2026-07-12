@@ -5,6 +5,52 @@ extends RefCounted
 
 var game
 
+const TRANSIENT_RUN_MODIFIER_KEYS := [
+	"dodge_rush_active",
+	"low_hp_active",
+	"crit_speed_burst_active",
+	"rush_window_active",
+	"hurt_active",
+	"stance_active",
+	"swarm_fraction",
+	"riff_streak_active",
+	"reactor_heat_active",
+	"ultimate_berserk_active",
+	# SCRUM-961: runtime-гейты классовых артефактов (молитва/стаки ярости).
+	"prayer_opening_active",
+	"rage_hit_damage_bonus",
+	"rage_hit_attack_speed_bonus",
+]
+const TRANSIENT_BERSERK_ULTIMATE_MULTIPLIERS := {
+	"attack_speed_multiplier": 1.35,
+	"move_speed_multiplier": 1.18,
+}
+const NORMAL_SPAWN_PRESSURE_BASE := 1.14
+const NORMAL_SPAWN_PRESSURE_STAGE_STEP := 0.018
+const NORMAL_SPAWN_PRESSURE_WAVE_STEP := 0.014
+const NORMAL_SPAWN_PRESSURE_ELAPSED_STEP := 0.16
+const NORMAL_SPAWN_PRESSURE_MAX := 1.55
+const ENEMY_HP_PRESSURE_BASE := 1.05
+const ENEMY_HP_PRESSURE_STAGE_STEP := 0.018
+const ENEMY_HP_PRESSURE_WAVE_STEP := 0.006
+const ENEMY_HP_PRESSURE_ELAPSED_STEP := 0.06
+const ENEMY_HP_PRESSURE_MAX := 1.38
+const ENEMY_DAMAGE_PRESSURE_BASE := 1.03
+const ENEMY_DAMAGE_PRESSURE_STAGE_STEP := 0.010
+const ENEMY_DAMAGE_PRESSURE_WAVE_STEP := 0.004
+const ENEMY_DAMAGE_PRESSURE_ELAPSED_STEP := 0.05
+const ENEMY_DAMAGE_PRESSURE_MAX := 1.24
+const SPAWN_COOLDOWN_ELAPSED_PRESSURE := 0.22
+const ADVANCED_MOB_ACT_STAGE := 4
+const ADVANCED_SHOOTER_WEIGHT_STEP := 0.10
+const ADVANCED_SUMMONER_WEIGHT_STEP := 0.12
+const ADVANCED_HEAVY_WEIGHT_STEP := 0.06
+const ADVANCED_SHOOTER_WEIGHT_MAX := 2.00
+const ADVANCED_SUMMONER_WEIGHT_MAX := 2.20
+const ADVANCED_HEAVY_WEIGHT_MAX := 1.66
+const BOSS_DEATH_VICTORY_DELAY := 2.0
+const BOSS_VICTORY_PRESSURE_GROUPS := ["enemies", "summoned_enemies", "projectiles", "enemy_projectiles", "enemy_hazards"]
+
 # SCRUM-528: «элитка реально убита в этом бою». Награда элитного узла (выбор
 # артефакта 1 из 3) гейтится этим флагом — победа по таймеру с ЖИВОЙ элиткой
 # награду не выдаёт. Сбрасывается в начале каждого боя (_start_combat),
@@ -13,6 +59,10 @@ var game
 # Живёт в боевом состоянии (не в сейве): при load элитного боя элитка
 # восстанавливается живой, поэтому флаг честно стартует с false.
 var _elite_defeated := false
+var _boss_victory_pending := false
+var _combat_start_finalized := false
+var _combat_start_in_progress := false
+var _combat_start_generation := 0
 
 
 func _init(game_ref) -> void:
@@ -24,10 +74,112 @@ func is_elite_defeated() -> bool:
 	return _elite_defeated
 
 
+func is_boss_victory_pending() -> bool:
+	return _boss_victory_pending
+
+
+func request_boss_victory_after_death() -> void:
+	if _boss_victory_pending or not game.combat_active:
+		return
+	_boss_victory_pending = true
+	_clear_boss_victory_pressure()
+	var tree: SceneTree = game.get_tree()
+	if tree == null:
+		_end_combat(true)
+		return
+	var timer: SceneTreeTimer = tree.create_timer(BOSS_DEATH_VICTORY_DELAY, false, false, true)
+	timer.timeout.connect(func() -> void:
+		if not _boss_victory_pending or not game.combat_active:
+			return
+		_boss_victory_pending = false
+		_end_combat(true)
+	)
+
+
+func _clear_boss_victory_pressure() -> void:
+	for group_name in BOSS_VICTORY_PRESSURE_GROUPS:
+		for node in game.get_tree().get_nodes_in_group(group_name):
+			if is_instance_valid(node) and not node.is_in_group("bosses"):
+				node.queue_free()
+
+
+static func normal_spawn_pressure_multiplier(route_scaling_stage: int, wave_index: int, elapsed_ratio: float) -> float:
+	var stage := maxf(float(route_scaling_stage), 0.0)
+	var wave := maxf(float(wave_index), 0.0)
+	var elapsed := clampf(elapsed_ratio, 0.0, 1.0)
+	var value := NORMAL_SPAWN_PRESSURE_BASE \
+		+ stage * NORMAL_SPAWN_PRESSURE_STAGE_STEP \
+		+ wave * NORMAL_SPAWN_PRESSURE_WAVE_STEP \
+		+ elapsed * NORMAL_SPAWN_PRESSURE_ELAPSED_STEP
+	return clampf(value, 1.0, NORMAL_SPAWN_PRESSURE_MAX)
+
+
+static func enemy_health_pressure_multiplier(route_scaling_stage: int, wave_index: int, elapsed_ratio: float) -> float:
+	var stage := maxf(float(route_scaling_stage), 0.0)
+	var wave := maxf(float(wave_index), 0.0)
+	var elapsed := clampf(elapsed_ratio, 0.0, 1.0)
+	var value := ENEMY_HP_PRESSURE_BASE \
+		+ stage * ENEMY_HP_PRESSURE_STAGE_STEP \
+		+ wave * ENEMY_HP_PRESSURE_WAVE_STEP \
+		+ elapsed * ENEMY_HP_PRESSURE_ELAPSED_STEP
+	return clampf(value, 1.0, ENEMY_HP_PRESSURE_MAX)
+
+
+static func enemy_damage_pressure_multiplier(route_scaling_stage: int, wave_index: int, elapsed_ratio: float) -> float:
+	var stage := maxf(float(route_scaling_stage), 0.0)
+	var wave := maxf(float(wave_index), 0.0)
+	var elapsed := clampf(elapsed_ratio, 0.0, 1.0)
+	var value := ENEMY_DAMAGE_PRESSURE_BASE \
+		+ stage * ENEMY_DAMAGE_PRESSURE_STAGE_STEP \
+		+ wave * ENEMY_DAMAGE_PRESSURE_WAVE_STEP \
+		+ elapsed * ENEMY_DAMAGE_PRESSURE_ELAPSED_STEP
+	return clampf(value, 1.0, ENEMY_DAMAGE_PRESSURE_MAX)
+
+
+static func mini_elite_pressure_chance(route_scaling_stage: int, wave_index: int, elapsed_ratio: float) -> float:
+	var chance := 0.015 \
+		+ maxf(float(route_scaling_stage), 0.0) * 0.006 \
+		+ maxf(float(wave_index), 0.0) * 0.001 \
+		+ clampf(elapsed_ratio, 0.0, 1.0) * 0.025
+	return clampf(chance, 0.0, 0.12)
+
+
+static func advanced_spawn_weight_multiplier(enemy_kind: String, route_scaling_stage: int) -> float:
+	var act_pressure_stage := maxf(float(route_scaling_stage - ADVANCED_MOB_ACT_STAGE + 1), 0.0)
+	match enemy_kind:
+		"shooter":
+			return minf(1.0 + act_pressure_stage * ADVANCED_SHOOTER_WEIGHT_STEP, ADVANCED_SHOOTER_WEIGHT_MAX)
+		"summoner":
+			return minf(1.0 + act_pressure_stage * ADVANCED_SUMMONER_WEIGHT_STEP, ADVANCED_SUMMONER_WEIGHT_MAX)
+		"heavy":
+			return minf(1.0 + act_pressure_stage * ADVANCED_HEAVY_WEIGHT_STEP, ADVANCED_HEAVY_WEIGHT_MAX)
+		_:
+			return 1.0
+
+
 func _start_combat(is_boss_fight := false, combat_type := "battle") -> void:
+	# SCRUM-1071: route/event/dev-console signals may converge in the same frame.
+	# A currently-building combat always owns the transition. `combat_active`
+	# alone is not authoritative: route-map boundary helpers clear Player/HUD/UI
+	# directly and legacy/test paths can leave the boolean stale. Only a complete,
+	# owned live generation (Player + matching generation + HUD) makes a repeated
+	# trigger an idempotent no-op. Otherwise normalize stale flags and start the
+	# route-selected combat normally.
+	if _combat_start_in_progress:
+		return
+	if game.combat_active:
+		if _has_live_owned_combat_generation():
+			return
+		game.combat_active = false
+		game.boss_combat_active = false
+	_combat_start_in_progress = true
+	# SCRUM-1000: бой не должен рождаться под чужой паузой (консольные fight/act
+	# в обход экранов). Штатные входы (клик узла карты, событие) приходят без
+	# pause-причин — для них это no-op. Симметрично гарду в _end_combat.
+	game._clear_all_game_pauses()
+	_boss_victory_pending = false
+	_combat_start_finalized = false
 	game.reset_run_ascension()
-	# Босс-бой — тёмная струнная вариация; обычный бой — минстрельский эмбиент.
-	game._play_music("boss" if is_boss_fight else "combat")
 	game._clear_ui()
 	game._clear_world()
 	_setup_arena_world(is_boss_fight)
@@ -37,6 +189,9 @@ func _start_combat(is_boss_fight := false, combat_type := "battle") -> void:
 	game.current_combat_type = "boss" if is_boss_fight else combat_type
 	# SCRUM-785: длительность зависит от типа боя — выставляем после current_combat_type.
 	game.round_time_left = _current_round_duration()
+	# SCRUM-968: боевой трек по типу узла + реальная длительность раунда (спека §3):
+	# ротация обычного боя, элитная дуэль, босс актов 1-2, финальный/секретный босс.
+	_play_combat_start_music()
 	# SCRUM-784: первая волна выходит почти мгновенно (наполняем экран в первую секунду).
 	game.spawn_cooldown = 0.1
 	game.spawn_wave_index = 0
@@ -45,7 +200,16 @@ func _start_combat(is_boss_fight := false, combat_type := "battle") -> void:
 	game.ui._create_hud()
 
 	game.current_player = game.player_scene.instantiate() as Node2D
+	if game.current_player == null:
+		game.combat_active = false
+		game.boss_combat_active = false
+		_combat_start_in_progress = false
+		push_error("SCRUM-1071: combat Player scene could not be instantiated")
+		return
 	game.add_child(game.current_player)
+	game._register_player_lifecycle_node(game.current_player, game.PLAYER_LIFECYCLE_COMBAT)
+	_combat_start_generation += 1
+	game.current_player.set_meta("combat_start_generation", _combat_start_generation)
 	game.current_player.global_position = game.ARENA_CENTER
 	_configure_player_camera(game.current_player)
 
@@ -65,8 +229,49 @@ func _start_combat(is_boss_fight := false, combat_type := "battle") -> void:
 	if game.current_player.has_signal("damaged"):
 		game.current_player.damaged.connect(game.ui._on_player_damaged)
 
-	game.ui._update_hud()
+	# SCRUM-926: a Priest must choose exactly one prayer before battle hooks and
+	# objective spawn. Non-Priest classes keep the synchronous path.
+	var prayer_choices: Array = []
+	if game.current_player.has_method("battle_prayer_choices"):
+		prayer_choices = game.current_player.call("battle_prayer_choices")
+	if not prayer_choices.is_empty() and str(game.current_player.call("active_battle_prayer_id")) == "":
+		if game.ui.has_method("show_battle_prayer_choice") and game.ui.show_battle_prayer_choice(game.current_player, Callable(self, "_finalize_combat_start")):
+			return
+		_combat_start_in_progress = false
+		push_error("SCRUM-926: mandatory battle prayer UI could not be opened")
+		return
+	_finalize_combat_start()
 
+
+func _has_live_owned_combat_generation() -> bool:
+	if not game.combat_active:
+		return false
+	var player := game.current_player as Node
+	if player == null or not is_instance_valid(player) or player.is_queued_for_deletion() or not player.is_inside_tree():
+		return false
+	if not player.is_in_group("player"):
+		return false
+	if int(player.get_meta(game.PLAYER_LIFECYCLE_OWNER_META, 0)) != game.get_instance_id():
+		return false
+	if StringName(player.get_meta(game.PLAYER_LIFECYCLE_ROLE_META, &"")) != game.PLAYER_LIFECYCLE_COMBAT:
+		return false
+	if int(player.get_meta("combat_start_generation", -1)) != _combat_start_generation:
+		return false
+	var hud := game.hud_layer as CanvasLayer
+	if hud == null or not is_instance_valid(hud) or hud.is_queued_for_deletion() or not hud.is_inside_tree():
+		return false
+	return hud.find_child("CombatHudRoot", true, false) != null
+
+
+func _finalize_combat_start() -> void:
+	if _combat_start_finalized or not game.combat_active:
+		return
+	_combat_start_finalized = true
+	_combat_start_in_progress = false
+	# SCRUM-961: battle-start artifact hooks run only after the prayer choice.
+	if game.current_player != null and is_instance_valid(game.current_player) and game.current_player.has_method("on_battle_start"):
+		game.current_player.on_battle_start()
+	game.ui._update_hud()
 	if game.boss_combat_active:
 		_spawn_boss()
 	elif game.current_combat_type == "elite":
@@ -124,7 +329,18 @@ func _restore_time_scale() -> void:
 func _end_combat(victory: bool) -> void:
 	if not game.combat_active:
 		return
+	_combat_start_in_progress = false
 
+	# SCRUM-1000: канонический конец боя снимает ВСЕ внутрибоевые pause-причины.
+	# Штатные пути (win/lose из main._process, died-сигнал игрока) недостижимы при
+	# активной паузе (main._process гейтится get_tree().paused), поэтому для них
+	# это no-op. Обходные пути (дев-консоль win/die при открытом level-up/досье/
+	# фидбеке) без этого оставляли get_tree().paused=true навсегда: победный флоу
+	# сносит pause-экран через _clear_ui без pop_pause, и следующий бой рождался
+	# мёртвым — без спавна волн, тика таймера, инпута и обновления камеры
+	# (игроку видна только верхняя-левая четверть арены).
+	game._clear_all_game_pauses()
+	_boss_victory_pending = false
 	var was_boss_fight = game.boss_combat_active
 	var was_elite_fight := str(game.current_combat_type) == "elite"
 	# SCRUM-528/785: артефакт-награда элитного узла — только если элитка реально убита.
@@ -134,6 +350,10 @@ func _end_combat(victory: bool) -> void:
 	# баннера), чтобы замыкание не зависело от последующей мутации поля.
 	var grant_elite_reward := was_elite_fight and _elite_defeated
 	var event_combat: Dictionary = game.pending_event_combat.duplicate(true)
+	# SCRUM-968: музыкальный финал раунда — fast-outro при раннем конце (босс/элитка
+	# убиты до таймера, смерть игрока; при штатном таймауте outro уже идёт —
+	# begin_music_outro идемпотентен) + стингер результата + снятие low-HP лупа.
+	_play_combat_result_audio(victory, was_boss_fight, was_elite_fight)
 	game.combat_active = false
 	game.boss_combat_active = false
 	if game.current_player != null and is_instance_valid(game.current_player):
@@ -142,32 +362,42 @@ func _end_combat(victory: bool) -> void:
 			var room_clear_heal := float((game.current_player.get("run_modifiers") as Dictionary).get("room_clear_heal_percent", 0.0))
 			if room_clear_heal > 0.0 and game.current_player.has_method("heal_percent"):
 				game.current_player.heal_percent(room_clear_heal)
-			if not was_boss_fight:
+			if was_boss_fight:
+				_grant_boss_completion_rewards()
+			else:
 				_grant_combat_completion_rewards(event_combat)
 		# SCRUM-502: снять актуальные данные игрока (level/money/artifacts) ДО
 		# _clear_world/queue_free — иначе run_player_snapshot был бы от прошлого узла
 		# (на смерти особенно критично: иначе снапшот остался бы от предыдущего узла).
 		_store_player_snapshot(game.current_player)
+	game.boss_hud_target = null  # SCRUM-874: узел закончился — боссбар гаснет
 	game._clear_world()
 	game._clear_hud()
 	game.pending_event_combat.clear()
 
 	if victory:
 		if was_boss_fight:
-			_grant_boss_completion_rewards()
-			if game.advance_to_next_act():
-				game.current_combat_type = "battle"
-				game.route._show_battle_map()
-			elif game.should_start_secret_boss_after_act3():
-				game.current_combat_type = "boss"
-				game.start_secret_boss_encounter()
+			var proceed_after_boss := func() -> void:
+				if game.advance_to_next_act():
+					game.current_combat_type = "battle"
+					game.route._show_battle_map()
+				elif game.should_start_secret_boss_after_final_act():
+					game.current_combat_type = "boss"
+					game.start_secret_boss_encounter()
+				else:
+					# SCRUM-502: финальный босс повержен — снять метрики-финалы + причину исхода.
+					game.capture_run_metrics_finals(game.run_player_snapshot)
+					var final_boss_name := str(game.run_metrics.get("last_boss_name", "финальный босс"))
+					game.run_metrics["outcome_reason"] = "Повержен финальный босс: %s" % final_boss_name
+					game.record_boss_victory()
+					game.ui._show_victory_screen()
+			# SCRUM-873: выбор 1 из 3 суперредких артефактов за акт-босса — только
+			# пока забег продолжается (следующий акт или секретный босс). После
+			# финального босса выбор бессмыслен — сразу экран победы.
+			if game.current_act < game.ACT_COUNT or game.should_start_secret_boss_after_final_act():
+				game.ui._show_boss_artifact_reward(proceed_after_boss)
 			else:
-				# SCRUM-502: финальный босс повержен — снять метрики-финалы + причину исхода.
-				game.capture_run_metrics_finals(game.run_player_snapshot)
-				var final_boss_name := str(game.run_metrics.get("last_boss_name", "финальный босс"))
-				game.run_metrics["outcome_reason"] = "Повержен финальный босс: %s" % final_boss_name
-				game.record_boss_victory()
-				game.ui._show_victory_screen()
+				proceed_after_boss.call()
 		else:
 			game.route_stage += 1
 			game.current_combat_type = "battle"
@@ -175,16 +405,14 @@ func _end_combat(victory: bool) -> void:
 			# Новый бой = новое окно докачки: набор и rerolls легально сбрасываются.
 			game.attribute_offer = []
 			game.attribute_rerolls_left = game.ui.ATTRIBUTE_REROLLS_PER_WINDOW
-			var return_to_route_map := func() -> void:
-				game.save_run_autosave("combat_node")
-				game.route._show_battle_map()
+			var proceed_to_map := _combat_victory_map_continuation(event_combat)
 			game.ui._show_victory_banner(func() -> void:
 				if grant_elite_reward:
 					game.ui._show_elite_artifact_reward(func() -> void:
-						game.ui._show_attribute_shop(return_to_route_map)
+						game.ui._show_attribute_shop(proceed_to_map)
 					)
 				else:
-					game.ui._show_attribute_shop(return_to_route_map)
+					game.ui._show_attribute_shop(proceed_to_map)
 			)
 	else:
 		# SCRUM-502: смерть — снять метрики-финалы из обновлённого снапшота + причину исхода.
@@ -203,6 +431,46 @@ func _end_combat(victory: bool) -> void:
 			else:
 				game.run_metrics["outcome_reason"] = "Пал в бою на этапе маршрута %d" % (game.route_stage + 1)
 		game.ui._show_death_screen()
+
+
+func _play_combat_start_music() -> void:
+	# SCRUM-968 (спека §3, «Точки вызова»): kind боевого трека по типу узла.
+	# Босс промежуточного акта -> "boss"; босс финального акта и секретный босс -> "final";
+	# элитка -> "elite"; всё остальное -> "battle" (shuffle-bag ротация §4).
+	# Длительность — реальный round_time_left (учитывает Возвышение и 300с элиток/боссов).
+	var audio: Node = game.get_node_or_null("/root/AudioManager")
+	if audio == null:
+		return
+	var kind := "battle"
+	if game.boss_combat_active:
+		kind = "final" if (game.secret_boss_active or game.current_act >= game.ACT_COUNT) else "boss"
+	elif str(game.current_combat_type) == "elite":
+		kind = "elite"
+	if audio.has_method("play_combat_music"):
+		audio.play_combat_music(kind, float(game.round_time_left))
+	elif audio.has_method("play_music"):
+		# Fallback на легаси-API (не должен срабатывать после SCRUM-968).
+		audio.play_music("boss" if game.boss_combat_active else "combat")
+
+
+func _play_combat_result_audio(victory: bool, was_boss_fight: bool, was_elite_fight: bool) -> void:
+	# SCRUM-968 (спека §3, п.4): ранний конец раунда — fast-outro 1.2 c + стингер
+	# результата немедленно. При конце по таймеру outro уже отработал (идемпотентный
+	# begin_music_outro проигнорирует повтор) — остаётся только стингер.
+	var audio: Node = game.get_node_or_null("/root/AudioManager")
+	if audio == null:
+		return
+	if audio.has_method("begin_music_outro"):
+		audio.begin_music_outro(1.2)
+	if audio.has_method("set_sfx_loop"):
+		# Бой кончился — low-HP пульс гаснет всегда (страховка к player._exit_tree).
+		audio.set_sfx_loop("low_hp_pulse", false)
+	if not audio.has_method("play_music_stinger"):
+		return
+	if victory:
+		audio.play_music_stinger("music_sting_victory_epic" if (was_boss_fight or was_elite_fight) else "music_sting_victory")
+	else:
+		audio.play_music_stinger("music_sting_defeat")
 
 
 func _random_enemy_scene() -> PackedScene:
@@ -250,6 +518,7 @@ func _spawn_weight_for_scene(scene: PackedScene) -> float:
 		base_weight *= 0.35
 	elif scaling_stage >= 2 and _is_shooter_scene(scene):
 		base_weight *= 1.25
+	base_weight *= advanced_spawn_weight_multiplier(_spawn_pressure_kind_for_scene(scene), scaling_stage)
 	if game.boss_combat_active and _is_shooter_scene(scene):
 		base_weight *= 0.6
 	return base_weight
@@ -271,7 +540,8 @@ func _spawn_random_enemy(enemy_scene_override: PackedScene = null, spawn_positio
 
 func _maybe_spawn_mini_elite(asc: Dictionary, remaining_slots: int) -> int:
 	# Возвращает число занятых слотов (0 если не спавнили).
-	var chance := float(asc.get("mini_elite_chance", 0.0))
+	var asc_chance := float(asc.get("mini_elite_chance", 0.0))
+	var chance := 1.0 if asc_chance >= 1.0 else clampf(asc_chance + _base_mini_elite_pressure_chance(), 0.0, 0.18)
 	if chance <= 0.0 or remaining_slots < 2 or game.rng.randf() >= chance:
 		return 0
 	# Свита L7: вид мини-элитки выбирается случайно из data-driven ростера (6 видов).
@@ -367,6 +637,8 @@ func _spawn_enemy_wave() -> void:
 
 	var base_count = int(game.WAVE_SETTINGS["base_spawn_count"])
 	var scaling_stage: int = game.route_scaling_stage()
+	var elapsed_ratio := _combat_elapsed_ratio()
+	var elapsed_bonus := int(floor(elapsed_ratio * 3.0))
 	var stage_bonus = scaling_stage * int(game.WAVE_SETTINGS["spawn_count_per_stage"])
 	var wave_bonus = int(floor(float(game.spawn_wave_index) / float(game.WAVE_SETTINGS["wave_step_size"]))) * int(game.WAVE_SETTINGS["spawn_count_per_wave_step"])
 	var spawn_limit = int(game.WAVE_SETTINGS["normal_spawn_limit"])
@@ -387,7 +659,9 @@ func _spawn_enemy_wave() -> void:
 	var density := float(asc_spawn["spawn_count_mult"])
 	if float(asc_spawn["first_wave_boost"]) > 0.0 and game.spawn_wave_index <= 1 and not game.boss_combat_active:
 		density *= 1.5
-	var raw_count := int(round(float(base_count + stage_bonus + wave_bonus) * density))
+	if not game.boss_combat_active and game.current_combat_type != "elite":
+		density *= normal_spawn_pressure_multiplier(scaling_stage, game.spawn_wave_index, elapsed_ratio)
+	var raw_count := int(round(float(base_count + stage_bonus + wave_bonus + elapsed_bonus) * density))
 	var spawn_count: int = mini(mini(raw_count, int(round(float(spawn_limit) * density))), remaining_slots)
 	for index in range(spawn_count):
 		var packed_scene := _random_enemy_scene()
@@ -422,7 +696,7 @@ func _active_enemy_cap() -> int:
 
 func _next_spawn_cooldown() -> float:
 	var stage_scale: float = game.PROGRESSION_DATA.stage_scale(game.route_scaling_stage())
-	var wave_pressure: float = float(game.spawn_wave_index) * 0.045 + (stage_scale - 1.0) * 0.42
+	var wave_pressure: float = float(game.spawn_wave_index) * 0.045 + (stage_scale - 1.0) * 0.42 + _combat_elapsed_ratio() * SPAWN_COOLDOWN_ELAPSED_PRESSURE
 	var cooldown_mult := float(game.ascension_difficulty()["spawn_cooldown_mult"])
 	if game.boss_combat_active:
 		return max(1.0, (game.rng.randf_range(float(game.WAVE_SETTINGS["boss_spawn_pause_min"]), float(game.WAVE_SETTINGS["boss_spawn_pause_max"])) - wave_pressure * 0.35) * cooldown_mult)
@@ -459,10 +733,13 @@ func _choose_wave_spawn_edges() -> void:
 func _scale_enemy_for_current_wave(enemy: Node) -> void:
 	var stage_scale: float = game.PROGRESSION_DATA.stage_scale(game.route_scaling_stage())
 	var wave_scale: float = float(game.spawn_wave_index)
+	var elapsed_ratio := _combat_elapsed_ratio()
 	var balance := _enemy_balance_for_node(enemy)
-	var health_multiplier: float = float(balance.get("hp_multiplier", 2.8)) * stage_scale * (1.0 + wave_scale * 0.055)
-	var speed_multiplier: float = float(balance.get("speed_multiplier", 0.84)) * (1.0 + (stage_scale - 1.0) * 0.18 + wave_scale * 0.008)
+	var health_multiplier: float = float(balance.get("hp_multiplier", 2.8)) * stage_scale * (1.0 + wave_scale * 0.065 + elapsed_ratio * 0.22)
+	var speed_multiplier: float = float(balance.get("speed_multiplier", 0.84)) * (1.0 + (stage_scale - 1.0) * 0.18 + wave_scale * 0.008 + elapsed_ratio * 0.04)
 	var damage_multiplier: float = float(balance.get("damage_multiplier", 1.16)) * (1.0 + (stage_scale - 1.0) * 0.46 + wave_scale * 0.024)
+	health_multiplier *= enemy_health_pressure_multiplier(game.route_scaling_stage(), game.spawn_wave_index, elapsed_ratio)
+	damage_multiplier *= enemy_damage_pressure_multiplier(game.route_scaling_stage(), game.spawn_wave_index, elapsed_ratio)
 	if game.boss_combat_active:
 		health_multiplier *= 0.72
 		speed_multiplier *= 0.82
@@ -543,6 +820,17 @@ func _enemy_balance_for_node(enemy: Node) -> Dictionary:
 	return game.ENEMY_BALANCE["default"]
 
 
+func _combat_elapsed_ratio() -> float:
+	var duration := maxf(_current_round_duration(), 0.001)
+	return clampf((duration - float(game.round_time_left)) / duration, 0.0, 1.0)
+
+
+func _base_mini_elite_pressure_chance() -> float:
+	if game.boss_combat_active or game.current_combat_type == "elite":
+		return 0.0
+	return mini_elite_pressure_chance(game.route_scaling_stage(), game.spawn_wave_index, _combat_elapsed_ratio())
+
+
 func _spawn_boss() -> void:
 	var selected_boss_scene = _boss_scene_for_id(game.current_boss_id)
 	if selected_boss_scene == null:
@@ -551,6 +839,7 @@ func _spawn_boss() -> void:
 	var boss := selected_boss_scene.instantiate() as Node2D
 	boss.set_meta("epic_scale_profile", "boss")
 	game.add_child(boss)
+	game.boss_hud_target = boss  # SCRUM-874: цель HUD-боссбара сверху экрана
 	boss.global_position = game.ARENA_CENTER + Vector2(0, -230)
 	_scale_boss_for_run(boss)
 	game.record_codex_enemy_discovery(boss)
@@ -608,6 +897,7 @@ func _spawn_elite_enemy() -> void:
 	elite.set_meta("epic_scale_profile", "elite")
 	elite.add_to_group("elite_enemies")
 	game.add_child(elite)
+	game.boss_hud_target = elite  # SCRUM-874: цель HUD-боссбара сверху экрана
 	elite.global_position = game.ARENA_CENTER + Vector2(0, -250)
 	if use_fallback_modifier:
 		_apply_elite_modifier(elite)
@@ -729,15 +1019,9 @@ func _scale_boss_for_run(boss: Node2D) -> void:
 func _grant_boss_completion_rewards() -> void:
 	if game.current_player == null or not is_instance_valid(game.current_player):
 		return
-	var tier3 := []
-	for artifact in game.PROGRESSION_DATA.ARTIFACTS:
-		if int(artifact.get("tier", 1)) >= 3:
-			tier3.append(artifact)
-	if not tier3.is_empty():
-		var reward: Dictionary = tier3[game.rng.randi_range(0, tier3.size() - 1)].duplicate(true)
-		reward["kind"] = "artifact"
-		game.current_player.apply_reward(reward)
-		game.record_codex_artifact_discovery(reward)
+	# SCRUM-873: артефакт больше НЕ выдаётся молча — игрок выбирает 1 из 3
+	# суперредких на экране _show_boss_artifact_reward (см. _end_combat).
+	# Здесь остаются только XP/деньги за босса.
 	var boss_rewards: Dictionary = game.PROGRESSION_DATA.drop_class_rewards("boss", game.route_scaling_stage(), game.spawn_wave_index)
 	game.current_player.gain_xp(int(boss_rewards.get("xp", 1)))
 	game.current_player.gain_money(int(boss_rewards.get("money", 1)))
@@ -961,6 +1245,19 @@ func _is_shooter_scene(packed_scene: PackedScene) -> bool:
 	return path.ends_with("EnemyShooter.tscn") or path.ends_with("EnemyMage.tscn") or path.ends_with("EnemySpitter.tscn") or path.ends_with("EnemyBoneShaman.tscn")
 
 
+func _spawn_pressure_kind_for_scene(packed_scene: PackedScene) -> String:
+	if packed_scene == null:
+		return "ordinary"
+	var path := packed_scene.resource_path
+	if _is_shooter_scene(packed_scene):
+		return "shooter"
+	if path.ends_with("EnemySummoner.tscn"):
+		return "summoner"
+	if path.ends_with("EnemyBruiser.tscn") or path.ends_with("EnemyShield.tscn"):
+		return "heavy"
+	return "ordinary"
+
+
 func _grant_combat_completion_rewards(event_combat := {}) -> void:
 	if game.current_player == null or not is_instance_valid(game.current_player):
 		return
@@ -986,9 +1283,35 @@ func _grant_combat_completion_rewards(event_combat := {}) -> void:
 		game.record_codex_artifact_discovery(event_combat["post_combat"])
 
 
+# SCRUM-996: продолжение победного флоу обычного/элитного боя после докачки
+# атрибутов. Штатно — автосейв + карта. Если событийный бой нёс
+# post_combat.shop_after — сначала событийный магазин (опц. shop_discount),
+# выход из которого ведёт к тому же штатному возврату. route_stage уже сдвинут
+# в _end_combat, поэтому advance здесь НЕ повторяется.
+func _combat_victory_map_continuation(event_combat: Dictionary) -> Callable:
+	var return_to_route_map := func() -> void:
+		game.save_run_autosave("combat_node")
+		game.route._show_battle_map()
+	if event_combat.is_empty():
+		return return_to_route_map
+	var post_combat_raw = event_combat.get("post_combat", {})
+	if not (post_combat_raw is Dictionary):
+		return return_to_route_map
+	var post_combat := post_combat_raw as Dictionary
+	if not bool(post_combat.get("shop_after", false)):
+		return return_to_route_map
+	return func() -> void:
+		game.ui._open_event_shop(return_to_route_map, float(post_combat.get("shop_discount", 0.0)))
+
+
 func _snapshot_player_for_menu() -> Node:
 	var temp_player = game.player_scene.instantiate()
+	if temp_player == null:
+		return null
 	game.add_child(temp_player)
+	# Full Player is reused only as an in-memory stat model. It must not compete
+	# with combat targeting, input, physics or Camera2D while a menu owns it.
+	game._register_player_lifecycle_node(temp_player, game.PLAYER_LIFECYCLE_MENU_SNAPSHOT)
 	if game.run_player_snapshot.is_empty():
 		temp_player.configure_character(game.selected_character_id, game.selected_weapon_id)
 	else:
@@ -997,13 +1320,17 @@ func _snapshot_player_for_menu() -> Node:
 
 
 func _store_player_snapshot(player: Node) -> void:
-	# SCRUM-500: снапшот тащит run_modifiers целиком между узлами. Временные *_active-флаги
-	# триггерных/уворотных баффов НЕ должны «застывать» как постоянный бонус в следующем бою.
-	# Обнуляем их в копии перед сохранением (источник истины — игрок, тут только сериализация).
+	# SCRUM-500/SCRUM-844: снапшот тащит run_modifiers целиком между узлами.
+	# Runtime-only active/fraction гейты и timed ultimate overlays не должны
+	# «застывать» как постоянный бонус после замены player node между боями.
 	var run_modifiers_snapshot := (player.get("run_modifiers") as Dictionary).duplicate(true)
-	for transient_flag in ["dodge_rush_active", "low_hp_active", "crit_speed_burst_active"]:
+	var berserk_ultimate_active := float(run_modifiers_snapshot.get("ultimate_berserk_active", 0.0)) > 0.0
+	for transient_flag in TRANSIENT_RUN_MODIFIER_KEYS:
 		if run_modifiers_snapshot.has(transient_flag):
 			run_modifiers_snapshot[transient_flag] = 0.0
+	if berserk_ultimate_active:
+		for multiplier_key in TRANSIENT_BERSERK_ULTIMATE_MULTIPLIERS.keys():
+			run_modifiers_snapshot[multiplier_key] = float(run_modifiers_snapshot.get(multiplier_key, 1.0)) / float(TRANSIENT_BERSERK_ULTIMATE_MULTIPLIERS[multiplier_key])
 	var artifacts_raw = player.get("artifacts")
 	var artifacts_snapshot: Array = []
 	if artifacts_raw is Array:
@@ -1020,6 +1347,9 @@ func _store_player_snapshot(player: Node) -> void:
 		"xp_to_next": player.get("xp_to_next"),
 		"level": player.get("level"),
 		"money": player.get("money"),
+		# SCRUM-872: накопленная шкала ульты переносится между узлами/раундами.
+		# Активная ульта (_ultimate_active/timed-overlay) — runtime-only, НЕ переносится.
+		"ultimate_charge": player.get("ultimate_charge"),
 	}
 
 
@@ -1039,6 +1369,10 @@ func _restore_player_snapshot(player: Node) -> void:
 	elif player.has_method("_apply_stat_scaling"):
 		player.call("_apply_stat_scaling", true)
 	player.set("health", min(float(game.run_player_snapshot.get("health", player.get("max_health"))), float(player.get("max_health"))))
+	# SCRUM-872: восстановить накопленную ульту ПОСЛЕ configure/equip (перерасчёт
+	# деривативов) с clamp по максимуму — заряд не должен превышать шкалу.
+	var ultimate_max := maxf(float(player.get("ultimate_max_charge")), 0.0)
+	player.set("ultimate_charge", clampf(float(game.run_player_snapshot.get("ultimate_charge", 0.0)), 0.0, ultimate_max))
 
 
 func _current_round_duration() -> float:

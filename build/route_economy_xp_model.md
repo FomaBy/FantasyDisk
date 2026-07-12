@@ -8,9 +8,9 @@ This is a deterministic route-level model, not a replacement for live combat tel
 
 | Route | Nodes | Expected XP | Levels | XP Left | Expected Gold | Avg Shop Cost | Affordable Offers | Attr Buys | Rerolls | Buying Power |
 | --- | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | --- |
-| Balanced Route | 10 | 497.0 | 20 | 21/50 | 496.6 | 82.2 | 6.0 | 2.6 | 7.9 | high |
-| Combat-Heavy Route | 11 | 770.0 | 25 | 13/67 | 759.7 | 118.9 | 6.4 | 2.4 | 7.2 | high |
-| Shop/Rest Route | 10 | 492.0 | 20 | 16/50 | 548.7 | 104.2 | 5.3 | 2.2 | 6.7 | healthy |
+| Balanced Route | 10 | 497.0 | 17 | 33/68 | 496.6 | 82.2 | 6.0 | 2.6 | 7.9 | high |
+| Combat-Heavy Route | 11 | 770.0 | 20 | 80/92 | 759.7 | 118.9 | 6.4 | 2.4 | 7.2 | high |
+| Shop/Rest Route | 10 | 492.0 | 17 | 28/68 | 548.7 | 104.2 | 5.3 | 2.2 | 6.7 | healthy |
 
 ## Node Detail
 
@@ -24,7 +24,7 @@ This is a deterministic route-level model, not a replacement for live combat tel
 | 4 | elite | 2 | 39.0 | 37.3 | 0.0 | ordinary x15.0, complex x5.0, heavy x3.0, elite x1.0 |
 | 5 | battle | 3 | 40.0 | 33.7 | 0.0 | ordinary x26.0, complex x5.0, heavy x2.0 |
 | 6 | rest | 4 | 0.0 | 0.0 | 0.0 | Rest node: no direct economy payout |
-| 7 | battle | 5 | 90.0 | 41.3 | 0.0 | ordinary x30.0, complex x6.0, heavy x3.0 |
+| 7 | battle | 5 | 90.0 | 41.2 | 0.0 | ordinary x30.0, complex x6.0, heavy x3.0 |
 | 8 | upgrade | 6 | 0.0 | 0.0 | 0.0 | Attribute buy 188, reroll 63 |
 | 9 | battle | 7 | 105.0 | 93.8 | 0.0 | ordinary x34.0, complex x7.0, heavy x4.0 |
 | 10 | boss | 8 | 157.0 | 234.1 | 0.0 | ordinary x16.0, complex x4.0, heavy x2.0, boss x1.0 |
@@ -38,7 +38,7 @@ This is a deterministic route-level model, not a replacement for live combat tel
 | 3 | elite | 2 | 39.0 | 37.3 | 0.0 | ordinary x15.0, complex x5.0, heavy x3.0, elite x1.0 |
 | 4 | battle | 3 | 40.0 | 33.7 | 0.0 | ordinary x26.0, complex x5.0, heavy x2.0 |
 | 5 | shop | 4 | 0.0 | 0.0 | 118.9 | 4 displayed offers sampled from 118.9 avg pool cost |
-| 6 | battle | 5 | 90.0 | 41.3 | 0.0 | ordinary x30.0, complex x6.0, heavy x3.0 |
+| 6 | battle | 5 | 90.0 | 41.2 | 0.0 | ordinary x30.0, complex x6.0, heavy x3.0 |
 | 7 | elite | 6 | 91.0 | 88.3 | 0.0 | ordinary x19.0, complex x7.0, heavy x4.0, elite x1.0 |
 | 8 | battle | 7 | 105.0 | 93.8 | 0.0 | ordinary x34.0, complex x7.0, heavy x4.0 |
 | 9 | upgrade | 8 | 0.0 | 0.0 | 0.0 | Attribute buy 317, reroll 106 |
@@ -62,9 +62,9 @@ This is a deterministic route-level model, not a replacement for live combat tel
 
 ## XP Tempo Decision
 
-- Current modeled routes produce 21.7 level-ups on average (range 20-25) before/including the boss reward.
+- Current modeled routes produce 18.0 level-ups on average (range 17-20) before/including the boss reward.
 - Buying power is healthy across the representative routes: each route can afford several shop offers or at least one post-fight attribute upgrade window without starving the run.
-- SCRUM-527: XP-кривая перекалибрована (множитель 1.42→1.038, flat 3.0→0.8) так, чтобы средний забег приходил к боссу 1-го акта примерно на 20 lvl (репрезентативные balanced/shop маршруты = 20, combat-heavy = 24). Рост требуемого опыта почти линейный (req ~5→10→20→30→44), без крутого геометрического разгона.
+- SCRUM-853: XP-кривая растянута после фидбека, что герой слишком быстро обгоняет монстров. Per-monster XP drops не урезались; главный pacing gate теперь отдельный 20-fight pressure projection `tests/monster_xp_pressure_pacing_test.gd` (Act 1 ~10-15, Act 2 ~20-25, final ~30-35).
 
 ## Fixture Delta
 
@@ -73,7 +73,7 @@ This is a deterministic route-level model, not a replacement for live combat tel
 | Expected gold | 93.5 | 123.3 | +31.9% |
 | Effective buying power | 93.5 | 112.1 | +19.9% |
 | Expected XP | 146.0 | 156.3 | +7.1% |
-| XP curve | `ceil(req*1.35+2)` | `ceil(req*1.04+1)` | guarded |
+| XP curve | `ceil(req*1.35+2)` | `ceil(req*1.09+0.8)` | guarded |
 
 ## Event Risk/Reward EV
 

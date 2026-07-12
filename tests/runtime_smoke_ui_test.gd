@@ -22,8 +22,8 @@ func _initialize() -> void:
 
 	main.call("_show_settings_menu")
 	await process_frame
-	if not _has_screen_background(main, "settings"):
-		_fail("Expected settings backdrop in UI smoke.")
+	if not _has_unified_screen_background(main, "settings"):
+		_fail("Expected SCRUM-879 unified settings backdrop in UI smoke.")
 		return
 	await _test_settings_tabs_and_rebind(main)
 	await _test_settings_return_origins(main_scene)

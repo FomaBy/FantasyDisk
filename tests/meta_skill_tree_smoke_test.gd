@@ -1,10 +1,8 @@
 extends SceneTree
 
-# SCRUM-828: data-целостность Меты 4.0 «Созвездия героев» (17 per-class графов +
-# Атлас гильдии), экономика двух валют (эмблемы/пыль), keystone-взаимоисключение,
-# скрытые звезды, миграция сейва schema 4→5, бюджет силы §6 дизайн-дока
-# (docs/design/systems/meta_constellations.md), применение к игроку и старый
-# экран дерева (v3 UI живёт на совместимом API до T3/SCRUM-827).
+# SCRUM-1068: schema-6 constellation regression plus the frozen Guild Atlas
+# runtime coverage. Class paths are weapon-scoped; Guild effects remain account-
+# wide and keep their established ids/behavior.
 
 const Meta := preload("res://scripts/meta_progression.gd")
 const CharacterData := preload("res://scripts/progression_data_characters.gd")
@@ -17,19 +15,14 @@ const ENEMY_SCENE := preload("res://scenes/Enemy.tscn")
 
 
 func _initialize() -> void:
-	_test_tree_data_integrity()
-	_test_effect_keys_are_wired()
-	_test_semantic_keystone_behavioral_gate_contract()
+	_test_schema6_tree_data_integrity()
+	_test_schema6_effect_profiles()
 	_test_graph_connectivity()
-	_test_purchase_and_currencies()
-	_test_save_load_roundtrip()
-	_test_migration_schema4_to_5()
-	_test_budget_power_corridor()
+	_test_schema6_purchase_and_currencies()
+	_test_schema6_save_load_roundtrip()
+	_test_schema5_to_6_migration()
 	_test_atlas_stays_non_combat()
-	await _test_player_application()
-	await _test_conditional_keystones()
-	await _test_semantic_combat_keystones_835()
-	await _test_skill_tree_screen()
+	await _test_guild_runtime_outcomes_1069()
 	await _test_victory_shows_skill_points()
 	await _test_shop_discount()
 	await _test_attribute_discount()
@@ -37,7 +30,6 @@ func _initialize() -> void:
 	await _test_first_levelup_rare_capstone()
 	await _test_guaranteed_rare_shop_capstone()
 	await _test_death_save_capstone()
-	await _test_run_start_application()
 	await _test_class_progression_run_start_application()
 	print("Meta skill tree smoke test passed.")
 	quit(0)
@@ -46,6 +38,205 @@ func _initialize() -> void:
 func _fail(msg: String) -> void:
 	push_error(msg)
 	quit(1)
+
+
+func _test_schema6_tree_data_integrity() -> void:
+	if Meta.SKILL_TREE.size() != 17 * 21 + 25:
+		_fail("Expected schema-6 total 17*21+25=382 nodes, got %d." % Meta.SKILL_TREE.size())
+		return
+	if Meta.default_state().has("active_keystones"):
+		_fail("Schema-6 default state must not serialize active_keystones.")
+		return
+	var ids := {}
+	var atlas_count := 0
+	var atlas_keystones := 0
+	for raw_node in Meta.SKILL_TREE:
+		var node: Dictionary = raw_node
+		var node_id := str(node.get("id", ""))
+		if node_id == "" or ids.has(node_id):
+			_fail("Duplicate or empty node id '%s'." % node_id)
+			return
+		ids[node_id] = true
+		if not (node.get("pos") is Vector2) or not (node.get("npos") is Vector2):
+			_fail("Node '%s' is missing pos/npos." % node_id)
+			return
+		if not (node.get("adj", []) is Array) or (node.get("adj", []) as Array).is_empty():
+			_fail("Node '%s' is missing adjacency." % node_id)
+			return
+		if str(node.get("title", "")) == "" or str(node.get("desc", "")) == "":
+			_fail("Node '%s' is missing title/description." % node_id)
+			return
+		if str(node.get("class_affinity", "")) == "":
+			atlas_count += 1
+			if str(node.get("kind", "")) == "keystone":
+				atlas_keystones += 1
+		for neighbor_value in node.get("adj", []):
+			var neighbor_id := str(neighbor_value)
+			var neighbor := Meta.node_by_id(neighbor_id)
+			if neighbor.is_empty() or not (neighbor.get("adj", []) as Array).has(node_id):
+				_fail("Edge '%s' <-> '%s' is dangling or asymmetric." % [node_id, neighbor_id])
+				return
+	if atlas_count != 25 or atlas_keystones != 4:
+		_fail("Frozen Guild Atlas must remain 25 nodes with four keystones, got %d/%d." % [atlas_count, atlas_keystones])
+		return
+	for class_value in CharacterData.CHARACTER_CONFIGS.keys():
+		var class_id := str(class_value)
+		var nodes := Meta.constellation_nodes(class_id)
+		var roles := {}
+		for raw_node in nodes:
+			var role := str((raw_node as Dictionary).get("role", ""))
+			roles[role] = int(roles.get(role, 0)) + 1
+		if nodes.size() != 21 or roles != {"core": 1, "weapon_boon": 15, "weapon_final": 3, "hidden": 2}:
+			_fail("Class '%s' violates schema-6 21-node anatomy: %s." % [class_id, str(roles)])
+			return
+		if Meta.constellation_total_cost(class_id) != 20:
+			_fail("Class '%s' must have exact spend 20." % class_id)
+			return
+
+
+func _test_schema6_effect_profiles() -> void:
+	var atlas_wired := {}
+	for key in PlayerScript.META_SKILL_MULT_MAP.keys():
+		atlas_wired[str(key)] = true
+	for key in PlayerScript.META_SKILL_FLAT_MAP.keys():
+		atlas_wired[str(key)] = true
+	for key in PlayerScript.META_SKILL_ATTRIBUTE_FLAT_MAP.keys():
+		atlas_wired[str(key)] = true
+	for key in ["ult_start_charge", "death_save", "lowhp_guard", "guaranteed_rare_shop", "first_levelup_rare", "shop_price_mult", "attr_cost_mult", "start_gold_flat", "attr_extra_options"]:
+		atlas_wired[str(key)] = true
+	for raw_node in Meta.atlas_nodes():
+		var node: Dictionary = raw_node
+		for key in (node.get("effects", {}) as Dictionary).keys():
+			if not atlas_wired.has(str(key)):
+				_fail("Guild node '%s' uses unwired effect '%s'." % [str(node.get("id", "")), str(key)])
+				return
+	for class_value in CharacterData.CHARACTER_CONFIGS.keys():
+		var class_id := str(class_value)
+		var purchased := []
+		for raw_node in Meta.constellation_nodes(class_id):
+			var node: Dictionary = raw_node
+			var role := str(node.get("role", ""))
+			if role == "core":
+				continue
+			var profile: Dictionary = node.get("effect_profile", {})
+			if str(profile.get("effect_key", "")) == "" or str(profile.get("scope", "")) != "owning_weapon_only":
+				_fail("Class node '%s' lacks an owning-weapon profile." % str(node.get("id", "")))
+				return
+			if role in ["weapon_boon", "weapon_final"]:
+				purchased.append(str(node.get("id", "")))
+		var state := Meta.default_state()
+		state["skill_nodes"] = purchased
+		var profiles := Meta.skill_profiles_for_class(state, class_id)
+		if profiles.size() != 3:
+			_fail("Class '%s' must expose exactly three typed weapon profiles." % class_id)
+			return
+		var finals := 0
+		for weapon_value in profiles.keys():
+			var weapon_id := str(weapon_value)
+			var typed: Dictionary = profiles[weapon_id]
+			if not bool(typed.get("valid", false)) or (typed.get("node_ids", []) as Array).size() != 6:
+				_fail("Profile '%s/%s' must contain exactly its six valid path nodes." % [class_id, weapon_id])
+				return
+			if (typed.get("mechanics", {}) as Dictionary).size() != 1:
+				_fail("Profile '%s/%s' must expose one final mechanic." % [class_id, weapon_id])
+				return
+			finals += 1
+		if finals != 3:
+			_fail("All three finals of '%s' must be co-active." % class_id)
+			return
+
+
+func _test_schema6_purchase_and_currencies() -> void:
+	var state := Meta.record_boss_victory(Meta.default_state(), "berserk", 0, {"weapon_id": "sword"})
+	if Meta.class_sigils_earned(state, "berserk") != 2:
+		_fail("First clear A0 must award two schema-6 sigils.")
+		return
+	if Meta.node_status(state, "berserk_sword_b1") != "available" \
+			or Meta.node_status(state, "berserk_sword_b2") != "locked":
+		_fail("Only the core-adjacent first weapon boon may be available initially.")
+		return
+	if Meta.node_status(state, "soldier_soldier_rifle_b1") != "locked":
+		_fail("Berserk sigils must not unlock Soldier weapon nodes.")
+		return
+	var dust_before := Meta.stardust_available(state)
+	state = Meta.allocate_node(state, "berserk_sword_b1")
+	state = Meta.allocate_node(state, "berserk_sword_b2")
+	if Meta.class_sigils_spent(state, "berserk") != 2 or Meta.class_sigils_available(state, "berserk") != 0:
+		_fail("Two schema-6 purchases must spend exactly two Berserk sigils.")
+		return
+	if Meta.stardust_available(state) != dust_before:
+		_fail("Class purchases must not spend Guild stardust.")
+		return
+	if Meta.node_status(state, "atlas_m0") != "available":
+		_fail("Frozen Guild early hook must remain available after the first win.")
+		return
+	state = Meta.allocate_node(state, "atlas_m0")
+	if not Meta.is_node_purchased(state, "atlas_m0") or Meta.stardust_available(state) != dust_before - 1:
+		_fail("Frozen Guild purchase must spend one stardust.")
+		return
+	state = Meta.reset_skill_tree(state)
+	if Meta.class_sigils_spent(state, "berserk") != 0 or Meta.stardust_available(state) != Meta.stardust_earned(state):
+		_fail("Full respec must refund both schema-6 sigils and Guild stardust.")
+		return
+
+
+func _test_schema6_save_load_roundtrip() -> void:
+	var path := "user://test_meta_constellations_schema6.cfg"
+	var state := Meta.default_state()
+	state["meta_point_awards"] = {"berserk": [0, 1, 2, 3, 4, 5]}
+	state["skill_nodes"] = ["berserk_sword_b1", "berserk_sword_b2", "atlas_m0"]
+	state["legacy_mastery"] = {"berserk": 2}
+	state["hidden_reveal_facts"] = {"berserk": ["berserk_h0"]}
+	Meta.save_state(state, path)
+	var loaded := Meta.load_state(path)
+	if int(loaded.get("skill_tree_schema", 0)) != 6:
+		_fail("Roundtrip must retain schema version 6.")
+		return
+	if not Meta.is_node_purchased(loaded, "berserk_sword_b1") \
+			or not Meta.is_node_purchased(loaded, "berserk_sword_b2") \
+			or not Meta.is_node_purchased(loaded, "atlas_m0"):
+		_fail("Schema-6 class and frozen Guild purchases must survive roundtrip.")
+		return
+	if Meta.legacy_mastery_for_class(loaded, "berserk") != 2 \
+			or not Meta.hidden_reveal_facts_for_class(loaded, "berserk").has("berserk_h0"):
+		_fail("Legacy mastery and hidden reveal facts must survive roundtrip.")
+		return
+	if loaded.has("active_keystones"):
+		_fail("Roundtrip must not revive schema-5 active_keystones.")
+		return
+	DirAccess.remove_absolute(ProjectSettings.globalize_path(path))
+
+
+func _test_schema5_to_6_migration() -> void:
+	var path := "user://test_meta_migration_schema5_to_6.cfg"
+	var cfg := ConfigFile.new()
+	cfg.set_value("meta", "skill_tree_schema", 5)
+	cfg.set_value("meta", "meta_point_awards", {"berserk": [0, 1, 2, 3, 4, 5]})
+	cfg.set_value("meta", "ascension_levels", {"berserk": 5})
+	cfg.set_value("meta", "skill_nodes", ["berserk_m0", "berserk_k0", "atlas_m0"])
+	cfg.set_value("meta", "active_keystones", {"berserk": "berserk_k0"})
+	cfg.set_value("meta", "class_challenge_progress", {"berserk": {"weapons": ["sword", "axe"], "best_ascension": 2, "no_shop_wins": 0}})
+	cfg.save(path)
+	var loaded := Meta.load_state(path)
+	if not Meta.is_node_purchased(loaded, "atlas_m0"):
+		_fail("Schema-5 migration must preserve frozen Guild purchases.")
+		return
+	if Meta.is_node_purchased(loaded, "berserk_m0") or Meta.class_sigils_spent(loaded, "berserk") != 0:
+		_fail("Schema-5 class allocations must be fully respecced.")
+		return
+	if Meta.class_sigils_earned(loaded, "berserk") != 20 or Meta.legacy_mastery_for_class(loaded, "berserk") != 2:
+		_fail("Schema-5 22 earned sigils must migrate to 20 spendable +2 legacy mastery.")
+		return
+	if loaded.has("active_keystones"):
+		_fail("Migration must remove schema-5 active_keystones.")
+		return
+	if not Meta.hidden_star_unlocked(loaded, "berserk_h0") or not Meta.hidden_star_unlocked(loaded, "berserk_h1"):
+		_fail("Migration must reconstruct hidden reveal facts without auto-purchase.")
+		return
+	if Meta.is_node_purchased(loaded, "berserk_h0") or Meta.is_node_purchased(loaded, "berserk_h1"):
+		_fail("Revealed hidden nodes must still require purchase after migration.")
+		return
+	DirAccess.remove_absolute(ProjectSettings.globalize_path(path))
 
 
 # --- Данные ---
@@ -311,10 +502,13 @@ func _test_save_load_roundtrip() -> void:
 	state = Meta.allocate_node(state, "berserk_t0")
 	state = Meta.allocate_node(state, "berserk_k0")
 	state = Meta.set_active_keystone(state, "berserk", "berserk_k0")
+	# SCRUM-1069: schema-5 Guild purchases keep their canonical IDs and receive
+	# the tuned value in place; no migration/respec is allowed.
+	(state["skill_nodes"] as Array).append("atlas_m0")
 	Meta.save_state(state, path)
 	var loaded: Dictionary = Meta.load_state(path)
-	if Meta.global_level(loaded) != 5:
-		_fail("Expected 5 purchased stars after reload, got %d." % Meta.global_level(loaded))
+	if Meta.global_level(loaded) != 6:
+		_fail("Expected 6 purchased nodes including preserved Guild node after reload, got %d." % Meta.global_level(loaded))
 		return
 	if Meta.active_keystone(loaded, "berserk") != "berserk_k0":
 		_fail("Active keystone must survive save/load.")
@@ -327,6 +521,10 @@ func _test_save_load_roundtrip() -> void:
 		return
 	if int(loaded.get("skill_tree_schema", 0)) != Meta.TREE_SCHEMA_VERSION:
 		_fail("Loaded state must carry schema 5.")
+		return
+	if not Meta.is_node_purchased(loaded, "atlas_m0") \
+			or not is_equal_approx(float(Meta.skill_modifiers(loaded).get("money_gain_mult", 0.0)), 0.05):
+		_fail("Schema-5 Guild purchase must survive and resolve to tuned +5%% gold.")
 		return
 	DirAccess.remove_absolute(ProjectSettings.globalize_path(path))
 
@@ -448,24 +646,22 @@ func _test_budget_power_corridor() -> void:
 
 
 func _test_atlas_stays_non_combat() -> void:
-	# §6.5: Атлас (весь!) почти не несёт боевой силы — аккаунт-множитель < 1.30
-	# (наследные keystone учтены историческим балансом), и его вклад в
-	# class-power формулу тоже мал.
+	# SCRUM-1069: усиленный Atlas остаётся support/economy-слоем. Full Atlas is
+	# a stricter upper bound than any legal 50-dust build.
 	var state: Dictionary = Meta.default_state()
 	var all_atlas := []
 	for node in Meta.atlas_nodes():
 		if int((node as Dictionary).get("cost", 0)) > 0:
 			all_atlas.append(str((node as Dictionary)["id"]))
 	state["skill_nodes"] = all_atlas
-	if Meta.estimated_power_multiplier(state) >= 1.30:
-		_fail("Full Atlas account power must stay < 1.30.")
+	if Meta.estimated_power_multiplier(state) >= Meta.GUILD_ATLAS_ACCOUNT_POWER_CAP:
+		_fail("Full Atlas account power must stay < %.2f." % Meta.GUILD_ATLAS_ACCOUNT_POWER_CAP)
 		return
-	# Взвешенный вклад Атласа в class-power ≤10% (дельта от базлайна с одним
-	# ядром класса): боевого там только наследные флаги (death_save/ult_start)
-	# и аптека; остальное — QoL-веса (подбор).
+	# Взвешенный вклад Атласа в class-power ≤18% (дельта от базлайна с одним
+	# ядром класса), using source-aware Guild weights.
 	var baseline := Meta.estimated_class_power_multiplier(Meta.default_state(), "berserk")
-	if Meta.estimated_class_power_multiplier(state, "berserk") - baseline > 0.10:
-		_fail("Full Atlas must add <= 10%% weighted class power over baseline.")
+	if Meta.estimated_class_power_multiplier(state, "berserk") - baseline > Meta.GUILD_ATLAS_CLASS_POWER_DELTA_CAP + 0.0001:
+		_fail("Full Atlas must add <= %.0f%% weighted class power over baseline." % (Meta.GUILD_ATLAS_CLASS_POWER_DELTA_CAP * 100.0))
 		return
 	# Стоимость Атласа выше потолка пыли: «всё не купить».
 	if Meta.atlas_total_cost() <= Meta.STARDUST_CAP:
@@ -488,7 +684,7 @@ func _test_player_application() -> void:
 
 	# Полное созвездие берсерка (активен k1 «Несущий бурю») + пара узлов Атласа.
 	var state: Dictionary = Meta.default_state()
-	var build := ["atlas_m8", "atlas_k2"]
+	var build := ["atlas_m0", "atlas_m8", "atlas_k2"]
 	for node in Meta.constellation_nodes("berserk"):
 		var node_data: Dictionary = node
 		if str(node_data.get("role", "")) in ["minor", "technique", "keystone"]:
@@ -516,11 +712,20 @@ func _test_player_application() -> void:
 	if float(run_mods.get("xp_gain_multiplier", 1.0)) <= 1.0:
 		_fail("Expected Atlas xp node to apply.")
 		return
-	# Атлас-keystone «Боевой раж»: ульта стартует на 50%.
+	# SCRUM-1069: Атлас-keystone «Боевой раж» полностью заряжает ульту.
 	var ult_charge := float(player.get("ultimate_charge"))
 	var ult_max := float(player.get("ultimate_max_charge"))
-	if ult_charge < ult_max * 0.45:
+	if ult_charge < ult_max * 0.99:
 		_fail("Expected ult_start_charge keystone to pre-charge the ultimate (%.1f/%.1f)." % [ult_charge, ult_max])
+		return
+	# Doctor hidden «Горный госпиталь» still grants 50%; Guild k2 must win the
+	# max-merge and remain a real 100% upgrade instead of a duplicate no-op.
+	var doctor_state := Meta.default_state()
+	doctor_state["skill_nodes"] = ["atlas_k2"]
+	doctor_state["class_challenge_progress"] = {"doctor": {"no_shop_wins": 2}}
+	var doctor_mods := Meta.skill_modifiers_for_class(doctor_state, "doctor")
+	if not is_equal_approx(float(doctor_mods.get("ult_start_charge", 0.0)), 1.0):
+		_fail("Guild k2 must override Doctor hidden 50%% charge with exact 100%%.")
 		return
 	# Downside активного keystone: max_health ниже, чем без него (числовой трейд-офф).
 	var no_key_state: Dictionary = Meta.default_state()
@@ -536,16 +741,55 @@ func _test_player_application() -> void:
 	await process_frame
 
 
+func _test_guild_runtime_outcomes_1069() -> void:
+	var holder := Node2D.new()
+	root.add_child(holder)
+	current_scene = holder
+	await process_frame
+	var player := PLAYER_SCENE.instantiate()
+	holder.add_child(player)
+	if player.has_method("configure_character"):
+		player.configure_character("berserk", "sword")
+	var base_pickup := float(player.get("pickup_radius"))
+	var state := Meta.default_state()
+	state["skill_nodes"] = ["atlas_m0", "atlas_m8", "atlas_m11", "atlas_m13"]
+	player.call("apply_meta_skill_modifiers", Meta.skill_modifiers(state))
+	player.set("money", 0)
+	player.set("xp", 0)
+	player.set("xp_to_next", 9999)
+	player.call("gain_money", 20)
+	player.call("gain_xp", 20)
+	if int(player.get("money")) != 21 or int(player.get("xp")) != 21:
+		_fail("Guild 5%% minor must change a 20-unit pickup after rounding (money=%d xp=%d)." % [player.get("money"), player.get("xp")])
+		return
+	if absf(float(player.get("pickup_radius")) - (base_pickup + 30.0)) > 0.1:
+		_fail("Guild pickup minor must add exact +30 at runtime.")
+		return
+	var max_hp := float(player.get("max_health"))
+	player.set("health", max_hp * 0.50)
+	player.call("heal_percent", 0.10)
+	if absf(float(player.get("health")) - max_hp * 0.608) > 0.15:
+		_fail("Guild healing minor must turn 10%% max-HP heal into exact 10.8%%.")
+		return
+	holder.queue_free()
+	current_scene = null
+	await process_frame
+
+
 # SCRUM-834 (Мета 4.1): каждый из 4 типов условных keystone поднимает урон ЛИШЬ
 # при выполнении условия; гейты ставит player (HP-порог, стойка, окно-после-
 # уклонения, счёт-в-радиусе). Минимум 1 поведенческий сценарий на тип условия.
-func _make_conditional_player(holder: Node2D, mods: Dictionary, class_id: String = "berserk", weapon_id: String = "sword") -> Node:
+func _make_conditional_player(holder: Node2D, mods: Dictionary, class_id: String = "berserk", weapon_id: String = "sword", manual_fixture := false) -> Node:
 	var player := PLAYER_SCENE.instantiate()
 	holder.add_child(player)
 	if player.has_method("configure_character"):
 		player.configure_character(class_id, weapon_id)
+	if manual_fixture:
+		_quiesce_manual_combat_fixture(player)
 	await process_frame
 	player.call("apply_meta_skill_modifiers", mods)
+	if manual_fixture:
+		_quiesce_manual_combat_fixture(player)
 	await process_frame
 	return player
 
@@ -703,7 +947,7 @@ func _test_semantic_keystone_data_835() -> void:
 		"robot_k0": {"title": "Перегрев", "effects": {"reactor_heat_damage_bonus": 0.30, "reactor_heat_incoming_damage": 0.15}},
 		"robot_k1": {"title": "Сверхпроводник", "effects": {"magnet_radius_mult": 0.50, "max_health_mult": -0.12}},
 		"engineer_k0": {"title": "Автоматизация", "effects": {"device_attack_speed_bonus": 0.25, "non_device_damage_mult": -0.15}},
-		"engineer_k1": {"title": "Минёр", "effects": {"mine_extra_count": 2.0, "repair_radius_mult": -0.30}},
+		"engineer_k1": {"title": "Минёр", "effects": {"mine_extra_count": 2.0, "device_attack_speed_bonus": -0.12}},
 		"dark_mage_k0": {"title": "Пожинатель", "effects": {"dot_death_spread_duration": 2.0, "direct_damage_mult": -0.15}},
 		"dark_mage_k1": {"title": "Ненасытный луч", "effects": {"beam_duration_mult": 0.30, "explosion_radius_mult": -0.20}},
 		"guitarist_k0": {"title": "Хедлайнер", "effects": {"guitar_aura_radius_mult": 0.30, "knockback_mult": -0.50}},
@@ -741,15 +985,29 @@ func _test_semantic_keystone_data_835() -> void:
 				return
 
 
-func _spawn_test_enemy(holder: Node2D, position: Vector2, max_hp := 100.0) -> Node2D:
+func _spawn_test_enemy(holder: Node2D, position: Vector2, max_hp := 100.0, manual_fixture := false) -> Node2D:
 	var enemy := ENEMY_SCENE.instantiate() as Node2D
 	holder.add_child(enemy)
 	enemy.global_position = position
 	enemy.add_to_group("enemies")
+	if manual_fixture:
+		_quiesce_manual_combat_fixture(enemy)
 	await process_frame
 	enemy.set("max_health", max_hp)
 	enemy.set("health", max_hp)
 	return enemy
+
+
+func _quiesce_manual_combat_fixture(actor: Node) -> void:
+	# SCRUM-1028: semantic mini-arenas ниже вызывают runtime API напрямую. Пока
+	# coroutine ждёт process_frame, живое оружие/AI не должно успеть выбрать цель,
+	# потратить cooldown, убить fixture или сдвинуть его. Отключаем только
+	# callbacks (и у уже созданных детей), сохраняя CharacterBody2D в physics
+	# space для явных call("_physics_process")/move_and_slide() oracle ниже.
+	actor.set_process(false)
+	actor.set_physics_process(false)
+	for child in actor.get_children():
+		_quiesce_manual_combat_fixture(child)
 
 
 func _test_semantic_keystone_runtime_835() -> void:
@@ -919,10 +1177,18 @@ func _test_semantic_keystone_runtime_835() -> void:
 	dot_source.queue_free()
 	dot_neighbor.queue_free()
 
-	var shadow := await _make_conditional_player(holder, {"shadow_burst_invisibility_time": 2.0}, "assassin", "shadow_daggers")
-	var shadow_target := await _spawn_test_enemy(holder, shadow.global_position + Vector2(160.0, 0.0), 100.0)
+	var shadow := await _make_conditional_player(holder, {"shadow_burst_invisibility_time": 2.0}, "assassin", "shadow_daggers", true)
+	var shadow_params := shadow.get("derived_parameters") as Dictionary
+	shadow_params["dodge"] = 0.0
+	var shadow_target := await _spawn_test_enemy(holder, shadow.global_position + Vector2(160.0, 0.0), 100.0, true)
 	shadow.set("health", shadow.get("max_health"))
+	if float(shadow.get("_assassin_crit_shadow_cooldown_left")) > 0.0:
+		_fail("SCRUM-1028 shadow mini-arena must begin before any automatic weapon consumes the cooldown.")
+		return
 	shadow.call("trigger_assassin_crit_shadow", shadow_target, 80.0)
+	if float(shadow.get("_shadow_invisible_left")) < 1.99:
+		_fail("SCRUM-835 Теневой шаг must open its configured two-second invisibility window immediately.")
+		return
 	var shadow_before := float(shadow.get("health"))
 	if bool(shadow.call("take_damage", 10.0, "semantic_835_shadow_invisible")) or float(shadow.get("health")) < shadow_before:
 		_fail("SCRUM-835 Теневой шаг must make the assassin ignore damage during shadow invisibility.")
@@ -956,12 +1222,24 @@ func _test_semantic_keystone_runtime_835() -> void:
 	pack_druid.queue_free()
 
 	await process_frame
-	var plain := await _make_conditional_player(holder, {})
-	var bastion := await _make_conditional_player(holder, {"bastion_defense_bonus": 0.25, "bastion_taunt": 1.0})
+	var plain := await _make_conditional_player(holder, {}, "berserk", "sword", true)
+	var bastion := await _make_conditional_player(holder, {"bastion_defense_bonus": 0.25, "bastion_taunt": 1.0}, "berserk", "sword", true)
+	var plain_params := plain.get("derived_parameters") as Dictionary
+	plain_params["dodge"] = 0.0
 	plain.set("health", plain.get("max_health"))
 	bastion.set("health", bastion.get("max_health"))
 	bastion.set("velocity", Vector2.ZERO)
 	bastion.call("_update_conditional_keystones", 1.0)
+	if not bool(bastion.get("_stance_active")):
+		_fail("SCRUM-1028 Bastion mini-arena must deterministically enter stance before damage comparison.")
+		return
+	# Stance activation recalculates and replaces derived_parameters; remove the
+	# intentional runtime dodge only after that recalculation.
+	var bastion_params := bastion.get("derived_parameters") as Dictionary
+	bastion_params["dodge"] = 0.0
+	if float(plain.call("_current_dodge_chance")) > 0.0 or float(bastion.call("_current_dodge_chance")) > 0.0:
+		_fail("SCRUM-1028 Bastion defense comparison must neutralize random dodge on both fixtures.")
+		return
 	var plain_before := float(plain.get("health"))
 	var bastion_before := float(bastion.get("health"))
 	plain.call("take_damage", 10.0, "semantic_835_plain")
@@ -971,7 +1249,7 @@ func _test_semantic_keystone_runtime_835() -> void:
 		return
 	plain.global_position = Vector2(40.0, 0.0)
 	bastion.global_position = Vector2(240.0, 0.0)
-	var taunted_enemy := await _spawn_test_enemy(holder, Vector2(160.0, 0.0), 100.0)
+	var taunted_enemy := await _spawn_test_enemy(holder, Vector2(160.0, 0.0), 100.0, true)
 	taunted_enemy.set("move_speed", 120.0)
 	taunted_enemy.set("contact_range", 12.0)
 	bastion.call("_update_conditional_keystones", 0.10)
@@ -1067,10 +1345,14 @@ func _test_victory_shows_skill_points() -> void:
 
 
 func _test_shop_discount() -> void:
-	# Атлас, ветвь «Лавка»: узлы скидки снижают цены товаров.
+	# Атлас, ветвь «Лавка»: узлы скидки снижают цены ТОЙ ЖЕ корзины.
+	# SCRUM-1027: shop_items() материализует rarity-family tier через глобальный
+	# RNG, а _weighted_sample() использует main.rng. Оба источника обязаны иметь
+	# один seed для base/discount пары; иначе тест сравнивает разные tier/cost.
 	var main := MAIN_SCENE.instantiate()
 	root.add_child(main)
 	await process_frame
+	main.set("selected_character_id", "berserk")
 	main.set("selected_ascension_level", 0)
 	main.set("route_stage", 2)
 	if main.has_method("reset_run_ascension"):
@@ -1078,25 +1360,60 @@ func _test_shop_discount() -> void:
 
 	var base_state: Dictionary = main.get("meta_state")
 	base_state["skill_nodes"] = []
+	base_state["active_keystones"] = {}
 	main.set("meta_state", base_state)
-	(main.get("rng") as RandomNumberGenerator).seed = 4242
-	var full_items: Array = main.ui._random_shop_items(4)
-	var full_total := 0
-	for item in full_items:
-		full_total += int((item as Dictionary).get("cost", 0))
-
-	var disc_state: Dictionary = main.get("meta_state")
-	disc_state["skill_nodes"] = ["atlas_m4", "atlas_m5"]
-	main.set("meta_state", disc_state)
-	(main.get("rng") as RandomNumberGenerator).seed = 4242
-	var disc_items: Array = main.ui._random_shop_items(4)
-	var disc_total := 0
-	for item in disc_items:
-		disc_total += int((item as Dictionary).get("cost", 0))
-
-	if disc_total >= full_total or disc_total <= 0:
-		_fail("Expected Atlas shop nodes to lower prices (%d vs %d)." % [disc_total, full_total])
+	var discount_state: Dictionary = base_state.duplicate(true)
+	discount_state["skill_nodes"] = ["atlas_m4", "atlas_m5", "atlas_n1"]
+	var global_mods: Dictionary = Meta.skill_modifiers(discount_state)
+	var class_mods: Dictionary = Meta.skill_modifiers_for_class(discount_state, "berserk")
+	var global_shop_mult := float(global_mods.get("shop_price_mult", 0.0))
+	var class_shop_delta := float(class_mods.get("shop_price_mult", 0.0)) - global_shop_mult
+	var expected_price_mult := maxf(1.0 + global_shop_mult, 0.1) * maxf(1.0 + class_shop_delta, 0.1)
+	if not is_equal_approx(global_shop_mult, -0.20) or not is_equal_approx(expected_price_mult, 0.80):
+		_fail("Expected full Shop branch multiplier 0.80, got global %.3f / final %.3f." % [global_shop_mult, expected_price_mult])
 		return
+
+	for sample_seed in [17, 4242, 9001, 31337]:
+		main.set("meta_state", base_state)
+		(main.get("rng") as RandomNumberGenerator).seed = sample_seed
+		seed(sample_seed)
+		var full_items: Array = main.ui._random_shop_items(4)
+
+		main.set("meta_state", discount_state)
+		(main.get("rng") as RandomNumberGenerator).seed = sample_seed
+		seed(sample_seed)
+		var discounted_items: Array = main.ui._random_shop_items(4)
+		if discounted_items.size() != full_items.size() or full_items.is_empty():
+			_fail("Shop discount seed %d changed basket size (%d vs %d)." % [sample_seed, discounted_items.size(), full_items.size()])
+			return
+		for index in range(full_items.size()):
+			var base_item := full_items[index] as Dictionary
+			var discounted_item := discounted_items[index] as Dictionary
+			var base_signature := "%s|%s|%d" % [
+				str(base_item.get("id", "")),
+				str(base_item.get("kind", "")),
+				int(base_item.get("tier", 1)),
+			]
+			var discounted_signature := "%s|%s|%d" % [
+				str(discounted_item.get("id", "")),
+				str(discounted_item.get("kind", "")),
+				int(discounted_item.get("tier", 1)),
+			]
+			if discounted_signature != base_signature:
+				_fail("Shop discount seed %d changed item %d (%s -> %s); both RNG sources must be paired." % [
+					sample_seed, index, base_signature, discounted_signature])
+				return
+			var base_cost := int(base_item.get("cost", 0))
+			var expected_cost := maxi(1, int(round(float(base_cost) * expected_price_mult)))
+			var discounted_cost := int(discounted_item.get("cost", 0))
+			if discounted_cost != expected_cost or discounted_cost <= 0:
+				_fail("Shop discount seed %d item %s expected %d from %d, got %d." % [
+					sample_seed, base_signature, expected_cost, base_cost, discounted_cost])
+				return
+	# Не оставляем process-global RNG на последней SCRUM-1027
+	# последовательности: следующие независимые smoke-сценарии снова работают в
+	# обычном runtime-режиме. Failure paths завершают процесс через _fail().
+	randomize()
 	main.queue_free()
 	await process_frame
 
@@ -1117,12 +1434,13 @@ func _test_attribute_discount() -> void:
 	var full_cost: int = main.ui._attribute_buy_cost()
 
 	var disc_state: Dictionary = main.get("meta_state")
-	disc_state["skill_nodes"] = ["atlas_m6", "atlas_m7"]
+	disc_state["skill_nodes"] = ["atlas_m6", "atlas_m7", "atlas_n1"]
 	main.set("meta_state", disc_state)
 	var disc_cost: int = main.ui._attribute_buy_cost()
 
-	if disc_cost >= full_cost or disc_cost <= 0:
-		_fail("Expected Atlas attribute nodes to lower buy cost (%d vs %d)." % [disc_cost, full_cost])
+	var expected_disc_cost := maxi(1, int(round(float(full_cost) * 0.80)))
+	if disc_cost != expected_disc_cost or disc_cost <= 0:
+		_fail("Expected full Guild attribute branch to price %.0f%% (%d), got %d from %d." % [80.0, expected_disc_cost, disc_cost, full_cost])
 		return
 	main.queue_free()
 	await process_frame
@@ -1223,7 +1541,7 @@ func _test_guaranteed_rare_shop_capstone() -> void:
 
 
 func _test_death_save_capstone() -> void:
-	# Атлас-keystone «Вторая жизнь»: первый смертельный удар оставляет 1 HP.
+	# SCRUM-1069: «Вторая жизнь» восстанавливает 30% max HP один раз за забег.
 	var holder := Node2D.new()
 	root.add_child(holder)
 	current_scene = holder
@@ -1244,12 +1562,16 @@ func _test_death_save_capstone() -> void:
 
 	player.call("take_damage", 1000.0)
 	await process_frame
-	if not is_instance_valid(player) or float(player.get("health")) < 0.9 or float(player.get("health")) > 3.0:
-		_fail("Expected death-save keystone to leave the player alive at low HP.")
+	var expected_health := float(player.get("max_health")) * 0.30
+	if not is_instance_valid(player) or absf(float(player.get("health")) - expected_health) > 0.1:
+		_fail("Expected death-save to restore 30%% max HP (expected %.2f, got %.2f)." % [expected_health, float(player.get("health"))])
 		return
 	var rm: Dictionary = player.get("run_modifiers")
 	if float(rm.get("death_save_used", 0.0)) <= 0.0:
 		_fail("Expected death-save to be marked used after triggering.")
+		return
+	if float(player.get("_damage_invulnerability_left")) < 1.8:
+		_fail("Expected death-save to preserve the 2s invulnerability window.")
 		return
 
 	player.set("_damage_invulnerability_left", 0.0)
@@ -1274,7 +1596,7 @@ func _test_run_start_application() -> void:
 	main.set("selected_ascension_level", 0)
 	main.set("route_stage", 0)
 	var state: Dictionary = main.get("meta_state")
-	state["skill_nodes"] = ["atlas_k0", "berserk_m0", "berserk_m2"]
+	state["skill_nodes"] = ["atlas_m0", "atlas_m1", "atlas_m2", "atlas_m3", "atlas_n0", "atlas_k0", "berserk_m0", "berserk_m2"]
 	main.set("meta_state", state)
 
 	var player := PLAYER_SCENE.instantiate()
@@ -1287,8 +1609,8 @@ func _test_run_start_application() -> void:
 	main.call("apply_ascension_bonuses", player)
 	await process_frame
 
-	if int(player.get("money")) < 15:
-		_fail("Expected Atlas guild keystone to grant +15 gold at run start (got %d)." % int(player.get("money")))
+	if int(player.get("money")) != 100:
+		_fail("Expected full Treasury branch to grant exact +100 start gold (got %d)." % int(player.get("money")))
 		return
 	if float((player.get("run_modifiers") as Dictionary).get("damage_multiplier", 1.0)) <= dmg_before:
 		_fail("Expected constellation damage to apply at run start.")

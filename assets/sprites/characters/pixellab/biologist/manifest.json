@@ -29,64 +29,84 @@
     "move_frame_count_per_direction": 6,
     "south_override": "south-facing-walk-rescue v3 custom; used PixelLab frames 001..006 because frame 000 is the reference frame"
   },
-  "source_files": [
-    "biologist_idle_south.png",
-    "biologist_move_south_00.png",
-    "biologist_move_south_01.png",
-    "biologist_move_south_02.png",
-    "biologist_move_south_03.png",
-    "biologist_move_south_04.png",
-    "biologist_move_south_05.png",
-    "biologist_idle_south-east.png",
-    "biologist_move_south-east_00.png",
-    "biologist_move_south-east_01.png",
-    "biologist_move_south-east_02.png",
-    "biologist_move_south-east_03.png",
-    "biologist_move_south-east_04.png",
-    "biologist_move_south-east_05.png",
-    "biologist_idle_east.png",
-    "biologist_move_east_00.png",
-    "biologist_move_east_01.png",
-    "biologist_move_east_02.png",
-    "biologist_move_east_03.png",
-    "biologist_move_east_04.png",
-    "biologist_move_east_05.png",
-    "biologist_idle_north-east.png",
-    "biologist_move_north-east_00.png",
-    "biologist_move_north-east_01.png",
-    "biologist_move_north-east_02.png",
-    "biologist_move_north-east_03.png",
-    "biologist_move_north-east_04.png",
-    "biologist_move_north-east_05.png",
-    "biologist_idle_north.png",
-    "biologist_move_north_00.png",
-    "biologist_move_north_01.png",
-    "biologist_move_north_02.png",
-    "biologist_move_north_03.png",
-    "biologist_move_north_04.png",
-    "biologist_move_north_05.png",
-    "biologist_idle_north-west.png",
-    "biologist_move_north-west_00.png",
-    "biologist_move_north-west_01.png",
-    "biologist_move_north-west_02.png",
-    "biologist_move_north-west_03.png",
-    "biologist_move_north-west_04.png",
-    "biologist_move_north-west_05.png",
-    "biologist_idle_west.png",
-    "biologist_move_west_00.png",
-    "biologist_move_west_01.png",
-    "biologist_move_west_02.png",
-    "biologist_move_west_03.png",
-    "biologist_move_west_04.png",
-    "biologist_move_west_05.png",
-    "biologist_idle_south-west.png",
-    "biologist_move_south-west_00.png",
-    "biologist_move_south-west_01.png",
-    "biologist_move_south-west_02.png",
-    "biologist_move_south-west_03.png",
-    "biologist_move_south-west_04.png",
-    "biologist_move_south-west_05.png"
-  ],
+  "source_files": {
+    "idle": {
+      "south": "biologist_idle_south.png",
+      "south-east": "biologist_idle_south-east.png",
+      "east": "biologist_idle_east.png",
+      "north-east": "biologist_idle_north-east.png",
+      "north": "biologist_idle_north.png",
+      "north-west": "biologist_idle_north-west.png",
+      "west": "biologist_idle_west.png",
+      "south-west": "biologist_idle_south-west.png"
+    },
+    "move": {
+      "south": [
+        "biologist_move_south_00.png",
+        "biologist_move_south_01.png",
+        "biologist_move_south_02.png",
+        "biologist_move_south_03.png",
+        "biologist_move_south_04.png",
+        "biologist_move_south_05.png"
+      ],
+      "south-east": [
+        "biologist_move_south-east_00.png",
+        "biologist_move_south-east_01.png",
+        "biologist_move_south-east_02.png",
+        "biologist_move_south-east_03.png",
+        "biologist_move_south-east_04.png",
+        "biologist_move_south-east_05.png"
+      ],
+      "east": [
+        "biologist_move_east_00.png",
+        "biologist_move_east_01.png",
+        "biologist_move_east_02.png",
+        "biologist_move_east_03.png",
+        "biologist_move_east_04.png",
+        "biologist_move_east_05.png"
+      ],
+      "north-east": [
+        "biologist_move_north-east_00.png",
+        "biologist_move_north-east_01.png",
+        "biologist_move_north-east_02.png",
+        "biologist_move_north-east_03.png",
+        "biologist_move_north-east_04.png",
+        "biologist_move_north-east_05.png"
+      ],
+      "north": [
+        "biologist_move_north_00.png",
+        "biologist_move_north_01.png",
+        "biologist_move_north_02.png",
+        "biologist_move_north_03.png",
+        "biologist_move_north_04.png",
+        "biologist_move_north_05.png"
+      ],
+      "north-west": [
+        "biologist_move_north-west_00.png",
+        "biologist_move_north-west_01.png",
+        "biologist_move_north-west_02.png",
+        "biologist_move_north-west_03.png",
+        "biologist_move_north-west_04.png",
+        "biologist_move_north-west_05.png"
+      ],
+      "west": [
+        "biologist_move_west_00.png",
+        "biologist_move_west_01.png",
+        "biologist_move_west_02.png",
+        "biologist_move_west_03.png",
+        "biologist_move_west_04.png",
+        "biologist_move_west_05.png"
+      ],
+      "south-west": [
+        "biologist_move_south-west_00.png",
+        "biologist_move_south-west_01.png",
+        "biologist_move_south-west_02.png",
+        "biologist_move_south-west_03.png",
+        "biologist_move_south-west_04.png",
+        "biologist_move_south-west_05.png"
+      ]
+    }
+  },
   "runtime_files": [
     "biologist_idle_south.png",
     "biologist_move_south_00.png",
@@ -148,5 +168,33 @@
   "pixel_lab_metadata_file": "pixellab_metadata.json",
   "alpha_bbox_report": "alpha_bbox_report.json",
   "preview": "docs/design/previews/scrum421_biologist_pixellab_contact.png",
-  "notes": "Empty-hands Biologist runtime pack. No legacy/manual/non-PixelLab source art used for new source frames."
+  "notes": "Empty-hands Biologist runtime pack. No legacy/manual/non-PixelLab source art used for new source frames.",
+  "move_frame_count": 6,
+  "runtime_canvas": "512x512",
+  "runtime_dir": "assets/sprites/characters/full_frame/biologist_pixellab",
+  "spriteframes": "assets/sprites/characters/biologist_spriteframes.tres",
+  "scrum869_refresh": {
+    "task": "SCRUM-869",
+    "refreshed_at": "2026-07-04T08:10:32+00:00",
+    "pixellab_download_export_date": "2026-07-04T08:10:31.607773",
+    "pixellab_export_version": "3.0",
+    "selected_animation_folders": {
+      "south": "animating-9a485e8a",
+      "south-east": "animating",
+      "east": "animating-9a485e8a",
+      "north-east": "animating",
+      "north": "animating-9a485e8a",
+      "north-west": "animating",
+      "west": "animating-9a485e8a",
+      "south-west": "animating"
+    },
+    "runtime_canvas": [
+      512,
+      512
+    ],
+    "runtime_visible_height_target": 245,
+    "runtime_bottom_padding": 16,
+    "source": "PixelLab MCP download endpoint",
+    "legacy_or_manual_fallback_used": false
+  }
 }

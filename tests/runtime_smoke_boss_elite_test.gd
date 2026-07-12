@@ -26,9 +26,10 @@ func _initialize() -> void:
 	await _test_mini_elite_roster(main_scene)
 	await _test_new_boss_roster(main_scene)
 	await _test_bloodthorn_lion_boss(main_scene)
-	await _test_secret_boss_after_act3_flow(main_scene)
+	await _test_secret_boss_after_final_act_flow(main_scene)
 	await _test_secret_boss_uses_full_frame()
 	_test_hazard_telegraph_texture_param()
+	await _test_boss_death_victory_delay(main)
 	await _test_victory_flow(main)
 
 	main.queue_free()
@@ -71,6 +72,21 @@ func _test_secret_boss_uses_full_frame() -> void:
 		boss.queue_free()
 		return
 	boss.queue_free()
+	await process_frame
+
+
+func _test_boss_death_victory_delay(main: Node) -> void:
+	main.set("combat_active", true)
+	main.set("boss_combat_active", true)
+	main.set("current_combat_type", "boss")
+	main.combat.request_boss_victory_after_death()
+	if not main.combat.is_boss_victory_pending():
+		_fail("Expected boss victory to become pending so the death animation can play before _end_combat.")
+	if not bool(main.get("combat_active")):
+		_fail("Expected boss death victory delay to avoid immediate combat end.")
+	main.combat.set("_boss_victory_pending", false)
+	main.set("boss_combat_active", false)
+	main.set("combat_active", false)
 	await process_frame
 
 

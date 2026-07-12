@@ -1,0 +1,37 @@
+{
+  "canvas": {"width": 688, "height": 384},
+  "policy": {"min_gap": 8, "allow_overlap": false},
+  "content": {},
+  "elements": [
+    {"id": "reference_board", "kind": "decor", "x": 8, "y": 8, "w": 672, "h": 368, "collision": false},
+
+    {"id": "button_normal", "kind": "button", "x": 24, "y": 24, "w": 120, "h": 52, "content_zone": false, "collision": false, "min_w": 96, "min_h": 44},
+    {"id": "button_normal_safe", "kind": "zone", "parent": "button_normal", "x": 40, "y": 36, "w": 88, "h": 28, "content_zone": true, "collision": true},
+    {"id": "button_hover", "kind": "button", "x": 154, "y": 24, "w": 120, "h": 52, "content_zone": false, "collision": false, "min_w": 96, "min_h": 44},
+    {"id": "button_hover_safe", "kind": "zone", "parent": "button_hover", "x": 170, "y": 36, "w": 88, "h": 28, "content_zone": true, "collision": true},
+    {"id": "button_pressed", "kind": "button", "x": 284, "y": 24, "w": 120, "h": 52, "content_zone": false, "collision": false, "min_w": 96, "min_h": 44},
+    {"id": "button_pressed_safe", "kind": "zone", "parent": "button_pressed", "x": 300, "y": 36, "w": 88, "h": 28, "content_zone": true, "collision": true},
+    {"id": "button_focus", "kind": "button", "x": 414, "y": 24, "w": 120, "h": 52, "content_zone": false, "collision": false, "min_w": 96, "min_h": 44},
+    {"id": "button_focus_safe", "kind": "zone", "parent": "button_focus", "x": 430, "y": 36, "w": 88, "h": 28, "content_zone": true, "collision": true},
+    {"id": "button_disabled", "kind": "button", "x": 544, "y": 24, "w": 120, "h": 52, "content_zone": false, "collision": false, "min_w": 96, "min_h": 44},
+    {"id": "button_disabled_safe", "kind": "zone", "parent": "button_disabled", "x": 560, "y": 36, "w": 88, "h": 28, "content_zone": true, "collision": true},
+
+    {"id": "accent_main_menu", "kind": "panel", "x": 24, "y": 96, "w": 148, "h": 118, "collision": false},
+    {"id": "accent_main_menu_safe", "kind": "zone", "parent": "accent_main_menu", "x": 104, "y": 118, "w": 50, "h": 60, "content_zone": true, "collision": true},
+    {"id": "accent_selection", "kind": "panel", "x": 188, "y": 96, "w": 148, "h": 118, "collision": false},
+    {"id": "accent_selection_safe", "kind": "zone", "parent": "accent_selection", "x": 214, "y": 122, "w": 96, "h": 66, "content_zone": true, "collision": true},
+    {"id": "accent_settings", "kind": "panel", "x": 352, "y": 96, "w": 148, "h": 118, "collision": false},
+    {"id": "accent_settings_safe", "kind": "zone", "parent": "accent_settings", "x": 375, "y": 122, "w": 102, "h": 68, "content_zone": true, "collision": true},
+    {"id": "accent_codex", "kind": "panel", "x": 516, "y": 96, "w": 148, "h": 118, "collision": false},
+    {"id": "accent_codex_safe", "kind": "zone", "parent": "accent_codex", "x": 563, "y": 122, "w": 54, "h": 64, "content_zone": true, "collision": true},
+
+    {"id": "accent_combat_hud", "kind": "panel", "x": 24, "y": 230, "w": 148, "h": 130, "collision": false},
+    {"id": "accent_combat_hud_safe", "kind": "zone", "parent": "accent_combat_hud", "x": 38, "y": 276, "w": 120, "h": 36, "content_zone": true, "collision": true},
+    {"id": "accent_economy", "kind": "panel", "x": 188, "y": 230, "w": 148, "h": 130, "collision": false},
+    {"id": "accent_economy_safe", "kind": "zone", "parent": "accent_economy", "x": 210, "y": 280, "w": 104, "h": 28, "content_zone": true, "collision": true},
+    {"id": "accent_rewards_levelup", "kind": "panel", "x": 352, "y": 230, "w": 148, "h": 130, "collision": false},
+    {"id": "accent_rewards_levelup_safe", "kind": "zone", "parent": "accent_rewards_levelup", "x": 393, "y": 268, "w": 66, "h": 72, "content_zone": true, "collision": true},
+    {"id": "accent_pause_results", "kind": "panel", "x": 516, "y": 230, "w": 148, "h": 130, "collision": false},
+    {"id": "accent_pause_results_safe", "kind": "zone", "parent": "accent_pause_results", "x": 536, "y": 271, "w": 108, "h": 42, "content_zone": true, "collision": true}
+  ]
+}

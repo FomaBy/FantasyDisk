@@ -1,0 +1,116 @@
+{
+  "issue": "SCRUM-934",
+  "name": "Sniper projectile and telegraph VFX component pack",
+  "source_pipeline": "PixelLab MCP via fantasydisk-asset-generator",
+  "pixel_lab_config_smoke": "PASS",
+  "fallbacks_used": [],
+  "godot_import": {
+    "type": "CompressedTexture2D",
+    "compression": "lossless",
+    "mipmaps": false,
+    "alpha_border_fix": true,
+    "filtering": "use project pixel-art default; runtime Texture2D consumers must not enable smoothing"
+  },
+  "runtime_mapping": {
+    "sniper_shatter_rounds": "rotate the right-facing projectile along travel; intended display 48x24; safe for repeated fan shots",
+    "sniper_deadeye_rifle": "center endpoint impact at the locked hit position; intended display 96x96",
+    "sniper_spotter_scope_telegraph": "scale the semi-transparent ring to the actual pending damage radius; do not force opaque modulation",
+    "sniper_spotter_scope_impact": "center the shell impact after the telegraph delay; intended display 144x144"
+  },
+  "assets": [
+    {
+      "asset_id": "sniper_shatter_rounds_projectile",
+      "weapon_id": "sniper_shatter_rounds",
+      "role": "repeatable physical projectile, right-facing canonical source",
+      "pixel_lab": {
+        "tool": "create_map_object",
+        "object_id": "7da22aa9-112f-4f01-942b-4f6d9d85c380",
+        "prompt": "One single small horizontal supersonic sniper projectile pointing right, blackened steel needle bullet with a tiny pale icy-cyan luminous tail, sharp readable silhouette at 16 to 24 pixels, D&D dark fantasy pixel art, restrained selective outline, centered with abundant empty transparent space. Object only: no gun, no shooter, no explosion, no text, no border, no background.",
+        "source_sha256": "f95f29cbdc253eb6909a278123e31c6c65f6efc54d97316dd304e1eb510afc70"
+      },
+      "source_path": "docs/design/references/sniper_projectile_vfx/pixellab_shatter_rounds_projectile_source.png",
+      "accepted_path": "docs/design/references/sniper_projectile_vfx/accepted_shatter_rounds_projectile.png",
+      "runtime_path": "assets/sprites/effects/vfx_weapon_sniper_shatter_rounds_projectile.png",
+      "canvas": [
+        128,
+        64
+      ],
+      "intended_display_size": [
+        48,
+        24
+      ],
+      "integration": "Backend-owned by related SCRUM-931/932/933; this Design package changes no gameplay scene or script."
+    },
+    {
+      "asset_id": "sniper_deadeye_rifle_endpoint_impact",
+      "weapon_id": "sniper_deadeye_rifle",
+      "role": "precise locked-shot endpoint hit flash",
+      "pixel_lab": {
+        "tool": "create_map_object",
+        "object_id": "371efe43-2f92-4c5d-9421-2d56b1eb4895",
+        "prompt": "Compact endpoint hit impact for a precision fantasy sniper shot, white-hot pinprick center with a narrow gold cross-flash and a few icy cyan steel shards, crisp directional burst readable at combat scale, D&D dark fantasy pixel art, centered with safe transparent gutter. Impact only: no gun, no bullet trail, no character, no magic circle, no text, no border, no background.",
+        "source_sha256": "4a485bdc8b5f2c0feb3f0655bcdab29e96129bf03e9047f38080c215692d9051"
+      },
+      "source_path": "docs/design/references/sniper_projectile_vfx/pixellab_deadeye_endpoint_impact_source.png",
+      "accepted_path": "docs/design/references/sniper_projectile_vfx/accepted_deadeye_endpoint_impact.png",
+      "runtime_path": "assets/sprites/effects/vfx_weapon_sniper_deadeye_rifle_endpoint_impact.png",
+      "canvas": [
+        192,
+        192
+      ],
+      "intended_display_size": [
+        96,
+        96
+      ],
+      "integration": "Backend-owned by related SCRUM-931/932/933; this Design package changes no gameplay scene or script."
+    },
+    {
+      "asset_id": "sniper_spotter_scope_telegraph",
+      "weapon_id": "sniper_spotter_scope",
+      "role": "semi-transparent pending artillery danger zone",
+      "pixel_lab": {
+        "tool": "create_map_object",
+        "object_id": "7d95f053-d8d2-4f26-abb9-deeb3c52b3a8",
+        "prompt": "Flat top-down pending artillery targeting telegraph: one thin semi-transparent crimson red circular to slightly oval ring with four restrained black-iron gothic sight ticks, empty transparent center, calm readable danger-zone outline for a dark fantasy D&D game. Marker only: no explosion, no beam, no weapon, no runes, no text, no solid fill, no border, no background.",
+        "source_sha256": "d416ebc35e2a2739f4de9632a08aeea3db3864188d5c1f2678f2034b7c0b306c"
+      },
+      "source_path": "docs/design/references/sniper_projectile_vfx/pixellab_spotter_scope_telegraph_source.png",
+      "accepted_path": "docs/design/references/sniper_projectile_vfx/accepted_spotter_scope_telegraph.png",
+      "runtime_path": "assets/sprites/effects/vfx_weapon_sniper_spotter_scope_telegraph.png",
+      "canvas": [
+        256,
+        256
+      ],
+      "intended_display_size": [
+        160,
+        160
+      ],
+      "integration": "Backend-owned by related SCRUM-931/932/933; this Design package changes no gameplay scene or script."
+    },
+    {
+      "asset_id": "sniper_spotter_scope_impact",
+      "weapon_id": "sniper_spotter_scope",
+      "role": "high-damage shell impact after telegraph",
+      "pixel_lab": {
+        "tool": "create_map_object",
+        "object_id": "4fd616e6-1e86-4d7a-9498-ff1cc43980aa",
+        "prompt": "Top-down high-damage fantasy artillery shell impact, compact white-hot center, crimson and ember-orange shock petals, blackened iron fragments and a restrained dark smoke crown, powerful but clean silhouette readable at combat scale, D&D dark fantasy pixel art, centered with safe transparent gutter. Impact only: no targeting ring, no gun, no character, no text, no border, no background.",
+        "source_sha256": "965d0abc325f19fe14af980d1029626d52b380a6c959528022c6302ddfd1f8f4"
+      },
+      "source_path": "docs/design/references/sniper_projectile_vfx/pixellab_spotter_scope_impact_source.png",
+      "accepted_path": "docs/design/references/sniper_projectile_vfx/accepted_spotter_scope_impact.png",
+      "runtime_path": "assets/sprites/effects/vfx_weapon_sniper_spotter_scope_impact.png",
+      "canvas": [
+        256,
+        256
+      ],
+      "intended_display_size": [
+        144,
+        144
+      ],
+      "integration": "Backend-owned by related SCRUM-931/932/933; this Design package changes no gameplay scene or script."
+    }
+  ],
+  "preview": "docs/design/previews/sniper_projectile_vfx_contact.png",
+  "qa_report": "docs/design/references/sniper_projectile_vfx/qa_report.json"
+}

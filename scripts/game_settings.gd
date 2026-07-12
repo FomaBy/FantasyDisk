@@ -2,6 +2,8 @@ extends RefCounted
 
 # Персистентные настройки игры (дисплей + звук) в user://settings.cfg.
 
+const GAMEPLAY_SANDBOX := preload("res://scripts/gameplay_sandbox.gd")
+
 const SAVE_PATH := "user://settings.cfg"
 const SECTION := "settings"
 const MASTER_ZERO_INTENT_KEY := "master_zero_intent"
@@ -14,9 +16,12 @@ const DEFAULTS := {
 	"master_volume": 1.0,
 	"music_volume": 1.0,
 	"sfx_volume": 1.0,
+	"ui_volume": 1.0,
 	"master_zero_intent": false,
 	"music_enabled": false,
 	"sfx_enabled": false,
+	"mute_when_unfocused": false,
+	"low_hp_warning_enabled": true,
 	"screen_shake": true,
 	"combat_feedback": true,
 	"debug_mode": false,
@@ -29,6 +34,12 @@ const DEFAULTS := {
 	"gamepad_bindings": {},
 	"gamepad_deadzone": 0.25,
 	"gamepad_vibration": true,
+	# SCRUM-976: нейтральные значения сохраняют release-баланс и progression.
+	"sandbox_monster_hp_multiplier": 1.0,
+	"sandbox_monster_damage_multiplier": 1.0,
+	"sandbox_player_damage_multiplier": 1.0,
+	"sandbox_player_attack_speed_multiplier": 1.0,
+	"sandbox_monster_attack_speed_multiplier": 1.0,
 }
 
 
@@ -46,9 +57,12 @@ static func load_settings() -> Dictionary:
 	settings["master_volume"] = clampf(float(settings["master_volume"]), 0.0, 1.0)
 	settings["music_volume"] = clampf(float(settings["music_volume"]), 0.0, 1.0)
 	settings["sfx_volume"] = clampf(float(settings["sfx_volume"]), 0.0, 1.0)
+	settings["ui_volume"] = clampf(float(settings["ui_volume"]), 0.0, 1.0)
 	settings["master_zero_intent"] = bool(settings["master_zero_intent"])
 	settings["music_enabled"] = bool(settings["music_enabled"])
 	settings["sfx_enabled"] = bool(settings["sfx_enabled"])
+	settings["mute_when_unfocused"] = bool(settings["mute_when_unfocused"])
+	settings["low_hp_warning_enabled"] = bool(settings["low_hp_warning_enabled"])
 	settings["screen_shake"] = bool(settings["screen_shake"])
 	settings["combat_feedback"] = bool(settings["combat_feedback"])
 	settings["debug_mode"] = bool(settings["debug_mode"])
@@ -66,6 +80,7 @@ static func load_settings() -> Dictionary:
 		settings["gamepad_bindings"] = {}
 	settings["gamepad_deadzone"] = clampf(float(settings["gamepad_deadzone"]), 0.05, 0.5)
 	settings["gamepad_vibration"] = bool(settings["gamepad_vibration"])
+	GAMEPLAY_SANDBOX.write_snapshot_to_settings(settings, settings)
 	if float(settings["master_volume"]) <= 0.0 and not has_master_zero_intent:
 		settings["master_volume"] = float(DEFAULTS["master_volume"])
 		settings["master_zero_intent"] = false

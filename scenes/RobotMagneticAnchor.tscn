@@ -10,14 +10,14 @@ weapon_id = "robot_magnetic_anchor"
 display_name = "Магнитный Якорь"
 attack_mode = "robot_magnetic_anchor"
 damage_parameter = "damage"
-fire_interval = 1.14
+fire_interval = 2.05
 damage = 12.0
 attack_range = 520.0
-aoe_radius = 230.0
+aoe_radius = 250.0
 beam_width = 44.0
-knockback = 150.0
-grenade_delay = 0.22
-damage_falloff = 0.68
+knockback = 170.0
+grenade_delay = 0.34
+damage_falloff = 0.72
 visual_color = Color(0.42, 0.82, 1, 0.42)
 
 [node name="WeaponVisual" type="Sprite2D" parent="."]

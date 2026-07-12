@@ -1,0 +1,1410 @@
+{
+  "runtime_canvas": [
+    512,
+    512
+  ],
+  "target_visible_height": 245,
+  "bottom_padding": 32,
+  "frames": [
+    {
+      "source": "ranger_idle_south.png",
+      "runtime": "ranger_idle_south.png",
+      "source_size": [
+        240,
+        240
+      ],
+      "source_alpha_bbox": [
+        71,
+        61,
+        167,
+        180
+      ],
+      "source_alpha_bbox_size": [
+        96,
+        119
+      ],
+      "scale": 2.0588235294117645,
+      "runtime_alpha_bbox": [
+        157,
+        235,
+        355,
+        480
+      ]
+    },
+    {
+      "source": "ranger_move_south_00.png",
+      "runtime": "ranger_move_south_00.png",
+      "source_size": [
+        240,
+        240
+      ],
+      "source_alpha_bbox": [
+        76,
+        61,
+        164,
+        176
+      ],
+      "source_alpha_bbox_size": [
+        88,
+        115
+      ],
+      "scale": 2.130434782608696,
+      "runtime_alpha_bbox": [
+        162,
+        235,
+        349,
+        480
+      ]
+    },
+    {
+      "source": "ranger_move_south_01.png",
+      "runtime": "ranger_move_south_01.png",
+      "source_size": [
+        240,
+        240
+      ],
+      "source_alpha_bbox": [
+        76,
+        61,
+        163,
+        176
+      ],
+      "source_alpha_bbox_size": [
+        87,
+        115
+      ],
+      "scale": 2.130434782608696,
+      "runtime_alpha_bbox": [
+        164,
+        235,
+        349,
+        480
+      ]
+    },
+    {
+      "source": "ranger_move_south_02.png",
+      "runtime": "ranger_move_south_02.png",
+      "source_size": [
+        240,
+        240
+      ],
+      "source_alpha_bbox": [
+        76,
+        60,
+        163,
+        175
+      ],
+      "source_alpha_bbox_size": [
+        87,
+        115
+      ],
+      "scale": 2.130434782608696,
+      "runtime_alpha_bbox": [
+        164,
+        235,
+        349,
+        480
+      ]
+    },
+    {
+      "source": "ranger_move_south_03.png",
+      "runtime": "ranger_move_south_03.png",
+      "source_size": [
+        240,
+        240
+      ],
+      "source_alpha_bbox": [
+        76,
+        60,
+        164,
+        175
+      ],
+      "source_alpha_bbox_size": [
+        88,
+        115
+      ],
+      "scale": 2.130434782608696,
+      "runtime_alpha_bbox": [
+        162,
+        235,
+        349,
+        480
+      ]
+    },
+    {
+      "source": "ranger_move_south_04.png",
+      "runtime": "ranger_move_south_04.png",
+      "source_size": [
+        240,
+        240
+      ],
+      "source_alpha_bbox": [
+        76,
+        60,
+        163,
+        176
+      ],
+      "source_alpha_bbox_size": [
+        87,
+        116
+      ],
+      "scale": 2.1120689655172415,
+      "runtime_alpha_bbox": [
+        165,
+        235,
+        348,
+        480
+      ]
+    },
+    {
+      "source": "ranger_move_south_05.png",
+      "runtime": "ranger_move_south_05.png",
+      "source_size": [
+        240,
+        240
+      ],
+      "source_alpha_bbox": [
+        76,
+        60,
+        163,
+        176
+      ],
+      "source_alpha_bbox_size": [
+        87,
+        116
+      ],
+      "scale": 2.1120689655172415,
+      "runtime_alpha_bbox": [
+        165,
+        235,
+        348,
+        480
+      ]
+    },
+    {
+      "source": "ranger_idle_south-east.png",
+      "runtime": "ranger_idle_south-east.png",
+      "source_size": [
+        240,
+        240
+      ],
+      "source_alpha_bbox": [
+        71,
+        61,
+        159,
+        180
+      ],
+      "source_alpha_bbox_size": [
+        88,
+        119
+      ],
+      "scale": 2.0588235294117645,
+      "runtime_alpha_bbox": [
+        166,
+        235,
+        347,
+        480
+      ]
+    },
+    {
+      "source": "ranger_move_south-east_00.png",
+      "runtime": "ranger_move_south-east_00.png",
+      "source_size": [
+        240,
+        240
+      ],
+      "source_alpha_bbox": [
+        67,
+        62,
+        144,
+        180
+      ],
+      "source_alpha_bbox_size": [
+        77,
+        118
+      ],
+      "scale": 2.0762711864406778,
+      "runtime_alpha_bbox": [
+        176,
+        235,
+        336,
+        480
+      ]
+    },
+    {
+      "source": "ranger_move_south-east_01.png",
+      "runtime": "ranger_move_south-east_01.png",
+      "source_size": [
+        240,
+        240
+      ],
+      "source_alpha_bbox": [
+        68,
+        62,
+        149,
+        178
+      ],
+      "source_alpha_bbox_size": [
+        81,
+        116
+      ],
+      "scale": 2.1120689655172415,
+      "runtime_alpha_bbox": [
+        170,
+        235,
+        341,
+        480
+      ]
+    },
+    {
+      "source": "ranger_move_south-east_02.png",
+      "runtime": "ranger_move_south-east_02.png",
+      "source_size": [
+        240,
+        240
+      ],
+      "source_alpha_bbox": [
+        71,
+        61,
+        144,
+        174
+      ],
+      "source_alpha_bbox_size": [
+        73,
+        113
+      ],
+      "scale": 2.168141592920354,
+      "runtime_alpha_bbox": [
+        177,
+        235,
+        335,
+        480
+      ]
+    },
+    {
+      "source": "ranger_move_south-east_03.png",
+      "runtime": "ranger_move_south-east_03.png",
+      "source_size": [
+        240,
+        240
+      ],
+      "source_alpha_bbox": [
+        75,
+        62,
+        146,
+        178
+      ],
+      "source_alpha_bbox_size": [
+        71,
+        116
+      ],
+      "scale": 2.1120689655172415,
+      "runtime_alpha_bbox": [
+        181,
+        235,
+        331,
+        480
+      ]
+    },
+    {
+      "source": "ranger_move_south-east_04.png",
+      "runtime": "ranger_move_south-east_04.png",
+      "source_size": [
+        240,
+        240
+      ],
+      "source_alpha_bbox": [
+        74,
+        61,
+        148,
+        178
+      ],
+      "source_alpha_bbox_size": [
+        74,
+        117
+      ],
+      "scale": 2.094017094017094,
+      "runtime_alpha_bbox": [
+        179,
+        235,
+        334,
+        480
+      ]
+    },
+    {
+      "source": "ranger_move_south-east_05.png",
+      "runtime": "ranger_move_south-east_05.png",
+      "source_size": [
+        240,
+        240
+      ],
+      "source_alpha_bbox": [
+        73,
+        61,
+        147,
+        178
+      ],
+      "source_alpha_bbox_size": [
+        74,
+        117
+      ],
+      "scale": 2.094017094017094,
+      "runtime_alpha_bbox": [
+        179,
+        235,
+        334,
+        480
+      ]
+    },
+    {
+      "source": "ranger_idle_east.png",
+      "runtime": "ranger_idle_east.png",
+      "source_size": [
+        240,
+        240
+      ],
+      "source_alpha_bbox": [
+        77,
+        62,
+        145,
+        178
+      ],
+      "source_alpha_bbox_size": [
+        68,
+        116
+      ],
+      "scale": 2.1120689655172415,
+      "runtime_alpha_bbox": [
+        185,
+        235,
+        328,
+        480
+      ]
+    },
+    {
+      "source": "ranger_move_east_00.png",
+      "runtime": "ranger_move_east_00.png",
+      "source_size": [
+        240,
+        240
+      ],
+      "source_alpha_bbox": [
+        79,
+        63,
+        139,
+        178
+      ],
+      "source_alpha_bbox_size": [
+        60,
+        115
+      ],
+      "scale": 2.130434782608696,
+      "runtime_alpha_bbox": [
+        192,
+        235,
+        320,
+        480
+      ]
+    },
+    {
+      "source": "ranger_move_east_01.png",
+      "runtime": "ranger_move_east_01.png",
+      "source_size": [
+        240,
+        240
+      ],
+      "source_alpha_bbox": [
+        78,
+        64,
+        148,
+        179
+      ],
+      "source_alpha_bbox_size": [
+        70,
+        115
+      ],
+      "scale": 2.130434782608696,
+      "runtime_alpha_bbox": [
+        182,
+        235,
+        331,
+        480
+      ]
+    },
+    {
+      "source": "ranger_move_east_02.png",
+      "runtime": "ranger_move_east_02.png",
+      "source_size": [
+        240,
+        240
+      ],
+      "source_alpha_bbox": [
+        79,
+        64,
+        142,
+        177
+      ],
+      "source_alpha_bbox_size": [
+        63,
+        113
+      ],
+      "scale": 2.168141592920354,
+      "runtime_alpha_bbox": [
+        187,
+        235,
+        324,
+        480
+      ]
+    },
+    {
+      "source": "ranger_move_east_03.png",
+      "runtime": "ranger_move_east_03.png",
+      "source_size": [
+        240,
+        240
+      ],
+      "source_alpha_bbox": [
+        79,
+        63,
+        138,
+        175
+      ],
+      "source_alpha_bbox_size": [
+        59,
+        112
+      ],
+      "scale": 2.1875,
+      "runtime_alpha_bbox": [
+        191,
+        235,
+        320,
+        480
+      ]
+    },
+    {
+      "source": "ranger_move_east_04.png",
+      "runtime": "ranger_move_east_04.png",
+      "source_size": [
+        240,
+        240
+      ],
+      "source_alpha_bbox": [
+        78,
+        64,
+        149,
+        175
+      ],
+      "source_alpha_bbox_size": [
+        71,
+        111
+      ],
+      "scale": 2.2072072072072073,
+      "runtime_alpha_bbox": [
+        178,
+        235,
+        335,
+        480
+      ]
+    },
+    {
+      "source": "ranger_move_east_05.png",
+      "runtime": "ranger_move_east_05.png",
+      "source_size": [
+        240,
+        240
+      ],
+      "source_alpha_bbox": [
+        78,
+        64,
+        142,
+        176
+      ],
+      "source_alpha_bbox_size": [
+        64,
+        112
+      ],
+      "scale": 2.1875,
+      "runtime_alpha_bbox": [
+        186,
+        235,
+        326,
+        480
+      ]
+    },
+    {
+      "source": "ranger_idle_north-east.png",
+      "runtime": "ranger_idle_north-east.png",
+      "source_size": [
+        240,
+        240
+      ],
+      "source_alpha_bbox": [
+        76,
+        61,
+        140,
+        176
+      ],
+      "source_alpha_bbox_size": [
+        64,
+        115
+      ],
+      "scale": 2.130434782608696,
+      "runtime_alpha_bbox": [
+        188,
+        235,
+        324,
+        480
+      ]
+    },
+    {
+      "source": "ranger_move_north-east_00.png",
+      "runtime": "ranger_move_north-east_00.png",
+      "source_size": [
+        240,
+        240
+      ],
+      "source_alpha_bbox": [
+        86,
+        62,
+        142,
+        178
+      ],
+      "source_alpha_bbox_size": [
+        56,
+        116
+      ],
+      "scale": 2.1120689655172415,
+      "runtime_alpha_bbox": [
+        197,
+        235,
+        315,
+        480
+      ]
+    },
+    {
+      "source": "ranger_move_north-east_01.png",
+      "runtime": "ranger_move_north-east_01.png",
+      "source_size": [
+        240,
+        240
+      ],
+      "source_alpha_bbox": [
+        86,
+        62,
+        145,
+        178
+      ],
+      "source_alpha_bbox_size": [
+        59,
+        116
+      ],
+      "scale": 2.1120689655172415,
+      "runtime_alpha_bbox": [
+        194,
+        235,
+        318,
+        480
+      ]
+    },
+    {
+      "source": "ranger_move_north-east_02.png",
+      "runtime": "ranger_move_north-east_02.png",
+      "source_size": [
+        240,
+        240
+      ],
+      "source_alpha_bbox": [
+        85,
+        65,
+        143,
+        176
+      ],
+      "source_alpha_bbox_size": [
+        58,
+        111
+      ],
+      "scale": 2.2072072072072073,
+      "runtime_alpha_bbox": [
+        192,
+        236,
+        320,
+        481
+      ]
+    },
+    {
+      "source": "ranger_move_north-east_03.png",
+      "runtime": "ranger_move_north-east_03.png",
+      "source_size": [
+        240,
+        240
+      ],
+      "source_alpha_bbox": [
+        78,
+        61,
+        140,
+        175
+      ],
+      "source_alpha_bbox_size": [
+        62,
+        114
+      ],
+      "scale": 2.1491228070175437,
+      "runtime_alpha_bbox": [
+        190,
+        235,
+        323,
+        480
+      ]
+    },
+    {
+      "source": "ranger_move_north-east_04.png",
+      "runtime": "ranger_move_north-east_04.png",
+      "source_size": [
+        240,
+        240
+      ],
+      "source_alpha_bbox": [
+        77,
+        60,
+        151,
+        175
+      ],
+      "source_alpha_bbox_size": [
+        74,
+        115
+      ],
+      "scale": 2.130434782608696,
+      "runtime_alpha_bbox": [
+        177,
+        235,
+        335,
+        480
+      ]
+    },
+    {
+      "source": "ranger_move_north-east_05.png",
+      "runtime": "ranger_move_north-east_05.png",
+      "source_size": [
+        240,
+        240
+      ],
+      "source_alpha_bbox": [
+        78,
+        60,
+        145,
+        175
+      ],
+      "source_alpha_bbox_size": [
+        67,
+        115
+      ],
+      "scale": 2.130434782608696,
+      "runtime_alpha_bbox": [
+        184,
+        235,
+        327,
+        480
+      ]
+    },
+    {
+      "source": "ranger_idle_north.png",
+      "runtime": "ranger_idle_north.png",
+      "source_size": [
+        240,
+        240
+      ],
+      "source_alpha_bbox": [
+        72,
+        60,
+        161,
+        174
+      ],
+      "source_alpha_bbox_size": [
+        89,
+        114
+      ],
+      "scale": 2.1491228070175437,
+      "runtime_alpha_bbox": [
+        161,
+        235,
+        352,
+        480
+      ]
+    },
+    {
+      "source": "ranger_move_north_00.png",
+      "runtime": "ranger_move_north_00.png",
+      "source_size": [
+        240,
+        240
+      ],
+      "source_alpha_bbox": [
+        81,
+        60,
+        157,
+        174
+      ],
+      "source_alpha_bbox_size": [
+        76,
+        114
+      ],
+      "scale": 2.1491228070175437,
+      "runtime_alpha_bbox": [
+        174,
+        235,
+        338,
+        480
+      ]
+    },
+    {
+      "source": "ranger_move_north_01.png",
+      "runtime": "ranger_move_north_01.png",
+      "source_size": [
+        240,
+        240
+      ],
+      "source_alpha_bbox": [
+        81,
+        58,
+        157,
+        176
+      ],
+      "source_alpha_bbox_size": [
+        76,
+        118
+      ],
+      "scale": 2.0762711864406778,
+      "runtime_alpha_bbox": [
+        177,
+        235,
+        335,
+        480
+      ]
+    },
+    {
+      "source": "ranger_move_north_02.png",
+      "runtime": "ranger_move_north_02.png",
+      "source_size": [
+        240,
+        240
+      ],
+      "source_alpha_bbox": [
+        79,
+        61,
+        156,
+        173
+      ],
+      "source_alpha_bbox_size": [
+        77,
+        112
+      ],
+      "scale": 2.1875,
+      "runtime_alpha_bbox": [
+        172,
+        235,
+        340,
+        480
+      ]
+    },
+    {
+      "source": "ranger_move_north_03.png",
+      "runtime": "ranger_move_north_03.png",
+      "source_size": [
+        240,
+        240
+      ],
+      "source_alpha_bbox": [
+        85,
+        59,
+        156,
+        172
+      ],
+      "source_alpha_bbox_size": [
+        71,
+        113
+      ],
+      "scale": 2.168141592920354,
+      "runtime_alpha_bbox": [
+        179,
+        235,
+        333,
+        480
+      ]
+    },
+    {
+      "source": "ranger_move_north_04.png",
+      "runtime": "ranger_move_north_04.png",
+      "source_size": [
+        240,
+        240
+      ],
+      "source_alpha_bbox": [
+        96,
+        60,
+        155,
+        172
+      ],
+      "source_alpha_bbox_size": [
+        59,
+        112
+      ],
+      "scale": 2.1875,
+      "runtime_alpha_bbox": [
+        192,
+        235,
+        321,
+        480
+      ]
+    },
+    {
+      "source": "ranger_move_north_05.png",
+      "runtime": "ranger_move_north_05.png",
+      "source_size": [
+        240,
+        240
+      ],
+      "source_alpha_bbox": [
+        96,
+        60,
+        144,
+        172
+      ],
+      "source_alpha_bbox_size": [
+        48,
+        112
+      ],
+      "scale": 2.1875,
+      "runtime_alpha_bbox": [
+        204,
+        235,
+        309,
+        480
+      ]
+    },
+    {
+      "source": "ranger_idle_north-west.png",
+      "runtime": "ranger_idle_north-west.png",
+      "source_size": [
+        240,
+        240
+      ],
+      "source_alpha_bbox": [
+        79,
+        62,
+        166,
+        174
+      ],
+      "source_alpha_bbox_size": [
+        87,
+        112
+      ],
+      "scale": 2.1875,
+      "runtime_alpha_bbox": [
+        161,
+        235,
+        351,
+        480
+      ]
+    },
+    {
+      "source": "ranger_move_north-west_00.png",
+      "runtime": "ranger_move_north-west_00.png",
+      "source_size": [
+        240,
+        240
+      ],
+      "source_alpha_bbox": [
+        78,
+        62,
+        145,
+        174
+      ],
+      "source_alpha_bbox_size": [
+        67,
+        112
+      ],
+      "scale": 2.1875,
+      "runtime_alpha_bbox": [
+        183,
+        235,
+        329,
+        480
+      ]
+    },
+    {
+      "source": "ranger_move_north-west_01.png",
+      "runtime": "ranger_move_north-west_01.png",
+      "source_size": [
+        240,
+        240
+      ],
+      "source_alpha_bbox": [
+        80,
+        60,
+        147,
+        172
+      ],
+      "source_alpha_bbox_size": [
+        67,
+        112
+      ],
+      "scale": 2.1875,
+      "runtime_alpha_bbox": [
+        183,
+        235,
+        330,
+        480
+      ]
+    },
+    {
+      "source": "ranger_move_north-west_02.png",
+      "runtime": "ranger_move_north-west_02.png",
+      "source_size": [
+        240,
+        240
+      ],
+      "source_alpha_bbox": [
+        79,
+        60,
+        146,
+        174
+      ],
+      "source_alpha_bbox_size": [
+        67,
+        114
+      ],
+      "scale": 2.1491228070175437,
+      "runtime_alpha_bbox": [
+        184,
+        235,
+        328,
+        480
+      ]
+    },
+    {
+      "source": "ranger_move_north-west_03.png",
+      "runtime": "ranger_move_north-west_03.png",
+      "source_size": [
+        240,
+        240
+      ],
+      "source_alpha_bbox": [
+        82,
+        62,
+        158,
+        173
+      ],
+      "source_alpha_bbox_size": [
+        76,
+        111
+      ],
+      "scale": 2.2072072072072073,
+      "runtime_alpha_bbox": [
+        172,
+        235,
+        340,
+        480
+      ]
+    },
+    {
+      "source": "ranger_move_north-west_04.png",
+      "runtime": "ranger_move_north-west_04.png",
+      "source_size": [
+        240,
+        240
+      ],
+      "source_alpha_bbox": [
+        82,
+        61,
+        156,
+        174
+      ],
+      "source_alpha_bbox_size": [
+        74,
+        113
+      ],
+      "scale": 2.168141592920354,
+      "runtime_alpha_bbox": [
+        176,
+        235,
+        336,
+        480
+      ]
+    },
+    {
+      "source": "ranger_move_north-west_05.png",
+      "runtime": "ranger_move_north-west_05.png",
+      "source_size": [
+        240,
+        240
+      ],
+      "source_alpha_bbox": [
+        82,
+        62,
+        155,
+        174
+      ],
+      "source_alpha_bbox_size": [
+        73,
+        112
+      ],
+      "scale": 2.1875,
+      "runtime_alpha_bbox": [
+        176,
+        235,
+        336,
+        480
+      ]
+    },
+    {
+      "source": "ranger_idle_west.png",
+      "runtime": "ranger_idle_west.png",
+      "source_size": [
+        240,
+        240
+      ],
+      "source_alpha_bbox": [
+        97,
+        62,
+        160,
+        178
+      ],
+      "source_alpha_bbox_size": [
+        63,
+        116
+      ],
+      "scale": 2.1120689655172415,
+      "runtime_alpha_bbox": [
+        189,
+        235,
+        322,
+        480
+      ]
+    },
+    {
+      "source": "ranger_move_west_00.png",
+      "runtime": "ranger_move_west_00.png",
+      "source_size": [
+        240,
+        240
+      ],
+      "source_alpha_bbox": [
+        103,
+        60,
+        144,
+        176
+      ],
+      "source_alpha_bbox_size": [
+        41,
+        116
+      ],
+      "scale": 2.1120689655172415,
+      "runtime_alpha_bbox": [
+        213,
+        235,
+        299,
+        480
+      ]
+    },
+    {
+      "source": "ranger_move_west_01.png",
+      "runtime": "ranger_move_west_01.png",
+      "source_size": [
+        240,
+        240
+      ],
+      "source_alpha_bbox": [
+        90,
+        60,
+        149,
+        174
+      ],
+      "source_alpha_bbox_size": [
+        59,
+        114
+      ],
+      "scale": 2.1491228070175437,
+      "runtime_alpha_bbox": [
+        194,
+        235,
+        320,
+        480
+      ]
+    },
+    {
+      "source": "ranger_move_west_02.png",
+      "runtime": "ranger_move_west_02.png",
+      "source_size": [
+        240,
+        240
+      ],
+      "source_alpha_bbox": [
+        97,
+        60,
+        148,
+        174
+      ],
+      "source_alpha_bbox_size": [
+        51,
+        114
+      ],
+      "scale": 2.1491228070175437,
+      "runtime_alpha_bbox": [
+        202,
+        235,
+        311,
+        480
+      ]
+    },
+    {
+      "source": "ranger_move_west_03.png",
+      "runtime": "ranger_move_west_03.png",
+      "source_size": [
+        240,
+        240
+      ],
+      "source_alpha_bbox": [
+        104,
+        61,
+        142,
+        176
+      ],
+      "source_alpha_bbox_size": [
+        38,
+        115
+      ],
+      "scale": 2.130434782608696,
+      "runtime_alpha_bbox": [
+        215,
+        235,
+        296,
+        480
+      ]
+    },
+    {
+      "source": "ranger_move_west_04.png",
+      "runtime": "ranger_move_west_04.png",
+      "source_size": [
+        240,
+        240
+      ],
+      "source_alpha_bbox": [
+        90,
+        61,
+        144,
+        176
+      ],
+      "source_alpha_bbox_size": [
+        54,
+        115
+      ],
+      "scale": 2.130434782608696,
+      "runtime_alpha_bbox": [
+        198,
+        235,
+        313,
+        480
+      ]
+    },
+    {
+      "source": "ranger_move_west_05.png",
+      "runtime": "ranger_move_west_05.png",
+      "source_size": [
+        240,
+        240
+      ],
+      "source_alpha_bbox": [
+        98,
+        61,
+        143,
+        175
+      ],
+      "source_alpha_bbox_size": [
+        45,
+        114
+      ],
+      "scale": 2.1491228070175437,
+      "runtime_alpha_bbox": [
+        208,
+        235,
+        304,
+        480
+      ]
+    },
+    {
+      "source": "ranger_idle_south-west.png",
+      "runtime": "ranger_idle_south-west.png",
+      "source_size": [
+        240,
+        240
+      ],
+      "source_alpha_bbox": [
+        82,
+        61,
+        162,
+        175
+      ],
+      "source_alpha_bbox_size": [
+        80,
+        114
+      ],
+      "scale": 2.1491228070175437,
+      "runtime_alpha_bbox": [
+        170,
+        235,
+        342,
+        480
+      ]
+    },
+    {
+      "source": "ranger_move_south-west_00.png",
+      "runtime": "ranger_move_south-west_00.png",
+      "source_size": [
+        240,
+        240
+      ],
+      "source_alpha_bbox": [
+        96,
+        62,
+        173,
+        180
+      ],
+      "source_alpha_bbox_size": [
+        77,
+        118
+      ],
+      "scale": 2.0762711864406778,
+      "runtime_alpha_bbox": [
+        176,
+        235,
+        336,
+        480
+      ]
+    },
+    {
+      "source": "ranger_move_south-west_01.png",
+      "runtime": "ranger_move_south-west_01.png",
+      "source_size": [
+        240,
+        240
+      ],
+      "source_alpha_bbox": [
+        91,
+        62,
+        172,
+        178
+      ],
+      "source_alpha_bbox_size": [
+        81,
+        116
+      ],
+      "scale": 2.1120689655172415,
+      "runtime_alpha_bbox": [
+        170,
+        235,
+        341,
+        480
+      ]
+    },
+    {
+      "source": "ranger_move_south-west_02.png",
+      "runtime": "ranger_move_south-west_02.png",
+      "source_size": [
+        240,
+        240
+      ],
+      "source_alpha_bbox": [
+        96,
+        61,
+        169,
+        174
+      ],
+      "source_alpha_bbox_size": [
+        73,
+        113
+      ],
+      "scale": 2.168141592920354,
+      "runtime_alpha_bbox": [
+        177,
+        235,
+        335,
+        480
+      ]
+    },
+    {
+      "source": "ranger_move_south-west_03.png",
+      "runtime": "ranger_move_south-west_03.png",
+      "source_size": [
+        240,
+        240
+      ],
+      "source_alpha_bbox": [
+        94,
+        62,
+        165,
+        178
+      ],
+      "source_alpha_bbox_size": [
+        71,
+        116
+      ],
+      "scale": 2.1120689655172415,
+      "runtime_alpha_bbox": [
+        181,
+        235,
+        331,
+        480
+      ]
+    },
+    {
+      "source": "ranger_move_south-west_04.png",
+      "runtime": "ranger_move_south-west_04.png",
+      "source_size": [
+        240,
+        240
+      ],
+      "source_alpha_bbox": [
+        92,
+        61,
+        166,
+        178
+      ],
+      "source_alpha_bbox_size": [
+        74,
+        117
+      ],
+      "scale": 2.094017094017094,
+      "runtime_alpha_bbox": [
+        179,
+        235,
+        334,
+        480
+      ]
+    },
+    {
+      "source": "ranger_move_south-west_05.png",
+      "runtime": "ranger_move_south-west_05.png",
+      "source_size": [
+        240,
+        240
+      ],
+      "source_alpha_bbox": [
+        93,
+        61,
+        167,
+        178
+      ],
+      "source_alpha_bbox_size": [
+        74,
+        117
+      ],
+      "scale": 2.094017094017094,
+      "runtime_alpha_bbox": [
+        179,
+        235,
+        334,
+        480
+      ]
+    }
+  ]
+}

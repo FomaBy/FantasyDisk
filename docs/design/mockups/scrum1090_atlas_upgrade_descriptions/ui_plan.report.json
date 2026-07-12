@@ -1,0 +1,269 @@
+{
+  "ok": true,
+  "decision": "ready_for_image",
+  "errors": [],
+  "warnings": [],
+  "elements": [
+    {
+      "id": "screen_frame",
+      "kind": "panel",
+      "rect": [
+        0,
+        0,
+        688,
+        384
+      ],
+      "ok": true,
+      "warnings": []
+    },
+    {
+      "id": "header",
+      "kind": "panel",
+      "rect": [
+        24,
+        13,
+        642,
+        32
+      ],
+      "ok": true,
+      "warnings": []
+    },
+    {
+      "id": "tab",
+      "kind": "text",
+      "rect": [
+        34,
+        19,
+        112,
+        18
+      ],
+      "ok": true,
+      "warnings": [],
+      "fit_font_size": 12
+    },
+    {
+      "id": "class_progress",
+      "kind": "text",
+      "rect": [
+        154,
+        19,
+        122,
+        18
+      ],
+      "ok": true,
+      "warnings": [],
+      "fit_font_size": 12
+    },
+    {
+      "id": "class_rail",
+      "kind": "panel",
+      "rect": [
+        24,
+        56,
+        78,
+        269
+      ],
+      "ok": true,
+      "warnings": []
+    },
+    {
+      "id": "class_list",
+      "kind": "list",
+      "rect": [
+        29,
+        70,
+        68,
+        241
+      ],
+      "ok": true,
+      "warnings": [],
+      "content_h": 642,
+      "scrollbar_required": true,
+      "scrollbar_rect": [
+        93,
+        70,
+        4,
+        241
+      ]
+    },
+    {
+      "id": "constellation",
+      "kind": "panel",
+      "rect": [
+        113,
+        56,
+        374,
+        269
+      ],
+      "ok": true,
+      "warnings": []
+    },
+    {
+      "id": "weapon_paths",
+      "kind": "text",
+      "rect": [
+        132,
+        70,
+        336,
+        18
+      ],
+      "ok": true,
+      "warnings": [],
+      "fit_font_size": 12
+    },
+    {
+      "id": "constellation_runtime",
+      "kind": "zone",
+      "rect": [
+        129,
+        90,
+        342,
+        220
+      ],
+      "ok": true,
+      "warnings": []
+    },
+    {
+      "id": "dossier",
+      "kind": "panel",
+      "rect": [
+        497,
+        56,
+        169,
+        269
+      ],
+      "ok": true,
+      "warnings": []
+    },
+    {
+      "id": "dossier_kind",
+      "kind": "text",
+      "rect": [
+        510,
+        69,
+        143,
+        12
+      ],
+      "ok": true,
+      "warnings": [],
+      "fit_font_size": 9
+    },
+    {
+      "id": "dossier_title",
+      "kind": "text",
+      "rect": [
+        510,
+        84,
+        143,
+        16
+      ],
+      "ok": true,
+      "warnings": [],
+      "fit_font_size": 12
+    },
+    {
+      "id": "dossier_weapon",
+      "kind": "text",
+      "rect": [
+        510,
+        104,
+        143,
+        14
+      ],
+      "ok": true,
+      "warnings": [],
+      "fit_font_size": 9
+    },
+    {
+      "id": "dossier_effect",
+      "kind": "text",
+      "rect": [
+        510,
+        136,
+        143,
+        48
+      ],
+      "ok": true,
+      "warnings": [],
+      "fit_font_size": 9
+    },
+    {
+      "id": "dossier_result",
+      "kind": "text",
+      "rect": [
+        510,
+        198,
+        143,
+        48
+      ],
+      "ok": true,
+      "warnings": [],
+      "fit_font_size": 9
+    },
+    {
+      "id": "progress",
+      "kind": "text",
+      "rect": [
+        510,
+        260,
+        65,
+        16
+      ],
+      "ok": true,
+      "warnings": [],
+      "fit_font_size": 10
+    },
+    {
+      "id": "price",
+      "kind": "text",
+      "rect": [
+        585,
+        260,
+        67,
+        16
+      ],
+      "ok": true,
+      "warnings": [],
+      "fit_font_size": 10
+    },
+    {
+      "id": "status",
+      "kind": "text",
+      "rect": [
+        510,
+        281,
+        143,
+        14
+      ],
+      "ok": true,
+      "warnings": [],
+      "fit_font_size": 9
+    },
+    {
+      "id": "buy",
+      "kind": "button",
+      "rect": [
+        510,
+        300,
+        143,
+        16
+      ],
+      "ok": true,
+      "warnings": [],
+      "fit_font_size": 8
+    },
+    {
+      "id": "reset",
+      "kind": "button",
+      "rect": [
+        34,
+        346,
+        168,
+        20
+      ],
+      "ok": true,
+      "warnings": [],
+      "fit_font_size": 11
+    }
+  ]
+}

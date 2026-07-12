@@ -1,0 +1,1410 @@
+{
+  "runtime_canvas": [
+    512,
+    512
+  ],
+  "target_visible_height": 245,
+  "bottom_padding": 32,
+  "frames": [
+    {
+      "source": "assassin_idle_south.png",
+      "runtime": "assassin_idle_south.png",
+      "source_size": [
+        252,
+        252
+      ],
+      "source_alpha_bbox": [
+        75,
+        65,
+        174,
+        187
+      ],
+      "source_alpha_bbox_size": [
+        99,
+        122
+      ],
+      "scale": 2.0081967213114753,
+      "runtime_alpha_bbox": [
+        157,
+        235,
+        355,
+        479
+      ]
+    },
+    {
+      "source": "assassin_move_south_00.png",
+      "runtime": "assassin_move_south_00.png",
+      "source_size": [
+        252,
+        252
+      ],
+      "source_alpha_bbox": [
+        87,
+        66,
+        166,
+        186
+      ],
+      "source_alpha_bbox_size": [
+        79,
+        120
+      ],
+      "scale": 2.0416666666666665,
+      "runtime_alpha_bbox": [
+        175,
+        235,
+        337,
+        479
+      ]
+    },
+    {
+      "source": "assassin_move_south_01.png",
+      "runtime": "assassin_move_south_01.png",
+      "source_size": [
+        252,
+        252
+      ],
+      "source_alpha_bbox": [
+        89,
+        67,
+        163,
+        185
+      ],
+      "source_alpha_bbox_size": [
+        74,
+        118
+      ],
+      "scale": 2.0762711864406778,
+      "runtime_alpha_bbox": [
+        179,
+        235,
+        332,
+        480
+      ]
+    },
+    {
+      "source": "assassin_move_south_02.png",
+      "runtime": "assassin_move_south_02.png",
+      "source_size": [
+        252,
+        252
+      ],
+      "source_alpha_bbox": [
+        89,
+        67,
+        164,
+        185
+      ],
+      "source_alpha_bbox_size": [
+        75,
+        118
+      ],
+      "scale": 2.0762711864406778,
+      "runtime_alpha_bbox": [
+        178,
+        235,
+        333,
+        480
+      ]
+    },
+    {
+      "source": "assassin_move_south_03.png",
+      "runtime": "assassin_move_south_03.png",
+      "source_size": [
+        252,
+        252
+      ],
+      "source_alpha_bbox": [
+        96,
+        66,
+        156,
+        182
+      ],
+      "source_alpha_bbox_size": [
+        60,
+        116
+      ],
+      "scale": 2.1120689655172415,
+      "runtime_alpha_bbox": [
+        193,
+        235,
+        319,
+        480
+      ]
+    },
+    {
+      "source": "assassin_move_south_04.png",
+      "runtime": "assassin_move_south_04.png",
+      "source_size": [
+        252,
+        252
+      ],
+      "source_alpha_bbox": [
+        96,
+        67,
+        156,
+        184
+      ],
+      "source_alpha_bbox_size": [
+        60,
+        117
+      ],
+      "scale": 2.094017094017094,
+      "runtime_alpha_bbox": [
+        193,
+        235,
+        319,
+        481
+      ]
+    },
+    {
+      "source": "assassin_move_south_05.png",
+      "runtime": "assassin_move_south_05.png",
+      "source_size": [
+        252,
+        252
+      ],
+      "source_alpha_bbox": [
+        96,
+        67,
+        156,
+        182
+      ],
+      "source_alpha_bbox_size": [
+        60,
+        115
+      ],
+      "scale": 2.130434782608696,
+      "runtime_alpha_bbox": [
+        193,
+        235,
+        320,
+        480
+      ]
+    },
+    {
+      "source": "assassin_idle_south-east.png",
+      "runtime": "assassin_idle_south-east.png",
+      "source_size": [
+        252,
+        252
+      ],
+      "source_alpha_bbox": [
+        80,
+        67,
+        171,
+        189
+      ],
+      "source_alpha_bbox_size": [
+        91,
+        122
+      ],
+      "scale": 2.0081967213114753,
+      "runtime_alpha_bbox": [
+        165,
+        235,
+        347,
+        479
+      ]
+    },
+    {
+      "source": "assassin_move_south-east_00.png",
+      "runtime": "assassin_move_south-east_00.png",
+      "source_size": [
+        252,
+        252
+      ],
+      "source_alpha_bbox": [
+        88,
+        67,
+        159,
+        190
+      ],
+      "source_alpha_bbox_size": [
+        71,
+        123
+      ],
+      "scale": 1.991869918699187,
+      "runtime_alpha_bbox": [
+        185,
+        235,
+        327,
+        480
+      ]
+    },
+    {
+      "source": "assassin_move_south-east_01.png",
+      "runtime": "assassin_move_south-east_01.png",
+      "source_size": [
+        252,
+        252
+      ],
+      "source_alpha_bbox": [
+        91,
+        67,
+        162,
+        188
+      ],
+      "source_alpha_bbox_size": [
+        71,
+        121
+      ],
+      "scale": 2.024793388429752,
+      "runtime_alpha_bbox": [
+        184,
+        235,
+        328,
+        479
+      ]
+    },
+    {
+      "source": "assassin_move_south-east_02.png",
+      "runtime": "assassin_move_south-east_02.png",
+      "source_size": [
+        252,
+        252
+      ],
+      "source_alpha_bbox": [
+        90,
+        67,
+        156,
+        188
+      ],
+      "source_alpha_bbox_size": [
+        66,
+        121
+      ],
+      "scale": 2.024793388429752,
+      "runtime_alpha_bbox": [
+        189,
+        235,
+        323,
+        479
+      ]
+    },
+    {
+      "source": "assassin_move_south-east_03.png",
+      "runtime": "assassin_move_south-east_03.png",
+      "source_size": [
+        252,
+        252
+      ],
+      "source_alpha_bbox": [
+        77,
+        67,
+        151,
+        188
+      ],
+      "source_alpha_bbox_size": [
+        74,
+        121
+      ],
+      "scale": 2.024793388429752,
+      "runtime_alpha_bbox": [
+        181,
+        235,
+        331,
+        479
+      ]
+    },
+    {
+      "source": "assassin_move_south-east_04.png",
+      "runtime": "assassin_move_south-east_04.png",
+      "source_size": [
+        252,
+        252
+      ],
+      "source_alpha_bbox": [
+        83,
+        68,
+        161,
+        190
+      ],
+      "source_alpha_bbox_size": [
+        78,
+        122
+      ],
+      "scale": 2.0081967213114753,
+      "runtime_alpha_bbox": [
+        178,
+        235,
+        334,
+        480
+      ]
+    },
+    {
+      "source": "assassin_move_south-east_05.png",
+      "runtime": "assassin_move_south-east_05.png",
+      "source_size": [
+        252,
+        252
+      ],
+      "source_alpha_bbox": [
+        87,
+        68,
+        160,
+        190
+      ],
+      "source_alpha_bbox_size": [
+        73,
+        122
+      ],
+      "scale": 2.0081967213114753,
+      "runtime_alpha_bbox": [
+        183,
+        235,
+        329,
+        480
+      ]
+    },
+    {
+      "source": "assassin_idle_east.png",
+      "runtime": "assassin_idle_east.png",
+      "source_size": [
+        252,
+        252
+      ],
+      "source_alpha_bbox": [
+        82,
+        66,
+        156,
+        189
+      ],
+      "source_alpha_bbox_size": [
+        74,
+        123
+      ],
+      "scale": 1.991869918699187,
+      "runtime_alpha_bbox": [
+        182,
+        235,
+        330,
+        481
+      ]
+    },
+    {
+      "source": "assassin_move_east_00.png",
+      "runtime": "assassin_move_east_00.png",
+      "source_size": [
+        252,
+        252
+      ],
+      "source_alpha_bbox": [
+        110,
+        66,
+        144,
+        189
+      ],
+      "source_alpha_bbox_size": [
+        34,
+        123
+      ],
+      "scale": 1.991869918699187,
+      "runtime_alpha_bbox": [
+        222,
+        235,
+        290,
+        481
+      ]
+    },
+    {
+      "source": "assassin_move_east_01.png",
+      "runtime": "assassin_move_east_01.png",
+      "source_size": [
+        252,
+        252
+      ],
+      "source_alpha_bbox": [
+        97,
+        68,
+        164,
+        185
+      ],
+      "source_alpha_bbox_size": [
+        67,
+        117
+      ],
+      "scale": 2.094017094017094,
+      "runtime_alpha_bbox": [
+        186,
+        235,
+        327,
+        481
+      ]
+    },
+    {
+      "source": "assassin_move_east_02.png",
+      "runtime": "assassin_move_east_02.png",
+      "source_size": [
+        252,
+        252
+      ],
+      "source_alpha_bbox": [
+        91,
+        69,
+        153,
+        187
+      ],
+      "source_alpha_bbox_size": [
+        62,
+        118
+      ],
+      "scale": 2.0762711864406778,
+      "runtime_alpha_bbox": [
+        191,
+        235,
+        320,
+        480
+      ]
+    },
+    {
+      "source": "assassin_move_east_03.png",
+      "runtime": "assassin_move_east_03.png",
+      "source_size": [
+        252,
+        252
+      ],
+      "source_alpha_bbox": [
+        101,
+        66,
+        146,
+        188
+      ],
+      "source_alpha_bbox_size": [
+        45,
+        122
+      ],
+      "scale": 2.0081967213114753,
+      "runtime_alpha_bbox": [
+        211,
+        235,
+        301,
+        479
+      ]
+    },
+    {
+      "source": "assassin_move_east_04.png",
+      "runtime": "assassin_move_east_04.png",
+      "source_size": [
+        252,
+        252
+      ],
+      "source_alpha_bbox": [
+        105,
+        66,
+        158,
+        186
+      ],
+      "source_alpha_bbox_size": [
+        53,
+        120
+      ],
+      "scale": 2.0416666666666665,
+      "runtime_alpha_bbox": [
+        202,
+        235,
+        310,
+        479
+      ]
+    },
+    {
+      "source": "assassin_move_east_05.png",
+      "runtime": "assassin_move_east_05.png",
+      "source_size": [
+        252,
+        252
+      ],
+      "source_alpha_bbox": [
+        100,
+        66,
+        152,
+        186
+      ],
+      "source_alpha_bbox_size": [
+        52,
+        120
+      ],
+      "scale": 2.0416666666666665,
+      "runtime_alpha_bbox": [
+        203,
+        235,
+        309,
+        479
+      ]
+    },
+    {
+      "source": "assassin_idle_north-east.png",
+      "runtime": "assassin_idle_north-east.png",
+      "source_size": [
+        252,
+        252
+      ],
+      "source_alpha_bbox": [
+        84,
+        64,
+        158,
+        187
+      ],
+      "source_alpha_bbox_size": [
+        74,
+        123
+      ],
+      "scale": 1.991869918699187,
+      "runtime_alpha_bbox": [
+        182,
+        235,
+        330,
+        481
+      ]
+    },
+    {
+      "source": "assassin_move_north-east_00.png",
+      "runtime": "assassin_move_north-east_00.png",
+      "source_size": [
+        252,
+        252
+      ],
+      "source_alpha_bbox": [
+        100,
+        67,
+        153,
+        190
+      ],
+      "source_alpha_bbox_size": [
+        53,
+        123
+      ],
+      "scale": 1.991869918699187,
+      "runtime_alpha_bbox": [
+        203,
+        235,
+        309,
+        480
+      ]
+    },
+    {
+      "source": "assassin_move_north-east_01.png",
+      "runtime": "assassin_move_north-east_01.png",
+      "source_size": [
+        252,
+        252
+      ],
+      "source_alpha_bbox": [
+        99,
+        68,
+        162,
+        192
+      ],
+      "source_alpha_bbox_size": [
+        63,
+        124
+      ],
+      "scale": 1.9758064516129032,
+      "runtime_alpha_bbox": [
+        194,
+        235,
+        318,
+        480
+      ]
+    },
+    {
+      "source": "assassin_move_north-east_02.png",
+      "runtime": "assassin_move_north-east_02.png",
+      "source_size": [
+        252,
+        252
+      ],
+      "source_alpha_bbox": [
+        98,
+        69,
+        160,
+        194
+      ],
+      "source_alpha_bbox_size": [
+        62,
+        125
+      ],
+      "scale": 1.96,
+      "runtime_alpha_bbox": [
+        195,
+        235,
+        317,
+        480
+      ]
+    },
+    {
+      "source": "assassin_move_north-east_03.png",
+      "runtime": "assassin_move_north-east_03.png",
+      "source_size": [
+        252,
+        252
+      ],
+      "source_alpha_bbox": [
+        103,
+        66,
+        150,
+        185
+      ],
+      "source_alpha_bbox_size": [
+        47,
+        119
+      ],
+      "scale": 2.0588235294117645,
+      "runtime_alpha_bbox": [
+        208,
+        235,
+        305,
+        480
+      ]
+    },
+    {
+      "source": "assassin_move_north-east_04.png",
+      "runtime": "assassin_move_north-east_04.png",
+      "source_size": [
+        252,
+        252
+      ],
+      "source_alpha_bbox": [
+        90,
+        68,
+        161,
+        186
+      ],
+      "source_alpha_bbox_size": [
+        71,
+        118
+      ],
+      "scale": 2.0762711864406778,
+      "runtime_alpha_bbox": [
+        183,
+        235,
+        330,
+        480
+      ]
+    },
+    {
+      "source": "assassin_move_north-east_05.png",
+      "runtime": "assassin_move_north-east_05.png",
+      "source_size": [
+        252,
+        252
+      ],
+      "source_alpha_bbox": [
+        91,
+        68,
+        155,
+        185
+      ],
+      "source_alpha_bbox_size": [
+        64,
+        117
+      ],
+      "scale": 2.094017094017094,
+      "runtime_alpha_bbox": [
+        189,
+        235,
+        323,
+        481
+      ]
+    },
+    {
+      "source": "assassin_idle_north.png",
+      "runtime": "assassin_idle_north.png",
+      "source_size": [
+        252,
+        252
+      ],
+      "source_alpha_bbox": [
+        78,
+        66,
+        174,
+        185
+      ],
+      "source_alpha_bbox_size": [
+        96,
+        119
+      ],
+      "scale": 2.0588235294117645,
+      "runtime_alpha_bbox": [
+        157,
+        235,
+        354,
+        480
+      ]
+    },
+    {
+      "source": "assassin_move_north_00.png",
+      "runtime": "assassin_move_north_00.png",
+      "source_size": [
+        252,
+        252
+      ],
+      "source_alpha_bbox": [
+        90,
+        63,
+        176,
+        183
+      ],
+      "source_alpha_bbox_size": [
+        86,
+        120
+      ],
+      "scale": 2.0416666666666665,
+      "runtime_alpha_bbox": [
+        168,
+        235,
+        343,
+        479
+      ]
+    },
+    {
+      "source": "assassin_move_north_01.png",
+      "runtime": "assassin_move_north_01.png",
+      "source_size": [
+        252,
+        252
+      ],
+      "source_alpha_bbox": [
+        79,
+        64,
+        164,
+        183
+      ],
+      "source_alpha_bbox_size": [
+        85,
+        119
+      ],
+      "scale": 2.0588235294117645,
+      "runtime_alpha_bbox": [
+        169,
+        235,
+        344,
+        480
+      ]
+    },
+    {
+      "source": "assassin_move_north_02.png",
+      "runtime": "assassin_move_north_02.png",
+      "source_size": [
+        252,
+        252
+      ],
+      "source_alpha_bbox": [
+        94,
+        65,
+        177,
+        185
+      ],
+      "source_alpha_bbox_size": [
+        83,
+        120
+      ],
+      "scale": 2.0416666666666665,
+      "runtime_alpha_bbox": [
+        172,
+        235,
+        341,
+        479
+      ]
+    },
+    {
+      "source": "assassin_move_north_03.png",
+      "runtime": "assassin_move_north_03.png",
+      "source_size": [
+        252,
+        252
+      ],
+      "source_alpha_bbox": [
+        96,
+        65,
+        159,
+        183
+      ],
+      "source_alpha_bbox_size": [
+        63,
+        118
+      ],
+      "scale": 2.0762711864406778,
+      "runtime_alpha_bbox": [
+        191,
+        235,
+        322,
+        480
+      ]
+    },
+    {
+      "source": "assassin_move_north_04.png",
+      "runtime": "assassin_move_north_04.png",
+      "source_size": [
+        252,
+        252
+      ],
+      "source_alpha_bbox": [
+        96,
+        66,
+        156,
+        182
+      ],
+      "source_alpha_bbox_size": [
+        60,
+        116
+      ],
+      "scale": 2.1120689655172415,
+      "runtime_alpha_bbox": [
+        193,
+        235,
+        319,
+        480
+      ]
+    },
+    {
+      "source": "assassin_move_north_05.png",
+      "runtime": "assassin_move_north_05.png",
+      "source_size": [
+        252,
+        252
+      ],
+      "source_alpha_bbox": [
+        96,
+        66,
+        157,
+        182
+      ],
+      "source_alpha_bbox_size": [
+        61,
+        116
+      ],
+      "scale": 2.1120689655172415,
+      "runtime_alpha_bbox": [
+        191,
+        235,
+        319,
+        480
+      ]
+    },
+    {
+      "source": "assassin_idle_north-west.png",
+      "runtime": "assassin_idle_north-west.png",
+      "source_size": [
+        252,
+        252
+      ],
+      "source_alpha_bbox": [
+        76,
+        64,
+        168,
+        186
+      ],
+      "source_alpha_bbox_size": [
+        92,
+        122
+      ],
+      "scale": 2.0081967213114753,
+      "runtime_alpha_bbox": [
+        164,
+        235,
+        348,
+        479
+      ]
+    },
+    {
+      "source": "assassin_move_north-west_00.png",
+      "runtime": "assassin_move_north-west_00.png",
+      "source_size": [
+        252,
+        252
+      ],
+      "source_alpha_bbox": [
+        80,
+        63,
+        166,
+        187
+      ],
+      "source_alpha_bbox_size": [
+        86,
+        124
+      ],
+      "scale": 1.9758064516129032,
+      "runtime_alpha_bbox": [
+        171,
+        235,
+        341,
+        481
+      ]
+    },
+    {
+      "source": "assassin_move_north-west_01.png",
+      "runtime": "assassin_move_north-west_01.png",
+      "source_size": [
+        252,
+        252
+      ],
+      "source_alpha_bbox": [
+        80,
+        65,
+        165,
+        182
+      ],
+      "source_alpha_bbox_size": [
+        85,
+        117
+      ],
+      "scale": 2.094017094017094,
+      "runtime_alpha_bbox": [
+        167,
+        235,
+        345,
+        480
+      ]
+    },
+    {
+      "source": "assassin_move_north-west_02.png",
+      "runtime": "assassin_move_north-west_02.png",
+      "source_size": [
+        252,
+        252
+      ],
+      "source_alpha_bbox": [
+        82,
+        65,
+        167,
+        188
+      ],
+      "source_alpha_bbox_size": [
+        85,
+        123
+      ],
+      "scale": 1.991869918699187,
+      "runtime_alpha_bbox": [
+        171,
+        235,
+        341,
+        481
+      ]
+    },
+    {
+      "source": "assassin_move_north-west_03.png",
+      "runtime": "assassin_move_north-west_03.png",
+      "source_size": [
+        252,
+        252
+      ],
+      "source_alpha_bbox": [
+        88,
+        64,
+        166,
+        182
+      ],
+      "source_alpha_bbox_size": [
+        78,
+        118
+      ],
+      "scale": 2.0762711864406778,
+      "runtime_alpha_bbox": [
+        175,
+        235,
+        337,
+        480
+      ]
+    },
+    {
+      "source": "assassin_move_north-west_04.png",
+      "runtime": "assassin_move_north-west_04.png",
+      "source_size": [
+        252,
+        252
+      ],
+      "source_alpha_bbox": [
+        78,
+        64,
+        166,
+        185
+      ],
+      "source_alpha_bbox_size": [
+        88,
+        121
+      ],
+      "scale": 2.024793388429752,
+      "runtime_alpha_bbox": [
+        167,
+        235,
+        345,
+        479
+      ]
+    },
+    {
+      "source": "assassin_move_north-west_05.png",
+      "runtime": "assassin_move_north-west_05.png",
+      "source_size": [
+        252,
+        252
+      ],
+      "source_alpha_bbox": [
+        79,
+        64,
+        166,
+        185
+      ],
+      "source_alpha_bbox_size": [
+        87,
+        121
+      ],
+      "scale": 2.024793388429752,
+      "runtime_alpha_bbox": [
+        168,
+        235,
+        344,
+        479
+      ]
+    },
+    {
+      "source": "assassin_idle_west.png",
+      "runtime": "assassin_idle_west.png",
+      "source_size": [
+        252,
+        252
+      ],
+      "source_alpha_bbox": [
+        107,
+        66,
+        164,
+        188
+      ],
+      "source_alpha_bbox_size": [
+        57,
+        122
+      ],
+      "scale": 2.0081967213114753,
+      "runtime_alpha_bbox": [
+        199,
+        235,
+        313,
+        479
+      ]
+    },
+    {
+      "source": "assassin_move_west_00.png",
+      "runtime": "assassin_move_west_00.png",
+      "source_size": [
+        252,
+        252
+      ],
+      "source_alpha_bbox": [
+        108,
+        66,
+        142,
+        189
+      ],
+      "source_alpha_bbox_size": [
+        34,
+        123
+      ],
+      "scale": 1.991869918699187,
+      "runtime_alpha_bbox": [
+        222,
+        235,
+        290,
+        481
+      ]
+    },
+    {
+      "source": "assassin_move_west_01.png",
+      "runtime": "assassin_move_west_01.png",
+      "source_size": [
+        252,
+        252
+      ],
+      "source_alpha_bbox": [
+        88,
+        68,
+        155,
+        185
+      ],
+      "source_alpha_bbox_size": [
+        67,
+        117
+      ],
+      "scale": 2.094017094017094,
+      "runtime_alpha_bbox": [
+        186,
+        235,
+        327,
+        481
+      ]
+    },
+    {
+      "source": "assassin_move_west_02.png",
+      "runtime": "assassin_move_west_02.png",
+      "source_size": [
+        252,
+        252
+      ],
+      "source_alpha_bbox": [
+        99,
+        69,
+        161,
+        187
+      ],
+      "source_alpha_bbox_size": [
+        62,
+        118
+      ],
+      "scale": 2.0762711864406778,
+      "runtime_alpha_bbox": [
+        191,
+        235,
+        320,
+        480
+      ]
+    },
+    {
+      "source": "assassin_move_west_03.png",
+      "runtime": "assassin_move_west_03.png",
+      "source_size": [
+        252,
+        252
+      ],
+      "source_alpha_bbox": [
+        106,
+        66,
+        151,
+        188
+      ],
+      "source_alpha_bbox_size": [
+        45,
+        122
+      ],
+      "scale": 2.0081967213114753,
+      "runtime_alpha_bbox": [
+        211,
+        235,
+        301,
+        479
+      ]
+    },
+    {
+      "source": "assassin_move_west_04.png",
+      "runtime": "assassin_move_west_04.png",
+      "source_size": [
+        252,
+        252
+      ],
+      "source_alpha_bbox": [
+        94,
+        66,
+        147,
+        186
+      ],
+      "source_alpha_bbox_size": [
+        53,
+        120
+      ],
+      "scale": 2.0416666666666665,
+      "runtime_alpha_bbox": [
+        202,
+        235,
+        310,
+        479
+      ]
+    },
+    {
+      "source": "assassin_move_west_05.png",
+      "runtime": "assassin_move_west_05.png",
+      "source_size": [
+        252,
+        252
+      ],
+      "source_alpha_bbox": [
+        100,
+        66,
+        152,
+        186
+      ],
+      "source_alpha_bbox_size": [
+        52,
+        120
+      ],
+      "scale": 2.0416666666666665,
+      "runtime_alpha_bbox": [
+        203,
+        235,
+        309,
+        479
+      ]
+    },
+    {
+      "source": "assassin_idle_south-west.png",
+      "runtime": "assassin_idle_south-west.png",
+      "source_size": [
+        252,
+        252
+      ],
+      "source_alpha_bbox": [
+        81,
+        66,
+        168,
+        189
+      ],
+      "source_alpha_bbox_size": [
+        87,
+        123
+      ],
+      "scale": 1.991869918699187,
+      "runtime_alpha_bbox": [
+        169,
+        235,
+        343,
+        481
+      ]
+    },
+    {
+      "source": "assassin_move_south-west_00.png",
+      "runtime": "assassin_move_south-west_00.png",
+      "source_size": [
+        252,
+        252
+      ],
+      "source_alpha_bbox": [
+        93,
+        67,
+        164,
+        190
+      ],
+      "source_alpha_bbox_size": [
+        71,
+        123
+      ],
+      "scale": 1.991869918699187,
+      "runtime_alpha_bbox": [
+        185,
+        235,
+        327,
+        480
+      ]
+    },
+    {
+      "source": "assassin_move_south-west_01.png",
+      "runtime": "assassin_move_south-west_01.png",
+      "source_size": [
+        252,
+        252
+      ],
+      "source_alpha_bbox": [
+        90,
+        67,
+        161,
+        188
+      ],
+      "source_alpha_bbox_size": [
+        71,
+        121
+      ],
+      "scale": 2.024793388429752,
+      "runtime_alpha_bbox": [
+        184,
+        235,
+        328,
+        479
+      ]
+    },
+    {
+      "source": "assassin_move_south-west_02.png",
+      "runtime": "assassin_move_south-west_02.png",
+      "source_size": [
+        252,
+        252
+      ],
+      "source_alpha_bbox": [
+        96,
+        67,
+        162,
+        188
+      ],
+      "source_alpha_bbox_size": [
+        66,
+        121
+      ],
+      "scale": 2.024793388429752,
+      "runtime_alpha_bbox": [
+        189,
+        235,
+        323,
+        479
+      ]
+    },
+    {
+      "source": "assassin_move_south-west_03.png",
+      "runtime": "assassin_move_south-west_03.png",
+      "source_size": [
+        252,
+        252
+      ],
+      "source_alpha_bbox": [
+        101,
+        67,
+        175,
+        188
+      ],
+      "source_alpha_bbox_size": [
+        74,
+        121
+      ],
+      "scale": 2.024793388429752,
+      "runtime_alpha_bbox": [
+        180,
+        235,
+        330,
+        479
+      ]
+    },
+    {
+      "source": "assassin_move_south-west_04.png",
+      "runtime": "assassin_move_south-west_04.png",
+      "source_size": [
+        252,
+        252
+      ],
+      "source_alpha_bbox": [
+        91,
+        68,
+        169,
+        190
+      ],
+      "source_alpha_bbox_size": [
+        78,
+        122
+      ],
+      "scale": 2.0081967213114753,
+      "runtime_alpha_bbox": [
+        178,
+        235,
+        334,
+        480
+      ]
+    },
+    {
+      "source": "assassin_move_south-west_05.png",
+      "runtime": "assassin_move_south-west_05.png",
+      "source_size": [
+        252,
+        252
+      ],
+      "source_alpha_bbox": [
+        92,
+        68,
+        165,
+        190
+      ],
+      "source_alpha_bbox_size": [
+        73,
+        122
+      ],
+      "scale": 2.0081967213114753,
+      "runtime_alpha_bbox": [
+        183,
+        235,
+        329,
+        480
+      ]
+    }
+  ]
+}

@@ -1,0 +1,94 @@
+{
+  "task": "SCRUM-981",
+  "status": "ready_for_backend_integration",
+  "production_asset_reuse": {
+    "path": "assets/sprites/ui/meta40/frame_border.png",
+    "size": [1536, 1024],
+    "sha256": "a593321bd5f732d70814a35dc9f98af31a09818b6452ded1a37fba521b937c85",
+    "texture_margins": [160, 160, 160, 160],
+    "draw_center": false,
+    "provenance": "SCRUM-832 gpt-image-2 product override; accepted and QA-passed; original SCRUM-826 PixelLab family superseded for production geometry",
+    "new_runtime_art": false
+  },
+  "accepted_visual_references": [
+    {
+      "path": "docs/design/previews/meta40_atlas_mockup.png",
+      "size": [2560, 1440],
+      "sha256": "730b66ec292cea0a214e52cbb825b95ff799ec9f8d9499676108814657391c40"
+    },
+    {
+      "path": "docs/design/previews/meta40_asset_contact.png",
+      "sha256": "16fa062ae7e85fc0791a5e7a97ed330053d1a53e0f790470064e02a6e00f8249"
+    }
+  ],
+  "pixellab_config_smoke": {
+    "tool": "get_balance",
+    "result": "PASS",
+    "is_error": false,
+    "secrets_printed": false
+  },
+  "pixellab_jobs": [
+    {
+      "screen": "main_menu",
+      "ui_asset_id": "7d9c5262-5448-40c0-beaf-2b7d4b6b1f58",
+      "name": "SCRUM-981 Main Menu Gold Shell Reference v3 Exact Six",
+      "size": [688, 384],
+      "status": "accepted",
+      "source_file": "docs/design/references/scrum981_gold_menu_shell/pixellab_main_menu_gold_shell_reference_688x384.png",
+      "preview_file": "docs/design/previews/scrum981_gold_menu_shell/pixellab_main_menu_gold_shell_reference_688x384.png",
+      "debug_overlay": "docs/design/previews/scrum981_gold_menu_shell/pixellab_main_menu_gold_shell_reference_688x384_debug.png",
+      "sha256": "a3f446d54cf2b1c2bdfbd2a4f2a097962aadf8c166c0a99869bf9a50597dbd85",
+      "alpha_audit": {
+        "minimum": 0,
+        "maximum": 255,
+        "transparent_pixels": 197452,
+        "opaque_pixels": 66740,
+        "partial_alpha_pixels": 0,
+        "baked_checkerboard": false
+      },
+      "visual_qa": "PASS: exactly one outer shell, one rectangular logo well and exactly six rectangular action wells in a 2-column by 3-row grid; no circular or extra panel, text or pseudo-text.",
+      "prompt_contract": "Textless full-page 16:9 D&D dark-fantasy dragon shell; one hollow outer gold edge; one rectangular logo well and exactly six equal empty action wells arranged as 2 columns by 3 rows; no circles, portraits, radar, compass, medallion, extra panels, text, pseudo-text or checkerboard."
+    },
+    {
+      "screen": "route_map",
+      "ui_asset_id": "1df5105f-5469-4a93-b93c-ebe839831ed0",
+      "name": "SCRUM-981 Route Map Gold Shell Reference v2 Transparent",
+      "size": [688, 384],
+      "status": "accepted",
+      "source_file": "docs/design/references/scrum981_gold_menu_shell/pixellab_route_map_gold_shell_reference_688x384.png",
+      "preview_file": "docs/design/previews/scrum981_gold_menu_shell/pixellab_route_map_gold_shell_reference_688x384.png",
+      "debug_overlay": "docs/design/previews/scrum981_gold_menu_shell/pixellab_route_map_gold_shell_reference_688x384_debug.png",
+      "sha256": "647fe73e85e3777dc6401f2fe9f920a411802d314f883f35eca04d2a8a62b0d6",
+      "alpha_audit": {
+        "minimum": 0,
+        "maximum": 255,
+        "transparent_pixels": 92944,
+        "opaque_pixels": 171248,
+        "partial_alpha_pixels": 0,
+        "baked_checkerboard": false
+      },
+      "visual_qa": "PASS: outer shell, two header wells, one calm route-map interior and a dedicated scrollbar lane remain outside the decorative rails.",
+      "prompt_contract": "Textless full-page 16:9 D&D dark-fantasy dragon shell; exact header/title/resource/map-scroll interiors; map body calm and empty; no nodes/text/pseudo-text or ornament inside zones."
+    }
+  ],
+  "rejected_generations": [
+    {
+      "screen": "main_menu",
+      "ui_asset_id": "c73391b7-1af6-4f79-ac98-fed1319313e3",
+      "revision": "v1",
+      "reason": "Rejected: no_background=false produced a fully opaque baked checkerboard instead of a transparent source PNG."
+    },
+    {
+      "screen": "route_map",
+      "ui_asset_id": "23cb9d2d-bd6b-42c7-9921-d69d2248c290",
+      "revision": "v1",
+      "reason": "Rejected: no_background=false produced a fully opaque baked checkerboard instead of a transparent source PNG."
+    },
+    {
+      "screen": "main_menu",
+      "ui_asset_id": "f82b796a-01f5-464e-a8af-6274a05423a2",
+      "revision": "v2",
+      "reason": "Rejected after alpha PASS: only four action wells were present and an unrelated circular lower-right panel violated the exact six-slot contract."
+    }
+  ]
+}

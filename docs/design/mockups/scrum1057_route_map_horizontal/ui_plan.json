@@ -1,0 +1,35 @@
+{
+  "canvas": {"width": 1920, "height": 1080},
+  "policy": {"min_gap": 12, "allow_overlap": false},
+  "content": {
+    "title": "Акт 1/3 · Путь к боссу",
+    "resources": "HP 100/100 · XP 24/60 · 120 золота"
+  },
+  "elements": [
+    {"id": "frame_art", "kind": "decor", "x": 0, "y": 0, "w": 1920, "h": 1080, "collision": false},
+    {"id": "frame_safe_area", "kind": "panel", "x": 200, "y": 169, "w": 1520, "h": 742, "content_zone": true, "collision": false},
+    {"id": "inner_content", "kind": "zone", "parent": "frame_safe_area", "x": 224, "y": 193, "w": 1472, "h": 694, "content_zone": true, "collision": false},
+    {"id": "route_header", "kind": "panel", "parent": "inner_content", "x": 224, "y": 193, "w": 1472, "h": 88, "content_zone": true, "collision": false},
+    {"id": "route_title_progress", "kind": "text", "parent": "route_header", "x": 248, "y": 197, "w": 700, "h": 64, "content_zone": true, "collision": true, "text_key": "title", "max_font": 31, "min_font": 22},
+    {"id": "route_resources", "kind": "text", "parent": "route_header", "x": 1128, "y": 197, "w": 544, "h": 64, "content_zone": true, "collision": true, "text_key": "resources", "max_font": 25, "min_font": 18},
+    {"id": "route_scroll", "kind": "scroll_area", "parent": "inner_content", "x": 224, "y": 297, "w": 1472, "h": 590, "content_zone": true, "collision": false, "scroll": "never", "scroll_axis": "horizontal", "content_w": 2600, "content_h": 590, "scrollbar_w": 18, "min_content_w": 1200},
+    {"id": "route_node_viewport", "kind": "zone", "parent": "route_scroll", "x": 248, "y": 321, "w": 1328, "h": 500, "content_zone": true, "collision": false},
+    {"id": "horizontal_scrollbar_lane", "kind": "scrollbar", "parent": "route_scroll", "x": 248, "y": 845, "w": 1328, "h": 18, "content_zone": true, "collision": true},
+    {"id": "upgrade_fab", "kind": "button", "parent": "route_scroll", "x": 1600, "y": 791, "w": 72, "h": 72, "content_zone": true, "collision": true, "text": "+", "max_font": 38, "min_font": 26},
+    {"id": "node_c0_start", "kind": "slot", "parent": "route_node_viewport", "x": 280, "y": 535, "w": 72, "h": 72, "content_zone": true, "collision": true},
+    {"id": "node_c1_top", "kind": "slot", "parent": "route_node_viewport", "x": 450, "y": 415, "w": 72, "h": 72, "content_zone": true, "collision": true},
+    {"id": "node_c1_bottom", "kind": "slot", "parent": "route_node_viewport", "x": 450, "y": 655, "w": 72, "h": 72, "content_zone": true, "collision": true},
+    {"id": "node_c2_top", "kind": "slot", "parent": "route_node_viewport", "x": 620, "y": 345, "w": 72, "h": 72, "content_zone": true, "collision": true},
+    {"id": "node_c2_mid", "kind": "slot", "parent": "route_node_viewport", "x": 620, "y": 535, "w": 72, "h": 72, "content_zone": true, "collision": true},
+    {"id": "node_c2_bottom", "kind": "slot", "parent": "route_node_viewport", "x": 620, "y": 725, "w": 72, "h": 72, "content_zone": true, "collision": true},
+    {"id": "node_c3_top", "kind": "slot", "parent": "route_node_viewport", "x": 790, "y": 415, "w": 72, "h": 72, "content_zone": true, "collision": true},
+    {"id": "node_c3_bottom", "kind": "slot", "parent": "route_node_viewport", "x": 790, "y": 655, "w": 72, "h": 72, "content_zone": true, "collision": true},
+    {"id": "node_c4_top", "kind": "slot", "parent": "route_node_viewport", "x": 960, "y": 345, "w": 72, "h": 72, "content_zone": true, "collision": true},
+    {"id": "node_c4_mid", "kind": "slot", "parent": "route_node_viewport", "x": 960, "y": 535, "w": 72, "h": 72, "content_zone": true, "collision": true},
+    {"id": "node_c4_bottom", "kind": "slot", "parent": "route_node_viewport", "x": 960, "y": 725, "w": 72, "h": 72, "content_zone": true, "collision": true},
+    {"id": "node_c5_top", "kind": "slot", "parent": "route_node_viewport", "x": 1130, "y": 415, "w": 72, "h": 72, "content_zone": true, "collision": true},
+    {"id": "node_c5_bottom", "kind": "slot", "parent": "route_node_viewport", "x": 1130, "y": 655, "w": 72, "h": 72, "content_zone": true, "collision": true},
+    {"id": "node_c6_merge", "kind": "slot", "parent": "route_node_viewport", "x": 1300, "y": 535, "w": 72, "h": 72, "content_zone": true, "collision": true},
+    {"id": "node_c7_boss", "kind": "slot", "parent": "route_node_viewport", "x": 1470, "y": 527, "w": 88, "h": 88, "content_zone": true, "collision": true}
+  ]
+}

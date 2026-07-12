@@ -1,0 +1,291 @@
+{
+  "ok": true,
+  "zones": [
+    {
+      "id": "settings_title",
+      "rect": [
+        352,
+        132,
+        392,
+        72
+      ],
+      "ok": true,
+      "kind": "guide"
+    },
+    {
+      "id": "back",
+      "rect": [
+        2124,
+        140,
+        164,
+        72
+      ],
+      "ok": true,
+      "kind": "guide"
+    },
+    {
+      "id": "tab_screen",
+      "rect": [
+        752,
+        266,
+        204,
+        72
+      ],
+      "ok": true,
+      "kind": "guide"
+    },
+    {
+      "id": "tab_sound",
+      "rect": [
+        1036,
+        266,
+        204,
+        72
+      ],
+      "ok": true,
+      "kind": "guide"
+    },
+    {
+      "id": "tab_controls",
+      "rect": [
+        1320,
+        266,
+        204,
+        72
+      ],
+      "ok": true,
+      "kind": "guide"
+    },
+    {
+      "id": "tab_game",
+      "rect": [
+        1604,
+        266,
+        204,
+        72
+      ],
+      "ok": true,
+      "kind": "guide"
+    },
+    {
+      "id": "game_title",
+      "rect": [
+        592,
+        450,
+        680,
+        60
+      ],
+      "ok": true,
+      "kind": "guide"
+    },
+    {
+      "id": "game_status",
+      "rect": [
+        1532,
+        450,
+        428,
+        60
+      ],
+      "ok": true,
+      "kind": "guide"
+    },
+    {
+      "id": "game_desc",
+      "rect": [
+        592,
+        524,
+        1368,
+        48
+      ],
+      "ok": true,
+      "kind": "guide"
+    },
+    {
+      "id": "game_warning",
+      "rect": [
+        592,
+        584,
+        1368,
+        54
+      ],
+      "ok": true,
+      "kind": "guide"
+    },
+    {
+      "id": "label_monster_hp",
+      "rect": [
+        680,
+        664,
+        580,
+        56
+      ],
+      "ok": true,
+      "kind": "guide"
+    },
+    {
+      "id": "value_monster_hp",
+      "rect": [
+        1320,
+        664,
+        170,
+        56
+      ],
+      "ok": true,
+      "kind": "guide"
+    },
+    {
+      "id": "slider_monster_hp",
+      "rect": [
+        1520,
+        664,
+        420,
+        56
+      ],
+      "ok": true,
+      "kind": "guide"
+    },
+    {
+      "id": "label_monster_damage",
+      "rect": [
+        680,
+        754,
+        580,
+        56
+      ],
+      "ok": true,
+      "kind": "guide"
+    },
+    {
+      "id": "value_monster_damage",
+      "rect": [
+        1320,
+        754,
+        170,
+        56
+      ],
+      "ok": true,
+      "kind": "guide"
+    },
+    {
+      "id": "slider_monster_damage",
+      "rect": [
+        1520,
+        754,
+        420,
+        56
+      ],
+      "ok": true,
+      "kind": "guide"
+    },
+    {
+      "id": "label_player_damage",
+      "rect": [
+        680,
+        844,
+        580,
+        56
+      ],
+      "ok": true,
+      "kind": "guide"
+    },
+    {
+      "id": "value_player_damage",
+      "rect": [
+        1320,
+        844,
+        170,
+        56
+      ],
+      "ok": true,
+      "kind": "guide"
+    },
+    {
+      "id": "slider_player_damage",
+      "rect": [
+        1520,
+        844,
+        420,
+        56
+      ],
+      "ok": true,
+      "kind": "guide"
+    },
+    {
+      "id": "label_player_attack_speed",
+      "rect": [
+        680,
+        934,
+        580,
+        56
+      ],
+      "ok": true,
+      "kind": "guide"
+    },
+    {
+      "id": "value_player_attack_speed",
+      "rect": [
+        1320,
+        934,
+        170,
+        56
+      ],
+      "ok": true,
+      "kind": "guide"
+    },
+    {
+      "id": "slider_player_attack_speed",
+      "rect": [
+        1520,
+        934,
+        420,
+        56
+      ],
+      "ok": true,
+      "kind": "guide"
+    },
+    {
+      "id": "label_monster_attack_speed",
+      "rect": [
+        680,
+        1024,
+        580,
+        56
+      ],
+      "ok": true,
+      "kind": "guide"
+    },
+    {
+      "id": "value_monster_attack_speed",
+      "rect": [
+        1320,
+        1024,
+        170,
+        56
+      ],
+      "ok": true,
+      "kind": "guide"
+    },
+    {
+      "id": "slider_monster_attack_speed",
+      "rect": [
+        1520,
+        1024,
+        420,
+        56
+      ],
+      "ok": true,
+      "kind": "guide"
+    },
+    {
+      "id": "reset",
+      "rect": [
+        1368,
+        1114,
+        544,
+        48
+      ],
+      "ok": true,
+      "kind": "guide"
+    }
+  ]
+}

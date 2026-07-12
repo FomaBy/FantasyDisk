@@ -1,0 +1,31 @@
+{
+  "jira": "SCRUM-951",
+  "pipeline": "PixelLab MCP create_ui_asset via config-based JSON-RPC bridge",
+  "source_id": "c02b9d90-d4c0-431d-af5d-560cb4c3625b",
+  "name": "SCRUM-951 Hero Select compact 2x4 stat mockup",
+  "seed": 9511,
+  "size": [688, 384],
+  "status": "completed_and_inspected",
+  "source_file": "pixellab_stat_color_compact_2x4_688x384.png",
+  "sha256": "17e7d490ef014f59e0fee80b45210dd4e9c4bf33dbf671f34502bb2367e68c2c",
+  "runtime_promotion": "none; 720p responsive styling reference only",
+  "layout": {
+    "columns": 2,
+    "rows": 4,
+    "reading_order": [
+      "strength", "agility", "intelligence", "perception",
+      "energy", "knowledge", "endurance", "leadership"
+    ],
+    "content_contract": "each compact cell retains visible localized name, bar length, value, and tooltip hitbox"
+  },
+  "visual_qa": {
+    "result": "accepted_as_720p_responsive_styling_reference",
+    "checks": [
+      "exactly two columns by four rows",
+      "canonical row-major color order",
+      "empty name, bar, and value zones in every cell",
+      "perimeter ornament stays outside content",
+      "no baked labels, values, icons, or portraits"
+    ]
+  }
+}

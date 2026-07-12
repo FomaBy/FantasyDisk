@@ -1,0 +1,183 @@
+{
+  "ok": true,
+  "decision": "ready_for_image",
+  "errors": [],
+  "warnings": [],
+  "elements": [
+    {
+      "id": "frame_art",
+      "kind": "decor",
+      "rect": [
+        0,
+        0,
+        2560,
+        1440
+      ],
+      "ok": true,
+      "warnings": []
+    },
+    {
+      "id": "frame_safe_opening",
+      "kind": "panel",
+      "rect": [
+        267,
+        225,
+        2026,
+        990
+      ],
+      "ok": true,
+      "warnings": []
+    },
+    {
+      "id": "authored_inner",
+      "kind": "panel",
+      "rect": [
+        299,
+        257,
+        1962,
+        926
+      ],
+      "ok": true,
+      "warnings": []
+    },
+    {
+      "id": "logo",
+      "kind": "icon",
+      "rect": [
+        299,
+        257,
+        480,
+        180
+      ],
+      "ok": true,
+      "warnings": []
+    },
+    {
+      "id": "gratitude_glow",
+      "kind": "decor",
+      "rect": [
+        2107,
+        1091,
+        116,
+        116
+      ],
+      "ok": true,
+      "warnings": []
+    },
+    {
+      "id": "gratitude_icon",
+      "kind": "button",
+      "rect": [
+        2120,
+        1101,
+        96,
+        96
+      ],
+      "ok": true,
+      "warnings": []
+    },
+    {
+      "id": "runtime_version",
+      "kind": "text",
+      "rect": [
+        2225,
+        1175,
+        60,
+        32
+      ],
+      "ok": true,
+      "warnings": [],
+      "fit_font_size": 18
+    },
+    {
+      "id": "action_1",
+      "kind": "button",
+      "rect": [
+        299,
+        457,
+        380,
+        96
+      ],
+      "ok": true,
+      "warnings": [],
+      "fit_font_size": 24
+    },
+    {
+      "id": "action_2",
+      "kind": "button",
+      "rect": [
+        299,
+        567,
+        380,
+        96
+      ],
+      "ok": true,
+      "warnings": [],
+      "fit_font_size": 24
+    },
+    {
+      "id": "action_3",
+      "kind": "button",
+      "rect": [
+        299,
+        677,
+        380,
+        96
+      ],
+      "ok": true,
+      "warnings": [],
+      "fit_font_size": 24
+    },
+    {
+      "id": "action_4",
+      "kind": "button",
+      "rect": [
+        299,
+        787,
+        380,
+        96
+      ],
+      "ok": true,
+      "warnings": [],
+      "fit_font_size": 24
+    },
+    {
+      "id": "action_5",
+      "kind": "button",
+      "rect": [
+        299,
+        897,
+        380,
+        96
+      ],
+      "ok": true,
+      "warnings": [],
+      "fit_font_size": 24
+    },
+    {
+      "id": "action_6",
+      "kind": "button",
+      "rect": [
+        299,
+        1007,
+        380,
+        96
+      ],
+      "ok": true,
+      "warnings": [],
+      "fit_font_size": 24
+    },
+    {
+      "id": "gratitude_visible_alpha",
+      "kind": "icon",
+      "rect": [
+        2124,
+        1105,
+        88,
+        88
+      ],
+      "ok": true,
+      "warnings": []
+    }
+  ]
+}

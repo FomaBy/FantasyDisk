@@ -1,0 +1,8 @@
+{
+  "base_request": "pixellab_create_request_v2.json",
+  "jsonrpc_id": 10140,
+  "name": "scrum1013_codex_characteristics_attributes_v3_alpha_clean",
+  "no_background": true,
+  "removed_piece_ids": ["detail_title_zone", "detail_chip_zone"],
+  "reason": "Preserve flat empty title/chip content zones and request server-side alpha cleanup after v2 baked a checkerboard background. Prompt text and all remaining geometry are identical to v2."
+}

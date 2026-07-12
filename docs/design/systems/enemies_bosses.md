@@ -1,6 +1,6 @@
 # Enemies, Elites And Bosses
 
-Обновлено: 2026-06-13 (0.1.5)
+Обновлено: 2026-07-04 (0.2.1)
 
 Канонические enemy/boss IDs и assets находятся в `docs/design/content_registry.md`. Основная логика врагов: `scripts/enemy.gd`, боссов: `scripts/boss.gd`, спавна: `scripts/combat_director.gd`. Data-driven enemy slices после SCRUM-198 находятся в `scripts/progression_data_enemies.gd` и экспортируются через `ProgressionData`.
 
@@ -25,7 +25,7 @@ SCRUM-260 развел размеры по data-driven профилям `Progres
 | Profile | Scale | Runtime meaning |
 | --- | ---: | --- |
 | `ordinary` | 1.25 | обычные враги, увеличены на +25% для читаемости в бою |
-| `mini_elite` | 1.31 | свита Возвышения L7: усиленный моб, больше обычного, меньше полноценной элитки |
+| `mini_elite` | 1.31 | усиленный моб: свита Возвышения и редкая pressure-добавка обычных волн, больше обычного, меньше полноценной элитки |
 | `elite` | 1.68 | карточная элитка узла маршрута, крупная и страшная |
 | `boss` | 1.90 | боссы, самые крупные сущности |
 
@@ -48,7 +48,14 @@ manifests переведены на native `512x512`, поэтому epic-scale 
 
 ## Bosses
 
-Boss node выбирает одного из доступных боссов: `rift_warden`, `disk_devourer`, `bone_archon`, `brood_mother`, `ashen_colossus`. С SCRUM-135 первые два активных boss source sprites и cutout parts также `512x512`; `rift_warden` сохраняет отдельный `vortex` cutout part, `disk_devourer` остается single-torso rig. SCRUM-156 подготовил source sprites для трех новых боссов; runtime mechanics/scenes уже заведены, а полный art/cutout wiring остается отдельным content/animation scope.
+Live boss scenes exist for `rift_warden`, `disk_devourer`, `bone_archon`,
+`brood_mother`, `ashen_colossus`, and `bloodthorn_lion`. The random route boss
+pool still uses the QA-gated subset; `bloodthorn_lion` remains out of random
+rotation until its follow-up gate lands. С SCRUM-135 первые два активных boss
+source sprites и cutout parts также `512x512`; `rift_warden` сохраняет отдельный
+`vortex` cutout part, `disk_devourer` остается single-torso rig. SCRUM-156
+подготовил source sprites для трех новых боссов; runtime mechanics/scenes уже
+заведены, а полный art/cutout wiring остается отдельным content/animation scope.
 
 | Boss | Scene | Pattern |
 | --- | --- | --- |
@@ -65,15 +72,14 @@ the live boss node rotation. Current boss redraw candidates, the special
 live under `assets/sprites/bosses/pixellab_candidates/` with source manifest
 `docs/design/references/bosses/pixellab_roster_redraw_2026_06/manifest.json`.
 OpenAI image generation was used only for new-boss concept references; PixelLab
-MCP produced the production sprite candidates. SCRUM-793 promotes only the
-accepted current-boss PixelLab candidates into live full-frame rows:
-`disk_devourer` source `81b491db-7240-4513-bad5-263b7f81539d` and
-`brood_mother` source `99d1c48c-ab86-4025-80b0-5a0ccb3d2edf`. Existing
-SpriteFrames resources, visual state names, frame counts and gameplay callbacks
-are preserved. `secret_ascension_boss`, single-view `bloodthorn_lion`,
-`rift_warden`, `bone_archon`, `ashen_colossus`, `skeletal_dragon` and 8-dir
-`bloodthorn_lion` remain source-only/revise-needed follow-up material.
-Promotion QA evidence lives in `build/qa/scrum793_boss_pixellab_promotion/`.
+MCP produced the production sprite candidates. SCRUM-793 promoted only the
+accepted `disk_devourer` and `brood_mother` candidates into live rows. SCRUM-865
+then replaced the live full-frame rows for all six live bosses from PixelLab MCP
+8-direction source objects and imported west-facing runtime rows into the
+existing Godot contract. Existing boss gameplay callbacks, damage, cooldowns,
+route-pool status and encounter mechanics are preserved. `skeletal_dragon`
+remains source-only/planned. Evidence:
+`docs/design/previews/boss_pixellab_full_redraw_2026_07_runtime_contact.png`.
 
 **SCRUM-794 — `bloodthorn_lion` runtime integration.** Back-end promoted the
 `bloodthorn_lion` new-boss candidate to a live-runtime boss: single-view
@@ -90,15 +96,28 @@ resolution, and a Codex boss entry. Covered by `_test_bloodthorn_lion_boss` in
 QA are ready"):* `bloodthorn_lion` is intentionally **NOT** in the random route
 pool `route_map_screen._random_boss_route_node` — the QA-gated rotation hookup is
 a follow-up. The remaining `skeletal_dragon` candidate ("needs more epic boss
-mass before final runtime") stays source-only. Full-frame animation rows for
-`bloodthorn_lion` also remain an Animator follow-up (live scene uses the static
-sprite, mirroring the pre-animation state of the other bosses).
+mass before final runtime") stays source-only. SCRUM-865 added
+`bloodthorn_lion` full-frame SpriteFrames and visual hooks for
+`skill_spike_ring` and `skill_rift_zone`; the random route pool is still
+unchanged.
 
-SCRUM-259 добавил boss-specific telegraph mechanics, SCRUM-261 закрыл их визуальный слой. Новые зоны продолжают использовать `HazardVfx.telegraph`/`detonate`, но helper выбирает dedicated painterly textures по runtime node name: `BossGravityWell`, `BossVampiricBite`, `BossRiftZone`/bone prison, `BroodWebZone`, `AshEmberZone`, `BossMoltenArmorPulse`. SCRUM-378 добавил visual-only boss full-frame skill-state hooks: эти callbacks запрашивают matching `skill_*` animation state, если для босса есть `FullFrameBody`, и fallback'аются на прежние `cast`/`attack`/`shoot` rig actions. SCRUM-379 добавил death playback lifecycle для explicit full-frame deaths: rewards/death signals происходят сразу, а визуальный труп выходит из combat groups, отключает collision/HP bar и удаляется после `death` row; missing death rows остаются на `DeathGhostRig` fallback. Щиты, reflect-thorns, command aura и summon portal также получили отдельные VFX PNG. Runtime smoke проверяет, что каждая boss scene получает unique-pattern meta и реально создает свой named mechanic node; Design smoke проверяет текстурный hazard pipeline.
+**SCRUM-865 — full PixelLab boss redraw integration.** Animator/Codex generated
+new PixelLab MCP 8-direction source objects for all six live bosses and imported
+west-facing 6-frame runtime rows for `move`, `attack`/`attack_primary`, `death`
+and two `skill_*` states per boss. The first `256x256` attempt failed because
+PixelLab caps 8-direction output at `168x168`; the completed supported pass
+landed as `170x170` source objects and normalized `512x512` Godot runtime rows.
+Source IDs/prompts are recorded in
+`docs/design/references/bosses/boss_pixellab_full_redraw_2026_07/manifest.json`.
+The runtime slice also fixes static fallback PNGs for `bone_archon`,
+`brood_mother`, and `ashen_colossus`, registers `bloodthorn_lion` in the
+full-frame registry, and keeps gameplay mechanics unchanged.
+
+SCRUM-259 добавил boss-specific telegraph mechanics, SCRUM-261 закрыл их визуальный слой. Новые зоны продолжают использовать `HazardVfx.telegraph`/`detonate`, но helper выбирает dedicated painterly textures по runtime node name: `BossGravityWell`, `BossVampiricBite`, `BossRiftZone`/bone prison, `BroodWebZone`, `AshEmberZone`, `BossMoltenArmorPulse`. SCRUM-378 добавил visual-only boss full-frame skill-state hooks: эти callbacks запрашивают matching `skill_*` animation state, если для босса есть `FullFrameBody`, и fallback'аются на прежние `cast`/`attack`/`shoot` rig actions. SCRUM-379 добавил death playback lifecycle для explicit full-frame deaths: rewards/death signals происходят сразу, а визуальный труп выходит из combat groups, отключает collision/HP bar и удаляется после `death` row; missing death rows остаются на `DeathGhostRig` fallback. SCRUM-865 добавляет boss victory delay: после смерти босса `CombatDirector` чистит не-boss pressure, ждёт `2.0s`, затем завершает победу/переход акта, а boss full-frame death cleanup cap поднят до `2.4s`. Щиты, reflect-thorns, command aura и summon portal также получили отдельные VFX PNG. Runtime smoke проверяет, что каждая boss scene получает unique-pattern meta и реально создает свой named mechanic node; Design smoke проверяет текстурный hazard pipeline.
 
 ## Mini-Elites
 
-`ProgressionData.MINI_ELITE_KINDS` содержит 6 видов L7-свиты Возвышения:
+`ProgressionData.MINI_ELITE_KINDS` содержит 6 видов mini-elite pressure-свиты:
 `mini_scavenger_reaper`, `mini_plague_bellringer`, `mini_bone_warden`,
 `mini_spark_wight`, `mini_rot_hound`, `mini_shadow_devourer`. Их source PNG из
 SCRUM-156 лежат в `assets/sprites/elites/`, но SCRUM-193 cleanup их не удалял:
@@ -109,14 +128,18 @@ legacy cleanup scope.
 добавлением в дерево получают meta `drop_class=mini_elite` и
 `epic_scale_profile=mini_elite`; поэтому визуально они читаются как усиленная
 свита, а не как полноценный route elite или босс.
+SCRUM-853 разрешает обычным волнам подмешивать mini-elites без Ascension: шанс
+начинается около `0.015` и растет от `route_scaling_stage`, wave index и elapsed
+combat time до capped `0.12`; принудительные Ascension-тесты с
+`mini_elite_chance = 1.0` сохраняют deterministic spawn.
 
 Минимальные правила:
 
 - boss fight завершает run;
 - boss имеет больше HP и несколько attack patterns;
-- victory screen появляется после смерти босса;
+- victory screen появляется после короткого boss-death playback delay;
 - defeat/death screen появляется при смерти игрока;
-- boss fight не использует обычный таймер боя.
+- boss fight использует kill-or-lose таймер, а не survival-таймер обычного боя.
 
 ## Balance Notes
 
@@ -130,12 +153,12 @@ legacy cleanup scope.
 
 `tests/runtime_smoke_test.gd` и `tests/runtime_smoke_boss_elite_test.gd`
 проверяют elite scenes, attack phases, boss pool, spawn bounds, wave pacing,
-mini/card elite/boss scale order и базовые combat flows.
+mini/card elite/boss scale order, boss death victory delay и базовые combat flows.
 
 ## SCRUM-541 Secret Ascension Boss
 
-`secret_ascension_boss` is a post-Act-3 backend/balance boss, not part of the
-normal boss node rotation. The route map still starts the ordinary Act 3 boss;
+`secret_ascension_boss` is a post-final-Act-2 backend/balance boss, not part of the
+normal boss node rotation. The route map still starts the ordinary Act 2 boss;
 after that boss is defeated, `CombatDirector` starts the secret encounter only
 when the run was launched at the maximum available Ascension level.
 
@@ -167,7 +190,8 @@ lands. Mechanics are implemented in `scripts/boss.gd` under
 - phase 2 at 50% HP adds immediate sector pressure plus riftling adds; phase 3
   begins below 25% HP.
 
-Balance benchmark for Act 3 max Ascension L5, route scaling stage 18:
+Historical balance benchmark for the final max-Ascension L5 encounter at route
+scaling stage 18 (the two-act route finale itself now reaches stage 16):
 estimated HP is about `47.6k`. L20 optimum class-kit 1-target DPS range from
 `205.39` to `391.83`, producing estimated TTK `231.8s` to `121.5s`
 (`179.8s` at median `264.77` DPS). L20 random average DPS range

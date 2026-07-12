@@ -1,0 +1,31 @@
+{
+  "canvas": {"width": 1280, "height": 720},
+  "policy": {"min_gap": 12, "allow_overlap": false},
+  "content": {
+    "title": "Магазин",
+    "subtitle": "Выбери предмет — описание появится ниже.",
+    "caption": "Длинное имя товара",
+    "price": "9999",
+    "tooltip": "Название предмета\nПолное описание и эффект предмета.\nЦена: 9999g\nКласс: Темный маг\nНе хватает монет",
+    "back": "Назад"
+  },
+  "elements": [
+    {"id": "frame_art", "kind": "decor", "x": 0, "y": 0, "w": 1280, "h": 720, "collision": false},
+    {"id": "frame_safe_area", "kind": "panel", "x": 133, "y": 113, "w": 1014, "h": 494, "content_zone": true, "collision": false, "min_w": 1014, "min_h": 494},
+    {"id": "shop_background_clip", "kind": "panel", "parent": "frame_safe_area", "x": 133, "y": 113, "w": 1014, "h": 494, "content_zone": false, "collision": false},
+    {"id": "shop_background_visible", "kind": "portrait", "parent": "shop_background_clip", "x": 201, "y": 113, "w": 878, "h": 494, "content_zone": false, "collision": false},
+    {"id": "inner_content", "kind": "zone", "parent": "frame_safe_area", "x": 157, "y": 137, "w": 966, "h": 446, "content_zone": true, "collision": false},
+    {"id": "header_zone", "kind": "zone", "parent": "inner_content", "x": 157, "y": 137, "w": 966, "h": 70, "content_zone": true, "collision": false},
+    {"id": "run_hud", "kind": "panel", "parent": "header_zone", "x": 181, "y": 147, "w": 480, "h": 50, "content_zone": true, "min_w": 480, "min_h": 50},
+    {"id": "shop_title", "kind": "text", "parent": "header_zone", "x": 675, "y": 137, "w": 330, "h": 34, "text_key": "title", "content_zone": true, "max_font": 28, "min_font": 20},
+    {"id": "shop_subtitle", "kind": "text", "parent": "header_zone", "x": 675, "y": 173, "w": 330, "h": 24, "text_key": "subtitle", "content_zone": true, "max_font": 15, "min_font": 11},
+    {"id": "manual_attribute_shop_reserved_empty", "kind": "zone", "parent": "header_zone", "x": 1057, "y": 147, "w": 50, "h": 50, "content_zone": false, "collision": false},
+    {"id": "shop_item_0", "kind": "slot", "parent": "inner_content", "x": 340, "y": 219, "w": 132, "h": 140, "content_zone": true, "min_w": 132, "min_h": 132},
+    {"id": "shop_item_1", "kind": "slot", "parent": "inner_content", "x": 496, "y": 219, "w": 132, "h": 140, "content_zone": true, "min_w": 132, "min_h": 132},
+    {"id": "shop_item_2", "kind": "slot", "parent": "inner_content", "x": 652, "y": 219, "w": 132, "h": 140, "content_zone": true, "min_w": 132, "min_h": 132},
+    {"id": "shop_item_3", "kind": "slot", "parent": "inner_content", "x": 808, "y": 219, "w": 132, "h": 140, "content_zone": true, "min_w": 132, "min_h": 132},
+    {"id": "shop_tooltip", "kind": "panel", "parent": "inner_content", "x": 430, "y": 371, "w": 420, "h": 128, "content_zone": true, "min_w": 420, "min_h": 128},
+    {"id": "shop_tooltip_content", "kind": "text", "parent": "shop_tooltip", "x": 455, "y": 388, "w": 370, "h": 94, "text_key": "tooltip", "content_zone": true, "max_font": 11, "min_font": 11},
+    {"id": "shop_back", "kind": "button", "parent": "inner_content", "x": 500, "y": 511, "w": 280, "h": 64, "text_key": "back", "content_zone": true, "max_font": 22, "min_font": 16, "min_w": 280, "min_h": 64}
+  ]
+}

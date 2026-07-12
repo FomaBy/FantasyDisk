@@ -1,0 +1,20 @@
+{
+  "jira": "SCRUM-971",
+  "provider": "PixelLab MCP",
+  "tool": "create_ui_asset",
+  "ui_asset_id": "d17b4090-9c7c-4e98-91e8-b788be339530",
+  "name": "SCRUM-971 Atlas selected class safe-zone mockup",
+  "size": "688x384",
+  "seed": 971,
+  "source_file": "pixellab_atlas_selected_class_source.png",
+  "sha256": "945f9aff7f7d4432fd7df3dfacb2d7578745b055f73b993bb8afa6b87fca0efa",
+  "planning_gate": "ready_for_image",
+  "content_zone": {
+    "x": 225,
+    "y": 93,
+    "w": 165,
+    "h": 20
+  },
+  "runtime_use": "mockup/spec evidence only; production remains native Godot UI over the existing Atlas art kit",
+  "notes": "The generated source keeps frame ornament, buttons, node sockets and constellation lines outside the selected-class title zone. The zone retains only the low-detail starfield surface, so outlined native text remains legible without a new heavy panel."
+}

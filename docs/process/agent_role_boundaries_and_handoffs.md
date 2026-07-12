@@ -1,17 +1,21 @@
 # Agent Role Boundaries And Handoffs
 
-Обновлено: 2026-07-02
+Обновлено: 2026-07-03
 
 Этот документ задает правило работы для всех специализированных чатов FantasyDisk:
 `Design`, `Back-end`, `Animator`, `QA`.
 
 Задачи формирует PM-чат/другая LLM по регламенту `docs/process/pm_workflow.md`.
-Активен текущий Jira sprint на board 1 (`Спринт 0.2.0` на 2026-07-02):
-v0.1.5 выпущен, feature block 0.1.5 снят. Плановые версии `0.1.8` и `0.1.9`
-отменены/superseded; новые tasks/fixVersions/sprint notes используют `0.2.0`
-и далее `0.2.1`, `0.2.2`, ... С 2026-06-27
+Активен текущий Jira sprint на board 1 (`Спринт 0.2.1` на 2026-07-03; всегда
+проверять live Jira перед dispatch/claim): v0.1.5 выпущен, feature block 0.1.5
+снят. Плановые версии `0.1.8` и `0.1.9` отменены/superseded; новые
+tasks/fixVersions/sprint notes используют live active sprint/release
+(`0.2.1` на момент обновления) и далее `0.2.2`, `0.2.3`, ... С 2026-06-27
 Jira проект `SCRUM` является authoritative task queue/status/owner source.
-Новые задачи текущего спринта берутся только из активного Jira sprint. PM/Documentation
+Директива пользователя 2026-07-03: все задачи, которые пользователь добавляет
+в любые чаты, сразу заводятся в active Jira sprint; backlog допустим только при
+явном freeze/hold marker. Новые задачи текущего спринта берутся только из
+активного Jira sprint. PM/Documentation
 dispatcher может маршрутизировать задачи вручную, но role agents также могут
 автоматически брать одну eligible задачу своей роли/контура через Jira-pull
 claim-first, с проверкой зависимостей и активного владельца.

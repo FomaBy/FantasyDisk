@@ -13,7 +13,6 @@ const SCREEN_IDS := [
 	"hero_select",
 	"weapon_select",
 	"codex",
-	"codex_tooltip",
 	"battle_reward",
 	"level_up",
 	"elite_reward",
@@ -103,10 +102,6 @@ func _open_screen(main: Node, screen_id: String) -> void:
 			main.ui._show_weapon_select()
 		"codex":
 			main.ui._show_codex_screen()
-		"codex_tooltip":
-			main.ui._show_codex_screen()
-			await process_frame
-			await _open_codex_tooltip(main)
 		"battle_reward":
 			_prepare_run_state(main)
 			main.ui._show_reward_screen()
@@ -134,7 +129,8 @@ func _open_screen(main: Node, screen_id: String) -> void:
 			_prepare_run_state(main)
 			main.ui._show_event_screen({
 				"name": "Design review event",
-				"event_id": "cursed_altar",
+				# SCRUM-995: флагман нового пака (3 карточки, самые длинные тексты).
+				"event_id": "caravan_bandits",
 			})
 		"pause_menu":
 			_prepare_run_state(main)
@@ -172,13 +168,6 @@ func _open_settings_tab(main: Node, tab_index: int) -> void:
 	if tabs != null:
 		tabs.current_tab = tab_index
 	await process_frame
-
-
-func _open_codex_tooltip(main: Node) -> void:
-	var anchor := main.find_child("CodexBackButton", true, false) as Control
-	if anchor == null:
-		return
-	main.ui._show_glossary_tooltip(anchor, "damage")
 
 
 func _prepare_run_state(main: Node) -> void:

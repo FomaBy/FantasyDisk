@@ -1,0 +1,776 @@
+{
+  "source_manifest": "docs/design/references/SCRUM-1065_player_projectiles/manifest.json",
+  "contract": {
+    "characters": 17,
+    "weapons": 51,
+    "flying_or_projectile_like_profiles": 20,
+    "intentional_non_projectile": 31,
+    "canonical_forward": "right",
+    "pivot": [
+      0.5,
+      0.5
+    ],
+    "runtime_integration_owner": "SCRUM-1066"
+  },
+  "assets": [
+    {
+      "visual_id": "soldier_arquebus_round",
+      "weapon_id": "soldier_rifle",
+      "runtime_path": "assets/sprites/projectiles/player/soldier/soldier_arquebus_round.png",
+      "forward_orientation": "left",
+      "rotation_offset_degrees": 180,
+      "intended_runtime_display_px": [
+        40,
+        40
+      ],
+      "trail_palette": [
+        "#F4C06A",
+        "#6B3A1E"
+      ],
+      "impact_palette": [
+        "#FFE0A0",
+        "#9B4A20"
+      ],
+      "animation_frames": 1
+    },
+    {
+      "visual_id": "soldier_fuse_grenade",
+      "weapon_id": "soldier_grenade",
+      "runtime_path": "assets/sprites/projectiles/player/soldier/soldier_fuse_grenade.png",
+      "forward_orientation": "non_directional",
+      "rotation_offset_degrees": 0,
+      "intended_runtime_display_px": [
+        48,
+        48
+      ],
+      "trail_palette": [
+        "#FF9A36",
+        "#5B4633"
+      ],
+      "impact_palette": [
+        "#FFB347",
+        "#6D2417"
+      ],
+      "animation_frames": 1
+    },
+    {
+      "visual_id": "assassin_void_chakram",
+      "weapon_id": "chakrams",
+      "runtime_path": "assets/sprites/projectiles/player/assassin/assassin_void_chakram.png",
+      "forward_orientation": "non_directional",
+      "rotation_offset_degrees": 0,
+      "intended_runtime_display_px": [
+        56,
+        56
+      ],
+      "trail_palette": [
+        "#8C5BFF",
+        "#29163F"
+      ],
+      "impact_palette": [
+        "#C090FF",
+        "#4A1C73"
+      ],
+      "animation_frames": 1
+    },
+    {
+      "visual_id": "thief_ricochet_coin",
+      "weapon_id": "thief_coin_pouch",
+      "runtime_path": "assets/sprites/projectiles/player/thief/thief_ricochet_coin.png",
+      "forward_orientation": "non_directional",
+      "rotation_offset_degrees": 0,
+      "intended_runtime_display_px": [
+        34,
+        34
+      ],
+      "trail_palette": [
+        "#FFD36A",
+        "#9B671D"
+      ],
+      "impact_palette": [
+        "#FFF0A6",
+        "#8A6A3A"
+      ],
+      "animation_frames": 1
+    },
+    {
+      "visual_id": "ranger_moon_bolt",
+      "weapon_id": "moon_crossbow",
+      "runtime_path": "assets/sprites/projectiles/player/ranger/ranger_moon_bolt.png",
+      "forward_orientation": "right",
+      "rotation_offset_degrees": 0,
+      "intended_runtime_display_px": [
+        56,
+        32
+      ],
+      "trail_palette": [
+        "#D9F3FF",
+        "#7588A7"
+      ],
+      "impact_palette": [
+        "#E8FAFF",
+        "#7EB9D5"
+      ],
+      "animation_frames": 1
+    },
+    {
+      "visual_id": "ranger_storm_arrow",
+      "weapon_id": "storm_longbow",
+      "runtime_path": "assets/sprites/projectiles/player/ranger/ranger_storm_arrow.png",
+      "forward_orientation": "right",
+      "rotation_offset_degrees": 0,
+      "intended_runtime_display_px": [
+        72,
+        32
+      ],
+      "trail_palette": [
+        "#32D9F0",
+        "#173B59"
+      ],
+      "impact_palette": [
+        "#A2F6FF",
+        "#297BA0"
+      ],
+      "animation_frames": 1
+    },
+    {
+      "visual_id": "engineer_sentry_round",
+      "weapon_id": "engineer_sentry_wrench",
+      "runtime_path": "assets/sprites/projectiles/player/engineer/engineer_sentry_round.png",
+      "forward_orientation": "right",
+      "rotation_offset_degrees": 0,
+      "intended_runtime_display_px": [
+        32,
+        32
+      ],
+      "trail_palette": [
+        "#FF9B32",
+        "#7A522B"
+      ],
+      "impact_palette": [
+        "#FFD37A",
+        "#A84B18"
+      ],
+      "animation_frames": 1
+    },
+    {
+      "visual_id": "biologist_sample_dart",
+      "weapon_id": "biologist_sample_injector",
+      "runtime_path": "assets/sprites/projectiles/player/biologist/biologist_sample_dart.png",
+      "forward_orientation": "right",
+      "rotation_offset_degrees": 0,
+      "intended_runtime_display_px": [
+        58,
+        24
+      ],
+      "trail_palette": [
+        "#4FE4C8",
+        "#2A6E70"
+      ],
+      "impact_palette": [
+        "#9BFFE8",
+        "#2D9184"
+      ],
+      "animation_frames": 1
+    },
+    {
+      "visual_id": "dark_mage_mirror_page",
+      "weapon_id": "dark_book",
+      "runtime_path": "assets/sprites/projectiles/player/dark_mage/dark_mage_mirror_page.png",
+      "forward_orientation": "non_directional",
+      "rotation_offset_degrees": 0,
+      "intended_runtime_display_px": [
+        54,
+        54
+      ],
+      "trail_palette": [
+        "#A845F5",
+        "#27112F"
+      ],
+      "impact_palette": [
+        "#F05BFF",
+        "#5A1C78"
+      ],
+      "animation_frames": 1
+    },
+    {
+      "visual_id": "dark_mage_cursed_skull",
+      "weapon_id": "cursed_skull",
+      "runtime_path": "assets/sprites/projectiles/player/dark_mage/dark_mage_cursed_skull.png",
+      "forward_orientation": "left",
+      "rotation_offset_degrees": 180,
+      "intended_runtime_display_px": [
+        52,
+        52
+      ],
+      "trail_palette": [
+        "#69E7A1",
+        "#6546B8"
+      ],
+      "impact_palette": [
+        "#B0FFB8",
+        "#7A3DAD"
+      ],
+      "animation_frames": 1
+    },
+    {
+      "visual_id": "dark_mage_chain_bolt",
+      "weapon_id": "dark_wand",
+      "runtime_path": "assets/sprites/projectiles/player/dark_mage/dark_mage_chain_bolt.png",
+      "forward_orientation": "right",
+      "rotation_offset_degrees": 0,
+      "intended_runtime_display_px": [
+        64,
+        28
+      ],
+      "trail_palette": [
+        "#22DFFC",
+        "#25154A"
+      ],
+      "impact_palette": [
+        "#8DF6FF",
+        "#6946BA"
+      ],
+      "animation_frames": 1
+    },
+    {
+      "visual_id": "elementalist_meteor",
+      "weapon_id": "elementalist_meteor_core",
+      "runtime_path": "assets/sprites/projectiles/player/elementalist/elementalist_meteor.png",
+      "forward_orientation": "left",
+      "rotation_offset_degrees": 180,
+      "intended_runtime_display_px": [
+        64,
+        64
+      ],
+      "trail_palette": [
+        "#FF7A24",
+        "#3D1B17"
+      ],
+      "impact_palette": [
+        "#FFF0A0",
+        "#E23B16"
+      ],
+      "animation_frames": 1
+    },
+    {
+      "visual_id": "doctor_restore_potion",
+      "weapon_id": "restore_potion",
+      "runtime_path": "assets/sprites/projectiles/player/doctor/doctor_restore_potion.png",
+      "forward_orientation": "non_directional",
+      "rotation_offset_degrees": 0,
+      "intended_runtime_display_px": [
+        48,
+        48
+      ],
+      "trail_palette": [
+        "#70E8A0",
+        "#346B55"
+      ],
+      "impact_palette": [
+        "#B7FFD0",
+        "#3AB77A"
+      ],
+      "animation_frames": 1
+    },
+    {
+      "visual_id": "doctor_plague_syringe",
+      "weapon_id": "plague_syringe",
+      "runtime_path": "assets/sprites/projectiles/player/doctor/doctor_plague_syringe.png",
+      "forward_orientation": "left",
+      "rotation_offset_degrees": 180,
+      "intended_runtime_display_px": [
+        58,
+        24
+      ],
+      "trail_palette": [
+        "#8DE34F",
+        "#3B5A2B"
+      ],
+      "impact_palette": [
+        "#CAFF80",
+        "#567A28"
+      ],
+      "animation_frames": 1
+    },
+    {
+      "visual_id": "chemist_blast_powder",
+      "weapon_id": "blast_powder",
+      "runtime_path": "assets/sprites/projectiles/player/chemist/chemist_blast_powder.png",
+      "forward_orientation": "non_directional",
+      "rotation_offset_degrees": 0,
+      "intended_runtime_display_px": [
+        44,
+        44
+      ],
+      "trail_palette": [
+        "#E8B44F",
+        "#6B4B25"
+      ],
+      "impact_palette": [
+        "#FFD275",
+        "#A85B20"
+      ],
+      "animation_frames": 1
+    },
+    {
+      "visual_id": "chemist_acid_flask",
+      "weapon_id": "acid_flask",
+      "runtime_path": "assets/sprites/projectiles/player/chemist/chemist_acid_flask.png",
+      "forward_orientation": "non_directional",
+      "rotation_offset_degrees": 0,
+      "intended_runtime_display_px": [
+        48,
+        48
+      ],
+      "trail_palette": [
+        "#B6F542",
+        "#355E2C"
+      ],
+      "impact_palette": [
+        "#D8FF66",
+        "#52A836"
+      ],
+      "animation_frames": 1
+    },
+    {
+      "visual_id": "druid_briar_seed",
+      "weapon_id": "briar_staff",
+      "runtime_path": "assets/sprites/projectiles/player/druid/druid_briar_seed.png",
+      "forward_orientation": "right",
+      "rotation_offset_degrees": 0,
+      "intended_runtime_display_px": [
+        60,
+        32
+      ],
+      "trail_palette": [
+        "#57D98B",
+        "#254B32"
+      ],
+      "impact_palette": [
+        "#9BFF9D",
+        "#39733B"
+      ],
+      "animation_frames": 1
+    },
+    {
+      "visual_id": "druid_spectral_raven",
+      "weapon_id": "raven_totem",
+      "runtime_path": "assets/sprites/projectiles/player/druid/druid_spectral_raven.png",
+      "forward_orientation": "right",
+      "rotation_offset_degrees": 0,
+      "intended_runtime_display_px": [
+        64,
+        40
+      ],
+      "trail_palette": [
+        "#39C9C7",
+        "#142F35"
+      ],
+      "impact_palette": [
+        "#7FF6E8",
+        "#315D67"
+      ],
+      "animation_frames": 1
+    },
+    {
+      "visual_id": "thief_smoke_bomb",
+      "weapon_id": "thief_smoke_bomb",
+      "runtime_path": "assets/sprites/projectiles/player/thief/thief_smoke_bomb.png",
+      "forward_orientation": "non_directional",
+      "rotation_offset_degrees": 0,
+      "intended_runtime_display_px": [
+        48,
+        48
+      ],
+      "trail_palette": [
+        "#8C80B8",
+        "#32313D"
+      ],
+      "impact_palette": [
+        "#B5AEC8",
+        "#4C465C"
+      ],
+      "animation_frames": 1
+    },
+    {
+      "visual_id": "sniper_shatter_round",
+      "weapon_id": "sniper_shatter_rounds",
+      "runtime_path": "assets/sprites/projectiles/player/sniper/sniper_shatter_round.png",
+      "forward_orientation": "right",
+      "rotation_offset_degrees": 0,
+      "intended_runtime_display_px": [
+        48,
+        24
+      ],
+      "trail_palette": [
+        "#C8F7FF",
+        "#506776"
+      ],
+      "impact_palette": [
+        "#E8FCFF",
+        "#7CA6BA"
+      ],
+      "animation_frames": 1
+    }
+  ],
+  "inventory": [
+    {
+      "character_id": "berserk",
+      "weapon_id": "sword",
+      "classification": "intentional_non_projectile",
+      "projectile_visual_id": null,
+      "asset_path": null
+    },
+    {
+      "character_id": "berserk",
+      "weapon_id": "axe",
+      "classification": "intentional_non_projectile",
+      "projectile_visual_id": null,
+      "asset_path": null
+    },
+    {
+      "character_id": "berserk",
+      "weapon_id": "hammer",
+      "classification": "intentional_non_projectile",
+      "projectile_visual_id": null,
+      "asset_path": null
+    },
+    {
+      "character_id": "dark_mage",
+      "weapon_id": "dark_book",
+      "classification": "flying_projectile",
+      "projectile_visual_id": "dark_mage_mirror_page",
+      "asset_path": "assets/sprites/projectiles/player/dark_mage/dark_mage_mirror_page.png"
+    },
+    {
+      "character_id": "dark_mage",
+      "weapon_id": "cursed_skull",
+      "classification": "flying_projectile",
+      "projectile_visual_id": "dark_mage_cursed_skull",
+      "asset_path": "assets/sprites/projectiles/player/dark_mage/dark_mage_cursed_skull.png"
+    },
+    {
+      "character_id": "dark_mage",
+      "weapon_id": "dark_wand",
+      "classification": "flying_projectile",
+      "projectile_visual_id": "dark_mage_chain_bolt",
+      "asset_path": "assets/sprites/projectiles/player/dark_mage/dark_mage_chain_bolt.png"
+    },
+    {
+      "character_id": "guitarist",
+      "weapon_id": "electric_guitar",
+      "classification": "intentional_non_projectile",
+      "projectile_visual_id": null,
+      "asset_path": null
+    },
+    {
+      "character_id": "guitarist",
+      "weapon_id": "bass_guitar",
+      "classification": "intentional_non_projectile",
+      "projectile_visual_id": null,
+      "asset_path": null
+    },
+    {
+      "character_id": "guitarist",
+      "weapon_id": "sound_amp",
+      "classification": "intentional_non_projectile",
+      "projectile_visual_id": null,
+      "asset_path": null
+    },
+    {
+      "character_id": "assassin",
+      "weapon_id": "chakrams",
+      "classification": "flying_projectile",
+      "projectile_visual_id": "assassin_void_chakram",
+      "asset_path": "assets/sprites/projectiles/player/assassin/assassin_void_chakram.png"
+    },
+    {
+      "character_id": "assassin",
+      "weapon_id": "shadow_daggers",
+      "classification": "intentional_non_projectile",
+      "projectile_visual_id": null,
+      "asset_path": null
+    },
+    {
+      "character_id": "assassin",
+      "weapon_id": "venom_wire",
+      "classification": "intentional_non_projectile",
+      "projectile_visual_id": null,
+      "asset_path": null
+    },
+    {
+      "character_id": "ranger",
+      "weapon_id": "moon_crossbow",
+      "classification": "projectile_like_tracer",
+      "projectile_visual_id": "ranger_moon_bolt",
+      "asset_path": "assets/sprites/projectiles/player/ranger/ranger_moon_bolt.png"
+    },
+    {
+      "character_id": "ranger",
+      "weapon_id": "storm_longbow",
+      "classification": "projectile_like_tracer",
+      "projectile_visual_id": "ranger_storm_arrow",
+      "asset_path": "assets/sprites/projectiles/player/ranger/ranger_storm_arrow.png"
+    },
+    {
+      "character_id": "ranger",
+      "weapon_id": "hunter_trap",
+      "classification": "intentional_non_projectile",
+      "projectile_visual_id": null,
+      "asset_path": null
+    },
+    {
+      "character_id": "doctor",
+      "weapon_id": "restore_potion",
+      "classification": "flying_projectile",
+      "projectile_visual_id": "doctor_restore_potion",
+      "asset_path": "assets/sprites/projectiles/player/doctor/doctor_restore_potion.png"
+    },
+    {
+      "character_id": "doctor",
+      "weapon_id": "plague_syringe",
+      "classification": "flying_projectile",
+      "projectile_visual_id": "doctor_plague_syringe",
+      "asset_path": "assets/sprites/projectiles/player/doctor/doctor_plague_syringe.png"
+    },
+    {
+      "character_id": "doctor",
+      "weapon_id": "bone_saw",
+      "classification": "intentional_non_projectile",
+      "projectile_visual_id": null,
+      "asset_path": null
+    },
+    {
+      "character_id": "chemist",
+      "weapon_id": "blast_powder",
+      "classification": "flying_projectile",
+      "projectile_visual_id": "chemist_blast_powder",
+      "asset_path": "assets/sprites/projectiles/player/chemist/chemist_blast_powder.png"
+    },
+    {
+      "character_id": "chemist",
+      "weapon_id": "acid_flask",
+      "classification": "flying_projectile",
+      "projectile_visual_id": "chemist_acid_flask",
+      "asset_path": "assets/sprites/projectiles/player/chemist/chemist_acid_flask.png"
+    },
+    {
+      "character_id": "chemist",
+      "weapon_id": "homunculus_vial",
+      "classification": "intentional_non_projectile",
+      "projectile_visual_id": null,
+      "asset_path": null
+    },
+    {
+      "character_id": "knight",
+      "weapon_id": "long_spear",
+      "classification": "intentional_non_projectile",
+      "projectile_visual_id": null,
+      "asset_path": null
+    },
+    {
+      "character_id": "knight",
+      "weapon_id": "tower_shield",
+      "classification": "intentional_non_projectile",
+      "projectile_visual_id": null,
+      "asset_path": null
+    },
+    {
+      "character_id": "knight",
+      "weapon_id": "holy_flail",
+      "classification": "intentional_non_projectile",
+      "projectile_visual_id": null,
+      "asset_path": null
+    },
+    {
+      "character_id": "druid",
+      "weapon_id": "summon_amulet",
+      "classification": "intentional_non_projectile",
+      "projectile_visual_id": null,
+      "asset_path": null
+    },
+    {
+      "character_id": "druid",
+      "weapon_id": "briar_staff",
+      "classification": "flying_projectile",
+      "projectile_visual_id": "druid_briar_seed",
+      "asset_path": "assets/sprites/projectiles/player/druid/druid_briar_seed.png"
+    },
+    {
+      "character_id": "druid",
+      "weapon_id": "raven_totem",
+      "classification": "flying_projectile",
+      "projectile_visual_id": "druid_spectral_raven",
+      "asset_path": "assets/sprites/projectiles/player/druid/druid_spectral_raven.png"
+    },
+    {
+      "character_id": "soldier",
+      "weapon_id": "soldier_rifle",
+      "classification": "flying_projectile",
+      "projectile_visual_id": "soldier_arquebus_round",
+      "asset_path": "assets/sprites/projectiles/player/soldier/soldier_arquebus_round.png"
+    },
+    {
+      "character_id": "soldier",
+      "weapon_id": "soldier_grenade",
+      "classification": "flying_projectile",
+      "projectile_visual_id": "soldier_fuse_grenade",
+      "asset_path": "assets/sprites/projectiles/player/soldier/soldier_fuse_grenade.png"
+    },
+    {
+      "character_id": "soldier",
+      "weapon_id": "soldier_bayonet",
+      "classification": "intentional_non_projectile",
+      "projectile_visual_id": null,
+      "asset_path": null
+    },
+    {
+      "character_id": "thief",
+      "weapon_id": "thief_coin_pouch",
+      "classification": "flying_projectile",
+      "projectile_visual_id": "thief_ricochet_coin",
+      "asset_path": "assets/sprites/projectiles/player/thief/thief_ricochet_coin.png"
+    },
+    {
+      "character_id": "thief",
+      "weapon_id": "thief_shadow_cloak",
+      "classification": "intentional_non_projectile",
+      "projectile_visual_id": null,
+      "asset_path": null
+    },
+    {
+      "character_id": "thief",
+      "weapon_id": "thief_smoke_bomb",
+      "classification": "flying_projectile",
+      "projectile_visual_id": "thief_smoke_bomb",
+      "asset_path": "assets/sprites/projectiles/player/thief/thief_smoke_bomb.png"
+    },
+    {
+      "character_id": "elementalist",
+      "weapon_id": "elementalist_orb_ring",
+      "classification": "intentional_non_projectile",
+      "projectile_visual_id": null,
+      "asset_path": null
+    },
+    {
+      "character_id": "elementalist",
+      "weapon_id": "elementalist_prism_focus",
+      "classification": "intentional_non_projectile",
+      "projectile_visual_id": null,
+      "asset_path": null
+    },
+    {
+      "character_id": "elementalist",
+      "weapon_id": "elementalist_meteor_core",
+      "classification": "flying_projectile",
+      "projectile_visual_id": "elementalist_meteor",
+      "asset_path": "assets/sprites/projectiles/player/elementalist/elementalist_meteor.png"
+    },
+    {
+      "character_id": "sniper",
+      "weapon_id": "sniper_deadeye_rifle",
+      "classification": "intentional_non_projectile",
+      "projectile_visual_id": null,
+      "asset_path": null
+    },
+    {
+      "character_id": "sniper",
+      "weapon_id": "sniper_spotter_scope",
+      "classification": "intentional_non_projectile",
+      "projectile_visual_id": null,
+      "asset_path": null
+    },
+    {
+      "character_id": "sniper",
+      "weapon_id": "sniper_shatter_rounds",
+      "classification": "flying_projectile",
+      "projectile_visual_id": "sniper_shatter_round",
+      "asset_path": "assets/sprites/projectiles/player/sniper/sniper_shatter_round.png"
+    },
+    {
+      "character_id": "priest",
+      "weapon_id": "priest_reliquary",
+      "classification": "intentional_non_projectile",
+      "projectile_visual_id": null,
+      "asset_path": null
+    },
+    {
+      "character_id": "priest",
+      "weapon_id": "priest_censer",
+      "classification": "intentional_non_projectile",
+      "projectile_visual_id": null,
+      "asset_path": null
+    },
+    {
+      "character_id": "priest",
+      "weapon_id": "priest_chime",
+      "classification": "intentional_non_projectile",
+      "projectile_visual_id": null,
+      "asset_path": null
+    },
+    {
+      "character_id": "biologist",
+      "weapon_id": "biologist_spore_lens",
+      "classification": "intentional_non_projectile",
+      "projectile_visual_id": null,
+      "asset_path": null
+    },
+    {
+      "character_id": "biologist",
+      "weapon_id": "biologist_sample_injector",
+      "classification": "projectile_like_tracer",
+      "projectile_visual_id": "biologist_sample_dart",
+      "asset_path": "assets/sprites/projectiles/player/biologist/biologist_sample_dart.png"
+    },
+    {
+      "character_id": "biologist",
+      "weapon_id": "biologist_symbiote_seed",
+      "classification": "intentional_non_projectile",
+      "projectile_visual_id": null,
+      "asset_path": null
+    },
+    {
+      "character_id": "robot",
+      "weapon_id": "robot_magnetic_anchor",
+      "classification": "intentional_non_projectile",
+      "projectile_visual_id": null,
+      "asset_path": null
+    },
+    {
+      "character_id": "robot",
+      "weapon_id": "robot_hydraulic_press",
+      "classification": "intentional_non_projectile",
+      "projectile_visual_id": null,
+      "asset_path": null
+    },
+    {
+      "character_id": "robot",
+      "weapon_id": "robot_reactor_core",
+      "classification": "intentional_non_projectile",
+      "projectile_visual_id": null,
+      "asset_path": null
+    },
+    {
+      "character_id": "engineer",
+      "weapon_id": "engineer_sentry_wrench",
+      "classification": "flying_projectile",
+      "projectile_visual_id": "engineer_sentry_round",
+      "asset_path": "assets/sprites/projectiles/player/engineer/engineer_sentry_round.png"
+    },
+    {
+      "character_id": "engineer",
+      "weapon_id": "engineer_repair_drone",
+      "classification": "intentional_non_projectile",
+      "projectile_visual_id": null,
+      "asset_path": null
+    },
+    {
+      "character_id": "engineer",
+      "weapon_id": "engineer_pressure_mines",
+      "classification": "intentional_non_projectile",
+      "projectile_visual_id": null,
+      "asset_path": null
+    }
+  ]
+}

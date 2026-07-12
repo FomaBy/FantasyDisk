@@ -1,0 +1,235 @@
+{
+  "jira": "SCRUM-1016",
+  "policy": {
+    "source_issue": "SCRUM-1015",
+    "exact_character_ids_only": true,
+    "directions": ["west", "east"],
+    "movement_template": "running-6-frames",
+    "action_mode": "v3",
+    "action_frame_count": 6,
+    "keep_first_frame": false,
+    "pro_mode_used": false
+  },
+  "characters": [
+    {
+      "id": "druid_ghost_wolf",
+      "pixellab_character_id": "8d473df8-9bc2-481c-ad58-b69cfecc5d33",
+      "role": "physical_melee_aoe",
+      "movement": {
+        "template_animation_id": "running-6-frames",
+        "animation_name": "ghost_move",
+        "directions": ["west", "east"],
+        "mode": "template"
+      },
+      "action": {
+        "animation_name": "ghost_melee_sweep",
+        "action_description": "lunging forward with a wide claw and body sweep, then returning to the ready pose",
+        "directions": ["west", "east"],
+        "mode": "v3",
+        "frame_count": 6,
+        "keep_first_frame": false
+      }
+    },
+    {
+      "id": "druid_ghost_bear",
+      "pixellab_character_id": "6805608a-b64a-471c-a1d9-9601a3062e2f",
+      "role": "physical_melee_aoe",
+      "movement": {
+        "template_animation_id": "running-6-frames",
+        "animation_name": "ghost_move",
+        "directions": ["west", "east"],
+        "mode": "template"
+      },
+      "action": {
+        "animation_name": "ghost_ground_slam",
+        "action_description": "raising both forepaws and slamming them heavily onto the ground, then returning to the ready pose",
+        "directions": ["west", "east"],
+        "mode": "v3",
+        "frame_count": 6,
+        "keep_first_frame": false
+      }
+    },
+    {
+      "id": "druid_ghost_panther",
+      "pixellab_character_id": "b2d06d20-aabb-48e2-9d8a-5053daa03e8e",
+      "role": "physical_melee_aoe",
+      "movement": {
+        "template_animation_id": "running-6-frames",
+        "animation_name": "ghost_move",
+        "directions": ["west", "east"],
+        "mode": "template"
+      },
+      "action": {
+        "animation_name": "ghost_pounce_rake",
+        "action_description": "making a short forward pounce followed by a wide circular claw rake, then returning to the ready pose",
+        "directions": ["west", "east"],
+        "mode": "v3",
+        "frame_count": 6,
+        "keep_first_frame": false
+      }
+    },
+    {
+      "id": "druid_ghost_stag",
+      "pixellab_character_id": "f17948e2-8e1d-44f2-93f1-8f8593ae01fe",
+      "role": "magical_ranged_caster",
+      "movement": {
+        "template_animation_id": "running-6-frames",
+        "animation_name": "ghost_move",
+        "directions": ["west", "east"],
+        "mode": "template"
+      },
+      "action": {
+        "animation_name": "ghost_spirit_lance_cast",
+        "action_description": "bracing and lifting the antlers to cast a focused spirit lance forward, then returning to the ready pose",
+        "directions": ["west", "east"],
+        "mode": "v3",
+        "frame_count": 6,
+        "keep_first_frame": false
+      }
+    },
+    {
+      "id": "druid_ghost_lion",
+      "pixellab_character_id": "48d76788-eeba-4a9f-a36f-bd40a8f42e07",
+      "role": "magical_ranged_caster",
+      "movement": {
+        "template_animation_id": "running-6-frames",
+        "animation_name": "ghost_move",
+        "directions": ["west", "east"],
+        "mode": "template"
+      },
+      "action": {
+        "animation_name": "ghost_roar_cast",
+        "action_description": "planting all paws and releasing a powerful spectral roar projectile forward while the mane surges, then returning to the ready pose",
+        "directions": ["west", "east"],
+        "mode": "v3",
+        "frame_count": 6,
+        "keep_first_frame": false
+      }
+    }
+  ],
+  "quality_revisions": [
+    {
+      "id": "druid_ghost_bear",
+      "kind": "movement",
+      "reason": "Strict alpha/crop gate found template movement phases touching the 180x180 source edge.",
+      "request": {
+        "animation_name": "ghost_move_centered",
+        "action_description": "walking steadily in place with a heavy grounded quadruped gait, body remains centered and compact inside the canvas with generous transparent padding and no horizontal translation",
+        "directions": ["west", "east"],
+        "mode": "v3",
+        "frame_count": 6,
+        "keep_first_frame": false
+      }
+    },
+    {
+      "id": "druid_ghost_stag",
+      "kind": "movement",
+      "reason": "Strict alpha/crop gate found template movement phases touching the 180x180 source edge.",
+      "request": {
+        "animation_name": "ghost_move_centered",
+        "action_description": "trotting gracefully in place with a light quadruped gait, full antlers and body remain centered and compact inside the canvas with generous transparent padding and no horizontal translation",
+        "directions": ["west", "east"],
+        "mode": "v3",
+        "frame_count": 6,
+        "keep_first_frame": false
+      }
+    },
+    {
+      "id": "druid_ghost_stag",
+      "kind": "attack_right",
+      "reason": "Strict alpha/crop gate found east/right cast phases touching the 180x180 source edge.",
+      "request": {
+        "animation_name": "ghost_spirit_lance_cast_centered",
+        "action_description": "bracing in place and charging a compact spirit lance glow between the antlers, full antlers and body remain centered inside the canvas with generous transparent padding and no translation",
+        "directions": ["east"],
+        "mode": "v3",
+        "frame_count": 6,
+        "keep_first_frame": false
+      }
+    },
+    {
+      "id": "druid_ghost_bear",
+      "kind": "movement_visual_retake",
+      "reason": "Animator contact-sheet review rejected the first centered retake because it reared upright instead of maintaining a four-paw gait.",
+      "request": {
+        "animation_name": "ghost_move_quadruped",
+        "action_description": "walking in place on all four paws with a low heavy grounded quadruped gait, never standing upright and never rearing, full body stays centered compact with generous transparent padding and no horizontal translation",
+        "directions": ["west", "east"],
+        "mode": "v3",
+        "frame_count": 6,
+        "keep_first_frame": false
+      }
+    },
+    {
+      "id": "druid_ghost_stag",
+      "kind": "attack_left_visual_retake",
+      "reason": "Animator contact-sheet review found the original west/left spirit-lance cast too subtle to read as a ranged magical action.",
+      "request": {
+        "animation_name": "ghost_spirit_lance_cast_left_readable",
+        "action_description": "bracing in place and releasing a clearly visible compact bright cyan spirit lance flash between the antlers, no orange red or fire, full antlers and body remain centered with generous transparent padding",
+        "directions": ["west"],
+        "mode": "v3",
+        "frame_count": 6,
+        "keep_first_frame": false
+      }
+    },
+    {
+      "id": "druid_ghost_lion",
+      "kind": "attack_left_visual_retake",
+      "reason": "Animator contact-sheet review rejected the original west/left roar frames because they introduced an orange ground accent outside the allied cyan/blue palette.",
+      "request": {
+        "animation_name": "ghost_roar_cast_left_blue",
+        "action_description": "planting all four paws and releasing a clearly visible compact cyan and blue spectral roar burst forward, no orange red fire or ground circle, full body and mane remain centered with generous transparent padding",
+        "directions": ["west"],
+        "mode": "v3",
+        "frame_count": 6,
+        "keep_first_frame": false
+      }
+    },
+    {
+      "id": "druid_ghost_bear",
+      "kind": "movement_final_template_retake",
+      "reason": "Two v3 centered movement attempts kept rearing upright; switch back to the available quadruped skeleton template with a slower walk cycle. The invalid `walking-6-frames` probe was rejected by PixelLab; `walk-6-frames` was accepted.",
+      "request": {
+        "template_animation_id": "walk-6-frames",
+        "animation_name": "ghost_walk_quadruped",
+        "directions": ["west", "east"],
+        "mode": "template"
+      }
+    },
+    {
+      "id": "druid_ghost_bear",
+      "kind": "scrum1020_move_right_identity_remediation",
+      "reason": "Independent QA rejected the selected walking east row because frames 00-02 became canine-like while frames 03-05 became a heavy bear (2.09x alpha-area discontinuity). Anchor a v3 east-only retake with a same-UUID heavy-bear frame.",
+      "request": {
+        "animation_name": "scrum1020_grounded_bear_walk_right_v1",
+        "action_description": "walking slowly in place on all four paws with a heavy grounded bear gait, back stays nearly horizontal, front and rear paws remain below the torso and reach the ground, preserve the exact heavy bear body mass proportions cyan spectral palette and white star shoulder marking at the same scale in every frame, never rear sit stand bipedally become canine fox wolf shrink grow or translate across the canvas",
+        "directions": ["east"],
+        "mode": "v3",
+        "frame_count": 6,
+        "keep_first_frame": false,
+        "ai_freedom": 0,
+        "custom_start_frame": "same UUID walking/east/frame_003.png; base64 intentionally not stored",
+        "accepted": true,
+        "selected_job_id": "1585ff64-f3e8-4db7-aa8b-fd7631a40bae"
+      }
+    },
+    {
+      "id": "druid_ghost_bear",
+      "kind": "scrum1020_move_right_palette_candidate",
+      "reason": "Second same-UUID cyan-palette candidate was inspected but rejected before import because frames 03-05 gradually reared upright.",
+      "request": {
+        "animation_name": "scrum1020_cyan_bear_patrol_right_v2",
+        "action_description": "subtle grounded four paw patrol cycle, heavy cyan spectral bear keeps the same long torso rounded bear head dark blue legs body mass and scale as the supplied pose, fully cyan face and coat remain stable, paws alternate naturally under a nearly horizontal back, absolutely no white head color swap wolf fox canine body shrinking growth rearing sitting biped stance or canvas translation",
+        "directions": ["east"],
+        "mode": "v3",
+        "frame_count": 6,
+        "keep_first_frame": false,
+        "ai_freedom": 0,
+        "custom_start_frame": "same UUID running/east/frame_002.png; base64 intentionally not stored",
+        "accepted": false,
+        "rejected_job_id": "127fa29e-bafa-402f-bca2-4960e61644d1"
+      }
+    }
+  ]
+}

@@ -1,0 +1,15 @@
+{
+  "canvas": {"width": 1280, "height": 720},
+  "defaults": {"color": "#F2E4B8", "stroke_fill": "#140D0B", "stroke_width": 2, "align": "center", "valign": "middle"},
+  "content": {
+    "header": "TITLE / BACK / STATUS",
+    "body": "EMPTY RUNTIME CONTENT INTERIOR\nSCROLLABLE COMPACT MODE",
+    "footer": "ACTIONS / PAGING"
+  },
+  "zones": [
+    {"id": "header_zone", "content_key": "header", "x": 157, "y": 137, "w": 966, "h": 72, "max_font": 22, "min_font": 15, "debug_color": "#E3B95D"},
+    {"id": "body_zone", "content_key": "body", "x": 157, "y": 225, "w": 952, "h": 255, "max_font": 24, "min_font": 15, "debug_color": "#58D6C7"},
+    {"id": "scrollbar_lane", "text": "S", "x": 1109, "y": 225, "w": 14, "h": 255, "max_font": 10, "min_font": 8, "debug_color": "#A67CFF"},
+    {"id": "footer_zone", "content_key": "footer", "x": 157, "y": 496, "w": 966, "h": 72, "max_font": 20, "min_font": 14, "debug_color": "#E38C5D"}
+  ]
+}

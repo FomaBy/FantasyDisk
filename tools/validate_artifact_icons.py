@@ -13,7 +13,7 @@ from PIL import Image, ImageDraw, ImageFont
 
 ROOT = Path(__file__).resolve().parents[1]
 ARTIFACT_DIR = ROOT / "assets" / "sprites" / "ui" / "icons" / "artifacts"
-PROGRESSION_DATA = ROOT / "scripts" / "progression_data.gd"
+PROGRESSION_DATA = ROOT / "scripts" / "progression_data_content.gd"
 PREVIEW_PATH = ROOT / "assets" / "sprites" / "ui" / "icons" / "artifact_per_item_preview.png"
 SIZE = 256
 EDGE_MARGIN = 4
@@ -21,7 +21,7 @@ EDGE_MARGIN = 4
 
 def parse_artifact_ids() -> list[str]:
     text = PROGRESSION_DATA.read_text(encoding="utf-8")
-    block = text.split("const ARTIFACTS :=", 1)[1].split("const LEVEL_UP_REWARDS", 1)[0]
+    block = text.split("const ARTIFACTS := [", 1)[1].split("\n]", 1)[0]
     return re.findall(r'"id":\s*"([^"]+)"', block)
 
 

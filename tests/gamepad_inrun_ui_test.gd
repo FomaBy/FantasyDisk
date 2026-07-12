@@ -115,19 +115,37 @@ func _test_reward_focus(main) -> bool:
 
 
 func _test_pause_menu_focus_and_cancel(main) -> bool:
-	# _show_pause_menu в бою открывает досье (PauseStatsMenu, кнопка «Продолжить» =
-	# PauseResumeButton), вне блокирующих экранов — run-меню (RunPauseContinueButton).
-	# Обе — валидный стартовый фокус (наша разводка); принимаем любой вариант.
+	# SCRUM-890: _show_pause_menu ВСЕГДА открывает досье героя; стартовый фокус —
+	# первая кнопка шапки «Продолжить» (PauseResumeButton).
 	main.ui._show_pause_menu(true)
 	await process_frame
 	await process_frame
 	var focus := _focus_owner(main)
 	var focus_name := str(focus.name) if focus != null else ""
-	if focus == null or (focus_name != "RunPauseContinueButton" and focus_name != "PauseResumeButton"):
-		_fail("SCRUM-812: стартовый фокус паузы — «Продолжить» (Run/Dossier), получено: %s" % [focus])
+	if focus == null or focus_name != "PauseResumeButton":
+		_fail("SCRUM-812/890: стартовый фокус досье — «Продолжить» (PauseResumeButton), получено: %s" % [focus])
 		return false
 	if not main.ui._is_run_pause_overlay_open():
 		_fail("SCRUM-812: пауза-оверлей должен быть открыт.")
+		return false
+	main.ui._show_settings_menu("run_pause")
+	await process_frame
+	await process_frame
+	if not main.ui._is_settings_screen_open():
+		_fail("SCRUM-844: настройки из паузы должны открывать SettingsV2Root.")
+		return false
+	var escape := InputEventKey.new()
+	escape.keycode = KEY_ESCAPE
+	escape.physical_keycode = KEY_ESCAPE
+	escape.pressed = true
+	main.call("_input", escape)
+	await process_frame
+	await process_frame
+	if main.ui._is_settings_screen_open():
+		_fail("SCRUM-844: Esc из Settings должен вернуться к pause, а не оставить настройки поверх.")
+		return false
+	if not main.ui._is_run_pause_overlay_open():
+		_fail("SCRUM-844: Esc из Settings, открытых из паузы, должен восстановить pause overlay.")
 		return false
 	# B (joypad) через main._input закрывает паузу (ui_cancel → _resume_game).
 	var cancel := InputEventJoypadButton.new()

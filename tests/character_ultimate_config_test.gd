@@ -11,7 +11,8 @@ extends SceneTree
 
 const PD := preload("res://scripts/progression_data.gd")
 
-const VALID_DAMAGE_PARAMS := ["damage", "magic_damage", "sound_wave_damage"]
+# SCRUM-898: звуковой тип удалён — валидны только физический и магический каналы.
+const VALID_DAMAGE_PARAMS := ["damage", "magic_damage"]
 
 
 func _initialize() -> void:

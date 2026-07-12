@@ -1,0 +1,32 @@
+{
+  "canvas": {"width": 688, "height": 384},
+  "policy": {"min_gap": 4, "allow_overlap": false},
+  "content": {
+    "title": "НАСТРОЙКИ",
+    "tab_screen": "ЭКРАН",
+    "tab_sound": "ЗВУК",
+    "tab_controls": "УПРАВЛЕНИЕ",
+    "monitor": "МОНИТОР",
+    "resolution": "РАЗРЕШЕНИЕ",
+    "window_mode": "РЕЖИМ ОКНА",
+    "shake": "ТРЯСКА КАМЕРЫ"
+  },
+  "elements": [
+    {"id": "outer_frame", "kind": "panel", "x": 0, "y": 0, "w": 688, "h": 384, "min_w": 640, "min_h": 360},
+    {"id": "safe_area", "kind": "zone", "parent": "outer_frame", "content_zone": true, "x": 48, "y": 34, "w": 592, "h": 316},
+    {"id": "header", "kind": "zone", "parent": "safe_area", "content_zone": true, "x": 68, "y": 61, "w": 552, "h": 30},
+    {"id": "title", "kind": "text", "parent": "header", "content_zone": true, "x": 86, "y": 64, "w": 118, "h": 22, "text_key": "title", "max_font": 16, "min_font": 11},
+    {"id": "back_button", "kind": "button", "parent": "header", "content_zone": true, "x": 522, "y": 61, "w": 98, "h": 30, "min_w": 86, "min_h": 26},
+    {"id": "tab_row", "kind": "zone", "parent": "safe_area", "content_zone": true, "x": 196, "y": 103, "w": 296, "h": 34},
+    {"id": "tab_screen", "kind": "button", "parent": "tab_row", "content_zone": true, "x": 196, "y": 103, "w": 94, "h": 34, "text_key": "tab_screen", "max_font": 12, "min_font": 8},
+    {"id": "tab_sound", "kind": "button", "parent": "tab_row", "content_zone": true, "x": 296, "y": 103, "w": 94, "h": 34, "text_key": "tab_sound", "max_font": 12, "min_font": 8},
+    {"id": "tab_controls", "kind": "button", "parent": "tab_row", "content_zone": true, "x": 396, "y": 103, "w": 96, "h": 34, "text_key": "tab_controls", "max_font": 11, "min_font": 7},
+    {"id": "seamless_content_zone", "kind": "zone", "parent": "safe_area", "content_zone": true, "x": 154, "y": 145, "w": 380, "h": 154, "min_w": 340, "min_h": 140},
+    {"id": "monitor_row", "kind": "zone", "parent": "seamless_content_zone", "content_zone": true, "x": 170, "y": 151, "w": 348, "h": 27},
+    {"id": "resolution_row", "kind": "zone", "parent": "seamless_content_zone", "content_zone": true, "x": 170, "y": 183, "w": 348, "h": 27},
+    {"id": "window_mode_row", "kind": "zone", "parent": "seamless_content_zone", "content_zone": true, "x": 170, "y": 215, "w": 348, "h": 27},
+    {"id": "shake_row", "kind": "zone", "parent": "seamless_content_zone", "content_zone": true, "x": 170, "y": 247, "w": 348, "h": 27},
+    {"id": "status_row", "kind": "text", "parent": "seamless_content_zone", "content_zone": true, "x": 264, "y": 278, "w": 180, "h": 18, "text": "Изменения применены", "max_font": 10, "min_font": 7},
+    {"id": "footer_actions", "kind": "zone", "parent": "safe_area", "content_zone": true, "x": 309, "y": 307, "w": 206, "h": 30}
+  ]
+}

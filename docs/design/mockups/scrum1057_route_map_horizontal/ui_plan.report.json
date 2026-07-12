@@ -1,0 +1,313 @@
+{
+  "ok": true,
+  "decision": "ready_for_image",
+  "errors": [],
+  "warnings": [],
+  "elements": [
+    {
+      "id": "frame_art",
+      "kind": "decor",
+      "rect": [
+        0,
+        0,
+        1920,
+        1080
+      ],
+      "ok": true,
+      "warnings": []
+    },
+    {
+      "id": "frame_safe_area",
+      "kind": "panel",
+      "rect": [
+        200,
+        169,
+        1520,
+        742
+      ],
+      "ok": true,
+      "warnings": []
+    },
+    {
+      "id": "inner_content",
+      "kind": "zone",
+      "rect": [
+        224,
+        193,
+        1472,
+        694
+      ],
+      "ok": true,
+      "warnings": []
+    },
+    {
+      "id": "route_header",
+      "kind": "panel",
+      "rect": [
+        224,
+        193,
+        1472,
+        88
+      ],
+      "ok": true,
+      "warnings": []
+    },
+    {
+      "id": "route_title_progress",
+      "kind": "text",
+      "rect": [
+        248,
+        197,
+        700,
+        64
+      ],
+      "ok": true,
+      "warnings": [],
+      "fit_font_size": 31
+    },
+    {
+      "id": "route_resources",
+      "kind": "text",
+      "rect": [
+        1128,
+        197,
+        544,
+        64
+      ],
+      "ok": true,
+      "warnings": [],
+      "fit_font_size": 25
+    },
+    {
+      "id": "route_scroll",
+      "kind": "scroll_area",
+      "rect": [
+        224,
+        297,
+        1472,
+        590
+      ],
+      "ok": true,
+      "warnings": [],
+      "content_h": 590,
+      "scrollbar_required": false
+    },
+    {
+      "id": "route_node_viewport",
+      "kind": "zone",
+      "rect": [
+        248,
+        321,
+        1328,
+        500
+      ],
+      "ok": true,
+      "warnings": []
+    },
+    {
+      "id": "horizontal_scrollbar_lane",
+      "kind": "scrollbar",
+      "rect": [
+        248,
+        845,
+        1328,
+        18
+      ],
+      "ok": true,
+      "warnings": []
+    },
+    {
+      "id": "upgrade_fab",
+      "kind": "button",
+      "rect": [
+        1600,
+        791,
+        72,
+        72
+      ],
+      "ok": true,
+      "warnings": [],
+      "fit_font_size": 38
+    },
+    {
+      "id": "node_c0_start",
+      "kind": "slot",
+      "rect": [
+        280,
+        535,
+        72,
+        72
+      ],
+      "ok": true,
+      "warnings": []
+    },
+    {
+      "id": "node_c1_top",
+      "kind": "slot",
+      "rect": [
+        450,
+        415,
+        72,
+        72
+      ],
+      "ok": true,
+      "warnings": []
+    },
+    {
+      "id": "node_c1_bottom",
+      "kind": "slot",
+      "rect": [
+        450,
+        655,
+        72,
+        72
+      ],
+      "ok": true,
+      "warnings": []
+    },
+    {
+      "id": "node_c2_top",
+      "kind": "slot",
+      "rect": [
+        620,
+        345,
+        72,
+        72
+      ],
+      "ok": true,
+      "warnings": []
+    },
+    {
+      "id": "node_c2_mid",
+      "kind": "slot",
+      "rect": [
+        620,
+        535,
+        72,
+        72
+      ],
+      "ok": true,
+      "warnings": []
+    },
+    {
+      "id": "node_c2_bottom",
+      "kind": "slot",
+      "rect": [
+        620,
+        725,
+        72,
+        72
+      ],
+      "ok": true,
+      "warnings": []
+    },
+    {
+      "id": "node_c3_top",
+      "kind": "slot",
+      "rect": [
+        790,
+        415,
+        72,
+        72
+      ],
+      "ok": true,
+      "warnings": []
+    },
+    {
+      "id": "node_c3_bottom",
+      "kind": "slot",
+      "rect": [
+        790,
+        655,
+        72,
+        72
+      ],
+      "ok": true,
+      "warnings": []
+    },
+    {
+      "id": "node_c4_top",
+      "kind": "slot",
+      "rect": [
+        960,
+        345,
+        72,
+        72
+      ],
+      "ok": true,
+      "warnings": []
+    },
+    {
+      "id": "node_c4_mid",
+      "kind": "slot",
+      "rect": [
+        960,
+        535,
+        72,
+        72
+      ],
+      "ok": true,
+      "warnings": []
+    },
+    {
+      "id": "node_c4_bottom",
+      "kind": "slot",
+      "rect": [
+        960,
+        725,
+        72,
+        72
+      ],
+      "ok": true,
+      "warnings": []
+    },
+    {
+      "id": "node_c5_top",
+      "kind": "slot",
+      "rect": [
+        1130,
+        415,
+        72,
+        72
+      ],
+      "ok": true,
+      "warnings": []
+    },
+    {
+      "id": "node_c5_bottom",
+      "kind": "slot",
+      "rect": [
+        1130,
+        655,
+        72,
+        72
+      ],
+      "ok": true,
+      "warnings": []
+    },
+    {
+      "id": "node_c6_merge",
+      "kind": "slot",
+      "rect": [
+        1300,
+        535,
+        72,
+        72
+      ],
+      "ok": true,
+      "warnings": []
+    },
+    {
+      "id": "node_c7_boss",
+      "kind": "slot",
+      "rect": [
+        1470,
+        527,
+        88,
+        88
+      ],
+      "ok": true,
+      "warnings": []
+    }
+  ]
+}

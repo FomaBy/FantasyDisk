@@ -66,6 +66,14 @@ func _test_triggered_artifacts_present_in_data() -> void:
 		"counterwave_sigil": "on_take_hit",
 		"soul_harvest": "on_kill",
 		"second_wind": "on_low_hp",
+		# SCRUM-961: классовые активные артефакты (+ новый триггер on_battle_start).
+		"shadow_twin": "on_crit",
+		"blood_roar": "on_take_hit",
+		"last_onslaught": "on_low_hp",
+		"triage_protocol": "on_low_hp",
+		"martyr_shroud": "on_low_hp",
+		"repair_subroutine": "on_take_hit",
+		"prayer_beads": "on_battle_start",
 	}
 	var found := {}
 	var triggers_seen := {}
@@ -246,14 +254,28 @@ func _test_transient_flags_not_frozen_in_snapshot() -> void:
 	rm["dodge_rush_active"] = 1.0
 	rm["low_hp_active"] = 1.0
 	rm["crit_speed_burst_active"] = 1.0
+	rm["rush_window_active"] = 1.0
+	rm["hurt_active"] = 1.0
+	rm["stance_active"] = 1.0
+	rm["swarm_fraction"] = 1.0
+	rm["riff_streak_active"] = 1.0
+	rm["reactor_heat_active"] = 1.0
+	rm["ultimate_berserk_active"] = 1.0
+	rm["attack_speed_multiplier"] = 1.25 * 1.35
+	rm["move_speed_multiplier"] = 1.20 * 1.18
 	player.set("run_modifiers", rm)
 	main.call("_store_player_snapshot", player)
 	var snap_rm: Dictionary = main.get("run_player_snapshot").get("run_modifiers", {})
-	for flag in ["dodge_rush_active", "low_hp_active", "crit_speed_burst_active"]:
+	for flag in ["dodge_rush_active", "low_hp_active", "crit_speed_burst_active", "rush_window_active", "hurt_active", "stance_active", "swarm_fraction", "riff_streak_active", "reactor_heat_active", "ultimate_berserk_active"]:
 		if float(snap_rm.get(flag, 0.0)) != 0.0:
 			_fail("Transient flag %s must be zeroed in player snapshot (no balance drift across nodes)." % flag)
 			player.queue_free(); main.queue_free()
 			return
+	if not is_equal_approx(float(snap_rm.get("attack_speed_multiplier", 0.0)), 1.25) \
+			or not is_equal_approx(float(snap_rm.get("move_speed_multiplier", 0.0)), 1.20):
+		_fail("Timed Berserk ultimate multipliers must be removed from snapshot without erasing persistent run multipliers.")
+		player.queue_free(); main.queue_free()
+		return
 	player.queue_free()
 	main.queue_free()
 	await process_frame

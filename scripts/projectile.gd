@@ -1,22 +1,30 @@
 extends Area2D
 
+const ProjectileVisuals := preload("res://scripts/projectile_visual_registry.gd")
+
 @export var speed := 600.0
 @export var lifetime := 2.0
+@export var projectile_visual_weapon_id := "soldier_rifle"
 
 const ARENA_SIZE := Vector2(4096, 2304)  # SCRUM-518: синхронно с main.gd (×1.6)
 const CLEANUP_MARGIN := 180.0
 
 const TRAIL_POINTS := 9
+const DEFAULT_TRAIL_COLOR := Color(0.62, 0.86, 1.0, 0.7)
 
 var damage := 1.0
 var direction := Vector2.RIGHT
 var _trail: Line2D = null
-var _trail_color := Color(0.62, 0.86, 1.0, 0.7)
+var _trail_color := DEFAULT_TRAIL_COLOR
 
 
-func setup(start_position: Vector2, target_position: Vector2, projectile_damage: float) -> void:
+func setup(start_position: Vector2, target_position: Vector2, projectile_damage: float, visual_weapon_id := "") -> void:
 	global_position = start_position
 	damage = projectile_damage
+	if not visual_weapon_id.is_empty():
+		projectile_visual_weapon_id = visual_weapon_id
+		if is_inside_tree():
+			_apply_visual_profile()
 
 	var target_direction := target_position - start_position
 	if target_direction.length_squared() > 0.0:
@@ -29,7 +37,51 @@ func _ready() -> void:
 	process_mode = Node.PROCESS_MODE_PAUSABLE
 	add_to_group("projectiles")
 	body_entered.connect(_on_body_entered)
+	_apply_visual_profile()
 	_build_trail()
+
+
+func _apply_visual_profile() -> void:
+	var profile := ProjectileVisuals.profile_for_weapon(projectile_visual_weapon_id)
+	if profile.is_empty():
+		_clear_visual_profile()
+		push_warning("Legacy Projectile missing canonical visual profile: %s" % projectile_visual_weapon_id)
+		return
+	var visual := get_node_or_null("Shape") as Sprite2D
+	if visual == null:
+		return
+	var texture := load(str(profile.get("asset_path", ""))) as Texture2D
+	if texture == null:
+		_clear_visual_profile()
+		return
+	visual.texture = texture
+	var display_size: Vector2 = profile.get("display_size", Vector2(40.0, 40.0))
+	var texture_size := texture.get_size()
+	visual.scale = Vector2(display_size.x / maxf(texture_size.x, 1.0), display_size.y / maxf(texture_size.y, 1.0))
+	visual.rotation = deg_to_rad(float(profile.get("rotation_offset_degrees", 0.0)))
+	set_meta("projectile_visual_id", str(profile.get("visual_id", "")))
+	set_meta("projectile_asset_path", str(profile.get("asset_path", "")))
+	var palette = profile.get("trail_palette", [])
+	if palette is Array and not palette.is_empty():
+		var c: Color = palette[0]
+		_trail_color = Color(c.r, c.g, c.b, 0.70)
+	else:
+		_trail_color = DEFAULT_TRAIL_COLOR
+	if _trail != null:
+		_trail.default_color = _trail_color
+
+
+func _clear_visual_profile() -> void:
+	remove_meta("projectile_visual_id")
+	remove_meta("projectile_asset_path")
+	var visual := get_node_or_null("Shape") as Sprite2D
+	if visual != null:
+		visual.texture = null
+		visual.scale = Vector2.ONE
+		visual.rotation = 0.0
+	_trail_color = DEFAULT_TRAIL_COLOR
+	if _trail != null:
+		_trail.default_color = _trail_color
 
 
 func _build_trail() -> void:

@@ -1,0 +1,43 @@
+{
+  "schema": 1,
+  "jira": "SCRUM-1073",
+  "provider": "PixelLab MCP",
+  "mcp_status": "completed",
+  "account_check": {
+    "tool": "get_balance",
+    "status": "PASS",
+    "subscription": "active (Tier 3: Pixel Architect)",
+    "generations_remaining": 2416,
+    "generations_used": 5417,
+    "generations_total": 7833
+  },
+  "purpose": "Content-zone anchor for legacy typography families not covered by accepted screen mockups",
+  "runtime_promotion": false,
+  "sources": [
+    {
+      "mcp_asset_id": "c60357ee-05ee-43bd-939c-a8ece7c82ef5",
+      "file": "pixellab_uncovered_content_zones_600x448.png",
+      "size": [600, 448],
+      "sha256": "d99ac9e6ab3ec80d7f09cac84b4b5f29a20df80c3f51d09398ad408c8c0bdee3",
+      "disposition": "rejected_reference_only",
+      "reason": "Generated pseudo-runes/text violated the empty-frame content-zone contract."
+    },
+    {
+      "mcp_asset_id": "6e512c63-5c42-44ee-a6b3-09a3ed69189d",
+      "name": "scrum1073_uncovered_typography_content_zones_clean",
+      "file": "pixellab_uncovered_content_zones_clean_600x448.png",
+      "size": [600, 448],
+      "seed": 1074,
+      "sha256": "b127bcc1f31dcfb89090dbd12728a64266c28dbd74436881196c01e0955c38be",
+      "disposition": "approved_mockup_layer",
+      "prompt_contract": "Dark fantasy dragon/D&D 2x4 contact sheet of eight clean empty UI content-zone frames; restrained metal, leather and parchment ornament only on outer rails; no words, letters, runes, glyphs, icons, numbers or pseudo-text; flat dark readable interiors."
+    }
+  ],
+  "composite": {
+    "file": "../../mockups/scrum1073_semantic_band_migration/pixellab_composited_preview_600x448.png",
+    "sha256": "3bcbbb8d9ab79c5abde3c0e7ad51b6068bc05cd49632ad4797f17d0ea2e65d80",
+    "fit_report": "../../mockups/scrum1073_semantic_band_migration/pixellab_composited_preview.report.json",
+    "zones": 8,
+    "fit_verdict": "PASS"
+  }
+}

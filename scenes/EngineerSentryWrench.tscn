@@ -7,20 +7,19 @@
 z_index = 8
 script = ExtResource("1_class_weapon")
 weapon_id = "engineer_sentry_wrench"
-display_name = "Ключ Часового"
+display_name = "Часовая турель"
 attack_mode = "engineer_sentry_link"
 damage_parameter = "damage"
-fire_interval = 1.32
+fire_interval = 2.7
 damage = 12.0
 attack_range = 560.0
 aoe_radius = 170.0
-beam_width = 34.0
-knockback = 42.0
-projectile_count = 4
-amp_lifetime = 2.8
-amp_pulse_interval = 0.42
-max_summons = 1
-damage_falloff = 0.72
+projectile_count = 2
+amp_pulse_interval = 0.55
+sentry_shot_magazine = 15
+max_summons = 2
+max_summons_cap = 6
+damage_falloff = 0.55
 visual_color = Color(0.88, 0.7, 0.32, 0.42)
 
 [node name="WeaponVisual" type="Sprite2D" parent="."]

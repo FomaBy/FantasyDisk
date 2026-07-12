@@ -1,9 +1,9 @@
 extends "res://tests/runtime_smoke_test.gd"
 
-# SCRUM-831: смоук дев-консоли (~). Проверяет: тоггл синтетической тильдой +
-# пауза игры, help/ошибки без игрока, и боевые команды (gold/godmode/spawn/kill/
-# timer/timescale/win) на живом бою. Бой стартует прямым вызовом _start_combat —
-# как в остальных смоуках (тяжёлые переходы состояния не эмулируются вводом).
+# SCRUM-831/SCRUM-845: смоук дев-консоли (~). Проверяет: тоггл синтетической
+# тильдой без глобальной паузы, help/ошибки без игрока, live-combat ticking при
+# открытой консоли, и боевые команды (gold/godmode/spawn/kill/timer/timescale/win).
+# Бой стартует прямым вызовом _start_combat — как в остальных смоуках.
 
 
 func _press_tilde() -> void:
@@ -41,16 +41,16 @@ func _initialize() -> void:
 		_fail("SCRUM-831: консоль должна стартовать закрытой.")
 		return
 
-	# (a) Тоггл синтетической тильдой: консоль открылась, игра встала на паузу.
+	# (a) Тоггл синтетической тильдой: консоль открылась, но НЕ ставит бой/дерево на паузу.
 	await _press_tilde()
 	if not console.is_console_open():
 		_fail("SCRUM-831(a): тильда не открыла консоль.")
 		return
-	if not paused:
-		_fail("SCRUM-831(a): открытая консоль обязана ставить игру на паузу.")
+	if paused:
+		_fail("SCRUM-845(a): открытая консоль не должна ставить SceneTree на паузу.")
 		return
-	if not main.pause_reasons.has("dev_console"):
-		_fail("SCRUM-831(a): нет pause-причины dev_console.")
+	if main.pause_reasons.has("dev_console"):
+		_fail("SCRUM-845(a): открытая консоль не должна добавлять pause-причину dev_console.")
 		return
 
 	# (b) help перечисляет команды; неизвестная команда даёт ошибку, не краш.
@@ -71,13 +71,38 @@ func _initialize() -> void:
 		_fail("SCRUM-831(c): gold в меню должен сообщать об отсутствии игрока/забега.")
 		return
 
-	# (d) Живой бой: прямой старт, консоль остаётся открытой (пауза держит мир).
+	# (d) Живой бой: прямой старт, консоль остаётся открытой как live overlay.
 	main.combat._start_combat(false, "battle")
 	await process_frame
 	await process_frame
 	var player = main.current_player
 	if player == null or not is_instance_valid(player):
 		_fail("SCRUM-831(d): _start_combat не создал игрока.")
+		return
+	if paused or main.pause_reasons.has("dev_console"):
+		_fail("SCRUM-845(d): бой не должен быть на паузе из-за открытой консоли.")
+		return
+	var timer_before_live := float(main.round_time_left)
+	var player_position_before_live: Vector2 = player.global_position
+	console.execute_command("spawn basic 1")
+	await process_frame
+	var live_enemies := get_nodes_in_group("enemies")
+	if live_enemies.is_empty():
+		_fail("SCRUM-845(d): spawn basic 1 не создал врага для live-check.")
+		return
+	var live_enemy := live_enemies[live_enemies.size() - 1] as Node2D
+	var enemy_position_before_live: Vector2 = live_enemy.global_position
+	Input.action_press("move_right")
+	await create_timer(0.18).timeout
+	Input.action_release("move_right")
+	if float(main.round_time_left) >= timer_before_live - 0.02:
+		_fail("SCRUM-845(d): таймер боя не тикает при открытой консоли.")
+		return
+	if player.global_position.distance_to(player_position_before_live) < 12.0:
+		_fail("SCRUM-845(d): игрок не двигается при открытой консоли.")
+		return
+	if is_instance_valid(live_enemy) and live_enemy.global_position.distance_to(enemy_position_before_live) < 4.0:
+		_fail("SCRUM-845(d): враг не двигается при открытой консоли.")
 		return
 
 	# (e) gold: ровно +250 к текущему значению (без множителей).
@@ -129,7 +154,7 @@ func _initialize() -> void:
 		_fail("SCRUM-831(i): timescale 1 не вернул скорость (=%f)." % Engine.time_scale)
 		return
 
-	# (j) win: бой завершается победой, консоль сама закрывается и снимает паузу.
+	# (j) win: бой завершается победой, консоль сама закрывается без pause-хвоста.
 	console.execute_command("win")
 	await process_frame
 	await process_frame
@@ -140,7 +165,7 @@ func _initialize() -> void:
 		_fail("SCRUM-831(j): win обязан закрывать консоль.")
 		return
 	if main.pause_reasons.has("dev_console"):
-		_fail("SCRUM-831(j): pause-причина dev_console не снята после win.")
+		_fail("SCRUM-845(j): pause-причина dev_console не должна оставаться после win.")
 		return
 
 	# (k) Повторный цикл: открыть → stats → закрыть тильдой.
@@ -151,7 +176,7 @@ func _initialize() -> void:
 		return
 	await _press_tilde()
 	if console.is_console_open() or main.pause_reasons.has("dev_console"):
-		_fail("SCRUM-831(k): тильда не закрыла консоль или не сняла паузу.")
+		_fail("SCRUM-845(k): тильда не закрыла консоль или оставила pause-причину.")
 		return
 
 	main.queue_free()

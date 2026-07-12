@@ -1,0 +1,273 @@
+{
+  "ok": true,
+  "decision": "ready_for_image",
+  "errors": [],
+  "warnings": [],
+  "elements": [
+    {
+      "id": "screen_safe",
+      "kind": "panel",
+      "rect": [
+        48,
+        48,
+        592,
+        320
+      ],
+      "ok": true,
+      "warnings": []
+    },
+    {
+      "id": "title",
+      "kind": "text",
+      "rect": [
+        72,
+        58,
+        112,
+        26
+      ],
+      "ok": true,
+      "warnings": [],
+      "fit_font_size": 18
+    },
+    {
+      "id": "back",
+      "kind": "button",
+      "rect": [
+        526,
+        58,
+        90,
+        30
+      ],
+      "ok": true,
+      "warnings": [],
+      "fit_font_size": 16
+    },
+    {
+      "id": "portrait",
+      "kind": "portrait",
+      "rect": [
+        72,
+        100,
+        168,
+        204
+      ],
+      "ok": true,
+      "warnings": []
+    },
+    {
+      "id": "choose",
+      "kind": "button",
+      "rect": [
+        72,
+        318,
+        168,
+        38
+      ],
+      "ok": true,
+      "warnings": [],
+      "fit_font_size": 16
+    },
+    {
+      "id": "dossier",
+      "kind": "panel",
+      "rect": [
+        252,
+        100,
+        364,
+        110
+      ],
+      "ok": true,
+      "warnings": []
+    },
+    {
+      "id": "hero_name",
+      "kind": "text",
+      "rect": [
+        264,
+        110,
+        168,
+        28
+      ],
+      "ok": true,
+      "warnings": [],
+      "fit_font_size": 21
+    },
+    {
+      "id": "ascension_band",
+      "kind": "panel",
+      "rect": [
+        252,
+        216,
+        300,
+        48
+      ],
+      "ok": true,
+      "warnings": []
+    },
+    {
+      "id": "asc_minus",
+      "kind": "button",
+      "rect": [
+        260,
+        222,
+        54,
+        36
+      ],
+      "ok": true,
+      "warnings": [],
+      "fit_font_size": 24
+    },
+    {
+      "id": "asc_value",
+      "kind": "text",
+      "rect": [
+        324,
+        222,
+        156,
+        36
+      ],
+      "ok": true,
+      "warnings": [],
+      "fit_font_size": 18
+    },
+    {
+      "id": "asc_plus",
+      "kind": "button",
+      "rect": [
+        490,
+        222,
+        54,
+        36
+      ],
+      "ok": true,
+      "warnings": [],
+      "fit_font_size": 22
+    },
+    {
+      "id": "counter",
+      "kind": "text",
+      "rect": [
+        558,
+        226,
+        58,
+        22
+      ],
+      "ok": true,
+      "warnings": [],
+      "fit_font_size": 11
+    },
+    {
+      "id": "carousel_band",
+      "kind": "panel",
+      "rect": [
+        252,
+        270,
+        364,
+        94
+      ],
+      "ok": true,
+      "warnings": []
+    },
+    {
+      "id": "prev",
+      "kind": "button",
+      "rect": [
+        260,
+        299,
+        54,
+        36
+      ],
+      "ok": true,
+      "warnings": [],
+      "fit_font_size": 25
+    },
+    {
+      "id": "slot_1",
+      "kind": "slot",
+      "rect": [
+        322,
+        279,
+        76,
+        76
+      ],
+      "ok": true,
+      "warnings": []
+    },
+    {
+      "id": "slot_1_label",
+      "kind": "text",
+      "rect": [
+        326,
+        337,
+        68,
+        15
+      ],
+      "ok": true,
+      "warnings": [],
+      "fit_font_size": 10
+    },
+    {
+      "id": "slot_2",
+      "kind": "slot",
+      "rect": [
+        402,
+        279,
+        76,
+        76
+      ],
+      "ok": true,
+      "warnings": []
+    },
+    {
+      "id": "slot_2_label",
+      "kind": "text",
+      "rect": [
+        406,
+        337,
+        68,
+        15
+      ],
+      "ok": true,
+      "warnings": [],
+      "fit_font_size": 10
+    },
+    {
+      "id": "slot_3",
+      "kind": "slot",
+      "rect": [
+        482,
+        279,
+        76,
+        76
+      ],
+      "ok": true,
+      "warnings": []
+    },
+    {
+      "id": "slot_3_label",
+      "kind": "text",
+      "rect": [
+        486,
+        337,
+        68,
+        15
+      ],
+      "ok": true,
+      "warnings": [],
+      "fit_font_size": 10
+    },
+    {
+      "id": "next",
+      "kind": "button",
+      "rect": [
+        562,
+        299,
+        46,
+        36
+      ],
+      "ok": true,
+      "warnings": [],
+      "fit_font_size": 25
+    }
+  ]
+}

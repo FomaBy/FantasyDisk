@@ -1,5 +1,18 @@
 # Skill Tree 3.0
 
+> Текущий production runtime — SCRUM-1068 / schema 6. Исторический документ
+> Skill Tree 3.0 ниже сохранён как источник решений v3/v4, но больше не описывает
+> живую классовую топологию и экономику.
+
+Schema 6 оставляет account-wide Guild Atlas из 25 узлов и заменяет классовую
+часть на 17 независимых созвездий по 21 узлу: free core, три линейных оружейных
+пути `6/6`, два cost-1 hidden side nodes. Полный класс стоит 20; rewards A0..A5
+`[2,2,3,4,4,5]`; все три weapon finals совместимы, но каждый boon/hidden/final
+строго scoped к canonical `weapon_id`. Runtime data/API: `data/meta/constellation_schema6.json`,
+`scripts/constellation_schema6_data.gd`, `MetaProgression.skill_profiles_for_class`.
+Миграция schema 5 возвращает class allocations, сохраняет Guild/progression/
+reveal facts и записывает excess old sigils в non-combat `legacy_mastery`.
+
 Обновлено: 2026-07-02, SCRUM-807 (мажорная редакция v3). Предыдущие: SCRUM-696
 (PoE-like граф), SCRUM-726 (per-hero keystones), v2 — 2026-07-01.
 

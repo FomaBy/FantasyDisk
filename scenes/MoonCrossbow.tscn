@@ -8,12 +8,18 @@ z_index = 8
 script = ExtResource("1_class_weapon")
 weapon_id = "moon_crossbow"
 display_name = "Лунный арбалет"
-attack_mode = "beam"
+attack_mode = "moon_split_shot"
 damage_parameter = "damage"
 fire_interval = 0.95
 damage = 12.0
 attack_range = 900.0
-aoe_radius = 40.0
+aoe_radius = 260.0
+beam_width = 26.0
+knockback = 175.0
+split_count = 4
+bow_knockback_trait = true
+charge_seconds = 1.25
+charge_max_multiplier = 1.7
 visual_color = Color(0.75, 0.85, 1, 0.5)
 
 [node name="WeaponVisual" type="Sprite2D" parent="."]

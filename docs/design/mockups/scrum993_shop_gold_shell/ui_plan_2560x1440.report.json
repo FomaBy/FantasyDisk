@@ -1,0 +1,216 @@
+{
+  "ok": true,
+  "decision": "ready_for_image",
+  "errors": [],
+  "warnings": [],
+  "elements": [
+    {
+      "id": "frame_art",
+      "kind": "decor",
+      "rect": [
+        0,
+        0,
+        2560,
+        1440
+      ],
+      "ok": true,
+      "warnings": []
+    },
+    {
+      "id": "frame_safe_area",
+      "kind": "panel",
+      "rect": [
+        267,
+        225,
+        2026,
+        990
+      ],
+      "ok": true,
+      "warnings": []
+    },
+    {
+      "id": "shop_background_clip",
+      "kind": "panel",
+      "rect": [
+        267,
+        225,
+        2026,
+        990
+      ],
+      "ok": true,
+      "warnings": []
+    },
+    {
+      "id": "shop_background_visible",
+      "kind": "portrait",
+      "rect": [
+        400,
+        225,
+        1760,
+        990
+      ],
+      "ok": true,
+      "warnings": []
+    },
+    {
+      "id": "inner_content",
+      "kind": "zone",
+      "rect": [
+        299,
+        257,
+        1962,
+        926
+      ],
+      "ok": true,
+      "warnings": []
+    },
+    {
+      "id": "header_zone",
+      "kind": "zone",
+      "rect": [
+        299,
+        257,
+        1962,
+        120
+      ],
+      "ok": true,
+      "warnings": []
+    },
+    {
+      "id": "run_hud",
+      "kind": "panel",
+      "rect": [
+        323,
+        273,
+        930,
+        88
+      ],
+      "ok": true,
+      "warnings": []
+    },
+    {
+      "id": "shop_title",
+      "kind": "text",
+      "rect": [
+        1281,
+        257,
+        700,
+        64
+      ],
+      "ok": true,
+      "warnings": [],
+      "fit_font_size": 52
+    },
+    {
+      "id": "shop_subtitle",
+      "kind": "text",
+      "rect": [
+        1281,
+        327,
+        700,
+        40
+      ],
+      "ok": true,
+      "warnings": [],
+      "fit_font_size": 22
+    },
+    {
+      "id": "manual_attribute_shop_reserved_empty",
+      "kind": "zone",
+      "rect": [
+        2187,
+        292,
+        50,
+        50
+      ],
+      "ok": true,
+      "warnings": []
+    },
+    {
+      "id": "shop_item_0",
+      "kind": "slot",
+      "rect": [
+        810,
+        421,
+        196,
+        196
+      ],
+      "ok": true,
+      "warnings": []
+    },
+    {
+      "id": "shop_item_1",
+      "kind": "slot",
+      "rect": [
+        1058,
+        421,
+        196,
+        196
+      ],
+      "ok": true,
+      "warnings": []
+    },
+    {
+      "id": "shop_item_2",
+      "kind": "slot",
+      "rect": [
+        1306,
+        421,
+        196,
+        196
+      ],
+      "ok": true,
+      "warnings": []
+    },
+    {
+      "id": "shop_item_3",
+      "kind": "slot",
+      "rect": [
+        1554,
+        421,
+        196,
+        196
+      ],
+      "ok": true,
+      "warnings": []
+    },
+    {
+      "id": "shop_tooltip",
+      "kind": "panel",
+      "rect": [
+        980,
+        649,
+        600,
+        240
+      ],
+      "ok": true,
+      "warnings": []
+    },
+    {
+      "id": "shop_tooltip_content",
+      "kind": "text",
+      "rect": [
+        1016,
+        677,
+        528,
+        184
+      ],
+      "ok": true,
+      "warnings": [],
+      "fit_font_size": 17
+    },
+    {
+      "id": "shop_back",
+      "kind": "button",
+      "rect": [
+        1100,
+        1059,
+        360,
+        88
+      ],
+      "ok": true,
+      "warnings": [],
+      "fit_font_size": 30
+    }
+  ]
+}

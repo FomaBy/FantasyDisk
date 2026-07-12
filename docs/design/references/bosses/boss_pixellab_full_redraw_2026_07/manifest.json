@@ -1,0 +1,101 @@
+{
+  "task": "SCRUM-865",
+  "created": "2026-07-04",
+  "pipeline": "PixelLab MCP create_8_direction_object + animate_object",
+  "requested_canvas_px": 256,
+  "active_source_canvas_px": 168,
+  "completed_canvas_px": 170,
+  "runtime_animation_direction": "west",
+  "runtime_rows": ["move", "attack_primary", "death", "skill_1", "skill_2"],
+  "preview": "docs/design/previews/boss_pixellab_full_redraw_2026_07_runtime_contact.png",
+  "latest_status_check": "2026-07-04 04:06 EEST: PixelLab reported all six original 256x256 8-direction base objects as failed because output frame size must be max 168x168. Retried all six live boss base objects at supported 168x168 low top-down canvas; PixelLab completed them as 170x170 objects. Runtime imported west-facing 6-frame rows into the current Godot full-frame contract for all six live bosses.",
+  "view": "low top-down",
+  "style": "unified top-down 3/4 dark fantasy pixel-art boss, transparent background, huge readable silhouette, ornate D&D monster, dramatic shadows",
+  "pixel_lab_objects": {
+    "rift_warden": {
+      "object_id": "ab1c7701-3ee7-4c7c-8842-22a7def87f08",
+      "status": "completed_imported",
+      "failed_256_object_id": "df9e643d-d8d7-42f8-b5fe-d90ed2f93d86",
+      "failed_256_error": "Output frame size must be max 168x168, got 256x256",
+      "base_prompt": "void-armored rift warden, floating horned warlock knight, purple black-hole core, gold-black armor, torn shadow cloak, top-down 3/4 dark fantasy pixel art boss, transparent background, huge readable silhouette, ornate D&D monster, dramatic shadows, no text",
+      "animation_prompts": {
+        "move": "heavy boss walk, slow powerful weight shifts, body sways, claws/robes/legs move clearly",
+        "death": "epic boss death, stagger, collapse, crack apart, dark magic and embers leak out, final fading corpse",
+        "attack_primary": "casts rift bolts from both hands, cloak flares, core pulses",
+        "skill_gravity_well": "summons a purple gravity well, arms raised, vortex expands from chest",
+        "skill_rift_zone": "opens jagged rift fissures, sweeping occult casting gesture"
+      }
+    },
+    "disk_devourer": {
+      "object_id": "2df47b9e-a5f8-4f4a-b423-4aca73d8c3b3",
+      "status": "completed_imported",
+      "failed_256_object_id": "90832156-efdf-47bd-872d-4bfb660c14c3",
+      "failed_256_error": "Output frame size must be max 168x168, got 256x256",
+      "retry_note": "skill_vampiric_bite timed out/failed several times; final imported row used the shorter prompt 'bite attack, huge mouth snaps open, red energy flash, teeth clamp shut, tentacles recoil'.",
+      "base_prompt": "cosmic disk devourer, round many-eyed maw demon, ring of teeth and tentacles, violet singularity mouth, top-down 3/4 dark fantasy pixel art boss, transparent background, huge readable silhouette, ornate D&D monster, dramatic shadows, no text",
+      "animation_prompts": {
+        "move": "heavy boss walk, slow powerful weight shifts, body sways, claws/robes/legs move clearly",
+        "death": "epic boss death, stagger, collapse, crack apart, dark magic and embers leak out, final fading corpse",
+        "attack_primary": "lunges and slams its disk body, teeth flare, tentacles recoil",
+        "skill_vampiric_bite": "vampiric bite, maw opens wide, red-violet drain energy",
+        "skill_rift_zone": "spins and opens a rift ring, eye core flashes"
+      }
+    },
+    "bone_archon": {
+      "object_id": "0335a72f-9905-4a18-ba1e-e91d2a9de9bc",
+      "status": "completed_imported",
+      "failed_256_object_id": "17d6278c-579c-4013-ab58-c9f3703d3d26",
+      "failed_256_error": "Output frame size must be max 168x168, got 256x256",
+      "base_prompt": "bone archon necromancer, crowned skeletal lich, bone staff, ragged grave robes, green-gold necrotic glow, top-down 3/4 dark fantasy pixel art boss, transparent background, huge readable silhouette, ornate D&D monster, dramatic shadows, no text",
+      "animation_prompts": {
+        "move": "heavy boss walk, slow powerful weight shifts, body sways, claws/robes/legs move clearly",
+        "death": "epic boss death, stagger, collapse, crack apart, dark magic and embers leak out, final fading corpse",
+        "attack_primary": "skull volley cast, staff points forward, skull spirits launch",
+        "skill_skull_volley": "rapid necromantic skull barrage, crown and staff glow",
+        "skill_bone_prison": "raises bone prison walls from the ground, staff slams down"
+      }
+    },
+    "brood_mother": {
+      "object_id": "0f0db439-9b79-4b25-8951-988319c5e821",
+      "status": "completed_imported",
+      "failed_256_object_id": "19cdb501-b695-4733-86d8-a887fd8b7bf7",
+      "failed_256_error": "Output frame size must be max 168x168, got 256x256",
+      "base_prompt": "brood mother spider queen, massive armored arachnid, egg sacs, webbed legs, sickly gold and black chitin, top-down 3/4 dark fantasy pixel art boss, transparent background, huge readable silhouette, ornate D&D monster, dramatic shadows, no text",
+      "animation_prompts": {
+        "move": "heavy boss walk, slow powerful weight shifts, body sways, claws/robes/legs move clearly",
+        "death": "epic boss death, stagger, collapse, crack apart, dark magic and embers leak out, final fading corpse",
+        "attack_primary": "spider queen lunge bite, front legs stab forward",
+        "skill_brood_spawn": "spawns brood eggs and hatchlings, abdomen pulses",
+        "skill_web_zone": "casts sticky web zone, legs spread and silk bursts"
+      }
+    },
+    "ashen_colossus": {
+      "object_id": "eb2bfa56-9406-4855-96e6-dc05c9272494",
+      "status": "completed_imported",
+      "failed_256_object_id": "ea8e402d-4157-43d7-b506-ca357088c6db",
+      "failed_256_error": "Output frame size must be max 168x168, got 256x256",
+      "base_prompt": "ashen colossus, cracked obsidian lava giant, molten fists, ember smoke, heavy ancient golem, top-down 3/4 dark fantasy pixel art boss, transparent background, huge readable silhouette, ornate D&D monster, dramatic shadows, no text",
+      "animation_prompts": {
+        "move": "heavy boss walk, slow powerful weight shifts, body sways, claws/robes/legs move clearly",
+        "death": "epic boss death, stagger, collapse, crack apart, dark magic and embers leak out, final fading corpse",
+        "attack_primary": "massive molten fist slam, shoulders recoil, lava cracks flare",
+        "skill_molten_slam": "ground-breaking lava shockwave slam, both fists down",
+        "skill_armor_pulse": "molten armor pulse, chest glows, ember ring bursts outward"
+      }
+    },
+    "bloodthorn_lion": {
+      "object_id": "1b923d8c-e83e-48a1-970e-4681f63ead0a",
+      "status": "completed_imported",
+      "failed_256_object_id": "b012810b-57b5-40b6-859f-80012fa79f30",
+      "failed_256_error": "Output frame size must be max 168x168, got 256x256",
+      "base_prompt": "bloodthorn lion, huge dark fantasy lion predator, crimson thorn mane, black hide, blood crystal spikes, top-down 3/4 dark fantasy pixel art boss, transparent background, huge readable silhouette, ornate D&D monster, dramatic shadows, no text",
+      "animation_prompts": {
+        "move": "heavy boss walk, slow powerful weight shifts, body sways, claws/robes/legs move clearly",
+        "death": "epic boss death, stagger, collapse, crack apart, dark magic and embers leak out, final fading corpse",
+        "attack_primary": "predator pounce slash, thorn mane whips forward",
+        "skill_spike_ring": "blood thorn spike ring roar, crimson crystals erupt around body",
+        "skill_rift_zone": "bleeding thorn fissures, claws carve red rift trails"
+      }
+    }
+  }
+}

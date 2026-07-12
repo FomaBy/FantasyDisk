@@ -1,0 +1,44 @@
+{
+  "ok": true,
+  "decision": "ready_for_image",
+  "errors": [],
+  "warnings": [],
+  "elements": [
+    {
+      "id": "icon_canvas",
+      "kind": "decor",
+      "rect": [
+        0,
+        0,
+        256,
+        256
+      ],
+      "ok": true,
+      "warnings": []
+    },
+    {
+      "id": "button_hit_rect",
+      "kind": "button",
+      "rect": [
+        24,
+        24,
+        208,
+        208
+      ],
+      "ok": true,
+      "warnings": []
+    },
+    {
+      "id": "icon_safe",
+      "kind": "icon",
+      "rect": [
+        48,
+        48,
+        160,
+        160
+      ],
+      "ok": true,
+      "warnings": []
+    }
+  ]
+}

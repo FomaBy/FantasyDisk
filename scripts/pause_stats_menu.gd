@@ -7,419 +7,1454 @@ signal main_menu_requested
 
 const StatFormulas := preload("res://scripts/stat_formulas.gd")
 const UIIconRegistry := preload("res://scripts/ui_icon_registry.gd")
-const ESCAPE_PANEL_FRAME := preload("res://assets/sprites/ui/frames/minimal_metal/ui_frame_minimal_metal_panel.png")
-const STAT_BASIC_ROW_FRAME := preload("res://assets/sprites/ui/frames/minimal_metal/ui_frame_minimal_metal_field.png")
-const STAT_GROUP_FRAME := preload("res://assets/sprites/ui/frames/minimal_metal/ui_frame_minimal_metal_panel.png")
-const STAT_CHIP_FRAME := preload("res://assets/sprites/ui/frames/minimal_metal/ui_frame_minimal_metal_field.png")
-const STAT_TOOLTIP_FRAME := preload("res://assets/sprites/ui/frames/minimal_metal/ui_frame_minimal_metal_tooltip.png")
-# SCRUM-486/SCRUM-593: per-slot @2K pause dossier plus dedicated SCRUM-586 stat tooltip.
-const ESCAPE_PANEL_FRAME_2K := preload("res://assets/sprites/ui/frames/overhaul_2k/ui_frame_2k_pd_panel.png")
-const STAT_TOOLTIP_FRAME_2K := preload("res://assets/sprites/ui/frames/overhaul_2k/ui_frame_2k_stat_tooltip.png")
-const STAT_SECTION_DIVIDER := preload("res://assets/sprites/ui/frames/escape/ui_stat_section_divider.png")
-const PAUSE_END_MODAL_FRAME := preload("res://assets/sprites/ui/frames/minimal_metal/ui_frame_minimal_metal_modal.png")
-const PAUSE_BUTTON_NORMAL := preload("res://assets/sprites/ui/frames/text_buttons_unique/ui_btn_text_unique_pause_280x60_normal.png")
-const PAUSE_BUTTON_HOVER := preload("res://assets/sprites/ui/frames/text_buttons_unique/ui_btn_text_unique_pause_280x60_hover.png")
-const PAUSE_BUTTON_FOCUS := preload("res://assets/sprites/ui/frames/text_buttons_unique/ui_btn_text_unique_pause_280x60_focus.png")
-const PAUSE_BUTTON_PRESSED := preload("res://assets/sprites/ui/frames/text_buttons_unique/ui_btn_text_unique_pause_280x60_pressed.png")
-const PAUSE_BUTTON_DISABLED := preload("res://assets/sprites/ui/frames/text_buttons_unique/ui_btn_text_unique_pause_280x60_disabled.png")
-const PAUSE_BUTTON_TEXTURE_MARGINS := Vector4(34.0, 12.0, 34.0, 12.0)
-const PAUSE_BUTTON_CONTENT_MARGINS := Vector4(45.0, 12.0, 45.0, 12.0)
-const BUTTON_NEUTRAL_HOVER_TINT := Color(1.16, 1.16, 1.16, 1.0)
-const BUTTON_NEUTRAL_FOCUS_TINT := Color(1.20, 1.20, 1.20, 1.0)
-const BUTTON_NEUTRAL_HOVER_FONT := Color(1.0, 1.0, 1.0, 1.0)
-const PAUSE_END_MODAL_SOURCE_SIZE := Vector2(986.0, 900.0)
-const PAUSE_END_MODAL_TEXTURE_MARGINS := Vector4(46.0, 62.0, 46.0, 58.0)
-const PAUSE_END_MODAL_CONTENT := Vector4(72.0, 92.0, 72.0, 84.0)
+const GlobalTooltip := preload("res://scripts/ui/global_tooltip.gd")
+const GlobalTooltipControl := preload("res://scripts/ui/global_tooltip_control.gd")
+const UIButtonFamily := preload("res://scripts/ui/ui_button_family.gd")
+const SemanticTypography := preload("res://scripts/ui/semantic_typography.gd")
+
+# SCRUM-890: досье героя (пауза) — вариант Б: атлас-шапка (чип-титул + кит-кнопки
+# в ряд) и плотное тело (карточка героя слева, «Боевые параметры» 2×2 справа).
+# Сцена не имеет доступа к хелперам ui_screens — мини-хелперы стилей продублированы
+# локально с ТЕМИ ЖЕ числами (см. комментарии «числа = ...»).
+
+const HERO_EMBLEM_PATH := "res://assets/sprites/ui/atlas_style/emblem_hero_hall.png"
+
+# SCRUM-893: язык Атласа в полном составе — полая рама meta40 по краю экрана
+# (числа = ui_screens._atlas_frame_style/_unified_safe_margins, коэффициент
+# захода в тёмное поле рамы 0.86 = атлас после фидбека), парадная рама портрета
+# (PixelLab), герб класса и орнамент-разделители.
+const META40_FRAME_BORDER_PATH := "res://assets/sprites/ui/meta40/frame_border.png"
+const ATLAS_FRAME_SOURCE_SIZE := Vector2(1536.0, 1024.0)
+const ATLAS_FRAME_SOURCE_MARGIN := 160.0
+const INNER_RESERVE_COMPACT := 24.0
+const INNER_RESERVE_LARGE := 32.0
+const PORTRAIT_FRAME_PATH := "res://assets/sprites/ui/atlas_style/dossier_portrait_frame.png"
+const CLASS_CREST_DIR := "res://assets/sprites/ui/meta40/"
+const DIVIDER_ORNAMENT_PATH := "res://assets/sprites/ui/atlas_style/divider_ornament.png"
+
+# Shared resolver keeps Pause in the same semantic button inventory as every
+# runtime screen. SCRUM-1056 explicitly pins all four actions to the exact
+# five-state main-menu plate while this scene only owns responsive margins.
+const PAUSE_ACTION_BUTTON_FAMILY := "text/main_menu_380x104"
+
+# Цвета единого атлас-стиля (= _show_atlas_screen и родня).
+const COLOR_TITLE := Color(0.96, 0.90, 0.68, 1.0)
+const COLOR_KIND := Color(0.78, 0.66, 0.44, 1.0)
+const COLOR_BODY := Color(0.88, 0.92, 0.98, 1.0)
 
 const VALUE_HIGH := Color(0.439, 0.949, 0.651, 1.0)
 const VALUE_LOW := Color(1.0, 0.420, 0.420, 1.0)
 const VALUE_NEUTRAL := Color(0.914, 0.863, 0.655, 1.0)
 const VALUE_EFFECTIVE := Color(1.0, 0.863, 0.361, 1.0)
-const TEXT_PRIMARY := Color(0.937, 0.886, 0.698, 1.0)
-const TEXT_SECONDARY := Color(0.592, 0.647, 0.722, 1.0)
-const TOOLTIP_MAX_WIDTH := 430.0
 
+# SCRUM-890 вариант Б: «Боевые параметры» = ровно 4 секции в сетке 2×2.
+# Выживаемость/саммоны-производные ушли из досье (плотность по мокапу Б);
+# ключевые цифры выживания видны в HUD, полные — в кодексе.
 const DERIVED_GROUPS := [
 	{
 		"id": "physical_damage",
 		"title": "Физический урон",
-		"description": "Melee и прямой физический burst.",
 		"stats": ["damage", "attack_speed", "crit_chance", "crit_damage_multiplier", "knockback_power"],
 		"accent": Color(0.95, 0.38, 0.22, 1.0),
 	},
 	{
 		"id": "magic_damage",
 		"title": "Магия",
-		"description": "Темная магия, области поражения и снаряды.",
 		"stats": ["magic_damage", "aoe_radius", "projectile_speed", "attack_range", "range_multiplier"],
 		"accent": Color(0.55, 0.42, 1.0, 1.0),
 	},
 	{
-		"id": "sound_control",
-		"title": "Звук / Контроль",
-		"description": "Волны, ауры, бафы и отталкивание.",
-		"stats": ["sound_wave_damage", "aura_radius", "buff_power", "knockback_distance"],
+		"id": "support_control",
+		"title": "Поддержка / Контроль",
+		"stats": ["aura_radius", "buff_power", "knockback_distance"],
 		"accent": Color(0.30, 0.86, 1.0, 1.0),
 	},
 	{
 		"id": "dot_poison",
 		"title": "Яд / периодический урон",
-		"description": "Периодический урон и темп тиков.",
 		"stats": ["dot_damage", "dot_speed"],
 		"accent": Color(0.45, 0.95, 0.44, 1.0),
 	},
-	{
-		"id": "survival",
-		"title": "Выживаемость",
-		"description": "Здоровье, защита, движение и восстановление.",
-		"stats": ["health_point", "defense", "dodge", "move_speed", "absorb", "regeneration", "vampiric_amount", "vampiric_chance"],
-		"accent": Color(0.95, 0.78, 0.32, 1.0),
-	},
-	{
-		"id": "summons_support",
-		"title": "Приспешники / Поддержка",
-		"description": "Summons, pickup и будущие support-системы.",
-		"stats": ["summon_amount", "pickup_radius", "ultimate_multiplier"],
-		"accent": Color(0.90, 0.62, 1.0, 1.0),
-	},
 ]
+const DERIVED_COMPACT_LABELS := {
+	"damage": "Урон",
+	"attack_speed": "Скор. атаки",
+	"crit_chance": "Шанс крит.",
+	"crit_damage_multiplier": "Сила крита",
+	"knockback_power": "Сила отт.",
+	"magic_damage": "Маг. урон",
+	"aoe_radius": "Ширина",
+	"projectile_speed": "Скор. снар.",
+	"attack_range": "Дальность",
+	"range_multiplier": "Дальн. ×",
+	"aura_radius": "Радиус а.",
+	"buff_power": "Сила бафа",
+	"knockback_distance": "Отталк.",
+	"dot_damage": "Период. ур.",
+	"dot_speed": "Частота",
+}
+const BASE_TIGHT_LABELS := {
+	"strength": "Сила", "agility": "Ловк.", "intelligence": "Инт.",
+	"perception": "Воспр.", "energy": "Энерг.", "knowledge": "Знания",
+	"endurance": "Выносл.", "leadership": "Лидер.",
+}
+const SURVIVAL_TIGHT_LABELS := {
+	"health_point": "ОЗ", "defense": "Защ.", "dodge": "Увор.",
+	"regeneration": "Реген.", "summon_amount": "Приз.",
+}
+const DERIVED_TIGHT_LABELS := {
+	"damage": "Урон", "attack_speed": "Скор.", "crit_chance": "Крит",
+	"crit_damage_multiplier": "К×", "knockback_power": "Отт.",
+	"magic_damage": "Маг.", "aoe_radius": "Шир.", "projectile_speed": "Снар.",
+	"attack_range": "Дал.", "range_multiplier": "Д×", "aura_radius": "Аура",
+	"buff_power": "Баф", "knockback_distance": "Отт.", "dot_damage": "Пер.",
+	"dot_speed": "Част.",
+}
+const DERIVED_ULTRA_TIGHT_LABELS := {
+	"damage": "Ур.", "attack_speed": "Ск.", "crit_chance": "Кр.",
+	"crit_damage_multiplier": "К×", "knockback_power": "От.",
+	"magic_damage": "М", "aoe_radius": "Ш", "projectile_speed": "Сн.",
+	"attack_range": "Д", "range_multiplier": "Д×", "aura_radius": "А",
+	"buff_power": "Б", "knockback_distance": "От.", "dot_damage": "П",
+	"dot_speed": "Ч",
+}
+const DOSSIER_TOOLTIP_META := "dossier_tooltip_text"
+const TOOLTIP_SCROLL_STEP := 88
+
+# SCRUM-890: кнопка «Завершить забег» открывает модалку EndRunConfirm ui_screens
+# (SCRUM-883) через этот хук; standalone-сцена (тесты/превью) падает в
+# движковый ConfirmationDialog-фолбэк.
+var end_run_confirm_handler := Callable()
 
 var _base_stats_container: VBoxContainer = null
-var _artifacts_container: HFlowContainer = null
+var _base_stats_grid: GridContainer = null
 var _derived_groups_container: GridContainer = null
-var _dossier_container: HBoxContainer = null
+var _survival_stats_container: GridContainer = null
+var _hero_card_container: VBoxContainer = null
+var _equipment_flow: HFlowContainer = null
+var _arsenal_box: VBoxContainer = null
+var _build_summary_panel: PanelContainer = null
+var _build_summary_label: Label = null
 var _player: Node = null
+var _dossier_root: Control = null
+var _dossier_header: HBoxContainer = null
+var _dossier_body: HBoxContainer = null
+var _hero_card: PanelContainer = null
+var _right_column: VBoxContainer = null
+var _hero_scroll: ScrollContainer = null
+var _derived_scroll: ScrollContainer = null
+var _button_box: HBoxContainer = null
+var _action_buttons: Array[Button] = []
+var _title_label: Label = null
+var _header_summary: Label = null
+var _frame_panel: PanelContainer = null
+var _focus_tooltip: PanelContainer = null
+var _focus_tooltip_scroll: ScrollContainer = null
+var _focus_tooltip_label: Label = null
+var _focus_tooltip_anchor: Control = null
+var _focused_tooltip_anchor: Control = null
+var _hovered_tooltip_anchor: Control = null
+var _base_focus_targets: Array[Control] = []
+var _survival_focus_targets: Array[Control] = []
+var _derived_focus_targets: Array[Control] = []
+var _reserve_masks: Array[ColorRect] = []
+var _focus_rebuild_queued := false
+
+# SCRUM-890 (доработка): derived-статы выживания живут в карточке героя
+# компактным блоком под базовыми статами; «Призывы» добавляются одной строкой
+# только у призывного кита (канон: ProgressionData.weapon_archetype == "summon").
+const SURVIVAL_STAT_IDS := ["health_point", "defense", "dodge", "regeneration"]
 
 
 func _ready() -> void:
 	process_mode = Node.PROCESS_MODE_ALWAYS
 	mouse_filter = Control.MOUSE_FILTER_STOP
 	set_anchors_preset(Control.PRESET_FULL_RECT)
+	# Тултипы — глобальный чип-стиль (SCRUM-890): рамку рисует TooltipPanel из
+	# GlobalTooltip.make_theme, свой texture-override сцене больше не нужен.
+	theme = GlobalTooltip.make_theme()
 	_build_layout()
+	resized.connect(_apply_responsive_layout)
+	call_deferred("_apply_responsive_layout")
+	call_deferred("_install_global_tooltip_skin")
 
 
 func setup(player: Node) -> void:
 	_player = player
-	_refresh_dossier()
+	_refresh_hero_card()
 	_refresh_stats()
-	_refresh_artifacts()
+	call_deferred("_apply_responsive_layout")
+	call_deferred("_rebuild_focus_navigation")
+	call_deferred("_install_global_tooltip_skin")
 
 
-# SCRUM-484: координатная спека @2560×1440 — пауза-досье (двухколоночная модалка).
-# Панель почти на весь экран (offset 20/18/-20/-18 → 2520×1404), _pause_end_modal_style
-# margins (74,94,74,86)×1.56 → safe-area Rect2(135,165,2290,1123). Внутри ScrollContainer
-# HBox(sep18): левая колонка управления (ширина 330, кнопки 280×60) + правая область
-# статов/артефактов (группы-панели шириной 430). Контент list-driven, тянется по высоте.
-const PD_PANEL_2K := Rect2(20, 18, 2520, 1404)
-const PD_SAFE_2K := Rect2(135, 165, 2290, 1123)
-const PD_LEFT_COLUMN_2K := Rect2(135, 165, 330, 1123)
-const PD_RIGHT_AREA_2K := Rect2(483, 165, 1942, 1123)
-const PD_BTN_2K := Rect2(0, 0, 280, 60)  # шаблон-размер кнопки управления
-const PD_STAT_GROUP_2K := Rect2(0, 0, 430, 0)  # шаблон-ширина панели группы статов
+const READABILITY_BASE_VIEWPORT := Vector2(1280.0, 720.0)
+const READABILITY_MAX_SCALE := 1.18
+const READABLE_BASE_ROW_HEIGHT := 44.0
+const READABLE_CHIP_HEIGHT := 54.0
+const READABLE_CHIP_WIDTH := 236.0
+const HEADER_SUMMARY_BASE_FONT_SIZE := 20
+const HEADER_SUMMARY_MIN_FONT_SIZE := 20
+const HEADER_SUMMARY_RIGHT_INSET := 24.0
+
+
+func _readability_scale() -> float:
+	var viewport := get_viewport_rect().size
+	if viewport.x <= 0.0 or viewport.y <= 0.0:
+		return 1.0
+	return clampf(
+		minf(viewport.x / READABILITY_BASE_VIEWPORT.x, viewport.y / READABILITY_BASE_VIEWPORT.y),
+		1.0,
+		READABILITY_MAX_SCALE
+	)
+
+
+func _readable_px(role_or_base, explicit_base_size := -1.0) -> int:
+	# Non-font geometry callers keep the historical one-argument scale. Every
+	# font assignment passes an explicit semantic role as the first argument.
+	var role := SemanticTypography.ROLE_BODY
+	var base_size := float(role_or_base)
+	if role_or_base is StringName:
+		role = role_or_base
+		base_size = float(explicit_base_size)
+	return SemanticTypography.resolve_scaled_compat(
+		role, base_size, _readability_scale()
+	)
+
+
+# числа = ui_screens._atlas_ui_scale (база 2560×1440).
+func _atlas_scale() -> float:
+	var vp := get_viewport_rect().size
+	if vp.x <= 0.0 or vp.y <= 0.0:
+		return 1.0
+	return minf(vp.x / 2560.0, vp.y / 1440.0)
+
+
+# числа = ui_screens._atlas_chip_style: тёмная кожа + латунный кант.
+func _chip_style(alpha: float, pad: float) -> StyleBoxFlat:
+	var style := StyleBoxFlat.new()
+	style.bg_color = Color(0.085, 0.070, 0.055, alpha)
+	style.border_color = Color(0.52, 0.41, 0.24, 0.90)
+	style.set_border_width_all(2)
+	style.set_corner_radius_all(10)
+	style.content_margin_left = pad * 1.4
+	style.content_margin_right = pad * 1.4
+	style.content_margin_top = pad
+	style.content_margin_bottom = pad
+	return style
+
+
+# числа = ui_screens._atlas_translucent_style.
+func _translucent_style(alpha: float, radius: float) -> StyleBoxFlat:
+	var style := StyleBoxFlat.new()
+	style.bg_color = Color(0.03, 0.03, 0.05, alpha)
+	style.set_corner_radius_all(int(radius))
+	return style
+
+
+# SCRUM-893: полая рама meta40 на весь экран — как на экранах атласа/настроек/
+# кодекса. Контент живёт в safe-зоне (маргины 160·vp/source ×0.86); фолбэк без
+# ассета — прежний плотный чип.
+func _frame_style() -> StyleBox:
+	if not ResourceLoader.exists(META40_FRAME_BORDER_PATH):
+		return _chip_style(0.95, maxf(7.0, roundf(16.0 * _atlas_scale())))
+	var vp := get_viewport_rect().size
+	if vp.x <= 0.0 or vp.y <= 0.0:
+		vp = Vector2(2560.0, 1440.0)
+	var style := StyleBoxTexture.new()
+	style.texture = load(META40_FRAME_BORDER_PATH)
+	style.texture_margin_left = ATLAS_FRAME_SOURCE_MARGIN
+	style.texture_margin_top = ATLAS_FRAME_SOURCE_MARGIN
+	style.texture_margin_right = ATLAS_FRAME_SOURCE_MARGIN
+	style.texture_margin_bottom = ATLAS_FRAME_SOURCE_MARGIN
+	style.draw_center = false
+	var margin_h := roundf(ATLAS_FRAME_SOURCE_MARGIN * vp.x / ATLAS_FRAME_SOURCE_SIZE.x)
+	var margin_v := roundf(ATLAS_FRAME_SOURCE_MARGIN * vp.y / ATLAS_FRAME_SOURCE_SIZE.y)
+	style.content_margin_left = margin_h
+	style.content_margin_right = margin_h
+	style.content_margin_top = margin_v
+	style.content_margin_bottom = margin_v
+	return style
+
+
+# Орнамент-разделитель секций (atlas_style); фолбэк — латунная линия 2px.
+func _make_section_divider() -> Control:
+	if ResourceLoader.exists(DIVIDER_ORNAMENT_PATH):
+		var ornament := TextureRect.new()
+		ornament.name = "DossierDivider"
+		ornament.texture = load(DIVIDER_ORNAMENT_PATH)
+		ornament.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
+		ornament.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
+		ornament.texture_filter = CanvasItem.TEXTURE_FILTER_NEAREST
+		ornament.custom_minimum_size = Vector2(0.0, maxf(16.0, roundf(24.0 * _atlas_scale())))
+		ornament.modulate = Color(1.0, 1.0, 1.0, 0.85)
+		ornament.mouse_filter = Control.MOUSE_FILTER_IGNORE
+		return ornament
+	var line := ColorRect.new()
+	line.name = "DossierDivider"
+	line.custom_minimum_size = Vector2(0.0, 2.0)
+	line.color = Color(0.52, 0.41, 0.24, 0.55)
+	line.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	return line
+
+
+# логика = ui_screens._atlas_action_button_height (72/88/104 по высоте вьюпорта).
+func _action_button_height() -> float:
+	var vp_h := get_viewport_rect().size.y
+	if vp_h <= 0.0:
+		vp_h = 1080.0
+	return 72.0 if vp_h < 900.0 else 104.0
 
 
 func _build_layout() -> void:
 	var overlay := ColorRect.new()
 	overlay.name = "PauseStatsDim"
 	overlay.set_anchors_preset(Control.PRESET_FULL_RECT)
-	overlay.color = Color(0.01, 0.015, 0.025, 0.74)
+	# SCRUM-893: рама полая — фон паузы теперь дим, гасим игру сильнее, чтобы
+	# контент досье читался как передний план.
+	overlay.color = Color(0.01, 0.015, 0.025, 0.88)
 	add_child(overlay)
 
-	var root := Control.new()
-	root.name = "PauseStatsMenuRoot"
-	root.set_anchors_preset(Control.PRESET_FULL_RECT)
-	add_child(root)
+	_dossier_root = Control.new()
+	_dossier_root.name = "PauseStatsMenuRoot"
+	_dossier_root.set_anchors_preset(Control.PRESET_FULL_RECT)
+	add_child(_dossier_root)
+	_build_reserve_masks(_dossier_root)
 
-	var panel := PanelContainer.new()
-	panel.name = "EscapeStatsPanelFrame"
-	var panel_size := get_viewport_rect().size - Vector2(40.0, 36.0)
-	panel.set_anchors_preset(Control.PRESET_FULL_RECT)
-	panel.offset_left = 20.0
-	panel.offset_top = 18.0
-	panel.offset_right = -20.0
-	panel.offset_bottom = -18.0
-	panel.clip_contents = true
-	panel.add_theme_stylebox_override("panel", _pause_end_modal_style(panel_size))
-	root.add_child(panel)
+	var content := Control.new()
+	content.name = "DossierContentRoot"
+	content.set_anchors_preset(Control.PRESET_FULL_RECT)
+	content.mouse_filter = Control.MOUSE_FILTER_PASS
+	_dossier_root.add_child(content)
 
-	var safe_scroll := ScrollContainer.new()
-	safe_scroll.name = "PauseStatsSafeScroll"
-	safe_scroll.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-	safe_scroll.size_flags_vertical = Control.SIZE_EXPAND_FILL
-	safe_scroll.horizontal_scroll_mode = ScrollContainer.SCROLL_MODE_DISABLED
-	safe_scroll.follow_focus = true
-	panel.add_child(safe_scroll)
+	var s := _atlas_scale()
+	_build_header(content, s)
+	_build_body(content, s)
+	_build_action_footer(content)
+	_build_focus_tooltip(content)
 
-	var layout := HBoxContainer.new()
-	layout.name = "EscapeStatsLayout"
-	layout.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-	layout.size_flags_vertical = Control.SIZE_EXPAND_FILL
-	layout.add_theme_constant_override("separation", 18)
-	safe_scroll.add_child(layout)
+	# The hollow shell is the final, mouse-ignored art layer. All runtime
+	# content is laid out inside the published inner rect before this node.
+	_frame_panel = PanelContainer.new()
+	_frame_panel.name = "EscapeStatsPanelFrame"
+	_frame_panel.set_anchors_preset(Control.PRESET_FULL_RECT)
+	_frame_panel.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	_frame_panel.texture_filter = CanvasItem.TEXTURE_FILTER_NEAREST
+	_frame_panel.add_theme_stylebox_override("panel", _frame_style())
+	_dossier_root.add_child(_frame_panel)
 
-	var left_column := VBoxContainer.new()
-	left_column.name = "RunControls"
-	left_column.custom_minimum_size = Vector2(300 if get_viewport_rect().size.x < 1500.0 else 330, 0)
-	left_column.add_theme_constant_override("separation", 10)
-	layout.add_child(left_column)
 
-	_build_left_controls(left_column)
-	_build_dossier_header(left_column)
-	_build_base_stats_block(left_column)
+func _build_reserve_masks(parent: Control) -> void:
+	for side in ["Top", "Bottom", "Left", "Right"]:
+		var mask := ColorRect.new()
+		mask.name = "DossierReserveMask%s" % side
+		mask.color = Color(0.01, 0.015, 0.025, 1.0)
+		mask.mouse_filter = Control.MOUSE_FILTER_IGNORE
+		parent.add_child(mask)
+		_reserve_masks.append(mask)
 
-	var right_column := VBoxContainer.new()
-	right_column.name = "DerivedStatsPanel"
-	right_column.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-	right_column.add_theme_constant_override("separation", 12)
-	layout.add_child(right_column)
+
+# SCRUM-983: the header is informational only. All destructive/navigation
+# actions live in a fixed footer so compact viewports retain a stable body.
+func _build_header(parent: Control, s: float) -> void:
+	_dossier_header = HBoxContainer.new()
+	_dossier_header.name = "DossierHeader"
+	_dossier_header.add_theme_constant_override("separation", 12)
+	parent.add_child(_dossier_header)
+
+	var title_chip := PanelContainer.new()
+	title_chip.name = "DossierTitleChip"
+	title_chip.size_flags_vertical = Control.SIZE_SHRINK_CENTER
+	title_chip.add_theme_stylebox_override("panel", _chip_style(0.86, maxf(5.0, roundf(10.0 * s))))
+	_dossier_header.add_child(title_chip)
+
+	var title_row := HBoxContainer.new()
+	title_row.add_theme_constant_override("separation", int(maxf(6.0, roundf(10.0 * s))))
+	title_chip.add_child(title_row)
+
+	if ResourceLoader.exists(HERO_EMBLEM_PATH):
+		var emblem := TextureRect.new()
+		emblem.name = "DossierTitleEmblem"
+		emblem.texture = load(HERO_EMBLEM_PATH)
+		emblem.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
+		emblem.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
+		emblem.texture_filter = CanvasItem.TEXTURE_FILTER_NEAREST
+		var emblem_px := maxf(26.0, roundf(44.0 * s))
+		emblem.custom_minimum_size = Vector2(emblem_px, emblem_px)
+		emblem.size_flags_vertical = Control.SIZE_SHRINK_CENTER
+		title_row.add_child(emblem)
+
+	_title_label = Label.new()
+	_title_label.name = "DossierTitleLabel"
+	_title_label.text = "Досье героя"
+	_title_label.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
+	_title_label.add_theme_font_size_override("font_size", SemanticTypography.resolve_fixed(
+		SemanticTypography.ROLE_TITLE,
+		_readable_px(SemanticTypography.ROLE_TITLE, 22.0),
+		SemanticTypography.role_min(SemanticTypography.ROLE_TITLE),
+		SemanticTypography.role_max(SemanticTypography.ROLE_TITLE)
+	))
+	_title_label.add_theme_color_override("font_color", COLOR_TITLE)
+	title_row.add_child(_title_label)
+
+	var spacer := Control.new()
+	spacer.name = "DossierHeaderSpacer"
+	spacer.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	spacer.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	_dossier_header.add_child(spacer)
+
+	_header_summary = Label.new()
+	_header_summary.name = "DossierHeaderSummary"
+	_header_summary.text = "Герой · текущий билд"
+	_header_summary.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
+	_header_summary.horizontal_alignment = HORIZONTAL_ALIGNMENT_RIGHT
+	_header_summary.clip_text = false
+	_header_summary.text_overrun_behavior = TextServer.OVERRUN_NO_TRIMMING
+	_header_summary.size_flags_horizontal = Control.SIZE_SHRINK_END
+	_header_summary.add_theme_font_size_override("font_size", SemanticTypography.resolve_fixed(
+		SemanticTypography.ROLE_SECTION,
+		_readable_px(SemanticTypography.ROLE_SECTION, HEADER_SUMMARY_BASE_FONT_SIZE),
+		SemanticTypography.role_min(SemanticTypography.ROLE_SECTION),
+		SemanticTypography.role_max(SemanticTypography.ROLE_SECTION)
+	))
+	_header_summary.add_theme_color_override("font_color", COLOR_KIND)
+	var summary_inset := MarginContainer.new()
+	summary_inset.name = "DossierHeaderSummaryInset"
+	summary_inset.size_flags_horizontal = Control.SIZE_SHRINK_END
+	summary_inset.add_theme_constant_override("margin_right", int(HEADER_SUMMARY_RIGHT_INSET))
+	summary_inset.add_child(_header_summary)
+	_dossier_header.add_child(summary_inset)
+
+
+func _build_action_footer(parent: Control) -> void:
+	_button_box = HBoxContainer.new()
+	_button_box.name = "PauseControlButtons"
+	_button_box.size_flags_horizontal = Control.SIZE_SHRINK_CENTER
+	_button_box.size_flags_vertical = Control.SIZE_SHRINK_CENTER
+	parent.add_child(_button_box)
+
+	var resume_button := _kit_button("Продолжить", 220.0)
+	resume_button.name = "PauseResumeButton"
+	resume_button.pressed.connect(func() -> void:
+		resume_requested.emit()
+	)
+	_button_box.add_child(resume_button)
+
+	var settings_button := _kit_button("Настройки", 220.0)
+	settings_button.name = "PauseSettingsButton"
+	settings_button.pressed.connect(func() -> void:
+		settings_requested.emit()
+	)
+	_button_box.add_child(settings_button)
+
+	var end_run_button := _kit_button("Завершить забег", 260.0)
+	end_run_button.name = "PauseEndRunButton"
+	end_run_button.pressed.connect(_show_end_run_confirm)
+	_button_box.add_child(end_run_button)
+
+	var menu_button := _kit_button("Главное меню", 220.0)
+	menu_button.name = "PauseMainMenuButton"
+	menu_button.pressed.connect(func() -> void:
+		main_menu_requested.emit()
+	)
+	_button_box.add_child(menu_button)
+	_action_buttons = [resume_button, settings_button, end_run_button, menu_button]
+	for button in _action_buttons:
+		button.set_meta("ui_button_family", PAUSE_ACTION_BUTTON_FAMILY)
+		button.focus_entered.connect(_schedule_focus_navigation_rebuild)
+
+	# SCRUM-812: досье проходимо с геймпада/стрелок — горизонтальное кольцо фокуса,
+	# стартовый фокус «Продолжить». B/Esc (resume) — централизованно в main._input.
+	var ring: Array[Button] = [resume_button, settings_button, end_run_button, menu_button]
+	for i in range(ring.size()):
+		var b := ring[i]
+		b.focus_mode = Control.FOCUS_ALL
+		b.focus_neighbor_left = ring[(i - 1 + ring.size()) % ring.size()].get_path()
+		b.focus_neighbor_right = ring[(i + 1) % ring.size()].get_path()
+	resume_button.call_deferred("grab_focus")
+
+
+func _build_body(parent: Control, s: float) -> void:
+	_dossier_body = HBoxContainer.new()
+	_dossier_body.name = "DossierBody"
+	_dossier_body.add_theme_constant_override("separation", maxi(10, int(roundf(16.0 * s))))
+	parent.add_child(_dossier_body)
+
+	# ЛЕВО — карточка героя: портрет, класс, оружие/уровень/возвышение, 8 базовых
+	# статов плотными chip-рядами и компактный блок «Выживание».
+	_hero_card = PanelContainer.new()
+	_hero_card.name = "HeroCard"
+	# SCRUM-893: шире под парадный портрет 200px + ряды с значениями.
+	_hero_card.custom_minimum_size = Vector2(clampf(520.0 * s, 320.0, 560.0), 0.0)
+	_hero_card.size_flags_vertical = Control.SIZE_EXPAND_FILL
+	_hero_card.add_theme_stylebox_override("panel", _chip_style(0.90, 12.0))
+	_dossier_body.add_child(_hero_card)
+
+	# SCRUM-890 (доработка): на компакт-высотах контент карточки длиннее панели —
+	# вертикальный скролл; на ≥1920×1080 контент помещается и скролл не активен.
+	_hero_scroll = ScrollContainer.new()
+	_hero_scroll.name = "HeroCardScroll"
+	_hero_scroll.horizontal_scroll_mode = ScrollContainer.SCROLL_MODE_DISABLED
+	_hero_scroll.vertical_scroll_mode = ScrollContainer.SCROLL_MODE_DISABLED
+	_hero_scroll.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	_hero_scroll.size_flags_vertical = Control.SIZE_EXPAND_FILL
+	_hero_scroll.follow_focus = true
+	_hero_scroll.get_v_scroll_bar().value_changed.connect(_schedule_focus_navigation_rebuild.unbind(1))
+	_hero_card.add_child(_hero_scroll)
+
+	_hero_card_container = VBoxContainer.new()
+	_hero_card_container.name = "HeroCardContent"
+	_hero_card_container.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	# SCRUM-893: сепарация 4 + портрет 188 — карточка (8 базовых + «Выживание»)
+	# помещается на 1440p без скролла; на компактных высотах скролл остаётся.
+	_hero_card_container.add_theme_constant_override("separation", 4)
+	_hero_scroll.add_child(_hero_card_container)
+
+	# ПРАВО — «Боевые параметры»: 4 секции кожаными чипами в сетке 2×2.
+	_right_column = VBoxContainer.new()
+	_right_column.name = "DerivedStatsPanel"
+	_right_column.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	_right_column.size_flags_vertical = Control.SIZE_EXPAND_FILL
+	_right_column.add_theme_constant_override("separation", maxi(6, int(roundf(10.0 * s))))
+	_dossier_body.add_child(_right_column)
 
 	var header := HBoxContainer.new()
 	header.name = "DerivedStatsHeader"
 	header.add_theme_constant_override("separation", 10)
-	right_column.add_child(header)
+	_right_column.add_child(header)
 
 	var stats_title := Label.new()
+	stats_title.name = "DerivedStatsTitle"
 	stats_title.text = "Боевые параметры"
 	stats_title.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-	stats_title.add_theme_font_size_override("font_size", 30)
-	stats_title.add_theme_color_override("font_color", Color(0.95, 0.97, 1.0, 1.0))
+	stats_title.add_theme_font_size_override("font_size", _readable_px(SemanticTypography.ROLE_SECTION, 24.0))
+	stats_title.add_theme_color_override("font_color", COLOR_TITLE)
 	header.add_child(stats_title)
 
 	var stats_hint := Label.new()
-	stats_hint.text = "Наведи на параметр для деталей"
+	stats_hint.name = "DerivedStatsHint"
+	stats_hint.text = "Фокус или наведение — подробности"
 	stats_hint.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
-	stats_hint.add_theme_font_size_override("font_size", 15)
-	stats_hint.add_theme_color_override("font_color", Color(0.62, 0.70, 0.78, 1.0))
+	stats_hint.add_theme_font_size_override("font_size", _readable_px(SemanticTypography.ROLE_CAPTION, 14.0))
+	stats_hint.add_theme_color_override("font_color", COLOR_KIND)
 	header.add_child(stats_hint)
 
-	var scroll := ScrollContainer.new()
-	scroll.name = "DerivedStatsScroll"
-	scroll.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-	scroll.size_flags_vertical = Control.SIZE_EXPAND_FILL
-	scroll.horizontal_scroll_mode = ScrollContainer.SCROLL_MODE_DISABLED
-	right_column.add_child(scroll)
+	# Без скролла на ≥1920×1080 (сетка 2×2 помещается в тело); на компактных
+	# вьюпортах секции складываются в 1 колонку и правая зона скроллится.
+	_derived_scroll = ScrollContainer.new()
+	_derived_scroll.name = "DerivedStatsScroll"
+	_derived_scroll.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	_derived_scroll.size_flags_vertical = Control.SIZE_EXPAND_FILL
+	_derived_scroll.horizontal_scroll_mode = ScrollContainer.SCROLL_MODE_DISABLED
+	_derived_scroll.vertical_scroll_mode = ScrollContainer.SCROLL_MODE_DISABLED
+	_derived_scroll.follow_focus = true
+	_derived_scroll.get_v_scroll_bar().value_changed.connect(_schedule_focus_navigation_rebuild.unbind(1))
+	_right_column.add_child(_derived_scroll)
+
+	# Скролл держит и сетку, и снаряжение: на 1440p всё помещается без скролла,
+	# на компактных вьюпортах правая зона листается целиком.
+	var right_content := VBoxContainer.new()
+	right_content.name = "DerivedStatsScrollContent"
+	right_content.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	right_content.size_flags_vertical = Control.SIZE_EXPAND_FILL
+	right_content.add_theme_constant_override("separation", maxi(8, int(roundf(12.0 * s))))
+	_derived_scroll.add_child(right_content)
 
 	_derived_groups_container = GridContainer.new()
 	_derived_groups_container.name = "DerivedStatsGroups"
-	_derived_groups_container.columns = 1 if get_viewport_rect().size.x < 1800.0 else 2
+	_derived_groups_container.columns = 2
 	_derived_groups_container.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-	_derived_groups_container.add_theme_constant_override("h_separation", 12)
-	_derived_groups_container.add_theme_constant_override("v_separation", 12)
-	scroll.add_child(_derived_groups_container)
+	_derived_groups_container.add_theme_constant_override("h_separation", maxi(8, int(roundf(12.0 * s))))
+	_derived_groups_container.add_theme_constant_override("v_separation", maxi(8, int(roundf(12.0 * s))))
+	right_content.add_child(_derived_groups_container)
+
+	# SCRUM-1056: preserve Arsenal/Equipment information without restoring the
+	# long prose blocks that forced a scrollbar. The compact row is always
+	# visible; its tooltip retains complete weapon, ultimate and artifact data.
+	_build_summary_panel = PanelContainer.new()
+	_build_summary_panel.name = "RunBuildSummaryPanel"
+	_build_summary_panel.custom_minimum_size = Vector2(0.0, 44.0)
+	_build_summary_panel.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	_build_summary_panel.add_theme_stylebox_override("panel", _stat_row_style(false))
+	right_content.add_child(_build_summary_panel)
+
+	_build_summary_label = Label.new()
+	_build_summary_label.name = "RunBuildSummaryLabel"
+	_build_summary_label.text = "Оружие · Ульта · Снаряжение"
+	_build_summary_label.clip_text = true
+	_build_summary_label.text_overrun_behavior = TextServer.OVERRUN_TRIM_ELLIPSIS
+	_build_summary_label.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
+	_build_summary_label.add_theme_font_size_override("font_size", SemanticTypography.resolve_fixed(
+		SemanticTypography.ROLE_BODY,
+		_readable_px(SemanticTypography.ROLE_BODY, 14.0),
+		SemanticTypography.role_min(SemanticTypography.ROLE_BODY),
+		SemanticTypography.role_max(SemanticTypography.ROLE_BODY)
+	))
+	_build_summary_label.add_theme_color_override("font_color", COLOR_BODY)
+	_build_summary_panel.add_child(_build_summary_label)
+
+	# SCRUM-893: «Арсенал» — механика оружия и ульта словами (та же дата-база,
+	# что у кодекса: weapon.description + ultimate_config).
+	var arsenal_panel := PanelContainer.new()
+	arsenal_panel.name = "ArsenalPanel"
+	arsenal_panel.visible = false
+	arsenal_panel.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	arsenal_panel.add_theme_stylebox_override("panel", _chip_style(0.86, maxf(6.0, roundf(10.0 * s))))
+	right_content.add_child(arsenal_panel)
+
+	var arsenal_outer := VBoxContainer.new()
+	arsenal_outer.add_theme_constant_override("separation", 6)
+	arsenal_panel.add_child(arsenal_outer)
+
+	var arsenal_header := HBoxContainer.new()
+	arsenal_header.add_theme_constant_override("separation", 8)
+	arsenal_outer.add_child(arsenal_header)
+
+	var arsenal_marker := ColorRect.new()
+	arsenal_marker.custom_minimum_size = Vector2(5.0, 22.0)
+	arsenal_marker.color = Color(0.85, 0.62, 0.30, 1.0)
+	arsenal_marker.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	arsenal_header.add_child(arsenal_marker)
+
+	var arsenal_title := Label.new()
+	arsenal_title.name = "ArsenalTitle"
+	arsenal_title.text = "Арсенал"
+	arsenal_title.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	arsenal_title.add_theme_font_size_override("font_size", SemanticTypography.resolve_fixed(
+		SemanticTypography.ROLE_SECTION,
+		_readable_px(SemanticTypography.ROLE_SECTION, 18.0),
+		SemanticTypography.role_min(SemanticTypography.ROLE_SECTION),
+		SemanticTypography.role_max(SemanticTypography.ROLE_SECTION)
+	))
+	arsenal_title.add_theme_color_override("font_color", Color(0.98, 0.94, 0.78, 1.0))
+	arsenal_header.add_child(arsenal_title)
+
+	_arsenal_box = VBoxContainer.new()
+	_arsenal_box.name = "ArsenalEntries"
+	_arsenal_box.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	_arsenal_box.add_theme_constant_override("separation", 6)
+	arsenal_outer.add_child(_arsenal_box)
+
+	# SCRUM-893: под параметрами — снаряжение текущего забега (артефакты игрока).
+	# Панель тянется на остаток высоты: свободное место читается как инвентарь
+	# с запасом под будущие находки, а не как дыра лейаута.
+	var equip_panel := PanelContainer.new()
+	equip_panel.name = "RunEquipmentPanel"
+	equip_panel.visible = false
+	equip_panel.custom_minimum_size = Vector2(0.0, 110.0)
+	equip_panel.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	equip_panel.size_flags_vertical = Control.SIZE_EXPAND_FILL
+	equip_panel.add_theme_stylebox_override("panel", _chip_style(0.86, maxf(6.0, roundf(10.0 * s))))
+	right_content.add_child(equip_panel)
+
+	var equip_box := VBoxContainer.new()
+	equip_box.add_theme_constant_override("separation", 6)
+	equip_panel.add_child(equip_box)
+
+	var equip_header := HBoxContainer.new()
+	equip_header.add_theme_constant_override("separation", 8)
+	equip_box.add_child(equip_header)
+
+	var equip_marker := ColorRect.new()
+	equip_marker.custom_minimum_size = Vector2(5.0, 22.0)
+	equip_marker.color = Color(0.94, 0.80, 0.46, 1.0)
+	equip_marker.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	equip_header.add_child(equip_marker)
+
+	var equip_title := Label.new()
+	equip_title.name = "RunEquipmentTitle"
+	equip_title.text = "Снаряжение забега"
+	equip_title.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	equip_title.add_theme_font_size_override("font_size", SemanticTypography.resolve_fixed(
+		SemanticTypography.ROLE_SECTION,
+		_readable_px(SemanticTypography.ROLE_SECTION, 18.0),
+		SemanticTypography.role_min(SemanticTypography.ROLE_SECTION),
+		SemanticTypography.role_max(SemanticTypography.ROLE_SECTION)
+	))
+	equip_title.add_theme_color_override("font_color", Color(0.98, 0.94, 0.78, 1.0))
+	equip_header.add_child(equip_title)
+
+	_equipment_flow = HFlowContainer.new()
+	_equipment_flow.name = "RunEquipmentFlow"
+	_equipment_flow.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	_equipment_flow.add_theme_constant_override("h_separation", 8)
+	_equipment_flow.add_theme_constant_override("v_separation", 6)
+	equip_box.add_child(_equipment_flow)
 
 
-func _build_dossier_header(left_column: VBoxContainer) -> void:
-	left_column.add_child(_make_section_divider())
-	_dossier_container = HBoxContainer.new()
-	_dossier_container.name = "PauseCharacterDossier"
-	_dossier_container.add_theme_constant_override("separation", 10)
-	left_column.add_child(_dossier_container)
+func _build_focus_tooltip(parent: Control) -> void:
+	_focus_tooltip = PanelContainer.new()
+	_focus_tooltip.name = "DossierFocusTooltip"
+	_focus_tooltip.visible = false
+	_focus_tooltip.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	_focus_tooltip.clip_contents = true
+	_focus_tooltip.z_index = 100
+	_focus_tooltip.add_theme_stylebox_override("panel", _chip_style(0.98, 12.0))
+	parent.add_child(_focus_tooltip)
+
+	_focus_tooltip_scroll = ScrollContainer.new()
+	_focus_tooltip_scroll.name = "DossierFocusTooltipScroll"
+	_focus_tooltip_scroll.custom_minimum_size = Vector2(390.0, 0.0)
+	_focus_tooltip_scroll.horizontal_scroll_mode = ScrollContainer.SCROLL_MODE_DISABLED
+	_focus_tooltip_scroll.vertical_scroll_mode = ScrollContainer.SCROLL_MODE_AUTO
+	_focus_tooltip_scroll.focus_mode = Control.FOCUS_NONE
+	_focus_tooltip_scroll.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	_focus_tooltip_scroll.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	_focus_tooltip_scroll.size_flags_vertical = Control.SIZE_EXPAND_FILL
+	_focus_tooltip.add_child(_focus_tooltip_scroll)
+
+	_focus_tooltip_label = Label.new()
+	_focus_tooltip_label.name = "DossierFocusTooltipLabel"
+	_focus_tooltip_label.custom_minimum_size = Vector2(380.0, 0.0)
+	_focus_tooltip_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	_focus_tooltip_label.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	_focus_tooltip_label.add_theme_font_size_override("font_size", SemanticTypography.resolve_fixed(
+		SemanticTypography.ROLE_TOOLTIP,
+		_readable_px(SemanticTypography.ROLE_TOOLTIP, 15.0),
+		SemanticTypography.role_min(SemanticTypography.ROLE_TOOLTIP),
+		SemanticTypography.role_max(SemanticTypography.ROLE_TOOLTIP)
+	))
+	_focus_tooltip_label.add_theme_color_override("font_color", COLOR_BODY)
+	_focus_tooltip_scroll.add_child(_focus_tooltip_label)
 
 
-func _refresh_dossier() -> void:
-	if _dossier_container == null:
+func _safe_rect_for_size(viewport_size: Vector2) -> Rect2:
+	var margin_x := roundf(ATLAS_FRAME_SOURCE_MARGIN * viewport_size.x / ATLAS_FRAME_SOURCE_SIZE.x)
+	var margin_y := roundf(ATLAS_FRAME_SOURCE_MARGIN * viewport_size.y / ATLAS_FRAME_SOURCE_SIZE.y)
+	return Rect2(
+		Vector2(margin_x, margin_y),
+		viewport_size - Vector2(margin_x * 2.0, margin_y * 2.0)
+	)
+
+
+func _responsive_contract(viewport_size: Vector2) -> Dictionary:
+	var safe_rect := _safe_rect_for_size(viewport_size)
+	var compact := viewport_size.y <= 900.0
+	var large := viewport_size.y >= 1200.0
+	var reserve := INNER_RESERVE_LARGE if large else INNER_RESERVE_COMPACT
+	var inner_rect := safe_rect.grow(-reserve)
+	var header_height := (48.0 if viewport_size.y >= 900.0 else 46.0) if compact else (104.0 if large else 72.0)
+	var header_gap := 4.0 if compact else (24.0 if large else 12.0)
+	var footer_gap := 2.0 if compact else (24.0 if large else 12.0)
+	var footer_bottom := 4.0 if compact else (16.0 if large else 12.0)
+	var action_height := 72.0 if compact else 104.0
+	var hero_width := 348.0 if compact else (520.0 if large else 420.0)
+	var column_gap := 12.0 if compact else (24.0 if large else 20.0)
+	var action_widths := [220.0, 220.0, 260.0, 220.0] if compact else (
+		[280.0, 280.0, 320.0, 300.0] if large else [260.0, 260.0, 280.0, 280.0]
+	)
+	var action_gap := 8.0 if compact else (20.0 if large else 16.0)
+	var raw_button_width := float(action_widths[0] + action_widths[1] + action_widths[2] + action_widths[3])
+	var available_button_width := maxf(1.0, inner_rect.size.x - action_gap * 3.0 - (8.0 if compact else 0.0))
+	if raw_button_width > available_button_width:
+		var width_scale := available_button_width / raw_button_width
+		for index in range(action_widths.size()):
+			action_widths[index] = floorf(float(action_widths[index]) * width_scale)
+	var action_total := float(action_widths[0] + action_widths[1] + action_widths[2] + action_widths[3]) + action_gap * 3.0
+	var action_rect := Rect2(
+		Vector2(inner_rect.get_center().x - action_total * 0.5, inner_rect.end.y - footer_bottom - action_height),
+		Vector2(action_total, action_height)
+	)
+	var body_top := inner_rect.position.y + header_height + header_gap
+	var body_rect := Rect2(
+		Vector2(inner_rect.position.x, body_top),
+		Vector2(inner_rect.size.x, maxf(1.0, action_rect.position.y - footer_gap - body_top))
+	)
+	return {
+		"safe_rect": safe_rect,
+		"inner_rect": inner_rect,
+		"header_rect": Rect2(inner_rect.position, Vector2(inner_rect.size.x, header_height)),
+		"body_rect": body_rect,
+		"hero_width": hero_width,
+		"column_gap": column_gap,
+		"action_rect": action_rect,
+		"action_widths": action_widths,
+		"action_gap": action_gap,
+	}
+
+
+func _apply_responsive_layout() -> void:
+	if _dossier_root == null or not is_instance_valid(_dossier_root):
 		return
-	for child in _dossier_container.get_children():
+	var viewport_size := get_viewport_rect().size
+	if viewport_size.x <= 1.0 or viewport_size.y <= 1.0:
+		return
+	var contract := _responsive_contract(viewport_size)
+	var safe_rect: Rect2 = contract["safe_rect"]
+	var inner_rect: Rect2 = contract["inner_rect"]
+	var header_rect: Rect2 = contract["header_rect"]
+	var body_rect: Rect2 = contract["body_rect"]
+	var action_rect: Rect2 = contract["action_rect"]
+
+	_dossier_root.set_meta("gold_shell_content_rect", safe_rect)
+	_dossier_root.set_meta("dossier_inner_content_rect", inner_rect)
+	_apply_reserve_masks(viewport_size, inner_rect)
+	_refresh_responsive_metrics(viewport_size)
+	_dossier_body.add_theme_constant_override("separation", int(contract["column_gap"]))
+	_hero_card.custom_minimum_size = Vector2(float(contract["hero_width"]), body_rect.size.y)
+	if _base_stats_grid != null and is_instance_valid(_base_stats_grid):
+		_base_stats_grid.columns = 2
+	_button_box.add_theme_constant_override("separation", int(contract["action_gap"]))
+	var action_widths: Array = contract["action_widths"]
+	for index in range(_action_buttons.size()):
+		var button := _action_buttons[index]
+		button.custom_minimum_size = Vector2(float(action_widths[index]), action_rect.size.y)
+		_apply_kit_button_theme(button)
+	_frame_panel.add_theme_stylebox_override("panel", _frame_style())
+	_frame_panel.set_meta("gold_shell_content_rect", safe_rect)
+	_frame_panel.set_meta("dossier_inner_content_rect", inner_rect)
+	if _hero_scroll != null:
+		_hero_scroll.set_meta("dossier_scrollbar_lane", 0.0)
+	if _derived_scroll != null:
+		_derived_scroll.set_meta("dossier_scrollbar_lane", 0.0)
+	_button_box.queue_sort()
+	_dossier_body.queue_sort()
+	call_deferred("_finalize_responsive_rects", contract)
+	if _focus_tooltip != null and _focus_tooltip.visible:
+		call_deferred("_position_focus_tooltip")
+
+
+func _apply_reserve_masks(viewport_size: Vector2, inner_rect: Rect2) -> void:
+	if _reserve_masks.size() != 4:
+		return
+	var mask_rects := [
+		Rect2(Vector2.ZERO, Vector2(viewport_size.x, inner_rect.position.y)),
+		Rect2(Vector2(0.0, inner_rect.end.y), Vector2(viewport_size.x, viewport_size.y - inner_rect.end.y)),
+		Rect2(Vector2(0.0, inner_rect.position.y), Vector2(inner_rect.position.x, inner_rect.size.y)),
+		Rect2(Vector2(inner_rect.end.x, inner_rect.position.y), Vector2(viewport_size.x - inner_rect.end.x, inner_rect.size.y)),
+	]
+	for index in range(_reserve_masks.size()):
+		_reserve_masks[index].position = (mask_rects[index] as Rect2).position
+		_reserve_masks[index].size = (mask_rects[index] as Rect2).size
+
+
+func _refresh_responsive_metrics(viewport_size: Vector2) -> void:
+	var s := _atlas_scale()
+	var compact := viewport_size.y <= 900.0
+	var very_compact := viewport_size.y <= 648.0
+	if _title_label != null:
+		_title_label.add_theme_font_size_override("font_size", SemanticTypography.resolve_fixed(
+			SemanticTypography.ROLE_TITLE,
+			_readable_px(SemanticTypography.ROLE_TITLE, 22.0),
+			SemanticTypography.role_min(SemanticTypography.ROLE_TITLE),
+			SemanticTypography.role_max(SemanticTypography.ROLE_TITLE)
+		))
+	var title_chip := find_child("DossierTitleChip", true, false) as PanelContainer
+	if title_chip != null:
+		title_chip.add_theme_stylebox_override("panel", _chip_style(0.86, maxf(5.0, roundf(10.0 * s))))
+	var title_emblem := find_child("DossierTitleEmblem", true, false) as TextureRect
+	if title_emblem != null:
+		var emblem_px := maxf(26.0, roundf(44.0 * s))
+		title_emblem.custom_minimum_size = Vector2(emblem_px, emblem_px)
+	if _header_summary != null:
+		_fit_header_summary(viewport_size)
+	var portrait_slot := find_child("PauseDossierPortraitSlot", true, false) as Control
+	if portrait_slot != null:
+		var portrait_px := clampf(188.0 * s, 128.0, 196.0)
+		portrait_slot.custom_minimum_size = Vector2(portrait_px, portrait_px)
+	var identity := find_child("HeroIdentityRow", true, false) as Control
+	if identity != null:
+		# The header already carries hero + weapon. The detailed portrait block
+		# returns on the 2K tier; smaller targets use its vertical budget to keep
+		# every numeric row visible without a dossier scrollbar.
+		identity.visible = viewport_size.y >= 1200.0
+	if _hero_card != null:
+		_hero_card.add_theme_stylebox_override("panel", _chip_style(0.90, 1.0 if compact else 12.0))
+	var crest := find_child("PauseDossierCrest", true, false) as TextureRect
+	if crest != null:
+		var crest_px := maxf(30.0, roundf(42.0 * s))
+		crest.custom_minimum_size = Vector2(crest_px, crest_px)
+	for button in _action_buttons:
+		button.add_theme_font_size_override("font_size", _readable_px(SemanticTypography.ROLE_ACTION, 16.0))
+	var derived_title := find_child("DerivedStatsTitle", true, false) as Label
+	if derived_title != null:
+		derived_title.add_theme_font_size_override("font_size", _readable_px(SemanticTypography.ROLE_SECTION, 24.0))
+	var derived_hint := find_child("DerivedStatsHint", true, false) as Label
+	if derived_hint != null:
+		derived_hint.add_theme_font_size_override("font_size", _readable_px(SemanticTypography.ROLE_CAPTION, 14.0))
+	var derived_header := find_child("DerivedStatsHeader", true, false) as Control
+	if derived_header != null:
+		derived_header.visible = viewport_size.y >= 1200.0
+	if _build_summary_panel != null:
+		_build_summary_panel.custom_minimum_size.y = 20.0 if very_compact else (28.0 if compact else 44.0)
+		_build_summary_panel.add_theme_stylebox_override("panel", _stat_row_style(false))
+	if _build_summary_label != null:
+		_build_summary_label.add_theme_font_size_override("font_size", SemanticTypography.resolve_fixed(
+			SemanticTypography.ROLE_BODY,
+			13 if compact else _readable_px(SemanticTypography.ROLE_BODY, 14.0),
+			SemanticTypography.role_min(SemanticTypography.ROLE_BODY),
+			SemanticTypography.role_max(SemanticTypography.ROLE_BODY)
+		))
+	var right_content := find_child("DerivedStatsScrollContent", true, false) as VBoxContainer
+	if right_content != null:
+		right_content.add_theme_constant_override("separation", 2 if very_compact else (8 if compact else maxi(8, int(roundf(12.0 * s)))))
+	var base_title := find_child("BaseStatsTitle", true, false) as Label
+	if base_title != null:
+		base_title.visible = not compact
+	var survival_title := find_child("SurvivalTitle", true, false) as Label
+	if survival_title != null:
+		survival_title.visible = not compact
+	for node in find_children("DerivedGroupTitle_*", "Label", true, false):
+		(node as Label).add_theme_font_size_override("font_size", SemanticTypography.resolve_fixed(
+			SemanticTypography.ROLE_SECTION,
+			_readable_px(SemanticTypography.ROLE_SECTION, 18.0),
+			SemanticTypography.role_min(SemanticTypography.ROLE_SECTION),
+			SemanticTypography.role_max(SemanticTypography.ROLE_SECTION)
+		))
+	for node in find_children("DerivedGroupHeader_*", "HBoxContainer", true, false):
+		(node as Control).visible = not very_compact
+	for node in find_children("DerivedGroupContent_*", "VBoxContainer", true, false):
+		(node as VBoxContainer).add_theme_constant_override("separation", 4 if very_compact else 8)
+	for node in find_children("DerivedStatChips_*", "GridContainer", true, false):
+		var chips := node as GridContainer
+		chips.columns = 2
+		chips.add_theme_constant_override("v_separation", 2 if very_compact else 6)
+	for node in find_children("DerivedStatGroup_*", "PanelContainer", true, false):
+		(node as PanelContainer).add_theme_stylebox_override("panel", _chip_style(0.86, 2.0 if very_compact else maxf(6.0, roundf(12.0 * s))))
+	if _derived_groups_container != null:
+		_derived_groups_container.add_theme_constant_override("v_separation", 2 if very_compact else maxi(8, int(roundf(12.0 * s))))
+	for node in find_children("BaseStatName_*", "Label", true, false):
+		var label := node as Label
+		var stat_id := label.name.trim_prefix("BaseStatName_")
+		label.text = str(BASE_TIGHT_LABELS.get(stat_id, label.text)) if compact else str(label.get_meta("full_label", label.text))
+		label.add_theme_font_size_override("font_size", _readable_px(SemanticTypography.ROLE_FIELD, 17.0))
+	for node in find_children("BaseStatValue_*", "Label", true, false):
+		var label := node as Label
+		label.custom_minimum_size = Vector2(_readable_px(32.0), 0.0)
+		label.add_theme_font_size_override("font_size", _readable_px(SemanticTypography.ROLE_VALUE, 18.0))
+	for node in find_children("SurvivalStatName_*", "Label", true, false):
+		var label := node as Label
+		var stat_id := label.name.trim_prefix("SurvivalStatName_")
+		label.text = str(SURVIVAL_TIGHT_LABELS.get(stat_id, label.text)) if compact else str(label.get_meta("full_label", label.text))
+		label.add_theme_font_size_override("font_size", SemanticTypography.resolve_fixed(
+			SemanticTypography.ROLE_FIELD,
+			14 if compact else _readable_px(SemanticTypography.ROLE_FIELD, 15.0),
+			SemanticTypography.role_min(SemanticTypography.ROLE_FIELD),
+			SemanticTypography.role_max(SemanticTypography.ROLE_FIELD)
+		))
+	for node in find_children("SurvivalStatValue_*", "Label", true, false):
+		var label := node as Label
+		label.custom_minimum_size = Vector2(54.0 if compact else _readable_px(96.0), 0.0)
+		label.add_theme_font_size_override("font_size", SemanticTypography.resolve_fixed(
+			SemanticTypography.ROLE_VALUE,
+			14 if compact else _readable_px(SemanticTypography.ROLE_VALUE, 16.0),
+			SemanticTypography.role_min(SemanticTypography.ROLE_VALUE),
+			SemanticTypography.role_max(SemanticTypography.ROLE_VALUE)
+		))
+	for node in find_children("DerivedStatName_*", "Label", true, false):
+		var label := node as Label
+		var stat_id := label.name.trim_prefix("DerivedStatName_")
+		label.text = str(DERIVED_ULTRA_TIGHT_LABELS.get(stat_id, label.text)) if very_compact else (str(DERIVED_TIGHT_LABELS.get(stat_id, label.text)) if compact else str(DERIVED_COMPACT_LABELS.get(stat_id, label.text)))
+		label.add_theme_font_size_override("font_size", SemanticTypography.resolve_fixed(
+			SemanticTypography.ROLE_FIELD,
+			11 if very_compact else (13 if compact else _readable_px(SemanticTypography.ROLE_FIELD, 15.0)),
+			SemanticTypography.role_min(SemanticTypography.ROLE_FIELD),
+			SemanticTypography.role_max(SemanticTypography.ROLE_FIELD)
+		))
+	for node in find_children("DerivedStatValue_*", "Label", true, false):
+		var label := node as Label
+		label.custom_minimum_size = Vector2(48.0 if compact else _readable_px(54.0), 0.0)
+		label.add_theme_font_size_override("font_size", SemanticTypography.resolve_fixed(
+			SemanticTypography.ROLE_VALUE,
+			13 if very_compact else (14 if compact else _readable_px(SemanticTypography.ROLE_VALUE, 17.0)),
+			SemanticTypography.role_min(SemanticTypography.ROLE_VALUE),
+			SemanticTypography.role_max(SemanticTypography.ROLE_VALUE)
+		))
+	if _base_stats_grid != null:
+		_base_stats_grid.columns = 2
+	if _survival_stats_container != null:
+		_survival_stats_container.columns = 2
+	for node in find_children("BaseStatRow_*", "PanelContainer", true, false):
+		var row := node as PanelContainer
+		row.custom_minimum_size.y = READABLE_BASE_ROW_HEIGHT
+		row.add_theme_stylebox_override("panel", _base_stat_row_style(false, row.find_children("PriorityBadge_*", "Label", true, false).size() > 0))
+	for node in find_children("SurvivalStatRow_*", "PanelContainer", true, false):
+		var row := node as PanelContainer
+		row.custom_minimum_size.y = 40.0
+		row.add_theme_stylebox_override("panel", _stat_row_style(false))
+	for node in find_children("DerivedStatChip_*", "PanelContainer", true, false):
+		var chip := node as PanelContainer
+		chip.custom_minimum_size = Vector2(0.0 if compact else READABLE_CHIP_WIDTH, 28.0 if very_compact else (32.0 if compact else READABLE_CHIP_HEIGHT))
+		chip.add_theme_stylebox_override("panel", _derived_stat_row_style(false))
+	for node in find_children("*Divider*", "TextureRect", true, false):
+		var divider := node as Control
+		divider.visible = viewport_size.y >= 1200.0
+		divider.custom_minimum_size.y = maxf(16.0, roundf(24.0 * s))
+	for node in find_children("BaseStatIcon_*", "Control", true, false):
+		(node as Control).custom_minimum_size = Vector2(44.0, 44.0)
+	for node in find_children("SurvivalStatIcon_*", "Control", true, false):
+		(node as Control).custom_minimum_size = Vector2(35.0, 35.0)
+	for node in find_children("DerivedStatIcon_*", "Control", true, false):
+		(node as Control).custom_minimum_size = Vector2(24.0, 24.0) if very_compact else (Vector2(26.0, 26.0) if compact else Vector2(46.0, 46.0))
+
+
+# SCRUM-1056 QA correction: the old right-aligned identity ended on the header's
+# rectangular edge, where the irregular top-right ornament covered its final
+# glyph at 1152x648. Reserve the exact measured lane plus an ornament inset;
+# only reduce type if a future localized identity genuinely exceeds all space
+# left by the title chip. The text itself is never abbreviated or ellipsized.
+func _fit_header_summary(viewport_size: Vector2) -> void:
+	if _header_summary == null or _dossier_header == null:
+		return
+	var title_chip := find_child("DossierTitleChip", true, false) as Control
+	var header_width := float(_responsive_contract(viewport_size)["header_rect"].size.x)
+	var separation := float(_dossier_header.get_theme_constant("separation"))
+	var title_width := title_chip.get_combined_minimum_size().x if title_chip != null else 0.0
+	var available_width := maxf(1.0, header_width - title_width - separation * 2.0 - HEADER_SUMMARY_RIGHT_INSET)
+	var base_font_size := _readable_px(SemanticTypography.ROLE_SECTION, HEADER_SUMMARY_BASE_FONT_SIZE)
+	var min_font_size := _readable_px(SemanticTypography.ROLE_SECTION, HEADER_SUMMARY_MIN_FONT_SIZE)
+	var font := _header_summary.get_theme_font("font")
+	var chosen_font_size := base_font_size
+	var rendered_width := font.get_string_size(
+		_header_summary.text, HORIZONTAL_ALIGNMENT_LEFT, -1.0, chosen_font_size
+	).x
+	while chosen_font_size > min_font_size and rendered_width > available_width:
+		chosen_font_size -= 1
+		rendered_width = font.get_string_size(
+			_header_summary.text, HORIZONTAL_ALIGNMENT_LEFT, -1.0, chosen_font_size
+		).x
+	_header_summary.add_theme_font_size_override("font_size", SemanticTypography.resolve_fixed(
+		SemanticTypography.ROLE_SECTION,
+		chosen_font_size,
+		SemanticTypography.role_min(SemanticTypography.ROLE_SECTION),
+		SemanticTypography.role_max(SemanticTypography.ROLE_SECTION)
+	))
+	_header_summary.custom_minimum_size.x = minf(ceilf(rendered_width) + 2.0, available_width)
+
+
+func _finalize_responsive_rects(contract: Dictionary) -> void:
+	if _dossier_header == null or not is_instance_valid(_dossier_header):
+		return
+	var header_rect: Rect2 = contract["header_rect"]
+	var body_rect: Rect2 = contract["body_rect"]
+	var action_rect: Rect2 = contract["action_rect"]
+	_dossier_header.position = header_rect.position
+	_dossier_header.size = header_rect.size
+	_dossier_body.position = body_rect.position
+	_dossier_body.size = body_rect.size
+	_button_box.position = action_rect.position
+	_button_box.size = action_rect.size
+	_dossier_header.queue_sort()
+	_dossier_body.queue_sort()
+	_button_box.queue_sort()
+	call_deferred("_rebuild_focus_navigation")
+
+
+func _position_focus_tooltip() -> void:
+	if _focus_tooltip == null or not _focus_tooltip.visible or _focus_tooltip_anchor == null:
+		return
+	if not is_instance_valid(_focus_tooltip_anchor):
+		_focus_tooltip.visible = false
+		return
+	var viewport_size := get_viewport_rect().size
+	var inner_rect: Rect2 = _responsive_contract(viewport_size)["inner_rect"]
+	var tooltip_size := Vector2(minf(430.0, inner_rect.size.x), minf(288.0, inner_rect.size.y))
+	_focus_tooltip.size = tooltip_size
+	var anchor_rect := _focus_tooltip_anchor.get_global_rect()
+	var candidate := Vector2(anchor_rect.end.x + 12.0, anchor_rect.position.y)
+	if candidate.x + tooltip_size.x > inner_rect.end.x:
+		candidate.x = anchor_rect.position.x - tooltip_size.x - 12.0
+	candidate.x = clampf(candidate.x, inner_rect.position.x, inner_rect.end.x - tooltip_size.x)
+	candidate.y = clampf(candidate.y, inner_rect.position.y, inner_rect.end.y - tooltip_size.y)
+	_focus_tooltip.position = candidate
+
+
+func _show_focus_tooltip(anchor: Control) -> void:
+	_focused_tooltip_anchor = anchor
+	_refresh_dossier_tooltip()
+
+
+func _hide_focus_tooltip(anchor: Control) -> void:
+	if _focused_tooltip_anchor == anchor:
+		_focused_tooltip_anchor = null
+	_refresh_dossier_tooltip()
+
+
+func _show_hover_tooltip(anchor: Control) -> void:
+	_hovered_tooltip_anchor = anchor
+	_refresh_dossier_tooltip()
+
+
+func _hide_hover_tooltip(anchor: Control) -> void:
+	if _hovered_tooltip_anchor == anchor:
+		_hovered_tooltip_anchor = null
+	_refresh_dossier_tooltip()
+
+
+func _refresh_dossier_tooltip() -> void:
+	var anchor := _hovered_tooltip_anchor if _hovered_tooltip_anchor != null else _focused_tooltip_anchor
+	if anchor == null or not is_instance_valid(anchor):
+		_focus_tooltip_anchor = null
+		_focus_tooltip.visible = false
+		_focus_tooltip.set_meta("dossier_anchor_name", "")
+		return
+	var text := str(anchor.get_meta(DOSSIER_TOOLTIP_META, ""))
+	if text.strip_edges() == "":
+		return
+	_focus_tooltip_anchor = anchor
+	_focus_tooltip_label.text = text
+	_focus_tooltip_scroll.scroll_vertical = 0
+	_focus_tooltip.visible = true
+	_focus_tooltip.set_meta("dossier_anchor_name", str(anchor.name))
+	call_deferred("_position_focus_tooltip")
+
+
+func _unhandled_input(event: InputEvent) -> void:
+	if _focus_tooltip == null or not _focus_tooltip.visible or _focus_tooltip_anchor == null:
+		return
+	var direction := 0
+	if event.is_action_pressed("ui_page_down"):
+		direction = 1
+	elif event.is_action_pressed("ui_page_up"):
+		direction = -1
+	elif event is InputEventJoypadButton and event.pressed:
+		if event.button_index == JOY_BUTTON_RIGHT_SHOULDER:
+			direction = 1
+		elif event.button_index == JOY_BUTTON_LEFT_SHOULDER:
+			direction = -1
+	if direction == 0:
+		return
+	_focus_tooltip_scroll.scroll_vertical += direction * TOOLTIP_SCROLL_STEP
+	get_viewport().set_input_as_handled()
+
+
+func _input(event: InputEvent) -> void:
+	# Wheel events are normally consumed by the dossier's underlying content
+	# ScrollContainer before _unhandled_input. Capture them early while a bounded
+	# hover/focus tooltip is open so its hidden tail remains reachable.
+	if _focus_tooltip == null or not _focus_tooltip.visible or _hovered_tooltip_anchor == null \
+		or not is_instance_valid(_hovered_tooltip_anchor) or not (event is InputEventMouseButton):
+		return
+	var mouse_event := event as InputEventMouseButton
+	if not mouse_event.pressed:
+		return
+	var direction := 0
+	if mouse_event.button_index == MOUSE_BUTTON_WHEEL_DOWN:
+		direction = 1
+	elif mouse_event.button_index == MOUSE_BUTTON_WHEEL_UP:
+		direction = -1
+	if direction == 0:
+		return
+	_focus_tooltip_scroll.scroll_vertical += direction * TOOLTIP_SCROLL_STEP
+	get_viewport().set_input_as_handled()
+
+
+func _wire_stat_focus(control: Control, target_list: Array[Control]) -> void:
+	control.focus_mode = Control.FOCUS_ALL
+	control.mouse_default_cursor_shape = Control.CURSOR_HELP
+	target_list.append(control)
+	control.focus_entered.connect(_show_focus_tooltip.bind(control))
+	control.focus_exited.connect(_hide_focus_tooltip.bind(control))
+	control.mouse_entered.connect(_show_hover_tooltip.bind(control))
+	control.mouse_exited.connect(_hide_hover_tooltip.bind(control))
+
+
+func _schedule_focus_navigation_rebuild() -> void:
+	if _focus_rebuild_queued:
+		return
+	_focus_rebuild_queued = true
+	call_deferred("_flush_focus_navigation_rebuild")
+
+
+func _flush_focus_navigation_rebuild() -> void:
+	_focus_rebuild_queued = false
+	_rebuild_focus_navigation()
+
+
+func _rebuild_focus_navigation() -> void:
+	var stat_targets: Array[Control] = []
+	for source in [_base_focus_targets, _survival_focus_targets, _derived_focus_targets]:
+		for target in source:
+			if target != null and is_instance_valid(target) and target.is_inside_tree():
+				stat_targets.append(target as Control)
+	if stat_targets.is_empty() or _action_buttons.size() != 4:
+		return
+	for target in stat_targets:
+		var left := _nearest_focus_target(target, stat_targets, Vector2.LEFT)
+		var right := _nearest_focus_target(target, stat_targets, Vector2.RIGHT)
+		var up := _nearest_focus_target(target, stat_targets, Vector2.UP)
+		var down := _nearest_focus_target(target, stat_targets, Vector2.DOWN)
+		if left != null:
+			target.focus_neighbor_left = left.get_path()
+		if right != null:
+			target.focus_neighbor_right = right.get_path()
+		target.focus_neighbor_top = (up if up != null else _nearest_action_by_x(target)).get_path()
+		target.focus_neighbor_bottom = (down if down != null else _nearest_action_by_x(target)).get_path()
+	for button in _action_buttons:
+		var upper_target := _nearest_stat_edge_by_x(button, stat_targets, true)
+		var lower_target := _nearest_stat_edge_by_x(button, stat_targets, false)
+		if upper_target != null:
+			button.focus_neighbor_top = upper_target.get_path()
+		if lower_target != null:
+			button.focus_neighbor_bottom = lower_target.get_path()
+
+
+func _nearest_focus_target(source: Control, candidates: Array[Control], direction: Vector2) -> Control:
+	var source_center := source.get_global_rect().get_center()
+	var best: Control = null
+	var best_score := INF
+	for candidate in candidates:
+		if candidate == source:
+			continue
+		var delta := candidate.get_global_rect().get_center() - source_center
+		var primary := delta.dot(direction)
+		if primary <= 1.0:
+			continue
+		var lateral := absf(delta.cross(direction))
+		# Lateral drift is expensive: D-pad up/down preserves logical columns,
+		# while left/right selects the geometric sibling in the same row.
+		var score := primary + lateral * 3.0
+		if score < best_score:
+			best_score = score
+			best = candidate
+	return best
+
+
+func _nearest_action_by_x(source: Control) -> Button:
+	var source_x := source.get_global_rect().get_center().x
+	var best := _action_buttons[0]
+	var best_distance := INF
+	for button in _action_buttons:
+		var distance := absf(button.get_global_rect().get_center().x - source_x)
+		if distance < best_distance:
+			best_distance = distance
+			best = button
+	return best
+
+
+func _nearest_stat_edge_by_x(source: Control, candidates: Array[Control], bottom_edge: bool) -> Control:
+	var visible_candidates: Array[Control] = []
+	for candidate in candidates:
+		var visible_rect := _focus_visible_rect(candidate)
+		if visible_rect.has_area() and visible_rect.size.y >= minf(12.0, candidate.size.y * 0.25):
+			visible_candidates.append(candidate)
+	if visible_candidates.is_empty():
+		visible_candidates = candidates
+	var edge_y := -INF if bottom_edge else INF
+	for candidate in visible_candidates:
+		var y := _focus_visible_rect(candidate).get_center().y
+		edge_y = maxf(edge_y, y) if bottom_edge else minf(edge_y, y)
+	var source_x := source.get_global_rect().get_center().x
+	var best: Control = null
+	var best_score := INF
+	for candidate in visible_candidates:
+		var center := _focus_visible_rect(candidate).get_center()
+		var row_distance := absf(center.y - edge_y)
+		var score := row_distance * 4.0 + absf(center.x - source_x)
+		if score < best_score:
+			best_score = score
+			best = candidate
+	return best
+
+
+func _focus_visible_rect(control: Control) -> Rect2:
+	var rect := control.get_global_rect()
+	var ancestor := control.get_parent()
+	while ancestor != null:
+		if ancestor is ScrollContainer:
+			rect = rect.intersection((ancestor as ScrollContainer).get_global_rect())
+		ancestor = ancestor.get_parent()
+	return rect
+
+
+func _refresh_hero_card() -> void:
+	if _hero_card_container == null:
+		return
+	for child in _hero_card_container.get_children():
 		child.queue_free()
+	_base_stats_container = null
+	_survival_stats_container = null
 	if _player == null or not is_instance_valid(_player):
 		return
+
+	var s := _atlas_scale()
 	var character_id := str(_player.get("character_id"))
 	var weapon_id := str(_player.get("weapon_id"))
 	var config: Dictionary = ProgressionData.character_config(character_id)
 	var weapon: Dictionary = ProgressionData.weapon(character_id, weapon_id)
+	if _title_label != null:
+		_title_label.text = "Досье героя"
+	if _header_summary != null:
+		_header_summary.text = "%s · %s" % [str(config.get("title", "Герой")), str(weapon.get("title", "—"))]
+
+	var identity := HBoxContainer.new()
+	identity.name = "HeroIdentityRow"
+	identity.add_theme_constant_override("separation", maxi(10, int(roundf(14.0 * s))))
+	_hero_card_container.add_child(identity)
+
+	# SCRUM-893: парадный портрет — крупный, в резной раме PixelLab поверх
+	# тёмного колодца; фолбэк без ассета — прежний полупрозрачный слот.
+	var portrait_px := clampf(188.0 * s, 128.0, 196.0)
+	var portrait_slot := Control.new()
+	portrait_slot.name = "PauseDossierPortraitSlot"
+	portrait_slot.custom_minimum_size = Vector2(portrait_px, portrait_px)
+	portrait_slot.size_flags_vertical = Control.SIZE_SHRINK_CENTER
+	identity.add_child(portrait_slot)
+
+	var portrait_well := Panel.new()
+	portrait_well.name = "PauseDossierPortraitWell"
+	portrait_well.set_anchors_preset(Control.PRESET_FULL_RECT)
+	var well_inset := roundf(portrait_px * 0.08)
+	portrait_well.offset_left = well_inset
+	portrait_well.offset_top = well_inset
+	portrait_well.offset_right = -well_inset
+	portrait_well.offset_bottom = -well_inset
+	portrait_well.add_theme_stylebox_override("panel", _translucent_style(0.62, 10.0))
+	portrait_well.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	portrait_slot.add_child(portrait_well)
+
 	var portrait := TextureRect.new()
 	portrait.name = "PauseDossierPortrait"
-	portrait.custom_minimum_size = Vector2(58, 58)
+	portrait.set_anchors_preset(Control.PRESET_FULL_RECT)
+	var portrait_inset := roundf(portrait_px * 0.10)
+	portrait.offset_left = portrait_inset
+	portrait.offset_top = portrait_inset
+	portrait.offset_right = -portrait_inset
+	portrait.offset_bottom = -portrait_inset
 	portrait.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
 	portrait.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
+	portrait.texture_filter = CanvasItem.TEXTURE_FILTER_NEAREST
+	portrait.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	var sprite_path := str(config.get("sprite_path", ""))
 	if sprite_path != "" and ResourceLoader.exists(sprite_path):
 		portrait.texture = load(sprite_path)
-	_dossier_container.add_child(portrait)
+	portrait_slot.add_child(portrait)
+
+	if ResourceLoader.exists(PORTRAIT_FRAME_PATH):
+		var portrait_frame := TextureRect.new()
+		portrait_frame.name = "PauseDossierPortraitFrame"
+		portrait_frame.set_anchors_preset(Control.PRESET_FULL_RECT)
+		portrait_frame.texture = load(PORTRAIT_FRAME_PATH)
+		portrait_frame.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
+		portrait_frame.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
+		portrait_frame.texture_filter = CanvasItem.TEXTURE_FILTER_NEAREST
+		portrait_frame.mouse_filter = Control.MOUSE_FILTER_IGNORE
+		portrait_slot.add_child(portrait_frame)
 
 	var text_box := VBoxContainer.new()
+	text_box.name = "HeroIdentityText"
 	text_box.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-	text_box.add_theme_constant_override("separation", 1)
-	_dossier_container.add_child(text_box)
+	text_box.size_flags_vertical = Control.SIZE_SHRINK_CENTER
+	text_box.add_theme_constant_override("separation", 3)
+	identity.add_child(text_box)
+
+	# Имя героя золотом + герб класса meta40 рядом.
+	var name_row := HBoxContainer.new()
+	name_row.name = "PauseDossierNameRow"
+	name_row.add_theme_constant_override("separation", 8)
+	text_box.add_child(name_row)
+
+	var crest_path := "%screst_%s.png" % [CLASS_CREST_DIR, character_id]
+	if ResourceLoader.exists(crest_path):
+		var crest := TextureRect.new()
+		crest.name = "PauseDossierCrest"
+		crest.texture = load(crest_path)
+		crest.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
+		crest.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
+		crest.texture_filter = CanvasItem.TEXTURE_FILTER_NEAREST
+		var crest_px := maxf(30.0, roundf(42.0 * s))
+		crest.custom_minimum_size = Vector2(crest_px, crest_px)
+		crest.size_flags_vertical = Control.SIZE_SHRINK_CENTER
+		name_row.add_child(crest)
 
 	var title := Label.new()
 	title.name = "PauseDossierTitle"
 	title.text = str(config.get("title", "Герой"))
-	title.add_theme_font_size_override("font_size", 18)
-	title.add_theme_color_override("font_color", Color(1.0, 0.88, 0.40, 1.0))
-	text_box.add_child(title)
+	title.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	title.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
+	title.clip_text = true
+	title.text_overrun_behavior = TextServer.OVERRUN_TRIM_ELLIPSIS
+	title.add_theme_font_size_override("font_size", _readable_px(SemanticTypography.ROLE_TITLE, 27.0))
+	title.add_theme_color_override("font_color", COLOR_TITLE)
+	name_row.add_child(title)
 
-	var details := Label.new()
-	details.name = "PauseDossierDetails"
-	details.text = "%s  |  Уровень %d  |  XP %d/%d" % [
-		str(weapon.get("title", "Оружие")),
-		int(_player.get("level")),
-		int(_player.get("xp")),
-		int(_player.get("xp_to_next")),
-	]
-	details.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
-	details.add_theme_font_size_override("font_size", 13)
-	details.add_theme_color_override("font_color", TEXT_SECONDARY)
-	text_box.add_child(details)
+	_add_identity_row(text_box, "PauseDossierWeapon", "Оружие", str(weapon.get("title", "—")))
+	_add_identity_row(text_box, "PauseDossierLevel", "Уровень", "%d · XP %d/%d" % [
+		int(_player.get("level")), int(_player.get("xp")), int(_player.get("xp_to_next")),
+	])
+	var ascension_level := 0
+	if _player.get_parent() != null and _player.get_parent().get("selected_ascension_level") != null:
+		ascension_level = int(_player.get_parent().get("selected_ascension_level"))
+	_add_identity_row(text_box, "PauseDossierAscension", "Возвышение", str(ascension_level))
 
-	var asc := Label.new()
-	asc.name = "PauseDossierAscension"
-	asc.text = "Возвышение %d" % int(_player.get_parent().get("selected_ascension_level") if _player.get_parent() != null and _player.get_parent().get("selected_ascension_level") != null else 0)
-	asc.add_theme_font_size_override("font_size", 12)
-	asc.add_theme_color_override("font_color", Color(0.78, 0.88, 1.0, 1.0))
-	text_box.add_child(asc)
+	# SCRUM-893: орнамент-разделители atlas_style между секциями карточки.
+	var divider := _make_section_divider()
+	divider.name = "HeroCardDivider"
+	_hero_card_container.add_child(divider)
 
-
-func _build_left_controls(left_column: VBoxContainer) -> void:
-	var title := Label.new()
-	title.name = "PauseStatsTitle"
-	title.text = "Пауза"
-	title.add_theme_font_size_override("font_size", 38)
-	title.add_theme_color_override("font_color", Color(0.96, 0.90, 0.68, 1.0))
-	left_column.add_child(title)
-
-	var subtitle := Label.new()
-	subtitle.name = "PauseStatsSubtitle"
-	subtitle.text = "Управление забегом и текущий билд"
-	subtitle.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
-	subtitle.add_theme_font_size_override("font_size", 16)
-	subtitle.add_theme_color_override("font_color", Color(0.72, 0.78, 0.84, 1.0))
-	left_column.add_child(subtitle)
-
-	var button_box := VBoxContainer.new()
-	button_box.name = "PauseControlButtons"
-	button_box.add_theme_constant_override("separation", 8)
-	left_column.add_child(button_box)
-
-	# SCRUM-580: 4 кнопки управления досье-паузы переодеты в выделенный pd_btn @2K-фрейм.
-	var resume_button := _make_button("Продолжить")
-	resume_button.name = "PauseResumeButton"
-	_apply_pd_2k_button_theme(resume_button)
-	resume_button.pressed.connect(func() -> void:
-		resume_requested.emit()
-	)
-	button_box.add_child(resume_button)
-
-	var settings_button := _make_button("Настройки")
-	settings_button.name = "PauseSettingsButton"
-	_apply_pd_2k_button_theme(settings_button)
-	settings_button.pressed.connect(func() -> void:
-		settings_requested.emit()
-	)
-	button_box.add_child(settings_button)
-
-	var end_run_button := _make_button("Завершить забег")
-	end_run_button.name = "PauseEndRunButton"
-	_apply_pd_2k_button_theme(end_run_button, "danger")
-	end_run_button.pressed.connect(_show_end_run_confirm)
-	button_box.add_child(end_run_button)
-
-	var menu_button := _make_button("Выйти в главное меню")
-	menu_button.name = "PauseMainMenuButton"
-	_apply_pd_2k_button_theme(menu_button)
-	menu_button.pressed.connect(func() -> void:
-		main_menu_requested.emit()
-	)
-	button_box.add_child(menu_button)
-
-	# SCRUM-812: досье-пауза проходима с геймпада/стрелок — кнопки фокусируемы (VBox
-	# ведёт фокус вверх/вниз по геометрии), стартовый фокус — «Продолжить». B/Esc
-	# (назад в паузу/продолжить) обрабатывается централизованно в main._input.
-	for b in [resume_button, settings_button, end_run_button, menu_button]:
-		b.focus_mode = Control.FOCUS_ALL
-	resume_button.call_deferred("grab_focus")
-
-
-func _build_base_stats_block(left_column: VBoxContainer) -> void:
-	left_column.add_child(_make_section_divider())
-
-	var section_title := Label.new()
-	section_title.name = "BaseStatsTitle"
-	section_title.text = "Базовые характеристики"
-	section_title.add_theme_font_size_override("font_size", 19)
-	section_title.add_theme_color_override("font_color", Color(0.96, 0.90, 0.68, 1.0))
-	left_column.add_child(section_title)
+	var base_title := Label.new()
+	base_title.name = "BaseStatsTitle"
+	base_title.text = "Характеристики"
+	base_title.add_theme_font_size_override("font_size", SemanticTypography.resolve_fixed(
+		SemanticTypography.ROLE_SECTION,
+		_readable_px(SemanticTypography.ROLE_SECTION, 16.0),
+		SemanticTypography.role_min(SemanticTypography.ROLE_SECTION),
+		SemanticTypography.role_max(SemanticTypography.ROLE_SECTION)
+	))
+	base_title.add_theme_color_override("font_color", COLOR_KIND)
+	_hero_card_container.add_child(base_title)
 
 	_base_stats_container = VBoxContainer.new()
 	_base_stats_container.name = "BaseStatsList"
-	_base_stats_container.add_theme_constant_override("separation", 4)
-	left_column.add_child(_base_stats_container)
+	_base_stats_container.add_theme_constant_override("separation", 0)
+	_hero_card_container.add_child(_base_stats_container)
 
-	_build_artifacts_block(left_column)
+	_hero_card_container.add_child(_make_section_divider())
 
-	var fill := Control.new()
-	fill.size_flags_vertical = Control.SIZE_EXPAND_FILL
-	left_column.add_child(fill)
+	# SCRUM-890 (доработка): блок «Выживание» — оборонительные derived-статы
+	# под базовыми (правые 4 секции остались атакующими).
+	var survival_title := Label.new()
+	survival_title.name = "SurvivalTitle"
+	survival_title.text = "Выживание"
+	survival_title.add_theme_font_size_override("font_size", SemanticTypography.resolve_fixed(
+		SemanticTypography.ROLE_SECTION,
+		_readable_px(SemanticTypography.ROLE_SECTION, 16.0),
+		SemanticTypography.role_min(SemanticTypography.ROLE_SECTION),
+		SemanticTypography.role_max(SemanticTypography.ROLE_SECTION)
+	))
+	survival_title.add_theme_color_override("font_color", COLOR_KIND)
+	_hero_card_container.add_child(survival_title)
 
-	var hint := Label.new()
-	hint.name = "PauseStatsHint"
-	hint.text = "Esc закрывает меню."
-	hint.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
-	hint.add_theme_font_size_override("font_size", 14)
-	hint.add_theme_color_override("font_color", Color(0.58, 0.65, 0.72, 1.0))
-	left_column.add_child(hint)
-
-
-func _build_artifacts_block(left_column: VBoxContainer) -> void:
-	left_column.add_child(_make_section_divider())
-
-	var section_title := Label.new()
-	section_title.name = "ArtifactsTitle"
-	section_title.text = "Артефакты"
-	section_title.add_theme_font_size_override("font_size", 19)
-	section_title.add_theme_color_override("font_color", Color(0.96, 0.90, 0.68, 1.0))
-	left_column.add_child(section_title)
-
-	_artifacts_container = HFlowContainer.new()
-	_artifacts_container.name = "ArtifactsList"
-	_artifacts_container.add_theme_constant_override("h_separation", 6)
-	_artifacts_container.add_theme_constant_override("v_separation", 6)
-	left_column.add_child(_artifacts_container)
+	_survival_stats_container = GridContainer.new()
+	_survival_stats_container.name = "SurvivalStatsList"
+	_survival_stats_container.columns = 2
+	_survival_stats_container.add_theme_constant_override("h_separation", 4)
+	_survival_stats_container.add_theme_constant_override("v_separation", 2)
+	_hero_card_container.add_child(_survival_stats_container)
 
 
-func _refresh_artifacts() -> void:
-	if _artifacts_container == null or _player == null or not is_instance_valid(_player):
-		return
-	for child in _artifacts_container.get_children():
-		child.queue_free()
-	var artifacts: Array = _player.get("artifacts") if _player.get("artifacts") != null else []
-	if artifacts.is_empty():
-		var empty_label := Label.new()
-		empty_label.name = "ArtifactsEmptyLabel"
-		empty_label.text = "Пока не найдено"
-		empty_label.add_theme_font_size_override("font_size", 14)
-		empty_label.add_theme_color_override("font_color", Color(0.58, 0.65, 0.72, 1.0))
-		_artifacts_container.add_child(empty_label)
-		return
-	for entry in artifacts:
-		var artifact: Dictionary = entry if entry is Dictionary else {"id": "", "title": str(entry)}
-		var artifact_id := str(artifact.get("id", ""))
-		var icon := TextureRect.new()
-		icon.custom_minimum_size = Vector2(56, 56)
-		icon.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
-		icon.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
-		var icon_path := "res://assets/sprites/ui/icons/artifacts/artifact_%s.png" % artifact_id
-		if artifact_id != "" and ResourceLoader.exists(icon_path):
-			icon.texture = load(icon_path)
-		else:
-			icon.texture = UIIconRegistry.texture_for("buff_power")
-		var definition: Dictionary = ProgressionData.artifact_definition(artifact_id)
-		var description := str(definition.get("description", ""))
-		var title := str(artifact.get("title", ""))
-		var tier_text := "Тир %d" % int(definition.get("tier", 1))
-		icon.tooltip_text = title if description == "" else "%s (%s)\n%s" % [title, tier_text, description]
-		var pause_affinity: Array = definition.get("class_affinity", [])
-		if not pause_affinity.is_empty() and _player != null and not pause_affinity.has(str(_player.get("character_id"))):
-			var interpreted_parameter := ""
-			for key in (definition.get("affinity_mods", {}) as Dictionary).keys():
-				interpreted_parameter = str(key)
-				break
-			if interpreted_parameter == "":
-				interpreted_parameter = "summon_amount"
-			icon.tooltip_text += "\n[Интерпретация: %s]" % ProgressionData.class_interpretation_text(str(_player.get("character_id")), interpreted_parameter)
-			icon.modulate = Color(0.78, 0.95, 1.0, 1.0)
-		icon.mouse_filter = Control.MOUSE_FILTER_PASS
-		_artifacts_container.add_child(icon)
+func _add_identity_row(parent: VBoxContainer, row_name: String, kind_text: String, value_text: String) -> void:
+	var row := HBoxContainer.new()
+	row.name = row_name
+	row.add_theme_constant_override("separation", 6)
+	parent.add_child(row)
+
+	var kind := Label.new()
+	kind.name = "%sKind" % row_name
+	kind.text = kind_text
+	kind.add_theme_font_size_override("font_size", SemanticTypography.resolve_fixed(
+		SemanticTypography.ROLE_FIELD,
+		_readable_px(SemanticTypography.ROLE_FIELD, 14.0),
+		SemanticTypography.role_min(SemanticTypography.ROLE_FIELD),
+		SemanticTypography.role_max(SemanticTypography.ROLE_FIELD)
+	))
+	kind.add_theme_color_override("font_color", COLOR_KIND)
+	row.add_child(kind)
+
+	var value := Label.new()
+	value.name = "%sValue" % row_name
+	value.text = value_text
+	value.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	value.clip_text = true
+	value.text_overrun_behavior = TextServer.OVERRUN_TRIM_ELLIPSIS
+	value.add_theme_font_size_override("font_size", SemanticTypography.resolve_fixed(
+		SemanticTypography.ROLE_VALUE,
+		_readable_px(SemanticTypography.ROLE_VALUE, 14.0),
+		SemanticTypography.role_min(SemanticTypography.ROLE_VALUE),
+		SemanticTypography.role_max(SemanticTypography.ROLE_VALUE)
+	))
+	value.add_theme_color_override("font_color", COLOR_BODY)
+	row.add_child(value)
 
 
 func _refresh_stats() -> void:
@@ -430,9 +1465,23 @@ func _refresh_stats() -> void:
 		child.queue_free()
 	for child in _derived_groups_container.get_children():
 		child.queue_free()
+	if _survival_stats_container != null:
+		for child in _survival_stats_container.get_children():
+			child.queue_free()
 
 	if _player == null or not is_instance_valid(_player):
 		return
+	_base_focus_targets.clear()
+	_survival_focus_targets.clear()
+	_derived_focus_targets.clear()
+
+	_base_stats_grid = GridContainer.new()
+	_base_stats_grid.name = "BaseStatsGrid"
+	_base_stats_grid.columns = 2
+	_base_stats_grid.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	_base_stats_grid.add_theme_constant_override("h_separation", 6)
+	_base_stats_grid.add_theme_constant_override("v_separation", 2)
+	_base_stats_container.add_child(_base_stats_grid)
 
 	var sections: Dictionary = StatFormulas.stat_sections_for_player(_player)
 	var priority_ids := ProgressionData.attribute_priorities(str(_player.get("character_id")))
@@ -449,11 +1498,305 @@ func _refresh_stats() -> void:
 		return ai < bi
 	)
 	for entry in base_entries:
-		_base_stats_container.add_child(_make_basic_stat_row(entry))
+		_base_stats_grid.add_child(_make_basic_stat_row(entry))
 
 	var derived_entries_by_id := _entries_by_id(sections.get("derived", []))
 	for group in DERIVED_GROUPS:
 		_derived_groups_container.add_child(_make_derived_group(group, derived_entries_by_id))
+	_refresh_survival_rows(derived_entries_by_id)
+	_refresh_arsenal()
+	_refresh_equipment()
+	_refresh_build_summary()
+	call_deferred("_rebuild_focus_navigation")
+
+
+func _refresh_build_summary() -> void:
+	if _build_summary_panel == null or _build_summary_label == null or _player == null or not is_instance_valid(_player):
+		return
+	var character_id := str(_player.get("character_id"))
+	var weapon: Dictionary = ProgressionData.weapon(character_id, str(_player.get("weapon_id")))
+	var ultimate: Dictionary = ProgressionData.ultimate_config(character_id)
+	var artifacts: Array = _player.get("artifacts") if _player.get("artifacts") != null else []
+	var weapon_title := str(weapon.get("title", "—"))
+	var ultimate_title := str(ultimate.get("title", "—"))
+	_build_summary_label.text = "Оружие: %s · Ульта: %s · Артефакты: %d" % [weapon_title, ultimate_title, artifacts.size()]
+	var tooltip_lines := PackedStringArray([
+		"Оружие — %s\n%s" % [weapon_title, str(weapon.get("description", ""))],
+		"Ульта — %s\n%s" % [ultimate_title, str(ultimate.get("description", ""))],
+	])
+	if artifacts.is_empty():
+		tooltip_lines.append("Снаряжение: артефакты ещё не найдены.")
+	else:
+		var artifact_titles := PackedStringArray()
+		for artifact_entry in artifacts:
+			artifact_titles.append(str(artifact_entry.get("title", "Артефакт")) if artifact_entry is Dictionary else str(artifact_entry))
+		tooltip_lines.append("Снаряжение: %s" % ", ".join(artifact_titles))
+	_build_summary_panel.tooltip_text = "\n\n".join(tooltip_lines)
+
+
+# SCRUM-893: словесная часть досье — как играет оружие и что делает ульта.
+func _refresh_arsenal() -> void:
+	if _arsenal_box == null:
+		return
+	for child in _arsenal_box.get_children():
+		child.queue_free()
+	if _player == null or not is_instance_valid(_player):
+		return
+	var character_id := str(_player.get("character_id"))
+	var weapon: Dictionary = ProgressionData.weapon(character_id, str(_player.get("weapon_id")))
+	_add_arsenal_entry("ArsenalWeapon", "Оружие — %s" % str(weapon.get("title", "—")),
+		str(weapon.get("description", "")))
+	var ultimate: Dictionary = ProgressionData.ultimate_config(character_id)
+	if not ultimate.is_empty():
+		_add_arsenal_entry("ArsenalUltimate", "Ульта — %s" % str(ultimate.get("title", "")),
+			str(ultimate.get("description", "")))
+
+
+func _add_arsenal_entry(entry_name: String, kind_text: String, body_text: String) -> void:
+	var entry := VBoxContainer.new()
+	entry.name = entry_name
+	entry.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	entry.add_theme_constant_override("separation", 1)
+	_arsenal_box.add_child(entry)
+
+	var kind := Label.new()
+	kind.name = "%sKind" % entry_name
+	kind.text = kind_text
+	kind.add_theme_font_size_override("font_size", SemanticTypography.resolve_fixed(
+		SemanticTypography.ROLE_FIELD,
+		_readable_px(SemanticTypography.ROLE_FIELD, 15.0),
+		SemanticTypography.role_min(SemanticTypography.ROLE_FIELD),
+		SemanticTypography.role_max(SemanticTypography.ROLE_FIELD)
+	))
+	kind.add_theme_color_override("font_color", COLOR_KIND)
+	entry.add_child(kind)
+
+	var body := Label.new()
+	body.name = "%sBody" % entry_name
+	body.text = body_text
+	body.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	body.add_theme_font_size_override("font_size", _readable_px(SemanticTypography.ROLE_DESCRIPTION, 14.0))
+	body.add_theme_color_override("font_color", COLOR_BODY)
+	entry.add_child(body)
+
+
+# SCRUM-893: чипы артефактов текущего забега (player.artifacts: [{id, title, tier?}]) +
+# пустые слоты-сокеты meta40 до минимума 8 — свободное место панели читается
+# как инвентарь под будущие находки, а не как дыра лейаута.
+const EQUIPMENT_MIN_SLOTS := 8
+const EQUIPMENT_SOCKET_PATH := "res://assets/sprites/ui/meta40/socket_minor.png"
+# SCRUM-963: канон редкости — строки/цвета = ui_screens.TIER_LABELS/TIER_COLORS
+# (сцена не имеет доступа к хелперам ui_screens — локальный дубль по паттерну файла).
+const EQUIPMENT_TIER_LABELS := {1: "Обычный", 2: "Редкий", 3: "Эпический"}
+const EQUIPMENT_TIER_COLORS := {
+	1: Color(0.80, 0.86, 0.94, 1.0),
+	2: Color(0.46, 0.78, 1.0, 1.0),
+	3: Color(1.0, 0.74, 0.30, 1.0),
+}
+
+
+# SCRUM-963: уникальная иконка артефакта artifact_<id>.png (реестровая
+# «artifact»-иконка — только dev-fallback на отсутствующий файл/пустой id).
+func _equipment_artifact_icon(artifact_id: String) -> Control:
+	var path := "%sartifact_%s.png" % [ShopUIConstants.ARTIFACT_ICON_DIR, artifact_id]
+	if artifact_id != "" and ResourceLoader.exists(path):
+		var icon := TextureRect.new()
+		icon.name = "RunEquipmentIcon_%s" % artifact_id
+		icon.texture = load(path)
+		icon.custom_minimum_size = Vector2(22, 22)
+		icon.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
+		icon.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
+		icon.mouse_filter = Control.MOUSE_FILTER_IGNORE
+		return icon
+	return UIIconRegistry.make_icon("artifact", Vector2(22, 22))
+
+
+# SCRUM-963: тултип чипа — редкость РОЛЛНУТОГО тира записи забега (фоллбек —
+# корневой тир определения для старых сейвов) + описание из определения.
+func _equipment_artifact_tooltip(artifact: Dictionary) -> String:
+	var title := str(artifact.get("title", "Артефакт"))
+	var definition: Dictionary = ProgressionData.artifact_definition(str(artifact.get("id", "")))
+	var tier := int(artifact.get("tier", 0))
+	if tier <= 0:
+		tier = int(definition.get("tier", 0))
+	var lines := PackedStringArray()
+	if EQUIPMENT_TIER_LABELS.has(tier):
+		lines.append("%s (%s)" % [title, EQUIPMENT_TIER_LABELS[tier]])
+	else:
+		lines.append(title)
+	var description := str(definition.get("description", ""))
+	if description != "":
+		lines.append(description)
+	return "\n".join(lines)
+
+
+func _refresh_equipment() -> void:
+	if _equipment_flow == null:
+		return
+	for child in _equipment_flow.get_children():
+		child.queue_free()
+	var artifacts: Array = []
+	if _player != null and is_instance_valid(_player) and _player.get("artifacts") != null:
+		artifacts = _player.get("artifacts")
+	if artifacts.is_empty():
+		var empty_label := Label.new()
+		empty_label.name = "RunEquipmentEmpty"
+		empty_label.text = "Артефакты ещё не найдены — ищи награды за бои и события."
+		# EXPAND на всю строку flow — сокеты уходят на собственный ряд ниже.
+		empty_label.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+		empty_label.add_theme_font_size_override("font_size", SemanticTypography.resolve_fixed(
+			SemanticTypography.ROLE_BODY,
+			_readable_px(SemanticTypography.ROLE_BODY, 14.0),
+			SemanticTypography.role_min(SemanticTypography.ROLE_BODY),
+			SemanticTypography.role_max(SemanticTypography.ROLE_BODY)
+		))
+		empty_label.add_theme_color_override("font_color", Color(0.62, 0.66, 0.70, 1.0))
+		_equipment_flow.add_child(empty_label)
+		_add_equipment_sockets(EQUIPMENT_MIN_SLOTS)
+		return
+	for artifact_entry in artifacts:
+		# Совместимость со старыми сейвами: запись может быть голым title (String).
+		var artifact: Dictionary = artifact_entry if artifact_entry is Dictionary else {"id": "", "title": str(artifact_entry)}
+		var chip := PanelContainer.new()
+		chip.name = "RunEquipmentChip_%s" % str(artifact.get("id", ""))
+		chip.custom_minimum_size = Vector2(0, 40.0)
+		chip.add_theme_stylebox_override("panel", _stat_row_style(false))
+		chip.mouse_filter = Control.MOUSE_FILTER_STOP
+		chip.tooltip_text = _equipment_artifact_tooltip(artifact)
+		_equipment_flow.add_child(chip)
+
+		var line := HBoxContainer.new()
+		line.add_theme_constant_override("separation", 6)
+		chip.add_child(line)
+
+		# SCRUM-963: уникальная иконка артефакта в чипе.
+		var icon := _equipment_artifact_icon(str(artifact.get("id", "")))
+		icon.size_flags_vertical = Control.SIZE_SHRINK_CENTER
+		line.add_child(icon)
+
+		var chip_label := Label.new()
+		chip_label.text = str(artifact.get("title", "Артефакт"))
+		chip_label.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
+		chip_label.add_theme_font_size_override("font_size", SemanticTypography.resolve_fixed(
+			SemanticTypography.ROLE_BODY,
+			_readable_px(SemanticTypography.ROLE_BODY, 14.0),
+			SemanticTypography.role_min(SemanticTypography.ROLE_BODY),
+			SemanticTypography.role_max(SemanticTypography.ROLE_BODY)
+		))
+		# SCRUM-963: имя — цветом роллнутой редкости (язык карточек наград);
+		# записи без тира (старые сейвы) остаются нейтральными.
+		var rolled_tier := int(artifact.get("tier", 0))
+		chip_label.add_theme_color_override("font_color", EQUIPMENT_TIER_COLORS.get(rolled_tier, COLOR_BODY))
+		line.add_child(chip_label)
+	_add_equipment_sockets(maxi(EQUIPMENT_MIN_SLOTS - artifacts.size(), 2))
+
+
+func _add_equipment_sockets(count: int) -> void:
+	if _equipment_flow == null or not ResourceLoader.exists(EQUIPMENT_SOCKET_PATH):
+		return
+	for i in range(count):
+		var socket := TextureRect.new()
+		socket.name = "RunEquipmentSlot_%d" % i
+		socket.texture = load(EQUIPMENT_SOCKET_PATH)
+		socket.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
+		socket.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
+		socket.texture_filter = CanvasItem.TEXTURE_FILTER_NEAREST
+		socket.custom_minimum_size = Vector2(56.0, 56.0)
+		socket.modulate = Color(1.0, 1.0, 1.0, 0.55)
+		socket.tooltip_text = "Свободный слот — артефакты выпадают из наград за бои и события."
+		_equipment_flow.add_child(socket)
+
+
+# SCRUM-890 (доработка): плотные ряды «Выживания» в карточке героя — ОЗ (тек/макс),
+# Защита, Уворот, Регенерация; «Призывы» одной строкой только у призывного кита.
+func _refresh_survival_rows(entries_by_id: Dictionary) -> void:
+	if _survival_stats_container == null or _player == null or not is_instance_valid(_player):
+		return
+	for stat_id in SURVIVAL_STAT_IDS:
+		if not entries_by_id.has(stat_id):
+			continue
+		var entry: Dictionary = entries_by_id[stat_id]
+		var display_name := ""
+		var value_override := ""
+		if stat_id == "health_point":
+			display_name = "ОЗ"
+			var current_hp: Variant = _player.get("health")
+			var max_hp: Variant = entry.get("value", null)
+			if current_hp != null and max_hp != null:
+				value_override = "%d/%d" % [int(round(clampf(float(current_hp), 0.0, float(max_hp)))), int(round(float(max_hp)))]
+		_survival_stats_container.add_child(_make_survival_stat_row(entry, display_name, value_override))
+	var weapon: Dictionary = ProgressionData.weapon(str(_player.get("character_id")), str(_player.get("weapon_id")))
+	if ProgressionData.weapon_archetype(weapon) == "summon" and entries_by_id.has("summon_amount"):
+		_survival_stats_container.add_child(_make_survival_stat_row(entries_by_id["summon_amount"], "Призывы"))
+
+
+# Мини-ряд выживания: иконка 24 (реестр → 35) + имя + значение, высота ~40;
+# тултип и hover — как у параметров правой зоны.
+func _make_survival_stat_row(entry: Dictionary, display_name := "", value_override := "") -> Control:
+	var stat_id := str(entry.get("id", ""))
+	var row := PanelContainer.new()
+	row.name = "SurvivalStatRow_%s" % stat_id
+	row.custom_minimum_size = Vector2(0, 40.0)
+	row.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	row.mouse_filter = Control.MOUSE_FILTER_STOP
+	row.set_meta(DOSSIER_TOOLTIP_META, _tooltip_for_entry(entry))
+	row.tooltip_text = ""
+	row.add_theme_stylebox_override("panel", _stat_row_style(false))
+	row.mouse_entered.connect(func() -> void:
+		row.add_theme_stylebox_override("panel", _stat_row_style(true))
+	)
+	row.mouse_exited.connect(func() -> void:
+		row.add_theme_stylebox_override("panel", _stat_row_style(false))
+	)
+	row.focus_entered.connect(func() -> void:
+		row.add_theme_stylebox_override("panel", _stat_row_style(true))
+	)
+	row.focus_exited.connect(func() -> void:
+		row.add_theme_stylebox_override("panel", _stat_row_style(false))
+	)
+	_wire_stat_focus(row, _survival_focus_targets)
+
+	var line := HBoxContainer.new()
+	line.add_theme_constant_override("separation", 6)
+	row.add_child(line)
+
+	var icon_request := Vector2(18, 18) if get_viewport_rect().size.y < 900.0 else Vector2(24, 24)
+	var icon := UIIconRegistry.make_icon(stat_id, icon_request)
+	icon.name = "SurvivalStatIcon_%s" % stat_id
+	icon.size_flags_vertical = Control.SIZE_SHRINK_CENTER
+	line.add_child(icon)
+
+	var name_label := Label.new()
+	name_label.name = "SurvivalStatName_%s" % stat_id
+	name_label.text = display_name if display_name != "" else str(entry.get("name_ru", ""))
+	name_label.set_meta("full_label", name_label.text)
+	name_label.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	name_label.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
+	name_label.clip_text = true
+	name_label.text_overrun_behavior = TextServer.OVERRUN_TRIM_ELLIPSIS
+	name_label.add_theme_font_size_override("font_size", SemanticTypography.resolve_fixed(
+		SemanticTypography.ROLE_FIELD,
+		_readable_px(SemanticTypography.ROLE_FIELD, 15.0),
+		SemanticTypography.role_min(SemanticTypography.ROLE_FIELD),
+		SemanticTypography.role_max(SemanticTypography.ROLE_FIELD)
+	))
+	name_label.add_theme_color_override("font_color", COLOR_BODY)
+	line.add_child(name_label)
+
+	var value_label := Label.new()
+	value_label.name = "SurvivalStatValue_%s" % stat_id
+	value_label.text = value_override if value_override != "" else _compact_value_text(entry)
+	# SCRUM-893: clip_text обнуляет min-width Label — без явного минимума метка
+	# схлопывается в 0 рядом с EXPAND_FILL-именем (значения «исчезали» на рендере).
+	value_label.custom_minimum_size = Vector2(_readable_px(96.0), 0)
+	value_label.clip_text = true
+	value_label.text_overrun_behavior = TextServer.OVERRUN_TRIM_ELLIPSIS
+	value_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_RIGHT
+	value_label.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
+	value_label.add_theme_font_size_override("font_size", _readable_px(SemanticTypography.ROLE_VALUE, 16.0))
+	value_label.add_theme_color_override("font_color", _value_color(entry))
+	line.add_child(value_label)
+	return row
 
 
 func _entries_by_id(entries: Array) -> Dictionary:
@@ -464,41 +1807,58 @@ func _entries_by_id(entries: Array) -> Dictionary:
 	return result
 
 
+# Плотный chip-ряд базового стата: иконка + имя + ★ (main-атрибут) + значение.
+# Минимумы SCRUM-839: ряд ≥44, имя ≥17 / значение ≥18, иконка ≥44
+# (реестр скейлит запрошенные 30 → 44).
 func _make_basic_stat_row(entry: Dictionary) -> Control:
 	var stat_id := str(entry.get("id", ""))
 	var character_id := str(_player.get("character_id")) if _player != null and is_instance_valid(_player) else ""
 	var is_priority := ProgressionData.attribute_priorities(character_id).has(stat_id)
 	var row := PanelContainer.new()
 	row.name = "BaseStatRow_%s" % stat_id
-	row.custom_minimum_size = Vector2(0, 36)
+	var compact := get_viewport_rect().size.y < 900.0
+	row.custom_minimum_size = Vector2(0, 36.0 if compact else READABLE_BASE_ROW_HEIGHT)
 	row.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	row.mouse_filter = Control.MOUSE_FILTER_STOP
-	row.tooltip_text = _tooltip_for_entry(entry)
+	var dossier_tooltip := _tooltip_for_entry(entry)
 	if is_priority:
-		row.tooltip_text += "\n\n%s" % ProgressionData.attribute_priority_reason(character_id, stat_id)
-	row.add_theme_stylebox_override("panel", _basic_stat_row_style(false, is_priority))
+		dossier_tooltip += "\n\n%s" % ProgressionData.attribute_priority_reason(character_id, stat_id)
+	row.set_meta(DOSSIER_TOOLTIP_META, dossier_tooltip)
+	row.tooltip_text = ""
+	row.add_theme_stylebox_override("panel", _base_stat_row_style(false, is_priority))
 	row.mouse_entered.connect(func() -> void:
-		row.add_theme_stylebox_override("panel", _basic_stat_row_style(true, is_priority))
+		row.add_theme_stylebox_override("panel", _base_stat_row_style(true, is_priority))
 	)
 	row.mouse_exited.connect(func() -> void:
-		row.add_theme_stylebox_override("panel", _basic_stat_row_style(false, is_priority))
+		row.add_theme_stylebox_override("panel", _base_stat_row_style(false, is_priority))
 	)
+	row.focus_entered.connect(func() -> void:
+		row.add_theme_stylebox_override("panel", _base_stat_row_style(true, is_priority))
+	)
+	row.focus_exited.connect(func() -> void:
+		row.add_theme_stylebox_override("panel", _base_stat_row_style(false, is_priority))
+	)
+	_wire_stat_focus(row, _base_focus_targets)
 
 	var line := HBoxContainer.new()
-	line.add_theme_constant_override("separation", 8)
+	line.add_theme_constant_override("separation", 2 if compact else 4)
 	row.add_child(line)
 
-	var icon := UIIconRegistry.make_icon(str(entry.get("id", "")), Vector2(28, 28))
+	var icon := UIIconRegistry.make_icon(stat_id, Vector2(22, 22) if compact else Vector2(30, 30))
+	icon.name = "BaseStatIcon_%s" % stat_id
 	icon.size_flags_vertical = Control.SIZE_SHRINK_CENTER
 	line.add_child(icon)
 
 	var name_label := Label.new()
 	name_label.name = "BaseStatName_%s" % stat_id
 	name_label.text = str(entry.get("name_ru", ""))
+	name_label.set_meta("full_label", name_label.text)
 	name_label.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	name_label.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
-	name_label.add_theme_font_size_override("font_size", 15)
-	name_label.add_theme_color_override("font_color", Color(0.90, 0.94, 1.0, 1.0))
+	name_label.clip_text = true
+	name_label.text_overrun_behavior = TextServer.OVERRUN_TRIM_ELLIPSIS
+	name_label.add_theme_font_size_override("font_size", _readable_px(SemanticTypography.ROLE_FIELD, 17.0))
+	name_label.add_theme_color_override("font_color", COLOR_BODY)
 	line.add_child(name_label)
 
 	if is_priority:
@@ -506,66 +1866,78 @@ func _make_basic_stat_row(entry: Dictionary) -> Control:
 		badge.name = "PriorityBadge_%s" % stat_id
 		badge.text = "★"
 		badge.tooltip_text = ProgressionData.attribute_priority_reason(character_id, stat_id)
-		badge.add_theme_font_size_override("font_size", 14)
+		badge.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
+		badge.add_theme_font_size_override("font_size", _readable_px(SemanticTypography.ROLE_HUD, 17.0))
 		badge.add_theme_color_override("font_color", Color(1.0, 0.82, 0.25, 1.0))
 		line.add_child(badge)
 
 	var value_label := Label.new()
-	value_label.name = "BaseStatValue_%s" % str(entry.get("id", ""))
+	value_label.name = "BaseStatValue_%s" % stat_id
 	value_label.text = _compact_value_text(entry)
-	value_label.custom_minimum_size = Vector2(48, 0)
+	value_label.custom_minimum_size = Vector2(_readable_px(32.0), 0)
+	value_label.clip_text = true
+	value_label.text_overrun_behavior = TextServer.OVERRUN_TRIM_ELLIPSIS
 	value_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_RIGHT
 	value_label.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
-	value_label.add_theme_font_size_override("font_size", 16)
+	value_label.add_theme_font_size_override("font_size", _readable_px(SemanticTypography.ROLE_VALUE, 18.0))
 	value_label.add_theme_color_override("font_color", _value_color(entry))
 	line.add_child(value_label)
 	return row
 
 
+# Секция «Боевых параметров»: кожаный чип 0.86, цветной маркер-полоска слева
+# заголовка, внутри чипы-ряды в 2 колонки.
 func _make_derived_group(group: Dictionary, entries_by_id: Dictionary) -> Control:
+	var s := _atlas_scale()
 	var group_panel := PanelContainer.new()
 	group_panel.name = "DerivedStatGroup_%s" % str(group.get("id", ""))
-	group_panel.custom_minimum_size = Vector2(430, 0)
 	group_panel.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-	group_panel.add_theme_stylebox_override("panel", _group_style(group.get("accent", Color(0.95, 0.78, 0.32, 1.0))))
+	# SCRUM-893: секции делят высоту сетки поровну (без пустого поля под ними).
+	group_panel.size_flags_vertical = Control.SIZE_EXPAND_FILL
+	group_panel.add_theme_stylebox_override("panel", _chip_style(0.86, maxf(6.0, roundf(12.0 * s))))
+	var accent: Color = group.get("accent", Color(0.95, 0.78, 0.32, 1.0))
 
 	var box := VBoxContainer.new()
+	box.name = "DerivedGroupContent_%s" % str(group.get("id", ""))
 	box.add_theme_constant_override("separation", 8)
 	group_panel.add_child(box)
 
 	var header := HBoxContainer.new()
+	header.name = "DerivedGroupHeader_%s" % str(group.get("id", ""))
 	header.add_theme_constant_override("separation", 8)
 	box.add_child(header)
 
-	var accent := ColorRect.new()
-	accent.custom_minimum_size = Vector2(5, 26)
-	accent.color = group.get("accent", Color(0.95, 0.78, 0.32, 1.0))
-	header.add_child(accent)
-
-	var title_box := VBoxContainer.new()
-	title_box.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-	title_box.add_theme_constant_override("separation", 1)
-	header.add_child(title_box)
+	var marker := ColorRect.new()
+	marker.name = "DerivedGroupMarker_%s" % str(group.get("id", ""))
+	marker.custom_minimum_size = Vector2(5.0, 24.0)
+	marker.color = accent
+	marker.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	header.add_child(marker)
 
 	var title := Label.new()
+	title.name = "DerivedGroupTitle_%s" % str(group.get("id", ""))
 	title.text = str(group.get("title", "Группа"))
-	title.add_theme_font_size_override("font_size", 18)
+	title.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	title.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
+	title.clip_text = true
+	title.text_overrun_behavior = TextServer.OVERRUN_TRIM_ELLIPSIS
+	title.add_theme_font_size_override("font_size", SemanticTypography.resolve_fixed(
+		SemanticTypography.ROLE_SECTION,
+		_readable_px(SemanticTypography.ROLE_SECTION, 18.0),
+		SemanticTypography.role_min(SemanticTypography.ROLE_SECTION),
+		SemanticTypography.role_max(SemanticTypography.ROLE_SECTION)
+	))
 	title.add_theme_color_override("font_color", Color(0.98, 0.94, 0.78, 1.0))
-	title_box.add_child(title)
-
-	var description := Label.new()
-	description.text = str(group.get("description", ""))
-	description.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
-	description.add_theme_font_size_override("font_size", 12)
-	description.add_theme_color_override("font_color", Color(0.62, 0.70, 0.78, 1.0))
-	title_box.add_child(description)
+	header.add_child(title)
 
 	var chips := GridContainer.new()
 	chips.name = "DerivedStatChips_%s" % str(group.get("id", ""))
+	# SCRUM-893: 2 колонки чипов только на широких вьюпортах — на 1920 и уже
+	# имя+значение не делят чип без эллипсиса, читаемость дороже плотности.
 	chips.columns = 2
 	chips.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-	chips.add_theme_constant_override("h_separation", 7)
-	chips.add_theme_constant_override("v_separation", 7)
+	chips.add_theme_constant_override("h_separation", 8)
+	chips.add_theme_constant_override("v_separation", 6)
 	box.add_child(chips)
 
 	for stat_id in group.get("stats", []):
@@ -574,54 +1946,140 @@ func _make_derived_group(group: Dictionary, entries_by_id: Dictionary) -> Contro
 	return group_panel
 
 
+# Плотный ряд параметра: иконка + имя + значение в одну строку.
+# Минимумы SCRUM-839: чип ≥236×54, имя ≥15 / значение ≥17, иконка ≥46
+# (реестр скейлит запрошенные 32 → 46).
 func _make_stat_chip(entry: Dictionary) -> Control:
+	var stat_id := str(entry.get("id", ""))
 	var chip := PanelContainer.new()
-	chip.name = "DerivedStatChip_%s" % str(entry.get("id", ""))
-	chip.custom_minimum_size = Vector2(200, 44)
+	chip.name = "DerivedStatChip_%s" % stat_id
+	var compact := get_viewport_rect().size.y < 900.0
+	chip.custom_minimum_size = Vector2(0.0 if compact else READABLE_CHIP_WIDTH, 32.0 if compact else 48.0)
 	chip.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	chip.mouse_filter = Control.MOUSE_FILTER_STOP
-	chip.tooltip_text = _tooltip_for_entry(entry)
-	chip.add_theme_stylebox_override("panel", _chip_style(false))
+	chip.set_meta(DOSSIER_TOOLTIP_META, _tooltip_for_entry(entry))
+	chip.tooltip_text = ""
+	chip.add_theme_stylebox_override("panel", _derived_stat_row_style(false))
 	chip.mouse_entered.connect(func() -> void:
-		chip.add_theme_stylebox_override("panel", _chip_style(true))
+		chip.add_theme_stylebox_override("panel", _derived_stat_row_style(true))
 	)
 	chip.mouse_exited.connect(func() -> void:
-		chip.add_theme_stylebox_override("panel", _chip_style(false))
+		chip.add_theme_stylebox_override("panel", _derived_stat_row_style(false))
 	)
+	chip.focus_entered.connect(func() -> void:
+		chip.add_theme_stylebox_override("panel", _derived_stat_row_style(true))
+	)
+	chip.focus_exited.connect(func() -> void:
+		chip.add_theme_stylebox_override("panel", _derived_stat_row_style(false))
+	)
+	_wire_stat_focus(chip, _derived_focus_targets)
 
 	var line := HBoxContainer.new()
-	line.add_theme_constant_override("separation", 7)
+	line.add_theme_constant_override("separation", 2 if compact else 4)
 	chip.add_child(line)
 
-	line.add_child(UIIconRegistry.make_icon(str(entry.get("id", "")), Vector2(30, 30)))
-
-	var text_box := VBoxContainer.new()
-	text_box.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-	text_box.add_theme_constant_override("separation", 0)
-	line.add_child(text_box)
+	var icon := UIIconRegistry.make_icon(stat_id, Vector2(18, 18) if compact else Vector2(28, 28))
+	icon.name = "DerivedStatIcon_%s" % stat_id
+	icon.size_flags_vertical = Control.SIZE_SHRINK_CENTER
+	line.add_child(icon)
 
 	var name_label := Label.new()
-	name_label.text = str(entry.get("name_ru", ""))
+	name_label.name = "DerivedStatName_%s" % stat_id
+	name_label.text = _derived_compact_label(entry)
+	name_label.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	name_label.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
 	name_label.clip_text = true
-	name_label.add_theme_font_size_override("font_size", 13)
-	name_label.add_theme_color_override("font_color", Color(0.86, 0.91, 0.96, 1.0))
-	text_box.add_child(name_label)
+	name_label.text_overrun_behavior = TextServer.OVERRUN_TRIM_ELLIPSIS
+	name_label.add_theme_font_size_override("font_size", SemanticTypography.resolve_fixed(
+		SemanticTypography.ROLE_FIELD,
+		_readable_px(SemanticTypography.ROLE_FIELD, 15.0),
+		SemanticTypography.role_min(SemanticTypography.ROLE_FIELD),
+		SemanticTypography.role_max(SemanticTypography.ROLE_FIELD)
+	))
+	name_label.add_theme_color_override("font_color", COLOR_BODY)
+	line.add_child(name_label)
 
 	var value_label := Label.new()
-	value_label.name = "DerivedStatValue_%s" % str(entry.get("id", ""))
+	value_label.name = "DerivedStatValue_%s" % stat_id
 	value_label.text = _compact_value_text(entry)
+	# SCRUM-893: см. SurvivalStatValue — clip_text без min-width схлопывал значение в 0.
+	value_label.custom_minimum_size = Vector2(_readable_px(54.0), 0)
 	value_label.clip_text = true
-	value_label.add_theme_font_size_override("font_size", 15)
+	value_label.text_overrun_behavior = TextServer.OVERRUN_TRIM_ELLIPSIS
+	value_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_RIGHT
+	value_label.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
+	value_label.add_theme_font_size_override("font_size", _readable_px(SemanticTypography.ROLE_VALUE, 17.0))
 	value_label.add_theme_color_override("font_color", _value_color(entry))
-	text_box.add_child(value_label)
+	line.add_child(value_label)
 	return chip
 
 
+func _derived_compact_label(entry: Dictionary) -> String:
+	var stat_id := str(entry.get("id", ""))
+	return str(DERIVED_COMPACT_LABELS.get(stat_id, entry.get("name_ru", "")))
+
+
+# Чип-ряд контента (0.62, hover 0.82) — язык рядов Атласа
+# (числа = ui_screens._unified_apply_row_theme normal/hover).
+# На компакт-высотах (<1000) вертикальный pad 1px: базовые ряды + блок
+# «Выживание» держат карточку героя без скролла вплоть до 1600×900.
+func _stat_row_style(is_hovered: bool, is_priority := false) -> StyleBoxFlat:
+	var row_pad_v := 1.0 if get_viewport_rect().size.y < 1000.0 else 4.0
+	var style := _chip_style(0.82 if is_hovered else 0.62, row_pad_v)
+	style.content_margin_left = 10.0
+	style.content_margin_right = 10.0
+	if is_hovered:
+		style.border_color = Color(0.72, 0.58, 0.34, 0.95)
+	if is_priority:
+		style.border_color = Color(0.93, 0.77, 0.40, 0.95) if is_hovered else Color(0.70, 0.56, 0.32, 0.95)
+	return style
+
+
+func _base_stat_row_style(is_hovered: bool, is_priority := false) -> StyleBoxFlat:
+	var style := _stat_row_style(is_hovered, is_priority)
+	# In the 1080p 2x4 grid every row is only ~205px wide. Six-pixel side
+	# padding preserves a readable localized-name lane without shrinking icons,
+	# font sizes or the accepted grid topology.
+	style.content_margin_left = 6.0
+	style.content_margin_right = 6.0
+	if get_viewport_rect().size.y <= 900.0:
+		style.content_margin_top = 0.0
+		style.content_margin_bottom = 0.0
+	return style
+
+
+func _derived_stat_row_style(is_hovered: bool) -> StyleBoxFlat:
+	var style := _stat_row_style(is_hovered)
+	style.content_margin_left = 6.0
+	style.content_margin_right = 6.0
+	return style
+
+
 func _compact_value_text(entry: Dictionary) -> String:
-	return str(entry.get("value_text", "N/A")).replace(" / sec", "/s").replace(" units", "")
+	var raw_value: Variant = entry.get("value", null)
+	if raw_value == null:
+		return "N/A"
+	var value := float(raw_value)
+	var stat_id := str(entry.get("id", ""))
+	if stat_id in ["crit_chance", "dodge", "defense", "vampiric_chance", "range_multiplier"]:
+		return "%d%%" % int(round(value * 100.0))
+	if stat_id in ["crit_damage_multiplier", "ultimate_multiplier", "buff_power"]:
+		return ("×%.2f" % value).replace(".", ",")
+	if stat_id in ["attack_speed", "dot_speed", "regeneration"]:
+		return ("%.2f/с" % value).replace(".", ",")
+	if str(entry.get("type", "derived")) == "base" and is_equal_approx(value, roundf(value)):
+		return str(int(round(value)))
+	if stat_id in ["attack_range", "aoe_radius", "aura_radius", "projectile_speed", "knockback_distance", "knockback_power", "move_speed", "pickup_radius"]:
+		return str(int(round(value)))
+	return ("%.1f" % value).replace(".", ",")
 
 
 func _show_end_run_confirm() -> void:
+	# Основной путь — модалка EndRunConfirm ui_screens (SCRUM-883, стиль quit-диалога).
+	if end_run_confirm_handler.is_valid():
+		end_run_confirm_handler.call()
+		return
+	# Standalone-фолбэк (сцена без ui_screens): движковый диалог.
 	var dialog := ConfirmationDialog.new()
 	dialog.process_mode = Node.PROCESS_MODE_ALWAYS
 	dialog.title = "Завершить забег?"
@@ -630,43 +2088,28 @@ func _show_end_run_confirm() -> void:
 		end_run_confirmed.emit()
 	)
 	add_child(dialog)
-	_apply_fantasy_button_theme(dialog.get_ok_button(), "danger")
-	_apply_fantasy_button_theme(dialog.get_cancel_button())
 	dialog.popup_centered(Vector2i(360, 140))
 
 
-# SCRUM-593: координатная спека @2560×1440 — тултип статов (транзиентный).
-# Плавающая панель шириной TOOLTIP_MAX_WIDTH=430, высота по контенту (label autowrap,
-# content margins 44/42/44/42 from SCRUM-586 safe-zone spec). Позиция у курсора/слота
-# стандартным tooltip Godot клампится в экран движком.
-const ST_PANEL_2K := Rect2(0, 0, 430, 0)  # w фикс (TOOLTIP_MAX_WIDTH), h по контенту
-const ST_LABEL_CONTENT_2K := Vector4(44.0, 42.0, 44.0, 42.0)
-
-
+# SCRUM-593/SCRUM-851/SCRUM-890: тултип статов — движковый попап с чип-рамкой
+# TooltipPanel из GlobalTooltip.make_theme; контент — титул золотом + тело светлым
+# (GlobalTooltip.make_tooltip_content), позиция и кламп — GlobalTooltip.
 func _make_custom_tooltip(for_text: String) -> Object:
-	var tooltip := PanelContainer.new()
-	tooltip.name = "StatTooltipPanel"
-	tooltip.custom_minimum_size = Vector2(TOOLTIP_MAX_WIDTH, 0.0)
-	tooltip.add_theme_stylebox_override("panel", _tooltip_style())
-
-	var label := Label.new()
-	label.name = "StatTooltipLabel"
-	label.custom_minimum_size = Vector2(TOOLTIP_MAX_WIDTH - ST_LABEL_CONTENT_2K.x - ST_LABEL_CONTENT_2K.z, 0.0)
-	label.text = for_text
-	label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
-	label.add_theme_font_size_override("font_size", 14)
-	label.add_theme_color_override("font_color", TEXT_PRIMARY)
-	tooltip.add_child(label)
-	return tooltip
+	return GlobalTooltip.make_tooltip_content(for_text, self)
 
 
+func _install_global_tooltip_skin() -> void:
+	GlobalTooltip.install_on_tree(self, GlobalTooltipControl)
+
+
+# SCRUM-983: the visible row is compact; the tooltip owns the complete
+# explanation, formula/source and influence list from StatFormulas.
 func _tooltip_for_entry(entry: Dictionary) -> String:
-	return "%s: %s\nЗначение: %s\n\n%s\n\nФормула: %s\nВлияет: %s" % [
+	return "%s — %s\n%s\n\nФормула / источник: %s\nВлияет: %s" % [
 		str(entry.get("name_ru", "")),
-		str(entry.get("name_en", "")),
-		str(entry.get("value_text", "N/A")),
+		_compact_value_text(entry),
 		str(entry.get("description", "")),
-		str(entry.get("formula", "Формула пока не подключена.")),
+		str(entry.get("formula", "")),
 		str(entry.get("influences", "")),
 	]
 
@@ -687,7 +2130,7 @@ func _value_color(entry: Dictionary) -> Color:
 
 	var stat_id := str(entry.get("id", ""))
 	match stat_id:
-		"damage", "magic_damage", "sound_wave_damage":
+		"damage", "magic_damage":
 			return VALUE_HIGH if value >= 15.0 else VALUE_EFFECTIVE
 		"attack_speed":
 			return VALUE_HIGH if value >= 1.2 else VALUE_EFFECTIVE
@@ -704,137 +2147,61 @@ func _value_color(entry: Dictionary) -> Color:
 	return VALUE_NEUTRAL
 
 
-func _make_button(text: String) -> Button:
+# --- Pause actions use the exact main-menu plate family ----------------------
+func _kit_button(text: String, width: float) -> Button:
 	var button := Button.new()
 	button.text = text
-	button.custom_minimum_size = Vector2(280, 60)
-	button.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
-	_apply_fantasy_button_theme(button)
-	button.add_theme_font_size_override("font_size", 16)
+	var height := _action_button_height()
+	button.custom_minimum_size = Vector2(width, height)
+	button.size_flags_horizontal = Control.SIZE_SHRINK_CENTER
+	button.size_flags_vertical = Control.SIZE_SHRINK_CENTER
+	button.autowrap_mode = TextServer.AUTOWRAP_OFF
+	button.mouse_default_cursor_shape = Control.CURSOR_POINTING_HAND
+	button.add_theme_font_size_override("font_size", _readable_px(SemanticTypography.ROLE_ACTION, 16.0))
+	UIButtonFamily.assign(button, PAUSE_ACTION_BUTTON_FAMILY, true)
+	_apply_kit_button_theme(button)
 	return button
 
 
-func _apply_fantasy_button_theme(button: Button, variant := "default") -> void:
-	var normal_tint := Color.WHITE
-	var pressed_tint := Color(0.92, 0.88, 0.82, 1.0)
-	if variant == "danger":
-		normal_tint = Color(1.08, 0.72, 0.72, 1.0)
-		pressed_tint = Color(0.92, 0.55, 0.55, 1.0)
-	button.add_theme_stylebox_override("normal", _button_style(PAUSE_BUTTON_NORMAL, normal_tint))
-	button.add_theme_stylebox_override("hover", _button_style(PAUSE_BUTTON_HOVER, BUTTON_NEUTRAL_HOVER_TINT))
-	button.add_theme_stylebox_override("pressed", _button_style(PAUSE_BUTTON_PRESSED, pressed_tint))
-	button.add_theme_stylebox_override("disabled", _button_style(PAUSE_BUTTON_DISABLED, Color(0.72, 0.72, 0.72, 1.0)))
-	button.add_theme_stylebox_override("focus", _button_style(PAUSE_BUTTON_FOCUS, BUTTON_NEUTRAL_FOCUS_TINT))
+func _apply_kit_button_theme(button: Button) -> void:
+	var family := UIButtonFamily.resolve(button, "default", PAUSE_ACTION_BUTTON_FAMILY)
+	for state in UIButtonFamily.STATES:
+		button.add_theme_stylebox_override(state, _kit_button_state_style(button, family, state))
 	button.add_theme_color_override("font_color", Color(0.98, 0.94, 0.78, 1.0))
-	button.add_theme_color_override("font_hover_color", BUTTON_NEUTRAL_HOVER_FONT)
-	button.add_theme_color_override("font_focus_color", BUTTON_NEUTRAL_HOVER_FONT)
+	button.add_theme_color_override("font_hover_color", Color(1.0, 1.0, 1.0, 1.0))
+	button.add_theme_color_override("font_focus_color", Color(1.0, 1.0, 1.0, 1.0))
 	button.add_theme_color_override("font_pressed_color", Color(0.86, 1.0, 0.96, 1.0))
 	button.add_theme_color_override("font_disabled_color", Color(0.46, 0.49, 0.54, 1.0))
 
 
-# SCRUM-669: pause-dossier text actions use the generated SCRUM-657 exact-size
-# pause_280x60 state kit. The helper remains for call-site compatibility.
-func _apply_pd_2k_button_theme(button: Button, variant := "default") -> void:
-	_apply_fantasy_button_theme(button, variant)
+func _kit_button_state_style(button: Button, family: String, state: String) -> StyleBox:
+	var descriptor := UIButtonFamily.descriptor(family, state)
+	var texture := load(str(descriptor.get("path", ""))) as Texture2D
+	var margins: Vector4 = descriptor.get("margins", Vector4(42, 28, 42, 28))
+	var content: Vector4 = descriptor.get("content", Vector4(56, 32, 56, 32))
+	var size := button.custom_minimum_size
+	var horizontal_scale := clampf(size.x / 380.0, 0.55, 1.0)
+	margins.x = roundf(margins.x * horizontal_scale)
+	margins.z = roundf(margins.z * horizontal_scale)
+	content.x = roundf(content.x * horizontal_scale)
+	content.z = roundf(content.z * horizontal_scale)
+	if size.y <= 76.0:
+		var vertical_margin := 12.0 if size.y <= 64.0 else 14.0
+		var vertical_content := 10.0 if size.y <= 64.0 else 14.0
+		margins.y = minf(margins.y, vertical_margin)
+		margins.w = minf(margins.w, vertical_margin)
+		content.y = minf(content.y, vertical_content)
+		content.w = minf(content.w, vertical_content)
 
-
-func _panel_style() -> StyleBox:
-	return _texture_style(ESCAPE_PANEL_FRAME, 38, 52, 38, 48, Color.WHITE, Vector4(58, 72, 58, 66))
-
-
-# SCRUM-486: панель паузы-досье на @2K-ассете pd_panel (нарисован ровно 2520×1404 c
-# modal-маргинами). Бордюры скейлятся от source 2520×1404 → на 2K display==source (1:1),
-# на 1080p/4K — uniform-скейл вьюпорта. Ассет несёт свой орнамент, центр тянется 9-slice.
-const PD_PANEL_SOURCE_SIZE := Vector2(2520.0, 1404.0)
-const PD_PANEL_TEXTURE_MARGINS := Vector4(46.0, 62.0, 46.0, 58.0)
-const PD_PANEL_CONTENT := Vector4(72.0, 92.0, 72.0, 84.0)
-
-func _pause_end_modal_style(display_size: Vector2) -> StyleBox:
-	var texture_margins := _scaled_frame_margins(PD_PANEL_SOURCE_SIZE, display_size, PD_PANEL_TEXTURE_MARGINS)
-	var content_margins := _scaled_frame_margins(PD_PANEL_SOURCE_SIZE, display_size, PD_PANEL_CONTENT)
-	return _texture_style(
-		ESCAPE_PANEL_FRAME_2K,
-		texture_margins.x,
-		texture_margins.y,
-		texture_margins.z,
-		texture_margins.w,
-		Color.WHITE,
-		content_margins
-	)
-
-
-func _scaled_frame_margins(source_size: Vector2, display_size: Vector2, source_margins: Vector4) -> Vector4:
-	var scale := minf(display_size.x / source_size.x, display_size.y / source_size.y)
-	return Vector4(
-		roundf(source_margins.x * scale),
-		roundf(source_margins.y * scale),
-		roundf(source_margins.z * scale),
-		roundf(source_margins.w * scale)
-	)
-
-
-func _basic_stat_row_style(is_hovered: bool, is_priority := false) -> StyleBox:
-	var tint := Color(1.10, 1.10, 1.10, 1.0) if is_hovered else Color.WHITE
-	if is_priority:
-		tint = Color(1.18, 1.08, 0.72, 1.0) if is_hovered else Color(1.10, 1.02, 0.74, 1.0)
-	return _texture_style(STAT_BASIC_ROW_FRAME, 42, 38, 42, 36, tint, Vector4(58, 52, 58, 48))
-
-
-func _group_style(accent: Color) -> StyleBox:
-	var tint := Color(
-		lerpf(1.0, accent.r, 0.12),
-		lerpf(1.0, accent.g, 0.12),
-		lerpf(1.0, accent.b, 0.12),
-		1.0
-	)
-	return _texture_style(STAT_GROUP_FRAME, 38, 52, 38, 48, tint, Vector4(58, 72, 58, 66))
-
-
-func _chip_style(is_hovered: bool) -> StyleBox:
-	var tint := Color(1.12, 1.12, 1.12, 1.0) if is_hovered else Color.WHITE
-	return _texture_style(STAT_CHIP_FRAME, 42, 38, 42, 36, tint, Vector4(58, 52, 58, 48))
-
-
-func _tooltip_style() -> StyleBox:
-	# SCRUM-593: SCRUM-586 tooltip frame (430x288) has stricter safe content than old st_panel.
-	var margins: Vector4 = UIThemePaths.OVERHAUL_2K_FRAME_TEXTURE_MARGINS["stat_tooltip"]
-	var content: Vector4 = UIThemePaths.OVERHAUL_2K_FRAME_CONTENT["stat_tooltip"]
-	return _texture_style(STAT_TOOLTIP_FRAME_2K, margins.x, margins.y, margins.z, margins.w, Color.WHITE, content)
-
-
-func _make_section_divider() -> TextureRect:
-	var divider := TextureRect.new()
-	divider.name = "StatSectionDivider"
-	divider.custom_minimum_size = Vector2(0.0, 10.0)
-	divider.texture = STAT_SECTION_DIVIDER
-	divider.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
-	divider.stretch_mode = TextureRect.STRETCH_SCALE
-	return divider
-
-
-func _button_style(texture: Texture2D, tint: Color) -> StyleBox:
-	var style := _texture_style(
-		texture,
-		PAUSE_BUTTON_TEXTURE_MARGINS.x,
-		PAUSE_BUTTON_TEXTURE_MARGINS.y,
-		PAUSE_BUTTON_TEXTURE_MARGINS.z,
-		PAUSE_BUTTON_TEXTURE_MARGINS.w,
-		tint,
-		PAUSE_BUTTON_CONTENT_MARGINS
-	)
-	if style is StyleBoxTexture:
-		(style as StyleBoxTexture).modulate_color.a = 1.0
-	return style
-
-
-func _texture_style(texture: Texture2D, left: float, top: float, right: float, bottom: float, tint: Color, content := Vector4.ZERO) -> StyleBox:
+	if texture == null:
+		return _chip_style(0.9, 10.0)
 	var style := StyleBoxTexture.new()
 	style.texture = texture
-	style.set_texture_margin(SIDE_LEFT, left)
-	style.set_texture_margin(SIDE_TOP, top)
-	style.set_texture_margin(SIDE_RIGHT, right)
-	style.set_texture_margin(SIDE_BOTTOM, bottom)
-	style.modulate_color = tint
+	style.set_texture_margin(SIDE_LEFT, margins.x)
+	style.set_texture_margin(SIDE_TOP, margins.y)
+	style.set_texture_margin(SIDE_RIGHT, margins.z)
+	style.set_texture_margin(SIDE_BOTTOM, margins.w)
+	style.modulate_color = Color.WHITE
 	style.content_margin_left = content.x
 	style.content_margin_top = content.y
 	style.content_margin_right = content.z

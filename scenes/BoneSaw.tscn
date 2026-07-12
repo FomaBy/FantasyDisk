@@ -8,16 +8,18 @@ z_index = 8
 script = ExtResource("1_class_weapon")
 weapon_id = "bone_saw"
 display_name = "Костяная пила"
-attack_mode = "stab_flurry"
+attack_mode = "saw_sector"
 damage_parameter = "damage"
-fire_interval = 0.58
+fire_interval = 0.62
 damage = 11.0
-attack_range = 190.0
-aoe_radius = 70.0
-wave_width = 220.0
-projectile_count = 2
-dot_ticks = 3
-heal_percent_on_attack = 0.01
+attack_range = 215.0
+aoe_radius = 215.0
+cone_degrees = 135.0
+sector_full_targets = 4
+sector_target_diminish = 0.72
+heal_percent_of_damage = 0.34
+melee_close_bonus_radius = 110.0
+melee_close_damage_multiplier = 1.12
 visual_color = Color(0.88, 0.22, 0.18, 0.42)
 
 [node name="WeaponVisual" type="Sprite2D" parent="."]

@@ -1,0 +1,14 @@
+{
+  "jira": "SCRUM-952",
+  "provider": "PixelLab MCP",
+  "tool": "create_ui_asset",
+  "ui_asset_id": "c72b6dba-895e-4f6a-93a1-1a5a36934a54",
+  "created": "2026-07-11",
+  "source_size": [688, 384],
+  "source": "pixellab_source.png",
+  "composited_preview": "composited_preview.png",
+  "layout": "../../mockups/scrum952_hero_trait_copy/layout.json",
+  "fit_report": "fit_report.json",
+  "decision": "accepted",
+  "notes": "Textless PixelLab reference; first composite was rejected because scaled coordinates crossed the center-frame ornament. Final zones were remeasured from the generated source and pass the fit report inside all three colored bands. Runtime uses native Godot text, not this bitmap."
+}

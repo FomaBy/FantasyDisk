@@ -1,0 +1,451 @@
+{
+  "ok": true,
+  "decision": "ready_for_image",
+  "errors": [],
+  "warnings": [],
+  "elements": [
+    {
+      "id": "screen_safe",
+      "kind": "panel",
+      "rect": [
+        120,
+        72,
+        2320,
+        1296
+      ],
+      "ok": true,
+      "warnings": []
+    },
+    {
+      "id": "settings_title",
+      "kind": "text",
+      "rect": [
+        352,
+        132,
+        392,
+        72
+      ],
+      "ok": true,
+      "warnings": [],
+      "fit_font_size": 48
+    },
+    {
+      "id": "back_button",
+      "kind": "button",
+      "rect": [
+        2076,
+        124,
+        260,
+        104
+      ],
+      "ok": true,
+      "warnings": [],
+      "fit_font_size": 38
+    },
+    {
+      "id": "tab_screen",
+      "kind": "button",
+      "rect": [
+        724,
+        250,
+        260,
+        104
+      ],
+      "ok": true,
+      "warnings": [],
+      "fit_font_size": 34
+    },
+    {
+      "id": "tab_sound",
+      "kind": "button",
+      "rect": [
+        1008,
+        250,
+        260,
+        104
+      ],
+      "ok": true,
+      "warnings": [],
+      "fit_font_size": 34
+    },
+    {
+      "id": "tab_controls",
+      "kind": "button",
+      "rect": [
+        1292,
+        250,
+        260,
+        104
+      ],
+      "ok": true,
+      "warnings": [],
+      "fit_font_size": 31
+    },
+    {
+      "id": "tab_game",
+      "kind": "button",
+      "rect": [
+        1576,
+        250,
+        260,
+        104
+      ],
+      "ok": true,
+      "warnings": [],
+      "fit_font_size": 34
+    },
+    {
+      "id": "content_panel",
+      "kind": "panel",
+      "rect": [
+        508,
+        382,
+        1544,
+        858
+      ],
+      "ok": true,
+      "warnings": []
+    },
+    {
+      "id": "content_safe",
+      "kind": "zone",
+      "rect": [
+        556,
+        426,
+        1448,
+        770
+      ],
+      "ok": true,
+      "warnings": []
+    },
+    {
+      "id": "game_scroll",
+      "kind": "scroll_area",
+      "rect": [
+        568,
+        438,
+        1424,
+        746
+      ],
+      "ok": true,
+      "warnings": [],
+      "content_h": 746,
+      "scrollbar_required": false
+    },
+    {
+      "id": "game_title",
+      "kind": "text",
+      "rect": [
+        592,
+        450,
+        680,
+        60
+      ],
+      "ok": true,
+      "warnings": [],
+      "fit_font_size": 42
+    },
+    {
+      "id": "game_status",
+      "kind": "text",
+      "rect": [
+        1532,
+        450,
+        428,
+        60
+      ],
+      "ok": true,
+      "warnings": [],
+      "fit_font_size": 30
+    },
+    {
+      "id": "game_desc",
+      "kind": "text",
+      "rect": [
+        592,
+        524,
+        1368,
+        48
+      ],
+      "ok": true,
+      "warnings": [],
+      "fit_font_size": 28
+    },
+    {
+      "id": "game_warning",
+      "kind": "text",
+      "rect": [
+        592,
+        584,
+        1368,
+        54
+      ],
+      "ok": true,
+      "warnings": [],
+      "fit_font_size": 25
+    },
+    {
+      "id": "row_monster_hp",
+      "kind": "panel",
+      "rect": [
+        584,
+        654,
+        1384,
+        76
+      ],
+      "ok": true,
+      "warnings": []
+    },
+    {
+      "id": "label_monster_hp",
+      "kind": "text",
+      "rect": [
+        680,
+        664,
+        580,
+        56
+      ],
+      "ok": true,
+      "warnings": [],
+      "fit_font_size": 28
+    },
+    {
+      "id": "value_monster_hp",
+      "kind": "value",
+      "rect": [
+        1320,
+        664,
+        170,
+        56
+      ],
+      "ok": true,
+      "warnings": [],
+      "fit_font_size": 28
+    },
+    {
+      "id": "slider_monster_hp",
+      "kind": "slider",
+      "rect": [
+        1520,
+        664,
+        420,
+        56
+      ],
+      "ok": true,
+      "warnings": []
+    },
+    {
+      "id": "row_monster_damage",
+      "kind": "panel",
+      "rect": [
+        584,
+        744,
+        1384,
+        76
+      ],
+      "ok": true,
+      "warnings": []
+    },
+    {
+      "id": "label_monster_damage",
+      "kind": "text",
+      "rect": [
+        680,
+        754,
+        580,
+        56
+      ],
+      "ok": true,
+      "warnings": [],
+      "fit_font_size": 28
+    },
+    {
+      "id": "value_monster_damage",
+      "kind": "value",
+      "rect": [
+        1320,
+        754,
+        170,
+        56
+      ],
+      "ok": true,
+      "warnings": [],
+      "fit_font_size": 28
+    },
+    {
+      "id": "slider_monster_damage",
+      "kind": "slider",
+      "rect": [
+        1520,
+        754,
+        420,
+        56
+      ],
+      "ok": true,
+      "warnings": []
+    },
+    {
+      "id": "row_player_damage",
+      "kind": "panel",
+      "rect": [
+        584,
+        834,
+        1384,
+        76
+      ],
+      "ok": true,
+      "warnings": []
+    },
+    {
+      "id": "label_player_damage",
+      "kind": "text",
+      "rect": [
+        680,
+        844,
+        580,
+        56
+      ],
+      "ok": true,
+      "warnings": [],
+      "fit_font_size": 28
+    },
+    {
+      "id": "value_player_damage",
+      "kind": "value",
+      "rect": [
+        1320,
+        844,
+        170,
+        56
+      ],
+      "ok": true,
+      "warnings": [],
+      "fit_font_size": 28
+    },
+    {
+      "id": "slider_player_damage",
+      "kind": "slider",
+      "rect": [
+        1520,
+        844,
+        420,
+        56
+      ],
+      "ok": true,
+      "warnings": []
+    },
+    {
+      "id": "row_player_attack_speed",
+      "kind": "panel",
+      "rect": [
+        584,
+        924,
+        1384,
+        76
+      ],
+      "ok": true,
+      "warnings": []
+    },
+    {
+      "id": "label_player_attack_speed",
+      "kind": "text",
+      "rect": [
+        680,
+        934,
+        580,
+        56
+      ],
+      "ok": true,
+      "warnings": [],
+      "fit_font_size": 28
+    },
+    {
+      "id": "value_player_attack_speed",
+      "kind": "value",
+      "rect": [
+        1320,
+        934,
+        170,
+        56
+      ],
+      "ok": true,
+      "warnings": [],
+      "fit_font_size": 28
+    },
+    {
+      "id": "slider_player_attack_speed",
+      "kind": "slider",
+      "rect": [
+        1520,
+        934,
+        420,
+        56
+      ],
+      "ok": true,
+      "warnings": []
+    },
+    {
+      "id": "row_monster_attack_speed",
+      "kind": "panel",
+      "rect": [
+        584,
+        1014,
+        1384,
+        76
+      ],
+      "ok": true,
+      "warnings": []
+    },
+    {
+      "id": "label_monster_attack_speed",
+      "kind": "text",
+      "rect": [
+        680,
+        1024,
+        580,
+        56
+      ],
+      "ok": true,
+      "warnings": [],
+      "fit_font_size": 28
+    },
+    {
+      "id": "value_monster_attack_speed",
+      "kind": "value",
+      "rect": [
+        1320,
+        1024,
+        170,
+        56
+      ],
+      "ok": true,
+      "warnings": [],
+      "fit_font_size": 28
+    },
+    {
+      "id": "slider_monster_attack_speed",
+      "kind": "slider",
+      "rect": [
+        1520,
+        1024,
+        420,
+        56
+      ],
+      "ok": true,
+      "warnings": []
+    },
+    {
+      "id": "reset_game",
+      "kind": "button",
+      "rect": [
+        1320,
+        1106,
+        640,
+        64
+      ],
+      "ok": true,
+      "warnings": [],
+      "fit_font_size": 29
+    }
+  ]
+}

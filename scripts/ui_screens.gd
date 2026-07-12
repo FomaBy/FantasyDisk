@@ -6,7 +6,8 @@ extends RefCounted
 var game
 var settings_return_origin := "main_menu"
 var settings_video_pending := {}
-var _settings_v5_icon_cache := {}
+var _settings_v6_icon_cache := {}
+var _global_tooltip_theme: Theme = null
 # SCRUM-816: живая строка статуса геймпада на вкладке «Управление» + флаг режима
 # прослушивания ребинда (клавиатура vs геймпад — один диспетчер _handle_rebind_input).
 var _gamepad_status_label: Label = null
@@ -19,14 +20,33 @@ var _atlas := {}
 var _atlas_hidden_seen := {}
 
 const HeroStatRadar := preload("res://scripts/ui/hero_stat_radar.gd")
+const SemanticTypography := preload("res://scripts/ui/semantic_typography.gd")
 const UIThemePaths := preload("res://scripts/ui/ui_theme_paths.gd")
+const UIButtonFamily := preload("res://scripts/ui/ui_button_family.gd")
+const ConstellationDescriptionFormatter := preload("res://scripts/constellation_description_formatter.gd")
+# SCRUM-871: прогноз level-up наград (дельты derived-статов + бейджи DPS/выживаемость).
+const LevelUpAdvisor := preload("res://scripts/level_up_advisor.gd")
+const ArtifactRewardPresenter := preload("res://scripts/artifact_reward_presenter.gd")
 const ShopUIConstants := preload("res://scripts/ui/shop_ui_constants.gd")
 const HeroSelectConstants := preload("res://scripts/ui/hero_select_constants.gd")
 const FEEDBACK_REPORTER_SCRIPT := preload("res://scripts/feedback_reporter.gd")
 const DisplayResolution := preload("res://scripts/display_resolution.gd")
 const StatFormulas := preload("res://scripts/stat_formulas.gd")
+const GlobalTooltip := preload("res://scripts/ui/global_tooltip.gd")
+const GlobalTooltipControl := preload("res://scripts/ui/global_tooltip_control.gd")
 # SCRUM-810/816: реестр глифов кнопок геймпада (null-safe; нет ассета → текст).
 const InputGlyphRegistry := preload("res://scripts/ui/input_glyph_registry.gd")
+const CodexImageFit := preload("res://scripts/ui/codex_image_fit.gd")
+const BATTLE_PRAYER_ICON_IDS := {
+	"prayer_wrath": "damage",
+	"prayer_mending": "regeneration",
+	"prayer_aegis": "defense",
+}
+const BATTLE_PRAYER_EFFECT_SUMMARIES := {
+	"prayer_wrath": "+20% ко всему урону",
+	"prayer_mending": "+2 HP/с",
+	"prayer_aegis": "−20% вход. урона",
+}
 
 # SCRUM-816: человекочитаемые подписи кнопок геймпада для вкладки «Управление».
 # Локальная копия имён (не зависим от автолоада InputDeviceManager в тестах).
@@ -92,12 +112,12 @@ const OVERHAUL_2K_FRAME_PATHS := UIThemePaths.OVERHAUL_2K_FRAME_PATHS
 const OVERHAUL_2K_FRAME_SOURCE_SIZE := UIThemePaths.OVERHAUL_2K_FRAME_SOURCE_SIZE
 const OVERHAUL_2K_FRAME_TEXTURE_MARGINS := UIThemePaths.OVERHAUL_2K_FRAME_TEXTURE_MARGINS
 const OVERHAUL_2K_FRAME_CONTENT := UIThemePaths.OVERHAUL_2K_FRAME_CONTENT
-const LEVEL_UP_SCRUM682_FRAME_PATHS := UIThemePaths.LEVEL_UP_SCRUM682_FRAME_PATHS
 const GLOSSARY := preload("res://scripts/glossary.gd")
 const SYSTEM_CHECKBOX_UNCHECKED_PATH := "res://assets/sprites/ui/icons/system/ui_checkbox_unchecked.png"
 const SYSTEM_CHECKBOX_CHECKED_PATH := "res://assets/sprites/ui/icons/system/ui_checkbox_checked.png"
 const SYSTEM_SLIDER_TRACK_PATH := "res://assets/sprites/ui/icons/system/ui_slider_track.png"
 const SYSTEM_SLIDER_GRABBER_PATH := "res://assets/sprites/ui/icons/system/ui_slider_grabber.png"
+const GRATITUDE_ICON_PATH := "res://assets/sprites/ui/icons/credits/ui_icon_gratitude.png"
 const SHOP_INLINE_SLOT_SIZE := ShopUIConstants.SHOP_INLINE_SLOT_SIZE
 const SHOP_INLINE_ICON_SIZE := ShopUIConstants.SHOP_INLINE_ICON_SIZE
 const SHOP_INLINE_CAPTION_SIZE := ShopUIConstants.SHOP_INLINE_CAPTION_SIZE
@@ -111,150 +131,65 @@ const STANDARD_ACTION_BUTTON_HEIGHT := 104.0
 const STANDARD_ACTION_BUTTON_WIDTH := 420.0
 const MAX_ACTION_BUTTON_VISUAL_WIDTH := 560.0
 const MAIN_MENU_ACTION_BUTTON_WIDTH := 380.0
+const END_RUN_CONFIRM_BUTTON_SIZE := Vector2(240.0, 72.0)
+const END_RUN_CONFIRM_BUTTON_FAMILY := "text/continue_240x72"
 const MAIN_MENU_BUTTON_COUNT := 6.0
-const MAIN_MENU_BUTTON_SEPARATION := 10.0
-const MAIN_MENU_ACTION_COLUMN_HEIGHT := STANDARD_ACTION_BUTTON_HEIGHT * MAIN_MENU_BUTTON_COUNT + MAIN_MENU_BUTTON_SEPARATION * (MAIN_MENU_BUTTON_COUNT - 1.0)
-const MAIN_MENU_LOGO_RECT := Rect2(56.0, 44.0, 720.0, 270.0)
-const MAIN_MENU_LOGO_ACTION_GAP := 80.0
-const MAIN_MENU_ACTION_BOTTOM_MARGIN := 10.0
+const GOLD_SHELL_SCREEN_IDS := ["campfire", "upgrade", "artifact_reward", "victory", "death"]
 const COMPACT_UTILITY_BUTTON_SIZE := Vector2(54.0, 42.0)
 const ASCENSION_BUTTON_SIZE := Vector2(54.0, 62.0)
-const READABILITY_FONT_SCALE_MIN := 1.32
-const READABILITY_FONT_SCALE_TARGET := 1.45
 const BUTTON_NEUTRAL_HOVER_TINT := Color(1.16, 1.16, 1.16, 1.0)
+# Фидбек 2026-07-08: hover заметнее (но «не сильно») — мягкий множитель ПОВЕРХ
+# запечённого hover-арта пластин кита (unique + minimal_metal).
+const BUTTON_HOVER_EXTRA_TINT := Color(1.12, 1.12, 1.12, 1.0)
 const BUTTON_NEUTRAL_FOCUS_TINT := Color(1.20, 1.20, 1.20, 1.0)
 const BUTTON_NEUTRAL_HOVER_FONT := Color(1.0, 1.0, 1.0, 1.0)
 const SETTINGS_RETURN_MAIN_MENU := "main_menu"
 const SETTINGS_RETURN_RUN_PAUSE := "run_pause"
-# SCRUM-792: Settings v3 — runtime-врезка PixelLab 9-slice фрейм-семьи (handoff SCRUM-694).
-# Production = только PixelLab-ассеты (не OpenAI mockups). Геометрия live-рамок НЕ меняется
-# (layout.json validated): source-margins пересчитаны так, что display-rects байт-в-байт
-# совпадают со старой minimal-семьёй (см. _settings_v2_content_panel_rect / margins helper).
-const SETTINGS_V3_FRAME_DIR := "res://assets/sprites/ui/frames/settings_v3/"
-const SETTINGS_V3_MAIN_MODAL_PATH := SETTINGS_V3_FRAME_DIR + "ui_frame_settings_v3_main_modal.png"
-const SETTINGS_V3_TAB_SWITCHER_PATH := SETTINGS_V3_FRAME_DIR + "ui_frame_settings_v3_tab_switcher.png"
-const SETTINGS_V3_CONTENT_PANEL_PATH := SETTINGS_V3_FRAME_DIR + "ui_frame_settings_v3_content_panel.png"
-const SETTINGS_V3_FIELD_PATH := SETTINGS_V3_FRAME_DIR + "ui_frame_settings_v3_inset_field.png"
-const SETTINGS_V3_BUTTON_PATH := SETTINGS_V3_FRAME_DIR + "ui_frame_settings_v3_action_button.png"
-# 9-slice source-px margins: corner-cell вмещает угловой орнамент (gem+metal), чтобы он не
-# растягивался; центр — плоская тёмная зона (tile). Замерено на доставленном арте.
-const SETTINGS_V3_MAIN_SOURCE_SIZE := Vector2(640.0, 384.0)
-const SETTINGS_V3_MAIN_TEXTURE_MARGINS := Vector4(150.0, 110.0, 150.0, 110.0)
-const SETTINGS_V3_CONTENT_SOURCE_SIZE := Vector2(688.0, 246.0)
-const SETTINGS_V3_CONTENT_TEXTURE_MARGINS := Vector4(140.0, 80.0, 140.0, 78.0)
-const SETTINGS_V3_TAB_SWITCHER_SOURCE_SIZE := Vector2(688.0, 192.0)
-const SETTINGS_V3_TAB_SWITCHER_TEXTURE_MARGINS := Vector4(96.0, 70.0, 96.0, 70.0)
-# Inset-field / action-button рендерятся на мелких контролах (≤72px высотой) — фиксированные
-# display-px margins (не масштабируются от source, иначе 9-slice > высоты контрола).
-const SETTINGS_V3_FIELD_BTN_MARGINS := Vector4(26.0, 20.0, 26.0, 20.0)
-const SETTINGS_V3_FIELD_BTN_CONTENT := Vector4(20.0, 10.0, 20.0, 10.0)
-const SETTINGS_V3_ACTION_BTN_MARGINS := Vector4(30.0, 22.0, 30.0, 22.0)
-const SETTINGS_V3_ACTION_BTN_CONTENT := Vector4(22.0, 12.0, 22.0, 12.0)
-# SCRUM-805 v4: перерисованные интерактивные элементы (PixelLab, dark-iron + яркий
-# золочёный кант) — отдельные ассеты в settings_v4/, выше контраст, чем тёмный v3
-# (кант/поля больше не «пропадают» на тёмной модалке). Источник 367×72 (кнопка) /
-# 392×72 (поле): корнер-филигрань ≤28px по вертикали → 9-slice v-margin 28, 2×28=56 <
-# минимальной высоты контрола 60 (нет наслоения углов). Панели/рамка/свитчер — фон v3.
-const SETTINGS_V4_FRAME_DIR := "res://assets/sprites/ui/frames/settings_v4/"
-const SETTINGS_V4_ACTION_BUTTON_PATH := SETTINGS_V4_FRAME_DIR + "ui_frame_settings_v4_action_button.png"
-const SETTINGS_V4_FIELD_PATH := SETTINGS_V4_FRAME_DIR + "ui_frame_settings_v4_field.png"
-const SETTINGS_V4_ACTION_BTN_MARGINS := Vector4(44.0, 28.0, 44.0, 28.0)
-const SETTINGS_V4_ACTION_BTN_CONTENT := Vector4(28.0, 8.0, 28.0, 8.0)
-const SETTINGS_V4_FIELD_MARGINS := Vector4(46.0, 28.0, 46.0, 28.0)
-const SETTINGS_V4_FIELD_CONTENT := Vector4(26.0, 6.0, 26.0, 6.0)
-# Per-state тинты для одного базового 9-slice (нет отдельных текстур состояний — handoff).
-const SETTINGS_V3_BTN_STATE_TINTS := {
-	"normal": Color(1.0, 1.0, 1.0, 1.0),
-	"hover": Color(1.16, 1.16, 1.16, 1.0),
-	"pressed": Color(0.86, 0.86, 0.86, 1.0),
-	"focus": Color(1.20, 1.20, 1.20, 1.0),
-	# SCRUM-805 v4: disabled был слишком тёмным/прозрачным (0.55/α0.78) → рамка
-	# Применить/Отменить «пропадала» без непримененных изменений (выглядело недоделкой).
-	# Осветлён до читаемого серо-золотого — кнопка видна как честный greyed-out.
-	"disabled": Color(0.80, 0.80, 0.84, 0.94),
-}
-const SETTINGS_V2_FRAME_DIR := "res://assets/sprites/ui/frames/settings_v2/"
-const SETTINGS_V2_MAIN_MODAL_PATH := SETTINGS_V3_MAIN_MODAL_PATH
-const SETTINGS_V2_TAB_SWITCHER_PATH := SETTINGS_V3_TAB_SWITCHER_PATH
-const SETTINGS_V2_SECTION_PANEL_PATH := SETTINGS_V3_CONTENT_PANEL_PATH
-const SETTINGS_V2_CONTROL_ROW_PATH := SETTINGS_V3_FIELD_PATH
-const SETTINGS_V2_MAIN_SOURCE_SIZE := SETTINGS_V3_MAIN_SOURCE_SIZE
-# Display-rects сохранены: старое (986x900, margins 72/92) давало content-inset 136px@1080;
-# новое (640x384, margins 47/39) даёт тот же 136-137px (проверено против layout.json).
-const SETTINGS_V2_MAIN_TEXTURE_MARGINS := SETTINGS_V3_MAIN_TEXTURE_MARGINS
-const SETTINGS_V2_MAIN_CONTENT_MARGINS := Vector4(47.0, 39.0, 47.0, 36.0)
-const SETTINGS_TAB_SWITCHER_FRAME_PATH := SETTINGS_V2_TAB_SWITCHER_PATH
-const SETTINGS_TAB_SWITCHER_BASE_SIZE := Vector2(616.0, 286.0)
-const SETTINGS_TAB_SWITCHER_CONTENT := Vector4(58.0, 52.0, 58.0, 48.0)
-const SETTINGS_APPLY_BUTTON_SIZE := Vector2(240.0, 72.0)
-
-# --- Settings v5 (SCRUM-805, полный редизайн с нуля) ---------------------------
-# Дизайн-система «Оружейная драконьего замка»: все координаты заданы в
-# design-px модалки 1420×1060 при базовом вьюпорте 2560×1440 и скейлятся
-# единым коэффициентом s = modal_width/1420 (пропорция модалки фиксирована).
-const SETTINGS_V5_DIR := "res://assets/sprites/ui/frames/settings_v5/"
-const SETTINGS_V5_DESIGN_SIZE := Vector2(1420.0, 1060.0)
-const SETTINGS_V5_MODAL_WIDTH_RATIO := 0.555
-const SETTINGS_V5_MODAL_FRAME_PATH := SETTINGS_V5_DIR + "ui_settings_v5_modal_frame.png"
-const SETTINGS_V5_CONTENT_INSET_PATH := SETTINGS_V5_DIR + "ui_settings_v5_content_inset.png"
-const SETTINGS_V5_MEDALLION_PATH := SETTINGS_V5_DIR + "ui_settings_v5_medallion.png"
-const SETTINGS_V5_TAB_PATHS := {
-	"active": SETTINGS_V5_DIR + "ui_settings_v5_tab_active.png",
-	"hover": SETTINGS_V5_DIR + "ui_settings_v5_tab_hover.png",
-	"inactive": SETTINGS_V5_DIR + "ui_settings_v5_tab_inactive.png",
-}
-const SETTINGS_V5_TAB_ICON_PATHS := [
-	SETTINGS_V5_DIR + "ui_settings_v5_icon_screen.png",
-	SETTINGS_V5_DIR + "ui_settings_v5_icon_sound.png",
-	SETTINGS_V5_DIR + "ui_settings_v5_icon_controls.png",
+# --- Settings v6 (SCRUM-847) + фулскрин атлас-шелл (SCRUM-879, итерация 2) ----
+# Шелл экрана — единый атлас-паттерн (_show_atlas_screen): фон/safe-зона/полая
+# рама, кнопки — глобальный кит. От v6 остался кит СТРОК (поля, бинды,
+# чекбоксы, слайдеры, медальон, иконки табов): их геометрия — design-px листа
+# 1420×1060, масштаб s = ширина контент-зоны / 1420 (кламп 0.55..1.05).
+# Арт-кит строк — OpenAI gpt-image-2 + PixelLab, состояния hover/pressed/
+# disabled — PIL-деривативы (tools/generate_settings_v6_openai.py).
+const SETTINGS_V6_DIR := "res://assets/sprites/ui/frames/settings_v6/"
+const SETTINGS_V6_DESIGN_SIZE := Vector2(1420.0, 1060.0)
+const SETTINGS_V6_MEDALLION_PATH := SETTINGS_V6_DIR + "ui_settings_v6_medallion.png"
+const SETTINGS_V6_TAB_ICON_PATHS := [
+	SETTINGS_V6_DIR + "ui_settings_v6_icon_screen.png",
+	SETTINGS_V6_DIR + "ui_settings_v6_icon_sound.png",
+	SETTINGS_V6_DIR + "ui_settings_v6_icon_controls.png",
+	SETTINGS_V6_DIR + "ui_settings_v6_icon_game.png",
 ]
-const SETTINGS_V5_BTN_PATHS := {
-	"neutral": {
-		"normal": SETTINGS_V5_DIR + "ui_settings_v5_btn_neutral_normal.png",
-		"hover": SETTINGS_V5_DIR + "ui_settings_v5_btn_neutral_hover.png",
-		"pressed": SETTINGS_V5_DIR + "ui_settings_v5_btn_neutral_pressed.png",
-		"disabled": SETTINGS_V5_DIR + "ui_settings_v5_btn_neutral_disabled.png",
-	},
-	"primary": {
-		"normal": SETTINGS_V5_DIR + "ui_settings_v5_btn_primary_normal.png",
-		"hover": SETTINGS_V5_DIR + "ui_settings_v5_btn_primary_hover.png",
-		"pressed": SETTINGS_V5_DIR + "ui_settings_v5_btn_primary_pressed.png",
-		"disabled": SETTINGS_V5_DIR + "ui_settings_v5_btn_primary_disabled.png",
-	},
+# SCRUM-879: пластины табов и кнопок-действий v6 (ui_settings_v6_tab_*/btn_*)
+# выведены — табы и действия носят глобальный кит (_make_button, как Атлас).
+const SETTINGS_V6_FIELD_PATHS := {
+	"normal": SETTINGS_V6_DIR + "ui_settings_v6_field_normal.png",
+	"hover": SETTINGS_V6_DIR + "ui_settings_v6_field_hover.png",
+	"pressed": SETTINGS_V6_DIR + "ui_settings_v6_field_pressed.png",
 }
-const SETTINGS_V5_FIELD_PATHS := {
-	"normal": SETTINGS_V5_DIR + "ui_settings_v5_field_normal.png",
-	"hover": SETTINGS_V5_DIR + "ui_settings_v5_field_hover.png",
-	"pressed": SETTINGS_V5_DIR + "ui_settings_v5_field_pressed.png",
-}
-const SETTINGS_V5_ARROW_PATH := SETTINGS_V5_DIR + "ui_settings_v5_arrow_socket.png"
-const SETTINGS_V5_CHECKBOX_ON_PATH := SETTINGS_V5_DIR + "ui_settings_v5_checkbox_on.png"
-const SETTINGS_V5_CHECKBOX_OFF_PATH := SETTINGS_V5_DIR + "ui_settings_v5_checkbox_off.png"
-const SETTINGS_V5_SLIDER_TRACK_PATH := SETTINGS_V5_DIR + "ui_settings_v5_slider_track.png"
-const SETTINGS_V5_SLIDER_FILL_PATH := SETTINGS_V5_DIR + "ui_settings_v5_slider_fill.png"
-const SETTINGS_V5_SLIDER_GEM_PATH := SETTINGS_V5_DIR + "ui_settings_v5_slider_gem.png"
-const SETTINGS_V5_VALUE_CHIP_PATH := SETTINGS_V5_DIR + "ui_settings_v5_value_chip.png"
+const SETTINGS_V6_ARROW_PATH := SETTINGS_V6_DIR + "ui_settings_v6_arrow_socket.png"
+const SETTINGS_V6_CHECKBOX_ON_PATH := SETTINGS_V6_DIR + "ui_settings_v6_checkbox_on.png"
+const SETTINGS_V6_CHECKBOX_OFF_PATH := SETTINGS_V6_DIR + "ui_settings_v6_checkbox_off.png"
+const SETTINGS_V6_SLIDER_TRACK_PATH := SETTINGS_V6_DIR + "ui_settings_v6_slider_track.png"
+const SETTINGS_V6_SLIDER_FILL_PATH := SETTINGS_V6_DIR + "ui_settings_v6_slider_fill.png"
+const SETTINGS_V6_SLIDER_GEM_PATH := SETTINGS_V6_DIR + "ui_settings_v6_slider_gem.png"
+const SETTINGS_V6_VALUE_CHIP_PATH := SETTINGS_V6_DIR + "ui_settings_v6_value_chip.png"
 # Геометрия (design-px @1420×1060): title/табы/панель/низ.
-const SETTINGS_V5_TITLE_RECT := Rect2(80.0, 56.0, 1260.0, 62.0)
-const SETTINGS_V5_TAB_SIZE := Vector2(340.0, 84.0)
-const SETTINGS_V5_TAB_GAP := 20.0
-const SETTINGS_V5_TAB_TOP := 150.0
-const SETTINGS_V5_CONTENT_RECT := Rect2(72.0, 258.0, 1276.0, 630.0)
-const SETTINGS_V5_CONTENT_PAD := Vector4(44.0, 34.0, 44.0, 30.0)
-const SETTINGS_V5_DIVIDER_Y := 910.0
-const SETTINGS_V5_ACTION_SIZE := Vector2(320.0, 80.0)
-const SETTINGS_V5_ACTION_GAP := 30.0
-const SETTINGS_V5_ACTION_TOP := 936.0
-const SETTINGS_V5_LABEL_COL := Vector2(380.0, 56.0)
-const SETTINGS_V5_CONTROL_SIZE := Vector2(560.0, 56.0)
-# Палитра v5.
-const SETTINGS_V5_TEXT := Color(0.949, 0.902, 0.761, 1.0)
-const SETTINGS_V5_TEXT_BRIGHT := Color(1.0, 0.96, 0.84, 1.0)
-const SETTINGS_V5_GOLD := Color(0.792, 0.643, 0.180, 1.0)
-const SETTINGS_V5_AMBER := Color(0.96, 0.78, 0.40, 1.0)
-const SETTINGS_V5_MUTED := Color(0.72, 0.68, 0.58, 1.0)
-const SETTINGS_V5_DISABLED := Color(0.48, 0.45, 0.40, 1.0)
-const SETTINGS_V5_BRONZE_LINE := Color(0.54, 0.42, 0.18, 0.55)
+const SETTINGS_V6_LABEL_COL := Vector2(380.0, 56.0)
+const SETTINGS_V6_CONTROL_SIZE := Vector2(560.0, 56.0)
+# Палитра v6 — выведена из экрана Атласа (meta40): текст-пергамент, атласное
+# золото титулов #F5E6AE, тёплое золото заголовков #C7A870, ценник-золото
+# #F0CC75, голубой хинт #B8D6FF, латунь #856A3D, чип-фон #150F0D.
+const SETTINGS_V6_TEXT := Color(0.93, 0.88, 0.72, 1.0)
+const SETTINGS_V6_TEXT_BRIGHT := Color(0.96, 0.90, 0.68, 1.0)
+const SETTINGS_V6_GOLD := Color(0.78, 0.66, 0.44, 1.0)
+const SETTINGS_V6_AMBER := Color(0.94, 0.80, 0.46, 1.0)
+const SETTINGS_V6_HINT_BLUE := Color(0.72, 0.84, 1.0, 0.95)
+const SETTINGS_V6_MUTED := Color(0.72, 0.68, 0.58, 1.0)
+const SETTINGS_V6_DISABLED := Color(0.48, 0.45, 0.40, 1.0)
+const SETTINGS_V6_BRONZE_LINE := Color(0.52, 0.41, 0.24, 0.55)
+const SETTINGS_V6_POPUP_BG := Color(0.085, 0.070, 0.055, 0.98)
 const COMBAT_HUD_FRAME_DIR := "res://assets/sprites/ui/frames/combat_hud/"
 const COMBAT_HUD_FILL_DIR := "res://assets/sprites/ui/hud/combat_hud/"
 const COMBAT_HUD_RESOURCE_PANEL_PATH := MINIMAL_HUD_STRIP_PATH
@@ -289,25 +224,16 @@ const COMBAT_HUD_LEVEL_UP_MARGINS := Vector4(8.0, 8.0, 8.0, 8.0)
 const COMBAT_HUD_LEVEL_UP_CONTENT := Vector4(6.0, 6.0, 6.0, 6.0)
 
 # === SCRUM-487: координатная спека @2560×1440 — блок Боевые ===
-# Источник правды для рисующего скрипта (рисует рамки/панели ровно в эти размеры) и
-# документ-спека раскладки. Значения вычислены из фактической раскладки билдеров при
-# базе 2560×1440 (window/stretch=canvas_items, aspect=keep → рантайм всегда лэйаутит в
-# этой базе, окно скейлится автоматически). Стиль и инварианты — как у блока Меню (MM_*/
-# QC_*/PM_* в SCRUM-484): панели с рамкой держат пустую safe-area под контент.
+# Значения вычислены из фактической раскладки билдеров при базе 2560×1440
+# (window/stretch=canvas_items, aspect=keep → рантайм всегда лэйаутит в этой базе,
+# окно скейлится автоматически). Панели с рамкой держат пустую safe-area под контент.
 # Шаблонные размеры контейнер-зависимых слотов (карточки/кнопки/ряды) заданы как
 # Rect2(0, 0, w, h) — позиция считается контейнером в рантайме (центрирование).
+# Координатные спеки экранов, ушедших на атлас-стиль (SCRUM-879..888), сняты.
 const COMBAT_BLOCK_DESIGN_BASE_2K := Vector2(2560.0, 1440.0)
 
-# #5 Бой / HUD — generated 2K frame-kit slots. Keep these in sync with
-# tools/build_ui_2k_frame_kit.py; SCRUM-671 runtime placement uses the SCRUM666_*
-# geometry below because SCRUM-666 is a full-screen mockup/source package.
-const CHUD_RESOURCE_PANEL_2K := Rect2(18, 18, 820, 84)
-const CHUD_TIMER_2K := Rect2(1136, 14, 288, 96)
-const CHUD_ASCENSION_BADGE_2K := Rect2(1432, 18, 64, 64)
-const CHUD_ARTIFACT_ROW_2K := Rect2(2140, 16, 402, 104)
-const CHUD_LEVELUP_BUTTON_2K := Rect2(2436, 1316, 96, 117)
-const CHUD_LEVELUP_BADGE_2K := Rect2(2498, 1306, 28, 28)
-const CHUD_DAMAGE_FLASH_2K := Rect2(0, 0, 2560, 1440)       # DamageFlashOverlay (full-rect)
+# #5 Бой / HUD — SCRUM-671 runtime placement uses the SCRUM666_* geometry below
+# because SCRUM-666 is a full-screen mockup/source package.
 
 # SCRUM-671 / SCRUM-666 clean essential-only runtime HUD geometry.
 # SCRUM-778 keeps the same accepted HUD content, but compacts the runtime footprint
@@ -344,6 +270,10 @@ const HUD_V2_MONEY_LABEL_2K := Rect2(570, 88, 100, 34)
 const HUD_V2_TIMER_2K := Rect2(1148, 40, 264, 92)
 const HUD_V2_TIMER_ZONE_2K := Rect2(1190, 58, 180, 56)
 const HUD_V2_TIMER_ICON_2K := Rect2(1194, 70, 32, 32)
+# SCRUM-874: HUD-боссбар цели узла (акт-босс/элитка) — центр верха, ниже
+# кластера ресурсов (36..158) и таймера (40..132), чтобы не пересекаться с ними.
+const HUD_V2_BOSS_NAME_2K := Rect2(880, 168, 800, 40)
+const HUD_V2_BOSS_BAR_2K := Rect2(880, 212, 800, 46)
 # Ряд эмблем возвышения: правый край/верх/размер пипа/зазор @2K (ширина = от уровня).
 const HUD_V2_ASCENSION_RIGHT_2K := 2524.0
 const HUD_V2_ASCENSION_TOP_2K := 52.0
@@ -351,138 +281,105 @@ const HUD_V2_ASCENSION_PIP_2K := 44.0
 const HUD_V2_ASCENSION_GAP_2K := 8.0
 
 # #6 Событие — _show_event_screen (economy-панель "event"; safe = панель − content 58/72/58/66)
-const EVT_PANEL_2K := Rect2(420, 330, 1720, 780)
-const EVT_SAFE_2K := Rect2(478, 402, 1604, 642)
-const EVT_CARD_2K := Rect2(0, 0, 480, 340)                  # EventChoiceButton{0..2} (3 в ряд, gap 48)
-const EVT_BACK_BUTTON_2K := Rect2(0, 0, 380, 54)            # EventBackButton
 
 # #14 Улучшение — _show_upgrade_screen (economy-панель "upgrade"; target 1720×730, центр)
-const UPGRADE_PANEL_2K := Rect2(420, 355, 1720, 730)        # MenuPanel_upgrade (centered economy panel)
-const UPGRADE_SAFE_2K := Rect2(478, 427, 1604, 592)         # safe = панель − content 58/72/58/66
 
 # #11 Повышение уровня — _show_level_up_screen / _level_up_layout_metrics
+# SCRUM-892 → SCRUM-985: титул/divider и локальные сокеты Атласа сохранены,
+# но самая большая внешняя frame_border-рама и видимый борт общей панели сняты.
+# Arcane-lab фон открыт светлее; только карточки остаются плотными локальными
+# поверхностями. Иконки наград живут в строгом inner-safe rect сокета; иконки/
+# портрета класса на экране НЕТ. «Позже» — глобальный кит (LevelUpLaterButton →
+# later_260x72).
+# Дизайн-база 2K 1720×1040; контент-зона панели = фактические margins чипа
+# (pad 20 → 28/20 @2K); карточки — контентной высоты (стек сокет→титул→
+# описание→дельты без пустых зон), ряд центрируется в зоне между шапкой и «Позже».
 const LU_PANEL_2K := Rect2(420, 205, 1720, 1040)
-const LU_SAFE_2K := Rect2(512, 315, 1536, 835)
-const LU_CARD_2K := Rect2(0, 0, 470, 560)                   # LevelUpRewardButton{0..2} (3 в ряд, gap 0)
-const LU_LATER_BUTTON_2K := Rect2(0, 0, 300, 82)            # LevelUpLaterButton
-const LU_PANEL_SOURCE_SIZE := Vector2(1720.0, 1040.0)
-const LU_PANEL_CONTENT_2K := Vector4(92.0, 110.0, 92.0, 96.0)
-const LU_PANEL_CONTENT_SIZE_2K := Vector2(1536.0, 834.0)
-const LU_HERO_HEADER_RECT := Rect2(98.0, 20.0, 1290.0, 140.0)
-const LU_HERO_FRAME_RECT := Rect2(98.0, 20.0, 140.0, 140.0)
-const LU_HERO_PORTRAIT_RECT := Rect2(118.0, 40.0, 100.0, 100.0)
-const LU_TITLE_RECT := Rect2(292.0, 30.0, 880.0, 60.0)
-const LU_SUBTITLE_RECT := Rect2(292.0, 100.0, 920.0, 44.0)
-const LU_REWARDS_ROW_RECT := Rect2(63.0, 175.0, 1410.0, 560.0)
-const LU_LATER_BUTTON_RECT := Rect2(618.0, 736.0, 300.0, 76.0)
-const LU_CARD_CONTENT_RECT := Rect2(58.0, 70.0, 354.0, 426.0)
-const LU_CARD_ICON_RECT := Rect2(97.0, 21.0, 160.0, 160.0)
-const LU_CARD_TITLE_RECT := Rect2(12.0, 201.0, 330.0, 46.0)
-const LU_CARD_DESCRIPTION_RECT := Rect2(12.0, 265.0, 330.0, 92.0)
-const LU_CARD_EFFECT_RECT := Rect2(12.0, 362.0, 330.0, 64.0)
+const LU_PANEL_CHIP_PAD_2K := 20.0
+const LU_PANEL_BACKGROUND_ALPHA := 0.20
+const LU_BACKGROUND_SHADE_ALPHA := 0.12
+const LU_DIM_ALPHA := 0.24
+const LU_BACKGROUND_BRIGHTEN := Color(1.15, 1.12, 1.18, 1.0)
+const LU_CARD_2K := Rect2(0, 0, 470, 560)                   # ширина карточки @2K (высота — от контента)
+const LU_CARD_GAP_2K := 24.0
+const LU_CARD_CHIP_PAD_2K := 12.0
+# Шапка без иконки/портрета класса (директива пользователя 2026-07-08):
+# симметричный золотой титул на всю ширину, под ним церемониальная линия
+# divider_ornament (800×56, ширина ~46% панели, высота 24-28, KEEP_ASPECT_
+# CENTERED + NEAREST), под орнаментом сабтитул.
+const LU_HERO_HEADER_RECT := Rect2(40.0, 8.0, 1584.0, 160.0)
+const LU_TITLE_RECT := Rect2(40.0, 16.0, 1584.0, 64.0)
+const LU_DIVIDER_TOP_2K := 86.0
+const LU_DIVIDER_HEIGHT_2K := 28.0
+const LU_DIVIDER_PANEL_WIDTH_RATIO := 0.46
+const LU_SUBTITLE_RECT := Rect2(40.0, 120.0, 1584.0, 46.0)
+const LU_REWARDS_ROW_TOP_2K := 180.0
+const LU_LATER_BUTTON_WIDTH := 260.0
+# Стек карточки (2K-номиналы, скейл ×scale): сокет 128 (socket_notable/keystone
+# натив 128/168 в квадратном боксе, KEEP_ASPECT_CENTERED), иконка награды 72 по
+# центру сокета, звезда советника 32 в правом-верхнем углу сокета, межблочный
+# зазор 16 (внутренние паддинги 14-18 на целевых вьюпортах).
+const LU_CARD_SOCKET_BOX_2K := 128.0
+const LU_CARD_SOCKET_ICON_RATIO := 0.5625
+const LU_CARD_STAR_2K := 32.0
+const LU_CARD_STACK_GAP_2K := 16.0
+const LU_CARD_BADGE_WIDTH_2K := 320.0
+# Бейджи советника: плашка _atlas_translucent_style(0.7, 6) + подпись цветом
+# типа (PNG-риббоны lu682 сняты; тёмная плашка → светлые акцентные цвета).
+const LU_BADGE_META := {
+	"dps": {"text": "ЛУЧШИЙ УРОН", "text_color": Color(1.0, 0.76, 0.34, 1.0)},
+	"surv": {"text": "ВЫЖИВАНИЕ", "text_color": Color(0.64, 0.94, 0.66, 1.0)},
+	"both": {"text": "ЛУЧШИЙ ВЫБОР", "text_color": Color(0.98, 0.87, 0.42, 1.0)},
+}
 
-# #12 Награда обычная — _show_reward_screen (_create_menu_box, панель 1120×660)
-const RWD_PANEL_2K := Rect2(720, 390, 1120, 660)
-const RWD_SAFE_2K := Rect2(778, 462, 1004, 522)
-const RWD_CARD_2K := Rect2(0, 0, 300, 430)                  # BattleRewardButton{0..2} = REWARD_CARD_SIZE (gap 18)
-
-# #13 Награда элитки — _show_elite_artifact_reward (панель 1140×640)
-const ELR_PANEL_2K := Rect2(710, 400, 1140, 640)
-const ELR_SAFE_2K := Rect2(768, 472, 1024, 502)
-const ELR_CARD_2K := Rect2(0, 0, 320, 430)                  # EliteArtifactRewardButton{0..2} = REWARD_ELITE_CARD_SIZE (gap 22)
+# #12/#13 Награды (обычная и элитки) — SCRUM-883: панели и карточки — чипы Атласа,
+# геометрия задаётся _create_menu_box/REWARD_*_CARD_SIZE (спек-рамки @2K сняты).
 
 # #28 Тост повышения — _show_level_up_toast (транзиентный full-rect burst на позиции игрока/центра)
-const LUT_OVERLAY_2K := Rect2(0, 0, 2560, 1440)
 
 # #29 Баннер заголовка боя — _show_combat_title_banner (center-top; ширина была 1280 = 720p-баг → 2K)
 const CTB_BIG_2K := Rect2(100, 120, 2360, 90)              # появление босса (big)
 const CTB_SMALL_2K := Rect2(100, 92, 2360, 56)             # появление элитки
 
-# #30 Баннер победы — _show_victory_banner (dim + "ПОБЕДА" 96pt по центру)
-const VBN_DIM_2K := Rect2(0, 0, 2560, 1440)
-const VBN_FRAME_2K := Rect2(560, 600, 1440, 240)
-const VBN_SAFE_2K := Rect2(672, 652, 1216, 136)
+# #30 Баннер победы — _show_victory_banner: дим + компактный чип Атласа с золотым
+# титулом «ПОБЕДА», центрированный по обеим осям любого viewport (SCRUM-986;
+# ранее абсолютный 2K top=608 обрезал нижние 112px на 1280x720).
+const VICTORY_BANNER_CHIP_SIZE := Vector2(960.0, 224.0)
+const VICTORY_BANNER_CHIP_PAD := 26.0
 # === конец спеки SCRUM-487 ===
 
 # === SCRUM-488: координатная спека @2560×1440 — блок Прогрессия/Экономика ===
 # Те же правила и стиль, что у блока Меню (SCRUM-484) и Боевые (SCRUM-487): значения
 # вычислены из фактической раскладки билдеров при базе 2560×1440 и сверены с рантайм-дампом
 # верификатора (build/qa/ui_no_overlap_matrix.md, секции *_2560×1440). Контейнер-зависимые
-# слоты-шаблоны заданы как Rect2(0, 0, w, h). Кодекс/Настройки — путь (б) из ТЗ: рантайм-
-# масштабирование V2 НЕ трогаем (оно уже uniform-заполняет вьюпорт: на 2K даёт ровно эти
-# rect — codex = CODEX_V2_* × 4/3), здесь — документирующий 2K-вход для рисующего скрипта.
+# слоты-шаблоны заданы как Rect2(0, 0, w, h). Кодекс с SCRUM-879 — контейнерный
+# атлас-шелл (см. #15 ниже), собственного координатного движка больше не имеет.
 
 # #8 Магазин — _show_shop_screen (backdrop-лавка; контент в центральной зоне «стены»)
-const SHOP_TITLE_2K := Rect2(900, 104, 760, 86)            # ShopHeader (заголовок+подзаголовок)
-const SHOP_WALL_2K := Rect2(512, 547, 1536, 533)           # ShopParchmentWall (anchor-фракции 0.20/0.38/0.80/0.75)
-const SHOP_SAFE_2K := Rect2(512, 547, 1536, 533)           # пустая зона лавки под слоты
-const SHOP_SLOT_2K := Rect2(0, 0, 148, 148)                # ShopItemButton{0..3} (anchors 0.30/0.70 × 0.18/0.84 внутри стены)
-const SHOP_BACK_2K := Rect2(1100, 1314, 360, 104)          # ShopLeaveButton (anchor bottom-center)
 
 # #9 Докача — _show_attribute_shop (панель full-height; скролл опций + фикс-низ)
-const ATTR_PANEL_2K := Rect2(730, 28, 1124, 1384)
-const ATTR_SAFE_2K := Rect2(788, 100, 1008, 1246)          # панель − content 58/72/58/66
-const ATTR_OFFER_2K := Rect2(0, 0, 480, 340)               # AttributeOffer_* = ECONOMY_CHOICE_TARGET_1440 (грид 2 кол)
-const ATTR_ACTION_BUTTON_2K := Rect2(0, 0, 420, 62)        # AttributeReroll/Skip (фикс ВНЕ скролла снизу)
 
 # #10 Дерево навыков (легаси-спека v3; экран заменён Атласом героев — _show_atlas_screen, SCRUM-827)
-const SKILL_MAIN_PANEL_2K := Rect2(48, 26, 2464, 1388)
-const SKILL_SAFE_2K := Rect2(136, 118, 2288, 1214)         # layout-VBox (header→hint→body)
-const SKILL_POINTS_BADGE_2K := Rect2(0, 0, 215, 96)        # SkillTreePointsBadge (ширина растёт под текст очков)
-const SKILL_BACK_2K := Rect2(0, 0, 260, 104)               # SkillTreeBackButton
-const SKILL_CLASS_PANEL_2K := Rect2(136, 262, 330, 1070)   # SkillTreeClassPanel (левая колонка)
-const SKILL_BRANCHES_2K := Rect2(484, 262, 1932, 1276)     # SkillTreeBranches (ряд веток; @2K без гориз-скролла)
-const SKILL_BRANCH_2K := Rect2(0, 0, 164, 430)             # SkillTreeBranchPanel_* (шаблон ветки, separation 14)
 
-# #15 Кодекс — _show_codex_screen / _show_codex_section (3 колонки; V2-база 1920 × 4/3 → 2K)
-const CODEX_OUTER_FRAME_2K := Rect2(32, 27, 2496, 1387)
-const CODEX_HEADER_TITLE_2K := Rect2(149, 99, 1493, 85)
-const CODEX_BACK_BUTTON_2K := Rect2(2245, 80, 168, 128)
-const CODEX_NAV_PANEL_2K := Rect2(96, 227, 405, 1163)      # колонка навигации (панель)
-const CODEX_NAV_SAFE_2K := Rect2(117, 264, 344, 960)
-const CODEX_LIST_PANEL_2K := Rect2(517, 227, 1113, 1163)   # колонка списка (CodexContent)
-const CODEX_DETAIL_PANEL_2K := Rect2(1656, 227, 808, 1163) # колонка детали (CodexDetailPanel)
-const CODEX_PORTRAIT_SAFE_2K := Rect2(1861, 301, 427, 400)
-const CODEX_CHIP_ROW_SAFE_2K := Rect2(1731, 731, 648, 107)
-const CODEX_ENTRY_CARD_2K := Rect2(0, 0, 963, 147)
-const CODEX_TAB_BUTTON_2K := Rect2(0, 0, 333, 115)
+# #15 Кодекс — _show_codex_screen / _show_codex_section: SCRUM-879, контейнерный
+# шелл в атлас-стиле (фон COVERED → safe-зона рамы → «табы | объект-сцена | досье»
+# → полая рама поверх); панели — _atlas_chip_style, ряды — _unified_apply_row_theme.
 
-# #16 Настройки — _show_settings_menu (V2-модалка, scaled fill → 2K)
-const SETTINGS_PANEL_2K := Rect2(256, 104, 2048, 1232)
-const SETTINGS_SAFE_2K := Rect2(430, 229, 1700, 1062)
-const SETTINGS_TITLE_2K := Rect2(448, 229, 1664, 64)
-const SETTINGS_TAB_SWITCHER_2K := Rect2(730, 316, 1100, 220)
-const SETTINGS_CONTENT_PANEL_2K := Rect2(430, 570, 1700, 610)
-const SETTINGS_CONTROL_ROW_2K := Rect2(658, 602, 1438, 62) # строка контрола (разрешение/режим окна; шаблон h)
-const SETTINGS_BACK_2K := Rect2(1140, 1204, 280, 87)
+# #16 Настройки — _show_settings_menu (SCRUM-879: фулскрин атлас-шелл, строки v6)
 # === конец спеки SCRUM-488 ===
 
 # #17 Что нового / патч-ноуты — _show_patch_notes_screen (SCRUM-576). Полноэкранная панель
 # (как skill-tree main), хедер «Что нового» + «Назад в меню» сверху, скролл версий/буллетов
 # внутри safe-area. Текст длинных версий уходит в вертикальный скролл (рамка не растягивается).
-const PN_PANEL_2K := Rect2(48, 26, 2464, 1388)             # PatchNotesPanel (фрейм)
-const PN_SAFE_2K := Rect2(136, 118, 2288, 1214)            # layout-VBox (header → scroll), панель − content 58/72/58/66 (масштаб)
-const PN_HEADER_2K := Rect2(136, 118, 2288, 104)           # хедер (title EXPAND + back)
-const PN_TITLE_2K := Rect2(136, 118, 1900, 104)            # «Что нового» (38px)
-const PN_BACK_2K := Rect2(2164, 118, 260, 104)             # PatchNotesBackButton
-const PN_SCROLL_2K := Rect2(136, 234, 2288, 1098)          # скролл версий/буллетов (под хедером)
 
 const ECONOMY_FRAME_DIR := "res://assets/sprites/ui/frames/economy/"
 const ECONOMY_PANEL_PATH := MINIMAL_PANEL_PATH
-const ECONOMY_CHOICE_CARD_PATH := MINIMAL_CARD_PATH
-const ECONOMY_CHOICE_CARD_HOVER_PATH := MINIMAL_CARD_PATH
 const ECONOMY_DRAGON_PANEL_PATH := ECONOMY_FRAME_DIR + "ui_frame_economy_dragon_panel.png"
 const ECONOMY_PRICE_BADGE_PATH := MINIMAL_FIELD_PATH
 const ECONOMY_TOOLTIP_PATH := MINIMAL_TOOLTIP_PATH
 const ECONOMY_PANEL_SOURCE_SIZE := Vector2(782.0, 716.0)
 const ECONOMY_PANEL_TEXTURE_MARGINS := Vector4(38.0, 52.0, 38.0, 48.0)
 const ECONOMY_PANEL_CONTENT := Vector4(58.0, 72.0, 58.0, 66.0)
-const ECONOMY_CHOICE_SOURCE_SIZE := Vector2(426.0, 486.0)
-const ECONOMY_CHOICE_TEXTURE_MARGINS := Vector4(32.0, 42.0, 32.0, 40.0)
-const ECONOMY_CHOICE_HOVER_TEXTURE_MARGINS := Vector4(32.0, 42.0, 32.0, 40.0)
-const ECONOMY_CHOICE_CONTENT := Vector4(46.0, 58.0, 46.0, 54.0)
-const ECONOMY_CHOICE_HOVER_CONTENT := Vector4(46.0, 58.0, 46.0, 54.0)
-const ECONOMY_CHOICE_SAFE_RECT := Rect2(46.0, 58.0, 334.0, 374.0)
 const ECONOMY_CHOICE_TARGET_720 := Vector2(360.0, 240.0)
 const ECONOMY_CHOICE_TARGET_1080 := Vector2(420.0, 300.0)
 const ECONOMY_CHOICE_TARGET_1440 := Vector2(480.0, 340.0)
@@ -549,6 +446,7 @@ const ATLAS_FOG_DISSOLVE_SEC := 0.6
 const ATLAS_ROLE_LABELS := {
 	"core": "ЯДРО СОЗВЕЗДИЯ", "minor": "ЗВЕЗДА-АТРИБУТ", "technique": "ЗВЕЗДА-ТЕХНИКА",
 	"notable": "ПРИМЕЧАТЕЛЬНАЯ ЗВЕЗДА", "keystone": "КЛЮЧЕВАЯ ЗВЕЗДА", "hidden": "СКРЫТАЯ ЗВЕЗДА",
+	"weapon_boon": "УСИЛЕНИЕ ОРУЖИЯ", "weapon_final": "ФИНАЛ ОРУЖИЯ",
 }
 # Родительный падеж названий классов для шапки «Эмблемы …: N» (мокап).
 const ATLAS_CLASS_GENITIVE := {
@@ -559,155 +457,331 @@ const ATLAS_CLASS_GENITIVE := {
 	"ranger": "Рейнджера", "doctor": "Доктора", "chemist": "Химика",
 	"knight": "Рыцаря", "druid": "Друида",
 }
-const CODEX_FRAME_DIR := "res://assets/sprites/ui/frames/codex/"
-const CODEX_MAIN_PANEL_PATH := MINIMAL_MODAL_PATH
-const CODEX_SECTION_PANEL_PATH := MINIMAL_PANEL_PATH
-const CODEX_ENTRY_CARD_PATH := MINIMAL_CARD_PATH
-const CODEX_ENTRY_CARD_HOVER_PATH := MINIMAL_CARD_PATH
-const CODEX_PORTRAIT_SLOT_PATH := MINIMAL_FIELD_PATH
-const CODEX_TOOLTIP_PATH := MINIMAL_TOOLTIP_PATH
-const CODEX_TAB_TEXTURES := {
-	"normal": CODEX_FRAME_DIR + "ui_frame_codex_tab.png",
-	"hover": CODEX_FRAME_DIR + "ui_frame_codex_tab_hover.png",
-	"pressed": CODEX_FRAME_DIR + "ui_frame_codex_tab_pressed.png",
-	"disabled": CODEX_FRAME_DIR + "ui_frame_codex_tab_disabled.png",
+# SCRUM-879: единый атлас-стиль остальных экранов (выбор героя / кодекс /
+# релиз-ноты / настройки). Фоны 2560×1440 — OpenAI-пайплайн SCRUM-832, акценты —
+# PixelLab. Слои повторяют экран «Атлас героев»: тихий фон COVERED, контент в
+# safe-зоне, полая рама frame_border поверх, панели — _atlas_chip_style, кнопки —
+# глобальный кит (_make_button/_set_action_button_size).
+const ATLAS_STYLE_DIR := "res://assets/sprites/ui/atlas_style/"
+const ATLAS_STYLE_BG_PATHS := {
+	"hero_select": ATLAS_STYLE_DIR + "bg_hero_hall.png",
+	"codex": ATLAS_STYLE_DIR + "bg_codex_archive.png",
+	"patch_notes": ATLAS_STYLE_DIR + "bg_chronicle.png",
+	"settings": ATLAS_STYLE_DIR + "bg_sanctum.png",
 }
-const CODEX_MAIN_PANEL_MARGINS := Vector4(51.0, 70.0, 51.0, 63.0)
-const CODEX_MAIN_PANEL_CONTENT := Vector4(74.0, 94.0, 74.0, 86.0)
-const CODEX_SECTION_PANEL_MARGINS := Vector4(41.0, 56.0, 41.0, 50.0)
-const CODEX_SECTION_PANEL_CONTENT := Vector4(59.0, 75.0, 59.0, 68.0)
-const CODEX_ENTRY_CARD_MARGINS := Vector4(34.0, 45.0, 34.0, 44.0)
-const CODEX_ENTRY_CARD_CONTENT := Vector4(45.0, 58.0, 45.0, 56.0)
-const CODEX_PORTRAIT_SLOT_MARGINS := Vector4(44.0, 39.0, 44.0, 37.0)
-const CODEX_PORTRAIT_SLOT_CONTENT := Vector4(59.0, 53.0, 59.0, 50.0)
-const CODEX_TOOLTIP_MARGINS := Vector4(49.0, 31.0, 49.0, 29.0)
-const CODEX_TOOLTIP_CONTENT := Vector4(68.0, 46.0, 68.0, 41.0)
-const CODEX_TAB_MARGINS := Vector4(42.0, 20.0, 42.0, 20.0)
-const CODEX_TAB_CONTENT := Vector4(24.0, 14.0, 24.0, 14.0)
-const CODEX_V2_BASE_SIZE := Vector2(1920.0, 1080.0)
-# SCRUM-684: поля вокруг всей кодекс-композиции, чтобы рамка не клипалась краем экрана.
-const CODEX_V2_SCREEN_INSET := Vector2.ZERO
-# SCRUM-725: layout_map.md geometry from the accepted Codex redesign mockup.
-# The composition scales uniformly from 1920x1080 and centers in letterbox space;
-# the backdrop cover-crops separately, so no UI frame is one-axis stretched.
-const CODEX_V2_OUTER_FRAME_RECT := Rect2(24.0, 24.0, 1872.0, 1032.0)
-const CODEX_V2_HEADER_TITLE_SAFE := Rect2(190.0, 32.0, 557.0, 130.0)
-const CODEX_V2_HEADER_SUBTITLE_SAFE := Rect2(720.0, 54.0, 520.0, 90.0)
-const CODEX_V2_BACK_BUTTON_SAFE := Rect2(24.0, 24.0, 96.0, 120.0)
-const CODEX_V2_NAV_PANEL_RECT := Rect2(24.0, 192.0, 384.0, 864.0)
-const CODEX_V2_NAV_SAFE := Rect2(64.0, 284.0, 304.0, 724.0)
-const CODEX_V2_LIST_PANEL_RECT := Rect2(426.0, 192.0, 517.0, 864.0)
-const CODEX_V2_DETAIL_PANEL_RECT := Rect2(964.0, 192.0, 932.0, 864.0)
-const CODEX_V2_PORTRAIT_SAFE := Rect2(1070.0, 274.0, 720.0, 300.0)
-const CODEX_V2_CHIP_ROW_SAFE := Rect2(1048.0, 602.0, 760.0, 72.0)
-const CODEX_V2_ENTRY_CARD_SOURCE_SIZE := Vector2(430.0, 150.0)
-const CODEX_V2_ENTRY_CARD_CONTENT := Vector4(28.0, 36.0, 28.0, 28.0)
-const CODEX_V2_ENTRY_PORTRAIT_SIZE := Vector2(68.0, 68.0)
-const CODEX_V2_CATEGORY_BUTTON_SIZE := Vector2(304.0, 102.0)
-const CODEX_V2_MAIN_PANEL_MARGINS := Vector4(48.0, 48.0, 48.0, 48.0)
-const CODEX_V2_MAIN_PANEL_CONTENT := Vector4(72.0, 72.0, 72.0, 72.0)
-const CODEX_V2_NAV_PANEL_CONTENT := Vector4(56.0, 72.0, 56.0, 64.0)
-const CODEX_V2_LIST_PANEL_CONTENT := Vector4(64.0, 72.0, 64.0, 64.0)
-const CODEX_V2_DETAIL_PANEL_CONTENT := Vector4(64.0, 62.0, 64.0, 58.0)
-const CODEX_V2_TOOLTIP_CONTENT := Vector4(20.0, 28.0, 18.0, 34.0)
-# SCRUM-684: Dark Fantasy pixel-art кодекс (Pixel Lab). Рамки нарисованы в
-# малом нативном размере, поэтому НЕ масштабируем texture-margins по display
-# (это бы пересекало 9-slice). Фиксированные margins измерены прямо в исходных
-# PNG: ширина орнамента в пикселях источника. content = texture + воздух, чтобы
-# текст/иконки никогда не садились на орнаментную рамку (frame safe-area rule).
-const CODEX_PL_FRAME_DIR := "res://assets/sprites/ui/frames/codex_pl/"
-# fit/ — копии рамок, обрезанные по непрозрачному bbox (орнамент заполняет холст,
-# без прозрачных полей), чтобы 9-slice и content-margins ложились корректно.
-const CODEX_PL_FIT_DIR := CODEX_PL_FRAME_DIR + "fit/"
-const CODEX_PL_MAIN_PATH := CODEX_PL_FIT_DIR + "codex_pl_main_shell.png"
-const CODEX_PL_NAV_PATH := CODEX_PL_FIT_DIR + "codex_pl_nav_panel.png"
-const CODEX_PL_LIST_PATH := CODEX_PL_FIT_DIR + "codex_pl_grid_panel.png"
-const CODEX_PL_DETAIL_PATH := CODEX_PL_FIT_DIR + "codex_pl_detail_panel.png"
-const CODEX_PL_ENTRY_CARD_PATH := CODEX_PL_FIT_DIR + "codex_pl_entry_card.png"
-const CODEX_PL_CATEGORY_BUTTON_PATH := CODEX_PL_FIT_DIR + "codex_pl_category_button.png"
-const CODEX_PL_BACK_BUTTON_PATH := CODEX_PL_FIT_DIR + "codex_pl_back_button.png"
-const CODEX_PL_BACKDROP_PATH := CODEX_PL_FRAME_DIR + "codex_pl_backdrop.png"
-# texture-margins (9-slice corner zones), измерены в обрезанных fit-PNG
-const CODEX_PL_MAIN_TEX := Vector4(48.0, 48.0, 48.0, 48.0)
-const CODEX_PL_NAV_TEX := Vector4(48.0, 48.0, 48.0, 48.0)
-const CODEX_PL_LIST_TEX := Vector4(48.0, 48.0, 48.0, 48.0)
-const CODEX_PL_DETAIL_TEX := Vector4(48.0, 48.0, 48.0, 48.0)
-const CODEX_PL_ENTRY_CARD_TEX := Vector4(20.0, 20.0, 20.0, 20.0)
-const CODEX_PL_CATEGORY_BUTTON_TEX := Vector4(24.0, 24.0, 24.0, 24.0)
-const CODEX_PL_BACK_BUTTON_TEX := Vector4(20.0, 20.0, 20.0, 20.0)
-# content-margins (display px) — куда ложится контент, с воздухом от орнамента
-const CODEX_PL_MAIN_CONTENT := Vector4(72.0, 72.0, 72.0, 72.0)
-const CODEX_PL_NAV_CONTENT := Vector4(64.0, 72.0, 64.0, 64.0)
-const CODEX_PL_LIST_CONTENT := Vector4(64.0, 72.0, 64.0, 64.0)
-const CODEX_PL_DETAIL_CONTENT := Vector4(64.0, 62.0, 64.0, 58.0)
-const CODEX_PL_ENTRY_CARD_CONTENT := Vector4(28.0, 36.0, 28.0, 28.0)
-const CODEX_PL_CATEGORY_BUTTON_CONTENT := Vector4(84.0, 24.0, 34.0, 24.0)
-const CODEX_PL_BACK_BUTTON_CONTENT := Vector4(24.0, 24.0, 24.0, 24.0)
-const CODEX_PL_TEXT_CREAM := Color(0.91, 0.84, 0.66, 1.0)
-const CODEX_PL_TEXT_CREAM_MUTED := Color(0.76, 0.70, 0.57, 1.0)
-const CODEX_PL_TEXT_GOLD := Color(0.88, 0.75, 0.43, 1.0)
-const CODEX_PL_PARCHMENT_FILL := Color(0.85, 0.79, 0.63, 0.96)
-const CODEX_PL_PARCHMENT_BORDER := Color(0.46, 0.31, 0.16, 0.92)
-const CODEX_PL_INK_DARK := Color(0.18, 0.125, 0.075, 1.0)
-const CODEX_PL_CHIP_FILL := Color(0.165, 0.133, 0.106, 0.96)
-const CODEX_PL_CARD_TITLE_COLOR := CODEX_PL_TEXT_CREAM
-const CODEX_PL_CARD_BODY_COLOR := CODEX_PL_TEXT_CREAM_MUTED
-const CODEX_PL_CARD_ACCENT_COLOR := CODEX_PL_TEXT_GOLD
-const CODEX_PL_DETAIL_TITLE_COLOR := CODEX_PL_TEXT_GOLD
-const CODEX_PL_DETAIL_BODY_COLOR := CODEX_PL_INK_DARK
-const CODEX_PL_ICONS := {
-	"characters": CODEX_PL_FRAME_DIR + "codex_pl_icon_characters.png",
-	"monsters": CODEX_PL_FRAME_DIR + "codex_pl_icon_monsters.png",
-	"artifacts": CODEX_PL_FRAME_DIR + "codex_pl_icon_artifacts.png",
-	"stats": CODEX_PL_FRAME_DIR + "codex_pl_icon_stats.png",
-	"glossary": CODEX_PL_FRAME_DIR + "codex_pl_icon_glossary.png",
-	"ascensions": CODEX_PL_FRAME_DIR + "codex_pl_icon_ascensions.png",
+const ATLAS_STYLE_EMBLEM_PATHS := {
+	"hero_select": ATLAS_STYLE_DIR + "emblem_hero_hall.png",
+	"codex": ATLAS_STYLE_DIR + "emblem_codex.png",
+	"patch_notes": ATLAS_STYLE_DIR + "emblem_chronicle.png",
 }
-const REWARD_FRAME_DIR := "res://assets/sprites/ui/frames/rewards/"
-const REWARD_CARD_PATH := MINIMAL_CARD_PATH
-const REWARD_CARD_HOVER_PATH := MINIMAL_CARD_PATH
-const REWARD_ELITE_CARD_PATH := MINIMAL_CARD_PATH
-const REWARD_ELITE_CARD_HOVER_PATH := MINIMAL_CARD_PATH
-const REWARD_FRAME_SOURCE_SIZE := Vector2(426.0, 486.0)
+const ATLAS_STYLE_PEDESTAL_PATH := ATLAS_STYLE_DIR + "pedestal_dais.png"
+const ATLAS_STYLE_DIVIDER_PATH := ATLAS_STYLE_DIR + "divider_ornament.png"
+# SCRUM-954: center rows keep the calm atlas card palette; generic codex_pl
+# category emblems are no longer part of live navigation.
+const CODEX_PL_CARD_BODY_COLOR := Color(0.76, 0.70, 0.57, 1.0)
+# SCRUM-883: карточки наград — чип-ряды Атласа; display-размеры слотов сохранены.
 const REWARD_CARD_SIZE := Vector2(300.0, 430.0)
 const REWARD_ELITE_CARD_SIZE := Vector2(320.0, 430.0)
-const REWARD_CARD_TEXTURE_MARGINS := Vector4(32.0, 42.0, 32.0, 40.0)
-const REWARD_CARD_SOURCE_CONTENT := Vector4(46.0, 58.0, 46.0, 54.0)
-const REWARD_ELITE_CARD_TEXTURE_MARGINS := Vector4(32.0, 42.0, 32.0, 40.0)
-const REWARD_ELITE_CARD_SOURCE_CONTENT := Vector4(46.0, 58.0, 46.0, 54.0)
 
 
 func _init(game_ref) -> void:
 	game = game_ref
 
 
-# SCRUM-484: координатная спека @2560×1440 — блок Меню/Навигация (главное меню).
-# Документирующие const рядом с билдером: x,y,w,h каждого слота контента @2K, плюс
-# safe-area (пустая зона внутри рамки, куда можно класть контент). База дизайна 2K
-# (project.godot viewport 2560×1440, stretch=canvas_items/keep). Эти прямоугольники —
-# вход для рисующего скрипта: он рисует ассеты ровно в эти размеры.
-const MENU_NAV_DESIGN_BASE_2K := Vector2(2560.0, 1440.0)
-const MM_TITLE_2K := Rect2(56, 44, 720, 270)
-# Колонка кнопок слева (MarginContainer offset_left=72..452, VBox по центру вертикали,
-# 6 кнопок 380×104, separation 10 → высота 674; top рассчитывается ниже лого).
-const MM_BUTTON_COLUMN_2K := Rect2(72, 394, 380, 674)
-const MM_BTN_START_2K := Rect2(72, 394, 380, 104)
-const MM_BTN_SETTINGS_2K := Rect2(72, 508, 380, 104)
-const MM_BTN_SKILLTREE_2K := Rect2(72, 622, 380, 104)
-const MM_BTN_PATCHNOTES_2K := Rect2(72, 736, 380, 104)
-const MM_BTN_CODEX_2K := Rect2(72, 850, 380, 104)
-const MM_BTN_EXIT_2K := Rect2(72, 964, 380, 104)
-const MM_VERSION_LABEL_2K := Rect2(2440, 1406, 104, 24)  # якорь bottom-right
-const MM_SAFE_2K := Rect2(72, 394, 380, 674)  # фон обязан держать эту колонку пустой
+# SCRUM-1059 supersedes the SCRUM-981 2×3 action grid while preserving its
+# accepted PixelLab/runtime background, logo, button family and hollow shell.
+# Logo and six actions occupy one responsive left column inside the real
+# authored inner rect; the scenic character group remains readable to the right.
 
 
-func _main_menu_actions_top(viewport_size: Vector2, title_bottom: float) -> float:
-	var preferred_top := roundf((viewport_size.y - MAIN_MENU_ACTION_COLUMN_HEIGHT) * 0.5)
-	var min_top := roundf(title_bottom + MAIN_MENU_LOGO_ACTION_GAP)
-	var max_top := roundf(viewport_size.y - MAIN_MENU_ACTION_COLUMN_HEIGHT - MAIN_MENU_ACTION_BOTTOM_MARGIN)
-	if max_top >= min_top:
-		return clampf(maxf(preferred_top, min_top), min_top, max_top)
-	return maxf(0.0, max_top)
+func _main_menu_gold_shell_metrics(viewport_size: Vector2) -> Dictionary:
+	# SCRUM-1059: exact UI Director content-zone contract for 1152×648 through
+	# 2560×1440. The outer safe rect remains continuously derived from the
+	# 9-slice source; controls use the stricter authored inner rect.
+	var margins := _unified_safe_margins_for_size(viewport_size)
+	var safe_rect := Rect2(
+		Vector2(margins.x, margins.y),
+		Vector2(maxf(1.0, viewport_size.x - margins.x - margins.z), maxf(1.0, viewport_size.y - margins.y - margins.w))
+	)
+	var reserve := 32.0 if viewport_size.y >= 1200.0 else 24.0
+	var inner_rect := safe_rect.grow(-reserve)
+	var logo_size := Vector2(480.0, 180.0)
+	var button_width := MAIN_MENU_ACTION_BUTTON_WIDTH
+	var button_height := 96.0
+	var row_gap := 14.0
+	var logo_gap := 20.0
+	var glow_side := 116.0
+	var gratitude_side := 96.0
+	# SCRUM-1095: the glow keeps a validator-safe two-pixel separation from the
+	# version rect.  The Button is biased three pixels toward the version inside
+	# that glow; its hitbox remains bounded and never intersects the label.
+	var utility_cluster_gap := 2.0
+	var gratitude_button_x_bias := 3.0
+	var utility_frame_reserve := 8.0
+	var version_height := 32.0
+	var version_font_size := 18
+	if viewport_size.y < 700.0:
+		logo_size = Vector2(160.0, 60.0)
+		button_width = 320.0
+		button_height = 54.0
+		row_gap = 2.0
+		logo_gap = 4.0
+		glow_side = 84.0
+		gratitude_side = 72.0
+		version_height = 22.0
+		version_font_size = 14
+	elif viewport_size.y < 800.0:
+		logo_size = Vector2(192.0, 72.0)
+		button_width = 340.0
+		button_height = 56.0
+		row_gap = 5.0
+		logo_gap = 6.0
+		glow_side = 84.0
+		gratitude_side = 72.0
+		version_height = 24.0
+		version_font_size = 14
+	elif viewport_size.y < 1000.0:
+		logo_size = Vector2(267.0, 100.0)
+		button_width = 360.0
+		button_height = 64.0
+		row_gap = 8.0
+		logo_gap = 8.0
+		glow_side = 96.0
+		gratitude_side = 80.0
+		version_height = 26.0
+		version_font_size = 15
+	elif viewport_size.y < 1200.0:
+		logo_size = Vector2(331.0, 124.0)
+		button_height = 76.0
+		row_gap = 10.0
+		logo_gap = 12.0
+		glow_side = 96.0
+		gratitude_side = 80.0
+		version_height = 28.0
+		version_font_size = 16
+	var logo_rect := Rect2(inner_rect.position, logo_size)
+	var actions_rect := Rect2(
+		Vector2(inner_rect.position.x, logo_rect.end.y + logo_gap),
+		Vector2(button_width, button_height * MAIN_MENU_BUTTON_COUNT + row_gap * (MAIN_MENU_BUTTON_COUNT - 1.0))
+	)
+	# SCRUM-1093: the compact utility cluster has its own measured reserve from
+	# the frame-safe opening. The page-wide inner rect remains intentionally more
+	# conservative for large panels/buttons, but made the tiny version cluster
+	# look detached from the actual lower-right rail.
+	var utility_anchor := safe_rect.end - Vector2.ONE * utility_frame_reserve
+	return {
+		"safe_rect": safe_rect,
+		"inner_rect": inner_rect,
+		"logo_rect": logo_rect,
+		"actions_rect": actions_rect,
+		"button_width": button_width,
+		"button_height": button_height,
+		"row_gap": row_gap,
+		"gratitude_glow_side": glow_side,
+		"gratitude_side": gratitude_side,
+		"utility_anchor": utility_anchor,
+		"utility_cluster_gap": utility_cluster_gap,
+		"gratitude_button_x_bias": gratitude_button_x_bias,
+		"utility_frame_reserve": utility_frame_reserve,
+		"version_height": version_height,
+		"version_font_size": version_font_size,
+	}
+
+
+func _layout_main_menu_gold_shell(root: Control, title_logo: TextureRect, action_box: GridContainer, gratitude_glow: TextureRect, gratitude_button: Button, version_label: Label, buttons: Array) -> void:
+	if root == null or not is_instance_valid(root):
+		return
+	var viewport_size := root.size
+	if viewport_size.x <= 1.0 or viewport_size.y <= 1.0:
+		viewport_size = game.get_viewport().get_visible_rect().size
+	var metrics := _main_menu_gold_shell_metrics(viewport_size)
+	var logo_rect: Rect2 = metrics["logo_rect"]
+	var actions_rect: Rect2 = metrics["actions_rect"]
+	_apply_control_rect(title_logo, logo_rect)
+	_apply_control_rect(action_box, actions_rect)
+	action_box.custom_minimum_size = actions_rect.size
+	action_box.add_theme_constant_override("v_separation", int(metrics["row_gap"]))
+	for candidate in buttons:
+		var button := candidate as Button
+		if button != null:
+			# Keep one semantic/art family at every responsive tier. Without the
+			# explicit assignment the generic resolver would switch compact rows
+			# to the unrelated Continue plate solely because their height is <=76.
+			UIButtonFamily.assign(button, "text/main_menu_380x104", true)
+			# Main Menu labels are fixed one-line actions by contract. Smart-wrap
+			# makes the longest Russian label inflate only the first compact row.
+			button.autowrap_mode = TextServer.AUTOWRAP_OFF
+			_set_action_button_size(button, float(metrics["button_width"]), float(metrics["button_height"]))
+			_fit_main_menu_button_styles(button, float(metrics["button_width"]), float(metrics["button_height"]))
+	action_box.queue_sort()
+	var safe_rect: Rect2 = metrics["safe_rect"]
+	var version_font_size := SemanticTypography.resolve_fixed(
+		SemanticTypography.ROLE_CAPTION,
+		int(metrics["version_font_size"]),
+		SemanticTypography.role_min(SemanticTypography.ROLE_CAPTION),
+		SemanticTypography.role_max(SemanticTypography.ROLE_CAPTION)
+	)
+	version_label.add_theme_font_size_override(
+		"font_size",
+		version_font_size
+	)
+	var version_font: Font = version_label.get_theme_font("font")
+	if version_font == null:
+		version_font = ThemeDB.fallback_font
+	var measured_version_width := 1.0
+	if version_font != null:
+		measured_version_width = ceilf(version_font.get_string_size(
+			version_label.text,
+			HORIZONTAL_ALIGNMENT_LEFT,
+			-1.0,
+			version_font_size
+		).x)
+	# Never silently clamp a future semantic version (for example a beta tag):
+	# the rect follows the actual rendered string plus the outline/effect reserve.
+	var version_width := measured_version_width + 6.0
+	var utility_anchor: Vector2 = metrics["utility_anchor"]
+	var version_size := Vector2(version_width, float(metrics["version_height"]))
+	var version_rect := Rect2(utility_anchor - version_size, version_size)
+	var glow_side := float(metrics["gratitude_glow_side"])
+	var gratitude_side := float(metrics["gratitude_side"])
+	var glow_rect := Rect2(
+		Vector2(
+			version_rect.position.x - float(metrics["utility_cluster_gap"]) - glow_side,
+			utility_anchor.y - glow_side
+		),
+		Vector2.ONE * glow_side
+	)
+	var gratitude_inset := (glow_side - gratitude_side) * 0.5
+	var gratitude_rect := Rect2(
+		glow_rect.position + Vector2(gratitude_inset + float(metrics["gratitude_button_x_bias"]), gratitude_inset),
+		Vector2.ONE * gratitude_side
+	)
+	_apply_control_rect(gratitude_glow, glow_rect)
+	_apply_control_rect(gratitude_button, gratitude_rect)
+	_apply_control_rect(version_label, version_rect)
+	version_label.set_meta("scrum1093_measured_text_width", measured_version_width)
+	version_label.set_meta("scrum1093_utility_anchor", utility_anchor)
+	version_label.set_meta("scrum1093_cluster_gap", metrics["utility_cluster_gap"])
+	version_label.set_meta("scrum1095_gratitude_button_x_bias", metrics["gratitude_button_x_bias"])
+	root.set_meta("gold_shell_content_rect", safe_rect)
+	root.set_meta("gold_shell_inner_rect", metrics["inner_rect"])
+	root.set_meta("main_menu_utility_anchor", utility_anchor)
+	root.set_meta("main_menu_utility_frame_reserve", metrics["utility_frame_reserve"])
+	root.set_meta("gold_shell_screen_id", "main_menu")
+
+
+func _fit_main_menu_button_styles(button: Button, width: float, height: float) -> void:
+	# The accepted main-menu sources are 380×104 9-slice plates. Compact tiers
+	# keep their caps/rails and the same family, but scale the content margins to
+	# the rendered geometry so the StyleBox minimum does not force 60–92px rows.
+	var horizontal := maxf(40.0, roundf(54.0 * width / 380.0) + 2.0)
+	# The canonical source already defines vertical content=texture margin
+	# (21px at 104px); preserve that ratio exactly. Adding a second reserve here
+	# would inflate the compact control beyond its authored rect.
+	var vertical := maxf(4.0, roundf(21.0 * height / 104.0))
+	for state in UIButtonFamily.STATES:
+		var original := button.get_theme_stylebox(state)
+		if original == null:
+			continue
+		var fitted := original.duplicate(true) as StyleBox
+		if fitted is StyleBoxTexture:
+			var fitted_texture := fitted as StyleBoxTexture
+			fitted_texture.texture_margin_left = roundf(54.0 * width / 380.0)
+			fitted_texture.texture_margin_right = roundf(54.0 * width / 380.0)
+			fitted_texture.texture_margin_top = roundf(21.0 * height / 104.0)
+			fitted_texture.texture_margin_bottom = roundf(21.0 * height / 104.0)
+		fitted.content_margin_left = horizontal
+		fitted.content_margin_right = horizontal
+		fitted.content_margin_top = vertical
+		fitted.content_margin_bottom = vertical
+		button.add_theme_stylebox_override(state, fitted)
+	# Live downsize must discard the previous tier's cached combined minimum;
+	# otherwise GridContainer keeps two stale pixels per row after 2K→648.
+	button.update_minimum_size()
+	button.reset_size()
+
+
+func _gratitude_button_style(state: String) -> StyleBoxFlat:
+	var style := StyleBoxFlat.new()
+	style.bg_color = Color(0.04, 0.035, 0.045, 0.0)
+	style.border_color = Color(0.68, 0.51, 0.25, 0.0)
+	var border_width := 0
+	match state:
+		"hover":
+			style.bg_color = Color(0.10, 0.075, 0.065, 0.42)
+			style.border_color = Color(0.82, 0.66, 0.36, 0.78)
+			border_width = 1
+		"focus":
+			style.bg_color = Color(0.11, 0.12, 0.14, 0.58)
+			style.border_color = Color(0.84, 0.88, 0.94, 0.98)
+			border_width = 2
+		"pressed":
+			style.bg_color = Color(0.075, 0.045, 0.05, 0.58)
+			style.border_color = Color(0.78, 0.48, 0.30, 0.82)
+			border_width = 1
+		"disabled":
+			style.bg_color = Color(0.03, 0.03, 0.035, 0.16)
+	style.set_border_width_all(border_width)
+	style.set_corner_radius_all(10)
+	style.set_content_margin_all(4.0)
+	return style
+
+
+func _gratitude_glow_texture(peak_alpha: float) -> GradientTexture2D:
+	# SCRUM-1081: a bounded procedural aura, not a new bitmap asset. The radial
+	# texture is clipped to MainMenuGratitudeGlow, so no state can cover the gold
+	# shell rail or change the icon hitbox geometry.
+	var gradient := Gradient.new()
+	var warm_gold := Color(0.84, 0.62, 0.28, clampf(peak_alpha, 0.0, 0.26))
+	gradient.offsets = PackedFloat32Array([0.0, 0.58, 0.82, 1.0])
+	gradient.colors = PackedColorArray([
+		warm_gold,
+		Color(warm_gold.r, warm_gold.g, warm_gold.b, warm_gold.a * 0.72),
+		Color(warm_gold.r, warm_gold.g, warm_gold.b, warm_gold.a * 0.26),
+		Color(warm_gold.r, warm_gold.g, warm_gold.b, 0.0),
+	])
+	var texture := GradientTexture2D.new()
+	texture.gradient = gradient
+	texture.width = 128
+	texture.height = 128
+	texture.fill = GradientTexture2D.FILL_RADIAL
+	texture.fill_from = Vector2(0.5, 0.5)
+	texture.fill_to = Vector2(1.0, 0.5)
+	return texture
+
+
+func _gratitude_alpha_aware_texture(source: Texture2D, button: Button) -> Texture2D:
+	# SCRUM-1095: the accepted PixelLab PNG deliberately has generous transparent
+	# source padding.  Button.expand_icon scales that full 256x256 square, so the
+	# transparent right edge — not the visible hands/heart — used to define the
+	# apparent gap.  Build a runtime AtlasTexture from actual used alpha instead
+	# of modifying the source bitmap.  The square remains aspect-stable; all spare
+	# width is placed on the left so the alpha edge facing the version is exact.
+	if source == null:
+		return source
+	var image := source.get_image()
+	if image == null or image.is_empty():
+		return source
+	var used: Rect2i = image.get_used_rect()
+	if not used.has_area():
+		return source
+	var side := maxi(used.size.x, used.size.y)
+	var region_x := used.end.x - side
+	var region_y := used.position.y - int(floorf(float(side - used.size.y) * 0.5))
+	region_x = clampi(region_x, 0, maxi(0, image.get_width() - side))
+	region_y = clampi(region_y, 0, maxi(0, image.get_height() - side))
+	var atlas_region := Rect2i(region_x, region_y, side, side)
+	if not atlas_region.encloses(used):
+		return source
+	var cropped := AtlasTexture.new()
+	cropped.atlas = source
+	cropped.region = Rect2(atlas_region)
+	cropped.filter_clip = true
+	if button != null:
+		button.set_meta("scrum1095_source_asset", source.resource_path)
+		button.set_meta("scrum1095_source_alpha_rect", Rect2(used))
+		button.set_meta("scrum1095_atlas_region", Rect2(atlas_region))
+	return cropped
 
 
 func _show_main_menu() -> void:
@@ -723,6 +797,7 @@ func _show_main_menu() -> void:
 	game.used_event_ids.clear()
 	game.current_event_definition.clear()
 	game.pending_event_combat.clear()
+	game.event_shop_exit_action = Callable()  # SCRUM-996
 	game.pending_level_ups = 0
 	game.shop_reentry_pending = false
 	game.shop_reentry_route_stage = -1
@@ -737,6 +812,7 @@ func _show_main_menu() -> void:
 	root.name = "MainMenuScreen"
 	root.set_anchors_preset(Control.PRESET_FULL_RECT)
 	game.ui_layer.add_child(root)
+	_prepare_global_tooltips(root)
 
 	var background := TextureRect.new()
 	background.name = "MainMenuBackground"
@@ -753,47 +829,19 @@ func _show_main_menu() -> void:
 
 	var title_logo := TextureRect.new()
 	title_logo.name = "MainMenuTitleLabel"
-	title_logo.anchor_left = 0.0
-	title_logo.anchor_top = 0.0
-	title_logo.anchor_right = 0.0
-	title_logo.anchor_bottom = 0.0
-	title_logo.offset_left = MAIN_MENU_LOGO_RECT.position.x
-	title_logo.offset_top = MAIN_MENU_LOGO_RECT.position.y
-	title_logo.offset_right = MAIN_MENU_LOGO_RECT.position.x + MAIN_MENU_LOGO_RECT.size.x
-	title_logo.offset_bottom = MAIN_MENU_LOGO_RECT.position.y + MAIN_MENU_LOGO_RECT.size.y
 	title_logo.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
 	title_logo.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
 	title_logo.texture = game._cached_texture("res://assets/sprites/ui/menu_title/main_menu_title_fantasy_disk.png")
 	title_logo.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	root.add_child(title_logo)
 
-	var viewport_size: Vector2 = game.get_viewport().get_visible_rect().size
-	var action_top := _main_menu_actions_top(viewport_size, MAIN_MENU_LOGO_RECT.position.y + MAIN_MENU_LOGO_RECT.size.y)
-	var layout := MarginContainer.new()
-	layout.anchor_left = 0.0
-	layout.anchor_top = 0.0
-	layout.anchor_right = 0.0
-	layout.anchor_bottom = 0.0
-	layout.offset_left = 72.0
-	layout.offset_top = action_top
-	layout.offset_right = 452.0
-	layout.offset_bottom = action_top + MAIN_MENU_ACTION_COLUMN_HEIGHT
-	layout.add_theme_constant_override("margin_left", 0)
-	layout.add_theme_constant_override("margin_top", 0)
-	layout.add_theme_constant_override("margin_right", 0)
-	layout.add_theme_constant_override("margin_bottom", 0)
-	root.add_child(layout)
-
-	var action_box := VBoxContainer.new()
+	var action_box := GridContainer.new()
 	action_box.name = "MainMenuActions"
-	action_box.custom_minimum_size = Vector2(380, MAIN_MENU_ACTION_COLUMN_HEIGHT)
-	action_box.alignment = BoxContainer.ALIGNMENT_BEGIN
-	action_box.add_theme_constant_override("separation", int(MAIN_MENU_BUTTON_SEPARATION))
-	layout.add_child(action_box)
+	action_box.columns = 1
+	root.add_child(action_box)
 
 	var start_button := _make_button("Начать новую игру")
 	start_button.name = "MainMenuStartButton"
-	_set_action_button_size(start_button, MAIN_MENU_ACTION_BUTTON_WIDTH)
 	start_button.pressed.connect(func() -> void:
 		if game.run_autosave_has_run():
 			_show_continue_run_dialog()
@@ -804,7 +852,6 @@ func _show_main_menu() -> void:
 
 	var settings_button := _make_button("Настройки")
 	settings_button.name = "MainMenuSettingsButton"
-	_set_action_button_size(settings_button, MAIN_MENU_ACTION_BUTTON_WIDTH)
 	settings_button.pressed.connect(func() -> void:
 		_show_settings_menu(SETTINGS_RETURN_MAIN_MENU)
 	)
@@ -813,23 +860,25 @@ func _show_main_menu() -> void:
 	var version_label := Label.new()
 	version_label.name = "MainMenuVersionLabel"
 	version_label.text = "v%s" % str(ProjectSettings.get_setting("application/config/version", "0.0.0"))
-	version_label.anchor_left = 1.0
-	version_label.anchor_top = 1.0
-	version_label.anchor_right = 1.0
-	version_label.anchor_bottom = 1.0
-	version_label.offset_left = -120.0
-	version_label.offset_top = -34.0
-	version_label.offset_right = -16.0
-	version_label.offset_bottom = -10.0
 	version_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_RIGHT
-	version_label.add_theme_font_size_override("font_size", _readable_font_size(13))
-	version_label.add_theme_color_override("font_color", Color(0.62, 0.66, 0.72, 0.85))
+	version_label.vertical_alignment = VERTICAL_ALIGNMENT_BOTTOM
+	version_label.add_theme_font_size_override(
+		"font_size",
+		SemanticTypography.resolve_fixed(
+			SemanticTypography.ROLE_CAPTION,
+			14,
+			SemanticTypography.role_min(SemanticTypography.ROLE_CAPTION),
+			SemanticTypography.role_max(SemanticTypography.ROLE_CAPTION)
+		)
+	)
+	version_label.add_theme_color_override("font_color", Color(0.847, 0.816, 0.741, 0.93))
+	version_label.add_theme_color_override("font_outline_color", Color(0.07, 0.05, 0.07, 0.92))
+	version_label.add_theme_constant_override("outline_size", 2)
 	version_label.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	root.add_child(version_label)
 
 	var skill_tree_button := _make_button("Атлас героев")
 	skill_tree_button.name = "MainMenuSkillTreeButton"
-	_set_action_button_size(skill_tree_button, MAIN_MENU_ACTION_BUTTON_WIDTH)
 	skill_tree_button.pressed.connect(_show_atlas_screen)
 	action_box.add_child(skill_tree_button)
 
@@ -839,7 +888,6 @@ func _show_main_menu() -> void:
 	var last_seen: String = str(settings_module.load_settings().get("last_seen_version", "0.0.0"))
 	var patch_notes_button := _make_button("Что нового  ●" if patch_notes_data.has_new_since(last_seen) else "Что нового")
 	patch_notes_button.name = "MainMenuPatchNotesButton"
-	_set_action_button_size(patch_notes_button, MAIN_MENU_ACTION_BUTTON_WIDTH)
 	patch_notes_button.pressed.connect(func() -> void:
 		# Просмотр отмечает актуальную версию как увиденную — бейдж гаснет.
 		var saved: Dictionary = settings_module.load_settings()
@@ -851,35 +899,85 @@ func _show_main_menu() -> void:
 
 	var codex_button := _make_button("Кодекс")
 	codex_button.name = "MainMenuCodexButton"
-	_set_action_button_size(codex_button, MAIN_MENU_ACTION_BUTTON_WIDTH)
 	codex_button.pressed.connect(_show_codex_screen)
 	action_box.add_child(codex_button)
 
 	var exit_button := _make_button("Выйти из игры")
 	exit_button.name = "MainMenuExitButton"
-	_set_action_button_size(exit_button, MAIN_MENU_ACTION_BUTTON_WIDTH)
 	exit_button.pressed.connect(_show_quit_confirmation_dialog)
 	action_box.add_child(exit_button)
 	game.ui_escape_action = _show_quit_confirmation_dialog
 
-	# SCRUM-813: главное меню проходимо с геймпада/стрелок — вертикальный круг кнопок,
-	# стартовый фокус «Начать новую игру»; B/Esc = подтверждение выхода (ui_escape_action).
-	_wire_run_ui_focus([
+	var action_buttons := [
 		start_button, settings_button, skill_tree_button, patch_notes_button, codex_button, exit_button,
-	], false, [], start_button)
+	]
+	# SCRUM-968: озвучка кнопок меню через общий хелпер (ui_click). Живёт рядом со
+	# штатными навигационными обработчиками; MainMenuActions остаётся ровно на 6
+	# кнопках в одной колонке (контракт SCRUM-1059).
+	for menu_button in action_buttons:
+		_connect_ui_sfx(menu_button, "click")
+
+	# SCRUM-968: «Благодарности» — player-facing блок атрибуций CC BY (docs/CREDITS.md).
+	# Отдельная ссылка НА root (не в MainMenuActions — там контрактные 6 кнопок);
+	# позиционируется внутри authored inner rect, то есть после обязательного
+	# дополнительного резерва SCRUM-1036 от орнамента золотой рамы.
+	var gratitude_glow := TextureRect.new()
+	gratitude_glow.name = "MainMenuGratitudeGlow"
+	gratitude_glow.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
+	gratitude_glow.stretch_mode = TextureRect.STRETCH_SCALE
+	gratitude_glow.texture = _gratitude_glow_texture(0.18)
+	gratitude_glow.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	root.add_child(gratitude_glow)
+
+	var credits_button := Button.new()
+	credits_button.name = "MainMenuCreditsButton"
+	credits_button.text = ""
+	var gratitude_source: Texture2D = game._cached_texture(GRATITUDE_ICON_PATH) as Texture2D
+	credits_button.icon = _gratitude_alpha_aware_texture(gratitude_source, credits_button)
+	credits_button.expand_icon = true
+	credits_button.icon_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	credits_button.flat = true
+	credits_button.focus_mode = Control.FOCUS_ALL
+	credits_button.tooltip_text = "Благодарности"
+	credits_button.set_meta("accessibility_name", "Благодарности")
+	credits_button.set_meta("accessibility_description", "Открыть экран благодарностей")
+	UIButtonFamily.assign(credits_button, "credits_icon")
+	for credits_state in UIButtonFamily.STATES:
+		credits_button.add_theme_stylebox_override(credits_state, _gratitude_button_style(credits_state))
+	credits_button.mouse_default_cursor_shape = Control.CURSOR_POINTING_HAND
+	credits_button.pressed.connect(_show_credits_screen)
+	root.add_child(credits_button)
+	_connect_ui_sfx(credits_button, "click")
+	credits_button.mouse_entered.connect(func() -> void:
+		gratitude_glow.texture = _gratitude_glow_texture(0.26)
+	)
+	credits_button.mouse_exited.connect(func() -> void:
+		gratitude_glow.texture = _gratitude_glow_texture(0.20 if credits_button.has_focus() else 0.18)
+	)
+	credits_button.button_down.connect(func() -> void:
+		gratitude_glow.texture = _gratitude_glow_texture(0.13)
+	)
+	credits_button.button_up.connect(func() -> void:
+		gratitude_glow.texture = _gratitude_glow_texture(0.20 if credits_button.has_focus() else 0.18)
+	)
+	credits_button.focus_entered.connect(func() -> void:
+		gratitude_glow.texture = _gratitude_glow_texture(0.20)
+	)
+	credits_button.focus_exited.connect(func() -> void:
+		gratitude_glow.texture = _gratitude_glow_texture(0.18)
+	)
+
+	_layout_main_menu_gold_shell(root, title_logo, action_box, gratitude_glow, credits_button, version_label, action_buttons)
+	root.resized.connect(_layout_main_menu_gold_shell.bind(root, title_logo, action_box, gratitude_glow, credits_button, version_label, action_buttons))
+	_wire_main_menu_column_focus(action_buttons, credits_button, start_button)
+	# Рама всегда последняя: она видима целиком, а все hitbox остаются в safe rect.
+	_unified_add_frame(root, "MainMenu")
 
 
 # SCRUM-484: координатная спека @2560×1440 — подтверждение выхода (модалка).
 # Панель PanelContainer (offset ±300×±170 от центра → 600×340), _panel_style content
 # margins (58,72,58,66) → safe-area. Контент: заголовок, подзаголовок, ряд из двух
 # кнопок 220×72 (separation 18). Всё помещается внутри safe-area без наслоений.
-const QC_DIM_2K := Rect2(0, 0, 2560, 1440)
-const QC_PANEL_2K := Rect2(980, 550, 600, 340)
-const QC_SAFE_2K := Rect2(1038, 622, 484, 202)
-const QC_TITLE_2K := Rect2(1038, 627, 484, 44)
-const QC_SUBTITLE_2K := Rect2(1038, 687, 484, 44)
-const QC_BTN_EXIT_2K := Rect2(1051, 747, 220, 72)
-const QC_BTN_CANCEL_2K := Rect2(1289, 747, 220, 72)
 
 
 func _show_quit_confirmation_dialog() -> void:
@@ -898,6 +996,7 @@ func _show_quit_confirmation_dialog() -> void:
 	overlay.mouse_filter = Control.MOUSE_FILTER_STOP
 	overlay.z_index = 500
 	game.ui_layer.add_child(overlay)
+	_prepare_global_tooltips(overlay)
 
 	var dim := ColorRect.new()
 	dim.name = "QuitConfirmationDim"
@@ -917,22 +1016,22 @@ func _show_quit_confirmation_dialog() -> void:
 	panel.offset_right = 300.0
 	panel.offset_bottom = 170.0
 	panel.mouse_filter = Control.MOUSE_FILTER_STOP
-	# SCRUM-581: свежий @2K per-слот фрейм диалога подтверждения (qc_modal 600×340, modal-
-	# профиль — более ornate бордюр befitting confirm-модалки; SCRUM-486 держал qc_panel
-	# на общем panel-профиле). Кнопки остаются на унифицированном 4-state minimal_metal.
-	panel.add_theme_stylebox_override("panel", _overhaul_2k_frame_style("qc_modal", Vector2(600.0, 340.0)))
+	# SCRUM-883: единый атлас-стиль — модалка подтверждения на плотном кожаном чипе
+	# (StyleBoxFlat, латунный кант) вместо per-слот qc_modal @2K-рамки. Кнопки остаются
+	# на глобальном ките (нативы quit_220x72 по маппингу имён QuitConfirm*).
+	panel.add_theme_stylebox_override("panel", _atlas_chip_style(0.97, roundf(20.0 * _atlas_ui_scale())))
 	overlay.add_child(panel)
 
 	var box := VBoxContainer.new()
 	box.alignment = BoxContainer.ALIGNMENT_CENTER
-	box.add_theme_constant_override("separation", 16)
+	box.add_theme_constant_override("separation", 12)
 	panel.add_child(box)
 
 	var title_label := Label.new()
 	title_label.name = "QuitConfirmationTitle"
 	title_label.text = "Выйти из игры?"
 	title_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	title_label.add_theme_font_size_override("font_size", _readable_font_size(34))
+	title_label.add_theme_font_size_override("font_size", _readable_font_size(SemanticTypography.ROLE_TITLE, 34))
 	title_label.add_theme_color_override("font_color", Color(0.96, 0.90, 0.68, 1.0))
 	box.add_child(title_label)
 
@@ -941,7 +1040,12 @@ func _show_quit_confirmation_dialog() -> void:
 	subtitle_label.text = "Несохраненный забег будет завершен. Продолжить выход?"
 	subtitle_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	subtitle_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
-	subtitle_label.add_theme_font_size_override("font_size", _readable_font_size(16))
+	subtitle_label.add_theme_font_size_override("font_size", SemanticTypography.resolve_fixed(
+		SemanticTypography.ROLE_CAPTION,
+		_readable_font_size(SemanticTypography.ROLE_CAPTION, 16),
+		SemanticTypography.role_min(SemanticTypography.ROLE_CAPTION),
+		SemanticTypography.role_max(SemanticTypography.ROLE_CAPTION)
+	))
 	subtitle_label.add_theme_color_override("font_color", Color(0.90, 0.88, 0.78, 1.0))
 	box.add_child(subtitle_label)
 
@@ -976,6 +1080,12 @@ func _show_quit_confirmation_dialog() -> void:
 	confirm_button.focus_neighbor_left = cancel_button.get_path()
 	cancel_button.focus_neighbor_left = confirm_button.get_path()
 	cancel_button.focus_neighbor_right = confirm_button.get_path()
+	# SCRUM-883: замыкаем и вертикаль — стрелки вверх/вниз не должны уводить фокус
+	# на кнопки экрана ПОД модалкой (мышь блокирует overlay, клавиатуру — соседи).
+	confirm_button.focus_neighbor_top = cancel_button.get_path()
+	confirm_button.focus_neighbor_bottom = cancel_button.get_path()
+	cancel_button.focus_neighbor_top = confirm_button.get_path()
+	cancel_button.focus_neighbor_bottom = confirm_button.get_path()
 	cancel_button.grab_focus()
 
 	overlay.gui_input.connect(func(event: InputEvent) -> void:
@@ -994,21 +1104,15 @@ func _cancel_quit_confirmation_dialog() -> void:
 	game.ui_escape_action = _show_quit_confirmation_dialog
 
 
-# SCRUM-484: координатная спека @2560×1440 — продолжить забег (модалка).
-# Панель (offset ±340×±190 → 680×380), _panel_style margins (58,72,58,66) → safe-area.
-# Контент: заголовок, подзаголовок (2 строки, autowrap), ряд из двух кнопок 240×72
-# (separation 18). Текст в рамках, кнопки не уезжают за нижний край.
-const CR_DIM_2K := Rect2(0, 0, 2560, 1440)
-const CR_PANEL_2K := Rect2(940, 530, 680, 380)
-const CR_SAFE_2K := Rect2(998, 602, 564, 242)
-const CR_TITLE_2K := Rect2(998, 614, 564, 44)
-const CR_SUBTITLE_2K := Rect2(998, 674, 564, 66)
-const CR_BTN_CONTINUE_2K := Rect2(1031, 758, 240, 72)
-const CR_BTN_NEWGAME_2K := Rect2(1289, 758, 240, 72)
+# SCRUM-484/SCRUM-842: координатная спека @2560×1440 — продолжить забег (модалка).
+# Панель расширена до 840×380, чтобы long-кнопка «Продолжить» 420×72 и «Новая игра»
+# 240×72 с gap 18 оставались внутри safe-area и не клепали текст по орнаменту.
+const CR_PANEL_2K := Rect2(860, 530, 840, 380)
+const CR_BTN_CONTINUE_2K := Rect2(942, 758, 420, 72)
+const CR_BTN_NEWGAME_2K := Rect2(1380, 758, 240, 72)
 
 # SCRUM-584: координатная спека @2560x1440 — конфликт переназначения клавиши.
 # Mockup/art source: docs/design/references/scrum584_rebind_conflict_2k/.
-const RC_DIM_2K := Rect2(0, 0, 2560, 1440)
 const RC_PANEL_2K := Rect2(940, 530, 680, 380)
 const RC_SAFE_2K := Rect2(998, 602, 564, 242)
 const RC_TITLE_2K := Rect2(998, 614, 564, 44)
@@ -1038,6 +1142,7 @@ func _show_continue_run_dialog() -> void:
 	overlay.mouse_filter = Control.MOUSE_FILTER_STOP
 	overlay.z_index = 520
 	game.ui_layer.add_child(overlay)
+	_prepare_global_tooltips(overlay)
 
 	var dim := ColorRect.new()
 	dim.name = "ContinueRunDim"
@@ -1052,16 +1157,22 @@ func _show_continue_run_dialog() -> void:
 	panel.anchor_top = 0.5
 	panel.anchor_right = 0.5
 	panel.anchor_bottom = 0.5
-	panel.offset_left = -340.0
-	panel.offset_top = -190.0
-	panel.offset_right = 340.0
-	panel.offset_bottom = 190.0
+	var panel_size := CR_PANEL_2K.size
+	var panel_half_size := panel_size * 0.5
+	panel.offset_left = -panel_half_size.x
+	panel.offset_top = -panel_half_size.y
+	panel.offset_right = panel_half_size.x
+	panel.offset_bottom = panel_half_size.y
 	panel.mouse_filter = Control.MOUSE_FILTER_STOP
-	# SCRUM-486: @2K per-слот фрейм (cr_panel 680×380, ровно размер панели).
-	panel.add_theme_stylebox_override("panel", _overhaul_2k_frame_style("cr_panel", Vector2(680.0, 380.0)))
+	# SCRUM-842: cr_panel 9-slice расширен по X под long continue button.
+	panel.add_theme_stylebox_override("panel", _overhaul_2k_frame_style("cr_panel", panel_size))
 	panel.set_meta("continue_run_slot", "cr_panel")
-	panel.set_meta("continue_run_content_margins", _overhaul_2k_content_margins("cr_panel", CR_PANEL_2K.size))
-	panel.set_meta("continue_run_content_rect", Rect2(CR_SAFE_2K.position - CR_PANEL_2K.position, CR_SAFE_2K.size))
+	var content_margins := _overhaul_2k_content_margins("cr_panel", panel_size)
+	panel.set_meta("continue_run_content_margins", content_margins)
+	panel.set_meta("continue_run_content_rect", Rect2(
+		Vector2(content_margins.x, content_margins.y),
+		Vector2(panel_size.x - content_margins.x - content_margins.z, panel_size.y - content_margins.y - content_margins.w)
+	))
 	overlay.add_child(panel)
 
 	var box := VBoxContainer.new()
@@ -1069,16 +1180,48 @@ func _show_continue_run_dialog() -> void:
 	box.add_theme_constant_override("separation", 16)
 	panel.add_child(box)
 
-	# SCRUM-677: стилизованный лого-заголовок вместо плоского жёлтого текста.
-	var title_label := TextureRect.new()
+	# SCRUM-1062: живой title Label вместо отдельного системного Luminari wordmark.
+	# До появления общего semantic token API (SCRUM-1061) используем ровно тот же
+	# effective theme/default Font, что стандартная title-family (например
+	# QuitConfirmationTitle), с локальным fit-safe title tier. Runtime текст остаётся доступным и не
+	# растягивается как texture внутри authored content-zone панели.
+	var title_label := Label.new()
 	title_label.name = "ContinueRunTitle"
-	title_label.custom_minimum_size = Vector2(0.0, 72.0)
+	title_label.text = "Продолжить забег?"
+	title_label.custom_minimum_size = Vector2(0.0, 70.0)
 	title_label.size_flags_horizontal = Control.SIZE_FILL
-	title_label.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
-	title_label.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
+	title_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	title_label.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
+	title_label.autowrap_mode = TextServer.AUTOWRAP_OFF
+	title_label.text_overrun_behavior = TextServer.OVERRUN_NO_TRIMMING
+	title_label.clip_text = false
 	title_label.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	title_label.texture = game._cached_texture("res://assets/sprites/ui/menu_title/continue_run_title.png")
+	title_label.add_theme_color_override("font_color", Color(0.96, 0.90, 0.68, 1.0))
+	title_label.add_theme_color_override("font_outline_color", Color(0.08, 0.035, 0.02, 0.98))
+	title_label.add_theme_color_override("font_shadow_color", Color(0.02, 0.01, 0.015, 0.86))
+	title_label.add_theme_constant_override("outline_size", 2)
+	title_label.add_theme_constant_override("shadow_offset_x", 2)
+	title_label.add_theme_constant_override("shadow_offset_y", 2)
+	title_label.set_meta("semantic_typography_role", "title")
+	title_label.set_meta("font_family_contract", "theme_default")
+	var refresh_continue_title_typography := func() -> void:
+		if not is_instance_valid(title_label):
+			return
+		# Continue Run keeps the semantic title hierarchy but uses a narrower local
+		# fit tier than the wider Quit modal: 29 -> 38/40/42 effective px. This leaves
+		# authored reserve for Cyrillic ascenders, outline and shadow inside 70px.
+		var title_font_size := _readable_font_size(SemanticTypography.ROLE_TITLE, 29)
+		title_label.add_theme_font_size_override("font_size", SemanticTypography.resolve_fixed(SemanticTypography.ROLE_TITLE, title_font_size))
+		title_label.set_meta("effective_title_font_size", title_font_size)
+	refresh_continue_title_typography.call()
 	box.add_child(title_label)
+	var continue_title_viewport: Viewport = game.get_viewport()
+	if continue_title_viewport != null:
+		continue_title_viewport.size_changed.connect(refresh_continue_title_typography)
+		overlay.tree_exiting.connect(func() -> void:
+			if is_instance_valid(continue_title_viewport) and continue_title_viewport.size_changed.is_connected(refresh_continue_title_typography):
+				continue_title_viewport.size_changed.disconnect(refresh_continue_title_typography)
+		)
 
 	var character_id := str(autosave_state.get("selected_character_id", "berserk"))
 	var character_config: Dictionary = game.PROGRESSION_DATA.character_config(character_id)
@@ -1095,20 +1238,25 @@ func _show_continue_run_dialog() -> void:
 	subtitle_label.text = "%s · акт %d/%d · этап %d · уровень %d · золото %d\nМожно вернуться на карту или начать новый забег." % [character_title, current_act, game.ACT_COUNT, route_stage, level, money]
 	subtitle_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	subtitle_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
-	subtitle_label.add_theme_font_size_override("font_size", _readable_font_size(16))
+	subtitle_label.add_theme_font_size_override("font_size", SemanticTypography.resolve_fixed(
+		SemanticTypography.ROLE_CAPTION,
+		_readable_font_size(SemanticTypography.ROLE_CAPTION, 16),
+		SemanticTypography.role_min(SemanticTypography.ROLE_CAPTION),
+		SemanticTypography.role_max(SemanticTypography.ROLE_CAPTION)
+	))
 	subtitle_label.add_theme_color_override("font_color", Color(0.90, 0.88, 0.78, 1.0))
 	box.add_child(subtitle_label)
 
 	var button_row := HBoxContainer.new()
 	button_row.name = "ContinueRunButtons"
 	button_row.alignment = BoxContainer.ALIGNMENT_CENTER
-	button_row.custom_minimum_size = Vector2(0.0, 76.0)
+	button_row.custom_minimum_size = Vector2(0.0, CR_BTN_CONTINUE_2K.size.y)
 	button_row.add_theme_constant_override("separation", 18)
 	box.add_child(button_row)
 
 	var continue_button := _make_button("Продолжить")
 	continue_button.name = "ContinueRunButton"
-	_set_action_button_size(continue_button, 240.0, 72.0)
+	_set_action_button_size(continue_button, CR_BTN_CONTINUE_2K.size.x, CR_BTN_CONTINUE_2K.size.y)
 	_apply_overhaul_2k_button_theme(continue_button, "cr_btn", CR_BTN_CONTINUE_2K.size)
 	continue_button.pressed.connect(func() -> void:
 		if game.load_run_autosave():
@@ -1155,10 +1303,8 @@ const HS4_MINIMAL_SLOT_SIZE := 280.0
 const HS4_MINIMAL_BASE_STATS := HeroSelectConstants.HERO_BASE_STATS
 const HS4_MINIMAL_PREVIEW_MIN_SIZE := 320.0
 const HS4_MINIMAL_PREVIEW_MAX_SIZE := 660.0
-const HS4_MINIMAL_SLOT_MIN_SIZE := 184.0
+const HS4_MINIMAL_SLOT_MIN_SIZE := 180.0
 const HS4_MINIMAL_SLOT_MAX_SIZE := 320.0
-const HS4_MINIMAL_ASCENSION_MIN_HEIGHT := 84.0
-const HS4_MINIMAL_ASCENSION_MAX_HEIGHT := 138.0
 
 # SCRUM-489: координатная спека @2560×1440 — экран «Выбор героя v4» (полноэкранный).
 # ВАЖНО: билдер _build_character_select_v4 НЕ использует нормализованные доли HS4_* (выше,
@@ -1168,18 +1314,7 @@ const HS4_MINIMAL_ASCENSION_MAX_HEIGHT := 138.0
 # Доли HS4_* (Rect2 в долях) НЕ совпадают с этими px (напр. HS4_PORTRAIT_FRAME долями ≈
 # (51,194,632,835) против реальных (56,179,661,959)) — оставлены для mockup-валидации, НЕ трогать.
 const HS4_DESIGN_BASE_2K := Vector2(2560.0, 1440.0)
-const HS4_TITLE_2K := Rect2(56, 40, 2448, 122)
-const HS4_BACK_2K := Rect2(56, 74, 218, 54)                  # compact runtime back button centered inside title band
-const HS4_PORTRAIT_FRAME_2K := Rect2(56, 179, 661, 959)
-const HS4_PORTRAIT_SAFE_2K := Rect2(114, 251, 545, 821)       # frame content margins: 58/72/58/66
-const HS4_DOSSIER_2K := Rect2(753, 179, 1091, 959)            # x = 56 + 661 + gap 36
-const HS4_RADAR_2K := Rect2(1880, 179, 624, 959)             # x = 753 + 1091 + gap 36
-const HS4_CAROUSEL_2K := Rect2(56, 1155, 2448, 245)
-const HS4_CHOOSE_BTN_2K := Rect2(0, 0, 512, 89)              # шаблон (shrink_center в dossier-VBox)
-const HS4_ASC_BTN_2K := Rect2(0, 0, 102, 72)                 # шаблон ±-кнопок возвышения
-# Карусель SCRUM-561: content-zone comes from hs4_carousel_panel; thumbnails stay square inside the safe band.
-const HS4_CAROUSEL_SLOT_2K := Rect2(237, 1230, 101, 101)     # square slot inside hud-strip content safe area
-const HS4_CAROUSEL_SLOT_STEP_2K := 248.0
+# Карусель SCRUM-561: thumbnails stay square inside the safe band of the carousel strip.
 const HS4_PIXELLAB_DIR := "res://assets/sprites/ui/frames/hero_select_pixellab/"
 const HS4_PIXELLAB_PATHS := {
 	"background": HS4_PIXELLAB_DIR + "background.png",
@@ -1227,16 +1362,6 @@ const HS4_PIXELLAB_CONTENT_RECT := {
 	"carousel_right": Rect2(36, 42, 60, 92),
 	"hero_slot": Rect2(18, 18, 160, 160),
 }
-const HS4_PIXELLAB_LAYOUT_2K := {
-	"back": Rect2(100, 86, 460, 148),
-	"title": Rect2(240, 6, 1840, 184),
-	"portrait": Rect2(64, 178, 600, 820),
-	"dossier": Rect2(720, 178, 980, 820),
-	"radar": Rect2(1716, 178, 780, 520),
-	"ascension": Rect2(1714, 728, 780, 270),
-	"choose": Rect2(1012, 998, 512, 118),
-	"carousel": Rect2(64, 1080, 2432, 330),
-}
 
 
 func _hs4_scaled_rect(zone: Rect2, canvas_size: Vector2) -> Rect2:
@@ -1277,6 +1402,32 @@ func _hs4_pixellab_style(slot: String, display_size: Vector2, tint := Color.WHIT
 		return _minimal_metal_frame_style("panel", tint)
 	var margins := _hs4_pixellab_content_margins(slot, display_size)
 	return _global_texture_style(str(HS4_PIXELLAB_PATHS[slot]), margins, tint, margins, false)
+
+
+func _hs4_apply_wide_control_style(button: Button, display_size: Vector2) -> void:
+	UIButtonFamily.assign(button, "hero_carousel_arrow")
+	# SCRUM-1063: the accepted textless PixelLab Ascension plate is the universal
+	# horizontal source for carousel and Ascension controls. StyleBoxTexture keeps
+	# its corners intact while only the calm centre stretches; all runtime glyphs
+	# remain inside the authored Rect2(32,22,68,48) content zone.
+	button.add_theme_stylebox_override("normal", _hs4_pixellab_style("asc_minus", display_size, Color.WHITE))
+	button.add_theme_stylebox_override("hover", _hs4_pixellab_style("asc_minus", display_size, Color(1.08, 1.04, 0.92, 1.0)))
+	button.add_theme_stylebox_override("focus", _hs4_pixellab_style("asc_minus", display_size, Color(1.08, 1.04, 0.92, 1.0)))
+	button.add_theme_stylebox_override("pressed", _hs4_pixellab_style("asc_minus", display_size, Color(0.82, 0.76, 0.66, 1.0)))
+	button.add_theme_stylebox_override("disabled", _hs4_pixellab_style("asc_minus", display_size, Color(0.46, 0.46, 0.50, 0.72)))
+	button.add_theme_color_override("font_color", Color(0.98, 0.91, 0.66, 1.0))
+	button.add_theme_color_override("font_hover_color", Color(1.0, 0.98, 0.82, 1.0))
+	button.add_theme_color_override("font_focus_color", Color(1.0, 0.98, 0.82, 1.0))
+	button.add_theme_color_override("font_pressed_color", Color(0.90, 0.82, 0.62, 1.0))
+	button.add_theme_font_size_override("font_size", SemanticTypography.resolve_fixed(
+		SemanticTypography.ROLE_ACTION,
+		clampi(int(roundf(display_size.y * 0.28)), 20, 38),
+		SemanticTypography.role_min(SemanticTypography.ROLE_ACTION),
+		SemanticTypography.role_max(SemanticTypography.ROLE_ACTION)
+	))
+	button.set_meta("hero_wide_control_source", HS4_PIXELLAB_PATHS["asc_minus"])
+	button.set_meta("hero_wide_control_source_size", HS4_PIXELLAB_SOURCE_SIZE["asc_minus"])
+	button.set_meta("hero_wide_control_content_rect", HS4_PIXELLAB_CONTENT_RECT["asc_minus"])
 
 
 func _hs4_overlay_style(fill: Color, border: Color = Color(0, 0, 0, 0), border_width := 0) -> StyleBoxFlat:
@@ -1355,44 +1506,15 @@ func _advance_hero_select_portrait_preview(portrait: TextureRect, preview_state:
 		return
 
 
-func _hs4_minimal_style(fill: Color, border := Color(0.0, 0.0, 0.0, 0.0), border_width := 0, radius := 4) -> StyleBoxFlat:
-	var style := StyleBoxFlat.new()
-	style.bg_color = fill
-	style.border_color = border
-	style.set_border_width_all(border_width)
-	style.set_corner_radius_all(radius)
-	style.content_margin_left = 10
-	style.content_margin_top = 8
-	style.content_margin_right = 10
-	style.content_margin_bottom = 8
-	return style
-
-
-func _apply_hs4_minimal_button_theme(button: Button, selected := false) -> void:
-	var normal_border := Color(0.70, 0.55, 0.26, 0.72) if selected else Color(0.18, 0.18, 0.18, 0.52)
-	var normal_fill := Color(0.03, 0.03, 0.032, 0.86) if selected else Color(0.0, 0.0, 0.0, 0.06)
-	button.add_theme_stylebox_override("normal", _hs4_minimal_style(normal_fill, normal_border, 1 if selected else 0, 3))
-	button.add_theme_stylebox_override("hover", _hs4_minimal_style(Color(0.12, 0.085, 0.035, 0.52), Color(0.96, 0.76, 0.35, 0.90), 1, 3))
-	button.add_theme_stylebox_override("focus", _hs4_minimal_style(Color(0.13, 0.09, 0.035, 0.58), Color(1.0, 0.86, 0.44, 1.0), 2, 3))
-	button.add_theme_stylebox_override("pressed", _hs4_minimal_style(Color(0.20, 0.11, 0.035, 0.70), Color(0.78, 0.52, 0.20, 0.95), 1, 3))
-	button.add_theme_stylebox_override("disabled", _hs4_minimal_style(Color(0.0, 0.0, 0.0, 0.16), Color(0.12, 0.12, 0.14, 0.48), 1, 3))
-	button.add_theme_color_override("font_color", Color(0.94, 0.88, 0.72, 1.0))
-	button.add_theme_color_override("font_hover_color", Color(1.0, 0.96, 0.78, 1.0))
-	button.add_theme_color_override("font_focus_color", Color(1.0, 0.96, 0.78, 1.0))
-	button.add_theme_color_override("font_pressed_color", Color(0.86, 1.0, 0.96, 1.0))
-	button.add_theme_color_override("font_disabled_color", Color(0.46, 0.48, 0.52, 1.0))
-
-
-func _hs4_stat_tooltip(stat_id: String, value: float, character_id: String) -> String:
+# SCRUM-851: тултип стата краткий — «Имя — значение» + человеческое описание.
+# Формулы, тех-листинги производных и классовые интерпретации — в кодекс, не в ховер.
+func _hs4_stat_tooltip(stat_id: String, value: float, _character_id: String) -> String:
 	var definition: Dictionary = StatFormulas.STAT_DEFINITIONS.get(stat_id, {})
 	var stat_name := str(game.PROGRESSION_DATA.STAT_NAMES.get(stat_id, stat_id))
-	return "%s\nЗначение: %d\n\n%s\n\nВлияет на: %s\nФормула: %s\nИнтерпретация класса: %s" % [
+	return "%s — %d\n%s" % [
 		stat_name,
 		int(round(value)),
 		str(definition.get("description", "")),
-		str(definition.get("influences", "")),
-		str(definition.get("formula", "")),
-		game.PROGRESSION_DATA.class_interpretation_text(character_id, stat_id),
 	]
 
 
@@ -1403,66 +1525,22 @@ func _hs4_ascension_text(level: int) -> String:
 	return "\n".join(lines)
 
 
-func _hs4_attribute_display_name(attr_id: String) -> String:
-	for entry in game.PROGRESSION_DATA.ATTRIBUTE_REGISTRY:
-		var item := entry as Dictionary
-		if str(item.get("id", "")) == attr_id:
-			return str(item.get("name", attr_id))
-	return str(game.PROGRESSION_DATA.STAT_NAMES.get(attr_id, attr_id))
-
-
-func _hs4_attribute_guidance_groups(character_id: String) -> Dictionary:
-	var groups := {
-		"primary": [],
-		"secondary": [],
-		"optional": [],
-	}
-	for entry in game.PROGRESSION_DATA.ATTRIBUTE_REGISTRY:
-		var item := entry as Dictionary
-		var attr_id := str(item.get("id", ""))
-		if attr_id == "":
-			continue
-		var relevance := str(game.PROGRESSION_DATA.attribute_relevance(attr_id, character_id))
-		if not groups.has(relevance):
-			relevance = "optional"
-		(groups[relevance] as Array).append(_hs4_attribute_display_name(attr_id))
-	return groups
-
-
-func _hs4_join_guidance_names(names: Array, max_items := 8) -> String:
-	if names.is_empty():
+func _hs4_join_dossier_names(entries: Array) -> String:
+	if entries.is_empty():
 		return "Нет."
-	var shown := PackedStringArray()
-	for i in range(mini(names.size(), max_items)):
-		shown.append(str(names[i]))
-	if names.size() > max_items:
-		shown.append("+%d" % (names.size() - max_items))
-	return ", ".join(shown)
+	var names := PackedStringArray()
+	for entry_value in entries:
+		var entry := entry_value as Dictionary
+		names.append(str(entry.get("name", entry.get("id", ""))))
+	return ", ".join(names)
 
 
 func _hs4_stat_fill_color(stat_id: String) -> Color:
-	var base := Color(0.92, 0.70, 0.28, 0.95)
-	if HERO_CLASS_COLORS.has(game.selected_character_id):
-		base = HERO_CLASS_COLORS[game.selected_character_id]
-	match stat_id:
-		"strength":
-			return Color(1.0, 0.34, 0.22, 0.95).lerp(base, 0.25)
-		"agility":
-			return Color(0.96, 0.76, 0.28, 0.95).lerp(base, 0.25)
-		"intelligence":
-			return Color(0.62, 0.42, 1.0, 0.95).lerp(base, 0.25)
-		"perception":
-			return Color(0.44, 0.72, 1.0, 0.95).lerp(base, 0.25)
-		"energy":
-			return Color(0.24, 0.88, 1.0, 0.95).lerp(base, 0.25)
-		"knowledge":
-			return Color(0.52, 0.92, 0.54, 0.95).lerp(base, 0.25)
-		"endurance":
-			return Color(0.92, 0.52, 0.32, 0.95).lerp(base, 0.25)
-		"leadership":
-			return Color(1.0, 0.86, 0.42, 0.95).lerp(base, 0.25)
-		_:
-			return base
+	return HeroSelectConstants.stat_accent_color(stat_id)
+
+
+func _hs4_stat_text_color(stat_id: String) -> Color:
+	return HeroSelectConstants.stat_text_color(stat_id)
 
 
 func _build_character_select_v4() -> void:
@@ -1475,58 +1553,170 @@ func _build_character_select_v4() -> void:
 	root.set_anchors_preset(Control.PRESET_FULL_RECT)
 	root.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	game.ui_layer.add_child(root)
+	_prepare_global_tooltips(root)
 
 	var vp: Vector2 = root.get_viewport_rect().size
 	if vp.x <= 0.0 or vp.y <= 0.0:
 		vp = Vector2(1600.0, 900.0)
 	var layout_scale := clampf(vp.y / 900.0, 0.76, 1.18)
+	var s := _atlas_ui_scale()
+	var action_h := _atlas_action_button_height()
 
-	var black_background := ColorRect.new()
-	black_background.name = "HS4BlackBackground"
-	black_background.set_anchors_preset(Control.PRESET_FULL_RECT)
-	black_background.color = Color.BLACK
-	black_background.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	root.add_child(black_background)
+	# SCRUM-879: единый атлас-стиль — фон-зал героев, контент строго в safe-зоне
+	# рамы, полая рама frame_border добавляется последней (поверх контента).
+	_unified_add_background(root, "hero_select")
+	var sm := _unified_safe_margins()
+	var content_rect := Rect2(Vector2(sm.x, sm.y), vp - Vector2(sm.x + sm.z, sm.y + sm.w))
 
-	var margin_x := clampf(vp.x * 0.035, 28.0, 76.0)
-	var top_y := clampf(vp.y * 0.052, 30.0, 70.0)
-	var bottom_margin := clampf(vp.y * 0.024, 16.0, 34.0)
-	var gap := clampf(vp.x * 0.026, 26.0, 58.0)
-	var carousel_slot_size := clampf(vp.y * 0.282, HS4_MINIMAL_SLOT_MIN_SIZE, HS4_MINIMAL_SLOT_MAX_SIZE)
-	var carousel_h := carousel_slot_size + clampf(vp.y * 0.025, 18.0, 32.0)
-	var carousel_y := vp.y - bottom_margin - carousel_h
-	var top_h := maxf(360.0, carousel_y - top_y - clampf(vp.y * 0.018, 12.0, 24.0))
-	var ascension_h := clampf(vp.y * 0.12, HS4_MINIMAL_ASCENSION_MIN_HEIGHT, HS4_MINIMAL_ASCENSION_MAX_HEIGHT)
-	var ascension_gap := clampf(vp.y * 0.012, 8.0, 12.0)
-	var ascension_reserved_h := 148.0
-	if vp.y < 720.0:
-		ascension_reserved_h = 88.0
-	elif vp.y < 1000.0:
-		ascension_reserved_h = 136.0
-	var left_w := clampf(vp.x * 0.33, 370.0, 660.0)
-	var preview_floor := 300.0 if vp.y < 720.0 else HS4_MINIMAL_PREVIEW_MIN_SIZE
-	var portrait_size := clampf(minf(left_w, top_h - ascension_reserved_h - ascension_gap), preview_floor, HS4_MINIMAL_PREVIEW_MAX_SIZE)
-	var left_x := margin_x
-	var dossier_x := left_x + left_w + gap
-	var dossier_w := maxf(420.0, vp.x - margin_x - dossier_x)
-
+	# --- Шапка: чип-титул слева, «Назад» на глобальном ките справа ---
+	var title_chip := _unified_header_chip("HS4", "Выбор героя", "hero_select", s)
+	title_chip.position = content_rect.position
+	root.add_child(title_chip)
 	var back_button := _make_button("Назад")
 	back_button.name = "HS4BackButton"
-	back_button.position = Vector2(margin_x, maxf(12.0, top_y - 50.0))
-	_set_action_button_size(back_button, 124.0, 44.0)
-	_apply_hs4_minimal_button_theme(back_button)
-	back_button.add_theme_font_size_override("font_size", _readable_font_size(maxi(12, int(round(14.0 * layout_scale))), 0, 24))
+	# Единый возврат (фидбек 2026-07-08): та же плита 260×h, что на всех экранах.
+	_set_action_button_size(back_button, 260.0, action_h)
+	back_button.position = Vector2(content_rect.end.x - 260.0, content_rect.position.y)
 	root.add_child(back_button)
 	back_button.pressed.connect(_show_main_menu)
+	# Реальная высота шапки: у кит-кнопки 9-slice минимум выше компактного
+	# action_h (контент-маргины ассета) — меряем фактический минимум.
+	var header_h := maxf(back_button.get_combined_minimum_size().y, action_h)
 
-	var portrait_panel := Control.new()
+	# Геометрия (SCRUM-882): единая шапка (чип-титул слева, «Назад» справа) над
+	# ОБЕИМИ колоннами; ниже слева колонна-витрина (портрет на пьедестале → CTA
+	# «Выбрать» у низа safe-зоны), справа досье → возвышение → карусель.
+	var column_gap := clampf(content_rect.size.x * 0.012, 8.0, 16.0)
+	var vgap := clampf(content_rect.size.y * 0.010, 4.0, 10.0)
+	var header_band := maxf(title_chip.get_combined_minimum_size().y + 4.0, header_h)
+	var baseline_carousel_slot_size := clampf(content_rect.size.y * 0.26, HS4_MINIMAL_SLOT_MIN_SIZE, HS4_MINIMAL_SLOT_MAX_SIZE)
+	# The fixed outer shell is narrow at 1152×648/1280×720. Uniformly scale the
+	# complete square cards there so the doubled arrows never reduce the window
+	# below three visible heroes or overlap a portrait/label.
+	var carousel_slot_size := baseline_carousel_slot_size
+	if vp.y <= 648.0:
+		carousel_slot_size = minf(carousel_slot_size, 116.0)
+	elif vp.y <= 720.0:
+		carousel_slot_size = minf(carousel_slot_size, 132.0)
+	var carousel_h := carousel_slot_size + clampf(content_rect.size.y * 0.012, 6.0, 14.0)
+	# SCRUM-1063 doubles the former responsive width exactly while preserving the
+	# pre-change height derived from the original slot tier: old aspect 0.75 -> 1.5.
+	var carousel_arrow_h := clampf(roundf(baseline_carousel_slot_size * 0.52), 84.0, 140.0)
+	var former_carousel_arrow_w := roundf(carousel_arrow_h * 0.75)
+	var carousel_arrow_size := Vector2(former_carousel_arrow_w * 2.0, carousel_arrow_h)
+	var carousel_min_w := 2.0 * carousel_arrow_size.x + 3.0 * HS4_MINIMAL_SLOT_MIN_SIZE + 4.0 * 6.0
+	if vp.y <= 720.0:
+		carousel_min_w = 2.0 * carousel_arrow_size.x + 3.0 * carousel_slot_size + 4.0 * 6.0
+	# CTA «Выбрать» — плита кнопок главного меню 380×104 (Правило 1: только
+	# пропорциональный даунскейл под ширину колонны, аспект не ломаем).
+	var choose_aspect := 104.0 / 380.0
+	var ascension_pad := roundf(clampf(9.0 * s, 4.0, 9.0))
+	# Utility button art has a 59px combined minimum at compact readability.
+	# Reserve that real minimum plus both content margins; using the requested
+	# 42px alone left the 720p row only 1–2px from/inside the decorative border.
+	var asc_utility_min_h := 59.0
+	var asc_min_h := maxf(62.0, asc_utility_min_h + ascension_pad * 2.0)
+	var asc_target_h := maxf(asc_min_h, clampf(content_rect.size.y * 0.115, 52.0, 100.0))
+	# SCRUM-1026: the 1080p/1440p contract promises the complete selected-level
+	# delta without an internal scrollbar. Level 5 is the longest supported copy;
+	# reserve four readable lines plus the unchanged frame padding. The band's
+	# bottom edge stays anchored above the carousel, so this grows upward only and
+	# consumes the already scroll-safe dossier budget. Compact 720p keeps the
+	# original band and its intentional keyboard/mouse/gamepad scroll path.
+	if vp.y >= 1000.0:
+		asc_target_h = maxf(asc_target_h, 132.0)
+	# All four wide controls share exact geometry. Grow the band upward when the
+	# preserved carousel height plus real frame padding exceeds the older band.
+	asc_target_h = maxf(asc_target_h, carousel_arrow_size.y + ascension_pad * 2.0)
+	# Вертикальный бюджет левой колонны: portrait + vgap + CTA. Возвышение после
+	# SCRUM-980 живёт в правой полосе и больше не отнимает высоту у preview.
+	var preview_floor := HS4_MINIMAL_PREVIEW_MIN_SIZE
+	if vp.y < 680.0:
+		preview_floor = 240.0
+	elif vp.y < 800.0:
+		preview_floor = 270.0
+	var left_x := content_rect.position.x
+	var left_top := content_rect.position.y + header_band + vgap
+	var column_budget := content_rect.end.y - left_top
+	var portrait_size := (column_budget - vgap) / (1.0 + choose_aspect)
+	if portrait_size > MAX_ACTION_BUTTON_VISUAL_WIDTH:
+		# Плита CTA шире 560 не растёт (глобальный кап кита) — высота фиксируется.
+		portrait_size = column_budget - vgap - roundf(MAX_ACTION_BUTTON_VISUAL_WIDTH * choose_aspect)
+	portrait_size = minf(portrait_size, content_rect.size.x * 0.34)
+	portrait_size = minf(portrait_size, content_rect.size.x - column_gap - carousel_min_w)
+	# Global action art caps at 560px; keep CTA at least 90% of the portrait
+	# column instead of allowing a visibly undersized plate on 1440p.
+	portrait_size = minf(portrait_size, MAX_ACTION_BUTTON_VISUAL_WIDTH / 0.90)
+	portrait_size = floorf(clampf(portrait_size, preview_floor, HS4_MINIMAL_PREVIEW_MAX_SIZE))
+	var choose_w := minf(portrait_size, MAX_ACTION_BUTTON_VISUAL_WIDTH)
+	var choose_h := maxf(roundf(choose_w * choose_aspect), 68.0)
+	# The 1152×648 shell's source-space gold border rounds 4 px inward compared
+	# with the generic safe-margin helper. Keep the CTA fully off that ornament.
+	var choose_bottom_reserve := 4.0 if vp.y <= 648.0 else 0.0
+	var choose_top := content_rect.end.y - choose_h - choose_bottom_reserve
+	var dossier_x := left_x + portrait_size + column_gap
+	var dossier_w := content_rect.end.x - dossier_x
+	# Фидбек SCRUM-882: top досье == top портрет-фрейма (одна линия под шапкой).
+	var dossier_y := left_top
+	var carousel_y := content_rect.end.y - carousel_h
+
+	# Счётчик карусели «N–M из K» — полупрозрачный чип над правым краем карусели.
+	# Создаётся до досье: его фактическая ширина резервирует правый сегмент полосы
+	# возвышения между досье и каруселью.
+	var carousel_counter := PanelContainer.new()
+	carousel_counter.name = "HS4CarouselCounter"
+	var counter_style := _atlas_translucent_style(0.55, 8.0)
+	counter_style.content_margin_left = 12.0
+	counter_style.content_margin_right = 12.0
+	counter_style.content_margin_top = 4.0
+	counter_style.content_margin_bottom = 4.0
+	carousel_counter.add_theme_stylebox_override("panel", counter_style)
+	carousel_counter.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	var carousel_counter_label := Label.new()
+	carousel_counter_label.name = "HS4CarouselCounterLabel"
+	carousel_counter_label.text = "88–88 из 88"
+	carousel_counter_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	carousel_counter_label.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
+	carousel_counter_label.add_theme_font_size_override("font_size", _readable_font_size(SemanticTypography.ROLE_VALUE, 12, 0, 18))
+	carousel_counter_label.add_theme_color_override("font_color", Color(0.92, 0.88, 0.72, 1.0))
+	carousel_counter.add_child(carousel_counter_label)
+	root.add_child(carousel_counter)
+	# SCRUM-980: полоса между досье и каруселью принадлежит отдельному правому
+	# фрейму возвышения. Счётчик карусели занимает правый край той же полосы,
+	# поэтому ни описание, ни +/- не делят вертикаль с левой CTA.
+	var ascension_h := asc_target_h
+	# The frame-safe 69px compact band must not steal height from the fixed
+	# eight-row stats column. At 720p reclaim that budget from the two decorative
+	# inter-panel gaps (still positive/non-overlapping); full sizes retain vgap.
+	var ascension_outer_gap := 1.0 if vp.y < 800.0 else vgap
+	var ascension_top := carousel_y - ascension_outer_gap - ascension_h
+	var dossier_h := maxf(0.0, ascension_top - ascension_outer_gap - dossier_y)
+
+	var portrait_panel := Panel.new()
 	portrait_panel.name = "HS4PortraitFrame"
-	portrait_panel.position = Vector2(left_x + maxf(0.0, (left_w - portrait_size) * 0.5), top_y)
+	portrait_panel.position = Vector2(left_x, left_top)
 	portrait_panel.size = Vector2(portrait_size, portrait_size)
 	portrait_panel.custom_minimum_size = portrait_panel.size
+	portrait_panel.add_theme_stylebox_override("panel", _atlas_chip_style(0.82, roundf(clampf(10.0 * s, 5.0, 10.0))))
 	portrait_panel.clip_contents = true
 	portrait_panel.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	root.add_child(portrait_panel)
+
+	# Пьедестал-подиум PixelLab: аспект-бокс 676:148 у нижней кромки портрет-фрейма,
+	# добавлен ДО портрета (под ним по z-порядку). Герой floor-align на верхнюю
+	# площадку — линия пола = верх бокса + 22% его высоты.
+	var pedestal := TextureRect.new()
+	pedestal.name = "HS4Pedestal"
+	pedestal.texture = game._cached_texture(ATLAS_STYLE_PEDESTAL_PATH)
+	pedestal.texture_filter = CanvasItem.TEXTURE_FILTER_NEAREST
+	pedestal.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
+	pedestal.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
+	pedestal.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	var pedestal_w := roundf(portrait_size * 0.86)
+	var pedestal_h := roundf(pedestal_w * 148.0 / 676.0)
+	pedestal.position = Vector2(roundf((portrait_size - pedestal_w) * 0.5), portrait_size - pedestal_h - maxf(6.0, roundf(portrait_size * 0.02)))
+	pedestal.size = Vector2(pedestal_w, pedestal_h)
+	portrait_panel.add_child(pedestal)
 	var portrait := TextureRect.new()
 	portrait.name = "HS4Portrait"
 	portrait.texture_filter = CanvasItem.TEXTURE_FILTER_NEAREST
@@ -1593,8 +1783,9 @@ func _build_character_select_v4() -> void:
 		texture_rect.offset_right = left + draw_size.x
 		texture_rect.offset_bottom = top + draw_size.y
 	var position_main_portrait := func(texture: Texture2D) -> void:
-		var floor_y := portrait_panel.size.y - maxf(6.0, roundf(portrait_panel.size.y * 0.025))
-		var visible_target := Vector2(portrait_panel.size.x * 0.86, portrait_panel.size.y * 0.92)
+		# Floor-align на верхнюю площадку пьедестала (верх бокса + 22% высоты).
+		var floor_y := pedestal.position.y + roundf(pedestal.size.y * 0.22)
+		var visible_target := Vector2(portrait_panel.size.x * 0.86, maxf(96.0, floor_y - maxf(10.0, roundf(portrait_panel.size.y * 0.05))))
 		position_alpha_cropped_texture.call(portrait, texture, portrait_panel.size, visible_target, floor_y, portrait_panel.size.x * 0.5)
 	var portrait_preview_state := {
 		"character_id": "",
@@ -1612,145 +1803,245 @@ func _build_character_select_v4() -> void:
 		position_main_portrait.call(portrait.texture)
 	)
 
+	var dossier_chip_pad := roundf(clampf(12.0 * s, 6.0, 12.0))
 	var dossier_panel := PanelContainer.new()
 	dossier_panel.name = "HS4DossierFrame"
-	dossier_panel.position = Vector2(dossier_x, top_y)
-	dossier_panel.size = Vector2(dossier_w, top_h)
-	dossier_panel.add_theme_stylebox_override("panel", _hs4_minimal_style(Color(0.018, 0.018, 0.022, 0.72), Color(0.34, 0.28, 0.18, 0.64), 1, 4))
+	dossier_panel.position = Vector2(dossier_x, dossier_y)
+	dossier_panel.size = Vector2(dossier_w, dossier_h)
+	dossier_panel.add_theme_stylebox_override("panel", _atlas_chip_style(0.88, dossier_chip_pad))
 	dossier_panel.mouse_filter = Control.MOUSE_FILTER_PASS
 	root.add_child(dossier_panel)
 
+	var dossier_margin_side := maxi(14, int(round(20.0 * layout_scale)))
+	var dossier_margin_v := maxi(12, int(round(16.0 * layout_scale)))
 	var dossier_margin := MarginContainer.new()
 	dossier_margin.name = "HS4DossierContentSafe"
-	dossier_margin.add_theme_constant_override("margin_left", maxi(14, int(round(20.0 * layout_scale))))
-	dossier_margin.add_theme_constant_override("margin_top", maxi(12, int(round(16.0 * layout_scale))))
-	dossier_margin.add_theme_constant_override("margin_right", maxi(14, int(round(20.0 * layout_scale))))
-	dossier_margin.add_theme_constant_override("margin_bottom", maxi(12, int(round(16.0 * layout_scale))))
+	dossier_margin.add_theme_constant_override("margin_left", dossier_margin_side)
+	dossier_margin.add_theme_constant_override("margin_top", dossier_margin_v)
+	dossier_margin.add_theme_constant_override("margin_right", dossier_margin_side)
+	dossier_margin.add_theme_constant_override("margin_bottom", dossier_margin_v)
 	dossier_panel.add_child(dossier_margin)
+
+	# SCRUM-887: досье из двух колонн — слева скролл текстов (растёт), справа
+	# фикс-колонна из 8 полос характеристик БЕЗ скролла (всегда все видимы).
+	var dossier_columns := HBoxContainer.new()
+	dossier_columns.name = "HS4DossierColumns"
+	dossier_columns.add_theme_constant_override("separation", maxi(10, int(round(14.0 * layout_scale))))
+	dossier_margin.add_child(dossier_columns)
 
 	var dossier_scroll := ScrollContainer.new()
 	dossier_scroll.name = "HS4DossierScroll"
 	dossier_scroll.horizontal_scroll_mode = ScrollContainer.SCROLL_MODE_DISABLED
 	dossier_scroll.vertical_scroll_mode = ScrollContainer.SCROLL_MODE_AUTO
+	dossier_scroll.focus_mode = Control.FOCUS_ALL
 	dossier_scroll.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	dossier_scroll.size_flags_vertical = Control.SIZE_EXPAND_FILL
-	dossier_margin.add_child(dossier_scroll)
+	dossier_columns.add_child(dossier_scroll)
 
 	var dossier_content := VBoxContainer.new()
 	dossier_content.name = "HS4DossierContent"
 	dossier_content.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-	dossier_content.add_theme_constant_override("separation", maxi(5, int(round(8.0 * layout_scale))))
+	dossier_content.add_theme_constant_override("separation", 4)
 	dossier_scroll.add_child(dossier_content)
+	# SCRUM-1046: a focusable ScrollContainer does not automatically provide the
+	# menu's scroll-first contract. Consume discrete vertical/page actions while
+	# copy remains, then hand focus to the declared Back/Choose neighbour only at
+	# the boundary. Keep this local to the dossier so gameplay/global input and
+	# configurable controller bindings remain authoritative.
+	dossier_scroll.tooltip_text = "Досье героя. Прокрутка: ↑/↓, Page Up/Page Down или колесо мыши."
+	dossier_scroll.gui_input.connect(func(event: InputEvent) -> void:
+		var scroll_direction := 0
+		if event.is_action_pressed("ui_down") or event.is_action_pressed("ui_page_down"):
+			scroll_direction = 1
+		elif event.is_action_pressed("ui_up") or event.is_action_pressed("ui_page_up"):
+			scroll_direction = -1
+		if scroll_direction == 0:
+			return
+		var scrollbar := dossier_scroll.get_v_scroll_bar()
+		var scroll_max := maxi(0, int(ceil(scrollbar.max_value - scrollbar.page)))
+		var scroll_step := maxi(12, int(round(dossier_scroll.size.y * 0.65)))
+		var previous_scroll := dossier_scroll.scroll_vertical
+		var target_scroll := clampi(previous_scroll + scroll_direction * scroll_step, 0, scroll_max)
+		if target_scroll == previous_scroll:
+			var side := SIDE_BOTTOM if scroll_direction > 0 else SIDE_TOP
+			var boundary_neighbor := dossier_scroll.find_valid_focus_neighbor(side)
+			if boundary_neighbor != null:
+				boundary_neighbor.grab_focus()
+				dossier_scroll.accept_event()
+			return
+		dossier_scroll.scroll_vertical = target_scroll
+		dossier_scroll.accept_event()
+	)
+
+	# SCRUM-1064: the optional canonical trait is the first dossier block. Hidden
+	# traits collapse completely in the VBox, so name becomes first without a gap.
+	# The title/body stay as native labels inside the existing scroll-safe content
+	# zone; no generated ornament or frame is used as a live text surface.
+	var trait_heading := Label.new()
+	trait_heading.name = "HS4TraitHeading"
+	trait_heading.horizontal_alignment = HORIZONTAL_ALIGNMENT_LEFT
+	trait_heading.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	trait_heading.add_theme_font_size_override("font_size", SemanticTypography.resolve_fixed(
+		SemanticTypography.ROLE_SECTION,
+		_readable_font_size(SemanticTypography.ROLE_SECTION, maxi(11, int(round(14.0 * layout_scale))), 0, 21),
+		SemanticTypography.role_min(SemanticTypography.ROLE_SECTION),
+		SemanticTypography.role_max(SemanticTypography.ROLE_SECTION)
+	))
+	trait_heading.add_theme_color_override("font_color", Color(0.94, 0.80, 0.46, 1.0))
+	trait_heading.mouse_filter = Control.MOUSE_FILTER_PASS
+	dossier_content.add_child(trait_heading)
 
 	var name_label := Label.new()
 	name_label.name = "HS4NameLabel"
 	name_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_LEFT
-	name_label.add_theme_font_size_override("font_size", _readable_font_size(maxi(20, int(round(30.0 * layout_scale))), 0, 44))
-	name_label.add_theme_color_override("font_color", Color(0.98, 0.88, 0.56, 1.0))
+	name_label.add_theme_font_size_override("font_size", _readable_font_size(SemanticTypography.ROLE_TITLE, maxi(20, int(round(30.0 * layout_scale))), 0, 44))
+	name_label.add_theme_color_override("font_color", Color(0.96, 0.90, 0.68, 1.0))
 	dossier_content.add_child(name_label)
-
-	var desc_label := Label.new()
-	desc_label.name = "HS4Description"
-	desc_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
-	desc_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_LEFT
-	desc_label.max_lines_visible = 3
-	desc_label.text_overrun_behavior = TextServer.OVERRUN_TRIM_ELLIPSIS
-	desc_label.add_theme_font_size_override("font_size", _readable_font_size(maxi(12, int(round(16.0 * layout_scale))), 0, 24))
-	desc_label.add_theme_color_override("font_color", Color(0.86, 0.89, 0.96, 1.0))
-	dossier_content.add_child(desc_label)
-
-	var strengths_label := Label.new()
-	strengths_label.name = "HS4Strengths"
-	strengths_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
-	strengths_label.max_lines_visible = 2
-	strengths_label.text_overrun_behavior = TextServer.OVERRUN_TRIM_ELLIPSIS
-	strengths_label.add_theme_font_size_override("font_size", _readable_font_size(maxi(11, int(round(15.0 * layout_scale))), 0, 22))
-	strengths_label.add_theme_color_override("font_color", Color(0.78, 0.94, 0.74, 1.0))
-	dossier_content.add_child(strengths_label)
-
-	var weaknesses_label := Label.new()
-	weaknesses_label.name = "HS4Weaknesses"
-	weaknesses_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
-	weaknesses_label.max_lines_visible = 2
-	weaknesses_label.text_overrun_behavior = TextServer.OVERRUN_TRIM_ELLIPSIS
-	weaknesses_label.add_theme_font_size_override("font_size", _readable_font_size(maxi(11, int(round(15.0 * layout_scale))), 0, 22))
-	weaknesses_label.add_theme_color_override("font_color", Color(0.95, 0.62, 0.58, 1.0))
-	dossier_content.add_child(weaknesses_label)
 
 	var weapon_label := Label.new()
 	weapon_label.name = "HS4Weapon"
 	weapon_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
-	weapon_label.max_lines_visible = 2
-	weapon_label.text_overrun_behavior = TextServer.OVERRUN_TRIM_ELLIPSIS
+	weapon_label.max_lines_visible = -1
+	weapon_label.text_overrun_behavior = TextServer.OVERRUN_NO_TRIMMING
 	weapon_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_LEFT
-	weapon_label.add_theme_font_size_override("font_size", _readable_font_size(maxi(11, int(round(14.0 * layout_scale))), 0, 22))
-	weapon_label.add_theme_color_override("font_color", Color(0.84, 0.90, 1.0, 0.96))
+	weapon_label.add_theme_font_size_override("font_size", SemanticTypography.resolve_fixed(
+		SemanticTypography.ROLE_BODY,
+		_readable_font_size(SemanticTypography.ROLE_BODY, maxi(11, int(round(14.0 * layout_scale))), 0, 22),
+		SemanticTypography.role_min(SemanticTypography.ROLE_BODY),
+		SemanticTypography.role_max(SemanticTypography.ROLE_BODY)
+	))
+	weapon_label.add_theme_color_override("font_color", Color(0.88, 0.92, 0.98, 1.0))
 	weapon_label.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	dossier_content.add_child(weapon_label)
 
-	var identity_label := Label.new()
-	identity_label.name = "HS4Identity"
-	identity_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
-	identity_label.max_lines_visible = 2
-	identity_label.text_overrun_behavior = TextServer.OVERRUN_TRIM_ELLIPSIS
-	identity_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_LEFT
-	identity_label.add_theme_font_size_override("font_size", _readable_font_size(maxi(10, int(round(13.0 * layout_scale))), 0, 20))
-	identity_label.add_theme_color_override("font_color", Color(0.72, 0.76, 0.84, 1.0))
-	identity_label.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	dossier_content.add_child(identity_label)
+	var leading_stats_label := Label.new()
+	leading_stats_label.name = "HS4LeadingBaseStats"
+	leading_stats_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	leading_stats_label.max_lines_visible = -1
+	leading_stats_label.text_overrun_behavior = TextServer.OVERRUN_NO_TRIMMING
+	leading_stats_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_LEFT
+	leading_stats_label.add_theme_font_size_override("font_size", SemanticTypography.resolve_fixed(
+		SemanticTypography.ROLE_BODY,
+		_readable_font_size(SemanticTypography.ROLE_BODY, maxi(11, int(round(14.0 * layout_scale))), 0, 22),
+		SemanticTypography.role_min(SemanticTypography.ROLE_BODY),
+		SemanticTypography.role_max(SemanticTypography.ROLE_BODY)
+	))
+	leading_stats_label.add_theme_color_override("font_color", Color(0.94, 0.80, 0.46, 1.0))
+	dossier_content.add_child(leading_stats_label)
+
+	# SCRUM-887/951: характеристики не скроллятся. Full-size остаётся одной
+	# вертикальной колонной; 720p использует PixelLab-specified 2x4 reflow, чтобы
+	# имя и число не исчезали и цвет не становился единственным носителем смысла.
+	# Высоты решает арифметика (не min-size детей): хост — обычный Control.
+	var compact_stat_grid := vp.y < 800.0
+	var stat_grid_columns := 2 if compact_stat_grid else 1
+	var stat_grid_rows := 4 if compact_stat_grid else 8
+	var stats_col_w := 320.0 if compact_stat_grid else clampf(300.0 * layout_scale, 220.0, 320.0)
+	var stats_inner_h := dossier_h - 2.0 * dossier_chip_pad - 2.0 * float(dossier_margin_v)
+	var stats_column := Control.new()
+	stats_column.name = "HS4StatsColumn"
+	stats_column.custom_minimum_size = Vector2(stats_col_w, 0.0)
+	stats_column.mouse_filter = Control.MOUSE_FILTER_PASS
+	dossier_columns.add_child(stats_column)
+
+	var stats_title_font := _readable_font_size(SemanticTypography.ROLE_TITLE, maxi(11, int(round(14.0 * layout_scale))), 0, 22)
+	var stats_title_band := roundf(float(stats_title_font) * 1.5) + 6.0
+	# Норма: ряд 34–52px; тесный бюджет использует compact paddings. 720p уже
+	# reflowed в четыре ряда, поэтому сохраняет текст вместо bar-only fallback.
+	var stat_row_sep := clampf(roundf(4.0 * layout_scale), 3.0, 6.0)
+	var stat_separator_count := stat_grid_rows - 1
+	var stat_row_h := clampf(floorf((stats_inner_h - stats_title_band - float(stat_separator_count) * stat_row_sep) / float(stat_grid_rows)), 34.0, 52.0)
+	var stat_row_style_pad := 8.0
+	var stat_row_pad_v := 5.0
+	var stat_row_pad_h := 8.0
+	if stats_title_band + float(stat_grid_rows) * stat_row_h + float(stat_separator_count) * stat_row_sep > stats_inner_h + 0.5:
+		stat_row_sep = 3.0 if compact_stat_grid else 2.0
+		stat_row_style_pad = 4.0
+		stat_row_pad_v = 1.0
+		stat_row_pad_h = 6.0
+		stat_row_h = floorf((stats_inner_h - stats_title_band - float(stat_separator_count) * stat_row_sep) / float(stat_grid_rows))
+	var stat_rows_show_text := compact_stat_grid or stat_row_h >= 14.0
+	if not stat_rows_show_text:
+		stat_row_style_pad = 2.0
+		stat_row_h = maxf(10.0, stat_row_h)
 
 	var stats_title := Label.new()
 	stats_title.name = "HS4StatsTitle"
-	stats_title.text = "Основные характеристики"
+	stats_title.text = "Характеристики"
 	stats_title.horizontal_alignment = HORIZONTAL_ALIGNMENT_LEFT
-	stats_title.add_theme_font_size_override("font_size", _readable_font_size(maxi(11, int(round(14.0 * layout_scale))), 0, 22))
-	stats_title.add_theme_color_override("font_color", Color(0.98, 0.86, 0.52, 1.0))
-	dossier_content.add_child(stats_title)
+	stats_title.text_overrun_behavior = TextServer.OVERRUN_TRIM_ELLIPSIS
+	stats_title.position = Vector2.ZERO
+	stats_title.size = Vector2(stats_col_w, maxf(0.0, stats_title_band - 4.0))
+	stats_title.add_theme_font_size_override("font_size", SemanticTypography.resolve_fixed(
+		SemanticTypography.ROLE_TITLE,
+		stats_title_font,
+		SemanticTypography.role_min(SemanticTypography.ROLE_TITLE),
+		SemanticTypography.role_max(SemanticTypography.ROLE_TITLE)
+	))
+	stats_title.add_theme_color_override("font_color", Color(0.78, 0.66, 0.44, 1.0))
+	stats_column.add_child(stats_title)
 
 	var stats_grid := GridContainer.new()
 	stats_grid.name = "HS4StatsGrid"
-	stats_grid.columns = 2
-	stats_grid.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-	stats_grid.add_theme_constant_override("h_separation", maxi(8, int(round(12.0 * layout_scale))))
-	stats_grid.add_theme_constant_override("v_separation", maxi(5, int(round(7.0 * layout_scale))))
-	dossier_content.add_child(stats_grid)
+	stats_grid.columns = stat_grid_columns
+	stats_grid.position = Vector2(0.0, stats_title_band)
+	stats_grid.size = Vector2(stats_col_w, maxf(0.0, stats_inner_h - stats_title_band))
+	stats_grid.add_theme_constant_override("v_separation", int(stat_row_sep))
+	var stat_column_sep := 6.0 if compact_stat_grid else 0.0
+	stats_grid.add_theme_constant_override("h_separation", int(stat_column_sep))
+	stats_column.add_child(stats_grid)
 	var stat_buttons := {}
 	var stat_fill_nodes := {}
 	var stat_value_labels := {}
-	var stat_button_w := maxf(180.0, (dossier_w - 64.0) * 0.5)
-	var stat_button_h := maxf(38.0, roundf(42.0 * layout_scale))
+	# SCRUM-951: the former 12px base produced a 26px Label line box inside
+	# 21px rows at 1080p. Use a stat-only compact step so visible text/bar tracks
+	# stay within the accepted dossier geometry; 2K still scales upward.
+	var stat_text_font_size := _readable_font_size(SemanticTypography.ROLE_BODY, maxi(8, int(round(10.0 * layout_scale))), 0, 18)
+	var stat_cell_w := floorf((stats_col_w - stat_column_sep * float(stat_grid_columns - 1)) / float(stat_grid_columns))
 	for sid in HS4_MINIMAL_BASE_STATS:
 		var stat_button := Button.new()
 		stat_button.name = "HS4Stat_%s" % sid
-		stat_button.custom_minimum_size = Vector2(stat_button_w, stat_button_h)
+		stat_button.custom_minimum_size = Vector2(stat_cell_w, stat_row_h)
 		stat_button.mouse_default_cursor_shape = Control.CURSOR_HELP
 		stat_button.focus_mode = Control.FOCUS_ALL
 		stat_button.text = ""
-		stat_button.add_theme_font_size_override("font_size", _readable_font_size(maxi(10, int(round(12.0 * layout_scale))), 0, 18))
-		_apply_hs4_minimal_button_theme(stat_button)
+		stat_button.add_theme_font_size_override("font_size", SemanticTypography.resolve_fixed(
+			SemanticTypography.ROLE_ACTION,
+			_readable_font_size(SemanticTypography.ROLE_ACTION, maxi(10, int(round(12.0 * layout_scale))), 0, 18),
+			SemanticTypography.role_min(SemanticTypography.ROLE_ACTION),
+			SemanticTypography.role_max(SemanticTypography.ROLE_ACTION)
+		))
+		_unified_apply_row_theme(stat_button, stat_row_style_pad)
 		var stat_row := HBoxContainer.new()
 		stat_row.name = "HS4StatLine_%s" % sid
 		stat_row.set_anchors_preset(Control.PRESET_FULL_RECT)
-		stat_row.offset_left = 8.0
-		stat_row.offset_right = -8.0
-		stat_row.offset_top = 5.0
-		stat_row.offset_bottom = -5.0
-		stat_row.add_theme_constant_override("separation", maxi(5, int(round(7.0 * layout_scale))))
+		stat_row.offset_left = stat_row_pad_h
+		stat_row.offset_right = -stat_row_pad_h
+		stat_row.offset_top = stat_row_pad_v
+		stat_row.offset_bottom = -stat_row_pad_v
+		stat_row.add_theme_constant_override("separation", 3 if compact_stat_grid else maxi(5, int(round(7.0 * layout_scale))))
 		stat_row.mouse_filter = Control.MOUSE_FILTER_IGNORE
 		stat_button.add_child(stat_row)
 		var stat_name := Label.new()
 		stat_name.name = "HS4StatName_%s" % sid
-		stat_name.custom_minimum_size = Vector2(maxf(72.0, 92.0 * layout_scale), 0.0)
+		stat_name.custom_minimum_size = Vector2(90.0 if compact_stat_grid else 126.0, 0.0)
 		stat_name.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
 		stat_name.text = str(game.PROGRESSION_DATA.STAT_NAMES.get(sid, sid))
 		stat_name.text_overrun_behavior = TextServer.OVERRUN_TRIM_ELLIPSIS
-		stat_name.add_theme_font_size_override("font_size", _readable_font_size(maxi(9, int(round(12.0 * layout_scale))), 0, 18))
-		stat_name.add_theme_color_override("font_color", Color(0.88, 0.84, 0.74, 1.0))
+		stat_name.visible = stat_rows_show_text
+		stat_name.add_theme_font_size_override("font_size", SemanticTypography.resolve_fixed(
+			SemanticTypography.ROLE_FIELD,
+			stat_text_font_size,
+			SemanticTypography.role_min(SemanticTypography.ROLE_FIELD),
+			SemanticTypography.role_max(SemanticTypography.ROLE_FIELD)
+		))
+		stat_name.add_theme_color_override("font_color", _hs4_stat_text_color(sid))
 		stat_row.add_child(stat_name)
 		var bar_bg := ColorRect.new()
 		bar_bg.name = "HS4StatBar_%s" % sid
-		bar_bg.custom_minimum_size = Vector2(maxf(72.0, 126.0 * layout_scale), maxf(10.0, 12.0 * layout_scale))
+		bar_bg.custom_minimum_size = Vector2(28.0 if compact_stat_grid else maxf(64.0, 96.0 * layout_scale), maxf(8.0, minf(12.0 * layout_scale, stat_row_h - 2.0 * stat_row_pad_v)))
 		bar_bg.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+		bar_bg.size_flags_vertical = Control.SIZE_SHRINK_CENTER
 		bar_bg.color = Color(0.09, 0.085, 0.075, 0.92)
 		bar_bg.mouse_filter = Control.MOUSE_FILTER_IGNORE
 		stat_row.add_child(bar_bg)
@@ -1763,53 +2054,76 @@ func _build_character_select_v4() -> void:
 		bar_bg.add_child(bar_fill)
 		var stat_value := Label.new()
 		stat_value.name = "HS4StatValue_%s" % sid
-		stat_value.custom_minimum_size = Vector2(maxf(22.0, 28.0 * layout_scale), 0.0)
+		stat_value.custom_minimum_size = Vector2(18.0 if compact_stat_grid else maxf(22.0, 28.0 * layout_scale), 0.0)
 		stat_value.horizontal_alignment = HORIZONTAL_ALIGNMENT_RIGHT
 		stat_value.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
-		stat_value.add_theme_font_size_override("font_size", _readable_font_size(maxi(9, int(round(12.0 * layout_scale))), 0, 18))
-		stat_value.add_theme_color_override("font_color", Color(0.96, 0.90, 0.70, 1.0))
+		stat_value.visible = stat_rows_show_text
+		stat_value.add_theme_font_size_override("font_size", SemanticTypography.resolve_fixed(
+			SemanticTypography.ROLE_VALUE,
+			stat_text_font_size,
+			SemanticTypography.role_min(SemanticTypography.ROLE_VALUE),
+			SemanticTypography.role_max(SemanticTypography.ROLE_VALUE)
+		))
+		stat_value.add_theme_color_override("font_color", _hs4_stat_text_color(sid))
 		stat_row.add_child(stat_value)
 		stats_grid.add_child(stat_button)
 		stat_buttons[sid] = stat_button
 		stat_fill_nodes[sid] = bar_fill
 		stat_value_labels[sid] = stat_value
 
-	var guidance_title := Label.new()
-	guidance_title.name = "HS4BuildGuidanceTitle"
-	guidance_title.text = "Подсказки билда"
-	guidance_title.horizontal_alignment = HORIZONTAL_ALIGNMENT_LEFT
-	guidance_title.add_theme_font_size_override("font_size", _readable_font_size(maxi(11, int(round(14.0 * layout_scale))), 0, 22))
-	guidance_title.add_theme_color_override("font_color", Color(0.98, 0.86, 0.52, 1.0))
-	dossier_content.add_child(guidance_title)
-
 	var guidance_labels := {}
-	for relevance in HeroSelectConstants.HERO_BUILD_RELEVANCE_ORDER:
+	for relevance in ["primary", "secondary", "weak"]:
 		var guide_label := Label.new()
 		guide_label.name = "HS4BuildGuidance_%s" % relevance
 		guide_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
-		guide_label.max_lines_visible = 2 if relevance != "optional" else 1
-		guide_label.text_overrun_behavior = TextServer.OVERRUN_TRIM_ELLIPSIS
-		guide_label.add_theme_font_size_override("font_size", _readable_font_size(maxi(10, int(round(13.0 * layout_scale))), 0, 20))
-		guide_label.add_theme_color_override("font_color", Color(0.78, 0.82, 0.90, 1.0))
+		guide_label.max_lines_visible = -1
+		guide_label.text_overrun_behavior = TextServer.OVERRUN_NO_TRIMMING
+		guide_label.add_theme_font_size_override("font_size", SemanticTypography.resolve_fixed(
+			SemanticTypography.ROLE_DESCRIPTION,
+			_readable_font_size(SemanticTypography.ROLE_DESCRIPTION, maxi(10, int(round(13.0 * layout_scale))), 0, 20),
+			SemanticTypography.role_min(SemanticTypography.ROLE_DESCRIPTION),
+			SemanticTypography.role_max(SemanticTypography.ROLE_DESCRIPTION)
+		))
+		guide_label.add_theme_color_override("font_color", Color(0.88, 0.92, 0.98, 1.0))
 		dossier_content.add_child(guide_label)
 		guidance_labels[relevance] = guide_label
 
-	var ascension_panel := VBoxContainer.new()
+	# Возвышение — широкая правая полоса между досье и каруселью. Хост остаётся
+	# обычным Panel: ручная арифметика гарантирует пустую content-zone рамки и не
+	# даёт minimum-size детей вытолкнуть CTA/карусель (SCRUM-876/SCRUM-980).
+	var ascension_counter_gap := maxf(column_gap, 8.0)
+	var ascension_w := maxf(0.0, dossier_w - carousel_counter.get_combined_minimum_size().x - ascension_counter_gap)
+	var ascension_panel := Panel.new()
 	ascension_panel.name = "HS4AscensionFrame"
-	ascension_panel.position = Vector2(portrait_panel.position.x, portrait_panel.position.y + portrait_size + ascension_gap)
-	ascension_panel.size = Vector2(portrait_size, ascension_h)
-	ascension_panel.add_theme_constant_override("separation", maxi(3, int(round(5.0 * layout_scale))))
-	ascension_panel.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	ascension_panel.position = Vector2(dossier_x, ascension_top)
+	ascension_panel.size = Vector2(ascension_w, ascension_h)
+	ascension_panel.add_theme_stylebox_override("panel", _atlas_chip_style(0.86, ascension_pad))
+	ascension_panel.mouse_filter = Control.MOUSE_FILTER_PASS
+	ascension_panel.clip_contents = true
 	root.add_child(ascension_panel)
+	# Степпер слева, полное описание выбранного уровня в вертикальном scroll справа.
+	# `_atlas_chip_style` uses pad*1.4 for horizontal content margins. Keep the
+	# manually positioned row/scroll on that exact authored inset, not the
+	# smaller vertical pad (SCRUM-1026 frame-content oracle).
+	var ascension_pad_x := ascension_pad * 1.4
+	var asc_button_size := carousel_arrow_size
 
+	# Заголовок/интро остаются скрытыми compatibility nodes; доступное описание
+	# уровня и полный cumulative tooltip принадлежат правой полосе.
 	var asc_label := Label.new()
 	asc_label.name = "AscensionLevelLabel"
 	asc_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	asc_label.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
-	asc_label.custom_minimum_size = Vector2(0.0, maxf(20.0, 26.0 * layout_scale))
-	asc_label.add_theme_font_size_override("font_size", _readable_font_size(maxi(12, int(round(17.0 * layout_scale))), 0, 26))
-	asc_label.add_theme_color_override("font_color", Color(0.95, 0.82, 0.5, 1.0))
-	asc_label.visible = vp.y >= 900.0
+	asc_label.add_theme_font_size_override("font_size", SemanticTypography.resolve_fixed(
+		SemanticTypography.ROLE_TITLE,
+		_readable_font_size(SemanticTypography.ROLE_TITLE, maxi(12, int(round(17.0 * layout_scale))), 0, 26),
+		SemanticTypography.role_min(SemanticTypography.ROLE_TITLE),
+		SemanticTypography.role_max(SemanticTypography.ROLE_TITLE)
+	))
+	asc_label.add_theme_color_override("font_color", Color(0.96, 0.90, 0.68, 1.0))
+	asc_label.visible = false
+	asc_label.position = Vector2(ascension_pad_x, ascension_pad)
+	asc_label.size = Vector2(maxf(0.0, ascension_w - ascension_pad_x * 2.0), 0.0)
 	ascension_panel.add_child(asc_label)
 
 	var asc_intro := Label.new()
@@ -1819,64 +2133,132 @@ func _build_character_select_v4() -> void:
 	asc_intro.max_lines_visible = 1
 	asc_intro.visible = false
 	asc_intro.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	asc_intro.add_theme_font_size_override("font_size", _readable_font_size(maxi(9, int(round(11.0 * layout_scale))), 0, 16))
-	asc_intro.add_theme_color_override("font_color", Color(0.78, 0.80, 0.86, 1.0))
+	asc_intro.add_theme_font_size_override("font_size", SemanticTypography.resolve_fixed(
+		SemanticTypography.ROLE_DESCRIPTION,
+		_readable_font_size(SemanticTypography.ROLE_DESCRIPTION, maxi(9, int(round(11.0 * layout_scale))), 0, 16),
+		SemanticTypography.role_min(SemanticTypography.ROLE_DESCRIPTION),
+		SemanticTypography.role_max(SemanticTypography.ROLE_DESCRIPTION)
+	))
+	asc_intro.add_theme_color_override("font_color", Color(0.88, 0.92, 0.98, 1.0))
+	asc_intro.position = Vector2(ascension_pad_x, ascension_pad)
+	asc_intro.size = Vector2(maxf(0.0, ascension_w - ascension_pad_x * 2.0), 0.0)
 	ascension_panel.add_child(asc_intro)
 
-	var asc_action_row := HBoxContainer.new()
-	asc_action_row.name = "HS4AscensionActionRow"
-	asc_action_row.alignment = BoxContainer.ALIGNMENT_CENTER
-	asc_action_row.add_theme_constant_override("separation", maxi(6, int(round(9.0 * layout_scale))))
-	ascension_panel.add_child(asc_action_row)
 	var asc_box := HBoxContainer.new()
+	asc_box.name = "HS4AscensionActionRow"
 	asc_box.alignment = BoxContainer.ALIGNMENT_CENTER
-	asc_box.add_theme_constant_override("separation", maxi(5, int(round(7.0 * layout_scale))))
-	asc_action_row.add_child(asc_box)
+	var asc_control_gap := maxi(10, int(roundf(asc_button_size.x * 0.10)))
+	asc_box.add_theme_constant_override("separation", asc_control_gap)
+	ascension_panel.add_child(asc_box)
 	var asc_minus := _make_button("−")
 	asc_minus.name = "AscensionMinusButton"
-	var asc_button_size := Vector2(maxf(46.0, 52.0 * layout_scale), maxf(40.0, 46.0 * layout_scale))
 	_set_action_button_size(asc_minus, asc_button_size.x, asc_button_size.y)
-	_apply_hs4_minimal_button_theme(asc_minus)
-	asc_minus.add_theme_font_size_override("font_size", _readable_font_size(maxi(16, int(round(22.0 * layout_scale))), 0, 34))
+	_hs4_apply_wide_control_style(asc_minus, asc_button_size)
+	asc_minus.set_meta("former_responsive_width", former_carousel_arrow_w)
 	asc_box.add_child(asc_minus)
 	var asc_stepper_label := Label.new()
 	asc_stepper_label.name = "HS4AscensionValue"
 	asc_stepper_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	asc_stepper_label.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
-	asc_stepper_label.custom_minimum_size = Vector2(maxf(76.0, 92.0 * layout_scale), asc_button_size.y)
-	asc_stepper_label.add_theme_font_size_override("font_size", _readable_font_size(maxi(12, int(round(15.0 * layout_scale))), 0, 24))
+	var asc_value_available := maxf(
+		120.0,
+		ascension_w - ascension_pad_x * 2.0 - asc_button_size.x * 2.0 - asc_control_gap * 2.0)
+	asc_stepper_label.custom_minimum_size = Vector2(minf(maxf(172.0, roundf(220.0 * layout_scale)), asc_value_available), asc_button_size.y)
+	asc_stepper_label.add_theme_font_size_override("font_size", _readable_font_size(SemanticTypography.ROLE_VALUE, maxi(13, int(round(17.0 * layout_scale))), 0, 26))
 	asc_stepper_label.add_theme_color_override("font_color", Color(0.92, 0.84, 0.66, 1.0))
+	asc_stepper_label.mouse_filter = Control.MOUSE_FILTER_PASS
 	asc_box.add_child(asc_stepper_label)
 	var asc_plus := _make_button("+")
 	asc_plus.name = "AscensionPlusButton"
 	_set_action_button_size(asc_plus, asc_button_size.x, asc_button_size.y)
-	_apply_hs4_minimal_button_theme(asc_plus)
-	asc_plus.add_theme_font_size_override("font_size", _readable_font_size(maxi(16, int(round(22.0 * layout_scale))), 0, 34))
+	_hs4_apply_wide_control_style(asc_plus, asc_button_size)
+	asc_plus.set_meta("former_responsive_width", former_carousel_arrow_w)
 	asc_box.add_child(asc_plus)
+	# Equal controls + equal gaps make the label centre identical to the midpoint
+	# between the two button centres. Centre the complete row in the frame.
+	asc_box.size = asc_box.get_combined_minimum_size()
+	asc_box.position = Vector2(
+		roundf((ascension_w - asc_box.size.x) * 0.5),
+		roundf((ascension_h - asc_box.size.y) * 0.5))
 
-	var select_button := _make_button("Выбрать")
-	select_button.name = "HS4ChooseButton"
-	select_button.size_flags_horizontal = Control.SIZE_SHRINK_CENTER
-	_set_action_button_size(select_button, maxf(124.0, minf(190.0, portrait_size * 0.34)), asc_button_size.y)
-	_apply_hs4_minimal_button_theme(select_button, true)
-	select_button.add_theme_font_size_override("font_size", _readable_font_size(maxi(12, int(round(15.0 * layout_scale))), 0, 24))
-	asc_action_row.add_child(select_button)
-
+	var asc_description_gap := maxf(8.0, roundf(10.0 * layout_scale))
+	var asc_description_x := asc_box.position.x + asc_box.size.x + asc_description_gap
+	var asc_description_scroll := ScrollContainer.new()
+	asc_description_scroll.name = "HS4AscensionDescriptionScroll"
+	asc_description_scroll.horizontal_scroll_mode = ScrollContainer.SCROLL_MODE_DISABLED
+	asc_description_scroll.vertical_scroll_mode = ScrollContainer.SCROLL_MODE_AUTO
+	# Compatibility node for older test/tool lookup. SCRUM-1063 intentionally
+	# removes the visible modifier lane; the complete copy lives in tooltips.
+	asc_description_scroll.focus_mode = Control.FOCUS_NONE
+	asc_description_scroll.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	asc_description_scroll.visible = false
+	asc_description_scroll.position = Vector2(asc_description_x, ascension_pad)
+	asc_description_scroll.size = Vector2.ZERO
+	ascension_panel.add_child(asc_description_scroll)
 	var asc_mods := Label.new()
 	asc_mods.name = "AscensionModsLabel"
+	asc_mods.custom_minimum_size = Vector2(maxf(0.0, asc_description_scroll.size.x - 14.0), 0.0)
+	asc_mods.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	asc_mods.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
-	asc_mods.max_lines_visible = 1 if vp.y < 1200.0 else 2
-	asc_mods.size_flags_vertical = Control.SIZE_EXPAND_FILL
-	asc_mods.text_overrun_behavior = TextServer.OVERRUN_TRIM_ELLIPSIS
-	asc_mods.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	asc_mods.add_theme_font_size_override("font_size", _readable_font_size(maxi(9, int(round(11.0 * layout_scale))), 0, 16))
+	asc_mods.max_lines_visible = -1
+	asc_mods.text_overrun_behavior = TextServer.OVERRUN_NO_TRIMMING
+	asc_mods.horizontal_alignment = HORIZONTAL_ALIGNMENT_LEFT
+	asc_mods.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
+	asc_mods.add_theme_font_size_override("font_size", SemanticTypography.resolve_fixed(
+		SemanticTypography.ROLE_DESCRIPTION,
+		_readable_font_size(SemanticTypography.ROLE_DESCRIPTION, maxi(10, int(round(12.0 * layout_scale))), 0, 18),
+		SemanticTypography.role_min(SemanticTypography.ROLE_DESCRIPTION),
+		SemanticTypography.role_max(SemanticTypography.ROLE_DESCRIPTION)
+	))
 	asc_mods.add_theme_color_override("font_color", Color(0.95, 0.62, 0.55, 0.95))
-	ascension_panel.add_child(asc_mods)
+	asc_mods.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	asc_mods.visible = false
+	asc_description_scroll.add_child(asc_mods)
+	asc_description_scroll.gui_input.connect(func(event: InputEvent) -> void:
+		var scroll_direction := 0
+		if event.is_action_pressed("ui_down"):
+			scroll_direction = 1
+		elif event.is_action_pressed("ui_up"):
+			scroll_direction = -1
+		if scroll_direction == 0:
+			return
+		var scrollbar := asc_description_scroll.get_v_scroll_bar()
+		var scroll_max := maxi(0, int(floor(scrollbar.max_value - scrollbar.page)))
+		var scroll_step := maxi(12, int(round(asc_description_scroll.size.y * 0.65)))
+		var previous_scroll := asc_description_scroll.scroll_vertical
+		var target_scroll := clampi(
+			asc_description_scroll.scroll_vertical + scroll_direction * scroll_step,
+			0,
+			scroll_max)
+		if target_scroll == previous_scroll:
+			# ScrollContainer owns ui_up/down internally, so explicitly hand focus
+			# to the declared boundary neighbor when there is nothing left to scroll.
+			var side := SIDE_BOTTOM if scroll_direction > 0 else SIDE_TOP
+			var boundary_neighbor := asc_description_scroll.find_valid_focus_neighbor(side)
+			if boundary_neighbor != null:
+				boundary_neighbor.grab_focus()
+				asc_description_scroll.accept_event()
+			return
+		asc_description_scroll.scroll_vertical = target_scroll
+		asc_description_scroll.accept_event()
+	)
 
-	var carousel_panel := Control.new()
+	# CTA «Выбрать» — под превью, прижат к низу
+	# safe-зоны, на плите кнопок главного меню (main_menu_380x104 через
+	# _text_button_unique_id) во всю ширину колонны. Шрифт — базовый кнопочный
+	# (как в главном меню), без кастомных override.
+	var select_button := _make_button("Выбрать")
+	select_button.name = "HS4ChooseButton"
+	_set_action_button_size(select_button, choose_w, choose_h)
+	select_button.clip_text = true
+	select_button.position = Vector2(left_x + roundf((portrait_size - choose_w) * 0.5), choose_top)
+	root.add_child(select_button)
+
+	var carousel_panel := Panel.new()
 	carousel_panel.name = "HS4CarouselFrame"
-	carousel_panel.position = Vector2(margin_x, carousel_y)
-	carousel_panel.size = Vector2(vp.x - margin_x * 2.0, carousel_h)
+	carousel_panel.position = Vector2(dossier_x, carousel_y)
+	carousel_panel.size = Vector2(dossier_w, carousel_h)
+	carousel_panel.add_theme_stylebox_override("panel", _atlas_translucent_style(0.45, 12.0))
 	carousel_panel.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	root.add_child(carousel_panel)
 	var carousel := Control.new()
@@ -1887,7 +2269,7 @@ func _build_character_select_v4() -> void:
 	carousel_panel.add_child(carousel)
 	var carousel_w: float = carousel.size.x
 	var carousel_area_h: float = carousel.size.y
-	var arrow_size := Vector2(maxf(64.0, carousel_slot_size * 0.30), carousel_slot_size)
+	var arrow_size := carousel_arrow_size
 	var slot_size := Vector2(carousel_slot_size, carousel_slot_size)
 	var slot_label_h := clampf(roundf(slot_size.y * 0.17), 26.0, 34.0)
 	var slot_label_gap := maxf(3.0, roundf(slot_size.y * 0.02))
@@ -1895,23 +2277,27 @@ func _build_character_select_v4() -> void:
 	var roster: Array = game.PROGRESSION_DATA.character_ids()
 	if roster.is_empty():
 		return
-	var visible_slot_count := clampi(int(floor((carousel_w - arrow_size.x * 2.0) / (carousel_slot_size + 8.0))), 3, roster.size())
-	var slot_gap: float = maxf(8.0, (carousel_w - arrow_size.x * 2.0 - slot_size.x * float(visible_slot_count)) / float(visible_slot_count + 1))
+	var visible_slot_count := clampi(int(floor((carousel_w - arrow_size.x * 2.0 - 6.0) / (carousel_slot_size + 6.0))), 3, roster.size())
+	var slot_gap: float = maxf(6.0, (carousel_w - arrow_size.x * 2.0 - slot_size.x * float(visible_slot_count)) / float(visible_slot_count + 1))
 	var slot_y: float = round((carousel_area_h - slot_size.y) * 0.5)
 	var arrow_y: float = round((carousel_area_h - arrow_size.y) * 0.5)
 
-	var left_arrow := _make_button("<")
+	# SCRUM-1063: both arrows share the same horizontal PixelLab/9-slice source,
+	# geometry and states as Ascension −/+; hidden counts remain runtime text.
+	var left_arrow := _make_button("‹")
 	left_arrow.name = "HS4CarouselPrevButton"
 	_set_action_button_size(left_arrow, arrow_size.x, arrow_size.y)
-	_apply_hs4_minimal_button_theme(left_arrow)
-	left_arrow.add_theme_font_size_override("font_size", _readable_font_size(maxi(18, int(round(28.0 * layout_scale))), 0, 42))
+	_hs4_apply_wide_control_style(left_arrow, arrow_size)
+	left_arrow.set_meta("former_responsive_width", former_carousel_arrow_w)
+	left_arrow.clip_text = true
 	left_arrow.position = Vector2(0.0, arrow_y)
 	carousel.add_child(left_arrow)
-	var right_arrow := _make_button(">")
+	var right_arrow := _make_button("›")
 	right_arrow.name = "HS4CarouselNextButton"
 	_set_action_button_size(right_arrow, arrow_size.x, arrow_size.y)
-	_apply_hs4_minimal_button_theme(right_arrow)
-	right_arrow.add_theme_font_size_override("font_size", _readable_font_size(maxi(18, int(round(28.0 * layout_scale))), 0, 42))
+	_hs4_apply_wide_control_style(right_arrow, arrow_size)
+	right_arrow.set_meta("former_responsive_width", former_carousel_arrow_w)
+	right_arrow.clip_text = true
 	right_arrow.position = Vector2(carousel_w - arrow_size.x, arrow_y)
 	carousel.add_child(right_arrow)
 
@@ -1931,7 +2317,7 @@ func _build_character_select_v4() -> void:
 		slot.position = Vector2(arrow_size.x + slot_gap + i * (slot_size.x + slot_gap), slot_y)
 		slot.size = slot_size
 		slot.custom_minimum_size = slot_size
-		_apply_hs4_minimal_button_theme(slot)
+		_unified_apply_row_theme(slot, 6.0)
 		var slot_portrait := TextureRect.new()
 		slot_portrait.name = "HS4CarouselPortrait_%02d" % i
 		slot_portrait.texture_filter = CanvasItem.TEXTURE_FILTER_NEAREST
@@ -1950,7 +2336,7 @@ func _build_character_select_v4() -> void:
 		slot_label.position = Vector2(slot_label_margin_x, slot_size.y - slot_label_h)
 		slot_label.size = Vector2(slot_size.x - slot_label_margin_x * 2.0, slot_label_h)
 		slot_label.mouse_filter = Control.MOUSE_FILTER_IGNORE
-		slot_label.add_theme_font_size_override("font_size", _readable_font_size(maxi(12, int(round(slot_size.y * 0.075))), 0, 16))
+		slot_label.add_theme_font_size_override("font_size", _readable_font_size(SemanticTypography.ROLE_FIELD, maxi(12, int(round(slot_size.y * 0.075))), 0, 16))
 		slot_label.add_theme_color_override("font_color", Color(0.96, 0.90, 0.74, 0.94))
 		slot_label.add_theme_color_override("font_outline_color", Color(0.0, 0.0, 0.0, 0.88))
 		slot_label.add_theme_constant_override("outline_size", 3)
@@ -1986,27 +2372,50 @@ func _build_character_select_v4() -> void:
 			default_focus = visible_slots[visible_index] as Control
 		for i in range(row_controls.size()):
 			var ctrl := row_controls[i] as Control
-			var left := row_controls[posmod(i - 1, row_controls.size())] as Control
-			var right := row_controls[posmod(i + 1, row_controls.size())] as Control
+			# SCRUM-1063 restores the cyclic row: outward focus moves to the
+			# opposite arrow, and activating either focused arrow uses the same wrap
+			# path as pointer input.
+			var left := (row_controls.back() as Control) if i == 0 else (row_controls[i - 1] as Control)
+			var right := (row_controls.front() as Control) if i == row_controls.size() - 1 else (row_controls[i + 1] as Control)
 			ctrl.focus_neighbor_left = left.get_path()
 			ctrl.focus_neighbor_right = right.get_path()
 			ctrl.focus_neighbor_top = select_button.get_path()
 			ctrl.focus_neighbor_bottom = ctrl.get_path()
+		# SCRUM-887: статы — вертикальная колонна у правого края досье; цепочка
+		# сверху вниз, вход — с «Назад», выход вниз — в правую стрелку карусели.
+		var stat_chain: Array = []
+		for sid in HS4_MINIMAL_BASE_STATS:
+			stat_chain.append(stat_buttons[sid] as Control)
+		for i in range(stat_chain.size()):
+			var stat_ctrl := stat_chain[i] as Control
+			var above := (back_button as Control) if i == 0 else (stat_chain[i - 1] as Control)
+			var below := (right_arrow as Control) if i == stat_chain.size() - 1 else (stat_chain[i + 1] as Control)
+			stat_ctrl.focus_neighbor_top = above.get_path()
+			stat_ctrl.focus_neighbor_bottom = below.get_path()
+			stat_ctrl.focus_neighbor_left = dossier_scroll.get_path()
+			stat_ctrl.focus_neighbor_right = stat_ctrl.get_path()
+		right_arrow.focus_neighbor_top = (stat_chain.back() as Control).get_path()
 		back_button.focus_neighbor_left = back_button.get_path()
 		back_button.focus_neighbor_right = back_button.get_path()
 		back_button.focus_neighbor_top = back_button.get_path()
-		back_button.focus_neighbor_bottom = select_button.get_path()
-		asc_minus.focus_neighbor_left = asc_plus.get_path()
+		back_button.focus_neighbor_bottom = dossier_scroll.get_path()
+		dossier_scroll.focus_neighbor_left = dossier_scroll.get_path()
+		dossier_scroll.focus_neighbor_right = (stat_chain.front() as Control).get_path()
+		dossier_scroll.focus_neighbor_top = back_button.get_path()
+		dossier_scroll.focus_neighbor_bottom = select_button.get_path()
+		asc_minus.focus_neighbor_left = asc_minus.get_path()
 		asc_minus.focus_neighbor_right = asc_plus.get_path()
 		asc_minus.focus_neighbor_top = back_button.get_path()
 		asc_minus.focus_neighbor_bottom = select_button.get_path()
 		asc_plus.focus_neighbor_left = asc_minus.get_path()
-		asc_plus.focus_neighbor_right = asc_minus.get_path()
+		asc_plus.focus_neighbor_right = asc_plus.get_path()
 		asc_plus.focus_neighbor_top = back_button.get_path()
 		asc_plus.focus_neighbor_bottom = select_button.get_path()
+		# CTA внизу левой колонны: вверх ведёт к степперу правой полосы,
+		# вправо — вход в ряд карусели.
 		select_button.focus_neighbor_left = asc_minus.get_path()
-		select_button.focus_neighbor_right = asc_plus.get_path()
-		select_button.focus_neighbor_top = asc_minus.get_path()
+		select_button.focus_neighbor_right = left_arrow.get_path()
+		select_button.focus_neighbor_top = dossier_scroll.get_path()
 		select_button.focus_neighbor_bottom = default_focus.get_path()
 		if grab_default:
 			default_focus.grab_focus()
@@ -2032,16 +2441,27 @@ func _build_character_select_v4() -> void:
 		var cid: String = game.selected_character_id
 		var config: Dictionary = game.PROGRESSION_DATA.character_config(cid)
 		var stats: Dictionary = game.PROGRESSION_DATA.base_stats(cid)
+		var dossier: Dictionary = game.PROGRESSION_DATA.hero_select_dossier(cid)
+		var trait_config: Dictionary = dossier.get("trait", {}) as Dictionary
 		_set_hero_select_portrait_preview(portrait, cid, config, portrait_preview_state)
 		position_main_portrait.call(portrait.texture)
-		name_label.text = str(config.get("title", cid))
-		desc_label.text = str(config.get("description", ""))
-		strengths_label.text = "Сильные стороны: %s" % str(config.get("strengths", ""))
-		weaknesses_label.text = "Слабые стороны: %s" % str(config.get("weaknesses", ""))
-		weapon_label.text = "Оружие: %s" % _hero_weapon_names(cid)
-		var identity: Dictionary = game.PROGRESSION_DATA.class_mechanic_identity(cid)
-		var main_attr: String = str(game.PROGRESSION_DATA.class_main_attribute(cid))
-		identity_label.text = "%s: %s" % [str(game.PROGRESSION_DATA.STAT_NAMES.get(main_attr, main_attr)), str(identity.get("summary", ""))]
+		name_label.text = str(dossier.get("name", config.get("title", cid)))
+		var trait_title := str(trait_config.get("title", "")).strip_edges()
+		var trait_copy := str(trait_config.get("short_description", trait_config.get("description", ""))).strip_edges()
+		trait_heading.visible = not trait_title.is_empty() and not trait_copy.is_empty()
+		trait_heading.text = "Особенность: %s — %s" % [trait_title, trait_copy] if trait_heading.visible else ""
+		trait_heading.tooltip_text = trait_heading.text
+		weapon_label.text = "Оружие: %s" % _hs4_join_dossier_names(dossier.get("weapons", []) as Array)
+		dossier_scroll.scroll_vertical = 0
+		dossier_scroll.set_deferred("scroll_vertical", 0)
+		var leading_stats := PackedStringArray()
+		for stat_value in dossier.get("leading_base_stats", []) as Array:
+			var stat_entry := stat_value as Dictionary
+			leading_stats.append("%s — %d" % [
+				str(stat_entry.get("name", stat_entry.get("id", ""))),
+				int(round(float(stat_entry.get("value", 0.0)))),
+			])
+		leading_stats_label.text = "Основные характеристики: %s." % "; ".join(leading_stats)
 		for sid in HS4_MINIMAL_BASE_STATS:
 			var sval := float(stats.get(sid, 0.0))
 			var stat_button := stat_buttons[sid] as Button
@@ -2052,27 +2472,38 @@ func _build_character_select_v4() -> void:
 			stat_fill.color = _hs4_stat_fill_color(sid)
 			var stat_value := stat_value_labels[sid] as Label
 			stat_value.text = str(int(round(sval)))
-		var guidance_groups := _hs4_attribute_guidance_groups(cid)
-		for relevance in HeroSelectConstants.HERO_BUILD_RELEVANCE_ORDER:
+		var guidance_groups: Dictionary = dossier.get("attribute_relevance", {}) as Dictionary
+		var relevance_titles := {
+			"primary": "Основные атрибуты",
+			"secondary": "Второстепенные атрибуты",
+			"weak": "Слабые атрибуты",
+		}
+		for relevance in ["primary", "secondary", "weak"]:
 			var guide_label := guidance_labels[relevance] as Label
-			var title := str(HeroSelectConstants.HERO_BUILD_RELEVANCE_TITLES.get(relevance, relevance))
-			var names: Array = guidance_groups.get(relevance, [])
-			guide_label.text = "%s: %s" % [title, _hs4_join_guidance_names(names, 8 if relevance != "optional" else 6)]
-			var tooltip_names := PackedStringArray()
-			for name in names:
-				tooltip_names.append(str(name))
-			guide_label.tooltip_text = "%s\n%s" % [title, ", ".join(tooltip_names)]
+			var title := str(relevance_titles.get(relevance, relevance))
+			var entries: Array = guidance_groups.get(relevance, []) as Array
+			guide_label.text = "%s: %s" % [title, _hs4_join_dossier_names(entries)]
+			guide_label.tooltip_text = guide_label.text
 		var maxl: int = game.ascension_selectable_max(cid)
 		game.selected_ascension_level = clampi(game.selected_ascension_level, 0, maxl)
 		asc_label.text = "Возвышение"
-		asc_stepper_label.text = "%d / %d" % [game.selected_ascension_level, maxl]
-		asc_mods.text = str(game.PROGRESSION_DATA.ascension_level_change_line(game.selected_ascension_level))
+		asc_stepper_label.text = "Возвышение %d" % game.selected_ascension_level
 		var ascension_tooltip := _hs4_ascension_text(game.selected_ascension_level)
+		asc_mods.text = str(game.PROGRESSION_DATA.ascension_level_change_line(game.selected_ascension_level))
+		asc_description_scroll.scroll_vertical = 0
+		asc_description_scroll.set_deferred("scroll_vertical", 0)
 		asc_mods.tooltip_text = ascension_tooltip
+		asc_stepper_label.tooltip_text = ascension_tooltip
+		asc_minus.tooltip_text = ascension_tooltip
+		asc_plus.tooltip_text = ascension_tooltip
+		asc_description_scroll.tooltip_text = ascension_tooltip
 		ascension_panel.tooltip_text = ascension_tooltip
 		asc_minus.disabled = game.selected_ascension_level <= 0
 		asc_plus.disabled = game.selected_ascension_level >= maxl
 		var off: int = int(state["offset"])
+		carousel.set_meta("window_offset", off)
+		carousel.set_meta("visible_slot_count", visible_slot_count)
+		carousel.set_meta("cyclic_wrap", true)
 		for i in range(visible_slot_count):
 			var idx: int = off + i
 			var slot: Button = slot_buttons[i]
@@ -2080,6 +2511,7 @@ func _build_character_select_v4() -> void:
 			var slot_label := slot_labels[i] as Label
 			if idx < roster.size():
 				var rid: String = str(roster[idx])
+				slot.set_meta("character_id", rid)
 				var rconf: Dictionary = game.PROGRESSION_DATA.character_config(rid)
 				var slot_texture := game._cached_texture(str(rconf.get("sprite_path", rconf.get("sprite", "")))) as Texture2D
 				slot_portrait.texture = slot_texture
@@ -2088,13 +2520,27 @@ func _build_character_select_v4() -> void:
 				var slot_title := str(rconf.get("title", rid))
 				slot.tooltip_text = slot_title
 				slot_label.text = slot_title
-				_apply_hs4_minimal_button_theme(slot, rid == cid)
+				_unified_apply_row_theme(slot, 6.0, rid == cid)
 				slot_portrait.modulate = Color(1.0, 1.0, 1.0, 1.0) if rid == cid else Color(0.58, 0.60, 0.68, 0.78)
 				slot_label.modulate = Color(1.0, 0.96, 0.80, 1.0) if rid == cid else Color(0.66, 0.68, 0.74, 0.84)
 			else:
 				slot.visible = false
+				slot.remove_meta("character_id")
 				slot_portrait.texture = null
 				slot_label.text = ""
+		# SCRUM-882: явный счётчик карусели — «N–M из K» + число скрытых на стрелках.
+		var roster_total: int = roster.size()
+		var window_first: int = mini(off + 1, roster_total)
+		var window_last: int = mini(off + visible_slot_count, roster_total)
+		carousel_counter_label.text = "%d–%d из %d" % [window_first, window_last, roster_total]
+		carousel_counter.size = carousel_counter.get_combined_minimum_size()
+		carousel_counter.position = Vector2(
+			content_rect.end.x - carousel_counter.size.x,
+			carousel_y - 4.0 - carousel_counter.size.y)
+		var hidden_left: int = off
+		var hidden_right: int = maxi(0, roster_total - off - visible_slot_count)
+		left_arrow.text = "‹" if hidden_left <= 0 else "‹%d" % hidden_left
+		right_arrow.text = "›" if hidden_right <= 0 else "%d›" % hidden_right
 		refresh_focus_graph.call(false)
 
 	var select_hero := func(cid: String) -> void:
@@ -2102,12 +2548,33 @@ func _build_character_select_v4() -> void:
 		game.selected_ascension_level = game.ascension_selectable_max(cid)
 		refresh.call()
 
-	var select_relative_hero := func(direction: int) -> void:
+	var scroll_carousel_window := func(direction: int) -> void:
+		keep_selected_visible.call()
 		var selected_index: int = roster.find(game.selected_character_id)
 		if selected_index < 0:
 			selected_index = 0
-		var next_index: int = posmod(selected_index + direction, roster.size())
-		select_hero.call(str(roster[next_index]))
+		var old_offset: int = int(state["offset"])
+		var anchor: int = clampi(selected_index - old_offset, 0, visible_slot_count - 1)
+		var max_offset: int = maxi(0, roster.size() - visible_slot_count)
+		var wraps_to_end := direction < 0 and old_offset <= 0
+		var wraps_to_start := direction > 0 and old_offset >= max_offset
+		var new_offset: int = old_offset
+		if wraps_to_end:
+			new_offset = max_offset
+		elif wraps_to_start:
+			new_offset = 0
+		else:
+			new_offset = clampi(old_offset + direction, 0, max_offset)
+		state["offset"] = new_offset
+		var window_end: int = mini(new_offset + visible_slot_count - 1, roster.size() - 1)
+		var target_index: int
+		if wraps_to_end:
+			target_index = roster.size() - 1
+		elif wraps_to_start:
+			target_index = 0
+		else:
+			target_index = clampi(new_offset + anchor, new_offset, window_end)
+		select_hero.call(str(roster[target_index]))
 
 	for i in range(visible_slot_count):
 		var slot_index := i
@@ -2117,10 +2584,10 @@ func _build_character_select_v4() -> void:
 				select_hero.call(str(roster[idx]))
 		)
 	left_arrow.pressed.connect(func() -> void:
-		select_relative_hero.call(-1)
+		scroll_carousel_window.call(-1)
 	)
 	right_arrow.pressed.connect(func() -> void:
-		select_relative_hero.call(1)
+		scroll_carousel_window.call(1)
 	)
 	asc_minus.pressed.connect(func() -> void:
 		game.selected_ascension_level = maxi(game.selected_ascension_level - 1, 0)
@@ -2137,9 +2604,33 @@ func _build_character_select_v4() -> void:
 	game.ui_escape_action = _show_main_menu
 	refresh.call()
 	refresh_focus_graph.call(true)
+	# SCRUM-1064: Hero Select used one-shot viewport arithmetic while the unified
+	# frame itself already followed resize. Rebuild this screen only (without the
+	# route/run reset in _show_character_select) after a real live size change.
+	# The deferred guard coalesces resize bursts and the old root invalidates on
+	# _clear_ui, preventing duplicate rebuilds.
+	var built_viewport_size := root.size
+	root.resized.connect(func() -> void:
+		if not is_instance_valid(root) or root.get_meta("hero_resize_rebuild_pending", false):
+			return
+		if root.size.distance_to(built_viewport_size) <= 0.5:
+			return
+		root.set_meta("hero_resize_rebuild_pending", true)
+		_rebuild_character_select_after_resize.call_deferred(root)
+	)
+	# Полая рама 9-slice поверх всего контента — добавляется последней.
+	_unified_add_frame(root, "HeroSelect")
+
+
+func _rebuild_character_select_after_resize(previous_root: Control) -> void:
+	if previous_root == null or not is_instance_valid(previous_root) or previous_root.get_parent() == null:
+		return
+	game._clear_ui()
+	_build_character_select_v4()
 
 func _show_character_select() -> void:
 	game.clear_run_autosave()
+	game.clear_run_sandbox_snapshot()
 	game.run_player_snapshot.clear()
 	game.current_act = 1
 	game.route_stage = 0
@@ -2147,6 +2638,7 @@ func _show_character_select() -> void:
 	game.used_event_ids.clear()
 	game.current_event_definition.clear()
 	game.pending_event_combat.clear()
+	game.event_shop_exit_action = Callable()  # SCRUM-996
 	game.run_used_shop = false
 	game.shop_reentry_pending = false
 	game.shop_reentry_route_stage = -1
@@ -2159,22 +2651,14 @@ func _show_character_select() -> void:
 	_build_character_select_v4()
 
 
-func _hero_weapon_names(character_id: String) -> String:
-	var names := []
-	for weapon_id in game.PROGRESSION_DATA.weapon_ids(character_id):
-		var weapon: Dictionary = game.PROGRESSION_DATA.weapon(character_id, str(weapon_id))
-		names.append(str(weapon.get("title", weapon_id)))
-	return ", ".join(names)
-
-
 const CODEX_DATA := preload("res://scripts/codex_data.gd")
 const CODEX_SECTIONS := [
 	{"id": "characters", "title": "Персонажи"},
 	{"id": "monsters", "title": "Монстры"},
 	{"id": "artifacts", "title": "Артефакты"},
-	{"id": "stats", "title": "Характеристики"},
-	{"id": "glossary", "title": "Глоссарий"},
-	{"id": "ascensions", "title": "Возвышения"},
+	{"id": "characteristics", "title": "Характеристики"},
+	{"id": "attributes", "title": "Атрибуты"},
+	{"id": "ascension", "title": "Возвышение"},
 ]
 
 
@@ -2219,6 +2703,7 @@ func _show_victory_banner(on_continue: Callable) -> void:
 
 	var click_catcher := Button.new()
 	click_catcher.name = "VictoryBanner"
+	UIButtonFamily.assign(click_catcher, "invisible_catcher")
 	click_catcher.flat = true
 	click_catcher.set_anchors_preset(Control.PRESET_FULL_RECT)
 	click_catcher.add_theme_stylebox_override("normal", StyleBoxEmpty.new())
@@ -2239,27 +2724,20 @@ func _show_victory_banner(on_continue: Callable) -> void:
 	frame.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	frame.anchor_left = 0.5
 	frame.anchor_right = 0.5
-	frame.anchor_top = 0.0
-	frame.anchor_bottom = 0.0
-	frame.offset_left = -VBN_FRAME_2K.size.x * 0.5
-	frame.offset_right = VBN_FRAME_2K.size.x * 0.5
-	frame.offset_top = VBN_FRAME_2K.position.y
-	frame.offset_bottom = VBN_FRAME_2K.position.y + VBN_FRAME_2K.size.y
-	frame.pivot_offset = Vector2(VBN_FRAME_2K.size.x * 0.5, VBN_FRAME_2K.size.y * 0.5)
+	frame.anchor_top = 0.5
+	frame.anchor_bottom = 0.5
+	# SCRUM-883: транзиентный оверлей поверх боя — компактный чип Атласа вместо
+	# тяжёлой vbn_frame @2K-рамы (просто и торжественно; дим сохранён, растяжек нет).
+	var banner_size := VICTORY_BANNER_CHIP_SIZE
+	frame.offset_left = -banner_size.x * 0.5
+	frame.offset_right = banner_size.x * 0.5
+	frame.offset_top = -banner_size.y * 0.5
+	frame.offset_bottom = banner_size.y * 0.5
+	frame.pivot_offset = banner_size * 0.5
 	frame.scale = Vector2(0.92, 0.92)
 	frame.modulate.a = 0.0
-	frame.add_theme_stylebox_override("panel", _overhaul_2k_frame_style("vbn_frame", VBN_FRAME_2K.size))
-	var content_margins := _overhaul_2k_content_margins("vbn_frame", VBN_FRAME_2K.size)
-	var content_rect := Rect2(
-		Vector2(content_margins.x, content_margins.y),
-		Vector2(
-			VBN_FRAME_2K.size.x - content_margins.x - content_margins.z,
-			VBN_FRAME_2K.size.y - content_margins.y - content_margins.w
-		)
-	)
-	frame.set_meta("victory_banner_slot", "vbn_frame")
-	frame.set_meta("victory_banner_content_margins", content_margins)
-	frame.set_meta("victory_banner_content_rect", content_rect)
+	frame.add_theme_stylebox_override("panel", _atlas_chip_style(0.92, VICTORY_BANNER_CHIP_PAD))
+	frame.set_meta("victory_banner_style", "atlas_chip")
 	click_catcher.add_child(frame)
 
 	var label := Label.new()
@@ -2270,8 +2748,13 @@ func _show_victory_banner(on_continue: Callable) -> void:
 	label.size_flags_vertical = Control.SIZE_EXPAND_FILL
 	label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	label.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
-	label.add_theme_font_size_override("font_size", _readable_font_size(90))
-	label.add_theme_color_override("font_color", Color(0.98, 0.84, 0.30, 1.0))
+	label.add_theme_font_size_override("font_size", SemanticTypography.resolve_fixed(
+		SemanticTypography.ROLE_DISPLAY,
+		_readable_font_size(SemanticTypography.ROLE_DISPLAY, 90),
+		SemanticTypography.role_min(SemanticTypography.ROLE_DISPLAY),
+		SemanticTypography.role_max(SemanticTypography.ROLE_DISPLAY)
+	))
+	label.add_theme_color_override("font_color", Color(0.96, 0.90, 0.68, 1.0))
 	label.add_theme_color_override("font_outline_color", Color(0.10, 0.05, 0.02, 1.0))
 	label.add_theme_constant_override("outline_size", 8)
 	frame.add_child(label)
@@ -2284,7 +2767,9 @@ func _show_victory_banner(on_continue: Callable) -> void:
 	tween.chain().tween_interval(1.3)
 	tween.chain().tween_callback(continue_once)
 
-	game._play_sfx("level_up")
+	# SCRUM-968: акцент баннера — artifact_reveal (level_up остаётся только за
+	# настоящим повышением уровня в _on_player_leveled_up).
+	game._play_sfx("artifact_reveal")
 
 
 func _random_attribute_pair() -> Array:
@@ -2301,8 +2786,182 @@ func _random_attribute_pair() -> Array:
 	return pair
 
 
+func _normalize_attribute_offer(saved_offer: Array) -> Array:
+	# Old saves and automation fixtures may contain duplicate, removed or 4+
+	# entries. Preserve canonical entries in order, then fill to the live 2/3
+	# contract without ever overflowing the authored three-card row.
+	var pool := ["strength", "agility", "intelligence", "perception", "energy", "knowledge", "endurance", "leadership"]
+	var skill_mods: Dictionary = game.META_PROGRESSION.skill_modifiers(game.meta_state)
+	var option_count: int = clampi(2 + int(skill_mods.get("attr_extra_options", 0.0)), 2, 3)
+	var normalized: Array = []
+	for raw_stat in saved_offer:
+		var stat_id := str(raw_stat)
+		if not pool.has(stat_id) or normalized.has(stat_id):
+			continue
+		normalized.append(stat_id)
+		pool.erase(stat_id)
+		if normalized.size() >= option_count:
+			return normalized
+	while normalized.size() < option_count and not pool.is_empty():
+		var index: int = game.rng.randi_range(0, pool.size() - 1)
+		normalized.append(pool[index])
+		pool.remove_at(index)
+	return normalized
+
+
+func _attribute_shop_layout_for_size(viewport_size: Vector2) -> Dictionary:
+	var inner_rect := _gold_shell_inner_rect_for_size(viewport_size)
+	var tier_t := clampf((viewport_size.y - 720.0) / 360.0, 0.0, 1.0)
+	var large_t := clampf((viewport_size.y - 1080.0) / 360.0, 0.0, 1.0)
+	var card_size := Vector2.ZERO
+	var offer_gap := 0.0
+	var offer_top_offset := 0.0
+	var action_size := Vector2.ZERO
+	var action_gap := 0.0
+	var action_bottom_inset := 0.0
+	var title_size := Vector2.ZERO
+	var money_size := Vector2.ZERO
+	if viewport_size.y <= 1080.0:
+		card_size = Vector2(276.0, 258.0).lerp(Vector2(360.0, 410.0), tier_t)
+		offer_gap = lerpf(22.0, 70.0, tier_t)
+		offer_top_offset = lerpf(81.0, 137.0, tier_t)
+		action_size = Vector2(300.0, 64.0).lerp(Vector2(380.0, 72.0), tier_t)
+		action_gap = lerpf(80.0, 160.0, tier_t)
+		action_bottom_inset = lerpf(19.0, 30.0, tier_t)
+		title_size = Vector2(378.0, 50.0).lerp(Vector2(500.0, 60.0), tier_t)
+		money_size = Vector2(240.0, 42.0).lerp(Vector2(380.0, 50.0), tier_t)
+	else:
+		card_size = Vector2(360.0, 410.0).lerp(Vector2(460.0, 540.0), large_t)
+		offer_gap = lerpf(70.0, 120.0, large_t)
+		offer_top_offset = lerpf(137.0, 173.0, large_t)
+		action_size = Vector2(380.0, 72.0).lerp(Vector2(460.0, 88.0), large_t)
+		action_gap = lerpf(160.0, 340.0, large_t)
+		action_bottom_inset = lerpf(30.0, 35.0, large_t)
+		title_size = Vector2(500.0, 60.0).lerp(Vector2(700.0, 64.0), large_t)
+		money_size = Vector2(380.0, 50.0).lerp(Vector2(480.0, 64.0), large_t)
+
+	# Width-constrained windows still keep exactly three cards in one row.
+	var max_offer_width := maxf(180.0, (inner_rect.size.x - 48.0 - offer_gap * 2.0) / 3.0)
+	card_size.x = minf(card_size.x, max_offer_width)
+	var offer_row_size := Vector2(card_size.x * 3.0 + offer_gap * 2.0, card_size.y)
+	var offer_rect := Rect2(
+		Vector2(roundf(inner_rect.position.x + (inner_rect.size.x - offer_row_size.x) * 0.5), roundf(inner_rect.position.y + offer_top_offset)),
+		offer_row_size
+	)
+
+	var max_action_width := maxf(180.0, (inner_rect.size.x - 48.0 - action_gap) * 0.5)
+	action_size.x = minf(action_size.x, max_action_width)
+	var action_row_size := Vector2(action_size.x * 2.0 + action_gap, action_size.y)
+	var action_rect := Rect2(
+		Vector2(
+			roundf(inner_rect.position.x + (inner_rect.size.x - action_row_size.x) * 0.5),
+			roundf(inner_rect.end.y - action_bottom_inset - action_size.y)
+		),
+		action_row_size
+	)
+	# Never let the offer row collide with the bottom action band on unusual aspect ratios.
+	card_size.y = minf(card_size.y, maxf(160.0, action_rect.position.y - offer_rect.position.y - 24.0))
+	offer_rect.size.y = card_size.y
+
+	var title_rect := Rect2(
+		Vector2(roundf(inner_rect.position.x + (inner_rect.size.x - title_size.x) * 0.5), roundf(inner_rect.position.y + lerpf(6.0, 10.0, clampf((viewport_size.y - 720.0) / 720.0, 0.0, 1.0)))),
+		title_size
+	)
+	var money_rect := Rect2(
+		Vector2(inner_rect.position.x + 24.0, inner_rect.position.y + (20.0 if viewport_size.y >= 1000.0 else 10.0)),
+		money_size
+	)
+	# Compact 1152×648 legacy verification: keep the left money status and the
+	# centered title as separate peers instead of allowing their labels to touch.
+	money_rect.size.x = minf(money_rect.size.x, maxf(120.0, title_rect.position.x - money_rect.position.x - 12.0))
+	return {
+		"safe_rect": _unified_safe_rect_for_size(viewport_size),
+		"inner_rect": inner_rect,
+		"title_rect": title_rect,
+		"money_rect": money_rect,
+		"offers_rect": offer_rect,
+		"offer_size": card_size,
+		"offer_gap": offer_gap,
+		"actions_rect": action_rect,
+		"action_size": action_size,
+		"action_gap": action_gap,
+	}
+
+
+func _apply_attribute_shop_rect(control: Control, rect: Rect2) -> void:
+	if control == null:
+		return
+	control.set_anchors_preset(Control.PRESET_TOP_LEFT)
+	control.position = rect.position
+	# SCRUM-1073: labels may have a larger intrinsic minimum after semantic
+	# floors are enforced. Their authored card lane is the clipping/wrap owner;
+	# do not let the intrinsic minimum push the Control outside that lane.
+	control.custom_minimum_size = Vector2.ZERO if control is Label else rect.size
+	control.size = rect.size
+	if control is Label:
+		(control as Label).clip_text = true
+
+
+func _layout_attribute_shop(root: Control) -> void:
+	if root == null or not is_instance_valid(root):
+		return
+	var layout := _attribute_shop_layout_for_size(root.size)
+	root.set_meta("gold_shell_content_rect", layout["safe_rect"])
+	root.set_meta("gold_shell_inner_rect", layout["inner_rect"])
+	var title := root.find_child("AttributeShopTitle", true, false) as Label
+	var money := root.find_child("AttributeShopMoney", true, false) as Label
+	var offers := root.find_child("AttributeOffers", true, false) as HBoxContainer
+	var actions := root.find_child("AttributeShopActions", true, false) as HBoxContainer
+	_apply_attribute_shop_rect(title, layout["title_rect"])
+	_apply_attribute_shop_rect(money, layout["money_rect"])
+	_apply_attribute_shop_rect(offers, layout["offers_rect"])
+	_apply_attribute_shop_rect(actions, layout["actions_rect"])
+	if title != null:
+		title.add_theme_font_size_override("font_size", SemanticTypography.resolve_fixed(
+			SemanticTypography.ROLE_TITLE, int(clampf(roundf((layout["title_rect"] as Rect2).size.y * 0.58), 24.0, 42.0))
+		))
+	if money != null:
+		money.add_theme_font_size_override("font_size", SemanticTypography.resolve_fixed(
+			SemanticTypography.ROLE_VALUE,
+			int(clampf(roundf((layout["money_rect"] as Rect2).size.y * 0.34), 12.0, 22.0)),
+			SemanticTypography.role_min(SemanticTypography.ROLE_VALUE),
+			SemanticTypography.role_max(SemanticTypography.ROLE_VALUE)
+		))
+	if offers != null:
+		offers.add_theme_constant_override("separation", int(roundf(float(layout["offer_gap"]))))
+		for child in offers.get_children():
+			if child is Button:
+				var offer_button := child as Button
+				offer_button.custom_minimum_size = layout["offer_size"]
+				offer_button.size = layout["offer_size"]
+				_apply_atlas_choice_card_theme(offer_button, _atlas_card_pad(layout["offer_size"]))
+				_layout_attribute_offer_card(offer_button)
+				_layout_attribute_offer_card.call_deferred(offer_button)
+	if actions != null:
+		actions.add_theme_constant_override("separation", int(roundf(float(layout["action_gap"]))))
+		for action_child in actions.get_children():
+			if action_child is Button:
+				var action_button := action_child as Button
+				action_button.custom_minimum_size = layout["action_size"]
+				action_button.size = layout["action_size"]
+				action_button.add_theme_font_size_override("font_size", SemanticTypography.resolve_fixed(
+					SemanticTypography.ROLE_ACTION,
+					int(clampf(roundf((layout["action_size"] as Vector2).y * 0.27), 14.0, 24.0)),
+					SemanticTypography.role_min(SemanticTypography.ROLE_ACTION),
+					SemanticTypography.role_max(SemanticTypography.ROLE_ACTION)
+				))
+				# Compact authored action band: avoid the 104px global button plate
+				# expanding the HBox beyond the gold-shell inner rect at 720p.
+				_apply_slim_action_button_theme(action_button)
+	var frame := root.find_child("AttributeShopFrame", false, false) as Panel
+	if frame != null:
+		root.move_child(frame, root.get_child_count() - 1)
+
+
 func _show_attribute_shop(on_done: Callable) -> void:
-	# Окно докачки после боя: 1 из 2 характеристик за деньги, reroll x2, пропуск.
+	# SCRUM-982/987/988: mandatory post-combat gold shop. Manual Route/Rest entry
+	# is removed; this screen remains the victory continuation for 2 default or
+	# 3 Atlas offers in one row inside the shared hollow gold shell.
 	game._clear_ui()
 	game.ui_layer = CanvasLayer.new()
 	game.ui_layer.process_mode = Node.PROCESS_MODE_ALWAYS
@@ -2312,118 +2971,287 @@ func _show_attribute_shop(on_done: Callable) -> void:
 	root.name = "AttributeShopScreen"
 	root.set_anchors_preset(Control.PRESET_FULL_RECT)
 	game.ui_layer.add_child(root)
+	_prepare_global_tooltips(root)
 	_add_screen_background(root, "meta_progression")
 
 	var shade := ColorRect.new()
-	shade.color = Color(0.02, 0.025, 0.045, 0.92)
+	shade.name = "AttributeShopReadableShade"
+	shade.color = Color(0.02, 0.025, 0.045, 0.20)
 	shade.set_anchors_preset(Control.PRESET_FULL_RECT)
 	shade.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	root.add_child(shade)
 
-	# SCRUM-413: высота адаптивна (вьюпорт минус поля сверху/снизу), не фикс 660px —
-	# вписывается в 1280x720 и узкие окна. Карточки опций в ScrollContainer, а кнопки
-	# «Обновить»/«Пропустить» закреплены ВНЕ скролла снизу панели (SCRUM-467).
-	var viewport_size: Vector2 = game.get_viewport().get_visible_rect().size
-	var panel_width: float = minf(1100.0, maxf(640.0, viewport_size.x - 48.0))
-	var panel_vertical_margin: float = minf(28.0, maxf(18.0, viewport_size.y * 0.045))
-	var panel := PanelContainer.new()
-	panel.name = "AttributeShopPanel"
-	panel.anchor_left = 0.5
-	panel.anchor_top = 0.0
-	panel.anchor_right = 0.5
-	panel.anchor_bottom = 1.0
-	panel.offset_left = -panel_width * 0.5
-	panel.offset_top = panel_vertical_margin
-	panel.offset_right = panel_width * 0.5
-	panel.offset_bottom = -panel_vertical_margin
-	# SCRUM-568: высокая панель докачи использует per-слот attr_panel @2K-рамку
-	# (1124×1384, нарисована 1:1 под слот; 9-slice тянет только плоскую середину).
-	var attr_panel_display := Vector2(panel_width, maxf(1.0, viewport_size.y - panel_vertical_margin * 2.0))
-	panel.add_theme_stylebox_override("panel", _overhaul_2k_frame_style("attr_panel", attr_panel_display))
-	root.add_child(panel)
-
-	var outer := VBoxContainer.new()
-	outer.name = "AttributeShopOuter"
-	outer.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-	outer.size_flags_vertical = Control.SIZE_EXPAND_FILL
-	outer.add_theme_constant_override("separation", 10)
-	panel.add_child(outer)
-
-	var scroll := ScrollContainer.new()
-	scroll.horizontal_scroll_mode = ScrollContainer.SCROLL_MODE_DISABLED
-	scroll.follow_focus = true
-	scroll.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-	scroll.size_flags_vertical = Control.SIZE_EXPAND_FILL
-	outer.add_child(scroll)
-
-	var box := VBoxContainer.new()
-	box.name = "AttributeShopContent"
-	box.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-	box.alignment = BoxContainer.ALIGNMENT_CENTER
-	box.add_theme_constant_override("separation", 8)
-	scroll.add_child(box)
-
 	var title := Label.new()
+	title.name = "AttributeShopTitle"
 	title.text = "Докачка"
 	title.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	title.add_theme_font_size_override("font_size", _readable_font_size(34))
+	title.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
 	title.add_theme_color_override("font_color", Color(0.96, 0.90, 0.68, 1.0))
-	box.add_child(title)
+	title.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	root.add_child(title)
 
 	var money_label := Label.new()
 	money_label.name = "AttributeShopMoney"
-	money_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	money_label.add_theme_font_size_override("font_size", _readable_font_size(18))
-	money_label.add_theme_color_override("font_color", Color(0.95, 0.82, 0.30, 1.0))
-	box.add_child(money_label)
+	money_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_LEFT
+	money_label.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
+	money_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	money_label.add_theme_color_override("font_color", Color(0.94, 0.80, 0.46, 1.0))
+	money_label.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	root.add_child(money_label)
 
-	var offers_box := GridContainer.new()
+	var offers_box := HBoxContainer.new()
 	offers_box.name = "AttributeOffers"
-	offers_box.columns = 1 if panel_width < 820.0 else 2
-	offers_box.size_flags_horizontal = Control.SIZE_SHRINK_CENTER
-	offers_box.add_theme_constant_override("h_separation", _economy_choice_row_gap(_economy_attribute_choice_display_size()))
-	offers_box.add_theme_constant_override("v_separation", 14)
-	box.add_child(offers_box)
+	offers_box.alignment = BoxContainer.ALIGNMENT_CENTER
+	offers_box.mouse_filter = Control.MOUSE_FILTER_PASS
+	root.add_child(offers_box)
 
-	# Кнопки действий — ВНЕ скролла, закреплены снизу панели: при 4+ опциях докачки
-	# (ветка Знаний мета-древа) на 720p они раньше уезжали под фолд (SCRUM-467).
-	var actions := VBoxContainer.new()
+	var actions := HBoxContainer.new()
 	actions.name = "AttributeShopActions"
-	actions.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	actions.alignment = BoxContainer.ALIGNMENT_CENTER
-	var compact_action_height := 54.0 if viewport_size.y <= 660.0 else 62.0
-	actions.add_theme_constant_override("separation", 6 if viewport_size.y <= 660.0 else 8)
-	outer.add_child(actions)
+	root.add_child(actions)
 
 	var reroll_button := _make_button("")
 	reroll_button.name = "AttributeRerollButton"
-	reroll_button.size_flags_horizontal = Control.SIZE_SHRINK_CENTER
-	_set_action_button_size(reroll_button, STANDARD_ACTION_BUTTON_WIDTH, compact_action_height)
+	_apply_slim_action_button_theme(reroll_button)
 	actions.add_child(reroll_button)
 
 	var skip_button := _make_button("Пропустить")
 	skip_button.name = "AttributeSkipButton"
-	skip_button.size_flags_horizontal = Control.SIZE_SHRINK_CENTER
-	_set_action_button_size(skip_button, STANDARD_ACTION_BUTTON_WIDTH, compact_action_height)
+	_apply_slim_action_button_theme(skip_button)
 	actions.add_child(skip_button)
 
-	# Набор и счетчик rerolls живут в game-state: переоткрытие окна (FAB)
-	# не дает бесплатного реролла; сброс — только в победном флоу нового боя.
-	if game.attribute_offer.is_empty():
-		game.attribute_offer = _random_attribute_pair()
+	# Набор и счетчик rerolls живут в game-state: повторный runtime вызов не дает
+	# бесплатного реролла; сброс — только в победном флоу нового боя. Legacy and
+	# malformed saved arrays are canonicalized to the same strict 2/3 contract.
+	game.attribute_offer = _normalize_attribute_offer(game.attribute_offer)
 	skip_button.pressed.connect(func() -> void:
 		if on_done.is_valid():
 			on_done.call()
 	)
+	# SCRUM-968: «Пропустить» докачку — отмена/закрытие → ui_back.
+	_connect_ui_sfx(skip_button, "back")
 	reroll_button.pressed.connect(func() -> void:
 		if game.attribute_rerolls_left <= 0 or not _spend_run_money(_attribute_reroll_cost()):
+			# SCRUM-968: реролл недоступен / нет золота — отказ.
+			game._play_sfx("ui_error")
 			return
+		# SCRUM-968: платный реролл характеристик — трата золота.
+		game._play_sfx("purchase")
 		game.attribute_rerolls_left -= 1
 		game.attribute_offer = _random_attribute_pair()
 		_refresh_attribute_shop(root, on_done)
 	)
 	game.ui_escape_action = skip_button.pressed.emit
+	_unified_add_frame(root, "AttributeShop")
+	_layout_attribute_shop(root)
+	root.resized.connect(func() -> void:
+		_layout_attribute_shop(root)
+		_layout_attribute_shop.call_deferred(root)
+	)
 	_refresh_attribute_shop(root, on_done)
+
+
+func _make_attribute_offer_card(stat_id: String, stat_title: String, interpretation: String, influence_text: String, preview_lines: Array, buy_cost: int, display_size: Vector2) -> Button:
+	var button := Button.new()
+	button.name = "AttributeOffer_%s" % stat_id
+	button.text = ""
+	button.custom_minimum_size = display_size
+	button.size = display_size
+	button.size_flags_horizontal = Control.SIZE_SHRINK_CENTER
+	button.size_flags_vertical = Control.SIZE_SHRINK_CENTER
+	button.focus_mode = Control.FOCUS_ALL
+	button.mouse_default_cursor_shape = Control.CURSOR_POINTING_HAND
+	button.set_meta("attribute_stat_id", stat_id)
+	button.set_meta("economy_display_size", display_size)
+	var card_pad := _atlas_card_pad(display_size)
+	button.set_meta("economy_content_margins", _atlas_chip_content_margins(card_pad))
+	_apply_atlas_choice_card_theme(button, card_pad)
+
+	var icon_control: Control = game.UIIconRegistry.make_icon(stat_id, Vector2(32, 32))
+	icon_control.name = "%sIcon" % button.name
+	icon_control.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	button.add_child(icon_control)
+
+	var title_label := Label.new()
+	title_label.name = "%sTitle" % button.name
+	title_label.text = "%s  +1" % stat_title
+	title_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	title_label.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
+	title_label.add_theme_color_override("font_color", Color(0.96, 0.90, 0.68, 1.0))
+	title_label.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	button.add_child(title_label)
+
+	var interpretation_label := Label.new()
+	interpretation_label.name = "%sInterpretation" % button.name
+	interpretation_label.text = interpretation
+	interpretation_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	interpretation_label.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
+	interpretation_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	interpretation_label.text_overrun_behavior = TextServer.OVERRUN_TRIM_ELLIPSIS
+	interpretation_label.max_lines_visible = 2
+	interpretation_label.add_theme_color_override("font_color", Color(0.82, 0.86, 0.92, 1.0))
+	interpretation_label.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	button.add_child(interpretation_label)
+
+	var influence_label := Label.new()
+	influence_label.name = "%sInfluence" % button.name
+	influence_label.text = "Влияет на: %s" % (influence_text if influence_text != "" else "базовую характеристику")
+	influence_label.set_meta("full_text", influence_label.text)
+	influence_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	influence_label.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
+	influence_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	influence_label.add_theme_color_override("font_color", Color(0.74, 0.84, 0.96, 1.0))
+	influence_label.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	button.add_child(influence_label)
+
+	var preview_label := Label.new()
+	preview_label.name = "%sPreview" % button.name
+	preview_label.text = "\n".join(preview_lines) if not preview_lines.is_empty() else "+1 к базовой характеристике"
+	preview_label.set_meta("full_text", preview_label.text)
+	preview_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	preview_label.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
+	preview_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	preview_label.add_theme_color_override("font_color", Color(0.88, 0.92, 0.98, 1.0))
+	preview_label.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	button.add_child(preview_label)
+
+	var price_label := Label.new()
+	price_label.name = "%sAction" % button.name
+	price_label.text = "%d зол." % buy_cost
+	price_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	price_label.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
+	price_label.add_theme_color_override("font_color", Color(0.94, 0.80, 0.46, 1.0))
+	price_label.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	button.add_child(price_label)
+
+	button.resized.connect(_layout_attribute_offer_card.bind(button))
+	_layout_attribute_offer_card(button)
+	return button
+
+
+func _layout_attribute_offer_card(button: Button) -> void:
+	if button == null or not is_instance_valid(button):
+		return
+	var display_size := button.size
+	if display_size.x <= 1.0 or display_size.y <= 1.0:
+		display_size = button.custom_minimum_size
+	var pad := _atlas_card_pad(display_size)
+	var margins := _atlas_chip_content_margins(pad)
+	button.set_meta("economy_display_size", display_size)
+	button.set_meta("economy_content_margins", margins)
+	var content_rect := Rect2(
+		Vector2(margins.x, margins.y),
+		Vector2(maxf(1.0, display_size.x - margins.x - margins.z), maxf(1.0, display_size.y - margins.y - margins.w))
+	)
+	button.set_meta("attribute_content_rect", content_rect)
+	var gap := clampf(roundf(content_rect.size.y * 0.012), 2.0, 6.0)
+	var icon_side := clampf(roundf(content_rect.size.y * 0.14), 26.0, 56.0)
+	var title_h := clampf(roundf(content_rect.size.y * 0.11), 20.0, 48.0)
+	var interpretation_h := clampf(roundf(content_rect.size.y * 0.12), 24.0, 58.0)
+	var influence_h := clampf(roundf(content_rect.size.y * 0.22), 38.0, 96.0)
+	var price_h := clampf(roundf(content_rect.size.y * 0.12), 22.0, 48.0)
+	if display_size.y >= 230.0 and display_size.y <= 240.0:
+		# Approved 720p plan: 11px minimum body copy, two interpretation lines,
+		# a full wrapped influence block and four derived preview lines all fit.
+		# The decorative stat icon yields its compact slot to copy at this tier.
+		icon_side = 0.0
+		title_h = 32.0
+		interpretation_h = 38.0
+		influence_h = 50.0
+		price_h = 24.0
+	elif display_size.y < 400.0:
+		# At the 1080p tier the icon is redundant with the title and tooltip;
+		# yield its lane to the four semantic-size derived preview rows.
+		icon_side = 0.0
+	var fixed_h := icon_side + title_h + interpretation_h + influence_h + price_h + gap * 5.0
+	var preview_h := maxf(38.0, content_rect.size.y - fixed_h)
+	if fixed_h + preview_h > content_rect.size.y:
+		interpretation_h = maxf(20.0, interpretation_h - (fixed_h + preview_h - content_rect.size.y))
+		fixed_h = icon_side + title_h + interpretation_h + influence_h + price_h + gap * 5.0
+		preview_h = maxf(32.0, content_rect.size.y - fixed_h)
+	var y := content_rect.position.y
+	var icon := button.find_child("%sIcon" % button.name, false, false) as Control
+	if icon != null:
+		icon.visible = icon_side > 0.0
+		if icon.visible:
+			_apply_attribute_shop_rect(icon, Rect2(Vector2(content_rect.position.x + (content_rect.size.x - icon_side) * 0.5, y), Vector2(icon_side, icon_side)))
+	y += icon_side + gap
+	var title := button.find_child("%sTitle" % button.name, false, false) as Label
+	var interpretation := button.find_child("%sInterpretation" % button.name, false, false) as Label
+	var influence := button.find_child("%sInfluence" % button.name, false, false) as Label
+	var preview := button.find_child("%sPreview" % button.name, false, false) as Label
+	var price := button.find_child("%sAction" % button.name, false, false) as Label
+	var compact_semantic := display_size.y < 300.0
+	if influence != null:
+		var full_influence := str(influence.get_meta("full_text", influence.text))
+		var influence_items := full_influence.trim_prefix("Влияет на: ").split(",", false)
+		var compact_influence := str(influence_items[0]).strip_edges() if not influence_items.is_empty() else "характеристику"
+		if compact_influence.length() > 18:
+			compact_influence = compact_influence.left(18).strip_edges()
+		influence.text = "Влияет на: %s" % compact_influence if compact_semantic else full_influence
+		influence.max_lines_visible = 2 if compact_semantic else -1
+	if preview != null:
+		var full_preview := str(preview.get_meta("full_text", preview.text))
+		var preview_lines := full_preview.split("\n", false)
+		var compact_lines := PackedStringArray()
+		for line_index in range(mini(2, preview_lines.size())):
+			compact_lines.append(_compact_attribute_preview_line(str(preview_lines[line_index])))
+		preview.text = "\n".join(compact_lines) if compact_semantic else full_preview
+		preview.max_lines_visible = 2 if compact_semantic else -1
+	_apply_attribute_shop_rect(title, Rect2(Vector2(content_rect.position.x, y), Vector2(content_rect.size.x, title_h)))
+	y += title_h + gap
+	_apply_attribute_shop_rect(interpretation, Rect2(Vector2(content_rect.position.x, y), Vector2(content_rect.size.x, interpretation_h)))
+	y += interpretation_h + gap
+	_apply_attribute_shop_rect(influence, Rect2(Vector2(content_rect.position.x, y), Vector2(content_rect.size.x, influence_h)))
+	y += influence_h + gap
+	_apply_attribute_shop_rect(preview, Rect2(Vector2(content_rect.position.x, y), Vector2(content_rect.size.x, preview_h)))
+	y += preview_h + gap
+	_apply_attribute_shop_rect(price, Rect2(Vector2(content_rect.position.x, y), Vector2(content_rect.size.x, price_h)))
+	var minimum_body_font := 11.0 if display_size.y >= 230.0 else 9.0
+	var base_font := int(clampf(roundf(display_size.y * 0.040), minimum_body_font, 20.0))
+	if title != null:
+		title.add_theme_font_size_override("font_size", SemanticTypography.resolve_fixed(
+			SemanticTypography.ROLE_TITLE,
+			base_font + 2,
+			SemanticTypography.role_min(SemanticTypography.ROLE_TITLE),
+			SemanticTypography.role_max(SemanticTypography.ROLE_TITLE)
+		))
+	if interpretation != null:
+		interpretation.add_theme_font_size_override("font_size", SemanticTypography.resolve_fixed(
+			SemanticTypography.ROLE_BODY,
+			base_font,
+			SemanticTypography.role_min(SemanticTypography.ROLE_BODY),
+			SemanticTypography.role_max(SemanticTypography.ROLE_BODY)
+		))
+	if influence != null:
+		influence.add_theme_font_size_override("font_size", SemanticTypography.resolve_fixed(
+			SemanticTypography.ROLE_DESCRIPTION,
+			base_font,
+			SemanticTypography.role_min(SemanticTypography.ROLE_DESCRIPTION),
+			SemanticTypography.role_max(SemanticTypography.ROLE_DESCRIPTION)
+		))
+	if preview != null:
+		preview.add_theme_font_size_override("font_size", SemanticTypography.resolve_fixed(
+			SemanticTypography.ROLE_BODY,
+			base_font,
+			SemanticTypography.role_min(SemanticTypography.ROLE_BODY),
+			SemanticTypography.role_max(SemanticTypography.ROLE_BODY)
+		))
+	if price != null:
+		price.add_theme_font_size_override("font_size", SemanticTypography.resolve_fixed(
+			SemanticTypography.ROLE_VALUE,
+			base_font + 1,
+			SemanticTypography.role_min(SemanticTypography.ROLE_VALUE),
+			SemanticTypography.role_max(SemanticTypography.ROLE_VALUE)
+		))
+
+
+func _compact_attribute_preview_line(line: String) -> String:
+	var parts := line.split(":", true, 1)
+	if parts.size() < 2:
+		return line.left(22)
+	var label := str(parts[0]).strip_edges()
+	return label.left(22)
 
 
 func _refresh_attribute_shop(root: Control, on_done: Callable) -> void:
@@ -2435,56 +3263,61 @@ func _refresh_attribute_shop(root: Control, on_done: Callable) -> void:
 	if offers_box == null or money_label == null or reroll_button == null:
 		return
 	for child in offers_box.get_children():
+		offers_box.remove_child(child)
 		child.queue_free()
 
 	var buy_cost := _attribute_buy_cost()
 	var money := _run_money()
-	money_label.text = "Золото: %d   |   +1 к характеристике: %d зол." % [money, buy_cost]
-	reroll_button.text = "Обновить (%d зол.) — осталось %d" % [_attribute_reroll_cost(), game.attribute_rerolls_left]
+	money_label.text = "Золото: %d · Цена +1: %d зол." % [money, buy_cost]
+	reroll_button.text = "Обновить · %d зол. · %d" % [_attribute_reroll_cost(), game.attribute_rerolls_left]
 	reroll_button.disabled = game.attribute_rerolls_left <= 0 or money < _attribute_reroll_cost()
 
 	for stat_id in game.attribute_offer:
 		var stat_title: String = str(game.PROGRESSION_DATA.STAT_NAMES.get(stat_id, stat_id))
 		var interpretation: String = str(game.PROGRESSION_DATA.class_interpretation_text(game.selected_character_id, stat_id))
-		var attr_offer_size := _economy_attribute_choice_display_size()
-		var offer_button: Button = _make_economy_choice_card(stat_title, "%s\n+1 к характеристике" % interpretation, "%d зол." % buy_cost, "AttributeOffer_%s" % stat_id, attr_offer_size)
-		offer_button.name = "AttributeOffer_%s" % stat_id
-		# SCRUM-568: карточка опции докачи переодета в evt_card @2K-рамку (480×340, тот же
-		# card-тип) и переинсечена под её content-зону — единый дарк-фэнтези стиль с Событием.
-		_apply_overhaul_choice_2k_theme(offer_button, "evt_card", attr_offer_size)
-		_reinset_overhaul_choice_content(offer_button, "evt_card", attr_offer_size)
+		var influence_text := _attribute_influence_text(stat_id)
+		var preview_lines := _attribute_upgrade_preview_lines(stat_id)
+		var attr_offer_size: Vector2 = _attribute_shop_layout_for_size(root.size)["offer_size"]
+		var offer_button := _make_attribute_offer_card(stat_id, stat_title, interpretation, influence_text, preview_lines, buy_cost, attr_offer_size)
 		offer_button.disabled = money < buy_cost
 		# SCRUM-413: недоступные (не хватает золота) карточки визуально затемнены —
 		# явно видно, что купить нельзя, а не «активная, но не реагирует».
 		offer_button.modulate = Color(0.5, 0.5, 0.55, 0.85) if offer_button.disabled else Color(1.0, 1.0, 1.0, 1.0)
-		offer_button.tooltip_text = "%s +1\n%s" % [stat_title, interpretation]
-		# SCRUM-525: в тултип — на что влияет атрибут и живой предпросмотр производных при +1.
-		# Подробности держим в tooltip_text (Godot клампит его в экран сам), тело карточки
-		# оставляем компактным, чтобы не ловить overflow на 720p (ui_no_overlap_matrix_test).
-		var influence_text := _attribute_influence_text(stat_id)
-		if influence_text != "":
-			offer_button.tooltip_text += "\nВлияет на: %s" % influence_text
-		var preview_lines := _attribute_upgrade_preview_lines(stat_id)
-		if not preview_lines.is_empty():
-			offer_button.tooltip_text += "\nПредпросмотр при +1:\n• %s" % "\n• ".join(preview_lines)
+		# SCRUM-525/SCRUM-851: тултип краткий и по делу — на что влияет атрибут и живой
+		# предпросмотр производных при +1; интерпретация класса уже написана на карточке.
+		offer_button.tooltip_text = "%s +1" % stat_title
+		if interpretation != "":
+			offer_button.tooltip_text += "\n%s" % interpretation
+		# Compact display copy may be abbreviated, but focus disclosure keeps the
+		# exact source strings stored on the labels.
+		var influence_label := offer_button.find_child("%sInfluence" % offer_button.name, false, false) as Label
+		var preview_label := offer_button.find_child("%sPreview" % offer_button.name, false, false) as Label
+		var full_influence := str(influence_label.get_meta("full_text", "")) if influence_label != null else ""
+		var full_preview := str(preview_label.get_meta("full_text", "")) if preview_label != null else ""
+		if full_influence != "":
+			offer_button.tooltip_text += "\n%s" % full_influence
+		if full_preview != "":
+			offer_button.tooltip_text += "\nПредпросмотр при +1:\n• %s" % "\n• ".join(full_preview.split("\n", false))
 		if offer_button.disabled:
 			offer_button.tooltip_text += "\nНедостаточно золота: нужно %d, есть %d." % [buy_cost, money]
-		var icon_control: Control = game.UIIconRegistry.make_icon(stat_id, Vector2(30, 30))
-		icon_control.name = "AttributeOfferIcon_%s" % stat_id
-		icon_control.mouse_filter = Control.MOUSE_FILTER_IGNORE
-		_prepend_economy_choice_content(offer_button, icon_control)
 		offer_button.pressed.connect(func() -> void:
 			if not _spend_run_money(buy_cost):
+				# SCRUM-968: не хватает золота на +1 к характеристике — отказ.
+				game._play_sfx("ui_error")
 				return
+			# SCRUM-968: успешная докачка характеристики — трата золота.
+			game._play_sfx("purchase")
 			_apply_reward_to_run({"stats": {stat_id: 1.0}})
 			game.attribute_offer = []
 			if on_done.is_valid():
 				on_done.call()
 		)
 		offers_box.add_child(offer_button)
+	_layout_attribute_shop(root)
+	_layout_attribute_shop.call_deferred(root)
 
 	# SCRUM-813: докач-опции + Reroll/Skip проходимы с геймпада/стрелок; старт — первая
-	# доступная опция (иначе Reroll/Skip). follow_focus у скролла прокручивает к выбранной.
+	# доступная опция (иначе Reroll/Skip), без scroll-зависимости.
 	var attr_skip_button := root.find_child("AttributeSkipButton", true, false) as Button
 	var attr_focus: Array = []
 	for offer_child in offers_box.get_children():
@@ -2496,6 +3329,23 @@ func _refresh_attribute_shop(root: Control, on_done: Callable) -> void:
 	if attr_skip_button != null:
 		attr_secondary.append(attr_skip_button)
 	_wire_run_ui_focus(attr_focus, true, attr_secondary, null)
+	# The action controls are visually horizontal, so Left/Right must traverse
+	# them. Map Down from the offer row to the nearest action and Up back.
+	var focusable_offers := _collect_focusable_controls(attr_focus)
+	var focusable_actions := _collect_focusable_controls(attr_secondary)
+	if focusable_actions.size() == 2:
+		var left_action := focusable_actions[0]
+		var right_action := focusable_actions[1]
+		left_action.focus_neighbor_left = right_action.get_path()
+		left_action.focus_neighbor_right = right_action.get_path()
+		right_action.focus_neighbor_left = left_action.get_path()
+		right_action.focus_neighbor_right = left_action.get_path()
+		if not focusable_offers.is_empty():
+			left_action.focus_neighbor_top = focusable_offers[0].get_path()
+			right_action.focus_neighbor_top = focusable_offers[focusable_offers.size() - 1].get_path()
+			for offer_index in range(focusable_offers.size()):
+				var action_target := left_action if offer_index < ceili(float(focusable_offers.size()) * 0.5) else right_action
+				focusable_offers[offer_index].focus_neighbor_bottom = action_target.get_path()
 
 
 func _spend_run_money(amount: int) -> bool:
@@ -2510,40 +3360,6 @@ func _spend_run_money(amount: int) -> bool:
 	game.combat._store_player_snapshot(temp_player)
 	temp_player.queue_free()
 	return true
-
-
-func _create_upgrade_fab(root: Control, return_action: Callable, allow_attribute_shop := true) -> void:
-	# При pending level-up единственная точка входа — нижняя кнопка
-	# "Повышение уровня (N)" с бейджем. FAB остается только для докачки за золото.
-	if game.pending_level_ups > 0:
-		_update_level_up_button()
-		return
-
-	# Желтая стрелка прокачки: докачка характеристик за деньги.
-	var fab := _make_compact_button("⬆")
-	fab.name = "UpgradeFabButton"
-	fab.custom_minimum_size = Vector2(50, 50)
-	fab.anchor_left = 1.0
-	fab.anchor_top = 1.0
-	fab.anchor_right = 1.0
-	fab.anchor_bottom = 1.0
-	fab.offset_left = -88.0
-	fab.offset_top = -88.0
-	fab.offset_right = -24.0
-	fab.offset_bottom = -24.0
-	fab.add_theme_font_size_override("font_size", _readable_font_size(30))
-	_apply_compact_button_theme(fab)
-	fab.tooltip_text = "Докачка характеристик за золото"
-	if not allow_attribute_shop:
-		fab.disabled = true
-		fab.tooltip_text = "Докачка здесь недоступна"
-	fab.pressed.connect(func() -> void:
-		if allow_attribute_shop:
-			_show_attribute_shop(return_action)
-	)
-	root.add_child(fab)
-
-
 func _show_atlas_screen() -> void:
 	# SCRUM-827: экран «Атлас героев» (Мета 4.0, дизайн §7 + мокап meta40_atlas_mockup).
 	# Две вкладки (Созвездие/Гильдия), созвездие класса ЦЕЛИКОМ без пан/зума на небе
@@ -2577,6 +3393,7 @@ func _show_atlas_screen() -> void:
 	root.name = "AtlasScreen"
 	root.set_anchors_preset(Control.PRESET_FULL_RECT)
 	game.ui_layer.add_child(root)
+	_prepare_global_tooltips(root)
 	_atlas["root"] = root
 
 	# Ночное небо — фулскрин-ассет кита, без общего фона/шейда.
@@ -2595,13 +3412,21 @@ func _show_atlas_screen() -> void:
 	var frame_margins := _scaled_frame_margins_xy(
 		ATLAS_FRAME_SOURCE_SIZE, vp,
 		Vector4(ATLAS_FRAME_SOURCE_MARGIN, ATLAS_FRAME_SOURCE_MARGIN, ATLAS_FRAME_SOURCE_MARGIN, ATLAS_FRAME_SOURCE_MARGIN))
+	# Full currency names plus three standard action plates need ~1.4K. At
+	# compact safe widths the icons keep the resource identity, labels show the
+	# exact count, and the full localized phrase moves to the tooltip.
+	var atlas_safe_width := maxf(0.0, vp.x - frame_margins.x - frame_margins.z)
+	var compact_header_currency := atlas_safe_width < 1420.0
 	var safe := MarginContainer.new()
 	safe.name = "AtlasSafeArea"
 	safe.set_anchors_preset(Control.PRESET_FULL_RECT)
+	# Фидбек 2026-07-08: шапку чуть выше, футер чуть ниже (band рамы имеет тёмный
+	# внутренний отступ — 14% захода визуально остаются в пустой зоне), телу
+	# достаётся больше высоты под 2 колонки эмблем без скролла.
 	safe.add_theme_constant_override("margin_left", int(frame_margins.x))
-	safe.add_theme_constant_override("margin_top", int(frame_margins.y))
+	safe.add_theme_constant_override("margin_top", int(frame_margins.y * 0.86))
 	safe.add_theme_constant_override("margin_right", int(frame_margins.z))
-	safe.add_theme_constant_override("margin_bottom", int(frame_margins.w))
+	safe.add_theme_constant_override("margin_bottom", int(frame_margins.w * 0.86))
 	root.add_child(safe)
 
 	var layout := VBoxContainer.new()
@@ -2609,36 +3434,47 @@ func _show_atlas_screen() -> void:
 	layout.add_theme_constant_override("separation", int(roundf(10.0 * s)))
 	safe.add_child(layout)
 
-	# --- Шапка: валюты + вкладки + назад ---
+	# --- Шапка (фидбек пользователя 2026-07-08): «Созвездие» слева + рядом счётчик
+	# свободных эмблем класса; «Гильдия» + звёздная пыль по центру (между двумя
+	# expand-спейсерами); «Назад» справа. Табы и назад — единые плиты кита 260×h,
+	# как back-кнопки остальных экранов (однообразие возврата и кнопок).
 	var header := HBoxContainer.new()
 	header.name = "AtlasHeader"
 	header.add_theme_constant_override("separation", int(roundf(12.0 * s)))
 	layout.add_child(header)
+	var atlas_action_h := _atlas_action_button_height()
+	var tab_constellation := _make_button("Созвездие")
+	tab_constellation.name = "AtlasTabConstellation"
+	_set_action_button_size(tab_constellation, 260.0, atlas_action_h)
+	tab_constellation.pressed.connect(Callable(self, "_atlas_switch_tab").bind("constellation"))
+	header.add_child(tab_constellation)
+	_atlas["tab_constellation"] = tab_constellation
 	var emblem_badge := _atlas_make_currency_chip("AtlasEmblemBadge", META40_CURRENCY_EMBLEM_PATH, "AtlasEmblemsLabel", s)
 	header.add_child(emblem_badge)
+	emblem_badge.tooltip_text = "Эмблемы класса"
 	_atlas["emblem_badge"] = emblem_badge
 	_atlas["emblems_label"] = emblem_badge.find_child("AtlasEmblemsLabel", true, false)
-	var stardust_badge := _atlas_make_currency_chip("AtlasStardustBadge", META40_CURRENCY_STARDUST_PATH, "AtlasStardustLabel", s)
-	header.add_child(stardust_badge)
-	_atlas["stardust_label"] = stardust_badge.find_child("AtlasStardustLabel", true, false)
 	var header_spacer := Control.new()
 	header_spacer.name = "AtlasHeaderSpacer"
 	header_spacer.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	header.add_child(header_spacer)
-	var tab_constellation := _make_button("Созвездие")
-	tab_constellation.name = "AtlasTabConstellation"
-	var atlas_action_h := _atlas_action_button_height()
-	_set_action_button_size(tab_constellation, 236.0, atlas_action_h)
-	tab_constellation.pressed.connect(Callable(self, "_atlas_switch_tab").bind("constellation"))
-	header.add_child(tab_constellation)
-	_atlas["tab_constellation"] = tab_constellation
 	var tab_guild := _make_button("Гильдия")
 	tab_guild.name = "AtlasTabGuild"
-	_set_action_button_size(tab_guild, 236.0, atlas_action_h)
+	_set_action_button_size(tab_guild, 260.0, atlas_action_h)
 	tab_guild.pressed.connect(Callable(self, "_atlas_switch_tab").bind("guild"))
 	header.add_child(tab_guild)
 	_atlas["tab_guild"] = tab_guild
-	var back_button := _make_button("Назад в меню")
+	var stardust_badge := _atlas_make_currency_chip("AtlasStardustBadge", META40_CURRENCY_STARDUST_PATH, "AtlasStardustLabel", s)
+	header.add_child(stardust_badge)
+	stardust_badge.tooltip_text = "Звёздная пыль"
+	_atlas["stardust_badge"] = stardust_badge
+	_atlas["stardust_label"] = stardust_badge.find_child("AtlasStardustLabel", true, false)
+	_atlas["compact_header_currency"] = compact_header_currency
+	var header_spacer_right := Control.new()
+	header_spacer_right.name = "AtlasHeaderSpacerRight"
+	header_spacer_right.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	header.add_child(header_spacer_right)
+	var back_button := _make_button("Назад")
 	back_button.name = "AtlasBackButton"
 	_set_action_button_size(back_button, 260.0, atlas_action_h)
 	back_button.pressed.connect(_show_main_menu)
@@ -2653,23 +3489,38 @@ func _show_atlas_screen() -> void:
 	body.add_theme_constant_override("separation", int(roundf(14.0 * s)))
 	layout.add_child(body)
 
-	var medallion_px := roundf(clampf(112.0 * s, 64.0, 132.0))
+	# Фидбек 2026-07-08 (SCRUM-884): все 17 героев видимы разом — сетка в 2
+	# столбца; размер медальона считается от высоты тела (9 рядов), скролл
+	# остаётся только страховкой для карликовых окон (пол 44px).
+	var strip_rows := ceili(float(game.META_PROGRESSION.constellation_class_ids().size()) / 2.0)
+	var strip_sep := int(roundf(6.0 * s))
+	var vp_h: float = game.get_viewport().get_visible_rect().size.y
+	# Фидбек 2026-07-08: размер медальона от ФАКТИЧЕСКОЙ высоты тела (вьюпорт минус
+	# ужатые маргины рамы, шапка, футер, сепараторы) — на 1080p и 1440p все 9 рядов
+	# видимы без скролла; пол 44 — только страховка карликовых окон.
+	var atlas_body_h := vp_h - frame_margins.y * 0.86 - frame_margins.w * 0.86 \
+		- atlas_action_h * 2.0 - roundf(10.0 * s) * 2.0 - 8.0
+	var medallion_px := roundf(clampf(atlas_body_h / float(maxi(strip_rows, 1)) - float(strip_sep), 44.0, 112.0))
 	var strip := ScrollContainer.new()
 	strip.name = "AtlasClassStrip"
 	strip.horizontal_scroll_mode = ScrollContainer.SCROLL_MODE_DISABLED
-	strip.custom_minimum_size = Vector2(medallion_px + roundf(26.0 * s), 0.0)
+	strip.follow_focus = true
+	strip.custom_minimum_size = Vector2(medallion_px * 2.0 + float(strip_sep) + roundf(14.0 * s), 0.0)
 	strip.size_flags_vertical = Control.SIZE_EXPAND_FILL
 	body.add_child(strip)
 	_atlas["strip"] = strip
-	var strip_box := VBoxContainer.new()
+	var strip_box := GridContainer.new()
 	strip_box.name = "AtlasClassStripBox"
-	strip_box.add_theme_constant_override("separation", int(roundf(10.0 * s)))
+	strip_box.columns = 2
+	strip_box.add_theme_constant_override("h_separation", strip_sep)
+	strip_box.add_theme_constant_override("v_separation", strip_sep)
 	strip.add_child(strip_box)
 	for raw_cid in game.META_PROGRESSION.constellation_class_ids():
 		var cid := str(raw_cid)
 		var cfg: Dictionary = game.PROGRESSION_DATA.character_config(cid)
 		var mb := TextureButton.new()
 		mb.name = "AtlasMedallion_%s" % cid
+		UIButtonFamily.assign(mb, "atlas_medallion")
 		mb.texture_normal = game._cached_texture(META40_UI_DIR + "crest_%s.png" % cid)
 		mb.ignore_texture_size = true
 		mb.stretch_mode = TextureButton.STRETCH_KEEP_ASPECT_CENTERED
@@ -2692,7 +3543,7 @@ func _show_atlas_screen() -> void:
 		var prog := Label.new()
 		prog.name = "AtlasMedallionProgress_%s" % cid
 		prog.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-		prog.add_theme_font_size_override("font_size", _readable_font_size(11))
+		prog.add_theme_font_size_override("font_size", _readable_font_size(SemanticTypography.ROLE_VALUE, 11))
 		prog.add_theme_color_override("font_color", Color(0.93, 0.89, 0.74, 0.96))
 		prog_chip.add_child(prog)
 		var badge := PanelContainer.new()
@@ -2709,9 +3560,33 @@ func _show_atlas_screen() -> void:
 		badge_label.name = "BadgeCount"
 		badge_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 		badge_label.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
-		badge_label.add_theme_font_size_override("font_size", _readable_font_size(11))
+		badge_label.add_theme_font_size_override("font_size", _readable_font_size(SemanticTypography.ROLE_HUD, 11))
 		badge_label.add_theme_color_override("font_color", Color(1.0, 0.93, 0.86, 1.0))
 		badge.add_child(badge_label)
+
+	# SCRUM-971: the header is already fully owned by tabs, currencies and Back.
+	# Give the localized selected-class title a lightweight native-text row over
+	# the graph instead. The shared VBox reserves the row without overlaying any
+	# socket, while the canvas keeps all remaining responsive height.
+	var center_column := VBoxContainer.new()
+	center_column.name = "AtlasCenterColumn"
+	center_column.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	center_column.size_flags_vertical = Control.SIZE_EXPAND_FILL
+	center_column.add_theme_constant_override("separation", maxi(4, int(roundf(6.0 * s))))
+	body.add_child(center_column)
+	_atlas["center_column"] = center_column
+	var selected_class_label := Label.new()
+	selected_class_label.name = "AtlasSelectedClassLabel"
+	selected_class_label.custom_minimum_size = Vector2(0.0, maxf(28.0, roundf(52.0 * s)))
+	selected_class_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	selected_class_label.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
+	selected_class_label.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	selected_class_label.add_theme_font_size_override("font_size", _readable_font_size(SemanticTypography.ROLE_TITLE, 20, 16, 28))
+	selected_class_label.add_theme_color_override("font_color", Color(0.96, 0.87, 0.58, 1.0))
+	selected_class_label.add_theme_color_override("font_outline_color", Color(0.05, 0.035, 0.07, 0.96))
+	selected_class_label.add_theme_constant_override("outline_size", maxi(2, int(roundf(4.0 * s))))
+	center_column.add_child(selected_class_label)
+	_atlas["selected_class_label"] = selected_class_label
 
 	var canvas := Control.new()
 	canvas.name = "AtlasCanvas"
@@ -2721,7 +3596,7 @@ func _show_atlas_screen() -> void:
 	canvas.mouse_filter = Control.MOUSE_FILTER_STOP
 	canvas.gui_input.connect(Callable(self, "_atlas_canvas_input"))
 	canvas.resized.connect(Callable(self, "_atlas_schedule_layout_passes"))
-	body.add_child(canvas)
+	center_column.add_child(canvas)
 	_atlas["canvas"] = canvas
 	var edge_layer := Control.new()
 	edge_layer.name = "AtlasEdges"
@@ -2736,7 +3611,10 @@ func _show_atlas_screen() -> void:
 	panel.name = "AtlasNodePanel"
 	panel.custom_minimum_size = Vector2(roundf(clampf(452.0 * s, 272.0, 452.0)), 0.0)
 	panel.size_flags_vertical = Control.SIZE_EXPAND_FILL
-	panel.add_theme_stylebox_override("panel", _atlas_chip_style(0.90, roundf(16.0 * s)))
+	# SCRUM-1090/1091 dossier contract: the calm runtime interior begins at
+	# least 30 px inside the panel on every target tier. Long copy scrolls inside
+	# that zone; shrinking the inset to gain space would put text on ornament.
+	panel.add_theme_stylebox_override("panel", _atlas_chip_style(0.90, 30.0))
 	body.add_child(panel)
 	var panel_box := VBoxContainer.new()
 	panel_box.name = "AtlasNodePanelBox"
@@ -2745,7 +3623,7 @@ func _show_atlas_screen() -> void:
 	var kind_label := Label.new()
 	kind_label.name = "AtlasNodeKind"
 	kind_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	kind_label.add_theme_font_size_override("font_size", _readable_font_size(13))
+	kind_label.add_theme_font_size_override("font_size", _readable_font_size(SemanticTypography.ROLE_FIELD, 13))
 	kind_label.add_theme_color_override("font_color", Color(0.78, 0.66, 0.44, 1.0))
 	panel_box.add_child(kind_label)
 	_atlas["panel_kind"] = kind_label
@@ -2764,7 +3642,7 @@ func _show_atlas_screen() -> void:
 	title_label.name = "AtlasNodeTitle"
 	title_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	title_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
-	title_label.add_theme_font_size_override("font_size", _readable_font_size(22))
+	title_label.add_theme_font_size_override("font_size", _readable_font_size(SemanticTypography.ROLE_TITLE, 22))
 	title_label.add_theme_color_override("font_color", Color(0.96, 0.90, 0.68, 1.0))
 	panel_box.add_child(title_label)
 	_atlas["panel_title"] = title_label
@@ -2772,17 +3650,33 @@ func _show_atlas_screen() -> void:
 	info_scroll.name = "AtlasNodeScroll"
 	info_scroll.horizontal_scroll_mode = ScrollContainer.SCROLL_MODE_DISABLED
 	info_scroll.size_flags_vertical = Control.SIZE_EXPAND_FILL
+	info_scroll.focus_mode = Control.FOCUS_ALL
+	info_scroll.mouse_default_cursor_shape = Control.CURSOR_POINTING_HAND
+	info_scroll.tooltip_text = "Описание звезды. Прокрутка: ↑/↓ или колесо мыши."
 	panel_box.add_child(info_scroll)
+	_atlas["panel_scroll"] = info_scroll
 	var info_box := VBoxContainer.new()
 	info_box.name = "AtlasNodeInfoBox"
 	info_box.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	info_box.add_theme_constant_override("separation", int(roundf(8.0 * s)))
 	info_scroll.add_child(info_box)
+	var final_callout := Label.new()
+	final_callout.name = "AtlasNodeFinalCallout"
+	final_callout.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	final_callout.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	final_callout.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	final_callout.add_theme_font_size_override("font_size", _readable_font_size(SemanticTypography.ROLE_FIELD, 14))
+	final_callout.add_theme_color_override("font_color", Color(0.54, 0.78, 1.0, 1.0))
+	final_callout.add_theme_color_override("font_outline_color", Color(0.10, 0.07, 0.03, 0.98))
+	final_callout.add_theme_constant_override("outline_size", maxi(2, int(roundf(3.0 * s))))
+	final_callout.visible = false
+	info_box.add_child(final_callout)
+	_atlas["panel_final_callout"] = final_callout
 	var desc_label := Label.new()
 	desc_label.name = "AtlasNodeDesc"
 	desc_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	desc_label.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-	desc_label.add_theme_font_size_override("font_size", _readable_font_size(15))
+	desc_label.add_theme_font_size_override("font_size", _readable_font_size(SemanticTypography.ROLE_DESCRIPTION, 15))
 	desc_label.add_theme_color_override("font_color", Color(0.88, 0.91, 0.95, 0.96))
 	info_box.add_child(desc_label)
 	_atlas["panel_desc"] = desc_label
@@ -2790,7 +3684,7 @@ func _show_atlas_screen() -> void:
 	condition_label.name = "AtlasNodeCondition"
 	condition_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	condition_label.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-	condition_label.add_theme_font_size_override("font_size", _readable_font_size(13))
+	condition_label.add_theme_font_size_override("font_size", _readable_font_size(SemanticTypography.ROLE_DESCRIPTION, 13))
 	condition_label.add_theme_color_override("font_color", Color(0.72, 0.84, 1.0, 0.95))
 	condition_label.visible = false
 	info_box.add_child(condition_label)
@@ -2799,7 +3693,7 @@ func _show_atlas_screen() -> void:
 	lore_label.name = "AtlasNodeLore"
 	lore_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	lore_label.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-	lore_label.add_theme_font_size_override("font_size", _readable_font_size(12))
+	lore_label.add_theme_font_size_override("font_size", _readable_font_size(SemanticTypography.ROLE_DESCRIPTION, 12))
 	lore_label.add_theme_color_override("font_color", Color(0.72, 0.74, 0.82, 0.85))
 	lore_label.visible = false
 	info_box.add_child(lore_label)
@@ -2812,7 +3706,7 @@ func _show_atlas_screen() -> void:
 	_atlas["panel_price_row"] = price_row
 	var price_label := Label.new()
 	price_label.name = "AtlasNodePriceLabel"
-	price_label.add_theme_font_size_override("font_size", _readable_font_size(17))
+	price_label.add_theme_font_size_override("font_size", _readable_font_size(SemanticTypography.ROLE_VALUE, 17))
 	price_label.add_theme_color_override("font_color", Color(0.94, 0.80, 0.46, 1.0))
 	price_row.add_child(price_label)
 	_atlas["panel_price_label"] = price_label
@@ -2826,13 +3720,15 @@ func _show_atlas_screen() -> void:
 	_atlas["panel_price_icon"] = price_icon
 	var buy_button := _make_button("Вложить эмблему")
 	buy_button.name = "AtlasBuyButton"
-	_set_action_button_size(buy_button, 360.0, 88.0)
+	# Let the action fill the responsive dossier width without imposing the
+	# legacy 360 px minimum that widened the panel after selection on 720p/1080p.
+	_set_action_button_size(buy_button, 0.0, 88.0)
 	buy_button.pressed.connect(Callable(self, "_atlas_buy_selected"))
 	panel_box.add_child(buy_button)
 	_atlas["buy_button"] = buy_button
 	var keystone_toggle := _make_button("Сделать активной")
 	keystone_toggle.name = "AtlasKeystoneToggle"
-	_set_action_button_size(keystone_toggle, 360.0, 88.0)
+	_set_action_button_size(keystone_toggle, 0.0, 88.0)
 	keystone_toggle.pressed.connect(Callable(self, "_atlas_toggle_keystone"))
 	keystone_toggle.visible = false
 	panel_box.add_child(keystone_toggle)
@@ -2841,28 +3737,90 @@ func _show_atlas_screen() -> void:
 	progress_label.name = "AtlasProgressLabel"
 	progress_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	progress_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
-	progress_label.add_theme_font_size_override("font_size", _readable_font_size(14))
+	progress_label.add_theme_font_size_override("font_size", _readable_font_size(SemanticTypography.ROLE_VALUE, 14))
 	progress_label.add_theme_color_override("font_color", Color(0.90, 0.86, 0.70, 0.95))
-	panel_box.add_child(progress_label)
+	# Variable progress/hint copy belongs to the existing dossier scroll. Keeping
+	# it outside forced a 420px panel minimum and expanded 1280x720 beyond the
+	# real viewport after node selection (SCRUM-1024).
+	info_box.add_child(progress_label)
 	_atlas["panel_progress"] = progress_label
 	var hidden_hint := Label.new()
 	hidden_hint.name = "AtlasHiddenHint"
 	hidden_hint.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	hidden_hint.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
-	hidden_hint.add_theme_font_size_override("font_size", _readable_font_size(12))
+	hidden_hint.add_theme_font_size_override("font_size", _readable_font_size(SemanticTypography.ROLE_CAPTION, 12))
 	hidden_hint.add_theme_color_override("font_color", Color(0.72, 0.82, 0.98, 0.88))
 	hidden_hint.visible = false
-	panel_box.add_child(hidden_hint)
+	info_box.add_child(hidden_hint)
 	_atlas["panel_hidden_hint"] = hidden_hint
+	info_scroll.gui_input.connect(func(event: InputEvent) -> void:
+		var scroll_direction := 0
+		if event.is_action_pressed("ui_down"):
+			scroll_direction = 1
+		elif event.is_action_pressed("ui_up"):
+			scroll_direction = -1
+		if scroll_direction == 0:
+			return
+		var scrollbar := info_scroll.get_v_scroll_bar()
+		var scroll_max := maxi(0, int(floor(scrollbar.max_value - scrollbar.page)))
+		var scroll_step := maxi(12, int(round(info_scroll.size.y * 0.65)))
+		var previous_scroll := info_scroll.scroll_vertical
+		var target_scroll := clampi(previous_scroll + scroll_direction * scroll_step, 0, scroll_max)
+		if target_scroll == previous_scroll:
+			var side := SIDE_BOTTOM if scroll_direction > 0 else SIDE_TOP
+			var boundary_neighbor := info_scroll.find_valid_focus_neighbor(side)
+			if boundary_neighbor != null:
+				boundary_neighbor.grab_focus()
+				info_scroll.accept_event()
+			return
+		info_scroll.scroll_vertical = target_scroll
+		info_scroll.accept_event()
+	)
 
-	# --- Низ: «Респек — бесплатно» + легенда состояний ---
+	# --- Низ: «Сброс умений» (бесплатный респек — в тултипе) + легенда состояний ---
 	var footer := HBoxContainer.new()
 	footer.name = "AtlasFooter"
 	footer.add_theme_constant_override("separation", int(roundf(14.0 * s)))
 	layout.add_child(footer)
-	var respec_button := _make_button("Респек — бесплатно")
+	# SCRUM-1070: accepted Atlas mockup uses the wide reset action. Pin the exact
+	# 420×104 family explicitly so compact 72/88px tiers keep its 9-slice caps and
+	# do not fall through size inference to a narrow Later/Back plate.
+	var respec_button := _make_button("Сброс умений")
 	respec_button.name = "AtlasRespecButton"
-	_set_action_button_size(respec_button, 330.0, atlas_action_h)
+	respec_button.tooltip_text = "Сбросить все купленные узлы — бесплатно."
+	respec_button.autowrap_mode = TextServer.AUTOWRAP_OFF
+	respec_button.text_overrun_behavior = TextServer.OVERRUN_NO_TRIMMING
+	respec_button.clip_text = false
+	UIButtonFamily.assign(respec_button, "text/standard_420x104")
+	_set_action_button_size(respec_button, STANDARD_ACTION_BUTTON_WIDTH, atlas_action_h)
+	var refresh_respec_geometry := func() -> void:
+		var responsive_viewport: Vector2 = game.get_viewport().get_visible_rect().size
+		var responsive_height := _atlas_action_button_height()
+		var responsive_frame_margins := _scaled_frame_margins_xy(
+			ATLAS_FRAME_SOURCE_SIZE, responsive_viewport,
+			Vector4(ATLAS_FRAME_SOURCE_MARGIN, ATLAS_FRAME_SOURCE_MARGIN, ATLAS_FRAME_SOURCE_MARGIN, ATLAS_FRAME_SOURCE_MARGIN)
+		)
+		safe.add_theme_constant_override("margin_left", int(responsive_frame_margins.x))
+		safe.add_theme_constant_override("margin_top", int(responsive_frame_margins.y * 0.86))
+		safe.add_theme_constant_override("margin_right", int(responsive_frame_margins.z))
+		safe.add_theme_constant_override("margin_bottom", int(responsive_frame_margins.w * 0.86))
+		var responsive_frame := _atlas.get("frame") as Panel
+		if responsive_frame != null:
+			responsive_frame.add_theme_stylebox_override("panel", _atlas_frame_style(responsive_frame_margins))
+		respec_button.custom_minimum_size = Vector2(STANDARD_ACTION_BUTTON_WIDTH, responsive_height)
+		# The compact plate has a 30px text zone after its accepted 21px vertical
+		# content margins. Its semantic 21px action line keeps the exact 72px hit
+		# tier; medium/large tiers retain the accepted 23px compatibility token.
+		respec_button.add_theme_font_size_override(
+			"font_size",
+			maxi(SemanticTypography.role_min(SemanticTypography.ROLE_ACTION), 21)
+				if responsive_height <= 72.0
+				else _readable_font_size(SemanticTypography.ROLE_ACTION, 16)
+		)
+	refresh_respec_geometry.call()
+	# Keep the visual and hit rectangle at the exact responsive tier. VBox/HBox
+	# integer distribution can otherwise donate one spare pixel to this row.
+	respec_button.size_flags_vertical = Control.SIZE_SHRINK_CENTER
 	respec_button.pressed.connect(Callable(self, "_atlas_respec_prompt"))
 	footer.add_child(respec_button)
 	_atlas["respec_button"] = respec_button
@@ -2879,11 +3837,15 @@ func _show_atlas_screen() -> void:
 	_atlas_add_legend_item(legend, str(META40_SOCKET_TEXTURES["minor"]), "доступно", s)
 	_atlas_add_legend_item(legend, str(META40_SOCKET_TEXTURES["keystone"]), "ключевая", s)
 	_atlas_add_legend_item(legend, str(META40_SOCKET_TEXTURES["hidden"]), "скрытая", s)
+	# Footer-only live responsiveness: containers reflow automatically; refresh
+	# the exact tiered hit height/font when the same Atlas instance is resized.
+	root.resized.connect(refresh_respec_geometry)
 
 	# Полая орнаментная рама кита ПОВЕРХ контента (клики сквозь; nearest — чтобы
 	# key-цвет прозрачной середины не подмешивался фильтрацией).
 	var frame := Panel.new()
 	frame.name = "AtlasFrame"
+	_atlas["frame"] = frame
 	frame.set_anchors_preset(Control.PRESET_FULL_RECT)
 	frame.add_theme_stylebox_override("panel", _atlas_frame_style(frame_margins))
 	frame.mouse_filter = Control.MOUSE_FILTER_IGNORE
@@ -2906,7 +3868,7 @@ func _show_atlas_screen() -> void:
 	var respec_text := Label.new()
 	respec_text.name = "AtlasRespecPopupBody"
 	respec_text.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
-	respec_text.add_theme_font_size_override("font_size", _readable_font_size(16))
+	respec_text.add_theme_font_size_override("font_size", _readable_font_size(SemanticTypography.ROLE_ACTION, 16))
 	respec_text.add_theme_color_override("font_color", Color(0.92, 0.94, 0.88, 0.96))
 	respec_box.add_child(respec_text)
 	_atlas["respec_text"] = respec_text
@@ -2929,7 +3891,7 @@ func _show_atlas_screen() -> void:
 	_atlas_apply_tab_state()
 	_atlas_build_canvas()
 	_atlas_refresh()
-	_atlas_wire_focus()
+	_atlas_wire_focus(true)
 
 
 # Масштаб UI Атласа: min-ось от дизайн-окна 2560×1440 (ассеты кита нарисованы
@@ -2990,6 +3952,20 @@ func _atlas_chip_style(alpha: float, pad: float) -> StyleBoxFlat:
 	return style
 
 
+func _settings_seamless_content_style(pad: float) -> StyleBoxFlat:
+	# SCRUM-972: Settings is already inside the fullscreen sanctum shell. Keep a
+	# StyleBox owner solely for responsive content margins; drawing another fill
+	# or border here makes the center read as a separate gray inset panel.
+	var style := StyleBoxFlat.new()
+	style.bg_color = Color(0.0, 0.0, 0.0, 0.0)
+	style.set_border_width_all(0)
+	style.content_margin_left = pad * 1.4
+	style.content_margin_right = pad * 1.4
+	style.content_margin_top = pad
+	style.content_margin_bottom = pad
+	return style
+
+
 func _atlas_translucent_style(alpha: float, radius: float) -> StyleBoxFlat:
 	var style := StyleBoxFlat.new()
 	style.bg_color = Color(0.03, 0.03, 0.05, alpha)
@@ -3010,8 +3986,11 @@ func _atlas_make_currency_chip(chip_name: String, icon_path: String, label_name:
 	var chip := PanelContainer.new()
 	chip.name = chip_name
 	chip.size_flags_vertical = Control.SIZE_SHRINK_CENTER
+	chip.mouse_filter = Control.MOUSE_FILTER_STOP
+	chip.mouse_default_cursor_shape = Control.CURSOR_HELP
 	chip.add_theme_stylebox_override("panel", _atlas_chip_style(0.86, roundf(10.0 * s)))
 	var row := HBoxContainer.new()
+	row.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	row.add_theme_constant_override("separation", int(roundf(8.0 * s)))
 	chip.add_child(row)
 	var icon := TextureRect.new()
@@ -3019,13 +3998,15 @@ func _atlas_make_currency_chip(chip_name: String, icon_path: String, label_name:
 	icon.texture = game._cached_texture(icon_path)
 	icon.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
 	icon.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
+	icon.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	var icon_px := maxf(20.0, roundf(30.0 * s))
 	icon.custom_minimum_size = Vector2(icon_px, icon_px)
 	row.add_child(icon)
 	var label := Label.new()
 	label.name = label_name
+	label.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	label.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
-	label.add_theme_font_size_override("font_size", _readable_font_size(16))
+	label.add_theme_font_size_override("font_size", _readable_font_size(SemanticTypography.ROLE_VALUE, 16))
 	label.add_theme_color_override("font_color", Color(0.95, 0.90, 0.74, 1.0))
 	row.add_child(label)
 	return chip
@@ -3047,9 +4028,190 @@ func _atlas_add_legend_item(legend: HBoxContainer, icon_path: String, text: Stri
 	var label := Label.new()
 	label.text = text
 	label.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
-	label.add_theme_font_size_override("font_size", _readable_font_size(13))
+	label.add_theme_font_size_override("font_size", SemanticTypography.resolve_fixed(
+		SemanticTypography.ROLE_CAPTION,
+		_readable_font_size(SemanticTypography.ROLE_CAPTION, 13),
+		SemanticTypography.role_min(SemanticTypography.ROLE_CAPTION),
+		SemanticTypography.role_max(SemanticTypography.ROLE_CAPTION)
+	))
 	label.add_theme_color_override("font_color", Color(0.86, 0.88, 0.94, 0.92))
 	item.add_child(label)
+
+
+# --- SCRUM-879: атлас-стиль для остальных экранов --------------------------
+# Слои как у «Атласа героев»: фон COVERED (без растяжки осей, fallback bg_sky),
+# контент ТОЛЬКО в safe-зоне рамы, полая рама 9-slice ПОВЕРХ контента
+# (_unified_add_frame звать ПОСЛЕДНИМ). Панели — _atlas_chip_style.
+
+func _unified_add_background(root: Control, screen_id: String, shade_alpha := 0.0) -> void:
+	var path := str(ATLAS_STYLE_BG_PATHS.get(screen_id, ""))
+	if path == "" or not ResourceLoader.exists(path):
+		path = META40_BG_SKY_PATH
+	var background := TextureRect.new()
+	background.name = "UnifiedBackground_%s" % screen_id
+	background.texture = game._cached_texture(path)
+	background.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
+	background.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_COVERED
+	background.set_anchors_preset(Control.PRESET_FULL_RECT)
+	background.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	root.add_child(background)
+	if shade_alpha > 0.0:
+		var shade := ColorRect.new()
+		shade.name = "UnifiedBackgroundShade"
+		shade.set_anchors_preset(Control.PRESET_FULL_RECT)
+		shade.color = Color(0.0, 0.0, 0.0, shade_alpha)
+		shade.mouse_filter = Control.MOUSE_FILTER_IGNORE
+		root.add_child(shade)
+
+
+func _unified_safe_margins() -> Vector4:
+	var vp: Vector2 = game.get_viewport().get_visible_rect().size
+	return _unified_safe_margins_for_size(vp)
+
+
+func _unified_safe_margins_for_size(viewport_size: Vector2) -> Vector4:
+	return _scaled_frame_margins_xy(
+		ATLAS_FRAME_SOURCE_SIZE, viewport_size,
+		Vector4(ATLAS_FRAME_SOURCE_MARGIN, ATLAS_FRAME_SOURCE_MARGIN, ATLAS_FRAME_SOURCE_MARGIN, ATLAS_FRAME_SOURCE_MARGIN))
+
+
+func _unified_safe_rect() -> Rect2:
+	var viewport_size: Vector2 = game.get_viewport().get_visible_rect().size
+	return _unified_safe_rect_for_size(viewport_size)
+
+
+func _unified_safe_rect_for_size(viewport_size: Vector2) -> Rect2:
+	var margins := _unified_safe_margins_for_size(viewport_size)
+	return Rect2(
+		Vector2(margins.x, margins.y),
+		Vector2(maxf(1.0, viewport_size.x - margins.x - margins.z), maxf(1.0, viewport_size.y - margins.y - margins.w))
+	)
+
+
+# SCRUM-1036: the texture-safe rect only clears the 9-slice border. Authored
+# gold-shell screens reserve another 24px (32px on the 2K tier) before any live
+# control, label, icon or hitbox may begin.
+func _gold_shell_inner_rect_for_size(viewport_size: Vector2) -> Rect2:
+	var reserve := 32.0 if viewport_size.y >= 1200.0 else 24.0
+	return _unified_safe_rect_for_size(viewport_size).grow(-reserve)
+
+
+func _unified_make_safe_area(root: Control, prefix: String) -> MarginContainer:
+	var margins := _unified_safe_margins()
+	var safe := MarginContainer.new()
+	safe.name = "%sSafeArea" % prefix
+	safe.set_anchors_preset(Control.PRESET_FULL_RECT)
+	safe.add_theme_constant_override("margin_left", int(margins.x))
+	safe.add_theme_constant_override("margin_top", int(margins.y))
+	safe.add_theme_constant_override("margin_right", int(margins.z))
+	safe.add_theme_constant_override("margin_bottom", int(margins.w))
+	root.add_child(safe)
+	return safe
+
+
+func _unified_add_frame(root: Control, prefix: String) -> Panel:
+	var frame := Panel.new()
+	frame.name = "%sFrame" % prefix
+	frame.set_anchors_preset(Control.PRESET_FULL_RECT)
+	frame.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	frame.texture_filter = CanvasItem.TEXTURE_FILTER_NEAREST
+	frame.set_meta("gold_shell_asset", META40_FRAME_BORDER_PATH)
+	frame.set_meta("gold_shell_draw_center", false)
+	root.add_child(frame)
+	_refresh_unified_frame(root, frame)
+	root.resized.connect(_refresh_unified_frame.bind(root, frame))
+	return frame
+
+
+func _refresh_unified_frame(root: Control, frame: Panel) -> void:
+	if root == null or frame == null or not is_instance_valid(root) or not is_instance_valid(frame):
+		return
+	var viewport_size := root.size
+	if viewport_size.x <= 1.0 or viewport_size.y <= 1.0:
+		viewport_size = game.get_viewport().get_visible_rect().size
+	var margins := _unified_safe_margins_for_size(viewport_size)
+	var safe_rect := _unified_safe_rect_for_size(viewport_size)
+	var inner_rect := _gold_shell_inner_rect_for_size(viewport_size)
+	frame.add_theme_stylebox_override("panel", _atlas_frame_style(margins))
+	frame.set_meta("gold_shell_content_rect", safe_rect)
+	frame.set_meta("gold_shell_inner_rect", inner_rect)
+	root.set_meta("gold_shell_content_rect", safe_rect)
+	root.set_meta("gold_shell_inner_rect", inner_rect)
+
+
+# Кожаный чип-заголовок экрана: эмблема PixelLab + титул золотом (шапка как
+# валютные чипы Атласа).
+func _unified_header_chip(prefix: String, title: String, screen_id: String, s: float) -> PanelContainer:
+	var chip := PanelContainer.new()
+	chip.name = "%sTitleChip" % prefix
+	chip.size_flags_vertical = Control.SIZE_SHRINK_CENTER
+	chip.add_theme_stylebox_override("panel", _atlas_chip_style(0.86, roundf(10.0 * s)))
+	var row := HBoxContainer.new()
+	row.add_theme_constant_override("separation", int(roundf(10.0 * s)))
+	chip.add_child(row)
+	var emblem_path := str(ATLAS_STYLE_EMBLEM_PATHS.get(screen_id, ""))
+	if emblem_path != "" and ResourceLoader.exists(emblem_path):
+		var icon := TextureRect.new()
+		icon.name = "%sTitleEmblem" % prefix
+		icon.texture = game._cached_texture(emblem_path)
+		icon.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
+		icon.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
+		icon.texture_filter = CanvasItem.TEXTURE_FILTER_NEAREST
+		var icon_px := maxf(26.0, roundf(44.0 * s))
+		icon.custom_minimum_size = Vector2(icon_px, icon_px)
+		icon.size_flags_vertical = Control.SIZE_SHRINK_CENTER
+		row.add_child(icon)
+	var label := Label.new()
+	label.name = "%sTitleLabel" % prefix
+	label.text = title
+	label.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
+	label.add_theme_font_size_override("font_size", _readable_font_size(SemanticTypography.ROLE_TITLE, 22))
+	label.add_theme_color_override("font_color", Color(0.96, 0.90, 0.68, 1.0))
+	row.add_child(label)
+	return chip
+
+
+# Тема «кожаного ряда» для списочных Button-контролов (карточки кодекса,
+# слоты карусели, строки статов): это НЕ действие-кнопки глобального кита,
+# а контентные ряды в языке чипов Атласа.
+func _unified_apply_row_theme(button: Button, pad := 10.0, selected := false) -> void:
+	UIButtonFamily.assign(button, UIButtonFamily.FAMILY_CONTENT_ROW)
+	var normal := _atlas_chip_style(0.72, pad)
+	var hover := _atlas_chip_style(0.82, pad)
+	hover.border_color = Color(0.72, 0.58, 0.34, 0.95)
+	var pressed := _atlas_chip_style(0.92, pad)
+	pressed.bg_color = Color(0.11, 0.09, 0.07, 0.94)
+	var focus := _atlas_chip_style(0.84, pad)
+	focus.border_color = Color(0.93, 0.77, 0.40, 0.95)
+	if selected:
+		normal = _atlas_chip_style(0.88, pad)
+		normal.border_color = Color(0.93, 0.77, 0.40, 0.95)
+		normal.set_border_width_all(3)
+	button.add_theme_stylebox_override("normal", normal)
+	button.add_theme_stylebox_override("hover", hover)
+	button.add_theme_stylebox_override("pressed", pressed)
+	button.add_theme_stylebox_override("focus", focus)
+	button.add_theme_stylebox_override("disabled", _atlas_translucent_style(0.45, 10.0))
+	button.add_theme_color_override("font_color", Color(0.90, 0.86, 0.72, 1.0))
+	button.add_theme_color_override("font_hover_color", Color(1.0, 1.0, 1.0, 1.0))
+	button.add_theme_color_override("font_focus_color", Color(1.0, 1.0, 1.0, 1.0))
+	button.add_theme_color_override("font_pressed_color", Color(0.86, 1.0, 0.96, 1.0))
+	button.add_theme_color_override("font_disabled_color", Color(0.46, 0.49, 0.54, 1.0))
+
+
+# Орнамент-разделитель PixelLab фикс-высоты (KEEP_ASPECT_CENTERED — без растяжки).
+func _unified_add_divider(parent: Control, s: float, name_suffix := "") -> void:
+	if not ResourceLoader.exists(ATLAS_STYLE_DIVIDER_PATH):
+		return
+	var divider := TextureRect.new()
+	divider.name = "UnifiedDivider%s" % name_suffix
+	divider.texture = game._cached_texture(ATLAS_STYLE_DIVIDER_PATH)
+	divider.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
+	divider.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
+	divider.texture_filter = CanvasItem.TEXTURE_FILTER_NEAREST
+	divider.custom_minimum_size = Vector2(0.0, maxf(18.0, roundf(28.0 * s)))
+	divider.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	parent.add_child(divider)
 
 
 # Узлы текущего графа: созвездие выбранного класса либо Атлас гильдии.
@@ -3100,6 +4262,7 @@ func _atlas_build_canvas() -> void:
 		var affinity := str(node_data.get("class_affinity", ""))
 		var nb := TextureButton.new()
 		nb.name = "AtlasNode_%s" % node_id
+		UIButtonFamily.assign(nb, "atlas_socket")
 		var base_path := str(META40_SOCKET_TEXTURES.get(role, META40_SOCKET_TEXTURES["minor"]))
 		if role == "core" and affinity != "":
 			base_path = META40_UI_DIR + "crest_%s.png" % affinity
@@ -3109,6 +4272,11 @@ func _atlas_build_canvas() -> void:
 		var disp := maxf(24.0, roundf(float(ATLAS_SOCKET_SIZES.get(role, 96.0)) * socket_scale))
 		nb.custom_minimum_size = Vector2(disp, disp)
 		nb.size = Vector2(disp, disp)
+		# SCRUM-970: keep the visible socket itself as the authoritative pointer
+		# target at every stretch ratio. Previewing on button-down also prevents a
+		# responsive relayout/focus change from stealing the release phase.
+		nb.mouse_filter = Control.MOUSE_FILTER_STOP
+		nb.action_mode = BaseButton.ACTION_MODE_BUTTON_PRESS
 		nb.focus_mode = Control.FOCUS_ALL
 		nb.mouse_default_cursor_shape = Control.CURSOR_POINTING_HAND
 		nb.tooltip_text = "%s\n%s" % [str(node_data.get("title", "")), str(node_data.get("desc", ""))]
@@ -3143,7 +4311,9 @@ func _atlas_build_canvas() -> void:
 			qmark.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
 			qmark.mouse_filter = Control.MOUSE_FILTER_IGNORE
 			qmark.text = "?"
-			qmark.add_theme_font_size_override("font_size", int(maxf(12.0, disp * 0.40)))
+			qmark.add_theme_font_size_override("font_size", SemanticTypography.resolve_fixed(
+				SemanticTypography.ROLE_HUD, int(maxf(14.0, disp * 0.40))
+			))
 			qmark.add_theme_color_override("font_color", Color(0.82, 0.90, 1.0, 0.92))
 			nb.add_child(qmark)
 			var fog := _atlas_add_overlay(nb, "Fog", str(META40_SOCKET_TEXTURES["hidden"]), 1.0, Color.WHITE)
@@ -3422,14 +4592,29 @@ func _atlas_refresh() -> void:
 	var state: Dictionary = game.meta_state
 	var class_id := str(_atlas.get("class_id", "berserk"))
 	var on_guild := str(_atlas.get("tab", "constellation")) == "guild"
+	var selected_class_label := _atlas.get("selected_class_label") as Label
+	if selected_class_label != null and is_instance_valid(selected_class_label):
+		var class_config: Dictionary = game.PROGRESSION_DATA.character_config(class_id)
+		selected_class_label.text = str(class_config.get("title", class_id))
+		selected_class_label.tooltip_text = "Выбранный класс: %s" % selected_class_label.text
 
 	var emblems_label := _atlas.get("emblems_label") as Label
 	if emblems_label != null and is_instance_valid(emblems_label):
 		var genitive := str(ATLAS_CLASS_GENITIVE.get(class_id, "класса"))
-		emblems_label.text = "Эмблемы %s: %d" % [genitive, game.META_PROGRESSION.class_sigils_available(state, class_id)]
+		var emblem_count: int = game.META_PROGRESSION.class_sigils_available(state, class_id)
+		var emblem_text := "Эмблемы %s: %d" % [genitive, emblem_count]
+		emblems_label.text = str(emblem_count) if bool(_atlas.get("compact_header_currency", false)) else emblem_text
+		var emblem_badge := _atlas.get("emblem_badge") as Control
+		if emblem_badge != null:
+			emblem_badge.tooltip_text = emblem_text
 	var stardust_label := _atlas.get("stardust_label") as Label
 	if stardust_label != null and is_instance_valid(stardust_label):
-		stardust_label.text = "Звёздная пыль: %d" % game.META_PROGRESSION.stardust_available(state)
+		var stardust_count: int = game.META_PROGRESSION.stardust_available(state)
+		var stardust_text := "Звёздная пыль: %d" % stardust_count
+		stardust_label.text = str(stardust_count) if bool(_atlas.get("compact_header_currency", false)) else stardust_text
+		var stardust_badge := _atlas.get("stardust_badge") as Control
+		if stardust_badge != null:
+			stardust_badge.tooltip_text = stardust_text
 
 	# Медальоны: подсветка выбранного, прогресс x/N, бейдж непотраченных эмблем.
 	var purchased_all: Array = game.META_PROGRESSION.purchased_nodes(state)
@@ -3528,6 +4713,7 @@ func _atlas_refresh_node_panel() -> void:
 	var icon := _atlas.get("panel_icon") as TextureRect
 	var title_label := _atlas.get("panel_title") as Label
 	var desc_label := _atlas.get("panel_desc") as Label
+	var final_callout := _atlas.get("panel_final_callout") as Label
 	var condition_label := _atlas.get("panel_condition") as Label
 	var lore_label := _atlas.get("panel_lore") as Label
 	var price_row := _atlas.get("panel_price_row") as HBoxContainer
@@ -3537,7 +4723,7 @@ func _atlas_refresh_node_panel() -> void:
 	var keystone_toggle := _atlas.get("keystone_toggle") as Button
 	var progress_label := _atlas.get("panel_progress") as Label
 	var hidden_hint := _atlas.get("panel_hidden_hint") as Label
-	for control in [kind_label, icon, title_label, desc_label, condition_label, lore_label, price_row, price_label, price_icon, buy_button, keystone_toggle, progress_label, hidden_hint]:
+	for control in [kind_label, icon, title_label, final_callout, desc_label, condition_label, lore_label, price_row, price_label, price_icon, buy_button, keystone_toggle, progress_label, hidden_hint]:
 		if control == null or not is_instance_valid(control):
 			return
 	var currency_icon_path := META40_CURRENCY_STARDUST_PATH if on_guild else META40_CURRENCY_EMBLEM_PATH
@@ -3547,6 +4733,7 @@ func _atlas_refresh_node_panel() -> void:
 		icon.texture = game._cached_texture(str(META40_SOCKET_TEXTURES["minor"]))
 		title_label.text = "Выберите звезду"
 		desc_label.text = "Кликните по звезде созвездия, чтобы увидеть её силу и цену."
+		final_callout.visible = false
 		condition_label.visible = false
 		lore_label.visible = false
 		price_row.visible = false
@@ -3562,7 +4749,12 @@ func _atlas_refresh_node_panel() -> void:
 			icon_path = META40_UI_DIR + "crest_%s.png" % affinity
 		icon.texture = game._cached_texture(icon_path)
 		title_label.text = str(node.get("title", ""))
-		desc_label.text = str(node.get("desc", ""))
+		var dossier: Dictionary = node.get("dossier", {})
+		var dossier_valid := affinity == "" or (bool(node.get("dossier_valid", false)) and not dossier.is_empty())
+		var is_weapon_final := role == "weapon_final" and dossier_valid
+		final_callout.text = str(dossier.get("final_callout", "УНИКАЛЬНЫЙ ФИНАЛ"))
+		final_callout.visible = is_weapon_final
+		desc_label.text = str(node.get("desc", "")) if affinity == "" else (str(dossier.get("full_text", "")) if dossier_valid else ConstellationDescriptionFormatter.FAILURE_TEXT)
 		lore_label.text = str(node.get("lore", ""))
 		lore_label.visible = role == "hidden" and lore_label.text != ""
 		condition_label.visible = false
@@ -3571,10 +4763,12 @@ func _atlas_refresh_node_panel() -> void:
 			if not progress.is_empty():
 				condition_label.visible = true
 				if bool(progress.get("unlocked", false)):
-					condition_label.text = "Подвиг совершён — звезда зажжена!"
+					condition_label.text = "Подвиг совершён — тайную звезду можно купить."
 				else:
 					condition_label.text = "Условие: %s\nПрогресс: %d/%d" % [str(progress.get("text", "")), int(progress.get("current", 0)), int(progress.get("required", 1))]
-		var purchasable := role != "core" and role != "hidden"
+		# Schema 6 hidden stars are reveal-then-purchase: the challenge only
+		# exposes the node; its exact weapon-scoped effect still costs one sigil.
+		var purchasable := role != "core" and (role != "hidden" or node_status != "hidden")
 		var cost := int(node.get("cost", 0))
 		price_row.visible = purchasable and node_status != "purchased"
 		price_label.text = "Цена: %d" % cost
@@ -3582,7 +4776,15 @@ func _atlas_refresh_node_panel() -> void:
 		buy_button.visible = purchasable and node_status != "purchased"
 		buy_button.text = "Вложить %s" % currency_word
 		buy_button.disabled = node_status != "available"
-		if node_status == "locked":
+		var dossier_blocked := affinity != "" and not dossier_valid
+		if dossier_blocked:
+			buy_button.disabled = true
+			condition_label.visible = true
+			condition_label.text = "Покупка отключена: требуется корректный schema-6 dossier."
+		# SCRUM-1094: an explicit fail-closed schema error has higher precedence
+		# than ordinary adjacency/currency/purchased status hints.  Never replace
+		# the actionable failure with a plausible generic condition.
+		elif node_status == "locked":
 			var have: int = game.META_PROGRESSION.currency_available_for_node(state, selected_id)
 			condition_label.visible = true
 			if have < cost:
@@ -3592,6 +4794,8 @@ func _atlas_refresh_node_panel() -> void:
 		elif purchasable and node_status == "purchased":
 			condition_label.visible = true
 			condition_label.text = "Звезда зажжена."
+		# Schema-6 weapon finals are independent permanent path capstones. They
+		# never reuse the legacy mutually-exclusive keystone activation control.
 		keystone_toggle.visible = role == "keystone" and affinity != "" and node_status == "purchased"
 		if keystone_toggle.visible:
 			var active: bool = game.META_PROGRESSION.is_keystone_active(state, selected_id)
@@ -3620,13 +4824,16 @@ func _atlas_refresh_node_panel() -> void:
 		progress_label.text = "Созвездие: %d/%d · Сила класса: +%d%%" % [visible_bought, visible_total, int(roundf((power - 1.0) * 100.0))]
 	hidden_hint.text = hint_text
 	hidden_hint.visible = hint_text != ""
+	var info_scroll := _atlas.get("panel_scroll") as ScrollContainer
+	if info_scroll != null and is_instance_valid(info_scroll):
+		info_scroll.scroll_vertical = 0
+		info_scroll.set_deferred("scroll_vertical", 0)
 
 
 func _atlas_node_pressed(node_id: String) -> void:
 	_atlas_skip_fog_ceremonies()
-	if str(_atlas.get("selected", "")) == node_id and str((_atlas.get("status", {}) as Dictionary).get(node_id, "")) == "available":
-		_atlas_buy_selected()
-		return
+	# SCRUM-838: clicking an Atlas cell is preview-only. Purchasing or keystone
+	# activation must go through the explicit action buttons in the right panel.
 	_atlas_select_node(node_id)
 
 
@@ -3641,6 +4848,7 @@ func _atlas_select_node(node_id: String) -> void:
 		return
 	_atlas["selected"] = node_id
 	_atlas_refresh()
+	_atlas_wire_focus()
 
 
 func _atlas_select_class(class_id: String) -> void:
@@ -3664,7 +4872,10 @@ func _atlas_switch_tab(tab: String) -> void:
 	_atlas_apply_tab_state()
 	_atlas_build_canvas()
 	_atlas_refresh()
-	_atlas_wire_focus()
+	# The old tab's focused node/medallion may be hidden or queued for deletion.
+	# Reseed only in that case; the guarded deferred helper preserves a still-live
+	# header focus and deferred resize passes remain non-seeding (SCRUM-970).
+	_atlas_wire_focus(true)
 
 
 # LB/RB (и Tab) листают вкладки Созвездие↔Гильдия (паттерн SCRUM-813).
@@ -3700,7 +4911,7 @@ func _atlas_apply_tab_state() -> void:
 		emblem_badge.visible = not on_guild
 	var respec_button := _atlas.get("respec_button") as Button
 	if respec_button != null and is_instance_valid(respec_button):
-		respec_button.text = "Респек Атласа — бесплатно" if on_guild else "Респек — бесплатно"
+		respec_button.text = "Сброс умений Атласа" if on_guild else "Сброс умений"
 
 
 func _atlas_buy_selected() -> void:
@@ -3708,9 +4919,13 @@ func _atlas_buy_selected() -> void:
 	if node_id == "" or _atlas.is_empty():
 		return
 	if not game.META_PROGRESSION.can_buy_node(game.meta_state, node_id):
+		# SCRUM-968: узел недоступен (нет звёздной пыли / не открыт предок) — отказ.
+		game._play_sfx("ui_error")
 		return
 	game.meta_state = game.META_PROGRESSION.allocate_node(game.meta_state, node_id)
 	game.META_PROGRESSION.save_state(game.meta_state)
+	# SCRUM-968: успешная покупка узла Атласа — трата звёздной пыли.
+	game._play_sfx("purchase")
 	_atlas_refresh()
 	_atlas_play_purchase_ceremony(node_id)
 
@@ -3815,7 +5030,7 @@ func _atlas_finish_fog(node_id: String) -> void:
 
 # SCRUM-812/813: фокус-цепочки — лента классов вертикальной цепью, узлы по
 # adj-соседям созвездия (гео-направления), шапка/низ достижимы направлениями.
-func _atlas_wire_focus() -> void:
+func _atlas_wire_focus(seed_initial_focus := false) -> void:
 	if _atlas.is_empty():
 		return
 	var tab_constellation := _atlas.get("tab_constellation") as Button
@@ -3823,11 +5038,12 @@ func _atlas_wire_focus() -> void:
 	var back_button := _atlas.get("back_button") as Button
 	var respec_button := _atlas.get("respec_button") as Button
 	var buy_button := _atlas.get("buy_button") as Button
+	var info_scroll := _atlas.get("panel_scroll") as ScrollContainer
 	var on_guild := str(_atlas.get("tab", "constellation")) == "guild"
 	var medallions: Array = [] if on_guild else _atlas.get("medallions", [])
 	var buttons: Dictionary = _atlas.get("node_buttons", {})
 	var centers: Dictionary = _atlas.get("node_centers", {})
-	for control in [tab_constellation, tab_guild, back_button, respec_button, buy_button]:
+	for control in [tab_constellation, tab_guild, back_button, respec_button, buy_button, info_scroll]:
 		if control == null or not is_instance_valid(control):
 			return
 	# Шапка: горизонтальная цепь.
@@ -3882,7 +5098,7 @@ func _atlas_wire_focus() -> void:
 			left_target = selected_medallion if selected_medallion != null else tab_constellation
 		var right_target := best["right"] as Control
 		if right_target == null:
-			right_target = buy_button if buy_button.visible and not buy_button.disabled else respec_button
+			right_target = buy_button if buy_button.visible and not buy_button.disabled else info_scroll
 		var top_target := best["top"] as Control
 		if top_target == null:
 			top_target = tab_guild if on_guild else tab_constellation
@@ -3897,25 +5113,55 @@ func _atlas_wire_focus() -> void:
 	if core_button != null and is_instance_valid(core_button):
 		buy_button.focus_neighbor_left = core_button.get_path()
 		respec_button.focus_neighbor_top = core_button.get_path()
+		info_scroll.focus_neighbor_left = core_button.get_path()
+	var scroll_exit := buy_button if buy_button.visible and not buy_button.disabled else respec_button
+	info_scroll.focus_neighbor_right = scroll_exit.get_path()
+	info_scroll.focus_neighbor_top = back_button.get_path()
+	info_scroll.focus_neighbor_bottom = scroll_exit.get_path()
+	buy_button.focus_neighbor_top = info_scroll.get_path()
 	var keystone_toggle := _atlas.get("keystone_toggle") as Button
 	if keystone_toggle != null and is_instance_valid(keystone_toggle):
 		buy_button.focus_neighbor_bottom = keystone_toggle.get_path()
 		keystone_toggle.focus_neighbor_top = buy_button.get_path()
 		if core_button != null and is_instance_valid(core_button):
 			keystone_toggle.focus_neighbor_left = core_button.get_path()
-	# Стартовый фокус: медальон выбранного класса (вкладка Гильдии — ядро Атласа).
+	# Стартовый фокус нужен только при первом открытии экрана. Deferred responsive
+	# layout passes may rewire neighbours, but must never steal a live pointer or
+	# gamepad selection back to the class medallion/Guild hub (SCRUM-970).
+	if not seed_initial_focus:
+		return
 	var initial: Control = selected_medallion
 	if initial == null:
 		initial = core_button
 	if initial == null and not buttons.is_empty():
 		initial = buttons.values()[0] as Control
 	if initial != null and is_instance_valid(initial):
-		initial.call_deferred("grab_focus")
+		call_deferred("_atlas_grab_initial_focus_if_outside", initial)
+
+
+func _atlas_grab_initial_focus_if_outside(initial: Control) -> void:
+	if _atlas.is_empty() or initial == null or not is_instance_valid(initial):
+		return
+	var atlas_root := _atlas.get("root") as Control
+	if atlas_root == null or not is_instance_valid(atlas_root):
+		return
+	var viewport: Viewport = null
+	if game != null:
+		viewport = game.get_viewport()
+	var current: Control = null
+	if viewport != null:
+		current = viewport.gui_get_focus_owner()
+	if current != null and is_instance_valid(current) and not current.is_queued_for_deletion() \
+			and current.is_visible_in_tree() and (current == atlas_root or atlas_root.is_ancestor_of(current)):
+		return
+	initial.grab_focus()
 
 
 func _show_patch_notes_screen() -> void:
 	# SCRUM-159: экран «Что нового» из главного меню — data-driven патч-ноуты
 	# по версиям (новейшая первой), только пользовательский русский текст.
+	# SCRUM-879: единый атлас-стиль — тихий фон-хроника COVERED, контент в
+	# safe-зоне рамы, кожаная панель _atlas_chip_style, полая рама поверх.
 	const PatchNotesData := preload("res://scripts/patch_notes_data.gd")
 	game._clear_ui()
 	game.ui_layer = CanvasLayer.new()
@@ -3926,39 +5172,29 @@ func _show_patch_notes_screen() -> void:
 	root.name = "PatchNotesScreen"
 	root.set_anchors_preset(Control.PRESET_FULL_RECT)
 	game.ui_layer.add_child(root)
-	_add_screen_background(root, "codex")
+	_prepare_global_tooltips(root)
+	_unified_add_background(root, "patch_notes")
 
-	# SCRUM-576: полноэкранная панель-фрейм @2K (PN_PANEL_2K 2464×1388), нарисована per-слот
-	# рисующим пайплайном (9-slice-safe, орнамент в margin-band). Контент — внутри content-зоны
-	# панели (58/72/58/66 source→display); хедер + скролл версий не лезут на рамку.
-	var panel := PanelContainer.new()
-	panel.name = "PatchNotesPanel"
-	panel.set_anchors_preset(Control.PRESET_FULL_RECT)
-	panel.offset_left = PN_PANEL_2K.position.x
-	panel.offset_top = PN_PANEL_2K.position.y
-	panel.offset_right = -(2560.0 - PN_PANEL_2K.end.x)
-	panel.offset_bottom = -(1440.0 - PN_PANEL_2K.end.y)
-	panel.add_theme_stylebox_override("panel", _overhaul_2k_frame_style("pn_panel", PN_PANEL_2K.size))
-	root.add_child(panel)
-
+	var s := _atlas_ui_scale()
+	var safe := _unified_make_safe_area(root, "PatchNotes")
 	var layout := VBoxContainer.new()
-	layout.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-	layout.size_flags_vertical = Control.SIZE_EXPAND_FILL
-	layout.add_theme_constant_override("separation", 12)
-	panel.add_child(layout)
+	layout.name = "PatchNotesLayout"
+	layout.add_theme_constant_override("separation", int(roundf(12.0 * s)))
+	safe.add_child(layout)
 
 	var header := HBoxContainer.new()
-	header.add_theme_constant_override("separation", 18)
+	header.name = "PatchNotesHeader"
+	header.add_theme_constant_override("separation", int(roundf(12.0 * s)))
 	layout.add_child(header)
-	var title := Label.new()
-	title.text = "Что нового"
-	title.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-	title.add_theme_font_size_override("font_size", _readable_font_size(38))
-	title.add_theme_color_override("font_color", Color(0.96, 0.90, 0.68, 1.0))
-	header.add_child(title)
-	var back_button := _make_button("Назад в меню")
+	header.add_child(_unified_header_chip("PatchNotes", "Что нового", "patch_notes", s))
+	var header_spacer := Control.new()
+	header_spacer.name = "PatchNotesHeaderSpacer"
+	header_spacer.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	header.add_child(header_spacer)
+	# Единый возврат (фидбек 2026-07-08): везде «Назад» на плите 260×h.
+	var back_button := _make_button("Назад")
 	back_button.name = "PatchNotesBackButton"
-	_set_action_button_size(back_button, 260.0)
+	_set_action_button_size(back_button, 260.0, _atlas_action_button_height())
 	back_button.pressed.connect(_show_main_menu)
 	header.add_child(back_button)
 	game.ui_escape_action = _show_main_menu
@@ -3968,34 +5204,171 @@ func _show_patch_notes_screen() -> void:
 	_ensure_run_ui_gamepad_bindings()
 	back_button.call_deferred("grab_focus")
 
+	var panel := PanelContainer.new()
+	panel.name = "PatchNotesPanel"
+	panel.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	panel.size_flags_vertical = Control.SIZE_EXPAND_FILL
+	panel.add_theme_stylebox_override("panel", _atlas_chip_style(0.90, roundf(18.0 * s)))
+	layout.add_child(panel)
+
 	var scroll := ScrollContainer.new()
-	scroll.size_flags_vertical = Control.SIZE_EXPAND_FILL
+	scroll.name = "PatchNotesScroll"
 	scroll.horizontal_scroll_mode = ScrollContainer.SCROLL_MODE_DISABLED
-	layout.add_child(scroll)
+	panel.add_child(scroll)
 	var content := VBoxContainer.new()
 	content.name = "PatchNotesContent"
 	content.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-	content.add_theme_constant_override("separation", 14)
+	content.add_theme_constant_override("separation", int(roundf(12.0 * s)))
 	scroll.add_child(content)
 
-	for entry in PatchNotesData.all_entries():
-		var entry_data: Dictionary = entry
+	var entries := PatchNotesData.all_entries()
+	for i in entries.size():
+		var entry_data: Dictionary = entries[i]
+		var version := str(entry_data.get("version", ""))
 		var version_label := Label.new()
-		version_label.name = "PatchNotesVersion_%s" % str(entry_data.get("version", "")).replace(".", "_")
-		version_label.text = "Версия %s  (%s)" % [str(entry_data.get("version", "")), str(entry_data.get("date", ""))]
-		version_label.add_theme_font_size_override("font_size", _readable_font_size(24))
-		version_label.add_theme_color_override("font_color", Color(1.0, 0.86, 0.40, 1.0))
+		version_label.name = "PatchNotesVersion_%s" % version.replace(".", "_")
+		version_label.text = "Версия %s  (%s)" % [version, str(entry_data.get("date", ""))]
+		version_label.add_theme_font_size_override("font_size", SemanticTypography.resolve_fixed(
+			SemanticTypography.ROLE_CAPTION,
+			_readable_font_size(SemanticTypography.ROLE_CAPTION, 24),
+			SemanticTypography.role_min(SemanticTypography.ROLE_CAPTION),
+			SemanticTypography.role_max(SemanticTypography.ROLE_CAPTION)
+		))
+		version_label.add_theme_color_override("font_color", Color(0.94, 0.80, 0.46, 1.0))
 		content.add_child(version_label)
 		for line in (entry_data.get("highlights", []) as Array):
 			var bullet := Label.new()
 			bullet.text = "•  %s" % str(line)
 			bullet.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
-			bullet.add_theme_font_size_override("font_size", _readable_font_size(16))
-			bullet.add_theme_color_override("font_color", Color(0.90, 0.93, 0.98, 1.0))
+			bullet.add_theme_font_size_override("font_size", _readable_font_size(SemanticTypography.ROLE_BODY, 16))
+			bullet.add_theme_color_override("font_color", Color(0.86, 0.90, 0.97, 0.96))
 			content.add_child(bullet)
+		if i < entries.size() - 1:
+			_unified_add_divider(content, s, "_" + version)
+
+	# Рама — ПОСЛЕДНЕЙ: полый 9-slice поверх контента (контент в safe-зоне).
+	_unified_add_frame(root, "PatchNotes")
+
+
+# SCRUM-968: player-facing «Благодарности» — обязательный CC BY-блок (Kevin
+# MacLeod, CC BY 4.0) + CC0-вклад + инструменты. Канонический источник —
+# docs/CREDITS.md; текст транскрибирован в рантайм, чтобы обязательная атрибуция
+# уходила в билд без зависимости от экспорта каталога docs/. Экран автономный:
+# фон + затемнение + кожаный чип-панель со скроллом + «Назад» в меню.
+func _show_credits_screen() -> void:
+	game._clear_ui()
+	game.ui_layer = CanvasLayer.new()
+	game.ui_layer.process_mode = Node.PROCESS_MODE_ALWAYS
+	game.add_child(game.ui_layer)
+
+	var root := Control.new()
+	root.name = "CreditsScreen"
+	root.set_anchors_preset(Control.PRESET_FULL_RECT)
+	game.ui_layer.add_child(root)
+	_prepare_global_tooltips(root)
+	_add_screen_background(root, "settings")
+
+	var s := _atlas_ui_scale()
+	var viewport_size: Vector2 = game.get_viewport().get_visible_rect().size
+	var panel := PanelContainer.new()
+	panel.name = "CreditsPanel"
+	panel.anchor_left = 0.5
+	panel.anchor_top = 0.5
+	panel.anchor_right = 0.5
+	panel.anchor_bottom = 0.5
+	var panel_width := clampf(viewport_size.x - 96.0, 560.0, 900.0)
+	var panel_height := clampf(viewport_size.y - 96.0, 360.0, 760.0)
+	panel.offset_left = -panel_width * 0.5
+	panel.offset_top = -panel_height * 0.5
+	panel.offset_right = panel_width * 0.5
+	panel.offset_bottom = panel_height * 0.5
+	panel.add_theme_stylebox_override("panel", _atlas_chip_style(0.95, roundf(20.0 * s)))
+	root.add_child(panel)
+
+	var outer := VBoxContainer.new()
+	outer.name = "CreditsOuter"
+	outer.add_theme_constant_override("separation", int(roundf(12.0 * s)))
+	panel.add_child(outer)
+
+	var title := Label.new()
+	title.name = "CreditsTitle"
+	title.text = "Благодарности"
+	title.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	title.add_theme_font_size_override("font_size", _readable_font_size(SemanticTypography.ROLE_TITLE, 32))
+	title.add_theme_color_override("font_color", Color(0.96, 0.90, 0.68, 1.0))
+	outer.add_child(title)
+
+	var scroll := ScrollContainer.new()
+	scroll.name = "CreditsScroll"
+	scroll.horizontal_scroll_mode = ScrollContainer.SCROLL_MODE_DISABLED
+	scroll.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	scroll.size_flags_vertical = Control.SIZE_EXPAND_FILL
+	outer.add_child(scroll)
+
+	var content := VBoxContainer.new()
+	content.name = "CreditsContent"
+	content.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	content.add_theme_constant_override("separation", int(roundf(6.0 * s)))
+	scroll.add_child(content)
+
+	# Порядок и текст зеркалят docs/CREDITS.md (источник истины по атрибуциям).
+	_add_credits_heading(content, "Музыка (CC BY 4.0 — атрибуция обязательна)")
+	_add_credits_body(content, "«Suonatore di Liuto», «Master of the Feast», «Lord of the Land», «Celtic Impulse», «Drums of the Deep», «The Escalation»")
+	_add_credits_body(content, "Kevin MacLeod (incompetech.com)")
+	_add_credits_body(content, "Licensed under Creative Commons: By Attribution 4.0 License")
+	_add_credits_body(content, "http://creativecommons.org/licenses/by/4.0/")
+
+	_add_credits_heading(content, "Музыка и SFX (CC0)")
+	for cc0_line in [
+		"RandomMind — средневековые треки (opengameart.org)",
+		"Kenney — Impact Sounds / RPG Audio (kenney.nl)",
+		"artisticdude — RPG Sound Pack (opengameart.org)",
+		"bart — Heartbeat sounds (opengameart.org)",
+		"qubodup — Ghost breath (opengameart.org)",
+		"AntumDeluge — Fire Crackling (opengameart.org)",
+	]:
+		_add_credits_body(content, "•  %s" % cc0_line)
+
+	_add_credits_heading(content, "Инструменты")
+	_add_credits_body(content, "Godot Engine (godotengine.org, MIT)")
+
+	# «Назад» — единый возврат в меню (плита 260×h), ui_back через общий хелпер.
+	var back_button := _make_button("Назад")
+	back_button.name = "CreditsBackButton"
+	_set_action_button_size(back_button, 260.0, _atlas_action_button_height())
+	back_button.size_flags_horizontal = Control.SIZE_SHRINK_CENTER
+	back_button.pressed.connect(_show_main_menu)
+	_connect_ui_sfx(back_button, "back")
+	outer.add_child(back_button)
+
+	game.ui_escape_action = _show_main_menu
+	_ensure_run_ui_gamepad_bindings()
+	back_button.call_deferred("grab_focus")
+
+
+func _add_credits_heading(parent: Control, text: String) -> void:
+	var label := Label.new()
+	label.text = text
+	label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	label.add_theme_font_size_override("font_size", _readable_font_size(SemanticTypography.ROLE_SECTION, 20))
+	label.add_theme_color_override("font_color", Color(0.94, 0.80, 0.46, 1.0))
+	parent.add_child(label)
+
+
+func _add_credits_body(parent: Control, text: String) -> void:
+	var label := Label.new()
+	label.text = text
+	label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	label.add_theme_font_size_override("font_size", _readable_font_size(SemanticTypography.ROLE_BODY, 15))
+	label.add_theme_color_override("font_color", Color(0.86, 0.90, 0.97, 0.96))
+	parent.add_child(label)
 
 
 func _show_codex_screen() -> void:
+	# SCRUM-954: the accepted SCRUM-1017 PixelLab contract is authored on a
+	# 1920x1080 stage. The stage scales uniformly and letterboxes instead of
+	# compressing the three columns through their ornamental/content margins.
+	# Lazy sections, discovery/locked state and focus navigation remain data-driven.
 	game._clear_ui()
 	game.ui_layer = CanvasLayer.new()
 	game.ui_layer.process_mode = Node.PROCESS_MODE_ALWAYS
@@ -4005,105 +5378,129 @@ func _show_codex_screen() -> void:
 	root.name = "CodexScreen"
 	root.set_anchors_preset(Control.PRESET_FULL_RECT)
 	game.ui_layer.add_child(root)
+	_prepare_global_tooltips(root)
 
-	# SCRUM-684: весь кодекс — pixel-art; nearest наследуется на все панели/
-	# карточки/иконки/фон, чтобы апскейл вьюпорта был хрустящим без блюра.
-	root.texture_filter = CanvasItem.TEXTURE_FILTER_NEAREST
+	_unified_add_background(root, "codex")
 
-	_add_codex_pl_background(root)
+	var stage := Control.new()
+	stage.name = "CodexStage"
+	stage.mouse_filter = Control.MOUSE_FILTER_PASS
+	root.add_child(stage)
+	_codex_update_stage_transform(stage)
+	root.resized.connect(_codex_update_stage_transform.bind(stage))
 
-	var main_panel := PanelContainer.new()
-	main_panel.name = "CodexMainPanel"
-	main_panel.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	main_panel.add_theme_stylebox_override("panel", _codex_v2_main_panel_style())
-	root.add_child(main_panel)
+	# Header frame and Back use the same restrained metal/button family as the
+	# rest of the product. No category emblem competes with the screen title.
+	var title_frame := PanelContainer.new()
+	title_frame.name = "CodexTitleFrame"
+	title_frame.add_theme_stylebox_override("panel", _codex_panel_style(0.90, Vector4(36, 22, 36, 22)))
+	_codex_set_design_rect(title_frame, Rect2(72, 36, 340, 112))
+	stage.add_child(title_frame)
+	var title_label := Label.new()
+	title_label.name = "CodexTitleLabel"
+	title_label.text = "КОДЕКС"
+	title_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	title_label.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
+	_codex_bind_stage_font(title_label, SemanticTypography.ROLE_TITLE, 30, SemanticTypography.role_min(SemanticTypography.ROLE_TITLE), SemanticTypography.role_max(SemanticTypography.ROLE_TITLE))
+	title_label.add_theme_color_override("font_color", Color(0.96, 0.90, 0.68, 1.0))
+	title_frame.add_child(title_label)
 
-	var title := Label.new()
-	title.name = "CodexHeaderTitle"
-	title.text = "Кодекс"
-	title.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
-	title.add_theme_font_size_override("font_size", _codex_font_size(48, 30, 72))
-	title.add_theme_color_override("font_color", CODEX_PL_TEXT_GOLD)
-	root.add_child(title)
-
-	var subtitle := Label.new()
-	subtitle.name = "CodexHeaderSubtitle"
-	subtitle.text = "Записи о героях, тварях, реликвиях и правилах мира."
-	subtitle.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
-	subtitle.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
-	subtitle.add_theme_font_size_override("font_size", _codex_font_size(22, 14, 28))
-	subtitle.add_theme_color_override("font_color", CODEX_PL_TEXT_CREAM)
-	root.add_child(subtitle)
-
-	var back_button := _make_compact_button("←")
+	var back_button := Button.new()
 	back_button.name = "CodexBackButton"
-	_apply_codex_pl_button_theme(back_button, CODEX_PL_BACK_BUTTON_PATH, CODEX_PL_BACK_BUTTON_TEX, CODEX_PL_BACK_BUTTON_CONTENT)
-	back_button.tooltip_text = "Назад в меню"
-	back_button.add_theme_font_size_override("font_size", _readable_font_size(28))
+	back_button.text = "НАЗАД"
+	back_button.custom_minimum_size = Vector2(268, 96)
+	back_button.mouse_default_cursor_shape = Control.CURSOR_POINTING_HAND
+	_apply_fantasy_button_theme(back_button, "default", "text/back_260x104")
+	back_button.add_theme_font_size_override("font_size", _readable_font_size(SemanticTypography.ROLE_ACTION, 16))
+	_codex_bind_stage_font(back_button, SemanticTypography.ROLE_ACTION, 22, SemanticTypography.role_min(SemanticTypography.ROLE_ACTION), SemanticTypography.role_max(SemanticTypography.ROLE_ACTION))
+	_codex_set_design_rect(back_button, Rect2(1580, 46, 268, 96))
 	back_button.pressed.connect(_show_main_menu)
-	root.add_child(back_button)
+	_connect_ui_sfx(back_button, "back")
+	stage.add_child(back_button)
 	game.ui_escape_action = _show_main_menu
 
+	# Exact panel frames and their content margins are the accepted empty zones.
 	var nav_panel := PanelContainer.new()
 	nav_panel.name = "CodexNavPanel"
-	nav_panel.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	nav_panel.add_theme_stylebox_override("panel", _codex_v2_nav_panel_style())
-	root.add_child(nav_panel)
-
-	var tabs_row := VBoxContainer.new()
+	nav_panel.add_theme_stylebox_override("panel", _codex_panel_style(0.90, Vector4(32, 38, 32, 50)))
+	_codex_set_design_rect(nav_panel, Rect2(72, 172, 324, 840))
+	stage.add_child(nav_panel)
+	var tabs_row := Control.new()
 	tabs_row.name = "CodexTabs"
-	tabs_row.alignment = BoxContainer.ALIGNMENT_BEGIN
-	root.add_child(tabs_row)
+	nav_panel.add_child(tabs_row)
 
 	var content := PanelContainer.new()
 	content.name = "CodexContent"
-	content.add_theme_stylebox_override("panel", _codex_v2_list_panel_style())
-	root.add_child(content)
+	content.add_theme_stylebox_override("panel", _codex_panel_style(0.88, Vector4(32, 36, 32, 44)))
+	_codex_set_design_rect(content, Rect2(420, 172, 620, 840))
+	stage.add_child(content)
+	var center_inner := Control.new()
+	center_inner.name = "CodexCenterBox"
+	content.add_child(center_inner)
+	var center_title := Label.new()
+	center_title.name = "CodexCenterTitle"
+	center_title.text = "ПЕРСОНАЖИ"
+	center_title.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	center_title.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
+	_codex_bind_stage_font(center_title, SemanticTypography.ROLE_SECTION, 24, SemanticTypography.role_min(SemanticTypography.ROLE_SECTION), SemanticTypography.role_max(SemanticTypography.ROLE_SECTION))
+	center_title.add_theme_color_override("font_color", Color(0.96, 0.90, 0.68, 1.0))
+	_codex_set_design_rect(center_title, Rect2(88, 14, 380, 44))
+	center_inner.add_child(center_title)
+
+	var center_list_host := Control.new()
+	center_list_host.name = "CodexCenterListHost"
+	center_list_host.clip_contents = true
+	_codex_set_design_rect(center_list_host, Rect2(0, 70, 556, 690))
+	center_inner.add_child(center_list_host)
 
 	var detail_panel := PanelContainer.new()
 	detail_panel.name = "CodexDetailPanel"
-	detail_panel.add_theme_stylebox_override("panel", _codex_v2_detail_panel_style())
-	root.add_child(detail_panel)
+	detail_panel.add_theme_stylebox_override("panel", _codex_panel_style(0.92, Vector4(32, 36, 32, 44)))
+	_codex_set_design_rect(detail_panel, Rect2(1064, 172, 784, 840))
+	stage.add_child(detail_panel)
 
 	content.set_meta("codex_detail_panel", detail_panel)
-	content.set_meta("codex_header_title", title)
-	content.set_meta("codex_header_subtitle", subtitle)
 	content.set_meta("codex_tabs", tabs_row)
+	content.set_meta("codex_section_host", center_list_host)
+	content.set_meta("codex_section_title", center_title)
 	content.set_meta("codex_active_section", "characters")
 
-	var layout_entries: Array = []
-	_codex_v2_register_rect(layout_entries, main_panel, CODEX_V2_OUTER_FRAME_RECT)
-	_codex_v2_register_rect(layout_entries, title, CODEX_V2_HEADER_TITLE_SAFE)
-	_codex_v2_register_rect(layout_entries, subtitle, CODEX_V2_HEADER_SUBTITLE_SAFE)
-	_codex_v2_register_rect(layout_entries, back_button, CODEX_V2_BACK_BUTTON_SAFE)
-	_codex_v2_register_rect(layout_entries, nav_panel, CODEX_V2_NAV_PANEL_RECT)
-	_codex_v2_register_rect(layout_entries, tabs_row, CODEX_V2_NAV_SAFE)
-	_codex_v2_register_rect(layout_entries, content, CODEX_V2_LIST_PANEL_RECT)
-	_codex_v2_register_rect(layout_entries, detail_panel, CODEX_V2_DETAIL_PANEL_RECT)
-
-	for section in CODEX_SECTIONS:
+	# Six fixed Russian labels. The category-emblem path is intentionally absent:
+	# actual canonical images belong to entries, not to navigation furniture.
+	var nav_y := [12.0, 130.0, 248.0, 366.0, 484.0, 602.0]
+	for section_index in range(CODEX_SECTIONS.size()):
+		var section: Dictionary = CODEX_SECTIONS[section_index]
 		var section_id := str(section["id"])
-		var tab_button := _make_button(str(section["title"]))
+		var tab_button := Button.new()
 		tab_button.name = "CodexTab_%s" % section_id
-		tab_button.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
-		tab_button.add_theme_font_size_override("font_size", _readable_font_size(15))
+		tab_button.text = str(section["title"])
+		tab_button.custom_minimum_size = Vector2(260, 104)
+		tab_button.mouse_default_cursor_shape = Control.CURSOR_POINTING_HAND
+		_apply_fantasy_button_theme(tab_button, "default", UIButtonFamily.FAMILY_CODEX_TAB)
+		tab_button.add_theme_font_size_override("font_size", _readable_font_size(SemanticTypography.ROLE_TAB, 16))
+		tab_button.alignment = HORIZONTAL_ALIGNMENT_CENTER
+		tab_button.autowrap_mode = TextServer.AUTOWRAP_OFF
+		tab_button.clip_text = false
+		_codex_bind_stage_font(tab_button, SemanticTypography.ROLE_TAB, 22, SemanticTypography.role_min(SemanticTypography.ROLE_TAB), SemanticTypography.role_max(SemanticTypography.ROLE_TAB))
+		for tab_state in ["normal", "hover", "pressed", "disabled", "focus"]:
+			var source_style := tab_button.get_theme_stylebox(tab_state)
+			var tab_style := source_style.duplicate() if source_style != null else null
+			if tab_style != null:
+				tab_style.content_margin_left = 20.0
+				tab_style.content_margin_right = 20.0
+				tab_style.content_margin_top = 18.0
+				tab_style.content_margin_bottom = 18.0
+				tab_button.add_theme_stylebox_override(tab_state, tab_style)
+		_codex_set_design_rect(tab_button, Rect2(0, nav_y[section_index], 260, 104))
 		tab_button.pressed.connect(_show_codex_section.bind(content, section_id))
+		_connect_ui_sfx(tab_button, "click")
 		tabs_row.add_child(tab_button)
-		_codex_pl_add_category_emblem(tab_button, section_id)
-
-	_codex_v2_apply_layout(layout_entries)
-	_codex_v2_apply_header_metrics(title, subtitle)
-	_codex_v2_apply_tab_metrics(tabs_row)
-	_codex_v2_apply_back_button_metrics(back_button)
-	root.resized.connect(func() -> void:
-		_codex_v2_apply_layout(layout_entries)
-		_codex_v2_apply_header_metrics(title, subtitle)
-		_codex_v2_apply_tab_metrics(tabs_row)
-		_codex_v2_apply_back_button_metrics(back_button)
-		_codex_rebuild_current_section(content)
-	)
 
 	_show_codex_section(content, "characters")
+
+	# SCRUM-954 intentionally has no full-screen ornamental shell. The previous
+	# CodexFrame covered the authored header/nav zones at 720p and 1080p; each
+	# surface above now owns its own explicit safe content margin.
 
 	# SCRUM-813: стартовый фокус — первая вкладка кодекса; LB/RB листают разделы
 	# (см. _handle_menu_shoulder_nav), карточки записей фокусируемы и прокручиваются
@@ -4115,29 +5512,97 @@ func _show_codex_screen() -> void:
 		first_codex_tab.call_deferred("grab_focus")
 
 
+func _codex_set_design_rect(control: Control, rect: Rect2) -> void:
+	control.position = rect.position
+	control.size = rect.size
+	control.custom_minimum_size = rect.size
+
+
+func _codex_update_stage_transform(stage: Control) -> void:
+	if stage == null or not is_instance_valid(stage):
+		return
+	var viewport_size := Vector2(1920, 1080)
+	if game != null and game.get_viewport() != null:
+		viewport_size = game.get_viewport().get_visible_rect().size
+	var design_size := Vector2(1920, 1080)
+	var uniform_scale := minf(viewport_size.x / design_size.x, viewport_size.y / design_size.y)
+	stage.position = (viewport_size - design_size * uniform_scale) * 0.5
+	stage.size = design_size
+	stage.custom_minimum_size = design_size
+	stage.scale = Vector2.ONE * uniform_scale
+	stage.set_meta("codex_design_scale", uniform_scale)
+	stage.set_meta("codex_letterbox_offset", stage.position)
+	_codex_refresh_stage_fonts(stage)
+
+
+func _codex_bind_stage_font(control: Control, role: StringName, design_size: int, min_visual_size: int, max_visual_size: int) -> void:
+	# SCRUM-1073 keeps the accepted Codex dossier's 17px body floor and 30px
+	# section ceiling while enforcing the canonical semantic band everywhere.
+	# These narrower in-band bounds prevent compact dossier drift and large-tier
+	# center-title growth without weakening native token floors.
+	if role == SemanticTypography.ROLE_BODY:
+		min_visual_size = maxi(min_visual_size, 17)
+	if role == SemanticTypography.ROLE_SECTION:
+		max_visual_size = mini(max_visual_size, 30)
+	control.set_meta("codex_semantic_role", role)
+	control.set_meta("codex_design_font_size", design_size)
+	control.set_meta("codex_min_visual_font_size", min_visual_size)
+	control.set_meta("codex_max_visual_font_size", max_visual_size)
+	control.add_theme_font_size_override("font_size", _codex_stage_font_size(role, design_size, min_visual_size, max_visual_size))
+
+
+func _codex_refresh_stage_fonts(stage: Control) -> void:
+	if stage == null or not is_instance_valid(stage):
+		return
+	for node in stage.find_children("*", "Control", true, false):
+		var control := node as Control
+		if control == null or not control.has_meta("codex_design_font_size"):
+			continue
+		control.add_theme_font_size_override("font_size", _codex_stage_font_size(
+			StringName(control.get_meta("codex_semantic_role", SemanticTypography.ROLE_BODY)),
+			int(control.get_meta("codex_design_font_size")),
+			int(control.get_meta("codex_min_visual_font_size")),
+			int(control.get_meta("codex_max_visual_font_size"))
+		))
+
+
+func _codex_panel_style(alpha: float, margins: Vector4) -> StyleBoxFlat:
+	var style := _atlas_chip_style(alpha, 0.0)
+	style.content_margin_left = margins.x
+	style.content_margin_top = margins.y
+	style.content_margin_right = margins.z
+	style.content_margin_bottom = margins.w
+	return style
+
+
 func _show_codex_section(content: PanelContainer, section_id: String) -> void:
 	# Ленивое построение: раздел собирается при первом открытии и кэшируется
 	# внутри экрана, остальные скрываются — меню не фризит на старте.
 	if content == null or not is_instance_valid(content):
 		return
 	var detail_panel := content.get_meta("codex_detail_panel", null) as PanelContainer
-	var header_title := content.get_meta("codex_header_title", null) as Label
-	var header_subtitle := content.get_meta("codex_header_subtitle", null) as Label
 	var tabs_row := content.get_meta("codex_tabs", null) as Control
-	if header_title != null:
-		header_title.text = "Кодекс"
-	if header_subtitle != null:
-		header_subtitle.text = "Раздел: %s" % _codex_section_title(section_id)
+	var section_host := content.get_meta("codex_section_host", content) as Control
+	var section_title := content.get_meta("codex_section_title", null) as Label
+	if section_host == null:
+		section_host = content
 	content.set_meta("codex_active_section", section_id)
 	_codex_update_tab_selection(tabs_row, section_id)
-	for child in content.get_children():
+	if section_title != null:
+		for section in CODEX_SECTIONS:
+			if str(section.get("id", "")) == section_id:
+				section_title.text = str(section.get("title", "")).to_upper()
+				break
+	for child in section_host.get_children():
 		child.visible = false
-	var existing := content.get_node_or_null("CodexSection_%s" % section_id)
+	var existing := section_host.get_node_or_null("CodexSection_%s" % section_id)
 	if existing != null:
 		existing.visible = true
 		var default_detail: Dictionary = existing.get_meta("codex_default_detail", {})
 		if detail_panel != null and not default_detail.is_empty():
 			_codex_update_detail(detail_panel, default_detail)
+			if existing.has_meta("codex_default_entry_button"):
+				_codex_set_selected_entry(content, existing.get_meta("codex_default_entry_button") as Button)
 		return
 
 	var scroll := ScrollContainer.new()
@@ -4146,14 +5611,25 @@ func _show_codex_section(content: PanelContainer, section_id: String) -> void:
 	scroll.set_anchors_preset(Control.PRESET_FULL_RECT)
 	# SCRUM-813: скролл секции следует за сфокусированной карточкой (крестовина/стик).
 	scroll.follow_focus = true
-	content.add_child(scroll)
+	section_host.add_child(scroll)
+
+	var list_inset := MarginContainer.new()
+	list_inset.name = "CodexSectionInset_%s" % section_id
+	list_inset.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	list_inset.add_theme_constant_override("margin_left", 8)
+	list_inset.add_theme_constant_override("margin_top", 12)
+	list_inset.add_theme_constant_override("margin_right", 32)
+	list_inset.add_theme_constant_override("margin_bottom", 12)
+	scroll.add_child(list_inset)
 
 	var list := VBoxContainer.new()
+	list.name = "CodexSectionList_%s" % section_id
 	list.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-	list.add_theme_constant_override("separation", 12)
+	list.add_theme_constant_override("separation", 16)
 	list.set_meta("codex_detail_panel", detail_panel)
 	list.set_meta("codex_section_scroll", scroll)
-	scroll.add_child(list)
+	list.set_meta("codex_content_panel", content)
+	list_inset.add_child(list)
 
 	match section_id:
 		"characters":
@@ -4162,43 +5638,39 @@ func _show_codex_section(content: PanelContainer, section_id: String) -> void:
 			_build_codex_monsters(list)
 		"artifacts":
 			_build_codex_artifacts(list)
-		"stats":
-			_build_codex_stats(list)
-		"glossary":
-			_build_codex_glossary(list)
-		"ascensions":
+		"characteristics":
+			_build_codex_stats(list, "base")
+		"attributes":
+			_build_codex_stats(list, "derived")
+		"ascension":
 			_build_codex_ascensions(list)
 	var default_detail: Dictionary = scroll.get_meta("codex_default_detail", {})
 	if detail_panel != null and not default_detail.is_empty():
 		_codex_update_detail(detail_panel, default_detail)
+		if scroll.has_meta("codex_default_entry_button"):
+			_codex_set_selected_entry(content, scroll.get_meta("codex_default_entry_button") as Button)
 
 
 func _codex_entry_panel(list: VBoxContainer, detail_data := {}) -> HBoxContainer:
+	# SCRUM-954: 516x154 authored row. Its 20px inner reserve keeps the actual
+	# image well and centered Russian name clear of the leather/metal bevel.
 	var panel := Button.new()
 	panel.name = "CodexEntryCard"
 	panel.text = ""
-	panel.custom_minimum_size = Vector2(0.0, CODEX_V2_ENTRY_CARD_SOURCE_SIZE.y * _codex_v2_scale())
+	panel.custom_minimum_size = Vector2(516.0, 154.0)
 	panel.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	panel.mouse_default_cursor_shape = Control.CURSOR_POINTING_HAND
 	panel.focus_mode = Control.FOCUS_ALL
-	panel.add_theme_stylebox_override("normal", _codex_entry_card_style())
-	panel.add_theme_stylebox_override("hover", _codex_entry_card_style(true))
-	panel.add_theme_stylebox_override("focus", _codex_entry_card_style(true))
-	panel.add_theme_stylebox_override("pressed", _codex_entry_card_style(true))
-	panel.add_theme_color_override("font_color", Color.TRANSPARENT)
-	panel.add_theme_color_override("font_hover_color", Color.TRANSPARENT)
-	panel.add_theme_color_override("font_pressed_color", Color.TRANSPARENT)
-	panel.add_theme_color_override("font_focus_color", Color.TRANSPARENT)
+	_unified_apply_row_theme(panel, 10.0, false)
 	list.add_child(panel)
 	var row := HBoxContainer.new()
 	row.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	row.set_anchors_preset(Control.PRESET_FULL_RECT)
-	var margins := _codex_v2_scaled_margins(CODEX_V2_ENTRY_CARD_CONTENT)
-	row.offset_left = margins.x
-	row.offset_top = margins.y
-	row.offset_right = -margins.z
-	row.offset_bottom = -margins.w
-	row.add_theme_constant_override("separation", int(round(16.0 * _codex_v2_scale())))
+	row.offset_left = 20.0
+	row.offset_top = 20.0
+	row.offset_right = -30.0
+	row.offset_bottom = -20.0
+	row.add_theme_constant_override("separation", 14)
 	panel.add_child(row)
 	row.set_meta("entry_button", panel)
 	if detail_data is Dictionary and not (detail_data as Dictionary).is_empty():
@@ -4206,64 +5678,33 @@ func _codex_entry_panel(list: VBoxContainer, detail_data := {}) -> HBoxContainer
 	return row
 
 
-func _codex_portrait(row: HBoxContainer, sprite_path: String, size: Vector2) -> Texture2D:
+# Квадрат портрета/иконки в чип-ряду записи (влезает в content-зону карточки).
+func _codex_entry_portrait_size() -> Vector2:
+	return Vector2(88.0, 96.0)
+
+
+func _codex_portrait(row: HBoxContainer, sprite_path: String, size: Vector2, image_policy := CodexImageFit.POLICY_CHARACTER) -> Texture2D:
 	var texture: Texture2D = null
 	if sprite_path != "" and ResourceLoader.exists(sprite_path):
 		texture = game._cached_texture(sprite_path)
-	_codex_icon_slot(row, texture, size, "CodexPortraitSlot")
+	_codex_icon_slot(row, texture, size, "CodexPortraitSlot", image_policy, sprite_path)
 	return texture
 
 
-# SCRUM-684: лёгкая parchment-inset подложка для портрета/иконки в строке-
-# карточке кодекса. БЕЗ чёрного MINIMAL_FIELD-бокса — тонкая тёмно-коричневая
-# рамка с малой непрозрачностью, чтобы эмблема читалась, но не пробивала пергамент.
-func _codex_pl_entry_icon_slot_style() -> StyleBox:
-	var box := StyleBoxFlat.new()
-	box.bg_color = Color(0.24, 0.16, 0.10, 0.30)
-	box.border_color = Color(0.42, 0.30, 0.16, 0.70)
-	box.set_border_width_all(2)
-	box.set_corner_radius_all(6)
-	box.set_content_margin_all(3.0)
-	return box
-
-
-func _codex_chip_style() -> StyleBox:
-	var box := StyleBoxFlat.new()
-	box.bg_color = CODEX_PL_CHIP_FILL
-	box.border_color = Color(0.72, 0.58, 0.31, 0.86)
-	box.set_border_width_all(2)
-	box.set_corner_radius_all(4)
-	box.content_margin_left = 12.0
-	box.content_margin_right = 12.0
-	box.content_margin_top = 6.0
-	box.content_margin_bottom = 6.0
-	return box
-
-
-func _codex_parchment_style() -> StyleBox:
-	var box := StyleBoxFlat.new()
-	box.bg_color = CODEX_PL_PARCHMENT_FILL
-	box.border_color = CODEX_PL_PARCHMENT_BORDER
-	box.set_border_width_all(3)
-	box.set_corner_radius_all(5)
-	box.content_margin_left = 22.0
-	box.content_margin_right = 22.0
-	box.content_margin_top = 18.0
-	box.content_margin_bottom = 18.0
-	return box
-
-
-func _codex_icon_slot(row: HBoxContainer, texture: Texture2D, size: Vector2, node_name := "CodexPortraitSlot") -> void:
+func _codex_icon_slot(row: HBoxContainer, texture: Texture2D, size: Vector2, node_name := "CodexPortraitSlot", image_policy := CodexImageFit.POLICY_CONTAIN, source_path := "") -> void:
 	var slot := PanelContainer.new()
 	slot.name = node_name
 	slot.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	# Слот в карточке-строке: фикс-квадрат, по вертикали ужимается и центрируется,
-	# чтобы НИКОГДА не превышать высоту пергамента карточки (не торчал сверху/снизу).
-	var slot_padding := Vector2(6.0, 6.0) * _codex_v2_scale()
-	slot.custom_minimum_size = size + slot_padding
+	# Accepted row image well: 122x114 with the live image inside 88x96.
+	slot.custom_minimum_size = Vector2(122.0, 114.0)
 	slot.size_flags_vertical = Control.SIZE_SHRINK_CENTER
 	slot.size_flags_horizontal = Control.SIZE_SHRINK_CENTER
-	slot.add_theme_stylebox_override("panel", _codex_pl_entry_icon_slot_style())
+	var slot_style := _atlas_translucent_style(0.45, 6.0)
+	slot_style.content_margin_left = 17.0
+	slot_style.content_margin_right = 17.0
+	slot_style.content_margin_top = 9.0
+	slot_style.content_margin_bottom = 9.0
+	slot.add_theme_stylebox_override("panel", slot_style)
 	_codex_pl_make_nearest(slot)
 	row.add_child(slot)
 	var portrait := TextureRect.new()
@@ -4273,10 +5714,32 @@ func _codex_icon_slot(row: HBoxContainer, texture: Texture2D, size: Vector2, nod
 	portrait.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	portrait.size_flags_vertical = Control.SIZE_EXPAND_FILL
 	portrait.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
-	portrait.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_COVERED if node_name == "CodexPortraitSlot" else TextureRect.STRETCH_KEEP_ASPECT_CENTERED
-	portrait.texture = texture
+	portrait.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
+	portrait.texture = CodexImageFit.texture_view(texture, source_path, image_policy, size)
+	portrait.set_meta("codex_source_path", source_path if not source_path.is_empty() else CodexImageFit.canonical_path(texture))
+	portrait.set_meta("codex_image_policy", image_policy)
 	_codex_pl_make_nearest(portrait)
 	slot.add_child(portrait)
+
+
+func _codex_add_entry_name(row: HBoxContainer, display_name: String) -> Label:
+	var label := Label.new()
+	label.name = "CodexEntryName"
+	label.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	label.text = display_name
+	label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	label.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
+	label.max_lines_visible = 2
+	label.clip_text = true
+	label.text_overrun_behavior = TextServer.OVERRUN_TRIM_ELLIPSIS
+	label.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	label.size_flags_vertical = Control.SIZE_SHRINK_CENTER
+	label.custom_minimum_size.y = 60.0
+	_codex_bind_stage_font(label, SemanticTypography.ROLE_FIELD, 24, SemanticTypography.role_min(SemanticTypography.ROLE_FIELD), SemanticTypography.role_max(SemanticTypography.ROLE_FIELD))
+	label.add_theme_color_override("font_color", CODEX_PL_CARD_BODY_COLOR)
+	row.add_child(label)
+	return label
 
 
 func _codex_label(parent: Control, text: String, font_size: int, color: Color, max_lines := 0) -> Label:
@@ -4285,168 +5748,40 @@ func _codex_label(parent: Control, text: String, font_size: int, color: Color, m
 	label.text = text
 	label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	label.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-	label.add_theme_font_size_override("font_size", _codex_font_size(font_size, 10, 44))
+	_codex_bind_stage_font(label, SemanticTypography.ROLE_BODY, font_size, SemanticTypography.role_min(SemanticTypography.ROLE_BODY), SemanticTypography.role_max(SemanticTypography.ROLE_BODY))
 	label.add_theme_color_override("font_color", color)
 	if max_lines > 0:
 		label.clip_text = true
 		label.max_lines_visible = max_lines
 		label.text_overrun_behavior = TextServer.OVERRUN_TRIM_ELLIPSIS
-		label.custom_minimum_size.y = ceilf(float(_codex_font_size(font_size, 10, 44) * max_lines) * 1.18)
+		label.custom_minimum_size.y = ceilf(float(_codex_font_size(SemanticTypography.ROLE_BODY, font_size, 17, 32) * max_lines) * 1.18)
 	parent.add_child(label)
 	return label
 
 
-func _codex_font_size(base_size: int, min_size := 10, max_size := 44) -> int:
-	var scale := clampf(_codex_v2_scale(), 0.82, 1.32)
-	return clampi(int(roundf(float(base_size) * scale)), min_size, max_size)
+func _codex_font_size(role: StringName, base_size: int, min_size := 10, max_size := 44) -> int:
+	return _codex_stage_font_size(role, base_size, min_size, max_size)
 
 
-func _codex_v2_scale(viewport_size := Vector2.ZERO) -> float:
-	var size := viewport_size
-	if size == Vector2.ZERO:
-		size = game.get_viewport().get_visible_rect().size if game != null and game.get_viewport() != null else CODEX_V2_BASE_SIZE
-	# SCRUM-725: the base rects already include the 24px outer inset from layout_map.md.
-	var avail := size - CODEX_V2_SCREEN_INSET * 2.0
-	return minf(avail.x / CODEX_V2_BASE_SIZE.x, avail.y / CODEX_V2_BASE_SIZE.y)
-
-
-func _codex_v2_scaled_margins(margins: Vector4, viewport_size := Vector2.ZERO) -> Vector4:
-	var scale := _codex_v2_scale(viewport_size)
-	return Vector4(
-		roundf(margins.x * scale),
-		roundf(margins.y * scale),
-		roundf(margins.z * scale),
-		roundf(margins.w * scale)
+func _codex_stage_font_size(role: StringName, design_size: int, min_visual_size: int, max_visual_size: int) -> int:
+	# CodexStage scales Controls and fonts together. Keep design sizes inside the
+	# responsive band, but compensate locally when the visual result would fall
+	# below the accepted minimum or exceed the cap.
+	var viewport_size := Vector2(1920, 1080)
+	if game != null and game.get_viewport() != null:
+		viewport_size = game.get_viewport().get_visible_rect().size
+	var stage_scale := maxf(0.01, minf(viewport_size.x / 1920.0, viewport_size.y / 1080.0))
+	return SemanticTypography.resolve_transform_aware(
+		role,
+		design_size,
+		stage_scale,
+		min_visual_size,
+		max_visual_size
 	)
-
-
-func _codex_v2_scaled_rect(base_rect: Rect2, viewport_size := Vector2.ZERO) -> Rect2:
-	var size := viewport_size
-	if size == Vector2.ZERO:
-		size = game.get_viewport().get_visible_rect().size if game != null and game.get_viewport() != null else CODEX_V2_BASE_SIZE
-	var scale := _codex_v2_scale(size)
-	var offset := (size - CODEX_V2_BASE_SIZE * scale) * 0.5
-	return Rect2(
-		offset + base_rect.position * scale,
-		base_rect.size * scale
-	)
-
-
-func _codex_v2_register_rect(entries: Array, control: Control, base_rect: Rect2) -> void:
-	entries.append({"control": control, "rect": base_rect})
-
-
-func _codex_v2_apply_layout(entries: Array) -> void:
-	var viewport_size: Vector2 = game.get_viewport().get_visible_rect().size if game != null and game.get_viewport() != null else CODEX_V2_BASE_SIZE
-	for entry in entries:
-		var data: Dictionary = entry
-		var control := data.get("control", null) as Control
-		if control == null or not is_instance_valid(control):
-			continue
-		var rect := _codex_v2_scaled_rect(data.get("rect", Rect2()), viewport_size)
-		control.set_anchors_preset(Control.PRESET_TOP_LEFT)
-		control.offset_left = rect.position.x
-		control.offset_top = rect.position.y
-		control.offset_right = rect.position.x + rect.size.x
-		control.offset_bottom = rect.position.y + rect.size.y
-		control.custom_minimum_size = rect.size
-
-
-func _codex_v2_apply_header_metrics(title: Label, subtitle: Label) -> void:
-	if title != null:
-		title.add_theme_font_size_override("font_size", _codex_font_size(48, 30, 72))
-	if subtitle != null:
-		subtitle.add_theme_font_size_override("font_size", _codex_font_size(22, 14, 28))
-
-
-func _codex_v2_apply_tab_metrics(tabs_row: VBoxContainer) -> void:
-	if tabs_row == null:
-		return
-	var scale := _codex_v2_scale()
-	var tab_size := CODEX_V2_CATEGORY_BUTTON_SIZE * scale
-	var separation: int = maxi(7, int(round(14.0 * scale)))
-	tabs_row.add_theme_constant_override("separation", separation)
-	for child in tabs_row.get_children():
-		var button := child as Button
-		if button == null:
-			continue
-		button.custom_minimum_size = tab_size
-		button.add_theme_font_size_override("font_size", _codex_font_size(18, 12, 23))
-		# Полоса слева под эмблему: ruby-rivet (≈левый tex-margin) + сама эмблема.
-		# content-margins масштабируем под размер плитки (display px); левый margin
-		# уводит подпись правее эмблемы, остальные кладут текст в parchment-зону.
-		var px := tab_size.x / 512.0
-		var rivet_end := CODEX_PL_CATEGORY_BUTTON_TEX.x * px
-		var emblem := clampf(tab_size.y * 0.50, 30.0, 64.0)
-		var btn_content := Vector4(rivet_end + emblem + 12.0 * scale, 22.0 * px, 26.0 * px, 22.0 * px)
-		_apply_codex_pl_button_theme(button, CODEX_PL_CATEGORY_BUTTON_PATH, CODEX_PL_CATEGORY_BUTTON_TEX, btn_content)
-		button.alignment = HORIZONTAL_ALIGNMENT_LEFT
-		_codex_pl_layout_category_emblem(button, tab_size, rivet_end, emblem)
-
-
-# SCRUM-684 fix: компактная кнопка «Назад» масштабирует content-margins и шрифт под
-# свою (168×84-в-base) display-высоту. Без этого фикс-margins (60px) + шрифт 28
-# давали intrinsic-min ≈99px, и на малых разрешениях кнопка раздувалась ниже своего
-# layout-rect и налезала на CodexDetailPanel (ui_no_overlap_matrix_test, все res).
-# Пропорциональные margins/font держат intrinsic-min < layout-высоты на всех scale.
-func _codex_v2_apply_back_button_metrics(button: Button) -> void:
-	if button == null:
-		return
-	var scale := _codex_v2_scale()
-	var height := CODEX_V2_BACK_BUTTON_SAFE.size.y * scale
-	var v_margin := maxf(6.0, height * 0.13)
-	var content := Vector4(
-		CODEX_PL_BACK_BUTTON_CONTENT.x * scale,
-		v_margin,
-		CODEX_PL_BACK_BUTTON_CONTENT.z * scale,
-		v_margin)
-	_apply_codex_pl_button_theme(button, CODEX_PL_BACK_BUTTON_PATH, CODEX_PL_BACK_BUTTON_TEX, content)
-	button.add_theme_font_size_override("font_size", _codex_font_size(int(round(clampf(height * 0.34, 16.0, 40.0))), 14, 44))
-
-
-func _codex_rebuild_current_section(content: PanelContainer) -> void:
-	if content == null or not is_instance_valid(content):
-		return
-	var section_id := str(content.get_meta("codex_active_section", "characters"))
-	for child in content.get_children():
-		content.remove_child(child)
-		child.queue_free()
-	_show_codex_section(content, section_id)
-
-
-# SCRUM-684: эмблема категории (golden helm / dragon skull / …) в безопасной
-# зоне плитки, левее подписи; не заходит на ruby-rivet и орнамент рамки.
-func _codex_pl_add_category_emblem(button: Button, section_id: String) -> void:
-	if button == null or not CODEX_PL_ICONS.has(section_id):
-		return
-	var icon := TextureRect.new()
-	icon.name = "CodexCategoryEmblem"
-	icon.texture = game._cached_texture(str(CODEX_PL_ICONS[section_id]))
-	icon.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
-	icon.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
-	icon.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	_codex_pl_make_nearest(icon)
-	button.add_child(icon)
-
-
-func _codex_pl_layout_category_emblem(button: Button, tab_size: Vector2, rivet_end: float, emblem: float) -> void:
-	var icon := button.get_node_or_null("CodexCategoryEmblem") as TextureRect
-	if icon == null:
-		return
-	# Эмблема сразу после ruby-rivet, по центру по вертикали; подпись её не перекрывает
-	# (левый content-margin кнопки = rivet_end + emblem + воздух).
-	icon.size = Vector2(emblem, emblem)
-	icon.position = Vector2(rivet_end + 6.0, (tab_size.y - emblem) * 0.5)
-
-
-func _codex_section_title(section_id: String) -> String:
-	for section in CODEX_SECTIONS:
-		if str(section.get("id", "")) == section_id:
-			return str(section.get("title", section_id))
-	return section_id
 
 
 func _codex_update_tab_selection(tabs_row: Control, section_id: String) -> void:
+	# Активный/неактивные табы — модуляцией, как _atlas_apply_tab_state.
 	if tabs_row == null:
 		return
 	for child in tabs_row.get_children():
@@ -4454,224 +5789,490 @@ func _codex_update_tab_selection(tabs_row: Control, section_id: String) -> void:
 		if button == null:
 			continue
 		var selected := button.name == "CodexTab_%s" % section_id
-		button.modulate = Color(1.08, 0.95, 0.78, 1.0) if selected else Color.WHITE
-		button.add_theme_color_override("font_color", Color(1.0, 0.88, 0.48, 1.0) if selected else Color(0.98, 0.94, 0.78, 1.0))
+		button.modulate = Color(1.0, 0.94, 0.74, 1.0) if selected else Color(0.74, 0.76, 0.84, 0.92)
+
+
+# Подсветка выбранной карточки записи: перекладываем «кожаный ряд» selected-стилем.
+func _codex_set_selected_entry(content: PanelContainer, button: Button) -> void:
+	if content == null or not is_instance_valid(content) or button == null or not is_instance_valid(button):
+		return
+	var previous: Button = null
+	if content.has_meta("codex_selected_entry"):
+		previous = content.get_meta("codex_selected_entry") as Button
+	if previous == button:
+		return
+	if previous != null and is_instance_valid(previous):
+		_unified_apply_row_theme(previous, 10.0, false)
+	_unified_apply_row_theme(button, 10.0, true)
+	content.set_meta("codex_selected_entry", button)
 
 
 func _codex_attach_entry_detail(list: VBoxContainer, row: HBoxContainer, detail_data: Dictionary) -> void:
 	var button := row.get_meta("entry_button", null) as Button
 	var detail_panel := list.get_meta("codex_detail_panel", null) as PanelContainer
 	var scroll := list.get_meta("codex_section_scroll", null) as ScrollContainer
+	var content := list.get_meta("codex_content_panel", null) as PanelContainer
 	if scroll != null and not scroll.has_meta("codex_default_detail"):
 		scroll.set_meta("codex_default_detail", detail_data)
+		if button != null:
+			scroll.set_meta("codex_default_entry_button", button)
 	if button == null or detail_panel == null:
 		return
 	button.set_meta("codex_detail_data", detail_data)
 	button.pressed.connect(func() -> void:
+		_codex_set_selected_entry(content, button)
 		_codex_update_detail(detail_panel, detail_data)
 	)
 
 
 func _codex_update_detail(detail_panel: PanelContainer, detail_data: Dictionary) -> void:
+	# SCRUM-954 / accepted SCRUM-1017 geometry. One large contained preview, two
+	# calm semantic chips and one lower dossier scroll replace the old split rails
+	# and stray preview bars. Related stat projections live inside that same lower
+	# scroll so the screen has exactly two scrollbar lanes: list and dossier.
 	if detail_panel == null or not is_instance_valid(detail_panel):
 		return
 	for child in detail_panel.get_children():
+		detail_panel.remove_child(child)
 		child.queue_free()
-	var box := VBoxContainer.new()
-	box.name = "CodexDetailContent"
-	box.add_theme_constant_override("separation", int(round(12.0 * _codex_v2_scale())))
-	detail_panel.add_child(box)
+
+	var detail_root := Control.new()
+	detail_root.name = "CodexDetailContent"
+	detail_root.custom_minimum_size = Vector2(720, 760)
+	detail_panel.add_child(detail_root)
 
 	var title := Label.new()
 	title.name = "CodexDetailTitle"
 	title.text = str(detail_data.get("title", ""))
 	title.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	title.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	title.add_theme_font_size_override("font_size", _codex_font_size(34, 22, 44))
-	title.add_theme_color_override("font_color", CODEX_PL_DETAIL_TITLE_COLOR)
-	box.add_child(title)
+	title.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
+	title.max_lines_visible = 2
+	title.clip_text = true
+	title.text_overrun_behavior = TextServer.OVERRUN_TRIM_ELLIPSIS
+	_codex_bind_stage_font(title, SemanticTypography.ROLE_TITLE, 22, SemanticTypography.role_min(SemanticTypography.ROLE_TITLE), SemanticTypography.role_max(SemanticTypography.ROLE_TITLE))
+	title.add_theme_color_override("font_color", Color(0.96, 0.90, 0.68, 1.0))
+	# Transform-aware semantic title sizing raises the compact-stage authored
+	# font so its *visual* size stays in band. Give that larger local font a 60px
+	# design lane; the lane still ends before the preview rail at y=76.
+	_codex_set_design_rect(title, Rect2(104, 8, 508, 60))
+	detail_root.add_child(title)
 
+	# Compatibility rail names are retained for gamepad/tests, but their geometry
+	# now maps directly to the accepted preview and chip zones.
+	var left_rail := Control.new()
+	left_rail.name = "CodexDetailLeftRail"
+	_codex_set_design_rect(left_rail, Rect2(12, 76, 300, 300))
+	detail_root.add_child(left_rail)
+	var portrait_slot := PanelContainer.new()
+	portrait_slot.name = "CodexDetailPortraitSlot"
+	portrait_slot.set_anchors_preset(Control.PRESET_FULL_RECT)
+	var portrait_style := _atlas_translucent_style(0.55, 10.0)
+	portrait_style.content_margin_left = 32.0
+	portrait_style.content_margin_top = 26.0
+	portrait_style.content_margin_right = 32.0
+	portrait_style.content_margin_bottom = 26.0
+	portrait_slot.add_theme_stylebox_override("panel", portrait_style)
+	left_rail.add_child(portrait_slot)
 	var texture := detail_data.get("texture", null) as Texture2D
-	if texture != null:
-		var portrait_slot := PanelContainer.new()
-		portrait_slot.name = "CodexDetailPortraitSlot"
-		var portrait_size := _codex_v2_scaled_rect(CODEX_V2_PORTRAIT_SAFE).size
-		portrait_slot.custom_minimum_size = portrait_size
-		portrait_slot.size_flags_horizontal = Control.SIZE_SHRINK_CENTER
-		portrait_slot.add_theme_stylebox_override("panel", _codex_portrait_slot_style())
-		box.add_child(portrait_slot)
-		var portrait := TextureRect.new()
-		portrait.name = "CodexDetailPortraitTexture"
-		portrait.custom_minimum_size = Vector2(maxf(portrait_size.x - 36.0 * _codex_v2_scale(), 48.0), maxf(portrait_size.y - 36.0 * _codex_v2_scale(), 48.0))
-		portrait.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-		portrait.size_flags_vertical = Control.SIZE_EXPAND_FILL
-		portrait.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
-		portrait.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_COVERED if bool(detail_data.get("covered_portrait", false)) else TextureRect.STRETCH_KEEP_ASPECT_CENTERED
-		portrait.texture = texture
-		portrait_slot.add_child(portrait)
+	var portrait := TextureRect.new()
+	portrait.name = "CodexDetailPortraitTexture"
+	portrait.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	portrait.size_flags_vertical = Control.SIZE_EXPAND_FILL
+	portrait.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
+	portrait.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
+	var source_path := str(detail_data.get("texture_path", CodexImageFit.canonical_path(texture)))
+	var image_policy := str(detail_data.get("image_policy", CodexImageFit.POLICY_CONTAIN))
+	portrait.texture = CodexImageFit.texture_view(texture, source_path, image_policy, Vector2(236.0, 248.0))
+	portrait.set_meta("codex_source_path", source_path)
+	portrait.set_meta("codex_image_policy", image_policy)
+	portrait.self_modulate = detail_data.get("texture_tint", Color.WHITE)
+	_codex_pl_make_nearest(portrait)
+	portrait_slot.add_child(portrait)
 
+	var right_rail := Control.new()
+	right_rail.name = "CodexDetailRightRail"
+	_codex_set_design_rect(right_rail, Rect2(336, 102, 330, 156))
+	detail_root.add_child(right_rail)
 	var chips: Array = detail_data.get("chips", [])
 	if not chips.is_empty():
 		var chip_row := HBoxContainer.new()
 		chip_row.name = "CodexDetailChipRow"
-		chip_row.alignment = BoxContainer.ALIGNMENT_CENTER
-		chip_row.custom_minimum_size = Vector2(0.0, _codex_v2_scaled_rect(CODEX_V2_CHIP_ROW_SAFE).size.y)
-		chip_row.add_theme_constant_override("separation", int(round(8.0 * _codex_v2_scale())))
-		box.add_child(chip_row)
-		var chip_limit := mini(4, chips.size())
-		for chip_index in range(chip_limit):
-			var chip_text = chips[chip_index]
+		chip_row.set_anchors_preset(Control.PRESET_FULL_RECT)
+		right_rail.add_child(chip_row)
+		var chip_column := VBoxContainer.new()
+		chip_column.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+		chip_column.add_theme_constant_override("separation", 16)
+		chip_row.add_child(chip_column)
+		var visible_chips: Array = chips.slice(0, mini(2, chips.size()))
+		# Locked state is interaction-critical. If affinity produces a third chip,
+		# keep the primary semantic chip plus «Заперто» inside the two authored rows.
+		if chips.has("Заперто") and not visible_chips.has("Заперто"):
+			visible_chips = [chips[0], "Заперто"]
+		for chip_text in visible_chips:
 			var chip := PanelContainer.new()
 			chip.name = "CodexDetailChip"
-			chip.add_theme_stylebox_override("panel", _codex_chip_style())
-			chip_row.add_child(chip)
+			chip.custom_minimum_size = Vector2(330, 70)
+			chip.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+			chip.add_theme_stylebox_override("panel", _codex_panel_style(0.86, Vector4(18, 14, 18, 14)))
+			chip_column.add_child(chip)
 			var chip_label := Label.new()
 			chip_label.text = str(chip_text)
 			chip_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 			chip_label.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
-			chip_label.add_theme_font_size_override("font_size", _codex_font_size(15, 11, 20))
-			chip_label.add_theme_color_override("font_color", CODEX_PL_TEXT_CREAM)
+			chip_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+			chip_label.max_lines_visible = 2
+			_codex_bind_stage_font(chip_label, SemanticTypography.ROLE_BODY, 24, SemanticTypography.role_min(SemanticTypography.ROLE_BODY), SemanticTypography.role_max(SemanticTypography.ROLE_BODY))
+			chip_label.add_theme_color_override("font_color", Color(0.78, 0.66, 0.44, 1.0))
 			chip.add_child(chip_label)
-
-	var term_id := str(detail_data.get("term_id", ""))
-	if term_id != "":
-		var glossary_button := _make_glossary_term_button(term_id, false)
-		glossary_button.name = "CodexDetailGlossaryTerm_%s" % term_id
-		glossary_button.size_flags_horizontal = Control.SIZE_SHRINK_CENTER
-		box.add_child(glossary_button)
 
 	var parchment := PanelContainer.new()
 	parchment.name = "CodexDetailParchmentInset"
-	parchment.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-	parchment.size_flags_vertical = Control.SIZE_EXPAND_FILL
-	parchment.add_theme_stylebox_override("panel", _codex_parchment_style())
-	box.add_child(parchment)
+	parchment.add_theme_stylebox_override("panel", _codex_panel_style(0.74, Vector4(32, 26, 42, 26)))
+	_codex_set_design_rect(parchment, Rect2(12, 398, 684, 356))
+	detail_root.add_child(parchment)
 	var text_scroll := ScrollContainer.new()
 	text_scroll.name = "CodexDetailTextScroll"
 	text_scroll.size_flags_vertical = Control.SIZE_EXPAND_FILL
 	text_scroll.horizontal_scroll_mode = ScrollContainer.SCROLL_MODE_DISABLED
+	text_scroll.follow_focus = true
 	parchment.add_child(text_scroll)
 	var text_box := VBoxContainer.new()
 	text_box.name = "CodexDetailTextBody"
 	text_box.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-	text_box.add_theme_constant_override("separation", 7)
+	text_box.add_theme_constant_override("separation", 10)
 	text_scroll.add_child(text_box)
-	var lines: Array = detail_data.get("body_lines", [])
-	for line in lines:
-		_codex_label(text_box, str(line), 18, CODEX_PL_DETAIL_BODY_COLOR)
+
+	var related_entries: Array = detail_data.get("related", [])
+	if not related_entries.is_empty():
+		var related_panel := PanelContainer.new()
+		related_panel.name = "CodexDetailRelatedPanel"
+		related_panel.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+		related_panel.add_theme_stylebox_override("panel", _codex_panel_style(0.72, Vector4(14, 12, 14, 12)))
+		text_box.add_child(related_panel)
+		var related_box := VBoxContainer.new()
+		related_box.name = "CodexDetailRelatedContent"
+		related_box.add_theme_constant_override("separation", 6)
+		related_panel.add_child(related_box)
+		var related_title := _codex_label(related_box, str(detail_data.get("related_title", "Связанные параметры")), 24, Color(0.96, 0.90, 0.68, 1.0), 2)
+		related_title.name = "CodexDetailRelatedTitle"
+		var related_scroll := ScrollContainer.new()
+		related_scroll.name = "CodexDetailRelatedScroll"
+		related_scroll.horizontal_scroll_mode = ScrollContainer.SCROLL_MODE_DISABLED
+		related_scroll.vertical_scroll_mode = ScrollContainer.SCROLL_MODE_DISABLED
+		related_scroll.custom_minimum_size.y = maxf(32.0, float(related_entries.size()) * 32.0)
+		related_box.add_child(related_scroll)
+		var related_list := VBoxContainer.new()
+		related_list.name = "CodexDetailRelatedList"
+		related_list.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+		related_list.add_theme_constant_override("separation", 4)
+		related_scroll.add_child(related_list)
+		for related_entry in related_entries:
+			var related_dict := related_entry as Dictionary
+			var related_text := str(related_dict.get("title", ""))
+			if related_text != "":
+				_codex_label(related_list, related_text, 22, Color(0.84, 0.80, 0.70, 0.96), 2)
+
+	# SCRUM-881: глубокое досье — структурированные секции (бронзовый заголовок →
+	# титулы записей золотом → светлое тело) из СУЩЕСТВУЮЩИХ данных
+	# codex_data/ProgressionData; сырой body_lines остаётся fallback-путём.
+	var sections: Array = detail_data.get("sections", [])
+	if sections.is_empty():
+		var lines: Array = detail_data.get("body_lines", [])
+		for line in lines:
+			if str(line) != "":
+				_codex_label(text_box, str(line), 24, Color(0.88, 0.92, 0.98, 0.96))
+	else:
+		var heading_index := 0
+		for section in sections:
+			var section_dict := section as Dictionary
+			if section_dict == null or section_dict.is_empty():
+				continue
+			var heading := str(section_dict.get("heading", ""))
+			if heading != "":
+				if heading_index > 0:
+					var section_gap := Control.new()
+					section_gap.custom_minimum_size = Vector2(0.0, 8.0)
+					text_box.add_child(section_gap)
+				var heading_label := _codex_label(text_box, heading, 26, Color(0.78, 0.66, 0.44, 1.0))
+				heading_label.name = "CodexDetailSectionHeading_%d" % heading_index
+				heading_index += 1
+			for line in section_dict.get("lines", []):
+				if line is Dictionary:
+					var line_dict := line as Dictionary
+					var line_title := str(line_dict.get("title", ""))
+					if line_title != "":
+						_codex_label(text_box, line_title, 24, Color(0.96, 0.90, 0.68, 1.0))
+					var line_text := str(line_dict.get("text", ""))
+					if line_text != "":
+						_codex_label(text_box, line_text, 24, Color(0.88, 0.92, 0.98, 0.96))
+				elif str(line) != "":
+					_codex_label(text_box, str(line), 24, Color(0.88, 0.92, 0.98, 0.96))
 
 
-func _make_glossary_term_button(term_id: String, popup_context := false) -> Button:
-	var definition: Dictionary = GLOSSARY.definition(term_id)
-	var button := Button.new()
-	button.name = "GlossaryTerm_%s" % term_id
-	button.text = str(definition.get("name", term_id))
-	button.flat = true
-	button.focus_mode = Control.FOCUS_NONE
-	button.mouse_filter = Control.MOUSE_FILTER_STOP
-	button.tooltip_text = "" if popup_context else _glossary_tooltip_text(term_id)
-	button.add_theme_font_size_override("font_size", _readable_font_size(14))
-	button.add_theme_color_override("font_color", Color(0.92, 0.82, 0.54, 1.0))
-	button.add_theme_color_override("font_hover_color", Color(1.0, 0.92, 0.62, 1.0))
-	button.add_theme_stylebox_override("normal", StyleBoxEmpty.new())
-	button.add_theme_stylebox_override("hover", StyleBoxEmpty.new())
-	button.add_theme_stylebox_override("pressed", StyleBoxEmpty.new())
-	button.add_theme_stylebox_override("focus", StyleBoxEmpty.new())
-	button.mouse_entered.connect(func() -> void:
-		if not popup_context or Input.is_key_pressed(KEY_ALT):
-			_show_glossary_tooltip(button, term_id)
-	)
-	button.mouse_exited.connect(_hide_glossary_tooltip)
-	button.gui_input.connect(func(event: InputEvent) -> void:
-		if popup_context and event is InputEventKey and Input.is_key_pressed(KEY_ALT):
-			_show_glossary_tooltip(button, term_id)
-	)
-	var underline := HBoxContainer.new()
-	underline.name = "GlossaryDottedUnderline"
-	underline.anchor_left = 0.0
-	underline.anchor_top = 1.0
-	underline.anchor_right = 1.0
-	underline.anchor_bottom = 1.0
-	underline.offset_top = -4.0
-	underline.offset_bottom = -1.0
-	underline.alignment = BoxContainer.ALIGNMENT_CENTER
-	underline.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	underline.add_theme_constant_override("separation", 3)
-	for dot_index in range(10):
-		var dot := ColorRect.new()
-		dot.custom_minimum_size = Vector2(3, 2)
-		dot.color = Color(0.92, 0.74, 0.38, 0.95)
-		underline.add_child(dot)
-	button.add_child(underline)
-	return button
+# --- SCRUM-881: секции глубокого досье. СТРОГО существующие данные из
+# codex_data/ProgressionData/StatFormulas/GLOSSARY; пустое поле = секция/строка
+# пропускается (никаких заглушек). Формат: [{heading, lines:[String|{title,text}]}].
+func _codex_character_sections(character: Dictionary) -> Array:
+	var character_id := str(character.get("id", ""))
+	var sections := []
+	# Идентичность/роль: описание конфига + механическая идентичность класса + плейстайл.
+	var identity: Dictionary = game.PROGRESSION_DATA.class_mechanic_identity(character_id)
+	var identity_lines := []
+	if str(character.get("description", "")) != "":
+		identity_lines.append(str(character["description"]))
+	var identity_title := str(identity.get("identity_title", ""))
+	var identity_summary := str(identity.get("summary", ""))
+	if identity_title != "" or identity_summary != "":
+		identity_lines.append({"title": identity_title, "text": identity_summary})
+	if str(character.get("playstyle", "")) != "":
+		identity_lines.append(str(character["playstyle"]))
+	if not identity_lines.is_empty():
+		sections.append({"heading": "Идентичность и роль", "lines": identity_lines})
+	# Сильные и слабые стороны.
+	var side_lines := []
+	if str(character.get("strengths", "")) != "":
+		side_lines.append("Сильное: %s" % character["strengths"])
+	if str(character.get("weaknesses", "")) != "":
+		side_lines.append("Слабое: %s" % character["weaknesses"])
+	if not side_lines.is_empty():
+		sections.append({"heading": "Сильные и слабые стороны", "lines": side_lines})
+	# 8 базовых характеристик компактными парами; ★ — главный стат класса.
+	var base_stats: Dictionary = game.PROGRESSION_DATA.base_stats(character_id)
+	var main_attribute := str(game.PROGRESSION_DATA.class_main_attribute(character_id))
+	var stat_lines := []
+	var stat_pair := PackedStringArray()
+	for stat_id in game.PROGRESSION_DATA.STAT_NAMES.keys():
+		var stat_piece := "%s: %d" % [str(game.PROGRESSION_DATA.STAT_NAMES[stat_id]), int(roundf(float(base_stats.get(stat_id, 0.0))))]
+		if str(stat_id) == main_attribute:
+			stat_piece += " ★"
+		stat_pair.append(stat_piece)
+		if stat_pair.size() == 2:
+			stat_lines.append("  ·  ".join(stat_pair))
+			stat_pair = PackedStringArray()
+	if stat_pair.size() > 0:
+		stat_lines.append("  ·  ".join(stat_pair))
+	var priorities: Array = game.PROGRESSION_DATA.attribute_priorities(character_id)
+	if not priorities.is_empty():
+		var priority_names := PackedStringArray()
+		for priority_id in priorities:
+			priority_names.append(str(game.PROGRESSION_DATA.STAT_NAMES.get(priority_id, priority_id)))
+		stat_lines.append("Приоритеты прокачки: %s." % " → ".join(priority_names))
+	if not stat_lines.is_empty():
+		sections.append({"heading": "Базовые характеристики", "lines": stat_lines})
+	# Три оружия: полное описание + identity-строка механики из ProgressionData.
+	var weapon_lines := []
+	for weapon in character.get("weapons", []):
+		var weapon_text := str(weapon.get("description", ""))
+		var weapon_identity := str(game.PROGRESSION_DATA.weapon_mechanic_identity(character_id, str(weapon.get("id", ""))))
+		if weapon_identity != "":
+			weapon_text += "\nМеханика: %s." % weapon_identity
+		weapon_lines.append({"title": str(weapon.get("title", "")), "text": weapon_text})
+	if not weapon_lines.is_empty():
+		sections.append({"heading": "Оружие", "lines": weapon_lines})
+	# Ультимейт: описание + реальные параметры конфига (только присутствующие).
+	var ultimate: Dictionary = character.get("ultimate", {})
+	if not ultimate.is_empty():
+		var ultimate_lines := [{"title": str(ultimate.get("title", "")), "text": str(ultimate.get("description", ""))}]
+		var ultimate_bits := PackedStringArray()
+		if float(ultimate.get("radius", 0.0)) > 0.0:
+			ultimate_bits.append("радиус %d" % int(ultimate["radius"]))
+		if float(ultimate.get("damage", 0.0)) > 0.0:
+			ultimate_bits.append("урон ×%.2f" % float(ultimate["damage"]))
+		if float(ultimate.get("duration", 0.0)) > 0.0:
+			ultimate_bits.append("длительность %.1f с" % float(ultimate["duration"]))
+		if int(ultimate.get("target_count", 0)) > 0:
+			ultimate_bits.append("до %d целей" % int(ultimate["target_count"]))
+		if float(ultimate.get("heal_ratio", 0.0)) > 0.0:
+			ultimate_bits.append("лечение %d%% урона" % int(roundf(float(ultimate["heal_ratio"]) * 100.0)))
+		if not ultimate_bits.is_empty():
+			ultimate_lines.append("Параметры: %s." % "; ".join(ultimate_bits))
+		sections.append({"heading": "Ультимейт", "lines": ultimate_lines})
+	# Классовые вознесения: реальные титулы ступеней из ASCENSION_LEVELS.
+	var ascension_levels: Array = game.PROGRESSION_DATA.ascension_levels(character_id)
+	if not ascension_levels.is_empty():
+		var ascension_names := PackedStringArray()
+		for ascension_entry in ascension_levels:
+			var ascension_title := str((ascension_entry as Dictionary).get("title", ""))
+			if ascension_title != "":
+				ascension_names.append(ascension_title)
+		if not ascension_names.is_empty():
+			sections.append({"heading": "Вознесения класса", "lines": ["Ступени: %s." % " → ".join(ascension_names)]})
+	return sections
 
 
-func _glossary_tooltip_text(term_id: String) -> String:
-	var definition: Dictionary = GLOSSARY.definition(term_id)
-	return "%s\n%s" % [str(definition.get("name", term_id)), str(definition.get("desc", ""))]
+func _codex_monster_sections(monster: Dictionary) -> Array:
+	var monster_id := str(monster.get("id", ""))
+	var kind := str(monster.get("kind", "standard"))
+	var sections := []
+	# Профиль угрозы: тип из ENEMY_SIZE_PROFILES + поведение.
+	var profile_id := "ordinary"
+	match kind:
+		"elite":
+			profile_id = "elite"
+		"mini_elite":
+			profile_id = "mini_elite"
+		"boss":
+			profile_id = "boss"
+	var size_profile: Dictionary = game.PROGRESSION_DATA.enemy_size_profile(profile_id)
+	var behavior_lines := []
+	if str(size_profile.get("label", "")) != "":
+		behavior_lines.append("Класс угрозы: %s (габарит ×%.2f)." % [str(size_profile["label"]), float(size_profile.get("scale", 1.0))])
+	if str(monster.get("behavior", "")) != "":
+		behavior_lines.append(str(monster["behavior"]))
+	if not behavior_lines.is_empty():
+		sections.append({"heading": "Тип и поведение", "lines": behavior_lines})
+	# Умения — канонические имена и описания из codex_data.
+	var ability_lines := []
+	for ability in monster.get("abilities", []):
+		ability_lines.append({"title": str((ability as Dictionary).get("title", "")), "text": str((ability as Dictionary).get("description", ""))})
+	if not ability_lines.is_empty():
+		sections.append({"heading": "Умения", "lines": ability_lines})
+	# Боевой паттерн элиток/боссов: UNIQUE_ENCOUNTER_PATTERNS + каталог механик.
+	var pattern: Dictionary = game.PROGRESSION_DATA.unique_encounter_pattern(monster_id)
+	if not pattern.is_empty():
+		var pattern_lines := []
+		if str(pattern.get("summary", "")) != "":
+			pattern_lines.append({"title": str(pattern.get("title", "")), "text": "Паттерн боя: %s." % str(pattern["summary"])})
+		var mechanic_catalog: Dictionary = game.PROGRESSION_DATA.enemy_mechanic_catalog()
+		for mechanic_id in pattern.get("mechanics", []):
+			var mechanic: Dictionary = mechanic_catalog.get(str(mechanic_id), {})
+			if mechanic.is_empty():
+				continue
+			var mechanic_text := str(mechanic.get("desc", ""))
+			if bool(mechanic.get("telegraph", false)):
+				mechanic_text += " Телеграфится заранее."
+			pattern_lines.append({"title": str(mechanic.get("title", mechanic_id)), "text": mechanic_text})
+		if not pattern_lines.is_empty():
+			sections.append({"heading": "Боевой паттерн", "lines": pattern_lines})
+	# Боевые параметры из конфигов: спецатака элитки / множители мини-элитки.
+	var combat_lines := []
+	var attack_source_id := monster_id
+	var mini_kind: Dictionary = {}
+	if kind == "mini_elite":
+		mini_kind = game.PROGRESSION_DATA.mini_elite_kind_by_id(monster_id)
+		if not mini_kind.is_empty():
+			combat_lines.append("Относительно базовой элитки: здоровье ×%.2f; скорость ×%.2f; урон ×%.2f." % [float(mini_kind.get("hp_mult", 1.0)), float(mini_kind.get("speed_mult", 1.0)), float(mini_kind.get("damage_mult", 1.0))])
+			attack_source_id = str(mini_kind.get("behavior", monster_id))
+	var attack_config: Dictionary = game.PROGRESSION_DATA.elite_attack_config(attack_source_id)
+	if not attack_config.is_empty():
+		var attack_bits := PackedStringArray()
+		if float(attack_config.get("cooldown", 0.0)) > 0.0:
+			attack_bits.append("перезарядка %.1f с" % float(attack_config["cooldown"]))
+		if float(attack_config.get("trigger_range", 0.0)) > 0.0:
+			attack_bits.append("дистанция срабатывания %d" % int(attack_config["trigger_range"]))
+		if float(attack_config.get("radius", 0.0)) > 0.0:
+			attack_bits.append("радиус %d" % int(attack_config["radius"]))
+		if float(attack_config.get("damage_factor", 0.0)) > 0.0:
+			attack_bits.append("урон ×%.1f от базового" % float(attack_config["damage_factor"]))
+		if not attack_bits.is_empty():
+			combat_lines.append("Спецатака: %s." % "; ".join(attack_bits))
+	if not combat_lines.is_empty():
+		sections.append({"heading": "Боевые параметры", "lines": combat_lines})
+	return sections
 
 
-# SCRUM-484: координатная спека @2560×1440 — тултип глоссария (транзиентный).
-# Плавающая панель шириной 460, высота по контенту (заголовок + описание autowrap).
-# Позиция динамическая (под якорем +8), но всегда внутри viewport с отступом 16 от
-# краёв (clamp). Шаблон-размер ниже + правила размещения для рисующего скрипта.
-const GT_PANEL_2K := Rect2(0, 0, 460, 140)  # w фикс, h по контенту (шаблон ~140)
-const GT_PANEL_CONTENT_2K := Vector4(66, 44, 66, 40)
-const GT_VIEWPORT_MARGIN_2K := 16.0  # минимальный отступ панели от краёв экрана
-const GT_ANCHOR_GAP_2K := 8.0  # зазор от низа якоря до верха тултипа
-const GT_TITLE_FONT_SIZE := 16
-const GT_DESC_FONT_SIZE := 13
-const GT_TEXT_SEPARATION := 4
+# SCRUM-963: классовый артефакт заперт в кодексе, пока мета-Возвышение ЕГО
+# класса ниже requires_ascension (тот же порог, что гейт выдачи SCRUM-961).
+func _codex_artifact_locked(definition: Dictionary) -> bool:
+	var required := int(definition.get("requires_ascension", 0))
+	if required <= 0:
+		return false
+	var affinity: Array = definition.get("class_affinity", [])
+	if affinity.is_empty():
+		return false
+	for class_id in affinity:
+		if game.ascension_level_for(str(class_id)) >= required:
+			return false
+	return true
 
 
-func _show_glossary_tooltip(anchor: Control, term_id: String) -> void:
-	_hide_glossary_tooltip()
-	if game.ui_layer == null:
-		return
-	var definition: Dictionary = GLOSSARY.definition(term_id)
-	if definition.is_empty():
-		return
-	var tooltip := PanelContainer.new()
-	tooltip.name = "GlossaryTooltipPanel"
-	tooltip.process_mode = Node.PROCESS_MODE_ALWAYS
-	tooltip.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	tooltip.custom_minimum_size = Vector2(GT_PANEL_2K.size.x, 0)
-	# SCRUM-486: @2K per-слот фрейм тултипа глоссария (gt_panel 460×140; ширина фикс 460,
-	# высота content-driven — 9-slice бордюры абсолютны в px, центр тянется по высоте).
-	# SCRUM-585: content margins GT_PANEL_CONTENT_2K = real empty center; runtime text must
-	# stay inside this zone and never cover the corner claws, ruby pins or metal rails.
-	tooltip.add_theme_stylebox_override("panel", _overhaul_2k_frame_style("gt_panel", GT_PANEL_2K.size))
-	var box := VBoxContainer.new()
-	box.add_theme_constant_override("separation", GT_TEXT_SEPARATION)
-	tooltip.add_child(box)
-	var title := Label.new()
-	title.text = str(definition.get("name", term_id))
-	title.add_theme_font_size_override("font_size", _readable_font_size(GT_TITLE_FONT_SIZE))
-	title.add_theme_color_override("font_color", Color(1.0, 0.88, 0.48, 1.0))
-	box.add_child(title)
-	var desc := Label.new()
-	desc.text = str(definition.get("desc", ""))
-	desc.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
-	desc.add_theme_font_size_override("font_size", _readable_font_size(GT_DESC_FONT_SIZE))
-	desc.add_theme_color_override("font_color", Color(0.90, 0.88, 0.80, 1.0))
-	box.add_child(desc)
-	game.ui_layer.add_child(tooltip)
-	var anchor_rect := anchor.get_global_rect()
-	var viewport_size := anchor.get_viewport_rect().size
-	tooltip.position = anchor_rect.position + Vector2(0, anchor_rect.size.y + GT_ANCHOR_GAP_2K)
-	tooltip.size = Vector2(GT_PANEL_2K.size.x, 0)
-	await game.get_tree().process_frame
-	var rect := tooltip.get_global_rect()
-	tooltip.position.x = clampf(tooltip.position.x, GT_VIEWPORT_MARGIN_2K, maxf(GT_VIEWPORT_MARGIN_2K, viewport_size.x - rect.size.x - GT_VIEWPORT_MARGIN_2K))
-	tooltip.position.y = clampf(tooltip.position.y, GT_VIEWPORT_MARGIN_2K, maxf(GT_VIEWPORT_MARGIN_2K, viewport_size.y - rect.size.y - GT_VIEWPORT_MARGIN_2K))
+func _codex_artifact_unlock_condition(definition: Dictionary) -> String:
+	var class_names := PackedStringArray()
+	for class_id in definition.get("class_affinity", []):
+		class_names.append(str(CLASS_RU.get(str(class_id), class_id)))
+	return "Откроется на Возвышении %d — %s." % [int(definition.get("requires_ascension", 0)), ", ".join(class_names)]
 
 
-func _hide_glossary_tooltip() -> void:
-	if game.ui_layer == null:
-		return
-	var existing: Node = game.ui_layer.find_child("GlossaryTooltipPanel", true, false)
-	if existing != null:
-		existing.queue_free()
+func _codex_artifact_sections(artifact: Dictionary, definition: Dictionary, locked := false) -> Array:
+	var sections := []
+	# Запертая запись: эффект скрыт, досье показывает условие разблокировки.
+	if locked:
+		sections.append({"heading": "Как открыть", "lines": [
+			_codex_artifact_unlock_condition(definition),
+			"Классовые артефакты выпадают только своему классу.",
+		]})
+		sections.append({"heading": "Свойства", "lines": ["Редкость: %s." % _artifact_tier_text(definition)]})
+		return sections
+	# Полный текст эффекта + классовая пометка (SCRUM-963: «Класс: … · Возвышение N»).
+	var effect_lines := []
+	if str(artifact.get("description", "")) != "":
+		effect_lines.append(str(artifact["description"]))
+	var affinity_note := _artifact_affinity_note(definition)
+	if not affinity_note.is_empty():
+		effect_lines.append(str(affinity_note["text"]))
+	if not effect_lines.is_empty():
+		sections.append({"heading": "Эффект", "lines": effect_lines})
+	# Свойства: редкость/источник, цена, активность-триггер.
+	var property_lines := []
+	if str(artifact.get("source", "")) == "shop":
+		property_lines.append("Источник: походный магазин.")
+	else:
+		property_lines.append("Редкость: %s." % _artifact_tier_text(definition))
+	if definition.has("cost"):
+		property_lines.append("Базовая цена: %d золота." % int(definition.get("cost", 0)))
+	if bool(definition.get("active", false)):
+		property_lines.append("Активный артефакт: срабатывает сам по триггеру из описания эффекта.")
+	if not property_lines.is_empty():
+		sections.append({"heading": "Свойства", "lines": property_lines})
+	# Классовый артефакт: класс-владелец + каноническое пояснение из глоссария.
+	var affinity_list: Array = definition.get("class_affinity", [])
+	if not affinity_list.is_empty():
+		var class_names := PackedStringArray()
+		for class_id in affinity_list:
+			class_names.append(str(CLASS_RU.get(str(class_id), class_id)))
+		var affinity_lines := ["Класс: %s." % ", ".join(class_names)]
+		var affinity_term: Dictionary = GLOSSARY.definition("affinity")
+		if str(affinity_term.get("desc", "")) != "":
+			affinity_lines.append(str(affinity_term["desc"]))
+		sections.append({"heading": "Классовый артефакт", "lines": affinity_lines})
+	return sections
+
+
+func _codex_stat_sections(stat: Dictionary) -> Array:
+	var stat_id := str(stat.get("id", ""))
+	var sections := []
+	var description_lines := []
+	if str(stat.get("description", "")) != "":
+		description_lines.append(str(stat["description"]))
+	var stat_definition: Dictionary = StatFormulas.STAT_DEFINITIONS.get(stat_id, {})
+	if str(stat_definition.get("formula", "")) != "":
+		description_lines.append("Формула: %s" % str(stat_definition["formula"]))
+	if not description_lines.is_empty():
+		sections.append({"heading": "Описание", "lines": description_lines})
+	if str(stat.get("influences", "")) != "":
+		sections.append({"heading": "Влияние", "lines": ["Влияет на: %s" % str(stat["influences"])]})
+	# Связанные записи: классы, у которых этот стат — главный (identity-данные).
+	if str(stat.get("type", "")) == "base":
+		var main_class_names := PackedStringArray()
+		for character_id in game.PROGRESSION_DATA.character_ids():
+			if str(game.PROGRESSION_DATA.class_main_attribute(str(character_id))) == stat_id:
+				var config: Dictionary = game.PROGRESSION_DATA.character_config(str(character_id))
+				main_class_names.append(str(config.get("title", character_id)))
+		if not main_class_names.is_empty():
+			sections.append({"heading": "Связанные классы", "lines": ["Главный стат для: %s." % ", ".join(main_class_names)]})
+	return sections
+
+
+func _codex_ascension_sections(entry: Dictionary) -> Array:
+	var sections := []
+	if str(entry.get("description", "")) != "":
+		sections.append({"heading": "Усложнение", "lines": [str(entry["description"])]})
+	# Кумулятив: уровень N включает все усложнения 1..N (реальный хелпер данных).
+	var cumulative_lines: Array = game.PROGRESSION_DATA.ascension_modifier_lines(int(entry.get("level", 0)))
+	if not cumulative_lines.is_empty():
+		sections.append({"heading": "Кумулятивно на этом уровне", "lines": cumulative_lines})
+	return sections
 
 
 func _build_codex_characters(list: VBoxContainer) -> void:
@@ -4691,24 +6292,22 @@ func _build_codex_characters(list: VBoxContainer) -> void:
 			texture = game._cached_texture(str(character["sprite"]))
 		var row := _codex_entry_panel(list, {
 			"title": str(character["title"]),
+			"summary": str(character["playstyle"]),
 			"texture": texture,
+			"texture_path": str(character["sprite"]),
+			"image_policy": CodexImageFit.POLICY_CHARACTER,
 			"covered_portrait": true,
-			"chips": ["Герой", str(character.get("id", ""))],
+			"chips": ["Герой"],
 			"body_lines": body_lines,
+			"sections": _codex_character_sections(character),
 		})
-		_codex_portrait(row, str(character["sprite"]), CODEX_V2_ENTRY_PORTRAIT_SIZE * _codex_v2_scale())
-		var text_box := VBoxContainer.new()
-		text_box.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-		text_box.size_flags_vertical = Control.SIZE_SHRINK_CENTER
-		text_box.add_theme_constant_override("separation", 4)
-		row.add_child(text_box)
-		_codex_label(text_box, "%s — %s" % [character["title"], character["playstyle"]], 12, CODEX_PL_CARD_BODY_COLOR, 2)
+		_codex_portrait(row, str(character["sprite"]), _codex_entry_portrait_size(), CodexImageFit.POLICY_CHARACTER)
+		_codex_add_entry_name(row, str(character["title"]))
 
 
 func _build_codex_monsters(list: VBoxContainer) -> void:
 	var kind_titles := {"standard": "Обычные Монстры", "elite": "Элитные Монстры", "mini_elite": "Мини-элитки (свита Возвышения)", "boss": "Боссы"}
 	for kind in ["standard", "elite", "mini_elite", "boss"]:
-		_codex_label(list, str(kind_titles[kind]), 24, CODEX_PL_TEXT_GOLD)
 		for monster in CODEX_DATA.monsters():
 			if str(monster["kind"]) != kind:
 				continue
@@ -4720,108 +6319,123 @@ func _build_codex_monsters(list: VBoxContainer) -> void:
 				texture = game._cached_texture(str(monster["sprite"]))
 			var row := _codex_entry_panel(list, {
 				"title": str(monster["title"]),
+				"summary": str(monster["behavior"]),
 				"texture": texture,
+				"texture_path": str(monster["sprite"]),
+				"image_policy": CodexImageFit.POLICY_MONSTER,
 				"covered_portrait": false,
-				"chips": [str(kind_titles[kind]), str(monster["id"])],
+				"chips": [str(kind_titles[kind])],
 				"body_lines": body_lines,
+				"sections": _codex_monster_sections(monster),
 			})
-			_codex_portrait(row, str(monster["sprite"]), CODEX_V2_ENTRY_PORTRAIT_SIZE * _codex_v2_scale())
-			var text_box := VBoxContainer.new()
-			text_box.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-			text_box.size_flags_vertical = Control.SIZE_SHRINK_CENTER
-			text_box.add_theme_constant_override("separation", 3)
-			row.add_child(text_box)
-			_codex_label(text_box, "%s (%s) — %s" % [monster["title"], monster["id"], monster["behavior"]], 11, CODEX_PL_CARD_BODY_COLOR, 2)
+			_codex_portrait(row, str(monster["sprite"]), _codex_entry_portrait_size(), CodexImageFit.POLICY_MONSTER)
+			_codex_add_entry_name(row, str(monster["title"]))
+
+
+# SCRUM-963: тёмный силуэт иконки запертой записи + дим всего чип-ряда — тот же
+# приём, что «скрытая звезда» Атласа и locked-узлы прогрессии (тинты кита).
+const CODEX_LOCKED_SILHOUETTE_TINT := Color(0.09, 0.11, 0.17, 0.96)
+const CODEX_LOCKED_ROW_TINT := Color(0.70, 0.72, 0.78, 0.82)
 
 
 func _build_codex_artifacts(list: VBoxContainer) -> void:
 	for artifact in CODEX_DATA.artifacts():
 		var artifact_definition: Dictionary = game.PROGRESSION_DATA.artifact_definition(str(artifact["id"]))
-		var body_lines := [str(artifact["description"])]
-		var codex_note := _artifact_affinity_note(artifact_definition)
-		if not codex_note.is_empty():
-			body_lines.append(str(codex_note["text"]))
-		var affinity_list: Array = artifact_definition.get("class_affinity", [])
-		if not affinity_list.is_empty():
-			var class_names := []
-			for class_id in affinity_list:
-				class_names.append(str(CLASS_RU.get(class_id, class_id)))
-			body_lines.append("Тематика: %s" % ", ".join(class_names))
+		var locked := _codex_artifact_locked(artifact_definition)
+		var tier_text := _artifact_tier_text(artifact_definition)
+		var affinity_note := _artifact_affinity_note(artifact_definition)
+		# Чипы: редкость + класс-владелец; сырой id игроку не показывается
+		# (SCRUM-963), товары магазина помечены источником вместо редкости.
+		var chips := []
+		if str(artifact.get("source", "")) == "shop":
+			chips.append("Магазин")
+		else:
+			chips.append(tier_text)
+		if not affinity_note.is_empty():
+			var class_names := PackedStringArray()
+			for class_id in artifact_definition.get("class_affinity", []):
+				class_names.append(str(CLASS_RU.get(str(class_id), class_id)))
+			chips.append(", ".join(class_names))
+		if locked:
+			chips.append("Заперто")
+		var body_lines := []
+		var summary := str(artifact["description"])
+		if locked:
+			summary = _codex_artifact_unlock_condition(artifact_definition)
+			body_lines.append(summary)
+		else:
+			body_lines.append(str(artifact["description"]))
+			if not affinity_note.is_empty():
+				body_lines.append(str(affinity_note["text"]))
 		var icon_texture := _artifact_icon_texture(str(artifact["id"]))
+		var icon_path := _artifact_icon_path(str(artifact["id"]))
 		var row := _codex_entry_panel(list, {
 			"title": str(artifact["title"]),
+			"summary": summary,
 			"texture": icon_texture,
+			"texture_path": icon_path,
+			"image_policy": CodexImageFit.POLICY_ARTIFACT,
+			"texture_tint": CODEX_LOCKED_SILHOUETTE_TINT if locked else Color.WHITE,
 			"covered_portrait": false,
-			"chips": [_artifact_tier_text(artifact_definition), str(artifact["id"])],
+			"chips": chips,
 			"body_lines": body_lines,
+			"sections": _codex_artifact_sections(artifact, artifact_definition, locked),
 		})
-		_codex_icon_slot(row, icon_texture, Vector2(62, 62) * _codex_v2_scale(), "CodexArtifactIconSlot")
-		var text_box := VBoxContainer.new()
-		text_box.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-		text_box.size_flags_vertical = Control.SIZE_SHRINK_CENTER
-		row.add_child(text_box)
-		_codex_label(text_box, "%s [%s] — %s" % [artifact["title"], _artifact_tier_text(artifact_definition), artifact["description"]], 11, CODEX_PL_CARD_BODY_COLOR, 2)
+		_codex_icon_slot(row, icon_texture, _codex_entry_portrait_size(), "CodexArtifactIconSlot", CodexImageFit.POLICY_ARTIFACT, icon_path)
+		if locked:
+			# Запертая запись: силуэт иконки, дим ряда, вместо эффекта — условие.
+			var slot_texture := row.get_node_or_null("CodexArtifactIconSlot/CodexArtifactIconSlotTexture") as TextureRect
+			if slot_texture != null:
+				slot_texture.self_modulate = CODEX_LOCKED_SILHOUETTE_TINT
+			var entry_button := row.get_meta("entry_button", null) as Button
+			if entry_button != null:
+				entry_button.modulate = CODEX_LOCKED_ROW_TINT
+		_codex_add_entry_name(row, str(artifact["title"]))
 
 
 func _build_codex_ascensions(list: VBoxContainer) -> void:
-	_codex_label(list, "Возвышения — режим усложнения (10 кумулятивных уровней)", 24, CODEX_PL_TEXT_GOLD)
-	_codex_label(list, "Уровень N включает все усложнения 1..N. Повышает сложность и открывает мета-прогрессию (награда за победу над финальным боссом).", 12, CODEX_PL_TEXT_CREAM_MUTED)
 	for entry in CODEX_DATA.ascensions():
+		var ascension_texture: Texture2D = game._cached_texture(str(HUD_V2_ICON_PATHS["ascension"]))
 		var row := _codex_entry_panel(list, {
 			"title": "%d. %s" % [entry["level"], entry["title"]],
+			"summary": str(entry["description"]),
+			"texture": ascension_texture,
+			"covered_portrait": false,
 			"chips": ["Возвышение", "ур. %d" % entry["level"]],
 			"body_lines": [str(entry["description"])],
+			"sections": _codex_ascension_sections(entry),
 		})
-		var text_box := VBoxContainer.new()
-		text_box.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-		text_box.size_flags_vertical = Control.SIZE_SHRINK_CENTER
-		row.add_child(text_box)
-		_codex_label(text_box, "%d. %s — %s" % [entry["level"], entry["title"], entry["description"]], 12, CODEX_PL_CARD_BODY_COLOR, 2)
+		_codex_icon_slot(row, ascension_texture, _codex_entry_portrait_size(), "CodexAscensionIconSlot")
+		_codex_add_entry_name(row, "%d. %s" % [entry["level"], entry["title"]])
 
 
-func _build_codex_stats(list: VBoxContainer) -> void:
-	var type_titles := {"base": "Базовые Характеристики", "derived": "Производные Параметры"}
-	for stat_type in ["base", "derived"]:
-		_codex_label(list, str(type_titles.get(stat_type, stat_type)), 24, CODEX_PL_TEXT_GOLD)
-		for stat in CODEX_DATA.stats():
-			if str(stat["type"]) != stat_type:
-				continue
-			var row := _codex_entry_panel(list, {
-				"title": str(stat["title"]),
-				"chips": [str(type_titles.get(stat_type, stat_type)), str(stat["id"])],
-				"body_lines": [
-					str(stat["description"]),
-					"Влияет на: %s" % stat["influences"] if str(stat["influences"]) != "" else "",
-				],
-			})
-			var icon_control: Control = game.UIIconRegistry.make_icon(str(stat["id"]), Vector2(36, 36))
-			row.add_child(icon_control)
-			var text_box := VBoxContainer.new()
-			text_box.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-			row.add_child(text_box)
-			_codex_label(text_box, "%s — %s" % [stat["title"], stat["description"]], 11, CODEX_PL_CARD_BODY_COLOR, 2)
-
-
-func _build_codex_glossary(list: VBoxContainer) -> void:
-	_codex_label(list, "Глоссарий терминов", 24, CODEX_PL_TEXT_GOLD)
-	_codex_label(list, "Термины с пунктиром можно навести мышью. Во всплывающих окнах такие подсказки показываются только при зажатом Alt.", 12, CODEX_PL_TEXT_CREAM_MUTED)
-	for term_id in GLOSSARY.term_ids():
-		var definition: Dictionary = GLOSSARY.definition(term_id)
+func _build_codex_stats(list: VBoxContainer, stat_type: String) -> void:
+	var type_titles := {"base": "Базовая характеристика", "derived": "Производный атрибут"}
+	var related_titles := {"base": "Связанные атрибуты", "derived": "Связанные характеристики"}
+	var entries: Array = CODEX_DATA.characteristics() if stat_type == "base" else CODEX_DATA.attributes()
+	for stat in entries:
+		var stat_id := str(stat["id"])
 		var row := _codex_entry_panel(list, {
-			"title": str(definition.get("name", term_id)),
-			"term_id": str(term_id),
-			"chips": ["Глоссарий", str(term_id)],
-			"body_lines": [str(definition.get("desc", ""))],
+			"title": str(stat["title"]),
+			"summary": str(stat["description"]),
+			"texture": game.UIIconRegistry.texture_for(stat_id),
+			"covered_portrait": false,
+			"chips": [str(type_titles.get(stat_type, "Параметр"))],
+			"related_title": str(related_titles.get(stat_type, "Связанные параметры")),
+			"related": stat.get("related", []),
+			"body_lines": [
+				str(stat["description"]),
+				"Влияет на: %s" % stat["influences"] if str(stat["influences"]) != "" else "",
+			],
+			"sections": _codex_stat_sections(stat),
 		})
-		var box := VBoxContainer.new()
-		box.add_theme_constant_override("separation", 4)
-		box.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-		row.add_child(box)
-		box.add_child(_make_glossary_term_button(term_id, false))
-		_codex_label(box, str(definition.get("desc", "")), 11, CODEX_PL_CARD_BODY_COLOR, 2)
+		_codex_icon_slot(row, game.UIIconRegistry.texture_for(stat_id), _codex_entry_portrait_size(), "CodexStatIconSlot")
+		_codex_add_entry_name(row, str(stat["title"]))
 
 
 func _apply_control_rect(control: Control, rect: Rect2) -> void:
+	if control == null or not is_instance_valid(control):
+		return
 	control.set_anchors_preset(Control.PRESET_TOP_LEFT)
 	control.offset_left = rect.position.x
 	control.offset_top = rect.position.y
@@ -4829,50 +6443,21 @@ func _apply_control_rect(control: Control, rect: Rect2) -> void:
 	control.offset_bottom = rect.position.y + rect.size.y
 
 
-func _settings_v2_modal_rect() -> Rect2:
-	# SCRUM-805 v5: модалка 55.5% ширины вьюпорта, пропорция дизайн-листа
-	# 1420×1060 (≈1.34) зафиксирована — вся внутренняя геометрия скейлится
-	# единым s = width/1420 без искажений. Кап по высоте 87% вьюпорта.
-	var viewport_size := Vector2(1280.0, 720.0)
-	if game != null and game.get_viewport() != null:
-		viewport_size = game.get_viewport().get_visible_rect().size
-	var aspect := SETTINGS_V5_DESIGN_SIZE.x / SETTINGS_V5_DESIGN_SIZE.y
-	var width := clampf(roundf(viewport_size.x * SETTINGS_V5_MODAL_WIDTH_RATIO), 980.0, 1560.0)
-	var height := roundf(width / aspect)
-	var max_height := roundf(viewport_size.y * 0.87)
-	if height > max_height:
-		height = max_height
-		width = roundf(height * aspect)
-	return Rect2(
-		Vector2(roundf((viewport_size.x - width) * 0.5), roundf((viewport_size.y - height) * 0.5)),
-		Vector2(width, height)
-	)
-
-
-func _settings_v5_scale(modal_size: Vector2) -> float:
-	return modal_size.x / SETTINGS_V5_DESIGN_SIZE.x
-
-
-func _settings_v5_rect(design_rect: Rect2, s: float) -> Rect2:
-	return Rect2(
-		Vector2(roundf(design_rect.position.x * s), roundf(design_rect.position.y * s)),
-		Vector2(roundf(design_rect.size.x * s), roundf(design_rect.size.y * s))
-	)
-
-
-func _settings_v5_font(design_px: float, s: float) -> int:
+func _settings_v6_font(role: StringName, design_px: float, s: float) -> int:
 	# Кегль скейлится вместе с сеткой (s), пол 12px. На 1080p (s=0.75)
 	# label 26 → 19.5px, статус 22 → 16.5px — читаемо по дизайн-инварианту.
-	return maxi(12, int(roundf(design_px * s)))
+	return SemanticTypography.resolve_scaled_compat(
+		role, design_px, s, 12, 96
+	)
 
 
-func _settings_v5_icon(path: String, design_size: Vector2, s: float) -> Texture2D:
+func _settings_v6_icon(path: String, design_size: Vector2, s: float) -> Texture2D:
 	# Иконки тем (чекбоксы, граббер, стрелка, иконки табов) рендерятся Godot в
 	# НАТИВНОМ размере текстуры — заранее ресайзим под текущий масштаб сетки.
 	var target := Vector2i(maxi(1, int(roundf(design_size.x * s))), maxi(1, int(roundf(design_size.y * s))))
 	var key := "%s@%dx%d" % [path, target.x, target.y]
-	if _settings_v5_icon_cache.has(key):
-		return _settings_v5_icon_cache[key]
+	if _settings_v6_icon_cache.has(key):
+		return _settings_v6_icon_cache[key]
 	var texture: Texture2D = game._cached_texture(path)
 	if texture == null:
 		return null
@@ -4882,26 +6467,14 @@ func _settings_v5_icon(path: String, design_size: Vector2, s: float) -> Texture2
 	image = image.duplicate()
 	image.resize(target.x, target.y, Image.INTERPOLATE_LANCZOS)
 	var scaled := ImageTexture.create_from_image(image)
-	_settings_v5_icon_cache[key] = scaled
+	_settings_v6_icon_cache[key] = scaled
 	return scaled
 
 
-func _settings_v5_texture_box(path: String, source_margins: Vector4, content: Vector4) -> StyleBox:
+func _settings_v6_texture_box(path: String, source_margins: Vector4, content: Vector4) -> StyleBox:
 	# margins — в px источника (углы рисуются 1:1, середина тянется);
 	# content — в экранных px (уже ×s у вызывающего).
 	return _global_texture_style(path, source_margins, Color.WHITE, content)
-
-
-func _settings_v2_main_modal_style(display_size: Vector2) -> StyleBox:
-	# Арт рамки в пропорции модалки (1420:1060) — рисуется целиком без
-	# 9-slice-растяжений орнамента (аспект rect == аспект текстуры при любом s).
-	var s := _settings_v5_scale(display_size)
-	var content := Vector4(72.0 * s, 130.0 * s, 72.0 * s, 44.0 * s)
-	return _settings_v5_texture_box(SETTINGS_V5_MODAL_FRAME_PATH, Vector4(12.0, 12.0, 12.0, 12.0), content)
-
-
-func _settings_v2_content_panel_style(display_size := Vector2.ZERO) -> StyleBox:
-	return _settings_v5_texture_box(SETTINGS_V5_CONTENT_INSET_PATH, Vector4(30.0, 30.0, 30.0, 30.0), Vector4.ZERO)
 
 
 func _settings_resolution_entries(usable_logical: Vector2i) -> Array[Dictionary]:
@@ -4936,9 +6509,19 @@ func _settings_video_dirty() -> bool:
 	return false
 
 
-func _pending_screen_index(screen_count: int) -> int:
+func _settings_monitor_model(screen_sizes: Array[Vector2i]) -> Dictionary:
 	_ensure_settings_video_pending()
-	return clampi(int(settings_video_pending.get("screen_index", game.selected_screen_index)), 0, maxi(screen_count - 1, 0))
+	return DisplayResolution.monitor_options(
+		screen_sizes,
+		int(settings_video_pending.get("screen_index", game.selected_screen_index))
+	)
+
+
+func _current_monitor_sizes() -> Array[Vector2i]:
+	var screen_sizes: Array[Vector2i] = []
+	for screen_index in range(maxi(DisplayServer.get_screen_count(), 0)):
+		screen_sizes.append(DisplayServer.screen_get_size(screen_index))
+	return screen_sizes
 
 
 func _clamp_pending_resolution_for_screen(screen_index: int) -> void:
@@ -4984,86 +6567,164 @@ func _show_settings_menu(requested_return_origin := "") -> void:
 	root.set_anchors_preset(Control.PRESET_FULL_RECT)
 	root.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	game.ui_layer.add_child(root)
-	_add_screen_background(root, "settings")
+	_prepare_global_tooltips(root)
+	# SCRUM-879: фон — единый атлас-стиль (bg_sanctum, COVERED без растяжки осей)
+	# с лёгким шейдом 0.30: поверх фона лежит модалка, сильное затемнение не нужно.
+	_unified_add_background(root, "settings", 0.30)
 
-	var modal_rect := _settings_v2_modal_rect()
-	var modal := Control.new()
-	modal.name = "SettingsV2Modal"
-	modal.set_anchors_preset(Control.PRESET_TOP_LEFT)
-	_apply_control_rect(modal, modal_rect)
-	root.add_child(modal)
+	# SCRUM-879 (итерация 2): полноэкранный атлас-шелл вместо v6-модалки — слои
+	# как у «Атласа героев» (_show_atlas_screen): фон → safe-зона рамы → VBox
+	# (шапка / свитчер табов / контент / футер) → полая рама ПОВЕРХ
+	# (_unified_add_frame последним). Строки контента (поля/бинды/чекбоксы/
+	# слайдеры v6) сохранены — их масштаб s считается ниже.
+	var s_ui := _atlas_ui_scale()
+	# SCRUM-882 (фидбек): строки настроек — колонка ФИКСИРОВАННОЙ ширины по
+	# центру контент-панели, элементы внутри колонки выровнены влево.
+	# Детерминированно от вьюпорта ДО построения строк: ширина контент-зоны
+	# safe-области (минус запас на поля чипа) задаёт column_w, а масштаб строк s
+	# считается уже от column_w к самой широкой строке дизайна (~1276: volume-ряд
+	# label 380 + слайдер 420 + чип 96 + toggle с зазорами + запас) — ряды
+	# гарантированно уже колонки, переполнений нет; клампы держат строки
+	# читаемыми на 648p и не дают распухнуть на 4K.
+	var vp: Vector2 = game.get_viewport().get_visible_rect().size
+	var safe_m := _unified_safe_margins()
+	var content_w := vp.x - safe_m.x - safe_m.z - roundf(44.0 * s_ui) * 2.0
+	var s_fit := clampf(content_w / SETTINGS_V6_DESIGN_SIZE.x, 0.55, 1.05)
+	var settings_column_w := clampf(roundf(920.0 * s_fit), 560.0, 980.0)
+	var s := clampf(settings_column_w / 1276.0, 0.55, 1.05)
 
-	var s := _settings_v5_scale(modal_rect.size)
+	var safe := _unified_make_safe_area(root, "Settings")
+	var layout := VBoxContainer.new()
+	layout.name = "SettingsLayout"
+	layout.add_theme_constant_override("separation", int(12.0 * s_ui))
+	safe.add_child(layout)
 
-	var modal_frame := PanelContainer.new()
-	modal_frame.name = "SettingsV2MainModalFrame"
-	modal_frame.set_anchors_preset(Control.PRESET_FULL_RECT)
-	modal_frame.add_theme_stylebox_override("panel", _settings_v2_main_modal_style(modal_rect.size))
-	modal_frame.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	modal.add_child(modal_frame)
+	var settings_back := func() -> void:
+		_return_from_settings()
 
-	var medallion_texture: Texture2D = game._cached_texture(SETTINGS_V5_MEDALLION_PATH)
-	if medallion_texture != null:
+	# --- Ряд 1: шапка — чип-титул (v6-медальон внутри) + спейсер + «Назад» ---
+	var header := HBoxContainer.new()
+	header.name = "SettingsHeader"
+	header.add_theme_constant_override("separation", int(12.0 * s_ui))
+	layout.add_child(header)
+	var title_chip := _unified_header_chip("Settings", "Настройки", "settings", s_ui)
+	header.add_child(title_chip)
+	# Эмблемы кита для "settings" в ATLAS_STYLE_EMBLEM_PATHS нет (чип текстовый) —
+	# вставляем v6-медальон первым в ряд чипа: арт 180×72, аспект 2.5:1 сохранён
+	# (85×34×s_ui, KEEP_ASPECT_CENTERED — без растяжки, Правило 1).
+	var chip_row := title_chip.get_child(0) as HBoxContainer
+	var medallion_texture: Texture2D = game._cached_texture(SETTINGS_V6_MEDALLION_PATH)
+	if chip_row != null and medallion_texture != null:
 		var medallion := TextureRect.new()
-		medallion.name = "SettingsV5Medallion"
+		medallion.name = "SettingsV6Emblem"
 		medallion.texture = medallion_texture
+		medallion.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
 		medallion.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
+		medallion.custom_minimum_size = Vector2(roundf(85.0 * s_ui), roundf(34.0 * s_ui))
+		medallion.size_flags_vertical = Control.SIZE_SHRINK_CENTER
 		medallion.mouse_filter = Control.MOUSE_FILTER_IGNORE
-		_apply_control_rect(medallion, _settings_v5_rect(Rect2(620.0, -14.0, 180.0, 72.0), s))
-		modal.add_child(medallion)
-
-	var title := Label.new()
-	title.name = "SettingsV2Title"
-	title.text = "НАСТРОЙКИ"
-	title.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	title.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
-	title.add_theme_font_size_override("font_size", _settings_v5_font(46.0, s))
-	title.add_theme_color_override("font_color", SETTINGS_V5_TEXT_BRIGHT)
-	_apply_control_rect(title, _settings_v5_rect(SETTINGS_V5_TITLE_RECT, s))
-	modal.add_child(title)
+		chip_row.add_child(medallion)
+		chip_row.move_child(medallion, 0)
+	var header_spacer := Control.new()
+	header_spacer.name = "SettingsHeaderSpacer"
+	header_spacer.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	header.add_child(header_spacer)
+	# «Назад» — в шапке; единый возврат (фидбек 2026-07-08): та же плита 260×h,
+	# что на всех экранах (маппинг имени переведён на back_260x104).
+	var back_button := _settings_v6_make_action_button("Назад", "SettingsBackButton", 260.0, _atlas_action_button_height())
+	back_button.size_flags_vertical = Control.SIZE_SHRINK_CENTER
+	back_button.pressed.connect(settings_back)
+	header.add_child(back_button)
+	_settings_fit_kit_row([back_button], 280.0, 64.0)
+	game.ui_escape_action = settings_back
 
 	var tabs := TabContainer.new()
 	tabs.name = "SettingsTabs"
 	tabs.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	tabs.size_flags_vertical = Control.SIZE_EXPAND_FILL
 	tabs.tabs_visible = false
+	# Hidden TabContainer headers do not disable the engine theme's own panel
+	# fill. Preserve its layout margins while making that second surface fully
+	# transparent, otherwise it remains visible beneath the outer content owner.
+	var inherited_tabs_panel := tabs.get_theme_stylebox("panel")
+	var seamless_tabs_panel := StyleBoxFlat.new()
+	seamless_tabs_panel.bg_color = Color(0.0, 0.0, 0.0, 0.0)
+	seamless_tabs_panel.set_border_width_all(0)
+	if inherited_tabs_panel != null:
+		seamless_tabs_panel.content_margin_left = inherited_tabs_panel.get_content_margin(SIDE_LEFT)
+		seamless_tabs_panel.content_margin_top = inherited_tabs_panel.get_content_margin(SIDE_TOP)
+		seamless_tabs_panel.content_margin_right = inherited_tabs_panel.get_content_margin(SIDE_RIGHT)
+		seamless_tabs_panel.content_margin_bottom = inherited_tabs_panel.get_content_margin(SIDE_BOTTOM)
+	tabs.add_theme_stylebox_override("panel", seamless_tabs_panel)
 
-	var tab_bar_width := SETTINGS_V5_TAB_SIZE.x * 3.0 + SETTINGS_V5_TAB_GAP * 2.0
-	var switcher := _make_settings_tab_switcher(tabs, Vector2(tab_bar_width, SETTINGS_V5_TAB_SIZE.y) * s)
-	_apply_control_rect(switcher, _settings_v5_rect(
-		Rect2((SETTINGS_V5_DESIGN_SIZE.x - tab_bar_width) * 0.5, SETTINGS_V5_TAB_TOP, tab_bar_width, SETTINGS_V5_TAB_SIZE.y), s))
-	modal.add_child(switcher)
+	# --- Ряд 2: свитчер табов — кнопки глобального кита на плите «Назад»,
+	# фикс-сетка 3×260×_atlas_action_button_height() (SCRUM-882) ---
+	var switcher_row := HBoxContainer.new()
+	switcher_row.name = "SettingsSwitcherRow"
+	switcher_row.alignment = BoxContainer.ALIGNMENT_CENTER
+	layout.add_child(switcher_row)
+	switcher_row.add_child(_make_settings_tab_switcher(tabs, s))
 
-	var content_panel := Panel.new()
+	# --- Ряд 3: бесшовный content-owner поверх общего sanctum background.
+	# Фидбек 2026-07-08: панель ОБЖИМАЕТ контент по ширине (колонка + поля чипа),
+	# а не тянется на всю safe-зону. SCRUM-972 сохраняет её responsive rect,
+	# margins и clipping, но убирает отдельный серый fill/кант внутри outer frame.
+	var content_panel := PanelContainer.new()
 	content_panel.name = "SettingsContentPanel"
-	var content_panel_rect := _settings_v5_rect(SETTINGS_V5_CONTENT_RECT, s)
-	content_panel.add_theme_stylebox_override("panel", _settings_v2_content_panel_style(content_panel_rect.size))
+	var content_chip_pad := roundf(16.0 * s_ui)
+	content_panel.add_theme_stylebox_override("panel", _settings_seamless_content_style(content_chip_pad))
+	# SCRUM-1025 accepted transparent clip-owner: 960 @720, 1158 @1080,
+	# 1544 @1440. Existing pages retain their centered fixed-width columns.
+	var settings_panel_target := 960.0 if vp.y <= 760.0 else clampf(1544.0 * (vp.y / 1440.0), 1158.0, 1544.0)
+	var settings_panel_w := minf(settings_panel_target, content_w)
+	content_panel.custom_minimum_size = Vector2(settings_panel_w, 0.0)
+	content_panel.size_flags_horizontal = Control.SIZE_SHRINK_CENTER
+	content_panel.size_flags_vertical = Control.SIZE_EXPAND_FILL
 	content_panel.clip_contents = true
-	_apply_control_rect(content_panel, content_panel_rect)
-	modal.add_child(content_panel)
+	layout.add_child(content_panel)
+	# Малые поля: transparent StyleBox margins держат контент внутри safe-zone.
 	var content_margin := MarginContainer.new()
 	content_margin.name = "SettingsContentSafe"
-	content_margin.set_anchors_preset(Control.PRESET_FULL_RECT)
-	content_margin.add_theme_constant_override("margin_left", int(roundf(SETTINGS_V5_CONTENT_PAD.x * s)))
-	content_margin.add_theme_constant_override("margin_top", int(roundf(SETTINGS_V5_CONTENT_PAD.y * s)))
-	content_margin.add_theme_constant_override("margin_right", int(roundf(SETTINGS_V5_CONTENT_PAD.z * s)))
-	content_margin.add_theme_constant_override("margin_bottom", int(roundf(SETTINGS_V5_CONTENT_PAD.w * s)))
+	content_margin.add_theme_constant_override("margin_left", int(8.0 * s_ui))
+	content_margin.add_theme_constant_override("margin_top", int(8.0 * s_ui))
+	content_margin.add_theme_constant_override("margin_right", int(8.0 * s_ui))
+	content_margin.add_theme_constant_override("margin_bottom", int(8.0 * s_ui))
 	content_panel.add_child(content_margin)
 	content_margin.add_child(tabs)
 
-	var screen_tab := _make_settings_tab("Экран", s)
-	var screen_box := screen_tab.get_child(0) as VBoxContainer
+	var screen_tab := _make_settings_tab("Экран", s, settings_column_w)
+	var screen_page := screen_tab.get_child(0) as VBoxContainer
+	var screen_box := screen_page
+	# SCRUM-1053: compact Settings needs a structural 24px footer reserve. Make
+	# the only non-scrollable legacy page scroll-capable on this tier so its
+	# native rows no longer force the VBox past the Atlas safe boundary.
+	if vp.y <= 760.0:
+		screen_page.add_theme_constant_override("separation", 0)
+		var screen_scroll := ScrollContainer.new()
+		screen_scroll.name = "SettingsScreenScroll"
+		screen_scroll.horizontal_scroll_mode = ScrollContainer.SCROLL_MODE_DISABLED
+		screen_scroll.vertical_scroll_mode = ScrollContainer.SCROLL_MODE_AUTO
+		screen_scroll.follow_focus = true
+		screen_scroll.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+		screen_scroll.size_flags_vertical = Control.SIZE_EXPAND_FILL
+		screen_page.add_child(screen_scroll)
+		_settings_v6_style_audio_scrollbar(screen_scroll, s)
+		screen_box = VBoxContainer.new()
+		screen_box.name = "SettingsScreenContent"
+		screen_box.custom_minimum_size = Vector2(settings_column_w, 0.0)
+		screen_box.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+		screen_box.add_theme_constant_override("separation", int(roundf(20.0 * s)))
+		screen_scroll.add_child(screen_box)
 	tabs.add_child(screen_tab)
 
-	var screen_count := DisplayServer.get_screen_count()
-	var pending_screen := _pending_screen_index(screen_count)
-	if screen_count > 1:
+	var monitor_model := _settings_monitor_model(_current_monitor_sizes())
+	var pending_screen := int(monitor_model["selected_index"])
+	if bool(monitor_model["visible"]):
 		var screen_options := OptionButton.new()
 		screen_options.name = "SettingsScreenOption"
-		_settings_v5_apply_field_theme(screen_options, s)
-		for screen_index in range(screen_count):
-			var size := DisplayServer.screen_get_size(screen_index)
-			screen_options.add_item("Экран %d (%dx%d)" % [screen_index + 1, size.x, size.y])
+		_settings_v6_apply_field_theme(screen_options, s)
+		for option: Dictionary in monitor_model["options"]:
+			screen_options.add_item(str(option["label"]), int(option["index"]))
 		screen_options.selected = pending_screen
 		screen_options.item_selected.connect(func(index: int) -> void:
 			settings_video_pending["screen_index"] = index
@@ -5074,7 +6735,7 @@ func _show_settings_menu(requested_return_origin := "") -> void:
 
 	var resolution_options := OptionButton.new()
 	resolution_options.name = "SettingsResolutionOption"
-	_settings_v5_apply_field_theme(resolution_options, s)
+	_settings_v6_apply_field_theme(resolution_options, s)
 	var usable_size := Vector2i(99999, 99999)
 	var screen_full_size := Vector2i(99999, 99999)
 	var screen_scale := 1.0
@@ -5103,7 +6764,7 @@ func _show_settings_menu(requested_return_origin := "") -> void:
 
 	var mode_options := OptionButton.new()
 	mode_options.name = "SettingsWindowModeOption"
-	_settings_v5_apply_field_theme(mode_options, s)
+	_settings_v6_apply_field_theme(mode_options, s)
 	for mode_name in game.WINDOW_MODE_OPTIONS:
 		mode_options.add_item(mode_name)
 	mode_options.selected = clampi(int(settings_video_pending.get("window_mode_index", game.selected_window_mode_index)), 0, game.WINDOW_MODE_OPTIONS.size() - 1)
@@ -5117,7 +6778,7 @@ func _show_settings_menu(requested_return_origin := "") -> void:
 	shake_toggle.name = "ScreenShakeToggle"
 	shake_toggle.button_pressed = game.screen_shake_enabled
 	shake_toggle.text = "Вкл." if shake_toggle.button_pressed else "Выкл."
-	_settings_v5_style_checkbox(shake_toggle, s)
+	_settings_v6_style_checkbox(shake_toggle, s)
 	shake_toggle.toggled.connect(func(pressed: bool) -> void:
 		game.screen_shake_enabled = pressed
 		game.get_tree().root.set_meta("screen_shake", pressed)
@@ -5134,18 +6795,44 @@ func _show_settings_menu(requested_return_origin := "") -> void:
 	pending_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	pending_label.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
 	pending_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
-	pending_label.add_theme_font_size_override("font_size", _settings_v5_font(22.0, s))
-	pending_label.add_theme_color_override("font_color", SETTINGS_V5_AMBER if _settings_video_dirty() else SETTINGS_V5_MUTED)
+	pending_label.add_theme_font_size_override("font_size", SemanticTypography.resolve_fixed(
+		SemanticTypography.ROLE_VALUE,
+		_settings_v6_font(SemanticTypography.ROLE_VALUE, 22.0, s),
+		SemanticTypography.role_min(SemanticTypography.ROLE_VALUE),
+		SemanticTypography.role_max(SemanticTypography.ROLE_VALUE)
+	))
+	pending_label.add_theme_color_override("font_color", SETTINGS_V6_AMBER if _settings_video_dirty() else SETTINGS_V6_MUTED)
 	screen_box.add_child(pending_label)
 
-	var audio_tab := _make_settings_tab("Звук", s)
-	var audio_box := audio_tab.get_child(0) as VBoxContainer
+	var audio_tab := _make_settings_tab("Звук", s, settings_column_w)
 	tabs.add_child(audio_tab)
+	var audio_page := audio_tab.get_child(0) as VBoxContainer
+	var audio_scroll := ScrollContainer.new()
+	audio_scroll.name = "AudioScroll"
+	audio_scroll.horizontal_scroll_mode = ScrollContainer.SCROLL_MODE_DISABLED
+	audio_scroll.vertical_scroll_mode = ScrollContainer.SCROLL_MODE_AUTO
+	audio_scroll.follow_focus = true
+	audio_scroll.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	audio_scroll.size_flags_vertical = Control.SIZE_EXPAND_FILL
+	audio_page.add_child(audio_scroll)
+	_settings_v6_style_audio_scrollbar(audio_scroll, s)
+	var audio_box := VBoxContainer.new()
+	audio_box.name = "SettingsAudioContent"
+	audio_box.custom_minimum_size = Vector2(settings_column_w, 0.0)
+	audio_box.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	# Six real rows + Reset fit 1080p without a scrollbar; compact 720p keeps
+	# full-size controls and scrolls instead of shrinking labels.
+	audio_box.add_theme_constant_override("separation", int(roundf(10.0 * s)))
+	audio_scroll.add_child(audio_box)
 	_add_volume_row(audio_box, "Общая громкость", "master_volume", "", s)
 	_add_volume_row(audio_box, "Музыка", "music_volume", "music_enabled", s)
 	_add_volume_row(audio_box, "Эффекты", "sfx_volume", "sfx_enabled", s)
-	var reset_audio_button := _settings_v5_make_action_button("Сбросить звук", "neutral", s)
-	reset_audio_button.name = "SettingsResetAudioButton"
+	_add_volume_row(audio_box, "Звуки интерфейса", "ui_volume", "", s)
+	_add_audio_option_row(audio_box, "Без звука вне окна", "mute_when_unfocused", s)
+	_add_audio_option_row(audio_box, "Предупреждение о здоровье", "low_hp_warning_enabled", s)
+	# SCRUM-879: кит-натив standard_420x104 (маппинг по имени кнопки).
+	var audio_reset_height := 72.0 if vp.y < 760.0 else (88.0 if vp.y < 1200.0 else 104.0)
+	var reset_audio_button := _settings_v6_make_action_button("Сбросить звук", "SettingsResetAudioButton", 420.0, audio_reset_height)
 	reset_audio_button.size_flags_horizontal = Control.SIZE_SHRINK_BEGIN
 	reset_audio_button.pressed.connect(func() -> void:
 		_reset_audio_to_defaults()
@@ -5153,7 +6840,7 @@ func _show_settings_menu(requested_return_origin := "") -> void:
 	)
 	audio_box.add_child(reset_audio_button)
 
-	var controls_tab := _make_settings_tab("Управление", s)
+	var controls_tab := _make_settings_tab("Управление", s, settings_column_w)
 	tabs.add_child(controls_tab)
 	# Вкладка «Управление» переполнялась (прицеливание + строка-ребинд на каждый
 	# INPUT_ACTION) — оборачиваем контент в вертикальный ScrollContainer, чтобы
@@ -5167,6 +6854,23 @@ func _show_settings_menu(requested_return_origin := "") -> void:
 	controls_scroll.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	controls_scroll.size_flags_vertical = Control.SIZE_EXPAND_FILL
 	controls_page.add_child(controls_scroll)
+	# v6: скроллбар в палитре кита — тёмный жёлоб, латунный граббер.
+	var scrollbar := controls_scroll.get_v_scroll_bar()
+	if scrollbar != null:
+		var scroll_track := StyleBoxFlat.new()
+		scroll_track.bg_color = Color(0.05, 0.04, 0.03, 0.85)
+		scroll_track.set_corner_radius_all(int(roundf(4.0 * s)))
+		scroll_track.set_content_margin_all(roundf(2.0 * s))
+		var scroll_grabber := StyleBoxFlat.new()
+		scroll_grabber.bg_color = Color(0.52, 0.41, 0.24, 0.95)
+		scroll_grabber.set_corner_radius_all(int(roundf(4.0 * s)))
+		var scroll_grabber_hi := scroll_grabber.duplicate()
+		scroll_grabber_hi.bg_color = Color(0.78, 0.66, 0.44, 1.0)
+		scrollbar.add_theme_stylebox_override("scroll", scroll_track)
+		scrollbar.add_theme_stylebox_override("grabber", scroll_grabber)
+		scrollbar.add_theme_stylebox_override("grabber_highlight", scroll_grabber_hi)
+		scrollbar.add_theme_stylebox_override("grabber_pressed", scroll_grabber_hi)
+		scrollbar.custom_minimum_size = Vector2(roundf(10.0 * s), 0.0)
 	var controls_box := VBoxContainer.new()
 	controls_box.name = "ControlsContent"
 	controls_box.size_flags_horizontal = Control.SIZE_EXPAND_FILL
@@ -5178,7 +6882,7 @@ func _show_settings_menu(requested_return_origin := "") -> void:
 	var device_option := OptionButton.new()
 	device_option.name = "SettingsInputModeOption"
 	device_option.focus_mode = Control.FOCUS_ALL
-	_settings_v5_apply_field_theme(device_option, s)
+	_settings_v6_apply_field_theme(device_option, s)
 	device_option.add_item("Авто (по последнему вводу)")
 	device_option.add_item("Клавиатура и мышь")
 	device_option.add_item("Геймпад")
@@ -5199,14 +6903,19 @@ func _show_settings_menu(requested_return_origin := "") -> void:
 	device_hint.text = "И клавиатура, и геймпад работают одновременно в любом режиме — режим лишь задаёт, чьи подсказки показывать."
 	device_hint.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	device_hint.custom_minimum_size = Vector2(roundf(880.0 * s), 0.0)
-	device_hint.add_theme_font_size_override("font_size", _settings_v5_font(20.0, s))
-	device_hint.add_theme_color_override("font_color", SETTINGS_V5_MUTED)
+	device_hint.add_theme_font_size_override("font_size", _settings_v6_font(SemanticTypography.ROLE_CAPTION, 20.0, s))
+	device_hint.add_theme_color_override("font_color", SETTINGS_V6_HINT_BLUE)
 	controls_box.add_child(device_hint)
 
 	var gamepad_status := Label.new()
 	gamepad_status.name = "SettingsGamepadStatus"
-	gamepad_status.add_theme_font_size_override("font_size", _settings_v5_font(22.0, s))
-	gamepad_status.add_theme_color_override("font_color", SETTINGS_V5_AMBER)
+	gamepad_status.add_theme_font_size_override("font_size", SemanticTypography.resolve_fixed(
+		SemanticTypography.ROLE_VALUE,
+		_settings_v6_font(SemanticTypography.ROLE_VALUE, 22.0, s),
+		SemanticTypography.role_min(SemanticTypography.ROLE_VALUE),
+		SemanticTypography.role_max(SemanticTypography.ROLE_VALUE)
+	))
+	gamepad_status.add_theme_color_override("font_color", SETTINGS_V6_AMBER)
 	controls_box.add_child(gamepad_status)
 	_gamepad_status_label = gamepad_status
 	_connect_gamepad_status_signals()
@@ -5214,7 +6923,7 @@ func _show_settings_menu(requested_return_origin := "") -> void:
 
 	var aim_options := OptionButton.new()
 	aim_options.name = "SettingsAimModeOption"
-	_settings_v5_apply_field_theme(aim_options, s)
+	_settings_v6_apply_field_theme(aim_options, s)
 	aim_options.add_item("Автонаводка на ближайшего")
 	aim_options.add_item("По курсору")
 	aim_options.selected = 1 if str(game.aim_mode) == "cursor" else 0
@@ -5230,7 +6939,7 @@ func _show_settings_menu(requested_return_origin := "") -> void:
 	debug_toggle.button_pressed = game.debug_mode_enabled
 	debug_toggle.text = "Вкл. (ПКМ / Shift+ЛКМ)" if debug_toggle.button_pressed else "Выкл."
 	debug_toggle.tooltip_text = "Дебаг: в бою ПКМ или Shift+ЛКМ задают точку движения, средняя кнопка телепортирует."
-	_settings_v5_style_checkbox(debug_toggle, s)
+	_settings_v6_style_checkbox(debug_toggle, s)
 	debug_toggle.toggled.connect(func(pressed: bool) -> void:
 		game.debug_mode_enabled = pressed
 		game.get_tree().root.set_meta("debug_mode", pressed)
@@ -5244,7 +6953,7 @@ func _show_settings_menu(requested_return_origin := "") -> void:
 	feedback_toggle.button_pressed = game.combat_feedback_enabled
 	feedback_toggle.text = "Вкл." if feedback_toggle.button_pressed else "Выкл."
 	feedback_toggle.tooltip_text = "Боевые цифры, крит-маркеры, вспышка попадания и зелёные числа лечения."
-	_settings_v5_style_checkbox(feedback_toggle, s)
+	_settings_v6_style_checkbox(feedback_toggle, s)
 	feedback_toggle.toggled.connect(func(pressed: bool) -> void:
 		game.combat_feedback_enabled = pressed
 		game.get_tree().root.set_meta("combat_feedback", pressed)
@@ -5260,7 +6969,7 @@ func _show_settings_menu(requested_return_origin := "") -> void:
 		bind_button.name = "BindingButton_%s" % action_name
 		bind_button.text = _binding_text(action_name)
 		bind_button.mouse_default_cursor_shape = Control.CURSOR_POINTING_HAND
-		_settings_v5_apply_field_theme(bind_button, s)
+		_settings_v6_apply_field_theme(bind_button, s)
 		bind_button.pressed.connect(func() -> void:
 			_begin_rebind(action_name)
 		)
@@ -5270,12 +6979,12 @@ func _show_settings_menu(requested_return_origin := "") -> void:
 	var hint_label := Label.new()
 	hint_label.text = "Клик по биндингу, затем нажми клавишу. Esc отменяет."
 	hint_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_LEFT
-	hint_label.add_theme_font_size_override("font_size", _settings_v5_font(22.0, s))
-	hint_label.add_theme_color_override("font_color", SETTINGS_V5_MUTED)
+	hint_label.add_theme_font_size_override("font_size", _settings_v6_font(SemanticTypography.ROLE_CAPTION, 22.0, s))
+	hint_label.add_theme_color_override("font_color", SETTINGS_V6_HINT_BLUE)
 	controls_box.add_child(hint_label)
 
-	var reset_button := _settings_v5_make_action_button("Сбросить управление", "neutral", s)
-	reset_button.name = "SettingsResetBindingsButton"
+	# SCRUM-879: кит-натив wide_440x104 (маппинг по имени кнопки).
+	var reset_button := _settings_v6_make_action_button("Сбросить управление", "SettingsResetBindingsButton", 440.0, 104.0)
 	reset_button.size_flags_horizontal = Control.SIZE_SHRINK_BEGIN
 	reset_button.pressed.connect(func() -> void:
 		_reset_input_bindings_to_defaults()
@@ -5292,7 +7001,7 @@ func _show_settings_menu(requested_return_origin := "") -> void:
 		gp_button.text = _gamepad_binding_text(gp_action)
 		gp_button.mouse_default_cursor_shape = Control.CURSOR_POINTING_HAND
 		gp_button.focus_mode = Control.FOCUS_ALL
-		_settings_v5_apply_field_theme(gp_button, s)
+		_settings_v6_apply_field_theme(gp_button, s)
 		var gp_glyph := _gamepad_glyph_for_action(gp_action)
 		if gp_glyph != null:
 			gp_button.icon = gp_glyph
@@ -5308,8 +7017,8 @@ func _show_settings_menu(requested_return_origin := "") -> void:
 	gp_hint.horizontal_alignment = HORIZONTAL_ALIGNMENT_LEFT
 	gp_hint.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	gp_hint.custom_minimum_size = Vector2(roundf(880.0 * s), 0.0)
-	gp_hint.add_theme_font_size_override("font_size", _settings_v5_font(20.0, s))
-	gp_hint.add_theme_color_override("font_color", SETTINGS_V5_MUTED)
+	gp_hint.add_theme_font_size_override("font_size", _settings_v6_font(SemanticTypography.ROLE_CAPTION, 20.0, s))
+	gp_hint.add_theme_color_override("font_color", SETTINGS_V6_HINT_BLUE)
 	controls_box.add_child(gp_hint)
 
 	var deadzone_slider := HSlider.new()
@@ -5321,14 +7030,19 @@ func _show_settings_menu(requested_return_origin := "") -> void:
 	deadzone_slider.size_flags_horizontal = Control.SIZE_SHRINK_BEGIN
 	deadzone_slider.size_flags_vertical = Control.SIZE_SHRINK_CENTER
 	deadzone_slider.focus_mode = Control.FOCUS_ALL
-	_settings_v5_style_slider(deadzone_slider, s)
+	_settings_v6_style_slider(deadzone_slider, s)
 	deadzone_slider.value = clampf(float(game.gamepad_deadzone), 0.05, 0.5)
 	var deadzone_row := _add_settings_control_row(controls_box, "Мёртвая зона стика", deadzone_slider, s)
 	var deadzone_value := Label.new()
 	deadzone_value.name = "SettingsGamepadDeadzoneValue"
 	deadzone_value.text = "%.2f" % deadzone_slider.value
-	deadzone_value.add_theme_font_size_override("font_size", _settings_v5_font(24.0, s))
-	deadzone_value.add_theme_color_override("font_color", SETTINGS_V5_AMBER)
+	deadzone_value.add_theme_font_size_override("font_size", SemanticTypography.resolve_fixed(
+		SemanticTypography.ROLE_VALUE,
+		_settings_v6_font(SemanticTypography.ROLE_VALUE, 24.0, s),
+		SemanticTypography.role_min(SemanticTypography.ROLE_VALUE),
+		SemanticTypography.role_max(SemanticTypography.ROLE_VALUE)
+	))
+	deadzone_value.add_theme_color_override("font_color", SETTINGS_V6_AMBER)
 	deadzone_row.add_child(deadzone_value)
 	deadzone_slider.value_changed.connect(func(value: float) -> void:
 		var dz := snappedf(clampf(value, 0.05, 0.5), 0.05)
@@ -5342,7 +7056,7 @@ func _show_settings_menu(requested_return_origin := "") -> void:
 	vibration_toggle.name = "SettingsGamepadVibrationToggle"
 	vibration_toggle.button_pressed = bool(game.gamepad_vibration)
 	vibration_toggle.text = "Вкл." if vibration_toggle.button_pressed else "Выкл."
-	_settings_v5_style_checkbox(vibration_toggle, s)
+	_settings_v6_style_checkbox(vibration_toggle, s)
 	vibration_toggle.toggled.connect(func(pressed: bool) -> void:
 		game.gamepad_vibration = pressed
 		game.get_tree().root.set_meta("gamepad_vibration", pressed)
@@ -5351,48 +7065,70 @@ func _show_settings_menu(requested_return_origin := "") -> void:
 	)
 	_add_settings_control_row(controls_box, "Вибрация", vibration_toggle, s)
 
-	var gp_reset := _settings_v5_make_action_button("Сбросить геймпад", "neutral", s)
-	gp_reset.name = "SettingsResetGamepadButton"
+	# SCRUM-879: кит-натив standard_420x104 (по size-маппингу): у minimal_metal
+	# высоты 72 глобальный seal-инвариант SCRUM-450 требует 104 — берём натив,
+	# единый с «Сбросить звук».
+	var gp_reset := _settings_v6_make_action_button("Сбросить геймпад", "SettingsResetGamepadButton", 420.0, 104.0)
 	gp_reset.size_flags_horizontal = Control.SIZE_SHRINK_BEGIN
 	gp_reset.pressed.connect(func() -> void:
 		_reset_gamepad_bindings_to_defaults()
 	)
 	controls_box.add_child(gp_reset)
 
-	var settings_back := func() -> void:
-		_return_from_settings()
+	# SCRUM-1025: fourth Settings/Game page consumes the authoritative
+	# SCRUM-976 API. Values persist now but affect only the next run snapshot.
+	var game_settings_tab := _make_settings_game_tab(s, settings_column_w, vp)
+	tabs.add_child(game_settings_tab)
+	_wire_settings_game_focus(tabs, game_settings_tab, vp.y <= 760.0)
 
-	var divider := ColorRect.new()
-	divider.name = "SettingsV5Divider"
-	divider.color = SETTINGS_V5_BRONZE_LINE
-	divider.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	_apply_control_rect(divider, _settings_v5_rect(Rect2(160.0, SETTINGS_V5_DIVIDER_Y, 1100.0, 2.0), s))
-	divider.custom_minimum_size.y = maxf(1.0, divider.custom_minimum_size.y)
-	modal.add_child(divider)
-
+	# --- Ряд 4: футер — «Вернуть»/«Применить» справа («Назад» теперь в шапке).
+	# Кнопки глобального кита, фикс 280×64: Apply/Revert носят НАТИВНУЮ пластину
+	# по size-маппингу кита (y<=66, 240<=x<360) — без даунскейла и растяжки.
+	# SCRUM-1053: on the compact tier the texture-safe SettingsSafeArea ends at
+	# the first bottom-frame pixel. Keep a 24px authored inner reserve beneath
+	# the footer so the plates, labels, focus and hit rects cannot enter the live
+	# Atlas ornament. The wrapper is hidden together with the footer on Game, so
+	# SCRUM-1025's exact 892x242 compact scroll viewport remains unchanged.
+	var action_safe := Control.new()
+	action_safe.name = "SettingsBottomActionsSafe"
+	action_safe.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	var footer_bottom_reserve := 24 if vp.y <= 760.0 else 0
+	action_safe.custom_minimum_size = Vector2(0.0, 64.0 + float(footer_bottom_reserve))
+	action_safe.set_meta("settings_footer_bottom_reserve", footer_bottom_reserve)
+	layout.add_child(action_safe)
 	var action_row := HBoxContainer.new()
 	action_row.name = "SettingsBottomActions"
-	action_row.alignment = BoxContainer.ALIGNMENT_CENTER
-	action_row.add_theme_constant_override("separation", int(roundf(SETTINGS_V5_ACTION_GAP * s)))
-	var action_row_width := SETTINGS_V5_ACTION_SIZE.x * 3.0 + SETTINGS_V5_ACTION_GAP * 2.0
-	_apply_control_rect(action_row, _settings_v5_rect(
-		Rect2((SETTINGS_V5_DESIGN_SIZE.x - action_row_width) * 0.5, SETTINGS_V5_ACTION_TOP, action_row_width, SETTINGS_V5_ACTION_SIZE.y), s))
-	modal.add_child(action_row)
-	var apply_button := _settings_v5_make_action_button("Применить", "primary", s)
-	apply_button.name = "SettingsApplyButton"
-	apply_button.disabled = not _settings_video_dirty()
-	apply_button.pressed.connect(_apply_pending_video_settings)
-	action_row.add_child(apply_button)
-	var revert_button := _settings_v5_make_action_button("Вернуть", "neutral", s)
-	revert_button.name = "SettingsRevertButton"
+	action_row.alignment = BoxContainer.ALIGNMENT_END
+	action_row.add_theme_constant_override("separation", int(14.0 * s_ui))
+	# Футер той же ширины, что панель: кнопки прижаты к её правому краю.
+	action_row.set_anchors_preset(Control.PRESET_CENTER_TOP)
+	action_row.offset_left = -settings_panel_w * 0.5
+	action_row.offset_top = 0.0
+	action_row.offset_right = settings_panel_w * 0.5
+	action_row.offset_bottom = 64.0
+	action_row.custom_minimum_size = Vector2(settings_panel_w, 64.0)
+	action_safe.add_child(action_row)
+	var revert_button := _settings_v6_make_action_button("Вернуть", "SettingsRevertButton", 280.0, 64.0)
 	revert_button.disabled = not _settings_video_dirty()
 	revert_button.pressed.connect(_revert_pending_video_settings)
 	action_row.add_child(revert_button)
-	var back_button := _settings_v5_make_action_button("Назад", "neutral", s)
-	back_button.name = "SettingsBackButton"
-	back_button.pressed.connect(settings_back)
-	action_row.add_child(back_button)
-	game.ui_escape_action = settings_back
+	var apply_button := _settings_v6_make_action_button("Применить", "SettingsApplyButton", 280.0, 64.0)
+	apply_button.disabled = not _settings_video_dirty()
+	apply_button.pressed.connect(_apply_pending_video_settings)
+	action_row.add_child(apply_button)
+	_settings_fit_kit_row([revert_button, apply_button], 280.0, 64.0)
+	# Apply/Revert belong only to pending Screen settings. The accepted Game-tab
+	# mockup has no irrelevant footer; hiding it also restores the exact compact
+	# scroll viewport while tabs/header remain fixed.
+	var update_settings_footer_visibility := func(tab_index: int) -> void:
+		var show_footer := tab_index != 3
+		action_safe.visible = show_footer
+		action_row.visible = show_footer
+	tabs.tab_changed.connect(update_settings_footer_visibility)
+	update_settings_footer_visibility.call(tabs.current_tab)
+
+	# Полая рама frame_border ПОВЕРХ всего контента — строго последним слоем.
+	_unified_add_frame(root, "Settings")
 
 	# SCRUM-813: стартовый фокус — первая вкладка настроек; LB/RB листают вкладки
 	# (см. _handle_menu_shoulder_nav). Слайдеры/OptionButton/CheckBox фокусируемы —
@@ -5441,40 +7177,56 @@ func _return_from_settings() -> void:
 	_show_main_menu()
 
 
-func _make_settings_tab_switcher(tabs: TabContainer, display_size := Vector2.ZERO) -> Control:
-	# v5: три «листа-закладки» фиксированного размера 340×84×s с иконками,
-	# без общей рамки-подложки (арт каждого таба — самостоятельная пластина).
+func _make_settings_tab_switcher(tabs: TabContainer, _s: float) -> Control:
+	# SCRUM-882 (фидбек к SCRUM-879): табы настроек — тот же стиль, что у кнопки
+	# «Назад»: 260×_atlas_action_button_height(); на высоте 104 size-маппинг кита
+	# даёт ту же НАТИВНУЮ плиту back_260x104, что носит SettingsBackButton, на
+	# компакт-высотах 88/72 кит штатно уходит в 9-slice-ветки (как табы Атласа).
+	# SCRUM-1025: 1080p/2K = one-row 4×260; compact <=760px = 2×2. Каждая
+	# плита самостоятельна — исторический 3-slot ornament не растягивается.
+	# SCRUM-1060: все четыре подписи — text-only и используют ровно тот же
+	# readability contract, что SettingsBackButton. Иконки убраны на всех tier:
+	# длинное «Управление» с иконкой не сохраняло Back-font внутри плоской
+	# x=48..212 content-zone, а уменьшать кегль для fit теперь запрещено.
 	var switcher := Control.new()
 	switcher.name = "SettingsTabSwitcher"
-	var actual_display_size := display_size if display_size.x > 0.0 and display_size.y > 0.0 else Vector2(1060.0, 84.0)
-	var s := actual_display_size.y / SETTINGS_V5_TAB_SIZE.y
-	switcher.custom_minimum_size = actual_display_size
-	switcher.size_flags_horizontal = Control.SIZE_SHRINK_CENTER
-	switcher.size_flags_vertical = Control.SIZE_SHRINK_CENTER
 	switcher.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	var tab_width := 260.0
+	var viewport_height: float = float(game.get_viewport().get_visible_rect().size.y)
+	var tab_height := 72.0 if viewport_height <= 760.0 else (88.0 if viewport_height <= 1080.0 else 104.0)
+	var tab_gap := 24.0
+	var compact_grid: bool = viewport_height <= 760.0
+	var column_count := 2 if compact_grid else 4
+	var row_count := 2 if compact_grid else 1
+	var row_gap := 12.0 if compact_grid else 0.0
+	switcher.custom_minimum_size = Vector2(
+		tab_width * float(column_count) + tab_gap * float(column_count - 1),
+		tab_height * float(row_count) + row_gap * float(row_count - 1))
+	switcher.set_meta("settings_tab_columns", column_count)
+	switcher.set_meta("settings_tab_rows", row_count)
+	switcher.set_meta("settings_tab_gap", Vector2(tab_gap, row_gap))
 
 	var buttons: Array[Button] = []
-	var labels := ["Экран", "Звук", "Управление"]
-	var tab_width := roundf(SETTINGS_V5_TAB_SIZE.x * s)
-	var tab_gap := roundf(SETTINGS_V5_TAB_GAP * s)
+	var labels := ["Экран", "Звук", "Управление", "Игра"]
 	for tab_index in range(labels.size()):
-		var tab_left := float(tab_index) * (tab_width + tab_gap)
-		var button := Button.new()
+		var button := _make_button(labels[tab_index])
 		button.name = "SettingsTabButton_%d" % tab_index
-		button.text = labels[tab_index]
-		button.mouse_default_cursor_shape = Control.CURSOR_POINTING_HAND
-		button.focus_mode = Control.FOCUS_ALL
+		_set_action_button_size(button, tab_width, tab_height)
+		var column := tab_index % column_count
+		var row := tab_index / column_count
+		var tab_left := float(column) * (tab_width + tab_gap)
+		var tab_top := float(row) * (tab_height + row_gap)
 		button.set_anchors_preset(Control.PRESET_TOP_LEFT)
 		button.offset_left = tab_left
-		button.offset_top = 0.0
+		button.offset_top = tab_top
 		button.offset_right = tab_left + tab_width
-		button.offset_bottom = actual_display_size.y
-		button.add_theme_font_size_override("font_size", _settings_v5_font(26.0, s))
-		var icon := _settings_v5_icon(SETTINGS_V5_TAB_ICON_PATHS[tab_index], Vector2(44.0, 44.0), s)
-		if icon != null:
-			button.icon = icon
-			button.expand_icon = false
-			button.add_theme_constant_override("h_separation", int(roundf(12.0 * s)))
+		button.offset_bottom = tab_top + tab_height
+		button.icon = null
+		button.expand_icon = false
+		button.clip_text = false
+		button.text_overrun_behavior = TextServer.OVERRUN_NO_TRIMMING
+		button.set_meta("settings_tab_content_side_margin", 48.0)
+		button.set_meta("settings_fixed_font_contract", _readable_font_size(SemanticTypography.ROLE_TAB, 16))
 		button.tooltip_text = "Открыть вкладку: %s" % labels[tab_index]
 		var target_tab := tab_index
 		button.pressed.connect(func() -> void:
@@ -5482,10 +7234,18 @@ func _make_settings_tab_switcher(tabs: TabContainer, display_size := Vector2.ZER
 		)
 		switcher.add_child(button)
 		buttons.append(button)
+	# Плоское поле плиты back_260x104 — x∈[48,212] (по бокам драконьи головы
+	# орнамента, промер арта): text-only «Управление» помещается в 164px при
+	# Back-font 21/22/23/23. Fixed-font параметр разрешает хелперу вычислить
+	# одинаковые vertical margins для пяти state styles, но запрещает downscale.
+	_settings_fit_kit_row(buttons, tab_width, tab_height, 48.0, 1.0, _readable_font_size(SemanticTypography.ROLE_TAB, 16))
 
 	var update_buttons := func(active_tab: int) -> void:
+		# Актив/неактив — модуляцией, теми же тонами, что _atlas_apply_tab_state.
+		var active_tint := Color(1.0, 0.94, 0.74)
+		var idle_tint := Color(0.74, 0.76, 0.84, 0.92)
 		for button_index in range(buttons.size()):
-			_apply_settings_tab_button_theme(buttons[button_index], button_index == active_tab, s)
+			buttons[button_index].modulate = active_tint if button_index == active_tab else idle_tint
 	update_buttons.call(tabs.current_tab)
 	tabs.tab_changed.connect(func(tab_index: int) -> void:
 		update_buttons.call(tab_index)
@@ -5493,28 +7253,80 @@ func _make_settings_tab_switcher(tabs: TabContainer, display_size := Vector2.ZER
 	return switcher
 
 
-func _settings_v5_tab_stylebox(state: String, s: float) -> StyleBox:
-	# Арт таба 340×84 — точный дизайн-размер пластины (аспект rect == аспект арта).
-	var content := Vector4(18.0 * s, 10.0 * s, 18.0 * s, 12.0 * s)
-	return _settings_v5_texture_box(SETTINGS_V5_TAB_PATHS[state], Vector4(14.0, 12.0, 14.0, 12.0), content)
+func _settings_fit_kit_row(row_buttons: Array, button_width: float, button_height: float, side_pad := 0.0, fit_ratio := 1.0, fixed_font_size := 0) -> void:
+	# SCRUM-879: кит-кнопки в фиксированных слотах модалки (табы 84×s, нижний
+	# ряд 80×s). Пластины кита не искажаем (те же текстуры, 9-slice-раскрой),
+	# но контент доводим под слот: подпись одной строкой (autowrap раздувает
+	# min-height Button двухстрочным переносом и распирает кнопку за слот —
+	# матрица ловит наезд на соседей), ЕДИНЫЙ для ряда кегль по самой длинной
+	# подписи, вертикальные content-margins дозируем от высоты слота; клип —
+	# страховка оконного рендера (строка в окне до ×1.5 шире headless-мерки).
+	# side_pad > 0 переопределяет боковые поля контента (левое гнездо иконки
+	# у табов), 0 — родные поля пластины кита. fit_ratio < 1 — страховка
+	# оконного рендера (строка в окне до ~1.4-1.5 шире headless-мерки): кегль
+	# подбирается под долю доступной ширины, чтобы буквы не клипались в окне.
+	# fixed_font_size > 0 — typography contract для рядов, где layout/spec уже
+	# доказал fit: helper не имеет права повторно уменьшать кегль.
+	if row_buttons.is_empty():
+		return
+	var first := row_buttons[0] as Button
+	if first == null:
+		return
+	var font := first.get_theme_font("font")
+	var font_size := fixed_font_size if fixed_font_size > 0 else _readable_font_size(SemanticTypography.ROLE_ACTION, 16)
+	var side_left := side_pad
+	var side_right := side_pad
+	if side_pad <= 0.0:
+		var base_style := first.get_theme_stylebox("normal")
+		side_left = base_style.content_margin_left if base_style != null else 45.0
+		side_right = base_style.content_margin_right if base_style != null else 45.0
+	var icon_span := 0.0
+	var icon_height := 0.0
+	for entry in row_buttons:
+		var entry_icon := (entry as Button).icon
+		if entry_icon != null:
+			icon_span = maxf(icon_span, minf(36.0, float(entry_icon.get_width())) + 4.0)
+			icon_height = maxf(icon_height, float(entry_icon.get_height()))
+	if font != null:
+		var avail := (button_width - side_left - side_right - icon_span) * clampf(fit_ratio, 0.1, 1.0)
+		var widest := 0.0
+		for entry in row_buttons:
+			widest = maxf(widest, font.get_string_size((entry as Button).text, HORIZONTAL_ALIGNMENT_LEFT, -1.0, font_size).x)
+		while fixed_font_size <= 0 and font_size > 11 and widest > avail:
+			font_size -= 1
+			widest = 0.0
+			for entry in row_buttons:
+				widest = maxf(widest, font.get_string_size((entry as Button).text, HORIZONTAL_ALIGNMENT_LEFT, -1.0, font_size).x)
+	var line_height := 22.0
+	if font != null:
+		line_height = font.get_height(font_size)
+	var v_pad := clampf((button_height - maxf(line_height, icon_height)) * 0.5, 4.0, 16.0)
+	for entry in row_buttons:
+		var button := entry as Button
+		button.autowrap_mode = TextServer.AUTOWRAP_OFF
+		# Fixed-font rows have already proved full text fit against their declared
+		# content zone, so clipping would hide a future localization regression.
+		button.clip_text = fixed_font_size <= 0
+		button.add_theme_font_size_override("font_size", SemanticTypography.resolve_fixed(
+			SemanticTypography.ROLE_ACTION,
+			font_size,
+			SemanticTypography.role_min(SemanticTypography.ROLE_ACTION),
+			SemanticTypography.role_max(SemanticTypography.ROLE_ACTION)
+		))
+		for state in ["normal", "hover", "pressed", "disabled", "focus"]:
+			var state_style := button.get_theme_stylebox(state)
+			if state_style == null:
+				continue
+			var fitted: StyleBox = state_style.duplicate()
+			if side_pad > 0.0:
+				fitted.content_margin_left = side_pad
+				fitted.content_margin_right = side_pad
+			fitted.content_margin_top = v_pad
+			fitted.content_margin_bottom = v_pad
+			button.add_theme_stylebox_override(state, fitted)
 
 
-func _apply_settings_tab_button_theme(button: Button, selected: bool, s := 1.0) -> void:
-	var normal_state := "active" if selected else "inactive"
-	var hover_state := "active" if selected else "hover"
-	button.add_theme_stylebox_override("normal", _settings_v5_tab_stylebox(normal_state, s))
-	button.add_theme_stylebox_override("hover", _settings_v5_tab_stylebox(hover_state, s))
-	button.add_theme_stylebox_override("pressed", _settings_v5_tab_stylebox("active", s))
-	button.add_theme_stylebox_override("focus", _settings_v5_tab_stylebox(hover_state, s))
-	button.add_theme_stylebox_override("disabled", _settings_v5_tab_stylebox("inactive", s))
-	button.add_theme_color_override("font_color", SETTINGS_V5_TEXT_BRIGHT if selected else SETTINGS_V5_MUTED)
-	button.add_theme_color_override("font_hover_color", SETTINGS_V5_TEXT_BRIGHT)
-	button.add_theme_color_override("font_focus_color", SETTINGS_V5_TEXT_BRIGHT)
-	button.add_theme_color_override("font_pressed_color", SETTINGS_V5_TEXT_BRIGHT)
-	button.add_theme_color_override("font_disabled_color", SETTINGS_V5_DISABLED)
-
-
-func _make_settings_tab(tab_name: String, s := 1.0) -> MarginContainer:
+func _make_settings_tab(tab_name: String, s := 1.0, column_w := 0.0) -> MarginContainer:
 	var margin := MarginContainer.new()
 	margin.name = tab_name
 	margin.size_flags_horizontal = Control.SIZE_EXPAND_FILL
@@ -5525,15 +7337,312 @@ func _make_settings_tab(tab_name: String, s := 1.0) -> MarginContainer:
 	margin.add_theme_constant_override("margin_bottom", 0)
 	var page := VBoxContainer.new()
 	page.name = "%sContent" % tab_name
-	page.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	# SCRUM-882 (фидбек): страница таба — колонка фикс-ширины column_w по ЦЕНТРУ
+	# панели (SHRINK_CENTER внутри margin-обёртки), строки внутри колонки
+	# остаются с левым выравниванием (у самих строк SIZE_SHRINK_BEGIN). Ширины
+	# строк считаются от s = column_w/1276 — уже колонки по построению.
+	page.size_flags_horizontal = Control.SIZE_SHRINK_CENTER if column_w > 0.0 else Control.SIZE_EXPAND_FILL
 	page.size_flags_vertical = Control.SIZE_EXPAND_FILL
+	if column_w > 0.0:
+		page.custom_minimum_size = Vector2(roundf(column_w), 0.0)
 	page.add_theme_constant_override("separation", int(roundf(20.0 * s)))
 	margin.add_child(page)
 	return margin
 
 
+func _make_settings_game_tab(s: float, column_w: float, viewport_size: Vector2) -> MarginContainer:
+	var game_tab := _make_settings_tab("Игра", s, column_w)
+	var page := game_tab.get_child(0) as VBoxContainer
+	var compact := viewport_size.y <= 760.0
+	var game_content_w := 878.0 if compact else clampf(1424.0 * (viewport_size.y / 1440.0), 1068.0, 1424.0)
+	var game_scroll_w := 892.0 if compact else game_content_w
+	# SCRUM-1030's 306px mockup viewport was authored without the live Atlas
+	# border. In the runtime shell it would end beneath the bottom ornament,
+	# violating the global frame-safe rule. Keep the exact 878×520 canvas and
+	# 14px lane, but cap the visible height to the actual empty frame interior.
+	var compact_scroll_h := maxf(160.0, roundf(viewport_size.y * 0.6875 - 253.0)) if compact else 0.0
+	page.custom_minimum_size.x = game_scroll_w
+	page.add_theme_constant_override("separation", 0)
+
+	var scroll := ScrollContainer.new()
+	scroll.name = "SettingsGameScroll"
+	scroll.horizontal_scroll_mode = ScrollContainer.SCROLL_MODE_DISABLED
+	scroll.vertical_scroll_mode = ScrollContainer.SCROLL_MODE_AUTO
+	scroll.follow_focus = true
+	scroll.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	scroll.size_flags_vertical = Control.SIZE_SHRINK_BEGIN if compact else Control.SIZE_EXPAND_FILL
+	scroll.custom_minimum_size = Vector2(game_scroll_w, compact_scroll_h)
+	page.add_child(scroll)
+	_settings_v6_style_audio_scrollbar(scroll, s)
+	if compact:
+		scroll.get_v_scroll_bar().custom_minimum_size.x = 14.0
+
+	var content: Control
+	if compact:
+		content = Control.new()
+	else:
+		var wide_content := VBoxContainer.new()
+		wide_content.add_theme_constant_override("separation", maxi(2, int(roundf(3.0 * s))))
+		content = wide_content
+	content.name = "SettingsGameContent"
+	content.custom_minimum_size = Vector2(game_content_w, 520.0 if compact else 0.0)
+	content.size_flags_horizontal = Control.SIZE_SHRINK_BEGIN if compact else Control.SIZE_EXPAND_FILL
+	scroll.add_child(content)
+
+	var title := Label.new()
+	title.name = "SettingsGameTitle"
+	title.text = "Игровая песочница"
+	title.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
+	title.add_theme_font_size_override("font_size", SemanticTypography.resolve_fixed(
+		SemanticTypography.ROLE_TITLE,
+		_settings_v6_font(SemanticTypography.ROLE_TITLE, 28.0, s),
+		SemanticTypography.role_min(SemanticTypography.ROLE_TITLE),
+		SemanticTypography.role_max(SemanticTypography.ROLE_TITLE)
+	))
+	title.add_theme_color_override("font_color", SETTINGS_V6_GOLD)
+	var status := Label.new()
+	status.name = "SettingsGameStatus"
+	status.horizontal_alignment = HORIZONTAL_ALIGNMENT_RIGHT
+	status.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
+	status.add_theme_font_size_override("font_size", SemanticTypography.resolve_fixed(
+		SemanticTypography.ROLE_VALUE,
+		_settings_v6_font(SemanticTypography.ROLE_VALUE, 22.0, s),
+		SemanticTypography.role_min(SemanticTypography.ROLE_VALUE),
+		SemanticTypography.role_max(SemanticTypography.ROLE_VALUE)
+	))
+	if compact:
+		content.add_child(title)
+		_settings_game_place_control(title, Rect2(14.0, 8.0, 400.0, 34.0))
+		content.add_child(status)
+		_settings_game_place_control(status, Rect2(536.0, 8.0, 328.0, 34.0))
+	else:
+		var header := HBoxContainer.new()
+		header.name = "SettingsGameHeader"
+		header.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+		header.add_theme_constant_override("separation", int(roundf(16.0 * s)))
+		content.add_child(header)
+		title.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+		header.add_child(title)
+		status.custom_minimum_size = Vector2(roundf(360.0 * s), roundf(42.0 * s))
+		header.add_child(status)
+
+	var description := Label.new()
+	description.name = "SettingsGameDescription"
+	description.text = "Настрой сложность следующего забега. Текущий забег не изменится."
+	description.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	description.add_theme_font_size_override("font_size", SemanticTypography.resolve_fixed(
+		SemanticTypography.ROLE_DESCRIPTION,
+		_settings_v6_font(SemanticTypography.ROLE_DESCRIPTION, 20.0, s),
+		SemanticTypography.role_min(SemanticTypography.ROLE_DESCRIPTION),
+		SemanticTypography.role_max(SemanticTypography.ROLE_DESCRIPTION)
+	))
+	description.add_theme_color_override("font_color", SETTINGS_V6_TEXT)
+	content.add_child(description)
+	if compact:
+		_settings_game_place_control(description, Rect2(14.0, 52.0, 850.0, 30.0))
+
+	var warning := Label.new()
+	warning.name = "SettingsSandboxWarning"
+	warning.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	warning.custom_minimum_size = Vector2(0.0, 42.0 if compact else roundf(42.0 * s))
+	warning.add_theme_font_size_override("font_size", SemanticTypography.resolve_fixed(
+		SemanticTypography.ROLE_DESCRIPTION,
+		_settings_v6_font(SemanticTypography.ROLE_DESCRIPTION, 19.0, s),
+		SemanticTypography.role_min(SemanticTypography.ROLE_DESCRIPTION),
+		SemanticTypography.role_max(SemanticTypography.ROLE_DESCRIPTION)
+	))
+	content.add_child(warning)
+	if compact:
+		_settings_game_place_control(warning, Rect2(14.0, 92.0, 850.0, 42.0))
+
+	var sliders := {}
+	var value_labels := {}
+	var slider_order: Array[HSlider] = []
+	var rows := [
+		{"key": game.GAMEPLAY_SANDBOX.MONSTER_HP, "suffix": "monster_hp", "label": "Здоровье монстров"},
+		{"key": game.GAMEPLAY_SANDBOX.MONSTER_DAMAGE, "suffix": "monster_damage", "label": "Урон монстров"},
+		{"key": game.GAMEPLAY_SANDBOX.PLAYER_DAMAGE, "suffix": "player_damage", "label": "Урон игрока"},
+		{"key": game.GAMEPLAY_SANDBOX.PLAYER_ATTACK_SPEED, "suffix": "player_attack_speed", "label": "Скорость атак игрока"},
+		{"key": game.GAMEPLAY_SANDBOX.MONSTER_ATTACK_SPEED, "suffix": "monster_attack_speed", "label": "Скорость атак монстров"},
+	]
+	var configured: Dictionary = game.sandbox_snapshot()
+	var layout_scale := viewport_size.y / 1440.0
+	var row_label_w := 310.0 if compact else 580.0 * layout_scale
+	var row_slider_w := 346.0 if compact else 420.0 * layout_scale
+	var row_value_w := 126.0 if compact else 170.0 * layout_scale
+	var row_height := 56.0 if compact else 76.0 * layout_scale
+	var reset_height := 50.0 if compact else 64.0
+	var reset := _settings_v6_make_action_button("Сбросить игровые настройки", "SettingsResetGameButton", 392.0, reset_height)
+	_settings_fit_kit_row([reset], 392.0, reset_height, 48.0, 0.72)
+	for row_index in range(rows.size()):
+		var row_config: Dictionary = rows[row_index]
+		var key := str(row_config["key"])
+		var suffix := str(row_config["suffix"])
+		var spec: Dictionary = game.GAMEPLAY_SANDBOX.SPECS[key]
+		var row: Control = Control.new() if compact else HBoxContainer.new()
+		row.name = "SettingsSandboxRow_%s" % suffix
+		row.size_flags_horizontal = Control.SIZE_SHRINK_BEGIN
+		row.custom_minimum_size = Vector2(842.0 if compact else 0.0, row_height)
+		if not compact:
+			(row as HBoxContainer).add_theme_constant_override("separation", int(roundf(16.0 * s)))
+		content.add_child(row)
+		if compact:
+			var compact_row_y: float = float([142.0, 206.0, 278.0, 342.0, 406.0][row_index])
+			_settings_game_place_control(row, Rect2(10.0, compact_row_y, 842.0, 56.0))
+		else:
+			var row_inset := Control.new()
+			row_inset.name = "SettingsSandboxInset_%s" % suffix
+			row_inset.custom_minimum_size.x = 16.0
+			row_inset.mouse_filter = Control.MOUSE_FILTER_IGNORE
+			row.add_child(row_inset)
+
+		var row_label := Label.new()
+		row_label.name = "SettingsSandboxLabel_%s" % suffix
+		row_label.text = str(row_config["label"])
+		row_label.custom_minimum_size = Vector2(roundf(row_label_w), roundf(row_height))
+		row_label.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
+		row_label.add_theme_font_size_override("font_size", SemanticTypography.resolve_fixed(
+			SemanticTypography.ROLE_FIELD,
+			_settings_v6_font(SemanticTypography.ROLE_FIELD, 24.0, s),
+			SemanticTypography.role_min(SemanticTypography.ROLE_FIELD),
+			SemanticTypography.role_max(SemanticTypography.ROLE_FIELD)
+		))
+		row_label.add_theme_color_override("font_color", SETTINGS_V6_TEXT)
+		row.add_child(row_label)
+		if compact:
+			_settings_game_place_control(row_label, Rect2(16.0, 8.0, 310.0, 40.0))
+
+		var slider := HSlider.new()
+		slider.name = "SettingsSandboxSlider_%s" % suffix
+		slider.min_value = float(spec["min"])
+		slider.max_value = float(spec["max"])
+		slider.step = float(spec["step"])
+		slider.value = float(configured[key])
+		slider.custom_minimum_size = Vector2(roundf(row_slider_w), roundf(40.0 if compact else 56.0 * layout_scale))
+		slider.size_flags_horizontal = Control.SIZE_SHRINK_BEGIN
+		slider.size_flags_vertical = Control.SIZE_SHRINK_CENTER
+		slider.focus_mode = Control.FOCUS_ALL
+		_settings_v6_style_slider(slider, s)
+		row.add_child(slider)
+		if compact:
+			_settings_game_place_control(slider, Rect2(342.0, 8.0, 346.0, 40.0))
+
+		var chip := PanelContainer.new()
+		chip.name = "SettingsSandboxValueChip_%s" % suffix
+		chip.custom_minimum_size = Vector2(roundf(row_value_w), roundf(40.0 if compact else 56.0 * layout_scale))
+		chip.size_flags_vertical = Control.SIZE_SHRINK_CENTER
+		chip.add_theme_stylebox_override("panel", _settings_v6_texture_box(
+			SETTINGS_V6_VALUE_CHIP_PATH, Vector4(16.0, 14.0, 16.0, 14.0), Vector4(6.0 * s, 2.0 * s, 6.0 * s, 2.0 * s)))
+		row.add_child(chip)
+		if compact:
+			_settings_game_place_control(chip, Rect2(702.0, 8.0, 126.0, 40.0))
+		var value_label := Label.new()
+		value_label.name = "SettingsSandboxValue_%s" % suffix
+		value_label.text = "%.1f×" % slider.value
+		value_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+		value_label.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
+		value_label.add_theme_font_size_override("font_size", SemanticTypography.resolve_fixed(
+			SemanticTypography.ROLE_VALUE,
+			_settings_v6_font(SemanticTypography.ROLE_VALUE, 22.0, s),
+			SemanticTypography.role_min(SemanticTypography.ROLE_VALUE),
+			SemanticTypography.role_max(SemanticTypography.ROLE_VALUE)
+		))
+		value_label.add_theme_color_override("font_color", SETTINGS_V6_AMBER)
+		chip.add_child(value_label)
+		sliders[key] = slider
+		value_labels[key] = value_label
+		slider_order.append(slider)
+
+		slider.value_changed.connect(func(value: float) -> void:
+			game.set_sandbox_multiplier(key, value, true)
+			_refresh_settings_game_page(status, warning, reset, sliders, value_labels)
+		)
+
+	reset.size_flags_horizontal = Control.SIZE_SHRINK_END
+	reset.pressed.connect(func() -> void:
+		game.reset_sandbox_settings(true)
+		_refresh_settings_game_page(status, warning, reset, sliders, value_labels)
+	)
+	content.add_child(reset)
+	if compact:
+		# The semantic action font makes the textured button's measured minimum
+		# three pixels taller than its authored 50px slot.  Lift the slot by that
+		# exact amount so follow_focus reveals the complete focus plate at the
+		# bottom scroll extent without entering the Atlas ornament below it.
+		_settings_game_place_control(reset, Rect2(446.0, 467.0, 392.0, 50.0))
+	_refresh_settings_game_page(status, warning, reset, sliders, value_labels)
+	game_tab.set_meta("settings_game_sliders", slider_order)
+	game_tab.set_meta("settings_game_reset", reset)
+	return game_tab
+
+
+func _settings_game_place_control(control: Control, rect: Rect2) -> void:
+	control.set_anchors_preset(Control.PRESET_TOP_LEFT)
+	control.position = rect.position
+	control.size = rect.size
+	control.custom_minimum_size = rect.size
+
+
+func _wire_settings_game_focus(tabs: TabContainer, game_tab: Control, compact: bool) -> void:
+	var tab_buttons: Array[Button] = []
+	for tab_index in range(4):
+		var button := tabs.get_parent().get_parent().get_parent().find_child("SettingsTabButton_%d" % tab_index, true, false) as Button
+		if button != null:
+			tab_buttons.append(button)
+	if tab_buttons.size() != 4:
+		return
+	for tab_index in range(tab_buttons.size()):
+		var current := tab_buttons[tab_index]
+		if compact:
+			var other_column := tab_index ^ 1
+			var other_row := (tab_index + 2) % 4
+			current.focus_neighbor_left = tab_buttons[other_column].get_path()
+			current.focus_neighbor_right = tab_buttons[other_column].get_path()
+			current.focus_neighbor_top = tab_buttons[other_row].get_path()
+			current.focus_neighbor_bottom = tab_buttons[other_row].get_path()
+		else:
+			current.focus_neighbor_left = tab_buttons[(tab_index - 1 + 4) % 4].get_path()
+			current.focus_neighbor_right = tab_buttons[(tab_index + 1) % 4].get_path()
+			current.focus_neighbor_top = current.get_path()
+
+	var sliders: Array = game_tab.get_meta("settings_game_sliders", [])
+	var reset := game_tab.get_meta("settings_game_reset", null) as Button
+	if sliders.size() != 5 or reset == null:
+		return
+	var first_slider := sliders[0] as HSlider
+	var last_slider := sliders[sliders.size() - 1] as HSlider
+	tab_buttons[3].focus_neighbor_bottom = first_slider.get_path()
+	for slider_index in range(sliders.size()):
+		var slider := sliders[slider_index] as HSlider
+		slider.focus_neighbor_top = tab_buttons[3].get_path() if slider_index == 0 else (sliders[slider_index - 1] as HSlider).get_path()
+		slider.focus_neighbor_bottom = reset.get_path() if slider_index == sliders.size() - 1 else (sliders[slider_index + 1] as HSlider).get_path()
+	reset.focus_neighbor_top = last_slider.get_path()
+	reset.focus_neighbor_bottom = tab_buttons[3].get_path()
+	reset.focus_neighbor_left = reset.get_path()
+	reset.focus_neighbor_right = reset.get_path()
+
+
+func _refresh_settings_game_page(status: Label, warning: Label, reset: Button, sliders: Dictionary, value_labels: Dictionary) -> void:
+	var snapshot: Dictionary = game.sandbox_snapshot()
+	var neutral: bool = bool(game.sandbox_settings_are_neutral())
+	status.text = "Обычный режим · 1.0×" if neutral else "Песочница активна"
+	status.add_theme_color_override("font_color", Color(0.64, 0.86, 0.58, 1.0) if neutral else SETTINGS_V6_AMBER)
+	warning.text = "Изменения применятся только к следующему забегу." if neutral else "Обычная прогрессия, достижения и release-balance evidence отключены."
+	warning.add_theme_color_override("font_color", SETTINGS_V6_MUTED if neutral else Color(1.0, 0.68, 0.36, 1.0))
+	if reset != null:
+		reset.disabled = neutral
+	for key in sliders:
+		var slider := sliders[key] as HSlider
+		var value_label := value_labels.get(key) as Label
+		var value := float(snapshot.get(key, 1.0))
+		if slider != null:
+			slider.set_value_no_signal(value)
+		if value_label != null:
+			value_label.text = "%.1f×" % value
+
+
 func _add_settings_control_row(parent: VBoxContainer, title: String, control: Control, s := 1.0) -> HBoxContainer:
-	# v5: единая двухколоночная сетка label(380)|control — колонки выровнены по
+	# v6: единая двухколоночная сетка label(380)|control — колонки выровнены по
 	# всем вкладкам, контролы фиксированных размеров, ничего не тянется.
 	var row := HBoxContainer.new()
 	row.name = "SettingsRow_%s" % title.replace(" ", "_")
@@ -5544,10 +7653,15 @@ func _add_settings_control_row(parent: VBoxContainer, title: String, control: Co
 
 	var label := Label.new()
 	label.text = title
-	label.custom_minimum_size = Vector2(roundf(SETTINGS_V5_LABEL_COL.x * s), roundf(SETTINGS_V5_LABEL_COL.y * s))
+	label.custom_minimum_size = Vector2(roundf(SETTINGS_V6_LABEL_COL.x * s), roundf(SETTINGS_V6_LABEL_COL.y * s))
 	label.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
-	label.add_theme_font_size_override("font_size", _settings_v5_font(26.0, s))
-	label.add_theme_color_override("font_color", SETTINGS_V5_TEXT)
+	label.add_theme_font_size_override("font_size", SemanticTypography.resolve_fixed(
+		SemanticTypography.ROLE_FIELD,
+		_settings_v6_font(SemanticTypography.ROLE_FIELD, 26.0, s),
+		SemanticTypography.role_min(SemanticTypography.ROLE_FIELD),
+		SemanticTypography.role_max(SemanticTypography.ROLE_FIELD)
+	))
+	label.add_theme_color_override("font_color", SETTINGS_V6_TEXT)
 	row.add_child(label)
 	control.size_flags_horizontal = Control.SIZE_SHRINK_BEGIN
 	control.size_flags_vertical = Control.SIZE_SHRINK_CENTER
@@ -5556,13 +7670,34 @@ func _add_settings_control_row(parent: VBoxContainer, title: String, control: Co
 
 
 func _add_controls_section_header(parent: VBoxContainer, title: String, s := 1.0) -> Label:
-	# SCRUM-816: заголовок секции вкладки «Управление» (Устройство/Клавиатура/Геймпад).
+	# v6: заголовок секции в атласном золоте + латунная линия до правого края —
+	# секции «Устройство/Клавиатура/Геймпад» читаются как главы одного свитка.
+	var row := HBoxContainer.new()
+	row.name = "SettingsSectionRow_%s" % title.replace(" ", "_")
+	row.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	row.add_theme_constant_override("separation", int(roundf(18.0 * s)))
+	parent.add_child(row)
 	var header := Label.new()
 	header.name = "SettingsSectionHeader_%s" % title.replace(" ", "_")
 	header.text = title
-	header.add_theme_font_size_override("font_size", _settings_v5_font(28.0, s))
-	header.add_theme_color_override("font_color", SETTINGS_V5_TEXT_BRIGHT)
-	parent.add_child(header)
+	header.add_theme_font_size_override("font_size", SemanticTypography.resolve_fixed(
+		SemanticTypography.ROLE_SECTION,
+		_settings_v6_font(SemanticTypography.ROLE_SECTION, 28.0, s),
+		SemanticTypography.role_min(SemanticTypography.ROLE_SECTION),
+		SemanticTypography.role_max(SemanticTypography.ROLE_SECTION)
+	))
+	header.add_theme_color_override("font_color", SETTINGS_V6_GOLD)
+	header.add_theme_color_override("font_shadow_color", Color(0.0, 0.0, 0.0, 0.55))
+	header.add_theme_constant_override("shadow_offset_x", maxi(1, int(roundf(1.5 * s))))
+	header.add_theme_constant_override("shadow_offset_y", maxi(1, int(roundf(1.5 * s))))
+	row.add_child(header)
+	var line := ColorRect.new()
+	line.color = SETTINGS_V6_BRONZE_LINE
+	line.custom_minimum_size = Vector2(0.0, maxf(2.0, roundf(2.0 * s)))
+	line.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	line.size_flags_vertical = Control.SIZE_SHRINK_CENTER
+	line.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	row.add_child(line)
 	return header
 
 
@@ -5576,10 +7711,15 @@ func _add_volume_row(box: VBoxContainer, title: String, volume_key: String, enab
 
 	var label := Label.new()
 	label.text = title
-	label.custom_minimum_size = Vector2(roundf(SETTINGS_V5_LABEL_COL.x * s), roundf(SETTINGS_V5_LABEL_COL.y * s))
+	label.custom_minimum_size = Vector2(roundf(SETTINGS_V6_LABEL_COL.x * s), roundf(SETTINGS_V6_LABEL_COL.y * s))
 	label.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
-	label.add_theme_font_size_override("font_size", _settings_v5_font(26.0, s))
-	label.add_theme_color_override("font_color", SETTINGS_V5_TEXT)
+	label.add_theme_font_size_override("font_size", SemanticTypography.resolve_fixed(
+		SemanticTypography.ROLE_FIELD,
+		_settings_v6_font(SemanticTypography.ROLE_FIELD, 26.0, s),
+		SemanticTypography.role_min(SemanticTypography.ROLE_FIELD),
+		SemanticTypography.role_max(SemanticTypography.ROLE_FIELD)
+	))
+	label.add_theme_color_override("font_color", SETTINGS_V6_TEXT)
 	row.add_child(label)
 
 	var slider := HSlider.new()
@@ -5592,7 +7732,7 @@ func _add_volume_row(box: VBoxContainer, title: String, volume_key: String, enab
 	slider.size_flags_horizontal = Control.SIZE_SHRINK_BEGIN
 	slider.size_flags_vertical = Control.SIZE_SHRINK_CENTER
 	slider.focus_mode = Control.FOCUS_ALL
-	_settings_v5_style_slider(slider, s)
+	_settings_v6_style_slider(slider, s)
 	slider.value = float(game.audio_settings.get(volume_key, 1.0)) * 100.0
 	slider.value_changed.connect(func(value: float) -> void:
 		game.audio_settings[volume_key] = value / 100.0
@@ -5605,15 +7745,20 @@ func _add_volume_row(box: VBoxContainer, title: String, volume_key: String, enab
 	chip.name = "VolumeChip_%s" % volume_key
 	chip.custom_minimum_size = Vector2(roundf(96.0 * s), roundf(48.0 * s))
 	chip.size_flags_vertical = Control.SIZE_SHRINK_CENTER
-	chip.add_theme_stylebox_override("panel", _settings_v5_texture_box(
-		SETTINGS_V5_VALUE_CHIP_PATH, Vector4(16.0, 14.0, 16.0, 14.0), Vector4(6.0 * s, 2.0 * s, 6.0 * s, 2.0 * s)))
+	chip.add_theme_stylebox_override("panel", _settings_v6_texture_box(
+		SETTINGS_V6_VALUE_CHIP_PATH, Vector4(16.0, 14.0, 16.0, 14.0), Vector4(6.0 * s, 2.0 * s, 6.0 * s, 2.0 * s)))
 	row.add_child(chip)
 	var value_label := Label.new()
 	value_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	value_label.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
 	value_label.text = "%d%%" % int(slider.value)
-	value_label.add_theme_font_size_override("font_size", _settings_v5_font(24.0, s))
-	value_label.add_theme_color_override("font_color", SETTINGS_V5_AMBER)
+	value_label.add_theme_font_size_override("font_size", SemanticTypography.resolve_fixed(
+		SemanticTypography.ROLE_VALUE,
+		_settings_v6_font(SemanticTypography.ROLE_VALUE, 24.0, s),
+		SemanticTypography.role_min(SemanticTypography.ROLE_VALUE),
+		SemanticTypography.role_max(SemanticTypography.ROLE_VALUE)
+	))
+	value_label.add_theme_color_override("font_color", SETTINGS_V6_AMBER)
 	slider.value_changed.connect(func(value: float) -> void:
 		value_label.text = "%d%%" % int(value)
 	)
@@ -5625,7 +7770,7 @@ func _add_volume_row(box: VBoxContainer, title: String, volume_key: String, enab
 		toggle.button_pressed = bool(game.audio_settings.get(enabled_key, true))
 		toggle.text = "Вкл." if toggle.button_pressed else "Выкл."
 		toggle.size_flags_vertical = Control.SIZE_SHRINK_CENTER
-		_settings_v5_style_checkbox(toggle, s)
+		_settings_v6_style_checkbox(toggle, s)
 		slider.editable = toggle.button_pressed
 		toggle.toggled.connect(func(pressed: bool) -> void:
 			game.audio_settings[enabled_key] = pressed
@@ -5637,69 +7782,138 @@ func _add_volume_row(box: VBoxContainer, title: String, volume_key: String, enab
 		row.add_child(toggle)
 
 
-func _settings_v5_apply_field_theme(button: Button, s: float) -> void:
+func _add_audio_option_row(box: VBoxContainer, title: String, setting_key: String, s := 1.0) -> HBoxContainer:
+	var toggle := CheckBox.new()
+	toggle.name = "AudioToggle_%s" % setting_key
+	toggle.button_pressed = bool(game.audio_settings.get(setting_key, game.GAME_SETTINGS.DEFAULTS.get(setting_key, false)))
+	toggle.text = "Вкл." if toggle.button_pressed else "Выкл."
+	toggle.tooltip_text = title
+	_settings_v6_style_checkbox(toggle, s)
+	toggle.toggled.connect(func(pressed: bool) -> void:
+		game.audio_settings[setting_key] = pressed
+		toggle.text = "Вкл." if pressed else "Выкл."
+		game._apply_audio_settings()
+		game.save_game_settings()
+	)
+	var row := _add_settings_control_row(box, title, toggle, s)
+	row.name = "AudioOptionRow_%s" % setting_key
+	return row
+
+
+func _settings_v6_style_audio_scrollbar(scroll: ScrollContainer, s: float) -> void:
+	var scrollbar := scroll.get_v_scroll_bar()
+	if scrollbar == null:
+		return
+	var track := StyleBoxFlat.new()
+	track.bg_color = Color(0.05, 0.04, 0.03, 0.85)
+	track.set_corner_radius_all(int(roundf(4.0 * s)))
+	track.set_content_margin_all(roundf(2.0 * s))
+	var grabber := StyleBoxFlat.new()
+	grabber.bg_color = Color(0.52, 0.41, 0.24, 0.95)
+	grabber.set_corner_radius_all(int(roundf(4.0 * s)))
+	var grabber_highlight: StyleBoxFlat = grabber.duplicate()
+	grabber_highlight.bg_color = Color(0.78, 0.66, 0.44, 1.0)
+	scrollbar.add_theme_stylebox_override("scroll", track)
+	scrollbar.add_theme_stylebox_override("grabber", grabber)
+	scrollbar.add_theme_stylebox_override("grabber_highlight", grabber_highlight)
+	scrollbar.add_theme_stylebox_override("grabber_pressed", grabber_highlight)
+
+
+func _settings_v6_apply_field_theme(button: Button, s: float) -> void:
+	UIButtonFamily.assign(button, UIButtonFamily.FAMILY_SETTINGS_FIELD)
 	# Врезное поле 560×56×s: дропдауны и кнопки биндингов. Арт — 9-slice
 	# источник 320×56 (углы 1:1, плоская середина тянется по ширине).
-	button.custom_minimum_size = Vector2(roundf(SETTINGS_V5_CONTROL_SIZE.x * s), roundf(SETTINGS_V5_CONTROL_SIZE.y * s))
+	button.custom_minimum_size = Vector2(roundf(SETTINGS_V6_CONTROL_SIZE.x * s), roundf(SETTINGS_V6_CONTROL_SIZE.y * s))
 	button.size_flags_horizontal = Control.SIZE_SHRINK_BEGIN
 	button.mouse_default_cursor_shape = Control.CURSOR_POINTING_HAND
-	button.add_theme_font_size_override("font_size", _settings_v5_font(24.0, s))
-	var content := Vector4(24.0 * s, 6.0 * s, 24.0 * s, 6.0 * s)
+	button.add_theme_font_size_override("font_size", SemanticTypography.resolve_fixed(
+		SemanticTypography.ROLE_ACTION,
+		_settings_v6_font(SemanticTypography.ROLE_ACTION, 24.0, s),
+		SemanticTypography.role_min(SemanticTypography.ROLE_ACTION),
+		SemanticTypography.role_max(SemanticTypography.ROLE_ACTION)
+	))
+	button.clip_text = true
+	button.alignment = HORIZONTAL_ALIGNMENT_CENTER
+	# v6: у арта поля декоративные наконечники ~52px + золотое кольцо капсулы
+	# ~20px с каждого конца — текст держим строго в плоской зоне капсулы,
+	# иначе края длинных опций ложатся на кольцо.
+	var content := Vector4(76.0 * s, 6.0 * s, 76.0 * s, 6.0 * s)
+	if button is OptionButton:
+		# OptionButton резервирует справа зону стрелки (internal margin) и
+		# центрирует текст в остатке — центр уезжает влево, длинные опции
+		# ложатся на кольцо. Компенсируем слева (+20px к базе), справа держим
+		# 76, чтобы стрелка осталась внутри капсулы; вместе с кеглем 22 у
+		# самой длинной опции зазор до кольца ≥25px на 1080p/1440p.
+		content = Vector4(96.0 * s, 6.0 * s, 76.0 * s, 6.0 * s)
+		button.add_theme_font_size_override("font_size", SemanticTypography.resolve_fixed(
+			SemanticTypography.ROLE_ACTION,
+			_settings_v6_font(SemanticTypography.ROLE_ACTION, 22.0, s),
+			SemanticTypography.role_min(SemanticTypography.ROLE_ACTION),
+			SemanticTypography.role_max(SemanticTypography.ROLE_ACTION)
+		))
 	# Арт поля 560×56 — точный дизайн-размер контрола (без 9-slice растяжений).
 	var source_margins := Vector4(12.0, 10.0, 12.0, 10.0)
-	button.add_theme_stylebox_override("normal", _settings_v5_texture_box(SETTINGS_V5_FIELD_PATHS["normal"], source_margins, content))
-	button.add_theme_stylebox_override("hover", _settings_v5_texture_box(SETTINGS_V5_FIELD_PATHS["hover"], source_margins, content))
-	button.add_theme_stylebox_override("pressed", _settings_v5_texture_box(SETTINGS_V5_FIELD_PATHS["pressed"], source_margins, content))
-	button.add_theme_stylebox_override("focus", _settings_v5_texture_box(SETTINGS_V5_FIELD_PATHS["hover"], source_margins, content))
-	button.add_theme_stylebox_override("disabled", _settings_v5_texture_box(SETTINGS_V5_FIELD_PATHS["normal"], source_margins, content))
-	button.add_theme_color_override("font_color", SETTINGS_V5_TEXT)
-	button.add_theme_color_override("font_hover_color", SETTINGS_V5_TEXT_BRIGHT)
-	button.add_theme_color_override("font_pressed_color", SETTINGS_V5_TEXT_BRIGHT)
-	button.add_theme_color_override("font_focus_color", SETTINGS_V5_TEXT_BRIGHT)
-	button.add_theme_color_override("font_disabled_color", SETTINGS_V5_DISABLED)
+	button.add_theme_stylebox_override("normal", _settings_v6_texture_box(SETTINGS_V6_FIELD_PATHS["normal"], source_margins, content))
+	button.add_theme_stylebox_override("hover", _settings_v6_texture_box(SETTINGS_V6_FIELD_PATHS["hover"], source_margins, content))
+	button.add_theme_stylebox_override("pressed", _settings_v6_texture_box(SETTINGS_V6_FIELD_PATHS["pressed"], source_margins, content))
+	button.add_theme_stylebox_override("focus", _settings_v6_texture_box(SETTINGS_V6_FIELD_PATHS["hover"], source_margins, content))
+	button.add_theme_stylebox_override("disabled", _settings_v6_texture_box(SETTINGS_V6_FIELD_PATHS["normal"], source_margins, content))
+	button.add_theme_color_override("font_color", SETTINGS_V6_TEXT)
+	button.add_theme_color_override("font_hover_color", SETTINGS_V6_TEXT_BRIGHT)
+	button.add_theme_color_override("font_pressed_color", SETTINGS_V6_TEXT_BRIGHT)
+	button.add_theme_color_override("font_focus_color", SETTINGS_V6_TEXT_BRIGHT)
+	button.add_theme_color_override("font_disabled_color", SETTINGS_V6_DISABLED)
 	if button is OptionButton:
-		var arrow := _settings_v5_icon(SETTINGS_V5_ARROW_PATH, Vector2(36.0, 36.0), s)
+		# 30px: меньший резерв стрелки оставляет длинным опциям запас от клипа.
+		var arrow := _settings_v6_icon(SETTINGS_V6_ARROW_PATH, Vector2(30.0, 30.0), s)
 		if arrow != null:
 			button.add_theme_icon_override("arrow", arrow)
 		var popup := (button as OptionButton).get_popup()
-		popup.add_theme_font_size_override("font_size", _settings_v5_font(24.0, s))
+		popup.add_theme_font_size_override("font_size", SemanticTypography.resolve_fixed(
+			SemanticTypography.ROLE_FIELD,
+			_settings_v6_font(SemanticTypography.ROLE_FIELD, 24.0, s),
+			SemanticTypography.role_min(SemanticTypography.ROLE_FIELD),
+			SemanticTypography.role_max(SemanticTypography.ROLE_FIELD)
+		))
+		# v6: поп-ап как чип Атласа — тёмный фон, латунная кромка, скругление.
 		var popup_style := StyleBoxFlat.new()
-		popup_style.bg_color = Color(0.086, 0.063, 0.043, 0.98)
-		popup_style.border_color = SETTINGS_V5_GOLD
+		popup_style.bg_color = SETTINGS_V6_POPUP_BG
+		popup_style.border_color = Color(0.52, 0.41, 0.24, 0.90)
 		popup_style.set_border_width_all(maxi(1, int(roundf(2.0 * s))))
+		popup_style.set_corner_radius_all(int(roundf(10.0 * s)))
 		popup_style.set_content_margin_all(roundf(10.0 * s))
 		popup.add_theme_stylebox_override("panel", popup_style)
+		var popup_hover := StyleBoxFlat.new()
+		popup_hover.bg_color = Color(0.30, 0.23, 0.12, 0.85)
+		popup_hover.set_corner_radius_all(int(roundf(8.0 * s)))
+		popup.add_theme_stylebox_override("hover", popup_hover)
+		popup.add_theme_color_override("font_color", SETTINGS_V6_TEXT)
+		popup.add_theme_color_override("font_hover_color", SETTINGS_V6_TEXT_BRIGHT)
 
 
-func _settings_v5_make_action_button(text: String, kind: String, s: float) -> Button:
-	# Кнопка 320×80×s с четырьмя состояниями из отдельных ассетов (без растяжений:
-	# арт 320×80 рисуется в точной пропорции, углы 9-slice 1:1).
-	var button := Button.new()
-	button.text = text
-	button.custom_minimum_size = Vector2(roundf(SETTINGS_V5_ACTION_SIZE.x * s), roundf(SETTINGS_V5_ACTION_SIZE.y * s))
-	button.mouse_default_cursor_shape = Control.CURSOR_POINTING_HAND
-	button.add_theme_font_size_override("font_size", _settings_v5_font(26.0, s))
-	var paths: Dictionary = SETTINGS_V5_BTN_PATHS[kind]
-	var content := Vector4(24.0 * s, 10.0 * s, 24.0 * s, 12.0 * s)
-	var source_margins := Vector4(30.0, 26.0, 30.0, 28.0)
-	button.add_theme_stylebox_override("normal", _settings_v5_texture_box(paths["normal"], source_margins, content))
-	button.add_theme_stylebox_override("hover", _settings_v5_texture_box(paths["hover"], source_margins, content))
-	button.add_theme_stylebox_override("pressed", _settings_v5_texture_box(paths["pressed"], source_margins, content))
-	button.add_theme_stylebox_override("focus", _settings_v5_texture_box(paths["hover"], source_margins, content))
-	button.add_theme_stylebox_override("disabled", _settings_v5_texture_box(paths["disabled"], source_margins, content))
-	button.add_theme_color_override("font_color", SETTINGS_V5_TEXT_BRIGHT if kind == "primary" else SETTINGS_V5_TEXT)
-	button.add_theme_color_override("font_hover_color", Color(1.0, 1.0, 0.94, 1.0))
-	button.add_theme_color_override("font_pressed_color", SETTINGS_V5_TEXT)
-	button.add_theme_color_override("font_focus_color", Color(1.0, 1.0, 0.94, 1.0))
-	button.add_theme_color_override("font_disabled_color", SETTINGS_V5_DISABLED)
+func _settings_v6_make_action_button(text: String, button_name: String, width: float, height: float) -> Button:
+	# SCRUM-879: кнопки-действия настроек — глобальный кит (Правило 2, как экран
+	# «Атлас героев»): _make_button + _set_action_button_size. Имя ставим ДО
+	# применения размера: маппинг текстур кита (_text_button_unique_id /
+	# _button_asset_type) читает name+size. Прежние ui_settings_v6_btn_* стили
+	# не используются; disabled-состояние (Apply) кит поддерживает.
+	var button := _make_button(text)
+	button.name = button_name
+	_set_action_button_size(button, width, height)
 	return button
 
 
-func _settings_v5_style_checkbox(toggle: CheckBox, s: float) -> void:
+func _settings_v6_style_checkbox(toggle: CheckBox, s: float) -> void:
+	UIButtonFamily.assign(toggle, "settings_toggle")
 	toggle.mouse_default_cursor_shape = Control.CURSOR_POINTING_HAND
-	toggle.add_theme_font_size_override("font_size", _settings_v5_font(24.0, s))
-	var unchecked := _settings_v5_icon(SETTINGS_V5_CHECKBOX_OFF_PATH, Vector2(52.0, 52.0), s)
-	var checked := _settings_v5_icon(SETTINGS_V5_CHECKBOX_ON_PATH, Vector2(52.0, 52.0), s)
+	toggle.add_theme_font_size_override("font_size", SemanticTypography.resolve_fixed(
+		SemanticTypography.ROLE_ACTION,
+		_settings_v6_font(SemanticTypography.ROLE_ACTION, 24.0, s),
+		SemanticTypography.role_min(SemanticTypography.ROLE_ACTION),
+		SemanticTypography.role_max(SemanticTypography.ROLE_ACTION)
+	))
+	var unchecked := _settings_v6_icon(SETTINGS_V6_CHECKBOX_OFF_PATH, Vector2(52.0, 52.0), s)
+	var checked := _settings_v6_icon(SETTINGS_V6_CHECKBOX_ON_PATH, Vector2(52.0, 52.0), s)
 	if unchecked != null:
 		toggle.add_theme_icon_override("unchecked", unchecked)
 		toggle.add_theme_icon_override("unchecked_disabled", unchecked)
@@ -5707,19 +7921,26 @@ func _settings_v5_style_checkbox(toggle: CheckBox, s: float) -> void:
 		toggle.add_theme_icon_override("checked", checked)
 		toggle.add_theme_icon_override("checked_disabled", checked)
 	toggle.add_theme_constant_override("h_separation", int(roundf(14.0 * s)))
-	toggle.add_theme_color_override("font_color", SETTINGS_V5_TEXT)
-	toggle.add_theme_color_override("font_hover_color", SETTINGS_V5_TEXT_BRIGHT)
-	toggle.add_theme_color_override("font_pressed_color", SETTINGS_V5_TEXT_BRIGHT)
+	toggle.add_theme_color_override("font_color", SETTINGS_V6_TEXT)
+	toggle.add_theme_color_override("font_hover_color", SETTINGS_V6_TEXT_BRIGHT)
+	toggle.add_theme_color_override("font_pressed_color", SETTINGS_V6_TEXT_BRIGHT)
+	# v6: видимое фокус-кольцо для геймпад-навигации (латунная рамка).
+	var focus_ring := StyleBoxFlat.new()
+	focus_ring.bg_color = Color(0.0, 0.0, 0.0, 0.0)
+	focus_ring.border_color = Color(0.78, 0.66, 0.44, 0.85)
+	focus_ring.set_border_width_all(maxi(1, int(roundf(2.0 * s))))
+	focus_ring.set_corner_radius_all(int(roundf(8.0 * s)))
+	toggle.add_theme_stylebox_override("focus", focus_ring)
 
 
-func _settings_v5_style_slider(slider: HSlider, s: float) -> void:
+func _settings_v6_style_slider(slider: HSlider, s: float) -> void:
 	slider.mouse_default_cursor_shape = Control.CURSOR_POINTING_HAND
 	var groove_h := maxf(8.0, 9.0 * s)
-	var track := _settings_v5_texture_box(SETTINGS_V5_SLIDER_TRACK_PATH, Vector4(8.0, 5.0, 8.0, 5.0), Vector4.ZERO)
+	var track := _settings_v6_texture_box(SETTINGS_V6_SLIDER_TRACK_PATH, Vector4(8.0, 5.0, 8.0, 5.0), Vector4.ZERO)
 	if track is StyleBoxTexture:
 		track.content_margin_top = groove_h
 		track.content_margin_bottom = groove_h
-	var fill := _settings_v5_texture_box(SETTINGS_V5_SLIDER_FILL_PATH, Vector4(6.0, 4.0, 6.0, 4.0), Vector4.ZERO)
+	var fill := _settings_v6_texture_box(SETTINGS_V6_SLIDER_FILL_PATH, Vector4(6.0, 4.0, 6.0, 4.0), Vector4.ZERO)
 	if fill is StyleBoxTexture:
 		fill.content_margin_top = maxf(8.0, groove_h - 2.0 * s)
 		fill.content_margin_bottom = maxf(8.0, groove_h - 2.0 * s)
@@ -5727,15 +7948,21 @@ func _settings_v5_style_slider(slider: HSlider, s: float) -> void:
 	slider.add_theme_stylebox_override("grabber_area", fill)
 	slider.add_theme_stylebox_override("grabber_area_highlight", fill)
 	slider.add_theme_constant_override("center_grabber", 1)
-	var gem := _settings_v5_icon(SETTINGS_V5_SLIDER_GEM_PATH, Vector2(36.0, 36.0), s)
+	var gem := _settings_v6_icon(SETTINGS_V6_SLIDER_GEM_PATH, Vector2(36.0, 36.0), s)
 	if gem != null:
 		slider.add_theme_icon_override("grabber", gem)
-		slider.add_theme_icon_override("grabber_highlight", gem)
 		slider.add_theme_icon_override("grabber_disabled", gem)
+	# v6: под фокусом/hover гем чуть крупнее — заметно с геймпада.
+	var gem_focus := _settings_v6_icon(SETTINGS_V6_SLIDER_GEM_PATH, Vector2(40.0, 40.0), s)
+	if gem_focus != null:
+		slider.add_theme_icon_override("grabber_highlight", gem_focus)
 
 
 func _reset_audio_to_defaults() -> void:
-	for key in ["master_volume", "music_volume", "sfx_volume", "music_enabled", "sfx_enabled"]:
+	for key in [
+		"master_volume", "music_volume", "sfx_volume", "ui_volume",
+		"music_enabled", "sfx_enabled", "mute_when_unfocused", "low_hp_warning_enabled",
+	]:
 		game.audio_settings[key] = game.GAME_SETTINGS.DEFAULTS[key]
 	game.audio_settings["master_zero_intent"] = false
 	game._apply_audio_settings()
@@ -5755,141 +7982,138 @@ func _show_pause_menu(force := false) -> void:
 	game.pause_overlay_layer.process_mode = Node.PROCESS_MODE_ALWAYS
 	game.add_child(game.pause_overlay_layer)
 	game.pause_stats_menu = null
-	if _should_open_pause_dossier_first():
-		_show_pause_dossier_menu()
-	else:
-		_build_run_pause_menu()
+	# SCRUM-890: Esc в любой момент забега открывает сразу досье героя — промежуточное
+	# простое меню паузы (RunPauseMenu) удалено, его функции живут в шапке досье.
+	_show_pause_dossier_menu()
 
 
-# SCRUM-484: координатная спека @2560×1440 — пауза в забеге (модалка).
-# Панель _pause_end_modal_display_size("pause"): source 986×900, высота клампится в
-# [520,820] → @2K = 898×820, CenterContainer центрирует. Content margins (74,94,74,86)
-# скейлятся ×0.911 → safe-area ≈ (67,86,67,78). Контент: заголовок, подзаголовок,
-# 5 кнопок 280×60 (separation 8). Всё внутри safe-area без наслоений.
-const PM_PANEL_2K := Rect2(831, 310, 898, 820)
-const PM_SAFE_2K := Rect2(898, 396, 764, 656)
-const PM_TITLE_2K := Rect2(898, 509, 764, 58)
-const PM_SUBTITLE_2K := Rect2(898, 575, 764, 24)
-const PM_BTN_CONTINUE_2K := Rect2(1140, 607, 280, 60)
-const PM_BTN_DOSSIER_2K := Rect2(1140, 675, 280, 60)
-const PM_BTN_SETTINGS_2K := Rect2(1140, 743, 280, 60)
-const PM_BTN_ENDRUN_2K := Rect2(1140, 811, 280, 60)
-const PM_BTN_MAINMENU_2K := Rect2(1140, 879, 280, 60)
-
-
-func _build_run_pause_menu() -> void:
+# SCRUM-883: модалка подтверждения «Завершить забег» из паузы — тот же стиль, что у
+# quit-диалога главного меню: плотный atlas-чип, золотой титул, парные кнопки 240×72
+# на нативной continue_240x72 family, стартовый фокус на безопасной «Отмене»,
+# Esc/B и клик мимо панели отменяют только модалку (пауза остаётся).
+func _show_end_run_confirmation_dialog() -> void:
 	if game.pause_overlay_layer == null or not is_instance_valid(game.pause_overlay_layer):
 		return
-	for child in game.pause_overlay_layer.get_children():
-		child.queue_free()
+	if game.pause_overlay_layer.find_child("EndRunConfirmationDialog", true, false) != null:
+		var existing_cancel := game.pause_overlay_layer.find_child("EndRunConfirmCancelButton", true, false) as Button
+		if existing_cancel != null:
+			existing_cancel.grab_focus()
+		return
+
+	var overlay := Control.new()
+	overlay.name = "EndRunConfirmationDialog"
+	overlay.set_anchors_preset(Control.PRESET_FULL_RECT)
+	overlay.process_mode = Node.PROCESS_MODE_ALWAYS
+	overlay.mouse_filter = Control.MOUSE_FILTER_STOP
+	overlay.z_index = 500
+	game.pause_overlay_layer.add_child(overlay)
 
 	var dim := ColorRect.new()
-	dim.name = "RunPauseDim"
+	dim.name = "EndRunConfirmationDim"
 	dim.set_anchors_preset(Control.PRESET_FULL_RECT)
-	dim.color = Color(0.01, 0.015, 0.025, 0.70)
-	game.pause_overlay_layer.add_child(dim)
-
-	var root := Control.new()
-	root.name = "RunPauseMenuRoot"
-	root.set_anchors_preset(Control.PRESET_FULL_RECT)
-	root.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	game.pause_overlay_layer.add_child(root)
+	dim.color = Color(0.0, 0.0, 0.0, 0.55)
+	dim.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	overlay.add_child(dim)
 
 	var panel := PanelContainer.new()
-	panel.name = "RunPauseMenuPanel"
-	var panel_size := _pause_end_modal_display_size("pause")
-	panel.custom_minimum_size = panel_size
-	# SCRUM-486: @2K per-слот фрейм паузы (pm_panel 898×820). Размер панели берётся из
-	# общей _pause_end_modal_display_size (на 2K ≈898×820), но стиль — собственный pm_panel,
-	# чтобы НЕ трогать общий PAUSE_END_MODAL_* (его делят победа/смерть).
-	panel.add_theme_stylebox_override("panel", _overhaul_2k_frame_style("pm_panel", panel_size))
-	panel.set_anchors_preset(Control.PRESET_TOP_LEFT)
-	panel.position = _pause_menu_top_left_position(panel_size)
-	panel.size = panel_size
-	root.add_child(panel)
-	root.resized.connect(func() -> void:
-		if panel != null and is_instance_valid(panel):
-			var next_size := _pause_end_modal_display_size("pause")
-			panel.custom_minimum_size = next_size
-			panel.size = next_size
-			panel.position = _pause_menu_top_left_position(next_size)
-	)
+	panel.name = "EndRunConfirmationPanel"
+	panel.anchor_left = 0.5
+	panel.anchor_top = 0.5
+	panel.anchor_right = 0.5
+	panel.anchor_bottom = 0.5
+	panel.offset_left = -300.0
+	panel.offset_top = -170.0
+	panel.offset_right = 300.0
+	panel.offset_bottom = 170.0
+	panel.mouse_filter = Control.MOUSE_FILTER_STOP
+	panel.add_theme_stylebox_override("panel", _atlas_chip_style(0.97, roundf(20.0 * _atlas_ui_scale())))
+	overlay.add_child(panel)
 
 	var box := VBoxContainer.new()
-	box.name = "RunPauseMenuContent"
 	box.alignment = BoxContainer.ALIGNMENT_CENTER
-	box.add_theme_constant_override("separation", 8)
+	box.add_theme_constant_override("separation", 12)
 	panel.add_child(box)
 
-	var title := Label.new()
-	title.name = "RunPauseMenuTitle"
-	title.text = "Пауза"
-	title.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	title.add_theme_font_size_override("font_size", _readable_font_size(44))
-	title.add_theme_color_override("font_color", Color(0.96, 0.90, 0.68, 1.0))
-	box.add_child(title)
+	var title_label := Label.new()
+	title_label.name = "EndRunConfirmationTitle"
+	title_label.text = "Завершить забег?"
+	title_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	title_label.add_theme_font_size_override("font_size", _readable_font_size(SemanticTypography.ROLE_TITLE, 34))
+	title_label.add_theme_color_override("font_color", Color(0.96, 0.90, 0.68, 1.0))
+	box.add_child(title_label)
 
-	var subtitle := Label.new()
-	subtitle.name = "RunPauseMenuSubtitle"
-	subtitle.text = "Забег поставлен на паузу"
-	subtitle.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	subtitle.add_theme_font_size_override("font_size", _readable_font_size(16))
-	subtitle.add_theme_color_override("font_color", Color(0.74, 0.82, 0.90, 1.0))
-	box.add_child(subtitle)
+	var subtitle_label := Label.new()
+	subtitle_label.name = "EndRunConfirmationSubtitle"
+	subtitle_label.text = "Текущий забег закончится, и будет подведён итог. Продолжить?"
+	subtitle_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	subtitle_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	subtitle_label.add_theme_font_size_override("font_size", SemanticTypography.resolve_fixed(
+		SemanticTypography.ROLE_CAPTION,
+		_readable_font_size(SemanticTypography.ROLE_CAPTION, 16),
+		SemanticTypography.role_min(SemanticTypography.ROLE_CAPTION),
+		SemanticTypography.role_max(SemanticTypography.ROLE_CAPTION)
+	))
+	subtitle_label.add_theme_color_override("font_color", Color(0.90, 0.88, 0.78, 1.0))
+	box.add_child(subtitle_label)
 
-	# SCRUM-579: 5 кнопок паузы переодеты в выделенный pm_btn @2K-фрейм (280×60),
-	# нарисованный РОВНО под слот (9-slice-safe) — единый дарк-фэнтези стиль с панелью pm_panel,
-	# вместо общего minimal-metal standard-кнопочного фрейма.
-	var continue_button := _make_button("Продолжить")
-	continue_button.name = "RunPauseContinueButton"
-	_set_action_button_size(continue_button, 280.0, 60.0)
-	_apply_overhaul_2k_button_theme(continue_button, "pm_btn", PM_BTN_CONTINUE_2K.size)
-	continue_button.pressed.connect(_resume_game)
-	box.add_child(continue_button)
+	var button_row := HBoxContainer.new()
+	button_row.name = "EndRunConfirmationButtons"
+	button_row.alignment = BoxContainer.ALIGNMENT_CENTER
+	button_row.custom_minimum_size = Vector2(0.0, END_RUN_CONFIRM_BUTTON_SIZE.y)
+	button_row.size_flags_vertical = Control.SIZE_SHRINK_CENTER
+	button_row.add_theme_constant_override("separation", 18)
+	box.add_child(button_row)
 
-	var dossier_button := _make_button("Досье персонажа")
-	dossier_button.name = "RunPauseDossierButton"
-	_set_action_button_size(dossier_button, 280.0, 60.0)
-	_apply_overhaul_2k_button_theme(dossier_button, "pm_btn", PM_BTN_DOSSIER_2K.size)
-	dossier_button.pressed.connect(_show_pause_dossier_menu)
-	box.add_child(dossier_button)
+	var confirm_button := _make_button("Завершить")
+	confirm_button.name = "EndRunConfirmAcceptButton"
+	_set_action_button_size(confirm_button, END_RUN_CONFIRM_BUTTON_SIZE.x, END_RUN_CONFIRM_BUTTON_SIZE.y)
+	_apply_fantasy_button_theme(confirm_button, "default", END_RUN_CONFIRM_BUTTON_FAMILY)
+	confirm_button.autowrap_mode = TextServer.AUTOWRAP_OFF
+	confirm_button.size_flags_vertical = Control.SIZE_SHRINK_CENTER
+	# Диалог живёт в pause_overlay_layer и умрёт вместе с ним при _clear_ui завершения.
+	confirm_button.pressed.connect(_end_current_run_by_player)
+	button_row.add_child(confirm_button)
 
-	var settings_button := _make_button("Настройки")
-	settings_button.name = "RunPauseSettingsButton"
-	_set_action_button_size(settings_button, 280.0, 60.0)
-	_apply_overhaul_2k_button_theme(settings_button, "pm_btn", PM_BTN_SETTINGS_2K.size)
-	settings_button.pressed.connect(func() -> void:
-		_show_settings_menu(SETTINGS_RETURN_RUN_PAUSE)
+	var cancel_button := _make_button("Отмена")
+	cancel_button.name = "EndRunConfirmCancelButton"
+	_set_action_button_size(cancel_button, END_RUN_CONFIRM_BUTTON_SIZE.x, END_RUN_CONFIRM_BUTTON_SIZE.y)
+	_apply_fantasy_button_theme(cancel_button, "default", END_RUN_CONFIRM_BUTTON_FAMILY)
+	cancel_button.autowrap_mode = TextServer.AUTOWRAP_OFF
+	cancel_button.size_flags_vertical = Control.SIZE_SHRINK_CENTER
+	cancel_button.pressed.connect(_cancel_end_run_confirmation_dialog)
+	button_row.add_child(cancel_button)
+
+	# Полное 4-стороннее замыкание фокуса: под модалкой вертикальная колонна кнопок
+	# паузы, стрелки не должны уводить фокус за пределы диалога.
+	confirm_button.focus_neighbor_left = cancel_button.get_path()
+	confirm_button.focus_neighbor_right = cancel_button.get_path()
+	confirm_button.focus_neighbor_top = cancel_button.get_path()
+	confirm_button.focus_neighbor_bottom = cancel_button.get_path()
+	cancel_button.focus_neighbor_left = confirm_button.get_path()
+	cancel_button.focus_neighbor_right = confirm_button.get_path()
+	cancel_button.focus_neighbor_top = confirm_button.get_path()
+	cancel_button.focus_neighbor_bottom = confirm_button.get_path()
+	cancel_button.grab_focus()
+
+	overlay.gui_input.connect(func(event: InputEvent) -> void:
+		if event is InputEventMouseButton and event.pressed and event.button_index == MOUSE_BUTTON_LEFT:
+			if not panel.get_global_rect().has_point((event as InputEventMouseButton).global_position):
+				_cancel_end_run_confirmation_dialog()
 	)
-	box.add_child(settings_button)
-
-	var end_run_button := _make_button("Покинуть забег")
-	end_run_button.name = "RunPauseEndRunButton"
-	_set_action_button_size(end_run_button, 280.0, 60.0)
-	_apply_overhaul_2k_button_theme(end_run_button, "pm_btn", PM_BTN_ENDRUN_2K.size)
-	end_run_button.pressed.connect(_end_current_run_by_player)
-	box.add_child(end_run_button)
-
-	var main_menu_button := _make_button("Главное меню")
-	main_menu_button.name = "RunPauseMainMenuButton"
-	_set_action_button_size(main_menu_button, 280.0, 60.0)
-	_apply_overhaul_2k_button_theme(main_menu_button, "pm_btn", PM_BTN_MAINMENU_2K.size)
-	main_menu_button.pressed.connect(_quit_current_run)
-	box.add_child(main_menu_button)
-
-	# SCRUM-812: вертикальное меню паузы проходимо с геймпада/стрелок, стартовый
-	# фокус — «Продолжить»; ui_cancel (B/Esc) продолжает игру (см. main._input).
-	_wire_run_ui_focus([
-		continue_button, dossier_button, settings_button, end_run_button, main_menu_button,
-	], false, [], continue_button)
 
 
-func _pause_menu_top_left_position(panel_size: Vector2) -> Vector2:
-	var viewport_size: Vector2 = game.get_viewport().get_visible_rect().size
-	var margin := clampf(viewport_size.y * 0.025, 18.0, 28.0)
-	var max_x := maxf(margin, viewport_size.x - panel_size.x - margin)
-	var max_y := maxf(margin, viewport_size.y - panel_size.y - margin)
-	return Vector2(minf(margin, max_x), minf(margin, max_y))
+# Возвращает true, если модалка подтверждения была открыта и закрыта этим вызовом.
+func _cancel_end_run_confirmation_dialog() -> bool:
+	if game.pause_overlay_layer == null or not is_instance_valid(game.pause_overlay_layer):
+		return false
+	var overlay: Node = game.pause_overlay_layer.find_child("EndRunConfirmationDialog", true, false)
+	if overlay == null:
+		return false
+	overlay.queue_free()
+	var end_run_button := game.pause_overlay_layer.find_child("PauseEndRunButton", true, false) as Button
+	if end_run_button != null and is_instance_valid(end_run_button):
+		end_run_button.grab_focus()
+	return true
 
 
 func _show_pause_dossier_menu() -> void:
@@ -5898,6 +8122,9 @@ func _show_pause_dossier_menu() -> void:
 	for child in game.pause_overlay_layer.get_children():
 		child.queue_free()
 
+	# SCRUM-890: досье может быть первым открытым UI забега — гарантируем
+	# геймпад-биндинги ui_accept/ui_cancel (B = «Продолжить» через main._input).
+	_ensure_run_ui_gamepad_bindings()
 	game.pause_stats_menu = game.PAUSE_STATS_MENU_SCENE.instantiate() as Control
 	game.pause_overlay_layer.add_child(game.pause_stats_menu)
 	if game.pause_stats_menu.has_method("setup"):
@@ -5906,6 +8133,9 @@ func _show_pause_dossier_menu() -> void:
 	game.pause_stats_menu.settings_requested.connect(func() -> void:
 		_show_settings_menu(SETTINGS_RETURN_RUN_PAUSE)
 	)
+	# SCRUM-890: «Завершить забег» из шапки досье открывает модалку SCRUM-883
+	# (EndRunConfirmationDialog в pause_overlay_layer), а не движковый фолбэк сцены.
+	game.pause_stats_menu.set("end_run_confirm_handler", Callable(self, "_show_end_run_confirmation_dialog"))
 	game.pause_stats_menu.end_run_confirmed.connect(_end_current_run_by_player)
 	game.pause_stats_menu.main_menu_requested.connect(_quit_current_run)
 
@@ -5914,18 +8144,15 @@ func _is_run_pause_overlay_open() -> bool:
 	return game.pause_overlay_layer != null and is_instance_valid(game.pause_overlay_layer)
 
 
-func _should_open_pause_dossier_first() -> bool:
-	if not game.combat_active:
-		return false
+func _is_settings_screen_open() -> bool:
 	if game.ui_layer == null or not is_instance_valid(game.ui_layer):
-		return true
-	for screen_name in ["LevelUpOverlay", "ShopScreen", "AttributeShopScreen", "EliteArtifactRewardScreen", "EventScreen", "RouteMapScreen"]:
-		if game.ui_layer.find_child(screen_name, true, false) != null:
-			return false
-	return true
+		return false
+	return game.ui_layer.find_child("SettingsV2Root", true, false) != null
 
 
 func _can_open_pause_dossier() -> bool:
+	if _is_settings_screen_open():
+		return false
 	if game.combat_active:
 		return true
 	if game.ui_layer == null or not is_instance_valid(game.ui_layer):
@@ -5945,6 +8172,10 @@ func _pause_dossier_player() -> Node:
 
 
 func _resume_game() -> void:
+	# SCRUM-883: Esc/B при открытом подтверждении «Завершить забег» отменяет только
+	# модалку — пауза остаётся (паритет с Escape-отменой quit-диалога главного меню).
+	if _cancel_end_run_confirmation_dialog():
+		return
 	game.pending_rebind_action = ""
 	game.pop_pause("escape_menu")
 	if game.pause_stats_menu != null and is_instance_valid(game.pause_stats_menu):
@@ -5969,6 +8200,7 @@ func _quit_current_run() -> void:
 	game.used_event_ids.clear()
 	game.current_event_definition.clear()
 	game.pending_event_combat.clear()
+	game.event_shop_exit_action = Callable()  # SCRUM-996
 	game.pending_level_ups = 0
 	game.current_route_choice = ""
 	game.run_used_shop = false
@@ -5996,22 +8228,12 @@ func _end_current_run_by_player() -> void:
 	game.used_event_ids.clear()
 	game.current_event_definition.clear()
 	game.pending_event_combat.clear()
+	game.event_shop_exit_action = Callable()  # SCRUM-996
 	game.pending_level_ups = 0
 	game.current_route_choice = ""
 	game._clear_world()
 	game._clear_hud()
 	_show_death_screen("Забег завершен игроком.")
-
-
-func _hero_card_line(text: String, font_size: int, color: Color) -> Label:
-	var label := Label.new()
-	label.text = text
-	label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	label.add_theme_font_size_override("font_size", _readable_font_size(font_size, 0, 44))
-	label.add_theme_color_override("font_color", color)
-	label.clip_text = true
-	label.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	return label
 
 
 func _update_hero_select_info(info_labels: Dictionary, title: String, description: String, strengths: String, weaknesses: String, stats_text: String) -> void:
@@ -6026,35 +8248,90 @@ func _update_hero_select_info(info_labels: Dictionary, title: String, descriptio
 		stats_label.text = stats_text
 
 
-# SCRUM-489: координатная спека @2560×1440 — экран «Выбор оружия» (economy-панель).
-# Панель из _economy_menu_panel_half_size("weapon_select"): нет match-ветки → дефолт
-# target 1120×660, clamp по viewport (2K не режет) → 1120×660 центр → top-left (720,390).
-# Рамка _economy_panel_style() = minimal-metal "panel"; content-margins (58,72,58,66, абс. px,
-# не скейлятся) → safe-area (778,462,1004,522). Контент в ScrollContainer→VBox (separation 16):
-# title 42px → subtitle 17px → N карточек оружия (custom_min 860×173, EXPAND_FILL → ширина по
-# safe 1004) → кнопка «Назад». Карточка — фикс высота 173, шаг = 173 + 16 = 189.
-# РИСК overflow по высоте: title+subtitle+(до 4 карточек×189)+back > 522 → ScrollContainer
-# скрывает вылет (берсерк = 3 оружия влезают; персонажи с 4 оружиями уходят в скролл).
-const WS_DESIGN_BASE_2K := Vector2(2560.0, 1440.0)
-const WS_PANEL_2K := Rect2(420, 190, 1720, 1060)
-const WS_SAFE_2K := Rect2(498, 286, 1564, 898)
-const WS_TITLE_2K := Rect2(498, 296, 1564, 64)
-const WS_SUBTITLE_2K := Rect2(498, 376, 1564, 42)
-const WS_CARD_2K := Rect2(498, 446, 1564, 190)
-const WS_CARD_STEP_2K := 218.0
-const WS_BTN_BACK_2K := Rect2(1140, 1120, 280, 60)
+# SCRUM-883: экраны выбора оружия и стартового буна на едином атлас-стиле
+# (эталон SCRUM-879): фон-зал героев COVERED (продолжение флоу выбора героя),
+# контент в safe-зоне полой рамы meta40, панели/карточки — чипы StyleBoxFlat,
+# кнопки — глобальный кит. Геометрия адаптивная от _atlas_ui_scale(): на базе
+# 2560×1440 держит смоук-контракты (колодец ≥200, спрайт ≥176, статс ≥300),
+# на малых вьюпортах матрицы пропорционально ужимается в safe-зону.
+
+
+# Общий полноэкранный корень пре-ран экранов оружия/буна: чистка UI, слой,
+# root на весь экран, глобальные тултипы. Фон/safe/рама добавляются звонящим.
+func _weapon_flow_shell_root(screen_name: String) -> Control:
+	game._clear_ui()
+	game.ui_layer = CanvasLayer.new()
+	game.ui_layer.process_mode = Node.PROCESS_MODE_ALWAYS
+	game.add_child(game.ui_layer)
+	var root := Control.new()
+	root.name = screen_name
+	root.set_anchors_preset(Control.PRESET_FULL_RECT)
+	root.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	game.ui_layer.add_child(root)
+	_prepare_global_tooltips(root)
+	return root
+
+
+# Шапка атлас-экрана: чип-титул слева, «Назад» на глобальном ките справа
+# (единый возврат 2026-07-08: плита 260 × action-height на всех экранах).
+func _weapon_flow_header(layout: VBoxContainer, prefix: String, title: String, s: float, back_action: Callable) -> Button:
+	var header := HBoxContainer.new()
+	header.name = "%sHeader" % prefix
+	header.add_theme_constant_override("separation", int(roundf(12.0 * s)))
+	layout.add_child(header)
+	header.add_child(_unified_header_chip(prefix, title, "hero_select", s))
+	var spacer := Control.new()
+	spacer.name = "%sHeaderSpacer" % prefix
+	spacer.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	spacer.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	header.add_child(spacer)
+	var back_button := _make_button("Назад")
+	back_button.name = "%sBackButton" % prefix
+	_set_action_button_size(back_button, 260.0, _atlas_action_button_height())
+	back_button.pressed.connect(back_action)
+	header.add_child(back_button)
+	return back_button
 
 
 func _show_weapon_select() -> void:
 	var character_config = game.PROGRESSION_DATA.character_config(game.selected_character_id)
-	var box := _create_menu_box(
-		"Выбор оружия",
-		"%s: выбери стартовое оружие." % str(character_config["title"]),
-		"weapon_select",
-		_overhaul_2k_frame_style("ws_panel", WS_PANEL_2K.size),
-		WS_PANEL_2K.size
-	)
-	box.add_theme_constant_override("separation", 24)
+	var root := _weapon_flow_shell_root("WeaponSelectScreen")
+	_unified_add_background(root, "hero_select")
+
+	var s := _atlas_ui_scale()
+	var safe := _unified_make_safe_area(root, "WeaponSelect")
+	var layout := VBoxContainer.new()
+	layout.name = "WeaponSelectLayout"
+	layout.add_theme_constant_override("separation", int(roundf(12.0 * s)))
+	safe.add_child(layout)
+	var back_button := _weapon_flow_header(layout, "WeaponSelect", "Выбор оружия", s, _show_character_select)
+
+	# Плита карточек: узел MenuPanel_weapon_select — тест-контракт (смоук/матрица:
+	# PanelContainer + StyleBoxFlat alpha >= 0.80), стиль — атлас-чип.
+	var panel := PanelContainer.new()
+	panel.name = "MenuPanel_weapon_select"
+	panel.size_flags_vertical = Control.SIZE_EXPAND_FILL
+	panel.add_theme_stylebox_override("panel", _weapon_select_panel_style())
+	layout.add_child(panel)
+	var box := VBoxContainer.new()
+	box.name = "WeaponSelectCards"
+	box.add_theme_constant_override("separation", int(roundf(12.0 * s)))
+	panel.add_child(box)
+
+	var subtitle := Label.new()
+	subtitle.name = "WeaponSelectSubtitle"
+	subtitle.text = "%s: выбери стартовое оружие." % str(character_config["title"])
+	subtitle.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	subtitle.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	subtitle.add_theme_font_size_override("font_size", SemanticTypography.resolve_fixed(
+		SemanticTypography.ROLE_CAPTION,
+		_readable_font_size(SemanticTypography.ROLE_CAPTION, 17, 12, 24),
+		SemanticTypography.role_min(SemanticTypography.ROLE_CAPTION),
+		SemanticTypography.role_max(SemanticTypography.ROLE_CAPTION)
+	))
+	subtitle.add_theme_color_override("font_color", Color(0.78, 0.66, 0.44, 1.0))
+	box.add_child(subtitle)
+
 	var weapon_cards: Array = []
 	for weapon_id in game.PROGRESSION_DATA.weapon_ids(game.selected_character_id):
 		var config = game.PROGRESSION_DATA.weapon(game.selected_character_id, str(weapon_id))
@@ -6063,114 +8340,285 @@ func _show_weapon_select() -> void:
 			game.selected_weapon_id = str(config["id"])
 			# SCRUM-502: фактический старт нового забега (герой+оружие выбраны) — обнулить
 			# метрики сводки, чтобы они не текли из прошлого прогона/autosave.
-			game.reset_run_metrics()
+			game.begin_new_run_session()
 			# SCRUM-618: между выбором оружия и стартом — пикер стартового боона.
 			_show_start_boon_select()
 		)
 		box.add_child(button)
 		weapon_cards.append(button)
 
-	var back_button := _make_button("Назад")
-	back_button.name = "WeaponSelectBackButton"
-	back_button.custom_minimum_size = WS_BTN_BACK_2K.size
-	back_button.size_flags_horizontal = Control.SIZE_SHRINK_CENTER
-	_apply_overhaul_2k_button_theme(back_button, "ws_btn_back", WS_BTN_BACK_2K.size)
-	back_button.pressed.connect(_show_character_select)
-	box.add_child(back_button)
 	game.ui_escape_action = _show_character_select
+	# Полая рама атласа — ПОСЛЕДНЕЙ, поверх контента.
+	_unified_add_frame(root, "WeaponSelect")
 
-	# SCRUM-813: карточки оружия листаются вверх/вниз по кругу, «Назад» ниже; A выбирает,
-	# B/Esc возвращает к выбору героя. Старт — первая карточка.
+	# SCRUM-813: карточки оружия листаются вверх/вниз по кругу, «Назад» в шапке; A
+	# выбирает, B/Esc возвращает к выбору героя. Старт — первая карточка.
 	_wire_run_ui_focus(weapon_cards, false, [back_button],
 		weapon_cards[0] if not weapon_cards.is_empty() else back_button)
 
 
 func _make_weapon_select_card(config: Dictionary) -> Button:
 	var weapon_id := str(config.get("id", ""))
+	var character_id := str(config.get("character_id", game.selected_character_id))
+	var s := _atlas_ui_scale()
 	var button := Button.new()
 	button.name = "WeaponOption_%s" % weapon_id
 	button.set_meta("weapon_id", weapon_id)
 	button.text = ""
-	button.custom_minimum_size = WS_CARD_2K.size
+	# Пол min-высоты держит карточку читаемой на малых вьюпортах; на базе карточки
+	# растягиваются EXPAND_FILL и делят плиту (фактически ~260, смоук требует >=110).
+	button.custom_minimum_size = Vector2(0.0, roundf(maxf(200.0 * s, 96.0)))
 	button.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	button.size_flags_vertical = Control.SIZE_EXPAND_FILL
 	button.focus_mode = Control.FOCUS_ALL
 	button.mouse_default_cursor_shape = Control.CURSOR_POINTING_HAND
-	button.tooltip_text = "%s\n%s" % [str(config.get("title", weapon_id)), str(config.get("description", ""))]
-	button.add_theme_stylebox_override("normal", _overhaul_2k_frame_style("ws_card", WS_CARD_2K.size))
-	button.add_theme_stylebox_override("hover", _overhaul_2k_frame_style("ws_card", WS_CARD_2K.size, BUTTON_NEUTRAL_HOVER_TINT))
-	button.add_theme_stylebox_override("pressed", _overhaul_2k_frame_style("ws_card", WS_CARD_2K.size, Color(0.90, 0.84, 0.76, 1.0)))
-	button.add_theme_stylebox_override("focus", _overhaul_2k_frame_style("ws_card", WS_CARD_2K.size, BUTTON_NEUTRAL_HOVER_TINT))
-	button.add_theme_stylebox_override("disabled", _overhaul_2k_frame_style("ws_card", WS_CARD_2K.size, Color(0.58, 0.58, 0.58, 0.82)))
+	button.tooltip_text = "%s\n%s\n%s" % [
+		str(config.get("title", weapon_id)),
+		_weapon_select_identity_text(character_id, weapon_id),
+		str(config.get("description", "")),
+	]
+	_weapon_card_theme(button, roundf(12.0 * s))
 
 	var row := HBoxContainer.new()
 	row.name = "WeaponOptionContent_%s" % weapon_id
 	row.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	row.set_anchors_preset(Control.PRESET_FULL_RECT)
-	var card_content := _overhaul_2k_content_margins("ws_card", WS_CARD_2K.size)
+	var card_content := _weapon_select_card_content_margins()
 	row.offset_left = card_content.x
 	row.offset_top = card_content.y
 	row.offset_right = -card_content.z
 	row.offset_bottom = -card_content.w
-	row.add_theme_constant_override("separation", 34)
+	row.alignment = BoxContainer.ALIGNMENT_CENTER
+	row.add_theme_constant_override("separation", int(roundf(24.0 * s)))
 	button.add_child(row)
+
+	var icon_well := PanelContainer.new()
+	icon_well.name = "WeaponSelectIconWell_%s" % weapon_id
+	# База 2560: 204×204 (смоук-контракт >=200); на малых вьюпортах ужимается.
+	icon_well.custom_minimum_size = Vector2(roundf(204.0 * s), roundf(204.0 * s))
+	icon_well.size_flags_horizontal = Control.SIZE_SHRINK_CENTER
+	icon_well.size_flags_vertical = Control.SIZE_SHRINK_CENTER
+	icon_well.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	icon_well.add_theme_stylebox_override("panel", _weapon_select_icon_well_style())
+	row.add_child(icon_well)
 
 	var sprite := TextureRect.new()
 	sprite.name = "WeaponSelectSprite_%s" % weapon_id
-	sprite.custom_minimum_size = Vector2(120, 120)
-	sprite.size_flags_horizontal = Control.SIZE_SHRINK_CENTER
-	sprite.size_flags_vertical = Control.SIZE_SHRINK_CENTER
+	sprite.custom_minimum_size = Vector2(roundf(176.0 * s), roundf(176.0 * s))
+	sprite.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	sprite.size_flags_vertical = Control.SIZE_EXPAND_FILL
 	sprite.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
 	sprite.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
 	sprite.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	sprite.texture = game._cached_texture(_weapon_sprite_path(config))
-	row.add_child(sprite)
+	icon_well.add_child(sprite)
 
 	var text_box := VBoxContainer.new()
 	text_box.name = "WeaponSelectText_%s" % weapon_id
 	text_box.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	text_box.size_flags_vertical = Control.SIZE_EXPAND_FILL
-	text_box.add_theme_constant_override("separation", 5)
+	text_box.alignment = BoxContainer.ALIGNMENT_CENTER
+	text_box.add_theme_constant_override("separation", int(roundf(6.0 * s)))
 	row.add_child(text_box)
 
 	var title_label := Label.new()
 	title_label.name = "WeaponSelectTitle_%s" % weapon_id
 	title_label.text = str(config.get("title", weapon_id))
-	title_label.add_theme_font_size_override("font_size", _readable_font_size(28))
-	title_label.add_theme_color_override("font_color", Color(1.0, 0.88, 0.46, 1.0))
+	title_label.max_lines_visible = 1
+	title_label.text_overrun_behavior = TextServer.OVERRUN_TRIM_ELLIPSIS
+	title_label.add_theme_font_size_override("font_size", _readable_font_size(SemanticTypography.ROLE_TITLE, 26, 12, 36))
+	title_label.add_theme_color_override("font_color", Color(0.96, 0.90, 0.68, 1.0))
 	title_label.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	text_box.add_child(title_label)
 
+	var identity_label := Label.new()
+	identity_label.name = "WeaponSelectIdentity_%s" % weapon_id
+	identity_label.text = "Отличие: %s" % _weapon_select_identity_text(character_id, weapon_id)
+	identity_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	identity_label.max_lines_visible = 2
+	identity_label.text_overrun_behavior = TextServer.OVERRUN_TRIM_ELLIPSIS
+	identity_label.add_theme_font_size_override("font_size", _readable_font_size(SemanticTypography.ROLE_FIELD, 17, 12, 23))
+	identity_label.add_theme_color_override("font_color", Color(0.78, 0.66, 0.44, 1.0))
+	identity_label.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	text_box.add_child(identity_label)
+
 	var desc_label := Label.new()
 	desc_label.name = "WeaponSelectDescription_%s" % weapon_id
-	desc_label.text = str(config.get("description", ""))
+	desc_label.text = _weapon_select_mechanic_summary(config)
 	desc_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
-	desc_label.add_theme_font_size_override("font_size", _readable_font_size(20))
-	desc_label.add_theme_color_override("font_color", Color(0.91, 0.88, 0.78, 1.0))
+	desc_label.max_lines_visible = 2
+	desc_label.text_overrun_behavior = TextServer.OVERRUN_NO_TRIMMING
+	desc_label.add_theme_font_size_override("font_size", _readable_font_size(SemanticTypography.ROLE_DESCRIPTION, 15, 12, 21))
+	desc_label.add_theme_color_override("font_color", Color(0.88, 0.92, 0.98, 1.0))
 	desc_label.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	text_box.add_child(desc_label)
 
+	var role_label := Label.new()
+	role_label.name = "WeaponSelectRole_%s" % weapon_id
+	role_label.text = _weapon_select_role_text(character_id, config)
+	role_label.max_lines_visible = 1
+	role_label.text_overrun_behavior = TextServer.OVERRUN_TRIM_ELLIPSIS
+	role_label.add_theme_font_size_override("font_size", _readable_font_size(SemanticTypography.ROLE_FIELD, 14, 12, 18))
+	role_label.add_theme_color_override("font_color", Color(0.78, 0.66, 0.44, 1.0))
+	role_label.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	text_box.add_child(role_label)
+
+	var stats_panel := PanelContainer.new()
+	stats_panel.name = "WeaponSelectStatsPanel_%s" % weapon_id
+	# База 2560: 310×204 (смоук-контракт min.x >= 300).
+	stats_panel.custom_minimum_size = Vector2(roundf(310.0 * s), roundf(204.0 * s))
+	stats_panel.size_flags_horizontal = Control.SIZE_SHRINK_CENTER
+	stats_panel.size_flags_vertical = Control.SIZE_SHRINK_CENTER
+	stats_panel.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	stats_panel.add_theme_stylebox_override("panel", _weapon_select_stats_panel_style())
+	row.add_child(stats_panel)
+
 	var stats_label := Label.new()
 	stats_label.name = "WeaponSelectStats_%s" % weapon_id
-	stats_label.custom_minimum_size = Vector2(360, 0)
+	stats_label.custom_minimum_size = Vector2(roundf(280.0 * s), 0)
 	stats_label.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
 	stats_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
-	stats_label.text = "Дальность %.0f\nРадиус %.0f\nПерезарядка %.2fс" % [
+	stats_label.text = _weapon_select_stats_text(config)
+	stats_label.add_theme_font_size_override("font_size", _readable_font_size(SemanticTypography.ROLE_BODY, 13, 12, 17))
+	stats_label.add_theme_color_override("font_color", Color(0.88, 0.92, 0.98, 1.0))
+	stats_label.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	stats_panel.add_child(stats_label)
+	return button
+
+
+# SCRUM-883: плита экрана — атлас-чип (тест-контракт: StyleBoxFlat, alpha >= 0.80).
+func _weapon_select_panel_style() -> StyleBoxFlat:
+	return _atlas_chip_style(0.90, roundf(12.0 * _atlas_ui_scale()))
+
+
+func _weapon_select_card_content_margins() -> Vector4:
+	var s := _atlas_ui_scale()
+	return Vector4(roundf(22.0 * s), roundf(18.0 * s), roundf(22.0 * s), roundf(18.0 * s))
+
+
+# SCRUM-883: тема карточек оружия/буна — «кожаный ряд» атласа (hover/pressed/
+# focus/disabled от row-theme) с поднятым normal-чипом: row-normal 0.72 ниже
+# смоук-контракта прозрачности (>=0.80), карточкам нужен фон плотнее.
+func _weapon_card_theme(button: Button, pad := 12.0) -> void:
+	_unified_apply_row_theme(button, pad)
+	UIButtonFamily.assign(button, UIButtonFamily.FAMILY_WEAPON_CARD)
+	button.add_theme_stylebox_override("normal", _atlas_chip_style(0.86, pad))
+
+
+# Колодец иконки: тихая полупрозрачная подложка без канта (арт не спорит с рамой).
+func _weapon_select_icon_well_style() -> StyleBoxFlat:
+	return _atlas_translucent_style(0.55, 10.0)
+
+
+func _weapon_select_stats_panel_style() -> StyleBoxFlat:
+	return _atlas_chip_style(0.62, roundf(10.0 * _atlas_ui_scale()))
+
+
+func _weapon_select_identity_text(character_id: String, weapon_id: String) -> String:
+	var identity := str(game.PROGRESSION_DATA.weapon_mechanic_identity(character_id, weapon_id))
+	if identity.strip_edges() == "":
+		return "уникальный стиль атаки этого оружия"
+	return identity
+
+
+func _weapon_select_role_text(character_id: String, config: Dictionary) -> String:
+	var archetype := _weapon_select_archetype_label(config)
+	var main_attribute := str(game.PROGRESSION_DATA.class_main_attribute(character_id))
+	var stat_name := str(game.PROGRESSION_DATA.STAT_NAMES.get(main_attribute, main_attribute))
+	var mode_label := _weapon_select_mode_label(config)
+	return "Роль: %s · %s · Скейл: %s" % [archetype, mode_label, stat_name]
+
+
+func _weapon_select_mechanic_summary(config: Dictionary) -> String:
+	var archetype := _weapon_select_archetype_label(config)
+	var mode_label := _weapon_select_mode_label(config)
+	var attack_range := float(config.get("attack_range", 0.0))
+	var radius := float(config.get("aoe_radius", 0.0))
+	if int(config.get("max_summons", 0)) > 0:
+		return "Призывает до %d союзн.; держит давление сам, лучше раскрывается через Leadership." % int(config.get("max_summons", 0))
+	match mode_label:
+		"сектор":
+			return "Направленный сектор: важно позиционирование. Дуга/радиус растут от секторных усилений."
+		"круг":
+			return "Круговая зона вокруг героя: стабильная зачистка рядом, радиус раскрывает контроль толпы."
+		"траектория":
+			return "Траектория/линия: сильнее по выбранному направлению, ценит дальность и точное наведение."
+		"взрыв":
+			return "Взрывная зона: короткое окно урона по группе, радиус повышает число задетых целей."
+		"установка":
+			return "Ставит объект/ловушку: контроль пространства, заранее покрывает подходы врагов."
+		"цепь":
+			return "Цепная атака: перескакивает между целями и лучше работает в плотной группе."
+		_:
+			if archetype == "область" or radius >= attack_range * 0.75:
+				return "Зональная атака: держит область под контролем и хорошо чистит ближнюю толпу."
+			if attack_range >= 420.0:
+				return "Дальняя атака: безопаснее открывает бой и сильнее отыгрывает дистанцию."
+	return "Уникальная схема атаки: отличается формой удара, темпом и способом контроля целей."
+
+
+func _weapon_select_archetype_label(config: Dictionary) -> String:
+	match str(game.PROGRESSION_DATA.weapon_archetype(config)):
+		"melee":
+			return "ближний бой"
+		"beam":
+			return "луч/линия"
+		"aoe":
+			return "область"
+		"summon":
+			return "призыв/устройство"
+		"aura":
+			return "аура"
+		"projectile":
+			return "снаряд"
+	return "особая атака"
+
+
+func _weapon_select_mode_label(config: Dictionary) -> String:
+	var mode := str(config.get("attack_mode", config.get("attack_shape", "")))
+	match mode:
+		"cone", "sweep":
+			return "сектор"
+		"circle", "slam", "aura":
+			return "круг"
+		"beam", "line", "pierce":
+			return "траектория"
+		"burst", "explosion":
+			return "взрыв"
+		"deploy", "trap", "mine":
+			return "установка"
+		"chain":
+			return "цепь"
+		"single":
+			return "точечная цель"
+	if str(config.get("summon_role", "")) != "" or int(config.get("max_summons", 0)) > 0:
+		return "союзники"
+	return "механика"
+
+
+func _weapon_select_stats_text(config: Dictionary) -> String:
+	var lines := PackedStringArray()
+	lines.append("Архетип: %s" % _weapon_select_archetype_label(config))
+	lines.append("Дальность %.0f / радиус %.0f" % [
 		float(config.get("attack_range", 0.0)),
 		float(config.get("aoe_radius", 0.0)),
-		float(config.get("fire_interval", 0.0)),
-	]
-	stats_label.add_theme_font_size_override("font_size", _readable_font_size(18))
-	stats_label.add_theme_color_override("font_color", Color(0.74, 0.92, 1.0, 1.0))
-	stats_label.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	row.add_child(stats_label)
-	return button
+	])
+	lines.append("Перезарядка %.2fс" % float(config.get("fire_interval", 0.0)))
+	if int(config.get("max_summons", 0)) > 0:
+		lines.append("Лимит: %d" % int(config.get("max_summons", 0)))
+	elif float(config.get("knockback", 0.0)) > 0.0:
+		lines.append("Контроль: %.0f" % float(config.get("knockback", 0.0)))
+	else:
+		lines.append("Урон x%.2f" % float(config.get("damage_multiplier", 1.0)))
+	return "\n".join(lines)
 
 
 # SCRUM-618: пикер стартового боона. Показывает 3 случайных боона (карточный паттерн)
 # между выбором оружия и стартом забега. Выбор → game.selected_start_boon_id + автосейв
 # + карта. «Без боона» завершает выбор тождественно (selected_start_boon_id="").
+# SCRUM-883: тот же атлас-шелл, что у выбора оружия (фон-зал/safe/чип-шапка/рама).
 func _show_start_boon_select() -> void:
-	var all_boons: Array = game.PROGRESSION_DATA.start_boons()
+	var all_boons: Array = game.PROGRESSION_DATA.start_boons(game.selected_character_id)
 	# Случайная выборка 3 без повторов (детерминирована текущим состоянием game.rng).
 	var pool: Array = all_boons.duplicate()
 	for i in range(pool.size() - 1, 0, -1):
@@ -6180,7 +8628,42 @@ func _show_start_boon_select() -> void:
 		pool[j] = tmp
 	var offered: Array = pool.slice(0, mini(3, pool.size()))
 
-	var box := _create_menu_box("Стартовый боон", "Выбери одно благословение на этот забег.", "weapon_select")
+	var root := _weapon_flow_shell_root("StartBoonScreen")
+	_unified_add_background(root, "hero_select")
+
+	var s := _atlas_ui_scale()
+	var safe := _unified_make_safe_area(root, "StartBoon")
+	var layout := VBoxContainer.new()
+	layout.name = "StartBoonLayout"
+	layout.add_theme_constant_override("separation", int(roundf(12.0 * s)))
+	safe.add_child(layout)
+	var back_button := _weapon_flow_header(layout, "StartBoon", "Стартовый боон", s, _show_weapon_select)
+
+	var panel := PanelContainer.new()
+	panel.name = "StartBoonPanel"
+	panel.size_flags_vertical = Control.SIZE_EXPAND_FILL
+	panel.add_theme_stylebox_override("panel", _weapon_select_panel_style())
+	layout.add_child(panel)
+	var box := VBoxContainer.new()
+	box.name = "StartBoonCards"
+	box.alignment = BoxContainer.ALIGNMENT_CENTER
+	box.add_theme_constant_override("separation", int(roundf(12.0 * s)))
+	panel.add_child(box)
+
+	var subtitle := Label.new()
+	subtitle.name = "StartBoonSubtitle"
+	subtitle.text = "Выбери одно благословение на этот забег."
+	subtitle.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	subtitle.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	subtitle.add_theme_font_size_override("font_size", SemanticTypography.resolve_fixed(
+		SemanticTypography.ROLE_CAPTION,
+		_readable_font_size(SemanticTypography.ROLE_CAPTION, 17, 12, 24),
+		SemanticTypography.role_min(SemanticTypography.ROLE_CAPTION),
+		SemanticTypography.role_max(SemanticTypography.ROLE_CAPTION)
+	))
+	subtitle.add_theme_color_override("font_color", Color(0.78, 0.66, 0.44, 1.0))
+	box.add_child(subtitle)
+
 	var boon_cards: Array = []
 	for boon in offered:
 		var boon_dict: Dictionary = boon
@@ -6196,6 +8679,7 @@ func _show_start_boon_select() -> void:
 	# «Без боона» — пропустить (тождественность). Возможность не брать ничего.
 	var skip_button := _make_button("Без боона")
 	skip_button.name = "StartBoonSkipButton"
+	skip_button.size_flags_horizontal = Control.SIZE_SHRINK_CENTER
 	skip_button.pressed.connect(func() -> void:
 		game.selected_start_boon_id = ""
 		game.save_run_autosave("start_boon")
@@ -6203,45 +8687,47 @@ func _show_start_boon_select() -> void:
 	)
 	box.add_child(skip_button)
 	game.ui_escape_action = _show_weapon_select
+	_unified_add_frame(root, "StartBoon")
 
-	# SCRUM-813: бооны листаются вверх/вниз по кругу, «Без боона» ниже; A выбирает,
-	# B/Esc возвращает к выбору оружия. Старт — первый боон.
-	_wire_run_ui_focus(boon_cards, false, [skip_button],
+	# SCRUM-813: бооны листаются вверх/вниз по кругу, «Без боона» ниже, «Назад» в
+	# шапке; A выбирает, B/Esc возвращает к выбору оружия. Старт — первый боон.
+	_wire_run_ui_focus(boon_cards, false, [skip_button, back_button],
 		boon_cards[0] if not boon_cards.is_empty() else skip_button)
 
 
 func _make_start_boon_card(boon: Dictionary) -> Button:
 	var boon_id := str(boon.get("id", ""))
+	var s := _atlas_ui_scale()
 	var button := Button.new()
 	button.name = "StartBoonOption_%s" % boon_id
 	button.set_meta("boon_id", boon_id)
 	button.text = ""
-	button.custom_minimum_size = Vector2(860, 116)
+	button.custom_minimum_size = Vector2(0.0, roundf(maxf(116.0 * s, 84.0)))
 	button.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	button.focus_mode = Control.FOCUS_ALL
 	button.mouse_default_cursor_shape = Control.CURSOR_POINTING_HAND
 	button.tooltip_text = "%s\n%s" % [str(boon.get("title", boon_id)), str(boon.get("description", ""))]
-	button.add_theme_stylebox_override("normal", _weapon_card_style(false))
-	button.add_theme_stylebox_override("hover", _weapon_card_style(true))
-	button.add_theme_stylebox_override("pressed", _weapon_card_style(true, true))
-	button.add_theme_stylebox_override("focus", _weapon_card_style(true))
+	_weapon_card_theme(button, roundf(10.0 * s))
 
 	var text_box := VBoxContainer.new()
 	text_box.name = "StartBoonText_%s" % boon_id
 	text_box.set_anchors_preset(Control.PRESET_FULL_RECT)
-	text_box.offset_left = 22.0
-	text_box.offset_top = 12.0
-	text_box.offset_right = -22.0
-	text_box.offset_bottom = -12.0
+	text_box.offset_left = roundf(22.0 * s)
+	text_box.offset_top = roundf(12.0 * s)
+	text_box.offset_right = -roundf(22.0 * s)
+	text_box.offset_bottom = -roundf(12.0 * s)
+	text_box.alignment = BoxContainer.ALIGNMENT_CENTER
 	text_box.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	text_box.add_theme_constant_override("separation", 6)
+	text_box.add_theme_constant_override("separation", int(roundf(6.0 * s)))
 	button.add_child(text_box)
 
 	var title_label := Label.new()
 	title_label.name = "StartBoonTitle_%s" % boon_id
 	title_label.text = str(boon.get("title", boon_id))
-	title_label.add_theme_font_size_override("font_size", _readable_font_size(21))
-	title_label.add_theme_color_override("font_color", Color(1.0, 0.88, 0.46, 1.0))
+	title_label.max_lines_visible = 1
+	title_label.text_overrun_behavior = TextServer.OVERRUN_TRIM_ELLIPSIS
+	title_label.add_theme_font_size_override("font_size", _readable_font_size(SemanticTypography.ROLE_TITLE, 21, 12, 30))
+	title_label.add_theme_color_override("font_color", Color(0.96, 0.90, 0.68, 1.0))
 	title_label.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	text_box.add_child(title_label)
 
@@ -6249,8 +8735,10 @@ func _make_start_boon_card(boon: Dictionary) -> Button:
 	desc_label.name = "StartBoonDescription_%s" % boon_id
 	desc_label.text = str(boon.get("description", ""))
 	desc_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
-	desc_label.add_theme_font_size_override("font_size", _readable_font_size(14))
-	desc_label.add_theme_color_override("font_color", Color(0.91, 0.88, 0.78, 1.0))
+	desc_label.max_lines_visible = 3
+	desc_label.text_overrun_behavior = TextServer.OVERRUN_TRIM_ELLIPSIS
+	desc_label.add_theme_font_size_override("font_size", _readable_font_size(SemanticTypography.ROLE_DESCRIPTION, 14, 12, 20))
+	desc_label.add_theme_color_override("font_color", Color(0.88, 0.92, 0.98, 1.0))
 	desc_label.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	text_box.add_child(desc_label)
 	return button
@@ -6323,6 +8811,31 @@ func _wire_run_ui_focus(primary: Array, axis_h: bool, secondary: Array = [], ini
 		target = ring_head if ring_head != null else (extra[0] if not extra.is_empty() else null)
 	if target != null and is_instance_valid(target):
 		target.call_deferred("grab_focus")
+
+
+func _wire_main_menu_column_focus(buttons: Array, gratitude: Control, initial: Control = null) -> void:
+	# SCRUM-1081: Up/Down wraps the canonical action column. Gratitude is the
+	# separate bottom-right utility: Right enters it; Left/Up returns to Exit.
+	_ensure_run_ui_gamepad_bindings()
+	var column := _collect_focusable_controls(buttons)
+	if column.is_empty():
+		return
+	for index in range(column.size()):
+		var current := column[index]
+		var previous := column[(index - 1 + column.size()) % column.size()]
+		var following := column[(index + 1) % column.size()]
+		current.focus_neighbor_left = current.get_path()
+		current.focus_neighbor_right = gratitude.get_path() if gratitude != null and is_instance_valid(gratitude) else current.get_path()
+		current.focus_neighbor_top = previous.get_path()
+		current.focus_neighbor_bottom = following.get_path()
+	if gratitude != null and is_instance_valid(gratitude):
+		gratitude.focus_mode = Control.FOCUS_ALL
+		gratitude.focus_neighbor_left = column[column.size() - 1].get_path()
+		gratitude.focus_neighbor_right = gratitude.get_path()
+		gratitude.focus_neighbor_top = column[column.size() - 1].get_path()
+		gratitude.focus_neighbor_bottom = column[0].get_path()
+	var target := initial if initial != null and is_instance_valid(initial) else column[0]
+	(target as Control).call_deferred("grab_focus")
 
 
 # SCRUM-812: собирает валидные фокусируемые контролы (не disabled), проставляя им
@@ -6427,13 +8940,15 @@ func _cycle_codex_section(dir: int) -> bool:
 
 
 func _show_reward_screen() -> void:
-	var box := _create_menu_box("Награда за бой", "Выбери 1 из 3 усилений.", "artifact_reward")
+	# SCRUM-883: панель награды — чип Атласа (карточки внутри — чип-ряды).
+	var box := _create_menu_box("Награда за бой", "Выбери 1 из 3 усилений.", "artifact_reward", _atlas_chip_style(0.94, 18.0))
 	_create_menu_run_hud()
 	var rewards_row := HBoxContainer.new()
+	var reward_card_size := _battle_reward_card_size()
 	rewards_row.name = "BattleRewardCardsRow"
 	rewards_row.alignment = BoxContainer.ALIGNMENT_CENTER
 	rewards_row.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-	rewards_row.custom_minimum_size = Vector2(0.0, REWARD_CARD_SIZE.y)
+	rewards_row.custom_minimum_size = Vector2(0.0, reward_card_size.y)
 	rewards_row.add_theme_constant_override("separation", 18)
 	box.add_child(rewards_row)
 	var reward_buttons: Array[Button] = []
@@ -6470,9 +8985,10 @@ func _show_level_up_screen(return_to_map := false) -> void:
 	var rewards_row := HBoxContainer.new()
 	rewards_row.name = "LevelUpRewardsRow"
 	rewards_row.alignment = BoxContainer.ALIGNMENT_CENTER
-	var level_up_card_size: Vector2 = layout.get("card_size", Vector2(238.0, 210.0))
 	rewards_row.position = layout.get("rewards_row_position", Vector2.ZERO)
-	rewards_row.size = layout.get("rewards_row_size", Vector2(level_up_card_size.x * 3.0, level_up_card_size.y))
+	# SCRUM-892: ряд занимает зону между шапкой и «Позже»; карточки контентной
+	# высоты (SIZE_SHRINK_CENTER) центрируются в ней по вертикали.
+	rewards_row.size = layout.get("rewards_row_size", Vector2(760.0, 320.0))
 	rewards_row.custom_minimum_size = rewards_row.size
 	rewards_row.add_theme_constant_override("separation", int(layout.get("card_gap", 0)))
 	box.add_child(rewards_row)
@@ -6480,9 +8996,15 @@ func _show_level_up_screen(return_to_map := false) -> void:
 	# Набор фиксируется на полученный уровень: переоткрытие окна показывает то же.
 	if game.level_up_offer.is_empty():
 		game.level_up_offer = _random_level_up_rewards(3)
+	# SCRUM-871: прогноз «до -> после» и бейджи «Лучший урон»/«Выживание» на весь
+	# набор — один раз на построение экрана, от живых статов игрока.
+	var advice := _level_up_offer_advice(game.level_up_offer)
+	# SCRUM-892: единый план стека на весь набор (глубина описаний/дельт, бейдж-
+	# слот) — сокеты и титулы трёх карточек стоят в одну линию, без пустых зон.
+	layout["card_plan"] = _level_up_card_plan(game.level_up_offer, advice, layout)
 	var reward_buttons: Array[Button] = []
 	for reward in game.level_up_offer:
-		var button := _make_level_up_reward_button(reward, layout)
+		var button := _make_level_up_reward_button(reward, layout, advice, reward_buttons.size())
 		button.name = "LevelUpRewardButton%d" % reward_buttons.size()
 		button.pressed.connect(func() -> void:
 			_apply_reward_to_active_run(reward)
@@ -6511,6 +9033,23 @@ func _show_level_up_screen(return_to_map := false) -> void:
 		rewards_row.add_child(button)
 		reward_buttons.append(button)
 
+	# Типографика: авто-подбор мог дать титулам разный размер — выравниваем ряд
+	# по минимальному, чтобы карточки читались как одна линейка.
+	var title_labels: Array = []
+	var min_title_font := 999
+	for button in reward_buttons:
+		var reward_title := button.find_child("LevelUpRewardTitle", true, false) as Label
+		if reward_title != null:
+			title_labels.append(reward_title)
+			min_title_font = mini(min_title_font, reward_title.get_theme_font_size("font_size"))
+	for reward_title in title_labels:
+		(reward_title as Label).add_theme_font_size_override("font_size", SemanticTypography.resolve_fixed(
+			SemanticTypography.ROLE_TITLE,
+			min_title_font,
+			SemanticTypography.role_min(SemanticTypography.ROLE_TITLE),
+			SemanticTypography.role_max(SemanticTypography.ROLE_TITLE)
+		))
+
 	# Клавиатура/геймпад: фокус по карточкам стрелками по кругу, Enter/Space/A выбирают.
 	# Полная разводка (карточки + «Позже») ставится ниже, после создания later_button.
 
@@ -6535,6 +9074,9 @@ func _show_level_up_screen(return_to_map := false) -> void:
 			game.save_run_autosave("level_up_deferred")
 			game.route._show_battle_map()
 
+	# SCRUM-883: «Позже» — Button-контрол действия, только глобальный кит (имя узла
+	# LevelUpLaterButton мапится на текстуры later_260x72; _set_action_button_size
+	# переприменяет тему кита после установки размера).
 	var later_button := _make_button("Позже")
 	later_button.name = "LevelUpLaterButton"
 	var later_button_size: Vector2 = layout.get("later_button_size", Vector2(260.0, 72.0))
@@ -6542,7 +9084,6 @@ func _show_level_up_screen(return_to_map := false) -> void:
 	later_button.position = layout.get("later_button_position", Vector2.ZERO)
 	later_button.size = later_button_size
 	later_button.tooltip_text = "Закрыть без выбора — пик сохранится, вернуться можно кнопкой повышения внизу."
-	_apply_level_up_later_button_theme(later_button, later_button_size)
 	later_button.pressed.connect(defer_choice)
 	box.add_child(later_button)
 	game.ui_escape_action = defer_choice
@@ -6557,76 +9098,93 @@ func _show_level_up_screen(return_to_map := false) -> void:
 
 
 func _show_elite_artifact_reward(on_done: Callable) -> void:
+	var choices: Array = game.PROGRESSION_DATA.elite_artifact_choices(game.route_scaling_stage(), 3, game.selected_character_id, _run_ascension_level(), _run_cross_class_artifact_ids())
+	_show_artifact_reward_screen(
+		"Elite",
+		"Трофей элитки",
+		"Выбери 1 из 3 артефактов. Чем глубже маршрут, тем выше шанс редкой добычи.",
+		choices,
+		on_done
+	)
+
+
+func _show_boss_artifact_reward(on_done: Callable) -> void:
+	# SCRUM-873: награда за акт-босса — выбор 1 из 3 СУПЕРРЕДКИХ артефактов
+	var choices: Array = game.PROGRESSION_DATA.boss_completion_artifact_choices(3, game.selected_character_id, _run_ascension_level(), _run_cross_class_artifact_ids())
+	# Пул пуст (теоретический случай) — не запирать игрока на экране без карт.
+	if choices.is_empty():
+		push_warning("Boss artifact reward: пул суперредких пуст — экран пропущен.")
+		game._clear_ui()
+		if on_done.is_valid():
+			on_done.call()
+		return
+	_show_artifact_reward_screen(
+		"Boss",
+		"Трофей босса",
+		"Акт пройден! Выбери 1 из 3 эпических артефактов.",
+		choices,
+		on_done
+	)
+
+
+# SCRUM-990/991: единый reward-hall builder для элитного/сундукового и boss
+# путей. Фон — канонический reward hall, единственная внешняя ornament-рама
+# добавляется ПОСЛЕДНЕЙ и остаётся полой; центрального modal/panel больше нет.
+func _show_artifact_reward_screen(
+		prefix: String,
+		title_text: String,
+		subtitle_text: String,
+		choices: Array,
+		on_done: Callable) -> void:
 	game._clear_ui()
 	game.ui_layer = CanvasLayer.new()
 	game.ui_layer.process_mode = Node.PROCESS_MODE_ALWAYS
 	game.add_child(game.ui_layer)
 
 	var root := Control.new()
-	root.name = "EliteArtifactRewardScreen"
+	root.name = "%sArtifactRewardScreen" % prefix
 	root.set_anchors_preset(Control.PRESET_FULL_RECT)
 	root.process_mode = Node.PROCESS_MODE_ALWAYS
 	game.ui_layer.add_child(root)
-	_add_screen_background(root, "elite_reward")
+	_prepare_global_tooltips(root)
+	_add_screen_background(root, "artifact_reward")
 
-	var shade := ColorRect.new()
-	shade.name = "EliteArtifactRewardShade"
-	shade.set_anchors_preset(Control.PRESET_FULL_RECT)
-	shade.color = Color(0.02, 0.015, 0.025, 0.76)
-	root.add_child(shade)
-
-	var center := CenterContainer.new()
-	center.name = "EliteArtifactRewardCenter"
-	center.set_anchors_preset(Control.PRESET_FULL_RECT)
-	center.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	root.add_child(center)
-
-	var panel := PanelContainer.new()
-	panel.name = "EliteArtifactRewardPanel"
-	panel.custom_minimum_size = Vector2(1140, 640)
-	panel.size_flags_horizontal = Control.SIZE_SHRINK_CENTER
-	panel.size_flags_vertical = Control.SIZE_SHRINK_CENTER
-	panel.mouse_filter = Control.MOUSE_FILTER_STOP
-	panel.add_theme_stylebox_override("panel", _level_up_panel_style())
-	center.add_child(panel)
-
-	var box := VBoxContainer.new()
-	box.alignment = BoxContainer.ALIGNMENT_CENTER
-	box.add_theme_constant_override("separation", 20)
-	box.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-	box.size_flags_vertical = Control.SIZE_EXPAND_FILL
-	panel.add_child(box)
+	var content_root := Control.new()
+	content_root.name = "%sArtifactRewardContentRoot" % prefix
+	content_root.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	root.add_child(content_root)
 
 	var title := Label.new()
-	title.name = "EliteArtifactRewardTitle"
-	title.text = "Трофей элитки"
+	title.name = "%sArtifactRewardTitle" % prefix
+	title.text = title_text
 	title.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	title.add_theme_font_size_override("font_size", _readable_font_size(52, 0, 52))
-	title.add_theme_color_override("font_color", Color(1.0, 0.86, 0.38, 1.0))
-	box.add_child(title)
+	title.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
+	title.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	title.add_theme_color_override("font_color", TIER_COLORS[3] if prefix == "Boss" else Color(0.96, 0.90, 0.68, 1.0))
+	content_root.add_child(title)
 
 	var subtitle := Label.new()
-	subtitle.name = "EliteArtifactRewardSubtitle"
-	subtitle.text = "Выбери 1 из 3 артефактов. Чем глубже маршрут, тем выше шанс редкой добычи."
+	subtitle.name = "%sArtifactRewardSubtitle" % prefix
+	subtitle.text = subtitle_text
 	subtitle.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	subtitle.add_theme_font_size_override("font_size", _readable_font_size(20, 0, 20))
-	subtitle.add_theme_color_override("font_color", Color(0.86, 0.90, 0.98, 1.0))
-	box.add_child(subtitle)
+	subtitle.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
+	subtitle.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	subtitle.add_theme_color_override("font_color", Color(0.88, 0.92, 0.98, 1.0))
+	content_root.add_child(subtitle)
 
 	var rewards_row := HBoxContainer.new()
-	rewards_row.name = "EliteArtifactRewardRow"
+	rewards_row.name = "%sArtifactRewardRow" % prefix
 	rewards_row.alignment = BoxContainer.ALIGNMENT_CENTER
-	rewards_row.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-	rewards_row.custom_minimum_size = Vector2(0.0, REWARD_ELITE_CARD_SIZE.y)
-	rewards_row.add_theme_constant_override("separation", 22)
-	box.add_child(rewards_row)
+	rewards_row.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	content_root.add_child(rewards_row)
 
-	var choices: Array = game.PROGRESSION_DATA.elite_artifact_choices(game.route_scaling_stage(), 3)
+	var presentations := _artifact_reward_presentations(choices)
 	var reward_cards: Array[Button] = []
-	for reward in choices:
-		var reward_data: Dictionary = reward
-		var button := _make_elite_artifact_card(reward_data)
-		button.name = "EliteArtifactRewardButton%d" % rewards_row.get_child_count()
+	for index in range(choices.size()):
+		var reward_data := choices[index] as Dictionary
+		var presentation := presentations[index] as Dictionary
+		var button := _make_elite_artifact_card(reward_data, presentation)
+		button.name = "%sArtifactRewardButton%d" % [prefix, index]
 		button.pressed.connect(func() -> void:
 			_apply_reward_to_run(reward_data)
 			game._clear_ui()
@@ -6636,7 +9194,6 @@ func _show_elite_artifact_reward(on_done: Callable) -> void:
 		rewards_row.add_child(button)
 		reward_cards.append(button)
 
-	# Клавиатура/геймпад: стрелки двигают фокус по кругу, Enter/Space выбирают.
 	for index in range(reward_cards.size()):
 		var card := reward_cards[index]
 		var left := reward_cards[(index - 1 + reward_cards.size()) % reward_cards.size()]
@@ -6648,16 +9205,265 @@ func _show_elite_artifact_reward(on_done: Callable) -> void:
 	if not reward_cards.is_empty():
 		reward_cards[0].grab_focus()
 
-	# Выбор обязателен: Escape ничего не закрывает.
 	game.ui_escape_action = Callable()
-	game._play_sfx("level_up")
+	_unified_add_frame(root, "%sArtifactReward" % prefix)
+	_layout_artifact_reward_screen(root, prefix)
+	root.resized.connect(func() -> void:
+		_layout_artifact_reward_screen(root, prefix)
+		call_deferred("_layout_artifact_reward_screen", root, prefix)
+	)
+	game._play_sfx("artifact_reveal")
 
 
-func _make_level_up_reward_button(reward: Dictionary, layout := {}) -> Button:
+func _artifact_reward_layout_metrics(viewport_size: Vector2) -> Dictionary:
+	var inner := _gold_shell_inner_rect_for_size(viewport_size)
+	var card_size: Vector2
+	var gap: float
+	var title_size: Vector2
+	var subtitle_size: Vector2
+	var title_top: float
+	var subtitle_top: float
+	var row_top: float
+	var bottom_reserve: float
+	if viewport_size.y < 900.0:
+		card_size = Vector2(286.0, 344.0)
+		gap = 21.0
+		title_size = Vector2(520.0, 38.0)
+		subtitle_size = Vector2(760.0, 28.0)
+		title_top = 4.0
+		subtitle_top = 44.0
+		row_top = 82.0
+		bottom_reserve = 20.0
+	elif viewport_size.y < 1200.0:
+		card_size = Vector2(360.0, 520.0)
+		gap = 36.0
+		title_size = Vector2(640.0, 52.0)
+		subtitle_size = Vector2(960.0, 34.0)
+		title_top = 16.0
+		subtitle_top = 76.0
+		row_top = 130.0
+		bottom_reserve = 44.0
+	else:
+		card_size = Vector2(430.0, 660.0)
+		gap = 60.0
+		title_size = Vector2(920.0, 70.0)
+		subtitle_size = Vector2(1280.0, 42.0)
+		title_top = 24.0
+		subtitle_top = 108.0
+		row_top = 186.0
+		bottom_reserve = 80.0
+
+	card_size.x = minf(card_size.x, floorf((inner.size.x - gap * 2.0) / 3.0))
+	card_size.y = minf(card_size.y, maxf(180.0, inner.size.y - row_top - bottom_reserve))
+	var row_size := Vector2(card_size.x * 3.0 + gap * 2.0, card_size.y)
+	return {
+		"inner_rect": inner,
+		"title_rect": Rect2(Vector2(inner.get_center().x - title_size.x * 0.5, inner.position.y + title_top), title_size),
+		"subtitle_rect": Rect2(Vector2(inner.get_center().x - subtitle_size.x * 0.5, inner.position.y + subtitle_top), subtitle_size),
+		"row_rect": Rect2(Vector2(inner.get_center().x - row_size.x * 0.5, inner.position.y + row_top), row_size),
+		"card_size": card_size,
+		"gap": gap,
+	}
+
+
+func _layout_artifact_reward_screen(root: Control, prefix: String) -> void:
+	if root == null or not is_instance_valid(root) or root.size.x <= 1.0 or root.size.y <= 1.0:
+		return
+	var metrics := _artifact_reward_layout_metrics(root.size)
+	var inner := metrics["inner_rect"] as Rect2
+	root.set_meta("gold_shell_inner_rect", inner)
+	var content_root := root.find_child("%sArtifactRewardContentRoot" % prefix, false, false) as Control
+	if content_root == null:
+		return
+	content_root.position = inner.position
+	content_root.size = inner.size
+	content_root.set_meta("gold_shell_inner_rect", inner)
+
+	var title := content_root.find_child("%sArtifactRewardTitle" % prefix, false, false) as Label
+	var subtitle := content_root.find_child("%sArtifactRewardSubtitle" % prefix, false, false) as Label
+	var row := content_root.find_child("%sArtifactRewardRow" % prefix, false, false) as HBoxContainer
+	var title_rect := metrics["title_rect"] as Rect2
+	var subtitle_rect := metrics["subtitle_rect"] as Rect2
+	var row_rect := metrics["row_rect"] as Rect2
+	if title != null:
+		title.position = title_rect.position - inner.position
+		title.size = title_rect.size
+		title.add_theme_font_size_override("font_size", _readable_font_size(SemanticTypography.ROLE_TITLE, 30 if root.size.y < 900.0 else (42 if root.size.y < 1200.0 else 54), 20, 54))
+	if subtitle != null:
+		subtitle.position = subtitle_rect.position - inner.position
+		subtitle.size = subtitle_rect.size
+		subtitle.add_theme_font_size_override("font_size", SemanticTypography.resolve_fixed(
+			SemanticTypography.ROLE_CAPTION,
+			_readable_font_size(SemanticTypography.ROLE_CAPTION, 14 if root.size.y < 900.0 else (17 if root.size.y < 1200.0 else 20), 11, 24),
+			SemanticTypography.role_min(SemanticTypography.ROLE_CAPTION),
+			SemanticTypography.role_max(SemanticTypography.ROLE_CAPTION)
+		))
+	if row != null:
+		row.position = row_rect.position - inner.position
+		row.size = row_rect.size
+		row.custom_minimum_size = row_rect.size
+		row.add_theme_constant_override("separation", int(roundf(float(metrics["gap"]))))
+		for child in row.get_children():
+			if child is Button:
+				_resize_elite_artifact_card(child as Button, metrics["card_size"] as Vector2)
+
+
+# SCRUM-892: план стека карточек на весь набор наград — карточки контентной
+# высоты без пустых зон (сокет-иконка → титул → описание → сразу дельта-блок);
+# глубина описания (2-3 строки), дельта-блока (1-3 строки) и бейдж-слот
+# выравниваются по максимуму набора, чтобы сокеты и титулы трёх карточек
+# стояли в одну линию. Все номиналы 2K скейлятся ×scale (сокеты — пропорционально).
+func _level_up_card_plan(rewards: Array, advice: Dictionary, layout: Dictionary) -> Dictionary:
+	var scale := float(layout.get("scale", 0.5))
+	var compact := bool(layout.get("compact", scale <= 0.52))
+	var zone_height := float((layout.get("rewards_row_size", Vector2(760.0, 4096.0)) as Vector2).y)
+	var card_width := float(layout.get("card_width", roundf(LU_CARD_2K.size.x * scale)))
+	var pad := maxf(6.0, roundf(LU_CARD_CHIP_PAD_2K * scale))
+	var content_width := maxf(card_width - pad * 2.8, 48.0)
+	var gap := maxf(6.0, roundf(LU_CARD_STACK_GAP_2K * scale))
+	var small_gap := maxf(4.0, roundf(8.0 * scale))
+	# Шрифты стека (пол кегля 12 — фидбек читаемости SCRUM-883).
+	var badge_font := _readable_font_size(SemanticTypography.ROLE_HUD, maxi(12, int(roundf(13.0 * scale))), 0, 16)
+	var title_font := _readable_font_size(SemanticTypography.ROLE_TITLE, maxi(12, int(roundf(18.0 * scale))), 0, 26)
+	var desc_font := _readable_font_size(SemanticTypography.ROLE_DESCRIPTION, maxi(12, int(roundf(13.0 * scale))), 0, 18)
+	var effect_font := _readable_font_size(SemanticTypography.ROLE_BODY, maxi(12, int(roundf(15.0 * scale))), 0, 20)
+	# Высоты строк меряем probe-Label'ом — та же метрика, какой Godot считает
+	# minimum size настоящих подписей (headless-гейты честные, без сюрпризов).
+	var badge_line_h := _level_up_probe_line_height(badge_font)
+	var title_line_h := _level_up_probe_line_height(title_font)
+	var desc_line_h := _level_up_probe_line_height(desc_font) + 3.0
+	var effect_row_h := _level_up_probe_line_height(effect_font) + 4.0
+	# Бейдж всегда занимает отдельный слот на весь ряд. До SCRUM-1032 compact-
+	# режим накладывал плашку на верх сокета: при 1280x720 она закрывала 31px
+	# орнамента и 18px самой reward-иконки. Бюджетный цикл ниже уже умеет ужимать
+	# описание/дельты, поэтому безопаснее сохранять отдельный ряд на всех scale.
+	var badges: Array = advice.get("badges", [])
+	var forecasts: Array = advice.get("forecasts", [])
+	var badge_any := false
+	for badge_kind in badges:
+		if str(badge_kind) != "":
+			badge_any = true
+			break
+	var badge_slot := badge_any
+	# Глубина описания: 2 строки; 3 — если просторно и хоть одному описанию
+	# набора мало двух (меряем той же гарнитурой, что и line height).
+	var measure_probe := Label.new()
+	var measure_font: Font = measure_probe.get_theme_font("font")
+	measure_probe.free()
+	if measure_font == null:
+		measure_font = ThemeDB.fallback_font
+	var desc_lines := 2
+	if not compact:
+		var desc_width := content_width - 12.0
+		var desc_font_h := _level_up_probe_line_height(desc_font)
+		for reward in rewards:
+			var desc_needed := measure_font.get_multiline_string_size(
+				_level_up_card_description(reward), HORIZONTAL_ALIGNMENT_CENTER, desc_width, desc_font).y
+			if desc_needed > desc_font_h * 2.0 + 1.0:
+				desc_lines = 3
+				break
+	# Глубина дельта-блока: максимум строк по набору (1-3); строки кэшируются,
+	# чтобы карточки не пересчитывали их заново.
+	var delta_lines_per_card := []
+	var effect_rows := 1
+	for reward_index in range(rewards.size()):
+		var forecast: Dictionary = forecasts[reward_index] if reward_index < forecasts.size() else {}
+		var lines := _level_up_delta_lines(rewards[reward_index], forecast)
+		delta_lines_per_card.append(lines)
+		effect_rows = maxi(effect_rows, lines.size())
+	var socket_box := roundf(clampf(LU_CARD_SOCKET_BOX_2K * scale, 44.0, LU_CARD_SOCKET_BOX_2K))
+	var badge_h := badge_line_h + 8.0
+	var title_h := title_line_h + 4.0
+	var effect_pad := maxf(5.0, roundf(10.0 * scale))
+	# Бюджет вертикали = зона между шапкой и «Позже»: не влезаем — ступенчатая
+	# деградация (описание до 2 строк → дельта-блок до 1 строки), затем кап.
+	var desc_h := 0.0
+	var effect_chip_h := 0.0
+	var content_height := 0.0
+	while true:
+		desc_h = desc_line_h * float(desc_lines) + 4.0
+		effect_chip_h = effect_row_h * float(effect_rows) + effect_pad * 2.0
+		content_height = socket_box + gap + title_h + small_gap + desc_h + gap + effect_chip_h
+		if badge_slot:
+			content_height = badge_h + gap + content_height
+		if content_height + pad * 2.0 <= zone_height:
+			break
+		if desc_lines > 2:
+			desc_lines = 2
+			continue
+		if effect_rows > 1:
+			effect_rows -= 1
+			continue
+		break
+	var card_height := minf(roundf(content_height + pad * 2.0), floorf(zone_height))
+	return {
+		"pad": pad,
+		"content_width": content_width,
+		"card_size": Vector2(card_width, card_height),
+		"gap": gap,
+		"small_gap": small_gap,
+		"badge_slot": badge_slot,
+		"badge_h": badge_h,
+		"badge_w": minf(roundf(LU_CARD_BADGE_WIDTH_2K * scale), content_width - 8.0),
+		"badge_font": badge_font,
+		"socket_box": socket_box,
+		"icon_px": roundf(socket_box * LU_CARD_SOCKET_ICON_RATIO),
+		"star_px": roundf(clampf(LU_CARD_STAR_2K * scale, 14.0, LU_CARD_STAR_2K)),
+		"title_h": title_h,
+		"title_font": title_font,
+		"desc_lines": desc_lines,
+		"desc_h": desc_h,
+		"desc_font": desc_font,
+		"effect_rows": effect_rows,
+		"effect_row_h": effect_row_h,
+		"effect_font": effect_font,
+		"effect_pad": effect_pad,
+		"effect_inset": 2.0 if compact else maxf(6.0, roundf(16.0 * scale)),
+		"effect_chip_h": effect_chip_h,
+		"delta_lines_per_card": delta_lines_per_card,
+	}
+
+
+# Высота строки Label при данном кегле — через Font.get_height той же
+# гарнитуры, какой рисуются подписи (тема проекта → fallback). ВАЖНО: мерить
+# probe-Label'ом вне дерева нельзя — override кегля не попадает в theme-cache
+# узла до входа в дерево, и min size считается дефолтным кеглем; а Label,
+# которому бокс ниже строки, не рисует её ВООБЩЕ (lines_visible = 0).
+func _level_up_probe_line_height(font_size: int) -> float:
+	var probe := Label.new()
+	var font: Font = probe.get_theme_font("font")
+	probe.free()
+	if font == null:
+		font = ThemeDB.fallback_font
+	return ceilf(font.get_height(font_size))
+
+
+# SCRUM-892: лёгкий подсвет сокета при hover/focus карточки — modulate 1.12 без
+# таймеров; метод+bind вместо лямбды (канон freed-lambda SCRUM-551) + гарды.
+func _update_level_up_socket_glow(button: Button, socket: TextureRect) -> void:
+	if button == null or socket == null or not is_instance_valid(button) or not is_instance_valid(socket):
+		return
+	var lit := button.is_hovered() or button.has_focus()
+	socket.modulate = Color(1.12, 1.12, 1.12, 1.0) if lit else Color.WHITE
+
+
+func _make_level_up_reward_button(reward: Dictionary, layout := {}, advice := {}, reward_index := -1) -> Button:
 	var is_rare := bool(reward.get("rare", false))
 	var rare_color: Color = TIER_COLORS[3]
-	var card_size: Vector2 = layout.get("card_size", Vector2(245, 364))
-	var card_scale := _level_up_xy_scale(LU_CARD_2K.size, card_size)
+	# SCRUM-871: прогноз этой карточки и её бейдж из общего advice набора.
+	var forecast: Dictionary = {}
+	var badge_kind := ""
+	var forecasts: Array = advice.get("forecasts", [])
+	var badges: Array = advice.get("badges", [])
+	if reward_index >= 0 and reward_index < forecasts.size():
+		forecast = forecasts[reward_index]
+	if reward_index >= 0 and reward_index < badges.size():
+		badge_kind = str(badges[reward_index])
+	# SCRUM-892: стек контентной высоты по общему плану набора.
+	var plan: Dictionary = layout.get("card_plan", {})
+	if plan.is_empty():
+		plan = _level_up_card_plan([reward], {"forecasts": [forecast], "badges": [badge_kind]}, layout)
+	var card_size: Vector2 = plan.get("card_size", Vector2(238.0, 300.0))
 	var button := Button.new()
 	button.text = ""
 	button.custom_minimum_size = card_size
@@ -6666,81 +9472,319 @@ func _make_level_up_reward_button(reward: Dictionary, layout := {}) -> Button:
 	button.focus_mode = Control.FOCUS_ALL
 	button.clip_text = false
 	button.mouse_default_cursor_shape = Control.CURSOR_POINTING_HAND
-	button.tooltip_text = _format_level_up_reward_text(reward)
+	button.tooltip_text = _level_up_card_tooltip(reward, forecast, badge_kind, advice)
 	button.set_meta("level_up_text_field_card", true)
-	_apply_level_up_card_2k_theme(button, card_size, is_rare)
+	_apply_level_up_card_atlas_theme(button, card_size, is_rare)
 	button.add_theme_color_override("font_color", Color.TRANSPARENT)
 	button.add_theme_color_override("font_hover_color", Color.TRANSPARENT)
 	button.add_theme_color_override("font_pressed_color", Color.TRANSPARENT)
 
+	# Контент-зона = фактические content margins чип-стиля карточки; блоки стека
+	# позиционируются вручную (Control-хост, не контейнер — гейт no_overlap).
+	var card_margins: Vector4 = button.get_meta("level_up_card_content_margins", Vector4.ZERO)
 	var content := Control.new()
 	content.name = "LevelUpRewardContent"
 	content.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	content.clip_contents = true
-	content.position = _level_up_scaled_position(LU_CARD_CONTENT_RECT, card_scale)
-	content.size = _level_up_scaled_size(LU_CARD_CONTENT_RECT, card_scale)
+	content.position = Vector2(card_margins.x, card_margins.y)
+	content.size = Vector2(
+		maxf(card_size.x - card_margins.x - card_margins.z, 8.0),
+		maxf(card_size.y - card_margins.y - card_margins.w, 8.0)
+	)
 	content.custom_minimum_size = content.size
 	button.add_child(content)
 
-	var icon_size := _level_up_scaled_size(LU_CARD_ICON_RECT, card_scale)
-	var icon := game.UIIconRegistry.make_icon(_reward_icon_id(reward), icon_size) as Control
+	var content_width := content.size.x
+	var gap := float(plan.get("gap", 8.0))
+	var badge_w := float(plan.get("badge_w", 200.0))
+	var badge_h := float(plan.get("badge_h", 26.0))
+	var has_badge := badge_kind != "" and LU_BADGE_META.has(badge_kind)
+	var stack_y := 0.0
+	if bool(plan.get("badge_slot", false)):
+		if has_badge:
+			_add_level_up_badge(
+				content, badge_kind,
+				Rect2(roundf((content_width - badge_w) * 0.5), stack_y, badge_w, badge_h),
+				int(plan.get("badge_font", 12))
+			)
+		stack_y += badge_h + gap
+
+	# Сокет атласа за иконкой награды: socket_notable; карточке advisor-акцента
+	# (метки «ЛУЧШИЙ УРОН»/«ЛУЧШИЙ ВЫБОР») — socket_keystone + звезда star_alloc
+	# в правом-верхнем углу сокета. Только KEEP_ASPECT_CENTERED в фикс-боксах
+	# (натив 128/168/80 или пропорциональный даунскейл), NEAREST.
+	var socket_box := float(plan.get("socket_box", 64.0))
+	var advisor_keystone := badge_kind in ["dps", "both"]
+	var socket := TextureRect.new()
+	socket.name = "LevelUpRewardSocket%d" % maxi(reward_index, 0)
+	socket.texture = game._cached_texture(str(META40_SOCKET_TEXTURES["keystone" if advisor_keystone else "notable"]))
+	socket.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
+	socket.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
+	socket.texture_filter = CanvasItem.TEXTURE_FILTER_NEAREST
+	socket.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	socket.position = Vector2(roundf((content_width - socket_box) * 0.5), stack_y)
+	socket.size = Vector2(socket_box, socket_box)
+	socket.custom_minimum_size = socket.size
+	content.add_child(socket)
+
+	var icon_px := float(plan.get("icon_px", 40.0))
+	var icon_size := Vector2(icon_px, icon_px)
+	# Сокет уже задаёт читаемый визуальный масштаб: registry-scale здесь нельзя
+	# применять, иначе Control становится в 1.45x больше строгой inner safe-zone.
+	var icon := game.UIIconRegistry.make_icon(_reward_icon_id(reward), icon_size, false) as Control
 	icon.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	icon.position = _level_up_scaled_position(LU_CARD_ICON_RECT, card_scale)
-	icon.size = icon_size
+	icon.position = socket.position + Vector2(roundf((socket_box - icon_px) * 0.5), roundf((socket_box - icon_px) * 0.5))
+	# Фиксируем Control ровно в рассчитанной inner safe-zone.
 	icon.custom_minimum_size = icon_size
+	icon.size = icon_size
 	content.add_child(icon)
 
+	if advisor_keystone:
+		var star_px := float(plan.get("star_px", 16.0))
+		var star_inset := maxf(1.0, roundf(2.0 * float(layout.get("scale", 0.5))))
+		var star := TextureRect.new()
+		star.name = "LevelUpRewardSocketStar%d" % maxi(reward_index, 0)
+		star.texture = game._cached_texture(META40_STAR_ALLOC_PATH)
+		star.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
+		star.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
+		star.texture_filter = CanvasItem.TEXTURE_FILTER_NEAREST
+		star.mouse_filter = Control.MOUSE_FILTER_IGNORE
+		star.position = socket.position + Vector2(socket_box - star_px - star_inset, star_inset)
+		star.size = Vector2(star_px, star_px)
+		content.add_child(star)
+
+	# Лёгкий подсвет сокета при hover/focus карточки — существующие сигналы кнопки.
+	var glow_callable := Callable(self, "_update_level_up_socket_glow").bind(button, socket)
+	button.mouse_entered.connect(glow_callable)
+	button.mouse_exited.connect(glow_callable)
+	button.focus_entered.connect(glow_callable)
+	button.focus_exited.connect(glow_callable)
+	stack_y += socket_box + gap
+
 	var title_label := Label.new()
+	title_label.name = "LevelUpRewardTitle"
 	title_label.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	title_label.text = str(reward.get("title", "Upgrade"))
 	title_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	title_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	title_label.clip_text = true
 	title_label.max_lines_visible = 1
-	_level_up_place_card_child(title_label, LU_CARD_TITLE_RECT, card_scale)
-	title_label.add_theme_font_size_override("font_size", _readable_font_size(maxi(7, int(roundf(18.0 * card_scale.y))), 0, 26))
-	title_label.add_theme_color_override("font_color", rare_color if is_rare else Color(1.0, 0.91, 0.58, 1.0))
+	title_label.text_overrun_behavior = TextServer.OVERRUN_TRIM_ELLIPSIS
+	title_label.position = Vector2(4.0, stack_y)
+	title_label.size = Vector2(content_width - 8.0, float(plan.get("title_h", 20.0)))
+	title_label.custom_minimum_size = title_label.size
+	# Фидбек читаемости SCRUM-883: пол кегля 12 — длинные титулы уходят в
+	# ellipsis, но не в нечитаемый микрошрифт.
+	_shrink_label_font_to_width(title_label, SemanticTypography.ROLE_TITLE, int(plan.get("title_font", 12)), title_label.size.x - 4.0, SemanticTypography.role_min(SemanticTypography.ROLE_TITLE))
+	title_label.add_theme_color_override("font_color", rare_color if is_rare else Color(0.96, 0.90, 0.68, 1.0))
 	content.add_child(title_label)
+	stack_y += float(plan.get("title_h", 20.0)) + float(plan.get("small_gap", 4.0))
 
 	var description_label := Label.new()
 	description_label.name = "LevelUpRewardDescription"
 	description_label.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	description_label.text = _level_up_card_description(reward)
 	description_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	description_label.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
 	description_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	description_label.clip_text = true
-	description_label.max_lines_visible = 2
-	_level_up_place_card_child(description_label, LU_CARD_DESCRIPTION_RECT, card_scale)
-	description_label.add_theme_font_size_override("font_size", _readable_font_size(maxi(6, int(roundf(12.0 * card_scale.y))), 0, 18))
-	description_label.add_theme_color_override("font_color", Color(0.74, 0.82, 0.90, 1.0))
+	description_label.max_lines_visible = int(plan.get("desc_lines", 2))
+	description_label.text_overrun_behavior = TextServer.OVERRUN_TRIM_ELLIPSIS
+	description_label.position = Vector2(6.0, stack_y)
+	description_label.size = Vector2(content_width - 12.0, float(plan.get("desc_h", 36.0)))
+	description_label.custom_minimum_size = description_label.size
+	description_label.add_theme_font_size_override("font_size", SemanticTypography.resolve_fixed(
+		SemanticTypography.ROLE_DESCRIPTION,
+		int(plan.get("desc_font", 12)),
+		SemanticTypography.role_min(SemanticTypography.ROLE_DESCRIPTION),
+		SemanticTypography.role_max(SemanticTypography.ROLE_DESCRIPTION)
+	))
+	description_label.add_theme_color_override("font_color", Color(0.88, 0.92, 0.98, 1.0))
 	content.add_child(description_label)
+	stack_y += float(plan.get("desc_h", 36.0)) + gap
 
+	# SCRUM-871: блок «до -> после» — реально пересчитанные дельты производных
+	# статов; глубина блока единая по набору (план), строки центрируются в чипе.
+	var effect_inset := float(plan.get("effect_inset", 8.0))
 	var effect_panel := PanelContainer.new()
 	effect_panel.name = "LevelUpRewardEffectPreview"
 	effect_panel.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	_level_up_place_card_child(effect_panel, LU_CARD_EFFECT_RECT, card_scale)
-	effect_panel.add_theme_stylebox_override("panel", _level_up_effect_preview_style(effect_panel.size))
+	effect_panel.position = Vector2(effect_inset, stack_y)
+	effect_panel.size = Vector2(content_width - effect_inset * 2.0, float(plan.get("effect_chip_h", 40.0)))
+	effect_panel.custom_minimum_size = effect_panel.size
+	var effect_style := _atlas_chip_style(0.62, float(plan.get("effect_pad", 5.0)))
+	effect_panel.add_theme_stylebox_override("panel", effect_style)
 	content.add_child(effect_panel)
 
-	var effect_label := Label.new()
-	effect_label.name = "LevelUpRewardEffectText"
-	effect_label.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	effect_label.text = _level_up_reward_preview(reward)
-	effect_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	effect_label.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
-	effect_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
-	effect_label.clip_text = true
-	effect_label.max_lines_visible = 1
-	effect_label.add_theme_font_size_override("font_size", _readable_font_size(maxi(6, int(roundf(12.0 * card_scale.y))), 0, 18))
-	effect_label.add_theme_color_override("font_color", Color(0.84, 0.97, 1.0, 1.0))
-	effect_panel.add_child(effect_label)
+	# Хост строк — обычный Control с нулевым minimum size: PanelContainer не
+	# растёт от текста, дельта-блок гарантированно остаётся в контент-зоне
+	# карточки (гейт ui_no_overlap_matrix).
+	var effect_rows := Control.new()
+	effect_rows.name = "LevelUpRewardEffectRows"
+	effect_rows.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	effect_rows.clip_contents = true
+	effect_panel.add_child(effect_rows)
+
+	var rows_size := Vector2(
+		maxf(effect_panel.size.x - effect_style.content_margin_left - effect_style.content_margin_right, 8.0),
+		maxf(effect_panel.size.y - effect_style.content_margin_top - effect_style.content_margin_bottom, 8.0)
+	)
+	var delta_lines_cache: Array = plan.get("delta_lines_per_card", [])
+	var delta_lines: Array = delta_lines_cache[reward_index] if (reward_index >= 0 and reward_index < delta_lines_cache.size()) else _level_up_delta_lines(reward, forecast)
+	# Бюджетная деградация плана могла срезать глубину блока — лишние строки
+	# отбрасываем сразу (полный список всегда в тултипе карточки).
+	var plan_rows := maxi(int(plan.get("effect_rows", 3)), 1)
+	if delta_lines.size() > plan_rows:
+		delta_lines = delta_lines.slice(0, plan_rows)
+	var row_height := float(plan.get("effect_row_h", 18.0))
+	var effect_font := int(plan.get("effect_font", 12))
+	var has_forecast_deltas: bool = not (forecast.get("deltas", []) as Array).is_empty()
+	# Строки центрируются в зоне блока; не влезающие по высоте отбрасываем
+	# (кроме первой: контракт смоук/матрицы «LevelUpRewardEffectText с '->'»).
+	var used_height := roundf(maxf(rows_size.y - row_height * float(delta_lines.size()), 0.0) * 0.5)
+	for line_index in range(delta_lines.size()):
+		var line_label := Label.new()
+		line_label.name = "LevelUpRewardEffectText" if line_index == 0 else "LevelUpRewardEffectText%d" % (line_index + 1)
+		line_label.mouse_filter = Control.MOUSE_FILTER_IGNORE
+		line_label.text = str(delta_lines[line_index])
+		line_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+		line_label.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
+		line_label.autowrap_mode = TextServer.AUTOWRAP_OFF
+		line_label.clip_text = true
+		line_label.max_lines_visible = 1
+		line_label.text_overrun_behavior = TextServer.OVERRUN_TRIM_ELLIPSIS
+		_shrink_label_font_to_width(line_label, SemanticTypography.ROLE_BODY, effect_font, rows_size.x - 4.0, SemanticTypography.role_min(SemanticTypography.ROLE_BODY))
+		line_label.add_theme_color_override("font_color", Color(0.76, 0.96, 0.80, 1.0) if has_forecast_deltas else Color(0.84, 0.97, 1.0, 1.0))
+		var line_height := maxf(row_height, line_label.get_minimum_size().y)
+		if line_index > 0 and used_height + line_height > rows_size.y + 0.5:
+			line_label.free()
+			continue
+		line_label.position = Vector2(0.0, used_height)
+		line_label.size = Vector2(rows_size.x, line_height)
+		effect_rows.add_child(line_label)
+		used_height += line_height
 	return button
+
+
+# SCRUM-871: контекст прогноза — живые статы/моды игрока (бой или меню-снапшот,
+# fallback на базу класса) + актуальный weapon_config (боевой или собранный по
+# выбранному классу/оружию тем же ProgressionData.weapon путём).
+func _level_up_offer_advice(rewards: Array) -> Dictionary:
+	var weapon_config = {}
+	if game.current_player != null and is_instance_valid(game.current_player):
+		weapon_config = game.current_player.get("weapon_config")
+	if not (weapon_config is Dictionary) or (weapon_config as Dictionary).is_empty():
+		weapon_config = game.PROGRESSION_DATA.weapon(game.selected_character_id, game.selected_weapon_id)
+	return LevelUpAdvisor.recommend(rewards, _active_stats_snapshot(), _active_modifiers_snapshot(), weapon_config)
+
+
+# SCRUM-871: понижает размер шрифта, пока строка не влезает в ширину зоны —
+# юзерский масштаб шрифта (readability) может раздуть текст шире слота, а
+# клип срезал бы края подписи. Вызывать после присвоения label.text.
+func _shrink_label_font_to_width(label: Label, role: StringName, base_font_size: int, max_width: float, min_font_size := 12, fit_ratio := 0.62) -> void:
+	# Внешняя мерка Font.get_string_size детерминирована, но фактический рендер
+	# строки в окне шире мерки до ~1.5x (font oversampling/DPI), а внутренняя
+	# мерка Label.get_minimum_size в этом же окружении флачит. Поэтому меряем
+	# внешне и держим жёсткий запас fit_ratio 0.62 (~1/1.6): подпись гарантированно
+	# помещается на всех целевых разрешениях, клип/ellipsis остаются страховкой.
+	var font: Font = label.get_theme_font("font")
+	if font == null:
+		font = ThemeDB.fallback_font
+	var font_size := base_font_size
+	if font != null:
+		var fit_width := maxf(max_width, 8.0) * fit_ratio
+		while font_size > min_font_size and font.get_string_size(label.text, HORIZONTAL_ALIGNMENT_LEFT, -1.0, font_size).x > fit_width:
+			font_size -= 1
+	label.add_theme_font_size_override("font_size", SemanticTypography.resolve_fixed(
+		role, font_size
+	))
+
+
+# Строки блока изменений карточки: топ-3 дельты прогноза; без измеримых дельт —
+# прежнее SCRUM-525 превью (спец-эффекты вроде призывов), затем краткий фолбэк.
+func _level_up_delta_lines(reward: Dictionary, forecast: Dictionary) -> Array:
+	var lines: Array = []
+	var explicit_summary := str(reward.get("effect_summary", "")).strip_edges()
+	if explicit_summary != "":
+		lines.append(explicit_summary)
+		return lines
+	for delta in (forecast.get("deltas", []) as Array):
+		lines.append(LevelUpAdvisor.delta_line(delta))
+		if lines.size() >= 3:
+			break
+	if lines.is_empty():
+		lines = _level_up_effect_preview_lines(reward, 2)
+	if lines.is_empty():
+		lines.append(_level_up_reward_preview(reward))
+	return lines
+
+
+func _format_level_up_gain_percent(gain: float) -> String:
+	var percent := gain * 100.0
+	return "%.1f%%" % percent if absf(percent) < 10.0 else "%d%%" % int(roundf(percent))
+
+
+# Тултип карточки: название, описание, полный список изменений, классовая
+# интерпретация и объяснение бейджа рекомендации.
+func _level_up_card_tooltip(reward: Dictionary, forecast: Dictionary, badge_kind: String, advice := {}) -> String:
+	var parts: Array = [str(reward.get("title", "Upgrade"))]
+	var description := str(reward.get("description", "")).strip_edges()
+	if description != "":
+		parts.append(description)
+	var deltas: Array = forecast.get("deltas", [])
+	if not deltas.is_empty():
+		var delta_lines: Array = []
+		for delta in deltas:
+			delta_lines.append("  %s" % LevelUpAdvisor.delta_line(delta))
+		parts.append("Изменения:\n%s" % "\n".join(delta_lines))
+	else:
+		parts.append(_level_up_reward_preview(reward))
+	var interpretation := _reward_interpretation_text(reward)
+	if interpretation != "":
+		parts.append(interpretation)
+	match badge_kind:
+		"dps":
+			parts.append("Метка «Лучший урон»: наибольший прирост урона в секунду (+%s) для твоего класса и оружия." % _format_level_up_gain_percent(float(advice.get("dps_gain", 0.0))))
+		"surv":
+			parts.append("Метка «Выживание»: наибольший прирост живучести (+%s) — здоровье, защита, уклонение, поглощение и лечение." % _format_level_up_gain_percent(float(advice.get("surv_gain", 0.0))))
+		"both":
+			parts.append("Метка «Лучший выбор»: сильнейший рост и урона (+%s), и живучести (+%s)." % [_format_level_up_gain_percent(float(advice.get("dps_gain", 0.0))), _format_level_up_gain_percent(float(advice.get("surv_gain", 0.0)))])
+	return "\n".join(parts)
+
+
+# SCRUM-883: бейдж рекомендации советника — полупрозрачная плашка атласа
+# (_atlas_translucent_style) в бейдж-слоте стека карточки (rect из плана
+# SCRUM-892), подпись цветом типа бейджа. Механика kind — в LevelUpAdvisor.
+func _add_level_up_badge(content: Control, badge_kind: String, badge_rect: Rect2, base_font_size: int) -> void:
+	var badge_meta: Dictionary = LU_BADGE_META[badge_kind]
+	var badge := PanelContainer.new()
+	badge.name = "LevelUpRewardBadge"
+	badge.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	badge.add_theme_stylebox_override("panel", _atlas_translucent_style(0.7, 6.0))
+	badge.position = badge_rect.position
+	badge.size = badge_rect.size
+	badge.custom_minimum_size = badge_rect.size
+	content.add_child(badge)
+
+	var badge_label := Label.new()
+	badge_label.name = "LevelUpRewardBadgeLabel"
+	badge_label.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	badge_label.text = str(badge_meta["text"])
+	badge_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	badge_label.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
+	badge_label.clip_text = true
+	badge_label.max_lines_visible = 1
+	badge_label.text_overrun_behavior = TextServer.OVERRUN_TRIM_ELLIPSIS
+	# Фидбек читаемости SCRUM-883: пол кегля 12 — подпись всегда читаемая.
+	_shrink_label_font_to_width(badge_label, SemanticTypography.ROLE_HUD, base_font_size, badge_rect.size.x - 8.0, SemanticTypography.role_min(SemanticTypography.ROLE_HUD))
+	badge_label.add_theme_color_override("font_color", badge_meta["text_color"])
+	badge.add_child(badge_label)
 
 
 func _make_battle_reward_card(reward: Dictionary) -> Button:
 	var button := Button.new()
 	button.text = ""
-	button.custom_minimum_size = REWARD_CARD_SIZE
+	button.custom_minimum_size = _battle_reward_card_size()
 	button.size_flags_horizontal = Control.SIZE_SHRINK_CENTER
 	button.size_flags_vertical = Control.SIZE_SHRINK_CENTER
 	button.focus_mode = Control.FOCUS_ALL
@@ -6758,7 +9802,9 @@ func _make_battle_reward_card(reward: Dictionary) -> Button:
 	icon_row.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	icon_row.alignment = BoxContainer.ALIGNMENT_CENTER
 	content.add_child(icon_row)
-	icon_row.add_child(game.UIIconRegistry.make_icon(_reward_icon_id(reward), Vector2(40, 40)))
+	# SCRUM-963: пост-боевые награды тоже содержат артефакты (reward_pool) —
+	# артефакт показывает свою artifact_<id>.png, статы — реестровые иконки.
+	icon_row.add_child(_make_reward_card_icon(reward, Vector2(40, 40)))
 
 	var title_label := Label.new()
 	title_label.name = "BattleRewardTitle"
@@ -6768,8 +9814,18 @@ func _make_battle_reward_card(reward: Dictionary) -> Button:
 	title_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	title_label.max_lines_visible = 2
 	title_label.text_overrun_behavior = TextServer.OVERRUN_TRIM_ELLIPSIS
-	title_label.add_theme_font_size_override("font_size", _readable_font_size(17, 0, 22))
-	title_label.add_theme_color_override("font_color", Color(1.0, 0.91, 0.58, 1.0))
+	title_label.add_theme_font_size_override("font_size", SemanticTypography.resolve_fixed(
+		SemanticTypography.ROLE_TITLE,
+		_readable_font_size(SemanticTypography.ROLE_TITLE, 17, 12, 22),
+		SemanticTypography.role_min(SemanticTypography.ROLE_TITLE),
+		SemanticTypography.role_max(SemanticTypography.ROLE_TITLE)
+	))
+	# SCRUM-963: титул артефакта — цветом редкости (язык элитных карточек);
+	# стат/атрибут-награды остаются золотыми.
+	if str(reward.get("kind", "")) == "artifact":
+		title_label.add_theme_color_override("font_color", _artifact_tier_color(reward))
+	else:
+		title_label.add_theme_color_override("font_color", Color(0.96, 0.90, 0.68, 1.0))
 	content.add_child(title_label)
 
 	var preview_label := Label.new()
@@ -6778,8 +9834,8 @@ func _make_battle_reward_card(reward: Dictionary) -> Button:
 	preview_label.text = _level_up_reward_preview(reward)
 	preview_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	preview_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
-	preview_label.add_theme_font_size_override("font_size", _readable_font_size(14, 0, 16))
-	preview_label.add_theme_color_override("font_color", Color(0.86, 0.96, 1.0, 1.0))
+	preview_label.add_theme_font_size_override("font_size", _readable_font_size(SemanticTypography.ROLE_BODY, 14, 12, 16))
+	preview_label.add_theme_color_override("font_color", Color(0.88, 0.92, 0.98, 1.0))
 	content.add_child(preview_label)
 
 	var description_label := Label.new()
@@ -6790,9 +9846,28 @@ func _make_battle_reward_card(reward: Dictionary) -> Button:
 	description_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	description_label.max_lines_visible = 2
 	description_label.text_overrun_behavior = TextServer.OVERRUN_TRIM_ELLIPSIS
-	description_label.add_theme_font_size_override("font_size", _readable_font_size(12, 0, 14))
-	description_label.add_theme_color_override("font_color", Color(0.66, 0.74, 0.82, 1.0))
+	description_label.add_theme_font_size_override("font_size", _readable_font_size(SemanticTypography.ROLE_DESCRIPTION, 12, 12, 14))
+	description_label.add_theme_color_override("font_color", Color(0.78, 0.66, 0.44, 1.0))
 	content.add_child(description_label)
+
+	# SCRUM-963: классовая пометка классового артефакта — одна строка цветом пометки.
+	var reward_note := _artifact_affinity_note(reward)
+	if not reward_note.is_empty():
+		var note_label := Label.new()
+		note_label.name = "BattleRewardClassNote"
+		note_label.mouse_filter = Control.MOUSE_FILTER_IGNORE
+		note_label.text = str(reward_note["text"])
+		note_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+		note_label.max_lines_visible = 1
+		note_label.text_overrun_behavior = TextServer.OVERRUN_TRIM_ELLIPSIS
+		note_label.add_theme_font_size_override("font_size", SemanticTypography.resolve_fixed(
+			SemanticTypography.ROLE_BODY,
+			_readable_font_size(SemanticTypography.ROLE_BODY, 11, 12, 14),
+			SemanticTypography.role_min(SemanticTypography.ROLE_BODY),
+			SemanticTypography.role_max(SemanticTypography.ROLE_BODY)
+		))
+		note_label.add_theme_color_override("font_color", reward_note["color"])
+		content.add_child(note_label)
 
 	var spacer := Control.new()
 	spacer.mouse_filter = Control.MOUSE_FILTER_IGNORE
@@ -6804,48 +9879,59 @@ func _make_battle_reward_card(reward: Dictionary) -> Button:
 	action_label.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	action_label.text = "Получить"
 	action_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	action_label.add_theme_font_size_override("font_size", _readable_font_size(15, 0, 16))
-	action_label.add_theme_color_override("font_color", Color(1.0, 0.90, 0.64, 1.0))
+	action_label.add_theme_font_size_override("font_size", _readable_font_size(SemanticTypography.ROLE_ACTION, 15, 12, 16))
+	action_label.add_theme_color_override("font_color", Color(0.94, 0.80, 0.46, 1.0))
 	action_label.add_theme_color_override("font_outline_color", Color(0.13, 0.04, 0.035, 0.92))
 	action_label.add_theme_constant_override("outline_size", 2)
 	content.add_child(action_label)
+	_resize_reward_card(button, button.custom_minimum_size)
 	return button
 
 
-func _make_elite_artifact_card(reward: Dictionary) -> Button:
-	# Крупная карточка трофея элитки: иконка 112px, название/тир цветом тира,
-	# эффект и классовая интерпретация. Кликается целиком, фокусируется с клавиатуры.
+func _make_elite_artifact_card(reward: Dictionary, presentation := {}) -> Button:
+	# SCRUM-990/991: одна карточка трофея для elite/chest/boss. Содержит только
+	# concrete current-class effect и безопасные recommendation badges; старой
+	# отдельной строки «Интерпретация» больше нет.
+	var resolved_presentation: Dictionary = presentation as Dictionary
+	if resolved_presentation.is_empty():
+		resolved_presentation = _artifact_reward_single_presentation(reward)
 	var tier_color := _artifact_tier_color(reward)
 	var button := Button.new()
 	button.text = ""
-	button.custom_minimum_size = REWARD_ELITE_CARD_SIZE
+	button.custom_minimum_size = (_artifact_reward_layout_metrics(game.get_viewport().get_visible_rect().size)["card_size"] as Vector2)
 	button.size_flags_horizontal = Control.SIZE_SHRINK_CENTER
 	button.size_flags_vertical = Control.SIZE_SHRINK_CENTER
 	button.focus_mode = Control.FOCUS_ALL
 	button.clip_text = false
 	button.mouse_default_cursor_shape = Control.CURSOR_POINTING_HAND
-	button.tooltip_text = _format_level_up_reward_text(reward)
+	button.tooltip_text = "%s\n%s" % [_format_level_up_reward_text(reward), str(resolved_presentation.get("resolved_effect", ""))]
 	button.set_meta("reward_frame_kind", "elite_artifact")
-	_apply_reward_card_theme(button, true)
+	button.set_meta("artifact_reward_id", str(reward.get("id", "")))
+	_resize_elite_artifact_card(button, button.custom_minimum_size)
 
-	var content := _add_reward_card_content_container(button, true)
+	var content := VBoxContainer.new()
 	content.name = "EliteArtifactRewardContent"
-	content.add_theme_constant_override("separation", 3)
+	content.clip_contents = true
+	content.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	content.set_anchors_preset(Control.PRESET_FULL_RECT)
+	content.alignment = BoxContainer.ALIGNMENT_CENTER
+	button.add_child(content)
 
 	var icon_row := HBoxContainer.new()
+	icon_row.name = "EliteArtifactRewardIconRow"
 	icon_row.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	icon_row.alignment = BoxContainer.ALIGNMENT_CENTER
 	content.add_child(icon_row)
-	icon_row.add_child(game.UIIconRegistry.make_icon(_reward_icon_id(reward), Vector2(52, 52)))
+	# SCRUM-963: у артефакта — его уникальная иконка artifact_<id>.png.
+	icon_row.add_child(_make_reward_card_icon(reward, Vector2(52, 52)))
 
 	var title_label := Label.new()
+	title_label.name = "EliteArtifactRewardCardTitle"
 	title_label.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	title_label.text = str(reward.get("title", "Артефакт"))
 	title_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	title_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	title_label.max_lines_visible = 2
-	title_label.text_overrun_behavior = TextServer.OVERRUN_TRIM_ELLIPSIS
-	title_label.add_theme_font_size_override("font_size", _readable_font_size(18, 0, 22))
 	title_label.add_theme_color_override("font_color", tier_color)
 	content.add_child(title_label)
 
@@ -6855,38 +9941,147 @@ func _make_elite_artifact_card(reward: Dictionary) -> Button:
 	tier_label.text = _artifact_tier_text(reward)
 	tier_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	tier_label.max_lines_visible = 1
-	tier_label.text_overrun_behavior = TextServer.OVERRUN_TRIM_ELLIPSIS
-	tier_label.add_theme_font_size_override("font_size", _readable_font_size(13, 0, 16))
 	tier_label.add_theme_color_override("font_color", tier_color)
 	content.add_child(tier_label)
 
-	var effect_label := Label.new()
-	effect_label.name = "EliteArtifactRewardDescription"
-	effect_label.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	effect_label.text = str(reward.get("description", ""))
-	effect_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	effect_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
-	effect_label.max_lines_visible = 2
-	effect_label.text_overrun_behavior = TextServer.OVERRUN_TRIM_ELLIPSIS
-	effect_label.add_theme_font_size_override("font_size", _readable_font_size(12, 0, 15))
-	effect_label.add_theme_color_override("font_color", Color(0.88, 0.94, 1.0, 1.0))
-	content.add_child(effect_label)
+	var badge_label := Label.new()
+	badge_label.name = "EliteArtifactRewardBadge"
+	badge_label.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	badge_label.text = str(resolved_presentation.get("badge_text", ""))
+	badge_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	badge_label.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
+	badge_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	badge_label.add_theme_color_override("font_color", Color(0.98, 0.80, 0.32, 1.0))
+	content.add_child(badge_label)
 
-	var interpretation := _reward_interpretation_text(reward)
-	if interpretation != "":
-		var interp_label := Label.new()
-		interp_label.name = "EliteArtifactRewardInterpretation"
-		interp_label.mouse_filter = Control.MOUSE_FILTER_IGNORE
-		interp_label.text = interpretation
-		interp_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-		interp_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
-		interp_label.max_lines_visible = 1
-		interp_label.text_overrun_behavior = TextServer.OVERRUN_TRIM_ELLIPSIS
-		interp_label.add_theme_font_size_override("font_size", _readable_font_size(11, 0, 14))
-		interp_label.add_theme_color_override("font_color", Color(0.66, 0.74, 0.82, 1.0))
-		content.add_child(interp_label)
+	var resolved_label := Label.new()
+	resolved_label.name = "EliteArtifactRewardResolvedEffect"
+	resolved_label.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	resolved_label.text = str(resolved_presentation.get("resolved_effect", ""))
+	resolved_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	resolved_label.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
+	resolved_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	resolved_label.size_flags_vertical = Control.SIZE_EXPAND_FILL
+	resolved_label.add_theme_color_override("font_color", Color(0.88, 0.92, 0.98, 1.0))
+	content.add_child(resolved_label)
+
+	var action_label := Label.new()
+	action_label.name = "EliteArtifactRewardAction"
+	action_label.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	action_label.text = "Выбрать"
+	action_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	action_label.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
+	action_label.add_theme_color_override("font_color", Color(0.94, 0.80, 0.46, 1.0))
+	content.add_child(action_label)
+
+	_resize_elite_artifact_card(button, button.custom_minimum_size)
 
 	return button
+
+
+func _artifact_reward_weapon_config() -> Dictionary:
+	var config: Dictionary = game.PROGRESSION_DATA.weapon(game.selected_character_id, game.selected_weapon_id).duplicate(true)
+	config["character_id"] = game.selected_character_id
+	return config
+
+
+func _artifact_reward_presentations(rewards: Array) -> Array:
+	return ArtifactRewardPresenter.build_offer_presentations(
+		rewards,
+		game.selected_character_id,
+		_active_stats_snapshot(),
+		_active_modifiers_snapshot(),
+		_artifact_reward_weapon_config()
+	)
+
+
+func _artifact_reward_single_presentation(reward: Dictionary) -> Dictionary:
+	return ArtifactRewardPresenter.build_single_presentation(
+		reward,
+		game.selected_character_id,
+		_active_stats_snapshot(),
+		_active_modifiers_snapshot(),
+		_artifact_reward_weapon_config()
+	)
+
+
+func _artifact_reward_card_pad(display_size: Vector2) -> float:
+	if display_size.y < 400.0:
+		return 16.0
+	if display_size.y < 600.0:
+		return 20.0
+	return 24.0
+
+
+func _resize_elite_artifact_card(button: Button, display_size: Vector2) -> void:
+	if button == null or not is_instance_valid(button):
+		return
+	button.custom_minimum_size = display_size
+	button.size = display_size
+	var pad := _artifact_reward_card_pad(display_size)
+	_apply_atlas_choice_card_theme(button, pad)
+	var margins := _atlas_chip_content_margins(pad)
+	button.set_meta("artifact_reward_display_size", display_size)
+	button.set_meta("artifact_reward_content_margins", margins)
+	var content := button.find_child("EliteArtifactRewardContent", false, false) as VBoxContainer
+	if content == null:
+		return
+	content.offset_left = margins.x
+	content.offset_top = margins.y
+	content.offset_right = -margins.z
+	content.offset_bottom = -margins.w
+	var compact := display_size.y < 400.0
+	var medium := display_size.y < 600.0 and not compact
+	content.add_theme_constant_override("separation", 2 if compact else (5 if medium else 7))
+	var icon := content.find_child("UIIcon_*", true, false) as Control
+	if icon != null:
+		var icon_size := Vector2(32.0, 32.0) if compact else (Vector2(68.0, 68.0) if medium else Vector2(94.0, 94.0))
+		icon.custom_minimum_size = icon_size
+	var title := content.find_child("EliteArtifactRewardCardTitle", false, false) as Label
+	if title != null:
+		title.custom_minimum_size.y = 32.0 if compact else (58.0 if medium else 72.0)
+		title.add_theme_font_size_override("font_size", SemanticTypography.resolve_fixed(
+			SemanticTypography.ROLE_TITLE,
+			_readable_font_size(SemanticTypography.ROLE_TITLE, 12 if compact else (16 if medium else 19), 11, 16 if compact else (20 if medium else 25)),
+			SemanticTypography.role_min(SemanticTypography.ROLE_TITLE),
+			SemanticTypography.role_max(SemanticTypography.ROLE_TITLE)
+		))
+	var tier := content.find_child("EliteArtifactRewardTier", false, false) as Label
+	if tier != null:
+		tier.custom_minimum_size.y = 18.0 if compact else (24.0 if medium else 30.0)
+		tier.add_theme_font_size_override("font_size", SemanticTypography.resolve_fixed(
+			SemanticTypography.ROLE_BODY,
+			_readable_font_size(SemanticTypography.ROLE_BODY, 10 if compact else (12 if medium else 14), 10, 13 if compact else (16 if medium else 19)),
+			SemanticTypography.role_min(SemanticTypography.ROLE_BODY),
+			SemanticTypography.role_max(SemanticTypography.ROLE_BODY)
+		))
+	var badge := content.find_child("EliteArtifactRewardBadge", false, false) as Label
+	if badge != null:
+		badge.custom_minimum_size.y = 20.0 if compact else (34.0 if medium else 42.0)
+		badge.add_theme_font_size_override("font_size", SemanticTypography.resolve_fixed(
+			SemanticTypography.ROLE_HUD,
+			_readable_font_size(SemanticTypography.ROLE_HUD, 9 if compact else (11 if medium else 13), 9, 11 if compact else (15 if medium else 18)),
+			SemanticTypography.role_min(SemanticTypography.ROLE_HUD),
+			SemanticTypography.role_max(SemanticTypography.ROLE_HUD)
+		))
+	var resolved := content.find_child("EliteArtifactRewardResolvedEffect", false, false) as Label
+	if resolved != null:
+		resolved.add_theme_constant_override("line_spacing", -2 if compact else 0)
+		resolved.add_theme_font_size_override("font_size", SemanticTypography.resolve_fixed(
+			SemanticTypography.ROLE_BODY,
+			_readable_font_size(SemanticTypography.ROLE_BODY, 9 if compact else (12 if medium else 14), 9, 11 if compact else (16 if medium else 19)),
+			SemanticTypography.role_min(SemanticTypography.ROLE_BODY),
+			SemanticTypography.role_max(SemanticTypography.ROLE_BODY)
+		))
+	var action := content.find_child("EliteArtifactRewardAction", false, false) as Label
+	if action != null:
+		action.custom_minimum_size.y = 22.0 if compact else (28.0 if medium else 34.0)
+		action.add_theme_font_size_override("font_size", SemanticTypography.resolve_fixed(
+			SemanticTypography.ROLE_ACTION,
+			_readable_font_size(SemanticTypography.ROLE_ACTION, 10 if compact else (13 if medium else 16), 10, 14 if compact else (18 if medium else 22)),
+			SemanticTypography.role_min(SemanticTypography.ROLE_ACTION),
+			SemanticTypography.role_max(SemanticTypography.ROLE_ACTION)
+		))
 
 
 func _current_shop_node_key() -> String:
@@ -6921,6 +10116,257 @@ func _clear_current_shop_stock() -> void:
 	game.current_shop_node_key = ""
 
 
+func _shop_gold_shell_base_layout(viewport_size: Vector2) -> Dictionary:
+	if viewport_size.y < 900.0:
+		return {
+			"viewport": Vector2(1280.0, 720.0),
+			"inner": Rect2(157, 137, 966, 446),
+			"header": Rect2(157, 137, 966, 70),
+			"hud": Rect2(181, 147, 480, 50),
+			"title": Rect2(675, 137, 330, 34),
+			"subtitle": Rect2(675, 173, 330, 24),
+			"empty": Rect2(1057, 147, 50, 50),
+			"slots": [Rect2(340, 219, 132, 140), Rect2(496, 219, 132, 140), Rect2(652, 219, 132, 140), Rect2(808, 219, 132, 140)],
+			# SCRUM-1073: widen the fixed compact tooltip rather than shrinking its
+			# semantic typography. Worst-case stock copy reflows to three lines.
+			"tooltip": Rect2(290, 361, 700, 148),
+			"tooltip_content": Rect2(315, 378, 650, 114),
+			"back": Rect2(500, 511, 280, 64),
+			"title_font": 24, "subtitle_font": 12, "tooltip_font": 11, "back_font": 20,
+		}
+	if viewport_size.y >= 1200.0:
+		return {
+			"viewport": Vector2(2560.0, 1440.0),
+			"inner": Rect2(299, 257, 1962, 926),
+			"header": Rect2(299, 257, 1962, 120),
+			"hud": Rect2(323, 273, 930, 88),
+			"title": Rect2(1281, 257, 700, 64),
+			"subtitle": Rect2(1281, 327, 700, 40),
+			"empty": Rect2(2187, 292, 50, 50),
+			"slots": [Rect2(810, 421, 196, 196), Rect2(1058, 421, 196, 196), Rect2(1306, 421, 196, 196), Rect2(1554, 421, 196, 196)],
+			"tooltip": Rect2(980, 649, 600, 240),
+			"tooltip_content": Rect2(1016, 677, 528, 184),
+			"back": Rect2(1100, 1059, 360, 88),
+			"title_font": 46, "subtitle_font": 22, "tooltip_font": 17, "back_font": 30,
+		}
+	return {
+		"viewport": Vector2(1920.0, 1080.0),
+		"inner": Rect2(224, 193, 1472, 694),
+		"header": Rect2(224, 193, 1472, 100),
+		"hud": Rect2(248, 209, 720, 72),
+		"title": Rect2(996, 193, 560, 52),
+		"subtitle": Rect2(996, 251, 560, 32),
+		"empty": Rect2(1622, 220, 50, 50),
+		"slots": [Rect2(572, 325, 164, 164), Rect2(776, 325, 164, 164), Rect2(980, 325, 164, 164), Rect2(1184, 325, 164, 164)],
+		"tooltip": Rect2(690, 513, 540, 200),
+		"tooltip_content": Rect2(721, 537, 478, 152),
+		"back": Rect2(780, 795, 360, 72),
+		"title_font": 37, "subtitle_font": 18, "tooltip_font": 14, "back_font": 26,
+	}
+
+
+func _shop_map_design_rect(design_rect: Rect2, design_inner: Rect2, current_inner: Rect2) -> Rect2:
+	var scale := Vector2(
+		current_inner.size.x / maxf(design_inner.size.x, 1.0),
+		current_inner.size.y / maxf(design_inner.size.y, 1.0)
+	)
+	return Rect2(
+		Vector2(
+			roundf(current_inner.position.x + (design_rect.position.x - design_inner.position.x) * scale.x),
+			roundf(current_inner.position.y + (design_rect.position.y - design_inner.position.y) * scale.y)
+		),
+		Vector2(roundf(design_rect.size.x * scale.x), roundf(design_rect.size.y * scale.y))
+	)
+
+
+func _shop_gold_shell_metrics(viewport_size: Vector2) -> Dictionary:
+	if viewport_size.x <= 1.0 or viewport_size.y <= 1.0:
+		viewport_size = game.get_viewport().get_visible_rect().size
+	var safe_rect := _unified_safe_rect_for_size(viewport_size)
+	var inner_rect := _gold_shell_inner_rect_for_size(viewport_size)
+	var base := _shop_gold_shell_base_layout(viewport_size)
+	var design_inner: Rect2 = base["inner"]
+	var mapped_slots: Array[Rect2] = []
+	for design_slot in base["slots"]:
+		mapped_slots.append(_shop_map_design_rect(design_slot as Rect2, design_inner, inner_rect))
+	var backdrop_scale := minf(safe_rect.size.x / 2560.0, safe_rect.size.y / 1440.0)
+	var backdrop_size := Vector2(2560.0, 1440.0) * backdrop_scale
+	var visible_backdrop_rect := Rect2(safe_rect.get_center() - backdrop_size * 0.5, backdrop_size)
+	return {
+		"safe_rect": safe_rect,
+		"inner_rect": inner_rect,
+		"visible_backdrop_rect": visible_backdrop_rect,
+		"header_rect": _shop_map_design_rect(base["header"], design_inner, inner_rect),
+		"hud_rect": _shop_map_design_rect(base["hud"], design_inner, inner_rect),
+		"title_rect": _shop_map_design_rect(base["title"], design_inner, inner_rect),
+		"subtitle_rect": _shop_map_design_rect(base["subtitle"], design_inner, inner_rect),
+		"manual_attribute_reserved_empty": _shop_map_design_rect(base["empty"], design_inner, inner_rect),
+		"slot_rects": mapped_slots,
+		"slot_size": mapped_slots[0].size,
+		"tooltip_rect": _shop_map_design_rect(base["tooltip"], design_inner, inner_rect),
+		"tooltip_content_rect": _shop_map_design_rect(base["tooltip_content"], design_inner, inner_rect),
+		"back_rect": _shop_map_design_rect(base["back"], design_inner, inner_rect),
+		"title_font": base["title_font"], "subtitle_font": base["subtitle_font"],
+		"tooltip_font": base["tooltip_font"], "back_font": base["back_font"],
+	}
+
+
+func _add_shop_gold_shell_background(root: Control) -> void:
+	var underlay := ColorRect.new()
+	underlay.name = "ShopGoldUnderlay"
+	underlay.set_anchors_preset(Control.PRESET_FULL_RECT)
+	underlay.color = Color(0.012, 0.010, 0.016, 1.0)
+	underlay.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	root.add_child(underlay)
+
+	var clip := Control.new()
+	clip.name = "ShopBackgroundClip"
+	clip.clip_contents = true
+	clip.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	clip.z_index = 1
+	root.add_child(clip)
+
+	var background := TextureRect.new()
+	background.name = "ShopGoldBackdrop"
+	background.set_anchors_preset(Control.PRESET_FULL_RECT)
+	background.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
+	background.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
+	background.texture = _screen_background_texture("shop")
+	background.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	clip.add_child(background)
+
+	var shade := ColorRect.new()
+	shade.name = "ShopGoldReadableShade"
+	shade.set_anchors_preset(Control.PRESET_FULL_RECT)
+	shade.color = Color(0.0, 0.0, 0.0, 0.18)
+	shade.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	clip.add_child(shade)
+
+
+func _layout_shop_gold_shell(root: Control) -> void:
+	if root == null or not is_instance_valid(root):
+		return
+	var metrics := _shop_gold_shell_metrics(root.size)
+	var safe_rect: Rect2 = metrics["safe_rect"]
+	var inner_rect: Rect2 = metrics["inner_rect"]
+	root.set_meta("gold_shell_content_rect", safe_rect)
+	root.set_meta("gold_shell_inner_rect", inner_rect)
+	root.set_meta("scrum993_manual_attribute_reserved_empty", metrics["manual_attribute_reserved_empty"])
+
+	var clip := root.find_child("ShopBackgroundClip", true, false) as Control
+	if clip != null:
+		_apply_control_rect(clip, safe_rect)
+	var backdrop := root.find_child("ShopGoldBackdrop", true, false) as TextureRect
+	if backdrop != null:
+		backdrop.set_meta("scrum993_visible_image_rect", metrics["visible_backdrop_rect"])
+		backdrop.set_meta("scrum993_source_fully_contained", true)
+
+	var header := root.find_child("ShopHeader", true, false) as Control
+	var header_rect: Rect2 = metrics["header_rect"]
+	if header != null:
+		_apply_control_rect(header, header_rect)
+	var title := root.find_child("ShopTitleLabel", true, false) as Label
+	var title_rect: Rect2 = metrics["title_rect"]
+	if title != null:
+		_apply_control_rect(title, Rect2(title_rect.position - header_rect.position, title_rect.size))
+		title.add_theme_font_size_override("font_size", _readable_font_size(SemanticTypography.ROLE_TITLE, int(metrics["title_font"]), 20, int(metrics["title_font"])))
+	var subtitle := root.find_child("ShopSubtitleLabel", true, false) as Label
+	var subtitle_rect: Rect2 = metrics["subtitle_rect"]
+	if subtitle != null:
+		_apply_control_rect(subtitle, Rect2(subtitle_rect.position - header_rect.position, subtitle_rect.size))
+		subtitle.add_theme_font_size_override("font_size", SemanticTypography.resolve_fixed(
+			SemanticTypography.ROLE_CAPTION,
+			_readable_font_size(SemanticTypography.ROLE_CAPTION, int(metrics["subtitle_font"]), 11, int(metrics["subtitle_font"])),
+			SemanticTypography.role_min(SemanticTypography.ROLE_CAPTION),
+			SemanticTypography.role_max(SemanticTypography.ROLE_CAPTION)
+		))
+
+	var wall := root.find_child("ShopParchmentWall", true, false) as Control
+	if wall != null:
+		_apply_control_rect(wall, inner_rect)
+	var slots: Array = metrics["slot_rects"]
+	for index in range(slots.size()):
+		var button := root.find_child("ShopItemButton%d" % index, true, false) as Button
+		if button == null:
+			continue
+		var slot_rect: Rect2 = slots[index]
+		_apply_control_rect(button, Rect2(slot_rect.position - inner_rect.position, slot_rect.size))
+		_resize_shop_item_slot(button, slot_rect.size)
+
+	var tooltip_panel := root.find_child("ShopTooltipPanel", true, false) as Panel
+	var tooltip_rect: Rect2 = metrics["tooltip_rect"]
+	if tooltip_panel != null:
+		tooltip_panel.add_theme_stylebox_override("panel", _shop_tooltip_texture_style(tooltip_rect.size))
+		_apply_control_rect(tooltip_panel, tooltip_rect)
+	var tooltip_text := root.find_child("ShopTooltipText", true, false) as Label
+	var tooltip_content_rect: Rect2 = metrics["tooltip_content_rect"]
+	if tooltip_text != null:
+		_apply_control_rect(tooltip_text, Rect2(tooltip_content_rect.position - tooltip_rect.position, tooltip_content_rect.size))
+		tooltip_text.add_theme_font_size_override("font_size", SemanticTypography.resolve_fixed(
+			SemanticTypography.ROLE_TOOLTIP,
+			_readable_font_size(SemanticTypography.ROLE_TOOLTIP, int(metrics["tooltip_font"]), 11, int(metrics["tooltip_font"])),
+			SemanticTypography.role_min(SemanticTypography.ROLE_TOOLTIP),
+			SemanticTypography.role_max(SemanticTypography.ROLE_TOOLTIP)
+		))
+
+	var back := root.find_child("ShopLeaveButton", true, false) as Button
+	var back_rect: Rect2 = metrics["back_rect"]
+	if back != null:
+		_set_action_button_size(back, back_rect.size.x, back_rect.size.y)
+		_apply_slim_action_button_theme(back)
+		_apply_control_rect(back, back_rect)
+		back.add_theme_font_size_override("font_size", _readable_font_size(SemanticTypography.ROLE_ACTION, int(metrics["back_font"]), 16, int(metrics["back_font"])))
+
+	var hud_root := game.hud_layer.find_child("MenuRunHudRoot", true, false) as Control if game.hud_layer != null and is_instance_valid(game.hud_layer) else null
+	if hud_root != null:
+		_layout_shop_gold_shell_resource_hud_current(hud_root)
+
+
+func _resize_shop_item_slot(button: Button, display_size: Vector2) -> void:
+	if button == null or not is_instance_valid(button):
+		return
+	button.custom_minimum_size = display_size
+	button.size = display_size
+	button.clip_contents = true
+	_apply_atlas_choice_card_theme(button, _atlas_card_pad(display_size))
+	var content := button.find_child("ShopWallItemContent", true, false) as Control
+	if content == null:
+		return
+	var content_scale := minf(display_size.x / SHOP_INLINE_SLOT_SIZE.x, display_size.y / SHOP_INLINE_SLOT_SIZE.y)
+	content.set_anchors_preset(Control.PRESET_TOP_LEFT)
+	content.size = SHOP_INLINE_SLOT_SIZE
+	content.custom_minimum_size = SHOP_INLINE_SLOT_SIZE
+	content.scale = Vector2(content_scale, content_scale)
+	content.position = (display_size - SHOP_INLINE_SLOT_SIZE * content_scale) * 0.5
+	content.set_meta("scrum993_uniform_content_scale", content_scale)
+
+
+func _show_shop_gold_tooltip(root: Control, source: Button) -> void:
+	if root == null or source == null or not is_instance_valid(root) or not is_instance_valid(source):
+		return
+	var panel := root.find_child("ShopTooltipPanel", true, false) as Panel
+	var label := root.find_child("ShopTooltipText", true, false) as Label
+	if panel == null or label == null:
+		return
+	label.text = str(source.get_meta("shop_tooltip_text", ""))
+	panel.set_meta("shop_tooltip_source", source.name)
+	panel.visible = label.text.strip_edges() != ""
+
+
+func _maybe_hide_shop_gold_tooltip(root: Control, source: Button) -> void:
+	call_deferred("_hide_shop_gold_tooltip_if_inactive", root, source)
+
+
+func _hide_shop_gold_tooltip_if_inactive(root: Control, source: Button) -> void:
+	if root == null or source == null or not is_instance_valid(root) or not is_instance_valid(source):
+		return
+	if source.has_focus() or source.get_global_rect().has_point(source.get_global_mouse_position()):
+		return
+	var panel := root.find_child("ShopTooltipPanel", true, false) as Panel
+	if panel != null and str(panel.get_meta("shop_tooltip_source", "")) == str(source.name):
+		panel.visible = false
+
+
 func _show_shop_screen() -> void:
 	_ensure_shop_stock_for_current_node()
 
@@ -6935,52 +10381,56 @@ func _show_shop_screen() -> void:
 	root.set_anchors_preset(Control.PRESET_FULL_RECT)
 	root.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	game.ui_layer.add_child(root)
+	_prepare_global_tooltips(root)
 
-	_add_screen_background(root, "shop")
+	var initial_metrics := _shop_gold_shell_metrics(root.size)
+	root.set_meta("gold_shell_content_rect", initial_metrics["safe_rect"])
+	root.set_meta("gold_shell_inner_rect", initial_metrics["inner_rect"])
+	root.set_meta("gold_shell_screen_id", "shop")
+	_add_shop_gold_shell_background(root)
 	_create_menu_run_hud()
-	_create_upgrade_fab(root, _show_shop_screen)
 
-	var title_box := VBoxContainer.new()
+	var title_box := Control.new()
 	title_box.name = "ShopHeader"
-	title_box.anchor_left = 0.5
-	title_box.anchor_top = 0.0
-	title_box.anchor_right = 0.5
-	title_box.anchor_bottom = 0.0
-	title_box.offset_left = -380.0
-	title_box.offset_top = 104.0
-	title_box.offset_right = 380.0
-	title_box.offset_bottom = 190.0
-	title_box.alignment = BoxContainer.ALIGNMENT_CENTER
 	title_box.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	title_box.z_index = 20
 	root.add_child(title_box)
 
 	var title := Label.new()
+	title.name = "ShopTitleLabel"
 	title.text = "Магазин"
 	title.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	title.add_theme_font_size_override("font_size", _readable_font_size(42))
+	title.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
+	title.add_theme_font_size_override("font_size", SemanticTypography.resolve_fixed(
+		SemanticTypography.ROLE_TITLE,
+		_readable_font_size(SemanticTypography.ROLE_TITLE, 42),
+		SemanticTypography.role_min(SemanticTypography.ROLE_TITLE),
+		SemanticTypography.role_max(SemanticTypography.ROLE_TITLE)
+	))
 	title.add_theme_color_override("font_color", Color(0.96, 0.90, 0.68, 1.0))
 	title_box.add_child(title)
 
 	var subtitle := Label.new()
-	subtitle.text = "Выбери предмет. Описание появляется при наведении."
+	subtitle.name = "ShopSubtitleLabel"
+	subtitle.text = "Выбери предмет — описание появится ниже."
 	subtitle.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	subtitle.add_theme_font_size_override("font_size", _readable_font_size(16))
-	subtitle.add_theme_color_override("font_color", Color(0.84, 0.90, 0.96, 1.0))
+	subtitle.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
+	subtitle.clip_text = true
+	subtitle.add_theme_font_size_override("font_size", SemanticTypography.resolve_fixed(
+		SemanticTypography.ROLE_CAPTION,
+		_readable_font_size(SemanticTypography.ROLE_CAPTION, 16, 12),
+		SemanticTypography.role_min(SemanticTypography.ROLE_CAPTION),
+		SemanticTypography.role_max(SemanticTypography.ROLE_CAPTION)
+	))
+	subtitle.add_theme_color_override("font_color", Color(0.88, 0.92, 0.98, 1.0))
 	title_box.add_child(subtitle)
 
 	# Товары лежат в центральной свободной зоне shop backdrop как предметы
 	# лавки, а не как UI-карточки.
 	var wall := Control.new()
 	wall.name = "ShopParchmentWall"
-	wall.anchor_left = 0.20
-	wall.anchor_top = 0.38
-	wall.anchor_right = 0.80
-	wall.anchor_bottom = 0.75
-	wall.offset_left = 0.0
-	wall.offset_top = 0.0
-	wall.offset_right = 0.0
-	wall.offset_bottom = 0.0
 	wall.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	wall.z_index = 20
 	root.add_child(wall)
 
 	var items_area := Control.new()
@@ -6991,34 +10441,56 @@ func _show_shop_screen() -> void:
 
 	for index in range(game.current_shop_items.size()):
 		var item: Dictionary = game.current_shop_items[index]
-		var slot := _make_shop_item_slot(item, index, money)
-		var slot_anchor := _shop_wall_slot_anchor(index)
-		slot.anchor_left = slot_anchor.x
-		slot.anchor_top = slot_anchor.y
-		slot.anchor_right = slot_anchor.x
-		slot.anchor_bottom = slot_anchor.y
-		slot.offset_left = -SHOP_INLINE_SLOT_SIZE.x * 0.5
-		slot.offset_top = -SHOP_INLINE_SLOT_SIZE.y * 0.5
-		slot.offset_right = SHOP_INLINE_SLOT_SIZE.x * 0.5
-		slot.offset_bottom = SHOP_INLINE_SLOT_SIZE.y * 0.5
+		var slot := _make_shop_item_slot(item, index, money, initial_metrics["slot_size"])
 		items_area.add_child(slot)
+
+	# SCRUM-993: описание не следует за курсором и не может попасть на орнамент.
+	# Один фиксированный tooltip-band расположен под четырьмя товарами.
+	var tooltip_panel := Panel.new()
+	tooltip_panel.name = "ShopTooltipPanel"
+	tooltip_panel.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	tooltip_panel.z_index = 30
+	tooltip_panel.visible = false
+	var tooltip_style := _shop_tooltip_texture_style(initial_metrics["tooltip_rect"].size)
+	tooltip_panel.add_theme_stylebox_override("panel", tooltip_style if tooltip_style != null else _atlas_chip_style(0.96, 10.0))
+	root.add_child(tooltip_panel)
+
+	var tooltip_text := Label.new()
+	tooltip_text.name = "ShopTooltipText"
+	tooltip_text.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	tooltip_text.vertical_alignment = VERTICAL_ALIGNMENT_TOP
+	tooltip_text.clip_text = true
+	tooltip_text.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	tooltip_text.add_theme_color_override("font_color", Color(0.96, 0.91, 0.78, 1.0))
+	tooltip_panel.add_child(tooltip_text)
+
+	for slot_node in items_area.get_children():
+		var slot := slot_node as Button
+		if slot == null:
+			continue
+		slot.mouse_entered.connect(_show_shop_gold_tooltip.bind(root, slot))
+		slot.focus_entered.connect(_show_shop_gold_tooltip.bind(root, slot))
+		slot.mouse_exited.connect(_maybe_hide_shop_gold_tooltip.bind(root, slot))
+		slot.focus_exited.connect(_maybe_hide_shop_gold_tooltip.bind(root, slot))
 
 	var skip_button := _make_button("Назад")
 	skip_button.name = "ShopLeaveButton"
 	skip_button.tooltip_text = "Покинуть магазин и продолжить маршрут."
-	skip_button.anchor_left = 0.5
-	skip_button.anchor_top = 1.0
-	skip_button.anchor_right = 0.5
-	skip_button.anchor_bottom = 1.0
-	skip_button.offset_left = -180.0
-	skip_button.offset_top = -126.0
-	skip_button.offset_right = 180.0
-	skip_button.offset_bottom = -58.0
-	_set_action_button_size(skip_button, 360.0)
 	var leave_shop := func() -> void:
-		game.route._return_to_map_after_shop_visit()
+		# SCRUM-996: событийный магазин (shop_after) продолжает событийный путь
+		# (advance/пост-боевой возврат с автосейвом); обычный узел-магазин —
+		# прежний выход с возможностью повторного входа на узел.
+		if game.event_shop_exit_action.is_valid():
+			var exit_action: Callable = game.event_shop_exit_action
+			game.event_shop_exit_action = Callable()
+			exit_action.call()
+		else:
+			game.route._return_to_map_after_shop_visit()
 	skip_button.pressed.connect(leave_shop)
+	# SCRUM-968: «Назад» из магазина — выход/закрытие экрана → ui_back.
+	_connect_ui_sfx(skip_button, "back")
 	game.ui_escape_action = leave_shop
+	skip_button.z_index = 20
 	root.add_child(skip_button)
 
 	# SCRUM-812: товары проходимы с геймпада (крестовина/стик), «Назад» доступна ui_down,
@@ -7031,42 +10503,62 @@ func _show_shop_screen() -> void:
 	_wire_run_ui_focus(shop_focus_items, true, [skip_button],
 		shop_focus_items[0] if not shop_focus_items.is_empty() else skip_button)
 
+	_layout_shop_gold_shell(root)
+	root.resized.connect(func() -> void:
+		_layout_shop_gold_shell(root)
+		call_deferred("_layout_shop_gold_shell", root)
+	)
+	# Visual-only hollow frame must remain the final UI child.
+	var frame := _unified_add_frame(root, "ShopGold")
+	frame.z_index = 100
 
-func _make_shop_item_slot(item: Dictionary, index: int, money: int) -> Button:
+
+func _make_shop_item_slot(item: Dictionary, index: int, money: int, display_size := SHOP_INLINE_SLOT_SIZE) -> Button:
 	var purchased: bool = index < game.current_shop_purchased.size() and bool(game.current_shop_purchased[index])
 	var cost := int(item.get("cost", 0))
 	var affordable := money >= cost
 	var button := Button.new()
 	button.name = "ShopItemButton%d" % index
-	button.custom_minimum_size = SHOP_INLINE_SLOT_SIZE
+	button.custom_minimum_size = display_size
 	button.size_flags_horizontal = Control.SIZE_SHRINK_CENTER
 	button.size_flags_vertical = Control.SIZE_SHRINK_CENTER
 	button.focus_mode = Control.FOCUS_ALL
 	button.text = ""
-	button.tooltip_text = _shop_item_tooltip(item, purchased, affordable)
+	button.tooltip_text = ""
+	button.set_meta("shop_tooltip_text", _shop_item_tooltip(item, purchased, affordable))
 	if str(item.get("kind", "")) == "artifact":
-		button.tooltip_text += "\n%s" % _artifact_tier_text(item)
 		var affinity_note := _artifact_affinity_note(item)
 		if not affinity_note.is_empty():
-			button.tooltip_text += "\n[%s]" % affinity_note["text"]
-			var note_label := Label.new()
-			note_label.name = "ShopAffinityNote"
-			note_label.text = "!"
-			note_label.tooltip_text = str(affinity_note["text"])
-			note_label.add_theme_font_size_override("font_size", _readable_font_size(22))
-			note_label.add_theme_color_override("font_color", affinity_note["color"])
-			note_label.set_anchors_preset(Control.PRESET_TOP_RIGHT)
-			note_label.offset_left = -26.0
-			note_label.offset_top = 4.0
-			note_label.mouse_filter = Control.MOUSE_FILTER_IGNORE
-			button.add_child(note_label)
-	button.add_theme_stylebox_override("normal", _shop_wall_button_style(false))
-	button.add_theme_stylebox_override("hover", _shop_wall_button_style(true))
-	button.add_theme_stylebox_override("pressed", _shop_wall_button_style(true))
-	button.add_theme_stylebox_override("focus", _shop_wall_button_style(true))
-	button.add_theme_stylebox_override("disabled", _shop_wall_button_style(false))
+			# SCRUM-963: бейдж «!» — только на выпадении ЧУЖОГО класса (cross-class
+			# слот «Украденного герба»); свой классовый артефакт — штатный товар,
+			# пометка живёт в тултипе без тревожного маркера.
+			var affinity_list: Array = item.get("class_affinity", [])
+			if not affinity_list.has(game.selected_character_id):
+				var note_label := Label.new()
+				note_label.name = "ShopAffinityNote"
+				note_label.text = "!"
+				note_label.tooltip_text = str(affinity_note["text"])
+				note_label.add_theme_font_size_override("font_size", SemanticTypography.resolve_fixed(
+					SemanticTypography.ROLE_BODY,
+					_readable_font_size(SemanticTypography.ROLE_BODY, 22),
+					SemanticTypography.role_min(SemanticTypography.ROLE_BODY),
+					SemanticTypography.role_max(SemanticTypography.ROLE_BODY)
+				))
+				note_label.add_theme_color_override("font_color", affinity_note["color"])
+				note_label.set_anchors_preset(Control.PRESET_TOP_RIGHT)
+				note_label.offset_left = -26.0
+				note_label.offset_top = 4.0
+				note_label.mouse_filter = Control.MOUSE_FILTER_IGNORE
+				button.add_child(note_label)
+	# SCRUM-883: слот товара — чип-ряд Атласа (StyleBoxFlat, hover — золотой кант);
+	# внутренности слота (иконка, пергамент-плашка, ценник) сохранены.
+	_apply_atlas_choice_card_theme(button, _atlas_card_pad(display_size))
 	button.pressed.connect(func() -> void:
-		_buy_shop_item_at(index)
+		# SCRUM-968: успех покупки → purchase, отказ (не хватает золота) → ui_error.
+		if _buy_shop_item_at(index):
+			game._play_sfx("purchase")
+		else:
+			game._play_sfx("ui_error")
 	)
 
 	if purchased:
@@ -7077,8 +10569,11 @@ func _make_shop_item_slot(item: Dictionary, index: int, money: int) -> Button:
 	var content := Control.new()
 	content.name = "ShopWallItemContent"
 	content.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	content.set_anchors_preset(Control.PRESET_FULL_RECT)
+	content.set_anchors_preset(Control.PRESET_TOP_LEFT)
+	content.size = SHOP_INLINE_SLOT_SIZE
+	content.custom_minimum_size = SHOP_INLINE_SLOT_SIZE
 	button.add_child(content)
+	_resize_shop_item_slot(button, display_size)
 
 	var shadow := PanelContainer.new()
 	shadow.name = "ShopItemContactShadow"
@@ -7123,10 +10618,14 @@ func _make_shop_item_slot(item: Dictionary, index: int, money: int) -> Button:
 		var plate := NinePatchRect.new()
 		plate.name = "ShopItemCaptionPlate"
 		plate.texture = plate_texture
-		plate.patch_margin_left = int(SHOP_CAPTION_PLATE_MARGINS.x)
-		plate.patch_margin_top = int(SHOP_CAPTION_PLATE_MARGINS.y)
-		plate.patch_margin_right = int(SHOP_CAPTION_PLATE_MARGINS.z)
-		plate.patch_margin_bottom = int(SHOP_CAPTION_PLATE_MARGINS.w)
+		# Source rails are authored at 1728x624. Their raw 150px values would
+		# force a 300x300 minimum into a 140x20 runtime label, so scale the
+		# 9-slice margins to the actual caption plate before assigning them.
+		var plate_margins := _scaled_frame_margins(Vector2(1728.0, 624.0), SHOP_INLINE_CAPTION_SIZE, SHOP_CAPTION_PLATE_MARGINS)
+		plate.patch_margin_left = int(roundf(plate_margins.x))
+		plate.patch_margin_top = int(roundf(plate_margins.y))
+		plate.patch_margin_right = int(roundf(plate_margins.z))
+		plate.patch_margin_bottom = int(roundf(plate_margins.w))
 		plate.anchor_left = 0.5
 		plate.anchor_top = 0.0
 		plate.anchor_right = 0.5
@@ -7145,6 +10644,8 @@ func _make_shop_item_slot(item: Dictionary, index: int, money: int) -> Button:
 	caption.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	caption.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
 	caption.clip_text = true
+	caption.max_lines_visible = 1
+	caption.text_overrun_behavior = TextServer.OVERRUN_TRIM_ELLIPSIS
 	# Текст ужимаем по ширине парчмент-центра плашки (≈ −16px от полной ширины).
 	caption.custom_minimum_size = Vector2(SHOP_INLINE_CAPTION_SIZE.x - 16.0, SHOP_INLINE_CAPTION_SIZE.y)
 	caption.anchor_left = 0.5
@@ -7155,12 +10656,19 @@ func _make_shop_item_slot(item: Dictionary, index: int, money: int) -> Button:
 	caption.offset_top = SHOP_INLINE_CAPTION_TOP
 	caption.offset_right = (SHOP_INLINE_CAPTION_SIZE.x - 16.0) * 0.5
 	caption.offset_bottom = SHOP_INLINE_CAPTION_TOP + SHOP_INLINE_CAPTION_SIZE.y
-	caption.add_theme_font_size_override("font_size", _readable_font_size(13))
-	caption.add_theme_color_override("font_color", Color(0.30, 0.20, 0.10, 1.0) if affordable else Color(0.42, 0.36, 0.30, 0.86))
+	caption.add_theme_font_size_override("font_size", SemanticTypography.resolve_fixed(
+		SemanticTypography.ROLE_CAPTION,
+		_readable_font_size(SemanticTypography.ROLE_CAPTION, 13),
+		SemanticTypography.role_min(SemanticTypography.ROLE_CAPTION),
+		SemanticTypography.role_max(SemanticTypography.ROLE_CAPTION)
+	))
+	caption.add_theme_color_override("font_color", Color(0.96, 0.82, 0.48, 1.0) if affordable else Color(0.70, 0.66, 0.60, 0.90))
+	caption.add_theme_color_override("font_outline_color", Color(0.08, 0.045, 0.02, 0.96))
+	caption.add_theme_constant_override("outline_size", 2)
 	caption.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	content.add_child(caption)
 
-	var price_badge := PanelContainer.new()
+	var price_badge := Panel.new()
 	price_badge.name = "ShopPriceBadge"
 	price_badge.anchor_left = 0.5
 	price_badge.anchor_top = 1.0
@@ -7171,12 +10679,17 @@ func _make_shop_item_slot(item: Dictionary, index: int, money: int) -> Button:
 	price_badge.offset_right = 64.0
 	price_badge.offset_bottom = -12.0
 	price_badge.custom_minimum_size = Vector2(128, 40)
+	price_badge.clip_contents = true
 	price_badge.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	price_badge.add_theme_stylebox_override("panel", _shop_price_badge_style(affordable))
 	content.add_child(price_badge)
 
 	var price_row := HBoxContainer.new()
 	price_row.set_anchors_preset(Control.PRESET_FULL_RECT)
+	price_row.offset_left = 16.0
+	price_row.offset_top = 8.0
+	price_row.offset_right = -16.0
+	price_row.offset_bottom = -8.0
 	price_row.alignment = BoxContainer.ALIGNMENT_CENTER
 	price_row.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	price_badge.add_child(price_row)
@@ -7184,7 +10697,7 @@ func _make_shop_item_slot(item: Dictionary, index: int, money: int) -> Button:
 	var money_icon := TextureRect.new()
 	money_icon.name = "ShopPriceMoneyIcon"
 	money_icon.texture = game.UIIconRegistry.texture_for("money")
-	money_icon.custom_minimum_size = Vector2(18, 18)
+	money_icon.custom_minimum_size = Vector2(16, 16)
 	money_icon.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
 	money_icon.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
 	money_icon.mouse_filter = Control.MOUSE_FILTER_IGNORE
@@ -7195,12 +10708,12 @@ func _make_shop_item_slot(item: Dictionary, index: int, money: int) -> Button:
 	price_label.text = "%d" % cost
 	price_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	price_label.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
-	price_label.add_theme_font_size_override("font_size", _readable_font_size(18))
-	price_label.add_theme_color_override("font_color", Color(1.0, 0.86, 0.34, 1.0) if affordable else Color(1.0, 0.42, 0.42, 1.0))
+	price_label.add_theme_font_size_override("font_size", _readable_font_size(SemanticTypography.ROLE_VALUE, 16, 12, 18))
+	price_label.add_theme_color_override("font_color", Color(0.94, 0.80, 0.46, 1.0) if affordable else Color(1.0, 0.42, 0.42, 1.0))
 	price_row.add_child(price_label)
 
-	if not affordable:
-		_add_shop_state_overlay(button, "Нет монет")
+	# Unaffordable products remain fully legible/focusable: the icon tint, red
+	# price and fixed tooltip communicate the state without covering the item.
 	return button
 
 
@@ -7233,25 +10746,28 @@ func _add_shop_empty_hook(button: Button) -> void:
 	label.text = "снято"
 	label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	label.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
-	label.add_theme_font_size_override("font_size", _readable_font_size(13))
+	label.add_theme_font_size_override("font_size", _readable_font_size(SemanticTypography.ROLE_BODY, 13))
 	label.add_theme_color_override("font_color", Color(0.40, 0.30, 0.20, 0.78))
 	label.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	hook.add_child(label)
 
 
 func _add_shop_state_overlay(button: Button, text: String) -> void:
-	var overlay := PanelContainer.new()
+	var overlay := Panel.new()
 	overlay.name = "ShopItemStateOverlay"
 	overlay.set_anchors_preset(Control.PRESET_FULL_RECT)
+	overlay.clip_contents = true
 	overlay.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	overlay.add_theme_stylebox_override("panel", _shop_purchased_overlay_style())
 	button.add_child(overlay)
 
 	var label := Label.new()
 	label.text = text
+	label.set_anchors_preset(Control.PRESET_FULL_RECT)
 	label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	label.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
-	label.add_theme_font_size_override("font_size", _readable_font_size(17))
+	label.clip_text = true
+	label.add_theme_font_size_override("font_size", _readable_font_size(SemanticTypography.ROLE_BODY, 15, 12, 17))
 	label.add_theme_color_override("font_color", Color(0.96, 0.90, 0.68, 1.0))
 	overlay.add_child(label)
 
@@ -7260,20 +10776,28 @@ func _shop_item_tooltip(item: Dictionary, purchased: bool, affordable: bool) -> 
 	var lines := [
 		str(item.get("title", "Предмет")),
 		str(item.get("description", "")),
-		"Цена: %dg" % int(item.get("cost", 0)),
 	]
+	var detail_line := "Цена: %dg" % int(item.get("cost", 0))
 	var class_text := _shop_item_classes_text(item)
 	if class_text != "":
-		lines.append("Класс: %s" % class_text)
+		detail_line += " · Класс: %s" % class_text
+	lines.append(detail_line)
+	var state_parts: Array[String] = []
+	if str(item.get("kind", "")) == "artifact":
+		state_parts.append(_artifact_tier_text(item))
 	if purchased:
-		lines.append("Уже куплено")
+		state_parts.append("Уже куплено")
 	elif not affordable:
-		lines.append("Не хватает монет")
+		state_parts.append("Не хватает монет")
+	if not state_parts.is_empty():
+		lines.append(" · ".join(state_parts))
 	return "\n".join(lines)
 
 
 func _shop_item_classes_text(item: Dictionary) -> String:
 	var classes: Array = item.get("classes", [])
+	if classes.is_empty():
+		classes = item.get("class_affinity", [])
 	if classes.is_empty():
 		return ""
 	var titles := []
@@ -7332,7 +10856,7 @@ func _shop_item_fallback_icon_id(item: Dictionary) -> String:
 	if classes.has("dark_mage"):
 		return "magic_damage"
 	if classes.has("guitarist"):
-		return "sound_wave_damage"
+		return "magic_damage"
 	if modifiers.has("money_gain_multiplier"):
 		return "money"
 	if modifiers.has("xp_gain_multiplier"):
@@ -7340,21 +10864,6 @@ func _shop_item_fallback_icon_id(item: Dictionary) -> String:
 	if modifiers.has("damage_multiplier"):
 		return "damage"
 	return "artifact"
-
-
-func _shop_wall_button_style(is_hovered: bool) -> StyleBox:
-	var style := StyleBoxFlat.new()
-	style.bg_color = Color(0.90, 0.76, 0.38, 0.08) if is_hovered else Color(0.0, 0.0, 0.0, 0.0)
-	style.border_color = Color(1.0, 0.86, 0.42, 0.38) if is_hovered else Color(0.0, 0.0, 0.0, 0.0)
-	style.set_border_width_all(1 if is_hovered else 0)
-	style.set_corner_radius_all(18)
-	style.content_margin_left = 0
-	style.content_margin_top = 0
-	style.content_margin_right = 0
-	style.content_margin_bottom = 0
-	style.shadow_color = Color(1.0, 0.70, 0.24, 0.18) if is_hovered else Color(0.0, 0.0, 0.0, 0.0)
-	style.shadow_size = 12 if is_hovered else 0
-	return style
 
 
 func _shop_item_shadow_style() -> StyleBox:
@@ -7381,8 +10890,12 @@ func _shop_empty_hook_style() -> StyleBox:
 
 func _shop_price_badge_style(affordable := true) -> StyleBox:
 	var display_size := Vector2(128.0, 40.0)
-	var texture_margins := _scaled_frame_margins(Vector2(256.0, 96.0), display_size, ECONOMY_PRICE_BADGE_MARGINS)
-	var content_margins := _scaled_frame_margins(Vector2(256.0, 96.0), display_size, ECONOMY_PRICE_BADGE_CONTENT)
+	# The visible rails in the 256x96 source are ~24x14px. The older economy
+	# constants described a much larger generic safe zone and expanded this
+	# compact 128x40 badge past its product slot. Keep four runtime pixels of
+	# reserve beyond the scaled rails while leaving 20px for icon/text.
+	var texture_margins := _scaled_frame_margins(Vector2(256.0, 96.0), display_size, Vector4(24.0, 14.0, 24.0, 14.0))
+	var content_margins := _scaled_frame_margins(Vector2(256.0, 96.0), display_size, Vector4(32.0, 19.2, 32.0, 19.2))
 	var tint := Color.WHITE if affordable else Color(0.76, 0.55, 0.55, 0.92)
 	var texture_style := _global_texture_style(ECONOMY_PRICE_BADGE_PATH, texture_margins, tint, content_margins)
 	if texture_style != null:
@@ -7433,6 +10946,42 @@ func _shop_texture_style(path: String, margin: Vector2) -> StyleBoxTexture:
 	return style
 
 
+func _shop_tooltip_texture_style(display_size: Vector2) -> StyleBox:
+	# The 640x320 source frame is displayed at three authored sizes. Scale its
+	# decorative rails with the actual panel instead of keeping the 2K margins
+	# at 720p; reserve four additional pixels before any text starts.
+	var rail := Vector2(
+		maxf(12.0, roundf(display_size.x * 0.05)),
+		maxf(10.0, roundf(display_size.y * 0.10))
+	)
+	var content := Vector4(rail.x + 4.0, rail.y + 4.0, rail.x + 4.0, rail.y + 4.0)
+	var texture: Texture2D = game._cached_texture(SHOP_TOOLTIP_FRAME_PATH)
+	if texture == null:
+		var fallback := _atlas_chip_style(0.96, 10.0)
+		fallback.content_margin_left = content.x
+		fallback.content_margin_top = content.y
+		fallback.content_margin_right = content.z
+		fallback.content_margin_bottom = content.w
+		return fallback
+	var style := StyleBoxTexture.new()
+	style.texture = texture
+	style.texture_margin_left = rail.x
+	style.texture_margin_top = rail.y
+	style.texture_margin_right = rail.x
+	style.texture_margin_bottom = rail.y
+	style.content_margin_left = content.x
+	style.content_margin_top = content.y
+	style.content_margin_right = content.z
+	style.content_margin_bottom = content.w
+	return style
+
+
+func _apply_slim_action_button_theme(button: Button) -> void:
+	# Compact economy actions are a semantic action family, not rebind fields.
+	# The registry owns their accepted slim-source alias and safe margins.
+	_apply_fantasy_button_theme(button, "default", UIButtonFamily.FAMILY_SLIM_ACTION)
+
+
 func _show_rest_screen() -> void:
 	var box := _create_menu_box("Костер", "Восстановись или подготовься перед следующим боем.", "campfire")
 	box.name = "RestContent"
@@ -7449,11 +10998,7 @@ func _show_rest_screen() -> void:
 	_create_menu_run_hud()
 	# Escape = уйти от костра без бонуса (последовательно с пропуском магазина).
 	game.ui_escape_action = game.route._advance_route_after_noncombat
-	var rest_panel := box.get_parent().get_parent() as Control if box.get_parent() != null and box.get_parent().get_parent() != null else null
-	var rest_root := rest_panel.get_parent() as Control if rest_panel != null and rest_panel.get_parent() != null else null
-	if rest_root != null:
-		_create_upgrade_fab(rest_root, _show_rest_screen)
-	var rest_card_size := _economy_choice_display_size(2)
+	var rest_card_size := _gold_shell_economy_choice_display_size(2)
 	var choices := _make_economy_choice_row("RestChoiceRow", rest_card_size, 2)
 	box.add_child(choices)
 	var heal_button := _make_economy_choice_card("Передышка", "Восстановить 35% максимального здоровья.", "Отдохнуть", "RestHealButton", rest_card_size)
@@ -7462,6 +11007,8 @@ func _show_rest_screen() -> void:
 		_apply_event_choice({"title": "Rest", "description": "Recover", "heal_percent": 0.35})
 		game.route._advance_route_after_noncombat()
 	)
+	# SCRUM-968: отдых/подготовка — бесплатные подтверждения (не траты) → ui_click.
+	_connect_ui_sfx(heal_button, "click")
 
 	var guard_button := _make_economy_choice_card("Защитная стойка", "Получить +6% защиты до конца забега.", "Подготовиться", "RestGuardButton", rest_card_size)
 	choices.add_child(guard_button)
@@ -7469,12 +11016,15 @@ func _show_rest_screen() -> void:
 		_apply_reward_to_run({"title": "Защитная стойка", "description": "+6% к защите.", "mods": {"defense_flat": 0.06}})
 		game.route._advance_route_after_noncombat()
 	)
+	_connect_ui_sfx(guard_button, "click")
 	var back_button := _make_button("Назад")
 	back_button.name = "RestBackButton"
 	back_button.size_flags_horizontal = Control.SIZE_SHRINK_CENTER
 	_set_action_button_size(back_button, 380.0, 54.0)
 	back_button.tooltip_text = "Вернуться на карту без отдыха."
 	back_button.pressed.connect(game.route._advance_route_after_noncombat)
+	# SCRUM-968: «Назад» от костра — выход/закрытие экрана → ui_back.
+	_connect_ui_sfx(back_button, "back")
 	box.add_child(back_button)
 
 	# SCRUM-812: два выбора листаются лево/право, «Назад» доступна ui_down, старт — «Передышка».
@@ -7482,9 +11032,11 @@ func _show_rest_screen() -> void:
 
 
 func _show_upgrade_screen() -> void:
-	var box := _create_menu_box("Улучшение", "Выбери усиление оружия или параметра.", "upgrade", _upgrade_panel_2k_style())
+	# SCRUM-883: панель улучшения — чип Атласа (экономический фолбэк) вместо
+	# upgrade_panel @2K-рамки; карточки — чип-ряды общей фабрики.
+	var box := _create_menu_box("Улучшение", "Выбери усиление оружия или параметра.", "upgrade")
 	_create_menu_run_hud()
-	var upgrade_card_size := _economy_choice_display_size(3)
+	var upgrade_card_size := _gold_shell_economy_choice_display_size(3)
 	var choices := _make_economy_choice_row("UpgradeChoiceRow", upgrade_card_size, 3)
 	box.add_child(choices)
 	var index := 0
@@ -7514,16 +11066,22 @@ func _show_event_screen(route_node: Dictionary) -> void:
 		# / старт боя), поэтому непустое значение здесь = тот же незавершённый узел-событие.
 		event_definition = game.current_event_definition.duplicate(true)
 	if event_definition.is_empty():
-		event_definition = game.EVENT_DATA.pick_event(game.used_event_ids, game.rng)
+		# SCRUM-996: контекст отбора — act-теги нового пака (SCRUM-995) фильтруются
+		# по текущему акту; события без тегов (весь текущий пул) допустимы всюду.
+		event_definition = game.EVENT_DATA.pick_event(game.used_event_ids, game.rng, {"act": int(game.current_act)})
 	var event_id := str(event_definition.get("id", ""))
 	if event_id != "" and not game.used_event_ids.has(event_id):
 		game.used_event_ids.append(event_id)
 	game.current_event_definition = event_definition.duplicate(true)
 
-	var box := _create_menu_box(str(event_definition.get("title", route_node["name"])), str(event_definition.get("story", "Странная возможность на дороге: риск, награда или оба сразу.")), "event", _event_panel_2k_style())
+	# SCRUM-997: иллюстрированная встреча (спека docs/design/mockups/
+	# scrum997_event_dialog/spec.md): фон-арт события на весь экран, диалог-панель
+	# справа на полупрозрачном чипе Атласа, три карточки выбора внизу.
+	var metrics := _event_dialog_metrics()
+	var box := _create_menu_box(str(event_definition.get("title", route_node.get("name", "Событие"))), str(event_definition.get("story", "Странная возможность на дороге: риск, награда или оба сразу.")), "event", _atlas_chip_style(0.90, float(metrics["panel_pad"])))
 	_configure_event_menu_layout(box)
-	var event_panel := box.get_parent().get_parent() as Control if box.get_parent() != null and box.get_parent().get_parent() != null else null
-	var event_root := event_panel.get_parent() as Control if event_panel != null and event_panel.get_parent() != null else null
+	_apply_event_screen_background(box, event_id)
+	var event_root := _event_screen_root(box)
 	if event_root != null:
 		event_root.name = "EventScreen"
 	_create_menu_run_hud()
@@ -7535,9 +11093,25 @@ func _show_event_screen(route_node: Dictionary) -> void:
 	# опций. Подставляем процедурные выборы, чтобы экран всегда был кликабельным.
 	if event_choices.is_empty():
 		event_choices = _random_event_choices()
-	var event_card_size := _economy_choice_display_size(3)
-	var choices := _make_economy_choice_row("EventChoiceRow", event_card_size, 3)
-	box.add_child(choices)
+	# SCRUM-997: нижняя полоса выборов — отдельная full-rect зона на корне экрана
+	# (не в панели): ряд карточек слева + плита «Назад» у правого safe-края.
+	var bottom_zone := Control.new()
+	bottom_zone.name = "EventBottomZone"
+	bottom_zone.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	bottom_zone.set_anchors_preset(Control.PRESET_FULL_RECT)
+	if event_root != null:
+		event_root.add_child(bottom_zone)
+	else:
+		box.add_child(bottom_zone)
+	var event_card_size: Vector2 = metrics["card_size"]
+	var row_rect: Rect2 = metrics["row_rect"]
+	var choices := HBoxContainer.new()
+	choices.name = "EventChoiceRow"
+	choices.alignment = BoxContainer.ALIGNMENT_BEGIN
+	choices.add_theme_constant_override("separation", int(metrics["gap"]))
+	bottom_zone.add_child(choices)
+	choices.position = row_rect.position
+	choices.size = row_rect.size
 	var selectable_buttons: Array[Button] = []
 	var index := 0
 	for event_choice in event_choices:
@@ -7546,10 +11120,10 @@ func _show_event_screen(route_node: Dictionary) -> void:
 		var action_text := _event_choice_action_text(event_choice)
 		var button := _make_economy_choice_card(title_text, desc_text, action_text, "EventChoiceButton%d" % index, event_card_size)
 		button.name = "EventChoiceButton%d" % index
-		# SCRUM-565: переодеть карточку выбора в per-слот evt_card @2K-рамку и пере-инсетить
-		# контент под её content-зону (46/58/46/54 source → display), чтобы текст не лез на орнамент.
-		_apply_overhaul_choice_2k_theme(button, "evt_card", event_card_size)
-		_reinset_overhaul_choice_content(button, "evt_card", event_card_size)
+		# SCRUM-883: карточки выбора носят единый atlas-чип общего хелпера
+		# _make_economy_choice_card (StyleBoxFlat a>=0.8, hover — более яркий золотой
+		# кант); SCRUM-997 добавляет строку награды/чек-хинта (спека §2).
+		_add_event_choice_hint_line(button, event_choice, event_card_size)
 		var required_money := _event_choice_scaled_cost(event_choice)
 		if required_money > 0 and _run_money() < required_money:
 			button.disabled = true
@@ -7559,17 +11133,37 @@ func _show_event_screen(route_node: Dictionary) -> void:
 			selectable_buttons.append(button)
 		button.pressed.connect(func() -> void:
 			if not _event_choice_is_affordable(event_choice):
+				# SCRUM-968: платный выбор события без золота — отказ.
+				game._play_sfx("ui_error")
 				return
-			var starts_combat := _apply_event_choice(event_choice)
-			if not starts_combat:
+			# SCRUM-968: платный выбор события (трата золота) — purchase.
+			if _event_choice_scaled_cost(event_choice) > 0:
+				game._play_sfx("purchase")
+			var resolution := _apply_event_choice_resolved(event_choice)
+			if bool(resolution.get("starts_combat", false)):
+				return  # бой стартовал, экран уже сменён; reveal не показывается — исход боя = сам бой
+			var outcome: Dictionary = resolution.get("outcome", {})
+			if not bool(resolution.get("applied", false)):
+				# Гонка оплаты (spend_money не прошёл несмотря на предпроверку) —
+				# прежняя семантика: событие завершается без исхода и без магазина.
 				game.current_event_definition.clear()
 				game.route._advance_route_after_noncombat()
+				return
+			# SCRUM-996: исходы с outcome_text / hidden-выбора / check-проверки показывают
+			# reveal-шаг («что произошло» + кнопка продолжения); остальные — прежний
+			# мгновенный переход на карту.
+			if _event_outcome_needs_reveal(event_choice, outcome):
+				_show_event_outcome_reveal(box, outcome)
+			else:
+				_finish_event_and_continue(outcome)
 		)
 		index += 1
+	# Единый возврат (фидбек 2026-07-08): везде «Назад» на плите back_260x104, 260×action-height.
+	# SCRUM-997: плита живёт в нижней полосе у правого safe-края (спека §2) —
+	# не на иллюстрации (нижняя четверть арта — тёмная UI-зона по манифесту SCRUM-998).
 	var back_button := _make_button("Назад")
 	back_button.name = "EventBackButton"
-	back_button.size_flags_horizontal = Control.SIZE_SHRINK_CENTER
-	_set_action_button_size(back_button, 380.0, 54.0)
+	_set_action_button_size(back_button, 260.0, _atlas_action_button_height())
 	var allow_skip := bool(event_definition.get("allow_skip", false))
 	# Аварийный выход: если ни один выбор недоступен (например, не хватает золота на все
 	# платные опции), кнопка «Назад» обязана работать, иначе забег застревает навсегда.
@@ -7588,7 +11182,10 @@ func _show_event_screen(route_node: Dictionary) -> void:
 		game.current_event_definition.clear()
 		game.route._show_battle_map()
 	)
-	box.add_child(back_button)
+	bottom_zone.add_child(back_button)
+	var back_rect: Rect2 = metrics["back_rect"]
+	back_button.position = back_rect.position
+	back_button.size = back_rect.size
 
 	# Клавиатура/геймпад: события должны выбираться не только мышью (AC SCRUM-477).
 	# Замыкаем фокус по доступным карточкам стрелками влево/вправо и ставим фокус на
@@ -7616,24 +11213,13 @@ func _show_event_screen(route_node: Dictionary) -> void:
 
 
 # SCRUM-489: координатная спека @2560×1440 — блок «Результаты» (Победа / Поражение).
-# Геометрия победы и поражения идентична: обе — pause/end-модалки через _create_menu_box
-# (_is_pause_end_screen_background → ["pause","victory","death"]). Размер панели из
-# _pause_end_modal_display_size("victory"/"death"): source 986×900, height clamp [520,820]
-# упирается в 820 → @2K = 898×820, CenterContainer центрирует → top-left (831,310).
-# Content-margins PAUSE_END_MODAL_CONTENT (74,94,74,86) скейлятся ×0.911 → (67,86,67,78) →
-# safe-area (898,396,764,656) — идентична PM_SAFE_2K. Контент в ScrollContainer→VBox
-# (alignment center, separation 12): crest 176×176 → title 42px → subtitle 17px (autowrap,
-# до ~8 строк у победы) → кнопка 420×104. Все элементы по центру safe-x; Y — фиксированные
-# слоты в safe 396..1052 (длинный subtitle победы при переполнении уходит в вертикальный
-# скролл — дизайн-инвариант «помещается до скролла» держится при 2K).
-const RESULT_DESIGN_BASE_2K := Vector2(2560.0, 1440.0)
-const RESULT_PANEL_2K := Rect2(831, 310, 898, 820)
-const RESULT_SAFE_2K := Rect2(898, 396, 764, 656)
-const RESULT_CREST_2K := Rect2(1192, 401, 176, 176)      # x = 898 + (764-176)/2
-const RESULT_TITLE_2K := Rect2(898, 589, 764, 54)        # crest_bottom 577 + sep 12
-const RESULT_SUBTITLE_2K := Rect2(898, 655, 764, 220)    # до ~8 строк автопереноса
+# Геометрия победы и поражения использует pause/end-модалку, но с SCRUM-841 result
+# screens больше не кладутся в ScrollContainer: title/subtitle занимают верх safe-зоны,
+# body делит середину на crest-slot и компактную run-summary column, а action button
+# всегда остаётся в нижнем safe-слоте. Pause screen сохраняет scroll-контракт отдельно.
+# SCRUM-883: модалка итогов — чип Атласа с симметричным чип-пэддингом.
+const RESULT_MODAL_CHIP_PAD := 24.0
 const VS_BTN_NEWRUN_2K := Rect2(1070, 948, 420, 104)     # x = 898 + (764-420)/2; нижний слот safe
-const DS_BTN_RETRY_2K := Rect2(1070, 948, 420, 104)      # геометрия = VS_BTN_NEWRUN_2K
 
 
 func _show_victory_screen() -> void:
@@ -7644,17 +11230,23 @@ func _show_victory_screen() -> void:
 	if character_title == "" or character_title == game.selected_character_id:
 		character_title = "Герой"
 	var run_level: int = game.selected_ascension_level
-	# Победа над боссом даёт очко умений (record_boss_victory) — показываем игроку.
+	# Нейтральная победа даёт прогресс; custom sandbox честно сообщает, что
+	# persistent-награды отключены (SCRUM-976), а не обещает невыданное очко.
 	var skill_points_total: int = game.META_PROGRESSION.skill_points(game.meta_state)
-	var subtitle := "Финальный босс повержен.\n%s завершил забег.\nОчки наследия: %d.\nПолучено очко умений — всего %d, потрать их в «Древе умений» в меню.\n%s" % [
+	var progression_line := "Получено очко умений — всего %d, потрать их в «Древе умений» в меню." % skill_points_total
+	var ascension_summary := _victory_ascension_summary(game.selected_character_id, run_level, ascension_level)
+	if not game.run_progression_eligible():
+		progression_line = "Пользовательский sandbox: метапрогрессия и достижения не начисляются."
+		ascension_summary = "Текущий предел Возвышения: %d из %d. Без изменений в пользовательском sandbox." % [ascension_level, game.META_PROGRESSION.MAX_ASCENSION_LEVEL]
+	var subtitle := "Финальный босс повержен.\n%s завершил забег.\nОчки наследия: %d.\n%s\n%s" % [
 		character_title,
 		game.meta_points,
-		skill_points_total,
-		_victory_ascension_summary(game.selected_character_id, run_level, ascension_level),
+		progression_line,
+		ascension_summary,
 	]
-	var box = _create_menu_box("Победа", subtitle, "victory")
-	_add_result_crest(box, "victory")
-	_add_run_summary_rows(box, true)  # SCRUM-502: сводка прогона
+	var result_layout := _create_result_menu_box("Победа", subtitle, "victory")
+	_add_result_crest_to_slot(result_layout["crest_slot"] as Control, "victory")
+	_add_run_summary_rows(result_layout["summary_column"] as VBoxContainer, true, true)  # SCRUM-502: сводка прогона
 	var finish_run := func() -> void:
 		game.current_act = 1
 		game.route_stage = 0
@@ -7663,15 +11255,16 @@ func _show_victory_screen() -> void:
 		game.used_event_ids.clear()
 		game.current_event_definition.clear()
 		game.pending_event_combat.clear()
+		game.event_shop_exit_action = Callable()  # SCRUM-996
 		game.run_used_shop = false
 		game.reset_run_metrics()  # SCRUM-502: метрики не текут в следующий забег
 		game.route_nodes = game.route._generate_route()
 		_show_main_menu()
 	var restart_button := _make_button("Новый забег")
 	restart_button.name = "VictoryNewRunButton"
-	_set_action_button_size(restart_button, STANDARD_ACTION_BUTTON_WIDTH, _pause_end_result_button_height())
+	_set_action_button_size(restart_button, _pause_end_result_button_width("victory"), _pause_end_result_button_height())
 	restart_button.pressed.connect(finish_run)
-	box.add_child(restart_button)
+	(result_layout["button_slot"] as Control).add_child(restart_button)
 	game.ui_escape_action = finish_run
 	# SCRUM-812: стартовый фокус на основной кнопке; B/Esc = основная кнопка (finish_run),
 	# «пустого» закрытия нет.
@@ -7683,9 +11276,9 @@ func _show_death_screen(reason := "") -> void:
 	var subtitle := str(reason)
 	if subtitle == "":
 		subtitle = "Забег завершён: %s, этап маршрута %d." % [game.act_progress_label(), game.route_stage + 1]
-	var box := _create_menu_box("Поражение", subtitle, "death")
-	_add_result_crest(box, "death")
-	_add_run_summary_rows(box, false)  # SCRUM-502: сводка прогона
+	var result_layout := _create_result_menu_box("Поражение", subtitle, "death")
+	_add_result_crest_to_slot(result_layout["crest_slot"] as Control, "death")
+	_add_run_summary_rows(result_layout["summary_column"] as VBoxContainer, false, true)  # SCRUM-502: сводка прогона
 	var back_to_menu := func() -> void:
 		game.current_act = 1
 		game.route_stage = 0
@@ -7694,26 +11287,32 @@ func _show_death_screen(reason := "") -> void:
 		game.used_event_ids.clear()
 		game.current_event_definition.clear()
 		game.pending_event_combat.clear()
+		game.event_shop_exit_action = Callable()  # SCRUM-996
 		game.run_used_shop = false
 		game.reset_run_metrics()  # SCRUM-502: метрики не текут в следующий забег
 		game.route_nodes = game.route._generate_route()
 		_show_main_menu()
 	var retry_button := _make_button("Начать заново")
 	retry_button.name = "DeathRetryButton"
-	_set_action_button_size(retry_button, STANDARD_ACTION_BUTTON_WIDTH, _pause_end_result_button_height())
+	_set_action_button_size(retry_button, _pause_end_result_button_width("death"), _pause_end_result_button_height())
 	retry_button.pressed.connect(back_to_menu)
-	box.add_child(retry_button)
+	(result_layout["button_slot"] as Control).add_child(retry_button)
 	game.ui_escape_action = back_to_menu
 	# SCRUM-812: стартовый фокус на «Начать заново»; B/Esc = основная кнопка, без «пустого» закрытия.
 	_wire_run_ui_focus([retry_button], false, [], retry_button)
 
 
-# SCRUM-502: блок сводки прогона на экранах победы/смерти. Кладётся в box (VBox внутри
-# PauseEndModalScroll_*) после crest/subtitle, до кнопки. Все строки MOUSE_FILTER_IGNORE,
-# чтобы не перехватывать клик кнопки и Escape. Стабильные имена узлов — для matrix-теста.
-func _add_run_summary_rows(box: VBoxContainer, _is_victory: bool) -> void:
+# SCRUM-502/SCRUM-841: блок сводки прогона на экранах победы/смерти. В старом
+# контейнерном пути он кладётся в box; в no-scroll result layout — в компактную
+# RunSummaryColumn. Все строки MOUSE_FILTER_IGNORE, чтобы не перехватывать клик
+# кнопки и Escape. Стабильные имена узлов — для matrix-теста.
+func _add_run_summary_rows(box: VBoxContainer, _is_victory: bool, force_compact := false) -> void:
 	var metrics: Dictionary = game.run_metrics if not game.run_metrics.is_empty() else {}
 	var outcome := str(metrics.get("outcome_reason", ""))
+	var summary_parent := _result_summary_parent(box)
+	var target: VBoxContainer = summary_parent if summary_parent != null else box
+	var compact := force_compact or summary_parent != null
+	var ultra_compact: bool = compact and game.get_viewport().get_visible_rect().size.y < 800.0
 
 	if outcome != "":
 		var outcome_label := Label.new()
@@ -7721,19 +11320,24 @@ func _add_run_summary_rows(box: VBoxContainer, _is_victory: bool) -> void:
 		outcome_label.text = outcome
 		outcome_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 		outcome_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
-		outcome_label.add_theme_font_size_override("font_size", _readable_font_size(17))
-		outcome_label.add_theme_color_override("font_color", Color(1.0, 0.88, 0.54, 1.0))
+		outcome_label.add_theme_font_size_override("font_size", SemanticTypography.resolve_fixed(
+			SemanticTypography.ROLE_SECTION,
+			_readable_font_size(SemanticTypography.ROLE_SECTION, 10 if ultra_compact else (13 if compact else 17), 10 if ultra_compact else 12, 22),
+			SemanticTypography.role_min(SemanticTypography.ROLE_SECTION),
+			SemanticTypography.role_max(SemanticTypography.ROLE_SECTION)
+		))
+		outcome_label.add_theme_color_override("font_color", Color(0.96, 0.90, 0.68, 1.0))
 		outcome_label.mouse_filter = Control.MOUSE_FILTER_IGNORE
-		box.add_child(outcome_label)
+		target.add_child(outcome_label)
 
 	var grid := GridContainer.new()
 	grid.name = "RunSummaryStats"
 	grid.columns = 2
-	grid.add_theme_constant_override("h_separation", 28)
-	grid.add_theme_constant_override("v_separation", 6)
-	grid.size_flags_horizontal = Control.SIZE_SHRINK_CENTER
+	grid.add_theme_constant_override("h_separation", 8 if ultra_compact else (14 if compact else 28))
+	grid.add_theme_constant_override("v_separation", 0 if ultra_compact else (2 if compact else 6))
+	grid.size_flags_horizontal = Control.SIZE_EXPAND_FILL if compact else Control.SIZE_SHRINK_CENTER
 	grid.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	box.add_child(grid)
+	target.add_child(grid)
 
 	var artifacts: Array = metrics.get("artifacts", []) as Array
 	var rows := [
@@ -7751,16 +11355,26 @@ func _add_run_summary_rows(box: VBoxContainer, _is_victory: bool) -> void:
 		name_label.name = "RunSummaryStatName_%s" % str(row[0])
 		name_label.text = "%s:" % str(row[1])
 		name_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_RIGHT
-		name_label.add_theme_font_size_override("font_size", _readable_font_size(16))
-		name_label.add_theme_color_override("font_color", Color(0.82, 0.86, 0.94, 0.92))
+		name_label.add_theme_font_size_override("font_size", SemanticTypography.resolve_fixed(
+			SemanticTypography.ROLE_FIELD,
+			_readable_font_size(SemanticTypography.ROLE_FIELD, 10 if ultra_compact else (12 if compact else 16), 10 if ultra_compact else 12, 20),
+			SemanticTypography.role_min(SemanticTypography.ROLE_FIELD),
+			SemanticTypography.role_max(SemanticTypography.ROLE_FIELD)
+		))
+		name_label.add_theme_color_override("font_color", Color(0.78, 0.66, 0.44, 1.0))
 		name_label.mouse_filter = Control.MOUSE_FILTER_IGNORE
 		grid.add_child(name_label)
 		var value_label := Label.new()
 		value_label.name = "RunSummaryStat_%s" % str(row[0])
 		value_label.text = str(row[2])
 		value_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_LEFT
-		value_label.add_theme_font_size_override("font_size", _readable_font_size(16))
-		value_label.add_theme_color_override("font_color", Color(1.0, 0.95, 0.78, 1.0))
+		value_label.add_theme_font_size_override("font_size", SemanticTypography.resolve_fixed(
+			SemanticTypography.ROLE_VALUE,
+			_readable_font_size(SemanticTypography.ROLE_VALUE, 10 if ultra_compact else (13 if compact else 16), 10 if ultra_compact else 12, 20),
+			SemanticTypography.role_min(SemanticTypography.ROLE_VALUE),
+			SemanticTypography.role_max(SemanticTypography.ROLE_VALUE)
+		))
+		value_label.add_theme_color_override("font_color", Color(0.88, 0.92, 0.98, 1.0))
 		value_label.mouse_filter = Control.MOUSE_FILTER_IGNORE
 		grid.add_child(value_label)
 
@@ -7773,13 +11387,36 @@ func _add_run_summary_rows(box: VBoxContainer, _is_victory: bool) -> void:
 				names.append(str(artifact))
 		var artifacts_label := Label.new()
 		artifacts_label.name = "RunSummaryArtifacts"
-		artifacts_label.text = ", ".join(names)
+		artifacts_label.text = _compact_result_artifact_names(names) if compact else ", ".join(names)
 		artifacts_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 		artifacts_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
-		artifacts_label.add_theme_font_size_override("font_size", _readable_font_size(14))
-		artifacts_label.add_theme_color_override("font_color", Color(0.86, 0.82, 0.96, 0.95))
+		artifacts_label.add_theme_font_size_override("font_size", SemanticTypography.resolve_fixed(
+			SemanticTypography.ROLE_BODY,
+			_readable_font_size(SemanticTypography.ROLE_BODY, 10 if ultra_compact else (11 if compact else 14), 10 if ultra_compact else 12, 18),
+			SemanticTypography.role_min(SemanticTypography.ROLE_BODY),
+			SemanticTypography.role_max(SemanticTypography.ROLE_BODY)
+		))
+		artifacts_label.add_theme_color_override("font_color", Color(0.88, 0.92, 0.98, 0.95))
 		artifacts_label.mouse_filter = Control.MOUSE_FILTER_IGNORE
-		box.add_child(artifacts_label)
+		target.add_child(artifacts_label)
+
+
+func _result_summary_parent(box: VBoxContainer) -> VBoxContainer:
+	if box == null or not bool(box.get_meta("result_no_scroll_layout", false)):
+		return null
+	var screen_id := str(box.get_meta("result_screen_id", ""))
+	if screen_id == "":
+		return null
+	return box.find_child("RunSummaryColumn_%s" % screen_id, true, false) as VBoxContainer
+
+
+func _compact_result_artifact_names(names: Array) -> String:
+	if names.size() <= 3:
+		return ", ".join(names)
+	var visible_names := []
+	for index in range(mini(3, names.size())):
+		visible_names.append(str(names[index]))
+	return "%s + ещё %d" % [", ".join(visible_names), names.size() - visible_names.size()]
 
 
 func _format_run_duration(total_seconds: float) -> String:
@@ -7882,11 +11519,24 @@ func _random_event_choices() -> Array:
 	return choices
 
 
+# SCRUM-996: дефолт «загадочного» описания hidden-выбора без unknown_hint.
+const EVENT_HIDDEN_CHOICE_FALLBACK_HINT := "Исход неизвестен…"
+
+
 func _event_choice_description_text(event_choice: Dictionary) -> String:
+	# SCRUM-996: скрытый выбор не раскрывает исход — вместо описания показываем
+	# «загадочный» hint (unknown_hint или дефолт), без «Риск:»-префикса.
+	if bool(event_choice.get("hidden", false)):
+		var hint := str(event_choice.get("unknown_hint", "")).strip_edges()
+		return hint if hint != "" else EVENT_HIDDEN_CHOICE_FALLBACK_HINT
 	return _event_choice_risk_description(str(event_choice.get("description", "")), bool(event_choice.get("risk", false)))
 
 
 func _event_choice_action_text(event_choice: Dictionary) -> String:
+	# SCRUM-996: hidden-карточка зовёт «Рискнуть» (цену, если она есть, обязан
+	# упоминать unknown_hint — см. контракт схемы в event_data.gd).
+	if bool(event_choice.get("hidden", false)):
+		return "Рискнуть"
 	var cost := _event_choice_scaled_cost(event_choice)
 	if cost > 0:
 		return "%d зол." % cost
@@ -7913,7 +11563,212 @@ func _event_choice_risk_description(description: String, is_risk: bool) -> Strin
 	return "Риск: %s" % text
 
 
+# SCRUM-997: фон-иллюстрация события — texture по event.id из пака SCRUM-998
+# (маппинг main.event_background_path, кэш screen_background_cache под ключом
+# "event:<id>"). Незамапленный id оставляет общий backdrop "event" и плотный шейд
+# 0.44; над родным артом шейд облегчается до 0.14 — арт сам держит тёмные
+# UI-зоны (правая треть/нижняя четверть, манифест events_backgrounds_pack).
+func _apply_event_screen_background(box: VBoxContainer, event_id: String) -> void:
+	var root := _event_screen_root(box)
+	if root == null:
+		return
+	var background := root.find_child("ScreenBackground_event", false, false) as TextureRect
+	if background == null:
+		return
+	var path := str(game.event_background_path(event_id))
+	if path == "":
+		return
+	var cache_key := "event:%s" % event_id
+	var texture: Texture2D = null
+	if game.screen_background_cache.has(cache_key):
+		texture = game.screen_background_cache[cache_key]
+	else:
+		texture = game._cached_texture(path)
+		game.screen_background_cache[cache_key] = texture
+	if texture == null:
+		return
+	background.texture = texture
+	var shade := root.find_child("ScreenBackgroundReadableShade", false, false) as ColorRect
+	if shade != null:
+		shade.color = Color(0.0, 0.0, 0.0, 0.14)
+
+
+# SCRUM-997: строка награды/чек-хинта на карточке выбора (спека §2, п.3):
+# «Проверка: <Стат> <N>» | компактная видимая награда | для hidden — «Исход
+# скрыт» (точный исход не раскрываем, детали цены — в unknown_hint по контракту
+# SCRUM-996). Пустая строка = хинт не показываем.
+func _event_choice_hint_text(event_choice: Dictionary) -> String:
+	if bool(event_choice.get("hidden", false)):
+		return "Исход скрыт"
+	if event_choice.has("check"):
+		var check: Dictionary = event_choice.get("check", {})
+		var stat_id := str(check.get("stat", ""))
+		var stat_name := str(game.PROGRESSION_DATA.STAT_NAMES.get(stat_id, stat_id))
+		return "Проверка: %s %d" % [stat_name, int(check.get("difficulty", 0))]
+	if event_choice.has("random_outcomes"):
+		return "Случайный исход"
+	if event_choice.has("combat"):
+		return "Бой — награда за победу"
+	var parts: Array[String] = []
+	if event_choice.has("health_percent_cost"):
+		parts.append("−%d%% HP" % int(roundf(float(event_choice["health_percent_cost"]) * 100.0)))
+	if event_choice.has("damage_flat"):
+		parts.append("−%d HP" % int(roundf(float(event_choice["damage_flat"]))))
+	if event_choice.has("money"):
+		parts.append("+%d зол." % int(event_choice["money"]))
+	if event_choice.has("heal_percent"):
+		parts.append("Лечение %d%%" % int(roundf(float(event_choice["heal_percent"]) * 100.0)))
+	var stats: Dictionary = event_choice.get("stats", {})
+	for stat_id in stats:
+		parts.append("%+d %s" % [int(stats[stat_id]), str(game.PROGRESSION_DATA.STAT_NAMES.get(str(stat_id), str(stat_id)))])
+	if bool(event_choice.get("random_artifact", false)):
+		parts.append("Случайный артефакт")
+	if bool(event_choice.get("shop_after", false)):
+		parts.append("Лавка торговца")
+	if not (event_choice.get("mods", {}) as Dictionary).is_empty():
+		parts.append("Бонус забега")
+	if event_choice.has("reward"):
+		parts.append("Награда")
+	if parts.is_empty():
+		# Выбор без цены и исхода («Пройти мимо») — честный нейтральный хинт,
+		# карточка не остаётся без строки (контракт матрицы SCRUM-997).
+		return "Без последствий"
+	return " · ".join(PackedStringArray(parts.slice(0, 3)))
+
+
+# SCRUM-997: вставка hint-строки в контент карточки (между описанием и action).
+# Канон клип-строк: без autowrap, TRIM_ELLIPSIS и ЯВНЫЙ min-width (клип без
+# min-width рядом с EXPAND_FILL схлопывает метку — память проекта); полный текст
+# дублируется в tooltip карточки.
+func _add_event_choice_hint_line(button: Button, event_choice: Dictionary, card_size: Vector2) -> void:
+	if button == null:
+		return
+	var hint := _event_choice_hint_text(event_choice)
+	if hint == "":
+		return
+	var content := button.find_child("%sContent" % button.name, false, false) as BoxContainer
+	if content == null:
+		return
+	var margins: Vector4 = button.get_meta("economy_content_margins", Vector4.ZERO)
+	var hint_label := Label.new()
+	hint_label.name = "%sHint" % button.name
+	hint_label.text = hint
+	hint_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	hint_label.text_overrun_behavior = TextServer.OVERRUN_TRIM_ELLIPSIS
+	hint_label.custom_minimum_size = Vector2(maxf(card_size.x - margins.x - margins.z, 60.0), 0.0)
+	hint_label.add_theme_font_size_override("font_size", _readable_font_size(SemanticTypography.ROLE_CAPTION, 13, 12, 18))
+	hint_label.add_theme_color_override("font_color", Color(0.94, 0.80, 0.46, 1.0))
+	hint_label.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	content.add_child(hint_label)
+	# После title (0) и description (1), перед action-строкой.
+	content.move_child(hint_label, mini(2, content.get_child_count() - 1))
+	button.tooltip_text = "%s\n%s" % [button.tooltip_text, hint]
+	# Событийный пост-фит ОТЛОЖЕННО (после первого лейаута): ready-мерка врёт —
+	# autowrap-лейблы при ещё нулевой ширине завышают мин-высоту, и базовый
+	# фиттер премature-ужимает контент даже в просторных карточках. Deferred-фит
+	# сбрасывает эти ужимки и меряет по реальной ширине.
+	button.ready.connect(func() -> void:
+		_fit_event_choice_card_content.call_deferred(button)
+	, CONNECT_ONE_SHOT)
+
+
+# SCRUM-997: честная доводка карточки события по высоте ПОСЛЕ первого лейаута.
+# Сброс premature-ужимок ready-фиттера (шрифты/строки к базе спеки §2), жёсткий
+# минимум «одна строка описания» (единственный EXPAND_FILL-ребёнок при плотном
+# бюджете сжимается ниже строки и рисует 0 строк — описание «исчезает»), при
+# оверфлоу ужимка: шрифт описания → титул → hint; в конце max_lines описания
+# по фактическому остатку бюджета (честный ellipsis). Полные тексты — в tooltip.
+func _fit_event_choice_card_content(button: Button) -> void:
+	if button == null or not is_instance_valid(button):
+		return
+	var content := button.find_child("%sContent" % button.name, false, false) as BoxContainer
+	if content == null:
+		return
+	var margins: Vector4 = button.get_meta("economy_content_margins", Vector4.ZERO)
+	var avail_h: float = button.custom_minimum_size.y - margins.y - margins.w
+	if avail_h <= 0.0:
+		return
+	# Four semantic text lanes (title/description/hint/action) replace legacy
+	# undersized copy. Compact event cards keep all lanes by spending ornamental
+	# inter-line whitespace inside the empty chip content zone.
+	if button.custom_minimum_size.y < 190.0:
+		content.add_theme_constant_override("separation", 3)
+	var title_label := button.find_child("%sTitle" % button.name, true, false) as Label
+	var desc_label := button.find_child("%sDescription" % button.name, true, false) as Label
+	var hint_label := button.find_child("%sHint" % button.name, true, false) as Label
+	var desc_font_obj: Font = null
+	if desc_label != null:
+		desc_font_obj = desc_label.get_theme_font("font")
+		if desc_font_obj == null:
+			desc_font_obj = ThemeDB.fallback_font
+	if title_label != null:
+		title_label.add_theme_font_size_override("font_size", SemanticTypography.resolve_fixed(
+			SemanticTypography.ROLE_TITLE,
+			_readable_font_size(SemanticTypography.ROLE_TITLE, 17, 12, 24),
+			SemanticTypography.role_min(SemanticTypography.ROLE_TITLE),
+			SemanticTypography.role_max(SemanticTypography.ROLE_TITLE)
+		))
+	var desc_font := 0
+	if desc_label != null:
+		desc_font = _readable_font_size(SemanticTypography.ROLE_DESCRIPTION, 13, 12, 20)
+		desc_label.max_lines_visible = -1
+		desc_label.add_theme_font_size_override("font_size", SemanticTypography.resolve_fixed(
+			SemanticTypography.ROLE_DESCRIPTION,
+			desc_font,
+			SemanticTypography.role_min(SemanticTypography.ROLE_DESCRIPTION),
+			SemanticTypography.role_max(SemanticTypography.ROLE_DESCRIPTION)
+		))
+		if desc_font_obj != null:
+			desc_label.custom_minimum_size = Vector2(0.0, ceilf(desc_font_obj.get_height(desc_font)) + 2.0)
+	if hint_label != null:
+		hint_label.add_theme_font_size_override("font_size", _readable_font_size(SemanticTypography.ROLE_CAPTION, 13, 12, 18))
+	if desc_label != null and desc_font_obj != null:
+		while desc_font > 12 and content.get_combined_minimum_size().y > avail_h:
+			desc_font -= 1
+			desc_label.add_theme_font_size_override("font_size", SemanticTypography.resolve_fixed(
+				SemanticTypography.ROLE_DESCRIPTION,
+				desc_font,
+				SemanticTypography.role_min(SemanticTypography.ROLE_DESCRIPTION),
+				SemanticTypography.role_max(SemanticTypography.ROLE_DESCRIPTION)
+			))
+			desc_label.custom_minimum_size = Vector2(0.0, ceilf(desc_font_obj.get_height(desc_font)) + 2.0)
+	if title_label != null:
+		var title_font := title_label.get_theme_font_size("font_size")
+		while title_font > 13 and content.get_combined_minimum_size().y > avail_h:
+			title_font -= 1
+			title_label.add_theme_font_size_override("font_size", SemanticTypography.resolve_fixed(
+				SemanticTypography.ROLE_TITLE,
+				title_font,
+				SemanticTypography.role_min(SemanticTypography.ROLE_TITLE),
+				SemanticTypography.role_max(SemanticTypography.ROLE_TITLE)
+			))
+	if hint_label != null:
+		var hint_font := hint_label.get_theme_font_size("font_size")
+		while hint_font > 11 and content.get_combined_minimum_size().y > avail_h:
+			hint_font -= 1
+			hint_label.add_theme_font_size_override("font_size", SemanticTypography.resolve_fixed(SemanticTypography.ROLE_CAPTION, hint_font))
+	if desc_label != null and desc_font_obj != null:
+		# Сколько строк описания реально помещается в остаток бюджета.
+		var line_h := ceilf(desc_font_obj.get_height(desc_font))
+		var others := content.get_combined_minimum_size().y - desc_label.custom_minimum_size.y
+		var lines_fit := maxi(1, int(floorf((avail_h - others) / maxf(line_h, 1.0))))
+		var lines_shown := mini(lines_fit, maxi(desc_label.get_line_count(), 1))
+		desc_label.max_lines_visible = lines_shown
+		desc_label.custom_minimum_size = Vector2(0.0, line_h * float(lines_shown) + 2.0)
+
+
+# Обратная совместимость (rest-экран, dev-фасад main._apply_event_choice, старые
+# тесты): bool = «стартовал бой». Полная резолюция — _apply_event_choice_resolved.
 func _apply_event_choice(event_choice: Dictionary) -> bool:
+	return bool(_apply_event_choice_resolved(event_choice).get("starts_combat", false))
+
+
+# SCRUM-996: применяет выбор события и возвращает полную резолюцию для reveal-шага:
+# {"applied": bool — исход применён (false = не прошла оплата cost_money),
+#  "starts_combat": bool — стартовал бой (экран уже сменён),
+#  "outcome": Dictionary — развёрнутый исход (random_outcomes/check уже слиты,
+#   check_passed проставлен) — источник outcome_text/shop_after для reveal}.
+func _apply_event_choice_resolved(event_choice: Dictionary) -> Dictionary:
 	var temp_player = game.player_scene.instantiate()
 	game.add_child(temp_player)
 	if game.run_player_snapshot.is_empty():
@@ -7924,7 +11779,7 @@ func _apply_event_choice(event_choice: Dictionary) -> bool:
 	var outcome := _resolve_event_choice_outcome(event_choice, temp_player)
 	if not _apply_event_outcome_to_player(outcome, temp_player):
 		temp_player.queue_free()
-		return false
+		return {"applied": false, "starts_combat": false, "outcome": outcome}
 	var combat_payload: Dictionary = outcome.get("combat", {})
 
 	game.combat._store_player_snapshot(temp_player)
@@ -7937,8 +11792,8 @@ func _apply_event_choice(event_choice: Dictionary) -> bool:
 		game.current_event_definition.clear()
 		var combat_type := str(combat_payload.get("type", "battle"))
 		game.combat._start_combat(false, "elite" if combat_type == "elite" else "battle")
-		return true
-	return false
+		return {"applied": true, "starts_combat": true, "outcome": outcome}
+	return {"applied": true, "starts_combat": false, "outcome": outcome}
 
 
 func _resolve_event_choice_outcome(event_choice: Dictionary, temp_player: Node) -> Dictionary:
@@ -7991,7 +11846,7 @@ func _apply_event_outcome_to_player(outcome: Dictionary, temp_player: Node) -> b
 			"heal_percent": outcome.get("heal_percent", 0.0),
 		})
 	if bool(outcome.get("random_artifact", false)):
-		var artifacts := _weighted_sample(game.PROGRESSION_DATA.reward_pool(game.selected_character_id).filter(func(reward: Dictionary) -> bool:
+		var artifacts := _weighted_sample(game.PROGRESSION_DATA.reward_pool(game.selected_character_id, _run_ascension_level(), _run_cross_class_artifact_ids()).filter(func(reward: Dictionary) -> bool:
 			return str(reward.get("kind", "")) == "artifact"
 		), 1)
 		if not artifacts.is_empty():
@@ -8007,11 +11862,164 @@ func _apply_event_outcome_to_player(outcome: Dictionary, temp_player: Node) -> b
 	if outcome.has("health_percent_cost"):
 		var cost := float(temp_player.get("max_health")) * float(outcome["health_percent_cost"])
 		temp_player.set("health", max(1.0, float(temp_player.get("health")) - cost))
+	if outcome.has("damage_flat"):
+		# SCRUM-996: прямой урон события; как и health_percent_cost — не летален
+		# (пол 1 HP). Не путать с mods.damage_flat (бонус урона атак игрока).
+		var flat_damage := maxf(0.0, float(outcome["damage_flat"]))
+		temp_player.set("health", max(1.0, float(temp_player.get("health")) - flat_damage))
 	return true
 
 
+# SCRUM-996: исходу нужен reveal-шаг, если есть текст «что произошло», выбор был
+# скрытым или была check-проверка — игрок обязан увидеть результат до карты.
+# Исходы-бои сюда не попадают (starts_combat обрывает обработчик раньше).
+func _event_outcome_needs_reveal(event_choice: Dictionary, outcome: Dictionary) -> bool:
+	if bool(event_choice.get("hidden", false)):
+		return true
+	if str(outcome.get("outcome_text", "")).strip_edges() != "":
+		return true
+	return outcome.has("check_passed")
+
+
+# SCRUM-996: текст раскрытия исхода: outcome_text + строка результата проверки
+# («Проверка Сила 7 — пройдена/провалена»). Для старых событий без outcome_text
+# остаётся хотя бы строка проверки; совсем пустой reveal получает нейтральный текст.
+func _event_outcome_reveal_text(outcome: Dictionary) -> String:
+	var lines: Array[String] = []
+	var outcome_text := str(outcome.get("outcome_text", "")).strip_edges()
+	if outcome_text != "":
+		lines.append(outcome_text)
+	if outcome.has("check_passed"):
+		var check: Dictionary = outcome.get("check", {})
+		var stat_id := str(check.get("stat", ""))
+		var stat_name := str(game.PROGRESSION_DATA.STAT_NAMES.get(stat_id, stat_id))
+		lines.append("Проверка %s %d — %s." % [stat_name, int(check.get("difficulty", 0)), "пройдена" if bool(outcome.get("check_passed", false)) else "провалена"])
+	if lines.is_empty():
+		lines.append("Выбор сделан — последствия уже с тобой.")
+	return "\n".join(lines)
+
+
+# SCRUM-996: reveal-состояние экрана события — story-текст заменяется текстом
+# исхода, карточки выбора и «Назад» прячутся, остаётся одна кнопка продолжения
+# EventContinueButton («В путь»). Только она завершает событие (clear + advance,
+# либо событийный магазин при shop_after). SCRUM-997: исход показывается в
+# диалог-панели справа, кнопка «В путь» — по центру нижней полосы (спека §2).
+func _show_event_outcome_reveal(box: VBoxContainer, outcome: Dictionary) -> void:
+	if box == null or not is_instance_valid(box):
+		return
+	var root := _event_screen_root(box)
+	var story_label := box.find_child("EventStory", false, false) as Label
+	if story_label != null:
+		story_label.text = _event_outcome_reveal_text(outcome)
+	var choices_row: CanvasItem = null
+	var back_button: Button = null
+	if root != null:
+		choices_row = root.find_child("EventChoiceRow", true, false) as CanvasItem
+		back_button = root.find_child("EventBackButton", true, false) as Button
+	if choices_row == null:
+		choices_row = box.find_child("EventChoiceRow", false, false) as CanvasItem
+	if back_button == null:
+		back_button = box.find_child("EventBackButton", false, false) as Button
+	if choices_row != null:
+		choices_row.visible = false
+	if back_button != null:
+		back_button.visible = false
+	var continue_button := _make_button("В путь")
+	continue_button.name = "EventContinueButton"
+	_set_action_button_size(continue_button, 260.0, _atlas_action_button_height())
+	continue_button.tooltip_text = "Принять исход и продолжить маршрут."
+	continue_button.pressed.connect(func() -> void:
+		_finish_event_and_continue(outcome)
+	)
+	var bottom_zone := root.find_child("EventBottomZone", true, false) as Control if root != null else null
+	if bottom_zone != null:
+		bottom_zone.add_child(continue_button)
+		var metrics := _event_dialog_metrics()
+		var row_rect: Rect2 = metrics["row_rect"]
+		var back_h := _atlas_action_button_height()
+		continue_button.position = Vector2(
+			roundf(((metrics["vp"] as Vector2).x - 260.0) * 0.5),
+			row_rect.position.y + roundf((row_rect.size.y - back_h) * 0.5)
+		)
+		continue_button.size = Vector2(260.0, back_h)
+	else:
+		continue_button.size_flags_horizontal = Control.SIZE_SHRINK_CENTER
+		box.add_child(continue_button)
+	# Фокус-цепь SCRUM-477: в reveal-состоянии единственная цель — кнопка
+	# продолжения; замыкаем её на себя, чтобы стрелки/стик не роняли фокус.
+	continue_button.focus_neighbor_left = continue_button.get_path()
+	continue_button.focus_neighbor_right = continue_button.get_path()
+	continue_button.focus_neighbor_top = continue_button.get_path()
+	continue_button.focus_neighbor_bottom = continue_button.get_path()
+	continue_button.grab_focus()
+	# Исход уже применён к снапшоту — меню-HUD (HP/золото) показывает честные цифры.
+	_update_hud()
+
+
+# SCRUM-996: единая точка завершения события без боя. shop_after открывает
+# событийный магазин, выход из которого ведёт к штатному advance маршрута
+# (route_stage+1 + автосейв) вместо обычного shop-узлового возврата на карту.
+func _finish_event_and_continue(outcome: Dictionary) -> void:
+	game.current_event_definition.clear()
+	if bool(outcome.get("shop_after", false)):
+		_open_event_shop(Callable(game.route, "_advance_route_after_noncombat"), float(outcome.get("shop_discount", 0.0)))
+		return
+	game.route._advance_route_after_noncombat()
+
+
+# SCRUM-996: верхняя граница событийной скидки — цены не бывают ниже 10% базы.
+const EVENT_SHOP_DISCOUNT_MAX := 0.9
+
+
+# SCRUM-996: магазин из событийного пути (shop_after исхода события или
+# post_combat победы событийного боя). Сток генерируется заново под этот визит
+# (узел — не shop, старый сток был очищен при входе на узел), опциональная
+# скидка применяется к ценам один раз (сток и цены живут в автосейв-полях,
+# повторный вход через level-up FAB их не пересчитывает). exit_action
+# подменяет штатный выход магазина и вызывается один раз при выходе.
+func _open_event_shop(exit_action: Callable, discount := 0.0) -> void:
+	_clear_current_shop_stock()
+	_ensure_shop_stock_for_current_node()
+	_apply_event_shop_discount(discount)
+	game.event_shop_exit_action = exit_action
+	_show_shop_screen()
+
+
+# SCRUM-996: скидка событийного магазина — умножает цены текущего стока,
+# clamp 0..EVENT_SHOP_DISCOUNT_MAX, пол цены 1 золото.
+func _apply_event_shop_discount(discount: float) -> void:
+	var clamped := clampf(discount, 0.0, EVENT_SHOP_DISCOUNT_MAX)
+	if clamped <= 0.0:
+		return
+	for item in game.current_shop_items:
+		if item is Dictionary and (item as Dictionary).has("cost"):
+			item["cost"] = maxi(1, int(round(float((item as Dictionary).get("cost", 0)) * (1.0 - clamped))))
+
+
 func _random_rewards(count: int) -> Array:
-	return _weighted_sample(game.PROGRESSION_DATA.reward_pool(game.selected_character_id), count)
+	return _weighted_sample(game.PROGRESSION_DATA.reward_pool(game.selected_character_id, _run_ascension_level(), _run_cross_class_artifact_ids()), count)
+
+
+# SCRUM-961: аргументы классового гейта артефактов (artifact_system_matrix §1.4)
+# для всех сэмплеров. Возвышение — МЕТОВОЕ (макс. достигнутый уровень класса,
+# main.ascension_level_for), не выбранный на забег: прогресс-награда класса не
+# должна пропадать при игре на низкой сложности.
+func _run_ascension_level() -> int:
+	return game.ascension_level_for(game.selected_character_id)
+
+
+# SCRUM-961 (§5): активные cross-class слоты «Украденного герба» текущего забега.
+# Вне боя игрока нет — Array живёт в run_player_snapshot.run_modifiers.
+func _run_cross_class_artifact_ids() -> Array:
+	var modifiers := {}
+	if game.current_player != null and is_instance_valid(game.current_player):
+		var live_raw = game.current_player.get("run_modifiers")
+		if live_raw is Dictionary:
+			modifiers = live_raw
+	else:
+		modifiers = game.run_player_snapshot.get("run_modifiers", {}) as Dictionary
+	var ids = modifiers.get("cross_class_artifact_ids", [])
+	return (ids as Array).duplicate() if ids is Array else []
 
 
 func _weighted_sample(pool: Array, count: int) -> Array:
@@ -8064,7 +12072,7 @@ func _random_level_up_rewards(count: int) -> Array:
 
 func _random_shop_items(count: int) -> Array:
 	var scaling_stage: int = game.route_scaling_stage()
-	var items := _weighted_sample(game.PROGRESSION_DATA.shop_items(scaling_stage), count)
+	var items := _weighted_sample(game.PROGRESSION_DATA.shop_items(scaling_stage, game.selected_character_id, _run_ascension_level(), _run_cross_class_artifact_ids()), count)
 	var price_mult := float(game.ascension_difficulty()["price_mult"])
 	# Ветвь Богатства мета-древа (SCRUM-150): скидка магазина (shop_price_mult ≤ 0).
 	var skill_mods: Dictionary = game.META_PROGRESSION.skill_modifiers(game.meta_state)
@@ -8076,7 +12084,7 @@ func _random_shop_items(count: int) -> Array:
 	var class_skill_mods: Dictionary = game.META_PROGRESSION.skill_modifiers_for_class(game.meta_state, game.selected_character_id)
 	var class_shop_price_delta := float(class_skill_mods.get("shop_price_mult", 0.0)) - float(skill_mods.get("shop_price_mult", 0.0))
 	price_mult *= maxf(1.0 + class_shop_price_delta, 0.1)
-	# Capstone «Связи в гильдии»: гарантированный редкий (tier 3) товар на стене.
+	# Capstone «Связи в гильдии»: гарантированный эпический (tier 3) товар на стене.
 	if float(skill_mods.get("guaranteed_rare_shop", 0.0)) > 0.0 and not items.is_empty():
 		var has_rare := false
 		for item in items:
@@ -8084,7 +12092,7 @@ func _random_shop_items(count: int) -> Array:
 				has_rare = true
 				break
 		if not has_rare:
-			var rares: Array = (game.PROGRESSION_DATA.shop_items(scaling_stage) as Array).filter(
+			var rares: Array = (game.PROGRESSION_DATA.shop_items(scaling_stage, game.selected_character_id, _run_ascension_level(), _run_cross_class_artifact_ids()) as Array).filter(
 				func(it): return int((it as Dictionary).get("tier", 1)) >= 3)
 			if not rares.is_empty():
 				items[game.rng.randi_range(0, items.size() - 1)] = (rares[game.rng.randi_range(0, rares.size() - 1)] as Dictionary).duplicate(true)
@@ -8225,7 +12233,7 @@ func _show_combat_title_banner(title: String, color: Color, big := false) -> voi
 	label.size_flags_vertical = Control.SIZE_EXPAND_FILL
 	label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	label.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
-	label.add_theme_font_size_override("font_size", _readable_font_size(54 if big else 34, 0, 54 if big else 36))
+	label.add_theme_font_size_override("font_size", _readable_font_size(SemanticTypography.ROLE_DISPLAY, 54 if big else 34, 0, 54 if big else 36))
 	label.add_theme_color_override("font_color", color)
 	label.add_theme_color_override("font_outline_color", Color(0.06, 0.03, 0.02, 1.0))
 	label.add_theme_constant_override("outline_size", 6 if big else 4)
@@ -8263,7 +12271,12 @@ func _update_level_up_button() -> void:
 		game.level_up_button.anchor_top = 1.0
 		game.level_up_button.anchor_bottom = 1.0
 		game.level_up_button.tooltip_text = "Открыть выбор улучшения (непотраченные уровни)"
-		game.level_up_button.add_theme_font_size_override("font_size", _readable_font_size(34))
+		game.level_up_button.add_theme_font_size_override("font_size", SemanticTypography.resolve_fixed(
+			SemanticTypography.ROLE_ACTION,
+			_readable_font_size(SemanticTypography.ROLE_ACTION, 34),
+			SemanticTypography.role_min(SemanticTypography.ROLE_ACTION),
+			SemanticTypography.role_max(SemanticTypography.ROLE_ACTION)
+		))
 		_apply_fantasy_button_theme(game.level_up_button)
 		game.level_up_button.pressed.connect(_open_pending_level_up)
 		level_button_parent.add_child(game.level_up_button)
@@ -8282,47 +12295,104 @@ func _update_level_up_button() -> void:
 		badge.name = "LevelUpPlusBadge"
 		badge.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 		badge.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
-		badge.add_theme_font_size_override("font_size", _readable_font_size(16))
+		badge.add_theme_font_size_override("font_size", _readable_font_size(SemanticTypography.ROLE_HUD, 16))
 		badge.add_theme_color_override("font_color", Color(0.08, 0.05, 0.02, 1.0))
 		badge_panel.add_child(badge)
 
 	game.level_up_button.text = "+"
 	game.level_up_button.modulate = Color(1.0, 1.0, 1.0, 1.0)
+	# A menu pass may have moved the persistent button into a gold-shell socket.
+	# Restore combat anchors before applying SCRUM-666 bottom-right offsets.
+	game.level_up_button.set_anchors_preset(Control.PRESET_BOTTOM_RIGHT)
+	game.level_up_button.scale = Vector2.ONE
+	game.level_up_button.pivot_offset = Vector2.ZERO
 	var viewport_size: Vector2 = game.get_viewport().get_visible_rect().size
-	var scale := _scrum666_hud_scale_for_size(viewport_size)
-	var plus_rect := _scrum666_scaled_rect(SCRUM666_CHUD_LEVELUP_BUTTON_2K, scale)
-	var base_size := COMBAT_BLOCK_DESIGN_BASE_2K * scale
+	var metrics := _configure_level_up_button_for_viewport(viewport_size)
+	var plus_rect: Rect2 = metrics["plus_rect"]
+	var base_size: Vector2 = metrics["base_size"]
 	game.level_up_button.offset_left = plus_rect.position.x - base_size.x
 	game.level_up_button.offset_right = plus_rect.position.x + plus_rect.size.x - base_size.x
 	game.level_up_button.offset_top = plus_rect.position.y - base_size.y
 	game.level_up_button.offset_bottom = plus_rect.position.y + plus_rect.size.y - base_size.y
+	# Menus with ornate gold shells own a smaller empty content rectangle than
+	# the combat HUD. Re-socket the persistent button after every count update so
+	# its semantic-size badge cannot fall back onto the frame rail.
+	var shell_screen: Control = game.find_child("RouteMapScreen", true, false) as Control
+	if shell_screen == null:
+		shell_screen = game.find_child("AttributeShopScreen", true, false) as Control
+	if shell_screen != null and shell_screen.has_meta("gold_shell_inner_rect"):
+		_layout_level_up_button_in_gold_shell(viewport_size)
+
+
+func _configure_level_up_button_for_viewport(viewport_size: Vector2) -> Dictionary:
+	var scale := _scrum666_hud_scale_for_size(viewport_size)
+	var plus_rect := _scrum666_scaled_rect(SCRUM666_CHUD_LEVELUP_BUTTON_2K, scale)
+	var badge_rect := _scrum666_scaled_rect(SCRUM666_CHUD_LEVELUP_BADGE_2K, scale)
+	var local_badge_pos := badge_rect.position - plus_rect.position
 	game.level_up_button.custom_minimum_size = plus_rect.size
 	game.level_up_button.size = plus_rect.size
 	game.level_up_button.set_meta("scrum666_frame_rect", _scrum666_scaled_rect(SCRUM666_CHUD_LEVELUP_FRAME_2K, scale))
 	game.level_up_button.set_meta("scrum666_content_zone", plus_rect)
 	game.level_up_button.clip_text = true
-	game.level_up_button.add_theme_font_size_override("font_size", _readable_font_size(maxi(18, int(roundf(24.0 * scale))), 0, 34))
+	game.level_up_button.add_theme_font_size_override("font_size", _readable_font_size(SemanticTypography.ROLE_ACTION, maxi(18, int(roundf(24.0 * scale))), 0, 34))
 	_apply_fantasy_button_theme(game.level_up_button)
-
 	var badge_panel := game.level_up_button.find_child("LevelUpPlusBadgePanel", true, false) as PanelContainer
 	if badge_panel != null:
-		var badge_rect := _scrum666_scaled_rect(SCRUM666_CHUD_LEVELUP_BADGE_2K, scale)
-		var local_badge_pos := badge_rect.position - plus_rect.position
 		badge_panel.offset_left = local_badge_pos.x
 		badge_panel.offset_top = local_badge_pos.y
 		badge_panel.offset_right = local_badge_pos.x + badge_rect.size.x
 		badge_panel.offset_bottom = local_badge_pos.y + badge_rect.size.y
 		badge_panel.custom_minimum_size = badge_rect.size
+		badge_panel.size = badge_rect.size
 		badge_panel.set_meta("scrum666_content_zone", badge_rect)
 	var badge_label := game.level_up_button.find_child("LevelUpPlusBadge", true, false) as Label
 	if badge_label != null:
 		badge_label.text = str(game.pending_level_ups)
-		badge_label.add_theme_font_size_override("font_size", _readable_font_size(maxi(9, int(roundf(14.0 * scale))), 0, 22))
+		badge_label.add_theme_font_size_override("font_size", SemanticTypography.resolve_fixed(
+			SemanticTypography.ROLE_HUD,
+			_readable_font_size(SemanticTypography.ROLE_HUD, maxi(9, int(roundf(14.0 * scale))), 0, 22),
+			SemanticTypography.role_min(SemanticTypography.ROLE_HUD),
+			SemanticTypography.role_max(SemanticTypography.ROLE_HUD)
+		))
+	return {
+		"plus_rect": plus_rect,
+		"base_size": COMBAT_BLOCK_DESIGN_BASE_2K * scale,
+		"badge_local_rect": Rect2(local_badge_pos, badge_rect.size),
+		"right_overhang": maxf(0.0, local_badge_pos.x + badge_rect.size.x - plus_rect.size.x),
+	}
+
+
+func _layout_level_up_button_in_gold_shell(viewport_size: Vector2) -> void:
+	if game.pending_level_ups <= 0 or game.level_up_button == null or not is_instance_valid(game.level_up_button):
+		return
+	var inner_rect := _gold_shell_inner_rect_for_size(viewport_size)
+	var metrics := _configure_level_up_button_for_viewport(viewport_size)
+	var button_size: Vector2 = (metrics["plus_rect"] as Rect2).size
+	var reserve := 24.0 if viewport_size.y >= 1000.0 else 16.0
+	var right_reserve := reserve + float(metrics["right_overhang"])
+	var target_rect := Rect2(
+		Vector2(inner_rect.end.x - right_reserve - button_size.x, inner_rect.end.y - reserve - button_size.y),
+		button_size
+	)
+	game.level_up_button.set_anchors_preset(Control.PRESET_TOP_LEFT)
+	game.level_up_button.scale = Vector2.ONE
+	game.level_up_button.pivot_offset = Vector2.ZERO
+	game.level_up_button.position = target_rect.position
+	game.level_up_button.size = target_rect.size
+	game.level_up_button.set_meta("gold_shell_inner_rect", inner_rect)
+	game.level_up_button.set_meta("gold_shell_socket_rect", target_rect)
+	var badge_local_rect: Rect2 = metrics["badge_local_rect"]
+	game.level_up_button.set_meta("gold_shell_descendant_rect", target_rect.merge(Rect2(target_rect.position + badge_local_rect.position, badge_local_rect.size)))
 
 
 func _format_level_up_reward_text(reward: Dictionary) -> String:
 	var preview := _level_up_reward_preview(reward)
 	var interpretation := _reward_interpretation_text(reward)
+	# SCRUM-963: у классовых артефактов вместо интерпретации — классовая пометка.
+	if interpretation == "":
+		var note := _artifact_affinity_note(reward)
+		if not note.is_empty():
+			interpretation = str(note["text"])
 	return "%s\n%s\n%s%s" % [
 		str(reward.get("title", "Upgrade")),
 		preview,
@@ -8342,6 +12412,9 @@ func _level_up_card_description(reward: Dictionary) -> String:
 
 
 func _reward_icon_id(reward: Dictionary) -> String:
+	var explicit_icon_id := str(reward.get("icon_id", "")).strip_edges()
+	if explicit_icon_id != "":
+		return explicit_icon_id
 	var stat_keys := (reward.get("stats", {}) as Dictionary).keys()
 	if not stat_keys.is_empty():
 		return str(stat_keys[0])
@@ -8354,6 +12427,22 @@ func _reward_icon_id(reward: Dictionary) -> String:
 	return "buff_power"
 
 
+# SCRUM-963: иконка карточки награды. Артефакт получает СВОЮ artifact_<id>.png
+# (резолвер _artifact_icon_texture, с dev-fallback внутри); стат/атрибут-награды
+# остаются на реестровых иконках _reward_icon_id как раньше.
+func _make_reward_card_icon(reward: Dictionary, size: Vector2) -> Control:
+	if str(reward.get("kind", "")) == "artifact" and str(reward.get("id", "")) != "":
+		var icon := TextureRect.new()
+		icon.name = "RewardArtifactIcon_%s" % str(reward["id"])
+		icon.texture = _artifact_icon_texture(str(reward["id"]))
+		icon.custom_minimum_size = size
+		icon.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
+		icon.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
+		icon.mouse_filter = Control.MOUSE_FILTER_IGNORE
+		return icon
+	return game.UIIconRegistry.make_icon(_reward_icon_id(reward), size)
+
+
 # SCRUM-525: какие производные статы реально двигает +1 к базовому атрибуту.
 # Список — самые значимые производные (порядок = приоритет показа), чтобы тултип
 # докачки не разрастался и не давал overflow на 720p. Damage-типы тут приводятся к
@@ -8362,15 +12451,15 @@ func _reward_icon_id(reward: Dictionary) -> String:
 const STAT_DERIVED_PREVIEW := {
 	"strength": ["damage"],
 	"intelligence": ["magic_damage"],
-	"perception": ["sound_wave_damage", "attack_range", "aoe_radius", "pickup_radius"],
-	"energy": ["sound_wave_damage", "ultimate_multiplier", "projectile_speed"],
+	"perception": ["attack_range", "aoe_radius", "pickup_radius"],
+	"energy": ["ultimate_multiplier", "projectile_speed"],
 	"knowledge": ["dot_damage", "regeneration", "dot_speed", "summon_amount"],
 	"agility": ["attack_speed", "crit_chance", "move_speed", "dodge"],
 	"endurance": ["health_point", "defense", "absorb", "knockback_power"],
 	"leadership": ["summon_amount", "aura_radius", "buff_power"],
 }
 
-const _DAMAGE_TYPE_PARAMETERS := ["damage", "magic_damage", "sound_wave_damage"]
+const _DAMAGE_TYPE_PARAMETERS := ["damage", "magic_damage"]
 
 
 # SCRUM-525: RU-список производных, на которые влияет атрибут (для блока «Влияет на: …»
@@ -8539,6 +12628,11 @@ func _level_up_reward_preview(reward: Dictionary) -> String:
 
 
 func _reward_interpretation_text(reward: Dictionary) -> String:
+	# SCRUM-963: классовые артефакты говорят классовой пометкой (_artifact_affinity_note),
+	# а не генерик-интерпретацией первого mod-ключа — новые классовые ключи
+	# (rage_hit_stacks и т.п.) неизвестны LEVEL_UP_MOD_DISPLAY и давали филлер.
+	if not (reward.get("class_affinity", []) as Array).is_empty():
+		return ""
 	var stat_keys := (reward.get("stats", {}) as Dictionary).keys()
 	if not stat_keys.is_empty():
 		return "Интерпретация: %s" % game.PROGRESSION_DATA.class_interpretation_text(game.selected_character_id, str(stat_keys[0]))
@@ -8578,8 +12672,6 @@ func _level_up_parameter_label(parameter_id: String) -> String:
 			return "Урон"
 		"magic_damage":
 			return "Маг. урон"
-		"sound_wave_damage":
-			return "Звуковой урон"
 		"attack_speed":
 			return "Скорость атаки"
 		"health_point":
@@ -8897,6 +12989,8 @@ func _show_rebind_conflict(target_action: String, keycode: int, conflict_action:
 	var target_label := _action_label(target_action)
 	var conflict_label := _action_label(conflict_action)
 	var key_name := OS.get_keycode_string(keycode)
+	game.pending_rebind_action = ""
+	_rebind_is_gamepad = false
 	game._clear_ui()
 
 	game.ui_layer = CanvasLayer.new()
@@ -8908,6 +13002,7 @@ func _show_rebind_conflict(target_action: String, keycode: int, conflict_action:
 	root.set_anchors_preset(Control.PRESET_FULL_RECT)
 	root.mouse_filter = Control.MOUSE_FILTER_STOP
 	game.ui_layer.add_child(root)
+	_prepare_global_tooltips(root)
 	_add_screen_background(root, "settings")
 
 	var panel := Panel.new()
@@ -8933,7 +13028,7 @@ func _show_rebind_conflict(target_action: String, keycode: int, conflict_action:
 	title_label.text = "Клавиша занята"
 	title_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	title_label.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
-	title_label.add_theme_font_size_override("font_size", _readable_font_size(36, 0, 40))
+	title_label.add_theme_font_size_override("font_size", _readable_font_size(SemanticTypography.ROLE_TITLE, 36, 0, 40))
 	title_label.add_theme_color_override("font_color", Color(0.96, 0.90, 0.68, 1.0))
 	panel.add_child(title_label)
 	title_label.position = RC_TITLE_2K.position - RC_PANEL_2K.position
@@ -8946,7 +13041,7 @@ func _show_rebind_conflict(target_action: String, keycode: int, conflict_action:
 	message_label.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
 	message_label.autowrap_mode = TextServer.AUTOWRAP_OFF
 	message_label.clip_text = true
-	message_label.add_theme_font_size_override("font_size", _readable_font_size(18, 0, 24))
+	message_label.add_theme_font_size_override("font_size", _readable_font_size(SemanticTypography.ROLE_BODY, 18, 0, 24))
 	message_label.add_theme_color_override("font_color", Color(0.88, 0.86, 0.78, 1.0))
 	panel.add_child(message_label)
 	message_label.position = RC_MESSAGE_2K.position - RC_PANEL_2K.position
@@ -8957,7 +13052,7 @@ func _show_rebind_conflict(target_action: String, keycode: int, conflict_action:
 	_set_action_button_size(retry_button, RC_BTN_RETRY_2K.size.x, RC_BTN_RETRY_2K.size.y)
 	_apply_overhaul_2k_button_theme(retry_button, "rc_btn", RC_BTN_RETRY_2K.size)
 	retry_button.clip_text = true
-	retry_button.add_theme_font_size_override("font_size", _readable_font_size(18, 0, 18))
+	retry_button.add_theme_font_size_override("font_size", _readable_font_size(SemanticTypography.ROLE_ACTION, 18, 0, 18))
 	retry_button.pressed.connect(func() -> void:
 		_begin_rebind(target_action)
 	)
@@ -8969,7 +13064,7 @@ func _show_rebind_conflict(target_action: String, keycode: int, conflict_action:
 	_set_action_button_size(back_button, RC_BTN_BACK_2K.size.x, RC_BTN_BACK_2K.size.y)
 	_apply_overhaul_2k_button_theme(back_button, "rc_btn", RC_BTN_BACK_2K.size)
 	back_button.clip_text = true
-	back_button.add_theme_font_size_override("font_size", _readable_font_size(18, 0, 18))
+	back_button.add_theme_font_size_override("font_size", _readable_font_size(SemanticTypography.ROLE_ACTION, 18, 0, 18))
 	back_button.pressed.connect(func() -> void:
 		game.pending_rebind_action = ""
 		_show_settings_menu()
@@ -9149,6 +13244,8 @@ func _show_gamepad_rebind_conflict(target_action: String, binding_desc: String, 
 	# про кнопку/ось геймпада. «Выбрать другую» перезапускает прослушивание.
 	var target_label := _action_label(target_action)
 	var conflict_label := _action_label(conflict_action)
+	game.pending_rebind_action = ""
+	_rebind_is_gamepad = false
 	var box := _create_menu_box("Кнопка занята",
 		"%s занята: «%s». Для «%s» выбери другую." % [binding_desc, conflict_label, target_label], "settings")
 
@@ -9165,6 +13262,8 @@ func _show_gamepad_rebind_conflict(target_action: String, binding_desc: String, 
 		_cancel_gamepad_rebind()
 	)
 	box.add_child(back_button)
+	_wire_run_ui_focus([retry_button, back_button], true, [], retry_button)
+	game.ui_escape_action = _cancel_gamepad_rebind
 
 
 func _reset_gamepad_bindings_to_defaults() -> void:
@@ -9232,6 +13331,46 @@ func _sync_window_content_scale(content_size: Vector2i) -> void:
 	window.content_scale_size = content_size
 
 
+func _editor_preview_window_resolution(usable_logical: Vector2i, screen_full: Vector2i, screen_scale: float) -> Vector2i:
+	var scale := maxf(screen_scale, 1.0)
+	var usable_physical := DisplayResolution.physical_usable_size(usable_logical, scale)
+	var max_window := Vector2i(maxi(320, usable_physical.x - 96), maxi(180, usable_physical.y - 96))
+	var default_index := DisplayResolution.default_resolution_index(screen_full, scale)
+	var target: Vector2i = game.RESOLUTION_OPTIONS[clampi(default_index, 0, game.RESOLUTION_OPTIONS.size() - 1)]
+	var fit_scale: float = minf(minf(float(max_window.x) / float(target.x), float(max_window.y) / float(target.y)), 1.0)
+	if fit_scale < 1.0:
+		target = Vector2i(
+			maxi(320, int(floor(float(target.x) * fit_scale))),
+			maxi(180, int(floor(float(target.y) * fit_scale)))
+		)
+	target.x = mini(target.x, max_window.x)
+	target.y = mini(target.y, max_window.y)
+	return target
+
+
+func _apply_editor_preview_video_settings() -> void:
+	if DisplayServer.get_name() == "headless":
+		return
+
+	var screen_count := DisplayServer.get_screen_count()
+	var screen: int = clampi(game.selected_screen_index, 0, maxi(screen_count - 1, 0))
+	var usable := DisplayServer.screen_get_usable_rect(screen)
+	var screen_full := DisplayServer.screen_get_size(screen)
+	var screen_scale := DisplayServer.screen_get_scale(screen)
+	var resolution := _editor_preview_window_resolution(usable.size, screen_full, screen_scale)
+	DisplayServer.window_set_mode(DisplayServer.WINDOW_MODE_WINDOWED)
+	DisplayServer.window_set_flag(DisplayServer.WINDOW_FLAG_BORDERLESS, false)
+	DisplayServer.window_set_flag(DisplayServer.WINDOW_FLAG_RESIZE_DISABLED, false)
+	DisplayServer.window_set_current_screen(screen)
+	DisplayServer.window_set_size(resolution)
+	_sync_window_content_scale(resolution)
+	var logical_window_size := Vector2i(
+		int(round(float(resolution.x) / maxf(screen_scale, 1.0))),
+		int(round(float(resolution.y) / maxf(screen_scale, 1.0)))
+	)
+	DisplayServer.window_set_position(usable.position + (usable.size - logical_window_size) / 2)
+
+
 func _apply_video_settings() -> void:
 	game.selected_window_mode_index = clampi(game.selected_window_mode_index, 0, game.WINDOW_MODE_OPTIONS.size() - 1)
 	if DisplayServer.get_name() == "headless":
@@ -9293,15 +13432,6 @@ func _apply_video_settings() -> void:
 # статус + ряд кнопок (Отправить 260×64, Отмена 220×64, sep 18); середина (ScrollContainer)
 # тянется и прокручивает поле ввода (h≥130) и превью скриншота (h 240). Кнопки никогда
 # не уезжают за нижний край (SCRUM-460).
-const FB_PANEL_2K := Rect2(810, 330, 940, 780)
-const FB_SAFE_2K := Rect2(868, 402, 824, 642)
-const FB_TITLE_2K := Rect2(868, 402, 824, 42)
-const FB_SCROLL_2K := Rect2(868, 454, 824, 470)
-const FB_TEXTEDIT_2K := Rect2(868, 508, 824, 130)
-const FB_SCREENSHOT_2K := Rect2(868, 648, 824, 240)
-const FB_STATUS_2K := Rect2(868, 934, 824, 36)
-const FB_BTN_SEND_2K := Rect2(1031, 980, 260, 64)
-const FB_BTN_CANCEL_2K := Rect2(1309, 980, 220, 64)
 
 
 func _show_feedback_overlay(screenshot: Image = null) -> void:
@@ -9321,6 +13451,7 @@ func _show_feedback_overlay(screenshot: Image = null) -> void:
 	root.set_anchors_preset(Control.PRESET_FULL_RECT)
 	root.mouse_filter = Control.MOUSE_FILTER_STOP
 	game.feedback_overlay_layer.add_child(root)
+	_prepare_global_tooltips(root)
 
 	var dim := ColorRect.new()
 	dim.name = "FeedbackDim"
@@ -9362,7 +13493,7 @@ func _show_feedback_overlay(screenshot: Image = null) -> void:
 	var title := Label.new()
 	title.text = "Отправить фидбек"
 	title.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	title.add_theme_font_size_override("font_size", _readable_font_size(32))
+	title.add_theme_font_size_override("font_size", _readable_font_size(SemanticTypography.ROLE_TITLE, 32))
 	title.add_theme_color_override("font_color", Color(0.96, 0.90, 0.68, 1.0))
 	box.add_child(title)
 
@@ -9385,7 +13516,12 @@ func _show_feedback_overlay(screenshot: Image = null) -> void:
 	hint.text = "Опиши баг или впечатление. Скриншот ниже уже снят до открытия формы."
 	hint.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	hint.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
-	hint.add_theme_font_size_override("font_size", _readable_font_size(16))
+	hint.add_theme_font_size_override("font_size", SemanticTypography.resolve_fixed(
+		SemanticTypography.ROLE_CAPTION,
+		_readable_font_size(SemanticTypography.ROLE_CAPTION, 16),
+		SemanticTypography.role_min(SemanticTypography.ROLE_CAPTION),
+		SemanticTypography.role_max(SemanticTypography.ROLE_CAPTION)
+	))
 	hint.add_theme_color_override("font_color", Color(0.88, 0.86, 0.78, 1.0))
 	scroll_body.add_child(hint)
 
@@ -9395,7 +13531,12 @@ func _show_feedback_overlay(screenshot: Image = null) -> void:
 	text_edit.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	text_edit.placeholder_text = "Что случилось? Где ты был в игре? Что ожидал увидеть?"
 	text_edit.wrap_mode = TextEdit.LINE_WRAPPING_BOUNDARY
-	text_edit.add_theme_font_size_override("font_size", _readable_font_size(17))
+	text_edit.add_theme_font_size_override("font_size", SemanticTypography.resolve_fixed(
+		SemanticTypography.ROLE_BODY,
+		_readable_font_size(SemanticTypography.ROLE_BODY, 17),
+		SemanticTypography.role_min(SemanticTypography.ROLE_BODY),
+		SemanticTypography.role_max(SemanticTypography.ROLE_BODY)
+	))
 	text_edit.add_theme_color_override("font_color", Color(0.96, 0.93, 0.84, 1.0))
 	text_edit.add_theme_color_override("font_placeholder_color", Color(0.66, 0.64, 0.58, 1.0))
 	scroll_body.add_child(text_edit)
@@ -9421,7 +13562,7 @@ func _show_feedback_overlay(screenshot: Image = null) -> void:
 	status.text = "Отправка происходит только после нажатия «Отправить»."
 	status.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	status.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
-	status.add_theme_font_size_override("font_size", _readable_font_size(14))
+	status.add_theme_font_size_override("font_size", _readable_font_size(SemanticTypography.ROLE_VALUE, 14))
 	status.add_theme_color_override("font_color", Color(0.74, 0.82, 0.88, 1.0))
 	box.add_child(status)
 
@@ -9512,6 +13653,44 @@ func _current_ui_screen_name() -> String:
 	return "World"
 
 
+func _uses_gold_menu_shell(screen_background_id: String) -> bool:
+	return GOLD_SHELL_SCREEN_IDS.has(screen_background_id)
+
+
+func _gold_menu_shell_prefix(screen_background_id: String) -> String:
+	return {
+		"campfire": "Rest",
+		"upgrade": "Upgrade",
+		"artifact_reward": "BattleReward",
+		"victory": "Victory",
+		"death": "Defeat",
+	}.get(screen_background_id, screen_background_id.capitalize())
+
+
+func _gold_shell_menu_hud_reserve(screen_background_id := "") -> float:
+	return _gold_shell_menu_hud_reserve_for_size(screen_background_id, game.get_viewport().get_visible_rect().size)
+
+
+func _gold_shell_menu_hud_reserve_for_size(screen_background_id: String, viewport_size: Vector2) -> float:
+	var viewport_height: float = viewport_size.y
+	if viewport_height < 900.0:
+		return 96.0
+	if viewport_height >= 1200.0:
+		return 140.0
+	return 112.0
+
+
+func _gold_shell_panel_size(target_size: Vector2, inset := Vector2(16.0, 12.0), top_reserve := 0.0) -> Vector2:
+	return _gold_shell_panel_size_for_safe(target_size, _unified_safe_rect().size, inset, top_reserve)
+
+
+func _gold_shell_panel_size_for_safe(target_size: Vector2, safe_size: Vector2, inset: Vector2, top_reserve: float) -> Vector2:
+	return Vector2(
+		minf(target_size.x, maxf(1.0, safe_size.x - inset.x * 2.0)),
+		minf(target_size.y, maxf(1.0, safe_size.y - inset.y * 2.0 - top_reserve))
+	)
+
+
 func _create_menu_box(title: String, subtitle: String, screen_background_id := "", panel_style_override: StyleBox = null, panel_display_size := Vector2.ZERO) -> VBoxContainer:
 	game._clear_ui()
 
@@ -9520,9 +13699,11 @@ func _create_menu_box(title: String, subtitle: String, screen_background_id := "
 	game.add_child(game.ui_layer)
 
 	var root := Control.new()
+	root.name = "MenuScreen_%s" % screen_background_id if screen_background_id != "" else "MenuScreen"
 	root.set_anchors_preset(Control.PRESET_FULL_RECT)
 	root.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	game.ui_layer.add_child(root)
+	_prepare_global_tooltips(root)
 
 	if screen_background_id != "":
 		_add_screen_background(root, screen_background_id)
@@ -9535,28 +13716,40 @@ func _create_menu_box(title: String, subtitle: String, screen_background_id := "
 	panel.anchor_bottom = 0.5
 	var economy_panel := _is_economy_screen_background(screen_background_id)
 	var pause_end_panel := _is_pause_end_screen_background(screen_background_id)
+	var result_panel := _is_result_screen_background(screen_background_id)
 	var display_size := _pause_end_modal_display_size(screen_background_id) if pause_end_panel else Vector2.ZERO
 	var half_size := panel_display_size * 0.5 if panel_display_size != Vector2.ZERO else (display_size * 0.5 if pause_end_panel else (_economy_menu_panel_half_size(screen_background_id) if economy_panel else Vector2(560.0, 330.0)))
+	var shell_top_reserve := _gold_shell_menu_hud_reserve(screen_background_id) if _uses_gold_menu_shell(screen_background_id) and not result_panel else 0.0
+	if _uses_gold_menu_shell(screen_background_id):
+		var shell_panel_size := _gold_shell_panel_size(half_size * 2.0, Vector2(16.0, 0.0), shell_top_reserve)
+		half_size = shell_panel_size * 0.5
 	panel.offset_left = -half_size.x
-	panel.offset_top = -half_size.y
+	panel.offset_top = -half_size.y + shell_top_reserve * 0.5
 	panel.offset_right = half_size.x
-	panel.offset_bottom = half_size.y
+	panel.offset_bottom = half_size.y + shell_top_reserve * 0.5
 	if pause_end_panel:
 		panel.name = "PauseEndModalPanel_%s" % screen_background_id
 		panel.clip_contents = true
+		panel.set_meta("pause_end_display_size", display_size)
+		panel.set_meta("pause_end_content_margins", _pause_end_modal_content_margins(display_size, screen_background_id))
+		panel.set_meta("pause_end_content_rect", _pause_end_modal_content_rect(display_size, screen_background_id))
 		panel.add_theme_stylebox_override("panel", _pause_end_modal_style(display_size, screen_background_id))
 	elif panel_style_override != null:
 		panel.add_theme_stylebox_override("panel", panel_style_override)
 	else:
-		panel.add_theme_stylebox_override("panel", _economy_panel_style() if economy_panel else _panel_style())
+		var compact_gold_panel: bool = economy_panel and _uses_gold_menu_shell(screen_background_id) \
+			and game.get_viewport().get_visible_rect().size.y < 800.0
+		panel.add_theme_stylebox_override("panel", _atlas_chip_style(0.94, 6.0) if compact_gold_panel else (_economy_panel_style() if economy_panel else _panel_style()))
 	root.add_child(panel)
 
 	var box := VBoxContainer.new()
 	box.alignment = BoxContainer.ALIGNMENT_CENTER
 	box.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	box.size_flags_vertical = Control.SIZE_EXPAND_FILL
-	box.add_theme_constant_override("separation", 12 if pause_end_panel else (16 if economy_panel else 14))
-	if pause_end_panel:
+	var compact_gold_layout: bool = economy_panel and _uses_gold_menu_shell(screen_background_id) \
+		and game.get_viewport().get_visible_rect().size.y < 800.0
+	box.add_theme_constant_override("separation", (8 if result_panel and display_size.y < 660.0 else 10) if result_panel else (12 if pause_end_panel else ((8 if compact_gold_layout else 16) if economy_panel else 14)))
+	if pause_end_panel and not result_panel:
 		var scroll := ScrollContainer.new()
 		scroll.name = "PauseEndModalScroll_%s" % screen_background_id
 		scroll.size_flags_horizontal = Control.SIZE_EXPAND_FILL
@@ -9565,6 +13758,17 @@ func _create_menu_box(title: String, subtitle: String, screen_background_id := "
 		scroll.follow_focus = true
 		panel.add_child(scroll)
 		scroll.add_child(box)
+	elif result_panel:
+		var result_shell := Control.new()
+		result_shell.name = "ResultShell_%s" % screen_background_id
+		result_shell.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+		result_shell.size_flags_vertical = Control.SIZE_EXPAND_FILL
+		result_shell.clip_contents = true
+		panel.add_child(result_shell)
+		result_shell.add_child(box)
+		box.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
+		box.custom_minimum_size = Vector2.ZERO
+		box.clip_contents = true
 	elif economy_panel:
 		var scroll := ScrollContainer.new()
 		scroll.name = "EconomyMenuScroll_%s" % screen_background_id
@@ -9582,7 +13786,12 @@ func _create_menu_box(title: String, subtitle: String, screen_background_id := "
 	title_label.text = title
 	title_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	title_label.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-	title_label.add_theme_font_size_override("font_size", _readable_font_size(34 if pause_end_panel and game.get_viewport().get_visible_rect().size.y < 800.0 else 42, 0, 60))
+	title_label.add_theme_font_size_override("font_size", SemanticTypography.resolve_fixed(
+		SemanticTypography.ROLE_TITLE,
+		_readable_font_size(SemanticTypography.ROLE_TITLE, 34 if pause_end_panel and game.get_viewport().get_visible_rect().size.y < 800.0 else 42, 0, 60),
+		SemanticTypography.role_min(SemanticTypography.ROLE_TITLE),
+		SemanticTypography.role_max(SemanticTypography.ROLE_TITLE)
+	))
 	title_label.add_theme_color_override("font_color", Color(0.96, 0.9, 0.68, 1.0))
 	box.add_child(title_label)
 
@@ -9592,20 +13801,519 @@ func _create_menu_box(title: String, subtitle: String, screen_background_id := "
 	subtitle_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	subtitle_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	subtitle_label.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-	subtitle_label.add_theme_font_size_override("font_size", _readable_font_size(15 if pause_end_panel and game.get_viewport().get_visible_rect().size.y < 800.0 else 17, 0, 24))
+	subtitle_label.add_theme_font_size_override("font_size", SemanticTypography.resolve_fixed(
+		SemanticTypography.ROLE_CAPTION,
+		_readable_font_size(SemanticTypography.ROLE_CAPTION, 15 if pause_end_panel and game.get_viewport().get_visible_rect().size.y < 800.0 else 17, 0, 24),
+		SemanticTypography.role_min(SemanticTypography.ROLE_CAPTION),
+		SemanticTypography.role_max(SemanticTypography.ROLE_CAPTION)
+	))
 	subtitle_label.add_theme_color_override("font_color", Color(0.93, 0.89, 0.80, 1.0))
 	box.add_child(subtitle_label)
+	if result_panel:
+		_configure_result_menu_layout(box, screen_background_id, display_size)
+	if _uses_gold_menu_shell(screen_background_id):
+		panel.set_meta("gold_shell_content_rect", _unified_safe_rect())
+		_unified_add_frame(root, _gold_menu_shell_prefix(screen_background_id))
+		root.resized.connect(func() -> void:
+			_relayout_gold_menu_screen(root, panel, box, screen_background_id)
+			call_deferred("_relayout_gold_menu_screen", root, panel, box, screen_background_id)
+		)
 
 	return box
 
 
+func _gold_menu_target_size(screen_background_id: String) -> Vector2:
+	match screen_background_id:
+		"campfire":
+			return Vector2(1180.0, 716.0)
+		"upgrade":
+			return Vector2(1720.0, 730.0)
+		"artifact_reward":
+			return Vector2(1120.0, 660.0)
+	return Vector2(1120.0, 660.0)
+
+
+func _relayout_gold_menu_screen(root: Control, panel: PanelContainer, box: VBoxContainer, screen_background_id: String) -> void:
+	if root == null or panel == null or box == null or not is_instance_valid(root) or not is_instance_valid(panel) or not is_instance_valid(box):
+		return
+	var viewport_size := root.size
+	if viewport_size.x <= 1.0 or viewport_size.y <= 1.0:
+		return
+	var safe_rect := _unified_safe_rect_for_size(viewport_size)
+	var inner_rect := _gold_shell_inner_rect_for_size(viewport_size)
+	var reserve := _gold_shell_menu_hud_reserve_for_size(screen_background_id, viewport_size)
+	var panel_size := _gold_shell_panel_size_for_safe(_gold_menu_target_size(screen_background_id), safe_rect.size, Vector2(16.0, 0.0), reserve)
+	var half_size := panel_size * 0.5
+	panel.offset_left = -half_size.x
+	panel.offset_top = -half_size.y + reserve * 0.5
+	panel.offset_right = half_size.x
+	panel.offset_bottom = half_size.y + reserve * 0.5
+	panel.set_meta("gold_shell_content_rect", safe_rect)
+	panel.set_meta("gold_shell_inner_rect", inner_rect)
+
+	var compact_economy := viewport_size.y < 800.0 and ["campfire", "upgrade"].has(screen_background_id)
+	if screen_background_id in ["campfire", "upgrade"]:
+		panel.add_theme_stylebox_override("panel", _atlas_chip_style(0.94, 6.0 if compact_economy else 18.0))
+		box.add_theme_constant_override("separation", 8 if compact_economy else 16)
+		var cards_in_row := 2 if screen_background_id == "campfire" else 3
+		var card_size := _gold_shell_economy_choice_display_size_for_viewport(cards_in_row, viewport_size)
+		var row_name := "RestChoiceRow" if screen_background_id == "campfire" else "UpgradeChoiceRow"
+		var row := box.find_child(row_name, true, false) as HBoxContainer
+		if row != null:
+			var gap := _economy_choice_row_gap(card_size)
+			row.custom_minimum_size.x = card_size.x * float(cards_in_row) + float(gap * maxi(cards_in_row - 1, 0))
+			row.custom_minimum_size.y = card_size.y
+			row.add_theme_constant_override("separation", gap)
+			for child in row.get_children():
+				if child is Button:
+					_resize_economy_choice_card(child as Button, card_size)
+	elif screen_background_id == "artifact_reward":
+		panel.add_theme_stylebox_override("panel", _atlas_chip_style(0.94, 18.0))
+		var reward_size := _battle_reward_card_size_for_viewport(viewport_size)
+		var rewards_row := box.find_child("BattleRewardCardsRow", true, false) as HBoxContainer
+		if rewards_row != null:
+			rewards_row.custom_minimum_size.y = reward_size.y
+			for child in rewards_row.get_children():
+				if child is Button:
+					_resize_reward_card(child as Button, reward_size)
+
+	var title := box.find_child("MenuTitle_%s" % screen_background_id, true, false) as Label
+	if title == null and screen_background_id == "campfire":
+		title = box.find_child("RestTitle", true, false) as Label
+	if title != null:
+		title.add_theme_font_size_override("font_size", SemanticTypography.resolve_fixed(
+			SemanticTypography.ROLE_TITLE,
+			_readable_font_size(SemanticTypography.ROLE_TITLE, 42, 0, 60),
+			SemanticTypography.role_min(SemanticTypography.ROLE_TITLE),
+			SemanticTypography.role_max(SemanticTypography.ROLE_TITLE)
+		))
+	var subtitle := box.find_child("MenuSubtitle_%s" % screen_background_id, true, false) as Label
+	if subtitle == null and screen_background_id == "campfire":
+		subtitle = box.find_child("RestSubtitle", true, false) as Label
+	if subtitle != null:
+		subtitle.add_theme_font_size_override("font_size", SemanticTypography.resolve_fixed(
+			SemanticTypography.ROLE_CAPTION,
+			_readable_font_size(SemanticTypography.ROLE_CAPTION, 17, 0, 24),
+			SemanticTypography.role_min(SemanticTypography.ROLE_CAPTION),
+			SemanticTypography.role_max(SemanticTypography.ROLE_CAPTION)
+		))
+
+
+func _resize_economy_choice_card(button: Button, display_size: Vector2) -> void:
+	if button == null or not is_instance_valid(button):
+		return
+	button.custom_minimum_size = display_size
+	button.set_meta("economy_display_size", display_size)
+	button.set_meta("gold_shell_compact", display_size.y < ECONOMY_CHOICE_TARGET_720.y)
+	var pad := _atlas_card_pad(display_size)
+	_apply_atlas_choice_card_theme(button, pad)
+	var margins := _atlas_chip_content_margins(pad)
+	button.set_meta("economy_content_margins", margins)
+	var content := button.find_child("%sContent" % button.name, true, false) as Control
+	if content != null:
+		content.offset_left = margins.x
+		content.offset_top = margins.y
+		content.offset_right = -margins.z
+		content.offset_bottom = -margins.w
+	call_deferred("_fit_economy_choice_card_content", button)
+
+
+func _resize_reward_card(button: Button, display_size: Vector2) -> void:
+	if button == null or not is_instance_valid(button):
+		return
+	button.custom_minimum_size = display_size
+	_apply_reward_card_theme(button, false)
+	var margins := _atlas_chip_content_margins(_atlas_card_pad(display_size))
+	var content := button.find_child("BattleRewardCardContent", true, false) as Control
+	if content != null:
+		content.offset_left = margins.x
+		content.offset_top = margins.y
+		content.offset_right = -margins.z
+		content.offset_bottom = -margins.w
+	var compact := display_size.y <= 300.0
+	var content_box := content as VBoxContainer
+	if content_box != null:
+		content_box.add_theme_constant_override("separation", 2 if compact else 5)
+	var icon := button.find_child("UIIcon_*", true, false) as Control
+	if icon != null:
+		icon.custom_minimum_size = Vector2(32.0, 32.0) if compact else Vector2(40.0, 40.0)
+	var title := button.find_child("BattleRewardTitle", true, false) as Label
+	if title != null:
+		title.max_lines_visible = 1 if compact else 2
+		title.add_theme_font_size_override("font_size", SemanticTypography.resolve_fixed(
+			SemanticTypography.ROLE_TITLE,
+			_readable_font_size(SemanticTypography.ROLE_TITLE, 12 if compact else 17, 10 if compact else 12, 15 if compact else 22),
+			SemanticTypography.role_min(SemanticTypography.ROLE_TITLE),
+			SemanticTypography.role_max(SemanticTypography.ROLE_TITLE)
+		))
+	var preview := button.find_child("BattleRewardPreview", true, false) as Label
+	if preview != null:
+		preview.max_lines_visible = 2 if compact else -1
+		preview.text_overrun_behavior = TextServer.OVERRUN_TRIM_ELLIPSIS
+		preview.add_theme_font_size_override("font_size", SemanticTypography.resolve_fixed(
+			SemanticTypography.ROLE_BODY,
+			_readable_font_size(SemanticTypography.ROLE_BODY, 10 if compact else 14, 10, 13 if compact else 16),
+			SemanticTypography.role_min(SemanticTypography.ROLE_BODY),
+			SemanticTypography.role_max(SemanticTypography.ROLE_BODY)
+		))
+	var description := button.find_child("BattleRewardDescription", true, false) as Label
+	if description != null:
+		description.max_lines_visible = 1 if compact else 2
+		description.text_overrun_behavior = TextServer.OVERRUN_TRIM_ELLIPSIS
+		description.add_theme_font_size_override("font_size", SemanticTypography.resolve_fixed(
+			SemanticTypography.ROLE_DESCRIPTION,
+			_readable_font_size(SemanticTypography.ROLE_DESCRIPTION, 9 if compact else 12, 9 if compact else 12, 12 if compact else 14),
+			SemanticTypography.role_min(SemanticTypography.ROLE_DESCRIPTION),
+			SemanticTypography.role_max(SemanticTypography.ROLE_DESCRIPTION)
+		))
+	var note := button.find_child("BattleRewardClassNote", true, false) as Label
+	if note != null:
+		note.add_theme_font_size_override("font_size", SemanticTypography.resolve_fixed(
+			SemanticTypography.ROLE_BODY,
+			_readable_font_size(SemanticTypography.ROLE_BODY, 9 if compact else 11, 9 if compact else 12, 12 if compact else 14),
+			SemanticTypography.role_min(SemanticTypography.ROLE_BODY),
+			SemanticTypography.role_max(SemanticTypography.ROLE_BODY)
+		))
+	var action := button.find_child("BattleRewardActionLabel", true, false) as Label
+	if action != null:
+		action.add_theme_font_size_override("font_size", SemanticTypography.resolve_fixed(
+			SemanticTypography.ROLE_ACTION,
+			_readable_font_size(SemanticTypography.ROLE_ACTION, 10 if compact else 15, 10, 13 if compact else 16),
+			SemanticTypography.role_min(SemanticTypography.ROLE_ACTION),
+			SemanticTypography.role_max(SemanticTypography.ROLE_ACTION)
+		))
+
+
+func _create_result_menu_box(title: String, subtitle: String, screen_background_id: String) -> Dictionary:
+	game._clear_ui()
+
+	game.ui_layer = CanvasLayer.new()
+	game.ui_layer.process_mode = Node.PROCESS_MODE_ALWAYS
+	game.add_child(game.ui_layer)
+
+	var root := Control.new()
+	root.name = "ResultScreen_%s" % screen_background_id
+	root.set_anchors_preset(Control.PRESET_FULL_RECT)
+	root.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	game.ui_layer.add_child(root)
+	_prepare_global_tooltips(root)
+	_add_screen_background(root, screen_background_id)
+
+	var display_size := _pause_end_modal_display_size(screen_background_id)
+	var panel := PanelContainer.new()
+	panel.name = "PauseEndModalPanel_%s" % screen_background_id
+	panel.clip_contents = true
+	panel.anchor_left = 0.5
+	panel.anchor_top = 0.5
+	panel.anchor_right = 0.5
+	panel.anchor_bottom = 0.5
+	var half_size := display_size * 0.5
+	panel.offset_left = -half_size.x
+	panel.offset_top = -half_size.y
+	panel.offset_right = half_size.x
+	panel.offset_bottom = half_size.y
+	panel.set_meta("pause_end_display_size", display_size)
+	panel.set_meta("pause_end_content_margins", _pause_end_modal_content_margins(display_size, screen_background_id))
+	panel.set_meta("pause_end_content_rect", _pause_end_modal_content_rect(display_size, screen_background_id))
+	panel.add_theme_stylebox_override("panel", _pause_end_modal_style(display_size, screen_background_id))
+	root.add_child(panel)
+
+	var content := Control.new()
+	content.name = "ResultContent_%s" % screen_background_id
+	content.clip_contents = true
+	content.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	content.custom_minimum_size = Vector2.ZERO
+	content.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	content.size_flags_vertical = Control.SIZE_EXPAND_FILL
+	content.set_meta("result_no_scroll_layout", true)
+	content.set_meta("result_screen_id", screen_background_id)
+	content.set_meta("result_content_rect", _pause_end_modal_content_rect(display_size, screen_background_id))
+	panel.add_child(content)
+
+	var title_label := Label.new()
+	title_label.name = "MenuTitle_%s" % screen_background_id
+	title_label.text = title
+	title_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	title_label.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
+	title_label.clip_text = true
+	title_label.add_theme_color_override("font_color", Color(0.96, 0.9, 0.68, 1.0))
+	title_label.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	content.add_child(title_label)
+
+	var subtitle_label := Label.new()
+	subtitle_label.name = "MenuSubtitle_%s" % screen_background_id
+	subtitle_label.text = subtitle
+	subtitle_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	subtitle_label.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
+	subtitle_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	subtitle_label.clip_text = true
+	subtitle_label.add_theme_color_override("font_color", Color(0.93, 0.89, 0.80, 1.0))
+	subtitle_label.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	content.add_child(subtitle_label)
+
+	var body := Control.new()
+	body.name = "ResultBody_%s" % screen_background_id
+	body.clip_contents = true
+	body.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	content.add_child(body)
+
+	var crest_slot := CenterContainer.new()
+	crest_slot.name = "ResultCrestSlot_%s" % screen_background_id
+	crest_slot.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	body.add_child(crest_slot)
+
+	var summary_column := VBoxContainer.new()
+	summary_column.name = "RunSummaryColumn_%s" % screen_background_id
+	summary_column.alignment = BoxContainer.ALIGNMENT_CENTER
+	summary_column.clip_contents = true
+	summary_column.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	summary_column.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	summary_column.size_flags_vertical = Control.SIZE_EXPAND_FILL
+	body.add_child(summary_column)
+
+	var button_slot := CenterContainer.new()
+	button_slot.name = "ResultButtonSlot_%s" % screen_background_id
+	button_slot.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	content.add_child(button_slot)
+
+	content.resized.connect(func() -> void:
+		_layout_result_content(content, screen_background_id)
+	)
+	_layout_result_content(content, screen_background_id)
+	call_deferred("_layout_result_content", content, screen_background_id)
+	panel.set_meta("gold_shell_content_rect", _unified_safe_rect())
+	_unified_add_frame(root, _gold_menu_shell_prefix(screen_background_id))
+	root.resized.connect(func() -> void:
+		_relayout_gold_result_screen(root, panel, content, screen_background_id)
+		call_deferred("_relayout_gold_result_screen", root, panel, content, screen_background_id)
+	)
+
+	return {
+		"content": content,
+		"crest_slot": crest_slot,
+		"summary_column": summary_column,
+		"button_slot": button_slot,
+	}
+
+
+func _relayout_gold_result_screen(root: Control, panel: PanelContainer, content: Control, screen_background_id: String) -> void:
+	if root == null or panel == null or content == null or not is_instance_valid(root) or not is_instance_valid(panel) or not is_instance_valid(content):
+		return
+	var viewport_size := root.size
+	if viewport_size.x <= 1.0 or viewport_size.y <= 1.0:
+		return
+	var display_size := _pause_end_modal_display_size_for_viewport(screen_background_id, viewport_size)
+	var half_size := display_size * 0.5
+	panel.offset_left = -half_size.x
+	panel.offset_top = -half_size.y
+	panel.offset_right = half_size.x
+	panel.offset_bottom = half_size.y
+	var content_margins := _pause_end_modal_content_margins(display_size, screen_background_id)
+	var content_rect := _pause_end_modal_content_rect(display_size, screen_background_id)
+	panel.set_meta("pause_end_display_size", display_size)
+	panel.set_meta("pause_end_content_margins", content_margins)
+	panel.set_meta("pause_end_content_rect", content_rect)
+	panel.set_meta("gold_shell_content_rect", _unified_safe_rect_for_size(viewport_size))
+	panel.add_theme_stylebox_override("panel", _pause_end_modal_style(display_size, screen_background_id))
+	content.set_meta("result_content_rect", content_rect)
+
+	var crest_size := _pause_end_result_crest_size_for_viewport(viewport_size.y)
+	var crest := content.find_child("ResultCrest", true, false) as TextureRect
+	if crest != null:
+		crest.custom_minimum_size = Vector2(crest_size, crest_size)
+	var action_name := "VictoryNewRunButton" if screen_background_id == "victory" else "DeathRetryButton"
+	var action := content.find_child(action_name, true, false) as Button
+	if action != null:
+		_set_action_button_size(action, _pause_end_result_button_width_for_viewport(screen_background_id, viewport_size), _pause_end_result_button_height_for_viewport(viewport_size.y))
+	_layout_result_content(content, screen_background_id)
+	_relayout_result_summary_typography(content, viewport_size.y)
+
+
+func _relayout_result_summary_typography(content: Control, viewport_height: float) -> void:
+	if content == null or not is_instance_valid(content):
+		return
+	var ultra_compact: bool = viewport_height < 800.0
+	var outcome := content.find_child("RunSummaryOutcome", true, false) as Label
+	if outcome != null:
+		outcome.add_theme_font_size_override("font_size", SemanticTypography.resolve_fixed(
+			SemanticTypography.ROLE_SECTION,
+			_readable_font_size(SemanticTypography.ROLE_SECTION, 10 if ultra_compact else 13, 10 if ultra_compact else 12, 22),
+			SemanticTypography.role_min(SemanticTypography.ROLE_SECTION),
+			SemanticTypography.role_max(SemanticTypography.ROLE_SECTION)
+		))
+	var grid := content.find_child("RunSummaryStats", true, false) as GridContainer
+	if grid != null:
+		grid.add_theme_constant_override("h_separation", 8 if ultra_compact else 14)
+		grid.add_theme_constant_override("v_separation", 0 if ultra_compact else 2)
+		for label_node in grid.get_children():
+			var label := label_node as Label
+			if label == null:
+				continue
+			var base_size := 10 if ultra_compact else (12 if str(label.name).begins_with("RunSummaryStatName_") else 13)
+			if str(label.name).begins_with("RunSummaryStatName_"):
+				label.add_theme_font_size_override("font_size", SemanticTypography.resolve_fixed(
+					SemanticTypography.ROLE_FIELD,
+					_readable_font_size(SemanticTypography.ROLE_FIELD, base_size, 10 if ultra_compact else 12, 20),
+					SemanticTypography.role_min(SemanticTypography.ROLE_FIELD),
+					SemanticTypography.role_max(SemanticTypography.ROLE_FIELD)
+				))
+			else:
+				label.add_theme_font_size_override("font_size", SemanticTypography.resolve_fixed(
+					SemanticTypography.ROLE_VALUE,
+					_readable_font_size(SemanticTypography.ROLE_VALUE, base_size, 10 if ultra_compact else 12, 20),
+					SemanticTypography.role_min(SemanticTypography.ROLE_VALUE),
+					SemanticTypography.role_max(SemanticTypography.ROLE_VALUE)
+				))
+	var artifacts := content.find_child("RunSummaryArtifacts", true, false) as Label
+	if artifacts != null:
+		artifacts.add_theme_font_size_override("font_size", SemanticTypography.resolve_fixed(
+			SemanticTypography.ROLE_BODY,
+			_readable_font_size(SemanticTypography.ROLE_BODY, 10 if ultra_compact else 11, 10 if ultra_compact else 12, 18),
+			SemanticTypography.role_min(SemanticTypography.ROLE_BODY),
+			SemanticTypography.role_max(SemanticTypography.ROLE_BODY)
+		))
+
+
+func _layout_result_content(content: Control, screen_background_id: String) -> void:
+	if content == null or not is_instance_valid(content):
+		return
+	var size := content.size
+	if size.x <= 1.0 or size.y <= 1.0:
+		return
+	var compact := size.y < 520.0 or float(game.get_viewport().get_visible_rect().size.y) < 760.0
+	var gap := 6.0 if compact else 10.0
+	var button_height := minf(_pause_end_result_button_height(), maxf(56.0, size.y * 0.20))
+	var available_height := maxf(1.0, size.y - button_height - gap * 3.0)
+	var title_height := clampf(available_height * 0.12, 28.0 if compact else 34.0, 42.0)
+	var subtitle_height := clampf(available_height * (0.23 if compact else 0.25), 58.0 if compact else 104.0, 112.0 if compact else 128.0)
+	var body_height := maxf(1.0, available_height - title_height - subtitle_height)
+	var minimum_body := 162.0 if compact else 220.0
+	if body_height < minimum_body:
+		var deficit := minimum_body - body_height
+		subtitle_height = maxf(58.0 if compact else 82.0, subtitle_height - deficit)
+		body_height = maxf(1.0, available_height - title_height - subtitle_height)
+
+	var title := content.get_node_or_null("MenuTitle_%s" % screen_background_id) as Label
+	var subtitle := content.get_node_or_null("MenuSubtitle_%s" % screen_background_id) as Label
+	var body := content.get_node_or_null("ResultBody_%s" % screen_background_id) as Control
+	var button_slot := content.get_node_or_null("ResultButtonSlot_%s" % screen_background_id) as Control
+
+	_apply_control_rect(title, Rect2(0.0, 0.0, size.x, title_height))
+	_apply_control_rect(subtitle, Rect2(0.0, title_height + gap, size.x, subtitle_height))
+	_apply_control_rect(body, Rect2(0.0, title_height + gap + subtitle_height + gap, size.x, body_height))
+	_apply_control_rect(button_slot, Rect2(0.0, maxf(0.0, size.y - button_height), size.x, button_height))
+
+	if title != null:
+		title.add_theme_font_size_override("font_size", _readable_font_size(SemanticTypography.ROLE_TITLE, 26 if compact else 34, 0, 42))
+	if subtitle != null:
+		subtitle.add_theme_font_size_override("font_size", _readable_font_size(SemanticTypography.ROLE_CAPTION, 11 if compact else 13, 0, 18))
+	if body == null:
+		return
+
+	var crest_slot := body.get_node_or_null("ResultCrestSlot_%s" % screen_background_id) as Control
+	var summary_column := body.get_node_or_null("RunSummaryColumn_%s" % screen_background_id) as VBoxContainer
+	var body_gap := 10.0 if compact else 18.0
+	var crest_width := clampf(size.x * 0.26, 92.0 if compact else 112.0, 168.0)
+	var summary_x := crest_width + body_gap
+	var summary_width := maxf(1.0, size.x - summary_x)
+	_apply_control_rect(crest_slot, Rect2(0.0, 0.0, crest_width, body_height))
+	_apply_control_rect(summary_column, Rect2(summary_x, 0.0, summary_width, body_height))
+	if summary_column != null:
+		summary_column.add_theme_constant_override("separation", 2 if compact else 4)
+
+
+func _configure_result_menu_layout(box: VBoxContainer, screen_background_id: String, display_size: Vector2) -> void:
+	var content_rect := _pause_end_modal_content_rect(display_size, screen_background_id)
+	var content_size := content_rect.size
+	var compact := display_size.y < 660.0
+	box.name = "ResultContent_%s" % screen_background_id
+	box.set_meta("result_no_scroll_layout", true)
+	box.set_meta("result_screen_id", screen_background_id)
+	box.set_meta("result_content_rect", content_rect)
+	box.alignment = BoxContainer.ALIGNMENT_BEGIN
+	box.custom_minimum_size = Vector2.ZERO
+	box.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	box.size_flags_vertical = Control.SIZE_EXPAND_FILL
+	box.add_theme_constant_override("separation", 8 if compact else 10)
+
+	var title_label := box.find_child("MenuTitle_%s" % screen_background_id, false, false) as Label
+	if title_label != null:
+		title_label.custom_minimum_size = Vector2(content_size.x, 30.0 if compact else 42.0)
+		title_label.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
+		title_label.add_theme_font_size_override("font_size", _readable_font_size(SemanticTypography.ROLE_TITLE, 28 if compact else 36, 0, 48))
+
+	var subtitle_label := box.find_child("MenuSubtitle_%s" % screen_background_id, false, false) as Label
+	if subtitle_label != null:
+		subtitle_label.custom_minimum_size = Vector2(content_size.x, 112.0 if compact else 128.0)
+		subtitle_label.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
+		subtitle_label.add_theme_font_size_override("font_size", SemanticTypography.resolve_fixed(
+			SemanticTypography.ROLE_CAPTION,
+			_readable_font_size(SemanticTypography.ROLE_CAPTION, 13 if compact else 16, 0, 21),
+			SemanticTypography.role_min(SemanticTypography.ROLE_CAPTION),
+			SemanticTypography.role_max(SemanticTypography.ROLE_CAPTION)
+		))
+
+	var body := HBoxContainer.new()
+	body.name = "ResultBody_%s" % screen_background_id
+	body.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	body.size_flags_vertical = Control.SIZE_EXPAND_FILL
+	body.add_theme_constant_override("separation", 12 if compact else 18)
+	box.add_child(body)
+
+	var crest_column := VBoxContainer.new()
+	crest_column.name = "ResultCrestColumn_%s" % screen_background_id
+	crest_column.alignment = BoxContainer.ALIGNMENT_CENTER
+	crest_column.size_flags_vertical = Control.SIZE_EXPAND_FILL
+	var crest_column_width := clampf(content_size.x * 0.28, 112.0, 170.0)
+	crest_column.custom_minimum_size = Vector2(crest_column_width, 0.0)
+	body.add_child(crest_column)
+
+	var crest_slot := CenterContainer.new()
+	crest_slot.name = "ResultCrestSlot_%s" % screen_background_id
+	var crest_size := _pause_end_result_crest_size()
+	crest_slot.custom_minimum_size = Vector2(crest_column_width, crest_size)
+	crest_slot.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	crest_column.add_child(crest_slot)
+
+	var summary_column := VBoxContainer.new()
+	summary_column.name = "RunSummaryColumn_%s" % screen_background_id
+	summary_column.alignment = BoxContainer.ALIGNMENT_CENTER
+	summary_column.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	summary_column.size_flags_vertical = Control.SIZE_EXPAND_FILL
+	summary_column.add_theme_constant_override("separation", 4 if compact else 6)
+	body.add_child(summary_column)
+
+
 func _add_result_crest(box: VBoxContainer, kind: String) -> void:
+	var slot := box.find_child("ResultCrestSlot_%s" % kind, true, false) as Control
+	if slot != null:
+		_add_result_crest_to_slot(slot, kind)
+		return
+	# Аддитивная геральдическая эмблема-кольцо над заголовком экранов победы/поражения
+	# (D&D Dark Fantasy Dragon, fantasydisk-asset-generator). SCRUM-330.
+	var crest := _make_result_crest(kind)
+	if crest == null:
+		return
+	box.add_child(crest)
+	box.move_child(crest, 0)
+
+
+func _add_result_crest_to_slot(slot: Control, kind: String) -> void:
+	if slot == null or not is_instance_valid(slot):
+		return
+	var crest := _make_result_crest(kind)
+	if crest == null:
+		return
+	slot.add_child(crest)
+
+
+func _make_result_crest(kind: String) -> TextureRect:
 	# Аддитивная геральдическая эмблема-кольцо над заголовком экранов победы/поражения
 	# (D&D Dark Fantasy Dragon, fantasydisk-asset-generator). SCRUM-330.
 	var slug := "victory" if kind == "victory" else "defeat"
 	var tex: Texture2D = game._cached_texture("res://assets/sprites/ui/result_crests/ui_crest_%s.png" % slug)
 	if tex == null:
-		return
+		return null
 	var crest := TextureRect.new()
 	crest.name = "ResultCrest"
 	crest.texture = tex
@@ -9615,22 +14323,41 @@ func _add_result_crest(box: VBoxContainer, kind: String) -> void:
 	crest.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
 	crest.size_flags_horizontal = Control.SIZE_SHRINK_CENTER
 	crest.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	box.add_child(crest)
-	box.move_child(crest, 0)
+	return crest
 
 
 func _pause_end_result_crest_size() -> float:
 	var viewport_height: float = float(game.get_viewport().get_visible_rect().size.y)
-	return clampf(viewport_height * 0.17, 112.0, 176.0)
+	return _pause_end_result_crest_size_for_viewport(viewport_height)
+
+
+func _pause_end_result_crest_size_for_viewport(viewport_height: float) -> float:
+	if viewport_height < 760.0:
+		return clampf(viewport_height * 0.15, 88.0, 112.0)
+	return clampf(viewport_height * 0.16, 112.0, 168.0)
 
 
 func _pause_end_result_button_height() -> float:
 	var viewport_height: float = float(game.get_viewport().get_visible_rect().size.y)
+	return _pause_end_result_button_height_for_viewport(viewport_height)
+
+
+func _pause_end_result_button_height_for_viewport(viewport_height: float) -> float:
 	if viewport_height < 800.0:
 		return 72.0
 	if viewport_height < 1000.0:
 		return 88.0
 	return STANDARD_ACTION_BUTTON_HEIGHT
+
+
+func _pause_end_result_button_width(screen_background_id: String) -> float:
+	return _pause_end_result_button_width_for_viewport(screen_background_id, game.get_viewport().get_visible_rect().size)
+
+
+func _pause_end_result_button_width_for_viewport(screen_background_id: String, viewport_size: Vector2) -> float:
+	var display_size := _pause_end_modal_display_size_for_viewport(screen_background_id, viewport_size)
+	var content_width := _pause_end_modal_content_rect(display_size, screen_background_id).size.x
+	return clampf(floorf(content_width), 260.0, STANDARD_ACTION_BUTTON_WIDTH)
 
 
 func _add_screen_background(root: Control, screen_background_id: String) -> void:
@@ -9642,6 +14369,8 @@ func _add_screen_background(root: Control, screen_background_id: String) -> void
 		background.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
 		background.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_COVERED
 		background.texture = texture
+		if screen_background_id == "level_up":
+			background.modulate = LU_BACKGROUND_BRIGHTEN
 		background.mouse_filter = Control.MOUSE_FILTER_IGNORE
 		root.add_child(background)
 	else:
@@ -9657,33 +14386,12 @@ func _add_screen_background(root: Control, screen_background_id: String) -> void
 	shade.set_anchors_preset(Control.PRESET_FULL_RECT)
 	# SCRUM-684: кодекс рисуется поверх детального гримуар-разворота — гасим фон
 	# сильнее, чтобы орнаментные панели читались как передний план.
-	shade.color = Color(0.02, 0.015, 0.03, 0.62) if screen_background_id == "codex" else Color(0.0, 0.0, 0.0, 0.44)
-	shade.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	root.add_child(shade)
-
-
-func _add_codex_pl_background(root: Control) -> void:
-	var texture: Texture2D = null
-	if ResourceLoader.exists(CODEX_PL_BACKDROP_PATH):
-		texture = game._cached_texture(CODEX_PL_BACKDROP_PATH)
-	if texture != null:
-		var background := TextureRect.new()
-		background.name = "ScreenBackground_codex"
-		background.set_anchors_preset(Control.PRESET_FULL_RECT)
-		background.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
-		background.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_COVERED
-		background.texture = texture
-		background.mouse_filter = Control.MOUSE_FILTER_IGNORE
-		_codex_pl_make_nearest(background)
-		root.add_child(background)
+	if screen_background_id == "codex":
+		shade.color = Color(0.02, 0.015, 0.03, 0.62)
+	elif screen_background_id == "level_up":
+		shade.color = Color(0.015, 0.010, 0.030, LU_BACKGROUND_SHADE_ALPHA)
 	else:
-		_add_screen_background(root, "codex")
-		return
-
-	var shade := ColorRect.new()
-	shade.name = "ScreenBackgroundReadableShade"
-	shade.set_anchors_preset(Control.PRESET_FULL_RECT)
-	shade.color = Color(0.015, 0.012, 0.018, 0.24)
+		shade.color = Color(0.0, 0.0, 0.0, 0.44)
 	shade.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	root.add_child(shade)
 
@@ -9704,35 +14412,77 @@ func _level_up_layout_metrics() -> Dictionary:
 	var viewport_size := Vector2(1280.0, 720.0)
 	if game != null and game.get_viewport() != null:
 		viewport_size = game.get_viewport().get_visible_rect().size
-	var scale := maxf(0.5, minf(viewport_size.x / 2560.0, viewport_size.y / 1440.0))
+	# SCRUM-985: внешняя рама больше не рисуется, но её консервативный safe-inset
+	# остаётся геометрическим viewport reserve — карточки и «Позже» не липнут к
+	# краям экрана на компактной матрице.
+	var safe_margins := _unified_safe_margins()
+	var safe_size := Vector2(
+		maxf(viewport_size.x - safe_margins.x - safe_margins.z, 96.0),
+		maxf(viewport_size.y - safe_margins.y - safe_margins.w, 96.0)
+	)
+	var scale := clampf(
+		minf((safe_size.x - 8.0) / LU_PANEL_2K.size.x, (safe_size.y - 8.0) / LU_PANEL_2K.size.y),
+		0.30, 1.0
+	)
 	var compact := scale <= 0.52
-	var panel_size := LU_PANEL_2K.size * scale
-	var content_position := Vector2(LU_PANEL_CONTENT_2K.x, LU_PANEL_CONTENT_2K.y) * scale
-	var content_size := LU_PANEL_CONTENT_SIZE_2K * scale
+	var xy := Vector2(scale, scale)
+	var panel_size := Vector2(roundf(LU_PANEL_2K.size.x * scale), roundf(LU_PANEL_2K.size.y * scale))
+	# Контент-зона = фактические content margins чипа панели (_atlas_chip_style:
+	# по горизонтали pad*1.4) — PanelContainer сам ставит бокс ровно в эту зону.
+	var panel_pad := roundf(LU_PANEL_CHIP_PAD_2K * scale)
+	var content_position := Vector2(panel_pad * 1.4, panel_pad)
+	var content_size := panel_size - Vector2(panel_pad * 2.8, panel_pad * 2.0)
+	var card_width := roundf(LU_CARD_2K.size.x * scale)
+	var card_gap := roundf(LU_CARD_GAP_2K * scale)
+	# «Позже» — фикс-размер глобального кита (высота от вьюпорта, не от scale):
+	# прижата к низу контент-зоны, по центру.
+	var later_size := Vector2(LU_LATER_BUTTON_WIDTH, _atlas_action_button_height())
+	var later_position := Vector2(
+		roundf((content_size.x - later_size.x) * 0.5),
+		content_size.y - later_size.y - maxf(8.0, roundf(12.0 * scale))
+	)
+	# Ряд карточек занимает всю зону между шапкой и «Позже»; карточки контентной
+	# высоты (SIZE_SHRINK_CENTER) центрируются в ней по вертикали.
+	var rewards_zone_top := roundf(LU_REWARDS_ROW_TOP_2K * scale)
+	var rewards_zone_bottom := later_position.y - maxf(8.0, roundf(14.0 * scale))
+	var rewards_row_size := Vector2(
+		card_width * 3.0 + card_gap * 2.0,
+		maxf(rewards_zone_bottom - rewards_zone_top, 64.0)
+	)
+	var rewards_row_position := Vector2(roundf((content_size.x - rewards_row_size.x) * 0.5), rewards_zone_top)
+	# Церемониальный орнамент под титулом: бокс ~46% ширины панели, высота 14-28
+	# (KEEP_ASPECT_CENTERED центрирует арт по высоте бокса).
+	var divider_size := Vector2(
+		roundf(panel_size.x * LU_DIVIDER_PANEL_WIDTH_RATIO),
+		clampf(roundf(LU_DIVIDER_HEIGHT_2K * scale), 14.0, LU_DIVIDER_HEIGHT_2K)
+	)
+	var divider_position := Vector2(
+		roundf((content_size.x - divider_size.x) * 0.5),
+		roundf(LU_DIVIDER_TOP_2K * scale)
+	)
 	return {
 		"scale": scale,
-		"panel_size": Vector2(roundf(panel_size.x), roundf(panel_size.y)),
-		"content_position": Vector2(roundf(content_position.x), roundf(content_position.y)),
-		"content_size": Vector2(roundf(content_size.x), roundf(content_size.y)),
-		"hero_header_position": _level_up_scaled_position(LU_HERO_HEADER_RECT, Vector2(scale, scale)),
-		"hero_header_size": _level_up_scaled_size(LU_HERO_HEADER_RECT, Vector2(scale, scale)),
-		"hero_frame_position": _level_up_scaled_position(LU_HERO_FRAME_RECT, Vector2(scale, scale)),
-		"hero_size": _level_up_scaled_size(LU_HERO_FRAME_RECT, Vector2(scale, scale)),
-		"hero_portrait_position": _level_up_scaled_position(LU_HERO_PORTRAIT_RECT, Vector2(scale, scale)),
-		"hero_portrait_size": _level_up_scaled_size(LU_HERO_PORTRAIT_RECT, Vector2(scale, scale)),
-		"title_position": _level_up_scaled_position(LU_TITLE_RECT, Vector2(scale, scale)),
-		"title_size": _level_up_scaled_size(LU_TITLE_RECT, Vector2(scale, scale)),
-		"subtitle_position": _level_up_scaled_position(LU_SUBTITLE_RECT, Vector2(scale, scale)),
-		"subtitle_size": _level_up_scaled_size(LU_SUBTITLE_RECT, Vector2(scale, scale)),
-		"rewards_row_position": _level_up_scaled_position(LU_REWARDS_ROW_RECT, Vector2(scale, scale)),
-		"rewards_row_size": _level_up_scaled_size(LU_REWARDS_ROW_RECT, Vector2(scale, scale)),
-		"card_size": _level_up_scaled_size(LU_CARD_2K, Vector2(scale, scale)),
-		"card_gap": 0,
-		"later_button_position": _level_up_scaled_position(LU_LATER_BUTTON_RECT, Vector2(scale, scale)),
-		"later_button_size": _level_up_scaled_size(LU_LATER_BUTTON_RECT, Vector2(scale, scale)),
+		"panel_size": panel_size,
+		"panel_pad": panel_pad,
+		"content_position": content_position,
+		"content_size": content_size,
+		"hero_header_position": _level_up_scaled_position(LU_HERO_HEADER_RECT, xy),
+		"hero_header_size": _level_up_scaled_size(LU_HERO_HEADER_RECT, xy),
+		"title_position": _level_up_scaled_position(LU_TITLE_RECT, xy),
+		"title_size": _level_up_scaled_size(LU_TITLE_RECT, xy),
+		"divider_position": divider_position,
+		"divider_size": divider_size,
+		"subtitle_position": _level_up_scaled_position(LU_SUBTITLE_RECT, xy),
+		"subtitle_size": _level_up_scaled_size(LU_SUBTITLE_RECT, xy),
+		"rewards_row_position": rewards_row_position,
+		"rewards_row_size": rewards_row_size,
+		"card_width": card_width,
+		"card_gap": card_gap,
+		"later_button_position": later_position,
+		"later_button_size": later_size,
 		"title_font": maxi(16, int(roundf(38.0 * scale))),
 		"title_scale": Vector2.ONE,
-		"subtitle_font": maxi(8, int(roundf(18.0 * scale))),
+		"subtitle_font": maxi(12, int(roundf(18.0 * scale))),
 		"compact": compact,
 	}
 
@@ -9750,6 +14500,7 @@ func _create_level_up_menu_box(title: String, subtitle: String, layout := {}) ->
 	root.name = "LevelUpOverlay"
 	root.set_anchors_preset(Control.PRESET_FULL_RECT)
 	game.ui_layer.add_child(root)
+	_prepare_global_tooltips(root)
 	_add_screen_background(root, "level_up")
 
 	var dim := ColorRect.new()
@@ -9771,8 +14522,7 @@ func _create_level_up_menu_box(title: String, subtitle: String, layout := {}) ->
 	var panel := PanelContainer.new()
 	panel.name = "LevelUpPanel"
 	var panel_size: Vector2 = layout.get("panel_size", Vector2(1120, 660))
-	var panel_source_size := LU_PANEL_SOURCE_SIZE
-	var panel_source_content := LU_PANEL_CONTENT_2K
+	var panel_pad: float = layout.get("panel_pad", 14.0)
 	var panel_content_position: Vector2 = layout.get("content_position", Vector2(46.0, 55.0))
 	panel.anchor_left = 0.5
 	panel.anchor_top = 0.5
@@ -9790,15 +14540,20 @@ func _create_level_up_menu_box(title: String, subtitle: String, layout := {}) ->
 	panel.modulate.a = 0.0
 	panel.custom_minimum_size = panel_size
 	panel.mouse_filter = Control.MOUSE_FILTER_STOP
-	panel.add_theme_stylebox_override("panel", _level_up_panel_2k_style(panel_size))
+	# SCRUM-985: PanelContainer остаётся layout/safe-margin хостом, но большая
+	# общая рамка визуально снята. Контраст обеспечивают локальные reward cards.
+	var panel_style := _atlas_chip_style(LU_PANEL_BACKGROUND_ALPHA, panel_pad)
+	panel_style.border_color = Color.TRANSPARENT
+	panel_style.set_border_width_all(0)
+	panel.add_theme_stylebox_override("panel", panel_style)
 	panel.set_meta("level_up_slot", "level_up_panel")
-	panel.set_meta("level_up_content_margins", panel_source_content)
-	panel.set_meta("level_up_content_rect", Rect2(
-		panel_source_content.x,
-		panel_source_content.y,
-		panel_source_size.x - panel_source_content.x - panel_source_content.z,
-		panel_source_size.y - panel_source_content.y - panel_source_content.w
+	panel.set_meta("level_up_content_margins", Vector4(
+		panel_style.content_margin_left,
+		panel_style.content_margin_top,
+		panel_style.content_margin_right,
+		panel_style.content_margin_bottom
 	))
+	panel.set_meta("level_up_content_rect", Rect2(panel_content_position, layout.get("content_size", Vector2(768.0, 417.0))))
 	root.add_child(panel)
 
 	var box := Control.new()
@@ -9815,25 +14570,9 @@ func _create_level_up_menu_box(title: String, subtitle: String, layout := {}) ->
 	hero_header.custom_minimum_size = hero_header.size
 	box.add_child(hero_header)
 
-	var hero_size: Vector2 = layout.get("hero_size", Vector2(92, 92))
-	var hero_frame := PanelContainer.new()
-	hero_frame.name = "LevelUpHeroFrame"
-	hero_frame.position = layout.get("hero_frame_position", Vector2.ZERO)
-	hero_frame.custom_minimum_size = hero_size
-	hero_frame.size = hero_size
-	hero_frame.add_theme_stylebox_override("panel", _level_up_portrait_style(hero_size))
-	box.add_child(hero_frame)
-
-	var hero_portrait := TextureRect.new()
-	hero_portrait.name = "LevelUpHeroPortrait"
-	hero_portrait.texture = game._cached_texture(str(game.PROGRESSION_DATA.character_config(game.selected_character_id).get("sprite_path", "")))
-	hero_portrait.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
-	hero_portrait.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
-	hero_portrait.position = layout.get("hero_portrait_position", Vector2(10.0, 10.0)) - hero_frame.position
-	hero_portrait.size = layout.get("hero_portrait_size", hero_size - Vector2(20.0, 20.0))
-	hero_portrait.custom_minimum_size = hero_portrait.size
-	hero_frame.add_child(hero_portrait)
-
+	# Директива пользователя SCRUM-892: иконки/портрета класса на level-up НЕТ —
+	# шапка симметричная и церемониальная: золотой титул на всю ширину, под ним
+	# орнамент-разделитель, под орнаментом сабтитул.
 	var title_label := Label.new()
 	title_label.name = "LevelUpTitle"
 	title_label.text = title
@@ -9843,9 +14582,23 @@ func _create_level_up_menu_box(title: String, subtitle: String, layout := {}) ->
 	title_label.size = layout.get("title_size", Vector2(440.0, 30.0))
 	title_label.scale = layout.get("title_scale", Vector2(1.18, 1.18))
 	title_label.modulate.a = 0.0
-	title_label.add_theme_font_size_override("font_size", _readable_font_size(int(layout.get("title_font", 50)), 0, 72))
-	title_label.add_theme_color_override("font_color", Color(1.0, 0.86, 0.30, 1.0))
+	title_label.add_theme_font_size_override("font_size", _readable_font_size(SemanticTypography.ROLE_DISPLAY, int(layout.get("title_font", 50)), 0, 72))
+	title_label.add_theme_color_override("font_color", Color(0.96, 0.90, 0.68, 1.0))
 	box.add_child(title_label)
+
+	# SCRUM-892: церемониальная линия под золотым титулом — атласный
+	# divider_ornament в фикс-боксе (KEEP_ASPECT_CENTERED, NEAREST).
+	var title_divider := TextureRect.new()
+	title_divider.name = "LevelUpTitleDivider"
+	title_divider.texture = game._cached_texture(ATLAS_STYLE_DIVIDER_PATH)
+	title_divider.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
+	title_divider.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
+	title_divider.texture_filter = CanvasItem.TEXTURE_FILTER_NEAREST
+	title_divider.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	title_divider.position = layout.get("divider_position", Vector2.ZERO)
+	title_divider.size = layout.get("divider_size", Vector2(360.0, 24.0))
+	title_divider.custom_minimum_size = title_divider.size
+	box.add_child(title_divider)
 
 	var subtitle_label := Label.new()
 	subtitle_label.name = "LevelUpSubtitle"
@@ -9855,8 +14608,13 @@ func _create_level_up_menu_box(title: String, subtitle: String, layout := {}) ->
 	subtitle_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	subtitle_label.position = layout.get("subtitle_position", Vector2.ZERO)
 	subtitle_label.size = layout.get("subtitle_size", Vector2(460.0, 22.0))
-	subtitle_label.add_theme_font_size_override("font_size", _readable_font_size(int(layout.get("subtitle_font", 17)), 0, 26))
-	subtitle_label.add_theme_color_override("font_color", Color(0.88, 0.94, 1.0, 1.0))
+	subtitle_label.add_theme_font_size_override("font_size", SemanticTypography.resolve_fixed(
+		SemanticTypography.ROLE_CAPTION,
+		_readable_font_size(SemanticTypography.ROLE_CAPTION, int(layout.get("subtitle_font", 17)), 0, 26),
+		SemanticTypography.role_min(SemanticTypography.ROLE_CAPTION),
+		SemanticTypography.role_max(SemanticTypography.ROLE_CAPTION)
+	))
+	subtitle_label.add_theme_color_override("font_color", Color(0.78, 0.66, 0.44, 1.0))
 	box.add_child(subtitle_label)
 
 	return box
@@ -9899,7 +14657,8 @@ func _start_level_up_intro(panel: Node, title_label: Node, reward_buttons: Array
 	if dim != null:
 		var dim_tween = dim.create_tween()
 		dim_tween.set_pause_mode(Tween.TWEEN_PAUSE_PROCESS)
-		dim_tween.tween_property(dim, "color:a", 0.68, 0.16)
+		# SCRUM-985: arcane-lab остаётся заметным вместо почти чёрной подложки.
+		dim_tween.tween_property(dim, "color:a", LU_DIM_ALPHA, 0.16)
 
 	# SCRUM-552: панель раскрываем только fade'ом (modulate.a). Scale-«поп» убран —
 	# он сжимал глобальные rect'ы текстовых лейблов (LevelUpTitle/RewardDescription),
@@ -9982,21 +14741,28 @@ func _make_button(text: String) -> Button:
 	return button
 
 
-func _readability_font_scale() -> float:
+# SCRUM-968: единая озвучка кнопок (спека §3) — общая обёртка вокруг
+# pressed.connect. kind "click" (подтверждение/переход) → ui_click, "back"
+# (назад/отмена/закрытие экрана) → ui_back. Троттлинг-группа ui уже настроена
+# в AudioManager (ui_click/ui_back дефолт 0.05 c) — спам исключён. Подключается
+# как звук-компаньон рядом со штатным навигационным обработчиком кнопки; в
+# headless _play_sfx — полный no-op.
+func _connect_ui_sfx(button: BaseButton, kind := "click") -> void:
+	if button == null or not is_instance_valid(button):
+		return
+	var sfx := "ui_back" if kind == "back" else "ui_click"
+	button.pressed.connect(func() -> void:
+		game._play_sfx(sfx)
+	)
+
+
+func _readable_font_size(role: StringName, base_size: int, min_size := 0, max_size := 96) -> int:
 	var viewport_height := 864.0
 	if game != null and game.get_viewport() != null:
 		viewport_height = game.get_viewport().get_visible_rect().size.y
-	var t := clampf((viewport_height - 648.0) / 216.0, 0.0, 1.0)
-	return lerpf(READABILITY_FONT_SCALE_MIN, READABILITY_FONT_SCALE_TARGET, t)
-
-
-func _readable_font_size(base_size: int, min_size := 0, max_size := 96) -> int:
-	var scaled := int(roundf(float(base_size) * _readability_font_scale()))
-	if min_size > 0:
-		scaled = maxi(scaled, min_size)
-	if max_size > 0:
-		scaled = mini(scaled, max_size)
-	return scaled
+	return SemanticTypography.resolve_authored_compat(
+		role, base_size, viewport_height, min_size, max_size
+	)
 
 
 func _make_compact_button(text: String) -> Button:
@@ -10004,7 +14770,7 @@ func _make_compact_button(text: String) -> Button:
 	button.text = text
 	button.custom_minimum_size = COMPACT_UTILITY_BUTTON_SIZE
 	button.mouse_default_cursor_shape = Control.CURSOR_POINTING_HAND
-	button.add_theme_font_size_override("font_size", _readable_font_size(18))
+	button.add_theme_font_size_override("font_size", _readable_font_size(SemanticTypography.ROLE_ACTION, 18))
 	_apply_compact_button_theme(button)
 	return button
 
@@ -10022,11 +14788,12 @@ func _set_action_button_size(button: Button, width := STANDARD_ACTION_BUTTON_WID
 
 func _style_button_control(button: Button) -> void:
 	_apply_fantasy_button_theme(button)
-	button.add_theme_font_size_override("font_size", _readable_font_size(16))
+	button.add_theme_font_size_override("font_size", _readable_font_size(SemanticTypography.ROLE_ACTION, 16))
 
 
-func _apply_fantasy_button_theme(button: Button, variant := "default") -> void:
+func _apply_fantasy_button_theme(button: Button, variant := "default", explicit_family := "") -> void:
 	var role := _button_role(button, variant)
+	UIButtonFamily.resolve(button, variant, explicit_family)
 	button.add_theme_stylebox_override("normal", _button_state_style(button, role, "normal"))
 	button.add_theme_stylebox_override("hover", _button_state_style(button, role, "hover"))
 	button.add_theme_stylebox_override("pressed", _button_state_style(button, role, "pressed"))
@@ -10066,178 +14833,34 @@ func _button_role(button: Button, variant := "default") -> String:
 
 
 func _button_asset_type(button: Button, variant := "default") -> String:
-	var button_name: String = button.name if button != null else ""
-	var button_text: String = button.text.to_lower() if button != null else ""
-	var size: Vector2 = button.custom_minimum_size if button != null else _action_button_size()
-	if button_name == "LevelUpPlusButton":
-		return "combat_level_up_plus"
-	if button_name.begins_with("MainMenu"):
-		return "main_menu"
-	if button_name == "HeroSelectChooseButton" or button_name == "HS4ChooseButton":
-		return "hero_confirm"
-	if button_name == "SettingsResetAudioButton":
-		return "reset_audio"
-	if button_name == "SettingsResetBindingsButton":
-		return "reset_bindings"
-	if button_name.begins_with("CodexTab_"):
-		return "codex_tab"
-	if button_name.begins_with("AttributeOffer_"):
-		return "attr_selector"
-	if button_name.begins_with("RunPause"):
-		return "pause"
-	if button_name.begins_with("QuitConfirm"):
-		return "pause"
-	if button_name == "UpgradeFabButton":
-		return "fab"
-	if button_name.begins_with("BindingButton_") or button_name == "SettingsAimModeOption":
-		return "rebind"
-	if button_name in ["AscensionMinusButton", "AscensionPlusButton"] or size.x <= 64.0:
-		return "utility"
-	if variant == "level_up" or button_name == "LevelUpButton":
-		return "back_l"
-	if button_text == "назад":
-		if size.x <= 180.0:
-			return "back_s"
-		if size.x <= 300.0:
-			return "back_m"
-		return "back_l"
-	if variant in ["reward", "primary"] and size.x >= 540.0:
-		return "attr_selector"
-	if size.y <= 66.0:
-		if size.x <= 70.0:
-			return "utility"
-		if size.x <= 300.0:
-			return "pause"
-		return "rebind"
-	if size.x >= 540.0:
-		return "max"
-	if size.x >= 430.0:
-		return "reset_bindings"
-	if size.x >= 400.0:
-		return "standard"
-	if size.x >= 360.0:
-		return "back_l"
-	if size.x >= 300.0:
-		return "hero_confirm"
-	if size.x >= 240.0:
-		return "back_m"
-	return "back_s"
-
-
-func _settings_v3_button_style(button: Button, state: String) -> StyleBox:
-	# SCRUM-792/805: маршрутизируем settings-узлы на 9-slice inset_field / action_button
-	# по ТОЧНОМУ имени (zero-leak на другие экраны). Один базовый 9-slice + per-state тинт.
-	# SCRUM-805 v4: базовые текстуры — settings_v4/* (перерисовка, выше контраст), а не v3.
-	if button == null:
-		return null
-	var n := button.name
-	var is_field := n in ["SettingsScreenOption", "SettingsResolutionOption", "SettingsWindowModeOption", "SettingsAimModeOption"] or n.begins_with("BindingButton_")
-	var is_action := n in ["SettingsApplyButton", "SettingsRevertButton", "SettingsBackButton", "SettingsResetAudioButton", "SettingsResetBindingsButton"]
-	if not is_field and not is_action:
-		return null
-	var tint: Color = SETTINGS_V3_BTN_STATE_TINTS.get(state, SETTINGS_V3_BTN_STATE_TINTS["normal"])
-	if is_field:
-		return _global_texture_style(SETTINGS_V4_FIELD_PATH, SETTINGS_V4_FIELD_MARGINS, tint, SETTINGS_V4_FIELD_CONTENT, false)
-	return _global_texture_style(SETTINGS_V4_ACTION_BUTTON_PATH, SETTINGS_V4_ACTION_BTN_MARGINS, tint, SETTINGS_V4_ACTION_BTN_CONTENT, false)
+	return UIButtonFamily.minimal_family_type(button, variant)
 
 
 func _button_state_style(button: Button, _role: String, state: String, tint := Color.WHITE) -> StyleBox:
-	var settings_v3_style := _settings_v3_button_style(button, state)
-	if settings_v3_style != null:
-		return settings_v3_style
-	var button_type := _button_asset_type(button)
-	if button_type == "combat_level_up_plus":
+	# SCRUM-847: legacy-маршрут settings-узлов (v3/v4 tint-стили) удалён — экран
+	# настроек v6 стилизует свои контролы явно (_settings_v6_*), сюда не попадает.
+	var family := str(button.get_meta(UIButtonFamily.META_FAMILY, ""))
+	if family == "":
+		family = UIButtonFamily.resolve(button)
+	if family == "combat_level_up_plus":
 		var plus_state := state
 		if plus_state == "focus":
 			plus_state = "hover"
 		var plus_path := str(COMBAT_HUD_LEVEL_UP_BUTTON_TEXTURES.get(plus_state, COMBAT_HUD_LEVEL_UP_BUTTON_TEXTURES["normal"]))
 		var plus_tint := BUTTON_NEUTRAL_HOVER_TINT if state == "hover" and tint == Color.WHITE else tint
 		return _global_texture_style(plus_path, COMBAT_HUD_LEVEL_UP_MARGINS, plus_tint, COMBAT_HUD_LEVEL_UP_CONTENT)
-	var texture_state := state
-	if not ["normal", "hover", "pressed", "focus", "disabled"].has(texture_state):
-		texture_state = "normal"
-	var text_button_id := _text_button_unique_id(button)
-	if text_button_id != "" and TEXT_BUTTON_UNIQUE_TEXTURES.has(text_button_id):
-		var text_textures: Dictionary = TEXT_BUTTON_UNIQUE_TEXTURES[text_button_id]
-		var text_path := str(text_textures.get(texture_state, text_textures["normal"]))
-		var text_margins: Vector4 = TEXT_BUTTON_UNIQUE_MARGINS.get(text_button_id, TEXT_BUTTON_UNIQUE_MARGINS["standard_420x104"])
-		var text_content: Vector4 = TEXT_BUTTON_UNIQUE_CONTENT.get(text_button_id, TEXT_BUTTON_UNIQUE_CONTENT["standard_420x104"])
-		return _global_texture_style(text_path, text_margins, tint, text_content)
-	var suffix := "" if texture_state == "normal" else "_%s" % texture_state
-	var path := "%sui_btn_minimal_metal_%s%s.png" % [MINIMAL_METAL_BUTTON_DIR, button_type, suffix]
+	var texture_state := state if UIButtonFamily.STATES.has(state) else "normal"
+	var descriptor := UIButtonFamily.descriptor(family, texture_state)
+	if descriptor.is_empty():
+		return _global_texture_style(GLOBAL_BUTTON_FRAME_PATH, Vector4(50, 28, 50, 28), tint, Vector4(64, 32, 64, 32))
 	var final_tint := tint
-	var margins: Vector4 = MINIMAL_METAL_BUTTON_MARGINS.get(button_type, MINIMAL_METAL_BUTTON_MARGINS["standard"])
-	var content: Vector4 = MINIMAL_METAL_BUTTON_CONTENT.get(button_type, MINIMAL_METAL_BUTTON_CONTENT["standard"])
-	return _global_texture_style(path, margins, final_tint, content)
+	if texture_state == "hover" and tint == Color.WHITE:
+		final_tint = BUTTON_HOVER_EXTRA_TINT
+	return _global_texture_style(str(descriptor["path"]), descriptor["margins"], final_tint, descriptor["content"])
 
 
 func _text_button_unique_id(button: Button) -> String:
-	if button == null:
-		return ""
-	var button_name := button.name
-	var text := button.text.to_lower()
-	var size := button.custom_minimum_size
-	if button_name == "LevelUpPlusButton" or button_name == "UpgradeFabButton":
-		return ""
-	if button_name in ["AscensionMinusButton", "AscensionPlusButton"] or size.x <= 70.0:
-		return ""
-	if button_name.begins_with("MainMenu"):
-		return "main_menu_380x104"
-	if button_name.begins_with("RunPause"):
-		return "pause_280x60"
-	if button_name.begins_with("QuitConfirm"):
-		return "quit_220x72"
-	if button_name == "ContinueRunButton":
-		if size.x >= 360.0:
-			return "continue_run_long_420x72"
-		return "continue_240x72"
-	if button_name == "ContinueRunNewGameButton":
-		return "continue_240x72"
-	if button_name == "LevelUpLaterButton":
-		return "later_260x72"
-	if button_name == "SettingsBackButton":
-		return "settings_back_280x64"
-	if button_name == "SettingsResetBindingsButton":
-		if size.x >= 540.0:
-			return "reset_bindings_long_560x104"
-		return "wide_440x104"
-	if button_name == "SettingsResetAudioButton":
-		return "standard_420x104"
-	if button_name == "FeedbackSendButton":
-		return "feedback_260x64"
-	if button_name == "FeedbackCancelButton":
-		return "feedback_cancel_220x64"
-	if button_name == "EventBackButton":
-		return "event_back_380x54"
-	if button_name.begins_with("BindingButton_") or button_name == "SettingsAimModeOption":
-		return "rebind_420x62"
-	if button_name in ["RebindConflictRetryButton", "RebindConflictBackButton"]:
-		return ""
-	if button_name == "WeaponSelectBackButton":
-		return "pause_280x60"
-	if button_name in ["SkillTreeBackButton", "PatchNotesBackButton"]:
-		return "back_260x104"
-	if button_name in ["AttributeRerollButton", "AttributeSkipButton", "VictoryNewRunButton", "DeathRetryButton"]:
-		return "standard_420x104"
-	if size.y <= 56.0 and size.x >= 340.0:
-		return "event_back_380x54"
-	if size.y <= 66.0 and size.x >= 360.0:
-		return "rebind_420x62"
-	if size.y <= 66.0 and size.x >= 240.0:
-		return "settings_back_280x64"
-	if size.y <= 76.0 and size.x <= 230.0:
-		return "quit_220x72"
-	if size.y <= 76.0 and size.x <= 250.0:
-		return "continue_240x72"
-	if size.y <= 76.0 and size.x <= 300.0:
-		return "later_260x72"
-	if size.y >= 96.0 and size.x >= 430.0:
-		return "wide_440x104"
-	if size.y >= 96.0 and size.x >= 400.0:
-		return "standard_420x104"
-	if size.y >= 96.0 and size.x >= 240.0:
-		return "back_260x104"
-	return ""
+	return UIButtonFamily.text_family_id(button)
 
 
 func _apply_compact_button_theme(button: Button) -> void:
@@ -10251,27 +14874,6 @@ func _apply_compact_button_theme(button: Button) -> void:
 	button.add_theme_color_override("font_focus_color", BUTTON_NEUTRAL_HOVER_FONT)
 	button.add_theme_color_override("font_pressed_color", Color(0.80, 1.0, 0.95, 1.0))
 	button.add_theme_color_override("font_disabled_color", Color(0.46, 0.49, 0.54, 1.0))
-
-
-func _weapon_card_style(hovered := false, pressed := false, disabled := false) -> StyleBoxFlat:
-	var style := StyleBoxFlat.new()
-	style.bg_color = Color(0.055, 0.060, 0.074, 0.82)
-	style.border_color = Color(0.50, 0.42, 0.25, 0.72)
-	if hovered:
-		style.bg_color = Color(0.085, 0.075, 0.060, 0.92)
-		style.border_color = Color(0.92, 0.72, 0.30, 0.96)
-	if pressed:
-		style.bg_color = Color(0.045, 0.050, 0.060, 0.96)
-	if disabled:
-		style.bg_color = Color(0.04, 0.045, 0.055, 0.55)
-		style.border_color = Color(0.22, 0.23, 0.25, 0.65)
-	style.set_corner_radius_all(10)
-	style.set_border_width_all(1)
-	style.content_margin_left = 14
-	style.content_margin_top = 10
-	style.content_margin_right = 14
-	style.content_margin_bottom = 10
-	return style
 
 
 func _level_up_text_field_style(hovered := false, rare := false, pressed := false, disabled := false) -> StyleBoxFlat:
@@ -10303,30 +14905,6 @@ func _level_up_panel_style() -> StyleBox:
 	return _minimal_frame_style("panel", Color(1.06, 1.03, 1.08, 1.0))
 
 
-func _level_up_panel_2k_style(display_size: Vector2) -> StyleBox:
-	return _overhaul_2k_frame_style("level_up_panel", display_size, Color(1.06, 1.03, 1.08, 1.0))
-
-
-func _level_up_portrait_style(display_size: Vector2) -> StyleBox:
-	return _level_up_scrum682_style(
-		str(LEVEL_UP_SCRUM682_FRAME_PATHS["portrait"]),
-		Vector2(320.0, 320.0),
-		display_size,
-		Vector4(34.0, 34.0, 34.0, 34.0),
-		Vector4(44.0, 44.0, 44.0, 44.0)
-	)
-
-
-func _level_up_effect_preview_style(display_size: Vector2) -> StyleBox:
-	return _level_up_scrum682_style(
-		str(LEVEL_UP_SCRUM682_FRAME_PATHS["effect_preview"]),
-		Vector2(330.0, 64.0),
-		display_size,
-		Vector4(22.0, 18.0, 22.0, 18.0),
-		Vector4(32.0, 22.0, 32.0, 22.0)
-	)
-
-
 func _card_hover_style() -> StyleBox:
 	return _minimal_frame_style("card", BUTTON_NEUTRAL_HOVER_TINT)
 
@@ -10343,21 +14921,46 @@ func _is_pause_end_screen_background(screen_background_id: String) -> bool:
 	return ["pause", "victory", "death"].has(screen_background_id)
 
 
+func _is_result_screen_background(screen_background_id: String) -> bool:
+	return ["victory", "death"].has(screen_background_id)
+
+
 func _pause_end_modal_display_size(screen_background_id: String) -> Vector2:
 	var viewport_size: Vector2 = game.get_viewport().get_visible_rect().size
+	return _pause_end_modal_display_size_for_viewport(screen_background_id, viewport_size)
+
+
+func _pause_end_modal_display_size_for_viewport(screen_background_id: String, viewport_size: Vector2) -> Vector2:
 	var max_width := viewport_size.x * 0.84
 	var max_height := viewport_size.y * 0.90
 	if screen_background_id == "victory" or screen_background_id == "death":
-		max_width = viewport_size.x * 0.82
-		max_height = viewport_size.y * 0.88
+		var safe_size := _unified_safe_rect_for_size(viewport_size).size
+		max_width = minf(viewport_size.x * 0.82, maxf(1.0, safe_size.x - 48.0))
+		max_height = minf(viewport_size.y * 0.88, maxf(1.0, safe_size.y - 40.0))
 	var source_aspect := PAUSE_END_MODAL_SOURCE_SIZE.x / PAUSE_END_MODAL_SOURCE_SIZE.y
 	var height := minf(max_height, max_width / source_aspect)
-	height = clampf(height, 520.0, 820.0)
+	var minimum_height := minf(520.0, max_height)
+	height = clampf(height, minimum_height, 820.0)
 	var width := height * source_aspect
 	if width > max_width:
 		width = max_width
 		height = width / source_aspect
 	return Vector2(roundf(width), roundf(height))
+
+
+func _pause_end_modal_content_margins(display_size: Vector2, screen_background_id: String) -> Vector4:
+	# SCRUM-883: у результ-чипа контент держат симметричные чип-пэддинги.
+	if _is_result_screen_background(screen_background_id):
+		return _atlas_chip_content_margins(RESULT_MODAL_CHIP_PAD)
+	return _scaled_frame_margins(PAUSE_END_MODAL_SOURCE_SIZE, display_size, PAUSE_END_MODAL_CONTENT)
+
+
+func _pause_end_modal_content_rect(display_size: Vector2, screen_background_id: String) -> Rect2:
+	var margins := _pause_end_modal_content_margins(display_size, screen_background_id)
+	return Rect2(
+		Vector2(margins.x, margins.y),
+		Vector2(maxf(1.0, display_size.x - margins.x - margins.z), maxf(1.0, display_size.y - margins.y - margins.w))
+	)
 
 
 func _economy_menu_panel_half_size(screen_background_id: String) -> Vector2:
@@ -10397,25 +15000,12 @@ func _scaled_frame_margins_xy(source_size: Vector2, display_size: Vector2, sourc
 	)
 
 
-func _level_up_xy_scale(source_size: Vector2, display_size: Vector2) -> Vector2:
-	return Vector2(
-		display_size.x / maxf(source_size.x, 1.0),
-		display_size.y / maxf(source_size.y, 1.0)
-	)
-
-
 func _level_up_scaled_position(rect: Rect2, scale: Vector2) -> Vector2:
 	return Vector2(roundf(rect.position.x * scale.x), roundf(rect.position.y * scale.y))
 
 
 func _level_up_scaled_size(rect: Rect2, scale: Vector2) -> Vector2:
 	return Vector2(roundf(rect.size.x * scale.x), roundf(rect.size.y * scale.y))
-
-
-func _level_up_place_card_child(control: Control, rect: Rect2, scale: Vector2) -> void:
-	control.position = _level_up_scaled_position(rect, scale)
-	control.size = _level_up_scaled_size(rect, scale)
-	control.custom_minimum_size = control.size
 
 
 func _minimal_frame_style(frame_type: String, tint := Color.WHITE) -> StyleBox:
@@ -10460,21 +15050,11 @@ func _overhaul_2k_frame_style(slot: String, display_size: Vector2, tint := Color
 # SCRUM-684: Фикс-margins styling для Dark Fantasy pixel-art кодекса. Без
 # масштабирования по display_size — texture_margins берутся РОВНО в пикселях
 # источника, иначе 9-slice пересекает орнамент малых текстур.
-func _codex_pl_frame_style(path: String, tex_margins: Vector4, content: Vector4, tint := Color.WHITE) -> StyleBox:
-	return _global_texture_style(path, tex_margins, tint, content, false)
-
-
-# Pixel-art рамки/иконки кодекса масштабируются вьюпортом — рендерим nearest,
+# Pixel-art иконки/портреты кодекса масштабируются вьюпортом — рендерим nearest,
 # чтобы не было блюра (дефолт проекта = linear).
 func _codex_pl_make_nearest(node: CanvasItem) -> void:
 	if node != null:
 		node.texture_filter = CanvasItem.TEXTURE_FILTER_NEAREST
-
-
-func _level_up_scrum682_style(path: String, source_size: Vector2, display_size: Vector2, texture_margins: Vector4, content_margins := Vector4.ZERO, tint := Color.WHITE) -> StyleBox:
-	var scaled_texture := _scaled_frame_margins_xy(source_size, display_size, texture_margins)
-	var scaled_content := _scaled_frame_margins_xy(source_size, display_size, content_margins)
-	return _global_texture_style(path, scaled_texture, tint, scaled_content, false)
 
 
 func _overhaul_2k_content_margins(slot: String, display_size: Vector2) -> Vector4:
@@ -10486,9 +15066,10 @@ func _overhaul_2k_content_margins(slot: String, display_size: Vector2) -> Vector
 
 
 func _apply_overhaul_2k_button_theme(button: Button, slot: String, display_size: Vector2) -> void:
-	if slot in ["cr_btn", "pm_btn", "ws_btn_back"] and _text_button_unique_id(button) != "":
+	if slot == "cr_btn" and _text_button_unique_id(button) != "":
 		_apply_fantasy_button_theme(button)
 		return
+	UIButtonFamily.assign(button, "overhaul_2k/%s" % slot)
 	button.add_theme_stylebox_override("normal", _overhaul_2k_frame_style(slot, display_size))
 	button.add_theme_stylebox_override("hover", _overhaul_2k_frame_style(slot, display_size, BUTTON_NEUTRAL_HOVER_TINT))
 	button.add_theme_stylebox_override("focus", _overhaul_2k_frame_style(slot, display_size, BUTTON_NEUTRAL_HOVER_TINT))
@@ -10501,51 +15082,127 @@ func _apply_overhaul_2k_button_theme(button: Button, slot: String, display_size:
 	button.add_theme_color_override("font_disabled_color", Color(0.46, 0.49, 0.54, 1.0))
 
 
-# SCRUM-684: Dark Fantasy кодекс — кнопки (категория-плитка / назад) на фикс-
-# margins pixel-art рамках, с теми же state-tint'ами что у overhaul-кнопок.
-func _apply_codex_pl_button_theme(button: Button, path: String, tex_margins: Vector4, content: Vector4) -> void:
-	button.add_theme_stylebox_override("normal", _codex_pl_frame_style(path, tex_margins, content))
-	button.add_theme_stylebox_override("hover", _codex_pl_frame_style(path, tex_margins, content, BUTTON_NEUTRAL_HOVER_TINT))
-	button.add_theme_stylebox_override("focus", _codex_pl_frame_style(path, tex_margins, content, BUTTON_NEUTRAL_HOVER_TINT))
-	button.add_theme_stylebox_override("pressed", _codex_pl_frame_style(path, tex_margins, content, Color(0.90, 0.84, 0.76, 1.0)))
-	button.add_theme_stylebox_override("disabled", _codex_pl_frame_style(path, tex_margins, content, Color(0.58, 0.58, 0.58, 0.82)))
-	button.add_theme_color_override("font_color", Color(0.98, 0.92, 0.72, 1.0))
-	button.add_theme_color_override("font_hover_color", BUTTON_NEUTRAL_HOVER_FONT)
-	button.add_theme_color_override("font_focus_color", BUTTON_NEUTRAL_HOVER_FONT)
-	button.add_theme_color_override("font_pressed_color", Color(0.80, 1.0, 0.95, 1.0))
-	button.add_theme_color_override("font_disabled_color", Color(0.46, 0.49, 0.54, 1.0))
-	_codex_pl_make_nearest(button)
-
-
+# SCRUM-883: панели экономических экранов маршрута (костёр и фолбэк) — чип Атласа.
 func _economy_panel_style() -> StyleBox:
-	return _minimal_frame_style("panel")
+	return _atlas_chip_style(0.94, 18.0)
 
 
-# SCRUM-565: Событие @2K. Панель и карточки выбора используют per-слот overhaul_2k-рамки
-# (evt_panel 1720×780, evt_card 480×340), нарисованные РОВНО в свой пиксельный размер →
-# на 2K рендерятся 1:1, на 1080p/4K юниформ-скейлятся вьюпортом без растяжения орнамента.
-func _event_panel_2k_style() -> StyleBox:
-	var display_size := _economy_menu_panel_half_size("event") * 2.0
-	return _overhaul_2k_frame_style("evt_panel", display_size)
+# SCRUM-883: Событие в едином атлас-стиле. Панель — atlas-чип (MenuPanel_event),
+# контент раскладывается от ФАКТИЧЕСКИХ content-margins чипа (не от source-зон
+# @2K-рамки); титул золотом 30/36, стори — читаемое тело 16+ с autowrap.
+# SCRUM-997: метрики зон иллюстрированного event-диалога — единственный источник
+# геометрии экрана события (спека docs/design/mockups/scrum997_event_dialog/spec.md §1-2):
+# диалог-панель СПРАВА (~36% ширины, от верха safe-зоны до верха нижнего ряда),
+# нижняя полоса (~22% высоты) = ряд из 3 карточек + плита «Назад» 260×action-height
+# у правого края. Все значения — от фактического viewport (матрица 1152×648…3840×2160).
+func _event_dialog_metrics() -> Dictionary:
+	var vp := Vector2(1280.0, 720.0)
+	if game != null and game.get_viewport() != null:
+		vp = game.get_viewport().get_visible_rect().size
+	var m := roundf(clampf(vp.y * 0.025, 12.0, 36.0))
+	# Four in-band semantic lanes need 176px on compact tiers. The extra height
+	# grows upward from the bottom safe strip and leaves the dialogue panel above
+	# it disjoint; no content enters the viewport/frame rail.
+	var bottom_h := roundf(clampf(vp.y * 0.22, 176.0, 320.0))
+	var row_top := vp.y - m - bottom_h
+	var gap := roundf(clampf(vp.x * 0.012, 10.0, 32.0))
+	var gap_v := roundf(clampf(vp.y * 0.016, 8.0, 24.0))
+	var panel_w := roundf(clampf(vp.x * 0.36, 330.0, 980.0))
+	var pad := roundf(clampf(vp.y * 0.018, 12.0, 26.0))
+	var back_w := 260.0
+	var back_h := _atlas_action_button_height()
+	var card_w := floorf((vp.x - 2.0 * m - back_w - 3.0 * gap) / 3.0)
+	return {
+		"vp": vp,
+		"margin": m,
+		"gap": gap,
+		"panel_pad": pad,
+		"panel_rect": Rect2(vp.x - m - panel_w, m, panel_w, row_top - gap_v - m),
+		"row_rect": Rect2(m, row_top, card_w * 3.0 + gap * 2.0, bottom_h),
+		"card_size": Vector2(card_w, bottom_h),
+		"back_rect": Rect2(vp.x - m - back_w, row_top + roundf((bottom_h - back_h) * 0.5), back_w, back_h),
+	}
+
+
+# SCRUM-997: титул события — autowrap по словам, но шрифт ужимается так, чтобы
+# самое ДЛИННОЕ слово гарантированно влезало в контент-ширину панели (иначе
+# WORD_SMART рвёт слово посреди: «жертвоприношени/й»). Мерка внешняя +
+# жёсткий запас fit_ratio 0.62 — как _shrink_label_font_to_width (оконный
+# рендер строки до ~1.5x шире Font.get_string_size, память проекта).
+func _shrink_event_title_font(title_label: Label, base_font_size: int, max_width: float) -> void:
+	if title_label == null:
+		return
+	var longest := ""
+	for word in title_label.text.split(" ", false):
+		if word.length() > longest.length():
+			longest = word
+	if longest == "":
+		longest = title_label.text
+	var font: Font = title_label.get_theme_font("font")
+	if font == null:
+		font = ThemeDB.fallback_font
+	var font_size := base_font_size
+	if font != null:
+		var fit_width := maxf(max_width, 8.0) * 0.62
+		while font_size > 18 and font.get_string_size(longest, HORIZONTAL_ALIGNMENT_LEFT, -1.0, font_size).x > fit_width:
+			font_size -= 1
+	title_label.add_theme_font_size_override("font_size", SemanticTypography.resolve_fixed(
+		SemanticTypography.ROLE_TITLE,
+		font_size,
+		SemanticTypography.role_min(SemanticTypography.ROLE_TITLE),
+		SemanticTypography.role_max(SemanticTypography.ROLE_TITLE)
+	))
+
+
+# SCRUM-997: корень экрана события (EventScreen) от контент-бокса: box → scroll →
+# MenuPanel_event → root. Null-safe для ранних вызовов/деградаций.
+func _event_screen_root(box: VBoxContainer) -> Control:
+	if box == null or not is_instance_valid(box):
+		return null
+	var scroll := box.get_parent()
+	if scroll == null:
+		return null
+	var panel := scroll.get_parent()
+	if panel == null:
+		return null
+	return panel.get_parent() as Control
 
 
 func _configure_event_menu_layout(box: VBoxContainer) -> void:
 	if box == null:
 		return
-	var display_size := _economy_menu_panel_half_size("event") * 2.0
-	var margins := _overhaul_2k_content_margins("evt_panel", display_size)
+	# SCRUM-997: диалог-панель СПРАВА (спека §2) вместо центральной economy-панели:
+	# ручной rect (якоря 0/0), панель не перекрывает иллюстрацию слева.
+	var metrics := _event_dialog_metrics()
+	var panel_rect: Rect2 = metrics["panel_rect"]
+	var pad: float = metrics["panel_pad"]
+	var scroll := box.get_parent() as ScrollContainer
+	var panel: PanelContainer = null
+	if scroll != null:
+		panel = scroll.get_parent() as PanelContainer
+	if panel != null:
+		panel.anchor_left = 0.0
+		panel.anchor_top = 0.0
+		panel.anchor_right = 0.0
+		panel.anchor_bottom = 0.0
+		panel.offset_left = panel_rect.position.x
+		panel.offset_top = panel_rect.position.y
+		panel.offset_right = panel_rect.end.x
+		panel.offset_bottom = panel_rect.end.y
+	# Контент-зона чипа: по X pad·1.4 (см. _atlas_chip_style), по Y pad.
 	var content_size := Vector2(
-		maxf(320.0, display_size.x - margins.x - margins.z),
-		maxf(240.0, display_size.y - margins.y - margins.w)
+		maxf(240.0, panel_rect.size.x - pad * 2.8),
+		maxf(180.0, panel_rect.size.y - pad * 2.0)
 	)
-	var compact := display_size.y < 680.0
+	var compact := (metrics["vp"] as Vector2).y < 760.0
 	box.name = "EventContent"
 	box.alignment = BoxContainer.ALIGNMENT_BEGIN
-	box.custom_minimum_size = content_size
+	# Ширина минус запас на вертикальный скроллбар: длинный story скроллится,
+	# не распирая панель (канон: фикс-зону держат ручные rect'ы, не min-size лейблов).
+	box.custom_minimum_size = Vector2(content_size.x - 14.0, 0.0)
 	box.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	box.size_flags_vertical = Control.SIZE_EXPAND_FILL
-	box.add_theme_constant_override("separation", 12 if compact else 16)
-	var scroll := box.get_parent() as ScrollContainer
+	box.add_theme_constant_override("separation", 10 if compact else 14)
 	if scroll != null:
 		scroll.follow_focus = false
 		scroll.scroll_vertical = 0
@@ -10553,68 +15210,92 @@ func _configure_event_menu_layout(box: VBoxContainer) -> void:
 	var title_label := box.find_child("MenuTitle_event", false, false) as Label
 	if title_label != null:
 		title_label.name = "EventTitle"
-		title_label.custom_minimum_size = Vector2(content_size.x, 38.0 if compact else 52.0)
-		title_label.add_theme_font_size_override("font_size", _readable_font_size(30 if compact else 36, 0, 48))
+		title_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_LEFT
+		title_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+		title_label.custom_minimum_size = Vector2(content_size.x - 14.0, 0.0)
+		title_label.add_theme_color_override("font_color", Color(0.96, 0.90, 0.68, 1.0))
+		# Длинные слова («жертвоприношений») не должны рваться посреди строки:
+		# ужимаем шрифт под самое длинное слово (канон fit_ratio 0.62 — оконный
+		# рендер строк шире мерки, память проекта), autowrap доносит остальное.
+		_shrink_event_title_font(title_label, _readable_font_size(SemanticTypography.ROLE_TITLE, 30 if compact else 34, 0, 44), content_size.x - 14.0)
+		# Латунная отчёркивающая линия под титулом (спека §2).
+		if box.find_child("EventTitleRule", false, false) == null:
+			var rule := ColorRect.new()
+			rule.name = "EventTitleRule"
+			rule.color = Color(0.52, 0.41, 0.24, 0.90)
+			rule.custom_minimum_size = Vector2(0.0, 2.0)
+			rule.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+			rule.mouse_filter = Control.MOUSE_FILTER_IGNORE
+			box.add_child(rule)
+			box.move_child(rule, title_label.get_index() + 1)
 	var story_label := box.find_child("MenuSubtitle_event", false, false) as Label
 	if story_label != null:
 		story_label.name = "EventStory"
-		story_label.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
-		story_label.custom_minimum_size = Vector2(content_size.x, 58.0 if compact else 92.0)
-		story_label.size_flags_vertical = Control.SIZE_SHRINK_CENTER
-		story_label.add_theme_font_size_override("font_size", _readable_font_size(14 if compact else 17, 0, 24))
+		story_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_LEFT
+		story_label.vertical_alignment = VERTICAL_ALIGNMENT_TOP
+		story_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+		story_label.custom_minimum_size = Vector2(content_size.x - 14.0, 0.0)
+		story_label.size_flags_vertical = Control.SIZE_FILL
+		story_label.add_theme_font_size_override("font_size", _readable_font_size(SemanticTypography.ROLE_DESCRIPTION, 16 if compact else 17, 13, 22))
+		story_label.add_theme_color_override("font_color", Color(0.88, 0.92, 0.98, 1.0))
 
 
-# SCRUM-573: Улучшение @2K. Панель экрана улучшения — per-слот overhaul_2k-рамка
-# (upgrade_panel 1720×730), нарисованная РОВНО в свой пиксельный размер → на 2K 1:1,
-# на 1080p/4K юниформ-скейл вьюпортом без растяжения орнамента. Карточки выбора —
-# общий economy-choice-арт (как остальные economy-экраны кроме события).
-func _upgrade_panel_2k_style() -> StyleBox:
-	var display_size := _economy_menu_panel_half_size("upgrade") * 2.0
-	return _overhaul_2k_frame_style("upgrade_panel", display_size)
-
-
-# SCRUM-565/568: переинсет контента карточки выбора под content-зону её overhaul_2k-рамки
-# (slot), чтобы текст/иконки держались внутри safe-зоны и не лезли на орнамент.
-func _reinset_overhaul_choice_content(button: Button, slot: String, display_size: Vector2) -> void:
-	if button == null or not UIThemePaths.OVERHAUL_2K_FRAME_SOURCE_SIZE.has(slot):
+# SCRUM-565/568 → SCRUM-883: чип-карточка держит контент собственными симметричными
+# пэддингами — переинсет под content-зону текстурной рамки больше не нужен. Хелпер
+# сохранён идемпотентной переустановкой чип-маржин (его зовёт экран события).
+func _reinset_overhaul_choice_content(button: Button, _slot: String, _display_size: Vector2) -> void:
+	if button == null:
 		return
 	var content := button.find_child("%sContent" % button.name, true, false) as Control
 	if content == null:
 		return
-	var source_size: Vector2 = UIThemePaths.OVERHAUL_2K_FRAME_SOURCE_SIZE[slot]
-	var base_content: Vector4 = UIThemePaths.OVERHAUL_2K_FRAME_CONTENT.get(slot, Vector4.ZERO)
-	var margins := _scaled_frame_margins_xy(source_size, display_size, base_content)
+	var margins: Vector4 = button.get_meta("economy_content_margins", Vector4.ZERO)
+	if margins == Vector4.ZERO:
+		return
 	content.offset_left = margins.x
 	content.offset_top = margins.y
 	content.offset_right = -margins.z
 	content.offset_bottom = -margins.w
-	button.set_meta("economy_content_margins", margins)
 
 
-# SCRUM-565/568: переодеть карточку выбора в overhaul_2k-рамку slot (normal/hover/
-# pressed/focus/disabled) с теми же нейтральными тинтами, что у economy-карт.
-func _apply_overhaul_choice_2k_theme(button: Button, slot: String, display_size: Vector2) -> void:
-	button.add_theme_stylebox_override("normal", _overhaul_2k_frame_style(slot, display_size))
-	button.add_theme_stylebox_override("hover", _overhaul_2k_frame_style(slot, display_size, BUTTON_NEUTRAL_HOVER_TINT))
-	button.add_theme_stylebox_override("pressed", _overhaul_2k_frame_style(slot, display_size, Color(0.90, 0.84, 0.76, 1.0)))
-	button.add_theme_stylebox_override("focus", _overhaul_2k_frame_style(slot, display_size, BUTTON_NEUTRAL_HOVER_TINT))
-	button.add_theme_stylebox_override("disabled", _overhaul_2k_frame_style(slot, display_size, Color(0.58, 0.58, 0.58, 0.82)))
-	button.add_theme_color_override("font_color", Color.TRANSPARENT)
-	button.add_theme_color_override("font_hover_color", Color.TRANSPARENT)
-	button.add_theme_color_override("font_pressed_color", Color.TRANSPARENT)
-	button.add_theme_color_override("font_focus_color", Color.TRANSPARENT)
-	button.add_theme_color_override("font_disabled_color", Color.TRANSPARENT)
+# SCRUM-565/568 → SCRUM-883: карточки выбора больше не переодеваются в текстурные
+# @2K-рамки — единый чип-язык Атласа. Сигнатура и точки вызова сохранены (экран
+# события зовёт хелпер со слотом; слот игнорируется).
+func _apply_overhaul_choice_2k_theme(button: Button, _slot: String, display_size: Vector2) -> void:
+	if button == null:
+		return
+	_apply_atlas_choice_card_theme(button, _atlas_card_pad(display_size))
 
 
-func _apply_level_up_card_2k_theme(button: Button, display_size: Vector2, is_rare := false) -> void:
-	var accent := Color(1.08, 1.04, 1.12, 1.0) if is_rare else Color.WHITE
-	var normal_content := Vector4(58.0, 70.0, 58.0, 64.0)
-	button.add_theme_stylebox_override("normal", _level_up_scrum682_style(str(LEVEL_UP_SCRUM682_FRAME_PATHS["card"]), LU_CARD_2K.size, display_size, Vector4(42.0, 54.0, 42.0, 50.0), normal_content, accent))
-	button.add_theme_stylebox_override("hover", _level_up_scrum682_style(str(LEVEL_UP_SCRUM682_FRAME_PATHS["card_hover"]), LU_CARD_2K.size, display_size, Vector4(42.0, 54.0, 42.0, 50.0), Vector4(58.0, 70.0, 58.0, 64.0), BUTTON_NEUTRAL_HOVER_TINT))
-	button.add_theme_stylebox_override("pressed", _level_up_scrum682_style(str(LEVEL_UP_SCRUM682_FRAME_PATHS["card_selected"]), LU_CARD_2K.size, display_size, Vector4(46.0, 58.0, 46.0, 54.0), Vector4(62.0, 74.0, 62.0, 68.0), Color(0.90, 0.84, 0.76, 1.0)))
-	button.add_theme_stylebox_override("focus", _level_up_scrum682_style(str(LEVEL_UP_SCRUM682_FRAME_PATHS["card_hover"]), LU_CARD_2K.size, display_size, Vector4(42.0, 54.0, 42.0, 50.0), Vector4(58.0, 70.0, 58.0, 64.0), BUTTON_NEUTRAL_HOVER_TINT))
-	button.add_theme_stylebox_override("disabled", _level_up_scrum682_style(str(LEVEL_UP_SCRUM682_FRAME_PATHS["card"]), LU_CARD_2K.size, display_size, Vector4(42.0, 54.0, 42.0, 50.0), Vector4(58.0, 70.0, 58.0, 64.0), Color(0.58, 0.58, 0.58, 0.82)))
-	var content_margins := _scaled_frame_margins_xy(LU_CARD_2K.size, display_size, normal_content)
+# SCRUM-883: карточка награды = кожаный чип-ряд атласа (база — _unified_apply_
+# row_theme) с поднятой плотностью поверх замороженного боя: normal 0.88,
+# hover/focus — золотой кант ярче, pressed — толстый золотой борт (селект).
+func _apply_level_up_card_atlas_theme(button: Button, display_size: Vector2, is_rare := false) -> void:
+	# SCRUM-892: пэддинг чипа — от ШИРИНЫ карточки (высота теперь контентная,
+	# завязка на неё зациклила бы план стека).
+	var pad := maxf(6.0, roundf(LU_CARD_CHIP_PAD_2K * display_size.x / LU_CARD_2K.size.x))
+	_unified_apply_row_theme(button, pad)
+	UIButtonFamily.assign(button, UIButtonFamily.FAMILY_LEVEL_UP_CARD)
+	var normal := _atlas_chip_style(0.88, pad)
+	if is_rare:
+		normal.border_color = Color(0.80, 0.62, 0.30, 0.95)
+	var hover := _atlas_chip_style(0.92, pad)
+	hover.border_color = Color(0.93, 0.77, 0.40, 0.95)
+	var focus := _atlas_chip_style(0.90, pad)
+	focus.border_color = Color(0.93, 0.77, 0.40, 0.95)
+	var pressed := _atlas_chip_style(0.96, pad)
+	pressed.border_color = Color(0.98, 0.84, 0.46, 1.0)
+	pressed.set_border_width_all(3)
+	button.add_theme_stylebox_override("normal", normal)
+	button.add_theme_stylebox_override("hover", hover)
+	button.add_theme_stylebox_override("focus", focus)
+	button.add_theme_stylebox_override("pressed", pressed)
+	var content_margins := Vector4(
+		normal.content_margin_left,
+		normal.content_margin_top,
+		normal.content_margin_right,
+		normal.content_margin_bottom
+	)
 	button.set_meta("level_up_card_slot", "level_up_card")
 	button.set_meta("level_up_card_content_margins", content_margins)
 	button.set_meta("level_up_card_content_rect", Rect2(
@@ -10625,47 +15306,51 @@ func _apply_level_up_card_2k_theme(button: Button, display_size: Vector2, is_rar
 	))
 
 
-func _apply_level_up_later_button_theme(button: Button, display_size: Vector2) -> void:
-	button.add_theme_stylebox_override("normal", _level_up_scrum682_style(str(LEVEL_UP_SCRUM682_FRAME_PATHS["later_button"]), LU_LATER_BUTTON_2K.size, display_size, Vector4(36.0, 22.0, 36.0, 22.0), Vector4(54.0, 28.0, 54.0, 28.0)))
-	button.add_theme_stylebox_override("hover", _level_up_scrum682_style(str(LEVEL_UP_SCRUM682_FRAME_PATHS["later_button_hover"]), LU_LATER_BUTTON_2K.size, display_size, Vector4(36.0, 22.0, 36.0, 22.0), Vector4(54.0, 28.0, 54.0, 28.0), BUTTON_NEUTRAL_HOVER_TINT))
-	button.add_theme_stylebox_override("focus", _level_up_scrum682_style(str(LEVEL_UP_SCRUM682_FRAME_PATHS["later_button_hover"]), LU_LATER_BUTTON_2K.size, display_size, Vector4(36.0, 22.0, 36.0, 22.0), Vector4(54.0, 28.0, 54.0, 28.0), BUTTON_NEUTRAL_HOVER_TINT))
-	button.add_theme_stylebox_override("pressed", _level_up_scrum682_style(str(LEVEL_UP_SCRUM682_FRAME_PATHS["later_button_pressed"]), LU_LATER_BUTTON_2K.size, display_size, Vector4(36.0, 22.0, 36.0, 22.0), Vector4(54.0, 28.0, 54.0, 28.0), Color(0.90, 0.84, 0.76, 1.0)))
-	button.add_theme_stylebox_override("disabled", _level_up_scrum682_style(str(LEVEL_UP_SCRUM682_FRAME_PATHS["later_button"]), LU_LATER_BUTTON_2K.size, display_size, Vector4(36.0, 22.0, 36.0, 22.0), Vector4(54.0, 28.0, 54.0, 28.0), Color(0.58, 0.58, 0.58, 0.82)))
-	button.add_theme_color_override("font_color", Color(1.0, 0.90, 0.60, 1.0))
-	button.add_theme_color_override("font_hover_color", BUTTON_NEUTRAL_HOVER_FONT)
-	button.add_theme_color_override("font_focus_color", BUTTON_NEUTRAL_HOVER_FONT)
-	button.add_theme_font_size_override("font_size", _readable_font_size(maxi(10, int(roundf(22.0 * display_size.y / LU_LATER_BUTTON_2K.size.y))), 0, 22))
-	var label_safe := Rect2(Vector2(54.0, 28.0), Vector2(192.0, 26.0))
-	button.set_meta("level_up_later_content_rect", label_safe)
-
-
 func _pause_end_modal_style(display_size: Vector2, screen_background_id := "") -> StyleBox:
-	# SCRUM-578: экран «Смерть» (end-модалка результата) получает per-слот @2K-рамку
-	# result_panel (RESULT_PANEL_2K 898×820), нарисованную РОВНО в свой размер → резкий
-	# орнамент на 1080p/2K/4K. Победа/пауза пока на общем PAUSE_END_MODAL_PATH (свои таски).
-	if screen_background_id == "death":
-		return _overhaul_2k_frame_style("result_panel", display_size)
+	# SCRUM-883: итоги забега (Победа/Поражение) — модалка-чип Атласа 0.96 вместо
+	# текстурных рам (result_panel @2K у смерти, minimal-modal у победы). Пауза —
+	# чужая зона: остаётся на общем PAUSE_END_MODAL_PATH.
+	if _is_result_screen_background(screen_background_id):
+		return _atlas_chip_style(0.96, RESULT_MODAL_CHIP_PAD)
 	var texture_margins := _scaled_frame_margins(PAUSE_END_MODAL_SOURCE_SIZE, display_size, PAUSE_END_MODAL_TEXTURE_MARGINS)
 	var content_margins := _scaled_frame_margins(PAUSE_END_MODAL_SOURCE_SIZE, display_size, PAUSE_END_MODAL_CONTENT)
 	return _global_texture_style(PAUSE_END_MODAL_PATH, texture_margins, Color.WHITE, content_margins, true)
 
 
-func _economy_choice_style(display_size: Vector2, hovered := false, pressed := false, disabled := false) -> StyleBox:
-	var path := ECONOMY_CHOICE_CARD_HOVER_PATH if hovered else ECONOMY_CHOICE_CARD_PATH
-	var texture_margins := _scaled_frame_margins_xy(ECONOMY_CHOICE_SOURCE_SIZE, display_size, ECONOMY_CHOICE_HOVER_TEXTURE_MARGINS if hovered else ECONOMY_CHOICE_TEXTURE_MARGINS)
-	var content_margins := _scaled_frame_margins_xy(ECONOMY_CHOICE_SOURCE_SIZE, display_size, ECONOMY_CHOICE_HOVER_CONTENT if hovered else ECONOMY_CHOICE_CONTENT)
-	var tint := Color.WHITE
-	if hovered:
-		tint = BUTTON_NEUTRAL_HOVER_TINT
-	if pressed:
-		tint = Color(0.90, 0.84, 0.76, 1.0)
-	if disabled:
-		tint = Color(0.58, 0.58, 0.58, 0.82)
-	return _global_texture_style(path, texture_margins, tint, content_margins, true)
+# SCRUM-883: чип-пэддинг карточек наград/экономики от высоты слота (симметрия с
+# _atlas_chip_style: по X пад расширяется 1.4x внутри самого стиля).
+func _atlas_card_pad(display_size: Vector2) -> float:
+	return roundf(clampf(display_size.y * 0.10, 18.0, 34.0))
 
 
-func _economy_choice_content_margins(display_size: Vector2) -> Vector4:
-	return _scaled_frame_margins_xy(ECONOMY_CHOICE_SOURCE_SIZE, display_size, ECONOMY_CHOICE_CONTENT)
+func _atlas_chip_content_margins(pad: float) -> Vector4:
+	return Vector4(pad * 1.4, pad, pad * 1.4, pad)
+
+
+# SCRUM-883: контентные карточки-ряды (награда за бой, артефакты элитки/босса,
+# экономика маршрута, докачка, события) — единый чип-язык Атласа поверх
+# _unified_apply_row_theme: normal — плотный чип 0.86, hover/focus/pressed —
+# золотой кант; disabled сохраняет силуэт чипа (дим — модуляцией карточки).
+# Никаких текстурных рамок и растяжек (Правило 1/2 SCRUM-879).
+func _apply_atlas_choice_card_theme(button: Button, pad: float) -> void:
+	_unified_apply_row_theme(button, pad)
+	UIButtonFamily.assign(button, UIButtonFamily.FAMILY_CHOICE_CARD)
+	button.add_theme_stylebox_override("normal", _atlas_chip_style(0.86, pad))
+	var hover := _atlas_chip_style(0.90, pad)
+	hover.border_color = Color(0.93, 0.77, 0.40, 0.95)
+	button.add_theme_stylebox_override("hover", hover)
+	var pressed := _atlas_chip_style(0.94, pad)
+	pressed.bg_color = Color(0.11, 0.09, 0.07, 0.94)
+	pressed.border_color = Color(0.93, 0.77, 0.40, 0.95)
+	button.add_theme_stylebox_override("pressed", pressed)
+	var focus := _atlas_chip_style(0.90, pad)
+	focus.border_color = Color(0.93, 0.77, 0.40, 0.95)
+	button.add_theme_stylebox_override("focus", focus)
+	var disabled := _atlas_chip_style(0.80, pad)
+	disabled.border_color = Color(0.36, 0.32, 0.26, 0.70)
+	button.add_theme_stylebox_override("disabled", disabled)
+	button.set_meta("economy_card_style", "atlas_chip")
+	button.set_meta("economy_card_pad", pad)
 
 
 func _economy_choice_display_size(cards_in_row := 3) -> Vector2:
@@ -10678,6 +15363,24 @@ func _economy_choice_display_size(cards_in_row := 3) -> Vector2:
 		return ECONOMY_CHOICE_TARGET_1080
 	if viewport_size.x < 1280.0:
 		return Vector2(320.0, 240.0)
+	if viewport_size.x >= 2400.0 and viewport_size.y >= 1200.0:
+		return ECONOMY_CHOICE_TARGET_1440
+	if viewport_size.x >= 1800.0 and viewport_size.y >= 900.0:
+		return ECONOMY_CHOICE_TARGET_1080
+	return ECONOMY_CHOICE_TARGET_720
+
+
+func _gold_shell_economy_choice_display_size(cards_in_row: int) -> Vector2:
+	return _gold_shell_economy_choice_display_size_for_viewport(cards_in_row, game.get_viewport().get_visible_rect().size)
+
+
+func _gold_shell_economy_choice_display_size_for_viewport(cards_in_row: int, viewport_size: Vector2) -> Vector2:
+	if viewport_size.y < 800.0:
+		return Vector2(390.0, 150.0) if cards_in_row <= 2 else Vector2(280.0, 180.0)
+	if viewport_size.y < 1000.0:
+		return Vector2(390.0, 200.0) if cards_in_row <= 2 else Vector2(320.0, 220.0)
+	if cards_in_row <= 2:
+		return ECONOMY_CHOICE_TARGET_1440 if viewport_size.x >= 1920.0 and viewport_size.y >= 1000.0 else ECONOMY_CHOICE_TARGET_1080
 	if viewport_size.x >= 2400.0 and viewport_size.y >= 1200.0:
 		return ECONOMY_CHOICE_TARGET_1440
 	if viewport_size.x >= 1800.0 and viewport_size.y >= 900.0:
@@ -10707,19 +15410,6 @@ func _economy_choice_row_gap(display_size: Vector2) -> int:
 	return 24
 
 
-func _apply_economy_choice_theme(button: Button, display_size: Vector2) -> void:
-	button.add_theme_stylebox_override("normal", _economy_choice_style(display_size))
-	button.add_theme_stylebox_override("hover", _economy_choice_style(display_size, true))
-	button.add_theme_stylebox_override("pressed", _economy_choice_style(display_size, true, true))
-	button.add_theme_stylebox_override("focus", _economy_choice_style(display_size, true))
-	button.add_theme_stylebox_override("disabled", _economy_choice_style(display_size, false, false, true))
-	button.add_theme_color_override("font_color", Color.TRANSPARENT)
-	button.add_theme_color_override("font_hover_color", Color.TRANSPARENT)
-	button.add_theme_color_override("font_pressed_color", Color.TRANSPARENT)
-	button.add_theme_color_override("font_focus_color", Color.TRANSPARENT)
-	button.add_theme_color_override("font_disabled_color", Color.TRANSPARENT)
-
-
 func _make_economy_choice_row(row_name: String, display_size := Vector2.ZERO, cards_in_row := 3) -> HBoxContainer:
 	var row := HBoxContainer.new()
 	row.name = row_name
@@ -10737,11 +15427,8 @@ func _make_economy_choice_card(title: String, description: String, action_text: 
 	button.name = button_name if button_name != "" else "EconomyChoiceCard"
 	var compact_attribute := button.name.begins_with("AttributeOffer_")
 	button.set_meta("economy_frame_kind", "choice_card")
-	button.set_meta("economy_frame_path", ECONOMY_CHOICE_CARD_PATH)
-	button.set_meta("economy_hover_frame_path", ECONOMY_CHOICE_CARD_HOVER_PATH)
-	button.set_meta("economy_source_size", ECONOMY_CHOICE_SOURCE_SIZE)
-	button.set_meta("economy_source_safe_rect", ECONOMY_CHOICE_SAFE_RECT)
 	button.set_meta("economy_display_size", display_size)
+	button.set_meta("gold_shell_compact", display_size.y < ECONOMY_CHOICE_TARGET_720.y)
 	button.text = ""
 	button.custom_minimum_size = display_size
 	button.size_flags_horizontal = Control.SIZE_SHRINK_CENTER
@@ -10749,9 +15436,12 @@ func _make_economy_choice_card(title: String, description: String, action_text: 
 	button.focus_mode = Control.FOCUS_ALL
 	button.mouse_default_cursor_shape = Control.CURSOR_POINTING_HAND
 	button.tooltip_text = "%s\n%s" % [title, description]
-	_apply_economy_choice_theme(button, display_size)
+	# SCRUM-883: карточка выбора — чип-ряд Атласа (StyleBoxFlat), контент держат
+	# симметричные чип-пэддинги вместо content-зоны текстурной рамки.
+	var card_pad := _atlas_card_pad(display_size)
+	_apply_atlas_choice_card_theme(button, card_pad)
 
-	var margins := _economy_choice_content_margins(display_size)
+	var margins := _atlas_chip_content_margins(card_pad)
 	button.set_meta("economy_content_margins", margins)
 	var content := VBoxContainer.new()
 	content.name = "%sContent" % button.name
@@ -10770,8 +15460,13 @@ func _make_economy_choice_card(title: String, description: String, action_text: 
 	title_label.text = title
 	title_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	title_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
-	title_label.add_theme_font_size_override("font_size", _readable_font_size(14 if compact_attribute else 17, 0, 24))
-	title_label.add_theme_color_override("font_color", Color(1.0, 0.88, 0.46, 1.0))
+	title_label.add_theme_font_size_override("font_size", SemanticTypography.resolve_fixed(
+		SemanticTypography.ROLE_TITLE,
+		_readable_font_size(SemanticTypography.ROLE_TITLE, 14 if compact_attribute else 17, 12, 24),
+		SemanticTypography.role_min(SemanticTypography.ROLE_TITLE),
+		SemanticTypography.role_max(SemanticTypography.ROLE_TITLE)
+	))
+	title_label.add_theme_color_override("font_color", Color(0.96, 0.90, 0.68, 1.0))
 	title_label.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	content.add_child(title_label)
 
@@ -10782,8 +15477,8 @@ func _make_economy_choice_card(title: String, description: String, action_text: 
 	desc_label.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
 	desc_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	desc_label.size_flags_vertical = Control.SIZE_EXPAND_FILL
-	desc_label.add_theme_font_size_override("font_size", _readable_font_size(11 if compact_attribute else 13, 0, 20))
-	desc_label.add_theme_color_override("font_color", Color(0.90, 0.86, 0.76, 1.0))
+	desc_label.add_theme_font_size_override("font_size", _readable_font_size(SemanticTypography.ROLE_DESCRIPTION, 11 if compact_attribute else 13, 12, 20))
+	desc_label.add_theme_color_override("font_color", Color(0.88, 0.92, 0.98, 1.0))
 	desc_label.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	content.add_child(desc_label)
 
@@ -10791,8 +15486,8 @@ func _make_economy_choice_card(title: String, description: String, action_text: 
 	action_label.name = "%sAction" % button.name
 	action_label.text = action_text
 	action_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	action_label.add_theme_font_size_override("font_size", _readable_font_size(12 if compact_attribute else 15, 0, 14))
-	action_label.add_theme_color_override("font_color", Color(0.74, 0.92, 1.0, 1.0))
+	action_label.add_theme_font_size_override("font_size", _readable_font_size(SemanticTypography.ROLE_ACTION, 12 if compact_attribute else 15, 12, 22))
+	action_label.add_theme_color_override("font_color", Color(0.94, 0.80, 0.46, 1.0))
 	action_label.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	content.add_child(action_label)
 
@@ -10818,9 +15513,14 @@ func _fit_economy_choice_card_content(button: Button) -> void:
 	if avail_h <= 0.0:
 		return
 	var font_size := desc_label.get_theme_font_size("font_size")
-	while font_size > 9 and content.get_combined_minimum_size().y > avail_h:
+	while font_size > 12 and content.get_combined_minimum_size().y > avail_h:
 		font_size -= 1
-		desc_label.add_theme_font_size_override("font_size", font_size)
+		desc_label.add_theme_font_size_override("font_size", SemanticTypography.resolve_fixed(
+			SemanticTypography.ROLE_DESCRIPTION,
+			font_size,
+			SemanticTypography.role_min(SemanticTypography.ROLE_DESCRIPTION),
+			SemanticTypography.role_max(SemanticTypography.ROLE_DESCRIPTION)
+		))
 	var guard := desc_label.get_line_count()
 	while guard > 1 and content.get_combined_minimum_size().y > avail_h:
 		guard -= 1
@@ -10841,76 +15541,40 @@ func _prepend_economy_choice_content(button: Button, control: Control) -> void:
 	content.move_child(control, 0)
 
 
-func _reward_card_content_margins(elite := false) -> Vector4:
-	var source_content := REWARD_ELITE_CARD_SOURCE_CONTENT if elite else REWARD_CARD_SOURCE_CONTENT
-	var display_size := REWARD_ELITE_CARD_SIZE if elite else REWARD_CARD_SIZE
-	return Vector4(
-		roundf(source_content.x / REWARD_FRAME_SOURCE_SIZE.x * display_size.x),
-		roundf(source_content.y / REWARD_FRAME_SOURCE_SIZE.y * display_size.y),
-		roundf(source_content.z / REWARD_FRAME_SOURCE_SIZE.x * display_size.x),
-		roundf(source_content.w / REWARD_FRAME_SOURCE_SIZE.y * display_size.y)
-	)
+# SCRUM-883: чип-пэддинг карточки награды (обычной/элитной) от её display-размера.
+func _reward_card_pad(elite := false) -> float:
+	return _atlas_card_pad(REWARD_ELITE_CARD_SIZE if elite else REWARD_CARD_SIZE)
 
 
-func _reward_card_style(elite := false, hovered := false, pressed := false, disabled := false) -> StyleBox:
-	var path := REWARD_ELITE_CARD_PATH if elite else REWARD_CARD_PATH
-	if hovered:
-		path = REWARD_ELITE_CARD_HOVER_PATH if elite else REWARD_CARD_HOVER_PATH
-	var source_margins := REWARD_ELITE_CARD_TEXTURE_MARGINS if elite else REWARD_CARD_TEXTURE_MARGINS
-	var display_size := REWARD_ELITE_CARD_SIZE if elite else REWARD_CARD_SIZE
-	var texture_margins := _scaled_frame_margins_xy(REWARD_FRAME_SOURCE_SIZE, display_size, source_margins)
-	var content_margins := _reward_card_content_margins(elite)
-	var tint := Color.WHITE
-	if hovered:
-		tint = BUTTON_NEUTRAL_HOVER_TINT
-	if pressed:
-		tint = Color(0.88, 0.84, 0.90, 1.0) if elite else Color(0.90, 0.86, 0.78, 1.0)
-	if disabled:
-		tint = Color(0.58, 0.58, 0.58, 0.82)
-	var texture: Texture2D = game._cached_texture(path)
-	if texture == null:
-		var fallback := StyleBoxFlat.new()
-		fallback.bg_color = Color(0.08, 0.055, 0.08, 0.96) if elite else Color(0.09, 0.06, 0.045, 0.96)
-		fallback.border_color = Color(0.72, 0.50, 1.0, 0.88) if elite else Color(0.95, 0.72, 0.28, 0.88)
-		fallback.set_border_width_all(2)
-		fallback.set_corner_radius_all(8)
-		fallback.content_margin_left = content_margins.x
-		fallback.content_margin_top = content_margins.y
-		fallback.content_margin_right = content_margins.z
-		fallback.content_margin_bottom = content_margins.w
-		return fallback
-	var style := StyleBoxTexture.new()
-	style.texture = texture
-	style.texture_margin_left = texture_margins.x
-	style.texture_margin_top = texture_margins.y
-	style.texture_margin_right = texture_margins.z
-	style.texture_margin_bottom = texture_margins.w
-	style.modulate_color = tint
-	style.content_margin_left = content_margins.x
-	style.content_margin_top = content_margins.y
-	style.content_margin_right = content_margins.z
-	style.content_margin_bottom = content_margins.w
-	style.axis_stretch_horizontal = StyleBoxTexture.AXIS_STRETCH_MODE_TILE
-	style.axis_stretch_vertical = StyleBoxTexture.AXIS_STRETCH_MODE_TILE
-	return style
+func _battle_reward_card_size() -> Vector2:
+	# The 720p gold-shell interior is 1014×494. Three compact cards remain fully
+	# inside it together with title/subtitle; larger tiers keep the accepted size.
+	return _battle_reward_card_size_for_viewport(game.get_viewport().get_visible_rect().size)
 
 
+func _battle_reward_card_size_for_viewport(viewport_size: Vector2) -> Vector2:
+	if viewport_size.y < 800.0:
+		# SCRUM-1036: 224px leaves the exact 96px authored header reserve while
+		# preserving the compact single-line reward-card layout at 720p.
+		return Vector2(270.0, 224.0)
+	if viewport_size.y < 1000.0:
+		return Vector2(280.0, 300.0)
+	return REWARD_CARD_SIZE
+
+
+# SCRUM-883: карточки наград — чип-ряды Атласа (общий язык с карточками экономики);
+# текстурные reward-рамки SCRUM-338/448 сняты.
 func _apply_reward_card_theme(button: Button, elite := false) -> void:
-	button.add_theme_stylebox_override("normal", _reward_card_style(elite))
-	button.add_theme_stylebox_override("hover", _reward_card_style(elite, true))
-	button.add_theme_stylebox_override("pressed", _reward_card_style(elite, true, true))
-	button.add_theme_stylebox_override("focus", _reward_card_style(elite, true))
-	button.add_theme_stylebox_override("disabled", _reward_card_style(elite, false, false, true))
-	button.add_theme_color_override("font_color", Color.TRANSPARENT)
-	button.add_theme_color_override("font_hover_color", Color.TRANSPARENT)
-	button.add_theme_color_override("font_pressed_color", Color.TRANSPARENT)
-	button.add_theme_color_override("font_focus_color", Color.TRANSPARENT)
-	button.add_theme_color_override("font_disabled_color", Color.TRANSPARENT)
+	var display_size := button.custom_minimum_size if button != null else (REWARD_ELITE_CARD_SIZE if elite else REWARD_CARD_SIZE)
+	_apply_atlas_choice_card_theme(button, _atlas_card_pad(display_size))
+	UIButtonFamily.assign(button, UIButtonFamily.FAMILY_REWARD_CARD)
 
 
 func _add_reward_card_content_container(button: Button, elite := false) -> VBoxContainer:
-	var margins := _reward_card_content_margins(elite)
+	var display_size := button.custom_minimum_size if button != null else (REWARD_ELITE_CARD_SIZE if elite else REWARD_CARD_SIZE)
+	var margins := _atlas_chip_content_margins(_atlas_card_pad(display_size))
 	var content := VBoxContainer.new()
+	content.clip_contents = true
 	content.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	content.set_anchors_preset(Control.PRESET_FULL_RECT)
 	content.offset_left = margins.x
@@ -10920,31 +15584,6 @@ func _add_reward_card_content_container(button: Button, elite := false) -> VBoxC
 	content.alignment = BoxContainer.ALIGNMENT_CENTER
 	button.add_child(content)
 	return content
-
-
-func _codex_v2_main_panel_style() -> StyleBox:
-	return _codex_pl_frame_style(CODEX_PL_MAIN_PATH, CODEX_PL_MAIN_TEX, CODEX_PL_MAIN_CONTENT)
-
-
-func _codex_v2_nav_panel_style() -> StyleBox:
-	return _codex_pl_frame_style(CODEX_PL_NAV_PATH, CODEX_PL_NAV_TEX, CODEX_PL_NAV_CONTENT)
-
-
-func _codex_v2_list_panel_style() -> StyleBox:
-	return _codex_pl_frame_style(CODEX_PL_LIST_PATH, CODEX_PL_LIST_TEX, CODEX_PL_LIST_CONTENT)
-
-
-func _codex_v2_detail_panel_style() -> StyleBox:
-	return _codex_pl_frame_style(CODEX_PL_DETAIL_PATH, CODEX_PL_DETAIL_TEX, CODEX_PL_DETAIL_CONTENT)
-
-
-func _codex_entry_card_style(hovered := false) -> StyleBox:
-	var tint := BUTTON_NEUTRAL_HOVER_TINT if hovered else Color.WHITE
-	return _codex_pl_frame_style(CODEX_PL_ENTRY_CARD_PATH, CODEX_PL_ENTRY_CARD_TEX, CODEX_PL_ENTRY_CARD_CONTENT, tint)
-
-
-func _codex_portrait_slot_style() -> StyleBox:
-	return _global_texture_style(CODEX_PORTRAIT_SLOT_PATH, CODEX_PORTRAIT_SLOT_MARGINS, Color.WHITE, CODEX_PORTRAIT_SLOT_CONTENT, true)
 
 
 func _progression_node_style(status: String, focused := false) -> StyleBox:
@@ -11026,6 +15665,36 @@ func _global_texture_style(path: String, margins: Vector4, tint := Color.WHITE, 
 	return style
 
 
+func _prepare_global_tooltips(root: Control) -> void:
+	if root == null:
+		return
+	if _global_tooltip_theme == null:
+		_global_tooltip_theme = GlobalTooltip.make_theme()
+	root.theme = _global_tooltip_theme
+	if not bool(root.get_meta("global_tooltip_child_hook", false)):
+		root.set_meta("global_tooltip_child_hook", true)
+		root.child_entered_tree.connect(func(_child: Node) -> void:
+			_schedule_global_tooltip_install(root)
+		)
+	_schedule_global_tooltip_install(root)
+
+
+func _schedule_global_tooltip_install(root: Control) -> void:
+	if root == null or not is_instance_valid(root):
+		return
+	if bool(root.get_meta("global_tooltip_install_pending", false)):
+		return
+	root.set_meta("global_tooltip_install_pending", true)
+	call_deferred("_install_global_tooltips_for_root", root)
+
+
+func _install_global_tooltips_for_root(root: Control) -> void:
+	if root == null or not is_instance_valid(root):
+		return
+	root.set_meta("global_tooltip_install_pending", false)
+	GlobalTooltip.install_on_tree(root, GlobalTooltipControl)
+
+
 func _style_slider(slider: HSlider) -> void:
 	slider.mouse_default_cursor_shape = Control.CURSOR_POINTING_HAND
 	slider.add_theme_stylebox_override("slider", _slider_track_style(Color(0.035, 0.045, 0.065, 0.96), Color(0.55, 0.42, 0.18, 0.85)))
@@ -11040,6 +15709,7 @@ func _style_slider(slider: HSlider) -> void:
 
 
 func _style_checkbox(toggle: CheckBox) -> void:
+	UIButtonFamily.assign(toggle, "checkbox")
 	toggle.mouse_default_cursor_shape = Control.CURSOR_POINTING_HAND
 	var unchecked: Texture2D = game._cached_texture(SYSTEM_CHECKBOX_UNCHECKED_PATH)
 	var checked: Texture2D = game._cached_texture(SYSTEM_CHECKBOX_CHECKED_PATH)
@@ -11054,6 +15724,111 @@ func _style_checkbox(toggle: CheckBox) -> void:
 	toggle.add_theme_color_override("font_pressed_color", Color(0.70, 1.0, 0.92, 1.0))
 
 
+# SCRUM-1088: the mandatory Priest battle-start choice deliberately reuses the
+# live Level Up shell/card builders. There is no prayer-specific frame, card
+# geometry or visual family: only the title, three data dictionaries and the
+# selection callback differ from an ordinary Level Up choice.
+func show_battle_prayer_choice(player: Node, on_selected: Callable) -> bool:
+	if player == null or not is_instance_valid(player) or not player.has_method("battle_prayer_choices"):
+		return false
+	var choices: Array = player.call("battle_prayer_choices")
+	if choices.is_empty() or str(player.call("active_battle_prayer_id")) != "":
+		return false
+	if _is_battle_prayer_choice_open():
+		return true
+
+	var layout := _level_up_layout_metrics()
+	var display_choices: Array = []
+	for choice_raw in choices.slice(0, 3):
+		var choice := (choice_raw as Dictionary).duplicate(true)
+		var prayer_id := str(choice.get("id", ""))
+		choice["icon_id"] = str(BATTLE_PRAYER_ICON_IDS.get(prayer_id, "buff_power"))
+		# Display-only compact copy for the fixed one-line Level Up effect field.
+		# Canonical prayer descriptions/effects remain unchanged in progression data.
+		choice["effect_summary"] = str(BATTLE_PRAYER_EFFECT_SUMMARIES.get(prayer_id, choice.get("description", "")))
+		choice["description"] = "Действует до конца текущего боя."
+		display_choices.append(choice)
+	var advice := {"forecasts": [], "badges": []}
+	layout["card_plan"] = _level_up_card_plan(display_choices, advice, layout)
+	var box := _create_level_up_menu_box(
+		"Молитва перед боем",
+		"Выбери 1 из 3 усилений. Один выбор на текущий бой.",
+		layout
+	)
+	if game.ui_layer == null or not is_instance_valid(game.ui_layer):
+		return false
+	game.ui_layer.name = "BattlePrayerChoiceLayer"
+	var root := game.ui_layer.get_node_or_null("LevelUpOverlay") as Control
+	if root == null:
+		return false
+	root.process_mode = Node.PROCESS_MODE_ALWAYS
+	root.set_meta("selection_locked", false)
+	root.set_meta("battle_prayer_choice", true)
+	root.set_meta("source_content_layout", "res://docs/design/mockups/scrum1088_priest_prayer_attribute_picker/layout.json")
+
+	var rewards_row := HBoxContainer.new()
+	rewards_row.name = "LevelUpRewardsRow"
+	rewards_row.alignment = BoxContainer.ALIGNMENT_CENTER
+	rewards_row.position = layout.get("rewards_row_position", Vector2.ZERO)
+	rewards_row.size = layout.get("rewards_row_size", Vector2(760.0, 320.0))
+	rewards_row.custom_minimum_size = rewards_row.size
+	rewards_row.add_theme_constant_override("separation", int(layout.get("card_gap", 0)))
+	box.add_child(rewards_row)
+
+	var buttons: Array[Button] = []
+	for index in range(display_choices.size()):
+		var choice: Dictionary = display_choices[index]
+		var button := _make_level_up_reward_button(choice, layout, advice, index)
+		button.name = "LevelUpRewardButton%d" % index
+		button.set_meta("prayer_id", str(choice.get("id", "")))
+		button.pressed.connect(Callable(self, "_select_battle_prayer").bind(root, player, str(choice.get("id", "")), on_selected))
+		rewards_row.add_child(button)
+		buttons.append(button)
+
+	_wire_run_ui_focus(buttons, true, [], buttons[0] if not buttons.is_empty() else null)
+	game.ui_escape_action = Callable(self, "_consume_battle_prayer_cancel")
+	game.push_pause("battle_prayer")
+
+	var panel := box.get_parent() as PanelContainer
+	var title_label := box.find_child("LevelUpTitle", true, false) as Label
+	var sparkle_root := game.ui_layer.get_node_or_null("LevelUpOverlay/LevelUpParticles") as Control
+	_start_level_up_intro(panel, title_label, buttons, sparkle_root)
+	return true
+
+
+func _select_battle_prayer(root: Control, player: Node, prayer_id: String, on_selected: Callable) -> void:
+	if root == null or not is_instance_valid(root) or bool(root.get_meta("selection_locked", false)):
+		return
+	if player == null or not is_instance_valid(player) or not player.has_method("select_battle_prayer"):
+		return
+	if not bool(player.call("select_battle_prayer", prayer_id)):
+		return
+	root.set_meta("selection_locked", true)
+	_close_battle_prayer_choice()
+	if on_selected.is_valid():
+		on_selected.call()
+
+
+func _close_battle_prayer_choice() -> void:
+	game.ui_escape_action = Callable()
+	if game.ui_layer != null and is_instance_valid(game.ui_layer):
+		game.ui_layer.queue_free()
+	game.ui_layer = null
+	game.pop_pause("battle_prayer")
+
+
+func _consume_battle_prayer_cancel() -> void:
+	# The choice is mandatory: Escape/B intentionally has no closing action.
+	pass
+
+
+func _is_battle_prayer_choice_open() -> bool:
+	if game.ui_layer == null or not is_instance_valid(game.ui_layer):
+		return false
+	var root := game.ui_layer.get_node_or_null("LevelUpOverlay") as Control
+	return root != null and bool(root.get_meta("battle_prayer_choice", false))
+
+
 func _create_hud() -> void:
 	game._clear_hud()
 	game.hud_layer = CanvasLayer.new()
@@ -11065,9 +15840,11 @@ func _create_hud() -> void:
 	root.set_anchors_preset(Control.PRESET_FULL_RECT)
 	root.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	game.hud_layer.add_child(root)
+	_prepare_global_tooltips(root)
 
-	_create_resource_hud_panel(root, Vector2(20, 18), true)
+	_create_resource_hud_panel(root, Vector2(20, 18))
 	_create_combat_timer_panel(root)
+	_create_boss_health_panel(root)
 	_create_damage_flash_overlay(root)
 	_create_low_hp_vignette(root)
 	_create_threat_indicator_overlay(root)
@@ -11114,7 +15891,12 @@ func _create_combat_timer_panel(root: Control) -> void:
 	label.name = "CombatTimerLabel"
 	label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	label.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
-	label.add_theme_font_size_override("font_size", _readable_font_size(26))
+	label.add_theme_font_size_override("font_size", SemanticTypography.resolve_fixed(
+		SemanticTypography.ROLE_HUD,
+		_readable_font_size(SemanticTypography.ROLE_HUD, 26),
+		SemanticTypography.role_min(SemanticTypography.ROLE_HUD),
+		SemanticTypography.role_max(SemanticTypography.ROLE_HUD)
+	))
 	label.add_theme_color_override("font_color", Color(0.96, 0.92, 0.74, 1.0))
 	label.add_theme_color_override("font_outline_color", Color(0.06, 0.05, 0.03, 1.0))
 	label.add_theme_constant_override("outline_size", 4)
@@ -11127,6 +15909,87 @@ func _create_combat_timer_panel(root: Control) -> void:
 	timer_icon.set_anchors_preset(Control.PRESET_TOP_LEFT)
 	timer_icon.custom_minimum_size = Vector2(28, 28)
 	root.add_child(timer_icon)
+
+
+func _create_boss_health_panel(root: Control) -> void:
+	# SCRUM-874: общий HUD-боссбар цели узла (акт-босс/элитка) — крупная полоса HP
+	# с именем цели по центру верха экрана. Создаётся скрытым; видимость и значения
+	# ведёт _update_boss_hud_bar() по game.boss_hud_target (ставит combat_director
+	# в _spawn_boss/_spawn_elite_enemy, снимает _end_combat). Плавающая полоса над
+	# спрайтом у таких целей не создаётся (enemy._uses_hud_boss_bar).
+	var name_label := Label.new()
+	name_label.name = "BossHudNameLabel"
+	name_label.visible = false
+	name_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	name_label.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
+	name_label.clip_text = true
+	name_label.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	name_label.add_theme_font_size_override("font_size", SemanticTypography.resolve_fixed(
+		SemanticTypography.ROLE_HUD,
+		_readable_font_size(SemanticTypography.ROLE_HUD, 24),
+		SemanticTypography.role_min(SemanticTypography.ROLE_HUD),
+		SemanticTypography.role_max(SemanticTypography.ROLE_HUD)
+	))
+	name_label.add_theme_color_override("font_color", Color(1.0, 0.42, 0.34, 1.0))
+	name_label.add_theme_color_override("font_outline_color", Color(0.06, 0.05, 0.03, 1.0))
+	name_label.add_theme_constant_override("outline_size", 4)
+	root.add_child(name_label)
+
+	var track := PanelContainer.new()
+	track.name = "BossHudTrack"
+	track.visible = false
+	track.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	track.add_theme_stylebox_override("panel", _hud_v2_bar_track_style())
+	root.add_child(track)
+
+	var bar := ProgressBar.new()
+	bar.name = "BossHudBar"
+	bar.show_percentage = false
+	bar.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	bar.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	bar.size_flags_vertical = Control.SIZE_EXPAND_FILL
+	bar.add_theme_stylebox_override("background", _bar_style(Color(0.05, 0.06, 0.08, 0.85)))
+	bar.add_theme_stylebox_override("fill", _hud_v2_bar_fill_style("hp", Color(0.86, 0.20, 0.16, 0.95)))
+	track.add_child(bar)
+
+	game.boss_hud_name_label = name_label
+	game.boss_hud_bar = bar
+
+
+func _update_boss_hud_bar() -> void:
+	var bar := game.boss_hud_bar as ProgressBar
+	var name_label := game.boss_hud_name_label as Label
+	if bar == null or not is_instance_valid(bar) or name_label == null or not is_instance_valid(name_label):
+		return
+	var track := bar.get_parent() as Control
+	# ВАЖНО: не кастовать boss_hud_target до is_instance_valid — после free цели
+	# `as Node2D` на freed-объекте даёт script error «Trying to cast a freed object».
+	if game.boss_hud_target == null or not is_instance_valid(game.boss_hud_target):
+		game.boss_hud_target = null
+		if track != null:
+			track.visible = false
+		name_label.visible = false
+		return
+	var target: Node2D = game.boss_hud_target
+	if not target.is_inside_tree():
+		if track != null:
+			track.visible = false
+		name_label.visible = false
+		return
+	var max_hp := maxf(_number_value(target.get("max_health"), 1.0), 1.0)
+	# Смерть цели: hp клампится в 0 — полоса доводится в ноль на время
+	# death-анимации (SCRUM-865, ~2s), затем узел освобождается и панель гаснет.
+	var hp := clampf(_number_value(target.get("health"), 0.0), 0.0, max_hp)
+	bar.max_value = max_hp
+	bar.value = hp
+	var display_name = target.get("boss_display_name")
+	var target_name := str(display_name) if display_name != null else ""
+	if target_name == "":
+		target_name = str(target.get("enemy_type_name"))
+	name_label.text = target_name
+	if track != null:
+		track.visible = true
+	name_label.visible = true
 
 
 func _timer_panel_style(alarm: bool, display_size := Vector2(264.0, 92.0), content_margins := Vector4.ZERO) -> StyleBox:
@@ -11192,6 +16055,55 @@ func _apply_chud_rect(control: Control, rect: Rect2, meta_key := "") -> void:
 		control.set_meta(meta_key, rect)
 
 
+# SCRUM-876: разложить боевой ресурс-кластер на меню-экране с кастомной точкой
+# привязки (карта держит его ПОД своим заголовком). Размер/содержимое — тот же
+# скейл и лейаут, что в бою.
+func _layout_menu_resource_hud(root: Control, origin: Vector2) -> void:
+	if root == null or not is_instance_valid(root):
+		return
+	var resource := root.find_child("RunResourceHud", true, false) as PanelContainer
+	if resource == null:
+		return
+	var scale := _scrum666_hud_scale(root)
+	# Внутренние зоны кластера (_hud_v2_place_in_panel) заданы в абсолютных
+	# боевых 2K-координатах и вычитают позицию панели — раскладываем содержимое
+	# относительно БОЕВОГО ректа, а саму панель ставим на кастомный origin.
+	var combat_rect := _scrum666_scaled_rect(HUD_V2_CLUSTER_2K, scale)
+	_apply_chud_rect(resource, Rect2(origin, combat_rect.size), "scrum666_frame_rect")
+	resource.add_theme_stylebox_override("panel", _hud_v2_cluster_style(combat_rect.size))
+	_layout_hud_v2_cluster(resource, combat_rect, scale)
+
+
+func _layout_gold_shell_menu_resource_hud(root: Control, inner_rect: Rect2) -> void:
+	if root == null or not is_instance_valid(root) or not inner_rect.has_area():
+		return
+	# Rebuild the canonical unscaled HUD for this viewport first, then fit the
+	# entire composition uniformly into the authored header-left zone. Resetting
+	# scale before every pass keeps 2K -> 720p -> 2K resize idempotent.
+	_layout_menu_resource_hud(root, Vector2.ZERO)
+	var resource := root.find_child("RunResourceHud", true, false) as PanelContainer
+	if resource == null:
+		return
+	resource.scale = Vector2.ONE
+	resource.pivot_offset = Vector2.ZERO
+	var source_size := resource.size
+	if source_size.x <= 0.0 or source_size.y <= 0.0:
+		source_size = resource.custom_minimum_size
+	var header_height := 72.0 if root.size.y < 900.0 else (104.0 if root.size.y >= 1200.0 else 88.0)
+	var header_rect := Rect2(
+		inner_rect.position,
+		Vector2(maxf(1.0, inner_rect.size.x - 96.0), minf(header_height, inner_rect.size.y))
+	)
+	var fit_scale := minf(1.0, minf(header_rect.size.x / source_size.x, header_rect.size.y / source_size.y))
+	resource.scale = Vector2(fit_scale, fit_scale)
+	resource.position = Vector2(
+		header_rect.position.x,
+		header_rect.position.y
+	)
+	resource.set_meta("gold_shell_inner_rect", inner_rect)
+	resource.set_meta("scrum1036_zone_rect", header_rect)
+
+
 func _layout_combat_hud(root: Control) -> void:
 	if root == null or not is_instance_valid(root):
 		return
@@ -11212,10 +16124,35 @@ func _layout_combat_hud(root: Control) -> void:
 		timer_panel.set_meta("scrum666_content_zone", _scrum666_scaled_rect(HUD_V2_TIMER_ZONE_2K, scale))
 		timer_panel.add_theme_stylebox_override("panel", _timer_panel_style(bool(game.timer_label != null and game.timer_label.get_meta("alarm_active", false)), timer_rect.size, timer_content))
 		if game.timer_label != null:
-			game.timer_label.add_theme_font_size_override("font_size", maxi(16, int(roundf(34.0 * scale))))
+			game.timer_label.add_theme_font_size_override("font_size", SemanticTypography.resolve_fixed(
+				SemanticTypography.ROLE_HUD,
+				SemanticTypography.resolve_scaled_compat( SemanticTypography.ROLE_HUD, 34.0, scale, 16, 96 ),
+				SemanticTypography.role_min(SemanticTypography.ROLE_HUD),
+				SemanticTypography.role_max(SemanticTypography.ROLE_HUD)
+			))
 		var timer_icon := root.find_child("CombatTimerIcon", true, false) as TextureRect
 		if timer_icon != null:
 			_apply_chud_rect(timer_icon, _scrum666_scaled_rect(HUD_V2_TIMER_ICON_2K, scale))
+
+	# SCRUM-874: HUD-боссбар — центр верха, ниже кластера/таймера.
+	var boss_track := root.find_child("BossHudTrack", true, false) as PanelContainer
+	if boss_track != null:
+		var boss_rect := _scrum666_scaled_rect(HUD_V2_BOSS_BAR_2K, scale)
+		_apply_chud_rect(boss_track, boss_rect, "scrum666_frame_rect")
+		var boss_inset := maxf(2.0, roundf(4.0 * scale))
+		boss_track.add_theme_stylebox_override("panel", _hud_v2_bar_track_style(boss_rect.size, boss_inset))
+		var boss_bar := boss_track.find_child("BossHudBar", true, false) as ProgressBar
+		if boss_bar != null:
+			boss_bar.custom_minimum_size = Vector2(0.0, maxf(4.0, boss_rect.size.y - boss_inset * 2.0))
+		var boss_name := root.find_child("BossHudNameLabel", true, false) as Label
+		if boss_name != null:
+			_apply_chud_rect(boss_name, _scrum666_scaled_rect(HUD_V2_BOSS_NAME_2K, scale))
+			boss_name.add_theme_font_size_override("font_size", SemanticTypography.resolve_fixed(
+				SemanticTypography.ROLE_HUD,
+				SemanticTypography.resolve_scaled_compat( SemanticTypography.ROLE_HUD, 32.0, scale, 16, 96 ),
+				SemanticTypography.role_min(SemanticTypography.ROLE_HUD),
+				SemanticTypography.role_max(SemanticTypography.ROLE_HUD)
+			))
 
 	var asc_row := root.find_child("AscensionHudRow", true, false) as HBoxContainer
 	if asc_row != null:
@@ -11256,17 +16193,25 @@ func _layout_hud_v2_cluster(resource: PanelContainer, panel_rect: Rect2, scale: 
 		if track == null:
 			continue
 		var zone: Rect2 = track_zones[track_name]
-		_hud_v2_place_in_panel(track, zone, panel_rect, scale)
 		var track_size := _scrum666_scaled_rect(zone, scale).size
 		var inset := maxf(2.0, roundf(4.0 * scale))
-		track.add_theme_stylebox_override("panel", _hud_v2_bar_track_style(track_size, inset))
 		var bar := track.find_child(track_name.replace("Track", "Bar"), true, false) as ProgressBar
+		# SCRUM-1039: shrink the child minimum before assigning the smaller parent
+		# rect. PanelContainer otherwise retains the previous 2K child minimum for
+		# one sort pass and physically overlaps sibling tracks after 2K -> 720p.
 		if bar != null:
 			bar.custom_minimum_size = Vector2(0.0, maxf(4.0, track_size.y - inset * 2.0))
+		track.add_theme_stylebox_override("panel", _hud_v2_bar_track_style(track_size, inset))
+		_hud_v2_place_in_panel(track, zone, panel_rect, scale)
 	var money_label := resource.find_child("HudMoneyLabel", true, false) as Label
 	if money_label != null:
 		_hud_v2_place_in_panel(money_label, HUD_V2_MONEY_LABEL_2K, panel_rect, scale)
-		money_label.add_theme_font_size_override("font_size", maxi(11, int(roundf(24.0 * scale))))
+		money_label.add_theme_font_size_override("font_size", SemanticTypography.resolve_fixed(
+			SemanticTypography.ROLE_HUD,
+			SemanticTypography.resolve_scaled_compat( SemanticTypography.ROLE_HUD, 24.0, scale, 14, 96 ),
+			SemanticTypography.role_min(SemanticTypography.ROLE_HUD),
+			SemanticTypography.role_max(SemanticTypography.ROLE_HUD)
+		))
 	var bar_labels := {
 		"HudHPLabel": [HUD_V2_HP_BAR_2K, 20.0],
 		"HudXPLabel": [HUD_V2_XP_BAR_2K, 17.0],
@@ -11276,7 +16221,12 @@ func _layout_hud_v2_cluster(resource: PanelContainer, panel_rect: Rect2, scale: 
 		var label := resource.find_child(str(label_name), true, false) as Label
 		if label == null:
 			continue
-		label.add_theme_font_size_override("font_size", maxi(9, int(roundf(float(bar_labels[label_name][1]) * scale))))
+		label.add_theme_font_size_override("font_size", SemanticTypography.resolve_fixed(
+			SemanticTypography.ROLE_HUD,
+			SemanticTypography.resolve_scaled_compat( SemanticTypography.ROLE_HUD, float(bar_labels[label_name][1]), scale, 12, 96 ),
+			SemanticTypography.role_min(SemanticTypography.ROLE_HUD),
+			SemanticTypography.role_max(SemanticTypography.ROLE_HUD)
+		))
 		label.add_theme_constant_override("outline_size", maxi(2, int(roundf(3.0 * scale))))
 		_hud_v2_place_in_panel(label, bar_labels[label_name][0], panel_rect, scale)
 		# Шрифт может требовать больше высоты, чем слим-бар: расширяем рект лейбла
@@ -11340,21 +16290,44 @@ func _player_artifacts() -> Array:
 	return normalized
 
 
-func _artifact_icon_texture(artifact_id: String) -> Texture2D:
+func _artifact_icon_path(artifact_id: String) -> String:
 	var path := "%sartifact_%s.png" % [ARTIFACT_ICON_DIR, artifact_id]
 	if artifact_id != "" and ResourceLoader.exists(path):
+		return path
+	# CodexData appends SHOP_ITEMS to the artifact section. Their canonical icons
+	# use the existing shop/shop_<id>.png family, not artifact_<id>.png.
+	var shop_path := "%sshop_%s.png" % [SHOP_ICON_DIR, artifact_id]
+	if artifact_id.begins_with("shop_") and ResourceLoader.exists(shop_path):
+		return shop_path
+	return ""
+
+
+func _artifact_icon_texture(artifact_id: String) -> Texture2D:
+	var path := _artifact_icon_path(artifact_id)
+	if not path.is_empty():
 		return game._cached_texture(path)
 	return game.UIIconRegistry.texture_for("buff_power")
 
 
-const TIER_LABELS := {1: "Тир 1", 2: "Тир 2 — редкий", 3: "Тир 3 — легендарный"}
+# SCRUM-963: канон редкости (artifact_system_matrix §1.1) — tier и есть редкость,
+# без номеров: 1 обычный / 2 редкий / 3 эпический. Цвета тиров сохранены.
+const TIER_LABELS := {1: "Обычный", 2: "Редкий", 3: "Эпический"}
 const TIER_COLORS := {
 	1: Color(0.80, 0.86, 0.94, 1.0),
 	2: Color(0.46, 0.78, 1.0, 1.0),
 	3: Color(1.0, 0.74, 0.30, 1.0),
 }
+# SCRUM-963: 17/17 — дословно titles ProgressionData.CHARACTER_CONFIGS.
 const CLASS_RU := {
 	"berserk": "Берсерк",
+	"soldier": "Солдат",
+	"thief": "Вор",
+	"elementalist": "Элементалист",
+	"sniper": "Снайпер",
+	"priest": "Священник",
+	"biologist": "Биолог",
+	"robot": "Робот",
+	"engineer": "Инженер",
 	"dark_mage": "Темный маг",
 	"guitarist": "Гитарист",
 	"assassin": "Ассасин",
@@ -11367,16 +16340,21 @@ const CLASS_RU := {
 
 
 func _artifact_affinity_note(definition: Dictionary) -> Dictionary:
-	# С 0.2 классовая часть больше не пропадает: affinity теперь объясняет,
-	# как артефакт интерпретируется текущим классом.
+	# SCRUM-963: классовая пометка вместо старой «Интерпретации» — после гейта
+	# SCRUM-961 классовый артефакт больше не «перетолковывается» чужим классом,
+	# а честно подписывается своим классом и порогом Возвышения. Пометка есть у
+	# ЛЮБОГО классового артефакта (свой класс — знак эксклюзива, cross-class
+	# выпадение «Украденного герба» — честное имя чужого класса).
 	var affinity: Array = definition.get("class_affinity", definition.get("classes", []))
-	if affinity.is_empty() or affinity.has(game.selected_character_id):
+	if affinity.is_empty():
 		return {}
-	var affinity_keys := (definition.get("affinity_mods", {}) as Dictionary).keys()
-	var parameter_id := "buff_power"
-	if not affinity_keys.is_empty():
-		parameter_id = str(game.LEVEL_UP_MOD_DISPLAY.get(str(affinity_keys[0]), affinity_keys[0]))
-	var text := "Интерпретация: %s" % game.PROGRESSION_DATA.class_interpretation_text(game.selected_character_id, parameter_id)
+	var class_names := PackedStringArray()
+	for class_id in affinity:
+		class_names.append(str(CLASS_RU.get(str(class_id), class_id)))
+	var text := "Класс: %s" % ", ".join(class_names)
+	var required := int(definition.get("requires_ascension", 0))
+	if required > 0:
+		text += " · Возвышение %d" % required
 	return {"text": text, "color": Color(0.55, 0.92, 1.0, 1.0)}
 
 
@@ -11388,8 +16366,14 @@ func _artifact_affinity_suffix(definition: Dictionary) -> String:
 [%s]" % note["text"]
 
 
+# Подпись редкости по конкретному тиру (0/неизвестный → пусто: старые записи
+# player.artifacts без тира редкость не показывают).
+func _tier_label(tier: int) -> String:
+	return str(TIER_LABELS.get(tier, ""))
+
+
 func _artifact_tier_text(definition: Dictionary) -> String:
-	return str(TIER_LABELS.get(int(definition.get("tier", 1)), "Тир 1"))
+	return str(TIER_LABELS.get(int(definition.get("tier", 1)), TIER_LABELS[1]))
 
 
 func _artifact_tier_color(definition: Dictionary) -> Color:
@@ -11403,8 +16387,13 @@ func _artifact_tooltip(artifact: Dictionary) -> String:
 	var description := str(definition.get("description", ""))
 	if description == "":
 		return title
+	# SCRUM-963: редкость полученного артефакта — РОЛЛНУТЫЙ тир записи забега
+	# (player.artifacts[].tier, пишется с SCRUM-960); фоллбек — корневой тир
+	# определения (старые сейвы без тира).
+	var rolled_tier := int(artifact.get("tier", 0))
+	var tier_text := _tier_label(rolled_tier) if rolled_tier > 0 else _artifact_tier_text(definition)
 	return "%s (%s)
-%s%s" % [title, _artifact_tier_text(definition), description, _artifact_affinity_suffix(definition)]
+%s%s" % [title, tier_text, description, _artifact_affinity_suffix(definition)]
 
 
 func _create_damage_flash_overlay(root: Control) -> void:
@@ -11541,41 +16530,130 @@ func _create_menu_run_hud() -> void:
 	game.add_child(game.hud_layer)
 
 	var root := Control.new()
+	root.name = "MenuRunHudRoot"
 	root.set_anchors_preset(Control.PRESET_FULL_RECT)
 	root.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	game.hud_layer.add_child(root)
-	_create_resource_hud_panel(root, Vector2(18, 10))
+	_prepare_global_tooltips(root)
+	# SCRUM-876: меню-экраны забега (карта/level-up/награды/магазины/события)
+	# показывают ТОТ ЖЕ боевой ресурс-кластер SCRUM-806 (HP/XP/ULT + золото),
+	# что и бой — один вид HUD во всех местах. Боевые-only элементы (таймер,
+	# боссбар, ascension-пипсы) здесь не создаются; _layout_combat_hud null-safe.
+	_create_resource_hud_panel(root, Vector2(20, 18))
+	var shell_safe_rect := _active_gold_shell_content_rect()
+	if shell_safe_rect.has_area():
+		root.set_meta("gold_shell_content_rect", shell_safe_rect)
+		var shell_inner_rect := _active_gold_shell_inner_rect()
+		root.set_meta("gold_shell_inner_rect", shell_inner_rect)
+		if _active_gold_shell_screen_id() == "shop":
+			root.resized.connect(func() -> void:
+				_layout_shop_gold_shell_resource_hud_current(root)
+				call_deferred("_layout_shop_gold_shell_resource_hud_current", root)
+			)
+			_layout_shop_gold_shell_resource_hud_current(root)
+			call_deferred("_layout_shop_gold_shell_resource_hud_current", root)
+		else:
+			root.resized.connect(func() -> void:
+				_layout_gold_shell_menu_resource_hud_current(root)
+				call_deferred("_layout_gold_shell_menu_resource_hud_current", root)
+			)
+			_layout_gold_shell_menu_resource_hud(root, shell_inner_rect)
+			call_deferred("_layout_gold_shell_menu_resource_hud_current", root)
+	else:
+		root.resized.connect(func() -> void:
+			_layout_combat_hud(root)
+		)
+		_layout_combat_hud(root)
+		call_deferred("_layout_combat_hud", root)
 	_update_hud()
 	_update_level_up_button()
+	if shell_safe_rect.has_area():
+		_layout_level_up_button_in_gold_shell(root.size)
+		root.resized.connect(func() -> void:
+			_layout_level_up_button_in_gold_shell(root.size)
+			_layout_level_up_button_in_gold_shell.call_deferred(root.size)
+		)
 
 
-func _create_resource_hud_panel(parent: Control, position: Vector2, combat_layout := false) -> void:
+func _layout_gold_shell_menu_resource_hud_current(root: Control) -> void:
+	if root == null or not is_instance_valid(root):
+		return
+	# Derive from the current root size instead of frame metadata captured by a
+	# different resized signal. This makes the deferred pass resize-safe in both
+	# directions and keeps the HUD's acceptance metadata current.
+	var inner_rect := _gold_shell_inner_rect_for_size(root.size)
+	root.set_meta("gold_shell_inner_rect", inner_rect)
+	_layout_gold_shell_menu_resource_hud(root, inner_rect)
+
+
+func _layout_shop_gold_shell_resource_hud_current(root: Control) -> void:
+	if root == null or not is_instance_valid(root):
+		return
+	var metrics := _shop_gold_shell_metrics(root.size)
+	var zone: Rect2 = metrics["hud_rect"]
+	_layout_menu_resource_hud(root, Vector2.ZERO)
+	var resource := root.find_child("RunResourceHud", true, false) as PanelContainer
+	if resource == null:
+		return
+	resource.scale = Vector2.ONE
+	resource.pivot_offset = Vector2.ZERO
+	var source_size := resource.size
+	if source_size.x <= 0.0 or source_size.y <= 0.0:
+		source_size = resource.custom_minimum_size
+	var fit_scale := minf(1.0, minf(zone.size.x / maxf(source_size.x, 1.0), zone.size.y / maxf(source_size.y, 1.0)))
+	resource.scale = Vector2(fit_scale, fit_scale)
+	resource.position = Vector2(zone.position.x, zone.position.y + roundf((zone.size.y - source_size.y * fit_scale) * 0.5))
+	resource.set_meta("scrum993_zone_rect", zone)
+	resource.set_meta("gold_shell_inner_rect", metrics["inner_rect"])
+
+
+func _active_gold_shell_content_rect() -> Rect2:
+	if game.ui_layer == null or not is_instance_valid(game.ui_layer):
+		return Rect2()
+	for child in game.ui_layer.get_children():
+		if child is Control and child.has_meta("gold_shell_content_rect"):
+			return child.get_meta("gold_shell_content_rect", Rect2()) as Rect2
+	return Rect2()
+
+
+func _active_gold_shell_screen_id() -> String:
+	if game.ui_layer == null or not is_instance_valid(game.ui_layer):
+		return ""
+	for child in game.ui_layer.get_children():
+		if child is Control and child.has_meta("gold_shell_screen_id"):
+			return str(child.get_meta("gold_shell_screen_id", ""))
+	return ""
+
+
+func _active_gold_shell_inner_rect() -> Rect2:
+	if game.ui_layer == null or not is_instance_valid(game.ui_layer):
+		return Rect2()
+	for child in game.ui_layer.get_children():
+		if child is Control and child.has_meta("gold_shell_inner_rect"):
+			return child.get_meta("gold_shell_inner_rect", Rect2()) as Rect2
+	for child in game.ui_layer.find_children("*", "Control", true, false):
+		if child is Control and child.has_meta("gold_shell_inner_rect"):
+			return child.get_meta("gold_shell_inner_rect", Rect2()) as Rect2
+	return Rect2()
+
+
+func _create_resource_hud_panel(parent: Control, position: Vector2) -> void:
+	# SCRUM-806 боевой HUD v2 (слим-бары с пиксель-иконками); с SCRUM-876 —
+	# единственный вид ресурс-панели: и бой, и все меню-экраны забега.
 	game._last_hud_snapshot.clear()
 	var panel := PanelContainer.new()
 	panel.name = "RunResourceHud"
 	panel.position = position
-	panel.custom_minimum_size = HUD_V2_CLUSTER_2K.size if combat_layout else Vector2(690, 72)
-	panel.add_theme_stylebox_override("panel", _hud_v2_cluster_style(HUD_V2_CLUSTER_2K.size) if combat_layout else _hud_panel_style())
+	panel.custom_minimum_size = HUD_V2_CLUSTER_2K.size
+	panel.add_theme_stylebox_override("panel", _hud_v2_cluster_style(HUD_V2_CLUSTER_2K.size))
 	parent.add_child(panel)
 
-	if combat_layout:
-		# SCRUM-806: боевой HUD v2 — слим-бары с пиксель-иконками вместо карточек.
-		var content := Control.new()
-		content.name = "RunResourceHudContent"
-		content.set_anchors_preset(Control.PRESET_FULL_RECT)
-		content.mouse_filter = Control.MOUSE_FILTER_IGNORE
-		panel.add_child(content)
-		_build_hud_v2_cluster(content)
-		return
-
-	var row := HBoxContainer.new()
-	row.name = "RunResourceHudContent"
-	row.add_theme_constant_override("separation", 6)
-	panel.add_child(row)
-	game.health_bar = _add_hud_resource_card(row, "hp", "HP", Color(0.92, 0.08, 0.08, 1.0))
-	game.xp_bar = _add_hud_resource_card(row, "xp", "XP", Color(0.25, 0.78, 1.0, 1.0))
-	_add_hud_money_card(row)
-	game.ultimate_bar = _add_hud_resource_card(row, "ultimate_multiplier", "ULT", Color(0.95, 0.68, 1.0, 1.0))
+	var content := Control.new()
+	content.name = "RunResourceHudContent"
+	content.set_anchors_preset(Control.PRESET_FULL_RECT)
+	content.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	panel.add_child(content)
+	_build_hud_v2_cluster(content)
 
 
 func _build_hud_v2_cluster(content: Control) -> void:
@@ -11591,7 +16669,7 @@ func _build_hud_v2_cluster(content: Control) -> void:
 	game.money_label.name = "HudMoneyLabel"
 	game.money_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_LEFT
 	game.money_label.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
-	game.money_label.add_theme_font_size_override("font_size", _readable_font_size(18))
+	game.money_label.add_theme_font_size_override("font_size", _readable_font_size(SemanticTypography.ROLE_HUD, 18))
 	game.money_label.add_theme_color_override("font_color", Color(1.0, 0.86, 0.34, 1.0))
 	game.money_label.add_theme_color_override("font_outline_color", Color(0.08, 0.06, 0.03, 1.0))
 	game.money_label.add_theme_constant_override("outline_size", 3)
@@ -11641,7 +16719,7 @@ func _add_hud_v2_bar(parent: Control, icon_id: String, tag: String, fill_fallbac
 	label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	label.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
 	label.clip_text = true
-	label.add_theme_font_size_override("font_size", _readable_font_size(13))
+	label.add_theme_font_size_override("font_size", _readable_font_size(SemanticTypography.ROLE_HUD, 13))
 	label.add_theme_color_override("font_color", Color(0.98, 0.96, 0.86, 1.0))
 	label.add_theme_color_override("font_outline_color", Color(0.06, 0.05, 0.03, 1.0))
 	label.add_theme_constant_override("outline_size", 3)
@@ -11710,7 +16788,7 @@ func _make_character_stat_chip(entry: Dictionary) -> Control:
 	value.clip_text = true
 	value.horizontal_alignment = HORIZONTAL_ALIGNMENT_LEFT
 	value.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
-	value.add_theme_font_size_override("font_size", _readable_font_size(15))
+	value.add_theme_font_size_override("font_size", _readable_font_size(SemanticTypography.ROLE_VALUE, 15))
 	value.add_theme_color_override("font_color", _hud_stat_value_color(entry))
 	line.add_child(value)
 	return chip
@@ -11726,81 +16804,6 @@ func _hud_stat_value_color(entry: Dictionary) -> Color:
 		return Color(0.91, 0.86, 0.65, 1.0)
 	var value := float(raw_value)
 	return Color(0.44, 0.95, 0.65, 1.0) if value >= 8.0 else Color(0.91, 0.86, 0.65, 1.0)
-
-
-func _add_hud_resource_card(parent: Control, icon_id: String, label_text: String, fill_color: Color) -> ProgressBar:
-	var card := PanelContainer.new()
-	card.name = "Hud%sCard" % label_text
-	card.custom_minimum_size = Vector2(132, 48)
-	card.add_theme_stylebox_override("panel", _hud_card_style(icon_id))
-	parent.add_child(card)
-
-	var line := HBoxContainer.new()
-	line.add_theme_constant_override("separation", 4)
-	card.add_child(line)
-	line.add_child(game.UIIconRegistry.make_icon(icon_id, Vector2(24, 24)))
-
-	var value_box := VBoxContainer.new()
-	value_box.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-	value_box.add_theme_constant_override("separation", 3)
-	line.add_child(value_box)
-
-	var value_label := Label.new()
-	value_label.name = "Hud%sLabel" % label_text
-	value_label.add_theme_font_size_override("font_size", _readable_font_size(14))
-	value_label.add_theme_color_override("font_color", Color(0.98, 0.96, 0.86, 1.0))
-	value_box.add_child(value_label)
-	if icon_id == "hp":
-		game.health_label = value_label
-	elif icon_id == "xp":
-		game.xp_label = value_label
-	elif icon_id == "ultimate_multiplier":
-		game.ultimate_label = value_label
-
-	var bar := ProgressBar.new()
-	bar.name = "Hud%sBar" % label_text
-	bar.custom_minimum_size = Vector2(58, 8)
-	bar.show_percentage = false
-	bar.add_theme_stylebox_override("background", _bar_style(Color(0.06, 0.07, 0.09, 0.94)))
-	bar.add_theme_stylebox_override("fill", _hud_bar_fill_style(icon_id, fill_color))
-	value_box.add_child(bar)
-	return bar
-
-
-func _add_hud_money_card(parent: Control) -> void:
-	var card := PanelContainer.new()
-	card.name = "HudMoneyCard"
-	card.custom_minimum_size = Vector2(104, 48)
-	card.add_theme_stylebox_override("panel", _hud_card_style("money"))
-	parent.add_child(card)
-
-	var line := HBoxContainer.new()
-	line.add_theme_constant_override("separation", 4)
-	card.add_child(line)
-	var money_icon := TextureRect.new()
-	money_icon.name = "UIIcon_money"
-	money_icon.custom_minimum_size = Vector2(24, 24)
-	money_icon.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
-	money_icon.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
-	money_icon.texture = game._cached_texture(COMBAT_HUD_GOLD_MEDALLION_PATH)
-	money_icon.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	line.add_child(money_icon)
-
-	game.money_label = Label.new()
-	game.money_label.name = "HudMoneyLabel"
-	game.money_label.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
-	game.money_label.add_theme_font_size_override("font_size", _readable_font_size(18))
-	game.money_label.add_theme_color_override("font_color", Color(1.0, 0.86, 0.34, 1.0))
-	line.add_child(game.money_label)
-
-
-func _hud_panel_style(display_size := Vector2(820.0, 84.0), zero_content := false) -> StyleBox:
-	# SCRUM-564: per-слот @2K-рамка ресурс-панели (SCRUM666_CHUD_RESOURCE_PANEL_2K=820×84) — узкие
-	# верт. бордюры (hud_resource), плоский центр под HP/XP/Gold/ULT-карточки, орнамент не мылится.
-	var style := _overhaul_2k_frame_style("chud_resource_panel", display_size)
-	if zero_content:
-		_apply_stylebox_content_margins(style, Vector4.ZERO)
-	return style
 
 
 func _hud_v2_cluster_style(display_size := Vector2(640.0, 122.0)) -> StyleBox:
@@ -11838,13 +16841,6 @@ func _hud_card_style(icon_id := "hp", display_size := Vector2.ZERO) -> StyleBox:
 	var texture_margins := _scaled_frame_margins_xy(Vector2(616.0, 286.0), resolved_size, COMBAT_HUD_CARD_MARGINS)
 	var content_margins := _scaled_frame_margins_xy(Vector2(616.0, 286.0), resolved_size, COMBAT_HUD_CARD_CONTENT)
 	return _global_texture_style(path, texture_margins, Color.WHITE, content_margins, true)
-
-
-func _hud_bar_fill_style(icon_id: String, fallback_color: Color) -> StyleBox:
-	var path := str(COMBAT_HUD_BAR_FILL_PATHS.get(icon_id, ""))
-	if path != "" and ResourceLoader.exists(path):
-		return _global_texture_style(path, Vector4(4, 4, 4, 4), Color.WHITE, Vector4.ZERO)
-	return _bar_style(fallback_color)
 
 
 func _run_resource_values() -> Dictionary:
@@ -11900,6 +16896,10 @@ func _int_value(value, fallback: int = 0) -> int:
 func _update_hud() -> void:
 	if game.health_bar == null or game.health_label == null:
 		return
+
+	# SCRUM-874: боссбар обновляется ДО дедуп-гарда _last_hud_snapshot ниже —
+	# HP цели меняется независимо от ресурсов игрока.
+	_update_boss_hud_bar()
 
 	var values: Dictionary = _run_resource_values()
 	var max_hp: float = max(float(values["max_hp"]), 1.0)

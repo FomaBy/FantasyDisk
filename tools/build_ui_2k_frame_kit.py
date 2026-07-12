@@ -53,7 +53,7 @@ FILL_BOT = (24, 22, 19)
 FILL_ALPHA = 214
 
 # Шаблонная высота для слотов с динамической высотой (h=0 в .gd — h по контенту).
-DYNAMIC_TEMPLATE_HEIGHT = {"st_panel": 220}
+DYNAMIC_TEMPLATE_HEIGHT = {}
 
 # --- слотовая спека: slug → источник координат + тип рамки --------------------
 # kind: тип рамки (для frame-маргинов) или "button" (button-маргины).
@@ -61,75 +61,41 @@ DYNAMIC_TEMPLATE_HEIGHT = {"st_panel": 220}
 # expect_w/h: ожидаемый размер слота (сверяется с .gd; h=None → динамическая высота).
 SLOTS = [
     # панели/модалки/тултипы (frame-маргины)
-    {"slug": "qc_panel", "file": "ui_screens", "const": "QC_PANEL_2K", "kind": "frame", "margin_key": "panel", "w": 600, "h": 340},
     {"slug": "cr_panel", "file": "ui_screens", "const": "CR_PANEL_2K", "kind": "frame", "margin_key": "panel", "w": 680, "h": 380},
     {"slug": "rc_panel", "file": "ui_screens", "const": "RC_PANEL_2K", "kind": "frame", "margin_key": "panel", "w": 680, "h": 380},
-    {"slug": "pm_panel", "file": "ui_screens", "const": "PM_PANEL_2K", "kind": "frame", "margin_key": "panel", "w": 898, "h": 820},
-    {"slug": "fb_panel", "file": "ui_screens", "const": "FB_PANEL_2K", "kind": "frame", "margin_key": "panel", "w": 940, "h": 780},
+    {"slug": "fb_panel", "file": "ui_screens", "const": None, "kind": "frame", "margin_key": "panel", "w": 940, "h": 780},
     {"slug": "pd_panel", "file": "pause_stats", "const": "PD_PANEL_2K", "kind": "frame", "margin_key": "modal", "w": 2520, "h": 1404},
-    {"slug": "gt_panel", "file": "ui_screens", "const": "GT_PANEL_2K", "kind": "frame", "margin_key": "tooltip", "w": 460, "h": 140},
-    {"slug": "st_panel", "file": "pause_stats", "const": "ST_PANEL_2K", "kind": "frame", "margin_key": "tooltip", "w": 430, "h": None},
     # SCRUM-565 (Событие): панель события (economy-panel слот) + карточка выбора.
     # Hover переиспользует evt_card с нейтральным рантайм-тинтом (как economy-карты
     # переиспользуют base card-арт под hover) — отдельный идентичный PNG не нужен.
-    {"slug": "evt_panel", "file": "ui_screens", "const": "EVT_PANEL_2K", "kind": "frame", "margin_key": "panel", "w": 1720, "h": 780},
-    {"slug": "evt_card", "file": "ui_screens", "const": "EVT_CARD_2K", "kind": "frame", "margin_key": "card", "w": 480, "h": 340},
     # SCRUM-683: Level-Up moved to the dedicated SCRUM-682 frame family under
     # assets/sprites/ui/frames/level_up_scrum682/. This overhaul_2k generator no
     # longer owns level_up_panel/card; runtime and tests verify those paths
     # directly.
     # SCRUM-573 (Улучшение): per-слот @2K-рамка панели улучшения (economy-panel "upgrade").
     # Карточки выбора переиспользуют общий economy-choice-арт (как остальные economy-экраны).
-    {"slug": "upgrade_panel", "file": "ui_screens", "const": "UPGRADE_PANEL_2K", "kind": "frame", "margin_key": "panel", "w": 1720, "h": 730},
     # SCRUM-562 (Выбор оружия): Weapon Select gets a larger dedicated panel and card/button frames.
     # Start-boon still uses the generic weapon_select economy panel; do not route-map these slots into SCRUM-563.
-    {"slug": "ws_panel", "file": "ui_screens", "const": "WS_PANEL_2K", "kind": "frame", "margin_key": "panel", "w": 1720, "h": 1060},
-    {"slug": "ws_card", "file": "ui_screens", "const": "WS_CARD_2K", "kind": "frame", "margin_key": "card", "w": 1564, "h": 190},
-    {"slug": "ws_btn_back", "file": "ui_screens", "const": "WS_BTN_BACK_2K", "kind": "button", "margin_key": "pause", "w": 280, "h": 60},
     # SCRUM-578 (Смерть): per-слот @2K-рамка end-модалки результата (RESULT_PANEL_2K 898×820,
     # pause-end-модалка). Геометрия общая с победой; здесь редизайнится только путь смерти.
-    {"slug": "result_panel", "file": "ui_screens", "const": "RESULT_PANEL_2K", "kind": "frame", "margin_key": "modal", "w": 898, "h": 820},
     # SCRUM-581 (Подтверждение выхода): свежий @2K-фрейм модалки с modal-профилем (более
     # ornate бордюр, befitting confirm-диалога) поверх QC_PANEL_2K 600×340. SCRUM-486
     # держал qc_panel на panel-профиле (общий с меню/нав) — qc_modal даёт диалогу свою рамку.
-    {"slug": "qc_modal", "file": "ui_screens", "const": "QC_PANEL_2K", "kind": "frame", "margin_key": "modal", "w": 600, "h": 340},
     # боевой HUD-блок (SCRUM-564, эпик SCRUM-481): per-слот @2K-рамки из CHUD_*_2K.
     # Тонкие горизонтальные стрипы → margin-профили hud_resource/hud_timer/hud_artifact.
-    {"slug": "chud_resource_panel", "file": "ui_screens", "const": "CHUD_RESOURCE_PANEL_2K", "kind": "frame", "margin_key": "hud_resource", "w": 820, "h": 84},
-    {"slug": "chud_timer", "file": "ui_screens", "const": "CHUD_TIMER_2K", "kind": "frame", "margin_key": "hud_timer", "w": 288, "h": 96},
-    {"slug": "chud_artifact_row", "file": "ui_screens", "const": "CHUD_ARTIFACT_ROW_2K", "kind": "frame", "margin_key": "hud_artifact", "w": 402, "h": 104},
+    {"slug": "chud_resource_panel", "file": "ui_screens", "const": None, "kind": "frame", "margin_key": "hud_resource", "w": 820, "h": 84},
+    {"slug": "chud_timer", "file": "ui_screens", "const": None, "kind": "frame", "margin_key": "hud_timer", "w": 288, "h": 96},
+    {"slug": "chud_artifact_row", "file": "ui_screens", "const": None, "kind": "frame", "margin_key": "hud_artifact", "w": 402, "h": 104},
     # SCRUM-589: combat title banner, with narrow frame margins so runtime text stays in the safe zone.
     {"slug": "ctb_big", "file": "ui_screens", "const": "CTB_BIG_2K", "kind": "frame", "margin_key": "combat_title_big", "w": 2360, "h": 90},
     {"slug": "ctb_small", "file": "ui_screens", "const": "CTB_SMALL_2K", "kind": "frame", "margin_key": "combat_title_small", "w": 2360, "h": 56},
-    {"slug": "vbn_frame", "file": "ui_screens", "const": "VBN_FRAME_2K", "kind": "frame", "margin_key": "victory_banner", "w": 1440, "h": 240},
-    {"slug": "hs4_portrait_panel", "file": "ui_screens", "const": "HS4_PORTRAIT_FRAME_2K", "kind": "frame", "margin_key": "panel", "w": 661, "h": 959},
-    {"slug": "hs4_dossier_panel", "file": "ui_screens", "const": "HS4_DOSSIER_2K", "kind": "frame", "margin_key": "panel", "w": 1091, "h": 959},
-    {"slug": "hs4_radar_panel", "file": "ui_screens", "const": "HS4_RADAR_2K", "kind": "frame", "margin_key": "panel", "w": 624, "h": 959},
-    {"slug": "hs4_carousel_panel", "file": "ui_screens", "const": "HS4_CAROUSEL_2K", "kind": "frame", "margin_key": "hud_strip", "w": 2448, "h": 245},
     # SCRUM-568 (Докача/атрибут-шоп): высокая панель full-height. Карточки опций
     # (ATTR_OFFER_2K 480×340) переиспользуют evt_card-рамку (тот же размер/тип card).
-    {"slug": "attr_panel", "file": "ui_screens", "const": "ATTR_PANEL_2K", "kind": "frame", "margin_key": "panel", "w": 1124, "h": 1384},
     # SCRUM-576 (Что нового/патч-ноуты): полноэкранная панель-фрейм (как skill-tree main).
-    {"slug": "pn_panel", "file": "ui_screens", "const": "PN_PANEL_2K", "kind": "frame", "margin_key": "panel", "w": 2464, "h": 1388},
     # SCRUM-574: Codex gets its own @2K frame kit instead of sharing generic minimal-metal frames.
-    {"slug": "codex_main", "file": "ui_screens", "const": "CODEX_OUTER_FRAME_2K", "kind": "frame", "margin_key": "modal", "w": 2496, "h": 1387},
-    {"slug": "codex_nav", "file": "ui_screens", "const": "CODEX_NAV_PANEL_2K", "kind": "frame", "margin_key": "panel", "w": 405, "h": 1163},
-    {"slug": "codex_list", "file": "ui_screens", "const": "CODEX_LIST_PANEL_2K", "kind": "frame", "margin_key": "panel", "w": 1113, "h": 1163},
-    {"slug": "codex_detail", "file": "ui_screens", "const": "CODEX_DETAIL_PANEL_2K", "kind": "frame", "margin_key": "panel", "w": 808, "h": 1163},
-    {"slug": "codex_entry_card", "file": "ui_screens", "const": "CODEX_ENTRY_CARD_2K", "kind": "frame", "margin_key": "card", "w": 963, "h": 147},
     # кнопки (button-маргины)
-    {"slug": "codex_tab_btn", "file": "ui_screens", "const": "CODEX_TAB_BUTTON_2K", "kind": "button", "margin_key": "codex_tab", "w": 333, "h": 115},
-    {"slug": "codex_back_btn", "file": "ui_screens", "const": "CODEX_BACK_BUTTON_2K", "kind": "button", "margin_key": "utility", "w": 168, "h": 128},
-    {"slug": "hs4_choose_btn", "file": "ui_screens", "const": "HS4_CHOOSE_BTN_2K", "kind": "button", "margin_key": "hero_confirm", "w": 512, "h": 89},
-    {"slug": "hs4_asc_btn", "file": "ui_screens", "const": "HS4_ASC_BTN_2K", "kind": "button", "margin_key": "utility", "w": 102, "h": 72},
-    {"slug": "mm_btn", "file": "ui_screens", "const": "MM_BTN_START_2K", "kind": "button", "margin_key": "main_menu", "w": 380, "h": 104},
-    {"slug": "qc_btn", "file": "ui_screens", "const": "QC_BTN_EXIT_2K", "kind": "button", "margin_key": "standard", "w": 220, "h": 72},
     {"slug": "cr_btn", "file": "ui_screens", "const": "CR_BTN_CONTINUE_2K", "kind": "button", "margin_key": "standard", "w": 240, "h": 72},
     {"slug": "rc_btn", "file": "ui_screens", "const": "RC_BTN_RETRY_2K", "kind": "button", "margin_key": "standard", "w": 240, "h": 72},
-    {"slug": "pm_btn", "file": "ui_screens", "const": "PM_BTN_CONTINUE_2K", "kind": "button", "margin_key": "pause", "w": 280, "h": 60},
-    {"slug": "fb_btn_send", "file": "ui_screens", "const": "FB_BTN_SEND_2K", "kind": "button", "margin_key": "standard", "w": 260, "h": 64},
-    {"slug": "fb_btn_cancel", "file": "ui_screens", "const": "FB_BTN_CANCEL_2K", "kind": "button", "margin_key": "standard", "w": 220, "h": 64},
-    {"slug": "pd_btn", "file": "pause_stats", "const": "PD_BTN_2K", "kind": "button", "margin_key": "pause", "w": 280, "h": 60},
 ]
 
 GD_FILE = {"ui_screens": UI_SCREENS, "pause_stats": PAUSE_STATS}

@@ -1,5 +1,8 @@
 extends RefCounted
 
+const SCHEMA6_DATA := preload("res://scripts/constellation_schema6_data.gd")
+const DESCRIPTION_FORMATTER := preload("res://scripts/constellation_description_formatter.gd")
+
 # SCRUM-828 — Мета 4.0 «Созвездия героев» (дизайн: docs/design/systems/
 # meta_constellations.md). Этот модуль хранит ДАННЫЕ и сборщик графа меты:
 #   • 17 персональных созвездий классов (по 22 узла: ядро-эмблема 0-cost,
@@ -86,7 +89,7 @@ const POWER_WEIGHTS := {
 	"reactor_heat_damage_bonus": 0.37, "reactor_heat_incoming_damage": -0.45,
 	"magnet_radius_mult": 0.33,
 	"device_attack_speed_bonus": 0.45, "non_device_damage_mult": 0.35,
-	"mine_extra_count": 0.06, "repair_radius_mult": 0.25,
+	"mine_extra_count": 0.06,
 	"dot_death_spread_duration": 0.055, "direct_damage_mult": 0.45,
 	"beam_duration_mult": 0.30, "explosion_radius_mult": 0.25,
 	"guitar_aura_radius_mult": 0.80, "riff_streak_damage_bonus": 0.58,
@@ -106,6 +109,28 @@ const POWER_WEIGHTS := {
 	"xp_gain_mult": 0.0, "money_gain_mult": 0.0, "shop_price_mult": 0.0,
 	"attr_cost_mult": 0.0, "start_gold_flat": 0.0, "attr_extra_options": 0.0,
 	"guaranteed_rare_shop": 0.0, "first_levelup_rare": 0.0,
+	"death_save_health_fraction": 0.08,
+}
+
+# SCRUM-1069: source-aware weights for the account-wide Guild Atlas. The
+# generic POWER_WEIGHTS above remain the constellation budget source of truth;
+# these weights value large QoL floors without making pickup range look like a
+# damage stat. Full Atlas is a strict upper bound for every legal 50-dust build.
+const GUILD_ATLAS_POWER_WEIGHTS := {
+	"pickup_radius_flat": 0.0014,
+	"healing_mult": 0.15,
+	"death_save": 0.035,
+	# Recovery fraction is already included in the death_save mechanic weight.
+	"death_save_health_fraction": 0.0,
+	"ult_start_charge": 0.025,
+	"xp_gain_mult": 0.0,
+	"money_gain_mult": 0.0,
+	"shop_price_mult": 0.0,
+	"attr_cost_mult": 0.0,
+	"start_gold_flat": 0.0,
+	"attr_extra_options": 0.0,
+	"guaranteed_rare_shop": 0.0,
+	"first_levelup_rare": 0.0,
 }
 
 # --- RU-подписи для авто-описаний с числами (узлы обязаны читаться без токенов) ---
@@ -161,12 +186,11 @@ const EFFECT_LABELS := {
 	"device_attack_speed_bonus": {"ru": "к темпу устройств", "pct": true},
 	"non_device_damage_mult": {"ru": "к личному урону вне устройств", "pct": true},
 	"mine_extra_count": {"ru": "дополнительных мин", "pct": false},
-	"repair_radius_mult": {"ru": "к радиусу ремонтной сети", "pct": true},
 	"dot_death_spread_duration": {"ru": "сек. продления DoT вокруг погибшей проклятой цели", "pct": false},
 	"direct_damage_mult": {"ru": "к прямому урону", "pct": true},
 	"beam_duration_mult": {"ru": "к длительности лучей", "pct": true},
 	"explosion_radius_mult": {"ru": "к радиусу взрывов луча", "pct": true},
-	"guitar_aura_radius_mult": {"ru": "к ширине звуковых аур", "pct": true},
+	"guitar_aura_radius_mult": {"ru": "к ширине магических аур Гитариста", "pct": true},  # SCRUM-899: магическая идентичность
 	"riff_streak_damage_bonus": {"ru": "к урону при непрерывной рифф-серии", "pct": true},
 	"crit_execute_threshold": {"ru": "порог добивания критом не-элитных целей", "pct": true},
 	"shadow_burst_invisibility_time": {"ru": "сек. невидимости после теневого всплеска", "pct": false},
@@ -197,6 +221,8 @@ const EFFECT_LABELS := {
 	"vampiric_amount_flat": {"ru": "к лечению вампиризмом", "pct": false},
 	"lowhp_regen_bonus": {"ru": "к регенерации при низком здоровье", "pct": false},
 	"start_gold_flat": {"ru": "золота на старте забега", "pct": false},
+	"death_save_health_fraction": {"ru": "макс. здоровья восстанавливает «Вторая жизнь»", "pct": true},
+	"ult_start_charge": {"ru": "заряда ультимейта на старте забега", "pct": true},
 	"strength_flat": {"ru": "к Силе", "pct": false},
 	"agility_flat": {"ru": "к Ловкости", "pct": false},
 	"intelligence_flat": {"ru": "к Интеллекту", "pct": false},
@@ -210,9 +236,9 @@ const EFFECT_LABELS := {
 # Флаговые ключи описываются готовой фразой (не «+1 …»), мержатся через max().
 const FLAG_DESC := {
 	"death_save": "Раз за забег смертельный удар оставляет героя на ногах.",
-	"guaranteed_rare_shop": "В каждой лавке гарантированно есть редкий товар.",
+	# SCRUM-963: канон редкости — гарантия капстоуна фактически tier 3 = «эпический».
+	"guaranteed_rare_shop": "В каждой лавке гарантированно есть эпический товар.",
 	"first_levelup_rare": "Первое повышение в забеге гарантированно даёт основную характеристику.",
-	"ult_start_charge": "Ультимейт начинает забег заряженным наполовину.",
 	"lowhp_guard": "Падение ниже 30% HP раз за порог поднимает щит-волну и даёт миг неуязвимости.",
 	"attr_extra_options": "Докачка атрибутов предлагает на 1 вариант больше.",
 }
@@ -403,7 +429,7 @@ const CONSTELLATION_SPECS := {
 		],
 		"keystones": [
 			{"title": "Автоматизация", "effects": {"device_attack_speed_bonus": 0.25, "non_device_damage_mult": -0.15}},
-			{"title": "Минёр", "effects": {"mine_extra_count": 2.0, "repair_radius_mult": -0.30}},
+			{"title": "Минёр", "effects": {"mine_extra_count": 2.0, "device_attack_speed_bonus": -0.12}},
 			{"title": "Перегретые стволы", "effects": {"projectile_speed_flat": 33.0, "attack_speed_mult": 0.05, "defense_flat": -0.022}},
 		],
 		"hidden": [
@@ -489,12 +515,15 @@ const CONSTELLATION_SPECS := {
 	},
 	"doctor": {
 		"core_title": "Клятва полевого врача",
-		"attrs": ["regeneration", "vampiric_amount", "vampiric_chance", "max_health", "buff_power", "attack_speed"],
+		# SCRUM-1064: Plague Oath blocks every generic regen/vampirism modifier.
+		# Keep the constellation on live weapon/utility axes so no purchased star
+		# is silently discarded by Player.apply_meta_skill_modifiers().
+		"attrs": ["dot_damage", "dot_speed", "max_health", "buff_power", "attack_speed", "ultimate_power"],
 		"techniques": [
-			{"title": "Срочная перевязка", "effects": {"regeneration_flat": 0.023, "max_health_mult": 0.008}},
-			{"title": "Переливание", "effects": {"vampiric_amount_flat": 0.1, "vampiric_chance_flat": 0.006}},
+			{"title": "Чумная смесь", "effects": {"dot_damage_flat": 0.21, "dot_speed_flat": 0.013}},
+			{"title": "Полевой резерв", "effects": {"max_health_mult": 0.008, "buff_power_flat": 0.006}},
 			{"title": "Стимулятор", "effects": {"attack_speed_mult": 0.008, "buff_power_flat": 0.006}},
-			{"title": "Реанимация", "effects": {"lowhp_regen_bonus": 0.16, "regeneration_flat": 0.023}},
+			{"title": "Реанимация", "effects": {"ultimate_flat": 0.011, "max_health_mult": 0.008}},
 		],
 		"keystones": [
 			{"title": "Вампирический контур", "effects": {"drain_extra_targets": 1.0, "medkit_healing_mult": -0.40}},
@@ -503,7 +532,7 @@ const CONSTELLATION_SPECS := {
 		],
 		"hidden": [
 			{"title": "Протокол спасения", "effects": {"lowhp_guard": 1.0}, "lore": "Врач, освоивший весь инструментарий, не даст умереть и себе.", "metric": "class_wins", "threshold": 8},
-			{"title": "Горный госпиталь", "effects": {"lowhp_regen_bonus": 0.4}, "lore": "Чем выше поднимаешься, тем ценнее каждый вдох.", "metric": "no_shop_wins", "threshold": 2},
+			{"title": "Горный госпиталь", "effects": {"ult_start_charge": 0.5}, "lore": "Чем выше поднимаешься, тем важнее заранее подготовить переливание.", "metric": "no_shop_wins", "threshold": 2},
 		],
 	},
 	"chemist": {
@@ -589,7 +618,7 @@ const CONSTELLATION_LAYOUT := {
 # 25 узлов: хаб 0-cost + 14 минорных (13×cost 2 + 1×cost 1 — ранний крючок §4) +
 # 4 notable (cost 3) + 4 наследных keystone v2 (cost 5: death_save/
 # guaranteed_rare_shop/first_levelup_rare/ult_start_charge — их боевой вклад
-# заперт тестом аккаунт-множителя <1.30) + 2 скрытых узла (кодекс-вехи и
+# заперт усиленным тестом аккаунт-множителя <1.35 и class-power ≤18%) + 2 скрытых узла (кодекс-вехи и
 # секретный босс «зажигают» их без покупки). Полная стоимость 59 пыли при
 # потолке заработка 50 — «всё не купить». SCRUM-828: узел atlas_m0 стоит 1 пыль,
 # чтобы ПЕРВАЯ победа (1 пыль, §4) сразу открывала первый QoL-узел Атласа.
@@ -597,33 +626,33 @@ const ATLAS_NODES := [
 	{"id": "atlas_hub", "role": "core", "cost": 0, "title": "Зал гильдии", "desc": "Сердце Атласа гильдии. Открыт всем героям.", "effects": {}, "npos": Vector2(0.5, 0.5), "adj": ["atlas_m0", "atlas_m2", "atlas_m4", "atlas_m6", "atlas_m8", "atlas_m10", "atlas_m11", "atlas_m13"]},
 	# Ветвь «Казна» (северо-запад): золото и стартовый капитал.
 	# atlas_m0 — «ранний крючок» §4: cost 1, покупается сразу после первой победы.
-	{"id": "atlas_m0", "role": "minor", "cost": 1, "title": "Договор с торговцами", "effects": {"money_gain_mult": 0.02}, "npos": Vector2(0.38, 0.38), "adj": ["atlas_hub", "atlas_m1"]},
-	{"id": "atlas_m1", "role": "minor", "cost": 2, "title": "Караванные связи", "effects": {"money_gain_mult": 0.02}, "npos": Vector2(0.28, 0.28), "adj": ["atlas_m0", "atlas_n0"]},
-	{"id": "atlas_m2", "role": "minor", "cost": 2, "title": "Подъёмные новичка", "effects": {"start_gold_flat": 10.0}, "npos": Vector2(0.46, 0.30), "adj": ["atlas_hub", "atlas_m3"]},
-	{"id": "atlas_m3", "role": "minor", "cost": 2, "title": "Гильдейский аванс", "effects": {"start_gold_flat": 10.0}, "npos": Vector2(0.40, 0.19), "adj": ["atlas_m2", "atlas_n0"]},
-	{"id": "atlas_n0", "role": "notable", "cost": 3, "title": "Золотая жила", "effects": {"money_gain_mult": 0.03, "start_gold_flat": 5.0}, "npos": Vector2(0.26, 0.14), "adj": ["atlas_m1", "atlas_m3", "atlas_k0"]},
-	{"id": "atlas_k0", "role": "keystone", "cost": 5, "title": "Связи в гильдии", "effects": {"guaranteed_rare_shop": 1.0, "start_gold_flat": 15.0}, "npos": Vector2(0.12, 0.08), "adj": ["atlas_n0"]},
+	{"id": "atlas_m0", "role": "minor", "cost": 1, "title": "Договор с торговцами", "effects": {"money_gain_mult": 0.05}, "npos": Vector2(0.38, 0.38), "adj": ["atlas_hub", "atlas_m1"]},
+	{"id": "atlas_m1", "role": "minor", "cost": 2, "title": "Караванные связи", "effects": {"money_gain_mult": 0.05}, "npos": Vector2(0.28, 0.28), "adj": ["atlas_m0", "atlas_n0"]},
+	{"id": "atlas_m2", "role": "minor", "cost": 2, "title": "Подъёмные новичка", "effects": {"start_gold_flat": 25.0}, "npos": Vector2(0.46, 0.30), "adj": ["atlas_hub", "atlas_m3"]},
+	{"id": "atlas_m3", "role": "minor", "cost": 2, "title": "Гильдейский аванс", "effects": {"start_gold_flat": 25.0}, "npos": Vector2(0.40, 0.19), "adj": ["atlas_m2", "atlas_n0"]},
+	{"id": "atlas_n0", "role": "notable", "cost": 3, "title": "Золотая жила", "effects": {"money_gain_mult": 0.10}, "npos": Vector2(0.26, 0.14), "adj": ["atlas_m1", "atlas_m3", "atlas_k0"]},
+	{"id": "atlas_k0", "role": "keystone", "cost": 5, "title": "Связи в гильдии", "effects": {"guaranteed_rare_shop": 1.0, "start_gold_flat": 50.0}, "npos": Vector2(0.12, 0.08), "adj": ["atlas_n0"]},
 	# Ветвь «Лавка» (северо-восток): скидки лавки и докачки.
-	{"id": "atlas_m4", "role": "minor", "cost": 2, "title": "Скидка по знакомству", "effects": {"shop_price_mult": -0.02}, "npos": Vector2(0.62, 0.38), "adj": ["atlas_hub", "atlas_m5"]},
-	{"id": "atlas_m5", "role": "minor", "cost": 2, "title": "Оптовые цены", "effects": {"shop_price_mult": -0.02}, "npos": Vector2(0.72, 0.28), "adj": ["atlas_m4", "atlas_n1"]},
-	{"id": "atlas_m6", "role": "minor", "cost": 2, "title": "Тренировочный зал", "effects": {"attr_cost_mult": -0.02}, "npos": Vector2(0.54, 0.30), "adj": ["atlas_hub", "atlas_m7"]},
-	{"id": "atlas_m7", "role": "minor", "cost": 2, "title": "Наставники гильдии", "effects": {"attr_cost_mult": -0.02}, "npos": Vector2(0.60, 0.19), "adj": ["atlas_m6", "atlas_n1"]},
-	{"id": "atlas_n1", "role": "notable", "cost": 3, "title": "Штатный интендант", "effects": {"shop_price_mult": -0.02, "attr_cost_mult": -0.02}, "npos": Vector2(0.74, 0.14), "adj": ["atlas_m5", "atlas_m7", "atlas_k1"]},
+	{"id": "atlas_m4", "role": "minor", "cost": 2, "title": "Скидка по знакомству", "effects": {"shop_price_mult": -0.05}, "npos": Vector2(0.62, 0.38), "adj": ["atlas_hub", "atlas_m5"]},
+	{"id": "atlas_m5", "role": "minor", "cost": 2, "title": "Оптовые цены", "effects": {"shop_price_mult": -0.05}, "npos": Vector2(0.72, 0.28), "adj": ["atlas_m4", "atlas_n1"]},
+	{"id": "atlas_m6", "role": "minor", "cost": 2, "title": "Тренировочный зал", "effects": {"attr_cost_mult": -0.05}, "npos": Vector2(0.54, 0.30), "adj": ["atlas_hub", "atlas_m7"]},
+	{"id": "atlas_m7", "role": "minor", "cost": 2, "title": "Наставники гильдии", "effects": {"attr_cost_mult": -0.05}, "npos": Vector2(0.60, 0.19), "adj": ["atlas_m6", "atlas_n1"]},
+	{"id": "atlas_n1", "role": "notable", "cost": 3, "title": "Штатный интендант", "effects": {"shop_price_mult": -0.10, "attr_cost_mult": -0.10}, "npos": Vector2(0.74, 0.14), "adj": ["atlas_m5", "atlas_m7", "atlas_k1"]},
 	{"id": "atlas_k1", "role": "keystone", "cost": 5, "title": "Озарение", "effects": {"first_levelup_rare": 1.0}, "npos": Vector2(0.88, 0.08), "adj": ["atlas_n1"]},
 	# Ветвь «Знание» (юго-запад): опыт, кругозор, ульта-раж.
-	{"id": "atlas_m8", "role": "minor", "cost": 2, "title": "Хроники походов", "effects": {"xp_gain_mult": 0.02}, "npos": Vector2(0.38, 0.62), "adj": ["atlas_hub", "atlas_m9"]},
-	{"id": "atlas_m9", "role": "minor", "cost": 2, "title": "Разбор полётов", "effects": {"xp_gain_mult": 0.02}, "npos": Vector2(0.28, 0.72), "adj": ["atlas_m8", "atlas_n2", "atlas_h0"]},
-	{"id": "atlas_m10", "role": "minor", "cost": 2, "title": "Полевые заметки", "effects": {"xp_gain_mult": 0.02}, "npos": Vector2(0.46, 0.70), "adj": ["atlas_hub", "atlas_n2"]},
+	{"id": "atlas_m8", "role": "minor", "cost": 2, "title": "Хроники походов", "effects": {"xp_gain_mult": 0.05}, "npos": Vector2(0.38, 0.62), "adj": ["atlas_hub", "atlas_m9"]},
+	{"id": "atlas_m9", "role": "minor", "cost": 2, "title": "Разбор полётов", "effects": {"xp_gain_mult": 0.05}, "npos": Vector2(0.28, 0.72), "adj": ["atlas_m8", "atlas_n2", "atlas_h0"]},
+	{"id": "atlas_m10", "role": "minor", "cost": 2, "title": "Полевые заметки", "effects": {"xp_gain_mult": 0.05}, "npos": Vector2(0.46, 0.70), "adj": ["atlas_hub", "atlas_n2"]},
 	{"id": "atlas_n2", "role": "notable", "cost": 3, "title": "Кругозор", "effects": {"attr_extra_options": 1.0}, "npos": Vector2(0.34, 0.84), "adj": ["atlas_m9", "atlas_m10", "atlas_k2"]},
-	{"id": "atlas_k2", "role": "keystone", "cost": 5, "title": "Боевой раж", "effects": {"ult_start_charge": 0.5}, "npos": Vector2(0.18, 0.92), "adj": ["atlas_n2"]},
-	{"id": "atlas_h0", "role": "hidden", "cost": 0, "title": "Архив гильдии", "effects": {"money_gain_mult": 0.03}, "npos": Vector2(0.16, 0.62), "adj": ["atlas_m9"], "metric": "codex_milestones", "threshold": 4, "lore": "Полки архива пополняются трофеями всех походов гильдии."},
+	{"id": "atlas_k2", "role": "keystone", "cost": 5, "title": "Боевой раж", "effects": {"ult_start_charge": 1.0}, "npos": Vector2(0.18, 0.92), "adj": ["atlas_n2"]},
+	{"id": "atlas_h0", "role": "hidden", "cost": 0, "title": "Архив гильдии", "effects": {"money_gain_mult": 0.10}, "npos": Vector2(0.16, 0.62), "adj": ["atlas_m9"], "metric": "codex_milestones", "threshold": 4, "lore": "Полки архива пополняются трофеями всех походов гильдии."},
 	# Ветвь «Дорога» (юго-восток): подбор, аптека, вторая жизнь.
-	{"id": "atlas_m11", "role": "minor", "cost": 2, "title": "Цепкие руки", "effects": {"pickup_radius_flat": 10.0}, "npos": Vector2(0.62, 0.62), "adj": ["atlas_hub", "atlas_m12"]},
-	{"id": "atlas_m12", "role": "minor", "cost": 2, "title": "Длинный шаг", "effects": {"pickup_radius_flat": 10.0}, "npos": Vector2(0.72, 0.72), "adj": ["atlas_m11", "atlas_n3", "atlas_h1"]},
-	{"id": "atlas_m13", "role": "minor", "cost": 2, "title": "Походная аптека", "effects": {"healing_mult": 0.04}, "npos": Vector2(0.54, 0.70), "adj": ["atlas_hub", "atlas_n3"]},
-	{"id": "atlas_n3", "role": "notable", "cost": 3, "title": "Страховой взнос", "effects": {"pickup_radius_flat": 8.0, "healing_mult": 0.03}, "npos": Vector2(0.66, 0.84), "adj": ["atlas_m12", "atlas_m13", "atlas_k3"]},
-	{"id": "atlas_k3", "role": "keystone", "cost": 5, "title": "Вторая жизнь", "effects": {"death_save": 1.0}, "npos": Vector2(0.82, 0.92), "adj": ["atlas_n3"]},
-	{"id": "atlas_h1", "role": "hidden", "cost": 0, "title": "Трофей разлома", "effects": {"start_gold_flat": 25.0}, "npos": Vector2(0.84, 0.62), "adj": ["atlas_m12"], "metric": "secret_boss", "threshold": 1, "lore": "Осколок сущности секретного босса оплачивает любые долги гильдии."},
+	{"id": "atlas_m11", "role": "minor", "cost": 2, "title": "Цепкие руки", "effects": {"pickup_radius_flat": 30.0}, "npos": Vector2(0.62, 0.62), "adj": ["atlas_hub", "atlas_m12"]},
+	{"id": "atlas_m12", "role": "minor", "cost": 2, "title": "Длинный шаг", "effects": {"pickup_radius_flat": 30.0}, "npos": Vector2(0.72, 0.72), "adj": ["atlas_m11", "atlas_n3", "atlas_h1"]},
+	{"id": "atlas_m13", "role": "minor", "cost": 2, "title": "Походная аптека", "effects": {"healing_mult": 0.08}, "npos": Vector2(0.54, 0.70), "adj": ["atlas_hub", "atlas_n3"]},
+	{"id": "atlas_n3", "role": "notable", "cost": 3, "title": "Страховой взнос", "effects": {"healing_mult": 0.12}, "npos": Vector2(0.66, 0.84), "adj": ["atlas_m12", "atlas_m13", "atlas_k3"]},
+	{"id": "atlas_k3", "role": "keystone", "cost": 5, "title": "Вторая жизнь", "effects": {"death_save": 1.0, "death_save_health_fraction": 0.30}, "npos": Vector2(0.82, 0.92), "adj": ["atlas_n3"]},
+	{"id": "atlas_h1", "role": "hidden", "cost": 0, "title": "Трофей разлома", "effects": {"start_gold_flat": 50.0}, "npos": Vector2(0.84, 0.62), "adj": ["atlas_m12"], "metric": "secret_boss", "threshold": 1, "lore": "Осколок сущности секретного босса оплачивает любые долги гильдии."},
 ]
 
 # --- Геометрия старого экрана (SCRUM-698 canvas): созвездия на кольце, Атлас в центре ---
@@ -753,9 +782,120 @@ static func build_tree(entry_nodes: Dictionary) -> Array:
 	return nodes
 
 
-# Созвездие класса: 22 узла по силуэту приложения C (CONSTELLATION_LAYOUT:
-# [ядро, 4 луча × (m0,m1,m2,техника), 3 keystone, 2 скрытых]).
+# Schema 6: one free core, three six-node owning-weapon rays and two optional
+# revealed-then-purchased hidden side spurs. Normalized positions are the exact
+# SCRUM-1068 acceptance geometry inside the authored Atlas content zone.
 static func _build_constellation(nodes: Array, index: Dictionary, entry_nodes: Dictionary, class_id: String, class_index: int) -> void:
+	var class_spec := SCHEMA6_DATA.class_entry(class_id)
+	if class_spec.is_empty():
+		return
+	var core_spec: Dictionary = class_spec.get("core", {})
+	var core_id := str(core_spec.get("id", entry_nodes.get(class_id, "%s_core" % class_id)))
+	var core_profile: Dictionary = core_spec.get("effect_profile", {})
+	var core_params: Dictionary = core_profile.get("params", {})
+	var core_attribute := str(core_params.get("attribute", "strength"))
+	var core_effects := {"%s_flat" % core_attribute: float(core_params.get("amount", 1.0))}
+	var core_npos := Vector2(0.50, 0.08)
+	var core_node := {
+		"id": core_id, "branch": class_id, "tier": 10, "cost": 0,
+		"kind": "entry", "role": "core", "schema_role": "free_core",
+		"title": str(core_spec.get("title_ru", "Сердце созвездия")),
+		"desc": "Свободное ядро класса: +1 к основной характеристике.",
+		"effects": core_effects, "effect_profile": core_profile.duplicate(true),
+		"npos": core_npos, "pos": _world_pos(class_index, core_npos),
+		"class_affinity": class_id,
+	}
+	core_node = DESCRIPTION_FORMATTER.apply_to_node(core_node)
+	_add(nodes, index, core_node)
+
+	var branch_x := [0.20, 0.50, 0.80]
+	var branch_y := [0.22, 0.34, 0.46, 0.58, 0.70, 0.82]
+	var order_three_by_weapon := {}
+	var weapon_titles := {}
+	var branches: Array = class_spec.get("weapon_branches", [])
+	for branch_index in range(branches.size()):
+		var branch: Dictionary = branches[branch_index]
+		var weapon_id := str(branch.get("weapon_id", ""))
+		var weapon_title := str(branch.get("weapon_title", weapon_id))
+		weapon_titles[weapon_id] = weapon_title
+		var previous_id := core_id
+		var branch_nodes: Array = branch.get("nodes", [])
+		for node_index in range(branch_nodes.size()):
+			var node_spec: Dictionary = branch_nodes[node_index]
+			var node_id := str(node_spec.get("node_id", ""))
+			var branch_order := int(node_spec.get("branch_order", node_index + 1))
+			var is_final := str(node_spec.get("role", "")) == "weapon_final"
+			var node_npos := Vector2(float(branch_x[branch_index]), float(branch_y[node_index]))
+			var profile: Dictionary = (node_spec.get("effect_profile", {}) as Dictionary).duplicate(true)
+			var node := {
+				"id": node_id, "branch": class_id, "tier": 10 + branch_order,
+				"cost": int(node_spec.get("cost", 1)),
+				"kind": "keystone" if is_final else ("notable" if branch_order >= 4 else "minor"),
+				"role": "weapon_final" if is_final else "weapon_boon",
+				"schema_role": str(node_spec.get("role", "")),
+				"title": str(node_spec.get("title_ru", "Оружейная звезда")),
+				"desc": "%s Эффект действует только на «%s»." % ["Финал оружия." if is_final else "Усиление пути.", weapon_title],
+				"effects": {}, "effect_profile": profile,
+				"caps": (node_spec.get("caps", {}) as Dictionary).duplicate(true),
+				"weapon_id": weapon_id, "weapon_title": weapon_title,
+				"axis": str(branch.get("axis", "")), "branch_order": branch_order,
+				"runtime_consumer": str(node_spec.get("runtime_consumer", "")),
+				"positive_fixture": str(node_spec.get("positive_fixture", "")),
+				"negative_controls": (node_spec.get("negative_controls", []) as Array).duplicate(),
+				"npos": node_npos, "pos": _world_pos(class_index, node_npos),
+				"class_affinity": class_id,
+			}
+			if is_final:
+				node["final_id"] = str(node_spec.get("final_id", node_id))
+				node["mechanic_id"] = str(node_spec.get("mechanic_id", ""))
+				node["gain_over_order_5_min"] = float(node_spec.get("gain_over_order_5_min", 1.2))
+			node = DESCRIPTION_FORMATTER.apply_to_node(node)
+			_add(nodes, index, node)
+			_connect(index, previous_id, node_id)
+			previous_id = node_id
+			if branch_order == 3:
+				order_three_by_weapon[weapon_id] = node_id
+
+	for raw_hidden in class_spec.get("hidden", []):
+		var hidden: Dictionary = raw_hidden
+		var hidden_id := str(hidden.get("id", ""))
+		var owning_weapon := str(hidden.get("attach_weapon_id", ""))
+		var branch_index := 0
+		for candidate_index in range(branches.size()):
+			if str((branches[candidate_index] as Dictionary).get("weapon_id", "")) == owning_weapon:
+				branch_index = candidate_index
+				break
+		var side_offset := -0.10 if int(hidden.get("side_index", 0)) == 0 else 0.10
+		var hidden_npos := Vector2(clampf(float(branch_x[branch_index]) + side_offset, 0.08, 0.92), 0.46)
+		var reveal: Dictionary = hidden.get("reveal", {})
+		var metric := str(reveal.get("metric", ""))
+		var threshold := int(reveal.get("threshold", 1))
+		var cond_text := condition_text(metric, threshold)
+		var hidden_node := {
+			"id": hidden_id, "branch": class_id, "tier": 13, "cost": int(hidden.get("cost", 1)),
+			"kind": "hidden", "role": "hidden", "schema_role": "hidden_side_boon",
+			"title": str(hidden.get("title_ru", "Тайное мастерство")),
+			"desc": "Скрытая оружейная звезда. Открытие не активирует эффект: после подвига её нужно купить за 1 эмблему.",
+			"effects": {}, "effect_profile": (hidden.get("effect_profile", {}) as Dictionary).duplicate(true),
+			"caps": (hidden.get("caps", {}) as Dictionary).duplicate(true),
+			"weapon_id": owning_weapon, "weapon_title": str(weapon_titles.get(owning_weapon, owning_weapon)),
+			"axis": str(hidden.get("affected_axis", "")),
+			"side_index": int(hidden.get("side_index", 0)),
+			"purchase_required_for_effect": true,
+			"runtime_consumer": str(hidden.get("runtime_consumer", "")),
+			"positive_fixture": str(hidden.get("positive_fixture", "")),
+			"negative_controls": (hidden.get("negative_controls", []) as Array).duplicate(),
+			"condition": {"metric": metric, "threshold": threshold, "text": cond_text},
+			"npos": hidden_npos, "pos": _world_pos(class_index, hidden_npos),
+			"class_affinity": class_id,
+		}
+		hidden_node = DESCRIPTION_FORMATTER.apply_to_node(hidden_node)
+		_add(nodes, index, hidden_node)
+		_connect(index, str(order_three_by_weapon.get(owning_weapon, core_id)), hidden_id)
+
+
+# Retained as inert source documentation until all schema-5 fixtures are removed.
+static func _build_constellation_schema5_legacy(nodes: Array, index: Dictionary, entry_nodes: Dictionary, class_id: String, class_index: int) -> void:
 	var spec: Dictionary = CONSTELLATION_SPECS.get(class_id, {})
 	var layout: Array = CONSTELLATION_LAYOUT.get(class_id, [])
 	if spec.is_empty() or layout.size() != 22:

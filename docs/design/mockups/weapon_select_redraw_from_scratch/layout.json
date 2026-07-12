@@ -1,0 +1,63 @@
+{
+  "task": "SCRUM-870",
+  "screen": "weapon_select",
+  "base_resolution": [2560, 1440],
+  "pixellab_ui_asset_id": "ecd9f24e-b8a6-4a54-a824-f0f4d5a59505",
+  "mockup_png": "docs/design/mockups/weapon_select_redraw_from_scratch/pixellab_weapon_select_redraw_mockup.png",
+  "runtime_policy": "native_godot_controls_no_fullscreen_pixellab_layer",
+  "elements": [
+    {
+      "id": "MenuPanel_weapon_select",
+      "rect": [360, 120, 1840, 1200],
+      "content_margins": [56, 44, 56, 40],
+      "runtime_style": "weapon_select_panel"
+    },
+    {
+      "id": "WeaponOption_*",
+      "rect": [443, 350, 1674, 260],
+      "step_y": 274,
+      "content_margins": [22, 18, 22, 18],
+      "runtime_style": "weapon_select_card",
+      "children": [
+        "WeaponSelectIconWell_*",
+        "WeaponSelectSprite_*",
+        "WeaponSelectTitle_*",
+        "WeaponSelectIdentity_*",
+        "WeaponSelectDescription_*",
+        "WeaponSelectRole_*",
+        "WeaponSelectStatsPanel_*",
+        "WeaponSelectStats_*"
+      ]
+    },
+    {
+      "id": "WeaponSelectIconWell_*",
+      "size": [204, 204],
+      "content_margins": [12, 12, 12, 12],
+      "runtime_style": "weapon_select_icon_well"
+    },
+    {
+      "id": "WeaponSelectSprite_*",
+      "size": [176, 176],
+      "runtime_policy": "keep_aspect_centered"
+    },
+    {
+      "id": "WeaponSelectStatsPanel_*",
+      "size": [310, 204],
+      "content_margins": [12, 8, 12, 8],
+      "runtime_style": "weapon_select_stat_chip"
+    },
+    {
+      "id": "WeaponSelectBackButton",
+      "rect": [1140, 1238, 280, 60],
+      "runtime_style": "existing_text_button_pause_280x60"
+    }
+  ],
+  "removed_runtime_nodes": [
+    "WeaponSelectPixelLabRuntimeLayer"
+  ],
+  "verification_targets": [
+    "1280x720",
+    "1920x1080",
+    "2560x1440"
+  ]
+}

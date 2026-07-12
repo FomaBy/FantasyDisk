@@ -1,0 +1,78 @@
+{
+  "ok": true,
+  "decision": "ready_for_image",
+  "errors": [],
+  "warnings": [],
+  "elements": [
+    {
+      "id": "frame_art",
+      "kind": "decor",
+      "rect": [
+        0,
+        0,
+        2560,
+        1440
+      ],
+      "ok": true,
+      "warnings": []
+    },
+    {
+      "id": "frame_safe_area",
+      "kind": "panel",
+      "rect": [
+        267,
+        225,
+        2026,
+        990
+      ],
+      "ok": true,
+      "warnings": []
+    },
+    {
+      "id": "header_zone",
+      "kind": "text",
+      "rect": [
+        299,
+        257,
+        1962,
+        104
+      ],
+      "ok": true,
+      "warnings": [],
+      "fit_font_size": 34
+    },
+    {
+      "id": "body_zone",
+      "kind": "scroll_area",
+      "rect": [
+        299,
+        385,
+        1962,
+        650
+      ],
+      "ok": true,
+      "warnings": [],
+      "content_h": 980,
+      "scrollbar_required": true,
+      "scrollbar_rect": [
+        2243,
+        385,
+        18,
+        650
+      ]
+    },
+    {
+      "id": "footer_zone",
+      "kind": "text",
+      "rect": [
+        299,
+        1059,
+        1962,
+        104
+      ],
+      "ok": true,
+      "warnings": [],
+      "fit_font_size": 30
+    }
+  ]
+}

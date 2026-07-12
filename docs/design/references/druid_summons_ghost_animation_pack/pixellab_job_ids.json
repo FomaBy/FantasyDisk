@@ -1,0 +1,156 @@
+{
+  "jira": "SCRUM-1016",
+  "captured_at": "2026-07-10T00:11:31Z",
+  "source": "PixelLab get_character completed frame URLs",
+  "characters": {
+    "druid_ghost_wolf": {
+      "move": {
+        "left": {
+          "job_id": "b87dde06-b306-46eb-8db0-f0f92df139ce",
+          "download_folder": "running",
+          "exported_frame_count": 6
+        },
+        "right": {
+          "job_id": "0a8523fc-6b24-4dfd-abd8-2a3fdc334069",
+          "download_folder": "running",
+          "exported_frame_count": 6
+        }
+      },
+      "attack": {
+        "left": {
+          "job_id": "2e824e36-953f-4564-a2c6-74f1e42b608a",
+          "download_folder": "ghost_melee_sweep",
+          "exported_frame_count": 6
+        },
+        "right": {
+          "job_id": "96806b13-baee-414c-87b0-10fbf6c1d45e",
+          "download_folder": "ghost_melee_sweep",
+          "exported_frame_count": 6
+        }
+      }
+    },
+    "druid_ghost_bear": {
+      "move": {
+        "left": {
+          "job_id": "0eb9a607-3284-440c-910a-3968250b0338",
+          "download_folder": "walking",
+          "exported_frame_count": 6
+        },
+        "right": {
+          "job_id": "1585ff64-f3e8-4db7-aa8b-fd7631a40bae",
+          "download_folder": "scrum1020_grounded_bear_walk_right_v1",
+          "exported_frame_count": 6
+        }
+      },
+      "attack": {
+        "left": {
+          "job_id": "a11acb56-4f33-47b0-9f7e-f8cfc84cbaf4",
+          "download_folder": "ghost_ground_slam",
+          "exported_frame_count": 6
+        },
+        "right": {
+          "job_id": "b31a20bb-c84c-41d9-8e78-923b857ab49e",
+          "download_folder": "ghost_ground_slam",
+          "exported_frame_count": 6
+        }
+      }
+    },
+    "druid_ghost_panther": {
+      "move": {
+        "left": {
+          "job_id": "806bf3c2-f57a-4ed4-99e5-2ba7db5ca1fb",
+          "download_folder": "running",
+          "exported_frame_count": 6
+        },
+        "right": {
+          "job_id": "b027281f-6cf5-455b-a263-8644769e1b23",
+          "download_folder": "running",
+          "exported_frame_count": 6
+        }
+      },
+      "attack": {
+        "left": {
+          "job_id": "8c3e33f5-5fca-448a-b3cc-40124c7556b1",
+          "download_folder": "ghost_pounce_rake",
+          "exported_frame_count": 6
+        },
+        "right": {
+          "job_id": "1693a67e-e5d6-49c7-b2d6-205ac47607bd",
+          "download_folder": "ghost_pounce_rake",
+          "exported_frame_count": 6
+        }
+      }
+    },
+    "druid_ghost_stag": {
+      "move": {
+        "left": {
+          "job_id": "5e799a53-da87-4522-b5b5-dab2bc3f7783",
+          "download_folder": "ghost_move_centered",
+          "exported_frame_count": 6
+        },
+        "right": {
+          "job_id": "a439223f-8325-43f2-871d-dc1d5371ab3a",
+          "download_folder": "ghost_move_centered",
+          "exported_frame_count": 6
+        }
+      },
+      "attack": {
+        "left": {
+          "job_id": "cc085246-7e38-4d50-895d-684bd5e7eb65",
+          "download_folder": "ghost_spirit_lance_cast_left_readable",
+          "exported_frame_count": 6
+        },
+        "right": {
+          "job_id": "ee39a175-cb5c-421a-a0f3-355640428234",
+          "download_folder": "ghost_spirit_lance_cast_centered",
+          "exported_frame_count": 6
+        }
+      }
+    },
+    "druid_ghost_lion": {
+      "move": {
+        "left": {
+          "job_id": "b315075b-9c17-4d9f-ae1e-7979fd4db8b8",
+          "download_folder": "running",
+          "exported_frame_count": 6
+        },
+        "right": {
+          "job_id": "c07db263-2165-4da2-93ee-52523e909325",
+          "download_folder": "running",
+          "exported_frame_count": 6
+        }
+      },
+      "attack": {
+        "left": {
+          "job_id": "97535bfd-f611-46cb-8887-f90b1007bb48",
+          "download_folder": "ghost_roar_cast_left_blue",
+          "exported_frame_count": 6
+        },
+        "right": {
+          "job_id": "dc7110e0-e9ef-45fe-8bc9-c5796976dfd7",
+          "download_folder": "ghost_roar_cast",
+          "exported_frame_count": 6
+        }
+      }
+    }
+  },
+  "quality_retake_selected": true,
+  "visual_quality_retake_selected": true,
+  "remediation": {
+    "jira": "SCRUM-1020",
+    "character_id": "druid_ghost_bear",
+    "pixellab_character_id": "6805608a-b64a-471c-a1d9-9601a3062e2f",
+    "kind": "move",
+    "direction": "right",
+    "replaced_job_id": "d3434d3a-b0b8-465f-833d-bd4164202f7e",
+    "selected_job_id": "1585ff64-f3e8-4db7-aa8b-fd7631a40bae",
+    "selected_animation_folder": "scrum1020_grounded_bear_walk_right_v1",
+    "same_uuid_start_anchor": "walking/east/frame_003.png from replaced same-character job",
+    "before_visible_alpha_pixels": [8253, 7372, 7468, 15403, 14163, 13871],
+    "before_max_min_ratio": 2.089121,
+    "rejected_candidate_job_ids": [
+      "127fa29e-bafa-402f-bca2-4960e61644d1"
+    ],
+    "selection_reason": "v1 keeps one heavy grounded bear identity across all six frames; v2 gradually reared upright and was rejected before import"
+  }
+}

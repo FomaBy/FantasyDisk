@@ -1,5 +1,7 @@
 extends RefCounted
 
+const SemanticTypography := preload("res://scripts/ui/semantic_typography.gd")
+
 const BASE_STAT_IDS := [
 	"strength",
 	"agility",
@@ -14,7 +16,6 @@ const BASE_STAT_IDS := [
 const DERIVED_ATTRIBUTE_IDS := [
 	"damage",
 	"magic_damage",
-	"sound_wave_damage",
 	"attack_speed",
 	"crit_chance",
 	"crit_damage_multiplier",
@@ -58,7 +59,6 @@ const ICON_PATHS := {
 	"leadership": "res://assets/sprites/ui/icons/stats/stat_leadership.png",
 	"damage": "res://assets/sprites/ui/icons/derived/attr_damage.png",
 	"magic_damage": "res://assets/sprites/ui/icons/derived/attr_magic_damage.png",
-	"sound_wave_damage": "res://assets/sprites/ui/icons/derived/attr_sound_wave_damage.png",
 	"attack_speed": "res://assets/sprites/ui/icons/derived/attr_attack_speed.png",
 	"crit_chance": "res://assets/sprites/ui/icons/derived/attr_crit_chance.png",
 	"crit_damage_multiplier": "res://assets/sprites/ui/icons/derived/attr_crit_damage_multiplier.png",
@@ -111,7 +111,6 @@ const ICON_ABBREVIATIONS := {
 	"leadership": "LDR",
 	"damage": "DMG",
 	"magic_damage": "MAG",
-	"sound_wave_damage": "SND",
 	"attack_speed": "ASP",
 	"crit_chance": "CRT",
 	"crit_damage_multiplier": "CRD",
@@ -198,8 +197,8 @@ static func texture_for(icon_id: String) -> Texture2D:
 	return texture
 
 
-static func make_icon(icon_id: String, size: Vector2 = Vector2(42, 42)) -> Control:
-	var display_size := _readable_icon_size(size)
+static func make_icon(icon_id: String, size: Vector2 = Vector2(42, 42), apply_readability_scale := true) -> Control:
+	var display_size := _readable_icon_size(size) if apply_readability_scale else size
 	var texture := texture_for(icon_id)
 	if texture != null:
 		var texture_rect := TextureRect.new()
@@ -221,7 +220,10 @@ static func make_icon(icon_id: String, size: Vector2 = Vector2(42, 42)) -> Contr
 	label.text = str(ICON_ABBREVIATIONS.get(icon_id, icon_id.substr(0, min(3, icon_id.length())).to_upper()))
 	label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	label.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
-	label.add_theme_font_size_override("font_size", 18 if display_size.x >= 55.0 else 14)
+	# SCRUM-883: пол фолбэк-бейджа 14 → 16 (аббревиатура ≤3 букв читаема и в мелком слоте).
+	label.add_theme_font_size_override("font_size", SemanticTypography.resolve_fixed(
+		SemanticTypography.ROLE_HUD, 18 if display_size.x >= 55.0 else 16
+	))
 	label.add_theme_color_override("font_color", Color(0.98, 0.96, 0.86, 1.0))
 	panel.add_child(label)
 	return panel

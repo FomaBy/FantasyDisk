@@ -4,6 +4,19 @@
 
 Этот файл фиксирует reusable visual assets FantasyDisk после domain split. Подробные таблицы сущностей остаются в `docs/design/content_registry.md`.
 
+## Semantic Typography Content-Zone Anchor
+
+SCRUM-1073 adds a PixelLab MCP design-evidence package for legacy typography
+families that lacked their own accepted screen mockup. The approved clean source
+is `docs/design/references/scrum1073_semantic_band_migration/
+pixellab_uncovered_content_zones_clean_600x448.png` (PixelLab asset
+`6e512c63-5c42-44ee-a6b3-09a3ed69189d`); its manifest also preserves the first
+rejected pseudo-rune generation. The 2×4 sheet contains eight dark-fantasy
+dragon/D&D frames with empty interiors and decoration confined to outer rails.
+Plan, exact zones, composite, debug overlay and fit reports live in
+`docs/design/mockups/scrum1073_semantic_band_migration/`. This source is not a
+runtime texture; it documents content-zone rules for geometry migration.
+
 ## Artifact And Shop Icons
 
 All artifacts from `ProgressionData.ARTIFACTS` and all shop-only items from `ProgressionData.SHOP_ITEMS` have unique PNG assets. Artifact icons were replaced on 2026-06-12 as `256x256` RGBA transparent realistic epic D&D/tabletop fantasy raster magic items after direct user feedback: one finished painted object per icon, no pentagram-style pictograms, no built-in UI frame, no pedestal, no background tile, no loose shards or particles, and readable object lighting/materials. Shop-only icons keep the earlier fantasy-medallion treatment.
@@ -233,6 +246,19 @@ HUD/theme assets mapped into the SCRUM-666 safe zones. The combat HUD is now
 essential-only: no artifact row, character stat strip, duplicate FAB or extra
 combat panel belongs in the in-run overlay.
 
+SCRUM-985 refreshes the Level Up composition without promoting new bitmap
+assets into runtime. The PixelLab-first component source and rejected
+outer-shell candidate are recorded under
+`docs/design/references/scrum985_level_up_cleanup/`; the accepted mockup and
+exact content-zone plan live under `docs/design/mockups/scrum985_level_up_cleanup/`.
+Runtime reuses the canonical `ui_backdrop_arcane_lab.png`, Atlas card/socket
+materials, and global later button, but removes the viewport-wide
+`LevelUpFrame`. Only local reward-card ornament remains. The backdrop is
+brightened under a `0.12` shade and `0.24` dim, while reward icons are rendered
+at their exact inner socket size rather than receiving the icon registry's
+small-size readability enlargement. Verified captures at 720p, 1080p and 2K
+live under `docs/design/previews/scrum985_level_up_cleanup/`.
+
 SCRUM-586 adds the Design-source package for the 2K stat tooltip frame used by
 `StatTooltipPanel` / `_make_custom_tooltip` in `scripts/pause_stats_menu.gd`;
 SCRUM-593 makes it live in runtime.
@@ -245,6 +271,22 @@ runtime asset at
 `44/42/44/42`). Runtime registers it as `stat_tooltip` in
 `UIThemePaths.OVERHAUL_2K_FRAME_*`, and the tooltip label uses the documented
 `342 px` safe width.
+
+SCRUM-983 adds a PixelLab-first page composition reference without replacing
+the production outer frame. Accepted source
+`docs/design/references/scrum983_escape_dossier/pixellab_escape_dossier_v1_688x384.png`
+(PixelLab asset `ccc0e262-f062-4eb3-90d5-71c68c7db203`) has real transparency,
+one title well, one hero well, four stat wells and four footer actions; only the
+third action is crimson. Runtime reconstructs that composition from Controls,
+reuses `assets/sprites/ui/meta40/frame_border.png`, and keeps all text/icons/
+hitboxes/focus/scroll lanes inside the published 24/32px-reserved inner zones.
+Because the shared frame has transparent/hollow regions, four opaque dark
+reserve masks render below dossier content and below the final frame over the
+entire viewport-minus-inner area; lower combat HUD pixels must never appear in
+the ornamental rails or reserve band.
+Plans, fit reports, composite/debug overlay and provenance live under
+`docs/design/mockups/scrum983_escape_dossier/` and
+`docs/design/previews/scrum983_escape_dossier/`.
 
 SCRUM-588 adds `assets/sprites/ui/frames/overhaul_2k/ui_frame_2k_lut_toast.png`,
 the level-up toast frame. It is a generated transparent RGBA `480x300` asset
@@ -277,6 +319,32 @@ the deterministic cleanup/build script
 keeps runtime PNGs textless, alpha-clean and confined to the SCRUM-725
 9-slice margin bands. Runtime preview:
 `docs/design/previews/codex_redesign_2026_06_runtime_contact.png`.
+
+SCRUM-870 supersedes the SCRUM-868 Weapon Select runtime layer after live review.
+The old SCRUM-867/868 PixelLab mockup and derived
+`docs/design/mockups/weapon_select_full_redraw/pixellab_weapon_select_runtime_layer_2560x1440.png`
+remain historical evidence only; `scripts/ui_screens.gd` must not render
+`WeaponSelectPixelLabRuntimeLayer`. The active Weapon Select visual contract is
+`docs/design/mockups/weapon_select_redraw_from_scratch/` with PixelLab UI asset
+`ecd9f24e-b8a6-4a54-a824-f0f4d5a59505` as a textless reference, while live
+runtime uses native opaque Godot surfaces: dark shell, large readable cards,
+`204x204` icon wells, `176x176` weapon sprites, right stat chips, and normal
+fantasy Back button styling.
+
+SCRUM-849 adds the next Codex design-source package for an object-first layout
+without changing live runtime assets yet. The PixelLab UI-panel mockup and
+safe-zone contract live under
+`docs/design/mockups/codex_object_first_redesign/`; preview/contact evidence is
+`docs/design/previews/codex_object_first_redesign_mockup_v1.png`,
+`docs/design/previews/codex_object_first_redesign_mockup_v1_1920.png`,
+`docs/design/previews/codex_object_first_redesign_safe_zones_v1.png`, and
+`docs/design/previews/codex_object_first_redesign_contact_v1.png`. The design
+keeps only meaningful frame regions: left category rail, center selected/list
+overview, and right detail panel with the largest object image stage. Runtime
+integration is intentionally deferred to SCRUM-850 and should reuse existing
+Codex/Settings-family assets where they satisfy the declared content margins;
+new production sprites are optional only if integration cannot meet the
+object-first safe-zone contract with existing assets.
 
 SCRUM-584 adds the live rebind-conflict 2K frame pair under
 `assets/sprites/ui/frames/overhaul_2k/ui_frame_2k_rc_panel.png` and
@@ -509,13 +577,14 @@ modal safe zone. Runtime QA dump:
 `build/qa/scrum330/pause_end_ui_no_overlap_matrix.md`.
 
 SCRUM-345/SCRUM-403 provide the active **Codex texture kit** for the in-game
-encyclopedia and glossary tooltip. Assets live in
-`assets/sprites/ui/frames/codex/` and are wired only to Codex runtime surfaces:
-`CodexMainPanel`, `CodexContent`, `CodexTab_*`, Codex entry cards,
-portrait/artifact icon slots and `GlossaryTooltipPanel`. Safe-zone metadata is
-canonical in `docs/design/references/codex/codex_ui_texture_kit_metadata.json`;
-runtime uses those content margins instead of placing labels, icons, portraits
-or click/focus areas on dragon/metal/gem ornament. QA dump:
+encyclopedia. Assets live in `assets/sprites/ui/frames/codex/` and are wired
+only to Codex runtime surfaces: `CodexMainPanel`, `CodexContent`, `CodexTab_*`,
+Codex entry cards and portrait/artifact icon slots. SCRUM-889 removes the live
+glossary tab/list/tooltip from Codex; historical glossary tooltip art is kept as
+reference material only. Safe-zone metadata is canonical in
+`docs/design/references/codex/codex_ui_texture_kit_metadata.json`; runtime uses
+those content margins instead of placing labels, icons, portraits or click/focus
+areas on dragon/metal/gem ornament. QA dump:
 `build/qa/scrum345/codex_texture_runtime_dump.md`.
 
 These are live UI paths for the combat HUD after
@@ -645,6 +714,18 @@ Rebuild/QA assets:
 - `assets/sprites/ui/frames/settings_v2/ui_frame_settings_v2_tab_switcher_3slot.png` - SCRUM-439 Settings v2 three-slot switcher candidate (`1280x256`, RGBA; slot safe rects `Rect2(150,78,275,92)`, `Rect2(502,78,275,92)`, `Rect2(854,78,275,92)`);
 - `assets/sprites/ui/frames/settings_v2/ui_frame_settings_v2_section_panel.png` - SCRUM-439 Settings v2 nested section panel candidate (`1024x384`, RGBA; content margins `104/96/104/92`);
 - `assets/sprites/ui/frames/settings_v2/ui_frame_settings_v2_control_row.png` - SCRUM-439 Settings v2 control-row frame candidate (`1536x192`, RGBA; content margins `96/54/96/54`);
+- `docs/design/references/scrum975_settings_game_tab/` - SCRUM-975 PixelLab
+  source package for the four-tab Settings/Game sandbox extension. The accepted
+  layout uses four separate plates instead of modifying the historical
+  three-slot strip: one 4×1 row at 1920×1080/2560×1440 and a 2×2 reflow at
+  1280×720. Exact panel/content zones, 720p scroll lane, five modifier rows,
+  reset/status contract, PixelLab IDs, post-processing provenance and fit
+  reports are recorded in `spec.md`, `ui_plan*.json`, `layout*.json` and
+  `manifest.json`; rendered/debug previews live under
+  `docs/design/previews/scrum975_settings_game_tab/`. Runtime promotion is a
+  separate Back-end handoff and must reuse the current live Settings shell,
+  fields, sliders, value chips and action plates rather than stretching a
+  combined bitmap.
 - `tools/apply_button_only_ui_revert.py` - SCRUM-147 correction pipeline: taller wax-seal buttons + restored legacy panels;
 - `tools/build_leather_gold_ui_kit.py` - superseded SCRUM-229 panel/window pipeline from user interface references;
 - `tools/build_parchment_wax_ui_kit.py` - superseded full-frame parchment builder, protected from direct use;
@@ -772,15 +853,28 @@ SCRUM-337 is the current full attack VFX art baseline. Six generated source shee
   the visual source for future route-map 2K frame/runtime wiring; it contains no
   baked runtime text and preserves empty interiors for header, HUD, tooltip,
   route nodes/lines and FAB content.
+- SCRUM-1089 adds the active full-fit Route Map layout reference under
+  `docs/design/references/scrum1089_route_map_full_fit_hud2x/` (PixelLab UI
+  asset `a32def07-33e5-464d-a046-4967feefa4b1`) and matching mockup/runtime
+  previews. It is textless design evidence only: no bitmap is promoted to
+  runtime, and production continues to reuse `route_map_backdrop.png`, canonical
+  node icons, HUD v2 assets and the hollow `meta40/frame_border.png` shell.
 - SCRUM-158 dark fantasy UI backdrops live in `assets/backgrounds/ui/`: `ui_backdrop_system_cathedral.png`, `ui_backdrop_merchant_archive.png`, `ui_backdrop_arcane_lab.png`, `ui_backdrop_reward_hall.png`, `ui_backdrop_defeat_crypt.png`. Each is `2560x1440` with a calm low-contrast center for central panels and richer material detail pushed to the edges. SCRUM-418 removed the old compatibility copies from `assets/sprites/ui/screens/`; runtime mapping now points directly at this canonical backdrop set. Preview: `docs/design/previews/ui_screen_backdrops_dark_fantasy_contact.png`.
 - `assets/backgrounds/main_menu_epic_battle_v3.png` is the active start-screen
-  art. The 2026-07-02 0.2.0 release pass replaced the previous dragon battle
-  image with an OpenAI-generated cosmic character-atlas background: pixel-art
-  heroes in front of a constellation atlas, distant boss figures, a calm dark
-  left column for the six runtime menu buttons and a readable title-safe area.
-  The runtime background contains no baked UI text/buttons/frames. Source,
-  backup, preview and the Telegram/Discord announcement image are documented in
-  `docs/design/mockups/main_menu_020_cosmic_release/spec.md`.
+  art. SCRUM-1001 replaces the previous 0.2.0 cosmic atlas with an
+  OpenAI-generated clean cartoon-realistic D&D/dark-fantasy background. The
+  latest active SCRUM-1001 pass is a reimagined from-scratch generation that
+  excludes previous screen/background reference input and uses only current
+  runtime character and boss sprites as the visual reference. It keeps a calm
+  dark left column for the six runtime menu buttons and a readable title-safe
+  area, places the 3/4 front/side party and boss threat center-right/right,
+  keeps the guitarist front/3/4 readable with the guitar on the torso, avoids
+  the old portal/atlas/music line layout, and contains no baked UI
+  text/buttons/frames. Source, character/
+  boss reference sheets, backup, preview, comparisons and safe-zone evidence are
+  documented in
+  `docs/design/mockups/main_menu_openai_clean_background/spec.md`. This task is
+  an explicit OpenAI Images override by direct user request.
 - SCRUM-369 (2026-06-14) replaced the active combat arena set with 10
   `2560x1440` realistic D&D/dark fantasy battle backgrounds generated through
   `fantasydisk-asset-generator` and normalized for gameplay readability:
@@ -794,3 +888,21 @@ SCRUM-337 is the current full attack VFX art baseline. Six generated source shee
   `docs/design/references/backgrounds/`; previews:
   `docs/design/previews/arena_backgrounds_scrum369_contact.png` and
   `docs/design/previews/arena_backgrounds_scrum369_readability.png`.
+
+## Player Projectile Silhouette Contract (SCRUM-1065)
+
+Player projectiles use one compact weapon-owned silhouette rather than a
+universal recolored orb. PixelLab source assets are transparent, text-free,
+top-down 1-direction objects with safe alpha gutters; every profile records its
+canonical forward direction, runtime rotation offset, pivot and real display
+size. Class identity must remain readable at 24–64 px through material and
+shape first, palette second: Soldier black iron/brass, Thief silver/indigo,
+Dark Mage violet/cyan occult forms, Ranger moon/storm steel, Doctor green
+medical glass, Chemist ochre/lime alchemy, Druid thorn/teal spirit and Engineer
+brass device rounds. Enemy purple projectile silhouettes are not reused.
+
+The canonical source/runtime inventory is
+`docs/design/references/SCRUM-1065_player_projectiles/manifest.json`; visual QA
+uses both native-source and real-game-scale dark/light contact sheets under
+`docs/design/previews/SCRUM-1065_player_projectiles/`. Intentional beams,
+stationary zones, melee, traps and summons remain outside this sprite contract.

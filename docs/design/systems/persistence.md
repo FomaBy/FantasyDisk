@@ -52,6 +52,27 @@ current `route_stage`, selected route branches, player snapshot
 pending level-up/attribute offers, used events, current shop stock and shop
 re-entry state.
 
+SCRUM-976 adds gameplay-sandbox persistence without changing the autosave schema
+version. Five validated multipliers live in `user://settings.cfg`, while
+`Main.begin_new_run_session()` copies them into a separate immutable
+`run_sandbox_snapshot` at the weapon-confirm boundary. Safe checkpoints persist
+that active snapshot; Continue restores it, and legacy autosaves with no field
+normalize to neutral `1.0`. Resetting Settings is atomic and changes only the
+configured values for the next run, never an active or restored run.
+
+SCRUM-996 (event reveal / event shop) deliberately adds **no** new autosave
+fields. The event outcome is applied to the in-memory run snapshot when the
+choice is pressed, but the autosave is still written only at the next map
+checkpoint (`_advance_route_after_noncombat`, reached by confirming the reveal
+via `EventContinueButton` or by leaving an event `shop_after` shop). Quitting
+the game during the reveal state or inside an event shop therefore rolls back
+to the last autosave: the run re-enters the same unresolved event
+(`current_event_definition` is part of the snapshot, SCRUM-530 — no reroll) and
+the outcome/purchases made after the last checkpoint are discarded. This is the
+intended contract, not a bug. `Main.event_shop_exit_action` (the deferred
+event-shop exit) is runtime-only and is reset on autosave restore, act
+transition, run end and new run.
+
 Main menu start checks `RunAutosave.has_run()`:
 
 - `Продолжить` loads the snapshot into `Main` and opens the route map.
@@ -66,6 +87,8 @@ Main menu start checks `RunAutosave.has_run()`:
 - `tests/runtime_smoke_test.gd` covers the user flow: save exists, main menu
   prompt appears, Continue restores route/snapshot state, New Game clears the
   save, and death/victory clear the save.
+- `tests/gameplay_sandbox_scrum976_test.gd` covers settings persistence,
+  immutable active snapshots, autosave round-trip and next-run reset semantics.
 
 ## Settings schema audit (SCRUM-720)
 

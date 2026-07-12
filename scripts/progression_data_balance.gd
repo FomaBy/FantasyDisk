@@ -75,7 +75,7 @@ const COMFORT_WEIGHTS := {
 const COMFORT_WEIGHT_OVERRIDES := {
 	"druid/summon_amulet": 0.96,
 	"druid/raven_totem": 0.96,
-	"engineer/engineer_sentry_wrench": 1.03,  # SCRUM-546: ключ = реальный weapon_id (был engineer/sentry_wrench — не матчился)
+	"engineer/engineer_sentry_wrench": 1.03,  # SCRUM-546: ключ = реальный weapon_id; SCRUM-888: пересчитан под турели — implied 1.033 (raw/median по 1/5/20), оставлен
 	"engineer/engineer_repair_drone": 1.03,
 	"chemist/homunculus_vial": 1.43,
 	"guitarist/sound_amp": 1.25,
@@ -136,6 +136,8 @@ const COMFORT_BAND_SLICE_OVERRIDES := {
 	"doctor/bone_saw": {"ideal_1": 0.317, "ideal_5": 0.322, "ideal_20": 0.307},
 	"doctor/restore_potion": {"ideal_1": 1.491, "ideal_5": 1.493, "ideal_20": 1.320},
 	"druid/raven_totem": {"ideal_1": 1.025, "ideal_5": 1.131, "ideal_20": 1.056},
+	# SCRUM-888 (турели): аналитические raw новой механики = старым ±0.2% по всем
+	# срезам (residual-пара тюнера сохранена 0.389/0.774/1.29) — CSV-веса валидны.
 	"engineer/engineer_sentry_wrench": {"ideal_1": 0.733, "ideal_5": 0.909, "ideal_20": 0.849},
 	"guitarist/sound_amp": {"ideal_20": 1.142},
 }
@@ -176,6 +178,12 @@ const SURVIVABILITY_DEFENSE_CAP := 0.62
 const SURVIVABILITY_DEFENSE_DIMINISH := 0.55
 const SURVIVABILITY_DODGE_CAP := 0.55
 const SURVIVABILITY_DODGE_DIMINISH := 1.15
+# SCRUM-897 «Дымовая Бомба»: потолок СУММАРНОГО шанса уворота внутри дым-облака
+# Вора (капнутый базовый dodge + бонус облака). Читается только пока герой стоит
+# в живом облаке (player.smoke_cloud_dodge_bonus); вне дыма действует обычный
+# SURVIVABILITY_DODGE_CAP. 0.90 = «почти неуязвим в дыму при тяжёлом dodge-билде,
+# но никогда не бессмертен и только внутри облака».
+const SMOKE_CLOUD_DODGE_CAP := 0.90
 # SCRUM-526: нерф защитной оси (absorb/regen/vampiric). Защитные механики были
 # супер-имбовыми — «закопаться в выживаемость» доминировало над уроном. Ослаблены
 # измеримо, чтобы выживаемость была полезной, но не доминирующей стратегией.
@@ -238,18 +246,24 @@ const WEAPON_ARCHETYPE_BY_MODE := {
 	"sweep": "melee",
 	"circle": "melee",
 	"strip": "melee",
-	"bayonet_brace": "melee",
+	"bayonet_cone": "melee",
 	"stab_flurry": "melee",
+	"saw_sector": "melee",  # SCRUM-900 bone_saw: melee-сектор 135°
 	"aoe_projectile": "projectile",
+	"plague_dart": "projectile",  # SCRUM-900 plague_syringe: чумной дротик
 	"homing_curse": "projectile",
-	"suppression_burst": "projectile",
-	"grenade_cook": "projectile",
+	"arquebus_shot": "projectile",
+	"grenade_fuse": "projectile",
+	# SCRUM-939..941: кит Тёмного мага — цепь/зеркало снарядные, череп = curse-зона.
+	"dark_chain_burst": "projectile",
+	"dark_mirror_blast": "projectile",
+	"skull_curse_burn": "aoe",
 	"coin_ricochet": "projectile",
 	"meteor_shards": "projectile",
 	"sniper_lockshot": "projectile",
 	"sniper_kill_zone": "projectile",
 	"sniper_split_round": "projectile",
-	"priest_prayer_chain": "projectile",
+
 	"bio_sample_dart": "projectile",
 	"robot_reactor_vent": "projectile",
 	"beam": "beam",
@@ -259,6 +273,9 @@ const WEAPON_ARCHETYPE_BY_MODE := {
 	"prism_rift": "beam",
 	"robot_compression_line": "beam",
 	"sound_wave": "aura",
+	# SCRUM-899: узкая полоса Гитариста — фронтальная aura-ось класса (identity
+	# кита сохраняется: density/target-факторы толпы как у прежней волны).
+	"riff_strip": "aura",
 	"amp": "aura",
 	"pulse": "aura",
 	"trap": "aoe",
@@ -266,6 +283,8 @@ const WEAPON_ARCHETYPE_BY_MODE := {
 	"elemental_orbit": "aoe",
 	"priest_sanctify": "aoe",
 	"priest_ward": "aoe",
+	# SCRUM-929: dual toll — двойной AoE-взрыв (цель + Жрец), не снаряд/цепь.
+	"priest_dual_toll": "aoe",
 	"bio_spore_bloom": "aoe",
 	"bio_symbiote_web": "aoe",
 	"robot_magnetic_anchor": "aoe",
@@ -345,11 +364,11 @@ const STAGE_SCALE_LINEAR := 0.075
 
 const ECONOMY_PRICE_MULTIPLIER := 1.10
 
-# SCRUM-527: XP-кривая перекалибрована — к боссу 1-го акта средний забег ~20 lvl
-# (было ~8-9). Множитель резко снижен (1.42→1.038): рост требуемого опыта плавный,
-# почти линейный (req ~5→10→20→30→44 к lvl20, макс. скачок ~3), без крутого
-# геометрического разгона. Подтверждено tools/route_economy_xp_model.gd.
-const XP_CURVE_MULTIPLIER := 1.038
+# SCRUM-853: XP-кривая растянута без урезания per-monster drops. Почти линейная
+# кривая SCRUM-527 (`1.038`, flat `0.8`) разгоняла 20-fight projection до ~43 lvl.
+# Мягкий геометрический шаг `1.09` держит Act 1 около 14-15, Act 2 около 23-24
+# и полный 20-fight run около 32 lvl.
+const XP_CURVE_MULTIPLIER := 1.09
 
 const XP_CURVE_FLAT := 0.8
 

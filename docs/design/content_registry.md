@@ -78,7 +78,7 @@
 | `ranger` | Рейнджер | Дальний контроль через заряжаемые стойкой выстрелы, арбалет, ловушки | `scripts/progression_data.gd`, `scripts/class_weapon.gd`, `scripts/player.gd` | `assets/sprites/characters/ranger_spriteframes.tres`, `assets/sprites/characters/full_frame/ranger_pixellab/`, `assets/sprites/characters/pixellab/ranger/`, legacy `assets/sprites/characters/full_frame/ranger/`, `assets/sprites/characters/ranger.png`, `assets/sprites/characters/ranger_sheet.png`, `assets/sprites/characters/cutout/ranger_*.png` | Реализовано; SCRUM-804 live runtime uses PixelLab character `1646d83c-f570-4bdd-9065-cb1b46bf13f7` with empty hands, 8-direction idle rotations and 6-frame directional move/walk rows normalized to 245 px visible height on `512x512` frames; legacy SCRUM-294 art remains fallback/history |
 | `doctor` | Доктор | Выживание через drain/lifesteal-связи, чума и ближний sustain | `scripts/progression_data.gd`, `scripts/class_weapon.gd` | `assets/sprites/characters/doctor_spriteframes.tres`, `assets/sprites/characters/full_frame/doctor_pixellab/`, `assets/sprites/characters/pixellab/doctor/`, legacy `assets/sprites/characters/full_frame/doctor/`, `assets/sprites/characters/doctor.png`, `assets/sprites/characters/cutout/doctor_*.png` | Реализовано; SCRUM-705 live Hero Select/runtime SpriteFrames use fresh PixelLab v3 full redraw (`3e0a2b30-308e-48a8-a5a6-bb28a5038ca9`) with 8-direction idle + 6-frame directional move/walk, normalized to 244 px visible height in `512x512`; empty hands, no baked potion/syringe/saw; legacy full-frame art and SCRUM-425 pack remain history/fallback |
 | `chemist` | Химик | Газовые/кислотные DoT-зоны и combo explosions от разных облаков | `scripts/progression_data.gd`, `scripts/class_weapon.gd` | `assets/sprites/characters/chemist_spriteframes.tres`, `assets/sprites/characters/full_frame/chemist_pixellab/`, `assets/sprites/characters/pixellab/chemist/`, legacy `assets/sprites/characters/chemist.png`, `assets/sprites/characters/cutout/chemist_*.png` | Реализовано; SCRUM-423 live Hero Select/runtime SpriteFrames use PixelLab v3 8-direction static rotations + 6-frame directional walk (`walking-6-frames`); legacy art remains fallback/history |
-| `knight` | Рыцарь | Танк и тяжелый контроль: копье/щит плюс block/counter | `scripts/progression_data.gd`, `scripts/player.gd` | `assets/sprites/characters/knight_spriteframes.tres`, `assets/sprites/characters/full_frame/knight_pixellab/`, `assets/sprites/characters/pixellab/knight/`, legacy `assets/sprites/characters/full_frame/knight/`, `assets/sprites/characters/knight.png`, `assets/sprites/characters/cartoon2/knight/knight_cartoon2_anim_sheet.png`, `assets/sprites/characters/cutout/knight_*.png`, skeleton-source package `docs/design/references/chars_cartoon/skeleton_parts/knight/skeleton_source_manifest.json` | Реализовано; SCRUM-430 live SpriteFrames/portrait use PixelLab no-shield 8-direction idle rotations plus 6-frame directional walk/move rows; legacy SCRUM-473 cartoon2 frames remain history/fallback; SCRUM-475 skeleton-source parts package delivered for Animator rig work |
+| `knight` | Рыцарь | Танк и тяжелый контроль: копье/щит плюс block/counter | `scripts/progression_data.gd`, `scripts/player.gd` | `assets/sprites/characters/knight_spriteframes.tres`, `assets/sprites/characters/full_frame/knight_pixellab/`, `assets/sprites/characters/pixellab/knight/`, legacy `assets/sprites/characters/full_frame/knight/`, `assets/sprites/characters/knight.png`, `assets/sprites/characters/cartoon2/knight/knight_cartoon2_anim_sheet.png`, `assets/sprites/characters/cutout/knight_*.png`, skeleton-source package `docs/design/references/chars_cartoon/skeleton_parts/knight/skeleton_source_manifest.json` | Реализовано; SCRUM-885 refreshed the SCRUM-430 PixelLab no-shield character `c1a7d633-7353-4861-aea3-8d937b601cba` on 2026-07-08 with 8-direction idle rotations plus 6-frame directional walk/move rows; legacy SCRUM-473 cartoon2 frames remain history/fallback; SCRUM-475 skeleton-source parts package delivered for Animator rig work; SCRUM-919 routes the combat runtime (`scripts/player.gd`) through the accepted PixelLab `knight_spriteframes.tres` full-frame path — the legacy runtime skeletal rig (`scenes/characters/KnightSkeletonRig.tscn` + `assets/sprites/characters/skeleton_parts/knight/`) is detached from combat and kept as history/fallback |
 | `druid` | Друид | Командуемые питомцы, природные зоны, тотемы; scaling от Лидерства | `scripts/progression_data.gd`, `scripts/summoner_weapon.gd`, `scripts/ally_minion.gd` | `assets/sprites/characters/druid_spriteframes.tres`, `assets/sprites/characters/full_frame/druid_pixellab/`, `assets/sprites/characters/pixellab/druid/`, legacy `assets/sprites/characters/full_frame/druid/`, `assets/sprites/characters/druid.png`, `assets/sprites/characters/cutout/druid_*.png` | Реализовано; live runtime uses PixelLab 8-direction idle rotations and 6-frame move/walk rows; legacy art remains fallback/history |
 
 SCRUM-416 runtime portrait rule: for most playable classes,
@@ -95,6 +95,25 @@ single `sprite_path`; legacy `assets/sprites/characters/<class>.png` files remai
 historical/fallback asset references and are not the live static portrait source.
 Regression coverage: `tests/character_sprite_registry_alignment_test.gd` and
 `tests/runtime_smoke_test.gd`; QA dumps under `build/qa/scrum416/`.
+
+SCRUM-869 refreshes the playable PixelLab source/runtime packs from the live
+PixelLab manifests without changing canonical character IDs or portrait paths.
+The refreshed complete packs are `assassin`
+(`ec73da27-b704-4336-9275-74c8e3e578df`), `biologist`
+(`cb13813a-f0a8-4d18-b019-4bd7fb1eb3f4`), `chemist`
+(`c7fe44d3-1f15-45a1-b762-b2862833b151`), `dark_mage`
+(`9bb0eca8-5afe-49d4-8e56-7115a45efdcc`), `druid`
+(`4078113b-fece-4087-a035-9ed3714a6514`), `guitarist`
+(`d278e753-9885-4550-82ff-81ee3bef297d`), `knight`
+(`c1a7d633-7353-4861-aea3-8d937b601cba`), `priest`
+(`ed7db59e-0845-4218-b178-a56f948254b5`), `ranger`
+(`1646d83c-f570-4bdd-9065-cb1b46bf13f7`), `robot`
+(`37c6ccf2-ab40-4c89-83a3-db8365f85257`) and `thief`
+(`02e507dc-b1fa-4ef5-b6eb-e5ac97fffe9f`). `berserk`, `soldier`,
+`elementalist`, `sniper`, `engineer` and `doctor` remain on their existing live
+runtime packs because the SCRUM-869 PixelLab audit found incomplete/404 source
+packages; exact blockers are recorded in
+`build/qa/pixellab_character_animation_refresh/report.json` and the task mirror.
 
 SCRUM-423 promotes Chemist to the PixelLab directional runtime contract:
 PixelLab character `c7fe44d3-1f15-45a1-b762-b2862833b151` provides 8 static
@@ -236,7 +255,14 @@ normalized 512x512 runtime frames under
 `assets/sprites/characters/knight_spriteframes.tres` exposes one-frame
 `idle_<direction>` rows plus 6-frame `move_<direction>` / `walk_<direction>` rows
 for all 8 directions. The accepted PixelLab pass is explicitly no-shield/no-weapon;
-Knight weapons and shield visuals remain separate weapon assets.
+Knight weapons and shield visuals remain separate weapon assets. SCRUM-885
+refreshed that same PixelLab character on 2026-07-08, updating the source
+manifest, alpha-bbox report and normalized runtime frames while keeping the
+canonical SpriteFrames path unchanged. SCRUM-919 (2026-07-09) detaches the
+legacy skeletal combat rig from `scripts/player.gd`: Knight combat now renders
+the same accepted PixelLab `knight_spriteframes.tres` directional idle/move
+loops as Hero Select, while `scenes/characters/KnightSkeletonRig.tscn` and the
+`skeleton_parts/knight/` package stay in the repo as history/emergency fallback.
 
 SCRUM-475 adds Design-source skeleton packages for Dark Mage and Knight under
 `docs/design/references/chars_cartoon/skeleton_parts/`. Each character has a
@@ -381,7 +407,7 @@ assets until Animator/Back-end integration is accepted.
 | `doctor` | Доктор | Выживание через урон | `restore_potion`, `plague_syringe`, `bone_saw` | magic_damage |
 | `chemist` | Химик | AoE + DoT зоны | `blast_powder`, `acid_flask`, `homunculus_vial` | magic_damage |
 | `knight` | Рыцарь | Танк/копье | `long_spear`, `tower_shield`, `holy_flail` | damage |
-| `druid` | Друид | Призыватель | `summon_amulet`, `briar_staff`, `raven_totem` | sound_wave_damage |
+| `druid` | Друид | Призыватель | `summon_amulet`, `briar_staff`, `raven_totem` | magic_damage |
 
 Релевантность атрибутов расширена: strength -> berserk/assassin/ranger/knight; intelligence -> dark_mage/doctor/chemist; energy -> dark_mage/guitarist/doctor/chemist/druid. Вознесение: по 10 уровней на каждый новый класс (ID `<класс>_asc_1..10`, тематические имена в ASCENSION_LEVELS).
 
@@ -527,7 +553,7 @@ SCRUM-337 attack VFX source regeneration 2026-06-14: весь активный r
 
 SCRUM-756 attack VFX targeted redraw 2026-07-01: `vfx_weapon_priest_reliquary.png` заменен через PixelLab MCP / `fantasydisk-asset-generator` как отдельная полупрозрачная sanctify-seal пластина с ghost-силуэтом `assets/sprites/weapons/priest_reliquary.png`. Runtime path, размер `256x256`, alpha/RGBA контракт, gameplay timing, damage, healing, targeting, formulas и Back-end runtime logic не менялись. Evidence: `docs/design/references/weapon_attack_animations/priest_reliquary/manifest.json`, preview `docs/design/previews/weapon_attack_animations/priest_reliquary_contact.png`.
 
-Иконки артефактов: `assets/sprites/ui/icons/artifacts/artifact_*.png` (70 шт., 256x256; SCRUM-606/609 добавили 10 dedicated icons для новых artifact IDs). Финальный Design pass SCRUM-340 от 2026-06-14: все активные артефакты пересозданы через `fantasydisk-asset-generator` / OpenAI Images (`gpt-image-2`) как realistic epic D&D/dark-fantasy raster magic items с прозрачным фоном. Это не пентаграммы, не плоские UI-symbols и не векторные пиктограммы: каждый файл содержит отдельный нарисованный предмет с объемом, материалами, магическим светом и смысловой привязкой к `ProgressionData.ARTIFACTS`. Source references для SCRUM-606/609 лежат в `docs/design/references/icons/artifacts/<id>/`; QA evidence: `docs/design/previews/artifact_icons_606_609_contact.png` и `docs/design/reports/artifact_icons_606_609_qa.md`. Предыдущие пассы (flat v1, dark fantasy v2, glossy RPG v3, concept-sheet tile/cut pass, per-item pictogram pass, 2026-06-12 raster sheet pass) superseded.
+Иконки артефактов: `assets/sprites/ui/icons/artifacts/artifact_*.png` (71 шт., 256x256; SCRUM-606/609 добавили 10 dedicated icons для новых artifact IDs, SCRUM-619/623 добавили `rift_key`). Финальный Design pass SCRUM-340 от 2026-06-14: все активные артефакты пересозданы через `fantasydisk-asset-generator` / OpenAI Images (`gpt-image-2`) как realistic epic D&D/dark-fantasy raster magic items с прозрачным фоном. Это не пентаграммы, не плоские UI-symbols и не векторные пиктограммы: каждый файл содержит отдельный нарисованный предмет с объемом, материалами, магическим светом и смысловой привязкой к `ProgressionData.ARTIFACTS`. Source references для SCRUM-606/609 лежат в `docs/design/references/icons/artifacts/<id>/`; QA evidence: `docs/design/previews/artifact_icons_606_609_contact.png` и `docs/design/reports/artifact_icons_606_609_qa.md`. Предыдущие пассы (flat v1, dark fantasy v2, glossy RPG v3, concept-sheet tile/cut pass, per-item pictogram pass, 2026-06-12 raster sheet pass) superseded.
 
 Таймер боя: `assets/sprites/ui/hud/timer_frame.png` и `assets/sprites/ui/hud/timer_frame_alarm.png` (оба 300x90, прозрачный фон) — фэнтези-рамка под цифры (золотая окантовка, темная ниша, самоцветы по бокам, гребень сверху). Для тревоги Back-end просто меняет текстуру на `timer_frame_alarm.png` (красное свечение и красные самоцветы) — программная подсветка не нужна. Генерируются тем же инструментом.
 
@@ -609,31 +635,31 @@ VFX новых боссовских mechanics SCRUM-259/SCRUM-261:
 
 | ID | Игровое имя | Класс | Роль | Источник | Статус |
 | --- | --- | --- | --- | --- | --- |
-| `sword` | Двуручный меч | Берсерк | Усеченный замах 90 градусов, радиус 600, base width 150 | `ProgressionData.BERSERK_WEAPONS` | Реализовано |
-| `axe` | Двуручный топор | Берсерк | Широкая дуга 140 градусов радиуса 320 | `ProgressionData.BERSERK_WEAPONS` | Реализовано |
-| `hammer` | Двуручный молот | Берсерк | Круговой AoE: слабый старт, усиленный рост от апгрейдов | `ProgressionData.BERSERK_WEAPONS` | Реализовано |
+| `sword` | Двуручный меч | Берсерк | Узкий сектор 100 градусов радиуса 350 | `ProgressionData.BERSERK_WEAPONS` | Реализовано |
+| `axe` | Двуручный топор | Берсерк | Широкий сектор 180 градусов радиуса 250 | `ProgressionData.BERSERK_WEAPONS` | Реализовано |
+| `hammer` | Двуручный молот | Берсерк | Круговой AoE 150px с Radius scaling и diminishing по плотной толпе | `ProgressionData.BERSERK_WEAPONS` | Реализовано |
 | `soldier_rifle` | Аркебуза строя | Солдат | Suppression burst: 3 коротких выстрела по линии; основная цель полный урон, соседи reduced damage | `ProgressionData.SOLDIER_WEAPONS`, `scenes/SoldierRifle.tscn` | Реализовано |
 | `soldier_grenade` | Граната с фитилем | Солдат | Delayed ground explosion: телеграф, короткий фитиль, falloff урона к краю | `ProgressionData.SOLDIER_WEAPONS`, `scenes/SoldierGrenade.tscn` | Реализовано |
 | `soldier_bayonet` | Штык-стойка | Солдат | Defensive brace corridor: каждый враг в стойке получает один укол и knockback | `ProgressionData.SOLDIER_WEAPONS`, `scenes/SoldierBayonet.tscn` | Реализовано |
-| `thief_coin_pouch` | Кошель Рикошета | Вор | Coin ricochet: цепь по ближайшим целям с убывающим уроном и малой кражей золота | `ProgressionData.THIEF_WEAPONS`, `scenes/ThiefCoinPouch.tscn`, `assets/sprites/weapons/thief_coin_pouch.png`, `scripts/cutout_rig_2d.gd` | Реализовано |
-| `thief_shadow_cloak` | Плащ Захода | Вор | Shadow backstab: мгновенный заход за ближайшую цель, усиленный удар и малый splash рядом | `ProgressionData.THIEF_WEAPONS`, `scenes/ThiefShadowCloak.tscn`, `assets/sprites/weapons/thief_shadow_cloak.png`, `scripts/cutout_rig_2d.gd` | Реализовано |
-| `thief_smoke_bomb` | Дымовая Бомба | Вор | Smoke bomb: delayed AoE + временное уклонение Вора | `ProgressionData.THIEF_WEAPONS`, `scenes/ThiefSmokeBomb.tscn`, `assets/sprites/weapons/thief_smoke_bomb.png`, `scripts/cutout_rig_2d.gd` | Реализовано |
-| `elementalist_orb_ring` | Кольцо Трех Стихий | Элементалист | Elemental orbit: короткая орбита стихийных сфер вокруг героя с тиками AoE-урона | `ProgressionData.ELEMENTALIST_WEAPONS`, `scenes/ElementalistOrbRing.tscn`, `assets/sprites/weapons/elementalist_orb_ring.png`, `scripts/cutout_rig_2d.gd` | Реализовано |
-| `elementalist_prism_focus` | Призматический Фокус | Элементалист | Prism rift: два пересекающихся луча-разлома по ближайшей цели после короткого телеграфа | `ProgressionData.ELEMENTALIST_WEAPONS`, `scenes/ElementalistPrismFocus.tscn`, `assets/sprites/weapons/elementalist_prism_focus.png`, `scripts/cutout_rig_2d.gd` | Реализовано |
-| `elementalist_meteor_core` | Ядро Метеора | Элементалист | Meteor shards: delayed impact в цель и вторичные осколочные взрывы рядом | `ProgressionData.ELEMENTALIST_WEAPONS`, `scenes/ElementalistMeteorCore.tscn`, `assets/sprites/weapons/elementalist_meteor_core.png`, `scripts/cutout_rig_2d.gd` | Реализовано |
-| `sniper_deadeye_rifle` | Винтовка Мертвого Глаза | Снайпер | Sniper lockshot: короткий прицел/телеграф, затем точный дальний луч по locked target и line falloff | `ProgressionData.SNIPER_WEAPONS`, `scenes/SniperDeadeyeRifle.tscn`, `assets/sprites/weapons/sniper_deadeye_rifle.png`, `scripts/cutout_rig_2d.gd` | Реализовано |
-| `sniper_spotter_scope` | Прицел Наводчика | Снайпер | Sniper kill-zone: маркирует область у цели и вызывает несколько точных sky-beam попаданий по врагам внутри | `ProgressionData.SNIPER_WEAPONS`, `scenes/SniperSpotterScope.tscn`, `assets/sprites/weapons/sniper_spotter_scope.png`, `scripts/cutout_rig_2d.gd` | Реализовано |
-| `sniper_shatter_rounds` | Осколочные Патроны | Снайпер | Sniper split round: основной дальний выстрел раскалывается по соседним целям или продолжает линию при отсутствии целей | `ProgressionData.SNIPER_WEAPONS`, `scenes/SniperShatterRounds.tscn`, `assets/sprites/weapons/sniper_shatter_rounds.png`, `scripts/cutout_rig_2d.gd` | Реализовано |
+| `thief_coin_pouch` | Кошель Рикошета | Вор | Coin ricochet (SCRUM-897): цепь 6 прыжков (кап 8), спад до 50% к последнему, мгновенное золото с первых 3 целей | `ProgressionData.THIEF_WEAPONS`, `scenes/ThiefCoinPouch.tscn`, `assets/sprites/weapons/thief_coin_pouch.png`, `scripts/cutout_rig_2d.gd` | Реализовано |
+| `thief_shadow_cloak` | Отравленный Кинжал | Вор | Shadow backstab (SCRUM-897): фантомный кинжал без движения героя, паралич-яд и удар в спину ×1.35 | `ProgressionData.THIEF_WEAPONS`, `scenes/ThiefShadowCloak.tscn`, `assets/sprites/weapons/thief_shadow_cloak.png`, `scripts/cutout_rig_2d.gd` | Реализовано |
+| `thief_smoke_bomb` | Дымовая Бомба | Вор | Smoke bomb (SCRUM-897): бросок → AoE-взрыв → недамажащее облако с позиционным dodge (кап 0.90 в дыму) | `ProgressionData.THIEF_WEAPONS`, `scenes/ThiefSmokeBomb.tscn`, `assets/sprites/weapons/thief_smoke_bomb.png`, `scripts/cutout_rig_2d.gd` | Реализовано |
+| `elementalist_orb_ring` | Кольцо Четырёх Стихий | Элементалист | SCRUM-948 square field: квадратная AoE в точке каста, тики трёх каналов (магия+физика+ожог) с отбросом от центра | `ProgressionData.ELEMENTALIST_WEAPONS`, `scenes/ElementalistOrbRing.tscn`, `assets/sprites/weapons/elementalist_orb_ring.png`, `scripts/cutout_rig_2d.gd` | Реализовано |
+| `elementalist_prism_focus` | Призматический Фокус | Элементалист | SCRUM-949 full-map X: диагональный разлом во всю арену через точку фокуса + центр-AoE | `ProgressionData.ELEMENTALIST_WEAPONS`, `scenes/ElementalistPrismFocus.tscn`, `assets/sprites/weapons/elementalist_prism_focus.png`, `scripts/cutout_rig_2d.gd` | Реализовано |
+| `elementalist_meteor_core` | Ядро Метеора | Элементалист | SCRUM-950 heavy meteor: самое медленное оружие игрока — телеграф+падение, тяжёлый удар, догорающая DoT-зона | `ProgressionData.ELEMENTALIST_WEAPONS`, `scenes/ElementalistMeteorCore.tscn`, `assets/sprites/weapons/elementalist_meteor_core.png`, `scripts/cutout_rig_2d.gd` | Реализовано |
+| `sniper_deadeye_rifle` | Винтовка Мертвого Глаза | Снайпер | Sniper lockshot: короткий прицел/телеграф, затем точный дальний луч по locked target и line falloff | `ProgressionData.SNIPER_WEAPONS`, `scenes/SniperDeadeyeRifle.tscn`, `assets/sprites/weapons/sniper_deadeye_rifle.png`, `assets/sprites/effects/vfx_weapon_sniper_deadeye_rifle_endpoint_impact.png`, `scripts/cutout_rig_2d.gd` | Реализовано; SCRUM-934 endpoint VFX готов к SCRUM-931 |
+| `sniper_spotter_scope` | Прицел Наводчика | Снайпер | Sniper kill-zone: маркирует область у цели и вызывает несколько точных sky-beam попаданий по врагам внутри | `ProgressionData.SNIPER_WEAPONS`, `scenes/SniperSpotterScope.tscn`, `assets/sprites/weapons/sniper_spotter_scope.png`, `assets/sprites/effects/vfx_weapon_sniper_spotter_scope_{telegraph,impact}.png`, `scripts/cutout_rig_2d.gd` | Реализовано; SCRUM-934 telegraph/impact готовы к SCRUM-932 |
+| `sniper_shatter_rounds` | Осколочные Патроны | Снайпер | Sniper split round: основной дальний выстрел раскалывается веером; отдельный SCRUM-934 projectile component рассчитан на многократный spawn без визуального шума | `ProgressionData.SNIPER_WEAPONS`, `scenes/SniperShatterRounds.tscn`, `assets/sprites/weapons/sniper_shatter_rounds.png`, `assets/sprites/effects/vfx_weapon_sniper_shatter_rounds_projectile.png`, `scripts/cutout_rig_2d.gd` | Реализовано; SCRUM-934 projectile VFX готов к SCRUM-933 |
 | `priest_reliquary` | Светлый Реликварий | Священник | Sanctify: отмечает цель священным знаком, затем взрыв по области лечит часть нанесенного урона | `ProgressionData.PRIEST_WEAPONS`, `scenes/PriestReliquary.tscn`, `assets/sprites/weapons/priest_reliquary.png`, `scripts/cutout_rig_2d.gd` | Реализовано |
 | `priest_censer` | Кадило Обета | Священник | Ward pulses: несколько защитных волн вокруг героя наносят урон и дают малое лечение | `ProgressionData.PRIEST_WEAPONS`, `scenes/PriestCenser.tscn`, `assets/sprites/weapons/priest_censer.png`, `scripts/cutout_rig_2d.gd` | Реализовано |
 | `priest_chime` | Колокол Молитвы | Священник | Prayer chain: молитвенная нить перескакивает между врагами и возвращает sustain | `ProgressionData.PRIEST_WEAPONS`, `scenes/PriestChime.tscn`, `assets/sprites/weapons/priest_chime.png`, `scripts/cutout_rig_2d.gd` | Реализовано |
 | `biologist_spore_lens` | Споровая Линза | Биолог | Spore bloom: три расширяющихся споровых кольца выращиваются на цели и наносят убывающий урон | `ProgressionData.BIOLOGIST_WEAPONS`, `scenes/BiologistSporeLens.tscn`, `assets/sprites/weapons/biologist_spore_lens.png`, `scripts/cutout_rig_2d.gd` | Реализовано |
 | `biologist_sample_injector` | Инъектор Образцов | Биолог | Sample dart: берет образец у цели, затем два анализа бьют ее и ближайшие ткани | `ProgressionData.BIOLOGIST_WEAPONS`, `scenes/BiologistSampleInjector.tscn`, `assets/sprites/weapons/biologist_sample_injector.png`, `scripts/cutout_rig_2d.gd` | Реализовано |
 | `biologist_symbiote_seed` | Семя Симбионта | Биолог | Symbiote web: первичная цель связывается с соседними врагами и делит биоурон по сети | `ProgressionData.BIOLOGIST_WEAPONS`, `scenes/BiologistSymbioteSeed.tscn`, `assets/sprites/weapons/biologist_symbiote_seed.png`, `scripts/cutout_rig_2d.gd` | Реализовано |
-| `robot_magnetic_anchor` | Магнитный Якорь | Робот | Magnetic anchor: якорь стягивает врагов к центру и бьет импульсом | `ProgressionData.ROBOT_WEAPONS`, `scenes/RobotMagneticAnchor.tscn`, `assets/sprites/weapons/robot_magnetic_anchor.png`, `scripts/cutout_rig_2d.gd` | Реализовано |
-| `robot_hydraulic_press` | Гидравлический Пресс | Робот | Compression line: две силовые губки сходятся по линии атаки, прижимают врагов к оси и бьют коридором | `ProgressionData.ROBOT_WEAPONS`, `scenes/RobotHydraulicPress.tscn`, `assets/sprites/weapons/robot_hydraulic_press.png`, `scripts/cutout_rig_2d.gd` | Реализовано |
-| `robot_reactor_core` | Реакторное Ядро | Робот | Reactor vent: четыре направленных выброса вокруг корпуса чистят ближний круг и отталкивают толпу | `ProgressionData.ROBOT_WEAPONS`, `scenes/RobotReactorCore.tscn`, `assets/sprites/weapons/robot_reactor_core.png`, `scripts/cutout_rig_2d.gd` | Реализовано |
-| `engineer_sentry_wrench` | Ключ Часового | Инженер | Sentry link: временная турель сама выбирает цели и бьет их точечными лучами | `ProgressionData.ENGINEER_WEAPONS`, `scenes/EngineerSentryWrench.tscn`, `assets/sprites/weapons/engineer_sentry_wrench.png`, `scripts/cutout_rig_2d.gd` | Реализовано |
+| `robot_magnetic_anchor` | Магнитный Якорь | Робот | Magnetic anchor: отложенный тяжёлый AoE в точке цели, полный урон с falloff от центра, стягивает рядовых к центру 0.85/каст (импульс cap 1500); элитки/боссы не смещаются, урон полный | `ProgressionData.ROBOT_WEAPONS`, `scenes/RobotMagneticAnchor.tscn`, `assets/sprites/weapons/robot_magnetic_anchor.png`, `scripts/cutout_rig_2d.gd` | Реализовано |
+| `robot_hydraulic_press` | Гидравлический Пресс | Робот | Compression line: урон по ВСЕЙ ширине коридора suppression_width (300, ×1.30 с «Калибратором»), прижимает рядовых к оси 0.80/каст; элитки/боссы — полный урон, резист смещения ×0.25; SCRUM-917 PixelLab VFX сжимается side-to-centre и синхронизирует active frame с hit delay 0.20с | `ProgressionData.ROBOT_WEAPONS`, `scenes/RobotHydraulicPress.tscn`, `scenes/vfx/RobotHydraulicPressCompressionVfx.tscn`, `assets/sprites/weapons/robot_hydraulic_press.png`, `assets/sprites/effects/robot_hydraulic_press_compression/`, `scripts/cutout_rig_2d.gd` | Реализовано |
+| `robot_reactor_core` | Реакторное Ядро | Робот | Reactor vent: ровно 4 вентиля 90° от мировой фазы (без самонаведения), паттерн +6°/каст — веер обходит круг за 15 атак; урон вентиля = ролл ×0.42, extra_projectile расширяет лопасти | `ProgressionData.ROBOT_WEAPONS`, `scenes/RobotReactorCore.tscn`, `assets/sprites/weapons/robot_reactor_core.png`, `scripts/cutout_rig_2d.gd` | Реализовано |
+| `engineer_sentry_wrench` | Ключ Часового | Инженер | Sentry turret (SCRUM-888): разворачивает персистентные стационарные турели (жёсткий лимит 2, старейшая заменяется), турели сами обстреливают ближайших врагов залпом снарядов с capped splash | `ProgressionData.ENGINEER_WEAPONS`, `scenes/EngineerSentryWrench.tscn`, `scenes/SentryTurret.tscn`, `scripts/sentry_turret.gd`, `assets/sprites/weapons/engineer_sentry_wrench.png`, `assets/sprites/weapons/engineer_turret/sentry_turret.png`, `scripts/cutout_rig_2d.gd` | Реализовано |
 | `engineer_repair_drone` | Ремонтный Дрон | Инженер | Repair drone: цепная дуга по врагам возвращает часть урона в ремонт героя | `ProgressionData.ENGINEER_WEAPONS`, `scenes/EngineerRepairDrone.tscn`, `assets/sprites/weapons/engineer_repair_drone.png`, `scripts/cutout_rig_2d.gd` | Реализовано |
 | `engineer_pressure_mines` | Минная Сетка | Инженер | Pressure mine grid: три мины веером срабатывают отдельно при касании врагом | `ProgressionData.ENGINEER_WEAPONS`, `scenes/EngineerPressureMines.tscn`, `assets/sprites/weapons/engineer_pressure_mines.png`, `scripts/cutout_rig_2d.gd` | Реализовано |
 | `dark_book` | Книга тьмы | Темный маг | Два AoE-снаряда в две ближайшие цели | `ProgressionData.DARK_MAGE_WEAPONS` | Реализовано |
@@ -646,7 +672,7 @@ VFX новых боссовских mechanics SCRUM-259/SCRUM-261:
 | `shadow_daggers` | Теневые кинжалы | Ассасин | Быстрые короткие multi-stabs в ближней зоне + crit shadow burst у цели | `ProgressionData.ASSASSIN_WEAPONS` | Реализовано |
 | `venom_wire` | Ядовитая струна | Ассасин | Тонкая poison-линия с DoT + crit shadow burst у цели | `ProgressionData.ASSASSIN_WEAPONS` | Реализовано |
 | `moon_crossbow` | Лунный арбалет | Рейнджер | Stance-charged piercing shot | `ProgressionData.RANGER_WEAPONS` | Реализовано |
-| `storm_longbow` | Грозовой длинный лук | Рейнджер | Stance-charged веер грозовых лучей | `ProgressionData.RANGER_WEAPONS` | Реализовано |
+| `storm_longbow` | Грозовой длинный лук | Рейнджер | SCRUM-911/912: stance-charged конус из 5 пробивающих стрел (34°, 980px, pierce 4) с PixelLab bow-release/through-hit VFX | `ProgressionData.RANGER_WEAPONS`, `assets/sprites/effects/vfx_weapon_storm_longbow.png`, `assets/sprites/effects/storm_longbow/storm_longbow_release_spriteframes.tres`, `scenes/vfx/StormLongbowVolleyVfx.tscn` | Реализовано; PixelLab source/evidence в `docs/design/references/weapon_attack_animations/storm_longbow_pixellab_scrum912/` |
 | `hunter_trap` | Охотничий капкан | Рейнджер | Deploy trap: burst + knockback; stance charge усиливает | `ProgressionData.RANGER_WEAPONS` | Реализовано |
 | `restore_potion` | Зелье восстановления | Доктор | Drain/lifesteal-связь к цели | `ProgressionData.DOCTOR_WEAPONS` | Реализовано |
 | `plague_syringe` | Чумной шприц | Доктор | Drain-связь с poison DoT и sustain | `ProgressionData.DOCTOR_WEAPONS` | Реализовано |
@@ -656,7 +682,7 @@ VFX новых боссовских mechanics SCRUM-259/SCRUM-261:
 | `homunculus_vial` | Склянка гомункула | Химик | Temporary minion scaling from magic damage | `ProgressionData.CHEMIST_WEAPONS` | Реализовано |
 | `long_spear` | Копье | Рыцарь | Длинный точечный strip + block/counter passive | `ProgressionData.KNIGHT_WEAPONS` | Реализовано |
 | `tower_shield` | Башенный щит | Рыцарь | Shield bash / frontal control + сильный block/counter | `ProgressionData.KNIGHT_WEAPONS` | Реализовано |
-| `holy_flail` | Освященный кистень | Рыцарь | Medium circular heavy swing + сильнее counter damage | `ProgressionData.KNIGHT_WEAPONS` | Реализовано |
+| `holy_flail` | Освященный кистень | Рыцарь | 7-step center-out spiral (`0.085с`, `22%→100%` radius) + broad holy-control counter; SCRUM-924 PixelLab chain/flail VFX follows each live step | `ProgressionData.KNIGHT_WEAPONS` | Реализовано |
 | `summon_amulet` | Амулет призыва | Друид | Командуемая beast pack, scaling from Leadership | `ProgressionData.DRUID_WEAPONS` | Реализовано |
 | `briar_staff` | Посох терний | Друид | Thorn zone, AoE DoT, crowd control | `ProgressionData.DRUID_WEAPONS` | Реализовано |
 | `raven_totem` | Вороний тотем | Друид | Totem pulses, Leadership-scaled deploy limit | `ProgressionData.DRUID_WEAPONS` | Реализовано |
@@ -675,6 +701,11 @@ SCRUM-152 Design pass 2026-06-12 добавил канонический raster-
 | `ally_druid_pack_spirit` | Вариант стаи Друида / ultimate pack visual | `assets/sprites/allies/ally_druid_pack_spirit.png`; `assets/sprites/allies/ally_pack_spirit_spriteframes.tres` + `assets/sprites/allies/pack_spirit/ally_pack_spirit_{move,attack,death}_*.png` | Full-frame SpriteFrames: `move` 8f/12fps loop, runtime `attack` 6f/14fps no-loop (`attack_primary` в manifest), SCRUM-370 `death` 6f/10fps no-loop, scale `0.34`, position `(0,-10)` |
 | `ally_homunculus` | Химикский гомункул от `homunculus_vial` | `assets/sprites/allies/ally_homunculus.png`; `assets/sprites/allies/ally_homunculus_spriteframes.tres` + `assets/sprites/allies/homunculus/ally_homunculus_{move,attack,death}_*.png` | Full-frame SpriteFrames: `move` 8f/12fps loop, runtime `attack` 6f/14fps no-loop (`attack_primary` в manifest), SCRUM-370 `death` 6f/10fps no-loop, scale `0.34`, position `(0,-10)` |
 | `ally_leadership_echo` | Призрачный союзник/эхо от Leadership | `assets/sprites/allies/ally_leadership_echo.png`; `assets/sprites/allies/ally_leadership_echo_spriteframes.tres` + `assets/sprites/allies/leadership_echo/ally_leadership_echo_{move,attack,death}_*.png` | Full-frame SpriteFrames: `move` 8f/12fps loop, runtime `attack` 6f/14fps no-loop (`attack_primary` в manifest), SCRUM-370 `death` 6f/10fps no-loop, scale `0.34`, position `(0,-10)` |
+| `druid_ghost_wolf` | Дух-волк Друида; physical melee AoE animation identity | `assets/sprites/allies/druid_ghost_wolf/{pixellab_source,runtime}/`; `assets/sprites/allies/ally_druid_ghost_wolf_spriteframes.tres`; PixelLab `8d473df8-9bc2-481c-ad58-b69cfecc5d33` | SCRUM-1016 visual pack: explicit `move_left/right` 6f loop + claw/body-sweep `attack_left/right` 6f one-shot, transparent 256x256, no flip; roster/gameplay pending SCRUM-902 |
+| `druid_ghost_bear` | Дух-медведь Друида; physical melee AoE animation identity | `assets/sprites/allies/druid_ghost_bear/{pixellab_source,runtime}/`; `assets/sprites/allies/ally_druid_ghost_bear_spriteframes.tres`; PixelLab `6805608a-b64a-471c-a1d9-9601a3062e2f` | SCRUM-1016 visual pack: explicit `move_left/right` 6f loop + ground-slam `attack_left/right` 6f one-shot, transparent 256x256, no flip; SCRUM-1020 replaces `move_right` with coherent same-UUID job `1585ff64-f3e8-4db7-aa8b-fd7631a40bae` pending independent re-QA; roster/gameplay pending SCRUM-902 |
+| `druid_ghost_panther` | Дух-пантера Друида; physical melee AoE animation identity | `assets/sprites/allies/druid_ghost_panther/{pixellab_source,runtime}/`; `assets/sprites/allies/ally_druid_ghost_panther_spriteframes.tres`; PixelLab `b2d06d20-aabb-48e2-9d8a-5053daa03e8e` | SCRUM-1016 visual pack: explicit `move_left/right` 6f loop + pounce/rake `attack_left/right` 6f one-shot, transparent 256x256, no flip; roster/gameplay pending SCRUM-902 |
+| `druid_ghost_stag` | Дух-олень Друида; magical ranged caster animation identity | `assets/sprites/allies/druid_ghost_stag/{pixellab_source,runtime}/`; `assets/sprites/allies/ally_druid_ghost_stag_spriteframes.tres`; PixelLab `f17948e2-8e1d-44f2-93f1-8f8593ae01fe` | SCRUM-1016 visual pack: explicit `move_left/right` 6f loop + spirit-lance `attack_left/right` cast 6f one-shot, transparent 256x256, no flip; roster/gameplay pending SCRUM-902 |
+| `druid_ghost_lion` | Дух-лев Друида; magical ranged caster animation identity | `assets/sprites/allies/druid_ghost_lion/{pixellab_source,runtime}/`; `assets/sprites/allies/ally_druid_ghost_lion_spriteframes.tres`; PixelLab `48d76788-eeba-4a9f-a36f-bd40a8f42e07` | SCRUM-1016 visual pack: explicit `move_left/right` 6f loop + spectral-roar `attack_left/right` cast 6f one-shot, transparent 256x256, no flip; roster/gameplay pending SCRUM-902 |
 | `deploy_sound_amp_field` | Полевой объект ампа Гитариста | `assets/sprites/allies/deploy_sound_amp_field.png` | Подключен как `deploy_texture_path` для `sound_amp` |
 | `deploy_raven_totem_field` | Полевой объект Вороньего тотема Друида | `assets/sprites/allies/deploy_raven_totem_field.png` | Подключен как `deploy_texture_path` для `raven_totem` |
 
@@ -685,6 +716,7 @@ Preview QA:
 - `docs/design/previews/summon_allies_scale_meadow_preview.png` - scale/readability check on arena background;
 - `docs/design/previews/summons_ethereal_redraw_contact.png` - SCRUM-399 ethereal summon static/frame contact sheet;
 - `docs/design/previews/summons_ethereal_readability_meadow.png` - SCRUM-399 meadow readability preview against current arena colors.
+- `docs/design/previews/druid_summons_ghost_animation_pack_contact.png` - SCRUM-1016 west/east movement/action contact sheet for all five ghost summons.
 
 Back-end source-specific integration complete in SCRUM-157: runtime selectors preserve cleanup groups and gameplay balance.
 
@@ -768,15 +800,14 @@ Data-driven ростер `scripts/progression_data_enemies.gd::MINI_ELITE_KINDS`
 
 | ID | Игровое имя | Текущая сцена | Роль | Ассет | Паттерны | Статус |
 | --- | --- | --- | --- | --- | --- | --- |
-| `rift_warden` | Страж Разлома | `scenes/BossWarden.tscn` | Финальный босс контроля | `assets/sprites/bosses/boss_rift_warden.png`; full-frame `assets/sprites/bosses/full_frame/rift_warden_spriteframes.tres` | Залпы, зоны разлома, призыв, щит, увороты. Визуально: `move`, `attack`/`attack_primary`, `death`, `skill_gravity_well`, `skill_rift_zone` + `attack_*` aliases | Реализовано |
-| `disk_devourer` | Пожиратель Диска | `scenes/BossDiskDevourer.tscn` | Финальный босс давления | `assets/sprites/bosses/boss_disk_devourer.png`; full-frame `assets/sprites/bosses/full_frame/disk_devourer_spriteframes.tres` | Рывки, disk slam AoE, radial burst, enrage. Визуально: SCRUM-793 PixelLab source `81b491db-7240-4513-bad5-263b7f81539d` promoted into `move`, `attack`/`attack_primary`, `death`, `skill_vampiric_bite`, `skill_rift_zone` + `attack_*` aliases | Реализовано |
-| `bone_archon` | Костяной Архонт | `scenes/BossBoneArchon.tscn` | Финальный босс-некромант | `assets/sprites/bosses/boss_bone_archon.png`; full-frame `assets/sprites/bosses/full_frame/bone_archon_spriteframes.tres`; death source `assets/sprites/bosses/full_frame/bone_archon/bone_archon_death_*.png` + `bone_archon_death_row.png` | Волны скелетов (summon), веер черепов (volley), костяная стена (волна зон с проходом). Визуально: `move`, `attack`/`attack_primary`, `death`, `skill_skull_volley`, `skill_bone_prison` + `attack_*` aliases | Реализовано |
-| `brood_mother` | Матерь Роя | `scenes/BossBroodMother.tscn` | Финальный босс-рой | `assets/sprites/bosses/boss_brood_mother.png`; full-frame `assets/sprites/bosses/full_frame/brood_mother_spriteframes.tres`; death source `assets/sprites/bosses/full_frame/brood_mother/brood_mother_death_*.png` + `brood_mother_death_row.png` | Частый выводок мелких, паутинные зоны замедления (apply_web_slow), рывок в фазе 3. Визуально: SCRUM-793 PixelLab source `99d1c48c-ab86-4025-80b0-5a0ccb3d2edf` promoted into `move`, `attack`/`attack_primary`, `death`, `skill_brood_spawn`, `skill_web_zone` + `attack_*` aliases | Реализовано |
-| `ashen_colossus` | Пепельный Колосс | `scenes/BossAshenColossus.tscn` | Финальный босс-гигант | `assets/sprites/bosses/boss_ashen_colossus.png`; full-frame `assets/sprites/bosses/full_frame/ashen_colossus_spriteframes.tres`; death source `assets/sprites/bosses/full_frame/ashen_colossus/ashen_colossus_death_*.png` + `ashen_colossus_death_row.png` | Slam-волны + тлеющие зоны после ударов, редкий radial burst, энрейдж <25% HP (быстрее, шире волны). Визуально: `move`, `attack`/`attack_primary`, `death`, `skill_molten_slam`, `skill_armor_pulse` + `attack_*` aliases | Реализовано |
-| `bloodthorn_lion` | Кровавый Шипастый Лев | `scenes/BossBloodthornLion.tscn` | Новый боссовый хищник (SCRUM-794, design SCRUM-779) | Live static `assets/sprites/bosses/boss_bloodthorn_lion.png` (upscale 256→512 из single-view кандидата `assets/sprites/bosses/pixellab_candidates/bloodthorn_lion/bloodthorn_lion_pixellab_alpha.png`); full-frame rows — Animator follow-up | Прыжки-рывки (dash-pounce), radial burst шипов, колючие `BossRiftZone` bleed-зоны, уникальная `BloodthornSpikeRing` (кольцо с проходом), enrage <35% HP. Визуально пока static-sprite fallback | Runtime реализован (SCRUM-794); **вне случайной route-ротации** до QA-gated follow-up; full-frame анимация — Animator |
-| `secret_ascension_boss` | Secret Ascension Boss | `scenes/BossSecretAscension.tscn` | Post-Act-3 max-Ascension capstone boss | Design source/runtime candidate `assets/sprites/bosses/secret_ascension_boss.png`; source pack `docs/design/references/bosses/secret_ascension_boss/`; telegraphs `assets/sprites/effects/secret_ascension_boss_*_telegraph.png` | `SecretBossSectorRing`, delayed `BossRiftZone` eruptions, phase-2 adds/pressure at 50% HP, phase 3 below 25% HP | SCRUM-539 Design source pack done; animation/runtime integration handoff pending |
+| `rift_warden` | Страж Разлома | `scenes/BossWarden.tscn` | Финальный босс контроля | `assets/sprites/bosses/boss_rift_warden.png`; full-frame `assets/sprites/bosses/full_frame/rift_warden_spriteframes.tres`; SCRUM-865 PixelLab object `ab1c7701-3ee7-4c7c-8842-22a7def87f08` | Залпы, зоны разлома, призыв, щит, увороты. Визуально: `move`, `attack`/`attack_primary`, `death`, `skill_gravity_well`, `skill_rift_zone` + `attack_*` aliases | Реализовано |
+| `disk_devourer` | Пожиратель Диска | `scenes/BossDiskDevourer.tscn` | Финальный босс давления | `assets/sprites/bosses/boss_disk_devourer.png`; full-frame `assets/sprites/bosses/full_frame/disk_devourer_spriteframes.tres`; SCRUM-865 PixelLab object `2df47b9e-a5f8-4f4a-b423-4aca73d8c3b3` | Рывки, disk slam AoE, radial burst, enrage. Визуально: `move`, `attack`/`attack_primary`, `death`, `skill_vampiric_bite`, `skill_rift_zone` + `attack_*` aliases | Реализовано |
+| `bone_archon` | Костяной Архонт | `scenes/BossBoneArchon.tscn` | Финальный босс-некромант | `assets/sprites/bosses/boss_bone_archon.png`; full-frame `assets/sprites/bosses/full_frame/bone_archon_spriteframes.tres`; SCRUM-865 PixelLab object `0335a72f-9905-4a18-ba1e-e91d2a9de9bc` | Волны скелетов (summon), веер черепов (volley), костяная стена (волна зон с проходом). Визуально: `move`, `attack`/`attack_primary`, `death`, `skill_skull_volley`, `skill_bone_prison` + `attack_*` aliases | Реализовано |
+| `brood_mother` | Матерь Роя | `scenes/BossBroodMother.tscn` | Финальный босс-рой | `assets/sprites/bosses/boss_brood_mother.png`; full-frame `assets/sprites/bosses/full_frame/brood_mother_spriteframes.tres`; SCRUM-865 PixelLab object `0f0db439-9b79-4b25-8951-988319c5e821` | Частый выводок мелких, паутинные зоны замедления (apply_web_slow), рывок в фазе 3. Визуально: `move`, `attack`/`attack_primary`, `death`, `skill_brood_spawn`, `skill_web_zone` + `attack_*` aliases | Реализовано |
+| `ashen_colossus` | Пепельный Колосс | `scenes/BossAshenColossus.tscn` | Финальный босс-гигант | `assets/sprites/bosses/boss_ashen_colossus.png`; full-frame `assets/sprites/bosses/full_frame/ashen_colossus_spriteframes.tres`; SCRUM-865 PixelLab object `eb2bfa56-9406-4855-96e6-dc05c9272494` | Slam-волны + тлеющие зоны после ударов, редкий radial burst, энрейдж <25% HP (быстрее, шире волны). Визуально: `move`, `attack`/`attack_primary`, `death`, `skill_molten_slam`, `skill_armor_pulse` + `attack_*` aliases | Реализовано |
+| `bloodthorn_lion` | Кровавый Шипастый Лев | `scenes/BossBloodthornLion.tscn` | Новый боссовый хищник (SCRUM-794, design SCRUM-779) | Live static `assets/sprites/bosses/boss_bloodthorn_lion.png`; full-frame `assets/sprites/bosses/full_frame/bloodthorn_lion_spriteframes.tres`; SCRUM-865 PixelLab object `1b923d8c-e83e-48a1-970e-4681f63ead0a` | Прыжки-рывки (dash-pounce), radial burst шипов, колючие `BossRiftZone` bleed-зоны, уникальная `BloodthornSpikeRing` (кольцо с проходом), enrage <35% HP. Визуально: `move`, `attack`/`attack_primary`, `death`, `skill_spike_ring`, `skill_rift_zone` + `attack_*` aliases | Runtime и full-frame реализованы; **вне случайной route-ротации** до QA-gated follow-up |
+| `secret_ascension_boss` | Secret Ascension Boss | `scenes/BossSecretAscension.tscn` | Post-final-Act-2 max-Ascension capstone boss | Design source/runtime candidate `assets/sprites/bosses/secret_ascension_boss.png`; source pack `docs/design/references/bosses/secret_ascension_boss/`; telegraphs `assets/sprites/effects/secret_ascension_boss_*_telegraph.png` | `SecretBossSectorRing`, delayed `BossRiftZone` eruptions, phase-2 adds/pressure at 50% HP, phase 3 below 25% HP | SCRUM-539 Design source pack done; animation/runtime integration handoff pending |
 | `skeletal_dragon` | Костяной Дракон | TBD | Planned flying skeletal dragon boss | Concept reference `docs/design/references/bosses/pixellab_roster_redraw_2026_06/openai_concepts/skeletal_dragon_concept_openai.png`; PixelLab candidate `assets/sprites/bosses/pixellab_candidates/skeletal_dragon/skeletal_dragon_pixellab_alpha.png` | Planned: flying skeletal pressure, bone/necromancy hazards, wing-safe telegraphs. Mechanics/scene not implemented. | SCRUM-779 Design-source candidate; backend/animation handoff pending |
-| `bloodthorn_lion` | Шипастый Кровавый Лев | TBD | Planned fast predatory blood-thorn boss | Concept reference `docs/design/references/bosses/pixellab_roster_redraw_2026_06/openai_concepts/bloodthorn_lion_concept_openai.png`; PixelLab candidates `assets/sprites/bosses/pixellab_candidates/bloodthorn_lion/bloodthorn_lion_pixellab_alpha.png`, `assets/sprites/bosses/pixellab_candidates/bloodthorn_lion_8dir/bloodthorn_lion_pixellab_south.png` | Planned: leap/pounce pressure, thorn bursts, blood-crystal trail. Mechanics/scene not implemented. | SCRUM-779 Design-source candidate; backend/animation handoff pending |
 
 SCRUM-352/SCRUM-394 Design source для full-frame rows хранится как
 `assets/sprites/{enemies,elites,bosses}/full_frame/<entity_id>_full_frame_sheet.png`
@@ -804,14 +835,15 @@ roster refresh и двух новых candidates. OpenAI image generation исп
 sprite candidates созданы через PixelLab MCP и сохранены под
 `assets/sprites/bosses/pixellab_candidates/`, с manifest/QA notes в
 `docs/design/references/bosses/pixellab_roster_redraw_2026_06/manifest.json`.
-SCRUM-793 (2026-07-02) promoted only the accepted current-boss candidates:
-`disk_devourer` and `brood_mother` now use those PixelLab single-view sources in
-their existing live full-frame runtime rows while preserving SpriteFrames state
-names, frame counts and boss gameplay callbacks. `secret_ascension_boss`,
-single-view `bloodthorn_lion`, `rift_warden`, `bone_archon`, `ashen_colossus`,
-`skeletal_dragon` and 8-dir `bloodthorn_lion` remain source-only/revise-needed
-for separate follow-up. QA evidence:
-`build/qa/scrum793_boss_pixellab_promotion/`.
+SCRUM-793 (2026-07-02) promoted only the accepted current-boss candidates
+`disk_devourer` and `brood_mother`. SCRUM-865 (2026-07-04) supersedes that
+partial runtime state for live bosses: all six live bosses now use PixelLab MCP
+8-direction source objects plus imported west-facing runtime full-frame rows in
+the existing Godot state contract. `skeletal_dragon` remains source-only/planned,
+and `bloodthorn_lion` still stays out of random route rotation until a separate
+QA-gated route-pool task. QA evidence:
+`build/qa/scrum793_boss_pixellab_promotion/` and
+`docs/design/previews/boss_pixellab_full_redraw_2026_07_runtime_contact.png`.
 
 ## Узлы Маршрутной Карты
 
@@ -883,7 +915,6 @@ for separate follow-up. QA evidence:
 | --- | --- | --- |
 | `damage` | Урон | `assets/sprites/ui/icons/derived/attr_damage.png` |
 | `magic_damage` | Магический урон | `assets/sprites/ui/icons/derived/attr_magic_damage.png` |
-| `sound_wave_damage` | Урон звуковой волны | `assets/sprites/ui/icons/derived/attr_sound_wave_damage.png` |
 | `attack_speed` | Скорость атаки | `assets/sprites/ui/icons/derived/attr_attack_speed.png` |
 | `crit_chance` | Шанс крита | `assets/sprites/ui/icons/derived/attr_crit_chance.png` |
 | `crit_damage_multiplier` | Множитель крита | `assets/sprites/ui/icons/derived/attr_crit_damage_multiplier.png` |
@@ -899,8 +930,8 @@ for separate follow-up. QA evidence:
 | `regeneration` | Регенерация | `assets/sprites/ui/icons/derived/attr_regeneration.png` |
 | `vampiric_amount` | Вампиризм | `assets/sprites/ui/icons/derived/attr_vampiric_amount.png` |
 | `vampiric_chance` | Шанс вампиризма | `assets/sprites/ui/icons/derived/attr_vampiric_chance.png` |
-| `dot_damage` | Урон DoT | `assets/sprites/ui/icons/derived/attr_dot_damage.png` |
-| `dot_speed` | Скорость тиков DoT | `assets/sprites/ui/icons/derived/attr_dot_speed.png` |
+| `dot_damage` | Периодический урон | `assets/sprites/ui/icons/derived/attr_dot_damage.png` |
+| `dot_speed` | Частота периодического урона | `assets/sprites/ui/icons/derived/attr_dot_speed.png` |
 | `aoe_radius` | Радиус AoE | `assets/sprites/ui/icons/derived/attr_aoe_radius.png` |
 | `aura_radius` | Радиус ауры | `assets/sprites/ui/icons/derived/attr_aura_radius.png` |
 | `buff_power` | Сила баффов | `assets/sprites/ui/icons/derived/attr_buff_power.png` |
@@ -993,6 +1024,7 @@ preview: `docs/design/previews/scrum451_minimal_metal_rollout_contact.png`.
 | `ui_hud_card_frame` | `assets/sprites/ui/frames/global/ui_hud_card_frame.png` | HP/XP/money HUD cards |
 | `ui_tooltip_frame` | `assets/sprites/ui/frames/global/ui_tooltip_frame.png` | Generic tooltip/system panel frame |
 | `ui_frame_unified_master` | `assets/sprites/ui/frames/unified/ui_frame_unified_master.png` | SCRUM-384 active thin metallic projectwide master frame border, `1024x1024` RGBA, transparent center; use 9-slice tile margins `72/72/72/72`, content margins `88/88/88/88`, strict safe rect `[88,88,848,848]`; paths preserved from SCRUM-373/SCRUM-382 |
+| `ui_gold_menu_shell` | `assets/sprites/ui/meta40/frame_border.png` | SCRUM-981 canonical hollow outer shell for Main Menu, Route Map, Rest, Upgrade, Battle Reward, Victory and Defeat; source `1536x1024`, texture/content rails `160/160/160/160`, `draw_center=false`; safe rects `[133,113,1014,494]` @1280×720, `[200,169,1520,742]` @1920×1080, `[267,225,2026,990]` @2560×1440. Codex/Level Up/Combat and specialist child screens are explicit exceptions. |
 | `ui_frame_unified_master_fill` | `assets/sprites/ui/frames/unified/ui_frame_unified_master_fill.png` | SCRUM-384 full panel-fill variant for rectangular surfaces where a quiet dark fill is acceptable |
 | `ui_frame_unified_inner_fill` | `assets/sprites/ui/frames/unified/ui_frame_unified_inner_fill.png` | SCRUM-384 `1024x1024` inner fill asset with alpha outside strict content zone |
 | `ui_frame_unified_ornament_top_bottom` | `assets/sprites/ui/frames/unified/ui_frame_unified_ornament_top.png`, `assets/sprites/ui/frames/unified/ui_frame_unified_ornament_bottom.png` | SCRUM-384 optional dragon overlays for large-window ornaments only; do not bake into 9-slice stretch zones and do not use on compact HUD, tooltip, chip or button surfaces |
@@ -1100,7 +1132,7 @@ Contextual UI direction 2026-06-12 is superseded by SCRUM-147. SCRUM-418 confirm
 | --- | --- | --- | --- |
 | `arena_2k_combat` | Боевая Арена 2K | Generated by `scripts/main.gd` | Прямоугольная арена 2560x1440 с камерой zoom 1.12 |
 | `main_menu_epic_battle` | Эпичный бой стартового экрана | `build/qa/scrum418/removed_assets_backup/assets/backgrounds/main_menu_epic_battle.png` | Legacy фон главного меню, удален из runtime `assets/` SCRUM-418 и сохранен как QA backup вне shipping scope |
-| `main_menu_epic_battle_v3` | Космический атлас стартового экрана | `assets/backgrounds/main_menu_epic_battle_v3.png` | Active 0.2.0 фон главного меню: 2560x1440 OpenAI-generated D&D dark fantasy cosmic atlas composition without baked UI, left button-safe column, readable title-safe area, pixel heroes, constellations and distant bosses |
+| `main_menu_epic_battle_v3` | From-scratch clean-art фон стартового экрана | `assets/backgrounds/main_menu_epic_battle_v3.png` | Active SCRUM-1001 фон главного меню: 2560x1440 OpenAI-generated clean cartoon-realistic D&D dark fantasy composition without baked UI, regenerated from scratch without previous screen/background reference input, using current runtime character/boss sprite references only, with left button-safe column and readable title-safe area |
 | `ui_backdrop_system_cathedral` | System/Codex/Settings backdrop | `assets/backgrounds/ui/ui_backdrop_system_cathedral.png` | Active for `system`, `settings`, `codex`, `hero_select`, `weapon_select`, `pause_stats`, `meta_tree`, `campfire` |
 | `ui_backdrop_merchant_archive` | Shop backdrop | `assets/backgrounds/ui/ui_backdrop_merchant_archive.png` | Active for `shop` |
 | `ui_backdrop_arcane_lab` | Level-up/Magic/Meta backdrop | `assets/backgrounds/ui/ui_backdrop_arcane_lab.png` | Active for `event`, `upgrade`, `level_up`, `meta_progression` |
@@ -1148,6 +1180,47 @@ SCRUM-335 runtime VFX coverage: `enemy_magic_projectile` дополнитель�
 
 SCRUM-337 обновил сами projectile/VFX PNG как часть full attack VFX art pass: `enemy_projectile_magic_64.png` и `player_projectile_spark_64.png` остаются теми же canonical ID/path, но получили новый painterly D&D/dark-fantasy raster treatment с прозрачным фоном.
 
+SCRUM-1066 supersedes the single player-spark runtime contract for canonical
+weapons. `scripts/projectile_visual_registry.gd` consumes the accepted
+SCRUM-1065 manifest through its export-safe normalized copy
+`assets/data/projectile_visual_profiles.json`, keyed by canonical `weapon_id`, and validates all
+20 mapped profiles before use. They resolve existing
+`res://assets/sprites/projectiles/player/**` textures; the other 31 inventory
+rows are intentionally non-projectile. `void_orb.png` and
+`player_projectile_spark_64.png` are forbidden fallbacks for registered player
+projectile weapons; the old scene remains only as a profile-driven legacy API.
+
+SCRUM-1065 добавляет канонический PixelLab-first player-projectile pack вместо
+универсального фиолетового orb. Полный machine-readable inventory находится в
+`docs/design/references/SCRUM-1065_player_projectiles/manifest.json`: 17/17
+классов, 51/51 selectable weapons, 20 flying/projectile-like visual profiles и
+31 механически обоснованный `intentional_non_projectile`. Production PNG лежат
+под `assets/sprites/projectiles/player/<character_id>/`; это Design handoff для
+SCRUM-1066, поэтому runtime routing в этой задаче не менялся.
+
+| Projectile visual ID | Weapon | Runtime asset |
+| --- | --- | --- |
+| `soldier_arquebus_round` | `soldier_rifle` | `assets/sprites/projectiles/player/soldier/soldier_arquebus_round.png` |
+| `soldier_fuse_grenade` | `soldier_grenade` | `assets/sprites/projectiles/player/soldier/soldier_fuse_grenade.png` |
+| `thief_ricochet_coin` | `thief_coin_pouch` | `assets/sprites/projectiles/player/thief/thief_ricochet_coin.png` |
+| `thief_smoke_bomb` | `thief_smoke_bomb` | `assets/sprites/projectiles/player/thief/thief_smoke_bomb.png` |
+| `elementalist_meteor` | `elementalist_meteor_core` | `assets/sprites/projectiles/player/elementalist/elementalist_meteor.png` |
+| `sniper_shatter_round` | `sniper_shatter_rounds` | `assets/sprites/projectiles/player/sniper/sniper_shatter_round.png` |
+| `engineer_sentry_round` | `engineer_sentry_wrench` | `assets/sprites/projectiles/player/engineer/engineer_sentry_round.png` |
+| `dark_mage_mirror_page` | `dark_book` | `assets/sprites/projectiles/player/dark_mage/dark_mage_mirror_page.png` |
+| `dark_mage_cursed_skull` | `cursed_skull` | `assets/sprites/projectiles/player/dark_mage/dark_mage_cursed_skull.png` |
+| `dark_mage_chain_bolt` | `dark_wand` | `assets/sprites/projectiles/player/dark_mage/dark_mage_chain_bolt.png` |
+| `assassin_void_chakram` | `chakrams` | `assets/sprites/projectiles/player/assassin/assassin_void_chakram.png` |
+| `ranger_moon_bolt` | `moon_crossbow` | `assets/sprites/projectiles/player/ranger/ranger_moon_bolt.png` |
+| `ranger_storm_arrow` | `storm_longbow` | `assets/sprites/projectiles/player/ranger/ranger_storm_arrow.png` |
+| `doctor_restore_potion` | `restore_potion` | `assets/sprites/projectiles/player/doctor/doctor_restore_potion.png` |
+| `doctor_plague_syringe` | `plague_syringe` | `assets/sprites/projectiles/player/doctor/doctor_plague_syringe.png` |
+| `chemist_blast_powder` | `blast_powder` | `assets/sprites/projectiles/player/chemist/chemist_blast_powder.png` |
+| `chemist_acid_flask` | `acid_flask` | `assets/sprites/projectiles/player/chemist/chemist_acid_flask.png` |
+| `druid_briar_seed` | `briar_staff` | `assets/sprites/projectiles/player/druid/druid_briar_seed.png` |
+| `druid_spectral_raven` | `raven_totem` | `assets/sprites/projectiles/player/druid/druid_spectral_raven.png` |
+| `biologist_sample_dart` | `biologist_sample_injector` | `assets/sprites/projectiles/player/biologist/biologist_sample_dart.png` |
+
 ## Sprite QA Notes
 
 Активные спрайты персонажей, стандартных монстров, элиток, боссов, оружия, projectiles, pickups, route icons и UI icons проходят quality-audit перед сдачей визуальных задач. После аудита 2026-06-10 у `assets/sprites/enemies/enemy_suicide_runner.png` удален лишний правый фрагмент текстуры; активные pickup/player projectile больше не используют Polygon2D-placeholder как видимый слой.
@@ -1163,7 +1236,7 @@ SCRUM-269 read-only asset/image cleanup audit 2026-06-14: отчет `docs/desig
 | Группа | ID | Каноническая папка | Статус |
 | --- | --- | --- | --- |
 | Базовые характеристики | `strength`, `agility`, `intelligence`, `perception`, `energy`, `knowledge`, `endurance`, `leadership` | `assets/sprites/ui/icons/stats/` | Реализовано |
-| Производные параметры | `damage`, `magic_damage`, `sound_wave_damage`, `crit_chance`, `crit_damage_multiplier`, `attack_speed`, `dodge`, `move_speed`, `defense`, `absorb`, `health_point`, `knockback_distance`, `summon_amount`, `attack_range`, `range_multiplier`, `regeneration`, `vampiric_amount`, `vampiric_chance`, `dot_damage`, `dot_speed`, `aoe_radius`, `aura_radius`, `buff_power`, `knockback_power`, `projectile_speed`, `ultimate_multiplier`, `pickup_radius` | `assets/sprites/ui/icons/derived/` | Реализовано |
+| Производные параметры | `damage`, `magic_damage`, `crit_chance`, `crit_damage_multiplier`, `attack_speed`, `dodge`, `move_speed`, `defense`, `absorb`, `health_point`, `knockback_distance`, `summon_amount`, `attack_range`, `range_multiplier`, `regeneration`, `vampiric_amount`, `vampiric_chance`, `dot_damage`, `dot_speed`, `aoe_radius`, `aura_radius`, `buff_power`, `knockback_power`, `projectile_speed`, `ultimate_multiplier`, `pickup_radius` | `assets/sprites/ui/icons/derived/` | Реализовано |
 | HUD ресурсы | `hp`, `xp`, `money` | `assets/sprites/ui/hud/` | Реализовано |
 
 Escape stats menu, level-up reward cards и combat HUD должны брать иконки только через этот registry. Финальный PNG asset pack реализован; code-native fallback не является целевым визуальным состоянием.
@@ -1213,86 +1286,209 @@ Escape stats menu, level-up reward cards и combat HUD должны брать �
 
 ## Артефакты
 
-Текущие артефакты определены в `ProgressionData.ARTIFACTS`. Если артефакт переименовывается для UI, его `id` должен остаться стабильным или миграция должна быть явно описана в задаче.
+SCRUM-960: универсальный пул переехал на **семьи с роллом редкости** (`rarity_scaling: true`;
+контракт — `docs/design/systems/artifact_system_matrix.md` §1-2). Тир-канон: **т1 = обычный
+(cost 30), т2 = редкий (55), т3 = эпический (95)**. Тир семьи роллится при выдаче
+(`ProgressionData.materialize_family_offer`): reward/shop/события — нормализованные
+`TIER_WEIGHTS` (≈0.64/0.29/0.08), элитка/сундук — с depth-весом глубины, босс — фиксированно т3.
+Корень записи семьи = т1-база для legacy-читателей. Если артефакт переименовывается для UI,
+его `id` должен остаться стабильным или миграция должна быть явно описана в задаче.
 
-| ID | Текущее имя | Роль |
+SCRUM-956 закрепляет player-facing naming без смены id: `red_whetstone` =
+«Точильный камень», `field_kit` = «Полевой бинт», `magnetic_buckle` =
+«Магнитный талисман», `fast_boots` = «Легкие сапоги», `hawk_lens` = «Линза
+охоты». `quickstring` остаётся отдельным артефактом «Быстрая струна»;
+«Масло темпа» — магазинный `shop_weapon_cooldown`, «Пыльный артефакт» —
+магазинный `shop_artifact`. Отдельного `dusty_artifact` не существует.
+
+### Универсальные семьи (32, rarity_scaling)
+
+8 семей базовых статов (+2/+4/+7):
+
+| ID | Имя | Стат |
 | --- | --- | --- |
-| `warrior_charm` | Warrior Charm | +2 Сила |
-| `fox_boots` | Fox Boots | +2 Ловкость |
-| `glass_orb` | Glass Orb | +2 Интеллект |
-| `hawk_lens` | Hawk Lens | +2 Восприятие |
-| `ember_core` | Ember Core | +2 Энергия |
-| `old_codex` | Old Codex | +2 Знание |
-| `stone_heart` | Stone Heart | +2 Выносливость |
-| `banner_seed` | Banner Seed | +2 Лидерство |
-| `red_whetstone` | Red Whetstone | +1 Сила, +1 Ловкость |
-| `star_compass` | Star Compass | +1 Восприятие, +1 Знание |
-| `living_root` | Living Root | +1 Выносливость, +1 Энергия |
-| `captains_coin` | Captain's Coin | +1 Лидерство, +1 Сила |
-| `quickstring` | Quickstring | +15% attack speed |
-| `heavy_totem` | Heavy Totem | +25% max HP, -5% move speed |
-| `splinter_gloves` | Splinter Gloves | +20% damage |
-| `wide_sigil` | Wide Sigil | +20% attack range |
-| `swift_ink` | Swift Ink | +12% move speed |
-| `summoners_bell` | Summoner's Bell | +1 maximum summon |
-| `blood_sigil` | Кровавая печать | Берсерк: damage и max HP |
-| `void_ink` | Чернила пустоты | Темный маг: magic damage и AoE |
-| `echo_pick` | Медиатор эха | Гитарист: attack speed и knockback |
-| `sturdy_amulet` | Крепкий амулет | +24 max HP |
-| `fast_boots` | Быстрые сапоги | +10% move speed |
-| `magnetic_buckle` | Магнитная пряжка | +55 pickup radius |
-| `silver_coin` | Серебряная монета | +25% money gain |
-| `survival_manual` | Учебник выживания | +22% XP gain |
-| `cracked_shield` | Треснувший щит | +12% defense, -6% move speed |
-| `sharp_talisman` | Острый талисман | +8% crit chance |
-| `jagged_blade` | Зазубренное лезвие | Берсерк: melee damage |
-| `heavy_grip` | Тяжелая рукоять | Берсерк: knockback, меньше attack speed |
-| `war_belt` | Боевой ремень | Берсерк: AoE radius |
-| `warriors_rage` | Ярость воина | Берсерк: damage, меньше max HP |
-| `dark_crystal` | Темный кристалл | Темный маг: magic damage |
-| `ash_page` | Пепельная страница | Темный маг: AoE radius и damage |
-| `skull_resonator` | Черепной резонатор | Темный маг: attack range |
-| `ink_candle` | Чернильная свеча | Темный маг: damage, меньше move speed |
-| `copper_string` | Медная струна | Гитарист: sound damage |
-| `broken_pick` | Сломанный медиатор | Гитарист: crit chance |
-| `loud_amp` | Громкий усилитель | Гитарист: aura/AoE radius |
-| `bass_cable` | Басовый кабель | Гитарист: knockback и AoE |
-| `cursed_crown` | Проклятая корона | +30% damage, -18% max HP |
-| `fragile_heart` | Хрупкое сердце | +25% attack speed, -10% defense |
-| `greedy_purse` | Жадный кошелек | +45% money gain, enemies +15% HP |
-| `burning_shard` | Горящий осколок | +20% AoE radius, -20% healing |
-| `golden_route_mark` | Золотая метка пути | +15% XP gain и money gain |
-| `glass_edge` | Стеклянная кромка | +20% crit damage, -8 max HP |
-| `sacrifice_seal` | Печать жертвы | +30% crit chance, -22% max HP |
-| `hungry_amulet` | Голодный амулет | +85% money gain, -35% healing |
-| `berserk_totem` | Тотем берсерка | +60% damage, -20% move speed |
-| `focus_lens` | Линза фокуса | +70% range, -25% AoE radius |
-| `stone_hide` | Каменная шкура | +40% defense, -25% attack speed |
-| `field_kit` | Полевой набор | Active on room clear: heal 5% max HP |
-| `vital_siphon` | Живой сифон | Active on kill: heal 1% max HP |
-| `powder_charge` | Пороховой заряд | Active on kill: 10% corpse explosion chance |
-| `bulwark_echo` | Эхо бастиона | Active on hit: 16% pulse chance |
-| `duelist_spur` | Шпора дуэлянта | Active on crit: +22% move speed burst |
+| `warrior_charm` | Оберег воина | Сила |
+| `fox_boots` | Лисьи сапоги | Ловкость |
+| `glass_orb` | Стеклянная сфера | Интеллект |
+| `hawk_lens` | Линза охоты | Восприятие |
+| `ember_core` | Тлеющее ядро | Энергия |
+| `old_codex` | Ветхий кодекс | Знание |
+| `stone_heart` | Каменное сердце | Выносливость |
+| `banner_seed` | Семя знамени | Лидерство |
+
+24 семьи производных атрибутов (ключ эффекта = ключ level-up карточки):
+
+| ID | Имя | Ключ эффекта | т1 / т2 / т3 |
+| --- | --- | --- | --- |
+| `splinter_gloves` | Перчатки осколков | `damage_multiplier` | ×1.10 / ×1.18 / ×1.30 |
+| `quickstring` | Быстрая струна | `attack_speed_multiplier` | ×1.10 / ×1.18 / ×1.30 |
+| `sturdy_amulet` | Крепкий амулет | `max_health_flat` | +15 / +25 / +40 |
+| `fast_boots` | Легкие сапоги | `move_speed_multiplier` | ×1.10 / ×1.18 / ×1.30 |
+| `battle_fan` | Боевой веер | `sector_multiplier` | ×1.10 / ×1.18 / ×1.30 |
+| `magnetic_buckle` | Магнитный талисман | `pickup_radius_flat` | +35 / +55 / +90 |
+| `iron_scale` | Железная чешуя | `defense_flat` | +0.10 / +0.18 / +0.30 |
+| `arcane_prism` | Чародейская призма | `magic_damage_multiplier` | ×1.10 / ×1.18 / ×1.30 |
+| `ram_horn` | Рог тарана | `knockback_multiplier` | ×1.10 / ×1.18 / ×1.30 |
+| `sharp_talisman` | Острый талисман | `crit_chance_flat` | +0.10 / +0.18 / +0.30 |
+| `executioner_edge` | Грань палача | `crit_damage_flat` | +0.10 / +0.18 / +0.30 |
+| `ghost_ribbon` | Лента призрака | `dodge_flat` | +0.10 / +0.18 / +0.30 |
+| `wide_sigil` | Дальняя печать | `range_multiplier` | ×1.10 / ×1.18 / ×1.30 |
+| `venom_vial` | Флакон отравы | `dot_damage_flat` | +2 / +4 / +6 |
+| `plague_metronome` | Чумной метроном | `dot_speed_flat` | +0.2 / +0.3 / +0.5 |
+| `falcon_feather` | Перо сокола | `projectile_speed_flat` | +70 / +110 / +180 |
+| `wide_halo` | Широкий нимб | `aoe_radius_multiplier` | ×1.10 / ×1.18 / ×1.30 |
+| `war_banner` | Боевое знамя | `buff_power_flat` | +0.10 / +0.18 / +0.30 |
+| `summoners_bell` | Колокольчик призывателя | `summon_bonus` | +1.5 / +2.5 / +4 |
+| `aegis_shard` | Осколок эгиды | `absorb_flat` | +3 / +5 / +8 |
+| `troll_blood` | Кровь тролля | `regeneration_flat` | +1.0 / +1.6 / +2.6 |
+| `leech_fang` | Клык Пиявки | `vampiric_amount_flat` + `vampiric_heal_per_second_cap` | +0.75 / +1.25 / +2.0 (оба ключа) |
+| `thirsty_ruby` | Жаждущий рубин | `vampiric_chance_flat` | +0.10 / +0.18 / +0.30 |
+| `overcharge_rune` | Руна перегрузки | `ultimate_flat` | +0.10 / +0.18 / +0.30 |
+
+Иконки 15 новых семей и всех 85 классовых доставлены паком SCRUM-962
+(`artifact_<id>.png`, 256×256 RGBA). `swift_ink` удалён (полный дубль семьи
+`fast_boots`, поглощён ею — matrix §1.6), его иконка снята в SCRUM-961.
+
+### Сохранённые универсалы (37, без изменений)
+
+| ID | Имя | Роль | Тир |
+| --- | --- | --- | --- |
+| `red_whetstone` | Точильный камень | +3 Сила, +3 Ловкость | 1 |
+| `star_compass` | Звёздный компас | +3 Восприятие, +3 Знание | 1 |
+| `living_root` | Живой корень | +3 Выносливость, +3 Энергия | 1 |
+| `captains_coin` | Монета капитана | +3 Лидерство, +3 Сила | 1 |
+| `silver_coin` | Серебряная монета | +62% золота | 1 |
+| `survival_manual` | Учебник выживания | +55% опыта | 1 |
+| `heavy_totem` | Тяжёлый тотем | +62% max HP, −5% скорости движения | 2 |
+| `cracked_shield` | Треснувший щит | +30% защиты, −6% скорости движения | 2 |
+| `cursed_crown` | Проклятая корона | +75% урона, −18% max HP | 2 |
+| `fragile_heart` | Хрупкое сердце | +62% скорости атаки, −10% защиты | 2 |
+| `greedy_purse` | Жадный кошелек | +112% золота, враги +37% HP | 2 |
+| `burning_shard` | Горящий осколок | +50% радиуса атак и зон, −20% лечения | 2 |
+| `golden_route_mark` | Золотая метка пути | +37% опыта и +37% золота | 2 |
+| `glass_edge` | Стеклянная кромка | +50% урона крита, −8 max HP | 2 |
+| `sacrifice_seal` | Печать жертвы | +30% шанса крита, −22% max HP | 2 |
+| `hungry_amulet` | Голодный амулет | +85% золота, −35% лечения | 2 |
+| `berserk_totem` | Тотем берсерка | +60% урона, −20% скорости движения | 2 |
+| `focus_lens` | Линза фокуса | +70% дальности, −25% радиуса атак и зон | 2 |
+| `stone_hide` | Каменная шкура | +40% защиты, −25% скорости атаки | 2 |
+| `echo_core` | Эхо Разлома | Каждый 5-й удар — эхо-взрыв 80% урона по области | 3 |
+| `blood_pact` | Кровавый Рубеж | HP ниже 30% — +50% урона | 3 |
+| `leech_heart` | Сердце Пиявки | Убийство возвращает 2% максимального HP | 3 |
+| `thorn_pact` | Договор Шипов | Полученный урон отражается ×2 во врагов рядом | 3 |
+| `phantom_step` | Призрачный Шаг | Уворот дает +40% скорости движения на 2с | 3 |
+| `rift_key` | Ключ Разлома | +4 Восприятие, +4 Знание; реликвия тайной тропы финального разлома | 3 |
+
+Плюс 12 триггерных (`field_kit`, `vital_siphon`, `powder_charge`, `bulwark_echo`, `duelist_spur`,
+`guardian_bulwark`, `chain_spark`, `crit_impulse`, `breather_totem`, `counterwave_sigil`,
+`soul_harvest` (т3), `second_wind`) — канон в таблице «Триггерные» ниже.
+
+### Классовые артефакты (85 = 17 × 5, SCRUM-961)
+
+Открываются на **Возвышении 5** своего класса (`requires_ascension: 5`, гейт
+`is_reward_relevant` §1.4 матрицы — работает во всех сэмплерах: reward/shop/элитка/босс).
+Другим классам не выпадают; единственное исключение — `stolen_crest` (§5): на текущий
+забег добавляет в пул 2 случайных чужих классовых артефакта. Все — `class_affinity=[класс]`,
+cost по тиру (т1 30 / т2 55 / т3 95), без `affinity_mods`. Легаси классовые (16 id:
+`blood_sigil, jagged_blade, heavy_grip, war_belt, warriors_rage, void_ink, dark_crystal,
+ash_page, skull_resonator, ink_candle, echo_pick, copper_string, broken_pick, loud_amp,
+bass_cable, split_core`) удалены вместе с иконками (`swift_ink` поглощён `fast_boots` ещё
+в SCRUM-960, его иконка удалена здесь же).
+
+| ID | Имя | Класс | Т | Механика (кратко) |
+| --- | --- | --- | --- | --- |
+| `perfect_edge` | Идеальная грань | Ассасин | 2 | +15% шанс / +25% урон крита |
+| `shadow_twin` | Теневой двойник | Ассасин | 3 | ⚡ крит: теневой росчерк добивает область (45%) |
+| `venom_spool` | Ядовитая катушка | Ассасин | 2 | +2 тика яда струны, +5% уклонения |
+| `evasion_shroud` | Покров уклонения | Ассасин | 2 | +8% уклонения, спидбуст после уворота |
+| `return_arc_rune` | Руна обратной дуги | Ассасин | 3 | возврат чакрамов шире (+35%) и больнее (+30%) |
+| `crimson_grip` | Багровая рукоять | Берсерк | 3 | melee-стаки ярости: до 5 × (+2% урона, +1.5% темпа) |
+| `spectral_axe` | Призрачный топор | Берсерк | 2 | призрачный повтор взмаха (+25% followup) |
+| `hammer_weight` | Вес молота | Берсерк | 2 | слэм шире (+12%), полновесно до 6 целей |
+| `blood_roar` | Кровавый рык | Берсерк | 2 | ⚡ удар по себе: 30% шанс волны отталкивания |
+| `last_onslaught` | Последний натиск | Берсерк | 3 | ⚡ ниже 30% HP: +35% урона + щит-волна |
+| `spore_capacitor` | Споровый конденсатор | Биолог | 2 | кольца линзы замедляют 25%; +10% магии |
+| `sample_chain` | Цепь образцов | Биолог | 3 | дротик бьёт весь луч (70%), анализ шире |
+| `symbiote_sheath` | Симбиотическая оболочка | Биолог | 2 | хит семени +35%, сеть +2 тика |
+| `inhibitor_colony` | Колония торможения | Биолог | 2 | био-хиты: слоу 8%/стак, кап 3 |
+| `split_analysis` | Расщепленный анализ | Биолог | 3 | первичная цель сплэшит 40% двум соседям |
+| `lucky_coin` | Счастливая монета | Вор | 2 | +2 прыжка монеты, +1 краденое золото |
+| `magnetic_purse` | Магнитный кошель | Вор | 2 | +90 радиуса подбора, +10% золота |
+| `paralyzing_blade` | Парализующее лезвие | Вор | 3 | паралич-яд Кинжала дольше (+0.7с, кап 1.8с) |
+| `smoke_cache` | Дымный тайник | Вор | 2 | завеса +40% дольше, +12% уклонения |
+| `stolen_crest` | Украденный герб | Вор | 3 | 2 случайных чужих классовых в пул забега |
+| `overdrive_pick` | Медиатор овердрайва | Гитарист | 3 | рифф-серия: +10% урона, +12% темпа |
+| `bass_resonator` | Басовый резонатор | Гитарист | 2 | бас-аура +30%, +8% темпа |
+| `stage_amplifier` | Сценический усилитель | Гитарист | 2 | ампы +2.5с жизни, кап до 4 |
+| `feedback_loop` | Петля фидбэка | Гитарист | 3 | пульсы ампов: уязвимость 5%/стак, кап 3 |
+| `rhythm_counter` | Счетчик ритма | Гитарист | 2 | каждый 4-й каст повторяется (55%) |
+| `surgical_oath` | Хирургическая клятва | Доктор | 2 | +20% лечения, +2 drain-предела/с |
+| `bonesaw_teeth` | Зубья костяной пилы | Доктор | 2 | пила +30% шире, +8% хила с урона |
+| `plague_carrier` | Чумной носитель | Доктор | 3 | чума спредится со смертей (2.2с), +тики |
+| `restorative_vapor` | Восстановительный пар | Доктор | 3 | паровая зона: жжёт и лечит через drain |
+| `triage_protocol` | Протокол триажа | Доктор | 2 | ⚡ ниже 30% HP: следующий хил ×2.5, КД 12с |
+| `spirit_pack_banner` | Знамя духовной стаи | Друид | 2 | +20% поддержки, духи +15% урона |
+| `wolf_call` | Зов волков | Друид | 3 | +2 призыва; волки, melee-духи +20% |
+| `blue_totem` | Голубой тотем | Друид | 2 | тотем +25% урона и чаще; +10% звука |
+| `briar_seal` | Печать терновника | Друид | 2 | терновые зоны замедляют 20%; +тики |
+| `pack_alpha` | Альфа стаи | Друид | 3 | +40 радиуса аур, +15% поддержки, +1.5 призыва |
+| `turret_magazine` | Магазин турели | Инженер | 2 | турели живут по магазину 14+6 выстрелов |
+| `drone_gyroscope` | Гироскоп дрона | Инженер | 2 | +1 цель дрона, устройства +12% темпа |
+| `mine_satchel` | Минная сумка | Инженер | 3 | мины до срабатывания (кап 5), автоподрыв 6с |
+| `field_blueprint` | Полевой чертеж | Инженер | 3 | за 6 LDR: +1 кап устройств, +2 выстрела, +12% жизни мин |
+| `salvage_core` | Ядро утилизации | Инженер | 2 | отжившие устройства возвращают 35% КД |
+| `impact_string` | Ударная тетива | Рейнджер | 2 | +35% отталкивания лука |
+| `moon_splitter` | Лунный расщепитель | Рейнджер | 3 | болт ветвится в 4 цели (45%) |
+| `storm_piercer` | Грозовой пробойник | Рейнджер | 2 | +2 пробития заряженным, +15% дальности |
+| `root_snare` | Корневой капкан | Рейнджер | 3 | капканы вечны (кап 4): укоренение + кровотечение |
+| `hunters_mark` | Метка охотника | Рейнджер | 2 | обездвиженные/отброшенные: +25% урона |
+| `armor_protocol` | Бронепротокол | Робот | 2 | +5 поглощения, +8% защиты |
+| `anchor_core` | Ядро якоря | Робот | 2 | якорь +25% шире, тяга рядовых +35% |
+| `press_calibrator` | Калибратор пресса | Робот | 2 | коридор Пресса +30% шире |
+| `reactor_chronometer` | Реакторный хронометр | Робот | 3 | плавная ротация вентов, +10% темпа |
+| `repair_subroutine` | Ремонтная подпрограмма | Робот | 3 | ⚡ поглощённое копит заряд: +3 absorb на 5с |
+| `rebound_plate` | Отбойная пластина | Рыцарь | 2 | +40% отталкивания |
+| `triple_thrust` | Тройной укол | Рыцарь | 3 | копьё колет трижды (боковые 55% ±14°) |
+| `tower_slam` | Башенный удар | Рыцарь | 2 | конус щита +20%, +20% отталкивания |
+| `holy_chain` | Святая цепь | Рыцарь | 3 | спираль кистеня: +12%/каст, кап +36% |
+| `vanguard_oath` | Авангардная клятва | Рыцарь | 2 | +5% защиты; в стойке ещё +10% |
+| `prayer_beads` | Четки молитвы | Жрец | 2 | ⚡ старт боя: 6с +30% магии и лечения |
+| `reliquary_salvo` | Реликварный залп | Жрец | 3 | без лечения: залпы чаще, взрыв +20% |
+| `censer_vow` | Обет кадила | Жрец | 2 | пульс реже, но +45% шире и +35% больнее |
+| `twin_bell` | Двойной колокол | Жрец | 3 | взрывы у цели и жреца (55%), дедуп |
+| `martyr_shroud` | Покров мученика | Жрец | 2 | ⚡ ниже 30% HP: +12% защиты, +3 регена |
+| `longshot_scope` | Дальнобойный прицел | Снайпер | 3 | +3% урона за 100px, кап +30% |
+| `deadeye_round` | Патрон мертвого глаза | Снайпер | 3 | дальняя цель + терминальный взрыв 45% |
+| `spotter_mark` | Метка наводчика | Снайпер | 2 | зона на 35% быстрее, +1 удар |
+| `shatter_drum` | Барабан осколков | Снайпер | 2 | +2 осколка |
+| `clean_line` | Чистая линия | Снайпер | 2 | +120 скорости снарядов, +12% дальности |
+| `second_volley` | Второй залп | Солдат | 3 | 12% шанс дубля попадания (50%) |
+| `arquebus_shrapnel` | Шрапнель аркебузы | Солдат | 2 | коридор +25%, соседям больше |
+| `long_fuse` | Длинный фитиль | Солдат | 2 | фитиль +0.35с: взрыв +50%, радиус +10% |
+| `bayonet_trigger` | Спуск штыка | Солдат | 2 | 35% шанс пули по линии (420, 70%) |
+| `battle_doctrine` | Боевой устав | Солдат | 3 | дубли на пулях/гранатах/штыке, +6% шанс |
+| `chain_wand` | Цепная палочка | Тёмный маг | 2 | первые 3 пробития лопаются (35%, r70) |
+| `curse_font` | Купель проклятий | Тёмный маг | 2 | +3 DoT за тик, +0.35 тика/с |
+| `mirror_page` | Зеркальная страница | Тёмный маг | 3 | взрыв книги зеркалится (55%) через мага |
+| `void_hunger` | Голод пустоты | Тёмный маг | 3 | DoT спредится со смертей (2.5с) |
+| `black_bargain` | Черная сделка | Тёмный маг | 2 | +4 DoT за тик, +тики; −15% max HP |
+| `volatile_dust` | Летучая пыль | Химик | 2 | без облака: касты −22%, взрыв +25% |
+| `acid_catalyst` | Кислотный катализатор | Химик | 3 | лужа вешает перманентные DoT-стаки (кап 5) |
+| `clear_acid` | Прозрачная кислота | Химик | 1 | лужи прозрачнее с яркой кромкой, +25% жизни |
+| `tank_homunculus` | Гомункул-танк | Химик | 3 | +60% HP гомункула + провокация; +25% силы |
+| `reactor_homunculus` | Гомункул-реактор | Химик | 3 | неуязвимый реактор: волны DoT-стаков (кап 3) |
+| `fourth_ring` | Четвертое кольцо | Элементалист | 3 | 4-я орбита «земля»: физика + DoT + отброс |
+| `prismatic_cross` | Призматический крест | Элементалист | 3 | X-линии насквозь (дальняя часть 60%) |
+| `meteor_heart` | Сердце метеора | Элементалист | 2 | реже (+45% КД), центр +70%, кратер-DoT |
+| `mana_overflow` | Переполнение магии | Элементалист | 2 | +18% магии, +12% заряда ульты |
+| `elemental_recoil` | Стихийный отдачник | Элементалист | 2 | области толкают от кастера; +15% отталкивания |
 
 ## Тиры Артефактов
 
-Поле `tier` (1-3) есть у всех артефактов в `ProgressionData.ARTIFACTS` — третья арт-итерация рисует иконки «круче = сильнее» по этому полю. Поле `class_affinity` задает классовую привязку (пустой список = универсальный).
-
-- **Tier 2 (редкие, 26 шт.)**: `heavy_totem`, `blood_sigil`, `void_ink`, `echo_pick`, `cracked_shield`, `heavy_grip`, `warriors_rage`, `ash_page`, `ink_candle`, `bass_cable`, `cursed_crown`, `fragile_heart`, `greedy_purse`, `burning_shard`, `golden_route_mark`, `glass_edge`, `sacrifice_seal`, `hungry_amulet`, `berserk_totem`, `focus_lens`, `stone_hide`, `field_kit`, `vital_siphon`, `powder_charge`, `bulwark_echo`, `duelist_spur`.
-- **Tier 3 (легендарные, билдообразующие)**:
-
-| ID | Игровое имя | Механика |
-| --- | --- | --- |
-| `echo_core` | Эхо Разлома | Каждый 5-й удар — взрыв 80% урона по области вокруг цели |
-| `split_core` | Ядро Расщепления | Темный маг/Гитарист: +1 снаряд и луч всем атакам |
-| `blood_pact` | Кровавый Рубеж | HP ниже 30% — +50% урона |
-| `leech_heart` | Сердце Пиявки | Убийство возвращает 2% максимального HP |
-| `thorn_pact` | Договор Шипов | Полученный урон отражается x2 во врагов рядом |
-| `phantom_step` | Призрачный Шаг | Уворот дает +40% скорости движения на 2с |
-
-- `leech_fang` (Клык Пиявки) — Tier 2: +25% шанса вампиризма, +2 к силе вампиризма (источник vampiric-атрибутов).
-- Остальные артефакты — Tier 1 (эффекты усилены x2.5 от прежних).
-- Иконки всех tier-3 артефактов (`echo_core`, `split_core`, `blood_pact`, `leech_heart`, `thorn_pact`, `phantom_step`) пересозданы как уникальные SCRUM-340 magic-item PNG; временные копии больше не используются.
+Поле `tier` (1-3) есть у всех артефактов в `ProgressionData.ARTIFACTS`; канон имён:
+**обычный / редкий / эпический** (UI-лейблы приводит SCRUM-963). У семей корневой
+`tier: 1` — фактический тир оффера роллится при выдаче (см. выше). `class_affinity`
+задает классовую привязку (пустой список = универсальный).
 
 ### Триггерные (активные) артефакты — под-класс `active` (SCRUM-500)
 
@@ -1389,7 +1585,7 @@ remain authoritative.
 
 | Группа | ID / naming | Каноническая папка / файл | Статус |
 | --- | --- | --- | --- |
-| Artifact icons | `artifact_<artifact_id>.png` для всех `ProgressionData.ARTIFACTS`; 70 шт., 256x256 RGBA, transparent realistic epic D&D/tabletop fantasy raster magic items; QA preview `assets/sprites/ui/icons/artifact_realistic_dnd_preview.png`, SCRUM-606/609 contact `docs/design/previews/artifact_icons_606_609_contact.png` | `assets/sprites/ui/icons/artifacts/` | Реализовано (realistic D&D raster redraw 2026-06-12; SCRUM-606/609 icon integration 2026-06-28) |
+| Artifact icons | `artifact_<artifact_id>.png` для всех `ProgressionData.ARTIFACTS`; 71 шт., 256x256 RGBA, transparent realistic epic D&D/tabletop fantasy raster magic items; QA preview `assets/sprites/ui/icons/artifact_realistic_dnd_preview.png`, SCRUM-606/609 contact `docs/design/previews/artifact_icons_606_609_contact.png` | `assets/sprites/ui/icons/artifacts/` | Реализовано (realistic D&D raster redraw 2026-06-12; SCRUM-606/609 icon integration 2026-06-28; `rift_key` documented SCRUM-844) |
 | Shop-only item icons | `shop_<shop_item_id>.png` для всех `ProgressionData.SHOP_ITEMS` | `assets/sprites/ui/icons/shop/` | Реализовано |
 | Shop slot normal | `ui_shop_artifact_slot_frame` | `assets/sprites/ui/shop/ui_shop_artifact_slot_frame.png` | Реализовано |
 | Shop slot hover | `ui_shop_artifact_slot_hover` | `assets/sprites/ui/shop/ui_shop_artifact_slot_hover.png` | Реализовано |
@@ -1441,16 +1637,40 @@ Shop-only icons имеют прозрачный фон, размер `128x128`, 
 
 ## Звуковые Ассеты
 
+Бардовский пак SCRUM-966/967, интеграция SCRUM-968 (`scripts/audio_manager.gd`:
+`SFX_PATHS`/`MUSIC_META`). Slot-id экранов: `menu`/`route_map`/`shop` — алиасы
+на треки ниже; бой — `play_combat_music(kind, duration)`.
+
 | ID | Файл | Использование |
 | --- | --- | --- |
-| `sfx_hit` | `assets/audio/sfx_hit.wav` | Попадание по врагу |
-| `sfx_player_hit` | `assets/audio/sfx_player_hit.wav` | Урон по игроку |
-| `sfx_dodge` | `assets/audio/sfx_dodge.wav` | Уворот игрока |
-| `sfx_pickup_xp` | `assets/audio/sfx_pickup_xp.wav` | Подбор опыта |
-| `sfx_pickup_money` | `assets/audio/sfx_pickup_money.wav` | Подбор денег |
-| `sfx_level_up` | `assets/audio/sfx_level_up.wav` | Получение уровня |
-| `music_menu` | `assets/audio/music_menu.wav` | Меню, карта, небоевые экраны |
-| `music_combat` | `assets/audio/music_combat.wav` | Бой |
+| `hit` | `assets/audio/sfx/sfx_hit.ogg` | Попадание по врагу (physical/true) |
+| `hit_magic` | `assets/audio/sfx/sfx_hit_magic.ogg` | Попадание магией (`damage_type == "magic"`) |
+| `hit_dot` | `assets/audio/sfx/sfx_hit_dot.ogg` | Тик DoT (`damage_type == "dot"`) |
+| `player_hit` | `assets/audio/sfx/sfx_player_hit.ogg` | Урон по игроку |
+| `dodge` | `assets/audio/sfx/sfx_dodge.ogg` | Уворот игрока |
+| `pickup_xp` | `assets/audio/sfx/sfx_pickup_xp.ogg` | Подбор опыта |
+| `pickup_money` | `assets/audio/sfx/sfx_pickup_money.ogg` | Подбор денег |
+| `level_up` | `assets/audio/sfx/sfx_level_up.ogg` | Получение уровня |
+| `purchase` | `assets/audio/sfx/sfx_purchase.ogg` | Успешная покупка (вызовы — ui_screens-хвост SCRUM-968) |
+| `ui_click` | `assets/audio/sfx/sfx_ui_click.ogg` | Подтверждение кнопки (ui_screens-хвост) |
+| `ui_back` | `assets/audio/sfx/sfx_ui_back.ogg` | Назад/отмена (ui_screens-хвост) |
+| `ui_error` | `assets/audio/sfx/sfx_ui_error.ogg` | Отказ действия (ui_screens-хвост) |
+| `artifact_reveal` | `assets/audio/sfx/sfx_artifact_reveal.ogg` | Показ артефакт-награды (ui_screens-хвост) |
+| `boss_phase` | `assets/audio/sfx/sfx_boss_phase.ogg` | Смена фазы босса (boss.gd) |
+| `low_hp_pulse` | `assets/audio/sfx/sfx_low_hp_pulse.ogg` | Луп при HP<30% (`set_sfx_loop`, player.gd) |
+| `music_menu_tavern_warm` | `assets/audio/music/music_menu_tavern_warm.ogg` | Меню и мета-экраны (alias `menu`) |
+| `music_route_map_bard_journey` | `assets/audio/music/music_route_map_bard_journey.ogg` | Карта маршрута (alias `route_map`) |
+| `music_shop_campfire_inn` | `assets/audio/music/music_shop_campfire_inn.ogg` | Safe-узлы: магазин/костёр/событие/сундук (alias `shop`) |
+| `music_combat_bardic_skirmish_a` | `assets/audio/music/music_combat_bardic_skirmish_a.ogg` | Обычный бой, ротация №1 |
+| `music_combat_bardic_skirmish_b` | `assets/audio/music/music_combat_bardic_skirmish_b.ogg` | Обычный бой, ротация №2 |
+| `music_combat_ruined_courtyard` | `assets/audio/music/music_combat_ruined_courtyard.ogg` | Обычный бой, ротация №3 (акт 2 приоритет) |
+| `music_combat_fey_marsh` | `assets/audio/music/music_combat_fey_marsh.ogg` | Обычный бой, ротация №4 (без актового приоритета) |
+| `music_elite_duel_300` | `assets/audio/music/music_elite_duel_300.ogg` | Элитный бой (300 c) |
+| `music_boss_battle_300` | `assets/audio/music/music_boss_battle_300.ogg` | Промежуточный босс акта 1 (300 c) |
+| `music_final_boss_crescendo_300` | `assets/audio/music/music_final_boss_crescendo_300.ogg` | Финальный босс акта 2 / секретный босс (300 c) |
+| `music_sting_victory` | `assets/audio/music/music_sting_victory.ogg` | Стингер победы обычного боя |
+| `music_sting_victory_epic` | `assets/audio/music/music_sting_victory_epic.ogg` | Стингер победы над элиткой/боссом |
+| `music_sting_defeat` | `assets/audio/music/music_sting_defeat.ogg` | Стингер поражения |
 
 ## Правила Для Новых Сущностей
 
@@ -1467,7 +1687,7 @@ Shop-only icons имеют прозрачный фон, размер `128x128`, 
 
 | ID | Game name | Current scene | Role | Asset | Patterns | Status |
 | --- | --- | --- | --- | --- | --- | --- |
-| `secret_ascension_boss` | Secret Ascension Boss | `scenes/BossSecretAscension.tscn` | Post-Act-3 max-Ascension capstone boss | SCRUM-539 Design source pack: `assets/sprites/bosses/secret_ascension_boss.png`, `assets/sprites/effects/secret_ascension_boss_*_telegraph.png` | `SecretBossSectorRing`, delayed `BossRiftZone` eruptions, phase-2 adds/pressure at 50% HP, phase 3 below 25% HP | Backend implemented; final animation/runtime wiring pending |
+| `secret_ascension_boss` | Secret Ascension Boss | `scenes/BossSecretAscension.tscn` | Post-final-Act-2 max-Ascension capstone boss | SCRUM-539 Design source pack: `assets/sprites/bosses/secret_ascension_boss.png`, `assets/sprites/effects/secret_ascension_boss_*_telegraph.png` | `SecretBossSectorRing`, delayed `BossRiftZone` eruptions, phase-2 adds/pressure at 50% HP, phase 3 below 25% HP | Backend implemented; final animation/runtime wiring pending |
 
 ## SCRUM-723 Scene/Resource Reference Integrity Audit (0.2.0)
 

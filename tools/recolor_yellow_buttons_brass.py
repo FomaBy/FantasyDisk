@@ -6,9 +6,8 @@ pixels (hue 25..70deg, saturated, bright) move to the approved dark-brass band; 
 separation survives because the value map is monotonic (hover stays lighter than
 normal, pressed darker). Sizes/names/alpha stay 1:1 so margins and .import hold.
 
-Left untouched by decision (recorded in the task spec):
-  level_up_scrum682/ui_frame_lu682_card_hover.png — cream hover halo is focus
-  feedback, not a frame.
+level_up_scrum682-цели сняты: кит удалён при зачистке атлас-миграции
+(SCRUM-879..888), level-up рисуется атлас-чипами.
 """
 from __future__ import annotations
 
@@ -30,11 +29,6 @@ TARGETS = [
     "assets/sprites/ui/frames/minimal_metal_buttons/ui_btn_minimal_metal_utility_hover.png",
     "assets/sprites/ui/frames/minimal_metal_buttons/ui_btn_minimal_metal_utility_focus.png",
     "assets/sprites/ui/frames/minimal_metal_buttons/ui_btn_minimal_metal_utility_pressed.png",
-    # Level-up «Позже» (3 стейта) и кольцо портрета
-    "assets/sprites/ui/frames/level_up_scrum682/ui_btn_lu682_later.png",
-    "assets/sprites/ui/frames/level_up_scrum682/ui_btn_lu682_later_hover.png",
-    "assets/sprites/ui/frames/level_up_scrum682/ui_btn_lu682_later_pressed.png",
-    "assets/sprites/ui/frames/level_up_scrum682/ui_frame_lu682_portrait.png",
     # Кнопка «+» уровня в боевом HUD (тонкий золотой кант, приглушаем для единообразия)
     "assets/sprites/ui/frames/combat_hud/ui_btn_combat_level_up_plus.png",
     "assets/sprites/ui/frames/combat_hud/ui_btn_combat_level_up_plus_hover.png",

@@ -1,0 +1,148 @@
+{
+  "ok": true,
+  "zones": [
+    {
+      "id": "tab",
+      "rect": [
+        34,
+        19,
+        112,
+        18
+      ],
+      "ok": true,
+      "kind": "guide"
+    },
+    {
+      "id": "class_progress",
+      "rect": [
+        154,
+        19,
+        122,
+        18
+      ],
+      "ok": true,
+      "kind": "guide"
+    },
+    {
+      "id": "weapon_paths",
+      "rect": [
+        132,
+        70,
+        336,
+        18
+      ],
+      "ok": true,
+      "kind": "guide"
+    },
+    {
+      "id": "kind",
+      "rect": [
+        510,
+        69,
+        143,
+        12
+      ],
+      "ok": true,
+      "kind": "guide"
+    },
+    {
+      "id": "title",
+      "rect": [
+        510,
+        84,
+        143,
+        16
+      ],
+      "ok": true,
+      "kind": "guide"
+    },
+    {
+      "id": "weapon",
+      "rect": [
+        510,
+        104,
+        143,
+        14
+      ],
+      "ok": true,
+      "kind": "guide"
+    },
+    {
+      "id": "effect",
+      "rect": [
+        510,
+        136,
+        136,
+        48
+      ],
+      "ok": true,
+      "kind": "guide"
+    },
+    {
+      "id": "result",
+      "rect": [
+        510,
+        198,
+        136,
+        48
+      ],
+      "ok": true,
+      "kind": "guide"
+    },
+    {
+      "id": "progress",
+      "rect": [
+        510,
+        260,
+        65,
+        16
+      ],
+      "ok": true,
+      "kind": "guide"
+    },
+    {
+      "id": "price",
+      "rect": [
+        585,
+        260,
+        67,
+        16
+      ],
+      "ok": true,
+      "kind": "guide"
+    },
+    {
+      "id": "status",
+      "rect": [
+        510,
+        281,
+        143,
+        14
+      ],
+      "ok": true,
+      "kind": "guide"
+    },
+    {
+      "id": "buy",
+      "rect": [
+        510,
+        300,
+        143,
+        16
+      ],
+      "ok": true,
+      "kind": "guide"
+    },
+    {
+      "id": "reset",
+      "rect": [
+        34,
+        346,
+        168,
+        20
+      ],
+      "ok": true,
+      "kind": "guide"
+    }
+  ]
+}

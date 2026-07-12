@@ -1,0 +1,496 @@
+{
+  "ok": true,
+  "zones": [
+    {
+      "id": "settings_title",
+      "rect": [
+        264,
+        99,
+        294,
+        54
+      ],
+      "ok": true,
+      "kind": "text",
+      "font_size": 36,
+      "lines": [
+        "Настройки"
+      ],
+      "text_bbox": [
+        264,
+        108,
+        180,
+        37
+      ]
+    },
+    {
+      "id": "back",
+      "rect": [
+        1593,
+        105,
+        123,
+        54
+      ],
+      "ok": true,
+      "kind": "text",
+      "font_size": 28,
+      "lines": [
+        "Назад"
+      ],
+      "text_bbox": [
+        1612,
+        118,
+        85,
+        28
+      ]
+    },
+    {
+      "id": "tab_screen",
+      "rect": [
+        564,
+        200,
+        153,
+        54
+      ],
+      "ok": true,
+      "kind": "text",
+      "font_size": 22,
+      "lines": [
+        "Экран"
+      ],
+      "text_bbox": [
+        608,
+        215,
+        66,
+        24
+      ]
+    },
+    {
+      "id": "tab_sound",
+      "rect": [
+        777,
+        200,
+        153,
+        54
+      ],
+      "ok": true,
+      "kind": "text",
+      "font_size": 22,
+      "lines": [
+        "Звук"
+      ],
+      "text_bbox": [
+        828,
+        215,
+        50,
+        24
+      ]
+    },
+    {
+      "id": "tab_controls",
+      "rect": [
+        990,
+        200,
+        153,
+        54
+      ],
+      "ok": true,
+      "kind": "text",
+      "font_size": 18,
+      "lines": [
+        "Управление"
+      ],
+      "text_bbox": [
+        1014,
+        216,
+        105,
+        21
+      ]
+    },
+    {
+      "id": "tab_game",
+      "rect": [
+        1203,
+        200,
+        153,
+        54
+      ],
+      "ok": true,
+      "kind": "text",
+      "font_size": 22,
+      "lines": [
+        "Игра"
+      ],
+      "text_bbox": [
+        1254,
+        215,
+        52,
+        24
+      ]
+    },
+    {
+      "id": "game_title",
+      "rect": [
+        444,
+        338,
+        510,
+        45
+      ],
+      "ok": true,
+      "kind": "text",
+      "font_size": 32,
+      "lines": [
+        "Песочница забега"
+      ],
+      "text_bbox": [
+        444,
+        344,
+        276,
+        34
+      ]
+    },
+    {
+      "id": "game_status",
+      "rect": [
+        1149,
+        338,
+        321,
+        45
+      ],
+      "ok": true,
+      "kind": "text",
+      "font_size": 22,
+      "lines": [
+        "Обычный режим · 1.0×"
+      ],
+      "text_bbox": [
+        1235,
+        348,
+        235,
+        25
+      ]
+    },
+    {
+      "id": "game_desc",
+      "rect": [
+        444,
+        393,
+        1026,
+        36
+      ],
+      "ok": true,
+      "kind": "text",
+      "font_size": 21,
+      "lines": [
+        "Множители сохраняются сразу и применяются со следующего забега."
+      ],
+      "text_bbox": [
+        444,
+        399,
+        707,
+        24
+      ]
+    },
+    {
+      "id": "game_warning",
+      "rect": [
+        444,
+        438,
+        1026,
+        40
+      ],
+      "ok": true,
+      "kind": "text",
+      "font_size": 19,
+      "lines": [
+        "При значениях не 1.0× обычный прогресс, достижения и релизные баланс-замеры отключены."
+      ],
+      "text_bbox": [
+        444,
+        446,
+        856,
+        23
+      ]
+    },
+    {
+      "id": "label_monster_hp",
+      "rect": [
+        510,
+        498,
+        435,
+        42
+      ],
+      "ok": true,
+      "kind": "text",
+      "font_size": 21,
+      "lines": [
+        "Здоровье монстров"
+      ],
+      "text_bbox": [
+        510,
+        508,
+        199,
+        23
+      ]
+    },
+    {
+      "id": "value_monster_hp",
+      "rect": [
+        990,
+        498,
+        128,
+        42
+      ],
+      "ok": true,
+      "kind": "text",
+      "font_size": 21,
+      "lines": [
+        "1.0×"
+      ],
+      "text_bbox": [
+        1031,
+        510,
+        46,
+        19
+      ]
+    },
+    {
+      "id": "slider_monster_hp",
+      "rect": [
+        1140,
+        498,
+        315,
+        42
+      ],
+      "ok": true
+    },
+    {
+      "id": "label_monster_damage",
+      "rect": [
+        510,
+        566,
+        435,
+        42
+      ],
+      "ok": true,
+      "kind": "text",
+      "font_size": 21,
+      "lines": [
+        "Урон монстров"
+      ],
+      "text_bbox": [
+        510,
+        576,
+        153,
+        23
+      ]
+    },
+    {
+      "id": "value_monster_damage",
+      "rect": [
+        990,
+        566,
+        128,
+        42
+      ],
+      "ok": true,
+      "kind": "text",
+      "font_size": 21,
+      "lines": [
+        "1.0×"
+      ],
+      "text_bbox": [
+        1031,
+        578,
+        46,
+        19
+      ]
+    },
+    {
+      "id": "slider_monster_damage",
+      "rect": [
+        1140,
+        566,
+        315,
+        42
+      ],
+      "ok": true
+    },
+    {
+      "id": "label_player_damage",
+      "rect": [
+        510,
+        633,
+        435,
+        42
+      ],
+      "ok": true,
+      "kind": "text",
+      "font_size": 21,
+      "lines": [
+        "Урон игрока"
+      ],
+      "text_bbox": [
+        510,
+        642,
+        124,
+        23
+      ]
+    },
+    {
+      "id": "value_player_damage",
+      "rect": [
+        990,
+        633,
+        128,
+        42
+      ],
+      "ok": true,
+      "kind": "text",
+      "font_size": 21,
+      "lines": [
+        "1.0×"
+      ],
+      "text_bbox": [
+        1031,
+        644,
+        46,
+        19
+      ]
+    },
+    {
+      "id": "slider_player_damage",
+      "rect": [
+        1140,
+        633,
+        315,
+        42
+      ],
+      "ok": true
+    },
+    {
+      "id": "label_player_attack_speed",
+      "rect": [
+        510,
+        700,
+        435,
+        42
+      ],
+      "ok": true,
+      "kind": "text",
+      "font_size": 21,
+      "lines": [
+        "Скорость атак игрока"
+      ],
+      "text_bbox": [
+        510,
+        710,
+        216,
+        23
+      ]
+    },
+    {
+      "id": "value_player_attack_speed",
+      "rect": [
+        990,
+        700,
+        128,
+        42
+      ],
+      "ok": true,
+      "kind": "text",
+      "font_size": 21,
+      "lines": [
+        "1.0×"
+      ],
+      "text_bbox": [
+        1031,
+        712,
+        46,
+        19
+      ]
+    },
+    {
+      "id": "slider_player_attack_speed",
+      "rect": [
+        1140,
+        700,
+        315,
+        42
+      ],
+      "ok": true
+    },
+    {
+      "id": "label_monster_attack_speed",
+      "rect": [
+        510,
+        768,
+        435,
+        42
+      ],
+      "ok": true,
+      "kind": "text",
+      "font_size": 21,
+      "lines": [
+        "Скорость атак монстров"
+      ],
+      "text_bbox": [
+        510,
+        778,
+        245,
+        23
+      ]
+    },
+    {
+      "id": "value_monster_attack_speed",
+      "rect": [
+        990,
+        768,
+        128,
+        42
+      ],
+      "ok": true,
+      "kind": "text",
+      "font_size": 21,
+      "lines": [
+        "1.0×"
+      ],
+      "text_bbox": [
+        1031,
+        780,
+        46,
+        19
+      ]
+    },
+    {
+      "id": "slider_monster_attack_speed",
+      "rect": [
+        1140,
+        768,
+        315,
+        42
+      ],
+      "ok": true
+    },
+    {
+      "id": "reset",
+      "rect": [
+        1026,
+        836,
+        408,
+        36
+      ],
+      "ok": true,
+      "kind": "text",
+      "font_size": 22,
+      "lines": [
+        "Сбросить игровые настройки"
+      ],
+      "text_bbox": [
+        1080,
+        842,
+        301,
+        25
+      ]
+    }
+  ]
+}

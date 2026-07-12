@@ -1,0 +1,16 @@
+{
+  "jira": "SCRUM-1088",
+  "generator": "PixelLab MCP create_ui_asset",
+  "source_id": "fde0eec4-3323-47eb-9e29-cb23c048218f",
+  "name": "SCRUM-1088 Priest Level-Up Picker Reuse Mockup",
+  "status": "completed",
+  "source_size": [688, 384],
+  "source_file": "pixellab_level_up_picker_reuse_688x384.png",
+  "preview_file": "../../previews/scrum1088_priest_prayer_attribute_picker/mockup_688x384.png",
+  "runtime_promotion": "none; design evidence only",
+  "prompt": "Full-width 16:9 FantasyDisk UI layout layer that deliberately reuses the existing level-up attribute picker visual language: dark fantasy D&D dragon style, three equal ornate reward-card sockets, restrained gold title divider, no enclosing modal frame, no prayer-specific frame, no separate bottom action button, empty safe interiors, no text, letters, numbers or watermark.",
+  "alpha": "RGBA transparent outside the generated divider/card pieces",
+  "safe_zone_rule": "Runtime content is permitted only inside each card's dark inner field; all gold/ruby/metal ornament is forbidden.",
+  "sha256": "72a219dead7a6516fab6fc93bebf064f67d2a41c593f811a3859a151aeac29d8",
+  "qa": "PixelLab MCP config smoke PASS; exported PNG verified as 688x384 RGBA; visually inspected in Codex. Runtime Metal matrix at 1280x720, 1920x1080 and 2560x1440 uses the accepted Level Up builders and complete no-ellipsis effect summaries."
+}

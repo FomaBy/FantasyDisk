@@ -10,13 +10,13 @@ weapon_id = "sniper_shatter_rounds"
 display_name = "Осколочные Патроны"
 attack_mode = "sniper_split_round"
 damage_parameter = "damage"
-fire_interval = 1.08
+fire_interval = 0.55
 damage = 12.0
-attack_range = 820.0
-aoe_radius = 260.0
-beam_width = 38.0
-split_count = 3
-damage_falloff = 0.55
+attack_range = 380.0
+aoe_radius = 340.0
+beam_width = 24.0
+projectile_count = 6
+projectile_speed = 560.0
 visual_color = Color(0.5, 0.88, 1, 0.42)
 
 [node name="WeaponVisual" type="Sprite2D" parent="."]

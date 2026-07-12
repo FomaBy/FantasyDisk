@@ -10,6 +10,7 @@ func _initialize() -> void:
 	_test_enemy_projectile_sprite()
 	_test_enemy_sprite_paths()
 	_test_druid_wolf_ally_animation()
+	_test_druid_ghost_horizontal_ally_animations()
 	_test_character_full_frame_alpha_matte()
 	_test_full_frame_animation_registry()
 	_test_enemy_animation()
@@ -312,12 +313,12 @@ func _test_player_animation() -> void:
 		rig = player.get_node("VisualRoot/RigRoot") as Node2D
 		if body.sprite_frames == null or body.sprite_frames.resource_path != str(accepted_character_spriteframes[sheet_character_id]):
 			_fail("Expected %s to use its accepted SpriteFrames resource." % sheet_character_id)
-		if sheet_character_id == "knight":
-			if body.visible or rig.visible:
-				_fail("Expected %s to hide full-frame Body and legacy cutout RigRoot while the skeletal rig is live." % sheet_character_id)
-			_assert_skeletal_player_rig(player, sheet_character_id)
-		elif not body.visible or rig.visible:
+		if not body.visible or rig.visible:
 			_fail("Expected %s full-frame AnimatedSprite2D visible with hidden cutout RigRoot." % sheet_character_id)
+		if sheet_character_id == "knight":
+			# SCRUM-919: бой Рыцаря рендерит принятый PixelLab-пак; легаси
+			# скелетный риг (skeleton_parts) больше не подключается к рантайму.
+			_assert_knight_pixellab_combat_visual(player, body)
 		if body.scale != EXPECTED_PLAYER_COMBAT_VISUAL_SCALE or rig.get("base_scale") != EXPECTED_PLAYER_COMBAT_VISUAL_SCALE:
 			_fail("Expected %s visual paths to use SCRUM-823 combat scale %s." % [sheet_character_id, str(EXPECTED_PLAYER_COMBAT_VISUAL_SCALE)])
 		if sheet_character_id == "assassin" or sheet_character_id == "berserk" or sheet_character_id == "biologist" or sheet_character_id == "chemist" or sheet_character_id == "dark_mage" or sheet_character_id == "doctor" or sheet_character_id == "druid" or sheet_character_id == "elementalist" or sheet_character_id == "engineer" or sheet_character_id == "guitarist" or sheet_character_id == "knight" or sheet_character_id == "priest" or sheet_character_id == "ranger" or sheet_character_id == "robot" or sheet_character_id == "sniper" or sheet_character_id == "soldier" or sheet_character_id == "thief":
@@ -524,7 +525,7 @@ func _test_weapon_animation_timing_events(player: Node) -> void:
 	var grenade_weapon: Node = player.get("equipped_weapon")
 	grenade_weapon.set_process(false)
 	grenade_weapon.call("_emit_weapon_animation_event", player, "windup", 0.42, Vector2.RIGHT, {"delayed": true})
-	_assert_weapon_timing_event(events, "grenade_cook", "windup")
+	_assert_weapon_timing_event(events, "grenade_fuse", "windup")
 
 	player.configure_character("guitarist", "sound_amp")
 	var amp_weapon: Node = player.get("equipped_weapon")
@@ -534,11 +535,12 @@ func _test_weapon_animation_timing_events(player: Node) -> void:
 	_assert_weapon_timing_event(events, "amp", "deploy")
 	_assert_weapon_timing_event(events, "amp", "pulse")
 
+	# SCRUM-939: dark_wand — цепной снаряд (dark_chain_burst), каст даёт windup.
 	player.configure_character("dark_mage", "dark_wand")
-	var beam_weapon: Node = player.get("equipped_weapon")
-	beam_weapon.set_process(false)
-	beam_weapon.call("_emit_weapon_animation_event", player, "channel", 0.16, Vector2.RIGHT, {"beam_count": 2})
-	_assert_weapon_timing_event(events, "beam", "channel")
+	var chain_weapon: Node = player.get("equipped_weapon")
+	chain_weapon.set_process(false)
+	chain_weapon.call("_emit_weapon_animation_event", player, "windup", 0.12, Vector2.RIGHT, {"chain_targets": 3})
+	_assert_weapon_timing_event(events, "dark_chain_burst", "windup")
 
 	var last_event: Dictionary = player.get("last_weapon_animation_event")
 	if str(last_event.get("phase", "")) == "" or not last_event.has("duration") or not (last_event.get("metadata", {}) is Dictionary):
@@ -614,14 +616,15 @@ func _test_unique_attack_phase_pose_hooks(player: Node) -> void:
 	# Dark Mage/Knight body attack animation is out of scope here; their weapons
 	# still emit timing events, and body SpriteFrames stay idle/walk/move only.
 	var phase_samples := [
-		["guitarist", "electric_guitar", "sound_wave", "shoot", "windup"],
+		["guitarist", "electric_guitar", "riff_strip", "shoot", "windup"],
 		["guitarist", "bass_guitar", "pulse", "shoot", "pulse"],
 		["guitarist", "sound_amp", "amp", "shoot", "deploy"],
 		["assassin", "chakrams", "boomerang", "shoot", "windup"],
 		["assassin", "shadow_daggers", "stab_flurry", "shoot", "burst"],
 		["assassin", "venom_wire", "dot_beam", "cast", "channel"],
-		["ranger", "moon_crossbow", "beam", "cast", "channel"],
-		["ranger", "storm_longbow", "beam", "cast", "channel"],
+		# SCRUM-910/911: кит Рейнджера ушёл с beam на собственные режимы.
+		["ranger", "moon_crossbow", "moon_split_shot", "cast", "channel"],
+		["ranger", "storm_longbow", "storm_pierce_cone", "cast", "channel"],
 		["ranger", "hunter_trap", "trap", "shoot", "deploy"],
 		["doctor", "restore_potion", "drain_link", "cast", "channel"],
 		["doctor", "plague_syringe", "drain_link", "cast", "channel"],
@@ -632,9 +635,9 @@ func _test_unique_attack_phase_pose_hooks(player: Node) -> void:
 		["druid", "summon_amulet", "summon", "cast", "deploy"],
 		["druid", "briar_staff", "aoe_projectile", "cast", "windup"],
 		["druid", "raven_totem", "amp", "shoot", "deploy"],
-		["soldier", "soldier_rifle", "suppression_burst", "shoot", "burst"],
-		["soldier", "soldier_grenade", "grenade_cook", "shoot", "windup"],
-		["soldier", "soldier_bayonet", "bayonet_brace", "shoot", "windup"],
+		["soldier", "soldier_rifle", "arquebus_shot", "shoot", "windup"],
+		["soldier", "soldier_grenade", "grenade_fuse", "shoot", "windup"],
+		["soldier", "soldier_bayonet", "bayonet_cone", "shoot", "windup"],
 		["thief", "thief_coin_pouch", "coin_ricochet", "shoot", "windup"],
 		["thief", "thief_shadow_cloak", "shadow_backstab", "shoot", "windup"],
 		["thief", "thief_smoke_bomb", "smoke_bomb", "shoot", "windup"],
@@ -646,7 +649,7 @@ func _test_unique_attack_phase_pose_hooks(player: Node) -> void:
 		["sniper", "sniper_shatter_rounds", "sniper_split_round", "shoot", "windup"],
 		["priest", "priest_reliquary", "priest_sanctify", "shoot", "windup"],
 		["priest", "priest_censer", "priest_ward", "shoot", "pulse"],
-		["priest", "priest_chime", "priest_prayer_chain", "cast", "channel"],
+		["priest", "priest_chime", "priest_dual_toll", "cast", "channel"],
 		["biologist", "biologist_spore_lens", "bio_spore_bloom", "shoot", "pulse"],
 		["biologist", "biologist_sample_injector", "bio_sample_dart", "shoot", "pulse"],
 		["biologist", "biologist_symbiote_seed", "bio_symbiote_web", "cast", "channel"],
@@ -654,7 +657,7 @@ func _test_unique_attack_phase_pose_hooks(player: Node) -> void:
 		["robot", "robot_hydraulic_press", "robot_compression_line", "shoot", "windup"],
 		["robot", "robot_reactor_core", "robot_reactor_vent", "shoot", "windup"],
 		["engineer", "engineer_sentry_wrench", "engineer_sentry_link", "shoot", "deploy"],
-		["engineer", "engineer_repair_drone", "engineer_repair_drone", "cast", "channel"],
+		["engineer", "engineer_repair_drone", "engineer_orbit_drone", "shoot", "deploy"],  # SCRUM-906
 		["engineer", "engineer_pressure_mines", "engineer_pressure_mines", "shoot", "deploy"],
 	]
 
@@ -811,62 +814,41 @@ func _assert_sliced_rig(root_node: Node, rig_path: String, texture_fragment: Str
 		_fail("Expected %s rig WeaponSocketMount." % label)
 
 
-func _assert_skeletal_player_rig(player: Node, character_id: String) -> void:
+func _assert_knight_pixellab_combat_visual(player: Node, body: AnimatedSprite2D) -> void:
+	# SCRUM-919 (follow-up SCRUM-430/869/885): бой Рыцаря обязан рендерить принятый
+	# PixelLab full-frame пак, а не легаси-скелетный риг из skeleton_parts.
 	var previous_velocity = player.get("velocity")
 	var previous_animation_time := float(player.get("_animation_time"))
-	var rig := player.get_node_or_null("VisualRoot/SkeletalRigRoot") as Node2D
-	if rig == null or not rig.visible:
-		_fail("Expected %s live SkeletalRigRoot." % character_id)
-	var skeleton := rig.get_node_or_null("Skeleton2D") as Skeleton2D
-	var animation_player := rig.get_node_or_null("AnimationPlayer") as AnimationPlayer
-	if skeleton == null or animation_player == null:
-		_fail("Expected %s Skeleton2D and AnimationPlayer nodes." % character_id)
-	if not animation_player.has_animation("idle") or not animation_player.has_animation("walk") or not animation_player.has_animation("move"):
-		_fail("Expected %s skeletal rig to expose idle/walk/move clips." % character_id)
-	if animation_player.has_animation("attack") or animation_player.has_animation("attack_primary"):
-		_fail("Expected %s skeletal body rig to omit attack clips." % character_id)
-	for bone_path in [
-		"Root",
-		"Root/Pelvis",
-		"Root/Pelvis/Torso",
-		"Root/Pelvis/Torso/Head",
-		"Root/Pelvis/Torso/UpperArmL",
-		"Root/Pelvis/Torso/UpperArmR",
-		"Root/Pelvis/ThighL",
-		"Root/Pelvis/ThighR",
-	]:
-		if skeleton.get_node_or_null(bone_path) == null:
-			_fail("Expected %s skeletal bone %s." % [character_id, bone_path])
-	var torso_sprite := skeleton.get_node_or_null("Root/Pelvis/Torso/Sprite") as Sprite2D
-	if torso_sprite == null or torso_sprite.texture == null:
-		_fail("Expected %s skeletal torso sprite texture." % character_id)
-	if not torso_sprite.texture.resource_path.contains("assets/sprites/characters/skeleton_parts/%s/parts/" % character_id):
-		_fail("Expected %s skeletal rig to use asset-side accepted parts, got %s." % [character_id, torso_sprite.texture.resource_path])
-	var root_bone := skeleton.get_node("Root") as Bone2D
-	var thigh_l := skeleton.get_node("Root/Pelvis/ThighL") as Bone2D
-	var thigh_r := skeleton.get_node("Root/Pelvis/ThighR") as Bone2D
-	var idle_root_y := root_bone.position.y
+	var skeletal_rig := player.get_node_or_null("VisualRoot/SkeletalRigRoot") as Node2D
+	if skeletal_rig != null and skeletal_rig.visible:
+		_fail("Expected knight combat visual to drop the legacy SkeletalRigRoot (SCRUM-919).")
+	var idle_texture := body.sprite_frames.get_frame_texture(str(body.animation), 0)
+	if idle_texture == null or not idle_texture.resource_path.contains("assets/sprites/characters/full_frame/knight_pixellab/"):
+		_fail("Expected knight combat idle frame from the accepted PixelLab pack, got %s." % (idle_texture.resource_path if idle_texture != null else "<null>"))
 	player.set("velocity", Vector2(120, 0))
 	player.call("_update_movement_animation", 0.20)
-	if str(rig.get("active_animation")) != "walk":
-		_fail("Expected %s skeletal rig to switch to walk while moving." % character_id)
-	if abs(root_bone.position.y - idle_root_y) <= 0.01:
-		_fail("Expected %s skeletal walk to move the root bone." % character_id)
-	if abs(thigh_l.rotation - thigh_r.rotation) <= 0.05:
-		_fail("Expected %s skeletal walk to use opposing leg rotations." % character_id)
-	if rig.scale.x <= 0.0:
-		_fail("Expected %s skeletal rig to face right with positive scale." % character_id)
-	player.set("velocity", Vector2(-120, 0))
-	player.call("_update_movement_animation", 0.20)
-	if rig.scale.x >= 0.0:
-		_fail("Expected %s skeletal rig to mirror when facing left." % character_id)
+	var move_animation := str(body.animation)
+	if move_animation != "walk_east" and move_animation != "move_east":
+		_fail("Expected knight combat movement to play a directional PixelLab walk/move animation, got %s." % move_animation)
+	if not body.sprite_frames.get_animation_loop(move_animation):
+		_fail("Expected knight combat move animation %s to loop." % move_animation)
+	if body.sprite_frames.get_frame_count(move_animation) < 5:
+		_fail("Expected knight combat move animation %s to keep >=5 frames." % move_animation)
+	if body.flip_h:
+		_fail("Expected knight directional PixelLab animation to render without mirror flip.")
+	var move_texture := body.sprite_frames.get_frame_texture(move_animation, 0)
+	if move_texture == null or not move_texture.resource_path.contains("assets/sprites/characters/full_frame/knight_pixellab/"):
+		_fail("Expected knight combat move frames from the accepted PixelLab pack, got %s." % (move_texture.resource_path if move_texture != null else "<null>"))
 	player.set("velocity", Vector2.ZERO)
 	player.call("_update_movement_animation", 0.20)
-	if str(rig.get("active_animation")) != "idle":
-		_fail("Expected %s skeletal rig to return to idle when stopped." % character_id)
+	var idle_animation := str(body.animation)
+	if not idle_animation.begins_with("idle"):
+		_fail("Expected knight to return to a looping PixelLab idle when stopped, got %s." % idle_animation)
+	if not body.sprite_frames.get_animation_loop(idle_animation):
+		_fail("Expected knight combat idle animation %s to loop." % idle_animation)
 	var weapon_socket := player.get_node_or_null("VisualRoot/WeaponSocket") as Node2D
 	if weapon_socket == null or not weapon_socket.has_meta("weapon_orbit_radius"):
-		_fail("Expected %s weapon socket orbit behavior to remain configured." % character_id)
+		_fail("Expected knight weapon socket orbit behavior to remain configured.")
 	player.set("velocity", previous_velocity)
 	player.set("_animation_time", previous_animation_time)
 
@@ -911,21 +893,22 @@ func _test_enemy_sprite_paths() -> void:
 			_fail("Expected %s to use %s." % [scene_path, expected_paths[scene_path]])
 		enemy.queue_free()
 
-	var boss_scene := load("res://scenes/BossWarden.tscn") as PackedScene
-	var boss := boss_scene.instantiate()
-	root.add_child(boss)
-	var boss_body := boss.get_node("Sprite2D") as Sprite2D
-	if boss_body.texture == null or boss_body.texture.resource_path != "res://assets/sprites/bosses/boss_rift_warden.png":
-		_fail("Expected BossWarden to use res://assets/sprites/bosses/boss_rift_warden.png.")
-	boss.queue_free()
-
-	var disk_boss_scene := load("res://scenes/BossDiskDevourer.tscn") as PackedScene
-	var disk_boss := disk_boss_scene.instantiate()
-	root.add_child(disk_boss)
-	var disk_boss_body := disk_boss.get_node("Sprite2D") as Sprite2D
-	if disk_boss_body.texture == null or disk_boss_body.texture.resource_path != "res://assets/sprites/bosses/boss_disk_devourer.png":
-		_fail("Expected BossDiskDevourer to use res://assets/sprites/bosses/boss_disk_devourer.png.")
-	disk_boss.queue_free()
+	var expected_boss_paths := {
+		"res://scenes/BossWarden.tscn": "res://assets/sprites/bosses/boss_rift_warden.png",
+		"res://scenes/BossDiskDevourer.tscn": "res://assets/sprites/bosses/boss_disk_devourer.png",
+		"res://scenes/BossBoneArchon.tscn": "res://assets/sprites/bosses/boss_bone_archon.png",
+		"res://scenes/BossBroodMother.tscn": "res://assets/sprites/bosses/boss_brood_mother.png",
+		"res://scenes/BossAshenColossus.tscn": "res://assets/sprites/bosses/boss_ashen_colossus.png",
+		"res://scenes/BossBloodthornLion.tscn": "res://assets/sprites/bosses/boss_bloodthorn_lion.png",
+	}
+	for boss_scene_path in expected_boss_paths.keys():
+		var boss_scene := load(boss_scene_path) as PackedScene
+		var boss := boss_scene.instantiate()
+		root.add_child(boss)
+		var boss_body := boss.get_node("Sprite2D") as Sprite2D
+		if boss_body.texture == null or boss_body.texture.resource_path != expected_boss_paths[boss_scene_path]:
+			_fail("Expected %s to use %s." % [boss_scene_path, expected_boss_paths[boss_scene_path]])
+		boss.queue_free()
 
 
 func _test_druid_wolf_ally_animation() -> void:
@@ -979,6 +962,151 @@ func _test_druid_wolf_ally_animation() -> void:
 				or animated_body.sprite_frames.get_animation_loop("attack_primary") or animated_body.sprite_frames.get_animation_loop("death"):
 			_fail("Expected summon '%s' move to loop and attack/death to be one-shot." % summon_visual)
 	ally.queue_free()
+
+
+func _test_druid_ghost_horizontal_ally_animations() -> void:
+	var ally_scene := load("res://scenes/AllyMinion.tscn") as PackedScene
+	var expected_ids := [
+		"druid_ghost_wolf",
+		"druid_ghost_bear",
+		"druid_ghost_panther",
+		"druid_ghost_stag",
+		"druid_ghost_lion",
+	]
+	var allowed_animations := [
+		"attack",
+		"attack_left",
+		"attack_right",
+		"move",
+		"move_left",
+		"move_right",
+	]
+	for ghost_id in expected_ids:
+		var frames := FullFrameAnimationRegistry.sprite_frames_for("ally", ghost_id)
+		if frames == null:
+			_fail("Expected %s to resolve through FullFrameAnimationRegistry." % ghost_id)
+			return
+		var animation_names := []
+		for animation_name in frames.get_animation_names():
+			animation_names.append(str(animation_name))
+		animation_names.sort()
+		if animation_names != allowed_animations:
+			_fail("Expected %s to expose only horizontal move/attack rows, got %s." % [ghost_id, str(animation_names)])
+			return
+		for animation_name in allowed_animations:
+			if frames.get_frame_count(animation_name) != 6:
+				_fail("Expected %s %s to expose exactly 6 PixelLab frames." % [ghost_id, animation_name])
+				return
+			var should_loop: bool = str(animation_name).begins_with("move")
+			if frames.get_animation_loop(animation_name) != should_loop:
+				_fail("Expected %s %s loop=%s." % [ghost_id, animation_name, str(should_loop)])
+				return
+			for frame_index in range(frames.get_frame_count(animation_name)):
+				var texture := frames.get_frame_texture(animation_name, frame_index)
+				if texture == null or texture.get_image() == null or texture.get_image().get_size() != Vector2i(256, 256):
+					_fail("Expected %s %s frame %d to use a 256x256 runtime texture." % [ghost_id, animation_name, frame_index])
+					return
+				var expected_direction := "right" if animation_name.ends_with("_right") else "left"
+				var expected_kind := "attack" if animation_name.begins_with("attack") else "move"
+				var expected_prefix := "res://assets/sprites/allies/%s/runtime/%s_%s_%s_" % [ghost_id, ghost_id, expected_kind, expected_direction]
+				if not texture.resource_path.begins_with(expected_prefix):
+					_fail("Expected %s %s frame %d to resolve from %s, got %s." % [ghost_id, animation_name, frame_index, expected_prefix, texture.resource_path])
+					return
+		var runtime_files := []
+		for file_name in DirAccess.get_files_at("res://assets/sprites/allies/%s/runtime" % ghost_id):
+			if file_name.ends_with(".png"):
+				runtime_files.append(file_name)
+		if runtime_files.size() != 24:
+			_fail("Expected %s runtime folder to contain exactly 24 west/east PNGs, got %d." % [ghost_id, runtime_files.size()])
+			return
+		for file_name in runtime_files:
+			for forbidden_direction in ["north", "south", "up", "down"]:
+				if str(file_name).contains(forbidden_direction):
+					_fail("Expected %s runtime folder to omit %s direction assets: %s." % [ghost_id, forbidden_direction, file_name])
+					return
+		if ghost_id == "druid_ghost_bear":
+			var smallest_alpha_area := 1 << 30
+			var largest_alpha_area := 0
+			for frame_index in range(frames.get_frame_count(&"move_right")):
+				var texture := frames.get_frame_texture(&"move_right", frame_index)
+				var image := texture.get_image() if texture != null else null
+				var meaningful_alpha_area := _meaningful_alpha_pixel_count(image, 4.0 / 255.0)
+				if meaningful_alpha_area <= 0:
+					_fail("Expected druid_ghost_bear move_right frame %d to contain meaningful alpha." % frame_index)
+					return
+				smallest_alpha_area = mini(smallest_alpha_area, meaningful_alpha_area)
+				largest_alpha_area = maxi(largest_alpha_area, meaningful_alpha_area)
+			var alpha_area_ratio := float(largest_alpha_area) / float(maxi(smallest_alpha_area, 1))
+			if alpha_area_ratio > 1.65:
+				_fail("Expected druid_ghost_bear move_right silhouette continuity <=1.65x, got %.3fx." % alpha_area_ratio)
+				return
+
+		var ally := ally_scene.instantiate()
+		root.add_child(ally)
+		ally.call("set_visual_id", ghost_id)
+		var body := ally.get_node("Body") as Sprite2D
+		var animated_body := ally.get_node("AnimatedBody") as AnimatedSprite2D
+		if body.visible or not animated_body.visible or not ally.call("is_using_animated_ally_visual"):
+			_fail("Expected %s to use its directional AnimatedSprite2D visual." % ghost_id)
+			ally.queue_free()
+			return
+		if not FullFrameAnimationRegistry.uses_explicit_horizontal_directions(animated_body):
+			_fail("Expected %s to declare explicit horizontal direction rows." % ghost_id)
+			ally.queue_free()
+			return
+
+		ally.set("velocity", Vector2.LEFT * 120.0)
+		ally.call("_update_visual_animation")
+		if animated_body.animation != &"move_left" or animated_body.flip_h:
+			_fail("Expected %s left movement to play move_left without horizontal flip." % ghost_id)
+			ally.queue_free()
+			return
+		ally.set("velocity", Vector2.RIGHT * 120.0)
+		ally.call("_update_visual_animation")
+		if animated_body.animation != &"move_right" or animated_body.flip_h:
+			_fail("Expected %s right movement to play move_right without horizontal flip." % ghost_id)
+			ally.queue_free()
+			return
+		ally.call("_play_attack_animation", Vector2.LEFT)
+		if animated_body.animation != &"attack_left" or animated_body.flip_h:
+			_fail("Expected %s left action to play attack_left without horizontal flip." % ghost_id)
+			ally.queue_free()
+			return
+		ally.call("_play_attack_animation", Vector2.RIGHT)
+		if animated_body.animation != &"attack_right" or animated_body.flip_h:
+			_fail("Expected %s right action to play attack_right without horizontal flip." % ghost_id)
+			ally.queue_free()
+			return
+		if float(ally.get("_attack_anim_time")) < 0.5:
+			_fail("Expected %s action visual window to cover all 6 frames at 12fps." % ghost_id)
+			ally.queue_free()
+			return
+		if ghost_id in ["druid_ghost_stag", "druid_ghost_lion"]:
+			if not FullFrameAnimationRegistry.play_state(animated_body, "cast", Vector2.LEFT) or animated_body.animation != &"attack_left" or animated_body.flip_h:
+				_fail("Expected %s cast alias to resolve to attack_left without flip." % ghost_id)
+				ally.queue_free()
+				return
+			if not FullFrameAnimationRegistry.play_state(animated_body, "cast", Vector2.RIGHT) or animated_body.animation != &"attack_right" or animated_body.flip_h:
+				_fail("Expected %s cast alias to resolve to attack_right without flip." % ghost_id)
+				ally.queue_free()
+				return
+		ally.call("_play_attack_animation", Vector2.UP)
+		if animated_body.animation != &"attack_right" or animated_body.flip_h:
+			_fail("Expected %s vertical target action to preserve the last horizontal facing without flip." % ghost_id)
+			ally.queue_free()
+			return
+		ally.queue_free()
+
+
+func _meaningful_alpha_pixel_count(image: Image, threshold: float) -> int:
+	if image == null or image.is_empty():
+		return 0
+	var count := 0
+	for y in range(image.get_height()):
+		for x in range(image.get_width()):
+			if image.get_pixel(x, y).a > threshold:
+				count += 1
+	return count
 
 
 func _test_full_frame_animation_registry() -> void:
@@ -1322,6 +1450,15 @@ func _test_full_frame_animation_registry() -> void:
 			"hook_method": "_play_boss_skill_visual",
 			"hook_args": ["skill_molten_slam", "attack", Vector2.RIGHT],
 			"hook_expected": "skill_molten_slam",
+		},
+		"bloodthorn_lion": {
+			"path": "res://scenes/BossBloodthornLion.tscn",
+			"skill_states": ["skill_spike_ring", "skill_rift_zone"],
+			"phase_state": "bloodthorn_lion:spike_ring:windup",
+			"phase_resolved": "skill_spike_ring",
+			"hook_method": "_play_boss_skill_visual",
+			"hook_args": ["skill_spike_ring", "cast", Vector2.RIGHT],
+			"hook_expected": "skill_spike_ring",
 		},
 	}
 	for boss_id in boss_full_frame_scenes.keys():

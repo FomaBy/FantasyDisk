@@ -1,0 +1,247 @@
+{
+  "ok": true,
+  "zones": [
+    {
+      "id": "screen_title",
+      "rect": [
+        108,
+        58,
+        268,
+        68
+      ],
+      "ok": true,
+      "kind": "guide"
+    },
+    {
+      "id": "back_label",
+      "rect": [
+        1610,
+        66,
+        208,
+        54
+      ],
+      "ok": true,
+      "kind": "guide"
+    },
+    {
+      "id": "tab_characters_label",
+      "rect": [
+        146,
+        248,
+        212,
+        52
+      ],
+      "ok": true,
+      "kind": "guide"
+    },
+    {
+      "id": "tab_monsters_label",
+      "rect": [
+        146,
+        366,
+        212,
+        52
+      ],
+      "ok": true,
+      "kind": "guide"
+    },
+    {
+      "id": "tab_artifacts_label",
+      "rect": [
+        146,
+        484,
+        212,
+        52
+      ],
+      "ok": true,
+      "kind": "guide"
+    },
+    {
+      "id": "tab_characteristics_label",
+      "rect": [
+        146,
+        602,
+        212,
+        52
+      ],
+      "ok": true,
+      "kind": "guide"
+    },
+    {
+      "id": "tab_attributes_label",
+      "rect": [
+        146,
+        720,
+        212,
+        52
+      ],
+      "ok": true,
+      "kind": "guide"
+    },
+    {
+      "id": "tab_ascension_label",
+      "rect": [
+        146,
+        838,
+        212,
+        52
+      ],
+      "ok": true,
+      "kind": "guide"
+    },
+    {
+      "id": "center_header",
+      "rect": [
+        540,
+        222,
+        380,
+        44
+      ],
+      "ok": true,
+      "kind": "guide"
+    },
+    {
+      "id": "row_1_image",
+      "rect": [
+        502,
+        320,
+        88,
+        96
+      ],
+      "ok": true,
+      "kind": "guide"
+    },
+    {
+      "id": "row_1_name",
+      "rect": [
+        616,
+        337,
+        330,
+        60
+      ],
+      "ok": true,
+      "kind": "guide"
+    },
+    {
+      "id": "row_2_image",
+      "rect": [
+        502,
+        490,
+        88,
+        96
+      ],
+      "ok": true,
+      "kind": "guide"
+    },
+    {
+      "id": "row_2_name",
+      "rect": [
+        616,
+        507,
+        330,
+        60
+      ],
+      "ok": true,
+      "kind": "guide"
+    },
+    {
+      "id": "row_3_image",
+      "rect": [
+        502,
+        660,
+        88,
+        96
+      ],
+      "ok": true,
+      "kind": "guide"
+    },
+    {
+      "id": "row_3_name",
+      "rect": [
+        616,
+        677,
+        330,
+        60
+      ],
+      "ok": true,
+      "kind": "guide"
+    },
+    {
+      "id": "row_4_image",
+      "rect": [
+        502,
+        830,
+        88,
+        96
+      ],
+      "ok": true,
+      "kind": "guide"
+    },
+    {
+      "id": "row_4_name",
+      "rect": [
+        616,
+        847,
+        330,
+        60
+      ],
+      "ok": true,
+      "kind": "guide"
+    },
+    {
+      "id": "detail_title",
+      "rect": [
+        1200,
+        222,
+        508,
+        46
+      ],
+      "ok": true,
+      "kind": "guide"
+    },
+    {
+      "id": "detail_preview_image",
+      "rect": [
+        1140,
+        310,
+        236,
+        248
+      ],
+      "ok": true,
+      "kind": "guide"
+    },
+    {
+      "id": "detail_chip_1",
+      "rect": [
+        1450,
+        331,
+        268,
+        32
+      ],
+      "ok": true,
+      "kind": "guide"
+    },
+    {
+      "id": "detail_chip_2",
+      "rect": [
+        1450,
+        417,
+        268,
+        32
+      ],
+      "ok": true,
+      "kind": "guide"
+    },
+    {
+      "id": "detail_body",
+      "rect": [
+        1140,
+        632,
+        610,
+        304
+      ],
+      "ok": true,
+      "kind": "guide"
+    }
+  ]
+}

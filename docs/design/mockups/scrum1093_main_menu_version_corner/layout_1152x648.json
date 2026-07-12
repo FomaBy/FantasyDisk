@@ -1,0 +1,38 @@
+{
+  "canvas": {
+    "width": 1152,
+    "height": 648
+  },
+  "defaults": {
+    "font": "/System/Library/Fonts/Supplemental/Arial Bold.ttf",
+    "color": "#D8D0BD",
+    "stroke_fill": "#120D11",
+    "stroke_width": 2,
+    "align": "right",
+    "valign": "bottom"
+  },
+  "content": {
+    "runtime_version_preview": "vX.Y.Z"
+  },
+  "runtime_contract": {
+    "text": "v%s % ProjectSettings.get_setting('application/config/version', '0.0.0')",
+    "hardcoded_version_forbidden": true
+  },
+  "zones": [
+    {
+      "id": "runtime_version",
+      "content_key": "runtime_version_preview",
+      "role": "caption",
+      "x": 974,
+      "y": 517,
+      "w": 50,
+      "h": 22,
+      "max_font": 14,
+      "min_font": 14,
+      "align": "right",
+      "valign": "bottom",
+      "required": true,
+      "debug_color": "#D8D0BD"
+    }
+  ]
+}

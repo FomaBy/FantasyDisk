@@ -1,0 +1,15 @@
+{
+  "canvas": {"width": 2560, "height": 1440},
+  "defaults": {"color": "#F2E4B8", "stroke_fill": "#140D0B", "stroke_width": 3, "align": "center", "valign": "middle"},
+  "content": {
+    "header": "SCREEN TITLE / BACK / PRIMARY STATUS",
+    "body": "EMPTY RUNTIME CONTENT INTERIOR\nSCROLLABLE WHEN CONTENT EXCEEDS THE VIEWPORT",
+    "footer": "ACTIONS / PAGING / SCROLL END"
+  },
+  "zones": [
+    {"id": "header_zone", "content_key": "header", "x": 299, "y": 257, "w": 1962, "h": 104, "max_font": 34, "min_font": 22, "debug_color": "#E3B95D"},
+    {"id": "body_zone", "content_key": "body", "x": 299, "y": 385, "w": 1944, "h": 650, "max_font": 40, "min_font": 22, "debug_color": "#58D6C7"},
+    {"id": "scrollbar_lane", "text": "SCROLL", "x": 2243, "y": 385, "w": 18, "h": 650, "max_font": 12, "min_font": 9, "debug_color": "#A67CFF"},
+    {"id": "footer_zone", "content_key": "footer", "x": 299, "y": 1059, "w": 1962, "h": 104, "max_font": 30, "min_font": 20, "debug_color": "#E38C5D"}
+  ]
+}

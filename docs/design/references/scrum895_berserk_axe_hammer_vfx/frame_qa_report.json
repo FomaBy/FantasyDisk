@@ -1,0 +1,530 @@
+{
+  "issue": "SCRUM-895",
+  "pixel_lab_only": true,
+  "openai_images_used": false,
+  "packs": {
+    "axe": {
+      "object_id": "d5452069-7d6e-4646-8b9d-379f0c332f17",
+      "animation_group_id": "7e9c7287-d8f0-4461-844e-c1e0bfc5e817",
+      "animation_id": "b318ca47-840b-49d4-ab74-32be1d0c9c5a",
+      "frame_count": 8,
+      "pivot": [
+        128,
+        128
+      ],
+      "runtime_safe_gutter_px": 16,
+      "frames": [
+        {
+          "index": 0,
+          "raw_path": "docs/design/references/scrum895_berserk_axe_hammer_vfx/pixellab_raw/axe/axe_cleave_00.png",
+          "clean_path": "docs/design/references/scrum895_berserk_axe_hammer_vfx/pixellab_alpha_clean/axe/axe_cleave_00.png",
+          "runtime_path": "assets/sprites/effects/scrum895_berserk/axe_cleave_00.png",
+          "runtime_metrics": {
+            "size": [
+              256,
+              256
+            ],
+            "mode": "RGBA",
+            "alpha_bbox_gt_8": [
+              71,
+              24,
+              185,
+              232
+            ],
+            "gutters_px": [
+              71,
+              24,
+              71,
+              24
+            ],
+            "minimum_gutter_px": 24,
+            "edge_visible_pixels": 0,
+            "visible_pixels_alpha_gt_8": 4552,
+            "visible_ratio_alpha_gt_8": 0.0695,
+            "max_alpha": 205
+          },
+          "sha256": "7cf7b65073eeb8c0ba3cc988b0150f1a783ff9ea8417ecf5a6c7cb76916d296a"
+        },
+        {
+          "index": 1,
+          "raw_path": "docs/design/references/scrum895_berserk_axe_hammer_vfx/pixellab_raw/axe/axe_cleave_01.png",
+          "clean_path": "docs/design/references/scrum895_berserk_axe_hammer_vfx/pixellab_alpha_clean/axe/axe_cleave_01.png",
+          "runtime_path": "assets/sprites/effects/scrum895_berserk/axe_cleave_01.png",
+          "runtime_metrics": {
+            "size": [
+              256,
+              256
+            ],
+            "mode": "RGBA",
+            "alpha_bbox_gt_8": [
+              74,
+              26,
+              188,
+              232
+            ],
+            "gutters_px": [
+              74,
+              26,
+              68,
+              24
+            ],
+            "minimum_gutter_px": 24,
+            "edge_visible_pixels": 0,
+            "visible_pixels_alpha_gt_8": 4964,
+            "visible_ratio_alpha_gt_8": 0.0757,
+            "max_alpha": 205
+          },
+          "sha256": "d71dd5f28e0c978c67855febc534071e13dae2f3b0e8b9e3b31d2ac58afbb7c4"
+        },
+        {
+          "index": 2,
+          "raw_path": "docs/design/references/scrum895_berserk_axe_hammer_vfx/pixellab_raw/axe/axe_cleave_02.png",
+          "clean_path": "docs/design/references/scrum895_berserk_axe_hammer_vfx/pixellab_alpha_clean/axe/axe_cleave_02.png",
+          "runtime_path": "assets/sprites/effects/scrum895_berserk/axe_cleave_02.png",
+          "runtime_metrics": {
+            "size": [
+              256,
+              256
+            ],
+            "mode": "RGBA",
+            "alpha_bbox_gt_8": [
+              69,
+              30,
+              180,
+              234
+            ],
+            "gutters_px": [
+              69,
+              30,
+              76,
+              22
+            ],
+            "minimum_gutter_px": 22,
+            "edge_visible_pixels": 0,
+            "visible_pixels_alpha_gt_8": 5917,
+            "visible_ratio_alpha_gt_8": 0.0903,
+            "max_alpha": 205
+          },
+          "sha256": "ad5da22e9d4e5536410febd498a98185491a25e89a35aa5bf032e32dfb759324"
+        },
+        {
+          "index": 3,
+          "raw_path": "docs/design/references/scrum895_berserk_axe_hammer_vfx/pixellab_raw/axe/axe_cleave_03.png",
+          "clean_path": "docs/design/references/scrum895_berserk_axe_hammer_vfx/pixellab_alpha_clean/axe/axe_cleave_03.png",
+          "runtime_path": "assets/sprites/effects/scrum895_berserk/axe_cleave_03.png",
+          "runtime_metrics": {
+            "size": [
+              256,
+              256
+            ],
+            "mode": "RGBA",
+            "alpha_bbox_gt_8": [
+              34,
+              41,
+              180,
+              227
+            ],
+            "gutters_px": [
+              34,
+              41,
+              76,
+              29
+            ],
+            "minimum_gutter_px": 29,
+            "edge_visible_pixels": 0,
+            "visible_pixels_alpha_gt_8": 7036,
+            "visible_ratio_alpha_gt_8": 0.1074,
+            "max_alpha": 205
+          },
+          "sha256": "eb24eb3fa0b345cc3caab767c266447876062f6e83a47449a2ad13c8bd460501"
+        },
+        {
+          "index": 4,
+          "raw_path": "docs/design/references/scrum895_berserk_axe_hammer_vfx/pixellab_raw/axe/axe_cleave_04.png",
+          "clean_path": "docs/design/references/scrum895_berserk_axe_hammer_vfx/pixellab_alpha_clean/axe/axe_cleave_04.png",
+          "runtime_path": "assets/sprites/effects/scrum895_berserk/axe_cleave_04.png",
+          "runtime_metrics": {
+            "size": [
+              256,
+              256
+            ],
+            "mode": "RGBA",
+            "alpha_bbox_gt_8": [
+              30,
+              41,
+              180,
+              223
+            ],
+            "gutters_px": [
+              30,
+              41,
+              76,
+              33
+            ],
+            "minimum_gutter_px": 30,
+            "edge_visible_pixels": 0,
+            "visible_pixels_alpha_gt_8": 6969,
+            "visible_ratio_alpha_gt_8": 0.1063,
+            "max_alpha": 205
+          },
+          "sha256": "ba806612635cde2309dfc876747034cc72275506bf5c11b0a5b59cd329dac814"
+        },
+        {
+          "index": 5,
+          "raw_path": "docs/design/references/scrum895_berserk_axe_hammer_vfx/pixellab_raw/axe/axe_cleave_05.png",
+          "clean_path": "docs/design/references/scrum895_berserk_axe_hammer_vfx/pixellab_alpha_clean/axe/axe_cleave_05.png",
+          "runtime_path": "assets/sprites/effects/scrum895_berserk/axe_cleave_05.png",
+          "runtime_metrics": {
+            "size": [
+              256,
+              256
+            ],
+            "mode": "RGBA",
+            "alpha_bbox_gt_8": [
+              34,
+              38,
+              176,
+              226
+            ],
+            "gutters_px": [
+              34,
+              38,
+              80,
+              30
+            ],
+            "minimum_gutter_px": 30,
+            "edge_visible_pixels": 0,
+            "visible_pixels_alpha_gt_8": 6039,
+            "visible_ratio_alpha_gt_8": 0.0921,
+            "max_alpha": 205
+          },
+          "sha256": "08917a353c003b5033a982636c27d8f2e7d831d42381645ae689a39376d4dfc8"
+        },
+        {
+          "index": 6,
+          "raw_path": "docs/design/references/scrum895_berserk_axe_hammer_vfx/pixellab_raw/axe/axe_cleave_06.png",
+          "clean_path": "docs/design/references/scrum895_berserk_axe_hammer_vfx/pixellab_alpha_clean/axe/axe_cleave_06.png",
+          "runtime_path": "assets/sprites/effects/scrum895_berserk/axe_cleave_06.png",
+          "runtime_metrics": {
+            "size": [
+              256,
+              256
+            ],
+            "mode": "RGBA",
+            "alpha_bbox_gt_8": [
+              38,
+              32,
+              163,
+              230
+            ],
+            "gutters_px": [
+              38,
+              32,
+              93,
+              26
+            ],
+            "minimum_gutter_px": 26,
+            "edge_visible_pixels": 0,
+            "visible_pixels_alpha_gt_8": 5433,
+            "visible_ratio_alpha_gt_8": 0.0829,
+            "max_alpha": 205
+          },
+          "sha256": "e41b2ae7afd914f00beda7459249cf92d1a367c5e037ca4693766c51766eba43"
+        },
+        {
+          "index": 7,
+          "raw_path": "docs/design/references/scrum895_berserk_axe_hammer_vfx/pixellab_raw/axe/axe_cleave_07.png",
+          "clean_path": "docs/design/references/scrum895_berserk_axe_hammer_vfx/pixellab_alpha_clean/axe/axe_cleave_07.png",
+          "runtime_path": "assets/sprites/effects/scrum895_berserk/axe_cleave_07.png",
+          "runtime_metrics": {
+            "size": [
+              256,
+              256
+            ],
+            "mode": "RGBA",
+            "alpha_bbox_gt_8": [
+              71,
+              25,
+              184,
+              230
+            ],
+            "gutters_px": [
+              71,
+              25,
+              72,
+              26
+            ],
+            "minimum_gutter_px": 25,
+            "edge_visible_pixels": 0,
+            "visible_pixels_alpha_gt_8": 4799,
+            "visible_ratio_alpha_gt_8": 0.0732,
+            "max_alpha": 205
+          },
+          "sha256": "9a0965b762a7986989013f7a96bd920062394fb9b09c5042a0427d8343c4fa3e"
+        }
+      ]
+    },
+    "hammer": {
+      "object_id": "b1fed1f3-71b6-47d5-a1eb-e3e4b8db65b5",
+      "animation_group_id": "4515832c-5217-444d-a1a4-b25f1090d435",
+      "animation_id": "11ced058-204f-48dc-bfcb-c0aee7665917",
+      "frame_count": 8,
+      "pivot": [
+        128,
+        128
+      ],
+      "runtime_safe_gutter_px": 16,
+      "frames": [
+        {
+          "index": 0,
+          "raw_path": "docs/design/references/scrum895_berserk_axe_hammer_vfx/pixellab_raw/hammer/hammer_slam_00.png",
+          "clean_path": "docs/design/references/scrum895_berserk_axe_hammer_vfx/pixellab_alpha_clean/hammer/hammer_slam_00.png",
+          "runtime_path": "assets/sprites/effects/scrum895_berserk/hammer_slam_00.png",
+          "runtime_metrics": {
+            "size": [
+              256,
+              256
+            ],
+            "mode": "RGBA",
+            "alpha_bbox_gt_8": [
+              64,
+              29,
+              192,
+              230
+            ],
+            "gutters_px": [
+              64,
+              29,
+              64,
+              26
+            ],
+            "minimum_gutter_px": 26,
+            "edge_visible_pixels": 0,
+            "visible_pixels_alpha_gt_8": 6589,
+            "visible_ratio_alpha_gt_8": 0.1005,
+            "max_alpha": 205
+          },
+          "sha256": "3e9a39d1d5357700d3e98b9aa566dbf77ff8be86f0d98c7ffbd0abeabbe65f2f"
+        },
+        {
+          "index": 1,
+          "raw_path": "docs/design/references/scrum895_berserk_axe_hammer_vfx/pixellab_raw/hammer/hammer_slam_01.png",
+          "clean_path": "docs/design/references/scrum895_berserk_axe_hammer_vfx/pixellab_alpha_clean/hammer/hammer_slam_01.png",
+          "runtime_path": "assets/sprites/effects/scrum895_berserk/hammer_slam_01.png",
+          "runtime_metrics": {
+            "size": [
+              256,
+              256
+            ],
+            "mode": "RGBA",
+            "alpha_bbox_gt_8": [
+              68,
+              31,
+              188,
+              226
+            ],
+            "gutters_px": [
+              68,
+              31,
+              68,
+              30
+            ],
+            "minimum_gutter_px": 30,
+            "edge_visible_pixels": 0,
+            "visible_pixels_alpha_gt_8": 6587,
+            "visible_ratio_alpha_gt_8": 0.1005,
+            "max_alpha": 205
+          },
+          "sha256": "6a56b394a3f7591c0f2f43abf4e0696a5eddab01b623e1cd63bd37964175637b"
+        },
+        {
+          "index": 2,
+          "raw_path": "docs/design/references/scrum895_berserk_axe_hammer_vfx/pixellab_raw/hammer/hammer_slam_02.png",
+          "clean_path": "docs/design/references/scrum895_berserk_axe_hammer_vfx/pixellab_alpha_clean/hammer/hammer_slam_02.png",
+          "runtime_path": "assets/sprites/effects/scrum895_berserk/hammer_slam_02.png",
+          "runtime_metrics": {
+            "size": [
+              256,
+              256
+            ],
+            "mode": "RGBA",
+            "alpha_bbox_gt_8": [
+              61,
+              20,
+              194,
+              216
+            ],
+            "gutters_px": [
+              61,
+              20,
+              62,
+              40
+            ],
+            "minimum_gutter_px": 20,
+            "edge_visible_pixels": 0,
+            "visible_pixels_alpha_gt_8": 6955,
+            "visible_ratio_alpha_gt_8": 0.1061,
+            "max_alpha": 205
+          },
+          "sha256": "ae03a4f1ac266ace1613a335af598326c55877b81fb813cb75981587ee20bab7"
+        },
+        {
+          "index": 3,
+          "raw_path": "docs/design/references/scrum895_berserk_axe_hammer_vfx/pixellab_raw/hammer/hammer_slam_03.png",
+          "clean_path": "docs/design/references/scrum895_berserk_axe_hammer_vfx/pixellab_alpha_clean/hammer/hammer_slam_03.png",
+          "runtime_path": "assets/sprites/effects/scrum895_berserk/hammer_slam_03.png",
+          "runtime_metrics": {
+            "size": [
+              256,
+              256
+            ],
+            "mode": "RGBA",
+            "alpha_bbox_gt_8": [
+              64,
+              37,
+              191,
+              139
+            ],
+            "gutters_px": [
+              64,
+              37,
+              65,
+              117
+            ],
+            "minimum_gutter_px": 37,
+            "edge_visible_pixels": 0,
+            "visible_pixels_alpha_gt_8": 6352,
+            "visible_ratio_alpha_gt_8": 0.0969,
+            "max_alpha": 205
+          },
+          "sha256": "85feea0e1ffed794ece0c2121234f52972437ecc80d0ab90707035a890b4b641"
+        },
+        {
+          "index": 4,
+          "raw_path": "docs/design/references/scrum895_berserk_axe_hammer_vfx/pixellab_raw/hammer/hammer_slam_04.png",
+          "clean_path": "docs/design/references/scrum895_berserk_axe_hammer_vfx/pixellab_alpha_clean/hammer/hammer_slam_04.png",
+          "runtime_path": "assets/sprites/effects/scrum895_berserk/hammer_slam_04.png",
+          "runtime_metrics": {
+            "size": [
+              256,
+              256
+            ],
+            "mode": "RGBA",
+            "alpha_bbox_gt_8": [
+              62,
+              23,
+              194,
+              234
+            ],
+            "gutters_px": [
+              62,
+              23,
+              62,
+              22
+            ],
+            "minimum_gutter_px": 22,
+            "edge_visible_pixels": 0,
+            "visible_pixels_alpha_gt_8": 11403,
+            "visible_ratio_alpha_gt_8": 0.174,
+            "max_alpha": 205
+          },
+          "sha256": "b6c25e5e8508b47b38202f9935f412f40cdc2b27432149c4cb8dc6607e9c3e5a"
+        },
+        {
+          "index": 5,
+          "raw_path": "docs/design/references/scrum895_berserk_axe_hammer_vfx/pixellab_raw/hammer/hammer_slam_05.png",
+          "clean_path": "docs/design/references/scrum895_berserk_axe_hammer_vfx/pixellab_alpha_clean/hammer/hammer_slam_05.png",
+          "runtime_path": "assets/sprites/effects/scrum895_berserk/hammer_slam_05.png",
+          "runtime_metrics": {
+            "size": [
+              256,
+              256
+            ],
+            "mode": "RGBA",
+            "alpha_bbox_gt_8": [
+              62,
+              31,
+              192,
+              237
+            ],
+            "gutters_px": [
+              62,
+              31,
+              64,
+              19
+            ],
+            "minimum_gutter_px": 19,
+            "edge_visible_pixels": 0,
+            "visible_pixels_alpha_gt_8": 10307,
+            "visible_ratio_alpha_gt_8": 0.1573,
+            "max_alpha": 205
+          },
+          "sha256": "16242ba8deafff0013e8c15c212a642cca84fda24377e7efe63018eb580834b4"
+        },
+        {
+          "index": 6,
+          "raw_path": "docs/design/references/scrum895_berserk_axe_hammer_vfx/pixellab_raw/hammer/hammer_slam_06.png",
+          "clean_path": "docs/design/references/scrum895_berserk_axe_hammer_vfx/pixellab_alpha_clean/hammer/hammer_slam_06.png",
+          "runtime_path": "assets/sprites/effects/scrum895_berserk/hammer_slam_06.png",
+          "runtime_metrics": {
+            "size": [
+              256,
+              256
+            ],
+            "mode": "RGBA",
+            "alpha_bbox_gt_8": [
+              67,
+              31,
+              188,
+              227
+            ],
+            "gutters_px": [
+              67,
+              31,
+              68,
+              29
+            ],
+            "minimum_gutter_px": 29,
+            "edge_visible_pixels": 0,
+            "visible_pixels_alpha_gt_8": 6343,
+            "visible_ratio_alpha_gt_8": 0.0968,
+            "max_alpha": 205
+          },
+          "sha256": "09c5711312222dd82840b9f7669d39ff2742f1a2eab16e830718b36a5b11259c"
+        },
+        {
+          "index": 7,
+          "raw_path": "docs/design/references/scrum895_berserk_axe_hammer_vfx/pixellab_raw/hammer/hammer_slam_07.png",
+          "clean_path": "docs/design/references/scrum895_berserk_axe_hammer_vfx/pixellab_alpha_clean/hammer/hammer_slam_07.png",
+          "runtime_path": "assets/sprites/effects/scrum895_berserk/hammer_slam_07.png",
+          "runtime_metrics": {
+            "size": [
+              256,
+              256
+            ],
+            "mode": "RGBA",
+            "alpha_bbox_gt_8": [
+              75,
+              30,
+              181,
+              220
+            ],
+            "gutters_px": [
+              75,
+              30,
+              75,
+              36
+            ],
+            "minimum_gutter_px": 30,
+            "edge_visible_pixels": 0,
+            "visible_pixels_alpha_gt_8": 6269,
+            "visible_ratio_alpha_gt_8": 0.0957,
+            "max_alpha": 205
+          },
+          "sha256": "b0b386a7b245ae3150c74b300faddeaf32474daf626f65f36d4bba3740d8f425"
+        }
+      ]
+    }
+  },
+  "decision": "pass"
+}

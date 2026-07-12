@@ -1,0 +1,20 @@
+{
+  "canvas": {"width": 1920, "height": 1080},
+  "policy": {"min_gap": 10, "allow_overlap": false},
+  "content": {
+    "title": "ACT / ROUTE / PROGRESS",
+    "resources": "HP / XP / GOLD",
+    "map": "VERTICAL ROUTE MAP — PAN + SCROLL",
+    "upgrade": "+"
+  },
+  "elements": [
+    {"id": "frame_art", "kind": "decor", "x": 0, "y": 0, "w": 1920, "h": 1080, "collision": false},
+    {"id": "frame_safe_area", "kind": "panel", "x": 200, "y": 169, "w": 1520, "h": 742, "content_zone": true, "collision": false},
+    {"id": "route_header", "kind": "panel", "parent": "frame_safe_area", "x": 224, "y": 193, "w": 1472, "h": 104, "content_zone": true, "collision": true},
+    {"id": "route_title", "kind": "text", "parent": "route_header", "x": 248, "y": 209, "w": 700, "h": 70, "content_zone": true, "collision": true, "text_key": "title", "max_font": 28, "min_font": 17},
+    {"id": "route_resources", "kind": "text", "parent": "route_header", "x": 1128, "y": 209, "w": 544, "h": 70, "content_zone": true, "collision": true, "text_key": "resources", "max_font": 24, "min_font": 15},
+    {"id": "route_scroll", "kind": "scroll_area", "parent": "frame_safe_area", "x": 224, "y": 317, "w": 1472, "h": 550, "content_zone": true, "collision": true, "scroll": "required", "content_h": 1840, "scrollbar_w": 18, "min_content_w": 1200},
+    {"id": "route_map_content", "kind": "text", "parent": "route_scroll", "x": 248, "y": 341, "w": 1396, "h": 494, "content_zone": true, "collision": false, "text_key": "map", "max_font": 28, "min_font": 17},
+    {"id": "upgrade_fab", "kind": "button", "parent": "route_scroll", "x": 1584, "y": 779, "w": 72, "h": 72, "content_zone": true, "collision": false, "text_key": "upgrade", "max_font": 34, "min_font": 22}
+  ]
+}

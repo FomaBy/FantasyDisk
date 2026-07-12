@@ -1,0 +1,47 @@
+{
+  "schema": "fantasydisk.content_zones.v1",
+  "canvas": {"width": 1920, "height": 1080},
+  "defaults": {
+    "font": "/System/Library/Fonts/Supplemental/Arial Unicode.ttf",
+    "color": "#F2D58A",
+    "stroke_fill": "#160D0A",
+    "stroke_width": 2,
+    "line_spacing": 1.08,
+    "align": "center",
+    "valign": "middle"
+  },
+  "content": {
+    "class_progress": "Созвездие берсерка: 20/20",
+    "guild_tab": "Гильдия",
+    "sword": "МЕЧ",
+    "axe": "СЕКИРА",
+    "hammer": "МОЛОТ",
+    "dossier_title": "ФИНАЛ ОРУЖИЯ",
+    "dossier_weapon": "Повторный приговор",
+    "dossier_body": "Повторный удар казнит раненую цель. Эффект действует только для меча.",
+    "cost": "Цена: 1",
+    "buy": "Вложить эмблему",
+    "progress": "20/20",
+    "legacy": "Наследие: 8",
+    "hidden": "Скрытые звёзды: открыты, покупаются отдельно",
+    "reset": "Сброс умений",
+    "legend": "● куплено    ○ доступно    ✦ финал    ? скрытая"
+  },
+  "zones": [
+    {"id": "class_progress", "content_key": "class_progress", "x": 248, "y": 169, "w": 500, "h": 38, "max_font": 28, "min_font": 18, "align": "left"},
+    {"id": "guild_tab", "content_key": "guild_tab", "x": 1490, "y": 164, "w": 190, "h": 46, "max_font": 26, "min_font": 18},
+    {"id": "sword_label", "content_key": "sword", "x": 410, "y": 245, "w": 160, "h": 42, "max_font": 28, "min_font": 18},
+    {"id": "axe_label", "content_key": "axe", "x": 725, "y": 235, "w": 160, "h": 42, "max_font": 28, "min_font": 18},
+    {"id": "hammer_label", "content_key": "hammer", "x": 1040, "y": 245, "w": 160, "h": 42, "max_font": 28, "min_font": 18},
+    {"id": "dossier_title", "content_key": "dossier_title", "x": 1310, "y": 252, "w": 340, "h": 38, "max_font": 25, "min_font": 17},
+    {"id": "dossier_weapon", "content_key": "dossier_weapon", "x": 1310, "y": 310, "w": 340, "h": 54, "max_font": 30, "min_font": 20},
+    {"id": "dossier_body", "content_key": "dossier_body", "x": 1310, "y": 382, "w": 340, "h": 110, "max_font": 23, "min_font": 16},
+    {"id": "cost", "content_key": "cost", "x": 1310, "y": 510, "w": 150, "h": 38, "max_font": 22, "min_font": 16, "align": "left"},
+    {"id": "buy", "content_key": "buy", "x": 1310, "y": 566, "w": 340, "h": 58, "max_font": 23, "min_font": 17},
+    {"id": "progress", "content_key": "progress", "x": 1310, "y": 660, "w": 210, "h": 46, "max_font": 30, "min_font": 20},
+    {"id": "legacy", "content_key": "legacy", "x": 1540, "y": 660, "w": 110, "h": 46, "max_font": 18, "min_font": 14, "required": false},
+    {"id": "hidden", "content_key": "hidden", "x": 1310, "y": 724, "w": 340, "h": 48, "max_font": 19, "min_font": 14},
+    {"id": "reset", "content_key": "reset", "x": 271, "y": 852, "w": 278, "h": 62, "max_font": 23, "min_font": 21},
+    {"id": "legend", "content_key": "legend", "x": 960, "y": 851, "w": 720, "h": 64, "max_font": 22, "min_font": 16}
+  ]
+}

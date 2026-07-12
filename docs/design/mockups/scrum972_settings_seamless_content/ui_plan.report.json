@@ -1,0 +1,205 @@
+{
+  "ok": true,
+  "decision": "ready_for_image",
+  "errors": [],
+  "warnings": [],
+  "elements": [
+    {
+      "id": "outer_frame",
+      "kind": "panel",
+      "rect": [
+        0,
+        0,
+        688,
+        384
+      ],
+      "ok": true,
+      "warnings": []
+    },
+    {
+      "id": "safe_area",
+      "kind": "zone",
+      "rect": [
+        48,
+        34,
+        592,
+        316
+      ],
+      "ok": true,
+      "warnings": []
+    },
+    {
+      "id": "header",
+      "kind": "zone",
+      "rect": [
+        68,
+        61,
+        552,
+        30
+      ],
+      "ok": true,
+      "warnings": []
+    },
+    {
+      "id": "title",
+      "kind": "text",
+      "rect": [
+        86,
+        64,
+        118,
+        22
+      ],
+      "ok": true,
+      "warnings": [],
+      "fit_font_size": 16
+    },
+    {
+      "id": "back_button",
+      "kind": "button",
+      "rect": [
+        522,
+        61,
+        98,
+        30
+      ],
+      "ok": true,
+      "warnings": []
+    },
+    {
+      "id": "tab_row",
+      "kind": "zone",
+      "rect": [
+        196,
+        103,
+        296,
+        34
+      ],
+      "ok": true,
+      "warnings": []
+    },
+    {
+      "id": "tab_screen",
+      "kind": "button",
+      "rect": [
+        196,
+        103,
+        94,
+        34
+      ],
+      "ok": true,
+      "warnings": [],
+      "fit_font_size": 12
+    },
+    {
+      "id": "tab_sound",
+      "kind": "button",
+      "rect": [
+        296,
+        103,
+        94,
+        34
+      ],
+      "ok": true,
+      "warnings": [],
+      "fit_font_size": 12
+    },
+    {
+      "id": "tab_controls",
+      "kind": "button",
+      "rect": [
+        396,
+        103,
+        96,
+        34
+      ],
+      "ok": true,
+      "warnings": [],
+      "fit_font_size": 11
+    },
+    {
+      "id": "seamless_content_zone",
+      "kind": "zone",
+      "rect": [
+        154,
+        145,
+        380,
+        154
+      ],
+      "ok": true,
+      "warnings": []
+    },
+    {
+      "id": "monitor_row",
+      "kind": "zone",
+      "rect": [
+        170,
+        151,
+        348,
+        27
+      ],
+      "ok": true,
+      "warnings": []
+    },
+    {
+      "id": "resolution_row",
+      "kind": "zone",
+      "rect": [
+        170,
+        183,
+        348,
+        27
+      ],
+      "ok": true,
+      "warnings": []
+    },
+    {
+      "id": "window_mode_row",
+      "kind": "zone",
+      "rect": [
+        170,
+        215,
+        348,
+        27
+      ],
+      "ok": true,
+      "warnings": []
+    },
+    {
+      "id": "shake_row",
+      "kind": "zone",
+      "rect": [
+        170,
+        247,
+        348,
+        27
+      ],
+      "ok": true,
+      "warnings": []
+    },
+    {
+      "id": "status_row",
+      "kind": "text",
+      "rect": [
+        264,
+        278,
+        180,
+        18
+      ],
+      "ok": true,
+      "warnings": [],
+      "fit_font_size": 10
+    },
+    {
+      "id": "footer_actions",
+      "kind": "zone",
+      "rect": [
+        309,
+        307,
+        206,
+        30
+      ],
+      "ok": true,
+      "warnings": []
+    }
+  ]
+}

@@ -1,7 +1,6 @@
-[gd_scene load_steps=4 format=3]
+[gd_scene load_steps=3 format=3]
 
 [ext_resource type="Script" path="res://scripts/projectile.gd" id="1_projectile_script"]
-[ext_resource type="Texture2D" path="res://assets/sprites/projectiles/player_projectile_spark_64.png" id="2_projectile_texture"]
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_projectile"]
 radius = 5.0
@@ -10,8 +9,6 @@ radius = 5.0
 script = ExtResource("1_projectile_script")
 
 [node name="Shape" type="Sprite2D" parent="."]
-texture = ExtResource("2_projectile_texture")
-scale = Vector2(0.42, 0.42)
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
 shape = SubResource("CircleShape2D_projectile")

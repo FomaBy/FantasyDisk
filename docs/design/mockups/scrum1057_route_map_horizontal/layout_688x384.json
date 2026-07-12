@@ -1,0 +1,25 @@
+{
+  "canvas": {"width": 688, "height": 384},
+  "defaults": {
+    "font": "/System/Library/Fonts/Supplemental/Arial Unicode.ttf",
+    "color": "#F7E7BD",
+    "stroke_fill": "#160D10",
+    "stroke_width": 1,
+    "line_spacing": 1.04
+  },
+  "content": {
+    "title": "АКТ 1/3  ·  ПУТЬ К БОССУ",
+    "resources": "HP 100/100   XP 24/60   120"
+  },
+  "zones": [
+    {"id": "frame_safe_area", "text": "", "required": false, "x": 72, "y": 60, "w": 544, "h": 264, "debug_color": "#36D399"},
+    {"id": "inner_content", "text": "", "required": false, "x": 80, "y": 69, "w": 528, "h": 247, "debug_color": "#58D6C7"},
+    {"id": "route_header", "text": "", "required": false, "x": 80, "y": 69, "w": 528, "h": 31, "debug_color": "#E3B95D"},
+    {"id": "route_title_progress", "content_key": "title", "x": 89, "y": 70, "w": 251, "h": 23, "align": "left", "valign": "middle", "max_font": 10, "min_font": 7, "debug_color": "#E38C5D"},
+    {"id": "route_resources", "content_key": "resources", "x": 404, "y": 70, "w": 195, "h": 23, "align": "right", "valign": "middle", "max_font": 9, "min_font": 6, "debug_color": "#A67CFF"},
+    {"id": "route_scroll", "text": "", "required": false, "x": 80, "y": 106, "w": 528, "h": 210, "debug_color": "#58D6C7"},
+    {"id": "route_node_viewport", "text": "", "required": false, "x": 89, "y": 114, "w": 476, "h": 178, "debug_color": "#36D399"},
+    {"id": "horizontal_scrollbar_lane", "text": "", "required": false, "x": 89, "y": 300, "w": 476, "h": 6, "debug_color": "#A67CFF"},
+    {"id": "upgrade_fab", "text": "+", "x": 573, "y": 281, "w": 26, "h": 26, "max_font": 16, "min_font": 10, "debug_color": "#F59E0B"}
+  ]
+}

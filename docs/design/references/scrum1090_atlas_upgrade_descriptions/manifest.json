@@ -1,0 +1,38 @@
+{
+  "issue": "SCRUM-1090",
+  "rework_issue": "SCRUM-1092",
+  "generator": "PixelLab MCP",
+  "tool": "create_ui_asset",
+  "source_id": "cccfc9a1-e067-4507-a178-9dd6d54bfce4",
+  "source_name": "SCRUM-1092 Atlas glyph-free detailed dossier",
+  "source_file": "pixellab_atlas_detailed_dossier_688x384.png",
+  "sha256": "3c2583453bd3d03612df9345676b9a91d465c3ca889481a93473f4a299d429be",
+  "width": 688,
+  "height": 384,
+  "alpha": true,
+  "cost_generations": 40,
+  "previous_rejected_source": {
+    "source_id": "b6693906-f259-4b43-a1b5-4283ff88bec3",
+    "sha256": "a8d05d4bbc33bb078239b4722ded71fac5640bde869ed62240ba6190e82b9f6f",
+    "rejection": "Baked dollar-sign glyph in the top header and missing exact compositor callout."
+  },
+  "prompt_spec": "../../mockups/scrum1090_atlas_upgrade_descriptions/pixellab_request.json",
+  "content_plan": "../../mockups/scrum1090_atlas_upgrade_descriptions/ui_plan.json",
+  "glyph_audit": "glyph_audit.json",
+  "safe_zone_summary": {
+    "header_left": [24, 13, 258, 36],
+    "header_right": [490, 13, 178, 36],
+    "class_rail": [24, 56, 78, 269],
+    "constellation": [113, 56, 374, 269],
+    "dossier": [497, 56, 169, 269],
+    "dossier_callout": [510, 69, 143, 49],
+    "dossier_effect": [510, 136, 143, 48],
+    "dossier_result": [510, 198, 143, 48],
+    "dossier_footer": [510, 260, 143, 56],
+    "minimum_lateral_reserve_px": 12
+  },
+  "baked_text_or_semantic_glyphs": false,
+  "semantic_copy_source": "Compositor only; exact callout is УНИКАЛЬНЫЙ ФИНАЛ.",
+  "runtime_promotion": false,
+  "notes": "Source-only Design reference. Runtime continues to use the accepted Meta40 Atlas art and SCRUM-1075 geometry. SCRUM-1092 replaces the rejected source with a glyph-free PixelLab export."
+}

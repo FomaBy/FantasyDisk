@@ -26,6 +26,37 @@
 - Горизонтальный скролл запрещен для route map, pause stats и основных меню; длинный контент уходит в вертикальный `ScrollContainer`.
 - Длинный текст должен иметь `AUTOWRAP_WORD_SMART` или быть вынесен в отдельный info-frame над кнопкой.
 
+## Semantic Typography (SCRUM-1061)
+
+Канонический источник размеров player-facing текста —
+`scripts/ui/semantic_typography.gd`. Локальные формулы масштаба запрещены: новый
+Control выбирает роль и вызывает semantic resolver; существующая принятая сетка
+может использовать только документированный compatibility resolver.
+
+| Role | Min | Target | Max | Overflow |
+| --- | ---: | ---: | ---: | --- |
+| display | 32 | 44 | 72 | authored one-line fit / expand zone |
+| title | 24 | 34 | 54 | up to two lines, then specified ellipsis |
+| section | 20 | 24 | 34 | expand rail, then single-line ellipsis |
+| body | 16 | 18 | 24 | smart wrap + grow/scroll |
+| description | 14 | 17 | 22 | smart wrap + grow/scroll |
+| action | 16 | 23 | 34 | widen plate or two-line wrap |
+| tab | 16 | 23 | 28 | widen plate or specified two-line wrap |
+| field | 16 | 20 | 28 | reserve label column |
+| value | 16 | 20 | 28 | stable single-line value column |
+| tooltip | 18 | 20 | 24 | widen 460→620, then wrap/grow |
+| caption | 12 | 14 | 18 | single-line ellipsis; smaller only by allowlist |
+| HUD | 14 | 22 | 34 | fixed short feedback zone |
+
+Semantic-native scaling is monotonic at 648/720/900/1080/1440/2160p and never
+leaves the role band. Codex design-stage text uses transform-aware resolution so
+effective visual px (local font × stage scale) stays inside its selected bounds.
+Russian strings must be measured with the runtime font. Shrink-to-fit below the
+role minimum is forbidden; wrap/scroll/grow must happen inside the empty frame
+content zone. The authoritative overflow details, exceptions and fingerprinted
+inventory live in
+`docs/design/mockups/scrum1061_semantic_typography/`.
+
 ## Базовые Прозрачности Экранов
 
 | Элемент | Требование |
@@ -124,9 +155,19 @@ Fallback texture style, если PNG не найден: background `alpha=0.94`,
 
 ## Settings
 
-- Settings uses exactly three custom tabs: `Экран`, `Звук`, `Управление`.
-  Built-in `TabContainer` headers stay hidden; `SettingsTabButton_0..2` must stay
-  inside the switcher safe rects and `SettingsTabButton_3` must not exist.
+- Settings uses four custom tabs: `Экран`, `Звук`, `Управление`, `Игра`.
+  Built-in `TabContainer` headers stay hidden; `SettingsTabButton_0..3` use
+  independent safe plates (one 4-button row above 720p, centered 2×2 at 720p).
+  The Game page is a vertical-only `SettingsGameScroll`; compact runtime geometry
+  at 1280×720 is `892×242` with an exclusive 14px scrollbar lane and `878×520`
+  content canvas. The visible height is capped by the live Atlas frame safe-zone.
+- Settings tab typography is text-only on every tier. All four labels use the
+  same effective font as `SettingsBackButton`: `21px` at 1152x648, `22px` at
+  1280x720 and `23px` at 1920x1080/2560x1440 (maximum difference `1px`). The
+  260px plate content margins are exactly `48px` left/right, leaving a flat
+  `164px` lane; label icons, wrap, clipping, ellipsis and fit downscaling are
+  forbidden. normal/hover/pressed/focus/disabled styles must keep identical
+  margins and rendered glyph geometry inside that lane.
 - Screen dropdowns stage pending values only. `SettingsApplyButton` commits
   monitor/resolution/window-mode changes through `_apply_video_settings()`;
   `SettingsRevertButton` discards staged values. Both buttons are `240 x 72` and
@@ -249,11 +290,18 @@ Shop style alpha:
 
 ## Codex
 
-- Glossary tooltip minimum width: `360`.
-- Artifact codex icon: `96 x 96`.
-- Tab action button: `230 x 104`.
-- Dotted hover terms use hit-area stable labels; tooltip visibility must not resize surrounding grid.
-- Glossary grid columns: `2`; horizontal separation `14`; vertical separation `10`.
+- Design stage: `1920 x 1080`, uniform scale + letterbox.
+- Header title frame: `72,36,340,112`; Back: `1580,46,268,96`.
+- Panels: navigation `72,172,324,840`; list `420,172,620,840`; detail `1064,172,784,840`.
+- Navigation safe zone: `104,210,260,752`; six `260 x 104` Russian-only buttons at authored y `222,340,458,576,694,812`.
+- Center list viewport: `452,278,556,690`; entry rows `516 x 154`, with a `122 x 114` image well containing an `88 x 96` live image and a centered Russian name.
+- Detail preview frame: `1108,284,300,300`; live contained image: `1140,310,236,248`.
+- Detail body frame: `1108,606,684,356`; text safe zone `1140,632,610,304`.
+- Effective visual fonts: navigation/list/title `15..30px`; dossier body `17..32px`.
+- Live resize must recompute stage scale and all Codex font overrides without rebuilding lazy section caches.
+- Visible vertical scrollbar lanes: center list and lower dossier only.
+- Full-screen Codex ornament shell is forbidden: it overlaps the accepted header/nav zones. Each panel's content margins are authoritative.
+- Glossary remains absent from the live Codex.
 
 ## Settings
 
@@ -388,6 +436,24 @@ Cursor variants:
 - Attack cursor.
 
 All cursor variants must import cleanly in Godot and keep the active tip inside the hotspot tolerance used by tests.
+
+### Codex entity image-fit contract (SCRUM-958)
+
+- Authored row image area: `88×96` inside the existing `122×114` empty frame
+  content zone; dossier image area: `236×248` inside the existing `300×300`
+  frame content zone.
+- Runtime images use `STRETCH_KEEP_ASPECT_CENTERED`; enlargement comes from a
+  cached `AtlasTexture` alpha-view, never cover-stretch or source mutation.
+- Character policy: 8% reserve and bottom-center anchor. Monster policy: 4%
+  reserve, centered contain. Artifact/shop policy: 10% reserve, centered
+  contain.
+- The fitted region must enclose the complete non-transparent source rectangle.
+  Canonical source path, policy, visible rect and view region are mandatory
+  metadata for focused tests.
+- `codex_scrum958_image_fit_test.gd` must cover every character, monster and
+  artifact/shop row and its dossier at 1280×720, 1920×1080 and 2560×1440. No
+  generic fallback, frame-zone escape or raw/English duplicate label is
+  accepted.
 
 ## Accessibility And Input
 

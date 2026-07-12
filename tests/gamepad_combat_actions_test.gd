@@ -1,7 +1,7 @@
 extends "res://tests/runtime_smoke_test.gd"
 
-# SCRUM-824/SCRUM-825: battle action hotkeys must accept joypad action events,
-# not only InputEventKey. This focused test keeps keyboard Escape/Space parity.
+# SCRUM-824/SCRUM-825/SCRUM-846: battle action hotkeys must accept joypad action
+# events, not only InputEventKey. This focused test keeps keyboard parity.
 
 const ManagerScript := preload("res://scripts/input_device_manager.gd")
 
@@ -21,9 +21,13 @@ func _initialize() -> void:
 		return
 	if not _assert_action_has_joy_button("open_level_up", JOY_BUTTON_RIGHT_SHOULDER, "SCRUM-825: open_level_up missing RB binding."):
 		return
+	if not _assert_action_has_joy_button("feedback", JOY_BUTTON_BACK, "SCRUM-846: feedback missing Back/Select binding."):
+		return
 	if not _assert_action_has_keycode("pause", KEY_ESCAPE, "SCRUM-824: pause missing Escape binding."):
 		return
 	if not _assert_action_has_keycode("open_level_up", KEY_SPACE, "SCRUM-825: open_level_up missing Space binding."):
+		return
+	if not _assert_action_has_keycode("feedback", KEY_P, "SCRUM-846: feedback missing P binding."):
 		return
 
 	main.set("selected_character_id", "berserk")
@@ -68,6 +72,24 @@ func _initialize() -> void:
 		return
 	closed_level_up = await _close_level_up(main)
 	if not closed_level_up:
+		return
+
+	await _press_joy_button(JOY_BUTTON_BACK)
+	if not main.ui._is_feedback_overlay_open():
+		_fail("SCRUM-846: joypad Back/Select should open feedback overlay.")
+		return
+	await _press_joy_button(JOY_BUTTON_B)
+	if main.ui._is_feedback_overlay_open() or bool(main.call("_has_pause_reason", "feedback")):
+		_fail("SCRUM-846: joypad B should close feedback overlay.")
+		return
+
+	await _press_key(KEY_P)
+	if not main.ui._is_feedback_overlay_open():
+		_fail("SCRUM-846: keyboard P feedback path regressed.")
+		return
+	await _press_joy_button(JOY_BUTTON_START)
+	if main.ui._is_feedback_overlay_open() or bool(main.call("_has_pause_reason", "feedback")):
+		_fail("SCRUM-846: joypad Start should close feedback overlay via pause action.")
 		return
 
 	main.call("_clear_all_game_pauses")

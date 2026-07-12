@@ -1,0 +1,42 @@
+{
+  "canvas": {"width": 688, "height": 384},
+  "policy": {"min_gap": 4, "allow_overlap": false},
+  "content": {
+    "title": "Выбор героя",
+    "back": "Назад",
+    "hero": "Берсерк",
+    "choose": "Выбрать",
+    "ascension": "Возвышение 5",
+    "minus": "−",
+    "plus": "+",
+    "prev": "‹",
+    "next": "›",
+    "counter": "15–17 из 17",
+    "slot_1": "Химик",
+    "slot_2": "Рыцарь",
+    "slot_3": "Друид"
+  },
+  "elements": [
+    {"id": "screen_safe", "kind": "panel", "x": 48, "y": 48, "w": 592, "h": 320, "min_w": 592, "min_h": 320},
+    {"id": "title", "kind": "text", "parent": "screen_safe", "content_zone": true, "collision": false, "x": 72, "y": 58, "w": 112, "h": 26, "text_key": "title", "max_font": 19, "min_font": 14},
+    {"id": "back", "kind": "button", "parent": "screen_safe", "content_zone": true, "collision": false, "x": 526, "y": 58, "w": 90, "h": 30, "text_key": "back", "max_font": 16, "min_font": 12},
+    {"id": "portrait", "kind": "portrait", "parent": "screen_safe", "content_zone": true, "collision": false, "x": 72, "y": 100, "w": 168, "h": 204, "min_w": 150, "min_h": 180},
+    {"id": "choose", "kind": "button", "parent": "screen_safe", "content_zone": true, "collision": false, "x": 72, "y": 318, "w": 168, "h": 38, "text_key": "choose", "max_font": 16, "min_font": 12},
+    {"id": "dossier", "kind": "panel", "parent": "screen_safe", "x": 252, "y": 100, "w": 364, "h": 110, "min_w": 340, "min_h": 100},
+    {"id": "hero_name", "kind": "text", "parent": "dossier", "content_zone": true, "collision": false, "x": 264, "y": 110, "w": 168, "h": 28, "text_key": "hero", "max_font": 21, "min_font": 15},
+    {"id": "ascension_band", "kind": "panel", "parent": "screen_safe", "x": 252, "y": 216, "w": 300, "h": 48, "min_w": 286, "min_h": 44},
+    {"id": "asc_minus", "kind": "button", "parent": "ascension_band", "content_zone": true, "collision": false, "x": 260, "y": 222, "w": 54, "h": 36, "text_key": "minus", "max_font": 24, "min_font": 18},
+    {"id": "asc_value", "kind": "text", "parent": "ascension_band", "content_zone": true, "collision": false, "x": 324, "y": 222, "w": 156, "h": 36, "text_key": "ascension", "max_font": 18, "min_font": 13},
+    {"id": "asc_plus", "kind": "button", "parent": "ascension_band", "content_zone": true, "collision": false, "x": 490, "y": 222, "w": 54, "h": 36, "text_key": "plus", "max_font": 22, "min_font": 17},
+    {"id": "counter", "kind": "text", "parent": "screen_safe", "content_zone": true, "collision": false, "x": 558, "y": 226, "w": 58, "h": 22, "text_key": "counter", "max_font": 11, "min_font": 8},
+    {"id": "carousel_band", "kind": "panel", "parent": "screen_safe", "x": 252, "y": 270, "w": 364, "h": 94, "min_w": 350, "min_h": 88},
+    {"id": "prev", "kind": "button", "parent": "carousel_band", "content_zone": true, "collision": false, "x": 260, "y": 299, "w": 54, "h": 36, "text_key": "prev", "max_font": 25, "min_font": 18},
+    {"id": "slot_1", "kind": "slot", "parent": "carousel_band", "x": 322, "y": 279, "w": 76, "h": 76},
+    {"id": "slot_1_label", "kind": "text", "parent": "slot_1", "content_zone": true, "collision": false, "x": 326, "y": 337, "w": 68, "h": 15, "text_key": "slot_1", "max_font": 10, "min_font": 8},
+    {"id": "slot_2", "kind": "slot", "parent": "carousel_band", "x": 402, "y": 279, "w": 76, "h": 76},
+    {"id": "slot_2_label", "kind": "text", "parent": "slot_2", "content_zone": true, "collision": false, "x": 406, "y": 337, "w": 68, "h": 15, "text_key": "slot_2", "max_font": 10, "min_font": 8},
+    {"id": "slot_3", "kind": "slot", "parent": "carousel_band", "x": 482, "y": 279, "w": 76, "h": 76},
+    {"id": "slot_3_label", "kind": "text", "parent": "slot_3", "content_zone": true, "collision": false, "x": 486, "y": 337, "w": 68, "h": 15, "text_key": "slot_3", "max_font": 10, "min_font": 8},
+    {"id": "next", "kind": "button", "parent": "carousel_band", "content_zone": true, "collision": false, "x": 562, "y": 299, "w": 46, "h": 36, "text_key": "next", "max_font": 25, "min_font": 18}
+  ]
+}

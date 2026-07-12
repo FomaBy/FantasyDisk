@@ -1,0 +1,67 @@
+{
+  "task": "SCRUM-867",
+  "runtime_apply_task": "SCRUM-868",
+  "status": "historical_superseded_by_SCRUM-870",
+  "superseded_by": "docs/design/mockups/weapon_select_redraw_from_scratch/layout.json",
+  "runtime_status": "not_live_after_SCRUM-870",
+  "screen": "weapon_select",
+  "base_resolution": [2560, 1440],
+  "pixellab_ui_asset_id": "67e5f56a-aaa6-4216-814a-7f5301132fea",
+  "runtime_layer": {
+    "id": "WeaponSelectPixelLabRuntimeLayer",
+    "asset": "docs/design/mockups/weapon_select_full_redraw/pixellab_weapon_select_runtime_layer_2560x1440.png",
+    "source_asset": "docs/design/mockups/weapon_select_full_redraw/pixellab_weapon_select_mockup.png",
+    "rect": [0, 0, 2560, 1440],
+    "z": 9,
+    "notes": "Historical SCRUM-868 derived textless PixelLab layer; superseded by SCRUM-870 and not active runtime."
+  },
+  "panel": {
+    "id": "ws_panel",
+    "rect": [360, 120, 1840, 1200],
+    "safe_rect": [443, 229, 1674, 1016],
+    "asset": "assets/sprites/ui/frames/overhaul_2k/ui_frame_2k_ws_panel.png",
+    "source_size": [1720, 1060],
+    "texture_margins": [38, 52, 38, 48],
+    "content_margins": [78, 96, 78, 66]
+  },
+  "title": {
+    "id": "MenuTitle_weapon_select",
+    "rect": [443, 242, 1674, 60]
+  },
+  "subtitle": {
+    "id": "MenuSubtitle_weapon_select",
+    "rect": [443, 314, 1674, 32]
+  },
+  "weapon_card_template": {
+    "id": "WeaponOption_*",
+    "first_rect": [443, 374, 1674, 240],
+    "step_y": 254,
+    "count": 3,
+    "asset": "assets/sprites/ui/frames/overhaul_2k/ui_frame_2k_ws_card.png",
+    "source_size": [1564, 190],
+    "texture_margins": [32, 42, 32, 40],
+    "content_margins": [48, 35, 48, 32],
+    "icon_min_size": [150, 150],
+    "right_stats_width": 350,
+    "required_text_nodes": [
+      "WeaponSelectTitle_*",
+      "WeaponSelectIdentity_*",
+      "WeaponSelectDescription_*",
+      "WeaponSelectRole_*",
+      "WeaponSelectStats_*"
+    ]
+  },
+  "back_button": {
+    "id": "WeaponSelectBackButton",
+    "rect": [1140, 1234, 280, 60],
+    "asset_family": "pause_280x60"
+  },
+  "responsive_targets": [
+    [1152, 648],
+    [1280, 720],
+    [1536, 864],
+    [1920, 1080],
+    [2560, 1440],
+    [3840, 2160]
+  ]
+}

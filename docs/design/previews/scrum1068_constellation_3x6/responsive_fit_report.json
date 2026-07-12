@@ -1,0 +1,590 @@
+{
+  "schema": "fantasydisk.responsive_fit.v1",
+  "issue": "SCRUM-1075",
+  "ok": true,
+  "source_layout": "docs/design/mockups/scrum1068_constellation_3x6/preview_layout.json",
+  "matrix": [
+    {
+      "resolution": "1152x648",
+      "ok": true,
+      "renderer_exit": 0,
+      "zone_count": 15,
+      "zones": [
+        {
+          "id": "class_progress",
+          "ok": true,
+          "font_size": 20
+        },
+        {
+          "id": "guild_tab",
+          "ok": true,
+          "font_size": 18
+        },
+        {
+          "id": "sword_label",
+          "ok": true,
+          "font_size": 14
+        },
+        {
+          "id": "axe_label",
+          "ok": true,
+          "font_size": 13
+        },
+        {
+          "id": "hammer_label",
+          "ok": true,
+          "font_size": 13
+        },
+        {
+          "id": "dossier_title",
+          "ok": true,
+          "font_size": 14
+        },
+        {
+          "id": "dossier_weapon",
+          "ok": true,
+          "font_size": 16
+        },
+        {
+          "id": "dossier_body",
+          "ok": true,
+          "font_size": 12
+        },
+        {
+          "id": "cost",
+          "ok": true,
+          "font_size": 12
+        },
+        {
+          "id": "buy",
+          "ok": true,
+          "font_size": 13
+        },
+        {
+          "id": "progress",
+          "ok": true,
+          "font_size": 17
+        },
+        {
+          "id": "legacy",
+          "ok": true,
+          "font_size": 11
+        },
+        {
+          "id": "hidden",
+          "ok": true,
+          "font_size": 8
+        },
+        {
+          "id": "reset",
+          "ok": true,
+          "font_size": 14
+        },
+        {
+          "id": "legend",
+          "ok": true,
+          "font_size": 12
+        }
+      ]
+    },
+    {
+      "resolution": "1280x720",
+      "ok": true,
+      "renderer_exit": 0,
+      "zone_count": 15,
+      "zones": [
+        {
+          "id": "class_progress",
+          "ok": true,
+          "font_size": 23
+        },
+        {
+          "id": "guild_tab",
+          "ok": true,
+          "font_size": 20
+        },
+        {
+          "id": "sword_label",
+          "ok": true,
+          "font_size": 16
+        },
+        {
+          "id": "axe_label",
+          "ok": true,
+          "font_size": 15
+        },
+        {
+          "id": "hammer_label",
+          "ok": true,
+          "font_size": 15
+        },
+        {
+          "id": "dossier_title",
+          "ok": true,
+          "font_size": 16
+        },
+        {
+          "id": "dossier_weapon",
+          "ok": true,
+          "font_size": 18
+        },
+        {
+          "id": "dossier_body",
+          "ok": true,
+          "font_size": 14
+        },
+        {
+          "id": "cost",
+          "ok": true,
+          "font_size": 13
+        },
+        {
+          "id": "buy",
+          "ok": true,
+          "font_size": 14
+        },
+        {
+          "id": "progress",
+          "ok": true,
+          "font_size": 19
+        },
+        {
+          "id": "legacy",
+          "ok": true,
+          "font_size": 12
+        },
+        {
+          "id": "hidden",
+          "ok": true,
+          "font_size": 9
+        },
+        {
+          "id": "reset",
+          "ok": true,
+          "font_size": 15
+        },
+        {
+          "id": "legend",
+          "ok": true,
+          "font_size": 13
+        }
+      ]
+    },
+    {
+      "resolution": "1366x768",
+      "ok": true,
+      "renderer_exit": 0,
+      "zone_count": 15,
+      "zones": [
+        {
+          "id": "class_progress",
+          "ok": true,
+          "font_size": 24
+        },
+        {
+          "id": "guild_tab",
+          "ok": true,
+          "font_size": 21
+        },
+        {
+          "id": "sword_label",
+          "ok": true,
+          "font_size": 17
+        },
+        {
+          "id": "axe_label",
+          "ok": true,
+          "font_size": 16
+        },
+        {
+          "id": "hammer_label",
+          "ok": true,
+          "font_size": 16
+        },
+        {
+          "id": "dossier_title",
+          "ok": true,
+          "font_size": 17
+        },
+        {
+          "id": "dossier_weapon",
+          "ok": true,
+          "font_size": 19
+        },
+        {
+          "id": "dossier_body",
+          "ok": true,
+          "font_size": 15
+        },
+        {
+          "id": "cost",
+          "ok": true,
+          "font_size": 14
+        },
+        {
+          "id": "buy",
+          "ok": true,
+          "font_size": 15
+        },
+        {
+          "id": "progress",
+          "ok": true,
+          "font_size": 20
+        },
+        {
+          "id": "legacy",
+          "ok": true,
+          "font_size": 13
+        },
+        {
+          "id": "hidden",
+          "ok": true,
+          "font_size": 10
+        },
+        {
+          "id": "reset",
+          "ok": true,
+          "font_size": 16
+        },
+        {
+          "id": "legend",
+          "ok": true,
+          "font_size": 14
+        }
+      ]
+    },
+    {
+      "resolution": "1600x900",
+      "ok": true,
+      "renderer_exit": 0,
+      "zone_count": 15,
+      "zones": [
+        {
+          "id": "class_progress",
+          "ok": true,
+          "font_size": 28
+        },
+        {
+          "id": "guild_tab",
+          "ok": true,
+          "font_size": 25
+        },
+        {
+          "id": "sword_label",
+          "ok": true,
+          "font_size": 20
+        },
+        {
+          "id": "axe_label",
+          "ok": true,
+          "font_size": 18
+        },
+        {
+          "id": "hammer_label",
+          "ok": true,
+          "font_size": 18
+        },
+        {
+          "id": "dossier_title",
+          "ok": true,
+          "font_size": 20
+        },
+        {
+          "id": "dossier_weapon",
+          "ok": true,
+          "font_size": 22
+        },
+        {
+          "id": "dossier_body",
+          "ok": true,
+          "font_size": 18
+        },
+        {
+          "id": "cost",
+          "ok": true,
+          "font_size": 17
+        },
+        {
+          "id": "buy",
+          "ok": true,
+          "font_size": 18
+        },
+        {
+          "id": "progress",
+          "ok": true,
+          "font_size": 23
+        },
+        {
+          "id": "legacy",
+          "ok": true,
+          "font_size": 15
+        },
+        {
+          "id": "hidden",
+          "ok": true,
+          "font_size": 12
+        },
+        {
+          "id": "reset",
+          "ok": true,
+          "font_size": 19
+        },
+        {
+          "id": "legend",
+          "ok": true,
+          "font_size": 17
+        }
+      ]
+    },
+    {
+      "resolution": "1920x1080",
+      "ok": true,
+      "renderer_exit": 0,
+      "zone_count": 15,
+      "zones": [
+        {
+          "id": "class_progress",
+          "ok": true,
+          "font_size": 34
+        },
+        {
+          "id": "guild_tab",
+          "ok": true,
+          "font_size": 30
+        },
+        {
+          "id": "sword_label",
+          "ok": true,
+          "font_size": 24
+        },
+        {
+          "id": "axe_label",
+          "ok": true,
+          "font_size": 22
+        },
+        {
+          "id": "hammer_label",
+          "ok": true,
+          "font_size": 22
+        },
+        {
+          "id": "dossier_title",
+          "ok": true,
+          "font_size": 24
+        },
+        {
+          "id": "dossier_weapon",
+          "ok": true,
+          "font_size": 27
+        },
+        {
+          "id": "dossier_body",
+          "ok": true,
+          "font_size": 21
+        },
+        {
+          "id": "cost",
+          "ok": true,
+          "font_size": 20
+        },
+        {
+          "id": "buy",
+          "ok": true,
+          "font_size": 21
+        },
+        {
+          "id": "progress",
+          "ok": true,
+          "font_size": 28
+        },
+        {
+          "id": "legacy",
+          "ok": true,
+          "font_size": 18
+        },
+        {
+          "id": "hidden",
+          "ok": true,
+          "font_size": 15
+        },
+        {
+          "id": "reset",
+          "ok": true,
+          "font_size": 23
+        },
+        {
+          "id": "legend",
+          "ok": true,
+          "font_size": 20
+        }
+      ]
+    },
+    {
+      "resolution": "2560x1440",
+      "ok": true,
+      "renderer_exit": 0,
+      "zone_count": 15,
+      "zones": [
+        {
+          "id": "class_progress",
+          "ok": true,
+          "font_size": 45
+        },
+        {
+          "id": "guild_tab",
+          "ok": true,
+          "font_size": 40
+        },
+        {
+          "id": "sword_label",
+          "ok": true,
+          "font_size": 32
+        },
+        {
+          "id": "axe_label",
+          "ok": true,
+          "font_size": 29
+        },
+        {
+          "id": "hammer_label",
+          "ok": true,
+          "font_size": 29
+        },
+        {
+          "id": "dossier_title",
+          "ok": true,
+          "font_size": 32
+        },
+        {
+          "id": "dossier_weapon",
+          "ok": true,
+          "font_size": 36
+        },
+        {
+          "id": "dossier_body",
+          "ok": true,
+          "font_size": 28
+        },
+        {
+          "id": "cost",
+          "ok": true,
+          "font_size": 27
+        },
+        {
+          "id": "buy",
+          "ok": true,
+          "font_size": 28
+        },
+        {
+          "id": "progress",
+          "ok": true,
+          "font_size": 37
+        },
+        {
+          "id": "legacy",
+          "ok": true,
+          "font_size": 24
+        },
+        {
+          "id": "hidden",
+          "ok": true,
+          "font_size": 23
+        },
+        {
+          "id": "reset",
+          "ok": true,
+          "font_size": 31
+        },
+        {
+          "id": "legend",
+          "ok": true,
+          "font_size": 27
+        }
+      ]
+    },
+    {
+      "resolution": "3840x2160",
+      "ok": true,
+      "renderer_exit": 0,
+      "zone_count": 15,
+      "zones": [
+        {
+          "id": "class_progress",
+          "ok": true,
+          "font_size": 68
+        },
+        {
+          "id": "guild_tab",
+          "ok": true,
+          "font_size": 60
+        },
+        {
+          "id": "sword_label",
+          "ok": true,
+          "font_size": 48
+        },
+        {
+          "id": "axe_label",
+          "ok": true,
+          "font_size": 44
+        },
+        {
+          "id": "hammer_label",
+          "ok": true,
+          "font_size": 44
+        },
+        {
+          "id": "dossier_title",
+          "ok": true,
+          "font_size": 48
+        },
+        {
+          "id": "dossier_weapon",
+          "ok": true,
+          "font_size": 54
+        },
+        {
+          "id": "dossier_body",
+          "ok": true,
+          "font_size": 42
+        },
+        {
+          "id": "cost",
+          "ok": true,
+          "font_size": 40
+        },
+        {
+          "id": "buy",
+          "ok": true,
+          "font_size": 42
+        },
+        {
+          "id": "progress",
+          "ok": true,
+          "font_size": 56
+        },
+        {
+          "id": "legacy",
+          "ok": true,
+          "font_size": 36
+        },
+        {
+          "id": "hidden",
+          "ok": true,
+          "font_size": 34
+        },
+        {
+          "id": "reset",
+          "ok": true,
+          "font_size": 46
+        },
+        {
+          "id": "legend",
+          "ok": true,
+          "font_size": 40
+        }
+      ]
+    }
+  ],
+  "live_resize_contract": "same-instance geometry is recomputed from the current viewport; no stale rectangle reuse"
+}

@@ -54,3 +54,25 @@ static func default_resolution_index(screen_size: Vector2i, scale: float) -> int
 
 static func sanitize_resolution_index(index: int) -> int:
 	return clampi(index, 0, ALLOWED_RESOLUTIONS.size() - 1)
+
+
+# SCRUM-1012: pure monitor selector model. DisplayServer stays at the UI
+# boundary; headless tests pass virtual screen sizes through these helpers.
+static func sanitize_screen_index(screen_sizes: Array[Vector2i], requested_index: int) -> int:
+	return clampi(requested_index, 0, maxi(screen_sizes.size() - 1, 0))
+
+
+static func monitor_options(screen_sizes: Array[Vector2i], requested_index: int) -> Dictionary:
+	var options: Array[Dictionary] = []
+	for screen_index in range(screen_sizes.size()):
+		var screen_size: Vector2i = screen_sizes[screen_index]
+		options.append({
+			"index": screen_index,
+			"size": screen_size,
+			"label": "Экран %d (%dx%d)" % [screen_index + 1, screen_size.x, screen_size.y],
+		})
+	return {
+		"visible": options.size() > 1,
+		"selected_index": sanitize_screen_index(screen_sizes, requested_index),
+		"options": options,
+	}

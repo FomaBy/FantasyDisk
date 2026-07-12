@@ -1,0 +1,26 @@
+{
+  "jira": "SCRUM-979",
+  "pipeline": "FantasyDisk UI Director -> content-zone gate -> PixelLab MCP -> existing PixelLab source reuse exception",
+  "planning_gate": "ready_for_image",
+  "planning_errors": 0,
+  "planning_warnings": 0,
+  "new_generation": {
+    "request": "pixellab_create_request.json",
+    "result": "no generations or credits remaining",
+    "asset_created": false
+  },
+  "exception": "PixelLab unavailable + existing source reuse",
+  "generic_fallback": "not used",
+  "reused_sources": [
+    "assets/sprites/ui/frames/hero_select_pixellab/button_carousel_left.png",
+    "assets/sprites/ui/frames/hero_select_pixellab/button_carousel_right.png"
+  ],
+  "reused_source_sha256": "3df59f375a52ba80baf8adf1153346cac9b23f7640261bf85ecdfcc5009daccb",
+  "source_dimensions": "132x176",
+  "source_content_rect": [36, 42, 60, 92],
+  "mockups": {
+    "existing_pixellab_reuse_mockup_1920x1080.png": "1c04fe7213ffa47beb3cc6f9e631aaf0b90f335dfc6089b56a00ee52510bfea9",
+    "existing_pixellab_reuse_mockup_2560x1440.png": "26ef438ab85e56f326db64ffc86cc0a50bb10d7cb2ba4b377007cd7d44218e3b"
+  },
+  "runtime_asset_policy": "No new bitmap. Runtime reuses the tracked PixelLab arrow sources with authored content margins."
+}

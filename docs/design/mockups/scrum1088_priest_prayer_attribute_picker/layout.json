@@ -1,0 +1,25 @@
+{
+  "canvas": {"width": 1920, "height": 1080},
+  "source_contract": "Reuse the live SCRUM-985 Level Up shell and card builders; do not render the generated mockup as a runtime texture.",
+  "elements": [
+    {"id": "level_up_overlay", "rect": [0, 0, 1920, 1080], "anchors": "full_rect", "z": 0},
+    {"id": "level_up_panel", "rect": [96, 24, 1728, 1032], "anchors": "center", "z": 2, "visual_border": "none"},
+    {"id": "title", "rect": [480, 42, 960, 72], "anchors": "center_top", "z": 10},
+    {"id": "divider", "rect": [720, 112, 480, 28], "anchors": "center_top", "z": 9},
+    {"id": "subtitle", "rect": [420, 142, 1080, 46], "anchors": "center_top", "z": 10},
+    {"id": "prayer_card_0", "rect": [135, 315, 520, 445], "anchors": "center", "z": 8},
+    {"id": "prayer_card_1", "rect": [700, 315, 520, 445], "anchors": "center", "z": 8},
+    {"id": "prayer_card_2", "rect": [1265, 315, 520, 445], "anchors": "center", "z": 8}
+  ],
+  "card_content": {
+    "texture_margins": [2, 2, 2, 2],
+    "content_margins": [17, 12, 17, 12],
+    "forbidden_zones": "all border, corner, gem, socket-ring and divider ornament pixels",
+    "runtime_zones": ["icon socket inner square", "single-line title", "two-line description", "effect-summary field"]
+  },
+  "responsive": {
+    "1280x720": "same _level_up_layout_metrics compact contract; three disjoint cards and readable minimum fonts",
+    "1920x1080": "base rectangles above",
+    "2560x1440": "same live 2K Level Up metrics; no outer prayer frame"
+  }
+}

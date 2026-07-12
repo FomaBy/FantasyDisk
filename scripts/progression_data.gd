@@ -10,6 +10,7 @@ const CLASS_DAMAGE_PARAMETER := CharacterData.CLASS_DAMAGE_PARAMETER
 const STAT_CLASS_RELEVANCE := CharacterData.STAT_CLASS_RELEVANCE
 const CLASS_INTERPRETATIONS := CharacterData.CLASS_INTERPRETATIONS
 const CLASS_MECHANIC_IDENTITIES := CharacterData.CLASS_MECHANIC_IDENTITIES
+const CLASS_TRAITS := CharacterData.CLASS_TRAITS  # SCRUM-935: data-driven class traits
 const ATTRIBUTE_PRIORITIES := CharacterData.ATTRIBUTE_PRIORITIES
 const ATTRIBUTE_PRIORITY_REASONS := CharacterData.ATTRIBUTE_PRIORITY_REASONS
 const ATTRIBUTE_REGISTRY := CharacterData.ATTRIBUTE_REGISTRY  # SCRUM-695: канон-реестр атрибутов
@@ -36,6 +37,7 @@ const SURVIVABILITY_DEFENSE_CAP := BalanceData.SURVIVABILITY_DEFENSE_CAP
 const SURVIVABILITY_DEFENSE_DIMINISH := BalanceData.SURVIVABILITY_DEFENSE_DIMINISH
 const SURVIVABILITY_DODGE_CAP := BalanceData.SURVIVABILITY_DODGE_CAP
 const SURVIVABILITY_DODGE_DIMINISH := BalanceData.SURVIVABILITY_DODGE_DIMINISH
+const SMOKE_CLOUD_DODGE_CAP := BalanceData.SMOKE_CLOUD_DODGE_CAP  # SCRUM-897: кап уворота в дым-облаке Вора
 const SURVIVABILITY_ABSORB_MIN_DAMAGE_FRACTION := BalanceData.SURVIVABILITY_ABSORB_MIN_DAMAGE_FRACTION
 const SURVIVABILITY_ABSORB_FLAT_DIMINISH := BalanceData.SURVIVABILITY_ABSORB_FLAT_DIMINISH
 const SURVIVABILITY_REGEN_FLAT_MULTIPLIER := BalanceData.SURVIVABILITY_REGEN_FLAT_MULTIPLIER
@@ -109,6 +111,8 @@ const ELITE_ATTACK_CONFIGS := EnemyData.ELITE_ATTACK_CONFIGS
 const UNIQUE_ENCOUNTER_PATTERNS := EnemyData.UNIQUE_ENCOUNTER_PATTERNS
 
 static func artifact_definition(artifact_id: String) -> Dictionary:
+	# SCRUM-960: для семьи (rarity_scaling) возвращает запись КАК ЕСТЬ (корень =
+	# т1-база + tiers) — материализация оффера происходит только в сэмплерах.
 	for artifact in ARTIFACTS:
 		if str(artifact.get("id", "")) == artifact_id:
 			return artifact
@@ -118,25 +122,91 @@ static func artifact_definition(artifact_id: String) -> Dictionary:
 	return {}
 
 
+# --- SCRUM-960: универсальные семьи артефактов с роллом редкости ---
+# Семья (rarity_scaling:true, artifact_system_matrix §1.3) хранит tiers{1,2,3};
+# тир роллится ПРИ ВЫДАЧЕ (offer-time) по нормализованным весам, оффер
+# материализуется в плоскую запись — дальше пайплайн (карточки, магазин,
+# apply_reward) работает без изменений. Вес самой семьи в пуле = 1.0.
+
+# Ролл тира семьи. Пустой аргумент = канонические TIER_WEIGHTS (нормализация
+# даёт ≈0.64/0.29/0.08); кастомные веса — для depth-логики элиток/сундуков.
+static func roll_artifact_family_tier(weights: Dictionary = {}) -> int:
+	var tier_weights: Dictionary = weights if not weights.is_empty() else TIER_WEIGHTS
+	var tiers: Array = tier_weights.keys()
+	tiers.sort()
+	var total := 0.0
+	for tier in tiers:
+		total += maxf(float(tier_weights[tier]), 0.0)
+	if total <= 0.0:
+		return 1
+	var roll := randf() * total
+	var cursor := 0.0
+	for tier in tiers:
+		cursor += maxf(float(tier_weights[tier]), 0.0)
+		if roll <= cursor:
+			return int(tier)
+	return int(tiers.back())
+
+
+# Материализация оффера семьи на выбранном тире: плоская запись
+# {id, title, tier, cost=COST_BY_TIER[tier], description, stats|mods,
+#  rarity_scaling:true} — эффект тира ЗАМЕЩАЕТ корневой (т1-базовый).
+# kind/weight не ставятся здесь — их добавляет вызывающий сэмплер.
+static func materialize_family_offer(family: Dictionary, tier: int) -> Dictionary:
+	var tiers: Dictionary = family.get("tiers", {}) as Dictionary
+	var tier_key := tier if tiers.has(tier) else 1
+	var tier_data: Dictionary = tiers.get(tier_key, {}) as Dictionary
+	var offer: Dictionary = family.duplicate(true)
+	offer.erase("tiers")
+	offer.erase("stats")
+	offer.erase("mods")
+	offer["tier"] = tier_key
+	offer["cost"] = int(COST_BY_TIER.get(tier_key, int(family.get("cost", 30))))
+	offer["description"] = str(tier_data.get("description", family.get("description", "")))
+	if tier_data.has("stats"):
+		offer["stats"] = (tier_data.get("stats") as Dictionary).duplicate(true)
+	if tier_data.has("mods"):
+		offer["mods"] = (tier_data.get("mods") as Dictionary).duplicate(true)
+	offer["rarity_scaling"] = true
+	return offer
+
+
 # --- Стартовые бооны забега (SCRUM-618) ---
 
-static func start_boons() -> Array:
-	return START_BOONS
+static func canonical_start_boon_id(boon_id: String) -> String:
+	match boon_id:
+		"glass_edge":
+			return "boon_glass_edge"
+		_:
+			return boon_id
+
+
+static func start_boons(character_id := "") -> Array:
+	if character_id == "":
+		return START_BOONS
+	var boons := []
+	for boon in START_BOONS:
+		if is_reward_relevant(boon, character_id):
+			boons.append((boon as Dictionary).duplicate(true))
+	return boons
 
 
 static func start_boon_definition(boon_id: String) -> Dictionary:
+	var canonical_id := canonical_start_boon_id(boon_id)
 	for boon in START_BOONS:
-		if str(boon.get("id", "")) == boon_id:
+		if str(boon.get("id", "")) == canonical_id:
 			return boon
 	return {}
 
 
 # Mods выбранного боона (пустой dict, если боон не выбран/неизвестен — тождественность).
-static func start_boon_mods(boon_id: String) -> Dictionary:
+static func start_boon_mods(boon_id: String, character_id := "") -> Dictionary:
 	if boon_id == "":
 		return {}
 	var boon := start_boon_definition(boon_id)
 	if boon.is_empty():
+		return {}
+	if character_id != "" and not is_reward_relevant(boon, character_id):
 		return {}
 	return (boon.get("mods", {}) as Dictionary).duplicate(true)
 
@@ -145,12 +215,94 @@ static func damage_parameter_for(character_id: String) -> String:
 	return str(CLASS_DAMAGE_PARAMETER.get(character_id, "damage"))
 
 
+
 static func is_stat_relevant(stat_id: String, character_id: String) -> bool:
 	return true
 
 
-static func is_reward_relevant(reward: Dictionary, character_id: String) -> bool:
-	return true
+# SCRUM-862 + SCRUM-900 «Клятва чумного доктора»: реестр generic-сустейна,
+# отрезанного trait'ом CLASS_TRAITS.*.generic_sustain_blocked (data-driven —
+# сейчас только doctor). Три потребителя:
+#   - is_reward_relevant: не предлагать такие награды в пулах level-up/артефактов;
+#   - Player._apply_reward_mods / apply_meta_skill_modifiers: не применять моды
+#     (is_blocked_sustain_mod_key), если награда не помечена doctor_friendly;
+#   - derived_parameters: отрезать базовый пассивный реген (константа+knowledge).
+# Пометка reward["doctor_friendly"] = true — явный допуск предмета для Доктора:
+# оффер проходит фильтр, моды применяются в обычные run-ключи и работают штатно.
+# Route/rest/shop-лечение (аптечки-пикапы, отдых на маршруте) сознательно НЕ
+# блокируется — отсекается именно КОМБАТ/билд-сустейн (решение тикета).
+const DOCTOR_FORBIDDEN_SUSTAIN_ATTRS := {
+	"regeneration": true,
+	"vampiric_amount": true,
+	"vampiric_chance": true,
+}
+const DOCTOR_FORBIDDEN_SUSTAIN_REWARD_IDS := {
+	"leech_heart": true,
+	"leech_fang": true,
+	"field_kit": true,
+	"vital_siphon": true,
+	"breather_totem": true,
+	"soul_harvest": true,
+	"second_wind": true,
+	"swiftfoot": true,
+	"shop_heal": true,
+}
+const DOCTOR_FORBIDDEN_SUSTAIN_MOD_KEYS := {
+	"regeneration_flat": true,
+	"vampiric_chance_flat": true,
+	"vampiric_amount_flat": true,
+	"vampiric_heal_per_second_cap": true,
+	"kill_heal_percent": true,
+	"room_clear_heal_percent": true,
+	"kill_streak_heal_every": true,
+	"lowhp_regen_bonus": true,
+	"heal_percent": true,
+}
+
+
+static func _is_doctor_forbidden_sustain_reward(reward: Dictionary) -> bool:
+	var reward_id := str(reward.get("id", ""))
+	if DOCTOR_FORBIDDEN_SUSTAIN_REWARD_IDS.has(reward_id):
+		return true
+	var attr_id := str(reward.get("attr", ""))
+	if DOCTOR_FORBIDDEN_SUSTAIN_ATTRS.has(attr_id):
+		return true
+	var mods: Dictionary = reward.get("mods", {}) as Dictionary
+	for key in mods.keys():
+		if DOCTOR_FORBIDDEN_SUSTAIN_MOD_KEYS.has(str(key)):
+			return true
+	if reward.has("heal_percent"):
+		return true
+	return false
+
+
+# SCRUM-900: data-driven чтение trait-флага «сустейн только от оружия».
+static func class_blocks_generic_sustain(character_id: String) -> bool:
+	return float((CLASS_TRAITS.get(character_id, {}) as Dictionary).get("generic_sustain_blocked", 0.0)) > 0.0
+
+
+# SCRUM-900: запрещён ли run-ключ мода для класса с trait'ом plague_oath.
+# Потребители — Player._apply_reward_mods / apply_meta_skill_modifiers.
+static func is_blocked_sustain_mod_key(key: String) -> bool:
+	return DOCTOR_FORBIDDEN_SUSTAIN_MOD_KEYS.has(key)
+
+
+static func is_reward_relevant(reward: Dictionary, character_id: String, ascension_level := 0, cross_class_ids: Array = []) -> bool:
+	# SCRUM-900: trait-гейт вместо хардкода класса; явная пометка doctor_friendly
+	# пропускает предмет в пул (и Player применит его моды штатно).
+	if class_blocks_generic_sustain(character_id) and not bool(reward.get("doctor_friendly", false)) \
+			and _is_doctor_forbidden_sustain_reward(reward):
+		return false
+	# SCRUM-961 (artifact_system_matrix §1.4): классовые артефакты заперты гейтом
+	# «свой класс И мета-Возвышение >= requires_ascension». Пустой class_affinity =
+	# универсал (гейта нет). cross_class_ids — run-исключение «Украденного герба»
+	# (§5): перечисленные id проходят сквозь гейт независимо от класса/возвышения.
+	var affinity: Array = reward.get("class_affinity", []) as Array
+	if affinity.is_empty():
+		return true
+	if cross_class_ids.has(str(reward.get("id", ""))):
+		return true
+	return character_id in affinity and ascension_level >= int(reward.get("requires_ascension", 0))
 
 
 static func class_interpretation_text(character_id: String, stat_or_parameter_id: String) -> String:
@@ -163,8 +315,8 @@ static func class_interpretation_text(character_id: String, stat_or_parameter_id
 			return "Для этого класса работает как частота вспомогательных эхо-эффектов и поддержки."
 		"intelligence", "magic_damage":
 			return "Для этого класса работает как зачарование оружия или магический splash."
-		"sound_wave_damage", "aura_radius":
-			return "Для этого класса работает как боевой клич и ближний контроль пространства."
+		"aura_radius":
+			return "Для этого класса работает как аура присутствия и ближний контроль пространства."
 		"knowledge", "dot_damage", "dot_speed":
 			return "Для этого класса добавляет малый bleed/burn/poison след к ударам."
 		"energy", "ultimate_multiplier":
@@ -262,6 +414,79 @@ static func attribute_relevance_weight(attr_id: String, character_id: String) ->
 			return 0.4
 
 
+# SCRUM-1064: deterministic Hero Select projection. Values sort descending;
+# ties keep the canonical STAT_NAMES declaration order so every class follows
+# exactly the same rule and the UI never carries a hand-written priority list.
+static func leading_base_stats(character_id: String, count := 3) -> Array:
+	var stats: Dictionary = base_stats(character_id)
+	var canonical_order: Array = STAT_NAMES.keys()
+	var rows: Array = []
+	for stat_id_value in canonical_order:
+		var stat_id := str(stat_id_value)
+		rows.append({
+			"id": stat_id,
+			"name": str(STAT_NAMES.get(stat_id, stat_id)),
+			"value": float(stats.get(stat_id, 0.0)),
+		})
+	rows.sort_custom(func(a: Dictionary, b: Dictionary) -> bool:
+		var av := float(a.get("value", 0.0))
+		var bv := float(b.get("value", 0.0))
+		if not is_equal_approx(av, bv):
+			return av > bv
+		return canonical_order.find(str(a.get("id", ""))) < canonical_order.find(str(b.get("id", "")))
+	)
+	var limit := clampi(count, 0, rows.size())
+	return rows.slice(0, limit)
+
+
+# Internal matrix key `optional` remains stable for reward weighting. The Hero
+# Select projection exposes the requested player-facing category `weak` and
+# covers the registry in canonical order without caps, abbreviations or overlap.
+static func hero_attribute_relevance_groups(character_id: String) -> Dictionary:
+	var groups := {"primary": [], "secondary": [], "weak": []}
+	for entry_value in ATTRIBUTE_REGISTRY:
+		var entry := entry_value as Dictionary
+		var attr_id := str(entry.get("id", ""))
+		if attr_id.is_empty():
+			continue
+		var category := attribute_relevance(attr_id, character_id)
+		if category == "optional":
+			category = "weak"
+		if not groups.has(category):
+			category = "weak"
+		(groups[category] as Array).append({
+			"id": attr_id,
+			"name": str(entry.get("name", attr_id)),
+		})
+	return groups
+
+
+# Uniform data contract consumed by Hero Select and focused schema tests. Codex
+# keeps its existing richer prose projection because it does not consume these
+# Hero-only fields.
+static func hero_select_dossier(character_id: String) -> Dictionary:
+	var config := character_config(character_id)
+	var weapons: Array = []
+	for weapon_id_value in weapon_ids(character_id):
+		var weapon_id := str(weapon_id_value)
+		var weapon_config := weapon(character_id, weapon_id)
+		weapons.append({
+			"id": weapon_id,
+			"name": str(weapon_config.get("title", weapon_id)),
+		})
+	var trait_record := class_trait(character_id)
+	if str(trait_record.get("title", "")).strip_edges().is_empty():
+		trait_record = {}
+	return {
+		"id": character_id,
+		"name": str(config.get("title", character_id)),
+		"trait": trait_record,
+		"weapons": weapons,
+		"leading_base_stats": leading_base_stats(character_id, 3),
+		"attribute_relevance": hero_attribute_relevance_groups(character_id),
+	}
+
+
 static func reward_attribute_dependency(reward: Dictionary) -> String:
 	# SCRUM-695: каноничный attr-id из реестра (LEVEL_UP_REWARDS теперь его несут).
 	var attr := str(reward.get("attr", ""))
@@ -283,8 +508,12 @@ static func reward_attribute_dependency(reward: Dictionary) -> String:
 				return "max_health"
 			"move_speed_multiplier":
 				return "move_speed"
-			"aoe_radius_multiplier":
+			"sector_multiplier":
 				return "aoe_radius"
+			"aoe_radius_multiplier":
+				return "aura_radius"
+			"magic_damage_multiplier":
+				return "magic_focus"
 			"pickup_radius_flat":
 				return "pickup_radius"
 			"defense_flat":
@@ -434,6 +663,50 @@ static func _soft_capped_run_multiplier(multiplier: float, softcap: float, knee:
 	return 1.0 + clampf(softened, 0.0, maxf(softcap - 1.0, 0.0))
 
 
+# SCRUM-947 «Проводник стихий»: класс-trait Элементалиста, data-driven запись
+# CLASS_TRAITS.elementalist.magic_bonus_effectiveness = 1.30 (реестр SCRUM-935).
+# Каждый источник бонуса МАГИЧЕСКОГО урона на 30% эффективнее (bonus-effectiveness
+# scaling: +15% источник → +19.5% фактически; НЕ флэт-множитель прямого урона).
+# Детерминированный порядок стакинга (см. derived_parameters, дублируется в
+# docs/design/systems/characters_weapons.md): каждый magic-tagged источник
+# усиливается РОВНО ОДИН РАЗ, отдельно от остальных, ДО перемножения источников:
+#   1) забеговый run_modifiers.magic_damage_multiplier — softcap → ×1.30 на избыток
+#      (усиливается уже задиминишенный бонус, глобальный анти-runaway остаётся
+#      арбитром) → upgrade_damage_exponent;
+#   2) пассив оружия passive_mods.magic_damage_multiplier (класс-прогрессия) —
+#      ×1.30 на бонусную часть;
+#   3) magic-tagged бафы (prayer_opening_*) — ×1.30 на саму добавку;
+#   4) атрибутный источник: дельта интеллекта НАД базой класса (после
+#      growth-скаляра CLASS_LEVEL_STAT_GROWTH_SCALARS) → ×1.30 только в канале
+#      magic_damage. Изоляция типов урона (SCRUM-524) не нарушается: интеллект
+#      владеет только магией, другие каналы не видят усиления.
+# НЕ усиливаются: universal damage_multiplier/damage_flat (не magic-tagged),
+# physical-only и periodic-only (dot_*) источники, а также штрафы (<1.0).
+static func _magic_bonus_effectiveness_for(character_id: String) -> float:
+	if character_id == "":
+		return 1.0
+	return maxf(float((CLASS_TRAITS.get(character_id, {}) as Dictionary).get("magic_bonus_effectiveness", 1.0)), 1.0)
+
+
+# SCRUM-897 «Воровская хватка»: класс-trait Вора, data-driven запись
+# CLASS_TRAITS.thief.pickup_radius_multiplier = 1.85 (реестр class_traits_registry).
+# Множитель применяется к СТАРТОВОЙ части pickup_radius (база 105 + perception×7)
+# в derived_parameters; flat-источники забега/пассивов (pickup_radius_flat) идут
+# поверх БЕЗ усиления — «сильно увеличенный стартовый радиус», а не runaway-скейл.
+static func _pickup_radius_trait_multiplier(character_id: String) -> float:
+	if character_id == "":
+		return 1.0
+	return maxf(float((CLASS_TRAITS.get(character_id, {}) as Dictionary).get("pickup_radius_multiplier", 1.0)), 1.0)
+
+
+# Усиливает БОНУСНУЮ часть множителя: 1.15 → 1.0 + 0.15*effectiveness. Штрафы
+# (multiplier <= 1.0) проходят без изменения — trait усиливает бонусы, не дебаффы.
+static func _amplified_bonus_multiplier(multiplier: float, effectiveness: float) -> float:
+	if effectiveness == 1.0 or multiplier <= 1.0:
+		return multiplier
+	return 1.0 + (multiplier - 1.0) * effectiveness
+
+
 static func effective_defense(raw_defense: float) -> float:
 	return _diminishing_percent(raw_defense, SURVIVABILITY_DEFENSE_CAP, SURVIVABILITY_DEFENSE_DIMINISH)
 
@@ -458,6 +731,15 @@ static func effective_regeneration(knowledge: float, flat_regeneration: float) -
 	return regen_base * knowledge_scale
 
 
+# SCRUM-900 «Клятва чумного доктора»: реген класса с generic_sustain_blocked =
+# только дельта от явно применённых flat'ов (base-константа+knowledge отрезаны).
+# Для остальных классов — прежняя формула без изменений.
+static func _class_gated_regeneration(character_id: String, knowledge: float, flat_regeneration: float) -> float:
+	if not class_blocks_generic_sustain(character_id):
+		return effective_regeneration(knowledge, flat_regeneration)
+	return maxf(effective_regeneration(knowledge, flat_regeneration) - effective_regeneration(knowledge, 0.0), 0.0)
+
+
 static func effective_vampiric_chance(raw_chance: float) -> float:
 	return clampf(raw_chance, 0.0, VAMPIRIC_CHANCE_CAP)
 
@@ -466,10 +748,13 @@ static func effective_vampiric_cap(raw_cap: float) -> float:
 	return clampf(raw_cap, 0.0, VAMPIRIC_HEAL_CAP_HARD)
 
 
-static func effective_crit_chance(raw_chance: float) -> float:
+# SCRUM-894: кап/diminish параметризованы под class trait «Хладнокровие»
+# (class_crit_profile). Дефолты — прежние глобальные константы, все старые
+# вызовы без аргументов тождественны.
+static func effective_crit_chance(raw_chance: float, cap := CRIT_CHANCE_CAP, diminish := CRIT_CHANCE_DIMINISH) -> float:
 	var raw := maxf(raw_chance, 0.0)
-	var softened := raw / (1.0 + raw * CRIT_CHANCE_DIMINISH)
-	return clampf(softened, 0.0, CRIT_CHANCE_CAP)
+	var softened := raw / (1.0 + raw * maxf(diminish, 0.0))
+	return clampf(softened, 0.0, clampf(cap, 0.0, 1.0))
 
 
 static func effective_crit_damage_multiplier(agility: float, flat_bonus: float) -> float:
@@ -593,6 +878,181 @@ static func character_config(character_id: String) -> Dictionary:
 	return CHARACTER_CONFIGS.get(character_id, CHARACTER_CONFIGS["berserk"]).duplicate(true)
 
 
+# SCRUM-935: канонический доступ к class trait (пусто у классов без trait'а).
+static func class_trait(character_id: String) -> Dictionary:
+	return (CLASS_TRAITS.get(character_id, {}) as Dictionary).duplicate(true)
+
+
+# SCRUM-935 «Двойное действие»: шанс полной копии действия оружия (Солдат = 0.5).
+static func class_action_echo_chance(character_id: String) -> float:
+	return clampf(float((CLASS_TRAITS.get(character_id, {}) as Dictionary).get("action_echo_chance", 0.0)), 0.0, 1.0)
+
+
+# SCRUM-925 «Молитва боя»: пул молитв класса для выбора на старте боя.
+# Data-driven: молитва входит в пул, только если её trait-ключ задан у класса в
+# CLASS_TRAITS (у классов без battle_prayer-ключей пул пуст — утечки нет).
+# Записи: {id, title, description, trait_key, value} — русский player-facing
+# текст для UI SCRUM-926 и численный эффект. Порядок пула = порядок UI;
+# первая запись — временный автовыбор (Player._auto_select_battle_prayer).
+static func class_battle_prayers(character_id: String) -> Array:
+	var trait_config: Dictionary = CLASS_TRAITS.get(character_id, {})
+	var pool: Array = []
+	for prayer_raw in CharacterData.BATTLE_PRAYERS:
+		var prayer: Dictionary = prayer_raw
+		var value := float(trait_config.get(str(prayer.get("trait_key", "")), 0.0))
+		if value <= 0.0:
+			continue
+		var entry: Dictionary = prayer.duplicate(true)
+		entry["value"] = value
+		pool.append(entry)
+	return pool
+
+
+# SCRUM-894 «Хладнокровие»: крит-профиль класса из CLASS_TRAITS. Без trait-записи —
+# глобальные константы (кап 55%, diminish 0.45, без overflow). Ассасин: кап 1.0,
+# diminish 0.0 (крит-вложения окупаются полностью), overflow 0.5 — избыток
+# raw-шанса сверх капа переливается в crit_damage_flat (итог по-прежнему зажат
+# CRIT_DAMAGE_CAP в effective_crit_damage_multiplier — runaway невозможен).
+static func class_crit_profile(character_id: String) -> Dictionary:
+	var trait_config: Dictionary = CLASS_TRAITS.get(character_id, {})
+	return {
+		"cap": clampf(float(trait_config.get("crit_chance_cap", CRIT_CHANCE_CAP)), 0.0, 1.0),
+		"diminish": maxf(float(trait_config.get("crit_chance_diminish", CRIT_CHANCE_DIMINISH)), 0.0),
+		"overflow": clampf(float(trait_config.get("crit_overflow_to_crit_damage", 0.0)), 0.0, 1.0),
+	}
+
+
+# SCRUM-894 «Теневая завеса»: величина бонуса уворота самоцентричной ауры класса
+# (у классов без veil-записи — 0). Масштаб от buff_power, жёсткий кап
+# veil_dodge_cap; применяется Player.current_dodge_chance ТОЛЬКО при враге внутри
+# derived aura_radius; суммарный уворот всё равно ≤ SURVIVABILITY_DODGE_CAP.
+static func class_veil_dodge_bonus(character_id: String, buff_power: float) -> float:
+	var trait_config: Dictionary = CLASS_TRAITS.get(character_id, {})
+	var base := float(trait_config.get("veil_dodge_bonus", 0.0))
+	if base <= 0.0:
+		return 0.0
+	var cap := maxf(float(trait_config.get("veil_dodge_cap", 0.18)), 0.0)
+	return clampf(base * maxf(buff_power, 0.0), 0.0, cap)
+
+
+# SCRUM-1005 «Разбор образцов»: множитель ПРЯМОГО урона по целям под собственным
+# периодическим эффектом (Биолог = 1.20; классы без trait'а — 1.0).
+static func class_infected_direct_multiplier(character_id: String) -> float:
+	return maxf(float((CLASS_TRAITS.get(character_id, {}) as Dictionary).get("infected_direct_hit_multiplier", 1.0)), 1.0)
+
+
+# SCRUM-902 «Аура дикой силы»: величина постоянного аура-баффа урона класса
+# (у классов без wild_aura-записи — 0). Масштаб от buff_power, жёсткий кап
+# wild_aura_damage_cap. ЕДИНАЯ точка чтения для рантайма
+# (Player.wild_aura_damage_multiplier + статус "wild_force_aura" призывам) и
+# budget-модели (class_wild_aura_damage_factor в estimate_weapon_budget_for_stats):
+# live-бой и формульный гейт видят один и тот же бафф.
+static func class_wild_aura_damage_bonus(character_id: String, buff_power: float) -> float:
+	var trait_config: Dictionary = CLASS_TRAITS.get(character_id, {})
+	var base := float(trait_config.get("wild_aura_damage_bonus", 0.0))
+	if base <= 0.0:
+		return 0.0
+	var cap := maxf(float(trait_config.get("wild_aura_damage_cap", 0.30)), 0.0)
+	return clampf(base * maxf(buff_power, 0.0), 0.0, cap)
+
+
+# Бюджет-фактор ауры: аура постоянна и баффает И владельца, И призывы — фактор
+# применяется ко ВСЕМ каналам выхода кита (budget_tuning_for компенсирует урон,
+# как у action_echo Солдата) — кит остаётся в общем коридоре, а инвестиции в
+# buff_power/aura_radius сверх базы остаются живой наградой в забеге.
+static func class_wild_aura_damage_factor(character_id: String, params: Dictionary) -> float:
+	return 1.0 + class_wild_aura_damage_bonus(character_id, float(params.get("buff_power", 1.0)))
+
+
+# SCRUM-1004 «Ярость»: средне-ожидаемая доля НЕДОСТАЮЩЕГО здоровья Берсерка за
+# забег для budget-зеркала trait'а. Берсерк живёт в гуще боя (постоянный
+# контакт-чип), но огромный запас крови + сустейн держат его большую часть
+# времени в средне-высоком HP: принято матожидание missing_hp = 30% ⇒
+# ожидаемый бонус 0.40×0.30 = +12% (фактор 1.12). budget_tuning_for
+# компенсирует кит этим фактором: на полном HP Берсерк слегка НИЖЕ коридора
+# (≈−11%), на почти пустом — до ≈+25% ВЫШЕ (риск/награда — решение SCRUM-1004).
+const RAGE_BUDGET_EXPECTED_MISSING_HP := 0.30
+
+
+# SCRUM-1004 «Ярость»: непрерывный бонус исходящего урона от недостающего HP.
+# ЕДИНАЯ точка формулы для рантайма (Player.rage_damage_multiplier), бюджета и
+# тестов: бонус = cap × clamp(1 − health/max_health, 0, 1) — полное HP → 0.0,
+# половина → cap/2 (+20%), пустое/отрицательное → ровно cap (+40%); линейная
+# шкала без ступенек. Невалидное max_health (<=0) и классы без rage-ключа
+# дают 0.0 — утечки другим классам нет, NaN/бесконечность невозможны.
+static func class_rage_damage_bonus(character_id: String, health: float, max_health: float) -> float:
+	var cap := maxf(float((CLASS_TRAITS.get(character_id, {}) as Dictionary).get("rage_damage_bonus_cap", 0.0)), 0.0)
+	if cap <= 0.0 or max_health <= 0.0:
+		return 0.0
+	var missing_ratio := clampf(1.0 - health / max_health, 0.0, 1.0)
+	return cap * missing_ratio
+
+
+# Бюджет-фактор «Ярости»: матожидание low-HP бонуса (кап × ожидаемое missing_hp,
+# см. RAGE_BUDGET_EXPECTED_MISSING_HP) — множит канальные выходы кита в
+# estimate_weapon_budget_for_stats (trait действует на весь исходящий урон
+# оружий Берсерка), budget_tuning_for компенсирует кит, как у ауры Друида.
+static func class_rage_expected_damage_factor(character_id: String) -> float:
+	var cap := maxf(float((CLASS_TRAITS.get(character_id, {}) as Dictionary).get("rage_damage_bonus_cap", 0.0)), 0.0)
+	return 1.0 + cap * RAGE_BUDGET_EXPECTED_MISSING_HP
+
+
+# SCRUM-930 «Дальний расчёт»: каноническая формула множителя дистанции —
+# ЕДИНАЯ точка правды для рантайма (ClassWeapon._class_distance_trait_multiplier),
+# budget-модели (_budget_distance_trait_factors) и тестов. В пределах free_range
+# ровно ×1.0 (AC: близкая цель получает базовый урон), дальше линейный рост
+# per_100 за каждые 100px, жёсткий кап +cap_bonus (с дефолтами Снайпера кап
+# ×1.60 достигается на 120 + 0.60/0.10×100 = 720px и держится дальше).
+static func distance_trait_multiplier(per_100: float, cap_bonus: float, free_range: float, distance: float) -> float:
+	if per_100 <= 0.0:
+		return 1.0
+	var scaled := maxf(distance - maxf(free_range, 0.0), 0.0) / 100.0 * per_100
+	return 1.0 + minf(scaled, maxf(cap_bonus, 0.0))
+
+
+# Множитель «Дальнего расчёта» класса на конкретной дистанции (1.0 у классов
+# без distance-ключей в CLASS_TRAITS — утечки другим классам нет).
+static func class_distance_multiplier_at(character_id: String, distance: float) -> float:
+	var trait_config: Dictionary = CLASS_TRAITS.get(character_id, {})
+	return distance_trait_multiplier(
+		float(trait_config.get("distance_damage_per_100px", 0.0)),
+		float(trait_config.get("distance_damage_cap_bonus", 0.0)),
+		float(trait_config.get("distance_damage_free_range", 0.0)),
+		distance
+	)
+
+
+# Бюджет-зеркало «Дальнего расчёта»: матожидание множителя по ТИПОВОЙ дистанции
+# боя оружия (документированные допущения по attack_mode; budget_tuning_for
+# затем компенсирует кит — инвестиция в позиционирование остаётся живой наградой):
+#   sniper_lockshot   — винтовка сама берёт САМУЮ ДАЛЬНЮЮ цель: соло-дуэль
+#     ~0.75×attack_range (около капа); по толпе часть выхода — ближний
+#     самоподрыв у ног (×1.0) → бонус срезается вдвое (доля дальних хитов 0.55);
+#   sniper_kill_zone  — снаряд по метке у выбранной цели: типовая зона
+#     ~0.55×attack_range, все жертвы в зоне на схожей дистанции;
+#   sniper_split_round — круговой веер по БЛИЖНИМ монстрам: типовая цель
+#     ~0.60×aoe_radius (радиус разлёта пуль) — почти без бонуса;
+#   иное оружие класса с trait'ом — консервативно 0.5×attack_range.
+static func _budget_distance_trait_factors(character_id: String, config: Dictionary) -> Dictionary:
+	var trait_config: Dictionary = CLASS_TRAITS.get(character_id, {})
+	if float(trait_config.get("distance_damage_per_100px", 0.0)) <= 0.0:
+		return {"solo": 1.0, "aoe": 1.0}
+	var attack_range := float(config.get("attack_range", 240.0))
+	var aoe_radius := float(config.get("aoe_radius", 120.0))
+	match str(config.get("attack_mode", config.get("attack_shape", "single"))):
+		"sniper_lockshot":
+			var far_mult := class_distance_multiplier_at(character_id, attack_range * 0.75)
+			return {"solo": far_mult, "aoe": 1.0 + (far_mult - 1.0) * 0.55}
+		"sniper_kill_zone":
+			var zone_mult := class_distance_multiplier_at(character_id, attack_range * 0.55)
+			return {"solo": zone_mult, "aoe": zone_mult}
+		"sniper_split_round":
+			var spray_mult := class_distance_multiplier_at(character_id, aoe_radius * 0.60)
+			return {"solo": spray_mult, "aoe": spray_mult}
+	var default_mult := class_distance_multiplier_at(character_id, attack_range * 0.5)
+	return {"solo": default_mult, "aoe": default_mult}
+
+
 static func berserk_weapon(weapon_id: String) -> Dictionary:
 	return BERSERK_WEAPONS.get(weapon_id, BERSERK_WEAPONS["sword"]).duplicate(true)
 
@@ -608,6 +1068,17 @@ static func weapon_ids(character_id: String) -> Array:
 
 static func class_budget_profile(character_id: String) -> Dictionary:
 	return CLASS_BUDGET_PROFILES.get(character_id, CLASS_BUDGET_PROFILES["berserk"]).duplicate(true)
+
+
+# SCRUM-942 «Катализатор»: множитель ПЕРИОДИЧЕСКОГО урона класса (1.0 = без trait'а).
+# Единая точка чтения для рантайма (player.periodic_damage_multiplier) и
+# бюджет-формул (_budget_dot_dps/_budget_pool_dps/_budget_summon_wave_dps) —
+# live-замер и формульный гейт видят одну и ту же периодику.
+static func class_periodic_damage_multiplier(character_id: String) -> float:
+	var trait_config = CLASS_TRAITS.get(character_id, {})
+	if not (trait_config is Dictionary):
+		return 1.0
+	return maxf(float((trait_config as Dictionary).get("periodic_damage_multiplier", 1.0)), 0.0)
 
 
 # SCRUM-544: comfort-вес класса/оружия — относительный потолок внутри ±20%-полосы.
@@ -693,15 +1164,81 @@ static func estimate_weapon_budget_for_stats(character_id: String, weapon_config
 	var direct_dps := base_damage * crit_factor / interval
 	if _is_pure_summon_weapon(config):
 		direct_dps = 0.0
+	elif bool(config.get("curse_only", false)):
+		# SCRUM-940: curse-only оружие (cursed_skull) прямого урона не наносит —
+		# весь его выход идёт через dot-ось (_budget_dot_dps), как и в рантайме.
+		direct_dps = 0.0
+	elif str(config.get("attack_mode", "")) == "engineer_orbit_drone":
+		# SCRUM-906: оружие само не стреляет — обслуживает парк дронов; весь
+		# урон контактный (summon-канал, _budget_orbit_drone_dps).
+		direct_dps = 0.0
 	elif str(config.get("summon_role", "")) != "":
 		direct_dps *= _budget_summon_role_damage_factor(config, params, stats)
 	var hit_model := _budget_hit_model(config)
 	var melee_unique_budget := _budget_melee_unique_bonus(config)
-	var dot_dps := _budget_dot_dps(config, params, interval)
+	var dot_dps := _budget_dot_dps(config, params, interval, stats)
 	var pool_dps := _budget_pool_dps(config, params, interval)
 	var summon_dps := _budget_summon_dps(config, params, stats)
-	var solo_dps := direct_dps * float(hit_model.get("solo_hits", 1.0)) * float(melee_unique_budget.get("solo", 1.0)) + dot_dps + pool_dps + summon_dps
-	var aoe_dps := direct_dps * float(hit_model.get("five_hits", 1.0)) * float(melee_unique_budget.get("aoe", 1.0)) + dot_dps * float(hit_model.get("dot_targets", 1.0)) + pool_dps * float(hit_model.get("pool_targets", 1.0)) + summon_dps * float(hit_model.get("summon_targets", 1.0))
+	# SCRUM-905/906: у устройств инженера собственные summon-модели, зеркалящие
+	# рантайм (боезапас турелей / орбитальный контакт дронов); они замещают
+	# generic _budget_summon_dps и пишут свой crowd-фактор в summon_targets.
+	var sentry_model := _budget_sentry_ammo_model(config, params, stats)
+	if not sentry_model.is_empty():
+		summon_dps = float(sentry_model.get("summon_dps", summon_dps))
+		hit_model["summon_targets"] = float(sentry_model.get("summon_targets", 1.0))
+	var orbit_model := _budget_orbit_drone_dps(config, params, stats)
+	if not orbit_model.is_empty():
+		summon_dps = float(orbit_model.get("summon_dps", summon_dps))
+		hit_model["summon_targets"] = float(orbit_model.get("summon_targets", 1.0))
+	# SCRUM-935 «Двойное действие»: echo-trait создаёт полную копию действия оружия
+	# с шансом p ⇒ матожидание выхода действия ×(1+p). Фактор применяется к
+	# action-компонентам (direct/dot/pool), но НЕ к призывам (деплой исключён из
+	# эха) и НЕ к ульте (не действие оружия). Благодаря этому budget_tuning_for
+	# автоматически компенсирует урон кита (AC SCRUM-935: кит сопоставим с ростером).
+	var action_echo_factor := 1.0 + class_action_echo_chance(character_id)
+	# SCRUM-946: периодические волны гомункула-кастера; по толпе волна накрывает
+	# нескольких целей радиусом (зеркало клампа pool_targets: 1 + r/130, кап 4).
+	# Волны — канал призыва (как summon_dps), echo-фактор действий на них не действует.
+	var wave_dps := _budget_summon_wave_dps(config, params)
+	var wave_targets := clampf(1.0 + float(config.get("summon_wave_radius", 130.0)) / 130.0, 1.0, 4.0)
+	# SCRUM-1005 «Разбор образцов»: прямой урон по целям под собственным DoT
+	# усилен (Биолог ×1.20). Инфекция оружия с dot_ticks>0 живёт дольше
+	# интервала каста (калибровка длительности в SCRUM-896), но первый хит боя
+	# идёт по чистой цели — документированный uptime 0.75. Фактор применяется
+	# ТОЛЬКО к прямому компоненту (не к dot/pool/summon/wave/ульте); у оружия без
+	# собственного DoT (dot_ticks<=0) бонус в модели не учитывается.
+	var infected_direct_factor := 1.0
+	if float(config.get("dot_ticks", 0.0)) > 0.0:
+		infected_direct_factor = 1.0 + (class_infected_direct_multiplier(character_id) - 1.0) * 0.75
+	# SCRUM-930 «Дальний расчёт»: матожидание дистанс-множителя Снайпера по
+	# типовой дистанции боя оружия (только ПРЯМОЙ компонент — тики DoT trait не
+	# скейлит, зеркало гейта в ClassWeapon._damage_enemy). budget_tuning_for
+	# компенсирует кит, как у прочих trait-факторов.
+	var distance_factors := _budget_distance_trait_factors(character_id, config)
+	var distance_solo_factor := float(distance_factors.get("solo", 1.0))
+	var distance_aoe_factor := float(distance_factors.get("aoe", 1.0))
+	# SCRUM-902 «Аура дикой силы»: постоянный классовый бафф урона владельца И
+	# призывов — множит ВСЕ каналы выхода (в отличие от echo, который не трогает
+	# призывы). budget_tuning_for компенсирует кит (см. class_wild_aura_damage_factor).
+	var wild_aura_factor := class_wild_aura_damage_factor(character_id, params)
+	# SCRUM-930 «Дальний расчёт» (distance_*_factor) впаян в объявления; сеть
+	# устройств и Ярость домножают ниже — все trait-факторы кита сохранены.
+	var solo_dps := ((direct_dps * infected_direct_factor * distance_solo_factor * float(hit_model.get("solo_hits", 1.0)) * float(melee_unique_budget.get("solo", 1.0)) + dot_dps + pool_dps) * action_echo_factor + summon_dps + wave_dps) * wild_aura_factor
+	var aoe_dps := ((direct_dps * infected_direct_factor * distance_aoe_factor * float(hit_model.get("five_hits", 1.0)) * float(melee_unique_budget.get("aoe", 1.0)) + dot_dps * float(hit_model.get("dot_targets", 1.0)) + pool_dps * float(hit_model.get("pool_targets", 1.0))) * action_echo_factor + summon_dps * float(hit_model.get("summon_targets", 1.0)) + wave_dps * wave_targets) * wild_aura_factor
+	# SCRUM-908 «Сеть мастерской»: ожидаемые стеки устройств усиливают выход
+	# оружия-устройства (ульта НЕ устройство — фактор до её добавления).
+	var network_factor := _budget_network_factor(config, params, stats)
+	solo_dps *= network_factor
+	aoe_dps *= network_factor
+
+	# SCRUM-1004 «Ярость»: матожидание low-HP бонуса Берсерка (кап 0.40 ×
+	# ожидаемое missing_hp 0.30 ⇒ ×1.12) — trait множит ВЕСЬ исходящий урон
+	# оружий кита (BerserkWeapon._rolled_damage), поэтому фактор применяется ко
+	# всем канальным выходам ДО ульты (ульта не действие оружия — паттерн
+	# action_echo); budget_tuning_for компенсирует кит. Другим классам фактор 1.0.
+	var rage_factor := class_rage_expected_damage_factor(character_id)
+	solo_dps *= rage_factor
+	aoe_dps *= rage_factor
 	var ultimate := _budget_ultimate_dps(character_id, params)
 	solo_dps += float(ultimate.get("solo", 0.0))
 	aoe_dps += float(ultimate.get("aoe", 0.0))
@@ -771,7 +1308,7 @@ static func _crowd_clear_density_factor(config: Dictionary, target_count: int) -
 			factor *= 0.98
 	if ["sniper_lockshot", "moon_crossbow", "drain_link"].has(mode):
 		factor *= 0.92
-	elif ["aoe_projectile", "grenade_cook", "smoke_bomb", "meteor_shards", "bio_spore_bloom", "engineer_pressure_mines"].has(mode):
+	elif ["aoe_projectile", "grenade_fuse", "smoke_bomb", "meteor_shards", "bio_spore_bloom", "engineer_pressure_mines", "dark_mirror_blast"].has(mode):
 		factor *= 1.04
 	return clampf(factor, 0.82, 1.12)
 
@@ -797,30 +1334,123 @@ static func _budget_hit_model(config: Dictionary) -> Dictionary:
 			var sweep := float(config.get("sweep_degrees", config.get("cone_degrees", 90.0)))
 			return {"solo_hits": 1.0, "five_hits": clampf(1.0 + (sweep / 45.0) * (attack_range / 320.0), 1.0, 5.0)}
 		"circle", "pulse":
+			# SCRUM-923: спиральный каст (spiral_steps>0) кроет диск не мгновенно —
+			# фронт дуги достигает внешнего кольца только к концу оборота, часть
+			# внешних целей остаётся за фронтом (рантайм: BerserkWeapon._run_spiral_step,
+			# 1 хит/цель/каст). Документированное среднее покрытие диска за оборот 0.85.
+			if float(config.get("spiral_steps", 0.0)) > 0.0:
+				return {"solo_hits": 1.0, "five_hits": clampf(1.0 + (aoe_radius / 72.0) * 0.85, 1.0, 5.0)}
 			return {"solo_hits": 1.0, "five_hits": clampf(1.0 + aoe_radius / 72.0, 1.0, 5.0)}
 		"strip":
-			return {"solo_hits": 1.0, "five_hits": clampf(1.0 + float(config.get("inner_width", 60.0)) / 160.0, 1.0, 2.1)}
+			# SCRUM-921: тройной укол (thrust_count>1) — веер полос под ±fan°:
+			# покрытие толпы растёт от углового размаха на дистанции. Дедуп
+			# рантайма (1 хит/цель/цикл, BerserkWeapon._run_thrust_step) держит
+			# solo_hits=1.0 — по одиночной цели цикл стоит столько же, сколько
+			# один укол; веер оплачивается aoe-осью тюнинга.
+			var strip_five := 1.0 + float(config.get("inner_width", 60.0)) / 160.0
+			var thrust_count := float(config.get("thrust_count", 1.0))
+			var thrust_fan := float(config.get("thrust_fan_degrees", 0.0))
+			if thrust_count > 1.0 and thrust_fan > 0.0:
+				strip_five += (attack_range * sin(deg_to_rad(thrust_fan))) / 260.0
+				return {"solo_hits": 1.0, "five_hits": clampf(strip_five, 1.0, 3.2)}
+			return {"solo_hits": 1.0, "five_hits": clampf(strip_five, 1.0, 2.1)}
 		"aoe_projectile":
 			var projectile_count := float(config.get("projectile_count", 1.0))
 			var blast_hits := clampf(1.0 + aoe_radius / 145.0, 1.0, 3.0)
 			return {"solo_hits": 1.0, "five_hits": clampf(projectile_count * blast_hits, 1.0, 5.0), "pool_targets": clampf(1.0 + aoe_radius / 130.0, 1.0, 4.0)}
 		"homing_curse":
 			return {"solo_hits": 1.0, "five_hits": clampf(1.0 + aoe_radius / 180.0, 1.0, 2.0), "dot_targets": 1.0}
+		"dark_chain_burst":
+			# SCRUM-939: цепь до chain_targets целей со спадом pierce_damage_falloff
+			# по прыжкам; на каждом попадании малый бурст (chain_burst_ratio от
+			# урона хита) бьёт СОСЕДЕЙ жертвы (сама жертва исключена). Solo: одна
+			# цель = только первый хит, бурсту некого задевать → 1.0.
+			var chain_count := clampf(float(config.get("chain_targets", 3.0)), 1.0, 5.0)
+			var chain_falloff := clampf(float(config.get("pierce_damage_falloff", 0.82)), 0.1, 1.0)
+			var chain_direct := 0.0
+			for chain_index in range(int(chain_count)):
+				chain_direct += pow(chain_falloff, float(chain_index))
+			var burst_ratio := clampf(float(config.get("chain_burst_ratio", 0.45)), 0.0, 1.0)
+			var burst_neighbors := clampf(aoe_radius / 95.0, 0.0, 2.0)
+			return {"solo_hits": 1.0, "five_hits": clampf(chain_direct + chain_count * burst_ratio * burst_neighbors, 1.0, 5.0)}
+		"skull_curse_burn":
+			# SCRUM-940: прямого урона нет (curse_only гасит direct_dps выше);
+			# solo = 1 проклятая цель, в толпе зона курсит несколько целей разом.
+			return {"solo_hits": 1.0, "five_hits": 1.0, "dot_targets": clampf(1.0 + aoe_radius / 110.0, 1.0, 4.0)}
+		"dark_mirror_blast":
+			# SCRUM-941: пара взрывов. Первичный кроет кластер у цели; зеркальный
+			# в среднем добавляет mirror-долю покрытия (в кластерном 5t-сценарии
+			# зеркало чаще бьёт по краю/пустоте — коэффициент 0.45 покрытия).
+			var mirror_ratio := maxf(float(config.get("mirror_damage_ratio", 1.0)), 0.0)
+			var primary_blast := clampf(1.0 + aoe_radius / 145.0, 1.0, 3.0)
+			return {"solo_hits": 1.0, "five_hits": clampf(primary_blast * (1.0 + mirror_ratio * 0.45), 1.0, 5.0), "pool_targets": clampf(1.0 + aoe_radius / 130.0, 1.0, 4.0)}
 		"beam":
 			var beam_count := float(config.get("beam_count", 1.0))
 			var pierce := float(config.get("pierce_count", 1.0))
 			return {"solo_hits": clampf(beam_count, 1.0, 2.0), "five_hits": clampf(beam_count * pierce, 1.0, 5.0)}
+		"moon_split_shot":
+			# SCRUM-910: болт бьёт первичную цель + расщепляется в до split_count
+			# РАЗНЫХ соседей с тем же уроном. Соло — ровно 1 хит (веткам нужны
+			# соседи), 5-пак — первичная + все ветки (без повторных хитов).
+			var moon_splits := clampf(float(config.get("split_count", 4.0)), 0.0, 4.0)
+			return {"solo_hits": 1.0, "five_hits": clampf(1.0 + moon_splits, 1.0, 5.0)}
+		"storm_pierce_cone":
+			# SCRUM-911: конус пробивающих стрел. Соло — один хит (дедуп на весь
+			# залп: цель у вершины не собирает несколько стрел). Толпа — покрытие
+			# раствором конуса на дальней дистанции (модель sweep) + пирс вглубь.
+			var storm_cone := float(config.get("cone_degrees", 34.0))
+			var cone_range := float(config.get("attack_range", 900.0))
+			return {"solo_hits": 1.0, "five_hits": clampf(1.0 + (storm_cone / 45.0) * (cone_range / 320.0), 1.0, 5.0)}
 		"sound_wave":
 			var wave_width := float(config.get("wave_width", 180.0))
 			return {"solo_hits": 1.0, "five_hits": clampf(1.0 + wave_width / 78.0, 1.0, 5.0)}
+		"riff_strip":
+			# SCRUM-899: узкая передняя полоса Гитариста — ПОСТОЯННАЯ полная
+			# ширина wave_width на всю attack_range (в отличие от расширяющейся
+			# sound_wave). В кластере из 5 ловит ~2 цели: узость — цена частых
+			# хитов, позиционирование корпусом обязательное.
+			var strip_width := float(config.get("wave_width", 118.0))
+			return {"solo_hits": 1.0, "five_hits": clampf(1.0 + strip_width / 105.0 + attack_range / 2600.0, 1.0, 2.6)}
 		"amp":
+			# SCRUM-903 raven_homing: тотемы пускают самонаводящихся воронов раз в
+			# amp_pulse_interval каждый; взрыв кроет explosion_targets целей
+			# (зеркало _launch_totem_raven/_resolve_raven_impact: полный урон
+			# первым 3, дальше диминиш). Одновременные тотемы ограничены
+			# lifetime/deploy-темпом и жёстким капом (Leadership-скейл лимита
+			# сверх — рантайм-бонус, как у прочих лимитов вне модели).
+			if bool(config.get("raven_homing", false)):
+				var deploy_interval := maxf(float(config.get("fire_interval", 2.35)), 0.25)
+				var raven_pulse := maxf(float(config.get("amp_pulse_interval", 1.1)), 0.2)
+				var raven_lifetime := maxf(float(config.get("amp_lifetime", 8.0)), deploy_interval)
+				var totems := minf(raven_lifetime / deploy_interval, maxf(float(config.get("max_summons_cap", 6.0)), 1.0))
+				var ravens_per_deploy := (deploy_interval / raven_pulse) * totems * maxf(float(config.get("raven_damage_multiplier", 0.85)), 0.0)
+				var explosion_targets := clampf(1.0 + float(config.get("raven_explosion_radius", 120.0)) / 145.0, 1.0, 3.0)
+				return {"solo_hits": clampf(ravens_per_deploy, 1.0, 8.0), "five_hits": clampf(ravens_per_deploy * explosion_targets, 1.0, 16.0)}
 			var active_ratio := float(config.get("amp_lifetime", 6.0)) / maxf(float(config.get("fire_interval", 2.0)), 0.25)
 			return {"solo_hits": clampf(active_ratio / 4.0, 1.0, 2.0), "five_hits": clampf((1.0 + aoe_radius / 80.0) * active_ratio / 3.5, 1.0, 5.0)}
 		"boomerang":
-			return {"solo_hits": 2.0, "five_hits": clampf(2.0 + float(config.get("beam_width", 48.0)) / 36.0, 2.0, 4.0)}
+			# SCRUM-894: возврат идёт ЛЕВОЙ дугой, а не тем же коридором — соло-цель
+			# на прямой получает гарантированно 1 проход, двойной проход требует
+			# позиционирования (у разворота/у героя). Бюджетное матожидание 1.6
+			# (позиционная средняя), навык двойного прохода — награда сверх бюджета.
+			return {"solo_hits": 1.6, "five_hits": clampf(1.6 + float(config.get("beam_width", 48.0)) / 34.0, 1.6, 3.4)}
 		"stab_flurry":
 			var targets := float(config.get("projectile_count", 1.0))
 			return {"solo_hits": 1.0, "five_hits": clampf(targets, 1.0, 4.0), "dot_targets": clampf(targets, 1.0, 4.0)}
+		"saw_sector":
+			# SCRUM-900 bone_saw: melee-сектор 120-150° — покрытие толпы растёт от
+			# ширины дуги и дистанции; диминиш по целям учтён sector_full_targets.
+			var cone := float(config.get("cone_degrees", 130.0))
+			var full_targets := float(config.get("sector_full_targets", 4.0))
+			var sector_hits := clampf(1.0 + (cone / 52.0) * (attack_range / 300.0), 1.0, minf(full_targets + 0.6, 5.0))
+			return {"solo_hits": 1.0, "five_hits": sector_hits}
+		"plague_dart":
+			# SCRUM-900 plague_syringe: прямой дротик бьёт одну цель; ценность в
+			# толпе — распространение заразы (dot_targets = ожидаемое число
+			# одновременно заражённых из 5-пака при spread-шансе за тик).
+			var spread_chance := clampf(float(config.get("plague_spread_chance", 0.0)), 0.0, 1.0)
+			var infected := clampf(1.0 + spread_chance * 10.0, 1.0, minf(float(config.get("plague_max_infected", 5.0)), 4.4))
+			return {"solo_hits": 1.0, "five_hits": 1.0, "dot_targets": infected}
 		"dot_beam":
 			var pierce := float(config.get("pierce_count", 1.0))
 			return {"solo_hits": 1.0, "five_hits": clampf(pierce, 1.0, 5.0), "dot_targets": clampf(pierce, 1.0, 5.0)}
@@ -828,70 +1458,181 @@ static func _budget_hit_model(config: Dictionary) -> Dictionary:
 			return {"solo_hits": 1.0, "five_hits": clampf(1.0 + float(config.get("beam_width", 40.0)) / 120.0, 1.0, 1.6), "dot_targets": 1.0}
 		"trap":
 			return {"solo_hits": 1.0, "five_hits": clampf(1.0 + aoe_radius / 85.0, 1.0, 4.2)}
-		"suppression_burst":
-			var burst_count := float(config.get("projectile_count", 3.0))
-			var suppression_width := float(config.get("suppression_width", 120.0))
-			return {"solo_hits": clampf(burst_count, 1.0, 4.0), "five_hits": clampf(burst_count * (1.0 + suppression_width / 210.0), 1.0, 5.0)}
-		"grenade_cook":
+		"arquebus_shot":
+			# SCRUM-936: одна взрывная пуля — полный урон цели + малый AoE соседям
+			# с falloff (модель как aoe_projectile при projectile_count=1).
+			return {"solo_hits": 1.0, "five_hits": clampf(1.0 + aoe_radius / 145.0, 1.0, 3.0)}
+		"grenade_fuse":
+			# SCRUM-937: медленный снаряд + фитиль; вся ценность — тяжёлый AoE-взрыв.
 			return {"solo_hits": 1.0, "five_hits": clampf(1.0 + aoe_radius / 72.0, 1.0, 5.0)}
-		"bayonet_brace":
-			var brace_width := float(config.get("beam_width", 120.0))
-			return {"solo_hits": 1.0, "five_hits": clampf(1.0 + brace_width / 56.0, 1.0, 4.0)}
+		"bayonet_cone":
+			# SCRUM-938: ближний конус + редкий авто-выстрел (chance*mult добавкой к
+			# обеим осям — пуля бьёт одну цель за конусом).
+			var cone := float(config.get("cone_degrees", 100.0))
+			var shot_bonus := clampf(float(config.get("bayonet_auto_shot_chance", 0.0)), 0.0, 1.0) * float(config.get("bayonet_shot_damage_multiplier", 0.7))
+			var cone_hits := 1.0 + (cone / 110.0) * (attack_range / 260.0) * 1.9
+			return {"solo_hits": 1.0 + shot_bonus, "five_hits": clampf(cone_hits + shot_bonus, 1.0, 4.4)}
 		"coin_ricochet":
-			var chain_count := float(config.get("projectile_count", 3.0))
-			return {"solo_hits": 1.0, "five_hits": clampf(chain_count * 0.76, 1.0, 5.0)}
+			# SCRUM-897 «Кошель Рикошета»: цепь = projectile_count прыжков (рантайм
+			# капит COIN_CHAIN_HARD_CAP=8 в class_weapon.gd), урон убывает монотонно
+			# до damage_falloff-доли (0.5) на ПОСЛЕДНЕМ прыжке: hit_i = tail^(i/(n-1)).
+			# Толпа из 5 = сумма долей первых 5 звеньев цепи (зеркало _fire_coin_ricochet).
+			var chain_count := clampf(float(config.get("projectile_count", 3.0)), 1.0, 8.0)
+			var chain_tail := clampf(float(config.get("damage_falloff", 0.5)), 0.1, 1.0)
+			var chain_crowd := 0.0
+			for chain_index in range(mini(int(chain_count), 5)):
+				chain_crowd += pow(chain_tail, float(chain_index) / maxf(chain_count - 1.0, 1.0))
+			return {"solo_hits": 1.0, "five_hits": clampf(chain_crowd, 1.0, 5.0)}
 		"shadow_backstab":
-			return {"solo_hits": 1.22, "five_hits": clampf(1.22 + aoe_radius / 150.0, 1.22, 3.0)}
+			# SCRUM-897 «Отравленный Кинжал»: фантом бьёт 1.22 ролла; удар в спину
+			# (цель смотрит прочь от фантома — чейзеры, uptime ~0.75) даёт ×1.35
+			# (BACKSTAB_* в class_weapon.gd) → соло ≈ 1.22×(1+0.35×0.75) = 1.54.
+			# Соседи у точки удара получают 0.35 ролла (aoe/150 ≈ 2.7 соседа × 0.35).
+			var backstab_solo := 1.22 * (1.0 + 0.35 * 0.75)
+			return {"solo_hits": backstab_solo, "five_hits": clampf(backstab_solo + aoe_radius / 150.0, backstab_solo, 3.4)}
 		"smoke_bomb":
 			return {"solo_hits": 1.0, "five_hits": clampf(1.0 + aoe_radius / 84.0, 1.0, 4.4)}
 		"elemental_orbit":
-			var orbit_ticks := float(config.get("storm_ticks", 4.0))
-			return {"solo_hits": clampf(orbit_ticks * 0.55, 1.0, 3.0), "five_hits": clampf(1.0 + aoe_radius / 55.0, 1.0, 5.0)}
+			# SCRUM-948: квадрат четырёх стихий. Соло за каст = полный ролл магии
+			# + физ.доля SQUARE_PHYSICAL_SHARE (0.45 × канал damage ≈ +11% на
+			# базе Элементалиста, см. class_weapon.gd), периодика — dot_ticks
+			# (отдельная ось _budget_dot_dps). Толпа — по площади квадрата.
+			return {"solo_hits": 1.11, "five_hits": clampf(1.0 + aoe_radius / 60.0, 1.0, 5.0), "dot_targets": clampf(1.0 + aoe_radius / 90.0, 1.0, 4.0)}
 		"prism_rift":
-			var prism_width := float(config.get("beam_width", 64.0))
-			return {"solo_hits": 1.05, "five_hits": clampf(2.0 + prism_width / 48.0, 2.0, 5.0)}
+			# SCRUM-949: полнокартный X. Соло у фокуса = луч (0.72) + центр (0.55)
+			# = 1.27 ролла; толпа — пирс двух диагоналей через всю арену + центр
+			# (доли PRISM_* в class_weapon.gd).
+			var prism_width := float(config.get("beam_width", 58.0))
+			return {"solo_hits": 1.27, "five_hits": clampf(2.5 + prism_width / 45.0, 2.5, 5.0)}
 		"meteor_shards":
-			var meteor_shards := float(config.get("shard_count", 3.0))
-			return {"solo_hits": 1.06, "five_hits": clampf(1.0 + aoe_radius / 95.0 + meteor_shards * 0.32, 1.0, 5.0)}
+			# SCRUM-950: одиночный тяжёлый нюк (веер осколков удалён). Соло =
+			# полный центр; толпа — большой AoE с falloff (×0.78 средняя доля);
+			# догорающая зона — dot_ticks по dot-оси со спадом по рангу
+			# (METEOR_ZONE_* в class_weapon.gd → dot_targets ≈ 3 на 5 целях).
+			return {"solo_hits": 1.0, "five_hits": clampf((1.0 + aoe_radius / 95.0) * 0.78, 1.0, 5.0), "dot_targets": 3.0}
 		"sniper_lockshot":
-			return {"solo_hits": 1.34, "five_hits": clampf(1.34 + float(config.get("beam_width", 34.0)) / 38.0, 1.34, 2.4)}
+			# SCRUM-931 (preferred-вариант): тяжёлый хит ×1.34 по САМОЙ ДАЛЬНЕЙ
+			# цели + терминальный взрыв на конце (DEADEYE_ENDPOINT_BLAST_RATIO
+			# 0.35, цель в центре ловит полную долю) → соло 1.69. Толпа: соло +
+			# overpen-коридор (damage_falloff-доля ~1 попутчику) + сосед взрыва
+			# (×0.7 средний falloff) + ближний самоподрыв close_burst_ratio от
+			# хита винтовки по врагам у ног (зеркало _fire_sniper_lockshot).
+			var endpoint_ratio := 0.35
+			var lockshot_solo := 1.34 * (1.0 + endpoint_ratio / 1.34)
+			var close_targets := clampf(float(config.get("close_burst_radius", 150.0)) / 95.0, 1.0, 2.2)
+			var close_share := clampf(float(config.get("close_burst_ratio", 0.8)), 0.0, 1.5) * 1.34 * close_targets
+			return {"solo_hits": lockshot_solo, "five_hits": clampf(lockshot_solo + float(config.get("damage_falloff", 0.38)) + endpoint_ratio * 0.7 + close_share, lockshot_solo, 4.6)}
 		"sniper_kill_zone":
-			var kill_zone_shots := float(config.get("projectile_count", 3.0))
-			return {"solo_hits": 1.0, "five_hits": clampf(kill_zone_shots * 0.82, 1.0, 4.2)}
+			# SCRUM-932: отложенный артиллерийский снаряд по красной метке —
+			# ОДИН тяжёлый AoE через grenade_delay (~1с), серия прицельных
+			# ударов удалена. Соло: полный ролл в центре зоны. Толпа: по площади
+			# зоны с усреднённой falloff-долей 0.85 (зеркало
+			# _damage_enemies_in_circle_falloff в _land_spotter_shell).
+			return {"solo_hits": 1.0, "five_hits": clampf((1.0 + aoe_radius / 85.0) * 0.85, 1.0, 4.6)}
 		"sniper_split_round":
-			var split_targets := float(config.get("split_count", 3.0))
-			return {"solo_hits": 1.0, "five_hits": clampf(1.0 + split_targets * 0.55, 1.0, 3.4)}
+			# SCRUM-933: скорострельный круговой веер пуль по ближним монстрам
+			# (сплит-чейн удалён). Соло: одна цель ловит не больше
+			# SHATTER_VOLLEY_HIT_LIMIT (2) пуль за залп (анти-runaway кап,
+			# зеркало _fire_sniper_split_round). Толпа: почти все пули находят
+			# цель round-robin'ом (эффективность прицеливания 0.92); пули без
+			# цели уходят радиально и урона не наносят.
+			var spray_bullets := float(config.get("projectile_count", 6.0))
+			return {"solo_hits": minf(spray_bullets, 2.0), "five_hits": clampf(spray_bullets * 0.92, 1.0, 5.2)}
 		"priest_sanctify":
-			return {"solo_hits": 1.0, "five_hits": clampf(1.0 + aoe_radius / 78.0, 1.0, 4.8)}
+			# SCRUM-927: бурст «тик-тик-тик» — серия storm_ticks вспышек по
+			# sanctify_tick_ratio ролла каждая; соло-цель ловит ВСЕ тики (знак
+			# ведёт цель), толпа — по малому радиусу с falloff (зеркало
+			# class_weapon._sanctify_burst_tick). Лечения у оружия нет.
+			var sanctify_ticks := maxf(float(config.get("storm_ticks", 3.0)), 1.0)
+			var sanctify_ratio := clampf(float(config.get("sanctify_tick_ratio", 0.38)), 0.05, 1.0)
+			var sanctify_total := sanctify_ticks * sanctify_ratio
+			return {"solo_hits": clampf(sanctify_total, 0.5, 2.4), "five_hits": clampf(sanctify_total * (1.0 + aoe_radius / 145.0), 1.0, 4.8)}
 		"priest_ward":
-			var ward_ticks := float(config.get("storm_ticks", 3.0))
-			return {"solo_hits": clampf(ward_ticks * 0.72, 1.0, 2.6), "five_hits": clampf(1.0 + aoe_radius / 70.0, 1.0, 4.5)}
-		"priest_prayer_chain":
-			var prayer_jumps := float(config.get("projectile_count", 4.0))
-			return {"solo_hits": 1.0, "five_hits": clampf(prayer_jumps * 0.72, 1.0, 4.2)}
+			# SCRUM-928: редкие тяжёлые волны вокруг Священника, последняя —
+			# ПОЛНЫЙ aoe_radius (радиусный AoE-специалист с медленной каденцией;
+			# зеркало lerp(0.80,1.0) в class_weapon._fire_priest_ward — соло-цель
+			# вплотную ловит обе волны, 0.85-дисконт за раскрытие радиуса).
+			var ward_ticks := float(config.get("storm_ticks", 2.0))
+			return {"solo_hits": clampf(ward_ticks * 0.85, 1.0, 2.6), "five_hits": clampf(1.0 + aoe_radius / 70.0, 1.0, 4.5)}
+		"priest_dual_toll":
+			# SCRUM-929: dual toll — два одновременных взрыва (у цели и у Жреца)
+			# с общим дедупом (враг ≤ 1 взрыв за каст) → соло ровно 1 полный хит.
+			# Толпа: покрытие цели (1 + aoe/95 с запасом на второй центр у Жреца,
+			# ~0.55 средней добавки — часть толпы прессует героя), кап 4.4.
+			return {"solo_hits": 1.0, "five_hits": clampf(1.55 + aoe_radius / 105.0, 1.0, 4.4)}
 		"bio_spore_bloom":
+			# SCRUM-896: три расширяющихся кольца у персонажа — соло-цель ловит
+			# все кольца с falloff (1+0.7+0.49≈2.19 → сохранена 0.34-модель),
+			# толпа — по радиусу; биоинфекция вешается на ВСЕХ задетых
+			# (dot_targets), зеркало class_weapon._bio_spore_pulse.
 			var bloom_ticks := float(config.get("storm_ticks", 3.0))
-			return {"solo_hits": clampf(1.0 + bloom_ticks * 0.34, 1.0, 2.4), "five_hits": clampf(1.0 + aoe_radius / 58.0, 1.0, 5.0)}
+			return {"solo_hits": clampf(1.0 + bloom_ticks * 0.34, 1.0, 2.4), "five_hits": clampf(1.0 + aoe_radius / 58.0, 1.0, 5.0), "dot_targets": clampf(1.0 + aoe_radius / 85.0, 1.0, 4.0)}
 		"bio_sample_dart":
-			var analysis_pulses := float(config.get("projectile_count", 2.0))
-			return {"solo_hits": clampf(1.0 + analysis_pulses * 0.52, 1.0, 2.5), "five_hits": clampf(1.0 + analysis_pulses * 0.72 + aoe_radius / 115.0, 1.0, 4.8)}
+			# SCRUM-896: пирсинг-луч на всю длину (полный ролл каждому на линии)
+			# + малый бурст анализа на конце (tip_burst_ratio) + физ.доля
+			# INJECTOR_PHYSICAL_SHARE канала damage на каждый хит луча: базовый
+			# факт-фактор 1.13 = 1 + 0.5×(damage/magic на базе Биолога 3/11.2),
+			# зеркало class_weapon._fire_bio_sample_dart. Инфекция — только
+			# ближайший на луче (dot_targets 1).
+			var tip_ratio := clampf(float(config.get("tip_burst_ratio", 0.55)), 0.0, 1.0)
+			var line_hits := clampf(1.0 + (attack_range / 420.0) * (float(config.get("beam_width", 46.0)) / 60.0), 1.0, 3.2)
+			var injector_phys_factor := 1.13
+			return {"solo_hits": (1.0 + tip_ratio) * injector_phys_factor, "five_hits": clampf((line_hits + tip_ratio * clampf(aoe_radius / 145.0, 0.0, 2.0)) * injector_phys_factor, 1.0, 4.8), "dot_targets": 1.0}
 		"bio_symbiote_web":
-			var web_links := float(config.get("projectile_count", 4.0))
-			return {"solo_hits": 1.18, "five_hits": clampf(1.0 + web_links * 0.62, 1.0, 4.6)}
+			# SCRUM-896: семя-зона с прорастанием — стартовый маг.хит
+			# seed_impact_ratio с falloff по области, главный пейофф в
+			# биоинфекции всех задетых (dot-ось), зеркало
+			# class_weapon._germinate_symbiote_seed.
+			var impact_ratio := clampf(float(config.get("seed_impact_ratio", 0.85)), 0.0, 1.5)
+			return {"solo_hits": impact_ratio, "five_hits": clampf(impact_ratio * (1.0 + aoe_radius / 110.0), 0.5, 4.0), "dot_targets": clampf(1.0 + aoe_radius / 95.0, 1.0, 4.0)}
 		"robot_magnetic_anchor":
-			return {"solo_hits": 1.0, "five_hits": clampf(1.0 + aoe_radius / 80.0, 1.0, 4.8)}
+			# SCRUM-915: тяжёлый AoE-пулл — рядовые стягиваются к центру зоны
+			# (конвергенция 0.85, ClassWeapon._pull_enemies_toward), поэтому
+			# следующие касты бьют сгруппированную толпу ближе к falloff-центру:
+			# группировка учтена мягким бонусом плотности +12% к толпе. Элитки/
+			# боссы не смещаются (контроль-ось, в DPS-модель не входит).
+			return {"solo_hits": 1.0, "five_hits": clampf((1.0 + aoe_radius / 80.0) * 1.12, 1.0, 4.8)}
 		"robot_compression_line":
+			# SCRUM-916: урон по ВСЕЙ ширине коридора suppression_width
+			# (зеркало _fire_robot_compression_line: width_override), компрессия
+			# к оси — контроль-ось. Толпа — от полной ширины коридора.
 			var compression_width := float(config.get("suppression_width", 220.0))
 			return {"solo_hits": 1.0, "five_hits": clampf(1.0 + compression_width / 82.0, 1.0, 4.6)}
 		"robot_reactor_vent":
+			# SCRUM-918: вращающийся веер — ровно 4 фикс-вентиля (без
+			# самонаведения), пер-вентильный урон = ролл × vent_ratio (зеркало
+			# ClassWeapon.REACTOR_VENT_DAMAGE_RATIO). Соло: identity ближнего
+			# контроля — чейзер на контактной дистанции покрыт лопастью
+			# (coverage ~1.0) => один вентиль за каст = vent_ratio ролла; толпа —
+			# прежняя форма «вентили + площадь», масштабированная vent_ratio.
 			var vent_count := float(config.get("projectile_count", 4.0))
-			return {"solo_hits": 1.0, "five_hits": clampf(1.0 + vent_count * 0.70 + aoe_radius / 150.0, 1.0, 5.0)}
+			var vent_ratio := 0.42
+			return {"solo_hits": vent_ratio, "five_hits": clampf((1.0 + vent_count * 0.70 + aoe_radius / 150.0) * vent_ratio, 0.5, 5.0)}
 		"engineer_sentry_link":
-			var sentry_shots := float(config.get("projectile_count", 4.0))
-			return {"solo_hits": clampf(sentry_shots * 0.66, 1.0, 3.2), "five_hits": clampf(sentry_shots * 0.96, 1.0, 5.0)}
-		"engineer_repair_drone":
-			var drone_links := float(config.get("projectile_count", 4.0))
-			return {"solo_hits": 1.0, "five_hits": clampf(1.0 + drone_links * 0.68, 1.0, 4.6)}
+			# SCRUM-888: турели. Прямой компонент — мгновенный первый выстрел при
+			# развёртке (1 цель); сустейн стрельбы турелей считает _budget_summon_dps
+			# (max_summons × damage × summon_damage_multiplier / summon_attack_interval).
+			# Толпу добирают: залп по РАЗНЫМ ближайшим целям (projectile_count со
+			# спадом damage_falloff^i; одиночная цель получает только 1-й снаряд —
+			# соло-ось не греется) и сплэш снаряда (cap целей со спадом 1/(1+0.75i))
+			# — зеркала sentry_turret.try_fire и _damage_engineer_sentry_splash.
+			var sentry_splash_bonus := 0.0
+			if float(config.get("sentry_splash_radius", 0.0)) > 0.0:
+				var sentry_splash_cap := maxi(int(config.get("sentry_splash_target_cap", 0)), 0)
+				var sentry_splash_mult := maxf(float(config.get("sentry_splash_damage_multiplier", 0.0)), 0.0)
+				for sentry_splash_index in range(sentry_splash_cap):
+					sentry_splash_bonus += sentry_splash_mult / (1.0 + float(sentry_splash_index) * 0.75)
+			var sentry_volley := maxi(int(config.get("projectile_count", 1)), 1)
+			var sentry_volley_falloff := clampf(float(config.get("damage_falloff", 0.55)), 0.05, 1.0)
+			var sentry_volley_crowd := 1.0
+			for sentry_volley_index in range(1, sentry_volley):
+				sentry_volley_crowd += pow(sentry_volley_falloff, float(sentry_volley_index))
+			var sentry_crowd_factor := sentry_volley_crowd * (1.0 + sentry_splash_bonus)
+			return {"solo_hits": 1.0, "five_hits": sentry_crowd_factor, "summon_targets": sentry_crowd_factor}
+		"engineer_orbit_drone":
+			# SCRUM-906: прямого канала нет (direct_dps = 0); crowd-фактор
+			# контакта пишет _budget_orbit_drone_dps в summon_targets.
+			return {"solo_hits": 1.0, "five_hits": 1.0}
 		"engineer_pressure_mines":
 			var mine_count := float(config.get("projectile_count", 3.0))
 			return {"solo_hits": 1.0, "five_hits": clampf(mine_count * (1.0 + aoe_radius / 170.0), 1.0, 5.0)}
@@ -923,31 +1664,283 @@ static func _budget_melee_unique_bonus(config: Dictionary) -> Dictionary:
 	return {"solo": solo_bonus, "aoe": aoe_bonus}
 
 
-static func _budget_dot_dps(config: Dictionary, params: Dictionary, interval: float) -> float:
+# SCRUM-900: старт ramp-фактора чумного тика (первые тики слабее — «давление
+# по карте», а не мгновенный бурст; растёт до 1.0 за plague_ramp_ticks).
+const PLAGUE_RAMP_START := 0.45
+
+
+# SCRUM-900: единый профиль чумного DoT — источник истины и для рантайма
+# (ClassWeapon._apply_plague_infection), и для budget-модели (_budget_dot_dps),
+# чтобы тюнинг-гейт считал ту же чуму, что тикает в бою.
+# Скейл: тик = magic_damage × plague_tick_ratio + dot_damage × plague_dot_coupling;
+# интервал тика ускоряется статом dot_speed; длительность фиксирована конфигом.
+static func plague_tick_profile(config: Dictionary, params: Dictionary) -> Dictionary:
+	var magic := float(params.get("magic_damage", params.get("damage", 1.0)))
+	var dot_damage := float(params.get("dot_damage", 1.0))
+	var dot_speed := maxf(float(params.get("dot_speed", 1.0)), 0.2)
+	var tick_interval := maxf(float(config.get("plague_tick_interval", 2.0)) / dot_speed, 0.45)
+	var duration := maxf(float(config.get("plague_duration", 24.0)), tick_interval)
+	var ticks := maxi(int(floor(duration / tick_interval)), 1)
+	var ramp_ticks := maxi(int(config.get("plague_ramp_ticks", 5)), 1)
+	var tick_damage := magic * float(config.get("plague_tick_ratio", 0.22)) \
+		+ dot_damage * float(config.get("plague_dot_coupling", 0.6))
+	var ramp_sum := 0.0
+	for tick_index in range(ticks):
+		ramp_sum += plague_ramp_factor(tick_index, ramp_ticks)
+	return {
+		"tick_damage": tick_damage,
+		"tick_interval": tick_interval,
+		"ticks": ticks,
+		"ramp_average": ramp_sum / float(ticks),
+	}
+
+
+static func plague_ramp_factor(tick_index: int, ramp_ticks: int) -> float:
+	var progress := clampf(float(tick_index) / float(maxi(ramp_ticks, 1)), 0.0, 1.0)
+	return lerpf(PLAGUE_RAMP_START, 1.0, progress)
+
+
+static func _budget_dot_dps(config: Dictionary, params: Dictionary, interval: float, stats := {}) -> float:
+	# SCRUM-900 plague_dart: длинная зараза (24с) с рефрешем при повторном
+	# попадании ⇒ на одиночной цели устойчивый DoT-поток, независимый от
+	# fire_interval (перезаражение лишь поддерживает 100% uptime).
+	if str(config.get("attack_mode", "")) == "plague_dart":
+		var profile := plague_tick_profile(config, params)
+		return float(profile.get("tick_damage", 0.0)) * float(profile.get("ramp_average", 1.0)) \
+			/ maxf(float(profile.get("tick_interval", 1.0)), 0.18) \
+			* class_periodic_damage_multiplier(str(config.get("character_id", "")))
 	var ticks := float(config.get("dot_ticks", 0.0))
 	if ticks <= 0.0:
 		return 0.0
-	return float(params.get("dot_damage", 1.0)) * ticks / maxf(interval, 0.18)
+	# SCRUM-940: документированный curse-пайплайн черепа — сила тика =
+	# dot_damage * curse_tick_multiplier * (1 + Интеллект * curse_int_scale);
+	# зеркалит class_weapon._apply_skull_curse_zone. Для прочих оружий
+	# multiplier=1.0 / int_scale=0.0 — формула тождественна прежней.
+	var tick_multiplier := maxf(float(config.get("curse_tick_multiplier", 1.0)), 0.0)
+	# SCRUM-896: биоинфекции — status-based с refresh (1 стак): перекаст НЕ
+	# мультиплицирует тики, поэтому устоявшийся DPS = тик × каденция
+	# (dot_speed × curse_tick_rate; интервал ≥0.1с — кламп StatusEffects.tick),
+	# а НЕ ticks/каст. Ось скейлится dot_damage/dot_speed (Знание/Энергия), не
+	# скоростью атаки; длительность (dot_ticks+0.99)×интервал перекрывает
+	# интервал каста — uptime в затяжном бою ≈1. Зеркало —
+	# class_weapon._apply_bio_infection (рантайм применяет статус через
+	# StatusEffects.apply_status_from — классовый периодический множитель
+	# SCRUM-942 запекается там же; у Биолога он 1.0).
+	if str(config.get("attack_mode", "")).begins_with("bio_"):
+		var bio_rate := maxf(float(config.get("curse_tick_rate", 1.0)), 0.2)
+		var bio_interval := maxf(1.0 / (maxf(float(params.get("dot_speed", 1.0)), 0.2) * bio_rate), 0.1)
+		return float(params.get("dot_damage", 1.0)) * tick_multiplier / bio_interval \
+			* class_periodic_damage_multiplier(str(config.get("character_id", "")))
+	var stats_map: Dictionary = stats if stats is Dictionary else {}
+	var curse_depth := 1.0 + maxf(float(stats_map.get("intelligence", 0.0)), 0.0) * maxf(float(config.get("curse_int_scale", 0.0)), 0.0)
+	# SCRUM-942: DoT-тики — периодический канал, множится классовым trait'ом
+	# (у классов без trait'а множитель 1.0 — формула тождественна прежней).
+	return float(params.get("dot_damage", 1.0)) * tick_multiplier * curse_depth * ticks / maxf(interval, 0.18) \
+		* class_periodic_damage_multiplier(str(config.get("character_id", "")))
 
 
 static func _budget_pool_dps(config: Dictionary, params: Dictionary, interval: float) -> float:
 	if not bool(config.get("leaves_pool", false)):
 		return 0.0
+	# SCRUM-903: терновая зона Друида — повторные ФИЗИЧЕСКИЕ хиты с капом на
+	# врага/зону (зеркало class_weapon._briar_zone_tick): хит = damage-параметр
+	# оружия × briar_hit_multiplier, хитов на врага с одной зоны =
+	# min(briar_hit_cap, duration/tick). Периодик-множители НЕ применяются —
+	# это не dot-ось (dot_damage в терновом канале не участвует).
+	if bool(config.get("briar_zone", false)):
+		var briar_tick := maxf(float(config.get("pool_tick_interval", 0.6)), 0.18)
+		var briar_hits := minf(float(config.get("briar_hit_cap", 5)), floor(maxf(float(config.get("pool_duration", 3.0)), briar_tick) / briar_tick))
+		var briar_hit_damage := float(params.get(str(config.get("damage_parameter", "damage")), params.get("damage", 1.0))) * maxf(float(config.get("briar_hit_multiplier", 0.34)), 0.0)
+		return briar_hit_damage * briar_hits / maxf(interval, 0.18)
 	var tick_interval := maxf(float(config.get("pool_tick_interval", 0.6)), 0.18)
 	var uptime := minf(float(config.get("pool_duration", 3.0)) / maxf(interval, 0.18), 1.0)
-	return float(params.get("dot_damage", 1.0)) / tick_interval * uptime
+	# SCRUM-944: per-weapon скалер тика лужи (зеркало ClassWeapon._spawn_damage_pool).
+	var tick_scale := maxf(float(config.get("pool_tick_damage_multiplier", 1.0)), 0.0)
+	# SCRUM-942: тики лужи — периодический канал, множится классовым trait'ом.
+	var periodic_mult := class_periodic_damage_multiplier(str(config.get("character_id", "")))
+	var pool_dps := float(params.get("dot_damage", 1.0)) * tick_scale / tick_interval * uptime * periodic_mult
+	return pool_dps + _budget_pool_charge_dps(config, params, periodic_mult)
+
+
+# SCRUM-944: бюджет перманентных контактных зарядов лужи (кислотная колба).
+# Зеркалит ClassWeapon._apply_pool_contact_statuses: враг копит по одному вечному
+# DoT-заряду с каждой РАЗНОЙ лужи (кап pool_charge_cap), тик = dot_damage ×
+# pool_charge_tick_multiplier / pool_charge_tick_interval. Ramp-фактор 0.5 —
+# заряды набираются по мере прохода луж, к концу бюджет-окна выходят на кап.
+static func _budget_pool_charge_dps(config: Dictionary, params: Dictionary, periodic_mult: float) -> float:
+	if not bool(config.get("pool_contact_charges", false)):
+		return 0.0
+	var cap := maxf(float(config.get("pool_charge_cap", 5.0)), 1.0)
+	var tick_multiplier := maxf(float(config.get("pool_charge_tick_multiplier", 0.30)), 0.0)
+	var tick_interval := maxf(float(config.get("pool_charge_tick_interval", 0.9)), 0.18)
+	const CHARGE_RAMP_FACTOR := 0.5
+	return float(params.get("dot_damage", 1.0)) * tick_multiplier * cap * CHARGE_RAMP_FACTOR / tick_interval * periodic_mult
+
+
+# SCRUM-946: бюджет волн гомункула-кастера (пара «танк+кастер»). Зеркалит
+# summoner_weapon._update_homunculus_pair: неуязвимый кастер каждые
+# summon_wave_interval вешает вечный DoT-заряд (кап summon_wave_stack_cap),
+# тик = dot_damage × summon_wave_dot_multiplier / summon_wave_dot_interval.
+# Ramp-фактор 0.5 — стаки волн копятся к капу за первые ~cap×interval секунд окна.
+static func _budget_summon_wave_dps(config: Dictionary, params: Dictionary) -> float:
+	if float(config.get("summon_wave_interval", 0.0)) <= 0.0:
+		return 0.0
+	var cap := maxf(float(config.get("summon_wave_stack_cap", 4.0)), 1.0)
+	var tick_multiplier := maxf(float(config.get("summon_wave_dot_multiplier", 0.35)), 0.0)
+	var tick_interval := maxf(float(config.get("summon_wave_dot_interval", 1.0)), 0.18)
+	const WAVE_RAMP_FACTOR := 0.5
+	return float(params.get("dot_damage", 1.0)) * tick_multiplier * cap * WAVE_RAMP_FACTOR / tick_interval \
+		* class_periodic_damage_multiplier(str(config.get("character_id", "")))
 
 
 static func _budget_summon_dps(config: Dictionary, params: Dictionary, stats := {}) -> float:
 	if int(config.get("max_summons", 0)) <= 0 and not config.has("summon_damage_multiplier"):
+		return 0.0
+	# SCRUM-903: выход вороньего тотема ЦЕЛИКОМ смоделирован amp-веткой
+	# _budget_hit_model (raven_homing) — фантомный summon-канал от max_summons
+	# создал бы двойной счёт одного и того же урона.
+	if bool(config.get("raven_homing", false)):
 		return 0.0
 	var summon_count: float = maxf(float(config.get("max_summons", 1.0)), 1.0) + floor(float(params.get("summon_amount", 0.0)) / 4.0)
 	var summon_amount := float(params.get("summon_amount", 0.0))
 	var leadership := float(stats.get("leadership", summon_amount)) if stats is Dictionary else summon_amount
 	var attack_interval := maxf(float(config.get("summon_attack_interval", 0.45)) / (1.0 + minf(summon_amount * 0.014 + leadership * 0.006, 0.30)), 0.18)
 	var role_factor := _budget_summon_role_damage_factor(config, params, stats)
-	var summon_damage := float(params.get(str(config.get("damage_parameter", "damage")), params.get("damage", 1.0))) * float(config.get("summon_damage_multiplier", 0.36)) * role_factor
+	# SCRUM-902: ростер-оружие (амулет Друида) — базовый стат КОМПОЗИЦИОННО
+	# взвешен по семьям ростера: physical-звери растут от damage (Сила),
+	# magic-духи — от magic_damage (Интеллект). Зеркалит summoner_weapon
+	# ._summon_profile (family_parameter per запись; дальние духи бьют реже, но
+	# тяжелее — per-body DPS равен melee, отдельная модель темпа не нужна).
+	var base_stat := float(params.get(str(config.get("damage_parameter", "damage")), params.get("damage", 1.0)))
+	var roster: Array = config.get("summon_roster", [])
+	if not roster.is_empty():
+		var weighted := 0.0
+		for entry_raw in roster:
+			var entry: Dictionary = entry_raw if entry_raw is Dictionary else {}
+			var family_parameter := "magic_damage" if str(entry.get("family", "")) == "magic" else "damage"
+			weighted += float(params.get(family_parameter, params.get("damage", 1.0)))
+		base_stat = weighted / float(roster.size())
+	var summon_damage := base_stat * float(config.get("summon_damage_multiplier", 0.36)) * role_factor
 	return summon_count * summon_damage / attack_interval
+
+
+# SCRUM-905: пропускная способность турелей с боезапасом — зеркало
+# scripts/sentry_turret.gd + class_weapon._engineer_turret_limit 1:1.
+# Спрос парка = capacity выстрелов раз в effective-pulse (pulse / tempo-lift /
+# attack_speed, пол 0.10с; соло — 1 снаряд/пульс на турель, толпа — залп
+# projectile_count); предложение = magazine выстрелов с каждым деплоем
+# (fire_interval / attack_speed). Устойчивый DPS = min(спрос, предложение) —
+# скорость атаки ускоряет и стрельбу, и восполнение (AC SCRUM-905), Лидерство
+# растит capacity (2 + floor(summon_amount/4), рельс max_summons_cap).
+static func _budget_sentry_ammo_model(config: Dictionary, params: Dictionary, stats := {}) -> Dictionary:
+	if str(config.get("attack_mode", "")) != "engineer_sentry_link" or int(config.get("sentry_shot_magazine", 0)) <= 0:
+		return {}
+	var magazine := float(config.get("sentry_shot_magazine", 15))
+	var attack_speed := maxf(float(params.get("attack_speed", 1.0)), 0.1)
+	var deploy_interval := maxf(float(config.get("fire_interval", 2.7)) / attack_speed, 0.18)
+	var supply_rate := magazine / deploy_interval
+	var summon_amount := maxf(float(params.get("summon_amount", 0.0)), 0.0)
+	var leadership := float(stats.get("leadership", summon_amount)) if stats is Dictionary else summon_amount
+	var tempo := 1.0 + minf(summon_amount * 0.014 + leadership * 0.006, 0.30)
+	var pulse := maxf(maxf(float(config.get("amp_pulse_interval", 0.55)), 0.18) / tempo / attack_speed, 0.10)
+	var capacity := maxf(float(maxi(int(config.get("max_summons", 1)), 1)) + floor(summon_amount / 4.0), 1.0)
+	if int(config.get("max_summons_cap", 0)) > 0:
+		capacity = minf(capacity, float(config.get("max_summons_cap", 6)))
+	var demand_solo := capacity / pulse
+	var volley := maxi(int(config.get("projectile_count", 1)), 1)
+	var falloff := clampf(float(config.get("damage_falloff", 0.55)), 0.05, 1.0)
+	var volley_quality := 0.0
+	for volley_index in range(volley):
+		volley_quality += pow(falloff, float(volley_index))
+	var splash_bonus := 0.0
+	if float(config.get("sentry_splash_radius", 0.0)) > 0.0:
+		var splash_cap := maxi(int(config.get("sentry_splash_target_cap", 0)), 0)
+		var splash_mult := maxf(float(config.get("sentry_splash_damage_multiplier", 0.0)), 0.0)
+		for splash_index in range(splash_cap):
+			splash_bonus += splash_mult / (1.0 + float(splash_index) * 0.75)
+	var role_factor := _budget_summon_role_damage_factor(config, params, stats)
+	var shot_damage := float(params.get(str(config.get("damage_parameter", "damage")), params.get("damage", 1.0))) 		* float(config.get("summon_damage_multiplier", 1.0)) * role_factor
+	var solo_dps := minf(demand_solo, supply_rate) * shot_damage
+	var aoe_dps := minf(demand_solo * float(volley), supply_rate) * shot_damage 		* (volley_quality / float(volley)) * (1.0 + splash_bonus)
+	return {
+		"summon_dps": solo_dps,
+		"summon_targets": aoe_dps / maxf(solo_dps, 0.001),
+	}
+
+
+# SCRUM-906: контактный DPS орбитальных дронов — зеркало
+# scripts/engineer_orbit_drone.gd + class_weapon._engineer_drone_target_count.
+# Число дронов = max_summons + floor(max(summon_amount - threshold, 0) / step),
+# рельс max_summons_cap (база Инженера ~12.5 → ровно 1 дрон). Оборотов/с =
+# drone_orbit_speed × attack_speed / TAU (скорость атаки крутит RPM, AC);
+# хитов/с на дрона по одной цели = min(обороты, 1/hit_cooldown) — дрон
+# пересекает угловую позицию цели раз за оборот, per-enemy кулдаун гейтит
+# сверху. Толпа: кольцо орбиты накрывает clamp(1 + (внешний радиус спирали +
+# контакт)/58, 1, 5) целей бюджет-пятёрки.
+static func _budget_orbit_drone_dps(config: Dictionary, params: Dictionary, stats := {}) -> Dictionary:
+	if str(config.get("attack_mode", "")) != "engineer_orbit_drone":
+		return {}
+	var attack_speed := maxf(float(params.get("attack_speed", 1.0)), 0.1)
+	var rev_rate := maxf(float(config.get("drone_orbit_speed", 3.6)), 0.5) * attack_speed / TAU
+	var hit_cooldown := maxf(float(config.get("drone_hit_cooldown", 0.85)), 0.1)
+	var pass_rate := minf(rev_rate, 1.0 / hit_cooldown)
+	var summon_amount := maxf(float(params.get("summon_amount", 0.0)), 0.0)
+	var threshold := float(config.get("drone_count_threshold", 12.0))
+	var step := maxf(float(config.get("drone_count_step", 4.0)), 0.5)
+	var count := maxf(float(maxi(int(config.get("max_summons", 1)), 1)) + floor(maxf(summon_amount - threshold, 0.0) / step), 1.0)
+	if int(config.get("max_summons_cap", 0)) > 0:
+		count = minf(count, float(config.get("max_summons_cap", 6)))
+	var role_factor := _budget_summon_role_damage_factor(config, params, stats)
+	var contact_damage := float(params.get(str(config.get("damage_parameter", "damage")), params.get("damage", 1.0))) 		* float(config.get("summon_damage_multiplier", 0.9)) * role_factor
+	var solo_dps := count * contact_damage * pass_rate
+	var outer_radius := maxf(float(config.get("drone_orbit_radius", 78.0)), 24.0) * (1.0 + 0.14 * (count - 1.0))
+	var ring_coverage := clampf(1.0 + (outer_radius + maxf(float(config.get("drone_contact_radius", 44.0)), 8.0)) / 58.0, 1.0, 5.0)
+	return {
+		"summon_dps": solo_dps,
+		"summon_targets": ring_coverage,
+	}
+
+
+# SCRUM-908 «Сеть мастерской»: бюджет-зеркало ClassWeapon._workshop_network_factor.
+# Ожидаемые стеки в устойчивом бою (по типу устройства):
+#   - турели: min(capacity, жизнь магазина / интервал деплоя) — боезапас
+#     ограничивает одновременный парк;
+#   - дроны: постоянный парк = число дронов;
+#   - мины: кап × вес 0.5 × заполненность 0.33 (в бою мины детонируют быстро).
+# Стеки клампятся капом сети (cap_base + floor(Лидерство/step)); фактор =
+# 1 + стеки × per_stack. У классов без trait'а per_stack = 0 → фактор 1.0.
+static func _budget_network_factor(config: Dictionary, params: Dictionary, stats := {}) -> float:
+	var trait_config: Dictionary = CLASS_TRAITS.get(str(config.get("character_id", "")), {}) as Dictionary
+	var per_stack := float(trait_config.get("network_damage_per_stack", 0.0))
+	if per_stack <= 0.0:
+		return 1.0
+	var summon_amount := maxf(float(params.get("summon_amount", 0.0)), 0.0)
+	var leadership := float(stats.get("leadership", summon_amount)) if stats is Dictionary else summon_amount
+	var cap := maxf(float(trait_config.get("network_stack_cap_base", 3.0)) 		+ floor(maxf(leadership, 0.0) / maxf(float(trait_config.get("network_cap_leadership_step", 6.0)), 1.0)), 0.0)
+	var mode := str(config.get("attack_mode", ""))
+	var expected := 0.0
+	match mode:
+		"engineer_sentry_link":
+			var attack_speed := maxf(float(params.get("attack_speed", 1.0)), 0.1)
+			var tempo := 1.0 + minf(summon_amount * 0.014 + leadership * 0.006, 0.30)
+			var pulse := maxf(maxf(float(config.get("amp_pulse_interval", 0.55)), 0.18) / tempo / attack_speed, 0.10)
+			var magazine_life := float(config.get("sentry_shot_magazine", 15)) * pulse
+			var deploy_interval := maxf(float(config.get("fire_interval", 2.7)) / attack_speed, 0.18)
+			var capacity := maxf(float(maxi(int(config.get("max_summons", 1)), 1)) + floor(summon_amount / 4.0), 1.0)
+			if int(config.get("max_summons_cap", 0)) > 0:
+				capacity = minf(capacity, float(config.get("max_summons_cap", 6)))
+			expected = minf(capacity, magazine_life / deploy_interval)
+		"engineer_orbit_drone":
+			var threshold := float(config.get("drone_count_threshold", 12.0))
+			var step := maxf(float(config.get("drone_count_step", 4.0)), 0.5)
+			expected = maxf(float(maxi(int(config.get("max_summons", 1)), 1)) + floor(maxf(summon_amount - threshold, 0.0) / step), 1.0)
+			if int(config.get("max_summons_cap", 0)) > 0:
+				expected = minf(expected, float(config.get("max_summons_cap", 6)))
+		"engineer_pressure_mines":
+			expected = float(config.get("mine_active_cap", 6)) * float(trait_config.get("network_mine_weight", 0.5)) * 0.33
+		_:
+			return 1.0
+	return 1.0 + minf(expected, cap) * per_stack
 
 
 static func _is_pure_summon_weapon(config: Dictionary) -> bool:
@@ -971,7 +1964,7 @@ static func _budget_summon_role_damage_factor(config: Dictionary, params: Dictio
 static func _budget_ultimate_dps(character_id: String, params: Dictionary) -> Dictionary:
 	var config := ultimate_config(character_id)
 	var multiplier := float(params.get("ultimate_multiplier", 1.0))
-	var base_damage := maxf(maxf(float(params.get("damage", 1.0)), float(params.get("magic_damage", 1.0))), float(params.get("sound_wave_damage", 1.0)))
+	var base_damage := maxf(float(params.get("damage", 1.0)), float(params.get("magic_damage", 1.0)))
 	var damage := base_damage * float(config.get("damage", 1.0)) * multiplier
 	var target_count := float(config.get("target_count", 5.0))
 	if not config.has("target_count"):
@@ -1057,8 +2050,29 @@ static func derived_parameters(stats: Dictionary, run_modifiers: Dictionary, wea
 	# Тождественно при множителе 1.0 (пустые run_modifiers формульного гейта) → база и
 	# формульные коридоры не меняются. Пассивы оружия (passive_mods) НЕ капятся — это база.
 	var run_damage_multiplier := _soft_capped_run_multiplier(float(run_modifiers.get("damage_multiplier", 1.0)), RUN_DAMAGE_MULT_SOFTCAP, RUN_DAMAGE_MULT_KNEE)
+	var run_magic_damage_multiplier := _soft_capped_run_multiplier(float(run_modifiers.get("magic_damage_multiplier", 1.0)), RUN_DAMAGE_MULT_SOFTCAP, RUN_DAMAGE_MULT_KNEE)
 	var run_attack_speed_multiplier := _soft_capped_run_multiplier(float(run_modifiers.get("attack_speed_multiplier", 1.0)), RUN_ATTACK_SPEED_MULT_SOFTCAP, RUN_ATTACK_SPEED_MULT_KNEE)
+	# SCRUM-947 «Проводник стихий»: magic-tagged бонусы Элементалиста на 30%
+	# эффективнее (CLASS_TRAITS.elementalist.magic_bonus_effectiveness). Порядок
+	# и полный список источников — у _magic_bonus_effectiveness_for. Каждый
+	# источник усиливается ровно
+	# один раз ЗДЕСЬ (точка агрегации), до перемножения — двойного применения
+	# при нескольких магических множителях нет.
+	var magic_bonus_effectiveness := _magic_bonus_effectiveness_for(character_id)
+	run_magic_damage_multiplier = _amplified_bonus_multiplier(run_magic_damage_multiplier, magic_bonus_effectiveness)
 	var damage_multiplier := pow(run_damage_multiplier, upgrade_damage_exponent) * float(passive_mods.get("damage_multiplier", 1.0))
+	var magic_damage_multiplier := pow(run_magic_damage_multiplier, upgrade_damage_exponent) * _amplified_bonus_multiplier(float(passive_mods.get("magic_damage_multiplier", 1.0)), magic_bonus_effectiveness)
+	# SCRUM-961 «Четки молитвы»: открывающий бафф первых секунд боя усиливает
+	# магический канал (prayer_opening_active ставит player.on_battle_start).
+	# SCRUM-947: magic-tagged бафф — добавка усиливается trait'ом Элементалиста.
+	magic_damage_multiplier *= 1.0 + float(run_modifiers.get("prayer_opening_power", 0.0)) * float(run_modifiers.get("prayer_opening_active", 0.0)) * magic_bonus_effectiveness
+	var kill_momentum_attack_speed_bonus := clampf(float(run_modifiers.get("kill_momentum_attack_speed_bonus", 0.0)), 0.0, 0.12)
+	var kill_momentum_crit_damage_bonus := clampf(float(run_modifiers.get("kill_momentum_crit_damage_bonus", 0.0)), 0.0, 0.09)
+	# SCRUM-961 «Багровая рукоять»: стаки ярости за melee-удары — пишет player
+	# ._refresh_rage_hit_modifiers по образцу kill_momentum; капы = пик 5 стаков.
+	var rage_hit_damage_bonus := clampf(float(run_modifiers.get("rage_hit_damage_bonus", 0.0)), 0.0, 0.10)
+	var rage_hit_attack_speed_bonus := clampf(float(run_modifiers.get("rage_hit_attack_speed_bonus", 0.0)), 0.0, 0.075)
+	damage_multiplier *= 1.0 + rage_hit_damage_bonus
 	# «Кровавый Рубеж» (tier 3): бонус урона активен, пока HP ниже порога (low_hp_active ставит player).
 	damage_multiplier *= 1.0 + float(run_modifiers.get("low_hp_damage_bonus", 0.0)) * float(run_modifiers.get("low_hp_active", 0.0))
 	# SCRUM-834 (Мета 4.1): условные keystone — бонус урона по типу условия. Гейты
@@ -1070,17 +2084,32 @@ static func derived_parameters(stats: Dictionary, run_modifiers: Dictionary, wea
 		+ float(run_modifiers.get("rush_damage_bonus", 0.0)) * float(run_modifiers.get("rush_window_active", 0.0)) \
 		+ float(run_modifiers.get("swarm_damage_bonus", 0.0)) * float(run_modifiers.get("swarm_fraction", 0.0))
 	var attack_speed_multiplier := run_attack_speed_multiplier * float(passive_mods.get("attack_speed_multiplier", 1.0))
+	attack_speed_multiplier *= 1.0 + kill_momentum_attack_speed_bonus
+	attack_speed_multiplier *= 1.0 + rage_hit_attack_speed_bonus
 	# SCRUM-834a: условный keystone «стойка → скорострельность» (soldier «Шквал»).
 	# Гейт stance_active ставит player._update_conditional_keystones; спит вне стойки.
 	attack_speed_multiplier *= 1.0 + float(run_modifiers.get("stance_attack_speed_bonus", 0.0)) * float(run_modifiers.get("stance_active", 0.0))
+	# SCRUM-961 «Медиатор овердрайва»: темп-бонус активной рифф-серии (riff_streak_active
+	# ставит player._update_meta_keystone_runtime; урон-бонус серии — в meta_damage_multiplier).
+	attack_speed_multiplier *= 1.0 + float(run_modifiers.get("riff_streak_attack_speed_bonus", 0.0)) * float(run_modifiers.get("riff_streak_active", 0.0))
+	# SCRUM-976: sandbox — final exact layer, intentionally outside release
+	# softcaps/exponents so 0.5/2.0 remain exact and do not retune canonical data.
+	var sandbox_damage_multiplier := clampf(float(run_modifiers.get("sandbox_player_damage_multiplier", 1.0)), 0.5, 2.0)
+	attack_speed_multiplier *= clampf(float(run_modifiers.get("sandbox_player_attack_speed_multiplier", 1.0)), 0.5, 2.0)
 	var move_speed_multiplier := float(run_modifiers.get("move_speed_multiplier", 1.0)) * float(passive_mods.get("move_speed_multiplier", 1.0))
 	# «Призрачный Шаг» (tier 3): рывок скорости после уворота (dodge_rush_active ставит player).
 	move_speed_multiplier *= 1.0 + float(run_modifiers.get("dodge_rush_bonus", 0.0)) * float(run_modifiers.get("dodge_rush_active", 0.0))
 	# SCRUM-500 «Импульс Крита»: короткий рывок скорости по криту (crit_speed_burst_active ставит player).
 	move_speed_multiplier *= 1.0 + float(run_modifiers.get("crit_speed_burst", 0.0)) * float(run_modifiers.get("crit_speed_burst_active", 0.0))
+	# SCRUM-894 «Рывок темпа»: короткий бафф скорости+уворота после серии Теневых
+	# кинжалов (flurry_tempo_active ставит Player.trigger_flurry_tempo с внутренним
+	# кулдауном — перманентного аптайма нет; величины зажаты от runaway).
+	var flurry_tempo_active := clampf(float(run_modifiers.get("flurry_tempo_active", 0.0)), 0.0, 1.0)
+	move_speed_multiplier *= 1.0 + clampf(float(run_modifiers.get("flurry_tempo_speed_bonus", 0.0)), 0.0, 0.25) * flurry_tempo_active
 	var max_health_multiplier := float(run_modifiers.get("max_health_multiplier", 1.0)) * float(passive_mods.get("max_health_multiplier", 1.0))
 	var range_multiplier := float(run_modifiers.get("range_multiplier", 1.0)) * float(passive_mods.get("range_multiplier", 1.0))
 	var aoe_radius_multiplier := pow(float(run_modifiers.get("aoe_radius_multiplier", 1.0)), upgrade_aoe_exponent) * float(passive_mods.get("aoe_radius_multiplier", 1.0))
+	var sector_multiplier := float(run_modifiers.get("sector_multiplier", 1.0)) * float(passive_mods.get("sector_multiplier", 1.0))
 	var knockback_multiplier := float(run_modifiers.get("knockback_multiplier", 1.0)) * float(passive_mods.get("knockback_multiplier", 1.0))
 	var defense_flat := float(run_modifiers.get("defense_flat", 0.0)) + float(passive_mods.get("defense_flat", 0.0))
 	var absorb_flat := float(run_modifiers.get("absorb_flat", 0.0)) + float(passive_mods.get("absorb_flat", 0.0))
@@ -1098,9 +2127,18 @@ static func derived_parameters(stats: Dictionary, run_modifiers: Dictionary, wea
 	# rush_window_active ставит player._trigger_rush_window; 0 вне окна. Проходит
 	# ту же CRIT_FLAT_EFFECTIVENESS, что и базовый крит-шанс (тождество весов).
 	var crit_chance_flat := (float(run_modifiers.get("crit_chance_flat", 0.0)) + float(run_modifiers.get("rush_crit_bonus", 0.0)) * float(run_modifiers.get("rush_window_active", 0.0)) + float(passive_mods.get("crit_chance_flat", 0.0))) * CRIT_FLAT_EFFECTIVENESS
-	var crit_damage_flat := float(run_modifiers.get("crit_damage_flat", 0.0)) + float(passive_mods.get("crit_damage_flat", 0.0))
+	var crit_damage_flat := float(run_modifiers.get("crit_damage_flat", 0.0)) + kill_momentum_crit_damage_bonus + float(passive_mods.get("crit_damage_flat", 0.0))
 	if passive_mods.has("crit_damage_multiplier"):
 		crit_damage_flat += float(passive_mods.get("crit_damage_multiplier", 1.0)) - 1.0
+	# SCRUM-894 «Хладнокровие»: per-class крит-профиль (кап/diminish из
+	# CLASS_TRAITS; дефолт — глобальные константы). Избыток raw-шанса СВЕРХ капа
+	# конвертируется в crit_damage_flat с коэффициентом overflow (только у классов
+	# с trait-ключом; итоговый крит-урон всё равно зажат CRIT_DAMAGE_CAP).
+	var crit_profile := class_crit_profile(character_id)
+	var crit_chance_raw := 0.04 + agility * 0.0075 + crit_chance_flat
+	var crit_overflow_ratio := float(crit_profile.get("overflow", 0.0))
+	if crit_overflow_ratio > 0.0:
+		crit_damage_flat += maxf(crit_chance_raw - float(crit_profile.get("cap", CRIT_CHANCE_CAP)), 0.0) * crit_overflow_ratio
 	# SCRUM-524: урон каждого ТИПА масштабируется ТОЛЬКО от своего атрибута.
 	# Изоляция по типам урона — жёсткий инвариант: прокачка атрибута типа X меняет
 	# урон ТОЛЬКО типа X и НИКАК не влияет на остальные типы (см. систему типов
@@ -1108,32 +2146,69 @@ static func derived_parameters(stats: Dictionary, run_modifiers: Dictionary, wea
 	# НЕТ «splash»-вкладов чужих атрибутов и НЕТ архетип-множителя: он зависел от
 	# ВСЕХ атрибутов и одинаково домножал все три типа, протекая между ними.
 	# Владельцы атрибутов по типам: сила→физический, интеллект→магический,
-	# восприятие+энергия→звуковой, знание→периодический (DoT). damage_flat и
+	# знание→периодический (DoT). SCRUM-898: звуковой тип удалён (бывшие
+	# sound-оружия Гитариста/Друида переведены на магический канал). damage_flat и
 	# dot_damage_flat — забеговые/пассивные модификаторы (не атрибуты), поэтому
 	# общий вклад в типы инвариант изоляции не нарушает (тест проверяет атрибуты).
 	# Баланс по DPS добирается классовым budget-множителем (budget_tuning_for).
 	var universal_damage_flat := float(run_modifiers.get("damage_flat", 0.0))
 	var physical_base := 15.0 * strength / 10.0
-	var magic_base := 14.0 * intelligence / 10.0
-	var sound_base := perception + energy
+	# SCRUM-947: атрибутный источник магического бонуса — дельта интеллекта НАД
+	# базой класса (после growth-скаляра) на 30% эффективнее для Элементалиста.
+	# База класса не трогается (стартовые числа и формульные гейты неизменны),
+	# усиление действует ТОЛЬКО в канале magic_damage (изоляция типов SCRUM-524).
+	var magic_intelligence := intelligence
+	if magic_bonus_effectiveness != 1.0 and not base_for_growth.is_empty():
+		var base_intelligence := float(base_for_growth.get("intelligence", intelligence))
+		var intelligence_delta := intelligence - base_intelligence
+		# The trait amplifies only a positive bonus. A below-base value is a
+		# penalty and must pass through unchanged, just like multiplier penalties
+		# in _amplified_bonus_multiplier(). Clamping the delta to zero here would
+		# silently restore debuffed Intelligence to the class base (SCRUM-1019).
+		if intelligence_delta > 0.0:
+			magic_intelligence = base_intelligence + intelligence_delta * magic_bonus_effectiveness
+	var magic_base := 14.0 * magic_intelligence / 10.0
 	var universal_attack_stat := agility + energy * 0.18 + perception * 0.10 + endurance * 0.04
 	var dot_attribute_base := 4.0 + knowledge * 0.65 + dot_damage_flat
+	var range_perception := perception
+	var range_intelligence := intelligence
+	var range_endurance := endurance
+	var range_leadership := leadership
+	var radius_perception := perception
+	var radius_intelligence := intelligence
+	var radius_knowledge := knowledge
+	var radius_leadership := leadership
+	if bool(weapon_config.get("geometry_stat_growth_from_delta", false)) and not base_for_growth.is_empty():
+		range_perception = maxf(0.0, perception - float(base_for_growth.get("perception", 0.0)))
+		range_intelligence = maxf(0.0, intelligence - float(base_for_growth.get("intelligence", 0.0)))
+		range_endurance = maxf(0.0, endurance - float(base_for_growth.get("endurance", 0.0)))
+		range_leadership = maxf(0.0, leadership - float(base_for_growth.get("leadership", 0.0)))
+		radius_perception = maxf(0.0, perception - float(base_for_growth.get("perception", 0.0)))
+		radius_intelligence = maxf(0.0, intelligence - float(base_for_growth.get("intelligence", 0.0)))
+		radius_knowledge = maxf(0.0, knowledge - float(base_for_growth.get("knowledge", 0.0)))
+		radius_leadership = maxf(0.0, leadership - float(base_for_growth.get("leadership", 0.0)))
+	var range_intelligence_weight := float(weapon_config.get("attack_range_intelligence_weight", 0.35))
+	var aoe_intelligence_weight := float(weapon_config.get("aoe_radius_intelligence_weight", 0.45))
+	var attack_range_multiplier := range_multiplier
+	if bool(weapon_config.get("range_scales_with_aoe_radius", false)):
+		attack_range_multiplier *= aoe_radius_multiplier
 
 	return {
-		"damage": physical_base * weapon_damage_multiplier * damage_multiplier + universal_damage_flat,
-		"magic_damage": magic_base * weapon_damage_multiplier * damage_multiplier + universal_damage_flat,
-		"sound_wave_damage": sound_base * weapon_damage_multiplier * damage_multiplier + universal_damage_flat,
+		"damage": (physical_base * weapon_damage_multiplier * damage_multiplier + universal_damage_flat) * sandbox_damage_multiplier,
+		"magic_damage": (magic_base * weapon_damage_multiplier * damage_multiplier * magic_damage_multiplier + universal_damage_flat) * sandbox_damage_multiplier,
 		"attack_speed": max(0.1, (9.0 * 3.0 * universal_attack_stat / 100.0) * attack_speed_multiplier),
-		"crit_chance": effective_crit_chance(0.04 + agility * 0.0075 + crit_chance_flat),
+		"crit_chance": effective_crit_chance(crit_chance_raw, float(crit_profile.get("cap", CRIT_CHANCE_CAP)), float(crit_profile.get("diminish", CRIT_CHANCE_DIMINISH))),
 		"crit_damage_multiplier": effective_crit_damage_multiplier(agility, crit_damage_flat),
 		"move_speed": (282.0 + agility * 6.2) * move_speed_multiplier,
-		"dodge": effective_dodge(0.02 + agility * 0.010 + float(run_modifiers.get("dodge_flat", 0.0))),
+		"dodge": effective_dodge(0.02 + agility * 0.010 + float(run_modifiers.get("dodge_flat", 0.0)) + clampf(float(run_modifiers.get("flurry_tempo_dodge_bonus", 0.0)), 0.0, 0.20) * flurry_tempo_active),
 		"defense": effective_defense(0.04 + endurance * 0.018 + defense_flat),
 		"health_point": (50.0 * endurance / 4.0 + max_health_flat) * max_health_multiplier,
-		"attack_range": (float(weapon_config.get("attack_range", 240.0)) + perception * 2.5 + intelligence * 0.35 + endurance * 0.25 + leadership * 0.35) * range_multiplier,
-		"aoe_radius": (float(weapon_config.get("aoe_radius", 190.0)) + perception * 3.5 + intelligence * 0.45 + knowledge * 0.35 + leadership * 0.30) * aoe_radius_multiplier,
-		"pickup_radius": 105.0 + perception * 7.0 + pickup_radius_flat,
-		"dot_damage": max(1.0, dot_attribute_base * damage_multiplier),
+		"attack_range": (float(weapon_config.get("attack_range", 240.0)) + range_perception * 2.5 + range_intelligence * range_intelligence_weight + range_endurance * 0.25 + range_leadership * 0.35) * attack_range_multiplier,
+		"aoe_radius": (float(weapon_config.get("aoe_radius", 190.0)) + radius_perception * 3.5 + radius_intelligence * aoe_intelligence_weight + radius_knowledge * 0.35 + radius_leadership * 0.30) * aoe_radius_multiplier,
+		# SCRUM-897 «Воровская хватка»: стартовая часть радиуса подбора усилена
+		# trait-множителем (у Вора ×1.85); flat-добавки — поверх без усиления.
+		"pickup_radius": (105.0 + perception * 7.0) * _pickup_radius_trait_multiplier(character_id) + pickup_radius_flat,
+		"dot_damage": max(1.0, dot_attribute_base * damage_multiplier) * sandbox_damage_multiplier,
 		"dot_speed": max(0.45, 0.65 + knowledge * 0.08 + energy * 0.015 + agility * 0.010 + dot_speed_flat),
 		"projectile_speed": float(weapon_config.get("projectile_speed", 460.0)) + perception * 18.0 + agility * 9.0 + energy * 4.0 + knowledge * 2.0 + projectile_speed_flat,
 		"aura_radius": (float(weapon_config.get("aoe_radius", 180.0)) + leadership * 5.0 + perception * 0.80 + energy * 0.65 + knowledge * 0.45 + aura_radius_flat) * aoe_radius_multiplier,
@@ -1146,28 +2221,42 @@ static func derived_parameters(stats: Dictionary, run_modifiers: Dictionary, wea
 		"leadership": leadership,
 		# Подключение полного набора атрибутов (аудит 2026-06-11):
 		"absorb": effective_absorb(endurance, absorb_flat),
-		"regeneration": effective_regeneration(knowledge, regeneration_flat),
+		# SCRUM-900 «Клятва чумного доктора»: при generic_sustain_blocked базовый
+		# пассивный реген (константа 0.16 + скейл knowledge) отрезан — остаётся
+		# только вклад явно применённых flat'ов (их пускает лишь doctor_friendly
+		# гейт Player._apply_reward_mods), с тем же knowledge-скейлом формулы.
+		"regeneration": _class_gated_regeneration(character_id, knowledge, regeneration_flat),
 		"vampiric_chance": effective_vampiric_chance(float(run_modifiers.get("vampiric_chance_flat", 0.0))),
 		"vampiric_amount": float(run_modifiers.get("vampiric_amount_flat", 0.0)) * VAMPIRIC_BASE_HEAL_MULTIPLIER,
 		"knockback_distance": (float(weapon_config.get("knockback", 60.0)) + endurance * 4.0 + leadership * 3.0) * knockback_multiplier * endurance / 20.0,
 		"range_multiplier": range_multiplier,
+		"sector_multiplier": sector_multiplier,
 		# Усиливает классовую ульту: урон, радиус, длительность или число целей.
 		"ultimate_multiplier": 1.0 + energy * 0.02 + (strength + agility + intelligence + perception + knowledge + endurance + leadership) * 0.002 + float(run_modifiers.get("ultimate_flat", 0.0)),
 	}
 
 
-static func reward_pool(character_id := "") -> Array:
+static func reward_pool(character_id := "", ascension_level := 0, cross_class_ids: Array = []) -> Array:
 	var rewards := []
 	for reward in STAT_REWARDS:
-		if character_id != "" and not is_reward_relevant(reward, character_id):
+		if character_id != "" and not is_reward_relevant(reward, character_id, ascension_level, cross_class_ids):
 			continue
 		var stat_reward: Dictionary = reward.duplicate(true)
 		stat_reward["kind"] = "stat"
 		rewards.append(stat_reward)
 	for artifact in ARTIFACTS:
-		var artifact_reward: Dictionary = artifact.duplicate(true)
+		if character_id != "" and not is_reward_relevant(artifact, character_id, ascension_level, cross_class_ids):
+			continue
+		var artifact_reward: Dictionary
+		if bool(artifact.get("rarity_scaling", false)):
+			# SCRUM-960: семья — ролл тира по нормализованным TIER_WEIGHTS,
+			# в пул входит материализованный оффер с весом семьи (1.0).
+			artifact_reward = materialize_family_offer(artifact, roll_artifact_family_tier())
+			artifact_reward["weight"] = 1.0
+		else:
+			artifact_reward = artifact.duplicate(true)
+			artifact_reward["weight"] = TIER_WEIGHTS.get(int(artifact.get("tier", 1)), 1.0)
 		artifact_reward["kind"] = "artifact"
-		artifact_reward["weight"] = TIER_WEIGHTS.get(int(artifact.get("tier", 1)), 1.0)
 		rewards.append(artifact_reward)
 	return rewards
 
@@ -1239,32 +2328,62 @@ static func unique_encounter_patterns() -> Dictionary:
 	return UNIQUE_ENCOUNTER_PATTERNS.duplicate(true)
 
 
-static func shop_items(route_stage := 0) -> Array:
+static func shop_items(route_stage := 0, character_id := "", ascension_level := 0, cross_class_ids: Array = []) -> Array:
 	var items := []
 	for item in SHOP_ITEMS:
+		if character_id != "" and not is_reward_relevant(item, character_id, ascension_level, cross_class_ids):
+			continue
 		var shop_item: Dictionary = item.duplicate(true)
 		shop_item["cost"] = stage_scaled_cost(int(shop_item.get("cost", 0)), route_stage)
 		items.append(shop_item)
 	for artifact in ARTIFACTS:
-		var shop_artifact: Dictionary = artifact.duplicate(true)
+		if character_id != "" and not is_reward_relevant(artifact, character_id, ascension_level, cross_class_ids):
+			continue
+		var shop_artifact: Dictionary
+		if bool(artifact.get("rarity_scaling", false)):
+			# SCRUM-960: семья — ролл тира (нормализованные TIER_WEIGHTS), цена
+			# материализованного тира затем масштабируется глубиной как обычно.
+			shop_artifact = materialize_family_offer(artifact, roll_artifact_family_tier())
+			shop_artifact["weight"] = 1.0
+		else:
+			shop_artifact = artifact.duplicate(true)
+			shop_artifact["weight"] = TIER_WEIGHTS.get(int(shop_artifact.get("tier", 1)), 1.0)
 		shop_artifact["cost"] = stage_scaled_cost(int(shop_artifact.get("cost", COST_BY_TIER.get(int(shop_artifact.get("tier", 1)), 30))), route_stage)
 		shop_artifact["kind"] = "artifact"
-		shop_artifact["weight"] = TIER_WEIGHTS.get(int(shop_artifact.get("tier", 1)), 1.0)
 		items.append(shop_artifact)
 	return items
 
 
-static func elite_artifact_choices(route_stage: int, count := 3) -> Array:
+static func _elite_tier_depth_weight(tier: int, route_stage: int, scale: float) -> float:
+	# Существующая depth-формула элиток/сундуков: глубже по маршруту — чаще т2/т3.
+	if tier == 2:
+		return 0.75 + scale * 0.25
+	elif tier == 3:
+		return 0.22 + maxf(float(route_stage) - 2.0, 0.0) * 0.18
+	return 1.0
+
+
+static func elite_artifact_choices(route_stage: int, count := 3, character_id := "", ascension_level := 0, cross_class_ids: Array = []) -> Array:
 	var pool := []
 	var scale := stage_scale(route_stage)
 	for artifact in ARTIFACTS:
-		var candidate: Dictionary = artifact.duplicate(true)
+		if character_id != "" and not is_reward_relevant(artifact, character_id, ascension_level, cross_class_ids):
+			continue
+		var candidate: Dictionary
+		if bool(artifact.get("rarity_scaling", false)):
+			# SCRUM-960: семья — тир роллится по TIER_WEIGHTS × depth_weight
+			# (существующая формула глубины), вес семьи в пуле = 1.0.
+			var depth_weights := {}
+			for tier_key in TIER_WEIGHTS:
+				depth_weights[tier_key] = float(TIER_WEIGHTS[tier_key]) * _elite_tier_depth_weight(int(tier_key), route_stage, scale)
+			candidate = materialize_family_offer(artifact, roll_artifact_family_tier(depth_weights))
+			candidate["kind"] = "artifact"
+			candidate["weight"] = 1.0
+			pool.append(candidate)
+			continue
+		candidate = artifact.duplicate(true)
 		var tier := int(candidate.get("tier", 1))
-		var depth_weight := 1.0
-		if tier == 2:
-			depth_weight = 0.75 + scale * 0.25
-		elif tier == 3:
-			depth_weight = 0.22 + maxf(float(route_stage) - 2.0, 0.0) * 0.18
+		var depth_weight := _elite_tier_depth_weight(tier, route_stage, scale)
 		candidate["kind"] = "artifact"
 		candidate["weight"] = maxf(TIER_WEIGHTS.get(tier, 1.0) * depth_weight, 0.05)
 		pool.append(candidate)
@@ -1286,6 +2405,37 @@ static func elite_artifact_choices(route_stage: int, count := 3) -> Array:
 	return choices
 
 
+static func boss_completion_artifact_rewards(character_id := "", ascension_level := 0, cross_class_ids: Array = []) -> Array:
+	var rewards := []
+	for artifact in ARTIFACTS:
+		var is_family := bool(artifact.get("rarity_scaling", false))
+		# SCRUM-960: семьи попадают в boss-пул ФИКСИРОВАННО тиром 3 (эпический);
+		# плоские записи — как раньше, только tier >= 3.
+		if not is_family and int(artifact.get("tier", 1)) < 3:
+			continue
+		if character_id != "" and not is_reward_relevant(artifact, character_id, ascension_level, cross_class_ids):
+			continue
+		var reward: Dictionary = materialize_family_offer(artifact, 3) if is_family else artifact.duplicate(true)
+		reward["kind"] = "artifact"
+		rewards.append(reward)
+	return rewards
+
+
+static func boss_completion_artifact_choices(count := 3, character_id := "", ascension_level := 0, cross_class_ids: Array = []) -> Array:
+	# SCRUM-873: награда за акт-босса — выбор 1 из `count` СУПЕРРЕДКИХ артефактов.
+	# «Суперредкие» = верхний тир пула (tier >= 3, boss-only оффер); внутри тира
+	# выборка равновероятная и БЕЗ дублей. Пул уже отфильтрован по релевантности
+	# классу в boss_completion_artifact_rewards; нейтральные артефакты добивают
+	# набор до count естественно (они проходят is_reward_relevant для всех).
+	var pool := boss_completion_artifact_rewards(character_id, ascension_level, cross_class_ids)
+	var choices := []
+	while choices.size() < count and not pool.is_empty():
+		var index := randi_range(0, pool.size() - 1)
+		choices.append(pool[index])
+		pool.remove_at(index)
+	return choices
+
+
 static func display_stats(stats: Dictionary) -> String:
 	var parts := []
 	for stat_id in STAT_NAMES.keys():
@@ -1294,10 +2444,9 @@ static func display_stats(stats: Dictionary) -> String:
 
 
 static func display_derived_parameters(parameters: Dictionary) -> String:
-	return "Урон %.1f | Магия %.1f | Звук %.1f | Атаки %.2f | Крит %.0f%% | Защита %.0f%% | Дальность %.0f | Область %.0f | Подбор %.0f" % [
+	return "Урон %.1f | Магия %.1f | Атаки %.2f | Крит %.0f%% | Защита %.0f%% | Дальность %.0f | Область %.0f | Подбор %.0f" % [
 		float(parameters.get("damage", 0.0)),
 		float(parameters.get("magic_damage", 0.0)),
-		float(parameters.get("sound_wave_damage", 0.0)),
 		float(parameters.get("attack_speed", 0.0)),
 		float(parameters.get("crit_chance", 0.0)) * 100.0,
 		float(parameters.get("defense", 0.0)) * 100.0,

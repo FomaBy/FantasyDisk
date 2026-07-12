@@ -1,0 +1,43 @@
+{
+  "schema": "fantasydisk.content_zones.v1",
+  "canvas": {"width": 688, "height": 384},
+  "defaults": {
+    "font": "/System/Library/Fonts/Supplemental/Arial Unicode.ttf",
+    "color": "#F2D58A",
+    "stroke_fill": "#120A08",
+    "stroke_width": 1,
+    "line_spacing": 1.04,
+    "align": "left",
+    "valign": "middle"
+  },
+  "content": {
+    "tab": "СОЗВЕЗДИЕ",
+    "class_progress": "БЕРСЕРК · 5/6",
+    "weapon_paths": "МЕЧ            ТОПОР          МОЛОТ",
+    "kind": "УНИКАЛЬНЫЙ ФИНАЛ",
+    "title": "ПРИГОВОР ВЕЛИКАНА",
+    "weapon": "Меч · только это оружие",
+    "effect": "3 попадания по одной цели заряжают казнь ниже 35% HP.",
+    "result": "БОСС: вместо казни до +24% урона.\nФИНАЛ: минимум +20% к силе узла 5.",
+    "progress": "5/6 → 6/6",
+    "price": "1 эмблема",
+    "status": "ГОТОВО К ОТКРЫТИЮ",
+    "buy": "ОТКРЫТЬ ФИНАЛ",
+    "reset": "СБРОС УМЕНИЙ"
+  },
+  "zones": [
+    {"id": "tab", "content_key": "tab", "x": 34, "y": 19, "w": 112, "h": 18, "max_font": 12, "min_font": 8},
+    {"id": "class_progress", "content_key": "class_progress", "x": 154, "y": 19, "w": 122, "h": 18, "max_font": 12, "min_font": 8},
+    {"id": "weapon_paths", "content_key": "weapon_paths", "x": 132, "y": 70, "w": 336, "h": 18, "max_font": 12, "min_font": 8, "align": "center"},
+    {"id": "kind", "content_key": "kind", "x": 510, "y": 69, "w": 143, "h": 12, "max_font": 9, "min_font": 7, "color": "#83C8FF"},
+    {"id": "title", "content_key": "title", "x": 510, "y": 84, "w": 143, "h": 16, "max_font": 12, "min_font": 8, "color": "#FFE29A"},
+    {"id": "weapon", "content_key": "weapon", "x": 510, "y": 104, "w": 143, "h": 14, "max_font": 9, "min_font": 7, "color": "#D8D3C4"},
+    {"id": "effect", "content_key": "effect", "x": 510, "y": 136, "w": 136, "h": 48, "max_font": 9, "min_font": 7, "valign": "top", "color": "#F3E7C6"},
+    {"id": "result", "content_key": "result", "x": 510, "y": 198, "w": 136, "h": 48, "max_font": 10, "min_font": 7, "valign": "top", "color": "#B8DAFF"},
+    {"id": "progress", "content_key": "progress", "x": 510, "y": 260, "w": 65, "h": 16, "max_font": 10, "min_font": 7, "align": "center"},
+    {"id": "price", "content_key": "price", "x": 585, "y": 260, "w": 67, "h": 16, "max_font": 10, "min_font": 7, "align": "center"},
+    {"id": "status", "content_key": "status", "x": 510, "y": 281, "w": 143, "h": 14, "max_font": 9, "min_font": 7, "align": "center", "color": "#83C8FF"},
+    {"id": "buy", "content_key": "buy", "x": 510, "y": 300, "w": 143, "h": 16, "max_font": 9, "min_font": 7, "align": "center", "color": "#FFF1C5"},
+    {"id": "reset", "content_key": "reset", "x": 34, "y": 346, "w": 168, "h": 20, "max_font": 11, "min_font": 8, "align": "center"}
+  ]
+}

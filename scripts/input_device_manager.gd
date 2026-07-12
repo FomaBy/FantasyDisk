@@ -141,12 +141,20 @@ func set_input_mode(mode: String) -> void:
 
 func set_gamepad_bindings(bindings: Dictionary) -> void:
 	# Кастомные бинды из настроек (SCRUM-816); формат — как DEFAULT_GAMEPAD_BINDINGS.
-	_gamepad_bindings = bindings if bindings is Dictionary else {}
+	# SCRUM-846: старые/битые settings.cfg могли хранить пустой бинд вроде
+	# {"ui_accept": {"buttons": [], "axes": []}}. Такой бинд не должен стирать A/стик.
+	var previous_actions := _gamepad_bindings.keys()
+	_gamepad_bindings = _sanitize_gamepad_bindings(bindings)
+	for action_name in previous_actions:
+		if not _gamepad_bindings.has(action_name):
+			_erase_joypad_events(str(action_name))
 	ensure_joypad_bindings()
 
 
 func reset_gamepad_bindings_to_defaults() -> void:
 	_gamepad_bindings = {}
+	for action_name in UI_ACTION_BINDINGS:
+		_erase_joypad_events(action_name)
 	for action_name in DEFAULT_GAMEPAD_BINDINGS:
 		_erase_joypad_events(action_name)
 	ensure_joypad_bindings()
@@ -205,7 +213,7 @@ func _load_from_settings() -> void:
 	if not [MODE_AUTO, MODE_KEYBOARD, MODE_GAMEPAD].has(_input_mode):
 		_input_mode = MODE_AUTO
 	var bindings: Variant = settings.get("gamepad_bindings", {})
-	_gamepad_bindings = bindings if bindings is Dictionary else {}
+	_gamepad_bindings = _sanitize_gamepad_bindings(bindings)
 
 
 func _wanted_bindings() -> Dictionary:
@@ -217,8 +225,61 @@ func _wanted_bindings() -> Dictionary:
 	for action_name in _gamepad_bindings:
 		var custom: Variant = _gamepad_bindings[action_name]
 		if custom is Dictionary:
-			wanted[action_name] = custom
+			var normalized := _normalize_gamepad_binding(custom)
+			if _binding_has_input(normalized):
+				wanted[action_name] = normalized
 	return wanted
+
+
+func _sanitize_gamepad_bindings(bindings: Variant) -> Dictionary:
+	var sanitized := {}
+	if not (bindings is Dictionary):
+		return sanitized
+	for action_name in bindings:
+		var action_key := str(action_name)
+		if not DEFAULT_GAMEPAD_BINDINGS.has(action_key):
+			continue
+		var custom: Variant = bindings[action_name]
+		if not (custom is Dictionary):
+			continue
+		var normalized := _normalize_gamepad_binding(custom)
+		if _binding_has_input(normalized):
+			sanitized[action_key] = normalized
+	return sanitized
+
+
+func _normalize_gamepad_binding(binding: Dictionary) -> Dictionary:
+	var normalized := {"buttons": [], "axes": []}
+	var buttons: Variant = binding.get("buttons", [])
+	if buttons is Array:
+		for button_index in buttons:
+			if _variant_is_number(button_index):
+				normalized["buttons"].append(int(button_index))
+	var axes: Variant = binding.get("axes", [])
+	if axes is Array:
+		for axis_binding in axes:
+			if not (axis_binding is Dictionary):
+				continue
+			var axis: Variant = axis_binding.get("axis", null)
+			var value: Variant = axis_binding.get("value", null)
+			if not _variant_is_number(axis) or not _variant_is_number(value):
+				continue
+			if is_zero_approx(float(value)):
+				continue
+			normalized["axes"].append({"axis": int(axis), "value": float(value)})
+	return normalized
+
+
+func _binding_has_input(binding: Dictionary) -> bool:
+	var buttons: Variant = binding.get("buttons", [])
+	var axes: Variant = binding.get("axes", [])
+	return (buttons is Array and not buttons.is_empty()) \
+		or (axes is Array and not axes.is_empty())
+
+
+func _variant_is_number(value: Variant) -> bool:
+	var value_type := typeof(value)
+	return value_type == TYPE_INT or value_type == TYPE_FLOAT
 
 
 func _set_raw_kind(kind: String) -> void:

@@ -1,0 +1,93 @@
+{
+  "ok": true,
+  "zones": [
+    {
+      "id": "economy",
+      "rect": [
+        22,
+        22,
+        255,
+        70
+      ],
+      "ok": true,
+      "kind": "guide"
+    },
+    {
+      "id": "combat_hud",
+      "rect": [
+        322,
+        22,
+        255,
+        70
+      ],
+      "ok": true,
+      "kind": "guide"
+    },
+    {
+      "id": "event",
+      "rect": [
+        22,
+        133,
+        255,
+        70
+      ],
+      "ok": true,
+      "kind": "guide"
+    },
+    {
+      "id": "confirmation",
+      "rect": [
+        322,
+        133,
+        255,
+        70
+      ],
+      "ok": true,
+      "kind": "guide"
+    },
+    {
+      "id": "feedback",
+      "rect": [
+        22,
+        243,
+        243,
+        70
+      ],
+      "ok": true,
+      "kind": "guide"
+    },
+    {
+      "id": "patch_notes",
+      "rect": [
+        322,
+        243,
+        255,
+        70
+      ],
+      "ok": true,
+      "kind": "guide"
+    },
+    {
+      "id": "start_boon",
+      "rect": [
+        22,
+        354,
+        255,
+        70
+      ],
+      "ok": true,
+      "kind": "guide"
+    },
+    {
+      "id": "victory",
+      "rect": [
+        322,
+        354,
+        255,
+        70
+      ],
+      "ok": true,
+      "kind": "guide"
+    }
+  ]
+}

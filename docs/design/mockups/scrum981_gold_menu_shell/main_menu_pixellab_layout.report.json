@@ -1,0 +1,93 @@
+{
+  "ok": true,
+  "zones": [
+    {
+      "id": "frame_safe_area",
+      "rect": [
+        71,
+        60,
+        546,
+        264
+      ],
+      "ok": true,
+      "kind": "guide"
+    },
+    {
+      "id": "logo_zone",
+      "rect": [
+        81,
+        68,
+        222,
+        60
+      ],
+      "ok": true,
+      "kind": "guide"
+    },
+    {
+      "id": "action_1",
+      "rect": [
+        81,
+        137,
+        136,
+        37
+      ],
+      "ok": true,
+      "kind": "guide"
+    },
+    {
+      "id": "action_2",
+      "rect": [
+        223,
+        137,
+        136,
+        37
+      ],
+      "ok": true,
+      "kind": "guide"
+    },
+    {
+      "id": "action_3",
+      "rect": [
+        81,
+        181,
+        136,
+        37
+      ],
+      "ok": true,
+      "kind": "guide"
+    },
+    {
+      "id": "action_4",
+      "rect": [
+        223,
+        181,
+        136,
+        37
+      ],
+      "ok": true,
+      "kind": "guide"
+    },
+    {
+      "id": "action_5",
+      "rect": [
+        81,
+        224,
+        136,
+        37
+      ],
+      "ok": true,
+      "kind": "guide"
+    },
+    {
+      "id": "action_6",
+      "rect": [
+        223,
+        224,
+        136,
+        37
+      ],
+      "ok": true,
+      "kind": "guide"
+    }
+  ]
+}

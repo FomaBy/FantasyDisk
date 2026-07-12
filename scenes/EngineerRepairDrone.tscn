@@ -7,17 +7,23 @@
 z_index = 8
 script = ExtResource("1_class_weapon")
 weapon_id = "engineer_repair_drone"
-display_name = "Ремонтный Дрон"
-attack_mode = "engineer_repair_drone"
+display_name = "Орбитальный Дрон"
+attack_mode = "engineer_orbit_drone"
 damage_parameter = "damage"
-fire_interval = 1.08
+fire_interval = 1.2
 damage = 12.0
 attack_range = 540.0
-aoe_radius = 260.0
-beam_width = 30.0
-projectile_count = 4
-damage_falloff = 0.68
-heal_percent_of_damage = 0.045
+aoe_radius = 150.0
+max_summons = 1
+max_summons_cap = 6
+drone_orbit_radius = 78.0
+drone_orbit_speed = 3.6
+drone_contact_radius = 44.0
+drone_hit_cooldown = 0.85
+drone_count_threshold = 12.0
+drone_count_step = 4.0
+summon_role = "orbit_drone"
+summon_role_damage_multiplier = 1.1
 visual_color = Color(0.48, 0.9, 1, 0.4)
 
 [node name="WeaponVisual" type="Sprite2D" parent="."]

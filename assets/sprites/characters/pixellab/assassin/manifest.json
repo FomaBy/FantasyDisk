@@ -12,10 +12,7 @@
     252,
     252
   ],
-  "runtime_canvas": [
-    512,
-    512
-  ],
+  "runtime_canvas": "512x512",
   "runtime_normalization": "alpha bbox crop from PixelLab source, nearest-neighbor scale to 245 px visible height, centered X, bottom-aligned with 32 px bottom padding",
   "runtime_visible_height_target": 245,
   "runtime_bottom_padding": 32,
@@ -63,12 +60,110 @@
     }
   ],
   "source_files": {
-    "idle": "assets/sprites/characters/pixellab/assassin/assassin_idle_<direction>.png",
-    "move": "assets/sprites/characters/pixellab/assassin/assassin_move_<direction>_<00-05>.png"
+    "idle": {
+      "south": "assassin_idle_south.png",
+      "south-east": "assassin_idle_south-east.png",
+      "east": "assassin_idle_east.png",
+      "north-east": "assassin_idle_north-east.png",
+      "north": "assassin_idle_north.png",
+      "north-west": "assassin_idle_north-west.png",
+      "west": "assassin_idle_west.png",
+      "south-west": "assassin_idle_south-west.png"
+    },
+    "move": {
+      "south": [
+        "assassin_move_south_00.png",
+        "assassin_move_south_01.png",
+        "assassin_move_south_02.png",
+        "assassin_move_south_03.png",
+        "assassin_move_south_04.png",
+        "assassin_move_south_05.png"
+      ],
+      "south-east": [
+        "assassin_move_south-east_00.png",
+        "assassin_move_south-east_01.png",
+        "assassin_move_south-east_02.png",
+        "assassin_move_south-east_03.png",
+        "assassin_move_south-east_04.png",
+        "assassin_move_south-east_05.png"
+      ],
+      "east": [
+        "assassin_move_east_00.png",
+        "assassin_move_east_01.png",
+        "assassin_move_east_02.png",
+        "assassin_move_east_03.png",
+        "assassin_move_east_04.png",
+        "assassin_move_east_05.png"
+      ],
+      "north-east": [
+        "assassin_move_north-east_00.png",
+        "assassin_move_north-east_01.png",
+        "assassin_move_north-east_02.png",
+        "assassin_move_north-east_03.png",
+        "assassin_move_north-east_04.png",
+        "assassin_move_north-east_05.png"
+      ],
+      "north": [
+        "assassin_move_north_00.png",
+        "assassin_move_north_01.png",
+        "assassin_move_north_02.png",
+        "assassin_move_north_03.png",
+        "assassin_move_north_04.png",
+        "assassin_move_north_05.png"
+      ],
+      "north-west": [
+        "assassin_move_north-west_00.png",
+        "assassin_move_north-west_01.png",
+        "assassin_move_north-west_02.png",
+        "assassin_move_north-west_03.png",
+        "assassin_move_north-west_04.png",
+        "assassin_move_north-west_05.png"
+      ],
+      "west": [
+        "assassin_move_west_00.png",
+        "assassin_move_west_01.png",
+        "assassin_move_west_02.png",
+        "assassin_move_west_03.png",
+        "assassin_move_west_04.png",
+        "assassin_move_west_05.png"
+      ],
+      "south-west": [
+        "assassin_move_south-west_00.png",
+        "assassin_move_south-west_01.png",
+        "assassin_move_south-west_02.png",
+        "assassin_move_south-west_03.png",
+        "assassin_move_south-west_04.png",
+        "assassin_move_south-west_05.png"
+      ]
+    }
   },
-  "runtime_dir": "assets/sprites/characters/full_frame/assassin_pixellab/",
+  "runtime_dir": "assets/sprites/characters/full_frame/assassin_pixellab",
   "spriteframes": "assets/sprites/characters/assassin_spriteframes.tres",
   "qa_report": "docs/design/previews/scrum803_assassin_pixellab_bbox_report.json",
   "preview_contact_sheet": "docs/design/previews/scrum803_assassin_pixellab_contact.png",
-  "notes": "Accepted source has empty open hands; chakrams, shadow daggers, venom wire and other combat visuals remain weapon-owned assets."
+  "notes": "Accepted source has empty open hands; chakrams, shadow daggers, venom wire and other combat visuals remain weapon-owned assets.",
+  "scrum869_refresh": {
+    "task": "SCRUM-869",
+    "refreshed_at": "2026-07-04T08:10:43+00:00",
+    "pixellab_download_export_date": "2026-07-04T08:10:43.282123",
+    "pixellab_export_version": "3.0",
+    "selected_animation_folders": {
+      "south": "animating-ed160325",
+      "south-east": "animating",
+      "east": "animating-ed160325",
+      "north-east": "animating-ed160325",
+      "north": "animating-ed160325",
+      "north-west": "animating-ed160325",
+      "west": "animating-ed160325",
+      "south-west": "animating"
+    },
+    "runtime_canvas": [
+      512,
+      512
+    ],
+    "runtime_visible_height_target": 245,
+    "runtime_bottom_padding": 32,
+    "source": "PixelLab MCP download endpoint",
+    "legacy_or_manual_fallback_used": false
+  }
 }

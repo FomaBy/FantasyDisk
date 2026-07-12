@@ -32,7 +32,9 @@ func _initialize() -> void:
 		_expect_runtime_frame_style(ui.call("_panel_style"), "panel", errors, unified_texture_margin)
 		_expect_runtime_frame_style(ui.call("_level_up_panel_style"), "level panel", errors, unified_texture_margin)
 		_expect_runtime_frame_style(ui.call("_character_card_style"), "card", errors, unified_texture_margin)
-		_expect_runtime_frame_style(ui.call("_hud_panel_style"), "HUD panel", errors, unified_texture_margin)
+		# SCRUM-876: ресурс-панель едина для боя и меню — SCRUM-806 v2 кластер;
+		# старый SCRUM-564 _hud_panel_style удалён вместе с карточным меню-худом,
+		# текстуру кластера гейтит runtime_smoke (HUD_RESOURCE_PANEL_TEXTURE_2K).
 		_expect_runtime_frame_style(ui.call("_hud_card_style"), "HUD card", errors, unified_texture_margin)
 		_expect_minimal_metal_frame_kit(ui, errors)
 		_expect_minimal_metal_button_kit(errors)

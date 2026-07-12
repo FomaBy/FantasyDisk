@@ -1,0 +1,93 @@
+{
+  "ok": true,
+  "ticket": "SCRUM-1033",
+  "errors": [],
+  "source_reuse": "accepted PixelLab art unchanged; content geometry/composites only",
+  "compact_contract_hashes": {
+    "ui_plan_1280x720.json": "bbbede9321fbd5f74e73e19c7e06a30622c6326a611c0f9c809d5baf45f4e562",
+    "layout_1280x720.json": "bc588b91d6bee3e61e6e3ddb75e72c671d454fab12f0dfd94935bbbfd269643b",
+    "layout_1280x720_scroll_bottom.json": "844880db8bc68add948adb3e22d647337e8ad4cca8811dfca8340507bf3b1241",
+    "render_1280x720.report.json": "78524120eb72f9324fd25af9c38504f9f27c57aa23bea17aaa1c81260d5cc8f7",
+    "render_1280x720_scroll_bottom.report.json": "5d5426c4abbd5a97ed7bf317a76888e3134a34bf0eac8e5e2b6de82102a53117"
+  },
+  "results": [
+    {
+      "canvas": [
+        2560,
+        1440
+      ],
+      "title_rect": [
+        352,
+        132,
+        392,
+        72
+      ],
+      "text_bbox": [
+        352,
+        144,
+        241,
+        49
+      ],
+      "font_size": 48,
+      "forbidden_bounds": {
+        "left_x": 339,
+        "right_x": 773,
+        "top_y": 125,
+        "bottom_y": 212
+      },
+      "actual_reserve": {
+        "left": 13,
+        "right": 29,
+        "top": 7,
+        "bottom": 8
+      },
+      "changed_title_pixels": 5759,
+      "changed_title_bbox": [
+        355,
+        143,
+        590,
+        192
+      ],
+      "forbidden_overlap_pixels": 0
+    },
+    {
+      "canvas": [
+        1920,
+        1080
+      ],
+      "title_rect": [
+        264,
+        99,
+        294,
+        54
+      ],
+      "text_bbox": [
+        264,
+        108,
+        180,
+        37
+      ],
+      "font_size": 36,
+      "forbidden_bounds": {
+        "left_x": 254,
+        "right_x": 580,
+        "top_y": 94,
+        "bottom_y": 159
+      },
+      "actual_reserve": {
+        "left": 10,
+        "right": 22,
+        "top": 5,
+        "bottom": 6
+      },
+      "changed_title_pixels": 3770,
+      "changed_title_bbox": [
+        266,
+        107,
+        442,
+        144
+      ],
+      "forbidden_overlap_pixels": 0
+    }
+  ]
+}

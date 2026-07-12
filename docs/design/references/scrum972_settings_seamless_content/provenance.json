@@ -1,0 +1,23 @@
+{
+  "jira": "SCRUM-972",
+  "provider": "PixelLab MCP",
+  "accepted": {
+    "ui_asset_id": "64eb22c0-35d0-41de-863c-e368c0e7da6f",
+    "name": "SCRUM-972 Settings seamless full-screen mockup v2",
+    "source": "pixellab_settings_seamless_source.png",
+    "sha256": "bc908b2e59d0f2bc7b4c8601a5d31eb18887819e741c32e4bbce1075c4b6ea2b",
+    "dimensions": "688x384",
+    "decision": "accepted",
+    "reason": "Border-only fullscreen overlay keeps the entire content field transparent and continuous; compositor fit and debug overlay pass all eight content zones without frame overlap."
+  },
+  "rejected": [
+    {
+      "ui_asset_id": "24273b01-5259-4f2a-9e3e-4139eb98d936",
+      "source": "pixellab_settings_seamless_rejected_v1.png",
+      "sha256": "2de51133cc761e5560b251770477a0029d753c8115e61b0e5a3120f2f987bc0c",
+      "decision": "rejected",
+      "reason": "Component sheet rather than a full-screen page mockup; contained baked SAVE text."
+    }
+  ],
+  "production_asset_policy": "Design evidence only. Runtime reuses the existing sanctum background, outer frame and native control kit; no generated PNG is shipped."
+}

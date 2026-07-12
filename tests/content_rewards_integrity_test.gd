@@ -139,6 +139,35 @@ func _check_artifacts(errors: Array, valid_stats: Dictionary) -> void:
 			_check_numeric_values(errors, a["mods"], "артефакт '%s'.mods" % aid)
 		if has_aff_mods:
 			_check_numeric_values(errors, a["affinity_mods"], "артефакт '%s'.affinity_mods" % aid)
+		# SCRUM-960: семья с роллом редкости — каждый тир 1..3 несёт валидный
+		# payload (description + числовые stats|mods с известными статами).
+		if bool(a.get("rarity_scaling", false)):
+			_check_family_tiers(errors, a, aid, valid_stats)
+
+
+# SCRUM-960: tiers-схема семьи (artifact_system_matrix §1.3).
+func _check_family_tiers(errors: Array, a: Dictionary, aid: String, valid_stats: Dictionary) -> void:
+	var tiers_raw = a.get("tiers", null)
+	if not (tiers_raw is Dictionary):
+		errors.append("семья '%s': отсутствует tiers" % aid)
+		return
+	var tiers: Dictionary = tiers_raw
+	for tier in VALID_TIERS:
+		if not tiers.has(tier):
+			errors.append("семья '%s': нет тира %d" % [aid, tier])
+			continue
+		var tier_data: Dictionary = tiers[tier] as Dictionary
+		if not _text_ok(str(tier_data.get("description", ""))):
+			errors.append("семья '%s' т%d: пустой description" % [aid, tier])
+		var t_stats: Dictionary = tier_data.get("stats", {}) as Dictionary
+		var t_mods: Dictionary = tier_data.get("mods", {}) as Dictionary
+		if t_stats.is_empty() and t_mods.is_empty():
+			errors.append("семья '%s' т%d: нет ни stats, ни mods" % [aid, tier])
+		for key in t_stats:
+			if not valid_stats.has(str(key)):
+				errors.append("семья '%s' т%d: stats неизвестный стат '%s'" % [aid, tier, str(key)])
+		_check_numeric_values(errors, t_stats, "семья '%s' т%d.stats" % [aid, tier])
+		_check_numeric_values(errors, t_mods, "семья '%s' т%d.mods" % [aid, tier])
 
 
 func _check_level_up_rewards(errors: Array) -> void:

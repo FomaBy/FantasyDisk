@@ -23,7 +23,7 @@ SOURCE_BACKUP_DIR = ROOT / "build" / "artifact_icon_final_redesign_sources"
 PREVIEW_PATH = ROOT / "assets" / "sprites" / "ui" / "icons" / "artifact_final_dark_fantasy_40px_preview.png"
 LEGACY_PREVIEW_PATH = ROOT / "assets" / "sprites" / "ui" / "icons" / "artifact_generated_concept_40px_preview.png"
 DARK_ARTIFACTS_PREVIEW_PATH = ROOT / "assets" / "sprites" / "ui" / "icons" / "artifact_dark_artifacts_40px_preview.png"
-PROGRESSION_DATA = ROOT / "scripts" / "progression_data.gd"
+PROGRESSION_DATA = ROOT / "scripts" / "progression_data_content.gd"
 
 SIZE = 256
 
@@ -41,7 +41,7 @@ ACCENTS = {
 
 def parse_artifacts() -> list[dict[str, object]]:
     text = PROGRESSION_DATA.read_text(encoding="utf-8")
-    block = text.split("const ARTIFACTS :=", 1)[1].split("const LEVEL_UP_REWARDS", 1)[0]
+    block = text.split("const ARTIFACTS := [", 1)[1].split("\n]", 1)[0]
     artifacts: list[dict[str, object]] = []
     for line in block.splitlines():
         if '"id":' not in line:

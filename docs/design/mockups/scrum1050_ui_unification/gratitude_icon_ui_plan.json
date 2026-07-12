@@ -1,0 +1,10 @@
+{
+  "canvas": {"width": 256, "height": 256},
+  "policy": {"min_gap": 8, "allow_overlap": false},
+  "content": {},
+  "elements": [
+    {"id": "icon_canvas", "kind": "decor", "x": 0, "y": 0, "w": 256, "h": 256, "collision": false},
+    {"id": "button_hit_rect", "kind": "button", "x": 24, "y": 24, "w": 208, "h": 208, "collision": false, "min_w": 64, "min_h": 64},
+    {"id": "icon_safe", "kind": "icon", "parent": "button_hit_rect", "x": 48, "y": 48, "w": 160, "h": 160, "content_zone": true, "collision": true, "min_w": 40, "min_h": 40}
+  ]
+}

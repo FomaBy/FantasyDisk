@@ -60,11 +60,19 @@ func _initialize() -> void:
 	_neutralize_mitigation(player)
 	var max_hp := float(player.get("max_health"))
 
-	# Доля лечения за один ward-тик (как class_weapon: heal_percent_on_attack × MULT).
+	# SCRUM-927/928: кит Священника больше НЕ лечит (heal_percent_on_attack убран
+	# из конфигов/сцен; сустейн класса — trait «Молитва боя»). Гейт продолжает
+	# сторожить КАППИРОВАННЫЙ pipeline heal-on-attack (heal_percent_capped →
+	# apply_drain_heal) на живом Player+weapon — инжектим долю в оружие вручную,
+	# как у любого будущего оружия с этим ключом.
 	var weapon: Node = player.get("equipped_weapon")
-	var per_attack := 0.012  # priest_censer heal_percent_on_attack
-	if weapon != null and weapon.get("heal_percent_on_attack") != null:
-		per_attack = float(weapon.get("heal_percent_on_attack"))
+	var per_attack := 0.012  # историческая доля censer до SCRUM-928
+	if weapon != null:
+		if float(weapon.get("heal_percent_on_attack")) > 0.0:
+			push_error("Priest sustain gate: у кадила снова появился встроенный heal_percent_on_attack — SCRUM-928 запрещает скрытый оружейный сустейн.")
+			quit(1)
+			return
+		weapon.set("heal_percent_on_attack", per_attack)
 	var heal_pct := per_attack * float(ProgressionData.WEAPON_DRAIN_HEAL_MULTIPLIER)
 
 	# === A. CAPPED: heal-on-attack не обходит per-second бюджет ===

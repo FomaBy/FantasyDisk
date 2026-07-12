@@ -1,6 +1,6 @@
 # Task Board — FantasyDisk (живой дашборд)
 
-Обновлено: 2026-07-02
+Обновлено: 2026-07-04
 Ведёт: PM/dispatcher как локальный dashboard/cache. С 2026-06-27 Jira проект
 `SCRUM` является authoritative task queue/status/owner source. Эта доска
 показывает активную работу, review/QA gates и важные recent rows только для
@@ -15,15 +15,41 @@ metadata: `Контур: Codex|Claude|OtherAI`, `Owner`, `Thread/Worker`, `Locke
 (задачи от пользователя/PM/dispatcher для AI-автоматики); остальные issues
 запускаются вручную явным поручением пользователя конкретному агенту.
 
-## Спринт 0.2.0 — активная разработка
+## Live Sprint 0.2.1 — активная разработка
 
 `Спринт 0.1.6` (id 100) закрыт в Jira 2026-06-27 (66/66 готово); `v0.1.6` влита в
-`main`. Активен **`Спринт 0.2.0`** (id 166, исходно был `Спринт 0.1.8`,
-переименован/перенацелен 2026-07-02 по прямой директиве пользователя). Jira version
-`0.2.0` — текущий target release для нового редизайна персонажей и связанных
-redesign-задач; `0.1.8` и `0.1.9` больше не используются как плановые версии.
-Задачи 0.2.0 создаются и берутся из Jira (проект SCRUM), доска — локальный кэш.
-Перед следующим релизом PM может включить freeze.
+`main`. На 2026-07-03 live active sprint: **`Спринт 0.2.1`** (id 199).
+Всегда проверять live Jira перед dispatch/claim. Jira version `0.2.1` — текущий
+target release; `0.1.8` и `0.1.9` больше не используются как плановые версии.
+По директиве пользователя 2026-07-03 все задачи, добавляемые в любые чаты, сразу
+заводятся в active Jira sprint с fixVersion активного sprint/release. Backlog
+используется только при явном freeze/hold marker. Доска — локальный кэш.
+
+**Sprint intake 2026-07-08 (user request):** создана и сразу взята в работу
+Codex/backend documentation задача на review-friendly таблицу всех playable
+characters/classes и их оружия с отличительными механиками. Jira: `SCRUM-878` в
+active sprint; owner `backend/codex-character-weapon-mechanics-review-table`;
+locked paths: `docs/design/reports/character_weapon_mechanics_review_table.md`,
+`docs/design/reports/character_weapon_mechanics_review_table.xlsx`,
+`docs/tasks/codex_backend_character_weapon_mechanics_review_table_task.md`,
+`docs/process/jira_sync_map.json`, `docs/process/task_board.md`. Runtime/gameplay
+files read-only.
+
+| Jira | Задача | Lane | Prio | Статус |
+| --- | --- | --- | --- | --- |
+| SCRUM-878 | [Character/Weapon Mechanics Review Table](../tasks/codex_backend_character_weapon_mechanics_review_table_task.md) | codex/backend | p1 | done; Excel follow-up QA PASSED; Jira `Готово` |
+
+**Sprint intake 2026-07-08 (user request):** создана и сразу взята в работу
+Codex/Animator задача на исправление читаемости атаки топором Берсерка: во время
+атаки должен быть виден actual two-handed axe weapon layer, а основной visible
+sweep должен примерно соответствовать live зоне `axe` — 180° / 250px без
+изменения damage geometry, cooldowns или баланса. Jira: `SCRUM-880`; owner
+`animator/codex-berserk-axe-attack-visual`; worktree
+`/Users/sergeyfomin/Documents/FantasyDisk_worktrees/scrum-berserk-axe-attack-visual`.
+
+| Jira | Задача | Lane | Prio | Статус |
+| --- | --- | --- | --- | --- |
+| SCRUM-880 | [Берсерк: топор в атаке и 180° sweep visual](../tasks/animation_berserk_axe_attack_visual_task.md) | codex/animator | p1 | done; QA PASSED; Jira `Готово` |
 
 **Backlog review 2026-06-30 (PM):** беклог вычищен. Закрыты как superseded (висели в
 «Контроль качества» с 12.06, новое UI-направление, работа в игре): SCRUM-111, SCRUM-118.
@@ -32,6 +58,19 @@ SCRUM-701/702 (Secret Ascension Boss handoffs), SCRUM-725 (редизайн Ко
 SCRUM-726 (Skill Tree FINAL) и пачка SCRUM-727…776 (50× attack-VFX redraw по оружиям) —
 всем проставлен label `foma`. В беклоге остались только эпики (212–221, 481, 522) и
 контейнер SCRUM-179 (Quality Pass). Спринт 0.2.0 = 122 задачи.
+
+**Пачка «Боссы: HUD-полоса, награда за акт, персист ульты» 2026-07-04 (PM, foma, lane=claude):**
+прямой запрос пользователя. (1) HUD-боссбар сверху экрана вместо плавающей полосы над
+боссом/элиткой; (2) награда за акт-босса = выбор 1 из 3 суперредких артефактов + отхил 60–80%
+HP при переходе в следующий акт; (3) накопленная шкала ультимейта не сбрасывается между
+раундами (переносить через `run_player_snapshot`). Анти-коллизия: SCRUM-873 и SCRUM-872 оба
+трогают `scripts/combat_director.gd`, SCRUM-874 и SCRUM-873 оба трогают `scripts/ui_screens.gd`
+— один исполнитель Claude за раз, не параллелить правку общих файлов. Спеки в docs/tasks/.
+| Jira | Задача | Lane | Prio | Статус |
+| --- | --- | --- | --- | --- |
+| SCRUM-874 | [HUD-боссбар босса/элитки сверху экрана](../tasks/ui_boss_elite_hud_health_bar_task.md) | claude/backend | p1 | done; ready_for_QA |
+| SCRUM-873 | [Награда за акт-босса: выбор 1 из 3 суперредких + отхил 70%](../tasks/ui_boss_act_reward_choice_heal_task.md) | claude/backend | p1 | done; ready_for_QA |
+| SCRUM-872 | [Ульта: не сбрасывать шкалу между раундами](../tasks/backend_ultimate_charge_persist_between_rounds_task.md) | claude/backend | p1 | done; ready_for_QA |
 
 **Пачка «Полная поддержка геймпада» 2026-07-02 (PM, foma, label=gamepad):** прямой
 запрос пользователя: играбельность на геймпаде целиком — все экраны/попапы навигируемы
@@ -66,6 +105,59 @@ QA-пройден (стартовая разведка читала старый
 вернуть только новым Jira issue, если ещё нужны): SCRUM-470 (выбор героя v4),
 SCRUM-474 (скелетная анимация, был USER HOLD), SCRUM-476 (ребаланс наград событий),
 SCRUM-480 (рантайм-интеграция минимал-UI).
+
+**Sprint intake 2026-07-03 (user request):** создана и перенесена в active sprint
+`Спринт 0.2.1` пара задач на следующий
+редизайн внутриигрового Кодекса в стиле Atlas/Settings v6: object-first,
+крупные изображения, краткая центральная область, подробная правая область и
+минимум рамок без смысловой нагрузки. Jira: `SCRUM-849`, `SCRUM-850` находятся
+в active sprint; брать только через claim-first и owner/locked-path проверку.
+
+| Jira | Задача | Lane | Prio |
+| --- | --- | --- | --- |
+| SCRUM-849 | [Кодекс: object-first дизайн-пакет с крупными изображениями](../tasks/design_codex_object_first_redesign_task.md) | codex/design (review; ready_for_integration) | p1 |
+| SCRUM-850 | [Кодекс: интегрировать object-first layout с крупными изображениями](../tasks/backend_codex_object_first_runtime_integration_task.md) | codex/backend (done; QA PASSED) | p1 |
+
+**Sprint intake 2026-07-04 (user request):** создана и сразу взята в работу
+backend/balance задача на усиление плотности/скейлинга монстров и растягивание
+XP-кривой забега. Jira: `SCRUM-853` в active sprint `Спринт 0.2.1`; execution
+lane `Codex`; owner `backend/codex-monster-xp-progression-orchestrator`; locked
+paths: `scripts/progression_data_balance.gd`, `scripts/progression_data_enemies.gd`,
+`scripts/combat_director.gd`, `scripts/player.gd`, focused balance/progression
+tests/harnesses and relevant docs.
+
+| Jira | Задача | Lane | Prio |
+| --- | --- | --- | --- |
+| SCRUM-853 | [Баланс: усилить плотность монстров и растянуть XP-кривую забега](../tasks/backend_monster_density_xp_progression_task.md) | codex/backend (done; ready_for_QA) | p1 |
+
+**Sprint intake 2026-07-04 (user request):** создана и сразу взята в работу
+Animator/Codex задача на полный PixelLab-first redraw всех live-боссов с
+movement/attack/death animations и задержкой перед victory/act transition после
+смерти босса. Jira: `SCRUM-865` в active sprint `Спринт 0.2.1`; owner
+`animator/codex-boss-pixellab-redraw-orchestrator`; locked paths:
+`assets/sprites/bosses/**`, boss full-frame assets, boss PixelLab references,
+boss animation docs/tests and focused runtime hooks.
+
+| Jira | Задача | Lane | Prio |
+| --- | --- | --- | --- |
+| SCRUM-865 | [Bosses: PixelLab full redraw and animated attack/death packs](../tasks/animation_boss_pixellab_full_redraw_task.md) | codex/animator (in_progress; PixelLab jobs) | p1 |
+
+**Sprint intake 2026-07-04 (user request):** создана волна полного
+class-rebalance/class-identity audit + implementation в active sprint
+`Спринт 0.2.1`. Цель: все 17 классов и 51 оружие должны отличаться gameplay,
+геометрией, cadence/setup-payoff, defensive/sustain utility и scaling hooks, а не
+только цифрами. `SCRUM-859` зависит от live overlapping scope `SCRUM-854`
+(AOE/zones/summons/Doctor sustain) и не должен стартовать runtime edits, пока
+locked paths не разведены.
+
+| Jira | Задача | Lane | Prio |
+| --- | --- | --- | --- |
+| SCRUM-856 | [Full Class Rebalance: Identity Audit And Trio Matrix](../tasks/backend_full_class_rebalance_identity_audit_task.md) | codex/backend | p0 |
+| SCRUM-857 | [Full Class Rebalance: Projectile, Chain, Pierce, And Delayed AoE Pass](../tasks/backend_full_class_rebalance_projectile_chain_pierce_task.md) | codex/backend | p1 |
+| SCRUM-858 | [Full Class Rebalance: Melee, Counter, Tank, And Risk-Reward Pass](../tasks/backend_full_class_rebalance_melee_counter_tank_task.md) | codex/backend | p1 |
+| SCRUM-859 | [Full Class Rebalance: Summon, Deploy, Turret, And Zone Ownership Pass](../tasks/backend_full_class_rebalance_summon_deploy_turret_task.md) | codex/backend | p1 |
+| SCRUM-860 | [Full Class Rebalance: Kill-Scaling, Sustain, And Attribute Growth Pass](../tasks/backend_full_class_rebalance_growth_sustain_task.md) | codex/backend | p1 |
+| SCRUM-861 | [QA Review: Full Class Rebalance And Class Identity](../tasks/qa_review_full_class_rebalance_identity_task.md) | codex/qa (blocked until backend wave ready) | p1 |
 
 Исторический контекст 0.1.5 оставлен только для сверки старых зависимостей:
 - СТАРТ: SCRUM-256 framework механик — done; SCRUM-260 монстры/размеры —
@@ -104,6 +196,10 @@ class_weapon). «done = чистый HEAD зелёный».
 
 | Задача | Роль | Статус | Примечание |
 | --- | --- | --- | --- |
+| [bug_scrum1036_live_resize_hud_track_overlap_task.md](../tasks/bug_scrum1036_live_resize_hud_track_overlap_task.md) | Back-end (UI runtime/tests, Codex) | done (QA PASSED) | Jira: SCRUM-1039 → Готово. Fresh/live/reverse actual track+bar geometry equal and pairwise disjoint; exact Route Map/UI/gamepad/full runtime green. |
+| [bug_scrum1040_main_menu_credits_inner_zone_task.md](../tasks/bug_scrum1040_main_menu_credits_inner_zone_task.md) | Back-end (UI runtime/tests, Codex) | done (QA PASSED) | Jira: SCRUM-1040 → Готово. Credits exact authored-inner hitbox passes 720p/1080p/1440p and bidirectional live resize; no peer overlap; Credits focus/Back/Escape and visual QA green. |
+| [bug_scrum981_gold_shell_menu_hud_inner_reserve_task.md](../tasks/bug_scrum981_gold_shell_menu_hud_inner_reserve_task.md) | Back-end (UI runtime/tests, Codex) | done (QA PASSED) | Jira: SCRUM-1036 → Готово after SCRUM-1039. Generic HUD children and exact uniform `72x72` FAB remain inside authored +24/+32 inner reserve across fresh/live matrix. |
+| [bug_scrum1041_audio_ui_tail_docs_stale_task.md](../tasks/bug_scrum1041_audio_ui_tail_docs_stale_task.md) | Back-end / Documentation (Codex) | new | Jira: SCRUM-1041. SCRUM-968 runtime/UI behavior passed independent QA, but `audio.md` and `current_game_state.md` still call the landed UI SFX/Credits tail deferred and link a deleted mirror. Docs-only blocker; runtime/tests/assets read-only. |
 | [SCRUM-798_hero_select_large_preview_attributes_carousel.md](../tasks/SCRUM-798_hero_select_large_preview_attributes_carousel.md) | Back-end (UI runtime, Codex) | new | Jira: SCRUM-798. Контур: Codex; Owner: unassigned; labels `foma`,`backend`,`codex`,`hero-select`,`p1`. Direct user redesign 2026-07-01: make Hero Select character preview 2-3x larger, place ascension + start under preview, put large right-side character dossier with Line Bars/tooltips and primary/secondary/additional attribute guidance, double bottom carousel portraits/arrows. Supersedes old SCRUM-688/796 PixelLab-framed acceptance as-is. Locked paths: `scripts/ui_screens.gd`, `scripts/ui/hero_select_constants.gd`, focused Hero Select tests/UI smokes, `docs/design/current_game_state.md`, `docs/design/systems/menus_ui.md`, `build/qa/scrum798/`. |
 | [codex_design_character_redraw_pixellab_berserk_240_250_task.md](../tasks/codex_design_character_redraw_pixellab_berserk_240_250_task.md) | Design main (Codex) → Animator (Codex) | done | Jira: SCRUM-703 → Контроль качества. Контур: Codex; Owner: Codex Design main + Animator; Thread/Worker: `codex-scrum-703-berserk-240`; Branch/worktree: `codex/scrum-703-berserk-pixellab-240` at `/Users/sergeyfomin/Documents/FantasyDisk_worktrees/scrum-703-berserk-240`; Result: new PixelLab v3 unarmed Berserk `8486ce45-f749-4c63-9a6d-f0477d619c2d`, 8-dir idle + 8-dir move/walk, all runtime bboxes `245 px` high, focused smokes PASS, old pack backed up. |
 | [codex_design_character_redraw_pixellab_dark_mage_240_250_task.md](../tasks/codex_design_character_redraw_pixellab_dark_mage_240_250_task.md) | Design main (Codex) → Animator (Codex) | new | Jira: SCRUM-704. Контур: Codex; Owner: unassigned; Locked paths: `assets/sprites/characters/pixellab/dark_mage/`, `assets/sprites/characters/full_frame/dark_mage_pixellab/`, `assets/sprites/characters/dark_mage_spriteframes.tres`, character registry/docs. Full PixelLab redraw copied from Biologist/Chemist pipeline with strict visible alpha bbox target `240-250 x 240-250 px`; no baked book/skull/wand. |
@@ -341,6 +437,7 @@ class_weapon). «done = чистый HEAD зелёный».
 | [bug_runtime_smoke_hero_select_v4_backbutton_name_task.md](../tasks/bug_runtime_smoke_hero_select_v4_backbutton_name_task.md) | Back-end (UI) | done | Jira: SCRUM-479. Closed in Jira by PM cleanup directive 2026-06-27 after follow-up commit `d59f80a9` and recorded runtime smoke rerun. |
 | [bug_scrum514_item_icon_skill_task.md](../tasks/bug_scrum514_item_icon_skill_task.md) | Design main / Codex | new | Jira: SCRUM-543. **QA: failed** (2026-06-27) на приёмке SCRUM-514 (вернулась в «К выполнению»). (1) БЛОКЕР AC №1: нет local skill mirror `~/.codex/skills/fantasydisk-item-icon-generator/`; (2) Asset Matrix не покрывает `assets/sprites/ui/icons/stats/stat_<id>.png` (базовые атрибуты, 8 шт.) — только `derived/attr_*`; `ui_icon_registry.gd:51-70` грузит обе папки. Skill не генерит картинки (read-only проверки). |
 | [bug_scrum619_secret_encounter_artifact_key_unlock_task.md](../tasks/bug_scrum619_secret_encounter_artifact_key_unlock_task.md) | Back-end | new | Jira: SCRUM-623. **QA: failed** (2026-06-28) на приёмке SCRUM-619: key-artifact branch checks raw `"rift_key"` string, but live artifacts are `{id,title}` dictionaries and no `rift_key` content item exists. SCRUM-619 returned to «К выполнению». |
+| [SCRUM-1095.md](../tasks/SCRUM-1095.md) | Back-end / UI | in_progress | Jira: SCRUM-1095. **QA-found from SCRUM-1093:** actual visible Gratitude alpha-to-version gap is 33.75–42.91px vs contract <=20; owner `/root/scrum1095_visible_icon_gap`. |
 
 ## 0.1.5 — blocked / dependency-gated
 

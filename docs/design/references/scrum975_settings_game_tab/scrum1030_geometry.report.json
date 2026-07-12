@@ -1,0 +1,13 @@
+{
+  "ok": true,
+  "ticket": "SCRUM-1030",
+  "errors": [],
+  "checks": [
+    "compact viewport/content canvas/14px scrollbar lane declared",
+    "header/back/tabs remain fixed outside the scroll viewport",
+    "five compact rows each declare non-overlapping label/slider/value hitboxes plus reset",
+    "top and bottom compact evidence reproduce the declared scroll transforms",
+    "top/bottom evidence keeps header/back/tabs pixel-identical",
+    "2K plan/layout and generated 1080p label/slider/value rectangles agree"
+  ]
+}

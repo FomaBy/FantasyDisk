@@ -9,15 +9,15 @@ script = ExtResource("1_class_weapon")
 weapon_id = "raven_totem"
 display_name = "Вороний тотем"
 attack_mode = "amp"
-damage_parameter = "sound_wave_damage"
+damage_parameter = "magic_damage"
 fire_interval = 2.35
 damage = 9.0
 attack_range = 470.0
 aoe_radius = 255.0
 knockback = 70.0
-amp_lifetime = 6.5
-amp_pulse_interval = 0.95
-max_summons = 1
+amp_lifetime = 8.0
+amp_pulse_interval = 1.10
+max_summons = 2
 visual_color = Color(0.20, 0.72, 0.42, 0.40)
 
 [node name="WeaponVisual" type="Sprite2D" parent="."]

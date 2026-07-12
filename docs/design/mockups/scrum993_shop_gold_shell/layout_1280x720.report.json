@@ -1,0 +1,282 @@
+{
+  "ok": true,
+  "zones": [
+    {
+      "id": "run_hud",
+      "rect": [
+        189,
+        157,
+        464,
+        30
+      ],
+      "ok": true,
+      "kind": "text",
+      "font_size": 17,
+      "lines": [
+        "HP 8888/8888 · XP 999/999 · 99999g · ULT 100%"
+      ],
+      "text_bbox": [
+        235,
+        162,
+        372,
+        19
+      ]
+    },
+    {
+      "id": "shop_title",
+      "rect": [
+        675,
+        137,
+        330,
+        34
+      ],
+      "ok": true,
+      "kind": "text",
+      "font_size": 28,
+      "lines": [
+        "Магазин"
+      ],
+      "text_bbox": [
+        783,
+        142,
+        114,
+        24
+      ]
+    },
+    {
+      "id": "shop_subtitle",
+      "rect": [
+        675,
+        173,
+        330,
+        24
+      ],
+      "ok": true,
+      "kind": "text",
+      "font_size": 15,
+      "lines": [
+        "Выбери предмет — описание появится ниже."
+      ],
+      "text_bbox": [
+        682,
+        176,
+        316,
+        19
+      ]
+    },
+    {
+      "id": "item0_caption",
+      "rect": [
+        348,
+        225,
+        116,
+        18
+      ],
+      "ok": true,
+      "kind": "text",
+      "font_size": 13,
+      "lines": [
+        "Быстрые сапоги"
+      ],
+      "text_bbox": [
+        355,
+        226,
+        102,
+        16
+      ]
+    },
+    {
+      "id": "item1_caption",
+      "rect": [
+        504,
+        225,
+        116,
+        18
+      ],
+      "ok": true,
+      "kind": "text",
+      "font_size": 11,
+      "lines": [
+        "Кристальная сфера"
+      ],
+      "text_bbox": [
+        510,
+        227,
+        105,
+        14
+      ]
+    },
+    {
+      "id": "item2_caption",
+      "rect": [
+        660,
+        225,
+        116,
+        18
+      ],
+      "ok": true,
+      "kind": "text",
+      "font_size": 11,
+      "lines": [
+        "Учебник выживания"
+      ],
+      "text_bbox": [
+        665,
+        228,
+        106,
+        12
+      ]
+    },
+    {
+      "id": "item3_caption",
+      "rect": [
+        816,
+        225,
+        116,
+        18
+      ],
+      "ok": true,
+      "kind": "text",
+      "font_size": 13,
+      "lines": [
+        "Темный кристалл"
+      ],
+      "text_bbox": [
+        820,
+        226,
+        109,
+        17
+      ]
+    },
+    {
+      "id": "item0_price",
+      "rect": [
+        362,
+        319,
+        88,
+        30
+      ],
+      "ok": true,
+      "kind": "text",
+      "font_size": 18,
+      "lines": [
+        "9999"
+      ],
+      "text_bbox": [
+        384,
+        326,
+        44,
+        17
+      ]
+    },
+    {
+      "id": "item1_price",
+      "rect": [
+        518,
+        319,
+        88,
+        30
+      ],
+      "ok": true,
+      "kind": "text",
+      "font_size": 18,
+      "lines": [
+        "9999"
+      ],
+      "text_bbox": [
+        540,
+        326,
+        44,
+        17
+      ]
+    },
+    {
+      "id": "item2_price",
+      "rect": [
+        674,
+        319,
+        88,
+        30
+      ],
+      "ok": true,
+      "kind": "text",
+      "font_size": 18,
+      "lines": [
+        "9999"
+      ],
+      "text_bbox": [
+        696,
+        326,
+        44,
+        17
+      ]
+    },
+    {
+      "id": "item3_price",
+      "rect": [
+        830,
+        319,
+        88,
+        30
+      ],
+      "ok": true,
+      "kind": "text",
+      "font_size": 18,
+      "lines": [
+        "9999"
+      ],
+      "text_bbox": [
+        852,
+        326,
+        44,
+        17
+      ]
+    },
+    {
+      "id": "shop_tooltip",
+      "rect": [
+        455,
+        388,
+        370,
+        94
+      ],
+      "ok": true,
+      "kind": "text",
+      "font_size": 11,
+      "lines": [
+        "Темный кристалл",
+        "+12% магического урона.",
+        "Цена: 9999g",
+        "Класс: Темный маг",
+        "Не хватает монет"
+      ],
+      "text_bbox": [
+        455,
+        388,
+        134,
+        85
+      ]
+    },
+    {
+      "id": "shop_back",
+      "rect": [
+        516,
+        523,
+        248,
+        40
+      ],
+      "ok": true,
+      "kind": "text",
+      "font_size": 22,
+      "lines": [
+        "Назад"
+      ],
+      "text_bbox": [
+        606,
+        532,
+        67,
+        23
+      ]
+    }
+  ]
+}

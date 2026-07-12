@@ -1,0 +1,95 @@
+{
+  "task": "SCRUM-983",
+  "stage": "design_ready_for_runtime_handoff",
+  "production_asset_reuse": {
+    "path": "assets/sprites/ui/meta40/frame_border.png",
+    "size": [1536, 1024],
+    "sha256": "a593321bd5f732d70814a35dc9f98af31a09818b6452ded1a37fba521b937c85",
+    "alpha_audit": {
+      "minimum": 0,
+      "maximum": 255,
+      "transparent_pixels": 979708,
+      "partial_alpha_pixels": 0,
+      "opaque_pixels": 593156
+    },
+    "texture_margins": [160, 160, 160, 160],
+    "draw_center": false,
+    "new_runtime_art": false,
+    "provenance": "SCRUM-832 gpt-image-2 product override, accepted and QA-passed; SCRUM-826 PixelLab family superseded for production geometry"
+  },
+  "pixellab_config_smoke": {
+    "tool": "get_balance",
+    "result": "PASS",
+    "is_error": false,
+    "secrets_printed": false
+  },
+  "planning_gates": [
+    {
+      "viewport": [1280, 720],
+      "plan": "docs/design/mockups/scrum983_escape_dossier/ui_plan_1280x720.json",
+      "report": "docs/design/mockups/scrum983_escape_dossier/ui_plan_1280x720.report.json",
+      "decision": "ready_for_image",
+      "ok": true,
+      "errors": 0,
+      "warnings": 0
+    },
+    {
+      "viewport": [1920, 1080],
+      "plan": "docs/design/mockups/scrum983_escape_dossier/ui_plan_1920x1080.json",
+      "report": "docs/design/mockups/scrum983_escape_dossier/ui_plan_1920x1080.report.json",
+      "decision": "ready_for_image",
+      "ok": true,
+      "errors": 0,
+      "warnings": 0
+    },
+    {
+      "viewport": [2560, 1440],
+      "plan": "docs/design/mockups/scrum983_escape_dossier/ui_plan_2560x1440.json",
+      "report": "docs/design/mockups/scrum983_escape_dossier/ui_plan_2560x1440.report.json",
+      "decision": "ready_for_image",
+      "ok": true,
+      "errors": 0,
+      "warnings": 0
+    }
+  ],
+  "accepted_generation": {
+    "ui_asset_id": "ccc0e262-f062-4eb3-90d5-71c68c7db203",
+    "name": "SCRUM-983 Escape Hero Dossier v1 exact zones",
+    "seed": 98301,
+    "generation_cost": 40,
+    "size": [688, 384],
+    "status": "accepted",
+    "source_file": "docs/design/references/scrum983_escape_dossier/pixellab_escape_dossier_v1_688x384.png",
+    "preview_file": "docs/design/previews/scrum983_escape_dossier/pixellab_escape_dossier_v1_688x384.png",
+    "composite_preview": "docs/design/previews/scrum983_escape_dossier/pixellab_escape_dossier_v1_composite.png",
+    "debug_overlay": "docs/design/previews/scrum983_escape_dossier/pixellab_escape_dossier_v1_debug.png",
+    "composite_report": "docs/design/mockups/scrum983_escape_dossier/pixellab_escape_dossier_v1_composite.report.json",
+    "sha256": "fd892f9aba4780a6fc2340484992712f9c5301acbca70a89d33e458d4bc54574",
+    "alpha_audit": {
+      "minimum": 0,
+      "maximum": 255,
+      "transparent_pixels": 96081,
+      "partial_alpha_pixels": 0,
+      "opaque_pixels": 168111,
+      "baked_checkerboard": false
+    },
+    "prompt_contract": "Textless FantasyDisk D&D dark-fantasy 16:9 hero-dossier art layer: one hollow outer worn-gold dragon-forged shell; one empty title well; one empty left hero-dossier well; exactly four empty right stat wells in a 2x2 grid; exactly four empty bottom action wells. First, second and fourth actions neutral; third action danger crimson. Interiors dark/calm/empty. No text, pseudo-text, runes, logo, watermark, portrait, character, icon, circle, extra panel, checkerboard or filled background.",
+    "pieces_virtual_canvas_512x286": [
+      {"id": "outer_shell", "rect": [0, 0, 512, 286]},
+      {"id": "title_well", "rect": [64, 52, 384, 20]},
+      {"id": "hero_dossier_well", "rect": [64, 76, 112, 122]},
+      {"id": "physical_stats_well", "rect": [184, 76, 130, 60]},
+      {"id": "magic_stats_well", "rect": [320, 76, 130, 60]},
+      {"id": "support_stats_well", "rect": [184, 140, 130, 60]},
+      {"id": "dot_stats_well", "rect": [320, 140, 130, 60]},
+      {"id": "continue_well", "rect": [106, 207, 70, 20]},
+      {"id": "settings_well", "rect": [180, 207, 70, 20]},
+      {"id": "end_run_danger_well", "rect": [254, 207, 76, 20]},
+      {"id": "main_menu_well", "rect": [334, 207, 76, 20]}
+    ],
+    "visual_qa": "PASS: one outer shell, one title well, one left dossier, exactly four rectangular stat wells in 2x2, exactly four bottom action wells; only the third action is crimson; no text/pseudo-text/characters/icons/circles/extra panels; all interiors remain calm and usable.",
+    "compositor_qa": "PASS: all 10 declared text/action zones rendered with ok=true and remain inside their PixelLab wells; debug overlay reviewed."
+  },
+  "rejected_generations": [],
+  "rejection_provenance": "No generation was rejected. The first plan-constrained PixelLab result passed the exact structure, alpha, content-zone and visual QA gates; creating a disposable failure solely to populate this list was intentionally avoided."
+}

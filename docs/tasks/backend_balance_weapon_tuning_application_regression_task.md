@@ -1,5 +1,7 @@
 # Back-end Task: Weapon Budget Tuning Application Regression
 
+> Историческая справка: упоминания `sound_wave_damage` в этом документе описывают состояние ДО SCRUM-898 (2026-07-10). Звуковая ось урона удалена; оружия Гитариста/Друида бьют магией (`magic_damage`).
+
 Статус: done (2026-06-13, Claude Fable 5)
 Версия: 0.1.4
 Создано: 2026-06-13

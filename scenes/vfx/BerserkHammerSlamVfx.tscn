@@ -1,0 +1,37 @@
+[gd_scene load_steps=4 format=3]
+
+[ext_resource type="Script" path="res://scripts/vfx/berserk_hammer_slam_vfx.gd" id="1_script"]
+[ext_resource type="SpriteFrames" path="res://assets/sprites/effects/scrum895_berserk/hammer_slam_spriteframes.tres" id="2_frames"]
+
+[sub_resource type="CanvasItemMaterial" id="CanvasItemMaterial_add"]
+blend_mode = 1
+light_mode = 1
+
+[node name="BerserkHammerSlamVfx" type="Node2D"]
+script = ExtResource("1_script")
+
+[node name="ImpactFill" type="Polygon2D" parent="."]
+z_index = 9
+
+[node name="ShockRing" type="Line2D" parent="."]
+material = SubResource("CanvasItemMaterial_add")
+z_index = 10
+antialiased = true
+closed = true
+
+[node name="InnerCrack" type="Line2D" parent="."]
+material = SubResource("CanvasItemMaterial_add")
+z_index = 11
+antialiased = true
+
+[node name="HammerGhost" type="AnimatedSprite2D" parent="."]
+material = SubResource("CanvasItemMaterial_add")
+z_index = 12
+texture_filter = 1
+sprite_frames = ExtResource("2_frames")
+animation = &"slam"
+
+[node name="ImpactFlash" type="Polygon2D" parent="."]
+material = SubResource("CanvasItemMaterial_add")
+z_index = 13
+polygon = PackedVector2Array(-16, 0, -5, -5, 0, -16, 5, -5, 16, 0, 5, 5, 0, 16, -5, 5)

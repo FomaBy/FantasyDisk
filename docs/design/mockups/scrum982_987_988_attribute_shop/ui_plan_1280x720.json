@@ -1,0 +1,21 @@
+{
+  "canvas": {"width": 1280, "height": 720},
+  "policy": {"min_gap": 12, "allow_overlap": false},
+  "content": {
+    "title": "Докачка",
+    "money": "Золото: 9999 | +1 к характеристике: 999 зол.",
+    "reroll": "Обновить (999 зол.) — осталось 2",
+    "skip": "Пропустить"
+  },
+  "elements": [
+    {"id": "ornamental_frame", "kind": "decor", "x": 0, "y": 0, "w": 1280, "h": 720, "collision": false},
+    {"id": "attribute_shell_inner", "kind": "panel", "parent": "ornamental_frame", "x": 157, "y": 137, "w": 966, "h": 446, "min_w": 966, "min_h": 446},
+    {"id": "money_zone", "kind": "text", "parent": "attribute_shell_inner", "content_zone": true, "x": 181, "y": 147, "w": 240, "h": 42, "text_key": "money", "max_font": 18, "min_font": 12},
+    {"id": "title_zone", "kind": "text", "parent": "attribute_shell_inner", "content_zone": true, "x": 451, "y": 143, "w": 378, "h": 50, "text_key": "title", "max_font": 32, "min_font": 20},
+    {"id": "offer_1", "kind": "button", "parent": "attribute_shell_inner", "content_zone": true, "x": 205, "y": 218, "w": 276, "h": 232, "min_w": 270, "min_h": 228, "text": "Сила · классовая роль · Влияет на · 4 строки эффекта · 999 зол.", "max_font": 18, "min_font": 11},
+    {"id": "offer_2", "kind": "button", "parent": "attribute_shell_inner", "content_zone": true, "x": 502, "y": 218, "w": 276, "h": 232, "min_w": 270, "min_h": 228, "text": "Ловкость · классовая роль · Влияет на · 4 строки эффекта · 999 зол.", "max_font": 18, "min_font": 11},
+    {"id": "offer_3_optional", "kind": "button", "parent": "attribute_shell_inner", "content_zone": true, "x": 799, "y": 218, "w": 276, "h": 232, "min_w": 270, "min_h": 228, "text": "Лидерство · классовая роль · Влияет на · 4 строки эффекта · 999 зол.", "max_font": 18, "min_font": 11, "required": false},
+    {"id": "reroll_button", "kind": "button", "parent": "attribute_shell_inner", "content_zone": true, "x": 300, "y": 500, "w": 300, "h": 64, "text_key": "reroll", "max_font": 18, "min_font": 12},
+    {"id": "skip_button", "kind": "button", "parent": "attribute_shell_inner", "content_zone": true, "x": 680, "y": 500, "w": 300, "h": 64, "text_key": "skip", "max_font": 18, "min_font": 12}
+  ]
+}

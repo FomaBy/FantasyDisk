@@ -314,6 +314,7 @@ static func characters() -> Array:
 	var result := []
 	for character_id in PROGRESSION_DATA.character_ids():
 		var config: Dictionary = PROGRESSION_DATA.character_config(character_id)
+		var trait_config: Dictionary = PROGRESSION_DATA.class_trait(character_id)
 		var weapons := []
 		var class_weapons: Dictionary = PROGRESSION_DATA.WEAPONS_BY_CLASS.get(character_id, {})
 		for weapon_id in class_weapons.keys():
@@ -331,6 +332,12 @@ static func characters() -> Array:
 			"playstyle": str(CHARACTER_PLAYSTYLE.get(character_id, "")),
 			"strengths": str(config.get("strengths", "")),
 			"weaknesses": str(config.get("weaknesses", "")),
+			"trait": {
+				"id": str(trait_config.get("id", "")),
+				"title": str(trait_config.get("title", "")),
+				"description": str(trait_config.get("short_description", trait_config.get("description", ""))),
+				"details": str(trait_config.get("description", "")),
+			},
 			"ultimate": PROGRESSION_DATA.ultimate_config(character_id),
 			"weapons": weapons,
 		})
@@ -374,15 +381,71 @@ static func ascensions() -> Array:
 	return result
 
 
-static func stats() -> Array:
+static func _related_stats(stat_id: String, stat_type: String) -> Array:
+	# SCRUM-1021: relationships come exclusively from the canonical machine-
+	# readable matrix that mirrors ProgressionData.derived_parameters(). Parsing
+	# localized formula prose lost generic dependencies ("all base stats") and
+	# produced lexical false positives such as base Strength inside the derived
+	# phrase "Сила отталкивания".
 	var result := []
-	for stat_id in STAT_FORMULAS.STAT_DEFINITIONS.keys():
-		var definition: Dictionary = STAT_FORMULAS.STAT_DEFINITIONS[stat_id]
+	var related_ids := []
+	if stat_type == "base":
+		for derived_id_value in STAT_FORMULAS.DERIVED_STAT_ORDER:
+			var derived_id := str(derived_id_value)
+			var dependencies: Array = STAT_FORMULAS.DERIVED_BASE_DEPENDENCIES.get(derived_id, [])
+			if dependencies.has(stat_id):
+				related_ids.append(derived_id)
+	else:
+		var dependency_ids: Array = STAT_FORMULAS.DERIVED_BASE_DEPENDENCIES.get(stat_id, [])
+		for base_id_value in STAT_FORMULAS.BASE_STAT_ORDER:
+			var base_id := str(base_id_value)
+			if dependency_ids.has(base_id):
+				related_ids.append(base_id)
+	for candidate_id_value in related_ids:
+		var candidate_id := str(candidate_id_value)
+		var candidate: Dictionary = STAT_FORMULAS.STAT_DEFINITIONS.get(candidate_id, {})
 		result.append({
-			"id": str(stat_id),
-			"title": str(definition.get("name_ru", str(stat_id))),
-			"type": str(definition.get("type", "base")),
-			"description": str(definition.get("description", "")),
-			"influences": str(definition.get("influences", "")),
+			"id": candidate_id,
+			"title": str(candidate.get("name_ru", candidate_id)),
 		})
 	return result
+
+
+static func _stat_projection(stat_id: String, expected_type: String) -> Dictionary:
+	var definition: Dictionary = STAT_FORMULAS.STAT_DEFINITIONS.get(stat_id, {})
+	if definition.is_empty() or str(definition.get("type", "")) != expected_type:
+		return {}
+	return {
+		"id": stat_id,
+		"title": str(definition.get("name_ru", stat_id)),
+		"type": expected_type,
+		"description": str(definition.get("description", "")),
+		"formula": str(definition.get("formula", "")),
+		"influences": str(definition.get("influences", "")),
+		"related": _related_stats(stat_id, expected_type),
+	}
+
+
+static func characteristics() -> Array:
+	var result := []
+	for stat_id_value in STAT_FORMULAS.BASE_STAT_ORDER:
+		var entry := _stat_projection(str(stat_id_value), "base")
+		if not entry.is_empty():
+			result.append(entry)
+	return result
+
+
+static func attributes() -> Array:
+	var result := []
+	for stat_id_value in STAT_FORMULAS.DERIVED_STAT_ORDER:
+		var entry := _stat_projection(str(stat_id_value), "derived")
+		if not entry.is_empty():
+			result.append(entry)
+	return result
+
+
+# Compatibility projection for non-UI tooling. The live Codex navigation uses
+# characteristics()/attributes() separately; keeping stats() avoids breaking
+# older diagnostics while preserving the canonical order and strict split.
+static func stats() -> Array:
+	return characteristics() + attributes()

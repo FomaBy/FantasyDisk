@@ -1,0 +1,65 @@
+[
+  {
+    "path": "docs/design/references/scrum571_reward_2k/reward_ordinary_2k_base.png",
+    "size": [
+      2560,
+      1440
+    ],
+    "mode": "RGB",
+    "sha256": "c5df3c1af575ce3e6d46bb88b1237b2c4aa2df5e1a6ef714ef0a26a6f7f86fcf"
+  },
+  {
+    "path": "docs/design/mockups/scrum571_reward_2k/reward_ordinary_2k_mockup.png",
+    "size": [
+      2560,
+      1440
+    ],
+    "mode": "RGB",
+    "sha256": "0cef59813fbf3be7b1ce85a0ac72e776368aac6692a0546b65a4d2e467b38503"
+  },
+  {
+    "path": "docs/design/mockups/scrum571_reward_2k/reward_ordinary_2k_mockup_debug.png",
+    "size": [
+      2560,
+      1440
+    ],
+    "mode": "RGB",
+    "sha256": "205c2d94e672192e876856dde385a9025977b024f05eaa2ba2fd89b9a7c02ccf"
+  },
+  {
+    "path": "docs/design/previews/scrum571_reward_2k_mockup.png",
+    "size": [
+      2560,
+      1440
+    ],
+    "mode": "RGB",
+    "sha256": "0cef59813fbf3be7b1ce85a0ac72e776368aac6692a0546b65a4d2e467b38503"
+  },
+  {
+    "path": "docs/design/previews/scrum571_reward_2k_mockup_debug.png",
+    "size": [
+      2560,
+      1440
+    ],
+    "mode": "RGB",
+    "sha256": "205c2d94e672192e876856dde385a9025977b024f05eaa2ba2fd89b9a7c02ccf"
+  },
+  {
+    "path": "build/qa/scrum571_reqacheck_20260703/reward_ordinary_2k_mockup.png",
+    "size": [
+      2560,
+      1440
+    ],
+    "mode": "RGB",
+    "sha256": "0cef59813fbf3be7b1ce85a0ac72e776368aac6692a0546b65a4d2e467b38503"
+  },
+  {
+    "path": "build/qa/scrum571_reqacheck_20260703/reward_ordinary_2k_mockup_debug.png",
+    "size": [
+      2560,
+      1440
+    ],
+    "mode": "RGB",
+    "sha256": "205c2d94e672192e876856dde385a9025977b024f05eaa2ba2fd89b9a7c02ccf"
+  }
+]

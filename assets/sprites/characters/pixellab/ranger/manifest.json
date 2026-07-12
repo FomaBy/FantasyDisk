@@ -12,10 +12,7 @@
     240,
     240
   ],
-  "runtime_canvas": [
-    512,
-    512
-  ],
+  "runtime_canvas": "512x512",
   "runtime_normalization": "alpha bbox crop from PixelLab source, nearest-neighbor scale to 245 px visible height, centered X, bottom-aligned with 32 px bottom padding",
   "runtime_visible_height_target": 245,
   "runtime_bottom_padding": 32,
@@ -67,12 +64,110 @@
     "UI frame"
   ],
   "source_files": {
-    "idle": "assets/sprites/characters/pixellab/ranger/ranger_idle_<dir>.png",
-    "move": "assets/sprites/characters/pixellab/ranger/ranger_move_<dir>_<00-05>.png"
+    "idle": {
+      "south": "ranger_idle_south.png",
+      "south-east": "ranger_idle_south-east.png",
+      "east": "ranger_idle_east.png",
+      "north-east": "ranger_idle_north-east.png",
+      "north": "ranger_idle_north.png",
+      "north-west": "ranger_idle_north-west.png",
+      "west": "ranger_idle_west.png",
+      "south-west": "ranger_idle_south-west.png"
+    },
+    "move": {
+      "south": [
+        "ranger_move_south_00.png",
+        "ranger_move_south_01.png",
+        "ranger_move_south_02.png",
+        "ranger_move_south_03.png",
+        "ranger_move_south_04.png",
+        "ranger_move_south_05.png"
+      ],
+      "south-east": [
+        "ranger_move_south-east_00.png",
+        "ranger_move_south-east_01.png",
+        "ranger_move_south-east_02.png",
+        "ranger_move_south-east_03.png",
+        "ranger_move_south-east_04.png",
+        "ranger_move_south-east_05.png"
+      ],
+      "east": [
+        "ranger_move_east_00.png",
+        "ranger_move_east_01.png",
+        "ranger_move_east_02.png",
+        "ranger_move_east_03.png",
+        "ranger_move_east_04.png",
+        "ranger_move_east_05.png"
+      ],
+      "north-east": [
+        "ranger_move_north-east_00.png",
+        "ranger_move_north-east_01.png",
+        "ranger_move_north-east_02.png",
+        "ranger_move_north-east_03.png",
+        "ranger_move_north-east_04.png",
+        "ranger_move_north-east_05.png"
+      ],
+      "north": [
+        "ranger_move_north_00.png",
+        "ranger_move_north_01.png",
+        "ranger_move_north_02.png",
+        "ranger_move_north_03.png",
+        "ranger_move_north_04.png",
+        "ranger_move_north_05.png"
+      ],
+      "north-west": [
+        "ranger_move_north-west_00.png",
+        "ranger_move_north-west_01.png",
+        "ranger_move_north-west_02.png",
+        "ranger_move_north-west_03.png",
+        "ranger_move_north-west_04.png",
+        "ranger_move_north-west_05.png"
+      ],
+      "west": [
+        "ranger_move_west_00.png",
+        "ranger_move_west_01.png",
+        "ranger_move_west_02.png",
+        "ranger_move_west_03.png",
+        "ranger_move_west_04.png",
+        "ranger_move_west_05.png"
+      ],
+      "south-west": [
+        "ranger_move_south-west_00.png",
+        "ranger_move_south-west_01.png",
+        "ranger_move_south-west_02.png",
+        "ranger_move_south-west_03.png",
+        "ranger_move_south-west_04.png",
+        "ranger_move_south-west_05.png"
+      ]
+    }
   },
-  "runtime_dir": "assets/sprites/characters/full_frame/ranger_pixellab/",
+  "runtime_dir": "assets/sprites/characters/full_frame/ranger_pixellab",
   "spriteframes": "assets/sprites/characters/ranger_spriteframes.tres",
   "qa_report": "docs/design/previews/scrum804_ranger_pixellab_bbox_report.json",
   "preview_contact_sheet": "docs/design/previews/scrum804_ranger_pixellab_contact.png",
-  "notes": "New PixelLab-only Ranger redraw for SCRUM-804. Base body is empty-handed; bow/crossbow/trap/projectile visuals remain weapon-owned runtime assets."
+  "notes": "New PixelLab-only Ranger redraw for SCRUM-804. Base body is empty-handed; bow/crossbow/trap/projectile visuals remain weapon-owned runtime assets.",
+  "scrum869_refresh": {
+    "task": "SCRUM-869",
+    "refreshed_at": "2026-07-04T08:10:44+00:00",
+    "pixellab_download_export_date": "2026-07-04T08:10:44.415624",
+    "pixellab_export_version": "3.0",
+    "selected_animation_folders": {
+      "south": "animating",
+      "south-east": "animating",
+      "east": "animating",
+      "north-east": "animating",
+      "north": "animating-ef8097a7",
+      "north-west": "animating-ef8097a7",
+      "west": "animating-ef8097a7",
+      "south-west": "animating"
+    },
+    "runtime_canvas": [
+      512,
+      512
+    ],
+    "runtime_visible_height_target": 245,
+    "runtime_bottom_padding": 32,
+    "source": "PixelLab MCP download endpoint",
+    "legacy_or_manual_fallback_used": false
+  }
 }

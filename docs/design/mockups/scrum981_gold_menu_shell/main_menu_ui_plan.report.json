@@ -1,0 +1,136 @@
+{
+  "ok": true,
+  "decision": "ready_for_image",
+  "errors": [],
+  "warnings": [],
+  "elements": [
+    {
+      "id": "frame_art",
+      "kind": "decor",
+      "rect": [
+        0,
+        0,
+        1920,
+        1080
+      ],
+      "ok": true,
+      "warnings": []
+    },
+    {
+      "id": "frame_safe_area",
+      "kind": "panel",
+      "rect": [
+        200,
+        169,
+        1520,
+        742
+      ],
+      "ok": true,
+      "warnings": []
+    },
+    {
+      "id": "logo_zone",
+      "kind": "text",
+      "rect": [
+        224,
+        193,
+        620,
+        170
+      ],
+      "ok": true,
+      "warnings": [],
+      "fit_font_size": 28
+    },
+    {
+      "id": "action_1",
+      "kind": "button",
+      "rect": [
+        224,
+        387,
+        380,
+        104
+      ],
+      "ok": true,
+      "warnings": [],
+      "fit_font_size": 24
+    },
+    {
+      "id": "action_2",
+      "kind": "button",
+      "rect": [
+        624,
+        387,
+        380,
+        104
+      ],
+      "ok": true,
+      "warnings": [],
+      "fit_font_size": 24
+    },
+    {
+      "id": "action_3",
+      "kind": "button",
+      "rect": [
+        224,
+        509,
+        380,
+        104
+      ],
+      "ok": true,
+      "warnings": [],
+      "fit_font_size": 24
+    },
+    {
+      "id": "action_4",
+      "kind": "button",
+      "rect": [
+        624,
+        509,
+        380,
+        104
+      ],
+      "ok": true,
+      "warnings": [],
+      "fit_font_size": 24
+    },
+    {
+      "id": "action_5",
+      "kind": "button",
+      "rect": [
+        224,
+        631,
+        380,
+        104
+      ],
+      "ok": true,
+      "warnings": [],
+      "fit_font_size": 24
+    },
+    {
+      "id": "action_6",
+      "kind": "button",
+      "rect": [
+        624,
+        631,
+        380,
+        104
+      ],
+      "ok": true,
+      "warnings": [],
+      "fit_font_size": 24
+    },
+    {
+      "id": "version_zone",
+      "kind": "text",
+      "rect": [
+        1546,
+        839,
+        126,
+        24
+      ],
+      "ok": true,
+      "warnings": [],
+      "fit_font_size": 16
+    }
+  ]
+}

@@ -1,0 +1,13 @@
+{
+  "jira_issue": "SCRUM-926",
+  "generator": "PixelLab MCP create_ui_asset",
+  "asset_id": "3c4556a9-e19f-42dd-972b-47d572264e66",
+  "name": "SCRUM-926 Priest Battle Prayer Choice",
+  "seed": 926,
+  "source_size": [688, 384],
+  "source_sha256": "8eb1406434e8c02ad291fcaf2f39b16ff6d9c87a0781cd4ef190dc750305046c",
+  "planning_gate": "ready_for_image",
+  "accepted": true,
+  "acceptance_note": "Single intact frame with two empty heading bands and three empty card interiors; all ornaments remain outside declared content zones.",
+  "runtime_policy": "Use the unchanged source image as the modal art layer. Runtime labels, icons and hit targets must stay inside layout_688x384.json zones; focus affordances may only draw inside the card interiors."
+}

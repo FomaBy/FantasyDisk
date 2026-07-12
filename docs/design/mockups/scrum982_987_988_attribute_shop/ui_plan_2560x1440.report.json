@@ -1,0 +1,123 @@
+{
+  "ok": true,
+  "decision": "ready_for_image",
+  "errors": [],
+  "warnings": [],
+  "elements": [
+    {
+      "id": "ornamental_frame",
+      "kind": "decor",
+      "rect": [
+        0,
+        0,
+        2560,
+        1440
+      ],
+      "ok": true,
+      "warnings": []
+    },
+    {
+      "id": "attribute_shell_inner",
+      "kind": "panel",
+      "rect": [
+        299,
+        257,
+        1962,
+        926
+      ],
+      "ok": true,
+      "warnings": []
+    },
+    {
+      "id": "money_zone",
+      "kind": "text",
+      "rect": [
+        323,
+        277,
+        480,
+        64
+      ],
+      "ok": true,
+      "warnings": [],
+      "fit_font_size": 28
+    },
+    {
+      "id": "title_zone",
+      "kind": "text",
+      "rect": [
+        930,
+        267,
+        700,
+        64
+      ],
+      "ok": true,
+      "warnings": [],
+      "fit_font_size": 46
+    },
+    {
+      "id": "offer_1",
+      "kind": "button",
+      "rect": [
+        470,
+        430,
+        460,
+        500
+      ],
+      "ok": true,
+      "warnings": [],
+      "fit_font_size": 26
+    },
+    {
+      "id": "offer_2",
+      "kind": "button",
+      "rect": [
+        1050,
+        430,
+        460,
+        500
+      ],
+      "ok": true,
+      "warnings": [],
+      "fit_font_size": 26
+    },
+    {
+      "id": "offer_3_optional",
+      "kind": "button",
+      "rect": [
+        1630,
+        430,
+        460,
+        500
+      ],
+      "ok": true,
+      "warnings": [],
+      "fit_font_size": 26
+    },
+    {
+      "id": "reroll_button",
+      "kind": "button",
+      "rect": [
+        650,
+        1060,
+        460,
+        88
+      ],
+      "ok": true,
+      "warnings": [],
+      "fit_font_size": 26
+    },
+    {
+      "id": "skip_button",
+      "kind": "button",
+      "rect": [
+        1450,
+        1060,
+        460,
+        88
+      ],
+      "ok": true,
+      "warnings": [],
+      "fit_font_size": 26
+    }
+  ]
+}

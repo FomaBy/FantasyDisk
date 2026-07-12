@@ -1,0 +1,1327 @@
+{
+  "issue": "SCRUM-1065",
+  "pipeline": "PixelLab MCP via fantasydisk-asset-generator",
+  "fallbacks_used": [],
+  "pixel_lab_config_smoke": "PASS",
+  "generation_budget": {
+    "starting": 2836,
+    "task_reported_spent": 100,
+    "global_remaining_after_exports": 2656,
+    "global_delta_note": "PixelLab is shared by parallel agents; each of the five SCRUM-1065 create calls reported cost: 20, so only 100 generations are attributable to this pack.",
+    "permanent_review_packs": 5,
+    "selected_new_objects": 19,
+    "reused_accepted_objects": 1
+  },
+  "source_pack_ids": [
+    "ef2929df-1ae9-4da0-a417-870414b09a6e",
+    "6c56dde2-1399-4b5a-8df4-5d695007bab9",
+    "adbd8d1c-a0e9-476d-bab4-99f523704cfb",
+    "0091c724-fa88-4aaf-afbb-2d1d0ed51178",
+    "a0d18914-9c5c-4dee-bee4-4bbb557afcfd"
+  ],
+  "contract": {
+    "characters": 17,
+    "weapons": 51,
+    "flying_or_projectile_like_profiles": 20,
+    "intentional_non_projectile": 31,
+    "canonical_forward": "right",
+    "pivot": [
+      0.5,
+      0.5
+    ],
+    "runtime_integration_owner": "SCRUM-1066"
+  },
+  "assets": [
+    {
+      "visual_id": "soldier_arquebus_round",
+      "character_id": "soldier",
+      "weapon_id": "soldier_rifle",
+      "runtime": "soldier/soldier_arquebus_round.png",
+      "source_path": "docs/design/references/SCRUM-1065_player_projectiles/soldier_arquebus_round_pixellab_source.png",
+      "runtime_path": "assets/sprites/projectiles/player/soldier/soldier_arquebus_round.png",
+      "source_dimensions": [
+        96,
+        96
+      ],
+      "pivot": [
+        0.5,
+        0.5
+      ],
+      "animation_frames": 1,
+      "source_tool": "create_1_direction_object",
+      "prompt_spec": "FantasyDisk permanent player projectile sprite pack, high top-down D&D dark fantasy pixel art, object points to the right as forward travel direction, clean compact silhouette readable at 24-48 px, restrained selective outline, transparent background, centered with 10 percent alpha-safe padding, no text, no border, no character, no weapon held by a character, no scenery, no impact explosion. One blackened-steel arquebus rifle bullet with a short warm brass muzzle-glow tail; disciplined Soldier identity.",
+      "trail_palette": [
+        "#F4C06A",
+        "#6B3A1E"
+      ],
+      "impact_palette": [
+        "#FFE0A0",
+        "#9B4A20"
+      ],
+      "forward_orientation": "left",
+      "rotation_offset_degrees": 180,
+      "intended_runtime_display_px": [
+        40,
+        40
+      ],
+      "source_pack_id": "ef2929df-1ae9-4da0-a417-870414b09a6e",
+      "source_object_id": "eedf31a8-1493-46a9-8607-49743c881828",
+      "source_tag": "SCRUM-1065_player_projectiles_martial",
+      "raw_source_path": "docs/design/references/SCRUM-1065_player_projectiles/soldier_arquebus_round_pixellab_raw.png",
+      "postprocess": "edge-connected near-black matte removed; canonical sprite pixels preserved"
+    },
+    {
+      "visual_id": "soldier_fuse_grenade",
+      "character_id": "soldier",
+      "weapon_id": "soldier_grenade",
+      "runtime": "soldier/soldier_fuse_grenade.png",
+      "source_path": "docs/design/references/SCRUM-1065_player_projectiles/soldier_fuse_grenade_pixellab_source.png",
+      "runtime_path": "assets/sprites/projectiles/player/soldier/soldier_fuse_grenade.png",
+      "source_dimensions": [
+        96,
+        96
+      ],
+      "pivot": [
+        0.5,
+        0.5
+      ],
+      "animation_frames": 1,
+      "source_tool": "create_1_direction_object",
+      "prompt_spec": "FantasyDisk permanent player projectile sprite pack, high top-down D&D dark fantasy pixel art, object points to the right as forward travel direction, clean compact silhouette readable at 24-48 px, restrained selective outline, transparent background, centered with 10 percent alpha-safe padding, no text, no border, no character, no weapon held by a character, no scenery, no impact explosion. One round black-iron fragmentation grenade with brass bands and a tiny ember fuse; warm orange Soldier identity.",
+      "trail_palette": [
+        "#FF9A36",
+        "#5B4633"
+      ],
+      "impact_palette": [
+        "#FFB347",
+        "#6D2417"
+      ],
+      "forward_orientation": "non_directional",
+      "rotation_offset_degrees": 0,
+      "intended_runtime_display_px": [
+        48,
+        48
+      ],
+      "source_pack_id": "ef2929df-1ae9-4da0-a417-870414b09a6e",
+      "source_object_id": "0757553d-c21f-4043-ad0b-a05452f84d9e",
+      "source_tag": "SCRUM-1065_player_projectiles_martial"
+    },
+    {
+      "visual_id": "assassin_void_chakram",
+      "character_id": "assassin",
+      "weapon_id": "chakrams",
+      "runtime": "assassin/assassin_void_chakram.png",
+      "source_path": "docs/design/references/SCRUM-1065_player_projectiles/assassin_void_chakram_pixellab_source.png",
+      "runtime_path": "assets/sprites/projectiles/player/assassin/assassin_void_chakram.png",
+      "source_dimensions": [
+        96,
+        96
+      ],
+      "pivot": [
+        0.5,
+        0.5
+      ],
+      "animation_frames": 1,
+      "source_tool": "create_1_direction_object",
+      "prompt_spec": "FantasyDisk permanent player projectile sprite pack, high top-down D&D dark fantasy pixel art, object points to the right as forward travel direction, clean compact silhouette readable at 24-48 px, restrained selective outline, transparent background, centered with 10 percent alpha-safe padding, no text, no border, no character, no weapon held by a character, no scenery, no impact explosion. One crescent double-edged obsidian-steel chakram with violet inner runes, clearly a returning blade; Assassin identity.",
+      "trail_palette": [
+        "#8C5BFF",
+        "#29163F"
+      ],
+      "impact_palette": [
+        "#C090FF",
+        "#4A1C73"
+      ],
+      "forward_orientation": "non_directional",
+      "rotation_offset_degrees": 0,
+      "intended_runtime_display_px": [
+        56,
+        56
+      ],
+      "source_pack_id": "ef2929df-1ae9-4da0-a417-870414b09a6e",
+      "source_object_id": "8d71c3ba-21fa-434f-944e-c568ab37ec02",
+      "source_tag": "SCRUM-1065_player_projectiles_martial"
+    },
+    {
+      "visual_id": "thief_ricochet_coin",
+      "character_id": "thief",
+      "weapon_id": "thief_coin_pouch",
+      "runtime": "thief/thief_ricochet_coin.png",
+      "source_path": "docs/design/references/SCRUM-1065_player_projectiles/thief_ricochet_coin_pixellab_source.png",
+      "runtime_path": "assets/sprites/projectiles/player/thief/thief_ricochet_coin.png",
+      "source_dimensions": [
+        96,
+        96
+      ],
+      "pivot": [
+        0.5,
+        0.5
+      ],
+      "animation_frames": 1,
+      "source_tool": "create_1_direction_object",
+      "prompt_spec": "FantasyDisk permanent player projectile sprite pack, high top-down D&D dark fantasy pixel art, object points to the right as forward travel direction, clean compact silhouette readable at 24-48 px, restrained selective outline, transparent background, centered with 10 percent alpha-safe padding, no text, no border, no character, no weapon held by a character, no scenery, no impact explosion. One spinning heavy silver coin seen slightly edge-on with a narrow amber motion glint; Thief identity.",
+      "trail_palette": [
+        "#FFD36A",
+        "#9B671D"
+      ],
+      "impact_palette": [
+        "#FFF0A6",
+        "#8A6A3A"
+      ],
+      "forward_orientation": "non_directional",
+      "rotation_offset_degrees": 0,
+      "intended_runtime_display_px": [
+        34,
+        34
+      ],
+      "source_pack_id": "ef2929df-1ae9-4da0-a417-870414b09a6e",
+      "source_object_id": "af2cca55-0eb8-4d41-a2db-8d1b822dca6a",
+      "source_tag": "SCRUM-1065_player_projectiles_martial"
+    },
+    {
+      "visual_id": "ranger_moon_bolt",
+      "character_id": "ranger",
+      "weapon_id": "moon_crossbow",
+      "runtime": "ranger/ranger_moon_bolt.png",
+      "source_path": "docs/design/references/SCRUM-1065_player_projectiles/ranger_moon_bolt_pixellab_source.png",
+      "runtime_path": "assets/sprites/projectiles/player/ranger/ranger_moon_bolt.png",
+      "source_dimensions": [
+        96,
+        96
+      ],
+      "pivot": [
+        0.5,
+        0.5
+      ],
+      "animation_frames": 1,
+      "source_tool": "create_1_direction_object",
+      "prompt_spec": "FantasyDisk permanent player projectile sprite pack, high top-down D&D dark fantasy pixel art, object points to the right as forward travel direction, clean compact silhouette readable at 24-48 px, restrained selective outline, transparent background, centered with 10 percent alpha-safe padding, no text, no border, no character, no weapon held by a character, no scenery, no impact explosion. One silver crescent crossbow bolt with pale moon-blue crystal tip and short white trail; Ranger moon identity.",
+      "trail_palette": [
+        "#D9F3FF",
+        "#7588A7"
+      ],
+      "impact_palette": [
+        "#E8FAFF",
+        "#7EB9D5"
+      ],
+      "forward_orientation": "right",
+      "rotation_offset_degrees": 0,
+      "intended_runtime_display_px": [
+        56,
+        32
+      ],
+      "source_pack_id": "6c56dde2-1399-4b5a-8df4-5d695007bab9",
+      "source_object_id": "a453a3a3-2010-485b-affd-441b7b4e7562",
+      "source_tag": "SCRUM-1065_player_projectiles_marksman_device"
+    },
+    {
+      "visual_id": "ranger_storm_arrow",
+      "character_id": "ranger",
+      "weapon_id": "storm_longbow",
+      "runtime": "ranger/ranger_storm_arrow.png",
+      "source_path": "docs/design/references/SCRUM-1065_player_projectiles/ranger_storm_arrow_pixellab_source.png",
+      "runtime_path": "assets/sprites/projectiles/player/ranger/ranger_storm_arrow.png",
+      "source_dimensions": [
+        96,
+        96
+      ],
+      "pivot": [
+        0.5,
+        0.5
+      ],
+      "animation_frames": 1,
+      "source_tool": "create_1_direction_object",
+      "prompt_spec": "FantasyDisk permanent player projectile sprite pack, high top-down D&D dark fantasy pixel art, object points to the right as forward travel direction, clean compact silhouette readable at 24-48 px, restrained selective outline, transparent background, centered with 10 percent alpha-safe padding, no text, no border, no character, no weapon held by a character, no scenery, no impact explosion. One long dark-steel storm arrow with bright cyan lightning fletching and needle silhouette; Ranger storm identity.",
+      "trail_palette": [
+        "#32D9F0",
+        "#173B59"
+      ],
+      "impact_palette": [
+        "#A2F6FF",
+        "#297BA0"
+      ],
+      "forward_orientation": "right",
+      "rotation_offset_degrees": 0,
+      "intended_runtime_display_px": [
+        72,
+        32
+      ],
+      "source_pack_id": "6c56dde2-1399-4b5a-8df4-5d695007bab9",
+      "source_object_id": "53f8f879-dd6f-40d0-9bbc-cc50596a84bc",
+      "source_tag": "SCRUM-1065_player_projectiles_marksman_device"
+    },
+    {
+      "visual_id": "engineer_sentry_round",
+      "character_id": "engineer",
+      "weapon_id": "engineer_sentry_wrench",
+      "runtime": "engineer/engineer_sentry_round.png",
+      "source_path": "docs/design/references/SCRUM-1065_player_projectiles/engineer_sentry_round_pixellab_source.png",
+      "runtime_path": "assets/sprites/projectiles/player/engineer/engineer_sentry_round.png",
+      "source_dimensions": [
+        96,
+        96
+      ],
+      "pivot": [
+        0.5,
+        0.5
+      ],
+      "animation_frames": 1,
+      "source_tool": "create_1_direction_object",
+      "prompt_spec": "FantasyDisk permanent player projectile sprite pack, high top-down D&D dark fantasy pixel art, object points to the right as forward travel direction, clean compact silhouette readable at 24-48 px, restrained selective outline, transparent background, centered with 10 percent alpha-safe padding, no text, no border, no character, no weapon held by a character, no scenery, no impact explosion. One tiny brass-and-steel sentry turret round with a compact orange spark tail, clearly mechanical and not enemy-purple; Engineer identity.",
+      "trail_palette": [
+        "#FF9B32",
+        "#7A522B"
+      ],
+      "impact_palette": [
+        "#FFD37A",
+        "#A84B18"
+      ],
+      "forward_orientation": "right",
+      "rotation_offset_degrees": 0,
+      "intended_runtime_display_px": [
+        32,
+        32
+      ],
+      "source_pack_id": "6c56dde2-1399-4b5a-8df4-5d695007bab9",
+      "source_object_id": "6cff73dd-853f-41bc-b648-8dcdf274f99e",
+      "source_tag": "SCRUM-1065_player_projectiles_marksman_device"
+    },
+    {
+      "visual_id": "biologist_sample_dart",
+      "character_id": "biologist",
+      "weapon_id": "biologist_sample_injector",
+      "runtime": "biologist/biologist_sample_dart.png",
+      "source_path": "docs/design/references/SCRUM-1065_player_projectiles/biologist_sample_dart_pixellab_source.png",
+      "runtime_path": "assets/sprites/projectiles/player/biologist/biologist_sample_dart.png",
+      "source_dimensions": [
+        96,
+        96
+      ],
+      "pivot": [
+        0.5,
+        0.5
+      ],
+      "animation_frames": 1,
+      "source_tool": "create_1_direction_object",
+      "prompt_spec": "FantasyDisk permanent player projectile sprite pack, high top-down D&D dark fantasy pixel art, object points to the right as forward travel direction, clean compact silhouette readable at 24-48 px, restrained selective outline, transparent background, centered with 10 percent alpha-safe padding, no text, no border, no character, no weapon held by a character, no scenery, no impact explosion. One glass-and-steel sample injector dart with teal reagent chamber and surgical needle tip; Biologist identity.",
+      "trail_palette": [
+        "#4FE4C8",
+        "#2A6E70"
+      ],
+      "impact_palette": [
+        "#9BFFE8",
+        "#2D9184"
+      ],
+      "forward_orientation": "right",
+      "rotation_offset_degrees": 0,
+      "intended_runtime_display_px": [
+        58,
+        24
+      ],
+      "source_pack_id": "6c56dde2-1399-4b5a-8df4-5d695007bab9",
+      "source_object_id": "907100e9-41df-45fe-8405-d6ebf95b2bb4",
+      "source_tag": "SCRUM-1065_player_projectiles_marksman_device"
+    },
+    {
+      "visual_id": "dark_mage_mirror_page",
+      "character_id": "dark_mage",
+      "weapon_id": "dark_book",
+      "runtime": "dark_mage/dark_mage_mirror_page.png",
+      "source_path": "docs/design/references/SCRUM-1065_player_projectiles/dark_mage_mirror_page_pixellab_source.png",
+      "runtime_path": "assets/sprites/projectiles/player/dark_mage/dark_mage_mirror_page.png",
+      "source_dimensions": [
+        96,
+        96
+      ],
+      "pivot": [
+        0.5,
+        0.5
+      ],
+      "animation_frames": 1,
+      "source_tool": "create_1_direction_object",
+      "prompt_spec": "FantasyDisk permanent player projectile sprite pack, high top-down D&D dark fantasy pixel art, object points to the right as forward travel direction, clean compact silhouette readable at 24-48 px, restrained selective outline, transparent background, centered with 10 percent alpha-safe padding, no text, no border, no character, no weapon held by a character, no scenery, no impact explosion. One torn black spellbook page folded into a sharp flying sigil, violet ink-fire edges and magenta center; Dark Mage book identity.",
+      "trail_palette": [
+        "#A845F5",
+        "#27112F"
+      ],
+      "impact_palette": [
+        "#F05BFF",
+        "#5A1C78"
+      ],
+      "forward_orientation": "non_directional",
+      "rotation_offset_degrees": 0,
+      "intended_runtime_display_px": [
+        54,
+        54
+      ],
+      "source_pack_id": "adbd8d1c-a0e9-476d-bab4-99f523704cfb",
+      "source_object_id": "39a5c550-17e0-44f8-98f3-96aaac88a7d8",
+      "source_tag": "SCRUM-1065_player_projectiles_dark_arcane"
+    },
+    {
+      "visual_id": "dark_mage_cursed_skull",
+      "character_id": "dark_mage",
+      "weapon_id": "cursed_skull",
+      "runtime": "dark_mage/dark_mage_cursed_skull.png",
+      "source_path": "docs/design/references/SCRUM-1065_player_projectiles/dark_mage_cursed_skull_pixellab_source.png",
+      "runtime_path": "assets/sprites/projectiles/player/dark_mage/dark_mage_cursed_skull.png",
+      "source_dimensions": [
+        96,
+        96
+      ],
+      "pivot": [
+        0.5,
+        0.5
+      ],
+      "animation_frames": 1,
+      "source_tool": "create_1_direction_object",
+      "prompt_spec": "FantasyDisk permanent player projectile sprite pack, high top-down D&D dark fantasy pixel art, object points to the right as forward travel direction, clean compact silhouette readable at 24-48 px, restrained selective outline, transparent background, centered with 10 percent alpha-safe padding, no text, no border, no character, no weapon held by a character, no scenery, no impact explosion. One small horned cursed skull projectile trailing restrained green-violet ghost flame, readable skull face and no body; Dark Mage curse identity.",
+      "trail_palette": [
+        "#69E7A1",
+        "#6546B8"
+      ],
+      "impact_palette": [
+        "#B0FFB8",
+        "#7A3DAD"
+      ],
+      "forward_orientation": "left",
+      "rotation_offset_degrees": 180,
+      "intended_runtime_display_px": [
+        52,
+        52
+      ],
+      "source_pack_id": "adbd8d1c-a0e9-476d-bab4-99f523704cfb",
+      "source_object_id": "54a0ba0b-23d3-4910-a765-635558791c17",
+      "source_tag": "SCRUM-1065_player_projectiles_dark_arcane"
+    },
+    {
+      "visual_id": "dark_mage_chain_bolt",
+      "character_id": "dark_mage",
+      "weapon_id": "dark_wand",
+      "runtime": "dark_mage/dark_mage_chain_bolt.png",
+      "source_path": "docs/design/references/SCRUM-1065_player_projectiles/dark_mage_chain_bolt_pixellab_source.png",
+      "runtime_path": "assets/sprites/projectiles/player/dark_mage/dark_mage_chain_bolt.png",
+      "source_dimensions": [
+        96,
+        96
+      ],
+      "pivot": [
+        0.5,
+        0.5
+      ],
+      "animation_frames": 1,
+      "source_tool": "create_1_direction_object",
+      "prompt_spec": "FantasyDisk permanent player projectile sprite pack, high top-down D&D dark fantasy pixel art, object points to the right as forward travel direction, clean compact silhouette readable at 24-48 px, restrained selective outline, transparent background, centered with 10 percent alpha-safe padding, no text, no border, no character, no weapon held by a character, no scenery, no impact explosion. One narrow cyan-black chain magic bolt shaped like a hooked rune spear, icy cyan core with deep violet rim; Dark Mage wand identity.",
+      "trail_palette": [
+        "#22DFFC",
+        "#25154A"
+      ],
+      "impact_palette": [
+        "#8DF6FF",
+        "#6946BA"
+      ],
+      "forward_orientation": "right",
+      "rotation_offset_degrees": 0,
+      "intended_runtime_display_px": [
+        64,
+        28
+      ],
+      "source_pack_id": "adbd8d1c-a0e9-476d-bab4-99f523704cfb",
+      "source_object_id": "5096d663-49e9-433d-bb7a-81d8518e6718",
+      "source_tag": "SCRUM-1065_player_projectiles_dark_arcane"
+    },
+    {
+      "visual_id": "elementalist_meteor",
+      "character_id": "elementalist",
+      "weapon_id": "elementalist_meteor_core",
+      "runtime": "elementalist/elementalist_meteor.png",
+      "source_path": "docs/design/references/SCRUM-1065_player_projectiles/elementalist_meteor_pixellab_source.png",
+      "runtime_path": "assets/sprites/projectiles/player/elementalist/elementalist_meteor.png",
+      "source_dimensions": [
+        96,
+        96
+      ],
+      "pivot": [
+        0.5,
+        0.5
+      ],
+      "animation_frames": 1,
+      "source_tool": "create_1_direction_object",
+      "prompt_spec": "FantasyDisk permanent player projectile sprite pack, high top-down D&D dark fantasy pixel art, object points to the right as forward travel direction, clean compact silhouette readable at 24-48 px, restrained selective outline, transparent background, centered with 10 percent alpha-safe padding, no text, no border, no character, no weapon held by a character, no scenery, no impact explosion. One jagged molten meteor stone with black basalt shell, orange-white cracks and short falling ember tail, compact not an explosion; Elementalist identity.",
+      "trail_palette": [
+        "#FF7A24",
+        "#3D1B17"
+      ],
+      "impact_palette": [
+        "#FFF0A0",
+        "#E23B16"
+      ],
+      "forward_orientation": "left",
+      "rotation_offset_degrees": 180,
+      "intended_runtime_display_px": [
+        64,
+        64
+      ],
+      "source_pack_id": "adbd8d1c-a0e9-476d-bab4-99f523704cfb",
+      "source_object_id": "bb4cc825-8e2c-43ef-997a-c83ae15ec569",
+      "source_tag": "SCRUM-1065_player_projectiles_dark_arcane"
+    },
+    {
+      "visual_id": "doctor_restore_potion",
+      "character_id": "doctor",
+      "weapon_id": "restore_potion",
+      "runtime": "doctor/doctor_restore_potion.png",
+      "source_path": "docs/design/references/SCRUM-1065_player_projectiles/doctor_restore_potion_pixellab_source.png",
+      "runtime_path": "assets/sprites/projectiles/player/doctor/doctor_restore_potion.png",
+      "source_dimensions": [
+        96,
+        96
+      ],
+      "pivot": [
+        0.5,
+        0.5
+      ],
+      "animation_frames": 1,
+      "source_tool": "create_1_direction_object",
+      "prompt_spec": "FantasyDisk permanent player projectile sprite pack, high top-down D&D dark fantasy pixel art, object points to the right as forward travel direction, clean compact silhouette readable at 24-48 px, restrained selective outline, transparent background, centered with 10 percent alpha-safe padding, no text, no border, no character, no weapon held by a character, no scenery, no impact explosion. One round corked healing potion bottle flying right, emerald glass and pale mint liquid, reinforced leather wrap; Doctor identity.",
+      "trail_palette": [
+        "#70E8A0",
+        "#346B55"
+      ],
+      "impact_palette": [
+        "#B7FFD0",
+        "#3AB77A"
+      ],
+      "forward_orientation": "non_directional",
+      "rotation_offset_degrees": 0,
+      "intended_runtime_display_px": [
+        48,
+        48
+      ],
+      "source_pack_id": "0091c724-fa88-4aaf-afbb-2d1d0ed51178",
+      "source_object_id": "e3736e1f-be8f-4cdb-bd9c-48833986ba2e",
+      "source_tag": "SCRUM-1065_player_projectiles_alchemy"
+    },
+    {
+      "visual_id": "doctor_plague_syringe",
+      "character_id": "doctor",
+      "weapon_id": "plague_syringe",
+      "runtime": "doctor/doctor_plague_syringe.png",
+      "source_path": "docs/design/references/SCRUM-1065_player_projectiles/doctor_plague_syringe_pixellab_source.png",
+      "runtime_path": "assets/sprites/projectiles/player/doctor/doctor_plague_syringe.png",
+      "source_dimensions": [
+        96,
+        96
+      ],
+      "pivot": [
+        0.5,
+        0.5
+      ],
+      "animation_frames": 1,
+      "source_tool": "create_1_direction_object",
+      "prompt_spec": "FantasyDisk permanent player projectile sprite pack, high top-down D&D dark fantasy pixel art, object points to the right as forward travel direction, clean compact silhouette readable at 24-48 px, restrained selective outline, transparent background, centered with 10 percent alpha-safe padding, no text, no border, no character, no weapon held by a character, no scenery, no impact explosion. One long plague syringe dart flying needle-first, tarnished silver, toxic green vial and bone grip; Doctor identity.",
+      "trail_palette": [
+        "#8DE34F",
+        "#3B5A2B"
+      ],
+      "impact_palette": [
+        "#CAFF80",
+        "#567A28"
+      ],
+      "forward_orientation": "left",
+      "rotation_offset_degrees": 180,
+      "intended_runtime_display_px": [
+        58,
+        24
+      ],
+      "source_pack_id": "0091c724-fa88-4aaf-afbb-2d1d0ed51178",
+      "source_object_id": "f55d928d-5247-418c-a984-f478044863c4",
+      "source_tag": "SCRUM-1065_player_projectiles_alchemy"
+    },
+    {
+      "visual_id": "chemist_blast_powder",
+      "character_id": "chemist",
+      "weapon_id": "blast_powder",
+      "runtime": "chemist/chemist_blast_powder.png",
+      "source_path": "docs/design/references/SCRUM-1065_player_projectiles/chemist_blast_powder_pixellab_source.png",
+      "runtime_path": "assets/sprites/projectiles/player/chemist/chemist_blast_powder.png",
+      "source_dimensions": [
+        96,
+        96
+      ],
+      "pivot": [
+        0.5,
+        0.5
+      ],
+      "animation_frames": 1,
+      "source_tool": "create_1_direction_object",
+      "prompt_spec": "FantasyDisk permanent player projectile sprite pack, high top-down D&D dark fantasy pixel art, object points to the right as forward travel direction, clean compact silhouette readable at 24-48 px, restrained selective outline, transparent background, centered with 10 percent alpha-safe padding, no text, no border, no character, no weapon held by a character, no scenery, no impact explosion. One compact waxed blast-powder packet projectile with ochre alchemical seal and tiny gold sparks, no letters; Chemist physical identity.",
+      "trail_palette": [
+        "#E8B44F",
+        "#6B4B25"
+      ],
+      "impact_palette": [
+        "#FFD275",
+        "#A85B20"
+      ],
+      "forward_orientation": "non_directional",
+      "rotation_offset_degrees": 0,
+      "intended_runtime_display_px": [
+        44,
+        44
+      ],
+      "source_pack_id": "0091c724-fa88-4aaf-afbb-2d1d0ed51178",
+      "source_object_id": "b51b01d6-daba-4d78-ae05-89bc585f825b",
+      "source_tag": "SCRUM-1065_player_projectiles_alchemy"
+    },
+    {
+      "visual_id": "chemist_acid_flask",
+      "character_id": "chemist",
+      "weapon_id": "acid_flask",
+      "runtime": "chemist/chemist_acid_flask.png",
+      "source_path": "docs/design/references/SCRUM-1065_player_projectiles/chemist_acid_flask_pixellab_source.png",
+      "runtime_path": "assets/sprites/projectiles/player/chemist/chemist_acid_flask.png",
+      "source_dimensions": [
+        96,
+        96
+      ],
+      "pivot": [
+        0.5,
+        0.5
+      ],
+      "animation_frames": 1,
+      "source_tool": "create_1_direction_object",
+      "prompt_spec": "FantasyDisk permanent player projectile sprite pack, high top-down D&D dark fantasy pixel art, object points to the right as forward travel direction, clean compact silhouette readable at 24-48 px, restrained selective outline, transparent background, centered with 10 percent alpha-safe padding, no text, no border, no character, no weapon held by a character, no scenery, no impact explosion. One angular acid flask projectile with sickly lime liquid, dark iron cage and one bubbling droplet, no spill background; Chemist acid identity.",
+      "trail_palette": [
+        "#B6F542",
+        "#355E2C"
+      ],
+      "impact_palette": [
+        "#D8FF66",
+        "#52A836"
+      ],
+      "forward_orientation": "non_directional",
+      "rotation_offset_degrees": 0,
+      "intended_runtime_display_px": [
+        48,
+        48
+      ],
+      "source_pack_id": "0091c724-fa88-4aaf-afbb-2d1d0ed51178",
+      "source_object_id": "d432a103-13ab-45dc-be6c-76a9c3917c03",
+      "source_tag": "SCRUM-1065_player_projectiles_alchemy"
+    },
+    {
+      "visual_id": "druid_briar_seed",
+      "character_id": "druid",
+      "weapon_id": "briar_staff",
+      "runtime": "druid/druid_briar_seed.png",
+      "source_path": "docs/design/references/SCRUM-1065_player_projectiles/druid_briar_seed_pixellab_source.png",
+      "runtime_path": "assets/sprites/projectiles/player/druid/druid_briar_seed.png",
+      "source_dimensions": [
+        96,
+        96
+      ],
+      "pivot": [
+        0.5,
+        0.5
+      ],
+      "animation_frames": 1,
+      "source_tool": "create_1_direction_object",
+      "prompt_spec": "FantasyDisk permanent player projectile sprite pack, high top-down D&D dark fantasy pixel art, object points to the right as forward travel direction, clean compact silhouette readable at 24-48 px, restrained selective outline, transparent background, centered with 10 percent alpha-safe padding, no text, no border, no character, no weapon held by a character, no scenery, no impact explosion. One dense thorn seed projectile, dark woody cone wrapped in sharp emerald briars and a pale green growth spark; Druid briar identity.",
+      "trail_palette": [
+        "#57D98B",
+        "#254B32"
+      ],
+      "impact_palette": [
+        "#9BFF9D",
+        "#39733B"
+      ],
+      "forward_orientation": "right",
+      "rotation_offset_degrees": 0,
+      "intended_runtime_display_px": [
+        60,
+        32
+      ],
+      "source_pack_id": "a0d18914-9c5c-4dee-bee4-4bbb557afcfd",
+      "source_object_id": "1b86c035-0e9e-431d-ad03-0a90e23e30da",
+      "source_tag": "SCRUM-1065_player_projectiles_nature_trickery"
+    },
+    {
+      "visual_id": "druid_spectral_raven",
+      "character_id": "druid",
+      "weapon_id": "raven_totem",
+      "runtime": "druid/druid_spectral_raven.png",
+      "source_path": "docs/design/references/SCRUM-1065_player_projectiles/druid_spectral_raven_pixellab_source.png",
+      "runtime_path": "assets/sprites/projectiles/player/druid/druid_spectral_raven.png",
+      "source_dimensions": [
+        96,
+        96
+      ],
+      "pivot": [
+        0.5,
+        0.5
+      ],
+      "animation_frames": 1,
+      "source_tool": "create_1_direction_object",
+      "prompt_spec": "FantasyDisk permanent player projectile sprite pack, high top-down D&D dark fantasy pixel art, object points to the right as forward travel direction, clean compact silhouette readable at 24-48 px, restrained selective outline, transparent background, centered with 10 percent alpha-safe padding, no text, no border, no character, no weapon held by a character, no scenery, no impact explosion. One spectral raven projectile in a tight wings-back diving silhouette, black feathers, cyan eyes and restrained teal ghost trail; Druid identity.",
+      "trail_palette": [
+        "#39C9C7",
+        "#142F35"
+      ],
+      "impact_palette": [
+        "#7FF6E8",
+        "#315D67"
+      ],
+      "forward_orientation": "right",
+      "rotation_offset_degrees": 0,
+      "intended_runtime_display_px": [
+        64,
+        40
+      ],
+      "source_pack_id": "a0d18914-9c5c-4dee-bee4-4bbb557afcfd",
+      "source_object_id": "8b6bdf3b-fa28-4ca8-96ad-f72e4863cb33",
+      "source_tag": "SCRUM-1065_player_projectiles_nature_trickery"
+    },
+    {
+      "visual_id": "thief_smoke_bomb",
+      "character_id": "thief",
+      "weapon_id": "thief_smoke_bomb",
+      "runtime": "thief/thief_smoke_bomb.png",
+      "source_path": "docs/design/references/SCRUM-1065_player_projectiles/thief_smoke_bomb_pixellab_source.png",
+      "runtime_path": "assets/sprites/projectiles/player/thief/thief_smoke_bomb.png",
+      "source_dimensions": [
+        96,
+        96
+      ],
+      "pivot": [
+        0.5,
+        0.5
+      ],
+      "animation_frames": 1,
+      "source_tool": "create_1_direction_object",
+      "prompt_spec": "FantasyDisk permanent player projectile sprite pack, high top-down D&D dark fantasy pixel art, object points to the right as forward travel direction, clean compact silhouette readable at 24-48 px, restrained selective outline, transparent background, centered with 10 percent alpha-safe padding, no text, no border, no character, no weapon held by a character, no scenery, no impact explosion. One compact black-cloth smoke bomb projectile with indigo cord and a tiny grey-purple smoke wisp, clearly a bomb not a magic orb; Thief identity.",
+      "trail_palette": [
+        "#8C80B8",
+        "#32313D"
+      ],
+      "impact_palette": [
+        "#B5AEC8",
+        "#4C465C"
+      ],
+      "forward_orientation": "non_directional",
+      "rotation_offset_degrees": 0,
+      "intended_runtime_display_px": [
+        48,
+        48
+      ],
+      "source_pack_id": "a0d18914-9c5c-4dee-bee4-4bbb557afcfd",
+      "source_object_id": "38396f5b-212d-485e-9d1d-39d38b8a45e3",
+      "source_tag": "SCRUM-1065_player_projectiles_nature_trickery"
+    },
+    {
+      "visual_id": "sniper_shatter_round",
+      "character_id": "sniper",
+      "weapon_id": "sniper_shatter_rounds",
+      "runtime": "sniper/sniper_shatter_round.png",
+      "reuse": "docs/design/references/sniper_projectile_vfx/accepted_shatter_rounds_projectile.png",
+      "source_path": "docs/design/references/SCRUM-1065_player_projectiles/sniper_shatter_round_pixellab_source.png",
+      "runtime_path": "assets/sprites/projectiles/player/sniper/sniper_shatter_round.png",
+      "source_dimensions": [
+        128,
+        64
+      ],
+      "pivot": [
+        0.5,
+        0.5
+      ],
+      "animation_frames": 1,
+      "source_tool": "create_1_direction_object",
+      "prompt_spec": "FantasyDisk permanent player projectile sprite pack, high top-down D&D dark fantasy pixel art, object points to the right as forward travel direction, clean compact silhouette readable at 24-48 px, restrained selective outline, transparent background, centered with 10 percent alpha-safe padding, no text, no border, no character, no weapon held by a character, no scenery, no impact explosion. Accepted SCRUM-934 blackened-steel needle projectile with icy-cyan tail; preserved without redraw.",
+      "trail_palette": [
+        "#C8F7FF",
+        "#506776"
+      ],
+      "impact_palette": [
+        "#E8FCFF",
+        "#7CA6BA"
+      ],
+      "forward_orientation": "right",
+      "rotation_offset_degrees": 0,
+      "intended_runtime_display_px": [
+        48,
+        24
+      ],
+      "source_pack_id": "SCRUM-934",
+      "source_object_id": "7da22aa9-112f-4f01-942b-4f6d9d85c380",
+      "source_tag": "accepted_scrum934_reuse"
+    }
+  ],
+  "inventory": [
+    {
+      "character_id": "berserk",
+      "weapon_id": "sword",
+      "title": "Двуручный меч",
+      "attack_mode": "",
+      "attack_shape": "sweep",
+      "classification": "intentional_non_projectile",
+      "projectile_visual_id": null,
+      "asset_path": null,
+      "reuse_rationale": "melee sweep attached to the hero; no flying entity"
+    },
+    {
+      "character_id": "berserk",
+      "weapon_id": "axe",
+      "title": "Двуручный топор",
+      "attack_mode": "",
+      "attack_shape": "sweep",
+      "classification": "intentional_non_projectile",
+      "projectile_visual_id": null,
+      "asset_path": null,
+      "reuse_rationale": "melee sweep attached to the hero; no flying entity"
+    },
+    {
+      "character_id": "berserk",
+      "weapon_id": "hammer",
+      "title": "Двуручный молот",
+      "attack_mode": "",
+      "attack_shape": "circle",
+      "classification": "intentional_non_projectile",
+      "projectile_visual_id": null,
+      "asset_path": null,
+      "reuse_rationale": "self-centered melee slam; no flying entity"
+    },
+    {
+      "character_id": "dark_mage",
+      "weapon_id": "dark_book",
+      "title": "Книга тьмы",
+      "attack_mode": "dark_mirror_blast",
+      "attack_shape": "",
+      "classification": "flying_projectile",
+      "projectile_visual_id": "dark_mage_mirror_page",
+      "asset_path": "assets/sprites/projectiles/player/dark_mage/dark_mage_mirror_page.png",
+      "reuse_rationale": "unique per weapon; no cross-class reuse"
+    },
+    {
+      "character_id": "dark_mage",
+      "weapon_id": "cursed_skull",
+      "title": "Проклятый череп",
+      "attack_mode": "skull_curse_burn",
+      "attack_shape": "",
+      "classification": "flying_projectile",
+      "projectile_visual_id": "dark_mage_cursed_skull",
+      "asset_path": "assets/sprites/projectiles/player/dark_mage/dark_mage_cursed_skull.png",
+      "reuse_rationale": "unique per weapon; no cross-class reuse"
+    },
+    {
+      "character_id": "dark_mage",
+      "weapon_id": "dark_wand",
+      "title": "Темная палочка",
+      "attack_mode": "dark_chain_burst",
+      "attack_shape": "",
+      "classification": "flying_projectile",
+      "projectile_visual_id": "dark_mage_chain_bolt",
+      "asset_path": "assets/sprites/projectiles/player/dark_mage/dark_mage_chain_bolt.png",
+      "reuse_rationale": "unique per weapon; no cross-class reuse"
+    },
+    {
+      "character_id": "guitarist",
+      "weapon_id": "electric_guitar",
+      "title": "Электрогитара",
+      "attack_mode": "riff_strip",
+      "attack_shape": "",
+      "classification": "intentional_non_projectile",
+      "projectile_visual_id": null,
+      "asset_path": null,
+      "reuse_rationale": "instant fixed-width riff strip; beam/wave VFX, not a flying entity"
+    },
+    {
+      "character_id": "guitarist",
+      "weapon_id": "bass_guitar",
+      "title": "Бас-гитара",
+      "attack_mode": "pulse",
+      "attack_shape": "",
+      "classification": "intentional_non_projectile",
+      "projectile_visual_id": null,
+      "asset_path": null,
+      "reuse_rationale": "self-centered pulse aura; no flying entity"
+    },
+    {
+      "character_id": "guitarist",
+      "weapon_id": "sound_amp",
+      "title": "Звуковой усилитель",
+      "attack_mode": "amp",
+      "attack_shape": "",
+      "classification": "intentional_non_projectile",
+      "projectile_visual_id": null,
+      "asset_path": null,
+      "reuse_rationale": "stationary deployable that emits area pulses; no flying entity"
+    },
+    {
+      "character_id": "assassin",
+      "weapon_id": "chakrams",
+      "title": "Чакрамы",
+      "attack_mode": "boomerang",
+      "attack_shape": "",
+      "classification": "flying_projectile",
+      "projectile_visual_id": "assassin_void_chakram",
+      "asset_path": "assets/sprites/projectiles/player/assassin/assassin_void_chakram.png",
+      "reuse_rationale": "unique per weapon; no cross-class reuse"
+    },
+    {
+      "character_id": "assassin",
+      "weapon_id": "shadow_daggers",
+      "title": "Теневые кинжалы",
+      "attack_mode": "stab_flurry",
+      "attack_shape": "",
+      "classification": "intentional_non_projectile",
+      "projectile_visual_id": null,
+      "asset_path": null,
+      "reuse_rationale": "point-blank melee stab flurry; no flying dagger entity"
+    },
+    {
+      "character_id": "assassin",
+      "weapon_id": "venom_wire",
+      "title": "Ядовитая струна",
+      "attack_mode": "dot_beam",
+      "attack_shape": "",
+      "classification": "intentional_non_projectile",
+      "projectile_visual_id": null,
+      "asset_path": null,
+      "reuse_rationale": "instant piercing DoT beam/garrote line; no flying entity"
+    },
+    {
+      "character_id": "ranger",
+      "weapon_id": "moon_crossbow",
+      "title": "Лунный арбалет",
+      "attack_mode": "moon_split_shot",
+      "attack_shape": "",
+      "classification": "projectile_like_tracer",
+      "projectile_visual_id": "ranger_moon_bolt",
+      "asset_path": "assets/sprites/projectiles/player/ranger/ranger_moon_bolt.png",
+      "reuse_rationale": "unique per weapon; no cross-class reuse"
+    },
+    {
+      "character_id": "ranger",
+      "weapon_id": "storm_longbow",
+      "title": "Грозовой длинный лук",
+      "attack_mode": "storm_pierce_cone",
+      "attack_shape": "",
+      "classification": "projectile_like_tracer",
+      "projectile_visual_id": "ranger_storm_arrow",
+      "asset_path": "assets/sprites/projectiles/player/ranger/ranger_storm_arrow.png",
+      "reuse_rationale": "unique per weapon; no cross-class reuse"
+    },
+    {
+      "character_id": "ranger",
+      "weapon_id": "hunter_trap",
+      "title": "Охотничий капкан",
+      "attack_mode": "trap",
+      "attack_shape": "",
+      "classification": "intentional_non_projectile",
+      "projectile_visual_id": null,
+      "asset_path": null,
+      "reuse_rationale": "persistent stationary trap; no flying entity"
+    },
+    {
+      "character_id": "doctor",
+      "weapon_id": "restore_potion",
+      "title": "Зелье восстановления",
+      "attack_mode": "aoe_projectile",
+      "attack_shape": "",
+      "classification": "flying_projectile",
+      "projectile_visual_id": "doctor_restore_potion",
+      "asset_path": "assets/sprites/projectiles/player/doctor/doctor_restore_potion.png",
+      "reuse_rationale": "unique per weapon; no cross-class reuse"
+    },
+    {
+      "character_id": "doctor",
+      "weapon_id": "plague_syringe",
+      "title": "Чумной шприц",
+      "attack_mode": "plague_dart",
+      "attack_shape": "",
+      "classification": "flying_projectile",
+      "projectile_visual_id": "doctor_plague_syringe",
+      "asset_path": "assets/sprites/projectiles/player/doctor/doctor_plague_syringe.png",
+      "reuse_rationale": "unique per weapon; no cross-class reuse"
+    },
+    {
+      "character_id": "doctor",
+      "weapon_id": "bone_saw",
+      "title": "Костяная пила",
+      "attack_mode": "saw_sector",
+      "attack_shape": "",
+      "classification": "intentional_non_projectile",
+      "projectile_visual_id": null,
+      "asset_path": null,
+      "reuse_rationale": "melee sector saw; no flying entity"
+    },
+    {
+      "character_id": "chemist",
+      "weapon_id": "blast_powder",
+      "title": "Взрывная пыль",
+      "attack_mode": "aoe_projectile",
+      "attack_shape": "",
+      "classification": "flying_projectile",
+      "projectile_visual_id": "chemist_blast_powder",
+      "asset_path": "assets/sprites/projectiles/player/chemist/chemist_blast_powder.png",
+      "reuse_rationale": "unique per weapon; no cross-class reuse"
+    },
+    {
+      "character_id": "chemist",
+      "weapon_id": "acid_flask",
+      "title": "Кислотная колба",
+      "attack_mode": "aoe_projectile",
+      "attack_shape": "",
+      "classification": "flying_projectile",
+      "projectile_visual_id": "chemist_acid_flask",
+      "asset_path": "assets/sprites/projectiles/player/chemist/chemist_acid_flask.png",
+      "reuse_rationale": "unique per weapon; no cross-class reuse"
+    },
+    {
+      "character_id": "chemist",
+      "weapon_id": "homunculus_vial",
+      "title": "Склянка гомункула",
+      "attack_mode": "",
+      "attack_shape": "",
+      "classification": "intentional_non_projectile",
+      "projectile_visual_id": null,
+      "asset_path": null,
+      "reuse_rationale": "summon/deploy contract; the vial is not a live flying damage path"
+    },
+    {
+      "character_id": "knight",
+      "weapon_id": "long_spear",
+      "title": "Копье",
+      "attack_mode": "",
+      "attack_shape": "strip",
+      "classification": "intentional_non_projectile",
+      "projectile_visual_id": null,
+      "asset_path": null,
+      "reuse_rationale": "hero-attached thrust strips; no flying spear"
+    },
+    {
+      "character_id": "knight",
+      "weapon_id": "tower_shield",
+      "title": "Башенный щит",
+      "attack_mode": "",
+      "attack_shape": "sweep",
+      "classification": "intentional_non_projectile",
+      "projectile_visual_id": null,
+      "asset_path": null,
+      "reuse_rationale": "hero-attached shield cone; no flying entity"
+    },
+    {
+      "character_id": "knight",
+      "weapon_id": "holy_flail",
+      "title": "Освященный кистень",
+      "attack_mode": "",
+      "attack_shape": "circle",
+      "classification": "intentional_non_projectile",
+      "projectile_visual_id": null,
+      "asset_path": null,
+      "reuse_rationale": "hero-centered expanding spiral; no flying flail entity"
+    },
+    {
+      "character_id": "druid",
+      "weapon_id": "summon_amulet",
+      "title": "Амулет призыва",
+      "attack_mode": "",
+      "attack_shape": "",
+      "classification": "intentional_non_projectile",
+      "projectile_visual_id": null,
+      "asset_path": null,
+      "reuse_rationale": "summons commanded pets; no flying attack entity"
+    },
+    {
+      "character_id": "druid",
+      "weapon_id": "briar_staff",
+      "title": "Посох терний",
+      "attack_mode": "aoe_projectile",
+      "attack_shape": "",
+      "classification": "flying_projectile",
+      "projectile_visual_id": "druid_briar_seed",
+      "asset_path": "assets/sprites/projectiles/player/druid/druid_briar_seed.png",
+      "reuse_rationale": "unique per weapon; no cross-class reuse"
+    },
+    {
+      "character_id": "druid",
+      "weapon_id": "raven_totem",
+      "title": "Вороний тотем",
+      "attack_mode": "amp",
+      "attack_shape": "",
+      "classification": "flying_projectile",
+      "projectile_visual_id": "druid_spectral_raven",
+      "asset_path": "assets/sprites/projectiles/player/druid/druid_spectral_raven.png",
+      "reuse_rationale": "unique per weapon; no cross-class reuse"
+    },
+    {
+      "character_id": "soldier",
+      "weapon_id": "soldier_rifle",
+      "title": "Аркебуза строя",
+      "attack_mode": "arquebus_shot",
+      "attack_shape": "",
+      "classification": "flying_projectile",
+      "projectile_visual_id": "soldier_arquebus_round",
+      "asset_path": "assets/sprites/projectiles/player/soldier/soldier_arquebus_round.png",
+      "reuse_rationale": "unique per weapon; no cross-class reuse"
+    },
+    {
+      "character_id": "soldier",
+      "weapon_id": "soldier_grenade",
+      "title": "Граната с фитилем",
+      "attack_mode": "grenade_fuse",
+      "attack_shape": "",
+      "classification": "flying_projectile",
+      "projectile_visual_id": "soldier_fuse_grenade",
+      "asset_path": "assets/sprites/projectiles/player/soldier/soldier_fuse_grenade.png",
+      "reuse_rationale": "unique per weapon; no cross-class reuse"
+    },
+    {
+      "character_id": "soldier",
+      "weapon_id": "soldier_bayonet",
+      "title": "Штык-стойка",
+      "attack_mode": "bayonet_cone",
+      "attack_shape": "",
+      "classification": "intentional_non_projectile",
+      "projectile_visual_id": null,
+      "asset_path": null,
+      "reuse_rationale": "melee bayonet cone; no flying entity"
+    },
+    {
+      "character_id": "thief",
+      "weapon_id": "thief_coin_pouch",
+      "title": "Кошель Рикошета",
+      "attack_mode": "coin_ricochet",
+      "attack_shape": "",
+      "classification": "flying_projectile",
+      "projectile_visual_id": "thief_ricochet_coin",
+      "asset_path": "assets/sprites/projectiles/player/thief/thief_ricochet_coin.png",
+      "reuse_rationale": "unique per weapon; no cross-class reuse"
+    },
+    {
+      "character_id": "thief",
+      "weapon_id": "thief_shadow_cloak",
+      "title": "Отравленный Кинжал",
+      "attack_mode": "shadow_backstab",
+      "attack_shape": "",
+      "classification": "intentional_non_projectile",
+      "projectile_visual_id": null,
+      "asset_path": null,
+      "reuse_rationale": "teleport/backstab melee strike; no flying dagger entity"
+    },
+    {
+      "character_id": "thief",
+      "weapon_id": "thief_smoke_bomb",
+      "title": "Дымовая Бомба",
+      "attack_mode": "smoke_bomb",
+      "attack_shape": "",
+      "classification": "flying_projectile",
+      "projectile_visual_id": "thief_smoke_bomb",
+      "asset_path": "assets/sprites/projectiles/player/thief/thief_smoke_bomb.png",
+      "reuse_rationale": "unique per weapon; no cross-class reuse"
+    },
+    {
+      "character_id": "elementalist",
+      "weapon_id": "elementalist_orb_ring",
+      "title": "Кольцо Четырёх Стихий",
+      "attack_mode": "elemental_orbit",
+      "attack_shape": "",
+      "classification": "intentional_non_projectile",
+      "projectile_visual_id": null,
+      "asset_path": null,
+      "reuse_rationale": "stationary four-element square field at cast point; orbs are field anchors, not travelling projectiles"
+    },
+    {
+      "character_id": "elementalist",
+      "weapon_id": "elementalist_prism_focus",
+      "title": "Призматический Фокус",
+      "attack_mode": "prism_rift",
+      "attack_shape": "",
+      "classification": "intentional_non_projectile",
+      "projectile_visual_id": null,
+      "asset_path": null,
+      "reuse_rationale": "instant full-map diagonal rift beams; no flying entity"
+    },
+    {
+      "character_id": "elementalist",
+      "weapon_id": "elementalist_meteor_core",
+      "title": "Ядро Метеора",
+      "attack_mode": "meteor_shards",
+      "attack_shape": "",
+      "classification": "flying_projectile",
+      "projectile_visual_id": "elementalist_meteor",
+      "asset_path": "assets/sprites/projectiles/player/elementalist/elementalist_meteor.png",
+      "reuse_rationale": "unique per weapon; no cross-class reuse"
+    },
+    {
+      "character_id": "sniper",
+      "weapon_id": "sniper_deadeye_rifle",
+      "title": "Винтовка Мертвого Глаза",
+      "attack_mode": "sniper_lockshot",
+      "attack_shape": "",
+      "classification": "intentional_non_projectile",
+      "projectile_visual_id": null,
+      "asset_path": null,
+      "reuse_rationale": "lockshot telegraph resolves as an instant precision trace with endpoint impact; accepted SCRUM-934 impact remains the visual contract, no flying sprite"
+    },
+    {
+      "character_id": "sniper",
+      "weapon_id": "sniper_spotter_scope",
+      "title": "Прицел Наводчика",
+      "attack_mode": "sniper_kill_zone",
+      "attack_shape": "",
+      "classification": "intentional_non_projectile",
+      "projectile_visual_id": null,
+      "asset_path": null,
+      "reuse_rationale": "marked kill-zone rains telegraphed precision beams; no persistent travelling projectile"
+    },
+    {
+      "character_id": "sniper",
+      "weapon_id": "sniper_shatter_rounds",
+      "title": "Осколочные Патроны",
+      "attack_mode": "sniper_split_round",
+      "attack_shape": "",
+      "classification": "flying_projectile",
+      "projectile_visual_id": "sniper_shatter_round",
+      "asset_path": "assets/sprites/projectiles/player/sniper/sniper_shatter_round.png",
+      "reuse_rationale": "preserves accepted SCRUM-934 permanent source/export; no redraw required"
+    },
+    {
+      "character_id": "priest",
+      "weapon_id": "priest_reliquary",
+      "title": "Светлый Реликварий",
+      "attack_mode": "priest_sanctify",
+      "attack_shape": "",
+      "classification": "intentional_non_projectile",
+      "projectile_visual_id": null,
+      "asset_path": null,
+      "reuse_rationale": "delayed stationary sanctify mark/explosion; no flying entity"
+    },
+    {
+      "character_id": "priest",
+      "weapon_id": "priest_censer",
+      "title": "Кадило Обета",
+      "attack_mode": "priest_ward",
+      "attack_shape": "",
+      "classification": "intentional_non_projectile",
+      "projectile_visual_id": null,
+      "asset_path": null,
+      "reuse_rationale": "self/area ward pulses; no flying entity"
+    },
+    {
+      "character_id": "priest",
+      "weapon_id": "priest_chime",
+      "title": "Колокол Молитвы",
+      "attack_mode": "priest_dual_toll",
+      "attack_shape": "",
+      "classification": "intentional_non_projectile",
+      "projectile_visual_id": null,
+      "asset_path": null,
+      "reuse_rationale": "dual prayer toll/chain effect; beam/area feedback, no flying entity"
+    },
+    {
+      "character_id": "biologist",
+      "weapon_id": "biologist_spore_lens",
+      "title": "Споровая Линза",
+      "attack_mode": "bio_spore_bloom",
+      "attack_shape": "",
+      "classification": "intentional_non_projectile",
+      "projectile_visual_id": null,
+      "asset_path": null,
+      "reuse_rationale": "expanding target-centered spore bloom rings; no flying entity"
+    },
+    {
+      "character_id": "biologist",
+      "weapon_id": "biologist_sample_injector",
+      "title": "Инъектор Образцов",
+      "attack_mode": "bio_sample_dart",
+      "attack_shape": "",
+      "classification": "projectile_like_tracer",
+      "projectile_visual_id": "biologist_sample_dart",
+      "asset_path": "assets/sprites/projectiles/player/biologist/biologist_sample_dart.png",
+      "reuse_rationale": "unique per weapon; no cross-class reuse"
+    },
+    {
+      "character_id": "biologist",
+      "weapon_id": "biologist_symbiote_seed",
+      "title": "Семя Симбионта",
+      "attack_mode": "bio_symbiote_web",
+      "attack_shape": "",
+      "classification": "intentional_non_projectile",
+      "projectile_visual_id": null,
+      "asset_path": null,
+      "reuse_rationale": "symbiote damage-sharing web links; no flying seed entity"
+    },
+    {
+      "character_id": "robot",
+      "weapon_id": "robot_magnetic_anchor",
+      "title": "Магнитный Якорь",
+      "attack_mode": "robot_magnetic_anchor",
+      "attack_shape": "",
+      "classification": "intentional_non_projectile",
+      "projectile_visual_id": null,
+      "asset_path": null,
+      "reuse_rationale": "delayed point-centered anchor pull/impact; stationary telegraph, no flying entity"
+    },
+    {
+      "character_id": "robot",
+      "weapon_id": "robot_hydraulic_press",
+      "title": "Гидравлический Пресс",
+      "attack_mode": "robot_compression_line",
+      "attack_shape": "",
+      "classification": "intentional_non_projectile",
+      "projectile_visual_id": null,
+      "asset_path": null,
+      "reuse_rationale": "instant compression corridor; no flying entity"
+    },
+    {
+      "character_id": "robot",
+      "weapon_id": "robot_reactor_core",
+      "title": "Реакторное Ядро",
+      "attack_mode": "robot_reactor_vent",
+      "attack_shape": "",
+      "classification": "intentional_non_projectile",
+      "projectile_visual_id": null,
+      "asset_path": null,
+      "reuse_rationale": "four rotating radial vent strips; wave/beam contract, no flying entity"
+    },
+    {
+      "character_id": "engineer",
+      "weapon_id": "engineer_sentry_wrench",
+      "title": "Часовая турель",
+      "attack_mode": "engineer_sentry_link",
+      "attack_shape": "",
+      "classification": "flying_projectile",
+      "projectile_visual_id": "engineer_sentry_round",
+      "asset_path": "assets/sprites/projectiles/player/engineer/engineer_sentry_round.png",
+      "reuse_rationale": "unique per weapon; no cross-class reuse"
+    },
+    {
+      "character_id": "engineer",
+      "weapon_id": "engineer_repair_drone",
+      "title": "Орбитальный Дрон",
+      "attack_mode": "engineer_orbit_drone",
+      "attack_shape": "",
+      "classification": "intentional_non_projectile",
+      "projectile_visual_id": null,
+      "asset_path": null,
+      "reuse_rationale": "persistent orbiting summon/contact damage; no flying shot entity"
+    },
+    {
+      "character_id": "engineer",
+      "weapon_id": "engineer_pressure_mines",
+      "title": "Минная Сетка",
+      "attack_mode": "engineer_pressure_mines",
+      "attack_shape": "",
+      "classification": "intentional_non_projectile",
+      "projectile_visual_id": null,
+      "asset_path": null,
+      "reuse_rationale": "persistent stationary mine deploy; no flying damage entity"
+    }
+  ],
+  "previews": {
+    "source": "docs/design/previews/SCRUM-1065_player_projectiles/source_contact_sheet.png",
+    "gameplay_scale": "docs/design/previews/SCRUM-1065_player_projectiles/gameplay_scale_dark_light_contact_sheet.png"
+  },
+  "qa_report": "docs/design/references/SCRUM-1065_player_projectiles/qa_report.json"
+}

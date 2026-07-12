@@ -1,0 +1,93 @@
+{
+  "ok": true,
+  "zones": [
+    {
+      "id": "title",
+      "rect": [
+        86,
+        64,
+        118,
+        22
+      ],
+      "ok": true,
+      "kind": "guide"
+    },
+    {
+      "id": "tab_screen",
+      "rect": [
+        214,
+        109,
+        60,
+        20
+      ],
+      "ok": true,
+      "kind": "guide"
+    },
+    {
+      "id": "tab_sound",
+      "rect": [
+        314,
+        109,
+        58,
+        20
+      ],
+      "ok": true,
+      "kind": "guide"
+    },
+    {
+      "id": "tab_controls",
+      "rect": [
+        406,
+        109,
+        76,
+        20
+      ],
+      "ok": true,
+      "kind": "guide"
+    },
+    {
+      "id": "monitor",
+      "rect": [
+        172,
+        154,
+        120,
+        20
+      ],
+      "ok": true,
+      "kind": "guide"
+    },
+    {
+      "id": "resolution",
+      "rect": [
+        172,
+        186,
+        120,
+        20
+      ],
+      "ok": true,
+      "kind": "guide"
+    },
+    {
+      "id": "window_mode",
+      "rect": [
+        172,
+        218,
+        120,
+        20
+      ],
+      "ok": true,
+      "kind": "guide"
+    },
+    {
+      "id": "shake",
+      "rect": [
+        172,
+        250,
+        120,
+        20
+      ],
+      "ok": true,
+      "kind": "guide"
+    }
+  ]
+}

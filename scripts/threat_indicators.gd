@@ -7,6 +7,8 @@ extends Control
 ## их направлении с цветом/глифом ранга. Маркер пропадает, как только цель в кадре
 ## или мертва. Обычные melee-мобы не маркируются (Enemy.threat_marker_rank() == "").
 
+const SemanticTypography := preload("res://scripts/ui/semantic_typography.gd")
+
 const EDGE_INSET := 34.0          # отступ маркера от края экрана
 const ARROW_LENGTH := 26.0
 const ARROW_HALF_WIDTH := 13.0
@@ -117,7 +119,12 @@ func _draw_marker(pos: Vector2, dir: Vector2, style: Dictionary) -> void:
 	var glyph := str(style["glyph"])
 	var font := ThemeDB.fallback_font
 	if font != null:
-		var font_size := int(round(15.0 * scale))
+		var font_size := SemanticTypography.resolve_fixed(
+			SemanticTypography.ROLE_HUD,
+			SemanticTypography.resolve_scaled_compat(SemanticTypography.ROLE_HUD, 15.0, scale),
+			SemanticTypography.role_min(SemanticTypography.ROLE_HUD),
+			SemanticTypography.role_max(SemanticTypography.ROLE_HUD)
+		)
 		var text_size := font.get_string_size(glyph, HORIZONTAL_ALIGNMENT_CENTER, -1, font_size)
 		draw_string(font, pos - text_size * 0.5 + Vector2(0, text_size.y * 0.35), glyph,
 			HORIZONTAL_ALIGNMENT_CENTER, -1, font_size, Color(0.05, 0.03, 0.02, 0.95))

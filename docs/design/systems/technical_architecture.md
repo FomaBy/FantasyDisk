@@ -56,6 +56,29 @@ Use groups for temporary runtime nodes:
 
 `_clear_world()` and transition flows must remove class-specific leftovers.
 
+### Player lifecycle ownership (SCRUM-1071)
+
+- A live combat has exactly one lifecycle generation: `CombatDirector._start_combat()`
+  is always idempotent while a start is in progress. Once built, a repeated
+  route/mouse/key/gamepad/dev-console trigger is ignored only when
+  `combat_active` is backed by the owned current Player, matching generation
+  metadata and a live combat HUD. A stale boolean after direct route teardown is
+  normalized and cannot block the next RouteNode activation.
+- Every full `Player.tscn` instance created by Main receives
+  `player_lifecycle_owner` and `player_lifecycle_role`. Combat instances remain
+  in `player`; stat-only menu snapshots use role `menu_snapshot`, group
+  `temporary_players`, disabled processing/collision and a disabled `Camera2D`.
+- `current_player` is a convenience reference, not the cleanup authority.
+  `_clear_world()` finds every Player owned by that Main, removes it from groups
+  and detaches it from the tree synchronously, then uses deferred `queue_free()`
+  for signal-safe destruction. `_clear_ui()` performs the same central cleanup
+  for temporary menu snapshots before pause/settings UI references are cleared.
+- The focused invariant/stress gate is
+  `tests/duplicate_player_spawn_regression_test.gd`: 50 new/continue transitions
+  across battle/elite/boss starts, unresolved dossier snapshots, repeated start
+  triggers, the stale-`combat_active` RouteMap gamepad-A boundary, process+physics
+  frames, one Player/Camera/HUD/weapon and one handler per combat signal.
+
 ## Resource Loading
 
 - Avoid `load()` in hot paths.
@@ -101,6 +124,10 @@ Additional checks:
   SceneTree test.
 - `tests/melee_weapon_targeting_test.gd`;
 - `tests/meta_progression_smoke_test.gd`.
+- `tests/projectile_visual_registry_test.gd` — SCRUM-1066 manifest/registry
+  integrity for all 17 classes and 51 weapons, 20 canonical projectile profiles,
+  valid asset selection, 31 intentional non-projectile entries and fail-safe
+  behavior for missing IDs.
 - `tests/run_autosave_persistence_test.gd`.
 - In-game feedback smoke is embedded in `tests/runtime_smoke_test.gd` and
   verifies the `P` action, overlay lifecycle, screenshot preview, local fallback

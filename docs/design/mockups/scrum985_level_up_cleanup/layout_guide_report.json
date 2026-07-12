@@ -1,0 +1,137 @@
+{
+  "ok": true,
+  "zones": [
+    {
+      "id": "title",
+      "rect": [
+        480,
+        42,
+        960,
+        72
+      ],
+      "ok": true,
+      "kind": "guide"
+    },
+    {
+      "id": "subtitle",
+      "rect": [
+        420,
+        126,
+        1080,
+        46
+      ],
+      "ok": true,
+      "kind": "guide"
+    },
+    {
+      "id": "card_1_title",
+      "rect": [
+        175,
+        515,
+        440,
+        44
+      ],
+      "ok": true,
+      "kind": "guide"
+    },
+    {
+      "id": "card_1_desc",
+      "rect": [
+        175,
+        565,
+        440,
+        60
+      ],
+      "ok": true,
+      "kind": "guide"
+    },
+    {
+      "id": "card_1_effect",
+      "rect": [
+        165,
+        650,
+        460,
+        70
+      ],
+      "ok": true,
+      "kind": "guide"
+    },
+    {
+      "id": "card_2_title",
+      "rect": [
+        740,
+        515,
+        440,
+        44
+      ],
+      "ok": true,
+      "kind": "guide"
+    },
+    {
+      "id": "card_2_desc",
+      "rect": [
+        740,
+        565,
+        440,
+        60
+      ],
+      "ok": true,
+      "kind": "guide"
+    },
+    {
+      "id": "card_2_effect",
+      "rect": [
+        730,
+        650,
+        460,
+        70
+      ],
+      "ok": true,
+      "kind": "guide"
+    },
+    {
+      "id": "card_3_title",
+      "rect": [
+        1305,
+        515,
+        440,
+        44
+      ],
+      "ok": true,
+      "kind": "guide"
+    },
+    {
+      "id": "card_3_desc",
+      "rect": [
+        1305,
+        565,
+        440,
+        60
+      ],
+      "ok": true,
+      "kind": "guide"
+    },
+    {
+      "id": "card_3_effect",
+      "rect": [
+        1295,
+        650,
+        460,
+        70
+      ],
+      "ok": true,
+      "kind": "guide"
+    },
+    {
+      "id": "later",
+      "rect": [
+        790,
+        900,
+        340,
+        76
+      ],
+      "ok": true,
+      "kind": "guide"
+    }
+  ]
+}

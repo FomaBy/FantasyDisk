@@ -1,0 +1,100 @@
+{
+  "jira": "SCRUM-1015",
+  "parent": "SCRUM-901",
+  "animator_handoff": "SCRUM-1016",
+  "backend_dependency": "SCRUM-902",
+  "generator": "PixelLab MCP create_character",
+  "config_smoke": {
+    "tool": "get_balance",
+    "status": "PASS",
+    "existing_tag_inventory": "0 matching characters",
+    "secrets_printed_or_stored": false
+  },
+  "policy": {
+    "pixel_lab_only": true,
+    "openai_images_used": false,
+    "manual_or_legacy_fallback_used": false,
+    "source_direction_count": 4,
+    "repo_export_directions": ["west", "east"],
+    "runtime_or_animation_files_created": false
+  },
+  "completed_at": "2026-07-09",
+  "art_direction": "Friendly allied spectral Druid creatures, bright cyan/blue ghost light, distinct combat silhouettes, restrained D&D dark fantasy, transparent background, no text/logo/watermark, no red/orange enemy palette, stable ground baseline and safe gutters.",
+  "creatures": [
+    {
+      "id": "druid_ghost_wolf",
+      "role": "physical_melee_aoe",
+      "template": "dog",
+      "request": "request_druid_ghost_wolf.json",
+      "status": "completed",
+      "pixellab_character_id": "8d473df8-9bc2-481c-ad58-b69cfecc5d33",
+      "exports": {
+        "west": {"file": "druid_ghost_wolf_west.png", "size": [180, 180], "visible_bbox": [46, 45, 167, 129]},
+        "east": {"file": "druid_ghost_wolf_east.png", "size": [180, 180], "visible_bbox": [15, 44, 134, 128]}
+      }
+    },
+    {
+      "id": "druid_ghost_bear",
+      "role": "physical_melee_aoe",
+      "template": "bear",
+      "request": "request_druid_ghost_bear.json",
+      "status": "completed",
+      "pixellab_character_id": "6805608a-b64a-471c-a1d9-9601a3062e2f",
+      "exports": {
+        "west": {"file": "druid_ghost_bear_west.png", "size": [180, 180], "visible_bbox": [22, 24, 156, 160]},
+        "east": {"file": "druid_ghost_bear_east.png", "size": [180, 180], "visible_bbox": [22, 26, 158, 161]}
+      }
+    },
+    {
+      "id": "druid_ghost_panther",
+      "role": "physical_melee_aoe",
+      "template": "cat",
+      "request": "request_druid_ghost_panther.json",
+      "status": "completed",
+      "pixellab_character_id": "b2d06d20-aabb-48e2-9d8a-5053daa03e8e",
+      "exports": {
+        "west": {"file": "druid_ghost_panther_west.png", "size": [180, 180], "visible_bbox": [48, 55, 161, 123]},
+        "east": {"file": "druid_ghost_panther_east.png", "size": [180, 180], "visible_bbox": [17, 55, 132, 124]}
+      }
+    },
+    {
+      "id": "druid_ghost_stag",
+      "role": "magical_ranged_caster",
+      "template": "horse",
+      "request": "request_druid_ghost_stag.json",
+      "status": "completed",
+      "pixellab_character_id": "f17948e2-8e1d-44f2-93f1-8f8593ae01fe",
+      "exports": {
+        "west": {"file": "druid_ghost_stag_west.png", "size": [180, 180], "visible_bbox": [34, 22, 156, 152]},
+        "east": {"file": "druid_ghost_stag_east.png", "size": [180, 180], "visible_bbox": [27, 21, 147, 148]}
+      }
+    },
+    {
+      "id": "druid_ghost_lion",
+      "role": "magical_ranged_caster",
+      "template": "lion",
+      "request": "request_druid_ghost_lion.json",
+      "status": "completed",
+      "pixellab_character_id": "48d76788-eeba-4a9f-a36f-bd40a8f42e07",
+      "exports": {
+        "west": {"file": "druid_ghost_lion_west.png", "size": [180, 180], "visible_bbox": [29, 38, 169, 134]},
+        "east": {"file": "druid_ghost_lion_east.png", "size": [180, 180], "visible_bbox": [13, 37, 150, 131]}
+      }
+    }
+  ],
+  "outputs": {
+    "contact_sheet": "../../previews/druid_summons_ghost_pack_contact.png",
+    "qa_overlay": "../../previews/druid_summons_ghost_pack_alpha_qa.png",
+    "qa_report": "qa_report.json",
+    "handoff_spec": "handoff_spec.md"
+  },
+  "qa_summary": {
+    "status": "PASS",
+    "source_png_count": 10,
+    "canvas_size": [180, 180],
+    "alpha_extrema": [0, 255],
+    "minimum_exterior_gutter_px": 11,
+    "maximum_west_east_visible_bottom_delta_px": 4,
+    "visual_review": "PASS — five distinct friendly spectral silhouettes; role families and west/east facing are readable; no crop, background, text, logo or watermark."
+  }
+}

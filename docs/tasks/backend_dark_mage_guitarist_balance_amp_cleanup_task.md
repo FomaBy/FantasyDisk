@@ -1,5 +1,7 @@
 # Задача Для Back-end-Агента: Перебалансировать Темного Мага И Гитариста, Починить Cleanup Усилителя
 
+> Историческая справка: упоминания `sound_wave_damage` в этом документе описывают состояние ДО SCRUM-898 (2026-07-10). Звуковая ось урона удалена; оружия Гитариста/Друида бьют магией (`magic_damage`).
+
 Дата: 2026-06-10
 
 Статус: done 2026-06-11. Результат: задача закрыта через более конкретную `backend_mage_buff_guitarist_rework_task.md`: Темный маг получил 2 луча/2 AoE-снаряда и усиленный DoT, Гитарист переработан в speed/control identity, `sound_amp` стал деплойным объектом с lifetime/лимитом от Лидерства и cleanup-группами `deployed_sound_amps`/`player_weapon_effects`. Runtime smoke test покрывает баланс-конфиги, beam count, amp limit/cleanup и проходит.

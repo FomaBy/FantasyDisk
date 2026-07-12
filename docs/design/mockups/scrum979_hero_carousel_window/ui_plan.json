@@ -1,0 +1,31 @@
+{
+  "canvas": {"width": 688, "height": 384},
+  "policy": {"min_gap": 6, "allow_overlap": false},
+  "content": {
+    "counter": "1–4 из 17",
+    "prev": "‹",
+    "next": "13›",
+    "hero_1": "Берсерк",
+    "hero_2": "Солдат",
+    "hero_3": "Вор",
+    "hero_4": "Элементалист"
+  },
+  "elements": [
+    {"id": "counter_zone", "kind": "text", "content_zone": true, "x": 536, "y": 220, "w": 98, "h": 16, "text_key": "counter", "max_font": 13, "min_font": 10},
+    {"id": "carousel_band", "kind": "panel", "x": 48, "y": 250, "w": 592, "h": 112, "min_w": 560, "min_h": 104},
+    {"id": "prev_button", "kind": "button", "parent": "carousel_band", "content_zone": true, "x": 56, "y": 262, "w": 68, "h": 88, "text_key": "prev", "max_font": 38, "min_font": 26},
+    {"id": "slot_1", "kind": "slot", "parent": "carousel_band", "x": 138, "y": 258, "w": 96, "h": 96},
+    {"id": "slot_1_portrait", "kind": "portrait", "parent": "slot_1", "content_zone": true, "collision": false, "x": 144, "y": 264, "w": 84, "h": 64, "min_w": 72, "min_h": 56},
+    {"id": "slot_1_label", "kind": "text", "parent": "slot_1", "content_zone": true, "collision": false, "x": 144, "y": 330, "w": 84, "h": 18, "text_key": "hero_1", "max_font": 13, "min_font": 9},
+    {"id": "slot_2", "kind": "slot", "parent": "carousel_band", "x": 246, "y": 258, "w": 96, "h": 96},
+    {"id": "slot_2_portrait", "kind": "portrait", "parent": "slot_2", "content_zone": true, "collision": false, "x": 252, "y": 264, "w": 84, "h": 64, "min_w": 72, "min_h": 56},
+    {"id": "slot_2_label", "kind": "text", "parent": "slot_2", "content_zone": true, "collision": false, "x": 252, "y": 330, "w": 84, "h": 18, "text_key": "hero_2", "max_font": 13, "min_font": 9},
+    {"id": "slot_3", "kind": "slot", "parent": "carousel_band", "x": 354, "y": 258, "w": 96, "h": 96},
+    {"id": "slot_3_portrait", "kind": "portrait", "parent": "slot_3", "content_zone": true, "collision": false, "x": 360, "y": 264, "w": 84, "h": 64, "min_w": 72, "min_h": 56},
+    {"id": "slot_3_label", "kind": "text", "parent": "slot_3", "content_zone": true, "collision": false, "x": 360, "y": 330, "w": 84, "h": 18, "text_key": "hero_3", "max_font": 13, "min_font": 9},
+    {"id": "slot_4", "kind": "slot", "parent": "carousel_band", "x": 462, "y": 258, "w": 96, "h": 96},
+    {"id": "slot_4_portrait", "kind": "portrait", "parent": "slot_4", "content_zone": true, "collision": false, "x": 468, "y": 264, "w": 84, "h": 64, "min_w": 72, "min_h": 56},
+    {"id": "slot_4_label", "kind": "text", "parent": "slot_4", "content_zone": true, "collision": false, "x": 468, "y": 330, "w": 84, "h": 18, "text_key": "hero_4", "max_font": 13, "min_font": 9},
+    {"id": "next_button", "kind": "button", "parent": "carousel_band", "content_zone": true, "x": 564, "y": 262, "w": 68, "h": 88, "text_key": "next", "max_font": 30, "min_font": 20}
+  ]
+}

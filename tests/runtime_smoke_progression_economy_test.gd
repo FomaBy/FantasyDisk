@@ -42,9 +42,11 @@ func _initialize() -> void:
 func _test_event_ev_risk_reward_invariant() -> void:
 	# SCRUM-508: для каждого события с парой ветвей EV(risk/combat) >= EV(лучшей безопасной).
 	# Использует общий калькулятор RouteEconomyModel.event_ev_rows (тот же, что и отчёт).
+	# SCRUM-995 сжал пул до полированного пака 12×3: пар риск/безопасно в каноне ровно 4
+	# (progression_balance.md §Random Events EV) — порог голден-гейта обновлён с 10.
 	var rows: Array = RouteEconomyModel.event_ev_rows()
-	if rows.size() < 10:
-		_fail("Expected EV invariant rows for risk events (got %d) — SCRUM-508 calculator regressed." % rows.size())
+	if rows.size() < 4:
+		_fail("Expected EV invariant rows for risk events (got %d, canon SCRUM-995 = 4) — calculator or event pack regressed." % rows.size())
 		return
 	for row in rows:
 		var risk_ev := float(row["risk_ev"])

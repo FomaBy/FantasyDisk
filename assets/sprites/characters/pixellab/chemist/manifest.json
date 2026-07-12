@@ -11,10 +11,7 @@
     252,
     252
   ],
-  "runtime_canvas": [
-    512,
-    512
-  ],
+  "runtime_canvas": "512x512",
   "runtime_scale": 2,
   "runtime_bottom_padding": 4,
   "clockwise_preview_order": [
@@ -808,5 +805,111 @@
       "assets/sprites/characters/full_frame/chemist_pixellab/chemist_move_south-west_04.png",
       "assets/sprites/characters/full_frame/chemist_pixellab/chemist_move_south-west_05.png"
     ]
+  },
+  "pixellab_name": "FantasyDisk Chemist PixelLab SCRUM-423 2026-06-30",
+  "move_frame_count": 6,
+  "source_files": {
+    "idle": {
+      "south": "chemist_idle_south.png",
+      "south-east": "chemist_idle_south-east.png",
+      "east": "chemist_idle_east.png",
+      "north-east": "chemist_idle_north-east.png",
+      "north": "chemist_idle_north.png",
+      "north-west": "chemist_idle_north-west.png",
+      "west": "chemist_idle_west.png",
+      "south-west": "chemist_idle_south-west.png"
+    },
+    "move": {
+      "south": [
+        "chemist_move_south_00.png",
+        "chemist_move_south_01.png",
+        "chemist_move_south_02.png",
+        "chemist_move_south_03.png",
+        "chemist_move_south_04.png",
+        "chemist_move_south_05.png"
+      ],
+      "south-east": [
+        "chemist_move_south-east_00.png",
+        "chemist_move_south-east_01.png",
+        "chemist_move_south-east_02.png",
+        "chemist_move_south-east_03.png",
+        "chemist_move_south-east_04.png",
+        "chemist_move_south-east_05.png"
+      ],
+      "east": [
+        "chemist_move_east_00.png",
+        "chemist_move_east_01.png",
+        "chemist_move_east_02.png",
+        "chemist_move_east_03.png",
+        "chemist_move_east_04.png",
+        "chemist_move_east_05.png"
+      ],
+      "north-east": [
+        "chemist_move_north-east_00.png",
+        "chemist_move_north-east_01.png",
+        "chemist_move_north-east_02.png",
+        "chemist_move_north-east_03.png",
+        "chemist_move_north-east_04.png",
+        "chemist_move_north-east_05.png"
+      ],
+      "north": [
+        "chemist_move_north_00.png",
+        "chemist_move_north_01.png",
+        "chemist_move_north_02.png",
+        "chemist_move_north_03.png",
+        "chemist_move_north_04.png",
+        "chemist_move_north_05.png"
+      ],
+      "north-west": [
+        "chemist_move_north-west_00.png",
+        "chemist_move_north-west_01.png",
+        "chemist_move_north-west_02.png",
+        "chemist_move_north-west_03.png",
+        "chemist_move_north-west_04.png",
+        "chemist_move_north-west_05.png"
+      ],
+      "west": [
+        "chemist_move_west_00.png",
+        "chemist_move_west_01.png",
+        "chemist_move_west_02.png",
+        "chemist_move_west_03.png",
+        "chemist_move_west_04.png",
+        "chemist_move_west_05.png"
+      ],
+      "south-west": [
+        "chemist_move_south-west_00.png",
+        "chemist_move_south-west_01.png",
+        "chemist_move_south-west_02.png",
+        "chemist_move_south-west_03.png",
+        "chemist_move_south-west_04.png",
+        "chemist_move_south-west_05.png"
+      ]
+    }
+  },
+  "runtime_dir": "assets/sprites/characters/full_frame/chemist_pixellab",
+  "spriteframes": "assets/sprites/characters/chemist_spriteframes.tres",
+  "scrum869_refresh": {
+    "task": "SCRUM-869",
+    "refreshed_at": "2026-07-04T08:10:47+00:00",
+    "pixellab_download_export_date": "2026-07-04T08:10:46.960905",
+    "pixellab_export_version": "3.0",
+    "selected_animation_folders": {
+      "south": "animating-94564e61",
+      "south-east": "animating-564ff697",
+      "east": "animating",
+      "north-east": "animating-d9b3a385",
+      "north": "animating-ab10f07a",
+      "north-west": "animating-d9b3a385",
+      "west": "animating",
+      "south-west": "animating-b43b105e"
+    },
+    "runtime_canvas": [
+      512,
+      512
+    ],
+    "runtime_visible_height_target": 245,
+    "runtime_bottom_padding": 4,
+    "source": "PixelLab MCP download endpoint",
+    "legacy_or_manual_fallback_used": false
   }
 }

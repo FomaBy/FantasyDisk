@@ -40,8 +40,9 @@ func _has_effect(entry: Dictionary, key: String) -> bool:
 
 
 func _check_artifacts(errors: Array) -> void:
-	if PD.ARTIFACTS.size() < 40:
-		errors.append("ARTIFACTS подозрительно мал (%d)" % PD.ARTIFACTS.size())
+	# SCRUM-960: 32 семьи + 37 сохранённых + 16 легаси классовых (уходят в 961) = 85.
+	if PD.ARTIFACTS.size() < 85:
+		errors.append("ARTIFACTS подозрительно мал (%d < 85)" % PD.ARTIFACTS.size())
 	var seen := {}
 	for entry in PD.ARTIFACTS:
 		var art: Dictionary = entry
@@ -52,6 +53,7 @@ func _check_artifacts(errors: Array) -> void:
 		seen[aid] = true
 		if str(art.get("title", "")).strip_edges() == "":
 			errors.append("артефакт '%s': пустой title" % aid)
+		# Дубли/битость tier|cost гейтим ПО КОРНЮ записи (у семьи корень = т1-база).
 		var tier := int(art.get("tier", 0))
 		if not PD.TIER_WEIGHTS.has(tier):
 			errors.append("артефакт '%s': tier %d без веса в TIER_WEIGHTS" % [aid, tier])
@@ -59,7 +61,11 @@ func _check_artifacts(errors: Array) -> void:
 			errors.append("артефакт '%s': cost <= 0" % aid)
 		# КЛЮЧЕВОЕ: эффект обязателен (иначе no-op). Артефакты бьют через
 		# stats / mods / affinity_mods (классовый бонус по class_affinity).
-		if not (_has_effect(art, "stats") or _has_effect(art, "mods") or _has_effect(art, "affinity_mods")):
+		# SCRUM-960: семья (rarity_scaling) валидна, если КАЖДЫЙ тир 1..3 несёт
+		# непустые stats|mods — проверяется _check_family_tiers ниже.
+		if bool(art.get("rarity_scaling", false)):
+			_check_family_tiers(errors, art, aid)
+		elif not (_has_effect(art, "stats") or _has_effect(art, "mods") or _has_effect(art, "affinity_mods")):
 			errors.append("артефакт '%s': нет эффекта (пустые stats/mods/affinity_mods) — молчаливый no-op" % aid)
 		if not (art.get("class_affinity", []) is Array):
 			errors.append("артефакт '%s': class_affinity не Array" % aid)
@@ -67,6 +73,39 @@ func _check_artifacts(errors: Array) -> void:
 		# список делает классовый бонус неприменимым (фактический no-op).
 		elif _has_effect(art, "affinity_mods") and (art.get("class_affinity", []) as Array).is_empty():
 			errors.append("артефакт '%s': affinity_mods при пустом class_affinity — бонус не применится" % aid)
+
+
+# SCRUM-960: схема семьи (artifact_system_matrix §1.3) — tiers ровно {1,2,3},
+# каждый тир: непустой description + непустые stats|mods. Корень записи обязан
+# зеркалить т1 (description/stats/mods) — гейт от дрейфа legacy-читателей.
+func _check_family_tiers(errors: Array, art: Dictionary, aid: String) -> void:
+	var tiers_raw = art.get("tiers", null)
+	if not (tiers_raw is Dictionary) or (tiers_raw as Dictionary).is_empty():
+		errors.append("семья '%s': нет tiers-словаря" % aid)
+		return
+	var tiers: Dictionary = tiers_raw
+	for tier in [1, 2, 3]:
+		if not tiers.has(tier):
+			errors.append("семья '%s': нет тира %d" % [aid, tier])
+			continue
+		var tier_data: Dictionary = tiers[tier] as Dictionary
+		if str(tier_data.get("description", "")).strip_edges() == "":
+			errors.append("семья '%s' т%d: пустой description" % [aid, tier])
+		if not (_has_effect(tier_data, "stats") or _has_effect(tier_data, "mods")):
+			errors.append("семья '%s' т%d: нет эффекта (пустые stats/mods) — no-op тир" % [aid, tier])
+	for tier_key in tiers.keys():
+		if not [1, 2, 3].has(int(tier_key)):
+			errors.append("семья '%s': лишний тир '%s'" % [aid, str(tier_key)])
+	if int(art.get("tier", 0)) != 1:
+		errors.append("семья '%s': корневой tier != 1 (т1-база для legacy-читателей)" % aid)
+	var base: Dictionary = tiers.get(1, {}) as Dictionary
+	if str(art.get("description", "")) != str(base.get("description", "")):
+		errors.append("семья '%s': корневой description != tiers[1].description" % aid)
+	for effect_key in ["stats", "mods"]:
+		var root_effect = art.get(effect_key, null)
+		var base_effect = base.get(effect_key, null)
+		if str(root_effect) != str(base_effect):
+			errors.append("семья '%s': корневой %s != tiers[1].%s (дрейф т1-базы)" % [aid, effect_key, effect_key])
 
 
 func _check_shop_items(errors: Array) -> void:

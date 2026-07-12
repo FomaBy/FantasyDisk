@@ -1,0 +1,174 @@
+[gd_resource type="SpriteFrames" format=3]
+
+[ext_resource type="Texture2D" path="res://assets/sprites/allies/druid_ghost_panther/runtime/druid_ghost_panther_move_left_00.png" id="1_scrum1016"]
+[ext_resource type="Texture2D" path="res://assets/sprites/allies/druid_ghost_panther/runtime/druid_ghost_panther_move_left_01.png" id="2_scrum1016"]
+[ext_resource type="Texture2D" path="res://assets/sprites/allies/druid_ghost_panther/runtime/druid_ghost_panther_move_left_02.png" id="3_scrum1016"]
+[ext_resource type="Texture2D" path="res://assets/sprites/allies/druid_ghost_panther/runtime/druid_ghost_panther_move_left_03.png" id="4_scrum1016"]
+[ext_resource type="Texture2D" path="res://assets/sprites/allies/druid_ghost_panther/runtime/druid_ghost_panther_move_left_04.png" id="5_scrum1016"]
+[ext_resource type="Texture2D" path="res://assets/sprites/allies/druid_ghost_panther/runtime/druid_ghost_panther_move_left_05.png" id="6_scrum1016"]
+[ext_resource type="Texture2D" path="res://assets/sprites/allies/druid_ghost_panther/runtime/druid_ghost_panther_move_right_00.png" id="7_scrum1016"]
+[ext_resource type="Texture2D" path="res://assets/sprites/allies/druid_ghost_panther/runtime/druid_ghost_panther_move_right_01.png" id="8_scrum1016"]
+[ext_resource type="Texture2D" path="res://assets/sprites/allies/druid_ghost_panther/runtime/druid_ghost_panther_move_right_02.png" id="9_scrum1016"]
+[ext_resource type="Texture2D" path="res://assets/sprites/allies/druid_ghost_panther/runtime/druid_ghost_panther_move_right_03.png" id="10_scrum1016"]
+[ext_resource type="Texture2D" path="res://assets/sprites/allies/druid_ghost_panther/runtime/druid_ghost_panther_move_right_04.png" id="11_scrum1016"]
+[ext_resource type="Texture2D" path="res://assets/sprites/allies/druid_ghost_panther/runtime/druid_ghost_panther_move_right_05.png" id="12_scrum1016"]
+[ext_resource type="Texture2D" path="res://assets/sprites/allies/druid_ghost_panther/runtime/druid_ghost_panther_attack_left_00.png" id="13_scrum1016"]
+[ext_resource type="Texture2D" path="res://assets/sprites/allies/druid_ghost_panther/runtime/druid_ghost_panther_attack_left_01.png" id="14_scrum1016"]
+[ext_resource type="Texture2D" path="res://assets/sprites/allies/druid_ghost_panther/runtime/druid_ghost_panther_attack_left_02.png" id="15_scrum1016"]
+[ext_resource type="Texture2D" path="res://assets/sprites/allies/druid_ghost_panther/runtime/druid_ghost_panther_attack_left_03.png" id="16_scrum1016"]
+[ext_resource type="Texture2D" path="res://assets/sprites/allies/druid_ghost_panther/runtime/druid_ghost_panther_attack_left_04.png" id="17_scrum1016"]
+[ext_resource type="Texture2D" path="res://assets/sprites/allies/druid_ghost_panther/runtime/druid_ghost_panther_attack_left_05.png" id="18_scrum1016"]
+[ext_resource type="Texture2D" path="res://assets/sprites/allies/druid_ghost_panther/runtime/druid_ghost_panther_attack_right_00.png" id="19_scrum1016"]
+[ext_resource type="Texture2D" path="res://assets/sprites/allies/druid_ghost_panther/runtime/druid_ghost_panther_attack_right_01.png" id="20_scrum1016"]
+[ext_resource type="Texture2D" path="res://assets/sprites/allies/druid_ghost_panther/runtime/druid_ghost_panther_attack_right_02.png" id="21_scrum1016"]
+[ext_resource type="Texture2D" path="res://assets/sprites/allies/druid_ghost_panther/runtime/druid_ghost_panther_attack_right_03.png" id="22_scrum1016"]
+[ext_resource type="Texture2D" path="res://assets/sprites/allies/druid_ghost_panther/runtime/druid_ghost_panther_attack_right_04.png" id="23_scrum1016"]
+[ext_resource type="Texture2D" path="res://assets/sprites/allies/druid_ghost_panther/runtime/druid_ghost_panther_attack_right_05.png" id="24_scrum1016"]
+
+[resource]
+animations = [
+{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("13_scrum1016")
+}, {
+"duration": 1.0,
+"texture": ExtResource("14_scrum1016")
+}, {
+"duration": 1.0,
+"texture": ExtResource("15_scrum1016")
+}, {
+"duration": 1.0,
+"texture": ExtResource("16_scrum1016")
+}, {
+"duration": 1.0,
+"texture": ExtResource("17_scrum1016")
+}, {
+"duration": 1.0,
+"texture": ExtResource("18_scrum1016")
+}],
+"loop": false,
+"name": &"attack",
+"speed": 12.0
+},
+{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("13_scrum1016")
+}, {
+"duration": 1.0,
+"texture": ExtResource("14_scrum1016")
+}, {
+"duration": 1.0,
+"texture": ExtResource("15_scrum1016")
+}, {
+"duration": 1.0,
+"texture": ExtResource("16_scrum1016")
+}, {
+"duration": 1.0,
+"texture": ExtResource("17_scrum1016")
+}, {
+"duration": 1.0,
+"texture": ExtResource("18_scrum1016")
+}],
+"loop": false,
+"name": &"attack_left",
+"speed": 12.0
+},
+{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("19_scrum1016")
+}, {
+"duration": 1.0,
+"texture": ExtResource("20_scrum1016")
+}, {
+"duration": 1.0,
+"texture": ExtResource("21_scrum1016")
+}, {
+"duration": 1.0,
+"texture": ExtResource("22_scrum1016")
+}, {
+"duration": 1.0,
+"texture": ExtResource("23_scrum1016")
+}, {
+"duration": 1.0,
+"texture": ExtResource("24_scrum1016")
+}],
+"loop": false,
+"name": &"attack_right",
+"speed": 12.0
+},
+{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("1_scrum1016")
+}, {
+"duration": 1.0,
+"texture": ExtResource("2_scrum1016")
+}, {
+"duration": 1.0,
+"texture": ExtResource("3_scrum1016")
+}, {
+"duration": 1.0,
+"texture": ExtResource("4_scrum1016")
+}, {
+"duration": 1.0,
+"texture": ExtResource("5_scrum1016")
+}, {
+"duration": 1.0,
+"texture": ExtResource("6_scrum1016")
+}],
+"loop": true,
+"name": &"move",
+"speed": 10.0
+},
+{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("1_scrum1016")
+}, {
+"duration": 1.0,
+"texture": ExtResource("2_scrum1016")
+}, {
+"duration": 1.0,
+"texture": ExtResource("3_scrum1016")
+}, {
+"duration": 1.0,
+"texture": ExtResource("4_scrum1016")
+}, {
+"duration": 1.0,
+"texture": ExtResource("5_scrum1016")
+}, {
+"duration": 1.0,
+"texture": ExtResource("6_scrum1016")
+}],
+"loop": true,
+"name": &"move_left",
+"speed": 10.0
+},
+{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("7_scrum1016")
+}, {
+"duration": 1.0,
+"texture": ExtResource("8_scrum1016")
+}, {
+"duration": 1.0,
+"texture": ExtResource("9_scrum1016")
+}, {
+"duration": 1.0,
+"texture": ExtResource("10_scrum1016")
+}, {
+"duration": 1.0,
+"texture": ExtResource("11_scrum1016")
+}, {
+"duration": 1.0,
+"texture": ExtResource("12_scrum1016")
+}],
+"loop": true,
+"name": &"move_right",
+"speed": 10.0
+}
+]

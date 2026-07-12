@@ -1,0 +1,76 @@
+{
+  "task": "SCRUM-1057",
+  "status": "ready_for_backend_integration",
+  "pipeline": "PixelLab MCP create_ui_asset via config-based JSON-RPC bridge",
+  "secrets_printed_or_stored": false,
+  "planning": {
+    "plan": "docs/design/mockups/scrum1057_route_map_horizontal/ui_plan.json",
+    "report": "docs/design/mockups/scrum1057_route_map_horizontal/ui_plan.report.json",
+    "decision": "ready_for_image",
+    "ok": true,
+    "errors": 0,
+    "warnings": 0
+  },
+  "pixellab_config_smoke": {
+    "tool": "get_balance",
+    "result": "PASS",
+    "subscription": "active",
+    "generations_remaining_before_jobs": 2836,
+    "secrets_printed": false
+  },
+  "accepted_job": {
+    "ui_asset_id": "0a5d3c83-3592-430d-b733-82128c86aa5b",
+    "name": "SCRUM-1057 Route Map Horizontal Gold Shell Reference v2 Solid Interior",
+    "cost_generations": 40,
+    "size": [688, 384],
+    "seed": 21057,
+    "no_background": true,
+    "source_file": "docs/design/references/scrum1057_route_map_horizontal/pixellab_route_map_horizontal_688x384.png",
+    "source_sha256": "6d6747cd66deb0146172787084ceff5934d65ad9b8e5504dff83617ad32a1394",
+    "alpha_audit": {
+      "mode": "RGBA",
+      "minimum": 0,
+      "maximum": 255,
+      "transparent_pixels": 96909,
+      "partial_alpha_pixels": 0,
+      "opaque_pixels": 167283
+    },
+    "prompt_contract": "Textless 16:9 FantasyDisk Route Map layer: left-to-right journey, raised two-well header, one continuous solid near-black map interior, bottom horizontal scrollbar only, lower-right action well, transparent exterior, no checkerboard/grid, text, pseudo-text, nodes, characters, portraits or vertical scrollbar; ornament outside all empty content rectangles.",
+    "visual_qa": "PASS: exact two header wells, one calm solid dark horizontal route viewport, bottom horizontal lane, lower-right action well, transparent exterior, no baked checkerboard or vertical scrollbar, and no ornament intrudes into the declared content rectangles."
+  },
+  "rejected_jobs": [
+    {
+      "ui_asset_id": "4f25f4c6-347d-4278-b5f8-5d20bb964e84",
+      "name": "SCRUM-1057 Route Map Horizontal Gold Shell Reference",
+      "cost_generations": 40,
+      "size": [688, 384],
+      "source_file": "docs/design/references/scrum1057_route_map_horizontal/rejected_v1_checkerboard_4f25f4c6.png",
+      "source_sha256": "8c097cb271adf429a6c4e4154028f2ec7541b181d1cefaa63920c437e81a6feb",
+      "alpha_audit": {
+        "mode": "RGBA",
+        "minimum": 0,
+        "maximum": 255,
+        "transparent_pixels": 82368,
+        "partial_alpha_pixels": 0,
+        "opaque_pixels": 181824
+      },
+      "reason": "Rejected by visual QA: the large route-map viewport contained a baked checkerboard/transparency-grid pattern, so it was not a usable final art layer."
+    }
+  ],
+  "composited_preview": {
+    "path": "docs/design/previews/scrum1057_route_map_horizontal/route_map_horizontal_composited_688x384.png",
+    "sha256": "ed001d112567e9d7e972aaad2f2c759f501b03487e8cbdfce112475f1f35bedf",
+    "debug_path": "docs/design/previews/scrum1057_route_map_horizontal/route_map_horizontal_composited_688x384_debug.png",
+    "debug_sha256": "05589e00b9444b0bff00fd9bdd92a29c24540edcc76766a9177c71a44148eddd",
+    "content_fit_report": "docs/design/mockups/scrum1057_route_map_horizontal/layout_688x384.report.json",
+    "content_fit_ok": true,
+    "composition_rule": "Only live sample text, route lines and existing canonical map icons were added inside declared content zones; no new panel, frame, card or opaque backing was drawn over the PixelLab layout."
+  },
+  "production_reuse": {
+    "outer_frame": "assets/sprites/ui/meta40/frame_border.png",
+    "outer_frame_source_size": [1536, 1024],
+    "texture_margins": [160, 160, 160, 160],
+    "draw_center": false,
+    "runtime_asset_promoted_by_design": false
+  }
+}

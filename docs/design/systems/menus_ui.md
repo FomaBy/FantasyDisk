@@ -1,8 +1,188 @@
 # Menus And UI
 
-Обновлено: 2026-06-14
+Обновлено: 2026-07-12
 
 Этот файл собирает UI-направление FantasyDisk после domain split. Полное фактическое состояние остается в `docs/design/current_game_state.md`, а канонические IDs и assets - в `docs/design/content_registry.md`.
+
+## SCRUM-1049/1051 Unified Semantic Button Families
+
+Runtime buttons now expose an explicit `ui_button_family` contract through
+`scripts/ui/ui_button_family.gd`. The registry resolves the accepted
+text-button/minimal-metal production assets only after final name and size are
+known, so semantic intent no longer depends on construction order. Main actions,
+Back/navigation, Codex tabs and Pause actions share the resolver; selectable
+content rows/cards, Settings fields/toggles, Route nodes, Atlas sockets,
+Hero-carousel arrows and @2K conflict controls remain
+documented shape-specific siblings of the same FantasyDisk family.
+
+Codex keeps the accepted frameless SCRUM-954 three-column layout. Its six tabs
+use the quiet `minimal/codex_tab` book-divider accent in all five states, while
+entry cards stay `content_row`; hover/focus/pressed/disabled do not alter content
+margins or geometry. Compact Shop/Attribute actions are now named
+`slim_action` instead of borrowing rebind-field semantics. Pause dossier actions
+consume the same shared resolver instead of a copied path/threshold table.
+
+`MainMenuCreditsButton` is an icon-only gratitude action using the transparent
+PixelLab asset `assets/sprites/ui/icons/credits/ui_icon_gratitude.png`; its face
+text is empty, while tooltip/accessibility metadata remains «Благодарности».
+SCRUM-1081/1082 moves it into the lower-right utility cluster immediately left
+of the version. SCRUM-1093 removes the wide invisible version placeholder;
+SCRUM-1095 additionally removes the accepted PNG's transparent-source-padding
+error at draw time. Runtime scans the unchanged PixelLab source alpha bbox and
+uses a right-facing square `AtlasTexture` crop (`(41,48)-(201,208)` for the
+accepted `256x256` source) without editing the bitmap. The 72/80/96 px hitbox is
+biased 3 px toward the version but remains inside its bounded 84/96/116 px
+procedural aura; the aura-to-label rect gap is 2 px. Independent actual-alpha
+measurements are `15/17/17/19 px` at 1280/1920/2048/2560, within the required
+`0..20 px` band. The existing neutral keyboard focus, Credits callback,
+accessibility, tooltip and UI SFX remain intact.
+
+`MainMenuVersionLabel` is the single runtime version control; it reads
+`application/config/version`, never a hardcoded release number. SCRUM-1082
+introduced the lower-right placement; SCRUM-1093 sizes the rect from the actual
+rendered string plus 6 px effect reserve and anchors its right/bottom edge to
+`frame_safe.end - Vector2(8,8)`. The 14/16/18 px caption tiers, right/bottom
+alignment and restrained dark outline remain unchanged. Logo/actions still use
+the more conservative page-wide authored inner rect.
+
+Acceptance coverage: `tests/scrum1051_ui_button_family_test.gd`,
+`tests/codex_scrum954_layout_test.gd`,
+`tests/scrum1093_main_menu_version_corner_test.gd`,
+`tests/scrum1093_independent_visible_gap_test.gd`,
+`tests/scrum981_gold_menu_shell_test.gd`,
+`tests/ui_no_overlap_matrix_test.gd` and the general runtime UI/full smokes.
+
+## SCRUM-1062 Continue Run Live Title Typography
+
+`ContinueRunTitle` is now an accessible live Godot `Label` with the exact
+Russian text `Продолжить забег?`; the former 760×170 Luminari bitmap wordmark
+and its platform-font generator were removed after confirming that the dialog
+was their only runtime consumer. The label inherits the same theme/default
+`Font` resource as standard game title labels. SCRUM-1061 inventories it as the
+semantic `title` role while this screen keeps its documented fit-safe title tier
+`_readable_font_size(29)` (`38/40/42/42px` at 1152×648 / 1280×720 / 1080p /
+2K), with warm-gold text, 2px dark outline and 2px shadow offset.
+
+The accepted PixelLab SCRUM-842 composition and all frame/button art are
+unchanged. The centered fixed `840×380` panel publishes an authored content
+rect of exactly `696×242` after integer layout; the title occupies a `696×70`
+single-line slot at source-space `Rect2(932,602,696,70)` at 2K. Measured
+glyph/effect bounds stay inside that slot and the empty content zone without
+touching rails, subtitle or buttons at 1152×648, 1280×720, 1920×1080,
+2560×1440 and live resize. Continue/New Game callbacks, autosave, Escape and
+mouse/keyboard/gamepad focus behavior are unchanged. Contract and evidence:
+`docs/design/mockups/scrum582_continue_run/spec.md` and
+`tests/scrum1062_continue_run_title_test.gd`.
+
+## SCRUM-926/1088 Priest Battle Prayer Choice
+
+Every Priest combat now begins behind a mandatory, non-cancellable three-card
+prayer choice. `CombatDirector` creates/configures the player and HUD first, but
+does not call `Player.on_battle_start()` or spawn an elite/boss until a valid
+`Player.select_battle_prayer()` succeeds. The modal owns pause reason
+`battle_prayer`; the global `Main._input` guard consumes physical Escape,
+keyboard `ui_cancel` and gamepad B before pause/hotkey routing, so no second
+overlay can cover the mandatory decision. The first card receives initial
+focus, left/right navigation is circular and up/down stays on the same card.
+Other classes retain the synchronous, screen-free combat-start path.
+
+SCRUM-1088 removes the bespoke 688×384 prayer modal from runtime. The choice
+now literally uses the same `LevelUpOverlay`, `LevelUpPanel`, title/divider,
+`LevelUpRewardsRow`, `_level_up_card_plan()` and three
+`LevelUpRewardButton0..2` builders as an ordinary level-up attribute/reward
+choice. Only the title/subtitle, prayer dictionaries and selection callback
+differ; the mandatory screen intentionally has no `Позже` button. The existing
+Level Up background, card/socket art, responsive metrics and hover/focus/pressed
+states are therefore the single visual/layout source of truth. No
+prayer-specific frame, card rects or focus style are rendered.
+
+The cards keep canonical order `prayer_wrath`, `prayer_mending`,
+`prayer_aegis`, use their damage/regeneration/defense icon IDs and show the
+round effect in the standard Level Up effect-summary field. All runtime content
+stays within the existing card content margins and socket inner zones at
+1280×720, 1920×1080 and 2560×1440. PixelLab reuse-spec evidence is under
+`docs/design/mockups/scrum1088_priest_prayer_attribute_picker/`; the generated
+layout layer is reference-only and is not promoted to runtime assets.
+
+Acceptance: `tests/scrum926_priest_prayer_choice_test.gd`,
+`tests/priest_kit_test.gd`, `tests/ui_no_overlap_matrix_test.gd` and real runtime
+captures under
+`docs/design/previews/scrum1088_priest_prayer_attribute_picker/runtime/`.
+
+## SCRUM-951 Hero Select Stat Identity Palette
+
+The eight `HS4Stat_*` rows now use one shared semantic map in
+`scripts/ui/hero_select_constants.gd`, independent of the selected class:
+Strength `#D84A3A`, Agility `#4CC66A`, Intelligence `#4C8DFF`, Perception
+`#F4C542`, Energy `#38D6E8`, Knowledge `#A675FF`, Endurance `#D98236`, and
+Leadership `#D8B24A`. Bars keep the canonical accents. Name/value text uses the
+same color except Strength, whose accessible text companion is `#E05B4C`
+(4.97:1 on the reference `#171613` row; canonical red remains on the bar).
+
+Color is redundant information: localized name, numeric value, bar length and
+the existing concise tooltip remain. At 1280×720 the stat zone reflows to 2×4
+cells so all semantics stay visible; 1920×1080 and 2560×1440 keep the vertical
+1×8 column. Both layouts remain inside `HS4DossierFrame` and the hollow global
+frame rails. PixelLab styling references/spec:
+`docs/design/mockups/scrum951_hero_stat_colors/`; Metal captures:
+`docs/design/previews/scrum951_hero_stat_colors/runtime/`. Acceptance:
+`tests/scrum951_hero_stat_colors_test.gd`,
+`tests/hero_select_pixellab_layout_test.gd` and the general UI gates.
+
+## SCRUM-981 Unified Gold Menu Shell
+
+SCRUM-981 promotes `assets/sprites/ui/meta40/frame_border.png` to the shared
+hollow outer shell for appropriate non-combat pages. The runtime
+`StyleBoxTexture` uses the 1536×1024 source with 160 px texture/content rails
+and `draw_center=false`; the frame is always the final, mouse-ignoring child.
+Its exact empty interiors are `Rect2(133,113,1014,494)` at 1280×720,
+`Rect2(200,169,1520,742)` at 1920×1080 and
+`Rect2(267,225,2026,990)` at 2560×1440. Every label, icon, hitbox, scroll lane
+and local panel must remain inside those rectangles.
+
+Live application inventory:
+
+- SCRUM-1059 Main Menu preserves the accepted logo/background/shell and places
+  six semantic `main_menu_380x104` actions in one responsive left column:
+  320×54 @1152×648, 340×56 @1280×720, 360×64 @1600×900, 380×76 @1080p and
+  380×96 @2K. SCRUM-1081/1082 keeps the accepted action column X at the authored
+  inner left edge. The 72/80/96px gratitude icon and bounded 84/96/116px
+  procedural glow form a lower-right cluster immediately left of the dynamic
+  version. SCRUM-1093 removes the oversized hidden label gap; SCRUM-1095 makes
+  the measurement alpha-aware through the runtime crop described above. The
+  glow-to-label separation is 2px, the label width is live glyph width + 6px,
+  and the compact cluster uses an 8px reserve from the frame-safe opening.
+  Logo/actions keep the
+  stricter shell interior (texture-safe rect minus another 24px, or 32px at 2K).
+  The screen never scrolls and relayouts on live resize. Up/Down wraps the six
+  actions; Right reaches gratitude, whose Left/Up returns to Exit and Down
+  returns to Start.
+- Route Map insets header/title, shared resource HUD, vertical scroll/canvas,
+  scrollbar lane and upgrade FAB into authored inner zones. Horizontal scroll
+  remains disabled and map nodes are rebuilt safely when available width changes.
+- Rest, Upgrade and Battle Reward keep their local Atlas chips/cards below a
+  reserved in-frame HUD/FAB strip; 720–900p uses explicit compact card tiers.
+- Victory and Defeat keep their local result modal, summary and action inside
+  the shell; the smallest legacy matrix uses compact summary typography and a
+  content-width action plate. SCRUM-986 also centers the transient 960x224
+  Victory banner on both axes at every target viewport; the old absolute 2K
+  top offset is forbidden because it clipped the banner at 720p.
+- Every listed shell has a live `resized` relayout path. Shrinking an existing
+  2560×1440 screen to 1280×720 recomputes panel/card/result/FAB geometry and
+  Route Map canvas width; it is not valid to rely only on screen reconstruction.
+- Existing Hero/Weapon Select, Settings, Patch Notes, Atlas and Pause dossier
+  shells remain unchanged. Codex intentionally keeps the SCRUM-954 frameless
+  three-column contract. Level Up remains frameless under SCRUM-985. Combat,
+  Combat HUD and transient combat/result overlays never receive the large shell.
+- Shop, Attribute Shop, Event and elite/boss reward variants remain owned by
+  their more specific child-task contracts and are not broadened by SCRUM-981.
+
+UI Director source, exact inventory and PixelLab provenance:
+`docs/design/mockups/scrum981_gold_menu_shell/`; accepted PixelLab references:
+`docs/design/references/scrum981_gold_menu_shell/`; runtime QA:
+`tests/scrum981_gold_menu_shell_test.gd`,
+`tests/scrum981_route_map_gold_shell_test.gd`,
+`tests/ui_no_overlap_matrix_test.gd` and `build/qa/scrum981/`.
 
 ## SCRUM-692 Runtime Readability Pass
 
@@ -28,9 +208,68 @@ Acceptance coverage: `tests/ui_no_overlap_matrix_test.gd` includes `1536x864`,
 `build/qa/design_review/` for Hero Select, Level Up, Shop, Codex, Settings, and
 Combat HUD at `1280x720`, `1920x1080`, and `2560x1440`.
 
+## SCRUM-1061 Semantic Typography
+
+Player-facing font sizing now has one canonical runtime source:
+`scripts/ui/semantic_typography.gd`. It defines the semantic roles `display`,
+`title`, `section`, `body`, `description`, `action`, `tab`, `field`, `value`,
+`tooltip`, `caption` and `HUD`; every role owns min/target/max effective px and
+an overflow policy. New UI uses the semantic resolver directly. Existing
+accepted layouts use centralized authored-compatibility, scale-compatibility or
+Codex transform-aware resolution so the SCRUM-692/883 effective values and
+frame geometry do not move during migration.
+
+The duplicated route-map readability formula is removed. `ui_screens` readable,
+Settings and Codex helpers plus the pause dossier helper now delegate to the
+same API. Global tooltips, level-up toast, threat indicators, player/enemy world
+feedback and raw combat HUD sizes are routed through it as well. Continue Run is
+inventoried as `title`, but its accepted SCRUM-1062 slot and effective tier are
+unchanged.
+
+The machine inventory
+`docs/design/mockups/scrum1061_semantic_typography/typography_inventory.json`
+uses stable source fingerprints. SCRUM-1073 migrated the exact 139-site
+non-Atlas legacy-geometry manifest into semantic bands without lowering token
+floors. Schema 3 records each original/replacement fingerprint, effective
+before/after range and final disposition; `139/139` replacements are live and
+SCRUM-1073 routing is zero. Two Atlas-canvas/topology fingerprints still route
+to SCRUM-1068. SCRUM-1070 remains scoped only to the Atlas reset-footer button
+and owns no current inventory fingerprint. The responsive matrix explicitly
+covers 2048×1152. Contract, PixelLab anchors and rules:
+`docs/design/mockups/scrum1061_semantic_typography/`.
+
+The additional SCRUM-1073 PixelLab/content-zone package is under
+`docs/design/mockups/scrum1073_semantic_band_migration/`. It covers the 35
+sites without an accepted family-specific mockup through eight clean empty
+zones (economy, combat HUD, event, confirmation, feedback, patch notes, start
+boon, victory); the remaining 104 migrations reuse their accepted mockups.
+The generated contact sheet is evidence only and is not a runtime texture.
+
 ## Shop UI
 
 Магазин должен ощущаться частью shop background, а не отдельным default modal window. Предметы располагаются в центральной свободной зоне canonical backdrop `assets/backgrounds/ui/ui_backdrop_merchant_archive.png`.
+
+SCRUM-993 makes that contract the live responsive gold-shell implementation.
+`ShopScreen` clips the complete 2560×1440 merchant archive with
+`STRETCH_KEEP_ASPECT_CENTERED` inside the SCRUM-981 safe rect, keeps the dark
+side gutters, and draws the shared hollow `meta40/frame_border.png` last at
+z=100. Authored geometry and ready/fit reports for 1280×720, 1920×1080 and
+2560×1440 live under `docs/design/mockups/scrum993_shop_gold_shell/`; renderer
+captures for default/focus/unaffordable/purchased states live under
+`docs/design/previews/scrum993_shop_gold_shell/runtime/`.
+
+The four product hitboxes remain one horizontal, scroll-free focus ring. Their
+caption plates use scaled source 9-slice margins and one-line ellipsis, price
+badges fit four digits, unavailable products keep the icon/caption visible with
+desaturated art and red price, and purchased products become a disabled
+`снято` hook. Descriptions no longer use the cursor-following global tooltip:
+hover/focus populates one fixed `ShopTooltipPanel` below the row. Its rails
+scale with the displayed panel and text begins beyond rail + reserve. SCRUM-1073
+uses a `700×148` compact panel with a `650×114` empty inner zone, containing all
+wrapped semantic tooltip lines before the Back action at 720p. Leaving focus
+hides the panel. Shop does
+not create `UpgradeFabButton`; the manual Attribute Shop entry was removed by
+SCRUM-982, while the mandatory post-combat shop remains SCRUM-987-owned.
 
 Design-ready assets:
 
@@ -41,6 +280,28 @@ Design-ready assets:
 | `ui_shop_price_badge` | `assets/sprites/ui/shop/ui_shop_price_badge.png` |
 | `ui_shop_purchased_overlay` | `assets/sprites/ui/shop/ui_shop_purchased_overlay.png` |
 | `ui_shop_tooltip_frame` | `assets/sprites/ui/shop/ui_shop_tooltip_frame.png` |
+
+## Attribute Shop UI
+
+SCRUM-982/987/988 supersede the repeatable/manual Attribute Shop flow and its
+old tall inner-panel layout. Route Map, Rest, Shop, Event and Escape/pause do not
+offer a paid attribute-upgrade entry. Normal victories still open Attribute
+Shop before returning to the map; elite victories still open it after the
+artifact reward. Pending Level Up rewards remain reachable through the separate
+`LevelUpPlusButton` on combat and non-combat screens and are not coupled to the
+removed gold-spend FAB.
+
+The live Attribute Shop reuses the shared hollow gold shell
+`assets/sprites/ui/meta40/frame_border.png`; it has no second central
+panel/frame. The shell is drawn last and all interactive content stays inside
+its true empty safe zone. The offer area is one horizontal, scroll-free row:
+two cards by default, or three when Atlas grants `attr_extra_options`. Every
+card visibly includes the class interpretation, attribute influence and derived
+before/after preview. SCRUM-1073 permits a compact two-line visible summary but
+stores the exact unabridged influence/preview payload in label metadata and the
+focus tooltip. Reroll and Skip are a horizontal action pair below the cards. Authored
+metrics and live `resized` relayout cover 1280x720, 1920x1080 and 2560x1440,
+including switching among those sizes while the screen remains open.
 
 SCRUM-332 adds a Design-ready economy node frame kit for the broader shop/rest/
 upgrade/event/attribute cluster. Mockup and spec live in
@@ -69,13 +330,13 @@ is irregular: its content may only use the real inner rect to the right of the
 dragon head/wing, not the full bounding box. Runtime QA dump:
 `build/qa/scrum332/economy_ui_no_overlap_matrix.md`.
 
-SCRUM-413/SCRUM-415 harden the live economy screens for 720p and narrow
-viewports: Attribute Shop uses responsive panel width/height, scrollable
-content, grid-based attribute offers and compact reachable reroll/skip buttons;
-unaffordable attribute cards are disabled, greyed and explain insufficient gold
-in tooltip. Random event choices keep long descriptions inside the accepted
-choice-card safe zone and normalize risk text so player copy shows a single
-`Риск:` prefix, never `Риск: Риск:`.
+SCRUM-413/SCRUM-415 are the historical 720p hardening baseline. Their
+scrollable, grid-based Attribute Shop layout is superseded by SCRUM-987/988's
+single scroll-free offer row and horizontal actions; the unaffordable-card
+state remains disabled/greyed and still explains insufficient gold. Random
+event choices keep long descriptions inside the accepted choice-card safe zone
+and normalize risk text so player copy shows a single `Риск:` prefix, never
+`Риск: Риск:`.
 
 SCRUM-629 keeps the random event panel from rendering as an empty shell: the
 screen root is `EventScreen`, the actual frame stays named `MenuPanel_event`,
@@ -92,17 +353,79 @@ gray interior in screenshots, hiding title/story/choices/back even though basic
 rect checks still passed. The matrix now explicitly forbids `UpgradeFabButton`
 on Event and requires `EventContent`, title, story, choices and back to remain
 inside the scaled `evt_panel` content safe rect.
-SCRUM-672 applies the same release-gate lesson to Rest: `_show_rest_screen()`
-must keep `UpgradeFabButton` on the screen root, never inside
-`MenuPanel_campfire`, so the campfire panel continues to show `RestContent`,
-`RestTitle`, `RestSubtitle`, the two rest choice cards and `RestBackButton`.
-The UI matrix now fails if Rest regresses to a blank panel/up-arrow-only shell or
-if the Rest content disappears from the campfire panel.
+SCRUM-672 historically moved `UpgradeFabButton` to the Rest screen root to
+protect the campfire panel layout. SCRUM-982 now removes that manual paid
+Attribute Shop entry from Rest entirely. The surviving invariant is that
+`MenuPanel_campfire` continues to show `RestContent`, `RestTitle`,
+`RestSubtitle`, the two rest choice cards and `RestBackButton`; the UI matrix
+still fails on a blank panel/up-arrow-only shell or missing Rest content.
 
-SCRUM-674 rebuilds the live Settings apply flow inside the existing dark-fantasy
-frame contract. The screen still has exactly three custom tabs: `Экран`, `Звук`
-and `Управление`, with built-in `TabContainer` headers hidden and
-`SettingsTabButton_0..2` inside the switcher safe rects. Screen settings
+SCRUM-996 adds conditional/hidden outcomes to the Event screen without visual
+redesign (the visual layer is SCRUM-997):
+
+- **Hidden choices.** A choice with `hidden: true` never reveals its outcome on
+  the card: the description shows `unknown_hint` (fallback «Исход неизвестен…»)
+  and the action text is «Рискнуть». `cost_money` price is not printed on a
+  hidden card's action button, so hidden paid choices must mention the price in
+  `unknown_hint` (data contract, `scripts/event_data.gd`).
+- **Reveal state.** If the applied outcome has `outcome_text`, or the choice was
+  `hidden`, or a stat `check` ran, the screen switches to a reveal state after
+  the outcome is applied: `EventStory` text is replaced by `outcome_text` plus a
+  check-result line («Проверка <Стат> <N> — пройдена/провалена»), the
+  `EventChoiceRow` cards and `EventBackButton` hide, and a single
+  `EventContinueButton` («В путь», the standard 260-wide action plate) appears
+  and grabs focus (the SCRUM-477 focus chain collapses to this one button, its
+  neighbors loop to itself). Only pressing it clears `current_event_definition`
+  and advances the route (`_advance_route_after_noncombat`). Outcomes without
+  these markers keep the old instant transition; combat outcomes start combat
+  immediately as before (the fight itself is the reveal).
+- **Event shop.** An outcome with `shop_after: true` (also honored inside
+  `post_combat` of an event fight) opens the regular `_show_shop_screen()` after
+  the reveal confirmation, with a freshly generated stock and an optional
+  `shop_discount` (0..0.9) applied to stock prices once. Leaving that shop
+  continues the event path — route advance with autosave after an event outcome,
+  or the standard combat-node return after an event-fight victory — instead of
+  the normal shop-node «return to map without advance» exit
+  (`Main.event_shop_exit_action`, consumed by one exit).
+
+SCRUM-997 turns the Event screen into an illustrated encounter (spec:
+`docs/design/mockups/scrum997_event_dialog/spec.md`, geometry single-sourced by
+`_event_dialog_metrics()`):
+
+- **Per-event background.** `ScreenBackground_event` swaps its texture to
+  `assets/backgrounds/events/event_bg_<event.id>.png` when the SCRUM-998 art
+  exists (`Main.event_background_path()`, file-convention manifest — no id
+  dictionary in code); unmapped ids keep the shared `ui_backdrop_arcane_lab`
+  fallback. Over native art the `ScreenBackgroundReadableShade` lightens to
+  a=0.14 (the art reserves dark UI zones per the pack manifest); the fallback
+  keeps the usual a=0.44.
+- **Right-side dialog panel.** `MenuPanel_event` is a manually-rected atlas
+  chip (`_atlas_chip_style(0.90, pad)`) pinned to the right safe edge, width
+  `clamp(0.36·W, 330, 980)`, spanning from the top safe margin down to the
+  bottom strip. Inside, the scroll keeps `EventContent` with left-aligned
+  golden `EventTitle`, a brass `EventTitleRule` divider and light `EventStory`;
+  long stories scroll instead of inflating the panel. The illustration on the
+  left is never covered by text.
+- **Bottom choice strip.** `EventBottomZone` (full-rect, mouse-ignore) hosts
+  `EventChoiceRow` — exactly three `_make_economy_choice_card` chips sized
+  `card_w × clamp(0.22·H, 142, 320)` — plus the unified 260-wide
+  `EventBackButton` plate at the right end, vertically centered. Every card
+  carries a SCRUM-997 hint line (`EventChoiceButtonNHint`): «Проверка: <Стат>
+  <N>» for checks, a compact visible-reward summary, or «Исход скрыт» for
+  hidden choices (price stays in `unknown_hint` per the SCRUM-996 contract).
+- **Reveal.** The SCRUM-996 reveal keeps its node contract; visually the
+  outcome text lands in the right dialog panel while `EventContinueButton`
+  («В путь», 260-wide plate) is centered in the bottom strip and grabs focus.
+- The UI no-overlap matrix enforces the new geometry: right-side panel
+  (left edge ≥ 0.55·W, width ≈ 30–42%·W or the 980 clamp), title/story inside
+  the chip content rect, the choice row inside the bottom strip and clear of
+  the panel, hint lines inside their cards, back plate in the strip and clear
+  of both, and a `ScreenBackground_event` (or fallback) node present.
+
+SCRUM-674 historically rebuilt the Settings apply flow inside the existing
+dark-fantasy frame contract. Its three pages `Экран`, `Звук`, `Управление` remain,
+but SCRUM-1025 adds live `Игра` and `SettingsTabButton_3`; built-in
+`TabContainer` headers remain hidden. Screen settings
 (`SettingsScreenOption`, `SettingsResolutionOption`, `SettingsWindowModeOption`)
 now stage values in a pending buffer and do not call `_apply_video_settings()`
 until `SettingsApplyButton` is pressed; `SettingsRevertButton` discards the
@@ -111,6 +434,18 @@ remain immediate-apply. Sound sliders are compact `420x42` rows with the same
 dark track/gold fill/focus behavior, so they no longer stretch across the whole
 content panel. Mockup/spec: `docs/design/mockups/scrum674_settings_ui/spec.md`;
 OpenAI reference: `docs/design/references/scrum674_settings_ui/settings_apply_flow_mockup.png`.
+
+SCRUM-974 expands the immediate-apply Sound page with three backed settings,
+without adding a placeholder control: `ui_volume` («Звуки интерфейса»),
+`mute_when_unfocused` («Без звука вне окна») and
+`low_hp_warning_enabled` («Предупреждение о здоровье»). Four compact volume
+rows are followed by two short toggle rows and the existing Reset action inside
+`AudioScroll`. At 1920×1080/2560×1440 all content fits with the scrollbar hidden;
+at 1280×720 the styled vertical scrollbar and `follow_focus` keep Reset and both
+toggles reachable without shrinking labels or touching the footer/frame.
+`SettingsResetAudioButton` restores all eight audio keys. PixelLab plan/source,
+rejected candidates, compositor fit/debug evidence and exact responsive contract:
+`docs/design/mockups/scrum974_settings_audio/`.
 
 SCRUM-694 delivers the Settings **v3** full redraw design package: a from-scratch
 premium dark-fantasy frame family (PixelLab) replacing the shared minimal-metal
@@ -127,11 +462,54 @@ stretch — only tiled 9-slice centers adapt). Runtime swap is a Back-end follow
 per `docs/design/references/settings_v3_full_redraw/backend_handoff.md` (exact
 paths, texture margins, node IDs, tests); v2/minimal-metal stays live until then.
 
-SCRUM-471 adds the 1152x648 short-height guard for Attribute Shop and Settings:
-Attribute Shop uses compact `320x240` offer cards plus shorter bottom action
-buttons only below 660px viewport height, while Settings permits a compressed
-content panel only when the v2 modal is height-constrained. This preserves the
-720p+ layout targets and keeps bottom actions reachable in the no-overlap matrix.
+SCRUM-975 defines the Design handoff for a fourth Settings tab, `Игра`, over the
+current fullscreen Atlas-family shell. It uses four independent global-kit tab
+plates instead of stretching the obsolete three-slot switcher: one centered row
+at 1920x1080 and 2560x1440, and a centered 2×2 grid at 1280x720. The Game page
+contains five SCRUM-976 sandbox multipliers, a neutral/custom status, next-run
+application and progression-restriction notices, and an atomic reset to `1.0×`.
+The header, Back action and tab plates remain fixed; only Game-page content
+scrolls at 720p. Every label, slider, value and hit area stays inside the real
+empty frame interior, clear of dragon heads, gems, bevels and the dedicated
+scroll lane. Exact rectangles, responsive rules, PixelLab provenance, generated
+sources and debug-overlay evidence live in
+`docs/design/references/scrum975_settings_game_tab/`; rendered previews live in
+`docs/design/previews/scrum975_settings_game_tab/`. SCRUM-1025 now integrates
+that accepted package:
+four independent plates (one row wide / 2×2 compact), PixelLab Game icon,
+five authoritative SCRUM-976 sliders, status/warning, atomic reset and
+next-run-only semantics. `SettingsBottomActions` is hidden only on Game because
+Apply/Revert belongs to staged Screen settings; Game content remains inside
+the transparent clip owner and scrolls vertically with a dedicated 14px lane.
+
+SCRUM-1053 hardens the remaining compact footer against the live Atlas bottom
+ornament. Screen/Sound/Controls now budget an `88px`
+`SettingsBottomActionsSafe` slot: the unchanged native `280x64` Apply/Revert
+plates occupy its top and the last `24px` stay empty. At 1280x720 this produces
+a 12px gap after `SettingsContentPanel`, a footer bottom exactly at the authored
+inner boundary `y=583`, and 24px before the texture-safe edge `y=607`. Compact
+Screen is now vertically scrollable (`SettingsScreenScroll`, `follow_focus`)
+so its legacy rows cannot expand the VBox through that reserve. Game hides the
+entire wrapper, so SCRUM-1025's `892x242` scroll viewport, `878x520` canvas and
+exclusive 14px lane remain exact. Focused headless/Metal coverage also checks
+the `<=760px` breakpoint at 1280x760.
+
+SCRUM-1060 aligns the four Settings tab labels with the header Back action.
+`SettingsTabButton_0..3` remain exact `260x72` plates in the compact 2x2 grid,
+`260x88` at 1080p and `260x104` at 1440p, but are now consistently text-only.
+Their effective font uses the same `_readable_font_size(16)` contract as
+`SettingsBackButton`: `21/22/23/23 px` at 1152x648, 1280x720, 1920x1080 and
+2560x1440. `_settings_fit_kit_row()` receives this as a fixed typography
+contract and may calculate equal state margins but may not downscale it. Every
+complete Russian label stays centered inside the plate's flat `x=48..212`
+field; wrap, clipping, ellipsis and icon fallback are forbidden. The accepted
+SCRUM-975 PixelLab Settings art is reused unchanged; adaptive spec and source
+provenance live in `docs/design/mockups/scrum1060_settings_tab_font/`.
+
+SCRUM-471 is the historical 1152x648 short-height guard for the former Attribute
+Shop inner panel and Settings. Its Attribute Shop card/button metrics are
+superseded by SCRUM-987/988's gold-shell relayout at 720p/1080p/1440p; the
+Settings compression rule remains unchanged.
 
 SCRUM-437 makes the wide 0.1.6 economy choice-card frame live in runtime for
 rest, upgrade, event and Attribute Shop choices. Runtime now uses
@@ -140,10 +518,13 @@ rest, upgrade, event and Attribute Shop choices. Runtime now uses
 source size `Vector2(960, 640)`, texture margins `Vector4(96, 88, 96, 96)`,
 content margins `Vector4(132, 118, 132, 128)`, hover content margins
 `Vector4(140, 126, 140, 136)` and safe rect `Rect2(132, 118, 696, 394)`.
-Display targets are `360x240` at 1280x720, `420x300` at 1920x1080 and
-`480x340` at 2560x1440, with a compact 1152px matrix fallback. Attribute Shop
-uses extra vertical card space for stat icon/title/interpretation/price text.
-Runtime labels, icons and focus/click content stay inside the scaled safe rect;
+The historical display targets were `360x240` at 1280x720, `420x300` at
+1920x1080 and `480x340` at 2560x1440, with a compact 1152px matrix fallback;
+SCRUM-987/988 supersede those Attribute Shop geometry targets. The wide economy
+card art remains reusable, but the live Attribute Shop cards reserve visible
+space for icon/title, class interpretation, full stat influence, derived
+before/after preview and price in one horizontal row. Runtime labels, icons and
+focus/click content stay inside the scaled safe rect;
 QA dumps live in `build/qa/scrum437/`. Spec:
 `docs/design/mockups/scrum437_wide_economy_choice_card/spec.md`.
 
@@ -192,29 +573,176 @@ Central-window screens use role-specific dark fantasy backdrops from `assets/bac
 
 Backdrops are full-rect `TextureRect` nodes with cover scaling and a readable shade layer. Route map and combat arena backgrounds remain separate systems.
 
-Main menu uses `assets/backgrounds/main_menu_epic_battle_v3.png` through `MAIN_MENU_BACKGROUND`. The 2026-07-02 0.2.0 release pass replaces the earlier dragon-battle image with a 2560x1440 OpenAI-generated cosmic character-atlas background: pixel-art heroes, constellation/star-chart rings, atlas silhouettes and distant bosses, while preserving the calm left button-safe column and readable title-safe area. The asset is prepared for proportional cover-crop, not one-axis stretching, and contains no baked UI text/buttons/frames. Source, backup, preview and the Telegram/Discord announcement derivative are tracked in `docs/design/mockups/main_menu_020_cosmic_release/spec.md`. SCRUM-680 release refresh replaces the title with `assets/sprites/ui/menu_title/main_menu_title_fantasy_disk.png` (`960x360`, transparent, PixelLab crest source in `docs/design/references/main_menu_logo_release_fix/`) and positions the action column below the title with a computed `80px` minimum source-space gap for 1920x1080, 2560x1440 and 1080x1920.
+Main menu uses `assets/backgrounds/main_menu_epic_battle_v3.png` through
+`MAIN_MENU_BACKGROUND`. SCRUM-1001 replaces the 0.2.0 cosmic atlas image with a
+2560x1440 OpenAI-generated clean cartoon-realistic dark-fantasy background. The
+latest active pass is regenerated from scratch without previous
+screen/background reference input: only the clean board of current runtime
+characters and bosses was used as the visual reference. The composition is a
+moonlit mountain-pass/citadel key-art scene with the party in 3/4 front/side
+poses on the center-right/right side, a clearly front/3/4 readable guitarist
+holding the guitar naturally, distant boss threats, no old central
+portal/atlas/music-line layout and no baked UI text. The calm left
+button-safe column and readable title-safe area are preserved, the
+asset is prepared for proportional cover-crop rather than one-axis stretching,
+and it contains no baked UI text/buttons/frames/logos. Source, reference sheet,
+backup, preview and safe-zone evidence are tracked in
+`docs/design/mockups/main_menu_openai_clean_background/spec.md`. This is an
+explicit OpenAI Images override because the user directly requested OpenAI image
+generation. SCRUM-680 release refresh keeps the title as
+`assets/sprites/ui/menu_title/main_menu_title_fantasy_disk.png` (`960x360`,
+transparent, PixelLab crest source in
+`docs/design/references/main_menu_logo_release_fix/`). The historical
+SCRUM-484 single column and SCRUM-981 2×3 grid are superseded by the SCRUM-1059
+authored-inner single-column contract described above.
 
-## Route Map 2K Source
+## Route Map Horizontal Gold Shell
 
-Route Map has a SCRUM-563 2K UI Director source package for the global UI
-overhaul. The package is design-source, not a broad runtime rewrite: geometry is
-defined in `docs/design/mockups/scrum563_route_map_2k/ui_plan.json` and
-`spec.md`, the OpenAI source mockup is
-`docs/design/references/scrum563_route_map_2k/route_map_2k_mockup.png`, and the
-safe-zone evidence is under `docs/design/previews/scrum563_route_map_2k_*`.
-The visual direction is a full-screen scroll field with a thin framed header,
-compact run HUD, clamped tooltip panel, centered vertical node lane and small
-bottom-right FAB. Runtime text/icons must stay inside the declared interiors.
+SCRUM-1057/1079 replaces the previous vertical geometry with an accepted
+PixelLab-authored horizontal contract: start at left, boss at right, route steps
+increase strictly on X and branches within a step separate on Y. Runtime uses
+horizontal auto-scroll only; the vertical scrollbar is disabled and
+`scroll_vertical=0`. The raised header/title/resource wells, node viewport,
+bottom scrollbar lane and pending-level FAB keep-out follow exact matrices for
+1152×648, 1280×720, 1600×900, 1920×1080 and 2560×1440. Spec/provenance:
+`docs/design/mockups/scrum1057_route_map_horizontal/spec.md`; runtime matrix:
+`docs/design/previews/scrum1079_route_map_horizontal_runtime/`.
+SCRUM-1086 добавляет width-measured responsive status copy: 1152/1280
+используют полную компактную фразу без ellipsis, а 1600/1920/2560
+сохраняют прежний полный текст. Live resize меняет copy без изменения
+authored title-zone geometry.
+
+The production outer shell remains the hollow SCRUM-981
+`assets/sprites/ui/meta40/frame_border.png`; all controls stay inside its real
+empty content zone. The older SCRUM-563 vertical 2K source package remains
+historical design evidence only.
+
+SCRUM-1089 supersedes the scrollable portion of that contract with the live
+full-fit layout requested from the 2026-07-12 route-map screenshot. All nine
+columns (eight activity steps plus boss) are now visible simultaneously;
+`RouteMapScroll` remains as a clipping/input compatibility node but both scroll
+axes and both scrollbar lanes are disabled and pinned to zero. The node canvas
+equals the authored node viewport, columns use the complete safe width, and
+multi-branch columns expand 55% toward the maximum safe vertical spread instead
+of clustering around the centre. The raised header uses the outer shell's real
+irregular empty zone: side/corner rails keep the 160px source boundary while
+the clear central top/bottom opening uses the measured 128px boundary plus
+24px reserve (32px at 2560×1440). HP/XP/ULT/gold is exactly 2× the former
+visible SCRUM-1079 Route Map cluster; compact 1152/1280/1600 tiers stack the
+title above it, while 1920/2560 keep title and resources side by side. The
+PixelLab textless layout source, exact matrix, user-before reference and runtime
+captures are under `docs/design/{mockups,references,previews}/scrum1089_route_map_full_fit_hud2x/`.
 
 ## Hero / Weapon / Level-Up Layout Rules
 
-- SCRUM-798 keeps the 2026-06-30 user-requested minimal black Hero Select direction, not the older ornate/Pixellab frame layout, but rebuilds the live sizing and information hierarchy. `_show_character_select()` / `_build_character_select_v4()` builds `HeroSelectScreen` over `HS4BlackBackground`; no title frame, no PixelLab backdrop, no compass rose, and no `HeroStatRadar` are active. The selected `HS4Portrait` is now the dominant left-column object (`320x320` at 1280x720, about `510x510` at 1920x1080, capped near `660x660` on tall screens) and keeps SCRUM-416/SCRUM-687 directional SpriteFrame rotation when available. `HS4AscensionFrame` is directly below the preview with `-`/`+`, max clamping, modifier text/tooltip and `HS4ChooseButton`. The right `HS4DossierFrame` is scroll-safe and contains class title, description, strengths, weaknesses, weapon names, class identity, eight base characteristics as hoverable Line Bars with rich `StatFormulas.STAT_DEFINITIONS` + class interpretation tooltips, and data-driven build guidance sections `Основные атрибуты`, `Второстепенные атрибуты`, `Дополнительные атрибуты` from `ProgressionData.attribute_relevance`. The bottom `HS4Carousel` uses enlarged responsive `HS4CarouselSlot_*` buttons (`~203px` at 720p, `~305px` at 1080p, capped near `320px`), larger arrows, cyclic paging and default focus on the selected visible slot. Since SCRUM-421 follow-up, carousel portraits are also alpha-bottom aligned inside clipped slots so PixelLab classes with different transparent canvas padding share one visible baseline. SCRUM-822 now positions both the large preview and carousel portraits by cached alpha bounding boxes, so transparent side padding is ignored, visible bodies are centered/bottom-aligned, and each carousel slot reserves a bottom `HS4CarouselLabel_*` name strip from the character title. Evidence: `build/qa/scrum-798/`, `build/qa/scrum421/`, `docs/design/mockups/hero_select_black_minimal/scrum822_preview_crop_labels_spec.md`.
-- SCRUM-562 updates the live Weapon Select 2K pass. `_show_weapon_select()` now uses a dedicated `WS_PANEL_2K` frame at `420,190,1720,1060` with `WS_SAFE_2K` `498,286,1564,898`; the start-boon screen continues to use the generic `weapon_select` economy panel. Runtime frames are `ws_panel`, `ws_card`, and `ws_btn_back` in `assets/sprites/ui/frames/overhaul_2k/`, registered through `UIThemePaths.OVERHAUL_2K_FRAME_*`. OpenAI/source and safe-zone evidence live under `docs/design/references/scrum562_weapon_select_2k/`, `docs/design/mockups/scrum562_weapon_select_2k/`, and `docs/design/previews/scrum562_weapon_select_2k_*`. Route Map/SCRUM-563 geometry is intentionally untouched.
-- Live HS4 Hero Select keeps the same runtime selection contract: carousel arrow
-  buttons select previous/next character cyclically in
-  `ProgressionData.character_ids()` order and use the same refresh path as
-  slot clicks for portrait, dossier, ascension label and selected carousel state.
-  The arrows remain inside the bottom carousel band.
+- Historical SCRUM-980 (superseded by SCRUM-1063 below) replaced the old left-column ascension geometry while preserving
+  the active HS4/Atlas art and selected-level semantics. `HS4AscensionFrame` is
+  now a wide right-hand band between `HS4DossierFrame` and `HS4Carousel`;
+  `HS4AscensionActionRow` occupies its left safe segment and the untrimmed
+  `AscensionModsLabel` occupies `HS4AscensionDescriptionScroll` in the right
+  segment. At 1280×720 the text scrolls vertically; at 1920×1080 and
+  2560×1440 the current-level delta fits in full. `HS4CarouselCounter` reserves
+  a separate segment beside the frame, while `HS4ChooseButton` remains at the
+  bottom of the left portrait column. Stepper, description, counter, carousel,
+  dossier and CTA must never overlap or cover frame ornament. Focused geometry
+  coverage: `tests/hero_select_scrum980_ascension_layout_test.gd`; transient
+  rect/screenshot evidence: `build/qa/scrum980/`.
+- Historical SCRUM-1026 (superseded by SCRUM-1063 below) made the full-size portion of that contract exhaustive instead of
+  relying on the shorter level-2 sample. At viewport heights `>=1000`,
+  `HS4AscensionFrame` has a 132 px minimum and stays bottom-anchored above the
+  carousel, so it expands upward into the scroll-safe dossier budget only.
+  Every selectable delta 0..5 has zero vertical overflow at 1920×1080 and
+  2560×1440; 1280×720 uses a 69 px band so its real 59 px utility row stays
+  inside 5 px top/bottom frame content margins, while the copy keeps its
+  intentional internal scroll. The focused gate uses physical viewport-bounded `−`/`+` and hero-slot
+  pointer input, validates exact cumulative tooltips, scroll reset and D-pad
+  boundary transfer, and records every level's label/viewport/overflow metrics.
+  No art, frame texture/content margin, carousel, counter, portrait or CTA
+  geometry changes. Spec:
+  `docs/design/mockups/hero_select_black_minimal/scrum1026_ascension_level3_responsive_spec.md`.
+- SCRUM-1063 supersedes the visible SCRUM-980/1026 modifier-scroll lane and
+  SCRUM-979's clamped carousel edges. The live Ascension strip contains only
+  symmetric wide `−` / centered exact `Возвышение N` / wide `+`; complete
+  cumulative modifiers remain on the frame/value/button tooltips. All four
+  controls reuse accepted PixelLab `button_asc_minus.png` through the same
+  9-slice/content rect and the same normal/hover/pressed/focus/disabled states.
+  Width is exactly twice the former rounded carousel width while height is
+  preserved: `142×94`, `142×94`, `150×100`, `202×134` at 1152×648, 720p,
+  1080p and 2K. Label/button midpoint error is `0 px` at all targets. Carousel
+  Previous wraps first→last/final-window and Next wraps last→first/first-window;
+  pointer, physical Enter, gamepad A and cyclic D-pad focus share the same
+  selection/window/dossier/portrait/counter/Ascension refresh. Compact cards
+  scale uniformly to 116/132 px so every target retains three disjoint slots.
+  Spec/provenance: `docs/design/mockups/scrum1063_hero_carousel_wide_buttons/`
+  and `docs/design/references/scrum1063_hero_carousel_wide_buttons/`.
+
+Historical SCRUM-952 made the Hero Select dossier's class identity readable via
+`Особенность`, `Плюсы`, `Минусы`. SCRUM-1064 supersedes that visible hierarchy:
+the scroll lane now renders optional canonical trait first in exact format
+`Особенность: <title> — <short_description>`, then name, all three canonical
+weapons, deterministic top-3 `BASE_STATS` with values, and complete primary /
+secondary / weak attribute lists. Free description and prose strengths/
+weaknesses are absent from the live tree; no `+N`, ellipsis or line cap hides
+registry entries. The right eight colored stat bars remain fixed.
+
+`HS4DossierScroll` owns overflow at every tier, reserves a separate scrollbar
+lane (16 px at 1080p plan, 14 px compact), is keyboard/gamepad focusable, and
+resets to the first line whenever the selected hero changes.
+SCRUM-1046 makes that input contract explicit: keyboard/D-pad/left-stick
+`ui_up/down` and PageUp/PageDown scroll the text lane first, retaining dossier
+focus while content remains; at the actual top/bottom only, the same action
+hands focus to Back/Choose. The handler is local to `HS4DossierScroll`, so it
+does not steal global gameplay input or bypass configurable controller binds.
+`ProgressionData.CLASS_TRAITS` remains the only trait source; Codex projects the
+same title, short copy and detailed copy. Frame, portrait, stats, ascension and
+carousel geometry are unchanged. SCRUM-1064 also rebuilds only the Hero Select
+screen after a live viewport resize, without resetting route/run state.
+Accepted PixelLab reuse + content-zone evidence:
+`docs/design/mockups/scrum1064_hero_dossier/`.
+- Historical SCRUM-798 baseline (its ascension placement is superseded by
+  SCRUM-980 above) keeps the 2026-06-30 user-requested minimal Hero Select
+  sizing/information hierarchy. The selected `HS4Portrait` is the dominant
+  left-column object and keeps SCRUM-416/SCRUM-687 directional SpriteFrame
+  rotation when available. The right `HS4DossierFrame` is scroll-safe and
+  contained class title, description, strengths, weaknesses, weapon names,
+  class identity, eight base characteristics as hoverable Line Bars and
+  data-driven build guidance; SCRUM-1064 supersedes that text content while
+  retaining the same frame/stat geometry. The bottom `HS4Carousel` uses enlarged responsive
+  slots and default focus on the selected visible slot. Historical SCRUM-979
+  introduced the moving window; SCRUM-1063 restores cyclic first↔last edges
+  while preserving the one-step window/selected-anchor behavior. Since
+  SCRUM-421/SCRUM-822, large and carousel portraits use cached alpha bounds for
+  consistent centering/bottom alignment and reserve a name strip. Historical
+  evidence: `build/qa/scrum-798/`, `build/qa/scrum421/`,
+  `docs/design/mockups/hero_select_black_minimal/scrum822_preview_crop_labels_spec.md`.
+- SCRUM-870 supersedes the SCRUM-868 full-screen Weapon Select runtime layer.
+  `_show_weapon_select()` no longer creates `WeaponSelectPixelLabRuntimeLayer`;
+  the old PixelLab layer remains only as historical SCRUM-867/868 evidence.
+  Runtime now uses native, opaque Godot surfaces: `MenuPanel_weapon_select` is a
+  dark readable shell, each `WeaponOption_*` is a framed `1674x260` card with no
+  baked text/art behind labels, and `WeaponSelectBackButton` uses the normal
+  fantasy button theme. The active source-space geometry is `WS_PANEL_2K`
+  `Rect2(360,120,1840,1200)`, `WS_SAFE_2K` `Rect2(443,229,1674,1016)`,
+  title/subtitle at `443,218,1674,62` and `443,288,1674,34`, first card at
+  `443,350,1674,260` with `274px` vertical step, and Back at
+  `1140,1238,280,60`. Every card has a `204x204`
+  `WeaponSelectIconWell_*`, a larger `176x176` `WeaponSelectSprite_*`, center
+  title/`Отличие:`/concise mechanic/role text, and a right `310x204`
+  `WeaponSelectStatsPanel_*` with range/radius, cooldown, damage/control/limit
+  context. The start-boon screen continues to use the generic `weapon_select`
+  menu box, and Route Map/SCRUM-563 geometry remains untouched. Mockup/spec:
+  `docs/design/mockups/weapon_select_redraw_from_scratch/`.
+- Historical SCRUM-979 made the live HS4 carousel window the primary navigation state.
+  `HS4CarouselPrevButton` / `HS4CarouselNextButton` shift its clamped offset by
+  exactly one in `ProgressionData.character_ids()` order and preserve the
+  selected visible-slot anchor; the hero newly occupying that slot becomes the
+  selection. Its clamped edge no-ops are superseded by SCRUM-1063 cyclic wrap.
+  Direct slot clicks keep
+  the current window and select the exact clicked hero through the same portrait,
+  dossier and ascension refresh path. The visibly larger arrows reuse the
+  accepted PixelLab vertical plates and their authored empty content margins;
+  SCRUM-1063 replaces them at runtime with the shared horizontal PixelLab plate.
+  Mockup/spec: `docs/design/mockups/scrum979_hero_carousel_window/`.
 - 2026-06-29: `HS4Portrait` can render an animated class preview when the
   selected character exposes directional SpriteFrames. PixelLab classes use
   one-frame `idle_<direction>` rotation rows and cycle `south -> south_west ->
@@ -317,15 +845,13 @@ bottom-right FAB. Runtime text/icons must stay inside the declared interiors.
   exceptions. Runtime content must use only each frame's `content_rect_xywh`;
   QA evidence is in `build/qa/scrum451_minimal_metal_rollout/`.
 
-- SCRUM-585 refreshes the `GlossaryTooltipPanel` as an isolated 2K tooltip
-  frame. Runtime keeps the existing dynamic placement contract (`460` fixed
-  width, content-driven height, `8px` anchor gap, `16px` viewport clamp) and now
-  uses the regenerated `assets/sprites/ui/frames/overhaul_2k/ui_frame_2k_gt_panel.png`
-  with strict content margins `Vector4(66, 44, 66, 40)`. Generated mockup/spec
-  and safe-zone evidence live under
-  `docs/design/mockups/scrum585_glossary_tooltip/` and
-  `docs/design/previews/scrum585_glossary_tooltip_*`. Runtime text stays inside
-  the empty center and never covers the metal rails, ruby pins, or corner claws.
+- SCRUM-585 historically refreshed the `GlossaryTooltipPanel` as an isolated 2K
+  tooltip frame (`assets/sprites/ui/frames/overhaul_2k/ui_frame_2k_gt_panel.png`,
+  content margins `Vector4(66, 44, 66, 40)`). Generated mockup/spec and
+  safe-zone evidence live under `docs/design/mockups/scrum585_glossary_tooltip/`
+  and `docs/design/previews/scrum585_glossary_tooltip_*`. SCRUM-889 removes the
+  live glossary section from the in-game Codex, so this panel is no longer
+  created by `scripts/ui_screens.gd`.
 
 - SCRUM-588 refreshes the transient `LevelUpToast` as an isolated generated @2K
   frame asset. Runtime uses
@@ -348,26 +874,27 @@ bottom-right FAB. Runtime text/icons must stay inside the declared interiors.
   from the `level_up_effects` group before spawning the replacement. The only
   visible `Level Up` text is `LevelUpToastLabel` inside `LevelUpToastFrame`.
 
-- SCRUM-396 makes the SCRUM-391 Settings tab switcher live:
+- SCRUM-396 is the historical SCRUM-391 Settings tab-switcher integration:
 `assets/sprites/ui/frames/settings/ui_frame_settings_tab_switcher_3slot.png`
 (`1280x256` RGBA). It has exactly three slots in the red-gold/dark-steel style,
 with safe rects `Rect2(160,88,270,82)`, `Rect2(506,88,270,82)` and
 `Rect2(852,88,270,82)`. Runtime `SETTINGS_TAB_SWITCHER_FRAME_PATH` points to
 this 3-slot asset, `SETTINGS_TAB_SWITCHER_SAFE_RECTS` contains exactly those
-three rects, and `SettingsTabButton_3` must not exist.
-- SCRUM-439 integrates the Settings v2 rebuild runtime for Sprint 0.1.6:
+three rects. SCRUM-1025 supersedes that runtime geometry with four independent
+plates; the old 3-slot bitmap remains reference/backup only.
+- SCRUM-439 historically integrated the Settings v2 rebuild for Sprint 0.1.6:
 `docs/design/mockups/scrum439_settings_v2/spec.md`,
 `scrum439_settings_v2_mockup.png`, `docs/design/previews/scrum439_settings_v2_safe_zones.png`
 and transparent candidate frames in `assets/sprites/ui/frames/settings_v2/`.
-The mockup covers all three tabs (`Экран`, `Звук`, `Управление`) and records a
+That mockup covers the former three tabs (`Экран`, `Звук`, `Управление`) and records a
 new three-slot tab switcher, modal frame, section panel and control-row safe
-zones. Runtime now uses the v2 main modal and v2 proportional 3-slot switcher,
-preserves the existing settings/rebind semantics, keeps exactly three tab
+zones. That runtime used the v2 main modal and proportional 3-slot switcher,
+preserved the settings/rebind semantics, kept exactly three tab
 buttons, and places labels, icons, sliders, dropdowns, checkboxes, focus rings
-and scroll bars only inside modal safe areas. The dense live body uses a flat
+and scroll bars only inside modal safe areas. The dense v2 body used a flat
 inner safe panel rather than the optional section/control-row frames, because
 those candidates' source margins would clip controls or collide with the Back
-button at 720p.
+button at 720p. SCRUM-879/972/1025 supersede this shell and tab count.
 
 ## Combat HUD Redraw
 
@@ -434,6 +961,44 @@ rims, or badges.
   states, portrait frame, effect-preview field, and dedicated `Позже` button
   states. The screen still presents exactly 3 variants and preserves deferred
   choice through `level_up_offer`.
+- SCRUM-871 (Level Up 3.0 Advisor) rebuilds the card information architecture on
+  top of the SCRUM-682 kit: each card shows a top recommendation ribbon slot
+  (`LU_CARD_BADGE_RECT`), a 120px icon, title, short description, and a large
+  «до -> после» delta field (`LU_CARD_EFFECT_RECT` 354x132) that replaces the
+  old single-line effect preview with up to 3 recalculated derived-stat lines
+  (`LevelUpRewardEffectText`, `...Text2/3`) inside the same 9-slice
+  `ui_frame_lu682_effect_preview` frame. `scripts/level_up_advisor.gd` dry-runs
+  every offered reward against live player stats/run_modifiers/weapon_config via
+  `ProgressionData.derived_parameters` and scores a DPS proxy
+  (class damage_parameter × attack_speed × crit expectation + DoT track) and an
+  EHP survivability model mirroring combat `take_damage` (absorb → defense →
+  dodge + regen/vampiric window). The best positive DPS gain card gets the red
+  «ЛУЧШИЙ УРОН» ribbon (`ui_badge_lu_best_dps.png`), the best survivability gain
+  the green «ВЫЖИВАНИЕ» ribbon (`ui_badge_lu_best_surv.png`), one card winning
+  both axes gets the gold «ЛУЧШИЙ ВЫБОР» ribbon (`ui_badge_lu_best_both.png`);
+  zero/negative gains award no badge. Ribbons are PixelLab textless assets with
+  runtime labels constrained to each ribbon's empty field
+  (`LU_BADGE_META.label_zone` — фактические поля риббонов, замеренные по
+  пикселям низкодисперсным раном в средней полосе PNG; поле у всех риббонов в
+  ВЕРХНЕЙ части с эмблемой слева, подпись центрируется в поле по вертикали с
+  учётом кламппа минимальной высоты Label); card tooltips list the full delta
+  set and explain the badge with the computed gain percent. Damage-type
+  isolation (SCRUM-524) keeps foreign damage types out of card deltas.
+  Mockup/spec: `docs/design/mockups/level_up_advisor/`;
+  gate: `tests/level_up_advisor_test.gd`.
+- SCRUM-876 unifies the run resource HUD: `_create_menu_run_hud()` now builds
+  the SAME SCRUM-806 combat slim cluster (HP/XP/ULT pixel-icon bars + gold,
+  `ui_hud_v2_cluster_bg`) on every run menu screen — route map, level-up,
+  rewards, shops, events, upgrade — via the shared `_create_resource_hud_panel`
+  (combat-only layout param removed) + `_layout_combat_hud` responsive pass.
+  The route map keeps its custom anchor below `RouteMapHeader` through
+  `_layout_menu_resource_hud(root, origin)` (inner zones are laid out against
+  the combat rect because `_hud_v2_place_in_panel` subtracts the panel
+  position). The legacy card-style menu HUD (`_hud_panel_style`,
+  `_add_hud_resource_card`, `_add_hud_money_card`, `_hud_bar_fill_style`) is
+  deleted; `RouteMapHeader` uses the same `chud_resource_panel` @2K frame
+  directly. Combat-only elements (timer, boss bar, ascension pips) stay
+  combat-exclusive. Evidence: `build/qa/scrum876/route_map_hud_1920x1080.png`.
 - SCRUM-683 is the live runtime wiring for the SCRUM-682 Level Up package.
   Source geometry lives under `docs/design/mockups/level_up_scrum682/spec.md`,
   and runtime scales it from 2560x1440 while keeping hero header, portrait,
@@ -446,9 +1011,48 @@ rims, or badges.
   `LevelUpPanel`, `LevelUpHeroHeader`, all three reward cards,
   `LevelUpRewardEffectPreview`, and `LevelUpLaterButton`; focused SCRUM-683 QA
   evidence writes `build/qa/scrum683/level_up_no_overlap_matrix.md`.
+- SCRUM-985 removes the largest Level Up shell without changing the three-card
+  reward flow. Runtime no longer creates `LevelUpFrame`; `LevelUpPanel` remains
+  only as a responsive safe-margin/layout host with `0.20` alpha and no visible
+  border. The arcane-lab backdrop uses a brighter color modulation, a `0.12`
+  readable shade, and a `0.24` intro dim instead of the SCRUM-892 `0.82` dim.
+  Local card/socket ornament stays visible. Level Up explicitly opts out of the
+  registry's small-icon readability enlargement, so each reward icon keeps the
+  exact calculated inner socket rect and never crosses the ring. SCRUM-1032
+  makes the advisor badge a separate stack row even in the compact 720p tier;
+  it never overlays the socket ornament or reward icon, and every card reserves
+  the same row so sockets/titles remain aligned. The responsive matrix also
+  verifies that the full Russian badge label fits and focus does not move the
+  badge/socket/icon geometry. PixelLab-first
+  provenance and the accepted no-shell mockup live under
+  `docs/design/mockups/scrum985_level_up_cleanup/` and
+  `docs/design/references/scrum985_level_up_cleanup/`; runtime captures for
+  1280x720, 1920x1080 and 2560x1440 live under
+  `docs/design/previews/scrum985_level_up_cleanup/`.
 - SCRUM-571 adds the Design-source 2K ordinary reward mockup/spec package for the post-battle reward selection screen. Source geometry and safe-zone files live under `docs/design/mockups/scrum571_reward_2k/`, the OpenAI base layer under `docs/design/references/scrum571_reward_2k/reward_ordinary_2k_base.png`, and previews under `docs/design/previews/scrum571_reward_2k_*.png`. As of SCRUM-670 this package has no isolated alpha runtime frames, so runtime intentionally keeps the SCRUM-338 reward-card kit instead of slicing the full-screen mockup.
 - SCRUM-572 adds the Design-source 2K elite artifact reward mockup/spec package for the elite victory artifact-choice screen. Source geometry and safe-zone files live under `docs/design/mockups/scrum572_elite_artifact_reward_2k/`, the OpenAI base layer under `docs/design/references/scrum572_elite_artifact_reward_2k/elite_artifact_reward_2k_base.png`, and previews under `docs/design/previews/scrum572_elite_artifact_reward_2k_*.png`. As of SCRUM-670 this package has no isolated alpha runtime frames, so runtime intentionally keeps the SCRUM-338 elite reward-card kit instead of slicing the full-screen mockup.
 - SCRUM-404 wires the dedicated SCRUM-338 reward-card frame kit for battle rewards and elite artifact rewards: `assets/sprites/ui/frames/rewards/ui_frame_reward_card.png`, `_hover.png`, `ui_frame_reward_elite_artifact_card.png` and `_hover.png`. Runtime uses the metadata in `docs/design/references/rewards/reward_frames_scrum338_metadata.json`, keeps title, icon, description, artifact tier labels and `Получить`/choice content inside the safe content fields, and preserves whole-card click/focus without placing UI content on red gems, top crests, side metal or bottom ornaments. Runtime smoke writes SCRUM-338 card rect dumps to `build/qa/scrum338/`.
+- SCRUM-990/991 supersede the elite/boss full-screen portion of that historical
+  package. Elite/chest and boss artifact choices now share one responsive
+  reward-hall builder: canonical `ui_backdrop_reward_hall.png` below, one hollow
+  `meta40/frame_border.png` shell above, and no visible central modal or second
+  ornamental screen frame. The outer frame is the final mouse-ignore child.
+  Exact inner content rects are `157,137 966×446` at 1280×720,
+  `224,193 1472×694` at 1920×1080 and `299,257 1962×926` at 2560×1440.
+  Title, subtitle and all three Atlas-chip cards remain in that empty zone on
+  live resize. The PixelLab-first component mockup, validated UI plans and
+  compositor proof live under
+  `docs/design/{mockups,references,previews}/scrum990_991_artifact_reward/`;
+  production intentionally reuses the ticket-required shared frame/background.
+- Artifact reward cards no longer expose a separate generic `Interpretation`
+  line. `ArtifactRewardPresenter` dry-runs each reward with the same stats/mods
+  semantics and `ProgressionData.derived_parameters()` formulas as runtime,
+  names the current class and shows concise concrete before/after deltas or the
+  artifact's concrete conditional description. Across the three offers only a
+  unique positive, safely modelled top gain receives `Лучший урон` or
+  `Лучшая выживаемость`; a unique hybrid may receive both. Ties, zero/negative
+  gains and mechanics outside the derived model receive no badge rather than a
+  guessed recommendation. Full detail remains in the card tooltip.
 
 ## Button Height / Minimal Metal Rule
 
@@ -477,9 +1081,10 @@ SCRUM-345 adds a Design-ready Codex-specific texture kit under
 `entry_card_hover`, `portrait_slot`, `tooltip`, and `tab` states. Safe content
 rects live in `docs/design/references/codex/codex_ui_texture_kit_metadata.json`.
 Runtime Codex content must stay inside those rects; portraits, descriptions,
-tabs, glossary tooltips and click/focus hitboxes must not sit on decorative
-dragon/metal/gem borders. SCRUM-403 wires the kit into `_show_codex_screen`,
-Codex tabs, entry cards, portrait/icon slots and `GlossaryTooltipPanel`.
+tabs and click/focus hitboxes must not sit on decorative dragon/metal/gem
+borders. SCRUM-403 historically wired the kit into `_show_codex_screen`, Codex
+tabs, entry cards, portrait/icon slots and `GlossaryTooltipPanel`; SCRUM-889
+removes the live glossary section and tooltip panel from the in-game Codex.
 Runtime smoke asserts the actual StyleBoxTexture paths and writes
 `build/qa/scrum345/codex_texture_runtime_dump.md`.
 SCRUM-417 increases character portrait density by rendering character
@@ -495,9 +1100,8 @@ body text. Uniform-scale rects come from
 1280x720 / 1920x1080 / 2560x1440. The full mockup PNG is not wired as a runtime
 atlas; the existing SCRUM-345/SCRUM-403 Codex frame kit remains the component
 frame material. Entry cards are focusable buttons, sections still lazy-build
-and cache, Escape/back returns to main menu, glossary tooltips keep the Codex
-tooltip frame, and character detail portraits keep SCRUM-416 full-frame
-`sprite_path` plus SCRUM-417 covered scaling. QA dumps:
+and cache, Escape/back returns to main menu, and character detail portraits keep
+SCRUM-416 full-frame `sprite_path` plus SCRUM-417 covered scaling. QA dumps:
 `build/qa/scrum438/codex_v2_runtime_dump.md` and
 `build/qa/scrum438/codex_v2_no_overlap_matrix.md`.
 
@@ -535,6 +1139,82 @@ single clamped title-summary block so text stays readable inside the empty card
 zone without touching the red diamond ornament or 9-slice rails. Full description
 text remains in `CodexDetailParchmentInset`.
 
+SCRUM-849 prepared the object-first Codex design package, and SCRUM-850 makes it
+live in runtime. The current screen shifts away from text-first list density
+toward a large right-side object stage, a concise center selected/list area, and
+a quiet left category rail. Source/spec:
+`docs/design/mockups/codex_object_first_redesign/spec.md` and
+`layout_zones.json`; PixelLab preview:
+`docs/design/previews/codex_object_first_redesign_contact_v1.png`. Runtime base
+rects are `CodexMainPanel` 72,54,1776,972; `CodexNavPanel` 96,210,300,700;
+`CodexContent` 438,210,490,700; and `CodexDetailPanel` 960,210,840,700. The
+center column contains `CodexCenterObjectStage`, contained
+`CodexCenterObjectTexture`, short selected summary and cached compact section
+lists; the right detail overlay contains the larger contained
+`CodexDetailPortraitSlot`, chip row and `CodexDetailParchmentInset`. Data-driven
+sections, mouse/keyboard/gamepad navigation and strict frame-safe content
+placement are preserved. SCRUM-889 removes the live `Глоссарий` section from
+the category rail, so the active Codex shows Персонажи, Монстры, Артефакты,
+Характеристики and Возвышения only. Screenshot evidence:
+`build/qa/codex_object_first/`.
+
+SCRUM-955 supersedes that five-section data/navigation statement using the
+independently accepted PixelLab and content-zone package from SCRUM-1013. The
+active rail has six fixed Russian tabs: `Персонажи`, `Монстры`, `Артефакты`,
+`Характеристики`, `Атрибуты`, `Возвышение`. The rail width and button content
+margins scale so the longest label plus icon fits without ellipsis at
+1280x720, 1920x1080 and 2560x1440. `Характеристики` is the exact ordered
+`BASE_STAT_ORDER` projection (8 rows); `Атрибуты` is the exact ordered
+`DERIVED_STAT_ORDER` projection (26 rows). Both lists remain lazy/cached.
+
+The dossier follows the accepted split content zones: `CodexDetailLeftRail`
+contains the centered, aspect-preserving icon and
+`CodexDetailRelatedScroll`; `CodexDetailRightRail` contains title, semantic
+Russian chip, and `CodexDetailParchmentInset`. SCRUM-1021 makes the related list
+an exact projection of `StatFormulas.DERIVED_BASE_DEPENDENCIES`, a canonical
+26-row matrix mirroring `ProgressionData.derived_parameters`; localized
+formula/influence prose is never parsed as data. Derived rows preserve
+`BASE_STAT_ORDER`, base rows are the exact inverse in `DERIVED_STAT_ORDER`, and
+Russian display titles remain presentation-only. `ultimate_multiplier` lists
+all eight base characteristics; derived attributes with no direct base input
+(range/vampiric run modifiers) correctly expose an empty relation set.
+SCRUM-1023 keeps the selected dossier title on a mockup-native resolution
+scale rather than the global readability boost: 15px at 1280x720, 22px at
+1920x1080, 29px at 2560x1440 and a 30px cap at 4K. This preserves the accepted
+title rect while guaranteeing at least one rendered line; the responsive
+Codex gate checks `Label.get_visible_line_count()`, not only rect height.
+The two rails, all six tabs, center rows and scrollbars remain inside the dark
+panel interiors; the hollow frame ornament stays unobstructed. No row or chip
+shows raw character, monster, artifact or stat ids. Focused coverage lives in
+`codex_data_smoke_test.gd`, `runtime_smoke_test.gd` and the 720p/1080p/1440p
+Codex branch of `ui_no_overlap_matrix_test.gd`.
+
+SCRUM-954 supersedes the previous container geometry with the independently
+accepted SCRUM-1017 PixelLab/content-zone contract. Runtime uses a real
+1920x1080 `CodexStage`, uniformly scaled by
+`min(viewport_width/1920, viewport_height/1080)` and letterboxed for other
+aspect ratios. Base panel rects are `CodexNavPanel 72,172,324,840`,
+`CodexContent 420,172,620,840` and `CodexDetailPanel 1064,172,784,840`.
+The old full-screen `CodexFrame` is removed because its 160px rails covered the
+new header/nav zones at 720p and 1080p; the title, Back control and each panel
+now own explicit safe margins. The six navigation controls contain only
+centered Russian labels on the shared back/main button family, with no category
+emblems. Center rows are 516x154 design pixels and expose exactly one canonical
+image plus one centered Russian display-name; summary prose, raw ids and English
+duplicates live outside the list. The right dossier uses a contained 236x248
+image zone and a single 610x304 lower text scroll. Stat relations are projected
+inside that lower scroll, so only the center list and dossier have visible
+scrollbar lanes. The stage-aware font clamp keeps nav/names/title within
+15–30 visual px and dossier text within 17–32 visual px. Ascension rows reuse
+the canonical combat-HUD ascension icon; shop-derived artifact rows resolve the
+existing `shop/shop_<id>.png` family before the fail-safe icon. Exact
+720p/1080p/1440p coverage and windowed screenshots are
+produced by `codex_scrum954_layout_test.gd`; the Codex branch of
+`ui_no_overlap_matrix_test.gd` checks the same transformed rects and content
+zones. Font metadata is refreshed on live window resize without rebuilding the
+six cached sections. Persistent windowed previews live under
+`docs/design/previews/scrum954_codex_runtime/`.
+
 SCRUM-331 adds a Design-ready progression/skill-tree frame kit while preserving
 the SCRUM-345/SCRUM-403 Codex kit as the historical Codex component package.
 SCRUM-574 is the live Codex 2K frame baseline. Mockup/spec:
@@ -566,8 +1246,10 @@ text, while UI matrix dumps live under `build/qa/scrum331/`.
 
 The combat/route `LevelUpPlusButton` is an exception to the flat FAB look: in
 combat it uses the SCRUM-390 square plus texture states, remains fully opaque
-and anchored bottom-right, and keeps its pending-count badge readable. Runtime
-smoke writes `build/qa/combat_level_up_button.md` and
+and anchored bottom-right, and keeps its pending-count badge readable. On Route
+Map and other non-combat screens it remains the dedicated entry for saved
+pending level-up offers after SCRUM-982 removes the unrelated paid Attribute
+Shop FAB. Runtime smoke writes `build/qa/combat_level_up_button.md` and
 `build/qa/scrum390/combat_level_up_button.md`.
 
 Hover/focus states after SCRUM-318 are neutral-bright, not golden glow states:
@@ -591,6 +1273,14 @@ SCRUM-344 locks the dialog action buttons to 220x72; SCRUM-669 routes
 back to compact/back/icon families: their text must remain inside the
 `quit_220x72` content band. Runtime smoke records the actual rects and textures
 in `build/qa/scrum319/quit_confirmation_dialog.md`.
+
+The in-run `EndRunConfirmationDialog` deliberately has a separate width
+contract. SCRUM-1055 gives both `Завершить` and `Отмена` equal 240x72 slots on
+the native `text/continue_240x72` five-state family. This leaves at least a 4px
+text-fit reserve after the style content margins at supported font scales, so
+the final soft sign in `Завершить` cannot be clipped. The 600px atlas-chip panel,
+18px inter-button gap, safe default focus on Cancel, and Escape/B behavior stay
+unchanged.
 
 ## Pause And Result Screens
 
@@ -623,18 +1313,80 @@ Rules:
 Runtime connection is implemented in SCRUM-407: `scripts/ui_screens.gd` uses the
 modal frame for pause, victory and death menu boxes, while
 `scripts/pause_stats_menu.gd` uses the same frame for the pause dossier/stats
-overlay. Long stats content scrolls inside the modal safe-zone; result crests
-remain decorative header art and 720p result actions use smaller crest/button
-sizes so labels and click/focus zones stay off the border ornaments. QA dump:
-`build/qa/scrum330/pause_end_ui_no_overlap_matrix.md`.
+overlay. Long pause/dossier stats content scrolls inside the modal safe-zone;
+SCRUM-841 makes victory/death result screens no-scroll: `ResultContent_*` is a
+direct panel child, `ResultBody_*` splits the middle safe-zone into a decorative
+crest slot and compact `RunSummaryColumn_*`, and the primary action button stays
+visible in the bottom safe-zone at 1152x648 through 4K. Result crests remain
+decorative art, not text containers. QA dump:
+`build/qa/scrum330/pause_end_ui_no_overlap_matrix.md`; current regression gate:
+`tests/ui_no_overlap_matrix_test.gd` fails if `PauseEndModalScroll_victory` or
+`PauseEndModalScroll_death` returns.
 
 SCRUM-693 changes the active-combat Escape entry point: when no other run screen
-is covering gameplay, Escape opens the pause dossier / character board directly
-and uses its left run-control column as the available pause actions. The old
+is covering gameplay, Escape opens the pause dossier / character board directly.
+SCRUM-983 moves the four run actions from the old left/header placement into a
+fixed bottom footer, with Continue focused first. SCRUM-1056 supersedes the
+old pause-only/danger styling: Continue, Settings, End Run and Main Menu all use
+the exact `main_menu_380x104` five-state family with geometry-stable 72px compact
+or 104px wide heights. The old
 standalone `RunPauseMenuRoot` is still available for noncombat overlays such as
 route/shop/event/level-up/reward contexts, but it must not appear over or instead
 of the character board for clean active gameplay. Resume, Settings Back, and
 repeated Escape preserve the same run state and pause-stack semantics.
+
+SCRUM-839 is a runtime readability pass on the accepted SCRUM-580/SCRUM-486
+pause dossier @2K layout. No new bitmap frames were generated: `pd_panel`,
+`pause_280x60`, stat row/chip frames, and tooltip frames remain the source of
+truth. `scripts/pause_stats_menu.gd` now uses viewport-aware readable minimums:
+base stat rows are at least 44px high with 17/18px name/value text, derived stat
+chips are at least 236x54px with 15/17px name/value text, and stat icons render
+at 44px+ for base attributes and 46px+ for derived attributes. Long Russian stat
+names are clipped with ellipsis or wrapped only inside their existing containers;
+content remains inside the frame safe-zone. The update note lives in
+`docs/design/mockups/scrum839_pause_dossier_readability/spec.md`.
+
+SCRUM-983 supersedes the old pause-dossier placement while preserving those
+readability minima. SCRUM-1056 removes the dossier scrollbars and replaces the
+old overflow layout with a no-scroll responsive contract. The live screen reuses the SCRUM-981 hollow gold shell and
+adds a real inner reserve beyond the scaled 160px rails: exact inner rects are
+`157,137,966,446` at 1280×720, `224,193,1472,694` at 1920×1080 and
+`299,257,1962,926` at 2560×1440. Header, hero/derived body and the fixed footer
+remain inside those rects; `HeroCardScroll` and `DerivedStatsScroll` have both
+scroll modes disabled and must report `content minimum <= viewport`. Base stats are
+eight semantic rows in `BaseStatsGrid` (2 columns at every tier);
+the 1080p two-column name lane must fit at least the rendered short localized
+label `Сила`. Four opaque reserve masks cover everything outside the inner rect
+below the content/final frame, preventing any combat HUD from showing through
+gold ornament. Derived stat groups remain 2×2 and show deterministic readable
+compact aliases without clipping either aliases or localized numeric values;
+canonical names remain in tooltips. Every stat target is keyboard/gamepad focusable,
+uses geometric D-pad neighbors, and exposes the same complete
+description/formula/source/influences through one shared hover/focus tooltip.
+The former long Arsenal/Equipment blocks are condensed into the always-visible
+`RunBuildSummaryPanel`; full weapon, ultimate and artifact details remain in its
+tooltip. The header preserves the complete class + weapon identity with an
+explicit rendered-text lane and a 24px local reserve before the irregular
+top-right ornament; clipping, wrapping and ellipsis are forbidden across the
+1152×648/720p/900p/1080p/2K matrix and live resize. Stat rows disable the generic 460/620px engine popup; the dossier tooltip is a
+clipped vertical viewport that never exceeds 430×288 and scrolls by wheel,
+Page Up/Down or gamepad shoulders. Wheel is captured only during an actual stat
+hover; after the pointer leaves stat rows it does not move the no-scroll dossier
+or the focus-only tooltip. Footer Up neighbors resolve from visible stat rows.
+The acceptance matrix covers 1152×648, 1280×720, 1600×900, 1920×1080 and
+2560×1440. Runtime oracle:
+`tests/scrum983_escape_dossier_test.gd`; visual evidence:
+`build/qa/scrum983/`.
+
+SCRUM-840 unifies global hover tooltip behavior without generating new bitmap
+assets. Generic `tooltip_text` controls inherit the existing minimal-metal
+`tooltip` frame (`66/44/66/40` content margins), while pause dossier stat
+details keep `stat_tooltip`. The shared
+runtime helper in `scripts/ui/global_tooltip.gd` builds opaque framed panels
+with word wrap, `MOUSE_FILTER_IGNORE`, 460px generic width / 430px stat width,
+16px viewport clamp and 18px cursor/anchor gap. Generic tooltip panels carry a
+small positioning script that re-places the Godot tooltip away from the cursor
+after instantiation. Spec note: `docs/design/mockups/scrum840_global_tooltips/spec.md`.
 
 ## Feedback Overlay
 
@@ -652,19 +1404,42 @@ multipart payloads, while missing/failed webhook delivery falls back to
 
 ## Settings Tabs
 
-SCRUM-439 supersedes the older SCRUM-396 switcher-only runtime with the full
-Settings v2 modal. The live settings screen now draws
+SCRUM-439 superseded the older SCRUM-396 switcher-only runtime with the full
+Settings v2 modal. That historical settings screen drew
 `assets/sprites/ui/frames/settings_v2/ui_frame_settings_v2_main_modal.png` and
 the design-ready 3-slot switcher
 `assets/sprites/ui/frames/settings_v2/ui_frame_settings_v2_tab_switcher_3slot.png`
 (`1280x256`, RGBA transparent, no baked text). The switcher is displayed as a
 whole-image proportional 5:1 strip so it is never stretched on one axis. The
-built-in `TabContainer` headers are hidden; `SettingsTabs` still owns the three
-settings pages, while `SettingsTabButton_0..2` switch `current_tab`.
+built-in `TabContainer` headers remain hidden. Current `SettingsTabs` owns four
+pages, while `SettingsTabButton_0..3` switch `current_tab`.
 
-Runtime labels/click/focus zones must stay inside these base safe rects and
-scale proportionally with the whole image. Runtime smoke validates the actual
-button rects against the scaled safe rects:
+SCRUM-879 later promoted Settings into the shared fullscreen Atlas shell while
+preserving the native pages and controls. SCRUM-972 defines the current
+content-surface contract: `SettingsContentPanel` remains the centered responsive
+width/clip owner and retains positive content margins, but both its style and
+the hidden `SettingsTabs.panel` style are fully transparent with zero borders.
+Rows therefore sit directly on the single dark sanctum background; there must
+be no gray inset, inner outline, bevel, shadow or second frame between the tab
+plates and footer. The outer `SettingsFrame` stays hollow/on top, and every
+control remains inside `SettingsSafeArea`. PixelLab direction, exact zones and
+fit/debug evidence: `docs/design/mockups/scrum972_settings_seamless_content/`;
+runtime matrix: `build/qa/scrum972/`. SCRUM-1025 extends this same transparent
+surface to `Игра`: panel widths `960/1158/1544`, Game scroll widths
+`892/1068/1424`, compact logical content `878×520`, and four standalone
+tab plates. The source compact mockup's `306px` viewport omitted the live Atlas
+border; runtime uses a frame-safe `242px` viewport at 720p (max scroll `278`)
+so the bottom state exposes rows 3–5 and Reset entirely above the ornament.
+All five rows remain inside the empty frame interior.
+
+The SCRUM-1060 live switcher is text-only even though the accepted SCRUM-975
+icon PNGs remain in the repository as source/history. Removing the icons from
+all four tabs frees the complete 164px flat label lane and lets `Управление`
+retain the same effective font as Back without touching the dragon end caps.
+
+The following safe-rect table is historical SCRUM-439/v2 evidence, not the live
+SCRUM-1025 switcher contract. In that former whole-strip asset, runtime labels,
+click and focus zones had to stay inside these three source rects:
 
 SCRUM-626 fixes Settings return-origin tracking. Settings opened from the main
 menu returns to the main menu on Back/Escape, while Settings opened from the
@@ -677,12 +1452,12 @@ preserves the active run state instead of rebuilding the start screen.
 | `tab_1_audio_safe` | `Rect2(502, 78, 275, 92)` |
 | `tab_2_controls_safe` | `Rect2(854, 78, 275, 92)` |
 
-There is no fourth runtime slot and no fourth hit area. If the settings screen
-ever needs another page, Design must provide a new asset and safe-zone metadata
-instead of Back-end placing a tab on the existing ornament.
+That v2 asset had no fourth runtime slot or hit area. SCRUM-1025 supersedes this
+limitation with four independent global-kit plates, including live
+`SettingsTabButton_3`; it does not place a fourth hit area on the old ornament.
 
-Do not place text, icons, click zones or focus rings on the tab strip's metal
-bevels, dragon heads, red gems, dividers or lower rail. Preview:
+For the archived v2 strip, text, icons, click zones and focus rings must not be
+placed on its metal bevels, dragon heads, red gems, dividers or lower rail. Preview:
 `docs/design/previews/scrum439_settings_v2_safe_zones.png`; runtime QA dumps:
 `build/qa/scrum439/settings_v2_runtime_rects.md` and
 `build/qa/scrum439/settings_v2_no_overlap_matrix.md`.
@@ -750,6 +1525,10 @@ with `DisplayResolution.clamp_to_physical(...)`, and `project.godot` enables
 `window/dpi/allow_hidpi=true`. QA evidence:
 `build/qa/scrum441/hidpi_resolution_evidence.md`.
 
+SCRUM-1002 makes Godot editor previews ignore saved fullscreen at launch and use
+a bordered, resizable, screen-fitting window. The override is non-persistent:
+exported/runtime builds still use the saved video mode and resolution.
+
 ## SCRUM-478 Bright Minimalist Full UI Anchor
 
 SCRUM-478 is the Design-source anchor for the next full-game minimalist UI
@@ -813,6 +1592,52 @@ collision-relax и финальный nearest-open placement. Acceptance rule: �
 2560×1440; тестовое покрытие — `runtime_smoke_test.gd`,
 `runtime_smoke_ui_test.gd` и `meta40_atlas_screen_smoke_test.gd`.
 
+SCRUM-1024 fixes the 1280×720 responsive minimum-size contract without changing
+Atlas art, graph or purchase semantics. The authored content rectangle remains
+the frame's scaled `160/1536` horizontal and `0.86 × 160/1024` vertical inset.
+When that safe width is below 1420 px, the two header currency chips keep their
+icons and exact numeric counts while the full localized currency/class phrase
+moves to the tooltip; the three standard 260 px action plates remain unchanged.
+All variable dossier copy — description, condition/lore, constellation progress
+and hidden-star hint — lives in `AtlasNodeScroll`; price and explicit Buy remain
+pinned below it. The dossier scroll is focusable, supports mouse/`ui_up/down`,
+resets to the first line on every node/class/tab refresh and hands focus to
+Back/Buy at its boundaries. Currency chip children are mouse-ignore so hovering
+either icon or number resolves the parent's full tooltip. `AtlasClassStrip.follow_focus` keeps the ninth
+row of the 17-hero grid reachable on 720p. The focused bounded oracle refuses
+synthetic off-viewport pointer coordinates and verifies every live hitbox,
+every socket/circle, class/Guild preview-only state and exact explicit spend on
+1280×720, 1920×1080, 2048×1152 and 2560×1440.
+
+SCRUM-1091 реализует accepted SCRUM-1090 hierarchy внутри того же
+`AtlasNodeScroll`. Schema-6 dossier показывает scope/weapon, axis, exact
+`before → after`, результат и путь; финал предваряется native-label
+`УНИКАЛЬНЫЙ ФИНАЛ` и раскрывает trigger/caps/boss/floor. Цена и Buy остаются
+соседями scroll в `AtlasNodePanelBox`, то есть всегда pinned; weapon final не
+показывает legacy `AtlasKeystoneToggle`. `AtlasNodePanel` держит 30px content
+reserve от орнамента, а длинный текст прокручивается на 720p без уменьшения
+семантического шрифта. Focused matrix:
+`tests/scrum1091_atlas_dossier_ui_test.gd`.
+The class-hidden state follows schema 6 end to end: a recorded reveal fact and
+the attached order-3 path expose a cost-1 Buy action; only that explicit
+purchase lights the star and applies its weapon-scoped effect.
+
+SCRUM-1094 hardens the same fail-closed panel path: an invalid class dossier has
+higher precedence than ordinary locked/currency/purchased hints. Available and
+locked malformed nodes both retain the exact explicit schema failure, keep Buy
+visible but disabled and never show a plausible generic fallback. Regression:
+`tests/scrum1094_atlas_failure_precedence_test.gd`.
+
+SCRUM-971 adds `AtlasCenterColumn`, a responsive vertical owner for the native
+`AtlasSelectedClassLabel` row and the existing expanding `AtlasCanvas`. The
+localized label is refreshed from `ProgressionData.character_config(class_id)`
+on initial open, class-medallion selection and both tab paths. It remains
+pointer-pass-through and unframed; the reserved row keeps it disjoint from the
+header, class grid, socket canvas, dossier and footer at 1280×720, 1920×1080,
+2048×1152 and 2560×1440. PixelLab/content-zone evidence is stored under
+`docs/design/mockups/scrum971_atlas_class_label/`; runtime reuses the existing
+Atlas art rather than adding the mockup as a production texture.
+
 ## SCRUM-812 — фокус-навигация внутризабеговых экранов (геймпад/стрелки)
 
 Все окна выбора, открывающиеся ВНУТРИ забега, полностью управляются геймпадом
@@ -842,8 +1667,10 @@ collision-relax и финальный nearest-open placement. Acceptance rule: �
   старт — первая карточка (награды обязательны — cancel не выходит).
 - Пауза (`_build_run_pause_menu`): вертикальное меню, старт — «Продолжить»;
   B/Esc = продолжить игру.
-- Досье паузы (`PauseStatsMenu`): кнопки фокусируемы, старт — «Продолжить»; B/Esc
-  обрабатывается централизованно в `main._input`.
+- Досье паузы (`PauseStatsMenu`): старт — «Продолжить» в fixed footer;
+  left/right cycles the four actions, up/down enters the closest semantic stat
+  row, stat navigation preserves geometric rows/columns and focus-follow scroll;
+  B/Esc обрабатывается централизованно в `main._input`.
 - Смерть/победа (`_show_death_screen`, `_show_victory_screen`): старт — основная
   кнопка; B/Esc = основная кнопка (нет «пустого» закрытия).
 - Магазин/отдых/улучшение (`_show_shop_screen`, `_show_rest_screen`,
@@ -852,7 +1679,8 @@ collision-relax и финальный nearest-open placement. Acceptance rule: �
 - Карта маршрута (`route_map_screen.gd`): доступные ноды — `FOCUS_ALL`, недоступные
   `FOCUS_NONE` (пропускаются); крестовина/стик двигают выделение по доступным нодам,
   A подтверждает (`Button.pressed`), заметная золотая кайма (`focus`-стайлбокс),
-  скролл следует за фокусом (`follow_focus`). Мышь идёт своим путём
+  Left/Right ищут ближайшую доступную колонку, Up/Down двигаются по веткам
+  текущей колонки, а horizontal scroll следует за фокусом. Мышь идёт своим путём
   (`_handle_route_node_input`); двойную активацию гасит реэнтранси-латч
   `_route_node_activating` в `_activate_route_node`.
 
@@ -877,15 +1705,17 @@ B→ui_cancel, крестовину/стик к ui_*) и общий хелпер
   +/- + Выбрать + Назад) — уже был (SCRUM-664), сохранён.
 - Выбор оружия/боона (`_show_weapon_select`, `_show_start_boon_select`): карточки
   вертикально по кругу, «Назад»/«Без боона» ниже; старт — первая карточка.
-- Магазин атрибутов (`_show_attribute_shop`): докач-опции + Reroll/Skip, старт — первая
-  доступная опция; `follow_focus` прокручивает список.
+- Магазин атрибутов (`_show_attribute_shop`): 2 докач-опции по умолчанию или 3 с
+  Atlas-бонусом находятся в одном горизонтальном focus ring, старт — первая
+  доступная опция; Down ведёт к горизонтальной паре Reroll/Skip, scroll отсутствует.
 - Дерево умений (`_show_skill_tree_screen`): старт — селектор класса; кнопки хедера
   (зум/сброс/назад) достижимы направлением; узлы графа — мышь/зум (гео-навигация графа
   геймпадом — отдельная доработка).
 - Патч-ноуты (`_show_patch_notes_screen`): старт — «Назад в меню»; контент read-only
   (колесо/перетаскивание).
 - Кодекс (`_show_codex_screen`): старт — первая вкладка; карточки записей фокусируемы,
-  секция-скролл `follow_focus`. **LB/RB листают секции** (`_cycle_codex_section`).
+  секция-скролл `follow_focus`; live-раздела `Глоссарий` нет. **LB/RB листают
+  секции** (`_cycle_codex_section`).
 - Настройки (`_show_settings_menu`): старт — первая вкладка; слайдеры/OptionButton/
   CheckBox фокусируемы (ui_left/right меняют значение из коробки). **LB/RB листают
   вкладки** (`_cycle_settings_tab`).
@@ -896,3 +1726,72 @@ B→ui_cancel, крестовину/стик к ui_*) и общий хелпер
 вкладку/секцию. Обрабатывается, только если экран открыт — иначе не трогается.
 ui_cancel/B закрывает попапы через `ui_escape_action` (SCRUM-812 путь в `main._input`).
 Focus-стиль — существующие не-жёлтые focus-текстуры темы (курс «без жёлтых рамок»).
+
+## SCRUM-963 — Артефактный UI: редкость, классовая пометка, иконки (0.2.1)
+
+Единый канон отображения артефактов на всех поверхностях (данные — SCRUM-960/961,
+иконки — SCRUM-962, контракт — `artifact_system_matrix.md` §1.1/§7.4).
+
+**Редкость.** `tier` и есть редкость; player-facing подписи — `TIER_LABELS`
+(`ui_screens.gd`): 1 «Обычный» / 2 «Редкий» / 3 «Эпический», цвета `TIER_COLORS`
+прежние (светлый/голубой/оранжевый). Номера тиров игроку не показываются нигде:
+хинт сундука маршрута (`route_map_screen._elite_artifact_tier_hint`) — «шанс
+эпического / ориентир — редкий / ориентир — обычный или редкий», сабтайтл трофея
+босса — «Выбери 1 из 3 эпических артефактов», капстоун Атласа «Связи в гильдии» —
+«гарантированно есть эпический товар». Для ПОЛУЧЕННЫХ артефактов показывается
+роллнутый тир записи забега `player.artifacts[].tier` (HUD-тултип, чипы
+«Экипировки» паузы — имя цветом редкости + тултип), фоллбек — корневой тир
+определения (старые сейвы без поля живы, редкость без тира не рисуется).
+
+**Иконки.** Все карточки наград с артефактами используют уникальную
+`artifact_<id>.png` через `_make_reward_card_icon` (элитка/босс/сундук —
+`_make_elite_artifact_card`; пост-боевой выбор — `_make_battle_reward_card`);
+стат/атрибут-награды остаются на реестровых иконках `UIIconRegistry`. Магазин
+(`_shop_item_icon_path`), HUD-ряд (`_refresh_artifact_hud_row`), кодекс и
+экипировка паузы (`pause_stats_menu._equipment_artifact_icon`) грузят тот же
+файл. Fallback (`buff_power`) — только dev-страховка: гейты
+`tools/validate_artifact_icons.py` (данные 154 = иконки 154) и
+`codex_data_smoke_test` (ResourceLoader.exists на каждый id + запрет латиницы
+в титулах).
+
+**Классовая пометка.** Формат `_artifact_affinity_note`: «Класс: <RU> ·
+Возвышение 5» (цвет 0.55/0.92/1.0). Показывается у ЛЮБОГО классового артефакта:
+на своих — знак эксклюзива класса, на cross-class выпадениях «Украденного герба»
+— честное имя чужого класса. Поверхности: карточки наград (нижняя строка вместо
+генерик-«Интерпретации», которая осталась только у универсалов со stats/mods),
+тултипы карточек/HUD (суффикс `[Класс: …]`), магазин (строка тултипа; бейдж «!»
+— ТОЛЬКО на чужеклассовом товаре), кодекс. Старая формулировка «Тематика»
+упразднена (глоссарий `affinity` переписан под гейт: «Классовый артефакт»).
+CLASS_RU покрывает 17/17 классов (дословно titles CHARACTER_CONFIGS).
+
+**Кодекс.** Чипы записи — редкость + класс-владелец (+«Заперто»), сырой id из
+чипов убран; товары магазина помечаются чипом «Магазин» вместо фиктивной
+редкости. Классовый артефакт ЗАПЕРТ, пока мета-Возвышение его класса <
+`requires_ascension` (`_codex_artifact_locked`, порог = гейт выдачи): ряд
+затемнён китовым locked-тинтом (0.70/0.72/0.78/0.82), иконка — тёмный силуэт
+(`CODEX_LOCKED_SILHOUETTE_TINT`, тот же приём, что «скрытая звезда» Атласа),
+эффект скрыт — вместо описания условие «Откроется на Возвышении 5 — <Класс>»,
+досье показывает секцию «Как открыть» и силуэт (тинт через
+`detail_data.texture_tint`). Разблокированные — обычные записи с новой иконкой
+и классовой пометкой; смоук-анкер формата пометки — `runtime_smoke_test`
+(stolen_crest/void_hunger/warrior_charm).
+
+**Run summary.** Имена артефактов остаются компактным списком без тиров
+(решение по лаконичности; редкость доступна в тултипах HUD/паузы).
+
+## SCRUM-958 — Canonical Codex image fit
+
+Codex character, monster and artifact rows keep the accepted SCRUM-954 geometry
+but no longer display full transparent source canvases as micro-previews.
+`scripts/ui/codex_image_fit.gd` supplies cached, non-destructive `AtlasTexture`
+views for both the 88×96 row image and 236×248 dossier preview. Character views
+use an 8% alpha reserve with bottom-center anchoring; monsters use 4% centered
+contain; artifact and shop icons use 10% centered contain. Visible alpha is
+never cropped, and each view keeps its canonical source path/policy metadata.
+
+The player-facing contract is unchanged: one actual canonical image and one
+centered Russian name per row, no category emblem, English duplicate or raw id.
+All 17 characters, 31 monster projections and 161 artifact/shop projections
+resolve their canonical runtime source. Missing entity/artifact art is rejected
+by `codex_scrum958_image_fit_test.gd`; the old generic registry fallback is not
+an accepted Codex result.

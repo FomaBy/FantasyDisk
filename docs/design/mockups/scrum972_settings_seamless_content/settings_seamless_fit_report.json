@@ -1,0 +1,173 @@
+{
+  "ok": true,
+  "zones": [
+    {
+      "id": "title",
+      "rect": [
+        62,
+        73,
+        140,
+        18
+      ],
+      "ok": true,
+      "kind": "text",
+      "font_size": 14,
+      "lines": [
+        "НАСТРОЙКИ"
+      ],
+      "text_bbox": [
+        88,
+        74,
+        88,
+        15
+      ]
+    },
+    {
+      "id": "tab_screen",
+      "rect": [
+        202,
+        121,
+        86,
+        16
+      ],
+      "ok": true,
+      "kind": "text",
+      "font_size": 11,
+      "lines": [
+        "ЭКРАН"
+      ],
+      "text_bbox": [
+        226,
+        124,
+        38,
+        10
+      ]
+    },
+    {
+      "id": "tab_sound",
+      "rect": [
+        302,
+        121,
+        86,
+        16
+      ],
+      "ok": true,
+      "kind": "text",
+      "font_size": 11,
+      "lines": [
+        "ЗВУК"
+      ],
+      "text_bbox": [
+        330,
+        124,
+        30,
+        10
+      ]
+    },
+    {
+      "id": "tab_controls",
+      "rect": [
+        398,
+        121,
+        96,
+        16
+      ],
+      "ok": true,
+      "kind": "text",
+      "font_size": 10,
+      "lines": [
+        "УПРАВЛЕНИЕ"
+      ],
+      "text_bbox": [
+        410,
+        124,
+        71,
+        9
+      ]
+    },
+    {
+      "id": "monitor",
+      "rect": [
+        52,
+        154,
+        94,
+        18
+      ],
+      "ok": true,
+      "kind": "text",
+      "font_size": 11,
+      "lines": [
+        "МОНИТОР"
+      ],
+      "text_bbox": [
+        52,
+        158,
+        59,
+        10
+      ]
+    },
+    {
+      "id": "resolution",
+      "rect": [
+        52,
+        193,
+        94,
+        18
+      ],
+      "ok": true,
+      "kind": "text",
+      "font_size": 11,
+      "lines": [
+        "РАЗРЕШЕНИЕ"
+      ],
+      "text_bbox": [
+        52,
+        197,
+        77,
+        10
+      ]
+    },
+    {
+      "id": "window_mode",
+      "rect": [
+        52,
+        228,
+        94,
+        18
+      ],
+      "ok": true,
+      "kind": "text",
+      "font_size": 11,
+      "lines": [
+        "РЕЖИМ ОКНА"
+      ],
+      "text_bbox": [
+        52,
+        232,
+        77,
+        10
+      ]
+    },
+    {
+      "id": "shake",
+      "rect": [
+        52,
+        267,
+        116,
+        18
+      ],
+      "ok": true,
+      "kind": "text",
+      "font_size": 11,
+      "lines": [
+        "ТРЯСКА КАМЕРЫ"
+      ],
+      "text_bbox": [
+        52,
+        271,
+        94,
+        10
+      ]
+    }
+  ]
+}

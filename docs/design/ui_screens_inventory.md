@@ -58,18 +58,17 @@
 | 24 | Форма фидбэка | `FeedbackOverlay` / `FeedbackPanel` | `_show_feedback_overlay` | ui_screens.gd:5940 |
 | 25 | Конфликт переназначения клавиш | `RebindConflictPanel` | `_show_rebind_conflict` (в настройках) | ui_screens.gd:6131 |
 
-## C. Тултипы / транзиентные баннеры (5)
+## C. Тултипы / транзиентные баннеры (4)
 
 | # | Элемент | Корневая нода | Вход | Файл |
 |---|---|---|---|---|
-| 26 | Тултип глоссария | `GlossaryTooltipPanel` | `_show_glossary_tooltip` | ui_screens.gd:2722 |
-| 27 | Тултип статов | `StatTooltipPanel` | — | ui_screens.gd |
-| 28 | Тост повышения уровня | — | `_show_level_up_toast` | ui_screens.gd:5361 |
-| 29 | Баннер заголовка боя | — | `_show_combat_title_banner` | ui_screens.gd:5396 |
-| 30 | Баннер победы | — | `_show_victory_banner` | ui_screens.gd:1686 |
+| 26 | Тултип статов | `StatTooltipPanel` | — | ui_screens.gd |
+| 27 | Тост повышения уровня | — | `_show_level_up_toast` | ui_screens.gd:5361 |
+| 28 | Баннер заголовка боя | — | `_show_combat_title_banner` | ui_screens.gd:5396 |
+| 29 | Баннер победы | — | `_show_victory_banner` | ui_screens.gd:1686 |
 
 ## Итого
-**30 уникальных UI-состояний:** 19 полноэкранных + 6 модалок/пауз + 5 тултипов/баннеров.
+**29 уникальных UI-состояний:** 19 полноэкранных + 6 модалок/пауз + 4 тултипа/баннера.
 
 ## Координатная спека @2560×1440 — блок Меню/Навигация (SCRUM-484)
 
@@ -435,16 +434,20 @@ center-align) помечены «—» (auto) с шаблонным `w×h`; дл
 ### 1–2. Победа / Поражение — `_show_victory_screen` / `_show_death_screen` · `RESULT_*` / `VS_*` / `DS_*`
 Pause/end-модалки (через `_create_menu_box`). Геометрия победы и поражения **идентична**
 (`_pause_end_modal_display_size` для "victory"/"death" → один 898×820, height упирается в
-clamp 820). Контент в ScrollContainer→VBox (center, sep 12): crest→title→subtitle→кнопка.
-Длинный subtitle победы (~8 строк) при переполнении уходит в скролл.
+clamp 820). С SCRUM-841 эти result-экраны не используют `PauseEndModalScroll_*`:
+контент лежит напрямую в safe-area как `ResultContent_*`, верх отдан title/subtitle,
+середина — `ResultBody_*` с crest-slot слева и компактной `RunSummaryColumn_*` справа,
+а action-кнопка всегда видима в нижнем safe-слоте.
 
 | Слот | const | x | y | w | h |
 |---|---|---:|---:|---:|---:|
 | Панель модалки | `RESULT_PANEL_2K` | 831 | 310 | 898 | 820 |
 | Safe-area | `RESULT_SAFE_2K` | 898 | 396 | 764 | 656 |
-| Эмблема-кольцо (crest) | `RESULT_CREST_2K` | 1192 | 401 | 176 | 176 |
-| Заголовок (42px) | `RESULT_TITLE_2K` | 898 | 589 | 764 | 54 |
-| Подзаголовок (17px, autowrap) | `RESULT_SUBTITLE_2K` | 898 | 655 | 764 | 220 |
+| Заголовок | `RESULT_TITLE_2K` | 898 | 396 | 764 | 42 |
+| Подзаголовок (autowrap) | `RESULT_SUBTITLE_2K` | 898 | 448 | 764 | 128 |
+| Body: crest + summary | `RESULT_BODY_2K` | 898 | 586 | 764 | 352 |
+| Эмблема-кольцо (crest) | `RESULT_CREST_2K` | 899 | 678 | 168 | 168 |
+| Сводка забега | `RESULT_SUMMARY_2K` | 1086 | 586 | 576 | 352 |
 | Кнопка «Новый забег» (победа) | `VS_BTN_NEWRUN_2K` | 1070 | 948 | 420 | 104 |
 | Кнопка «Начать заново» (смерть) | `DS_BTN_RETRY_2K` | 1070 | 948 | 420 | 104 |
 
@@ -461,23 +464,42 @@ clamp 820). Контент в ScrollContainer→VBox (center, sep 12): crest→t
 | Досье | `HS4DossierFrame`, center column with name, description, strengths, weaknesses, weapon list, class identity |
 | Характеристики | `HS4StatsGrid`, 8 `HS4Stat_<stat_id>` buttons; each has tooltip with dependent attributes |
 | Возвышение | `HS4AscensionFrame`, right column with description, `AscensionMinusButton`, `AscensionPlusButton`, `HS4ChooseButton` |
-| Карусель | `HS4CarouselFrame` / `HS4Carousel`, bottom band; slots are `150x150` `HS4CarouselSlot_*` buttons |
-| Прокрутка карусели | `HS4CarouselPrevButton` / `HS4CarouselNextButton`; visible slot count is computed from available width |
+| Карусель | `HS4CarouselFrame` / `HS4Carousel`, bottom band; responsive square `HS4CarouselSlot_*` buttons are clamped to `180..320px` |
+| Прокрутка карусели | SCRUM-979: `HS4CarouselPrevButton` / `HS4CarouselNextButton` use existing PixelLab `132x176` plates scaled to `52%` of slot height (`84..140px` high); each press shifts the clamped visible window by one, preserves selected slot position where possible, and never wraps |
 
 ### 4. Выбор оружия — `_show_weapon_select` · `WS_*_2K`
-SCRUM-562 live 2K pass: Weapon Select now has a dedicated frame contract instead of the old generic `1120x660` economy panel. Runtime uses `WS_PANEL_2K = Rect2(420,190,1720,1060)`, `WS_SAFE_2K = Rect2(498,286,1564,898)`, `WS_CARD_2K = Rect2(498,446,1564,190)` with step `218`, and `WS_BTN_BACK_2K = Rect2(1140,1120,280,60)`. The `ws_panel`, `ws_card`, and `ws_btn_back` assets are generated in `assets/sprites/ui/frames/overhaul_2k/`; content margins keep all title/card/button text and weapon sprites inside the empty frame interiors. The start-boon picker keeps the old shared `weapon_select` panel, and SCRUM-563 route-map layout is not part of this scope.
-Economy-панель 1120×660 по центру. Карточки оружия (фикс высота 173, EXPAND_FILL по ширине
-safe) в ScrollContainer→VBox (sep 16). Берсерк = 3 оружия влезают; персонажи с 4 оружиями
-уходят в вертикальный скролл (дизайн-инвариант сохранён через скролл).
+SCRUM-870 is the active live contract and supersedes the SCRUM-868 full-screen
+PixelLab layer. `_show_weapon_select()` must not create or render
+`WeaponSelectPixelLabRuntimeLayer`; the SCRUM-867/868 mockup/runtime-layer files
+remain historical evidence only. Weapon Select now uses native Godot controls
+with opaque high-contrast surfaces: a dark centered `MenuPanel_weapon_select`,
+three large framed `WeaponOption_*` cards, live labels/icons, live focus states,
+and the normal fantasy `WeaponSelectBackButton`. The start-boon picker keeps the
+old shared `weapon_select` menu box, and SCRUM-563 route-map layout is not part
+of this scope.
+
+Each `WeaponOption_*` card contains:
+- `WeaponSelectIconWell_*` at minimum `204x204`;
+- `WeaponSelectSprite_*` at minimum `176x176`;
+- `WeaponSelectTitle_*`;
+- `WeaponSelectIdentity_*` with `Отличие:` from
+  `ProgressionData.weapon_mechanic_identity(character_id, weapon_id)`;
+- `WeaponSelectDescription_*` with a concise mechanic summary that fits the
+  card instead of a clipped paragraph;
+- `WeaponSelectRole_*` with archetype/mode/class scaling;
+- `WeaponSelectStatsPanel_*` with `WeaponSelectStats_*`: archetype, range/radius,
+  cooldown and one context line for summon limit, control or damage.
 
 | Слот | const | x | y | w | h |
 |---|---|---:|---:|---:|---:|
-| Панель (фрейм) | `WS_PANEL_2K` | 720 | 390 | 1120 | 660 |
-| Safe-area | `WS_SAFE_2K` | 778 | 462 | 1004 | 522 |
-| Заголовок | `WS_TITLE_2K` | 778 | 462 | 1004 | 54 |
-| Подзаголовок | `WS_SUBTITLE_2K` | 778 | 532 | 1004 | 24 |
-| Карточка оружия (шаблон; шаг Y=189) | `WS_CARD_2K` | 778 | 572 | 1004 | 173 |
-| Кнопка «Назад» | `WS_BTN_BACK_2K` | 940 | 880 | 280 | 60 |
+| Панель (фрейм) | `WS_PANEL_2K` | 360 | 120 | 1840 | 1200 |
+| Safe-area | `WS_SAFE_2K` | 443 | 229 | 1674 | 1016 |
+| Заголовок | `WS_TITLE_2K` | 443 | 218 | 1674 | 62 |
+| Подзаголовок | `WS_SUBTITLE_2K` | 443 | 288 | 1674 | 34 |
+| Карточка оружия (шаблон; шаг Y=274) | `WS_CARD_2K` | 443 | 350 | 1674 | 260 |
+| Иконка оружия | `WS_ICON_WELL_SIZE_2K` / `WS_ICON_SIZE_2K` | — | — | 204 / 176 | 204 / 176 |
+| Панель статов | `WS_STATS_PANEL_SIZE_2K` | — | — | 310 | 204 |
+| Кнопка «Назад» | `WS_BTN_BACK_2K` | 1140 | 1238 | 280 | 60 |
 
 ### 5. Карта маршрута — `_show_battle_map` · `RM_*_2K` (**scripts/route_map_screen.gd**)
 

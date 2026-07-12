@@ -1,0 +1,141 @@
+{
+  "canvas": {
+    "width": 1280,
+    "height": 720
+  },
+  "policy": {
+    "min_gap": 4,
+    "allow_overlap": false
+  },
+  "content": {
+    "trait": "Особенность — Сеть мастерской: активные устройства дают стеки сети; Лидерство поднимает предел.",
+    "strengths": "Плюсы: сильная армия устройств, устойчивый урон по толпе, масштабирование от Лидерства.",
+    "weaknesses": "Минусы: медленный старт без устройств, требует подготовить позицию."
+  },
+  "elements": [
+    {
+      "id": "portrait_frame",
+      "kind": "portrait",
+      "content_zone": true,
+      "x": 24,
+      "y": 48,
+      "w": 250,
+      "h": 250,
+      "min_w": 250,
+      "min_h": 250
+    },
+    {
+      "id": "choose_button",
+      "kind": "button",
+      "content_zone": true,
+      "x": 24,
+      "y": 306,
+      "w": 250,
+      "h": 56,
+      "min_w": 220,
+      "min_h": 48
+    },
+    {
+      "id": "dossier_frame",
+      "kind": "panel",
+      "x": 288,
+      "y": 48,
+      "w": 968,
+      "h": 414,
+      "min_w": 760,
+      "min_h": 360
+    },
+    {
+      "id": "copy_scroll",
+      "kind": "scroll_area",
+      "parent": "dossier_frame",
+      "content_zone": true,
+      "x": 310,
+      "y": 70,
+      "w": 496,
+      "h": 370,
+      "scroll": "auto",
+      "content_h": 460,
+      "scrollbar_w": 16
+    },
+    {
+      "id": "trait_zone",
+      "kind": "text",
+      "parent": "copy_scroll",
+      "content_zone": true,
+      "collision": false,
+      "x": 324,
+      "y": 142,
+      "w": 452,
+      "h": 92,
+      "text_key": "trait",
+      "max_font": 18,
+      "min_font": 13
+    },
+    {
+      "id": "strengths_zone",
+      "kind": "text",
+      "parent": "copy_scroll",
+      "content_zone": true,
+      "collision": false,
+      "x": 324,
+      "y": 242,
+      "w": 452,
+      "h": 72,
+      "text_key": "strengths",
+      "max_font": 17,
+      "min_font": 12
+    },
+    {
+      "id": "weaknesses_zone",
+      "kind": "text",
+      "parent": "copy_scroll",
+      "content_zone": true,
+      "collision": false,
+      "x": 324,
+      "y": 322,
+      "w": 452,
+      "h": 72,
+      "text_key": "weaknesses",
+      "max_font": 17,
+      "min_font": 12
+    },
+    {
+      "id": "stats_zone",
+      "kind": "list",
+      "parent": "dossier_frame",
+      "content_zone": true,
+      "x": 824,
+      "y": 70,
+      "w": 408,
+      "h": 370,
+      "item_count": 8,
+      "item_h": 38,
+      "item_gap": 4,
+      "scroll": "never"
+    },
+    {
+      "id": "ascension_frame",
+      "kind": "panel",
+      "content_zone": true,
+      "x": 288,
+      "y": 470,
+      "w": 968,
+      "h": 69,
+      "min_h": 69
+    },
+    {
+      "id": "carousel_frame",
+      "kind": "list",
+      "content_zone": true,
+      "x": 24,
+      "y": 547,
+      "w": 1232,
+      "h": 149,
+      "item_count": 7,
+      "item_h": 149,
+      "item_gap": 8,
+      "scroll": "auto"
+    }
+  ]
+}

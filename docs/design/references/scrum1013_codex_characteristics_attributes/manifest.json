@@ -1,0 +1,66 @@
+{
+  "jira": "SCRUM-1013",
+  "generator": "PixelLab MCP create_ui_asset",
+  "config_smoke": {
+    "tool": "get_balance",
+    "status": "PASS",
+    "is_error": false,
+    "secrets_printed_or_stored": false
+  },
+  "attempts": [
+    {
+      "id": "f6336ce1-387d-4edc-9e06-0711361f0a69",
+      "tag": "scrum1013_codex_characteristics_attributes_v1",
+      "status": "rejected_visual_qa",
+      "request": "pixellab_create_request.json",
+      "export_dimensions": [672, 378],
+      "export_file": "pixellab_codex_characteristics_attributes_v1_rejected_intrusion_672x378.png",
+      "reason": "crystal illustration intruded into center list content zone; no manual cover or fallback used"
+    },
+    {
+      "id": "323272d6-46d6-4598-8f07-2e7dac8a7274",
+      "tag": "scrum1013_codex_characteristics_attributes_v2_clean_zones",
+      "status": "superseded_candidate_after_alpha_cleanup",
+      "request": "pixellab_create_request_v2.json",
+      "export_dimensions": [672, 378],
+      "export_file": "pixellab_codex_characteristics_attributes_v2_raw_checkerboard_672x378.png",
+      "reason": "empty zones passed; the connected neutral checkerboard was removed by the recorded background-only postprocess without painting or covering UI art"
+    },
+    {
+      "id": "3ace4827-cfee-439e-8545-4dc145993d2f",
+      "tag": "scrum1013_codex_characteristics_attributes_v3_alpha_clean",
+      "status": "accepted",
+      "request": "pixellab_create_request_v2.json + pixellab_v3_overrides.json",
+      "export_dimensions": [672, 378],
+      "export_file": "pixellab_codex_characteristics_attributes_v3_export_672x378.png"
+    }
+  ],
+  "accepted_source": {
+    "id": "3ace4827-cfee-439e-8545-4dc145993d2f",
+    "tag": "scrum1013_codex_characteristics_attributes_v3_alpha_clean",
+    "raw_export": "pixellab_codex_characteristics_attributes_v3_export_672x378.png",
+    "alpha_clean_source": "pixellab_codex_characteristics_attributes_source_672x378.png",
+    "postprocess_script": "postprocess_pixellab_source.py",
+    "postprocess_effect": "source background was already transparent; script preserved pixels and performed nearest-neighbour scale only",
+    "alpha_zero_pixels": 141392,
+    "alpha_opaque_pixels": 112624,
+    "visual_qa": "PASS: no baked text/pseudotext/IDs/watermark; all declared interiors remain calm and ornament-free"
+  },
+  "target": {
+    "dimensions": [1920, 1080],
+    "base_art_layer": "pixellab_codex_characteristics_attributes_base_1920x1080.png",
+    "mockup": "../../mockups/scrum1013_codex_characteristics_attributes/codex_characteristics_attributes_mockup_1920x1080.png",
+    "preview": "../../previews/scrum1013_codex_characteristics_attributes_preview.png",
+    "alpha_policy": "alpha-clean 672x378 source; 1920x1080 mockup flattens transparent exterior to black; runtime content remains separate",
+    "final_report": "../../mockups/scrum1013_codex_characteristics_attributes/final.report.json",
+    "debug_overlay": "../../mockups/scrum1013_codex_characteristics_attributes/codex_characteristics_attributes_mockup_debug_1920x1080.png"
+  },
+  "provenance": {
+    "previous_screens_used_as_generation_input": false,
+    "openai_images_used": false,
+    "manual_art_fallback_used": false,
+    "postprocess": "PixelLab v3 source required no background removal; aspect-preserving nearest-neighbour upscale to 1920x1080; bundled content-zone renderer adds sample runtime content only inside declared zones",
+    "frames_or_panels_added_after_generation": false,
+    "renderer_report_ok": true
+  }
+}

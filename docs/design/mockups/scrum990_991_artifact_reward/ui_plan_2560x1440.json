@@ -1,0 +1,31 @@
+{
+  "canvas": {"width": 2560, "height": 1440},
+  "policy": {"min_gap": 16, "allow_overlap": false},
+  "content": {
+    "title": "Трофей элитки",
+    "subtitle": "Выбери 1 из 3 артефактов. Чем глубже маршрут, тем выше шанс редкой добычи.",
+    "artifact_title": "Невероятно длинное название артефакта",
+    "tier": "Эпический артефакт",
+    "badges": "Лучший урон · Лучшая выживаемость",
+    "resolved": "Тёмный маг: +18% магического урона; при здоровье ниже 30%: -15% максимального здоровья, +3 регенерации.",
+    "action": "Выбрать"
+  },
+  "elements": [
+    {"id": "frame_art", "kind": "decor", "x": 0, "y": 0, "w": 2560, "h": 1440, "collision": false},
+    {"id": "frame_safe_area", "kind": "panel", "x": 267, "y": 225, "w": 2026, "h": 990, "content_zone": true, "collision": false},
+    {"id": "inner_content", "kind": "zone", "parent": "frame_safe_area", "x": 299, "y": 257, "w": 1962, "h": 926, "content_zone": true, "collision": false},
+    {"id": "title", "kind": "text", "parent": "inner_content", "x": 820, "y": 281, "w": 920, "h": 70, "text_key": "title", "content_zone": true, "max_font": 54, "min_font": 28},
+    {"id": "subtitle", "kind": "text", "parent": "inner_content", "x": 640, "y": 365, "w": 1280, "h": 42, "text_key": "subtitle", "content_zone": true, "max_font": 24, "min_font": 14},
+    {"id": "card_0", "kind": "button", "parent": "inner_content", "x": 575, "y": 443, "w": 430, "h": 660, "content_zone": true, "min_w": 430, "min_h": 660},
+    {"id": "card_0_icon", "kind": "portrait", "parent": "card_0", "x": 743, "y": 475, "w": 94, "h": 94, "content_zone": true},
+    {"id": "card_0_title", "kind": "text", "parent": "card_0", "x": 609, "y": 589, "w": 362, "h": 72, "text_key": "artifact_title", "content_zone": true, "max_font": 25, "min_font": 14},
+    {"id": "card_0_tier", "kind": "text", "parent": "card_0", "x": 609, "y": 677, "w": 362, "h": 30, "text_key": "tier", "content_zone": true, "max_font": 19, "min_font": 13},
+    {"id": "card_0_badges", "kind": "text", "parent": "card_0", "x": 599, "y": 727, "w": 382, "h": 42, "text_key": "badges", "content_zone": true, "max_font": 18, "min_font": 12},
+    {"id": "card_0_effect", "kind": "text", "parent": "card_0", "x": 609, "y": 793, "w": 362, "h": 204, "text_key": "resolved", "content_zone": true, "max_font": 19, "min_font": 14},
+    {"id": "card_0_action", "kind": "text", "parent": "card_0", "x": 659, "y": 1041, "w": 262, "h": 34, "text_key": "action", "content_zone": true, "max_font": 22, "min_font": 14},
+    {"id": "card_1", "kind": "button", "parent": "inner_content", "x": 1065, "y": 443, "w": 430, "h": 660, "content_zone": true, "min_w": 430, "min_h": 660},
+    {"id": "card_1_content", "kind": "zone", "parent": "card_1", "x": 1099, "y": 475, "w": 362, "h": 600, "content_zone": true, "collision": false},
+    {"id": "card_2", "kind": "button", "parent": "inner_content", "x": 1555, "y": 443, "w": 430, "h": 660, "content_zone": true, "min_w": 430, "min_h": 660},
+    {"id": "card_2_content", "kind": "zone", "parent": "card_2", "x": 1589, "y": 475, "w": 362, "h": 600, "content_zone": true, "collision": false}
+  ]
+}

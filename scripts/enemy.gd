@@ -1,5 +1,7 @@
 extends CharacterBody2D
 
+const SemanticTypography := preload("res://scripts/ui/semantic_typography.gd")
+
 # SCRUM-611: мягкий радиальный тик попадания вместо квадратной красной рамки.
 const HIT_FLASH_TEXTURE := preload("res://assets/sprites/effects/impact_flash.png")
 
@@ -77,6 +79,7 @@ const ARENA_ENTITY_MARGIN := 48.0
 const CUTOUT_RIG_SCRIPT := preload("res://scripts/cutout_rig_2d.gd")
 const HEALTH_BAR_SCRIPT := preload("res://scripts/enemy_health_bar.gd")
 const StatusEffects := preload("res://scripts/status_effects.gd")
+const GAMEPLAY_SANDBOX := preload("res://scripts/gameplay_sandbox.gd")
 const FullFrameAnimationRegistry := preload("res://scripts/full_frame_animation_registry.gd")
 const ENEMY_PROJECTILE_SCENE := preload("res://scenes/EnemyProjectile.tscn")
 const ELITE_TELEGRAPH_TEXTURE := preload("res://assets/sprites/effects/elite_telegraph_circle.png")
@@ -96,8 +99,9 @@ const COMBAT_FEEDBACK_FLASH_GROUP := "combat_feedback_flashes"
 const COMBAT_FEEDBACK_MAX_LABELS := 42
 const COMBAT_FEEDBACK_MAX_FLASHES := 36
 # SCRUM-523: ЕДИНЫЙ источник правды палитры боевых цифр по ТИПУ урона.
-# Цвет привязан к КАНАЛУ урона (физический/магический/звуковой/периодический-DoT/
+# Цвет привязан к КАНАЛУ урона (физический/магический/периодический-DoT/
 # чистый-true), НЕ к классу или оружию — бой читается одинаково во всех схватках.
+# SCRUM-898: звуковой канал удалён — бывшие sound-оружия бьют магией.
 # Итог по цели = сумма типизированных попаданий; каждый вызов take_damage с
 # feedback{"damage_type"} порождает отдельную цветную цифру, поэтому виден вклад
 # каждого типа. Враг (этот файл) — единственный, кто рисует боевые цифры; игрок
@@ -109,7 +113,6 @@ const COMBAT_FEEDBACK_DAMAGE_COLORS := {
 	"physical": Color(1.0, 0.84, 0.42, 1.0),
 	"magic": Color(0.68, 0.46, 1.0, 1.0),
 	"dot": Color(0.46, 1.0, 0.42, 1.0),
-	"sound": Color(0.30, 0.86, 1.0, 1.0),
 	"true": Color(1.0, 0.96, 0.82, 1.0),
 }
 
@@ -118,6 +121,18 @@ const COMBAT_FEEDBACK_DAMAGE_COLORS := {
 # static — инстанс врага не нужен (зовётся из тестов/оружия/статусов).
 static func damage_type_color(damage_type) -> Color:
 	return COMBAT_FEEDBACK_DAMAGE_COLORS.get(str(damage_type), COMBAT_FEEDBACK_DAMAGE_COLORS["true"])
+
+
+# SCRUM-968: маппинг типа урона -> SFX попадания (спека §5). Дефолт (physical/
+# true/неизвестный) — глухой "hit"; static для headless focused-теста.
+static func hit_sfx_for_damage_type(damage_type: String) -> String:
+	match damage_type:
+		"magic":
+			return "hit_magic"
+		"dot":
+			return "hit_dot"
+		_:
+			return "hit"
 
 # Epic-масштаб узла: визуал (rig — ребёнок), CollisionShape2D (ребёнок) и
 # contact_range/health-bar (через _visible_sprite_size, учитывает scale) растут
@@ -130,6 +145,7 @@ func _ready() -> void:
 	process_mode = Node.PROCESS_MODE_PAUSABLE
 	add_to_group("enemies")
 	_apply_collision_profile()
+	_apply_gameplay_sandbox_runtime()
 	health = max_health
 	_shoot_cooldown = fire_interval
 	_summon_cooldown = summon_interval
@@ -214,6 +230,20 @@ func _physics_process(delta: float) -> void:
 	var direction := target.global_position - global_position
 	var distance := direction.length()
 
+	# SCRUM-913: жёсткий паралич (капкан Рейнджера, movement_locked-статус) —
+	# жертва полностью стоит: перемещение, рывки, стрельба и призыв заморожены
+	# до истечения статуса; двигают её только внешние импульсы apply_knockback.
+	# Контактный урон СОХРАНЯЕТСЯ — наступать на захлопнутого врага всё ещё
+	# больно. Конечность: длительность статуса конечна, у боссов/элит срезана
+	# контроль-резистом источника (×0.25) — пермалок невозможен.
+	if StatusEffects.is_movement_locked(self):
+		velocity = _consume_knockback(delta)
+		move_and_slide()
+		global_position = _clamp_to_arena(global_position)
+		_update_movement_animation(delta)
+		_update_contact_damage(delta, target, distance)
+		return
+
 	if _update_elite_dash(delta, target, distance):
 		move_and_slide()
 		global_position = _clamp_to_arena(global_position)
@@ -251,6 +281,39 @@ func _physics_process(delta: float) -> void:
 	_update_elite_patterns(delta, target, distance)
 
 
+func _sandbox_attack_delta(delta: float) -> float:
+	return delta * clampf(float(get_meta("sandbox_attack_speed_multiplier", 1.0)), 0.5, 3.0)
+
+
+# SCRUM-976: Enemy — общий предок ordinary/summon/elite/boss, поэтому этот
+# одноразовый слой покрывает и прямые summon-пути, которых нет в CombatDirector.
+func _apply_gameplay_sandbox_runtime() -> void:
+	if bool(get_meta("gameplay_sandbox_applied", false)):
+		return
+	var game := _gameplay_sandbox_owner()
+	if game == null:
+		return
+	var hp_multiplier: float = float(game.call("run_sandbox_multiplier", GAMEPLAY_SANDBOX.MONSTER_HP))
+	var damage_multiplier: float = float(game.call("run_sandbox_multiplier", GAMEPLAY_SANDBOX.MONSTER_DAMAGE))
+	var attack_speed_multiplier: float = float(game.call("run_sandbox_multiplier", GAMEPLAY_SANDBOX.MONSTER_ATTACK_SPEED))
+	max_health *= hp_multiplier
+	contact_damage *= damage_multiplier
+	projectile_damage *= damage_multiplier
+	elite_hazard_damage *= damage_multiplier
+	set_meta("sandbox_attack_speed_multiplier", attack_speed_multiplier)
+	set_meta("sandbox_damage_multiplier", damage_multiplier)
+	set_meta("gameplay_sandbox_applied", true)
+
+
+func _gameplay_sandbox_owner() -> Node:
+	var candidate := get_parent()
+	while candidate != null:
+		if candidate.has_method("run_sandbox_multiplier"):
+			return candidate
+		candidate = candidate.get_parent()
+	return null
+
+
 func take_damage(amount: float, feedback := {}) -> void:
 	if _death_lifecycle_started:
 		return
@@ -275,7 +338,10 @@ func take_damage(amount: float, feedback := {}) -> void:
 		if _cached_audio == null or not is_instance_valid(_cached_audio):
 			_cached_audio = get_node_or_null("/root/AudioManager")
 		if _cached_audio != null and _cached_audio.has_method("play_sfx"):
-			_cached_audio.play_sfx("hit")
+			# SCRUM-968: типизированные попадания (спека §5) — маппинг по
+			# feedback.damage_type в единой точке урона. Оси после SCRUM-898:
+			# physical/magic/dot (+"true" у нетипизированных источников -> "hit").
+			_cached_audio.play_sfx(hit_sfx_for_damage_type(str(feedback_data.get("damage_type", ""))))
 	var rig := _cutout_rig()
 	if rig != null and rig.has_method("play_hit"):
 		rig.play_hit()
@@ -284,6 +350,10 @@ func take_damage(amount: float, feedback := {}) -> void:
 	if health <= 0.0:
 		_death_lifecycle_started = true
 		health = 0.0
+		# SCRUM-1007: фиксируем feedback убившего хита ДО сигнала — подписчики
+		# died (он-килл trait'ы) читают атрибуцию из меты (отдельная функция,
+		# не относится к маппингу damage_type→SFX).
+		_record_kill_attribution(feedback_data)
 		# Награды/лут/счёт — сразу через сигнал, независимо от визуала смерти.
 		died.emit(self)
 		# SCRUM-379: если есть ЯВНАЯ full-frame death-анимация — проигрываем её до
@@ -295,6 +365,17 @@ func take_damage(amount: float, feedback := {}) -> void:
 			if rig != null and rig.has_method("spawn_death_ghost"):
 				rig.spawn_death_ghost()
 			queue_free()
+
+
+# SCRUM-1007: атрибуция смертельного удара. Feedback убившего хита кладётся в
+# мету "killing_hit_feedback" непосредственно перед died.emit — обработчики
+# смерти (player.on_enemy_killed → он-килл trait'ы) по ней различают источник:
+#   player_owned=true  — урон игрока (оружие/тик проклятия/ульта);
+#   dark_decay=true    — урон самого взрыва «Тёмного распада» (анти-рекурсия);
+#   пустая мета         — неатрибутированный источник (hazard/чужой) → trait молчит.
+# Отдельная функция вне блока маппинга damage_type→SFX (владение SCRUM-968).
+func _record_kill_attribution(feedback: Dictionary) -> void:
+	set_meta("killing_hit_feedback", feedback.duplicate(true) if feedback is Dictionary else {})
 
 
 func _show_combat_feedback(amount: float, feedback: Dictionary) -> void:
@@ -313,7 +394,9 @@ func _show_combat_feedback(amount: float, feedback: Dictionary) -> void:
 	label.text = "! %d" % int(round(amount)) if critical else str(int(round(amount)))
 	# Крит перебивает тип красным (ожидаемо, см. combat.md); иначе — цвет по типу.
 	label.modulate = Color(1.0, 0.24, 0.16, 1.0) if critical else damage_type_color(damage_type)
-	label.add_theme_font_size_override("font_size", 30 if critical else 22)
+	label.add_theme_font_size_override("font_size", SemanticTypography.resolve_fixed(
+		SemanticTypography.ROLE_HUD, 30 if critical else 22
+	))
 	label.add_theme_color_override("font_outline_color", Color(0.04, 0.02, 0.01, 0.95))
 	label.add_theme_constant_override("outline_size", 6 if critical else 5)
 	label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
@@ -339,7 +422,7 @@ func _show_critical_marker() -> void:
 	marker.add_to_group(COMBAT_FEEDBACK_LABEL_GROUP)
 	marker.text = "!"
 	marker.modulate = Color(1.0, 0.06, 0.02, 1.0)
-	marker.add_theme_font_size_override("font_size", 34)
+	marker.add_theme_font_size_override("font_size", SemanticTypography.resolve_fixed(SemanticTypography.ROLE_HUD, 34))
 	marker.add_theme_color_override("font_outline_color", Color(1.0, 0.78, 0.20, 0.95))
 	marker.add_theme_constant_override("outline_size", 4)
 	marker.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
@@ -427,6 +510,7 @@ func _feedback_flash_body() -> CanvasItem:
 func _play_full_frame_death_then_free(body: AnimatedSprite2D) -> void:
 	# SCRUM-379: проигрываем death-кадры, отключив поведение/столкновения мёртвого
 	# врага, затем удаляем по длительности анимации. Геймплей-награды уже выданы.
+	var was_boss := is_in_group("bosses")
 	set_physics_process(false)
 	set_process(false)
 	velocity = Vector2.ZERO
@@ -446,7 +530,8 @@ func _play_full_frame_death_then_free(body: AnimatedSprite2D) -> void:
 	var frames := body.sprite_frames
 	var fps: float = maxf(frames.get_animation_speed("death"), 1.0)
 	var count: int = maxi(frames.get_frame_count("death"), 1)
-	var duration := clampf(float(count) / fps, 0.25, 1.2)
+	var max_duration := 2.4 if was_boss else 1.2
+	var duration := clampf(float(count) / fps, 0.25, max_duration)
 	if not is_inside_tree():
 		call_deferred("queue_free")
 		return
@@ -466,11 +551,16 @@ func _apply_elite_reflect_thorns(incoming_amount: float) -> void:
 		return
 	if player.global_position.distance_to(global_position) > 190.0:
 		return
-	var reflected_damage: float = minf(contact_damage * 0.55 + incoming_amount * 0.03, contact_damage * 1.15)
+	var reflected_damage := _elite_reflect_damage(incoming_amount)
 	if reflected_damage <= 0.0:
 		return
 	HazardVfx.aura_pulse(self, 150.0, Color(0.78, 0.92, 1.0, 0.9))
 	player.take_damage(reflected_damage, "elite_reflect_thorns")
+
+
+func _elite_reflect_damage(incoming_amount: float) -> float:
+	var sandbox_damage := clampf(float(get_meta("sandbox_damage_multiplier", 1.0)), 0.5, 3.0)
+	return minf(contact_damage * 0.55 + incoming_amount * 0.03 * sandbox_damage, contact_damage * 1.15)
 
 
 func _update_elite_patterns(delta: float, player: Node2D, distance: float) -> void:
@@ -479,11 +569,11 @@ func _update_elite_patterns(delta: float, player: Node2D, distance: float) -> vo
 	if elite_behavior.contains("armored") or elite_behavior.contains("bastion"):
 		_update_elite_shield(delta)
 	elif elite_behavior.contains("stalker"):
-		_prepare_elite_dash(delta, player, distance)
+		_prepare_elite_dash(_sandbox_attack_delta(delta), player, distance)
 	elif elite_behavior.contains("poison") or elite_behavior.contains("plague") or elite_behavior.contains("prophet"):
-		_update_elite_hazard(delta, player)
+		_update_elite_hazard(_sandbox_attack_delta(delta), player)
 	elif elite_behavior.contains("commander") or elite_behavior.contains("marshal"):
-		_update_elite_aura(delta)
+		_update_elite_aura(_sandbox_attack_delta(delta))
 
 
 func _update_elite_shield(delta: float) -> void:
@@ -612,7 +702,7 @@ func _update_elite_attack(delta: float, player: Node2D, distance: float) -> bool
 		if not _elite_instant_phase_applied and bool(get_meta("ascension_instant_phase", false)):
 			_elite_instant_phase_applied = true
 			_elite_attack_cooldown = 0.0
-		_elite_attack_cooldown -= delta
+		_elite_attack_cooldown -= _sandbox_attack_delta(delta)
 		if _elite_attack_cooldown > 0.0 or distance > float(config.get("trigger_range", 360.0)):
 			return false
 		_begin_elite_attack_windup(config, player)
@@ -1037,7 +1127,18 @@ func _fit_contact_range_to_sprite() -> void:
 	contact_range = maxf(contact_range, visible_radius * 0.82 + PLAYER_CONTACT_PADDING)
 
 
+func _uses_hud_boss_bar() -> bool:
+	# SCRUM-874: у акт-босса и элитки узла HP показывает общий HUD-боссбар сверху
+	# экрана (ui_screens._update_boss_hud_bar) — плавающая полоса над спрайтом не
+	# создаётся. Мини-элитки волн (профиль mini_elite) и обычные мобы остаются с
+	# обычной плавающей полосой.
+	var profile := str(get_meta(EPIC_SCALE_PROFILE_META, ""))
+	return profile == "boss" or profile == "elite"
+
+
 func _create_health_bar() -> void:
+	if _uses_hud_boss_bar():
+		return
 	if get_node_or_null("HealthBar") != null:
 		return
 	var bar := Node2D.new()
@@ -1162,7 +1263,7 @@ func _update_shooting(delta: float, player: Node2D) -> void:
 	if not can_shoot or projectile_scene == null:
 		return
 
-	_shoot_cooldown -= delta
+	_shoot_cooldown -= _sandbox_attack_delta(delta)
 	if _shoot_cooldown > 0.0:
 		return
 
@@ -1185,7 +1286,7 @@ func _update_summoning(delta: float) -> void:
 	if not can_summon or summoned_enemy_scene == null:
 		return
 
-	_summon_cooldown -= delta
+	_summon_cooldown -= _sandbox_attack_delta(delta)
 	if _summon_cooldown > 0.0:
 		return
 
@@ -1216,7 +1317,7 @@ func _clamp_to_arena(position: Vector2, margin: float = ARENA_ENTITY_MARGIN) -> 
 
 
 func _update_contact_damage(delta: float, player: Node2D, distance: float) -> void:
-	_contact_cooldown = max(_contact_cooldown - delta, 0.0)
+	_contact_cooldown = max(_contact_cooldown - _sandbox_attack_delta(delta), 0.0)
 	if distance > contact_range:
 		_contact_windup_left = -1.0
 		return
@@ -1240,7 +1341,10 @@ func _update_contact_damage(delta: float, player: Node2D, distance: float) -> vo
 		if player_max_health > 0.0:
 			contact_hit = minf(contact_hit, player_max_health * 0.20)
 		contact_hit = _outgoing_damage(contact_hit)
-		player.take_damage(contact_hit, "contact")
+		# SCRUM-920: контактный удар передаёт атакующего 3-м аргументом — trait
+		# «Возмездие» Рыцаря отбрасывает именно нанёсшего удар (боссы/главные
+		# элиты гейтятся на стороне Player; другие классы хук игнорируют).
+		player.take_damage(contact_hit, "contact", self)
 
 	_contact_cooldown = contact_interval
 	_contact_windup_left = -1.0
