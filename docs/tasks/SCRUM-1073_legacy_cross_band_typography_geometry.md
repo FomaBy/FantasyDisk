@@ -76,7 +76,7 @@ reset-footer button and no current inventory entry.
   1152×648 and 1280×720;
 - runtime UI smoke and full runtime smoke: PASS.
 
-## QA-Вердикт (2026-07-12, independent QA) — FAILED
+## Historical QA verdict (2026-07-12, independent QA) — FAILED
 
 Статус: FAILED
 
@@ -118,3 +118,36 @@ not repeated after this deterministic acceptance blocker was confirmed.
 
 Disk cleanup: pending removal of the disposable QA worktree and `/tmp` evidence
 after Jira/mirror sync is pushed.
+
+## QA-Вердикт (2026-07-12, independent combined re-QA) — PASSED
+
+Статус: PASSED
+
+Re-QA on fresh `origin/dev@0dc31f79dc94fa575489ace823f7e21a1bcef7a0`
+confirmed that SCRUM-1087 closes the only blocking verifier weakness without
+changing runtime UI files.
+
+- original same-group/order `font_size = 1` drift now fails closed with
+  `refusing to rewrite`; the manifest remains byte- and SHA-identical;
+- SCRUM-1087 focused Python suite: `9/9` PASS, covering numeric/exponent drift,
+  missing role/resolver, changed call/control, adjacency-sensitive forms,
+  spoofed fingerprints, ordering and whitespace-only positive reconciliation;
+- independent transactional negatives confirmed validation failure and a late
+  multi-entry mismatch cannot commit earlier candidate changes; migration
+  replacement fingerprints update only after complete token equivalence;
+- inventory and migrator twice: PASS and byte-identical; schema 3 remains `246`
+  total / `244` mapped / `2` truthful SCRUM-1068 allowlist / `0` unreviewed /
+  `0` routed SCRUM-1073, with `139/139` unique replacements live and originals
+  absent;
+- live PixelLab provenance remains byte-identical for approved `6e512c63` and
+  rejected `c60357ee`; planning/compositor is deterministic and `8/8`;
+- compact Event 1152×648 and 1280×720 evidence remains readable, contained and
+  frame-safe;
+- semantic typography, six-tier no-overlap including 2048×1152, gamepad
+  full-flow, runtime UI and full runtime smoke all PASS on Godot 4.7; only the
+  known non-fatal dummy-renderer screenshot warning appeared.
+
+SCRUM-1073 and linked SCRUM-1087 may transition to `Готово`.
+
+Disk cleanup: pending removal of disposable re-QA worktree, `.godot` and
+`/tmp/fsd_qa_scrum1087` after the verdict/sync commits are pushed.
