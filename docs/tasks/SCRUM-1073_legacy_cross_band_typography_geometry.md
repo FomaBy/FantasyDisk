@@ -1,6 +1,6 @@
 # SCRUM-1073 — Legacy cross-band typography geometry migration
 
-Статус: review
+Статус: done
 Контур: Codex
 Owner: Design/Codex
 Thread: /root/scrum1079_route_backend
