@@ -26,12 +26,16 @@ consume the same shared resolver instead of a copied path/threshold table.
 PixelLab asset `assets/sprites/ui/icons/credits/ui_icon_gratitude.png`; its face
 text is empty, while tooltip/accessibility metadata remains «Благодарности».
 SCRUM-1081/1082 moves it into the lower-right utility cluster immediately left
-of the version. SCRUM-1093 corrects the large-resolution visual spacing: the
-72/80/96 px hitbox remains centered in its bounded 84/96/116 px procedural
-aura, but the aura now ends 4 px before the compact live version rect instead
-of being positioned from a wide invisible placeholder label. The hitbox-to-live
-glyph gap stays in the documented 0..20 px compact band at every tier. The existing
-neutral keyboard focus, Credits callback and UI SFX remain intact.
+of the version. SCRUM-1093 removes the wide invisible version placeholder;
+SCRUM-1095 additionally removes the accepted PNG's transparent-source-padding
+error at draw time. Runtime scans the unchanged PixelLab source alpha bbox and
+uses a right-facing square `AtlasTexture` crop (`(41,48)-(201,208)` for the
+accepted `256x256` source) without editing the bitmap. The 72/80/96 px hitbox is
+biased 3 px toward the version but remains inside its bounded 84/96/116 px
+procedural aura; the aura-to-label rect gap is 2 px. Independent actual-alpha
+measurements are `15/17/17/19 px` at 1280/1920/2048/2560, within the required
+`0..20 px` band. The existing neutral keyboard focus, Credits callback,
+accessibility, tooltip and UI SFX remain intact.
 
 `MainMenuVersionLabel` is the single runtime version control; it reads
 `application/config/version`, never a hardcoded release number. SCRUM-1082
@@ -44,6 +48,7 @@ the more conservative page-wide authored inner rect.
 Acceptance coverage: `tests/scrum1051_ui_button_family_test.gd`,
 `tests/codex_scrum954_layout_test.gd`,
 `tests/scrum1093_main_menu_version_corner_test.gd`,
+`tests/scrum1093_independent_visible_gap_test.gd`,
 `tests/scrum981_gold_menu_shell_test.gd`,
 `tests/ui_no_overlap_matrix_test.gd` and the general runtime UI/full smokes.
 
@@ -143,9 +148,11 @@ Live application inventory:
   380×96 @2K. SCRUM-1081/1082 keeps the accepted action column X at the authored
   inner left edge. The 72/80/96px gratitude icon and bounded 84/96/116px
   procedural glow form a lower-right cluster immediately left of the dynamic
-  version. SCRUM-1093 removes the oversized hidden label gap: the glow-to-label
-  separation is 4px, the label width is live glyph width + 6px, and the compact
-  cluster uses an 8px reserve from the frame-safe opening. Logo/actions keep the
+  version. SCRUM-1093 removes the oversized hidden label gap; SCRUM-1095 makes
+  the measurement alpha-aware through the runtime crop described above. The
+  glow-to-label separation is 2px, the label width is live glyph width + 6px,
+  and the compact cluster uses an 8px reserve from the frame-safe opening.
+  Logo/actions keep the
   stricter shell interior (texture-safe rect minus another 24px, or 32px at 2K).
   The screen never scrolls and relayouts on live resize. Up/Down wraps the six
   actions; Right reaches gratitude, whose Left/Up returns to Exit and Down

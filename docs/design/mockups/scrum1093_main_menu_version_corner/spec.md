@@ -1,6 +1,6 @@
 # UI Mockup Spec — Main Menu compact lower-right utility cluster
 
-Status: ready_for_integration — SCRUM-1095 alpha-aware follow-up
+Status: implemented — SCRUM-1095 alpha-aware follow-up
 Role owner: Back-end source-reuse geometry follow-up
 Task: `docs/tasks/SCRUM-1095.md`
 Jira: SCRUM-1095 (linked QA bug for SCRUM-1093)
@@ -87,8 +87,8 @@ PixelLab object `c1c1c353-e56e-405b-9adf-f1e6bd993152`, promoted unchanged as
 - [x] All six runtime-text layout guide reports are `ok=true`.
 - [x] Updated preview shown in chat.
 - [x] Runtime screenshots match the compact mockup at the responsive matrix.
-- [ ] Independent alpha-edge oracle passes unchanged at four targets.
-- [ ] Focused, gold-shell, no-overlap, gamepad, runtime UI and full runtime gates pass.
+- [x] Independent alpha-edge oracle passes unchanged at four targets.
+- [x] Focused, gold-shell, no-overlap, gamepad, runtime UI and full runtime gates pass.
 
 ## Previous SCRUM-1093 runtime evidence
 
@@ -96,4 +96,10 @@ PixelLab object `c1c1c353-e56e-405b-9adf-f1e6bd993152`, promoted unchanged as
 - `docs/design/previews/scrum1093_main_menu_version_corner/runtime/main_menu_2560x1440.png`
 - Windowed Metal capture passed at all six responsive targets.
 
-SCRUM-1095 captures replace this evidence after integration.
+## SCRUM-1095 runtime evidence
+
+Six windowed Metal captures and exact geometry/alpha measurements are under
+`docs/design/previews/scrum1093_main_menu_version_corner/runtime/`. The report
+`runtime_visual_matrix.md` records `15/15/17/17/17/19 px` at
+1152/1280/1600/1920/2048/2560. Visual inspection at 1280 and 2560 confirms the
+accepted art remains readable, is not stretched, and stays clear of the rail.

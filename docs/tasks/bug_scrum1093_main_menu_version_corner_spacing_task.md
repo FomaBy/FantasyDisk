@@ -1,6 +1,6 @@
 # Main Menu: tighten the lower-right version cluster at large resolutions
 
-Статус: in_progress
+Статус: review
 Версия: 0.2.1
 Jira: SCRUM-1093
 Контур: Codex
@@ -119,3 +119,13 @@ px` на 1280/1920/2048/2560 при контракте `<=20 px`.
 
 After QA routing, SCRUM-1093 + SCRUM-1095 were claimed as one identical-lock
 fix by `/root/scrum1095_visible_icon_gap`; Jira now truthfully shows active work.
+
+## Linked fix result — SCRUM-1095
+
+SCRUM-1095 replaces the incorrect transparent-hitbox measurement with a
+runtime alpha-aware `AtlasTexture` crop while preserving the accepted PixelLab
+PNG. The unchanged independent QA oracle now reports `15/17/17/19 px` at
+1280/1920/2048/2560, inside `0..20 px`; future `v0.2.10-beta`, exact 8px rail
+reserve, focus/callback/a11y/SFX, no-overlap, gamepad, runtime UI/full smoke and
+six-target Metal captures all PASS. Both linked issues are ready for independent
+QA on the same implementation commit.
