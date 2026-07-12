@@ -74,3 +74,46 @@ worktree, clone or isolated userdata directory. Generated screenshots are
 committed task evidence.
 
 Thread cleanup: not a disposable worker thread.
+
+## QA-Вердикт (2026-07-12)
+
+Статус: PASSED
+
+Проверено на `origin/dev` `b0c3bff2a` (implementation `f1481dd1a`):
+
+- `show_battle_prayer_choice()` использует те же `_level_up_layout_metrics()`,
+  `_level_up_card_plan()`, `_create_level_up_menu_box()`,
+  `_make_level_up_reward_button()`, `_wire_run_ui_focus()` и
+  `_start_level_up_intro()`, что обычный Level Up; prayer-specific runtime frame,
+  modal, card rects и focus styles отсутствуют.
+- Canonical порядок и эффекты сохранены: `prayer_wrath` `+20%`,
+  `prayer_mending` `+2 HP/с`, `prayer_aegis` `-20%` входящего урона.
+- Проверены обязательная причина паузы `battle_prayer`, physical Escape,
+  keyboard cancel и gamepad B, same-frame double press, повторный/невалидный
+  выбор, exactly-once продолжение elite-боя и синхронный fast path Berserk.
+- Обычный Level Up сохраняет три карточки, real before/after previews,
+  `LevelUpLaterButton`, pause/focus и socket/card safe zones; optional
+  `effect_summary`/`icon_id` не протекают в стандартные rewards.
+- Committed captures `1280x720`, `1920x1080`, `2560x1440` просмотрены: полный
+  текст без ellipsis, карточки не пересекаются, контент остаётся в спокойных
+  внутренних зонах и не перекрывает орнамент.
+
+Фактические PASS-гейты через `tools/godot_gate.py`:
+
+- `scrum926_priest_prayer_choice_test.gd`
+- `priest_kit_test.gd`
+- `gamepad_inrun_ui_test.gd`
+- `ui_no_overlap_matrix_test.gd`
+- `runtime_smoke_ui_test.gd`
+- `runtime_smoke_test.gd`
+- `animation_smoke_test.gd`
+- `meta_progression_smoke_test.gd`
+- `melee_weapon_targeting_test.gd`
+- `gamepad_core_input_test.gd`
+- `gamepad_menu_focus_test.gd`
+- `gamepad_full_flow_smoke_test.gd` (2 последовательных прогона)
+
+Краевые случаи: 720p/1080p/2K, три cancel-варианта, same-frame double accept,
+повторный/невалидный prayer id, elite spawn до/после выбора и non-Priest flow.
+
+Баги: нет.
