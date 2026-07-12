@@ -5,148 +5,149 @@
 
 ## Срез `ideal_1` — FAIL
 
-- медиана нормированного DPS: **263.7**, полоса [210.9 .. 316.4]
-- факт: min **0.0**, max **1736.8**, разброс **1736795.7x** (цель ≤ 1.50x)
-- нарушений полосы: **33 / 51**
+- медиана нормированного DPS: **298.4**, полоса [238.7 .. 358.1]
+- факт: min **0.0**, max **2381.7**, разброс **2381740.1x** (цель ≤ 1.50x)
+- нарушений полосы: **39 / 51**
 
 | класс/оружие | raw DPS | comfort | norm DPS | ×медиана |
 |---|--:|--:|--:|--:|
-| doctor/bone_saw | 551 | 0.32 | 1737 | 6.59x |
-| druid/summon_amulet | 1305 | 0.86 | 1520 | 5.76x |
-| assassin/venom_wire | 640 | 0.44 | 1448 | 5.49x |
-| engineer/engineer_sentry_wrench | 945 | 0.73 | 1289 | 4.89x |
-| soldier/soldier_bayonet | 949 | 0.98 | 967 | 3.67x |
-| thief/thief_shadow_cloak | 662 | 0.99 | 669 | 2.54x |
-| dark_mage/dark_book | 617 | 0.93 | 665 | 2.52x |
-| elementalist/elementalist_prism_focus | 668 | 1.02 | 655 | 2.48x |
-| dark_mage/dark_wand | 599 | 0.93 | 646 | 2.45x |
-| chemist/blast_powder | 593 | 0.99 | 597 | 2.26x |
-| biologist/biologist_spore_lens | 400 | 0.75 | 531 | 2.01x |
-| doctor/plague_syringe | 260 | 0.49 | 525 | 1.99x |
-| berserk/hammer | 399 | 1.14 | 351 | 1.33x |
-| biologist/biologist_sample_injector | 339 | 1.03 | 329 | 1.25x |
-| robot/robot_hydraulic_press | 205 | 1.00 | 204 | 0.77x |
-| knight/long_spear | 194 | 0.96 | 202 | 0.77x |
-| chemist/homunculus_vial | 109 | 0.55 | 199 | 0.75x |
-| berserk/sword | 140 | 0.73 | 191 | 0.72x |
-| doctor/restore_potion | 279 | 1.49 | 187 | 0.71x |
-| druid/briar_staff | 157 | 0.86 | 182 | 0.69x |
-| biologist/biologist_symbiote_seed | 185 | 1.03 | 179 | 0.68x |
-| knight/holy_flail | 168 | 0.96 | 175 | 0.66x |
-| ranger/moon_crossbow | 243 | 1.47 | 166 | 0.63x |
-| priest/priest_chime | 146 | 1.00 | 146 | 0.55x |
-| ranger/hunter_trap | 198 | 1.47 | 135 | 0.51x |
-| sniper/sniper_shatter_rounds | 148 | 1.17 | 127 | 0.48x |
-| priest/priest_censer | 126 | 1.00 | 125 | 0.48x |
-| guitarist/electric_guitar | 123 | 1.04 | 118 | 0.45x |
-| sniper/sniper_spotter_scope | 128 | 1.17 | 110 | 0.42x |
-| guitarist/sound_amp | 88 | 1.04 | 85 | 0.32x |
-| guitarist/bass_guitar | 88 | 1.04 | 84 | 0.32x |
-| druid/raven_totem | 67 | 1.02 | 65 | 0.25x |
+| doctor/bone_saw | 755 | 0.32 | 2382 | 7.98x |
+| druid/summon_amulet | 1790 | 0.86 | 2084 | 6.98x |
+| engineer/engineer_sentry_wrench | 1113 | 0.73 | 1518 | 5.09x |
+| assassin/venom_wire | 479 | 0.44 | 1084 | 3.63x |
+| soldier/soldier_bayonet | 995 | 0.98 | 1013 | 3.39x |
+| dark_mage/dark_book | 792 | 0.93 | 854 | 2.86x |
+| thief/thief_shadow_cloak | 803 | 0.99 | 812 | 2.72x |
+| elementalist/elementalist_prism_focus | 802 | 1.02 | 786 | 2.63x |
+| doctor/plague_syringe | 368 | 0.49 | 743 | 2.49x |
+| chemist/blast_powder | 710 | 0.99 | 715 | 2.39x |
+| dark_mage/dark_wand | 617 | 0.93 | 666 | 2.23x |
+| priest/priest_reliquary | 457 | 1.00 | 456 | 1.53x |
+| berserk/axe | 479 | 1.14 | 421 | 1.41x |
+| soldier/soldier_grenade | 401 | 0.98 | 409 | 1.37x |
+| biologist/biologist_sample_injector | 416 | 1.03 | 404 | 1.35x |
+| biologist/biologist_spore_lens | 293 | 0.75 | 389 | 1.30x |
+| berserk/hammer | 435 | 1.14 | 383 | 1.28x |
+| soldier/soldier_rifle | 368 | 0.98 | 375 | 1.26x |
+| assassin/chakrams | 611 | 1.65 | 371 | 1.24x |
+| chemist/homunculus_vial | 197 | 0.55 | 361 | 1.21x |
+| thief/thief_coin_pouch | 231 | 0.99 | 233 | 0.78x |
+| berserk/sword | 170 | 0.73 | 232 | 0.78x |
+| chemist/acid_flask | 218 | 0.99 | 219 | 0.73x |
+| sniper/sniper_shatter_rounds | 243 | 1.17 | 207 | 0.69x |
+| robot/robot_magnetic_anchor | 208 | 1.00 | 207 | 0.69x |
+| knight/long_spear | 183 | 0.96 | 191 | 0.64x |
+| assassin/shadow_daggers | 308 | 1.65 | 187 | 0.63x |
+| druid/briar_staff | 159 | 0.86 | 185 | 0.62x |
+| sniper/sniper_spotter_scope | 212 | 1.17 | 181 | 0.61x |
+| priest/priest_censer | 172 | 1.00 | 172 | 0.57x |
+| doctor/restore_potion | 243 | 1.49 | 163 | 0.55x |
+| biologist/biologist_symbiote_seed | 157 | 1.03 | 152 | 0.51x |
+| guitarist/electric_guitar | 129 | 1.04 | 124 | 0.42x |
+| knight/holy_flail | 117 | 0.96 | 122 | 0.41x |
+| ranger/hunter_trap | 138 | 1.47 | 94 | 0.32x |
+| guitarist/sound_amp | 97 | 1.04 | 93 | 0.31x |
+| guitarist/bass_guitar | 92 | 1.04 | 88 | 0.30x |
+| druid/raven_totem | 60 | 1.02 | 59 | 0.20x |
 | engineer/engineer_pressure_mines | 0 | 0.96 | 0 | 0.00x |
 
 ## Срез `ideal_5` — FAIL
 
-- медиана нормированного DPS: **1009.0**, полоса [807.2 .. 1210.8]
-- факт: min **137.8**, max **9404.1**, разброс **68.3x** (цель ≤ 1.50x)
-- нарушений полосы: **41 / 51**
+- медиана нормированного DPS: **1120.7**, полоса [896.6 .. 1344.9]
+- факт: min **179.0**, max **8934.8**, разброс **49.9x** (цель ≤ 1.50x)
+- нарушений полосы: **36 / 51**
 
 | класс/оружие | raw DPS | comfort | norm DPS | ×медиана |
 |---|--:|--:|--:|--:|
-| chemist/acid_flask | 14191 | 1.51 | 9404 | 9.32x |
-| druid/summon_amulet | 6205 | 0.87 | 7124 | 7.06x |
-| chemist/blast_powder | 6448 | 1.51 | 4273 | 4.24x |
-| doctor/bone_saw | 1237 | 0.32 | 3841 | 3.81x |
-| dark_mage/dark_book | 4418 | 1.46 | 3032 | 3.00x |
-| assassin/venom_wire | 613 | 0.24 | 2532 | 2.51x |
-| elementalist/elementalist_prism_focus | 2432 | 1.13 | 2148 | 2.13x |
-| robot/robot_reactor_core | 2066 | 1.00 | 2068 | 2.05x |
-| priest/priest_reliquary | 2033 | 1.03 | 1973 | 1.96x |
-| biologist/biologist_spore_lens | 2022 | 1.11 | 1817 | 1.80x |
-| ranger/moon_crossbow | 1401 | 0.79 | 1769 | 1.75x |
-| berserk/hammer | 1971 | 1.15 | 1710 | 1.69x |
-| dark_mage/dark_wand | 2438 | 1.46 | 1674 | 1.66x |
-| elementalist/elementalist_orb_ring | 1646 | 1.13 | 1454 | 1.44x |
-| assassin/shadow_daggers | 1273 | 0.90 | 1415 | 1.40x |
-| soldier/soldier_grenade | 1359 | 0.99 | 1365 | 1.35x |
-| elementalist/elementalist_meteor_core | 1537 | 1.13 | 1357 | 1.35x |
-| engineer/engineer_sentry_wrench | 1201 | 0.91 | 1321 | 1.31x |
-| thief/thief_shadow_cloak | 771 | 1.00 | 771 | 0.76x |
-| priest/priest_censer | 774 | 1.03 | 751 | 0.74x |
-| thief/thief_coin_pouch | 751 | 1.00 | 751 | 0.74x |
-| soldier/soldier_bayonet | 718 | 0.99 | 722 | 0.72x |
-| ranger/hunter_trap | 570 | 0.79 | 720 | 0.71x |
-| biologist/biologist_symbiote_seed | 920 | 1.33 | 690 | 0.68x |
-| robot/robot_hydraulic_press | 688 | 1.00 | 688 | 0.68x |
-| chemist/homunculus_vial | 573 | 0.86 | 668 | 0.66x |
-| druid/briar_staff | 552 | 0.87 | 634 | 0.63x |
-| sniper/sniper_shatter_rounds | 505 | 0.82 | 617 | 0.61x |
-| biologist/biologist_sample_injector | 803 | 1.33 | 602 | 0.60x |
-| knight/tower_shield | 532 | 0.93 | 575 | 0.57x |
-| sniper/sniper_spotter_scope | 432 | 0.82 | 528 | 0.52x |
-| knight/long_spear | 438 | 0.93 | 474 | 0.47x |
-| assassin/chakrams | 423 | 0.90 | 470 | 0.47x |
-| doctor/plague_syringe | 243 | 0.52 | 468 | 0.46x |
-| ranger/storm_longbow | 369 | 0.79 | 465 | 0.46x |
-| berserk/sword | 326 | 0.74 | 439 | 0.44x |
-| guitarist/sound_amp | 594 | 1.37 | 432 | 0.43x |
-| guitarist/bass_guitar | 570 | 1.37 | 415 | 0.41x |
-| engineer/engineer_pressure_mines | 414 | 1.11 | 372 | 0.37x |
-| guitarist/electric_guitar | 229 | 1.37 | 167 | 0.17x |
-| druid/raven_totem | 156 | 1.13 | 138 | 0.14x |
+| chemist/acid_flask | 13483 | 1.51 | 8935 | 7.97x |
+| druid/summon_amulet | 7159 | 0.87 | 8219 | 7.33x |
+| chemist/blast_powder | 8826 | 1.51 | 5849 | 5.22x |
+| doctor/bone_saw | 1529 | 0.32 | 4748 | 4.24x |
+| dark_mage/dark_book | 4306 | 1.46 | 2956 | 2.64x |
+| elementalist/elementalist_prism_focus | 2813 | 1.13 | 2485 | 2.22x |
+| priest/priest_reliquary | 2415 | 1.03 | 2344 | 2.09x |
+| dark_mage/dark_wand | 3275 | 1.46 | 2248 | 2.01x |
+| ranger/moon_crossbow | 1613 | 0.79 | 2037 | 1.82x |
+| elementalist/elementalist_orb_ring | 2291 | 1.13 | 2024 | 1.81x |
+| berserk/axe | 2129 | 1.15 | 1846 | 1.65x |
+| assassin/venom_wire | 432 | 0.24 | 1783 | 1.59x |
+| priest/priest_chime | 1606 | 1.03 | 1560 | 1.39x |
+| soldier/soldier_grenade | 1528 | 0.99 | 1536 | 1.37x |
+| berserk/hammer | 1735 | 1.15 | 1505 | 1.34x |
+| biologist/biologist_spore_lens | 1630 | 1.11 | 1465 | 1.31x |
+| thief/thief_smoke_bomb | 1453 | 1.00 | 1453 | 1.30x |
+| engineer/engineer_sentry_wrench | 1242 | 0.91 | 1366 | 1.22x |
+| thief/thief_coin_pouch | 854 | 1.00 | 854 | 0.76x |
+| thief/thief_shadow_cloak | 810 | 1.00 | 810 | 0.72x |
+| robot/robot_hydraulic_press | 793 | 1.00 | 794 | 0.71x |
+| druid/briar_staff | 683 | 0.87 | 784 | 0.70x |
+| ranger/hunter_trap | 573 | 0.79 | 724 | 0.65x |
+| assassin/chakrams | 637 | 0.90 | 707 | 0.63x |
+| biologist/biologist_symbiote_seed | 917 | 1.33 | 687 | 0.61x |
+| knight/long_spear | 627 | 0.93 | 678 | 0.61x |
+| doctor/plague_syringe | 341 | 0.52 | 657 | 0.59x |
+| biologist/biologist_sample_injector | 873 | 1.33 | 655 | 0.58x |
+| ranger/storm_longbow | 371 | 0.79 | 469 | 0.42x |
+| engineer/engineer_pressure_mines | 522 | 1.11 | 469 | 0.42x |
+| guitarist/bass_guitar | 587 | 1.37 | 427 | 0.38x |
+| guitarist/sound_amp | 563 | 1.37 | 410 | 0.37x |
+| knight/tower_shield | 311 | 0.93 | 336 | 0.30x |
+| guitarist/electric_guitar | 445 | 1.37 | 324 | 0.29x |
+| berserk/sword | 203 | 0.74 | 274 | 0.24x |
+| druid/raven_totem | 202 | 1.13 | 179 | 0.16x |
 
 ## Срез `ideal_20` — FAIL
 
-- медиана нормированного DPS: **3890.5**, полоса [3112.4 .. 4668.6]
-- факт: min **346.5**, max **196249.9**, разброс **566.3x** (цель ≤ 1.50x)
+- медиана нормированного DPS: **4700.6**, полоса [3760.5 .. 5640.7]
+- факт: min **402.8**, max **321035.9**, разброс **796.9x** (цель ≤ 1.50x)
 - нарушений полосы: **44 / 51**
 
 | класс/оружие | raw DPS | comfort | norm DPS | ×медиана |
 |---|--:|--:|--:|--:|
-| chemist/blast_powder | 299674 | 1.53 | 196250 | 50.44x |
-| elementalist/elementalist_orb_ring | 142183 | 1.14 | 124286 | 31.95x |
-| biologist/biologist_spore_lens | 145891 | 1.31 | 111197 | 28.58x |
-| dark_mage/cursed_skull | 80564 | 1.16 | 69213 | 17.79x |
-| doctor/restore_potion | 69754 | 1.32 | 52844 | 13.58x |
-| biologist/biologist_symbiote_seed | 66517 | 1.31 | 50699 | 13.03x |
-| chemist/acid_flask | 69717 | 1.53 | 45656 | 11.74x |
-| biologist/biologist_sample_injector | 56594 | 1.31 | 43135 | 11.09x |
-| druid/summon_amulet | 31329 | 0.84 | 37164 | 9.55x |
-| engineer/engineer_pressure_mines | 17551 | 1.05 | 16747 | 4.30x |
-| doctor/bone_saw | 5108 | 0.31 | 16638 | 4.28x |
-| priest/priest_reliquary | 14349 | 1.05 | 13639 | 3.51x |
-| elementalist/elementalist_prism_focus | 13359 | 1.14 | 11677 | 3.00x |
-| soldier/soldier_grenade | 8205 | 0.97 | 8458 | 2.17x |
-| dark_mage/dark_book | 11344 | 1.39 | 8167 | 2.10x |
-| robot/robot_reactor_core | 7868 | 0.97 | 8086 | 2.08x |
-| knight/holy_flail | 6540 | 0.88 | 7415 | 1.91x |
-| elementalist/elementalist_meteor_core | 7219 | 1.14 | 6311 | 1.62x |
-| thief/thief_smoke_bomb | 5979 | 0.97 | 6145 | 1.58x |
-| robot/robot_magnetic_anchor | 5358 | 0.97 | 5507 | 1.42x |
-| berserk/axe | 5935 | 1.10 | 5400 | 1.39x |
-| dark_mage/dark_wand | 7258 | 1.39 | 5225 | 1.34x |
-| soldier/soldier_bayonet | 5030 | 0.97 | 5185 | 1.33x |
-| assassin/venom_wire | 710 | 0.23 | 3085 | 0.79x |
-| berserk/hammer | 3357 | 1.10 | 3055 | 0.79x |
-| sniper/sniper_deadeye_rifle | 2308 | 0.80 | 2903 | 0.75x |
-| guitarist/sound_amp | 3145 | 1.14 | 2754 | 0.71x |
-| ranger/hunter_trap | 2002 | 0.76 | 2624 | 0.67x |
-| knight/tower_shield | 2228 | 0.88 | 2526 | 0.65x |
-| ranger/storm_longbow | 1563 | 0.76 | 2048 | 0.53x |
-| guitarist/bass_guitar | 2774 | 1.40 | 1975 | 0.51x |
-| thief/thief_shadow_cloak | 1815 | 0.97 | 1865 | 0.48x |
-| assassin/chakrams | 1582 | 0.86 | 1843 | 0.47x |
-| engineer/engineer_repair_drone | 1908 | 1.05 | 1821 | 0.47x |
-| berserk/sword | 1276 | 0.71 | 1803 | 0.46x |
-| engineer/engineer_sentry_wrench | 1468 | 0.85 | 1729 | 0.44x |
-| ranger/moon_crossbow | 1224 | 0.76 | 1604 | 0.41x |
-| assassin/shadow_daggers | 1092 | 0.86 | 1273 | 0.33x |
-| knight/long_spear | 1057 | 0.88 | 1198 | 0.31x |
-| thief/thief_coin_pouch | 1092 | 0.97 | 1122 | 0.29x |
-| sniper/sniper_shatter_rounds | 546 | 0.80 | 686 | 0.18x |
-| doctor/plague_syringe | 260 | 0.46 | 566 | 0.15x |
-| guitarist/electric_guitar | 756 | 1.40 | 538 | 0.14x |
-| druid/raven_totem | 366 | 1.06 | 347 | 0.09x |
+| chemist/blast_powder | 490222 | 1.53 | 321036 | 68.30x |
+| elementalist/elementalist_orb_ring | 199729 | 1.14 | 174588 | 37.14x |
+| biologist/biologist_spore_lens | 116310 | 1.31 | 88651 | 18.86x |
+| dark_mage/cursed_skull | 96749 | 1.16 | 83118 | 17.68x |
+| ranger/hunter_trap | 46522 | 0.76 | 60972 | 12.97x |
+| biologist/biologist_symbiote_seed | 69581 | 1.31 | 53034 | 11.28x |
+| doctor/restore_potion | 68884 | 1.32 | 52185 | 11.10x |
+| chemist/acid_flask | 73491 | 1.53 | 48128 | 10.24x |
+| druid/summon_amulet | 35639 | 0.84 | 42276 | 8.99x |
+| biologist/biologist_sample_injector | 42234 | 1.31 | 32190 | 6.85x |
+| doctor/bone_saw | 6737 | 0.31 | 21943 | 4.67x |
+| elementalist/elementalist_prism_focus | 17820 | 1.14 | 15577 | 3.31x |
+| priest/priest_reliquary | 14817 | 1.05 | 14085 | 3.00x |
+| dark_mage/dark_book | 16934 | 1.39 | 12191 | 2.59x |
+| berserk/axe | 9869 | 1.10 | 8980 | 1.91x |
+| chemist/homunculus_vial | 7050 | 0.80 | 8801 | 1.87x |
+| priest/priest_chime | 7833 | 1.05 | 7446 | 1.58x |
+| soldier/soldier_grenade | 6776 | 0.97 | 6985 | 1.49x |
+| engineer/engineer_pressure_mines | 6899 | 1.05 | 6583 | 1.40x |
+| thief/thief_smoke_bomb | 6286 | 0.97 | 6460 | 1.37x |
+| elementalist/elementalist_meteor_core | 7359 | 1.14 | 6433 | 1.37x |
+| knight/holy_flail | 5605 | 0.88 | 6355 | 1.35x |
+| soldier/soldier_bayonet | 5774 | 0.97 | 5952 | 1.27x |
+| robot/robot_hydraulic_press | 3039 | 0.97 | 3124 | 0.66x |
+| knight/long_spear | 2631 | 0.88 | 2983 | 0.63x |
+| guitarist/sound_amp | 3340 | 1.14 | 2925 | 0.62x |
+| berserk/hammer | 3180 | 1.10 | 2893 | 0.62x |
+| guitarist/bass_guitar | 3417 | 1.40 | 2434 | 0.52x |
+| sniper/sniper_deadeye_rifle | 1929 | 0.80 | 2427 | 0.52x |
+| ranger/storm_longbow | 1766 | 0.76 | 2315 | 0.49x |
+| berserk/sword | 1618 | 0.71 | 2285 | 0.49x |
+| assassin/venom_wire | 518 | 0.23 | 2251 | 0.48x |
+| ranger/moon_crossbow | 1614 | 0.76 | 2116 | 0.45x |
+| assassin/chakrams | 1798 | 0.86 | 2096 | 0.45x |
+| knight/tower_shield | 1752 | 0.88 | 1986 | 0.42x |
+| thief/thief_shadow_cloak | 1798 | 0.97 | 1848 | 0.39x |
+| engineer/engineer_sentry_wrench | 1538 | 0.85 | 1811 | 0.39x |
+| engineer/engineer_repair_drone | 1790 | 1.05 | 1708 | 0.36x |
+| assassin/shadow_daggers | 1190 | 0.86 | 1387 | 0.30x |
+| thief/thief_coin_pouch | 1321 | 0.97 | 1358 | 0.29x |
+| sniper/sniper_shatter_rounds | 959 | 0.80 | 1206 | 0.26x |
+| guitarist/electric_guitar | 1566 | 1.40 | 1116 | 0.24x |
+| doctor/plague_syringe | 341 | 0.46 | 743 | 0.16x |
+| druid/raven_totem | 425 | 1.06 | 403 | 0.09x |
 
 ---
 
