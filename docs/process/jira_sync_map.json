@@ -4722,5 +4722,10 @@
   "key": "SCRUM-1092",
   "status": "К выполнению",
   "desc_hash": "384720ec20def1ec930cb2904bd07c8f"
+ },
+ "backend_scrum1089_route_map_full_fit_hud2x.md": {
+  "key": "SCRUM-1089",
+  "status": "В работе",
+  "desc_hash": "ed60d792deaad04649be60ad6ba988f7"
  }
 }

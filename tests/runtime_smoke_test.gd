@@ -218,16 +218,16 @@ func _initialize() -> void:
 	if route_map == null:
 		_fail("Expected route map scroll area to contain the map canvas.")
 		return
-	# SCRUM-1079: route columns advance left-to-right; the canvas height fits the
-	# declared node viewport and width exceeds it for the full runtime route.
+	# SCRUM-1089: route columns advance left-to-right and the complete nine-column
+	# act canvas exactly fits the declared viewport on both axes.
 	if route_map.custom_minimum_size.y <= 0.0 or route_map.custom_minimum_size.y > route_scroll.size.y + 1.0:
 		_fail("Expected horizontal route canvas height to fit the node viewport.")
 		return
-	if route_map.custom_minimum_size.x <= route_scroll.size.x + 1.0:
-		_fail("Expected full route canvas to overflow into horizontal scrolling.")
+	if route_map.custom_minimum_size.distance_to(route_scroll.size) > 1.0:
+		_fail("Expected full route canvas to fit the route viewport exactly.")
 		return
-	if route_scroll.horizontal_scroll_mode != ScrollContainer.SCROLL_MODE_AUTO:
-		_fail("Expected route map horizontal scrolling to be automatic.")
+	if route_scroll.horizontal_scroll_mode != ScrollContainer.SCROLL_MODE_DISABLED or route_scroll.scroll_horizontal != 0:
+		_fail("Expected full-fit route map horizontal scrolling to stay disabled at zero.")
 		return
 	if route_scroll.vertical_scroll_mode != ScrollContainer.SCROLL_MODE_DISABLED or route_scroll.scroll_vertical != 0:
 		_fail("Expected route map vertical scrolling to stay disabled at zero.")
@@ -2097,8 +2097,11 @@ func _test_route_map_start_selection(main_scene: PackedScene) -> void:
 		_fail("Expected dragging a route node to avoid starting combat.")
 		return
 	var end_scroll_position := Vector2(route_scroll.scroll_horizontal, route_scroll.scroll_vertical)
-	if end_scroll_position == start_scroll_position:
-		_fail("Expected dragging a route node to pan the scroll container.")
+	if end_scroll_position != start_scroll_position:
+		_fail("Expected dragging a full-fit route node to leave the fixed viewport at zero.")
+		return
+	if not bool(route_main.get("route_map_drag_suppressed_click")):
+		_fail("Expected full-fit route dragging to preserve accidental-click suppression.")
 		return
 
 	_send_route_node_mouse_press(route_main, start_button, route_scroll, battle_index, start_route_node)

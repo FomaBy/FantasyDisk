@@ -11,7 +11,7 @@ func _initialize() -> void:
 	for target in TARGETS:
 		if not await _check_target(target):
 			return
-	print("[SCRUM-1079 horizontal Route Map] PASSED")
+	print("[SCRUM-1079/1089 horizontal full-fit Route Map] PASSED")
 	quit(0)
 
 
@@ -39,10 +39,14 @@ func _check_target(target: Vector2i) -> bool:
 		return _fail("%s: missing horizontal Route Map runtime nodes." % str(target))
 	if str(canvas.get_meta("route_orientation", "")) != "horizontal":
 		return _fail("%s: canvas does not publish horizontal orientation." % str(target))
-	if scroll.horizontal_scroll_mode != ScrollContainer.SCROLL_MODE_AUTO:
-		return _fail("%s: horizontal scrolling is not automatic." % str(target))
+	if scroll.horizontal_scroll_mode != ScrollContainer.SCROLL_MODE_DISABLED:
+		return _fail("%s: SCRUM-1089 full-fit map still allows horizontal scrolling." % str(target))
 	if scroll.vertical_scroll_mode != ScrollContainer.SCROLL_MODE_DISABLED or scroll.scroll_vertical != 0:
 		return _fail("%s: vertical scroll contract failed." % str(target))
+	if scroll.scroll_horizontal != 0:
+		return _fail("%s: full-fit map is not pinned to horizontal offset zero." % str(target))
+	if canvas.custom_minimum_size.distance_to(scroll.size) > 1.0:
+		return _fail("%s: full route canvas does not exactly fit its viewport: %s vs %s." % [str(target), canvas.custom_minimum_size, scroll.size])
 
 	var by_step := {}
 	for child in canvas.get_children():
@@ -50,13 +54,18 @@ func _check_target(target: Vector2i) -> bool:
 		if button == null or not str(button.name).begins_with("RouteNode_"):
 			continue
 		var step := int(button.get_meta("route_step", -1))
-		if step < 0:
+		if step < 0 or step > 8:
 			return _fail("%s: route node lacks step metadata." % str(target))
 		if not by_step.has(step):
 			by_step[step] = []
 		by_step[step].append(button)
 	if by_step.size() != (main.get("route_nodes") as Array).size():
 		return _fail("%s: rendered columns do not match route data." % str(target))
+	if by_step.size() != 9:
+		return _fail("%s: expected all 9 route columns, got %d." % [str(target), by_step.size()])
+	for required_step in range(9):
+		if not by_step.has(required_step):
+			return _fail("%s: exact step set 0..8 is missing %d." % [str(target), required_step])
 
 	var previous_center_x := -INF
 	for step in range(by_step.size()):
@@ -88,8 +97,10 @@ func _check_target(target: Vector2i) -> bool:
 
 	var before := scroll.scroll_horizontal
 	main.route._pan_route_map_scroll(scroll, Vector2(-96.0, 80.0))
-	if scroll.scroll_horizontal <= before or scroll.scroll_vertical != 0:
-		return _fail("%s: drag did not pan horizontally-only." % str(target))
+	if scroll.scroll_horizontal != before or scroll.scroll_vertical != 0:
+		return _fail("%s: drag moved a Route Map that should already fit in full." % str(target))
+	if not bool(main.get("route_map_drag_suppressed_click")):
+		return _fail("%s: full-fit drag no longer suppresses accidental node activation." % str(target))
 	var focused := viewport.gui_get_focus_owner() as Button
 	if focused == null or int(focused.get_meta("route_step", -1)) != 0:
 		return _fail("%s: initial gamepad focus is not in the available start column." % str(target))
@@ -100,6 +111,6 @@ func _check_target(target: Vector2i) -> bool:
 
 
 func _fail(message: String) -> bool:
-	push_error("[SCRUM-1079 horizontal Route Map] " + message)
+	push_error("[SCRUM-1079/1089 horizontal full-fit Route Map] " + message)
 	quit(1)
 	return false

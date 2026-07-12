@@ -603,6 +603,22 @@ The production outer shell remains the hollow SCRUM-981
 empty content zone. The older SCRUM-563 vertical 2K source package remains
 historical design evidence only.
 
+SCRUM-1089 supersedes the scrollable portion of that contract with the live
+full-fit layout requested from the 2026-07-12 route-map screenshot. All nine
+columns (eight activity steps plus boss) are now visible simultaneously;
+`RouteMapScroll` remains as a clipping/input compatibility node but both scroll
+axes and both scrollbar lanes are disabled and pinned to zero. The node canvas
+equals the authored node viewport, columns use the complete safe width, and
+multi-branch columns expand 55% toward the maximum safe vertical spread instead
+of clustering around the centre. The raised header uses the outer shell's real
+irregular empty zone: side/corner rails keep the 160px source boundary while
+the clear central top/bottom opening uses the measured 128px boundary plus
+24px reserve (32px at 2560×1440). HP/XP/ULT/gold is exactly 2× the former
+visible SCRUM-1079 Route Map cluster; compact 1152/1280/1600 tiers stack the
+title above it, while 1920/2560 keep title and resources side by side. The
+PixelLab textless layout source, exact matrix, user-before reference and runtime
+captures are under `docs/design/{mockups,references,previews}/scrum1089_route_map_full_fit_hud2x/`.
+
 ## Hero / Weapon / Level-Up Layout Rules
 
 - Historical SCRUM-980 (superseded by SCRUM-1063 below) replaced the old left-column ascension geometry while preserving

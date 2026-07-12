@@ -10,33 +10,33 @@ const EPSILON := 2.0
 const MATRIX := {
 	"1280x720": {
 		"viewport": Vector2i(1280, 720),
-		"safe": Rect2(133, 113, 1014, 494),
-		"inner": Rect2(157, 137, 966, 446),
-		"header": Rect2(157,137,966,80), "title": Rect2(173,141,450,58),
-		"resources": Rect2(731,141,376,58), "route": Rect2(157,229,966,354),
-		"nodes": Rect2(175,249,834,286), "lane": Rect2(175,549,834,14),
-		"scroll": Rect2(175,249,834,314), "node_size": 60.0,
+		"safe": Rect2(133,90,1014,540),
+		"inner": Rect2(157,114,966,492),
+		"header": Rect2(157,114,966,188), "title": Rect2(173,120,934,54),
+		"resources": Rect2(335,176,610,116), "route": Rect2(157,314,966,276),
+		"nodes": Rect2(173,314,934,276), "lane": Rect2(),
+		"scroll": Rect2(173,314,934,276), "node_size": 58.0,
 	},
 	"1920x1080": {
 		"viewport": Vector2i(1920, 1080),
-		"safe": Rect2(200, 169, 1520, 742),
-		"inner": Rect2(224, 193, 1472, 694),
-		"header": Rect2(224,193,1472,88), "title": Rect2(248,197,700,64),
-		"resources": Rect2(1128,197,544,64), "route": Rect2(224,297,1472,590),
-		"nodes": Rect2(248,321,1328,500), "lane": Rect2(248,845,1328,18),
-		"scroll": Rect2(248,321,1328,542), "node_size": 72.0,
+		"safe": Rect2(200,135,1520,810),
+		"inner": Rect2(224,159,1472,762),
+		"header": Rect2(224,159,1472,144), "title": Rect2(240,167,753,128),
+		"resources": Rect2(1012,167,668,128), "route": Rect2(224,319,1472,586),
+		"nodes": Rect2(240,319,1440,586), "lane": Rect2(),
+		"scroll": Rect2(240,319,1440,586), "node_size": 76.0,
 	},
 	"2560x1440": {
 		"viewport": Vector2i(2560, 1440),
-		"safe": Rect2(267, 225, 2026, 990),
-		"inner": Rect2(299, 257, 1962, 926),
-		"header": Rect2(299,257,1962,104), "title": Rect2(331,263,940,80),
-		"resources": Rect2(1557,263,672,80), "route": Rect2(299,385,1962,798),
-		"nodes": Rect2(331,417,1786,694), "lane": Rect2(331,1139,1786,20),
-		"scroll": Rect2(331,417,1786,742), "node_size": 88.0,
+		"safe": Rect2(267,180,2026,1080),
+		"inner": Rect2(299,212,1962,1016),
+		"header": Rect2(299,212,1962,176), "title": Rect2(323,220,1059,160),
+		"resources": Rect2(1398,220,839,160), "route": Rect2(299,408,1962,796),
+		"nodes": Rect2(323,408,1914,796), "lane": Rect2(),
+		"scroll": Rect2(323,408,1914,796), "node_size": 96.0,
 	},
-	"1152x648": {"viewport": Vector2i(1152,648), "safe": Rect2(120,101,912,446), "inner": Rect2(140,121,872,406), "header": Rect2(140,121,872,76), "title": Rect2(154,125,416,54), "resources": Rect2(666,125,332,54), "route": Rect2(140,209,872,318), "nodes": Rect2(158,227,740,258), "lane": Rect2(158,497,740,14), "scroll": Rect2(158,227,740,284), "node_size": 56.0},
-	"1600x900": {"viewport": Vector2i(1600,900), "safe": Rect2(167,141,1266,618), "inner": Rect2(191,165,1218,570), "header": Rect2(191,165,1218,84), "title": Rect2(211,169,580,62), "resources": Rect2(965,169,424,62), "route": Rect2(191,265,1218,470), "nodes": Rect2(215,289,1074,392), "lane": Rect2(215,701,1074,16), "scroll": Rect2(215,289,1074,428), "node_size": 68.0},
+	"1152x648": {"viewport": Vector2i(1152,648), "safe": Rect2(120,81,912,486), "inner": Rect2(144,105,864,438), "header": Rect2(144,105,864,184), "title": Rect2(158,111,836,54), "resources": Rect2(293,169,566,108), "route": Rect2(144,301,864,230), "nodes": Rect2(158,301,836,230), "lane": Rect2(), "scroll": Rect2(158,301,836,230), "node_size": 52.0},
+	"1600x900": {"viewport": Vector2i(1600,900), "safe": Rect2(167,113,1266,674), "inner": Rect2(191,137,1218,626), "header": Rect2(191,137,1218,202), "title": Rect2(207,145,1186,62), "resources": Rect2(475,207,650,124), "route": Rect2(191,351,1218,396), "nodes": Rect2(207,351,1186,396), "lane": Rect2(), "scroll": Rect2(207,351,1186,396), "node_size": 68.0},
 }
 
 
@@ -130,14 +130,12 @@ func _check_matrix_entry(context: String, expected: Dictionary) -> bool:
 		if typed_label != null and not _encloses_with_epsilon(expected["title"], typed_label.get_global_rect()):
 			return _fail("%s: label %s overflows title/progress zone: %s." % [context, typed_label.name, typed_label.get_global_rect()])
 
-	if scroll.horizontal_scroll_mode != ScrollContainer.SCROLL_MODE_AUTO:
-		return _fail("%s: horizontal route scrolling must be automatic." % context)
+	if scroll.horizontal_scroll_mode != ScrollContainer.SCROLL_MODE_DISABLED or scroll.scroll_horizontal != 0:
+		return _fail("%s: full-fit route must disable horizontal scrolling and stay at zero." % context)
 	if scroll.vertical_scroll_mode != ScrollContainer.SCROLL_MODE_DISABLED or scroll.scroll_vertical != 0:
 		return _fail("%s: vertical scrolling must be disabled and pinned to zero." % context)
-	if map_area.custom_minimum_size.x <= expected["nodes"].size.x + EPSILON:
-		return _fail("%s: long route canvas must overflow horizontally." % context)
-	if absf(map_area.custom_minimum_size.y - expected["nodes"].size.y) > EPSILON:
-		return _fail("%s: route canvas height must match the node viewport." % context)
+	if map_area.custom_minimum_size.distance_to(expected["nodes"].size) > EPSILON:
+		return _fail("%s: complete route canvas must exactly match the node viewport." % context)
 
 	var route_button_count := 0
 	for child in map_area.get_children():

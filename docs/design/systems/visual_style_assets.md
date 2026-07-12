@@ -853,6 +853,12 @@ SCRUM-337 is the current full attack VFX art baseline. Six generated source shee
   the visual source for future route-map 2K frame/runtime wiring; it contains no
   baked runtime text and preserves empty interiors for header, HUD, tooltip,
   route nodes/lines and FAB content.
+- SCRUM-1089 adds the active full-fit Route Map layout reference under
+  `docs/design/references/scrum1089_route_map_full_fit_hud2x/` (PixelLab UI
+  asset `a32def07-33e5-464d-a046-4967feefa4b1`) and matching mockup/runtime
+  previews. It is textless design evidence only: no bitmap is promoted to
+  runtime, and production continues to reuse `route_map_backdrop.png`, canonical
+  node icons, HUD v2 assets and the hollow `meta40/frame_border.png` shell.
 - SCRUM-158 dark fantasy UI backdrops live in `assets/backgrounds/ui/`: `ui_backdrop_system_cathedral.png`, `ui_backdrop_merchant_archive.png`, `ui_backdrop_arcane_lab.png`, `ui_backdrop_reward_hall.png`, `ui_backdrop_defeat_crypt.png`. Each is `2560x1440` with a calm low-contrast center for central panels and richer material detail pushed to the edges. SCRUM-418 removed the old compatibility copies from `assets/sprites/ui/screens/`; runtime mapping now points directly at this canonical backdrop set. Preview: `docs/design/previews/ui_screen_backdrops_dark_fantasy_contact.png`.
 - `assets/backgrounds/main_menu_epic_battle_v3.png` is the active start-screen
   art. SCRUM-1001 replaces the previous 0.2.0 cosmic atlas with an

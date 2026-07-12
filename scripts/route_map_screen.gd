@@ -41,24 +41,28 @@ const RM_NODE_2K := Rect2(0, 0, 88, 88)                    # шаблон узл
 const RM_ROW_GAP_2K := 165.0
 const RM_PADDING_2K := Vector2(170.0, 72.0)
 
-# SCRUM-981: production frame 1536×1024, 160px 9-slice rail on every edge.
-# Reserve is additional empty-zone breathing room, never part of the ornament.
+# SCRUM-981: production frame 1536×1024. The side/corner ornament consumes the
+# full 160px source band, while the real clear centre above/below the route
+# content begins after 128px. SCRUM-1089 uses that irregular empty-zone shape:
+# content X remains beyond the side rail and content Y may start after the real
+# 128px centre boundary plus reserve without touching the corner flowers.
 const ROUTE_SHELL_FRAME_SOURCE_SIZE := Vector2(1536.0, 1024.0)
-const ROUTE_SHELL_FRAME_SOURCE_MARGIN := 160.0
+const ROUTE_SHELL_FRAME_SOURCE_MARGIN_X := 160.0
+const ROUTE_SHELL_FRAME_SOURCE_MARGIN_Y := 128.0
 const ROUTE_SHELL_RESERVE_COMPACT := 24.0
 const ROUTE_SHELL_RESERVE_LARGE := 32.0
 
-# SCRUM-1057: accepted PixelLab horizontal Route Map contract. Arrays keep the
-# machine-readable rectangles identical to responsive_matrix.json while making
-# the table legal as a GDScript constant.
+# SCRUM-1089: full-fit PixelLab Route Map contract. All nine runtime columns are
+# visible at once, both scroll axes are disabled, and the route-only resource
+# cluster fills an exact zone twice the previously visible SCRUM-1079 size.
 const ROUTE_HORIZONTAL_LAYOUTS := {
-	"1152x648": {"safe": [120,101,912,446], "inner": [140,121,872,406], "header": [140,121,872,76], "title": [154,125,416,54], "resources": [666,125,332,54], "route": [140,209,872,318], "nodes": [158,227,740,258], "lane": [158,497,740,14], "fab": [922,437,72,72], "node_size": 56.0, "boss_size": 64.0},
-	"1280x720": {"safe": [133,113,1014,494], "inner": [157,137,966,446], "header": [157,137,966,80], "title": [173,141,450,58], "resources": [731,141,376,58], "route": [157,229,966,354], "nodes": [175,249,834,286], "lane": [175,549,834,14], "fab": [1033,493,72,72], "node_size": 60.0, "boss_size": 68.0},
-	"1600x900": {"safe": [167,141,1266,618], "inner": [191,165,1218,570], "header": [191,165,1218,84], "title": [211,169,580,62], "resources": [965,169,424,62], "route": [191,265,1218,470], "nodes": [215,289,1074,392], "lane": [215,701,1074,16], "fab": [1313,639,72,72], "node_size": 68.0, "boss_size": 76.0},
-	"1920x1080": {"safe": [200,169,1520,742], "inner": [224,193,1472,694], "header": [224,193,1472,88], "title": [248,197,700,64], "resources": [1128,197,544,64], "route": [224,297,1472,590], "nodes": [248,321,1328,500], "lane": [248,845,1328,18], "fab": [1600,791,72,72], "node_size": 72.0, "boss_size": 88.0},
-	"2560x1440": {"safe": [267,225,2026,990], "inner": [299,257,1962,926], "header": [299,257,1962,104], "title": [331,263,940,80], "resources": [1557,263,672,80], "route": [299,385,1962,798], "nodes": [331,417,1786,694], "lane": [331,1139,1786,20], "fab": [2149,1071,80,80], "node_size": 88.0, "boss_size": 104.0},
+	"1152x648": {"safe": [120,81,912,486], "inner": [144,105,864,438], "header": [144,105,864,184], "title": [158,111,836,54], "resources": [293,169,566,108], "route": [144,301,864,230], "nodes": [158,301,836,230], "lane": [0,0,0,0], "fab": [936,459,64,64], "node_size": 52.0, "boss_size": 64.0},
+	"1280x720": {"safe": [133,90,1014,540], "inner": [157,114,966,492], "header": [157,114,966,188], "title": [173,120,934,54], "resources": [335,176,610,116], "route": [157,314,966,276], "nodes": [173,314,934,276], "lane": [0,0,0,0], "fab": [1035,510,72,72], "node_size": 58.0, "boss_size": 68.0},
+	"1600x900": {"safe": [167,113,1266,674], "inner": [191,137,1218,626], "header": [191,137,1218,202], "title": [207,145,1186,62], "resources": [475,207,650,124], "route": [191,351,1218,396], "nodes": [207,351,1186,396], "lane": [0,0,0,0], "fab": [1313,659,80,80], "node_size": 68.0, "boss_size": 80.0},
+	"1920x1080": {"safe": [200,135,1520,810], "inner": [224,159,1472,762], "header": [224,159,1472,144], "title": [240,167,753,128], "resources": [1012,167,668,128], "route": [224,319,1472,586], "nodes": [240,319,1440,586], "lane": [0,0,0,0], "fab": [1584,809,80,80], "node_size": 76.0, "boss_size": 92.0},
+	"2560x1440": {"safe": [267,180,2026,1080], "inner": [299,212,1962,1016], "header": [299,212,1962,176], "title": [323,220,1059,160], "resources": [1398,220,839,160], "route": [299,408,1962,796], "nodes": [323,408,1914,796], "lane": [0,0,0,0], "fab": [2125,1084,96,96], "node_size": 96.0, "boss_size": 112.0},
 }
-const ROUTE_HORIZONTAL_VISIBLE_COLUMNS := 8
+const ROUTE_HORIZONTAL_FULL_FIT_COLUMNS := 9
 
 
 func _init(game_ref) -> void:
@@ -215,7 +219,7 @@ func _show_battle_map() -> void:
 	var scroll := ScrollContainer.new()
 	scroll.name = "RouteMapScroll"
 	scroll.set_anchors_preset(Control.PRESET_TOP_LEFT)
-	scroll.horizontal_scroll_mode = ScrollContainer.SCROLL_MODE_AUTO
+	scroll.horizontal_scroll_mode = ScrollContainer.SCROLL_MODE_DISABLED
 	scroll.vertical_scroll_mode = ScrollContainer.SCROLL_MODE_DISABLED
 	scroll.mouse_filter = Control.MOUSE_FILTER_PASS
 	root.add_child(scroll)
@@ -225,6 +229,7 @@ func _show_battle_map() -> void:
 	# is the authoritative orientation contract from SCRUM-1057.
 	map_area.name = "VerticalRouteMap"
 	map_area.set_meta("route_orientation", "horizontal")
+	map_area.set_meta("scrum1089_full_fit_columns", ROUTE_HORIZONTAL_FULL_FIT_COLUMNS)
 	var canvas_size := _route_map_canvas_size(
 		float(shell_layout["node_viewport_rect"].size.x),
 		float(shell_layout["node_viewport_rect"].size.y)
@@ -279,8 +284,8 @@ func _route_map_shell_layout(viewport_size: Vector2) -> Dictionary:
 
 	# Non-matrix window sizes interpolate from the accepted 1920×1080 contract,
 	# then clamp every zone back into the real hollow-frame interior.
-	var margin_x := roundf(ROUTE_SHELL_FRAME_SOURCE_MARGIN * viewport_size.x / ROUTE_SHELL_FRAME_SOURCE_SIZE.x)
-	var margin_y := roundf(ROUTE_SHELL_FRAME_SOURCE_MARGIN * viewport_size.y / ROUTE_SHELL_FRAME_SOURCE_SIZE.y)
+	var margin_x := roundf(ROUTE_SHELL_FRAME_SOURCE_MARGIN_X * viewport_size.x / ROUTE_SHELL_FRAME_SOURCE_SIZE.x)
+	var margin_y := roundf(ROUTE_SHELL_FRAME_SOURCE_MARGIN_Y * viewport_size.y / ROUTE_SHELL_FRAME_SOURCE_SIZE.y)
 	var safe_rect := Rect2(
 		Vector2(margin_x, margin_y),
 		viewport_size - Vector2(margin_x * 2.0, margin_y * 2.0)
@@ -291,14 +296,14 @@ func _route_map_shell_layout(viewport_size: Vector2) -> Dictionary:
 	var sy := viewport_size.y / 1080.0
 	var scale_rect := func(base: Rect2) -> Rect2:
 		return Rect2(Vector2(roundf(base.position.x * sx), roundf(base.position.y * sy)), Vector2(roundf(base.size.x * sx), roundf(base.size.y * sy)))
-	var header_rect: Rect2 = scale_rect.call(Rect2(224,193,1472,88)).intersection(inner_rect)
-	var title_rect: Rect2 = scale_rect.call(Rect2(248,197,700,64)).intersection(inner_rect)
-	var resource_rect: Rect2 = scale_rect.call(Rect2(1128,197,544,64)).intersection(inner_rect)
-	var route_rect: Rect2 = scale_rect.call(Rect2(224,297,1472,590)).intersection(inner_rect)
-	var node_rect: Rect2 = scale_rect.call(Rect2(248,321,1328,500)).intersection(route_rect)
-	var lane_rect: Rect2 = scale_rect.call(Rect2(248,845,1328,18)).intersection(route_rect)
-	var fab_rect: Rect2 = scale_rect.call(Rect2(1600,791,72,72)).intersection(inner_rect)
-	var node_size := clampf(roundf(72.0 * minf(sx, sy)), 56.0, 88.0)
+	var header_rect: Rect2 = scale_rect.call(Rect2(224,159,1472,144)).intersection(inner_rect)
+	var title_rect: Rect2 = scale_rect.call(Rect2(240,167,753,128)).intersection(header_rect)
+	var resource_rect: Rect2 = scale_rect.call(Rect2(1012,167,668,128)).intersection(header_rect)
+	var route_rect: Rect2 = scale_rect.call(Rect2(224,319,1472,586)).intersection(inner_rect)
+	var node_rect: Rect2 = scale_rect.call(Rect2(240,319,1440,586)).intersection(route_rect)
+	var lane_rect := Rect2()
+	var fab_rect: Rect2 = scale_rect.call(Rect2(1584,809,80,80)).intersection(inner_rect)
+	var node_size := clampf(roundf(76.0 * minf(sx, sy)), 52.0, 96.0)
 	return {
 		"safe_rect": safe_rect,
 		"inner_rect": inner_rect,
@@ -309,7 +314,7 @@ func _route_map_shell_layout(viewport_size: Vector2) -> Dictionary:
 		"node_viewport_rect": node_rect,
 		"horizontal_lane_rect": lane_rect,
 		"fab_rect": fab_rect,
-		"scroll_rect": Rect2(node_rect.position, Vector2(node_rect.size.x, maxf(node_rect.size.y, lane_rect.end.y - node_rect.position.y))),
+		"scroll_rect": node_rect,
 		"node_size": node_size,
 		"boss_size": node_size + maxf(8.0, node_size * 0.2),
 	}
@@ -330,7 +335,7 @@ func _route_map_layout_from_entry(entry: Dictionary) -> Dictionary:
 		"node_viewport_rect": node_rect,
 		"horizontal_lane_rect": lane_rect,
 		"fab_rect": _route_map_rect(entry["fab"]),
-		"scroll_rect": Rect2(node_rect.position, Vector2(node_rect.size.x, lane_rect.end.y - node_rect.position.y)),
+		"scroll_rect": node_rect,
 		"node_size": float(entry["node_size"]),
 		"boss_size": float(entry["boss_size"]),
 	}
@@ -350,6 +355,8 @@ func _apply_route_map_shell_layout(root: Control, header: Control, title_box: Co
 	root.set_meta("scrum1057_node_viewport_rect", layout["node_viewport_rect"])
 	root.set_meta("scrum1057_horizontal_lane_rect", layout["horizontal_lane_rect"])
 	root.set_meta("scrum1057_fab_rect", layout["fab_rect"])
+	root.set_meta("scrum1089_full_fit", true)
+	root.set_meta("scrum1089_all_columns", maxi(game.route_nodes.size(), game.ROUTE_STEPS_TO_BOSS + 1))
 	_apply_route_map_control_rect(header, layout["header_rect"])
 	_apply_route_map_control_rect(title_box, layout["title_rect"])
 	_apply_route_map_control_rect(scroll, layout["scroll_rect"])
@@ -358,14 +365,18 @@ func _apply_route_map_shell_layout(root: Control, header: Control, title_box: Co
 	scroll.set_meta("scrum981_zone_rect", layout["route_rect"])
 	scroll.set_meta("scrum1057_node_viewport_rect", layout["node_viewport_rect"])
 	scroll.set_meta("scrum1057_horizontal_lane_rect", layout["horizontal_lane_rect"])
-	scroll.horizontal_scroll_mode = ScrollContainer.SCROLL_MODE_AUTO
+	scroll.horizontal_scroll_mode = ScrollContainer.SCROLL_MODE_DISABLED
 	scroll.vertical_scroll_mode = ScrollContainer.SCROLL_MODE_DISABLED
+	scroll.scroll_horizontal = 0
 	scroll.scroll_vertical = 0
+	var horizontal_bar := scroll.get_h_scroll_bar()
+	if horizontal_bar != null:
+		horizontal_bar.visible = false
+		horizontal_bar.focus_mode = Control.FOCUS_NONE
 	var vertical_bar := scroll.get_v_scroll_bar()
 	if vertical_bar != null:
 		vertical_bar.visible = false
 		vertical_bar.focus_mode = Control.FOCUS_NONE
-	_style_route_map_horizontal_scrollbar(scroll, float(layout["horizontal_lane_rect"].size.y))
 
 	var expected_canvas_size := _route_map_canvas_size(
 		float(layout["node_viewport_rect"].size.x),
@@ -386,12 +397,26 @@ func _layout_route_map_resource_hud(root: Control, resource_zone: Rect2) -> void
 	var resource := root.find_child("RunResourceHud", true, false) as PanelContainer
 	if resource == null:
 		return
+	# The semantic HUD font has a minimum height. Once the complete cluster is
+	# scaled to 2x on compact Route Map tiers, the ULT label's symmetric
+	# bar-centering can leave its last pixels below the cluster content rect.
+	# Clamp only that label upward inside the accepted empty HUD zone; do not
+	# shrink the text or change the authored 2x exterior size.
+	var ult_label := resource.find_child("HudULTLabel", true, false) as Label
+	if ult_label != null:
+		var content_bottom := maxf(1.0, resource.size.y - 2.0)
+		var overflow := ult_label.position.y + ult_label.size.y - content_bottom
+		if overflow > 0.0:
+			ult_label.position.y -= overflow
 	resource.pivot_offset = Vector2.ZERO
 	resource.scale = Vector2.ONE
 	var unscaled_size := resource.size
 	if unscaled_size.x <= 0.0 or unscaled_size.y <= 0.0:
 		unscaled_size = resource.custom_minimum_size
-	var fit_scale := minf(1.0, minf(resource_zone.size.x / unscaled_size.x, resource_zone.size.y / unscaled_size.y))
+	# SCRUM-1089: the authored resource zone is exactly twice the previous
+	# visible Route Map HUD. Route-only scaling may therefore exceed 1.0; the
+	# cluster and all of its child safe zones remain uniformly scaled together.
+	var fit_scale := minf(resource_zone.size.x / unscaled_size.x, resource_zone.size.y / unscaled_size.y)
 	resource.scale = Vector2(fit_scale, fit_scale)
 	var visible_size := unscaled_size * fit_scale
 	resource.position = Vector2(
@@ -399,6 +424,8 @@ func _layout_route_map_resource_hud(root: Control, resource_zone: Rect2) -> void
 		resource_zone.position.y + roundf((resource_zone.size.y - visible_size.y) * 0.5)
 	)
 	resource.set_meta("scrum981_zone_rect", resource_zone)
+	resource.set_meta("scrum1089_hud_scale", fit_scale)
+	resource.set_meta("scrum1089_hud_zone", resource_zone)
 
 
 func _layout_route_map_fab(root: Control, fab_zone: Rect2) -> void:
@@ -480,19 +507,12 @@ func _random_battle_node_name(index: int) -> String:
 
 
 func _route_map_canvas_size(available_width := -1.0, available_height := -1.0) -> Vector2:
-	# SCRUM-1057: columns advance on X. Eight authored columns fit without
-	# scrolling; longer runtime routes grow the canvas and use only the bottom
-	# horizontal lane. Height always fits the declared node viewport.
+	# SCRUM-1089: the entire fixed nine-column act route is always visible. The
+	# clipped canvas exactly matches the authored node viewport on both axes.
 	var layout := _route_map_shell_layout(game.get_viewport().get_visible_rect().size)
 	var requested_width: float = available_width if available_width > 0.0 else float(layout["node_viewport_rect"].size.x)
 	var requested_height: float = available_height if available_height > 0.0 else float(layout["node_viewport_rect"].size.y)
-	var column_count: int = maxi(game.route_nodes.size(), game.ROUTE_STEPS_TO_BOSS + 1)
-	var node_size := float(layout["node_size"])
-	var padding_x := maxf(24.0, roundf(node_size * 0.7))
-	var authored_gaps := maxi(ROUTE_HORIZONTAL_VISIBLE_COLUMNS - 1, 1)
-	var column_gap := maxf(node_size + 24.0, (requested_width - padding_x * 2.0 - node_size) / float(authored_gaps))
-	var width := maxf(requested_width, padding_x * 2.0 + node_size + column_gap * float(maxi(column_count - 1, 0)))
-	return Vector2(ceilf(width), maxf(1.0, requested_height))
+	return Vector2(maxf(1.0, requested_width), maxf(1.0, requested_height))
 
 
 func _node_pool_for_step(step_index: int) -> Array:
@@ -795,10 +815,22 @@ func _map_node_positions(map_size: Vector2) -> Array:
 			x_position -= (boss_size - normal_size) * 0.5
 		var minimum_gap := maxf(4.0, roundf(node_size * 0.08))
 		var required_height := node_size * float(branch_count) + minimum_gap * float(maxi(branch_count - 1, 0))
-		var padding_y := maxf(8.0, roundf((map_size.y - required_height) * 0.5))
+		var preferred_padding_y := maxf(8.0, roundf(node_size * 0.28))
+		# Compact 4-branch columns may need less than the preferred breathing
+		# room; clamp padding to the space that actually remains after the hard
+		# non-overlap stack instead of letting the last hitbox leave the canvas.
+		var minimum_padding_y := minf(preferred_padding_y, maxf(0.0, (map_size.y - required_height) * 0.5))
+		var maximum_occupied_height := maxf(required_height, map_size.y - minimum_padding_y * 2.0)
+		# SCRUM-1089: use the taller viewport visibly without pinning branches to
+		# its edges. Expand 55% of the way from the old compact stack toward the
+		# maximum safe spread; a single boss/start node remains centred.
+		var occupied_height := required_height
+		if branch_count > 1:
+			occupied_height = lerpf(required_height, maximum_occupied_height, 0.55)
+		var padding_y := maxf(minimum_padding_y, roundf((map_size.y - occupied_height) * 0.5))
 		var branch_gap := 0.0
 		if branch_count > 1:
-			branch_gap = maxf(minimum_gap, (map_size.y - padding_y * 2.0 - node_size * float(branch_count)) / float(branch_count - 1))
+			branch_gap = maxf(minimum_gap, (occupied_height - node_size * float(branch_count)) / float(branch_count - 1))
 		for branch_index in range(branch_count):
 			step_positions.append(Vector2(
 				x_position,
@@ -814,15 +846,8 @@ func _center_route_map_on_current_row(scroll: ScrollContainer, map_size: Vector2
 		return
 	if game.route_nodes.is_empty():
 		return
-	var node_positions := _map_node_positions(map_size)
-	var active_step = clampi(game.route_stage, 0, node_positions.size() - 1)
-	if node_positions[active_step].is_empty():
-		return
-	var node_size := _route_map_node_size_for_step(active_step)
-	var column_center_x := float(node_positions[active_step][0].x) + node_size.x * 0.5
-	var focus_ratio := 0.22 if active_step == 0 else 0.5
-	var target_x := maxi(0, int(column_center_x - scroll.size.x * focus_ratio))
-	scroll.scroll_horizontal = target_x
+	# The complete map fits; focus changes never need to move the viewport.
+	scroll.scroll_horizontal = 0
 	scroll.scroll_vertical = 0
 
 
@@ -847,18 +872,14 @@ func _pan_route_map_scroll(scroll: ScrollContainer, drag_delta: Vector2) -> void
 	game.route_map_drag_distance += drag_delta.length()
 	if game.route_map_drag_distance > game.ROUTE_MAP_DRAG_THRESHOLD:
 		game.route_map_drag_suppressed_click = true
-	scroll.scroll_horizontal = maxi(0, scroll.scroll_horizontal - int(drag_delta.x))
+	scroll.scroll_horizontal = 0
 	scroll.scroll_vertical = 0
 
 
 func _handle_route_map_wheel(scroll: ScrollContainer, event: InputEventMouseButton) -> bool:
 	if not event.pressed or event.button_index not in [MOUSE_BUTTON_WHEEL_UP, MOUSE_BUTTON_WHEEL_DOWN, MOUSE_BUTTON_WHEEL_LEFT, MOUSE_BUTTON_WHEEL_RIGHT]:
 		return false
-	var direction := -1
-	if event.button_index in [MOUSE_BUTTON_WHEEL_DOWN, MOUSE_BUTTON_WHEEL_RIGHT]:
-		direction = 1
-	var amount := maxi(32, int(roundf(72.0 * maxf(event.factor, 1.0))))
-	scroll.scroll_horizontal = maxi(0, scroll.scroll_horizontal + direction * amount)
+	scroll.scroll_horizontal = 0
 	scroll.scroll_vertical = 0
 	return true
 
