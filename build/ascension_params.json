@@ -1,0 +1,1682 @@
+{
+	"ascension_difficulty": {
+		"0": {
+			"boss_extra_phase": 0.0,
+			"boss_hp_mult": 1.0,
+			"boss_telegraph_mult": 1.0,
+			"elite_hp_mult": 1.0,
+			"elite_instant_phase": 0.0,
+			"enemy_damage_mult": 1.0,
+			"enemy_hp_mult": 1.0,
+			"first_wave_boost": 0.0,
+			"healing_mult": 1.0,
+			"mini_elite_chance": 0.0,
+			"player_max_hp_mult": 1.0,
+			"price_mult": 1.0,
+			"reward_mult": 1.0,
+			"round_duration_mult": 1.0,
+			"spawn_cooldown_mult": 1.0,
+			"spawn_count_mult": 1.0
+		},
+		"1": {
+			"boss_extra_phase": 0.0,
+			"boss_hp_mult": 1.0,
+			"boss_telegraph_mult": 1.0,
+			"elite_hp_mult": 1.0,
+			"elite_instant_phase": 0.0,
+			"enemy_damage_mult": 1.18,
+			"enemy_hp_mult": 1.25,
+			"first_wave_boost": 0.0,
+			"healing_mult": 1.0,
+			"mini_elite_chance": 0.0,
+			"player_max_hp_mult": 1.0,
+			"price_mult": 1.25,
+			"reward_mult": 1.0,
+			"round_duration_mult": 1.0,
+			"spawn_cooldown_mult": 1.0,
+			"spawn_count_mult": 1.0
+		},
+		"5": {
+			"boss_extra_phase": 1.0,
+			"boss_hp_mult": 1.3,
+			"boss_telegraph_mult": 0.72,
+			"elite_hp_mult": 1.25,
+			"elite_instant_phase": 1.0,
+			"enemy_damage_mult": 1.6572864,
+			"enemy_hp_mult": 1.8032,
+			"first_wave_boost": 1.0,
+			"healing_mult": 0.68,
+			"mini_elite_chance": 0.03,
+			"player_max_hp_mult": 0.8,
+			"price_mult": 1.25,
+			"reward_mult": 0.8,
+			"round_duration_mult": 1.25,
+			"spawn_cooldown_mult": 0.78,
+			"spawn_count_mult": 1.3
+		}
+	},
+	"classes": {
+		"assassin": {
+			"ascension_mods": {
+				"0": {},
+				"1": {
+					"damage_multiplier": 1.05
+				},
+				"5": {
+					"attack_speed_multiplier": 1.04,
+					"damage_multiplier": 1.1235,
+					"defense_flat": 0.02,
+					"max_health_flat": 8.0
+				}
+			},
+			"base_stats": {
+				"agility": 10.0,
+				"endurance": 5.0,
+				"energy": 3.0,
+				"intelligence": 2.0,
+				"knowledge": 4.0,
+				"leadership": 4.0,
+				"perception": 6.0,
+				"strength": 6.0
+			},
+			"derived_a5": {
+				"absorb": 0.725,
+				"attack_speed": 3.18187058823529,
+				"damage": 10.1073970937676,
+				"defense": 0.138568129330254,
+				"dodge": 0.105448154657294,
+				"magic_damage": 3.14452354028325,
+				"max_health": 70.5,
+				"regeneration": 0.125333333333333
+			},
+			"derived_base": {
+				"absorb": 0.725,
+				"attack_speed": 3.0618,
+				"damage": 9.0,
+				"defense": 0.121325244983668,
+				"dodge": 0.105448154657294,
+				"magic_damage": 2.8,
+				"max_health": 62.5,
+				"regeneration": 0.125333333333333
+			},
+			"weapons": {
+				"chakrams": {
+					"aoe_dps": 132.81,
+					"ehp": 87.62,
+					"interval": 0.202,
+					"solo_dps": 65.27,
+					"tuning": {
+						"aoe_budget_multiplier": 0.909,
+						"aoe_target": 120.75,
+						"base_aoe_dps": 74.11,
+						"base_solo_dps": 36.42,
+						"damage_multiplier": 1.792,
+						"solo_budget_multiplier": 1.1,
+						"solo_target": 71.76
+					}
+				},
+				"shadow_daggers": {
+					"aoe_dps": 161.37,
+					"ehp": 87.62,
+					"interval": 0.18,
+					"solo_dps": 53.71,
+					"tuning": {
+						"aoe_budget_multiplier": 0.748,
+						"aoe_target": 120.75,
+						"base_aoe_dps": 110.0,
+						"base_solo_dps": 36.61,
+						"damage_multiplier": 1.467,
+						"solo_budget_multiplier": 1.336,
+						"solo_target": 71.76
+					}
+				},
+				"venom_wire": {
+					"aoe_dps": 453.13,
+					"ehp": 87.62,
+					"interval": 0.255,
+					"solo_dps": 113.27,
+					"tuning": {
+						"aoe_budget_multiplier": 0.266,
+						"aoe_target": 120.75,
+						"base_aoe_dps": 522.97,
+						"base_solo_dps": 130.72,
+						"damage_multiplier": 0.356,
+						"solo_budget_multiplier": 0.634,
+						"solo_target": 71.76
+					}
+				}
+			}
+		},
+		"berserk": {
+			"ascension_mods": {
+				"0": {},
+				"1": {
+					"damage_multiplier": 1.05
+				},
+				"5": {
+					"attack_speed_multiplier": 1.04,
+					"damage_multiplier": 1.1235,
+					"defense_flat": 0.02,
+					"max_health_flat": 8.0
+				}
+			},
+			"base_stats": {
+				"agility": 5.0,
+				"endurance": 7.0,
+				"energy": 4.0,
+				"intelligence": 2.0,
+				"knowledge": 4.0,
+				"leadership": 3.0,
+				"perception": 5.0,
+				"strength": 10.0
+			},
+			"derived_a5": {
+				"absorb": 1.015,
+				"attack_speed": 1.82382352941176,
+				"damage": 16.845661822946,
+				"defense": 0.168738093078109,
+				"dodge": 0.0647848218417399,
+				"magic_damage": 3.14452354028325,
+				"max_health": 95.5,
+				"regeneration": 0.125333333333333
+			},
+			"derived_base": {
+				"absorb": 1.015,
+				"attack_speed": 1.755,
+				"damage": 15.0,
+				"defense": 0.152112159809402,
+				"dodge": 0.0647848218417399,
+				"magic_damage": 2.8,
+				"max_health": 87.5,
+				"regeneration": 0.125333333333333
+			},
+			"weapons": {
+				"axe": {
+					"aoe_dps": 185.18,
+					"ehp": 120.2,
+					"interval": 0.604,
+					"solo_dps": 38.88,
+					"tuning": {
+						"aoe_budget_multiplier": 0.81,
+						"aoe_target": 150.0,
+						"base_aoe_dps": 112.51,
+						"base_solo_dps": 23.62,
+						"damage_multiplier": 1.646,
+						"solo_budget_multiplier": 1.235,
+						"solo_target": 48.0
+					}
+				},
+				"hammer": {
+					"aoe_dps": 129.74,
+					"ehp": 120.2,
+					"interval": 0.712,
+					"solo_dps": 42.12,
+					"tuning": {
+						"aoe_budget_multiplier": 1.156,
+						"aoe_target": 150.0,
+						"base_aoe_dps": 46.33,
+						"base_solo_dps": 15.04,
+						"damage_multiplier": 2.8,
+						"solo_budget_multiplier": 1.14,
+						"solo_target": 48.0
+					}
+				},
+				"sword": {
+					"aoe_dps": 157.16,
+					"ehp": 120.2,
+					"interval": 0.33,
+					"solo_dps": 45.85,
+					"tuning": {
+						"aoe_budget_multiplier": 0.955,
+						"aoe_target": 150.0,
+						"base_aoe_dps": 238.11,
+						"base_solo_dps": 69.47,
+						"damage_multiplier": 0.66,
+						"solo_budget_multiplier": 1.047,
+						"solo_target": 48.0
+					}
+				}
+			}
+		},
+		"biologist": {
+			"ascension_mods": {
+				"0": {},
+				"1": {
+					"damage_multiplier": 1.04
+				},
+				"5": {
+					"aoe_radius_multiplier": 1.05,
+					"attack_speed_multiplier": 1.04,
+					"damage_multiplier": 1.1128,
+					"max_health_flat": 7.0
+				}
+			},
+			"base_stats": {
+				"agility": 5.0,
+				"endurance": 4.0,
+				"energy": 6.0,
+				"intelligence": 8.0,
+				"knowledge": 10.0,
+				"leadership": 4.0,
+				"perception": 7.0,
+				"strength": 2.0
+			},
+			"derived_a5": {
+				"absorb": 0.58,
+				"attack_speed": 1.94728235294118,
+				"damage": 3.33725871650335,
+				"defense": 0.105501130369254,
+				"dodge": 0.0647848218417399,
+				"magic_damage": 12.4590992082792,
+				"max_health": 57.0,
+				"regeneration": 0.205333333333333
+			},
+			"derived_base": {
+				"absorb": 0.58,
+				"attack_speed": 1.8738,
+				"damage": 3.0,
+				"defense": 0.105501130369254,
+				"dodge": 0.0647848218417399,
+				"magic_damage": 11.2,
+				"max_health": 50.0,
+				"regeneration": 0.205333333333333
+			},
+			"weapons": {
+				"biologist_sample_injector": {
+					"aoe_dps": 109.0,
+					"ehp": 69.41,
+					"interval": 0.56,
+					"solo_dps": 70.79,
+					"tuning": {
+						"aoe_budget_multiplier": 1.754,
+						"aoe_target": 191.16,
+						"base_aoe_dps": 71.77,
+						"base_solo_dps": 48.23,
+						"damage_multiplier": 1.623,
+						"solo_budget_multiplier": 0.674,
+						"solo_target": 47.69
+					}
+				},
+				"biologist_spore_lens": {
+					"aoe_dps": 182.93,
+					"ehp": 69.41,
+					"interval": 0.63,
+					"solo_dps": 60.92,
+					"tuning": {
+						"aoe_budget_multiplier": 1.045,
+						"aoe_target": 191.16,
+						"base_aoe_dps": 192.66,
+						"base_solo_dps": 65.15,
+						"damage_multiplier": 0.852,
+						"solo_budget_multiplier": 0.783,
+						"solo_target": 47.69
+					}
+				},
+				"biologist_symbiote_seed": {
+					"aoe_dps": 109.41,
+					"ehp": 69.41,
+					"interval": 0.662,
+					"solo_dps": 43.63,
+					"tuning": {
+						"aoe_budget_multiplier": 1.747,
+						"aoe_target": 191.16,
+						"base_aoe_dps": 93.98,
+						"base_solo_dps": 37.19,
+						"damage_multiplier": 1.615,
+						"solo_budget_multiplier": 1.093,
+						"solo_target": 47.69
+					}
+				}
+			}
+		},
+		"chemist": {
+			"ascension_mods": {
+				"0": {},
+				"1": {
+					"damage_multiplier": 1.05
+				},
+				"5": {
+					"attack_speed_multiplier": 1.04,
+					"damage_multiplier": 1.1235,
+					"defense_flat": 0.02,
+					"max_health_flat": 8.0
+				}
+			},
+			"base_stats": {
+				"agility": 4.0,
+				"endurance": 3.0,
+				"energy": 7.0,
+				"intelligence": 9.0,
+				"knowledge": 7.0,
+				"leadership": 2.0,
+				"perception": 6.0,
+				"strength": 2.0
+			},
+			"derived_a5": {
+				"absorb": 0.435,
+				"attack_speed": 1.67791764705882,
+				"damage": 3.3691323645892,
+				"defense": 0.107273924908253,
+				"dodge": 0.0561272217025257,
+				"magic_damage": 14.1503559312746,
+				"max_health": 45.5,
+				"regeneration": 0.165333333333333
+			},
+			"derived_base": {
+				"absorb": 0.435,
+				"attack_speed": 1.6146,
+				"damage": 3.0,
+				"defense": 0.089379100503946,
+				"dodge": 0.0561272217025257,
+				"magic_damage": 12.6,
+				"max_health": 37.5,
+				"regeneration": 0.165333333333333
+			},
+			"weapons": {
+				"acid_flask": {
+					"aoe_dps": 89.58,
+					"ehp": 51.2,
+					"interval": 0.774,
+					"solo_dps": 34.69,
+					"tuning": {
+						"aoe_budget_multiplier": 2.503,
+						"aoe_target": 224.25,
+						"base_aoe_dps": 78.4,
+						"base_solo_dps": 30.19,
+						"damage_multiplier": 2.096,
+						"solo_budget_multiplier": 1.337,
+						"solo_target": 46.37
+					}
+				},
+				"blast_powder": {
+					"aoe_dps": 206.16,
+					"ehp": 51.2,
+					"interval": 0.384,
+					"solo_dps": 50.44,
+					"tuning": {
+						"aoe_budget_multiplier": 1.088,
+						"aoe_target": 224.25,
+						"base_aoe_dps": 88.78,
+						"base_solo_dps": 21.72,
+						"damage_multiplier": 2.322,
+						"solo_budget_multiplier": 0.919,
+						"solo_target": 46.37
+					}
+				},
+				"homunculus_vial": {
+					"aoe_dps": 232.21,
+					"ehp": 58.18,
+					"interval": 2.477,
+					"solo_dps": 115.33,
+					"tuning": {
+						"aoe_budget_multiplier": 0.966,
+						"aoe_target": 224.25,
+						"base_aoe_dps": 779.61,
+						"base_solo_dps": 388.8,
+						"damage_multiplier": 0.28,
+						"solo_budget_multiplier": 0.402,
+						"solo_target": 46.37
+					}
+				}
+			}
+		},
+		"dark_mage": {
+			"ascension_mods": {
+				"0": {},
+				"1": {
+					"damage_multiplier": 1.05
+				},
+				"5": {
+					"aoe_radius_multiplier": 1.05,
+					"attack_speed_multiplier": 1.04,
+					"damage_multiplier": 1.1235,
+					"max_health_flat": 6.0
+				}
+			},
+			"base_stats": {
+				"agility": 3.0,
+				"endurance": 3.0,
+				"energy": 7.0,
+				"intelligence": 10.0,
+				"knowledge": 6.0,
+				"leadership": 5.0,
+				"perception": 5.0,
+				"strength": 2.0
+			},
+			"derived_a5": {
+				"absorb": 0.435,
+				"attack_speed": 1.36927058823529,
+				"damage": 3.3691323645892,
+				"defense": 0.089379100503946,
+				"dodge": 0.0472813238770686,
+				"magic_damage": 15.7226177014163,
+				"max_health": 43.5,
+				"regeneration": 0.152
+			},
+			"derived_base": {
+				"absorb": 0.435,
+				"attack_speed": 1.3176,
+				"damage": 3.0,
+				"defense": 0.089379100503946,
+				"dodge": 0.0472813238770686,
+				"magic_damage": 14.0,
+				"max_health": 37.5,
+				"regeneration": 0.152
+			},
+			"weapons": {
+				"cursed_skull": {
+					"aoe_dps": 152.33,
+					"ehp": 50.39,
+					"interval": 0.683,
+					"solo_dps": 60.71,
+					"tuning": {
+						"aoe_budget_multiplier": 1.472,
+						"aoe_target": 224.25,
+						"base_aoe_dps": 152.25,
+						"base_solo_dps": 60.69,
+						"damage_multiplier": 1.061,
+						"solo_budget_multiplier": 0.764,
+						"solo_target": 46.37
+					}
+				},
+				"dark_book": {
+					"aoe_dps": 126.76,
+					"ehp": 50.39,
+					"interval": 0.994,
+					"solo_dps": 39.37,
+					"tuning": {
+						"aoe_budget_multiplier": 1.769,
+						"aoe_target": 224.25,
+						"base_aoe_dps": 45.27,
+						"base_solo_dps": 14.06,
+						"damage_multiplier": 2.8,
+						"solo_budget_multiplier": 1.178,
+						"solo_target": 46.37
+					}
+				},
+				"dark_wand": {
+					"aoe_dps": 144.46,
+					"ehp": 50.39,
+					"interval": 1.025,
+					"solo_dps": 38.22,
+					"tuning": {
+						"aoe_budget_multiplier": 1.552,
+						"aoe_target": 224.25,
+						"base_aoe_dps": 51.59,
+						"base_solo_dps": 13.65,
+						"damage_multiplier": 2.8,
+						"solo_budget_multiplier": 1.213,
+						"solo_target": 46.37
+					}
+				}
+			}
+		},
+		"doctor": {
+			"ascension_mods": {
+				"0": {},
+				"1": {
+					"damage_multiplier": 1.05
+				},
+				"5": {
+					"attack_speed_multiplier": 1.04,
+					"damage_multiplier": 1.1235,
+					"defense_flat": 0.02,
+					"max_health_flat": 8.0
+				}
+			},
+			"base_stats": {
+				"agility": 4.0,
+				"endurance": 5.0,
+				"energy": 6.0,
+				"intelligence": 8.0,
+				"knowledge": 8.0,
+				"leadership": 2.0,
+				"perception": 5.0,
+				"strength": 2.0
+			},
+			"derived_a5": {
+				"absorb": 0.725,
+				"attack_speed": 1.6218,
+				"damage": 3.3691323645892,
+				"defense": 0.138568129330254,
+				"dodge": 0.0561272217025257,
+				"magic_damage": 12.578094161133,
+				"max_health": 70.5,
+				"regeneration": 0.178666666666667
+			},
+			"derived_base": {
+				"absorb": 0.725,
+				"attack_speed": 1.5606,
+				"damage": 3.0,
+				"defense": 0.121325244983668,
+				"dodge": 0.0561272217025257,
+				"magic_damage": 11.2,
+				"max_health": 62.5,
+				"regeneration": 0.178666666666667
+			},
+			"weapons": {
+				"bone_saw": {
+					"aoe_dps": 122.58,
+					"ehp": 95.5,
+					"interval": 0.397,
+					"solo_dps": 42.46,
+					"tuning": {
+						"aoe_budget_multiplier": 1.04,
+						"aoe_target": 127.5,
+						"base_aoe_dps": 113.39,
+						"base_solo_dps": 39.28,
+						"damage_multiplier": 1.081,
+						"solo_budget_multiplier": 0.961,
+						"solo_target": 40.8
+					}
+				},
+				"plague_syringe": {
+					"aoe_dps": 80.73,
+					"ehp": 87.76,
+					"interval": 0.865,
+					"solo_dps": 58.37,
+					"tuning": {
+						"aoe_budget_multiplier": 1.579,
+						"aoe_target": 127.5,
+						"base_aoe_dps": 57.38,
+						"base_solo_dps": 39.92,
+						"damage_multiplier": 1.507,
+						"solo_budget_multiplier": 0.699,
+						"solo_target": 40.8
+					}
+				},
+				"restore_potion": {
+					"aoe_dps": 103.44,
+					"ehp": 93.97,
+					"interval": 0.737,
+					"solo_dps": 50.27,
+					"tuning": {
+						"aoe_budget_multiplier": 1.232,
+						"aoe_target": 127.5,
+						"base_aoe_dps": 88.41,
+						"base_solo_dps": 42.96,
+						"damage_multiplier": 1.17,
+						"solo_budget_multiplier": 0.811,
+						"solo_target": 40.8
+					}
+				}
+			}
+		},
+		"druid": {
+			"ascension_mods": {
+				"0": {},
+				"1": {
+					"damage_multiplier": 1.05
+				},
+				"5": {
+					"attack_speed_multiplier": 1.04,
+					"damage_multiplier": 1.1235,
+					"defense_flat": 0.02,
+					"max_health_flat": 8.0
+				}
+			},
+			"base_stats": {
+				"agility": 4.0,
+				"endurance": 5.0,
+				"energy": 6.0,
+				"intelligence": 4.0,
+				"knowledge": 5.0,
+				"leadership": 9.0,
+				"perception": 7.0,
+				"strength": 3.0
+			},
+			"derived_a5": {
+				"absorb": 0.725,
+				"attack_speed": 1.67791764705882,
+				"damage": 5.0536985468838,
+				"defense": 0.138568129330254,
+				"dodge": 0.0561272217025257,
+				"magic_damage": 6.2890470805665,
+				"max_health": 70.5,
+				"regeneration": 0.138666666666667
+			},
+			"derived_base": {
+				"absorb": 0.725,
+				"attack_speed": 1.6146,
+				"damage": 4.5,
+				"defense": 0.121325244983668,
+				"dodge": 0.0561272217025257,
+				"magic_damage": 5.6,
+				"max_health": 62.5,
+				"regeneration": 0.138666666666667
+			},
+			"weapons": {
+				"briar_staff": {
+					"aoe_dps": 88.61,
+					"ehp": 83.87,
+					"interval": 0.743,
+					"solo_dps": 36.76,
+					"tuning": {
+						"aoe_budget_multiplier": 1.693,
+						"aoe_target": 150.0,
+						"base_aoe_dps": 31.65,
+						"base_solo_dps": 13.13,
+						"damage_multiplier": 2.8,
+						"solo_budget_multiplier": 1.306,
+						"solo_target": 48.0
+					}
+				},
+				"raven_totem": {
+					"aoe_dps": 114.82,
+					"ehp": 83.87,
+					"interval": 1.455,
+					"solo_dps": 62.73,
+					"tuning": {
+						"aoe_budget_multiplier": 1.307,
+						"aoe_target": 150.0,
+						"base_aoe_dps": 68.71,
+						"base_solo_dps": 37.54,
+						"damage_multiplier": 1.671,
+						"solo_budget_multiplier": 0.765,
+						"solo_target": 48.0
+					}
+				},
+				"summon_amulet": {
+					"aoe_dps": 788.31,
+					"ehp": 83.87,
+					"interval": 1.858,
+					"solo_dps": 197.08,
+					"tuning": {
+						"aoe_budget_multiplier": 0.19,
+						"aoe_target": 150.0,
+						"base_aoe_dps": 2815.41,
+						"base_solo_dps": 703.85,
+						"damage_multiplier": 0.28,
+						"solo_budget_multiplier": 0.244,
+						"solo_target": 48.0
+					}
+				}
+			}
+		},
+		"elementalist": {
+			"ascension_mods": {
+				"0": {},
+				"1": {
+					"damage_multiplier": 1.05
+				},
+				"5": {
+					"aoe_radius_multiplier": 1.05,
+					"attack_speed_multiplier": 1.04,
+					"damage_multiplier": 1.1235,
+					"max_health_flat": 6.0
+				}
+			},
+			"base_stats": {
+				"agility": 4.0,
+				"endurance": 3.0,
+				"energy": 8.0,
+				"intelligence": 9.0,
+				"knowledge": 6.0,
+				"leadership": 5.0,
+				"perception": 7.0,
+				"strength": 2.0
+			},
+			"derived_a5": {
+				"absorb": 0.435,
+				"attack_speed": 1.75648235294118,
+				"damage": 3.3691323645892,
+				"defense": 0.089379100503946,
+				"dodge": 0.0561272217025257,
+				"magic_damage": 14.1503559312746,
+				"max_health": 43.5,
+				"regeneration": 0.152
+			},
+			"derived_base": {
+				"absorb": 0.435,
+				"attack_speed": 1.6902,
+				"damage": 3.0,
+				"defense": 0.089379100503946,
+				"dodge": 0.0561272217025257,
+				"magic_damage": 12.6,
+				"max_health": 37.5,
+				"regeneration": 0.152
+			},
+			"weapons": {
+				"elementalist_meteor_core": {
+					"aoe_dps": 126.94,
+					"ehp": 50.8,
+					"interval": 2.662,
+					"solo_dps": 43.61,
+					"tuning": {
+						"aoe_budget_multiplier": 1.404,
+						"aoe_target": 178.2,
+						"base_aoe_dps": 90.8,
+						"base_solo_dps": 30.98,
+						"damage_multiplier": 1.812,
+						"solo_budget_multiplier": 1.189,
+						"solo_target": 51.84
+					}
+				},
+				"elementalist_orb_ring": {
+					"aoe_dps": 179.18,
+					"ehp": 50.8,
+					"interval": 0.899,
+					"solo_dps": 44.31,
+					"tuning": {
+						"aoe_budget_multiplier": 0.994,
+						"aoe_target": 178.2,
+						"base_aoe_dps": 158.85,
+						"base_solo_dps": 39.65,
+						"damage_multiplier": 1.211,
+						"solo_budget_multiplier": 1.17,
+						"solo_target": 51.84
+					}
+				},
+				"elementalist_prism_focus": {
+					"aoe_dps": 167.18,
+					"ehp": 50.8,
+					"interval": 1.361,
+					"solo_dps": 55.27,
+					"tuning": {
+						"aoe_budget_multiplier": 1.066,
+						"aoe_target": 178.2,
+						"base_aoe_dps": 71.45,
+						"base_solo_dps": 23.62,
+						"damage_multiplier": 2.34,
+						"solo_budget_multiplier": 0.938,
+						"solo_target": 51.84
+					}
+				}
+			}
+		},
+		"engineer": {
+			"ascension_mods": {
+				"0": {},
+				"1": {
+					"attack_speed_multiplier": 1.04
+				},
+				"5": {
+					"attack_speed_multiplier": 1.04,
+					"damage_multiplier": 1.06,
+					"max_health_flat": 8.0,
+					"range_multiplier": 1.05,
+					"summon_bonus": 1.0
+				}
+			},
+			"base_stats": {
+				"agility": 5.0,
+				"endurance": 5.0,
+				"energy": 6.0,
+				"intelligence": 7.0,
+				"knowledge": 6.0,
+				"leadership": 10.0,
+				"perception": 6.0,
+				"strength": 4.0
+			},
+			"derived_a5": {
+				"absorb": 0.725,
+				"attack_speed": 1.93044705882353,
+				"damage": 6.35935316430425,
+				"defense": 0.121325244983668,
+				"dodge": 0.0647848218417399,
+				"magic_damage": 10.3869435016969,
+				"max_health": 70.5,
+				"regeneration": 0.152
+			},
+			"derived_base": {
+				"absorb": 0.725,
+				"attack_speed": 1.8576,
+				"damage": 6.0,
+				"defense": 0.121325244983668,
+				"dodge": 0.0647848218417399,
+				"magic_damage": 9.8,
+				"max_health": 62.5,
+				"regeneration": 0.152
+			},
+			"weapons": {
+				"engineer_pressure_mines": {
+					"aoe_dps": 159.61,
+					"ehp": 84.97,
+					"interval": 0.786,
+					"solo_dps": 45.63,
+					"tuning": {
+						"aoe_budget_multiplier": 1.011,
+						"aoe_target": 161.28,
+						"base_aoe_dps": 108.14,
+						"base_solo_dps": 30.92,
+						"damage_multiplier": 1.476,
+						"solo_budget_multiplier": 0.99,
+						"solo_target": 45.16
+					}
+				},
+				"engineer_repair_drone": {
+					"aoe_dps": 150.79,
+					"ehp": 84.97,
+					"interval": 0.646,
+					"solo_dps": 48.26,
+					"tuning": {
+						"aoe_budget_multiplier": 1.069,
+						"aoe_target": 161.28,
+						"base_aoe_dps": 103.28,
+						"base_solo_dps": 33.06,
+						"damage_multiplier": 1.46,
+						"solo_budget_multiplier": 0.935,
+						"solo_target": 45.16
+					}
+				},
+				"engineer_sentry_wrench": {
+					"aoe_dps": 94.25,
+					"ehp": 84.97,
+					"interval": 1.453,
+					"solo_dps": 77.35,
+					"tuning": {
+						"aoe_budget_multiplier": 1.712,
+						"aoe_target": 161.28,
+						"base_aoe_dps": 150.32,
+						"base_solo_dps": 123.36,
+						"damage_multiplier": 0.627,
+						"solo_budget_multiplier": 0.584,
+						"solo_target": 45.16
+					}
+				}
+			}
+		},
+		"guitarist": {
+			"ascension_mods": {
+				"0": {},
+				"1": {
+					"damage_multiplier": 1.05
+				},
+				"5": {
+					"aoe_radius_multiplier": 1.05,
+					"attack_speed_multiplier": 1.04,
+					"damage_multiplier": 1.1235,
+					"max_health_flat": 7.0
+				}
+			},
+			"base_stats": {
+				"agility": 6.0,
+				"endurance": 4.0,
+				"energy": 6.0,
+				"intelligence": 4.0,
+				"knowledge": 5.0,
+				"leadership": 7.0,
+				"perception": 7.0,
+				"strength": 4.0
+			},
+			"derived_a5": {
+				"absorb": 0.58,
+				"attack_speed": 2.22787058823529,
+				"damage": 6.7382647291784,
+				"defense": 0.105501130369254,
+				"dodge": 0.0732600732600732,
+				"magic_damage": 6.2890470805665,
+				"max_health": 57.0,
+				"regeneration": 0.138666666666667
+			},
+			"derived_base": {
+				"absorb": 0.58,
+				"attack_speed": 2.1438,
+				"damage": 6.0,
+				"defense": 0.105501130369254,
+				"dodge": 0.0732600732600732,
+				"magic_damage": 5.6,
+				"max_health": 50.0,
+				"regeneration": 0.138666666666667
+			},
+			"weapons": {
+				"bass_guitar": {
+					"aoe_dps": 65.2,
+					"ehp": 67.96,
+					"interval": 0.331,
+					"solo_dps": 13.05,
+					"tuning": {
+						"aoe_budget_multiplier": 2.991,
+						"aoe_target": 195.0,
+						"base_aoe_dps": 23.29,
+						"base_solo_dps": 4.66,
+						"damage_multiplier": 2.8,
+						"solo_budget_multiplier": 3.678,
+						"solo_target": 48.0
+					}
+				},
+				"electric_guitar": {
+					"aoe_dps": 114.37,
+					"ehp": 67.96,
+					"interval": 0.223,
+					"solo_dps": 48.99,
+					"tuning": {
+						"aoe_budget_multiplier": 1.705,
+						"aoe_target": 195.0,
+						"base_aoe_dps": 40.85,
+						"base_solo_dps": 17.5,
+						"damage_multiplier": 2.8,
+						"solo_budget_multiplier": 0.98,
+						"solo_target": 48.0
+					}
+				},
+				"sound_amp": {
+					"aoe_dps": 105.9,
+					"ehp": 67.96,
+					"interval": 1.12,
+					"solo_dps": 76.32,
+					"tuning": {
+						"aoe_budget_multiplier": 1.841,
+						"aoe_target": 195.0,
+						"base_aoe_dps": 37.82,
+						"base_solo_dps": 27.26,
+						"damage_multiplier": 2.8,
+						"solo_budget_multiplier": 0.629,
+						"solo_target": 48.0
+					}
+				}
+			}
+		},
+		"knight": {
+			"ascension_mods": {
+				"0": {},
+				"1": {
+					"damage_multiplier": 1.05
+				},
+				"5": {
+					"attack_speed_multiplier": 1.04,
+					"damage_multiplier": 1.1235,
+					"defense_flat": 0.02,
+					"max_health_flat": 8.0
+				}
+			},
+			"base_stats": {
+				"agility": 3.0,
+				"endurance": 10.0,
+				"energy": 3.0,
+				"intelligence": 2.0,
+				"knowledge": 4.0,
+				"leadership": 6.0,
+				"perception": 4.0,
+				"strength": 8.0
+			},
+			"derived_a5": {
+				"absorb": 1.45,
+				"attack_speed": 1.21775294117647,
+				"damage": 13.4765294583568,
+				"defense": 0.212014134275618,
+				"dodge": 0.0472813238770686,
+				"magic_damage": 3.14452354028325,
+				"max_health": 133.0,
+				"regeneration": 0.125333333333333
+			},
+			"derived_base": {
+				"absorb": 1.45,
+				"attack_speed": 1.1718,
+				"damage": 12.0,
+				"defense": 0.196253345227475,
+				"dodge": 0.0472813238770686,
+				"magic_damage": 2.8,
+				"max_health": 125.0,
+				"regeneration": 0.125333333333333
+			},
+			"weapons": {
+				"holy_flail": {
+					"aoe_dps": 139.53,
+					"ehp": 175.7,
+					"interval": 1.007,
+					"solo_dps": 29.83,
+					"tuning": {
+						"aoe_budget_multiplier": 0.914,
+						"aoe_target": 127.5,
+						"base_aoe_dps": 49.83,
+						"base_solo_dps": 10.65,
+						"damage_multiplier": 2.8,
+						"solo_budget_multiplier": 1.436,
+						"solo_target": 42.84
+					}
+				},
+				"long_spear": {
+					"aoe_dps": 111.31,
+					"ehp": 183.99,
+					"interval": 0.853,
+					"solo_dps": 49.06,
+					"tuning": {
+						"aoe_budget_multiplier": 1.145,
+						"aoe_target": 127.5,
+						"base_aoe_dps": 104.42,
+						"base_solo_dps": 46.03,
+						"damage_multiplier": 1.066,
+						"solo_budget_multiplier": 0.873,
+						"solo_target": 42.84
+					}
+				},
+				"tower_shield": {
+					"aoe_dps": 90.84,
+					"ehp": 203.3,
+					"interval": 0.7,
+					"solo_dps": 37.47,
+					"tuning": {
+						"aoe_budget_multiplier": 1.404,
+						"aoe_target": 127.5,
+						"base_aoe_dps": 32.44,
+						"base_solo_dps": 13.38,
+						"damage_multiplier": 2.8,
+						"solo_budget_multiplier": 1.143,
+						"solo_target": 42.84
+					}
+				}
+			}
+		},
+		"priest": {
+			"ascension_mods": {
+				"0": {},
+				"1": {
+					"damage_multiplier": 1.04
+				},
+				"5": {
+					"aoe_radius_multiplier": 1.05,
+					"attack_speed_multiplier": 1.04,
+					"damage_multiplier": 1.1024,
+					"max_health_flat": 8.0
+				}
+			},
+			"base_stats": {
+				"agility": 4.0,
+				"endurance": 5.0,
+				"energy": 7.0,
+				"intelligence": 8.0,
+				"knowledge": 9.0,
+				"leadership": 6.0,
+				"perception": 6.0,
+				"strength": 2.0
+			},
+			"derived_a5": {
+				"absorb": 0.725,
+				"attack_speed": 1.70036470588235,
+				"damage": 3.30625917182416,
+				"defense": 0.121325244983668,
+				"dodge": 0.0561272217025257,
+				"magic_damage": 12.3433675748102,
+				"max_health": 70.5,
+				"regeneration": 0.192
+			},
+			"derived_base": {
+				"absorb": 0.725,
+				"attack_speed": 1.6362,
+				"damage": 3.0,
+				"defense": 0.121325244983668,
+				"dodge": 0.0561272217025257,
+				"magic_damage": 11.2,
+				"max_health": 62.5,
+				"regeneration": 0.192
+			},
+			"weapons": {
+				"priest_censer": {
+					"aoe_dps": 69.26,
+					"ehp": 86.98,
+					"interval": 1.253,
+					"solo_dps": 25.88,
+					"tuning": {
+						"aoe_budget_multiplier": 2.092,
+						"aoe_target": 144.9,
+						"base_aoe_dps": 24.74,
+						"base_solo_dps": 9.24,
+						"damage_multiplier": 2.8,
+						"solo_budget_multiplier": 1.758,
+						"solo_target": 45.48
+					}
+				},
+				"priest_chime": {
+					"aoe_dps": 112.61,
+					"ehp": 85.47,
+					"interval": 0.782,
+					"solo_dps": 31.97,
+					"tuning": {
+						"aoe_budget_multiplier": 1.287,
+						"aoe_target": 144.9,
+						"base_aoe_dps": 40.22,
+						"base_solo_dps": 11.42,
+						"damage_multiplier": 2.8,
+						"solo_budget_multiplier": 1.423,
+						"solo_target": 45.48
+					}
+				},
+				"priest_reliquary": {
+					"aoe_dps": 116.34,
+					"ehp": 85.47,
+					"interval": 0.423,
+					"solo_dps": 56.66,
+					"tuning": {
+						"aoe_budget_multiplier": 1.245,
+						"aoe_target": 144.9,
+						"base_aoe_dps": 61.98,
+						"base_solo_dps": 30.18,
+						"damage_multiplier": 1.877,
+						"solo_budget_multiplier": 0.803,
+						"solo_target": 45.48
+					}
+				}
+			}
+		},
+		"ranger": {
+			"ascension_mods": {
+				"0": {},
+				"1": {
+					"damage_multiplier": 1.05
+				},
+				"5": {
+					"attack_speed_multiplier": 1.04,
+					"damage_multiplier": 1.1235,
+					"defense_flat": 0.02,
+					"max_health_flat": 8.0
+				}
+			},
+			"base_stats": {
+				"agility": 7.0,
+				"endurance": 4.0,
+				"energy": 4.0,
+				"intelligence": 2.0,
+				"knowledge": 4.0,
+				"leadership": 3.0,
+				"perception": 9.0,
+				"strength": 7.0
+			},
+			"derived_a5": {
+				"absorb": 0.58,
+				"attack_speed": 2.46356470588235,
+				"damage": 11.7919632760622,
+				"defense": 0.123065448443036,
+				"dodge": 0.0815586769370186,
+				"magic_damage": 3.14452354028325,
+				"max_health": 58.0,
+				"regeneration": 0.125333333333333
+			},
+			"derived_base": {
+				"absorb": 0.58,
+				"attack_speed": 2.3706,
+				"damage": 10.5,
+				"defense": 0.105501130369254,
+				"dodge": 0.0815586769370186,
+				"magic_damage": 2.8,
+				"max_health": 50.0,
+				"regeneration": 0.125333333333333
+			},
+			"weapons": {
+				"hunter_trap": {
+					"aoe_dps": 129.11,
+					"ehp": 68.1,
+					"interval": 0.696,
+					"solo_dps": 107.1,
+					"tuning": {
+						"aoe_budget_multiplier": 0.935,
+						"aoe_target": 120.75,
+						"base_aoe_dps": 140.97,
+						"base_solo_dps": 111.35,
+						"damage_multiplier": 0.743,
+						"solo_budget_multiplier": 0.67,
+						"solo_target": 71.76
+					}
+				},
+				"moon_crossbow": {
+					"aoe_dps": 208.12,
+					"ehp": 68.1,
+					"interval": 0.401,
+					"solo_dps": 41.62,
+					"tuning": {
+						"aoe_budget_multiplier": 0.58,
+						"aoe_target": 120.75,
+						"base_aoe_dps": 146.97,
+						"base_solo_dps": 29.39,
+						"damage_multiplier": 1.416,
+						"solo_budget_multiplier": 1.724,
+						"solo_target": 71.76
+					}
+				},
+				"storm_longbow": {
+					"aoe_dps": 169.86,
+					"ehp": 68.1,
+					"interval": 0.505,
+					"solo_dps": 51.02,
+					"tuning": {
+						"aoe_budget_multiplier": 0.711,
+						"aoe_target": 120.75,
+						"base_aoe_dps": 114.77,
+						"base_solo_dps": 34.48,
+						"damage_multiplier": 1.48,
+						"solo_budget_multiplier": 1.407,
+						"solo_target": 71.76
+					}
+				}
+			}
+		},
+		"robot": {
+			"ascension_mods": {
+				"0": {},
+				"1": {
+					"attack_speed_multiplier": 1.04
+				},
+				"5": {
+					"aoe_radius_multiplier": 1.04,
+					"attack_speed_multiplier": 1.04,
+					"damage_multiplier": 1.05,
+					"defense_flat": 0.025,
+					"max_health_flat": 10.0
+				}
+			},
+			"base_stats": {
+				"agility": 3.0,
+				"endurance": 10.0,
+				"energy": 7.0,
+				"intelligence": 5.0,
+				"knowledge": 4.0,
+				"leadership": 4.0,
+				"perception": 5.0,
+				"strength": 8.0
+			},
+			"derived_a5": {
+				"absorb": 1.45,
+				"attack_speed": 1.44783529411765,
+				"damage": 12.599101347978,
+				"defense": 0.215906587354043,
+				"dodge": 0.0472813238770686,
+				"magic_damage": 7.34947578632052,
+				"max_health": 135.0,
+				"regeneration": 0.125333333333333
+			},
+			"derived_base": {
+				"absorb": 1.45,
+				"attack_speed": 1.3932,
+				"damage": 12.0,
+				"defense": 0.196253345227475,
+				"dodge": 0.0472813238770686,
+				"magic_damage": 7.0,
+				"max_health": 125.0,
+				"regeneration": 0.125333333333333
+			},
+			"weapons": {
+				"robot_hydraulic_press": {
+					"aoe_dps": 169.82,
+					"ehp": 178.64,
+					"interval": 0.969,
+					"solo_dps": 36.88,
+					"tuning": {
+						"aoe_budget_multiplier": 0.816,
+						"aoe_target": 138.6,
+						"base_aoe_dps": 62.34,
+						"base_solo_dps": 13.54,
+						"damage_multiplier": 2.724,
+						"solo_budget_multiplier": 1.226,
+						"solo_target": 45.2
+					}
+				},
+				"robot_magnetic_anchor": {
+					"aoe_dps": 170.2,
+					"ehp": 185.54,
+					"interval": 1.471,
+					"solo_dps": 36.78,
+					"tuning": {
+						"aoe_budget_multiplier": 0.814,
+						"aoe_target": 138.6,
+						"base_aoe_dps": 61.29,
+						"base_solo_dps": 13.25,
+						"damage_multiplier": 2.777,
+						"solo_budget_multiplier": 1.229,
+						"solo_target": 45.2
+					}
+				},
+				"robot_reactor_core": {
+					"aoe_dps": 75.91,
+					"ehp": 177.02,
+					"interval": 0.66,
+					"solo_dps": 15.7,
+					"tuning": {
+						"aoe_budget_multiplier": 1.826,
+						"aoe_target": 138.6,
+						"base_aoe_dps": 27.11,
+						"base_solo_dps": 5.61,
+						"damage_multiplier": 2.8,
+						"solo_budget_multiplier": 2.879,
+						"solo_target": 45.2
+					}
+				}
+			}
+		},
+		"sniper": {
+			"ascension_mods": {
+				"0": {},
+				"1": {
+					"damage_multiplier": 1.05
+				},
+				"5": {
+					"attack_speed_multiplier": 1.04,
+					"damage_multiplier": 1.1235,
+					"max_health_flat": 8.0,
+					"range_multiplier": 1.05
+				}
+			},
+			"base_stats": {
+				"agility": 8.0,
+				"endurance": 7.0,
+				"energy": 3.0,
+				"intelligence": 2.0,
+				"knowledge": 3.0,
+				"leadership": 1.0,
+				"perception": 10.0,
+				"strength": 6.0
+			},
+			"derived_a5": {
+				"absorb": 1.015,
+				"attack_speed": 2.75537647058824,
+				"damage": 10.1073970937676,
+				"defense": 0.152112159809402,
+				"dodge": 0.0896860986547085,
+				"magic_damage": 3.14452354028325,
+				"max_health": 95.5,
+				"regeneration": 0.112
+			},
+			"derived_base": {
+				"absorb": 1.015,
+				"attack_speed": 2.6514,
+				"damage": 9.0,
+				"defense": 0.152112159809402,
+				"dodge": 0.0896860986547085,
+				"magic_damage": 2.8,
+				"max_health": 87.5,
+				"regeneration": 0.112
+			},
+			"weapons": {
+				"sniper_deadeye_rifle": {
+					"aoe_dps": 114.74,
+					"ehp": 122.81,
+					"interval": 0.536,
+					"solo_dps": 57.68,
+					"tuning": {
+						"aoe_budget_multiplier": 1.045,
+						"aoe_target": 120.0,
+						"base_aoe_dps": 119.65,
+						"base_solo_dps": 60.14,
+						"damage_multiplier": 0.959,
+						"solo_budget_multiplier": 0.957,
+						"solo_target": 55.2
+					}
+				},
+				"sniper_shatter_rounds": {
+					"aoe_dps": 131.38,
+					"ehp": 122.81,
+					"interval": 0.196,
+					"solo_dps": 50.45,
+					"tuning": {
+						"aoe_budget_multiplier": 0.914,
+						"aoe_target": 120.0,
+						"base_aoe_dps": 116.99,
+						"base_solo_dps": 44.92,
+						"damage_multiplier": 1.123,
+						"solo_budget_multiplier": 1.094,
+						"solo_target": 55.2
+					}
+				},
+				"sniper_spotter_scope": {
+					"aoe_dps": 147.28,
+					"ehp": 122.81,
+					"interval": 0.849,
+					"solo_dps": 45.0,
+					"tuning": {
+						"aoe_budget_multiplier": 0.815,
+						"aoe_target": 120.0,
+						"base_aoe_dps": 100.19,
+						"base_solo_dps": 30.61,
+						"damage_multiplier": 1.47,
+						"solo_budget_multiplier": 1.227,
+						"solo_target": 55.2
+					}
+				}
+			}
+		},
+		"soldier": {
+			"ascension_mods": {
+				"0": {},
+				"1": {
+					"damage_multiplier": 1.05
+				},
+				"5": {
+					"attack_speed_multiplier": 1.04,
+					"damage_multiplier": 1.1235,
+					"defense_flat": 0.02,
+					"max_health_flat": 8.0
+				}
+			},
+			"base_stats": {
+				"agility": 6.0,
+				"endurance": 6.0,
+				"energy": 4.0,
+				"intelligence": 2.0,
+				"knowledge": 5.0,
+				"leadership": 5.0,
+				"perception": 8.0,
+				"strength": 7.0
+			},
+			"derived_a5": {
+				"absorb": 0.87,
+				"attack_speed": 2.17736470588235,
+				"damage": 11.7919632760622,
+				"defense": 0.153789820578543,
+				"dodge": 0.0732600732600732,
+				"magic_damage": 3.14452354028325,
+				"max_health": 83.0,
+				"regeneration": 0.138666666666667
+			},
+			"derived_base": {
+				"absorb": 0.87,
+				"attack_speed": 2.0952,
+				"damage": 10.5,
+				"defense": 0.136859626410209,
+				"dodge": 0.0732600732600732,
+				"magic_damage": 2.8,
+				"max_health": 75.0,
+				"regeneration": 0.138666666666667
+			},
+			"weapons": {
+				"soldier_bayonet": {
+					"aoe_dps": 126.6,
+					"ehp": 105.97,
+					"interval": 0.391,
+					"solo_dps": 56.86,
+					"tuning": {
+						"aoe_budget_multiplier": 1.185,
+						"aoe_target": 150.0,
+						"base_aoe_dps": 109.33,
+						"base_solo_dps": 49.1,
+						"damage_multiplier": 1.158,
+						"solo_budget_multiplier": 0.844,
+						"solo_target": 48.0
+					}
+				},
+				"soldier_grenade": {
+					"aoe_dps": 162.39,
+					"ehp": 103.14,
+					"interval": 1.48,
+					"solo_dps": 44.36,
+					"tuning": {
+						"aoe_budget_multiplier": 0.924,
+						"aoe_target": 150.0,
+						"base_aoe_dps": 97.88,
+						"base_solo_dps": 26.74,
+						"damage_multiplier": 1.659,
+						"solo_budget_multiplier": 1.082,
+						"solo_target": 48.0
+					}
+				},
+				"soldier_rifle": {
+					"aoe_dps": 109.52,
+					"ehp": 103.14,
+					"interval": 0.296,
+					"solo_dps": 65.73,
+					"tuning": {
+						"aoe_budget_multiplier": 1.369,
+						"aoe_target": 150.0,
+						"base_aoe_dps": 56.14,
+						"base_solo_dps": 33.69,
+						"damage_multiplier": 1.951,
+						"solo_budget_multiplier": 0.73,
+						"solo_target": 48.0
+					}
+				}
+			}
+		},
+		"thief": {
+			"ascension_mods": {
+				"0": {},
+				"1": {
+					"damage_multiplier": 1.05
+				},
+				"5": {
+					"attack_speed_multiplier": 1.04,
+					"damage_multiplier": 1.05,
+					"dodge_flat": 0.02,
+					"max_health_flat": 7.0,
+					"money_gain_multiplier": 1.06
+				}
+			},
+			"base_stats": {
+				"agility": 9.0,
+				"endurance": 4.0,
+				"energy": 5.0,
+				"intelligence": 3.0,
+				"knowledge": 4.0,
+				"leadership": 5.0,
+				"perception": 8.0,
+				"strength": 5.0
+			},
+			"derived_a5": {
+				"absorb": 0.58,
+				"attack_speed": 3.04718823529412,
+				"damage": 7.87443834248627,
+				"defense": 0.105501130369254,
+				"dodge": 0.113092648977816,
+				"magic_damage": 4.40968547179231,
+				"max_health": 57.0,
+				"regeneration": 0.125333333333333
+			},
+			"derived_base": {
+				"absorb": 0.58,
+				"attack_speed": 2.9322,
+				"damage": 7.5,
+				"defense": 0.105501130369254,
+				"dodge": 0.097647581003107,
+				"magic_damage": 4.2,
+				"max_health": 50.0,
+				"regeneration": 0.125333333333333
+			},
+			"weapons": {
+				"thief_coin_pouch": {
+					"aoe_dps": 180.25,
+					"ehp": 69.19,
+					"interval": 0.3,
+					"solo_dps": 46.6,
+					"tuning": {
+						"aoe_budget_multiplier": 0.899,
+						"aoe_target": 162.0,
+						"base_aoe_dps": 86.12,
+						"base_solo_dps": 22.27,
+						"damage_multiplier": 2.093,
+						"solo_budget_multiplier": 1.113,
+						"solo_target": 51.84
+					}
+				},
+				"thief_shadow_cloak": {
+					"aoe_dps": 116.56,
+					"ehp": 69.19,
+					"interval": 0.368,
+					"solo_dps": 72.02,
+					"tuning": {
+						"aoe_budget_multiplier": 1.39,
+						"aoe_target": 162.0,
+						"base_aoe_dps": 53.94,
+						"base_solo_dps": 33.33,
+						"damage_multiplier": 2.161,
+						"solo_budget_multiplier": 0.72,
+						"solo_target": 51.84
+					}
+				},
+				"thief_smoke_bomb": {
+					"aoe_dps": 159.71,
+					"ehp": 69.19,
+					"interval": 0.457,
+					"solo_dps": 52.58,
+					"tuning": {
+						"aoe_budget_multiplier": 1.014,
+						"aoe_target": 162.0,
+						"base_aoe_dps": 72.76,
+						"base_solo_dps": 23.95,
+						"damage_multiplier": 2.195,
+						"solo_budget_multiplier": 0.986,
+						"solo_target": 51.84
+					}
+				}
+			}
+		}
+	},
+	"enemy_balance": {
+		"biter": {
+			"damage_multiplier": 1.23,
+			"hp_multiplier": 2.7,
+			"speed_multiplier": 0.94
+		},
+		"boss": {
+			"damage_multiplier": 1.46,
+			"hp_multiplier": 1.9,
+			"speed_multiplier": 0.86
+		},
+		"bruiser": {
+			"damage_multiplier": 1.38,
+			"hp_multiplier": 4.6,
+			"speed_multiplier": 0.74
+		},
+		"default": {
+			"damage_multiplier": 1.25,
+			"hp_multiplier": 3.1,
+			"speed_multiplier": 0.86
+		},
+		"elite": {
+			"damage_multiplier": 2.1,
+			"hp_multiplier": 4.6,
+			"speed_multiplier": 0.84
+		},
+		"flying": {
+			"damage_multiplier": 1.19,
+			"hp_multiplier": 2.75,
+			"speed_multiplier": 0.92
+		},
+		"runner": {
+			"damage_multiplier": 1.19,
+			"hp_multiplier": 2.6,
+			"speed_multiplier": 0.95
+		},
+		"shield": {
+			"damage_multiplier": 1.27,
+			"hp_multiplier": 4.3,
+			"speed_multiplier": 0.76
+		},
+		"shooter": {
+			"damage_multiplier": 1.3,
+			"hp_multiplier": 3.2,
+			"speed_multiplier": 0.8
+		},
+		"summoner": {
+			"damage_multiplier": 1.23,
+			"hp_multiplier": 3.6,
+			"speed_multiplier": 0.8
+		}
+	},
+	"generated_by": "tools/ascension_params_dump.gd",
+	"stage_scale": [
+		1.0,
+		1.255,
+		1.542,
+		1.868,
+		2.239,
+		2.663,
+		3.15,
+		3.71,
+		4.359,
+		5.11,
+		5.984,
+		7.001,
+		8.188,
+		9.574,
+		11.197,
+		13.099,
+		15.329
+	]
+}
