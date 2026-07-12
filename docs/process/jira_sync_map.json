@@ -4642,5 +4642,15 @@
   "key": "SCRUM-1068",
   "status": "Готово",
   "desc_hash": "0677ad9027ddb6c4f69709d5ddeedf65"
+ },
+ "SCRUM-1057_route_map_horizontal_design.md": {
+  "key": "SCRUM-1057",
+  "status": "Контроль качества",
+  "desc_hash": "c4c5223c70563169940efadce71f1ba7"
+ },
+ "backend_scrum1079_route_map_horizontal_integration.md": {
+  "key": "SCRUM-1079",
+  "status": "К выполнению",
+  "desc_hash": "d5618982c75f9b2162285a73b27cbcef"
  }
 }

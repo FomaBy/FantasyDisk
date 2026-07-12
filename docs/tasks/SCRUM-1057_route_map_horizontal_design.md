@@ -1,6 +1,6 @@
 # SCRUM-1057 — Route Map Horizontal Design Handoff
 
-Статус: review
+Статус: done
 Контур: Codex
 Owner: Design/Codex
 Thread: `/root/scrum1057_route_mockup`
