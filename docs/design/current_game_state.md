@@ -2470,3 +2470,15 @@ refresh/expiry. `constellation_schema6_live_runtime_test.gd` проверяет 
 урон, тайминги, overlapping-volley/per-cast caps, Censer ward, Reactor
 knockback и Acid reset/rearm, а `constellation_schema6_lifecycle_runtime_test.gd` —
 death/expiry и stack timeout/reset, а не только строки registry/resolver.
+
+## SCRUM-1065 Player Projectile Art Handoff
+
+Design source/production pack готов для backend-интеграции SCRUM-1066. PixelLab
+permanent-object pipeline создал 19 новых уникальных sprites; принятый
+SCRUM-934 Sniper shatter projectile переиспользован осмысленно, итого 20
+профилей. Inventory охватывает все 17 классов и 51 оружие; 31 melee/beam/zone/
+trap/summon path явно отмечен как non-projectile. Все 40 source/runtime PNG
+проверены на RGBA, прозрачные углы, crop и padding (`min 6px`), а source и
+real-game-scale dark/light contact sheets сохранены в
+`docs/design/previews/SCRUM-1065_player_projectiles/`. Gameplay/runtime код и
+боевые параметры этой Design-задачей не менялись.

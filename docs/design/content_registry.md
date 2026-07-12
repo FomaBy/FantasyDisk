@@ -1180,6 +1180,37 @@ SCRUM-335 runtime VFX coverage: `enemy_magic_projectile` дополнитель�
 
 SCRUM-337 обновил сами projectile/VFX PNG как часть full attack VFX art pass: `enemy_projectile_magic_64.png` и `player_projectile_spark_64.png` остаются теми же canonical ID/path, но получили новый painterly D&D/dark-fantasy raster treatment с прозрачным фоном.
 
+SCRUM-1065 добавляет канонический PixelLab-first player-projectile pack вместо
+универсального фиолетового orb. Полный machine-readable inventory находится в
+`docs/design/references/SCRUM-1065_player_projectiles/manifest.json`: 17/17
+классов, 51/51 selectable weapons, 20 flying/projectile-like visual profiles и
+31 механически обоснованный `intentional_non_projectile`. Production PNG лежат
+под `assets/sprites/projectiles/player/<character_id>/`; это Design handoff для
+SCRUM-1066, поэтому runtime routing в этой задаче не менялся.
+
+| Projectile visual ID | Weapon | Runtime asset |
+| --- | --- | --- |
+| `soldier_arquebus_round` | `soldier_rifle` | `assets/sprites/projectiles/player/soldier/soldier_arquebus_round.png` |
+| `soldier_fuse_grenade` | `soldier_grenade` | `assets/sprites/projectiles/player/soldier/soldier_fuse_grenade.png` |
+| `thief_ricochet_coin` | `thief_coin_pouch` | `assets/sprites/projectiles/player/thief/thief_ricochet_coin.png` |
+| `thief_smoke_bomb` | `thief_smoke_bomb` | `assets/sprites/projectiles/player/thief/thief_smoke_bomb.png` |
+| `elementalist_meteor` | `elementalist_meteor_core` | `assets/sprites/projectiles/player/elementalist/elementalist_meteor.png` |
+| `sniper_shatter_round` | `sniper_shatter_rounds` | `assets/sprites/projectiles/player/sniper/sniper_shatter_round.png` |
+| `engineer_sentry_round` | `engineer_sentry_wrench` | `assets/sprites/projectiles/player/engineer/engineer_sentry_round.png` |
+| `dark_mage_mirror_page` | `dark_book` | `assets/sprites/projectiles/player/dark_mage/dark_mage_mirror_page.png` |
+| `dark_mage_cursed_skull` | `cursed_skull` | `assets/sprites/projectiles/player/dark_mage/dark_mage_cursed_skull.png` |
+| `dark_mage_chain_bolt` | `dark_wand` | `assets/sprites/projectiles/player/dark_mage/dark_mage_chain_bolt.png` |
+| `assassin_void_chakram` | `chakrams` | `assets/sprites/projectiles/player/assassin/assassin_void_chakram.png` |
+| `ranger_moon_bolt` | `moon_crossbow` | `assets/sprites/projectiles/player/ranger/ranger_moon_bolt.png` |
+| `ranger_storm_arrow` | `storm_longbow` | `assets/sprites/projectiles/player/ranger/ranger_storm_arrow.png` |
+| `doctor_restore_potion` | `restore_potion` | `assets/sprites/projectiles/player/doctor/doctor_restore_potion.png` |
+| `doctor_plague_syringe` | `plague_syringe` | `assets/sprites/projectiles/player/doctor/doctor_plague_syringe.png` |
+| `chemist_blast_powder` | `blast_powder` | `assets/sprites/projectiles/player/chemist/chemist_blast_powder.png` |
+| `chemist_acid_flask` | `acid_flask` | `assets/sprites/projectiles/player/chemist/chemist_acid_flask.png` |
+| `druid_briar_seed` | `briar_staff` | `assets/sprites/projectiles/player/druid/druid_briar_seed.png` |
+| `druid_spectral_raven` | `raven_totem` | `assets/sprites/projectiles/player/druid/druid_spectral_raven.png` |
+| `biologist_sample_dart` | `biologist_sample_injector` | `assets/sprites/projectiles/player/biologist/biologist_sample_dart.png` |
+
 ## Sprite QA Notes
 
 Активные спрайты персонажей, стандартных монстров, элиток, боссов, оружия, projectiles, pickups, route icons и UI icons проходят quality-audit перед сдачей визуальных задач. После аудита 2026-06-10 у `assets/sprites/enemies/enemy_suicide_runner.png` удален лишний правый фрагмент текстуры; активные pickup/player projectile больше не используют Polygon2D-placeholder как видимый слой.

@@ -869,3 +869,21 @@ SCRUM-337 is the current full attack VFX art baseline. Six generated source shee
   `docs/design/references/backgrounds/`; previews:
   `docs/design/previews/arena_backgrounds_scrum369_contact.png` and
   `docs/design/previews/arena_backgrounds_scrum369_readability.png`.
+
+## Player Projectile Silhouette Contract (SCRUM-1065)
+
+Player projectiles use one compact weapon-owned silhouette rather than a
+universal recolored orb. PixelLab source assets are transparent, text-free,
+top-down 1-direction objects with safe alpha gutters; every profile records its
+canonical forward direction, runtime rotation offset, pivot and real display
+size. Class identity must remain readable at 24–64 px through material and
+shape first, palette second: Soldier black iron/brass, Thief silver/indigo,
+Dark Mage violet/cyan occult forms, Ranger moon/storm steel, Doctor green
+medical glass, Chemist ochre/lime alchemy, Druid thorn/teal spirit and Engineer
+brass device rounds. Enemy purple projectile silhouettes are not reused.
+
+The canonical source/runtime inventory is
+`docs/design/references/SCRUM-1065_player_projectiles/manifest.json`; visual QA
+uses both native-source and real-game-scale dark/light contact sheets under
+`docs/design/previews/SCRUM-1065_player_projectiles/`. Intentional beams,
+stationary zones, melee, traps and summons remain outside this sprite contract.

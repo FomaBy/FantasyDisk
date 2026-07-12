@@ -418,6 +418,23 @@ Runtime SCRUM-1068 предоставляет API
 schema 5 недостаточна для `damage_flat ≥10` и mechanic finals без утечки на всё
 трио.
 
+## SCRUM-1065 Player Projectile Visual Inventory
+
+Design inventory теперь различает настоящий flying projectile,
+`projectile_like_tracer` и intentional non-projectile. Канонический manifest
+`docs/design/references/SCRUM-1065_player_projectiles/manifest.json` покрывает
+17/17 классов и 51/51 оружие: 20 weapon-specific visual profiles и 31 `N/A` с
+механическим объяснением. Melee, beam, stationary zone, trap и summon/deploy
+не получают ложный flying sprite.
+
+Новые source exports созданы через permanent PixelLab
+`create_1_direction_object`, имеют стабильные object IDs/tags и promoted PNG
+под `assets/sprites/projectiles/player/<character_id>/`. Сохранён принятый
+SCRUM-934 `sniper_shatter_round` без бессмысленной перерисовки. Каждый профиль
+фиксирует pivot, исходное направление, rotation offset, intended display size,
+trail/impact palette и reuse rationale. Runtime integration и запрет generic
+`void_orb.png`/`player_projectile_spark_64.png` принадлежат SCRUM-1066.
+
 ## Targeting Rule
 
 Все атакующие оружия игрока целятся в ближайшего живого врага, а не в направление движения. Без врагов сохраняется последнее направление атаки.

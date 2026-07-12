@@ -1,0 +1,1408 @@
+{
+  "issue": "SCRUM-1065",
+  "assets_checked": 40,
+  "source_runtime_pairs": 20,
+  "all_pass": true,
+  "checks": [
+    {
+      "visual_id": "soldier_arquebus_round",
+      "kind": "source",
+      "path": "docs/design/references/SCRUM-1065_player_projectiles/soldier_arquebus_round_pixellab_source.png",
+      "dimensions": [
+        96,
+        96
+      ],
+      "mode": "RGBA",
+      "alpha_extrema": [
+        0,
+        255
+      ],
+      "corner_alpha": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "alpha_bbox": [
+        14,
+        34,
+        81,
+        60
+      ],
+      "padding_px": {
+        "left": 14,
+        "top": 34,
+        "right": 15,
+        "bottom": 36
+      },
+      "coverage_percent": 12.67,
+      "sha256": "cba97199e30a9343db9bf189cd8118cc30c57dcd11b3e0821dae8bf512622dd1",
+      "pass": true
+    },
+    {
+      "visual_id": "soldier_arquebus_round",
+      "kind": "runtime",
+      "path": "assets/sprites/projectiles/player/soldier/soldier_arquebus_round.png",
+      "dimensions": [
+        96,
+        96
+      ],
+      "mode": "RGBA",
+      "alpha_extrema": [
+        0,
+        255
+      ],
+      "corner_alpha": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "alpha_bbox": [
+        14,
+        34,
+        81,
+        60
+      ],
+      "padding_px": {
+        "left": 14,
+        "top": 34,
+        "right": 15,
+        "bottom": 36
+      },
+      "coverage_percent": 12.67,
+      "sha256": "cba97199e30a9343db9bf189cd8118cc30c57dcd11b3e0821dae8bf512622dd1",
+      "pass": true
+    },
+    {
+      "visual_id": "soldier_fuse_grenade",
+      "kind": "source",
+      "path": "docs/design/references/SCRUM-1065_player_projectiles/soldier_fuse_grenade_pixellab_source.png",
+      "dimensions": [
+        96,
+        96
+      ],
+      "mode": "RGBA",
+      "alpha_extrema": [
+        0,
+        255
+      ],
+      "corner_alpha": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "alpha_bbox": [
+        15,
+        23,
+        80,
+        72
+      ],
+      "padding_px": {
+        "left": 15,
+        "top": 23,
+        "right": 16,
+        "bottom": 24
+      },
+      "coverage_percent": 21.2,
+      "sha256": "522077faefa3b74774c7fd5c7927eb9f368edf3a0b3bf59f5f57ced8e293575e",
+      "pass": true
+    },
+    {
+      "visual_id": "soldier_fuse_grenade",
+      "kind": "runtime",
+      "path": "assets/sprites/projectiles/player/soldier/soldier_fuse_grenade.png",
+      "dimensions": [
+        96,
+        96
+      ],
+      "mode": "RGBA",
+      "alpha_extrema": [
+        0,
+        255
+      ],
+      "corner_alpha": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "alpha_bbox": [
+        15,
+        23,
+        80,
+        72
+      ],
+      "padding_px": {
+        "left": 15,
+        "top": 23,
+        "right": 16,
+        "bottom": 24
+      },
+      "coverage_percent": 21.2,
+      "sha256": "522077faefa3b74774c7fd5c7927eb9f368edf3a0b3bf59f5f57ced8e293575e",
+      "pass": true
+    },
+    {
+      "visual_id": "assassin_void_chakram",
+      "kind": "source",
+      "path": "docs/design/references/SCRUM-1065_player_projectiles/assassin_void_chakram_pixellab_source.png",
+      "dimensions": [
+        96,
+        96
+      ],
+      "mode": "RGBA",
+      "alpha_extrema": [
+        0,
+        255
+      ],
+      "corner_alpha": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "alpha_bbox": [
+        13,
+        9,
+        81,
+        88
+      ],
+      "padding_px": {
+        "left": 13,
+        "top": 9,
+        "right": 15,
+        "bottom": 8
+      },
+      "coverage_percent": 27.64,
+      "sha256": "10bf266f531123fe357a8c60862b1b0996320272319000b8cf8edf2aca893b30",
+      "pass": true
+    },
+    {
+      "visual_id": "assassin_void_chakram",
+      "kind": "runtime",
+      "path": "assets/sprites/projectiles/player/assassin/assassin_void_chakram.png",
+      "dimensions": [
+        96,
+        96
+      ],
+      "mode": "RGBA",
+      "alpha_extrema": [
+        0,
+        255
+      ],
+      "corner_alpha": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "alpha_bbox": [
+        13,
+        9,
+        81,
+        88
+      ],
+      "padding_px": {
+        "left": 13,
+        "top": 9,
+        "right": 15,
+        "bottom": 8
+      },
+      "coverage_percent": 27.64,
+      "sha256": "10bf266f531123fe357a8c60862b1b0996320272319000b8cf8edf2aca893b30",
+      "pass": true
+    },
+    {
+      "visual_id": "thief_ricochet_coin",
+      "kind": "source",
+      "path": "docs/design/references/SCRUM-1065_player_projectiles/thief_ricochet_coin_pixellab_source.png",
+      "dimensions": [
+        96,
+        96
+      ],
+      "mode": "RGBA",
+      "alpha_extrema": [
+        0,
+        255
+      ],
+      "corner_alpha": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "alpha_bbox": [
+        9,
+        22,
+        79,
+        76
+      ],
+      "padding_px": {
+        "left": 9,
+        "top": 22,
+        "right": 17,
+        "bottom": 20
+      },
+      "coverage_percent": 24.37,
+      "sha256": "5f344932d8deb58f7b5b3d5549451917cb3f58fc70ed54a3b2afdd0c9dbc21e8",
+      "pass": true
+    },
+    {
+      "visual_id": "thief_ricochet_coin",
+      "kind": "runtime",
+      "path": "assets/sprites/projectiles/player/thief/thief_ricochet_coin.png",
+      "dimensions": [
+        96,
+        96
+      ],
+      "mode": "RGBA",
+      "alpha_extrema": [
+        0,
+        255
+      ],
+      "corner_alpha": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "alpha_bbox": [
+        9,
+        22,
+        79,
+        76
+      ],
+      "padding_px": {
+        "left": 9,
+        "top": 22,
+        "right": 17,
+        "bottom": 20
+      },
+      "coverage_percent": 24.37,
+      "sha256": "5f344932d8deb58f7b5b3d5549451917cb3f58fc70ed54a3b2afdd0c9dbc21e8",
+      "pass": true
+    },
+    {
+      "visual_id": "ranger_moon_bolt",
+      "kind": "source",
+      "path": "docs/design/references/SCRUM-1065_player_projectiles/ranger_moon_bolt_pixellab_source.png",
+      "dimensions": [
+        96,
+        96
+      ],
+      "mode": "RGBA",
+      "alpha_extrema": [
+        0,
+        255
+      ],
+      "corner_alpha": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "alpha_bbox": [
+        35,
+        35,
+        86,
+        62
+      ],
+      "padding_px": {
+        "left": 35,
+        "top": 35,
+        "right": 10,
+        "bottom": 34
+      },
+      "coverage_percent": 6.34,
+      "sha256": "725d47d4eac84a55294ad6aad83903471701e2720bbdbf06d0d3ed12e01a0911",
+      "pass": true
+    },
+    {
+      "visual_id": "ranger_moon_bolt",
+      "kind": "runtime",
+      "path": "assets/sprites/projectiles/player/ranger/ranger_moon_bolt.png",
+      "dimensions": [
+        96,
+        96
+      ],
+      "mode": "RGBA",
+      "alpha_extrema": [
+        0,
+        255
+      ],
+      "corner_alpha": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "alpha_bbox": [
+        35,
+        35,
+        86,
+        62
+      ],
+      "padding_px": {
+        "left": 35,
+        "top": 35,
+        "right": 10,
+        "bottom": 34
+      },
+      "coverage_percent": 6.34,
+      "sha256": "725d47d4eac84a55294ad6aad83903471701e2720bbdbf06d0d3ed12e01a0911",
+      "pass": true
+    },
+    {
+      "visual_id": "ranger_storm_arrow",
+      "kind": "source",
+      "path": "docs/design/references/SCRUM-1065_player_projectiles/ranger_storm_arrow_pixellab_source.png",
+      "dimensions": [
+        96,
+        96
+      ],
+      "mode": "RGBA",
+      "alpha_extrema": [
+        0,
+        255
+      ],
+      "corner_alpha": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "alpha_bbox": [
+        7,
+        34,
+        90,
+        60
+      ],
+      "padding_px": {
+        "left": 7,
+        "top": 34,
+        "right": 6,
+        "bottom": 36
+      },
+      "coverage_percent": 5.64,
+      "sha256": "cf69a80d906cc6b628cbee5cd6213f326db311fefa485bfb74231be7d35d0cf4",
+      "pass": true
+    },
+    {
+      "visual_id": "ranger_storm_arrow",
+      "kind": "runtime",
+      "path": "assets/sprites/projectiles/player/ranger/ranger_storm_arrow.png",
+      "dimensions": [
+        96,
+        96
+      ],
+      "mode": "RGBA",
+      "alpha_extrema": [
+        0,
+        255
+      ],
+      "corner_alpha": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "alpha_bbox": [
+        7,
+        34,
+        90,
+        60
+      ],
+      "padding_px": {
+        "left": 7,
+        "top": 34,
+        "right": 6,
+        "bottom": 36
+      },
+      "coverage_percent": 5.64,
+      "sha256": "cf69a80d906cc6b628cbee5cd6213f326db311fefa485bfb74231be7d35d0cf4",
+      "pass": true
+    },
+    {
+      "visual_id": "engineer_sentry_round",
+      "kind": "source",
+      "path": "docs/design/references/SCRUM-1065_player_projectiles/engineer_sentry_round_pixellab_source.png",
+      "dimensions": [
+        96,
+        96
+      ],
+      "mode": "RGBA",
+      "alpha_extrema": [
+        0,
+        255
+      ],
+      "corner_alpha": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "alpha_bbox": [
+        21,
+        43,
+        66,
+        59
+      ],
+      "padding_px": {
+        "left": 21,
+        "top": 43,
+        "right": 30,
+        "bottom": 37
+      },
+      "coverage_percent": 4.65,
+      "sha256": "60feb324e490a33fa6e7b6e90bda2bbb9cd607e47af14a34fd4161ba27f26577",
+      "pass": true
+    },
+    {
+      "visual_id": "engineer_sentry_round",
+      "kind": "runtime",
+      "path": "assets/sprites/projectiles/player/engineer/engineer_sentry_round.png",
+      "dimensions": [
+        96,
+        96
+      ],
+      "mode": "RGBA",
+      "alpha_extrema": [
+        0,
+        255
+      ],
+      "corner_alpha": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "alpha_bbox": [
+        21,
+        43,
+        66,
+        59
+      ],
+      "padding_px": {
+        "left": 21,
+        "top": 43,
+        "right": 30,
+        "bottom": 37
+      },
+      "coverage_percent": 4.65,
+      "sha256": "60feb324e490a33fa6e7b6e90bda2bbb9cd607e47af14a34fd4161ba27f26577",
+      "pass": true
+    },
+    {
+      "visual_id": "biologist_sample_dart",
+      "kind": "source",
+      "path": "docs/design/references/SCRUM-1065_player_projectiles/biologist_sample_dart_pixellab_source.png",
+      "dimensions": [
+        96,
+        96
+      ],
+      "mode": "RGBA",
+      "alpha_extrema": [
+        0,
+        255
+      ],
+      "corner_alpha": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "alpha_bbox": [
+        16,
+        40,
+        86,
+        61
+      ],
+      "padding_px": {
+        "left": 16,
+        "top": 40,
+        "right": 10,
+        "bottom": 35
+      },
+      "coverage_percent": 6.41,
+      "sha256": "36c759ab12f17941516ea106d4895a4ebf4197266b64d4820890a031c99161e5",
+      "pass": true
+    },
+    {
+      "visual_id": "biologist_sample_dart",
+      "kind": "runtime",
+      "path": "assets/sprites/projectiles/player/biologist/biologist_sample_dart.png",
+      "dimensions": [
+        96,
+        96
+      ],
+      "mode": "RGBA",
+      "alpha_extrema": [
+        0,
+        255
+      ],
+      "corner_alpha": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "alpha_bbox": [
+        16,
+        40,
+        86,
+        61
+      ],
+      "padding_px": {
+        "left": 16,
+        "top": 40,
+        "right": 10,
+        "bottom": 35
+      },
+      "coverage_percent": 6.41,
+      "sha256": "36c759ab12f17941516ea106d4895a4ebf4197266b64d4820890a031c99161e5",
+      "pass": true
+    },
+    {
+      "visual_id": "dark_mage_mirror_page",
+      "kind": "source",
+      "path": "docs/design/references/SCRUM-1065_player_projectiles/dark_mage_mirror_page_pixellab_source.png",
+      "dimensions": [
+        96,
+        96
+      ],
+      "mode": "RGBA",
+      "alpha_extrema": [
+        0,
+        255
+      ],
+      "corner_alpha": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "alpha_bbox": [
+        15,
+        15,
+        82,
+        81
+      ],
+      "padding_px": {
+        "left": 15,
+        "top": 15,
+        "right": 14,
+        "bottom": 15
+      },
+      "coverage_percent": 28.96,
+      "sha256": "c6979553c3e062e23cb3a70265cbc0d45aa0a406396a23ec3d941fb60468ba73",
+      "pass": true
+    },
+    {
+      "visual_id": "dark_mage_mirror_page",
+      "kind": "runtime",
+      "path": "assets/sprites/projectiles/player/dark_mage/dark_mage_mirror_page.png",
+      "dimensions": [
+        96,
+        96
+      ],
+      "mode": "RGBA",
+      "alpha_extrema": [
+        0,
+        255
+      ],
+      "corner_alpha": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "alpha_bbox": [
+        15,
+        15,
+        82,
+        81
+      ],
+      "padding_px": {
+        "left": 15,
+        "top": 15,
+        "right": 14,
+        "bottom": 15
+      },
+      "coverage_percent": 28.96,
+      "sha256": "c6979553c3e062e23cb3a70265cbc0d45aa0a406396a23ec3d941fb60468ba73",
+      "pass": true
+    },
+    {
+      "visual_id": "dark_mage_cursed_skull",
+      "kind": "source",
+      "path": "docs/design/references/SCRUM-1065_player_projectiles/dark_mage_cursed_skull_pixellab_source.png",
+      "dimensions": [
+        96,
+        96
+      ],
+      "mode": "RGBA",
+      "alpha_extrema": [
+        0,
+        255
+      ],
+      "corner_alpha": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "alpha_bbox": [
+        9,
+        27,
+        84,
+        66
+      ],
+      "padding_px": {
+        "left": 9,
+        "top": 27,
+        "right": 12,
+        "bottom": 30
+      },
+      "coverage_percent": 16.69,
+      "sha256": "7ccdc1edfc30998fb29ea234906d665f20d91f8626beeabd846e94db4c932eef",
+      "pass": true
+    },
+    {
+      "visual_id": "dark_mage_cursed_skull",
+      "kind": "runtime",
+      "path": "assets/sprites/projectiles/player/dark_mage/dark_mage_cursed_skull.png",
+      "dimensions": [
+        96,
+        96
+      ],
+      "mode": "RGBA",
+      "alpha_extrema": [
+        0,
+        255
+      ],
+      "corner_alpha": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "alpha_bbox": [
+        9,
+        27,
+        84,
+        66
+      ],
+      "padding_px": {
+        "left": 9,
+        "top": 27,
+        "right": 12,
+        "bottom": 30
+      },
+      "coverage_percent": 16.69,
+      "sha256": "7ccdc1edfc30998fb29ea234906d665f20d91f8626beeabd846e94db4c932eef",
+      "pass": true
+    },
+    {
+      "visual_id": "dark_mage_chain_bolt",
+      "kind": "source",
+      "path": "docs/design/references/SCRUM-1065_player_projectiles/dark_mage_chain_bolt_pixellab_source.png",
+      "dimensions": [
+        96,
+        96
+      ],
+      "mode": "RGBA",
+      "alpha_extrema": [
+        0,
+        255
+      ],
+      "corner_alpha": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "alpha_bbox": [
+        9,
+        38,
+        89,
+        60
+      ],
+      "padding_px": {
+        "left": 9,
+        "top": 38,
+        "right": 7,
+        "bottom": 36
+      },
+      "coverage_percent": 7.92,
+      "sha256": "cb4c09056e9fd5a3a950f0711329ab8f80fc84c47f6b653b3b6c2d8cc73f11a4",
+      "pass": true
+    },
+    {
+      "visual_id": "dark_mage_chain_bolt",
+      "kind": "runtime",
+      "path": "assets/sprites/projectiles/player/dark_mage/dark_mage_chain_bolt.png",
+      "dimensions": [
+        96,
+        96
+      ],
+      "mode": "RGBA",
+      "alpha_extrema": [
+        0,
+        255
+      ],
+      "corner_alpha": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "alpha_bbox": [
+        9,
+        38,
+        89,
+        60
+      ],
+      "padding_px": {
+        "left": 9,
+        "top": 38,
+        "right": 7,
+        "bottom": 36
+      },
+      "coverage_percent": 7.92,
+      "sha256": "cb4c09056e9fd5a3a950f0711329ab8f80fc84c47f6b653b3b6c2d8cc73f11a4",
+      "pass": true
+    },
+    {
+      "visual_id": "elementalist_meteor",
+      "kind": "source",
+      "path": "docs/design/references/SCRUM-1065_player_projectiles/elementalist_meteor_pixellab_source.png",
+      "dimensions": [
+        96,
+        96
+      ],
+      "mode": "RGBA",
+      "alpha_extrema": [
+        0,
+        255
+      ],
+      "corner_alpha": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "alpha_bbox": [
+        11,
+        26,
+        84,
+        71
+      ],
+      "padding_px": {
+        "left": 11,
+        "top": 26,
+        "right": 12,
+        "bottom": 25
+      },
+      "coverage_percent": 21.57,
+      "sha256": "4db196874475bd49bb19830895da1a321952ee017a793867127f52a360fa9146",
+      "pass": true
+    },
+    {
+      "visual_id": "elementalist_meteor",
+      "kind": "runtime",
+      "path": "assets/sprites/projectiles/player/elementalist/elementalist_meteor.png",
+      "dimensions": [
+        96,
+        96
+      ],
+      "mode": "RGBA",
+      "alpha_extrema": [
+        0,
+        255
+      ],
+      "corner_alpha": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "alpha_bbox": [
+        11,
+        26,
+        84,
+        71
+      ],
+      "padding_px": {
+        "left": 11,
+        "top": 26,
+        "right": 12,
+        "bottom": 25
+      },
+      "coverage_percent": 21.57,
+      "sha256": "4db196874475bd49bb19830895da1a321952ee017a793867127f52a360fa9146",
+      "pass": true
+    },
+    {
+      "visual_id": "doctor_restore_potion",
+      "kind": "source",
+      "path": "docs/design/references/SCRUM-1065_player_projectiles/doctor_restore_potion_pixellab_source.png",
+      "dimensions": [
+        96,
+        96
+      ],
+      "mode": "RGBA",
+      "alpha_extrema": [
+        0,
+        255
+      ],
+      "corner_alpha": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "alpha_bbox": [
+        25,
+        30,
+        69,
+        64
+      ],
+      "padding_px": {
+        "left": 25,
+        "top": 30,
+        "right": 27,
+        "bottom": 32
+      },
+      "coverage_percent": 11.55,
+      "sha256": "29bf71660c782e55485e544c677560ef4112a4e635ffee5955aa4c3f64853c2f",
+      "pass": true
+    },
+    {
+      "visual_id": "doctor_restore_potion",
+      "kind": "runtime",
+      "path": "assets/sprites/projectiles/player/doctor/doctor_restore_potion.png",
+      "dimensions": [
+        96,
+        96
+      ],
+      "mode": "RGBA",
+      "alpha_extrema": [
+        0,
+        255
+      ],
+      "corner_alpha": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "alpha_bbox": [
+        25,
+        30,
+        69,
+        64
+      ],
+      "padding_px": {
+        "left": 25,
+        "top": 30,
+        "right": 27,
+        "bottom": 32
+      },
+      "coverage_percent": 11.55,
+      "sha256": "29bf71660c782e55485e544c677560ef4112a4e635ffee5955aa4c3f64853c2f",
+      "pass": true
+    },
+    {
+      "visual_id": "doctor_plague_syringe",
+      "kind": "source",
+      "path": "docs/design/references/SCRUM-1065_player_projectiles/doctor_plague_syringe_pixellab_source.png",
+      "dimensions": [
+        96,
+        96
+      ],
+      "mode": "RGBA",
+      "alpha_extrema": [
+        0,
+        255
+      ],
+      "corner_alpha": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "alpha_bbox": [
+        20,
+        37,
+        81,
+        58
+      ],
+      "padding_px": {
+        "left": 20,
+        "top": 37,
+        "right": 15,
+        "bottom": 38
+      },
+      "coverage_percent": 5.12,
+      "sha256": "0e457a8fe09dc7e07afb1f3365ed35eae7389e173bd3e86329a29c9f9981292c",
+      "pass": true
+    },
+    {
+      "visual_id": "doctor_plague_syringe",
+      "kind": "runtime",
+      "path": "assets/sprites/projectiles/player/doctor/doctor_plague_syringe.png",
+      "dimensions": [
+        96,
+        96
+      ],
+      "mode": "RGBA",
+      "alpha_extrema": [
+        0,
+        255
+      ],
+      "corner_alpha": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "alpha_bbox": [
+        20,
+        37,
+        81,
+        58
+      ],
+      "padding_px": {
+        "left": 20,
+        "top": 37,
+        "right": 15,
+        "bottom": 38
+      },
+      "coverage_percent": 5.12,
+      "sha256": "0e457a8fe09dc7e07afb1f3365ed35eae7389e173bd3e86329a29c9f9981292c",
+      "pass": true
+    },
+    {
+      "visual_id": "chemist_blast_powder",
+      "kind": "source",
+      "path": "docs/design/references/SCRUM-1065_player_projectiles/chemist_blast_powder_pixellab_source.png",
+      "dimensions": [
+        96,
+        96
+      ],
+      "mode": "RGBA",
+      "alpha_extrema": [
+        0,
+        255
+      ],
+      "corner_alpha": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "alpha_bbox": [
+        28,
+        33,
+        71,
+        67
+      ],
+      "padding_px": {
+        "left": 28,
+        "top": 33,
+        "right": 25,
+        "bottom": 29
+      },
+      "coverage_percent": 11.81,
+      "sha256": "7066fc88aacfed3035a94399b5f3db7aefc8f80842118828f9d52f075b62b386",
+      "pass": true
+    },
+    {
+      "visual_id": "chemist_blast_powder",
+      "kind": "runtime",
+      "path": "assets/sprites/projectiles/player/chemist/chemist_blast_powder.png",
+      "dimensions": [
+        96,
+        96
+      ],
+      "mode": "RGBA",
+      "alpha_extrema": [
+        0,
+        255
+      ],
+      "corner_alpha": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "alpha_bbox": [
+        28,
+        33,
+        71,
+        67
+      ],
+      "padding_px": {
+        "left": 28,
+        "top": 33,
+        "right": 25,
+        "bottom": 29
+      },
+      "coverage_percent": 11.81,
+      "sha256": "7066fc88aacfed3035a94399b5f3db7aefc8f80842118828f9d52f075b62b386",
+      "pass": true
+    },
+    {
+      "visual_id": "chemist_acid_flask",
+      "kind": "source",
+      "path": "docs/design/references/SCRUM-1065_player_projectiles/chemist_acid_flask_pixellab_source.png",
+      "dimensions": [
+        96,
+        96
+      ],
+      "mode": "RGBA",
+      "alpha_extrema": [
+        0,
+        255
+      ],
+      "corner_alpha": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "alpha_bbox": [
+        24,
+        28,
+        76,
+        73
+      ],
+      "padding_px": {
+        "left": 24,
+        "top": 28,
+        "right": 20,
+        "bottom": 23
+      },
+      "coverage_percent": 13.77,
+      "sha256": "1b8febca25e0f0ba87b04583e20927c2b3fd2f25e5510b75d4411295ebdb2208",
+      "pass": true
+    },
+    {
+      "visual_id": "chemist_acid_flask",
+      "kind": "runtime",
+      "path": "assets/sprites/projectiles/player/chemist/chemist_acid_flask.png",
+      "dimensions": [
+        96,
+        96
+      ],
+      "mode": "RGBA",
+      "alpha_extrema": [
+        0,
+        255
+      ],
+      "corner_alpha": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "alpha_bbox": [
+        24,
+        28,
+        76,
+        73
+      ],
+      "padding_px": {
+        "left": 24,
+        "top": 28,
+        "right": 20,
+        "bottom": 23
+      },
+      "coverage_percent": 13.77,
+      "sha256": "1b8febca25e0f0ba87b04583e20927c2b3fd2f25e5510b75d4411295ebdb2208",
+      "pass": true
+    },
+    {
+      "visual_id": "druid_briar_seed",
+      "kind": "source",
+      "path": "docs/design/references/SCRUM-1065_player_projectiles/druid_briar_seed_pixellab_source.png",
+      "dimensions": [
+        96,
+        96
+      ],
+      "mode": "RGBA",
+      "alpha_extrema": [
+        0,
+        255
+      ],
+      "corner_alpha": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "alpha_bbox": [
+        11,
+        26,
+        84,
+        66
+      ],
+      "padding_px": {
+        "left": 11,
+        "top": 26,
+        "right": 12,
+        "bottom": 30
+      },
+      "coverage_percent": 14.76,
+      "sha256": "534f8591cc748876e54af80903f642780d3959757f456515b1a910c9ef12fbb0",
+      "pass": true
+    },
+    {
+      "visual_id": "druid_briar_seed",
+      "kind": "runtime",
+      "path": "assets/sprites/projectiles/player/druid/druid_briar_seed.png",
+      "dimensions": [
+        96,
+        96
+      ],
+      "mode": "RGBA",
+      "alpha_extrema": [
+        0,
+        255
+      ],
+      "corner_alpha": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "alpha_bbox": [
+        11,
+        26,
+        84,
+        66
+      ],
+      "padding_px": {
+        "left": 11,
+        "top": 26,
+        "right": 12,
+        "bottom": 30
+      },
+      "coverage_percent": 14.76,
+      "sha256": "534f8591cc748876e54af80903f642780d3959757f456515b1a910c9ef12fbb0",
+      "pass": true
+    },
+    {
+      "visual_id": "druid_spectral_raven",
+      "kind": "source",
+      "path": "docs/design/references/SCRUM-1065_player_projectiles/druid_spectral_raven_pixellab_source.png",
+      "dimensions": [
+        96,
+        96
+      ],
+      "mode": "RGBA",
+      "alpha_extrema": [
+        0,
+        255
+      ],
+      "corner_alpha": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "alpha_bbox": [
+        11,
+        19,
+        86,
+        77
+      ],
+      "padding_px": {
+        "left": 11,
+        "top": 19,
+        "right": 10,
+        "bottom": 19
+      },
+      "coverage_percent": 21.83,
+      "sha256": "53719d18fc9936e5cd460b1aa5a2e7d9e00f0e9a255ca90b7930122a4840c2df",
+      "pass": true
+    },
+    {
+      "visual_id": "druid_spectral_raven",
+      "kind": "runtime",
+      "path": "assets/sprites/projectiles/player/druid/druid_spectral_raven.png",
+      "dimensions": [
+        96,
+        96
+      ],
+      "mode": "RGBA",
+      "alpha_extrema": [
+        0,
+        255
+      ],
+      "corner_alpha": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "alpha_bbox": [
+        11,
+        19,
+        86,
+        77
+      ],
+      "padding_px": {
+        "left": 11,
+        "top": 19,
+        "right": 10,
+        "bottom": 19
+      },
+      "coverage_percent": 21.83,
+      "sha256": "53719d18fc9936e5cd460b1aa5a2e7d9e00f0e9a255ca90b7930122a4840c2df",
+      "pass": true
+    },
+    {
+      "visual_id": "thief_smoke_bomb",
+      "kind": "source",
+      "path": "docs/design/references/SCRUM-1065_player_projectiles/thief_smoke_bomb_pixellab_source.png",
+      "dimensions": [
+        96,
+        96
+      ],
+      "mode": "RGBA",
+      "alpha_extrema": [
+        0,
+        255
+      ],
+      "corner_alpha": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "alpha_bbox": [
+        24,
+        24,
+        77,
+        69
+      ],
+      "padding_px": {
+        "left": 24,
+        "top": 24,
+        "right": 19,
+        "bottom": 27
+      },
+      "coverage_percent": 12.4,
+      "sha256": "13d9aaddeb149287c733c1ed3e0b80affc59c65093c0f7a3a1d2b5ad7686e240",
+      "pass": true
+    },
+    {
+      "visual_id": "thief_smoke_bomb",
+      "kind": "runtime",
+      "path": "assets/sprites/projectiles/player/thief/thief_smoke_bomb.png",
+      "dimensions": [
+        96,
+        96
+      ],
+      "mode": "RGBA",
+      "alpha_extrema": [
+        0,
+        255
+      ],
+      "corner_alpha": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "alpha_bbox": [
+        24,
+        24,
+        77,
+        69
+      ],
+      "padding_px": {
+        "left": 24,
+        "top": 24,
+        "right": 19,
+        "bottom": 27
+      },
+      "coverage_percent": 12.4,
+      "sha256": "13d9aaddeb149287c733c1ed3e0b80affc59c65093c0f7a3a1d2b5ad7686e240",
+      "pass": true
+    },
+    {
+      "visual_id": "sniper_shatter_round",
+      "kind": "source",
+      "path": "docs/design/references/SCRUM-1065_player_projectiles/sniper_shatter_round_pixellab_source.png",
+      "dimensions": [
+        128,
+        64
+      ],
+      "mode": "RGBA",
+      "alpha_extrema": [
+        0,
+        255
+      ],
+      "corner_alpha": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "alpha_bbox": [
+        19,
+        24,
+        115,
+        39
+      ],
+      "padding_px": {
+        "left": 19,
+        "top": 24,
+        "right": 13,
+        "bottom": 25
+      },
+      "coverage_percent": 11.3,
+      "sha256": "6d2cd9a21b8925adcd452c30ea4e94c30a379323dbf4501ca3b2156c58ba367e",
+      "pass": true
+    },
+    {
+      "visual_id": "sniper_shatter_round",
+      "kind": "runtime",
+      "path": "assets/sprites/projectiles/player/sniper/sniper_shatter_round.png",
+      "dimensions": [
+        128,
+        64
+      ],
+      "mode": "RGBA",
+      "alpha_extrema": [
+        0,
+        255
+      ],
+      "corner_alpha": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "alpha_bbox": [
+        19,
+        24,
+        115,
+        39
+      ],
+      "padding_px": {
+        "left": 19,
+        "top": 24,
+        "right": 13,
+        "bottom": 25
+      },
+      "coverage_percent": 11.3,
+      "sha256": "6d2cd9a21b8925adcd452c30ea4e94c30a379323dbf4501ca3b2156c58ba367e",
+      "pass": true
+    }
+  ]
+}
