@@ -1,6 +1,6 @@
 # Задача Для Back-end-Агента: Горизонтальная Route Map По SCRUM-1057 Spec
 
-Статус: review
+Статус: done
 Контур: Codex
 Owner: Back-end/Codex
 Thread: /root/scrum1079_route_backend
