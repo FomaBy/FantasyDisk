@@ -4712,5 +4712,10 @@
   "key": "SCRUM-1091",
   "status": "К выполнению",
   "desc_hash": "39f26c9c685cf40bc620ab33e277085a"
+ },
+ "backend_scrum1088_priest_prayer_attribute_picker_reuse.md": {
+  "key": "SCRUM-1088",
+  "status": "Контроль качества",
+  "desc_hash": "4963055f7ec0c902264958a95f2f7efb"
  }
 }
