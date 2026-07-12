@@ -1,6 +1,6 @@
 # UI Mockup Spec — Main Menu compact lower-right utility cluster
 
-Status: ready_for_integration
+Status: implemented
 Role owner: Back-end source-reuse geometry follow-up
 Task: `docs/tasks/bug_scrum1093_main_menu_version_corner_spacing_task.md`
 Jira: SCRUM-1093
@@ -77,5 +77,11 @@ PixelLab object `c1c1c353-e56e-405b-9adf-f1e6bd993152`, promoted unchanged as
 - [x] All six planning reports are `ready_for_image`, with zero errors/warnings.
 - [x] All six runtime-text layout guide reports are `ok=true`.
 - [x] Updated preview shown in chat.
-- [ ] Runtime screenshots match the compact mockup at the responsive matrix.
-- [ ] Focused and full runtime tests pass.
+- [x] Runtime screenshots match the compact mockup at the responsive matrix.
+- [x] Focused and full runtime tests pass.
+
+## Runtime evidence
+
+- `docs/design/previews/scrum1093_main_menu_version_corner/runtime/main_menu_2048x1152.png`
+- `docs/design/previews/scrum1093_main_menu_version_corner/runtime/main_menu_2560x1440.png`
+- Windowed Metal capture passed at all six responsive targets.

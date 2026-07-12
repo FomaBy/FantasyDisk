@@ -1,6 +1,6 @@
 # SCRUM-1094 — Atlas malformed locked dossier hides purchase failure
 
-Статус: in_progress
+Статус: done
 Версия: 0.2.1
 Jira: SCRUM-1094
 Тип: bug
@@ -56,3 +56,12 @@ Atlas/UI docs.
 - Pre-integration PASS: SCRUM-1094 focused regression; SCRUM-1091 exact 357/51
   descriptions and dossier UI matrix; migrated Meta40 Atlas; SCRUM-1067/1068
   validators and schema final runtime gates; no-overlap; runtime UI/full smoke.
+
+Ready for independent QA on `origin/dev`.
+
+Implementation commit: `ca9b4ed5a` in `origin/dev`. After integration with QA
+base `0b069dd6c`, upstream `tests/scrum1091_independent_qa_test.gd`, focused
+SCRUM-1094 and full runtime smoke all pass.
+
+Disk cleanup: removed disposable `.godot` (~446 MiB), transient captures,
+isolated user-data roots and generated `.uid`/`.import` sidecars.
