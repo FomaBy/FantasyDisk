@@ -740,6 +740,31 @@ SCRUM-1091 добавляет только presentation contract, не нову�
     (A/B override vs default). `global_damage_balance_smoke` без изменений (кап рантаймовый,
     ортогонален формульной бюджет-модели).
 
+- **FAN-1031 Stage 3c(a) (2026-07-13) — пул-канал data-driven кап + завершение S3
+  restore_potion (no-silent-retune).** Живой v3-пересъём (интерактивная полоса, коммит
+  346c0d21) показал: restore_potion 20t упал только `68.9k→52.4k (−24%)`, а не проектных
+  −72%. Причина — S1 (3a) сделал per-weapon кап ТОЛЬКО для прямого AoE-взрыва, а главный
+  канал crowd-runaway периодики — тик лужи (`_damage_enemies_in_pool`), прямая
+  `leaves_pool`-ветка и артефактный vapor restore_potion — оставался на КОНСТАНТАХ кода.
+  Полный разбор + handoff — `build/stage3c_pool_caps_fan1031.md`.
+  - **Пул-канал (механизм).** Добавлены per-weapon поля
+    `ClassWeapon.pool_full_targets/pool_target_diminish` (сентинел <0 → per-channel default:
+    тик лужи `POOL_FULL_TARGETS/POOL_TARGET_DIMINISH`=1/1.5; прямая leaves_pool-ветка
+    `POOL_PROJECTILE_FULL_TARGETS/POOL_PROJECTILE_TARGET_DIMINISH`=1/3.0). Нулевое изменение
+    поведения без override — тот же сентинел-контракт, что и S1. Теперь тик лужи по толпе
+    режется ДАННЫМИ, не только 1.5-константой. Гейт: `tests/pool_target_cap_gate.gd`
+    (override caps rank1, сентинел-контроль = default, leaves_pool-ветка уважает override,
+    CONST-guard, реальные конфиги).
+  - **S3 завершение — restore_vapor.** Артефактный vapor «Восстановительного пара» лил
+    `(F=2/D=1.5)` и на толпе давал ~2× throughput основного взрыва — весь vapor и был
+    некапнутым хвостом −24%. Теперь vapor наследует сустейн-нишевый кап зелья
+    (`aoe_full_targets/aoe_target_diminish`=1/4.0). rank0 (solo/дуо-хил) не тронут.
+  - **acid_flask пул-тик.** Первичное сужение `pool_target_diminish=3.0` (был default 1.5):
+    ядро пака полный тик, хвост душится — колба возвращается к area-denial. Финальная
+    величина + numeric per-hit + канал персистентных `acid_charge` (status fan-out, 3c-b) —
+    против живого v3-пересъёма (handoff). `global_damage_balance_smoke` без изменений (worst
+    CCT +21% — кап рантаймовый).
+
 ## Known Balance Risks
 
 - Точный паритет clear speed Темного мага/Гитариста с Берсерком требует ручного плейтеста.
