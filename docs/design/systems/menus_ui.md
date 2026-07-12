@@ -1,6 +1,6 @@
 # Menus And UI
 
-Обновлено: 2026-07-11
+Обновлено: 2026-07-12
 
 Этот файл собирает UI-направление FantasyDisk после domain split. Полное фактическое состояние остается в `docs/design/current_game_state.md`, а канонические IDs и assets - в `docs/design/content_registry.md`.
 
@@ -12,7 +12,7 @@ text-button/minimal-metal production assets only after final name and size are
 known, so semantic intent no longer depends on construction order. Main actions,
 Back/navigation, Codex tabs and Pause actions share the resolver; selectable
 content rows/cards, Settings fields/toggles, Route nodes, Atlas sockets,
-Hero-carousel arrows, Battle Prayer cards and @2K conflict controls remain
+Hero-carousel arrows and @2K conflict controls remain
 documented shape-specific siblings of the same FantasyDisk family.
 
 Codex keeps the accepted frameless SCRUM-954 three-column layout. Its six tabs
@@ -65,7 +65,7 @@ mouse/keyboard/gamepad focus behavior are unchanged. Contract and evidence:
 `docs/design/mockups/scrum582_continue_run/spec.md` and
 `tests/scrum1062_continue_run_title_test.gd`.
 
-## SCRUM-926 Priest Battle Prayer Choice
+## SCRUM-926/1088 Priest Battle Prayer Choice
 
 Every Priest combat now begins behind a mandatory, non-cancellable three-card
 prayer choice. `CombatDirector` creates/configures the player and HUD first, but
@@ -77,19 +77,28 @@ overlay can cover the mandatory decision. The first card receives initial
 focus, left/right navigation is circular and up/down stays on the same card.
 Other classes retain the synchronous, screen-free combat-start path.
 
-The runtime uses the unchanged PixelLab source
-`assets/sprites/ui/priest_prayer/priest_prayer_modal_frame.png` as one scaled
-688×384 art layer. Title, subtitle, icon, labels and hitboxes occupy only the
-empty interiors recorded in
-`docs/design/mockups/scrum926_priest_prayer/layout_688x384.json`; hover/focus
-draws a geometry-stable inner glow without covering the ornament. Responsive
-layout preserves the source aspect and centers it within 82% viewport width /
-80% height at 1280×720, 1920×1080 and 2560×1440, including live resize. The
-HUD stays visible on its separate layer beneath the dimmed modal.
+SCRUM-1088 removes the bespoke 688×384 prayer modal from runtime. The choice
+now literally uses the same `LevelUpOverlay`, `LevelUpPanel`, title/divider,
+`LevelUpRewardsRow`, `_level_up_card_plan()` and three
+`LevelUpRewardButton0..2` builders as an ordinary level-up attribute/reward
+choice. Only the title/subtitle, prayer dictionaries and selection callback
+differ; the mandatory screen intentionally has no `Позже` button. The existing
+Level Up background, card/socket art, responsive metrics and hover/focus/pressed
+states are therefore the single visual/layout source of truth. No
+prayer-specific frame, card rects or focus style are rendered.
+
+The cards keep canonical order `prayer_wrath`, `prayer_mending`,
+`prayer_aegis`, use their damage/regeneration/defense icon IDs and show the
+round effect in the standard Level Up effect-summary field. All runtime content
+stays within the existing card content margins and socket inner zones at
+1280×720, 1920×1080 and 2560×1440. PixelLab reuse-spec evidence is under
+`docs/design/mockups/scrum1088_priest_prayer_attribute_picker/`; the generated
+layout layer is reference-only and is not promoted to runtime assets.
 
 Acceptance: `tests/scrum926_priest_prayer_choice_test.gd`,
-`tests/priest_kit_test.gd`, the content-compositor fit report and real runtime
-captures under `docs/design/previews/scrum926_priest_prayer/runtime/`.
+`tests/priest_kit_test.gd`, `tests/ui_no_overlap_matrix_test.gd` and real runtime
+captures under
+`docs/design/previews/scrum1088_priest_prayer_attribute_picker/runtime/`.
 
 ## SCRUM-951 Hero Select Stat Identity Palette
 

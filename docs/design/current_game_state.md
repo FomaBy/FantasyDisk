@@ -1,6 +1,6 @@
 # FantasyDisk Current Game State
 
-Обновлено: 2026-07-11 (0.2.1 active sprint snapshot)
+Обновлено: 2026-07-12 (0.2.1 active sprint snapshot)
 
 Этот документ описывает то, что уже есть в текущей версии игры. Он нужен агентам и разработчикам как быстрый фактический снимок проекта перед изменениями в геймплее, балансе, UI, персонажах, врагах, прогрессии и ассетах.
 
@@ -2428,7 +2428,7 @@ damage/crit/knockback, charge и cooldown не менялись. One-shot осв
 `player_weapon_effects` lifecycle для очистки вместе с оружием/миром. Контракт:
 `tests/scrum912_storm_longbow_vfx_runtime_hook_test.gd`.
 
-## SCRUM-925/926 Priest Battle Prayer Runtime State
+## SCRUM-925/926/1088 Priest Battle Prayer Runtime State
 
 Священник начинает каждый бой с обязательного выбора ровно одной молитвы:
 `prayer_wrath` (+20% всего урона Священника), `prayer_mending` (+2 HP/с) или
@@ -2444,10 +2444,20 @@ spawn элитки/босса выполняются только после в�
 Escape, keyboard `ui_cancel` и gamepad B до общей ветки паузы/оверлеев: pause
 dossier не может открыться поверх молитвы, а фокус первой карточки сохраняется.
 Классы с пустым prayer-пулом идут по прежнему синхронному пути без экрана и
-паузы. Runtime UI использует цельный PixelLab-фрейм
-`assets/sprites/ui/priest_prayer/priest_prayer_modal_frame.png`; контент и
-фокус лежат только в пустых зонах из
-`docs/design/mockups/scrum926_priest_prayer/layout_688x384.json`.
+паузы.
+
+SCRUM-1088 убрал отдельный prayer-specific интерфейс из runtime-пути. Стартовый
+выбор Священника теперь создаётся теми же `_create_level_up_menu_box`,
+`_level_up_layout_metrics`, `_level_up_card_plan`,
+`_make_level_up_reward_button`, `_wire_run_ui_focus` и
+`_start_level_up_intro`, что обычный экран повышения уровня. Живые узлы —
+`LevelUpOverlay`, `LevelUpPanel`, `LevelUpRewardsRow` и
+`LevelUpRewardButton0..2`; меняются только заголовок, данные молитв и callback.
+Обязательный выбор не показывает `Позже`. Старый `BattlePrayerModal` /
+`BattlePrayerFrameArt` и фиксированные 688×384 card rects больше не рендерятся.
+Responsive/card content-zone контракт полностью совпадает с Level Up на
+1280×720, 1920×1080 и 2560×1440. Спецификация и PixelLab reference-only слой:
+`docs/design/mockups/scrum1088_priest_prayer_attribute_picker/`.
 
 ## SCRUM-1069 Guild Atlas Balance Runtime
 
