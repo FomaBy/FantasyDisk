@@ -1,6 +1,6 @@
 # SCRUM-1089 — Route Map Full Fit + HUD 2×
 
-Статус: in_progress
+Статус: done
 Контур: Codex
 Owner: Design + Back-end / Codex root
 Thread: current user task (source `019f4879-aabb-7113-b8e4-3e3e2e898fc5`)
@@ -69,3 +69,15 @@ Runtime implementation готова к финальному green gate:
 
 Final Metal capture matrix:
 `docs/design/previews/scrum1089_route_map_full_fit_hud2x/runtime/`.
+
+Implementation commit landed in `origin/dev`: `1c9cf28f1`.
+
+Final post-rebase gates on `1c9cf28f1`:
+
+- `tests/scrum1089_route_map_full_fit_hud_test.gd` — PASS (exact steps 0..8, no `-1`, title↔HUD no-overlap, HUD children in safe-zone, 2.00× baseline, 1280/1920/2560);
+- `tests/ui_no_overlap_matrix_test.gd` — PASS;
+- `tests/runtime_smoke_test.gd` — PASS (`Duplicate-artifact guard passed`, known optional dummy-renderer screenshot warning only).
+
+Disk cleanup: removed `.godot` cache (446M) and 55 transient `.import`/`.uid` sidecars; isolated worktree and task branch are removed after this review-status sync lands.
+
+Locks: released for independent QA after `origin/dev` landing.
