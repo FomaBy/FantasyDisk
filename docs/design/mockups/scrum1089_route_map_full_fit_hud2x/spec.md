@@ -85,7 +85,7 @@ No new runtime bitmap is promoted.
 - [x] Runtime content fits at every responsive target.
 - [x] Hover/focus/pressed/disabled states do not shift layout.
 - [x] Screenshot comparison completed at all five targets under `docs/design/previews/scrum1089_route_map_full_fit_hud2x/runtime/`.
-- [ ] Jira/task updated with landed commit and final QA handoff evidence.
+- [x] Jira/task updated with landed commit `1c9cf28f1` and final QA handoff evidence.
 
 ## Deviations From PixelLab Reference
 
