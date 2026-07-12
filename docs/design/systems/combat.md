@@ -286,6 +286,11 @@
   remain non-projectile. Runtime routing is visual-only and preserves damage,
   targeting, count, speed, timing, collision and hit geometry. Focused gate:
   `tests/projectile_visual_registry_test.gd`.
+- SCRUM-1085 hardens the legacy `Projectile.setup()` lifecycle: a non-empty
+  visual override is applied both before and after `_ready()`, an empty override
+  preserves the current profile, and an invalid override clears stale canonical
+  metadata/sprite state instead of leaving a mismatched previous texture.
+  Regression: `tests/projectile_setup_visual_order_test.gd`.
 - Балансовые харнессы (отчёты в `build/`): `tools/balance_harness.gd` (формульный), `tools/live_combat_harness.gd` (живой DPS/TTK), `tools/survivability_harness.gd` (выживаемость профилей). Прогон всех standalone-тестов: `tools/run_focused_tests.sh`.
 
 ## Enemy HP Bars

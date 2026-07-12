@@ -2510,3 +2510,8 @@ contract and add only the short travelling sprite. The other 31 weapons stay
 explicitly non-projectile. Generic void-orb/player-spark art is no longer a
 canonical player-weapon fallback. Mechanics, balance, damage, targeting, speed,
 count, timing, collision, hitbox and cleanup ownership are unchanged.
+
+SCRUM-1085 makes the legacy scene setup order-independent: changing
+`visual_weapon_id` after the projectile enters the tree immediately reapplies
+texture, scale, rotation, metadata and trail palette. Empty IDs keep the active
+profile; invalid IDs fail closed and cannot retain stale canonical visual state.
