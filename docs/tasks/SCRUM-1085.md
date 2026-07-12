@@ -29,3 +29,11 @@ trail, so an old valid sprite cannot masquerade under an invalid ID.
 
 Implementation commit: `1cafb8ad0a3ce38e62076ab085a52c051fa9a358`
 on `origin/dev`.
+
+## QA-Вердикт
+
+Статус: PASSED
+
+Independent re-verification on `origin/dev@adc819db4`: setup-order regression,
+visual registry, projectile smoke and cold import all passed. Jira SCRUM-1085
+was accepted on 2026-07-12.

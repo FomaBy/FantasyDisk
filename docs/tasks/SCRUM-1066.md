@@ -54,3 +54,12 @@ No source PNG, gameplay config or balance data changed.
 
 Implementation commit: `7fe9191994ac704221b3e17ff7d1d3286500df8d`
 on `origin/dev`.
+
+## QA-Вердикт
+
+Статус: PASSED
+
+Independent re-verification on `origin/dev@adc819db4` includes the SCRUM-1085
+late-setup regression fix (`1cafb8ad0`): setup-order, visual registry,
+projectile smoke and cold import all passed. Jira SCRUM-1066 was accepted on
+2026-07-12.

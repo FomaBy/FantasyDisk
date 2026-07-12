@@ -4660,7 +4660,12 @@
  },
  "SCRUM-1066.md": {
   "key": "SCRUM-1066",
-  "status": "Контроль качества",
-  "desc_hash": "aa118500db49f6a182257d210a70130a"
+  "status": "Готово",
+  "desc_hash": "e6bc19a74dbe2d352fff5df9da704092"
+ },
+ "SCRUM-1085.md": {
+  "key": "SCRUM-1085",
+  "status": "Готово",
+  "desc_hash": "857b2a7ac56ccb2aa14027371104e675"
  }
 }
