@@ -437,6 +437,7 @@ class_weapon). «done = чистый HEAD зелёный».
 | [bug_runtime_smoke_hero_select_v4_backbutton_name_task.md](../tasks/bug_runtime_smoke_hero_select_v4_backbutton_name_task.md) | Back-end (UI) | done | Jira: SCRUM-479. Closed in Jira by PM cleanup directive 2026-06-27 after follow-up commit `d59f80a9` and recorded runtime smoke rerun. |
 | [bug_scrum514_item_icon_skill_task.md](../tasks/bug_scrum514_item_icon_skill_task.md) | Design main / Codex | new | Jira: SCRUM-543. **QA: failed** (2026-06-27) на приёмке SCRUM-514 (вернулась в «К выполнению»). (1) БЛОКЕР AC №1: нет local skill mirror `~/.codex/skills/fantasydisk-item-icon-generator/`; (2) Asset Matrix не покрывает `assets/sprites/ui/icons/stats/stat_<id>.png` (базовые атрибуты, 8 шт.) — только `derived/attr_*`; `ui_icon_registry.gd:51-70` грузит обе папки. Skill не генерит картинки (read-only проверки). |
 | [bug_scrum619_secret_encounter_artifact_key_unlock_task.md](../tasks/bug_scrum619_secret_encounter_artifact_key_unlock_task.md) | Back-end | new | Jira: SCRUM-623. **QA: failed** (2026-06-28) на приёмке SCRUM-619: key-artifact branch checks raw `"rift_key"` string, but live artifacts are `{id,title}` dictionaries and no `rift_key` content item exists. SCRUM-619 returned to «К выполнению». |
+| [SCRUM-1095.md](../tasks/SCRUM-1095.md) | Back-end / UI | in_progress | Jira: SCRUM-1095. **QA-found from SCRUM-1093:** actual visible Gratitude alpha-to-version gap is 33.75–42.91px vs contract <=20; owner `/root/scrum1095_visible_icon_gap`. |
 
 ## 0.1.5 — blocked / dependency-gated
 

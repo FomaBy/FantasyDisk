@@ -1,6 +1,6 @@
 # SCRUM-1091 — Atlas exact upgrade descriptions and strong unique finals
 
-Статус: new
+Статус: done
 Версия: 0.2.1
 Jira: SCRUM-1091
 Контур: Codex
@@ -153,3 +153,22 @@ SCRUM-1091 scratch/log roots removed.
 
 Баг: `SCRUM-1094` (blocks this issue). Jira возвращён в `К выполнению`;
 `qa-failed` установлен. QA реализацию не менял.
+
+## QA-Re-вердикт (2026-07-12)
+
+Статус: PASSED
+
+Независимо на `origin/dev 2c8b60c86` проверены 357 RU dossier,
+51 distinct finals, 51 source-identity localizations, caps/boss/floor `>=1.20`,
+no ASCII/generic fallback и adversarial fail-closed contract. SCRUM-1094
+сохраняет точную причину для available и locked malformed nodes;
+Buy visible+disabled.
+
+PASS: validators `17/306/51/34` и `357+25`; schema manifest/migration/
+profile/consumer/event/lifecycle/live/special; Atlas 720p/1080p/2K+resize,
+scroll + pinned price/Buy + 30px safe zone; hidden cost-1; simultaneous finals;
+no toggle; balance harness/global damage/global survivability; no-overlap,
+runtime UI, gamepad menu/in-run/full-flow 2/2 и full runtime.
+
+Баги: нет; linked SCRUM-1094 принят. Отдельный SCRUM-1093
+visual-gap defect не затрагивает Atlas.

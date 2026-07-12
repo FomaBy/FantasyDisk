@@ -1,6 +1,6 @@
 # Main Menu: tighten the lower-right version cluster at large resolutions
 
-Статус: done
+Статус: in_progress
 Версия: 0.2.1
 Jira: SCRUM-1093
 Контур: Codex
@@ -99,3 +99,23 @@ and full runtime gates passed again after integrating fresh independent QA base
 Disk cleanup: removed disposable `.godot` (~446 MiB), transient six-target
 `build/qa/scrum1093`, isolated user-data roots and generated `.uid`/`.import`
 sidecars; committed previews/runtime evidence were preserved.
+
+## QA-Вердикт (2026-07-12)
+
+Статус: FAILED
+
+PASS на `origin/dev 2c8b60c86`: dynamic future `v0.2.10-beta`, exact 8px
+rail reserve, 4px glow-to-label rect gap, frame/ornament safety,
+focus/callback/a11y/SFX, owner focused/gold-shell/no-overlap/gamepad/runtime
+gates и fresh Metal matrix.
+
+FAIL: owner tests меряют transparent Button hitbox, а не visible PNG.
+Independent `tests/scrum1093_independent_visible_gap_test.gd` мерит
+rightmost non-zero alpha и получает `33.75 / 37.47 / 37.47 / 42.91
+px` на 1280/1920/2048/2560 при контракте `<=20 px`.
+
+Баг: SCRUM-1095. Jira вернут в `К выполнению`; QA реализацию
+не менял.
+
+After QA routing, SCRUM-1093 + SCRUM-1095 were claimed as one identical-lock
+fix by `/root/scrum1095_visible_icon_gap`; Jira now truthfully shows active work.

@@ -65,3 +65,15 @@ SCRUM-1094 and full runtime smoke all pass.
 
 Disk cleanup: removed disposable `.godot` (~446 MiB), transient captures,
 isolated user-data roots and generated `.uid`/`.import` sidecars.
+
+## QA-Вердикт (2026-07-12)
+
+Статус: PASSED
+
+На `origin/dev 2c8b60c86` upstream
+`tests/scrum1091_independent_qa_test.gd` и focused
+`tests/scrum1094_atlas_failure_precedence_test.gd` прошли: available и
+locked malformed dossier сохраняют точные safe description/condition,
+generic hints не перезаписывают failure, Buy visible+disabled.
+Schema/balance/Atlas/no-overlap/runtime UI/gamepad/full runtime regressions PASS.
+Баги: нет.
