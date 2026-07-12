@@ -1,6 +1,18 @@
 # Combat Feel Rework — точка отсчёта, анти-прилипание, честные АОЕ
 
-**Дата:** 2026-07-12 · **Статус:** in-progress · **Источник:** прямой запрос пользователя (чат-оркестратор)
+**Дата:** 2026-07-12 · **Статус:** done · **Источник:** прямой запрос пользователя (чат-оркестратор) · **Трекинг:** Multica FAN-1037
+
+## QA-Вердикт
+
+**Статус: PASSED** (2026-07-12, изолированный worktree на origin/dev 7aab0b6dc, 17/17 зелёных):
+runtime_smoke (134s), animation_smoke, meta_progression_smoke, melee_weapon_targeting,
+runtime_smoke_combat, runtime_smoke_boss_elite, feet_anchor_ground_circle,
+enemy_separation_behavior, combat_fairness, aoe_telegraph_fairness_runtime,
+contact_stuck_attack_deadzone, contact_damage_softcap, boss_directional_telegraph,
+elite_attack_config_safety, enemy_content_integrity + баланс-гейты boss_elite_ttk
+(запас 1.87–2.34× при полу 1.35×) и enemy_damage_spread (худший TTD 0.58s при полу 0.48s —
+следить при будущем тюнинге contact_range). Оконная приёмка: `docs/qa/combat_feel_rework/combat_feel_rework_windowed.png`
+(круг-якорь на ногах, крест origin в центре круга, y-sort, телеграф в urgent-фазе).
 
 ## Зачем
 
