@@ -1,6 +1,6 @@
 # SCRUM-1090 — Atlas detailed upgrade descriptions UI mockup
 
-Статус: new
+Статус: done
 Версия: 0.2.1
 Jira: SCRUM-1090
 Контур: Codex
@@ -93,3 +93,19 @@ Thread cleanup: not a disposable worker thread.
 
 Linked blocking Bug: SCRUM-1092. Исправления дизайна/runtime QA не выполнял;
 SCRUM-1090 возвращён в Jira `К выполнению` до fix + re-QA.
+
+## Design rework result — SCRUM-1092 (2026-07-12)
+
+- PixelLab base полностью перегенерирован через MCP: новый source
+  `cccfc9a1-e067-4507-a178-9dd6d54bfce4`, SHA-256
+  `3c2583453bd3d03612df9345676b9a91d465c3ca889481a93473f4a299d429be`.
+- Base больше не содержит `$`, другого текста, цифр, валютных/semantic glyphs,
+  рун или pseudo-writing. Original-size audit сохранён в
+  `docs/design/references/scrum1090_atlas_upgrade_descriptions/glyph_audit.json`.
+- Обязательная видимая callout теперь compositor-owned и записана точно как
+  `УНИКАЛЬНЫЙ ФИНАЛ`; сокращение `ФИНАЛ · SOLO` удалено из plan/layout.
+- Повторные gates: planning 20 элементов / 0 errors / 0 warnings; compositor
+  13/13 PASS; responsive 3/3 PASS; debug visual подтверждает content-only
+  placement внутри пустых секций dossier.
+- Runtime/data/assets не менялись. Linked SCRUM-1092 готов к независимому re-QA;
+  SCRUM-1091 остаётся blocked.

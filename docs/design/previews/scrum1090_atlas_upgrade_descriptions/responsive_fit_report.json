@@ -53,7 +53,7 @@
         {
           "id": "result",
           "ok": true,
-          "font_size": 18
+          "font_size": 15
         },
         {
           "id": "progress",
@@ -131,7 +131,7 @@
         {
           "id": "result",
           "ok": true,
-          "font_size": 28
+          "font_size": 24
         },
         {
           "id": "progress",
@@ -209,7 +209,7 @@
         {
           "id": "result",
           "ok": true,
-          "font_size": 37
+          "font_size": 32
         },
         {
           "id": "progress",

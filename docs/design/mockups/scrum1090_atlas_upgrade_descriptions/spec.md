@@ -1,12 +1,13 @@
 # SCRUM-1090 — Atlas detailed upgrade dossier UI Director spec
 
-Status: `ready_for_independent_qa`
+Status: `ready_for_independent_re_qa`
 Role owner: Design
 Jira: SCRUM-1090
 Base reference: 688×384 PixelLab source; runtime geometry remains the accepted
 1920×1080 SCRUM-1075 Atlas contract.
 Responsive targets: 1280×720, 1920×1080, 2560×1440 and same-instance resize.
-PixelLab source ID: `b6693906-f259-4b43-a1b5-4283ff88bec3`.
+PixelLab source ID: `cccfc9a1-e067-4507-a178-9dd6d54bfce4` (SCRUM-1092
+glyph-free replacement).
 
 Source PNG:
 `../../references/scrum1090_atlas_upgrade_descriptions/pixellab_atlas_detailed_dossier_688x384.png`.
@@ -44,13 +45,14 @@ preceding node. Flavor text never substitutes for numbers.
 
 | Zone | Rect | Purpose |
 | --- | --- | --- |
-| role/axis | `510,66,143,12` | final/ordinary role and solo/AoE/crowd/defense axis |
-| title | `510,81,143,16` | selected node title |
-| owning weapon | `510,101,143,14` | weapon title + scope |
-| effect viewport | `510,124,143,98` | two calm generated compartments inside the runtime scroll contract |
-| path progress | `510,232,65,35` | `5/6 → 6/6` or selected rank |
-| price | `585,232,67,35` | exact currency and cost |
-| state | `510,276,143,16` | availability/purchased/locked state |
+| exact final callout | `510,69,143,12` | compositor-only `УНИКАЛЬНЫЙ ФИНАЛ` |
+| title | `510,84,143,16` | selected node title |
+| owning weapon | `510,104,143,14` | weapon title + scope |
+| effect | `510,136,143,48` | exact trigger in the second empty compartment |
+| result | `510,198,143,48` | boss/final floor in the third empty compartment |
+| path progress | `510,260,65,16` | `5/6 → 6/6` or selected rank |
+| price | `585,260,67,16` | exact currency and cost |
+| state | `510,281,143,14` | availability/purchased/locked state |
 | action | `510,300,143,16` | purchase action; stable rect in all states |
 
 The dossier frame is `497,56,169,269`; all content has at least 12 px lateral
@@ -110,3 +112,24 @@ outside the scroll viewport, preserving pointer/gamepad reachability.
   2560×1440. Runtime remains governed by the accepted SCRUM-1075 geometry.
 - Back-end handoff: SCRUM-1091, intentionally blocked until this Design result
   passes independent QA and SCRUM-1088/SCRUM-1089 release overlapping locks.
+
+## SCRUM-1092 rework result
+
+- Rejected source `b6693906-f259-4b43-a1b5-4283ff88bec3` / SHA
+  `a8d05d4bbc33bb078239b4722ded71fac5640bde869ed62240ba6190e82b9f6f`
+  is superseded because it baked a `$` glyph into the header.
+- Replacement PixelLab MCP source
+  `cccfc9a1-e067-4507-a178-9dd6d54bfce4` / SHA
+  `3c2583453bd3d03612df9345676b9a91d465c3ca889481a93473f4a299d429be`
+  contains no text, numbers, currency marks, semantic icons, runes or
+  pseudo-writing. The original-size audit is recorded beside the source in
+  `glyph_audit.json`.
+- The required visible callout is compositor-owned and exactly
+  `УНИКАЛЬНЫЙ ФИНАЛ`; the base contains no baked replacement or abbreviation.
+- Updated planning gate: `ready_for_image`, 20 elements, 0 errors, 0 warnings.
+- Updated compositor: 13/13 zones PASS; the exact callout fits at 9 px in
+  `Rect2(510,69,143,12)` without touching ornament.
+- Updated responsive evidence: 3/3 PASS at 1280×720, 1920×1080 and
+  2560×1440; exact callout sizes are 17/25/33 px respectively.
+- Runtime/data/assets remain unchanged; SCRUM-1091 stays blocked pending re-QA
+  and release of SCRUM-1088/SCRUM-1089 locks.

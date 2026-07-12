@@ -1,10 +1,21 @@
 {
   "tool": "PixelLab MCP create_ui_asset",
-  "ui_asset_id": "b6693906-f259-4b43-a1b5-4283ff88bec3",
-  "name": "SCRUM-1090 Atlas detailed upgrade dossier",
+  "rework_issue": "SCRUM-1092",
+  "previous_rejected_source_id": "b6693906-f259-4b43-a1b5-4283ff88bec3",
+  "ui_asset_id": "cccfc9a1-e067-4507-a178-9dd6d54bfce4",
+  "status": "completed",
+  "name": "SCRUM-1092 Atlas glyph-free detailed dossier",
   "size": [688, 384],
   "cost_generations": 40,
-  "prompt_summary": "Full 16:9 D&D dark-fantasy Atlas reference with a thin hollow frame, class rail, three-path constellation canvas, calm detailed dossier interior and radiant unique final sockets. No text, pseudo-text, numbers or watermark; all content zones remain empty and ornament-free.",
+  "prompt_summary": "Full 16:9 D&D dark-fantasy Atlas reference with a thin hollow frame, one blank header rail, class-medallion rail, three-path constellation canvas, calm detailed dossier compartments and radiant final sockets. Absolute prohibition on all baked text, letters, numbers, currency marks including $, semantic icons, pictograms, logos, emblems, runes and pseudo-writing. Header interiors are plain empty dark rectangles without small icon/currency chips. Only non-semantic border geometry and plain gems may decorate outside content zones. All runtime copy, including exact УНИКАЛЬНЫЙ ФИНАЛ, is added later only by the compositor.",
+  "strict_empty_interiors": {
+    "header_left": [24, 13, 258, 36],
+    "header_right": [490, 13, 178, 36],
+    "class_rail": [24, 56, 78, 269],
+    "constellation": [113, 56, 374, 269],
+    "dossier": [497, 56, 169, 269],
+    "reset_action": [34, 346, 168, 20]
+  },
   "content_zone_source": "ui_plan.json",
   "runtime_promotion": false
 }

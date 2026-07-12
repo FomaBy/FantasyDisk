@@ -103,7 +103,7 @@
       "kind": "text",
       "rect": [
         132,
-        67,
+        70,
         336,
         18
       ],
@@ -140,7 +140,7 @@
       "kind": "text",
       "rect": [
         510,
-        66,
+        69,
         143,
         12
       ],
@@ -153,7 +153,7 @@
       "kind": "text",
       "rect": [
         510,
-        81,
+        84,
         143,
         16
       ],
@@ -166,7 +166,7 @@
       "kind": "text",
       "rect": [
         510,
-        101,
+        104,
         143,
         14
       ],
@@ -175,34 +175,39 @@
       "fit_font_size": 9
     },
     {
-      "id": "dossier_scroll",
-      "kind": "scroll_area",
+      "id": "dossier_effect",
+      "kind": "text",
       "rect": [
         510,
-        124,
+        136,
         143,
-        98
+        48
       ],
       "ok": true,
       "warnings": [],
-      "fit_font_size": 8,
-      "content_h": 150,
-      "scrollbar_required": true,
-      "scrollbar_rect": [
-        648,
-        124,
-        5,
-        98
-      ]
+      "fit_font_size": 9
+    },
+    {
+      "id": "dossier_result",
+      "kind": "text",
+      "rect": [
+        510,
+        198,
+        143,
+        48
+      ],
+      "ok": true,
+      "warnings": [],
+      "fit_font_size": 9
     },
     {
       "id": "progress",
       "kind": "text",
       "rect": [
         510,
-        232,
+        260,
         65,
-        35
+        16
       ],
       "ok": true,
       "warnings": [],
@@ -213,9 +218,9 @@
       "kind": "text",
       "rect": [
         585,
-        232,
+        260,
         67,
-        35
+        16
       ],
       "ok": true,
       "warnings": [],
@@ -226,9 +231,9 @@
       "kind": "text",
       "rect": [
         510,
-        276,
+        281,
         143,
-        16
+        14
       ],
       "ok": true,
       "warnings": [],
@@ -252,9 +257,9 @@
       "kind": "button",
       "rect": [
         34,
-        342,
+        346,
         168,
-        22
+        20
       ],
       "ok": true,
       "warnings": [],

@@ -1,0 +1,28 @@
+{
+  "schema": "fantasydisk.pixellab_glyph_audit.v1",
+  "issue": "SCRUM-1092",
+  "source_id": "cccfc9a1-e067-4507-a178-9dd6d54bfce4",
+  "source_file": "pixellab_atlas_detailed_dossier_688x384.png",
+  "sha256": "3c2583453bd3d03612df9345676b9a91d465c3ca889481a93473f4a299d429be",
+  "reviewed_at_original_size": true,
+  "prohibited": [
+    "letters",
+    "numbers",
+    "currency marks including $",
+    "semantic icons",
+    "logos",
+    "runes",
+    "pseudo-writing"
+  ],
+  "regions": [
+    {"id": "whole_canvas", "rect": [0, 0, 688, 384], "status": "PASS"},
+    {"id": "previous_dollar_defect", "rect": [250, 12, 42, 34], "status": "PASS", "finding": "blank dark header interior; no dollar sign or replacement glyph"},
+    {"id": "header_left", "rect": [24, 13, 258, 36], "status": "PASS"},
+    {"id": "header_right", "rect": [490, 13, 178, 36], "status": "PASS"},
+    {"id": "dossier_interiors", "rect": [509, 67, 145, 249], "status": "PASS"},
+    {"id": "reset_action", "rect": [31, 345, 174, 25], "status": "PASS"}
+  ],
+  "detected_prohibited_glyphs": [],
+  "allowed_non_semantic_geometry": "plain circular/diamond constellation nodes, border filigree and plain sapphire gems",
+  "result": "PASS"
+}
