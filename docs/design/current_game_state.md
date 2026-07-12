@@ -487,6 +487,9 @@ SCRUM-277 добавил weapon integrity gate для всего ростера:
 `route_orientation=horizontal`. Canvas по высоте равен authored node viewport, а по
 ширине растёт с числом колонок. `RouteMapScroll` использует horizontal auto-scroll;
 vertical scrollbar скрыт/отключён, `scroll_vertical=0`.
+SCRUM-1086 удерживает status второй строки шапки в той же safe-zone:
+на 1152/1280 показана компактная, но полная форма без ellipsis; на 1600+
+текст остаётся прежним.
 
 При open/return/live resize UI возвращает текущую доступную колонку в видимую
 область. Drag и wheel/trackpad над картой двигают только horizontal offset. Если

@@ -72,6 +72,38 @@ func _semantic_font(role: StringName, authored_px: int, min_px := 0, max_px := 9
 	return SemanticTypography.resolve_authored_compat(role, authored_px, viewport_height, min_px, max_px)
 
 
+func _route_map_stage_status_text(viewport_size: Vector2) -> String:
+	var progress: int = mini(game.route_stage, game.route_nodes.size() - 1)
+	var strength: int = game.route_scaling_stage()
+	var next_battle_seconds := int(game.combat._current_round_duration())
+	if viewport_size.x <= 1280.0 or viewport_size.y <= 720.0:
+		return "Шаг %d/%d  ·  Сила %d  ·  Бой %dс  ·  Выбор пути необратим" % [
+			progress,
+			game.ROUTE_STEPS_TO_BOSS,
+			strength,
+			next_battle_seconds,
+		]
+	return "Прогресс: %d/%d   Сила маршрута: %d   Следующий бой: %ds   Выбранный путь фиксируется" % [
+		progress,
+		game.ROUTE_STEPS_TO_BOSS,
+		strength,
+		next_battle_seconds,
+	]
+
+
+func _update_route_map_stage_label(label: Label, viewport_size: Vector2) -> void:
+	if label == null:
+		return
+	label.name = "RouteMapStageLabel"
+	label.text = _route_map_stage_status_text(viewport_size)
+	label.add_theme_color_override("font_color", Color(0.84, 0.90, 0.96, 1.0))
+	if game.route_debug_free_pick:
+		# Keep the compact two-line header contract even in debug mode.
+		label.name = "RouteDebugFreePickLabel"
+		label.text += "   DEBUG: свободный выбор (F12)"
+		label.add_theme_color_override("font_color", Color(1.0, 0.58, 0.46, 1.0))
+
+
 func _show_battle_map() -> void:
 	# SCRUM-812: сброс латча активации и цели фокуса на каждое переоткрытие карты.
 	_route_node_activating = false
@@ -163,12 +195,7 @@ func _show_battle_map() -> void:
 	title_box.add_child(title_label)
 
 	var stage_label := Label.new()
-	stage_label.text = "Прогресс: %d/%d   Сила маршрута: %d   Следующий бой: %ds   Выбранный путь фиксируется" % [
-		min(game.route_stage, game.route_nodes.size() - 1),
-		game.ROUTE_STEPS_TO_BOSS,
-		game.route_scaling_stage(),
-		int(game.combat._current_round_duration()),
-	]
+	_update_route_map_stage_label(stage_label, game.get_viewport().get_visible_rect().size)
 	stage_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_LEFT
 	# SCRUM-981: compact supporting line inside the same authored title zone.
 	stage_label.add_theme_font_size_override("font_size", _semantic_font(SemanticTypography.ROLE_CAPTION, 9, 12, 16))
@@ -176,12 +203,6 @@ func _show_battle_map() -> void:
 	stage_label.add_theme_color_override("font_color", Color(0.84, 0.90, 0.96, 1.0))
 	stage_label.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	title_box.add_child(stage_label)
-
-	if game.route_debug_free_pick:
-		# Keep the compact two-line header contract even in debug mode.
-		stage_label.name = "RouteDebugFreePickLabel"
-		stage_label.text += "   DEBUG: свободный выбор (F12)"
-		stage_label.add_theme_color_override("font_color", Color(1.0, 0.58, 0.46, 1.0))
 
 	var scroll := ScrollContainer.new()
 	scroll.name = "RouteMapScroll"
@@ -220,6 +241,7 @@ func _show_battle_map() -> void:
 	_apply_route_map_shell_layout(root, header, title_box, scroll, map_area)
 	_layout_route_map_fab(root, shell_layout["fab_rect"])
 	root.resized.connect(func() -> void:
+		_update_route_map_stage_label(stage_label, root.size)
 		_apply_route_map_shell_layout(root, header, title_box, scroll, map_area)
 		_apply_route_map_shell_layout.call_deferred(root, header, title_box, scroll, map_area)
 		var resized_layout := _route_map_shell_layout(root.size)

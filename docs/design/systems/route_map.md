@@ -15,6 +15,9 @@ Route map — full-screen экран выбора пути между боями
   область при open/return/live resize.
 - Точные header/HUD/map/node/scrollbar/FAB zones заданы для
   1152×648, 1280×720, 1600×900, 1920×1080 и 2560×1440 в SCRUM-1057 spec.
+- SCRUM-1086: в compact tiers 1152×648/1280×720 вторая строка шапки
+  показывает полный компактный статус `Шаг / Сила / Бой / Выбор пути
+  необратим` без ellipsis; на 1600+ сохраняется полная прежняя copy.
 
 ## Interaction
 
@@ -167,3 +170,6 @@ or corner metal.
 - `tests/scrum1079_route_map_horizontal_test.gd` гейтит five-target
   left-to-right geometry, non-overlapping Y branches, horizontal-only pan,
   line input transparency and initial gamepad focus.
+- `tests/scrum1086_route_map_header_text_fit_test.gd` измеряет
+  themed-font rendered width во всех пяти tiers и при live resize, а также
+  проверяет полноту meaningful status tokens и отсутствие ellipsis.

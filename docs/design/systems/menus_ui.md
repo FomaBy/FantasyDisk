@@ -564,6 +564,10 @@ bottom scrollbar lane and pending-level FAB keep-out follow exact matrices for
 1152×648, 1280×720, 1600×900, 1920×1080 and 2560×1440. Spec/provenance:
 `docs/design/mockups/scrum1057_route_map_horizontal/spec.md`; runtime matrix:
 `docs/design/previews/scrum1079_route_map_horizontal_runtime/`.
+SCRUM-1086 добавляет width-measured responsive status copy: 1152/1280
+используют полную компактную фразу без ellipsis, а 1600/1920/2560
+сохраняют прежний полный текст. Live resize меняет copy без изменения
+authored title-zone geometry.
 
 The production outer shell remains the hollow SCRUM-981
 `assets/sprites/ui/meta40/frame_border.png`; all controls stay inside its real
