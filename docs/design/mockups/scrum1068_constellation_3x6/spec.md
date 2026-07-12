@@ -4,11 +4,11 @@ Status: `ready_for_integration`
 Role owner: Design
 Jira: SCRUM-1075; implementation parent: SCRUM-1068
 Base geometry: 1920×1080
-PixelLab source request: 688×384, seed 1075
+PixelLab source request: 688×384, seed 1086
 Responsive targets: 1152×648, 1280×720, 1366×768, 1600×900,
 1920×1080, 2560×1440, 3840×2160 and same-instance live resize
-PixelLab source: `fde7794d-9f82-404c-8006-213e281a931a`,
-`scrum1075_constellation_3x6_atlas_mockup`, seed `1075`, 688×384.
+PixelLab source: `9bc178ba-1b69-43ce-82af-519e7abea66a`,
+`scrum1084_constellation_3x6_exact21_v3`, seed `1086`, 688×384.
 Mockup base: `atlas_schema6_base_1920x1080.png`.
 Preview/debug: `../../previews/scrum1068_constellation_3x6/atlas_schema6_preview_1920x1080.png`
 and adjacent debug overlay.
@@ -22,8 +22,9 @@ redraw or runtime asset promotion is required.
 
 Planning was complete before art generation. `ui_plan.report.json` says
 `ready_for_image`, with 47 elements and no errors or warnings. The exact MCP
-request remains frozen in `pixellab_request.json`; the accepted PixelLab job
-used it without geometry changes.
+request is recorded in `pixellab_request.json`; SCRUM-1084 preserved the
+47-element plan and removed hidden endpoints from the diffusion scaffold so
+PixelLab generated exactly two single spurs rather than duplicating junctions.
 
 ## Content inventory and base rectangles
 
@@ -91,8 +92,9 @@ activation control.
 
 ## PixelLab source and assembly
 
-The replenished account reported 2836 generations before the run. PixelLab MCP
-completed source ID `fde7794d-9f82-404c-8006-213e281a931a` for 40 generations.
+The SCRUM-1084 fix started with 2616 generations. PixelLab MCP rejected two
+non-conforming source attempts, then completed and accepted source ID
+`9bc178ba-1b69-43ce-82af-519e7abea66a` for the third 40-generation pass.
 The raw 688×384 export is retained unchanged for provenance. PixelLab baked its
 checker matte into the export, so `postprocess_pixellab_source.py` removes only
 the light neutral matte connected to the canvas edge, preserves the generated
@@ -108,6 +110,8 @@ surfaces remain PixelLab-generated; runtime copy is added only through
 ## QA result
 
 - planning gate: 47 elements, 0 errors, 0 warnings;
+- native pixel topology gate: exactly 21 detected socket centers; one core,
+  three six-socket rays and exactly two single side spurs; no keystone;
 - preview renderer: 15/15 zones fit, report `ok: true`;
 - responsive fit: 7/7 PASS at 1152×648 through 3840×2160;
 - full repository runtime smoke through `tools/godot_gate.py`: PASS on Godot

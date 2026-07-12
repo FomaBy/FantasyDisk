@@ -1,12 +1,12 @@
 {
   "tool": "create_ui_asset",
-  "name": "scrum1075_constellation_3x6_atlas_mockup",
-  "seed": 1075,
+  "name": "scrum1084_constellation_3x6_exact21_v3",
+  "seed": 1086,
   "width": 688,
   "height": 384,
   "no_background": false,
   "color_palette": "blackened iron, obsidian blue, worn antique gold, restrained ruby accents, subtle cold starlight",
-  "description": "Full 16:9 source-only FantasyDisk Atlas page mockup, premium dark fantasy D&D dragon-forged style matching the accepted Meta40 hollow gold frame family. No text, no letters, no numbers, no pseudo-text, no runes shaped like writing, no logo, no watermark. Keep the major panel interiors dark, calm and empty. Outer ornament must stay outside the safe interior. Show exactly one large free core socket near the lower middle of the graph, exactly three clearly separated weapon rays rising from that core, exactly six purchasable sockets on each ray including a stronger ornate final socket at each endpoint, and exactly two smaller hidden side-spur sockets attached laterally to the outer rays. Draw thin restrained constellation connectors only between the intended sockets. All three finals have equal visual authority and no exclusive/activation-toggle motif. Preserve a left class selector rail, a right empty dossier panel, a smaller right progress/legacy panel, and a bottom footer with a wide 420-family reset plate on the left and a separate legend zone on the right. No keystone toggle. Decorative metal, dragon ornaments, gems, spikes, seams, highlights and smoke must not enter any empty content interior or socket center. Strict, brutal, epic, premium, readable, restrained rather than noisy.",
+  "description": "Full 16:9 source-only FantasyDisk Atlas page mockup, premium restrained dark fantasy D&D dragon-forged style matching accepted Meta40. GEOMETRY CONTRACT: the supplied 19 circle pieces are the complete one-core plus three-rays scaffold: exactly one free core and exactly three rays with exactly six sockets each including equal ornate endpoint finals. Do not add any circle, keystone, junction dot, bead, node or gem to that scaffold. Then add exactly TWO and only two small lateral hidden spur sockets total: one single endpoint on the left of the left outer ray and one single endpoint on the right of the right outer ray, both around the horizontal level of branch socket 3. Each hidden endpoint connects directly to its existing outer-ray socket with one uninterrupted thin line. No intermediate circle or junction. Final graph circle count must be exactly 21 = supplied 19 + exactly two single hidden endpoints. No central extra large circle, no keystone/toggle, no extra connector. Count before output. No text, letters, numbers, pseudo-text, logo or watermark. Keep major panel interiors dark, calm, empty; preserve left class rail, right dossier, right progress, bottom reset plate and separate legend. Decorative frame art remains outside content interiors and socket centers. Blackened iron, obsidian blue, worn antique gold, restrained ruby accents, premium readable not noisy.",
   "virtual_canvas": {"width": 512, "height": 286},
   "pieces": [
     {"id": "outer_frame", "kind": "rounded_rect", "x": 0, "y": 0, "w": 512, "h": 286, "radius": 4},
@@ -35,8 +35,6 @@
     {"id": "hammer_b3", "kind": "circle", "x": 260, "y": 138, "r": 7},
     {"id": "hammer_b4", "kind": "circle", "x": 275, "y": 119, "r": 7},
     {"id": "hammer_b5", "kind": "circle", "x": 288, "y": 102, "r": 7},
-    {"id": "hammer_final", "kind": "circle", "x": 299, "y": 87, "r": 9},
-    {"id": "hidden_sword", "kind": "circle", "x": 143, "y": 143, "r": 7},
-    {"id": "hidden_hammer", "kind": "circle", "x": 313, "y": 143, "r": 7}
+    {"id": "hammer_final", "kind": "circle", "x": 299, "y": 87, "r": 9}
   ]
 }

@@ -1,16 +1,18 @@
 {
   "schema": "fantasydisk.pixellab_asset_manifest.v1",
   "issue": "SCRUM-1075",
+  "fix_issue": "SCRUM-1084",
   "generator": "PixelLab MCP",
   "tool": "create_ui_asset",
-  "source_id": "fde7794d-9f82-404c-8006-213e281a931a",
-  "name": "scrum1075_constellation_3x6_atlas_mockup",
-  "seed": 1075,
+  "source_id": "9bc178ba-1b69-43ce-82af-519e7abea66a",
+  "name": "scrum1084_constellation_3x6_exact21_v3",
+  "seed": 1086,
   "prompt_spec": "docs/design/mockups/scrum1068_constellation_3x6/pixellab_request.json",
   "export": {
     "width": 688,
     "height": 384,
     "mode": "RGBA",
+    "sha256": "88917fe4d9ebbdd16fbe4e7faf0582d1579439d661a7874e5ca8f05a307112ea",
     "raw_file": "atlas_schema6_source_688x384.png",
     "transparent_file": "atlas_schema6_source_transparent_688x384.png"
   },
@@ -21,8 +23,9 @@
     "runtime_promotion": false
   },
   "preview": "docs/design/previews/scrum1068_constellation_3x6/atlas_schema6_preview_1920x1080.png",
+  "topology_report": "docs/design/previews/scrum1068_constellation_3x6/atlas_schema6_topology_report.json",
   "qa": {
-    "topology": "one core; three rays x six sockets including finals; two hidden side spurs",
+    "topology": "21/21 PASS: one core; three rays x six sockets including finals; exactly two single hidden side spurs; no keystone",
     "content_zones": "15/15 PASS",
     "responsive_matrix": "7/7 PASS",
     "frame_overlap": "PASS"

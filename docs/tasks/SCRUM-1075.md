@@ -32,11 +32,14 @@ schema-6 topology without promoting new runtime art.
   `docs/design/mockups/scrum1068_constellation_3x6/ui_plan.json`;
 - compositor planning gate: `ready_for_image`, `47` elements, `0` errors,
   `0` warnings;
-- PixelLab MCP config smoke passed through `get_balance`; no secret was printed,
-  and the replenished account reported `2836` generations before this run;
-- `create_ui_asset` completed as source ID
-  `fde7794d-9f82-404c-8006-213e281a931a`, name
-  `scrum1075_constellation_3x6_atlas_mockup`, seed `1075`, cost `40`;
+- PixelLab MCP config smoke passed through `get_balance`; no secret was printed;
+- SCRUM-1084 replaced the QA-failed 23-socket art with accepted PixelLab source
+  `9bc178ba-1b69-43ce-82af-519e7abea66a`, name
+  `scrum1084_constellation_3x6_exact21_v3`, seed `1086`, cost `40` for the
+  accepted attempt;
+- native pixel topology gate now detects exactly `21/21` sockets: one core,
+  three rays × six including finals, and exactly two single side spurs total;
+  no keystone or intermediate junction remains;
 - source export, deterministic checker-matte cleanup and Meta40 `bg_sky`
   assembly are recorded in `provenance.json` and the reference manifest;
 - composited preview report: `ok: true`, all `15/15` content zones fit;
@@ -62,6 +65,7 @@ Evidence:
 - preview: `docs/design/previews/scrum1068_constellation_3x6/atlas_schema6_preview_1920x1080.png`;
 - debug overlay/report: adjacent `atlas_schema6_preview_debug_1920x1080.png`
   and `atlas_schema6_preview_report.json`;
+- topology report: adjacent `atlas_schema6_topology_report.json`;
 - responsive report/contact sheet: adjacent `responsive_fit_report.json` and
   `responsive_contact_sheet.png`.
 

@@ -1,6 +1,7 @@
 {
   "schema": "fantasydisk.pixellab_provenance.v1",
   "issue": "SCRUM-1075",
+  "fix_issue": "SCRUM-1084",
   "parent_issue": "SCRUM-1068",
   "status": "ready_for_design_qa",
   "generator": "PixelLab MCP",
@@ -9,30 +10,48 @@
     "result": "PASS",
     "secrets_printed": false
   },
-  "balance_before_generation": {
+  "balance_before_fix_generation": {
     "credits_usd": 0.0,
-    "generations_remaining": 2836,
-    "generations_used": 4997,
+    "generations_remaining": 2616,
+    "generations_used": 5217,
     "generations_total": 7833,
     "subscription": "active Tier 3 Pixel Architect"
   },
-  "generation_attempt": {
-    "tool": "create_ui_asset",
-    "name": "scrum1075_constellation_3x6_atlas_mockup",
-    "seed": 1075,
-    "requested_size": [688, 384],
-    "documented_job_size": "20-40 generations",
-    "charged_generations": 40,
-    "result": "completed"
-  },
-  "source_asset_id": "fde7794d-9f82-404c-8006-213e281a931a",
-  "source_asset_name": "scrum1075_constellation_3x6_atlas_mockup",
+  "generation_attempts": [
+    {
+      "source_asset_id": "6ab8c7cf-f5ab-42dc-830d-3cb96c8beb19",
+      "name": "scrum1084_constellation_3x6_exact21_v1",
+      "seed": 1084,
+      "charged_generations": 40,
+      "result": "rejected: 22 sockets; right intermediate junction remained"
+    },
+    {
+      "source_asset_id": "96aea870-1996-4ac8-92de-01286bdf68f8",
+      "name": "scrum1084_constellation_3x6_exact21_v2",
+      "seed": 1085,
+      "charged_generations": 40,
+      "result": "rejected: extra central keystone-like socket and topology drift"
+    },
+    {
+      "source_asset_id": "9bc178ba-1b69-43ce-82af-519e7abea66a",
+      "name": "scrum1084_constellation_3x6_exact21_v3",
+      "seed": 1086,
+      "requested_size": [688, 384],
+      "charged_generations": 40,
+      "result": "accepted: exact 21-socket native graph"
+    }
+  ],
+  "source_asset_id": "9bc178ba-1b69-43ce-82af-519e7abea66a",
+  "source_asset_name": "scrum1084_constellation_3x6_exact21_v3",
+  "source_seed": 1086,
+  "source_sha256": "88917fe4d9ebbdd16fbe4e7faf0582d1579439d661a7874e5ca8f05a307112ea",
   "source_export": "docs/design/references/scrum1068_constellation_3x6/atlas_schema6_source_688x384.png",
   "transparent_source": "docs/design/references/scrum1068_constellation_3x6/atlas_schema6_source_transparent_688x384.png",
   "mockup_png": "docs/design/mockups/scrum1068_constellation_3x6/atlas_schema6_base_1920x1080.png",
   "preview_png": "docs/design/previews/scrum1068_constellation_3x6/atlas_schema6_preview_1920x1080.png",
   "debug_overlay": "docs/design/previews/scrum1068_constellation_3x6/atlas_schema6_preview_debug_1920x1080.png",
   "preview_report": "docs/design/previews/scrum1068_constellation_3x6/atlas_schema6_preview_report.json",
+  "topology_report": "docs/design/previews/scrum1068_constellation_3x6/atlas_schema6_topology_report.json",
   "responsive_report": "docs/design/previews/scrum1068_constellation_3x6/responsive_fit_report.json",
   "postprocess": {
     "script": "docs/design/mockups/scrum1068_constellation_3x6/postprocess_pixellab_source.py",
@@ -44,6 +63,7 @@
   "fallback_used": false,
   "qa": {
     "planning_gate": "ready_for_image; 47 elements; 0 errors; 0 warnings",
+    "native_topology": "21/21 PASS; one core + three rays x six + exactly two single side spurs; no keystone",
     "preview_fit": "15/15 zones; ok=true",
     "responsive_fit": "7/7 PASS",
     "frame_overlap": "PASS",
