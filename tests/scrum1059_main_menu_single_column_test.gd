@@ -77,15 +77,17 @@ func _assert_main_menu(main: Node, viewport_size: Vector2i, phase: String) -> vo
 	var screen := main.find_child("MainMenuScreen", true, false) as Control
 	var logo := main.find_child("MainMenuTitleLabel", true, false) as TextureRect
 	var actions := main.find_child("MainMenuActions", true, false) as GridContainer
+	var glow := main.find_child("MainMenuGratitudeGlow", true, false) as TextureRect
 	var credits := main.find_child("MainMenuCreditsButton", true, false) as Button
 	var version := main.find_child("MainMenuVersionLabel", true, false) as Label
-	if screen == null or logo == null or actions == null or credits == null or version == null:
+	if screen == null or logo == null or actions == null or glow == null or credits == null or version == null:
 		_errors.append("%s: incomplete Main Menu nodes." % context)
 		return
 	var expected := _expected(viewport_size)
 	var inner: Rect2 = expected["inner"]
 	_assert_rect(logo.get_global_rect(), expected["logo"], "%s logo" % context)
 	_assert_rect(actions.get_global_rect(), expected["actions"], "%s actions" % context)
+	_assert_rect(glow.get_global_rect(), expected["glow"], "%s gratitude glow" % context)
 	_assert_rect(credits.get_global_rect(), expected["credits"], "%s gratitude" % context)
 	_assert_rect(version.get_global_rect(), expected["version"], "%s version" % context)
 	if actions.columns != 1 or actions.get_child_count() != 6:
@@ -93,15 +95,19 @@ func _assert_main_menu(main: Node, viewport_size: Vector2i, phase: String) -> vo
 		return
 	if not _near_rect(screen.get_meta("gold_shell_inner_rect", Rect2()) as Rect2, inner):
 		_errors.append("%s: published authored inner rect drifted." % context)
-	for control in [logo, actions, credits, version]:
+	for control in [logo, actions, glow, credits, version]:
 		if not inner.grow(1.0).encloses((control as Control).get_global_rect()):
 			_errors.append("%s: %s escapes authored inner %s." % [context, str((control as Control).name), str(inner)])
 	for first_index in range(4):
-		var first := [logo, actions, credits, version][first_index] as Control
+		var first := [logo, actions, glow, version][first_index] as Control
 		for second_index in range(first_index + 1, 4):
-			var second := [logo, actions, credits, version][second_index] as Control
+			var second := [logo, actions, glow, version][second_index] as Control
 			if first.get_global_rect().intersects(second.get_global_rect()):
 				_errors.append("%s: %s overlaps %s." % [context, str(first.name), str(second.name)])
+	if not glow.get_global_rect().grow(1.0).encloses(credits.get_global_rect()):
+		_errors.append("%s: gratitude icon escapes its bounded glow." % context)
+	if glow.mouse_filter != Control.MOUSE_FILTER_IGNORE or not (glow.texture is GradientTexture2D):
+		_errors.append("%s: gratitude glow must be procedural and mouse-ignoring." % context)
 	var buttons: Array[Button] = []
 	for index in range(BUTTON_NAMES.size()):
 		var button := actions.get_child(index) as Button
@@ -125,6 +131,13 @@ func _assert_main_menu(main: Node, viewport_size: Vector2i, phase: String) -> vo
 		_errors.append("%s: gratitude must remain icon-only with the accepted asset." % context)
 	if credits.tooltip_text != "Благодарности" or str(credits.get_meta("accessibility_name", "")) != "Благодарности":
 		_errors.append("%s: gratitude tooltip/accessibility drifted." % context)
+	var expected_version := "v%s" % str(ProjectSettings.get_setting("application/config/version", "0.0.0"))
+	if version.text != expected_version:
+		_errors.append("%s: version '%s' does not match dynamic project version '%s'." % [context, version.text, expected_version])
+	if version.horizontal_alignment != HORIZONTAL_ALIGNMENT_RIGHT or version.vertical_alignment != VERTICAL_ALIGNMENT_BOTTOM:
+		_errors.append("%s: version must remain bottom-right aligned." % context)
+	if version.get_theme_font_size("font_size") != int(expected["version_font_size"]):
+		_errors.append("%s: version font tier drifted." % context)
 	if screen.find_children("*", "ScrollContainer", true, false).size() > 0:
 		_errors.append("%s: Main Menu must not introduce a scrollbar." % context)
 
@@ -137,9 +150,9 @@ func _assert_focus_graph(buttons: Array[Button], credits: Button, context: Strin
 		var following := buttons[(index + 1) % buttons.size()]
 		if buttons[index].focus_neighbor_top != previous.get_path() or buttons[index].focus_neighbor_bottom != following.get_path():
 			_errors.append("%s: Up/Down ring drifted at %s." % [context, str(buttons[index].name)])
-		if buttons[index].focus_neighbor_right != credits.get_path():
-			_errors.append("%s: gratitude is unreachable from %s via Right." % [context, str(buttons[index].name)])
-	if credits.focus_neighbor_left != buttons[0].get_path() or credits.focus_neighbor_bottom != buttons[0].get_path() or credits.focus_neighbor_top != buttons[5].get_path():
+		if buttons[index].focus_neighbor_left != buttons[index].get_path() or buttons[index].focus_neighbor_right != credits.get_path():
+			_errors.append("%s: gratitude is not reachable from %s via Right." % [context, str(buttons[index].name)])
+	if credits.focus_neighbor_left != buttons[5].get_path() or credits.focus_neighbor_right != credits.get_path() or credits.focus_neighbor_bottom != buttons[0].get_path() or credits.focus_neighbor_top != buttons[5].get_path():
 		_errors.append("%s: gratitude return graph is not deterministic." % context)
 
 
@@ -162,15 +175,15 @@ func _assert_stable_states(button: Button, context: String) -> void:
 func _expected(viewport_size: Vector2i) -> Dictionary:
 	match viewport_size:
 		Vector2i(1152, 648):
-			return {"inner": Rect2(144, 125, 864, 398), "logo": Rect2(144, 125, 160, 60), "actions": Rect2(144, 189, 320, 334), "credits": Rect2(944, 125, 64, 64), "version": Rect2(320, 146, 112, 18), "button_width": 320.0, "button_height": 54.0}
+			return {"inner": Rect2(144, 125, 864, 398), "logo": Rect2(144, 125, 160, 60), "actions": Rect2(144, 189, 320, 334), "glow": Rect2(784, 439, 84, 84), "credits": Rect2(790, 445, 72, 72), "version": Rect2(880, 501, 128, 22), "version_font_size": 14, "button_width": 320.0, "button_height": 54.0}
 		Vector2i(1280, 720):
-			return {"inner": Rect2(157, 137, 966, 446), "logo": Rect2(157, 137, 192, 72), "actions": Rect2(157, 215, 340, 361), "credits": Rect2(1059, 137, 64, 64), "version": Rect2(365, 164, 112, 18), "button_width": 340.0, "button_height": 56.0}
+			return {"inner": Rect2(157, 137, 966, 446), "logo": Rect2(157, 137, 192, 72), "actions": Rect2(157, 215, 340, 361), "glow": Rect2(891, 499, 84, 84), "credits": Rect2(897, 505, 72, 72), "version": Rect2(987, 559, 136, 24), "version_font_size": 14, "button_width": 340.0, "button_height": 56.0}
 		Vector2i(1600, 900):
-			return {"inner": Rect2(191, 165, 1218, 570), "logo": Rect2(191, 165, 267, 100), "actions": Rect2(191, 273, 360, 424), "credits": Rect2(1337, 165, 72, 72), "version": Rect2(474, 205, 126, 20), "button_width": 360.0, "button_height": 64.0}
+			return {"inner": Rect2(191, 165, 1218, 570), "logo": Rect2(191, 165, 267, 100), "actions": Rect2(191, 273, 360, 424), "glow": Rect2(1153, 639, 96, 96), "credits": Rect2(1161, 647, 80, 80), "version": Rect2(1265, 709, 144, 26), "version_font_size": 15, "button_width": 360.0, "button_height": 64.0}
 		Vector2i(1920, 1080):
-			return {"inner": Rect2(224, 193, 1472, 694), "logo": Rect2(224, 193, 331, 124), "actions": Rect2(224, 329, 380, 506), "credits": Rect2(1624, 193, 72, 72), "version": Rect2(571, 245, 126, 20), "button_width": 380.0, "button_height": 76.0}
+			return {"inner": Rect2(224, 193, 1472, 694), "logo": Rect2(224, 193, 331, 124), "actions": Rect2(224, 329, 380, 506), "glow": Rect2(1424, 791, 96, 96), "credits": Rect2(1432, 799, 80, 80), "version": Rect2(1536, 859, 160, 28), "version_font_size": 16, "button_width": 380.0, "button_height": 76.0}
 		_:
-			return {"inner": Rect2(299, 257, 1962, 926), "logo": Rect2(299, 257, 480, 180), "actions": Rect2(299, 457, 380, 646), "credits": Rect2(2173, 257, 88, 88), "version": Rect2(795, 335, 124, 24), "button_width": 380.0, "button_height": 96.0}
+			return {"inner": Rect2(299, 257, 1962, 926), "logo": Rect2(299, 257, 480, 180), "actions": Rect2(299, 457, 380, 646), "glow": Rect2(1941, 1067, 116, 116), "credits": Rect2(1951, 1077, 96, 96), "version": Rect2(2077, 1151, 184, 32), "version_font_size": 18, "button_width": 380.0, "button_height": 96.0}
 
 
 func _assert_rect(actual: Rect2, expected: Rect2, context: String) -> void:

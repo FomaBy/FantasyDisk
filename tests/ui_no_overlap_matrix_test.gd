@@ -600,22 +600,50 @@ func _screen_specific_assertions(main: Node, screen_id: String, context: String)
 	match screen_id:
 		"main_menu":
 			var credits := main.find_child("MainMenuCreditsButton", true, false) as Button
-			if credits == null:
-				return "%s: expected MainMenuCreditsButton." % context
+			var glow := main.find_child("MainMenuGratitudeGlow", true, false) as TextureRect
+			var version := main.find_child("MainMenuVersionLabel", true, false) as Label
+			if credits == null or glow == null or version == null:
+				return "%s: expected complete Main Menu corner utilities." % context
 			var viewport_size := main.get_viewport().get_visible_rect().size
 			var margins := Vector2(roundf(160.0 * viewport_size.x / 1536.0), roundf(160.0 * viewport_size.y / 1024.0))
 			var reserve := 32.0 if viewport_size.y >= 1200.0 else 24.0
 			var inner_rect := Rect2(margins, viewport_size - margins * 2.0).grow(-reserve)
-			var credits_side := 64.0 if viewport_size.y < 900.0 else (72.0 if viewport_size.y < 1200.0 else 88.0)
-			var expected := Rect2(Vector2(inner_rect.end.x - credits_side, inner_rect.position.y), Vector2.ONE * credits_side)
+			var glow_side := 84.0 if viewport_size.y < 800.0 else (96.0 if viewport_size.y < 1200.0 else 116.0)
+			var credits_side := 72.0 if viewport_size.y < 800.0 else (80.0 if viewport_size.y < 1200.0 else 96.0)
+			var version_size := Vector2(184.0, 32.0)
+			var cluster_gap := 20.0
+			if viewport_size.y < 700.0:
+				version_size = Vector2(128.0, 22.0)
+				cluster_gap = 12.0
+			elif viewport_size.y < 800.0:
+				version_size = Vector2(136.0, 24.0)
+				cluster_gap = 12.0
+			elif viewport_size.y < 1000.0:
+				version_size = Vector2(144.0, 26.0)
+				cluster_gap = 16.0
+			elif viewport_size.y < 1200.0:
+				version_size = Vector2(160.0, 28.0)
+				cluster_gap = 16.0
+			var expected_version_rect := Rect2(inner_rect.end - version_size, version_size)
+			var expected_glow := Rect2(Vector2(expected_version_rect.position.x - cluster_gap - glow_side, inner_rect.end.y - glow_side), Vector2.ONE * glow_side)
+			var expected := Rect2(expected_glow.position + Vector2.ONE * ((glow_side - credits_side) * 0.5), Vector2.ONE * credits_side)
 			if not inner_rect.grow(1.0).encloses(credits.get_global_rect()):
 				return "%s: MainMenuCreditsButton %s escapes authored inner rect %s." % [context, str(credits.get_global_rect()), str(inner_rect)]
+			if not _rect_approximately_equal(glow.get_global_rect(), expected_glow, 1.1):
+				return "%s: MainMenuGratitudeGlow %s != authored zone %s." % [context, str(glow.get_global_rect()), str(expected_glow)]
+			if not _rect_approximately_equal(version.get_global_rect(), expected_version_rect, 1.1):
+				return "%s: MainMenuVersionLabel %s != authored zone %s." % [context, str(version.get_global_rect()), str(expected_version_rect)]
 			if not _rect_approximately_equal(credits.get_global_rect(), expected, 1.1):
 				return "%s: MainMenuCreditsButton %s != authored zone %s." % [context, str(credits.get_global_rect()), str(expected)]
+			if not glow.get_global_rect().grow(1.0).encloses(credits.get_global_rect()):
+				return "%s: MainMenuCreditsButton escapes bounded glow." % context
 			if credits.text != "" or credits.icon == null or credits.icon.resource_path != "res://assets/sprites/ui/icons/credits/ui_icon_gratitude.png":
 				return "%s: MainMenuCreditsButton must be icon-only with the accepted gratitude asset." % context
 			if credits.tooltip_text != "Благодарности" or str(credits.get_meta("accessibility_name", "")) != "Благодарности":
 				return "%s: MainMenuCreditsButton is missing gratitude tooltip/accessibility metadata." % context
+			var expected_version := "v%s" % str(ProjectSettings.get_setting("application/config/version", "0.0.0"))
+			if version.text != expected_version or version.horizontal_alignment != HORIZONTAL_ALIGNMENT_RIGHT or version.vertical_alignment != VERTICAL_ALIGNMENT_BOTTOM:
+				return "%s: MainMenuVersionLabel lost its dynamic bottom-right contract." % context
 			for peer_name in ["MainMenuTitleLabel", "MainMenuActions", "MainMenuVersionLabel"]:
 				var peer := main.find_child(peer_name, true, false) as Control
 				if peer != null and credits.get_global_rect().intersects(peer.get_global_rect()):

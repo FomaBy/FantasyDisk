@@ -95,14 +95,16 @@ func _assert_main_menu(main: Node, safe_rect: Rect2, viewport_size: Vector2i) ->
 	var title := main.find_child("MainMenuTitleLabel", true, false) as Control
 	var actions := main.find_child("MainMenuActions", true, false) as GridContainer
 	var version := main.find_child("MainMenuVersionLabel", true, false) as Control
+	var glow := main.find_child("MainMenuGratitudeGlow", true, false) as TextureRect
 	var credits := main.find_child("MainMenuCreditsButton", true, false) as Button
-	if title == null or actions == null or version == null or credits == null:
+	if title == null or actions == null or version == null or glow == null or credits == null:
 		_errors.append("%s: Main Menu gold-shell nodes are incomplete." % str(viewport_size))
 		return
 	var inner_rect := _inner_rect(Vector2(viewport_size))
 	_assert_inside(title.get_global_rect(), inner_rect, "%s MainMenuTitleLabel" % str(viewport_size))
 	_assert_inside(actions.get_global_rect(), inner_rect, "%s MainMenuActions authored inner" % str(viewport_size))
 	_assert_inside(version.get_global_rect(), inner_rect, "%s MainMenuVersionLabel authored inner" % str(viewport_size))
+	_assert_inside(glow.get_global_rect(), inner_rect, "%s MainMenuGratitudeGlow authored inner" % str(viewport_size))
 	_assert_inside(credits.get_global_rect(), inner_rect, "%s MainMenuCreditsButton authored inner" % str(viewport_size))
 	if actions.columns != 1 or actions.get_child_count() != 6:
 		_errors.append("%s: MainMenuActions must be one six-button left column." % str(viewport_size))
@@ -114,11 +116,14 @@ func _assert_main_menu(main: Node, safe_rect: Rect2, viewport_size: Vector2i) ->
 	_assert_rect_near(title.get_global_rect(), expected["logo"], "%s Main Menu logo" % str(viewport_size))
 	_assert_rect_near(actions.get_global_rect(), expected["actions"], "%s Main Menu action column" % str(viewport_size))
 	_assert_rect_near(version.get_global_rect(), expected["version"], "%s Main Menu version" % str(viewport_size))
+	_assert_rect_near(glow.get_global_rect(), expected["glow"], "%s Main Menu gratitude glow" % str(viewport_size))
 	_assert_rect_near(credits.get_global_rect(), expected["credits"], "%s Main Menu credits" % str(viewport_size))
 	if credits.text != "" or credits.icon == null or credits.icon.resource_path != GRATITUDE_ICON_PATH:
 		_errors.append("%s: MainMenuCreditsButton must be icon-only with the accepted PixelLab gratitude icon." % str(viewport_size))
 	if credits.tooltip_text != "Благодарности" or str(credits.get_meta("accessibility_name", "")) != "Благодарности":
 		_errors.append("%s: MainMenuCreditsButton is missing tooltip/accessibility metadata." % str(viewport_size))
+	if not glow.get_global_rect().grow(1.0).encloses(credits.get_global_rect()):
+		_errors.append("%s: MainMenuCreditsButton escapes bounded procedural glow." % str(viewport_size))
 	for peer in [title, actions, version]:
 		if credits.get_global_rect().intersects((peer as Control).get_global_rect()):
 			_errors.append("%s: MainMenuCreditsButton overlaps %s." % [str(viewport_size), str((peer as Control).name)])
@@ -360,11 +365,11 @@ func _inner_rect(viewport_size: Vector2) -> Rect2:
 func _main_expected(viewport_size: Vector2i) -> Dictionary:
 	match viewport_size:
 		Vector2i(1280, 720):
-			return {"logo": Rect2(157, 137, 192, 72), "actions": Rect2(157, 215, 340, 361), "version": Rect2(365, 164, 112, 18), "credits": Rect2(1059, 137, 64, 64), "button_height": 56.0}
+			return {"logo": Rect2(157, 137, 192, 72), "actions": Rect2(157, 215, 340, 361), "version": Rect2(987, 559, 136, 24), "glow": Rect2(891, 499, 84, 84), "credits": Rect2(897, 505, 72, 72), "button_height": 56.0}
 		Vector2i(1920, 1080):
-			return {"logo": Rect2(224, 193, 331, 124), "actions": Rect2(224, 329, 380, 506), "version": Rect2(571, 245, 126, 20), "credits": Rect2(1624, 193, 72, 72), "button_height": 76.0}
+			return {"logo": Rect2(224, 193, 331, 124), "actions": Rect2(224, 329, 380, 506), "version": Rect2(1536, 859, 160, 28), "glow": Rect2(1424, 791, 96, 96), "credits": Rect2(1432, 799, 80, 80), "button_height": 76.0}
 		_:
-			return {"logo": Rect2(299, 257, 480, 180), "actions": Rect2(299, 457, 380, 646), "version": Rect2(795, 335, 124, 24), "credits": Rect2(2173, 257, 88, 88), "button_height": 96.0}
+			return {"logo": Rect2(299, 257, 480, 180), "actions": Rect2(299, 457, 380, 646), "version": Rect2(2077, 1151, 184, 32), "glow": Rect2(1941, 1067, 116, 116), "credits": Rect2(1951, 1077, 96, 96), "button_height": 96.0}
 
 
 func _fresh_rest_hud_geometry(viewport_size: Vector2i) -> Dictionary:

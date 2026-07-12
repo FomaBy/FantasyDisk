@@ -25,11 +25,18 @@ consume the same shared resolver instead of a copied path/threshold table.
 `MainMenuCreditsButton` is an icon-only gratitude action using the transparent
 PixelLab asset `assets/sprites/ui/icons/credits/ui_icon_gratitude.png`; its face
 text is empty, while tooltip/accessibility metadata remains «Благодарности».
-The responsive authored hitboxes are `Rect2(1059,137,64,64)` at 1280×720,
-`Rect2(1624,193,72,72)` at 1920×1080 and
-`Rect2(2173,257,88,88)` at 2560×1440. They stay in the top-right gold-shell
-inner zone on fresh layout and live resize, with visible keyboard focus and the
-existing Credits callback/UI SFX.
+SCRUM-1081/1082 moves it into the lower-right utility cluster immediately left
+of the version: the responsive hitboxes are `Rect2(897,505,72,72)` at 1280×720,
+`Rect2(1432,799,80,80)` at 1920×1080 and
+`Rect2(1951,1077,96,96)` at 2560×1440. A mouse-ignoring procedural radial aura
+stays bounded to 84/96/116 px and changes alpha without resizing or translating
+the control. The existing neutral keyboard focus, Credits callback and UI SFX
+remain intact.
+
+`MainMenuVersionLabel` is the single runtime version control; it reads
+`application/config/version`, never a hardcoded release number. SCRUM-1082
+anchors it to the authored inner rect's lower-right at 14/16/18 px caption tiers
+for 720p/1080p/2K, with right/bottom alignment and a restrained dark outline.
 
 Acceptance coverage: `tests/scrum1051_ui_button_family_test.gd`,
 `tests/codex_scrum954_layout_test.gd`,
@@ -120,11 +127,13 @@ Live application inventory:
 - SCRUM-1059 Main Menu preserves the accepted logo/background/shell and places
   six semantic `main_menu_380x104` actions in one responsive left column:
   320×54 @1152×648, 340×56 @1280×720, 360×64 @1600×900, 380×76 @1080p and
-  380×96 @2K. The version sits beside the aspect-correct logo; the gratitude PixelLab icon
-  remains a separate 64/72/88px upper-right action. All controls use the stricter
-  shell interior (texture-safe rect minus another 24px, or 32px at 2K), never
-  scroll, and relayout on live resize. Up/Down wraps the six actions; Right
-  reaches gratitude, whose Left/Down returns to Start and Up returns to Exit.
+  380×96 @2K. SCRUM-1081/1082 keeps the accepted action column X at the authored
+  inner left edge. The 72/80/96px gratitude icon and bounded 84/96/116px
+  procedural glow form a lower-right cluster immediately left of the dynamic
+  version, separated by exactly 12/16/20px by tier. All controls use the stricter shell
+  interior (texture-safe rect minus another 24px, or 32px at 2K), never scroll,
+  and relayout on live resize. Up/Down wraps the six actions; Right reaches
+  gratitude, whose Left/Up returns to Exit and Down returns to Start.
 - Route Map insets header/title, shared resource HUD, vertical scroll/canvas,
   scrollbar lane and upgrade FAB into authored inner zones. Horizontal scroll
   remains disabled and map nodes are rebuilt safely when available width changes.

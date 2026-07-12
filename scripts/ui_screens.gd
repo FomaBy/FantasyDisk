@@ -510,45 +510,71 @@ func _main_menu_gold_shell_metrics(viewport_size: Vector2) -> Dictionary:
 	var button_height := 96.0
 	var row_gap := 14.0
 	var logo_gap := 20.0
-	var version_size := Vector2(124.0, 24.0)
-	var version_side_gap := 16.0
+	var glow_side := 116.0
+	var gratitude_side := 96.0
+	var utility_cluster_gap := 20.0
+	var version_size := Vector2(184.0, 32.0)
+	var version_font_size := 18
 	if viewport_size.y < 700.0:
 		logo_size = Vector2(160.0, 60.0)
 		button_width = 320.0
 		button_height = 54.0
 		row_gap = 2.0
 		logo_gap = 4.0
-		version_size = Vector2(112.0, 18.0)
+		glow_side = 84.0
+		gratitude_side = 72.0
+		utility_cluster_gap = 12.0
+		version_size = Vector2(128.0, 22.0)
+		version_font_size = 14
 	elif viewport_size.y < 800.0:
 		logo_size = Vector2(192.0, 72.0)
 		button_width = 340.0
 		button_height = 56.0
 		row_gap = 5.0
 		logo_gap = 6.0
-		version_size = Vector2(112.0, 18.0)
+		glow_side = 84.0
+		gratitude_side = 72.0
+		utility_cluster_gap = 12.0
+		version_size = Vector2(136.0, 24.0)
+		version_font_size = 14
 	elif viewport_size.y < 1000.0:
 		logo_size = Vector2(267.0, 100.0)
 		button_width = 360.0
 		button_height = 64.0
 		row_gap = 8.0
 		logo_gap = 8.0
-		version_size = Vector2(126.0, 20.0)
+		glow_side = 96.0
+		gratitude_side = 80.0
+		utility_cluster_gap = 16.0
+		version_size = Vector2(144.0, 26.0)
+		version_font_size = 15
 	elif viewport_size.y < 1200.0:
 		logo_size = Vector2(331.0, 124.0)
 		button_height = 76.0
 		row_gap = 10.0
 		logo_gap = 12.0
-		version_size = Vector2(126.0, 20.0)
+		glow_side = 96.0
+		gratitude_side = 80.0
+		utility_cluster_gap = 16.0
+		version_size = Vector2(160.0, 28.0)
+		version_font_size = 16
 	var logo_rect := Rect2(inner_rect.position, logo_size)
 	var actions_rect := Rect2(
 		Vector2(inner_rect.position.x, logo_rect.end.y + logo_gap),
 		Vector2(button_width, button_height * MAIN_MENU_BUTTON_COUNT + row_gap * (MAIN_MENU_BUTTON_COUNT - 1.0))
 	)
-	# Version belongs to the same empty top-left stage, immediately beside the
-	# aspect-correct logo. It no longer floats over the illustrated hero group.
 	var version_rect := Rect2(
-		Vector2(logo_rect.end.x + version_side_gap, logo_rect.position.y + (logo_rect.size.y - version_size.y) * 0.5),
+		inner_rect.end - version_size,
 		version_size
+	)
+	var glow_rect := Rect2(
+		Vector2(version_rect.position.x - utility_cluster_gap - glow_side, inner_rect.end.y - glow_side),
+		Vector2.ONE * glow_side
+	)
+	var gratitude_inset := (glow_side - gratitude_side) * 0.5
+	var gratitude_rect := Rect2(
+		glow_rect.position + Vector2.ONE * gratitude_inset,
+		Vector2.ONE * gratitude_side
 	)
 	return {
 		"safe_rect": safe_rect,
@@ -558,11 +584,14 @@ func _main_menu_gold_shell_metrics(viewport_size: Vector2) -> Dictionary:
 		"button_width": button_width,
 		"button_height": button_height,
 		"row_gap": row_gap,
+		"gratitude_glow_rect": glow_rect,
+		"gratitude_rect": gratitude_rect,
 		"version_rect": version_rect,
+		"version_font_size": version_font_size,
 	}
 
 
-func _layout_main_menu_gold_shell(root: Control, title_logo: TextureRect, action_box: GridContainer, version_label: Label, buttons: Array) -> void:
+func _layout_main_menu_gold_shell(root: Control, title_logo: TextureRect, action_box: GridContainer, gratitude_glow: TextureRect, gratitude_button: Button, version_label: Label, buttons: Array) -> void:
 	if root == null or not is_instance_valid(root):
 		return
 	var viewport_size := root.size
@@ -589,7 +618,10 @@ func _layout_main_menu_gold_shell(root: Control, title_logo: TextureRect, action
 			_fit_main_menu_button_styles(button, float(metrics["button_width"]), float(metrics["button_height"]))
 	action_box.queue_sort()
 	var safe_rect: Rect2 = metrics["safe_rect"]
+	_apply_control_rect(gratitude_glow, metrics["gratitude_glow_rect"])
+	_apply_control_rect(gratitude_button, metrics["gratitude_rect"])
 	_apply_control_rect(version_label, metrics["version_rect"])
+	version_label.add_theme_font_size_override("font_size", int(metrics["version_font_size"]))
 	root.set_meta("gold_shell_content_rect", safe_rect)
 	root.set_meta("gold_shell_inner_rect", metrics["inner_rect"])
 	root.set_meta("gold_shell_screen_id", "main_menu")
@@ -650,6 +682,29 @@ func _gratitude_button_style(state: String) -> StyleBoxFlat:
 	style.set_corner_radius_all(10)
 	style.set_content_margin_all(4.0)
 	return style
+
+
+func _gratitude_glow_texture(peak_alpha: float) -> GradientTexture2D:
+	# SCRUM-1081: a bounded procedural aura, not a new bitmap asset. The radial
+	# texture is clipped to MainMenuGratitudeGlow, so no state can cover the gold
+	# shell rail or change the icon hitbox geometry.
+	var gradient := Gradient.new()
+	var warm_gold := Color(0.84, 0.62, 0.28, clampf(peak_alpha, 0.0, 0.26))
+	gradient.offsets = PackedFloat32Array([0.0, 0.58, 0.82, 1.0])
+	gradient.colors = PackedColorArray([
+		warm_gold,
+		Color(warm_gold.r, warm_gold.g, warm_gold.b, warm_gold.a * 0.72),
+		Color(warm_gold.r, warm_gold.g, warm_gold.b, warm_gold.a * 0.26),
+		Color(warm_gold.r, warm_gold.g, warm_gold.b, 0.0),
+	])
+	var texture := GradientTexture2D.new()
+	texture.gradient = gradient
+	texture.width = 128
+	texture.height = 128
+	texture.fill = GradientTexture2D.FILL_RADIAL
+	texture.fill_from = Vector2(0.5, 0.5)
+	texture.fill_to = Vector2(1.0, 0.5)
+	return texture
 
 
 func _show_main_menu() -> void:
@@ -729,8 +784,11 @@ func _show_main_menu() -> void:
 	version_label.name = "MainMenuVersionLabel"
 	version_label.text = "v%s" % str(ProjectSettings.get_setting("application/config/version", "0.0.0"))
 	version_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_RIGHT
-	version_label.add_theme_font_size_override("font_size", SemanticTypography.resolve_fixed(SemanticTypography.ROLE_CAPTION, 12))
-	version_label.add_theme_color_override("font_color", Color(0.62, 0.66, 0.72, 0.85))
+	version_label.vertical_alignment = VERTICAL_ALIGNMENT_BOTTOM
+	version_label.add_theme_font_size_override("font_size", 14)
+	version_label.add_theme_color_override("font_color", Color(0.847, 0.816, 0.741, 0.93))
+	version_label.add_theme_color_override("font_outline_color", Color(0.07, 0.05, 0.07, 0.92))
+	version_label.add_theme_constant_override("outline_size", 2)
 	version_label.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	root.add_child(version_label)
 
@@ -778,6 +836,14 @@ func _show_main_menu() -> void:
 	# Отдельная ссылка НА root (не в MainMenuActions — там контрактные 6 кнопок);
 	# позиционируется внутри authored inner rect, то есть после обязательного
 	# дополнительного резерва SCRUM-1036 от орнамента золотой рамы.
+	var gratitude_glow := TextureRect.new()
+	gratitude_glow.name = "MainMenuGratitudeGlow"
+	gratitude_glow.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
+	gratitude_glow.stretch_mode = TextureRect.STRETCH_SCALE
+	gratitude_glow.texture = _gratitude_glow_texture(0.18)
+	gratitude_glow.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	root.add_child(gratitude_glow)
+
 	var credits_button := Button.new()
 	credits_button.name = "MainMenuCreditsButton"
 	credits_button.text = ""
@@ -796,30 +862,27 @@ func _show_main_menu() -> void:
 	credits_button.pressed.connect(_show_credits_screen)
 	root.add_child(credits_button)
 	_connect_ui_sfx(credits_button, "click")
+	credits_button.mouse_entered.connect(func() -> void:
+		gratitude_glow.texture = _gratitude_glow_texture(0.26)
+	)
+	credits_button.mouse_exited.connect(func() -> void:
+		gratitude_glow.texture = _gratitude_glow_texture(0.20 if credits_button.has_focus() else 0.18)
+	)
+	credits_button.button_down.connect(func() -> void:
+		gratitude_glow.texture = _gratitude_glow_texture(0.13)
+	)
+	credits_button.button_up.connect(func() -> void:
+		gratitude_glow.texture = _gratitude_glow_texture(0.20 if credits_button.has_focus() else 0.18)
+	)
+	credits_button.focus_entered.connect(func() -> void:
+		gratitude_glow.texture = _gratitude_glow_texture(0.20)
+	)
+	credits_button.focus_exited.connect(func() -> void:
+		gratitude_glow.texture = _gratitude_glow_texture(0.18)
+	)
 
-	_layout_main_menu_gold_shell(root, title_logo, action_box, version_label, action_buttons)
-	var reposition_credits := func() -> void:
-		if not is_instance_valid(credits_button):
-			return
-		var frame_safe := _unified_safe_rect_for_size(root.size)
-		var pad := 32.0 if root.size.y >= 1200.0 else 24.0
-		var inner := frame_safe.grow(-pad)
-		if inner.size.x <= 1.0 or inner.size.y <= 1.0:
-			return
-		# Верхний правый угол inner-зоны: напротив лого (верх-лево), ВЫШЕ сетки
-		# действий и метки версии — гарантированно вне их прямоугольников на 16:9
-		# (лого ≤ левой половины, сетка стартует ниже; см. _main_menu_gold_shell_metrics).
-		var viewport_height := root.size.y
-		var authored_side := 64.0 if viewport_height < 900.0 else (72.0 if viewport_height < 1200.0 else 88.0)
-		var cb_size := Vector2.ONE * minf(authored_side, minf(inner.size.x, inner.size.y))
-		credits_button.set_anchors_preset(Control.PRESET_TOP_LEFT)
-		credits_button.position = Vector2(frame_safe.end.x - cb_size.x - pad, frame_safe.position.y + pad)
-		credits_button.size = cb_size
-		credits_button.set_meta("gold_shell_inner_rect", inner)
-		credits_button.set_meta("scrum1040_zone_rect", Rect2(credits_button.position, cb_size))
-	reposition_credits.call()
-	root.resized.connect(_layout_main_menu_gold_shell.bind(root, title_logo, action_box, version_label, action_buttons))
-	root.resized.connect(reposition_credits)
+	_layout_main_menu_gold_shell(root, title_logo, action_box, gratitude_glow, credits_button, version_label, action_buttons)
+	root.resized.connect(_layout_main_menu_gold_shell.bind(root, title_logo, action_box, gratitude_glow, credits_button, version_label, action_buttons))
 	_wire_main_menu_column_focus(action_buttons, credits_button, start_button)
 	# Рама всегда последняя: она видима целиком, а все hitbox остаются в safe rect.
 	_unified_add_frame(root, "MainMenu")
@@ -8355,9 +8418,8 @@ func _wire_run_ui_focus(primary: Array, axis_h: bool, secondary: Array = [], ini
 
 
 func _wire_main_menu_column_focus(buttons: Array, gratitude: Control, initial: Control = null) -> void:
-	# SCRUM-1059: Up/Down traverses and wraps the visual one-column order. Right
-	# reaches the separate gratitude action from every row; gratitude returns to
-	# Start via Left/Down and to Exit via Up, so it cannot become a focus trap.
+	# SCRUM-1081: Up/Down wraps the canonical action column. Gratitude is the
+	# separate bottom-right utility: Right enters it; Left/Up returns to Exit.
 	_ensure_run_ui_gamepad_bindings()
 	var column := _collect_focusable_controls(buttons)
 	if column.is_empty():
@@ -8372,7 +8434,7 @@ func _wire_main_menu_column_focus(buttons: Array, gratitude: Control, initial: C
 		current.focus_neighbor_bottom = following.get_path()
 	if gratitude != null and is_instance_valid(gratitude):
 		gratitude.focus_mode = Control.FOCUS_ALL
-		gratitude.focus_neighbor_left = column[0].get_path()
+		gratitude.focus_neighbor_left = column[column.size() - 1].get_path()
 		gratitude.focus_neighbor_right = gratitude.get_path()
 		gratitude.focus_neighbor_top = column[column.size() - 1].get_path()
 		gratitude.focus_neighbor_bottom = column[0].get_path()
