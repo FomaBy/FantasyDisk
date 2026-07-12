@@ -1737,6 +1737,20 @@ func _outgoing_damage(amount: float) -> float:
 	return maxf(amount * StatusEffects.damage_multiplier(self), 0.0)
 
 
+# FAN-1031 S2 (Stage 3a): урон зоны/слама/хазарда/укуса босса, ограниченный долей
+# ТЕКУЩЕГО max HP игрока за тик — зеркало контактного (0.20) и элитного (0.25) капов.
+# Зоны/сламы босса были единственным каналом урона без такого предела и ваншотили
+# все 17 классов на A5. Кап применяется ПОСЛЕ _outgoing_damage (по фактически
+# доставляемому урону) и не меняет булев результат take_damage (только уменьшает).
+func _hazard_hit(base_amount: float, player: Node2D) -> float:
+	var amount := _outgoing_damage(base_amount)
+	if player != null and player.get("max_health") != null:
+		var player_max_health := float(player.get("max_health"))
+		if player_max_health > 0.0:
+			amount = minf(amount, player_max_health * ProgressionData.BOSS_HAZARD_MAX_HP_FRACTION)
+	return amount
+
+
 func _play_contact_windup() -> void:
 	var body := get_node_or_null("Body") as Sprite2D
 	if body == null:

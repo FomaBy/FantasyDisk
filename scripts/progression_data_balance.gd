@@ -174,6 +174,18 @@ const CROWD_CLEAR_ENEMY_HP := 80.0
 const CROWD_CLEAR_CORRIDOR := 0.30
 const CROWD_CLEAR_SOLO_CORRIDOR := 0.20
 
+# FAN-1031 S2 (Stage 3a): потолок урона ЗОН/СЛАМОВ/ХАЗАРДОВ босса долей ТЕКУЩЕГО
+# max HP игрока за тик. Контактный урон капится 0.20 (enemy._update_contact_damage),
+# элитный — 0.25 (enemy._elite_attack_damage); зоны/сламы/укусы босса были ЕДИНСТВЕННЫМ
+# каналом урона БЕЗ такого капа, поэтому hazard фазы 4 на A5 (~164 урона, худший —
+# секретный босс) ваншотил ВСЕ 17 классов (typ HP 50–157) с полного здоровья.
+# Baseline v2 (FAN-1029): «ваншот-вердикт — все 17 классов валятся hazard-ом фазы 4».
+# 0.80 подобран так, что провал доджа по-прежнему почти смертелен (телеграфы честные
+# после combat-feel этапа C — увернуться реально), но full-HP герой больше не удаляется
+# одним неравным тиком; это единственный реалистичный путь к DoD «каждый класс проходит
+# A5» без раздувания HP хрупких классов в ~3×. Гейт: tests/boss_hazard_cap_gate.gd.
+const BOSS_HAZARD_MAX_HP_FRACTION := 0.80
+
 const SURVIVABILITY_DEFENSE_CAP := 0.62
 const SURVIVABILITY_DEFENSE_DIMINISH := 0.55
 const SURVIVABILITY_DODGE_CAP := 0.55
