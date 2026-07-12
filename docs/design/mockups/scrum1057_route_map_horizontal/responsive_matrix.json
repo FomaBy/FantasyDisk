@@ -1,0 +1,11 @@
+{
+  "contract": "SCRUM-1057 horizontal Route Map; all rectangles are viewport pixels",
+  "scroll_policy": {"horizontal": "auto", "vertical": "disabled; scroll_vertical=0"},
+  "targets": {
+    "1152x648": {"frame_safe": [120,101,912,446], "inner": [140,121,872,406], "header": [140,121,872,76], "title_progress": [154,125,416,54], "resources": [666,125,332,54], "route_scroll": [140,209,872,318], "node_viewport": [158,227,740,258], "horizontal_scrollbar": [158,497,740,14], "upgrade_fab": [922,437,72,72]},
+    "1280x720": {"frame_safe": [133,113,1014,494], "inner": [157,137,966,446], "header": [157,137,966,80], "title_progress": [173,141,450,58], "resources": [731,141,376,58], "route_scroll": [157,229,966,354], "node_viewport": [175,249,834,286], "horizontal_scrollbar": [175,549,834,14], "upgrade_fab": [1033,493,72,72]},
+    "1600x900": {"frame_safe": [167,141,1266,618], "inner": [191,165,1218,570], "header": [191,165,1218,84], "title_progress": [211,169,580,62], "resources": [965,169,424,62], "route_scroll": [191,265,1218,470], "node_viewport": [215,289,1074,392], "horizontal_scrollbar": [215,701,1074,16], "upgrade_fab": [1313,639,72,72]},
+    "1920x1080": {"frame_safe": [200,169,1520,742], "inner": [224,193,1472,694], "header": [224,193,1472,88], "title_progress": [248,197,700,64], "resources": [1128,197,544,64], "route_scroll": [224,297,1472,590], "node_viewport": [248,321,1328,500], "horizontal_scrollbar": [248,845,1328,18], "upgrade_fab": [1600,791,72,72]},
+    "2560x1440": {"frame_safe": [267,225,2026,990], "inner": [299,257,1962,926], "header": [299,257,1962,104], "title_progress": [331,263,940,80], "resources": [1557,263,672,80], "route_scroll": [299,385,1962,798], "node_viewport": [331,417,1786,694], "horizontal_scrollbar": [331,1139,1786,20], "upgrade_fab": [2149,1071,80,80]}
+  }
+}

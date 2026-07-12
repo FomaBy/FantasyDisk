@@ -1,0 +1,128 @@
+{
+  "ok": true,
+  "zones": [
+    {
+      "id": "frame_safe_area",
+      "rect": [
+        72,
+        60,
+        544,
+        264
+      ],
+      "ok": true
+    },
+    {
+      "id": "inner_content",
+      "rect": [
+        80,
+        69,
+        528,
+        247
+      ],
+      "ok": true
+    },
+    {
+      "id": "route_header",
+      "rect": [
+        80,
+        69,
+        528,
+        31
+      ],
+      "ok": true
+    },
+    {
+      "id": "route_title_progress",
+      "rect": [
+        89,
+        70,
+        251,
+        23
+      ],
+      "ok": true,
+      "kind": "text",
+      "font_size": 10,
+      "lines": [
+        "АКТ 1/3 · ПУТЬ К БОССУ"
+      ],
+      "text_bbox": [
+        89,
+        77,
+        123,
+        9
+      ]
+    },
+    {
+      "id": "route_resources",
+      "rect": [
+        404,
+        70,
+        195,
+        23
+      ],
+      "ok": true,
+      "kind": "text",
+      "font_size": 9,
+      "lines": [
+        "HP 100/100 XP 24/60 120"
+      ],
+      "text_bbox": [
+        489,
+        77,
+        110,
+        9
+      ]
+    },
+    {
+      "id": "route_scroll",
+      "rect": [
+        80,
+        106,
+        528,
+        210
+      ],
+      "ok": true
+    },
+    {
+      "id": "route_node_viewport",
+      "rect": [
+        89,
+        114,
+        476,
+        178
+      ],
+      "ok": true
+    },
+    {
+      "id": "horizontal_scrollbar_lane",
+      "rect": [
+        89,
+        300,
+        476,
+        6
+      ],
+      "ok": true
+    },
+    {
+      "id": "upgrade_fab",
+      "rect": [
+        573,
+        281,
+        26,
+        26
+      ],
+      "ok": true,
+      "kind": "text",
+      "font_size": 16,
+      "lines": [
+        "+"
+      ],
+      "text_bbox": [
+        580,
+        288,
+        11,
+        11
+      ]
+    }
+  ]
+}
