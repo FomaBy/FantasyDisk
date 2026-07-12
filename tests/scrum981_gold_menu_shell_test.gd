@@ -119,7 +119,7 @@ func _assert_main_menu(main: Node, safe_rect: Rect2, viewport_size: Vector2i) ->
 	_assert_rect_near(version.get_global_rect(), expected["version"], "%s Main Menu version" % str(viewport_size))
 	_assert_rect_near(glow.get_global_rect(), expected["glow"], "%s Main Menu gratitude glow" % str(viewport_size))
 	_assert_rect_near(credits.get_global_rect(), expected["credits"], "%s Main Menu credits" % str(viewport_size))
-	if credits.text != "" or credits.icon == null or credits.icon.resource_path != GRATITUDE_ICON_PATH:
+	if credits.text != "" or credits.icon == null or _gratitude_source_path(credits.icon) != GRATITUDE_ICON_PATH:
 		_errors.append("%s: MainMenuCreditsButton must be icon-only with the accepted PixelLab gratitude icon." % str(viewport_size))
 	if credits.tooltip_text != "Благодарности" or str(credits.get_meta("accessibility_name", "")) != "Благодарности":
 		_errors.append("%s: MainMenuCreditsButton is missing tooltip/accessibility metadata." % str(viewport_size))
@@ -382,12 +382,19 @@ func _main_expected(viewport_size: Vector2i, version: Label) -> Dictionary:
 	var measured_width := ceilf(font.get_string_size(version.text, HORIZONTAL_ALIGNMENT_LEFT, -1.0, version.get_theme_font_size("font_size")).x)
 	var version_size := Vector2(measured_width + 6.0, version_height)
 	var version_rect := Rect2(safe.end - version_size, version_size)
-	var glow_rect := Rect2(Vector2(version_rect.position.x - 4.0 - glow_side, safe.end.y - glow_side), Vector2.ONE * glow_side)
+	var glow_rect := Rect2(Vector2(version_rect.position.x - 2.0 - glow_side, safe.end.y - glow_side), Vector2.ONE * glow_side)
 	var inset := (glow_side - credits_side) * 0.5
 	expected["version"] = version_rect
 	expected["glow"] = glow_rect
-	expected["credits"] = Rect2(glow_rect.position + Vector2.ONE * inset, Vector2.ONE * credits_side)
+	expected["credits"] = Rect2(glow_rect.position + Vector2(inset + 3.0, inset), Vector2.ONE * credits_side)
 	return expected
+
+
+func _gratitude_source_path(icon: Texture2D) -> String:
+	if icon is AtlasTexture:
+		var atlas := (icon as AtlasTexture).atlas
+		return atlas.resource_path if atlas != null else ""
+	return icon.resource_path if icon != null else ""
 
 
 func _fresh_rest_hud_geometry(viewport_size: Vector2i) -> Dictionary:

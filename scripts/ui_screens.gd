@@ -512,7 +512,11 @@ func _main_menu_gold_shell_metrics(viewport_size: Vector2) -> Dictionary:
 	var logo_gap := 20.0
 	var glow_side := 116.0
 	var gratitude_side := 96.0
-	var utility_cluster_gap := 4.0
+	# SCRUM-1095: the glow keeps a validator-safe two-pixel separation from the
+	# version rect.  The Button is biased three pixels toward the version inside
+	# that glow; its hitbox remains bounded and never intersects the label.
+	var utility_cluster_gap := 2.0
+	var gratitude_button_x_bias := 3.0
 	var utility_frame_reserve := 8.0
 	var version_height := 32.0
 	var version_font_size := 18
@@ -577,6 +581,7 @@ func _main_menu_gold_shell_metrics(viewport_size: Vector2) -> Dictionary:
 		"gratitude_side": gratitude_side,
 		"utility_anchor": utility_anchor,
 		"utility_cluster_gap": utility_cluster_gap,
+		"gratitude_button_x_bias": gratitude_button_x_bias,
 		"utility_frame_reserve": utility_frame_reserve,
 		"version_height": version_height,
 		"version_font_size": version_font_size,
@@ -648,7 +653,7 @@ func _layout_main_menu_gold_shell(root: Control, title_logo: TextureRect, action
 	)
 	var gratitude_inset := (glow_side - gratitude_side) * 0.5
 	var gratitude_rect := Rect2(
-		glow_rect.position + Vector2.ONE * gratitude_inset,
+		glow_rect.position + Vector2(gratitude_inset + float(metrics["gratitude_button_x_bias"]), gratitude_inset),
 		Vector2.ONE * gratitude_side
 	)
 	_apply_control_rect(gratitude_glow, glow_rect)
@@ -657,6 +662,7 @@ func _layout_main_menu_gold_shell(root: Control, title_logo: TextureRect, action
 	version_label.set_meta("scrum1093_measured_text_width", measured_version_width)
 	version_label.set_meta("scrum1093_utility_anchor", utility_anchor)
 	version_label.set_meta("scrum1093_cluster_gap", metrics["utility_cluster_gap"])
+	version_label.set_meta("scrum1095_gratitude_button_x_bias", metrics["gratitude_button_x_bias"])
 	root.set_meta("gold_shell_content_rect", safe_rect)
 	root.set_meta("gold_shell_inner_rect", metrics["inner_rect"])
 	root.set_meta("main_menu_utility_anchor", utility_anchor)
@@ -742,6 +748,40 @@ func _gratitude_glow_texture(peak_alpha: float) -> GradientTexture2D:
 	texture.fill_from = Vector2(0.5, 0.5)
 	texture.fill_to = Vector2(1.0, 0.5)
 	return texture
+
+
+func _gratitude_alpha_aware_texture(source: Texture2D, button: Button) -> Texture2D:
+	# SCRUM-1095: the accepted PixelLab PNG deliberately has generous transparent
+	# source padding.  Button.expand_icon scales that full 256x256 square, so the
+	# transparent right edge — not the visible hands/heart — used to define the
+	# apparent gap.  Build a runtime AtlasTexture from actual used alpha instead
+	# of modifying the source bitmap.  The square remains aspect-stable; all spare
+	# width is placed on the left so the alpha edge facing the version is exact.
+	if source == null:
+		return source
+	var image := source.get_image()
+	if image == null or image.is_empty():
+		return source
+	var used: Rect2i = image.get_used_rect()
+	if not used.has_area():
+		return source
+	var side := maxi(used.size.x, used.size.y)
+	var region_x := used.end.x - side
+	var region_y := used.position.y - int(floorf(float(side - used.size.y) * 0.5))
+	region_x = clampi(region_x, 0, maxi(0, image.get_width() - side))
+	region_y = clampi(region_y, 0, maxi(0, image.get_height() - side))
+	var atlas_region := Rect2i(region_x, region_y, side, side)
+	if not atlas_region.encloses(used):
+		return source
+	var cropped := AtlasTexture.new()
+	cropped.atlas = source
+	cropped.region = Rect2(atlas_region)
+	cropped.filter_clip = true
+	if button != null:
+		button.set_meta("scrum1095_source_asset", source.resource_path)
+		button.set_meta("scrum1095_source_alpha_rect", Rect2(used))
+		button.set_meta("scrum1095_atlas_region", Rect2(atlas_region))
+	return cropped
 
 
 func _show_main_menu() -> void:
@@ -892,7 +932,8 @@ func _show_main_menu() -> void:
 	var credits_button := Button.new()
 	credits_button.name = "MainMenuCreditsButton"
 	credits_button.text = ""
-	credits_button.icon = game._cached_texture(GRATITUDE_ICON_PATH)
+	var gratitude_source: Texture2D = game._cached_texture(GRATITUDE_ICON_PATH) as Texture2D
+	credits_button.icon = _gratitude_alpha_aware_texture(gratitude_source, credits_button)
 	credits_button.expand_icon = true
 	credits_button.icon_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	credits_button.flat = true

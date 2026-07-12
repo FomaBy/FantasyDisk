@@ -109,12 +109,36 @@ func _assert_cluster(main: Node, viewport_size: Vector2i, phase: String) -> void
 	for control in [glow, credits, version]:
 		if not utility_safe.grow(1.0).encloses((control as Control).get_global_rect()):
 			_errors.append("%s: %s escapes utility safe zone." % [context, str((control as Control).name)])
-	if absf(version.get_global_rect().position.x - glow.get_global_rect().end.x - 4.0) > 1.1:
-		_errors.append("%s: glow-to-version rect gap is not 4 px." % context)
+	if absf(version.get_global_rect().position.x - glow.get_global_rect().end.x - 2.0) > 1.1:
+		_errors.append("%s: glow-to-version rect gap is not 2 px." % context)
 	var glyph_start := version.get_global_rect().end.x - measured
-	var visible_gap := glyph_start - credits.get_global_rect().end.x
+	var icon_image := credits.icon.get_image()
+	var used := icon_image.get_used_rect()
+	var style := credits.get_theme_stylebox("normal")
+	var left_margin := style.get_content_margin(SIDE_LEFT) if style != null else 0.0
+	var right_margin := style.get_content_margin(SIDE_RIGHT) if style != null else 0.0
+	var top_margin := style.get_content_margin(SIDE_TOP) if style != null else 0.0
+	var bottom_margin := style.get_content_margin(SIDE_BOTTOM) if style != null else 0.0
+	var content_size := credits.size - Vector2(left_margin + right_margin, top_margin + bottom_margin)
+	var source_size := Vector2(icon_image.get_width(), icon_image.get_height())
+	var icon_scale := minf(content_size.x / source_size.x, content_size.y / source_size.y)
+	var draw_size := source_size * icon_scale
+	var draw_start := credits.get_global_rect().position + Vector2(
+		left_margin + (content_size.x - draw_size.x) * 0.5,
+		top_margin + (content_size.y - draw_size.y) * 0.5
+	)
+	var visible_alpha_right := draw_start.x + float(used.end.x) * icon_scale
+	var visible_gap := glyph_start - visible_alpha_right
 	if visible_gap < 0.0 or visible_gap > 20.0:
-		_errors.append("%s: visible icon-to-version gap %.1f is outside 0..20 px." % [context, visible_gap])
+		_errors.append("%s: actual alpha-to-version gap %.1f is outside 0..20 px." % [context, visible_gap])
+	if not (credits.icon is AtlasTexture):
+		_errors.append("%s: Gratitude icon must use the runtime alpha-aware AtlasTexture." % context)
+	else:
+		var atlas := credits.icon as AtlasTexture
+		if atlas.atlas == null or atlas.atlas.resource_path != "res://assets/sprites/ui/icons/credits/ui_icon_gratitude.png":
+			_errors.append("%s: alpha-aware crop lost the accepted PixelLab source." % context)
+		if atlas.region != Rect2(41, 48, 160, 160) or used != Rect2i(14, 0, 146, 160):
+			_errors.append("%s: alpha-aware region/used-alpha contract drifted (%s / %s)." % [context, str(atlas.region), str(used)])
 	if credits.get_global_rect().intersects(version.get_global_rect()) or glow.get_global_rect().intersects(version.get_global_rect()):
 		_errors.append("%s: compact controls overlap." % context)
 	if credits.tooltip_text != "Благодарности" or str(credits.get_meta("accessibility_name", "")) != "Благодарности":

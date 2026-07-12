@@ -55,7 +55,7 @@
       "id": "gratitude_glow",
       "kind": "decor",
       "parent": "frame_safe_opening",
-      "x": 2105,
+      "x": 2107,
       "y": 1091,
       "w": 116,
       "h": 116,
@@ -66,7 +66,7 @@
       "id": "gratitude_icon",
       "kind": "button",
       "parent": "gratitude_glow",
-      "x": 2115,
+      "x": 2120,
       "y": 1101,
       "w": 96,
       "h": 96,
@@ -172,6 +172,17 @@
       "min_font": 16,
       "content_zone": true,
       "collision": true
+    },
+    {
+      "id": "gratitude_visible_alpha",
+      "kind": "icon",
+      "parent": "gratitude_icon",
+      "x": 2124,
+      "y": 1105,
+      "w": 88,
+      "h": 88,
+      "content_zone": true,
+      "collision": false
     }
   ]
 }

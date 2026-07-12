@@ -1,9 +1,9 @@
 # UI Mockup Spec — Main Menu compact lower-right utility cluster
 
-Status: implemented
+Status: ready_for_integration — SCRUM-1095 alpha-aware follow-up
 Role owner: Back-end source-reuse geometry follow-up
-Task: `docs/tasks/bug_scrum1093_main_menu_version_corner_spacing_task.md`
-Jira: SCRUM-1093
+Task: `docs/tasks/SCRUM-1095.md`
+Jira: SCRUM-1095 (linked QA bug for SCRUM-1093)
 Base resolution: 1920×1080
 Responsive targets: 1152×648, 1280×720, 1600×900, 1920×1080, 2048×1152, 2560×1440
 Mockup PNG: `docs/design/previews/scrum1093_main_menu_version_corner/main_menu_bottom_corners_1920x1080.png`
@@ -11,10 +11,12 @@ Generated with: accepted PixelLab-lineage Main Menu/gold-shell/gratitude sources
 
 ## Source request
 
-The user's large-resolution screenshot shows the version floating too far from
-the lower-right yellow frame and an oversized visual gap between the Gratitude
-icon and the visible version glyphs. Move the compact cluster closer to the real
-frame opening while keeping it entirely off the ornament.
+Independent QA proved that SCRUM-1093 measured the transparent Button rectangle,
+not the accepted PNG's real alpha. Its source alpha bbox is exactly
+`(55,48)-(201,208)` inside `256x256`, producing visible gaps up to `42.91 px`.
+Reuse the same PixelLab object without bitmap edits, crop it at runtime through
+an `AtlasTexture`, and constrain the actual alpha-to-version-glyph gap to
+`0..20 px` while keeping the cluster entirely off the ornament.
 
 ## Geometry contract
 
@@ -22,11 +24,16 @@ frame opening while keeping it entirely off the ornament.
 - The version rect is sized from the actual rendered version string plus 6 px
   horizontal effect reserve; it is not a fixed 128–184 px placeholder.
 - `MainMenuVersionLabel` remains right/bottom aligned.
-- The bounded glow ends 4 px before the version rect; the icon remains centered
-  inside the glow. The visible icon-to-text gap therefore contains only the
-  4 px cluster gap, glow inset and the label's 6 px effect reserve.
-- The measurable hitbox-to-version-glyph gap is constrained to `0..20 px` at
-  every tier, including a future prerelease string (`v0.2.10-beta`).
+- The bounded glow ends `2 px` before the version rect; it is mouse-ignoring and
+  does not overlap the version. The Button remains inside the glow and is biased
+  `3 px` toward the version without touching it.
+- Runtime scans the accepted image with `Image.get_used_rect()`, builds a square
+  right-facing `AtlasTexture` that preserves all used alpha, and keeps the
+  stable `4 px` Button content margin. For the accepted source this produces a
+  `160x160` region `(41,48)-(201,208)` and alpha bbox `(14,0)-(160,160)`.
+- The measurable **actual alpha edge** to version glyph gap is constrained to
+  `0..20 px` at every tier, including `v0.2.10-beta`; target values are
+  approximately `15/17/17/19 px` at 1280/1920/2048/2560.
 - The general page `inner_rect` remains unchanged for logo/actions. The utility
   cluster uses the tighter frame-safe anchor because it is a small corner
   control with its own measured 8 px reserve.
@@ -36,7 +43,7 @@ frame opening while keeping it entirely off the ornament.
 | ID | Type | Runtime content | Rect | Z | Safe-zone parent |
 | --- | --- | --- | --- | --- | --- |
 | `MainMenuGratitudeGlow` | decorative `TextureRect` | procedural aura | generated `96×96`, immediately left of version | below icon | frame-safe opening |
-| `MainMenuCreditsButton` | icon-only `Button` | accepted gratitude PNG | generated `80×80`, centered in glow | controls | glow rect |
+| `MainMenuCreditsButton` | icon-only `Button` | accepted gratitude PNG via runtime alpha-aware `AtlasTexture` | generated `80×80`, 3 px right bias inside glow | controls | glow rect |
 | `MainMenuVersionLabel` | `Label` | dynamic `v<application/config/version>` | exact text width + 6 px, 28 px high | controls | frame-safe opening |
 
 Exact rectangles for every target are generated in `layout_<resolution>.json`
@@ -54,7 +61,8 @@ touch the gold rail or stepped bottom-right corner ornament.
 
 ## Responsive and interaction rules
 
-- Icon/glow/font tiers remain the accepted SCRUM-1081 tiers.
+- Icon/glow/font tiers remain the accepted SCRUM-1081 tiers; only transparent
+  source padding is removed at draw time.
 - Version width follows the live string on every layout and live resize.
 - Hover/focus/pressed change glow alpha only; geometry is invariant.
 - Callback, tooltip/accessibility metadata, UI SFX and focus graph are unchanged.
@@ -63,8 +71,9 @@ touch the gold rail or stepped bottom-right corner ornament.
 
 ## Assets
 
-No new runtime asset is introduced. The existing PixelLab-lineage background,
-gold shell and Gratitude icon are reused unchanged. Gratitude provenance is
+No new runtime asset is introduced and the PNG bytes remain unchanged. The
+existing PixelLab-lineage background, gold shell and Gratitude icon are reused.
+Gratitude provenance is
 PixelLab object `c1c1c353-e56e-405b-9adf-f1e6bd993152`, promoted unchanged as
 `assets/sprites/ui/icons/credits/ui_icon_gratitude.png` by SCRUM-1081.
 
@@ -78,10 +87,13 @@ PixelLab object `c1c1c353-e56e-405b-9adf-f1e6bd993152`, promoted unchanged as
 - [x] All six runtime-text layout guide reports are `ok=true`.
 - [x] Updated preview shown in chat.
 - [x] Runtime screenshots match the compact mockup at the responsive matrix.
-- [x] Focused and full runtime tests pass.
+- [ ] Independent alpha-edge oracle passes unchanged at four targets.
+- [ ] Focused, gold-shell, no-overlap, gamepad, runtime UI and full runtime gates pass.
 
-## Runtime evidence
+## Previous SCRUM-1093 runtime evidence
 
 - `docs/design/previews/scrum1093_main_menu_version_corner/runtime/main_menu_2048x1152.png`
 - `docs/design/previews/scrum1093_main_menu_version_corner/runtime/main_menu_2560x1440.png`
 - Windowed Metal capture passed at all six responsive targets.
+
+SCRUM-1095 captures replace this evidence after integration.

@@ -56,7 +56,7 @@
       "id": "gratitude_glow",
       "kind": "decor",
       "rect": [
-        2105,
+        2107,
         1091,
         116,
         116
@@ -68,7 +68,7 @@
       "id": "gratitude_icon",
       "kind": "button",
       "rect": [
-        2115,
+        2120,
         1101,
         96,
         96
@@ -166,6 +166,18 @@
       "ok": true,
       "warnings": [],
       "fit_font_size": 24
+    },
+    {
+      "id": "gratitude_visible_alpha",
+      "kind": "icon",
+      "rect": [
+        2124,
+        1105,
+        88,
+        88
+      ],
+      "ok": true,
+      "warnings": []
     }
   ]
 }

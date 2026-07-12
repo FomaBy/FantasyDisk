@@ -132,7 +132,7 @@ func _assert_main_menu(main: Node, viewport_size: Vector2i, phase: String) -> vo
 		if index > 0 and buttons[index - 1].get_global_rect().intersects(button.get_global_rect()):
 			_errors.append("%s: action rows %d/%d overlap." % [context, index - 1, index])
 	_assert_focus_graph(buttons, credits, context)
-	if credits.text != "" or credits.icon == null or credits.icon.resource_path != GRATITUDE_ICON_PATH:
+	if credits.text != "" or credits.icon == null or _gratitude_source_path(credits.icon) != GRATITUDE_ICON_PATH:
 		_errors.append("%s: gratitude must remain icon-only with the accepted asset." % context)
 	if credits.tooltip_text != "Благодарности" or str(credits.get_meta("accessibility_name", "")) != "Благодарности":
 		_errors.append("%s: gratitude tooltip/accessibility drifted." % context)
@@ -145,7 +145,7 @@ func _assert_main_menu(main: Node, viewport_size: Vector2i, phase: String) -> vo
 		_errors.append("%s: version font tier drifted." % context)
 	if absf(float(version.get_meta("scrum1093_measured_text_width", -1.0)) + 6.0 - version.size.x) > 1.1:
 		_errors.append("%s: version rect is not compact to the measured glyph width." % context)
-	if absf(version.get_global_rect().position.x - glow.get_global_rect().end.x - 4.0) > 1.1:
+	if absf(version.get_global_rect().position.x - glow.get_global_rect().end.x - 2.0) > 1.1:
 		_errors.append("%s: gratitude glow is not immediately left of the compact version rect." % context)
 	var glyph_start := version.get_global_rect().end.x - float(version.get_meta("scrum1093_measured_text_width", -1.0))
 	var visible_icon_to_text_gap := glyph_start - credits.get_global_rect().end.x
@@ -240,14 +240,21 @@ func _expected_utility(viewport_size: Vector2i, version: Label) -> Dictionary:
 	).x)
 	var version_size := Vector2(measured_width + 6.0, version_height)
 	var version_rect := Rect2(anchor - version_size, version_size)
-	var glow_rect := Rect2(Vector2(version_rect.position.x - 4.0 - glow_side, anchor.y - glow_side), Vector2.ONE * glow_side)
+	var glow_rect := Rect2(Vector2(version_rect.position.x - 2.0 - glow_side, anchor.y - glow_side), Vector2.ONE * glow_side)
 	var inset := (glow_side - credits_side) * 0.5
 	return {
 		"safe": safe,
 		"version": version_rect,
 		"glow": glow_rect,
-		"credits": Rect2(glow_rect.position + Vector2.ONE * inset, Vector2.ONE * credits_side),
+		"credits": Rect2(glow_rect.position + Vector2(inset + 3.0, inset), Vector2.ONE * credits_side),
 	}
+
+
+func _gratitude_source_path(icon: Texture2D) -> String:
+	if icon is AtlasTexture:
+		var atlas := (icon as AtlasTexture).atlas
+		return atlas.resource_path if atlas != null else ""
+	return icon.resource_path if icon != null else ""
 
 
 func _assert_rect(actual: Rect2, expected: Rect2, context: String) -> void:

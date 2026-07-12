@@ -630,8 +630,9 @@ func _screen_specific_assertions(main: Node, screen_id: String, context: String)
 			).x)
 			var version_size := Vector2(measured_width + 6.0, version_height)
 			var expected_version_rect := Rect2(utility_safe.end - version_size, version_size)
-			var expected_glow := Rect2(Vector2(expected_version_rect.position.x - 4.0 - glow_side, utility_safe.end.y - glow_side), Vector2.ONE * glow_side)
-			var expected := Rect2(expected_glow.position + Vector2.ONE * ((glow_side - credits_side) * 0.5), Vector2.ONE * credits_side)
+			var expected_glow := Rect2(Vector2(expected_version_rect.position.x - 2.0 - glow_side, utility_safe.end.y - glow_side), Vector2.ONE * glow_side)
+			var expected_inset := (glow_side - credits_side) * 0.5
+			var expected := Rect2(expected_glow.position + Vector2(expected_inset + 3.0, expected_inset), Vector2.ONE * credits_side)
 			if not utility_safe.grow(1.0).encloses(credits.get_global_rect()):
 				return "%s: MainMenuCreditsButton %s escapes compact utility safe rect %s." % [context, str(credits.get_global_rect()), str(utility_safe)]
 			if not _rect_approximately_equal(glow.get_global_rect(), expected_glow, 1.1):
@@ -642,13 +643,13 @@ func _screen_specific_assertions(main: Node, screen_id: String, context: String)
 				return "%s: MainMenuCreditsButton %s != authored zone %s." % [context, str(credits.get_global_rect()), str(expected)]
 			if not glow.get_global_rect().grow(1.0).encloses(credits.get_global_rect()):
 				return "%s: MainMenuCreditsButton escapes bounded glow." % context
-			if absf(version.get_global_rect().position.x - glow.get_global_rect().end.x - 4.0) > 1.1:
+			if absf(version.get_global_rect().position.x - glow.get_global_rect().end.x - 2.0) > 1.1:
 				return "%s: MainMenu utility cluster contains an oversized hidden gap." % context
 			var glyph_start := version.get_global_rect().end.x - measured_width
 			var visible_gap := glyph_start - credits.get_global_rect().end.x
 			if visible_gap < 0.0 or visible_gap > 20.0:
 				return "%s: MainMenu visible icon-to-version gap %.1f is outside 0..20 px." % [context, visible_gap]
-			if credits.text != "" or credits.icon == null or credits.icon.resource_path != "res://assets/sprites/ui/icons/credits/ui_icon_gratitude.png":
+			if credits.text != "" or credits.icon == null or _gratitude_source_path(credits.icon) != "res://assets/sprites/ui/icons/credits/ui_icon_gratitude.png":
 				return "%s: MainMenuCreditsButton must be icon-only with the accepted gratitude asset." % context
 			if credits.tooltip_text != "Благодарности" or str(credits.get_meta("accessibility_name", "")) != "Благодарности":
 				return "%s: MainMenuCreditsButton is missing gratitude tooltip/accessibility metadata." % context
@@ -1786,6 +1787,13 @@ func _codex_scaled_design_rect(viewport_size: Vector2, design_rect: Rect2) -> Re
 	var scale := minf(viewport_size.x / design_size.x, viewport_size.y / design_size.y)
 	var offset := (viewport_size - design_size * scale) * 0.5
 	return Rect2(offset + design_rect.position * scale, design_rect.size * scale)
+
+
+func _gratitude_source_path(icon: Texture2D) -> String:
+	if icon is AtlasTexture:
+		var atlas := (icon as AtlasTexture).atlas
+		return atlas.resource_path if atlas != null else ""
+	return icon.resource_path if icon != null else ""
 
 
 func _rect_approximately_equal(actual: Rect2, expected: Rect2, tolerance: float) -> bool:

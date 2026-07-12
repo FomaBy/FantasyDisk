@@ -28,7 +28,7 @@ func _initialize() -> void:
 		_expect_family(main.find_child(node_name, true, false) as BaseButton, "text/main_menu_380x104", node_name)
 	var credits := main.find_child("MainMenuCreditsButton", true, false) as Button
 	_expect_family(credits, "credits_icon", "MainMenuCreditsButton")
-	if credits == null or credits.text != "" or credits.icon == null or credits.icon.resource_path != GRATITUDE_ICON_PATH:
+	if credits == null or credits.text != "" or credits.icon == null or _gratitude_source_path(credits.icon) != GRATITUDE_ICON_PATH:
 		errors.append("MainMenuCreditsButton must be icon-only and use the accepted gratitude asset.")
 	elif credits.tooltip_text != "Благодарности" or str(credits.get_meta("accessibility_name", "")) != "Благодарности":
 		errors.append("MainMenuCreditsButton must expose gratitude tooltip/accessibility metadata.")
@@ -78,7 +78,6 @@ func _initialize() -> void:
 	_expect_family(slim, UIButtonFamily.FAMILY_SLIM_ACTION, "slim action probe")
 	_expect_stable_state_geometry(slim, "slim action probe")
 	slim.free()
-
 	main.queue_free()
 	viewport.queue_free()
 	await process_frame
@@ -89,6 +88,13 @@ func _initialize() -> void:
 		return
 	print("SCRUM-1051 semantic UI button family test passed.")
 	quit(0)
+
+
+func _gratitude_source_path(icon: Texture2D) -> String:
+	if icon is AtlasTexture:
+		var atlas := (icon as AtlasTexture).atlas
+		return atlas.resource_path if atlas != null else ""
+	return icon.resource_path if icon != null else ""
 
 
 func _audit_visible_buttons(scope: Node, context: String) -> void:
