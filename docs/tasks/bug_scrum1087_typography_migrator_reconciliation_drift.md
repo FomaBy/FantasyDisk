@@ -69,3 +69,23 @@ Disk cleanup: no bug-implementation cache or worktree created by QA.
 
 Disk cleanup: generated Godot import sidecars, disposable `.godot/` cache and
 isolated `/tmp/fsd-scrum1087-*` userdata removed before handoff.
+
+## QA-Вердикт (2026-07-12, independent re-QA) — PASSED
+
+Статус: PASSED
+
+- reviewed `origin/dev@0dc31f79dc94fa575489ace823f7e21a1bcef7a0`
+  containing fix `457ed4a89`;
+- original `font_size = 1` reproduction and every semantic/identity adversarial
+  case now fail closed without changing manifest bytes;
+- token-equivalent whitespace reconciliation remains the only positive update
+  path and rewrites migration replacement fingerprints only after full
+  candidate validation;
+- committed focused suite passed `9/9`; additional validation-rollback and
+  multi-entry late-mismatch transaction checks passed;
+- inventory check, two idempotent migrator runs, semantic typography,
+  no-overlap, gamepad, runtime UI and full runtime smoke passed;
+- no runtime UI implementation file was changed by this bug fix.
+
+Disk cleanup: pending removal of disposable re-QA worktree, `.godot` and
+`/tmp/fsd_qa_scrum1087` after the verdict/sync commits are pushed.
