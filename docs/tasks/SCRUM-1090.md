@@ -109,3 +109,13 @@ SCRUM-1090 возвращён в Jira `К выполнению` до fix + re-QA
   placement внутри пустых секций dossier.
 - Runtime/data/assets не менялись. Linked SCRUM-1092 готов к независимому re-QA;
   SCRUM-1091 остаётся blocked.
+
+## Independent re-QA (2026-07-12)
+
+Статус: PASSED
+
+Связанный SCRUM-1092 принят независимым QA: новый PixelLab source подтверждён
+API и SHA, original-size glyph audit чистый, callout ровно
+`УНИКАЛЬНЫЙ ФИНАЛ`, planning `20/20`, compositor `13/13`, responsive `3/3`,
+source-only scope соблюдён. Предыдущий QA-вердикт FAILED superseded этим
+re-QA PASS; SCRUM-1090 закрыт в Jira как `Готово`.

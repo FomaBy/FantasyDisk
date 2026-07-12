@@ -1,13 +1,14 @@
 # SCRUM-1091 — Atlas exact upgrade descriptions and strong unique finals
 
-Статус: blocked
+Статус: new
 Версия: 0.2.1
 Jira: SCRUM-1091
 Контур: Codex
 Owner: unassigned Back-end / balance
 Thread/Worker: n/a
-Dependency: SCRUM-1090 Design acceptance and release of SCRUM-1088/SCRUM-1089
-overlapping `scripts/ui_screens.gd` locks.
+Dependency: cleared 2026-07-12 — SCRUM-1090/SCRUM-1092 independent re-QA PASSED;
+SCRUM-1088/SCRUM-1089 are `Готово` and released overlapping
+`scripts/ui_screens.gd` locks.
 
 ## Design handoff
 
@@ -41,3 +42,10 @@ overlapping `scripts/ui_screens.gd` locks.
 - long descriptions scroll inside the dossier; price and Buy remain pinned;
 - no content touches the frame ornament at 1280×720, 1920×1080 or 2560×1440;
 - Jira starts only after SCRUM-1090 QA and overlapping owner locks are released.
+
+## Dependency release (2026-07-12)
+
+SCRUM-1090 и bug SCRUM-1092 приняты independent re-QA. SCRUM-1088 и
+SCRUM-1089 находятся в `Готово`; прежние overlapping locks освобождены. Jira
+label `blocked` снят. Задача остаётся unclaimed `К выполнению` и готова для
+отдельного Back-end/balance claim-first worker.

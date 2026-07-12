@@ -77,3 +77,26 @@ Disk cleanup: task не создавал `.godot`, user-data или build caches
 worktree/branch удаляются сразу после push и Jira sync.
 
 Thread cleanup: not a disposable worker thread.
+
+## Independent re-QA (2026-07-12)
+
+Статус: PASSED
+
+- Direct PixelLab API подтвердил completed source
+  `cccfc9a1-e067-4507-a178-9dd6d54bfce4`; remote download и repository PNG
+  byte-identical, SHA-256
+  `3c2583453bd3d03612df9345676b9a91d465c3ca889481a93473f4a299d429be`.
+- Original-size review нового uncached source: `$`, text, numbers, currency
+  marks, semantic glyphs, runes и pseudo-writing отсутствуют.
+- Compositor callout ровно `УНИКАЛЬНЫЙ ФИНАЛ`; старого `ФИНАЛ · SOLO` нет в
+  plan/layout/preview contracts.
+- Independent gates: planning `20/20`, 0 errors/warnings; compositor `13/13`;
+  responsive `3/3` на 1280×720, 1920×1080 и 2560×1440.
+- Debug overlay подтверждает safe zones без наложения на орнамент.
+- Fix commit `73b1969f5` source-only: production `assets/`, `scripts/`,
+  `scenes/`, `tests/`, `data/` не менялись.
+- Live-sync audit: между landing `876ac83a7` и latest verified origin/dev
+  `fefb4840a` Design package и SCRUM-1090/1092 mirrors не менялись.
+
+Jira SCRUM-1092 и SCRUM-1090 переведены в `Готово`. QA design/runtime
+исправлений не выполнял.
