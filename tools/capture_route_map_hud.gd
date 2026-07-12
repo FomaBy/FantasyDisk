@@ -1,8 +1,8 @@
 extends SceneTree
 
-## SCRUM-1079: five-target screenshot matrix for the horizontal Route Map.
+## SCRUM-1089: five-target screenshot matrix for the full-fit Route Map + HUD 2×.
 ## Run (windowed): python3 tools/godot_gate.py --path . --script res://tools/capture_route_map_hud.gd
-## Output: docs/design/previews/scrum1079_route_map_horizontal_runtime/
+## Output: docs/design/previews/scrum1089_route_map_full_fit_hud2x/runtime/
 
 const MAIN_SCENE := preload("res://scenes/Main.tscn")
 const TARGETS := [
@@ -12,7 +12,7 @@ const TARGETS := [
 
 
 func _initialize() -> void:
-	var qa_dir := ProjectSettings.globalize_path("res://docs/design/previews/scrum1079_route_map_horizontal_runtime")
+	var qa_dir := ProjectSettings.globalize_path("res://docs/design/previews/scrum1089_route_map_full_fit_hud2x/runtime")
 	DirAccess.make_dir_recursive_absolute(qa_dir)
 	for target in TARGETS:
 		var viewport := SubViewport.new()
@@ -32,16 +32,16 @@ func _initialize() -> void:
 			await process_frame
 		var image := viewport.get_texture().get_image()
 		if image == null or image.is_empty():
-			push_error("SCRUM-1079 capture failed for %s" % str(target))
+			push_error("SCRUM-1089 capture failed for %s" % str(target))
 			quit(1)
 			return
-		var output := "%s/route_map_horizontal_%dx%d.png" % [qa_dir, target.x, target.y]
+		var output := "%s/route_map_full_fit_hud2x_%dx%d.png" % [qa_dir, target.x, target.y]
 		if image.save_png(output) != OK:
-			push_error("SCRUM-1079 could not write %s" % output)
+			push_error("SCRUM-1089 could not write %s" % output)
 			quit(1)
 			return
 		print("Saved ", output)
 		viewport.queue_free()
 		await process_frame
-	print("SCRUM-1079 Route Map screenshot matrix complete.")
+	print("SCRUM-1089 Route Map full-fit screenshot matrix complete.")
 	quit(0)

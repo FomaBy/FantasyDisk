@@ -486,19 +486,31 @@ SCRUM-277 добавил weapon integrity gate для всего ростера:
 босса (`ROUTE_STEPS_TO_BOSS = 8`). Первые два selectable ряда всегда состоят только из `battle`
 узлов; дальнейшие пулы типов по-прежнему зависят от фазы акта.
 
+SCRUM-1089 делает горизонтальную карту full-fit: все 9 колонок акта сразу
+помещаются в видимую область на 1152×648, 1280×720, 1600×900, 1920×1080 и
+2560×1440. Горизонтальный scrollbar и pan больше не нужны и отключены вместе с
+vertical scroll; legacy `RouteMapScroll`/`VerticalRouteMap` сохранены для input,
+focus и tooling compatibility. Шапка поднята в реальную пустую центральную зону
+gold shell, title/progress остаётся полным, а menu-run HUD HP/XP/ULT/gold имеет
+ровно 2× прежний видимый размер. На компактных tiers title и HUD стоят друг над
+другом, на 1920/2560 — рядом. Узлы используют большую часть доступной высоты и
+ширины, но остаются внутри documented ornament reserve. Source/spec/runtime
+evidence: `docs/design/{mockups,references,previews}/scrum1089_route_map_full_fit_hud2x/`.
+
 Карта открывается отдельным full-screen экраном. Legacy-имя canvas
 `VerticalRouteMap` сохранено для tooling compatibility, но metadata публикует
 `route_orientation=horizontal`. Canvas по высоте равен authored node viewport, а по
-ширине растёт с числом колонок. `RouteMapScroll` использует horizontal auto-scroll;
-vertical scrollbar скрыт/отключён, `scroll_vertical=0`.
+ширине теперь равен authored node viewport и распределяет фиксированные девять
+колонок без overflow. `RouteMapScroll` отключает обе оси; оба scrollbar скрыты,
+`scroll_horizontal=0`, `scroll_vertical=0`.
 SCRUM-1086 удерживает status второй строки шапки в той же safe-zone:
 на 1152/1280 показана компактная, но полная форма без ellipsis; на 1600+
 текст остаётся прежним.
 
-При open/return/live resize UI возвращает текущую доступную колонку в видимую
-область. Drag и wheel/trackpad над картой двигают только horizontal offset. Если
-движение мыши превышает drag threshold, клик по узлу подавляется и encounter не
-стартует случайно.
+При open/return/live resize UI сохраняет все колонки в видимой области и
+удерживает scroll offsets на нуле. Drag и wheel/trackpad больше не двигают
+canvas; при этом движение мыши выше drag threshold по-прежнему подавляет клик
+по узлу, поэтому encounter не стартует случайно.
 
 Линии маршрута тонкие и декоративные. Они игнорируют мышь, как и иконки внутри узлов, поэтому hover tooltip и клики по узлам работают после скролла/pan. На route screen компактный HP/XP/money HUD находится в том же UI-слое, чтобы отдельный fullscreen HUD CanvasLayer не перекрывал карту и не перехватывал клики.
 
