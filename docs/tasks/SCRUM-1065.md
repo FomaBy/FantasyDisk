@@ -1,7 +1,7 @@
 # SCRUM-1065 — Player Projectile Art Pack
 
 Jira: SCRUM-1065
-Статус: review
+Статус: done
 Контур: Codex
 Owner: Design/Codex
 Thread/Worker: `/root/scrum1065_projectile_pack_resume`
