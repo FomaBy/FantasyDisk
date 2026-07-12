@@ -4645,12 +4645,12 @@
  },
  "SCRUM-1057_route_map_horizontal_design.md": {
   "key": "SCRUM-1057",
-  "status": "Контроль качества",
-  "desc_hash": "c4c5223c70563169940efadce71f1ba7"
+  "status": "Готово",
+  "desc_hash": "50fc288cac241a4350f3b3944f5041c6"
  },
  "backend_scrum1079_route_map_horizontal_integration.md": {
   "key": "SCRUM-1079",
-  "status": "Контроль качества",
+  "status": "Готово",
   "desc_hash": "1dd3581db8e1e9151df5e663e9558393"
  },
  "SCRUM-1065.md": {
@@ -4675,7 +4675,7 @@
  },
  "bug_scrum1086_route_map_header_text_fit.md": {
   "key": "SCRUM-1086",
-  "status": "Контроль качества",
-  "desc_hash": "37ea6ec9a733f9a56f4842a025dc18bf"
+  "status": "Готово",
+  "desc_hash": "974178aa39f0a7436f1a6a003903c8fa"
  }
 }
