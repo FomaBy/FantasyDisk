@@ -80,7 +80,7 @@ func _init() -> void:
 func _derived_survival_slice(stats: Dictionary, run_modifiers: Dictionary) -> Dictionary:
 	var derived: Dictionary = ProgressionDataScript.derived_parameters(stats, run_modifiers, {})
 	return {
-		"max_health": derived.get("max_health", 0.0),
+		"max_health": derived.get("health_point", 0.0),
 		"defense": derived.get("defense", 0.0),
 		"dodge": derived.get("dodge", 0.0),
 		"absorb": derived.get("absorb", 0.0),
