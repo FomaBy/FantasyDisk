@@ -657,10 +657,22 @@ func _initialize() -> void:
 		_fail("Expected axe weapon to use the two-handed axe sprite.")
 		return
 	var axe_config: Dictionary = ProgressionData.weapon("berserk", "axe")
+	var axe_base_sweep := float(melee_weapon.get_meta("base_sweep_degrees", melee_weapon.get("sweep_degrees")))
+	var axe_base_range := float(melee_weapon.get_meta("base_attack_range", melee_weapon.get("attack_range")))
 	if str(melee_weapon.get("attack_shape")) != str(axe_config.get("attack_shape")) \
-			or float(melee_weapon.get("sweep_degrees")) != float(axe_config.get("sweep_degrees")) \
-			or absf(float(melee_weapon.get_meta("base_attack_range", 0.0)) - float(axe_config.get("attack_range"))) > 0.01:
-		_fail("Expected axe runtime base geometry to match the current ProgressionData config.")
+			or absf(axe_base_sweep - float(axe_config.get("sweep_degrees"))) > 0.01 \
+			or absf(axe_base_range - float(axe_config.get("attack_range"))) > 0.01:
+		_fail(
+			"Expected axe runtime base geometry to match the current ProgressionData config "
+			+ "(shape=%s/%s, sweep=%.2f/%.2f, range=%.2f/%.2f)." % [
+				str(melee_weapon.get("attack_shape")),
+				str(axe_config.get("attack_shape")),
+				axe_base_sweep,
+				float(axe_config.get("sweep_degrees")),
+				axe_base_range,
+				float(axe_config.get("attack_range")),
+			]
+		)
 		return
 	var sword_config: Dictionary = ProgressionData.weapon("berserk", "sword")
 	if str(sword_config.get("attack_shape")) != "sweep" or float(sword_config.get("sweep_degrees")) != 100.0 or float(sword_config.get("attack_range")) != 350.0 or float(sword_config.get("damage_multiplier")) != 1.15:
