@@ -104,19 +104,19 @@ const SURVIVAL_TIGHT_LABELS := {
 }
 const DERIVED_TIGHT_LABELS := {
 	"damage": "Урон", "attack_speed": "Скор.", "crit_chance": "Крит",
-	"crit_damage_multiplier": "Крит ×", "knockback_power": "Отт.",
+	"crit_damage_multiplier": "К×", "knockback_power": "Отт.",
 	"magic_damage": "Маг.", "aoe_radius": "Шир.", "projectile_speed": "Снар.",
-	"attack_range": "Дал.", "range_multiplier": "Дал. ×", "aura_radius": "Аура",
+	"attack_range": "Дал.", "range_multiplier": "Д×", "aura_radius": "Аура",
 	"buff_power": "Баф", "knockback_distance": "Отт.", "dot_damage": "Пер.",
 	"dot_speed": "Част.",
 }
 const DERIVED_ULTRA_TIGHT_LABELS := {
 	"damage": "Ур.", "attack_speed": "Ск.", "crit_chance": "Кр.",
 	"crit_damage_multiplier": "К×", "knockback_power": "От.",
-	"magic_damage": "Маг", "aoe_radius": "Шир", "projectile_speed": "Сн.",
-	"attack_range": "Дал", "range_multiplier": "Д×", "aura_radius": "Аур",
-	"buff_power": "Баф", "knockback_distance": "От.", "dot_damage": "П.ур",
-	"dot_speed": "Част",
+	"magic_damage": "М", "aoe_radius": "Ш", "projectile_speed": "Сн.",
+	"attack_range": "Д", "range_multiplier": "Д×", "aura_radius": "А",
+	"buff_power": "Б", "knockback_distance": "От.", "dot_damage": "П",
+	"dot_speed": "Ч",
 }
 const DOSSIER_TOOLTIP_META := "dossier_tooltip_text"
 const TOOLTIP_SCROLL_STEP := 88
@@ -193,8 +193,8 @@ const READABILITY_MAX_SCALE := 1.18
 const READABLE_BASE_ROW_HEIGHT := 44.0
 const READABLE_CHIP_HEIGHT := 54.0
 const READABLE_CHIP_WIDTH := 236.0
-const HEADER_SUMMARY_BASE_FONT_SIZE := 15
-const HEADER_SUMMARY_MIN_FONT_SIZE := 12
+const HEADER_SUMMARY_BASE_FONT_SIZE := 20
+const HEADER_SUMMARY_MIN_FONT_SIZE := 20
 const HEADER_SUMMARY_RIGHT_INSET := 24.0
 
 
@@ -388,7 +388,12 @@ func _build_header(parent: Control, s: float) -> void:
 	_title_label.name = "DossierTitleLabel"
 	_title_label.text = "Досье героя"
 	_title_label.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
-	_title_label.add_theme_font_size_override("font_size", _readable_px(SemanticTypography.ROLE_TITLE, 22.0))
+	_title_label.add_theme_font_size_override("font_size", SemanticTypography.resolve_fixed(
+		SemanticTypography.ROLE_TITLE,
+		_readable_px(SemanticTypography.ROLE_TITLE, 22.0),
+		SemanticTypography.role_min(SemanticTypography.ROLE_TITLE),
+		SemanticTypography.role_max(SemanticTypography.ROLE_TITLE)
+	))
 	_title_label.add_theme_color_override("font_color", COLOR_TITLE)
 	title_row.add_child(_title_label)
 
@@ -406,7 +411,12 @@ func _build_header(parent: Control, s: float) -> void:
 	_header_summary.clip_text = false
 	_header_summary.text_overrun_behavior = TextServer.OVERRUN_NO_TRIMMING
 	_header_summary.size_flags_horizontal = Control.SIZE_SHRINK_END
-	_header_summary.add_theme_font_size_override("font_size", _readable_px(SemanticTypography.ROLE_SECTION, HEADER_SUMMARY_BASE_FONT_SIZE))
+	_header_summary.add_theme_font_size_override("font_size", SemanticTypography.resolve_fixed(
+		SemanticTypography.ROLE_SECTION,
+		_readable_px(SemanticTypography.ROLE_SECTION, HEADER_SUMMARY_BASE_FONT_SIZE),
+		SemanticTypography.role_min(SemanticTypography.ROLE_SECTION),
+		SemanticTypography.role_max(SemanticTypography.ROLE_SECTION)
+	))
 	_header_summary.add_theme_color_override("font_color", COLOR_KIND)
 	var summary_inset := MarginContainer.new()
 	summary_inset.name = "DossierHeaderSummaryInset"
@@ -574,7 +584,12 @@ func _build_body(parent: Control, s: float) -> void:
 	_build_summary_label.clip_text = true
 	_build_summary_label.text_overrun_behavior = TextServer.OVERRUN_TRIM_ELLIPSIS
 	_build_summary_label.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
-	_build_summary_label.add_theme_font_size_override("font_size", _readable_px(SemanticTypography.ROLE_BODY, 14.0))
+	_build_summary_label.add_theme_font_size_override("font_size", SemanticTypography.resolve_fixed(
+		SemanticTypography.ROLE_BODY,
+		_readable_px(SemanticTypography.ROLE_BODY, 14.0),
+		SemanticTypography.role_min(SemanticTypography.ROLE_BODY),
+		SemanticTypography.role_max(SemanticTypography.ROLE_BODY)
+	))
 	_build_summary_label.add_theme_color_override("font_color", COLOR_BODY)
 	_build_summary_panel.add_child(_build_summary_label)
 
@@ -605,7 +620,12 @@ func _build_body(parent: Control, s: float) -> void:
 	arsenal_title.name = "ArsenalTitle"
 	arsenal_title.text = "Арсенал"
 	arsenal_title.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-	arsenal_title.add_theme_font_size_override("font_size", _readable_px(SemanticTypography.ROLE_SECTION, 18.0))
+	arsenal_title.add_theme_font_size_override("font_size", SemanticTypography.resolve_fixed(
+		SemanticTypography.ROLE_SECTION,
+		_readable_px(SemanticTypography.ROLE_SECTION, 18.0),
+		SemanticTypography.role_min(SemanticTypography.ROLE_SECTION),
+		SemanticTypography.role_max(SemanticTypography.ROLE_SECTION)
+	))
 	arsenal_title.add_theme_color_override("font_color", Color(0.98, 0.94, 0.78, 1.0))
 	arsenal_header.add_child(arsenal_title)
 
@@ -645,7 +665,12 @@ func _build_body(parent: Control, s: float) -> void:
 	equip_title.name = "RunEquipmentTitle"
 	equip_title.text = "Снаряжение забега"
 	equip_title.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-	equip_title.add_theme_font_size_override("font_size", _readable_px(SemanticTypography.ROLE_SECTION, 18.0))
+	equip_title.add_theme_font_size_override("font_size", SemanticTypography.resolve_fixed(
+		SemanticTypography.ROLE_SECTION,
+		_readable_px(SemanticTypography.ROLE_SECTION, 18.0),
+		SemanticTypography.role_min(SemanticTypography.ROLE_SECTION),
+		SemanticTypography.role_max(SemanticTypography.ROLE_SECTION)
+	))
 	equip_title.add_theme_color_override("font_color", Color(0.98, 0.94, 0.78, 1.0))
 	equip_header.add_child(equip_title)
 
@@ -683,7 +708,12 @@ func _build_focus_tooltip(parent: Control) -> void:
 	_focus_tooltip_label.custom_minimum_size = Vector2(380.0, 0.0)
 	_focus_tooltip_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	_focus_tooltip_label.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	_focus_tooltip_label.add_theme_font_size_override("font_size", _readable_px(SemanticTypography.ROLE_TOOLTIP, 15.0))
+	_focus_tooltip_label.add_theme_font_size_override("font_size", SemanticTypography.resolve_fixed(
+		SemanticTypography.ROLE_TOOLTIP,
+		_readable_px(SemanticTypography.ROLE_TOOLTIP, 15.0),
+		SemanticTypography.role_min(SemanticTypography.ROLE_TOOLTIP),
+		SemanticTypography.role_max(SemanticTypography.ROLE_TOOLTIP)
+	))
 	_focus_tooltip_label.add_theme_color_override("font_color", COLOR_BODY)
 	_focus_tooltip_scroll.add_child(_focus_tooltip_label)
 
@@ -803,7 +833,12 @@ func _refresh_responsive_metrics(viewport_size: Vector2) -> void:
 	var compact := viewport_size.y <= 900.0
 	var very_compact := viewport_size.y <= 648.0
 	if _title_label != null:
-		_title_label.add_theme_font_size_override("font_size", _readable_px(SemanticTypography.ROLE_TITLE, 22.0))
+		_title_label.add_theme_font_size_override("font_size", SemanticTypography.resolve_fixed(
+			SemanticTypography.ROLE_TITLE,
+			_readable_px(SemanticTypography.ROLE_TITLE, 22.0),
+			SemanticTypography.role_min(SemanticTypography.ROLE_TITLE),
+			SemanticTypography.role_max(SemanticTypography.ROLE_TITLE)
+		))
 	var title_chip := find_child("DossierTitleChip", true, false) as PanelContainer
 	if title_chip != null:
 		title_chip.add_theme_stylebox_override("panel", _chip_style(0.86, maxf(5.0, roundf(10.0 * s))))
@@ -844,7 +879,12 @@ func _refresh_responsive_metrics(viewport_size: Vector2) -> void:
 		_build_summary_panel.custom_minimum_size.y = 20.0 if very_compact else (28.0 if compact else 44.0)
 		_build_summary_panel.add_theme_stylebox_override("panel", _stat_row_style(false))
 	if _build_summary_label != null:
-		_build_summary_label.add_theme_font_size_override("font_size", 13 if compact else _readable_px(SemanticTypography.ROLE_BODY, 14.0))
+		_build_summary_label.add_theme_font_size_override("font_size", SemanticTypography.resolve_fixed(
+			SemanticTypography.ROLE_BODY,
+			13 if compact else _readable_px(SemanticTypography.ROLE_BODY, 14.0),
+			SemanticTypography.role_min(SemanticTypography.ROLE_BODY),
+			SemanticTypography.role_max(SemanticTypography.ROLE_BODY)
+		))
 	var right_content := find_child("DerivedStatsScrollContent", true, false) as VBoxContainer
 	if right_content != null:
 		right_content.add_theme_constant_override("separation", 2 if very_compact else (8 if compact else maxi(8, int(roundf(12.0 * s)))))
@@ -855,7 +895,12 @@ func _refresh_responsive_metrics(viewport_size: Vector2) -> void:
 	if survival_title != null:
 		survival_title.visible = not compact
 	for node in find_children("DerivedGroupTitle_*", "Label", true, false):
-		(node as Label).add_theme_font_size_override("font_size", _readable_px(SemanticTypography.ROLE_SECTION, 18.0))
+		(node as Label).add_theme_font_size_override("font_size", SemanticTypography.resolve_fixed(
+			SemanticTypography.ROLE_SECTION,
+			_readable_px(SemanticTypography.ROLE_SECTION, 18.0),
+			SemanticTypography.role_min(SemanticTypography.ROLE_SECTION),
+			SemanticTypography.role_max(SemanticTypography.ROLE_SECTION)
+		))
 	for node in find_children("DerivedGroupHeader_*", "HBoxContainer", true, false):
 		(node as Control).visible = not very_compact
 	for node in find_children("DerivedGroupContent_*", "VBoxContainer", true, false):
@@ -881,20 +926,40 @@ func _refresh_responsive_metrics(viewport_size: Vector2) -> void:
 		var label := node as Label
 		var stat_id := label.name.trim_prefix("SurvivalStatName_")
 		label.text = str(SURVIVAL_TIGHT_LABELS.get(stat_id, label.text)) if compact else str(label.get_meta("full_label", label.text))
-		label.add_theme_font_size_override("font_size", 14 if compact else _readable_px(SemanticTypography.ROLE_FIELD, 15.0))
+		label.add_theme_font_size_override("font_size", SemanticTypography.resolve_fixed(
+			SemanticTypography.ROLE_FIELD,
+			14 if compact else _readable_px(SemanticTypography.ROLE_FIELD, 15.0),
+			SemanticTypography.role_min(SemanticTypography.ROLE_FIELD),
+			SemanticTypography.role_max(SemanticTypography.ROLE_FIELD)
+		))
 	for node in find_children("SurvivalStatValue_*", "Label", true, false):
 		var label := node as Label
 		label.custom_minimum_size = Vector2(54.0 if compact else _readable_px(96.0), 0.0)
-		label.add_theme_font_size_override("font_size", 14 if compact else _readable_px(SemanticTypography.ROLE_VALUE, 16.0))
+		label.add_theme_font_size_override("font_size", SemanticTypography.resolve_fixed(
+			SemanticTypography.ROLE_VALUE,
+			14 if compact else _readable_px(SemanticTypography.ROLE_VALUE, 16.0),
+			SemanticTypography.role_min(SemanticTypography.ROLE_VALUE),
+			SemanticTypography.role_max(SemanticTypography.ROLE_VALUE)
+		))
 	for node in find_children("DerivedStatName_*", "Label", true, false):
 		var label := node as Label
 		var stat_id := label.name.trim_prefix("DerivedStatName_")
 		label.text = str(DERIVED_ULTRA_TIGHT_LABELS.get(stat_id, label.text)) if very_compact else (str(DERIVED_TIGHT_LABELS.get(stat_id, label.text)) if compact else str(DERIVED_COMPACT_LABELS.get(stat_id, label.text)))
-		label.add_theme_font_size_override("font_size", 11 if very_compact else (13 if compact else _readable_px(SemanticTypography.ROLE_FIELD, 15.0)))
+		label.add_theme_font_size_override("font_size", SemanticTypography.resolve_fixed(
+			SemanticTypography.ROLE_FIELD,
+			11 if very_compact else (13 if compact else _readable_px(SemanticTypography.ROLE_FIELD, 15.0)),
+			SemanticTypography.role_min(SemanticTypography.ROLE_FIELD),
+			SemanticTypography.role_max(SemanticTypography.ROLE_FIELD)
+		))
 	for node in find_children("DerivedStatValue_*", "Label", true, false):
 		var label := node as Label
-		label.custom_minimum_size = Vector2(46.0 if compact else _readable_px(54.0), 0.0)
-		label.add_theme_font_size_override("font_size", 13 if very_compact else (14 if compact else _readable_px(SemanticTypography.ROLE_VALUE, 17.0)))
+		label.custom_minimum_size = Vector2(48.0 if compact else _readable_px(54.0), 0.0)
+		label.add_theme_font_size_override("font_size", SemanticTypography.resolve_fixed(
+			SemanticTypography.ROLE_VALUE,
+			13 if very_compact else (14 if compact else _readable_px(SemanticTypography.ROLE_VALUE, 17.0)),
+			SemanticTypography.role_min(SemanticTypography.ROLE_VALUE),
+			SemanticTypography.role_max(SemanticTypography.ROLE_VALUE)
+		))
 	if _base_stats_grid != null:
 		_base_stats_grid.columns = 2
 	if _survival_stats_container != null:
@@ -948,7 +1013,12 @@ func _fit_header_summary(viewport_size: Vector2) -> void:
 		rendered_width = font.get_string_size(
 			_header_summary.text, HORIZONTAL_ALIGNMENT_LEFT, -1.0, chosen_font_size
 		).x
-	_header_summary.add_theme_font_size_override("font_size", SemanticTypography.resolve_fixed(SemanticTypography.ROLE_SECTION, chosen_font_size))
+	_header_summary.add_theme_font_size_override("font_size", SemanticTypography.resolve_fixed(
+		SemanticTypography.ROLE_SECTION,
+		chosen_font_size,
+		SemanticTypography.role_min(SemanticTypography.ROLE_SECTION),
+		SemanticTypography.role_max(SemanticTypography.ROLE_SECTION)
+	))
 	_header_summary.custom_minimum_size.x = minf(ceilf(rendered_width) + 2.0, available_width)
 
 
@@ -1315,7 +1385,12 @@ func _refresh_hero_card() -> void:
 	var base_title := Label.new()
 	base_title.name = "BaseStatsTitle"
 	base_title.text = "Характеристики"
-	base_title.add_theme_font_size_override("font_size", _readable_px(SemanticTypography.ROLE_SECTION, 16.0))
+	base_title.add_theme_font_size_override("font_size", SemanticTypography.resolve_fixed(
+		SemanticTypography.ROLE_SECTION,
+		_readable_px(SemanticTypography.ROLE_SECTION, 16.0),
+		SemanticTypography.role_min(SemanticTypography.ROLE_SECTION),
+		SemanticTypography.role_max(SemanticTypography.ROLE_SECTION)
+	))
 	base_title.add_theme_color_override("font_color", COLOR_KIND)
 	_hero_card_container.add_child(base_title)
 
@@ -1331,7 +1406,12 @@ func _refresh_hero_card() -> void:
 	var survival_title := Label.new()
 	survival_title.name = "SurvivalTitle"
 	survival_title.text = "Выживание"
-	survival_title.add_theme_font_size_override("font_size", _readable_px(SemanticTypography.ROLE_SECTION, 16.0))
+	survival_title.add_theme_font_size_override("font_size", SemanticTypography.resolve_fixed(
+		SemanticTypography.ROLE_SECTION,
+		_readable_px(SemanticTypography.ROLE_SECTION, 16.0),
+		SemanticTypography.role_min(SemanticTypography.ROLE_SECTION),
+		SemanticTypography.role_max(SemanticTypography.ROLE_SECTION)
+	))
 	survival_title.add_theme_color_override("font_color", COLOR_KIND)
 	_hero_card_container.add_child(survival_title)
 
@@ -1352,7 +1432,12 @@ func _add_identity_row(parent: VBoxContainer, row_name: String, kind_text: Strin
 	var kind := Label.new()
 	kind.name = "%sKind" % row_name
 	kind.text = kind_text
-	kind.add_theme_font_size_override("font_size", _readable_px(SemanticTypography.ROLE_FIELD, 14.0))
+	kind.add_theme_font_size_override("font_size", SemanticTypography.resolve_fixed(
+		SemanticTypography.ROLE_FIELD,
+		_readable_px(SemanticTypography.ROLE_FIELD, 14.0),
+		SemanticTypography.role_min(SemanticTypography.ROLE_FIELD),
+		SemanticTypography.role_max(SemanticTypography.ROLE_FIELD)
+	))
 	kind.add_theme_color_override("font_color", COLOR_KIND)
 	row.add_child(kind)
 
@@ -1362,7 +1447,12 @@ func _add_identity_row(parent: VBoxContainer, row_name: String, kind_text: Strin
 	value.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	value.clip_text = true
 	value.text_overrun_behavior = TextServer.OVERRUN_TRIM_ELLIPSIS
-	value.add_theme_font_size_override("font_size", _readable_px(SemanticTypography.ROLE_VALUE, 14.0))
+	value.add_theme_font_size_override("font_size", SemanticTypography.resolve_fixed(
+		SemanticTypography.ROLE_VALUE,
+		_readable_px(SemanticTypography.ROLE_VALUE, 14.0),
+		SemanticTypography.role_min(SemanticTypography.ROLE_VALUE),
+		SemanticTypography.role_max(SemanticTypography.ROLE_VALUE)
+	))
 	value.add_theme_color_override("font_color", COLOR_BODY)
 	row.add_child(value)
 
@@ -1472,7 +1562,12 @@ func _add_arsenal_entry(entry_name: String, kind_text: String, body_text: String
 	var kind := Label.new()
 	kind.name = "%sKind" % entry_name
 	kind.text = kind_text
-	kind.add_theme_font_size_override("font_size", _readable_px(SemanticTypography.ROLE_FIELD, 15.0))
+	kind.add_theme_font_size_override("font_size", SemanticTypography.resolve_fixed(
+		SemanticTypography.ROLE_FIELD,
+		_readable_px(SemanticTypography.ROLE_FIELD, 15.0),
+		SemanticTypography.role_min(SemanticTypography.ROLE_FIELD),
+		SemanticTypography.role_max(SemanticTypography.ROLE_FIELD)
+	))
 	kind.add_theme_color_override("font_color", COLOR_KIND)
 	entry.add_child(kind)
 
@@ -1549,7 +1644,12 @@ func _refresh_equipment() -> void:
 		empty_label.text = "Артефакты ещё не найдены — ищи награды за бои и события."
 		# EXPAND на всю строку flow — сокеты уходят на собственный ряд ниже.
 		empty_label.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-		empty_label.add_theme_font_size_override("font_size", _readable_px(SemanticTypography.ROLE_BODY, 14.0))
+		empty_label.add_theme_font_size_override("font_size", SemanticTypography.resolve_fixed(
+			SemanticTypography.ROLE_BODY,
+			_readable_px(SemanticTypography.ROLE_BODY, 14.0),
+			SemanticTypography.role_min(SemanticTypography.ROLE_BODY),
+			SemanticTypography.role_max(SemanticTypography.ROLE_BODY)
+		))
 		empty_label.add_theme_color_override("font_color", Color(0.62, 0.66, 0.70, 1.0))
 		_equipment_flow.add_child(empty_label)
 		_add_equipment_sockets(EQUIPMENT_MIN_SLOTS)
@@ -1577,7 +1677,12 @@ func _refresh_equipment() -> void:
 		var chip_label := Label.new()
 		chip_label.text = str(artifact.get("title", "Артефакт"))
 		chip_label.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
-		chip_label.add_theme_font_size_override("font_size", _readable_px(SemanticTypography.ROLE_BODY, 14.0))
+		chip_label.add_theme_font_size_override("font_size", SemanticTypography.resolve_fixed(
+			SemanticTypography.ROLE_BODY,
+			_readable_px(SemanticTypography.ROLE_BODY, 14.0),
+			SemanticTypography.role_min(SemanticTypography.ROLE_BODY),
+			SemanticTypography.role_max(SemanticTypography.ROLE_BODY)
+		))
 		# SCRUM-963: имя — цветом роллнутой редкости (язык карточек наград);
 		# записи без тира (старые сейвы) остаются нейтральными.
 		var rolled_tier := int(artifact.get("tier", 0))
@@ -1669,7 +1774,12 @@ func _make_survival_stat_row(entry: Dictionary, display_name := "", value_overri
 	name_label.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
 	name_label.clip_text = true
 	name_label.text_overrun_behavior = TextServer.OVERRUN_TRIM_ELLIPSIS
-	name_label.add_theme_font_size_override("font_size", _readable_px(SemanticTypography.ROLE_FIELD, 15.0))
+	name_label.add_theme_font_size_override("font_size", SemanticTypography.resolve_fixed(
+		SemanticTypography.ROLE_FIELD,
+		_readable_px(SemanticTypography.ROLE_FIELD, 15.0),
+		SemanticTypography.role_min(SemanticTypography.ROLE_FIELD),
+		SemanticTypography.role_max(SemanticTypography.ROLE_FIELD)
+	))
 	name_label.add_theme_color_override("font_color", COLOR_BODY)
 	line.add_child(name_label)
 
@@ -1731,7 +1841,7 @@ func _make_basic_stat_row(entry: Dictionary) -> Control:
 	_wire_stat_focus(row, _base_focus_targets)
 
 	var line := HBoxContainer.new()
-	line.add_theme_constant_override("separation", 4)
+	line.add_theme_constant_override("separation", 2 if compact else 4)
 	row.add_child(line)
 
 	var icon := UIIconRegistry.make_icon(stat_id, Vector2(22, 22) if compact else Vector2(30, 30))
@@ -1811,7 +1921,12 @@ func _make_derived_group(group: Dictionary, entries_by_id: Dictionary) -> Contro
 	title.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
 	title.clip_text = true
 	title.text_overrun_behavior = TextServer.OVERRUN_TRIM_ELLIPSIS
-	title.add_theme_font_size_override("font_size", _readable_px(SemanticTypography.ROLE_SECTION, 18.0))
+	title.add_theme_font_size_override("font_size", SemanticTypography.resolve_fixed(
+		SemanticTypography.ROLE_SECTION,
+		_readable_px(SemanticTypography.ROLE_SECTION, 18.0),
+		SemanticTypography.role_min(SemanticTypography.ROLE_SECTION),
+		SemanticTypography.role_max(SemanticTypography.ROLE_SECTION)
+	))
 	title.add_theme_color_override("font_color", Color(0.98, 0.94, 0.78, 1.0))
 	header.add_child(title)
 
@@ -1860,7 +1975,7 @@ func _make_stat_chip(entry: Dictionary) -> Control:
 	_wire_stat_focus(chip, _derived_focus_targets)
 
 	var line := HBoxContainer.new()
-	line.add_theme_constant_override("separation", 4)
+	line.add_theme_constant_override("separation", 2 if compact else 4)
 	chip.add_child(line)
 
 	var icon := UIIconRegistry.make_icon(stat_id, Vector2(18, 18) if compact else Vector2(28, 28))
@@ -1875,7 +1990,12 @@ func _make_stat_chip(entry: Dictionary) -> Control:
 	name_label.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
 	name_label.clip_text = true
 	name_label.text_overrun_behavior = TextServer.OVERRUN_TRIM_ELLIPSIS
-	name_label.add_theme_font_size_override("font_size", _readable_px(SemanticTypography.ROLE_FIELD, 15.0))
+	name_label.add_theme_font_size_override("font_size", SemanticTypography.resolve_fixed(
+		SemanticTypography.ROLE_FIELD,
+		_readable_px(SemanticTypography.ROLE_FIELD, 15.0),
+		SemanticTypography.role_min(SemanticTypography.ROLE_FIELD),
+		SemanticTypography.role_max(SemanticTypography.ROLE_FIELD)
+	))
 	name_label.add_theme_color_override("font_color", COLOR_BODY)
 	line.add_child(name_label)
 

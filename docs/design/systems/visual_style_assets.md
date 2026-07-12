@@ -4,6 +4,19 @@
 
 Этот файл фиксирует reusable visual assets FantasyDisk после domain split. Подробные таблицы сущностей остаются в `docs/design/content_registry.md`.
 
+## Semantic Typography Content-Zone Anchor
+
+SCRUM-1073 adds a PixelLab MCP design-evidence package for legacy typography
+families that lacked their own accepted screen mockup. The approved clean source
+is `docs/design/references/scrum1073_semantic_band_migration/
+pixellab_uncovered_content_zones_clean_600x448.png` (PixelLab asset
+`6e512c63-5c42-44ee-a6b3-09a3ed69189d`); its manifest also preserves the first
+rejected pseudo-rune generation. The 2×4 sheet contains eight dark-fantasy
+dragon/D&D frames with empty interiors and decoration confined to outer rails.
+Plan, exact zones, composite, debug overlay and fit reports live in
+`docs/design/mockups/scrum1073_semantic_band_migration/`. This source is not a
+runtime texture; it documents content-zone rules for geometry migration.
+
 ## Artifact And Shop Icons
 
 All artifacts from `ProgressionData.ARTIFACTS` and all shop-only items from `ProgressionData.SHOP_ITEMS` have unique PNG assets. Artifact icons were replaced on 2026-06-12 as `256x256` RGBA transparent realistic epic D&D/tabletop fantasy raster magic items after direct user feedback: one finished painted object per icon, no pentagram-style pictograms, no built-in UI frame, no pedestal, no background tile, no loose shards or particles, and readable object lighting/materials. Shop-only icons keep the earlier fantasy-medallion treatment.

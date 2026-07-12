@@ -188,7 +188,15 @@ func _show_battle_map() -> void:
 	title_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_LEFT
 	# SCRUM-981: шапка живёт в authored 68/70/80px zone; readable 29..32px
 	# оставляет гарантированную отдельную строку прогресса без выхода на орнамент.
-	title_label.add_theme_font_size_override("font_size", _semantic_font(SemanticTypography.ROLE_TITLE, 18, 22, 30))
+	title_label.add_theme_font_size_override(
+		"font_size",
+		SemanticTypography.resolve_fixed(
+			SemanticTypography.ROLE_TITLE,
+			_semantic_font(SemanticTypography.ROLE_TITLE, 18, 22, 30),
+			SemanticTypography.role_min(SemanticTypography.ROLE_TITLE),
+			SemanticTypography.role_max(SemanticTypography.ROLE_TITLE)
+		)
+	)
 	title_label.text_overrun_behavior = TextServer.OVERRUN_TRIM_ELLIPSIS
 	title_label.add_theme_color_override("font_color", Color(0.96, 0.90, 0.68, 1.0))
 	title_label.mouse_filter = Control.MOUSE_FILTER_IGNORE
@@ -403,6 +411,13 @@ func _layout_route_map_fab(root: Control, fab_zone: Rect2) -> void:
 	button.position = fab_zone.position
 	button.custom_minimum_size = fab_zone.size
 	button.size = fab_zone.size
+	# SCRUM-1073: the legacy combat badge overhung the compact `+` button. In
+	# Route Map the authored FAB zone is the complete empty content socket, so
+	# keep the count badge inside its top-right corner instead of on the gold rail.
+	var badge_panel := button.find_child("LevelUpPlusBadgePanel", true, false) as PanelContainer
+	if badge_panel != null:
+		var badge_size := badge_panel.size
+		badge_panel.position = Vector2(maxf(0.0, fab_zone.size.x - badge_size.x), 0.0)
 	button.set_meta("gold_shell_socket_rect", fab_zone)
 	button.set_meta("scrum1057_fab_rect", fab_zone)
 
@@ -1479,7 +1494,12 @@ func _style_route_node_button(button: Button, node_type: String, state: String) 
 	button.add_theme_color_override("font_color", Color(0.96, 0.97, 1.0, 1.0))
 	button.add_theme_color_override("font_disabled_color", Color(0.72, 0.74, 0.76, 1.0) if state == "completed" else Color(0.46, 0.48, 0.52, 1.0))
 	# SCRUM-883: 34 фикс → readable (24×1.32…1.45 = 32…35), пол 24; фолбэк-буква узла 88×88.
-	button.add_theme_font_size_override("font_size", _semantic_font(SemanticTypography.ROLE_ACTION, 24, 24))
+	button.add_theme_font_size_override("font_size", SemanticTypography.resolve_fixed(
+		SemanticTypography.ROLE_ACTION,
+		_semantic_font(SemanticTypography.ROLE_ACTION, 24, 24),
+		SemanticTypography.role_min(SemanticTypography.ROLE_ACTION),
+		SemanticTypography.role_max(SemanticTypography.ROLE_ACTION)
+	))
 
 
 func _map_node_button_style(background: Color, _border: Color) -> StyleBox:

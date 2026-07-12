@@ -301,6 +301,15 @@ func _assert_attribute_shop_layout(main: Node, viewport_size: Vector2i, expected
 		var interpretation := offer.find_child("%sInterpretation" % offer.name, false, false) as Label
 		if interpretation == null or interpretation.text.strip_edges() == "" or not offer.tooltip_text.contains(interpretation.text):
 			_errors.append("%s: %s tooltip must preserve the unabridged class interpretation." % [context, offer.name])
+		var influence := offer.find_child("%sInfluence" % offer.name, false, false) as Label
+		var preview := offer.find_child("%sPreview" % offer.name, false, false) as Label
+		var full_influence := str(influence.get_meta("full_text", "")) if influence != null else ""
+		var full_preview := str(preview.get_meta("full_text", "")) if preview != null else ""
+		if full_influence == "" or not offer.tooltip_text.contains(full_influence):
+			_errors.append("%s: %s tooltip must preserve the full influence list behind the compact lane." % [context, offer.name])
+		for preview_line in full_preview.split("\n", false):
+			if str(preview_line) != "" and not offer.tooltip_text.contains(str(preview_line)):
+				_errors.append("%s: %s tooltip lost full preview line '%s'." % [context, offer.name, preview_line])
 	for first_index in range(card_rects.size()):
 		for second_index in range(first_index + 1, card_rects.size()):
 			if card_rects[first_index].intersects(card_rects[second_index]):

@@ -205,13 +205,22 @@ unchanged.
 
 The machine inventory
 `docs/design/mockups/scrum1061_semantic_typography/typography_inventory.json`
-uses stable source fingerprints. Every remaining authored exception records an
-owner, reason and next issue: two Atlas-canvas/topology fingerprints route to
-SCRUM-1068; the exact 139-site non-Atlas legacy-geometry manifest routes to the
-dedicated unassigned SCRUM-1073 follow-up. SCRUM-1070 remains scoped only to the
-Atlas reset-footer button and owns no current inventory fingerprint. Contract,
-accepted PixelLab anchor contact sheet and responsive rules:
+uses stable source fingerprints. SCRUM-1073 migrated the exact 139-site
+non-Atlas legacy-geometry manifest into semantic bands without lowering token
+floors. Schema 3 records each original/replacement fingerprint, effective
+before/after range and final disposition; `139/139` replacements are live and
+SCRUM-1073 routing is zero. Two Atlas-canvas/topology fingerprints still route
+to SCRUM-1068. SCRUM-1070 remains scoped only to the Atlas reset-footer button
+and owns no current inventory fingerprint. The responsive matrix explicitly
+covers 2048×1152. Contract, PixelLab anchors and rules:
 `docs/design/mockups/scrum1061_semantic_typography/`.
+
+The additional SCRUM-1073 PixelLab/content-zone package is under
+`docs/design/mockups/scrum1073_semantic_band_migration/`. It covers the 35
+sites without an accepted family-specific mockup through eight clean empty
+zones (economy, combat HUD, event, confirmation, feedback, patch notes, start
+boon, victory); the remaining 104 migrations reuse their accepted mockups.
+The generated contact sheet is evidence only and is not a runtime texture.
 
 ## Shop UI
 
@@ -232,9 +241,10 @@ badges fit four digits, unavailable products keep the icon/caption visible with
 desaturated art and red price, and purchased products become a disabled
 `снято` hook. Descriptions no longer use the cursor-following global tooltip:
 hover/focus populates one fixed `ShopTooltipPanel` below the row. Its rails
-scale with the displayed panel and text begins beyond rail + reserve; the copy
-is compacted into title, effect, combined price/class and combined tier/state
-lines so no state is clipped at 720p. Leaving focus hides the panel. Shop does
+scale with the displayed panel and text begins beyond rail + reserve. SCRUM-1073
+uses a `700×148` compact panel with a `650×114` empty inner zone, containing all
+wrapped semantic tooltip lines before the Back action at 720p. Leaving focus
+hides the panel. Shop does
 not create `UpgradeFabButton`; the manual Attribute Shop entry was removed by
 SCRUM-982, while the mandatory post-combat shop remains SCRUM-987-owned.
 
@@ -263,9 +273,10 @@ The live Attribute Shop reuses the shared hollow gold shell
 panel/frame. The shell is drawn last and all interactive content stays inside
 its true empty safe zone. The offer area is one horizontal, scroll-free row:
 two cards by default, or three when Atlas grants `attr_extra_options`. Every
-card visibly includes the class interpretation, the full attribute influence
-and derived before/after preview; a tooltip may only provide overflow/backstop
-detail. Reroll and Skip are a horizontal action pair below the cards. Authored
+card visibly includes the class interpretation, attribute influence and derived
+before/after preview. SCRUM-1073 permits a compact two-line visible summary but
+stores the exact unabridged influence/preview payload in label metadata and the
+focus tooltip. Reroll and Skip are a horizontal action pair below the cards. Authored
 metrics and live `resized` relayout cover 1280x720, 1920x1080 and 2560x1440,
 including switching among those sizes while the screen remains open.
 

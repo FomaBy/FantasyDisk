@@ -3,7 +3,7 @@ extends SceneTree
 const SemanticTypography := preload("res://scripts/ui/semantic_typography.gd")
 const GlobalTooltip := preload("res://scripts/ui/global_tooltip.gd")
 const INVENTORY_PATH := "res://docs/design/mockups/scrum1061_semantic_typography/typography_inventory.json"
-const VIEWPORT_HEIGHTS := [648.0, 720.0, 900.0, 1080.0, 1440.0, 2160.0]
+const VIEWPORT_HEIGHTS := [648.0, 720.0, 900.0, 1080.0, 1152.0, 1440.0, 2160.0]
 const RUSSIAN_SAMPLES := {
 	"title": "Продолжить забег?",
 	"section": "Боевые параметры",
@@ -31,7 +31,7 @@ func _initialize() -> void:
 			push_error(error)
 		quit(1)
 		return
-	print("SCRUM-1061 semantic typography token/inventory/Russian matrix passed at 648/720/900/1080/2K/4K tiers.")
+	print("SCRUM-1061/1073 semantic typography token/inventory/Russian matrix passed at 648/720/900/1080/1152/2K/4K tiers.")
 	quit(0)
 
 
@@ -123,8 +123,8 @@ func _check_inventory() -> void:
 		_errors.append("Typography inventory JSON is invalid.")
 		return
 	var inventory := parsed as Dictionary
-	if int(inventory.get("schema", 0)) != 2:
-		_errors.append("Typography inventory must use full-expression schema 2.")
+	if int(inventory.get("schema", 0)) != 3:
+		_errors.append("Typography inventory must use migration-aware full-expression schema 3.")
 	var entries := inventory.get("entries", []) as Array
 	if entries.size() < 150:
 		_errors.append("Typography inventory is implausibly small: %d entries." % entries.size())
@@ -190,21 +190,47 @@ func _check_inventory() -> void:
 	_assert_inventory_site(indexed, "scripts/ui_screens.gd", "_show_continue_run_dialog", "title", "title_label.add_theme", "theme_override")
 	_assert_inventory_site(indexed, "scripts/ui_screens.gd", "_show_codex_screen", "title", "_codex_bind_stage_font(title_label", "semantic_binding")
 	_assert_inventory_site(indexed, "scripts/ui_screens.gd", "_make_battle_prayer_card", "action", "ROLE_ACTION", "semantic_binding")
-	_assert_inventory_range(indexed, "scripts/ui_screens.gd", "_make_settings_game_tab", "title.add_theme", "legacy_compat", 15, 21, "allowlist")
-	_assert_inventory_range(indexed, "scripts/pause_stats_menu.gd", "_build_header", "_title_label.add_theme", "legacy_compat", 22, 26, "allowlist")
-	_assert_inventory_range(indexed, "scripts/ui_screens.gd", "_hs4_apply_wide_control_style", "button.add_theme", "legacy_compat", 20, 38, "allowlist")
-	_assert_inventory_range(indexed, "scripts/ui_screens.gd", "_layout_attribute_offer_card", "title.add_theme", "legacy_compat", 11, 22, "allowlist")
-	_assert_inventory_range(indexed, "scripts/ui_screens.gd", "_make_battle_prayer_card", "ROLE_ACTION", "legacy_compat", 11, 11, "allowlist")
-	_assert_inventory_range(indexed, "scripts/ui_screens.gd", "_show_continue_run_dialog", "subtitle_label.add_theme", "legacy_compat", 21, 23, "allowlist")
+	_assert_inventory_range(indexed, "scripts/ui_screens.gd", "_make_settings_game_tab", "title.add_theme", "semantic_native", 24, 24, "mapped")
+	_assert_inventory_range(indexed, "scripts/pause_stats_menu.gd", "_build_header", "_title_label.add_theme", "semantic_native", 24, 26, "mapped")
+	_assert_inventory_range(indexed, "scripts/ui_screens.gd", "_hs4_apply_wide_control_style", "button.add_theme", "semantic_native", 20, 34, "mapped")
+	_assert_inventory_range(indexed, "scripts/ui_screens.gd", "_layout_attribute_offer_card", "title.add_theme", "semantic_native", 24, 24, "mapped")
+	_assert_inventory_range(indexed, "scripts/ui_screens.gd", "_make_battle_prayer_card", "ROLE_ACTION", "semantic_native", 16, 16, "mapped")
+	_assert_inventory_range(indexed, "scripts/ui_screens.gd", "_show_continue_run_dialog", "subtitle_label.add_theme", "semantic_native", 18, 18, "mapped")
 	_assert_inventory_range(indexed, "scripts/ui_icon_registry.gd", "<class>", "display_size.x >= 55.0", "legacy_compat", 16, 18, "mapped")
 	var output := []
 	var exit_code := OS.execute("python3", PackedStringArray(["tools/typography_inventory.py", "--check"]), output, true)
 	if exit_code != 0:
 		_errors.append("Inventory regeneration check failed: %s." % "\n".join(output))
 	var matrix_source := FileAccess.get_file_as_string("res://tests/ui_no_overlap_matrix_test.gd")
-	for resolution in ["1152, 648", "1280, 720", "1600, 900", "1920, 1080", "2560, 1440", "3840, 2160"]:
+	_check_scrum1073_migrations(inventory, fingerprints)
+	for resolution in ["1152, 648", "1280, 720", "1600, 900", "1920, 1080", "2048, 1152", "2560, 1440", "3840, 2160"]:
 		if not matrix_source.contains("Vector2i(%s)" % resolution):
 			_errors.append("UI no-overlap matrix lost required semantic tier %s." % resolution)
+
+
+func _check_scrum1073_migrations(inventory: Dictionary, live_fingerprints: Dictionary) -> void:
+	if str(inventory.get("migration_task", "")) != "SCRUM-1073":
+		_errors.append("Inventory misses the SCRUM-1073 migration marker.")
+		return
+	var migrations := inventory.get("migrations", []) as Array
+	if migrations.size() != 139:
+		_errors.append("SCRUM-1073 must record 139 dispositions, got %d." % migrations.size())
+	var originals := {}
+	var replacements := {}
+	for raw in migrations:
+		var migration := raw as Dictionary
+		var original := str(migration.get("original_fingerprint", ""))
+		var replacement := str(migration.get("replacement_fingerprint", ""))
+		if originals.has(original) or replacements.has(replacement):
+			_errors.append("SCRUM-1073 migration has duplicate original/replacement fingerprint.")
+		originals[original] = true
+		replacements[replacement] = true
+		if live_fingerprints.has(original):
+			_errors.append("Original SCRUM-1073 fingerprint is still live: %s." % original)
+		if not live_fingerprints.has(replacement):
+			_errors.append("Replacement SCRUM-1073 fingerprint is missing: %s." % replacement)
+		if str(migration.get("disposition", "")) != "migrated_semantic_band":
+			_errors.append("SCRUM-1073 fingerprint %s lacks final disposition." % original)
 
 
 func _assert_inventory_site(indexed: Dictionary, path: String, function: String, role: String, source_fragment: String, kind: String) -> void:

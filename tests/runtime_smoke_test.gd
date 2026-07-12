@@ -7681,7 +7681,7 @@ func _test_codex_screen(main_scene: PackedScene) -> void:
 		"CodexPortraitSlot": Rect2(480, 310, 122, 114),
 		"CodexEntryName": Rect2(616, 337, 330, 60),
 		"CodexDetailPanel": Rect2(1064, 172, 784, 840),
-		"CodexDetailTitle": Rect2(1200, 222, 508, 46),
+		"CodexDetailTitle": Rect2(1200, 216, 508, 60),
 		"CodexDetailPortraitSlot": Rect2(1108, 284, 300, 300),
 		"CodexDetailPortraitTexture": Rect2(1140, 310, 236, 248),
 		"CodexDetailParchmentInset": Rect2(1108, 606, 684, 356),

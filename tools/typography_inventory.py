@@ -46,6 +46,7 @@ TOKEN_BOUNDS = {
 REVIEW_FIELDS = (
     "role", "status", "mapping_mode", "range_contract", "effective_min",
     "effective_max", "role_trace", "owner", "reason", "next_issue",
+    "migration_task", "replaces_fingerprint", "disposition",
 )
 DYNAMIC_HELPER_FUNCTIONS = {
     "_codex_bind_stage_font", "_codex_refresh_stage_fonts",
@@ -145,6 +146,23 @@ def _godot_round(value: float) -> int:
 
 def _inferred_bounds(item: dict) -> tuple[int, int] | None:
     source = item.get("source", "")
+
+    def semantic_clamp(bounds: tuple[int, int] | None) -> tuple[int, int] | None:
+        if bounds is None or (
+            "SemanticTypography.clamp_to_role" not in source
+            and "SemanticTypography.role_min" not in source
+        ):
+            return bounds
+        role_literals = [
+            value.lower()
+            for value in re.findall(r"SemanticTypography\.ROLE_([A-Z_]+)", source)
+        ]
+        role = item.get("role") or (role_literals[0] if role_literals else "")
+        if role not in TOKEN_BOUNDS:
+            return bounds
+        low, high = TOKEN_BOUNDS[role]
+        return max(low, min(high, bounds[0])), max(low, min(high, bounds[1]))
+
     args = _call_args(source, "_readable_font_size")
     if len(args) >= 2:
         base = _number(args[1])
@@ -159,7 +177,7 @@ def _inferred_bounds(item: dict) -> tuple[int, int] | None:
                 if maximum > 0:
                     value = min(value, int(maximum))
                 values.append(value)
-            return min(values), max(values)
+            return semantic_clamp((min(values), max(values)))
     args = _call_args(source, "_settings_v6_font")
     if len(args) >= 2:
         design = _number(args[1])
@@ -167,23 +185,23 @@ def _inferred_bounds(item: dict) -> tuple[int, int] | None:
             # Settings clamps column scale to 0.55 .. (920*1.05)/1276.
             max_scale = (920.0 * 1.05) / 1276.0
             values = [max(12, _godot_round(design * scale)) for scale in (0.55, max_scale)]
-            return min(values), max(values)
+            return semantic_clamp((min(values), max(values)))
     if item.get("kind") == "semantic_binding":
         if "_codex_bind_stage_font" in source:
             args = _call_args(source, "_codex_bind_stage_font")
             if len(args) >= 5 and _number(args[-2]) is not None and _number(args[-1]) is not None:
-                return int(float(args[-2])), int(float(args[-1]))
+                return semantic_clamp((int(float(args[-2])), int(float(args[-1]))))
         if "_battle_prayer_label" in source:
             if item.get("function") == "show_battle_prayer_choice":
-                return (24, 24) if item.get("role") == "title" else (15, 15)
-            return {"title": (12, 14), "description": (12, 12), "action": (11, 11)}.get(item.get("role"))
+                return semantic_clamp((24, 24) if item.get("role") == "title" else (15, 15))
+            return semantic_clamp({"title": (12, 14), "description": (12, 12), "action": (11, 11)}.get(item.get("role")))
         if "_shrink_label_font_to_width" in source:
-            return {"title": (12, 26), "body": (12, 20), "hud": (12, 16)}.get(item.get("role"))
+            return semantic_clamp({"title": (12, 26), "body": (12, 20), "hud": (12, 16)}.get(item.get("role")))
     if item.get("path") == "scripts/ui_icon_registry.gd" and "display_size.x >= 55.0" in source:
-        return 16, 18
+        return semantic_clamp((16, 18))
     if item.get("function") == "_layout_shop_gold_shell":
         lhs = source.split(".add_theme_font_size_override", 1)[0].strip()
-        return {"title": (24, 46), "subtitle": (12, 22), "tooltip_text": (11, 17), "back": (20, 30)}.get(lhs)
+        return semantic_clamp({"title": (24, 46), "subtitle": (12, 22), "tooltip_text": (11, 17), "back": (20, 30)}.get(lhs))
     return None
 
 
@@ -254,6 +272,7 @@ def _existing_reviews() -> dict[str, dict]:
 
 def document() -> dict:
     reviews = _existing_reviews()
+    existing_document = json.loads(OUTPUT.read_text(encoding="utf-8")) if OUTPUT.exists() else {}
     entries = collect_raw()
     for entry in entries:
         review = reviews.get(entry["fingerprint"], {})
@@ -264,8 +283,8 @@ def document() -> dict:
             entry["status"] = "unreviewed"
             entry["role"] = ""
         entry["mapping_source"] = "reviewed_manifest"
-    return {
-        "schema": 2,
+    result = {
+        "schema": 3,
         "task": "SCRUM-1061",
         "scope": "player-facing GDScript theme overrides, explicit semantic helper bindings, draw_string calls and FONT_SIZE constants plus .tscn/.tres/.theme font overrides; generic helper implementations and developer-only scripts/dev_console.gd excluded",
         "fingerprint_contract": "sha256(path\\0function\\0normalized_full_expression\\0same_source_ordinal)[:16]",
@@ -286,6 +305,11 @@ def document() -> dict:
             "routed_scrum_1073": sum(item.get("next_issue") == "SCRUM-1073" for item in entries),
         },
     }
+    if existing_document.get("migration_task"):
+        result["migration_task"] = existing_document["migration_task"]
+    if existing_document.get("migrations"):
+        result["migrations"] = existing_document["migrations"]
+    return result
 
 
 def validate(document_data: dict) -> list[str]:
@@ -369,6 +393,22 @@ def validate(document_data: dict) -> list[str]:
         actual_count = sum(helper in item.get("source", "") for item in bindings)
         if actual_count != expected_count:
             errors.append(f"semantic helper {helper} has {actual_count} inventoried consumers, expected {expected_count}")
+    migrations = document_data.get("migrations", [])
+    if document_data.get("migration_task") == "SCRUM-1073":
+        current_fingerprints = {item["fingerprint"] for item in document_data["entries"]}
+        originals = [item.get("original_fingerprint", "") for item in migrations]
+        replacements = [item.get("replacement_fingerprint", "") for item in migrations]
+        if len(migrations) != 139 or len(set(originals)) != 139 or len(set(replacements)) != 139:
+            errors.append("SCRUM-1073 migration manifest must contain 139 unique original/replacement fingerprints")
+        if set(originals) & current_fingerprints:
+            errors.append("SCRUM-1073 original fingerprints still exist in the live inventory")
+        missing_replacements = set(replacements) - current_fingerprints
+        if missing_replacements:
+            errors.append(f"SCRUM-1073 migration replacements missing: {sorted(missing_replacements)[:5]}")
+        if any(item.get("disposition") != "migrated_semantic_band" for item in migrations):
+            errors.append("SCRUM-1073 migration manifest has an invalid final disposition")
+        if any(item.get("next_issue") == "SCRUM-1073" for item in document_data["entries"]):
+            errors.append("SCRUM-1073 routing remains in the live inventory")
     ui_source = (ROOT / "scripts/ui_screens.gd").read_text(encoding="utf-8")
     if 'control.set_meta("codex_semantic_role", role)' not in ui_source or 'control.get_meta("codex_semantic_role"' not in ui_source:
         errors.append("Codex stage font role metadata is not preserved across refresh")

@@ -41,19 +41,19 @@ const DERIVED_COMPACT_LABELS := {
 }
 const DERIVED_TIGHT_LABELS := {
 	"damage": "Урон", "attack_speed": "Скор.", "crit_chance": "Крит",
-	"crit_damage_multiplier": "Крит ×", "knockback_power": "Отт.",
+	"crit_damage_multiplier": "К×", "knockback_power": "Отт.",
 	"magic_damage": "Маг.", "aoe_radius": "Шир.", "projectile_speed": "Снар.",
-	"attack_range": "Дал.", "range_multiplier": "Дал. ×", "aura_radius": "Аура",
+	"attack_range": "Дал.", "range_multiplier": "Д×", "aura_radius": "Аура",
 	"buff_power": "Баф", "knockback_distance": "Отт.", "dot_damage": "Пер.",
 	"dot_speed": "Част.",
 }
 const DERIVED_ULTRA_TIGHT_LABELS := {
 	"damage": "Ур.", "attack_speed": "Ск.", "crit_chance": "Кр.",
 	"crit_damage_multiplier": "К×", "knockback_power": "От.",
-	"magic_damage": "Маг", "aoe_radius": "Шир", "projectile_speed": "Сн.",
-	"attack_range": "Дал", "range_multiplier": "Д×", "aura_radius": "Аур",
-	"buff_power": "Баф", "knockback_distance": "От.", "dot_damage": "П.ур",
-	"dot_speed": "Част",
+	"magic_damage": "М", "aoe_radius": "Ш", "projectile_speed": "Сн.",
+	"attack_range": "Д", "range_multiplier": "Д×", "aura_radius": "А",
+	"buff_power": "Б", "knockback_distance": "От.", "dot_damage": "П",
+	"dot_speed": "Ч",
 }
 const SURVIVAL_IDS := ["health_point", "defense", "dodge", "regeneration"]
 const ACTION_NAMES := [

@@ -9,6 +9,7 @@ const VIEWPORT_SIZES := [
 	Vector2i(1536, 864),
 	Vector2i(1600, 900),
 	Vector2i(1920, 1080),
+	Vector2i(2048, 1152),
 	Vector2i(2560, 1440),
 	Vector2i(3840, 2160),
 ]

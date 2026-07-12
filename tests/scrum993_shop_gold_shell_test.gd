@@ -239,7 +239,7 @@ func _assert_layout(main: Node, viewport_size: Vector2i, context: String) -> voi
 func _expected(viewport_size: Vector2i) -> Dictionary:
 	match viewport_size:
 		Vector2i(1280, 720):
-			return {"safe": Rect2(133,113,1014,494), "inner": Rect2(157,137,966,446), "visible_backdrop": Rect2(201,113,878,494), "header": Rect2(157,137,966,70), "hud": Rect2(181,147,480,50), "title": Rect2(675,137,330,34), "subtitle": Rect2(675,173,330,24), "slots": [Rect2(340,219,132,140),Rect2(496,219,132,140),Rect2(652,219,132,140),Rect2(808,219,132,140)], "tooltip": Rect2(430,371,420,128), "tooltip_content": Rect2(455,388,370,94), "back": Rect2(500,511,280,64)}
+			return {"safe": Rect2(133,113,1014,494), "inner": Rect2(157,137,966,446), "visible_backdrop": Rect2(201,113,878,494), "header": Rect2(157,137,966,70), "hud": Rect2(181,147,480,50), "title": Rect2(675,137,330,34), "subtitle": Rect2(675,173,330,24), "slots": [Rect2(340,219,132,140),Rect2(496,219,132,140),Rect2(652,219,132,140),Rect2(808,219,132,140)], "tooltip": Rect2(290,361,700,148), "tooltip_content": Rect2(315,378,650,114), "back": Rect2(500,511,280,64)}
 		Vector2i(1920, 1080):
 			return {"safe": Rect2(200,169,1520,742), "inner": Rect2(224,193,1472,694), "visible_backdrop": Rect2(300,169,1320,742), "header": Rect2(224,193,1472,100), "hud": Rect2(248,209,720,72), "title": Rect2(996,193,560,52), "subtitle": Rect2(996,251,560,32), "slots": [Rect2(572,325,164,164),Rect2(776,325,164,164),Rect2(980,325,164,164),Rect2(1184,325,164,164)], "tooltip": Rect2(690,513,540,200), "tooltip_content": Rect2(721,537,478,152), "back": Rect2(780,795,360,72)}
 		_:

@@ -1,21 +1,34 @@
 # SCRUM-1073 — Legacy cross-band typography geometry migration
 
-Статус: new
+Статус: review
 Контур: Codex
-Owner: unassigned
-Thread: n/a
+Owner: Design/Codex
+Thread: /root/scrum1079_route_backend
 Jira: SCRUM-1073
 Спринт: 0.2.1
 
-## Coordination
-
-This follow-up stays unassigned and does not lock any path until SCRUM-1061 is
-landed in `origin/dev` and releases its typography locks. The future claimant
-must pull current `dev`, re-audit live owners and claim a non-overlapping screen
-slice before editing. Planned scope includes typography geometry in
+Locked paths: exact 139-fingerprint SCRUM-1073 allowlist scope in
 `scripts/ui_screens.gd`, `scripts/pause_stats_menu.gd`,
-`scripts/route_map_screen.gd`, `scripts/threat_indicators.gd` and
-`scripts/ui_icon_registry.gd`.
+`scripts/route_map_screen.gd`, `scripts/threat_indicators.gd`; typography
+inventory/migrator/verifier, focused tests and UI-domain evidence only.
+
+## Result
+
+All 139 locked fingerprints were deterministically migrated into their selected
+semantic bands. The schema-3 inventory records every original/replacement pair,
+effective before/after ranges and final disposition; no original fingerprint is
+live, all 139 replacements are live, and SCRUM-1073 routing is zero. The two
+Atlas topology entries remain correctly routed to SCRUM-1068; SCRUM-1070 owns no
+inventory site. `scripts/ui_icon_registry.gd` contained no claimed site and was
+not changed.
+
+Geometry was reallocated per family instead of lowering typography floors:
+Prayer lanes, compact Attribute Shop copy/tooltips, Pause aliases/value reserve,
+Codex transformed title lane, Artifact Reward spacing, Shop tooltip band,
+Settings Reset focus reveal, Route badge placement and compact Event lower cards.
+The 35 sites without prior screen-specific PixelLab coverage use the approved
+eight-zone PixelLab contact sheet and content-zone compositor package in
+`docs/design/mockups/scrum1073_semantic_band_migration/`.
 
 ## Exact scope
 
@@ -48,3 +61,17 @@ reset-footer button and no current inventory entry.
 - Text remains readable and inside empty frame zones at 1152×648, 1280×720,
   1600×900, 1920×1080, 2048×1152 and 2560×1440, including live resize.
 - Jira, this mirror and UI-domain docs contain per-site result and QA evidence.
+
+## Verification
+
+- inventory generator/check: PASS (`245` total, `243` mapped, `2` SCRUM-1068
+  allowlist, `0` unreviewed, `0` SCRUM-1073);
+- deterministic migration idempotence: PASS (`139/139`);
+- semantic typography tier test: PASS at 648/720/900/1080/1152/2K/4K;
+- UI no-overlap matrix: PASS at 1152×648, 1280×720, 1600×900, 1920×1080,
+  2048×1152 and 2560×1440;
+- focused Prayer, Attribute Shop, Pause dossier, Settings, Hero Select, Codex,
+  Artifact Reward, Shop, Route Map, Victory and End Run gates: PASS;
+- compact Event windowed exact-rect/containment gate and captures: PASS at
+  1152×648 and 1280×720;
+- runtime UI smoke and full runtime smoke: PASS.

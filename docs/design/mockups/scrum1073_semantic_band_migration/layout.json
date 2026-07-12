@@ -1,0 +1,24 @@
+{
+  "canvas": {"width": 600, "height": 448},
+  "defaults": {"color": "#F1E6C9", "stroke_fill": "#170E0B", "stroke_width": 1, "line_spacing": 1.05, "align": "center", "valign": "middle"},
+  "content": {
+    "economy": "Улучшение: Клинок пепла +25%",
+    "combat_hud": "Костяной дракон · 02:45",
+    "event": "Выберите исход события — описание переносится внутри панели.",
+    "confirmation": "Вы уверены, что хотите завершить забег?",
+    "feedback": "Опишите впечатление — длинный текст прокручивается.",
+    "patch_notes": "Версия 0.2.1",
+    "start_boon": "Выберите начальный дар",
+    "victory": "ПОБЕДА"
+  },
+  "zones": [
+    {"id": "economy", "content_key": "economy", "x": 22, "y": 22, "w": 255, "h": 70, "role": "action", "max_font": 24, "min_font": 16},
+    {"id": "combat_hud", "content_key": "combat_hud", "x": 322, "y": 22, "w": 255, "h": 70, "role": "hud", "max_font": 34, "min_font": 14},
+    {"id": "event", "content_key": "event", "x": 22, "y": 133, "w": 255, "h": 70, "role": "description", "max_font": 22, "min_font": 14},
+    {"id": "confirmation", "content_key": "confirmation", "x": 322, "y": 133, "w": 255, "h": 70, "role": "caption", "max_font": 18, "min_font": 12},
+    {"id": "feedback", "content_key": "feedback", "x": 22, "y": 243, "w": 243, "h": 70, "role": "body", "max_font": 24, "min_font": 16, "align": "left"},
+    {"id": "patch_notes", "content_key": "patch_notes", "x": 322, "y": 243, "w": 255, "h": 70, "role": "section", "max_font": 34, "min_font": 20},
+    {"id": "start_boon", "content_key": "start_boon", "x": 22, "y": 354, "w": 255, "h": 70, "role": "section", "max_font": 34, "min_font": 20},
+    {"id": "victory", "content_key": "victory", "x": 322, "y": 354, "w": 255, "h": 70, "role": "display", "max_font": 72, "min_font": 32}
+  ]
+}

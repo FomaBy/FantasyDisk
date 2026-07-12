@@ -1,0 +1,216 @@
+{
+  "ok": true,
+  "decision": "ready_for_image",
+  "errors": [],
+  "warnings": [],
+  "elements": [
+    {
+      "id": "economy_panel",
+      "kind": "panel",
+      "rect": [
+        9,
+        9,
+        281,
+        96
+      ],
+      "ok": true,
+      "warnings": []
+    },
+    {
+      "id": "economy_zone",
+      "kind": "text",
+      "rect": [
+        22,
+        22,
+        255,
+        70
+      ],
+      "ok": true,
+      "warnings": [],
+      "fit_font_size": 24
+    },
+    {
+      "id": "combat_hud_panel",
+      "kind": "panel",
+      "rect": [
+        309,
+        9,
+        281,
+        96
+      ],
+      "ok": true,
+      "warnings": []
+    },
+    {
+      "id": "combat_hud_zone",
+      "kind": "text",
+      "rect": [
+        322,
+        22,
+        255,
+        70
+      ],
+      "ok": true,
+      "warnings": [],
+      "fit_font_size": 32
+    },
+    {
+      "id": "event_panel",
+      "kind": "panel",
+      "rect": [
+        9,
+        120,
+        281,
+        96
+      ],
+      "ok": true,
+      "warnings": []
+    },
+    {
+      "id": "event_zone",
+      "kind": "text",
+      "rect": [
+        22,
+        133,
+        255,
+        70
+      ],
+      "ok": true,
+      "warnings": [],
+      "fit_font_size": 20
+    },
+    {
+      "id": "confirmation_panel",
+      "kind": "panel",
+      "rect": [
+        309,
+        120,
+        281,
+        96
+      ],
+      "ok": true,
+      "warnings": []
+    },
+    {
+      "id": "confirmation_zone",
+      "kind": "text",
+      "rect": [
+        322,
+        133,
+        255,
+        70
+      ],
+      "ok": true,
+      "warnings": [],
+      "fit_font_size": 18
+    },
+    {
+      "id": "feedback_panel",
+      "kind": "panel",
+      "rect": [
+        9,
+        230,
+        281,
+        96
+      ],
+      "ok": true,
+      "warnings": []
+    },
+    {
+      "id": "feedback_zone",
+      "kind": "scroll_area",
+      "rect": [
+        22,
+        243,
+        255,
+        70
+      ],
+      "ok": true,
+      "warnings": [],
+      "fit_font_size": 20,
+      "content_h": 110,
+      "scrollbar_required": true,
+      "scrollbar_rect": [
+        265,
+        243,
+        12,
+        70
+      ]
+    },
+    {
+      "id": "patch_notes_panel",
+      "kind": "panel",
+      "rect": [
+        309,
+        230,
+        281,
+        96
+      ],
+      "ok": true,
+      "warnings": []
+    },
+    {
+      "id": "patch_notes_zone",
+      "kind": "text",
+      "rect": [
+        322,
+        243,
+        255,
+        70
+      ],
+      "ok": true,
+      "warnings": [],
+      "fit_font_size": 34
+    },
+    {
+      "id": "start_boon_panel",
+      "kind": "panel",
+      "rect": [
+        9,
+        341,
+        281,
+        96
+      ],
+      "ok": true,
+      "warnings": []
+    },
+    {
+      "id": "start_boon_zone",
+      "kind": "text",
+      "rect": [
+        22,
+        354,
+        255,
+        70
+      ],
+      "ok": true,
+      "warnings": [],
+      "fit_font_size": 32
+    },
+    {
+      "id": "victory_panel",
+      "kind": "panel",
+      "rect": [
+        309,
+        341,
+        281,
+        96
+      ],
+      "ok": true,
+      "warnings": []
+    },
+    {
+      "id": "victory_zone",
+      "kind": "text",
+      "rect": [
+        322,
+        354,
+        255,
+        70
+      ],
+      "ok": true,
+      "warnings": [],
+      "fit_font_size": 61
+    }
+  ]
+}
