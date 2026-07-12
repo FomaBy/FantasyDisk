@@ -1,6 +1,6 @@
 # SCRUM-1075 — PixelLab mockup/spec for Atlas schema-6 3×6 constellation
 
-Статус: review
+Статус: done
 Версия: 0.2.1
 Jira: SCRUM-1075
 Контур: Codex
