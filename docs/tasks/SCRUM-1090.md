@@ -1,6 +1,6 @@
 # SCRUM-1090 — Atlas detailed upgrade descriptions UI mockup
 
-Статус: done
+Статус: new
 Версия: 0.2.1
 Jira: SCRUM-1090
 Контур: Codex
@@ -67,3 +67,29 @@ Disk cleanup: temporary responsive render directory auto-removed; no Godot
 cache, disposable clone or worktree created.
 
 Thread cleanup: not a disposable worker thread.
+
+## QA-Вердикт (2026-07-12)
+
+Статус: FAILED
+
+Независимо проверено в чистом worktree от `origin/dev` `ff4c37b63`:
+
+- PixelLab MCP подтвердил completed source
+  `b6693906-f259-4b43-a1b5-4283ff88bec3`; удалённый PNG и repository source
+  совпадают по SHA-256
+  `a8d05d4bbc33bb078239b4722ded71fac5640bde869ed62240ba6190e82b9f6f`;
+- planning gate: `ready_for_image`, 19 элементов, 0 ошибок/предупреждений;
+- compositor: 13/13 зон PASS; responsive matrix: 3/3 PASS;
+- task commit не меняет `assets/`, `scripts/`, `scenes/` или `tests/`;
+- SCRUM-1091 существует и корректно остаётся не взятым, пока SCRUM-1088 и
+  SCRUM-1089 держат overlapping `scripts/ui_screens.gd` locks.
+
+Найдены два приёмочных дефекта:
+
+1. обязательная callout-надпись `УНИКАЛЬНЫЙ ФИНАЛ` отсутствует: макет использует
+   `ФИНАЛ · SOLO`;
+2. PixelLab base содержит запечённый символ `$` в верхнем header, вопреки
+   no-text/no-pseudo-text контракту frame layer.
+
+Linked blocking Bug: SCRUM-1092. Исправления дизайна/runtime QA не выполнял;
+SCRUM-1090 возвращён в Jira `К выполнению` до fix + re-QA.
