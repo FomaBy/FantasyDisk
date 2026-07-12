@@ -4710,8 +4710,8 @@
  },
  "SCRUM-1091.md": {
   "key": "SCRUM-1091",
-  "status": "К выполнению",
-  "desc_hash": "7c0e77cde2741364f37387bed8643999"
+  "status": "Контроль качества",
+  "desc_hash": "195b473afcdcdf4e7eb5bc51b565bef8"
  },
  "backend_scrum1088_priest_prayer_attribute_picker_reuse.md": {
   "key": "SCRUM-1088",
@@ -4730,12 +4730,17 @@
  },
  "SCRUM-1094.md": {
   "key": "SCRUM-1094",
-  "status": "Контроль качества",
-  "desc_hash": "646fa8f2e12e6f232eabc1999e2f59bf"
+  "status": "Готово",
+  "desc_hash": "4354c58e8bef7e48a7fbc84da4b92a46"
  },
  "bug_scrum1093_main_menu_version_corner_spacing_task.md": {
   "key": "SCRUM-1093",
   "status": "Контроль качества",
   "desc_hash": "972ef2cf0ddb57611823e8a3744f8e9b"
+ },
+ "SCRUM-1095.md": {
+  "key": "SCRUM-1095",
+  "status": null,
+  "desc_hash": null
  }
 }
