@@ -489,6 +489,13 @@ const CHEMIST_WEAPONS := {
 		"leaves_pool": true, "pool_element": "poison", "pool_duration": 7.0, "pool_tick_interval": 0.75,
 		"pool_tick_damage_multiplier": 0.90,
 		"pool_direct_damage_multiplier": 0.38,
+		# FAN-1031 3c(a): пул-канал колбы уважает data-driven кап. Тик лужи по толпе теперь
+		# спадает круче (diminish 1.5→3.0), возвращая колбу к area-denial (ядро пака полный
+		# тик, хвост душится), не трогая одиночную цель (rank0). Это ПЕРВИЧНОЕ пул-сужение
+		# по образцу S1; финальная величина + numeric per-hit — против живого v3-пересъёма
+		# (см. build/stage3c_pool_caps_fan1031.md). Персистентные acid_charge (status
+		# fan-out) — отдельный канал 3c(b), здесь НЕ трогается.
+		"pool_target_diminish": 3.0,
 		"pool_translucent": true,
 		"pool_contact_charges": true, "pool_charge_tick_multiplier": 0.30,
 		"pool_charge_tick_interval": 0.9, "pool_charge_cap": 5,

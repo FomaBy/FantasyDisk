@@ -191,6 +191,17 @@ const ATTACK_MODE_EXECUTORS := {
 @export var pool_direct_damage_multiplier := 1.0
 # SCRUM-944: per-weapon скалер тика лужи (зеркалится в _budget_pool_dps).
 @export var pool_tick_damage_multiplier := 1.0
+# FAN-1031 3c(a): data-driven кап ПУЛ-канала — аналог S1 (aoe_full_targets) для луж.
+# Сентинел <0 → per-channel константы (тик лужи POOL_FULL_TARGETS/POOL_TARGET_DIMINISH;
+# прямая leaves_pool-ветка POOL_PROJECTILE_FULL_TARGETS/POOL_PROJECTILE_TARGET_DIMINISH),
+# нулевое изменение поведения для оружий, которые их не задают. Главный канал
+# crowd-runaway периодики (тик лужи) был вне S1: он капнут константами (1/1.5), а не
+# per-weapon — поэтому restore_potion в живом замере упал только −24% вместо проектных
+# −72% (его vapor-канал и pool-ветки диминиш F=1/D=4 не ловил). Узкий pool_full_targets +
+# крутой pool_target_diminish душат хвост лужи на толпе, не трогая 1t identity зоны
+# (см. gate tests/pool_target_cap_gate.gd).
+@export var pool_full_targets := -1
+@export var pool_target_diminish := -1.0
 # SCRUM-944: полупрозрачная наземная лужа (visual-polish кислотной колбы).
 @export var pool_translucent := false
 # SCRUM-944: перманентные контактные заряды лужи — один вечный DoT-заряд с КАЖДОЙ
@@ -511,6 +522,9 @@ func configure_weapon(config: Dictionary) -> void:
 	# FAN-1031 S1: data-driven кап прямого AoE-взрыва (см. _damage_aoe_projectile_explosion).
 	aoe_full_targets = int(config.get("aoe_full_targets", aoe_full_targets))
 	aoe_target_diminish = float(config.get("aoe_target_diminish", aoe_target_diminish))
+	# FAN-1031 3c(a): data-driven кап пул-канала (тик лужи + leaves_pool-ветка).
+	pool_full_targets = int(config.get("pool_full_targets", pool_full_targets))
+	pool_target_diminish = float(config.get("pool_target_diminish", pool_target_diminish))
 	plague_duration = float(config.get("plague_duration", plague_duration))
 	plague_tick_interval = float(config.get("plague_tick_interval", plague_tick_interval))
 	plague_tick_ratio = float(config.get("plague_tick_ratio", plague_tick_ratio))
@@ -2165,6 +2179,15 @@ func _fire_saw_sector(owner_node: Node2D, direction: Vector2) -> void:
 func _spawn_restore_vapor(owner_node: Node2D, center: Vector2, link_damage: float) -> void:
 	var vapor_radius := maxf(aoe_radius * 0.8, 90.0)
 	var tick_damage := link_damage * 0.28
+	# FAN-1031 S3 (3c): артефактный vapor-канал «Восстановительного пара» теперь
+	# подчиняется тому же сустейн-нишевому капу, что и основной взрыв зелья
+	# (aoe_full_targets/aoe_target_diminish = 1/4.0 у restore_potion). До правки vapor
+	# лил (F=2/D=1.5) и на толпе давал ~2× throughput основного взрыва — главная причина,
+	# почему живой 20t restore_potion упал лишь −24%, а не проектных −72% (весь vapor и
+	# был некапнутым хвостом). Solo/дуо-хил не страдает (rank0 полный). Сентинел <0 →
+	# прежний (2/1.5) для любого не-restore оружия (vapor вызывается только у зелья).
+	var vapor_full := aoe_full_targets if aoe_full_targets >= 0 else 2
+	var vapor_diminish := aoe_target_diminish if aoe_target_diminish >= 0.0 else 1.5
 	var weapon_self_id := get_instance_id()
 	var owner_id := owner_node.get_instance_id()
 	AttackVfx.ring_pulse(_projectile_parent(), center, vapor_radius, Color(0.45, 1.0, 0.75, 0.35), true)
@@ -2176,7 +2199,7 @@ func _spawn_restore_vapor(owner_node: Node2D, center: Vector2, link_damage: floa
 			if current_weapon == null or not is_instance_valid(current_weapon) or current_weapon._effects_shutdown:
 				return
 			AttackVfx.ring_pulse(current_weapon._projectile_parent(), center, vapor_radius, Color(0.45, 1.0, 0.75, 0.26), false)
-			current_weapon._damage_enemies_in_circle_capped(center, vapor_radius, tick_damage, 2, 1.5)
+			current_weapon._damage_enemies_in_circle_capped(center, vapor_radius, tick_damage, vapor_full, vapor_diminish)
 			var current_owner := instance_from_id(owner_id) as Node2D
 			if current_owner != null and is_instance_valid(current_owner) and current_owner.has_method("apply_drain_heal"):
 				current_owner.call("apply_drain_heal", tick_damage * 0.20)
@@ -5403,7 +5426,11 @@ func _damage_aoe_projectile_explosion(origin: Vector2, radius: float, amount: fl
 		_damage_enemies_in_circle_capped(origin, radius, amount * 1.25, full_targets, target_diminish)
 		return
 	if leaves_pool:
-		_damage_enemies_in_circle_capped(origin, radius, amount * POOL_PROJECTILE_DAMAGE_MULTIPLIER * pool_direct_damage_multiplier, POOL_PROJECTILE_FULL_TARGETS, POOL_PROJECTILE_TARGET_DIMINISH)
+		# FAN-1031 3c(a): прямая leaves_pool-ветка тоже уважает per-weapon override
+		# (сентинел <0 → общий POOL_PROJECTILE_* default).
+		var pool_full := pool_full_targets if pool_full_targets >= 0 else POOL_PROJECTILE_FULL_TARGETS
+		var pool_diminish := pool_target_diminish if pool_target_diminish >= 0.0 else POOL_PROJECTILE_TARGET_DIMINISH
+		_damage_enemies_in_circle_capped(origin, radius, amount * POOL_PROJECTILE_DAMAGE_MULTIPLIER * pool_direct_damage_multiplier, pool_full, pool_diminish)
 		return
 	_damage_enemies_in_circle_capped(origin, radius, amount, full_targets, target_diminish)
 
@@ -5460,7 +5487,10 @@ func _retire_excess_damage_pools(new_pool: Node2D) -> void:
 func _damage_enemies_in_pool(origin: Vector2, radius: float, amount: float, source_pool: Node2D = null) -> void:
 	var enemies: Array = TARGET_QUERY.in_radius(self, origin, radius)
 	_apply_pool_contact_statuses(enemies, source_pool)
-	if enemies.size() <= POOL_FULL_TARGETS:
+	# FAN-1031 3c(a): per-weapon override пул-тика (сентинел <0 → общий default).
+	var full_targets := pool_full_targets if pool_full_targets >= 0 else POOL_FULL_TARGETS
+	var target_diminish := pool_target_diminish if pool_target_diminish >= 0.0 else POOL_TARGET_DIMINISH
+	if enemies.size() <= full_targets:
 		for enemy_node in enemies:
 			# SCRUM-942: тик лужи — периодический канал и на одиночной цели тоже:
 			# тип "dot" (единая покраска цифр + trait-множитель периодики), без
@@ -5473,8 +5503,8 @@ func _damage_enemies_in_pool(origin: Vector2, radius: float, amount: float, sour
 	)
 	for index in range(enemies.size()):
 		var factor := 1.0
-		if index >= POOL_FULL_TARGETS:
-			factor = 1.0 / (1.0 + float(index - POOL_FULL_TARGETS + 1) * POOL_TARGET_DIMINISH)
+		if index >= full_targets:
+			factor = 1.0 / (1.0 + float(index - full_targets + 1) * target_diminish)
 		_damage_enemy(enemies[index] as Node2D, amount * factor, false, "dot", false)
 
 
