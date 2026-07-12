@@ -905,6 +905,22 @@ func apply_web_slow(duration: float, factor: float) -> void:
 	_web_slow_factor = clampf(factor, 0.2, 1.0)
 
 
+# Combat Feel Rework (этап C): скорости побега для CombatFairness.fair_windup.
+# escape_speed — текущая эффективная скорость движения (после паутины и
+# статус-слоу), base_escape_speed — базовая без временных замедлений. Их
+# отношение растягивает окно телеграфа замедленному герою (кап — в
+# CombatFairness.SLOW_COMP_CAP); формула зеркалит speed_factor из _physics_process.
+func escape_speed() -> float:
+	var web_factor := 1.0
+	if _web_slow_until > Time.get_ticks_msec() / 1000.0:
+		web_factor = _web_slow_factor
+	return speed * web_factor * StatusEffects.speed_multiplier(self)
+
+
+func base_escape_speed() -> float:
+	return speed
+
+
 # SCRUM-897 «Дымовая Бомба»: регистрация осевшего дым-облака. Облако урона не
 # наносит — оно даёт cloud_dodge_bonus к шансу уворота, ПОКА герой стоит внутри.
 func register_smoke_cloud(center: Vector2, radius: float, duration: float, cloud_dodge_bonus: float) -> void:

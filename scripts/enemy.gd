@@ -51,6 +51,9 @@ var _elite_shield_time_left := 0.0
 var _elite_dash_cooldown := 2.8
 var _elite_dash_time_left := 0.0
 var _elite_dash_direction := Vector2.ZERO
+# Этап C (fairness): замах перед рывком сталкера — решение ≠ исполнение.
+# < 0 — замаха нет; направление лочится в момент решения (_prepare_elite_dash).
+var _elite_dash_windup_left := -1.0
 var _elite_hazard_cooldown := 3.4
 var _elite_aura_cooldown := 3.2
 var _elite_shield_active := false
@@ -137,6 +140,14 @@ const CONTACT_WINDUP_STEERING_FACTOR := 0.2
 const KNOCKBACK_STEERING_SUPPRESS_SPEED := 300.0
 # Спавн-защита: миньоны саммонера/рифтлинги босса не появляются вплотную к игроку.
 const MINION_SPAWN_MIN_PLAYER_DISTANCE := 140.0
+# Combat Feel Rework (этап C): честные АОЕ. Замах рывка элитки-сталкера ДО
+# старта движения (направление лочится при решении — сайдстеп работает) и
+# параметры ядовитой зоны элитки (радиус/база замаха — пол считает CombatFairness).
+const ELITE_DASH_WINDUP := 0.4
+const ELITE_HAZARD_RADIUS := 72.0
+const ELITE_HAZARD_WINDUP_BASE := 0.55
+# Второй теневой удар night_stalker (фаза 2): база телеграфа до fair-пола.
+const SHADOW_SECOND_STRIKE_BASE_WINDUP := 0.35
 # Combat Feel Rework (этап A): feet-origin визуал + тень-круг под ногами.
 # Origin узла не двигается — поднимается только фолбэк-визуал (cutout/статический
 # спрайт центрирован по арту, ноги ~на 0.38 высоты ниже центра). Живой full-frame
@@ -819,6 +830,7 @@ func _update_elite_shield(delta: float) -> void:
 			_elite_shield_active = false
 			_elite_shield_cooldown = 5.4
 			_set_body_tint(Color.WHITE)
+			_set_reflect_thorns_aura_visible(false)
 		return
 
 	_elite_shield_cooldown -= delta
@@ -827,24 +839,57 @@ func _update_elite_shield(delta: float) -> void:
 		_elite_shield_time_left = 1.8
 		_set_body_tint(Color(0.62, 0.86, 1.0, 1.0))
 		HazardVfx.shield_block(self, Color(0.62, 0.86, 1.0, 1.0))
+		_set_reflect_thorns_aura_visible(true)
 		_play_rig_action("cast", Vector2.UP)
+
+
+# Этап C (fairness/читаемость): reflect_thorns остаётся реактивной механикой
+# (мгновенный ответ на удар по активной защите), но пока защита активна, на
+# носителе ОБЯЗАНА висеть постоянная аура шипов — игрок видит «сейчас бить
+# больно» ДО своего удара, а не после.
+func _set_reflect_thorns_aura_visible(active: bool) -> void:
+	var mechanics: Array = get_meta("unique_mechanics", []) as Array
+	if not mechanics.has("reflect_thorns"):
+		return
+	var aura := get_node_or_null("ReflectThornsAura")
+	if active and aura == null:
+		HazardVfx.thorns_aura(self, 150.0, Color(0.78, 0.92, 1.0, 1.0))
+	elif not active and aura != null:
+		aura.queue_free()
 
 
 func _prepare_elite_dash(delta: float, player: Node2D, distance: float) -> void:
 	_elite_dash_cooldown -= delta
 	if _elite_dash_cooldown > 0.0 or distance < 80.0:
 		return
+	if _elite_dash_windup_left >= 0.0 or _elite_dash_time_left > 0.0:
+		return
 	var direction := player.global_position - global_position
 	if direction.length_squared() <= 0.0:
 		return
+	# Этап C (fairness): раньше рывок стартовал В ТОТ ЖЕ кадр, что и решение
+	# (только тинт) — ноль-телеграф. Теперь решение взводит замах ELITE_DASH_WINDUP:
+	# направление ЛОЧИТСЯ здесь (сайдстеп игрока работает), тело подсвечивается,
+	# теневой трейл показывает коридор рывка. Кулдаун — как раньше, с решения.
 	_elite_dash_direction = direction.normalized()
-	_elite_dash_time_left = elite_dash_duration
+	_elite_dash_windup_left = ELITE_DASH_WINDUP
 	_elite_dash_cooldown = 4.2
 	_set_body_tint(Color(1.0, 0.78, 0.36, 1.0))
-	_play_rig_action("attack", _elite_dash_direction)
+	_play_rig_action("cast", _elite_dash_direction)
+	var dash_reach := move_speed * elite_dash_speed_multiplier * elite_dash_duration
+	_spawn_shadow_trail(global_position, _clamp_to_arena(global_position + _elite_dash_direction * dash_reach), ELITE_DASH_WINDUP)
 
 
 func _update_elite_dash(delta: float, _player: Node2D, _distance: float) -> bool:
+	# Этап C: фаза замаха — стоим на месте (velocity = 0), телеграф читается;
+	# по истечении замаха рывок исполняется вдоль ЗАЛОЧЕННОГО направления.
+	if _elite_dash_windup_left >= 0.0:
+		_elite_dash_windup_left -= delta
+		velocity = Vector2.ZERO
+		if _elite_dash_windup_left < 0.0:
+			_elite_dash_time_left = elite_dash_duration
+			_play_rig_action("attack", _elite_dash_direction)
+		return true
 	if _elite_dash_time_left <= 0.0:
 		return false
 	_elite_dash_time_left -= delta
@@ -876,15 +921,21 @@ func _spawn_elite_hazard(target_position: Vector2) -> void:
 	parent.add_child(hazard)
 
 	var hazard_color := Color(0.55, 0.95, 0.30, 1.0)
-	HazardVfx.telegraph(hazard, 72.0, hazard_color, 0.55)
+	# Этап C (fairness): зона кастуется в позицию игрока → дистанция побега =
+	# полный радиус (offset-семантика покрывает и кламп у кромки арены). Замах
+	# не короче пола CombatFairness — из зоны всегда можно выйти.
+	var caster_player := _player()
+	var escape := CombatFairness.circle_escape_distance(hazard.global_position, ELITE_HAZARD_RADIUS, caster_player)
+	var windup := CombatFairness.fair_windup(ELITE_HAZARD_WINDUP_BASE, escape, 1.0, caster_player)
+	HazardVfx.telegraph(hazard, ELITE_HAZARD_RADIUS, hazard_color, windup)
 
 	# Tween на hazard замораживается вместе с паузой дерева, в отличие от SceneTreeTimer.
 	var hazard_tween := hazard.create_tween()
-	hazard_tween.tween_interval(0.55)
+	hazard_tween.tween_interval(windup)
 	hazard_tween.tween_callback(func() -> void:
-		HazardVfx.detonate(hazard, 72.0, hazard_color, "poison")
+		HazardVfx.detonate(hazard, ELITE_HAZARD_RADIUS, hazard_color, "poison")
 		var player := get_tree().get_first_node_in_group("player") as Node2D
-		if player != null and player.global_position.distance_to(hazard.global_position) <= 72.0 and player.has_method("take_damage"):
+		if player != null and player.global_position.distance_to(hazard.global_position) <= ELITE_HAZARD_RADIUS and player.has_method("take_damage"):
 			player.take_damage(hazard_damage, "poison_zone")
 	)
 	hazard_tween.tween_interval(1.45)
@@ -1005,15 +1056,41 @@ func _play_elite_attack_phase_animation(phase: String, duration: float) -> void:
 	rig.play_action(action_name, _elite_attack_direction, variant, duration)
 
 
+# Этап C (fairness): дистанция побега для уникальной атаки элитки — по
+# семантике CombatFairness (центр на кастере → radius×0.6; зона за спиной
+# игрока → radius − behind_offset; лоб в игрока → полный радиус).
+func _elite_attack_escape_distance(config: Dictionary, phase2: bool) -> float:
+	match elite_behavior:
+		"iron_bastion":
+			# Волна от самого танка (radius×1.3 в фазе 2, cap безопасного коридора).
+			return _safe_radius(float(config.get("radius", 260.0)) * (1.3 if phase2 else 1.0)) \
+				* CombatFairness.CASTER_CENTERED_ESCAPE_RATIO
+		"night_stalker":
+			# Точка выхода из тени лежит ЗА игроком на behind_offset — до кромки
+			# зоны игроку остаётся radius − offset.
+			return maxf(float(config.get("radius", 92.0)) - float(config.get("behind_offset", 74.0)), 0.0)
+		"plague_prophet":
+			# Первый лоб летит точно в игрока → полный радиус лужи.
+			return float(config.get("radius", 56.0))
+		"shard_marshal":
+			# Веер снарядов: боковой выход из телеграф-круга у дула.
+			return 64.0
+	return float(config.get("radius", 56.0))
+
+
 func _begin_elite_attack_windup(config: Dictionary, player: Node2D) -> void:
 	_elite_attack_targets.clear()
-	var windup := float(config.get("windup", 0.5))
-	_set_elite_attack_phase("windup", windup)
 	var to_player := player.global_position - global_position
 	if to_player.length_squared() > 0.001:
 		_elite_attack_direction = to_player.normalized()
 
 	var phase2 := _elite_in_phase2()
+	# Этап C (fairness): замах не короче пола CombatFairness. Ascension L3
+	# (elite_instant_phase) обнуляет только СТАРТОВЫЙ кулдаун — сам замах ниже
+	# пола (≥ ABS_MIN_WINDUP 0.55 > 0.45) не проваливается никогда.
+	var windup := CombatFairness.fair_windup(float(config.get("windup", 0.5)),
+		_elite_attack_escape_distance(config, phase2), 1.0, player)
+	_set_elite_attack_phase("windup", windup)
 	match elite_behavior:
 		"iron_bastion":
 			# Телеграф совпадает с фаза-2 расширением волны (честное окно уворота).
@@ -1135,14 +1212,32 @@ func _strike_shadow_strike(config: Dictionary, player: Node2D) -> void:
 		if player.has_method("take_damage"):
 			player.take_damage(_elite_attack_damage(config, player), "elite_shadow_strike")
 	# Фаза 2: серия из двух ударов из тени — второй заход с другой стороны.
+	# Этап C (fairness): раньше второй удар бил по ЖИВОЙ позиции игрока в тот же
+	# кадр — гарантированный неизбегаемый урон. Теперь цель — СНАПШОТ точки в
+	# момент спавна телеграфа/трейла; после честного окна (fair_windup с
+	# escape = полный радиус) урон проходит ТОЛЬКО в радиусе снапшота.
 	if _elite_in_phase2():
+		var radius := float(config.get("radius", 92.0))
 		var second := _clamp_to_arena(player.global_position - _elite_attack_direction * float(config.get("behind_offset", 74.0)))
-		_spawn_shadow_trail(global_position, second, 0.18)
-		global_position = second
-		_play_rig_action("attack", player.global_position - global_position)
-		if player.global_position.distance_to(global_position) <= float(config.get("radius", 92.0)):
-			if player.has_method("take_damage"):
-				player.take_damage(_elite_attack_damage(config, player), "elite_shadow_strike")
+		var second_windup := CombatFairness.fair_windup(SHADOW_SECOND_STRIKE_BASE_WINDUP, radius, 1.0, player)
+		_spawn_elite_telegraph(second, radius, second_windup)
+		_spawn_shadow_trail(global_position, second, second_windup)
+		var second_damage := _elite_attack_damage(config, player)
+		# Tween на самом враге: умер до удара — второй заход честно отменяется.
+		var second_tween := create_tween()
+		second_tween.tween_interval(second_windup)
+		second_tween.tween_callback(func() -> void:
+			if not is_inside_tree():
+				return
+			global_position = second
+			_set_body_alpha(1.0)
+			var current_player := get_tree().get_first_node_in_group("player") as Node2D
+			if current_player == null:
+				return
+			_play_rig_action("attack", current_player.global_position - global_position)
+			if current_player.global_position.distance_to(second) <= radius and current_player.has_method("take_damage"):
+				current_player.take_damage(second_damage, "elite_shadow_strike")
+		)
 
 
 func _strike_poison_volley(config: Dictionary, player: Node2D) -> void:
@@ -1236,7 +1331,10 @@ func _spawn_shockwave_ring(origin: Vector2, radius: float) -> void:
 	ring.add_child(sprite)
 	var tween := ring.create_tween()
 	tween.set_parallel(true)
-	tween.tween_property(sprite, "scale", Vector2.ONE * (radius / texture_radius), 0.30).set_trans(Tween.TRANS_QUAD).set_ease(Tween.EASE_OUT)
+	# Этап C (fairness): урон slam-волны наносится В МОМЕНТ старта, а ринг раньше
+	# расползался 0.30s — визуальная ложь «волна ещё не дошла, а урон уже прошёл».
+	# Экспансия ужата до 0.15s, чтобы картинка догоняла факт.
+	tween.tween_property(sprite, "scale", Vector2.ONE * (radius / texture_radius), 0.15).set_trans(Tween.TRANS_QUAD).set_ease(Tween.EASE_OUT)
 	tween.tween_property(sprite, "modulate:a", 0.0, 0.34)
 	tween.chain().tween_callback(ring.queue_free)
 
