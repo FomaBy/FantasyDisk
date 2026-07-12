@@ -1,7 +1,7 @@
 # SCRUM-1085 — Projectile setup visual order regression
 
 Jira: SCRUM-1085
-Статус: in_progress
+Статус: done
 Контур: Codex
 Owner: Back-end/Codex
 Thread/Worker: `/root/scrum1066_projectile_backend`
@@ -26,3 +26,6 @@ trail, so an old valid sprite cannot masquerade under an invalid ID.
   profile data are present.
 - `tests/runtime_smoke_test.gd` — PASS (known non-fatal dummy-renderer
   screenshot texture warning only).
+
+Implementation commit: `1cafb8ad0a3ce38e62076ab085a52c051fa9a358`
+on `origin/dev`.
