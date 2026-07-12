@@ -1,7 +1,7 @@
 # SCRUM-1066 — Data-driven player projectile visuals
 
 Jira: SCRUM-1066
-Статус: in_progress
+Статус: done
 Контур: Codex
 Owner: Back-end/Codex
 Thread/Worker: `/root/scrum1066_projectile_backend`
@@ -51,3 +51,6 @@ Post-rebase gates on fresh `origin/dev`:
   projectile scenes are included despite the project-wide `docs/*` exclusion.
 
 No source PNG, gameplay config or balance data changed.
+
+Implementation commit: `7fe9191994ac704221b3e17ff7d1d3286500df8d`
+on `origin/dev`.
