@@ -1,6 +1,6 @@
 # Main Menu: tighten the lower-right version cluster at large resolutions
 
-Статус: review
+Статус: done
 Версия: 0.2.1
 Jira: SCRUM-1093
 Контур: Codex
@@ -129,3 +129,28 @@ PNG. The unchanged independent QA oracle now reports `15/17/17/19 px` at
 reserve, focus/callback/a11y/SFX, no-overlap, gamepad, runtime UI/full smoke and
 six-target Metal captures all PASS. Both linked issues are ready for independent
 QA on the same implementation commit.
+
+## QA-Вердикт (2026-07-12, final re-QA)
+
+Статус: PASSED
+
+Fresh-origin QA на `origin/dev 53a9c547e` подтвердил implementation
+`fc6b9f48a`. PixelLab PNG и independent oracle не менялись;
+`AtlasTexture (41,48,160,160)` сохраняет alpha bbox
+`(14,0,146,160)` без clipping. Реальный alpha-to-glyph gap:
+`15/17/17/19 px` на `1280×720` / `1920×1080` / `2048×1152` /
+`2560×1440`; future `v0.2.10-beta` и live resize PASS.
+
+Fresh Metal captures на четырёх целевых разрешениях визуально
+PASS: icon не clipped/oversized, версия читаема, content не касается
+орнамента. Exact rail reserve `8 px`, glow gap `2 px`, button bias
+`3 px`, focus/callback/tooltip/accessibility/SFX PASS.
+
+Focused, single-column, gold-shell, semantic button family, no-overlap,
+gamepad menu/full-flow, runtime UI/full runtime, animation, meta progression
+и melee targeting gates PASS. Lifecycle leaks нет. Баги: нет.
+Jira: SCRUM-1093 → «Готово».
+
+Disk cleanup: removed QA `.godot`, fresh captures/logs, generated sidecars and
+isolated `/tmp/fsd-scrum1093-1095-qa-userdata`; disposable worktree is removed
+after evidence push.

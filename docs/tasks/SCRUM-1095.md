@@ -1,6 +1,6 @@
 # SCRUM-1095 — Main Menu visible Gratitude icon remains more than 20 px from version glyphs
 
-Статус: review
+Статус: done
 Версия: 0.2.1
 Jira: SCRUM-1095
 Тип: bug
@@ -65,5 +65,20 @@ Verification PASS:
 
 Implementation commit: `fc6b9f48a` (rebased on QA evidence `d3e1bfd42`).
 
-Disk cleanup: pending final push; disposable `.godot`, `build/qa/scrum1093` and
-generated `.uid`/`.import` sidecars will be removed before handoff.
+Disk cleanup: removed disposable `.godot`, fresh `build/qa/scrum1093` captures,
+QA logs, isolated user-data and generated `.uid`/`.import` sidecars; disposable
+worktree is removed after evidence push.
+
+## QA-Вердикт (2026-07-12)
+
+Статус: PASSED
+
+Независимая приёмка на `origin/dev 53a9c547e` подтвердила fix
+`fc6b9f48a`: принятый PixelLab PNG не изменён, alpha bbox не
+обрезан, неизменённый oracle PASS `15/17/17/19 px`. Future SemVer,
+live resize, exact `8 px` rail reserve, glow/button/version hitboxes,
+focus/callback/tooltip/accessibility/SFX, focused/UI/gamepad/runtime и обязательные
+regression gates PASS. Fresh Metal matrix визуально PASS без
+clipping, oversized art и ornament overlap; lifecycle leaks нет.
+
+Баги: нет. Jira: SCRUM-1095 → «Готово».
