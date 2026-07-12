@@ -43,5 +43,6 @@ Canonical tag/name: `release_0_2_1_announcement`.
 Accepted PixelLab source: `faaec6cf-de1f-4ffb-9a15-2326923918e5`
 (`release_0_2_1_announcement_variant_b`). The baked checkerboard outside the
 generated ornamental frame is removed with crop `(23, 18, 665, 368)` before
-Lanczos resize. No new panels, frames, cards, or opaque backing boxes are added
-after generation.
+Lanczos resize; a 58 px rounded-canvas cleanup mask replaces the remaining
+outer editor checker with near-black. No new panels, frames, cards, or opaque
+backing boxes are added after generation.

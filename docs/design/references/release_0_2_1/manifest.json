@@ -52,8 +52,9 @@
       "height": 1080,
       "filter": "Lanczos"
     },
+    "outer_cleanup": "A 58 px rounded-canvas mask replaces the baked PixelLab editor checker outside the authored frame with #09080C.",
     "base_path": "docs/design/mockups/release_0_2_1/release_0_2_1_base.png",
-    "base_sha256": "0b7d37382db32066b1449cd8d740b95eadc0d006da6eb188c2a90ffa5cad16c4"
+    "base_sha256": "0ce550ec7f2bfd27a732431f85c8bb5b70ae3f9ad6d28452522e501b12c168e6"
   },
   "outputs": {
     "preview": "docs/design/previews/release_0_2_1/release_0_2_1_final.png",
@@ -63,7 +64,7 @@
     "width": 1920,
     "height": 1080,
     "mode": "RGB",
-    "sha256": "861979145208ecbafb22413ad180c3c7843becdca38b71083313cc41bd019e72"
+    "sha256": "9dda5196b8a4751e72c9ab0cc059c0035329fc7784d0478909de81a5913f9b6c"
   },
   "qa": {
     "content_zone_report_ok": true,
