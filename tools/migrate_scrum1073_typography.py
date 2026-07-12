@@ -10,6 +10,7 @@ from __future__ import annotations
 import hashlib
 import json
 import re
+from copy import deepcopy
 from collections import defaultdict
 from pathlib import Path
 
@@ -135,66 +136,179 @@ def _fingerprint(path: str, function: str, source: str, ordinal: int) -> str:
     return hashlib.sha256(material.encode("utf-8")).hexdigest()[:16]
 
 
-def _reconcile_format_only_fingerprints(existing: dict, current: list[dict]) -> bool:
-    """Remap reviewed fingerprints after structure-preserving formatting.
+def _gdscript_expression_tokens(source: str) -> tuple[str, ...]:
+    """Tokenize an inventory expression with conservative whitespace handling.
 
-    SCRUM-1073's readability pass reflows calls and collapses redundant
-    same-role resolve_fixed wrappers without adding/removing inventory sites.
-    Exact fingerprints intentionally change with the normalized expression, so
-    reconcile only when every path/function/kind group has the same cardinality
-    and every reviewed semantic role remains present in the paired live source.
-    Any structural drift is a hard failure rather than a silent review copy.
+    This is intentionally smaller than a GDScript parser: it preserves quoted
+    strings byte-for-byte, groups identifiers and numbers, recognizes common
+    contiguous operators, and keeps every other punctuation character. Only
+    leading/trailing and delimiter-adjacent whitespace around `()[]{},` is
+    ignored. Ambiguous whitespace near operators, literals, identifiers,
+    StringName/NodePath prefixes, `$`/`%` paths or annotations is retained as a
+    token and therefore fails closed.
     """
-    old_entries = list(existing.get("entries", []))
-    if {item["fingerprint"] for item in old_entries} == {item["fingerprint"] for item in current}:
-        return False
-    old_groups: dict[tuple[str, str, str], list[dict]] = defaultdict(list)
-    new_groups: dict[tuple[str, str, str], list[dict]] = defaultdict(list)
-    for item in old_entries:
-        old_groups[(item["path"], item["function"], item["kind"])].append(item)
+    tokens: list[str] = []
+    index = 0
+    multi_operators = (
+        "**=", "<<=", ">>=", "==", "!=", "<=", ">=", "->", ":=",
+        "&&", "||", "+=", "-=", "*=", "/=", "%=", "**", "<<", ">>",
+    )
+    safe_whitespace_delimiters = frozenset("()[]{},")
+    while index < len(source):
+        char = source[index]
+        if char.isspace():
+            start = index
+            while index < len(source) and source[index].isspace():
+                index += 1
+            previous = source[start - 1] if start > 0 else ""
+            following = source[index] if index < len(source) else ""
+            if previous and following and not (
+                previous in safe_whitespace_delimiters
+                or following in safe_whitespace_delimiters
+            ):
+                tokens.append("whitespace")
+            continue
+        if char in {'"', "'"}:
+            quote = char
+            start = index
+            index += 1
+            escaped = False
+            while index < len(source):
+                current = source[index]
+                index += 1
+                if escaped:
+                    escaped = False
+                elif current == "\\":
+                    escaped = True
+                elif current == quote:
+                    break
+            else:
+                raise ValueError("unterminated string in typography expression")
+            tokens.append("string:" + source[start:index])
+            continue
+        if char.isalpha() or char == "_":
+            start = index
+            index += 1
+            while index < len(source) and (source[index].isalnum() or source[index] == "_"):
+                index += 1
+            tokens.append("identifier:" + source[start:index])
+            continue
+        if char.isdigit() or (char == "." and index + 1 < len(source) and source[index + 1].isdigit()):
+            start = index
+            if char == ".":
+                index += 1
+                while index < len(source) and (source[index].isdigit() or source[index] == "_"):
+                    index += 1
+            elif source.startswith(("0x", "0X"), index):
+                index += 2
+                while index < len(source) and (source[index] in "0123456789abcdefABCDEF_"):
+                    index += 1
+            elif source.startswith(("0b", "0B"), index):
+                index += 2
+                while index < len(source) and source[index] in "01_":
+                    index += 1
+            else:
+                while index < len(source) and (source[index].isdigit() or source[index] == "_"):
+                    index += 1
+                if (
+                    index + 1 < len(source)
+                    and source[index] == "."
+                    and source[index + 1].isdigit()
+                ):
+                    index += 1
+                    while index < len(source) and (source[index].isdigit() or source[index] == "_"):
+                        index += 1
+            if index < len(source) and source[index] in "eE":
+                exponent = index + 1
+                if exponent < len(source) and source[exponent] in "+-":
+                    exponent += 1
+                digit_start = exponent
+                while exponent < len(source) and (source[exponent].isdigit() or source[exponent] == "_"):
+                    exponent += 1
+                if exponent > digit_start:
+                    index = exponent
+            tokens.append("number:" + source[start:index])
+            continue
+        operator = next((value for value in multi_operators if source.startswith(value, index)), "")
+        if operator:
+            tokens.append("operator:" + operator)
+            index += len(operator)
+            continue
+        tokens.append("punctuation:" + char)
+        index += 1
+    return tuple(tokens)
+
+
+def _reconcile_token_equivalent_fingerprints(existing: dict, current: list[dict]) -> tuple[dict, bool]:
+    """Return a reviewed live candidate only for token-identical expressions."""
+    reviewed_entries = list(existing.get("entries", []))
+    reviewed_groups: dict[tuple[str, str, str], list[dict]] = defaultdict(list)
+    live_groups: dict[tuple[str, str, str], list[dict]] = defaultdict(list)
+    for item in reviewed_entries:
+        reviewed_groups[(item["path"], item["function"], item["kind"])].append(item)
     for item in current:
-        new_groups[(item["path"], item["function"], item["kind"])].append(item)
-    if set(old_groups) != set(new_groups):
-        raise SystemExit("format reconciliation refused: inventory groups changed")
+        live_groups[(item["path"], item["function"], item["kind"])].append(item)
+    if set(reviewed_groups) != set(live_groups):
+        raise SystemExit("live typography snapshot groups changed; refusing to rewrite the reviewed manifest")
 
     fingerprint_changes: dict[str, str] = {}
-    rendered: list[dict] = []
-    review_by_current: dict[str, dict] = {}
-    for key in sorted(old_groups):
-        old_values = sorted(old_groups[key], key=lambda item: int(item["line"]))
-        new_values = sorted(new_groups[key], key=lambda item: int(item["line"]))
-        if len(old_values) != len(new_values):
-            raise SystemExit(f"format reconciliation refused: cardinality changed for {key}")
-        for old, live in zip(old_values, new_values):
-            role = str(old.get("role", ""))
-            role_literals = {
-                value.lower()
-                for value in re.findall(r"SemanticTypography\.ROLE_([A-Z_]+)", live.get("source", ""))
-            }
-            if role and role_literals and role not in role_literals:
+    review_by_live: dict[str, dict] = {}
+    changed = False
+    for key in reviewed_groups:
+        reviewed_values = sorted(reviewed_groups[key], key=lambda item: int(item["line"]))
+        live_values = sorted(live_groups[key], key=lambda item: int(item["line"]))
+        if len(reviewed_values) != len(live_values):
+            raise SystemExit(
+                f"live typography snapshot cardinality changed for {key}; "
+                "refusing to rewrite the reviewed manifest"
+            )
+        for reviewed, live in zip(reviewed_values, live_values):
+            try:
+                reviewed_tokens = _gdscript_expression_tokens(str(reviewed.get("source", "")))
+                live_tokens = _gdscript_expression_tokens(str(live.get("source", "")))
+            except ValueError as error:
+                raise SystemExit(f"typography tokenization failed for {key}: {error}") from error
+            if reviewed_tokens != live_tokens:
                 raise SystemExit(
-                    f"format reconciliation refused: role drift {old['fingerprint']} {role} -> {sorted(role_literals)}"
+                    f"live typography expression is not token-equivalent for {key}; "
+                    "refusing to rewrite the reviewed manifest"
                 )
-            fingerprint_changes[old["fingerprint"]] = live["fingerprint"]
-            review_by_current[live["fingerprint"]] = old
+            old_fingerprint = str(reviewed.get("fingerprint", ""))
+            live_fingerprint = str(live.get("fingerprint", ""))
+            fingerprint_changes[old_fingerprint] = live_fingerprint
+            review_by_live[live_fingerprint] = reviewed
+            changed = changed or old_fingerprint != live_fingerprint
 
+    candidate = deepcopy(existing)
+    rendered_entries: list[dict] = []
     for item in current:
-        review = review_by_current[item["fingerprint"]]
+        review = review_by_live.get(str(item.get("fingerprint", "")))
+        if review is None:
+            raise SystemExit(
+                f"live typography fingerprint {item.get('fingerprint', '')} lost its reviewed identity; "
+                "refusing to rewrite the reviewed manifest"
+            )
+        rendered = dict(item)
         for field in inventory.REVIEW_FIELDS:
             if field in review:
-                item[field] = review[field]
-        if "status" not in item:
-            raise SystemExit(f"format reconciliation lost review for {item['fingerprint']}")
-        item["mapping_source"] = "reviewed_manifest"
-        rendered.append(item)
-    for migration in existing.get("migrations", []):
-        old_replacement = migration["replacement_fingerprint"]
+                rendered[field] = review[field]
+        if "status" not in rendered or "role" not in rendered:
+            raise SystemExit(
+                f"live typography fingerprint {item.get('fingerprint', '')} lost review metadata; "
+                "refusing to rewrite the reviewed manifest"
+            )
+        rendered["mapping_source"] = "reviewed_manifest"
+        rendered_entries.append(rendered)
+    candidate["entries"] = rendered_entries
+    for migration in candidate.get("migrations", []):
+        old_replacement = str(migration.get("replacement_fingerprint", ""))
         if old_replacement not in fingerprint_changes:
-            raise SystemExit(f"format reconciliation lost migration replacement {old_replacement}")
+            raise SystemExit(
+                f"migration replacement {old_replacement} lost its reviewed identity; "
+                "refusing to rewrite the reviewed manifest"
+            )
         migration["replacement_fingerprint"] = fingerprint_changes[old_replacement]
-    existing["entries"] = rendered
-    MANIFEST.write_text(json.dumps(existing, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
-    return True
+    return candidate, changed
 
 
 def main() -> int:
@@ -265,18 +379,19 @@ def main() -> int:
                     item["role"] = ""
                 item["mapping_source"] = "reviewed_manifest"
                 rendered_entries.append(item)
-            for migration in existing.get("migrations", []):
+            candidate = deepcopy(existing)
+            candidate["entries"] = rendered_entries
+            for migration in candidate.get("migrations", []):
                 old_replacement = migration["replacement_fingerprint"]
                 migration["replacement_fingerprint"] = replacement_changes.get(old_replacement, old_replacement)
-            existing["entries"] = rendered_entries
-            MANIFEST.write_text(json.dumps(existing, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
+            existing = candidate
         current = inventory.collect_raw()
-        reconciled = _reconcile_format_only_fingerprints(existing, current)
-        errors = inventory.validate(inventory.document())
+        candidate, reconciled = _reconcile_token_equivalent_fingerprints(existing, current)
+        errors = inventory.validate(candidate)
         if errors:
             raise SystemExit("\n".join(errors))
         if rewrites or reconciled:
-            MANIFEST.write_text(json.dumps(inventory.document(), ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
+            MANIFEST.write_text(json.dumps(candidate, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
         print("PASS: SCRUM-1073 migration applied and verified without a central helper lock")
         return 0
     targets = [
