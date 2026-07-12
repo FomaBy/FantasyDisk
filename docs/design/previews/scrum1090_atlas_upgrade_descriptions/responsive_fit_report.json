@@ -1,0 +1,243 @@
+{
+  "schema": "fantasydisk.responsive_fit.v1",
+  "issue": "SCRUM-1090",
+  "ok": true,
+  "source_layout": "docs/design/mockups/scrum1090_atlas_upgrade_descriptions/layout.json",
+  "matrix": [
+    {
+      "resolution": "1280x720",
+      "ok": true,
+      "renderer_exit": 0,
+      "zone_count": 13,
+      "frame_transform": {
+        "scale": 1.860465,
+        "offset_x": 0,
+        "offset_y": 3
+      },
+      "zones": [
+        {
+          "id": "tab",
+          "ok": true,
+          "font_size": 22
+        },
+        {
+          "id": "class_progress",
+          "ok": true,
+          "font_size": 22
+        },
+        {
+          "id": "weapon_paths",
+          "ok": true,
+          "font_size": 22
+        },
+        {
+          "id": "kind",
+          "ok": true,
+          "font_size": 17
+        },
+        {
+          "id": "title",
+          "ok": true,
+          "font_size": 22
+        },
+        {
+          "id": "weapon",
+          "ok": true,
+          "font_size": 17
+        },
+        {
+          "id": "effect",
+          "ok": true,
+          "font_size": 17
+        },
+        {
+          "id": "result",
+          "ok": true,
+          "font_size": 18
+        },
+        {
+          "id": "progress",
+          "ok": true,
+          "font_size": 19
+        },
+        {
+          "id": "price",
+          "ok": true,
+          "font_size": 19
+        },
+        {
+          "id": "status",
+          "ok": true,
+          "font_size": 17
+        },
+        {
+          "id": "buy",
+          "ok": true,
+          "font_size": 17
+        },
+        {
+          "id": "reset",
+          "ok": true,
+          "font_size": 20
+        }
+      ]
+    },
+    {
+      "resolution": "1920x1080",
+      "ok": true,
+      "renderer_exit": 0,
+      "zone_count": 13,
+      "frame_transform": {
+        "scale": 2.790698,
+        "offset_x": 0,
+        "offset_y": 4
+      },
+      "zones": [
+        {
+          "id": "tab",
+          "ok": true,
+          "font_size": 33
+        },
+        {
+          "id": "class_progress",
+          "ok": true,
+          "font_size": 33
+        },
+        {
+          "id": "weapon_paths",
+          "ok": true,
+          "font_size": 33
+        },
+        {
+          "id": "kind",
+          "ok": true,
+          "font_size": 25
+        },
+        {
+          "id": "title",
+          "ok": true,
+          "font_size": 33
+        },
+        {
+          "id": "weapon",
+          "ok": true,
+          "font_size": 25
+        },
+        {
+          "id": "effect",
+          "ok": true,
+          "font_size": 25
+        },
+        {
+          "id": "result",
+          "ok": true,
+          "font_size": 28
+        },
+        {
+          "id": "progress",
+          "ok": true,
+          "font_size": 28
+        },
+        {
+          "id": "price",
+          "ok": true,
+          "font_size": 28
+        },
+        {
+          "id": "status",
+          "ok": true,
+          "font_size": 25
+        },
+        {
+          "id": "buy",
+          "ok": true,
+          "font_size": 25
+        },
+        {
+          "id": "reset",
+          "ok": true,
+          "font_size": 31
+        }
+      ]
+    },
+    {
+      "resolution": "2560x1440",
+      "ok": true,
+      "renderer_exit": 0,
+      "zone_count": 13,
+      "frame_transform": {
+        "scale": 3.72093,
+        "offset_x": 0,
+        "offset_y": 6
+      },
+      "zones": [
+        {
+          "id": "tab",
+          "ok": true,
+          "font_size": 45
+        },
+        {
+          "id": "class_progress",
+          "ok": true,
+          "font_size": 45
+        },
+        {
+          "id": "weapon_paths",
+          "ok": true,
+          "font_size": 45
+        },
+        {
+          "id": "kind",
+          "ok": true,
+          "font_size": 33
+        },
+        {
+          "id": "title",
+          "ok": true,
+          "font_size": 45
+        },
+        {
+          "id": "weapon",
+          "ok": true,
+          "font_size": 33
+        },
+        {
+          "id": "effect",
+          "ok": true,
+          "font_size": 33
+        },
+        {
+          "id": "result",
+          "ok": true,
+          "font_size": 37
+        },
+        {
+          "id": "progress",
+          "ok": true,
+          "font_size": 37
+        },
+        {
+          "id": "price",
+          "ok": true,
+          "font_size": 37
+        },
+        {
+          "id": "status",
+          "ok": true,
+          "font_size": 33
+        },
+        {
+          "id": "buy",
+          "ok": true,
+          "font_size": 33
+        },
+        {
+          "id": "reset",
+          "ok": true,
+          "font_size": 41
+        }
+      ]
+    }
+  ],
+  "runtime_note": "Source-only PixelLab reference; accepted SCRUM-1075 runtime geometry remains authoritative."
+}

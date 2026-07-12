@@ -1,0 +1,10 @@
+{
+  "tool": "PixelLab MCP create_ui_asset",
+  "ui_asset_id": "b6693906-f259-4b43-a1b5-4283ff88bec3",
+  "name": "SCRUM-1090 Atlas detailed upgrade dossier",
+  "size": [688, 384],
+  "cost_generations": 40,
+  "prompt_summary": "Full 16:9 D&D dark-fantasy Atlas reference with a thin hollow frame, class rail, three-path constellation canvas, calm detailed dossier interior and radiant unique final sockets. No text, pseudo-text, numbers or watermark; all content zones remain empty and ornament-free.",
+  "content_zone_source": "ui_plan.json",
+  "runtime_promotion": false
+}

@@ -1,0 +1,43 @@
+{
+  "schema": "fantasydisk.ui_plan.v1",
+  "issue": "SCRUM-1090",
+  "canvas": {"width": 688, "height": 384},
+  "policy": {"min_gap": 3, "allow_overlap": false},
+  "content": {
+    "tab": "СОЗВЕЗДИЕ",
+    "class_progress": "БЕРСЕРК · 5/6",
+    "weapon_paths": "МЕЧ      ТОПОР      МОЛОТ",
+    "kind": "ФИНАЛ · SOLO",
+    "title": "ПРИГОВОР ВЕЛИКАНА",
+    "weapon": "Меч · только это оружие",
+    "effect": "3 попадания по одной цели заряжают казнь ниже 35% HP.",
+    "result": "БОСС: вместо казни до +24% урона. ФИНАЛ: минимум +20% к силе узла 5.",
+    "scroll_copy": "ТРИГГЕР: 3 попадания по одной прочной цели. СЛЕДУЮЩИЙ УДАР: казнь ниже 35% здоровья. БОСС: вместо казни до +24% урона. ФИНАЛ: минимум +20% к силе узла 5.",
+    "progress": "5/6 → 6/6",
+    "price": "1 эмблема",
+    "status": "ГОТОВО К ОТКРЫТИЮ",
+    "buy": "ОТКРЫТЬ УНИКАЛЬНЫЙ ФИНАЛ",
+    "reset": "СБРОС УМЕНИЙ"
+  },
+  "elements": [
+    {"id": "screen_frame", "kind": "panel", "x": 0, "y": 0, "w": 688, "h": 384, "collision": false},
+    {"id": "header", "kind": "panel", "parent": "screen_frame", "x": 24, "y": 13, "w": 642, "h": 32, "collision": false},
+    {"id": "tab", "kind": "text", "parent": "header", "content_zone": true, "x": 34, "y": 19, "w": 112, "h": 18, "text_key": "tab", "max_font": 12, "min_font": 8},
+    {"id": "class_progress", "kind": "text", "parent": "header", "content_zone": true, "x": 154, "y": 19, "w": 122, "h": 18, "text_key": "class_progress", "max_font": 12, "min_font": 8},
+    {"id": "class_rail", "kind": "panel", "parent": "screen_frame", "x": 24, "y": 56, "w": 78, "h": 269, "collision": false},
+    {"id": "class_list", "kind": "list", "parent": "class_rail", "content_zone": true, "x": 29, "y": 70, "w": 68, "h": 241, "scroll": "auto", "item_count": 17, "item_h": 34, "item_gap": 4, "scrollbar_w": 4},
+    {"id": "constellation", "kind": "panel", "parent": "screen_frame", "x": 113, "y": 56, "w": 374, "h": 269, "collision": false},
+    {"id": "weapon_paths", "kind": "text", "parent": "constellation", "content_zone": true, "x": 132, "y": 67, "w": 336, "h": 18, "text_key": "weapon_paths", "max_font": 12, "min_font": 8},
+    {"id": "constellation_runtime", "kind": "zone", "parent": "constellation", "content_zone": true, "x": 129, "y": 90, "w": 342, "h": 220, "collision": false},
+    {"id": "dossier", "kind": "panel", "parent": "screen_frame", "x": 497, "y": 56, "w": 169, "h": 269, "collision": false},
+    {"id": "dossier_kind", "kind": "text", "parent": "dossier", "content_zone": true, "x": 510, "y": 66, "w": 143, "h": 12, "text_key": "kind", "max_font": 9, "min_font": 7},
+    {"id": "dossier_title", "kind": "text", "parent": "dossier", "content_zone": true, "x": 510, "y": 81, "w": 143, "h": 16, "text_key": "title", "max_font": 12, "min_font": 8},
+    {"id": "dossier_weapon", "kind": "text", "parent": "dossier", "content_zone": true, "x": 510, "y": 101, "w": 143, "h": 14, "text_key": "weapon", "max_font": 9, "min_font": 7},
+    {"id": "dossier_scroll", "kind": "scroll_area", "parent": "dossier", "content_zone": true, "x": 510, "y": 124, "w": 143, "h": 98, "scroll": "auto", "content_h": 150, "scrollbar_w": 5, "text_key": "scroll_copy", "max_font": 10, "min_font": 7, "collision": false},
+    {"id": "progress", "kind": "text", "parent": "dossier", "content_zone": true, "x": 510, "y": 232, "w": 65, "h": 35, "text_key": "progress", "max_font": 10, "min_font": 7},
+    {"id": "price", "kind": "text", "parent": "dossier", "content_zone": true, "x": 585, "y": 232, "w": 67, "h": 35, "text_key": "price", "max_font": 10, "min_font": 7},
+    {"id": "status", "kind": "text", "parent": "dossier", "content_zone": true, "x": 510, "y": 276, "w": 143, "h": 16, "text_key": "status", "max_font": 9, "min_font": 7},
+    {"id": "buy", "kind": "button", "parent": "dossier", "content_zone": true, "x": 510, "y": 300, "w": 143, "h": 16, "text_key": "buy", "max_font": 9, "min_font": 7},
+    {"id": "reset", "kind": "button", "parent": "screen_frame", "content_zone": true, "x": 34, "y": 342, "w": 168, "h": 22, "text_key": "reset", "max_font": 11, "min_font": 8}
+  ]
+}

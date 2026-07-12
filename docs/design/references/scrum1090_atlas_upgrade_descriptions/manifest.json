@@ -1,0 +1,25 @@
+{
+  "issue": "SCRUM-1090",
+  "generator": "PixelLab MCP",
+  "tool": "create_ui_asset",
+  "source_id": "b6693906-f259-4b43-a1b5-4283ff88bec3",
+  "source_name": "SCRUM-1090 Atlas detailed upgrade dossier",
+  "source_file": "pixellab_atlas_detailed_dossier_688x384.png",
+  "sha256": "a8d05d4bbc33bb078239b4722ded71fac5640bde869ed62240ba6190e82b9f6f",
+  "width": 688,
+  "height": 384,
+  "alpha": true,
+  "cost_generations": 40,
+  "prompt_spec": "../../mockups/scrum1090_atlas_upgrade_descriptions/pixellab_request.json",
+  "content_plan": "../../mockups/scrum1090_atlas_upgrade_descriptions/ui_plan.json",
+  "safe_zone_summary": {
+    "outer_frame": [0, 0, 688, 384],
+    "class_rail": [24, 56, 78, 269],
+    "constellation": [113, 56, 374, 269],
+    "dossier": [497, 56, 169, 269],
+    "dossier_content_inset": [510, 66, 143, 250],
+    "minimum_lateral_reserve_px": 12
+  },
+  "runtime_promotion": false,
+  "notes": "Source-only Design reference. Runtime continues to use the accepted Meta40 Atlas art and SCRUM-1075 geometry."
+}
