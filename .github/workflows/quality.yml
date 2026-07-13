@@ -14,11 +14,17 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v6
+        with:
+          fetch-depth: 0
       - uses: actions/setup-python@v6
         with:
           python-version: "3.12"
-      - name: Repository and Python gates
-        run: python3 tools/quality_gate.py --static-only
+      - name: Repository and Python gates (push range)
+        if: github.event_name == 'push'
+        run: python3 tools/quality_gate.py --static-only --changed-ref "${{ github.event.before }}"
+      - name: Repository and Python gates (pull request range)
+        if: github.event_name == 'pull_request'
+        run: python3 tools/quality_gate.py --static-only --changed-ref "${{ github.event.pull_request.base.sha }}"
 
 # The full gate additionally requires the project's exact Godot 4.7 toolchain
 # and remains a required local/release check:

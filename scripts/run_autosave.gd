@@ -106,16 +106,23 @@ static func has_run(save_path := DEFAULT_SAVE_PATH) -> bool:
 
 
 # Удалить автосейв (завершение забега: смерть/победа), включая .tmp/.bak.
-static func clear_run(save_path := DEFAULT_SAVE_PATH) -> void:
+# Primary удаляется последним: при crash/error до последнего шага load_run()
+# продолжит видеть committed checkpoint, а после него recovery-файлов уже нет.
+static func clear_run(save_path := DEFAULT_SAVE_PATH) -> bool:
 	var dir := DirAccess.open("user://")
 	if dir == null:
-		return
-	if dir.file_exists(save_path):
-		dir.remove(save_path)
-	for suffix in [".tmp", ".bak"]:
-		_cleanup_file(dir, save_path + suffix)
+		return false
+	for path in _clear_paths(save_path):
+		if not _cleanup_file(dir, path):
+			return false
+	return true
 
 
-static func _cleanup_file(dir: DirAccess, path: String) -> void:
+static func _clear_paths(save_path: String) -> Array[String]:
+	return [save_path + ".tmp", save_path + ".bak", save_path]
+
+
+static func _cleanup_file(dir: DirAccess, path: String) -> bool:
 	if dir.file_exists(path):
-		dir.remove(path)
+		return dir.remove(path) == OK
+	return true

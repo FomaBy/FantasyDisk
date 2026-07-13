@@ -191,7 +191,11 @@ def _windows_export_config_errors() -> list[str]:
     return [f"missing {label} in export_presets.cfg" for marker, label in required.items() if marker not in source]
 
 
-def run_static_checks(fail_fast: bool, timeout: float) -> list[dict]:
+def _range_check_command(changed_ref: str) -> list[str]:
+    return ["git", "diff", "--check", f"{changed_ref}...HEAD"]
+
+
+def run_static_checks(fail_fast: bool, timeout: float, changed_ref: str) -> list[dict]:
     commands: list[tuple[str, list[str]]] = [
         ("repository-invariants", [sys.executable, "tools/quality_static_guard.py"]),
         ("python-unit", [sys.executable, "-m", "unittest", "discover", "-s", "tests", "-p", "test_*.py"]),
@@ -201,6 +205,7 @@ def run_static_checks(fail_fast: bool, timeout: float) -> list[dict]:
         ("runtime-manifest-validator", [sys.executable, "tools/test_validate_scrum1068_runtime_manifest.py"]),
         ("git-diff-check", ["git", "diff", "--check"]),
         ("git-head-check", ["git", "show", "--check", "--format=", "HEAD"]),
+        ("git-range-check", _range_check_command(changed_ref)),
     ]
     shell_scripts = sorted((ROOT / "tools").glob("*.sh")) + sorted((ROOT / "scripts").glob("*.sh"))
     if shell_scripts:
@@ -396,7 +401,7 @@ def main(argv: Sequence[str] | None = None) -> int:
 
     started = time.monotonic()
     static_results = [] if args.skip_static else run_static_checks(
-        args.fail_fast, args.static_timeout
+        args.fail_fast, args.static_timeout, args.changed_ref
     )
     failed = any(item["status"] == "failed" for item in static_results)
     godot_results: list[dict] = []

@@ -110,7 +110,8 @@ Fix:
 - Wave-pack spawn keeps a local remaining-cap counter instead of rescanning the
   whole enemy group after every spawned enemy.
 - Run autosave uses a temporary file plus backup/rollback, so a failed replace
-  cannot destroy the last good checkpoint.
+  cannot destroy the last good checkpoint; completion cleanup checks deletion
+  errors and removes `.tmp`/`.bak` before the primary checkpoint.
 - Shared `SceneContracts` validates configurable Node2D scene roots at primary
   enemy/elite/boss/pickup/summon boundaries.
 - Static architecture ratchets prevent further growth of existing god-files and
@@ -206,7 +207,7 @@ Baseline before edits:
 
 Final combined changed-profile from baseline `1190db1d`:
 
-- 11 static/security/export-config/commit-whitespace checks passed;
+- 12 static/security/export-config/whole-range whitespace checks passed;
 - 14 diff-selected Godot suites passed, including target/separation/hot-path
   caches, Engineer kit, feedback, persistence, scene contracts, status effects,
   combat/UI split smoke and the umbrella `runtime_smoke_test.gd`;

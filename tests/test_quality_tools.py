@@ -3,6 +3,7 @@ from __future__ import annotations
 import importlib.util
 import base64
 import os
+import subprocess
 import sys
 import tempfile
 import unittest
@@ -119,6 +120,34 @@ class QualityGateTests(unittest.TestCase):
         names = {path.stem for path in selected}
         self.assertIn("weapon_integrity_test", names)
         self.assertIn("runtime_smoke_test", names)
+
+    def test_range_check_catches_whitespace_before_clean_head(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            repo = Path(tmp)
+            subprocess.run(["git", "init", "-q"], cwd=repo, check=True)
+            subprocess.run(["git", "config", "user.name", "Quality Test"], cwd=repo, check=True)
+            subprocess.run(["git", "config", "user.email", "quality@example.invalid"], cwd=repo, check=True)
+            (repo / "sample.txt").write_text("clean\n", encoding="utf-8")
+            subprocess.run(["git", "add", "sample.txt"], cwd=repo, check=True)
+            subprocess.run(["git", "commit", "-q", "-m", "base"], cwd=repo, check=True)
+            base = subprocess.check_output(["git", "rev-parse", "HEAD"], cwd=repo, text=True).strip()
+
+            (repo / "sample.txt").write_text("bad trailing space \n", encoding="utf-8")
+            subprocess.run(["git", "commit", "-qam", "bad middle"], cwd=repo, check=True)
+            (repo / "clean-head.txt").write_text("clean head\n", encoding="utf-8")
+            subprocess.run(["git", "add", "clean-head.txt"], cwd=repo, check=True)
+            subprocess.run(["git", "commit", "-q", "-m", "clean head"], cwd=repo, check=True)
+
+            head_only = subprocess.run(
+                ["git", "show", "--check", "--format=", "HEAD"], cwd=repo, check=False
+            )
+            range_check = subprocess.run(
+                self.quality._range_check_command(base), cwd=repo, check=False,
+                text=True, stdout=subprocess.PIPE, stderr=subprocess.STDOUT,
+            )
+            self.assertEqual(head_only.returncode, 0)
+            self.assertNotEqual(range_check.returncode, 0)
+            self.assertIn("trailing whitespace", range_check.stdout)
 
 
 if __name__ == "__main__":

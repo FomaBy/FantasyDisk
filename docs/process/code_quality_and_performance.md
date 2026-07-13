@@ -29,9 +29,9 @@ Filtered/skip-прогон имеет non-certifying статус `partial_pass`
 | High | `StatusEffects.tick()` строил `get_method_list()` каждый physics tick для каждого DoT | Introspection выполняется только при фактически наступившем DoT tick; финальное expiry также удаляет status/marker metadata |
 | High | Каждый enemy отдельно вызывал `get_nodes_in_group("enemies")` при separation refresh | Все refresh в кадре используют один `CombatTargetQuery` snapshot; mass regression фиксирует 48 enemies, ровно одну генерацию snapshot и максимум 4 neighbors |
 | High | Wave pack spawn повторно сканировал всю enemy group после каждого spawn | Cap вычисляется один раз, затем поддерживается локальным `remaining_slots`; combat smoke проверяет непревышение cap несколькими волнами |
-| High | Автосейв удалял последний хороший checkpoint до успешного rename | Введён `.tmp` → `.bak` swap с rollback/recovery; regression имитирует прерванную замену |
+| High | Автосейв удалял последний хороший checkpoint до успешного rename, а clear мог оставить восстанавливаемый `.bak` | Введён `.tmp` → `.bak` swap с rollback/recovery; clear проверяет ошибки и удаляет auxiliary-файлы раньше primary; regressions покрывают оба прерывания |
 | High | Configurable `PackedScene.instantiate() as Node2D` часто сразу разыменовывался | Общий `SceneContracts` валидирует root и освобождает wrong-root instance; применён к основным enemy/elite/boss/pickup/summon spawners |
-| Medium | Focused shell discovery видел только точную первую строку `extends SceneTree` и обходил derived suites; Godot запускался мимо semaphore | Единый явный manifest включает derived combat suite; shell runner направлен через `godot_gate.py`; semaphore поддерживает POSIX и native Windows |
+| Medium | Focused shell discovery видел только точную первую строку `extends SceneTree` и обходил derived suites; Godot запускался мимо semaphore | Единый динамический discovery включает direct и inherited suites; shell runner направлен через `godot_gate.py`; semaphore поддерживает POSIX и native Windows |
 | Medium | `ui_screens.gd` (≈17k), `class_weapon.gd` (≈6k) и другие god objects продолжают расти | Static ratchet запрещает рост legacy-монолитов и новые scripts >1200 строк; extraction выполняется отдельными поведенческими задачами, без wholesale rewrite |
 
 ## Оставшиеся риски и границы этого прохода
@@ -46,9 +46,9 @@ Filtered/skip-прогон имеет non-certifying статус `partial_pass`
 - Некоторые менее частые spawner paths всё ещё требуют миграции на `SceneContracts`;
   gate защищает новые массовые Node2D boundaries, но не обещает механическую замену
   всех duck-typed сцен за один проход.
-- Threat-indicator discovery и Bastion taunt application имеют потенциальные
-  group/status расходы. Первый затрагивает HUD cadence, второй — боевой баланс;
-  оба требуют отдельных профилей/AC и не менялись здесь.
+- Threat-indicator discovery переведён на общий snapshot с refresh 10 Hz, а
+  Bastion taunt читает scalar status без deep-copy. Оставшийся spatial O(N²)
+  separation требует native benchmark и отдельного grid-equivalence изменения.
 - `save_run_autosave()` возвращает failure, но ряд route/combat callers пока не
   показывает пользователю ошибку. Сохранённый checkpoint больше не уничтожается,
   однако caller-visible retry/error policy остаётся отдельной UX/persistence задачей.

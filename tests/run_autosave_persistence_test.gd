@@ -74,10 +74,24 @@ func _initialize() -> void:
 	if str(after_recovery.get("character_id", "")) != "druid":
 		errors.append("новый checkpoint после recovery не применился")
 
-	# 6. Очистка → пусто.
-	RunAutosave.clear_run(TEST_PATH)
+	# 6. Очистка primary + stale backup не должна позволить load_run() воскресить
+	# завершённый забег. Auxiliary-файлы всегда удаляются раньше primary: crash до
+	# последнего шага оставляет committed checkpoint, после него recovery уже нет.
+	var stale_backup := ConfigFile.new()
+	stale_backup.set_value("meta", "schema_version", RunAutosave.SCHEMA_VERSION)
+	stale_backup.set_value("run", "character_id", "stale_completed_run")
+	if stale_backup.save(TEST_PATH + ".bak") != OK:
+		errors.append("не удалось подготовить primary + .bak clear fixture")
+	var clear_paths: Array[String] = RunAutosave._clear_paths(TEST_PATH)
+	if clear_paths != [TEST_PATH + ".tmp", TEST_PATH + ".bak", TEST_PATH]:
+		errors.append("clear_run должен удалять auxiliary-файлы раньше primary")
+	if not RunAutosave.clear_run(TEST_PATH):
+		errors.append("clear_run должен вернуть true при успешной очистке")
 	if RunAutosave.has_run(TEST_PATH):
-		errors.append("после clear_run has_run должен быть false")
+		errors.append("после clear_run primary + .bak has_run должен быть false")
+	for path in clear_paths:
+		if FileAccess.file_exists(path):
+			errors.append("после clear_run остался файл: %s" % path)
 
 	# 7. Повреждённый файл → {} (как будто нет), не крэшит.
 	var f := FileAccess.open(TEST_PATH, FileAccess.WRITE)
@@ -115,7 +129,7 @@ func _initialize() -> void:
 		push_error("Run autosave persistence: %d нарушений." % errors.size())
 		quit(1)
 		return
-	print("Run autosave persistence passed (round-trip/atomic/corrupt/version/clear).")
+	print("Run autosave persistence passed (round-trip/atomic/corrupt/version/safe-clear).")
 	quit(0)
 
 
