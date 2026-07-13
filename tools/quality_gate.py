@@ -55,6 +55,7 @@ PATH_TEST_RULES = {
         "feedback_webhook_config_test",
     },
     "scripts/ui_screens.gd": {"feedback_privacy_ui_test"},
+    "scripts/ui/feedback_overlay.gd": {"feedback_privacy_ui_test"},
     "tests/feedback_webhook_config_test.gd": {"feedback_webhook_config_test"},
 }
 

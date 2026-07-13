@@ -4,6 +4,11 @@
 
 SCRUM-362 adds an in-game feedback and bug report tool. It is a Back-end/runtime system: no webhook secret is stored in the repository, and reports are sent only after explicit player confirmation.
 
+`scripts/ui_screens.gd` remains the public overlay facade and lifecycle owner;
+the focused `scripts/ui/feedback_overlay.gd` module builds the form and owns its
+responsive/input behavior. This keeps the shared screen coordinator below its
+17,000-line architecture ratchet without changing callers.
+
 ## Player Flow
 
 - `P` opens `FeedbackOverlayLayer` from combat, route map, shop, event, level-up, rewards, settings and menus.

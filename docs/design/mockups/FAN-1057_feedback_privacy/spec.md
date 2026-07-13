@@ -190,6 +190,8 @@ the overlay and restore focus to the control that opened it when available.
 - [x] Render complete privacy/operator/retention/local-fallback copy as Controls.
 - [x] Disable online routing unless deployment supplies operator/contact/retention/policy.
 - [x] Preserve canonical existing node names and reporter lifecycle.
+- [x] Keep lifecycle/facade compatibility in `ui_screens.gd` while extracting
+  the focused builder to `scripts/ui/feedback_overlay.gd`.
 - [x] Preserve pinned title/status/actions around the middle scroll body.
 - [x] Reuse accepted exact-size feedback button families and their five states.
 - [x] Verify 1280x720, 1920x1080 and 2560x1440 fresh-open and live-resize paths.
