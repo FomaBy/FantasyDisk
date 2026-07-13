@@ -24,41 +24,35 @@ Use this for a backend worker run inside a FantasyDisk checkout. Follow repo
 
 ## Workflow
 
-1. Check state:
+1. Verify issue, assignee, parent/dependencies, comments, active runs and locked
+   paths. Work only in the Multica-provided workdir:
+
+```bash
+multica issue get <FAN-issue-id> --output json
+multica issue comment list <FAN-issue-id> --recent 10 --output json
+```
+
+2. Fetch `origin`, safely integrate current `origin/dev`, and stop with a Multica
+   blocker if sync or ownership is unsafe:
 
 ```bash
 git branch --show-current
 git status --short --branch
+git fetch origin --prune
 git pull --ff-only origin dev
 ```
 
-2. Take one backend issue (the issue assigned to this worker, or an eligible
-   unassigned backend `FAN-*` issue). Claim it and record ownership:
-
-```bash
-multica issue get <FAN-issue-id> --output json
-multica issue status <FAN-issue-id> in_progress
-```
-
-If no eligible issue exists, report that and change nothing.
-
-3. Verify no active owner/locked-path overlap in the Multica issue comments,
-   assignee, and local mirrors before editing.
-4. Implement the issue. Update relevant docs and local task mirror if present.
-5. Run focused tests plus required Godot headless smokes using local project
-   helper scripts or documented Godot path.
-6. Commit and push only owned files:
-
-```bash
-git add <owned-files>
-git commit -m "FAN-123: <short backend summary>"
-git push origin dev
-```
-
-7. Update the Multica issue truthfully:
-   - implementation done -> `in_review` (QA gate);
-   - blocked -> `blocked` with an exact-reason comment;
-   - QA PASSED is required before an issue becomes `done`.
+3. Post start/heartbeat evidence: owner, task/run id, workdir/branch, locked
+   paths and next gate. Move a valid unassigned/manual issue to `in_progress`
+   with `multica issue status <FAN-issue-id> in_progress`; an agent-assigned run
+   must not claim a second issue.
+4. Stay in backend scope: gameplay/runtime code, balance implementation, tests
+   and docs. Create Multica child handoffs for Design, Animator or QA work.
+5. Run focused checks and `python3 tools/quality_gate.py --profile changed`.
+6. Commit only owned files and push the green result to `origin/dev` under repo
+   policy.
+7. Comment exact SHA, push state, tests, docs, risks and `Disk cleanup:`. Move
+   the issue to `in_review`; `done` requires independent QA PASSED.
 
 ## Report
 

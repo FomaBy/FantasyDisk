@@ -4,6 +4,8 @@ This repository is a Godot 4 project for FantasyDisk.
 
 Before making gameplay, balance, character, enemy, UI, or progression changes, read:
 - `docs/process/ai_agent_memorandum.md` for the compact onboarding protocol for any AI agent.
+- `docs/process/multica_workflow.md` for the authoritative task intake, ownership,
+  execution, QA, evidence, and recovery workflow.
 - `docs/design/fantasydisk_design_brief.md`
 - `docs/design/gdd_source.md` when exact GDD wording matters.
 - `docs/design/mechanics_extract.md` when formulas, classes, stats, weapons, or MVP screens matter.
@@ -207,8 +209,8 @@ Full autonomy (user directive, 2026-06-12):
   the decision + rationale in the task file report.
 - If something truly cannot proceed (missing asset, broken dependency,
   conflicting requirement), do not stall: mark the task `blocked` with a precise
-  reason on the board, create a handoff if another role can unblock it, and move
-  to the next task. PM reviews blocked items.
+  reason in Multica, create a child handoff issue if another role can unblock it,
+  release stale assignment, and move to the next eligible task. PM reviews blocked items.
 - Questions for the user are allowed ONLY for destructive/irreversible actions
   outside the repo (deleting user files, external accounts, payments) — these
   are out of scope for executors anyway.
@@ -222,8 +224,8 @@ Feature block:
   обычным порядком из Multica. Плановые версии `0.1.8` и `0.1.9`
   отменены/superseded; далее используется SemVer patch-линия `0.2.1`, `0.2.2`, ...
 - Механизм сохраняется: перед стабилизацией следующего релиза PM снова включает
-  фриз явной директивой/hold-marker; без такого marker sync держит новые задачи
-  в активном спринте, а не в бэклоге.
+  фриз явной директивой/hold-marker; без такого marker новые задачи идут в
+  Multica `todo`, а не в `backlog`.
 
 Use Godot 4 GDScript and keep systems compatible with the source design:
 - FantasyDisk is a 2D top-down loot-action survival roguelite with RPG buildcraft.
