@@ -11,20 +11,46 @@ FAN-1040 удалил такой fallback. Значение, попавшее в
 отозвано 2026-07-13 (FAN-1041: `DELETE 204`, проверка `404`); новый credential
 нельзя добавлять обратно в репозиторий.
 
-Production-доставка должна идти через rate-limited server/proxy endpoint,
-который хранит Discord credential на серверной стороне. Пока endpoint не
-подключён, player build сохраняет отчёт локально в `user://feedback/`.
+Production-доставка идёт только через rate-limited relay из
+`services/feedback_proxy/`, который хранит Discord credential на серверной
+стороне. Пока endpoint не provisioned и не записан в публичный project setting,
+player build сохраняет отчёт локально в `user://feedback/`.
 
-## Приоритет источников URL
+## Production relay
 
-1. env `FANTASYDISK_FEEDBACK_WEBHOOK` (дев-машина/CI);
+Публичный (не секретный) session endpoint задаётся в `project.godot`:
+
+```ini
+[feedback]
+relay_session_url="https://feedback.example.org/v1/session"
+```
+
+Для локальной отладки приоритетнее env `FANTASYDISK_FEEDBACK_RELAY_URL`, затем
+project setting, затем `user://feedback_config.cfg` key `relay_session_url`.
+Разрешён только HTTPS URL без query/fragment/userinfo и с точным path
+`/v1/session`. Client получает короткоживущий anonymous session token и отправляет
+JSON в тот же origin `/v1/feedback`; один UUIDv4 используется как report ID и
+`Idempotency-Key` на всех retry.
+
+Relay проверяет auth/session, schema, allowlist метаданных, JPEG type/размер,
+server-side IP+installation rate limits и idempotency. Он сам строит Discord
+multipart, запрещает mentions и никогда не логирует текст/скриншот/token/webhook.
+Поскольку Discord не поддерживает idempotency key, неоднозначный исход после
+начала upstream request помечается non-retryable и уходит в local fallback:
+at-most-once важнее риска продублировать приватный отчёт.
+Deployment/environment/checklist описаны в `services/feedback_proxy/README.md`.
+
+## Direct Discord — только debug
+
+Raw Discord transport вообще не читается release build. В debug build порядок:
+
+1. env `FANTASYDISK_FEEDBACK_WEBHOOK` (dev-машина/CI);
 2. `res://feedback_webhook.cfg` (локальный dev-оверрайд, gitignored,
    см. `feedback_webhook.cfg.example`);
 3. `user://feedback_config.cfg` (legacy/пользовательский оверрайд).
 
-Невалидный source игнорируется без печати URL; resolver проверяет следующий
-явный source. Если валидной конфигурации нет, путь fail closed сохраняет отчёт
-локально и показывает ошибку конфигурации без credential.
+Невалидный source игнорируется без печати URL. Если relay не настроен, release
+никогда не падает обратно на direct Discord: отчёт сохраняется локально.
 
 ## Выполненная ротация после FAN-1040
 
@@ -35,11 +61,22 @@ Production-доставка должна идти через rate-limited server
 
 ## Как это работает
 
-- Игра шлёт `multipart/form-data` на вебхук: `payload_json.content` (текст
-  бага + метаданные: версия, персонаж, возвышение, экран, разрешение, ОС,
-  время) и `files[0]` — ужатый JPG-скриншот (даунскейл до 1280px, q0.72 —
-  лимит вложений вебхука, SCRUM-460). Ретраи с бэкоффом на таймаутах/5xx/429
-  (SCRUM-547).
+- Production client шлёт relay-owned JSON schema с текстом, allowlisted
+  метаданными и base64 JPG (до 1280px, q0.72). Relay, а не клиент, формирует
+  Discord multipart. Debug-only direct transport остаётся для разработчиков.
+- Session/upload имеют отдельные phase guards: поздний callback/timer старой
+  фазы не может затронуть новый upload. 401 обновляет session один раз; 409,
+  429, 5xx и сетевые ошибки ретраятся с тем же report UUID и теми же bytes.
 - Нет сети / Discord недоступен / вебхук удалён → репорт сохраняется локально
-  в `user://feedback/` (полный PNG), UI показывает понятную причину. Успех —
-  только после HTTP 2xx от вебхука.
+  в `user://feedback/<timestamp>_<report-uuid>/` (полный PNG), UI показывает
+  понятную причину. Успех — только после HTTP 2xx от relay/debug transport.
+
+Release pipeline запускает `tools/scan_release_secrets.py` по DMG, Windows EXE,
+installer и ZIP до публикации checksums; macOS DMG предварительно монтируется
+read-only, чтобы сканировать app/PCK, а ZIP проверяется и как контейнер, и по
+распакованным entries. Scanner не печатает найденный secret и ловит raw, full
+Base64 и соседние quoted split-Base64 webhook значения.
+
+`relay_session_url` должен оставаться пустым и online delivery выключенным, пока
+не готовы player-facing disclosure (скриншот, game/OS metadata, persistent
+installation UUID, edge IP), retention/operator policy и staging load/TLS tests.

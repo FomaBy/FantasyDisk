@@ -1,6 +1,7 @@
-; FantasyDisk — локальный dev-оверрайд вебхука внутриигрового фидбека.
-; Webhook является credential и не встраивается в клиент. Без явной настройки
-; отчёты безопасно сохраняются в user://feedback.
+; FantasyDisk — только локальный DEBUG override Discord-вебхука.
+; Release build этот source не читает. Production использует публичный HTTPS
+; feedback/relay_session_url и server-only credential; без relay отчёты
+; безопасно сохраняются в user://feedback.
 ; скопируй в feedback_webhook.cfg (в .gitignore) и вставь свой Discord webhook URL.
 ; Формат Godot ConfigFile — комментарии через ';', значение в кавычках.
 [feedback]

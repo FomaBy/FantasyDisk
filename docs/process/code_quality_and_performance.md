@@ -26,7 +26,7 @@ Filtered/skip-прогон имеет non-certifying статус `partial_pass`
 
 | Приоритет | Доказательство | Решение |
 |---|---|---|
-| Critical | `feedback_reporter.gd` содержал полный Discord webhook в обратимом base64; тест закреплял его как контракт | Удалён из source/export, resolver fail-closed, локальный fallback проверяет I/O. Старый webhook должен быть немедленно отозван/ротирован владельцем; безопасное production-решение — server-side rate-limited relay |
+| Critical | `feedback_reporter.gd` содержал полный Discord webhook в обратимом base64; тест закреплял его как контракт | Credential удалён, старый webhook отозван (`DELETE 204`, контрольный `404`). FAN-1056 добавил server-only relay, release-safe client protocol, server auth/rate/idempotency/privacy tests и post-export secret scan. Production остаётся выключен до provisioning HTTPS/storage/new webhook |
 | High | `_taunt_target()` вызывался каждым enemy каждый physics tick и делал `StatusEffects.snapshot().duplicate(true)` | Добавлен scalar `status_value`; полный status map больше не копируется в target selection |
 | High | `StatusEffects.tick()` строил `get_method_list()` каждый physics tick для каждого DoT | Introspection выполняется только при фактически наступившем DoT tick; финальное expiry также удаляет status/marker metadata |
 | High | Каждый enemy отдельно вызывал `get_nodes_in_group("enemies")` при separation refresh | Все refresh в кадре используют один `CombatTargetQuery` snapshot; mass regression фиксирует 48 enemies, ровно одну генерацию snapshot и максимум 4 neighbors |
@@ -38,10 +38,10 @@ Filtered/skip-прогон имеет non-certifying статус `partial_pass`
 
 ## Оставшиеся риски и границы этого прохода
 
-- Feedback reporter всё ещё имеет один mutable pending slot и нет отмены retry timer:
-  send → close → reopen может дать late callback/cross-report race. Исправление
-  требует request-generation ownership и UI lifecycle regression, поэтому не
-  смешивается с non-visual FAN-1040.
+- Feedback lifecycle race из FAN-1040 закрыт в FAN-1046: monotonic request owner,
+  at-most-once completion и cancellation защищают reopen/supersede. FAN-1056
+  дополнительно guards двухфазный relay по `(request_id, phase)`. Оставшийся
+  feedback blocker — только внешний production provisioning/rollout FAN-1041.
 - Combat start не полностью транзакционен: отсутствие Player или failure обязательного
   prayer presenter могут оставить частично созданные HUD/music/runtime state. Нужен
   центральный `_abort_combat_start()` и fault-injection tests.
