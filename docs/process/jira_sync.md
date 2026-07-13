@@ -1,12 +1,24 @@
 # Jira Sync — FantasyDisk
 
+> ⚠️ **LEGACY / ARCHIVE-ONLY (по состоянию на cutover 2026-07-13).**
+> После Jira→Multica cutover (2026-07-13, approver Sergey Fomin) этот
+> Jira-sync регламент **superseded** и оставлен только как исторический
+> reference. Живой источник очереди/статуса/owner теперь — **Multica**
+> (project `FantasyDisk`, issues `FAN-*`, `multica` CLI). Legacy Jira
+> (`SCRUM-*`) — read-only historical archive (импортирован в Multica-проект
+> «Jira Archive»). Не применяйте описанный ниже регламент к новой работе.
+> См. `docs/process/jira_to_multica_cutover.md`.
+
 Обновлено: 2026-07-03
 
 ## Назначение
 
-С 2026-06-27 Jira является единым authoritative task queue/status/ownership
-source для FantasyDisk. Это нужно, чтобы AI-агенты могли работать с разных
-устройств и не зависели от локального состояния одного Mac.
+В период с 2026-06-27 и до Jira→Multica cutover (2026-07-13) Jira являлась единым
+authoritative task queue/status/ownership source для FantasyDisk. Это было нужно,
+чтобы AI-агенты могли работать с разных устройств и не зависели от локального
+состояния одного Mac. **Начиная с cutover 2026-07-13 это больше не действует:**
+authoritative source — Multica (`FAN-*`), а Jira (`SCRUM-*`) — read-only архив.
+Раздел ниже сохранён как исторический reference.
 
 Все задачи ведутся так:
 

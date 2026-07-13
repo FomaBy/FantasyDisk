@@ -5990,6 +5990,15 @@ func _test_feedback_overlay_and_local_fallback(main_scene: PackedScene) -> void:
 		feedback_main.queue_free()
 		await process_frame
 		return
+	var feedback_ui = feedback_main.get("ui")
+	var lifecycle_reporter: Node = feedback_ui._feedback_reporter()
+	var close_callback_calls := {"count": 0}
+	var close_callback := func(_success: bool, _message: String, _local_path: String) -> void:
+		close_callback_calls["count"] = int(close_callback_calls["count"]) + 1
+	var overlay_request_id: int = lifecycle_reporter._begin_report(
+		"cancel on close", FeedbackReporter._normalized_screenshot(null),
+		{"screen": "runtime_smoke"}, close_callback)
+	feedback_ui._feedback_request_id = overlay_request_id
 	var cancel_pad_event := InputEventJoypadButton.new()
 	cancel_pad_event.button_index = JOY_BUTTON_B
 	cancel_pad_event.pressed = true
@@ -5997,6 +6006,17 @@ func _test_feedback_overlay_and_local_fallback(main_scene: PackedScene) -> void:
 	await process_frame
 	if feedback_main.get("feedback_overlay_layer") != null:
 		_fail("Expected gamepad B to close feedback overlay.")
+		feedback_main.queue_free()
+		await process_frame
+		return
+	if lifecycle_reporter.is_request_active(overlay_request_id):
+		_fail("Expected closing feedback overlay to cancel its active request.")
+		feedback_main.queue_free()
+		await process_frame
+		return
+	lifecycle_reporter._finish_report(overlay_request_id, true, "late", "")
+	if int(close_callback_calls["count"]) != 0:
+		_fail("Expected a cancelled feedback request to drop its UI callback.")
 		feedback_main.queue_free()
 		await process_frame
 		return

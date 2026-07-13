@@ -11,9 +11,12 @@ bash scripts/onboard.sh
 ```
 Дальше: AI-агенты автоматически видят мастер-скилл **`fantasydisk-onboarding`**
 (в `.claude/skills/`), люди читают [`docs/process/ai_agent_memorandum.md`](docs/process/ai_agent_memorandum.md).
-**Правило №1:** все задачи создаются в и берутся из **Jira** (проект SCRUM) —
-`docs/tasks/*.md` и `docs/process/task_board.md` лишь зеркала/кэш. Ветки: `main`=релиз,
-`dev`=работа (default), теги `vX.Y.Z`=версии.
+**Правило №1:** все задачи создаются в и берутся из **Multica** (проект
+`FantasyDisk`, issues `FAN-*`) через `multica` CLI — `docs/tasks/*.md` и
+`docs/process/task_board.md` лишь зеркала/кэш. Legacy Jira (`SCRUM-*`) — read-only
+исторический архив, не источник новой работы (см.
+[`docs/process/jira_to_multica_cutover.md`](docs/process/jira_to_multica_cutover.md)).
+Ветки: `main`=релиз, `dev`=работа (default), теги `vX.Y.Z`=версии.
 
 ## Требования
 - **Godot 4.7** (стандартная сборка, ветка 4.x). Скачать: https://godotengine.org/download
@@ -72,11 +75,12 @@ tools/build_release.sh <версия>    # напр. 0.1.6 — собирает 
 - `scenes/` — сцены Godot (`.tscn`)
 - `assets/` — спрайты, фоны, аудио, шрифты, UI
 - `tests/` — headless smoke-тесты
-- `tools/` — утилиты (сборка, Jira-синк, фидбек)
+- `tools/` — утилиты (сборка, фидбек; legacy Jira-хелперы — archive-only)
 - `docs/` — дизайн-доки, процессы, задачи
 
 ## AI-автоматизация (только macOS)
 Агентная оркестрация (Codex-скиллы в `~/.codex/`, scheduled-task рутины,
-`tools/jira_board_sync.py` через macOS Keychain) специфична для Mac-машины и **не
-переносится в репозиторий**. На Windows работает сама игра — Godot кросс-платформенный;
-AI-оркестрация остаётся на Mac.
+локальный Multica daemon, запускающий Codex/Claude) специфична для Mac-машины и
+**не переносится в репозиторий**. Задачи ведутся в Multica (`multica` CLI); legacy
+`tools/jira_*.py` — archive-only. На Windows работает сама игра — Godot
+кросс-платформенный; AI-оркестрация остаётся на Mac.

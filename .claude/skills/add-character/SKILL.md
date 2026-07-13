@@ -22,8 +22,9 @@ before starting to confirm the class is not already implemented.
 - Animator: SpriteFrames/rig/motion through `fantasydisk-animation-director`.
 - QA: separate acceptance pass.
 
-Create Jira tasks/handoffs for each discipline instead of doing all roles in one
-task unless the user explicitly assigned a full pipeline owner.
+Create Multica issues/handoffs (project FantasyDisk, `FAN-*`) for each discipline
+instead of doing all roles in one task unless the user explicitly assigned a full
+pipeline owner.
 
 ## Acceptance Summary
 
@@ -32,4 +33,4 @@ task unless the user explicitly assigned a full pipeline owner.
 - Uses existing attributes; cross-class stat interpretations stay documented.
 - Hero select, Codex, content registry, and relevant balance docs updated.
 - Required focused tests and Godot smokes pass.
-- Jira/mirrors reflect owner, status, locked paths, results, and QA state.
+- Multica/mirrors reflect owner, status, locked paths, results, and QA state.

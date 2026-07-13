@@ -46,7 +46,11 @@ PATH_TEST_RULES = {
     "scripts/class_weapon.gd": {"engineer_kit_test", "persistent_hazard_contract_test"},
     "scripts/enemy.gd": {"enemy_separation_behavior_test"},
     "scripts/threat_indicators.gd": {"hot_path_cache_test"},
-    "scripts/feedback_reporter.gd": {"feedback_webhook_config_test", "feedback_retry_policy_test"},
+    "scripts/feedback_reporter.gd": {
+        "feedback_request_lifecycle_test",
+        "feedback_retry_policy_test",
+        "feedback_webhook_config_test",
+    },
     "tests/feedback_webhook_config_test.gd": {"feedback_webhook_config_test"},
 }
 

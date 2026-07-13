@@ -9,7 +9,8 @@ SCRUM-362 adds an in-game feedback and bug report tool. It is a Back-end/runtime
 - `P` opens `FeedbackOverlayLayer` from combat, route map, shop, event, level-up, rewards, settings and menus.
 - The tool captures the current viewport before the overlay appears, then shows that screenshot as a preview.
 - The player writes a short report and presses `Отправить`.
-- `Esc` or `Отмена` closes the overlay without sending.
+- `Esc` or `Отмена` closes the overlay without sending and cancels an in-flight
+  request owned by that overlay.
 - While the overlay is open, normal gameplay/menu shortcuts are blocked except Escape, but text input remains available inside `FeedbackTextEdit`.
 
 ## Delivery
@@ -22,6 +23,10 @@ SCRUM-362 adds an in-game feedback and bug report tool. It is a Back-end/runtime
   v10 needs this explicit attachment reference when `payload_json` is present.
 - `files[0]` contains a downscaled JPG upload copy; the local fallback keeps the
   full PNG screenshot.
+- Each submission owns a request-scoped payload snapshot and a monotonic request ID.
+  HTTP completions and retry timers verify that ID before touching state, so a
+  delayed attempt cannot complete or overwrite a newer report. Completion is
+  delivered at most once; cancellation drops the callback and payload snapshot.
 
 Webhook URL lookup order:
 
@@ -70,14 +75,16 @@ Headless runs cannot read a real viewport screenshot, so the overlay uses a smal
   `Content-Disposition` filename, so Discord keeps the screenshot attachment.
 - `tests/feedback_webhook_config_test.gd` rejects missing/placeholder/invalid
   webhook config without leaking the URL.
+- `tests/feedback_request_lifecycle_test.gd` covers superseding, stale HTTP
+  callbacks, stale retry timers, at-most-once completion and explicit cancel.
 
 ## Audit (SCRUM-720)
 
 Security/persistence audit of the feedback path — no runtime behaviour changed,
 findings + a regression guard:
 
-- **Secrets never leak.** The optional development webhook URL lives only in memory
-  (`_pending_webhook_url`) and is passed solely to `request_raw`. It is never
+- **Secrets never leak.** The optional development webhook URL lives only in the
+  active request context and is passed solely to `request_raw`. It is never
   `print`/`push_error`-logged, never written into `report.txt`, and never embedded
   in failure/config messages. The real `feedback_webhook.cfg` is gitignored
   (`*.cfg`) and untracked; only `feedback_webhook.cfg.example` (placeholder
@@ -95,5 +102,6 @@ findings + a regression guard:
 
 The SCRUM-848 client-embedded Base64 fallback was removed. Obfuscation did not
 prevent extracting and abusing the Discord credential, and the value remains in
-Git history. The old webhook must be revoked in Discord. Any replacement must be
-stored only in server/CI secret storage and must not be added to source or export.
+Git history. FAN-1041 revoked the old webhook on 2026-07-13 (`DELETE 204`, then
+`GET 404`; the secret itself was never logged). Any replacement must be stored
+only in server/CI secret storage and must not be added to source or export.

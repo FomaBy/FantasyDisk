@@ -5,6 +5,13 @@ description: Create high-quality Jira tickets from user notes, source links, scr
 
 # Jira Create Ticket
 
+> **LEGACY / ARCHIVE-ONLY — not part of the FantasyDisk workflow.** Since the
+> 2026-07-13 Jira → Multica cutover, FantasyDisk tasks are created and tracked in
+> **Multica** (project FantasyDisk, `FAN-*`) via the `multica` CLI, never in Jira
+> (see `docs/process/jira_to_multica_cutover.md`). This generic Jira ticket-drafting
+> skill is retained only for unrelated external Jira projects; do not use it to
+> create, mirror, or route FantasyDisk work.
+
 ## Goal
 
 Create Jira tickets that are ready for development, QA, and backlog refinement. Think like a product manager, scrum master, and QA engineer: clarify the problem, infer missing requirements from context and similar tickets, preserve user intent, and produce a short but complete ticket.

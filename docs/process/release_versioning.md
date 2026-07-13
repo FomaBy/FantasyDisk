@@ -8,8 +8,9 @@
 - Схема: **SemVer** `MAJOR.MINOR.PATCH`; до выхода 1.0 — `0.MINOR.PATCH`
   (0.1.0 → 0.2.0 — новые фичи; 0.2.1 — только хотфиксы).
 - Текущий active target: `0.2.1`. Плановые `0.1.8` и `0.1.9` отменены/superseded:
-  не создавать под них sprint, Jira fixVersion, changelog-финализацию или release
-  tasks. После `0.2.0` следующая patch-линия: `0.2.1`, `0.2.2`, ...
+  не создавать под них sprint, Multica release metadata (`release`),
+  changelog-финализацию или release tasks. После `0.2.0` следующая patch-линия:
+  `0.2.1`, `0.2.2`, ...
 - **Источник истины версии** — `project.godot` → `[application] config/version`.
   Код может читать её через `ProjectSettings.get_setting("application/config/version")`
   (показывать в главном меню мелким текстом).
@@ -57,15 +58,16 @@ dev  — основная ветка разработки. Все чаты (Back
    `releases/vX.Y.Z/CHANGELOG-X.Y.Z.md` (раздел версии из CHANGELOG.md) — чтобы
    получатель билда видел, что нового, без доступа к репозиторию.
 9. Smoke-проверка установленных билдов.
-10. **Jira-спринт и Jira-релиз** (правило пользователя 2026-06-12: спринт = релиз):
-    - завершить активный спринт (complete) на доске SCRUM;
-    - пометить Jira-версию X.Y.Z released (Releases проекта SCRUM), в описание
+10. **Релиз в Multica** (правило пользователя 2026-06-12: спринт = релиз;
+    live board — проект FantasyDisk, issues FAN-*):
+    - закрыть все issues версии в статус `done` на доске FantasyDisk;
+    - пометить Multica release metadata (`release`) X.Y.Z как released, в описание
       версии — краткий ченджлог + ссылка releases/vX.Y.Z/CHANGELOG-X.Y.Z.md;
-    - создать следующую Jira-версию X.Y.Z+1 (unreleased) с кратким описанием
-      плана; создать и запустить «Спринт X.Y.Z+1»;
-    - tools/jira_board_sync.py автоматически ставит новым тикетам
-      fixVersion = версия из имени активного спринта (тикеты «Версия: <след>»
-      остаются в бэклоге без fixVersion до своего спринта).
+    - открыть следующую версию X.Y.Z+1 (unreleased) с кратким описанием плана и
+      завести под неё issues FAN-* в статусе `todo`;
+    - новым issues версии проставлять release metadata (`release`) = активная
+      целевая версия (issues следующей версии остаются в backlog без `release`
+      до своей стабилизации).
 11. **Патч-ноуты в игре**: обновить игровой файл патч-ноутов (см. задачу
     backend_ingame_patch_notes_task.md / экран «Что нового») — человекочитаемые
     заметки версии для игрока, по-русски, синхронно с CHANGELOG. Это часть
@@ -74,7 +76,7 @@ dev  — основная ветка разработки. Все чаты (Back
 ## Feature Block
 
 Feature block 0.1.5 снят релизом v0.1.5 (2026-06-15). На 2026-07-02 активной
-freeze-директивы нет; текущий Jira sprint/release target — `0.2.1`. При следующей
+freeze-директивы нет; текущий Multica release target — `0.2.1`. При следующей
 стабилизации PM включает freeze отдельной директивой: в текущий релиз остаются
 уже заведенные строки доски, bugfix/QA defect/regression/release-blocker задачи
 и явно разрешенные PM исключения; новые не-баговые фичи уходят в следующую

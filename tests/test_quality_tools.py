@@ -130,6 +130,20 @@ class QualityGateTests(unittest.TestCase):
         self.assertIn("weapon_integrity_test", names)
         self.assertIn("runtime_smoke_test", names)
 
+    def test_feedback_reporter_change_selects_lifecycle_regression(self) -> None:
+        with mock.patch.object(
+            self.quality,
+            "_git_changed_paths",
+            return_value={"scripts/feedback_reporter.gd"},
+        ):
+            selected = self.quality.select_godot_tests(
+                "changed", [], "origin/dev", False
+            )
+        names = {path.stem for path in selected}
+        self.assertIn("feedback_request_lifecycle_test", names)
+        self.assertIn("feedback_retry_policy_test", names)
+        self.assertIn("feedback_webhook_config_test", names)
+
     def test_range_check_catches_whitespace_before_clean_head(self) -> None:
         with tempfile.TemporaryDirectory() as tmp:
             repo = Path(tmp)

@@ -1,17 +1,19 @@
 # Task Board — FantasyDisk (живой дашборд)
 
 Обновлено: 2026-07-04
-Ведёт: PM/dispatcher как локальный dashboard/cache. С 2026-06-27 Jira проект
-`SCRUM` является authoritative task queue/status/owner source. Эта доска
-показывает активную работу, review/QA gates и важные recent rows только для
-anti-duplicate/owner audit и локального удобства. Новые задачи нельзя брать
-из этого файла напрямую: они должны существовать и назначаться в Jira.
-Статусы: `new` | `in_progress` | `review` | `blocked` | `done`. Источник истины
-по очереди/status/owner — Jira; `docs/tasks/*.md` содержит подробную спецификацию
-и evidence mirror.
-Новые или обновляемые active Jira issues/mirror rows обязаны иметь lane/owner
+Ведёт: PM/dispatcher как локальный legacy dashboard/evidence mirror. После
+Jira→Multica cutover (2026-07-13, approver Sergey Fomin) authoritative task
+queue/status/owner source — **Multica** (project `FantasyDisk`, issues `FAN-*`).
+Эта доска теперь только **локальный legacy dashboard / evidence mirror** и **не
+является источником новой работы**: новые задачи ведутся и назначаются в Multica.
+Legacy Jira (`SCRUM-*`) — read-only historical archive; строки ниже сохранены как
+историческое evidence. Статусы: `new` | `in_progress` | `review` | `blocked` |
+`done`. Источник истины по очереди/status/owner — Multica (`FAN-*`);
+`docs/tasks/*.md` содержит подробную спецификацию и evidence mirror.
+См. `docs/process/jira_to_multica_cutover.md`.
+Новые или обновляемые active Multica issues/mirror rows обязаны иметь lane/owner
 metadata: `Контур: Codex|Claude|OtherAI`, `Owner`, `Thread/Worker`, `Locked paths`.
-Автоматическая работа role agents разрешена только по Jira issues с label `foma`
+Автоматическая работа role agents разрешена только по Multica issues с label `foma`
 (задачи от пользователя/PM/dispatcher для AI-автоматики); остальные issues
 запускаются вручную явным поручением пользователя конкретному агенту.
 
