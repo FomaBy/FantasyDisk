@@ -156,6 +156,10 @@ func _initialize() -> void:
 	if combat_director == null:
 		_fail("SCRUM-708: expected CombatDirector to be reachable via main.combat.")
 		return
+	# This section invokes the wave spawner directly. Keep Main._process() from
+	# firing a second timer-driven wave during the awaited frame, otherwise the
+	# assertion measures two producers against the cap of one invocation.
+	main.set("spawn_cooldown", 3600.0)
 	main.set("spawn_wave_index", 0)
 	var wave_cap := int(main.call("_active_enemy_cap"))
 	for wave_iteration in range(4):

@@ -95,6 +95,8 @@ Fix:
   run is rejected;
 - per-test/process timeouts terminate the full process group; `godot_gate.py`
   also enforces a configurable timeout for direct test/import/export commands;
+- the direct wave-cap smoke freezes the timer-driven producer while measuring
+  manual spawns, eliminating a two-producer race in the test harness;
 - the old shell command is a compatibility wrapper around the Python runner;
 - Python regression tests cover discovery (236 suites after FAN-1040), lock
   behavior, executable precedence and client secret scanning;
