@@ -13419,12 +13419,10 @@ func _apply_video_settings() -> void:
 	game.save_game_settings()
 
 
-# SCRUM-484: координатная спека @2560×1440 — форма фидбэка (модалка со скроллом).
-# Панель clamp(viewport-80, [480,940] × [380,780]) → @2K = 940×780, центрирована.
-# _panel_style margins (58,72,58,66) → safe-area. Сверху фикс заголовок, снизу фикс
-# статус + ряд кнопок (Отправить 260×64, Отмена 220×64, sep 18); середина (ScrollContainer)
-# тянется и прокручивает поле ввода (h≥130) и превью скриншота (h 240). Кнопки никогда
-# не уезжают за нижний край (SCRUM-460).
+# FAN-1057: runtime-builder формы фидбэка вынесен в FeedbackOverlayController.
+# Актуальная responsive-геометрия, safe zones и 720p/1080p/2K контрольные размеры
+# зафиксированы в docs/design/mockups/FAN-1057_feedback_privacy/spec.md и
+# tests/feedback_privacy_ui_test.gd; фасад ниже сохраняет публичный API UIScreens.
 
 
 func _show_feedback_overlay(screenshot: Image = null) -> void:
