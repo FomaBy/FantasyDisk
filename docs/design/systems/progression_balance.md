@@ -792,6 +792,43 @@ SCRUM-1091 добавляет только presentation contract, не нову�
     конфиги, CONST-guard дефолта no-op). `global_damage_balance_smoke` без изменений (worst
     CCT +21% — кап рантаймовый, ортогонален формульной бюджет-модели).
 
+- **FAN-1031 Stage 3c(b2) (2026-07-13) — FALLOFF/ORBIT fan-out data-driven кап (no-silent-retune).**
+  Последние два helper'а прямого урона, раздававшие полный урон КАЖДОЙ цели без диминиша по
+  ЧИСЛУ целей. По живому v3'' (интерактивная полоса) остаток crowd-runaway верхов (chemist
+  `10.96`/crowd `34.96`, elementalist `4.89`/crowd `14.65`) НЕ двигался пул/status-капами —
+  runaway жил в этих каналах. Полный разбор + handoff — `build/stage3c_b2_falloff_orbit_fan1031.md`.
+  - **Уточнение каналов (важно).** Диагностика координатора «blast_powder → falloff» неточна:
+    blast_powder идёт `attack_mode aoe_projectile` → `_damage_aoe_projectile_explosion` →
+    `_damage_enemies_in_circle_capped`, т.е. уже НА S1-капнутом пути (щедрый дефолт 5/2.0).
+    `_damage_enemies_in_circle_falloff` использует burst черепа Тёмного мага (`_fire_curse`),
+    уже де-эскалированного 3c(b). Реальный некапнутый крауд fan-out верхов —
+    `_elemental_square_tick` (elementalist_orb_ring): magic+phys+ожог КАЖДОМУ врагу в квадрате.
+  - **Механизм.** Добавлены per-weapon поля `falloff_full_targets/falloff_target_diminish` и
+    `orbit_full_targets/orbit_target_diminish` (сентинел <0 → `FALLOFF_FANOUT_*`/`ORBIT_FANOUT_*`,
+    дефолт diminish `0.0` → factor==1 для ВСЕХ рангов → нулевое изменение без override; тот же
+    сентинел-контракт, что S1/пул/status). Helper'ы `_falloff_fanout_factor(rank)` /
+    `_orbit_fanout_factor(rank)` — единая формула диминиша толпы. Проведены: крауд-хвост
+    поверх радиального спада в `_damage_enemies_in_circle_falloff`; и в тик квадрата
+    `_elemental_square_tick` (ранг = дистанция к центру, порядок итерации и phase_target
+    constellation НЕ тронуты — zero-collateral; magic/phys/ожог скейлятся одним factor).
+  - **Override orb_ring (`orbit F=3/D=1.0`).** Чистый крауд fan-out кастомного executor'а.
+    Σfactor(20t) `5.50 vs 20` = **−72.5%**; 5t `−23%`; 1t `0%` (3 ближних — полный тик, identity
+    зоны цела). Проекция 20t `197.8k → ~54k` (43×→~12× медианы) — до коридора остаётся per-hit
+    numeric (3c-c). Живой v3''' — за валидацией.
+  - **Override blast_powder (`aoe F=4/D=3.0`, S1-поля, НЕ falloff).** Правит ГЕОМЕТРИЮ его
+    прямого AoE (щедрый дефолт 5/2.0 → 4/3.0): Σfactor(20t) `6.37 vs 4.99` = **−22%**; 5t `−15%`;
+    1t `0%` (пара ближних взрывов цела). Диминиш даёт макс ≈×4 — 108× медианы им одним НЕ
+    закрыть; главный драйвер blast_powder — раздутый per-hit magnitude (build-стек), это 3c-c
+    numeric против v3'''. Здесь только геометрия (direction гарантирован вниз).
+  - **falloff-рычаг — готовый knob, НЕ переопределён нигде.** Проведён в
+    `_damage_enemies_in_circle_falloff` (сентинел → нулевое изменение), отдан калибровочной
+    полосе (burst черепа уже де-эскалирован 3c(b); слепой numeric без пересъёма запрещён issue).
+    Аналог оставленного acid_charge-рычага в 3c(b). Гейт: `tests/orbit_falloff_cap_gate.gd`
+    (helper override/сентинел обоих каналов, интеграция falloff+orbit override и A/B-контроль,
+    ratio-проверка magic+phys+ожог, реальные конфиги, CONST-guard дефолтов no-op).
+    `global_damage_balance_smoke` без изменений (worst CCT +21% — капы рантаймовые, ортогональны
+    формульной бюджет-модели). Гейтов не ослаблял.
+
 ## Known Balance Risks
 
 - Точный паритет clear speed Темного мага/Гитариста с Берсерком требует ручного плейтеста.
