@@ -319,8 +319,8 @@ func _append_codex_split_errors(main: Node, context: String, errors: Array, dump
 		return
 	var expected_tabs := [
 		["characters", "Персонажи"], ["monsters", "Монстры"],
-		["artifacts", "Артефакты"], ["characteristics", "Характеристики"],
-		["attributes", "Атрибуты"], ["ascension", "Возвышение"],
+		["artifacts", "Артефакты"], ["characteristics", "Параметры"],
+		["attributes", "Атрибуты"], ["ascension", "Возвыш."],
 	]
 	var tab_rects := []
 	for pair in expected_tabs:
@@ -989,8 +989,8 @@ func _screen_specific_assertions(main: Node, screen_id: String, context: String)
 				return "%s: expected CodexEntryCard to use the unified leather row StyleBoxFlat." % context
 			var tab_button := main.find_child("CodexTab_characters", true, false) as Button
 			var tab_style_path := _stylebox_texture_path(tab_button.get_theme_stylebox("normal")) if tab_button != null else ""
-			if tab_button == null or not tab_style_path.contains("minimal_metal_codex_tab"):
-				return "%s: expected CodexTab_characters to use the explicit quiet Codex tab family." % context
+			if tab_button == null or not tab_style_path.contains("ui_btn_text_unique_main_menu_380x104_normal"):
+				return "%s: expected CodexTab_characters to use the exact Main Menu action plate." % context
 			if tab_button.icon != null:
 				return "%s: Codex navigation must not render generic category emblems." % context
 			var center_panel := main.find_child("CodexContent", true, false) as Control

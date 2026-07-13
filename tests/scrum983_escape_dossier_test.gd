@@ -233,7 +233,7 @@ func _assert_major_geometry(pause: Control, contract: Dictionary, context: Strin
 	var body := pause.find_child("DossierBody", true, false) as Control
 	var hero := pause.find_child("HeroCard", true, false) as Control
 	var right := pause.find_child("DerivedStatsPanel", true, false) as Control
-	var actions := pause.find_child("PauseControlButtons", true, false) as HBoxContainer
+	var actions := pause.find_child("PauseControlButtons", true, false) as GridContainer
 	if header == null or body == null or hero == null or right == null or actions == null:
 		_errors.append("%s: incomplete header/body/footer hierarchy." % context)
 		return
@@ -242,18 +242,32 @@ func _assert_major_geometry(pause: Control, contract: Dictionary, context: Strin
 	_assert_rect(hero.get_global_rect(), contract["hero"], "%s hero" % context)
 	_assert_rect(right.get_global_rect(), contract["derived"], "%s derived" % context)
 	_assert_rect(actions.get_global_rect(), contract["actions"], "%s actions" % context)
+	var actions_vertical := bool(contract["actions_vertical"])
+	if actions.columns != (1 if actions_vertical else 4):
+		_errors.append("%s: action topology columns %d do not match %s contract." % [context, actions.columns, "vertical" if actions_vertical else "horizontal"])
 	for node in [header, hero, right, actions]:
 		_assert_inside(node.get_global_rect(), contract["inner"], "%s %s" % [context, node.name])
 	if hero.get_global_rect().intersects(right.get_global_rect()) or body.get_global_rect().intersects(actions.get_global_rect()):
 		_errors.append("%s: body siblings/footer overlap." % context)
 	var buttons: Array[Button] = []
-	for button_name in ACTION_NAMES:
+	for index in range(ACTION_NAMES.size()):
+		var button_name: String = ACTION_NAMES[index]
 		var button := pause.find_child(button_name, true, false) as Button
 		if button == null:
 			_errors.append("%s: missing %s." % [context, button_name])
 			continue
 		buttons.append(button)
 		_assert_inside(button.get_global_rect(), contract["inner"], "%s %s" % [context, button_name])
+		var action_size: Vector2 = contract["action_size"]
+		var expected_position := (contract["actions"] as Rect2).position
+		if actions_vertical:
+			expected_position.y += index * (action_size.y + float(contract["action_gap"]))
+		else:
+			expected_position.x += index * (action_size.x + float(contract["action_gap"]))
+		_assert_rect(button.get_global_rect(), Rect2(expected_position, action_size), "%s %s exact action" % [context, button_name])
+		var aspect_error := absf(button.size.x / button.size.y - 380.0 / 104.0) / (380.0 / 104.0)
+		if aspect_error > 0.02:
+			_errors.append("%s: %s aspect %.4f clips the 380x104 main-menu ornament." % [context, button_name, button.size.x / button.size.y])
 	for i in range(buttons.size()):
 		for j in range(i + 1, buttons.size()):
 			if buttons[i].get_global_rect().intersects(buttons[j].get_global_rect()):
@@ -594,6 +608,14 @@ func _assert_action_styles(pause: Control, context: String) -> void:
 			continue
 		if str(button.get_meta("ui_button_family", "")) != "text/main_menu_380x104":
 			_errors.append("%s: %s is not tagged with the main-menu button family." % [context, button.name])
+		var scale := minf(button.custom_minimum_size.x / 380.0, button.custom_minimum_size.y / 104.0)
+		var expected_texture_margins := Vector4(54.0, 21.0, 54.0, 21.0) * scale
+		var expected_content_margins := Vector4(69.0, 21.0, 69.0, 21.0) * scale
+		var rendered_text_width := button.get_theme_font("font").get_string_size(
+			button.text, HORIZONTAL_ALIGNMENT_LEFT, -1.0, button.get_theme_font_size("font_size")
+		).x
+		if rendered_text_width > button.size.x - expected_content_margins.x - expected_content_margins.z + 1.0:
+			_errors.append("%s: %s label does not fit the main-menu content lane." % [context, button.name])
 		for state in ["normal", "hover", "focus", "pressed", "disabled"]:
 			var style := button.get_theme_stylebox(state) as StyleBoxTexture
 			if style == null:
@@ -604,6 +626,12 @@ func _assert_action_styles(pause: Control, context: String) -> void:
 				_errors.append("%s: %s %s does not use %s." % [context, button.name, state, expected_suffix])
 			if style.modulate_color != Color.WHITE:
 				_errors.append("%s: %s %s adds a non-main-menu tint." % [context, button.name, state])
+			var actual_texture_margins := Vector4(style.texture_margin_left, style.texture_margin_top, style.texture_margin_right, style.texture_margin_bottom)
+			var actual_content_margins := Vector4(style.content_margin_left, style.content_margin_top, style.content_margin_right, style.content_margin_bottom)
+			if not actual_texture_margins.is_equal_approx(expected_texture_margins):
+				_errors.append("%s: %s %s texture margins %s are not uniformly scaled %s." % [context, button.name, state, actual_texture_margins, expected_texture_margins])
+			if not actual_content_margins.is_equal_approx(expected_content_margins):
+				_errors.append("%s: %s %s content margins %s are not uniformly scaled %s." % [context, button.name, state, actual_content_margins, expected_content_margins])
 
 
 func _expected_contract(viewport_size: Vector2) -> Dictionary:
@@ -616,23 +644,25 @@ func _expected_contract(viewport_size: Vector2) -> Dictionary:
 	var inner := safe.grow(-reserve)
 	var header_h := (48.0 if viewport_size.y >= 900.0 else 46.0) if compact else (104.0 if large else 72.0)
 	var header_gap := 4.0 if compact else (24.0 if large else 12.0)
-	var footer_gap := 2.0 if compact else (24.0 if large else 12.0)
 	var footer_bottom := 4.0 if compact else (16.0 if large else 12.0)
 	var hero_w := 348.0 if compact else (520.0 if large else 420.0)
 	var column_gap := 12.0 if compact else (24.0 if large else 20.0)
-	var widths := [220.0, 220.0, 260.0, 220.0] if compact else ([280.0, 280.0, 320.0, 300.0] if large else [260.0, 260.0, 280.0, 280.0])
-	var action_gap := 8.0 if compact else (20.0 if large else 16.0)
-	var raw_button_width := float(widths[0] + widths[1] + widths[2] + widths[3])
-	var available_button_width := maxf(1.0, inner.size.x - action_gap * 3.0 - (8.0 if compact else 0.0))
-	if raw_button_width > available_button_width:
-		var width_scale := available_button_width / raw_button_width
-		for index in range(widths.size()):
-			widths[index] = floorf(float(widths[index]) * width_scale)
-	var action_w := float(widths[0] + widths[1] + widths[2] + widths[3]) + action_gap * 3.0
-	var action_h := 72.0 if compact else 104.0
-	var actions := Rect2(Vector2(inner.get_center().x - action_w * 0.5, inner.end.y - footer_bottom - action_h), Vector2(action_w, action_h))
 	var body_y := inner.position.y + header_h + header_gap
-	var body := Rect2(Vector2(inner.position.x, body_y), Vector2(inner.size.x, actions.position.y - footer_gap - body_y))
+	var action_h := 60.0 if viewport_size.y <= 648.0 else (72.0 if compact else (104.0 if large else 88.0))
+	var action_w := 219.0 if viewport_size.y <= 648.0 else (263.0 if compact else (380.0 if large else 320.0))
+	var action_gap := (6.0 if viewport_size.y <= 648.0 else (10.0 if viewport_size.y >= 900.0 else 8.0)) if compact else (20.0 if large else 16.0)
+	var actions: Rect2
+	var body: Rect2
+	if compact:
+		var body_h := inner.end.y - footer_bottom - body_y
+		var action_total_h := action_h * 4.0 + action_gap * 3.0
+		actions = Rect2(Vector2(inner.end.x - action_w, body_y + maxf(0.0, (body_h - action_total_h) * 0.5)), Vector2(action_w, action_total_h))
+		body = Rect2(Vector2(inner.position.x, body_y), Vector2(inner.size.x - column_gap - action_w, body_h))
+	else:
+		var footer_gap := 24.0 if large else 12.0
+		var action_total_w := action_w * 4.0 + action_gap * 3.0
+		actions = Rect2(Vector2(inner.get_center().x - action_total_w * 0.5, inner.end.y - footer_bottom - action_h), Vector2(action_total_w, action_h))
+		body = Rect2(Vector2(inner.position.x, body_y), Vector2(inner.size.x, actions.position.y - footer_gap - body_y))
 	return {
 		"safe": safe,
 		"inner": inner,
@@ -641,6 +671,9 @@ func _expected_contract(viewport_size: Vector2) -> Dictionary:
 		"hero": Rect2(body.position, Vector2(hero_w, body.size.y)),
 		"derived": Rect2(Vector2(body.position.x + hero_w + column_gap, body.position.y), Vector2(body.size.x - hero_w - column_gap, body.size.y)),
 		"actions": actions,
+		"action_size": Vector2(action_w, action_h),
+		"action_gap": action_gap,
+		"actions_vertical": compact,
 	}
 
 

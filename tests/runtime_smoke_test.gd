@@ -57,10 +57,10 @@ const HUD_RESOURCE_PANEL_TEXTURE_2K := "res://assets/sprites/ui/hud/combat_hud_v
 const HUD_V2_BAR_TRACK_TEXTURE := "res://assets/sprites/ui/hud/combat_hud_v2/ui_hud_v2_bar_track.png"
 const HUD_V2_MONEY_ICON_TEXTURE := "res://assets/sprites/ui/hud/combat_hud_v2/ui_hud_v2_icon_money.png"
 const HUD_TIMER_PANEL_TEXTURE_2K := "res://assets/sprites/ui/hud/combat_hud_v2/ui_hud_v2_cluster_bg.png"  # SCRUM-806 reopen: без жёлтой рамки, единая подложка
-# SCRUM-879: кодекс на едином атлас-стиле — COVERED-фон atlas_style, панели-чипы
-# StyleBoxFlat, полая рама meta40 поверх; табы — глобальный кит codex_tab.
+# FAN-1047: кодекс на едином атлас-стиле; левые вкладки используют
+# точно ту же пятисостояниевую пластину 380×104, что и главное меню.
 const CODEX_FRAME_BORDER_SUFFIX := "meta40/frame_border.png"
-const CODEX_TAB_KIT_TEXTURE_PART := "minimal_metal_codex_tab"
+const CODEX_TAB_KIT_TEXTURE_PART := "ui_btn_text_unique_main_menu_380x104"
 const EXPECTED_PLAYER_COMBAT_VISUAL_SCALE := 0.64  # SCRUM-823: lock-step with player.gd visual-only bump.
 const ROUTE_START_BATTLE_ONLY_ROWS := 2
 const EXPECTED_CODEX_CHARACTER_PORTRAIT_SIZE := Vector2(216.0, 216.0)
@@ -1169,7 +1169,7 @@ func _initialize() -> void:
 		_fail("Expected active-combat Esc to attach the pause stats character board.")
 		return
 	# SCRUM-983: informational header + hero/derived body + fixed action footer.
-	var control_buttons := pause_menu.find_child("PauseControlButtons", true, false) as HBoxContainer
+	var control_buttons := pause_menu.find_child("PauseControlButtons", true, false) as GridContainer
 	var hero_card := pause_menu.find_child("HeroCard", true, false) as PanelContainer
 	var base_stats_list := pause_menu.find_child("BaseStatsList", true, false) as VBoxContainer
 	var base_stats_grid := pause_menu.find_child("BaseStatsGrid", true, false) as GridContainer
@@ -7781,8 +7781,8 @@ func _test_codex_screen(main_scene: PackedScene) -> void:
 		return
 
 	var character_tab := codex_main.find_child("CodexTab_characters", true, false) as Button
-	if character_tab == null or character_tab.icon != null or not _stylebox_texture_path(character_tab.get_theme_stylebox("normal")).contains("minimal_metal_codex_tab"):
-		_fail("Expected SCRUM-1051 Codex tabs to use centered Russian-only quiet Codex-family buttons without category emblems.")
+	if character_tab == null or character_tab.icon != null or not _stylebox_texture_path(character_tab.get_theme_stylebox("normal")).contains("ui_btn_text_unique_main_menu_380x104_normal"):
+		_fail("Expected FAN-1047 Codex tabs to use centered Russian-only Main Menu buttons without category emblems.")
 		return
 	var codex_back_button := codex_main.find_child("CodexBackButton", true, false) as Button
 	if codex_back_button == null or not (codex_back_button.get_theme_stylebox("normal") is StyleBoxTexture):
