@@ -36,10 +36,14 @@ Fix:
 - configuration now fails closed to local `user://feedback` storage;
 - added client-source secret scan to `tools/quality_gate.py`;
 - updated config test, release message and feedback documentation;
-- created FAN-1041 for external revocation and a rate-limited server-side proxy.
+- created FAN-1041 for external revocation and a rate-limited server-side proxy;
+- revoked the still-live historical webhook on 2026-07-13 (`DELETE 204`, then
+  `GET 404`; only SHA-256 fingerprint prefix `6aed8e9a0a20` retained as evidence).
 
-Residual: current-source removal cannot revoke the webhook and cannot erase it
-from existing Git history/builds. Discord revocation is mandatory.
+Residual: the now-dead credential remains recoverable from existing Git history
+and old builds, so those artifacts must still be treated as containing a leaked
+secret. Production feedback needs a new server-side intake; no replacement
+credential may be shipped in the client.
 
 ### P1 — first-use Engineer resource loads during combat
 

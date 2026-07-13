@@ -102,5 +102,6 @@ findings + a regression guard:
 
 The SCRUM-848 client-embedded Base64 fallback was removed. Obfuscation did not
 prevent extracting and abusing the Discord credential, and the value remains in
-Git history. The old webhook must be revoked in Discord. Any replacement must be
-stored only in server/CI secret storage and must not be added to source or export.
+Git history. FAN-1041 revoked the old webhook on 2026-07-13 (`DELETE 204`, then
+`GET 404`; the secret itself was never logged). Any replacement must be stored
+only in server/CI secret storage and must not be added to source or export.
