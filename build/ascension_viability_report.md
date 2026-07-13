@@ -25,45 +25,45 @@ lvl20_random из `tools/character_balance_csv.gd --mode=live` (окно 8с, б
 
 | Класс | Билд | Kit DPS A0 | Маржа A1 | Маржа A5 (А2-босс) | HP typ A5 | EHP A5 | Hazard A5 %HP | Вердикт DPS A5 | Вердикт выживания A5 |
 | --- | --- | ---: | ---: | ---: | ---: | ---: | ---: | :---: | :---: |
-| assassin | ideal | 514 | 7.49 | 6.41 | 82 | 113 | 200% | OK | ONESHOT |
-| assassin | random | 60 | 0.87 | 0.75 | 82 | 113 | 200% | FAIL | ONESHOT |
-| berserk | ideal | 333 | 4.86 | 4.16 | 111 | 151 | 148% | OK | ONESHOT |
-| berserk | random | 82 | 1.20 | 1.02 | 111 | 151 | 148% | RISK | ONESHOT |
-| biologist | ideal | 291 | 4.20 | 3.60 | 66 | 87 | 247% | OK | ONESHOT |
-| biologist | random | 82 | 1.19 | 1.02 | 66 | 87 | 247% | RISK | ONESHOT |
-| chemist | ideal | 361 | 5.26 | 4.50 | 53 | 69 | 310% | OK | ONESHOT |
-| chemist | random | 40 | 0.58 | 0.50 | 53 | 69 | 310% | FAIL | ONESHOT |
-| dark_mage | ideal | 382 | 5.57 | 4.77 | 50 | 64 | 324% | OK | ONESHOT |
-| dark_mage | random | 80 | 1.17 | 1.00 | 50 | 64 | 324% | FAIL | ONESHOT |
-| doctor | ideal | 459 | 6.69 | 5.73 | 82 | 109 | 200% | OK | ONESHOT |
-| doctor | random | 46 | 0.66 | 0.57 | 82 | 109 | 200% | FAIL | ONESHOT |
-| druid | ideal | 289 | 4.22 | 3.61 | 82 | 108 | 200% | OK | ONESHOT |
-| druid | random | 39 | 0.57 | 0.48 | 82 | 108 | 200% | FAIL | ONESHOT |
-| elementalist | ideal | 567 | 8.27 | 7.08 | 50 | 64 | 324% | OK | ONESHOT |
-| elementalist | random | 45 | 0.66 | 0.57 | 50 | 64 | 324% | FAIL | ONESHOT |
-| engineer | ideal | 454 | 6.55 | 5.34 | 82 | 107 | 200% | OK | ONESHOT |
-| engineer | random | 47 | 0.68 | 0.56 | 82 | 107 | 200% | FAIL | ONESHOT |
-| guitarist | ideal | 160 | 2.33 | 1.99 | 66 | 86 | 247% | OK | ONESHOT |
-| guitarist | random | 33 | 0.48 | 0.41 | 66 | 86 | 247% | FAIL | ONESHOT |
-| knight | ideal | 244 | 3.56 | 3.04 | 154 | 217 | 106% | OK | ONESHOT |
-| knight | random | 47 | 0.69 | 0.59 | 154 | 217 | 106% | FAIL | ONESHOT |
-| priest | ideal | 276 | 3.99 | 3.38 | 82 | 107 | 200% | OK | ONESHOT |
-| priest | random | 37 | 0.54 | 0.46 | 82 | 107 | 200% | FAIL | ONESHOT |
-| ranger | ideal | 298 | 4.34 | 3.72 | 67 | 90 | 243% | OK | ONESHOT |
-| ranger | random | 48 | 0.69 | 0.59 | 67 | 90 | 243% | FAIL | ONESHOT |
-| robot | ideal | 253 | 3.66 | 2.96 | 157 | 221 | 104% | OK | ONESHOT |
-| robot | random | 33 | 0.48 | 0.39 | 157 | 221 | 104% | FAIL | ONESHOT |
-| sniper | ideal | 339 | 4.94 | 4.23 | 111 | 152 | 148% | OK | ONESHOT |
-| sniper | random | 26 | 0.38 | 0.32 | 111 | 152 | 148% | FAIL | ONESHOT |
-| soldier | ideal | 650 | 9.47 | 8.11 | 96 | 131 | 170% | OK | ONESHOT |
-| soldier | random | 45 | 0.66 | 0.56 | 96 | 131 | 170% | FAIL | ONESHOT |
-| thief | ideal | 431 | 6.29 | 5.03 | 66 | 89 | 247% | OK | ONESHOT |
-| thief | random | 77 | 1.13 | 0.90 | 66 | 89 | 247% | FAIL | ONESHOT |
+| assassin | ideal | 1409 | 20.53 | 17.58 | 82 | 113 | 80% | OK | RISK |
+| assassin | random | 139 | 2.03 | 1.74 | 82 | 113 | 80% | OK | RISK |
+| berserk | ideal | 976 | 14.23 | 12.18 | 111 | 151 | 80% | OK | RISK |
+| berserk | random | 199 | 2.91 | 2.49 | 111 | 151 | 80% | OK | RISK |
+| biologist | ideal | 716 | 10.33 | 8.84 | 66 | 87 | 80% | OK | RISK |
+| biologist | random | 195 | 2.82 | 2.41 | 66 | 87 | 80% | OK | RISK |
+| chemist | ideal | 897 | 13.07 | 11.19 | 53 | 69 | 80% | OK | RISK |
+| chemist | random | 86 | 1.25 | 1.07 | 53 | 69 | 80% | RISK | RISK |
+| dark_mage | ideal | 997 | 14.54 | 12.45 | 50 | 64 | 80% | OK | RISK |
+| dark_mage | random | 179 | 2.61 | 2.23 | 50 | 64 | 80% | OK | RISK |
+| doctor | ideal | 989 | 14.42 | 12.34 | 82 | 109 | 80% | OK | RISK |
+| doctor | random | 112 | 1.63 | 1.39 | 82 | 109 | 80% | OK | RISK |
+| druid | ideal | 585 | 8.53 | 7.30 | 82 | 108 | 80% | OK | RISK |
+| druid | random | 81 | 1.18 | 1.01 | 82 | 108 | 80% | RISK | RISK |
+| elementalist | ideal | 924 | 13.47 | 11.53 | 50 | 64 | 80% | OK | RISK |
+| elementalist | random | 109 | 1.59 | 1.36 | 50 | 64 | 80% | OK | RISK |
+| engineer | ideal | 1116 | 16.11 | 13.13 | 82 | 107 | 80% | OK | RISK |
+| engineer | random | 133 | 1.93 | 1.57 | 82 | 107 | 80% | OK | RISK |
+| guitarist | ideal | 269 | 3.92 | 3.36 | 66 | 86 | 80% | OK | RISK |
+| guitarist | random | 77 | 1.12 | 0.96 | 66 | 86 | 80% | FAIL | RISK |
+| knight | ideal | 582 | 8.49 | 7.27 | 154 | 217 | 80% | OK | RISK |
+| knight | random | 105 | 1.53 | 1.31 | 154 | 217 | 80% | OK | RISK |
+| priest | ideal | 604 | 8.72 | 7.40 | 82 | 107 | 80% | OK | RISK |
+| priest | random | 82 | 1.18 | 1.00 | 82 | 107 | 80% | RISK | RISK |
+| ranger | ideal | 770 | 11.23 | 9.61 | 67 | 90 | 80% | OK | RISK |
+| ranger | random | 114 | 1.66 | 1.42 | 67 | 90 | 80% | OK | RISK |
+| robot | ideal | 589 | 8.51 | 6.87 | 157 | 221 | 80% | OK | RISK |
+| robot | random | 82 | 1.18 | 0.95 | 157 | 221 | 80% | FAIL | RISK |
+| sniper | ideal | 594 | 8.65 | 7.41 | 111 | 152 | 80% | OK | RISK |
+| sniper | random | 56 | 0.82 | 0.70 | 111 | 152 | 80% | FAIL | RISK |
+| soldier | ideal | 1466 | 21.37 | 18.29 | 96 | 131 | 80% | OK | RISK |
+| soldier | random | 103 | 1.50 | 1.28 | 96 | 131 | 80% | OK | RISK |
+| thief | ideal | 1136 | 16.57 | 13.25 | 66 | 89 | 80% | OK | RISK |
+| thief | random | 200 | 2.92 | 2.34 | 66 | 89 | 80% | OK | RISK |
 
 ## Сводка A5 (ideal-билд)
 
-- FAIL: assassin, berserk, biologist, chemist, dark_mage, doctor, druid, elementalist, engineer, guitarist, knight, priest, ranger, robot, sniper, soldier, thief
-- RISK: нет
+- FAIL: нет
+- RISK: assassin, berserk, biologist, chemist, dark_mage, doctor, druid, elementalist, engineer, guitarist, knight, priest, ranger, robot, sniper, soldier, thief
 - OK: нет
 
 Оговорки: kit DPS — среднее 3 оружий на болванках (8с, без ульты в full-charge циклах,
