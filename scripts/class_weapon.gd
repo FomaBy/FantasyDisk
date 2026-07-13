@@ -202,6 +202,22 @@ const ATTACK_MODE_EXECUTORS := {
 # (см. gate tests/pool_target_cap_gate.gd).
 @export var pool_full_targets := -1
 @export var pool_target_diminish := -1.0
+# FAN-1031 3c(b): data-driven кап STATUS fan-out канала — ТРЕТИЙ и последний
+# throughput-канал периодики (после прямого AoE S1 и пул-канала 3c-a). Крауд-
+# раздача периодических СТАТУСОВ (skull_curse Тёмного мага, bio_infection Биолога)
+# кладёт ПОЛНЫЙ per-target DoT на КАЖДОГО врага в зоне → на 20 целях = ×20 к
+# throughput без всякого диминиша. Это главный остаток crowd-runaway верхов по v3'
+# (lvl20_ideal_20t: cursed_skull 96.9k ≈21× медианы при 1t=270; spore_lens 114.5k
+# ≈25×; symbiote_seed 69.1k ≈15× — DoT блэнкетит всю толпу). Сентинел <0 →
+# STATUS_FANOUT_* (диминиш 0 → factor==1 для ВСЕХ → нулевое изменение поведения для
+# оружий без override; тот же сентинел-контракт, что S1/пул). Оружие-оффендер задаёт
+# узкий status_full_targets + крутой status_target_diminish: ближние N носителей —
+# полный тик статуса (identity зоны + малый пак 1t/5t сохранены), дальний хвост толпы
+# получает ослабленный DoT. Ранг = дистанция от центра каста. Диминиш даёт ≈×3-4
+# среза 20t-хвоста БЕЗ трогания per-hit (то — 3c-c numeric). Гейт
+# tests/status_fanout_cap_gate.gd; см. _status_fanout_factor.
+@export var status_full_targets := -1
+@export var status_target_diminish := -1.0
 # SCRUM-944: полупрозрачная наземная лужа (visual-polish кислотной колбы).
 @export var pool_translucent := false
 # SCRUM-944: перманентные контактные заряды лужи — один вечный DoT-заряд с КАЖДОЙ
@@ -525,6 +541,9 @@ func configure_weapon(config: Dictionary) -> void:
 	# FAN-1031 3c(a): data-driven кап пул-канала (тик лужи + leaves_pool-ветка).
 	pool_full_targets = int(config.get("pool_full_targets", pool_full_targets))
 	pool_target_diminish = float(config.get("pool_target_diminish", pool_target_diminish))
+	# FAN-1031 3c(b): data-driven кап STATUS fan-out (крауд-раздача DoT-статусов).
+	status_full_targets = int(config.get("status_full_targets", status_full_targets))
+	status_target_diminish = float(config.get("status_target_diminish", status_target_diminish))
 	plague_duration = float(config.get("plague_duration", plague_duration))
 	plague_tick_interval = float(config.get("plague_tick_interval", plague_tick_interval))
 	plague_tick_ratio = float(config.get("plague_tick_ratio", plague_tick_ratio))
@@ -1468,10 +1487,16 @@ func _apply_skull_curse_zone(center: Vector2) -> void:
 	# родиться лишнему (ticks+1)-му тику на границе.
 	var duration := (float(ticks) + 0.99) * tick_interval
 	var cursed_count := 0
-	for enemy_node in TARGET_QUERY.in_radius(self, center, aoe_radius):
+	# FAN-1031 3c(b): крауд-проклятие ранжируется по дистанции от центра каста —
+	# ближние status_full_targets прогорают полным тиком, дальний хвост толпы
+	# диминишится (_status_fanout_factor). Кап бьёт крауд-runaway 20t (v3
+	# cursed_skull 96.9k ≈21× медианы), НЕ трогая силу тика 1t/5t (identity кита).
+	# Сентинел по умолчанию (без override) = factor 1.0 → прежнее поведение.
+	for enemy_node in _status_fanout_order(center, TARGET_QUERY.in_radius(self, center, aoe_radius)):
+		var target_tick := tick_damage * _status_fanout_factor(cursed_count)
 		StatusEffects.apply_status(enemy_node, "skull_curse", {
 			"duration": duration,
-			"dot_damage": tick_damage,
+			"dot_damage": target_tick,
 			"dot_interval": tick_interval,
 			"max_stacks": 1,
 			"stack_mode": "refresh",
@@ -1482,7 +1507,7 @@ func _apply_skull_curse_zone(center: Vector2) -> void:
 		enemy_node.set_meta(_constellation_mark_key("skull_curse"), {
 			"status": {
 				"duration": duration,
-				"dot_damage": tick_damage,
+				"dot_damage": target_tick,
 				"dot_interval": tick_interval,
 				"max_stacks": 1,
 				"stack_mode": "refresh",
@@ -4035,8 +4060,12 @@ func _bio_spore_pulse(owner_id: int, target_id: int, stored_center: Vector2, dir
 	_damage_enemies_in_circle_falloff(impact_center, radius, damage_value * factor, damage_falloff)
 	_apply_bio_spore_slow(current_owner, impact_center, radius)
 	var ring_targets := TARGET_QUERY.in_radius(self, impact_center, radius)
-	for enemy_node in ring_targets:
-		_apply_bio_infection(enemy_node, current_owner)
+	# FAN-1031 3c(b): крауд-инфекция — ближние status_full_targets получают полный
+	# DoT, дальний хвост толпы диминишится (порядок ring_targets для constellation
+	# ниже НЕ трогаем — ранжируем в дубликате).
+	var infect_order := _status_fanout_order(impact_center, ring_targets)
+	for rank in range(infect_order.size()):
+		_apply_bio_infection(infect_order[rank] as Node2D, current_owner, _status_fanout_factor(rank))
 	if pulse_index == pulse_count - 1 and not ring_targets.is_empty():
 		var bloom_result := _constellation_event("final_ring", ring_targets[0] as Node2D, 0.0)
 		if bool(bloom_result.get("triggered", false)):
@@ -4146,11 +4175,16 @@ func _germinate_symbiote_seed(owner_id: int, center: Vector2, damage_value: floa
 	AttackVfx.ring_pulse(_projectile_parent(), center, aoe_radius, visual_color, true)
 	var impact_damage := damage_value * maxf(seed_impact_ratio, 0.0) * (1.0 + _owner_mod("symbiote_impact_bonus"))
 	_damage_enemies_in_circle_falloff(center, aoe_radius, impact_damage, damage_falloff)
+	var ring_targets: Array = TARGET_QUERY.in_radius(self, center, aoe_radius)
+	# FAN-1031 3c(b): крауд-инфекция ранжируется по дистанции (диминиш хвоста);
+	# linked_targets (constellation) сохраняют ИСХОДНЫЙ порядок выборки — zero-collateral.
 	var linked_targets: Array = []
-	for enemy_node in TARGET_QUERY.in_radius(self, center, aoe_radius):
-		_apply_bio_infection(enemy_node, current_owner)
+	for enemy_node in ring_targets:
 		if linked_targets.size() < 5:
 			linked_targets.append(enemy_node)
+	var infect_order := _status_fanout_order(center, ring_targets)
+	for rank in range(infect_order.size()):
+		_apply_bio_infection(infect_order[rank] as Node2D, current_owner, _status_fanout_factor(rank))
 	if not linked_targets.is_empty():
 		var host := linked_targets[0] as Node2D
 		var link_result := _constellation_event("link", host, 0.0, {"linked_targets": linked_targets.size()})
@@ -4221,14 +4255,19 @@ func _spore_slow_power(owner_node: Node2D) -> float:
 # take_damage — трейт их НЕ усиливает. «Симбиотическая оболочка» продлевает
 # инфекцию семени (+symbiote_dot_extra_ticks). +0.99 тика запаса — как у
 # проклятия черепа (последний тик не теряется, лишний не рождается).
-func _apply_bio_infection(enemy: Node, owner_node: Node2D) -> void:
+# FAN-1031 3c(b): fanout_factor <1.0 — диминиш крауд-DoT для дальних носителей
+# (см. _status_fanout_factor); дефолт 1.0 = прежнее поведение для одиночных
+# применений (bio_sample_dart tip, tick-спреды). Множитель бьёт в per-target
+# dot_damage ДО запекания периодик-трейта (apply_status_from) — трейт множится
+# поверх, как и раньше.
+func _apply_bio_infection(enemy: Node, owner_node: Node2D, fanout_factor := 1.0) -> void:
 	if dot_ticks <= 0 or enemy == null or not is_instance_valid(enemy):
 		return
 	if owner_node == null or not is_instance_valid(owner_node):
 		return
 	var parameters_raw = owner_node.get("derived_parameters")
 	var parameters: Dictionary = parameters_raw if parameters_raw is Dictionary else {}
-	var tick_damage := maxf(float(parameters.get("dot_damage", 1.0)), 1.0) * maxf(curse_tick_multiplier, 0.0)
+	var tick_damage := maxf(float(parameters.get("dot_damage", 1.0)), 1.0) * maxf(curse_tick_multiplier, 0.0) * clampf(fanout_factor, 0.0, 1.0)
 	if tick_damage <= 0.0:
 		return
 	var tick_speed := maxf(float(parameters.get("dot_speed", 1.0)), 0.2) * maxf(curse_tick_rate, 0.2)
@@ -5458,6 +5497,37 @@ const POOL_PROJECTILE_FULL_TARGETS := 1
 const POOL_PROJECTILE_TARGET_DIMINISH := 3.0
 const POOL_TICK_DAMAGE_MULTIPLIER := 0.55
 const POOL_PROJECTILE_DAMAGE_MULTIPLIER := 0.55
+# FAN-1031 3c(b): дефолт STATUS fan-out — БЕЗ диминиша (diminish 0 → factor==1 для
+# всех рангов), чтобы оружия без override не меняли поведение (нулевой A/B-контроль).
+# Оффендеры опт-инятся полями status_full_targets/status_target_diminish в конфиге.
+const STATUS_FANOUT_FULL_TARGETS := 4
+const STATUS_FANOUT_TARGET_DIMINISH := 0.0
+
+
+# FAN-1031 3c(b): диминиш-фактор тика периодического СТАТУСА для цели ранга `rank`
+# (0-based по возрастанию дистанции от центра каста). Первые status_full_targets —
+# полный тик (factor 1.0); дальше factor = 1/(1+(rank−full+1)·diminish) — та же
+# формула, что _damage_enemies_in_circle_capped / S1 / пул-кап (единый контракт
+# диминиша толпы). Сентинел <0 → STATUS_FANOUT_* (diminish 0 → factor==1 ВСЕГДА →
+# нулевое изменение без override). Душит хвост крауд-DoT на 20 целях, не трогая
+# per-hit силу тика (identity зоны и малый пак 1t/5t сохранены).
+func _status_fanout_factor(rank: int) -> float:
+	var full := status_full_targets if status_full_targets >= 0 else STATUS_FANOUT_FULL_TARGETS
+	var diminish := status_target_diminish if status_target_diminish >= 0.0 else STATUS_FANOUT_TARGET_DIMINISH
+	if diminish <= 0.0 or rank < full:
+		return 1.0
+	return 1.0 / (1.0 + float(rank - full + 1) * diminish)
+
+
+# FAN-1031 3c(b): дистанционно-отсортированный список врагов в радиусе — ранг
+# определяет диминиш крауд-DoT (_status_fanout_factor). Дубликат исходной выборки,
+# чтобы не тревожить порядок вызывающего (constellation-логика читает свой порядок).
+func _status_fanout_order(origin: Vector2, enemies: Array) -> Array:
+	var ordered := enemies.duplicate()
+	ordered.sort_custom(func(a: Node2D, b: Node2D) -> bool:
+		return origin.distance_squared_to(a.global_position) < origin.distance_squared_to(b.global_position)
+	)
+	return ordered
 
 
 func _retire_excess_damage_pools(new_pool: Node2D) -> void:
@@ -5538,10 +5608,18 @@ func _apply_pool_contact_statuses(enemies: Array, source_pool: Node2D = null) ->
 	if parameters_raw is Dictionary:
 		dot_damage = maxf(float((parameters_raw as Dictionary).get("dot_damage", 2.0)), 1.0)
 	var charge_tick := maxf(dot_damage * pool_charge_tick_multiplier, 0.30)
-	for enemy in enemies:
-		var enemy_node := enemy as Node2D
+	# FAN-1031 3c(b): крауд-заряды ранжируются по дистанции к центру лужи — ближние
+	# получают полный тик заряда, дальний хвост толпы диминишится (_status_fanout_factor).
+	# Кап ЧИСЛА зарядов на цель (pool_charge_cap) и детонация по СТАКАМ не тронуты —
+	# бьём только силу тика дальних. Без override (acid_flask пока не задаёт status_*)
+	# factor==1 → zero change: поле отдаётся калибровочной полосе как готовый рычаг
+	# (acid_flask уже пул-капнут в 3c-a; величину charge-fanout калибровать по v3').
+	var charge_order := _status_fanout_order(source_pool.global_position, enemies)
+	for rank in range(charge_order.size()):
+		var enemy_node := charge_order[rank] as Node2D
 		if enemy_node == null or not is_instance_valid(enemy_node):
 			continue
+		var per_target_tick := charge_tick * _status_fanout_factor(rank)
 		var owner_id := owner_node.get_instance_id() if owner_node != null else 0
 		var previous_stack_count := StatusEffects.count_status_prefix(enemy_node, ACID_CHARGE_STATUS_PREFIX)
 		if previous_stack_count < 5 and int(enemy_node.get_meta("constellation_acid_detonated_owner", 0)) == owner_id:
@@ -5550,7 +5628,7 @@ func _apply_pool_contact_statuses(enemies: Array, source_pool: Node2D = null) ->
 				and previous_stack_count < charge_cap:
 			StatusEffects.apply_status_from(owner_node, enemy_node, charge_status_id, {
 				"duration": ACID_CHARGE_PERSIST_SECONDS,
-				"dot_damage": charge_tick,
+				"dot_damage": per_target_tick,
 				"dot_interval": pool_charge_tick_interval,
 				"max_stacks": 1,
 				"marker_color": Color(0.62, 0.95, 0.25, 1.0),
@@ -5563,7 +5641,7 @@ func _apply_pool_contact_statuses(enemies: Array, source_pool: Node2D = null) ->
 				enemy_node.set_meta("constellation_acid_detonated_owner", owner_id)
 				var detonation_radius := maxf(aoe_radius * 0.60, 48.0)
 				AttackVfx.orb_burst(_projectile_parent(), enemy_node.global_position, detonation_radius, visual_color)
-				_damage_enemies_in_circle_capped(enemy_node.global_position, detonation_radius, charge_tick * 5.0 * _constellation_result_param(detonation, "detonation_damage_ratio", 0.46), 2, 0.65)
+				_damage_enemies_in_circle_capped(enemy_node.global_position, detonation_radius, per_target_tick * 5.0 * _constellation_result_param(detonation, "detonation_damage_ratio", 0.46), 2, 0.65)
 
 
 # SCRUM-903: тик терновой зоны — контракт повторных ФИЗИЧЕСКИХ хитов:

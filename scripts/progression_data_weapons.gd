@@ -147,6 +147,15 @@ const DARK_MAGE_WEAPONS := {
 		# формулы зеркалятся в бюджет-модели (_budget_dot_dps).
 		"curse_tick_multiplier": 0.58,
 		"curse_int_scale": 0.08,
+		# FAN-1031 3c(b): кап STATUS fan-out крауд-проклятия. v3 lvl20_ideal_20t=96.9k
+		# ≈21× медианы (4574) при 1t=270 — чистый крауд-DoT-runaway (проклятие
+		# блэнкетит всю толпу полным тиком). F=4/D=1.0: ближние 4 прогорают полностью
+		# (identity «череп накрывает область» + пак 1t/5t сохранены: 5t −10%, 1t 0%),
+		# дальний хвост 20-толпы душится → Σfactor(20t)≈6.44 vs 20 = −68% (≈×3.1). Это
+		# ПЕРВИЧНОЕ сужение диминишем (макс ≈×4); остаток до коридора ≤~3× медианы —
+		# per-hit numeric 3c-c против v3' (curse_tick_multiplier/dot). Точную величину
+		# калибровать по live 20t; identity distinct сохранена.
+		"status_full_targets": 4, "status_target_diminish": 1.0,
 		"projectile_speed": 680.0,
 		"visual_color": Color(0.78, 0.16, 1.0, 0.42),
 		"passive_mods": {"dot_speed_flat": 0.25},
@@ -1040,6 +1049,12 @@ const BIOLOGIST_WEAPONS := {
 		"damage_falloff": 0.70, "dot_ticks": 2,
 		"curse_tick_rate": 2.0, "curse_tick_multiplier": 1.0,
 		"spore_slow_base": 0.05, "spore_slow_max": 0.20,
+		# FAN-1031 3c(b): кап STATUS fan-out крауд-инфекции спор. v3 lvl20_ideal_20t=
+		# 114.5k ≈25× медианы при 1t=293 — bio_infection блэнкетит толпу полным DoT.
+		# F=4/D=1.0 (см. cursed_skull): ближние 4 полностью, хвост 20-толпы −68%
+		# (≈×3.1), пак 1t/5t почти цел (identity «споровое облако заражает задетых»).
+		# Первичное сужение; per-hit numeric биолога (3c-c) + доводка величины по v3'.
+		"status_full_targets": 4, "status_target_diminish": 1.0,
 		"visual_color": Color(0.46, 1.0, 0.42, 0.40),
 		"passive_mods": {"dot_damage_flat": 1.0},
 	},
@@ -1066,6 +1081,12 @@ const BIOLOGIST_WEAPONS := {
 		"grenade_delay": 0.55, "damage_falloff": 0.58,
 		"dot_ticks": 6, "curse_tick_rate": 1.0, "curse_tick_multiplier": 1.6,
 		"seed_impact_ratio": 0.85,
+		# FAN-1031 3c(b): кап STATUS fan-out крауд-инфекции семени. v3 lvl20_ideal_20t=
+		# 69.1k ≈15× медианы при 1t=173 — прорастание заражает всю толпу полным DoT.
+		# F=4/D=1.0 (см. cursed_skull): хвост 20-толпы −68% (≈×3.1), 1t/5t почти цел
+		# (identity «долгие пульсы заражения, урон приходит со временем» сохранена).
+		# Первичное сужение; per-hit numeric биолога (3c-c) + доводка по v3'.
+		"status_full_targets": 4, "status_target_diminish": 1.0,
 		"visual_color": Color(0.36, 0.92, 0.58, 0.42),
 		"passive_mods": {"aura_radius_multiplier": 1.04},
 	},

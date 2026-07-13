@@ -764,6 +764,33 @@ SCRUM-1091 добавляет только presentation contract, не нову�
     величина + numeric per-hit + канал персистентных `acid_charge` (status fan-out, 3c-b) —
     против живого v3-пересъёма (handoff). `global_damage_balance_smoke` без изменений (worst
     CCT +21% — кап рантаймовый).
+- **FAN-1031 Stage 3c(b) (2026-07-13) — STATUS fan-out data-driven кап (no-silent-retune).**
+  Третий и последний throughput-канал периодики. По живому v3 (интерактивная полоса) верхи
+  crowd-runaway жили в крауд-раздаче ПЕРИОДИЧЕСКИХ СТАТУСОВ: DoT кладётся на КАЖДОГО врага в
+  зоне полным тиком → на толпе ×N без диминиша. `lvl20_ideal_20t`: cursed_skull `96.9k`
+  (≈21× медианы 4574, при 1t=270 — чистый крауд-DoT), spore_lens `114.5k` (≈25×),
+  symbiote_seed `69.1k` (≈15×). Полный разбор + handoff — `build/stage3c_b_status_fanout_fan1031.md`.
+  - **Механизм.** Добавлены per-weapon поля `ClassWeapon.status_full_targets/status_target_diminish`
+    (сентинел <0 → `STATUS_FANOUT_*`, дефолт diminish `0.0` → factor==1 для ВСЕХ рангов →
+    нулевое изменение поведения без override; тот же сентинел-контракт, что S1/пул). Helper
+    `_status_fanout_factor(rank)` — та же формула диминиша толпы, что `_damage_enemies_in_circle_capped`.
+    Проведён в 4 крауд-сайта: `_apply_skull_curse_zone` (skull_curse), `_bio_spore_pulse` и
+    `_germinate_symbiote_seed` (bio_infection), `_apply_pool_contact_statuses` (acid_charge).
+    Ранг = дистанция от центра каста; ближние `status_full_targets` — полный тик, хвост душится.
+  - **Первичные капы (`F=4/D=1.0`).** cursed_skull, biologist_spore_lens, biologist_symbiote_seed.
+    Детерминированная дельта DoT-канала: Σfactor(20t) `6.44 vs 20` = **−67.8% (≈×3.1)**;
+    5t `−10%`; 1t `0%` (малый пак и identity зоны целы). Для чистого DoT (cursed_skull) это
+    тесная проекция 20t (96.9k→~31k, 21×→~7× медианы); для bio-оружий (споры/семя есть и
+    прямой ring/seed-урон, кап его НЕ трогает) измеренный 20t-срез будет МЕНЬШЕ −68% —
+    честный live 20t за v3'-пересъёмом (как урок restore_potion −24% в 3c-a). Диминиш даёт
+    макс ≈×4 БЕЗ трогания per-hit; остаток до коридора (~3× медианы) — numeric per-hit 3c-c.
+  - **acid_charge.** Рычаг проведён в `_apply_pool_contact_statuses` (кап силы тика заряда
+    по рангу; кап ЧИСЛА зарядов `pool_charge_cap` и детонация по стакам не тронуты), но
+    acid_flask НЕ переопределён — сентинел (заряды уже пул-капнуты в 3c-a; величину
+    charge-fanout калибрует v3'). Гейт: `tests/status_fanout_cap_gate.gd` (helper override/
+    сентинел, интеграция skull_curse override+A/B-контроль, bio_infection factor, реальные
+    конфиги, CONST-guard дефолта no-op). `global_damage_balance_smoke` без изменений (worst
+    CCT +21% — кап рантаймовый, ортогонален формульной бюджет-модели).
 
 ## Known Balance Risks
 
