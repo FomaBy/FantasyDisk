@@ -63,6 +63,8 @@ multica issue list --project 2ac963eb-b644-4540-8042-a1a4508f1a65 \
   --status backlog --limit 100 --output json
 multica issue list --project 2ac963eb-b644-4540-8042-a1a4508f1a65 \
   --status todo --limit 100 --output json
+multica issue list --project 2ac963eb-b644-4540-8042-a1a4508f1a65 \
+  --status blocked --limit 100 --output json
 ```
 
 Сверить title/description, parent/child relations, assignee, comments, active
@@ -83,9 +85,11 @@ multica issue create \
   --output json
 ```
 
-`backlog` используется только для явно отложенной, blocked или зависимой работы.
-Freeze/hold фиксируется в issue description/comment и metadata, а не в Jira
-sprint.
+`backlog` используется только для явно отложенной работы, freeze/hold или
+ожидания зависимости, когда issue ещё не готова к dispatch. Реальный blocker,
+который остановил executable acceptance, фиксируется отдельным статусом
+`blocked` с точной причиной и условием разблокировки. Эти состояния записываются
+в issue description/comment и metadata, а не в Jira sprint.
 
 ## Два режима исполнения
 
@@ -133,10 +137,11 @@ Next verification: <конкретный gate>
 
 | Multica status | Значение |
 | --- | --- |
-| `backlog` | отложено, blocked или ждёт зависимости |
+| `backlog` | намеренно отложено, hold/freeze или ждёт зависимости; не готово к dispatch |
 | `todo` | готово к назначению |
 | `in_progress` | один живой owner выполняет задачу |
 | `in_review` | реализация запушена и ждёт независимой проверки |
+| `blocked` | executable acceptance остановлен конкретным blocker; записаны причина, owner/condition разблокировки и evidence |
 | `done` | acceptance выполнен; обязательный QA PASSED зафиксирован |
 
 `in_progress` — живой lock, а не парковка. Комментарий-heartbeat нужен минимум
@@ -148,7 +153,8 @@ SHA/branch, locks, пройденный gate, blocker и следующий ша
 - `in_review` с commit/push/tests evidence;
 - `done` после QA PASSED;
 - `todo`, если claim освобождён без результата;
-- `backlog` с точным blocker/dependency и снятым assignee;
+- `backlog` с точным hold/dependency и правдивым assignee;
+- `blocked` с точным blocker, evidence и условием/owner разблокировки;
 - либо task `failed/cancelled` с объяснением и безопасным rerun/handoff.
 
 Не оставлять stale `in_progress` или agent assignment после фактической остановки.

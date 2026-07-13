@@ -61,8 +61,18 @@ class MulticaTaskPolicyTest(unittest.TestCase):
         self.assertIn("2ac963eb-b644-4540-8042-a1a4508f1a65", workflow)
         self.assertIn("4eccbced-60b5-4e7a-87fd-d9f3699d3bed", workflow)
         self.assertIn("e2e1c89f-587d-4a2d-bbaa-ce9b5dea908d", workflow)
-        for status in ("todo", "in_progress", "in_review", "done"):
+        for status in (
+            "backlog",
+            "todo",
+            "in_progress",
+            "in_review",
+            "blocked",
+            "done",
+        ):
             self.assertIn(f"`{status}`", workflow)
+        self.assertIn("`backlog` с точным hold/dependency", workflow)
+        self.assertIn("`blocked` с точным blocker", workflow)
+        self.assertNotIn("отложенной, blocked или зависимой", workflow)
 
         memo = (ROOT / "docs/process/ai_agent_memorandum.md").read_text(
             encoding="utf-8"
