@@ -566,6 +566,27 @@ static func reward_is_optional(reward: Dictionary, character_id: String) -> bool
 	return attribute_relevance(attr, character_id) == "optional"
 
 
+# FAN-1031 S4 (random-floor): урон-оси level-up наград. Карта релевантна УРОНУ класса, если
+# несёт одну из этих осей И ось для класса НЕ optional (matrix primary/secondary). Физ-урон
+# «damage» мёртв у маг-классов и наоборот — ATTRIBUTE_RELEVANCE это уже кодирует (для мага
+# «damage» → optional), поэтому проверки relevance достаточно, дубль-карты класса не нужны.
+const DAMAGE_RELEVANT_ATTRS := ["damage", "magic_focus", "attack_speed", "crit_chance", "crit_damage", "dot_damage"]
+
+
+static func reward_is_damage_relevant(reward: Dictionary, character_id: String) -> bool:
+	var attr := str(reward.get("attr", ""))
+	if not DAMAGE_RELEVANT_ATTRS.has(attr):
+		return false
+	return attribute_relevance(attr, character_id) != "optional"
+
+
+static func _reg_has_damage_relevant(pool: Array, character_id: String) -> bool:
+	for reward in pool:
+		if reward_is_damage_relevant(reward, character_id):
+			return true
+	return false
+
+
 # SCRUM-695: взвешенный индекс выбора из пула (детерминированно через переданный rng).
 static func weighted_level_up_index(pool: Array, character_id: String, rng: RandomNumberGenerator) -> int:
 	if pool.size() <= 1:
@@ -590,30 +611,44 @@ static func weighted_level_up_index(pool: Array, character_id: String, rng: Rand
 # не более 1 optional-атрибута на показ и минимум 1 primary/secondary (или основная
 # характеристика). prefill — уже выбранные награды (например capstone «Озарение»);
 # они учитываются в балансе optional/non-optional. Пулы не мутируются (работаем на копиях).
+# FAN-1031 S4 (random-floor, план §2.1-S4): КАЖДЫЙ показ гарантирует ≥1 карту, релевантную
+# УРОНУ класса (reward_is_damage_relevant). Без этого слабые/дно-классы вынуждены в некоторых
+# оферах брать не-урон (защита/утилита), и их random-билд-пол проседает (worst-класс v8 0.86).
+# Форс — только на ПОСЛЕДНЕМ слоте и только если в regular-пуле реально есть damage-карта класса
+# (иначе грациозно пропускаем). damage-релевантная карта non-optional по построению, поэтому
+# гарантия УСИЛИВАЕТ инвариант «≥1 non-optional», не нарушая «≤1 optional».
 static func weighted_level_up_selection(regular_pool: Array, stat_pool: Array, count: int, character_id: String, rng: RandomNumberGenerator, rare_slot_chance := 0.05, prefill := []) -> Array:
 	var rewards: Array = prefill.duplicate()
 	var reg: Array = regular_pool.duplicate()
 	var stat: Array = stat_pool.duplicate()
 	var optional_count := 0
 	var non_optional_count := 0
+	var damage_count := 0
 	for reward in rewards:
 		if reward_is_optional(reward, character_id):
 			optional_count += 1
 		else:
 			non_optional_count += 1
+		if reward_is_damage_relevant(reward, character_id):
+			damage_count += 1
 	while rewards.size() < count and (not reg.is_empty() or not stat.is_empty()):
+		var slots_left: int = count - rewards.size()
+		# FAN-1031 S4: на последнем слоте, если урон-карты ещё нет и в regular-пуле она есть —
+		# закрываем этот слот именно ей (не отдаём рарному стат-слоту, не фильтруем в не-урон).
+		var must_secure_damage: bool = damage_count == 0 and slots_left <= 1 and _reg_has_damage_relevant(reg, character_id)
 		var want_rare: bool = not stat.is_empty() and rng.randf() < rare_slot_chance
-		if want_rare or reg.is_empty():
+		if (want_rare or reg.is_empty()) and not must_secure_damage:
 			var s_index: int = weighted_level_up_index(stat, character_id, rng)
 			rewards.append(stat[s_index])
 			stat.remove_at(s_index)
 			non_optional_count += 1
 			continue
-		var slots_left: int = count - rewards.size()
 		var allow_optional: bool = optional_count < 1
 		var need_non_optional: bool = non_optional_count == 0 and slots_left <= 1
 		var candidates: Array = []
 		for reward in reg:
+			if must_secure_damage and not reward_is_damage_relevant(reward, character_id):
+				continue
 			var rel: String = attribute_relevance(str(reward.get("attr", "")), character_id)
 			if rel == "optional" and (not allow_optional or need_non_optional):
 				continue
@@ -627,6 +662,8 @@ static func weighted_level_up_selection(regular_pool: Array, stat_pool: Array, c
 			optional_count += 1
 		else:
 			non_optional_count += 1
+		if reward_is_damage_relevant(picked, character_id):
+			damage_count += 1
 	return rewards
 
 

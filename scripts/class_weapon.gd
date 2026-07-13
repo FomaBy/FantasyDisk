@@ -707,7 +707,11 @@ func _fire_interval_artifact_factor() -> float:
 	# берёт mode-артефакты (reliquary_salvo/censer_vow scored 0 — только mods, без stats),
 	# так что базовый тэ применяется к замеру без offset'а этими режимами.
 	if weapon_id == "priest_reliquary":
-		factor *= 1.30  # быстрый бурст-крауд — главный оффендер (20t 2.39× медианы ростера)
+		# FAN-1031 v8-микротрим: 1.30→1.18 — СМЯГЧАЕМ каденс-налог (координаторское решение):
+		# ×1.30 перегибал RANDOM-билд (random-A1 0.86), а каденс давит ВСЕ оси, включая solo.
+		# Крауд-добор перенесён на ШИРИНУ кадила (censer aoe_full_targets/diminish ниже), которая
+		# режет только толпу, не solo/random. Направление: reliquary throughput ×(1.30/1.18)≈+10%.
+		factor *= 1.18  # быстрый бурст-крауд — главный оффендер, но каденс-налог смягчён
 	if weapon_id == "priest_censer":
 		factor *= 1.15  # большой близкий AoE — вторичный крауд-вклад
 	if weapon_id == "priest_reliquary" and _owner_mod("reliquary_barrage_mode") > 0.0:
@@ -4066,6 +4070,14 @@ func _fire_priest_ward(owner_node: Node2D) -> void:
 		var censer_params: Dictionary = censer_profile.get("params", {})
 		owner_node.call("constellation_set_single_hit_ward", "censer_%d" % get_instance_id(), clampf(float(censer_params.get("absorb_ratio", 0.18)), 0.0, 0.80), ward_duration)
 	var damage_value: float = _rolled_damage(owner_node) * vow_damage_mult
+	# FAN-1031 v8-микротрим: крауд-добор Жреца перенесён с каденции реликвария (смягчена выше)
+	# на ШИРИНУ кадила. Пульс волны идёт через тот же капнутый direct-AoE контракт, что blast/acid
+	# (_damage_enemies_in_circle_capped): ближние ward_full целей — полный урон, дальний хвост толпы
+	# душится диминишем — режет crowd БЕЗ solo (1 цель = rank 0 = полный). Сентинел (нет полей в
+	# конфиге → full 9999 / diminish 0) = поведенчески plain-круг (нулевой A/B). Жёсткого max нет
+	# (aoe_max_targets censer -1): identity «выжигают ВСЁ вокруг» цела — все в радиусе задеты.
+	var ward_full := aoe_full_targets if aoe_full_targets >= 0 else 9999
+	var ward_diminish := aoe_target_diminish if aoe_target_diminish >= 0.0 else 0.0
 	for pulse_index in range(pulse_count):
 		var ward_tween := create_tween()
 		ward_tween.tween_interval(float(pulse_index) * maxf(burst_interval, 0.06))
@@ -4080,7 +4092,7 @@ func _fire_priest_ward(owner_node: Node2D) -> void:
 			var pulse_progress := 1.0 if pulse_count <= 1 else float(pulse_index) / float(pulse_count - 1)
 			var radius: float = float(current_weapon.get("aoe_radius")) * lerpf(0.80, 1.0, pulse_progress) * vow_radius_mult
 			AttackVfx.ring_pulse(current_weapon.call("_projectile_parent"), current_owner.global_position, radius, current_weapon.get("visual_color"), false)
-			current_weapon.call("_damage_enemies_in_circle", current_owner.global_position, radius, damage_value)
+			current_weapon.call("_damage_enemies_in_circle_capped", current_owner.global_position, radius, damage_value, ward_full, ward_diminish)
 		)
 
 

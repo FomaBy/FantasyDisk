@@ -1020,6 +1020,49 @@ SCRUM-1091 добавляет только presentation contract, не нову�
     себе ПОСЛЕ фиксации db на v8; премейчур-рекалибровка под ещё-двигающиеся db была бы сразу
     устаревшей. Не в приёмочном наборе «15/15».
 
+- **FAN-1031 Stage 3d v8-микротрим (2026-07-13, v8 приёмка координатора) — последний заход коридора
+  ±15% + S4 random-floor (no-silent-retune).** Полный разбор + карта рычагов + measured-направления —
+  `build/stage3d_final_v8_microtrim_fan1031.md`. По приёмочному v8 (ростер сошёлся 0.84…1.23, середина
+  0.91–1.11). Направление КАЖДОЙ правки — детерминированно (budget-дамп/формула); финальный **v9
+  double-reshoot и точная приёмка коридоров — за координатором** (roster-relative median дрейфует от
+  нерфов верхов вниз и буста дна вверх — статикой не учесть; полный live-trio вне лейна исполнителя).
+  - **Верхи вниз (по одному малому db-шагу; solo/aoe_target профилей НЕ трогаем):** chemist db `0.85→0.80`,
+    soldier `0.76→0.72`, dark_mage `0.52→0.48`, robot `0.80→0.75` (⚠️ остаток total >1.15 = identity-price
+    ТАНКА def 2.12 — survival НЕ режем, судить по damage-осям; решение координатора v7/v8). druid — aoe 1.64
+    амулет-driven ПОСЛЕ ревайва ворона (db призыв НЕ ведёт, bdm на floor 0.28) → рычаг `summon_damage_multiplier
+    0.85→0.78`, не db. Ворон/briar остаются живы.
+  - **Priest — смягчение каденс-налога + перенос крауд-добора на ШИРИНУ (координаторское решение).**
+    Каденс reliquary `1.30→1.18` (`_fire_interval_artifact_factor`): ×1.30 перегибал RANDOM-билд
+    (random-A1 0.86), а каденс давит ВСЕ оси, включая solo/random. Крауд-добор перенесён на новый
+    width-кап ХВОСТА кадила: `_fire_priest_ward` теперь льёт волну через тот же капнутый direct-AoE
+    контракт (`_damage_enemies_in_circle_capped`), что blast/acid; конфиг опт-инится `aoe_full_targets:4`
+    / `aoe_target_diminish:1.2`. Ближние 4 цели — полный урон, дальний хвост толпы душится по формуле, но
+    **жёсткого max НЕТ** (`aoe_max_targets` -1) → identity «выжигают ВСЁ вокруг» цела (все в радиусе задеты,
+    дальние слабее) — поэтому player-facing описание кадила НЕ меняем (в отличие от hard-cap spore/orb/acid).
+    Пин + A/B на реальном конфиге: `coverage_cap_gate._test_censer_width_integration` + real-config pin;
+    data-контракт + каденс-пин 1.18: `priest_kit_test`.
+  - **Дно вверх:** guitarist raw к потолку identity-капа (electric `1.28→1.30`, bass `0.48→0.50`; bass<electric
+    цел) + амп (uncapped identity-гейтом) `1.60→1.85` — осн. рычаг лифта 0.84→≥0.85 (плюс median-дрейф);
+    guitarist db 1.50 не трогаем (держит кит клампнут). ranger db `1.26→1.38` (raw всех трёх, unclamped).
+  - **S4 random-floor (план §2.1-S4, впервые реализовано):** каждый level-up-показ ГАРАНТИРУЕТ ≥1 карту,
+    релевантную УРОНУ класса. Рычаг — `ProgressionData.weighted_level_up_selection` + новый
+    `reward_is_damage_relevant` (урон-ось И relevance ≠ optional по ATTRIBUTE_RELEVANCE — физ-«damage»
+    у мага мёртв, matrix это кодирует). Форс на последнем слоте, только если в regular-пуле есть damage-карта.
+    Гарантия damage-релевантна ⟹ non-optional по построению → УСИЛИВАЕТ старый инвариант «≥1 non-optional»,
+    не нарушая «≤1 optional». LEVEL_UP_REWARDS не трогали (уже вычищен FAN-1034) — введена только офер-гарантия.
+    Гейт: `tests/level_up_damage_floor_gate.gd` (17 классов × 200 seed'ов + prefill capstone + helper A/B +
+    satisfiability); `attribute_relevance_test` (старые инварианты) остаётся зелёным.
+  - **Гейты (32 зелёных, гейтов НЕ ослаблял — только УСИЛЕНы priest_kit/coverage_cap + новый
+    level_up_damage_floor_gate):** kit ×11 (chemist/robot/soldier/dark_mage/druid/ranger/elementalist/
+    biologist/doctor/sniper/assassin) + guitarist/priest kit + cap ×6 (aoe_target/coverage/orbit_falloff/
+    status_fanout/pool_target/boss_hazard) + `class_budget_profiles_integrity` + `global_damage_balance_smoke`
+    (**worst CCT +20% — БЕЗ изменений**, db-сдвиги реебейзят формулу зелёно) + `content_rewards_integrity`/
+    `level_up_advisor`/`attribute_relevance`/`damage_type_isolation`/`content_registry_consistency`/
+    `progression_data_api_surface`/`contact_damage_softcap` + runtime_smoke (base + weapon_mechanics — живой
+    censer-путь). ⚠️ `comfort_band_cross_class_gate` — известный-красный (Stage-4 рекалибровка comfort-весов
+    под финальные db, за координатором); мой амп-raw-буст добавляет стейл в `guitarist/sound_amp` CSV-веса —
+    туда же. Не в приёмочном наборе.
+
 ## Known Balance Risks
 
 - Точный паритет clear speed Темного мага/Гитариста с Берсерком требует ручного плейтеста.

@@ -83,6 +83,7 @@ func _initialize() -> void:
 	await _test_pool_integration_control(errors)
 	await _test_orbit_hardcap_skip(errors)
 	await _test_fast_path_honors_max(errors)
+	await _test_censer_width_integration(errors)
 	_test_real_configs_and_defaults(errors)
 
 	if not errors.is_empty():
@@ -340,6 +341,52 @@ func _test_fast_path_honors_max(errors: Array) -> void:
 	await _cleanup(holder)
 
 
+# 6. Интеграция кадила Жреца (FAN-1031 v8-микротрим): _fire_priest_ward льёт волну через
+#    _damage_enemies_in_circle_capped на РЕАЛЬНОМ конфиге кадила (aoe_full/diminish). Ближние
+#    full — полный урон, хвост толпы душится по формуле, но НЕ обнуляется (жёсткого max нет →
+#    identity «выжигают ВСЁ вокруг» цела). A/B-сентинел (full=huge/diminish=0) → весь ряд полный.
+func _test_censer_width_integration(errors: Array) -> void:
+	var censer: Dictionary = PD.weapon("priest", "priest_censer")
+	var full := int(censer.get("aoe_full_targets", -1))
+	var diminish := float(censer.get("aoe_target_diminish", -1.0))
+	if full < 1 or diminish <= 0.0:
+		errors.append("censer integration: конфиг без width-опт-ина (full=%d diminish=%.2f) — крауд-добор не режется" % [full, diminish])
+		return
+	var holder := _new_scene("CenserWidth")
+	var owner := _new_owner(holder, Vector2(1000, 1000))
+	var weapon := _new_weapon(owner, {
+		"id": "priest_censer", "attack_mode": "priest_ward", "damage_parameter": "magic_damage",
+		"aoe_full_targets": full, "aoe_target_diminish": diminish,
+	})
+	var center: Vector2 = owner.global_position
+	var count := full + 4
+	var ranks := _spawn_ranks(holder, center, count)
+	await process_frame
+	var amount := 200.0
+	# Реальный кап: ближние full — полный, дальний хвост — по формуле диминиша, но НЕ ноль (нет max).
+	weapon.call("_damage_enemies_in_circle_capped", center, 800.0, amount, full, diminish)
+	for rank in range(count):
+		var e := ranks[rank] as MockEnemy
+		if rank < full:
+			if absf(e.total_damage - amount) > EPS:
+				errors.append("censer integration: ближняя цель rank %d dmg=%.2f != %.2f (в full — полный)" % [rank, e.total_damage, amount])
+		else:
+			var want := amount / (1.0 + float(rank - full + 1) * diminish)
+			if e.total_damage <= 0.0:
+				errors.append("censer integration: rank %d за full ОБНУЛЁН — жёсткий max сломал identity «всё вокруг»" % rank)
+			elif absf(e.total_damage - want) > EPS:
+				errors.append("censer integration: хвост rank %d dmg=%.3f != %.3f (диминиш толпы не по формуле)" % [rank, e.total_damage, want])
+	# A/B-сентинел: full=огромный / diminish=0 → весь ряд полный (режет ИМЕННО кап ширины, не геометрия).
+	for e in ranks:
+		(e as MockEnemy).total_damage = 0.0
+		(e as MockEnemy).hit_count = 0
+	weapon.call("_damage_enemies_in_circle_capped", center, 800.0, amount, 9999, 0.0)
+	for rank in range(count):
+		if absf((ranks[rank] as MockEnemy).total_damage - amount) > EPS:
+			errors.append("censer A/B: rank %d dmg=%.2f != %.2f — без диминиша ширина не должна резаться" % [rank, (ranks[rank] as MockEnemy).total_damage, amount])
+	await _cleanup(holder)
+
+
 # 7/8. Реальные конфиги (width-кап проведён + композится с диминишем) + дефолт-guard.
 func _test_real_configs_and_defaults(errors: Array) -> void:
 	# blast_powder: FAN-1031 3d aoe_max=3 ПОВЕРХ диминиш-капа 2/3.0 (оба живы; ужато с 6+4/3.0 —
@@ -368,6 +415,13 @@ func _test_real_configs_and_defaults(errors: Array) -> void:
 		errors.append("orb_ring orbit_max_targets != 4: %s" % str(orb.get("orbit_max_targets", -1)))
 	if int(orb.get("orbit_full_targets", -1)) != 3 or absf(float(orb.get("orbit_target_diminish", -1.0)) - 1.0) > 0.001:
 		errors.append("orb_ring orbit диминиш-кап затёрт (ждали 3/1.0): %s/%s" % [str(orb.get("orbit_full_targets")), str(orb.get("orbit_target_diminish"))])
+	# priest_censer: FAN-1031 v8-микротрим — width-кап крауд-ХВОСТА кадила (aoe_full/diminish 4/1.2),
+	# БЕЗ жёсткого max (identity «выжигают ВСЁ вокруг»: все в радиусе задеты, дальние слабее).
+	var censer: Dictionary = PD.weapon("priest", "priest_censer")
+	if int(censer.get("aoe_full_targets", -1)) != 4 or absf(float(censer.get("aoe_target_diminish", -1.0)) - 1.2) > 0.001:
+		errors.append("priest_censer width-кап затёрт (ждали 4/1.2): %s/%s" % [str(censer.get("aoe_full_targets")), str(censer.get("aoe_target_diminish"))])
+	if int(censer.get("aoe_max_targets", -1)) >= 0:
+		errors.append("priest_censer несёт aoe_max_targets=%s — жёсткий обрез ломает identity «большой AoE вокруг» (нужен лишь диминиш хвоста)" % str(censer.get("aoe_max_targets")))
 	# Дефолт-guard: оружие БЕЗ override не несёт молчаливого потолка.
 	var plain: Dictionary = PD.weapon("berserk", "sword")
 	for field in ["aoe_max_targets", "pool_max_targets", "status_max_targets", "orbit_max_targets"]:

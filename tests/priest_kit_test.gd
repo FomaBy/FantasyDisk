@@ -44,6 +44,7 @@ func _initialize() -> void:
 	_check_priest_weapon_niches()
 	await _check_reliquary_burst_no_heal()
 	await _check_censer_large_close_aoe()
+	await _check_censer_width_cap()
 	await _check_bell_dual_toll()
 	await _check_cadence_tax()
 
@@ -409,7 +410,9 @@ func _check_reliquary_burst_no_heal() -> void:
 # правка. chime/прочие оружия НЕ обложены (фактор 1.0) — сентинел-контракт (нулевой A/B).
 
 func _check_cadence_tax() -> void:
-	var expected := {"priest_reliquary": 1.30, "priest_censer": 1.15, "priest_chime": 1.0}
+	# FAN-1031 v8-микротрим: reliquary каденс-налог смягчён 1.30→1.18 (перегибал random-билд);
+	# крауд-добор перенесён на ширину кадила (см. _check_censer_width_cap). censer/chime не тронуты.
+	var expected := {"priest_reliquary": 1.18, "priest_censer": 1.15, "priest_chime": 1.0}
 	for weapon_id in expected.keys():
 		var player := _make_player("priest", str(weapon_id))
 		var weapon: Node = player.get("equipped_weapon")
@@ -489,6 +492,27 @@ func _check_censer_large_close_aoe() -> void:
 	player.free()
 	inside.free()
 	outside.free()
+	await process_frame
+
+
+# --- FAN-1031 v8-микротрим: кадило несёт width-кап крауд-хвоста -----------------
+# Крауд-добор Жреца перенесён с каденции реликвария (смягчена 1.30→1.18) на ШИРИНУ кадила:
+# _fire_priest_ward льёт волну через _damage_enemies_in_circle_capped, а конфиг опт-инится
+# полями aoe_full_targets/aoe_target_diminish. Здесь — data-контракт (пин + anti-silent-retune):
+# кадило ДОЛЖНО нести опт-ин, иначе канал снова полный по всей толпе. Поведенческий диминиш
+# хвоста + A/B-сентинел на РЕАЛЬНОМ конфиге кадила — tests/coverage_cap_gate.gd.
+
+func _check_censer_width_cap() -> void:
+	var censer: Dictionary = PD.weapon("priest", "priest_censer")
+	var full := int(censer.get("aoe_full_targets", -1))
+	var diminish := float(censer.get("aoe_target_diminish", -1.0))
+	if full < 1:
+		_errors.append("censer-width: aoe_full_targets=%d — кадило не опт-инено в кап ширины (крауд-добор не режется)" % full)
+	if diminish <= 0.0:
+		_errors.append("censer-width: aoe_target_diminish=%.2f — нет диминиша хвоста толпы (кап ширины неактивен)" % diminish)
+	# Жёсткого max НЕ ставим: identity «выжигают ВСЁ вокруг» — все в радиусе задеты, дальние слабее.
+	if int(censer.get("aoe_max_targets", -1)) >= 0:
+		_errors.append("censer-width: aoe_max_targets=%d — жёсткий обрез ломает identity «большой AoE вокруг»" % int(censer.get("aoe_max_targets", -1)))
 	await process_frame
 
 

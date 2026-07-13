@@ -220,8 +220,11 @@ const GUITARIST_WEAPONS := {
 		# структурно недооценён. Поднятый RAW компенсирует НЕсчитаемый контроль (не двойной зачёт).
 		# Все три оружия клампнуты budget_dm=2.80 (ceil) → живой урон = raw × 2.80, пока формульный
 		# таргет ≥ потолка; guitarist db поднят до 1.25, чтобы кит остался клампнут после raw-буста
-		# (raw лендится 1:1). Точную величину калибрует координатор по v8. Гейт обновлён синхронно.
-		"damage_multiplier": 1.28,
+		# (raw лендится 1:1). Гейт обновлён синхронно.
+		# FAN-1031 v8-микротрим: guitarist 0.84 (дно, цель ≥0.85). Ещё один raw-шаг В ПРЕДЕЛАХ
+		# identity-капа 1.30 (координаторская санкция): 1.28→1.30 (к потолку капа). Осн. лифт —
+		# амп (uncapped) + median-дрейф от нерфов верхов. Калибровать по v9 (если <0.85: db↑ ещё).
+		"damage_multiplier": 1.30,
 		"fire_interval": 0.55,
 		"attack_range": 520.0,
 		"aoe_radius": 110.0,
@@ -240,7 +243,8 @@ const GUITARIST_WEAPONS := {
 		# FAN-1031 3d-final (v7): raw-buff (bass клампнут ceil). identity-кап баса поднят под то же
 		# продуктовое решение координатора (см. electric_guitar). Бас остаётся САМЫМ слабым по urону
 		# в ките (bass < electric) — «ранняя слабость в уроне» как ОТНОСИТЕЛЬНАЯ identity сохранена.
-		"damage_multiplier": 0.48,
+		# FAN-1031 v8-микротрим: raw-шаг 0.48→0.50 к потолку identity-капа (bass<electric 1.30 цел).
+		"damage_multiplier": 0.50,
 		"fire_interval": 0.78,
 		"attack_range": 330.0,
 		"aoe_radius": 330.0,
@@ -257,7 +261,10 @@ const GUITARIST_WEAPONS := {
 		"damage_parameter": "magic_damage",
 		# FAN-1031 3d-final (v7): raw-buff под то же продуктовое решение (амп не в identity-гейте, только
 		# budget-кламп). db 1.25 держит амп ближе к ceil → больше raw лендится. Калибровать по v8.
-		"damage_multiplier": 1.60,
+		# FAN-1031 v8-микротрим: амп — ГЛАВНЫЙ (uncapped identity-гейтом) рычаг лифта дна 0.84→≥0.85:
+		# raw 1.60→1.85. Budget_dm амп 2.40 (не ceil) → лендится частично, но напрямую двигает kit-mean.
+		# ⚠️ CSV comfort-веса амп (COMFORT_*_OVERRIDES guitarist/sound_amp) стейл → Stage-4 рекалибровка.
+		"damage_multiplier": 1.85,
 		"fire_interval": 2.40,
 		"attack_range": 520.0,
 		"aoe_radius": 235.0,
@@ -705,7 +712,7 @@ const DRUID_WEAPONS := {
 		# 1.85→0.85 (и роль 1.45→1.15) → амулет ~×0.36; остаётся crowd-лидером кита, но не
 		# ломает ростер. Замер суммона самый ШУМНЫЙ (v4 разброс 1.90–4.91) — точную величину
 		# калибровать по A/B focused-тесту + среднему live, НЕ по одному прогону.
-		"summon_damage_multiplier": 0.85,
+		"summon_damage_multiplier": 0.78,  # FAN-1031 v8-микротрим: druid total 1.23 (aoe 1.64 — амулет чуть перелетел ПОСЛЕ ревайва ворона, kit-mean поднялся). Малый шаг роя вниз 0.85→0.78 (призыв pure_summon → db его НЕ ведёт, живой рычаг = summon_damage_multiplier). Остаётся crowd-лидером кита, ворон/briar живы. Калибровать по v9.
 		"damage_multiplier": 1.0, "fire_interval": 3.0,
 		"upgrade_damage_exponent": 1.22,  # SCRUM-505: lvl20 summon-profile lift; empty run_modifiers stay 1.0
 		"attack_range": 420.0, "aoe_radius": 60.0,
@@ -1114,6 +1121,12 @@ const PRIEST_WEAPONS := {
 		"damage_multiplier": 0.58, "fire_interval": 2.05,
 		"attack_range": 235.0, "aoe_radius": 320.0,
 		"storm_ticks": 2, "burst_interval": 0.24,
+		# FAN-1031 v8-микротрим: крауд-добор Жреца через ШИРИНУ кадила (координаторское решение —
+		# режем толпу, НЕ каденцию). Волна ward'а идёт через _damage_enemies_in_circle_capped:
+		# 4 ближних к Жрецу цели — полный урон, дальний хвост толпы душится (тот же диминиш-контракт,
+		# что прямой AoE blast/acid). Крауд↓ БЕЗ solo (1 цель = полная). Жёсткого max нет → «большой
+		# близкий AoE, выжигающий всё вокруг» identity цела: все в радиусе задеты, дальние — слабее.
+		"aoe_full_targets": 4, "aoe_target_diminish": 1.2,
 		"visual_color": Color(0.96, 1.0, 0.70, 0.36),
 		"passive_mods": {"defense_flat": 0.02},
 	},
