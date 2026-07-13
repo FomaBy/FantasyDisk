@@ -212,7 +212,16 @@ const GUITARIST_WEAPONS := {
 		"scene_path": "res://scenes/ElectricGuitar.tscn",
 		"attack_mode": "riff_strip",
 		"damage_parameter": "magic_damage",
-		"damage_multiplier": 0.66,
+		# FAN-1031 3d (v6): guitarist total 0.59 FAIL+ (solo 0.30/aoe 0.53/crowd 0.73). ВСЕ три
+		# оружия кита клампнуты budget_dm=2.80 (ceil) — формула хочет БОЛЬШЕ бюджета, чем
+		# потолок, т.е. кит структурно недодаёт. Профиль-таргеты (db/aoe_target) live НЕ
+		# двигают (тюнер уже на потолке). Единственный рычаг — RAW damage_multiplier: живой
+		# урон = raw × 2.80, пока формульный таргет ≥ потолка. ⚠️ identity-гейт guitarist_kit_test:
+		# рифф = «низко-средний хит», damage_multiplier ≤ 0.80. electric 0.66→0.80 (×1.21 — МАКСИМУМ
+		# в рамках identity, гейт НЕ ослаблял). Медиана ростера дрейфует вниз от нерфов верхов →
+		# нормированный скор гитариста растёт и сам. Остаточный дефицит клампнутого+identity-ограниченного
+		# кита сверх этого — структурный, решение координатора (см. handoff). Калибровать по v7.
+		"damage_multiplier": 0.80,
 		"fire_interval": 0.55,
 		"attack_range": 520.0,
 		"aoe_radius": 110.0,
@@ -228,7 +237,9 @@ const GUITARIST_WEAPONS := {
 		"scene_path": "res://scenes/BassGuitar.tscn",
 		"attack_mode": "pulse",
 		"damage_parameter": "magic_damage",
-		"damage_multiplier": 0.26,
+		# FAN-1031 3d (v6): raw-buff (bass клампнут ceil). ⚠️ identity-гейт: бас = «ранняя слабость
+		# в уроне», damage_multiplier ≤ 0.30. 0.26→0.30 (×1.15 — максимум в рамках identity).
+		"damage_multiplier": 0.30,
 		"fire_interval": 0.78,
 		"attack_range": 330.0,
 		"aoe_radius": 330.0,
@@ -243,7 +254,9 @@ const GUITARIST_WEAPONS := {
 		"scene_path": "res://scenes/SoundAmp.tscn",
 		"attack_mode": "amp",
 		"damage_parameter": "magic_damage",
-		"damage_multiplier": 0.85,
+		# FAN-1031 3d (v6): raw-buff (sound_amp headroom клампа мал ~×1.08 до компенсации; гейт dm не
+		# ограничивает). 0.85→1.00 — частичный (тюнер съест часть сверх границы клампа).
+		"damage_multiplier": 1.00,
 		"fire_interval": 2.40,
 		"attack_range": 520.0,
 		"aoe_radius": 235.0,
@@ -273,6 +286,12 @@ const ASSASSIN_WEAPONS := {
 		"scene_path": "res://scenes/Chakrams.tscn",
 		"attack_mode": "boomerang", "damage_parameter": "damage",
 		"damage_multiplier": 0.45, "fire_interval": 0.62,
+		# FAN-1031 3d (v6): assassin crowd-ось 0.38 остаётся низкой, НО геометрический widen
+		# бумеранга (aoe_radius/beam_width) НЕ поднял crowd в замере (болванки уже в коридоре;
+		# beam_width>61 упирает five_hits в кламп 3.4 → per-hit ПАДАЕТ, лишних целей нет) —
+		# измеренный live 20t 5508→4385 ушёл ВНИЗ. Геометрия здесь не рычаг. Откат к оригиналу;
+		# assassin (total 0.93, in-corridor) — crowd-ось требует ДРУГОЙ механики (напр. крауд-хит
+		# на возвратной дуге сверх дедупа) — deferred, решение координатора (см. handoff).
 		"attack_range": 460.0, "aoe_radius": 60.0, "beam_width": 56.0,
 		"projectile_speed": 760.0,
 		# Возврат — квадратичная дуга через ЛЕВУЮ сторону от направления броска;
@@ -496,14 +515,13 @@ const CHEMIST_WEAPONS := {
 		# (identity «пара взрывов по ближайшим целям» цела), хвост толпы круче (Σfactor 20t
 		# 6.37→4.99 = −22%; 5t −15%; 1t 0%). Per-hit magnitude — 3c-c numeric против v3'''
 		# (диминиш даёт макс ≈×4, 108× медианы им одним не закрыть).
-		"aoe_full_targets": 4, "aoe_target_diminish": 3.0,
-		# FAN-1031 3c(final): ЖЁСТКИЙ кап ШИРИНЫ прямого взрыва. Профилировка показала, что
-		# главный crowd-runaway blast — не per-hit (уже капнут диминишем: per_hit 230→38 при
-		# 1→20 целях), а ЧИСЛО событий взрыва на толпе (6→2585 хитов/окно), раздутое ещё и
-		# variable-delta живого замера (тяжёлый кадр → больше кастов _process). Кап на 6
-		# ближайших: identity «пара взрывов расчищает пак» цела, 1t/5t (≤6 целей) не тронуты,
-		# бланкет по 20 целям срезан. Старт — калибровать по live crowd_norm (цель ≤1.56).
-		"aoe_max_targets": 6,
+		# FAN-1031 3d (v6): honest-timebase v6 всё ещё держит blast aoe 8.78× (5t)/3.96× (20t)
+		# при 1t 2.36× — aoe/crowd = ШИРИНА прямого взрыва. Ужимаем геометрию: 2 ближайших
+		# полным + круче диминиш (4→2), кап ширины 6→3. identity «пара взрывов по БЛИЖАЙШИМ»
+		# сохранена (1-2 цели не тронуты), бланкет пака срезан. Per-hit дополнительно давит
+		# db 1.15→0.95. Старт — калибровать по live crowd_norm (цель ≤1.56).
+		"aoe_full_targets": 2, "aoe_target_diminish": 3.0,
+		"aoe_max_targets": 3,
 	},
 	# SCRUM-944: зонный контроль пола — долгоживущие ПОЛУПРОЗРАЧНЫЕ лужи. Монстр,
 	# зашедший в лужу, получает один ВЕЧНЫЙ кислотный заряд ОТ ЭТОЙ лужи (статус
@@ -530,8 +548,10 @@ const CHEMIST_WEAPONS := {
 		# FAN-1031 3c(final): ЖЁСТКИЙ кап ШИРИНЫ тика лужи (residual acid). Лужа остаётся
 		# area-denial по ядру пака (≤6 ближайших к центру тикают), но перестаёт заливать
 		# уроном весь экран на 20 целях. Заряды (acid_charge, status-канал) НЕ тронуты —
-		# у них свой кап числа стаков на цель. Старт 6 — калибровать по live.
-		"pool_max_targets": 6,
+		# у них свой кап числа стаков на цель. FAN-1031 3d (v6): пул-тик колбы 20t 1.11× —
+		# в коридоре, но при db 0.95 chemist и ужатом blast колба остаётся вторичным AoE;
+		# кап ширины 6→4 держит её area-denial-нишей (ядро пака), не заливает 20-толпу.
+		"pool_max_targets": 4,
 		"pool_translucent": true,
 		"pool_contact_charges": true, "pool_charge_tick_multiplier": 0.30,
 		"pool_charge_tick_interval": 0.9, "pool_charge_cap": 5,
@@ -775,9 +795,13 @@ const DRUID_WEAPONS := {
 		# пульс (amp_pulse_interval 1.10→0.95) → больше воронов/uptime. raven_damage_multiplier —
 		# per-hit сила взрыва, двигает живой урон напрямую. FAN-1031 3c-final (peer review): модель
 		# бюджета теперь пинована к RAVEN_BUDGET_REF_MULTIPLIER, так что множитель НЕ budget-compensated
-		# (раньше зеркалился в hits → тюнер съедал буст вдвое). Финальную величину калибровать по v6.
-		"raven_damage_multiplier": 1.35,
-		"raven_explosion_radius": 120.0,
+		# (раньше зеркалился в hits → тюнер съедал буст вдвое). FAN-1031 3d (v6, честная времябаза):
+		# raven ВСЁ ЕЩЁ мёртвый слот — 1t 0.26×/5t 0.27×/20t 0.14× медианы (порог «жив» = 40% средней
+		# кита по всем осям: 1t≥234/5t≥1112/20t≥3317). Оживляем: per-hit взрыва 1.35→2.4 (×1.78 —
+		# закрывает 1t/5t) + радиус взрыва 120→150 (ловит больше целей → тянет ИМЕННО crowd 20t, где
+		# отставание сильнейшее). Пин модели держит буст живым. Калибровать crowd по v7.
+		"raven_damage_multiplier": 2.4,
+		"raven_explosion_radius": 150.0,
 		"deploy_role": "support_totem",
 		"summon_role": "support_totem",
 		"summon_role_damage_multiplier": 1.08,
@@ -826,10 +850,15 @@ const SOLDIER_WEAPONS := {
 		"damage_multiplier": 0.92, "fire_interval": 0.82,
 		"attack_range": 205.0, "aoe_radius": 205.0,
 		"cone_degrees": 105.0, "knockback": 96.0,
-		"bayonet_auto_shot_chance": 0.25,
+		# FAN-1031 3d (v6): bayonet — SOLO-спайк кита (1t 3.35× медианы при 5t 1.10×). Оба
+		# усилителя ниже (close-bonus + авто-выстрел) БЮДЖЕТИРОВАНЫ (тюнер частично
+		# компенсирует), но при lvl20-ideal их live-амплификация выше формульной оценки на
+		# base_stats → мягкое ужатие сглаживает именно живой solo-спайк, не роняя aoe/crowd.
+		# auto_shot 0.25→0.18, close-mult 1.12→1.06. Uniform per-hit кита давит db 1.00→0.82.
+		"bayonet_auto_shot_chance": 0.18,
 		"bayonet_shot_range": 560.0,
 		"bayonet_shot_damage_multiplier": 0.7,
-		"melee_close_bonus_radius": 150.0, "melee_close_damage_multiplier": 1.12,
+		"melee_close_bonus_radius": 150.0, "melee_close_damage_multiplier": 1.06,
 		"melee_stagger_knockback_multiplier": 1.25,
 		"visual_color": Color(0.58, 0.86, 1.0, 0.40),
 		"passive_mods": {"defense_flat": 0.03},
@@ -927,8 +956,10 @@ const ELEMENTALIST_WEAPONS := {
 		"orbit_full_targets": 3, "orbit_target_diminish": 1.0,
 		# FAN-1031 3c(final): ЖЁСТКИЙ кап ШИРИНЫ тика квадрата. Диминиш (выше) душил per-hit
 		# хвоста, но тик всё равно раздавался каждому в зоне. Кап на 6 ближайших к центру:
-		# орбита чистит пак, но не весь экран. Identity зоны + 1t/5t целы. Старт — калибровать.
-		"orbit_max_targets": 6,
+		# орбита чистит пак, но не весь экран. Identity зоны + 1t/5t целы. FAN-1031 3d (v6):
+		# orb_ring crowd всё ещё 2.18× (20t) — ширина квадрата. Кап 6→4 + db 0.82→0.70 (per-hit
+		# prism/meteor/orb). Осторожно с двойным нерфом crowd — калибровать по v7.
+		"orbit_max_targets": 4,
 		"visual_color": Color(0.40, 0.82, 1.0, 0.42),
 		"passive_mods": {"aoe_radius_multiplier": 1.06},
 	},
@@ -1052,6 +1083,14 @@ const PRIEST_WEAPONS := {
 		"storm_ticks": 3, "burst_interval": 0.11,
 		"sanctify_tick_ratio": 0.38,
 		"damage_falloff": 0.62,
+		# FAN-1031 3d (v6): reliquary — крауд-драйвер Священника (20t 3.24×/5t 2.06× при 1t 1.22×).
+		# Бурст-тик идёт через _damage_enemies_in_circle_falloff (радиальный спад + крауд-кап
+		# ХВОСТА _falloff_fanout_factor). Диминиш-кап ширины: 4 ближайших к центру полным,
+		# дальний хвост толпы душится → режет crowd/aoe БЕЗ solo (1 цель = rank 0 = полный).
+		# Identity «серия быстрых вспышек по цели» цела. Per-hit мягко давит db 0.92→0.86.
+		# FAN-1031 3d: 4/1.5 дал live crowd −20% (25825→20626, всё ещё 2.6×) — слабо для
+		# single-target-burst оружия; ужат до 3/2.2 (3 ближних полным, хвост толпы душится круче).
+		"falloff_full_targets": 3, "falloff_target_diminish": 2.2,
 		"visual_color": Color(1.0, 0.92, 0.48, 0.42),
 		"passive_mods": {"attack_speed_multiplier": 1.04},
 	},

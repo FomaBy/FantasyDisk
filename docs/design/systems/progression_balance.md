@@ -926,6 +926,47 @@ SCRUM-1091 добавляет только presentation contract, не нову�
   направления); приёмка Stage 4 — по v6+. Запись 3c-final выше («харнес не трогал — решение
   лидера») отражает состояние ДО этого решения: решение принято координатором, харнес починен.
 
+- **FAN-1031 Stage 3d (2026-07-13) — финальный балансировочный заход по честной времябазе v6
+  (no-silent-retune).** Полный разбор + after-метрики + карта рычагов —
+  `build/stage3d_final_balance_fan1031.md`. По приёмочному v6 (среднее 2 честных прогонов,
+  все капы включены; trio-модель `tools/class_trio_table.py`): верхи вне коридора ±15%
+  (chemist 1.76 / elementalist 1.49 / dark_mage 1.41 / soldier 1.39 / priest 1.35 / berserk 1.32),
+  дно ниже (guitarist 0.59 / ranger 0.80 / sniper 0.86), raven_totem мёртвый слот (0.14–0.26×),
+  assassin crowd-ось 0.38. **Правки (направление подтверждено детерминированным budget-дампом
+  budget_tuning_for + одиночными live --pair; финальный v7 double-reshoot — за координатором):**
+  - **damage_budget (уникальный per-hit рычаг класса; budget_dm=√(solo_scale·aoe_scale) клампится
+    [0.28,2.80]):** chemist `1.15→0.95`, elementalist `0.82→0.70`, dark_mage `0.72→0.58`
+    (curse_only `cursed_skull` НЕ затронут — direct-канал=0; live 20t 2688→2689 подтверждает),
+    soldier `1.00→0.82`, priest `0.92→0.86`, berserk `1.00→0.82` (hammer вышел из клампа
+    2.80→2.636), ranger `1.15→1.26`, sniper `1.00→1.15`. solo/aoe_target профилей НЕ трогал
+    (внутриклассовый бюджет + профиль-идентичность).
+  - **Width/coverage-капы (режут aoe/crowd ШИРИНОЙ, solo цел):** blast_powder `aoe_full 4→2 / aoe_max 6→3`
+    (live 20t 31584→14835 −53%, 5t 20024→9509 −53%, 1t 1703→1504); acid_flask `pool_max 6→4`;
+    orb_ring `orbit_max 6→4` (live 20t 17340→4332 −75%); priest_reliquary НОВЫЙ `falloff_full 3 /
+    diminish 2.2` (live 20t 25825→20159 −22% — крауд реликвария КАДЕНС-driven, не width, кап трогает
+    лишь хвост каждого бурста; остаток — за координатором).
+  - **soldier bayonet solo-спайк** (live 1t 3.35× → измерено 1600 vs 2414 −34%): `melee_close_mult
+    1.12→1.06`, `bayonet_auto_shot 0.25→0.18` (бюджетированы — сглаживают именно lvl20-ideal live-спайк).
+  - **Дно RAW-buff (guitarist клампнут ceil — профиль live НЕ двигает):** electric_guitar `0.66→0.80`
+    (live 20t 3117→3783 +21%), bass_guitar `0.26→0.30` (live 8194 +26%), sound_amp `0.85→1.00`.
+    ⚠️ electric/bass у ВЕРХНЕЙ границы identity-гейта `guitarist_kit_test` (рифф ≤0.80, бас ≤0.30) —
+    гейт НЕ ослаблял; остаточный дефицит клампнутого+identity-ограниченного кита — структурный
+    (решение координатора: поднять кламп-ceiling / identity-границу / faster-riff mechanic).
+  - **raven_totem revive** (был мёртвый слот 0.14–0.26×): `raven_damage_multiplier 1.35→2.40`
+    (модель пинована `RAVEN_BUDGET_REF_MULTIPLIER` → НЕ budget-compensated) + `raven_explosion_radius
+    120→150` (крауд). Live 190/623/1149 → 349/1264/2774 (×1.84/2.03/2.41) — слот ОЖИЛ (выше 40%
+    средней кита по solo/aoe; crowd ~84% порога).
+  - **assassin chakrams — ОТКАТ.** Геометрический widen (aoe_radius/beam_width) НЕ поднял crowd
+    (болванки уже в коридоре; beam_width>61 упирает `five_hits` в кламп 3.4 → per-hit ПАДАЕТ);
+    измеренный live 20t 5508→4385 ушёл ВНИЗ. Откачено к оригиналу. assassin (0.93, in-corridor) —
+    crowd-ось требует ДРУГОЙ механики (крауд-хит возвратной дуги сверх дедупа), deferred.
+  - **Гейты обновлены (пинованные значения капов = ДОКУМЕНТИРОВАННАЯ правка, не ослабление):**
+    `aoe_target_cap_gate` blast 4/3.0→2/3.0; `coverage_cap_gate` blast aoe_max 6→3, acid pool_max
+    6→4, orb orbit_max 6→4; `orbit_falloff_cap_gate` blast pin 4→2 + два диминиш-теста изолированы
+    от жёсткого width-капа (`orbit_max_targets=-1`). Все kit/cap/smoke/regression-гейты зелёные
+    (worst CCT +20%). berserk_dps_runaway_gate — известный флаки FAN-1039 (мой нерф hammer его
+    только опускает; 3/3 зелёные при переспросе).
+
 ## Known Balance Risks
 
 - Точный паритет clear speed Темного мага/Гитариста с Берсерком требует ручного плейтеста.

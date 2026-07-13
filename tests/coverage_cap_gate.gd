@@ -342,16 +342,17 @@ func _test_fast_path_honors_max(errors: Array) -> void:
 
 # 7/8. Реальные конфиги (width-кап проведён + композится с диминишем) + дефолт-guard.
 func _test_real_configs_and_defaults(errors: Array) -> void:
-	# blast_powder: aoe_max=6 ПОВЕРХ диминиш-капа 4/3.0 (оба живы).
+	# blast_powder: FAN-1031 3d aoe_max=3 ПОВЕРХ диминиш-капа 2/3.0 (оба живы; ужато с 6+4/3.0 —
+	# v6 honest всё ещё держал blast aoe 8.78×; см. no-silent-retune лог).
 	var blast: Dictionary = PD.weapon("chemist", "blast_powder")
-	if int(blast.get("aoe_max_targets", -1)) != 6:
-		errors.append("blast_powder aoe_max_targets != 6 (silent-retune?): %s" % str(blast.get("aoe_max_targets", -1)))
-	if int(blast.get("aoe_full_targets", -1)) != 4 or absf(float(blast.get("aoe_target_diminish", -1.0)) - 3.0) > 0.001:
-		errors.append("blast_powder диминиш-кап затёрт width-капом (ждали 4/3.0): %s/%s" % [str(blast.get("aoe_full_targets")), str(blast.get("aoe_target_diminish"))])
-	# acid_flask: pool_max=6 ПОВЕРХ pool_target_diminish=3.0.
+	if int(blast.get("aoe_max_targets", -1)) != 3:
+		errors.append("blast_powder aoe_max_targets != 3 (silent-retune?): %s" % str(blast.get("aoe_max_targets", -1)))
+	if int(blast.get("aoe_full_targets", -1)) != 2 or absf(float(blast.get("aoe_target_diminish", -1.0)) - 3.0) > 0.001:
+		errors.append("blast_powder диминиш-кап затёрт width-капом (ждали 2/3.0): %s/%s" % [str(blast.get("aoe_full_targets")), str(blast.get("aoe_target_diminish"))])
+	# acid_flask: FAN-1031 3d pool_max=4 ПОВЕРХ pool_target_diminish=3.0 (ужато с 6).
 	var acid: Dictionary = PD.weapon("chemist", "acid_flask")
-	if int(acid.get("pool_max_targets", -1)) != 6:
-		errors.append("acid_flask pool_max_targets != 6: %s" % str(acid.get("pool_max_targets", -1)))
+	if int(acid.get("pool_max_targets", -1)) != 4:
+		errors.append("acid_flask pool_max_targets != 4: %s" % str(acid.get("pool_max_targets", -1)))
 	if absf(float(acid.get("pool_target_diminish", -1.0)) - 3.0) > 0.001:
 		errors.append("acid_flask pool_target_diminish затёрт (ждали 3.0): %s" % str(acid.get("pool_target_diminish")))
 	# biologist spore/symbiote: status_max=6 ПОВЕРХ status 4/1.0.
@@ -361,10 +362,10 @@ func _test_real_configs_and_defaults(errors: Array) -> void:
 			errors.append("%s status_max_targets != 6: %s" % [wid, str(bio.get("status_max_targets", -1))])
 		if int(bio.get("status_full_targets", -1)) != 4 or absf(float(bio.get("status_target_diminish", -1.0)) - 1.0) > 0.001:
 			errors.append("%s status диминиш-кап затёрт (ждали 4/1.0): %s/%s" % [wid, str(bio.get("status_full_targets")), str(bio.get("status_target_diminish"))])
-	# elementalist orb_ring: orbit_max=6 ПОВЕРХ orbit 3/1.0.
+	# elementalist orb_ring: FAN-1031 3d orbit_max=4 ПОВЕРХ orbit 3/1.0 (ужато с 6).
 	var orb: Dictionary = PD.weapon("elementalist", "elementalist_orb_ring")
-	if int(orb.get("orbit_max_targets", -1)) != 6:
-		errors.append("orb_ring orbit_max_targets != 6: %s" % str(orb.get("orbit_max_targets", -1)))
+	if int(orb.get("orbit_max_targets", -1)) != 4:
+		errors.append("orb_ring orbit_max_targets != 4: %s" % str(orb.get("orbit_max_targets", -1)))
 	if int(orb.get("orbit_full_targets", -1)) != 3 or absf(float(orb.get("orbit_target_diminish", -1.0)) - 1.0) > 0.001:
 		errors.append("orb_ring orbit диминиш-кап затёрт (ждали 3/1.0): %s/%s" % [str(orb.get("orbit_full_targets")), str(orb.get("orbit_target_diminish"))])
 	# Дефолт-guard: оружие БЕЗ override не несёт молчаливого потолка.

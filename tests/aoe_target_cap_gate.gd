@@ -170,7 +170,8 @@ func _test_constants_and_real_config(errors: Array) -> void:
 		errors.append("CONST-guard: AOE_PROJECTILE_FULL_TARGETS=%d != 5 — дефолт прямого AoE-капа сдвинут молча" % ClassWeapon.AOE_PROJECTILE_FULL_TARGETS)
 	if absf(ClassWeapon.AOE_PROJECTILE_TARGET_DIMINISH - 2.0) > 0.0001:
 		errors.append("CONST-guard: AOE_PROJECTILE_TARGET_DIMINISH=%.3f != 2.0 — дефолт прямого AoE-капа сдвинут молча" % ClassWeapon.AOE_PROJECTILE_TARGET_DIMINISH)
-	# blast_powder несёт S1-калибровку 4/3.0 (3c-b2) — не перекалибрована молча.
+	# blast_powder несёт калибровку 2/3.0 (FAN-1031 3d: ужато с 4/3.0 — v6 honest всё ещё держал
+	# blast aoe 8.78×/crowd 3.96×; см. no-silent-retune лог) — не перекалибрована молча.
 	var blast: Dictionary = PD.weapon("chemist", "blast_powder")
-	if int(blast.get("aoe_full_targets", -1)) != 4 or absf(float(blast.get("aoe_target_diminish", -1.0)) - 3.0) > 0.001:
-		errors.append("blast_powder aoe cap != 4/3.0 (silent-retune?): full=%s diminish=%s" % [str(blast.get("aoe_full_targets", -1)), str(blast.get("aoe_target_diminish", -1.0))])
+	if int(blast.get("aoe_full_targets", -1)) != 2 or absf(float(blast.get("aoe_target_diminish", -1.0)) - 3.0) > 0.001:
+		errors.append("blast_powder aoe cap != 2/3.0 (silent-retune?): full=%s diminish=%s" % [str(blast.get("aoe_full_targets", -1)), str(blast.get("aoe_target_diminish", -1.0))])

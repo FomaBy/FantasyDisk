@@ -264,6 +264,7 @@ func _test_orbit_integration(errors: Array) -> void:
 	var cfg: Dictionary = PD.weapon("elementalist", "elementalist_orb_ring").duplicate(true)
 	cfg["orbit_full_targets"] = 4
 	cfg["orbit_target_diminish"] = 1.0
+	cfg["orbit_max_targets"] = -1  # изолируем ДИМИНИШ-канал от ЖЁСТКОГО кап-ширины (coverage_cap_gate тестирует его отдельно; FAN-1031 3d real orbit_max=4)
 	var weapon := _new_weapon(owner, cfg)
 	var center: Vector2 = owner.global_position
 	var half_size: float = float(weapon.get("aoe_radius")) * 0.72
@@ -295,6 +296,7 @@ func _test_orbit_integration_control(errors: Array) -> void:
 	var cfg: Dictionary = PD.weapon("elementalist", "elementalist_orb_ring").duplicate(true)
 	cfg.erase("orbit_full_targets")
 	cfg.erase("orbit_target_diminish")
+	cfg["orbit_max_targets"] = -1  # A/B-контроль диминиша: снимаем и жёсткий кап-ширины (изоляция канала)
 	var weapon := _new_weapon(owner, cfg)
 	var center: Vector2 = owner.global_position
 	var half_size: float = float(weapon.get("aoe_radius")) * 0.72
@@ -323,12 +325,12 @@ func _test_real_configs_and_constants(errors: Array) -> void:
 	# blast_powder — прямой AoE-путь (aoe_projectile → _damage_aoe_projectile_explosion), НЕ
 	# falloff: его геометрию режем S1-полями aoe_full_targets/aoe_target_diminish = 4/3.0.
 	var blast: Dictionary = PD.weapon("chemist", "blast_powder")
-	if int(blast.get("aoe_full_targets", -1)) != 4 or absf(float(blast.get("aoe_target_diminish", -1.0)) - 3.0) > 0.001:
-		errors.append("blast_powder aoe cap != 4/3.0 (silent-retune?): full=%s diminish=%s" % [str(blast.get("aoe_full_targets", -1)), str(blast.get("aoe_target_diminish", -1.0))])
+	if int(blast.get("aoe_full_targets", -1)) != 2 or absf(float(blast.get("aoe_target_diminish", -1.0)) - 3.0) > 0.001:
+		errors.append("blast_powder aoe cap != 2/3.0 (silent-retune?): full=%s diminish=%s" % [str(blast.get("aoe_full_targets", -1)), str(blast.get("aoe_target_diminish", -1.0))])
 	if blast.has("falloff_full_targets") or blast.has("orbit_full_targets"):
 		errors.append("blast_powder НЕ должен нести falloff/orbit-override (его канал — прямой AoE); нашли falloff=%s orbit=%s" % [str(blast.get("falloff_full_targets")), str(blast.get("orbit_full_targets"))])
-	# falloff-рычаг проведён в _damage_enemies_in_circle_falloff, но НЕ переопределён нигде —
-	# готовый knob для калибровочной полосы (cursed_skull burst уже де-эскалирован 3c-b).
+	# falloff-рычаг: FAN-1031 3d переопределён на priest_reliquary (крауд-драйвер Священника,
+	# 4/1.5) — остальные оружия его НЕ несут (dark_mage burst де-эскалирован numeric'ом).
 	for entry in [["dark_mage", "cursed_skull"], ["dark_mage", "dark_wand"]]:
 		var cfg: Dictionary = PD.weapon(entry[0], entry[1])
 		if cfg.has("falloff_full_targets") or cfg.has("falloff_target_diminish"):
