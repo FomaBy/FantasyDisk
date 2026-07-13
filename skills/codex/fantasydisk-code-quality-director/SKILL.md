@@ -101,8 +101,8 @@ filtered run is not a substitute for the required changed/full profile.
    `origin/dev`.
 3. Clean `.godot/`, `__pycache__/`, generated `.uid`, scratch reports, and local
    test data before commit.
-4. Commit with the live issue ID. Disable any background autoland hook for the
-   commit, then push/merge synchronously according to root `AGENTS.md`.
+4. Commit with the live issue ID. Assert no repo-owned background autoland hook
+   is active, then push/merge synchronously according to root `AGENTS.md`.
 5. Verify the exact tested commit is present in remote `dev`. Post the commands,
    results, report path, remaining risks, and external owner actions to the
    Multica issue. Move to `in_review`; only independent QA may close it.

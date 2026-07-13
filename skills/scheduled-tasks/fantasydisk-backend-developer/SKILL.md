@@ -14,7 +14,7 @@ Use this for a backend worker run inside a FantasyDisk checkout. Follow repo
   `FAN-*`, driven via the `multica` CLI. Local task files and board rows are
   mirrors only. Legacy Jira (`SCRUM-*`) is a read-only archive; never claim or
   sync work there (see `docs/process/jira_to_multica_cutover.md`).
-- Work exactly one backend Multica issue before editing.
+- Work exactly the one backend Multica issue assigned to this agent before editing.
 - Work on `dev`; never push to `main`.
 - Stay in backend scope: gameplay code, GDScript, balance implementation,
   runtime UI glue, tests, and docs. Create handoffs for art/animation/QA.
@@ -42,10 +42,10 @@ git fetch origin --prune
 git pull --ff-only origin dev
 ```
 
-3. Post start/heartbeat evidence: owner, task/run id, workdir/branch, locked
-   paths and next gate. Move a valid unassigned/manual issue to `in_progress`
-   with `multica issue status <FAN-issue-id> in_progress`; an agent-assigned run
-   must not claim a second issue.
+3. Re-read and require this agent's exact `assignee_id`; never select an
+   unassigned issue. Post start/heartbeat evidence through `--content-file`:
+   owner, task/run id, workdir/branch, locked paths and next gate. Then move the
+   assigned issue to `in_progress`; never claim a second issue.
 4. Stay in backend scope: gameplay/runtime code, balance implementation, tests
    and docs. Create Multica child handoffs for Design, Animator or QA work.
 5. Run focused checks and `python3 tools/quality_gate.py --profile changed`.

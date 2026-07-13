@@ -233,28 +233,24 @@ review/QA → `in_review`, done (только после QA PASSED) → `done`; 
 ## Фоновые Воркеры (с 2026-06-11; ИСТОЧНИК ЗАДАЧ — MULTICA)
 
 > **Статус 2026-07-13 (cutover):** источник задач — Multica (проект `FantasyDisk`,
-> `FAN-*`). Активные role workers/heartbeats берут задачи **только из Multica
-> current sprint** через claim-first, а НЕ из локальной доски. Доска — сверочный
+> `FAN-*`). Активные role workers получают задачи **только через single
+> dispatcher assignment** в Multica, а НЕ из локальной доски. Доска — сверочный
 > кэш, не очередь задач.
 
-Когда флот активен, запланированные воркера (Claude Desktop → раздел Scheduled;
-работают, пока приложение открыто):
+Legacy Claude Desktop scheduled workers больше не являются task-pull флотом.
+Активный флот запускается через Multica daemon:
 
-- backend-воркеры ×3: `fantasydisk-backend-board-worker` (0),
-  `-worker-2` (+3), `-worker-3` (+1, добавлен 2026-06-13 под Quality Pass 0.1.4) —
-  каждые
-  ~5 минут: берут по одному **Multica issue** (`FAN-*`) из active sprint с
-  matching role/lane label, claim-first через Multica (взять назначенную/eligible
-  FAN issue и `multica issue status <FAN-id> in_progress` + стартовый комментарий),
-  выполняют полностью (клейм в Multica → код → тесты → документация →
-  коммит/push в dev → done).
-- `fantasydisk-designer-board-worker` (+2) — то же для роли Design + Design-ревью.
-  Для Codex Design pool auto-pull PM обязан добавлять worker-scope label:
-  `design-main` или `designer2`; общий label `design` без этого не забирается
-  автоматически.
-- QA-воркеры ×2: `fantasydisk-qa-board-worker` (+4) и `-worker-2` (+2, добавлен
-  2026-06-13) — приёмка done по qa_protocol, claim-first против гонок.
-  Итого флот: backend×3, design×1, qa×2 (работают пока открыт Claude Desktop).
+- dispatcher проверяет `todo`/`in_review`/`in_progress`, assignee, comments и
+  locked paths;
+- свободную issue он одним update паркует в `backlog` с exact agent UUID,
+  перепроверяет ownership, пишет assignment comment и переводит в `todo`;
+- daemon worker принимает только назначенную issue, переводит её в
+  `in_progress`, выполняет один scope, пушит и останавливается;
+- QA получает отдельную child review issue, чтобы не перезаписывать owner
+  реализации.
+
+Несколько dispatchers запрещены: CLI пока не имеет atomic
+`claim-if-unassigned/expected-status`.
 
 **Анти-коллизия (урок сломанного HEAD SCRUM-171, 2026-06-13):** два backend-воркера
 не берут задачи с пересекающимися основными файлами — особенно
@@ -278,10 +274,11 @@ review/QA → `in_review`, done (только после QA PASSED) → `done`; 
 ## Documentation Dispatcher И Role Heartbeats (Codex)
 
 Codex Documentation dispatcher регулярно смотрит Multica как authoritative queue
-и сверяет local mirrors, но обычные свободные current-sprint задачи role windows
-могут брать сами через Multica claim-first. Dispatcher не пишет код, не рисует
+и сверяет local mirrors. Он является единственным writer для назначения свободных
+задач: резервирует exact agent UUID, перепроверяет ownership и enqueue'ит issue.
+Role windows не берут unassigned задачи сами. Dispatcher не пишет код, не рисует
 ассеты, не делает анимации и не запускает release flow; он проверяет зависимости,
-дубли, active owner state, Multica/local mirror sync, спорные cases и ручные handoff.
+дубли, active owner state, Multica/local mirror sync и handoff.
 
 Существующие role windows:
 
@@ -291,21 +288,19 @@ Codex Documentation dispatcher регулярно смотрит Multica как 
 - Animator: `019eb156-710c-71f0-8903-eada762dceb3`.
 
 Role heartbeat в этих окнах не является разрешением брать любую свободную строку
-из локальной доски. Он может:
+из локальной доски или Multica. Он может:
 
-- claim'ить одну eligible Multica issue (`FAN-*`) из active sprint: взять
-  назначенную/eligible FAN issue для своей роли/lane (для Design main/Designer 2
-  — по label `design-main`|`designer2`) и заклеймить через
-  `multica issue status <FAN-id> in_progress` + стартовый комментарий;
-- продолжать уже назначенную/claimed этому thread задачу (`Контур: Codex`,
+- принять одну Multica issue (`FAN-*`) только если exact `assignee_id` совпадает
+  с worker; затем поставить `in_progress` и стартовый `--content-file` comment;
+- продолжать уже назначенную этому thread задачу (`Контур: Codex`,
   совпадающий `Owner/Thread`, непересекающиеся dirty files);
 - синхронизировать явно записанный результат/QA verdict;
 - отвечать `DONT_NOTIFY`, если в Multica не нашлось eligible issue и нет активной
   continuation.
 
-Он не должен self-select'ить `new` rows из общей доски. Ownership появляется
-только после Multica claim/comment/status или явного dispatcher/PM dispatch; затем
-task-файл/board обновляются как зеркало.
+Он не должен self-select'ить `new` rows или unassigned Multica issues. Ownership
+появляется только после verified dispatcher assignment; затем task-файл/board
+обновляются как зеркало.
 
 Одноразовые Codex worker-чаты, созданные автоматизациями для конкретного run,
 должны архивировать себя после завершения или truthful blocker/no-task отчёта.

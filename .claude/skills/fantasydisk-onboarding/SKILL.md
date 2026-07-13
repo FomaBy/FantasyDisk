@@ -29,12 +29,13 @@ multica issue get <FAN-issue-id> --output json
 multica issue comment list <FAN-issue-id> --recent 10 --output json
 ```
 
-You work the Multica issue assigned to you (or an eligible unassigned one). Claim
-by moving it to `in_progress` and posting a start comment with owner/lane/locked
-paths:
+Work only the Multica issue whose exact `assignee_id`/owner matches you. Never
+self-select an unassigned issue. After verification, move it to `in_progress`
+and post a start comment with owner/lane/locked paths through `--content-file`:
 
 ```bash
 multica issue status <FAN-issue-id> in_progress
+multica issue comment add <FAN-issue-id> --content-file ./start.md
 ```
 
 Check `multica issue comment list <id> --recent 10` for the latest owner/handoff

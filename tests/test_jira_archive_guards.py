@@ -4,6 +4,7 @@
 from __future__ import annotations
 
 import os
+import ast
 import subprocess
 import sys
 import unittest
@@ -18,6 +19,8 @@ RETIRED_TOOLS = (
     "jira_qa_next.py",
     "jira_release_stuck.py",
 )
+JIRA_ARCHIVE_PROJECT_ID = "a2cb75b5-d6c9-451c-8a29-4d267f09d67d"
+LIVE_FANTASYDISK_PROJECT_ID = "2ac963eb-b644-4540-8042-a1a4508f1a65"
 
 
 class JiraArchiveGuardTest(unittest.TestCase):
@@ -56,6 +59,46 @@ class JiraArchiveGuardTest(unittest.TestCase):
         ).read_text(encoding="utf-8")
         self.assertNotIn("jira_board_sync", source)
         self.assertNotIn("Jira: pending sync", source)
+
+    def test_archive_importer_jira_requests_are_get_only(self) -> None:
+        path = ROOT / "tools/jira_to_multica.py"
+        tree = ast.parse(path.read_text(encoding="utf-8"), filename=str(path))
+        request_calls = [
+            node
+            for node in ast.walk(tree)
+            if isinstance(node, ast.Call)
+            and isinstance(node.func, ast.Attribute)
+            and node.func.attr == "Request"
+        ]
+        self.assertTrue(request_calls)
+        for call in request_calls:
+            methods = [kw.value for kw in call.keywords if kw.arg == "method"]
+            for method in methods:
+                self.assertIsInstance(method, ast.Constant)
+                self.assertEqual("GET", method.value)
+
+    def test_archive_importer_rejects_live_project_before_jira_access(self) -> None:
+        env = os.environ.copy()
+        env.pop("JIRA_API_TOKEN", None)
+        result = subprocess.run(
+            [
+                sys.executable,
+                str(ROOT / "tools/jira_to_multica.py"),
+                "--apply",
+                "--project",
+                LIVE_FANTASYDISK_PROJECT_ID,
+            ],
+            cwd=ROOT,
+            env=env,
+            text=True,
+            stdout=subprocess.PIPE,
+            stderr=subprocess.PIPE,
+            timeout=5,
+            check=False,
+        )
+        self.assertEqual(2, result.returncode)
+        self.assertIn(JIRA_ARCHIVE_PROJECT_ID, result.stderr)
+        self.assertNotIn("JIRA_API_TOKEN is required", result.stderr)
 
 
 if __name__ == "__main__":

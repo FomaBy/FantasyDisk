@@ -39,9 +39,9 @@ Autonomy and approval:
 Role boundaries:
 - A PM chat forms requirements and issues tasks; its workflow is `docs/process/pm_workflow.md`. Since the 2026-07-13 cutover Multica is the authoritative task queue/status/ownership source (workspace/project `FantasyDisk`, issues `FAN-*`, `multica` CLI); `docs/process/task_board.md` and `docs/tasks/*.md` are local mirrors/spec/evidence, not the source of new work. Legacy Jira (`SCRUM-*`) is a read-only historical archive (see `docs/process/jira_to_multica_cutover.md`).
 - Design, Back-end, and Animator agents must do only their own discipline-specific work: Design owns art/sprites/UI visuals, Back-end owns logic/code/balance/tests, Animator owns motion/rigs/animation states.
-- New work is taken from the live Multica board (project `FantasyDisk`), not from the local board or Jira. A role agent works exactly one eligible `FAN-*` issue for its role/lane — the issue assigned to it, or an eligible unassigned one it claims via `multica issue status <FAN-id> in_progress` — then updates local mirrors only as bookkeeping. They must not self-select a local `new` row, a wrong-lane issue, a blocked/hold/review-gated issue, or any issue with active owner/locked-path overlap.
+- New work is taken from the live Multica board (project `FantasyDisk`), not from the local board or Jira. A daemon role agent works exactly the one `FAN-*` issue assigned to its exact agent UUID and never self-selects an unassigned issue. The single dispatcher reserves ownership before enqueue; a direct user control chat may own an unassigned issue only after a duplicate/lock audit and an explicit owner comment. Local mirrors are bookkeeping only. Agents must not self-select a local `new` row, a wrong-lane issue, a blocked/hold/review-gated issue, or any issue with active owner/locked-path overlap.
 - Single-owner rule: before taking or routing work, check the Multica issue status/comments/assignee/labels first, then local task file, board row, recent role-thread messages, and dirty worktree. If any recent dispatch note, `in_progress` status, owner/thread id, Multica assignee/comment, or overlapping active file/asset scope exists, do not take or resend the task.
-- Parallel Codex/Claude rule: every active task belongs to exactly one execution lane, `Контур: Codex`, `Контур: Claude`, or `Контур: OtherAI`, and must record `Owner`, `Thread/Worker`, and locked files/assets/screens before work starts. Codex/Claude/other AI work autonomously only on tasks whose Multica labels/comments match their lane and which they have claimed in Multica; every other lane must skip them. Review/fix work across lanes requires a separate review or bug issue after the owner records a result; do not edit the same files in both lanes at the same time.
+- Parallel Codex/Claude rule: every active task belongs to exactly one execution lane, `Контур: Codex`, `Контур: Claude`, or `Контур: OtherAI`, and must record `Owner`, `Thread/Worker`, and locked files/assets/screens before work starts. Codex/Claude/other AI work autonomously only on tasks whose exact Multica assignee/owner comment matches their lane; every other lane must skip them. Review/fix work across lanes requires a separate review or bug issue after the owner records a result; do not edit the same files in both lanes at the same time.
 - Design pool rule: Design main and Designer 2 are separate owners, not a shared queue. A Design task must name exactly one active Design owner/thread while in progress. The other Design thread may review only when explicitly asked, and must not start the same task or a task with overlapping source assets/screens.
 - If a task needs another discipline, create/update a `.md` handoff task in `docs/tasks/` (mirroring a Multica handoff issue) and send it to the correct chat instead of doing that specialist's work directly.
 - Use `docs/process/agent_role_boundaries_and_handoffs.md` as the source of truth for ownership and handoff format.
@@ -55,10 +55,12 @@ Role boundaries:
 0. **Новая задача** → сначала Multica issue в проекте `FantasyDisk`; локальные
    `.md` и task board обновляются только как spec/evidence mirror. Не брать работу
    из локальной доски, если в Multica нет этой задачи с owner/status.
-1. **Взял в работу** → `multica issue status <FAN-id> in_progress` + start-comment
-   с owner/thread/locked paths + локальный `.md` mirror `in_progress` при наличии.
-   Не работать «в тени», не отразив это в Multica. Берётся ровно одна назначенная
-   тебе или свободная eligible issue (`multica issue get <FAN-id> --output json`).
+1. **Взял в работу** → сначала `multica issue get <FAN-id> --output json` и
+   подтвердить точный assignee/owner, затем `multica issue status <FAN-id>
+   in_progress` + start-comment через `--content-file` с owner/thread/locked
+   paths + локальный `.md` mirror `in_progress` при наличии. Не работать «в
+   тени». Daemon worker берёт только назначенную ему issue; свободные issues
+   резервирует и назначает единственный dispatcher.
 2. **Завершил** → Multica comment + `multica issue status <FAN-id> in_review` и
    `.md` mirror `done` с резюме, если есть локальная спецификация (после
    QA-вердикта PASSED issue → `done`). Закрытая работа ОБЯЗАНА быть отражена в Multica.
@@ -181,19 +183,17 @@ Versioning:
 - All implementation tasks should be done on `dev` unless a task explicitly says otherwise.
 - Check the current branch before making changes; do not do ordinary feature work directly on `main`.
 
-Auto-land to dev (user directive, 2026-07-03):
-- КАЖДЫЙ чат/агент сразу лендит свой коммит в `dev` — локально И на `origin` —
-  но ТОЛЬКО если коммит зелёный (проходит `tests/runtime_smoke_test.gd`).
-- Механизм: repo-tracked `post-commit` хук `.githooks/post-commit`, включённый
-  через `core.hooksPath` (ставит `scripts/onboard.sh` в каждом клоне/worktree).
-  Хук фоновый: коммит агента возвращается мгновенно, smoke+ленд идут в фоне,
-  живую ветку чата НЕ трогают (ff-пуш или merge в одноразовом temp worktree).
-- Красный smoke → коммит НЕ лендится, остаётся на ветке чата до следующего
-  зелёного. Лог: `<git-common-dir>/autoland.log`.
-- Выключатели: `FSD_NO_AUTOLAND=1` (разово/сессионно), `git config --unset
-  core.hooksPath` (в клоне), `FSD_AUTOLAND_SKIP_SMOKE=1` (лендить без smoke).
-- Это НЕ отменяет QA-борд: смоук — минимальный green-gate, не полноценная
-  приёмка; статусы Multica/доски ведём как раньше.
+Synchronous landing to dev (updated 2026-07-13):
+- Repo-owned background autoland is retired. Do not install `post-commit`
+  landing hooks or detach smoke/test/push processes.
+- Run the task-required quality gate synchronously, fetch current `origin/dev`,
+  integrate safely, push the verified commit to `dev`, then wait for exact-SHA
+  GitHub checks and record their result in Multica.
+- A red local or GitHub gate is not landed/complete evidence. Fix it on the task
+  branch and rerun; never rely on a future background notification after the
+  owning Multica turn exits.
+- This is still only the engineering green gate. Independent QA and truthful
+  Multica status remain mandatory.
 
 Full autonomy (user directive, 2026-06-12):
 - ALL agents (Claude chats, board workers, QA, Codex threads) work autonomously:

@@ -156,8 +156,9 @@ it or perform cleanup after confirming the branch/commit/evidence is pushed.
   PM сразу заполняет в Multica/local mirror `Контур: Codex`, `Owner`, `Thread`,
   `Locked paths` и Multica comment.
 - `Claude`: PM/другая LLM создаёт Multica issue с `Контур: Claude` и local mirror
-  при необходимости. Claude Code/воркеры могут self-claim только такие issues и только если нет
-  active owner/locked-path конфликта.
+  при необходимости. Единственный dispatcher резервирует её exact Claude agent
+  UUID, перепроверяет ownership и переводит в `todo`; worker не self-claim'ит
+  свободные issues.
 - `QA`: QA выбирает `done` без QA verdict по `docs/process/qa_protocol.md`.
   QA не редактирует реализацию, а создаёт bug/follow-up задачи.
 

@@ -34,6 +34,8 @@ BANNED_LIVE_JIRA_PHRASES = (
     "Jira is mandatory and authoritative",
     "Jira является единым authoritative",
     "сначала Jira issue",
+    "claim-first",
+    "eligible unassigned",
 )
 
 

@@ -5,6 +5,9 @@ description: "Use this skill when designing, auditing, rebalancing, implementing
 
 # FantasyDisk Class Balance Director
 
+Work only from the assigned Multica `FAN-*` issue and keep its owner, evidence,
+and QA status truthful.
+
 ## Overview
 
 Use this skill to balance FantasyDisk classes as complete three-weapon kits, not as isolated weapons. The goal is equal aggregate class effectiveness across solo targets, AoE or crowd pressure, and defensive mechanics, while every individual weapon keeps a distinct gameplay identity.

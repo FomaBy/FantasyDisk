@@ -64,18 +64,19 @@ link_skills() {
 printf 'Linking Codex skills...\n'
 link_skills "$REPO_ROOT/skills/codex" "$HOME/.codex/skills"
 
-# (3) Claude skills: <repo>/skills/claude/* -> ~/.claude/skills/<name>
+# (3) Claude skills: <repo>/.claude/skills/* -> ~/.claude/skills/<name>
 printf 'Linking Claude skills...\n'
-link_skills "$REPO_ROOT/skills/claude" "$HOME/.claude/skills"
+link_skills "$REPO_ROOT/.claude/skills" "$HOME/.claude/skills"
 
-# (4) Auto-land hook: каждый чат/агент сразу лендит зелёные коммиты в dev
-#     (локально + origin). core.hooksPath — per-repo config, поэтому ставим его
-#     в КАЖДОМ клоне/worktree при онбординге. Идемпотентно.
-if [ -x "$REPO_ROOT/.githooks/post-commit" ]; then
-  git -C "$REPO_ROOT" config core.hooksPath "$REPO_ROOT/.githooks"
-  printf 'Auto-land hook enabled (core.hooksPath -> %s/.githooks)\n' "$REPO_ROOT"
-  printf '  (отключить в этом клоне: git config --unset core.hooksPath  |  разово: FSD_NO_AUTOLAND=1)\n'
-fi
+# (4) Remove only the retired repo-owned background autoland hook setting.
+#     Preserve any unrelated custom hooksPath configured by the user.
+LEGACY_HOOKS_PATH="$(git -C "$REPO_ROOT" config --get core.hooksPath 2>/dev/null || true)"
+case "$LEGACY_HOOKS_PATH" in
+  .githooks|"$REPO_ROOT/.githooks")
+    git -C "$REPO_ROOT" config --unset core.hooksPath
+    printf 'Retired background autoland hook disabled.\n'
+    ;;
+esac
 
 # (5) Multica runtime check. Onboarding stays usable on machines that only run
 #     the game, so a missing CLI is a warning rather than a failure.

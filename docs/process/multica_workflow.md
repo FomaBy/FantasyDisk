@@ -61,6 +61,8 @@ multica issue list --project 2ac963eb-b644-4540-8042-a1a4508f1a65 \
   --status in_review --limit 100 --output json
 multica issue list --project 2ac963eb-b644-4540-8042-a1a4508f1a65 \
   --status backlog --limit 100 --output json
+multica issue list --project 2ac963eb-b644-4540-8042-a1a4508f1a65 \
+  --status todo --limit 100 --output json
 ```
 
 Сверить title/description, parent/child relations, assignee, comments, active
@@ -74,7 +76,7 @@ priority, проверяемым описанием и acceptance criteria:
 ```bash
 multica issue create \
   --title "<краткий результат>" \
-  --description "<контекст, scope, acceptance, docs/tests, locked paths>" \
+  --description-file ./issue-description.md \
   --project 2ac963eb-b644-4540-8042-a1a4508f1a65 \
   --status todo \
   --priority <urgent|high|medium|low> \
@@ -89,23 +91,32 @@ sprint.
 
 ### Multica daemon agent
 
-Для автономного запуска назначить issue ровно одному агенту:
+CLI пока не имеет compare-and-swap claim, поэтому свободные задачи назначает
+ровно один активный dispatcher. Он резервирует parked issue без запуска daemon,
+перепроверяет exact UUID и только затем ставит `todo`:
 
 ```bash
-multica issue assign FAN-123 --to Codex
-multica issue assign FAN-124 --to Claude
+multica issue update FAN-123 --status backlog \
+  --assignee-id 4eccbced-60b5-4e7a-87fd-d9f3699d3bed --output json
+multica issue get FAN-123 --output json
+multica issue comment add FAN-123 --content-file ./assignment.md
+multica issue status FAN-123 todo
 ```
 
-Назначение создаёт task в очереди Multica. Daemon выдаёт изолированный workdir,
-запускает соответствующий CLI и сохраняет run, messages, session и usage.
-Нельзя одновременно назначить issue агенту и выполнять тот же scope вручную в
-другом чате.
+Переход зарезервированной назначенной issue в `todo` создаёт task в очереди.
+Daemon worker начинает работу только после повторной проверки собственного exact
+assignee UUID; он не ищет и не claim'ит свободную issue. Для QA создаётся
+отдельная child review issue, чтобы не перезаписывать owner реализации.
+Параллельные dispatchers запрещены, пока сервер не поддерживает
+`claim-if-unassigned/expected-status`. Нельзя одновременно назначить issue
+daemon-агенту и выполнять тот же scope вручную в другом чате.
 
 ### Текущий пользовательский control chat
 
 Если Codex/Claude уже получил прямой запрос пользователя и выполняет его в
 текущем чате, issue создаётся или обновляется без agent assignment, переводится
-в `in_progress`, а первый комментарий содержит:
+в `in_progress` только после duplicate/lock audit, а первый комментарий через
+`--content-file` содержит:
 
 ```text
 Owner: Codex|Claude / <thread-or-control-chat>
@@ -168,8 +179,9 @@ git pull --ff-only origin dev
 ```
 
 Если безопасный sync невозможен, не начинать edits: записать blocker в Multica.
-Готовый зелёный результат коммитится только в task-owned scope и сразу
-отправляется в `origin/dev` по действующей direct-dev/autoland политике проекта.
+Готовый зелёный результат коммитится только в task-owned scope. Gate, sync,
+push и exact-SHA GitHub check выполняются синхронно; background autoland/hooks
+запрещены.
 
 Issue нельзя считать review-ready или done, пока комментарий не содержит:
 
@@ -210,7 +222,7 @@ Multica issue.
 ## Комментарии, runs и usage
 
 ```bash
-multica issue comment add FAN-123 --content "<heartbeat/evidence>"
+multica issue comment add FAN-123 --content-file ./evidence.md
 multica issue update FAN-123 --status in_review
 multica issue runs FAN-123
 multica issue run-messages <task-id>
@@ -236,11 +248,13 @@ Multica issue timeline является журналом решений и evide
 
 ## Legacy Jira
 
-`docs/process/jira_sync.md`, `tools/jira_next_task.py`,
-`tools/jira_board_sync.py`, `tools/jira_qa_next.py` и `tools/jira_to_multica.py`
-сохранены для истории, аудита или односторонней архивной миграции. Они не входят
-в обычный Codex/Claude workflow и не должны создавать или изменять Jira issues
-без отдельной явной пользовательской команды на legacy operation.
+`docs/process/jira_sync.md` сохранён как история. `tools/jira_next_task.py`,
+`tools/jira_board_sync.py`, `tools/jira_qa_next.py`, `tools/jira_qa_helper.py` и
+`tools/jira_release_stuck.py` — fail-closed stubs без credentials/network и не
+могут читать или изменять Jira. `tools/jira_to_multica.py` — единственное
+исключение: GET-only importer завершённой истории в точный Multica project
+`Jira Archive`; он никогда не изменяет Jira и не может писать в live FantasyDisk
+project.
 
 Плановый cutover gate из `multica_migration_and_ai_operations.md` superseded
 прямой пользовательской директивой 2026-07-13. Возврат к Jira возможен только по

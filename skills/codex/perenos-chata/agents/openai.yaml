@@ -1,4 +1,4 @@
 interface:
   display_name: "Перенос рабочего чата"
-  short_description: "Переносит чат с Jira/Git-контекстом"
-  default_prompt: "Use $perenos-chata to перенести этот рабочий чат в новый thread с актуальным Jira/Git состоянием и безопасным архивированием."
+  short_description: "Переносит чат с tracker/Git-контекстом"
+  default_prompt: "Use $perenos-chata to перенести этот рабочий чат в новый thread с актуальным Multica FAN-*/Git состоянием и безопасным архивированием."

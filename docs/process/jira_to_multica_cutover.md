@@ -62,10 +62,12 @@
 - `tools/jira_next_task.py` — claim-first авто-взятие Jira (заменено назначением
   Multica issue / `multica issue …`).
 - `tools/jira_board_sync.py` — синк `.md` ↔ Jira (Multica timeline — сам record).
-- `tools/jira_qa_next.py`, `tools/jira_qa_helper.py`, `tools/jira_release_stuck.py`
-  — Jira QA/release хелперы.
-- `tools/jira_to_multica.py` — одноразовый архивный importer (см. runbook); не
-  cutover сам по себе.
+- `tools/jira_next_task.py`, `tools/jira_board_sync.py`, `tools/jira_qa_next.py`,
+  `tools/jira_qa_helper.py`, `tools/jira_release_stuck.py` — сохранённые имена
+  теперь являются fail-closed stubs без credential/network access.
+- `tools/jira_to_multica.py` — GET-only архивный importer (см. runbook), который
+  принимает apply/verify только для pinned project ID `Jira Archive` и не может
+  записать историю в live FantasyDisk project.
 - Скиллы `skills/codex/jira-create-ticket/`, `skills/codex/jira-move-children/`
   — generic Jira-tooling, не часть FantasyDisk Multica-потока.
 - `docs/process/jira_sync.md`, `docs/process/jira_epics.json`,
@@ -77,17 +79,20 @@
 - [x] Jira Archive проект существует, issues unassigned + `done`, `jira_key`/`jira_url` в metadata;
 - [x] live dev board ведётся в Multica (проект FantasyDisk, `FAN-*`);
 - [x] QA-gate: Done только после QA PASSED (`in_review` → QA → `done`);
-- [x] активные onboarding/process/worker инструкции переведены на Multica атомарно (FAN-1044);
-- [x] Jira-хелперы/скиллы помечены archive-only и убраны из normal flow;
+- [x] активные onboarding/process/worker инструкции переведены на Multica и
+      race-safe single-dispatcher contract (FAN-1044/FAN-1048/FAN-1050);
+- [x] Jira-хелперы fail-closed, default asset side effect удалён, skills покрыты
+      рекурсивным regression guard (FAN-1050);
 - [x] регрессионный тест не даёт направить нового агента (Codex/Claude) в Jira
       (`tests/test_multica_cutover_onboarding.py`);
-- [x] онбординг проверен на чистом клоне (`bash scripts/onboard.sh`);
+- [x] онбординг проверен на macOS с изолированным HOME; реальные Codex/Claude
+      skill links созданы, legacy `core.hooksPath=.githooks` удалён;
 - [x] владелец проекта явно одобрил cutover (см. «Запись решения»).
 
 ## Rollback
 
-Пока держится 30-дневное окно Jira-архива, rollback возможен по процедуре
-«Rollback» в [`multica_migration_and_ai_operations.md`](multica_migration_and_ai_operations.md):
-остановить новые Multica assignments, вернуть незавершённые issues в Jira по
-сохранённому `jira_key`, восстановить Jira-first dispatcher, зафиксировать incident.
-Multica-данные не удалять до анализа.
+Jira остаётся read-only архивом. Возврат к Jira как live tracker не является
+операционным rollback и требует новой прямой пользовательской директивы, нового
+review и отдельного migration tooling. При инциденте остановить новые Multica
+assignments, сохранить issues/runs/evidence и исправить или восстановить Multica;
+архивные и Multica-данные не удалять до анализа.

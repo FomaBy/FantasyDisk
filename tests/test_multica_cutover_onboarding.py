@@ -58,7 +58,7 @@ AUTHORITY_SURFACES = tuple(
     for rel in ACTIVE_SURFACES
     if rel in CORE_ACTIVE_SURFACES
     or (rel.startswith("skills/codex/fantasydisk-") and rel.endswith("/SKILL.md"))
-    or rel == "skills/codex/perenos-chata/SKILL.md"
+    or rel.startswith("skills/codex/perenos-chata/")
 )
 
 # Legacy Jira helper scripts / mechanisms. An active surface that invokes any of
@@ -147,7 +147,7 @@ class CutoverOnboardingTest(unittest.TestCase):
 
     def test_active_surfaces_name_multica_as_authoritative(self):
         """Every active surface must positively point at the Multica tracker."""
-        signals = ("fan-", "fan_id", "multica issue", "`multica`", "multica cli", "проект `fantasydisk`")
+        signals = ("fan-", "fan_id", "fan id", "multica issue", "`multica`", "multica cli", "проект `fantasydisk`")
         for rel in AUTHORITY_SURFACES:
             lowered = normalized(rel)
             self.assertIn("multica", lowered, f"{rel} never mentions Multica")
@@ -176,6 +176,29 @@ class CutoverOnboardingTest(unittest.TestCase):
         text = read("scripts/onboard.sh").lower()
         self.assertIn("multica-only rule", text)
         self.assertNotIn("jira-only rule", text)
+
+    def test_onboard_links_real_claude_skills_without_background_autoland(self):
+        text = read("scripts/onboard.sh")
+        self.assertIn('$REPO_ROOT/.claude/skills', text)
+        self.assertNotIn('$REPO_ROOT/skills/claude', text)
+        self.assertNotIn("Auto-land hook enabled", text)
+        self.assertFalse((ROOT / ".githooks/post-commit").exists())
+
+    def test_policy_forbids_worker_self_claim(self):
+        for rel in (
+            "AGENTS.md",
+            "skills/scheduled-tasks/fantasydisk-backend-developer/SKILL.md",
+        ):
+            text = normalized(rel)
+            with self.subTest(path=rel):
+                self.assertNotIn("eligible unassigned one it claims", text)
+                self.assertNotIn("valid unassigned/manual issue", text)
+                self.assertIn("assignee", text)
+
+    def test_multica_examples_use_safe_body_transport(self):
+        workflow = read("docs/process/multica_workflow.md")
+        self.assertNotIn('comment add FAN-123 --content "', workflow)
+        self.assertIn("comment add FAN-123 --content-file", workflow)
 
     def test_dispatcher_discovers_queue_and_reserves_one_owner(self):
         text = read("skills/codex/fantasydisk-agent-dispatcher/SKILL.md")

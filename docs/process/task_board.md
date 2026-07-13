@@ -108,12 +108,13 @@ QA-пройден (стартовая разведка читала старый
 SCRUM-474 (скелетная анимация, был USER HOLD), SCRUM-476 (ребаланс наград событий),
 SCRUM-480 (рантайм-интеграция минимал-UI).
 
-**Sprint intake 2026-07-03 (user request):** создана и перенесена в active sprint
+**Historical sprint intake snapshot 2026-07-03 (user request):** до Multica
+cutover была создана и перенесена в active Jira sprint
 `Спринт 0.2.1` пара задач на следующий
 редизайн внутриигрового Кодекса в стиле Atlas/Settings v6: object-first,
 крупные изображения, краткая центральная область, подробная правая область и
 минимум рамок без смысловой нагрузки. Jira: `SCRUM-849`, `SCRUM-850` находятся
-в active sprint; брать только через claim-first и owner/locked-path проверку.
+в тогдашнем active sprint; это archive evidence, не live intake/claim инструкция.
 
 | Jira | Задача | Lane | Prio |
 | --- | --- | --- | --- |

@@ -5,6 +5,9 @@ description: "Use when creating, fetching, or integrating PixelLab MCP-created F
 
 # FantasyDisk PixelLab Animation Integrator
 
+Work only from the assigned Multica `FAN-*` issue and record source IDs,
+runtime paths, tests, and cleanup there.
+
 ## Purpose
 
 Create, fetch, and apply PixelLab character/creature packs to FantasyDisk characters, monsters, bosses, and summons. This skill replaces the old rig/sprite-sheet animation director for character runtime integration; PixelLab MCP is mandatory for new character source art and motion.

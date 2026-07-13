@@ -18,10 +18,9 @@ docs/process/jira_to_multica_cutover.md).
 Директива пользователя 2026-07-03: все задачи, которые пользователь добавляет
 в любые чаты, сразу заводятся в active Multica board; backlog допустим только при
 явном freeze/hold marker. Новые задачи текущего цикла берутся только из
-активной Multica board. PM/Documentation
-dispatcher может маршрутизировать задачи вручную, но role agents также могут
-автоматически брать одну eligible задачу своей роли/контура claim-first,
-с проверкой зависимостей и активного владельца.
+активной Multica board. PM/Documentation dispatcher является единственным writer
+назначения: role agents получают одну issue с exact `assignee_id`, но не берут
+eligible/unassigned работу самостоятельно.
 `docs/tasks/*.md` и `docs/process/task_board.md` — локальные mirrors/spec/evidence
 и dashboard/cache.
 
@@ -62,26 +61,29 @@ Multica + mirror `done` (или `in_review`) с коротким резюме р
 
 Пользователь заранее одобрил in-scope изменения, поэтому агенты не спрашивают разрешение на работу. Но cross-discipline работу нужно передавать правильному агенту.
 
-## Single-owner / Multica-pull Lock
+## Single-owner / Dispatcher Assignment Lock
 
 Новая работа попадает к исполнителю только из активной Multica board. Локальная
 доска не является очередью. Роль-агенты не выбирают `new` rows из
-`docs/process/task_board.md`, но могут автоматически claim'ить ровно одну
-eligible Multica issue (`FAN-*`) своей роли/контура через:
+`docs/process/task_board.md` и не claim'ят unassigned issues. Единственный
+dispatcher резервирует ровно одну parked Multica issue (`FAN-*`) exact UUID
+исполнителя, перепроверяет assignee/status, пишет lock comment и только затем
+enqueue'ит её переходом в `todo`:
 
 ```bash
-multica issue status <FAN-id> in_progress
+multica issue update <FAN-id> --status backlog --assignee-id <agent-uuid>
+multica issue get <FAN-id> --output json
+multica issue comment add <FAN-id> --content-file ./assignment.md
+multica issue status <FAN-id> todo
 ```
 
-Multica-pull разрешён только для issue на активной board, status `todo`,
-с role label, matching lane label, без `hold/user-hold/blocked`, без assignee и
-без признаков чужого owner/locked-path overlap. Claim-first comment/status в
-Multica является lock. После успешного claim агент обновляет локальный `.md`/board
-mirror только как bookkeeping.
+Worker принимает только issue со своим exact `assignee_id`, повторно проверяет
+comments/locks, переводит её в `in_progress` и обновляет локальный `.md`/board
+mirror только как bookkeeping. Свободная issue, status change без assignee или
+второй dispatcher не дают права начать работу.
 
-PM/Documentation dispatcher остаётся нужен для декомпозиции, handoff, спорных
-owner cases, duplicate cleanup, зеркал и ручного назначения задач, но он больше
-не является единственным способом выдать обычную unowned current-board задачу.
+PM/Documentation dispatcher остаётся единственным writer назначения до появления
+server-side compare-and-swap claim; параллельные dispatchers запрещены.
 
 Для параллельной работы Codex и Claude каждая активная задача должна иметь
 execution-lane metadata:

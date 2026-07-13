@@ -149,20 +149,22 @@ caches → spatial index. Renderer/import changes require visual and GPU-vendor 
 
 ### FAN-1043 — enforceable CI / exact merge candidate
 
-A basic `.github/workflows/quality.yml` now runs the certifying static profile on
-push/PR. It is not yet a required full Godot/native-Windows exact-merge check.
-`.githooks/post-commit` can still test the task SHA, create and push a different
-merge SHA in a detached process, and offers a skip flag. FAN-1043 therefore
-still owns task branches, required exact-merge checks, branch protection, merge
-queue, Windows-native correctness and scheduled performance.
+`.github/workflows/quality.yml` now asserts `GITHUB_SHA`, supports `merge_group`,
+and publishes a hashed exact-SHA report artifact. Repo-owned background
+`.githooks/post-commit` autoland was removed; onboarding cleans only that legacy
+hooksPath and landing is synchronous. FAN-1043 still owns required branch
+protection/merge queue enforcement (unavailable on the current private-plan
+settings), full Godot/native-Windows checks, and scheduled Windows performance.
 
 ### FAN-1044 — atomic Jira-to-Multica process cutover
 
-The live runtime/workspace uses Multica, while root onboarding, README, QA/version
-docs and scheduled worker skills still declare Jira authoritative. A partial
-wording change would leave split ownership, so FAN-1044 owns one atomic cutover
-and clean-clone verification. FAN-1040 adds the quality skill/gate but does not
-silently rewrite historical task evidence or Jira automation.
+FAN-1044/FAN-1048 landed the Multica policy and operational workflow. FAN-1050
+closed the independent QA blockers: Jira writers are fail-closed, active
+FantasyDisk skills are scanned recursively, asset generation cannot sync Jira,
+daemon workers require exact assignment, the single dispatcher reserves parked
+issues before enqueue, and macOS onboarding links both agent families without
+background autoland. Server-side compare-and-swap claim remains a Multica
+platform gap, so multiple simultaneous dispatchers are explicitly forbidden.
 
 ### FAN-1041 — feedback delivery security/lifecycle
 

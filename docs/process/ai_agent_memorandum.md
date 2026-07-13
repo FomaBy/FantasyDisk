@@ -212,25 +212,23 @@ Codex и Claude могут работать одновременно тольк�
 - task/Multica/board явно показывают разных owner;
 - review/fix не идёт параллельно с реализацией.
 
-## Claim-first Вместо Локального Самовыбора
+## Assignment-first Вместо Локального Самовыбора
 
 Role agents не выбирают себе любую `new` строку из локального board. Локальная
-доска — dashboard/cache, а не очередь. Обычная новая работа берётся только из
-Multica проекта FantasyDisk (issues `FAN-*`) через claim-first. Auto-pull helper
-больше нет — агент берёт ровно один assigned-ему или eligible FAN issue и
-claim'ает его вручную:
+доска — dashboard/cache, а не очередь. Обычная новая работа выдаётся только из
+Multica проекта FantasyDisk (issues `FAN-*`) единственным dispatcher. Worker
+берёт ровно одну issue с собственным exact `assignee_id` и перепроверяет её:
 
 ```bash
+multica issue get <FAN-id> --output json
 multica issue status <FAN-id> in_progress
+multica issue comment add <FAN-id> --content-file ./start.md
 ```
 
-Сразу после claim агент постит start-comment (`multica issue comment add
-<FAN-id> ...`) с owner/lane/locked paths.
-
-Агент может начинать только после успешного claim: issue назначен ему или eligible
-для его роли/lane, status `todo`, нет чужого assignee/owner, нет
+Агент может начинать только после проверки: issue назначена его exact UUID,
+status `todo`, нет чужого owner, нет
 `hold/user-hold/blocked`, нет review/QA gate и нет locked-path overlap. Если
-подходящего eligible FAN issue нет либо claim не прошёл, агент ничего не меняет и
+назначенной FAN issue нет, агент ничего не меняет и
 завершает прогон.
 
 Агент также может продолжать:
@@ -558,7 +556,8 @@ Common blockers:
   the Multica issue, edit project files, run tests, update docs, commit, and push
   task-owned files without asking for confirmation. Only stop for platform-enforced
   approval gates, secrets, destructive external actions, or impossible blockers.
-- Do not self-select local board rows; use claim-first on a Multica FAN issue for new work.
+- Do not self-select local board rows or unassigned Multica issues; accept only
+  the FAN issue assigned/owned by you after dispatcher verification.
 - Do not route one task to multiple agents.
 - Do not edit files locked by another owner/lane.
 - Do not use destructive git commands without explicit instruction.
@@ -577,12 +576,12 @@ Use this before every task:
 1. Read AGENTS.md and relevant process/task/design docs.
 2. Confirm branch and GitHub sync.
 3. Check dirty worktree.
-4. Find or claim a Multica FAN issue for your role/lane (`multica issue status <FAN-id> in_progress` + start comment).
+4. Read the one Multica FAN issue assigned to your exact agent UUID; never self-select an unassigned issue.
 5. Check status, comments, assignee, Contour/Owner/Thread/Locked paths.
 6. Check local task/board mirror only after the Multica issue, plus recent owner/dispatch/QA notes.
 7. Verify required skill and read its SKILL.md if using Codex.
-8. If the Multica issue is neither explicitly assigned to you nor successfully claimed, do not start.
-9. If assigned/claimed, set Multica in_progress/comment + sync local mirror.
+8. If the Multica issue is not explicitly assigned/owned by you, do not start.
+9. If assigned, set Multica in_progress + `--content-file` comment and sync local mirror.
 10. Work only inside role scope.
 11. Test, update docs/task report.
 12. Commit/push or open PR.

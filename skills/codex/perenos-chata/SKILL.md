@@ -24,7 +24,7 @@ thread, синхронизировать активную работу и тол
    - В репозитории найди и полностью прочитай применимые `AGENTS.md` от корня
      до затрагиваемых путей. Не полагайся на старую сводку их содержимого.
    - Проверь authoritative tracker из актуального `AGENTS.md`. Для FantasyDisk
-     это Multica project `FantasyDisk`: issue status, comments, assignee,
+     это Multica project `FantasyDisk`, issues `FAN-*`: status, comments, assignee,
      parent/children, active runs, owner/thread и locked paths. Tracker имеет
      приоритет над локальными mirrors и legacy Jira history.
    - Выполняй разрешённые prompt/`AGENTS.md` in-scope действия автономно: не
