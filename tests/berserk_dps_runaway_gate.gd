@@ -12,15 +12,26 @@ extends SceneTree
 # soft-cap'а забеговых множителей (progression_data._soft_capped_run_multiplier) или
 # повторное раздувание upgrade_*_exponent молота.
 #
-# Запуск: Godot --headless --path . --script res://tests/berserk_dps_runaway_gate.gd
+# FAN-1039: этот файл — ДЕТЕРМИНИРОВАННЫЙ ЗАМЕР одного процесса (печатает число,
+# не судит потолок). Сам гейт с медианой N изолированных прогонов и потолками —
+# tools/berserk_runaway_gate.py (он и стоит в конвейере). Одиночный замер живого
+# DPS имеет неустранимый межпроцессный разброс дискретными «полками» (число полных
+# слэмов в окне и авто-ульта задаются стартовым джиттером процесса), поэтому
+# ОДИН прогон гейтить нельзя — медиана N прогонов отбрасывает редкие «полки».
+#
+# Запуск замера (обязателен --fixed-fps 60 для детерминизма кадровой дельты):
+#   Godot --headless --fixed-fps 60 --path . --script res://tests/berserk_dps_runaway_gate.gd
+# Гейт (медиана + потолки):
+#   python3 tools/berserk_runaway_gate.py
 # Отдельный изолированный файл (анти-коллизия с занятыми runtime_smoke/harness).
 
 const ProgressionData := preload("res://scripts/progression_data.gd")
 const PLAYER_SCENE := preload("res://scenes/Player.tscn")
 const ENEMY_SCENE := preload("res://scenes/Enemy.tscn")
 
-const WINDOW_SECONDS := 8.0
-const FRAMES := 480                 # 8с * 60fps — как в tools/character_balance_csv.gd
+const WINDOW_SECONDS := 24.0
+const FRAMES := 1440                # FAN-1039: длинное окно (24с) — краевой ±слэм-шум
+                                    # становится малой долей (~40 слэмов), полки уже.
 const DUMMY_HP := 1.0e9             # болванки не умирают — чистый DPS
 const TARGET_LEVEL := 20
 const LEVELUPS := 19                # уровни 2..20
@@ -28,21 +39,15 @@ const ARTIFACT_COUNT := 6
 const RARE_SLOT_CHANCE := 0.05
 const OFFER_SIZE := 3
 const BASE_SEED := 20260620         # тот же сид, что в генераторе матрицы
+# FAN-1039: боевой путь тянет ГЛОБАЛЬНЫЙ RNG (randf() — крит берсерка, вампиризм,
+# explosion-chance игрока), который сид билд-RNG (локальный объект) не покрывает.
+# Сидируем глобальный поток фиксированным зерном перед каждым живым замером,
+# чтобы серия боевых бросков была воспроизводимой (см. _measure_dps).
+const COMBAT_RNG_SEED := 20260713
 
 const CHARACTER_ID := "berserk"
 const WEAPON_ID := "hammer"
 
-# Потолки коридора лидеров (после SCRUM-503 soft-cap, SCRUM-545 + SCRUM-602).
-# Новый профиль молота стартует с кругом 150px и без fixed radius cap, но Radius
-# scaling и upgrade-экспоненты всё ещё должны оставлять идеальный lvl20 билд в
-# живом коридоре лидеров, без возврата мультипликативного runaway.
-# FAN-1034: ревизия атрибутов убрала из level-up пула мёртвые карты (снаряды/
-# отталкивание/сектор) — «идеальные» офферы стали плотнее по урону, живой замер
-# ideal-билда поднялся 3600 → ~3950 без каких-либо правок множителей молота.
-# Потолок рекалиброван с прежним запасом: откат радиуса/экспонент (+~30% к базе,
-# т.е. ≥5100 от новой базы) по-прежнему ловится.
-const MAX_IDEAL_20T := 4400.0    # SCRUM-602 restart band + FAN-1034 pool recalibration.
-const MAX_IDEAL_1T := 650.0      # Solo peak stays in corridor; damage-growth runaway fails.
 const ZERO_EPS := 0.01
 
 var _holder: Node2D
@@ -71,30 +76,26 @@ func _initialize() -> void:
 	rng.seed = _ideal_seed_for_pair(CHARACTER_ID, WEAPON_ID)
 	var ideal_build: Array = _build_levelups(CHARACTER_ID, archetype, rng) + _build_artifacts(CHARACTER_ID, archetype, rng)
 
+	# FAN-1039: детерминированный ЗАМЕР одного процесса (см. шапку файла). Один
+	# слэм-каденс полностью воспроизводим внутри процесса; вердикт по потолку —
+	# медианой N процессов в tools/berserk_runaway_gate.py.
 	var dps_20t: float = await _measure_dps(CHARACTER_ID, WEAPON_ID, 20, ideal_build)
 	var dps_1t: float = await _measure_dps(CHARACTER_ID, WEAPON_ID, 1, ideal_build)
 
 	_holder.queue_free()
 	await process_frame
 
-	var failures: Array = []
-	if not (is_finite(dps_20t) and is_finite(dps_1t)):
-		failures.append("нечисловой живой DPS (20t=%s 1t=%s)" % [dps_20t, dps_1t])
-	if maxf(dps_20t, dps_1t) <= ZERO_EPS:
-		failures.append("0 живого урона за %.0fс (20t=%.3f 1t=%.3f) — режим оружия сломан" % [WINDOW_SECONDS, dps_20t, dps_1t])
-	if dps_20t > MAX_IDEAL_20T:
-		failures.append("berserk/hammer lvl20_ideal 20t = %.0f > потолка %.0f — runaway множителей вернулся (проверь soft-cap забеговых множителей и upgrade_*_exponent молота)" % [dps_20t, MAX_IDEAL_20T])
-	if dps_1t > MAX_IDEAL_1T:
-		failures.append("berserk/hammer lvl20_ideal 1t = %.0f > потолка %.0f — solo-пик вне коридора" % [dps_1t, MAX_IDEAL_1T])
+	# Печатаем машинно-парсимую строку замера для агрегатора. RUNAWAY_SAMPLE-строку
+	# читает tools/berserk_runaway_gate.py; человекочитаемая строка — для логов.
+	print("RUNAWAY_SAMPLE 20t=%.1f 1t=%.1f" % [dps_20t, dps_1t])
+	print("[runaway-gate] berserk/hammer lvl20_ideal: 20t=%.0f 1t=%.0f" % [dps_20t, dps_1t])
 
-	print("[runaway-gate] berserk/hammer lvl20_ideal: 20t=%.0f (≤%.0f) 1t=%.0f (≤%.0f)" % [dps_20t, MAX_IDEAL_20T, dps_1t, MAX_IDEAL_1T])
-
-	if not failures.is_empty():
-		for f in failures:
-			push_error("Berserk runaway gate FAIL: %s" % f)
+	# Единственный хард-фейл на уровне ОДНОГО процесса — сломанный режим оружия
+	# (нечисловой / нулевой урон): это не шум полок, а реальная поломка.
+	if not (is_finite(dps_20t) and is_finite(dps_1t)) or maxf(dps_20t, dps_1t) <= ZERO_EPS:
+		push_error("Berserk runaway gate: сломан живой замер (20t=%s 1t=%s)" % [dps_20t, dps_1t])
 		quit(1)
 		return
-	print("Berserk DPS runaway gate passed.")
 	quit(0)
 
 
@@ -242,6 +243,24 @@ func _weighted_index(source: Array, character_id: String, rng: RandomNumberGener
 
 # --- Замер фактического DPS (зеркало tools/character_balance_csv.gd) -------------
 
+# FAN-1039: детерминированный ЗАМЕР одного процесса. Убраны четыре источника
+# межпроцессного разброса (был 2×, гейт FAN-1034 4400 пробивался шумом в ~40%):
+#   1) ТАЙМИНГ. В headless без --fixed-fps дельта idle-кадра = стенным часам, и
+#      480 кадров ≠ 8.0с симуляции: базовый замер копил урон за плавающее подокно,
+#      но делил на жёсткие WINDOW_SECONDS. Делим на ФАКТИЧЕСКИ прошедшее сим-время
+#      (сумму process-дельт) — DPS оконно-инвариантен. Под --fixed-fps 60 сумма
+#      дельт == 8.0 и весь шаг физики/твинов детерминирован (обязательный флаг).
+#   2) БОЕВОЙ RNG. Крит берсерка тянет ГЛОБАЛЬНЫЙ поток randf() (сид билд-RNG его
+#      не покрывает). Сидируем глобальный поток фиксированным зерном перед окном.
+#   3) ДРЕЙФ ИГРОКА. Ближняя дамми (58px) перекрывала тело игрока, move_and_slide
+#      сдвигал центр круга → менялись тир-индексы diminish целей (до ±2× по 20t).
+#      Пиним игрока (и velocity) к спавну каждый кадр, как и дамми к якорям.
+#   4) АВТО-УЛЬТА. Заряд ульты копится от нанесённого урона и авто-кастует в
+#      _physics_process; berserk-эхо добавляло ×ultimate_multiplier (~1.2×). Гейт
+#      меряет SUSTAIN без ульты (как задумано) — держим заряд на нуле весь замер.
+# Остаётся неустранимая дискретная «полка» (число полных слэмов в окне, задаётся
+# стартовым сабкадровым джиттером процесса) — её отбрасывает медиана N процессов
+# в tools/berserk_runaway_gate.py. Внутри процесса замер полностью воспроизводим.
 func _measure_dps(character_id: String, weapon_id: String, target_count: int, rewards: Array) -> float:
 	for child in _holder.get_children():
 		child.queue_free()
@@ -260,6 +279,9 @@ func _measure_dps(character_id: String, weapon_id: String, target_count: int, re
 			player.apply_reward(reward)
 	if not rewards.is_empty():
 		player.set("level", TARGET_LEVEL)
+	# источник №4: убираем авто-ульту из sustain-замера — недостижимый потолок заряда
+	player.set("ultimate_max_charge", 1.0e18)
+	player.set("ultimate_charge", 0.0)
 	await process_frame
 
 	var dummies := _spawn_dummies(player.global_position, target_count)
@@ -268,12 +290,22 @@ func _measure_dps(character_id: String, weapon_id: String, target_count: int, re
 		anchor_positions.append((enemy as Node2D).global_position)
 	await process_frame
 
+	seed(COMBAT_RNG_SEED + target_count)  # источник №2: детерминизм боевого крит-RNG
+
+	var player_spawn: Vector2 = player.global_position
 	var hp_before := 0.0
 	for enemy in dummies:
 		hp_before += float(enemy.get("health"))
 
+	var elapsed := 0.0
 	for _frame in range(FRAMES):
 		await process_frame
+		elapsed += _holder.get_process_delta_time()  # источник №1: реальное сим-время окна
+		# источник №3: пиним игрока (иначе дрейфует от контактной дамми)
+		player.global_position = player_spawn
+		player.set("velocity", Vector2.ZERO)
+		# источник №4: гасим заряд ульты, чтобы авто-каст не подмешивал ×ultimate_multiplier
+		player.set("ultimate_charge", 0.0)
 		for i in range(dummies.size()):
 			var enemy := dummies[i] as Node2D
 			if is_instance_valid(enemy):
@@ -283,7 +315,8 @@ func _measure_dps(character_id: String, weapon_id: String, target_count: int, re
 	for enemy in dummies:
 		if is_instance_valid(enemy):
 			hp_after += float(enemy.get("health"))
-	return maxf(hp_before - hp_after, 0.0) / WINDOW_SECONDS
+
+	return maxf(hp_before - hp_after, 0.0) / maxf(elapsed, ZERO_EPS)
 
 
 func _spawn_dummies(player_pos: Vector2, target_count: int) -> Array:

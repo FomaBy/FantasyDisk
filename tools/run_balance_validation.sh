@@ -61,7 +61,18 @@ run_gate survivability_smoke res://tests/global_survivability_balance_smoke_test
 run_gate survivability_harness res://tools/survivability_harness.gd
 run_gate survivability_scenario res://tests/survivability_scenario_test.gd
 run_gate live_balance_simulation res://tests/live_balance_simulation_test.gd
-run_gate berserk_runaway res://tests/berserk_dps_runaway_gate.gd
+# FAN-1039: berserk runaway гейтится МЕДИАНОЙ N изолированных прогонов (одиночный
+# живой замер имеет неустранимый межпроцессный разброс полками — потолок FAN-1034
+# 4400 пробивался шумом в ~40% прогонов). Питон-обёртка сама гоняет godot_gate с
+# --fixed-fps 60 и судит медиану 20t/1t.
+berserk_log="$OUT_DIR/berserk_runaway.log"
+python3 tools/berserk_runaway_gate.py > "$berserk_log" 2>&1
+if [ $? -eq 0 ] && ! grep -qiE "FAILED|FATAL" "$berserk_log"; then
+	echo "| berserk_runaway | ✅ PASS | berserk_runaway.log |" >> "$SUMMARY"
+else
+	echo "| berserk_runaway | ❌ FAIL | berserk_runaway.log |" >> "$SUMMARY"
+	FAILED=$((FAILED+1))
+fi
 run_gate pool_dot_runaway res://tests/pool_dot_runaway_gate.gd
 run_gate damage_isolation res://tests/damage_type_isolation_test.gd
 run_gate ascension_curve res://tests/ascension_curve_balance_test.gd
