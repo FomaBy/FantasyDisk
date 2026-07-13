@@ -29,15 +29,16 @@ const OFFER_SIZE := 3
 const BASE_SEED := 20260620
 const ZERO_EPS := 0.01
 
-# Потолок lvl20_ideal 20t для оружия-лужи после SCRUM-533. До фикса было
-# chemist/acid_flask ≈ 112k, blast_powder ≈ 65k; после диминишинга ≈ 44k / 29k.
-# FAN-1034: ревизия атрибутов слила dot damage+speed в одну карту — идеальный
-# dot-билд больше не сжигает 8 пиков на две оси, освобождённые пики уходят в
-# damage_multiplier (который множит и DoT). Живая соло-база поднялась 44k → ~65-70k
-# без каких-либо правок диминишинга луж (замер 74.8k при dot_speed_flat 0.2,
-# затюнено до 0.15). Потолок рекалиброван с прежним запасом: откат
-# pool-диминишинга (паттерн ×2.5, т.е. ≥170k от новой базы) ловится уверенно.
-const MAX_POOL_IDEAL_20T := 80000.0
+# Потолок lvl20_ideal 20t для оружия-лужи.
+# FAN-1031/FAN-1039: знаменатель замера чинён на Σ process delta (было ÷ жёсткие 8с
+# при 480 кадрах = сильно больше 8с игрового времени под нагрузкой). Прежние числа
+# (~65-80k) были РАЗДУТЫ этим багом в ~7×; честная live-база acid_flask теперь
+# ≈ 8950-9770 (9 изолированных прогонов, p99 ≈ 9771; без fixed-fps — мягкая полка
+# ±8.5%, под --fixed-fps 60 замер 9766-9771 ±0.05%, «диких» выбросов нет).
+# Потолок перекалиброван от честного p99 (+~23% margin), а не завышением. Проверено
+# откатом ДОКУМЕНТИРОВАННОГО runaway (POOL_TARGET_DIMINISH 1.5→0, все pool-цели в
+# полный урон): 20t=16177 > потолка → ловится; чистый dev (≤9771) проходит.
+const MAX_POOL_IDEAL_20T := 12000.0
 
 # Оружие-лужи (leaves_pool), которые давали выброс на плотном паке.
 # SCRUM-943: blast_powder больше не оставляет лужу (редизайн — быстрый прямой
@@ -241,8 +242,16 @@ func _measure_dps(character_id: String, weapon_id: String, target_count: int, re
 	for enemy in dummies:
 		hp_before += float(enemy.get("health"))
 
+	# FAN-1031/FAN-1039: делим на ФАКТИЧЕСКОЕ игровое время окна (Σ process delta),
+	# а не на номинал WINDOW_SECONDS. Оружие тикает лужу в _process(delta); под
+	# нагрузкой (плотный пак + активные лужи) кадры длиннее, 480 кадров = сильно
+	# больше 8с игрового времени → фиксированный знаменатель раздувал crowd-DPS
+	# (blast_powder 490k→31.4k честных, 8dd7e4fb4) и был главным источником шума
+	# между прогонами. DPS теперь оконно-инвариантен.
+	var elapsed_game_time := 0.0
 	for _frame in range(FRAMES):
 		await process_frame
+		elapsed_game_time += _holder.get_process_delta_time()
 		for i in range(dummies.size()):
 			var enemy := dummies[i] as Node2D
 			if is_instance_valid(enemy):
@@ -252,7 +261,7 @@ func _measure_dps(character_id: String, weapon_id: String, target_count: int, re
 	for enemy in dummies:
 		if is_instance_valid(enemy):
 			hp_after += float(enemy.get("health"))
-	return maxf(hp_before - hp_after, 0.0) / WINDOW_SECONDS
+	return maxf(hp_before - hp_after, 0.0) / maxf(elapsed_game_time, ZERO_EPS)
 
 
 func _spawn_dummies(player_pos: Vector2, target_count: int) -> Array:

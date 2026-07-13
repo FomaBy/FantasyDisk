@@ -108,15 +108,21 @@ func _measure_dps(holder: Node2D, character_id: String, weapon_id: String, targe
 	for enemy in dummies:
 		hp_before += float(enemy.get("health"))
 
+	# FAN-1031/FAN-1039: делим на ФАКТИЧЕСКОЕ игровое время окна (Σ process delta),
+	# не на номинал WINDOW_SECONDS. Оружие бьёт в _process(delta); под нагрузкой
+	# (5 целей/лужи) 480 кадров = сильно больше 8с игрового времени → раздувало
+	# живой DPS и портило кросс-оружейную медиану/±120%-флаг (см. 8dd7e4fb4).
+	var elapsed_game_time := 0.0
 	for _frame in range(FRAMES):
 		await process_frame
+		elapsed_game_time += holder.get_process_delta_time()
 
 	var hp_after := 0.0
 	for enemy in dummies:
 		if is_instance_valid(enemy):
 			hp_after += float(enemy.get("health"))
 	var damage := maxf(hp_before - hp_after, 0.0)
-	return damage / WINDOW_SECONDS
+	return damage / maxf(elapsed_game_time, 0.001)
 
 
 func _write_report(rows: Array) -> void:

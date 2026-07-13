@@ -166,15 +166,22 @@ func _measure_dps(holder: Node2D, character_id: String, weapon_id: String, targe
 	for enemy in dummies:
 		hp_before += _numeric_property(enemy, "health", DUMMY_HP)
 
+	# FAN-1031/FAN-1039: делим на ФАКТИЧЕСКОЕ игровое время окна (Σ process delta),
+	# не на номинал WINDOW_SECONDS — оружие бьёт в _process(delta), под нагрузкой
+	# 480 кадров ≠ 8с игрового времени (см. 8dd7e4fb4). Здесь пороги «поломки» —
+	# ноль/нечисло и отношение aoe/solo, инвариантные к знаменателю; фикс даёт
+	# ЧЕСТНЫЕ solo/5-target/ttk в отчёте (иначе раздуты под нагрузкой).
+	var elapsed_game_time := 0.0
 	for _frame in range(FRAMES):
 		await process_frame
+		elapsed_game_time += holder.get_process_delta_time()
 
 	var hp_after := 0.0
 	for enemy in dummies:
 		if is_instance_valid(enemy):
 			hp_after += _numeric_property(enemy, "health", DUMMY_HP)
 	var damage := maxf(hp_before - hp_after, 0.0)
-	return damage / WINDOW_SECONDS
+	return damage / maxf(elapsed_game_time, 0.001)
 
 
 func _estimated_dps(character_id: String, weapon_id: String, target_count: int) -> float:
