@@ -171,6 +171,20 @@ class CutoverOnboardingTest(unittest.TestCase):
                 f"{rel} header must name Multica as the live source of truth",
             )
 
+        task_board_head = "\n".join(
+            read("docs/process/task_board.md").splitlines()[:35]
+        ).lower()
+        self.assertNotIn("## live sprint", task_board_head)
+        self.assertNotIn("всегда проверять live jira", task_board_head)
+        self.assertNotIn("заводятся в active jira sprint", task_board_head)
+        self.assertNotIn(
+            "разрешена только по multica issues с label `foma`", task_board_head
+        )
+        self.assertIn(
+            "новые задачи создаются и назначаются только как `fan-*`",
+            task_board_head,
+        )
+
     def test_onboard_banner_is_multica_only(self):
         """The one-line onboarding banner must state the Multica-only rule."""
         text = read("scripts/onboard.sh").lower()
@@ -181,6 +195,8 @@ class CutoverOnboardingTest(unittest.TestCase):
         text = read("scripts/onboard.sh")
         self.assertIn('$REPO_ROOT/.claude/skills', text)
         self.assertNotIn('$REPO_ROOT/skills/claude', text)
+        self.assertIn("config --local --get core.hooksPath", text)
+        self.assertIn("config --local --unset core.hooksPath", text)
         self.assertNotIn("Auto-land hook enabled", text)
         self.assertFalse((ROOT / ".githooks/post-commit").exists())
 

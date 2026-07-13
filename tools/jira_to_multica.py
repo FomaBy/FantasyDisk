@@ -184,12 +184,27 @@ def issue_identity(value) -> str:
     raise RuntimeError(f"Cannot find issue identity in Multica response: {value}")
 
 
-def find_existing(jira_key: str) -> str | None:
+def find_existing(jira_key: str, project: str) -> str | None:
+    if project != JIRA_ARCHIVE_PROJECT_ID:
+        raise RuntimeError("archive lookup requires the pinned Jira Archive project")
     response = run_multica(
-        ["issue", "list", "--metadata", f"jira_key={jira_key}", "--limit", "2"],
+        [
+            "issue",
+            "list",
+            "--project",
+            project,
+            "--metadata",
+            f"jira_key={jira_key}",
+            "--limit",
+            "2",
+        ],
         expect_json=True,
     )
     rows = rows_from_json(response)
+    if len(rows) > 1:
+        raise RuntimeError(
+            f"duplicate archival jira_key {jira_key} in project {project}"
+        )
     return issue_identity(rows[0]) if rows else None
 
 
@@ -408,7 +423,7 @@ def main() -> int:
             if key in state["migrated"] and not args.repair:
                 counters["resumed"] += 1
                 continue
-            existing = find_existing(key)
+            existing = find_existing(key, args.project)
             if existing:
                 identity = existing
                 set_issue_metadata(issue, identity)

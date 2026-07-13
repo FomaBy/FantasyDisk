@@ -3,12 +3,14 @@
 
 from __future__ import annotations
 
-import os
 import ast
+import importlib.util
+import os
 import subprocess
 import sys
 import unittest
 from pathlib import Path
+from unittest import mock
 
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -72,6 +74,15 @@ class JiraArchiveGuardTest(unittest.TestCase):
         ]
         self.assertTrue(request_calls)
         for call in request_calls:
+            self.assertEqual(
+                1,
+                len(call.args),
+                "a positional Request payload defaults the request to POST",
+            )
+            self.assertFalse(
+                any(keyword.arg == "data" for keyword in call.keywords),
+                "a Request with data defaults to POST even without method=",
+            )
             methods = [kw.value for kw in call.keywords if kw.arg == "method"]
             for method in methods:
                 self.assertIsInstance(method, ast.Constant)
@@ -99,6 +110,35 @@ class JiraArchiveGuardTest(unittest.TestCase):
         self.assertEqual(2, result.returncode)
         self.assertIn(JIRA_ARCHIVE_PROJECT_ID, result.stderr)
         self.assertNotIn("JIRA_API_TOKEN is required", result.stderr)
+
+    def test_archive_lookup_is_project_scoped_and_unique(self) -> None:
+        path = ROOT / "tools/jira_to_multica.py"
+        spec = importlib.util.spec_from_file_location("jira_to_multica_test", path)
+        self.assertIsNotNone(spec)
+        self.assertIsNotNone(spec.loader)
+        module = importlib.util.module_from_spec(spec)
+        spec.loader.exec_module(module)
+
+        with mock.patch.object(
+            module,
+            "run_multica",
+            return_value=[{"identifier": "FAN-ARCHIVE"}],
+        ) as run:
+            self.assertEqual(
+                "FAN-ARCHIVE",
+                module.find_existing("SCRUM-1", JIRA_ARCHIVE_PROJECT_ID),
+            )
+        args = run.call_args.args[0]
+        self.assertIn("--project", args)
+        self.assertEqual(JIRA_ARCHIVE_PROJECT_ID, args[args.index("--project") + 1])
+
+        with mock.patch.object(
+            module,
+            "run_multica",
+            return_value=[{"identifier": "FAN-1"}, {"identifier": "FAN-2"}],
+        ):
+            with self.assertRaisesRegex(RuntimeError, "duplicate archival jira_key"):
+                module.find_existing("SCRUM-1", JIRA_ARCHIVE_PROJECT_ID)
 
 
 if __name__ == "__main__":

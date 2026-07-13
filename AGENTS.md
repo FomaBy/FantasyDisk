@@ -266,8 +266,9 @@ Project practices:
 - **Генерация графики/ассетов — через `fantasydisk-asset-generator` только для
   задач вне PixelLab-redraw scope или при явном Multica issue override**
   (Codex skill, `~/.codex/skills/fantasydisk-asset-generator/`, SCRUM-324):
-  `scripts/generate_asset.py --prompt "<...>" --output <тема/файл> --size <WxH>
-  --quality high` (OpenAI Images API, модель `gpt-image-2`, PNG). Для разрешённых
+  `scripts/generate_asset.py --issue FAN-123 --prompt "<...>" --output
+  <тема/файл> --size <WxH> --quality high` (OpenAI Images API, модель
+  `gpt-image-2`, PNG). Для разрешённых
   non-redraw/override задач все ассеты — на ПРОЗРАЧНОМ фоне; исходник сохраняется
   в `docs/design/references/<тема>/` (для единообразия на будущее), затем
   внедряется в `assets/`. Стиль — D&D + Dark Fantasy Dragon (см. UI Overhaul

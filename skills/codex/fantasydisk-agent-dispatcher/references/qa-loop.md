@@ -7,5 +7,5 @@
 
 Проверь acceptance на exact SHA. Запускай Godot только через tools/godot_gate.py и обязательные gates синхронно. Не чини implementation в QA scope: при дефекте дай воспроизводимый QA RED и child bug/handoff.
 
-Запиши в Multica verdict, verified SHA, команды/results, findings и cleanup. PASS переводит принятую issue в done; RED оставляет её in_review или возвращает по зафиксированному defect workflow. После одной issue остановись.
+Запиши в Multica verdict, verified SHA, команды/results, findings и cleanup. PASS переводит QA child и implementation parent в done. RED завершает QA child с verdict evidence, оставляет parent in_review и создаёт/линкует defect; не переиспользуй QA child как implementation owner. После одной issue остановись.
 ```

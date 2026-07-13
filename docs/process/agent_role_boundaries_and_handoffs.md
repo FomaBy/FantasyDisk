@@ -112,7 +112,7 @@ assignee/comment, незавершённый role-thread heartbeat по этой
 dispatcher оставляет задачу без dispatch и пишет Multica/PM/board note вместо параллельной
 работы.
 
-При dispatch или Multica-pull claim owner фиксируется в явном виде:
+При dispatcher assignment или direct-control ownership owner фиксируется явно:
 
 - в task-файле: `Dispatch: отправлено <Role>/<Thread name> (<thread id>) <YYYY-MM-DD HH:MM>`;
 - в task-файле: `Контур`, `Owner`, `Thread`, `Locked paths` должны совпадать с
@@ -120,7 +120,7 @@ dispatcher оставляет задачу без dispatch и пишет Multica
 - на board: роль/примечание должны показывать конкретного владельца, если таких
   владельцев несколько;
 - в Multica: status/comment должен отражать, кто взял работу, каким способом
-  (`dispatch` или `Multica-pull`), lane/role/thread-or-worker и какой handoff
+  (`dispatcher assignment` или `direct control`), lane/role/thread-or-worker и какой handoff
   создан, если работа передана.
 
 Active claim health is mandatory. `in_progress` means a live worker is still
@@ -162,12 +162,13 @@ threads whose ownership/status is unclear. Final reports should include
 Codex и Claude могут работать одновременно в одной ветке `dev`, но не над одной
 задачей, проблемой или locked path.
 
-- Codex role thread работает автономно только если задача явно помечена
-  `Контур: Codex`/label `codex`, была dispatched на этот thread или успешно
-  claimed этим thread через Multica-pull, и не имеет свежего Claude/OtherAI
-  owner/comment по тому же scope.
-- Claude Code/Claude worker работает автономно только если задача явно помечена
-  `Контур: Claude`/label `claude`, была assigned/claimed этим worker, или
+- Codex role thread работает автономно только если задача имеет lane
+  `Контур: Codex` в description/dispatcher comment и была assigned/dispatched на
+  этот thread либо имеет подтверждённый direct-control owner comment; optional
+  label `codex` не заменяет ownership. Свежего Claude/OtherAI owner/comment по
+  тому же scope быть не должно.
+- Claude Code/Claude worker работает автономно только если задача имеет lane
+  `Контур: Claude` и была assigned этим worker, или
   является отдельной review/bug задачей после Codex-result.
 - Нельзя превращать review в параллельную реализацию. Claude review Codex-работы
   начинается после Codex `done/review`, а найденные проблемы оформляются как
@@ -193,10 +194,10 @@ files в locked paths другого контура блокируют стар�
 
 `Design main` и `Designer 2` — два отдельных исполнителя, а не одна общая
 очередь. У Design-задачи в любой момент может быть только один активный владелец.
-Для auto-pull Design-задачи должны иметь дополнительный Multica label:
-`design-main` для Design main или `designer2` для Designer 2. Обычный общий
-label `design` без worker-scope label не даёт права автоматического взятия
-Design-задачи; её должен разметить PM/dispatcher.
+Перед dispatcher assignment Design-задача должна получить worker scope
+`design-main` или `designer2` в description/dispatcher comment. Optional Multica
+label с тем же значением разрешён для поиска, но label сам по себе не даёт права
+на работу и его отсутствие не блокирует issue с exact assignee и scope comment.
 
 - `Design main` обычно получает крупные visual direction/UI-source/style-anchor
   задачи, где важны цельный арт-дирекшен, mockup/spec, источники и handoff.

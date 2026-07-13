@@ -70,10 +70,10 @@ link_skills "$REPO_ROOT/.claude/skills" "$HOME/.claude/skills"
 
 # (4) Remove only the retired repo-owned background autoland hook setting.
 #     Preserve any unrelated custom hooksPath configured by the user.
-LEGACY_HOOKS_PATH="$(git -C "$REPO_ROOT" config --get core.hooksPath 2>/dev/null || true)"
+LEGACY_HOOKS_PATH="$(git -C "$REPO_ROOT" config --local --get core.hooksPath 2>/dev/null || true)"
 case "$LEGACY_HOOKS_PATH" in
   .githooks|"$REPO_ROOT/.githooks")
-    git -C "$REPO_ROOT" config --unset core.hooksPath
+    git -C "$REPO_ROOT" config --local --unset core.hooksPath
     printf 'Retired background autoland hook disabled.\n'
     ;;
 esac

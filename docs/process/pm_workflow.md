@@ -79,8 +79,8 @@ Dispatcher маршрутизирует существующие Multica issues 
 - **Codex** — автономный исполнитель для задач с исчерпывающим ТЗ, точными
   файлами/ассетами, проверяемыми acceptance criteria, рутинной интеграцией,
   механическими правками, генерацией ассетов, animation batches и тестовыми
-  фиксациями. Codex работает самостоятельно после успешного Multica claim в
-  конкретном role thread или после явного dispatch в этот thread. Codex
+  фиксациями. Codex работает самостоятельно после verified dispatcher assignment
+  в конкретный role thread или explicit direct-control owner comment. Codex
   Documentation остаётся диспетчером для ручной разбивки, handoff, спорных owner
   cases и синхронизации зеркал.
   Команда отправки (CLI из приложения Codex):
@@ -223,12 +223,12 @@ issues `FAN-*`) через `multica` CLI — источник истины дл�
 Multica timeline сам является record, отдельного end-of-run sync-скрипта нет.
 Legacy Jira board https://fantasydisk.atlassian.net (проект SCRUM, доска 1)
 после cutover — read-only исторический архив, не источник задач.
-Статусы Multica: new/blocked → `todo`/`blocked`, in_progress → `in_progress`,
-review/QA → `in_review`, done (только после QA PASSED) → `done`; bug_* → тип
-«Баг».
-Метки исполнителя (правило пользователя, 2026-06-12): каждый тикет несет лейбл
-`codex` (файлы codex_* или строка «Исполнитель: Codex») либо `claude` — по ним
-фильтруется, кто какой контур делает. Лейблы роли (backend/design/qa/bug) сохраняются.
+Статусы Multica: `todo`, `in_progress`, `in_review`, `blocked`, `backlog`,
+`done`; local mirror может отображать `new`/`review`. Parent получает `done`
+только после QA PASSED; bug scope фиксируется в title/description/parent links.
+Authoritative routing задают exact assignee и свежий dispatcher/owner comment с
+lane и locked paths. Labels `codex`/`claude`/role могут использоваться как
+необязательные подсказки поиска, но их отсутствие не блокирует назначенную issue.
 
 ## Фоновые Воркеры (с 2026-06-11; ИСТОЧНИК ЗАДАЧ — MULTICA)
 
@@ -339,11 +339,11 @@ PM: Multica issue FAN-* как источник очереди/status/owner
 PM: локальный .md/task_board mirror при необходимости
         │
         ▼
-PM/dispatcher указывает role/lane/locked paths; owner может быть unassigned
-до Multica claim или задан вручную
+PM/dispatcher указывает role/lane/locked paths и exact assignee; direct-control
+chat вместо assignee фиксирует explicit owner comment после duplicate audit
         │
         ▼
-Codex role heartbeat / Claude worker / dispatcher берёт только matching Multica issue/контур
+Codex role heartbeat / Claude worker принимает только назначенную matching Multica issue/контур
         │
         ▼
 Исполнитель: работа + обновление Multica + local mirror + docs/design/*
@@ -401,8 +401,8 @@ docs/process/agent_role_boundaries_and_handoffs.md и укажи это в фи�
 
 ## Правила Статусов
 
-- Новая задача создается в Multica со статусом `todo`/`new`; локальный mirror
-  получает `Статус: new` только после Multica key.
+- Новая задача создается в Multica со статусом `todo`; значение `new` существует
+  только в локальном mirror, который создаётся после получения Multica key.
 - Исполнитель при взятии в работу обновляет Multica first (`in_progress`/comment),
   затем локальный mirror. По завершении — Multica + mirror `done` (или
   `in_review`, если нужна проверка PM) и короткое резюме результата.

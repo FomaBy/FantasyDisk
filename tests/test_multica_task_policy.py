@@ -36,6 +36,12 @@ BANNED_LIVE_JIRA_PHRASES = (
     "сначала Jira issue",
     "claim-first",
     "eligible unassigned",
+    "multica-pull",
+    "successfully claimed",
+    "успешно claimed",
+    "qa сам находит",
+    "qa выбирает",
+    "каждый тикет несет лейбл",
 )
 
 
@@ -57,6 +63,12 @@ class MulticaTaskPolicyTest(unittest.TestCase):
         self.assertIn("e2e1c89f-587d-4a2d-bbaa-ce9b5dea908d", workflow)
         for status in ("todo", "in_progress", "in_review", "done"):
             self.assertIn(f"`{status}`", workflow)
+
+        memo = (ROOT / "docs/process/ai_agent_memorandum.md").read_text(
+            encoding="utf-8"
+        )
+        self.assertIn("direct user control chat", memo)
+        self.assertIn("Mode: direct control chat", memo)
 
     def test_legacy_jira_doc_cannot_look_current(self) -> None:
         opening = "\n".join(

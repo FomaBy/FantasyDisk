@@ -231,17 +231,23 @@ status `todo`, нет чужого owner, нет
 назначенной FAN issue нет, агент ничего не меняет и
 завершает прогон.
 
+Исключение — текущий direct user control chat. После duplicate/lock audit он
+может оставить issue unassigned, поставить `in_progress` и записать explicit
+`Mode: direct control chat`, owner/thread/workdir/locked paths comment. Такой чат
+не назначает ту же issue daemon-агенту и продолжает только пока owner comment
+совпадает с текущим thread.
+
 Агент также может продолжать:
 
 - активную Multica issue FAN-<n> с совпадающим owner/thread/worker;
-- bug/regression/release blocker, явно assigned или успешно claimed им;
+- bug/regression/release blocker, явно assigned ему или owned этим direct-control thread;
 - результат/QA verdict, который нужно отразить в timeline issue.
 
 Если FAN issue выглядит подходящим по роли, но не имеет matching lane, агент
 не берёт его, кроме случая явного PM/dispatcher разрешения.
 
-Design pool exception: Design main and Designer 2 must require an extra worker
-scope (`design-main` or `designer2`) before claim. Generic `design` issues
+Design pool rule: Design main and Designer 2 require an extra worker scope
+(`design-main` or `designer2`) before dispatcher assignment. Generic `design` issues
 without a worker-scope marker wait for PM/dispatcher split.
 
 ## Task Lifecycle
@@ -249,7 +255,8 @@ without a worker-scope marker wait for PM/dispatcher split.
 Нормальный цикл:
 
 ```text
-new -> in_progress -> done/review -> QA -> QA PASSED -> Multica done
+Multica parent: todo -> in_progress -> in_review -> done (только после QA PASS)
+local mirror:    new -> in_progress -> review -> done
 ```
 
 `in_progress` is a live lock, not a parking lot. A Multica issue may remain in
@@ -264,7 +271,8 @@ looks active but has no result/heartbeat is a process failure.
 
 1. Проверить branch/status/fetch state.
 2. Найти Multica issue FAN-<n> и проверить owner/locked paths/status/comments.
-3. Убедиться, что Multica issue явно assigned ему или успешно claimed им.
+3. Убедиться, что Multica issue assigned его exact UUID или имеет explicit
+   direct-control owner comment для текущего thread.
 4. Поставить Multica `in_progress`/comment и только затем local mirror `Статус: in_progress`.
 5. Обновить local mirror под текущий статус issue.
 6. Только потом менять код/ассеты/docs.
@@ -552,7 +560,7 @@ Common blockers:
 
 - Do not ask the user for routine approvals; decide autonomously in scope.
 - User directive 2026-06-28: agents have full in-repository approval for their
-  claimed Multica issue (FAN-<n>). Sync from GitHub before starting, claim/update
+  authorized Multica issue (FAN-<n>). Sync from GitHub before starting, update
   the Multica issue, edit project files, run tests, update docs, commit, and push
   task-owned files without asking for confirmation. Only stop for platform-enforced
   approval gates, secrets, destructive external actions, or impossible blockers.
@@ -576,12 +584,12 @@ Use this before every task:
 1. Read AGENTS.md and relevant process/task/design docs.
 2. Confirm branch and GitHub sync.
 3. Check dirty worktree.
-4. Read the one Multica FAN issue assigned to your exact agent UUID; never self-select an unassigned issue.
+4. Determine mode: daemon requires exact assignee UUID; direct control requires explicit matching owner comment after duplicate/lock audit.
 5. Check status, comments, assignee, Contour/Owner/Thread/Locked paths.
 6. Check local task/board mirror only after the Multica issue, plus recent owner/dispatch/QA notes.
 7. Verify required skill and read its SKILL.md if using Codex.
-8. If the Multica issue is not explicitly assigned/owned by you, do not start.
-9. If assigned, set Multica in_progress + `--content-file` comment and sync local mirror.
+8. If neither exact assignment nor the direct-control exception matches you, do not start.
+9. If authorized by exact assignment or direct-control ownership, set Multica in_progress + `--content-file` comment and sync local mirror.
 10. Work only inside role scope.
 11. Test, update docs/task report.
 12. Commit/push or open PR.

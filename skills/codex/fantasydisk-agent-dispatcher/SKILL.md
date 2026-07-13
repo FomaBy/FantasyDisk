@@ -12,9 +12,9 @@ unassigned issue independently.
 ## Context
 
 Read repo `AGENTS.md`. Resolve the repository with `git rev-parse
---show-toplevel`; never assume a drive letter or home-directory path. Create
-isolated worktrees under `${FANTASYDISK_WORKTREE_ROOT:-<repo-parent>/FantasyDisk_agents}`
-from fresh `origin/dev`.
+--show-toplevel`; never assume a drive letter, shell syntax, or home-directory
+path. The dispatcher chooses explicit absolute repo/worktree paths valid on the
+current runtime and includes them in each worker prompt.
 
 Canonical IDs:
 
@@ -30,36 +30,67 @@ List the whole queue; a known parent ID is optional:
 multica issue list --project 2ac963eb-b644-4540-8042-a1a4508f1a65 --status in_review --limit 100 --output json
 multica issue list --project 2ac963eb-b644-4540-8042-a1a4508f1a65 --status todo --limit 100 --output json
 multica issue list --project 2ac963eb-b644-4540-8042-a1a4508f1a65 --status in_progress --limit 100 --output json
+multica issue list --project 2ac963eb-b644-4540-8042-a1a4508f1a65 --status backlog --limit 100 --output json
+multica issue list --project 2ac963eb-b644-4540-8042-a1a4508f1a65 --status blocked --limit 100 --output json
 ```
 
-Page with `--offset` if a result reaches the limit. Filter JSON by role/lane,
-priority, blockers, assignee, parent, comments, and locked paths. Prefer QA for
+Page with `--offset` if a result reaches the limit. The list result does not
+contain the comment/lock history: for every candidate run `multica issue get
+<FAN-id> --output json` and `multica issue comment list <FAN-id> --recent 10
+--output json`. Reject blocked/dependent/stale-owner candidates. Prefer QA for
 `in_review`, then small backend/balance work, then non-overlapping UI/design and
 animation work.
 
+Before assigning, inspect capacity with `multica agent list --output json`,
+`multica agent tasks <agent-uuid> --output json`, and assignee-filtered `todo` /
+`in_progress` issue lists. Do not queue a second issue to a busy agent.
+
 ## Assign Without Duplicate Claims
 
-1. Keep exactly one active dispatcher for a queue. Record its owner and
-   heartbeat in the parent/control FAN issue. A second dispatcher observes only.
+1. Require a `DISPATCH_CONTROL_FAN` for the run. Post a `--content-file` lease
+   comment with dispatcher identity and an expiry no more than 15 minutes ahead;
+   re-read recent comments and continue only if no other unexpired lease exists.
+   Refresh before every assignment. A second dispatcher observes only.
 2. Re-read the candidate immediately before assignment:
    `multica issue get <FAN-id> --output json` and recent comments.
 3. Require `todo`, no active assignee, no blocker, and no overlapping owner/lock.
-   For implementation already in `in_review`, create or reuse a separate QA child
-   issue in `todo`; do not replace the implementation owner.
+   Capture the latest comment timestamp/ID. For implementation already in
+   `in_review`, create or reuse a separate QA child; do not replace its owner:
+
+   ```bash
+   multica issue create --title "QA: <parent title>" \
+     --description-file ./qa-description.md --parent <parent-FAN> \
+     --project 2ac963eb-b644-4540-8042-a1a4508f1a65 --status backlog \
+     --assignee-id <qa-agent-uuid> --priority <priority>
+   ```
 4. Multica CLI has no compare-and-swap claim. Under the single-dispatcher rule,
    reserve without starting the daemon in one update:
    `multica issue update <FAN-id> --status backlog --assignee-id <agent-uuid>
    --output json`.
-5. Re-read the issue and assert both `backlog` and the exact assignee UUID. If
-   either differs, do not edit or dispatch. Post the assignment/locks comment,
-   then move it to `todo` to enqueue the assigned agent.
+5. Re-read the issue and comments. Assert `backlog`, the exact assignee UUID,
+   and no new foreign owner/lock comment after the captured cursor. If any check
+   differs, roll back before enqueue. Otherwise post the assignment/locks
+   comment through `--content-file`, re-read once more, then move it to `todo`.
 6. The worker re-reads its issue, verifies its own assignee, then sets
    `in_progress` and posts owner/workdir/branch/locked paths. Unassigned workers
    must never self-claim by changing status alone.
 
-If reservation or enqueue fails, restore the truthful prior status, unassign the
-issue, and record the failure. Cross-dispatcher atomic claiming remains a server
-capability gap; never compensate by running multiple writers.
+For an already assigned `backlog` issue, never replace its assignee. Release it
+to `todo` only after its dependency/hold is explicitly cleared and the exact
+assignee has no active task.
+
+If reservation or enqueue fails, keep it parked, unassign, and only then restore
+the prior free status so no daemon can start mid-rollback:
+
+```bash
+multica issue status <FAN-id> backlog
+multica issue assign <FAN-id> --unassign
+multica issue status <FAN-id> todo
+```
+
+Record the failure. This lease/re-read protocol reduces but cannot eliminate a
+server race; true multi-dispatcher safety requires server-side
+claim-if-unassigned/expected-status. Never run multiple dispatcher writers.
 
 When using an in-process subagent instead of a Multica daemon agent, the central
 dispatcher must first set `in_progress` and post a direct-control owner/lock
@@ -70,12 +101,15 @@ comment. Do not assign a daemon agent as well.
 Give a worker exactly one FAN ID per run. It must:
 
 - verify issue status, assignee, comments, and locked paths before edits;
-- use a clean worktree from fresh `origin/dev`;
+- fetch `origin/dev`, pin its SHA, then create a named task branch/worktree from
+  that exact SHA (`git worktree add -b <task-branch> <absolute-path> <sha>`);
 - read the relevant UI/asset/animation/balance skill;
 - update docs and run the required synchronous quality gates;
 - commit and push task-owned files with the FAN key;
 - post exact SHA, commands/results, residual risk, and cleanup evidence;
-- move implementation to `in_review`; move QA-passed work to `done`;
+- move implementation to `in_review`; a QA PASS marks both the QA child and its
+  implementation parent `done`; QA RED completes the QA child with verdict
+  evidence but leaves the parent `in_review` and creates/links a defect;
 - stop after that issue so the central dispatcher chooses the next assignment.
 
 Never leave background commands or workers running past the owning Multica turn.

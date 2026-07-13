@@ -2,9 +2,9 @@
 
 Введен: 2026-06-12 (решение пользователя). Исполнители: чат «QA testing chat»
 и фоновый воркер `fantasydisk-qa-board-worker`.
-Обновлено: 2026-07-13 — Multica-first: QA выбирает задачи из Multica (проект
-FantasyDisk, issues FAN-* в статусе `in_review`), локальные `docs/tasks/*.md` —
-spec/evidence mirror.
+Обновлено: 2026-07-13 — Multica-first: dispatcher назначает QA отдельную child
+issue в проекте FantasyDisk для parent `FAN-*` в статусе `in_review`; QA не
+self-select'ит parent. Локальные `docs/tasks/*.md` — spec/evidence mirror.
 
 ## Правило «UI не наползает» (пользователь, 2026-06-12, ОБЯЗАТЕЛЬНО)
 
@@ -41,21 +41,24 @@ bug-задача, даже если no-overlap между плашками пр�
 
 ## Цикл задачи (обновленный)
 ```text
-todo → in_progress → in_review (исполнитель) → QA-тест → QA-Вердикт: PASSED → done
-                                                       ↘ QA-Вердикт: FAILED → blocked + bug-issue
+parent: todo → in_progress → in_review ───────────────→ done (QA PASS)
+QA child: backlog(reserved) → todo → in_progress → done + verdict
+                                                ↘ RED: parent stays in_review + linked bug
 ```
 Исполнители НИЧЕГО не меняют в своем процессе: ставят issue в `in_review` по
-завершении. QA сам находит `in_review`-задачи без QA-вердикта.
+завершении. Единственный dispatcher находит parent без verdict, создаёт отдельную
+QA child issue, резервирует exact QA agent UUID и enqueue'ит её. QA worker не
+self-select'ит implementation parent и не меняет его owner.
 
-## Как QA выбирает задачу
-1. Сканировать Multica проект FantasyDisk (`multica issue …`): issues FAN-* в
-   статусе `in_review` без QA PASSED/FAILED verdict comment. Локальный
-   `docs/tasks/*.md` использовать как подробную спецификацию и evidence mirror.
-2. Первым действием — застолбить QA claim в Multica issue comment:
-   `QA: in_progress (<дата время>, <agent>)`. Если есть свежий QA claim
-   (< 2 часов), пропускать. При наличии `.md` mirror можно продублировать туда
-   строку `QA: in_progress`.
-3. Одна задача за прогон. Приоритет — самые свежие `in_review` (актуальный код).
+## Как QA получает задачу
+1. Dispatcher сканирует Multica parent issues `FAN-*` в `in_review`, проверяет
+   отсутствие существующей QA child/verdict и создаёт child с parent ID, exact
+   candidate SHA и acceptance/evidence links.
+2. Child создаётся в `backlog` с exact QA `assignee_id`, затем dispatcher
+   перепроверяет ownership/comment locks и переводит child в `todo`.
+3. QA worker принимает только назначенную child, повторно читает parent/child и
+   recent comments, ставит child `in_progress` и пишет start comment через
+   `--content-file`. Одна child за прогон.
 
 ## Как тестировать (минимальный обязательный объем)
 1. **По Acceptance Criteria задачи** — каждый пункт проверяется фактически,
@@ -131,8 +134,9 @@ viewport, ждёт ещё 4 frames и проверяет его `WeakRef`. По�
 Карта управления — `docs/design/systems/input_controls.md`.
 
 ## Вердикт (дописывается в файл задачи)
-Вердикт сначала фиксируется в Multica issue (comment + статус: PASSED → `done`,
-FAILED → `blocked`), затем дублируется в локальный task mirror при наличии:
+Вердикт сначала фиксируется comment'ом в QA child issue, после чего завершённая
+QA child переводится в `done` при любом фактическом verdict. Затем verdict
+дублируется в локальный task mirror при наличии:
 
 ```md
 ## QA-Вердикт (<дата>)
@@ -141,9 +145,10 @@ FAILED → `blocked`), затем дублируется в локальный t
 Краевые случаи: <что прогнали>
 Баги: нет | список с ссылками на bug-таски
 ```
-При `PASSED` parent переводится в `done`. При `FAILED` parent возвращается в
-`todo` или остаётся `in_review` с blocker, а defect получает отдельную child
-issue.
+При `PASSED` parent переводится в `done`. При `FAILED` parent остаётся
+`in_review` с blocker, а defect получает отдельную child issue. Вернуть parent в
+`todo` может только dispatcher/PM после явного решения о повторной реализации;
+QA worker не меняет parent owner или execution status самостоятельно.
 
 ## Баги
 На КАЖДЫЙ найденный баг — сначала отдельный Multica bug issue (проект FantasyDisk,
