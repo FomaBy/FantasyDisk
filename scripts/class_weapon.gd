@@ -285,6 +285,12 @@ const ATTACK_MODE_EXECUTORS := {
 @export var point_blank_radius := 0.0
 @export var close_contact_radius := 0.0
 @export var dot_crit_snapshot_ratio := 0.0
+# FAN-1031 v7: ядовитый крауд-спред dot_beam (assassin venom_wire). Сентинел 0.0 → no-op
+# (ни один спред) → нулевое изменение без override. При >0 после пирса струна брызгает
+# ядом по врагам ВНЕ пробитой линии — крауд-канал В СУЩЕСТВУЮЩИХ капах ширины
+# (aoe_max_targets/aoe_full_targets/aoe_target_diminish), ОРТОГОНАЛЬНЫЙ solo (пробитые
+# исключены → на 1 цели спреда нет → solo не меняется).
+@export var dot_beam_spread_ratio := 0.0
 @export var melee_close_bonus_radius := 0.0
 @export var melee_close_damage_multiplier := 1.0
 @export var melee_execute_threshold := 0.0
@@ -559,6 +565,7 @@ func configure_weapon(config: Dictionary) -> void:
 	point_blank_radius = float(config.get("point_blank_radius", point_blank_radius))
 	close_contact_radius = float(config.get("close_contact_radius", close_contact_radius))
 	dot_crit_snapshot_ratio = float(config.get("dot_crit_snapshot_ratio", dot_crit_snapshot_ratio))
+	dot_beam_spread_ratio = float(config.get("dot_beam_spread_ratio", dot_beam_spread_ratio))
 	melee_close_bonus_radius = float(config.get("melee_close_bonus_radius", melee_close_bonus_radius))
 	melee_close_damage_multiplier = float(config.get("melee_close_damage_multiplier", melee_close_damage_multiplier))
 	melee_execute_threshold = float(config.get("melee_execute_threshold", melee_execute_threshold))
@@ -691,6 +698,18 @@ func _attack() -> void:
 # (само поле fire_interval пересобирает player._apply_weapon_scaling — не трогаем).
 func _fire_interval_artifact_factor() -> float:
 	var factor := 1.0
+	# FAN-1031 v7 (координаторское решение): priest crowd 1.89 — КАДЕНС-driven, не width.
+	# Замедляем БАЗОВУЮ каденцию reliquary/censer НА ТОЧКЕ ПОТРЕБЛЕНИЯ (тот же fire_interval-
+	# артефакт, что и mode-переработки ниже) — throughput всех осей падает пропорционально
+	# (DPS ∝ 1/cooldown), а WIDTH/identity (pack-clear breadth, falloff-кап) НЕ трогаем.
+	# Направление crowd↓ детерминированно (cadence-математика); точную величину калибрует
+	# координатор по v8 (roster-relative median дрейфует от буста дна). Ideal-крауд-билд НЕ
+	# берёт mode-артефакты (reliquary_salvo/censer_vow scored 0 — только mods, без stats),
+	# так что базовый тэ применяется к замеру без offset'а этими режимами.
+	if weapon_id == "priest_reliquary":
+		factor *= 1.30  # быстрый бурст-крауд — главный оффендер (20t 2.39× медианы ростера)
+	if weapon_id == "priest_censer":
+		factor *= 1.15  # большой близкий AoE — вторичный крауд-вклад
 	if weapon_id == "priest_reliquary" and _owner_mod("reliquary_barrage_mode") > 0.0:
 		factor *= 0.75  # «Реликварный залп»: частые залпы вместо лечения
 	if weapon_id == "priest_censer" and _owner_mod("censer_vow_mode") > 0.0:
@@ -1932,11 +1951,52 @@ func _fire_single_dot_beam(owner_node: Node2D, direction: Vector2) -> void:
 	var hit_count := 0
 	var hit_limit := _effective_pierce_count()
 	var falloff := clampf(pierce_damage_falloff, 0.1, 1.0)
+	var pierced_ids := {}
+	var spread_center := finish
 	for hit in hits:
 		if hit_count >= hit_limit:
 			break
-		_damage_enemy_with_dot(hit["node"], damage_value * pow(falloff, float(hit_count)), owner_node)
+		var hit_node := hit["node"] as Node2D
+		_damage_enemy_with_dot(hit_node, damage_value * pow(falloff, float(hit_count)), owner_node)
+		if hit_node != null and is_instance_valid(hit_node):
+			pierced_ids[hit_node.get_instance_id()] = true
+			spread_center = hit_node.global_position  # ядро спреда — самый глубокий пробитый (там плотнее толпа)
 		hit_count += 1
+	# FAN-1031 v7: ядовитый крауд-спред (assassin venom_wire) — крауд-канал В СУЩЕСТВУЮЩИХ капах,
+	# ортогональный solo (пробитые исключены). Сентинел 0.0 → ветка не выполняется (no-op).
+	if dot_beam_spread_ratio > 0.0 and hit_count > 0:
+		_venom_crowd_spread(spread_center, damage_value * dot_beam_spread_ratio, pierced_ids)
+
+
+# FAN-1031 v7: ядовитый крауд-спред dot_beam (assassin venom_wire crowd-ниша). Брызг яда
+# по врагам ВНЕ пробитой линии (exclude_ids) — отдельный крауд-канал, ОРТОГОНАЛЬНЫЙ solo:
+# на 1 цели она пробита → исключена → спреда нет → solo не двигается. Кап ШИРИНЫ — те же
+# aoe_max_targets/aoe_full_targets/aoe_target_diminish, что и прямой AoE (сентинел <0 → дефолт),
+# та же диминиш-формула по рангу удалённости. Урон прямой (не DoT), доля direct×spread_ratio.
+func _venom_crowd_spread(center: Vector2, amount: float, exclude_ids: Dictionary) -> void:
+	var enemies: Array = []
+	for enemy_node in TARGET_QUERY.in_radius(self, center, aoe_radius):
+		if enemy_node == null or not is_instance_valid(enemy_node):
+			continue
+		if exclude_ids.has((enemy_node as Node).get_instance_id()):
+			continue
+		enemies.append(enemy_node)
+	if enemies.is_empty():
+		return
+	AttackVfx.orb_burst(_projectile_parent(), center, aoe_radius * 0.6, Color(visual_color.r, visual_color.g, visual_color.b, 0.28))
+	var full_targets := aoe_full_targets if aoe_full_targets >= 0 else AOE_PROJECTILE_FULL_TARGETS
+	var diminish := aoe_target_diminish if aoe_target_diminish >= 0.0 else AOE_PROJECTILE_TARGET_DIMINISH
+	enemies.sort_custom(func(a: Node2D, b: Node2D) -> bool:
+		return center.distance_squared_to(a.global_position) < center.distance_squared_to(b.global_position)
+	)
+	for index in range(enemies.size()):
+		# Жёсткий кап ШИРИНЫ — дальше aoe_max_targets НОЛЬ (как у прямого AoE, coverage-контракт).
+		if aoe_max_targets >= 0 and index >= aoe_max_targets:
+			break
+		var factor := 1.0
+		if index >= full_targets:
+			factor = 1.0 / (1.0 + float(index - full_targets + 1) * diminish)
+		_damage_enemy(enemies[index] as Node2D, amount * factor)
 
 
 func _fire_drain_link(owner_node: Node2D, target: Node2D, direction: Vector2) -> void:
@@ -3655,7 +3715,7 @@ func _constellation_meteor_recall(center: Vector2, shard_damage: float) -> void:
 # Разрешение — через Callable(self, "_resolve_sniper_lockshot").bind (примитивы),
 # без лямбд с захватом узлов (SCRUM-551).
 const DEADEYE_LOCK_MAIN_MULT := 1.34        # тяжёлый прямой хит по дальней цели
-const DEADEYE_ENDPOINT_BLAST_RATIO := 0.35  # терминальный взрыв на конце линии
+const DEADEYE_ENDPOINT_BLAST_RATIO := 0.42  # FAN-1031 v7: 0.35→0.42 — deadeye-специфичный буст снайпера (терминальный взрыв на конце линии; вне budget-компенсации, лендится напрямую). Артефакт «Патрон мертвого глаза» добавляет сверху.
 const SHATTER_VOLLEY_HIT_LIMIT := 2         # макс пуль в одного врага за залп
 
 

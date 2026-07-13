@@ -72,16 +72,26 @@ func _check_weapon_configs() -> void:
 		_errors.append("рифф: полоса шириной %.0f — не узкая (ожидается <= 130)" % float(riff.get("wave_width", 0.0)))
 	if float(riff.get("fire_interval", 9.0)) > 0.6:
 		_errors.append("рифф: fire_interval %.2f — не частый (ожидается <= 0.6)" % float(riff.get("fire_interval", 9.0)))
-	if float(riff.get("damage_multiplier", 9.0)) > 0.8:
-		_errors.append("рифф: damage_multiplier %.2f — не низко-средний хит (ожидается <= 0.8)" % float(riff.get("damage_multiplier", 9.0)))
+	# FAN-1031 v7 (координаторское продуктовое решение, DoD FAN-1028): identity-кап риффа
+	# поднят 0.80→1.30. НЕ ослабление — компенсация НЕсчитаемого trio-моделью контроля
+	# (класс «control»: амп-сеть несёт бюджет в CC, ось defense=EHP это не зачитывает).
+	# Рифф остаётся СРЕДНИМ хитом кита (electric > bass — control-идентичность через ramp/амп,
+	# не через низкий raw). Верхняя граница держит рифф от превращения в бурст-оружие.
+	if float(riff.get("damage_multiplier", 9.0)) > 1.30:
+		_errors.append("рифф: damage_multiplier %.2f — за верхней границей v7 identity-капа (ожидается <= 1.30)" % float(riff.get("damage_multiplier", 9.0)))
 
 	var bass: Dictionary = PD.weapon("guitarist", "bass_guitar")
 	if float(bass.get("aoe_radius", 0.0)) < 320.0:
 		_errors.append("бас: базовый радиус %.0f мал (ожидается >= 320 с первого уровня)" % float(bass.get("aoe_radius", 0.0)))
 	if float(bass.get("fire_interval", 9.0)) > 0.8:
 		_errors.append("бас: fire_interval %.2f — тики не частые" % float(bass.get("fire_interval", 9.0)))
-	if float(bass.get("damage_multiplier", 9.0)) > 0.30:
-		_errors.append("бас: damage_multiplier %.2f — ранняя слабость должна быть в уроне" % float(bass.get("damage_multiplier", 9.0)))
+	# FAN-1031 v7: identity-кап баса поднят 0.30→0.50 (то же продуктовое решение). «Ранняя
+	# слабость в уроне» сохранена как ОТНОСИТЕЛЬНАЯ identity: бас ОБЯЗАН оставаться слабее
+	# риффа по урону (bass < electric), а не абсолютным числом.
+	if float(bass.get("damage_multiplier", 9.0)) > 0.50:
+		_errors.append("бас: damage_multiplier %.2f — за верхней границей v7 identity-капа (ожидается <= 0.50)" % float(bass.get("damage_multiplier", 9.0)))
+	if float(bass.get("damage_multiplier", 9.0)) >= float(riff.get("damage_multiplier", 0.0)):
+		_errors.append("бас: damage_multiplier %.2f не ниже риффа %.2f — относительная «ранняя слабость» нарушена" % [float(bass.get("damage_multiplier", 9.0)), float(riff.get("damage_multiplier", 0.0))])
 	if float(bass.get("knockback", 0.0)) < 150.0:
 		_errors.append("бас: knockback %.0f мал для кайта" % float(bass.get("knockback", 0.0)))
 	if float(bass.get("aoe_radius", 0.0)) > float(bass.get("attack_range", 0.0)) + EPS:

@@ -967,6 +967,59 @@ SCRUM-1091 добавляет только presentation contract, не нову�
     (worst CCT +20%). berserk_dps_runaway_gate — известный флаки FAN-1039 (мой нерф hammer его
     только опускает; 3/3 зелёные при переспросе).
 
+- **FAN-1031 Stage 3d-final (2026-07-13, v7 приёмка координатора) — доводка коридора + 3
+  структурных решения (no-silent-retune).** Полный разбор + budget-дамп + проекции —
+  `build/stage3d_final_v7_fan1031.md`. По приёмочному v7 (trio-модель, медианы solo 820 / aoe 2656 /
+  crowd 8556 / EHP 85): верхи chemist 1.36 / robot 1.33 / priest 1.22 / soldier 1.19 / dark_mage 1.16 /
+  elementalist 1.16; дно guitarist 0.61 / sniper 0.86 / assassin 0.85 (crowd 0.31). Направление КАЖДОЙ
+  правки подтверждено детерминированным дампом `budget_tuning_for` (budget_dm/eff per-hit); финальный
+  **v8 double-reshoot + точная приёмка коридоров — за координатором** (roster-relative median дрейфует
+  от нерфов верхов и буста дна — статикой не учесть; live-полный-пересъём вне лейна исполнителя).
+  - **Guitarist — ПРОДУКТОВОЕ РЕШЕНИЕ координатора (DoD FAN-1028), НЕ тихое ослабление гейта.**
+    identity-капы кита ПОДНЯТЫ: `guitarist_kit_test` рифф ≤0.80→≤1.30, бас ≤0.30→≤0.50 (+ новый пин
+    «бас < рифф» — относительная «ранняя слабость в уроне» сохранена). Обоснование: класс `control`
+    несёт бюджет в CC амп-сети, а trio-модель контроль НЕ считает (ось defense=EHP) → кит структурно
+    недооценён; поднятый RAW компенсирует НЕсчитаемый контроль (НЕ двойной зачёт). Raw: electric
+    `0.80→1.28`, bass `0.30→0.48`, amp `1.00→1.60`; db `1.00→1.50` держит кит клампнутым (budget_dm=2.80
+    ceil) → raw лендится 1:1 (budget-дамп: electric eff 2.24→3.58 ×1.60, bass 0.84→1.34 ×1.60). Ramp/
+    амп-control identity (warmup 0.02/0.20, амп-сеть) НЕ трогал. Статик-проекция total ≈0.86 + median-
+    дрейф → ≥0.85.
+  - **Priest — каданс-кап (НЕ width).** crowd 1.89 — каденс-driven (storm-бланкет толпы ×3/каст).
+    `_fire_interval_artifact_factor` замедляет БАЗОВЫЙ fire_interval на точке потребления: reliquary
+    ×1.30, censer ×1.15 → throughput всех осей ↓ (DPS ∝ 1/cooldown), WIDTH/falloff-identity целы.
+    Ideal-крауд-билд НЕ берёт mode-артефакты (reliquary_salvo/censer_vow scored 0 в `_dps_score` —
+    только `mods`, без `stats`) → базовый тэ применяется к замеру без offset'а. Направление crowd↓
+    детерминированно; остаток к ≤1.25 (chime 1.87× медианы НЕ тронут по указанию — reliquary/censer
+    only) — median-дрейф + решение координатора по chime на v8. Пин + A/B-контроль (не-priest =1.0):
+    `priest_kit_test._check_cadence_tax`.
+  - **Assassin — crowd-ниша через venom_wire «яд-спред по толпе в существующих капах».** Новый
+    сентинел-контракт `dot_beam_spread_ratio` (0.0 → no-op, A/B). После пирса струна брызгает ядом
+    по врагам ВНЕ пробитой линии (`_venom_crowd_spread`): крауд-канал В СУЩЕСТВУЮЩИХ капах ширины
+    (`aoe_max_targets 6 / aoe_full_targets 2 / aoe_target_diminish 1.6` — те же поля прямого AoE, venom
+    иначе их не использует), ОРТОГОНАЛЬНЫЙ solo (пробитые исключены → на 1 цели спреда нет → solo-ось
+    не раздувается). venom config: `dot_beam_spread_ratio 0.55`. Пирс-лимит контракт целостен (сабтест
+    изолирован от спреда). Новый сабтест `assassin_kit_test._test_venom_wire_crowd_spread` (solo A/B-
+    ортогональность + крауд-хит + кап ширины). Величину spread_ratio калибрует координатор по v8
+    (цель crowd_norm ≥0.45 профиля 0.70). Player-facing: описание venom_wire дополнено «яд брызгает на
+    ближнюю толпу за линией».
+  - **Numeric-трим верхов (db, budget-дамп-подтверждён):** chemist `0.95→0.85` (blast eff 5.02→4.49),
+    robot `0.88→0.80` (magnetic 4.30→3.91; ⚠️ остаток total >1.15 = identity-price ТАНКА def 2.12 —
+    survival НЕ режем, решение координатора; калибровать по damage-осям, не total), soldier `0.82→0.76`,
+    dark_mage `0.58→0.52`, elementalist `0.70→0.63`. chemist/dark_mage/elementalist остаточный aoe/crowd-
+    лид — profile-identity (aoe_target 1.30/1.10, уже width-капнуто) с примечанием, не выгрызаем per-hit.
+  - **Sniper — вверх (solo-класс недодаёт по своей оси, solo_norm 0.73 при цели 1.15):** db `1.15→1.35`
+    (budget_dm всех трёх, unclamped, лендится: deadeye eff 1.35→1.58) + deadeye-специфично
+    `DEADEYE_ENDPOINT_BLAST_RATIO 0.35→0.42` (вне budget-компенсации).
+  - **Гейты:** kit (guitarist/priest/assassin/sniper/chemist/robot/soldier/dark_mage/elementalist/
+    biologist/doctor/druid) + cap (aoe_target/coverage/orbit_falloff/status_fanout/pool_target/
+    boss_hazard) + `class_budget_profiles_integrity` + `global_damage_balance_smoke` (worst CCT +20% —
+    без изменений) + `damage_type_isolation`/`content_registry_consistency`/`progression_data_api_surface`/
+    `contact_damage_softcap` — ВСЕ зелёные (24/25). **Гейтов НЕ ослаблял.** ⚠️ Известный-красный ДО
+    моих правок `comfort_band_cross_class_gate` (v7 baseline: 7 нарушений; после db-сдвигов 18) — это
+    Stage-4 перекалибровка comfort-весов (`class_mean_raw/median`), которую координатор явно оставил
+    себе ПОСЛЕ фиксации db на v8; премейчур-рекалибровка под ещё-двигающиеся db была бы сразу
+    устаревшей. Не в приёмочном наборе «15/15».
+
 ## Known Balance Risks
 
 - Точный паритет clear speed Темного мага/Гитариста с Берсерком требует ручного плейтеста.

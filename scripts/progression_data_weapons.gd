@@ -212,16 +212,16 @@ const GUITARIST_WEAPONS := {
 		"scene_path": "res://scenes/ElectricGuitar.tscn",
 		"attack_mode": "riff_strip",
 		"damage_parameter": "magic_damage",
-		# FAN-1031 3d (v6): guitarist total 0.59 FAIL+ (solo 0.30/aoe 0.53/crowd 0.73). ВСЕ три
-		# оружия кита клампнуты budget_dm=2.80 (ceil) — формула хочет БОЛЬШЕ бюджета, чем
-		# потолок, т.е. кит структурно недодаёт. Профиль-таргеты (db/aoe_target) live НЕ
-		# двигают (тюнер уже на потолке). Единственный рычаг — RAW damage_multiplier: живой
-		# урон = raw × 2.80, пока формульный таргет ≥ потолка. ⚠️ identity-гейт guitarist_kit_test:
-		# рифф = «низко-средний хит», damage_multiplier ≤ 0.80. electric 0.66→0.80 (×1.21 — МАКСИМУМ
-		# в рамках identity, гейт НЕ ослаблял). Медиана ростера дрейфует вниз от нерфов верхов →
-		# нормированный скор гитариста растёт и сам. Остаточный дефицит клампнутого+identity-ограниченного
-		# кита сверх этого — структурный, решение координатора (см. handoff). Калибровать по v7.
-		"damage_multiplier": 0.80,
+		# FAN-1031 3d-final (v7): guitarist total 0.61 FAIL+ (solo 0.36/aoe 0.56/crowd 0.73).
+		# КООРДИНАТОРСКОЕ ПРОДУКТОВОЕ РЕШЕНИЕ (v7 приёмка, DoD FAN-1028 «каждый класс интересен
+		# и проходит игру»): identity-капы риффа/баса ПОДНЯТЫ — это НЕ тихое ослабление гейта, а
+		# задокументированное решение. Причина: класс «control» (амп-сеть) несёт часть бюджета
+		# в контроль, а trio-модель контроль НЕ считает (ось defense = EHP, не CC) → кит
+		# структурно недооценён. Поднятый RAW компенсирует НЕсчитаемый контроль (не двойной зачёт).
+		# Все три оружия клампнуты budget_dm=2.80 (ceil) → живой урон = raw × 2.80, пока формульный
+		# таргет ≥ потолка; guitarist db поднят до 1.25, чтобы кит остался клампнут после raw-буста
+		# (raw лендится 1:1). Точную величину калибрует координатор по v8. Гейт обновлён синхронно.
+		"damage_multiplier": 1.28,
 		"fire_interval": 0.55,
 		"attack_range": 520.0,
 		"aoe_radius": 110.0,
@@ -237,9 +237,10 @@ const GUITARIST_WEAPONS := {
 		"scene_path": "res://scenes/BassGuitar.tscn",
 		"attack_mode": "pulse",
 		"damage_parameter": "magic_damage",
-		# FAN-1031 3d (v6): raw-buff (bass клампнут ceil). ⚠️ identity-гейт: бас = «ранняя слабость
-		# в уроне», damage_multiplier ≤ 0.30. 0.26→0.30 (×1.15 — максимум в рамках identity).
-		"damage_multiplier": 0.30,
+		# FAN-1031 3d-final (v7): raw-buff (bass клампнут ceil). identity-кап баса поднят под то же
+		# продуктовое решение координатора (см. electric_guitar). Бас остаётся САМЫМ слабым по urону
+		# в ките (bass < electric) — «ранняя слабость в уроне» как ОТНОСИТЕЛЬНАЯ identity сохранена.
+		"damage_multiplier": 0.48,
 		"fire_interval": 0.78,
 		"attack_range": 330.0,
 		"aoe_radius": 330.0,
@@ -254,9 +255,9 @@ const GUITARIST_WEAPONS := {
 		"scene_path": "res://scenes/SoundAmp.tscn",
 		"attack_mode": "amp",
 		"damage_parameter": "magic_damage",
-		# FAN-1031 3d (v6): raw-buff (sound_amp headroom клампа мал ~×1.08 до компенсации; гейт dm не
-		# ограничивает). 0.85→1.00 — частичный (тюнер съест часть сверх границы клампа).
-		"damage_multiplier": 1.00,
+		# FAN-1031 3d-final (v7): raw-buff под то же продуктовое решение (амп не в identity-гейте, только
+		# budget-кламп). db 1.25 держит амп ближе к ceil → больше raw лендится. Калибровать по v8.
+		"damage_multiplier": 1.60,
 		"fire_interval": 2.40,
 		"attack_range": 520.0,
 		"aoe_radius": 235.0,
@@ -329,7 +330,7 @@ const ASSASSIN_WEAPONS := {
 	},
 	"venom_wire": {
 		"id": "venom_wire", "title": "Ядовитая струна",
-		"description": "Ядовитая гаррота от самой руки: пробивает ряд врагов по линии и душит тех, кто вцепился вплотную. Крит-удар делает яд злее.",
+		"description": "Ядовитая гаррота от самой руки: пробивает ряд врагов по линии и душит тех, кто вцепился вплотную. Яд брызгает на ближнюю толпу за линией. Крит-удар делает яд злее.",
 		"scene_path": "res://scenes/VenomWire.tscn",
 		"attack_mode": "dot_beam", "damage_parameter": "damage",
 		"damage_multiplier": 0.68, "fire_interval": 0.78,
@@ -342,6 +343,17 @@ const ASSASSIN_WEAPONS := {
 		"close_contact_radius": 80.0,
 		"dot_crit_snapshot_ratio": 0.6,
 		"crit_shadow_burst_radius": 92.0,
+		# FAN-1031 v7 (координаторское решение): assassin crowd-ниша через venom_wire — «яд-спред
+		# по толпе в существующих капах». После пирса струна брызгает ядом по врагам ВНЕ пробитой
+		# линии; крауд-канал, ортогональный solo (пробитые исключены → на 1 цели спреда нет).
+		# Кап ШИРИНЫ — те же поля, что у прямого AoE (venom_wire их иначе не использует):
+		# aoe_max_targets 6 (жёсткий потолок), aoe_full_targets 2 (первые 2 — полный яд),
+		# aoe_target_diminish 1.6 (спад дальних). Цель crowd_norm ≥0.45 (профиль 0.70). Величину
+		# dot_beam_spread_ratio калибрует координатор по v8 live-пересъёму (лейн live не тянет).
+		"dot_beam_spread_ratio": 0.55,
+		"aoe_full_targets": 2,
+		"aoe_target_diminish": 1.6,
+		"aoe_max_targets": 6,
 		"visual_color": Color(0.32, 0.95, 0.28, 0.46),
 		"passive_mods": {"crit_chance_flat": 0.04},
 	},
