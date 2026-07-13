@@ -4172,7 +4172,11 @@ func _test_class_weapon_rework() -> void:
 		_fail("Expected cursed skull to tick frequently through the dot pipeline.")
 		return
 	var bass_config: Dictionary = ProgressionData.weapon("guitarist", "bass_guitar")
-	if float(bass_config.get("damage_multiplier", 1.0)) > 0.35 or float(bass_config.get("fire_interval", 9.9)) > 0.9 or float(bass_config.get("knockback", 0.0)) < 150.0:
+	# FAN-1031 3d-final: identity-кап баса поднят задокументированным продуктовым
+	# решением (координатор, DoD FAN-1028): порог 0.35 → 0.50 зеркалит guitarist
+	# kit-тест (bass ≤ 0.50, bass < electric). Контроль-идентичность (частый пульс,
+	# жёсткий отброс) остаётся запинена.
+	if float(bass_config.get("damage_multiplier", 1.0)) > 0.50 or float(bass_config.get("fire_interval", 9.9)) > 0.9 or float(bass_config.get("knockback", 0.0)) < 150.0:
 		_fail("Expected bass guitar to be a fast low-damage control pulse.")
 		return
 	var amp_config: Dictionary = ProgressionData.weapon("guitarist", "sound_amp")
