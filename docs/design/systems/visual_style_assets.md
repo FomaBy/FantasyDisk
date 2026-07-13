@@ -17,6 +17,20 @@ Plan, exact zones, composite, debug overlay and fit reports live in
 `docs/design/mockups/scrum1073_semantic_band_migration/`. This source is not a
 runtime texture; it documents content-zone rules for geometry migration.
 
+## Feedback Privacy Overlay Reference
+
+FAN-1057/FAN-1059 adds the PixelLab MCP source
+`docs/design/references/FAN-1057_feedback_privacy/feedback_privacy_overlay_pixellab_source.png`
+(asset `6e87754b-e6e0-4c74-8682-46af7fe65ab7`, 672×378 RGBA) and proportional
+1920×1080 review preview. It is a textless design reference only, not a runtime
+texture. Empty wells cover title, description, optional 16:9 screenshot,
+include/omit control, privacy copy, status and actions; blackened-steel rails
+and restrained ruby dragon accents stay outside those interiors. Exact
+1280×720/1920×1080/2560×1440 geometry, provenance and visual QA live under
+`docs/design/mockups/FAN-1057_feedback_privacy/` and the adjacent reference
+manifest. Runtime recreates the layout with Godot Controls and existing
+feedback frame/button families.
+
 ## Artifact And Shop Icons
 
 All artifacts from `ProgressionData.ARTIFACTS` and all shop-only items from `ProgressionData.SHOP_ITEMS` have unique PNG assets. Artifact icons were replaced on 2026-06-12 as `256x256` RGBA transparent realistic epic D&D/tabletop fantasy raster magic items after direct user feedback: one finished painted object per icon, no pentagram-style pictograms, no built-in UI frame, no pedestal, no background tile, no loose shards or particles, and readable object lighting/materials. Shop-only icons keep the earlier fantasy-medallion treatment.

@@ -1,0 +1,80 @@
+{
+  "task": "FAN-1059",
+  "parent": "FAN-1057",
+  "canonical_id": "fan1057_feedback_privacy_overlay",
+  "generator": "PixelLab MCP create_ui_asset",
+  "mcp_config_smoke": {
+    "status": "pass",
+    "tool": "get_balance",
+    "secrets_printed": false
+  },
+  "pixellab": {
+    "ui_asset_id": "6e87754b-e6e0-4c74-8682-46af7fe65ab7",
+    "name": "fan1057_feedback_privacy_overlay",
+    "tag": "fan1057_feedback_privacy_overlay",
+    "storage_id": "7a9fb7cd-0060-48a4-a4dc-50f7b1124b0c",
+    "status": "completed",
+    "mode": "ui-panel",
+    "seed": 1057,
+    "generation_cost": 40,
+    "requested_size": [672, 378],
+    "completed_size": [672, 378],
+    "download_endpoint": "https://api.pixellab.ai/mcp/ui-assets/6e87754b-e6e0-4c74-8682-46af7fe65ab7/download",
+    "prompt_file": "docs/design/references/FAN-1057_feedback_privacy/pixellab_prompt.md",
+    "geometry_file": "docs/design/mockups/FAN-1057_feedback_privacy/ui_plan.json",
+    "template_key": "pixellab_pieces_virtual_512x288",
+    "no_background_requested": false,
+    "output_alpha": true
+  },
+  "attempts": [
+    {
+      "result": "validation_rejected_before_generation",
+      "requested_size": [688, 387],
+      "reason": "PixelLab UI aspect limit reported 688x384; no asset was created."
+    },
+    {
+      "result": "completed",
+      "requested_size": [672, 378],
+      "ui_asset_id": "6e87754b-e6e0-4c74-8682-46af7fe65ab7"
+    }
+  ],
+  "exports": [
+    {
+      "id": "pixellab_source",
+      "path": "docs/design/references/FAN-1057_feedback_privacy/feedback_privacy_overlay_pixellab_source.png",
+      "size": [672, 378],
+      "format": "PNG RGBA",
+      "sha256": "75be03e8effea7b1b87c033d05879a53f48f0ac9fefbdd211ccfdc0c718346db"
+    },
+    {
+      "id": "review_preview_1920x1080",
+      "path": "docs/design/previews/FAN-1057_feedback_privacy_overlay_1920x1080.png",
+      "size": [1920, 1080],
+      "format": "PNG RGBA",
+      "transform": "proportional 16:9 resample via macOS sips",
+      "sha256": "9561b4d6a32e601f56387f5ea347bf2ac2d78f37e353b318f99b3328b1ddb352"
+    }
+  ],
+  "runtime_promotion": {
+    "allowed": false,
+    "reason": "Full-page mockup/art layer is design evidence. Godot must recreate Controls and reuse accepted runtime frame/button families."
+  },
+  "visual_qa": {
+    "status": "pass",
+    "reviewed_source": true,
+    "runtime_text_baked": false,
+    "pseudo_runes_or_glyphs": false,
+    "watermark_or_logo": false,
+    "content_interiors_empty": true,
+    "decoration_crosses_content_zones": false,
+    "dragon_accents_restrained_to_outer_corners": true,
+    "one_axis_stretch": false,
+    "notes": "The generated screenshot-toggle well contains two quiet sub-wells that can visually support checkbox and state copy; runtime still uses one CheckBox Control."
+  },
+  "handoff": {
+    "status": "ready_for_integration",
+    "spec": "docs/design/mockups/FAN-1057_feedback_privacy/spec.md",
+    "fit_report": "docs/design/mockups/FAN-1057_feedback_privacy/fit_report.json",
+    "qa_notes": "docs/design/references/FAN-1057_feedback_privacy/qa_notes.md"
+  }
+}

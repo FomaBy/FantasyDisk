@@ -1,0 +1,82 @@
+{
+  "task": "FAN-1059",
+  "source": "ui_plan.json",
+  "status": "pass",
+  "minimum_gap_px": 16,
+  "checks": {
+    "1920x1080": {
+      "status": "pass",
+      "panel_inside_viewport": true,
+      "all_runtime_elements_inside_panel_content_rect": true,
+      "scroll_content_respects_18px_scrollbar_reserve": true,
+      "screenshot_aspect": "496:279 = 16:9",
+      "pairwise_gaps": {
+        "title_to_scroll": 16,
+        "scroll_to_status": 19,
+        "status_to_actions": 25,
+        "description_to_screenshot": 34,
+        "screenshot_to_toggle": 22,
+        "toggle_to_privacy": 16,
+        "privacy_to_scroll_bottom": 16,
+        "send_to_cancel": 20
+      },
+      "overlap_count": 0
+    },
+    "1280x720": {
+      "status": "pass",
+      "panel_inside_viewport": true,
+      "pinned_elements_inside_content_rect": true,
+      "screenshot_aspect": "544:306 = 16:9",
+      "scroll_required": true,
+      "scroll_viewport_height": 420,
+      "scroll_body_height": 824,
+      "controller_right_stick_reaches_full_privacy_block": true,
+      "pairwise_gaps": {
+        "title_to_scroll": 16,
+        "scroll_to_status": 16,
+        "status_to_actions": 16,
+        "send_to_cancel": 18,
+        "actions_to_panel_bottom": 20
+      },
+      "overlap_count": 0
+    },
+    "2560x1440": {
+      "status": "pass",
+      "scale_from_1920": 1.3333333333,
+      "uniform_control_scale_only": true,
+      "scaled_internal_minima_verified": true,
+      "panel_inside_viewport": true,
+      "overlap_count": 0
+    },
+    "responsive_continuity": {
+      "status": "pass",
+      "1400x720_panel": [1200, 672],
+      "1401x720_panel": [1200, 672],
+      "1599x899_panel": [1299.4, 830.1],
+      "1600x900_panel": [1300, 831],
+      "reverse_width_jump": false
+    }
+  },
+  "focus": {
+    "status": "pass",
+    "initial": "feedback_description",
+    "order": [
+      "feedback_description",
+      "feedback_screenshot_toggle",
+      "feedback_send",
+      "feedback_cancel"
+    ],
+    "duplicate_focus_targets": 0,
+    "noninteractive_preview_in_tab_order": false,
+    "close_scope": "overlay only",
+    "right_stick_scroll_from_all_focus_stops": true
+  },
+  "copy_fit": {
+    "status": "pass_by_contract",
+    "privacy_wrap": true,
+    "privacy_ellipsis_allowed": false,
+    "operator_retention_dynamic": true,
+    "online_send_fail_closed_when_policy_missing": true,
+    "compact_overflow_strategy": "vertical scroll before font reduction below semantic minimum"
+  }
+}
