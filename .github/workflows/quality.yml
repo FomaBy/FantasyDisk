@@ -13,6 +13,7 @@ permissions:
 jobs:
   static-quality:
     runs-on: ubuntu-latest
+    timeout-minutes: 30
     steps:
       - uses: actions/checkout@v6
         with:
@@ -38,7 +39,8 @@ jobs:
         if: always()
         run: |
           test -f build/quality_gate_report.json
-          sha256sum build/quality_gate_report.json > build/quality_gate_report.sha256
+          (cd build && sha256sum quality_gate_report.json > quality_gate_report.sha256)
+          (cd build && sha256sum -c quality_gate_report.sha256)
       - name: Upload exact-SHA quality evidence
         if: always()
         uses: actions/upload-artifact@v7

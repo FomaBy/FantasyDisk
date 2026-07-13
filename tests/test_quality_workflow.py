@@ -26,10 +26,20 @@ class QualityWorkflowContractTests(unittest.TestCase):
     def test_machine_readable_evidence_is_hashed_and_uploaded(self) -> None:
         self.assertIn("build/quality_gate_report.json", self.source)
         self.assertIn("build/quality_gate_report.sha256", self.source)
-        self.assertIn("sha256sum build/quality_gate_report.json", self.source)
+        self.assertIn(
+            "sha256sum quality_gate_report.json > quality_gate_report.sha256",
+            self.source,
+        )
+        self.assertIn("sha256sum -c quality_gate_report.sha256", self.source)
+        self.assertNotIn(
+            "sha256sum build/quality_gate_report.json >", self.source
+        )
         self.assertIn("actions/upload-artifact@v7", self.source)
         self.assertIn("quality-${{ github.event_name }}-${{ github.sha }}", self.source)
         self.assertIn("if-no-files-found: error", self.source)
+
+    def test_job_has_bounded_runtime(self) -> None:
+        self.assertIn("timeout-minutes: 30", self.source)
 
 
 if __name__ == "__main__":
