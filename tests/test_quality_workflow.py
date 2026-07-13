@@ -27,7 +27,7 @@ class QualityWorkflowContractTests(unittest.TestCase):
         self.assertIn("build/quality_gate_report.json", self.source)
         self.assertIn("build/quality_gate_report.sha256", self.source)
         self.assertIn("sha256sum build/quality_gate_report.json", self.source)
-        self.assertIn("actions/upload-artifact@v4", self.source)
+        self.assertIn("actions/upload-artifact@v7", self.source)
         self.assertIn("quality-${{ github.event_name }}-${{ github.sha }}", self.source)
         self.assertIn("if-no-files-found: error", self.source)
 
