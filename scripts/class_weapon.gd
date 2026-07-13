@@ -2821,8 +2821,10 @@ func _fire_bayonet_countershot_line(origin: Vector2, through_position: Vector2, 
 	_register_effect(AttackVfx.beam(_projectile_parent(), origin, line_end, maxf(beam_width * 0.55, 10.0), visual_color))
 	var half_width := maxf(beam_width * 0.75, 14.0)
 	for target in TARGET_QUERY.enemies(self):
+		if not is_instance_valid(target):
+			continue
 		var enemy := target as Node2D
-		if enemy == null or not is_instance_valid(enemy):
+		if enemy == null:
 			continue
 		var relative := enemy.global_position - origin
 		var forward := relative.dot(line_direction)

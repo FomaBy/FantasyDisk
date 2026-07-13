@@ -461,8 +461,10 @@ func _refresh_separation_neighbors() -> void:
 	var search_limit := SEPARATION_MAX_RANGE + SEPARATION_SEARCH_SLACK
 	var limit_sq := search_limit * search_limit
 	for node in TARGET_QUERY.enemies(self):
+		if not is_instance_valid(node):
+			continue
 		var other := node as Node2D
-		if other == null or other == self or not is_instance_valid(other):
+		if other == null or other == self:
 			continue
 		var dist_sq := global_position.distance_squared_to(other.global_position)
 		if dist_sq >= limit_sq:
@@ -486,8 +488,12 @@ func _separation_velocity() -> Vector2:
 		return Vector2.ZERO
 	var push := Vector2.ZERO
 	for node in _separation_neighbors:
+		# A cached neighbor may die between 0.2 s refreshes. Casting a freed
+		# Variant raises before a post-cast is_instance_valid() guard can run.
+		if not is_instance_valid(node):
+			continue
 		var other := node as Node2D
-		if other == null or not is_instance_valid(other) or not other.is_inside_tree():
+		if other == null or not other.is_inside_tree():
 			continue
 		var offset := global_position - other.global_position
 		var dist := offset.length()
