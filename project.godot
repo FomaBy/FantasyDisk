@@ -31,6 +31,13 @@ window/size/viewport_width=2560
 window/size/viewport_height=1440
 window/stretch/mode="canvas_items"
 
+[feedback]
+
+; Public, non-secret production relay session endpoint. Keep empty until FAN-1041
+; infrastructure and player privacy disclosure/retention policy are approved;
+; an empty value preserves the local fallback.
+relay_session_url=""
+
 [rendering]
 
 renderer/rendering_method="gl_compatibility"

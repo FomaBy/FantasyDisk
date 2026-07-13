@@ -8,8 +8,8 @@ const Reporter := preload("res://scripts/feedback_reporter.gd")
 class MissingConfigReporter:
 	extends Reporter
 
-	func _webhook_resolution() -> Dictionary:
-		return {"url": "", "source": "", "error": "missing"}
+	func _delivery_resolution() -> Dictionary:
+		return {"mode": "", "url": "", "source": "", "error": "missing"}
 
 
 var _errors: Array[String] = []
@@ -38,6 +38,25 @@ func _init() -> void:
 		"Public synchronous fallback did not preserve a local report.")
 	public_reporter.queue_free()
 
+	var oversized_reporter: Node = MissingConfigReporter.new()
+	root.add_child(oversized_reporter)
+	var oversized_result := {"count": 0, "message": "", "local_path": ""}
+	var oversized_id: int = oversized_reporter.submit_report(
+		"x".repeat(Reporter.MAX_DESCRIPTION_CHARS + 1), _image(Color.GRAY), {},
+		func(_success: bool, message: String, local_path: String) -> void:
+			oversized_result["count"] = int(oversized_result["count"]) + 1
+			oversized_result["message"] = message
+			oversized_result["local_path"] = local_path
+	)
+	_check(not oversized_reporter.is_request_active(oversized_id),
+		"Oversized description should fail before any network request.")
+	_check(int(oversized_result["count"]) == 1 \
+			and str(Reporter.MAX_DESCRIPTION_CHARS) in str(oversized_result["message"]),
+		"Oversized description did not return the client limit message exactly once.")
+	_check(str(oversized_result["local_path"]) != "",
+		"Oversized description was not preserved in local fallback.")
+	oversized_reporter.queue_free()
+
 	var reporter: Node = Reporter.new()
 	root.add_child(reporter)
 	var calls := {"first": 0, "second": 0, "signals": 0}
@@ -56,6 +75,7 @@ func _init() -> void:
 	_check(second_id > first_id, "Request ids must increase monotonically.")
 	_check(not reporter.is_request_active(first_id), "Superseded request remained active.")
 	_check(reporter.is_request_active(second_id), "Newest request did not become active.")
+	reporter._transition_phase(second_id, Reporter.PHASE_DISCORD_DEBUG)
 
 	# A stale completion is a no-op and cannot consume the newer callback.
 	reporter._finish_report(first_id, true, "stale", "")
@@ -70,6 +90,7 @@ func _init() -> void:
 	reporter.add_child(current_request)
 	reporter._request = current_request
 	reporter._request_owner_id = second_id
+	reporter._request_phase = Reporter.PHASE_DISCORD_DEBUG
 	reporter._on_request_completed(
 		HTTPRequest.RESULT_SUCCESS, 204, PackedStringArray(), PackedByteArray(), first_id, stale_request)
 	_check(reporter._request == current_request, "Stale HTTP completion disposed the active HTTPRequest.")
@@ -90,6 +111,72 @@ func _init() -> void:
 	reporter._finish_report(second_id, true, "duplicate", "")
 	_check(int(calls["second"]) == 1 and int(calls["signals"]) == 1,
 		"Duplicate completion emitted more than once.")
+
+	# request_id alone is insufficient for the two-phase relay: a late SESSION
+	# callback for the same report must not dispose or finish the active UPLOAD.
+	var phased_calls := {"count": 0}
+	var phased_id: int = reporter._begin_report(
+		"phased", _image(Color.PURPLE), {"sequence": 3},
+		func(_success: bool, _message: String, _local_path: String) -> void:
+			phased_calls["count"] = int(phased_calls["count"]) + 1
+	)
+	reporter._transition_phase(phased_id, Reporter.PHASE_RELAY_UPLOAD)
+	var stale_session_request := HTTPRequest.new()
+	reporter.add_child(stale_session_request)
+	var upload_request := HTTPRequest.new()
+	reporter.add_child(upload_request)
+	reporter._request = upload_request
+	reporter._request_owner_id = phased_id
+	reporter._request_phase = Reporter.PHASE_RELAY_UPLOAD
+	reporter._on_request_completed(
+		HTTPRequest.RESULT_SUCCESS, 200, PackedStringArray(),
+		JSON.stringify({"schema_version": 1, "expires_in": 600, "token": "stale"}).to_utf8_buffer(),
+		phased_id, stale_session_request, Reporter.PHASE_RELAY_SESSION)
+	_check(reporter._request == upload_request,
+		"Stale same-report SESSION completion disposed the UPLOAD HTTPRequest.")
+	_check(reporter._active_phase() == Reporter.PHASE_RELAY_UPLOAD,
+		"Stale same-report SESSION completion changed the active relay phase.")
+	_check(int(phased_calls["count"]) == 0,
+		"Stale same-report SESSION completion finished the report.")
+	var attempt_before_phase_timer := int(reporter._active_report.get("attempt", 0))
+	reporter._on_retry_timeout(phased_id, Reporter.PHASE_RELAY_SESSION)
+	_check(int(reporter._active_report.get("attempt", 0)) == attempt_before_phase_timer,
+		"Stale same-report SESSION retry timer dispatched during UPLOAD.")
+	reporter._on_request_completed(
+		HTTPRequest.RESULT_SUCCESS, 202, PackedStringArray(), PackedByteArray(),
+		phased_id, upload_request, Reporter.PHASE_RELAY_UPLOAD)
+	_check(int(phased_calls["count"]) == 1,
+		"Owning relay UPLOAD completion did not finish exactly once.")
+
+	# A retry creates another HTTPRequest in the same phase. A late completion
+	# from the previous attempt must be rejected by request identity, not merely
+	# by request_id+phase.
+	var retry_calls := {"count": 0}
+	var retry_id: int = reporter._begin_report(
+		"same phase retry", _image(Color.ORANGE), {"sequence": 4},
+		func(_success: bool, _message: String, _local_path: String) -> void:
+			retry_calls["count"] = int(retry_calls["count"]) + 1
+	)
+	reporter._transition_phase(retry_id, Reporter.PHASE_RELAY_UPLOAD)
+	var old_upload_attempt := HTTPRequest.new()
+	reporter.add_child(old_upload_attempt)
+	var current_upload_attempt := HTTPRequest.new()
+	reporter.add_child(current_upload_attempt)
+	reporter._request = current_upload_attempt
+	reporter._request_owner_id = retry_id
+	reporter._request_phase = Reporter.PHASE_RELAY_UPLOAD
+	reporter._on_request_completed(
+		HTTPRequest.RESULT_SUCCESS, 202, PackedStringArray(), PackedByteArray(),
+		retry_id, old_upload_attempt, Reporter.PHASE_RELAY_UPLOAD)
+	_check(reporter._request == current_upload_attempt,
+		"Stale same-phase retry completion disposed the owning HTTPRequest.")
+	_check(reporter.is_request_active(retry_id) and int(retry_calls["count"]) == 0,
+		"Stale same-phase retry completion finished the active report.")
+	reporter._on_request_completed(
+		HTTPRequest.RESULT_SUCCESS, 202, PackedStringArray(), PackedByteArray(),
+		retry_id, current_upload_attempt, Reporter.PHASE_RELAY_UPLOAD)
+	_check(int(retry_calls["count"]) == 1,
+		"Owning same-phase retry completion did not finish exactly once.")
 
 	var cancel_calls := {"count": 0}
 	var cancel_callback := func(_success: bool, _message: String, _local_path: String) -> void:

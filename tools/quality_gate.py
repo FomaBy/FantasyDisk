@@ -48,6 +48,7 @@ PATH_TEST_RULES = {
     "scripts/threat_indicators.gd": {"hot_path_cache_test"},
     "scripts/feedback_reporter.gd": {
         "feedback_request_lifecycle_test",
+        "feedback_relay_contract_test",
         "feedback_retry_policy_test",
         "feedback_webhook_config_test",
     },
@@ -173,7 +174,9 @@ def _source_secret_errors(rel: str, source: str) -> list[str]:
 
 def _scan_client_secrets() -> list[str]:
     errors: list[str] = []
-    roots = [ROOT / "scripts", ROOT / "scenes"]
+    # Player sources plus server-side service sources: a credential may live in
+    # server secret storage, never in either side of the repository.
+    roots = [ROOT / "scripts", ROOT / "scenes", ROOT / "services"]
     files: list[Path] = [ROOT / "project.godot", ROOT / "export_presets.cfg"]
     for directory in roots:
         files.extend(path for path in directory.rglob("*") if path.is_file())

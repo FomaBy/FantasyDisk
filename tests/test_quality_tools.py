@@ -141,6 +141,7 @@ class QualityGateTests(unittest.TestCase):
             )
         names = {path.stem for path in selected}
         self.assertIn("feedback_request_lifecycle_test", names)
+        self.assertIn("feedback_relay_contract_test", names)
         self.assertIn("feedback_retry_policy_test", names)
         self.assertIn("feedback_webhook_config_test", names)
 

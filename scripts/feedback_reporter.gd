@@ -9,8 +9,12 @@ const BUNDLED_CONFIG_PATH := "res://feedback_webhook.cfg"
 const CONFIG_SECTION := "feedback"
 const WEBHOOK_KEY := "webhook_url"
 const BUNDLED_WEBHOOK_KEY := "discord_webhook_url"
+const RELAY_CONFIG_KEY := "relay_session_url"
+const RELAY_PROJECT_SETTING := "feedback/relay_session_url"
 const LOCAL_ROOT := "user://feedback"
+const INSTALLATION_ID_PATH := "user://feedback_installation_id.txt"
 const ENV_WEBHOOK := "FANTASYDISK_FEEDBACK_WEBHOOK"
+const ENV_RELAY := "FANTASYDISK_FEEDBACK_RELAY_URL"
 # A Discord webhook is a credential, even when split or base64-encoded. It must
 # never be embedded in source or an export. Until a server-side relay exists,
 # network delivery is an explicit developer override and player builds preserve
@@ -22,6 +26,14 @@ const ENV_WEBHOOK := "FANTASYDISK_FEEDBACK_WEBHOOK"
 const UPLOAD_FILENAME := "fantasydisk_feedback.jpg"
 const UPLOAD_MAX_DIM := 1280
 const UPLOAD_JPG_QUALITY := 0.72
+const RELAY_SCHEMA_VERSION := 1
+const MAX_DESCRIPTION_CHARS := 4000
+const MAX_SESSION_REFRESHES := 1
+const MAX_RESPONSE_BYTES := 64 * 1024
+const PHASE_NONE := &""
+const PHASE_RELAY_SESSION := &"relay_session"
+const PHASE_RELAY_UPLOAD := &"relay_upload"
+const PHASE_DISCORD_DEBUG := &"discord_debug"
 
 # SCRUM-547: у тестеров отправка падала с «нет ответа (result 13)» = RESULT_TIMEOUT —
 # сервер не успевал ответить за жёсткие 12 с, и единственная попытка без ретрая сразу
@@ -56,6 +68,7 @@ const NO_NETWORK_RESULTS := [
 
 var _request: HTTPRequest = null
 var _request_owner_id := 0
+var _request_phase: StringName = PHASE_NONE
 var _next_request_id := 1
 var _active_request_id := 0
 var _active_report := {}
@@ -63,18 +76,34 @@ var _active_report := {}
 
 func submit_report(text: String, screenshot: Image, metadata: Dictionary, completion := Callable()) -> int:
 	var request_id := _begin_report(text, screenshot, metadata, completion)
-	var webhook_resolution := _webhook_resolution()
-	var webhook_url := str(webhook_resolution.get("url", ""))
-	if webhook_url == "":
+	if not _is_description_within_limit(str(_active_report.get("text", ""))):
+		var oversized_local_path := save_local_report(
+			str(_active_report.get("text", "")),
+			_active_report.get("screenshot") as Image,
+			_active_report.get("metadata", {}) as Dictionary,
+			str(_active_report.get("report_id", "")))
+		var suffix := " Отчет сохранен локально." if oversized_local_path != "" \
+			else " Локальное сохранение также не удалось."
+		_finish_report(request_id, false,
+			"Описание длиннее %d символов.%s" % [MAX_DESCRIPTION_CHARS, suffix],
+			oversized_local_path)
+		return request_id
+	var delivery := _delivery_resolution()
+	var delivery_url := str(delivery.get("url", ""))
+	if delivery_url == "":
 		var local_path := save_local_report(
 			str(_active_report.get("text", "")),
 			_active_report.get("screenshot") as Image,
-			_active_report.get("metadata", {}) as Dictionary)
+			_active_report.get("metadata", {}) as Dictionary,
+			str(_active_report.get("report_id", "")))
 		_finish_report(request_id, false, _configuration_failure_message(
-			str(webhook_resolution.get("error", "missing")), local_path != ""), local_path)
+			str(delivery.get("error", "missing")), local_path != ""), local_path)
 		return request_id
 
-	_post_to_webhook(webhook_url, request_id)
+	if str(delivery.get("mode", "")) == "relay":
+		_start_relay(delivery_url, request_id)
+	else:
+		_post_to_webhook(delivery_url, request_id)
 	return request_id
 
 
@@ -109,7 +138,15 @@ func _begin_report(text: String, screenshot: Image, metadata: Dictionary, comple
 		# reference instead of duplicating up to 32 MiB at 4K; upload resizing already
 		# duplicates only when it actually needs to mutate the image.
 		"screenshot": _normalized_screenshot(screenshot),
+		"report_id": _new_report_uuid(),
+		"installation_id": _installation_id(),
+		"phase": PHASE_NONE,
 		"webhook_url": "",
+		"relay_session_url": "",
+		"relay_upload_url": "",
+		"relay_body": PackedByteArray(),
+		"access_token": "",
+		"session_refreshes": 0,
 		"attempt": 0,
 		"completion": completion,
 	}
@@ -124,9 +161,10 @@ static func feedback_folder_path() -> String:
 	return ProjectSettings.globalize_path(LOCAL_ROOT)
 
 
-static func save_local_report(text: String, screenshot: Image, metadata: Dictionary) -> String:
+static func save_local_report(
+	text: String, screenshot: Image, metadata: Dictionary, report_id := "") -> String:
 	var timestamp := _timestamp_for_path()
-	var report_dir := "%s/%s" % [LOCAL_ROOT, timestamp]
+	var report_dir := "%s/%s" % [LOCAL_ROOT, _local_report_folder(timestamp, str(report_id))]
 	var absolute_dir := ProjectSettings.globalize_path(report_dir)
 	if DirAccess.make_dir_recursive_absolute(absolute_dir) != OK:
 		return ""
@@ -157,6 +195,7 @@ static func multipart_payload(text: String, screenshot: Image, metadata: Diction
 	var body := PackedByteArray()
 	var payload_json := JSON.stringify({
 		"content": discord_content(text, metadata),
+		"allowed_mentions": {"parse": []},
 		"attachments": [{"id": 0, "filename": UPLOAD_FILENAME}],
 	})
 	_append_utf8(body, "--%s\r\n" % boundary)
@@ -194,12 +233,42 @@ func _post_to_webhook(webhook_url: String, request_id: int) -> void:
 	if not is_request_active(request_id):
 		return
 	_active_report["webhook_url"] = webhook_url
-	_active_report["attempt"] = 0
-	_dispatch_request(request_id)
+	_transition_phase(request_id, PHASE_DISCORD_DEBUG)
+	_dispatch_request(request_id, PHASE_DISCORD_DEBUG)
 
 
-func _dispatch_request(request_id: int) -> void:
+func _start_relay(session_url: String, request_id: int) -> void:
 	if not is_request_active(request_id):
+		return
+	_active_report["relay_session_url"] = session_url
+	_active_report["relay_upload_url"] = session_url.trim_suffix("/v1/session") + "/v1/feedback"
+	_active_report["relay_body"] = _relay_upload_body(
+		str(_active_report.get("report_id", "")),
+		str(_active_report.get("text", "")),
+		_active_report.get("screenshot") as Image,
+		_active_report.get("metadata", {}) as Dictionary)
+	_transition_phase(request_id, PHASE_RELAY_SESSION)
+	_dispatch_request(request_id, PHASE_RELAY_SESSION)
+
+
+func _transition_phase(request_id: int, phase: StringName) -> void:
+	if not is_request_active(request_id):
+		return
+	_active_report["phase"] = phase
+	_active_report["attempt"] = 0
+
+
+func _active_phase() -> StringName:
+	return StringName(str(_active_report.get("phase", "")))
+
+
+func _is_active_phase(request_id: int, phase: StringName) -> bool:
+	return is_request_active(request_id) and _active_phase() == phase
+
+
+func _dispatch_request(request_id: int, expected_phase := PHASE_DISCORD_DEBUG) -> void:
+	var phase := StringName(expected_phase)
+	if not _is_active_phase(request_id, phase):
 		return
 	_active_report["attempt"] = int(_active_report.get("attempt", 0)) + 1
 	_dispose_request(_request)
@@ -209,56 +278,145 @@ func _dispatch_request(request_id: int) -> void:
 	# тикать на паузе, иначе отправка/ретрай «зависнут» до снятия паузы.
 	request.process_mode = Node.PROCESS_MODE_ALWAYS
 	request.timeout = REQUEST_TIMEOUT
+	request.body_size_limit = MAX_RESPONSE_BYTES
 	add_child(request)
 	_request = request
 	_request_owner_id = request_id
-	request.request_completed.connect(_on_request_completed.bind(request_id, request))
+	_request_phase = phase
+	request.request_completed.connect(_on_request_completed.bind(request_id, request, phase))
 
-	var boundary := "----FantasyDiskFeedback%s" % str(Time.get_unix_time_from_system()).replace(".", "")
-	var body := multipart_payload(
-		str(_active_report.get("text", "")),
-		_active_report.get("screenshot") as Image,
-		_active_report.get("metadata", {}) as Dictionary,
-		boundary)
-	# User-Agent ОБЯЗАТЕЛЕН: без него Discord/Cloudflare возвращает HTTP 403 (SCRUM-362).
-	var headers := [
-		"Content-Type: multipart/form-data; boundary=%s" % boundary,
-		"User-Agent: FantasyDisk-Feedback/1.0",
-	]
+	var request_spec := _request_spec_for_phase(phase)
 	var error := request.request_raw(
-		str(_active_report.get("webhook_url", "")), headers, HTTPClient.METHOD_POST, body)
+		str(request_spec.get("url", "")),
+		request_spec.get("headers", PackedStringArray()) as PackedStringArray,
+		HTTPClient.METHOD_POST,
+		request_spec.get("body", PackedByteArray()) as PackedByteArray)
 	if error != OK:
 		# Не удалось даже стартовать запрос (нет сети/занят клиент) — это временный сбой:
 		# ретраим по той же логике, что и таймаут, чтобы пережить короткую недоступность.
 		_dispose_request(request)
-		if not is_request_active(request_id):
+		if not _is_active_phase(request_id, phase):
 			return
 		if int(_active_report.get("attempt", 0)) < MAX_ATTEMPTS:
-			_schedule_retry(_backoff_for_attempt(), request_id)
+			_schedule_retry(_backoff_for_attempt(), request_id, phase)
 		else:
 			_finalize_failure(HTTPRequest.RESULT_CANT_CONNECT, 0, request_id)
+
+
+func _request_spec_for_phase(phase: StringName) -> Dictionary:
+	if phase == PHASE_RELAY_SESSION:
+		return {
+			"url": str(_active_report.get("relay_session_url", "")),
+			"headers": PackedStringArray([
+				"Content-Type: application/json",
+				"User-Agent: FantasyDisk-Feedback/1.0",
+			]),
+			"body": _relay_session_body(
+				str(_active_report.get("installation_id", "")),
+				str(ProjectSettings.get_setting("application/config/version", "dev"))),
+		}
+	if phase == PHASE_RELAY_UPLOAD:
+		return {
+			"url": str(_active_report.get("relay_upload_url", "")),
+			"headers": PackedStringArray([
+				"Content-Type: application/json",
+				"User-Agent: FantasyDisk-Feedback/1.0",
+				"Authorization: Bearer %s" % str(_active_report.get("access_token", "")),
+				"X-Feedback-Installation: %s" % str(_active_report.get("installation_id", "")),
+				"Idempotency-Key: %s" % str(_active_report.get("report_id", "")),
+			]),
+			"body": _active_report.get("relay_body", PackedByteArray()),
+		}
+	var boundary := "----FantasyDiskFeedback%s" % str(Time.get_unix_time_from_system()).replace(".", "")
+	return {
+		"url": str(_active_report.get("webhook_url", "")),
+		"headers": PackedStringArray([
+			"Content-Type: multipart/form-data; boundary=%s" % boundary,
+			"User-Agent: FantasyDisk-Feedback/1.0",
+		]),
+		"body": multipart_payload(
+			str(_active_report.get("text", "")),
+			_active_report.get("screenshot") as Image,
+			_active_report.get("metadata", {}) as Dictionary,
+			boundary),
+	}
 
 
 func _on_request_completed(
 		result: int,
 		response_code: int,
 		headers: PackedStringArray,
-		_body: PackedByteArray,
+		body: PackedByteArray,
 		request_id: int,
-		request: HTTPRequest) -> void:
+		request: HTTPRequest,
+		expected_phase := PHASE_DISCORD_DEBUG) -> void:
+	var phase := StringName(expected_phase)
+	var owns_attempt := request == _request \
+		and _request_owner_id == request_id \
+		and _request_phase == phase
 	_dispose_request(request)
-	if not is_request_active(request_id):
+	if not owns_attempt or not _is_active_phase(request_id, phase):
+		return
+	if phase == PHASE_RELAY_SESSION:
+		_handle_relay_session_response(result, response_code, headers, body, request_id)
+		return
+	if phase == PHASE_RELAY_UPLOAD:
+		_handle_relay_upload_response(result, response_code, headers, request_id)
 		return
 	if result == HTTPRequest.RESULT_SUCCESS and response_code >= 200 and response_code < 300:
 		_finish_report(request_id, true, "Отчет отправлен разработчику.", "")
 		return
+	_retry_or_finalize(result, response_code, headers, request_id, phase)
+
+
+func _handle_relay_session_response(
+		result: int,
+		response_code: int,
+		headers: PackedStringArray,
+		body: PackedByteArray,
+		request_id: int) -> void:
+	if result == HTTPRequest.RESULT_SUCCESS and response_code >= 200 and response_code < 300:
+		var token := _parse_relay_session_token(body)
+		if token == "":
+			_finalize_failure(HTTPRequest.RESULT_SUCCESS, 502, request_id)
+			return
+		_active_report["access_token"] = token
+		_transition_phase(request_id, PHASE_RELAY_UPLOAD)
+		_dispatch_request(request_id, PHASE_RELAY_UPLOAD)
+		return
+	_retry_or_finalize(result, response_code, headers, request_id, PHASE_RELAY_SESSION)
+
+
+func _handle_relay_upload_response(
+		result: int,
+		response_code: int,
+		headers: PackedStringArray,
+		request_id: int) -> void:
+	if result == HTTPRequest.RESULT_SUCCESS and response_code >= 200 and response_code < 300:
+		_finish_report(request_id, true, "Отчет отправлен разработчику.", "")
+		return
+	if result == HTTPRequest.RESULT_SUCCESS and response_code == 401 \
+			and int(_active_report.get("session_refreshes", 0)) < MAX_SESSION_REFRESHES:
+		_active_report["session_refreshes"] = int(_active_report.get("session_refreshes", 0)) + 1
+		_active_report["access_token"] = ""
+		_transition_phase(request_id, PHASE_RELAY_SESSION)
+		_dispatch_request(request_id, PHASE_RELAY_SESSION)
+		return
+	_retry_or_finalize(result, response_code, headers, request_id, PHASE_RELAY_UPLOAD)
+
+
+func _retry_or_finalize(
+		result: int,
+		response_code: int,
+		headers: PackedStringArray,
+		request_id: int,
+		phase: StringName) -> void:
 
 	if int(_active_report.get("attempt", 0)) < MAX_ATTEMPTS and _is_retryable(result, response_code):
 		var delay := _backoff_for_attempt()
-		# 429 Too Many Requests — уважаем Retry-After, иначе рискуем баном вебхука.
-		if response_code == 429:
+		if response_code == 429 or response_code == 409 or response_code == 503:
 			delay = maxf(delay, _retry_after_seconds(headers))
-		_schedule_retry(delay, request_id)
+		_schedule_retry(delay, request_id, phase)
 		return
 
 	_finalize_failure(result, response_code, request_id)
@@ -267,14 +425,15 @@ func _on_request_completed(
 func _is_retryable(result: int, response_code: int) -> bool:
 	if result != HTTPRequest.RESULT_SUCCESS:
 		return TRANSIENT_RESULTS.has(result)
-	# Ответ получен, но код ошибочный: 429 и 5xx — временные, прочие 4xx — нет.
-	if response_code == 429:
+	# Relay возвращает 409, пока первый idempotent delivery ещё выполняется.
+	if response_code == 409 or response_code == 429:
 		return true
 	return response_code >= 500 and response_code < 600
 
 
-func _schedule_retry(delay_seconds: float, request_id: int) -> void:
-	if not is_request_active(request_id):
+func _schedule_retry(delay_seconds: float, request_id: int, expected_phase := PHASE_DISCORD_DEBUG) -> void:
+	var phase := StringName(expected_phase)
+	if not _is_active_phase(request_id, phase):
 		return
 	var tree := get_tree()
 	if tree == null:
@@ -283,12 +442,13 @@ func _schedule_retry(delay_seconds: float, request_id: int) -> void:
 		return
 	# process_always=true: таймер тикает даже на паузе (форма фидбека ставит игру на паузу).
 	var timer := tree.create_timer(maxf(delay_seconds, 0.0), true)
-	timer.timeout.connect(_on_retry_timeout.bind(request_id), CONNECT_ONE_SHOT)
+	timer.timeout.connect(_on_retry_timeout.bind(request_id, phase), CONNECT_ONE_SHOT)
 
 
-func _on_retry_timeout(request_id: int) -> void:
-	if is_request_active(request_id):
-		_dispatch_request(request_id)
+func _on_retry_timeout(request_id: int, expected_phase := PHASE_DISCORD_DEBUG) -> void:
+	var phase := StringName(expected_phase)
+	if _is_active_phase(request_id, phase):
+		_dispatch_request(request_id, phase)
 
 
 func _finalize_failure(result: int, response_code: int, request_id: int) -> void:
@@ -297,7 +457,8 @@ func _finalize_failure(result: int, response_code: int, request_id: int) -> void
 	var local_path := save_local_report(
 		str(_active_report.get("text", "")),
 		_active_report.get("screenshot") as Image,
-		_active_report.get("metadata", {}) as Dictionary)
+		_active_report.get("metadata", {}) as Dictionary,
+		str(_active_report.get("report_id", "")))
 	_finish_report(request_id, false, _failure_message(result, response_code, local_path != ""), local_path)
 
 
@@ -322,6 +483,7 @@ func _dispose_request(request: HTTPRequest) -> void:
 	if _request == request:
 		_request = null
 		_request_owner_id = 0
+		_request_phase = PHASE_NONE
 
 
 func _failure_message(result: int, response_code: int, local_saved := true) -> String:
@@ -341,8 +503,8 @@ func _failure_message(result: int, response_code: int, local_saved := true) -> S
 static func _configuration_failure_message(error: String, local_saved := true) -> String:
 	var suffix := " Отчет сохранен локально." if local_saved else " Локальное сохранение также не удалось."
 	if error == "invalid":
-		return "Вебхук фидбека некорректен.%s" % suffix
-	return "Вебхук фидбека не настроен.%s" % suffix
+		return "Сервис фидбека некорректен.%s" % suffix
+	return "Сервис фидбека не настроен.%s" % suffix
 
 
 func _backoff_for_attempt() -> float:
@@ -372,6 +534,27 @@ func _webhook_resolution() -> Dictionary:
 		_config_webhook_value(CONFIG_PATH, WEBHOOK_KEY))
 
 
+func _relay_resolution() -> Dictionary:
+	return _resolve_relay_from(
+		OS.get_environment(ENV_RELAY),
+		str(ProjectSettings.get_setting(RELAY_PROJECT_SETTING, "")),
+		_config_webhook_value(CONFIG_PATH, RELAY_CONFIG_KEY))
+
+
+func _delivery_resolution() -> Dictionary:
+	var relay := _relay_resolution()
+	if str(relay.get("url", "")) != "":
+		return {"mode": "relay", "url": str(relay["url"]), "source": str(relay["source"]), "error": ""}
+	# A raw Discord webhook is a developer credential. Release builds must never
+	# consult or transmit it, even if a user config or environment accidentally
+	# survives on the build machine.
+	if OS.is_debug_build():
+		var webhook := _webhook_resolution()
+		if str(webhook.get("url", "")) != "":
+			return {"mode": "discord_debug", "url": str(webhook["url"]), "source": str(webhook["source"]), "error": ""}
+	return {"mode": "", "url": "", "source": "", "error": str(relay.get("error", "missing"))}
+
+
 static func _config_webhook_value(path: String, key: String) -> String:
 	var config := ConfigFile.new()
 	if config.load(path) != OK:
@@ -395,6 +578,38 @@ static func _resolve_from(env_url: String, bundled_url: String, user_url: String
 	return {"url": "", "source": "", "error": "missing"}
 
 
+static func _resolve_relay_from(env_url: String, project_url: String, user_url: String) -> Dictionary:
+	var overrides := [[env_url, "env"], [project_url, "project"], [user_url, "user"]]
+	var saw_invalid := false
+	for entry in overrides:
+		var url: String = str(entry[0]).strip_edges()
+		if url == "":
+			continue
+		if _is_valid_relay_session_url(url):
+			return {"url": url, "source": str(entry[1]), "error": ""}
+		saw_invalid = true
+		push_warning("Feedback: некорректный relay endpoint (%s) проигнорирован." % str(entry[1]))
+	return {"url": "", "source": "", "error": "invalid" if saw_invalid else "missing"}
+
+
+static func _resolve_delivery_from(
+		relay_urls: Array, webhook_urls: Array, debug_build: bool) -> Dictionary:
+	var relay := _resolve_relay_from(
+		str(relay_urls[0]) if relay_urls.size() > 0 else "",
+		str(relay_urls[1]) if relay_urls.size() > 1 else "",
+		str(relay_urls[2]) if relay_urls.size() > 2 else "")
+	if str(relay.get("url", "")) != "":
+		return {"mode": "relay", "url": str(relay["url"]), "error": ""}
+	if debug_build:
+		var direct := _resolve_from(
+			str(webhook_urls[0]) if webhook_urls.size() > 0 else "",
+			str(webhook_urls[1]) if webhook_urls.size() > 1 else "",
+			str(webhook_urls[2]) if webhook_urls.size() > 2 else "")
+		if str(direct.get("url", "")) != "":
+			return {"mode": "discord_debug", "url": str(direct["url"]), "error": ""}
+	return {"mode": "", "url": "", "error": str(relay.get("error", "missing"))}
+
+
 static func _is_valid_webhook_url(url: String) -> bool:
 	var clean := url.strip_edges()
 	if clean == "":
@@ -402,6 +617,131 @@ static func _is_valid_webhook_url(url: String) -> bool:
 	if "XXXX" in clean or "YYYY" in clean or "..." in clean:
 		return false
 	return clean.begins_with("https://discord.com/api/webhooks/") or clean.begins_with("https://discordapp.com/api/webhooks/")
+
+
+static func _is_valid_relay_session_url(url: String) -> bool:
+	var clean := url.strip_edges()
+	if clean == "" or clean != url or not clean.begins_with("https://"):
+		return false
+	if "XXXX" in clean or "YYYY" in clean or "..." in clean:
+		return false
+	if "?" in clean or "#" in clean or "@" in clean or "\\" in clean \
+			or "\r" in clean or "\n" in clean or "\t" in clean:
+		return false
+	var authority_and_path := clean.substr("https://".length())
+	var slash := authority_and_path.find("/")
+	if slash <= 0:
+		return false
+	var authority := authority_and_path.substr(0, slash)
+	if authority == "" or authority.begins_with(":") or " " in authority:
+		return false
+	return authority_and_path.substr(slash) == "/v1/session"
+
+
+static func _relay_session_body(installation_id: String, client_version: String) -> PackedByteArray:
+	return JSON.stringify({
+		"schema_version": RELAY_SCHEMA_VERSION,
+		"installation_id": installation_id,
+		"client_version": client_version,
+	}).to_utf8_buffer()
+
+
+static func _relay_upload_body(
+		report_id: String, text: String, screenshot: Image, metadata: Dictionary) -> PackedByteArray:
+	var jpeg := _upload_image_buffer(screenshot)
+	return JSON.stringify({
+		"schema_version": RELAY_SCHEMA_VERSION,
+		"report_id": report_id,
+		"description": text.strip_edges(),
+		"metadata": metadata,
+		"screenshot_jpeg_base64": Marshalls.raw_to_base64(jpeg),
+	}).to_utf8_buffer()
+
+
+static func _parse_relay_session_token(body: PackedByteArray) -> String:
+	if body.is_empty() or body.size() > MAX_RESPONSE_BYTES:
+		return ""
+	var parsed = JSON.parse_string(body.get_string_from_utf8())
+	if not parsed is Dictionary:
+		return ""
+	var response := parsed as Dictionary
+	if int(response.get("schema_version", 0)) != RELAY_SCHEMA_VERSION:
+		return ""
+	if int(response.get("expires_in", 0)) <= 0:
+		return ""
+	var token := str(response.get("token", ""))
+	if not _is_safe_session_token(token):
+		return ""
+	return token
+
+
+static func _is_safe_session_token(token: String) -> bool:
+	if token == "" or token.length() > 4096:
+		return false
+	var parts := token.split(".", false)
+	if parts.size() != 2:
+		return false
+	for part in parts:
+		if part == "":
+			return false
+		for character in part:
+			if not character in "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789-_":
+				return false
+	return true
+
+
+static func _is_description_within_limit(text: String) -> bool:
+	return text.strip_edges().length() <= MAX_DESCRIPTION_CHARS
+
+
+static func _new_report_uuid() -> String:
+	return _format_uuid_v4(Crypto.new().generate_random_bytes(16))
+
+
+static func _format_uuid_v4(random_bytes: PackedByteArray) -> String:
+	if random_bytes.size() != 16:
+		return ""
+	var bytes := random_bytes.duplicate()
+	bytes[6] = (int(bytes[6]) & 0x0f) | 0x40
+	bytes[8] = (int(bytes[8]) & 0x3f) | 0x80
+	var hex := ""
+	for value in bytes:
+		hex += "%02x" % int(value)
+	return "%s-%s-%s-%s-%s" % [
+		hex.substr(0, 8), hex.substr(8, 4), hex.substr(12, 4),
+		hex.substr(16, 4), hex.substr(20, 12),
+	]
+
+
+static func _is_uuid_v4(value: String) -> bool:
+	var clean := value.to_lower()
+	if clean.length() != 36 or clean[8] != "-" or clean[13] != "-" \
+			or clean[18] != "-" or clean[23] != "-":
+		return false
+	var compact := clean.replace("-", "")
+	if compact.length() != 32 or compact[12] != "4" or not compact[16] in ["8", "9", "a", "b"]:
+		return false
+	for character in compact:
+		if not character in "0123456789abcdef":
+			return false
+	return true
+
+
+static func _installation_id() -> String:
+	if FileAccess.file_exists(INSTALLATION_ID_PATH):
+		var existing := FileAccess.get_file_as_string(INSTALLATION_ID_PATH).strip_edges().to_lower()
+		if _is_uuid_v4(existing):
+			return existing
+	var generated := _new_report_uuid()
+	var file := FileAccess.open(INSTALLATION_ID_PATH, FileAccess.WRITE)
+	if file != null:
+		file.store_string(generated)
+		file.close()
+	return generated
+
+
+static func _local_report_folder(timestamp: String, report_id: String) -> String:
+	return "%s_%s" % [timestamp, report_id] if _is_uuid_v4(report_id) else timestamp
 
 
 static func _report_body(text: String, metadata: Dictionary) -> String:

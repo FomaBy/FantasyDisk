@@ -6036,6 +6036,12 @@ func _test_feedback_overlay_and_local_fallback(main_scene: PackedScene) -> void:
 		await process_frame
 		return
 	var payload_json := _feedback_multipart_payload_json(multipart, boundary)
+	var allowed_mentions: Dictionary = payload_json.get("allowed_mentions", {}) as Dictionary
+	if allowed_mentions.get("parse", ["unsafe"]) != []:
+		_fail("Expected direct debug feedback payload to disable Discord mentions.")
+		feedback_main.queue_free()
+		await process_frame
+		return
 	var multipart_filename := _feedback_multipart_file_filename(multipart)
 	var attachments: Array = payload_json.get("attachments", [])
 	if attachments.size() != 1 or not attachments[0] is Dictionary:
