@@ -15,7 +15,7 @@ Before changing balance, read the current task file and these repository sources
 
 - `AGENTS.md`
 - `docs/process/agent_role_boundaries_and_handoffs.md`
-- `docs/process/jira_sync.md`
+- `docs/process/multica_workflow.md`
 - `docs/design/mechanics_extract.md`
 - `docs/design/current_game_state.md`
 - `docs/design/systems/characters_weapons.md`
@@ -59,7 +59,7 @@ Use these axes unless the active task defines a stricter model:
 5. Choose a mechanic-first correction when an axis is structurally missing or a weapon identity is not working.
 6. Apply numeric tuning only after the mechanic has the right target pattern, risk, range, setup time, and defensive contribution.
 7. Re-run focused tests and update the relevant design/system docs in the same task.
-8. Leave an auditable result: before/after tables, changed mechanics, commands run, reports generated, residual risk, and Jira/task sync notes.
+8. Leave an auditable Multica result: before/after tables, changed mechanics, commands run, reports generated, residual risk, and task-mirror notes.
 
 ## Default Commands
 

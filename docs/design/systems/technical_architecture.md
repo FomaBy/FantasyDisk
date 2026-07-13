@@ -189,8 +189,9 @@ Snapshot of the runtime-smoke architecture after the 0.2.0 refactor-wave pass.
   these are load-sensitive and run serialized via `tools/godot_gate.py`. Prefer
   `await process_frame` / condition polling for new tests; only use timed waits when
   exercising real elapsed-time behaviour, and document why.
-- **Python unit test** `tests/test_jira_board_sync.py` (4 cases) covers board-sync
-  status mapping and is run with `python3 tests/test_jira_board_sync.py`.
+- **Python unit test** `tests/test_jira_archive_guards.py` proves retired Jira
+  entry points fail before credential/network access and asset generation cannot
+  invoke legacy synchronization.
 
 Gate everything through the semaphore wrapper to avoid headless single-instance
 crashes: `python3 tools/godot_gate.py --headless --path . --script res://tests/<suite>.gd`.

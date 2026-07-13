@@ -1,82 +1,97 @@
 ---
 name: fantasydisk-agent-dispatcher
-description: Coordinate continuous FantasyDisk multi-agent work from Multica. Use when the user asks to keep agents working, distribute board tasks, inspect or restart agents, run QA/backend/design/animator workers, prevent idle time, enforce pull-claim-work-push-update-clean loops, or manage autonomous Codex subagents for FantasyDisk delivery.
+description: Coordinate continuous FantasyDisk multi-agent delivery from Multica. Use when distributing queued FAN issues, assigning QA/backend/design/animation workers, inspecting or restarting agents, preventing duplicate ownership, or keeping the project conveyor active across macOS and Windows runtimes.
 ---
 
 # FantasyDisk Agent Dispatcher
 
-Use this skill to run FantasyDisk as a Multica-driven agent conveyor: workers take one issue, finish it, push it, update the Multica issue, clean disk, then take the next eligible issue until the board queue is empty or truly blocked.
+Run a central Multica dispatcher. Multica project `FantasyDisk` is authoritative;
+legacy Jira is a read-only archive. Never let workers discover and claim the same
+unassigned issue independently.
 
-**Multica is the source of truth** — workspace/project `FantasyDisk`, issues `FAN-*`, driven via the `multica` CLI. Legacy Jira (`SCRUM-*`) is a read-only historical archive; never claim or sync work there (see `docs/process/jira_to_multica_cutover.md`).
+## Context
 
-## Required Context
+Read repo `AGENTS.md`. Resolve the repository with `git rev-parse
+--show-toplevel`; never assume a drive letter or home-directory path. Create
+isolated worktrees under `${FANTASYDISK_WORKTREE_ROOT:-<repo-parent>/FantasyDisk_agents}`
+from fresh `origin/dev`.
 
-Before dispatching project work, read the repo `AGENTS.md` and obey its Multica-tracking, role-boundary, UI, asset, animation, balance, versioning, autonomy, and disk-cleanup rules. For UI, animation, asset, or balance work, tell workers to read the relevant FantasyDisk domain skill before editing.
+Canonical IDs:
 
-Assume the normal repo path is `D:\FantasyDisk`. Do not send workers into a dirty main checkout. Workers must create isolated clean git worktrees from fresh `origin/dev`, usually under `D:\FantasyDisk_agents\`.
+- project: `2ac963eb-b644-4540-8042-a1a4508f1a65`
+- Codex agent: `4eccbced-60b5-4e7a-87fd-d9f3699d3bed`
+- Claude agent: `e2e1c89f-587d-4a2d-bbaa-ce9b5dea908d`
 
-## Dispatcher Workflow
+## Discover
 
-1. Check current state:
-   - `git -C D:\FantasyDisk fetch origin dev`
-   - `git -C D:\FantasyDisk status --short --branch`
-   - `multica issue children <parent-id> --output json` (or `multica issue get <id>`) to read the live board.
-2. Close completed subagents so they do not consume concurrency.
-3. Prefer the live Multica board over local task mirrors. Use current statuses and comments/assignees/locked paths to avoid duplicate work.
-4. Spawn workers up to the useful concurrency limit:
-   - QA first for issues in `in_review`.
-   - Backend/balance next for small bugs and logic work.
-   - UI/design next for redesign tasks, with no overlapping screens/assets between workers.
-   - Animator/content for animation or sprite tasks, or QA fallback when animation queue is empty.
-5. Give every worker a loop prompt, not a one-shot prompt: take exactly one issue, finish it, push, update the Multica issue, clean, then take another.
-6. Create or maintain a heartbeat automation when the user wants continuous work beyond the current turn. Prefer a heartbeat attached to the current thread every 10 minutes.
+List the whole queue; a known parent ID is optional:
+
+```bash
+multica issue list --project 2ac963eb-b644-4540-8042-a1a4508f1a65 --status in_review --limit 100 --output json
+multica issue list --project 2ac963eb-b644-4540-8042-a1a4508f1a65 --status todo --limit 100 --output json
+multica issue list --project 2ac963eb-b644-4540-8042-a1a4508f1a65 --status in_progress --limit 100 --output json
+```
+
+Page with `--offset` if a result reaches the limit. Filter JSON by role/lane,
+priority, blockers, assignee, parent, comments, and locked paths. Prefer QA for
+`in_review`, then small backend/balance work, then non-overlapping UI/design and
+animation work.
+
+## Assign Without Duplicate Claims
+
+1. Keep exactly one active dispatcher for a queue. Record its owner and
+   heartbeat in the parent/control FAN issue. A second dispatcher observes only.
+2. Re-read the candidate immediately before assignment:
+   `multica issue get <FAN-id> --output json` and recent comments.
+3. Require `todo`, no active assignee, no blocker, and no overlapping owner/lock.
+   For implementation already in `in_review`, create or reuse a separate QA child
+   issue in `todo`; do not replace the implementation owner.
+4. Multica CLI has no compare-and-swap claim. Under the single-dispatcher rule,
+   reserve without starting the daemon in one update:
+   `multica issue update <FAN-id> --status backlog --assignee-id <agent-uuid>
+   --output json`.
+5. Re-read the issue and assert both `backlog` and the exact assignee UUID. If
+   either differs, do not edit or dispatch. Post the assignment/locks comment,
+   then move it to `todo` to enqueue the assigned agent.
+6. The worker re-reads its issue, verifies its own assignee, then sets
+   `in_progress` and posts owner/workdir/branch/locked paths. Unassigned workers
+   must never self-claim by changing status alone.
+
+If reservation or enqueue fails, restore the truthful prior status, unassign the
+issue, and record the failure. Cross-dispatcher atomic claiming remains a server
+capability gap; never compensate by running multiple writers.
+
+When using an in-process subagent instead of a Multica daemon agent, the central
+dispatcher must first set `in_progress` and post a direct-control owner/lock
+comment. Do not assign a daemon agent as well.
 
 ## Worker Contract
 
-Every worker prompt must include:
+Give a worker exactly one FAN ID per run. It must:
 
-- Work autonomously; do not ask the user for in-scope confirmations.
-- Use a clean worktree from fresh `origin/dev`; never use dirty `D:\FantasyDisk` for task edits.
-- Pull/rebase from `origin/dev` before every new issue.
-- Claim in Multica before editing: `multica issue status <FAN-id> in_progress` plus a start comment with owner, thread/worker id, locked files/assets/screens.
-- Respect role boundaries and active locked paths. Do not revert others' changes.
-- Commit and push each completed issue to `dev` with the `FAN-*` key in the commit message.
-- Update the Multica issue truthfully. Implementation work normally goes to `in_review` (QA gate); QA PASSED moves it to `done`; QA RED gets an evidence comment or bug/handoff.
-- Clean owned temp files after every issue: disposable `.godot`, `__pycache__`, logs, generated scratch, temporary worktrees when safe.
-- Never commit `.godot`, `source_docs/FantasyDisk_GDD.txt`, `.routine.lock`, unrelated `.import` files, caches, or sidecars.
+- verify issue status, assignee, comments, and locked paths before edits;
+- use a clean worktree from fresh `origin/dev`;
+- read the relevant UI/asset/animation/balance skill;
+- update docs and run the required synchronous quality gates;
+- commit and push task-owned files with the FAN key;
+- post exact SHA, commands/results, residual risk, and cleanup evidence;
+- move implementation to `in_review`; move QA-passed work to `done`;
+- stop after that issue so the central dispatcher chooses the next assignment.
 
-## Multica Helpers
+Never leave background commands or workers running past the owning Multica turn.
 
-Use these from a FantasyDisk worktree:
+## References
 
-```bash
-multica issue get <FAN-id> --output json
-multica issue children <parent-id> --output json
-multica issue status <FAN-id> in_progress
-multica issue comment add <FAN-id> --content-file ./reply.md
-multica issue status <FAN-id> in_review
-```
+Load only the role template needed:
 
-If the user explicitly says to ignore stale assignees such as Designer2, workers may take physically free tasks from another lane only after checking live Multica issue comments, assignee, status, and locked paths for active ownership.
+- `references/backend-loop.md`
+- `references/qa-loop.md`
+- `references/design-loop.md`
+- `references/animator-loop.md`
+- `references/dispatcher-heartbeat.md`
 
-## Reference Prompts
+## Report
 
-Load only the reference needed for the worker type you are spawning:
-
-- `references/dispatcher-heartbeat.md` for recurring heartbeat prompt text.
-- `references/qa-loop.md` for QA workers.
-- `references/backend-loop.md` for backend or balance workers.
-- `references/design-loop.md` for UI/design workers.
-- `references/animator-loop.md` for animation/content workers.
-
-## Reporting
-
-When reporting status to the user, keep it operational:
-
-- which agents are running,
-- which lanes they cover,
-- whether any failed to start,
-- what automation exists,
-- which blockers require a Multica comment or handoff.
-
-Do not claim a task is done until the worker has pushed, updated the Multica issue, and cleaned its own disk usage.
+Report active agents and FAN IDs, lane coverage, failed starts, green/red gates,
+and genuine blockers. Do not call work complete before push, Multica evidence,
+and cleanup are all verified.

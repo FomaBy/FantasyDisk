@@ -1,14 +1,12 @@
 #!/usr/bin/env python3
-"""Generate a FantasyDisk reference PNG and create its implementation task."""
+"""Generate a FantasyDisk reference PNG and a Multica-linked task mirror."""
 
 from __future__ import annotations
 
 import argparse
 import base64
-import json
 import os
 import re
-import subprocess
 import sys
 from datetime import date
 from pathlib import Path
@@ -193,7 +191,14 @@ def generate_image(prompt: str, size: str, quality: str) -> bytes:
     return base64.b64decode(result.data[0].b64_json)
 
 
-def write_task(project_root: Path, output_path: Path, prompt: str, size: str, quality: str) -> Path:
+def write_task(
+    project_root: Path,
+    output_path: Path,
+    prompt: str,
+    size: str,
+    quality: str,
+    issue_id: str,
+) -> Path:
     references_root = project_root / "docs/design/references"
     rel_output = output_path.relative_to(project_root)
     ref_rel = output_path.relative_to(references_root)
@@ -206,12 +211,12 @@ def write_task(project_root: Path, output_path: Path, prompt: str, size: str, qu
     title_name = title_name.replace("_", " ").replace("-", " ").strip() or output_path.stem
     body = f"""# Задача Для Design-Агента: Внедрить сгенерированный ассет {title_name}
 
-Статус: new
+Статус: specification
 Создано: {created}
 Автор: Codex asset generator
 Исполнитель: Design / Codex. Интеграция в код — через Back-end handoff при необходимости.
 Версия: 0.1.5
-Jira: pending sync
+Multica: {issue_id}
 
 ## Autonomy / Approval
 Пользователь заранее одобрил изменения в рамках этой задачи. Работать автономно, не ждать дополнительных подтверждений.
@@ -241,46 +246,10 @@ Jira: pending sync
 - [ ] Финальный ассет, если создается, имеет стабильное имя и лежит в правильной `assets/sprites/...` папке.
 - [ ] Не тронуты `.import` файлы без необходимости.
 - [ ] При runtime-интеграции пройдены релевантные Godot smoke/UI checks.
-- [ ] Jira и task-файл синхронизированы после смены статуса.
+- [ ] Multica issue обновлена evidence и актуальным статусом после интеграции.
 """
     task_path.write_text(body, encoding="utf-8")
     return task_path
-
-
-def patch_jira_key(project_root: Path, task_path: Path) -> str | None:
-    if os.environ.get("FANTASYDISK_SKIP_JIRA_SYNC") == "1":
-        return None
-    sync_script = project_root / "tools/jira_board_sync.py"
-    mapping_path = project_root / "docs/process/jira_sync_map.json"
-    if not sync_script.exists():
-        return None
-
-    result = subprocess.run(
-        [sys.executable, str(sync_script)],
-        cwd=project_root,
-        text=True,
-        stdout=subprocess.PIPE,
-        stderr=subprocess.PIPE,
-    )
-    if result.returncode != 0:
-        print(result.stdout, end="")
-        print(result.stderr, end="", file=sys.stderr)
-        print("warning: Jira sync failed; task was left with 'Jira: pending sync'", file=sys.stderr)
-        return None
-
-    try:
-        mapping = json.loads(mapping_path.read_text(encoding="utf-8"))
-    except (OSError, json.JSONDecodeError):
-        return None
-    entry = mapping.get(task_path.name)
-    key = entry.get("key") if isinstance(entry, dict) else None
-    if not key:
-        return None
-
-    text = task_path.read_text(encoding="utf-8")
-    task_path.write_text(text.replace("Jira: pending sync", f"Jira: {key}"), encoding="utf-8")
-    subprocess.run([sys.executable, str(sync_script)], cwd=project_root, check=False)
-    return key
 
 
 def parse_args() -> argparse.Namespace:
@@ -291,14 +260,20 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--output", required=True, help="PNG output path or name under docs/design/references.")
     parser.add_argument("--size", required=True, help="auto or WIDTHxHEIGHT.")
     parser.add_argument("--quality", required=True, choices=sorted(QUALITY_VALUES), help="Image quality.")
+    parser.add_argument(
+        "--issue",
+        help="Existing Multica issue identifier (FAN-123); required when creating a task mirror.",
+    )
     parser.add_argument("--no-task", action="store_true",
-                        help="Only generate the PNG; skip the integration task + Jira sync. "
+                        help="Only generate the PNG; skip the integration task mirror. "
                              "Use for batch frame sets to avoid duplicate task spam.")
     return parser.parse_args()
 
 
 def main() -> int:
     args = parse_args()
+    if not args.no_task and not re.fullmatch(r"FAN-[1-9]\d*", args.issue or ""):
+        fail("--issue FAN-<number> is required when creating a task mirror")
     project_root = find_project_root(Path.cwd().resolve())
     size = normalize_size(args.size)
     output_path = resolve_output(project_root, args.output)
@@ -312,11 +287,16 @@ def main() -> int:
     if args.no_task:
         return 0
 
-    task_path = write_task(project_root, output_path, args.prompt, size, args.quality)
-    jira_key = patch_jira_key(project_root, task_path)
+    task_path = write_task(
+        project_root,
+        output_path,
+        args.prompt,
+        size,
+        args.quality,
+        args.issue,
+    )
     print(f"task: {task_path.relative_to(project_root).as_posix()}")
-    if jira_key:
-        print(f"jira: {jira_key}")
+    print(f"multica: {args.issue}")
     return 0
 
 

@@ -22,7 +22,7 @@ ROOT = Path(__file__).resolve().parents[1]
 # Surfaces a fresh agent actually reads to learn "where does work live and how do
 # I take/close it". Every one of these must be Multica-authoritative and free of
 # active Jira-directing mechanisms. Codex and Claude surfaces are both covered.
-ACTIVE_SURFACES = [
+CORE_ACTIVE_SURFACES = [
     "AGENTS.md",
     "README.md",
     "scripts/onboard.sh",
@@ -37,6 +37,29 @@ ACTIVE_SURFACES = [
     "skills/codex/fantasydisk-agent-dispatcher/references/dispatcher-heartbeat.md",
     "docs/process/ai_agent_memorandum.md",
 ]
+
+
+def discover_active_surfaces():
+    """Cover installed FantasyDisk skills without a hand-maintained allowlist."""
+    paths = {ROOT / rel for rel in CORE_ACTIVE_SURFACES}
+    paths.update((ROOT / "skills/codex").glob("fantasydisk-*/SKILL.md"))
+    paths.update((ROOT / "skills/codex").glob("fantasydisk-*/references/*.md"))
+    paths.update((ROOT / "skills/codex").glob("fantasydisk-*/agents/*.yaml"))
+    paths.update((ROOT / "skills/scheduled-tasks").glob("fantasydisk-*/SKILL.md"))
+    paths.update((ROOT / ".claude/skills").glob("*/SKILL.md"))
+    paths.add(ROOT / "skills/codex/perenos-chata/SKILL.md")
+    paths.add(ROOT / "skills/codex/perenos-chata/agents/openai.yaml")
+    return tuple(sorted(path.relative_to(ROOT).as_posix() for path in paths))
+
+
+ACTIVE_SURFACES = discover_active_surfaces()
+AUTHORITY_SURFACES = tuple(
+    rel
+    for rel in ACTIVE_SURFACES
+    if rel in CORE_ACTIVE_SURFACES
+    or (rel.startswith("skills/codex/fantasydisk-") and rel.endswith("/SKILL.md"))
+    or rel == "skills/codex/perenos-chata/SKILL.md"
+)
 
 # Legacy Jira helper scripts / mechanisms. An active surface that invokes any of
 # these is directing an agent into Jira -- forbidden after cutover. (Bare
@@ -55,11 +78,13 @@ FORBIDDEN_HELPERS = [
 FORBIDDEN_DIRECTIVES = [
     "jira-first",
     "jira-pull",
+    "jira-driven",
     "берутся из jira",
     "берётся из jira",
     "jira является единым",
     "jira является authoritative",
     "claim в jira",
+    "jira имеет приоритет",
 ]
 
 # The canonical Multica target recorded at cutover.
@@ -80,6 +105,10 @@ def read(rel_path):
     return (ROOT / rel_path).read_text(encoding="utf-8")
 
 
+def normalized(rel_path):
+    return " ".join(read(rel_path).lower().split())
+
+
 class CutoverOnboardingTest(unittest.TestCase):
     def test_cutover_record_exists_and_pins_canonical_facts(self):
         """The cutover record must fix date, approver, and canonical project."""
@@ -96,7 +125,7 @@ class CutoverOnboardingTest(unittest.TestCase):
     def test_no_active_surface_invokes_a_jira_helper(self):
         """No onboarding/worker surface may hand an agent a Jira claim/sync tool."""
         for rel in ACTIVE_SURFACES:
-            lowered = read(rel).lower()
+            lowered = normalized(rel)
             for helper in FORBIDDEN_HELPERS:
                 self.assertNotIn(
                     helper,
@@ -108,7 +137,7 @@ class CutoverOnboardingTest(unittest.TestCase):
     def test_no_active_surface_directs_into_jira(self):
         """No active surface may assert Jira as the live/authoritative tracker."""
         for rel in ACTIVE_SURFACES:
-            lowered = read(rel).lower()
+            lowered = normalized(rel)
             for phrase in FORBIDDEN_DIRECTIVES:
                 self.assertNotIn(
                     phrase,
@@ -118,9 +147,9 @@ class CutoverOnboardingTest(unittest.TestCase):
 
     def test_active_surfaces_name_multica_as_authoritative(self):
         """Every active surface must positively point at the Multica tracker."""
-        signals = ("fan-", "multica issue", "`multica`", "multica cli", "проект `fantasydisk`")
-        for rel in ACTIVE_SURFACES:
-            lowered = read(rel).lower()
+        signals = ("fan-", "fan_id", "multica issue", "`multica`", "multica cli", "проект `fantasydisk`")
+        for rel in AUTHORITY_SURFACES:
+            lowered = normalized(rel)
             self.assertIn("multica", lowered, f"{rel} never mentions Multica")
             self.assertTrue(
                 any(sig in lowered for sig in signals),
@@ -147,6 +176,20 @@ class CutoverOnboardingTest(unittest.TestCase):
         text = read("scripts/onboard.sh").lower()
         self.assertIn("multica-only rule", text)
         self.assertNotIn("jira-only rule", text)
+
+    def test_dispatcher_discovers_queue_and_reserves_one_owner(self):
+        text = read("skills/codex/fantasydisk-agent-dispatcher/SKILL.md")
+        self.assertIn("multica issue list --project", text)
+        self.assertIn("--status backlog --assignee-id", text)
+        self.assertIn("single-dispatcher", text)
+        self.assertNotIn("D:\\FantasyDisk", text)
+
+    def test_dispatcher_role_prompts_are_path_portable(self):
+        for rel in ACTIVE_SURFACES:
+            if not rel.startswith("skills/codex/fantasydisk-agent-dispatcher/"):
+                continue
+            with self.subTest(path=rel):
+                self.assertNotIn("D:\\FantasyDisk", read(rel))
 
 
 if __name__ == "__main__":

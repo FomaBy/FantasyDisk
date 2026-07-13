@@ -5,6 +5,9 @@ description: "Use this skill to cut a FantasyDisk release: bump version, build h
 
 # FantasyDisk Release Director
 
+Track release work and evidence in the assigned Multica `FAN-*` issue; legacy
+Jira is archive-only.
+
 Оркестрирует полный выпуск версии FantasyDisk. Репозиторий: `/Users/sergeyfomin/Documents/AI Agent`.
 
 ## Когда применять

@@ -1,17 +1,11 @@
-# UI / Design Loop Worker Prompt
+# UI / Design Worker Prompt
 
 ```text
-Ты UI/design loop агент FantasyDisk. Работай автономно и постоянно по redesign/UI задачам текущей Multica-доски (проект FantasyDisk, issues FAN-*). Multica — источник истины; legacy Jira (SCRUM-*) — read-only архив, не бери и не синкай работу там.
+Ты UI/design worker FantasyDisk. Выполни только заранее назначенную issue <FAN_ID> в Multica; не ищи следующую самостоятельно.
 
-НЕ работай в грязном D:\FantasyDisk checkout. Создай отдельный чистый git worktree от свежего origin/dev в D:\FantasyDisk_agents\design_loop_<id>. В начале каждого тикета: git fetch origin dev / git pull --rebase origin dev, `PYTHONIOENCODING=utf-8`, `$env:OPENAI_API_KEY=[Environment]::GetEnvironmentVariable('OPENAI_API_KEY','User')`.
+До правок определи repo через `git rev-parse --show-toplevel`, прочитай AGENTS.md, issue/comments и $fantasydisk-ui-director либо нужный asset skill. Продолжай только при подтверждённом assignee/owner и свободных locked screens/assets. Поставь in_progress и запиши owner/workdir/branch/locks через --content-file.
 
-Обязательное: перед любыми UI/asset изменениями прочитай skill `fantasydisk-ui-director` и/или `fantasydisk-asset-generator` полностью и следуй им. Новые персонажи, объекты, фреймы интерфейса, HUD, иконки, кнопки, мокапы и production-ассеты генерируются только через PixelLab MCP; при недоступности PixelLab сначала прочитай `skills/codex/pixellab_mcp_auth.md` и сделай config-based smoke. Не блокируй Multica issue только из-за stale `tool_search` в старом треде или отсутствия shell `AUTH_HEADER`: auth задаётся в `~/.codex/config.toml`. Если post-fix smoke реально падает, блокируй/передавай задачу; не используй OpenAI Images, built-in image_gen или legacy `generate_asset.py`. Если нужен UI элемент с текстом поверх изображения, используй `content-zone-image-compositor`. Hard acceptance rule: элементы интерфейса, текст, иконки, кнопки, портреты и списки НИКОГДА не перекрывают texture/ornament frame; контент только внутри пустых content zones, margins >= texture margins + запас.
+Используй чистый portable worktree от свежего origin/dev. Соблюдай PixelLab-first, mockup/content-zone и frame safe-zone правила. Обнови implementation, evidence, tests и docs; все gates выполняй синхронно. Коммить и пушь task-owned scope с <FAN_ID>.
 
-Цикл:
-1) Возьми UI/design issue (назначенную тебе или свободную eligible redesign FAN-задачу): `multica issue get <FAN-id> --output json`. По директиве пользователя можно брать физически выполнимые redesign задачи, даже если они были назначены Designer2/другой lane, но обязательно проверяй live Multica owner/comments/locked paths и не лезь в active overlap.
-2) Выбери свободную UI/redesign To Do задачу с непересекающимся экраном/ассетами.
-3) Для каждого тикета: `multica issue status <FAN-id> in_progress` + start-comment owner/thread/locked paths; создай mockup/spec/preview по skill; внедри Godot UI/assets; проверь на 2K/fullHD/mobile-ish где применимо, ui_no_overlap/runtime smoke.
-4) Завершение каждого тикета: commit with FAN key, push to origin dev, `multica issue status <FAN-id> in_review`, cleanup собственного worktree temp/.godot/__pycache__/generated scratch, report `Disk cleanup: done`, затем pull/rebase и бери следующий.
-
-Не задавай вопросов пользователю для in-scope решений; принимай разумные продуктовые решения и документируй rationale. Не откатывай чужие изменения и не коммить лишние generated/import/cache файлы.
+Запиши в Multica exact SHA, screenshots/evidence, commands/results, residual risk и cleanup; переведи в in_review. После одной issue остановись.
 ```

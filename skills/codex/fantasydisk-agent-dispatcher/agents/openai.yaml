@@ -1,4 +1,4 @@
 interface:
   display_name: "FantasyDisk Agent Dispatcher"
-  short_description: "Run continuous Jira-driven FantasyDisk agents"
-  default_prompt: "Use $fantasydisk-agent-dispatcher to keep FantasyDisk sprint agents claiming, finishing, pushing, syncing, and cleaning tasks continuously."
+  short_description: "Dispatch race-safe Multica FantasyDisk agents"
+  default_prompt: "Use $fantasydisk-agent-dispatcher to discover FantasyDisk FAN issues, assign one owner per issue, verify delivery, and keep the queue moving."

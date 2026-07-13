@@ -16,7 +16,7 @@ In a FantasyDisk repo checkout, read these before UI work:
 - `docs/design/current_game_state.md`
 - `docs/design/systems/menus_ui.md`
 - `docs/design/systems/visual_style_assets.md`
-- the active task file, task board row, and linked Jira context when present
+- the active Multica issue, local task mirror, and locked screen paths
 
 Then read only the references needed for the current step:
 
@@ -67,7 +67,7 @@ Then read only the references needed for the current step:
    - fail the work if content overlaps frame decoration, clips text, or moves outside the safe zone.
 7. Document:
    - update the task file with mockup path, preview path, asset paths, margins, implementation paths, tests, and deviations;
-   - sync Jira/board status when the work is task-tracked.
+   - update Multica status/comment evidence when the work is task-tracked.
 
 ## Output Contract
 

@@ -80,4 +80,4 @@ The work is complete only when:
 - Hero Select preview rotates clockwise with live frames, not a static PNG.
 - Source PixelLab files, runtime files, SpriteFrames, config, docs, and tests are committed.
 - Focused animation and Hero Select smoke tests pass.
-- The task/Jira result states the PixelLab MCP source ID/tag/name and confirms no legacy/manual/non-PixelLab character art path was used for new source art.
+- The Multica result states the PixelLab MCP source ID/tag/name and confirms no legacy/manual/non-PixelLab character art path was used for new source art.
