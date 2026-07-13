@@ -10,6 +10,7 @@ import base64
 import binascii
 import hashlib
 import hmac
+import ipaddress
 import io
 import json
 import logging
@@ -28,7 +29,7 @@ from typing import Callable, Iterable, Mapping, Optional, Tuple
 from urllib.parse import urlparse
 
 
-SCHEMA_VERSION = 1
+SCHEMA_VERSION = 2
 MAX_REQUEST_BYTES = 2_000_000
 MAX_SESSION_REQUEST_BYTES = 2_048
 MAX_DESCRIPTION_CHARS = 4_000
@@ -87,7 +88,7 @@ class Config:
     discord_webhook_url: str
     database_path: str
     upstream_timeout: float = 10.0
-    trust_proxy: bool = False
+    trusted_proxy_cidrs: Tuple[str, ...] = ()
     allow_test_upstream: bool = False
     session_global_limit: int = SESSION_GLOBAL_LIMIT
     feedback_global_limit: int = FEEDBACK_GLOBAL_LIMIT
@@ -110,7 +111,9 @@ class Config:
             discord_webhook_url=webhook,
             database_path=os.environ.get("FEEDBACK_DATABASE_PATH", "/data/feedback_proxy.sqlite3"),
             upstream_timeout=float(os.environ.get("FEEDBACK_UPSTREAM_TIMEOUT", "10")),
-            trust_proxy=os.environ.get("FEEDBACK_TRUST_PROXY", "0") == "1",
+            trusted_proxy_cidrs=_trusted_proxy_cidrs(
+                os.environ.get("FEEDBACK_TRUSTED_PROXY_CIDRS", "")
+            ),
             session_global_limit=_positive_env("FEEDBACK_SESSION_GLOBAL_LIMIT", SESSION_GLOBAL_LIMIT),
             feedback_global_limit=_positive_env("FEEDBACK_GLOBAL_LIMIT", FEEDBACK_GLOBAL_LIMIT),
         )
@@ -227,6 +230,9 @@ class FeedbackProxyApp:
         self.config = config
         self.store = Store(config.database_path)
         self.logger = logger or logging.getLogger("fantasydisk.feedback_proxy")
+        self._trusted_proxy_networks = tuple(
+            ipaddress.ip_network(value, strict=False) for value in config.trusted_proxy_cidrs
+        )
         self._validate_upstream()
 
     def _validate_upstream(self) -> None:
@@ -363,21 +369,29 @@ class FeedbackProxyApp:
                 raise ClientError("413 Payload Too Large", "metadata_value_too_large")
             normalized_metadata[str(key)] = value
         encoded = payload.get("screenshot_jpeg_base64")
-        if not isinstance(encoded, str) or len(encoded) > (MAX_SCREENSHOT_BYTES * 4 // 3 + 8):
-            raise ClientError("413 Payload Too Large", "screenshot_too_large")
-        try:
-            screenshot = base64.b64decode(encoded, validate=True)
-        except ValueError:
-            raise ClientError("400 Bad Request", "invalid_screenshot_base64")
-        if not screenshot or len(screenshot) > MAX_SCREENSHOT_BYTES:
-            raise ClientError("413 Payload Too Large", "screenshot_too_large")
-        if not screenshot.startswith(b"\xff\xd8") or not screenshot.endswith(b"\xff\xd9"):
-            raise ClientError("400 Bad Request", "invalid_screenshot_jpeg")
-        width, height = _jpeg_dimensions(screenshot)
-        if width <= 0 or height <= 0:
-            raise ClientError("400 Bad Request", "invalid_screenshot_jpeg")
-        if max(width, height) > MAX_SCREENSHOT_DIMENSION:
-            raise ClientError("413 Payload Too Large", "screenshot_dimensions_too_large")
+        screenshot: Optional[bytes]
+        if encoded is None:
+            if not description:
+                raise ClientError("400 Bad Request", "text_only_description_required")
+            screenshot = None
+        else:
+            if not isinstance(encoded, str):
+                raise ClientError("400 Bad Request", "invalid_screenshot_type")
+            if len(encoded) > (MAX_SCREENSHOT_BYTES * 4 // 3 + 8):
+                raise ClientError("413 Payload Too Large", "screenshot_too_large")
+            try:
+                screenshot = base64.b64decode(encoded, validate=True)
+            except ValueError:
+                raise ClientError("400 Bad Request", "invalid_screenshot_base64")
+            if not screenshot or len(screenshot) > MAX_SCREENSHOT_BYTES:
+                raise ClientError("413 Payload Too Large", "screenshot_too_large")
+            if not screenshot.startswith(b"\xff\xd8") or not screenshot.endswith(b"\xff\xd9"):
+                raise ClientError("400 Bad Request", "invalid_screenshot_jpeg")
+            width, height = _jpeg_dimensions(screenshot)
+            if width <= 0 or height <= 0:
+                raise ClientError("400 Bad Request", "invalid_screenshot_jpeg")
+            if max(width, height) > MAX_SCREENSHOT_DIMENSION:
+                raise ClientError("413 Payload Too Large", "screenshot_dimensions_too_large")
         return {"description": description, "metadata": normalized_metadata, "screenshot": screenshot}
 
     def _read_json(self, environ: Mapping[str, object], max_bytes: int = MAX_REQUEST_BYTES) -> object:
@@ -434,13 +448,19 @@ class FeedbackProxyApp:
             raise ClientError("401 Unauthorized", "session_subject_mismatch")
 
     def _forward(self, report: dict, report_id: str) -> Tuple[int, int]:
-        boundary = "----FantasyDiskRelay" + secrets.token_hex(12)
-        body = _discord_multipart(report, report_id, boundary)
+        screenshot = report.get("screenshot")
+        if screenshot is None:
+            body = _discord_json(report)
+            content_type = "application/json; charset=utf-8"
+        else:
+            boundary = "----FantasyDiskRelay" + secrets.token_hex(12)
+            body = _discord_multipart(report, report_id, boundary)
+            content_type = "multipart/form-data; boundary=" + boundary
         request = urllib.request.Request(
             self.config.discord_webhook_url,
             data=body,
             headers={
-                "Content-Type": "multipart/form-data; boundary=" + boundary,
+                "Content-Type": content_type,
                 "User-Agent": "FantasyDisk-Feedback-Relay/1.0",
             },
             method="POST",
@@ -454,11 +474,15 @@ class FeedbackProxyApp:
             return 0, 0
 
     def _client_ip(self, environ: Mapping[str, object]) -> str:
-        if self.config.trust_proxy:
-            forwarded = str(environ.get("HTTP_X_FORWARDED_FOR", "")).split(",", 1)[0].strip()
-            if forwarded:
-                return forwarded
-        return str(environ.get("REMOTE_ADDR", "unknown"))
+        remote = _canonical_ip(str(environ.get("REMOTE_ADDR", "")))
+        if remote != "unknown" and self._trusted_proxy_networks:
+            remote_address = ipaddress.ip_address(remote)
+            if any(remote_address in network for network in self._trusted_proxy_networks):
+                forwarded = str(environ.get("HTTP_X_FORWARDED_FOR", "")).split(",", 1)[0].strip()
+                canonical_forwarded = _canonical_ip(forwarded)
+                if canonical_forwarded != "unknown":
+                    return canonical_forwarded
+        return remote
 
     def _ip_hash(self, ip: str) -> str:
         return hmac.new(self.config.log_salt, ip.encode("utf-8"), hashlib.sha256).hexdigest()
@@ -523,6 +547,26 @@ def _positive_env(name: str, default: int) -> int:
     return value
 
 
+def _trusted_proxy_cidrs(raw: str) -> Tuple[str, ...]:
+    values = tuple(value.strip() for value in raw.split(",") if value.strip())
+    try:
+        for value in values:
+            ipaddress.ip_network(value, strict=False)
+    except ValueError as exc:
+        raise RuntimeError("FEEDBACK_TRUSTED_PROXY_CIDRS contains an invalid network") from exc
+    return values
+
+
+def _canonical_ip(value: str) -> str:
+    try:
+        address = ipaddress.ip_address(value.strip())
+    except ValueError:
+        return "unknown"
+    if isinstance(address, ipaddress.IPv6Address) and address.ipv4_mapped is not None:
+        return str(address.ipv4_mapped)
+    return address.compressed
+
+
 def _base64url_decode(value: str) -> bytes:
     return base64.urlsafe_b64decode(value + "=" * (-len(value) % 4))
 
@@ -581,7 +625,7 @@ def _discord_content(description: str, metadata: Mapping[str, object]) -> str:
 
 def _report_digest(report: Mapping[str, object]) -> str:
     screenshot = report["screenshot"]
-    assert isinstance(screenshot, bytes)
+    assert screenshot is None or isinstance(screenshot, bytes)
     canonical = json.dumps(
         {"description": report["description"], "metadata": report["metadata"]},
         ensure_ascii=False,
@@ -590,9 +634,22 @@ def _report_digest(report: Mapping[str, object]) -> str:
     ).encode("utf-8")
     digest = hashlib.sha256()
     digest.update(canonical)
-    digest.update(b"\x00")
-    digest.update(screenshot)
+    digest.update(b"\x01" if screenshot is not None else b"\x00")
+    if screenshot is not None:
+        digest.update(screenshot)
     return digest.hexdigest()
+
+
+def _discord_json(report: Mapping[str, object]) -> bytes:
+    return json.dumps(
+        {
+            "content": _discord_content(str(report["description"]), report["metadata"]),
+            "allowed_mentions": {"parse": []},
+            "attachments": [],
+        },
+        ensure_ascii=False,
+        separators=(",", ":"),
+    ).encode("utf-8")
 
 
 def _discord_multipart(report: Mapping[str, object], report_id: str, boundary: str) -> bytes:

@@ -49,9 +49,12 @@ PATH_TEST_RULES = {
     "scripts/feedback_reporter.gd": {
         "feedback_request_lifecycle_test",
         "feedback_relay_contract_test",
+        "feedback_privacy_contract_test",
+        "feedback_privacy_ui_test",
         "feedback_retry_policy_test",
         "feedback_webhook_config_test",
     },
+    "scripts/ui_screens.gd": {"feedback_privacy_ui_test"},
     "tests/feedback_webhook_config_test.gd": {"feedback_webhook_config_test"},
 }
 

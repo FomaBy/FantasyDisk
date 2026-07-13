@@ -11,6 +11,10 @@ const WEBHOOK_KEY := "webhook_url"
 const BUNDLED_WEBHOOK_KEY := "discord_webhook_url"
 const RELAY_CONFIG_KEY := "relay_session_url"
 const RELAY_PROJECT_SETTING := "feedback/relay_session_url"
+const PRIVACY_OPERATOR_SETTING := "feedback/privacy_operator_name"
+const PRIVACY_CONTACT_SETTING := "feedback/privacy_contact_url"
+const PRIVACY_RETENTION_SETTING := "feedback/privacy_retention_notice"
+const PRIVACY_POLICY_SETTING := "feedback/privacy_policy_url"
 const LOCAL_ROOT := "user://feedback"
 const INSTALLATION_ID_PATH := "user://feedback_installation_id.txt"
 const ENV_WEBHOOK := "FANTASYDISK_FEEDBACK_WEBHOOK"
@@ -26,7 +30,7 @@ const ENV_RELAY := "FANTASYDISK_FEEDBACK_RELAY_URL"
 const UPLOAD_FILENAME := "fantasydisk_feedback.jpg"
 const UPLOAD_MAX_DIM := 1280
 const UPLOAD_JPG_QUALITY := 0.72
-const RELAY_SCHEMA_VERSION := 1
+const RELAY_SCHEMA_VERSION := 2
 const MAX_DESCRIPTION_CHARS := 4000
 const MAX_SESSION_REFRESHES := 1
 const MAX_RESPONSE_BYTES := 64 * 1024
@@ -34,6 +38,22 @@ const PHASE_NONE := &""
 const PHASE_RELAY_SESSION := &"relay_session"
 const PHASE_RELAY_UPLOAD := &"relay_upload"
 const PHASE_DISCORD_DEBUG := &"discord_debug"
+const METADATA_KEYS := [
+	"version",
+	"character",
+	"weapon",
+	"ascension",
+	"current_act",
+	"route_stage",
+	"route_scaling_stage",
+	"current_node_type",
+	"combat_active",
+	"boss_active",
+	"screen",
+	"resolution",
+	"os",
+	"timestamp",
+]
 
 # SCRUM-547: у тестеров отправка падала с «нет ответа (result 13)» = RESULT_TIMEOUT —
 # сервер не успевал ответить за жёсткие 12 с, и единственная попытка без ретрая сразу
@@ -74,14 +94,29 @@ var _active_request_id := 0
 var _active_report := {}
 
 
-func submit_report(text: String, screenshot: Image, metadata: Dictionary, completion := Callable()) -> int:
-	var request_id := _begin_report(text, screenshot, metadata, completion)
+func submit_report(
+	text: String,
+	screenshot: Image,
+	metadata: Dictionary,
+	completion := Callable(),
+	include_screenshot := true) -> int:
+	var request_id := _begin_report(text, screenshot, metadata, completion, include_screenshot)
+	if not _is_submission_content_valid(
+			str(_active_report.get("text", "")),
+			bool(_active_report.get("include_screenshot", true))):
+		_finish_report(
+			request_id,
+			false,
+			"Для отчета без скриншота добавьте описание.",
+			"")
+		return request_id
 	if not _is_description_within_limit(str(_active_report.get("text", ""))):
 		var oversized_local_path := save_local_report(
 			str(_active_report.get("text", "")),
 			_active_report.get("screenshot") as Image,
 			_active_report.get("metadata", {}) as Dictionary,
-			str(_active_report.get("report_id", "")))
+			str(_active_report.get("report_id", "")),
+			bool(_active_report.get("include_screenshot", true)))
 		var suffix := " Отчет сохранен локально." if oversized_local_path != "" \
 			else " Локальное сохранение также не удалось."
 		_finish_report(request_id, false,
@@ -95,7 +130,8 @@ func submit_report(text: String, screenshot: Image, metadata: Dictionary, comple
 			str(_active_report.get("text", "")),
 			_active_report.get("screenshot") as Image,
 			_active_report.get("metadata", {}) as Dictionary,
-			str(_active_report.get("report_id", "")))
+			str(_active_report.get("report_id", "")),
+			bool(_active_report.get("include_screenshot", true)))
 		_finish_report(request_id, false, _configuration_failure_message(
 			str(delivery.get("error", "missing")), local_path != ""), local_path)
 		return request_id
@@ -124,20 +160,28 @@ func cancel_active_report(request_id := 0) -> bool:
 	return true
 
 
-func _begin_report(text: String, screenshot: Image, metadata: Dictionary, completion := Callable()) -> int:
+func _begin_report(
+	text: String,
+	screenshot: Image,
+	metadata: Dictionary,
+	completion := Callable(),
+	include_screenshot := true) -> int:
 	# Only one report is allowed in flight. Superseding a request first invalidates
 	# its identity, so a late HTTP signal or retry timer cannot observe new payload.
 	cancel_active_report()
 	var request_id := _next_request_id
 	_next_request_id += 1
 	_active_request_id = request_id
+	var screenshot_enabled := bool(include_screenshot)
 	_active_report = {
 		"text": text.strip_edges(),
-		"metadata": metadata.duplicate(true),
+		"metadata": _sanitize_metadata(metadata),
+		"include_screenshot": screenshot_enabled,
 		# Captured screenshots are never mutated by the UI. Keep that stable image
 		# reference instead of duplicating up to 32 MiB at 4K; upload resizing already
-		# duplicates only when it actually needs to mutate the image.
-		"screenshot": _normalized_screenshot(screenshot),
+		# duplicates only when it actually needs to mutate the image. An opted-out
+		# report never retains the source image in the request snapshot.
+		"screenshot": _normalized_screenshot(screenshot) if screenshot_enabled else null,
 		"report_id": _new_report_uuid(),
 		"installation_id": _installation_id(),
 		"phase": PHASE_NONE,
@@ -145,6 +189,8 @@ func _begin_report(text: String, screenshot: Image, metadata: Dictionary, comple
 		"relay_session_url": "",
 		"relay_upload_url": "",
 		"relay_body": PackedByteArray(),
+		"discord_body": PackedByteArray(),
+		"discord_content_type": "",
 		"access_token": "",
 		"session_refreshes": 0,
 		"attempt": 0,
@@ -162,7 +208,11 @@ static func feedback_folder_path() -> String:
 
 
 static func save_local_report(
-	text: String, screenshot: Image, metadata: Dictionary, report_id := "") -> String:
+	text: String,
+	screenshot: Image,
+	metadata: Dictionary,
+	report_id := "",
+	include_screenshot := true) -> String:
 	var timestamp := _timestamp_for_path()
 	var report_dir := "%s/%s" % [LOCAL_ROOT, _local_report_folder(timestamp, str(report_id))]
 	var absolute_dir := ProjectSettings.globalize_path(report_dir)
@@ -172,20 +222,21 @@ static func save_local_report(
 	var report_file := FileAccess.open("%s/report.txt" % report_dir, FileAccess.WRITE)
 	if report_file == null:
 		return ""
-	report_file.store_string(_report_body(text, metadata))
+	report_file.store_string(_report_body(text, _sanitize_metadata(metadata), bool(include_screenshot)))
 	var report_error := report_file.get_error()
 	report_file.close()
 	if report_error != OK:
 		return ""
 
-	var safe_screenshot := _normalized_screenshot(screenshot)
-	if safe_screenshot.save_png("%s/screenshot.png" % report_dir) != OK:
-		return ""
+	if bool(include_screenshot):
+		var safe_screenshot := _normalized_screenshot(screenshot)
+		if safe_screenshot.save_png("%s/screenshot.png" % report_dir) != OK:
+			return ""
 	return absolute_dir
 
 
-static func discord_content(text: String, metadata: Dictionary) -> String:
-	var body := _report_body(text, metadata)
+static func discord_content(text: String, metadata: Dictionary, include_screenshot := true) -> String:
+	var body := _report_body(text, _sanitize_metadata(metadata), include_screenshot)
 	if body.length() > 1800:
 		body = body.substr(0, 1790) + "\n..."
 	return body
@@ -211,6 +262,14 @@ static func multipart_payload(text: String, screenshot: Image, metadata: Diction
 	return body
 
 
+static func discord_json_payload(text: String, metadata: Dictionary) -> PackedByteArray:
+	return JSON.stringify({
+		"content": discord_content(text, metadata, false),
+		"allowed_mentions": {"parse": []},
+		"attachments": [],
+	}).to_utf8_buffer()
+
+
 static func _upload_image_buffer(screenshot: Image) -> PackedByteArray:
 	# Ужимаем скрин перед отправкой в Discord, чтобы тело запроса не пробивало лимит
 	# вебхука (SCRUM-460). Локальная копия в save_local_report остаётся полным PNG.
@@ -233,6 +292,19 @@ func _post_to_webhook(webhook_url: String, request_id: int) -> void:
 	if not is_request_active(request_id):
 		return
 	_active_report["webhook_url"] = webhook_url
+	if bool(_active_report.get("include_screenshot", true)):
+		var boundary := "----FantasyDiskFeedback%s" % str(_active_report.get("report_id", "")).replace("-", "")
+		_active_report["discord_content_type"] = "multipart/form-data; boundary=%s" % boundary
+		_active_report["discord_body"] = multipart_payload(
+			str(_active_report.get("text", "")),
+			_active_report.get("screenshot") as Image,
+			_active_report.get("metadata", {}) as Dictionary,
+			boundary)
+	else:
+		_active_report["discord_content_type"] = "application/json"
+		_active_report["discord_body"] = discord_json_payload(
+			str(_active_report.get("text", "")),
+			_active_report.get("metadata", {}) as Dictionary)
 	_transition_phase(request_id, PHASE_DISCORD_DEBUG)
 	_dispatch_request(request_id, PHASE_DISCORD_DEBUG)
 
@@ -246,7 +318,8 @@ func _start_relay(session_url: String, request_id: int) -> void:
 		str(_active_report.get("report_id", "")),
 		str(_active_report.get("text", "")),
 		_active_report.get("screenshot") as Image,
-		_active_report.get("metadata", {}) as Dictionary)
+		_active_report.get("metadata", {}) as Dictionary,
+		bool(_active_report.get("include_screenshot", true)))
 	_transition_phase(request_id, PHASE_RELAY_SESSION)
 	_dispatch_request(request_id, PHASE_RELAY_SESSION)
 
@@ -327,18 +400,13 @@ func _request_spec_for_phase(phase: StringName) -> Dictionary:
 			]),
 			"body": _active_report.get("relay_body", PackedByteArray()),
 		}
-	var boundary := "----FantasyDiskFeedback%s" % str(Time.get_unix_time_from_system()).replace(".", "")
 	return {
 		"url": str(_active_report.get("webhook_url", "")),
 		"headers": PackedStringArray([
-			"Content-Type: multipart/form-data; boundary=%s" % boundary,
+			"Content-Type: %s" % str(_active_report.get("discord_content_type", "application/json")),
 			"User-Agent: FantasyDisk-Feedback/1.0",
 		]),
-		"body": multipart_payload(
-			str(_active_report.get("text", "")),
-			_active_report.get("screenshot") as Image,
-			_active_report.get("metadata", {}) as Dictionary,
-			boundary),
+		"body": _active_report.get("discord_body", PackedByteArray()),
 	}
 
 
@@ -458,7 +526,8 @@ func _finalize_failure(result: int, response_code: int, request_id: int) -> void
 		str(_active_report.get("text", "")),
 		_active_report.get("screenshot") as Image,
 		_active_report.get("metadata", {}) as Dictionary,
-		str(_active_report.get("report_id", "")))
+		str(_active_report.get("report_id", "")),
+		bool(_active_report.get("include_screenshot", true)))
 	_finish_report(request_id, false, _failure_message(result, response_code, local_path != ""), local_path)
 
 
@@ -504,6 +573,8 @@ static func _configuration_failure_message(error: String, local_saved := true) -
 	var suffix := " Отчет сохранен локально." if local_saved else " Локальное сохранение также не удалось."
 	if error == "invalid":
 		return "Сервис фидбека некорректен.%s" % suffix
+	if error == "privacy_incomplete":
+		return "Онлайн-фидбек отключен: политика конфиденциальности не настроена.%s" % suffix
 	return "Сервис фидбека не настроен.%s" % suffix
 
 
@@ -542,8 +613,11 @@ func _relay_resolution() -> Dictionary:
 
 
 func _delivery_resolution() -> Dictionary:
+	var privacy_complete := _privacy_disclosure_complete()
 	var relay := _relay_resolution()
 	if str(relay.get("url", "")) != "":
+		if not privacy_complete:
+			return {"mode": "", "url": "", "source": "", "error": "privacy_incomplete"}
 		return {"mode": "relay", "url": str(relay["url"]), "source": str(relay["source"]), "error": ""}
 	# A raw Discord webhook is a developer credential. Release builds must never
 	# consult or transmit it, even if a user config or environment accidentally
@@ -551,6 +625,10 @@ func _delivery_resolution() -> Dictionary:
 	if OS.is_debug_build():
 		var webhook := _webhook_resolution()
 		if str(webhook.get("url", "")) != "":
+			# The debug transport is still real network disclosure. Never let it
+			# contradict an overlay that says online delivery is disabled.
+			if not privacy_complete:
+				return {"mode": "", "url": "", "source": "", "error": "privacy_incomplete"}
 			return {"mode": "discord_debug", "url": str(webhook["url"]), "source": str(webhook["source"]), "error": ""}
 	return {"mode": "", "url": "", "source": "", "error": str(relay.get("error", "missing"))}
 
@@ -593,12 +671,17 @@ static func _resolve_relay_from(env_url: String, project_url: String, user_url: 
 
 
 static func _resolve_delivery_from(
-		relay_urls: Array, webhook_urls: Array, debug_build: bool) -> Dictionary:
+		relay_urls: Array,
+		webhook_urls: Array,
+		debug_build: bool,
+		privacy_complete := true) -> Dictionary:
 	var relay := _resolve_relay_from(
 		str(relay_urls[0]) if relay_urls.size() > 0 else "",
 		str(relay_urls[1]) if relay_urls.size() > 1 else "",
 		str(relay_urls[2]) if relay_urls.size() > 2 else "")
 	if str(relay.get("url", "")) != "":
+		if not bool(privacy_complete):
+			return {"mode": "", "url": "", "error": "privacy_incomplete"}
 		return {"mode": "relay", "url": str(relay["url"]), "error": ""}
 	if debug_build:
 		var direct := _resolve_from(
@@ -606,6 +689,8 @@ static func _resolve_delivery_from(
 			str(webhook_urls[1]) if webhook_urls.size() > 1 else "",
 			str(webhook_urls[2]) if webhook_urls.size() > 2 else "")
 		if str(direct.get("url", "")) != "":
+			if not bool(privacy_complete):
+				return {"mode": "", "url": "", "error": "privacy_incomplete"}
 			return {"mode": "discord_debug", "url": str(direct["url"]), "error": ""}
 	return {"mode": "", "url": "", "error": str(relay.get("error", "missing"))}
 
@@ -647,14 +732,20 @@ static func _relay_session_body(installation_id: String, client_version: String)
 
 
 static func _relay_upload_body(
-		report_id: String, text: String, screenshot: Image, metadata: Dictionary) -> PackedByteArray:
-	var jpeg := _upload_image_buffer(screenshot)
+		report_id: String,
+		text: String,
+		screenshot: Image,
+		metadata: Dictionary,
+		include_screenshot := true) -> PackedByteArray:
+	var encoded_screenshot = null
+	if bool(include_screenshot):
+		encoded_screenshot = Marshalls.raw_to_base64(_upload_image_buffer(screenshot))
 	return JSON.stringify({
 		"schema_version": RELAY_SCHEMA_VERSION,
 		"report_id": report_id,
 		"description": text.strip_edges(),
-		"metadata": metadata,
-		"screenshot_jpeg_base64": Marshalls.raw_to_base64(jpeg),
+		"metadata": _sanitize_metadata(metadata),
+		"screenshot_jpeg_base64": encoded_screenshot,
 	}).to_utf8_buffer()
 
 
@@ -692,6 +783,63 @@ static func _is_safe_session_token(token: String) -> bool:
 
 static func _is_description_within_limit(text: String) -> bool:
 	return text.strip_edges().length() <= MAX_DESCRIPTION_CHARS
+
+
+static func _is_submission_content_valid(text: String, include_screenshot: bool) -> bool:
+	return include_screenshot or not text.strip_edges().is_empty()
+
+
+func _privacy_disclosure_complete() -> bool:
+	return _privacy_configuration_complete(
+		str(ProjectSettings.get_setting(PRIVACY_OPERATOR_SETTING, "")),
+		str(ProjectSettings.get_setting(PRIVACY_CONTACT_SETTING, "")),
+		str(ProjectSettings.get_setting(PRIVACY_RETENTION_SETTING, "")),
+		str(ProjectSettings.get_setting(PRIVACY_POLICY_SETTING, "")))
+
+
+static func _privacy_configuration_complete(
+		operator_name: String,
+		contact_url: String,
+		retention_notice: String,
+		policy_url: String) -> bool:
+	var operator_clean := operator_name.strip_edges()
+	var retention_clean := retention_notice.strip_edges()
+	return not operator_clean.is_empty() \
+		and operator_clean.length() <= 120 \
+		and not retention_clean.is_empty() \
+		and retention_clean.length() <= 500 \
+		and _is_valid_public_https_url(contact_url) \
+		and _is_valid_public_https_url(policy_url)
+
+
+static func _is_valid_public_https_url(url: String) -> bool:
+	var clean := url.strip_edges()
+	if clean != url or not clean.begins_with("https://"):
+		return false
+	if "@" in clean or "\\" in clean or "\r" in clean or "\n" in clean or "\t" in clean:
+		return false
+	var authority_and_path := clean.substr("https://".length())
+	var delimiter_positions := [authority_and_path.find("/"), authority_and_path.find("?"), authority_and_path.find("#")]
+	var authority_end := authority_and_path.length()
+	for position in delimiter_positions:
+		if int(position) >= 0:
+			authority_end = mini(authority_end, int(position))
+	var authority := authority_and_path.substr(0, authority_end)
+	return not authority.is_empty() and not authority.begins_with(":") and not " " in authority
+
+
+static func _sanitize_metadata(metadata: Dictionary) -> Dictionary:
+	var sanitized := {}
+	for key in METADATA_KEYS:
+		if not metadata.has(key):
+			continue
+		var value = metadata[key]
+		if value == null or typeof(value) in [TYPE_DICTIONARY, TYPE_ARRAY]:
+			continue
+		if typeof(value) == TYPE_STRING and str(value).length() > 160:
+			value = str(value).substr(0, 160)
+		sanitized[key] = value
+	return sanitized
 
 
 static func _new_report_uuid() -> String:
@@ -744,17 +892,20 @@ static func _local_report_folder(timestamp: String, report_id: String) -> String
 	return "%s_%s" % [timestamp, report_id] if _is_uuid_v4(report_id) else timestamp
 
 
-static func _report_body(text: String, metadata: Dictionary) -> String:
+static func _report_body(text: String, metadata: Dictionary, include_screenshot := true) -> String:
 	var lines := [
 		"FantasyDisk feedback report",
 		"",
 		"Описание:",
 		text.strip_edges() if text.strip_edges() != "" else "(без описания)",
 		"",
+		"Скриншот: %s" % ("включен" if bool(include_screenshot) else "не включен"),
+		"",
 		"Метаданные:",
 	]
-	for key in metadata.keys():
-		lines.append("- %s: %s" % [str(key), str(metadata[key])])
+	for key in METADATA_KEYS:
+		if metadata.has(key):
+			lines.append("- %s: %s" % [str(key), str(metadata[key])])
 	return "\n".join(lines)
 
 

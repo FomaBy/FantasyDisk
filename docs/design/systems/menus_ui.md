@@ -1401,14 +1401,31 @@ after instantiation. Spec note: `docs/design/mockups/scrum840_global_tooltips/sp
 `P` opens `FeedbackOverlayLayer`, a separate top-level overlay that does not call
 `_clear_ui()` and therefore does not reset the underlying combat, route map,
 shop, event, level-up or reward screen. The overlay contains `FeedbackTextEdit`,
-`FeedbackScreenshotPreview`, `FeedbackSendButton` and `FeedbackCancelButton`.
-Escape closes only this overlay, while normal text input remains inside the text
-field.
+`FeedbackScreenshotPreview`, default-on `FeedbackScreenshotToggle`, complete
+privacy/operator/retention/local-fallback disclosure, `FeedbackSendButton` and
+`FeedbackCancelButton`. Escape closes only this overlay, while normal text
+input remains inside the text field.
 
 The screenshot is captured before the overlay is created. Sending is handled by
-`scripts/feedback_reporter.gd`: webhook reports use Discord-compatible
-multipart payloads, while missing/failed webhook delivery falls back to
-`user://feedback/<timestamp>/`. Details: `docs/design/systems/feedback_reporting.md`.
+`scripts/feedback_reporter.gd`: schema-v2 relay reports use a bounded JPEG or
+explicit JSON `null`; opted-out reports never retain/encode/send/save image
+bytes. Missing/failed delivery falls back to `user://feedback/<timestamp>/`,
+and the opt-out path creates only `report.txt`.
+
+FAN-1057/FAN-1059 replaces the old narrow vertical form with a PixelLab-first
+responsive contract. At 1920×1080 the centered 1400×990 panel uses a two-column
+description/screenshot row plus a full-width privacy field; 2560×1440 scales
+the geometry uniformly to 1866×1320. At 1280×720 the 1200×672 panel keeps
+title/status/actions pinned and changes the middle to a one-column 824px scroll
+body. Live resize switches the same Controls without losing player text.
+Intermediate panel geometry is continuous at 1400/1401 and 1599/1600; a
+constrained middle body remains scrollable. Focus is TextEdit →
+ScreenshotToggle → Send → Cancel, while the right stick scrolls disclosure from
+any focus stop. PixelLab source,
+provenance, exact zones and fit evidence:
+`docs/design/mockups/FAN-1057_feedback_privacy/` and
+`docs/design/references/FAN-1057_feedback_privacy/`; runtime/protocol details:
+`docs/design/systems/feedback_reporting.md`.
 
 ## Settings Tabs
 

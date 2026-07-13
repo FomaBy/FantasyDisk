@@ -38,6 +38,23 @@ func _init() -> void:
 		"Public synchronous fallback did not preserve a local report.")
 	public_reporter.queue_free()
 
+	var text_only_reporter: Node = MissingConfigReporter.new()
+	root.add_child(text_only_reporter)
+	var text_only_result := {"local_path": ""}
+	var text_only_id: int = text_only_reporter.submit_report(
+		"privacy opt-out fallback", _image(Color.DIM_GRAY), {"screen": "test"},
+		func(_success: bool, _message: String, local_path: String) -> void:
+			text_only_result["local_path"] = local_path,
+		false)
+	_check(not text_only_reporter.is_request_active(text_only_id),
+		"Text-only local fallback remained active after completion.")
+	var text_only_path := str(text_only_result["local_path"])
+	_check(text_only_path != "" and FileAccess.file_exists("%s/report.txt" % text_only_path),
+		"Text-only local fallback did not preserve report.txt.")
+	_check(not FileAccess.file_exists("%s/screenshot.png" % text_only_path),
+		"Screenshot opt-out still wrote a local screenshot.png.")
+	text_only_reporter.queue_free()
+
 	var oversized_reporter: Node = MissingConfigReporter.new()
 	root.add_child(oversized_reporter)
 	var oversized_result := {"count": 0, "message": "", "local_path": ""}
@@ -75,6 +92,14 @@ func _init() -> void:
 	_check(second_id > first_id, "Request ids must increase monotonically.")
 	_check(not reporter.is_request_active(first_id), "Superseded request remained active.")
 	_check(reporter.is_request_active(second_id), "Newest request did not become active.")
+	var opted_out_id: int = reporter._begin_report(
+		"snapshot opt-out", _image(Color.WHITE), {"screen": "test"}, Callable(), false)
+	_check(opted_out_id > second_id \
+		and not bool(reporter._active_report.get("include_screenshot", true)) \
+		and reporter._active_report.get("screenshot") == null,
+		"Opt-out request snapshot retained screenshot state or bytes.")
+	second_id = reporter._begin_report(
+		"second", _image(Color.BLUE), {"sequence": 2}, second_callback)
 	reporter._transition_phase(second_id, Reporter.PHASE_DISCORD_DEBUG)
 
 	# A stale completion is a no-op and cannot consume the newer callback.
@@ -130,7 +155,7 @@ func _init() -> void:
 	reporter._request_phase = Reporter.PHASE_RELAY_UPLOAD
 	reporter._on_request_completed(
 		HTTPRequest.RESULT_SUCCESS, 200, PackedStringArray(),
-		JSON.stringify({"schema_version": 1, "expires_in": 600, "token": "stale"}).to_utf8_buffer(),
+		JSON.stringify({"schema_version": Reporter.RELAY_SCHEMA_VERSION, "expires_in": 600, "token": "stale"}).to_utf8_buffer(),
 		phased_id, stale_session_request, Reporter.PHASE_RELAY_SESSION)
 	_check(reporter._request == upload_request,
 		"Stale same-report SESSION completion disposed the UPLOAD HTTPRequest.")

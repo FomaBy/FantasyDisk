@@ -24,9 +24,9 @@ provisioned and verified.
   duplicate private report but cannot guarantee delivery in the ambiguity window.
 - Limits are applied per keyed IP hash and per installation hash. Raw addresses,
   player text, screenshots, tokens and webhook values are not logged.
-- Only allowlisted scalar metadata and bounded JPEG data are accepted. The relay
-  constructs the Discord payload itself, fixes the filename and sets
-  `allowed_mentions.parse=[]`.
+- Only allowlisted scalar metadata and an optional bounded JPEG are accepted.
+  Schema v2 forwards opted-out text-only reports as Discord JSON and image
+  reports as multipart; both paths set `allowed_mentions.parse=[]`.
 - The Discord upstream is restricted to an official HTTPS webhook URL from
   server environment. No client-controlled upstream URL is accepted.
 
@@ -45,16 +45,18 @@ FEEDBACK_DATABASE_PATH=/data/feedback_proxy.sqlite3
 FEEDBACK_LISTEN_HOST=0.0.0.0
 FEEDBACK_LISTEN_PORT=8080
 FEEDBACK_UPSTREAM_TIMEOUT=10
-FEEDBACK_TRUST_PROXY=0
+FEEDBACK_TRUSTED_PROXY_CIDRS=10.0.0.0/8,2001:db8:feed::/48
 FEEDBACK_SESSION_GLOBAL_LIMIT=500
 FEEDBACK_GLOBAL_LIMIT=120
 FEEDBACK_MAX_WORKERS=24
 FEEDBACK_READ_TIMEOUT=15
 ```
 
-Set `FEEDBACK_TRUST_PROXY=1` only when the service is unreachable except through
-a controlled reverse proxy that overwrites `X-Forwarded-For`. Otherwise the
-socket peer address is authoritative.
+Leave `FEEDBACK_TRUSTED_PROXY_CIDRS` empty unless the service is unreachable
+except through controlled reverse proxies in those exact networks. An
+`X-Forwarded-For` value is accepted only from an allowlisted socket peer; all
+addresses are parsed and canonicalized before keyed hashing. The proxy must
+overwrite, not append to, the untrusted incoming header.
 
 The global hourly limits are a circuit breaker in front of per-IP and
 per-installation buckets. They also bound new SQLite key cardinality under
@@ -92,5 +94,7 @@ Before enabling `feedback/relay_session_url` in `project.godot`:
    upstream/crash fallback against staging;
 5. document operator contact/data retention and ship player-facing disclosure
    for screenshot, game/OS metadata, persistent installation UUID and edge IP;
+   populate all four public `feedback/privacy_*` project settings (the client
+   refuses a configured relay while any disclosure value is missing);
 6. run the Mac release/export secret scan and later the deferred Windows TLS test;
 7. set the public endpoint to exactly `https://<host>/v1/session` and rebuild.

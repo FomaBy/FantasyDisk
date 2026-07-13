@@ -119,7 +119,7 @@ class FeedbackProxyTests(unittest.TestCase):
         response = self._request(
             "/v1/session",
             {
-                "schema_version": 1,
+                "schema_version": 2,
                 "installation_id": installation_id or self.installation_id,
                 "client_version": "0.2.3",
             },
@@ -128,13 +128,17 @@ class FeedbackProxyTests(unittest.TestCase):
         self.assertEqual(response["headers"].get("Cache-Control"), "no-store")
         return response["json"]["token"]
 
-    def _feedback_payload(self, report_id, description="enemy froze @everyone", metadata=None):
+    def _feedback_payload(
+        self, report_id, description="enemy froze @everyone", metadata=None, screenshot=True
+    ):
         return {
-            "schema_version": 1,
+            "schema_version": 2,
             "report_id": report_id,
             "description": description,
             "metadata": metadata or {"version": "0.2.3", "os": "macOS", "combat_active": True},
-            "screenshot_jpeg_base64": base64.b64encode(_jpeg()).decode("ascii"),
+            "screenshot_jpeg_base64": (
+                base64.b64encode(_jpeg()).decode("ascii") if screenshot else None
+            ),
         }
 
     def _feedback_headers(self, token, report_id, installation_id=None):
@@ -171,6 +175,33 @@ class FeedbackProxyTests(unittest.TestCase):
         self.assertEqual(mismatch["status"], "409 Conflict")
         self.assertEqual(mismatch["json"]["error"], "idempotency_payload_mismatch")
         self.assertEqual(len(_UpstreamHandler.requests), 1)
+
+        changed_transport = dict(payload)
+        changed_transport["screenshot_jpeg_base64"] = None
+        mismatch = self._request("/v1/feedback", changed_transport, headers)
+        self.assertEqual(mismatch["status"], "409 Conflict")
+        self.assertEqual(mismatch["json"]["error"], "idempotency_payload_mismatch")
+        self.assertEqual(len(_UpstreamHandler.requests), 1)
+
+    def test_text_only_delivery_uses_json_without_attachment(self) -> None:
+        token = self._session()
+        report_id = str(uuid.uuid4())
+        payload = self._feedback_payload(
+            report_id, description="text-only report @everyone", screenshot=False
+        )
+        response = self._request(
+            "/v1/feedback", payload, self._feedback_headers(token, report_id)
+        )
+
+        self.assertEqual(response["status"], "202 Accepted")
+        self.assertEqual(len(_UpstreamHandler.requests), 1)
+        _path, upstream_headers, body = _UpstreamHandler.requests[0]
+        self.assertEqual(upstream_headers["Content-Type"], "application/json; charset=utf-8")
+        forwarded = json.loads(body.decode("utf-8"))
+        self.assertEqual(forwarded["allowed_mentions"], {"parse": []})
+        self.assertEqual(forwarded["attachments"], [])
+        self.assertIn("text-only report @everyone", forwarded["content"])
+        self.assertNotIn(_jpeg(), body)
 
     def test_token_is_bound_to_installation_and_expires(self) -> None:
         token = self._session()
@@ -219,6 +250,15 @@ class FeedbackProxyTests(unittest.TestCase):
         invalid_image["screenshot_jpeg_base64"] = base64.b64encode(b"not-a-jpeg").decode("ascii")
         response = self._request("/v1/feedback", invalid_image, headers)
         self.assertEqual(response["json"]["error"], "invalid_screenshot_jpeg")
+
+        invalid_type = self._feedback_payload(report_id)
+        invalid_type["screenshot_jpeg_base64"] = False
+        response = self._request("/v1/feedback", invalid_type, headers)
+        self.assertEqual(response["json"]["error"], "invalid_screenshot_type")
+
+        empty_text_only = self._feedback_payload(report_id, description="  ", screenshot=False)
+        response = self._request("/v1/feedback", empty_text_only, headers)
+        self.assertEqual(response["json"]["error"], "text_only_description_required")
 
         other_report = self._feedback_payload(str(uuid.uuid4()))
         response = self._request("/v1/feedback", other_report, headers)
@@ -310,7 +350,7 @@ class FeedbackProxyTests(unittest.TestCase):
             session = self._request(
                 "/v1/session",
                 {
-                    "schema_version": 1,
+                    "schema_version": 2,
                     "installation_id": installation_id,
                     "client_version": "0.2.3",
                 },
@@ -341,7 +381,7 @@ class FeedbackProxyTests(unittest.TestCase):
         first = self._request(
             "/v1/session",
             {
-                "schema_version": 1,
+                "schema_version": 2,
                 "installation_id": str(uuid.uuid4()),
                 "client_version": "0.2.3",
             },
@@ -371,6 +411,43 @@ class FeedbackProxyTests(unittest.TestCase):
         self.assertNotIn("203.0.113.10", logs)
         self.assertNotIn("/upstream", logs)
 
+    def test_forwarded_ip_requires_trusted_peer_and_is_canonicalized(self) -> None:
+        untrusted = {
+            "REMOTE_ADDR": "203.0.113.10",
+            "HTTP_X_FORWARDED_FOR": "198.51.100.44",
+        }
+        self.assertEqual(self.app._client_ip(untrusted), "203.0.113.10")
+
+        trusted = FeedbackProxyApp(
+            replace(
+                self.app.config,
+                database_path=str(Path(self.temp.name) / "trusted-proxy.sqlite3"),
+                trusted_proxy_cidrs=("10.0.0.0/8", "2001:db8:feed::/48"),
+            )
+        )
+        self.assertEqual(
+            trusted._client_ip(
+                {"REMOTE_ADDR": "10.2.3.4", "HTTP_X_FORWARDED_FOR": "2001:0db8::0001"}
+            ),
+            "2001:db8::1",
+        )
+        self.assertEqual(
+            trusted._client_ip(
+                {"REMOTE_ADDR": "203.0.113.10", "HTTP_X_FORWARDED_FOR": "198.51.100.44"}
+            ),
+            "203.0.113.10",
+        )
+        self.assertEqual(
+            trusted._client_ip(
+                {"REMOTE_ADDR": "10.2.3.4", "HTTP_X_FORWARDED_FOR": "not-an-ip"}
+            ),
+            "10.2.3.4",
+        )
+        self.assertEqual(
+            trusted._ip_hash("203.0.113.10"),
+            trusted._ip_hash(trusted._client_ip({"REMOTE_ADDR": "::ffff:203.0.113.10"})),
+        )
+
     def test_environment_config_rejects_short_secrets_and_non_discord_upstream(self) -> None:
         valid = {
             "FEEDBACK_TOKEN_SECRET": "t" * 32,
@@ -383,6 +460,15 @@ class FeedbackProxyTests(unittest.TestCase):
         valid["FEEDBACK_TOKEN_SECRET"] = "short"
         with mock.patch.dict(os.environ, valid, clear=True):
             with self.assertRaisesRegex(RuntimeError, "at least 32"):
+                Config.from_env()
+
+        valid["FEEDBACK_TOKEN_SECRET"] = "t" * 32
+        valid["FEEDBACK_DISCORD_WEBHOOK"] = (
+            "https://discord.com/api/webhooks/123456789012345678/abcdefghijklmnopqrstuvwxyz_123456"
+        )
+        valid["FEEDBACK_TRUSTED_PROXY_CIDRS"] = "10.0.0.0/8,not-a-network"
+        with mock.patch.dict(os.environ, valid, clear=True):
+            with self.assertRaisesRegex(RuntimeError, "invalid network"):
                 Config.from_env()
 
 

@@ -5957,8 +5957,22 @@ func _test_feedback_overlay_and_local_fallback(main_scene: PackedScene) -> void:
 		return
 	var text_edit := feedback_main.find_child("FeedbackTextEdit", true, false) as TextEdit
 	var preview := feedback_main.find_child("FeedbackScreenshotPreview", true, false) as TextureRect
-	if text_edit == null or preview == null or preview.texture == null:
-		_fail("Expected feedback overlay to show text input and screenshot preview.")
+	var screenshot_toggle := feedback_main.find_child("FeedbackScreenshotToggle", true, false) as CheckBox
+	var privacy_body := feedback_main.find_child("FeedbackPrivacyBody", true, false) as Label
+	var operator_retention := feedback_main.find_child("FeedbackOperatorRetentionLabel", true, false) as Label
+	var fallback_label := feedback_main.find_child("FeedbackLocalFallbackLabel", true, false) as Label
+	if text_edit == null or preview == null or preview.texture == null \
+			or screenshot_toggle == null or privacy_body == null \
+			or operator_retention == null or fallback_label == null:
+		_fail("Expected feedback overlay to show input, preview, opt-out and complete privacy disclosure.")
+		feedback_main.queue_free()
+		await process_frame
+		return
+	if not screenshot_toggle.button_pressed \
+			or not ("UUID" in privacy_body.text and "IP" in privacy_body.text) \
+			or not ("Оператор" in operator_retention.text and "Срок хранения" in operator_retention.text) \
+			or not ("только на этом устройстве" in fallback_label.text):
+		_fail("Expected feedback privacy controls to default include and disclose UUID/IP/operator/retention/local storage.")
 		feedback_main.queue_free()
 		await process_frame
 		return
@@ -6025,6 +6039,16 @@ func _test_feedback_overlay_and_local_fallback(main_scene: PackedScene) -> void:
 	})
 	if not FileAccess.file_exists("%s/report.txt" % local_path) or not FileAccess.file_exists("%s/screenshot.png" % local_path):
 		_fail("Expected feedback local fallback to write report.txt and screenshot.png under %s." % local_path)
+		feedback_main.queue_free()
+		await process_frame
+		return
+	var text_only_path := FeedbackReporter.save_local_report(
+		"Smoke feedback without screenshot", screenshot,
+		{"screen": "runtime_smoke", "version": "test"},
+		FeedbackReporter._new_report_uuid(), false)
+	if not FileAccess.file_exists("%s/report.txt" % text_only_path) \
+			or FileAccess.file_exists("%s/screenshot.png" % text_only_path):
+		_fail("Expected screenshot opt-out local fallback to write only report.txt under %s." % text_only_path)
 		feedback_main.queue_free()
 		await process_frame
 		return
