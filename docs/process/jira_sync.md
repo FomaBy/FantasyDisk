@@ -7,7 +7,8 @@
 > (project `FantasyDisk`, issues `FAN-*`, `multica` CLI). Legacy Jira
 > (`SCRUM-*`) — read-only historical archive (импортирован в Multica-проект
 > «Jira Archive»). Не применяйте описанный ниже регламент к новой работе.
-> См. `docs/process/jira_to_multica_cutover.md`.
+> См. `docs/process/jira_to_multica_cutover.md`; текущий операционный регламент:
+> `docs/process/multica_workflow.md`.
 
 Обновлено: 2026-07-03
 

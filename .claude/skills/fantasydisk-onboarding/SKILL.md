@@ -5,10 +5,9 @@ description: Compact startup protocol for FantasyDisk agents. Use when first ope
 
 # FantasyDisk Onboarding
 
-Read `AGENTS.md` first. It is intentionally short and points to deeper docs only
-when needed.
+Read `AGENTS.md`, then `docs/process/multica_workflow.md`.
 
-## Essentials
+## Before Work
 
 - Godot 4 project. Work on `dev`; `main` is release/stable.
 - **Multica is the task/status/owner source of truth** — workspace `FantasyDisk`,
@@ -20,12 +19,14 @@ when needed.
 - Do not edit files locked by another active owner.
 - In-scope work is pre-approved; do not ask routine approval.
 
-## Before Work
+Verify the runtime and issue before edits:
 
 ```bash
+multica daemon status
 git branch --show-current
 git status --short --branch
 multica issue get <FAN-issue-id> --output json
+multica issue comment list <FAN-issue-id> --recent 10 --output json
 ```
 
 You work the Multica issue assigned to you (or an eligible unassigned one). Claim

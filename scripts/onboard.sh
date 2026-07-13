@@ -77,7 +77,19 @@ if [ -x "$REPO_ROOT/.githooks/post-commit" ]; then
   printf '  (отключить в этом клоне: git config --unset core.hooksPath  |  разово: FSD_NO_AUTOLAND=1)\n'
 fi
 
-# (5) Onboarding banner.
+# (5) Multica runtime check. Onboarding stays usable on machines that only run
+#     the game, so a missing CLI is a warning rather than a failure.
+if command -v multica >/dev/null 2>&1; then
+  if multica daemon status >/dev/null 2>&1; then
+    printf 'Multica daemon connected.\n'
+  else
+    printf 'WARN: Multica CLI found, but daemon is not connected; run multica setup cloud.\n'
+  fi
+else
+  printf 'WARN: Multica CLI not found; agent task execution requires Multica.\n'
+fi
+
+# (6) Onboarding banner.
 cat <<'BANNER'
 
 ============================================================
@@ -86,6 +98,7 @@ cat <<'BANNER'
   Start here:
     .claude/skills/fantasydisk-onboarding/SKILL.md
     docs/process/ai_agent_memorandum.md
+    docs/process/multica_workflow.md
 
   Multica-only rule:
     ALL work lives in Multica (project FantasyDisk, FAN-* issues),

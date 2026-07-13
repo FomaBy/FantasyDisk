@@ -1,4 +1,4 @@
-# Task Board — FantasyDisk (живой дашборд)
+# Task Board — FantasyDisk (frozen legacy snapshot)
 
 Обновлено: 2026-07-04
 Ведёт: PM/dispatcher как локальный legacy dashboard/evidence mirror. После
