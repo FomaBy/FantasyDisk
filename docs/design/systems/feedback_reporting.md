@@ -83,8 +83,8 @@ findings + a regression guard:
   (`*.cfg`) and untracked; only `feedback_webhook.cfg.example` (placeholder
   `XXXX/YYYY`) and fake test fixtures are committed.
 - **Fallback stays out of the repo.** Local reports and the user webhook config
-  live under `user://` (`LOCAL_ROOT`, `CONFIG_PATH`); the bundled config is a
-  read-only `res://` resource generated at release from the secret. Guarded by
+  live under `user://` (`LOCAL_ROOT`, `CONFIG_PATH`); the optional dev config is
+  a read-only `res://` resource excluded from player exports. Guarded by
   `feedback_webhook_config_test.gd` (path-prefix asserts) so a regression like
   `LOCAL_ROOT → "res://feedback"` fails the gate instead of leaking player text/
   screenshots into the source tree.

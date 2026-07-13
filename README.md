@@ -40,6 +40,9 @@ python3 tools/quality_gate.py --profile changed
 ```bash
 python3 tools/quality_gate.py --profile full
 ```
+GitHub Actions выполняет certifying static profile через `--static-only`; он
+ловит case/version/Windows preset/architecture/credential regressions, но не
+заменяет локальный Godot `changed`/`full`.
 Нативный Windows-profile (PowerShell; предварительно задать путь к Godot):
 ```powershell
 $env:GODOT_BIN = "C:\Godot\Godot_v4.7-stable_win64.exe"

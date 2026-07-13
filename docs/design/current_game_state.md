@@ -2248,6 +2248,13 @@ sustained-модель dot-оси и infected-фактор; тюнеры кит�
   `CombatTargetQuery` snapshot. Threat model фильтруется с частотой 10 Hz без
   тройного group scan/дубликатов boss+elite, но позиции маркеров по-прежнему
   рисуются каждый кадр.
+- FAN-1040: taunt status читается scalar API без deep snapshot на каждый enemy
+  physics tick; reflection для DoT выполняется только при наступившем damage
+  tick. Wave spawn поддерживает локальный remaining-cap вместо повторного group
+  scan после каждого enemy.
+- FAN-1040: run autosave заменяет checkpoint транзакционно через `.tmp`/`.bak` с
+  rollback, а основные configurable Node2D spawner boundaries валидируются
+  общим `SceneContracts` перед использованием instance.
 - `scripts/main.gd` кэширует Texture2D для меню, портретов, route map и фоновых экранов через локальный texture cache, чтобы не дергать `load()` повторно при перестроении UI.
 - `scripts/ui_icon_registry.gd` кэширует иконки характеристик/HUD, поэтому level-up, stats menu и HUD могут безопасно переиспользовать registry без повторной загрузки PNG.
 - Inline shop item icons, shop slot frames and cursor variants используют тот же texture cache; отсутствующие Design PNG кэшируются как `null` и не вызывают повторный `load()` при перестроении магазина.

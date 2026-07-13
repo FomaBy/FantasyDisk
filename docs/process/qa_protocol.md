@@ -60,9 +60,10 @@ QA сам находит done-задачи без QA-вердикта.
    а не «по отчету исполнителя»: прогнать команды, открыть экраны, замерить.
 2. **Целевые тесты задачи** — прогнать все упомянутые тесты headless; убедиться,
    что тест реально проверяет заявленное (заглянуть в код теста), а не пустышка.
-3. **Регрессия**: `python3 tools/quality_gate.py` — единый manifest включает
-   runtime, animation, meta, targeting, Windows/static guards и профильные
-   quality/performance suites. Ручной focused-запуск не заменяет полный gate.
+3. **Регрессия**: `python3 tools/quality_gate.py --profile changed` для task diff;
+   `--profile full` перед release. Runner обнаруживает direct и inherited suites,
+   изолирует user-data и вызывает Godot только через semaphore. Ручной
+   focused-запуск не заменяет certifying profile.
 4. **Краевые случаи** — минимум 3 на задачу: граничные значения, повторные
    входы/выходы, пауза посреди эффекта, разрешение 1280x720, смерть/победа
    в момент действия механики.

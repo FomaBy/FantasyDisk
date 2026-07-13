@@ -3,18 +3,22 @@
 Обновлено: 2026-07-13. Аудит FAN-1040 выполнен на исходном
 `1190db1d1de10ab90e21d2cdea32be908efbeada`; исправления проверяются единым gate.
 
-## Обязательная команда
+## Обязательные профили
 
 ```bash
-python3 tools/quality_gate.py
+python3 tools/quality_gate.py --profile changed --changed-ref origin/dev
+python3 tools/quality_gate.py --profile full
 ```
 
 Gate требует Godot 4.7 и последовательно проверяет case-sensitive `res://` пути,
 синхронность версии и Windows export preset, архитектурные line-count ratchet’ы,
-отсутствие встроенного webhook credential, Python-тесты/синтаксис и явный manifest
-Godot suites. Любой `SCRIPT ERROR`, `Parse Error`, leaked ObjectDB/resource diagnostic
-или ненулевой exit — failure. `--static-only` предназначен для CI, но не заменяет
-полный локальный/release gate.
+отсутствие raw/Base64 webhook credential, Python-тесты/синтаксис и direct +
+inherited Godot suites. `changed` автоматически включает изменённые/новые тесты
+и umbrella fallback для runtime/scene diff; `full` обнаруживает весь текущий
+набор. Любой `SCRIPT ERROR`, `FATAL`, timeout или ненулевой exit — failure.
+Filtered/skip-прогон имеет non-certifying статус `partial_pass`, пустой прогон
+запрещён. `--static-only` — certifying CI-профиль, но не заменяет полный
+локальный/release gate.
 
 ## Реестр находок
 
