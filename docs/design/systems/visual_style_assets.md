@@ -289,10 +289,10 @@ Plans, fit reports, composite/debug overlay and provenance live under
 `docs/design/previews/scrum983_escape_dossier/`.
 
 FAN-1047 unifies ordinary Codex navigation and the four dossier footer actions
-with the live `text_buttons_unique` Main Menu material. Codex tabs use
-`back_260x104`; dossier actions select `later_260x72` or `back_260x104` from
-their authored height. The old yellow `minimal_metal_codex_tab` remains a
-historical asset only. PixelLab layout references and provenance are under
+with the exact live `text/main_menu_380x104` five-state material. Codex tabs
+use uniform `260×72` scaling; dossier actions preserve the source aspect in a
+compact right rail or wide footer. The old yellow `minimal_metal_codex_tab`
+remains a historical asset only. Supplemental PixelLab references are under
 `docs/design/references/FAN-1047_codex_dossier_buttons/`; no generated bitmap
 is promoted to runtime.
 

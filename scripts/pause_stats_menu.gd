@@ -469,6 +469,7 @@ func _build_action_footer(parent: Control) -> void:
 	_button_box.add_child(menu_button)
 	_action_buttons = [resume_button, settings_button, end_run_button, menu_button]
 	for button in _action_buttons:
+		button.set_meta("ui_button_family", PAUSE_ACTION_BUTTON_FAMILY)
 		button.focus_entered.connect(_schedule_focus_navigation_rebuild)
 
 	# SCRUM-812: досье проходимо с геймпада/стрелок — горизонтальное кольцо фокуса,
@@ -2177,14 +2178,13 @@ func _kit_button(text: String, width: float) -> Button:
 	button.autowrap_mode = TextServer.AUTOWRAP_OFF
 	button.mouse_default_cursor_shape = Control.CURSOR_POINTING_HAND
 	button.add_theme_font_size_override("font_size", _readable_px(SemanticTypography.ROLE_ACTION, 16.0))
-	UIButtonFamily.assign(button, UIButtonFamily.main_menu_action_family(button.custom_minimum_size), true)
+	UIButtonFamily.assign(button, PAUSE_ACTION_BUTTON_FAMILY, true)
 	_apply_kit_button_theme(button)
 	return button
 
 
 func _apply_kit_button_theme(button: Button) -> void:
-	var family := UIButtonFamily.main_menu_action_family(button.custom_minimum_size)
-	UIButtonFamily.assign(button, family, true)
+	var family := UIButtonFamily.resolve(button, "default", PAUSE_ACTION_BUTTON_FAMILY)
 	for state in UIButtonFamily.STATES:
 		button.add_theme_stylebox_override(state, _kit_button_state_style(button, family, state))
 	button.add_theme_color_override("font_color", Color(0.98, 0.94, 0.78, 1.0))

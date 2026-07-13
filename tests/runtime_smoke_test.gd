@@ -17,7 +17,6 @@ const RunAutosave := preload("res://scripts/run_autosave.gd")
 const FeedbackReporter := preload("res://scripts/feedback_reporter.gd")
 const HeroStatRadarScript := preload("res://scripts/ui/hero_stat_radar.gd")
 const GlobalTooltip := preload("res://scripts/ui/global_tooltip.gd")
-const UIButtonFamily := preload("res://scripts/ui/ui_button_family.gd")
 const STANDARD_ACTION_BUTTON_HEIGHT := 104.0
 const HERO_SELECT_V4_BG := "res://assets/sprites/ui/hero_select_v4/background.png"
 const HERO_SELECT_V4_SOURCE_SIZE := Vector2(1536.0, 1024.0)
@@ -1269,8 +1268,8 @@ func _initialize() -> void:
 	if not dossier_panel_style.texture.resource_path.ends_with("meta40/frame_border.png"):
 		_fail("Expected the dossier frame to reuse the meta40 frame_border 9-slice.")
 		return
-	# FAN-1047: every pause action uses a size-matched sibling from the main-menu
-	# visual kit. Compact targets use a native 72px plate; larger ones use 104px.
+	# SCRUM-1056: every pause action uses the exact main-menu family. Compact
+	# targets use 72px; 1080p/2K use the native 104px plate height.
 	for pd_btn_name in ["PauseResumeButton", "PauseSettingsButton", "PauseEndRunButton", "PauseMainMenuButton"]:
 		var pd_button := pause_menu.find_child(pd_btn_name, true, false) as Button
 		if pd_button == null:
@@ -1279,19 +1278,16 @@ func _initialize() -> void:
 		if not [72.0, 104.0].has(pd_button.custom_minimum_size.y):
 			_fail("Expected %s to use a main-menu footer height (72/104), got %s." % [pd_btn_name, str(pd_button.custom_minimum_size)])
 			return
-		var pd_family := str(pd_button.get_meta(UIButtonFamily.META_FAMILY, ""))
-		var pd_expected_family := UIButtonFamily.main_menu_action_family(pd_button.custom_minimum_size)
-		if pd_family != pd_expected_family or not UIButtonFamily.is_main_menu_visual_family(pd_family):
-			_fail("Expected %s to declare size-fit main-menu family %s, got %s." % [pd_btn_name, pd_expected_family, pd_family])
+		if str(pd_button.get_meta("ui_button_family", "")) != "text/main_menu_380x104":
+			_fail("Expected %s to declare the shared text/main_menu_380x104 family." % pd_btn_name)
 			return
 		var pd_style := pd_button.get_theme_stylebox("normal") as StyleBoxTexture
 		if pd_style == null or pd_style.texture == null:
 			_fail("Expected %s to ride a global kit texture plate." % pd_btn_name)
 			return
 		var pd_plate_path := pd_style.texture.resource_path
-		var pd_expected_path := str(UIButtonFamily.descriptor(pd_expected_family, "normal").get("path", ""))
-		if pd_plate_path != pd_expected_path:
-			_fail("Expected %s to use size-fit main-menu plate %s, got %s." % [pd_btn_name, pd_expected_path, pd_plate_path])
+		if not pd_plate_path.ends_with("ui_btn_text_unique_main_menu_380x104_normal.png"):
+			_fail("Expected %s to use the exact main-menu plate, got %s." % [pd_btn_name, pd_plate_path])
 			return
 		var pd_rect := pd_button.get_global_rect()
 		if absf(pd_rect.size.x - pd_button.custom_minimum_size.x) > 0.5 or absf(pd_rect.size.y - pd_button.custom_minimum_size.y) > 0.5:

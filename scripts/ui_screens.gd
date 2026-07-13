@@ -5423,7 +5423,7 @@ func _show_codex_screen() -> void:
 	# Exact panel frames and their content margins are the accepted empty zones.
 	var nav_panel := PanelContainer.new()
 	nav_panel.name = "CodexNavPanel"
-	nav_panel.add_theme_stylebox_override("panel", _codex_panel_style(0.90, Vector4(8, 38, 8, 50)))
+	nav_panel.add_theme_stylebox_override("panel", _codex_panel_style(0.90, Vector4(32, 38, 32, 50)))
 	_codex_set_design_rect(nav_panel, Rect2(72, 172, 324, 840))
 	stage.add_child(nav_panel)
 	var tabs_row := Control.new()

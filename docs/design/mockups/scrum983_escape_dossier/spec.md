@@ -137,11 +137,11 @@ chip, icon or pointer hitbox enters the scrollbar lane.
 
 ## Button And Focus Contract
 
-- All four pause actions use one size-fit sibling from the Main Menu
-  `text_buttons_unique` kit with `Color.WHITE` tint: `later_260x72` at compact
-  tiers and `back_260x104` at 104px tiers. Normal/hover/focus/pressed/disabled
-  retain identical bounds and logical content margins; no action receives a
-  pause-specific or danger-red override.
+- All four pause actions use the exact `main_menu_380x104` five-state texture
+  family with `Color.WHITE` tint. Compact tiers place ratio-preserving buttons
+  in a right action rail; 1080p/2K use a horizontal footer. Texture and content
+  margins share one uniform scale, and no action receives a pause-specific or
+  danger-red override.
 - Initial focus is Continue. Left/right forms a non-destructive action ring:
   Continue → Settings → End Run → Main Menu → Continue.
 - Up from an action moves to the nearest final visible stat chip; down from the

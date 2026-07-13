@@ -72,32 +72,6 @@ static func infer(button: Button, variant := "default") -> String:
 	return "minimal/%s" % minimal_type
 
 
-static func main_menu_action_family(display_size: Vector2) -> String:
-	# Keep one production visual language without squeezing the 380x104 plate
-	# into a 72px footer. These are neutral siblings from the same five-state
-	# text_buttons_unique source kit.
-	if display_size.y <= 76.0:
-		return FAMILY_MAIN_MENU_COMPACT
-	if display_size.x <= 340.0:
-		return FAMILY_MAIN_MENU_MEDIUM
-	return FAMILY_MAIN_MENU_NATIVE
-
-
-static func is_main_menu_visual_family(family: String) -> bool:
-	return MAIN_MENU_VISUAL_FAMILIES.has(family)
-
-
-static func family_source_size(family: String) -> Vector2:
-	match family:
-		FAMILY_MAIN_MENU_NATIVE:
-			return Vector2(380.0, 104.0)
-		FAMILY_MAIN_MENU_MEDIUM:
-			return Vector2(260.0, 104.0)
-		FAMILY_MAIN_MENU_COMPACT:
-			return Vector2(260.0, 72.0)
-	return Vector2.ZERO
-
-
 static func text_family_id(button: Button) -> String:
 	if button == null:
 		return ""

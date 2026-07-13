@@ -23,14 +23,15 @@ with a configured player and assert:
    contains the full stat name, current value, explanation and formula/source.
 6. `attack_speed` renders per-second, `crit_chance` as percent and
    `crit_damage_multiplier` as multiplier; values match the configured player.
-7. Continue, Settings, End Run and Main Menu resolve the size-fit
-   `later_260x72` (compact) or `back_260x104` (104px) sibling with white tint
-   and stable content margins for all five states.
+7. Continue, Settings, End Run and Main Menu resolve the exact
+   `main_menu_380x104` five-state textures with white tint, one uniform
+   texture/content-margin scale and ratio-preserving target rectangles.
 8. D-pad/keyboard traversal from initial Continue reaches all four actions and
    every stat tooltip target; focus-follow scroll keeps the focused rect inside
    its viewport; B/Escape resumes.
 9. Live resize 2560×1440 → 1280×720 relayouts the existing screen without
-   rebuilding and still satisfies all bounds/focus assertions.
+   rebuilding, changes the wide footer into the compact right action rail and
+   still satisfies all bounds/focus assertions.
 
 ## Regression gates after integration
 

@@ -5,7 +5,6 @@ extends SceneTree
 # complete tooltips, focus reachability and live responsive relayout.
 
 const MAIN_SCENE := preload("res://scenes/Main.tscn")
-const UIButtonFamily := preload("res://scripts/ui/ui_button_family.gd")
 const FRAME_PATH_SUFFIX := "meta40/frame_border.png"
 const TARGETS := [
 	Vector2i(1152, 648),
@@ -622,9 +621,9 @@ func _assert_action_styles(pause: Control, context: String) -> void:
 			if style == null:
 				_errors.append("%s: %s missing %s texture state." % [context, button.name, state])
 				continue
-			var expected_path := str(UIButtonFamily.descriptor(expected_family, state).get("path", ""))
-			if style.texture == null or style.texture.resource_path != expected_path:
-				_errors.append("%s: %s %s does not use %s." % [context, button.name, state, expected_path])
+			var expected_suffix := "ui_btn_text_unique_main_menu_380x104_%s.png" % state
+			if style.texture == null or not style.texture.resource_path.ends_with(expected_suffix):
+				_errors.append("%s: %s %s does not use %s." % [context, button.name, state, expected_suffix])
 			if style.modulate_color != Color.WHITE:
 				_errors.append("%s: %s %s adds a non-main-menu tint." % [context, button.name, state])
 			var actual_texture_margins := Vector4(style.texture_margin_left, style.texture_margin_top, style.texture_margin_right, style.texture_margin_bottom)
