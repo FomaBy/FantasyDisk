@@ -107,6 +107,15 @@ class QualityGateTests(unittest.TestCase):
         self.assertTrue(timed_out)
         self.assertEqual(code, 124)
 
+    def test_static_command_routes_python_cache_outside_checkout(self) -> None:
+        with mock.patch.object(
+            self.quality, "_run_captured", return_value=(0, "", False)
+        ) as run_captured:
+            result = self.quality._run_command("probe", [sys.executable, "--version"], 1.0)
+        self.assertEqual(result["status"], "passed")
+        cache_path = Path(run_captured.call_args.args[1]["PYTHONPYCACHEPREFIX"])
+        self.assertFalse(cache_path.exists())
+
     def test_changed_profile_selects_changed_and_untracked_tests_with_runtime_fallback(self) -> None:
         changed = {
             "tests/weapon_integrity_test.gd",

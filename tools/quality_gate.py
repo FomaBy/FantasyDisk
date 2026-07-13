@@ -125,9 +125,12 @@ def select_godot_tests(
 
 def _run_command(name: str, command: Sequence[str], timeout: float) -> dict:
     started = time.monotonic()
-    exit_code, output, timed_out = _run_captured(
-        command, os.environ.copy(), timeout
-    )
+    # Python unittest/compileall commands otherwise create __pycache__ inside
+    # the checkout, making the gate fail its own clean-worktree certification.
+    with tempfile.TemporaryDirectory(prefix="fsd-python-cache-") as python_cache:
+        env = os.environ.copy()
+        env["PYTHONPYCACHEPREFIX"] = python_cache
+        exit_code, output, timed_out = _run_captured(command, env, timeout)
     if output:
         print(output, end="" if output.endswith("\n") else "\n", flush=True)
     return {

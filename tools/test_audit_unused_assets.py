@@ -66,6 +66,22 @@ def main() -> int:
                 errors.append("ЛОЖНОЕ УДАЛЕНИЕ динамического ассета '%s' (семейство '%s')" % (
                     member, entry["family"]["name"]))
 
+    # Registry-removed id assets are no longer dynamic: they must remain visible
+    # as cleanup candidates instead of being silently protected by directory.
+    game_ids = audit.known_game_ids()
+    for family in audit.DYNAMIC_FAMILIES:
+        if family["kind"] != "id":
+            continue
+        directory = audit.ROOT / family["dir"]
+        if not directory.exists():
+            continue
+        for path in directory.rglob("*"):
+            if not path.is_file() or audit.rel(path).endswith(audit.SIDECAR_SUFFIXES):
+                continue
+            embedded_id = audit.dynamic_id_from_filename(path.name, family["pattern"])
+            if embedded_id not in game_ids and audit.rel(path) not in candidate_paths:
+                errors.append("ORPHAN id-ассет скрыт от cleanup candidates: '%s'" % audit.rel(path))
+
     # 3) Кандидаты-сайдкары — только сироты.
     for item in candidates:
         path = item["path"]
