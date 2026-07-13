@@ -482,6 +482,15 @@ const CHEMIST_WEAPONS := {
 		"attack_range": 430.0, "aoe_radius": 150.0, "projectile_speed": 640.0,
 		"visual_color": Color(0.95, 0.72, 0.22, 0.44),
 		"passive_mods": {"aoe_radius_multiplier": 1.10},
+		# FAN-1031 3c(b2): blast_powder идёт прямым AoE-взрывом (attack_mode aoe_projectile
+		# → _damage_aoe_projectile_explosion), т.е. уже НА S1-капнутом пути (не через falloff,
+		# как предполагала диагностика координатора). Runaway (v3'' 20t ≈494.9k ≈108× медианы)
+		# двигают ДВА ортогональных фактора: (1) щедрый дефолтный кап 5/2.0 и (2) раздутый
+		# per-hit magnitude (build-стек ×damage). Геометрию режем ЗДЕСЬ: 4 ближайших полным
+		# (identity «пара взрывов по ближайшим целям» цела), хвост толпы круче (Σfactor 20t
+		# 6.37→4.99 = −22%; 5t −15%; 1t 0%). Per-hit magnitude — 3c-c numeric против v3'''
+		# (диминиш даёт макс ≈×4, 108× медианы им одним не закрыть).
+		"aoe_full_targets": 4, "aoe_target_diminish": 3.0,
 	},
 	# SCRUM-944: зонный контроль пола — долгоживущие ПОЛУПРОЗРАЧНЫЕ лужи. Монстр,
 	# зашедший в лужу, получает один ВЕЧНЫЙ кислотный заряд ОТ ЭТОЙ лужи (статус
@@ -873,6 +882,14 @@ const ELEMENTALIST_WEAPONS := {
 		"attack_range": 360.0, "aoe_radius": 230.0,
 		"projectile_count": 4, "orbit_duration": 1.35, "storm_ticks": 4,
 		"dot_ticks": 2, "knockback": 46.0,
+		# FAN-1031 3c(b2): квадратный тик раздавал magic+phys+ожог КАЖДОМУ врагу в зоне
+		# полным тиком → чистый крауд fan-out (v3'' 20t ≈197.8k ≈43× медианы, elementalist
+		# crowd 14.65 не двигался пул/status-капами — его runaway жил ИМЕННО тут). Кап:
+		# 3 ближайших к центру — полный тик (identity зоны/малый пак целы), дальний хвост
+		# толпы душится (Σfactor 20t 20→5.50 = −72.5%; 5t −23%; 1t 0%). Остаток до коридора
+		# (per-hit magnitude) — 3c-c numeric; здесь только геометрия (direction гарантирован
+		# вниз, точный live 20t за v3'''-пересъёмом). Гейт tests/orbit_falloff_cap_gate.gd.
+		"orbit_full_targets": 3, "orbit_target_diminish": 1.0,
 		"visual_color": Color(0.40, 0.82, 1.0, 0.42),
 		"passive_mods": {"aoe_radius_multiplier": 1.06},
 	},

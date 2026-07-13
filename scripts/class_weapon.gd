@@ -218,6 +218,25 @@ const ATTACK_MODE_EXECUTORS := {
 # tests/status_fanout_cap_gate.gd; см. _status_fanout_factor.
 @export var status_full_targets := -1
 @export var status_target_diminish := -1.0
+# FAN-1031 3c(b2): data-driven кап FALLOFF/ORBIT каналов — последние некапнутые
+# крауд-fan-out пути прямого урона (после прямого AoE-взрыва S1, пул-канала 3c-a и
+# STATUS-канала 3c-b). Два helper'а раздавали полный урон КАЖДОЙ цели без диминиша по
+# числу целей → ×N throughput на плотном паке:
+#   • `_damage_enemies_in_circle_falloff` — дистанционный сплэш (без крауд-капа: спад
+#     только по РАДИУСУ, но не по ЧИСЛУ целей); напр. burst черепа Тёмного мага.
+#   • `_elemental_square_tick` (elementalist_orb_ring) — квадратный тик бьёт magic+phys+
+#     ожог КАЖДОМУ врагу в зоне полным тиком; v3'' elemental_orbit 20t ≈197.8k (≈43×
+#     медианы 4574) при 1t малом — чистый крауд fan-out кастомного executor'а.
+# Сентинел <0 → *_FANOUT_* дефолт (diminish 0 → factor==1 для ВСЕХ рангов → нулевое
+# изменение поведения без override; тот же сентинел-контракт, что STATUS 3c-b). Оффендер
+# задаёт узкий full_targets + крутой diminish: ближние N целей — полный урон (1t/identity
+# зоны целы), дальний хвост толпы душится геометрически. Ранг = дистанция от центра.
+# Диминиш даёт ≈×3-4 среза 20t-хвоста БЕЗ трогания per-hit (то — 3c-c numeric). Гейт
+# tests/orbit_falloff_cap_gate.gd; см. _falloff_fanout_factor / _orbit_fanout_factor.
+@export var falloff_full_targets := -1
+@export var falloff_target_diminish := -1.0
+@export var orbit_full_targets := -1
+@export var orbit_target_diminish := -1.0
 # SCRUM-944: полупрозрачная наземная лужа (visual-polish кислотной колбы).
 @export var pool_translucent := false
 # SCRUM-944: перманентные контактные заряды лужи — один вечный DoT-заряд с КАЖДОЙ
@@ -544,6 +563,11 @@ func configure_weapon(config: Dictionary) -> void:
 	# FAN-1031 3c(b): data-driven кап STATUS fan-out (крауд-раздача DoT-статусов).
 	status_full_targets = int(config.get("status_full_targets", status_full_targets))
 	status_target_diminish = float(config.get("status_target_diminish", status_target_diminish))
+	# FAN-1031 3c(b2): data-driven кап FALLOFF/ORBIT крауд-fan-out каналов.
+	falloff_full_targets = int(config.get("falloff_full_targets", falloff_full_targets))
+	falloff_target_diminish = float(config.get("falloff_target_diminish", falloff_target_diminish))
+	orbit_full_targets = int(config.get("orbit_full_targets", orbit_full_targets))
+	orbit_target_diminish = float(config.get("orbit_target_diminish", orbit_target_diminish))
 	plague_duration = float(config.get("plague_duration", plague_duration))
 	plague_tick_interval = float(config.get("plague_tick_interval", plague_tick_interval))
 	plague_tick_ratio = float(config.get("plague_tick_ratio", plague_tick_ratio))
@@ -3322,16 +3346,26 @@ func _elemental_square_tick(owner_node: Node2D, center: Vector2, half_size: floa
 	var dot_interval := 1.0 / maxf(float(parameters.get("dot_speed", 1.0)), 0.2)
 	var burn_ticks := maxi(dot_ticks, 1)
 	var phase_target: Node2D = null
-	for enemy in _enemies_in_square(center, half_size):
+	# FAN-1031 3c(b2): крауд-кап тика квадрата. Ранг по дистанции к центру каста
+	# берётся из отдельной карты — порядок итерации и phase_target (вход constellation
+	# «hit») НЕ трогаем (zero-collateral). Сентинел (без orbit_*-override) → factor 1.0
+	# всем → magic/phys/ожог побайтово прежние; оффендер (orb_ring) душит хвост толпы.
+	var square_enemies := _enemies_in_square(center, half_size)
+	var orbit_ranks := {}
+	var orbit_ordered := _status_fanout_order(center, square_enemies)
+	for order_rank in range(orbit_ordered.size()):
+		orbit_ranks[(orbit_ordered[order_rank] as Node2D).get_instance_id()] = order_rank
+	for enemy in square_enemies:
 		var enemy_node := enemy as Node2D
 		if phase_target == null:
 			phase_target = enemy_node
-		_damage_enemy(enemy_node, magic_tick)
+		var orbit_factor := _orbit_fanout_factor(int(orbit_ranks.get(enemy_node.get_instance_id(), 0)))
+		_damage_enemy(enemy_node, magic_tick * orbit_factor)
 		if physical_tick > 0.0:
-			_damage_enemy(enemy_node, physical_tick, false, "physical", false)
+			_damage_enemy(enemy_node, physical_tick * orbit_factor, false, "physical", false)
 		StatusEffects.apply_status(enemy_node, "four_elements_burn", {
 			"duration": dot_interval * float(burn_ticks),
-			"dot_damage": dot_tick_damage,
+			"dot_damage": dot_tick_damage * orbit_factor,
 			"dot_interval": dot_interval,
 			"marker_color": Color(0.40, 0.82, 1.0, 1.0),
 		})
@@ -5502,6 +5536,13 @@ const POOL_PROJECTILE_DAMAGE_MULTIPLIER := 0.55
 # Оффендеры опт-инятся полями status_full_targets/status_target_diminish в конфиге.
 const STATUS_FANOUT_FULL_TARGETS := 4
 const STATUS_FANOUT_TARGET_DIMINISH := 0.0
+# FAN-1031 3c(b2): дефолт FALLOFF/ORBIT fan-out — БЕЗ диминиша (diminish 0 → factor==1
+# для всех рангов), чтобы оружия без override не меняли поведение (нулевой A/B-контроль).
+# Оффендер опт-инится полями falloff_*/orbit_* в конфиге.
+const FALLOFF_FANOUT_FULL_TARGETS := 4
+const FALLOFF_FANOUT_TARGET_DIMINISH := 0.0
+const ORBIT_FANOUT_FULL_TARGETS := 4
+const ORBIT_FANOUT_TARGET_DIMINISH := 0.0
 
 
 # FAN-1031 3c(b): диминиш-фактор тика периодического СТАТУСА для цели ранга `rank`
@@ -5514,6 +5555,34 @@ const STATUS_FANOUT_TARGET_DIMINISH := 0.0
 func _status_fanout_factor(rank: int) -> float:
 	var full := status_full_targets if status_full_targets >= 0 else STATUS_FANOUT_FULL_TARGETS
 	var diminish := status_target_diminish if status_target_diminish >= 0.0 else STATUS_FANOUT_TARGET_DIMINISH
+	if diminish <= 0.0 or rank < full:
+		return 1.0
+	return 1.0 / (1.0 + float(rank - full + 1) * diminish)
+
+
+# FAN-1031 3c(b2): диминиш-фактор дистанционного сплэша (`_damage_enemies_in_circle_falloff`)
+# для цели ранга `rank` (0-based по возрастанию дистанции от центра). Первые
+# falloff_full_targets — полный урон; дальше factor = 1/(1+(rank−full+1)·diminish) — та же
+# формула, что _status_fanout_factor / S1 / пул. Сентинел <0 → FALLOFF_FANOUT_* (diminish 0
+# → factor==1 ВСЕГДА → нулевое изменение без override). Крауд-кап хвоста поверх радиального
+# спада (радиальный falloff остаётся — это ортогональная per-target ось).
+func _falloff_fanout_factor(rank: int) -> float:
+	var full := falloff_full_targets if falloff_full_targets >= 0 else FALLOFF_FANOUT_FULL_TARGETS
+	var diminish := falloff_target_diminish if falloff_target_diminish >= 0.0 else FALLOFF_FANOUT_TARGET_DIMINISH
+	if diminish <= 0.0 or rank < full:
+		return 1.0
+	return 1.0 / (1.0 + float(rank - full + 1) * diminish)
+
+
+# FAN-1031 3c(b2): диминиш-фактор тика квадрата Элементалиста (`_elemental_square_tick`) для
+# цели ранга `rank` (0-based по дистанции от центра каста). Кастомный executor раздавал
+# magic+phys+ожог КАЖДОМУ врагу в зоне полным тиком (крауд fan-out без потолка); тут ближние
+# orbit_full_targets прогорают полностью (identity зоны + одиночная/малый пак целы), дальний
+# хвост толпы душится геометрически. Сентинел <0 → ORBIT_FANOUT_* (diminish 0 → factor==1
+# ВСЕГДА → нулевое изменение без override). Формула единая с остальными крауд-капами.
+func _orbit_fanout_factor(rank: int) -> float:
+	var full := orbit_full_targets if orbit_full_targets >= 0 else ORBIT_FANOUT_FULL_TARGETS
+	var diminish := orbit_target_diminish if orbit_target_diminish >= 0.0 else ORBIT_FANOUT_TARGET_DIMINISH
 	if diminish <= 0.0 or rank < full:
 		return 1.0
 	return 1.0 / (1.0 + float(rank - full + 1) * diminish)
@@ -5727,10 +5796,17 @@ func _damage_enemies_in_circle_capped(origin: Vector2, radius: float, amount: fl
 
 
 func _damage_enemies_in_circle_falloff(origin: Vector2, radius: float, amount: float, minimum_factor: float) -> void:
-	for enemy_node in TARGET_QUERY.in_radius(self, origin, radius):
+	# FAN-1031 3c(b2): к радиальному спаду (per-target, по дистанции) добавлен крауд-кап
+	# ХВОСТА по ЧИСЛУ целей (_falloff_fanout_factor). Ранг = дистанция от центра; сентинел
+	# (без override) → factor 1.0 для всех рангов → урон побайтово прежний (A/B-контроль).
+	var ordered := _status_fanout_order(origin, TARGET_QUERY.in_radius(self, origin, radius))
+	for rank in range(ordered.size()):
+		var enemy_node := ordered[rank] as Node2D
+		if enemy_node == null or not is_instance_valid(enemy_node):
+			continue
 		var distance := origin.distance_to(enemy_node.global_position)
 		var factor := lerpf(1.0, clampf(minimum_factor, 0.0, 1.0), distance / maxf(radius, 1.0))
-		_damage_enemy(enemy_node, amount * factor)
+		_damage_enemy(enemy_node, amount * factor * _falloff_fanout_factor(rank))
 
 
 func _damage_enemies_in_segment(start: Vector2, finish: Vector2, width: float, amount: float) -> void:
