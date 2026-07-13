@@ -56,7 +56,7 @@ const STAT_REWARDS := [
 ]
 
 const ARTIFACTS := [
-	# --- SCRUM-960: универсальные СЕМЬИ с роллом редкости (32) ------------------
+	# --- SCRUM-960: универсальные СЕМЬИ с роллом редкости (29) ------------------
 	# Контракт: docs/design/systems/artifact_system_matrix.md §1-2. Семья помечена
 	# rarity_scaling:true и несёт tiers{1,2,3}; тир роллится ПРИ ВЫДАЧЕ (сэмплеры →
 	# ProgressionData.materialize_family_offer), сама семья входит в пул с весом 1.0.
@@ -122,7 +122,12 @@ const ARTIFACTS := [
 		2: {"description": "+4 Лидерство.", "stats": {"leadership": 4.0}},
 		3: {"description": "+7 Лидерство.", "stats": {"leadership": 7.0}},
 	}},
-	# 24 семьи производных атрибутов (ключ эффекта = ключ level-up карточки, §2.2):
+	# 21 семья производных атрибутов (ключ эффекта = ключ level-up карточки, §2.2):
+	# FAN-1038: убраны семьи мёртвых осей — battle_fan (sector_multiplier, no-op
+	# для 46/51 оружий), ram_horn (knockback_multiplier, боссы/элитки displacement-
+	# immune), falcon_feather (projectile_speed_flat, только косметика задержки
+	# импакта). Derived-механики живут дальше (их кормят статы/мета), удалены только
+	# предметы-ловушки. Follow-up FAN-1034 (уровневые карты этих осей — 9ca18b9f8).
 	{"id": "splinter_gloves", "title": "Перчатки осколков", "rarity_scaling": true, "tier": 1, "cost": 30, "class_affinity": [],
 	 "description": "+10% урона.", "mods": {"damage_multiplier": 1.10},
 	 "tiers": {
@@ -151,13 +156,6 @@ const ARTIFACTS := [
 		2: {"description": "+18% скорости движения.", "mods": {"move_speed_multiplier": 1.18}},
 		3: {"description": "+30% скорости движения.", "mods": {"move_speed_multiplier": 1.30}},
 	}},
-	{"id": "battle_fan", "title": "Боевой веер", "rarity_scaling": true, "tier": 1, "cost": 30, "class_affinity": [],
-	 "description": "+10% ширины сектора.", "mods": {"sector_multiplier": 1.10},
-	 "tiers": {
-		1: {"description": "+10% ширины сектора.", "mods": {"sector_multiplier": 1.10}},
-		2: {"description": "+18% ширины сектора.", "mods": {"sector_multiplier": 1.18}},
-		3: {"description": "+30% ширины сектора.", "mods": {"sector_multiplier": 1.30}},
-	}},
 	{"id": "magnetic_buckle", "title": "Магнитный талисман", "rarity_scaling": true, "tier": 1, "cost": 30, "class_affinity": [],
 	 "description": "+35 радиуса подбора.", "mods": {"pickup_radius_flat": 35.0},
 	 "tiers": {
@@ -178,13 +176,6 @@ const ARTIFACTS := [
 		1: {"description": "+10% магического урона.", "mods": {"magic_damage_multiplier": 1.10}},
 		2: {"description": "+18% магического урона.", "mods": {"magic_damage_multiplier": 1.18}},
 		3: {"description": "+30% магического урона.", "mods": {"magic_damage_multiplier": 1.30}},
-	}},
-	{"id": "ram_horn", "title": "Рог тарана", "rarity_scaling": true, "tier": 1, "cost": 30, "class_affinity": [],
-	 "description": "+10% отталкивания.", "mods": {"knockback_multiplier": 1.10},
-	 "tiers": {
-		1: {"description": "+10% отталкивания.", "mods": {"knockback_multiplier": 1.10}},
-		2: {"description": "+18% отталкивания.", "mods": {"knockback_multiplier": 1.18}},
-		3: {"description": "+30% отталкивания.", "mods": {"knockback_multiplier": 1.30}},
 	}},
 	{"id": "sharp_talisman", "title": "Острый талисман", "rarity_scaling": true, "tier": 1, "cost": 30, "class_affinity": [],
 	 "description": "+10% шанса крита.", "mods": {"crit_chance_flat": 0.10},
@@ -227,13 +218,6 @@ const ARTIFACTS := [
 		1: {"description": "+0.2 тика периодического урона в секунду.", "mods": {"dot_speed_flat": 0.2}},
 		2: {"description": "+0.3 тика периодического урона в секунду.", "mods": {"dot_speed_flat": 0.3}},
 		3: {"description": "+0.5 тика периодического урона в секунду.", "mods": {"dot_speed_flat": 0.5}},
-	}},
-	{"id": "falcon_feather", "title": "Перо сокола", "rarity_scaling": true, "tier": 1, "cost": 30, "class_affinity": [],
-	 "description": "+70 к скорости снарядов.", "mods": {"projectile_speed_flat": 70.0},
-	 "tiers": {
-		1: {"description": "+70 к скорости снарядов.", "mods": {"projectile_speed_flat": 70.0}},
-		2: {"description": "+110 к скорости снарядов.", "mods": {"projectile_speed_flat": 110.0}},
-		3: {"description": "+180 к скорости снарядов.", "mods": {"projectile_speed_flat": 180.0}},
 	}},
 	{"id": "wide_halo", "title": "Широкий нимб", "rarity_scaling": true, "tier": 1, "cost": 30, "class_affinity": [],
 	 "description": "+10% радиуса атак и зон.", "mods": {"aoe_radius_multiplier": 1.10},

@@ -40,7 +40,9 @@ func _has_effect(entry: Dictionary, key: String) -> bool:
 
 
 func _check_artifacts(errors: Array) -> void:
-	# SCRUM-960: 32 семьи + 37 сохранённых + 16 легаси классовых (уходят в 961) = 85.
+	# SCRUM-960: 32 семьи + 37 сохранённых + 16 легаси классовых (уходят в 961) = 85
+	# (исторический нижний порог; FAN-1038 убрал 3 мёртвых семьи → 29, но полный
+	# пул с 85 классовыми держит фактический размер сильно выше порога).
 	if PD.ARTIFACTS.size() < 85:
 		errors.append("ARTIFACTS подозрительно мал (%d < 85)" % PD.ARTIFACTS.size())
 	var seen := {}

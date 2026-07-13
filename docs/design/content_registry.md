@@ -1301,7 +1301,7 @@ SCRUM-956 закрепляет player-facing naming без смены id: `red_w
 «Масло темпа» — магазинный `shop_weapon_cooldown`, «Пыльный артефакт» —
 магазинный `shop_artifact`. Отдельного `dusty_artifact` не существует.
 
-### Универсальные семьи (32, rarity_scaling)
+### Универсальные семьи (29, rarity_scaling)
 
 8 семей базовых статов (+2/+4/+7):
 
@@ -1316,7 +1316,9 @@ SCRUM-956 закрепляет player-facing naming без смены id: `red_w
 | `stone_heart` | Каменное сердце | Выносливость |
 | `banner_seed` | Семя знамени | Лидерство |
 
-24 семьи производных атрибутов (ключ эффекта = ключ level-up карточки):
+21 семья производных атрибутов (ключ эффекта = ключ level-up карточки). FAN-1038
+убрал семьи мёртвых осей `battle_fan` / `ram_horn` / `falcon_feather`
+(follow-up FAN-1034):
 
 | ID | Имя | Ключ эффекта | т1 / т2 / т3 |
 | --- | --- | --- | --- |
@@ -1324,18 +1326,15 @@ SCRUM-956 закрепляет player-facing naming без смены id: `red_w
 | `quickstring` | Быстрая струна | `attack_speed_multiplier` | ×1.10 / ×1.18 / ×1.30 |
 | `sturdy_amulet` | Крепкий амулет | `max_health_flat` | +15 / +25 / +40 |
 | `fast_boots` | Легкие сапоги | `move_speed_multiplier` | ×1.10 / ×1.18 / ×1.30 |
-| `battle_fan` | Боевой веер | `sector_multiplier` | ×1.10 / ×1.18 / ×1.30 |
 | `magnetic_buckle` | Магнитный талисман | `pickup_radius_flat` | +35 / +55 / +90 |
 | `iron_scale` | Железная чешуя | `defense_flat` | +0.10 / +0.18 / +0.30 |
 | `arcane_prism` | Чародейская призма | `magic_damage_multiplier` | ×1.10 / ×1.18 / ×1.30 |
-| `ram_horn` | Рог тарана | `knockback_multiplier` | ×1.10 / ×1.18 / ×1.30 |
 | `sharp_talisman` | Острый талисман | `crit_chance_flat` | +0.10 / +0.18 / +0.30 |
 | `executioner_edge` | Грань палача | `crit_damage_flat` | +0.10 / +0.18 / +0.30 |
 | `ghost_ribbon` | Лента призрака | `dodge_flat` | +0.10 / +0.18 / +0.30 |
 | `wide_sigil` | Дальняя печать | `range_multiplier` | ×1.10 / ×1.18 / ×1.30 |
 | `venom_vial` | Флакон отравы | `dot_damage_flat` | +2 / +4 / +6 |
 | `plague_metronome` | Чумной метроном | `dot_speed_flat` | +0.2 / +0.3 / +0.5 |
-| `falcon_feather` | Перо сокола | `projectile_speed_flat` | +70 / +110 / +180 |
 | `wide_halo` | Широкий нимб | `aoe_radius_multiplier` | ×1.10 / ×1.18 / ×1.30 |
 | `war_banner` | Боевое знамя | `buff_power_flat` | +0.10 / +0.18 / +0.30 |
 | `summoners_bell` | Колокольчик призывателя | `summon_bonus` | +1.5 / +2.5 / +4 |
