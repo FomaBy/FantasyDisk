@@ -65,6 +65,8 @@ static func source_periodic_multiplier(source: Node) -> float:
 # SCRUM-944: число активных статусов с данным префиксом id (кап перманентных
 # кислотных зарядов: один заряд = один статус "acid_charge_p<pool_id>").
 static func count_status_prefix(target: Node, prefix: String) -> int:
+	if not _has_statuses(target):
+		return 0
 	var count := 0
 	for status_id in _statuses(target).keys():
 		if str(status_id).begins_with(prefix):
@@ -84,8 +86,11 @@ static func tick(target: Node, delta: float) -> void:
 		if float(status.get("dot_damage", 0.0)) > 0.0 and target.has_method("take_damage"):
 			var interval := maxf(float(status.get("dot_interval", 1.0)), 0.1)
 			status["tick_left"] = float(status.get("tick_left", interval)) - delta
-			var feedback_capable := _take_damage_accepts_feedback(target)
-			while float(status["tick_left"]) <= 0.0 and float(status.get("remaining", 0.0)) > 0.0:
+			# Introspection allocates the complete method list. Keep it outside the
+			# per-frame path and pay for it only when a DoT tick is actually due.
+			var tick_due := float(status["tick_left"]) <= 0.0 and float(status.get("remaining", 0.0)) > 0.0
+			var feedback_capable := _take_damage_accepts_feedback(target) if tick_due else false
+			while tick_due:
 				status["tick_left"] = float(status["tick_left"]) + interval
 				var tick_total := float(status.get("dot_damage", 0.0)) * float(status.get("stacks", 1))
 				# SCRUM-523: тик статуса — периодический урон → красим цифру как "dot".
@@ -102,6 +107,7 @@ static func tick(target: Node, delta: float) -> void:
 					target.call("take_damage", tick_total, tick_feedback)
 				else:
 					target.call("take_damage", tick_total)
+				tick_due = float(status["tick_left"]) <= 0.0 and float(status.get("remaining", 0.0)) > 0.0
 		if float(status.get("remaining", 0.0)) <= 0.0:
 			expired.append(str(status_id))
 		else:
@@ -109,7 +115,7 @@ static func tick(target: Node, delta: float) -> void:
 		changed = true
 	for status_id in expired:
 		statuses.erase(status_id)
-	if changed:
+	if changed or not expired.is_empty():
 		_set_statuses(target, statuses)
 
 
@@ -123,9 +129,20 @@ static func _take_damage_accepts_feedback(target: Node) -> bool:
 
 
 static func has_status(target: Node, status_id: String) -> bool:
-	if target == null or not is_instance_valid(target):
+	if not _has_statuses(target):
 		return false
 	return _statuses(target).has(status_id)
+
+
+# Read one scalar from one status without exposing the mutable backing dictionary
+# or deep-copying the complete status map (enemy target selection is per-frame).
+static func status_value(target: Node, status_id: String, key: String, default_value: Variant = null) -> Variant:
+	if not _has_statuses(target):
+		return default_value
+	var status_raw = _statuses(target).get(status_id, null)
+	if not (status_raw is Dictionary):
+		return default_value
+	return (status_raw as Dictionary).get(key, default_value)
 
 
 # SCRUM-1005 «Разбор образцов»: есть ли на цели ЖИВОЙ периодический эффект с
@@ -134,7 +151,7 @@ static func has_status(target: Node, status_id: String) -> bool:
 # Чужие статусы (другой владелец/без тега) и истёкшие (remaining<=0, ещё не
 # собранные tick'ом) бонусов не дают.
 static func has_dot_from_source(target: Node, source_id: int) -> bool:
-	if source_id == 0:
+	if source_id == 0 or not _has_statuses(target):
 		return false
 	for status in _statuses(target).values():
 		var status_config: Dictionary = status
@@ -148,10 +165,14 @@ static func has_dot_from_source(target: Node, source_id: int) -> bool:
 
 
 static func snapshot(target: Node) -> Dictionary:
+	if not _has_statuses(target):
+		return {}
 	return _statuses(target).duplicate(true)
 
 
 static func damage_multiplier(target: Node) -> float:
+	if not _has_statuses(target):
+		return 1.0
 	var multiplier := 1.0
 	for status in _statuses(target).values():
 		multiplier *= _stacked_multiplier(status, "damage_multiplier")
@@ -159,6 +180,8 @@ static func damage_multiplier(target: Node) -> float:
 
 
 static func damage_taken_multiplier(target: Node) -> float:
+	if not _has_statuses(target):
+		return 1.0
 	var multiplier := 1.0
 	for status in _statuses(target).values():
 		multiplier *= _stacked_multiplier(status, "damage_taken_multiplier")
@@ -166,6 +189,8 @@ static func damage_taken_multiplier(target: Node) -> float:
 
 
 static func speed_multiplier(target: Node) -> float:
+	if not _has_statuses(target):
+		return 1.0
 	var multiplier := 1.0
 	for status in _statuses(target).values():
 		multiplier *= _stacked_multiplier(status, "speed_multiplier")
@@ -180,6 +205,8 @@ static func speed_multiplier(target: Node) -> float:
 # истечением статуса в tick(); длительность у боссов/элит режется
 # контроль-резистом источника (ClassWeapon._control_resist_factor).
 static func is_movement_locked(target: Node) -> bool:
+	if not _has_statuses(target):
+		return false
 	for status in _statuses(target).values():
 		if bool((status as Dictionary).get("movement_locked", false)):
 			return true
@@ -197,10 +224,14 @@ static func _stacked_multiplier(status: Dictionary, key: String) -> float:
 
 
 static func _statuses(target: Node) -> Dictionary:
-	if target == null or not is_instance_valid(target) or not target.has_meta(META_KEY):
+	if not _has_statuses(target):
 		return {}
 	var raw = target.get_meta(META_KEY)
 	return raw if raw is Dictionary else {}
+
+
+static func _has_statuses(target: Node) -> bool:
+	return target != null and is_instance_valid(target) and target.has_meta(META_KEY)
 
 
 static func _set_statuses(target: Node, statuses: Dictionary) -> void:

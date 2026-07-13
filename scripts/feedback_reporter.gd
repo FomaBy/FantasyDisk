@@ -10,21 +10,10 @@ const WEBHOOK_KEY := "webhook_url"
 const BUNDLED_WEBHOOK_KEY := "discord_webhook_url"
 const LOCAL_ROOT := "user://feedback"
 const ENV_WEBHOOK := "FANTASYDISK_FEEDBACK_WEBHOOK"
-# SCRUM-848: встроенный дефолтный вебхук — фидбек уходит разработчику из коробки в
-# любой сборке/чекауте, без env и без cfg (директива PM, осознанный revert части
-# SCRUM-665: доставка фидбека важнее секретности вебхука). URL хранится base64-чанками,
-# а не литералом: grep и секрет-сканеры GitHub не находят сырой
-# discord.com/api/webhooks/<id>/<token>, и Discord не отзовёт вебхук автоматом, если
-# репозиторий когда-нибудь станет публичным. Оверрайды (env/cfg) сохраняют приоритет.
-# Ротация при спаме: новый вебхук в Discord → base64 →
-#   python3 -c "import base64;print(base64.b64encode(b'<url>').decode())"
-# → разложить на чанки ниже.
-const BUILTIN_WEBHOOK_B64_PARTS: Array[String] = [
-	"aHR0cHM6Ly9kaXNjb3JkLmNvbS9hcGkvd2ViaG9va3MvMTUxNTcxMDg",
-	"yMjg2ODA2MjM1MC9ZNlhSTlYwTzNuUGVhRXhpZWhKWFM2clZFV0hCMU",
-	"ozZV9STTdRbUpxOG52QmZQQzJ5bmh2c2pmWV95ckhQWlZPeS1PTw==",
-]
-const SCREENSHOT_FILENAME := "fantasydisk_feedback.png"
+# A Discord webhook is a credential, even when split or base64-encoded. It must
+# never be embedded in source or an export. Until a server-side relay exists,
+# network delivery is an explicit developer override and player builds preserve
+# reports under user://feedback instead.
 # Вложение в Discord уходит ужатым JPG, а не полноразмерным PNG: скрин 1600x970 в
 # PNG весит ~9.8 МБ, и multipart-тело пробивает лимит загрузки вебхука (~8–10 МБ
 # на не-бустнутом сервере) → HTTP 413 «Payload Too Large» → «Ошибка отправки»
@@ -80,7 +69,8 @@ func submit_report(text: String, screenshot: Image, metadata: Dictionary) -> voi
 	var webhook_url := str(webhook_resolution.get("url", ""))
 	if webhook_url == "":
 		var local_path := save_local_report(_pending_text, _pending_screenshot, _pending_metadata)
-		report_finished.emit(false, _configuration_failure_message(str(webhook_resolution.get("error", "missing"))), local_path)
+		report_finished.emit(false, _configuration_failure_message(
+			str(webhook_resolution.get("error", "missing")), local_path != ""), local_path)
 		return
 
 	_post_to_webhook(webhook_url)
@@ -98,15 +88,21 @@ static func save_local_report(text: String, screenshot: Image, metadata: Diction
 	var timestamp := _timestamp_for_path()
 	var report_dir := "%s/%s" % [LOCAL_ROOT, timestamp]
 	var absolute_dir := ProjectSettings.globalize_path(report_dir)
-	DirAccess.make_dir_recursive_absolute(absolute_dir)
+	if DirAccess.make_dir_recursive_absolute(absolute_dir) != OK:
+		return ""
 
 	var report_file := FileAccess.open("%s/report.txt" % report_dir, FileAccess.WRITE)
-	if report_file != null:
-		report_file.store_string(_report_body(text, metadata))
-		report_file.close()
+	if report_file == null:
+		return ""
+	report_file.store_string(_report_body(text, metadata))
+	var report_error := report_file.get_error()
+	report_file.close()
+	if report_error != OK:
+		return ""
 
 	var safe_screenshot := _normalized_screenshot(screenshot)
-	safe_screenshot.save_png("%s/screenshot.png" % report_dir)
+	if safe_screenshot.save_png("%s/screenshot.png" % report_dir) != OK:
+		return ""
 	return absolute_dir
 
 
@@ -233,26 +229,28 @@ func _schedule_retry(delay_seconds: float) -> void:
 
 func _finalize_failure(result: int, response_code: int) -> void:
 	var local_path := save_local_report(_pending_text, _pending_screenshot, _pending_metadata)
-	report_finished.emit(false, _failure_message(result, response_code), local_path)
+	report_finished.emit(false, _failure_message(result, response_code, local_path != ""), local_path)
 
 
-func _failure_message(result: int, response_code: int) -> String:
+func _failure_message(result: int, response_code: int, local_saved := true) -> String:
 	# Понятные, различимые сообщения (короткие — помещаются в FeedbackStatusLabel).
+	var suffix := " Отчет сохранен локально." if local_saved else " Локальное сохранение также не удалось."
 	if response_code >= 400:
-		return "Ошибка сервера (код %d). Отчет сохранен локально." % response_code
+		return "Ошибка сервера (код %d).%s" % [response_code, suffix]
 	if NO_NETWORK_RESULTS.has(result):
-		return "Не удалось связаться с сервером (нет сети). Отчет сохранен локально."
+		return "Не удалось связаться с сервером (нет сети).%s" % suffix
 	if result == HTTPRequest.RESULT_TIMEOUT or result == HTTPRequest.RESULT_NO_RESPONSE:
-		return "Сервер не ответил (таймаут после %d попыток). Отчет сохранен локально." % MAX_ATTEMPTS
+		return "Сервер не ответил (таймаут после %d попыток).%s" % [MAX_ATTEMPTS, suffix]
 	if response_code > 0:
-		return "Ошибка отправки (код %d). Отчет сохранен локально." % response_code
-	return "Ошибка отправки (нет ответа, result %d). Отчет сохранен локально." % result
+		return "Ошибка отправки (код %d).%s" % [response_code, suffix]
+	return "Ошибка отправки (нет ответа, result %d).%s" % [result, suffix]
 
 
-static func _configuration_failure_message(error: String) -> String:
+static func _configuration_failure_message(error: String, local_saved := true) -> String:
+	var suffix := " Отчет сохранен локально." if local_saved else " Локальное сохранение также не удалось."
 	if error == "invalid":
-		return "Ошибка сборки: вебхук фидбека некорректен. Отчет сохранен локально."
-	return "Ошибка сборки: вебхук фидбека не настроен. Отчет сохранен локально."
+		return "Вебхук фидбека некорректен.%s" % suffix
+	return "Вебхук фидбека не настроен.%s" % suffix
 
 
 func _backoff_for_attempt() -> float:
@@ -275,10 +273,6 @@ func _retry_after_seconds(headers: PackedStringArray) -> float:
 	return RATE_LIMIT_FALLBACK_SECONDS
 
 
-static func _builtin_webhook_url() -> String:
-	return Marshalls.base64_to_utf8("".join(BUILTIN_WEBHOOK_B64_PARTS))
-
-
 func _webhook_resolution() -> Dictionary:
 	return _resolve_from(
 		OS.get_environment(ENV_WEBHOOK),
@@ -293,11 +287,10 @@ static func _config_webhook_value(path: String, key: String) -> String:
 	return str(config.get_value(CONFIG_SECTION, key, ""))
 
 
-# Источник URL по приоритету (SCRUM-848): env (дев/CI) → res://feedback_webhook.cfg
-# (локальные dev-сборки) → user://feedback_config.cfg (legacy) → встроенный вебхук.
-# Невалидный оверрайд (плейсхолдер/чужой домен) у игрока больше не превращается в
-# «Ошибка сборки»: предупреждаем дева и падаем дальше по цепочке — встроенный URL
-# гарантирует доставку. Чистая функция, юнит-тестируется без файлов и env.
+# Источник URL по приоритету: env (dev/CI) → локальный bundled override →
+# user://feedback_config.cfg (legacy). Невалидный override не блокирует следующий
+# источник; если валидного URL нет, отчет остается локально. Чистая функция,
+# юнит-тестируется без файлов и env.
 static func _resolve_from(env_url: String, bundled_url: String, user_url: String) -> Dictionary:
 	var overrides := [[env_url, "env"], [bundled_url, "bundled"], [user_url, "user"]]
 	for entry in overrides:
@@ -306,10 +299,7 @@ static func _resolve_from(env_url: String, bundled_url: String, user_url: String
 			continue
 		if _is_valid_webhook_url(url):
 			return {"url": url, "source": str(entry[1]), "error": ""}
-		push_warning("Feedback: некорректный webhook-оверрайд (%s) проигнорирован, использую встроенный." % str(entry[1]))
-	var builtin := _builtin_webhook_url()
-	if _is_valid_webhook_url(builtin):
-		return {"url": builtin, "source": "builtin", "error": ""}
+		push_warning("Feedback: некорректный webhook-оверрайд (%s) проигнорирован." % str(entry[1]))
 	return {"url": "", "source": "", "error": "missing"}
 
 

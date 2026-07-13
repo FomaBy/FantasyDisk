@@ -48,9 +48,9 @@ fi
 
 echo "==> Feedback webhook"
 if [[ -f "${REPO_DIR}/feedback_webhook.cfg" || -n "${FANTASYDISK_FEEDBACK_WEBHOOK:-}" ]]; then
-  echo "    найден локальный webhook-оверрайд; player build его НЕ бандлит — клиент использует встроенный вебхук (SCRUM-848)"
+  echo "    найден локальный webhook-оверрайд; player build его НЕ бандлит (credential не должен попадать в клиент)"
 else
-  echo "    оверрайдов нет; клиент использует встроенный вебхук фидбека (SCRUM-848), ручная настройка не нужна"
+  echo "    оверрайдов нет; player build сохраняет feedback локально до появления server-side relay"
 fi
 
 echo "==> Импорт ресурсов (headless)"

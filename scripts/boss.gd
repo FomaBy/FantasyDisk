@@ -902,7 +902,9 @@ func _summon_riftlings() -> void:
 	else:
 		_play_rig_action("cast", Vector2.UP)
 	for index in range(summon_count):
-		var summon := scene.instantiate() as Node2D
+		var summon := SCENE_CONTRACTS.instantiate_node_2d(scene, "Boss riftling summon")
+		if summon == null:
+			return
 		parent.add_child(summon)
 		summon.add_to_group("summoned_enemies")
 		# Этап B: кольцо рифтлингов вокруг босса, но не вплотную к игроку (≥140px).

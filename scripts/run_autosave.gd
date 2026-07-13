@@ -9,7 +9,8 @@ class_name RunAutosave
 #
 # Гарантии:
 #   • схема версионируется (SCHEMA_VERSION) — несовместимый сейв игнорируется;
-#   • запись атомарна (пишем в .tmp, затем rename) — не бьётся при крэше середины;
+#   • replacement fail-safe: .tmp + .bak swap, backup читается после прерванной
+#     замены; старый checkpoint не удаляется до готовности нового;
 #   • повреждённый/отсутствующий/несовместимый сейв → load_run() == {} (как будто
 #     сейва нет), без крэша;
 #   • state — произвольный Dictionary run-состояния (character_id, route_stage,
@@ -35,21 +36,46 @@ static func save_run(state: Dictionary, save_path := DEFAULT_SAVE_PATH) -> bool:
 	var dir := DirAccess.open("user://")
 	if dir == null:
 		return false
-	if dir.file_exists(save_path):
-		dir.remove(save_path)
-	if dir.rename(tmp_path, save_path) != OK:
-		# rename не удался — подчистим временный файл, чтобы не копить мусор.
-		if dir.file_exists(tmp_path):
-			dir.remove(tmp_path)
+	var backup_path := save_path + ".bak"
+	# Recover an interrupted old→backup swap before attempting another save.
+	if not dir.file_exists(save_path) and dir.file_exists(backup_path):
+		if dir.rename(backup_path, save_path) != OK:
+			_cleanup_file(dir, tmp_path)
+			return false
+	elif dir.file_exists(save_path) and dir.file_exists(backup_path):
+		if dir.remove(backup_path) != OK:
+			_cleanup_file(dir, tmp_path)
+			return false
+
+	var had_previous := dir.file_exists(save_path)
+	if had_previous and dir.rename(save_path, backup_path) != OK:
+		_cleanup_file(dir, tmp_path)
 		return false
+	if dir.rename(tmp_path, save_path) != OK:
+		# Roll back the known-good checkpoint if new-file placement fails.
+		if had_previous and dir.file_exists(backup_path):
+			dir.rename(backup_path, save_path)
+		_cleanup_file(dir, tmp_path)
+		return false
+	if had_previous:
+		_cleanup_file(dir, backup_path)
 	return true
 
 
 # Загрузить run-состояние. {} если файла нет / повреждён / несовместимая схема.
 static func load_run(save_path := DEFAULT_SAVE_PATH) -> Dictionary:
-	if not FileAccess.file_exists(save_path):
+	var state := _load_run_path(save_path)
+	if not state.is_empty():
+		return state
+	# If the process stopped between old→.bak and .tmp→target, the backup is the
+	# last committed checkpoint and remains a valid resume source.
+	return _load_run_path(save_path + ".bak")
+
+
+static func _load_run_path(path: String) -> Dictionary:
+	if not FileAccess.file_exists(path):
 		return {}
-	var file := FileAccess.open(save_path, FileAccess.READ)
+	var file := FileAccess.open(path, FileAccess.READ)
 	if file == null:
 		return {}
 	var preview := file.get_as_text().strip_edges()
@@ -57,7 +83,7 @@ static func load_run(save_path := DEFAULT_SAVE_PATH) -> Dictionary:
 	if preview == "" or not preview.begins_with("["):
 		return {}
 	var config := ConfigFile.new()
-	var err := config.load(save_path)
+	var err := config.load(path)
 	if err != OK:
 		return {}
 	# Несовместимая/отсутствующая версия схемы — игнорируем сейв целиком.
@@ -79,13 +105,17 @@ static func has_run(save_path := DEFAULT_SAVE_PATH) -> bool:
 	return not load_run(save_path).is_empty()
 
 
-# Удалить автосейв (завершение забега: смерть/победа), включая возможный .tmp.
+# Удалить автосейв (завершение забега: смерть/победа), включая .tmp/.bak.
 static func clear_run(save_path := DEFAULT_SAVE_PATH) -> void:
 	var dir := DirAccess.open("user://")
 	if dir == null:
 		return
 	if dir.file_exists(save_path):
 		dir.remove(save_path)
-	var tmp_path := save_path + ".tmp"
-	if dir.file_exists(tmp_path):
-		dir.remove(tmp_path)
+	for suffix in [".tmp", ".bak"]:
+		_cleanup_file(dir, save_path + suffix)
+
+
+static func _cleanup_file(dir: DirAccess, path: String) -> void:
+	if dir.file_exists(path):
+		dir.remove(path)
