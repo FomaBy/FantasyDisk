@@ -200,6 +200,7 @@ def run_static_checks(fail_fast: bool, timeout: float) -> list[dict]:
         ("constellation-validator", [sys.executable, "tools/test_validate_scrum1067_constellation_spec.py"]),
         ("runtime-manifest-validator", [sys.executable, "tools/test_validate_scrum1068_runtime_manifest.py"]),
         ("git-diff-check", ["git", "diff", "--check"]),
+        ("git-head-check", ["git", "show", "--check", "--format=", "HEAD"]),
     ]
     shell_scripts = sorted((ROOT / "tools").glob("*.sh")) + sorted((ROOT / "scripts").glob("*.sh"))
     if shell_scripts:

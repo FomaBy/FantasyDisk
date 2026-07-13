@@ -1,7 +1,9 @@
 # FantasyDisk code quality / Windows performance audit — FAN-1040
 
-Дата: 2026-07-13  
-Baseline: `origin/dev@1190db1d1de10ab90e21d2cdea32be908efbeada`  
+Дата: 2026-07-13
+
+Baseline: `origin/dev@1190db1d1de10ab90e21d2cdea32be908efbeada`
+
 Scope: runtime GDScript, resource/cache hot paths, tests/tooling, release/process
 contracts, security review. Balance scope FAN-1028/FAN-1031, UI redesign, art and
 animation generation were intentionally excluded.
@@ -204,7 +206,7 @@ Baseline before edits:
 
 Final combined changed-profile from baseline `1190db1d`:
 
-- 10 static/security/export-config checks passed;
+- 11 static/security/export-config/commit-whitespace checks passed;
 - 14 diff-selected Godot suites passed, including target/separation/hot-path
   caches, Engineer kit, feedback, persistence, scene contracts, status effects,
   combat/UI split smoke and the umbrella `runtime_smoke_test.gd`;
