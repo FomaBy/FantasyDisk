@@ -145,7 +145,13 @@ const DARK_MAGE_WEAPONS := {
 		# по-прежнему НЕ участвуют. Пара (0.58, 0.08) держит базовый тик на
 		# уровне ~8.3 и даёт киту int-скейл в SCRUM-469-коридоре lvl20-оптимума;
 		# формулы зеркалятся в бюджет-модели (_budget_dot_dps).
-		"curse_tick_multiplier": 0.58,
+		# FAN-1031 3c-c: cursed_skull держал ~53% crowd-суммы dark_mage (v4 20t=27755).
+		# Проклятие — curse_only, поэтому budget_tuning (direct-канал) его НЕ трогает;
+		# единственный per-hit рычаг DoT-оси — curse_tick_multiplier. 0.58→0.36 (×0.62)
+		# режет силу тика (базовый тик ~8.3→~5.15) и зеркало _budget_dot_dps синхронно.
+		# Пара с int-скейлом (0.36, 0.08); identity «чистое проклятие» цела, srink только
+		# по величине. Точный live 20t — за пересъёмом (см. handoff).
+		"curse_tick_multiplier": 0.36,
 		"curse_int_scale": 0.08,
 		# FAN-1031 3c(b): кап STATUS fan-out крауд-проклятия. v3 lvl20_ideal_20t=96.9k
 		# ≈21× медианы (4574) при 1t=270 — чистый крауд-DoT-runaway (проклятие
@@ -648,7 +654,14 @@ const DRUID_WEAPONS := {
 		"description": "Зовет призрачный ростер: ближние духи рвут физически по площади, дальние бьют магическими снарядами; состав случаен, стая растет от Лидерства.",
 		"scene_path": "res://scenes/SummonAmulet.tscn",
 		"damage_parameter": "magic_damage",
-		"summon_damage_multiplier": 1.85,  # SCRUM-546: подъём с пола DPS-полосы (был 0.58)
+		# FAN-1031 3c-c: амулет держал ~97% crowd-суммы кита (v4 20t=203566, 45× медианы) и
+		# делал briar/raven «мёртвыми» слотами (кит-mean раздут). Призыв — pure_summon, поэтому
+		# budget_tuning (direct) его НЕ ведёт (bdm на нижнем клампе 0.28): единственные живые
+		# рычаги силы роя — summon_damage_multiplier/summon_role_damage_multiplier. Режем рой
+		# 1.85→0.85 (и роль 1.45→1.15) → амулет ~×0.36; остаётся crowd-лидером кита, но не
+		# ломает ростер. Замер суммона самый ШУМНЫЙ (v4 разброс 1.90–4.91) — точную величину
+		# калибровать по A/B focused-тесту + среднему live, НЕ по одному прогону.
+		"summon_damage_multiplier": 0.85,
 		"damage_multiplier": 1.0, "fire_interval": 3.0,
 		"upgrade_damage_exponent": 1.22,  # SCRUM-505: lvl20 summon-profile lift; empty run_modifiers stay 1.0
 		"attack_range": 420.0, "aoe_radius": 60.0,
@@ -665,7 +678,7 @@ const DRUID_WEAPONS := {
 		"max_summons": 5,
 		"command_mode": "attack_target",
 		"summon_role": "pack_damage",
-		"summon_role_damage_multiplier": 1.45,  # SCRUM-546 (был 1.06)
+		"summon_role_damage_multiplier": 1.15,  # FAN-1031 3c-c: 1.45→1.15 (см. summon_damage_multiplier)
 		"summon_health_multiplier": 0.30,
 		"summon_attack_interval": 0.34,  # SCRUM-546 (lvl1-нейтрально); темп растёт от haste
 		"summon_speed_multiplier": 1.15,
@@ -711,8 +724,12 @@ const DRUID_WEAPONS := {
 		#                        общий потолок зон MAX_ACTIVE_DAMAGE_POOLS=6);
 		#   briar_slow_multiplier — слоу внутри зоны (спадает при выходе).
 		"briar_zone": true,
-		"briar_hit_multiplier": 0.34,
-		"briar_hit_cap": 5,
+		# FAN-1031 3c-c: briar был «мёртвым» слотом из-за раздутого амулета (кит-mean).
+		# С амулетом вниз оживляем зону терний как честную area-denial/aoe-ось: сила хита
+		# 0.34→0.46 (×1.35) + cap 5→6 читаемых ударов. Рычаг briar_hit_multiplier —
+		# отдельный per-hit зоны, не budget-direct, поэтому двигает живой урон напрямую.
+		"briar_hit_multiplier": 0.46,
+		"briar_hit_cap": 6,
 		"briar_slow_multiplier": 0.62,
 		# SCRUM-903: зона полупрозрачна — поле боя читается сквозь шипы.
 		"pool_translucent": true,
@@ -729,7 +746,7 @@ const DRUID_WEAPONS := {
 		# SCRUM-903: деплой-тотем живёт ~8с (AC 6-10с) и раз в amp_pulse_interval
 		# выпускает самонаводящегося ворона; baseline-лимит = base 2 +
 		# floor(Лидерство 9 / 4) = 4 активных тотема (кап 6 — рост от Лидерства).
-		"amp_lifetime": 8.0, "amp_pulse_interval": 1.10, "max_summons": 2,
+		"amp_lifetime": 8.0, "amp_pulse_interval": 0.95, "max_summons": 2,  # FAN-1031 3c-c: чуть чаще пульс (1.10→0.95) для оживления raven-ниши
 		"max_summons_cap": 6,
 		# SCRUM-903: контракт воронов (рантайм — class_weapon._launch_totem_raven;
 		# зеркало бюджета — _budget_hit_model, amp+raven_homing ветка):
@@ -741,7 +758,11 @@ const DRUID_WEAPONS := {
 		#                             RAVEN_EXPLOSION_FULL_TARGETS целям, дальше
 		#                             диминиш — анти-стакинг толпы).
 		"raven_homing": true,
-		"raven_damage_multiplier": 0.85,
+		# FAN-1031 3c-c: raven был «мёртвым» по всем осям (v4 1t=60/5t=202/20t=425, 0.09–0.20×).
+		# Оживляем деплой-бурст как ниша-ось кита: урон взрыва 0.85→1.35 (×1.59) + чуть чаще
+		# пульс (amp_pulse_interval 1.10→0.95) → больше воронов/uptime. raven_damage_multiplier —
+		# отдельный per-hit, двигает живой урон напрямую (не budget-compensated).
+		"raven_damage_multiplier": 1.35,
 		"raven_explosion_radius": 120.0,
 		"deploy_role": "support_totem",
 		"summon_role": "support_totem",

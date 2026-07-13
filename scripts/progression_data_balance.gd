@@ -2,17 +2,28 @@ extends RefCounted
 
 # SCRUM-198: balance model, economy curve and drop-scaling constants. No value changes.
 
+# FAN-1031 3c-c: пер-классовый numeric down-tune перекормленных верхов делается
+# ЗДЕСЬ (damage_budget/solo_target/aoe_target), а НЕ через weapon.damage_multiplier.
+# Причина (проверено пробой progression_data.gd::budget_tuning_for): живой урон =
+# damage_multiplier × budget_damage_multiplier, где budget_damage_multiplier
+# авто-компенсирует damage_multiplier до формульной цели (solo_target/aoe_target ×
+# damage_budget) с клампом [0.28, 2.80]. Т.е. правка weapon.damage_multiplier сама по
+# себе живой DPS почти не двигает (кроме клампнутых оружий), а вот сдвиг цели профиля
+# двигает живой per-hit по ВСЕМ каналам (solo/aoe/crowd) И реебейзит формульный
+# smoke-гейт (остаётся зелёным). Crowd-ось при этом падает пропорционально per-hit,
+# но её РАЗБЕГ (coverage: залп-по-цели/рой-по-цели/пирс-луч) формулой не бюджетится —
+# см. build/stage3c_c_numeric_fan1031.md (карта каналов + решение по coverage-капу).
 const CLASS_BUDGET_PROFILES := {
 	"berserk": {"profile": "balanced", "survival": "sturdy", "damage_budget": 1.00, "solo_target": 1.00, "aoe_target": 1.00},
 	"soldier": {"profile": "balanced", "survival": "steady", "damage_budget": 1.00, "solo_target": 1.00, "aoe_target": 1.00},
 	"thief": {"profile": "balanced", "survival": "fragile", "damage_budget": 1.08, "solo_target": 1.00, "aoe_target": 1.00},
-	"elementalist": {"profile": "aoe", "survival": "fragile", "damage_budget": 1.08, "solo_target": 1.00, "aoe_target": 1.10},
+	"elementalist": {"profile": "aoe", "survival": "fragile", "damage_budget": 0.88, "solo_target": 0.92, "aoe_target": 1.10},  # FAN-1031 3c-c: overbudget v4 total 3.41 (solo 1.20, aoe 2.02) → down-tune per-hit по всему киту; crowd orb_ring остаётся coverage (см. handoff)
 	"sniper": {"profile": "solo", "survival": "steady", "damage_budget": 1.00, "solo_target": 1.15, "aoe_target": 0.80},
 	"priest": {"profile": "balanced", "survival": "steady", "damage_budget": 0.92, "solo_target": 1.03, "aoe_target": 1.05},
 	"biologist": {"profile": "aoe", "survival": "fragile", "damage_budget": 1.08, "solo_target": 0.92, "aoe_target": 1.18},
 	"robot": {"profile": "balanced", "survival": "tank", "damage_budget": 0.88, "solo_target": 1.07, "aoe_target": 1.05},
 	"engineer": {"profile": "balanced", "survival": "steady", "damage_budget": 0.96, "solo_target": 0.98, "aoe_target": 1.12},
-	"dark_mage": {"profile": "aoe", "survival": "fragile", "damage_budget": 1.15, "solo_target": 0.84, "aoe_target": 1.30},
+	"dark_mage": {"profile": "aoe", "survival": "fragile", "damage_budget": 0.72, "solo_target": 0.66, "aoe_target": 1.30},  # FAN-1031 3c-c: overbudget v4 total 1.82 (solo 1.33 при цели 0.84 — сильнее всего над профилем) → per-hit down-tune; cursed_skull DoT режется отдельно (curse_tick_multiplier)
 	"guitarist": {"profile": "aoe", "survival": "control", "damage_budget": 1.00, "solo_target": 1.00, "aoe_target": 1.30},
 	"assassin": {"profile": "solo", "survival": "fragile", "damage_budget": 1.15, "solo_target": 1.30, "aoe_target": 0.70},
 	"ranger": {"profile": "solo", "survival": "fragile", "damage_budget": 1.15, "solo_target": 1.30, "aoe_target": 0.70},

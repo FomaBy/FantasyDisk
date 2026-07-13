@@ -828,6 +828,45 @@ SCRUM-1091 добавляет только presentation contract, не нову�
     ratio-проверка magic+phys+ожог, реальные конфиги, CONST-guard дефолтов no-op).
     `global_damage_balance_smoke` без изменений (worst CCT +21% — капы рантаймовые, ортогональны
     формульной бюджет-модели). Гейтов не ослаблял.
+- **FAN-1031 Stage 3c-c (2026-07-13) — numeric down-tune перекормленных верхов + druid kit-rebuild
+  (no-silent-retune).** Полный разбор + карта каналов + решение по coverage —
+  `build/stage3c_c_numeric_fan1031.md`.
+  - **Ключевая поправка рычага (проверено пробой `budget_tuning_for`).** Живой per-hit
+    direct-канала = `damage_multiplier × budget_damage_multiplier`, где `budget_damage_multiplier`
+    авто-компенсирует `damage_multiplier` до формульной цели (`solo_target·aoe_target·damage_budget`)
+    с клампом `[0.28, 2.80]`. Т.е. правка `weapon.damage_multiplier` сама по себе живой DPS почти
+    не двигает (кроме уже-клампнутых оружий), поэтому numeric верхов делается СДВИГОМ ЦЕЛИ ПРОФИЛЯ
+    (`CLASS_BUDGET_PROFILES`), а не weapon-множителем. Сдвиг цели двигает живой per-hit по ВСЕМ
+    каналам И реебейзит формульный smoke-гейт (остаётся зелёным).
+  - **dark_mage** `damage_budget 1.15→0.72`, `solo_target 0.84→0.66` (solo 1.33 — сильнее всего над
+    профилем 0.84). + `cursed_skull curse_tick_multiplier 0.58→0.36` (curse_only → budget-direct не
+    ведёт; единственный per-hit DoT-рычаг; зеркало `_budget_dot_dps` синхронно; int-скейл 0.08 цел).
+    Проекция total `1.82 → ~1.39` (solo `1.33→1.05`, aoe `2.58→1.97`, crowd `2.80→1.96`).
+  - **elementalist** `damage_budget 1.08→0.88`, `solo_target 1.00→0.92`. Проекция total `3.41 → ~2.71`
+    (solo `1.20→0.97`, aoe `2.02→1.58`); crowd `7.68` — orb_ring coverage-остаток (см. ниже).
+  - **druid kit-rebuild** (замер суммона самый шумный → калибровать A/B, live=направление): амулет
+    вниз `summon_damage_multiplier 1.85→0.85` + `summon_role 1.45→1.15` (pure_summon → bdm на нижнем
+    клампе 0.28, budget не ведёт; живой рычаг — summon-множители); briar из мёртвых
+    `briar_hit_multiplier 0.34→0.46` + `briar_hit_cap 5→6`; raven из мёртвых
+    `raven_damage_multiplier 0.85→1.35` + `amp_pulse_interval 1.10→0.95`. Проекция total `4.91 → ~2.18`
+    (crowd `11.22→4.36`; briar/raven перестают быть «мёртвыми» слотами после спада kit-mean амулета).
+  - **chemist / biologist — НЕ тронуты numeric'ом (сознательно).** Их crowd-разбег — НЕ per-hit
+    magnitude, а UNBUDGETED coverage: `_fire_aoe_projectile` льёт залп-по-цели (blast_powder), а
+    инфекция-DoT биолога = его identity («урон приходит со временем» — `biologist_kit_test` это
+    защищает; попытка срезать `curse_tick_multiplier` перевернула DoT<impact и провалила гейт →
+    откат). Формульно доказано: чтобы crowd chemist/biologist попал в коридор одним numeric, нужно
+    гробить solo/aoe оружий (blast solo 1t уже ок; biologist solo 0.75 на полу) → нарушение DoD
+    «оружие не игнорируется» / identity. Требуется РЕШЕНИЕ: (а) coverage-кап на залп-по-цели/пирс
+    (новый механизм, следующий slice) ЛИБО (б) принять crowd-лид AoE-специалистов как профиль
+    (`aoe_target 1.30/1.18` уже это санкционирует). Развёрнуто — в handoff.
+  - **Гейтов не ослаблял.** Новый focused A/B: `tests/stage3c_c_numeric_gate.gd` (profile down-tune
+    A/B по реальной `budget_tuning_for`, cursed_skull DoT anti-silent-retune замок, druid rebuild
+    направление). Регрессия PASS: `dark_mage_kit`, `elementalist_kit`, `druid_kit`, `biologist_kit`
+    (после отката), `chemist_kit`, `doctor_kit`, `class_budget_profiles_integrity`,
+    `global_damage_balance_smoke` (worst CCT +21% — без изменений), `damage_type_isolation`,
+    `content_registry_consistency`, `status_fanout_cap_gate`, `pool_target_cap_gate`,
+    `boss_hazard_cap_gate`, `orbit_falloff_cap_gate`, `progression_data_api_surface`,
+    `contact_damage_softcap`. Живой пересъём CSV (направление проекций) — за интерактивной полосой.
 
 ## Known Balance Risks
 
