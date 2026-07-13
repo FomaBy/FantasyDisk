@@ -1,6 +1,6 @@
 # Technical Architecture
 
-Обновлено: 2026-06-17 (0.1.6)
+Обновлено: 2026-07-13 (0.2.1 quality/performance pass)
 
 Этот файл кратко описывает runtime architecture FantasyDisk для будущих Back-end задач.
 
@@ -23,8 +23,12 @@
   checkpoint autosaves (`user://fantasydisk_autosave.cfg`), with schema checks
   and atomic `.tmp` writes.
 - `scripts/feedback_reporter.gd`: in-game feedback/bug-report delivery helper
-  for Discord-compatible webhook multipart sends plus `user://feedback/` local
-  fallback reports.
+  for explicitly configured Discord-compatible webhook sends plus checked
+  `user://feedback/` local fallback reports. Client exports never contain a
+  webhook credential; production network delivery requires a server-side relay.
+- `scripts/scene_contracts.gd`: typed PackedScene instantiation boundary for
+  configurable Node2D spawners; wrong-root scenes fail locally without a null
+  dereference or orphan instance.
 
 `scripts/class_weapon.gd` owns non-Berserk class weapon runtime behavior. SCRUM-196
 replaced the old long `attack_mode` dispatch match with `ATTACK_MODE_EXECUTORS`,
@@ -91,15 +95,24 @@ Use groups for temporary runtime nodes:
 - Artifact HUD rebuilds only when artifact list changes.
 - Enemy HP bars redraw only when HP changes.
 - Avoid per-frame `get_node_or_null`/`get_nodes_in_group` in large enemy loops where cached references or limited scans are practical.
+- `CombatTargetQuery.enemies()` owns the once-per-frame enemy-group snapshot;
+  separation refreshes reuse it and keep at most four neighbors per enemy.
+- Status hot paths use scalar reads (`StatusEffects.status_value`) rather than a
+  deep snapshot; DoT method-signature introspection runs only when a tick is due.
 - Route map builds once per open, not every frame.
 
 ## Tests
 
-Main umbrella check:
+Unified required check:
 
 ```bash
-/Users/sergeyfomin/Downloads/Godot.app/Contents/MacOS/Godot --headless --path /Users/sergeyfomin/Documents/AI\ Agent --script res://tests/runtime_smoke_test.gd
+python3 tools/quality_gate.py
 ```
+
+It runs fast repository/Python guards plus an explicit reviewed Godot manifest,
+including derived smoke suites that first-line discovery cannot see. CI runs
+`--static-only`; local/release verification with the exact Godot 4.7 toolchain
+runs the full profile. See `docs/process/code_quality_and_performance.md`.
 
 Focused runtime smoke suites (SCRUM-202) reuse the umbrella helper/assertion layer and are intended for faster refactor regression checks:
 
@@ -173,5 +186,5 @@ crashes: `python3 tools/godot_gate.py --headless --path . --script res://tests/<
 Follow `docs/process/versioning_and_branching.md`:
 
 - `main` = stable released `0.1.x` line;
-- `dev` = active `0.2.x` working line; текущий sprint target — `0.2.0`;
+- `dev` = active `0.2.x` working line; текущий sprint target — `0.2.1`;
 - new feature work happens in `dev` unless explicitly stated otherwise.

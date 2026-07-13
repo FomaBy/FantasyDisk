@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Bounded-concurrency Godot runner (macOS-safe семафор через fcntl.flock).
+"""Bounded-concurrency Godot runner (POSIX and native Windows semaphore).
 
 Ограничивает число ОДНОВРЕМЕННЫХ headless-Godot процессов, чтобы пачка агентов,
 гоняющих smoke-тесты параллельно, не выжрала память и не словила OOM-kill (137).
@@ -12,20 +12,26 @@ Usage (как обычный Godot, аргументы прокидываютс�
 Env:
     FSD_GODOT_SLOTS   число слотов (по умолчанию 3)
     GODOT_BIN         путь к бинарю (по умолчанию ~/Downloads/Godot.app/Contents/MacOS/Godot)
-    FSD_GODOT_SEM_DIR каталог lock-файлов (по умолчанию /tmp/fsd_godot_sem)
+    FSD_GODOT_SEM_DIR каталог lock-файлов (по умолчанию системный temp)
     FSD_GODOT_MAXWAIT макс. ожидание слота в секундах (по умолчанию 2400)
     FSD_GODOT_BYPASS_ON_TIMEOUT=1 явный аварийный запуск без слота после таймаута
 """
 from __future__ import annotations
 
-import fcntl
 import os
 import subprocess
 import sys
+import tempfile
 import time
+from typing import BinaryIO
+
+if os.name == "nt":
+    import msvcrt
+else:
+    import fcntl
 
 SLOTS = max(1, int(os.getenv("FSD_GODOT_SLOTS", "3")))
-SEM_DIR = os.getenv("FSD_GODOT_SEM_DIR", "/tmp/fsd_godot_sem")
+SEM_DIR = os.getenv("FSD_GODOT_SEM_DIR", os.path.join(tempfile.gettempdir(), "fsd_godot_sem"))
 GODOT = os.getenv("GODOT_BIN", os.path.expanduser("~/Downloads/Godot.app/Contents/MacOS/Godot"))
 MAXWAIT = float(os.getenv("FSD_GODOT_MAXWAIT", "2400"))
 
@@ -64,6 +70,37 @@ def _ensure_import_cache(args: list[str]) -> int:
     return subprocess.call([GODOT, "--headless", "--path", project_path, "--import", "--quit"])
 
 
+def _prepare_lock_file(handle: BinaryIO) -> None:
+    """Windows byte-range locks require at least one byte in the file."""
+    if os.name != "nt":
+        return
+    handle.seek(0)
+    if handle.read(1) == b"":
+        handle.write(b"\0")
+        handle.flush()
+    handle.seek(0)
+
+
+def _try_lock(handle: BinaryIO) -> bool:
+    try:
+        if os.name == "nt":
+            handle.seek(0)
+            msvcrt.locking(handle.fileno(), msvcrt.LK_NBLCK, 1)
+        else:
+            fcntl.flock(handle.fileno(), fcntl.LOCK_EX | fcntl.LOCK_NB)
+    except (BlockingIOError, OSError):
+        return False
+    return True
+
+
+def _unlock(handle: BinaryIO) -> None:
+    if os.name == "nt":
+        handle.seek(0)
+        msvcrt.locking(handle.fileno(), msvcrt.LK_UNLCK, 1)
+    else:
+        fcntl.flock(handle.fileno(), fcntl.LOCK_UN)
+
+
 def main() -> int:
     os.makedirs(SEM_DIR, exist_ok=True)
     args = sys.argv[1:]
@@ -73,10 +110,9 @@ def main() -> int:
     deadline = time.time() + MAXWAIT
     while True:
         for i in range(SLOTS):
-            f = open(os.path.join(SEM_DIR, f"slot{i}.lock"), "w")
-            try:
-                fcntl.flock(f.fileno(), fcntl.LOCK_EX | fcntl.LOCK_NB)
-            except (BlockingIOError, OSError):
+            f = open(os.path.join(SEM_DIR, f"slot{i}.lock"), "a+b")
+            _prepare_lock_file(f)
+            if not _try_lock(f):
                 f.close()
                 continue
             # слот захвачен — гоним Godot, держим лок до конца процесса
@@ -86,7 +122,7 @@ def main() -> int:
                     return import_code
                 return subprocess.call([GODOT] + args)
             finally:
-                fcntl.flock(f.fileno(), fcntl.LOCK_UN)
+                _unlock(f)
                 f.close()
         if time.time() > deadline:
             if os.getenv("FSD_GODOT_BYPASS_ON_TIMEOUT", "") == "1":

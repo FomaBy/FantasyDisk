@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 # Прогон всех standalone smoke/integrity тестов (tests/*.gd, extends SceneTree)
-# headless через Godot, со сводкой pass/fail. Каждый тест — отдельный SceneTree
+# headless через общий Godot semaphore, со сводкой pass/fail. Каждый тест — отдельный SceneTree
 # со своим quit(0/1); процессный exit-код = вердикт.
 #
 # Использование:
@@ -66,7 +66,7 @@ START=$(date +%s)
 for path in "${TESTS[@]}"; do
 	name="$(basename "$path" .gd)"
 	rel="res://tests/$(basename "$path")"
-	out="$("$GODOT" --headless --path "$ROOT" --script "$rel" 2>&1)"
+	out="$(GODOT_BIN="$GODOT" python3 "$ROOT/tools/godot_gate.py" --headless --path "$ROOT" --script "$rel" 2>&1)"
 	code=$?
 	if [[ $code -eq 0 ]]; then
 		PASS=$((PASS + 1))

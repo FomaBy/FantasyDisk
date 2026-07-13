@@ -30,23 +30,33 @@ bash scripts/onboard.sh
 
 Работай в `dev`: правки → коммит → push в `dev`. На другой машине — `git pull`.
 
-## Headless smoke-тесты
-macOS:
+## Quality / headless gate
+
+Полный обязательный локальный gate (Godot 4.7 + Python + Windows/static guards):
 ```bash
-~/Downloads/Godot.app/Contents/MacOS/Godot --headless --path . --script res://tests/runtime_smoke_test.gd
+python3 tools/quality_gate.py
 ```
-Windows (путь под свою установку Godot):
+
+Если Godot не найден автоматически, укажи бинарь явно. Одна и та же команда
+работает на macOS и Windows; каждый runtime suite проходит через общий semaphore:
 ```powershell
-& "C:\Godot\Godot_v4.7-stable_win64.exe" --headless --path . --script res://tests/runtime_smoke_test.gd
+$env:GODOT_BIN = "C:\Godot\Godot_v4.7-stable_win64.exe"
+python tools/quality_gate.py
 ```
-Другие наборы: `animation_smoke_test.gd`, `attack_vfx_smoke_test.gd`, `meta_smoke_test.gd`, `ui_no_overlap_matrix_test.gd`.
+Быстрый CI-safe профиль без Godot: `python3 tools/quality_gate.py --static-only`.
+Focused-запуск: `python3 tools/godot_gate.py --headless --path . --script
+res://tests/<suite>.gd`. Основные наборы: `runtime_smoke_test.gd`,
+`animation_smoke_test.gd`, `meta_progression_smoke_test.gd`,
+`melee_weapon_targeting_test.gd`, `ui_no_overlap_matrix_test.gd`.
 `ui_no_overlap_matrix_test.gd` является UI render gate: открывает экраны headless
 на 1080p/2K/4K, ловит overflow текста, overlap контролов и некорректный stretch
 точноразмерных UI frame TextureRect.
 
 ## Локальные секреты (НЕ в git — создать на каждой машине)
-Эти файлы в `.gitignore`; нужны только для фидбека/релиза, на саму игру не влияют:
-- `feedback_webhook.cfg` — Discord-webhook внутриигрового фидбека (шаблон: `feedback_webhook.cfg.example`).
+Эти файлы в `.gitignore`; нужны только для dev-фидбека/релиза, на саму игру не влияют:
+- `feedback_webhook.cfg` — локальный dev-webhook (шаблон: `feedback_webhook.cfg.example`).
+  Credential никогда не встраивается в клиент; без server-side relay player build
+  сохраняет отчёт в `user://feedback`.
 - `release_webhook.cfg` — Discord-webhook публикации релизов.
 - `fantasydisk_release.session` — Telethon-сессия (создаётся при первом логине).
 
