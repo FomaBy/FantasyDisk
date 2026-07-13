@@ -17,7 +17,7 @@ const CLASS_BUDGET_PROFILES := {
 	"berserk": {"profile": "balanced", "survival": "sturdy", "damage_budget": 1.00, "solo_target": 1.00, "aoe_target": 1.00},
 	"soldier": {"profile": "balanced", "survival": "steady", "damage_budget": 1.00, "solo_target": 1.00, "aoe_target": 1.00},
 	"thief": {"profile": "balanced", "survival": "fragile", "damage_budget": 1.08, "solo_target": 1.00, "aoe_target": 1.00},
-	"elementalist": {"profile": "aoe", "survival": "fragile", "damage_budget": 0.88, "solo_target": 0.92, "aoe_target": 1.10},  # FAN-1031 3c-c: overbudget v4 total 3.41 (solo 1.20, aoe 2.02) → down-tune per-hit по всему киту; crowd orb_ring остаётся coverage (см. handoff)
+	"elementalist": {"profile": "aoe", "survival": "fragile", "damage_budget": 0.82, "solo_target": 0.92, "aoe_target": 1.10},  # FAN-1031 3c-c: down-tune per-hit по всему киту (v4 total 3.41). 3c-final: crowd orb_ring теперь режется ЖЁСТКИМ orbit_max_targets (coverage); damage_budget 0.88→0.82 добивает solo/aoe-остаток к total ≤1.5. Калибровать по live (осторожно с двойным нерфом crowd-оси — width-кап уже её срезал)
 	"sniper": {"profile": "solo", "survival": "steady", "damage_budget": 1.00, "solo_target": 1.15, "aoe_target": 0.80},
 	"priest": {"profile": "balanced", "survival": "steady", "damage_budget": 0.92, "solo_target": 1.03, "aoe_target": 1.05},
 	"biologist": {"profile": "aoe", "survival": "fragile", "damage_budget": 1.08, "solo_target": 0.92, "aoe_target": 1.18},

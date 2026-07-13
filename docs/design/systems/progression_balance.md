@@ -867,6 +867,52 @@ SCRUM-1091 добавляет только presentation contract, не нову�
     `content_registry_consistency`, `status_fanout_cap_gate`, `pool_target_cap_gate`,
     `boss_hazard_cap_gate`, `orbit_falloff_cap_gate`, `progression_data_api_surface`,
     `contact_damage_softcap`. Живой пересъём CSV (направление проекций) — за интерактивной полосой.
+- **FAN-1031 Stage 3c-final (2026-07-13) — data-driven ЖЁСТКИЙ кап ШИРИНЫ (coverage) крауд-каналов
+  + профилировка корня crowd-runaway (no-silent-retune).** Полный разбор + профиль-таблицы + карта
+  каналов — `build/stage3c_final_coverage_fan1031.md`. Решение координатора (2026-07-13): «резать
+  ШИРИНУ, не выгрызать per-hit» для chemist/biologist coverage.
+  - **Профилировка (ground truth, счётчики в `_damage_enemy`/`_fire_aoe_projectile`, 150-кадровое окно).**
+    Разложил crowd-runaway blast_powder (chemist) 1→20 целей: hits `6→2585`, per_hit `230→38`
+    (диминиш УЖЕ капнул per-hit), а число событий взрыва раздуто ДВУМЯ факторами: (1) coverage —
+    каждый взрыв покрывает весь фи-таксис-диск (radius@ideal 226 > диск 171); (2) **cast-inflation:
+    casts `6→68` при том же числе кадров.** Оружие фаирит в `_process(delta)` по `_cooldown -= delta`
+    с variable delta; тяжёлый кадр (20 целей → много событий/твинов) → больше game-time на
+    `await process_frame` → БОЛЬШЕ кастов на фикс-окно харнеса (`_measure_dps` делит на константу
+    `WINDOW_SECONDS=8.0`, а не на реальную сумму delta). **Т.е. живой crowd 20t частично —
+    measurement-артефакт frame-time-under-load** (объясняет и экстремальные числа, и 12× run-to-run
+    шум, ранее списанный на FAN-1039). Свежий single-pair live-пересъём blast: 20t≈483k совпал с
+    committed CSV, но 5t качнулся `8.4k→108k` (12.8×) — тот же артефакт. **Рекомендация лидеру:**
+    судить crowd по детерминированным per-cast-coverage/формуле ЛИБО починить харнес (нормировать на
+    реальную сумму delta / фикс-timestep) — иначе догон живого crowd_norm 1.56 = over-nerf реального
+    геймплея. Харнес не трогал (сломал бы всю прежнюю v1–v5 калибровку) — это решение лидера.
+  - **Механизм.** Per-weapon поля `aoe_max_targets` / `pool_max_targets` / `status_max_targets` /
+    `orbit_max_targets` (сентинел `<0` → без потолка → нулевое изменение поведения, A/B-контроль).
+    Ближние N целей (по дистанции от центра) получают урон/статус, дальше — НОЛЬ. Ортогонален
+    диминиш-капам (те режут per-hit ДО потолка; композиция проверена гейтом). Проведён в
+    `_damage_enemies_in_circle_capped` (aoe), `_damage_enemies_in_pool` (pool-тик), `_status_fanout_factor`
+    (spore/symbiote/skull/acid-charge), `_orbit_fanout_factor` (тик квадрата). Режет и реальную crowd-clear,
+    и frame-load → де-инфлирует живой замер (двойной выигрыш на артефакт-метрике).
+  - **Override (старт, калибровать по live crowd_norm ≤1.56).** blast_powder `aoe_max_targets=6`;
+    acid_flask `pool_max_targets=6` (заряды-статус не тронуты — свой кап стаков); biologist_spore_lens
+    / biologist_symbiote_seed `status_max_targets=6` (прямой ring-урон не тронут); elementalist_orb_ring
+    `orbit_max_targets=6`. After-профиль (детерминированный direct-канал): blast hits/expl `18.9→6.0`
+    (−68% событий, damage −10% т.к. хвост был диминиш-мал), acid pool-тик −20%, orb −33%; инфекция-DoT
+    spore/symbiote режется по ширине (DoT-тик идёт через StatusEffects, вне direct-профиля). Identity
+    «специалист по толпе» цела (профиль санкционирует crowd-лид до 1.2×aoe_target; 1t/малый пак rank<6
+    не тронуты).
+  - **elementalist** `damage_budget 0.88→0.82` (3c-c residual, item 2): crowd orb_ring теперь режется
+    orbit_max (coverage), budget-нудж добивает solo/aoe к total ≤1.5. Калибровать по live (осторожно
+    с двойным нерфом crowd-оси — width-кап её уже срезал).
+  - **Гейтов не ослаблял.** Новый focused A/B: `tests/coverage_cap_gate.gd` (helper hard-cap + композиция
+    с диминишем, сентинел-контроль, интеграция aoe/pool + A/B, реальные конфиги «поверх диминиша»,
+    дефолт-guard). Регрессия PASS: `chemist_kit`, `biologist_kit`, `elementalist_kit`, `doctor_kit`,
+    `dark_mage_kit`, `druid_kit`, `orbit_falloff_cap_gate`, `status_fanout_cap_gate`, `pool_target_cap_gate`,
+    `boss_hazard_cap_gate`, `class_budget_profiles_integrity`, `damage_type_isolation`,
+    `content_registry_consistency`, `progression_data_api_surface`, `contact_damage_softcap`,
+    `global_damage_balance_smoke` (worst CCT +21% — без изменений: капы рантаймовые, elementalist
+    budget-нудж реебейзил формулу зелёно), `runtime_smoke`. **3b дно-киты (guitarist/assassin/raven) —
+    сознательно НЕ начаты** (deferred): их «raw ниже сатурации» судится по той же frame-inflated
+    crowd-оси; буст к артефакт-инфлированному верху = over-buff. Разумнее после решения по методике.
 
 ## Known Balance Risks
 

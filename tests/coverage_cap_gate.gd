@@ -1,0 +1,312 @@
+extends SceneTree
+
+# FAN-1031 3c(final): data-driven ЖЁСТКИЙ кап ШИРИНЫ (coverage) крауд-fan-out каналов.
+#
+# Контекст. Диминиш-капы (S1 прямой AoE, 3c-a пул, 3c-b status, 3c-b2 orbit/falloff) режут
+# PER-HIT дальних целей, но урон/статус ещё РАЗДАЁТСЯ каждой цели в зоне (N событий).
+# Профилировка перекормленных AoE-верхов (build/stage3c_final_coverage_fan1031.md) показала,
+# что их crowd-runaway — это ШИРИНА: у blast_powder число событий взрыва на окно растёт
+# 6→2585 при 1→20 целях, а PER-HIT УЖЕ капнут диминишем (230→38). Продуктовое решение
+# координатора (2026-07-13): «резать ШИРИНУ, не выгрызать per-hit».
+#
+# Механизм. Per-weapon поля aoe_max_targets / pool_max_targets / status_max_targets /
+# orbit_max_targets кладут ЖЁСТКИЙ потолок: ближние N целей (по дистанции от центра) получают
+# урон/статус, дальше — НОЛЬ. Сентинел <0 → без потолка → нулевое изменение поведения (A/B).
+# Ортогонален диминиш-капам (те режут per-hit хвоста ДО потолка). 1t / малый пак (rank<N) целы.
+#
+# Гейт — лёгкий, детерминированный (единичные вызовы helper'ов/пайплайнов, без 480-кадрового
+# DPS-сима):
+#   1. _status_fanout_factor / _orbit_fanout_factor: *_max_targets=3 → rank<3 полный, rank>=3
+#      НОЛЬ; кап композится с диминишем (full=1/diminish=1.0 → rank1=0.5, rank2=0.333, rank3+=0);
+#   2. сентинел-контроль: без *_max_targets — factor НИКОГДА не 0 от капа (все ранги >0);
+#   3. интеграция _damage_enemies_in_circle_capped: aoe_max_targets=3 → ровно 3 ближайших
+#      получают урон, дальний хвост НОЛЬ; control (A/B) без override → все получают;
+#   4. интеграция _damage_enemies_in_pool: pool_max_targets=3 (те же 3 + zero-tail); control;
+#   5. реальные конфиги: blast aoe_max=6, acid pool_max=6, spore/symbiote status_max=6,
+#      orb_ring orbit_max=6 — и НЕ затёрты существующие диминиш-капы (composable);
+#   6. дефолт-guard: свежее оружие несёт *_max_targets == -1 (нет молчаливого потолка).
+#
+# Запуск: Godot --headless --path . --script res://tests/coverage_cap_gate.gd
+
+const ClassWeapon := preload("res://scripts/class_weapon.gd")
+const PD := preload("res://scripts/progression_data.gd")
+
+const EPS := 0.02
+
+
+class MockOwner extends CharacterBody2D:
+	var derived_parameters := {
+		"damage": 100.0,
+		"magic_damage": 100.0,
+		"crit_chance": 0.0,
+		"crit_damage_multiplier": 1.0,
+		"dot_damage": 10.0,
+		"dot_speed": 1.0,
+	}
+	var run_modifiers := {}
+	var stats := {}
+	var health := 100.0
+	var max_health := 100.0
+
+	func class_trait_value(_key: String, default_value := 0.0) -> float:
+		return default_value
+
+
+class MockEnemy extends Node2D:
+	var total_damage := 0.0
+	var hit_count := 0
+
+	func take_damage(amount: float) -> void:
+		total_damage += amount
+		hit_count += 1
+
+
+func _initialize() -> void:
+	seed(20260713)
+	# Sanity: непортированный ассет → class_weapon.gd не скомпилируется → ClassWeapon.new()
+	# вернёт null; гейт обязан упасть громко, а не «пройти» вхолостую (урок 3c-a).
+	var probe = ClassWeapon.new()
+	if probe == null:
+		push_error("Coverage cap (FAN-1031 3c-final): ClassWeapon.new() → null (class_weapon.gd не скомпилировался) — гейт недействителен.")
+		quit(1)
+		return
+	probe.free()
+
+	var errors: Array = []
+	await _test_status_helper_hardcap(errors)
+	await _test_orbit_helper_hardcap(errors)
+	await _test_helpers_sentinel_control(errors)
+	await _test_aoe_integration(errors)
+	await _test_aoe_integration_control(errors)
+	await _test_pool_integration(errors)
+	await _test_pool_integration_control(errors)
+	_test_real_configs_and_defaults(errors)
+
+	if not errors.is_empty():
+		for error in errors:
+			push_error("Coverage cap (FAN-1031 3c-final): %s" % str(error))
+		push_error("Coverage cap gate failed with %d error(s)." % errors.size())
+		quit(1)
+		return
+	print("Coverage cap gate passed (FAN-1031 3c-final: data-driven hard WIDTH cap on aoe/pool/status/orbit crowd channels, composes with diminish, sentinel control, real configs).")
+	quit(0)
+
+
+# --- helpers ------------------------------------------------------------------
+
+
+func _new_scene(name: String) -> Node2D:
+	var holder := Node2D.new()
+	holder.name = name
+	root.add_child(holder)
+	current_scene = holder
+	return holder
+
+
+func _new_owner(holder: Node2D, position: Vector2) -> MockOwner:
+	var owner := MockOwner.new()
+	holder.add_child(owner)
+	owner.global_position = position
+	return owner
+
+
+func _new_weapon(owner: MockOwner, config: Dictionary) -> ClassWeapon:
+	var weapon := ClassWeapon.new()
+	owner.add_child(weapon)
+	weapon.configure_weapon(config)
+	weapon.set_process(false)
+	return weapon
+
+
+# Цели с растущим удалением от центра: rank = удалённость (шаг мал, все в зоне).
+func _spawn_ranks(holder: Node2D, origin: Vector2, count: int) -> Array:
+	var ranks: Array = []
+	for k in range(count):
+		var enemy := MockEnemy.new()
+		holder.add_child(enemy)
+		enemy.global_position = origin + Vector2(float(k) * 16.0, 0.0)
+		enemy.add_to_group("enemies")
+		ranks.append(enemy)
+	return ranks
+
+
+func _cleanup(holder: Node2D) -> void:
+	holder.queue_free()
+	await process_frame
+
+
+# --- tests --------------------------------------------------------------------
+
+
+# 1a. _status_fanout_factor: hard-cap 3, composes with diminish full=1/1.0.
+func _test_status_helper_hardcap(errors: Array) -> void:
+	var holder := _new_scene("StatusHardCap")
+	var owner := _new_owner(holder, Vector2(1000, 1000))
+	var weapon := _new_weapon(owner, {
+		"id": "probe", "attack_mode": "aoe_projectile", "damage_parameter": "magic_damage",
+		"status_full_targets": 1, "status_target_diminish": 1.0, "status_max_targets": 3,
+	})
+	if weapon.status_max_targets != 3:
+		errors.append("status hard-cap: конфиг не загрузился (status_max_targets=%d; ждали 3)" % weapon.status_max_targets)
+	# rank0=1.0 (full), rank1=1/(1+1)=0.5, rank2=1/(1+2)=0.333, rank3+=0.0 (hard-cap).
+	var expected := {0: 1.0, 1: 0.5, 2: 1.0 / 3.0, 3: 0.0, 4: 0.0, 10: 0.0}
+	for rank in expected.keys():
+		var got: float = weapon.call("_status_fanout_factor", rank)
+		if absf(got - float(expected[rank])) > 0.001:
+			errors.append("status factor rank %d = %.4f != %.4f (hard-cap+diminish композиция)" % [rank, got, float(expected[rank])])
+	await _cleanup(holder)
+
+
+# 1b. _orbit_fanout_factor: hard-cap 3 без диминиша (default 0) → rank<3 = 1.0, rank>=3 = 0.
+func _test_orbit_helper_hardcap(errors: Array) -> void:
+	var holder := _new_scene("OrbitHardCap")
+	var owner := _new_owner(holder, Vector2(1000, 1000))
+	var weapon := _new_weapon(owner, {
+		"id": "probe", "attack_mode": "elemental_orbit", "damage_parameter": "magic_damage",
+		"orbit_max_targets": 3,
+	})
+	if weapon.orbit_max_targets != 3:
+		errors.append("orbit hard-cap: конфиг не загрузился (orbit_max_targets=%d; ждали 3)" % weapon.orbit_max_targets)
+	var expected := {0: 1.0, 1: 1.0, 2: 1.0, 3: 0.0, 4: 0.0, 19: 0.0}
+	for rank in expected.keys():
+		var got: float = weapon.call("_orbit_fanout_factor", rank)
+		if absf(got - float(expected[rank])) > 0.001:
+			errors.append("orbit factor rank %d = %.4f != %.4f (hard-cap без диминиша)" % [rank, got, float(expected[rank])])
+	await _cleanup(holder)
+
+
+# 2. Сентинел-контроль: без *_max_targets — factor НИКОГДА не обнуляется капом.
+func _test_helpers_sentinel_control(errors: Array) -> void:
+	var holder := _new_scene("SentinelControl")
+	var owner := _new_owner(holder, Vector2(1000, 1000))
+	var weapon := _new_weapon(owner, {
+		"id": "probe", "attack_mode": "aoe_projectile", "damage_parameter": "damage",
+	})
+	if weapon.status_max_targets != -1 or weapon.orbit_max_targets != -1 \
+			or weapon.aoe_max_targets != -1 or weapon.pool_max_targets != -1:
+		errors.append("сентинел-контроль: *_max_targets не -1 (aoe %d pool %d status %d orbit %d) — контракт сломан" % [weapon.aoe_max_targets, weapon.pool_max_targets, weapon.status_max_targets, weapon.orbit_max_targets])
+	for rank in [0, 1, 3, 10, 19]:
+		var gs: float = weapon.call("_status_fanout_factor", rank)
+		var go: float = weapon.call("_orbit_fanout_factor", rank)
+		if gs <= 0.0:
+			errors.append("сентинел status rank %d = %.4f (кап душит без override)" % [rank, gs])
+		if go <= 0.0:
+			errors.append("сентинел orbit rank %d = %.4f (кап душит без override)" % [rank, go])
+	await _cleanup(holder)
+
+
+# 3. Интеграция _damage_enemies_in_circle_capped: aoe_max=3 → 3 ближайших получают, хвост НОЛЬ.
+#    full=1/diminish=0 → у 3 нетронутых полный amount (изолируем именно кап ширины).
+func _test_aoe_integration(errors: Array) -> void:
+	var holder := _new_scene("AoeIntegration")
+	var owner := _new_owner(holder, Vector2(1000, 1000))
+	var weapon := _new_weapon(owner, {
+		"id": "probe", "attack_mode": "aoe_projectile", "damage_parameter": "damage",
+		"aoe_max_targets": 3,
+	})
+	var center: Vector2 = owner.global_position
+	var ranks := _spawn_ranks(holder, center, 6)
+	await process_frame
+	var amount := 200.0
+	weapon.call("_damage_enemies_in_circle_capped", center, 400.0, amount, 1, 0.0)
+	for rank in range(6):
+		var got: float = (ranks[rank] as MockEnemy).total_damage
+		var want := amount if rank < 3 else 0.0
+		if absf(got - want) > EPS:
+			errors.append("aoe integration rank %d dmg=%.3f != %.3f (жёсткий кап ширины не проведён)" % [rank, got, want])
+	await _cleanup(holder)
+
+
+# 4. Интеграция aoe control (A/B): без override → ВСЕ 6 целей получают полный amount.
+func _test_aoe_integration_control(errors: Array) -> void:
+	var holder := _new_scene("AoeControl")
+	var owner := _new_owner(holder, Vector2(1000, 1000))
+	var weapon := _new_weapon(owner, {
+		"id": "probe", "attack_mode": "aoe_projectile", "damage_parameter": "damage",
+	})
+	var center: Vector2 = owner.global_position
+	var ranks := _spawn_ranks(holder, center, 6)
+	await process_frame
+	var amount := 200.0
+	weapon.call("_damage_enemies_in_circle_capped", center, 400.0, amount, 1, 0.0)
+	for rank in range(6):
+		var got: float = (ranks[rank] as MockEnemy).total_damage
+		if absf(got - amount) > EPS:
+			errors.append("aoe control rank %d dmg=%.3f != %.3f — без override ширина не должна капиться (A/B-регресс)" % [rank, got, amount])
+	await _cleanup(holder)
+
+
+# 5. Интеграция _damage_enemies_in_pool: pool_max=3 → 3 ближайших тикают, хвост НОЛЬ.
+#    pool_full=1/diminish=0 → нетронутые получают полный amount (изолируем кап ширины).
+func _test_pool_integration(errors: Array) -> void:
+	var holder := _new_scene("PoolIntegration")
+	var owner := _new_owner(holder, Vector2(1000, 1000))
+	var weapon := _new_weapon(owner, {
+		"id": "probe", "attack_mode": "aoe_projectile", "damage_parameter": "damage",
+		"pool_full_targets": 1, "pool_target_diminish": 0.0, "pool_max_targets": 3,
+	})
+	var center: Vector2 = owner.global_position
+	var ranks := _spawn_ranks(holder, center, 6)
+	await process_frame
+	var amount := 150.0
+	weapon.call("_damage_enemies_in_pool", center, 400.0, amount, null)
+	for rank in range(6):
+		var got: float = (ranks[rank] as MockEnemy).total_damage
+		var want := amount if rank < 3 else 0.0
+		if absf(got - want) > EPS:
+			errors.append("pool integration rank %d dmg=%.3f != %.3f (жёсткий кап ширины лужи не проведён)" % [rank, got, want])
+	await _cleanup(holder)
+
+
+# 6. Интеграция pool control (A/B): без override → ВСЕ 6 целей тикают полным amount.
+func _test_pool_integration_control(errors: Array) -> void:
+	var holder := _new_scene("PoolControl")
+	var owner := _new_owner(holder, Vector2(1000, 1000))
+	var weapon := _new_weapon(owner, {
+		"id": "probe", "attack_mode": "aoe_projectile", "damage_parameter": "damage",
+		"pool_full_targets": 1, "pool_target_diminish": 0.0,
+	})
+	var center: Vector2 = owner.global_position
+	var ranks := _spawn_ranks(holder, center, 6)
+	await process_frame
+	var amount := 150.0
+	weapon.call("_damage_enemies_in_pool", center, 400.0, amount, null)
+	for rank in range(6):
+		var got: float = (ranks[rank] as MockEnemy).total_damage
+		if absf(got - amount) > EPS:
+			errors.append("pool control rank %d dmg=%.3f != %.3f — без override ширина лужи не должна капиться (A/B-регресс)" % [rank, got, amount])
+	await _cleanup(holder)
+
+
+# 7/8. Реальные конфиги (width-кап проведён + композится с диминишем) + дефолт-guard.
+func _test_real_configs_and_defaults(errors: Array) -> void:
+	# blast_powder: aoe_max=6 ПОВЕРХ диминиш-капа 4/3.0 (оба живы).
+	var blast: Dictionary = PD.weapon("chemist", "blast_powder")
+	if int(blast.get("aoe_max_targets", -1)) != 6:
+		errors.append("blast_powder aoe_max_targets != 6 (silent-retune?): %s" % str(blast.get("aoe_max_targets", -1)))
+	if int(blast.get("aoe_full_targets", -1)) != 4 or absf(float(blast.get("aoe_target_diminish", -1.0)) - 3.0) > 0.001:
+		errors.append("blast_powder диминиш-кап затёрт width-капом (ждали 4/3.0): %s/%s" % [str(blast.get("aoe_full_targets")), str(blast.get("aoe_target_diminish"))])
+	# acid_flask: pool_max=6 ПОВЕРХ pool_target_diminish=3.0.
+	var acid: Dictionary = PD.weapon("chemist", "acid_flask")
+	if int(acid.get("pool_max_targets", -1)) != 6:
+		errors.append("acid_flask pool_max_targets != 6: %s" % str(acid.get("pool_max_targets", -1)))
+	if absf(float(acid.get("pool_target_diminish", -1.0)) - 3.0) > 0.001:
+		errors.append("acid_flask pool_target_diminish затёрт (ждали 3.0): %s" % str(acid.get("pool_target_diminish")))
+	# biologist spore/symbiote: status_max=6 ПОВЕРХ status 4/1.0.
+	for wid in ["biologist_spore_lens", "biologist_symbiote_seed"]:
+		var bio: Dictionary = PD.weapon("biologist", wid)
+		if int(bio.get("status_max_targets", -1)) != 6:
+			errors.append("%s status_max_targets != 6: %s" % [wid, str(bio.get("status_max_targets", -1))])
+		if int(bio.get("status_full_targets", -1)) != 4 or absf(float(bio.get("status_target_diminish", -1.0)) - 1.0) > 0.001:
+			errors.append("%s status диминиш-кап затёрт (ждали 4/1.0): %s/%s" % [wid, str(bio.get("status_full_targets")), str(bio.get("status_target_diminish"))])
+	# elementalist orb_ring: orbit_max=6 ПОВЕРХ orbit 3/1.0.
+	var orb: Dictionary = PD.weapon("elementalist", "elementalist_orb_ring")
+	if int(orb.get("orbit_max_targets", -1)) != 6:
+		errors.append("orb_ring orbit_max_targets != 6: %s" % str(orb.get("orbit_max_targets", -1)))
+	if int(orb.get("orbit_full_targets", -1)) != 3 or absf(float(orb.get("orbit_target_diminish", -1.0)) - 1.0) > 0.001:
+		errors.append("orb_ring orbit диминиш-кап затёрт (ждали 3/1.0): %s/%s" % [str(orb.get("orbit_full_targets")), str(orb.get("orbit_target_diminish"))])
+	# Дефолт-guard: оружие БЕЗ override не несёт молчаливого потолка.
+	var plain: Dictionary = PD.weapon("berserk", "sword")
+	for field in ["aoe_max_targets", "pool_max_targets", "status_max_targets", "orbit_max_targets"]:
+		if plain.has(field):
+			errors.append("berserk/sword несёт %s=%s — нецелевое оружие не должно иметь width-кап" % [field, str(plain.get(field))])

@@ -237,6 +237,22 @@ const ATTACK_MODE_EXECUTORS := {
 @export var falloff_target_diminish := -1.0
 @export var orbit_full_targets := -1
 @export var orbit_target_diminish := -1.0
+
+# FAN-1031 3c(final): data-driven ЖЁСТКИЙ кап ШИРИНЫ (coverage) крауд-fan-out каналов.
+# Диминиш-капы (S1/пул/status/orbit) режут per-hit ДАЛЬНИХ целей, но урон ещё раздаётся
+# КАЖДОЙ цели в зоне (N событий _damage_enemy). Профилировка (build/stage3c_final_*.md)
+# показала: у перекормленных AoE-верхов crowd-runaway — это ШИРИНА (число одновременных
+# хитов на каст 6→2585 у blast_powder 1→20 целей; per-hit УЖЕ капнут диминишем 230→38),
+# усиленная тем, что тяжёлый кадр (много событий) раздувает и живой замер (`_process`
+# фаирит по variable delta). Продуктовое решение координатора (2026-07-13): «резать ШИРИНУ,
+# не выгрызать per-hit». Эти поля кладут ЖЁСТКИЙ потолок на число целей канала: ближние
+# N (по дистанции от центра) получают урон/статус, дальше — НОЛЬ. Identity «специалист по
+# толпе» цела (профиль санкционирует crowd-лид до 1.2×aoe_target); 1t/малый пак (rank<N)
+# не тронуты → нулевое изменение solo. Сентинел <0 → без потолка (прежнее поведение, A/B).
+@export var aoe_max_targets := -1     # кап _damage_enemies_in_circle_capped (прямой AoE-взрыв)
+@export var pool_max_targets := -1    # кап _damage_enemies_in_pool (тик лужи)
+@export var status_max_targets := -1  # кап _status_fanout_factor (крауд-DoT/статусы)
+@export var orbit_max_targets := -1   # кап _orbit_fanout_factor (тик квадрата орбит)
 # SCRUM-944: полупрозрачная наземная лужа (visual-polish кислотной колбы).
 @export var pool_translucent := false
 # SCRUM-944: перманентные контактные заряды лужи — один вечный DoT-заряд с КАЖДОЙ
@@ -568,6 +584,11 @@ func configure_weapon(config: Dictionary) -> void:
 	falloff_target_diminish = float(config.get("falloff_target_diminish", falloff_target_diminish))
 	orbit_full_targets = int(config.get("orbit_full_targets", orbit_full_targets))
 	orbit_target_diminish = float(config.get("orbit_target_diminish", orbit_target_diminish))
+	# FAN-1031 3c(final): жёсткий кап ШИРИНЫ (coverage) крауд-fan-out каналов.
+	aoe_max_targets = int(config.get("aoe_max_targets", aoe_max_targets))
+	pool_max_targets = int(config.get("pool_max_targets", pool_max_targets))
+	status_max_targets = int(config.get("status_max_targets", status_max_targets))
+	orbit_max_targets = int(config.get("orbit_max_targets", orbit_max_targets))
 	plague_duration = float(config.get("plague_duration", plague_duration))
 	plague_tick_interval = float(config.get("plague_tick_interval", plague_tick_interval))
 	plague_tick_ratio = float(config.get("plague_tick_ratio", plague_tick_ratio))
@@ -4099,7 +4120,13 @@ func _bio_spore_pulse(owner_id: int, target_id: int, stored_center: Vector2, dir
 	# ниже НЕ трогаем — ранжируем в дубликате).
 	var infect_order := _status_fanout_order(impact_center, ring_targets)
 	for rank in range(infect_order.size()):
-		_apply_bio_infection(infect_order[rank] as Node2D, current_owner, _status_fanout_factor(rank))
+		var infect_factor := _status_fanout_factor(rank)
+		# FAN-1031 3c(final): жёсткий кап ШИРИНЫ — за status_max_targets factor==0 → дальний
+		# хвост толпы вообще не заражается (order отсортирован по дистанции → break). Без
+		# override factor>0 всегда → цикл не прерывается (нулевое изменение поведения).
+		if infect_factor <= 0.0:
+			break
+		_apply_bio_infection(infect_order[rank] as Node2D, current_owner, infect_factor)
 	if pulse_index == pulse_count - 1 and not ring_targets.is_empty():
 		var bloom_result := _constellation_event("final_ring", ring_targets[0] as Node2D, 0.0)
 		if bool(bloom_result.get("triggered", false)):
@@ -4218,7 +4245,12 @@ func _germinate_symbiote_seed(owner_id: int, center: Vector2, damage_value: floa
 			linked_targets.append(enemy_node)
 	var infect_order := _status_fanout_order(center, ring_targets)
 	for rank in range(infect_order.size()):
-		_apply_bio_infection(infect_order[rank] as Node2D, current_owner, _status_fanout_factor(rank))
+		var seed_infect_factor := _status_fanout_factor(rank)
+		# FAN-1031 3c(final): жёсткий кап ШИРИНЫ заражения (см. _bio_spore_pulse). linked_targets
+		# (constellation, кап 5) взяты ВЫШЕ из исходного порядка — их break не трогает.
+		if seed_infect_factor <= 0.0:
+			break
+		_apply_bio_infection(infect_order[rank] as Node2D, current_owner, seed_infect_factor)
 	if not linked_targets.is_empty():
 		var host := linked_targets[0] as Node2D
 		var link_result := _constellation_event("link", host, 0.0, {"linked_targets": linked_targets.size()})
@@ -5553,6 +5585,10 @@ const ORBIT_FANOUT_TARGET_DIMINISH := 0.0
 # нулевое изменение без override). Душит хвост крауд-DoT на 20 целях, не трогая
 # per-hit силу тика (identity зоны и малый пак 1t/5t сохранены).
 func _status_fanout_factor(rank: int) -> float:
+	# FAN-1031 3c(final): жёсткий кап ШИРИНЫ — цели за status_max_targets не получают
+	# статус вовсе (ноль). Ортогонален диминишу (тот режет per-hit хвоста). Сентинел <0 = без потолка.
+	if status_max_targets >= 0 and rank >= status_max_targets:
+		return 0.0
 	var full := status_full_targets if status_full_targets >= 0 else STATUS_FANOUT_FULL_TARGETS
 	var diminish := status_target_diminish if status_target_diminish >= 0.0 else STATUS_FANOUT_TARGET_DIMINISH
 	if diminish <= 0.0 or rank < full:
@@ -5581,6 +5617,9 @@ func _falloff_fanout_factor(rank: int) -> float:
 # хвост толпы душится геометрически. Сентинел <0 → ORBIT_FANOUT_* (diminish 0 → factor==1
 # ВСЕГДА → нулевое изменение без override). Формула единая с остальными крауд-капами.
 func _orbit_fanout_factor(rank: int) -> float:
+	# FAN-1031 3c(final): жёсткий кап ШИРИНЫ — цели за orbit_max_targets не получают тик (ноль).
+	if orbit_max_targets >= 0 and rank >= orbit_max_targets:
+		return 0.0
 	var full := orbit_full_targets if orbit_full_targets >= 0 else ORBIT_FANOUT_FULL_TARGETS
 	var diminish := orbit_target_diminish if orbit_target_diminish >= 0.0 else ORBIT_FANOUT_TARGET_DIMINISH
 	if diminish <= 0.0 or rank < full:
@@ -5641,6 +5680,9 @@ func _damage_enemies_in_pool(origin: Vector2, radius: float, amount: float, sour
 		return origin.distance_squared_to(a.global_position) < origin.distance_squared_to(b.global_position)
 	)
 	for index in range(enemies.size()):
+		# FAN-1031 3c(final): жёсткий кап ШИРИНЫ тика лужи — дальше pool_max_targets НОЛЬ.
+		if pool_max_targets >= 0 and index >= pool_max_targets:
+			break
 		var factor := 1.0
 		if index >= full_targets:
 			factor = 1.0 / (1.0 + float(index - full_targets + 1) * target_diminish)
@@ -5789,6 +5831,9 @@ func _damage_enemies_in_circle_capped(origin: Vector2, radius: float, amount: fl
 		return origin.distance_squared_to(a.global_position) < origin.distance_squared_to(b.global_position)
 	)
 	for index in range(enemies.size()):
+		# FAN-1031 3c(final): жёсткий кап ШИРИНЫ прямого AoE — дальше aoe_max_targets НОЛЬ.
+		if aoe_max_targets >= 0 and index >= aoe_max_targets:
+			break
 		var factor := 1.0
 		if index >= full_targets:
 			factor = 1.0 / (1.0 + float(index - full_targets + 1) * diminish)

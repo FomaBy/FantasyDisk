@@ -497,6 +497,13 @@ const CHEMIST_WEAPONS := {
 		# 6.37→4.99 = −22%; 5t −15%; 1t 0%). Per-hit magnitude — 3c-c numeric против v3'''
 		# (диминиш даёт макс ≈×4, 108× медианы им одним не закрыть).
 		"aoe_full_targets": 4, "aoe_target_diminish": 3.0,
+		# FAN-1031 3c(final): ЖЁСТКИЙ кап ШИРИНЫ прямого взрыва. Профилировка показала, что
+		# главный crowd-runaway blast — не per-hit (уже капнут диминишем: per_hit 230→38 при
+		# 1→20 целях), а ЧИСЛО событий взрыва на толпе (6→2585 хитов/окно), раздутое ещё и
+		# variable-delta живого замера (тяжёлый кадр → больше кастов _process). Кап на 6
+		# ближайших: identity «пара взрывов расчищает пак» цела, 1t/5t (≤6 целей) не тронуты,
+		# бланкет по 20 целям срезан. Старт — калибровать по live crowd_norm (цель ≤1.56).
+		"aoe_max_targets": 6,
 	},
 	# SCRUM-944: зонный контроль пола — долгоживущие ПОЛУПРОЗРАЧНЫЕ лужи. Монстр,
 	# зашедший в лужу, получает один ВЕЧНЫЙ кислотный заряд ОТ ЭТОЙ лужи (статус
@@ -520,6 +527,11 @@ const CHEMIST_WEAPONS := {
 		# (см. build/stage3c_pool_caps_fan1031.md). Персистентные acid_charge (status
 		# fan-out) — отдельный канал 3c(b), здесь НЕ трогается.
 		"pool_target_diminish": 3.0,
+		# FAN-1031 3c(final): ЖЁСТКИЙ кап ШИРИНЫ тика лужи (residual acid). Лужа остаётся
+		# area-denial по ядру пака (≤6 ближайших к центру тикают), но перестаёт заливать
+		# уроном весь экран на 20 целях. Заряды (acid_charge, status-канал) НЕ тронуты —
+		# у них свой кап числа стаков на цель. Старт 6 — калибровать по live.
+		"pool_max_targets": 6,
 		"pool_translucent": true,
 		"pool_contact_charges": true, "pool_charge_tick_multiplier": 0.30,
 		"pool_charge_tick_interval": 0.9, "pool_charge_cap": 5,
@@ -911,6 +923,10 @@ const ELEMENTALIST_WEAPONS := {
 		# (per-hit magnitude) — 3c-c numeric; здесь только геометрия (direction гарантирован
 		# вниз, точный live 20t за v3'''-пересъёмом). Гейт tests/orbit_falloff_cap_gate.gd.
 		"orbit_full_targets": 3, "orbit_target_diminish": 1.0,
+		# FAN-1031 3c(final): ЖЁСТКИЙ кап ШИРИНЫ тика квадрата. Диминиш (выше) душил per-hit
+		# хвоста, но тик всё равно раздавался каждому в зоне. Кап на 6 ближайших к центру:
+		# орбита чистит пак, но не весь экран. Identity зоны + 1t/5t целы. Старт — калибровать.
+		"orbit_max_targets": 6,
 		"visual_color": Color(0.40, 0.82, 1.0, 0.42),
 		"passive_mods": {"aoe_radius_multiplier": 1.06},
 	},
@@ -1093,6 +1109,11 @@ const BIOLOGIST_WEAPONS := {
 		# (≈×3.1), пак 1t/5t почти цел (identity «споровое облако заражает задетых»).
 		# Первичное сужение; per-hit numeric биолога (3c-c) + доводка величины по v3'.
 		"status_full_targets": 4, "status_target_diminish": 1.0,
+		# FAN-1031 3c(final): ЖЁСТКИЙ кап ШИРИНЫ заражения. Диминиш (выше) душил per-hit
+		# хвоста, но статус вешался на КАЖДОГО в кольце. Кап на 6 заражаемых: облако чистит
+		# пак, но не заражает толпу из 20. Identity «облако заражает задетых» + прямой
+		# ring-урон (_damage_enemies_in_circle_falloff, НЕ капнут) целы. Старт — калибровать.
+		"status_max_targets": 6,
 		"visual_color": Color(0.46, 1.0, 0.42, 0.40),
 		"passive_mods": {"dot_damage_flat": 1.0},
 	},
@@ -1125,6 +1146,9 @@ const BIOLOGIST_WEAPONS := {
 		# (identity «долгие пульсы заражения, урон приходит со временем» сохранена).
 		# Первичное сужение; per-hit numeric биолога (3c-c) + доводка по v3'.
 		"status_full_targets": 4, "status_target_diminish": 1.0,
+		# FAN-1031 3c(final): ЖЁСТКИЙ кап ШИРИНЫ заражения семени (см. spore_lens). Кап на 6
+		# заражаемых; linked_targets (constellation, кап 5) отдельны. Старт — калибровать.
+		"status_max_targets": 6,
 		"visual_color": Color(0.36, 0.92, 0.58, 0.42),
 		"passive_mods": {"aura_radius_multiplier": 1.04},
 	},
