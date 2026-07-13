@@ -161,4 +161,7 @@ authoritative tracker оформляется отдельным cutover task п�
 - state, baseline report и live verification report остаются вне Git в
   `~/.multica/`.
 
-Jira остаётся authoritative tracker до отдельного explicit cutover gate.
+Explicit cutover gate пройден 2026-07-13 (approver Sergey Fomin, project owner):
+Multica (project `FantasyDisk`, issues `FAN-*`) теперь authoritative tracker, а
+Jira (`SCRUM-*`) — read-only historical archive. См.
+`docs/process/jira_to_multica_cutover.md`.

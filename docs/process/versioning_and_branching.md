@@ -8,23 +8,25 @@ FantasyDisk использует SemVer до 1.0:
 
 - `main` - стабильная линия выпущенных `0.1.x` версий;
 - `dev` - активная рабочая ветка текущей линии `0.2.x`;
-- Jira project `SCRUM` - authoritative task queue/status/owner source; local
-  task files and task board are mirrors/spec/evidence only.
-- текущая разработка: live Jira sprint на `dev` (`Спринт 0.2.1` на 2026-07-03);
-  `Спринт 0.1.6` закрыт 2026-06-27, `v0.1.6` влита в `main`.
-- `0.1.8` и `0.1.9` отменены как плановые версии: новые Jira issues, mirrors,
+- Multica проект `FantasyDisk` (issues `FAN-*`) - authoritative task
+  queue/status/owner source; local task files and task board are
+  mirrors/spec/evidence only. Legacy Jira (SCRUM-*) — read-only historical
+  archive (см. docs/process/jira_to_multica_cutover.md).
+- текущая разработка: активная Multica board / release target `0.2.1` на `dev`
+  (на 2026-07-03); релиз `0.1.6` закрыт 2026-06-27, `v0.1.6` влита в `main`.
+- `0.1.8` и `0.1.9` отменены как плановые версии: новые Multica issues, mirrors,
   fixVersions и release/freeze notes не должны использовать эти номера.
 - после `0.2.0` patch-линия идет как `0.2.1`, `0.2.2`, ...
 - **Кадэнс спринтов — короткий, ~2 дня** (агентная скорость разработки), НЕ недельный.
 
 ## Feature Block
 
-Feature block 0.1.5 снят релизом `v0.1.5` (2026-06-15). Сейчас активен live
-Jira sprint (`Спринт 0.2.1` на 2026-07-03): задачи ведутся через Jira (task
-board — локальное зеркало), с обязательной проверкой `Контур`, owner, locked
-paths и dirty worktree. Директива пользователя 2026-07-03: все задачи,
-добавляемые в любые чаты, сразу попадают в active Jira sprint с fixVersion
-активного sprint/release. Перед стабилизацией следующего релиза PM может
+Feature block 0.1.5 снят релизом `v0.1.5` (2026-06-15). Сейчас активна
+Multica board / release target `0.2.1` (на 2026-07-03): задачи ведутся через
+Multica (task board — локальное зеркало), с обязательной проверкой `Контур`,
+owner, locked paths и dirty worktree. Директива пользователя 2026-07-03: все
+задачи, добавляемые в любые чаты, сразу попадают в active Multica board с
+fixVersion активного release. Перед стабилизацией следующего релиза PM может
 включить новый freeze отдельной директивой; тогда новые не-баговые задачи
 уходят в backlog следующей версии только при явном freeze/hold marker.
 
@@ -33,7 +35,7 @@ paths и dirty worktree. Директива пользователя 2026-07-03:
 | Branch | Назначение | Правило |
 | --- | --- | --- |
 | `main` | Стабильная выпущенная линия `0.1.x` | Не вести обычную разработку напрямую |
-| `dev` | Активная рабочая ветка `0.2.x` | Работать по Jira (task board — зеркало); параллельные Codex/Claude задачи разводить через owner и locked paths |
+| `dev` | Активная рабочая ветка `0.2.x` | Работать по Multica (task board — зеркало); параллельные Codex/Claude задачи разводить через owner и locked paths |
 
 ## Правила Для Агентов
 
@@ -73,12 +75,12 @@ dev
   безопасная интеграция без переписывания истории.
 - Если pull невозможен из-за dirty WIP, diverged history, locked-path overlap или
   конфликта, агент не начинает новую задачу. Он фиксирует blocker/owner note в
-  Jira и ждёт routing/sync решения.
-- После завершения задачи агент обязан обновить Jira/local mirrors, выполнить
+  Multica и ждёт routing/sync решения.
+- После завершения задачи агент обязан обновить Multica/local mirrors, выполнить
   проверки, затем сделать intentional commit и `git push` сразу в рамках того же
   прогона.
 - Задача не считается завершённой, если изменения остались только локально в
-  dirty tree. Jira `done`/`review` разрешены только после успешного push или
+  dirty tree. Multica `done`/`in_review` разрешены только после успешного push или
   после явного blocker-комментария о failed push.
 - Коммитить можно только файлы своей задачи/locked paths. Чужой WIP, `.godot/`,
   caches, secrets, tokens и случайные generated sidecars не добавлять.
@@ -88,9 +90,9 @@ dev
 Текущий ожидаемый flow:
 
 1. `main` хранит `0.1` (выпущена `0.1.6`).
-2. `dev` используется для активной разработки текущего live Jira sprint/release.
+2. `dev` используется для активной разработки текущего live Multica board/release.
 3. Активные задачи, баги, QA defects и release blockers закрываются в текущем
-   sprint; Codex и Claude могут работать параллельно только при разных
+   release-цикле; Codex и Claude могут работать параллельно только при разных
    owner/locked paths.
 4. После проверки `dev` можно будет слить в `main` как новую стабильную версию.
 5. После релиза документация должна быть обновлена и отражать новую стабильную версию.
@@ -100,7 +102,7 @@ dev
 Документы должны явно понимать текущую линию разработки:
 
 - `docs/design/current_game_state.md` описывает активное состояние `dev`, если не указано иначе.
-- Jira issues по умолчанию создаются для `dev`/активного sprint; `docs/tasks/*.md`
+- Multica issues по умолчанию создаются для `dev`/активной board; `docs/tasks/*.md`
   создаются только как local spec/evidence mirrors.
 - release/finalization tasks должны явно указывать, какую версию готовят.
 
@@ -117,5 +119,5 @@ dev
 
 - Активная ветка: `dev`.
 - `main` = выпущенная `0.1.6` (линия версии `0.1`).
-- `dev` используется для активного live Jira sprint (`Спринт 0.2.1` на
-  2026-07-03); `0.1.8` и `0.1.9` skipped/superseded.
+- `dev` используется для активной live Multica board / release target `0.2.1`
+  (на 2026-07-03); `0.1.8` и `0.1.9` skipped/superseded.

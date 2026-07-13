@@ -1,11 +1,12 @@
 # Гид Диспетчера: Как Формировать Задачи И Куда Их Направлять (Claude vs Codex)
 
-Обновлено: 2026-06-27
+Обновлено: 2026-07-13
 
 Для кого: PM, Codex Documentation dispatcher, Claude Code/Claude-чаты,
 фоновые воркеры и будущие диспетчеры. Источники процесса:
 `docs/process/ai_agent_memorandum.md`, `docs/process/pm_workflow.md`,
-`docs/process/agent_role_boundaries_and_handoffs.md`, `docs/process/jira_sync.md`.
+`docs/process/agent_role_boundaries_and_handoffs.md`,
+`docs/process/jira_to_multica_cutover.md`.
 
 ## Главная Модель
 
@@ -18,19 +19,22 @@ execution lane:
 | `Claude` | архитектура, баланс с продуктовыми решениями, неочевидная отладка, широкий refactor, конфликт-резолюция, release decisions, review | получает `Контур: Claude`; Codex dispatcher/role threads пропускают эту задачу |
 | `QA` | приемка после результата owner, регрессии, создание bug/follow-up задач | не чинит код/арт/анимацию в исходной задаче |
 
-С 2026-06-27 маршрутизация начинается из Jira: все задачи создаются и берутся из
-Jira project `SCRUM`. Локальные `docs/tasks/*.md` и `docs/process/task_board.md`
-служат spec/evidence mirror и dashboard/cache, но не являются очередью задач.
+С cutover 2026-07-13 маршрутизация начинается из Multica: все задачи создаются и
+берутся из Multica проекта `FantasyDisk` (issues `FAN-*`) через `multica` CLI.
+Legacy Jira (`SCRUM-*`) — read-only исторический архив, не источник задач (см.
+`docs/process/jira_to_multica_cutover.md`). Локальные `docs/tasks/*.md` и
+`docs/process/task_board.md` служат spec/evidence mirror и dashboard/cache, но не
+являются очередью задач.
 
-Codex должен быть автономным внутри своих задач: после Jira dispatch он сам берёт
-задачу, меняет Jira status/comment и локальный mirror, реализует scope, запускает проверки,
+Codex должен быть автономным внутри своих задач: после Multica dispatch он сам берёт
+задачу, меняет Multica status/comment и локальный mirror, реализует scope, запускает проверки,
 обновляет docs/CHANGELOG/task report и завершает или блокирует задачу. Его
 автономия ограничена owner/locked-path правилами, а не ожиданием ручного
 подтверждения.
 
 ## Обязательная Метадата Задачи
 
-Каждый active Jira issue и его локальный mirror должны иметь:
+Каждый active Multica issue и его локальный mirror должны иметь:
 
 ```text
 Статус: new | in_progress | review | done | blocked
@@ -38,10 +42,10 @@ Codex должен быть автономным внутри своих зад�
 Owner: <роль>/<thread или worker> | unassigned
 Thread: <Codex thread id> | <Claude chat/worker id> | n/a
 Locked paths: <основные файлы/папки/ассеты/экраны>
-Jira: SCRUM-<номер>
+Multica: FAN-<номер>
 ```
 
-Если `Контур`, `Owner/Thread` или `Locked paths` отсутствуют в Jira, dispatcher
+Если `Контур`, `Owner/Thread` или `Locked paths` отсутствуют в Multica, dispatcher
 не маршрутизирует задачу до заполнения. Local mirror/board note должны отражать
 ту же информацию кратко.
 
@@ -64,30 +68,30 @@ Jira: SCRUM-<номер>
    конфликт.
 3. Задача затрагивает много подсистем и не делится на безопасные handoffs.
 4. Нужно review/acceptance Codex-результата с возможной правкой.
-5. Нужно разрешить конфликт dirty worktree, locked paths, Jira ownership или
+5. Нужно разрешить конфликт dirty worktree, locked paths, Multica ownership или
    противоречие в требованиях.
 
 ## Dispatch Protocol
 
-1. Dispatcher читает Jira issue/status/comments/assignee/labels/links first,
-   затем local task mirror, board row, sync map, dirty worktree, recent role-thread
+1. Dispatcher читает Multica issue/status/comments/assignee/labels/links first,
+   затем local task mirror, board row, dirty worktree, recent role-thread
    status и active owners по той же роли.
 2. Dispatcher выбирает `Контур` и locked paths. Нельзя оставлять active task без
    lane.
-3. Для `Контур: Codex` dispatcher добавляет/обновляет в Jira и local mirror
-   `Dispatch`, `Owner`, `Thread`, `Locked paths`, board note/Jira comment, затем отправляет ровно
+3. Для `Контур: Codex` dispatcher добавляет/обновляет в Multica и local mirror
+   `Dispatch`, `Owner`, `Thread`, `Locked paths`, board note/Multica comment, затем отправляет ровно
    один handoff в нужный Codex role thread.
 4. Для `Контур: Claude` task остаётся доступной Claude Code/Claude worker only;
    Codex Documentation dispatcher не отправляет её в Codex.
-5. Исполнитель перед первой правкой переводит Jira issue/comment в `in_progress`,
-   сохраняет owner metadata в Jira/local mirror, запускает sync и только потом работает.
+5. Исполнитель перед первой правкой переводит Multica issue/comment в `in_progress`,
+   сохраняет owner metadata в Multica/local mirror, запускает sync и только потом работает.
 6. По завершении owner пишет результат, проверки, docs changes и переводит
    задачу в `done` или `review`. Если scope не может быть завершён, ставит
    `blocked` с точной причиной и handoff/follow-up.
-7. Dispatcher keeps Jira truthful. If a task in `В работе` has no fresh
+7. Dispatcher keeps Multica truthful. If a task in `in_progress` has no fresh
    heartbeat/result, no active reachable worker, missing locked paths, or the
    same worker is holding multiple unrelated issues, dispatcher returns it to
-   `К выполнению` with a cleanup comment. Combined multi-issue work is allowed
+   `todo` with a cleanup comment. Combined multi-issue work is allowed
    only when one dispatcher comment explicitly lists the combined scope and
    shared locked paths.
 8. One-off Codex worker threads archive themselves after truthful completion,
@@ -98,7 +102,7 @@ Jira: SCRUM-<номер>
 
 ## Active Claim Health
 
-Every active claim must be readable from Jira without opening the worker chat.
+Every active claim must be readable from Multica without opening the worker chat.
 The latest active-owner comment must include owner/thread, lane, locked paths,
 branch/worktree, and next verification step.
 
@@ -109,7 +113,7 @@ Heartbeat policy:
 - final comment must include result, branch/commit or PR, tests/evidence, docs
   changes, and next status/owner;
 - no heartbeat/result means the issue is eligible for dispatcher release back to
-  `К выполнению`.
+  `todo`.
 
 ## Disk Cleanup Handoff
 
@@ -146,12 +150,12 @@ it or perform cleanup after confirming the branch/commit/evidence is pushed.
 
 ## Как Доставить Задачу
 
-- `Codex`: PM отправляет в Codex Documentation dispatcher Jira key и краткий
-  scope. Documentation dispatcher делает audit и сам отправляет задачу в
+- `Codex`: PM отправляет в Codex Documentation dispatcher Multica key (`FAN-*`) и
+  краткий scope. Documentation dispatcher делает audit и сам отправляет задачу в
   существующий role thread. Прямой dispatch в role thread допустим только если
-  PM сразу заполняет в Jira/local mirror `Контур: Codex`, `Owner`, `Thread`,
-  `Locked paths` и Jira comment.
-- `Claude`: PM/другая LLM создаёт Jira issue с `Контур: Claude` и local mirror
+  PM сразу заполняет в Multica/local mirror `Контур: Codex`, `Owner`, `Thread`,
+  `Locked paths` и Multica comment.
+- `Claude`: PM/другая LLM создаёт Multica issue с `Контур: Claude` и local mirror
   при необходимости. Claude Code/воркеры могут self-claim только такие issues и только если нет
   active owner/locked-path конфликта.
 - `QA`: QA выбирает `done` без QA verdict по `docs/process/qa_protocol.md`.
@@ -172,13 +176,13 @@ Codex-работа не требует параллельного Claude вме�
 ## Чего Диспетчеру Делать Нельзя
 
 - Отправлять одну и ту же задачу в Codex и Claude.
-- Оставлять active Jira issue/local `new` row без `Контур` и locked paths.
+- Оставлять active Multica issue/local `new` row без `Контур` и locked paths.
 - Давать Codex задачу, где уже есть Claude owner, worker note, `in_progress`,
-  Jira ownership или dirty overlap.
+  Multica ownership или dirty overlap.
 - Давать Claude worker задачу с `Контур: Codex` или dispatch на Codex thread.
 - Закрывать задачу за исполнителя без результата owner или QA-вердикта.
-- Оставлять зависшие `В работе` claims без heartbeat/result; такие задачи нужно
-  вернуть в `К выполнению` или явно заблокировать/передать.
+- Оставлять зависшие `in_progress` claims без heartbeat/result; такие задачи нужно
+  вернуть в `todo` или явно заблокировать/передать.
 - Смешивать Design main и Designer 2 в одной Design-задаче без явной PM-разбивки.
 - Игнорировать USER HOLD, blocked reason, PM/QA acceptance gate или superseded
   note, даже если зависимость формально выглядит готовой.

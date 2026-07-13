@@ -87,9 +87,13 @@ cat <<'BANNER'
     .claude/skills/fantasydisk-onboarding/SKILL.md
     docs/process/ai_agent_memorandum.md
 
-  Jira-only rule:
-    ALL work lives in Jira. Every task you pick up or hand off
-    is a Jira SCRUM ticket — no out-of-band tasks.
+  Multica-only rule:
+    ALL work lives in Multica (project FantasyDisk, FAN-* issues),
+    driven via the `multica` CLI. Every task you pick up or hand
+    off is a Multica issue — no out-of-band tasks.
+    Legacy Jira (SCRUM-*) is a read-only historical archive; do
+    not claim or sync work there. See:
+    docs/process/jira_to_multica_cutover.md
 
   Repo:
     https://github.com/FomaBy/FantasyDisk
