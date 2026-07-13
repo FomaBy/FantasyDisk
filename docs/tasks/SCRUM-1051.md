@@ -138,7 +138,8 @@ Implemented:
   action/text/minimal families and documented specialty families;
 - global actions recompute inferred family after final name/size, while explicit
   screen families persist through later sizing calls;
-- Codex tabs now apply `minimal/codex_tab` after their final node name and size;
+- Historical result: Codex tabs applied `minimal/codex_tab`; FAN-1047 supersedes
+  this exception with the exact `text/main_menu_380x104` family;
   Back remains `text/back_260x104`, entry cards remain `content_row`, and every
   state keeps identical content margins;
 - Pause dossier actions now consume the shared resolver instead of copied path,

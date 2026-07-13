@@ -16,16 +16,18 @@ Hero-carousel arrows and @2K conflict controls remain
 documented shape-specific siblings of the same FantasyDisk family.
 
 Codex keeps the accepted frameless SCRUM-954 three-column layout. FAN-1047
-removes the yellow `minimal/codex_tab` exception: all six tabs now use the
-five-state `text/back_260x104` sibling from the same production kit as Main
-Menu, at fixed `308×104` bounds and stable logical label insets. Entry cards
-stay `content_row`; hover/focus/pressed/disabled do not alter content margins or
-geometry. Compact Shop/Attribute actions are now named
+removes the old yellow `minimal/codex_tab` exception: all six left tabs now use
+the exact five-state `text/main_menu_380x104` family at a ratio-preserving
+260×72 target. The longest tab caption uses the compact synonym «Параметры»
+so it remains inside the plate content lane at 720p. Entry cards stay
+`content_row`; hover/focus/pressed/disabled do
+not alter content margins or geometry. Compact Shop/Attribute actions are now named
 `slim_action` instead of borrowing rebind-field semantics. Pause dossier actions
-consume the same shared resolver instead of a copied path/threshold table:
-compact 72px footers use `text/later_260x72`, while 104px footers use
-`text/back_260x104`. This avoids vertically squeezing the 380×104 Main Menu
-plate while preserving its material and state language.
+consume the same shared resolver instead of a copied path/threshold table.
+At 648p/720p/900p they form a right vertical rail at 219×60 or 263×72;
+1080p/2K retain a centered horizontal footer at 320×88 or native 380×104.
+Texture and content margins always scale by one uniform factor, so the Main
+Menu ornament is never cropped independently from the label lane.
 
 `MainMenuCreditsButton` is an icon-only gratitude action using the transparent
 PixelLab asset `assets/sprites/ui/icons/credits/ui_icon_gratitude.png`; its face
@@ -1330,12 +1332,12 @@ decorative art, not text containers. QA dump:
 
 SCRUM-693 changes the active-combat Escape entry point: when no other run screen
 is covering gameplay, Escape opens the pause dossier / character board directly.
-SCRUM-983 moves the four run actions from the old left/header placement into a
-fixed bottom footer, with Continue focused first. SCRUM-1056 removed the old
-pause-only/danger styling. FAN-1047 corrects its vertically squeezed plate:
-Continue, Settings, End Run and Main Menu now select one size-fit five-state
-Main Menu sibling per tier (`later_260x72` compact, `back_260x104` wide) with
-geometry-stable 72px or 104px heights. The old
+SCRUM-983 originally moved the four run actions into a fixed footer, with
+Continue focused first. SCRUM-1056 removed the pause-only/danger styling, and
+FAN-1047 fixes the remaining source cropping: Continue, Settings, End Run and
+Main Menu all use the exact `main_menu_380x104` five-state family. Compact
+targets use the right vertical rail described above; 1080p/2K keep the bottom
+footer. The old
 standalone `RunPauseMenuRoot` is still available for noncombat overlays such as
 route/shop/event/level-up/reward contexts, but it must not appear over or instead
 of the character board for clean active gameplay. Resume, Settings Back, and

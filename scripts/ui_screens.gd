@@ -2657,9 +2657,9 @@ const CODEX_SECTIONS := [
 	{"id": "characters", "title": "Персонажи"},
 	{"id": "monsters", "title": "Монстры"},
 	{"id": "artifacts", "title": "Артефакты"},
-	{"id": "characteristics", "title": "Характеристики"},
+	{"id": "characteristics", "title": "Параметры"},
 	{"id": "attributes", "title": "Атрибуты"},
-	{"id": "ascension", "title": "Возвышение"},
+	{"id": "ascension", "title": "Возвыш."},
 ]
 
 
@@ -5468,31 +5468,22 @@ func _show_codex_screen() -> void:
 
 	# Six fixed Russian labels. The category-emblem path is intentionally absent:
 	# actual canonical images belong to entries, not to navigation furniture.
-	var nav_y := [12.0, 130.0, 248.0, 366.0, 484.0, 602.0]
+	var nav_y := [24.0, 142.0, 260.0, 378.0, 496.0, 614.0]
 	for section_index in range(CODEX_SECTIONS.size()):
 		var section: Dictionary = CODEX_SECTIONS[section_index]
 		var section_id := str(section["id"])
 		var tab_button := Button.new()
 		tab_button.name = "CodexTab_%s" % section_id
 		tab_button.text = str(section["title"])
-		tab_button.custom_minimum_size = Vector2(308, 104)
+		tab_button.custom_minimum_size = Vector2(260, 72)
 		tab_button.mouse_default_cursor_shape = Control.CURSOR_POINTING_HAND
-		_apply_fantasy_button_theme(tab_button, "default", UIButtonFamily.FAMILY_CODEX_TAB)
+		_apply_fantasy_button_theme(tab_button, "default", UIButtonFamily.FAMILY_MAIN_MENU)
 		tab_button.add_theme_font_size_override("font_size", _readable_font_size(SemanticTypography.ROLE_TAB, 16))
 		tab_button.alignment = HORIZONTAL_ALIGNMENT_CENTER
 		tab_button.autowrap_mode = TextServer.AUTOWRAP_OFF
 		tab_button.clip_text = false
-		_codex_bind_stage_font(tab_button, SemanticTypography.ROLE_TAB, 18, SemanticTypography.role_min(SemanticTypography.ROLE_TAB), SemanticTypography.role_max(SemanticTypography.ROLE_TAB))
-		# The back_260 plate's ornamental edge stays untouched; only its logical
-		# label inset is relaxed so the longest Russian tab fits the 284px zone.
-		for tab_state in UIButtonFamily.STATES:
-			var source_style := tab_button.get_theme_stylebox(tab_state)
-			var tab_style := source_style.duplicate() if source_style != null else null
-			if tab_style != null:
-				tab_style.content_margin_left = 42.0
-				tab_style.content_margin_right = 42.0
-				tab_button.add_theme_stylebox_override(tab_state, tab_style)
-		_codex_set_design_rect(tab_button, Rect2(0, nav_y[section_index], 308, 104))
+		_codex_bind_stage_font(tab_button, SemanticTypography.ROLE_TAB, 20, SemanticTypography.role_min(SemanticTypography.ROLE_TAB), SemanticTypography.role_max(SemanticTypography.ROLE_TAB))
+		_codex_set_design_rect(tab_button, Rect2(0, nav_y[section_index], 260, 72))
 		tab_button.pressed.connect(_show_codex_section.bind(content, section_id))
 		_connect_ui_sfx(tab_button, "click")
 		tabs_row.add_child(tab_button)
@@ -14860,7 +14851,7 @@ func _button_state_style(button: Button, _role: String, state: String, tint := C
 		var plus_tint := BUTTON_NEUTRAL_HOVER_TINT if state == "hover" and tint == Color.WHITE else tint
 		return _global_texture_style(plus_path, COMBAT_HUD_LEVEL_UP_MARGINS, plus_tint, COMBAT_HUD_LEVEL_UP_CONTENT)
 	var texture_state := state if UIButtonFamily.STATES.has(state) else "normal"
-	var descriptor := UIButtonFamily.descriptor(family, texture_state)
+	var descriptor := UIButtonFamily.descriptor_for_size(family, texture_state, button.custom_minimum_size)
 	if descriptor.is_empty():
 		return _global_texture_style(GLOBAL_BUTTON_FRAME_PATH, Vector4(50, 28, 50, 28), tint, Vector4(64, 32, 64, 32))
 	var final_tint := tint

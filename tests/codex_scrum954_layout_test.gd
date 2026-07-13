@@ -8,8 +8,8 @@ const VIEWPORT_SIZES := [Vector2i(1280, 720), Vector2i(1920, 1080), Vector2i(256
 const ASCENSION_ICON_PATH := "res://assets/sprites/ui/hud/combat_hud_v2/ui_hud_v2_icon_ascension.png"
 const EXPECTED_TABS := [
 	["characters", "Персонажи"], ["monsters", "Монстры"],
-	["artifacts", "Артефакты"], ["characteristics", "Характеристики"],
-	["attributes", "Атрибуты"], ["ascension", "Возвышение"],
+	["artifacts", "Артефакты"], ["characteristics", "Параметры"],
+	["attributes", "Атрибуты"], ["ascension", "Возвыш."],
 ]
 
 var errors := PackedStringArray()
@@ -89,7 +89,7 @@ func _check_viewport(viewport_size: Vector2i) -> void:
 	if codex_back != null:
 		_check_button_family(codex_back, "text/back_260x104", "%s back" % context)
 
-	var nav_y := [222.0, 340.0, 458.0, 576.0, 694.0, 812.0]
+	var nav_y := [234.0, 352.0, 470.0, 588.0, 706.0, 824.0]
 	for tab_index in range(EXPECTED_TABS.size()):
 		var tab_spec: Array = EXPECTED_TABS[tab_index]
 		var tab := main.find_child("CodexTab_%s" % str(tab_spec[0]), true, false) as Button
@@ -98,8 +98,8 @@ func _check_viewport(viewport_size: Vector2i) -> void:
 			continue
 		if tab.text != str(tab_spec[1]) or tab.icon != null or tab.alignment != HORIZONTAL_ALIGNMENT_CENTER:
 			errors.append("%s: tab %s must be centered Russian-only text without an emblem." % [context, tab_spec[0]])
-		_check_button_family(tab, UIButtonFamily.FAMILY_CODEX_TAB, "%s tab %s" % [context, tab_spec[0]])
-		var expected_tab_rect := _scaled_rect(viewport_size, Rect2(80, nav_y[tab_index], 308, 104))
+		_check_button_family(tab, UIButtonFamily.FAMILY_MAIN_MENU, "%s tab %s" % [context, tab_spec[0]])
+		var expected_tab_rect := _scaled_rect(viewport_size, Rect2(104, nav_y[tab_index], 260, 72))
 		if not _rect_near(tab.get_global_rect(), expected_tab_rect, 1.5):
 			errors.append("%s: tab %s rect %s != %s." % [context, tab_spec[0], str(tab.get_global_rect()), str(expected_tab_rect)])
 		var tab_style := tab.get_theme_stylebox("normal") as StyleBoxTexture

@@ -14,15 +14,8 @@ const FAMILY_REWARD_CARD := "reward_card"
 const FAMILY_WEAPON_CARD := "weapon_card"
 const FAMILY_SETTINGS_FIELD := "settings_field"
 const FAMILY_SLIM_ACTION := "slim_action"
-const FAMILY_CODEX_TAB := "text/back_260x104"
-const FAMILY_MAIN_MENU_NATIVE := "text/main_menu_380x104"
-const FAMILY_MAIN_MENU_MEDIUM := "text/back_260x104"
-const FAMILY_MAIN_MENU_COMPACT := "text/later_260x72"
-const MAIN_MENU_VISUAL_FAMILIES := [
-	FAMILY_MAIN_MENU_NATIVE,
-	FAMILY_MAIN_MENU_MEDIUM,
-	FAMILY_MAIN_MENU_COMPACT,
-]
+const FAMILY_MAIN_MENU := "text/main_menu_380x104"
+const MAIN_MENU_SOURCE_SIZE := Vector2(380.0, 104.0)
 
 # Families which deliberately do not use the shared text-action plate. Runtime
 # inventory tests accept them only when their owning screen helper tags them.
@@ -113,7 +106,7 @@ static func text_family_id(button: Button) -> String:
 	if button_name == "LevelUpPlusButton":
 		return ""
 	if button_name.begins_with("CodexTab_"):
-		return FAMILY_CODEX_TAB.trim_prefix("text/")
+		return "main_menu_380x104"
 	if button_name in ["AscensionMinusButton", "AscensionPlusButton"] or size.x <= 70.0:
 		return ""
 	if button_name.begins_with("MainMenu"):
@@ -249,6 +242,20 @@ static func descriptor(family: String, state: String) -> Dictionary:
 		"margins": Vector4(34.0, 14.0, 34.0, 14.0) if family == FAMILY_SLIM_ACTION else UIThemePaths.MINIMAL_METAL_BUTTON_MARGINS.get(minimal_type, UIThemePaths.MINIMAL_METAL_BUTTON_MARGINS["standard"]),
 		"content": Vector4(46.0, 18.0, 46.0, 18.0) if family == FAMILY_SLIM_ACTION else UIThemePaths.MINIMAL_METAL_BUTTON_CONTENT.get(minimal_type, UIThemePaths.MINIMAL_METAL_BUTTON_CONTENT["standard"]),
 	}
+
+
+static func descriptor_for_size(family: String, state: String, target_size: Vector2) -> Dictionary:
+	var result := descriptor(family, state)
+	if result.is_empty() or family != FAMILY_MAIN_MENU:
+		return result
+	var uniform_scale := minf(
+		target_size.x / MAIN_MENU_SOURCE_SIZE.x,
+		target_size.y / MAIN_MENU_SOURCE_SIZE.y
+	)
+	result["margins"] = (result["margins"] as Vector4) * uniform_scale
+	result["content"] = (result["content"] as Vector4) * uniform_scale
+	result["source_scale"] = uniform_scale
+	return result
 
 
 static func is_registered(family: String) -> bool:

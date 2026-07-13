@@ -10,6 +10,7 @@ const UIIconRegistry := preload("res://scripts/ui_icon_registry.gd")
 const GlobalTooltip := preload("res://scripts/ui/global_tooltip.gd")
 const GlobalTooltipControl := preload("res://scripts/ui/global_tooltip_control.gd")
 const UIButtonFamily := preload("res://scripts/ui/ui_button_family.gd")
+const PauseDossierActionLayout := preload("res://scripts/ui/pause_dossier_action_layout.gd")
 const SemanticTypography := preload("res://scripts/ui/semantic_typography.gd")
 
 # SCRUM-890: досье героя (пауза) — вариант Б: атлас-шапка (чип-титул + кит-кнопки
@@ -33,8 +34,9 @@ const CLASS_CREST_DIR := "res://assets/sprites/ui/meta40/"
 const DIVIDER_ORNAMENT_PATH := "res://assets/sprites/ui/atlas_style/divider_ornament.png"
 
 # Shared resolver keeps Pause in the same semantic button inventory as every
-# runtime screen. FAN-1047 uses size-matched siblings from the main-menu kit so
-# the 104px plate is never vertically cropped into a compact 72px footer.
+# runtime screen. SCRUM-1056 explicitly pins all four actions to the exact
+# five-state main-menu plate while this scene only owns responsive margins.
+const PAUSE_ACTION_BUTTON_FAMILY := UIButtonFamily.FAMILY_MAIN_MENU
 
 # Цвета единого атлас-стиля (= _show_atlas_screen и родня).
 const COLOR_TITLE := Color(0.96, 0.90, 0.68, 1.0)
@@ -142,7 +144,7 @@ var _hero_card: PanelContainer = null
 var _right_column: VBoxContainer = null
 var _hero_scroll: ScrollContainer = null
 var _derived_scroll: ScrollContainer = null
-var _button_box: HBoxContainer = null
+var _button_box: GridContainer = null
 var _action_buttons: Array[Button] = []
 var _title_label: Label = null
 var _header_summary: Label = null
@@ -297,12 +299,19 @@ func _make_section_divider() -> Control:
 	return line
 
 
-# логика = ui_screens._atlas_action_button_height (72/88/104 по высоте вьюпорта).
+# Main-menu source is 380×104. Compact targets keep the same ratio instead of
+# trimming the ornament into the old arbitrary 220×72/260×72 rectangles.
 func _action_button_height() -> float:
 	var vp_h := get_viewport_rect().size.y
 	if vp_h <= 0.0:
 		vp_h = 1080.0
-	return 72.0 if vp_h < 900.0 else 104.0
+	if vp_h <= 648.0:
+		return 60.0
+	if vp_h <= 900.0:
+		return 72.0
+	if vp_h < 1200.0:
+		return 88.0
+	return 104.0
 
 
 func _build_layout() -> void:
@@ -426,32 +435,33 @@ func _build_header(parent: Control, s: float) -> void:
 
 
 func _build_action_footer(parent: Control) -> void:
-	_button_box = HBoxContainer.new()
+	_button_box = GridContainer.new()
 	_button_box.name = "PauseControlButtons"
+	_button_box.columns = 4
 	_button_box.size_flags_horizontal = Control.SIZE_SHRINK_CENTER
 	_button_box.size_flags_vertical = Control.SIZE_SHRINK_CENTER
 	parent.add_child(_button_box)
 
-	var resume_button := _kit_button("Продолжить", 220.0)
+	var resume_button := _kit_button("Продолжить", UIButtonFamily.MAIN_MENU_SOURCE_SIZE.x)
 	resume_button.name = "PauseResumeButton"
 	resume_button.pressed.connect(func() -> void:
 		resume_requested.emit()
 	)
 	_button_box.add_child(resume_button)
 
-	var settings_button := _kit_button("Настройки", 220.0)
+	var settings_button := _kit_button("Настройки", UIButtonFamily.MAIN_MENU_SOURCE_SIZE.x)
 	settings_button.name = "PauseSettingsButton"
 	settings_button.pressed.connect(func() -> void:
 		settings_requested.emit()
 	)
 	_button_box.add_child(settings_button)
 
-	var end_run_button := _kit_button("Завершить забег", 260.0)
+	var end_run_button := _kit_button("Завершить забег", UIButtonFamily.MAIN_MENU_SOURCE_SIZE.x)
 	end_run_button.name = "PauseEndRunButton"
 	end_run_button.pressed.connect(_show_end_run_confirm)
 	_button_box.add_child(end_run_button)
 
-	var menu_button := _kit_button("Главное меню", 220.0)
+	var menu_button := _kit_button("Главное меню", UIButtonFamily.MAIN_MENU_SOURCE_SIZE.x)
 	menu_button.name = "PauseMainMenuButton"
 	menu_button.pressed.connect(func() -> void:
 		main_menu_requested.emit()
@@ -726,49 +736,12 @@ func _safe_rect_for_size(viewport_size: Vector2) -> Rect2:
 
 
 func _responsive_contract(viewport_size: Vector2) -> Dictionary:
-	var safe_rect := _safe_rect_for_size(viewport_size)
-	var compact := viewport_size.y <= 900.0
-	var large := viewport_size.y >= 1200.0
-	var reserve := INNER_RESERVE_LARGE if large else INNER_RESERVE_COMPACT
-	var inner_rect := safe_rect.grow(-reserve)
-	var header_height := (48.0 if viewport_size.y >= 900.0 else 46.0) if compact else (104.0 if large else 72.0)
-	var header_gap := 4.0 if compact else (24.0 if large else 12.0)
-	var footer_gap := 2.0 if compact else (24.0 if large else 12.0)
-	var footer_bottom := 4.0 if compact else (16.0 if large else 12.0)
-	var action_height := 72.0 if compact else 104.0
-	var hero_width := 348.0 if compact else (520.0 if large else 420.0)
-	var column_gap := 12.0 if compact else (24.0 if large else 20.0)
-	var action_widths := [220.0, 220.0, 260.0, 220.0] if compact else (
-		[280.0, 280.0, 320.0, 300.0] if large else [260.0, 260.0, 280.0, 280.0]
+	return PauseDossierActionLayout.build(
+		viewport_size,
+		_safe_rect_for_size(viewport_size),
+		INNER_RESERVE_COMPACT,
+		INNER_RESERVE_LARGE
 	)
-	var action_gap := 8.0 if compact else (20.0 if large else 16.0)
-	var raw_button_width := float(action_widths[0] + action_widths[1] + action_widths[2] + action_widths[3])
-	var available_button_width := maxf(1.0, inner_rect.size.x - action_gap * 3.0 - (8.0 if compact else 0.0))
-	if raw_button_width > available_button_width:
-		var width_scale := available_button_width / raw_button_width
-		for index in range(action_widths.size()):
-			action_widths[index] = floorf(float(action_widths[index]) * width_scale)
-	var action_total := float(action_widths[0] + action_widths[1] + action_widths[2] + action_widths[3]) + action_gap * 3.0
-	var action_rect := Rect2(
-		Vector2(inner_rect.get_center().x - action_total * 0.5, inner_rect.end.y - footer_bottom - action_height),
-		Vector2(action_total, action_height)
-	)
-	var body_top := inner_rect.position.y + header_height + header_gap
-	var body_rect := Rect2(
-		Vector2(inner_rect.position.x, body_top),
-		Vector2(inner_rect.size.x, maxf(1.0, action_rect.position.y - footer_gap - body_top))
-	)
-	return {
-		"safe_rect": safe_rect,
-		"inner_rect": inner_rect,
-		"header_rect": Rect2(inner_rect.position, Vector2(inner_rect.size.x, header_height)),
-		"body_rect": body_rect,
-		"hero_width": hero_width,
-		"column_gap": column_gap,
-		"action_rect": action_rect,
-		"action_widths": action_widths,
-		"action_gap": action_gap,
-	}
 
 
 func _apply_responsive_layout() -> void:
@@ -792,11 +765,13 @@ func _apply_responsive_layout() -> void:
 	_hero_card.custom_minimum_size = Vector2(float(contract["hero_width"]), body_rect.size.y)
 	if _base_stats_grid != null and is_instance_valid(_base_stats_grid):
 		_base_stats_grid.columns = 2
-	_button_box.add_theme_constant_override("separation", int(contract["action_gap"]))
-	var action_widths: Array = contract["action_widths"]
-	for index in range(_action_buttons.size()):
-		var button := _action_buttons[index]
-		button.custom_minimum_size = Vector2(float(action_widths[index]), action_rect.size.y)
+	var actions_vertical := bool(contract["actions_vertical"])
+	_button_box.columns = 1 if actions_vertical else 4
+	_button_box.add_theme_constant_override("h_separation", int(contract["action_gap"]))
+	_button_box.add_theme_constant_override("v_separation", int(contract["action_gap"]))
+	_button_box.set_meta("actions_vertical", actions_vertical)
+	for button in _action_buttons:
+		button.custom_minimum_size = contract["action_size"]
 		_apply_kit_button_theme(button)
 	_frame_panel.add_theme_stylebox_override("panel", _frame_style())
 	_frame_panel.set_meta("gold_shell_content_rect", safe_rect)
@@ -900,12 +875,17 @@ func _refresh_responsive_metrics(viewport_size: Vector2) -> void:
 			SemanticTypography.role_max(SemanticTypography.ROLE_SECTION)
 		))
 	for node in find_children("DerivedGroupHeader_*", "HBoxContainer", true, false):
-		(node as Control).visible = not very_compact
+		# The 720p right column keeps every stat and tooltip but drops the repeated
+		# group captions; this recovers the 40px minimum-height overflow introduced
+		# by the full-ratio action rail.
+		(node as Control).visible = not very_compact and viewport_size.x > 1280.0
 	for node in find_children("DerivedGroupContent_*", "VBoxContainer", true, false):
 		(node as VBoxContainer).add_theme_constant_override("separation", 4 if very_compact else 8)
 	for node in find_children("DerivedStatChips_*", "GridContainer", true, false):
 		var chips := node as GridContainer
-		chips.columns = 2
+		# A single chip lane on compact targets removes the old 420px combined
+		# minimum, leaving room for the full-ratio Main Menu action rail.
+		chips.columns = 1 if compact else 2
 		chips.add_theme_constant_override("v_separation", 2 if very_compact else 6)
 	for node in find_children("DerivedStatGroup_*", "PanelContainer", true, false):
 		(node as PanelContainer).add_theme_stylebox_override("panel", _chip_style(0.86, 2.0 if very_compact else maxf(6.0, roundf(12.0 * s))))
@@ -1167,6 +1147,7 @@ func _rebuild_focus_navigation() -> void:
 				stat_targets.append(target as Control)
 	if stat_targets.is_empty() or _action_buttons.size() != 4:
 		return
+	var actions_vertical := bool(_button_box.get_meta("actions_vertical", false))
 	for target in stat_targets:
 		var left := _nearest_focus_target(target, stat_targets, Vector2.LEFT)
 		var right := _nearest_focus_target(target, stat_targets, Vector2.RIGHT)
@@ -1176,15 +1157,28 @@ func _rebuild_focus_navigation() -> void:
 			target.focus_neighbor_left = left.get_path()
 		if right != null:
 			target.focus_neighbor_right = right.get_path()
+		elif actions_vertical:
+			target.focus_neighbor_right = _nearest_action_by_y(target).get_path()
 		target.focus_neighbor_top = (up if up != null else _nearest_action_by_x(target)).get_path()
 		target.focus_neighbor_bottom = (down if down != null else _nearest_action_by_x(target)).get_path()
-	for button in _action_buttons:
-		var upper_target := _nearest_stat_edge_by_x(button, stat_targets, true)
-		var lower_target := _nearest_stat_edge_by_x(button, stat_targets, false)
-		if upper_target != null:
-			button.focus_neighbor_top = upper_target.get_path()
-		if lower_target != null:
-			button.focus_neighbor_bottom = lower_target.get_path()
+	for index in range(_action_buttons.size()):
+		var button := _action_buttons[index]
+		if actions_vertical:
+			button.focus_neighbor_top = _action_buttons[(index - 1 + _action_buttons.size()) % _action_buttons.size()].get_path()
+			button.focus_neighbor_bottom = _action_buttons[(index + 1) % _action_buttons.size()].get_path()
+			button.focus_neighbor_right = _action_buttons[(index + 1) % _action_buttons.size()].get_path()
+			var left_target := _nearest_stat_by_y(button, stat_targets)
+			if left_target != null:
+				button.focus_neighbor_left = left_target.get_path()
+		else:
+			button.focus_neighbor_left = _action_buttons[(index - 1 + _action_buttons.size()) % _action_buttons.size()].get_path()
+			button.focus_neighbor_right = _action_buttons[(index + 1) % _action_buttons.size()].get_path()
+			var upper_target := _nearest_stat_edge_by_x(button, stat_targets, true)
+			var lower_target := _nearest_stat_edge_by_x(button, stat_targets, false)
+			if upper_target != null:
+				button.focus_neighbor_top = upper_target.get_path()
+			if lower_target != null:
+				button.focus_neighbor_bottom = lower_target.get_path()
 
 
 func _nearest_focus_target(source: Control, candidates: Array[Control], direction: Vector2) -> Control:
@@ -1217,6 +1211,33 @@ func _nearest_action_by_x(source: Control) -> Button:
 		if distance < best_distance:
 			best_distance = distance
 			best = button
+	return best
+
+
+func _nearest_action_by_y(source: Control) -> Button:
+	var source_y := source.get_global_rect().get_center().y
+	var best := _action_buttons[0]
+	var best_distance := INF
+	for button in _action_buttons:
+		var distance := absf(button.get_global_rect().get_center().y - source_y)
+		if distance < best_distance:
+			best_distance = distance
+			best = button
+	return best
+
+
+func _nearest_stat_by_y(source: Control, candidates: Array[Control]) -> Control:
+	var source_y := source.get_global_rect().get_center().y
+	var best: Control = null
+	var best_distance := INF
+	for candidate in candidates:
+		var visible_rect := _focus_visible_rect(candidate)
+		if not visible_rect.has_area():
+			continue
+		var distance := absf(visible_rect.get_center().y - source_y)
+		if distance < best_distance:
+			best_distance = distance
+			best = candidate
 	return best
 
 
@@ -2174,21 +2195,10 @@ func _apply_kit_button_theme(button: Button) -> void:
 
 
 func _kit_button_state_style(button: Button, family: String, state: String) -> StyleBox:
-	var descriptor := UIButtonFamily.descriptor(family, state)
+	var descriptor := UIButtonFamily.descriptor_for_size(family, state, button.custom_minimum_size)
 	var texture := load(str(descriptor.get("path", ""))) as Texture2D
 	var margins: Vector4 = descriptor.get("margins", Vector4(42, 28, 42, 28))
 	var content: Vector4 = descriptor.get("content", Vector4(56, 32, 56, 32))
-	var size := button.custom_minimum_size
-	var source_size := UIButtonFamily.family_source_size(family)
-	var horizontal_scale := clampf(size.x / maxf(1.0, source_size.x), 0.55, 1.25)
-	margins.x = roundf(margins.x * horizontal_scale)
-	margins.z = roundf(margins.z * horizontal_scale)
-	# Logical label insets scale against the original main-menu width, not the
-	# chosen sibling's narrower canvas. This preserves the ornament while keeping
-	# "Завершить забег" inside the authored footer width.
-	var content_scale := clampf(size.x / 380.0, 0.55, 1.0)
-	content.x = roundf(content.x * content_scale)
-	content.z = roundf(content.z * content_scale)
 
 	if texture == null:
 		return _chip_style(0.9, 10.0)
