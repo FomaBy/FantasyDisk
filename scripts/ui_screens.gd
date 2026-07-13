@@ -5422,7 +5422,7 @@ func _show_codex_screen() -> void:
 	# Exact panel frames and their content margins are the accepted empty zones.
 	var nav_panel := PanelContainer.new()
 	nav_panel.name = "CodexNavPanel"
-	nav_panel.add_theme_stylebox_override("panel", _codex_panel_style(0.90, Vector4(32, 38, 32, 50)))
+	nav_panel.add_theme_stylebox_override("panel", _codex_panel_style(0.90, Vector4(8, 38, 8, 50)))
 	_codex_set_design_rect(nav_panel, Rect2(72, 172, 324, 840))
 	stage.add_child(nav_panel)
 	var tabs_row := Control.new()
@@ -5474,24 +5474,24 @@ func _show_codex_screen() -> void:
 		var tab_button := Button.new()
 		tab_button.name = "CodexTab_%s" % section_id
 		tab_button.text = str(section["title"])
-		tab_button.custom_minimum_size = Vector2(260, 104)
+		tab_button.custom_minimum_size = Vector2(308, 104)
 		tab_button.mouse_default_cursor_shape = Control.CURSOR_POINTING_HAND
 		_apply_fantasy_button_theme(tab_button, "default", UIButtonFamily.FAMILY_CODEX_TAB)
 		tab_button.add_theme_font_size_override("font_size", _readable_font_size(SemanticTypography.ROLE_TAB, 16))
 		tab_button.alignment = HORIZONTAL_ALIGNMENT_CENTER
 		tab_button.autowrap_mode = TextServer.AUTOWRAP_OFF
 		tab_button.clip_text = false
-		_codex_bind_stage_font(tab_button, SemanticTypography.ROLE_TAB, 22, SemanticTypography.role_min(SemanticTypography.ROLE_TAB), SemanticTypography.role_max(SemanticTypography.ROLE_TAB))
-		for tab_state in ["normal", "hover", "pressed", "disabled", "focus"]:
+		_codex_bind_stage_font(tab_button, SemanticTypography.ROLE_TAB, 18, SemanticTypography.role_min(SemanticTypography.ROLE_TAB), SemanticTypography.role_max(SemanticTypography.ROLE_TAB))
+		# The back_260 plate's ornamental edge stays untouched; only its logical
+		# label inset is relaxed so the longest Russian tab fits the 284px zone.
+		for tab_state in UIButtonFamily.STATES:
 			var source_style := tab_button.get_theme_stylebox(tab_state)
 			var tab_style := source_style.duplicate() if source_style != null else null
 			if tab_style != null:
-				tab_style.content_margin_left = 20.0
-				tab_style.content_margin_right = 20.0
-				tab_style.content_margin_top = 18.0
-				tab_style.content_margin_bottom = 18.0
+				tab_style.content_margin_left = 42.0
+				tab_style.content_margin_right = 42.0
 				tab_button.add_theme_stylebox_override(tab_state, tab_style)
-		_codex_set_design_rect(tab_button, Rect2(0, nav_y[section_index], 260, 104))
+		_codex_set_design_rect(tab_button, Rect2(0, nav_y[section_index], 308, 104))
 		tab_button.pressed.connect(_show_codex_section.bind(content, section_id))
 		_connect_ui_sfx(tab_button, "click")
 		tabs_row.add_child(tab_button)

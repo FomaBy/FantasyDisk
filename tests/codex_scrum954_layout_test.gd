@@ -70,7 +70,7 @@ func _check_viewport(viewport_size: Vector2i) -> void:
 		"CodexPortraitSlot": Rect2(480, 310, 122, 114),
 		"CodexEntryName": Rect2(616, 337, 330, 60),
 		"CodexDetailPanel": Rect2(1064, 172, 784, 840),
-		"CodexDetailTitle": Rect2(1200, 222, 508, 46),
+		"CodexDetailTitle": Rect2(1200, 216, 508, 60),
 		"CodexDetailPortraitSlot": Rect2(1108, 284, 300, 300),
 		"CodexDetailPortraitTexture": Rect2(1140, 310, 236, 248),
 		"CodexDetailParchmentInset": Rect2(1108, 606, 684, 356),
@@ -99,9 +99,14 @@ func _check_viewport(viewport_size: Vector2i) -> void:
 		if tab.text != str(tab_spec[1]) or tab.icon != null or tab.alignment != HORIZONTAL_ALIGNMENT_CENTER:
 			errors.append("%s: tab %s must be centered Russian-only text without an emblem." % [context, tab_spec[0]])
 		_check_button_family(tab, UIButtonFamily.FAMILY_CODEX_TAB, "%s tab %s" % [context, tab_spec[0]])
-		var expected_tab_rect := _scaled_rect(viewport_size, Rect2(104, nav_y[tab_index], 260, 104))
+		var expected_tab_rect := _scaled_rect(viewport_size, Rect2(80, nav_y[tab_index], 308, 104))
 		if not _rect_near(tab.get_global_rect(), expected_tab_rect, 1.5):
 			errors.append("%s: tab %s rect %s != %s." % [context, tab_spec[0], str(tab.get_global_rect()), str(expected_tab_rect)])
+		var tab_style := tab.get_theme_stylebox("normal") as StyleBoxTexture
+		if tab_style == null or tab_style.texture == null or tab_style.texture.resource_path.contains("minimal_metal_codex_tab"):
+			errors.append("%s: tab %s still uses the retired yellow Codex plate." % [context, tab_spec[0]])
+		elif tab.get_minimum_size().x > tab.size.x + 0.5:
+			errors.append("%s: tab %s text/content safe zone clips at %s." % [context, tab_spec[0], str(tab.size)])
 
 	var section_instance_ids := {}
 	for tab_spec in EXPECTED_TABS:

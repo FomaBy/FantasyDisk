@@ -9,12 +9,12 @@ Audit basis: `docs/design/systems/menus_ui.md`, `docs/design/systems/visual_styl
 | Hero Select | authored Hero Select frame family | portrait, radar, dossier, carousel | preserve authored geometry; normalize focus/hover brightness and button typography |
 | Weapon Select | native opaque dark surfaces and large weapon cards | weapon imagery and stat chips | cards remain cards; only Back/confirm use global action family |
 | Settings | fullscreen Atlas-family shell, four tabs, seamless transparent content | mechanical tabs and fields | shared action/back states; no second inner modal; stable state geometry |
-| Codex | SCRUM-954 frameless 1920x1080 three-column stage | quiet book/library edge language | do not add the large gold shell; unify tab/back button material, spacing, and neutral focus states only |
+| Codex | SCRUM-954 frameless 1920x1080 three-column stage | quiet book/library edge language | FAN-1047: `text/back_260x104` tabs/back material, stable spacing and neutral focus; no large gold shell |
 | Combat HUD | dedicated compact HUD v2 cluster | ultra-low ornament, fast scanning | no large shell/action textures; share graphite/brass/crimson palette and icon stroke weight |
 | Shop / Attribute Shop / Event / economy | merchant/event backdrops, Atlas chips/cards, screen-owned layout | treasure/rune/merchant accents | action labels use global resolver; product/choice cards stay cards and never become heavy buttons |
 | Level Up | frameless three-card composition | socket/card/ribbon hierarchy | preserve cards and recommendation rows; only `Позже` uses global action state family |
 | Artifact Reward | reward hall + hollow shell + three cards | gem/socket reward accent | cards remain whole focus targets; action content stays inside card safe zones |
-| Pause dossier / Victory / Defeat | dossier/result-specific body inside accepted shell/modal | danger action and result crest | same action states; only destructive action receives restrained crimson semantics |
+| Pause dossier / Victory / Defeat | dossier/result-specific body inside accepted shell/modal | danger action and result crest | FAN-1047 dossier uses size-fit 72/104 siblings from the Main Menu text kit with stable states; result screens keep their own accepted semantics |
 | Atlas / Patch Notes / dialogs / Feedback | screen-specific Atlas/dossier/dialog structures | information density and modal hierarchy | use common text-button and compact utility families; no default Godot gray controls |
 
 ## Button taxonomy

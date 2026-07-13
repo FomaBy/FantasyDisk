@@ -13,10 +13,10 @@ Display driver: `macOS`
 - opaque reserve masks: `4`, combined area `402624.0`, frame is final layer `true`
 - BaseStatsGrid: `8` real rows, `2` columns
 - Hero no-scroll: vertical mode `0`, content min `268.0`, viewport `268.0`, fits `true`
-- Derived no-scroll: vertical mode `0`, content min `178.0`, viewport `270.0`, fits `true`
+- Derived no-scroll: vertical mode `0`, content min `183.0`, viewport `270.0`, fits `true`
 - compact build summary: `Оружие: Двуручный меч · Ульта: Неистовство · Артефакты: 0`
-- compact units: attack `1,75/с`, crit `7%`, crit power `×1,58`
-- measured compact aliases: `Ск. 1,75/с; Маг 2,3; Шир 350; Сн. 619; П.ур 7,3; Част 1,08/с`
+- compact units: attack `1,82/с`, crit `7%`, crit power `×1,58`
+- measured compact aliases: `Ск. 1,82/с; М 2,7; Ш 350; Сн. 619; П 8,5; Ч 1,08/с`
 
 ## 1280x720
 - frame safe rect: `[P: (133.0, 113.0), S: (1014.0, 494.0)]`
@@ -29,10 +29,10 @@ Display driver: `macOS`
 - opaque reserve masks: `4`, combined area `490764.0`, frame is final layer `true`
 - BaseStatsGrid: `8` real rows, `2` columns
 - Hero no-scroll: vertical mode `0`, content min `268.0`, viewport `316.0`, fits `true`
-- Derived no-scroll: vertical mode `0`, content min `314.0`, viewport `318.0`, fits `true`
+- Derived no-scroll: vertical mode `0`, content min `318.0`, viewport `318.0`, fits `true`
 - compact build summary: `Оружие: Двуручный меч · Ульта: Неистовство · Артефакты: 0`
-- compact units: attack `1,75/с`, crit `7%`, crit power `×1,58`
-- measured compact aliases: `Скор. 1,75/с; Маг. 2,3; Шир. 350; Снар. 619; Пер. 7,3; Част. 1,08/с`
+- compact units: attack `1,82/с`, crit `7%`, crit power `×1,58`
+- measured compact aliases: `Скор. 1,82/с; Маг. 2,7; Шир. 350; Снар. 619; Пер. 8,5; Част. 1,08/с`
 
 ## 1600x900
 - frame safe rect: `[P: (167.0, 141.0), S: (1266.0, 618.0)]`
@@ -47,8 +47,8 @@ Display driver: `macOS`
 - Hero no-scroll: vertical mode `0`, content min `268.0`, viewport `438.0`, fits `true`
 - Derived no-scroll: vertical mode `0`, content min `330.0`, viewport `440.0`, fits `true`
 - compact build summary: `Оружие: Двуручный меч · Ульта: Неистовство · Артефакты: 0`
-- compact units: attack `1,75/с`, crit `7%`, crit power `×1,58`
-- measured compact aliases: `Скор. 1,75/с; Маг. 2,3; Шир. 350; Снар. 619; Пер. 7,3; Част. 1,08/с`
+- compact units: attack `1,82/с`, crit `7%`, crit power `×1,58`
+- measured compact aliases: `Скор. 1,82/с; Маг. 2,7; Шир. 350; Снар. 619; Пер. 8,5; Част. 1,08/с`
 
 ## 1920x1080
 - frame safe rect: `[P: (200.0, 169.0), S: (1520.0, 742.0)]`
@@ -60,11 +60,11 @@ Display driver: `macOS`
 - actions: `[P: (396.0, 771.0), S: (1128.0, 104.0)]`
 - opaque reserve masks: `4`, combined area `1052032.0`, frame is final layer `true`
 - BaseStatsGrid: `8` real rows, `2` columns
-- Hero no-scroll: vertical mode `0`, content min `368.0`, viewport `458.0`, fits `true`
+- Hero no-scroll: vertical mode `0`, content min `370.0`, viewport `458.0`, fits `true`
 - Derived no-scroll: vertical mode `0`, content min `462.0`, viewport `482.0`, fits `true`
 - compact build summary: `Оружие: Двуручный меч · Ульта: Неистовство · Артефакты: 0`
-- compact units: attack `1,75/с`, crit `7%`, crit power `×1,58`
-- measured compact aliases: `Скор. атаки 1,75/с; Маг. урон 2,3; Ширина 350; Скор. снар. 619; Период. ур. 7,3; Частота 1,08/с`
+- compact units: attack `1,82/с`, crit `7%`, crit power `×1,58`
+- measured compact aliases: `Скор. атаки 1,82/с; Маг. урон 2,7; Ширина 350; Скор. снар. 619; Период. ур. 8,5; Частота 1,08/с`
 
 ## 2560x1440
 - frame safe rect: `[P: (267.0, 225.0), S: (2026.0, 990.0)]`
@@ -76,8 +76,8 @@ Display driver: `macOS`
 - actions: `[P: (660.0, 1063.0), S: (1240.0, 104.0)]`
 - opaque reserve masks: `4`, combined area `1869588.0`, frame is final layer `true`
 - BaseStatsGrid: `8` real rows, `2` columns
-- Hero no-scroll: vertical mode `0`, content min `616.0`, viewport `630.0`, fits `true`
+- Hero no-scroll: vertical mode `0`, content min `618.0`, viewport `630.0`, fits `true`
 - Derived no-scroll: vertical mode `0`, content min `480.0`, viewport `605.0`, fits `true`
 - compact build summary: `Оружие: Двуручный меч · Ульта: Неистовство · Артефакты: 0`
-- compact units: attack `1,75/с`, crit `7%`, crit power `×1,58`
-- measured compact aliases: `Скор. атаки 1,75/с; Маг. урон 2,3; Ширина 350; Скор. снар. 619; Период. ур. 7,3; Частота 1,08/с`
+- compact units: attack `1,82/с`, crit `7%`, crit power `×1,58`
+- measured compact aliases: `Скор. атаки 1,82/с; Маг. урон 2,7; Ширина 350; Скор. снар. 619; Период. ур. 8,5; Частота 1,08/с`

@@ -33,9 +33,8 @@ const CLASS_CREST_DIR := "res://assets/sprites/ui/meta40/"
 const DIVIDER_ORNAMENT_PATH := "res://assets/sprites/ui/atlas_style/divider_ornament.png"
 
 # Shared resolver keeps Pause in the same semantic button inventory as every
-# runtime screen. SCRUM-1056 explicitly pins all four actions to the exact
-# five-state main-menu plate while this scene only owns responsive margins.
-const PAUSE_ACTION_BUTTON_FAMILY := "text/main_menu_380x104"
+# runtime screen. FAN-1047 uses size-matched siblings from the main-menu kit so
+# the 104px plate is never vertically cropped into a compact 72px footer.
 
 # Цвета единого атлас-стиля (= _show_atlas_screen и родня).
 const COLOR_TITLE := Color(0.96, 0.90, 0.68, 1.0)
@@ -460,7 +459,6 @@ func _build_action_footer(parent: Control) -> void:
 	_button_box.add_child(menu_button)
 	_action_buttons = [resume_button, settings_button, end_run_button, menu_button]
 	for button in _action_buttons:
-		button.set_meta("ui_button_family", PAUSE_ACTION_BUTTON_FAMILY)
 		button.focus_entered.connect(_schedule_focus_navigation_rebuild)
 
 	# SCRUM-812: досье проходимо с геймпада/стрелок — горизонтальное кольцо фокуса,
@@ -2158,13 +2156,14 @@ func _kit_button(text: String, width: float) -> Button:
 	button.autowrap_mode = TextServer.AUTOWRAP_OFF
 	button.mouse_default_cursor_shape = Control.CURSOR_POINTING_HAND
 	button.add_theme_font_size_override("font_size", _readable_px(SemanticTypography.ROLE_ACTION, 16.0))
-	UIButtonFamily.assign(button, PAUSE_ACTION_BUTTON_FAMILY, true)
+	UIButtonFamily.assign(button, UIButtonFamily.main_menu_action_family(button.custom_minimum_size), true)
 	_apply_kit_button_theme(button)
 	return button
 
 
 func _apply_kit_button_theme(button: Button) -> void:
-	var family := UIButtonFamily.resolve(button, "default", PAUSE_ACTION_BUTTON_FAMILY)
+	var family := UIButtonFamily.main_menu_action_family(button.custom_minimum_size)
+	UIButtonFamily.assign(button, family, true)
 	for state in UIButtonFamily.STATES:
 		button.add_theme_stylebox_override(state, _kit_button_state_style(button, family, state))
 	button.add_theme_color_override("font_color", Color(0.98, 0.94, 0.78, 1.0))
@@ -2180,18 +2179,16 @@ func _kit_button_state_style(button: Button, family: String, state: String) -> S
 	var margins: Vector4 = descriptor.get("margins", Vector4(42, 28, 42, 28))
 	var content: Vector4 = descriptor.get("content", Vector4(56, 32, 56, 32))
 	var size := button.custom_minimum_size
-	var horizontal_scale := clampf(size.x / 380.0, 0.55, 1.0)
+	var source_size := UIButtonFamily.family_source_size(family)
+	var horizontal_scale := clampf(size.x / maxf(1.0, source_size.x), 0.55, 1.25)
 	margins.x = roundf(margins.x * horizontal_scale)
 	margins.z = roundf(margins.z * horizontal_scale)
-	content.x = roundf(content.x * horizontal_scale)
-	content.z = roundf(content.z * horizontal_scale)
-	if size.y <= 76.0:
-		var vertical_margin := 12.0 if size.y <= 64.0 else 14.0
-		var vertical_content := 10.0 if size.y <= 64.0 else 14.0
-		margins.y = minf(margins.y, vertical_margin)
-		margins.w = minf(margins.w, vertical_margin)
-		content.y = minf(content.y, vertical_content)
-		content.w = minf(content.w, vertical_content)
+	# Logical label insets scale against the original main-menu width, not the
+	# chosen sibling's narrower canvas. This preserves the ornament while keeping
+	# "Завершить забег" inside the authored footer width.
+	var content_scale := clampf(size.x / 380.0, 0.55, 1.0)
+	content.x = roundf(content.x * content_scale)
+	content.z = roundf(content.z * content_scale)
 
 	if texture == null:
 		return _chip_style(0.9, 10.0)

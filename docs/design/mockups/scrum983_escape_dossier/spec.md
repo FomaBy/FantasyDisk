@@ -1,6 +1,6 @@
 # SCRUM-983 Escape Hero Dossier — UI Mockup Specification
 
-Status: Accepted and implemented; SCRUM-1056 no-scroll/main-menu-button corrective pass
+Status: Accepted and implemented; FAN-1047 supersedes only the footer plate selection
 Role owner: Back-end `/root`
 Task: `docs/tasks/SCRUM-1056.md`
 Jira: SCRUM-983, superseded for runtime geometry by SCRUM-1056
@@ -133,10 +133,11 @@ chip, icon or pointer hitbox enters the scrollbar lane.
 
 ## Button And Focus Contract
 
-- All four pause actions use `main_menu_380x104` normal/hover/focus/pressed/
-  disabled textures with `Color.WHITE` tint. Compact tiers scale the documented
-  texture/content margins proportionally to fit the horizontal footer; no action
-  receives a pause-specific or danger-red override.
+- All four pause actions use one size-fit sibling from the Main Menu
+  `text_buttons_unique` kit with `Color.WHITE` tint: `later_260x72` at compact
+  tiers and `back_260x104` at 104px tiers. Normal/hover/focus/pressed/disabled
+  retain identical bounds and logical content margins; no action receives a
+  pause-specific or danger-red override.
 - Initial focus is Continue. Left/right forms a non-destructive action ring:
   Continue → Settings → End Run → Main Menu → Continue.
 - Up from an action moves to the nearest final visible stat chip; down from the

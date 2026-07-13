@@ -1,10 +1,10 @@
 # Menus And UI
 
-Обновлено: 2026-07-12
+Обновлено: 2026-07-13
 
 Этот файл собирает UI-направление FantasyDisk после domain split. Полное фактическое состояние остается в `docs/design/current_game_state.md`, а канонические IDs и assets - в `docs/design/content_registry.md`.
 
-## SCRUM-1049/1051 Unified Semantic Button Families
+## FAN-1047 / SCRUM-1049/1051 Unified Semantic Button Families
 
 Runtime buttons now expose an explicit `ui_button_family` contract through
 `scripts/ui/ui_button_family.gd`. The registry resolves the accepted
@@ -15,12 +15,17 @@ content rows/cards, Settings fields/toggles, Route nodes, Atlas sockets,
 Hero-carousel arrows and @2K conflict controls remain
 documented shape-specific siblings of the same FantasyDisk family.
 
-Codex keeps the accepted frameless SCRUM-954 three-column layout. Its six tabs
-use the quiet `minimal/codex_tab` book-divider accent in all five states, while
-entry cards stay `content_row`; hover/focus/pressed/disabled do not alter content
-margins or geometry. Compact Shop/Attribute actions are now named
+Codex keeps the accepted frameless SCRUM-954 three-column layout. FAN-1047
+removes the yellow `minimal/codex_tab` exception: all six tabs now use the
+five-state `text/back_260x104` sibling from the same production kit as Main
+Menu, at fixed `308×104` bounds and stable logical label insets. Entry cards
+stay `content_row`; hover/focus/pressed/disabled do not alter content margins or
+geometry. Compact Shop/Attribute actions are now named
 `slim_action` instead of borrowing rebind-field semantics. Pause dossier actions
-consume the same shared resolver instead of a copied path/threshold table.
+consume the same shared resolver instead of a copied path/threshold table:
+compact 72px footers use `text/later_260x72`, while 104px footers use
+`text/back_260x104`. This avoids vertically squeezing the 380×104 Main Menu
+plate while preserving its material and state language.
 
 `MainMenuCreditsButton` is an icon-only gratitude action using the transparent
 PixelLab asset `assets/sprites/ui/icons/credits/ui_icon_gratitude.png`; its face
@@ -1326,10 +1331,11 @@ decorative art, not text containers. QA dump:
 SCRUM-693 changes the active-combat Escape entry point: when no other run screen
 is covering gameplay, Escape opens the pause dossier / character board directly.
 SCRUM-983 moves the four run actions from the old left/header placement into a
-fixed bottom footer, with Continue focused first. SCRUM-1056 supersedes the
-old pause-only/danger styling: Continue, Settings, End Run and Main Menu all use
-the exact `main_menu_380x104` five-state family with geometry-stable 72px compact
-or 104px wide heights. The old
+fixed bottom footer, with Continue focused first. SCRUM-1056 removed the old
+pause-only/danger styling. FAN-1047 corrects its vertically squeezed plate:
+Continue, Settings, End Run and Main Menu now select one size-fit five-state
+Main Menu sibling per tier (`later_260x72` compact, `back_260x104` wide) with
+geometry-stable 72px or 104px heights. The old
 standalone `RunPauseMenuRoot` is still available for noncombat overlays such as
 route/shop/event/level-up/reward contexts, but it must not appear over or instead
 of the character board for clean active gameplay. Resume, Settings Back, and

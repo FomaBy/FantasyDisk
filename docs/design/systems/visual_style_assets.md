@@ -288,6 +288,14 @@ Plans, fit reports, composite/debug overlay and provenance live under
 `docs/design/mockups/scrum983_escape_dossier/` and
 `docs/design/previews/scrum983_escape_dossier/`.
 
+FAN-1047 unifies ordinary Codex navigation and the four dossier footer actions
+with the live `text_buttons_unique` Main Menu material. Codex tabs use
+`back_260x104`; dossier actions select `later_260x72` or `back_260x104` from
+their authored height. The old yellow `minimal_metal_codex_tab` remains a
+historical asset only. PixelLab layout references and provenance are under
+`docs/design/references/FAN-1047_codex_dossier_buttons/`; no generated bitmap
+is promoted to runtime.
+
 SCRUM-588 adds `assets/sprites/ui/frames/overhaul_2k/ui_frame_2k_lut_toast.png`,
 the level-up toast frame. It is a generated transparent RGBA `480x300` asset
 with texture margins `58/48/58/48` and content margins `70/112/70/112`. It must
@@ -629,7 +637,7 @@ Canonical live Hero Select frame assets live in
 - `ui_frame_hero_select_thumbnail.png`, `ui_frame_hero_select_asc_button.png`,
   `ui_frame_hero_select_asc_label.png`, `ui_frame_hero_select_asc_mods.png`.
 
-Canonical live button assets live in `assets/sprites/ui/frames/minimal_metal_buttons/`:
+Canonical legacy/minimal button assets live in `assets/sprites/ui/frames/minimal_metal_buttons/`:
 
 - `ui_btn_minimal_metal_standard.png`, `ui_btn_minimal_metal_max.png`,
   `ui_btn_minimal_metal_main_menu.png`, `ui_btn_minimal_metal_hero_confirm.png`;
@@ -640,6 +648,10 @@ Canonical live button assets live in `assets/sprites/ui/frames/minimal_metal_but
 - `ui_btn_minimal_metal_fab.png`, `ui_btn_minimal_metal_utility.png`,
   `ui_btn_minimal_metal_pause.png`;
 - every file has `_hover`, `_focus`, `_pressed` and `_disabled` state variants.
+
+`ui_btn_minimal_metal_codex_tab*` is retained for history/metadata checks but
+is no longer a live Codex family after FAN-1047. Ordinary text actions use the
+canonical `assets/sprites/ui/frames/text_buttons_unique/` five-state kit.
 
 State language:
 

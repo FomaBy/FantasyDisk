@@ -989,8 +989,10 @@ func _screen_specific_assertions(main: Node, screen_id: String, context: String)
 				return "%s: expected CodexEntryCard to use the unified leather row StyleBoxFlat." % context
 			var tab_button := main.find_child("CodexTab_characters", true, false) as Button
 			var tab_style_path := _stylebox_texture_path(tab_button.get_theme_stylebox("normal")) if tab_button != null else ""
-			if tab_button == null or not tab_style_path.contains("minimal_metal_codex_tab"):
-				return "%s: expected CodexTab_characters to use the explicit quiet Codex tab family." % context
+			if tab_button == null \
+				or str(tab_button.get_meta(UIButtonFamily.META_FAMILY, "")) != UIButtonFamily.FAMILY_CODEX_TAB \
+				or not tab_style_path.contains("text_unique_back_260x104"):
+				return "%s: expected CodexTab_characters to use the shared main-menu visual family." % context
 			if tab_button.icon != null:
 				return "%s: Codex navigation must not render generic category emblems." % context
 			var center_panel := main.find_child("CodexContent", true, false) as Control

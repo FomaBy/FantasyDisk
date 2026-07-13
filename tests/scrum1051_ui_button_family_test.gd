@@ -68,8 +68,10 @@ func _initialize() -> void:
 			errors.append("Pause dossier is missing %s." % node_name)
 			continue
 		var family := str(pause_button.get_meta(UIButtonFamily.META_FAMILY, ""))
-		if not family.begins_with("text/"):
-			errors.append("%s must resolve through the shared text family, got '%s'." % [node_name, family])
+		var expected_family := UIButtonFamily.main_menu_action_family(pause_button.custom_minimum_size)
+		if family != expected_family or not UIButtonFamily.is_main_menu_visual_family(family):
+			errors.append("%s must use size-matched main-menu family '%s', got '%s'." % [node_name, expected_family, family])
+		_expect_stable_state_geometry(pause_button, node_name)
 
 	var slim := Button.new()
 	slim.name = "SCRUM1051SlimProbe"

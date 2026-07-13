@@ -5,6 +5,7 @@ extends SceneTree
 # complete tooltips, focus reachability and live responsive relayout.
 
 const MAIN_SCENE := preload("res://scenes/Main.tscn")
+const UIButtonFamily := preload("res://scripts/ui/ui_button_family.gd")
 const FRAME_PATH_SUFFIX := "meta40/frame_border.png"
 const TARGETS := [
 	Vector2i(1152, 648),
@@ -592,18 +593,24 @@ func _assert_action_styles(pause: Control, context: String) -> void:
 		var button := pause.find_child(ACTION_NAMES[index], true, false) as Button
 		if button == null:
 			continue
-		if str(button.get_meta("ui_button_family", "")) != "text/main_menu_380x104":
-			_errors.append("%s: %s is not tagged with the main-menu button family." % [context, button.name])
+		var family := str(button.get_meta(UIButtonFamily.META_FAMILY, ""))
+		var expected_family := UIButtonFamily.main_menu_action_family(button.custom_minimum_size)
+		if family != expected_family or not UIButtonFamily.is_main_menu_visual_family(family):
+			_errors.append("%s: %s family %s does not match size-fit main-menu family %s." % [context, button.name, family, expected_family])
 		for state in ["normal", "hover", "focus", "pressed", "disabled"]:
 			var style := button.get_theme_stylebox(state) as StyleBoxTexture
 			if style == null:
 				_errors.append("%s: %s missing %s texture state." % [context, button.name, state])
 				continue
-			var expected_suffix := "ui_btn_text_unique_main_menu_380x104_%s.png" % state
-			if style.texture == null or not style.texture.resource_path.ends_with(expected_suffix):
-				_errors.append("%s: %s %s does not use %s." % [context, button.name, state, expected_suffix])
+			var expected_path := str(UIButtonFamily.descriptor(expected_family, state).get("path", ""))
+			if style.texture == null or style.texture.resource_path != expected_path:
+				_errors.append("%s: %s %s does not use %s." % [context, button.name, state, expected_path])
 			if style.modulate_color != Color.WHITE:
 				_errors.append("%s: %s %s adds a non-main-menu tint." % [context, button.name, state])
+			if style.content_margin_left + style.content_margin_right >= button.custom_minimum_size.x:
+				_errors.append("%s: %s %s has no horizontal text safe zone." % [context, button.name, state])
+			if style.content_margin_top + style.content_margin_bottom >= button.custom_minimum_size.y:
+				_errors.append("%s: %s %s has no vertical text safe zone." % [context, button.name, state])
 
 
 func _expected_contract(viewport_size: Vector2) -> Dictionary:

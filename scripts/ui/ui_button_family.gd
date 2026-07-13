@@ -14,7 +14,15 @@ const FAMILY_REWARD_CARD := "reward_card"
 const FAMILY_WEAPON_CARD := "weapon_card"
 const FAMILY_SETTINGS_FIELD := "settings_field"
 const FAMILY_SLIM_ACTION := "slim_action"
-const FAMILY_CODEX_TAB := "minimal/codex_tab"
+const FAMILY_CODEX_TAB := "text/back_260x104"
+const FAMILY_MAIN_MENU_NATIVE := "text/main_menu_380x104"
+const FAMILY_MAIN_MENU_MEDIUM := "text/back_260x104"
+const FAMILY_MAIN_MENU_COMPACT := "text/later_260x72"
+const MAIN_MENU_VISUAL_FAMILIES := [
+	FAMILY_MAIN_MENU_NATIVE,
+	FAMILY_MAIN_MENU_MEDIUM,
+	FAMILY_MAIN_MENU_COMPACT,
+]
 
 # Families which deliberately do not use the shared text-action plate. Runtime
 # inventory tests accept them only when their owning screen helper tags them.
@@ -71,6 +79,32 @@ static func infer(button: Button, variant := "default") -> String:
 	return "minimal/%s" % minimal_type
 
 
+static func main_menu_action_family(display_size: Vector2) -> String:
+	# Keep one production visual language without squeezing the 380x104 plate
+	# into a 72px footer. These are neutral siblings from the same five-state
+	# text_buttons_unique source kit.
+	if display_size.y <= 76.0:
+		return FAMILY_MAIN_MENU_COMPACT
+	if display_size.x <= 340.0:
+		return FAMILY_MAIN_MENU_MEDIUM
+	return FAMILY_MAIN_MENU_NATIVE
+
+
+static func is_main_menu_visual_family(family: String) -> bool:
+	return MAIN_MENU_VISUAL_FAMILIES.has(family)
+
+
+static func family_source_size(family: String) -> Vector2:
+	match family:
+		FAMILY_MAIN_MENU_NATIVE:
+			return Vector2(380.0, 104.0)
+		FAMILY_MAIN_MENU_MEDIUM:
+			return Vector2(260.0, 104.0)
+		FAMILY_MAIN_MENU_COMPACT:
+			return Vector2(260.0, 72.0)
+	return Vector2.ZERO
+
+
 static func text_family_id(button: Button) -> String:
 	if button == null:
 		return ""
@@ -79,8 +113,7 @@ static func text_family_id(button: Button) -> String:
 	if button_name == "LevelUpPlusButton":
 		return ""
 	if button_name.begins_with("CodexTab_"):
-		# Codex owns the restrained book-divider plate, not the generic Back plate.
-		return ""
+		return FAMILY_CODEX_TAB.trim_prefix("text/")
 	if button_name in ["AscensionMinusButton", "AscensionPlusButton"] or size.x <= 70.0:
 		return ""
 	if button_name.begins_with("MainMenu"):
@@ -154,8 +187,6 @@ static func minimal_family_type(button: Button, variant := "default") -> String:
 		return "reset_audio"
 	if button_name == "SettingsResetBindingsButton":
 		return "reset_bindings"
-	if button_name.begins_with("CodexTab_"):
-		return "codex_tab"
 	if button_name.begins_with("AttributeOffer_"):
 		return "attr_selector"
 	if button_name.begins_with("RunPause") or button_name.begins_with("QuitConfirm"):
