@@ -17,7 +17,9 @@ inherited Godot suites. `changed` автоматически включает и
 и umbrella fallback для runtime/scene diff; `full` обнаруживает весь текущий
 набор. Любой `SCRIPT ERROR`, `FATAL`, timeout или ненулевой exit — failure.
 Filtered/skip-прогон имеет non-certifying статус `partial_pass`, пустой прогон
-запрещён. `--static-only` — certifying CI-профиль, но не заменяет полный
+запрещён. Staged, unstaged или untracked worktree также всегда non-certifying и
+фиксируется в JSON evidence; commit-range и index whitespace проверяются
+отдельно. `--static-only` — certifying CI-профиль, но не заменяет полный
 локальный/release gate.
 
 ## Реестр находок

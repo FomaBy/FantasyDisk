@@ -591,8 +591,9 @@ func _maybe_spawn_mini_elite(asc: Dictionary, remaining_slots: int) -> int:
 		if minion_scene == null:
 			break
 		var offset: Vector2 = Vector2.RIGHT.rotated(game.rng.randf() * TAU) * game.rng.randf_range(48.0, 96.0)
-		_spawn_random_enemy(minion_scene, elite.global_position + offset, true)
-		used += 1
+		var minion := _spawn_random_enemy(minion_scene, elite.global_position + offset, true)
+		if minion != null:
+			used += 1
 	return used
 
 

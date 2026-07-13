@@ -86,6 +86,7 @@ The gate must:
 - isolate HOME/XDG/AppData and `user://` for every Godot process;
 - route Godot through the shared semaphore;
 - fail on non-zero exit, `SCRIPT ERROR`, fatal diagnostics, or client secrets;
+- refuse certifying status for staged, unstaged, or untracked worktrees;
 - write `build/quality_gate_report.json` with SHA, platform, durations and
   per-check results.
 

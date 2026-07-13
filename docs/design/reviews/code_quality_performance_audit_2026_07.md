@@ -93,6 +93,8 @@ Fix:
   falls back to the umbrella for unmapped runtime/scene changes; filtered or
   skipped runs are recorded as non-certifying `partial_pass`, while an empty
   run is rejected;
+- any staged, unstaged or untracked worktree state is recorded in JSON and makes
+  the run non-certifying; whitespace checks cover index and the whole commit range;
 - per-test/process timeouts terminate the full process group; `godot_gate.py`
   also enforces a configurable timeout for direct test/import/export commands;
 - the direct wave-cap smoke freezes the timer-driven producer while measuring
@@ -209,7 +211,7 @@ Baseline before edits:
 
 Final combined changed-profile from baseline `1190db1d`:
 
-- 12 static/security/export-config/whole-range whitespace checks passed;
+- 13 static/security/export-config/index/whole-range whitespace checks passed;
 - 14 diff-selected Godot suites passed, including target/separation/hot-path
   caches, Engineer kit, feedback, persistence, scene contracts, status effects,
   combat/UI split smoke and the umbrella `runtime_smoke_test.gd`;

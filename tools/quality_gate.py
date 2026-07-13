@@ -195,6 +195,34 @@ def _range_check_command(changed_ref: str) -> list[str]:
     return ["git", "diff", "--check", f"{changed_ref}...HEAD"]
 
 
+def _index_check_command() -> list[str]:
+    return ["git", "diff", "--cached", "--check"]
+
+
+def _worktree_status() -> list[str]:
+    result = subprocess.run(
+        ["git", "status", "--porcelain=v1", "--untracked-files=all"],
+        cwd=ROOT,
+        text=True,
+        stdout=subprocess.PIPE,
+        stderr=subprocess.PIPE,
+        check=False,
+    )
+    if result.returncode != 0:
+        raise RuntimeError(result.stderr.strip() or "git worktree status failed")
+    return [line for line in result.stdout.splitlines() if line]
+
+
+def _is_certifying(args: argparse.Namespace, worktree_status: Sequence[str]) -> bool:
+    return not (
+        args.filters
+        or args.skip_static
+        or args.skip_godot
+        or args.skip_umbrella
+        or worktree_status
+    )
+
+
 def run_static_checks(fail_fast: bool, timeout: float, changed_ref: str) -> list[dict]:
     commands: list[tuple[str, list[str]]] = [
         ("repository-invariants", [sys.executable, "tools/quality_static_guard.py"]),
@@ -204,6 +232,7 @@ def run_static_checks(fail_fast: bool, timeout: float, changed_ref: str) -> list
         ("constellation-validator", [sys.executable, "tools/test_validate_scrum1067_constellation_spec.py"]),
         ("runtime-manifest-validator", [sys.executable, "tools/test_validate_scrum1068_runtime_manifest.py"]),
         ("git-diff-check", ["git", "diff", "--check"]),
+        ("git-index-check", _index_check_command()),
         ("git-head-check", ["git", "show", "--check", "--format=", "HEAD"]),
         ("git-range-check", _range_check_command(changed_ref)),
     ]
@@ -386,6 +415,7 @@ def main(argv: Sequence[str] | None = None) -> int:
         selected = select_godot_tests(
             args.profile, args.filters, args.changed_ref, args.skip_umbrella
         )
+        initial_worktree_status = _worktree_status()
     except RuntimeError as exc:
         print(f"quality_gate: {exc}", file=sys.stderr)
         return 2
@@ -415,9 +445,17 @@ def main(argv: Sequence[str] | None = None) -> int:
                 if args.fail_fast:
                     break
 
-    certifying = not (
-        args.filters or args.skip_static or args.skip_godot or args.skip_umbrella
-    )
+    try:
+        final_worktree_status = _worktree_status()
+    except RuntimeError as exc:
+        print(f"quality_gate: {exc}", file=sys.stderr)
+        return 2
+    worktree_status = list(dict.fromkeys(initial_worktree_status + final_worktree_status))
+    certifying = _is_certifying(args, worktree_status)
+    if worktree_status:
+        print("QUALITY NON-CERTIFYING: worktree is not clean", file=sys.stderr)
+        for line in worktree_status:
+            print(f"  {line}", file=sys.stderr)
     status = "failed" if failed else ("passed" if certifying else "partial_pass")
     payload = {
         "profile": args.profile,
@@ -426,6 +464,8 @@ def main(argv: Sequence[str] | None = None) -> int:
         "skip_static": args.skip_static,
         "skip_godot": args.skip_godot,
         "skip_umbrella": args.skip_umbrella,
+        "worktree_clean": not worktree_status,
+        "worktree_status": worktree_status,
         "discovered_godot_tests": len(discover_godot_tests()),
         "selected_godot_tests": len(selected),
         "git_sha": subprocess.check_output(["git", "rev-parse", "HEAD"], cwd=ROOT, text=True).strip(),

@@ -133,7 +133,14 @@ class QualityGateTests(unittest.TestCase):
             base = subprocess.check_output(["git", "rev-parse", "HEAD"], cwd=repo, text=True).strip()
 
             (repo / "sample.txt").write_text("bad trailing space \n", encoding="utf-8")
-            subprocess.run(["git", "commit", "-qam", "bad middle"], cwd=repo, check=True)
+            subprocess.run(["git", "add", "sample.txt"], cwd=repo, check=True)
+            index_check = subprocess.run(
+                self.quality._index_check_command(), cwd=repo, check=False,
+                text=True, stdout=subprocess.PIPE, stderr=subprocess.STDOUT,
+            )
+            self.assertNotEqual(index_check.returncode, 0)
+            self.assertIn("trailing whitespace", index_check.stdout)
+            subprocess.run(["git", "commit", "-q", "-m", "bad middle"], cwd=repo, check=True)
             (repo / "clean-head.txt").write_text("clean head\n", encoding="utf-8")
             subprocess.run(["git", "add", "clean-head.txt"], cwd=repo, check=True)
             subprocess.run(["git", "commit", "-q", "-m", "clean head"], cwd=repo, check=True)
@@ -148,6 +155,12 @@ class QualityGateTests(unittest.TestCase):
             self.assertEqual(head_only.returncode, 0)
             self.assertNotEqual(range_check.returncode, 0)
             self.assertIn("trailing whitespace", range_check.stdout)
+
+    def test_dirty_worktree_cannot_be_certifying(self) -> None:
+        args = self.quality._parse_args(["--profile", "changed"])
+        self.assertTrue(self.quality._is_certifying(args, []))
+        self.assertFalse(self.quality._is_certifying(args, ["M  scripts/example.gd"]))
+        self.assertFalse(self.quality._is_certifying(args, ["?? tests/new_test.gd"]))
 
 
 if __name__ == "__main__":
