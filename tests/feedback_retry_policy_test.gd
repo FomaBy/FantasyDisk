@@ -66,9 +66,9 @@ func _init() -> void:
 		_check(m.length() <= 90, "сообщение длиннее 90 символов (не влезет в статус-лейбл): %s" % m)
 
 	# --- 4. Бэкофф нарастающий ---
-	r._attempt = 1
+	r._active_report = {"attempt": 1}
 	var b1: float = r._backoff_for_attempt()
-	r._attempt = 2
+	r._active_report = {"attempt": 2}
 	var b2: float = r._backoff_for_attempt()
 	_check(b1 >= 0.0 and b2 >= b1,
 		"бэкофф не нарастает: попытка1=%.1f попытка2=%.1f" % [b1, b2])

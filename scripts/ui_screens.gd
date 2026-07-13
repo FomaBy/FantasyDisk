@@ -18,6 +18,7 @@ var _rebind_is_gamepad := false
 var _atlas := {}
 # Скрытые звезды, чью церемонию рассеивания тумана уже показали в этой сессии.
 var _atlas_hidden_seen := {}
+var _feedback_request_id := 0
 
 const HeroStatRadar := preload("res://scripts/ui/hero_stat_radar.gd")
 const SemanticTypography := preload("res://scripts/ui/semantic_typography.gd")
@@ -13587,12 +13588,16 @@ func _show_feedback_overlay(screenshot: Image = null) -> void:
 		send_button.disabled = true
 		status.text = "Отправляем..."
 		var reporter: Node = _feedback_reporter()
-		reporter.connect("report_finished", func(success: bool, message: String, local_path: String) -> void:
+		var completion := func(success: bool, message: String, local_path: String) -> void:
+			_feedback_request_id = 0
+			if not is_instance_valid(status) or not is_instance_valid(send_button):
+				return
 			status.text = message if local_path == "" else "%s\n%s" % [message, local_path]
 			status.add_theme_color_override("font_color", Color(0.74, 0.96, 0.74, 1.0) if success else Color(1.0, 0.82, 0.50, 1.0))
 			send_button.disabled = false
-		, CONNECT_ONE_SHOT)
-		reporter.call("submit_report", text_edit.text, safe_screenshot, _feedback_metadata())
+		var request_id := int(reporter.call(
+			"submit_report", text_edit.text, safe_screenshot, _feedback_metadata(), completion))
+		_feedback_request_id = request_id if bool(reporter.call("is_request_active", request_id)) else 0
 	)
 
 	text_edit.grab_focus()
@@ -13603,6 +13608,11 @@ func _is_feedback_overlay_open() -> bool:
 
 
 func _close_feedback_overlay() -> void:
+	if _feedback_request_id > 0:
+		var reporter := game.get_node_or_null("FeedbackReporter") as Node
+		if reporter != null and is_instance_valid(reporter):
+			reporter.call("cancel_active_report", _feedback_request_id)
+		_feedback_request_id = 0
 	if game.feedback_overlay_layer != null and is_instance_valid(game.feedback_overlay_layer):
 		game.feedback_overlay_layer.queue_free()
 	game.feedback_overlay_layer = null

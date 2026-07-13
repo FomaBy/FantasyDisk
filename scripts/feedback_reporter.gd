@@ -2,6 +2,7 @@ class_name FeedbackReporter
 extends Node
 
 signal report_finished(success: bool, message: String, local_path: String)
+signal report_finished_for_request(request_id: int, success: bool, message: String, local_path: String)
 
 const CONFIG_PATH := "user://feedback_config.cfg"
 const BUNDLED_CONFIG_PATH := "res://feedback_webhook.cfg"
@@ -53,27 +54,66 @@ const NO_NETWORK_RESULTS := [
 	HTTPRequest.RESULT_TLS_HANDSHAKE_ERROR,
 ]
 
-var _pending_text := ""
-var _pending_metadata := {}
-var _pending_screenshot: Image = null
 var _request: HTTPRequest = null
-var _pending_webhook_url := ""
-var _attempt := 0
+var _request_owner_id := 0
+var _next_request_id := 1
+var _active_request_id := 0
+var _active_report := {}
 
 
-func submit_report(text: String, screenshot: Image, metadata: Dictionary) -> void:
-	_pending_text = text.strip_edges()
-	_pending_metadata = metadata.duplicate(true)
-	_pending_screenshot = _normalized_screenshot(screenshot)
+func submit_report(text: String, screenshot: Image, metadata: Dictionary, completion := Callable()) -> int:
+	var request_id := _begin_report(text, screenshot, metadata, completion)
 	var webhook_resolution := _webhook_resolution()
 	var webhook_url := str(webhook_resolution.get("url", ""))
 	if webhook_url == "":
-		var local_path := save_local_report(_pending_text, _pending_screenshot, _pending_metadata)
-		report_finished.emit(false, _configuration_failure_message(
+		var local_path := save_local_report(
+			str(_active_report.get("text", "")),
+			_active_report.get("screenshot") as Image,
+			_active_report.get("metadata", {}) as Dictionary)
+		_finish_report(request_id, false, _configuration_failure_message(
 			str(webhook_resolution.get("error", "missing")), local_path != ""), local_path)
-		return
+		return request_id
 
-	_post_to_webhook(webhook_url)
+	_post_to_webhook(webhook_url, request_id)
+	return request_id
+
+
+func is_request_active(request_id: int) -> bool:
+	return request_id > 0 and request_id == _active_request_id
+
+
+func cancel_active_report(request_id := 0) -> bool:
+	if _active_request_id == 0:
+		return false
+	if request_id > 0 and request_id != _active_request_id:
+		return false
+	var cancelled_id := _active_request_id
+	_active_request_id = 0
+	_active_report = {}
+	if _request_owner_id == cancelled_id:
+		_dispose_request(_request)
+	return true
+
+
+func _begin_report(text: String, screenshot: Image, metadata: Dictionary, completion := Callable()) -> int:
+	# Only one report is allowed in flight. Superseding a request first invalidates
+	# its identity, so a late HTTP signal or retry timer cannot observe new payload.
+	cancel_active_report()
+	var request_id := _next_request_id
+	_next_request_id += 1
+	_active_request_id = request_id
+	_active_report = {
+		"text": text.strip_edges(),
+		"metadata": metadata.duplicate(true),
+		# Captured screenshots are never mutated by the UI. Keep that stable image
+		# reference instead of duplicating up to 32 MiB at 4K; upload resizing already
+		# duplicates only when it actually needs to mutate the image.
+		"screenshot": _normalized_screenshot(screenshot),
+		"webhook_url": "",
+		"attempt": 0,
+		"completion": completion,
+	}
+	return request_id
 
 
 static func webhook_config_template_path() -> String:
@@ -147,64 +187,81 @@ static func _upload_image_buffer(screenshot: Image) -> PackedByteArray:
 	return img.save_jpg_to_buffer(UPLOAD_JPG_QUALITY)
 
 
-func _post_to_webhook(webhook_url: String) -> void:
+func _post_to_webhook(webhook_url: String, request_id: int) -> void:
 	# Стартуем серию попыток: одна сетевая отправка = _dispatch_request(); ретраи по
 	# таймеру внутри, без промежуточных эмитов report_finished — сигнал уходит ровно один
 	# раз за submit_report (success или финальный провал после всех попыток).
-	_pending_webhook_url = webhook_url
-	_attempt = 0
-	_dispatch_request()
+	if not is_request_active(request_id):
+		return
+	_active_report["webhook_url"] = webhook_url
+	_active_report["attempt"] = 0
+	_dispatch_request(request_id)
 
 
-func _dispatch_request() -> void:
-	_attempt += 1
-	if _request != null and is_instance_valid(_request):
-		_request.queue_free()
-	_request = HTTPRequest.new()
-	_request.name = "FeedbackHTTPRequest"
+func _dispatch_request(request_id: int) -> void:
+	if not is_request_active(request_id):
+		return
+	_active_report["attempt"] = int(_active_report.get("attempt", 0)) + 1
+	_dispose_request(_request)
+	var request := HTTPRequest.new()
+	request.name = "FeedbackHTTPRequest"
 	# Форма ставит игру на паузу (push_pause): и сам запрос, и таймер ретрая должны
 	# тикать на паузе, иначе отправка/ретрай «зависнут» до снятия паузы.
-	_request.process_mode = Node.PROCESS_MODE_ALWAYS
-	_request.timeout = REQUEST_TIMEOUT
-	add_child(_request)
-	_request.request_completed.connect(_on_request_completed)
+	request.process_mode = Node.PROCESS_MODE_ALWAYS
+	request.timeout = REQUEST_TIMEOUT
+	add_child(request)
+	_request = request
+	_request_owner_id = request_id
+	request.request_completed.connect(_on_request_completed.bind(request_id, request))
 
 	var boundary := "----FantasyDiskFeedback%s" % str(Time.get_unix_time_from_system()).replace(".", "")
-	var body := multipart_payload(_pending_text, _pending_screenshot, _pending_metadata, boundary)
+	var body := multipart_payload(
+		str(_active_report.get("text", "")),
+		_active_report.get("screenshot") as Image,
+		_active_report.get("metadata", {}) as Dictionary,
+		boundary)
 	# User-Agent ОБЯЗАТЕЛЕН: без него Discord/Cloudflare возвращает HTTP 403 (SCRUM-362).
 	var headers := [
 		"Content-Type: multipart/form-data; boundary=%s" % boundary,
 		"User-Agent: FantasyDisk-Feedback/1.0",
 	]
-	var error := _request.request_raw(_pending_webhook_url, headers, HTTPClient.METHOD_POST, body)
+	var error := request.request_raw(
+		str(_active_report.get("webhook_url", "")), headers, HTTPClient.METHOD_POST, body)
 	if error != OK:
 		# Не удалось даже стартовать запрос (нет сети/занят клиент) — это временный сбой:
 		# ретраим по той же логике, что и таймаут, чтобы пережить короткую недоступность.
-		_request.queue_free()
-		_request = null
-		if _attempt < MAX_ATTEMPTS:
-			_schedule_retry(_backoff_for_attempt())
+		_dispose_request(request)
+		if not is_request_active(request_id):
+			return
+		if int(_active_report.get("attempt", 0)) < MAX_ATTEMPTS:
+			_schedule_retry(_backoff_for_attempt(), request_id)
 		else:
-			_finalize_failure(HTTPRequest.RESULT_CANT_CONNECT, 0)
+			_finalize_failure(HTTPRequest.RESULT_CANT_CONNECT, 0, request_id)
 
 
-func _on_request_completed(result: int, response_code: int, headers: PackedStringArray, _body: PackedByteArray) -> void:
-	if _request != null and is_instance_valid(_request):
-		_request.queue_free()
-	_request = null
+func _on_request_completed(
+		result: int,
+		response_code: int,
+		headers: PackedStringArray,
+		_body: PackedByteArray,
+		request_id: int,
+		request: HTTPRequest) -> void:
+	_dispose_request(request)
+	if not is_request_active(request_id):
+		return
 	if result == HTTPRequest.RESULT_SUCCESS and response_code >= 200 and response_code < 300:
-		report_finished.emit(true, "Отчет отправлен разработчику.", "")
+		_finish_report(request_id, true, "Отчет отправлен разработчику.", "")
 		return
 
-	if _attempt < MAX_ATTEMPTS and _is_retryable(result, response_code):
+	if int(_active_report.get("attempt", 0)) < MAX_ATTEMPTS and _is_retryable(result, response_code):
 		var delay := _backoff_for_attempt()
 		# 429 Too Many Requests — уважаем Retry-After, иначе рискуем баном вебхука.
 		if response_code == 429:
 			delay = maxf(delay, _retry_after_seconds(headers))
-		_schedule_retry(delay)
+		_schedule_retry(delay, request_id)
 		return
 
-	_finalize_failure(result, response_code)
+	_finalize_failure(result, response_code, request_id)
 
 
 func _is_retryable(result: int, response_code: int) -> bool:
@@ -216,20 +273,55 @@ func _is_retryable(result: int, response_code: int) -> bool:
 	return response_code >= 500 and response_code < 600
 
 
-func _schedule_retry(delay_seconds: float) -> void:
+func _schedule_retry(delay_seconds: float, request_id: int) -> void:
+	if not is_request_active(request_id):
+		return
 	var tree := get_tree()
 	if tree == null:
 		# Без дерева таймер не создать — не зависаем, проваливаемся сразу.
-		_finalize_failure(HTTPRequest.RESULT_TIMEOUT, 0)
+		_finalize_failure(HTTPRequest.RESULT_TIMEOUT, 0, request_id)
 		return
 	# process_always=true: таймер тикает даже на паузе (форма фидбека ставит игру на паузу).
 	var timer := tree.create_timer(maxf(delay_seconds, 0.0), true)
-	timer.timeout.connect(_dispatch_request, CONNECT_ONE_SHOT)
+	timer.timeout.connect(_on_retry_timeout.bind(request_id), CONNECT_ONE_SHOT)
 
 
-func _finalize_failure(result: int, response_code: int) -> void:
-	var local_path := save_local_report(_pending_text, _pending_screenshot, _pending_metadata)
-	report_finished.emit(false, _failure_message(result, response_code, local_path != ""), local_path)
+func _on_retry_timeout(request_id: int) -> void:
+	if is_request_active(request_id):
+		_dispatch_request(request_id)
+
+
+func _finalize_failure(result: int, response_code: int, request_id: int) -> void:
+	if not is_request_active(request_id):
+		return
+	var local_path := save_local_report(
+		str(_active_report.get("text", "")),
+		_active_report.get("screenshot") as Image,
+		_active_report.get("metadata", {}) as Dictionary)
+	_finish_report(request_id, false, _failure_message(result, response_code, local_path != ""), local_path)
+
+
+func _finish_report(request_id: int, success: bool, message: String, local_path: String) -> void:
+	if not is_request_active(request_id):
+		return
+	var completion: Callable = _active_report.get("completion", Callable()) as Callable
+	_active_request_id = 0
+	_active_report = {}
+	if _request_owner_id == request_id:
+		_dispose_request(_request)
+	report_finished_for_request.emit(request_id, success, message, local_path)
+	report_finished.emit(success, message, local_path)
+	if completion.is_valid():
+		completion.call(success, message, local_path)
+
+
+func _dispose_request(request: HTTPRequest) -> void:
+	if request != null and is_instance_valid(request):
+		request.cancel_request()
+		request.queue_free()
+	if _request == request:
+		_request = null
+		_request_owner_id = 0
 
 
 func _failure_message(result: int, response_code: int, local_saved := true) -> String:
@@ -254,9 +346,9 @@ static func _configuration_failure_message(error: String, local_saved := true) -
 
 
 func _backoff_for_attempt() -> float:
-	# _attempt уже инкрементнут на текущую попытку; пауза перед СЛЕДУЮЩЕЙ берётся по
+	# Attempt уже инкрементнут на текущую попытку; пауза перед СЛЕДУЮЩЕЙ берётся по
 	# индексу совершённых попыток (1→RETRY_BACKOFF_SECONDS[0], 2→[1], ...).
-	var idx := _attempt - 1
+	var idx := int(_active_report.get("attempt", 0)) - 1
 	if idx >= 0 and idx < RETRY_BACKOFF_SECONDS.size():
 		return float(RETRY_BACKOFF_SECONDS[idx])
 	return float(RETRY_BACKOFF_SECONDS[RETRY_BACKOFF_SECONDS.size() - 1]) if not RETRY_BACKOFF_SECONDS.is_empty() else 0.0
