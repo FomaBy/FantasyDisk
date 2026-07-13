@@ -872,10 +872,10 @@ SCRUM-1091 добавляет только presentation contract, не нову�
   каналов — `build/stage3c_final_coverage_fan1031.md`. Решение координатора (2026-07-13): «резать
   ШИРИНУ, не выгрызать per-hit» для chemist/biologist coverage.
   - **Профилировка (ground truth, счётчики в `_damage_enemy`/`_fire_aoe_projectile`, 150-кадровое окно).**
-    Разложил crowd-runaway blast_powder (chemist) 1→20 целей: hits `6→2585`, per_hit `230→38`
+    Разложил crowd-runaway blast_powder (chemist) 1→20 целей: hits `6→2547`, per_hit `230→38`
     (диминиш УЖЕ капнул per-hit), а число событий взрыва раздуто ДВУМЯ факторами: (1) coverage —
     каждый взрыв покрывает весь фи-таксис-диск (radius@ideal 226 > диск 171); (2) **cast-inflation:
-    casts `6→68` при том же числе кадров.** Оружие фаирит в `_process(delta)` по `_cooldown -= delta`
+    casts `6→67` при том же числе кадров.** Оружие фаирит в `_process(delta)` по `_cooldown -= delta`
     с variable delta; тяжёлый кадр (20 целей → много событий/твинов) → больше game-time на
     `await process_frame` → БОЛЬШЕ кастов на фикс-окно харнеса (`_measure_dps` делит на константу
     `WINDOW_SECONDS=8.0`, а не на реальную сумму delta). **Т.е. живой crowd 20t частично —

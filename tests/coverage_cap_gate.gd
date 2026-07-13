@@ -30,6 +30,7 @@ extends SceneTree
 
 const ClassWeapon := preload("res://scripts/class_weapon.gd")
 const PD := preload("res://scripts/progression_data.gd")
+const StatusEffects := preload("res://scripts/status_effects.gd")
 
 const EPS := 0.02
 
@@ -80,6 +81,8 @@ func _initialize() -> void:
 	await _test_aoe_integration_control(errors)
 	await _test_pool_integration(errors)
 	await _test_pool_integration_control(errors)
+	await _test_orbit_hardcap_skip(errors)
+	await _test_fast_path_honors_max(errors)
 	_test_real_configs_and_defaults(errors)
 
 	if not errors.is_empty():
@@ -275,6 +278,65 @@ func _test_pool_integration_control(errors: Array) -> void:
 		var got: float = (ranks[rank] as MockEnemy).total_damage
 		if absf(got - amount) > EPS:
 			errors.append("pool control rank %d dmg=%.3f != %.3f — без override ширина лужи не должна капиться (A/B-регресс)" % [rank, got, amount])
+	await _cleanup(holder)
+
+
+func _burn_dot(enemy: Node) -> float:
+	var snap: Dictionary = StatusEffects.snapshot(enemy)
+	return float((snap.get("four_elements_burn", {}) as Dictionary).get("dot_damage", -1.0))
+
+
+# 5b. Orbit hard-cap = SKIP, не ×0 (peer review MAJOR). Цель за orbit_max_targets НЕ должна
+# получать прокси-хит (_damage_enemy: он-хит пайплайн) и НЕ должна затирать живой ожог 0-статусом.
+func _test_orbit_hardcap_skip(errors: Array) -> void:
+	var holder := _new_scene("OrbitHardCapSkip")
+	var owner := _new_owner(holder, Vector2(1000, 1000))
+	var cfg: Dictionary = PD.weapon("elementalist", "elementalist_orb_ring").duplicate(true)
+	cfg["orbit_max_targets"] = 2
+	cfg.erase("orbit_full_targets")    # изолируем hard-cap: 2 ближних полным, дальше НОЛЬ (skip)
+	cfg.erase("orbit_target_diminish")
+	var weapon := _new_weapon(owner, cfg)
+	var center: Vector2 = owner.global_position
+	var half_size: float = float(weapon.get("aoe_radius")) * 0.72
+	var ranks := _spawn_ranks(holder, center, 5)
+	await process_frame
+	weapon.call("_elemental_square_tick", owner, center, half_size, 4, 0)
+	await process_frame
+	for rank in range(5):
+		var e := ranks[rank] as MockEnemy
+		var burn := _burn_dot(e)
+		if rank < 2:
+			if e.hit_count == 0 or e.total_damage <= 0.0:
+				errors.append("orbit hard-cap: rank %d (в капе) не получил урон (hits=%d dmg=%.2f)" % [rank, e.hit_count, e.total_damage])
+			if burn <= 0.0:
+				errors.append("orbit hard-cap: rank %d (в капе) не получил ожог (dot=%.2f)" % [rank, burn])
+		else:
+			if e.hit_count != 0 or e.total_damage > EPS:
+				errors.append("orbit hard-cap: rank %d (за капом) получил прокси-хит (hits=%d dmg=%.2f) — SKIP не работает, 0-хит фаирит он-хит пайплайн МИМО капа (MAJOR)" % [rank, e.hit_count, e.total_damage])
+			if burn > 0.0:
+				errors.append("orbit hard-cap: rank %d (за капом) получил ожог dot=%.2f — 0-статус затирает живой burn refresh-ом (MAJOR)" % [rank, burn])
+	await _cleanup(holder)
+
+
+# 5c. Fast-path чтит max (peer review MINOR). size ≤ full НЕ должен обходить жёсткий кап ШИРИНЫ.
+func _test_fast_path_honors_max(errors: Array) -> void:
+	var holder := _new_scene("FastPathMax")
+	var owner := _new_owner(holder, Vector2(1000, 1000))
+	var weapon := _new_weapon(owner, {
+		"id": "probe", "attack_mode": "aoe_projectile", "damage_parameter": "damage",
+		"aoe_max_targets": 2,
+	})
+	var center: Vector2 = owner.global_position
+	var ranks := _spawn_ranks(holder, center, 4)
+	await process_frame
+	var amount := 200.0
+	# full=5/diminish=0 → без капа все 4 (≤ full) полным через fast-path; aoe_max=2 → только 2 ближних.
+	weapon.call("_damage_enemies_in_circle_capped", center, 400.0, amount, 5, 0.0)
+	for rank in range(4):
+		var e := ranks[rank] as MockEnemy
+		var want := amount if rank < 2 else 0.0
+		if absf(e.total_damage - want) > EPS:
+			errors.append("fast-path max: rank %d dmg=%.2f != %.2f — fast-path (size 4 ≤ full 5) обошёл жёсткий кап aoe_max=2" % [rank, e.total_damage, want])
 	await _cleanup(holder)
 
 

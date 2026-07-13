@@ -1314,6 +1314,28 @@ static func _crowd_clear_target_factor(config: Dictionary, target_count: int) ->
 	return factor
 
 
+# FAN-1031 3c-final (peer review MAJOR): калибровочная база силы взрыва ворона для бюджет-модели.
+# raven_damage_multiplier — per-hit СИЛА (рантайм), не hit-COUNT: держим модель на этой фикс-базе,
+# чтобы доводка множителя двигала живой per-hit «сверх бюджета», а не съедалась авто-тюнером bdm.
+const RAVEN_BUDGET_REF_MULTIPLIER := 0.85
+
+
+# FAN-1031 3c-final (peer review MINOR): Σ диминиш-факторов по `count` целям — зеркало рантайм-капа
+# `_damage_enemies_in_circle_capped` (ближние `full` полный вес, дальше 1/(1+(rank−full+1)·diminish)).
+# Сентинел override <0 → (full_default/diminish_default). Дробный count — линейно на последней цели.
+static func _capped_coverage(count: float, full_override: int, diminish_override: float, full_default: int, diminish_default: float) -> float:
+	var full := full_override if full_override >= 0 else full_default
+	var diminish := diminish_override if diminish_override >= 0.0 else diminish_default
+	var total := 0.0
+	var whole := int(floor(count))
+	for i in range(whole):
+		total += 1.0 if i < full else 1.0 / (1.0 + float(i - full + 1) * diminish)
+	var frac := count - float(whole)
+	if frac > 0.0:
+		total += frac * (1.0 if whole < full else 1.0 / (1.0 + float(whole - full + 1) * diminish))
+	return total
+
+
 static func _budget_hit_model(config: Dictionary) -> Dictionary:
 	var mode := str(config.get("attack_mode", config.get("attack_shape", "single")))
 	var attack_range := float(config.get("attack_range", 240.0))
@@ -1349,7 +1371,14 @@ static func _budget_hit_model(config: Dictionary) -> Dictionary:
 		"aoe_projectile":
 			var projectile_count := float(config.get("projectile_count", 1.0))
 			var blast_hits := clampf(1.0 + aoe_radius / 145.0, 1.0, 3.0)
-			return {"solo_hits": 1.0, "five_hits": clampf(projectile_count * blast_hits, 1.0, 5.0), "pool_targets": clampf(1.0 + aoe_radius / 130.0, 1.0, 4.0)}
+			# FAN-1031 3c-final (peer review MINOR): зеркалим per-weapon кап прямого AoE-взрыва
+			# (S1 aoe_full_targets/aoe_target_diminish) в оценку hits. Без этого для оружий с
+			# override (restore_potion F=1/D=4.0) модель считала полный blast_hits, завышая
+			# aoe_dps ×1.7 → bdm не отражал живой срез. Сентинел <0 → дефолт (mirror class_weapon
+			# AOE_PROJECTILE_* = 5/2.0); при blast_hits ≤ 3 < full=5 diminish не срабатывает →
+			# нулевое изменение для всех оружий, кроме тех, у кого full < blast_hits (restore_potion).
+			var capped_blast := _capped_coverage(blast_hits, int(config.get("aoe_full_targets", -1)), float(config.get("aoe_target_diminish", -1.0)), 5, 2.0)
+			return {"solo_hits": 1.0, "five_hits": clampf(projectile_count * capped_blast, 1.0, 5.0), "pool_targets": clampf(1.0 + aoe_radius / 130.0, 1.0, 4.0)}
 		"homing_curse":
 			return {"solo_hits": 1.0, "five_hits": clampf(1.0 + aoe_radius / 180.0, 1.0, 2.0), "dot_targets": 1.0}
 		"dark_chain_burst":
@@ -1415,7 +1444,14 @@ static func _budget_hit_model(config: Dictionary) -> Dictionary:
 				var raven_pulse := maxf(float(config.get("amp_pulse_interval", 1.1)), 0.2)
 				var raven_lifetime := maxf(float(config.get("amp_lifetime", 8.0)), deploy_interval)
 				var totems := minf(raven_lifetime / deploy_interval, maxf(float(config.get("max_summons_cap", 6.0)), 1.0))
-				var ravens_per_deploy := (deploy_interval / raven_pulse) * totems * maxf(float(config.get("raven_damage_multiplier", 0.85)), 0.0)
+				# FAN-1031 3c-final fix (peer review MAJOR): raven_damage_multiplier — это per-hit
+				# СИЛА взрыва (рантайм _resolve_raven_impact: _rolled_damage × множитель), НЕ hit-COUNT.
+				# Раньше она зеркалилась в hits → авто-тюнер (bdm) компенсировал ×1.59-буст оживления
+				# вдвое (bdm 1.671→1.235, live per-hit +17% вместо +59%). Модель нормирует по СТРУКТУРНОМУ
+				# числу воронов (rate × totems) при ФИКСИРОВАННОЙ калибровочной силе взрыва
+				# RAVEN_BUDGET_REF_MULTIPLIER, поэтому доводка raven_damage_multiplier двигает живой
+				# per-hit «сверх бюджета» напрямую (как summon-множители у pure_summon) и НЕ сдвигает bdm.
+				var ravens_per_deploy := (deploy_interval / raven_pulse) * totems * RAVEN_BUDGET_REF_MULTIPLIER
 				var explosion_targets := clampf(1.0 + float(config.get("raven_explosion_radius", 120.0)) / 145.0, 1.0, 3.0)
 				return {"solo_hits": clampf(ravens_per_deploy, 1.0, 8.0), "five_hits": clampf(ravens_per_deploy * explosion_targets, 1.0, 16.0)}
 			var active_ratio := float(config.get("amp_lifetime", 6.0)) / maxf(float(config.get("fire_interval", 2.0)), 0.25)

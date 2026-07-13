@@ -512,7 +512,7 @@ const CHEMIST_WEAPONS := {
 	# Trait «Катализатор» множит и тики лужи, и заряды (+50%).
 	"acid_flask": {
 		"id": "acid_flask", "title": "Кислотная колба",
-		"description": "Долгая полупрозрачная кислотная лужа: пока враг в луже — тики, а каждый контакт с новой лужей вешает вечный кислотный заряд (до 5).",
+		"description": "Долгая полупрозрачная кислотная лужа: враги в её ядре получают тики (ближайшие к центру), а каждый контакт с новой лужей вешает вечный кислотный заряд (до 5).",
 		"scene_path": "res://scenes/AcidFlask.tscn",
 		"attack_mode": "aoe_projectile", "damage_parameter": "magic_damage",
 		"damage_multiplier": 0.24, "fire_interval": 1.25,
@@ -773,7 +773,9 @@ const DRUID_WEAPONS := {
 		# FAN-1031 3c-c: raven был «мёртвым» по всем осям (v4 1t=60/5t=202/20t=425, 0.09–0.20×).
 		# Оживляем деплой-бурст как ниша-ось кита: урон взрыва 0.85→1.35 (×1.59) + чуть чаще
 		# пульс (amp_pulse_interval 1.10→0.95) → больше воронов/uptime. raven_damage_multiplier —
-		# отдельный per-hit, двигает живой урон напрямую (не budget-compensated).
+		# per-hit сила взрыва, двигает живой урон напрямую. FAN-1031 3c-final (peer review): модель
+		# бюджета теперь пинована к RAVEN_BUDGET_REF_MULTIPLIER, так что множитель НЕ budget-compensated
+		# (раньше зеркалился в hits → тюнер съедал буст вдвое). Финальную величину калибровать по v6.
 		"raven_damage_multiplier": 1.35,
 		"raven_explosion_radius": 120.0,
 		"deploy_role": "support_totem",
@@ -908,7 +910,7 @@ const ELEMENTALIST_WEAPONS := {
 		# периодика, потому тяжело масштабируется оптимально) + отброс от центра
 		# на каждом тике. Геометрия/доли — константы SQUARE_* в class_weapon.gd.
 		"id": "elementalist_orb_ring", "title": "Кольцо Четырёх Стихий",
-		"description": "Квадрат четырёх стихий вспыхивает в точке каста: тики бьют физикой, магией и ожогом и отбрасывают врагов прочь от центра.",
+		"description": "Квадрат четырёх стихий вспыхивает в точке каста: тики бьют физикой, магией и ожогом ближайших к центру и отбрасывают их прочь.",
 		"scene_path": "res://scenes/ElementalistOrbRing.tscn",
 		"attack_mode": "elemental_orbit", "damage_parameter": "magic_damage",
 		"damage_multiplier": 1.35, "fire_interval": 1.52,
@@ -1094,7 +1096,7 @@ const PRIEST_WEAPONS := {
 const BIOLOGIST_WEAPONS := {
 	"biologist_spore_lens": {
 		"id": "biologist_spore_lens", "title": "Споровая Линза",
-		"description": "Spore bloom: три расширяющихся споровых кольца у самого Биолога — ранят, заражают и замедляют задетых (замедление растёт с прогрессией).",
+		"description": "Spore bloom: три расширяющихся споровых кольца у самого Биолога — ранят и замедляют задетых, заражая ближайших из них (замедление растёт с прогрессией).",
 		"scene_path": "res://scenes/BiologistSporeLens.tscn",
 		"attack_mode": "bio_spore_bloom", "damage_parameter": "magic_damage",
 		"damage_multiplier": 0.66, "fire_interval": 1.18,

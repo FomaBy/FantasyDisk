@@ -1532,6 +1532,7 @@ func _apply_skull_curse_zone(center: Vector2) -> void:
 	# родиться лишнему (ticks+1)-му тику на границе.
 	var duration := (float(ticks) + 0.99) * tick_interval
 	var cursed_count := 0
+	var curse_burn_total := 0.0
 	# FAN-1031 3c(b): крауд-проклятие ранжируется по дистанции от центра каста —
 	# ближние status_full_targets прогорают полным тиком, дальний хвост толпы
 	# диминишится (_status_fanout_factor). Кап бьёт крауд-runaway 20t (v3
@@ -1539,6 +1540,11 @@ func _apply_skull_curse_zone(center: Vector2) -> void:
 	# Сентинел по умолчанию (без override) = factor 1.0 → прежнее поведение.
 	for enemy_node in _status_fanout_order(center, TARGET_QUERY.in_radius(self, center, aoe_radius)):
 		var target_tick := tick_damage * _status_fanout_factor(cursed_count)
+		# FAN-1031 3c-final fix (peer review MINOR): жёсткий кап ШИРИНЫ = skip. Цель за
+		# status_max_targets (factor==0) НЕ получает 0-уронный skull_curse (refresh затирал бы
+		# живое проклятие) и НЕ кормит ульту — как в bio-ветках. order отсортирован → break.
+		if target_tick <= 0.0:
+			break
 		StatusEffects.apply_status(enemy_node, "skull_curse", {
 			"duration": duration,
 			"dot_damage": target_tick,
@@ -1563,11 +1569,15 @@ func _apply_skull_curse_zone(center: Vector2) -> void:
 		})
 		if enemy_node is Node2D:
 			HazardVfx.dot_tick(enemy_node, Color(visual_color.r, visual_color.g, visual_color.b, 1.0))
+		curse_burn_total += target_tick
 		cursed_count += 1
 	# Прямого урона нет → on_weapon_hit не зовётся; заряд ульты кормим явно
 	# ожидаемым прожигом каста (половинный вес, без он-хит проков/вампиризма).
+	# FAN-1031 3c-final fix (peer review MINOR): фид считаем от ФАКТИЧЕСКОГО прожига каста на
+	# толпе (Σ диминишированных тиков = tick_damage × Σfactor), а НЕ tick_damage × cursed_count —
+	# status fan-out кап (cursed_skull 4/1.0) теперь корректно урезает крауд-фид ульты.
 	if cursed_count > 0 and owner_node.has_method("on_curse_applied"):
-		owner_node.call("on_curse_applied", tick_damage * float(ticks) * float(cursed_count) * 0.5)
+		owner_node.call("on_curse_applied", curse_burn_total * float(ticks) * 0.5)
 
 
 # SCRUM-941: Книга тьмы — зеркальные AoE-взрывы вокруг мага.
@@ -3381,6 +3391,13 @@ func _elemental_square_tick(owner_node: Node2D, center: Vector2, half_size: floa
 		if phase_target == null:
 			phase_target = enemy_node
 		var orbit_factor := _orbit_fanout_factor(int(orbit_ranks.get(enemy_node.get_instance_id(), 0)))
+		# FAN-1031 3c-final fix (peer review MAJOR): жёсткий кап ШИРИНЫ = SKIP, не ×0. Цель за
+		# orbit_max_targets (factor==0) НЕ должна получать ни он-хит пайплайн `_damage_enemy`
+		# (hit-фидбек / on_weapon_hit / constellation-хуки / он-хит статусы), ни refresh ожога
+		# нулём (затирал живой four_elements_burn от предыдущего in-cap тика), ни пуш — как в
+		# bio/pool/aoe-ветках (break/skip). Диминиш (factor>0) по-прежнему масштабирует урон.
+		if orbit_factor <= 0.0:
+			continue
 		_damage_enemy(enemy_node, magic_tick * orbit_factor)
 		if physical_tick > 0.0:
 			_damage_enemy(enemy_node, physical_tick * orbit_factor, false, "physical", false)
@@ -5668,7 +5685,11 @@ func _damage_enemies_in_pool(origin: Vector2, radius: float, amount: float, sour
 	# FAN-1031 3c(a): per-weapon override пул-тика (сентинел <0 → общий default).
 	var full_targets := pool_full_targets if pool_full_targets >= 0 else POOL_FULL_TARGETS
 	var target_diminish := pool_target_diminish if pool_target_diminish >= 0.0 else POOL_TARGET_DIMINISH
-	if enemies.size() <= full_targets:
+	# FAN-1031 3c-final fix (peer review MINOR): fast-path берём только когда жёсткий кап ШИРИНЫ
+	# не режет глубже full_targets — иначе малый пак (size ≤ full, но > pool_max) обходил бы кап
+	# (немонотонность; pool_max=0 не мог «выключить» канал). effective_cap = min(full, max).
+	var fast_cap := full_targets if pool_max_targets < 0 else mini(full_targets, pool_max_targets)
+	if enemies.size() <= fast_cap:
 		for enemy_node in enemies:
 			# SCRUM-942: тик лужи — периодический канал и на одиночной цели тоже:
 			# тип "dot" (единая покраска цифр + trait-множитель периодики), без
@@ -5731,6 +5752,12 @@ func _apply_pool_contact_statuses(enemies: Array, source_pool: Node2D = null) ->
 		if enemy_node == null or not is_instance_valid(enemy_node):
 			continue
 		var per_target_tick := charge_tick * _status_fanout_factor(rank)
+		# FAN-1031 3c-final fix (peer review MINOR): жёсткий кап ШИРИНЫ = skip. За status_max_targets
+		# (factor==0) НЕ вешаем вечный acid_charge с dot_damage 0 (занимал бы слот charge_cap и
+		# считался в 5-стаковой детонации нулём). order отсортирован по дистанции → break. Без
+		# override status_max factor>0 всегда → break не срабатывает (нулевое изменение поведения).
+		if per_target_tick <= 0.0:
+			break
 		var owner_id := owner_node.get_instance_id() if owner_node != null else 0
 		var previous_stack_count := StatusEffects.count_status_prefix(enemy_node, ACID_CHARGE_STATUS_PREFIX)
 		if previous_stack_count < 5 and int(enemy_node.get_meta("constellation_acid_detonated_owner", 0)) == owner_id:
@@ -5823,7 +5850,11 @@ func _briar_zone_tick(pool: Node2D) -> void:
 
 func _damage_enemies_in_circle_capped(origin: Vector2, radius: float, amount: float, full_targets: int, diminish: float) -> void:
 	var enemies: Array = TARGET_QUERY.in_radius(self, origin, radius)
-	if enemies.size() <= full_targets:
+	# FAN-1031 3c-final fix (peer review MINOR): fast-path берём только когда жёсткий кап ШИРИНЫ
+	# (aoe_max_targets) не режет глубже full_targets — иначе малый пак обходил бы кап
+	# (немонотонность; aoe_max=0 не мог «выключить» канал). effective_cap = min(full, max).
+	var fast_cap := full_targets if aoe_max_targets < 0 else mini(full_targets, aoe_max_targets)
+	if enemies.size() <= fast_cap:
 		for enemy_node in enemies:
 			_damage_enemy(enemy_node, amount)
 		return
