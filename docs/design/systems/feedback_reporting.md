@@ -1,6 +1,6 @@
 # In-Game Feedback Reporting
 
-Обновлено: 2026-06-29 (0.1.7)
+Обновлено: 2026-07-13 (FAN-1040 security review)
 
 SCRUM-362 adds an in-game feedback and bug report tool. It is a Back-end/runtime system: no webhook secret is stored in the repository, and reports are sent only after explicit player confirmation.
 
@@ -26,10 +26,8 @@ SCRUM-362 adds an in-game feedback and bug report tool. It is a Back-end/runtime
 Webhook URL lookup order:
 
 1. Environment variable `FANTASYDISK_FEEDBACK_WEBHOOK` for dev/CI.
-2. Bundled `res://feedback_webhook.cfg`, section `[feedback]`, key
-   `discord_webhook_url`. `tools/build_release.sh` copies the ignored local file
-   or generates it from `FANTASYDISK_FEEDBACK_WEBHOOK` before export; release
-   builds fail early if neither source exists.
+2. Local development-only `res://feedback_webhook.cfg`, section `[feedback]`,
+   key `discord_webhook_url`. It is gitignored and excluded from player exports.
 3. Legacy/player override `user://feedback_config.cfg`, section `[feedback]`, key
    `webhook_url`.
 
@@ -40,7 +38,11 @@ Example local config:
 webhook_url="https://discord.com/api/webhooks/..."
 ```
 
-The project must never commit a real webhook URL. On macOS, `user://` normally resolves under the app data folder managed by Godot, not inside the repository.
+The project must never commit, obfuscate, or export a real webhook URL. Base64
+does not protect a credential in a client binary. Production delivery requires
+a rate-limited server/proxy endpoint; until that exists, an unconfigured player
+build saves the report locally. On macOS, `user://` normally resolves under the
+app data folder managed by Godot, not inside the repository.
 Runtime rejects blank, placeholder and non-Discord URLs as build/config errors;
 the UI still saves a local fallback and never prints the URL.
 
@@ -74,7 +76,7 @@ Headless runs cannot read a real viewport screenshot, so the overlay uses a smal
 Security/persistence audit of the feedback path — no runtime behaviour changed,
 findings + a regression guard:
 
-- **Secrets never leak.** The resolved webhook URL lives only in memory
+- **Secrets never leak.** The optional development webhook URL lives only in memory
   (`_pending_webhook_url`) and is passed solely to `request_raw`. It is never
   `print`/`push_error`-logged, never written into `report.txt`, and never embedded
   in failure/config messages. The real `feedback_webhook.cfg` is gitignored
@@ -86,5 +88,12 @@ findings + a regression guard:
   `feedback_webhook_config_test.gd` (path-prefix asserts) so a regression like
   `LOCAL_ROOT → "res://feedback"` fails the gate instead of leaking player text/
   screenshots into the source tree.
-- Resolution priority (env → bundled `res://` → user `user://`), retry/backoff and
+- Resolution priority (env → local `res://` → user `user://`), retry/backoff and
   upload-size handling were reviewed and left as-is (already SCRUM-547/460-hardened).
+
+## Security correction (FAN-1040)
+
+The SCRUM-848 client-embedded Base64 fallback was removed. Obfuscation did not
+prevent extracting and abusing the Discord credential, and the value remains in
+Git history. The old webhook must be revoked in Discord. Any replacement must be
+stored only in server/CI secret storage and must not be added to source or export.

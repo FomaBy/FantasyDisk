@@ -15,10 +15,14 @@ export LC_ALL=en_US.UTF-8
 
 VERSION="${1:?Usage: tools/build_release.sh <version>}"
 TAG="v${VERSION}"
-GODOT="/Users/sergeyfomin/Downloads/Godot.app/Contents/MacOS/Godot"
 REPO_DIR="$(cd "$(dirname "$0")/.." && pwd)"
+GODOT_PATH="${GODOT_BIN:-${GODOT:-/Users/sergeyfomin/Downloads/Godot.app/Contents/MacOS/Godot}}"
 WORKTREE_DIR="$(mktemp -d /tmp/fantasydisk-build-XXXXXX)/src"
 RELEASE_DIR="${REPO_DIR}/releases/${TAG}"
+
+run_godot() {
+  GODOT_BIN="${GODOT_PATH}" python3 "${REPO_DIR}/tools/godot_gate.py" "$@"
+}
 
 echo "==> Worktree из тега ${TAG}"
 git -C "${REPO_DIR}" worktree add --detach "${WORKTREE_DIR}" "${TAG}"
@@ -48,27 +52,27 @@ fi
 
 echo "==> Feedback webhook"
 if [[ -f "${REPO_DIR}/feedback_webhook.cfg" || -n "${FANTASYDISK_FEEDBACK_WEBHOOK:-}" ]]; then
-  echo "    найден локальный webhook-оверрайд; player build его НЕ бандлит (credential не должен попадать в клиент)"
+  echo "    raw Discord webhook не бандлится в player build; используйте server/proxy endpoint для production delivery"
 else
-  echo "    оверрайдов нет; player build сохраняет feedback локально до появления server-side relay"
+  echo "    raw webhook не задан; player feedback безопасно сохраняется в user://feedback"
 fi
 
 echo "==> Импорт ресурсов (headless)"
 mkdir -p "${RELEASE_DIR}" "${WORKTREE_DIR}/build"
 IMPORT_LOG="${WORKTREE_DIR}/build/godot_import.log"
-if ! "${GODOT}" --headless --import --path "${WORKTREE_DIR}" >"${IMPORT_LOG}" 2>&1; then
+if ! run_godot --headless --import --path "${WORKTREE_DIR}" >"${IMPORT_LOG}" 2>&1; then
   echo "    ERROR: headless import failed; tail ${IMPORT_LOG}:"
   tail -80 "${IMPORT_LOG}" || true
   exit 2
 fi
 
 echo "==> Экспорт macOS (dmg, ad-hoc подпись)"
-"${GODOT}" --headless --path "${WORKTREE_DIR}" \
+run_godot --headless --path "${WORKTREE_DIR}" \
   --export-release "macOS" "${WORKTREE_DIR}/build/FantasyDisk-${VERSION}-macos.dmg"
 cp "${WORKTREE_DIR}/build/FantasyDisk-${VERSION}-macos.dmg" "${RELEASE_DIR}/"
 
 echo "==> Экспорт Windows (x86_64, embed_pck)"
-"${GODOT}" --headless --path "${WORKTREE_DIR}" \
+run_godot --headless --path "${WORKTREE_DIR}" \
   --export-release "Windows Desktop" "${WORKTREE_DIR}/build/FantasyDisk-Windows.exe"
 
 echo "==> NSIS-инсталлер"

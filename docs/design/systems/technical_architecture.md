@@ -100,19 +100,33 @@ Use groups for temporary runtime nodes:
 - Status hot paths use scalar reads (`StatusEffects.status_value`) rather than a
   deep snapshot; DoT method-signature introspection runs only when a tick is due.
 - Route map builds once per open, not every frame.
+- Known scenes/scripts used during combat are preloaded or explicitly prewarmed;
+  first-use synchronous `load()` is not allowed in spawn/hit/tick paths.
+- Shared enemy scans go through `CombatTargetQuery`. A model/candidate cache may
+  refresh at 5–10 Hz while rendering positions continues every frame.
+- Any new long-lived texture/resource cache must define an owner, eviction or
+  teardown rule, and a regression assertion for its upper bound.
+- Static cost reductions are reported as hot-path improvements. A Windows
+  performance claim requires a native release build with scenario, baseline
+  SHA, p50/p95/p99 frame time, stalls over 100 ms, and RSS/VRAM evidence.
 
 ## Tests
 
 Unified required check:
 
 ```bash
-python3 tools/quality_gate.py
+python3 tools/quality_gate.py --profile changed --changed-ref origin/dev
+python3 tools/quality_gate.py --profile full
 ```
 
-It runs fast repository/Python guards plus an explicit reviewed Godot manifest,
-including derived smoke suites that first-line discovery cannot see. CI runs
-`--static-only`; local/release verification with the exact Godot 4.7 toolchain
-runs the full profile. See `docs/process/code_quality_and_performance.md`.
+The Python runner discovers direct and inherited SceneTree suites, gives every
+process isolated HOME/XDG/AppData/`user://`, scans client sources for embedded
+credentials, and routes every Godot invocation through `tools/godot_gate.py`.
+CI runs the certifying static-only compatibility profile; local/release
+verification uses changed/full with the exact Godot 4.7 toolchain. See
+`docs/process/code_quality_and_performance.md`.
+The `windows` profile refuses to run on another OS, because a macOS cross-export
+does not validate native Windows correctness or frame pacing.
 
 Focused runtime smoke suites (SCRUM-202) reuse the umbrella helper/assertion layer and are intended for faster refactor regression checks:
 

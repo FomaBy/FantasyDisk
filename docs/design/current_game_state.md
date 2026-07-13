@@ -150,7 +150,7 @@ Act 2 начинается с бюджета boss Act 1 и достигает п
   Runtime records monsters/bosses when they are encountered in combat and
   artifacts when the reward is applied, giving the Codex a save/load-backed
   unlock source without changing the visual Codex layout.
-- **Фидбек/баг-репорт**: SCRUM-362 добавил глобальное действие `feedback` (по умолчанию `P`). Оно открывает отдельный верхний `FeedbackOverlayLayer` с текстовым полем и preview текущего viewport screenshot. Отправка идет через Discord-compatible webhook из `FANTASYDISK_FEEDBACK_WEBHOOK`, bundled `res://feedback_webhook.cfg` (release-сборка генерирует его из секрета/env) или legacy `user://feedback_config.cfg`; multipart `payload_json.attachments[0]` ссылается на `files[0]`, чтобы Discord сохранял ужатый JPG-скриншот, а локальный fallback хранит полный PNG. Без валидного webhook/сети отчет сохраняется в `user://feedback/<timestamp>/`, UI показывает config/offline/send failure, а успех показывается только после HTTP success.
+- **Фидбек/баг-репорт**: SCRUM-362 добавил глобальное действие `feedback` (по умолчанию `P`). Оно открывает отдельный верхний `FeedbackOverlayLayer` с текстовым полем и preview текущего viewport screenshot. Dev/CI могут отправлять через Discord-compatible webhook из `FANTASYDISK_FEEDBACK_WEBHOOK`, локального gitignored `res://feedback_webhook.cfg` или legacy `user://feedback_config.cfg`; player export не содержит Discord credential (FAN-1040 удалил небезопасный Base64 fallback). Multipart `payload_json.attachments[0]` ссылается на `files[0]`, чтобы Discord сохранял ужатый JPG-скриншот, а локальный fallback хранит полный PNG. Без валидного webhook/сети отчёт сохраняется в `user://feedback/<timestamp>/`; production online delivery требует server/proxy endpoint.
 
 В настройках доступны:
 
@@ -2241,6 +2241,13 @@ sustained-модель dot-оси и infected-фактор; тюнеры кит�
 
 Основные runtime-правила после performance/code quality review:
 
+- FAN-1040: известные ресурсы Engineer kit (`SentryTurret`, orbit drone, mine)
+  preload'ятся вместе с `ClassWeapon`, поэтому первый деплой не выполняет
+  синхронный `load()` во время боя.
+- FAN-1040: separation и threat indicators используют один per-frame
+  `CombatTargetQuery` snapshot. Threat model фильтруется с частотой 10 Hz без
+  тройного group scan/дубликатов boss+elite, но позиции маркеров по-прежнему
+  рисуются каждый кадр.
 - `scripts/main.gd` кэширует Texture2D для меню, портретов, route map и фоновых экранов через локальный texture cache, чтобы не дергать `load()` повторно при перестроении UI.
 - `scripts/ui_icon_registry.gd` кэширует иконки характеристик/HUD, поэтому level-up, stats menu и HUD могут безопасно переиспользовать registry без повторной загрузки PNG.
 - Inline shop item icons, shop slot frames and cursor variants используют тот же texture cache; отсутствующие Design PNG кэшируются как `null` и не вызывают повторный `load()` при перестроении магазина.
@@ -2293,19 +2300,17 @@ matrix; screenshot evidence is under `build/qa/design_review/`.
 
 ## Проверка Перед Сдачей Геймплейных Изменений
 
-Runtime smoke test:
-
 ```bash
-/Users/sergeyfomin/Downloads/Godot.app/Contents/MacOS/Godot --headless --path /Users/sergeyfomin/Documents/AI\ Agent --script res://tests/runtime_smoke_test.gd
+python3 tools/quality_gate.py --profile changed --changed-ref origin/dev
+python3 tools/quality_gate.py --profile full
 ```
 
-Animation smoke test:
+`tools/quality_gate.py` одинаково работает на macOS/Linux/Windows, обнаруживает
+direct и inherited GDScript suites, изолирует `user://` и вызывает Godot только
+через semaphore `tools/godot_gate.py`. Windows profile должен выполняться
+нативно на Windows: `python tools/quality_gate.py --profile windows`.
 
-```bash
-/Users/sergeyfomin/Downloads/Godot.app/Contents/MacOS/Godot --headless --path /Users/sergeyfomin/Documents/AI\ Agent --script res://tests/animation_smoke_test.gd
-```
-
-Документационные правки не требуют запуска тестов, если не меняют код, сцены или ассеты.
+Документационные правки не требуют Godot-тестов, если не меняют код, сцены или ассеты; static gate остаётся обязательным для process/tool changes.
 
 ## SCRUM-541 Current Secret Boss State
 

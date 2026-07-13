@@ -1,42 +1,61 @@
 #!/usr/bin/env python3
-"""Bounded-concurrency Godot runner (POSIX and native Windows semaphore).
+"""Cross-platform bounded-concurrency runner for FantasyDisk Godot commands.
 
-Ограничивает число ОДНОВРЕМЕННЫХ headless-Godot процессов, чтобы пачка агентов,
-гоняющих smoke-тесты параллельно, не выжрала память и не словила OOM-kill (137).
-Все воркеры зовут Godot ЧЕРЕЗ этот тул вместо прямого вызова — тогда в любой момент
-запущено не больше FSD_GODOT_SLOTS инстансов, сколько бы агентов ни работало.
+Every automated Godot invocation should pass through this script.  It keeps a
+small shared set of process slots, creates the import cache when a script needs
+it, and works on macOS/Linux (``fcntl``) and Windows (``msvcrt``).
 
-Usage (как обычный Godot, аргументы прокидываются 1:1):
-    python3 tools/godot_gate.py --headless --path /path/wt --script res://tests/runtime_smoke_test.gd
+Usage:
+    python3 tools/godot_gate.py --headless --path . \
+        --script res://tests/runtime_smoke_test.gd
 
-Env:
-    FSD_GODOT_SLOTS   число слотов (по умолчанию 3)
-    GODOT_BIN         путь к бинарю (по умолчанию ~/Downloads/Godot.app/Contents/MacOS/Godot)
-    FSD_GODOT_SEM_DIR каталог lock-файлов (по умолчанию системный temp)
-    FSD_GODOT_MAXWAIT макс. ожидание слота в секундах (по умолчанию 2400)
-    FSD_GODOT_BYPASS_ON_TIMEOUT=1 явный аварийный запуск без слота после таймаута
+Environment:
+    FSD_GODOT_SLOTS       concurrent slots (default: 3)
+    GODOT_BIN / GODOT     executable path or command name
+    FSD_GODOT_SEM_DIR     lock directory (default: OS temp directory)
+    FSD_GODOT_MAXWAIT     maximum slot wait in seconds (default: 2400)
+    FSD_GODOT_RUN_TIMEOUT maximum Godot runtime in seconds (default: 3600)
+    FSD_GODOT_BYPASS_ON_TIMEOUT=1 allows an explicit emergency bypass
 """
 from __future__ import annotations
 
 import os
+import shutil
 import subprocess
 import sys
 import tempfile
 import time
-from typing import BinaryIO
-
-if os.name == "nt":
-    import msvcrt
-else:
-    import fcntl
-
-SLOTS = max(1, int(os.getenv("FSD_GODOT_SLOTS", "3")))
-SEM_DIR = os.getenv("FSD_GODOT_SEM_DIR", os.path.join(tempfile.gettempdir(), "fsd_godot_sem"))
-GODOT = os.getenv("GODOT_BIN", os.path.expanduser("~/Downloads/Godot.app/Contents/MacOS/Godot"))
-MAXWAIT = float(os.getenv("FSD_GODOT_MAXWAIT", "2400"))
+from pathlib import Path
+from typing import BinaryIO, Sequence
 
 
-def _project_path(args: list[str]) -> str:
+def _positive_int_env(name: str, default: int) -> int:
+    return max(1, int(os.getenv(name, str(default))))
+
+
+def _positive_float_env(name: str, default: float) -> float:
+    return max(0.0, float(os.getenv(name, str(default))))
+
+
+def _resolve_godot() -> str:
+    explicit = os.getenv("GODOT_BIN", "").strip() or os.getenv("GODOT", "").strip()
+    if explicit:
+        expanded = os.path.expanduser(explicit)
+        return shutil.which(expanded) or expanded
+
+    candidates = ["godot4", "godot"]
+    if sys.platform == "darwin":
+        candidates.insert(0, os.path.expanduser("~/Downloads/Godot.app/Contents/MacOS/Godot"))
+    for candidate in candidates:
+        resolved = shutil.which(candidate)
+        if resolved:
+            return resolved
+        if os.path.isfile(candidate) and os.access(candidate, os.X_OK):
+            return candidate
+    return ""
+
+
+def _project_path(args: Sequence[str]) -> str:
     for index, arg in enumerate(args):
         if arg == "--path" and index + 1 < len(args):
             return args[index + 1]
@@ -45,10 +64,8 @@ def _project_path(args: list[str]) -> str:
     return "."
 
 
-def _needs_import_cache(args: list[str]) -> bool:
-    if "--script" not in args:
-        return False
-    if "--import" in args:
+def _needs_import_cache(args: Sequence[str]) -> bool:
+    if "--script" not in args or "--import" in args:
         return False
     project_path = os.path.abspath(_project_path(args))
     imported_dir = os.path.join(project_path, ".godot", "imported")
@@ -62,82 +79,150 @@ def _needs_import_cache(args: list[str]) -> bool:
     return False
 
 
-def _ensure_import_cache(args: list[str]) -> int:
+def _ensure_import_cache(args: Sequence[str], godot: str) -> int:
     if not _needs_import_cache(args):
         return 0
     project_path = _project_path(args)
     sys.stderr.write("godot_gate: import cache missing, running headless import first\n")
-    return subprocess.call([GODOT, "--headless", "--path", project_path, "--import", "--quit"])
+    return _run_godot([godot, "--headless", "--path", project_path, "--import", "--quit"])
 
 
-def _prepare_lock_file(handle: BinaryIO) -> None:
-    """Windows byte-range locks require at least one byte in the file."""
+def _run_godot(command: Sequence[str]) -> int:
+    try:
+        timeout = _positive_float_env("FSD_GODOT_RUN_TIMEOUT", 3600.0)
+    except ValueError as exc:
+        sys.stderr.write(f"godot_gate: invalid FSD_GODOT_RUN_TIMEOUT: {exc}\n")
+        return 2
+    try:
+        return subprocess.run(
+            list(command),
+            check=False,
+            timeout=timeout if timeout > 0.0 else None,
+        ).returncode
+    except subprocess.TimeoutExpired:
+        sys.stderr.write(
+            f"godot_gate: Godot timed out after {timeout:g}s; process terminated\n"
+        )
+        return 124
+
+
+def _prepare_lock_file(file: BinaryIO) -> None:
     if os.name != "nt":
         return
-    handle.seek(0)
-    if handle.read(1) == b"":
-        handle.write(b"\0")
-        handle.flush()
-    handle.seek(0)
+    file.seek(0, os.SEEK_END)
+    if file.tell() == 0:
+        file.write(b"\0")
+        file.flush()
+    file.seek(0)
 
 
-def _try_lock(handle: BinaryIO) -> bool:
+def _try_lock(file: BinaryIO) -> bool:
     try:
         if os.name == "nt":
-            handle.seek(0)
-            msvcrt.locking(handle.fileno(), msvcrt.LK_NBLCK, 1)
+            import msvcrt
+
+            file.seek(0)
+            msvcrt.locking(file.fileno(), msvcrt.LK_NBLCK, 1)
         else:
-            fcntl.flock(handle.fileno(), fcntl.LOCK_EX | fcntl.LOCK_NB)
+            import fcntl
+
+            fcntl.flock(file.fileno(), fcntl.LOCK_EX | fcntl.LOCK_NB)
+        return True
     except (BlockingIOError, OSError):
         return False
-    return True
 
 
-def _unlock(handle: BinaryIO) -> None:
+def _unlock(file: BinaryIO) -> None:
     if os.name == "nt":
-        handle.seek(0)
-        msvcrt.locking(handle.fileno(), msvcrt.LK_UNLCK, 1)
+        import msvcrt
+
+        file.seek(0)
+        msvcrt.locking(file.fileno(), msvcrt.LK_UNLCK, 1)
     else:
-        fcntl.flock(handle.fileno(), fcntl.LOCK_UN)
+        import fcntl
+
+        fcntl.flock(file.fileno(), fcntl.LOCK_UN)
 
 
-def main() -> int:
-    os.makedirs(SEM_DIR, exist_ok=True)
-    args = sys.argv[1:]
-    if not os.path.exists(GODOT):
-        sys.stderr.write(f"godot_gate: бинарь не найден: {GODOT}\n")
+class _SlotLock:
+    """One-byte advisory lock with a uniform POSIX/Windows interface."""
+
+    def __init__(self, path: Path) -> None:
+        self.path = path
+        self.file: BinaryIO | None = None
+
+    def try_acquire(self) -> bool:
+        self.file = self.path.open("a+b")
+        _prepare_lock_file(self.file)
+        if not _try_lock(self.file):
+            self.file.close()
+            self.file = None
+            return False
+        return True
+
+    def release(self) -> None:
+        if self.file is None:
+            return
+        try:
+            _unlock(self.file)
+        finally:
+            self.file.close()
+            self.file = None
+
+
+def main(argv: Sequence[str] | None = None) -> int:
+    args = list(sys.argv[1:] if argv is None else argv)
+    try:
+        slots = _positive_int_env("FSD_GODOT_SLOTS", 3)
+        max_wait = _positive_float_env("FSD_GODOT_MAXWAIT", 2400.0)
+    except ValueError as exc:
+        sys.stderr.write(f"godot_gate: invalid numeric environment value: {exc}\n")
+        return 2
+
+    sem_dir = Path(os.getenv(
+        "FSD_GODOT_SEM_DIR",
+        os.path.join(tempfile.gettempdir(), "fsd_godot_sem"),
+    )).expanduser()
+    sem_dir.mkdir(parents=True, exist_ok=True)
+
+    godot = _resolve_godot()
+    if not godot or not os.path.isfile(godot) or not os.access(godot, os.X_OK):
+        sys.stderr.write(
+            "godot_gate: Godot executable not found; set GODOT_BIN (or GODOT) "
+            "to an executable path\n"
+        )
         return 127
-    deadline = time.time() + MAXWAIT
+
+    deadline = time.monotonic() + max_wait
     while True:
-        for i in range(SLOTS):
-            f = open(os.path.join(SEM_DIR, f"slot{i}.lock"), "a+b")
-            _prepare_lock_file(f)
-            if not _try_lock(f):
-                f.close()
+        for index in range(slots):
+            slot = _SlotLock(sem_dir / f"slot{index}.lock")
+            if not slot.try_acquire():
                 continue
-            # слот захвачен — гоним Godot, держим лок до конца процесса
             try:
-                import_code = _ensure_import_cache(args)
+                import_code = _ensure_import_cache(args, godot)
                 if import_code != 0:
                     return import_code
-                return subprocess.call([GODOT] + args)
+                return _run_godot([godot, *args])
             finally:
-                _unlock(f)
-                f.close()
-        if time.time() > deadline:
+                slot.release()
+
+        if time.monotonic() > deadline:
             if os.getenv("FSD_GODOT_BYPASS_ON_TIMEOUT", "") == "1":
-                sys.stderr.write("godot_gate: превышено ожидание слота, FSD_GODOT_BYPASS_ON_TIMEOUT=1 — запуск без гейта\n")
-                import_code = _ensure_import_cache(args)
+                sys.stderr.write(
+                    "godot_gate: slot wait timed out; explicit bypass enabled\n"
+                )
+                import_code = _ensure_import_cache(args, godot)
                 if import_code != 0:
                     return import_code
-                return subprocess.call([GODOT] + args)
+                return _run_godot([godot, *args])
             sys.stderr.write(
-                "godot_gate: превышено ожидание слота; запуск без семафора запрещён "
-                "(для ручного аварийного bypass задай FSD_GODOT_BYPASS_ON_TIMEOUT=1)\n"
+                "godot_gate: slot wait timed out; bypass is disabled "
+                "(set FSD_GODOT_BYPASS_ON_TIMEOUT=1 only for manual recovery)\n"
             )
             return 124
         time.sleep(1.5)
 
 
 if __name__ == "__main__":
-    sys.exit(main())
+    raise SystemExit(main())

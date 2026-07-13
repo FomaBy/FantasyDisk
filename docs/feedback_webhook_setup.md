@@ -1,41 +1,36 @@
-# Внутриигровой фидбек: локальный fallback и dev webhook
+# Discord-вебхук внутриигрового фидбека (SCRUM-362, security review FAN-1040)
 
 Фича: игрок жмёт **P** (или кнопку **«Фидбек»** в меню паузы) → пишет баг +
-автоскриншот → репорт сохраняется локально и, при явной dev-конфигурации,
-отправляется в Discord-канал фидбека.
+автоскриншот → репорт уходит в Discord-канал фидбека.
 
-## Security contract (FAN-1040)
+## Security contract
 
-Discord webhook — credential. Base64, разбиение на чанки и build-time injection
-не делают его секретным внутри клиентского export. Поэтому source и player build
-не содержат webhook. Без server-side relay игра fail-closed: сохраняет полный
-report в `user://feedback/` и честно сообщает, удалось ли локальное I/O.
+Discord webhook — это credential. Его нельзя хранить в исходниках или player
+build даже в Base64/чанках: пользователь может восстановить URL из клиента.
+FAN-1040 удалил такой fallback. Значение, попавшее в Git до этого исправления,
+обязательно нужно удалить/ротировать в Discord; новый credential нельзя
+добавлять обратно в репозиторий.
 
-Webhook, ранее встроенный в git/export, считается скомпрометированным и должен
-быть отозван в Discord. Возвращать его или новый credential в source запрещено;
-это гейтит `tools/quality_static_guard.py`.
+Production-доставка должна идти через rate-limited server/proxy endpoint,
+который хранит Discord credential на серверной стороне. Пока endpoint не
+подключён, player build сохраняет отчёт локально в `user://feedback/`.
 
 ## Приоритет источников URL
 
 1. env `FANTASYDISK_FEEDBACK_WEBHOOK` (дев-машина/CI);
 2. `res://feedback_webhook.cfg` (локальный dev-оверрайд, gitignored,
    см. `feedback_webhook.cfg.example`);
-3. `user://feedback_config.cfg` (legacy/пользовательский оверрайд);
-4. валидного URL нет → только проверенный локальный fallback.
+3. `user://feedback_config.cfg` (legacy/пользовательский оверрайд).
 
-Невалидный оверрайд (плейсхолдер `XXXX/YYYY`, чужой домен) игнорируется с
-`push_warning`; если следующего валидного источника нет, сеть не вызывается.
+Пустая конфигурация или невалидный приоритетный override fail closed: отчёт
+сохраняется локально, а UI показывает ошибку конфигурации без URL.
 
-## Dev-настройка
+## Обязательная ротация после FAN-1040
 
-1. Создать отдельный ограниченный dev webhook.
-2. Передать его только через `FANTASYDISK_FEEDBACK_WEBHOOK` или скопировать
-   `feedback_webhook.cfg.example` в gitignored `feedback_webhook.cfg`.
-3. Не коммитить config, URL, его base64 или части токена.
-
-Production network delivery должна идти на rate-limited server-side relay,
-который хранит Discord credential вне клиента. До появления relay локальный
-fallback — ожидаемое поведение player build.
+1. В Discord открыть настройки канала → Интеграции → Вебхуки.
+2. Удалить webhook, который ранее был встроен в `feedback_reporter.gd`.
+3. При необходимости создать новый webhook только для server/proxy intake.
+4. Хранить новый URL в secret storage сервера/CI, не в Git и не в клиенте.
 
 ## Как это работает
 

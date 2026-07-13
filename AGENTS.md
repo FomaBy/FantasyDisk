@@ -241,6 +241,13 @@ Project practices:
 - **Создание/редактирование скиллов — через `skill-creator`.** Держи
   `SKILL.md` коротким, переносимым между Windows/Mac/Linux, и синхронизируй
   локальные скиллы в git под `skills/`.
+- **Код-ревью, performance, Windows stutter и quality-process — через
+  `fantasydisk-code-quality-director`** (repo mirror:
+  `skills/codex/fantasydisk-code-quality-director/`). После любых изменений
+  code/test/tool/export запускай `python3 tools/quality_gate.py --profile changed`;
+  полный набор — `--profile full`, Windows-профиль обязан выполняться нативно на
+  Windows. Все Godot-команды автоматизации идут через `tools/godot_gate.py`,
+  проверки и landing выполняются синхронно, без фонового autoland.
 - **Изменения интерфейса — ТОЛЬКО через скилл `fantasydisk-ui-director`**
   (Codex skill, `~/.codex/skills/fantasydisk-ui-director/`). Перед любым
   внедрением/перерисовкой UI сначала создать OpenAI-API-generated mockup страницы
@@ -300,11 +307,11 @@ Project practices:
   механику оружия/кита (геометрия удара, target pattern, контроль, sustain,
   defensive window, summon behavior и т.п.), а не только множители урона; при
   этом каждое из трёх оружий должно сохранять отличающийся gameplay/niche.
-- Run Godot headless smoke tests after gameplay changes:
-  `/Users/sergeyfomin/Downloads/Godot.app/Contents/MacOS/Godot --headless --path /Users/sergeyfomin/Documents/AI\\ Agent --script res://tests/runtime_smoke_test.gd`
-  (бинарь сейчас **Godot 4.7**; `config/features="4.7"`).
-- ПАРАЛЛЕЛЬНЫЕ прогоны (несколько агентов/смоуков разом) — ТОЛЬКО через семафор, иначе OOM-kill
-  (exit 137): `python3 tools/godot_gate.py --headless --path . --script res://tests/<smoke>.gd`.
-  Гейт ограничивает число одновременных Godot (по умолчанию 3, env `FSD_GODOT_SLOTS`); аргументы
-  прокидываются в Godot 1:1. Одиночный прогон можно и напрямую (выше).
+- Run the certifying changed profile after code/gameplay/test/tool changes:
+  `python3 tools/quality_gate.py --profile changed --changed-ref origin/dev`.
+  Для итерации отдельный smoke можно запустить через
+  `python3 tools/godot_gate.py --headless --path . --script res://tests/<smoke>.gd`.
+  Прямой запуск Godot из автоматизации запрещён даже для одиночного теста:
+  semaphore защищает параллельных агентов, а timeout не оставляет зависший run.
+  Бинарь сейчас **Godot 4.7** (`config/features="4.7"`).
 - Do not commit `.godot/`.
