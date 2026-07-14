@@ -93,14 +93,18 @@ SemVer patch/minor версию.
 ### macOS
 - Пресет `macOS` экспортирует `.app` в zip; `tools/build_release.sh` распаковывает
   окончательный bundle, удаляет quarantine/xattr и **после всех изменений**
-  повторно подписывает его. `MACOS_SIGN_IDENTITY` включает Developer ID +
-  hardened runtime; без него применяется финальная ad-hoc подпись.
+  повторно подписывает его. `MACOS_SIGN_IDENTITY` обязан указывать установленный
+  `Developer ID Application`; ad-hoc подпись для publishable release запрещена.
 - Подпись обязательно проверяется через `codesign --verify --deep --strict` как
   до упаковки, так и после монтирования итогового DMG.
-- Если задан keychain profile `MACOS_NOTARY_PROFILE`, скрипт отправляет DMG в
-  `notarytool`, ждёт результат, делает `stapler staple` и `stapler validate`.
-- DMG содержит `FantasyDisk.app`, ярлык `Applications` и фоновую стрелку для
-  понятного drag-to-Applications потока.
+- `MACOS_NOTARY_PROFILE` обязателен. Скрипт отдельно отправляет подписанное
+  приложение и затем подписанный DMG в `notarytool`, требует `Accepted`, staples
+  tickets в оба артефакта и проверяет их через `stapler validate` + `spctl`.
+- Любое отсутствие credentials, отказ Apple, ошибка staple или Gatekeeper
+  assessment останавливает сборку до публикации.
+- DMG содержит только `FantasyDisk.app`, ярлык `Applications` и одну фоновую
+  стрелку. Стрелка хранится внутри signed app bundle; `.background`,
+  `.fseventsd` и другие видимые root-служебные элементы запрещены allowlist-гейтом.
 - Выход: `releases/vX.Y.Z/FantasyDisk-X.Y.Z-macos.dmg`.
 
 ### Windows (собирается с этого же Mac)
@@ -143,8 +147,9 @@ SemVer patch/minor версию.
   `std::bad_alloc` (ломается даже бандловый пример). `tools/build_release.sh`
   выставляет `LC_ALL=en_US.UTF-8` сам; при ручном запуске makensis — не забывать.
 - `assets/icon.ico` (16-256) сгенерирован из `icon.svg`: `qlmanage -t -s 256` -> PNG -> Pillow.
-- macOS `.app` подписывается последним шагом перед DMG; при отсутствии Developer
-  ID используется ad-hoc. GL-ошибки "Texture leaked" при выходе релизной
+- macOS `.app` подписывается Developer ID последним шагом перед app notarization
+  и DMG; отсутствие Developer ID/notary profile является release blocker.
+  GL-ошибки "Texture leaked" при выходе релизной
   сборки с `--quit-after` — известный безвредный артефакт принудительного выхода
   в gl_compatibility, не считать регрессией.
 - **NSIS CRC**: алгоритм exehead — crc32 файла с байта 512 до поля CRC (firstheader + length_of_all_following_data - 4); makensis на macOS пишет его корректно. `build_release.sh` делает verify-only проверку по этому алгоритму (НЕ перезаписывать хвост файла — формула crc32(file[:-4]) неверна и портит инсталлер). Компрессор — zlib: solid-lzma поток кросс-собранного makensis подозревается в «integrity check failed» на реальной Windows.
