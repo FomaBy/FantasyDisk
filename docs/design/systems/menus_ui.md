@@ -674,19 +674,21 @@ Central-window screens use role-specific dark fantasy backdrops from `assets/bac
 Backdrops are full-rect `TextureRect` nodes with cover scaling and a readable shade layer. Route map and combat arena backgrounds remain separate systems.
 
 Main menu uses `assets/backgrounds/main_menu_epic_battle_v3.png` through
-`MAIN_MENU_BACKGROUND`. FAN-1088 replaces the previous party/boss key art with
-a 2560x1440 PixelLab-composited dark-fantasy scene: exactly one canonical
-north-facing Berserk stands on a basalt cliff above a large violet disk-shaped
-rift. The focal art stays center-right/right, while the calm left button column
-and title-safe area remain free of key silhouettes. The image is prepared for
-proportional cover-crop and contains no baked UI text, buttons, frames, labels,
-logo or watermark. PixelLab object IDs, source prompts, alpha-cleaned exports,
-backup, preview, responsive matrix and safe-zone evidence are tracked in
-`docs/design/mockups/fan1088_main_menu_disk_rift/spec.md` and
-`docs/design/references/fan1088_main_menu_disk_rift/manifest.json`. The
-historical SCRUM-1001 source package remains under
-`docs/design/mockups/main_menu_openai_clean_background/`, and its former runtime
-image is backed up under `docs/design/backups/fan1088_main_menu_disk_rift/`.
+`MAIN_MENU_BACKGROUND`. FAN-1097 replaces the composited FAN-1088 art with one
+cohesive 2560x1440 scene generated and corrected through the built-in OpenAI
+Image Generator in Codex: one unarmed barbarian stands on a basalt cliff above a
+large violet disk-shaped rift, backed by ruined spires and storm mountains. The
+focal art stays center-right/right, while the calm left button column and
+title-safe area remain free of key silhouettes; a targeted second pass also
+quieted the lower-right utility zone. The proportional cover-crop contains no
+baked UI text, buttons, frames, labels, logo, cursor or watermark. Built-in
+sources, both prompts, backup, mockup, responsive matrix and safe-zone evidence
+are tracked in
+`docs/design/mockups/fan1097_main_menu_openai_background/spec.md` and
+`docs/design/references/fan1097_main_menu_openai_background/manifest.json`.
+The former FAN-1088 runtime image is backed up under
+`docs/design/backups/fan1097_main_menu_openai_background/`; the FAN-1088 package
+remains historical provenance.
 SCRUM-680 release refresh keeps the title as
 `assets/sprites/ui/menu_title/main_menu_title_fantasy_disk.png` (`960x360`,
 transparent, PixelLab crest source in

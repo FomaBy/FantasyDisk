@@ -1,0 +1,38 @@
+{
+  "issue": "FAN-1097",
+  "generator": "Codex built-in OpenAI Image Generator",
+  "generation_route": "image_gen built-in tool",
+  "pixel_lab_used": false,
+  "openai_images_api_used": false,
+  "prompt_file": "prompt.md",
+  "sources": [
+    {
+      "role": "initial_generation",
+      "file": "main_menu_openai_builtin_initial.png",
+      "size": "1672x941",
+      "color": "RGB",
+      "sha256": "2098bb00780de4678f8b7e87f8297ae0808566f102a842855aac8e16508b0765"
+    },
+    {
+      "role": "accepted_generation_after_utility_zone_correction",
+      "file": "main_menu_openai_builtin_source.png",
+      "size": "1672x941",
+      "color": "RGB",
+      "sha256": "f4461fe3ea7cbbde5c3e8cb79de67b3ec30414dff606e6262354469a3bf61a99"
+    }
+  ],
+  "normalization": {
+    "crop": "center crop from 1672x941 to exact 16:9 1664x936",
+    "resize": "proportional resize to 2560x1440",
+    "runtime_color": "RGB"
+  },
+  "outputs": {
+    "runtime": "../../../../assets/backgrounds/main_menu_epic_battle_v3.png",
+    "runtime_sha256": "5ca67f60dda660518a16a5ae8d6fe510c01850f96f537c5f6b57936ee2477975",
+    "mockup": "../../previews/fan1097_main_menu_openai_background_mockup.png",
+    "safe_zone_evidence": "../../previews/fan1097_main_menu_openai_background_safe_zones.png",
+    "runtime_preview_landscape": "../../previews/fan1097_main_menu_openai_background_runtime_1280x720.png",
+    "runtime_preview_portrait": "../../previews/fan1097_main_menu_openai_background_runtime_1080x1920.png",
+    "previous_runtime_backup": "../../backups/fan1097_main_menu_openai_background/main_menu_epic_battle_v3_pre_fan1097.png"
+  }
+}
