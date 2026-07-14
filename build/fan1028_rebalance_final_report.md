@@ -4,9 +4,9 @@
 живой замер (**v2**, Stage 1) → принятый финал (**v9 4-прогонное среднее**,
 Stage 3 закрыт коммитом `f4fbd121`; comfort-band + ascension-гейт `90352a6c`).
 
-Источники: BEFORE — `build/class_trio_before_fan1028.md` @ Stage-1 коммит
-`40a39a00`; AFTER — приёмочный v9 (`build/character_balance_dps_v9[a-d].csv`,
-`build/stage3_v9_final_fan1031.md`, приёмочный комментарий координатора).
+Источники: BEFORE — `build/stage4_before_after_fan1028.md` (законсервированный v2
+baseline из Stage-1 `40a39a00`); AFTER — приёмочный v9 (`build/class_trio_fan1028.md`,
+`build/character_balance_dps_v9[a-d].csv`, `build/stage3_v9_final_fan1031.md`).
 
 > **Оговорка по времябазе.** v2 снят на СТАРОМ знаменателе живого замера
 > (до фикса `8dd7e4fb`, раздувавшего crowd-DPS в 12–16×); финал — на честном.
