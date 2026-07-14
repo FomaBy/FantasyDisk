@@ -1,0 +1,77 @@
+{
+  "task": "FAN-1088",
+  "multica_issue_id": "36101914-56ef-4032-b4b3-7a2a25f6e448",
+  "generated_at": "2026-07-14",
+  "generator": "PixelLab MCP map-object workflow via configured JSON-RPC bridge",
+  "art_direction": "D&D dark fantasy dragon; cold moonlit navy and charcoal with restrained violet magic",
+  "canvas": {
+    "width": 2560,
+    "height": 1440,
+    "format": "PNG",
+    "alpha": false
+  },
+  "source_assets": [
+    {
+      "role": "cliff",
+      "pixellab_id": "c4c27ed8-71bb-4e83-82c3-5ccacd5aec20",
+      "tag": "fan1088_main_menu_cliff",
+      "source_file": "pixellab_cliff_source.png",
+      "postprocessed_file": "pixellab_cliff_alpha.png",
+      "dimensions": [400, 400],
+      "source_sha256": "c2c1e1c5defc7d82377fae04d02b34f029d108e026aa63f35f38694927409ab3",
+      "postprocessed_sha256": "53250e6c80284351ed42f00f670f1934d781e2341920ccd485f56536457bf2e6"
+    },
+    {
+      "role": "disk_rift",
+      "pixellab_id": "b3856aa4-8798-4bc3-a5fd-eae710ca9ae6",
+      "tag": "fan1088_main_menu_disk_rift",
+      "source_file": "pixellab_disk_rift_source.png",
+      "postprocessed_file": "pixellab_disk_rift_alpha.png",
+      "dimensions": [400, 400],
+      "source_sha256": "f97aaca89cbb70480be405fffb85c9860e10d0eb3730f84321842dedf2f17991",
+      "postprocessed_sha256": "71d79ae15da9bfe9ee4f4ba1446d232d45116995e4bcea4f5b2a2f7e2849e7b8"
+    },
+    {
+      "role": "standing_character",
+      "pixellab_id": "8486ce45-f749-4c63-9a6d-f0477d619c2d",
+      "tag": "berserk",
+      "source_file": "../../../../assets/sprites/characters/full_frame/berserk_pixellab/berserk_idle_north.png",
+      "dimensions": [512, 512]
+    },
+    {
+      "role": "atmospheric_underlay",
+      "source_file": "../../backups/fan1088_main_menu_disk_rift/main_menu_epic_battle_v3_pre_fan1088.png",
+      "source_region": [0, 0, 1180, 1440],
+      "note": "Character-free calm sky/mountain crop only; focal cliff, rift, and character come from PixelLab sources."
+    }
+  ],
+  "composition_rects_2560x1440": {
+    "cliff": [1120, 245, 1800, 1800],
+    "disk_rift": [990, 930, 1390, 370],
+    "berserk": [1180, 4, 590, 590]
+  },
+  "safe_zones_2560x1440": {
+    "gold_shell_inner": [299, 257, 1962, 926],
+    "title": [299, 257, 480, 180],
+    "actions": [299, 457, 380, 646],
+    "utility": [2110, 1091, 175, 116]
+  },
+  "outputs": {
+    "mockup": "../../previews/fan1088_main_menu_disk_rift_mockup.png",
+    "safe_zone_evidence": "../../previews/fan1088_main_menu_disk_rift_safe_zones.png",
+    "runtime_preview_landscape": "../../previews/fan1088_main_menu_disk_rift_runtime_1280x720.png",
+    "runtime_preview_portrait": "../../previews/fan1088_main_menu_disk_rift_runtime_1080x1920.png",
+    "runtime": "../../../../assets/backgrounds/main_menu_epic_battle_v3.png",
+    "previous_runtime_backup": "../../backups/fan1088_main_menu_disk_rift/main_menu_epic_battle_v3_pre_fan1088.png"
+  },
+  "mockup_sha256": "791fdc4ee1d70c8bdcd4b4f2cdfaaf67909d4382b34af63a1745479e59f0da76",
+  "forbidden_content": [
+    "baked text",
+    "baked labels",
+    "logos",
+    "buttons",
+    "panels",
+    "watermarks",
+    "extra characters"
+  ]
+}

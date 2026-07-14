@@ -206,21 +206,21 @@ Act 2 начинается с бюджета boss Act 1 и достигает п
 
 Все 10 боевых фонов нарисованы в нативном 2560x1440. С SCRUM-518 арена увеличена до 4096x2304, поэтому `_spawn_arena_background` апскейлит фон под арену (scale ≈ 1.6) — фоны теперь слегка мылятся (ожидаемый компромисс ради простора; перерисовка набора под 4K вынесена в отдельную арт-задачу через `fantasydisk-asset-generator`). SCRUM-369 (2026-06-14) заменил весь набор через `fantasydisk-asset-generator`: `field_marsh`, `field_meadow`, `field_misty_marsh`, `field_ruined_courtyard`, `field_dusty_badlands`, `field_enchanted_meadow`, `field_ashen_rift`, `field_cursed_grove`, `field_dry_road`, `field_stone_garden`. Новый стиль — реалистичный D&D/dark fantasy top-down battlefield floor с богатым материалом по биомам, но приглушенной центральной зоной для читаемости героев, монстров, projectile/VFX и анимаций. `field_dry_road` и `field_stone_garden` теперь существуют как реальные PNG, поэтому live links из `ARENA_BACKGROUND_OPTIONS` больше не битые. QA previews: `docs/design/previews/arena_backgrounds_scrum369_contact.png`, `docs/design/previews/arena_backgrounds_scrum369_readability.png`.
 `main_menu_epic_battle_v3.png` используется стартовым экраном как активный фон
-главного меню: 2560x1440 OpenAI-generated clean cartoon-realistic D&D/dark
-fantasy key art без baked UI, со спокойной левой колонкой под 6 runtime-кнопок и
-читаемой title-safe областью под `MainMenuTitleLabel`. Последняя SCRUM-1001
-ревизия перегенерирована с нуля без previous screen/background reference input:
-входным visual reference был только clean board из текущих runtime персонажей и
-боссов. Активная композиция — холодная moonlit mountain-pass/citadel key art с
-героями в 3/4 front/side poses справа/center-right; гитарист читается спереди/в
-3/4 с гитарой на корпусе, не спиной. Boss threat вынесен в дальний план/облака,
-без старого central portal/atlas/music-line layout и без baked UI/text.
-Source/reference
-sheet/backup/preview/safe-zone evidence задокументированы в
-`docs/design/mockups/main_menu_openai_clean_background/spec.md` (SCRUM-1001;
-explicit OpenAI Images override по прямому запросу пользователя). Предыдущий
-0.2.0 cosmic atlas фон сохранён в
-`docs/design/backups/main_menu_openai_clean_background/main_menu_epic_battle_v3_pre_scrum1001.png`.
+главного меню. FAN-1088 заменяет прежний party/boss key art на 2560x1440
+PixelLab-composited D&D/dark-fantasy сцену: один north-facing Berserk стоит на
+краю монументального базальтового утёса, а внизу читается большой фиолетовый
+disk-shaped dimensional rift. Фокус целиком вынесен в center-right/right;
+спокойная левая колонка под 6 runtime-кнопок и title-safe область под
+`MainMenuTitleLabel` остаются без ключевых силуэтов. Фон не содержит baked UI,
+text, logo, buttons или watermark; runtime texture path и UI wiring не менялись.
+PixelLab map-object IDs, canonical Berserk source, prompts, alpha-cleaned exports,
+backup, preview и точные safe zones задокументированы в
+`docs/design/mockups/fan1088_main_menu_disk_rift/spec.md` и
+`docs/design/references/fan1088_main_menu_disk_rift/manifest.json`. Предыдущий
+SCRUM-1001 runtime фон сохранён в
+`docs/design/backups/fan1088_main_menu_disk_rift/main_menu_epic_battle_v3_pre_fan1088.png`;
+его исторический source package остаётся в
+`docs/design/mockups/main_menu_openai_clean_background/spec.md`.
 SCRUM-680 release refresh (2026-07-02) заменил runtime logo на PixelLab-based
 `assets/sprites/ui/menu_title/main_menu_title_fantasy_disk.png` (`960x360`,
 transparent; source/provenance `docs/design/references/main_menu_logo_release_fix/`)

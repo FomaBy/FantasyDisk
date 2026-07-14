@@ -674,22 +674,20 @@ Central-window screens use role-specific dark fantasy backdrops from `assets/bac
 Backdrops are full-rect `TextureRect` nodes with cover scaling and a readable shade layer. Route map and combat arena backgrounds remain separate systems.
 
 Main menu uses `assets/backgrounds/main_menu_epic_battle_v3.png` through
-`MAIN_MENU_BACKGROUND`. SCRUM-1001 replaces the 0.2.0 cosmic atlas image with a
-2560x1440 OpenAI-generated clean cartoon-realistic dark-fantasy background. The
-latest active pass is regenerated from scratch without previous
-screen/background reference input: only the clean board of current runtime
-characters and bosses was used as the visual reference. The composition is a
-moonlit mountain-pass/citadel key-art scene with the party in 3/4 front/side
-poses on the center-right/right side, a clearly front/3/4 readable guitarist
-holding the guitar naturally, distant boss threats, no old central
-portal/atlas/music-line layout and no baked UI text. The calm left
-button-safe column and readable title-safe area are preserved, the
-asset is prepared for proportional cover-crop rather than one-axis stretching,
-and it contains no baked UI text/buttons/frames/logos. Source, reference sheet,
-backup, preview and safe-zone evidence are tracked in
-`docs/design/mockups/main_menu_openai_clean_background/spec.md`. This is an
-explicit OpenAI Images override because the user directly requested OpenAI image
-generation. SCRUM-680 release refresh keeps the title as
+`MAIN_MENU_BACKGROUND`. FAN-1088 replaces the previous party/boss key art with
+a 2560x1440 PixelLab-composited dark-fantasy scene: exactly one canonical
+north-facing Berserk stands on a basalt cliff above a large violet disk-shaped
+rift. The focal art stays center-right/right, while the calm left button column
+and title-safe area remain free of key silhouettes. The image is prepared for
+proportional cover-crop and contains no baked UI text, buttons, frames, labels,
+logo or watermark. PixelLab object IDs, source prompts, alpha-cleaned exports,
+backup, preview, responsive matrix and safe-zone evidence are tracked in
+`docs/design/mockups/fan1088_main_menu_disk_rift/spec.md` and
+`docs/design/references/fan1088_main_menu_disk_rift/manifest.json`. The
+historical SCRUM-1001 source package remains under
+`docs/design/mockups/main_menu_openai_clean_background/`, and its former runtime
+image is backed up under `docs/design/backups/fan1088_main_menu_disk_rift/`.
+SCRUM-680 release refresh keeps the title as
 `assets/sprites/ui/menu_title/main_menu_title_fantasy_disk.png` (`960x360`,
 transparent, PixelLab crest source in
 `docs/design/references/main_menu_logo_release_fix/`). The historical
