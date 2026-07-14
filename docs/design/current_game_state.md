@@ -27,9 +27,15 @@ Domain docs для подробностей по областям:
   Главный акцент — полный ребаланс всех 17 классов и 51 оружия без мёртвых
   вариантов и неконтролируемого crowd-разгона, обновлённый Кодекс с «Летописью»,
   новый фон главного меню и исправленная поставка macOS.
-- Основная рабочая платформа: macOS. Релизные платформы: macOS (подписанный DMG
-  с ярлыком Applications) и Windows (x86_64 NSIS-инсталлер с embed_pck; отдельный
-  zip/exe игрокам не публикуется).
+- Основная рабочая платформа: macOS. Релизные платформы: macOS (Developer ID
+  signed + Apple-notarized DMG с ярлыком Applications) и Windows (x86_64
+  NSIS-инсталлер с embed_pck; отдельный zip/exe игрокам не публикуется).
+- FAN-1094 делает macOS installer fail-closed: ad-hoc/unnotarized релиз больше
+  нельзя собрать или опубликовать. Finder DMG показывает только нативные
+  `FantasyDisk.app` и `Applications` с одной тонкой стрелкой между ними; baked
+  copy, рамки, `.background`, `.fseventsd` и прочие root-служебные элементы
+  запрещены и проверяются при sealing. `stapler` + `spctl` обязательны отдельно
+  для приложения и итогового DMG.
 - Версионирование: SemVer, источник истины `project.godot::config/version`; релизы — теги `vX.Y.Z` на main, разработка в `dev` (см. `docs/process/release_versioning.md`). Сборка: `tools/build_release.sh <версия>`.
 - Основная сцена: `scenes/Main.tscn`.
 - Основной управляющий скрипт: `scripts/main.gd` — тонкий координатор (state, пауза, основной цикл, делегирующие стабы для тестов). Он владеет модулями-компонентами: `scripts/ui_screens.gd` (меню/экраны/HUD/стили), `scripts/route_map_screen.gd` (генерация маршрута и экран карты), `scripts/combat_director.gd` (бой, спавн, баланс, арена, pickups). Модули — RefCounted с ссылкой `game` на main; общее состояние живет в main.

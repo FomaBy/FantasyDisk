@@ -67,17 +67,33 @@ class ReleaseSecretScanTests(unittest.TestCase):
         self.assertIn('"${DMG_MOUNT_DIR}"', script[scan_at:publish_at])
         self.assertNotIn('"${RELEASE_DIR}/FantasyDisk-', script[:publish_at])
 
-    def test_release_pipeline_signs_final_app_before_dmg_and_publishes_installer_only(self) -> None:
+    def test_release_pipeline_notarizes_final_app_before_dmg_and_publishes_installer_only(self) -> None:
         script = (ROOT / "tools" / "build_release.sh").read_text(encoding="utf-8")
+        credentials_at = script.index('if [[ -z "${MACOS_SIGN_IDENTITY}" ]]')
+        worktree_at = script.index('echo "==> Worktree из тега ${TAG}"')
         clear_xattr_at = script.index('xattr -cr "${APP_PATH}"')
-        sign_at = script.index('codesign --force --deep --sign - "${APP_PATH}"')
+        sign_at = script.index('codesign --force --deep --options runtime --timestamp')
         verify_at = script.index('codesign --verify --deep --strict --verbose=4 "${APP_PATH}"')
+        app_notary_at = script.index('submit_notary_artifact "${APP_NOTARY_ZIP}"')
+        app_staple_at = script.index('xcrun stapler staple "${APP_PATH}"')
         dmg_at = script.index('bash "${REPO_DIR}/tools/create_macos_dmg.sh"')
+        dmg_notary_at = script.index('submit_notary_artifact "${MAC_DMG}"')
+        dmg_staple_at = script.index('xcrun stapler staple "${MAC_DMG}"')
+        self.assertLess(credentials_at, worktree_at)
         self.assertLess(clear_xattr_at, sign_at)
         self.assertLess(sign_at, verify_at)
-        self.assertLess(verify_at, dmg_at)
+        self.assertLess(verify_at, app_notary_at)
+        self.assertLess(app_notary_at, app_staple_at)
+        self.assertLess(app_staple_at, dmg_at)
+        self.assertLess(dmg_at, dmg_notary_at)
+        self.assertLess(dmg_notary_at, dmg_staple_at)
+        self.assertNotIn('codesign --force --deep --sign -', script)
+        self.assertNotIn('Notarization пропущена', script)
+        self.assertIn('spctl --assess --type execute', script)
+        self.assertIn('spctl --assess --type open --context context:primary-signature', script)
 
         publish_at = script.index('echo "==> Публикация проверенных staged artifacts"')
+        self.assertLess(dmg_staple_at, publish_at)
         published = script[publish_at:]
         self.assertIn(
             'cp "${WORKTREE_DIR}/build/FantasyDisk-${VERSION}-windows-setup.exe"',
@@ -85,6 +101,17 @@ class ReleaseSecretScanTests(unittest.TestCase):
         )
         self.assertNotIn('cp "${WORKTREE_DIR}/build/FantasyDisk-Windows.exe"', published)
         self.assertNotIn('cp "${WORKTREE_DIR}/build/FantasyDisk-${VERSION}-windows.zip"', published)
+
+    def test_macos_dmg_root_is_minimal_and_has_no_internal_background_folder(self) -> None:
+        script = (ROOT / "tools" / "create_macos_dmg.sh").read_text(encoding="utf-8")
+        self.assertNotIn('STAGING_DIR}/.background', script)
+        self.assertNotIn('file ".background:', script)
+        self.assertIn('FantasyDiskDmgBackground.png', script)
+        self.assertIn('! -name "${APP_NAME}" ! -name "Applications" ! -name ".DS_Store"', script)
+        self.assertIn('"${RW_MOUNT_DIR}/.fseventsd"', script)
+        self.assertIn('final DMG exposes unexpected root items', script)
+        self.assertIn('set icon size of viewOptions to 128', script)
+        self.assertIn('set text size of viewOptions to 14', script)
 
 
 class _captured_streams:

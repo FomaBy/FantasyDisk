@@ -67,8 +67,13 @@ python tools/quality_gate.py --profile windows
 
 ## Сборка релиза (macOS)
 ```bash
-tools/build_release.sh <версия>    # напр. 0.1.6 — собирает из git-тега
+export MACOS_SIGN_IDENTITY="Developer ID Application: <owner> (<TEAMID>)"
+export MACOS_NOTARY_PROFILE="fantasydisk-notary" # credentials stored in Keychain
+tools/build_release.sh <версия>    # собирает из git-тега; ad-hoc build запрещён
 ```
+
+macOS-релиз fail-closed: нужны Developer ID, Apple notarization/stapling и
+успешный `spctl` для приложения и DMG. Без них publishable артефакт не создаётся.
 
 ## Структура
 - `scripts/` — игровая логика (GDScript)

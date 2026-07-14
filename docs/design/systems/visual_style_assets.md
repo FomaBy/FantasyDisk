@@ -4,6 +4,25 @@
 
 Этот файл фиксирует reusable visual assets FantasyDisk после domain split. Подробные таблицы сущностей остаются в `docs/design/content_registry.md`.
 
+## FAN-1094 macOS Installer Arrow
+
+The macOS DMG deliberately has no FantasyDisk frame, title, instructions,
+scenery, ornament or baked icon labels. Finder renders only the native
+`FantasyDisk.app` and `Applications` items; the one permitted drawable element
+is the thin charcoal arrow from PixelLab MCP object
+`eefc2d99-8fb4-407f-8a84-13f043c4f017`.
+
+Source/provenance and the accepted build input live under
+`docs/design/references/fan1094_macos_installer/`; exact `720×480`
+geometry/root allowlisting is
+documented in `docs/design/mockups/fan1094_macos_installer/spec.md`. Rejected
+PixelLab UI-panel attempts are recorded by ID only because they added forbidden
+buttons, text, scenery and character art. The final DMG stores its padded
+arrow-only Finder background inside the signed app bundle, so users who show
+hidden files do not see a `.background` folder. The mounted Finder proof is
+`docs/design/previews/fan1094_macos_installer_runtime.png` (Retina `1440×960`
+capture of the fixed `720×480` logical window).
+
 ## FAN-1077 Codex Unread Badge
 
 `assets/sprites/ui/icons/codex/ui_badge_codex_unread.png` is the accepted

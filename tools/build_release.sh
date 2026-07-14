@@ -21,9 +21,56 @@ GODOT_PATH="${GODOT_BIN:-${GODOT:-/Users/sergeyfomin/Downloads/Godot.app/Content
 WORKTREE_DIR="$(mktemp -d /tmp/fantasydisk-build-XXXXXX)/src"
 RELEASE_DIR="${REPO_DIR}/releases/${TAG}"
 DMG_MOUNT_DIR=""
+MACOS_SIGN_IDENTITY="${MACOS_SIGN_IDENTITY:-}"
+MACOS_NOTARY_PROFILE="${MACOS_NOTARY_PROFILE:-}"
+MACOS_ARROW_SOURCE="${REPO_DIR}/docs/design/references/fan1094_macos_installer/pixellab_arrow.png"
+
+if [[ -z "${MACOS_SIGN_IDENTITY}" ]]; then
+  echo "ERROR: MACOS_SIGN_IDENTITY is required; release builds may not use ad-hoc signing"
+  exit 2
+fi
+if [[ -z "${MACOS_NOTARY_PROFILE}" ]]; then
+  echo "ERROR: MACOS_NOTARY_PROFILE is required; release builds must be notarized"
+  exit 2
+fi
+if ! security find-identity -v -p codesigning 2>/dev/null \
+    | grep -F "${MACOS_SIGN_IDENTITY}" | grep -q "Developer ID Application"; then
+  echo "ERROR: MACOS_SIGN_IDENTITY is not an installed Developer ID Application identity"
+  exit 2
+fi
+if ! xcrun notarytool history --keychain-profile "${MACOS_NOTARY_PROFILE}" \
+    --output-format json >/dev/null 2>&1; then
+  echo "ERROR: MACOS_NOTARY_PROFILE is missing or cannot authenticate with Apple"
+  exit 2
+fi
+if [[ ! -f "${MACOS_ARROW_SOURCE}" ]]; then
+  echo "ERROR: minimal macOS DMG arrow source is missing: ${MACOS_ARROW_SOURCE}"
+  exit 2
+fi
 
 run_godot() {
   GODOT_BIN="${GODOT_PATH}" python3 "${REPO_DIR}/tools/godot_gate.py" "$@"
+}
+
+submit_notary_artifact() {
+  local artifact="$1"
+  local label="$2"
+  local report="$3"
+  if ! xcrun notarytool submit "${artifact}" \
+      --keychain-profile "${MACOS_NOTARY_PROFILE}" \
+      --wait --output-format json >"${report}"; then
+    echo "    ERROR: Apple notarization request failed for ${label}"
+    [[ -s "${report}" ]] && cat "${report}"
+    exit 2
+  fi
+  local status
+  status="$(/usr/bin/plutil -extract status raw -o - "${report}" 2>/dev/null || true)"
+  if [[ "${status}" != "Accepted" ]]; then
+    echo "    ERROR: Apple notarization rejected ${label} (status: ${status:-unknown})"
+    cat "${report}"
+    exit 2
+  fi
+  echo "    Apple notarization accepted ${label}"
 }
 
 echo "==> Worktree из тега ${TAG}"
@@ -88,38 +135,52 @@ if [[ -z "${APP_PATH}" ]]; then
   echo "    ERROR: macOS export не содержит .app"
   exit 2
 fi
-xattr -cr "${APP_PATH}"
-MACOS_SIGN_IDENTITY="${MACOS_SIGN_IDENTITY:--}"
-if [[ "${MACOS_SIGN_IDENTITY}" == "-" ]]; then
-  echo "    Developer ID Application не задан; ставим финальную ad-hoc подпись"
-  codesign --force --deep --sign - "${APP_PATH}"
-else
-  echo "    Подпись Developer ID Application (hardened runtime + timestamp)"
-  codesign --force --deep --options runtime --timestamp \
-    --sign "${MACOS_SIGN_IDENTITY}" "${APP_PATH}"
+
+echo "==> Минималистичный Finder layout: две системные иконки и одна стрелка"
+DMG_BACKGROUND_RESOURCE="${APP_PATH}/Contents/Resources/FantasyDiskDmgBackground.png"
+DMG_ARROW_STAGE="${MAC_STAGE}/dmg-arrow-170x64.png"
+mkdir -p "$(dirname "${DMG_BACKGROUND_RESOURCE}")"
+sips --resampleHeightWidth 64 170 "${MACOS_ARROW_SOURCE}" \
+  --out "${DMG_ARROW_STAGE}" >/dev/null
+sips --padToHeightWidth 480 720 --padColor F7F7F7 "${DMG_ARROW_STAGE}" \
+  --out "${DMG_BACKGROUND_RESOURCE}" >/dev/null
+DMG_BACKGROUND_WIDTH="$(sips -g pixelWidth "${DMG_BACKGROUND_RESOURCE}" | awk '/pixelWidth/ {print $2}')"
+DMG_BACKGROUND_HEIGHT="$(sips -g pixelHeight "${DMG_BACKGROUND_RESOURCE}" | awk '/pixelHeight/ {print $2}')"
+if [[ "${DMG_BACKGROUND_WIDTH}x${DMG_BACKGROUND_HEIGHT}" != "720x480" ]]; then
+  echo "    ERROR: Finder background must be exactly 720x480"
+  exit 2
 fi
+
+xattr -cr "${APP_PATH}"
+echo "    Подпись Developer ID Application (hardened runtime + timestamp)"
+codesign --force --deep --options runtime --timestamp \
+  --sign "${MACOS_SIGN_IDENTITY}" "${APP_PATH}"
 codesign --verify --deep --strict --verbose=4 "${APP_PATH}"
+
+echo "==> Apple notarization + stapling приложения"
+APP_NOTARY_ZIP="${WORKTREE_DIR}/build/FantasyDisk-${VERSION}-macos-notary.zip"
+APP_NOTARY_REPORT="${WORKTREE_DIR}/build/notary-app.json"
+ditto -c -k --sequesterRsrc --keepParent "${APP_PATH}" "${APP_NOTARY_ZIP}"
+submit_notary_artifact "${APP_NOTARY_ZIP}" "FantasyDisk.app" "${APP_NOTARY_REPORT}"
+rm -f "${APP_NOTARY_ZIP}"
+xcrun stapler staple "${APP_PATH}"
+xcrun stapler validate "${APP_PATH}"
+codesign --verify --deep --strict --verbose=4 "${APP_PATH}"
+spctl --assess --type execute --verbose=4 "${APP_PATH}"
 
 echo "==> Создание DMG с ярлыком Applications и стрелкой"
 MAC_DMG="${WORKTREE_DIR}/build/FantasyDisk-${VERSION}-macos.dmg"
 bash "${REPO_DIR}/tools/create_macos_dmg.sh" "${APP_PATH}" "${MAC_DMG}" "${VERSION}"
-if [[ "${MACOS_SIGN_IDENTITY}" != "-" ]]; then
-  codesign --force --timestamp --sign "${MACOS_SIGN_IDENTITY}" "${MAC_DMG}"
-fi
+codesign --force --timestamp --sign "${MACOS_SIGN_IDENTITY}" "${MAC_DMG}"
+codesign --verify --strict --verbose=4 "${MAC_DMG}"
 
-if [[ -n "${MACOS_NOTARY_PROFILE:-}" ]]; then
-  if [[ "${MACOS_SIGN_IDENTITY}" == "-" ]]; then
-    echo "    ERROR: MACOS_NOTARY_PROFILE задан, но Developer ID Application отсутствует"
-    exit 2
-  fi
-  echo "==> Apple notarization + stapling"
-  xcrun notarytool submit "${MAC_DMG}" \
-    --keychain-profile "${MACOS_NOTARY_PROFILE}" --wait
-  xcrun stapler staple "${MAC_DMG}"
-  xcrun stapler validate "${MAC_DMG}"
-else
-  echo "==> Notarization пропущена: MACOS_NOTARY_PROFILE не задан"
-fi
+echo "==> Apple notarization + stapling DMG"
+DMG_NOTARY_REPORT="${WORKTREE_DIR}/build/notary-dmg.json"
+submit_notary_artifact "${MAC_DMG}" "FantasyDisk DMG" "${DMG_NOTARY_REPORT}"
+xcrun stapler staple "${MAC_DMG}"
+xcrun stapler validate "${MAC_DMG}"
+codesign --verify --strict --verbose=4 "${MAC_DMG}"
+spctl --assess --type open --context context:primary-signature --verbose=4 "${MAC_DMG}"
 
 echo "==> Экспорт Windows (x86_64, embed_pck)"
 run_godot --headless --path "${WORKTREE_DIR}" \
@@ -164,6 +225,8 @@ if [[ ! -L "${DMG_MOUNT_DIR}/Applications" ]] \
 fi
 MOUNTED_APP="${DMG_MOUNT_DIR}/$(basename "${APP_PATH}")"
 codesign --verify --deep --strict --verbose=4 "${MOUNTED_APP}"
+xcrun stapler validate "${MOUNTED_APP}"
+spctl --assess --type execute --verbose=4 "${MOUNTED_APP}"
 
 echo "==> Secret scan staged player payloads до публикации"
 set +e

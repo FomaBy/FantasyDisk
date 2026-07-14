@@ -1,0 +1,25 @@
+{
+  "issue": "FAN-1094",
+  "pipeline": "PixelLab MCP create_map_object",
+  "config_smoke": "PASS: get_balance isError=false; no credentials printed",
+  "accepted_source": {
+    "object_id": "eefc2d99-8fb4-407f-8a84-13f043c4f017",
+    "source_file": "pixellab_arrow.png",
+    "generated_app_resource": "FantasyDisk.app/Contents/Resources/FantasyDiskDmgBackground.png",
+    "preview": "docs/design/previews/fan1094_macos_installer_arrow.png",
+    "width": 256,
+    "height": 96,
+    "alpha": true,
+    "prompt": "one simple thin right-pointing arrow icon only, straight horizontal shaft and clean arrowhead, monochrome charcoal gray, flat technical symbol, no ornament, no texture, no fantasy styling, no text, no label, no other object, transparent background"
+  },
+  "discarded_attempts": [
+    {
+      "ui_asset_id": "18474cda-5d18-4906-b56d-9508e262f9b3",
+      "reason": "Added scenery, buttons, labels and character art; violates the arrow-only request."
+    },
+    {
+      "ui_asset_id": "5d5b0233-8328-47b2-81fe-6aba22439bc0",
+      "reason": "Still added a game menu and scenery after strict negative prompting; rejected and not stored in the repository."
+    }
+  ]
+}
