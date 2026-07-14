@@ -73,6 +73,33 @@ AoE/crowd и survivability хотя бы одним честным способ�
 за-каповый хвост толпы **пропускается** (skip, не «хит нулём»), диминиш режет
 per-hit дальних. 5 крауд-каналов + boss-hazard-кап (≤80% max HP за тик).
 
+## 3b. Пер-оружейная identity-таблица (роль каждого оружия)
+
+Каждый класс — полный three-weapon кит с тремя РАЗЛИЧИМЫМИ ролями (нет клонов,
+нет «оружия, которое выгодно игнорировать»). Полные gameplay-описания —
+`docs/design/systems/characters_weapons.md` (Weapon Matrix). Правка = что сделал
+ребаланс FAN-1028 с этим оружием.
+
+| Класс | Оружие | Роль / ось | Правка ребаланса |
+| --- | --- | --- | --- |
+| berserk | sword / axe / hammer | узкий сектор-solo / широкий сектор-AoE / круговой slam-crowd | db 1.00→0.82 (axe 20t −40%, hammer из клампа) |
+| soldier | rifle / grenade / bayonet | частая пуля-solo / тяжёлый nuke-burst / конус-melee+knockback | db 0.72→0.68, bayonet solo-спайк вниз |
+| thief | coin_pouch / shadow_cloak / smoke_bomb | economy-цепь / backstab-solo+паралич / AoE+облако-уклонения | дно вверх (mechanic-first) |
+| elementalist | orb_ring / prism_focus / meteor_core | квадрат-crowd / полнокартный X-line / медленный метеор-burst | db 0.82→0.70; **orb_ring orbit width-cap (nearest cluster)** |
+| sniper | deadeye_rifle / spotter_scope / shatter_rounds | lockshot-solo / kill-zone-AoE / веер-pierce | db 1.00→1.15 (solo-ниша поднята) |
+| priest | reliquary / censer / chime | sanctify solo-burst+sustain / ward-crowd+absorb / prayer-chain sustain | NET-ZERO: crowd(кадило) вниз, reliquary base/solo вверх (random-A1 ≥0.95) |
+| biologist | spore_lens / sample_injector / symbiote_seed | споры-crowd-DoT / пирс-луч-solo / семя-инфекция-DoT | **spore_lens infection width-cap (nearest)**; status fan-out кап |
+| robot | magnetic_anchor / hydraulic_press / reactor_core | пулл-группировка / коридор-line / веер-360° | tank identity-price (damage-оси 0.77–1.00, платит EHP 2.12) |
+| engineer | sentry_wrench / repair_drone / pressure_mines | турели-summon-DPS / орбит-дроны-контакт / персист-мины-zone | sentry solo-спайк снят, устройства в коридор |
+| dark_mage | dark_book / cursed_skull / dark_wand | зеркальный AoE-burst / curse-only-DoT-crowd / цепь до 3 | db 0.72→0.58; status fan-out кап (curse-тик); ульта-фид Σfactor |
+| guitarist | electric_guitar / bass_guitar / sound_amp | рифф-strip-solo / кайт-кольцо-crowd / амп-турели-summon | RAW↑ (electric 0.66→0.80, bass 0.26→0.30, amp 0.85→1.00) — дно из сатурации |
+| assassin | chakrams / shadow_daggers / venom_wire | boomerang-solo / point-blank-flurry-AoE+tempo / poison-line-DoT | crowd-ось поднята к профилю (chakram-цепь) |
+| ranger | moon_crossbow / storm_longbow / hunter_trap | split-shot 1→4 / пирс-конус-line / перманентный капкан-control | db 1.15→1.26 (дно вверх) |
+| doctor | restore_potion / plague_syringe / bone_saw | зелье-AoE+хил / чума-спред-DoT / сектор-пила-solo+execute-heal | **restore_potion splash+vapor кап (сустейн-ниша 1/4.0)** |
+| chemist | blast_powder / acid_flask / homunculus_vial | прямой физ-AoE / лужа-zone-DoT / пара гомункулов-summon | db 1.15→0.95; **blast aoe 4/3→2/3 max 3 (20t −53%), acid pool_max 6→4** |
+| knight | long_spear / tower_shield / holy_flail | укол-solo+counter / баш-щит-defense / спираль-crowd-control | tank identity-price (EHP 2.21, damage-оси ниже медианы) |
+| druid | summon_amulet / briar_staff / raven_totem | beast-pack-summon / терновые зоны-DoT-control / вороний тотем-DPS | амулет вниз; **briar + raven оживлены (raven rdm 1.35→2.40, ×1.84–2.41)** |
+
 ## 4. Identity / погранзначения (задокументированные продуктовые решения)
 
 - **Танки (robot 1.19 / knight 1.12) — identity-price.** Равновесный total
@@ -121,7 +148,8 @@ honest-timebase харнес (`8dd7e4fb`), 8+ новых гейтов (5 cap + a
 без задокументированного продуктового решения (no-silent-retune лог в
 `progression_balance.md`).
 
-> ⚠️ **Заметка по артефакту:** `build/class_trio_before_fan1028.md` на текущем tip
-> содержит ФИНАЛЬНЫЙ снимок (0.87…1.21) под заголовком «до» — регенерирован из
-> текущего конфига. Истинный v2-baseline сохранён в git (`40a39a00`) и продублирован
-> в §1 этого отчёта. Рекомендую координатору восстановить/переименовать before-файл.
+> ✅ **Заметка по артефакту (закрыто `76e251ef`):** прежний
+> `build/class_trio_before_fan1028.md` содержал ФИНАЛЬНЫЙ снимок под заголовком
+> «до»; координатор переименовал его в **`build/class_trio_fan1028.md`** (нейтральное
+> имя + заголовок). Истинный v2-baseline сохранён в git (`40a39a00`) и продублирован
+> в §1 этого отчёта.

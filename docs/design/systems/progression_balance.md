@@ -1174,7 +1174,7 @@ Gate: `tests/guild_atlas_scrum1069_balance_test.gd`; exact audit:
 Пересмотр баланса всех 17 классов как полных three-weapon китов (FAN-1028,
 ветка `agent/claude/53f2a056`). Сводный before/after v2→финал с пер-классовыми
 и пер-оружейными таблицами, механизмами капов и валидацией:
-**`build/stage4_before_after_fan1028.md`**.
+**`build/fan1028_rebalance_final_report.md`**.
 
 Итог (roster-relative kit-total; времябаза честная с `8dd7e4fb`, roster-relative
 скоры сравнимы через границу времябазы):
