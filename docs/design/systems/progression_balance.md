@@ -1063,6 +1063,45 @@ SCRUM-1091 добавляет только presentation contract, не нову�
     под финальные db, за координатором); мой амп-raw-буст добавляет стейл в `guitarist/sound_amp` CSV-веса —
     туда же. Не в приёмочном наборе.
 
+- **FAN-1031 Stage 3 v9-финал (2026-07-14, v9 приёмка координатора) — 2 финальных пункта + закрытие S3
+  исполнителем (no-silent-retune).** Полный разбор + budget-дамп A/B + live-направления —
+  `build/stage3_v9_final_fan1031.md`. По приёмочному v9 (ростер 0.87…1.19, сжатие 15×→1.37×, мёртвых
+  слотов 0/51; координатор: «дальше гоняться за шумом ±0.1 бессмысленно»). Метод приёмки этого слайса —
+  budget-дамп (детерминированный per-hit A/B) + по одному `--pair` live (soldier, priest) + kit-тесты;
+  **полный v10-пересъём НЕ гоним** (координатор принимает по дампу/парам — направления детерминированы).
+  - **Soldier (per-hit вниз):** db `0.72→0.68` — ещё один малый uniform per-hit шаг всех трёх оружий
+    (unclamped, лендится 1:1). Budget-дамп A/B (`budget_tuning_for`): rifle dm 1.405→1.327, grenade
+    1.194→1.128, bayonet 0.889→0.839 — все **−5.6%** (= ratio 0.68/0.72), давит solo-спайк 1.50 (bayonet)
+    к профилю 1.00. def 1.22 steady не тронут.
+  - **Priest — NET-ZERO power-shift крауд→base/solo (координаторское решение).** random-A1 `0.87<1.0` —
+    единственный fail ascension-гейта: сила Жреца заперта в крауд-ширине кадила, а RANDOM-билд её не
+    добирает надёжно. Переносим силу С крауд-ширины НА base/solo (per-hit + throughput), total 1.14 держим:
+    - *base/solo ВВЕРХ (reliquary — соло-бурст Жреца, unclamped):* (1) каденс-налог `_fire_interval_artifact_factor`
+      reliquary `1.18→1.08` — throughput ×(1.18/1.08)≈**+9.3%** по всем осям, **НЕ** компенсируется budget-тюнером
+      (каденс вне формулы); (2) `solo_target 1.03→1.10` — budget-дамп A/B: reliquary dm `1.755→1.813` (**+3.3%**
+      per-hit, unclamped лендит), а **censer/chime clamped на ceil 2.80 → solo_target их НЕ двигает** (лифт
+      хирургически reliquary-only). Суммарный reliquary-лифт ≈**+12.9%** (live `--pair` подтверждает: reliquary
+      1t/5t/20t rnd/id/l1 все вверх +11…20% — совпадает с проекцией). Это и есть лифт random-floor.
+    - *crowd ВНИЗ (censer — крауд-оружие Жреца):* width-кап хвоста `aoe_full_targets 4→3` + `aoe_target_diminish
+      1.2→1.7` — крауд-хвост (ranks ≥3) режется **41…63%** (детерминированная формула диминиша, gated
+      `coverage_cap_gate`), компенсируя лифт base/solo для net-zero total. Censer per-hit clamped — width НЕ
+      трогает solo (1 цель = rank 0 = полный); жёсткого max НЕТ → identity «выжигают ВСЁ вокруг» цела →
+      player-facing описание кадила НЕ меняем. reliquary crowd hard-капнут falloff (3/2.2) → лифт reliquary
+      крауд обратно почти не разбегает. **⚠️ live censer/soldier single-`--pair` слишком шумны (кадило —
+      tween-пульсы, байонет — мили-позиционка; censer 1t качнулся 37.5→72.4 при том, что ширина на 1 цели
+      неактивна) — их направление держит ДЕТЕРМИНИРОВАННЫЙ дамп/формула, не live (координаторская доктрина:
+      live=направление, шум усредняют 2–4 прогонами).**
+  - **Пины обновлены (документированная правка, НЕ ослабление):** `priest_kit_test._check_cadence_tax` reliquary
+    1.18→1.08; `coverage_cap_gate` real-config pin кадила 4/1.2→3/1.7 (интеграционный `_test_censer_width_integration`
+    читает реальный конфиг → формула диминиша проверяется поведенчески, адаптивно).
+  - **Гейты (11 прогнано зелёными, гейтов НЕ ослаблял):** `priest_kit`, `soldier_kit`, `coverage_cap_gate`,
+    `class_budget_profiles_integrity` (solo_target 1.10 / soldier db 0.68 в границах (0,2]), `global_damage_balance_smoke`
+    (**worst CCT +20% — БЕЗ изменений**, sniper/deadeye/20t; priest-сдвиги worst не двигают), `runtime_smoke`
+    (base + weapon_mechanics — живой censer/reliquary путь), `damage_type_isolation`, `priest_sustain_softcap`,
+    `content_registry_consistency`, `contact_damage_softcap`.
+  - **За координатором:** авторитетный v10-контроль (если решит) + подтверждение random-A1 ≥1.0 по live-полам;
+    Stage 4 (FAN-1032): comfort-веса под финальные db, формальный ascension-гейт тестом, сводный before/after v2→v9.
+
 ## Known Balance Risks
 
 - Точный паритет clear speed Темного мага/Гитариста с Берсерком требует ручного плейтеста.

@@ -415,11 +415,12 @@ func _test_real_configs_and_defaults(errors: Array) -> void:
 		errors.append("orb_ring orbit_max_targets != 4: %s" % str(orb.get("orbit_max_targets", -1)))
 	if int(orb.get("orbit_full_targets", -1)) != 3 or absf(float(orb.get("orbit_target_diminish", -1.0)) - 1.0) > 0.001:
 		errors.append("orb_ring orbit диминиш-кап затёрт (ждали 3/1.0): %s/%s" % [str(orb.get("orbit_full_targets")), str(orb.get("orbit_target_diminish"))])
-	# priest_censer: FAN-1031 v8-микротрим — width-кап крауд-ХВОСТА кадила (aoe_full/diminish 4/1.2),
-	# БЕЗ жёсткого max (identity «выжигают ВСЁ вокруг»: все в радиусе задеты, дальние слабее).
+	# priest_censer: FAN-1031 v9-финал — width-кап крауд-ХВОСТА кадила УЖАТ 4/1.2→3/1.7 (NET-ZERO
+	# power-shift: crowd 1.59 ниже, компенсируя лифт base/solo reliquary — каденс 1.18→1.08 + solo_target
+	# 1.03→1.10). БЕЗ жёсткого max (identity «выжигают ВСЁ вокруг»: все в радиусе задеты, дальние слабее).
 	var censer: Dictionary = PD.weapon("priest", "priest_censer")
-	if int(censer.get("aoe_full_targets", -1)) != 4 or absf(float(censer.get("aoe_target_diminish", -1.0)) - 1.2) > 0.001:
-		errors.append("priest_censer width-кап затёрт (ждали 4/1.2): %s/%s" % [str(censer.get("aoe_full_targets")), str(censer.get("aoe_target_diminish"))])
+	if int(censer.get("aoe_full_targets", -1)) != 3 or absf(float(censer.get("aoe_target_diminish", -1.0)) - 1.7) > 0.001:
+		errors.append("priest_censer width-кап затёрт (ждали 3/1.7): %s/%s" % [str(censer.get("aoe_full_targets")), str(censer.get("aoe_target_diminish"))])
 	if int(censer.get("aoe_max_targets", -1)) >= 0:
 		errors.append("priest_censer несёт aoe_max_targets=%s — жёсткий обрез ломает identity «большой AoE вокруг» (нужен лишь диминиш хвоста)" % str(censer.get("aoe_max_targets")))
 	# Дефолт-guard: оружие БЕЗ override не несёт молчаливого потолка.

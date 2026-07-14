@@ -707,11 +707,13 @@ func _fire_interval_artifact_factor() -> float:
 	# берёт mode-артефакты (reliquary_salvo/censer_vow scored 0 — только mods, без stats),
 	# так что базовый тэ применяется к замеру без offset'а этими режимами.
 	if weapon_id == "priest_reliquary":
-		# FAN-1031 v8-микротрим: 1.30→1.18 — СМЯГЧАЕМ каденс-налог (координаторское решение):
-		# ×1.30 перегибал RANDOM-билд (random-A1 0.86), а каденс давит ВСЕ оси, включая solo.
-		# Крауд-добор перенесён на ШИРИНУ кадила (censer aoe_full_targets/diminish ниже), которая
-		# режет только толпу, не solo/random. Направление: reliquary throughput ×(1.30/1.18)≈+10%.
-		factor *= 1.18  # быстрый бурст-крауд — главный оффендер, но каденс-налог смягчён
+		# FAN-1031 v9-финал: 1.18→1.08 — ДОСМЯГЧАЕМ каденс-налог (координаторское решение,
+		# NET-ZERO power-shift крауд→base/solo). random-A1 0.87<1.0 — каденс давит ВСЕ оси
+		# (DPS ∝ 1/cooldown), включая solo/random, поэтому его смягчение — прямой рычаг base/solo↑
+		# (throughput ×(1.18/1.08)≈+9.3%), НЕ компенсируемый budget-тюнером (каденс вне формулы).
+		# Крауд не разбегает обратно: reliquary crowd hard-капнут falloff-капом (3/2.2), а крауд-
+		# компенсацию net-zero несёт width-кап кадила ниже (censer aoe_full 4→3/diminish 1.2→1.7).
+		factor *= 1.08  # быстрый бурст-крауд, но каденс-налог досмягчён под random-floor лифт
 	if weapon_id == "priest_censer":
 		factor *= 1.15  # большой близкий AoE — вторичный крауд-вклад
 	if weapon_id == "priest_reliquary" and _owner_mod("reliquary_barrage_mode") > 0.0:

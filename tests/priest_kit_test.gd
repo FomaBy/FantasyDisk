@@ -410,9 +410,10 @@ func _check_reliquary_burst_no_heal() -> void:
 # правка. chime/прочие оружия НЕ обложены (фактор 1.0) — сентинел-контракт (нулевой A/B).
 
 func _check_cadence_tax() -> void:
-	# FAN-1031 v8-микротрим: reliquary каденс-налог смягчён 1.30→1.18 (перегибал random-билд);
-	# крауд-добор перенесён на ширину кадила (см. _check_censer_width_cap). censer/chime не тронуты.
-	var expected := {"priest_reliquary": 1.18, "priest_censer": 1.15, "priest_chime": 1.0}
+	# FAN-1031 v9-финал: reliquary каденс-налог досмягчён 1.18→1.08 (random-A1 0.87<1.0 — NET-ZERO
+	# power-shift крауд→base/solo; каденс↓ = base/solo↑); крауд-компенсация — ужатая ширина кадила
+	# (aoe_full 4→3/diminish 1.2→1.7, см. _check_censer_width_cap). censer/chime каденс не тронуты.
+	var expected := {"priest_reliquary": 1.08, "priest_censer": 1.15, "priest_chime": 1.0}
 	for weapon_id in expected.keys():
 		var player := _make_player("priest", str(weapon_id))
 		var weapon: Node = player.get("equipped_weapon")
