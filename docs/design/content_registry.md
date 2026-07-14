@@ -96,6 +96,14 @@ historical/fallback asset references and are not the live static portrait source
 Regression coverage: `tests/character_sprite_registry_alignment_test.gd` and
 `tests/runtime_smoke_test.gd`; QA dumps under `build/qa/scrum416/`.
 
+FAN-1071 adds one roster-wide runtime placement contract without changing these
+canonical IDs or asset paths: every playable SpriteFrames idle/move/walk texture
+is grounded from its own visible alpha bottom onto the `Player` gameplay origin.
+Legacy `sliced_rig_manifest.foot_y` is now fallback-only for cutout/skeletal
+visuals and must not be treated as the footline of a PixelLab runtime pack.
+Focused coverage: `tests/feet_anchor_ground_circle_test.gd` iterates all 17
+classes, all directional locomotion rows and every frame.
+
 SCRUM-869 refreshes the playable PixelLab source/runtime packs from the live
 PixelLab manifests without changing canonical character IDs or portrait paths.
 The refreshed complete packs are `assassin`

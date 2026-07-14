@@ -647,6 +647,17 @@ SCRUM-823 снова увеличил только боевую визуальн
 поэтому hurtbox, контактное поведение, дальности, pivot, flip и `WeaponSocket`
 не менялись.
 
+FAN-1071 исправляет регрессию feet-origin после перехода ростера на разные
+PixelLab full-frame packs. Live `Player/VisualRoot/Body` больше не использует
+`foot_y` старого static/cutout-арта как источник позиции для full-frame кадра:
+нижняя видимая alpha-граница каждой active idle/move/walk texture кэшируется и
+при `animation_changed`/`frame_changed` сажается на локальный gameplay origin,
+где уже находится `GroundCircle` и область получения урона. Поэтому Инженер,
+Гитарист и остальные 15 героев стоят на площадке без вертикального дрейфа между
+кадрами. Это visual-only transform: world position, collision radius `8.9`,
+damage/targeting ranges, y-sort и damage geometry не изменены. Canonical idle
+lift остаётся стабильным ориентиром камеры, weapon orbit и feedback.
+
 SCRUM-412 очистил полный playable full-frame runtime set от белой/checkerboard
 подложки: все `255` PNG в
 `assets/sprites/characters/full_frame/<class>/` для 17 классов теперь имеют

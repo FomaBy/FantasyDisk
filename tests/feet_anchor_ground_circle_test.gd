@@ -2,16 +2,18 @@ extends SceneTree
 
 # Combat Feel Rework (этап A): «точка отсчёта» персонажа — круг под ногами.
 # Контракты:
-#  (a) визуал игрока поднят per-class: Body.position.y ≈ -(foot_y - size.y/2) * 0.64
-#      (foot_y из sliced_rig_manifest), у игрока есть GroundCircle (заливка + ободок),
-#      орбита оружия/камера сдвинуты к торсу поднятого силуэта;
+#  (a) все 17 live full-frame персонажей сажают фактическую нижнюю alpha-границу
+#      КАЖДОГО idle/move/walk кадра на gameplay origin; legacy foot_y не может
+#      увести PixelLab pack вверх/вниз. GroundCircle остаётся на origin, а
+#      орбита оружия/камера сдвинуты к торсу canonical idle-силуэта;
 #  (b) у врага (Enemy.tscn) создаётся GroundCircle-тень под ногами;
 #  (c) корень Main.tscn — Node2D с y_sort_enabled (актёры сортируются по Y);
 #  (d) origin-математика не тронута: pickup_radius/коллизии прежние.
 
-const SlicedRigManifest := preload("res://scripts/sliced_rig_manifest.gd")
+const ProgressionData := preload("res://scripts/progression_data.gd")
 const EXPECTED_PLAYER_VISUAL_SCALE := 0.64
 const LIFT_TOLERANCE := 0.75
+var _texture_bottom_cache: Dictionary = {}
 
 
 func _initialize() -> void:
@@ -35,19 +37,19 @@ func _test_player_feet_anchor_and_circle(errors: Array[String]) -> void:
 	root.add_child(player)
 	await process_frame
 
-	for class_id in ["berserk", "ranger"]:
+	for class_id in ProgressionData.character_ids():
 		player.configure_character(class_id)
-		var entry: Dictionary = SlicedRigManifest.DATA.get(class_id, {})
-		if entry.is_empty():
-			errors.append("Manifest entry missing for %s (test precondition)." % class_id)
-			continue
-		var art_size: Vector2 = entry["size"]
-		var expected_lift: float = (float(entry["foot_y"]) - art_size.y * 0.5) * EXPECTED_PLAYER_VISUAL_SCALE
-
 		var body := player.get_node_or_null("VisualRoot/Body") as AnimatedSprite2D
 		if body == null:
 			errors.append("%s: VisualRoot/Body missing." % class_id)
 			continue
+		if not body.visible or body.sprite_frames == null:
+			errors.append("%s: live full-frame Body/SpriteFrames missing." % class_id)
+			continue
+		if absf(body.scale.y - EXPECTED_PLAYER_VISUAL_SCALE) > 0.001:
+			errors.append("%s: Body scale %.3f, expected %.3f." % [class_id, body.scale.y, EXPECTED_PLAYER_VISUAL_SCALE])
+		var idle_texture := body.sprite_frames.get_frame_texture("idle", 0)
+		var expected_lift := _texture_ground_lift(idle_texture, body.scale.y)
 		if absf(body.position.y + expected_lift) > LIFT_TOLERANCE:
 			errors.append("%s: Body.position.y = %.2f, expected %.2f (feet on origin)." % [class_id, body.position.y, -expected_lift])
 		if absf(body.position.x) > 0.01:
@@ -55,6 +57,26 @@ func _test_player_feet_anchor_and_circle(errors: Array[String]) -> void:
 		var stored_lift := float(player.get("_feet_visual_lift"))
 		if absf(stored_lift - expected_lift) > LIFT_TOLERANCE:
 			errors.append("%s: _feet_visual_lift = %.2f, expected %.2f." % [class_id, stored_lift, expected_lift])
+
+		# FAN-1071 regression: force every live locomotion frame. The frame_changed
+		# signal must synchronously re-ground the body; rendered alpha bottom stays
+		# on local y=0 even for packs whose footline differs from legacy art.
+		for animation_name in body.sprite_frames.get_animation_names():
+			var name := str(animation_name)
+			if name != "idle" and name != "move" and name != "walk" and not name.begins_with("idle_") and not name.begins_with("move_") and not name.begins_with("walk_"):
+				continue
+			body.animation = animation_name
+			for frame_index in range(body.sprite_frames.get_frame_count(animation_name)):
+				body.frame = frame_index
+				var texture := body.sprite_frames.get_frame_texture(animation_name, frame_index)
+				var frame_lift := _texture_ground_lift(texture, body.scale.y)
+				var rendered_bottom := body.position.y + frame_lift
+				if absf(rendered_bottom) > LIFT_TOLERANCE:
+					errors.append("%s/%s[%d]: rendered footline y=%.2f, expected origin 0." % [class_id, name, frame_index, rendered_bottom])
+					break
+		# Restore canonical idle so camera/socket checks use the stable reference.
+		body.animation = "idle"
+		body.frame = 0
 
 		# Подъём переживает по-кадровый ресет трансформов (VisualRoot обнуляется).
 		player.call("_apply_sprite_transform")
@@ -107,6 +129,21 @@ func _test_player_feet_anchor_and_circle(errors: Array[String]) -> void:
 
 	player.queue_free()
 	await process_frame
+
+
+func _texture_ground_lift(texture: Texture2D, visual_scale: float) -> float:
+	if texture == null:
+		return 0.0
+	var key := texture.resource_path
+	if _texture_bottom_cache.has(key):
+		return float(_texture_bottom_cache[key]) * visual_scale
+	var image := texture.get_image()
+	if image == null or image.is_empty():
+		return 0.0
+	var used_rect := image.get_used_rect()
+	var unscaled_lift := maxf(float(used_rect.position.y + used_rect.size.y) - float(image.get_height()) * 0.5, 0.0)
+	_texture_bottom_cache[key] = unscaled_lift
+	return unscaled_lift * visual_scale
 
 
 func _test_enemy_ground_circle(errors: Array[String]) -> void:

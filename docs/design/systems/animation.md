@@ -143,6 +143,18 @@ Audit of the animation **runtime** loaders only (no art/motion/clip changes):
 
 ## Player Motion
 
+- FAN-1071 (2026-07-14) replaces the live playable footline dependency on
+  legacy `sliced_rig_manifest.foot_y` with frame-aware alpha grounding. For all
+  17 full-frame player resources, `player_sprite_grounding.gd` derives the
+  visible bottom of the active texture and adjusts only
+  `Player/VisualRoot/Body.position.y` whenever the animation or frame changes.
+  The world/gameplay origin, `GroundCircle`,
+  collision and damage geometry do not move. Canonical idle lift still drives
+  the stable camera/weapon/feedback bias, while individual locomotion frames
+  cannot vertically drift away from the platform. Legacy cutout/skeletal
+  fallback keeps the authored manifest footline. Permanent coverage iterates
+  every idle/move/walk frame of the full playable roster in
+  `tests/feet_anchor_ground_circle_test.gd`.
 - SCRUM-456 defines the new cartoon/anime playable-character restyle source
   contract. The Design package lives under
   `docs/design/references/chars_cartoon/` and establishes Berserk as the

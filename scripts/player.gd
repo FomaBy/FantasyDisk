@@ -31,7 +31,8 @@ const ROBOT_SPRITE := preload("res://assets/sprites/characters/robot.png")
 const DRUID_SPRITE := preload("res://assets/sprites/characters/druid.png")
 const PROGRESSION_DATA := preload("res://scripts/progression_data.gd")
 const CUTOUT_RIG_SCRIPT := preload("res://scripts/cutout_rig_2d.gd")
-# Combat Feel Rework (этап A): per-class foot_y для feet-origin визуала.
+const PLAYER_SPRITE_GROUNDING := preload("res://scripts/player_sprite_grounding.gd")
+# Combat Feel Rework (этап A): per-class foot_y для legacy feet-origin fallback.
 const SLICED_RIG_MANIFEST := preload("res://scripts/sliced_rig_manifest.gd")
 const ALLY_MINION_SCENE := preload("res://scenes/AllyMinion.tscn")
 const BERSERK_ANIMATION_FRAME_SIZE := Vector2i(384, 384)
@@ -59,8 +60,9 @@ const WEAPON_ORBIT_Z_INDEX := -8
 # Combat Feel Rework (этап A): «точка отсчёта» персонажа — круг под ногами.
 # Origin узла НЕ двигается (все дистанции origin-to-origin валидны), поднимается
 # только ВИЗУАЛ: ноги нарисованного спрайта сажаются на origin. Величина подъёма
-# считается per-class из sliced_rig_manifest.foot_y; для классов без записи в
-# манифесте берём типовую долю кадра (ноги ~на 94% высоты 512/384-арта).
+# для live full-frame SpriteFrames считается по фактической нижней alpha-границе
+# каждого кадра. Legacy cutout/skeletal fallback продолжает брать authored
+# sliced_rig_manifest.foot_y; без записи — типовую долю высоты кадра.
 const FEET_FALLBACK_FOOT_RATIO := 0.94
 const FEET_FALLBACK_ART_SIZE := 512.0
 # Читаемый круг-«точка отсчёта» под ногами игрока: мягкая тёмная заливка +
@@ -159,6 +161,10 @@ var _uses_skeletal_visual := false
 # подъём живёт на Body/RigRoot.position (их эта функция не трогает) и в
 # вертикальном bias орбиты оружия.
 var _feet_visual_lift := 0.0
+# FAN-1071: импортированные PixelLab packs не всегда используют тот же foot_y,
+# что legacy art в sliced_rig_manifest. Узкий helper кэширует alpha-footline;
+# frame_changed удерживает каждый idle/move кадр на gameplay origin.
+var _sprite_grounding := PLAYER_SPRITE_GROUNDING.new()
 var _damage_invulnerability_left := 0.0
 # SCRUM-831: неуязвимость из дев-консоли (godmode); take_damage игнорирует урон целиком.
 var debug_godmode := false
@@ -482,14 +488,16 @@ func configure_character(new_character_id: String, new_weapon_id := "") -> void:
 		var full_frame_frames: SpriteFrames = null if character_id in CARTOON_TRIAL_CLASSES or _uses_skeletal_visual else _character_full_frame_sprite_frames(character_id)
 		_uses_full_frame_visual = full_frame_frames != null
 		body.sprite_frames = full_frame_frames if _uses_full_frame_visual else _character_sprite_frames(config)
-		body.animation = "idle"
-		body.play("idle")
-		# Combat Feel Rework (этап A): ноги спрайта сажаются на origin — вместо
-		# нулевой позиции тело поднимается на per-class подъём (см. _feet_visual_lift).
-		_feet_visual_lift = _compute_feet_visual_lift(body)
-		body.position = Vector2(0.0, -_feet_visual_lift)
-		body.rotation = 0.0
 		body.scale = BASE_SPRITE_SCALE
+		body.animation = "idle"
+		body.frame = 0
+		body.play("idle")
+		# FAN-1071: canonical idle lift нужен камере/оружию/feedback, а сам Body
+		# дополнительно пересаживается на origin при каждой смене animation frame.
+		_feet_visual_lift = _compute_feet_visual_lift(body)
+		_bind_body_frame_grounding(body)
+		_apply_body_frame_grounding()
+		body.rotation = 0.0
 		body.flip_h = false
 		body.visible = _uses_full_frame_visual
 		_configure_skeletal_player_rig(skeleton_scene)
@@ -610,9 +618,15 @@ func _configure_weapon_socket_layer(socket: Node2D) -> void:
 
 
 func _compute_feet_visual_lift(body: AnimatedSprite2D) -> float:
-	# Подъём визуала: расстояние от центра арта до линии ног × визуальный масштаб.
-	# Источник правды — sliced_rig_manifest (foot_y замерен по полишенному арту);
-	# fallback для классов без записи — типовая доля кадра FEET_FALLBACK_FOOT_RATIO.
+	# Live full-frame art is authoritative for its own footline. This is critical
+	# for PixelLab packs such as Engineer/Guitarist whose normalized alpha bottom
+	# differs materially from the older static/cutout source manifest.
+	if _uses_full_frame_visual:
+		var live_lift := _sprite_grounding.idle_ground_lift(body)
+		if live_lift >= 0.0:
+			return live_lift
+
+	# Legacy fallback: authored foot_y from the cutout source manifest.
 	var manifest_entry: Dictionary = SLICED_RIG_MANIFEST.DATA.get(character_id, {})
 	if not manifest_entry.is_empty():
 		var art_size: Vector2 = manifest_entry.get("size", Vector2(FEET_FALLBACK_ART_SIZE, FEET_FALLBACK_ART_SIZE))
@@ -623,6 +637,15 @@ func _compute_feet_visual_lift(body: AnimatedSprite2D) -> float:
 	if frame_texture != null:
 		frame_height = float(frame_texture.get_height())
 	return maxf(frame_height * (FEET_FALLBACK_FOOT_RATIO - 0.5) * BASE_SPRITE_SCALE.y, 0.0)
+
+
+func _bind_body_frame_grounding(body: AnimatedSprite2D) -> void:
+	_sprite_grounding.bind(body, Callable(self, "_apply_body_frame_grounding"))
+
+
+func _apply_body_frame_grounding() -> void:
+	var body := _animated_sprite()
+	_sprite_grounding.apply(body, _uses_full_frame_visual, _feet_visual_lift)
 
 
 func _current_idle_frame_texture(body: AnimatedSprite2D) -> Texture2D:

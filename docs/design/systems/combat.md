@@ -57,6 +57,14 @@
   about x1.5 from the previous `0.425` combat scale. The player collision radius
   remains `8.9`, so readability improves without changing combat ranges, contact
   behavior or balance.
+- FAN-1071 makes the gameplay origin/GroundCircle the authoritative playable
+  footline. `Player` measures the current full-frame texture's visible alpha
+  bottom, caches its center-to-foot distance and reapplies the visual-only lift
+  on every `animation_changed`/`frame_changed`. All 17 heroes therefore keep
+  every idle/move/walk frame on the damage-position platform even when a
+  PixelLab pack uses a different transparent canvas placement than its legacy
+  `sliced_rig_manifest` art. Collision, hurtbox, world position, targeting,
+  camera ownership and combat ranges remain unchanged.
 - Дебаг-режим (SCRUM-375): если persisted setting `debug_mode` включен, то
   только в активном combat ПКМ или Shift+ЛКМ задают точку плавного движения
   игрока на арене, а средняя кнопка мыши мгновенно переносит игрока в выбранную
