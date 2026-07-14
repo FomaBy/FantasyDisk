@@ -5,7 +5,14 @@
 #
 # Использование:
 #   zsh tools/run_balance_validation.sh [ref]        # ref по умолчанию origin/dev
-#   FSD_SKIP_CSV=1 zsh tools/run_balance_validation.sh   # без 16-минутного CSV
+#   FSD_FULL_CSV=1 zsh tools/run_balance_validation.sh   # + живой пересъём CSV
+#
+# FAN-1062 (процессное решение координатора): живой пересъём CSV НЕ входит в
+# QA-контракт по умолчанию — это инструмент КАЛИБРОВОЧНОЙ полосы (медленные
+# среды не тянут тяжёлые пары: biologist 12+ мин/класс даже локально).
+# Приёмочный CSV зафиксирован в git (среднее ≥2 прогонов, см. no-silent-retune
+# лог) и валидируется в контракте: ascension_viability_gate (пороги DoD) +
+# python трио-отчёт + инвариант 51 строки. Пересъём — FSD_FULL_CSV=1.
 #
 # Выход: 0 если все гейты зелёные; лог и сводка в build/qa/fan1028_validation/.
 
@@ -95,7 +102,7 @@ run_gate comfort_band res://tests/comfort_band_cross_class_gate.gd
 run_gate ascension_viability res://tests/ascension_viability_gate.gd
 run_gate ascension_params_dump res://tools/ascension_params_dump.gd
 
-if [ "${FSD_SKIP_CSV:-0}" != "1" ]; then
+if [ "${FSD_FULL_CSV:-0}" = "1" ]; then
 	# FAN-1062: живой CSV чанками по 17 пар (~5-7 мин каждый) — целиком ~16 мин
 	# не переживает агентские tool-таймауты; band-проверка чанков пропускается
 	# (subset-режим), полная полоса судится по merged-CSV python-слоем ниже.
@@ -139,6 +146,20 @@ PYEOF
 		echo "| live_csv (51 per-pair чанк, merged) | ✅ PASS | csv_chunk_*.csv |" >> "$SUMMARY"
 	fi
 	cp build/character_balance_dps.csv "$OUT_DIR/character_balance_dps_after.csv" 2>/dev/null
+fi
+
+# Инвариант приёмочного CSV (всегда): 51 строка, ideal-значения ненулевые.
+python3 - <<'PYEOF'
+import csv, sys
+rows = list(csv.DictReader(open("build/character_balance_dps.csv")))
+bad = [r for r in rows if float(r["lvl20_ideal_1t"]) <= 0 and float(r["lvl20_ideal_20t"]) <= 0]
+sys.exit(0 if len(rows) == 51 and not bad else 1)
+PYEOF
+if [ $? -eq 0 ]; then
+	echo "| csv_integrity (51 строка, ненулевые) | ✅ PASS | — |" >> "$SUMMARY"
+else
+	echo "| csv_integrity | ❌ FAIL | — |" >> "$SUMMARY"
+	FAILED=$((FAILED+1))
 fi
 
 # Python-слой (без Godot): трио-таблица + матрица возвышений на свежих данных worktree
