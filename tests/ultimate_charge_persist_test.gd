@@ -37,6 +37,7 @@ func _initialize() -> void:
 	var errors: Array[String] = []
 	_test_store_includes_charge(errors)
 	_test_restore_transfers_charge(errors)
+	_test_full_charge_survives_multiple_battles(errors)
 	_test_restore_clamps_to_max(errors)
 	_test_restore_defaults_to_zero(errors)
 
@@ -73,6 +74,28 @@ func _test_restore_transfers_charge(errors: Array[String]) -> void:
 	if not is_equal_approx(fresh.ultimate_charge, 63.5):
 		errors.append("restore should transfer charge 63.5 to fresh player, got %f" % fresh.ultimate_charge)
 	fresh.free()
+
+
+func _test_full_charge_survives_multiple_battles(errors: Array[String]) -> void:
+	var game := StubGame.new()
+	var combat := CombatDirector.new(game)
+	var first_battle := StubPlayer.new()
+	first_battle.ultimate_charge = first_battle.ultimate_max_charge
+	combat._store_player_snapshot(first_battle)
+	first_battle.free()
+
+	var second_battle := StubPlayer.new()
+	combat._restore_player_snapshot(second_battle)
+	if not is_equal_approx(second_battle.ultimate_charge, second_battle.ultimate_max_charge):
+		errors.append("second battle should retain 100%% charge, got %f" % second_battle.ultimate_charge)
+	combat._store_player_snapshot(second_battle)
+	second_battle.free()
+
+	var third_battle := StubPlayer.new()
+	combat._restore_player_snapshot(third_battle)
+	if not is_equal_approx(third_battle.ultimate_charge, third_battle.ultimate_max_charge):
+		errors.append("third battle should retain 100%% charge, got %f" % third_battle.ultimate_charge)
+	third_battle.free()
 
 
 func _test_restore_clamps_to_max(errors: Array[String]) -> void:
