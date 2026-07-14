@@ -133,6 +133,29 @@ comment proves current ownership.
 4. `dev` и `main` не удалять никогда; это правило дополняет DISK HYGIENE ниже,
    не заменяет его гарды.
 
+**СИНК ЛОКАЛЬНОГО GODOT ПОСЛЕ ПУША В DEV (директива пользователя 2026-07-14, все lane).**
+Пользователь проверяет актуальную сборку в своём **локальном** Godot-редакторе, а
+номер версии в углу меню читается вживую из `project.godot → config/version`
+(`scripts/ui_screens.gd`). Поэтому после КАЖДОГО успешного `git push origin HEAD:dev`
+агент обязан подтянуть операторскую локальную рабочую копию проекта до только что
+запушенного `origin/dev`, чтобы там сразу была актуальная версия:
+1. Целевой путь на этом runtime-хосте: `/Users/sergeyfomin/Documents/AI Agent`
+   (канонический локальный Godot-проект оператора; это отдельный clone того же
+   репозитория, НЕ agent-worktree). Если пути нет — тихо пропустить (значит хост другой).
+2. Синк только безопасным fast-forward:
+   `git -C "/Users/sergeyfomin/Documents/AI Agent" fetch origin` затем
+   `git -C "/Users/sergeyfomin/Documents/AI Agent" merge --ff-only origin/dev`.
+   НИКОГДА не делать `reset --hard`, `checkout -f`, force-pull или иное затирание —
+   незакоммиченную работу оператора терять нельзя.
+3. Если ff не проходит из-за рабочего дерева: застэшить/убрать ТОЛЬКО очевидный
+   редакторский шум (пересейвы `project.godot` без смысловых правок, побайтово
+   идентичные апстриму `*.uid`/`*.import` сайдкары) и повторить ff. При реальном
+   расхождении или чужом WIP — НЕ форсить: оставить как есть и записать в финальном
+   комментарии Multica, что локальный mirror требует ручного `pull`.
+4. Godot можно не закрывать; оператор увидит новую версию после `Project → Reload
+   Current Project`. В финальном комментарии задачи указать, что локальный Godot
+   синкнут на `<sha>` (в углу меню — актуальный `config/version`).
+
 **DISK HYGIENE — MANDATORY (user directive 2026-06-28).**
 Agents must clean up their own temporary disk usage before reporting a task as
 done, blocked, or handed off. Disk space is part of task completion.
