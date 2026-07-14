@@ -12,6 +12,7 @@ const STORM_LONGBOW_VOLLEY_VFX_SCENE := preload("res://scenes/vfx/StormLongbowVo
 const SENTRY_TURRET_SCENE := preload("res://scenes/SentryTurret.tscn")
 const ENGINEER_ORBIT_DRONE_SCRIPT := preload("res://scripts/engineer_orbit_drone.gd")
 const ENGINEER_MINE_SCRIPT := preload("res://scripts/engineer_mine.gd")
+const WEAPON_CROWD_CAPS := preload("res://scripts/weapon_crowd_caps.gd")
 
 # SCRUM-553: абсолютный z-слой наземных луж/декалей (summon-пулы химика и пр.).
 # Ниже сущностей (игрок/монстры/пикапы z≈0), но выше фона арены (-100) и бордера (-20).
@@ -195,63 +196,26 @@ const ATTACK_MODE_EXECUTORS := {
 # SCRUM-944: per-weapon скалер тика лужи (зеркалится в _budget_pool_dps).
 @export var pool_tick_damage_multiplier := 1.0
 # FAN-1031 3c(a): data-driven кап ПУЛ-канала — аналог S1 (aoe_full_targets) для луж.
-# Сентинел <0 → per-channel константы (тик лужи POOL_FULL_TARGETS/POOL_TARGET_DIMINISH;
-# прямая leaves_pool-ветка POOL_PROJECTILE_FULL_TARGETS/POOL_PROJECTILE_TARGET_DIMINISH),
-# нулевое изменение поведения для оружий, которые их не задают. Главный канал
-# crowd-runaway периодики (тик лужи) был вне S1: он капнут константами (1/1.5), а не
-# per-weapon — поэтому restore_potion в живом замере упал только −24% вместо проектных
-# −72% (его vapor-канал и pool-ветки диминиш F=1/D=4 не ловил). Узкий pool_full_targets +
-# крутой pool_target_diminish душат хвост лужи на толпе, не трогая 1t identity зоны
 # (см. gate tests/pool_target_cap_gate.gd).
 @export var pool_full_targets := -1
 @export var pool_target_diminish := -1.0
-# FAN-1031 3c(b): data-driven кап STATUS fan-out канала — ТРЕТИЙ и последний
-# throughput-канал периодики (после прямого AoE S1 и пул-канала 3c-a). Крауд-
-# раздача периодических СТАТУСОВ (skull_curse Тёмного мага, bio_infection Биолога)
-# кладёт ПОЛНЫЙ per-target DoT на КАЖДОГО врага в зоне → на 20 целях = ×20 к
-# throughput без всякого диминиша. Это главный остаток crowd-runaway верхов по v3'
-# (lvl20_ideal_20t: cursed_skull 96.9k ≈21× медианы при 1t=270; spore_lens 114.5k
-# ≈25×; symbiote_seed 69.1k ≈15× — DoT блэнкетит всю толпу). Сентинел <0 →
-# STATUS_FANOUT_* (диминиш 0 → factor==1 для ВСЕХ → нулевое изменение поведения для
-# оружий без override; тот же сентинел-контракт, что S1/пул). Оружие-оффендер задаёт
-# узкий status_full_targets + крутой status_target_diminish: ближние N носителей —
-# полный тик статуса (identity зоны + малый пак 1t/5t сохранены), дальний хвост толпы
-# получает ослабленный DoT. Ранг = дистанция от центра каста. Диминиш даёт ≈×3-4
-# среза 20t-хвоста БЕЗ трогания per-hit (то — 3c-c numeric). Гейт
-# tests/status_fanout_cap_gate.gd; см. _status_fanout_factor.
+# FAN-1031 3c(b): STATUS fan-out кап (диминиш хвоста крауд-DoT) — ближние N носителей полный
+# тик, дальше ослаблен; сентинел <0 → STATUS_FANOUT_* (нулевое изменение без override). Канон
+# и профиль: docs/design/systems/progression_balance.md; гейт tests/status_fanout_cap_gate.gd.
 @export var status_full_targets := -1
 @export var status_target_diminish := -1.0
-# FAN-1031 3c(b2): data-driven кап FALLOFF/ORBIT каналов — последние некапнутые
-# крауд-fan-out пути прямого урона (после прямого AoE-взрыва S1, пул-канала 3c-a и
-# STATUS-канала 3c-b). Два helper'а раздавали полный урон КАЖДОЙ цели без диминиша по
-# числу целей → ×N throughput на плотном паке:
-#   • `_damage_enemies_in_circle_falloff` — дистанционный сплэш (без крауд-капа: спад
-#     только по РАДИУСУ, но не по ЧИСЛУ целей); напр. burst черепа Тёмного мага.
-#   • `_elemental_square_tick` (elementalist_orb_ring) — квадратный тик бьёт magic+phys+
-#     ожог КАЖДОМУ врагу в зоне полным тиком; v3'' elemental_orbit 20t ≈197.8k (≈43×
-#     медианы 4574) при 1t малом — чистый крауд fan-out кастомного executor'а.
-# Сентинел <0 → *_FANOUT_* дефолт (diminish 0 → factor==1 для ВСЕХ рангов → нулевое
-# изменение поведения без override; тот же сентинел-контракт, что STATUS 3c-b). Оффендер
-# задаёт узкий full_targets + крутой diminish: ближние N целей — полный урон (1t/identity
-# зоны целы), дальний хвост толпы душится геометрически. Ранг = дистанция от центра.
-# Диминиш даёт ≈×3-4 среза 20t-хвоста БЕЗ трогания per-hit (то — 3c-c numeric). Гейт
-# tests/orbit_falloff_cap_gate.gd; см. _falloff_fanout_factor / _orbit_fanout_factor.
+# FAN-1031 3c(b2): FALLOFF/ORBIT fan-out капы (_damage_enemies_in_circle_falloff /
+# _elemental_square_tick) — диминиш хвоста по числу целей поверх радиального спада; сентинел
+# <0 → *_FANOUT_* дефолт (нулевое изменение без override). Канон: progression_balance.md;
+# гейт tests/orbit_falloff_cap_gate.gd.
 @export var falloff_full_targets := -1
 @export var falloff_target_diminish := -1.0
 @export var orbit_full_targets := -1
 @export var orbit_target_diminish := -1.0
 
-# FAN-1031 3c(final): data-driven ЖЁСТКИЙ кап ШИРИНЫ (coverage) крауд-fan-out каналов.
-# Диминиш-капы (S1/пул/status/orbit) режут per-hit ДАЛЬНИХ целей, но урон ещё раздаётся
-# КАЖДОЙ цели в зоне (N событий _damage_enemy). Профилировка (build/stage3c_final_*.md)
-# показала: у перекормленных AoE-верхов crowd-runaway — это ШИРИНА (число одновременных
-# хитов на каст 6→2585 у blast_powder 1→20 целей; per-hit УЖЕ капнут диминишем 230→38),
-# усиленная тем, что тяжёлый кадр (много событий) раздувает и живой замер (`_process`
-# фаирит по variable delta). Продуктовое решение координатора (2026-07-13): «резать ШИРИНУ,
-# не выгрызать per-hit». Эти поля кладут ЖЁСТКИЙ потолок на число целей канала: ближние
-# N (по дистанции от центра) получают урон/статус, дальше — НОЛЬ. Identity «специалист по
-# толпе» цела (профиль санкционирует crowd-лид до 1.2×aoe_target); 1t/малый пак (rank<N)
-# не тронуты → нулевое изменение solo. Сентинел <0 → без потолка (прежнее поведение, A/B).
+# FAN-1031 3c(final): ЖЁСТКИЙ кап ШИРИНЫ (coverage) крауд-каналов — ближние N целей получают
+# урон/статус, дальше НОЛЬ (продуктовое решение «резать ширину, не per-hit», 2026-07-13);
+# сентинел <0 → без потолка. Канон: docs/design/systems/progression_balance.md.
 @export var aoe_max_targets := -1     # кап _damage_enemies_in_circle_capped (прямой AoE-взрыв)
 @export var pool_max_targets := -1    # кап _damage_enemies_in_pool (тик лужи)
 @export var status_max_targets := -1  # кап _status_fanout_factor (крауд-DoT/статусы)
@@ -307,11 +271,6 @@ const ATTACK_MODE_EXECUTORS := {
 @export var sector_full_targets := 4
 @export var sector_target_diminish := 0.72
 # FAN-1031 S1 (Stage 3a): data-driven кап «полных» целей и диминиш дальних целей
-# прямого AoE-взрыва (attack_mode aoe_projectile). Сентинел <0 = использовать
-# общие AOE_PROJECTILE_FULL_TARGETS / AOE_PROJECTILE_TARGET_DIMINISH (нулевое
-# изменение поведения для оружий, которые их не задают). Позволяет резать
-# crowd-runaway периодики/сплэша ДАННЫМИ, а не константами кода: узкий full_targets
-# + крутой diminish душат хвост на 20 целях, не трогая 1t/5t identity (см. gate
 # tests/aoe_target_cap_gate.gd; S3 применяет к doctor/restore_potion).
 @export var aoe_full_targets := -1
 @export var aoe_target_diminish := -1.0
@@ -419,11 +378,6 @@ const PRESS_COMPRESSION_IMPULSE_CAP := 1100.0
 const PRESS_COMPRESSION_FORCE_NORM := 130.0
 const PRESS_ELITE_BOSS_COMPRESSION_FACTOR := 0.25
 # Реактор (SCRUM-918): ровно 4 вентиля с шагом 90°, ротация паттерна +6° по
-# часовой после каждой атаки, направления НЕ зависят от целей (самонаведения
-# нет). Пер-вентильный урон = ролл × REACTOR_VENT_DAMAGE_RATIO (деления на
-# счётчик вентилей больше нет — вентилей всегда 4, зеркало в
-# ProgressionData._budget_hit_model). extra_projectile расширяет лопасти
-# (+14% ширины за снаряд) вместо добавления направлений (AC: ровно четыре).
 const REACTOR_VENT_COUNT := 4
 const REACTOR_ROTATION_STEP_DEG := 6.0
 const REACTOR_VENT_DAMAGE_RATIO := 0.42
@@ -702,20 +656,8 @@ func _attack() -> void:
 func _fire_interval_artifact_factor() -> float:
 	var factor := 1.0
 	# FAN-1031 v7 (координаторское решение): priest crowd 1.89 — КАДЕНС-driven, не width.
-	# Замедляем БАЗОВУЮ каденцию reliquary/censer НА ТОЧКЕ ПОТРЕБЛЕНИЯ (тот же fire_interval-
-	# артефакт, что и mode-переработки ниже) — throughput всех осей падает пропорционально
-	# (DPS ∝ 1/cooldown), а WIDTH/identity (pack-clear breadth, falloff-кап) НЕ трогаем.
-	# Направление crowd↓ детерминированно (cadence-математика); точную величину калибрует
-	# координатор по v8 (roster-relative median дрейфует от буста дна). Ideal-крауд-билд НЕ
-	# берёт mode-артефакты (reliquary_salvo/censer_vow scored 0 — только mods, без stats),
-	# так что базовый тэ применяется к замеру без offset'а этими режимами.
 	if weapon_id == "priest_reliquary":
 		# FAN-1031 v9-финал: 1.18→1.08 — ДОСМЯГЧАЕМ каденс-налог (координаторское решение,
-		# NET-ZERO power-shift крауд→base/solo). random-A1 0.87<1.0 — каденс давит ВСЕ оси
-		# (DPS ∝ 1/cooldown), включая solo/random, поэтому его смягчение — прямой рычаг base/solo↑
-		# (throughput ×(1.18/1.08)≈+9.3%), НЕ компенсируемый budget-тюнером (каденс вне формулы).
-		# Крауд не разбегает обратно: reliquary crowd hard-капнут falloff-капом (3/2.2), а крауд-
-		# компенсацию net-zero несёт width-кап кадила ниже (censer aoe_full 4→3/diminish 1.2→1.7).
 		factor *= 1.08  # быстрый бурст-крауд, но каденс-налог досмягчён под random-floor лифт
 	if weapon_id == "priest_censer":
 		factor *= 1.15  # большой близкий AoE — вторичный крауд-вклад
@@ -765,13 +707,6 @@ func _maybe_fire_rhythm_echo(owner_node: Node2D, target: Node2D, direction: Vect
 
 
 # SCRUM-935 «Двойное действие» (class trait Солдата, data-driven): каждое действие
-# оружия с шансом action_echo_chance (CLASS_TRAITS через Player.class_trait_value)
-# создаёт ОДНУ полную копию себя с коротким читаемым сдвигом — второй выстрел /
-# вторая граната / второй укол. Копия выполняется под флагом _action_echo_active и
-# НЕ роллит новую копию: рекурсия невозможна и структурно (эхо не зовёт _attack()),
-# и по гарду. Деплой-режимы исключены (эхо не ставит второй усилитель/капкан/мину).
-# Эхо повторяет только само действие: кулдаун, heal-on-attack, заряд и ролл
-# rhythm-эха НЕ переприменяются (без двойных классовых сайд-эффектов).
 const ACTION_ECHO_EXCLUDED_MODES := {
 	"amp": true, "trap": true,
 	"engineer_sentry_link": true, "engineer_orbit_drone": true, "engineer_pressure_mines": true,
@@ -1047,11 +982,6 @@ func _fire_aoe_projectile(owner_node: Node2D, target: Node2D, direction: Vector2
 
 func _fire_boomerang(owner_node: Node2D, direction: Vector2) -> void:
 	# Чакрамы: урон по коридору к цели сразу и повторно на «возврате» через 0.25с.
-	# SCRUM-894: при return_arc_offset > 0 возврат идёт НЕ тем же коридором, а
-	# видимой квадратичной дугой через ЛЕВУЮ сторону от направления броска
-	# (от точки разворота к герою). Гейт per-cast/per-target: outbound — один
-	# проход-скан, возврат — один дедуп-скан дуги ⇒ максимум 1+1 хита на цель
-	# за каст, бесконечных повторных хитов нет.
 	var origin := owner_node.global_position
 	var outbound_damage := _rolled_damage(owner_node)
 	var chakram_profile := _constellation_profile("chakram_return_execute_mark")
@@ -1425,16 +1355,6 @@ func _fire_curse(owner_node: Node2D, target: Node2D, direction: Vector2) -> void
 
 
 # SCRUM-939: Тёмная палочка — видимый цепной/рикошет-снаряд.
-# Правила таргетинга (детерминированы, покрыты dark_mage_kit_test):
-#   1) первая цель = переданный target (ближайший враг), иначе ближайший на арене;
-#   2) каждый рикошет летит в БЛИЖАЙШЕГО ещё не поражённого врага в chain_hop_range
-#      от точки текущего попадания; всего до chain_targets (+артефакт/extra) целей;
-#   3) повторных попаданий по одной цели в рамках одного каста НЕТ. FALLBACK
-#      (задокументирован): если валидных целей не осталось — цепь обрывается
-#      раньше, снаряд НЕ возвращается в уже поражённые цели.
-# На каждом попадании — малый магический AoE-бурст по соседям жертвы (сама
-# жертва бурстом не задевается — без double-dip). Бурст бьёт напрямую и не
-# порождает новых рикошетов/бурстов (анти-каскад §8.4).
 func _fire_dark_chain_burst(owner_node: Node2D, target: Node2D, direction: Vector2) -> void:
 	var first_target := target
 	if first_target == null:
@@ -1517,11 +1437,6 @@ func _fire_dark_chain_hit_burst(victim: Node2D, center: Vector2, amount: float) 
 
 
 # SCRUM-940: Проклятый череп — ЧИСТОЕ проклятие, прямого урона нет.
-# Череп летит в точку цели и накрывает область: каждый враг в aoe_radius
-# получает статус skull_curse (dot_ticks тиков dot-оси). Повторное попадание
-# ОБНОВЛЯЕТ прожиг (refresh, 1 стак) — стакование запрещено, бесконечного
-# прожига нет. Скейл: dot_damage (сила тика) и dot_speed (темп, капится
-# floor-ом интервала 0.1с ≈ 10 тик/с). Магические множители НЕ участвуют.
 func _fire_skull_curse_burn(owner_node: Node2D, target: Node2D, direction: Vector2) -> void:
 	var target_position: Vector2 = owner_node.global_position + direction * minf(attack_range, 300.0)
 	if target != null:
@@ -1609,13 +1524,6 @@ func _apply_skull_curse_zone(center: Vector2) -> void:
 
 
 # SCRUM-941: Книга тьмы — зеркальные AoE-взрывы вокруг мага.
-# Каждый каст порождает ДВА взрыва: первичный в точке цели P и зеркальный в
-# M = 2*owner_pos - P (позиция мага НА МОМЕНТ КАСТА — детерминированная
-# геометрия: горизонталь/вертикаль/диагональ зеркалятся одинаково). Оба взрыва
-# следуют одним правилам урона/диминишинга (_damage_aoe_projectile_explosion);
-# враг, накрытый обоими зонами, ЛЕГАЛЬНО получает оба удара (задокументировано,
-# покрыто тестом). У границ арены зеркальная точка может выйти за поле — взрыв
-# всё равно валиден и бьёт врагов в своём радиусе.
 func _fire_dark_mirror_blast(owner_node: Node2D, target: Node2D, direction: Vector2) -> void:
 	var primary_targets: Array = []
 	if target != null:
@@ -1803,12 +1711,6 @@ func _fire_single_beam(owner_node: Node2D, direction: Vector2) -> void:
 
 
 # SCRUM-910 «Лунный арбалет»: одиночный физический болт в цель; после попадания
-# расщепляется в до (split_count + артефакт «Лунный расщепитель») РАЗНЫХ соседей
-# первичной жертвы в радиусе aoe_radius с ТЕМ ЖЕ уроном (без спада; повторных
-# хитов по одной цели нет — при нехватке соседей бьём меньше). Рекурсии нет:
-# вторичные хиты дальше не ветвятся (одноуровневый сплит по построению — ветки
-# создаются только из первичного попадания). Каждый хит идёт через _damage_enemy
-# → trait «Сторожевой лук» толкает и первичную, и вторичные цели ОТ ИГРОКА.
 func _fire_moon_split_shot(owner_node: Node2D, target: Node2D, direction: Vector2) -> void:
 	_emit_weapon_animation_event(owner_node, "channel", 0.16, direction, {"split_count": split_count})
 	var primary := target
@@ -1845,15 +1747,6 @@ func _fire_moon_split_shot(owner_node: Node2D, target: Node2D, direction: Vector
 
 
 # SCRUM-911 «Грозовой длинный лук»: дальнобойный КОНУС пробивающих стрел.
-# beam_count (+extra_projectile артефакты) коридоров-стрел равномерно по полному
-# раствору cone_degrees, каждая — прямая линия на attack_range шириной beam_width
-# с пирсом до _effective_pierce_count целей (спад pierce_damage_falloff, у лука
-# 1.0 — без спада). Дедуп по врагам НА ВЕСЬ залп: цель у вершины конуса, куда
-# попадают несколько стрел, получает ровно один хит (и один trait-отброс) —
-# видимая зона совпадает с фактической (QA: без «невидимого» двойного урона).
-# Уже поражённое залпом тело ВСЁ РАВНО тратит пирс-бюджет проходящей сквозь
-# него стрелы (тела блокируют стрелы): колонна из 6 получает ровно
-# pierce_count хитов, дедуп не превращается в бесплатное углубление пирса.
 func _fire_storm_pierce_cone(owner_node: Node2D, direction: Vector2) -> void:
 	var arrow_count := maxi(beam_count + _extra_projectiles(), 1)
 	_emit_weapon_animation_event(owner_node, "channel", 0.18, direction, {"beam_count": arrow_count, "cone_degrees": cone_degrees})
@@ -2329,12 +2222,6 @@ func _spawn_restore_vapor(owner_node: Node2D, center: Vector2, link_damage: floa
 	var vapor_radius := maxf(aoe_radius * 0.8, 90.0)
 	var tick_damage := link_damage * 0.28
 	# FAN-1031 S3 (3c): артефактный vapor-канал «Восстановительного пара» теперь
-	# подчиняется тому же сустейн-нишевому капу, что и основной взрыв зелья
-	# (aoe_full_targets/aoe_target_diminish = 1/4.0 у restore_potion). До правки vapor
-	# лил (F=2/D=1.5) и на толпе давал ~2× throughput основного взрыва — главная причина,
-	# почему живой 20t restore_potion упал лишь −24%, а не проектных −72% (весь vapor и
-	# был некапнутым хвостом). Solo/дуо-хил не страдает (rank0 полный). Сентинел <0 →
-	# прежний (2/1.5) для любого не-restore оружия (vapor вызывается только у зелья).
 	var vapor_full := aoe_full_targets if aoe_full_targets >= 0 else 2
 	var vapor_diminish := aoe_target_diminish if aoe_target_diminish >= 0.0 else 1.5
 	var weapon_self_id := get_instance_id()
@@ -2370,11 +2257,6 @@ func _fire_sound_wave(owner_node: Node2D, direction: Vector2) -> void:
 
 
 # SCRUM-899: «рифф-полоса» Электрогитары — узкий передний коридор ПОСТОЯННОЙ
-# полной ширины wave_width на всю attack_range (в духе берсерк-форм, но магией).
-# Отличия от generic-волны (sound_wave): ширина не расширяется к концу; от
-# лучей (beam): бьёт ВСЕХ врагов в полосе без pierce-капа. Частые низко-средние
-# магические хиты — позиционирование корпусом обязательно. Бюджет-зеркало —
-# ветка "riff_strip" в ProgressionData._budget_hit_model.
 func _fire_riff_strip(owner_node: Node2D, direction: Vector2) -> void:
 	var origin := owner_node.global_position
 	var strip_visual := AttackVfx.beam(_projectile_parent(), origin + direction * 18.0, origin + direction * attack_range, maxf(wave_width, 24.0), visual_color)
@@ -2471,12 +2353,6 @@ func _fire_amp(owner_node: Node2D, direction: Vector2) -> void:
 		effective_pulse_interval *= 0.85
 	_emit_weapon_animation_event(owner_node, "deploy", effective_amp_lifetime, direction, {"pulse_interval": effective_pulse_interval})
 	# Деплой: усилитель ставится на землю, живет amp_lifetime секунд и пульсирует
-	# самостоятельно. Лимит одновременных ампов растет от Лидерства через
-	# max_summons (player._apply_weapon_scaling: base + floor(leadership / 4)).
-	# SCRUM-899: чистка без типизированной лямбды — hard-freed нода в массиве
-	# роняла filter(func(amp: Node)) («Cannot convert argument») и абортила
-	# ВЕСЬ _fire_amp: оружие переставало деплоить. Ручной alive-скан (паттерн
-	# _alive_effects) переживает freed-объекты любого происхождения.
 	var alive_amps: Array[Node] = []
 	for tracked_amp in _deployed_amps:
 		if tracked_amp != null and is_instance_valid(tracked_amp):
@@ -2538,15 +2414,6 @@ func _fire_amp(owner_node: Node2D, direction: Vector2) -> void:
 
 
 # ==================== SCRUM-903: вороны тотема (raven_homing) ====================
-# Каждый «пульс» тотема выпускает ОДНОГО самонаводящегося ворона по ближайшему
-# монстру в радиусе atack_range от тотема (нет целей — тотем молчит, выстрелов в
-# пустоту не бывает). Полёт — квадратичная Безье с ЖИВЫМ доведением: конец кривой
-# следует за целью каждый кадр (умерла — летим в последнюю известную точку),
-# бок изгиба чередуется — вороны видимо ЗАКРУЧИВАЮТСЯ, а не летят прямо.
-# Взрыв в точке попадания: полный урон первым RAVEN_EXPLOSION_FULL_TARGETS целям,
-# дальше диминиш (анти-стакинг). Все колбэки — bound-методы по instance id
-# (канон SCRUM-551, без лямбд с захватом узлов); вороны в реестре эффектов
-# оружия (_register_effect) — смена оружия/смерть/ресет сцены зачищает их.
 const RAVEN_EXPLOSION_FULL_TARGETS := 3
 const RAVEN_EXPLOSION_TARGET_DIMINISH := 0.60
 const RAVEN_CURVE_BEND := 0.38
@@ -2623,19 +2490,6 @@ func _resolve_raven_impact(raven_id: int, owner_id: int) -> void:
 
 
 # SCRUM-913 «Охотничий капкан»: ПЕРМАНЕНТНЫЙ контрольный капкан.
-#   - Не истекает по таймеру: цикл проверки бесконечен (tween.set_loops на узле
-#     капкана — умирает вместе с капканом). Жизненный цикл — до срабатывания
-#     либо штатной очистки (cleanup_effects при смене оружия/смерти/сбросе сцены).
-#   - Игрок капкан НЕ запускает и не снимает: проверка только по группе enemies
-#     (_has_enemy_in_circle).
-#   - Кап поля HUNTER_TRAP_ACTIVE_CAP (+trap_cap_bonus артефакта «Корневой
-#     капкан») — это КАП, а не таймер: старейший капкан тихо снимается.
-#   - Триггер (_trigger_hunter_trap): физический AoE-хлопок (ролл на момент
-#     срабатывания × заряд стойки, снапшот на установке) + жёсткий паралич +
-#     зелёное кровотечение по dot-оси. Отброса нет — паралич держит жертву.
-#   - Keystone «Капканщик» (trap_extra_count): каждый бросок ставит
-#     дополнительные капканы веером; instant_arm (meta_trap_instant_arm)
-#     вооружает без задержки первой проверки.
 const HUNTER_TRAP_ACTIVE_CAP := 6
 
 
@@ -2728,15 +2582,6 @@ func _trigger_hunter_trap(trap: Node2D, owner_node: Node2D) -> void:
 
 
 # Контроль капкана (SCRUM-913):
-#   Паралич — РЕАЛЬНЫЙ стоп-статус (movement_locked → enemy._physics_process
-#   гейтит скорость в ноль), длительность trap_paralyze_seconds ×
-#   контроль-резист боссов/элит (_control_resist_factor, ×0.25 — пермалок
-#   босса невозможен) + бонус артефакта «Корневой капкан». speed_multiplier
-#   0.0 в статусе — маркер «обездвижен» для «Метки охотника».
-#   Кровотечение — dot-ось: тик = dot_damage владельца (Знание), dot_ticks
-#   тиков каждые trap_bleed_tick_interval; длительность НЕ режется резистом —
-#   течёт во время паралича и продолжается после его конца (у боссов почти
-#   вся длительность — уже после паралича).
 func _apply_hunter_trap_control(enemy_node: Node2D, owner_node: Node2D) -> void:
 	var paralyze_duration := (trap_paralyze_seconds + _owner_mod("trap_paralysis_bonus")) * _control_resist_factor(enemy_node)
 	if paralyze_duration > 0.0:
@@ -2840,11 +2685,6 @@ func _explode_arquebus_bullet(bullet_id: int, owner_id: int, center: Vector2, di
 
 
 # SCRUM-937 «Граната с фитилем»: медленный снаряд долго летит в телеграфированную
-# зону, ложится и горит на видимом фитиле (grenade_delay), затем тяжёлый взрыв с
-# falloff к краю. Урон ТОЛЬКО на взрыве — враги успевают выйти из зоны. Trait
-# «Двойное действие» бросает вторую независимую гранату со своим полётом/фитилём.
-# Полёт капится GRENADE_MAX_FLIGHT_SPEED: derived projectile_speed растёт от статов
-# (perception 18/очко) и без капа съел бы «медленную» identity нюка.
 const GRENADE_MAX_FLIGHT_SPEED := 460.0
 
 
@@ -3222,15 +3062,6 @@ func _control_resist_factor(enemy_node: Node2D) -> float:
 
 
 # SCRUM-909 «Сторожевой лук» (CLASS_TRAITS.ranger, data-driven): каждый прямой
-# хит лучного оружия (конфиг-флаг bow_knockback_trait) отбрасывает жертву ОТ
-# ИГРОКА на момент попадания — вектор игрок→монстр, НЕ направление полёта
-# снаряда: сплит-ветки, пирс и удары «в спину» всё равно толкают прочь от героя.
-# Сила = weapon.knockback (рантайм-поле уже деривировано игроком: конфиг +
-# endurance×4 + leadership×3, ×knockback_multiplier артефакта «Ударная тетива»)
-# × trait-скаляр bow_hit_knockback; уроном НЕ скейлится. Боссы/элиты — общий
-# контроль-резист ×0.25 (_control_resist_factor). Классы без trait'а получают
-# скаляр 0.0 → no-op (утечка другим классам исключена, тест ranger_kit_test).
-# Сам игрок никуда не толкается — импульс получает только жертва.
 func _apply_ranger_bow_knockback(enemy: Node) -> void:
 	if not bow_knockback_trait:
 		return
@@ -3263,11 +3094,6 @@ func _apply_poison_paralysis(enemy_node: Node2D, duration: float) -> void:
 
 
 # SCRUM-897 «Дымовая Бомба»: брошенный снаряд с отложенной детонацией. Шашка
-# видимо летит в точку grenade_delay, на детонации — ОДНО AoE-событие урона
-# (скейлится уроном/AoE/темпом билда — реальный источник килов), затем на земле
-# остаётся НЕдамажащее облако smoke_duration. Уклонение действует ТОЛЬКО пока
-# герой стоит внутри облака (Player.register_smoke_cloud / smoke_cloud_dodge_bonus,
-# суммарный кап в дыму — SMOKE_CLOUD_DODGE_CAP=0.90).
 func _fire_smoke_bomb(owner_node: Node2D, target: Node2D, direction: Vector2) -> void:
 	_emit_weapon_animation_event(owner_node, "windup", maxf(grenade_delay, 0.10), direction, {"delayed": true})
 	var target_position: Vector2 = owner_node.global_position + direction * min(attack_range, 240.0)
@@ -3367,14 +3193,6 @@ func _enemies_in_square(center: Vector2, half_size: float) -> Array:
 
 
 # SCRUM-948 «Кольцо Четырёх Стихий»: квадратная AoE четырёх стихий в точке каста
-# (зона НЕ следует за героем). Каждый тик бьёт ТРЕМЯ каналами сразу — потому
-# оружие тяжело масштабировать оптимально (три атрибутные оси):
-#   магия     — ролл magic_damage, делённый на тики (ось интеллекта, канал оружия);
-#   физика    — SQUARE_PHYSICAL_SHARE от канала damage владельца (ось силы);
-#   периодика — статус ожога от dot_damage/dot_speed владельца (ось знания);
-# и отбрасывает задетых ПРОЧЬ от центра квадрата (защита личного пространства).
-# Имя функции сохраняет исторический attack_mode "elemental_orbit" (стабильные
-# внешние контракты: меты, тесты, анимации).
 func _fire_elemental_orbit(owner_node: Node2D, direction: Vector2) -> void:
 	# «Монолит»/extra-руны: дополнительные тики поля (кап SQUARE_EXTRA_TICK_CAP).
 	var ticks := maxi(storm_ticks, 1) + clampi(_extra_projectiles(), 0, SQUARE_EXTRA_TICK_CAP)
@@ -3515,13 +3333,6 @@ func _apply_elemental_repulse(owner_node: Node2D, center: Vector2, radius: float
 
 
 # SCRUM-949 «Призматический Фокус»: полнокартный X-разлом через точку фокуса
-# (ближайшая цель или точка на attack_range по направлению атаки). Две диагональные
-# линии (направление ±45°) длиной PRISM_FULL_MAP_REACH в каждое плечо пронзают
-# всех врагов на пути; малый AoE в центре пересечения бьёт бонус-хитом.
-# Телеграф: тонкие X-линии + кольцо центра на время grenade_delay ДО урона.
-# Детерминизм урона: за каст враг получает НЕ БОЛЕЕ одного луч-хита (первая
-# диагональ в порядке осей побеждает; кресты артефакта — своя доля, тоже один хит)
-# и не более одного центр-хита. Центр+луч = полный пэйофф пересечения.
 func _fire_prism_rift(owner_node: Node2D, target: Node2D, direction: Vector2) -> void:
 	_emit_weapon_animation_event(owner_node, "windup", maxf(grenade_delay, 0.12), direction, {"delayed": true})
 	var center: Vector2 = owner_node.global_position + direction * min(attack_range, 360.0)
@@ -3613,11 +3424,6 @@ func _constellation_prism_rift_tick(center: Vector2, tick_damage: float) -> void
 
 
 # SCRUM-950 «Ядро Метеора»: самое медленное оружие игрока. grenade_delay — полная
-# задержка до удара: сначала чистый телеграф зоны (METEOR_TELEGRAPH_RATIO доли,
-# HazardVfx.telegraph — рост + тревожный пульс, читаемо ГДЕ и КОГДА упадёт),
-# затем видимое падение метеора остаток времени. Урона до удара НЕТ. На ударе —
-# тяжёлый магический AoE с falloff, затем догорающая DoT-зона: dot_ticks тиков
-# каждые pool_tick_interval по dot-оси владельца (спад по рангу удалённости).
 func _fire_meteor_shards(owner_node: Node2D, target: Node2D, direction: Vector2) -> void:
 	var total_delay := maxf(grenade_delay, 0.30)
 	_emit_weapon_animation_event(owner_node, "windup", total_delay, direction, {"delayed": true})
@@ -3718,13 +3524,6 @@ func _constellation_meteor_recall(center: Vector2, shard_damage: float) -> void:
 
 
 # SCRUM-931 «Винтовка Мертвого Глаза» (PREFERRED-вариант, зафиксирован): всегда
-# выцеливает САМУЮ ДАЛЬНЮЮ валидную цель в радиусе (fantasy дальней дуэли +
-# синергия с trait'ом «Дальний расчёт» — дальше цель, больнее хит), тяжёлый
-# прямой выстрел, читаемый терминальный взрыв на конце линии и ближний
-# самоподрыв у ног Снайпера (страховка «беззащитен вплотную», ~80% урона
-# выстрела). Короткая фиксация (grenade_delay) — читаемая фаза «Lockshot».
-# Разрешение — через Callable(self, "_resolve_sniper_lockshot").bind (примитивы),
-# без лямбд с захватом узлов (SCRUM-551).
 const DEADEYE_LOCK_MAIN_MULT := 1.34        # тяжёлый прямой хит по дальней цели
 const DEADEYE_ENDPOINT_BLAST_RATIO := 0.42  # FAN-1031 v7: 0.35→0.42 — deadeye-специфичный буст снайпера (терминальный взрыв на конце линии; вне budget-компенсации, лендится напрямую). Артефакт «Патрон мертвого глаза» добавляет сверху.
 const SHATTER_VOLLEY_HIT_LIMIT := 2         # макс пуль в одного врага за залп
@@ -3822,13 +3621,6 @@ func _find_farthest_enemy(owner_node: Node2D, range_limit: float) -> Node2D:
 
 
 # SCRUM-932 «Прицел Наводчика»: отложенный артиллерийский AoE. Красный
-# полупрозрачный телеграф ложится на выбранную цель/позицию, через ~1с
-# (grenade_delay) туда падает тяжёлый снаряд и накрывает ВСЕХ в финальной зоне
-# (falloff к краю). Дистанция trait'а «Дальний расчёт» меряется ПО КАЖДОМУ
-# врагу в момент падения (в _damage_enemy), а не по центру зоны. Неудобство
-# задержки оплачено высоким damage_multiplier и большой зоной. Разрешение —
-# Callable(self, "_land_spotter_shell").bind; телеграф зарегистрирован и гаснет
-# при свапе/смерти/ресете через cleanup_effects (как фитиль гранаты).
 func _fire_sniper_kill_zone(owner_node: Node2D, target: Node2D, direction: Vector2) -> void:
 	var center: Vector2 = owner_node.global_position + direction * minf(attack_range, 620.0)
 	if target != null and is_instance_valid(target):
@@ -3898,14 +3690,6 @@ func _constellation_spotter_reserved_beam(target_id: int, origin: Vector2, base_
 
 
 # SCRUM-933 «Осколочные Патроны»: скорострельный круговой веер пуль по ближним
-# монстрам. projectile_count пуль за залп (round-robin по ближайшим врагам в
-# aoe_radius, не больше SHATTER_VOLLEY_HIT_LIMIT пуль в одного за залп —
-# анти-runaway при наложении); пули без цели уходят ровным радиальным веером и
-# урона не наносят (документированный fallback). Каждая пуля физически летит с
-# projectile_speed (видимый полёт) и бьёт одиночную цель на импакте — trait
-# «Дальний расчёт» скейлит по дистанции до КАЖДОЙ жертвы. Каденция залпов —
-# fire_interval + скорость атаки (кулдаун движка). Импакт — через
-# Callable(self, "_impact_shatter_bullet").bind (примитивы, без лямбд).
 func _fire_sniper_split_round(owner_node: Node2D, target: Node2D, direction: Vector2) -> void:
 	_constellation_shatter_volley_token += 1
 	var volley_token := _constellation_shatter_volley_token
@@ -3997,12 +3781,6 @@ func _impact_shatter_bullet(bullet_id: int, target_id: int, damage_value: float,
 
 
 # SCRUM-927: Реликварий — быстрый дальний бурст «тик-тик-тик» БЕЗ лечения
-# (весь оружейный сустейн выпилен: ни heal_percent_*, ни regen-пассивки — ни в
-# конфиге, ни в сцене; сустейн класса — trait «Молитва боя», SCRUM-925).
-# Помечает цель святым знаком, после короткого grenade_delay серия из
-# storm_ticks быстрых вспышек малого радиуса через burst_interval; каждый тик =
-# sanctify_tick_ratio ролла с falloff по области. Знак ведёт живую цель
-# (тики бьют по её актуальной позиции), без цели — по точке каста.
 func _fire_priest_sanctify(owner_node: Node2D, target: Node2D, direction: Vector2) -> void:
 	_emit_weapon_animation_event(owner_node, "windup", maxf(grenade_delay, 0.08), direction, {"delayed": true})
 	var center: Vector2 = owner_node.global_position + direction * min(attack_range, 480.0)
@@ -4053,12 +3831,6 @@ func _sanctify_burst_tick(owner_id: int, target_id: int, stored_center: Vector2,
 
 
 # SCRUM-928: Кадило — большой БЛИЗКИЙ AoE с долгим кулдауном. Редкие тяжёлые
-# волны вокруг Священника: последняя волна достигает ПОЛНОГО aoe_radius (радиус
-# кита много больше реликвария, range короче, каденция медленнее). Лечения на
-# атаку больше нет (SCRUM-928: сустейн класса — trait «Молитва боя»);
-# meta_apply_priest_ward остаётся ОПЦИОНАЛЬНЫМ absorb-хуком мета-древа
-# («Заступник», ward_absorb_bonus) — это митигция по выбору игрока, не скрытый
-# оружейный хил.
 func _fire_priest_ward(owner_node: Node2D) -> void:
 	var weapon_id := get_instance_id()
 	var owner_id := owner_node.get_instance_id()
@@ -4078,11 +3850,6 @@ func _fire_priest_ward(owner_node: Node2D) -> void:
 		owner_node.call("constellation_set_single_hit_ward", "censer_%d" % get_instance_id(), clampf(float(censer_params.get("absorb_ratio", 0.18)), 0.0, 0.80), ward_duration)
 	var damage_value: float = _rolled_damage(owner_node) * vow_damage_mult
 	# FAN-1031 v8-микротрим: крауд-добор Жреца перенесён с каденции реликвария (смягчена выше)
-	# на ШИРИНУ кадила. Пульс волны идёт через тот же капнутый direct-AoE контракт, что blast/acid
-	# (_damage_enemies_in_circle_capped): ближние ward_full целей — полный урон, дальний хвост толпы
-	# душится диминишем — режет crowd БЕЗ solo (1 цель = rank 0 = полный). Сентинел (нет полей в
-	# конфиге → full 9999 / diminish 0) = поведенчески plain-круг (нулевой A/B). Жёсткого max нет
-	# (aoe_max_targets censer -1): identity «выжигают ВСЁ вокруг» цела — все в радиусе задеты.
 	var ward_full := aoe_full_targets if aoe_full_targets >= 0 else 9999
 	var ward_diminish := aoe_target_diminish if aoe_target_diminish >= 0.0 else 0.0
 	for pulse_index in range(pulse_count):
@@ -4104,13 +3871,6 @@ func _fire_priest_ward(owner_node: Node2D) -> void:
 
 
 # SCRUM-929: Колокол Молитвы — dual toll. Каждый удар создаёт РОВНО два центра
-# взрыва В ОДИН момент атаки: вокруг выбранной цели (дальняя работа по группе)
-# и вокруг самого Священника (ближняя оборона). Перекрытие близкой цели капится
-# общим дедупом по instance id — враг получает не больше ОДНОГО полного взрыва
-# за каст (документированное правило per-enemy max-hit; двойного фулл-урона по
-# одному врагу нет by construction). Прежний chain-heal выпилен полностью —
-# сустейн класса в trait «Молитва боя» (SCRUM-925). Самоурона нет:
-# _damage_enemy бьёт только группу enemies.
 func _fire_priest_dual_toll(owner_node: Node2D, target: Node2D, direction: Vector2) -> void:
 	var bell_target: Node2D = target
 	if bell_target == null:
@@ -4235,14 +3995,6 @@ func _bio_spore_pulse(owner_id: int, target_id: int, stored_center: Vector2, dir
 
 
 # SCRUM-896: Инъектор Образцов — длинный пирсинг-луч Биолога. Урон получают ВСЕ
-# враги по всей длине луча (полный маг.ролл каждому), гибрид добавляет каждому
-# хиту луча долю канала damage (INJECTOR_PHYSICAL_SHARE — ось Силы, тип
-# "physical"; паттерн SQUARE_PHYSICAL_SHARE Элементалиста, зеркало в
-# _budget_hit_model). На конце луча — малый «бурст анализа» (tip_burst_ratio,
-# радиус много меньше Линзы). Ближайший к Биологу враг на луче получает
-# пробу-инфекцию ПОСЛЕ прямого урона каста («сначала заражай — потом добивай»,
-# SCRUM-1005). Артефакт «Цепь образцов» (sample_beam_full_damage): луч +30%
-# урона, бурст анализа шире (+25% радиуса).
 func _fire_bio_sample_dart(owner_node: Node2D, target: Node2D, direction: Vector2) -> void:
 	var beam_direction := direction
 	if target != null and is_instance_valid(target):
@@ -4297,14 +4049,6 @@ func _fire_bio_sample_dart(owner_node: Node2D, target: Node2D, direction: Vector
 
 
 # SCRUM-896: Семя Симбионта — самое дальнобойное оружие кита с ТЕМПОРАЛЬНОЙ
-# идентичностью: семя летит в точку цели (позиция телеграфирована на момент
-# каста — от зоны можно уйти), прорастает через grenade_delay, наносит
-# стартовый магический удар (seed_impact_ratio с falloff по области) и заражает
-# всех задетых биоинфекцией (dot_ticks × curse_tick_multiplier) — главный
-# пейофф уходит в DoT со временем. Радиус области — между кольцами Линзы и
-# бурстом Инъектора (данные). Артефакты SCRUM-961: «Симбиотическая оболочка» —
-# стартовый хит +35% и +2 тика инфекции; «Расщепленный анализ» — ближайший к
-# центру делится уроном с соседями.
 func _fire_bio_symbiote_web(owner_node: Node2D, target: Node2D, direction: Vector2) -> void:
 	var germination_center: Vector2 = owner_node.global_position + direction * minf(attack_range, 720.0)
 	if target != null and is_instance_valid(target):
@@ -4365,12 +4109,6 @@ func _germinate_symbiote_seed(owner_id: int, center: Vector2, damage_value: floa
 
 
 # SCRUM-896: базовое замедление Споровой Линзы (AC). Каждый задетый кольцом
-# враг замедлен; сила = spore_slow_base→spore_slow_max по НОРМИРОВАННОЙ
-# прогрессии оружия (_spore_slow_power), НЕ по сырому урону. Артефакт
-# «Споровый конденсатор» (spore_slow_power) добавляет замедление СВЕРХУ.
-# refresh + 1 стак: перекасты обновляют длительность (в перманентный рут не
-# стакуется), суммарную скорость движок клампит ≥0.25
-# (StatusEffects.speed_multiplier) — стоп-лок невозможен.
 func _apply_bio_spore_slow(owner_node: Node2D, center: Vector2, radius: float) -> void:
 	var slow_power := _spore_slow_power(owner_node) + maxf(_owner_mod("spore_slow_power"), 0.0)
 	if slow_power <= 0.0:
@@ -4407,21 +4145,6 @@ func _spore_slow_power(owner_node: Node2D) -> float:
 
 
 # SCRUM-896/1005: биоинфекция — status-based DoT Биолога с атрибуцией владельца.
-# Тик = derived dot_damage × curse_tick_multiplier (generic-ключ силы периодики,
-# зеркало _budget_dot_dps); каденция = dot_speed × curse_tick_rate (интервал
-# ≥0.1с — кламп StatusEffects.tick); refresh + 1 стак: перекаст обновляет
-# длительность, НЕ мультиплицируя тики (устоявшийся DPS = тик × каденция — см.
-# bio-ветку _budget_dot_dps). source_id — атрибуция для trait'а «Разбор
-# образцов» (SCRUM-1005): прямые хиты владельца по заражённым усиливает
-# generic-гейт в _damage_enemy. Тики идут через StatusEffects.tick напрямую в
-# take_damage — трейт их НЕ усиливает. «Симбиотическая оболочка» продлевает
-# инфекцию семени (+symbiote_dot_extra_ticks). +0.99 тика запаса — как у
-# проклятия черепа (последний тик не теряется, лишний не рождается).
-# FAN-1031 3c(b): fanout_factor <1.0 — диминиш крауд-DoT для дальних носителей
-# (см. _status_fanout_factor); дефолт 1.0 = прежнее поведение для одиночных
-# применений (bio_sample_dart tip, tick-спреды). Множитель бьёт в per-target
-# dot_damage ДО запекания периодик-трейта (apply_status_from) — трейт множится
-# поверх, как и раньше.
 func _apply_bio_infection(enemy: Node, owner_node: Node2D, fanout_factor := 1.0) -> void:
 	if dot_ticks <= 0 or enemy == null or not is_instance_valid(enemy):
 		return
@@ -4519,11 +4242,6 @@ func _maybe_duplicate_hit(enemy: Node, amount: float, hit_type: String) -> void:
 
 func _fire_robot_magnetic_anchor(owner_node: Node2D, target: Node2D, direction: Vector2) -> void:
 	# SCRUM-915: редкий ТЯЖЁЛЫЙ AoE-пулл. Центр = точка якоря (цель/направление),
-	# НЕ позиция игрока. Телеграф на grenade_delay, затем удар с falloff и
-	# стягивание выживших рядовых К ЦЕНТРУ зоны (_pull_enemies_toward:
-	# конвергенция 0.85 пути за каст, элитки/боссы не смещаются, урон полный).
-	# Группировка «точка за точкой»: AoE-прогрессия растит радиус, скорость
-	# атаки — частоту якорей; сжатая толпа ловит полные хиты следующих кастов.
 	var center: Vector2 = owner_node.global_position + direction * min(attack_range, 360.0)
 	if target != null:
 		center = target.global_position
@@ -4571,12 +4289,6 @@ func _resolve_robot_anchor(owner_id: int, center: Vector2, telegraph_id: int, te
 
 func _fire_robot_compression_line(owner_node: Node2D, target: Node2D, direction: Vector2) -> void:
 	# SCRUM-916: широкий коридор компрессии. Урон наносится по ВСЕЙ ширине
-	# коридора (suppression_width), рядовых врагов прижимает к осевой линии
-	# (см. _compress_enemies_to_axis: конвергенция 0.80, элитки/боссы ×0.25).
-	# Робот при касте не смещается — атака двигает только врагов.
-	# Геометрия для VFX (SCRUM-917): старт = owner + direction*28, длина =
-	# attack_range, полная ширина = suppression_width (×1.30 с «Калибратором
-	# пресса»), центральная «губка»-ось = beam_width, задержка удара = grenade_delay.
 	var center: Vector2 = owner_node.global_position + direction * min(attack_range * 0.58, 260.0)
 	if target != null:
 		var to_target := target.global_position - owner_node.global_position
@@ -4634,15 +4346,6 @@ func _resolve_robot_press(owner_id: int, line_start: Vector2, line_finish: Vecto
 
 func _fire_robot_reactor_vent(owner_node: Node2D, _direction: Vector2) -> void:
 	# SCRUM-918: Реакторное Ядро — вращающийся четырёхнаправленный веер.
-	# Ровно REACTOR_VENT_COUNT (4) вентиля с шагом 90° от МИРОВОЙ фазы
-	# _reactor_vent_phase (старт 0° = восток; направление атаки/ближайший враг
-	# ИГНОРИРУЮТСЯ — самонаведения нет, параметр _direction не используется).
-	# После каждой атаки паттерн доворачивается на REACTOR_ROTATION_STEP_DEG=6°
-	# по часовой (y-вниз => положительный угол); скорость атаки ускоряет только
-	# частоту шагов — за счёт неё веер «заметает» круг быстрее (полный цикл
-	# паттерна = 90°/6° = 15 атак). Пер-вентильный урон = ролл ×
-	# REACTOR_VENT_DAMAGE_RATIO; extra_projectile расширяет лопасти
-	# (+14% ширины за снаряд) вместо добавления направлений (AC: ровно четыре).
 	var damage_value := _rolled_damage(owner_node) * REACTOR_VENT_DAMAGE_RATIO
 	var cycle_resolution := _constellation_event("cast", null, damage_value)
 	if bool(cycle_resolution.get("triggered", false)):
@@ -4705,16 +4408,6 @@ func _fire_reactor_single_vent(owner_node: Node2D, vent_direction: Vector2, dama
 
 func _fire_engineer_sentry_link(owner_node: Node2D, direction: Vector2) -> void:
 	# SCRUM-905: «Часовая турель» = развёртка турелей С БОЕЗАПАСОМ.
-	# По кулдауну оружия ставится турель (scripts/sentry_turret.gd, магазин
-	# sentry_shot_magazine=15); турель уходит ТОЛЬКО расстреляв боезапас (плюс
-	# штатные lifecycle-чистки: player_weapon_effects / cleanup_effects — конец
-	# боя, смена оружия, смерть). Замены старейшей и таймера жизни НЕТ.
-	# Предел активных турелей растёт от Лидерства: max_summons +
-	# floor(summon_amount/4), рельс max_summons_cap (+«Полевой чертеж» поверх);
-	# при полном парке деплой ПРОПУСКАЕТСЯ (SCRUM-964-паттерн, не тихий retire).
-	# Мгновенный первый выстрел при развёртке — прямой компонент бюджет-модели
-	# (_budget_hit_model), сустейн — _budget_sentry_ammo_model (min(спрос
-	# парка, magazine/деплой) зеркалит рантайм).
 	var alive_turrets: Array[Node] = []
 	for device in _deployed_amps:
 		if device != null and is_instance_valid(device):
@@ -4787,12 +4480,6 @@ func _damage_engineer_sentry_splash(primary_target: Node2D, shot_damage: float) 
 
 func _fire_engineer_orbit_drone(owner_node: Node2D, direction: Vector2) -> void:
 	# SCRUM-906: «Орбитальный Дрон» — обслуживание ПОСТОЯННОГО парка орбитальных
-	# дронов (scripts/engineer_orbit_drone.gd). Каждый тик оружия доспавнивает
-	# недостающие дроны до целевого числа (растёт от Лидерства/summon_amount) и
-	# перераспределяет фазы спирали. Урон — ТОЛЬКО контактный физический от
-	# самих дронов (per-enemy кулдаун drone_hit_cooldown); прежний ремонт/цепь
-	# удалены (AC: никакого скрытого сустейна). Бюджет-зеркало —
-	# _budget_orbit_drone_dps.
 	var alive_drones := _alive_orbit_drones()
 	var target_count := _engineer_drone_target_count(owner_node)
 	if alive_drones.size() >= target_count:
@@ -4847,12 +4534,6 @@ func _alive_orbit_drones() -> Array[Node2D]:
 
 func _fire_engineer_pressure_mines(owner_node: Node2D, direction: Vector2) -> void:
 	# SCRUM-907: каждый деплой — 2 персистентные мины (projectile_count; extra-
-	# снаряды апгрейдов добавляют мины) в СЛУЧАЙНЫХ точках кольца
-	# [mine_place_min_distance..mine_place_max_distance] вокруг игрока —
-	# полезно рядом, но не на весь экран. Кап живых мин _engineer_mine_cap:
-	# при полном поле новые НЕ ставятся (SCRUM-964-паттерн). Таймера жизни нет —
-	# жизненный цикл в scripts/engineer_mine.gd (враг триггерит сразу, свой
-	# подрыв через mine_self_arm_delay).
 	var mine_count := maxi(projectile_count + _extra_projectiles(), 1)
 	_emit_weapon_animation_event(owner_node, "deploy", 0.40, direction, {"count": mine_count})
 	var mine_cap := _engineer_mine_cap(owner_node)
@@ -4947,11 +4628,6 @@ func _blueprint_device_cap_bonus(owner_node: Node2D) -> int:
 
 
 # SCRUM-961 «Корневой капкан»: сработавший капкан укореняет жертв (кламп движка
-# 0.25) и вешает кровотечение ~3 тика по dot_damage владельца.
-# SCRUM-913: старые trap_root_mode-хелперы (_apply_trap_root_bleed /
-# _retire_excess_root_traps, SCRUM-961) удалены — перманентность, контроль и
-# кровотечение стали БАЗОЙ капкана (_deploy_hunter_trap/_trigger_hunter_trap),
-# артефакт «Корневой капкан» репозиционирован в trap_cap_bonus/trap_paralysis_bonus.
 
 
 func _alive_persistent_mines(exclude: Node2D = null) -> Array[Node2D]:
@@ -4988,13 +4664,6 @@ func _blueprint_lifetime_multiplier() -> float:
 
 func _pull_enemies_toward(center: Vector2, radius: float, force: float) -> void:
 	# SCRUM-915: тяжёлый пулл Магнитного Якоря. Рядовые враги стягиваются К
-	# ЦЕНТРУ AoE — за каст покрывается ANCHOR_PULL_CONVERGENCE доли пути до
-	# центра (овершута через центр нет по построению: смещение всегда < дистанции).
-	# Элитки и боссы НЕ смещаются вовсе (AC SCRUM-915; анти-стаклок боссов),
-	# урон по ним при этом остаётся полным — гейта в damage-хелперах нет.
-	# force = конфиг-knockback якоря (базовая мощь пулла, норма 170); импульсный
-	# путь зажат капом ANCHOR_PULL_IMPULSE_CAP против разгона физики/патфайндинга.
-	# SCRUM-961 «Ядро якоря»: рядовых стягивает сильнее (конвергенция выше).
 	var anchor_bonus := _owner_mod("anchor_pull_power") if attack_mode == "robot_magnetic_anchor" else 0.0
 	var convergence := clampf(
 		ANCHOR_PULL_CONVERGENCE * (force / ANCHOR_PULL_FORCE_NORM) * (1.0 + maxf(anchor_bonus, 0.0)),
@@ -5029,12 +4698,6 @@ func _is_non_elite_target(enemy_node: Node2D) -> bool:
 
 func _compress_enemies_to_axis(origin: Vector2, direction: Vector2, perpendicular: Vector2, width: float, range_limit: float, force: float) -> void:
 	# SCRUM-916: компрессия Гидравлического Пресса. Врагов в коридоре прижимает
-	# к осевой линии: за каст гасится PRESS_COMPRESSION_CONVERGENCE доли
-	# бокового отступа (ось не пересекается по построению — толпа «выравнивается
-	# в линию» вдоль пути пресса). Элитки/боссы получают сниженное смещение
-	# ×PRESS_ELITE_BOSS_COMPRESSION_FACTOR (0.25, прецедент Thief-паралича),
-	# урон по ним полный — гейтится только смещение. force = конфиг-knockback
-	# пресса (норма PRESS_COMPRESSION_FORCE_NORM); импульс зажат капом.
 	var force_scale := clampf(force / PRESS_COMPRESSION_FORCE_NORM, 0.25, 1.6)
 	var convergence := clampf(PRESS_COMPRESSION_CONVERGENCE * force_scale, 0.10, 0.95)
 	for enemy in get_tree().get_nodes_in_group("enemies"):
@@ -5373,11 +5036,6 @@ func _is_enemy_inside_wave(origin: Vector2, enemy_position: Vector2, direction: 
 
 
 # SCRUM-523: КАНАЛ урона оружия → строковый тип для палитры боевых цифр.
-# Источник истины о канале — damage_parameter оружия (см. progression_data_weapons):
-# "magic_damage" → магия, всё прочее ("damage") → физика (SCRUM-898: звуковой
-# канал удалён, бывшие sound-оружия бьют магией). DoT-тики красятся "dot" в точке
-# тика, а не отсюда. Цвет берёт владелец цифры (enemy.gd) через
-# Enemy.damage_type_color() — здесь только маршрутизация типа.
 func _weapon_damage_type() -> String:
 	match damage_parameter:
 		"magic_damage":
@@ -5402,21 +5060,11 @@ func _damage_enemy(enemy: Node, amount: float, apply_unique_melee_effects := tru
 				"robot_magnetic_anchor": final_amount *= _consume_constellation_target_mark(enemy, "anchor")
 				"moon_crossbow": final_amount *= _consume_constellation_target_mark(enemy, "moon")
 		# SCRUM-1005 «Разбор образцов»: ПРЯМЫЕ хиты владельца по цели под ЕГО
-		# периодическим эффектом усилены data-driven множителем CLASS_TRAITS
-		# (infected_direct_hit_multiplier; есть только у Биолога — остальным
-		# generic-хук возвращает 1.0). Тики DoT сюда приходят с hit_type "dot"
-		# и НЕ усиливаются; чужой/истёкший статус отсекает
-		# StatusEffects.has_dot_from_source (атрибуция source_id владельца).
 		if hit_type != "dot" and owner_node != null and owner_node.has_method("class_trait_value"):
 			var infected_multiplier := maxf(float(owner_node.call("class_trait_value", "infected_direct_hit_multiplier", 1.0)), 1.0)
 			if infected_multiplier > 1.0 and StatusEffects.has_dot_from_source(enemy, owner_node.get_instance_id()):
 				final_amount *= infected_multiplier
 			# SCRUM-930 «Дальний расчёт»: урон оружия Снайпера растёт с дистанцией
-			# владелец→цель, замеренной ЗДЕСЬ — в момент применения урона (AC:
-			# отложенные атаки честны, никакого «угадывания» на спавне снаряда).
-			# Data-driven из CLASS_TRAITS (ключи только у Снайпера — остальным
-			# generic-хук возвращает нейтраль 1.0); тики DoT (hit_type "dot") не
-			# скейлятся — гейт hit_type общий с trait'ом Биолога выше.
 			final_amount *= _class_distance_trait_multiplier(owner_node, enemy as Node2D)
 		_call_take_damage(enemy, final_amount, {"critical": is_critical, "damage_type": hit_type})
 		_apply_constellation_symbiote_share(enemy, owner_node, final_amount, hit_type)
@@ -5516,11 +5164,6 @@ func _apply_constellation_prey_distribution(enemy: Node, owner_node: Node, amoun
 
 
 # SCRUM-930 «Дальний расчёт»: множитель дистанции для прямого хита владельца.
-# Читает data-driven ключи trait'а через generic-хук class_trait_value (есть
-# только у Снайпера) и считает по канонической формуле
-# ProgressionData.distance_trait_multiplier (единая точка правды с budget-моделью
-# и тестами): ×1.0 в пределах free_range, далее +per_100px за каждые 100px,
-# жёсткий кап +cap_bonus. Классам без ключей возвращает ровно 1.0 (утечки нет).
 func _class_distance_trait_multiplier(owner_node: Node2D, enemy_node: Node2D) -> float:
 	if owner_node == null or enemy_node == null or not is_instance_valid(enemy_node):
 		return 1.0
@@ -5642,14 +5285,6 @@ func _volatile_powder_active() -> bool:
 
 
 # SCRUM-533: тик ЛУЖИ (DoT-облако) с диминишингом по числу целей. Раньше каждый
-# тик лужи лил ПОЛНЫЙ tick_damage всем врагам в круге без потолка, поэтому на
-# плотном паке из 20 целей throughput рос линейно (chemist/acid_flask lvl20_ideal
-# 20t ≈ 112k — кратно выше budget'а). Формула же бюджетит лужу как pool_targets ≤ 4
-# (estimate_weapon_budget → _budget_hit_model, mode aoe_projectile), так что живой
-# замер выбивался из формульного коридора. Здесь живой урон лужи приводится к тому
-# же бюджету: центральная цель получает полный урон, каждая следующая (по удалённости
-# от центра) — резко убывающий 1/(1+(rank-knee)*decay). Облако остаётся area-denial
-# оружием, но плотная толпа больше не умножает один тик почти на весь экран.
 const POOL_FULL_TARGETS := 1
 const POOL_TARGET_DIMINISH := 1.5
 const MAX_ACTIVE_DAMAGE_POOLS := 6
@@ -5673,54 +5308,19 @@ const ORBIT_FANOUT_FULL_TARGETS := 4
 const ORBIT_FANOUT_TARGET_DIMINISH := 0.0
 
 
-# FAN-1031 3c(b): диминиш-фактор тика периодического СТАТУСА для цели ранга `rank`
-# (0-based по возрастанию дистанции от центра каста). Первые status_full_targets —
-# полный тик (factor 1.0); дальше factor = 1/(1+(rank−full+1)·diminish) — та же
-# формула, что _damage_enemies_in_circle_capped / S1 / пул-кап (единый контракт
-# диминиша толпы). Сентинел <0 → STATUS_FANOUT_* (diminish 0 → factor==1 ВСЕГДА →
-# нулевое изменение без override). Душит хвост крауд-DoT на 20 целях, не трогая
-# per-hit силу тика (identity зоны и малый пак 1t/5t сохранены).
+# FAN-1031 3c: диминиш-факторы крауд-fan-out каналов (STATUS/FALLOFF/ORBIT) — обёртки над
+# WeaponCrowdCaps.fanout_factor с per-weapon полями + сентинел-дефолтами. Канон и профиль
+# каждого канала: docs/design/systems/progression_balance.md. Ранг = дистанция от центра.
 func _status_fanout_factor(rank: int) -> float:
-	# FAN-1031 3c(final): жёсткий кап ШИРИНЫ — цели за status_max_targets не получают
-	# статус вовсе (ноль). Ортогонален диминишу (тот режет per-hit хвоста). Сентинел <0 = без потолка.
-	if status_max_targets >= 0 and rank >= status_max_targets:
-		return 0.0
-	var full := status_full_targets if status_full_targets >= 0 else STATUS_FANOUT_FULL_TARGETS
-	var diminish := status_target_diminish if status_target_diminish >= 0.0 else STATUS_FANOUT_TARGET_DIMINISH
-	if diminish <= 0.0 or rank < full:
-		return 1.0
-	return 1.0 / (1.0 + float(rank - full + 1) * diminish)
+	return WEAPON_CROWD_CAPS.fanout_factor(rank, status_full_targets, status_target_diminish, status_max_targets, STATUS_FANOUT_FULL_TARGETS, STATUS_FANOUT_TARGET_DIMINISH)
 
 
-# FAN-1031 3c(b2): диминиш-фактор дистанционного сплэша (`_damage_enemies_in_circle_falloff`)
-# для цели ранга `rank` (0-based по возрастанию дистанции от центра). Первые
-# falloff_full_targets — полный урон; дальше factor = 1/(1+(rank−full+1)·diminish) — та же
-# формула, что _status_fanout_factor / S1 / пул. Сентинел <0 → FALLOFF_FANOUT_* (diminish 0
-# → factor==1 ВСЕГДА → нулевое изменение без override). Крауд-кап хвоста поверх радиального
-# спада (радиальный falloff остаётся — это ортогональная per-target ось).
 func _falloff_fanout_factor(rank: int) -> float:
-	var full := falloff_full_targets if falloff_full_targets >= 0 else FALLOFF_FANOUT_FULL_TARGETS
-	var diminish := falloff_target_diminish if falloff_target_diminish >= 0.0 else FALLOFF_FANOUT_TARGET_DIMINISH
-	if diminish <= 0.0 or rank < full:
-		return 1.0
-	return 1.0 / (1.0 + float(rank - full + 1) * diminish)
+	return WEAPON_CROWD_CAPS.fanout_factor(rank, falloff_full_targets, falloff_target_diminish, -1, FALLOFF_FANOUT_FULL_TARGETS, FALLOFF_FANOUT_TARGET_DIMINISH)
 
 
-# FAN-1031 3c(b2): диминиш-фактор тика квадрата Элементалиста (`_elemental_square_tick`) для
-# цели ранга `rank` (0-based по дистанции от центра каста). Кастомный executor раздавал
-# magic+phys+ожог КАЖДОМУ врагу в зоне полным тиком (крауд fan-out без потолка); тут ближние
-# orbit_full_targets прогорают полностью (identity зоны + одиночная/малый пак целы), дальний
-# хвост толпы душится геометрически. Сентинел <0 → ORBIT_FANOUT_* (diminish 0 → factor==1
-# ВСЕГДА → нулевое изменение без override). Формула единая с остальными крауд-капами.
 func _orbit_fanout_factor(rank: int) -> float:
-	# FAN-1031 3c(final): жёсткий кап ШИРИНЫ — цели за orbit_max_targets не получают тик (ноль).
-	if orbit_max_targets >= 0 and rank >= orbit_max_targets:
-		return 0.0
-	var full := orbit_full_targets if orbit_full_targets >= 0 else ORBIT_FANOUT_FULL_TARGETS
-	var diminish := orbit_target_diminish if orbit_target_diminish >= 0.0 else ORBIT_FANOUT_TARGET_DIMINISH
-	if diminish <= 0.0 or rank < full:
-		return 1.0
-	return 1.0 / (1.0 + float(rank - full + 1) * diminish)
+	return WEAPON_CROWD_CAPS.fanout_factor(rank, orbit_full_targets, orbit_target_diminish, orbit_max_targets, ORBIT_FANOUT_FULL_TARGETS, ORBIT_FANOUT_TARGET_DIMINISH)
 
 
 # FAN-1031 3c(b): дистанционно-отсортированный список врагов в радиусе — ранг
@@ -5797,14 +5397,6 @@ const ACID_CHARGE_PERSIST_SECONDS := 999999.0
 const ACID_CHARGE_ARTIFACT_CAP_BONUS := 3
 
 # SCRUM-944: контактные статусы луж. Кислотная колба (pool_contact_charges):
-# монстр в луже получает ОДИН вечный DoT-заряд ОТ ЭТОЙ КОНКРЕТНОЙ лужи
-# (status id = acid_charge_p<pool_instance_id>, max_stacks 1 → стоять в одной
-# луже бесконечно = всё равно один заряд). Разные лужи стакаются: каждая даёт
-# свой статус; их тики складываются и живут до смерти носителя. Балансовый кап:
-# pool_charge_cap зарядов на цель (артефакт «Кислотный катализатор» +3).
-# Trait «Катализатор» (+50% периодики) запекается через apply_status_from.
-# SCRUM-903: терновая зона Друида сюда больше не ходит — её слоу/хиты ведёт
-# _briar_zone_tick (базовый слоу + углубление артефактом briar_slow_power).
 func _apply_pool_contact_statuses(enemies: Array, source_pool: Node2D = null) -> void:
 	var acid_charges := pool_contact_charges and source_pool != null and is_instance_valid(source_pool)
 	if not acid_charges:
@@ -5820,11 +5412,6 @@ func _apply_pool_contact_statuses(enemies: Array, source_pool: Node2D = null) ->
 		dot_damage = maxf(float((parameters_raw as Dictionary).get("dot_damage", 2.0)), 1.0)
 	var charge_tick := maxf(dot_damage * pool_charge_tick_multiplier, 0.30)
 	# FAN-1031 3c(b): крауд-заряды ранжируются по дистанции к центру лужи — ближние
-	# получают полный тик заряда, дальний хвост толпы диминишится (_status_fanout_factor).
-	# Кап ЧИСЛА зарядов на цель (pool_charge_cap) и детонация по СТАКАМ не тронуты —
-	# бьём только силу тика дальних. Без override (acid_flask пока не задаёт status_*)
-	# factor==1 → zero change: поле отдаётся калибровочной полосе как готовый рычаг
-	# (acid_flask уже пул-капнут в 3c-a; величину charge-fanout калибровать по v3').
 	var charge_order := _status_fanout_order(source_pool.global_position, enemies)
 	for rank in range(charge_order.size()):
 		var enemy_node := charge_order[rank] as Node2D
@@ -5862,14 +5449,6 @@ func _apply_pool_contact_statuses(enemies: Array, source_pool: Node2D = null) ->
 
 
 # SCRUM-903: тик терновой зоны — контракт повторных ФИЗИЧЕСКИХ хитов:
-#   1) слоу: все враги внутри замедлены (статус "briar_zone_slow" спадает сам
-#      после выхода; артефакт «Печать терновника» углубляет слоу briar_slow_power);
-#   2) хиты: враг получает удар = damage(физ., Сила) × briar_hit_multiplier раз в
-#      pool_tick_interval, но НЕ БОЛЬШЕ briar_hit_cap хитов С ОДНОЙ зоны
-#      (per-enemy счёт в meta зоны). Проход сквозь AoE даёт несколько читаемых
-#      ударов; стояние внутри не превращается в бесконечный DoT, повторный вход
-#      хиты не сбрасывает. Хиты идут damage_type="physical" (без крита и без
-#      периодик-множителей) — это НЕ dot-ось. Зеркало бюджета — _budget_pool_dps.
 func _briar_zone_tick(pool: Node2D) -> void:
 	if pool == null or not is_instance_valid(pool):
 		return
@@ -6099,14 +5678,6 @@ func _amp_summon_haste_value(owner_node: Node2D) -> float:
 
 
 # SCRUM-908 «Сеть мастерской» (workshop_network): активные устройства инженера
-# дают стеки сети — вес устройства из меты network_weight (турель 1.0, дрон 1.0,
-# мина 0.5 — предохранитель от мин-спама), кап = network_stack_cap_base +
-# floor(Лидерство / network_cap_leadership_step). Каждый стек даёт
-# +network_damage_per_stack к урону УСТРОЙСТВ: фактор входит ТОЛЬКО в
-# _rolled_damage (урон оружия/устройств этого класса — все три оружия Инженера
-# устройства), generic-урон игрока/ульту не трогает. Data-driven через
-# CLASS_TRAITS (Player.class_trait_value): у классов без trait'а per_stack = 0 →
-# фактор 1.0 (не течёт). Зеркало бюджета — ProgressionData._budget_network_factor.
 func _workshop_network_factor(owner_node: Node2D) -> float:
 	if owner_node == null or not is_instance_valid(owner_node) or not owner_node.has_method("class_trait_value"):
 		return 1.0

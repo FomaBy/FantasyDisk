@@ -693,24 +693,6 @@ static func _soft_capped_run_multiplier(multiplier: float, softcap: float, knee:
 
 
 # SCRUM-947 «Проводник стихий»: класс-trait Элементалиста, data-driven запись
-# CLASS_TRAITS.elementalist.magic_bonus_effectiveness = 1.30 (реестр SCRUM-935).
-# Каждый источник бонуса МАГИЧЕСКОГО урона на 30% эффективнее (bonus-effectiveness
-# scaling: +15% источник → +19.5% фактически; НЕ флэт-множитель прямого урона).
-# Детерминированный порядок стакинга (см. derived_parameters, дублируется в
-# docs/design/systems/characters_weapons.md): каждый magic-tagged источник
-# усиливается РОВНО ОДИН РАЗ, отдельно от остальных, ДО перемножения источников:
-#   1) забеговый run_modifiers.magic_damage_multiplier — softcap → ×1.30 на избыток
-#      (усиливается уже задиминишенный бонус, глобальный анти-runaway остаётся
-#      арбитром) → upgrade_damage_exponent;
-#   2) пассив оружия passive_mods.magic_damage_multiplier (класс-прогрессия) —
-#      ×1.30 на бонусную часть;
-#   3) magic-tagged бафы (prayer_opening_*) — ×1.30 на саму добавку;
-#   4) атрибутный источник: дельта интеллекта НАД базой класса (после
-#      growth-скаляра CLASS_LEVEL_STAT_GROWTH_SCALARS) → ×1.30 только в канале
-#      magic_damage. Изоляция типов урона (SCRUM-524) не нарушается: интеллект
-#      владеет только магией, другие каналы не видят усиления.
-# НЕ усиливаются: universal damage_multiplier/damage_flat (не magic-tagged),
-# physical-only и periodic-only (dot_*) источники, а также штрафы (<1.0).
 static func _magic_bonus_effectiveness_for(character_id: String) -> float:
 	if character_id == "":
 		return 1.0
@@ -2205,17 +2187,6 @@ static func derived_parameters(stats: Dictionary, run_modifiers: Dictionary, wea
 	if crit_overflow_ratio > 0.0:
 		crit_damage_flat += maxf(crit_chance_raw - float(crit_profile.get("cap", CRIT_CHANCE_CAP)), 0.0) * crit_overflow_ratio
 	# SCRUM-524: урон каждого ТИПА масштабируется ТОЛЬКО от своего атрибута.
-	# Изоляция по типам урона — жёсткий инвариант: прокачка атрибута типа X меняет
-	# урон ТОЛЬКО типа X и НИКАК не влияет на остальные типы (см. систему типов
-	# урона SCRUM-523 и гейт tests/damage_type_isolation_test.gd). Поэтому здесь
-	# НЕТ «splash»-вкладов чужих атрибутов и НЕТ архетип-множителя: он зависел от
-	# ВСЕХ атрибутов и одинаково домножал все три типа, протекая между ними.
-	# Владельцы атрибутов по типам: сила→физический, интеллект→магический,
-	# знание→периодический (DoT). SCRUM-898: звуковой тип удалён (бывшие
-	# sound-оружия Гитариста/Друида переведены на магический канал). damage_flat и
-	# dot_damage_flat — забеговые/пассивные модификаторы (не атрибуты), поэтому
-	# общий вклад в типы инвариант изоляции не нарушает (тест проверяет атрибуты).
-	# Баланс по DPS добирается классовым budget-множителем (budget_tuning_for).
 	var universal_damage_flat := float(run_modifiers.get("damage_flat", 0.0))
 	var physical_base := 15.0 * strength / 10.0
 	# SCRUM-947: атрибутный источник магического бонуса — дельта интеллекта НАД
