@@ -41,6 +41,10 @@ const GlobalTooltipControl := preload("res://scripts/ui/global_tooltip_control.g
 const InputGlyphRegistry := preload("res://scripts/ui/input_glyph_registry.gd")
 const CodexImageFit := preload("res://scripts/ui/codex_image_fit.gd")
 const CodexUnlockPresenter := preload("res://scripts/codex_unlock_presenter.gd")
+# FAN-1087: лор-модуль FAN-1080 подключается явным preload, как остальные
+# вынесенные UI-модули: глобальное имя класса из global_script_class_cache
+# не гарантировано в холодном/устаревшем чекауте и роняло компиляцию main.gd.
+const LoreScreens := preload("res://scripts/ui/lore_screens.gd")
 const BATTLE_PRAYER_ICON_IDS := {
 	"prayer_wrath": "damage",
 	"prayer_mending": "regeneration",

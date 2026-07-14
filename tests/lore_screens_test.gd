@@ -9,6 +9,7 @@ extends SceneTree
 #    Истока по secret_boss_defeated (meta_state подменяется в памяти).
 
 const MAIN_SCENE := preload("res://scenes/Main.tscn")
+const MainCompileGuard := preload("res://tests/main_compile_guard.gd")
 const LoreData := preload("res://scripts/lore_data.gd")
 const CodexData := preload("res://scripts/codex_data.gd")
 const ProgressionData := preload("res://scripts/progression_data.gd")
@@ -17,6 +18,13 @@ var errors := PackedStringArray()
 
 
 func _initialize() -> void:
+	# FAN-1087: компиляция/инстанцирование Main — жёсткий гейт, не false-green.
+	var gate_problems := MainCompileGuard.blocking_errors()
+	if not gate_problems.is_empty():
+		for problem in gate_problems:
+			push_error("FAN-1087 main-dependency gate: %s" % problem)
+		quit(1)
+		return
 	_check_data_integrity()
 	await _check_intro_screen()
 	await _check_codex_chronicle()

@@ -1,6 +1,7 @@
 extends SceneTree
 
 const MAIN_SCENE := preload("res://scenes/Main.tscn")
+const MainCompileGuard := preload("res://tests/main_compile_guard.gd")
 const Meta := preload("res://scripts/meta_progression.gd")
 const TEST_PATH := "user://test_codex_unread_victory.cfg"
 const BADGE_PATH := "res://assets/sprites/ui/icons/codex/ui_badge_codex_unread.png"
@@ -10,6 +11,13 @@ var errors := PackedStringArray()
 
 
 func _initialize() -> void:
+	# FAN-1087: компиляция/инстанцирование Main — жёсткий гейт, не false-green.
+	var gate_problems := MainCompileGuard.blocking_errors()
+	if not gate_problems.is_empty():
+		for problem in gate_problems:
+			push_error("FAN-1087 main-dependency gate: %s" % problem)
+		quit(1)
+		return
 	_cleanup()
 	for viewport_size in VIEWPORT_SIZES:
 		await _check_viewport(viewport_size)

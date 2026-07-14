@@ -1,6 +1,7 @@
 extends SceneTree
 
 const MAIN_SCENE := preload("res://scenes/Main.tscn")
+const MainCompileGuard := preload("res://tests/main_compile_guard.gd")
 const CodexData := preload("res://scripts/codex_data.gd")
 const LoreData := preload("res://scripts/lore_data.gd")
 const UIIconRegistry := preload("res://scripts/ui_icon_registry.gd")
@@ -25,6 +26,13 @@ var report := PackedStringArray(["# SCRUM-954 Codex Layout Matrix", ""])
 
 
 func _initialize() -> void:
+	# FAN-1087: компиляция/инстанцирование Main — жёсткий гейт, не false-green.
+	var gate_problems := MainCompileGuard.blocking_errors()
+	if not gate_problems.is_empty():
+		for problem in gate_problems:
+			push_error("FAN-1087 main-dependency gate: %s" % problem)
+		quit(1)
+		return
 	for viewport_size in VIEWPORT_SIZES:
 		await _check_viewport(viewport_size)
 	var qa_dir := ProjectSettings.globalize_path("res://build/qa/scrum954")
