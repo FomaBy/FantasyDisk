@@ -47,16 +47,16 @@ lvl20_random из `tools/character_balance_csv.gd --mode=live` (окно 8с, б
 | guitarist | random | 131 | 1.91 | 1.63 | 66 | 86 | 80% | OK | RISK |
 | knight | ideal | 578 | 8.43 | 7.21 | 154 | 217 | 80% | OK | RISK |
 | knight | random | 105 | 1.53 | 1.31 | 154 | 217 | 80% | OK | RISK |
-| priest | ideal | 583 | 8.42 | 7.14 | 82 | 107 | 80% | OK | RISK |
-| priest | random | 60 | 0.87 | 0.74 | 82 | 107 | 80% | FAIL | RISK |
+| priest | ideal | 594 | 8.58 | 7.27 | 82 | 107 | 80% | OK | RISK |
+| priest | random | 69 | 1.00 | 0.85 | 82 | 107 | 80% | FAIL | RISK |
 | ranger | ideal | 842 | 12.28 | 10.51 | 67 | 90 | 80% | OK | RISK |
 | ranger | random | 135 | 1.96 | 1.68 | 67 | 90 | 80% | OK | RISK |
 | robot | ideal | 572 | 8.26 | 6.67 | 157 | 221 | 80% | OK | RISK |
 | robot | random | 67 | 0.97 | 0.78 | 157 | 221 | 80% | FAIL | RISK |
 | sniper | ideal | 827 | 12.06 | 10.32 | 111 | 152 | 80% | OK | RISK |
 | sniper | random | 77 | 1.13 | 0.97 | 111 | 152 | 80% | FAIL | RISK |
-| soldier | ideal | 1118 | 16.29 | 13.95 | 96 | 131 | 80% | OK | RISK |
-| soldier | random | 78 | 1.13 | 0.97 | 96 | 131 | 80% | FAIL | RISK |
+| soldier | ideal | 1077 | 15.71 | 13.44 | 96 | 131 | 80% | OK | RISK |
+| soldier | random | 68 | 0.99 | 0.85 | 96 | 131 | 80% | FAIL | RISK |
 | thief | ideal | 1156 | 16.85 | 13.48 | 66 | 89 | 80% | OK | RISK |
 | thief | random | 203 | 2.96 | 2.37 | 66 | 89 | 80% | OK | RISK |
 
