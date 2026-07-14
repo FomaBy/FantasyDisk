@@ -1,0 +1,41 @@
+{
+  "issue": "FAN-1077",
+  "generator": "PixelLab MCP",
+  "art_direction": "D&D dark-fantasy dragon UI, aged leather, dark iron, antique gold, readable at game scale",
+  "sources": [
+    {
+      "id": "0f78f9f7-128d-41b0-b859-0c361af60708",
+      "tool": "create_ui_asset",
+      "status": "accepted_reference_board",
+      "generations": 40,
+      "dimensions": [688, 384],
+      "path": "reference_board_base.png",
+      "prompt_summary": "Three-panel UX reference board for Main Menu Codex notification, unread-first Codex rows, and a victory unlock journal; preserve the declared content zones and keep decoration outside them."
+    },
+    {
+      "id": "f0bbb7b6",
+      "tool": "create_ui_asset",
+      "status": "rejected_contact_sheet",
+      "dimensions": [192, 192],
+      "path": "ui_badge_codex_unread_source.png",
+      "reason": "The result contained multiple UI samples instead of one isolated transparent runtime badge."
+    },
+    {
+      "id": "661aefb3-25e0-4054-9dfe-cd21a7ebe9ad",
+      "tool": "create_1_direction_object",
+      "status": "accepted_runtime_asset",
+      "generations": 20,
+      "dimensions": [256, 256],
+      "path": "ui_badge_codex_unread_object_source.png",
+      "runtime_path": "../../../../assets/sprites/ui/icons/codex/ui_badge_codex_unread.png",
+      "alpha_bbox": [28, 28, 228, 230],
+      "prompt_summary": "One isolated round unread-notification badge: deep red enamel medallion, antique gold rim and bold gold exclamation, transparent background, no letters or surrounding UI."
+    }
+  ],
+  "composite": {
+    "preview": "../../previews/fan1077_codex_unread_unlocks_mockup.png",
+    "debug_overlay": "../../previews/fan1077_codex_unread_unlocks_mockup_debug.png",
+    "fit_report": "../../previews/fan1077_codex_unread_unlocks_mockup_report.json",
+    "fit_ok": true
+  }
+}

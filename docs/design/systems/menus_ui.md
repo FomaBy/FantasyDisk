@@ -39,6 +39,37 @@
   обновлены `codex_scrum954_layout_test` (7 вкладок), `runtime_smoke_test`
   (строка победы, байпас интро), `gamepad_full_flow_smoke_test` (байпас интро).
 
+## FAN-1077 Codex Unread And Victory Unlock Journal
+
+New Codex discoveries persist canonical discovery lists plus a separate
+`codex_unread` map for characters, weapons, monsters, bosses and artifacts.
+The discovery lists remain the source
+for locked artifact/enemy knowledge; unread is presentation state. Old saves
+load with an empty unread map, so migration never marks the whole historical
+Codex as new. Opening an entry explicitly clears and immediately saves all of
+its unread references. Merely landing on the default dossier does not clear it.
+
+Unread rows are stable-partitioned before read rows. Character rows aggregate
+their own ID and all nested `character_id/weapon_id` references, so a newly
+presented weapon raises its owning dossier. The 36×36 PixelLab exclamation
+badge stays inside the 516×154 card at `x=446,y=22`; unread rows reserve 86px
+on the right rather than covering the name. Category badges aggregate
+characters+weapons, monsters+bosses and artifacts. `MainMenuCodexUnreadBadge`
+shows while any category remains unread.
+
+`codex_unlock_state.gd`, `codex_run_unlocks.gd` and
+`codex_unlock_presenter.gd` own the focused persistence, journal and view
+contracts while `MetaProgression`, Main and `UIScreens` keep compatibility
+facades. `run_metrics.new_unlocks` keeps acquisition order and deduplicates by
+category+ID. A successful result with entries adds `VictoryUnlockPanel` and a
+nested `VictoryUnlockScroll` before a four-row compact stat summary, showing
+every artifact, hero and weapon rather than truncating the run journal. Hero
+and weapon unlock conditions are deliberately future work: FAN-1077 provides
+validated presentation APIs without locking the currently accessible roster.
+Design evidence and safe-zone reports live under
+`docs/design/mockups/fan1077_codex_unread_unlocks/`; responsive coverage is
+`tests/codex_unread_victory_test.gd`.
+
 ## FAN-1065 / FAN-1066 / FAN-1069 Codex Atlas/Settings Runtime Skin
 
 The active Codex visual canon is the PixelLab package

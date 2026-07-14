@@ -54,6 +54,10 @@ var _reactor_pulse_left := 0.0
 # SCRUM-946: постоянная пара «танк + кастер» (homunculus_vial).
 var summon_pair_mode := false
 var pair_tank_visual_id := "homunculus_tank"
+var pair_tank_visual_scale := 1.20
+var pair_caster_visual_scale := 2.40
+var pair_tank_regen_share := 0.50
+var pair_tank_vampiric_share := 0.50
 var summon_wave_interval := 1.7
 var summon_wave_radius := 150.0
 var summon_wave_dot_multiplier := 0.35
@@ -88,8 +92,10 @@ const REACTOR_WAVE_RADIUS := 140.0
 const CASTER_WAVE_STATUS_ID := "homunculus_caster_dot"
 const CASTER_WAVE_PERSIST_SECONDS := 999999.0
 # SCRUM-946: плечо кастера у танка и fallback-плечо у Химика (танк мёртв).
-const CASTER_TANK_OFFSET := Vector2(42.0, -34.0)
-const CASTER_OWNER_FALLBACK_OFFSET := Vector2(64.0, -42.0)
+const CASTER_TANK_OFFSET := Vector2(132.0, -48.0)
+const CASTER_OWNER_FALLBACK_OFFSET := Vector2(108.0, -54.0)
+const HOMUNCULUS_TANK_GROUP := "chemist_tank_homunculi"
+const HOMUNCULUS_TANK_OWNER_META := "chemist_tank_instance_id"
 
 
 # SCRUM-961: чтение ключа классового артефакта из run_modifiers владельца.
@@ -128,6 +134,10 @@ func configure_weapon(config: Dictionary) -> void:
 	# SCRUM-946: конфиг пары «танк + кастер».
 	summon_pair_mode = bool(config.get("summon_pair_mode", summon_pair_mode))
 	pair_tank_visual_id = str(config.get("pair_tank_visual_id", pair_tank_visual_id))
+	pair_tank_visual_scale = maxf(float(config.get("pair_tank_visual_scale", pair_tank_visual_scale)), 0.1)
+	pair_caster_visual_scale = maxf(float(config.get("pair_caster_visual_scale", pair_caster_visual_scale)), 0.1)
+	pair_tank_regen_share = clampf(float(config.get("pair_tank_regen_share", pair_tank_regen_share)), 0.0, 1.0)
+	pair_tank_vampiric_share = clampf(float(config.get("pair_tank_vampiric_share", pair_tank_vampiric_share)), 0.0, 1.0)
 	summon_wave_interval = maxf(float(config.get("summon_wave_interval", summon_wave_interval)), 0.2)
 	summon_wave_radius = maxf(float(config.get("summon_wave_radius", summon_wave_radius)), 24.0)
 	summon_wave_dot_multiplier = maxf(float(config.get("summon_wave_dot_multiplier", summon_wave_dot_multiplier)), 0.0)
@@ -461,6 +471,7 @@ func _update_homunculus_pair(delta: float) -> void:
 		if _pair_tank_respawn_left <= 0.0:
 			_pair_tank = _spawn_pair_tank(owner_node)
 			_pair_tank_deployed = _pair_tank != null and is_instance_valid(_pair_tank)
+	_heal_pair_tank_from_regeneration(owner_node, delta)
 	# --- кастер: вечен, следует за танком (fallback — за Химиком) ------------------
 	if _pair_caster == null or not is_instance_valid(_pair_caster):
 		_pair_caster = _spawn_pair_caster(owner_node)
@@ -485,6 +496,24 @@ func _pair_tank_alive() -> bool:
 	return health_value == null or float(health_value) > 0.0
 
 
+func _heal_pair_tank_from_regeneration(owner_node: Node2D, delta: float) -> void:
+	if not _pair_tank_alive() or pair_tank_regen_share <= 0.0 or delta <= 0.0:
+		return
+	if not owner_node.has_method("effective_regeneration_per_second") or not _pair_tank.has_method("heal"):
+		return
+	var owner_regeneration := maxf(float(owner_node.call("effective_regeneration_per_second")), 0.0)
+	_pair_tank.call("heal", owner_regeneration * pair_tank_regen_share * delta)
+
+
+# Player сообщает уже прошедшее общий healing-множитель лечение вампиризмом.
+# Доля танка независима от заполненности HP владельца: это его собственный sustain.
+func on_owner_vampiric_heal(effective_heal: float) -> void:
+	if not summon_pair_mode or not _pair_tank_alive() or pair_tank_vampiric_share <= 0.0:
+		return
+	if _pair_tank.has_method("heal"):
+		_pair_tank.call("heal", maxf(effective_heal, 0.0) * pair_tank_vampiric_share)
+
+
 func _spawn_pair_tank(owner_node: Node2D) -> Node2D:
 	if ally_scene == null:
 		return null
@@ -498,6 +527,7 @@ func _spawn_pair_tank(owner_node: Node2D) -> Node2D:
 		parent = owner_node.get_tree().root
 	parent.add_child(tank)
 	tank.add_to_group("player_weapon_effects")
+	tank.add_to_group(HOMUNCULUS_TANK_GROUP)
 	tank.set_meta("summon_weapon_owner", get_instance_id())
 	tank.set_meta("homunculus_pair_role", "tank")
 	if tank.has_method("set_visual_id"):
@@ -505,6 +535,7 @@ func _spawn_pair_tank(owner_node: Node2D) -> Node2D:
 	else:
 		tank.set("ally_visual_id", pair_tank_visual_id)
 	tank.set("owner_node", owner_node)
+	owner_node.set_meta(HOMUNCULUS_TANK_OWNER_META, tank.get_instance_id())
 	tank.set("command_mode", command_mode)
 	tank.global_position = owner_node.global_position + Vector2.RIGHT.rotated(randf() * TAU) * 48.0
 	var profile := _summon_profile(owner_node)
@@ -522,6 +553,8 @@ func _spawn_pair_tank(owner_node: Node2D) -> Node2D:
 		for key in profile.keys():
 			if tank.get(str(key)) != null:
 				tank.set(str(key), profile[key])
+	if tank.has_method("set_visual_scale"):
+		tank.call("set_visual_scale", Vector2.ONE * pair_tank_visual_scale)
 	if owner_node.has_method("play_action_animation"):
 		owner_node.play_action_animation("cast", tank.global_position - owner_node.global_position)
 	_command_existing_summons()
@@ -553,6 +586,7 @@ func _spawn_pair_caster(owner_node: Node2D) -> Node2D:
 	var visual := Sprite2D.new()
 	visual.name = "CasterVisual"
 	visual.texture = load(str(HOMUNCULUS_CASTER_TEXTURE_PATHS["south"])) as Texture2D
+	visual.scale = Vector2.ONE * pair_caster_visual_scale
 	caster.add_child(visual)
 	parent.add_child(caster)
 	caster.add_to_group("player_weapon_effects")

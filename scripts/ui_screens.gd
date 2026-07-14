@@ -19,6 +19,7 @@ var _atlas := {}
 # Скрытые звезды, чью церемонию рассеивания тумана уже показали в этой сессии.
 var _atlas_hidden_seen := {}
 var _feedback_request_id := 0
+var codex_unlock_presenter
 
 const HeroStatRadar := preload("res://scripts/ui/hero_stat_radar.gd")
 const SemanticTypography := preload("res://scripts/ui/semantic_typography.gd")
@@ -39,6 +40,7 @@ const GlobalTooltipControl := preload("res://scripts/ui/global_tooltip_control.g
 # SCRUM-810/816: реестр глифов кнопок геймпада (null-safe; нет ассета → текст).
 const InputGlyphRegistry := preload("res://scripts/ui/input_glyph_registry.gd")
 const CodexImageFit := preload("res://scripts/ui/codex_image_fit.gd")
+const CodexUnlockPresenter := preload("res://scripts/codex_unlock_presenter.gd")
 const BATTLE_PRAYER_ICON_IDS := {
 	"prayer_wrath": "damage",
 	"prayer_mending": "regeneration",
@@ -498,6 +500,7 @@ const REWARD_ELITE_CARD_SIZE := Vector2(320.0, 430.0)
 
 func _init(game_ref) -> void:
 	game = game_ref
+	codex_unlock_presenter = CodexUnlockPresenter.new(game_ref)
 
 
 # SCRUM-1059 supersedes the SCRUM-981 2×3 action grid while preserving its
@@ -914,6 +917,8 @@ func _show_main_menu() -> void:
 	codex_button.name = "MainMenuCodexButton"
 	codex_button.pressed.connect(_show_codex_screen)
 	action_box.add_child(codex_button)
+	var main_codex_badge: TextureRect = codex_unlock_presenter.add_unread_badge(codex_button, "MainMenuCodexUnreadBadge", 40.0, 52.0)
+	main_codex_badge.visible = game.META_PROGRESSION.has_codex_unread(game.meta_state)
 
 	var exit_button := _make_button("Выйти из игры")
 	exit_button.name = "MainMenuExitButton"
@@ -4939,7 +4944,7 @@ func _atlas_buy_selected() -> void:
 		game._play_sfx("ui_error")
 		return
 	game.meta_state = game.META_PROGRESSION.allocate_node(game.meta_state, node_id)
-	game.META_PROGRESSION.save_state(game.meta_state)
+	game.save_meta_progression()
 	# SCRUM-968: успешная покупка узла Атласа — трата звёздной пыли.
 	game._play_sfx("purchase")
 	_atlas_refresh()
@@ -4981,7 +4986,7 @@ func _atlas_toggle_keystone() -> void:
 		return
 	var active: bool = game.META_PROGRESSION.is_keystone_active(game.meta_state, node_id)
 	game.meta_state = game.META_PROGRESSION.set_active_keystone(game.meta_state, class_id, "" if active else node_id)
-	game.META_PROGRESSION.save_state(game.meta_state)
+	game.save_meta_progression()
 	_atlas_refresh()
 
 
@@ -5011,7 +5016,7 @@ func _atlas_respec_confirm() -> void:
 		game.meta_state = game.META_PROGRESSION.reset_constellation(game.meta_state, "")
 	else:
 		game.meta_state = game.META_PROGRESSION.reset_constellation(game.meta_state, str(_atlas.get("class_id", "")))
-	game.META_PROGRESSION.save_state(game.meta_state)
+	game.save_meta_progression()
 	_atlas_respec_cancel()
 	_atlas_refresh()
 
@@ -5529,6 +5534,9 @@ func _show_codex_screen() -> void:
 		tab_button.pressed.connect(_show_codex_section.bind(content, section_id))
 		_connect_ui_sfx(tab_button, "click")
 		tabs_row.add_child(tab_button)
+		if ["characters", "monsters", "artifacts"].has(section_id):
+			var tab_badge: TextureRect = codex_unlock_presenter.add_unread_badge(tab_button, "CodexTabUnreadBadge_%s" % section_id, 28.0, 30.0)
+			tab_badge.visible = codex_unlock_presenter.section_has_unread(section_id)
 
 	_show_codex_section(content, "characters")
 
@@ -5756,7 +5764,7 @@ func _show_codex_section(content: PanelContainer, section_id: String) -> void:
 			_codex_set_selected_entry(content, scroll.get_meta("codex_default_entry_button") as Button)
 
 
-func _codex_entry_panel(list: VBoxContainer, detail_data := {}) -> HBoxContainer:
+func _codex_entry_panel(list: VBoxContainer, detail_data := {}, unread_refs := []) -> HBoxContainer:
 	# SCRUM-954: 516x154 authored row. Its 20px inner reserve keeps the actual
 	# image well and centered Russian name clear of the leather/metal bevel.
 	var panel := Button.new()
@@ -5773,11 +5781,18 @@ func _codex_entry_panel(list: VBoxContainer, detail_data := {}) -> HBoxContainer
 	row.set_anchors_preset(Control.PRESET_FULL_RECT)
 	row.offset_left = 20.0
 	row.offset_top = 20.0
-	row.offset_right = -30.0
+	row.offset_right = -86.0 if not unread_refs.is_empty() else -30.0
 	row.offset_bottom = -20.0
 	row.add_theme_constant_override("separation", 14)
 	panel.add_child(row)
 	row.set_meta("entry_button", panel)
+	panel.set_meta("codex_unread_refs", unread_refs.duplicate(true))
+	panel.set_meta("codex_is_unread", not unread_refs.is_empty())
+	if detail_data is Dictionary:
+		panel.set_meta("codex_entry_id", str((detail_data as Dictionary).get("codex_entry_id", "")))
+		panel.set_meta("codex_entry_category", str((detail_data as Dictionary).get("codex_entry_category", "")))
+	if not unread_refs.is_empty():
+		codex_unlock_presenter.add_unread_badge(panel, "CodexUnreadBadge", 36.0, 34.0, 22.0)
 	if detail_data is Dictionary and not (detail_data as Dictionary).is_empty():
 		_codex_attach_entry_detail(list, row, detail_data)
 	return row
@@ -5924,9 +5939,37 @@ func _codex_attach_entry_detail(list: VBoxContainer, row: HBoxContainer, detail_
 		return
 	button.set_meta("codex_detail_data", detail_data)
 	button.pressed.connect(func() -> void:
+		_codex_mark_entry_read(list, button)
 		_codex_set_selected_entry(content, button)
 		_codex_update_detail(detail_panel, detail_data)
 	)
+
+
+func _codex_mark_entry_read(list: VBoxContainer, button: Button) -> void:
+	if button == null or not bool(button.get_meta("codex_is_unread", false)):
+		return
+	var refs: Array = button.get_meta("codex_unread_refs", []) as Array
+	for raw_ref in refs:
+		var ref := raw_ref as Dictionary
+		game.meta_state = game.META_PROGRESSION.mark_codex_read(game.meta_state, str(ref.get("category", "")), str(ref.get("id", "")))
+	game.save_meta_progression()
+	button.set_meta("codex_is_unread", false)
+	button.set_meta("codex_unread_refs", [])
+	var badge := button.get_node_or_null("CodexUnreadBadge") as TextureRect
+	if badge != null:
+		badge.visible = false
+	var row: HBoxContainer = null
+	if button.get_child_count() > 0:
+		row = button.get_child(0) as HBoxContainer
+	if row != null:
+		row.offset_right = -30.0
+	var unread_count := 0
+	for sibling in list.get_children():
+		if sibling != button and bool(sibling.get_meta("codex_is_unread", false)):
+			unread_count += 1
+	list.move_child(button, unread_count)
+	var content := list.get_meta("codex_content_panel", null) as PanelContainer
+	codex_unlock_presenter.refresh_tab_badges(content)
 
 
 func _codex_update_detail(detail_panel: PanelContainer, detail_data: Dictionary) -> void:
@@ -6390,7 +6433,9 @@ func _codex_ascension_sections(entry: Dictionary) -> Array:
 
 
 func _build_codex_characters(list: VBoxContainer) -> void:
-	for character in CODEX_DATA.characters():
+	var characters: Array = CODEX_DATA.characters()
+	for character in codex_unlock_presenter.unread_first(characters, Callable(codex_unlock_presenter, "character_unread_refs")):
+		var unread_refs: Array = codex_unlock_presenter.character_unread_refs(character)
 		var body_lines := [
 			str(character["playstyle"]),
 			"Сильное: %s" % character["strengths"],
@@ -6405,6 +6450,8 @@ func _build_codex_characters(list: VBoxContainer) -> void:
 		if str(character["sprite"]) != "" and ResourceLoader.exists(str(character["sprite"])):
 			texture = game._cached_texture(str(character["sprite"]))
 		var row := _codex_entry_panel(list, {
+			"codex_entry_id": str(character["id"]),
+			"codex_entry_category": "characters",
 			"title": str(character["title"]),
 			"summary": str(character["playstyle"]),
 			"texture": texture,
@@ -6414,36 +6461,42 @@ func _build_codex_characters(list: VBoxContainer) -> void:
 			"chips": ["Герой"],
 			"body_lines": body_lines,
 			"sections": _codex_character_sections(character),
-		})
+		}, unread_refs)
 		_codex_portrait(row, str(character["sprite"]), _codex_entry_portrait_size(), CodexImageFit.POLICY_CHARACTER)
 		_codex_add_entry_name(row, str(character["title"]))
 
 
 func _build_codex_monsters(list: VBoxContainer) -> void:
 	var kind_titles := {"standard": "Обычные Монстры", "elite": "Элитные Монстры", "mini_elite": "Мини-элитки (свита Возвышения)", "boss": "Боссы"}
+	var monsters := []
 	for kind in ["standard", "elite", "mini_elite", "boss"]:
 		for monster in CODEX_DATA.monsters():
-			if str(monster["kind"]) != kind:
-				continue
-			var body_lines := [str(monster["behavior"])]
-			for ability in monster["abilities"]:
-				body_lines.append("✦ %s — %s" % [ability["title"], ability["description"]])
-			var texture: Texture2D = null
-			if str(monster["sprite"]) != "" and ResourceLoader.exists(str(monster["sprite"])):
-				texture = game._cached_texture(str(monster["sprite"]))
-			var row := _codex_entry_panel(list, {
-				"title": str(monster["title"]),
-				"summary": str(monster["behavior"]),
-				"texture": texture,
-				"texture_path": str(monster["sprite"]),
-				"image_policy": CodexImageFit.POLICY_MONSTER,
-				"covered_portrait": false,
-				"chips": [str(kind_titles[kind])],
-				"body_lines": body_lines,
-				"sections": _codex_monster_sections(monster),
-			})
-			_codex_portrait(row, str(monster["sprite"]), _codex_entry_portrait_size(), CodexImageFit.POLICY_MONSTER)
-			_codex_add_entry_name(row, str(monster["title"]))
+			if str(monster["kind"]) == kind:
+				monsters.append(monster)
+	for monster in codex_unlock_presenter.unread_first(monsters, Callable(codex_unlock_presenter, "monster_unread_refs")):
+		var kind := str(monster["kind"])
+		var unread_refs: Array = codex_unlock_presenter.monster_unread_refs(monster)
+		var body_lines := [str(monster["behavior"])]
+		for ability in monster["abilities"]:
+			body_lines.append("✦ %s — %s" % [ability["title"], ability["description"]])
+		var texture: Texture2D = null
+		if str(monster["sprite"]) != "" and ResourceLoader.exists(str(monster["sprite"])):
+			texture = game._cached_texture(str(monster["sprite"]))
+		var row := _codex_entry_panel(list, {
+			"codex_entry_id": str(monster["id"]),
+			"codex_entry_category": "bosses" if kind == "boss" else "monsters",
+			"title": str(monster["title"]),
+			"summary": str(monster["behavior"]),
+			"texture": texture,
+			"texture_path": str(monster["sprite"]),
+			"image_policy": CodexImageFit.POLICY_MONSTER,
+			"covered_portrait": false,
+			"chips": [str(kind_titles[kind])],
+			"body_lines": body_lines,
+			"sections": _codex_monster_sections(monster),
+		}, unread_refs)
+		_codex_portrait(row, str(monster["sprite"]), _codex_entry_portrait_size(), CodexImageFit.POLICY_MONSTER)
+		_codex_add_entry_name(row, str(monster["title"]))
 
 
 # SCRUM-963: тёмный силуэт иконки запертой записи + дим всего чип-ряда — тот же
@@ -6453,7 +6506,9 @@ const CODEX_LOCKED_ROW_TINT := Color(0.70, 0.72, 0.78, 0.82)
 
 
 func _build_codex_artifacts(list: VBoxContainer) -> void:
-	for artifact in CODEX_DATA.artifacts():
+	var artifacts: Array = CODEX_DATA.artifacts()
+	for artifact in codex_unlock_presenter.unread_first(artifacts, Callable(codex_unlock_presenter, "artifact_unread_refs")):
+		var unread_refs: Array = codex_unlock_presenter.artifact_unread_refs(artifact)
 		var artifact_definition: Dictionary = game.PROGRESSION_DATA.artifact_definition(str(artifact["id"]))
 		var locked := _codex_artifact_locked(artifact_definition)
 		var tier_text := _artifact_tier_text(artifact_definition)
@@ -6484,6 +6539,8 @@ func _build_codex_artifacts(list: VBoxContainer) -> void:
 		var icon_texture := _artifact_icon_texture(str(artifact["id"]))
 		var icon_path := _artifact_icon_path(str(artifact["id"]))
 		var row := _codex_entry_panel(list, {
+			"codex_entry_id": str(artifact["id"]),
+			"codex_entry_category": "artifacts",
 			"title": str(artifact["title"]),
 			"summary": summary,
 			"texture": icon_texture,
@@ -6494,7 +6551,7 @@ func _build_codex_artifacts(list: VBoxContainer) -> void:
 			"chips": chips,
 			"body_lines": body_lines,
 			"sections": _codex_artifact_sections(artifact, artifact_definition, locked),
-		})
+		}, unread_refs)
 		_codex_icon_slot(row, icon_texture, _codex_entry_portrait_size(), "CodexArtifactIconSlot", CodexImageFit.POLICY_ARTIFACT, icon_path)
 		if locked:
 			# Запертая запись: силуэт иконки, дим ряда, вместо эффекта — условие.
@@ -11370,6 +11427,7 @@ func _show_victory_screen() -> void:
 	]
 	var result_layout := _create_result_menu_box("Победа", subtitle, "victory")
 	_add_result_crest_to_slot(result_layout["crest_slot"] as Control, "victory")
+	codex_unlock_presenter.add_victory_unlocks(result_layout["summary_column"] as VBoxContainer, self)
 	_add_run_summary_rows(result_layout["summary_column"] as VBoxContainer, true, true)  # SCRUM-502: сводка прогона
 	var finish_run := func() -> void:
 		game.current_act = 1
@@ -11432,7 +11490,7 @@ func _show_death_screen(reason := "") -> void:
 # контейнерном пути он кладётся в box; в no-scroll result layout — в компактную
 # RunSummaryColumn. Все строки MOUSE_FILTER_IGNORE, чтобы не перехватывать клик
 # кнопки и Escape. Стабильные имена узлов — для matrix-теста.
-func _add_run_summary_rows(box: VBoxContainer, _is_victory: bool, force_compact := false) -> void:
+func _add_run_summary_rows(box: VBoxContainer, is_victory: bool, force_compact := false) -> void:
 	var metrics: Dictionary = game.run_metrics if not game.run_metrics.is_empty() else {}
 	var outcome := str(metrics.get("outcome_reason", ""))
 	var summary_parent := _result_summary_parent(box)
@@ -11476,6 +11534,9 @@ func _add_run_summary_rows(box: VBoxContainer, _is_victory: bool, force_compact 
 		["level", "Финальный уровень", str(int(metrics.get("final_level", 0)))],
 		["artifacts", "Артефактов", str(artifacts.size())],
 	]
+	var unlocks: Array = metrics.get("new_unlocks", []) as Array
+	if is_victory and not unlocks.is_empty():
+		rows = [rows[0], rows[2], rows[5], rows[6]]
 	for row in rows:
 		var name_label := Label.new()
 		name_label.name = "RunSummaryStatName_%s" % str(row[0])
@@ -11504,7 +11565,7 @@ func _add_run_summary_rows(box: VBoxContainer, _is_victory: bool, force_compact 
 		value_label.mouse_filter = Control.MOUSE_FILTER_IGNORE
 		grid.add_child(value_label)
 
-	if not artifacts.is_empty():
+	if not artifacts.is_empty() and (not is_victory or unlocks.is_empty()):
 		var names := []
 		for artifact in artifacts:
 			if artifact is Dictionary:

@@ -1,6 +1,6 @@
 # Combat
 
-Обновлено: 2026-07-03 (0.2.0 refactor-wave reconcile; ядро системы — 0.1.5+)
+Обновлено: 2026-07-14 (0.2.0 refactor-wave reconcile; ядро системы — 0.1.5+)
 
 Этот файл описывает активную боевую систему `dev`. Snapshot полного состояния: `docs/design/current_game_state.md`. Канонические ID: `docs/design/content_registry.md`. Балансовый аудит: `docs/design/reviews/mechanics_balance_audit_2026_06.md`.
 
@@ -164,6 +164,12 @@
   указывает на живого валидного игрока/владельца в дереве, movement, shooting,
   contact damage и elite targeting используют владельца taunt как combat target;
   при истечении статуса или invalid owner враг возвращается к обычному `_player()`.
+- FAN-1076: живой танк пары `chemist/homunculus_vial` регистрируется в группе
+  `chemist_tank_homunculi`, а его instance id хранится на владельце без
+  аллокаций group-query в enemy hot path. Танк имеет приоритет над локальным
+  `bastion_taunt` для общего `_combat_target()`: движение, стрельба, contact
+  damage и elite targeting всех базовых `Enemy` направлены на него по всей
+  арене; после смерти/удаления выбор атомарно возвращается к taunt или игроку.
 - `AllyMinion` применяет status damage/speed buffs к атакам и перемещению.
 - `Player` раздает thematic on-hit debuffs: arcane vulnerability (Dark Mage/Elementalist), toxic DoT (Chemist/Doctor/Assassin/Biologist), stagger slow (Soldier/Knight/Robot).
 - Биолог (SCRUM-896/1005): статус `bio_infection` — периодический урон с

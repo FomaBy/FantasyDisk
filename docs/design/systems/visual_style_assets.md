@@ -4,6 +4,22 @@
 
 Этот файл фиксирует reusable visual assets FantasyDisk после domain split. Подробные таблицы сущностей остаются в `docs/design/content_registry.md`.
 
+## FAN-1077 Codex Unread Badge
+
+`assets/sprites/ui/icons/codex/ui_badge_codex_unread.png` is the accepted
+256×256 transparent PixelLab object (`661aefb3-25e0-4054-9dfe-cd21a7ebe9ad`):
+a deep-red enamel medallion, antique-gold rim and one bold gold exclamation.
+Runtime draws the same source at 18px in victory rows, 28px in Codex tabs,
+36px in entry cards and 40px on the Main Menu action. It is an additive icon,
+never a replacement for existing button/card frames.
+
+Source PNGs, the rejected contact-sheet attempt, prompt summaries and IDs are
+preserved in
+`docs/design/references/fan1077_codex_unread_unlocks/manifest.json`. The
+three-surface PixelLab reference board, content-zone plan, composited preview,
+debug overlay and successful fit reports live in the adjacent mockup/preview
+directories. No runtime text is baked into the badge.
+
 ## FAN-1065 Codex Atlas/Settings Skin
 
 The current Codex runtime art package lives at

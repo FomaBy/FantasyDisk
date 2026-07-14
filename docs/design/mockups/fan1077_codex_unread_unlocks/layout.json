@@ -1,0 +1,40 @@
+{
+  "canvas": {"width": 688, "height": 384},
+  "defaults": {
+    "font": "/System/Library/Fonts/Supplemental/Arial Unicode.ttf",
+    "color": "#F4E2B6",
+    "stroke_fill": "#160A0D",
+    "stroke_width": 1,
+    "line_spacing": 1.02,
+    "align": "center",
+    "valign": "middle"
+  },
+  "content": {
+    "board_title": "НОВЫЕ ОТКРЫТИЯ И КОДЕКС",
+    "main_title": "ГЛАВНОЕ МЕНЮ",
+    "main_codex": "КОДЕКС",
+    "codex_title": "КОДЕКС",
+    "codex_row_new": "НОВЫЙ\nАРТЕФАКТ",
+    "codex_row_read": "ИЗУЧЕННАЯ\nЗАПИСЬ",
+    "victory_title": "ПОБЕДА",
+    "victory_summary": "Финальный босс повержен.",
+    "unlocks_title": "ОТКРЫТО В ЭТОМ ЗАБЕГЕ",
+    "unlocks_body": "Артефакт: Печать разлома\nГерой: будущая разблокировка\nОружие: будущая разблокировка",
+    "continue": "НОВЫЙ ЗАБЕГ"
+  },
+  "zones": [
+    {"id": "board_title", "content_key": "board_title", "x": 164, "y": 4, "w": 360, "h": 24, "max_font": 18, "min_font": 10},
+    {"id": "main_title", "content_key": "main_title", "x": 28, "y": 48, "w": 144, "h": 30, "max_font": 16, "min_font": 9},
+    {"id": "main_codex", "content_key": "main_codex", "x": 44, "y": 214, "w": 88, "h": 34, "max_font": 16, "min_font": 10},
+    {"id": "main_codex_badge", "text": "!", "x": 140, "y": 218, "w": 22, "h": 22, "max_font": 17, "min_font": 12, "color": "#FFF1A8"},
+    {"id": "codex_title", "content_key": "codex_title", "x": 214, "y": 48, "w": 276, "h": 30, "max_font": 18, "min_font": 10},
+    {"id": "codex_row_new", "content_key": "codex_row_new", "x": 302, "y": 104, "w": 46, "h": 42, "max_font": 11, "min_font": 7},
+    {"id": "codex_row_new_badge", "text": "!", "x": 352, "y": 104, "w": 18, "h": 18, "max_font": 14, "min_font": 10, "color": "#FFF1A8"},
+    {"id": "codex_row_read", "content_key": "codex_row_read", "x": 302, "y": 166, "w": 68, "h": 42, "max_font": 11, "min_font": 7},
+    {"id": "victory_title", "content_key": "victory_title", "x": 530, "y": 48, "w": 132, "h": 30, "max_font": 18, "min_font": 11},
+    {"id": "victory_summary", "content_key": "victory_summary", "x": 530, "y": 88, "w": 132, "h": 62, "max_font": 12, "min_font": 8},
+    {"id": "victory_unlocks_title", "content_key": "unlocks_title", "x": 536, "y": 164, "w": 116, "h": 28, "max_font": 11, "min_font": 7},
+    {"id": "victory_unlocks_body", "content_key": "unlocks_body", "x": 536, "y": 196, "w": 108, "h": 78, "max_font": 9, "min_font": 6, "align": "left", "valign": "top"},
+    {"id": "victory_button", "content_key": "continue", "x": 542, "y": 310, "w": 108, "h": 34, "max_font": 13, "min_font": 8}
+  ]
+}

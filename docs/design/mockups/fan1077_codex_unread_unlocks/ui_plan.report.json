@@ -1,0 +1,301 @@
+{
+  "ok": true,
+  "decision": "ready_for_image",
+  "errors": [],
+  "warnings": [],
+  "elements": [
+    {
+      "id": "board_title",
+      "kind": "text",
+      "rect": [
+        164,
+        4,
+        360,
+        24
+      ],
+      "ok": true,
+      "warnings": [],
+      "fit_font_size": 18
+    },
+    {
+      "id": "main_panel",
+      "kind": "panel",
+      "rect": [
+        12,
+        32,
+        176,
+        343
+      ],
+      "ok": true,
+      "warnings": []
+    },
+    {
+      "id": "main_title",
+      "kind": "text",
+      "rect": [
+        28,
+        48,
+        144,
+        30
+      ],
+      "ok": true,
+      "warnings": [],
+      "fit_font_size": 16
+    },
+    {
+      "id": "main_button_1",
+      "kind": "button",
+      "rect": [
+        32,
+        96,
+        136,
+        48
+      ],
+      "ok": true,
+      "warnings": []
+    },
+    {
+      "id": "main_button_2",
+      "kind": "button",
+      "rect": [
+        32,
+        152,
+        136,
+        48
+      ],
+      "ok": true,
+      "warnings": []
+    },
+    {
+      "id": "main_codex_button",
+      "kind": "button",
+      "rect": [
+        32,
+        208,
+        136,
+        48
+      ],
+      "ok": true,
+      "warnings": [],
+      "fit_font_size": 16
+    },
+    {
+      "id": "main_codex_badge",
+      "kind": "icon",
+      "rect": [
+        140,
+        218,
+        22,
+        22
+      ],
+      "ok": true,
+      "warnings": [],
+      "fit_font_size": 17
+    },
+    {
+      "id": "codex_panel",
+      "kind": "panel",
+      "rect": [
+        198,
+        32,
+        308,
+        343
+      ],
+      "ok": true,
+      "warnings": []
+    },
+    {
+      "id": "codex_title",
+      "kind": "text",
+      "rect": [
+        214,
+        48,
+        276,
+        30
+      ],
+      "ok": true,
+      "warnings": [],
+      "fit_font_size": 18
+    },
+    {
+      "id": "codex_nav",
+      "kind": "panel",
+      "rect": [
+        210,
+        88,
+        72,
+        269
+      ],
+      "ok": true,
+      "warnings": []
+    },
+    {
+      "id": "codex_list",
+      "kind": "scroll_area",
+      "rect": [
+        290,
+        88,
+        98,
+        269
+      ],
+      "ok": true,
+      "warnings": [],
+      "content_h": 474,
+      "scrollbar_required": true,
+      "scrollbar_rect": [
+        380,
+        88,
+        8,
+        269
+      ]
+    },
+    {
+      "id": "codex_row_new",
+      "kind": "button",
+      "rect": [
+        298,
+        98,
+        78,
+        54
+      ],
+      "ok": true,
+      "warnings": [],
+      "fit_font_size": 11
+    },
+    {
+      "id": "codex_row_new_badge",
+      "kind": "icon",
+      "rect": [
+        352,
+        104,
+        18,
+        18
+      ],
+      "ok": true,
+      "warnings": [],
+      "fit_font_size": 14
+    },
+    {
+      "id": "codex_row_read",
+      "kind": "button",
+      "rect": [
+        298,
+        160,
+        78,
+        54
+      ],
+      "ok": true,
+      "warnings": [],
+      "fit_font_size": 11
+    },
+    {
+      "id": "codex_detail",
+      "kind": "panel",
+      "rect": [
+        396,
+        88,
+        98,
+        269
+      ],
+      "ok": true,
+      "warnings": []
+    },
+    {
+      "id": "victory_panel",
+      "kind": "panel",
+      "rect": [
+        516,
+        32,
+        160,
+        343
+      ],
+      "ok": true,
+      "warnings": []
+    },
+    {
+      "id": "victory_title",
+      "kind": "text",
+      "rect": [
+        530,
+        48,
+        132,
+        30
+      ],
+      "ok": true,
+      "warnings": [],
+      "fit_font_size": 18
+    },
+    {
+      "id": "victory_summary",
+      "kind": "text",
+      "rect": [
+        530,
+        88,
+        132,
+        62
+      ],
+      "ok": true,
+      "warnings": [],
+      "fit_font_size": 12
+    },
+    {
+      "id": "victory_unlocks",
+      "kind": "scroll_area",
+      "rect": [
+        530,
+        158,
+        132,
+        124
+      ],
+      "ok": true,
+      "warnings": [],
+      "content_h": 220,
+      "scrollbar_required": true,
+      "scrollbar_rect": [
+        654,
+        158,
+        8,
+        124
+      ]
+    },
+    {
+      "id": "victory_unlocks_title",
+      "kind": "text",
+      "rect": [
+        536,
+        164,
+        116,
+        28
+      ],
+      "ok": true,
+      "warnings": [],
+      "fit_font_size": 11
+    },
+    {
+      "id": "victory_unlocks_body",
+      "kind": "text",
+      "rect": [
+        536,
+        196,
+        108,
+        78
+      ],
+      "ok": true,
+      "warnings": [],
+      "fit_font_size": 9
+    },
+    {
+      "id": "victory_button",
+      "kind": "button",
+      "rect": [
+        538,
+        306,
+        116,
+        42
+      ],
+      "ok": true,
+      "warnings": [],
+      "fit_font_size": 13
+    }
+  ]
+}

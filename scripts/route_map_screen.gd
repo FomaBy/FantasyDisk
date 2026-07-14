@@ -1345,17 +1345,21 @@ func _route_node_state(step_index: int, branch_index: int) -> String:
 	if game.shop_reentry_pending:
 		var shop_step := int(game.shop_reentry_route_stage)
 		var shop_branch := int(game.shop_reentry_branch_index)
+		# FAN-1078: the recorded route choice is authoritative. A pending shop
+		# may expose only itself plus the next row reachable from that selected
+		# branch; sibling nodes must never inherit availability from proximity.
+		if not _pending_shop_matches_selected_route(shop_step, shop_branch):
+			return "locked"
 		if step_index < shop_step:
 			if step_index < game.route_selected_indices.size() and int(game.route_selected_indices[step_index]) == branch_index:
 				return "completed"
 			return "locked"
 		if step_index == shop_step:
-			var route_node: Dictionary = game.route_nodes[step_index][branch_index] if step_index >= 0 and step_index < game.route_nodes.size() and branch_index >= 0 and branch_index < game.route_nodes[step_index].size() else {}
-			if branch_index == shop_branch and str(route_node.get("type", "")) == "shop":
+			if branch_index == shop_branch:
 				return "shop_revisit"
 			return "locked"
 		if step_index == shop_step + 1:
-			if _route_node_connections(shop_step, shop_branch).has(branch_index):
+			if _is_route_node_reachable(step_index, branch_index):
 				return "available"
 			return "locked"
 		return "locked"
@@ -1368,6 +1372,17 @@ func _route_node_state(step_index: int, branch_index: int) -> String:
 			return "locked"
 		return "available"
 	return "locked"
+
+
+func _pending_shop_matches_selected_route(shop_step: int, shop_branch: int) -> bool:
+	if shop_step < 0 or shop_step >= game.route_nodes.size():
+		return false
+	if shop_branch < 0 or shop_branch >= game.route_nodes[shop_step].size():
+		return false
+	if shop_step >= game.route_selected_indices.size() or int(game.route_selected_indices[shop_step]) != shop_branch:
+		return false
+	var selected_node: Dictionary = game.route_nodes[shop_step][shop_branch]
+	return str(selected_node.get("type", "")) == "shop"
 
 
 func _is_route_node_reachable(step_index: int, branch_index: int) -> bool:

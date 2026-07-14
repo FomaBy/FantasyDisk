@@ -2374,6 +2374,15 @@ func _apply_regeneration(delta: float) -> void:
 	# т.к. sustain Доктора — это drain, а не пассивный реген; бюджет нужен даже при regen=0).
 	var drain_cap := _effective_drain_heal_cap()
 	_drain_heal_budget = minf(_drain_heal_budget + drain_cap * delta, drain_cap)
+	var regeneration := effective_regeneration_per_second()
+	if regeneration <= 0.0 or health >= max_health or health <= 0.0:
+		return
+	health = minf(health + regeneration * delta, max_health)
+
+
+func effective_regeneration_per_second() -> float:
+	if health <= 0.0:
+		return 0.0
 	var regeneration := float(derived_parameters.get("regeneration", 0.0))
 	# SCRUM-500 (on_low_hp): «Второе Дыхание» — усиленный реген, пока HP ниже порога.
 	# SCRUM-900: для «Клятвы чумного доктора» low-HP реген — generic-сустейн, не
@@ -2384,9 +2393,7 @@ func _apply_regeneration(delta: float) -> void:
 	# regen-пайплайном (множитель исходящего лечения применяется как к любому
 	# регену). Прекращается с концом боя — узел игрока пересоздаётся.
 	regeneration += _battle_prayer_regen
-	if regeneration <= 0.0 or health >= max_health or health <= 0.0:
-		return
-	health = minf(health + regeneration * _effective_healing_multiplier() * delta, max_health)
+	return maxf(regeneration, 0.0) * _effective_healing_multiplier()
 
 
 func on_weapon_hit(enemy: Node2D, dealt_damage := 0.0, was_crit := false, hit_context := {}) -> void:
@@ -2401,7 +2408,11 @@ func on_weapon_hit(enemy: Node2D, dealt_damage := 0.0, was_crit := false, hit_co
 		var raw_heal := float(derived_parameters.get("vampiric_amount", 0.0)) + dealt_damage * ProgressionData.VAMPIRIC_DAMAGE_HEAL_RATIO
 		var vampiric_heal := minf(raw_heal, _vampiric_heal_budget)
 		_vampiric_heal_budget -= vampiric_heal
-		health = minf(health + vampiric_heal * _effective_healing_multiplier(), max_health)
+		var effective_vampiric_heal := vampiric_heal * _effective_healing_multiplier()
+		health = minf(health + effective_vampiric_heal, max_health)
+		for weapon in _equipped_weapons():
+			if weapon.has_method("on_owner_vampiric_heal"):
+				weapon.call("on_owner_vampiric_heal", effective_vampiric_heal)
 	_trigger_magic_enchant(enemy)
 	_trigger_universal_dot(enemy)
 	_trigger_leadership_echo(enemy)
