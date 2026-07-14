@@ -127,6 +127,24 @@ func set_combat_profile(profile: Dictionary) -> void:
 	constellation_death_burst_ratio = clampf(float(profile.get("constellation_death_burst_ratio", 0.0)), 0.0, 1.0)
 
 
+func set_visual_scale(scale_value: Vector2) -> void:
+	var safe_scale := Vector2(maxf(scale_value.x, 0.1), maxf(scale_value.y, 0.1))
+	var body := get_node_or_null("Body") as Sprite2D
+	if body != null:
+		body.scale = safe_scale
+	var animated_body := get_node_or_null("AnimatedBody") as AnimatedSprite2D
+	if animated_body != null:
+		animated_body.scale = safe_scale
+
+
+func heal(amount: float) -> float:
+	if _death_lifecycle_started or health <= 0.0 or amount <= 0.0:
+		return 0.0
+	var before := health
+	health = minf(health + amount, max_health)
+	return health - before
+
+
 func take_damage(amount: float, _source := "", _attacker: Node2D = null) -> void:
 	# Сигнатура зеркалит Player.take_damage: по таунту (bastion_taunt) контактный
 	# удар врага приходит сюда с source/attacker вместо игрока.

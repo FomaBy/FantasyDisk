@@ -9,10 +9,10 @@ extends SceneTree
 #  - SCRUM-944 Кислотная колба: долгие полупрозрачные лужи; контакт с КАЖДОЙ
 #    отдельной лужей вешает один ВЕЧНЫЙ кислотный заряд (тики по dot-оси, кап 5,
 #    артефакт +3); стояние в одной луже заряды не множит; заряды переживают лужу.
-#  - SCRUM-946 Склянка гомункула: постоянная пара — танк (4x max HP Химика,
-#    таунт, смертен, респавн через summon_interval) + неуязвимый кастер
-#    (вне allies, волны вечного периодического урона с trait-бонусом);
-#    новые PixelLab-спрайты (SCRUM-945) на обоих юнитах.
+#  - SCRUM-946/FAN-1076 Склянка гомункула: постоянная крупная пара — танк
+#    (4x max HP Химика, глобальное аггро, 50% регена/вампиризма, смертен,
+#    респавн через summon_interval) + неуязвимый кастер (вне allies,
+#    широкие волны вечного периодического урона с trait-бонусом).
 #
 # Запуск: Godot --headless --path . --script res://tests/chemist_kit_test.gd
 
@@ -44,7 +44,7 @@ func _initialize() -> void:
 		push_error("Chemist kit test: %d ошибок." % _errors.size())
 		quit(1)
 		return
-	print("Chemist kit test passed (trait x1.5, blast direct, acid charges, homunculus pair).")
+	print("Chemist kit test passed (trait x1.5, blast direct, acid charges, enhanced homunculus pair).")
 	quit(0)
 
 
@@ -276,6 +276,8 @@ func _check_homunculus_pair() -> void:
 	# Танк: боевой саммон в allies, 4x max HP Химика, таунт, без таймера жизни.
 	if not tank.is_in_group("allies"):
 		_errors.append("pair: танк не в группе allies")
+	if not tank.is_in_group("chemist_tank_homunculi"):
+		_errors.append("pair: танк не зарегистрирован как глобальная цель аггро")
 	var expected_tank_hp := float(chemist.get("max_health")) * 4.0
 	if absf(float(tank.get("max_health")) - expected_tank_hp) > expected_tank_hp * 0.01:
 		_errors.append("pair: HP танка %.1f вместо 4x HP Химика (%.1f)" % [float(tank.get("max_health")), expected_tank_hp])
@@ -289,6 +291,8 @@ func _check_homunculus_pair() -> void:
 	if tank_body == null or tank_body.texture == null \
 			or not tank_body.texture.resource_path.begins_with("res://assets/sprites/allies/homunculus_tank_"):
 		_errors.append("pair: танк не на новом PixelLab-спрайте (%s)" % (tank_body.texture.resource_path if tank_body != null and tank_body.texture != null else "нет Body"))
+	elif tank_body.scale.x < 1.19 or tank_body.scale.y < 1.19:
+		_errors.append("pair: танк остался маленьким (scale %s)" % str(tank_body.scale))
 
 	# Кастер: неуязвимый эффект вне боевых групп, без таймера, новый спрайт.
 	if caster.is_in_group("allies"):
@@ -301,9 +305,41 @@ func _check_homunculus_pair() -> void:
 	if caster_visual == null or caster_visual.texture == null \
 			or not caster_visual.texture.resource_path.begins_with("res://assets/sprites/allies/homunculus_caster_"):
 		_errors.append("pair: кастер не на новом PixelLab-спрайте")
+	elif caster_visual.scale.x < 2.39 or caster_visual.scale.y < 2.39:
+		_errors.append("pair: кастер остался маленьким (scale %s)" % str(caster_visual.scale))
 
-	# Волны кастера: вечный периодический заряд с trait-бонусом, стак до капа.
-	var enemy := _make_dummy_enemy(caster.global_position + Vector2(40, 0))
+	# Танк получает ровно половину эффективного регена и вампиризма Химика.
+	var sustain_parameters: Dictionary = chemist.get("derived_parameters")
+	sustain_parameters["regeneration"] = 10.0
+	tank.set("health", float(tank.get("max_health")) - 100.0)
+	var health_before_regen := float(tank.get("health"))
+	var expected_regen_share := float(chemist.call("effective_regeneration_per_second")) * float(weapon.get("pair_tank_regen_share"))
+	weapon.call("_update_homunculus_pair", 1.0)
+	var actual_regen_share := float(tank.get("health")) - health_before_regen
+	if absf(actual_regen_share - expected_regen_share) > 0.01:
+		_errors.append("pair: танк получил %.3f регена вместо 50%% (%.3f)" % [actual_regen_share, expected_regen_share])
+
+	sustain_parameters["regeneration"] = 0.0
+	sustain_parameters["vampiric_chance"] = 1.0
+	sustain_parameters["vampiric_amount"] = 8.0
+	chemist.set("_vampiric_heal_budget", 100.0)
+	tank.set("health", float(tank.get("max_health")) - 100.0)
+	var health_before_vampirism := float(tank.get("health"))
+	var vampiric_hit_damage := 10.0
+	var expected_owner_vampirism := (8.0 + vampiric_hit_damage * ProgressionData.VAMPIRIC_DAMAGE_HEAL_RATIO) \
+			* float(chemist.call("_effective_healing_multiplier"))
+	var expected_vampiric_share := expected_owner_vampirism * float(weapon.get("pair_tank_vampiric_share"))
+	var vampiric_dummy := _make_dummy_enemy(caster.global_position + Vector2(20, 0))
+	chemist.call("on_weapon_hit", vampiric_dummy, vampiric_hit_damage, false, {})
+	var actual_vampiric_share := float(tank.get("health")) - health_before_vampirism
+	if absf(actual_vampiric_share - expected_vampiric_share) > 0.01:
+		_errors.append("pair: танк получил %.3f вампиризма вместо 50%% (%.3f)" % [actual_vampiric_share, expected_vampiric_share])
+	vampiric_dummy.free()
+
+	# Волны кастера: радиус 240, вечный периодический заряд с trait-бонусом, стак до капа.
+	if float(weapon.get("summon_wave_radius")) < 240.0:
+		_errors.append("pair: радиус волны меньше 240 (%.1f)" % float(weapon.get("summon_wave_radius")))
+	var enemy := _make_dummy_enemy(caster.global_position + Vector2(220, 0))
 	await process_frame
 	weapon.call("_fire_caster_wave", chemist)
 	var wave_status: Dictionary = StatusEffects.snapshot(enemy).get("homunculus_caster_dot", {})
@@ -324,11 +360,11 @@ func _check_homunculus_pair() -> void:
 
 	# Кастер следует за танком; после смерти танка — fallback к Химику.
 	var anchor_with_tank: Vector2 = weapon.call("_pair_caster_anchor", chemist)
-	if anchor_with_tank.distance_to(tank.global_position) > 120.0:
+	if anchor_with_tank.distance_to(tank.global_position) > 180.0:
 		_errors.append("pair: якорь кастера не у танка")
 	tank.call("take_damage", 1.0e12)
 	var anchor_fallback: Vector2 = weapon.call("_pair_caster_anchor", chemist)
-	if anchor_fallback.distance_to((chemist as Node2D).global_position) > 120.0:
+	if anchor_fallback.distance_to((chemist as Node2D).global_position) > 140.0:
 		_errors.append("pair: после смерти танка кастер не вернулся к Химику (fallback)")
 
 	enemy.free()
@@ -350,16 +386,15 @@ func _check_homunculus_tank_death_and_respawn() -> void:
 		chemist.free()
 		return
 
-	# Живой танк перехватывает аггро реального врага таунт-пульсом.
+	# Живой танк перехватывает глобальное аггро реального врага без таунт-пульса,
+	# даже если враг находится далеко за старым радиусом 210 px.
 	# HP врага задираем: базовые 3 HP танк сносит одним ударом ДО пульса,
 	# и мёртвый враг вылетает из группы enemies (репро первой красной итерации).
 	var enemy := (load("res://scenes/Enemy.tscn") as PackedScene).instantiate() as Node2D
 	enemy.set("max_health", 1.0e9)
 	root.add_child(enemy)
 	enemy.set("health", 1.0e9)
-	enemy.global_position = tank.global_position + Vector2(90, 0)
-	await process_frame
-	tank.call("_update_taunt_pulse", 2.0)
+	enemy.global_position = tank.global_position + Vector2(500, 0)
 	await process_frame
 	var taunted_target: Node2D = enemy.call("_combat_target")
 	if taunted_target != tank:
@@ -430,6 +465,7 @@ func _make_dummy_enemy(pos: Vector2) -> Node2D:
 func _dummy_enemy_script() -> GDScript:
 	var src := """
 extends Area2D
+var health := 1000000.0
 func take_damage(amount: float, _feedback := {}) -> bool:
 	set_meta(\"damage_taken\", float(get_meta(\"damage_taken\", 0.0)) + amount)
 	return true

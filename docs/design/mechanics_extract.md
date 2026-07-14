@@ -34,7 +34,7 @@ Manifest инстанцирует 306 branch nodes и 34 hidden profiles; каж
 scope/effect/cap/consumer/fixture. Free core явно и всегда даёт ровно +1 primary
 attribute вне 20-point spend.
 
-Обновлено: 2026-07-11
+Обновлено: 2026-07-14
 
 Ниже сохранена выгрузка исходной таблицы механик. Этот верхний раздел фиксирует, какие механики уже перенесены в игру и как они называются в коде. Для точного текущего состояния также см. `docs/design/current_game_state.md`.
 
@@ -255,7 +255,7 @@ solo/AoE-оси Солдата остаются на бюджет-целях 48/
 | Доктор | Костяная пила | `bone_saw` | `stab_flurry` | Ближний saw/flurry, bleed-like DoT, lifesteal от урона |
 | Химик | Взрывная пыль | `blast_powder` | `aoe_projectile` | AoE explosion + spark cloud; разные cloud elements дают combo explosion |
 | Химик | Кислотная колба | `acid_flask` | `aoe_projectile` | Poison/acid pool, большая DoT-zone, combo с другим элементом |
-| Химик | Склянка гомункула | `homunculus_vial` | `summon` | Гомункул `tank_control`: живучий temporary minion от magic damage, отталкивает цель |
+| Химик | Склянка гомункула | `homunculus_vial` | `summon` | Постоянная крупная пара: танк `tank_control` (4x HP, глобальное аггро, 50% регена/вампиризма) + неуязвимый кастер с damage-wave r240 |
 | Рыцарь | Копье | `long_spear` | `strip` | Длинный точечный strip, block/counter passive |
 | Рыцарь | Башенный щит | `tower_shield` | `sweep` | Shield bash / frontal control, самый сильный block reduction |
 | Рыцарь | Освященный кистень | `holy_flail` | `circle` | Medium circular heavy swing, сильнее counter damage |
@@ -273,7 +273,7 @@ SCRUM-254 усилил призывателей через data-driven поля 
 | Role | Где используется | Поведение |
 | --- | --- | --- |
 | `pack_damage` | `druid/summon_amulet` | Быстрая стая: высокий темп, умеренная живучесть, малый контроль |
-| `tank_control` | `chemist/homunculus_vial` | Более плотный одиночный миньон: больше HP, медленнее, отталкивает цель |
+| `tank_control` | `chemist/homunculus_vial` | Постоянный танк пары: 4x HP, глобально перехватывает врагов, получает 50% эффективного регена/вампиризма владельца; после смерти респавнится через 4с |
 | `support_totem` | `druid/raven_totem` | Тотем-поддержка: deploy-пульсы, контроль и малый sustain |
 | `engineer_sentry` | `engineer/engineer_sentry_wrench` | Устройство-турель (SCRUM-888): персистентная автострельба снарядами по ближайшим, роль считается summon archetype |
 | `orbit_drone` | `engineer/engineer_repair_drone` | Постоянный парк контактных боевых дронов: базовая антиподальная пара, число и урон скейлятся по summon-профилю |

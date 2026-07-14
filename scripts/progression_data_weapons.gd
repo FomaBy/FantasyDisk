@@ -504,8 +504,8 @@ const CHEMIST_WEAPONS := {
 		"passive_mods": {"aoe_radius_multiplier": 1.08},
 	},
 	# SCRUM-946: ПОСТОЯННАЯ пара гомункулов (без таймера жизни):
-	# - танк: 4x max HP Химика, таунт-пульсы (враги грызут его, а не игрока),
-	#   смертен; после смерти переспавнивается через fire_interval (4с);
+	# - танк: 4x max HP Химика, глобальный приоритет аггро, 50% регена и
+	#   вампиризма владельца; смертен, после смерти переспавнивается через 4с;
 	# - кастер: неуязвим (Node2D-эффект вне групп allies/боевого лимита), ходит
 	#   рядом с танком (fallback — плечо Химика), каждые summon_wave_interval
 	#   вешает волной вечный DoT-заряд (кап summon_wave_stack_cap, trait ×1.5).
@@ -513,7 +513,7 @@ const CHEMIST_WEAPONS := {
 	# использует: популяцию ведёт _update_homunculus_pair).
 	"homunculus_vial": {
 		"id": "homunculus_vial", "title": "Склянка гомункула",
-		"description": "Постоянная пара гомункулов: живучий танк-провокатор (4x HP Химика) и неуязвимый кастер, копящий волнами вечный периодический урон.",
+		"description": "Постоянная крупная пара: танк (4x HP, глобальное аггро, 50% регена и вампиризма Химика) и неуязвимый кастер с широкой волной вечного периодического урона.",
 		"scene_path": "res://scenes/HomunculusVial.tscn",
 		"damage_parameter": "magic_damage",
 		"summon_damage_multiplier": 2.40,  # SCRUM-546: подъём с пола DPS-полосы (был 0.52)
@@ -531,8 +531,12 @@ const CHEMIST_WEAPONS := {
 		"summon_control_knockback": 95.0,
 		"summon_pair_mode": true,
 		"pair_tank_visual_id": "homunculus_tank",
+		"pair_tank_visual_scale": 1.20,
+		"pair_caster_visual_scale": 2.40,
+		"pair_tank_regen_share": 0.50,
+		"pair_tank_vampiric_share": 0.50,
 		"summon_wave_interval": 1.7,
-		"summon_wave_radius": 150.0,
+		"summon_wave_radius": 240.0,
 		"summon_wave_dot_multiplier": 0.35,
 		"summon_wave_dot_interval": 1.0,
 		"summon_wave_stack_cap": 4,

@@ -73,6 +73,7 @@ var _separation_refresh_left := 0.0
 var _separation_weight := 1.0
 var _separation_radius := 32.0
 var _cached_player: Node2D = null
+var _cached_homunculus_tank: Node2D = null
 var _cached_body: Sprite2D = null
 var _cached_rig: Node2D = null
 var _cached_full_frame_body: AnimatedSprite2D = null
@@ -88,6 +89,7 @@ var _elite_instant_phase_applied := false
 
 const COLLISION_LAYER_PLAYER := 1
 const COLLISION_LAYER_GROUND_ENEMY := 2
+const HOMUNCULUS_TANK_OWNER_META := "chemist_tank_instance_id"
 const COLLISION_LAYER_FLYING_ENEMY := 4
 const COLLISION_LAYER_SOLID := 32
 const ARENA_SIZE := Vector2(4096, 2304)  # SCRUM-518: синхронно с main.gd (×1.6)
@@ -1623,10 +1625,47 @@ func _player() -> Node2D:
 
 
 func _combat_target() -> Node2D:
+	var homunculus_tank := _homunculus_tank_target()
+	if homunculus_tank != null:
+		return homunculus_tank
 	var taunt_target := _taunt_target()
 	if taunt_target != null:
 		return taunt_target
 	return _player()
+
+
+func _homunculus_tank_target() -> Node2D:
+	# Freed Object-ссылка не может быть передана в типизированный аргумент даже
+	# для проверки is_instance_valid внутри функции — отсеиваем её заранее.
+	if _cached_homunculus_tank != null and is_instance_valid(_cached_homunculus_tank) \
+			and _valid_homunculus_tank(_cached_homunculus_tank):
+		return _cached_homunculus_tank
+	_cached_homunculus_tank = null
+	# Не аллоцируем get_nodes_in_group на hot path каждого врага: оружие хранит
+	# instance id актуального танка прямо на своём владельце.
+	var player := _player()
+	if player == null:
+		return null
+	var tank_id := int(player.get_meta(HOMUNCULUS_TANK_OWNER_META, 0))
+	if tank_id <= 0:
+		return null
+	var tank := instance_from_id(tank_id) as Node2D
+	if _valid_homunculus_tank(tank):
+		_cached_homunculus_tank = tank
+		return tank
+	return null
+
+
+func _valid_homunculus_tank(tank: Node2D) -> bool:
+	if tank == null or not is_instance_valid(tank) or tank.is_queued_for_deletion():
+		return false
+	if not tank.is_inside_tree() or not tank.has_method("take_damage"):
+		return false
+	var health_value = tank.get("health")
+	if health_value != null and float(health_value) <= 0.0:
+		return false
+	var tank_owner = tank.get("owner_node")
+	return tank_owner == _player()
 
 
 func _taunt_target() -> Node2D:
