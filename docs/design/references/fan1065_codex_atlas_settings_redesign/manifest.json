@@ -1,0 +1,93 @@
+{
+  "package": "fan1065_codex_atlas_settings_redesign",
+  "issue": "FAN-1066",
+  "parent": "FAN-1065",
+  "role": "Design",
+  "lane": "Claude",
+  "generator": "PixelLab MCP",
+  "access": "direct MCP tools stale in this runtime; used configured PixelLab MCP bridge (~/.codex/config.toml). No tokens/headers stored in repo. `python3 tools/pixellab_auth_smoke.py` => PASS (get_balance).",
+  "art_direction": "D&D + Dark Fantasy Dragon; Atlas/Settings sanctum family — warm near-black forged stone/leather panels, thin muted-bronze + worn-gold trim, dark painted sanctum backdrop, restrained ember accents, calm surfaces. Codex keeps a restrained lore/parchment accent inside the dossier only.",
+  "shared_style_prompt": "strict premium dark fantasy dragon D&D interface art; warm near-black forged stone and dark leather; thin muted bronze and worn gold trim; restrained ember accents; calm, not busy, not loud",
+  "shared_negative_prompt": "no text, no letters, no numbers, no runes shaped like text, no logos, no watermarks, empty calm interior",
+  "source_assets": [
+    {
+      "name": "sanctum_backdrop",
+      "file": "source/codex_sanctum_backdrop.png",
+      "tool": "create_ui_asset",
+      "pixellab_id": "f6bb36b2-51b5-4b44-8941-43791eb38e8b",
+      "export_dimensions": [688, 384],
+      "aspect": "16:9 (max per axis)",
+      "seed": 11065,
+      "no_background": false,
+      "color_palette": "warm black and worn gold",
+      "prompt": "Full-screen dark fantasy sanctum archive backdrop wall for a codex/library screen. Deep warm-black forged stone and shadowed dragon library, faint worn-gold ember glow, subtle scale and horn silhouettes far in shadow. Atmospheric, seamless, calm, one continuous surface. + shared negative + shared style.",
+      "usage": "Fullscreen shell backdrop; inner scene cropped (inset 30/26) and cover-scaled to 1920x1080; also the dossier parchment/well frame source."
+    },
+    {
+      "name": "codex_panel_kit",
+      "file": "source/codex_panel_kit.png",
+      "tool": "create_ui_asset",
+      "pixellab_id": "d49ad290-6fe7-43b5-9a96-c202005ae36b",
+      "export_dimensions": [512, 512],
+      "aspect": "square",
+      "seed": 21065,
+      "no_background": true,
+      "color_palette": "warm black and muted bronze",
+      "prompt": "Calm dark fantasy content surface panel, warm near-black leather-and-stone interior with a thin muted-bronze double border and small claw-notched forged corners. Empty readable interior. Symmetric so it can 9-slice. + shared negative + shared style.",
+      "usage": "Panel kit; the large central panel is cropped to derived/panel_9slice.png (nav/content/detail/title frames); a wide bar cropped to derived/chip_bar.png (dossier chips)."
+    },
+    {
+      "name": "entry_card_kit",
+      "file": "source/entry_card_kit.png",
+      "tool": "create_ui_asset",
+      "pixellab_id": "d9a90bae-2dc3-4bfb-9c0e-30f7900944b3",
+      "export_dimensions": [688, 206],
+      "aspect": "16:9-ish wide",
+      "seed": 31065,
+      "no_background": true,
+      "color_palette": "warm black and worn gold",
+      "prompt": "Wide dark fantasy codex list row card. Warm-black leather plate with a thin bronze bevel edge, a recessed square dark image well on the left third and a calm empty name band filling the rest. + shared negative + shared style.",
+      "usage": "Center list row card; resized to derived/entry_card_516x154.png (516x154 accepted row)."
+    },
+    {
+      "name": "dossier_parchment_kit",
+      "file": "source/dossier_parchment_kit.png",
+      "tool": "create_ui_asset",
+      "pixellab_id": "18689c57-1115-4e63-8da8-e4f7510003bd",
+      "export_dimensions": [512, 512],
+      "aspect": "square",
+      "seed": 41065,
+      "no_background": true,
+      "color_palette": "bronze and aged parchment",
+      "prompt": "Ornamental dark fantasy dossier image-well frame, a bronze forged recess with a faint aged-parchment backing and subtle dragon-scale corners, empty dark center. + shared negative + shared style.",
+      "usage": "Dossier image well (resized to derived/dossier_well_236x248.png) and the lower lore parchment scroll (9-sliced to 684x356). Carries the allowed restrained parchment/lore accent."
+    },
+    {
+      "name": "codex_crest",
+      "file": "source/codex_crest.png",
+      "tool": "create_map_object",
+      "pixellab_id": "6a5c5a0c-af8c-4396-bc33-c56fde0391f5",
+      "export_dimensions": [220, 220],
+      "view": "side",
+      "outline": "selective outline",
+      "shading": "detailed shading",
+      "detail": "high detail",
+      "background": "transparent",
+      "prompt": "Small heraldic codex crest emblem: a coiled dragon over an open forged tome, worn gold and bronze on dark, restrained and premium, transparent background. + shared negative + shared style.",
+      "usage": "Header crest accent, top-center (104x104)."
+    }
+  ],
+  "derived_assets": [
+    {"file": "derived/panel_9slice.png", "from": "codex_panel_kit crop (210,77,295,231)", "nine_slice_margins": [46,46,46,46], "used_by": ["CodexNavPanel","CodexContent","CodexDetailPanel","CodexTitleFrame"]},
+    {"file": "derived/chip_bar.png", "from": "codex_panel_kit crop (209,7,297,60)", "nine_slice_margins": [40,20,40,20], "used_by": ["CodexDetailChip1","CodexDetailChip2"]},
+    {"file": "derived/entry_card_516x154.png", "from": "entry_card_kit resized 516x154", "used_by": ["CodexEntryCard"]},
+    {"file": "derived/dossier_well_236x248.png", "from": "dossier_parchment_kit resized 236x248", "used_by": ["CodexDetailWell image zone"]}
+  ],
+  "runtime_button_family_referenced_not_regenerated": {
+    "path": "assets/sprites/ui/frames/minimal_metal_buttons/",
+    "tabs": "ui_btn_minimal_metal_codex_tab{,_hover,_pressed,_focus,_disabled}.png (170x104)",
+    "back": "ui_btn_minimal_metal_main_menu{,_hover,_pressed,_focus,_disabled}.png (380x104)",
+    "note": "Six left tabs and Back stay in the accepted main-menu button family; not modified."
+  },
+  "notes": "PixelLab source assets auto-delete from PixelLab storage after 8h; downloaded PNGs are the durable copies committed here. provenance.json in source/ holds raw IDs/URLs."
+}
