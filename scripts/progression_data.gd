@@ -1918,7 +1918,7 @@ static func _budget_sentry_ammo_model(config: Dictionary, params: Dictionary, st
 # SCRUM-906: контактный DPS орбитальных дронов — зеркало
 # scripts/engineer_orbit_drone.gd + class_weapon._engineer_drone_target_count.
 # Число дронов = max_summons + floor(max(summon_amount - threshold, 0) / step),
-# рельс max_summons_cap (база Инженера ~12.5 → ровно 1 дрон). Оборотов/с =
+# рельс max_summons_cap (база Инженера ~12.5 → ровно 2 дрона). Оборотов/с =
 # drone_orbit_speed × attack_speed / TAU (скорость атаки крутит RPM, AC);
 # хитов/с на дрона по одной цели = min(обороты, 1/hit_cooldown) — дрон
 # пересекает угловую позицию цели раз за оборот, per-enemy кулдаун гейтит
@@ -1940,7 +1940,12 @@ static func _budget_orbit_drone_dps(config: Dictionary, params: Dictionary, stat
 	var role_factor := _budget_summon_role_damage_factor(config, params, stats)
 	var contact_damage := float(params.get(str(config.get("damage_parameter", "damage")), params.get("damage", 1.0))) 		* float(config.get("summon_damage_multiplier", 0.9)) * role_factor
 	var solo_dps := count * contact_damage * pass_rate
-	var outer_radius := maxf(float(config.get("drone_orbit_radius", 78.0)), 24.0) * (1.0 + 0.14 * (count - 1.0))
+	# FAN-1075: стартовая пара находится на одном кольце; спираль начинается
+	# с третьего дрона и зеркалит engineer_orbit_drone._orbit_radius.
+	var outer_slot := 0.0
+	if count > 2.0:
+		outer_slot = count - 1.0
+	var outer_radius := maxf(float(config.get("drone_orbit_radius", 121.0)), 24.0) * (1.0 + 0.14 * outer_slot)
 	var ring_coverage := clampf(1.0 + (outer_radius + maxf(float(config.get("drone_contact_radius", 44.0)), 8.0)) / 58.0, 1.0, 5.0)
 	return {
 		"summon_dps": solo_dps,

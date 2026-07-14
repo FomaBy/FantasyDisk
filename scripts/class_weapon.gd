@@ -293,8 +293,9 @@ const ATTACK_MODE_EXECUTORS := {
 @export var sentry_splash_target_cap := 0
 # SCRUM-905: боезапас турели (выстрелов на турель; расстреляла — свернулась).
 @export var sentry_shot_magazine := 15
-# SCRUM-906: орбитальные дроны (см. scripts/engineer_orbit_drone.gd).
-@export var drone_orbit_radius := 78.0
+# SCRUM-906, FAN-1075: орбитальные дроны (см. scripts/engineer_orbit_drone.gd).
+@export var drone_orbit_radius := 121.0
+@export var drone_visual_scale := 0.24
 @export var drone_orbit_speed := 3.6
 @export var drone_contact_radius := 44.0
 @export var drone_hit_cooldown := 0.85
@@ -570,6 +571,7 @@ func configure_weapon(config: Dictionary) -> void:
 	sentry_splash_target_cap = int(config.get("sentry_splash_target_cap", sentry_splash_target_cap))
 	sentry_shot_magazine = int(config.get("sentry_shot_magazine", sentry_shot_magazine))
 	drone_orbit_radius = float(config.get("drone_orbit_radius", drone_orbit_radius))
+	drone_visual_scale = float(config.get("drone_visual_scale", drone_visual_scale))
 	drone_orbit_speed = float(config.get("drone_orbit_speed", drone_orbit_speed))
 	drone_contact_radius = float(config.get("drone_contact_radius", drone_contact_radius))
 	drone_hit_cooldown = float(config.get("drone_hit_cooldown", drone_hit_cooldown))
@@ -4491,7 +4493,7 @@ func _fire_engineer_orbit_drone(owner_node: Node2D, direction: Vector2) -> void:
 		drone.set_script(ENGINEER_ORBIT_DRONE_SCRIPT)
 		var visual := Sprite2D.new()
 		visual.texture = _weapon_visual_texture()
-		visual.scale = Vector2.ONE * 0.16
+		visual.scale = Vector2.ONE * maxf(drone_visual_scale, 0.01)
 		visual.modulate = Color(1.0, 1.0, 1.0, 0.92)
 		drone.add_child(visual)
 		_projectile_parent().add_child(drone)
@@ -4508,10 +4510,10 @@ func _fire_engineer_orbit_drone(owner_node: Node2D, direction: Vector2) -> void:
 
 
 func _engineer_drone_target_count(owner_node: Node2D) -> int:
-	# SCRUM-906: 1 дрон на базовом профиле Инженера; +1 за каждые
+	# SCRUM-906, FAN-1075: 2 дрона на базовом профиле Инженера; +1 за каждые
 	# drone_count_step summon_amount сверх drone_count_threshold (порог ~
 	# базовый summon_amount класса), рельс max_summons_cap. Задокументированные
-	# пороги (threshold 12, step 4): 16 → 2, 20 → 3, 24 → 4, 28 → 5, 32 → 6.
+	# пороги (threshold 12, step 4): 16 → 3, 20 → 4, 24 → 5, 28 → 6.
 	var summon_amount := 0.0
 	if owner_node != null and is_instance_valid(owner_node):
 		var params = owner_node.get("derived_parameters")

@@ -5,10 +5,11 @@ extends SceneTree
 #       свернулась; таймера жизни нет; предел парка 2+floor(summon_amount/4)
 #       (рельс 6, «Полевой чертеж» поверх), при полном парке деплой skip;
 #       темп стрельбы ускоряется attack_speed (расход боезапаса быстрее).
-#   906 «Орбитальный Дрон»: дроны кружат вокруг игрока (спираль по слотам),
+#   906 «Орбитальный Дрон»: дроны кружат вокруг игрока (стартовая пара
+#       антиподальна на одном кольце, с третьего дрона — спираль по слотам),
 #       физический контактный урон с per-enemy кулдауном; число дронов
-#       1+floor(max(sa-12,0)/4) (1 на базовом профиле, 5 при sa=28, рельс 6);
-#       RPM растёт от attack_speed.
+#       2+floor(max(sa-12,0)/4) (2 на базовом профиле, 6 при sa=28, рельс 6);
+#       FAN-1075: радиус 121 px, визуальный scale 0.24; RPM растёт от attack_speed.
 #   907 «Минная Сетка»: ровно 2 персистентные мины за деплой в случайном
 #       кольце 110..260; таймера жизни НЕТ; враг подрывает сразу (и в первые
 #       3с), сам игрок — только после 3с; кап живых 6 (skip, не retire).
@@ -137,11 +138,15 @@ func _test_trait_registry_and_configs(errors: Array) -> void:
 		errors.append("дрон обязан наносить физический damage")
 	if drone.has("heal_percent_of_damage") or drone.has("summon_support_heal_percent"):
 		errors.append("ремонт/скрытый сустейн дрона обязан быть удалён (AC SCRUM-906)")
-	for key in ["drone_orbit_radius", "drone_orbit_speed", "drone_contact_radius", "drone_hit_cooldown", "drone_count_threshold", "drone_count_step"]:
+	for key in ["drone_orbit_radius", "drone_visual_scale", "drone_orbit_speed", "drone_contact_radius", "drone_hit_cooldown", "drone_count_threshold", "drone_count_step"]:
 		if float(drone.get(key, 0.0)) <= 0.0:
 			errors.append("drone config без ключа %s" % key)
-	if int(drone.get("max_summons", 0)) != 1 or int(drone.get("max_summons_cap", 0)) != 6:
-		errors.append("drone max_summons/cap != 1/6")
+	if int(drone.get("max_summons", 0)) != 2 or int(drone.get("max_summons_cap", 0)) != 6:
+		errors.append("drone max_summons/cap != 2/6")
+	if absf(float(drone.get("drone_orbit_radius", 0.0)) - 121.0) > EPS:
+		errors.append("drone_orbit_radius != 121 (+55% к 78)")
+	if absf(float(drone.get("drone_visual_scale", 0.0)) - 0.24) > EPS:
+		errors.append("drone_visual_scale != 0.24 (+50% к 0.16)")
 
 	# 907: ровно 2 мины, персистентные ключи, таймер жизни удалён.
 	if int(mines.get("projectile_count", 0)) != 2:
@@ -173,7 +178,7 @@ func _test_budget_models(errors: Array) -> void:
 	if not PD._budget_sentry_ammo_model(mines, sentry_params, stats).is_empty():
 		errors.append("_budget_sentry_ammo_model протёк на мины")
 
-	# Орбитальная модель: базовый профиль — ровно 1 дрон; рост RPM от attack_speed.
+	# Орбитальная модель: базовый профиль — ровно 2 дрона; рост RPM от attack_speed.
 	var orbit_model: Dictionary = PD._budget_orbit_drone_dps(drone, drone_params, stats)
 	if orbit_model.is_empty() or float(orbit_model.get("summon_dps", 0.0)) <= 0.0:
 		errors.append("_budget_orbit_drone_dps пуст для дрона")
@@ -326,17 +331,18 @@ func _test_orbit_drone_orbit_and_contact(errors: Array) -> void:
 	var weapon := _new_weapon(owner, "engineer_repair_drone")
 	await process_frame
 
-	# Базовый профиль mock-владельца (summon_amount 0): ровно 1 дрон.
+	# Базовый профиль mock-владельца (summon_amount 0): ровно 2 дрона.
 	weapon.call("_fire_engineer_orbit_drone", owner, Vector2.RIGHT)
 	await process_frame
 	var drones := _engineer_devices(holder)
-	if drones.size() != 1:
-		errors.append("на базе ожидался ровно 1 дрон, получено %d" % drones.size())
+	if drones.size() != 2:
+		errors.append("на базе ожидалось ровно 2 дрона, получено %d" % drones.size())
 		await _cleanup(holder)
 		return
 	var drone: Node2D = drones[0]
 
-	# Орбита: дрон держит радиус ~78 и движется вокруг владельца.
+	# Орбита: стартовая пара держит единый радиус 121, движется и остаётся
+	# строго напротив друг друга (разница фаз 180 градусов).
 	var start_position := drone.global_position
 	for _frame in range(20):
 		await process_frame
@@ -348,8 +354,19 @@ func _test_orbit_drone_orbit_and_contact(errors: Array) -> void:
 	if travelled <= 8.0:
 		errors.append("дрон не движется по орбите (сдвиг %.1f)" % travelled)
 	var orbit_distance := owner.global_position.distance_to(drone.global_position)
-	if absf(orbit_distance - 78.0) > 6.0:
-		errors.append("радиус орбиты слота 0 != ~78 (got %.1f)" % orbit_distance)
+	if absf(orbit_distance - 121.0) > 6.0:
+		errors.append("радиус орбиты слота 0 != ~121 (got %.1f)" % orbit_distance)
+	var opposite: Node2D = drones[1]
+	var opposite_distance := owner.global_position.distance_to(opposite.global_position)
+	if absf(opposite_distance - 121.0) > 6.0:
+		errors.append("радиус орбиты слота 1 != ~121 (got %.1f)" % opposite_distance)
+	var first_direction := (drone.global_position - owner.global_position).normalized()
+	var second_direction := (opposite.global_position - owner.global_position).normalized()
+	if first_direction.dot(second_direction) > -0.999:
+		errors.append("стартовые дроны не напротив друг друга (dot %.4f)" % first_direction.dot(second_direction))
+	var visual := drone.get_child(0) as Sprite2D
+	if visual == null or absf(visual.scale.x - 0.24) > EPS or absf(visual.scale.y - 0.24) > EPS:
+		errors.append("визуальный scale дрона != 0.24")
 
 	# Контакт: враг в точке дрона получает физический урон РОВНО раз за кулдаун.
 	var enemy := _new_enemy(holder, drone.global_position)
@@ -384,19 +401,19 @@ func _test_orbit_drone_count_scaling_and_spiral(errors: Array) -> void:
 	var weapon := _new_weapon(owner, "engineer_repair_drone")
 	await process_frame
 
-	# Документированные пороги: sa=16 -> 2, sa=28 -> 5 (AC: >=5 на хай-энде).
+	# Документированные пороги: sa=16 -> 3, sa=28 -> 6 (жёсткий рельс).
 	owner.derived_parameters["summon_amount"] = 16.0
 	weapon.call("_fire_engineer_orbit_drone", owner, Vector2.RIGHT)
 	await process_frame
-	if _engineer_devices(holder).size() != 2:
-		errors.append("sa=16 обязан дать 2 дрона (got %d)" % _engineer_devices(holder).size())
+	if _engineer_devices(holder).size() != 3:
+		errors.append("sa=16 обязан дать 3 дрона (got %d)" % _engineer_devices(holder).size())
 
 	owner.derived_parameters["summon_amount"] = 28.0
 	weapon.call("_fire_engineer_orbit_drone", owner, Vector2.RIGHT)
 	await process_frame
 	var drones := _engineer_devices(holder)
-	if drones.size() != 5:
-		errors.append("sa=28 обязан дать 5 дронов (got %d)" % drones.size())
+	if drones.size() != 6:
+		errors.append("sa=28 обязан дать 6 дронов (got %d)" % drones.size())
 
 	# Спираль: дроны не слипаются в одну точку, радиусы слотов различаются.
 	await process_frame

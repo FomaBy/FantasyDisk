@@ -155,7 +155,7 @@ SCRUM-256 закрепил data-driven framework `ProgressionData.CLASS_MECHANIC
 | Священник | Знание | Священная формула: печати, ward-пульсы, цепи и sustain через урон | Реликварий = sanctify, кадило = wards, колокол = prayer chain |
 | Биолог | Знание | Биореакция: споры, анализ образцов и симбиотические сети | Линза = spore bloom, инъектор = sample analysis, семя = symbiote web |
 | Робот | Выносливость | Бронеконтур: магнитное удержание, компрессия и реакторное давление | Якорь = magnet pull, пресс = compression line, ядро = reactor vent |
-| Инженер | Лидерство | Мастерская приказов: устройства работают как управляемая команда | Ключ = sentry link, дрон = repair support, мины = route control |
+| Инженер | Лидерство | Мастерская приказов: устройства работают как управляемая команда | Ключ = sentry link, дрон = орбитальный контактный парк, мины = route control |
 | Темный маг | Интеллект | Темная формула: проклятия, лучи, взрывы и распад пространства | Книга = double AoE projectile, череп = homing DoT curse, жезл = pierce beams |
 | Гитарист | Лидерство | «Разогрев» (SCRUM-1006): no-hit стек магического урона +2 п.п./сек до +20%, сброс при полученном ударе; кайт + деплой | Электро = узкий riff strip, бас = большое кайт-кольцо, амп = деплой-турели (SCRUM-899) |
 | Ассасин | Ловкость | Критический танец: критовые окна, теневые всплески и тонкие poison-линии | Чакрамы = boomerang corridor, кинжалы = stab flurry, струна = poison line |
@@ -236,7 +236,7 @@ solo/AoE-оси Солдата остаются на бюджет-целях 48/
 | Робот | Гидравлический Пресс | `robot_hydraulic_press` | `robot_compression_line` | Широкий коридор: урон по ВСЕЙ ширине `suppression_width` (300, ×1.30 с «Калибратором»), прижимает рядовых к оси 0.80/каст; элитки/боссы — полный урон, резист смещения ×0.25 — выравнивание в линию |
 | Робот | Реакторное Ядро | `robot_reactor_core` | `robot_reactor_vent` | Ровно 4 вентиля 90° от МИРОВОЙ фазы (без самонаведения), паттерн +6°/каст — веер обходит круг за 15 атак; урон вентиля = ролл ×0.42, extra_projectile лишь расширяет лопасти |
 | Инженер | Ключ Часового | `engineer_sentry_wrench` | `engineer_sentry_link` | `turret_dps` (SCRUM-888): персистентные турели (жёсткий лимит 2, старейшая заменяется) автострельбой бьют залпом по разным ближайшим целям, малый capped splash; урон/темп скейлятся от Лидерства |
-| Инженер | Ремонтный Дрон | `engineer_repair_drone` | `engineer_repair_drone` | `repair_chain`: цепная дуга по врагам возвращает часть нанесенного урона в ремонт |
+| Инженер | Орбитальный Дрон | `engineer_repair_drone` | `engineer_orbit_drone` | SCRUM-906/FAN-1075: 2 увеличенных боевых дрона по умолчанию строго напротив друг друга на кольце 121 px; контактный физический урон, спираль с третьего дрона, кап 6 |
 | Инженер | Минная Сетка | `engineer_pressure_mines` | `engineer_pressure_mines` | `mine_grid`: три мины веером живут свой duration и тикают по врагам внутри |
 | Темный маг | Темная книга | `dark_book` | `dark_mirror_blast` | SCRUM-941: каждый каст = пара взрывов — по цели и в зеркальной точке M = 2*маг − P; оба по общим правилам урона, двойное накрытие легально |
 | Темный маг | Проклятый череп | `cursed_skull` | `skull_curse_burn` | SCRUM-940: curse-only зона — прямого урона нет; dot_ticks частых тиков dot-оси, refresh без стаков. Статы проклятия: тик = dot_damage (Знание) × curse_tick_multiplier × (1 + Интеллект × curse_int_scale), темп = dot_speed; magic/physical-множители не участвуют |
@@ -276,13 +276,13 @@ SCRUM-254 усилил призывателей через data-driven поля 
 | `tank_control` | `chemist/homunculus_vial` | Более плотный одиночный миньон: больше HP, медленнее, отталкивает цель |
 | `support_totem` | `druid/raven_totem` | Тотем-поддержка: deploy-пульсы, контроль и малый sustain |
 | `engineer_sentry` | `engineer/engineer_sentry_wrench` | Устройство-турель (SCRUM-888): персистентная автострельба снарядами по ближайшим, роль считается summon archetype |
-| `support_drone` | `engineer/engineer_repair_drone` | Support chain: ремонт от урона + малый дополнительный sustain |
+| `orbit_drone` | `engineer/engineer_repair_drone` | Постоянный парк контактных боевых дронов: базовая антиподальная пара, число и урон скейлятся по summon-профилю |
 
 SCRUM-859 добавил отдельный `deploy_role` для ClassWeapon-deploys: `stage_pulse`
 для Guitarist amp, `support_totem` для Druid raven, `turret_dps` для Engineer
-sentry, `repair_chain` для Engineer drone и `mine_grid` для Engineer mines.
-`max_summons_cap` применяется после Leadership scaling: amp/totem cap 3, sentry
-cap 5. Sentry shots now keep a per-cycle target memory and add small capped splash
+sentry, `orbit_drone` для Engineer drone и `mine_grid` для Engineer mines.
+`max_summons_cap` применяется после Leadership scaling: amp/totem cap 3,
+Engineer sentry/drone cap 6. Sentry shots now keep a per-cycle target memory and add small capped splash
 around the primary target.
 
 `ProgressionData.weapon_archetype()` считает оружие с `summon_role` как `summon`.

@@ -1181,14 +1181,15 @@ const ENGINEER_WEAPONS := {
 		"attack_mode": "engineer_orbit_drone", "damage_parameter": "damage",
 		# fire_interval — каданс обслуживания парка (доспавн недостающих дронов),
 		# НЕ канал урона: весь урон — контактный (summon-канал бюджета,
-		# _budget_orbit_drone_dps). Число дронов = 1 + floor(max(summon_amount -
+		# _budget_orbit_drone_dps). Число дронов = 2 + floor(max(summon_amount -
 		# drone_count_threshold, 0) / drone_count_step), рельс max_summons_cap:
-		# базовый профиль Инженера (summon_amount ~12.5) даёт РОВНО 1 дрон,
-		# прокачка Лидерства добирает 2..6 (AC SCRUM-906: >=5 на хай-энде).
+		# базовый профиль Инженера (summon_amount ~12.5) даёт РОВНО 2 дрона,
+		# расположенных напротив друг друга; прокачка Лидерства добирает 3..6.
 		"damage_multiplier": 2.4, "fire_interval": 1.20,
 		"attack_range": 540.0, "aoe_radius": 150.0,
-		"max_summons": 1, "max_summons_cap": 6,
-		"drone_orbit_radius": 78.0,     # базовый радиус орбиты (спираль: +14% за слот)
+		"max_summons": 2, "max_summons_cap": 6,
+		"drone_orbit_radius": 121.0,    # FAN-1075: +55% к прежним 78 px
+		"drone_visual_scale": 0.24,     # FAN-1075: +50% к прежним 0.16
 		"drone_orbit_speed": 3.6,       # рад/с; × attack_speed (RPM растёт от скорости атаки)
 		"drone_contact_radius": 44.0,   # радиус контакта дрона
 		"drone_hit_cooldown": 0.85,     # per-enemy кулдаун (защита от every-frame урона)

@@ -1283,7 +1283,22 @@ SCRUM-256 добавил framework уникальных классовых ид�
 
 SCRUM-243 добавил универсальную матрицу синергий `ProgressionData.ATTRIBUTE_WEAPON_SYNERGY_MAP`: каждый базовый атрибут имеет понятный эффект для melee, projectile, beam, AoE, summon и aura архетипов. `derived_parameters` получил мягкий cross-scaling для damage/magic/sound, attack speed, range/AoE, projectile speed, DoT, aura, summon и ultimate, поэтому прокачка любого атрибута меняет фактический параметр у representative оружия каждого архетипа. Стартовый DPS удерживается budget tuning; global damage/survivability smoke остаются зелеными.
 
-SCRUM-254/357 усилили summon/support персонажей через data-driven `summon_role` поля. SCRUM-859 добавил deploy identity поля `deploy_role`, `max_summons_cap` и sentry splash knobs для ClassWeapon-deploys. `SummonerWeapon` передает `AllyMinion` профиль урона, HP, скорости, интервала атаки, lifetime, control knockback, support heal, splash radius/damage и leash radius. Урон призыва теперь явно масштабируется от Leadership и `summon_amount`/Knowledge/Intelligence/Energy, живучесть и темп — от Leadership/`summon_amount`; growth capped, поэтому уровень 0 остается базовым. Друидский `summon_amulet` теперь роль `pack_damage`, Химик `homunculus_vial` — `tank_control`, Друид `raven_totem` — `support_totem`, Инженер `engineer_sentry_wrench` — `engineer_sentry`, `engineer_repair_drone` — `support_drone`. Deploy roles split the stationary loops into `stage_pulse`, `support_totem`, `turret_dps`, `repair_chain`, and `mine_grid`. Мобильные союзники распределяют цели группой вокруг владельца: если назначенного burst damage уже хватает быстро убить слабого врага, лишние союзники берут соседние цели в leash radius. Engineer sentries now remember targets per firing cycle and add small capped splash. `ProgressionData.weapon_archetype()` считает `summon_role` как summon archetype, а balance harness больше не добавляет чистым summon-оружиям невидимый direct hit.
+SCRUM-254/357 усилили summon/support персонажей через data-driven `summon_role`
+поля. SCRUM-859 добавил `deploy_role`, `max_summons_cap` и sentry splash knobs для
+ClassWeapon-deploys. `SummonerWeapon` передает `AllyMinion` профиль урона, HP,
+скорости, интервала атаки, lifetime, control knockback, support heal, splash и
+leash radius. Урон призыва масштабируется от Leadership и
+`summon_amount`/Knowledge/Intelligence/Energy, живучесть и темп — от
+Leadership/`summon_amount`; growth capped, поэтому уровень 0 остается базовым.
+Друидский `summon_amulet` использует `pack_damage`, Химик `homunculus_vial` —
+`tank_control`, Друид `raven_totem` — `support_totem`, Инженер
+`engineer_sentry_wrench` — `engineer_sentry`, `engineer_repair_drone` после
+SCRUM-906/FAN-1075 — `orbit_drone`. Deploy roles: `stage_pulse`, `support_totem`,
+`turret_dps`, `orbit_drone` и `mine_grid`. Мобильные союзники распределяют цели
+группой вокруг владельца с учетом overkill pressure. Engineer sentries remember
+targets per firing cycle and add small capped splash. `ProgressionData.weapon_archetype()`
+считает оружие с `summon_role` summon-архетипом; balance harness не добавляет
+чистым summon-оружиям невидимый direct hit.
 
 SCRUM-245 добавил reusable status layer `scripts/status_effects.gd`. Статусы живут в meta цели (`status_effects`), поддерживают duration, refresh/add/extend stack policy, DoT ticks, speed multiplier, damage multiplier, damage-taken multiplier и marker metadata. `Enemy` учитывает status slow и vulnerability в движении/получении урона; SCRUM-835 hardening также заставляет врагов читать marker-status `bastion_taunt` и временно выбирать живого `taunt_owner` как combat target для движения/стрельбы/контакта/elite-паттернов с fallback к `_player()` после expiry или invalid owner. `AllyMinion` учитывает command-aura damage/speed buff; `Player` тикает собственные статусы, раздает on-hit debuffs и классовые ауры. Тематические назначения: Dark Mage/Elementalist — `arcane_vulnerability`, Chemist/Doctor/Assassin/Biologist — `toxic_debuff`, Soldier/Knight/Robot — `staggered`, Guitarist/Druid/Engineer — `command_pressure` вокруг героя, Priest — мягкая self-support aura.
 
@@ -1395,7 +1410,7 @@ data-driven `attack_mode` из `ProgressionData.WEAPONS_BY_CLASS` имеет
 | Робот | Гидравлический Пресс | `robot_hydraulic_press` | `robot_compression_line` | Широкий коридор: урон по ВСЕЙ ширине (300), прижимает рядовых к оси 0.80/каст, элитки/боссы — полный урон и резист смещения ×0.25 |
 | Робот | Реакторное Ядро | `robot_reactor_core` | `robot_reactor_vent` | Ровно 4 вентиля 90° от мировой фазы (без самонаведения), паттерн +6°/каст — веер обходит круг за 15 атак; урон вентиля = ролл ×0.42 |
 | Инженер | Ключ Часового | `engineer_sentry_wrench` | `engineer_sentry_link` | `turret_dps` (SCRUM-888): персистентные стационарные турели (жёсткий кап 2, старейшая заменяется с мини-VFX) автострельбой бьют залпом по разным ближайшим целям с малым capped splash; урон/темп — от Лидерства |
-| Инженер | Ремонтный Дрон | `engineer_repair_drone` | `engineer_repair_drone` | `repair_chain`: цепная дуга по врагам возвращает часть нанесенного урона в ремонт |
+| Инженер | Орбитальный Дрон | `engineer_repair_drone` | `engineer_orbit_drone` | SCRUM-906/FAN-1075: 2 увеличенных контактных дрона по умолчанию, строго напротив на кольце 121 px; спираль с третьего, кап 6 |
 | Инженер | Минная Сетка | `engineer_pressure_mines` | `engineer_pressure_mines` | `mine_grid`: три мины веером лежат свой duration и тикают урон по врагам внутри, а не исчезают после первого касания |
 | Ассасин | Чакрамы | `chakrams` | `boomerang` | Коридор до цели и обратно; критовые попадания запускают теневой всплеск у цели без смещения героя |
 | Ассасин | Теневые кинжалы | `shadow_daggers` | `stab_flurry` | Быстрые short-range multi-stabs с критовым теневым burst; normal kills build capped `shadow_momentum` |
@@ -2433,11 +2448,14 @@ generic-урон игрока не трогает, классам без trait'�
   целям, каждый снаряд тратит заряд; пульс = amp_pulse_interval / tempo-lift /
   attack_speed (скорость атаки буквально осушает магазин быстрее); предел парка
   `2 + floor(summon_amount/4)`, рельс 6, при полном парке деплой пропускается.
-- `engineer_repair_drone` («Орбитальный Дрон», SCRUM-906, id сохранён, ремонт
-  удалён): постоянный парк боевых дронов на орбите-спирали вокруг героя (радиус
-  слота +14%), физический контакт с per-enemy кулдауном 0.85с; число дронов
-  `1 + floor(max(summon_amount − 12, 0)/4)` (база РОВНО 1, рельс 6, sa=28 → 5);
-  attack_speed раскручивает обороты (RPM), гироскоп-артефакт +20%.
+- `engineer_repair_drone` («Орбитальный Дрон», SCRUM-906/FAN-1075, id сохранён,
+  ремонт удалён): постоянный парк боевых дронов; базовая пара увеличена с
+  visual scale 0.16 до 0.24 (+50%), находится строго напротив друг друга на
+  общем кольце радиусом 121 px вместо 78 px (+55%). С третьего дрона включается
+  спираль слотов (+14% радиуса за слот). Физический контакт использует per-enemy
+  кулдаун 0.85с; число `2 + floor(max(summon_amount − 12, 0)/4)` (база РОВНО 2,
+  рельс 6, sa=28 → 6); attack_speed раскручивает обороты (RPM),
+  гироскоп-артефакт +20%.
 - `engineer_pressure_mines` («Минная Сетка», SCRUM-907): 2 персистентные мины
   за деплой в случайном кольце 110..260 вокруг героя; таймера жизни НЕТ; враг
   подрывает мину сразу (включая первые 3с), сам игрок — только после 3с; кап
@@ -2451,9 +2469,10 @@ Generic-скейл Лидерства `max_summons` в `player._apply_weapon_sca
 рельса). Бюджет-зеркала: `_budget_sentry_ammo_model` (min(спрос парка,
 magazine/деплой)), `_budget_orbit_drone_dps` (контакт × min(обороты,
 1/hit_cd)), `_budget_network_factor` (ожидаемые стеки, кламп капом сети).
-Тюнеры кита в коридоре без клампов (0.627/1.460/1.476), cct10-отклонения
-±0.09. Гейты: tests/engineer_kit_test.gd (data+live: магазин/деспаун/парк,
-орбита/контакт/спираль, пара мин/триггеры/кап, стеки сети/кап от
+Тюнеры кита в коридоре без клампов; актуальные значения и cct-отклонения
+фиксирует `build/balance_report.md`. Гейты: tests/engineer_kit_test.gd
+(data+live: магазин/деспаун/парк, базовая антиподальная пара дронов,
+радиус/scale/контакт/спираль, пара мин/триггеры/кап, стеки сети/кап от
 Лидерства/без утечки), engineer_turret_test, persistent_hazard_contract_test,
 class_artifacts_test, summoner_strengthening_test, weapon_tuning_application,
 weapon_integrity, damage_type_isolation, animation_smoke, runtime_smoke.
