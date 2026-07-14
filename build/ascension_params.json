@@ -374,33 +374,33 @@
 			},
 			"weapons": {
 				"acid_flask": {
-					"aoe_dps": 84.0,
+					"aoe_dps": 83.07,
 					"ehp": 51.2,
 					"interval": 0.774,
-					"solo_dps": 32.44,
+					"solo_dps": 32.07,
 					"tuning": {
-						"aoe_budget_multiplier": 1.973,
-						"aoe_target": 165.75,
+						"aoe_budget_multiplier": 1.878,
+						"aoe_target": 156.0,
 						"base_aoe_dps": 78.4,
 						"base_solo_dps": 30.19,
-						"damage_multiplier": 1.549,
-						"solo_budget_multiplier": 1.056,
-						"solo_target": 34.27
+						"damage_multiplier": 1.458,
+						"solo_budget_multiplier": 1.006,
+						"solo_target": 32.26
 					}
 				},
 				"blast_powder": {
-					"aoe_dps": 151.45,
+					"aoe_dps": 142.51,
 					"ehp": 51.2,
 					"interval": 0.384,
-					"solo_dps": 37.51,
+					"solo_dps": 35.3,
 					"tuning": {
 						"aoe_budget_multiplier": 1.094,
-						"aoe_target": 165.75,
+						"aoe_target": 156.0,
 						"base_aoe_dps": 87.7,
 						"base_solo_dps": 21.72,
-						"damage_multiplier": 1.727,
+						"damage_multiplier": 1.625,
 						"solo_budget_multiplier": 0.914,
-						"solo_target": 34.27
+						"solo_target": 32.26
 					}
 				},
 				"homunculus_vial": {
@@ -409,13 +409,13 @@
 					"interval": 2.477,
 					"solo_dps": 115.33,
 					"tuning": {
-						"aoe_budget_multiplier": 0.714,
-						"aoe_target": 165.75,
+						"aoe_budget_multiplier": 0.672,
+						"aoe_target": 156.0,
 						"base_aoe_dps": 779.61,
 						"base_solo_dps": 388.8,
 						"damage_multiplier": 0.28,
-						"solo_budget_multiplier": 0.297,
-						"solo_target": 34.27
+						"solo_budget_multiplier": 0.28,
+						"solo_target": 32.26
 					}
 				}
 			}
@@ -465,48 +465,48 @@
 			},
 			"weapons": {
 				"cursed_skull": {
-					"aoe_dps": 94.58,
+					"aoe_dps": 94.51,
 					"ehp": 50.39,
 					"interval": 0.683,
-					"solo_dps": 37.69,
+					"solo_dps": 37.67,
 					"tuning": {
-						"aoe_budget_multiplier": 1.072,
-						"aoe_target": 101.4,
+						"aoe_budget_multiplier": 0.99,
+						"aoe_target": 93.6,
 						"base_aoe_dps": 95.0,
 						"base_solo_dps": 37.79,
-						"damage_multiplier": 0.682,
-						"solo_budget_multiplier": 0.437,
-						"solo_target": 16.47
+						"damage_multiplier": 0.63,
+						"solo_budget_multiplier": 0.404,
+						"solo_target": 15.21
 					}
 				},
 				"dark_book": {
-					"aoe_dps": 73.34,
+					"aoe_dps": 67.68,
 					"ehp": 50.39,
 					"interval": 0.994,
-					"solo_dps": 22.78,
+					"solo_dps": 21.02,
 					"tuning": {
 						"aoe_budget_multiplier": 1.383,
-						"aoe_target": 101.4,
+						"aoe_target": 93.6,
 						"base_aoe_dps": 45.27,
 						"base_solo_dps": 14.06,
-						"damage_multiplier": 1.62,
+						"damage_multiplier": 1.495,
 						"solo_budget_multiplier": 0.723,
-						"solo_target": 16.47
+						"solo_target": 15.21
 					}
 				},
 				"dark_wand": {
-					"aoe_dps": 79.45,
+					"aoe_dps": 73.37,
 					"ehp": 50.39,
 					"interval": 1.025,
-					"solo_dps": 21.02,
+					"solo_dps": 19.41,
 					"tuning": {
 						"aoe_budget_multiplier": 1.276,
-						"aoe_target": 101.4,
+						"aoe_target": 93.6,
 						"base_aoe_dps": 51.59,
 						"base_solo_dps": 13.65,
-						"damage_multiplier": 1.54,
+						"damage_multiplier": 1.422,
 						"solo_budget_multiplier": 0.783,
-						"solo_target": 16.47
+						"solo_target": 15.21
 					}
 				}
 			}
@@ -677,17 +677,17 @@
 					}
 				},
 				"summon_amulet": {
-					"aoe_dps": 287.31,
+					"aoe_dps": 263.66,
 					"ehp": 83.87,
 					"interval": 1.858,
-					"solo_dps": 71.83,
+					"solo_dps": 65.92,
 					"tuning": {
-						"aoe_budget_multiplier": 0.522,
+						"aoe_budget_multiplier": 0.569,
 						"aoe_target": 150.0,
-						"base_aoe_dps": 1026.12,
-						"base_solo_dps": 256.53,
+						"base_aoe_dps": 941.64,
+						"base_solo_dps": 235.41,
 						"damage_multiplier": 0.28,
-						"solo_budget_multiplier": 0.668,
+						"solo_budget_multiplier": 0.728,
 						"solo_target": 48.0
 					}
 				}
@@ -921,17 +921,17 @@
 			},
 			"weapons": {
 				"bass_guitar": {
-					"aoe_dps": 120.38,
+					"aoe_dps": 125.39,
 					"ehp": 67.96,
 					"interval": 0.331,
-					"solo_dps": 24.08,
+					"solo_dps": 25.09,
 					"tuning": {
-						"aoe_budget_multiplier": 2.43,
+						"aoe_budget_multiplier": 2.333,
 						"aoe_target": 292.5,
-						"base_aoe_dps": 42.99,
-						"base_solo_dps": 8.6,
+						"base_aoe_dps": 44.78,
+						"base_solo_dps": 8.96,
 						"damage_multiplier": 2.8,
-						"solo_budget_multiplier": 2.99,
+						"solo_budget_multiplier": 2.87,
 						"solo_target": 72.0
 					}
 				},
@@ -939,28 +939,28 @@
 					"aoe_dps": 221.73,
 					"ehp": 67.96,
 					"interval": 0.223,
-					"solo_dps": 94.98,
+					"solo_dps": 94.99,
 					"tuning": {
 						"aoe_budget_multiplier": 1.319,
 						"aoe_target": 292.5,
-						"base_aoe_dps": 79.22,
-						"base_solo_dps": 33.94,
-						"damage_multiplier": 2.799,
+						"base_aoe_dps": 80.45,
+						"base_solo_dps": 34.47,
+						"damage_multiplier": 2.756,
 						"solo_budget_multiplier": 0.758,
 						"solo_target": 72.0
 					}
 				},
 				"sound_amp": {
-					"aoe_dps": 170.94,
+					"aoe_dps": 170.98,
 					"ehp": 67.96,
 					"interval": 1.12,
-					"solo_dps": 123.19,
+					"solo_dps": 123.21,
 					"tuning": {
 						"aoe_budget_multiplier": 1.711,
 						"aoe_target": 292.5,
-						"base_aoe_dps": 71.2,
-						"base_solo_dps": 51.31,
-						"damage_multiplier": 2.401,
+						"base_aoe_dps": 82.32,
+						"base_solo_dps": 59.32,
+						"damage_multiplier": 2.077,
 						"solo_budget_multiplier": 0.584,
 						"solo_target": 72.0
 					}
@@ -1194,48 +1194,48 @@
 			},
 			"weapons": {
 				"hunter_trap": {
-					"aoe_dps": 132.39,
+					"aoe_dps": 135.99,
 					"ehp": 68.1,
 					"interval": 0.696,
-					"solo_dps": 108.28,
+					"solo_dps": 109.57,
 					"tuning": {
-						"aoe_budget_multiplier": 0.999,
-						"aoe_target": 132.3,
+						"aoe_budget_multiplier": 1.066,
+						"aoe_target": 144.9,
 						"base_aoe_dps": 140.97,
 						"base_solo_dps": 111.35,
-						"damage_multiplier": 0.814,
-						"solo_budget_multiplier": 0.726,
-						"solo_target": 78.62
+						"damage_multiplier": 0.892,
+						"solo_budget_multiplier": 0.786,
+						"solo_target": 86.11
 					}
 				},
 				"moon_crossbow": {
-					"aoe_dps": 228.1,
+					"aoe_dps": 249.86,
 					"ehp": 68.1,
 					"interval": 0.401,
-					"solo_dps": 45.62,
+					"solo_dps": 49.97,
 					"tuning": {
 						"aoe_budget_multiplier": 0.58,
-						"aoe_target": 132.3,
+						"aoe_target": 144.9,
 						"base_aoe_dps": 146.97,
 						"base_solo_dps": 29.39,
-						"damage_multiplier": 1.552,
-						"solo_budget_multiplier": 1.723,
-						"solo_target": 78.62
+						"damage_multiplier": 1.7,
+						"solo_budget_multiplier": 1.724,
+						"solo_target": 86.11
 					}
 				},
 				"storm_longbow": {
-					"aoe_dps": 186.05,
+					"aoe_dps": 203.84,
 					"ehp": 68.1,
 					"interval": 0.505,
-					"solo_dps": 55.89,
+					"solo_dps": 61.23,
 					"tuning": {
 						"aoe_budget_multiplier": 0.711,
-						"aoe_target": 132.3,
+						"aoe_target": 144.9,
 						"base_aoe_dps": 114.77,
 						"base_solo_dps": 34.48,
-						"damage_multiplier": 1.621,
+						"damage_multiplier": 1.776,
 						"solo_budget_multiplier": 1.407,
-						"solo_target": 78.62
+						"solo_target": 86.11
 					}
 				}
 			}
@@ -1286,33 +1286,33 @@
 			},
 			"weapons": {
 				"robot_hydraulic_press": {
-					"aoe_dps": 154.42,
+					"aoe_dps": 144.76,
 					"ehp": 178.64,
 					"interval": 0.969,
-					"solo_dps": 33.53,
+					"solo_dps": 31.44,
 					"tuning": {
 						"aoe_budget_multiplier": 0.816,
-						"aoe_target": 126.0,
+						"aoe_target": 118.13,
 						"base_aoe_dps": 62.34,
 						"base_solo_dps": 13.54,
-						"damage_multiplier": 2.477,
-						"solo_budget_multiplier": 1.225,
-						"solo_target": 41.09
+						"damage_multiplier": 2.322,
+						"solo_budget_multiplier": 1.226,
+						"solo_target": 38.52
 					}
 				},
 				"robot_magnetic_anchor": {
-					"aoe_dps": 154.75,
+					"aoe_dps": 145.07,
 					"ehp": 185.54,
 					"interval": 1.471,
-					"solo_dps": 33.44,
+					"solo_dps": 31.35,
 					"tuning": {
 						"aoe_budget_multiplier": 0.814,
-						"aoe_target": 126.0,
+						"aoe_target": 118.13,
 						"base_aoe_dps": 61.29,
 						"base_solo_dps": 13.25,
-						"damage_multiplier": 2.525,
+						"damage_multiplier": 2.367,
 						"solo_budget_multiplier": 1.229,
-						"solo_target": 41.09
+						"solo_target": 38.52
 					}
 				},
 				"robot_reactor_core": {
@@ -1321,13 +1321,13 @@
 					"interval": 0.66,
 					"solo_dps": 15.7,
 					"tuning": {
-						"aoe_budget_multiplier": 1.66,
-						"aoe_target": 126.0,
+						"aoe_budget_multiplier": 1.556,
+						"aoe_target": 118.13,
 						"base_aoe_dps": 27.11,
 						"base_solo_dps": 5.61,
 						"damage_multiplier": 2.8,
-						"solo_budget_multiplier": 2.617,
-						"solo_target": 41.09
+						"solo_budget_multiplier": 2.454,
+						"solo_target": 38.52
 					}
 				}
 			}
@@ -1468,48 +1468,48 @@
 			},
 			"weapons": {
 				"soldier_bayonet": {
-					"aoe_dps": 97.38,
+					"aoe_dps": 92.3,
 					"ehp": 105.97,
 					"interval": 0.391,
-					"solo_dps": 42.71,
+					"solo_dps": 40.48,
 					"tuning": {
 						"aoe_budget_multiplier": 1.171,
-						"aoe_target": 114.0,
+						"aoe_target": 108.0,
 						"base_aoe_dps": 103.82,
 						"base_solo_dps": 45.53,
-						"damage_multiplier": 0.938,
+						"damage_multiplier": 0.889,
 						"solo_budget_multiplier": 0.854,
-						"solo_target": 36.48
+						"solo_target": 34.56
 					}
 				},
 				"soldier_grenade": {
-					"aoe_dps": 123.43,
+					"aoe_dps": 116.87,
 					"ehp": 103.14,
 					"interval": 1.48,
-					"solo_dps": 33.72,
+					"solo_dps": 31.93,
 					"tuning": {
 						"aoe_budget_multiplier": 0.924,
-						"aoe_target": 114.0,
+						"aoe_target": 108.0,
 						"base_aoe_dps": 97.88,
 						"base_solo_dps": 26.74,
-						"damage_multiplier": 1.261,
+						"damage_multiplier": 1.194,
 						"solo_budget_multiplier": 1.082,
-						"solo_target": 36.48
+						"solo_target": 34.56
 					}
 				},
 				"soldier_rifle": {
-					"aoe_dps": 83.25,
+					"aoe_dps": 78.87,
 					"ehp": 103.14,
 					"interval": 0.296,
-					"solo_dps": 49.97,
+					"solo_dps": 47.34,
 					"tuning": {
 						"aoe_budget_multiplier": 1.37,
-						"aoe_target": 114.0,
+						"aoe_target": 108.0,
 						"base_aoe_dps": 56.14,
 						"base_solo_dps": 33.69,
-						"damage_multiplier": 1.483,
+						"damage_multiplier": 1.405,
 						"solo_budget_multiplier": 0.73,
-						"solo_target": 36.48
+						"solo_target": 34.56
 					}
 				}
 			}

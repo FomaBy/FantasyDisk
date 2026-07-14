@@ -41,8 +41,13 @@ const WEAPON_ID := "hammer"
 # ideal-билда поднялся 3600 → ~3950 без каких-либо правок множителей молота.
 # Потолок рекалиброван с прежним запасом: откат радиуса/экспонент (+~30% к базе,
 # т.е. ≥5100 от новой базы) по-прежнему ловится.
-const MAX_IDEAL_20T := 4400.0    # SCRUM-602 restart band + FAN-1034 pool recalibration.
-const MAX_IDEAL_1T := 650.0      # Solo peak stays in corridor; damage-growth runaway fails.
+# FAN-1039: потолки перекалиброваны под честную времябазу (см. _measure_dps).
+# Старые 4400/650 калибровались на сломанном фикс-окне (шум 2×: 3422..7049 на
+# одном коде → ложные красные ~40% прогонов). Честный замер: 20t 7299..8505
+# (±8%, N=3), 1t 943..1042. Потолок = среднее ×~1.3 (запас на шум + малый рост);
+# runaway-регрессии исторического масштаба (×2+, 13792/16k) ловятся с запасом.
+const MAX_IDEAL_20T := 10000.0
+const MAX_IDEAL_1T := 1300.0
 const ZERO_EPS := 0.01
 
 var _holder: Node2D
@@ -272,8 +277,14 @@ func _measure_dps(character_id: String, weapon_id: String, target_count: int, re
 	for enemy in dummies:
 		hp_before += float(enemy.get("health"))
 
+	# FAN-1039: честный знаменатель — фактическое игровое время окна (зеркало
+	# fix'а tools/character_balance_csv.gd 8dd7e4fb4). Фиксированный номинал 8с
+	# при переменной длине кадра раздувал DPS под нагрузкой и давал шум 2×
+	# (замеры 3422..7049 на одном коде) — ложные красные потолка.
+	var elapsed_game_time := 0.0
 	for _frame in range(FRAMES):
 		await process_frame
+		elapsed_game_time += _holder.get_process_delta_time()
 		for i in range(dummies.size()):
 			var enemy := dummies[i] as Node2D
 			if is_instance_valid(enemy):
@@ -283,7 +294,7 @@ func _measure_dps(character_id: String, weapon_id: String, target_count: int, re
 	for enemy in dummies:
 		if is_instance_valid(enemy):
 			hp_after += float(enemy.get("health"))
-	return maxf(hp_before - hp_after, 0.0) / WINDOW_SECONDS
+	return maxf(hp_before - hp_after, 0.0) / maxf(elapsed_game_time, 0.001)
 
 
 func _spawn_dummies(player_pos: Vector2, target_count: int) -> Array:
