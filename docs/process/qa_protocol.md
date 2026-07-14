@@ -105,6 +105,19 @@ viewport, ждёт ещё 4 frames и проверяет его `WeakRef`. По�
 сделать любую ошибку этих ownership-barriers реальным exit `1`; сам helper не
 глушит stderr и не меняет production `AudioManager`/UI.
 
+## Main-dependency gate фокусных Main-тестов (FAN-1087)
+
+`tests/main_compile_guard.gd` — общий RefCounted-хелпер для тестов, которые
+preload'ят `res://scenes/Main.tscn` (`lore_screens_test`,
+`codex_unread_victory_test`, `codex_scrum954_layout_test`,
+`ui_no_overlap_matrix_test`). В начале `_initialize()` он проверяет, что
+`main.gd` и `ui_screens.gd` компилируются (`can_instantiate()`) и что инстанс
+Main получает script и `ui`/`route`/`combat`; любой провал — немедленный
+`quit(1)`. Причина: PackedScene загружается даже с некомпилирующимися
+скриптами, и без гейта тест продолжал работу на «пустом» Main, глотал
+runtime-ошибки и печатал success с exit 0 (false-green FAN-1087). Новые
+фокусные тесты, инстанцирующие Main, обязаны вызывать этот гейт первым шагом.
+
 ## Мета 4.1 Keystone Behavioral Gate (SCRUM-837)
 
 Для задач Меты 4.1, которые меняют keystone-эффекты, QA обязан прогнать
