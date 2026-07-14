@@ -11,6 +11,7 @@ radius = 76.0
 script = ExtResource("1_boss_script")
 enemy_type_name = "Disk Devourer"
 boss_behavior = "disk_devourer"
+boss_display_name = "Пожиратель Диска"
 max_health = 380.0
 move_speed = 78.0
 can_shoot = true

@@ -1595,13 +1595,15 @@ func _test_new_boss_roster(main_scene: PackedScene) -> void:
 	var m := main_scene.instantiate()
 	root.add_child(m)
 	await process_frame
+	# FAN-1080: все боссы получили русские display-имена; секретный босс в бою
+	# зовётся лорным именем «Исток» (канон: docs/design/lore.md).
 	var expected := {
-		"rift_warden": "",
-		"disk_devourer": "",
+		"rift_warden": "Страж Разлома",
+		"disk_devourer": "Пожиратель Диска",
 		"bone_archon": "Костяной Архонт",
 		"brood_mother": "Матерь Роя",
 		"ashen_colossus": "Пепельный Колосс",
-		"secret_ascension_boss": "Secret Ascension Boss",
+		"secret_ascension_boss": "Исток",
 	}
 	var expected_unique_nodes := {
 		"rift_warden": "BossGravityWell",
@@ -2625,6 +2627,8 @@ func _test_run_autosave_continue_prompt(main_scene: PackedScene) -> void:
 		_fail("Expected manual run autosave fixture to save.")
 		return
 	var new_main := main_scene.instantiate()
+	# FAN-1080: детерминизм — интро истории зависит от машинного settings.cfg.
+	new_main.set("force_skip_lore_intro", true)
 	root.add_child(new_main)
 	await process_frame
 	var new_start := new_main.find_child("MainMenuStartButton", true, false) as Button
@@ -3948,7 +3952,8 @@ func _test_victory_flow(main: Node) -> void:
 		if victory_text.contains(forbidden):
 			_fail("Expected victory screen text to hide internal technical token '%s'." % forbidden)
 			return
-	for expected in ["Победа", "Финальный босс повержен", "Очки наследия", "Возвышения"]:
+	# FAN-1080: первая строка победы — лорная Печать (оба варианта строки).
+	for expected in ["Победа", "Печать наложена", "Очки наследия", "Возвышения"]:
 		if not victory_text.contains(expected):
 			_fail("Expected victory screen text to include '%s'." % expected)
 			return

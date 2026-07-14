@@ -54,6 +54,9 @@ func _initialize() -> void:
 		_fail("Main scene did not load for gamepad full-flow smoke.")
 		return
 	var main := main_scene.instantiate()
+	# FAN-1080: интро истории гейтится машинным settings.cfg — байпас для
+	# детерминизма сценария A («Начать» → сразу выбор героя).
+	main.set("force_skip_lore_intro", true)
 	root.add_child(main)
 	await process_frame
 	await process_frame

@@ -1,6 +1,8 @@
 extends RefCounted
 
 const SCENE_CONTRACTS := preload("res://scripts/scene_contracts.gd")
+const LORE_DATA := preload("res://scripts/lore_data.gd")
+const CODEX_DATA := preload("res://scripts/codex_data.gd")
 
 # Боевой цикл: старт/конец боя, спавн волн, баланс врагов/элиток/боссов,
 # арена, pickups и снапшот игрока между узлами.
@@ -871,7 +873,13 @@ func _spawn_boss() -> void:
 	# (на смерти/победе сам узел уже удалён; имя резолвится здесь, пока он жив).
 	if not game.run_metrics.is_empty():
 		game.run_metrics["last_boss_name"] = boss_name if boss_name != "" else "БОСС"
-	game.ui._show_combat_title_banner(boss_name if boss_name != "" else "БОСС", Color(1.0, 0.34, 0.3), true)
+	# FAN-1080: под титулом Владыки — короткая лор-подводка (кто он и зачем).
+	game.ui._show_combat_title_banner(
+		boss_name if boss_name != "" else "БОСС",
+		Color(1.0, 0.34, 0.3),
+		true,
+		LORE_DATA.boss_intro_line(game.current_boss_id)
+	)
 
 
 const BONE_ARCHON_BOSS_SCENE := preload("res://scenes/BossBoneArchon.tscn")
@@ -928,13 +936,34 @@ func _spawn_elite_enemy() -> void:
 	game.record_codex_enemy_discovery(elite)
 	_connect_enemy_rewards(elite)
 	# Появление элитки: краткая вспышка имени над ареной.
+	# FAN-1080: русский канонический титул из Кодекса вместо англ.
+	# enemy_type_name + строка «офицера прибоя» под именем.
 	var elite_name := str(elite.get("enemy_type_name"))
-	game.ui._show_combat_title_banner(elite_name if elite_name != "" else "ЭЛИТА", Color(1.0, 0.6, 0.32), false)
+	var elite_codex_id := str(game.CODEX_ENEMY_NAME_TO_ID.get(elite_name, ""))
+	var elite_title := _codex_monster_title(elite_codex_id)
+	if elite_title == "":
+		elite_title = elite_name
+	game.ui._show_combat_title_banner(
+		elite_title if elite_title != "" else "ЭЛИТА",
+		Color(1.0, 0.6, 0.32),
+		false,
+		LORE_DATA.elite_lore(elite_codex_id)
+	)
 
 
 func _random_elite_scene() -> PackedScene:
 	# SCRUM-499: детерминированный выбор типа элитки от seed узла — совпадает с превью.
 	return game.node_elite_scene(game.current_node_seed)
+
+
+func _codex_monster_title(codex_id: String) -> String:
+	# FAN-1080: канонический русский титул сущности из Кодекса (для баннеров).
+	if codex_id == "":
+		return ""
+	for monster in CODEX_DATA.monsters():
+		if str(monster.get("id", "")) == codex_id:
+			return str(monster.get("title", ""))
+	return ""
 
 
 func _apply_elite_modifier(enemy: Node2D) -> void:

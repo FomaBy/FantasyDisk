@@ -858,7 +858,8 @@ func _show_main_menu() -> void:
 		if game.run_autosave_has_run():
 			_show_continue_run_dialog()
 		else:
-			_show_character_select()
+			# FAN-1080: перед самым первым забегом — вступление истории (1 раз).
+			_maybe_show_lore_intro(_show_character_select)
 	)
 	action_box.add_child(start_button)
 
@@ -1284,7 +1285,8 @@ func _show_continue_run_dialog() -> void:
 	_apply_overhaul_2k_button_theme(new_game_button, "cr_btn", CR_BTN_NEWGAME_2K.size)
 	new_game_button.pressed.connect(func() -> void:
 		game.clear_run_autosave()
-		_show_character_select()
+		# FAN-1080: старые профили без флага lore_intro_seen тоже видят вступление.
+		_maybe_show_lore_intro(_show_character_select)
 	)
 	button_row.add_child(new_game_button)
 
@@ -2664,6 +2666,7 @@ func _show_character_select() -> void:
 
 
 const CODEX_DATA := preload("res://scripts/codex_data.gd")
+const LORE_DATA := preload("res://scripts/lore_data.gd")
 const CODEX_SECTIONS := [
 	{"id": "characters", "title": "Персонажи"},
 	{"id": "monsters", "title": "Монстры"},
@@ -2671,6 +2674,7 @@ const CODEX_SECTIONS := [
 	{"id": "characteristics", "title": "Параметры"},
 	{"id": "attributes", "title": "Атрибуты"},
 	{"id": "ascension", "title": "Возвыш."},
+	{"id": "chronicle", "title": "Летопись"},
 ]
 
 
@@ -5376,6 +5380,16 @@ func _add_credits_body(parent: Control, text: String) -> void:
 	parent.add_child(label)
 
 
+# FAN-1080: вступление истории и остальной лор-UI живут в scripts/ui/lore_screens.gd
+# (извлечено под static-quality ратчет); здесь — тонкие точки входа.
+func _maybe_show_lore_intro(next_action: Callable) -> void:
+	LoreScreens.maybe_show_intro(self, next_action)
+
+
+func _show_lore_intro(on_finish: Callable, mark_seen := true) -> void:
+	LoreScreens.show_intro(self, on_finish, mark_seen)
+
+
 func _show_codex_screen() -> void:
 	# SCRUM-954: the accepted SCRUM-1017 PixelLab contract is authored on a
 	# 1920x1080 stage. The stage scales uniformly and letterboxes instead of
@@ -5492,9 +5506,11 @@ func _show_codex_screen() -> void:
 	content.set_meta("codex_section_title", center_title)
 	content.set_meta("codex_active_section", "characters")
 
-	# Six fixed Russian labels. The category-emblem path is intentionally absent:
-	# actual canonical images belong to entries, not to navigation furniture.
-	var nav_y := [24.0, 142.0, 260.0, 378.0, 496.0, 614.0]
+	# Seven fixed Russian labels (FAN-1080 added «Летопись»). The category-emblem
+	# path is intentionally absent: canonical images belong to entries, not to
+	# navigation furniture. Pitch 104 keeps the 7th plate inside the 752px
+	# content zone of the nav panel (840 - 38 top - 50 bottom margins).
+	var nav_y := [24.0, 128.0, 232.0, 336.0, 440.0, 544.0, 648.0]
 	for section_index in range(CODEX_SECTIONS.size()):
 		var section: Dictionary = CODEX_SECTIONS[section_index]
 		var section_id := str(section["id"])
@@ -5731,6 +5747,8 @@ func _show_codex_section(content: PanelContainer, section_id: String) -> void:
 			_build_codex_stats(list, "derived")
 		"ascension":
 			_build_codex_ascensions(list)
+		"chronicle":
+			_build_codex_chronicle(list)
 	var default_detail: Dictionary = scroll.get_meta("codex_default_detail", {})
 	if detail_panel != null and not default_detail.is_empty():
 		_codex_update_detail(detail_panel, default_detail)
@@ -6098,6 +6116,10 @@ func _codex_update_detail(detail_panel: PanelContainer, detail_data: Dictionary)
 func _codex_character_sections(character: Dictionary) -> Array:
 	var character_id := str(character.get("id", ""))
 	var sections := []
+	# FAN-1080: происхождение Хранителя — осколок-мир из лора (lore_data.gd).
+	var origin := LORE_DATA.class_origin(character_id)
+	if origin != "":
+		sections.append({"heading": "Происхождение", "lines": [origin]})
 	# Идентичность/роль: описание конфига + механическая идентичность класса + плейстайл.
 	var identity: Dictionary = game.PROGRESSION_DATA.class_mechanic_identity(character_id)
 	var identity_lines := []
@@ -6204,6 +6226,16 @@ func _codex_monster_sections(monster: Dictionary) -> Array:
 		behavior_lines.append(str(monster["behavior"]))
 	if not behavior_lines.is_empty():
 		sections.append({"heading": "Тип и поведение", "lines": behavior_lines})
+	# FAN-1080: лор — боссы получают строку гибели своего мира («Владыка
+	# Разлома»), элитки — строку офицера прибоя (lore_data.gd / lore.md).
+	if kind == "boss":
+		var doom := LORE_DATA.boss_doom_line(monster_id)
+		if doom != "":
+			sections.append({"heading": "Владыка Разлома", "lines": [doom]})
+	elif kind == "elite":
+		var elite_line := LORE_DATA.elite_lore(monster_id)
+		if elite_line != "":
+			sections.append({"heading": "Офицер прибоя", "lines": [elite_line]})
 	# Умения — канонические имена и описания из codex_data.
 	var ability_lines := []
 	for ability in monster.get("abilities", []):
@@ -6489,6 +6521,11 @@ func _build_codex_ascensions(list: VBoxContainer) -> void:
 		})
 		_codex_icon_slot(row, ascension_texture, _codex_entry_portrait_size(), "CodexAscensionIconSlot")
 		_codex_add_entry_name(row, "%d. %s" % [entry["level"], entry["title"]])
+
+
+# FAN-1080: вкладка «Летопись» — реализация в scripts/ui/lore_screens.gd.
+func _build_codex_chronicle(list: VBoxContainer) -> void:
+	LoreScreens.build_chronicle(self, list)
 
 
 func _build_codex_stats(list: VBoxContainer, stat_type: String) -> void:
@@ -11320,7 +11357,12 @@ func _show_victory_screen() -> void:
 	if not game.run_progression_eligible():
 		progression_line = "Пользовательский sandbox: метапрогрессия и достижения не начисляются."
 		ascension_summary = "Текущий предел Возвышения: %d из %d. Без изменений в пользовательском sandbox." % [ascension_level, game.META_PROGRESSION.MAX_ASCENSION_LEVEL]
-	var subtitle := "Финальный босс повержен.\n%s завершил забег.\nОчки наследия: %d.\n%s\n%s" % [
+	# FAN-1080: первая строка — лорная Печать (вместо плоской «Финальный босс
+	# повержен»); вариант «Разлом уйдёт глубже», пока остаются витки Возвышения.
+	var rift_goes_deeper: bool = game.run_progression_eligible() \
+		and run_level < game.META_PROGRESSION.MAX_ASCENSION_LEVEL
+	var subtitle := "%s\n%s завершил забег.\nОчки наследия: %d.\n%s\n%s" % [
+		LORE_DATA.victory_line(rift_goes_deeper),
 		character_title,
 		game.meta_points,
 		progression_line,
@@ -11358,6 +11400,8 @@ func _show_death_screen(reason := "") -> void:
 	var subtitle := str(reason)
 	if subtitle == "":
 		subtitle = "Забег завершён: %s, этап маршрута %d." % [game.act_progress_label(), game.route_stage + 1]
+	# FAN-1080: лорная строка поражения — Диск помнит павших, цикл продолжается.
+	subtitle += "\n%s" % LORE_DATA.defeat_line()
 	var result_layout := _create_result_menu_box("Поражение", subtitle, "death")
 	_add_result_crest_to_slot(result_layout["crest_slot"] as Control, "death")
 	_add_run_summary_rows(result_layout["summary_column"] as VBoxContainer, false, true)  # SCRUM-502: сводка прогона
@@ -12268,14 +12312,19 @@ func _spawn_level_up_effect() -> void:
 		effect.setup(game.current_player)
 
 
-func _show_combat_title_banner(title: String, color: Color, big := false) -> void:
+func _show_combat_title_banner(title: String, color: Color, big := false, lore_line := "") -> void:
 	# Баннер появления элитки/босса: имя/титул вспыхивает над ареной и гаснет,
 	# бой не ставится на паузу. Самоосвобождается; привязан к HUD-слою.
+	# FAN-1080: lore_line — короткая лор-подводка (кто это и зачем он здесь),
+	# отдельной строкой без рамки под баннером; живёт чуть дольше титула.
 	if game.hud_layer == null or not is_instance_valid(game.hud_layer):
 		return
 	var existing: Node = game.hud_layer.get_node_or_null("CombatIntroBanner")
 	if existing != null:
 		existing.queue_free()
+	var existing_lore: Node = game.hud_layer.get_node_or_null("CombatIntroLoreLine")
+	if existing_lore != null:
+		existing_lore.queue_free()
 	var ctb_slot := "ctb_big" if big else "ctb_small"
 	var ctb_spec: Rect2 = CTB_BIG_2K if big else CTB_SMALL_2K
 	var ctb_half_width := ctb_spec.size.x * 0.5
@@ -12328,6 +12377,9 @@ func _show_combat_title_banner(title: String, color: Color, big := false) -> voi
 	tween.chain().tween_interval(1.1 if big else 0.7)
 	tween.chain().tween_property(banner, "modulate:a", 0.0, 0.4)
 	tween.chain().tween_callback(banner.queue_free)
+
+	# FAN-1080: лор-подводка отдельной строкой под баннером (scripts/ui/lore_screens.gd).
+	LoreScreens.show_banner_lore_line(self, lore_line, ctb_spec, ctb_half_width, big)
 
 
 func _update_level_up_button() -> void:

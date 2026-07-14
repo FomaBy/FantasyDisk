@@ -2,6 +2,7 @@ extends SceneTree
 
 const MAIN_SCENE := preload("res://scenes/Main.tscn")
 const CodexData := preload("res://scripts/codex_data.gd")
+const LoreData := preload("res://scripts/lore_data.gd")
 const UIIconRegistry := preload("res://scripts/ui_icon_registry.gd")
 const UIButtonFamily := preload("res://scripts/ui/ui_button_family.gd")
 const VIEWPORT_SIZES := [Vector2i(1280, 720), Vector2i(1920, 1080), Vector2i(2560, 1440)]
@@ -16,6 +17,7 @@ const EXPECTED_TABS := [
 	["characters", "Персонажи"], ["monsters", "Монстры"],
 	["artifacts", "Артефакты"], ["characteristics", "Параметры"],
 	["attributes", "Атрибуты"], ["ascension", "Возвыш."],
+	["chronicle", "Летопись"],
 ]
 
 var errors := PackedStringArray()
@@ -115,7 +117,8 @@ func _check_viewport(viewport_size: Vector2i) -> void:
 	if codex_back != null:
 		_check_button_family(codex_back, "text/back_260x104", "%s back" % context)
 
-	var nav_y := [234.0, 352.0, 470.0, 588.0, 706.0, 824.0]
+	# FAN-1080: 7 вкладок с шагом 104 (Летопись добавлена последней).
+	var nav_y := [234.0, 338.0, 442.0, 546.0, 650.0, 754.0, 858.0]
 	for tab_index in range(EXPECTED_TABS.size()):
 		var tab_spec: Array = EXPECTED_TABS[tab_index]
 		var tab := main.find_child("CodexTab_%s" % str(tab_spec[0]), true, false) as Button
@@ -234,6 +237,9 @@ func _expected_entries(section_id: String) -> Array:
 		"ascension":
 			for entry in CodexData.ascensions():
 				result.append({"title": "%d. %s" % [entry["level"], entry["title"]], "texture": ASCENSION_ICON_PATH})
+		"chronicle":
+			for entry in LoreData.chronicle_entries():
+				result.append({"title": str(entry["title"]), "texture": str(entry["icon"])})
 	return result
 
 

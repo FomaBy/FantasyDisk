@@ -398,6 +398,9 @@ var selected_character_id := "berserk"
 var selected_weapon_id := "sword"
 # SCRUM-618: выбранный стартовый боон забега ("" = без боона, тождественность).
 var selected_start_boon_id := ""
+# FAN-1080: детерминированный байпас вступления истории для headless-тестов
+# (реальный флаг живет в settings.cfg: lore_intro_seen и зависит от профиля).
+var force_skip_lore_intro := false
 var current_act := 1
 var route_stage := 0
 var combat_active := false
@@ -1505,7 +1508,12 @@ func _cached_texture(path: String) -> Texture2D:
 		var image := Image.new()
 		if image.load(path) == OK:
 			var image_texture := ImageTexture.create_from_image(image)
-			image_texture.resource_path = path
+			# FAN-1080: take_over_path вместо прямого resource_path — прошлый
+			# fallback-инстанс мог остаться живым в статических кэшах (например,
+			# CodexImageFit) между инстансами Main; прямое присваивание пути в
+			# этом случае молча падает («Another resource is loaded from path»)
+			# и texture остаётся без resource_path.
+			image_texture.take_over_path(path)
 			texture = image_texture
 	texture_cache[path] = texture
 	return texture

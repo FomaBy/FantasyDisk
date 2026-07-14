@@ -12,6 +12,7 @@ radius = 68.0
 script = ExtResource("1_boss_script")
 enemy_type_name = "Rift Warden"
 boss_behavior = "rift_warden"
+boss_display_name = "Страж Разлома"
 max_health = 320.0
 move_speed = 65.0
 can_shoot = true

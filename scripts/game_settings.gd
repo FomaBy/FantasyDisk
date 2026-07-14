@@ -27,6 +27,8 @@ const DEFAULTS := {
 	"debug_mode": false,
 	"aim_mode": "nearest",
 	"last_seen_version": "0.0.0",
+	# FAN-1080: вступление истории показано (интро новой игры — один раз).
+	"lore_intro_seen": false,
 	"input_bindings": {},
 	# SCRUM-811: геймпад. input_mode влияет на active_kind/подсказки, оба
 	# устройства физически работают всегда; deadzone/vibration читают SCRUM-814/816.
@@ -71,6 +73,7 @@ static func load_settings() -> Dictionary:
 		settings["aim_mode"] = DEFAULTS["aim_mode"]
 	# SCRUM-159: версия, патч-ноуты которой игрок уже видел (для бейджа «Что нового»).
 	settings["last_seen_version"] = str(settings["last_seen_version"])
+	settings["lore_intro_seen"] = bool(settings["lore_intro_seen"])
 	if not (settings["input_bindings"] is Dictionary):
 		settings["input_bindings"] = {}
 	settings["input_mode"] = str(settings["input_mode"])
