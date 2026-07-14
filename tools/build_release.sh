@@ -4,10 +4,9 @@
 #
 # Использование: tools/build_release.sh <версия>   # пример: tools/build_release.sh 0.1.0
 #
-# Сборка идет из git-тега v<версия> через ОТДЕЛЬНЫЙ git worktree, чтобы не трогать
-# рабочую ветку dev (в каталоге параллельно работают другие агенты — checkout тега
-# в основном дереве запрещен). Свежая инфраструктура сборки (export_presets.cfg,
-# assets/icon.ico, tools/windows_installer.nsi) копируется в worktree поверх тега.
+# Сборка идет только из git-тега v<версия> через ОТДЕЛЬНЫЙ git worktree, чтобы не
+# трогать рабочую ветку dev. Build inputs поверх тега не накладываются: сохранённый
+# source snapshot должен соответствовать проекту, из которого экспортирован релиз.
 set -euo pipefail
 
 # КРИТИЧНО для makensis: в C-локали iconv("wchar_t"->...) падает на не-ASCII
@@ -19,11 +18,11 @@ TAG="v${VERSION}"
 REPO_DIR="$(cd "$(dirname "$0")/.." && pwd)"
 GODOT_PATH="${GODOT_BIN:-${GODOT:-/Users/sergeyfomin/Downloads/Godot.app/Contents/MacOS/Godot}}"
 WORKTREE_DIR="$(mktemp -d /tmp/fantasydisk-build-XXXXXX)/src"
-RELEASE_DIR="${REPO_DIR}/releases/${TAG}"
+RELEASE_DIR="${WORKTREE_DIR}/build/release-package"
 DMG_MOUNT_DIR=""
 MACOS_SIGN_IDENTITY="${MACOS_SIGN_IDENTITY:-}"
 MACOS_NOTARY_PROFILE="${MACOS_NOTARY_PROFILE:-}"
-MACOS_ARROW_SOURCE="${REPO_DIR}/docs/design/references/fan1094_macos_installer/pixellab_arrow.png"
+MACOS_ARROW_REL="docs/design/references/fan1094_macos_installer/pixellab_arrow.png"
 
 if [[ -z "${MACOS_SIGN_IDENTITY}" ]]; then
   echo "ERROR: MACOS_SIGN_IDENTITY is required; release builds may not use ad-hoc signing"
@@ -43,13 +42,8 @@ if ! xcrun notarytool history --keychain-profile "${MACOS_NOTARY_PROFILE}" \
   echo "ERROR: MACOS_NOTARY_PROFILE is missing or cannot authenticate with Apple"
   exit 2
 fi
-if [[ ! -f "${MACOS_ARROW_SOURCE}" ]]; then
-  echo "ERROR: minimal macOS DMG arrow source is missing: ${MACOS_ARROW_SOURCE}"
-  exit 2
-fi
-
 run_godot() {
-  GODOT_BIN="${GODOT_PATH}" python3 "${REPO_DIR}/tools/godot_gate.py" "$@"
+  GODOT_BIN="${GODOT_PATH}" python3 "${WORKTREE_DIR}/tools/godot_gate.py" "$@"
 }
 
 submit_notary_artifact() {
@@ -83,10 +77,26 @@ cleanup() {
 }
 trap cleanup EXIT
 
-echo "==> Перенос свежей сборочной инфраструктуры в worktree"
-cp "${REPO_DIR}/export_presets.cfg" "${WORKTREE_DIR}/export_presets.cfg"
-mkdir -p "${WORKTREE_DIR}/assets"
-cp "${REPO_DIR}/assets/icon.ico" "${WORKTREE_DIR}/assets/icon.ico"
+echo "==> Проверка точных build inputs внутри тега"
+for required_input in \
+  export_presets.cfg \
+  assets/icon.ico \
+  "${MACOS_ARROW_REL}" \
+  tools/build_release.sh \
+  tools/create_macos_dmg.sh \
+  tools/godot_gate.py \
+  tools/scan_release_secrets.py \
+  tools/windows_installer.nsi; do
+  if [[ ! -f "${WORKTREE_DIR}/${required_input}" ]]; then
+    echo "    ERROR: тег ${TAG} не содержит build input ${required_input}"
+    exit 2
+  fi
+done
+if ! cmp -s "${REPO_DIR}/tools/build_release.sh" "${WORKTREE_DIR}/tools/build_release.sh"; then
+  echo "    ERROR: запущенный build_release.sh отличается от exact tag ${TAG}"
+  exit 2
+fi
+MACOS_ARROW_SOURCE="${WORKTREE_DIR}/${MACOS_ARROW_REL}"
 
 echo "==> Проверка версии тега и export presets"
 TAG_PROJECT_VERSION="$(grep 'config/version' "${WORKTREE_DIR}/project.godot" | cut -d'"' -f2)"
@@ -170,7 +180,7 @@ spctl --assess --type execute --verbose=4 "${APP_PATH}"
 
 echo "==> Создание DMG с ярлыком Applications и стрелкой"
 MAC_DMG="${WORKTREE_DIR}/build/FantasyDisk-${VERSION}-macos.dmg"
-bash "${REPO_DIR}/tools/create_macos_dmg.sh" "${APP_PATH}" "${MAC_DMG}" "${VERSION}"
+bash "${WORKTREE_DIR}/tools/create_macos_dmg.sh" "${APP_PATH}" "${MAC_DMG}" "${VERSION}"
 codesign --force --timestamp --sign "${MACOS_SIGN_IDENTITY}" "${MAC_DMG}"
 codesign --verify --strict --verbose=4 "${MAC_DMG}"
 
@@ -190,7 +200,7 @@ echo "==> NSIS-инсталлер"
 makensis -DVERSION="${VERSION}" \
   -DSRC_EXE="${WORKTREE_DIR}/build/FantasyDisk-Windows.exe" \
   -DOUT_FILE="${WORKTREE_DIR}/build/FantasyDisk-${VERSION}-windows-setup.exe" \
-  "${REPO_DIR}/tools/windows_installer.nsi"
+  "${WORKTREE_DIR}/tools/windows_installer.nsi"
 
 echo "==> Верификация NSIS CRC (точный алгоритм exehead: crc32 файла с байта 512 до поля CRC)"
 python3 - "${WORKTREE_DIR}/build/FantasyDisk-${VERSION}-windows-setup.exe" <<'PYCRC'
@@ -230,7 +240,7 @@ spctl --assess --type execute --verbose=4 "${MOUNTED_APP}"
 
 echo "==> Secret scan staged player payloads до публикации"
 set +e
-python3 "${REPO_DIR}/tools/scan_release_secrets.py" \
+python3 "${WORKTREE_DIR}/tools/scan_release_secrets.py" \
   "${DMG_MOUNT_DIR}" \
   "${WORKTREE_DIR}/build/FantasyDisk-Windows.exe" \
   "${WORKTREE_DIR}/build/FantasyDisk-${VERSION}-windows-setup.exe"
@@ -259,12 +269,21 @@ if [[ ! -s "${RELEASE_DIR}/CHANGELOG-${VERSION}.md" ]]; then
   exit 2
 fi
 POSTER_PATH="${WORKTREE_DIR}/assets/marketing/fantasydisk_${VERSION//./}_announcement_telegram_discord.png"
-if [[ -f "${POSTER_PATH}" ]]; then
-  cp "${POSTER_PATH}" "${RELEASE_DIR}/"
+if [[ ! -f "${POSTER_PATH}" ]]; then
+  echo "    ERROR: обязательный release poster отсутствует: ${POSTER_PATH}"
+  exit 2
 fi
+cp "${POSTER_PATH}" "${RELEASE_DIR}/"
 
 echo "==> SHA256SUMS.txt (контроль порчи при передаче файлов)"
 (cd "${RELEASE_DIR}" && shasum -a 256 FantasyDisk-* > SHA256SUMS.txt && cat SHA256SUMS.txt)
+
+echo "==> Постоянная локальная копия, Godot snapshot и установка macOS"
+python3 "${REPO_DIR}/skills/codex/fantasydisk-release-director/scripts/local_release.py" \
+  materialize \
+  --version "${VERSION}" \
+  --repo-root "${REPO_DIR}" \
+  --release-dir "${RELEASE_DIR}"
 
 echo "==> Готово:"
 ls -lh "${RELEASE_DIR}"

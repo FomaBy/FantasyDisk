@@ -1,6 +1,6 @@
 # Release & Versioning — FantasyDisk
 
-Обновлено: 2026-07-13
+Обновлено: 2026-07-14
 Ведет: PM. Исполняет сборки: Back-end.
 
 ## Версионирование
@@ -58,6 +58,24 @@ dev  — основная ветка разработки. Все чаты (Back
    `releases/vX.Y.Z/CHANGELOG-X.Y.Z.md` (раздел версии из CHANGELOG.md) — чтобы
    получатель билда видел, что нового, без доступа к репозиторию.
 9. Smoke-проверка установленных билдов.
+9a. **Постоянная локальная копия — блокирующий гейт.** До Telegram/Discord
+    `tools/build_release.sh` обязан вызвать bundled
+    `skills/codex/fantasydisk-release-director/scripts/local_release.py` и:
+    - собирать package в отдельный staging и только затем атомарно создать
+      `<local_root>/releases/vX.Y.Z/` независимо от временного agent worktree;
+    - извлечь в `project/` неизменяемое evidence exact tag `vX.Y.Z`, записать tag
+      SHA и SHA256 всех файлов в `LOCAL_RELEASE.json`;
+    - создать отдельную редактируемую `godot-project/`, атомарно направить на неё
+      `releases/current-project` и зарегистрировать путь как `favorite=true`, не
+      изменяя рабочий `dev` оператора и immutable evidence;
+    - на macOS атомарно установить приложение из итогового DMG и проверить
+      retained DMG layout/signature, bundle version, `hdiutil verify`, `codesign`,
+      `stapler`, `spctl` и headless launch smoke.
+    Существующий локальный релиз с отличающимися байтами не перезаписывается.
+    Telegram/Discord clients повторно запускают verify, отправляют байты только
+    из возвращённого проверенного локального пути и обязательно прикладывают PNG
+    release poster. Локальный root задаётся явно/env/config и никогда не
+    угадывается по временному worktree.
 10. **Релиз в Multica** (правило пользователя 2026-06-12: спринт = релиз;
     live board — проект FantasyDisk, issues FAN-*):
     - закрыть все issues версии в статус `done` на доске FantasyDisk;
@@ -137,8 +155,10 @@ SemVer patch/minor версию.
 - Сборка из тега идет через **отдельный git worktree** (`git worktree add --detach /tmp/... vX.Y.Z`),
   а не checkout в рабочем каталоге: в каталоге параллельно работают другие агенты,
   переключение ветки под ними недопустимо. Реализовано в `tools/build_release.sh`.
-- Свежая сборочная инфраструктура (export_presets.cfg, assets/icon.ico) копируется
-  в worktree поверх тега — старые теги могли не содержать Windows-пресет.
+- Все входы сборки (`export_presets.cfg`, иконки, NSIS source, DMG helper/arrow)
+  берутся из exact tag worktree. Если старый тег их не содержит, сборка блокируется:
+  накладывать свежие файлы поверх тега запрещено, иначе сохранённый Godot snapshot
+  перестаёт соответствовать реально экспортированному проекту.
 - **Export templates**: проверка `~/Library/Application Support/Godot/export_templates/<версия>/`;
   Windows-шаблоны ставятся из официального tpz (godotengine releases), распаковать
   `windows_release_x86_64.exe` / `windows_debug_x86_64.exe` в каталог шаблонов.

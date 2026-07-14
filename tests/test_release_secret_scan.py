@@ -76,7 +76,7 @@ class ReleaseSecretScanTests(unittest.TestCase):
         verify_at = script.index('codesign --verify --deep --strict --verbose=4 "${APP_PATH}"')
         app_notary_at = script.index('submit_notary_artifact "${APP_NOTARY_ZIP}"')
         app_staple_at = script.index('xcrun stapler staple "${APP_PATH}"')
-        dmg_at = script.index('bash "${REPO_DIR}/tools/create_macos_dmg.sh"')
+        dmg_at = script.index('bash "${WORKTREE_DIR}/tools/create_macos_dmg.sh"')
         dmg_notary_at = script.index('submit_notary_artifact "${MAC_DMG}"')
         dmg_staple_at = script.index('xcrun stapler staple "${MAC_DMG}"')
         self.assertLess(credentials_at, worktree_at)
