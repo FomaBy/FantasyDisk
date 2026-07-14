@@ -71,7 +71,49 @@ run_gate ascension_viability res://tests/ascension_viability_gate.gd
 run_gate ascension_params_dump res://tools/ascension_params_dump.gd
 
 if [ "${FSD_SKIP_CSV:-0}" != "1" ]; then
-	run_gate live_csv res://tools/character_balance_csv.gd -- --mode=live
+	# FAN-1062: живой CSV чанками по 17 пар (~5-7 мин каждый) — целиком ~16 мин
+	# не переживает агентские tool-таймауты; band-проверка чанков пропускается
+	# (subset-режим), полная полоса судится по merged-CSV python-слоем ниже.
+	CSV_OK=1
+	rm -f "$OUT_DIR"/csv_chunk_*.csv
+	# Чанки ПО КЛАССАМ (17 × ~2-5.5 мин): пул/статус-тяжёлые классы не влезают
+	# даже девятью парами в агентские ~10-мин tool-таймауты, а один класс —
+	# гарантированно влезает. Ростер зафиксирован контрактными тестами
+	# (progression_data_character_contract_test).
+	CSV_CLASSES=(berserk soldier thief elementalist sniper priest biologist robot engineer dark_mage guitarist assassin ranger doctor chemist knight druid)
+	CSV_I=0
+	for CID in "${CSV_CLASSES[@]}"; do
+		run_gate "live_csv_${CID}" res://tools/character_balance_csv.gd -- --mode=live --class=${CID}
+		if [ -f build/character_balance_dps.csv ]; then
+			cp build/character_balance_dps.csv "$OUT_DIR/csv_chunk_$(printf '%02d' ${CSV_I})_${CID}.csv"
+		else
+			CSV_OK=0
+		fi
+		CSV_I=$((CSV_I+1))
+	done
+	python3 - "$OUT_DIR" <<'PYEOF'
+import csv, sys, glob
+out_dir = sys.argv[1]
+rows, header = [], None
+for p in sorted(glob.glob(f"{out_dir}/csv_chunk_*.csv")):
+	with open(p) as fh:
+		r = list(csv.DictReader(fh))
+		if r and header is None:
+			header = list(r[0].keys())
+		rows += r
+if header and rows:
+	with open("build/character_balance_dps.csv", "w", newline="") as fh:
+		w = csv.DictWriter(fh, fieldnames=header); w.writeheader(); w.writerows(rows)
+	print(f"merged {len(rows)} rows")
+else:
+	sys.exit(1)
+PYEOF
+	if [ $? -ne 0 ] || [ $CSV_OK -ne 1 ]; then
+		echo "| live_csv (merge) | ❌ FAIL | csv_chunk_*.csv |" >> "$SUMMARY"
+		FAILED=$((FAILED+1))
+	else
+		echo "| live_csv (3 чанка, merged) | ✅ PASS | csv_chunk_*.csv |" >> "$SUMMARY"
+	fi
 	cp build/character_balance_dps.csv "$OUT_DIR/character_balance_dps_after.csv" 2>/dev/null
 fi
 
