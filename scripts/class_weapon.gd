@@ -772,29 +772,12 @@ func _execute_attack_mode(owner_node: Node2D, target: Node2D, direction: Vector2
 	call(executor_name, owner_node, target, direction)
 
 
-func _spawn_weapon_signature(owner_node: Node2D, target: Node2D, direction: Vector2) -> void:
+func _spawn_weapon_signature(owner_node: Node2D, _target: Node2D, direction: Vector2) -> void:
 	if owner_node == null or direction.length_squared() <= 0.001:
 		return
-	var center := owner_node.global_position + direction * minf(maxf(aoe_radius * 0.55, 72.0), 180.0)
+	var release_origin := owner_node.global_position + direction * 26.0
 	var radius := maxf(aoe_radius, beam_width * 1.4)
-	match attack_mode:
-		"pulse", "priest_ward", "elemental_orbit", "robot_reactor_vent", "engineer_orbit_drone":
-			center = owner_node.global_position
-		"amp", "trap", "engineer_sentry_link", "engineer_pressure_mines":
-			center = owner_node.global_position + direction * minf(attack_range, 150.0)
-		"grenade_fuse", "smoke_bomb", "prism_rift", "meteor_shards", "sniper_kill_zone", "priest_sanctify", "priest_dual_toll", "bio_spore_bloom", "robot_magnetic_anchor":
-			center = owner_node.global_position + direction * minf(attack_range, 360.0)
-			if target != null:
-				center = target.global_position
-		"beam", "dot_beam", "arquebus_shot", "sniper_lockshot", "sniper_split_round", "bayonet_cone", "robot_compression_line", "moon_split_shot", "storm_pierce_cone":
-			center = owner_node.global_position + direction * minf(attack_range * 0.45, 240.0)
-			radius = maxf(beam_width * 2.2, 86.0)
-		"drain_link", "coin_ricochet", "bio_symbiote_web":
-			center = owner_node.global_position + direction * minf(attack_range * 0.32, 190.0)
-			if target != null:
-				center = (owner_node.global_position + target.global_position) * 0.5
-			radius = maxf(beam_width * 2.4, 96.0)
-	var signature := AttackVfx.weapon_signature(_projectile_parent(), center, weapon_id, radius, visual_color, direction.angle())
+	var signature := AttackVfx.weapon_signature(_projectile_parent(), release_origin, weapon_id, radius, visual_color, direction.angle())
 	if signature != null:
 		_register_effect(signature)
 

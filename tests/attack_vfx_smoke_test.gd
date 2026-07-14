@@ -60,6 +60,7 @@ func _test_vfx_helpers() -> void:
 		push_error("Expected ring pulse VFX to limit note clutter.")
 		quit(1)
 	var signature_node := nodes[8] as Node2D
+	_assert_release_cue(signature_node, "sword")
 	var signature_body := signature_node.get_node_or_null("WeaponSignatureBody") as Sprite2D
 	if signature_body == null:
 		push_error("Expected weapon signature to expose a dedicated body sprite.")
@@ -87,6 +88,7 @@ func _test_vfx_helpers() -> void:
 	if axe_signature == null:
 		push_error("Expected axe signature helper to spawn with the axe VFX asset.")
 		quit(1)
+	_assert_release_cue(axe_signature, "axe")
 	var actual_axe := axe_signature.get_node_or_null("WeaponSignatureActualWeapon") as Sprite2D
 	if actual_axe == null or actual_axe.texture == null or actual_axe.texture.resource_path != "res://assets/sprites/weapons/two_handed_axe.png":
 		push_error("Expected axe signature to include the actual two-handed axe weapon sprite.")
@@ -126,6 +128,7 @@ func _test_weapon_fire_paths() -> void:
 			if signature == null:
 				push_error("Expected %s/%s to spawn dedicated weapon signature VFX." % [character_id, weapon_id])
 				quit(1)
+			_assert_release_cue(signature, weapon_id)
 			if character_id == "berserk" and weapon_id == "axe":
 				var actual_weapon := signature.get_node_or_null("WeaponSignatureActualWeapon") as Sprite2D
 				if actual_weapon == null or actual_weapon.texture == null or actual_weapon.texture.resource_path != "res://assets/sprites/weapons/two_handed_axe.png":
@@ -164,6 +167,8 @@ func _test_berserk_sweep_geometry() -> void:
 		quit(1)
 	var owner := Node2D.new()
 	root.add_child(owner)
+	owner.add_child(weapon)
+	weapon.set_process(false)
 	weapon.visual_color = Color(0.62, 0.82, 1.0, 0.30)
 	weapon.call("_show_sweep_area", owner, Vector2.RIGHT)
 	var overlay := owner.get_node_or_null("BerserkExactAttackZone") as Polygon2D
@@ -184,8 +189,38 @@ func _test_berserk_sweep_geometry() -> void:
 		if child is Sprite2D and absf(absf((child as Sprite2D).rotation) - PI) > 0.01:
 			push_error("Expected Berserk sweep crescent sprites to be rotated 180 degrees.")
 			quit(1)
+	weapon.weapon_id = "long_spear"
+	weapon.attack_shape = "strip"
+	weapon.inner_width = 54.0
+	weapon.start_distance = 24.0
+	weapon.call("_show_strip_area", owner, Vector2.RIGHT)
+	if owner.get_node_or_null("BerserkExactAttackZone") != null:
+		push_error("Expected Knight long spear to use its beam/weapon release without an exact damage-zone overlay.")
+		quit(1)
+	weapon.weapon_id = "holy_flail"
+	weapon.attack_shape = "circle"
+	weapon.spiral_arm_degrees = 150.0
+	weapon.call("_show_spiral_step_area", owner, 0.0, 180.0)
+	if owner.get_node_or_null("BerserkExactAttackZone") != null:
+		push_error("Expected Knight holy flail to use its spiral/weapon release without an exact damage-zone overlay.")
+		quit(1)
 	owner.queue_free()
-	weapon.queue_free()
+
+
+func _assert_release_cue(signature: Node2D, weapon_id: String) -> void:
+	if not bool(signature.get_meta("release_motion", false)):
+		push_error("Expected %s signature to be a moving weapon-release cue." % weapon_id)
+		quit(1)
+	if bool(signature.get_meta("damage_zone_overlay", true)):
+		push_error("Expected %s release cue to opt out of damage-zone visualization." % weapon_id)
+		quit(1)
+	var diameter := float(signature.get_meta("release_diameter_px", 0.0))
+	if diameter < 64.0 or diameter > 100.0:
+		push_error("Expected %s release cue diameter in compact 64..100px band, got %.2f." % [weapon_id, diameter])
+		quit(1)
+	if float(signature.get_meta("release_travel_px", 0.0)) < 48.0:
+		push_error("Expected %s release cue to travel visibly away from the character." % weapon_id)
+		quit(1)
 
 
 func _max_additive_alpha(node: Node) -> float:

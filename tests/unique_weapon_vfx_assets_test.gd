@@ -1,7 +1,7 @@
 extends SceneTree
 
-## SCRUM-258 smoke: every current class weapon has a live weapon-signature
-## VFX plate and AttackVfx can spawn it as a textured self-cleaning node.
+## SCRUM-258/FAN-1079 smoke: every current class weapon has a live textured,
+## compact and self-cleaning weapon-release cue.
 
 const AttackVfxScript := preload("res://scripts/attack_vfx.gd")
 const ProgressionData := preload("res://scripts/progression_data.gd")
@@ -25,6 +25,12 @@ func _initialize() -> void:
 				push_error("AttackVfx.weapon_signature did not spawn for %s." % weapon_id)
 				quit(1)
 				return
+			if not bool(node.get_meta("release_motion", false)) \
+					or bool(node.get_meta("damage_zone_overlay", true)) \
+					or float(node.get_meta("release_diameter_px", 0.0)) > 100.0:
+				push_error("Weapon signature for %s must be a compact moving release cue, never a damage-zone plate." % weapon_id)
+				quit(1)
+				return
 			var has_sprite := false
 			for child in node.get_children():
 				if child is Sprite2D and (child as Sprite2D).texture != null:
@@ -39,5 +45,5 @@ func _initialize() -> void:
 		quit(1)
 		return
 	host.queue_free()
-	print("Unique weapon VFX assets smoke passed: %d plates." % checked)
+	print("Unique weapon VFX assets smoke passed: %d compact release cues." % checked)
 	quit()

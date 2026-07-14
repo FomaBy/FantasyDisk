@@ -34,6 +34,9 @@ const MAX_ATTACK_VFX_ALPHA := 0.68
 const WEAPON_SIGNATURE_BODY_ALPHA := 0.60
 const WEAPON_SIGNATURE_SHADOW_ALPHA := 0.34
 const WEAPON_SIGNATURE_RIM_ALPHA := 0.20
+const WEAPON_RELEASE_MIN_DIAMETER := 64.0
+const WEAPON_RELEASE_MAX_DIAMETER := 100.0
+const WEAPON_RELEASE_TRAVEL_PX := 54.0
 const BEAM_VISUAL_WIDTH_MULT := 1.15
 const PARTICLE_DENSITY_MULT := 0.7
 
@@ -88,8 +91,12 @@ static func weapon_signature(
 	holder.name = "WeaponSignatureVfx_%s" % weapon_id
 	holder.z_index = 9
 	scene.add_child(holder)
+	var direction := Vector2.RIGHT.rotated(rotation)
 	holder.global_position = global_pos
-	holder.rotation = rotation
+	holder.rotation = rotation - 0.12
+	holder.set_meta("release_motion", true)
+	holder.set_meta("release_travel_px", WEAPON_RELEASE_TRAVEL_PX)
+	holder.set_meta("damage_zone_overlay", false)
 
 	var shadow := Sprite2D.new()
 	shadow.name = "WeaponSignatureShadow"
@@ -121,17 +128,26 @@ static func weapon_signature(
 		actual_weapon.z_index = 2
 		holder.add_child(actual_weapon)
 
-	var base_scale := maxf(radius, 70.0) / 176.0
-	holder.scale = Vector2.ONE * clampf(base_scale, 0.38, 1.55)
+	# FAN-1079: this is a compact weapon-release cue, never a painted copy of
+	# the damage area. Radius only selects a small readability band; gameplay
+	# geometry remains in the weapon scripts and is not encoded in this scale.
+	var compact_diameter := clampf(radius * 0.45, WEAPON_RELEASE_MIN_DIAMETER, WEAPON_RELEASE_MAX_DIAMETER)
+	var texture_diameter := maxf(texture.get_size().x, texture.get_size().y)
+	var base_scale := compact_diameter / maxf(texture_diameter, 1.0)
+	holder.scale = Vector2.ONE * base_scale * 0.72
+	holder.set_meta("release_diameter_px", compact_diameter)
 
 	var tween := holder.create_tween()
 	tween.set_parallel(true)
-	tween.tween_property(holder, "scale", holder.scale * 1.10, 0.24).set_trans(Tween.TRANS_CUBIC).set_ease(Tween.EASE_OUT)
-	tween.tween_property(sprite, "modulate:a", 0.0, 0.22).set_delay(0.08)
-	tween.tween_property(rim, "modulate:a", 0.0, 0.18).set_delay(0.06)
-	tween.tween_property(shadow, "modulate:a", 0.0, 0.18).set_delay(0.10)
+	tween.tween_property(holder, "global_position", global_pos + direction * WEAPON_RELEASE_TRAVEL_PX, 0.28).set_trans(Tween.TRANS_CUBIC).set_ease(Tween.EASE_OUT)
+	tween.tween_property(holder, "rotation", rotation + 0.12, 0.28).set_trans(Tween.TRANS_QUAD).set_ease(Tween.EASE_OUT)
+	tween.tween_property(holder, "scale", Vector2.ONE * base_scale, 0.20).set_trans(Tween.TRANS_BACK).set_ease(Tween.EASE_OUT)
+	tween.tween_property(sprite, "modulate:a", 0.0, 0.18).set_delay(0.10)
+	tween.tween_property(rim, "modulate:a", 0.0, 0.16).set_delay(0.08)
+	tween.tween_property(shadow, "modulate:a", 0.0, 0.16).set_delay(0.12)
 	if actual_weapon != null:
-		tween.tween_property(actual_weapon, "modulate:a", 0.0, 0.20).set_delay(0.10)
+		tween.tween_property(actual_weapon, "rotation", actual_weapon.rotation + 0.34, 0.28).set_trans(Tween.TRANS_QUAD).set_ease(Tween.EASE_OUT)
+		tween.tween_property(actual_weapon, "modulate:a", 0.0, 0.18).set_delay(0.12)
 	tween.chain().tween_callback(holder.queue_free)
 	return holder
 

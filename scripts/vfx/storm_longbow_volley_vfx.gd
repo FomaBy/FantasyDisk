@@ -19,7 +19,11 @@ const ARROW_OFFSETS_DEGREES := [-17.0, -8.5, 0.0, 8.5, 17.0]
 const SOURCE_CANVAS_PX := 256.0
 const SOURCE_ORIGIN := Vector2(26.0, 128.0)
 const SOURCE_ENDPOINT_X := 230.0
-const SOURCE_TRAVEL_PX := SOURCE_ENDPOINT_X - SOURCE_ORIGIN.x
+const BOW_SPLIT_X_PX := 51.0
+const BOW_SILHOUETTE_SCALE := 0.40
+const BOW_COMPRESSION_PX := (BOW_SPLIT_X_PX - SOURCE_ORIGIN.x) * (1.0 - BOW_SILHOUETTE_SCALE)
+const DISPLAY_ENDPOINT_X := SOURCE_ENDPOINT_X - BOW_COMPRESSION_PX
+const DISPLAY_TRAVEL_PX := DISPLAY_ENDPOINT_X - SOURCE_ORIGIN.x
 const RELEASE_FPS := 16.0
 const RELEASE_FRAME_COUNT := 8
 const RELEASE_DURATION_SECONDS := float(RELEASE_FRAME_COUNT) / RELEASE_FPS
@@ -39,6 +43,8 @@ func _ready() -> void:
 	set_meta("origin_forward_px", ORIGIN_FORWARD_PX)
 	set_meta("pierce_count", PIERCE_COUNT)
 	set_meta("arrow_offsets_degrees", ARROW_OFFSETS_DEGREES)
+	set_meta("bow_silhouette_scale", BOW_SILHOUETTE_SCALE)
+	set_meta("display_endpoint_x_px", DISPLAY_ENDPOINT_X)
 	animated_sprite.animation_finished.connect(_on_animation_finished)
 	animated_sprite.play("release")
 
@@ -50,7 +56,7 @@ func configure(origin: Vector2, direction: Vector2, visual_range := ATTACK_RANGE
 	global_position = origin + aim * ORIGIN_FORWARD_PX
 	rotation = aim.angle()
 	var travel_world := maxf(float(visual_range) - ORIGIN_FORWARD_PX, 1.0)
-	var uniform_scale := travel_world / SOURCE_TRAVEL_PX
+	var uniform_scale := travel_world / DISPLAY_TRAVEL_PX
 	scale = Vector2.ONE * uniform_scale
 
 
@@ -64,6 +70,8 @@ func geometry_contract() -> Dictionary:
 		"origin_forward_px": ORIGIN_FORWARD_PX,
 		"pierce_count": PIERCE_COUNT,
 		"arrow_offsets_degrees": ARROW_OFFSETS_DEGREES.duplicate(),
+		"bow_silhouette_scale": BOW_SILHOUETTE_SCALE,
+		"display_endpoint_x_px": DISPLAY_ENDPOINT_X,
 		"release_fps": RELEASE_FPS,
 		"release_frame_count": RELEASE_FRAME_COUNT,
 		"release_duration_seconds": RELEASE_DURATION_SECONDS,

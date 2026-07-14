@@ -251,17 +251,21 @@ func _test_visual_scene() -> bool:
 	var contract := effect.call("geometry_contract") as Dictionary
 	if int(contract.get("beam_count", 0)) != 5 or int(contract.get("pierce_count", 0)) != 4:
 		return _fail("Storm Longbow visual scene geometry metadata is incomplete.")
+	if float(contract.get("bow_silhouette_scale", 1.0)) > 0.50:
+		return _fail("Storm Longbow bow silhouette must be reduced by at least 2x.")
 	effect.call("configure", Vector2(100.0, 100.0), Vector2.DOWN, 980.0)
 	if effect.global_position.distance_to(Vector2(100.0, 126.0)) > 0.01:
 		return _fail("Storm Longbow visual pivot must start 26px forward.")
 	if not is_equal_approx(effect.rotation, PI * 0.5):
 		return _fail("Storm Longbow visual scene must rotate with aim direction.")
-	var expected_scale := (980.0 - 26.0) / (230.0 - 26.0)
+	var expected_scale := (980.0 - 26.0) / (float(contract.get("display_endpoint_x_px", 0.0)) - 26.0)
 	if not is_equal_approx(effect.scale.x, expected_scale) or not is_equal_approx(effect.scale.y, expected_scale):
-		return _fail("Storm Longbow visual scene must preserve uniform cone scaling.")
+		return _fail("Storm Longbow compacted visual must still span the live attack range.")
 	var sprite := effect.get_node_or_null("AnimatedSprite2D") as AnimatedSprite2D
 	if sprite == null or sprite.sprite_frames == null or sprite.animation != &"release" or not sprite.is_playing():
 		return _fail("Storm Longbow visual scene must autoplay the release SpriteFrames.")
+	if not sprite.material is ShaderMaterial:
+		return _fail("Storm Longbow must compact only the bow region through the runtime shader.")
 	effect.queue_free()
 	return true
 
