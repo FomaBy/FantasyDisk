@@ -17,6 +17,20 @@ Plan, exact zones, composite, debug overlay and fit reports live in
 `docs/design/mockups/scrum1073_semantic_band_migration/`. This source is not a
 runtime texture; it documents content-zone rules for geometry migration.
 
+## Feedback Privacy Overlay Reference
+
+FAN-1057/FAN-1059 adds the PixelLab MCP source
+`docs/design/references/FAN-1057_feedback_privacy/feedback_privacy_overlay_pixellab_source.png`
+(asset `6e87754b-e6e0-4c74-8682-46af7fe65ab7`, 672×378 RGBA) and proportional
+1920×1080 review preview. It is a textless design reference only, not a runtime
+texture. Empty wells cover title, description, optional 16:9 screenshot,
+include/omit control, privacy copy, status and actions; blackened-steel rails
+and restrained ruby dragon accents stay outside those interiors. Exact
+1280×720/1920×1080/2560×1440 geometry, provenance and visual QA live under
+`docs/design/mockups/FAN-1057_feedback_privacy/` and the adjacent reference
+manifest. Runtime recreates the layout with Godot Controls and existing
+feedback frame/button families.
+
 ## Artifact And Shop Icons
 
 All artifacts from `ProgressionData.ARTIFACTS` and all shop-only items from `ProgressionData.SHOP_ITEMS` have unique PNG assets. Artifact icons were replaced on 2026-06-12 as `256x256` RGBA transparent realistic epic D&D/tabletop fantasy raster magic items after direct user feedback: one finished painted object per icon, no pentagram-style pictograms, no built-in UI frame, no pedestal, no background tile, no loose shards or particles, and readable object lighting/materials. Shop-only icons keep the earlier fantasy-medallion treatment.
@@ -287,6 +301,14 @@ the ornamental rails or reserve band.
 Plans, fit reports, composite/debug overlay and provenance live under
 `docs/design/mockups/scrum983_escape_dossier/` and
 `docs/design/previews/scrum983_escape_dossier/`.
+
+FAN-1047 unifies ordinary Codex navigation and the four dossier footer actions
+with the exact live `text/main_menu_380x104` five-state material. Codex tabs
+use uniform `260×72` scaling; dossier actions preserve the source aspect in a
+compact right rail or wide footer. The old yellow `minimal_metal_codex_tab`
+remains a historical asset only. Supplemental PixelLab references are under
+`docs/design/references/FAN-1047_codex_dossier_buttons/`; no generated bitmap
+is promoted to runtime.
 
 SCRUM-588 adds `assets/sprites/ui/frames/overhaul_2k/ui_frame_2k_lut_toast.png`,
 the level-up toast frame. It is a generated transparent RGBA `480x300` asset
@@ -629,7 +651,7 @@ Canonical live Hero Select frame assets live in
 - `ui_frame_hero_select_thumbnail.png`, `ui_frame_hero_select_asc_button.png`,
   `ui_frame_hero_select_asc_label.png`, `ui_frame_hero_select_asc_mods.png`.
 
-Canonical live button assets live in `assets/sprites/ui/frames/minimal_metal_buttons/`:
+Canonical legacy/minimal button assets live in `assets/sprites/ui/frames/minimal_metal_buttons/`:
 
 - `ui_btn_minimal_metal_standard.png`, `ui_btn_minimal_metal_max.png`,
   `ui_btn_minimal_metal_main_menu.png`, `ui_btn_minimal_metal_hero_confirm.png`;
@@ -640,6 +662,10 @@ Canonical live button assets live in `assets/sprites/ui/frames/minimal_metal_but
 - `ui_btn_minimal_metal_fab.png`, `ui_btn_minimal_metal_utility.png`,
   `ui_btn_minimal_metal_pause.png`;
 - every file has `_hover`, `_focus`, `_pressed` and `_disabled` state variants.
+
+`ui_btn_minimal_metal_codex_tab*` is retained for history/metadata checks but
+is no longer a live Codex family after FAN-1047. Ordinary text actions use the
+canonical `assets/sprites/ui/frames/text_buttons_unique/` five-state kit.
 
 State language:
 

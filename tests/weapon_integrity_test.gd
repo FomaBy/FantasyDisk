@@ -23,6 +23,25 @@ const TEXTURE_ID_ALIASES := {
 
 const ACTIVE_DAMAGE_PARAMETERS := ["damage", "magic_damage"]
 
+# SCRUM-277 weapon-script whitelist (refreshed for FAN-1061). A weapon scene may
+# attach a scene-specific subclass for VFX/animation bridges, but it MUST derive
+# from one of these families so the family-specific contract checks below stay
+# valid. Match is by exact script filename to keep catching genuine substitutions
+# (an unlisted script still trips the "unexpected weapon script" guard).
+const CLASS_WEAPON_SCRIPTS := [
+	"class_weapon.gd",
+	"robot_hydraulic_press_weapon.gd",
+]
+const BERSERK_WEAPON_SCRIPTS := [
+	"berserk_weapon.gd",
+	"holy_flail_weapon.gd",
+	"two_handed_axe_weapon.gd",
+	"two_handed_hammer_weapon.gd",
+]
+const SUMMONER_WEAPON_SCRIPTS := [
+	"summoner_weapon.gd",
+]
+
 
 func _initialize() -> void:
 	var errors: Array = []
@@ -111,7 +130,10 @@ func _check_weapon_scene(errors: Array, character_id: String, weapon_id: String,
 	var script_ref = weapon_node.get_script()
 	var script_path := str(script_ref.resource_path) if script_ref != null else ""
 	var marker := _expected_attack_mode(config)
-	if script_path.ends_with("class_weapon.gd") or script_path.ends_with("summoner_weapon.gd"):
+	var is_class_weapon := _script_in_whitelist(script_path, CLASS_WEAPON_SCRIPTS)
+	var is_berserk_weapon := _script_in_whitelist(script_path, BERSERK_WEAPON_SCRIPTS)
+	var is_summoner_weapon := _script_in_whitelist(script_path, SUMMONER_WEAPON_SCRIPTS)
+	if is_class_weapon or is_summoner_weapon:
 		var config_damage_parameter := str(config.get("damage_parameter", "damage"))
 		var scene_damage_parameter := str(weapon_node.get("damage_parameter"))
 		if scene_damage_parameter != config_damage_parameter:
@@ -120,17 +142,17 @@ func _check_weapon_scene(errors: Array, character_id: String, weapon_id: String,
 		if not scene_damage_parameter in ACTIVE_DAMAGE_PARAMETERS:
 			errors.append("%s/%s: scene retains invalid damage_parameter '%s'" % [
 				character_id, weapon_id, scene_damage_parameter])
-	if script_path.ends_with("class_weapon.gd"):
+	if is_class_weapon:
 		var scene_mode := str(weapon_node.get("attack_mode"))
 		if scene_mode != marker:
 			errors.append("%s/%s: scene attack_mode '%s' != config '%s'" % [character_id, weapon_id, scene_mode, marker])
 		if not ClassWeaponScript.has_attack_mode_executor(marker):
 			errors.append("%s/%s: invalid ClassWeapon attack_mode '%s'" % [character_id, weapon_id, marker])
-	elif script_path.ends_with("berserk_weapon.gd"):
+	elif is_berserk_weapon:
 		var scene_shape := str(weapon_node.get("attack_shape"))
 		if scene_shape != marker:
 			errors.append("%s/%s: scene attack_shape '%s' != config '%s'" % [character_id, weapon_id, scene_shape, marker])
-	elif script_path.ends_with("summoner_weapon.gd"):
+	elif is_summoner_weapon:
 		if marker != "summon":
 			errors.append("%s/%s: SummonerWeapon must use attack_mode marker 'summon', got '%s'" % [character_id, weapon_id, marker])
 	else:
@@ -170,6 +192,10 @@ func _expected_attack_mode(config: Dictionary) -> String:
 	if config.has("summon_damage_multiplier") or int(config.get("max_summons", 0)) > 0:
 		return "summon"
 	return str(config.get("attack_shape", ""))
+
+
+func _script_in_whitelist(script_path: String, whitelist: Array) -> bool:
+	return script_path.get_file() in whitelist
 
 
 func _expected_texture_path(weapon_id: String) -> String:

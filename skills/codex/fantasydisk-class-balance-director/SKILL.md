@@ -5,6 +5,9 @@ description: "Use this skill when designing, auditing, rebalancing, implementing
 
 # FantasyDisk Class Balance Director
 
+Work only from the assigned Multica `FAN-*` issue and keep its owner, evidence,
+and QA status truthful.
+
 ## Overview
 
 Use this skill to balance FantasyDisk classes as complete three-weapon kits, not as isolated weapons. The goal is equal aggregate class effectiveness across solo targets, AoE or crowd pressure, and defensive mechanics, while every individual weapon keeps a distinct gameplay identity.
@@ -15,7 +18,7 @@ Before changing balance, read the current task file and these repository sources
 
 - `AGENTS.md`
 - `docs/process/agent_role_boundaries_and_handoffs.md`
-- `docs/process/jira_sync.md`
+- `docs/process/multica_workflow.md`
 - `docs/design/mechanics_extract.md`
 - `docs/design/current_game_state.md`
 - `docs/design/systems/characters_weapons.md`
@@ -59,7 +62,7 @@ Use these axes unless the active task defines a stricter model:
 5. Choose a mechanic-first correction when an axis is structurally missing or a weapon identity is not working.
 6. Apply numeric tuning only after the mechanic has the right target pattern, risk, range, setup time, and defensive contribution.
 7. Re-run focused tests and update the relevant design/system docs in the same task.
-8. Leave an auditable result: before/after tables, changed mechanics, commands run, reports generated, residual risk, and Jira/task sync notes.
+8. Leave an auditable Multica result: before/after tables, changed mechanics, commands run, reports generated, residual risk, and task-mirror notes.
 
 ## Default Commands
 

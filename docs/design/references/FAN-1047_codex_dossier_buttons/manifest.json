@@ -1,0 +1,30 @@
+{
+  "task": "FAN-1047",
+  "generator": "PixelLab MCP create_ui_asset",
+  "config_smoke": "PASS via get_balance; no secrets printed",
+  "runtime_promotion": "reference-only; existing text_buttons_unique runtime assets are reused",
+  "assets": [
+    {
+      "id": "68ae588d-1191-4a7b-875b-70668c84a623",
+      "name": "FAN-1047 Codex main-menu button family reference",
+      "request": "pixellab_codex_request.json",
+      "export": "pixellab_codex_main_menu_family_688x384.png",
+      "size": [688, 384],
+      "alpha": true,
+      "purpose": "Codex three-column composition with six neutral main-menu-family navigation plates"
+    },
+    {
+      "id": "719436ba-2b67-4424-ae7f-d0e4199e5415",
+      "name": "FAN-1047 dossier unclipped main-menu action reference",
+      "request": "pixellab_dossier_request.json",
+      "export": "pixellab_dossier_actions_688x384.png",
+      "size": [688, 384],
+      "alpha": true,
+      "purpose": "Hero dossier footer with four fully bounded action plates"
+    }
+  ],
+  "source_evidence": {
+    "multica_attachment_id": "019f5beb-6945-7a4b-81a1-e38f7e641254",
+    "local_path": "image.png"
+  }
+}

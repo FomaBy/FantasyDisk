@@ -22,33 +22,25 @@ func _init() -> void:
 	_check(not Reporter._is_valid_webhook_url("https://example.com/api/webhooks/123/abc"),
 		"non-Discord webhook URL should be rejected")
 
-	# SCRUM-848: встроенный дефолтный вебхук — фидбек работает из коробки. Контракт:
-	# 1) встроенный URL собирается из base64-чанков и валиден;
-	# 2) пустые env/cfg → резолюция отдаёт встроенный (не «Ошибка сборки»);
-	# 3) оверрайды сохраняют приоритет: env > bundled > user > builtin;
-	# 4) невалидный оверрайд игнорируется и падает дальше до встроенного.
-	var builtin_url := Reporter._builtin_webhook_url()
-	_check(Reporter._is_valid_webhook_url(builtin_url),
-		"builtin webhook URL must decode into a valid Discord webhook")
+	# Webhook — credential: ни literal, ни reversible base64 не должны жить в
+	# клиенте. Пустая конфигурация безопасно оставляет отчёт локально.
 	var fallback: Dictionary = Reporter._resolve_from("", "", "")
-	_check(str(fallback.get("source", "")) == "builtin" and str(fallback.get("error", "x")) == "",
-		"empty sources must resolve to the builtin webhook without error")
-	_check(str(fallback.get("url", "")) == builtin_url,
-		"builtin fallback must return the decoded builtin URL")
+	_check(str(fallback.get("url", "x")) == "" and str(fallback.get("error", "")) == "missing",
+		"empty sources must fail closed without an embedded credential")
 	var env_win: Dictionary = Reporter._resolve_from(
 		"https://discord.com/api/webhooks/111/aaa", "https://discord.com/api/webhooks/222/bbb", "")
 	_check(str(env_win.get("source", "")) == "env" and str(env_win.get("url", "")).ends_with("/111/aaa"),
-		"env override must win over bundled and builtin")
+		"env override must win over bundled and user config")
 	var bundled_win: Dictionary = Reporter._resolve_from("", "https://discord.com/api/webhooks/222/bbb", "")
 	_check(str(bundled_win.get("source", "")) == "bundled",
-		"bundled cfg override must win over user cfg and builtin")
+		"bundled cfg override must win over user cfg")
 	var user_win: Dictionary = Reporter._resolve_from("", "", "https://discord.com/api/webhooks/333/ccc")
 	_check(str(user_win.get("source", "")) == "user",
-		"user cfg override must win over builtin")
+		"user cfg must be accepted as the last explicit source")
 	var invalid_fallthrough: Dictionary = Reporter._resolve_from(
 		"https://discord.com/api/webhooks/XXXX/YYYY", "https://example.com/api/webhooks/1/a", "")
-	_check(str(invalid_fallthrough.get("source", "")) == "builtin" and str(invalid_fallthrough.get("error", "x")) == "",
-		"invalid overrides must fall through to builtin instead of failing the send")
+	_check(str(invalid_fallthrough.get("url", "x")) == "" and str(invalid_fallthrough.get("error", "")) == "missing",
+		"invalid overrides must fail closed instead of exposing a fallback credential")
 
 	var missing_msg := Reporter._configuration_failure_message("missing")
 	var invalid_msg := Reporter._configuration_failure_message("invalid")
@@ -58,6 +50,8 @@ func _init() -> void:
 	_check(not ("discord.com/api/webhooks" in invalid_msg), "invalid message must not expose webhook URL")
 	_check(missing_msg.length() <= 90, "missing message should fit status label: %s" % missing_msg)
 	_check(invalid_msg.length() <= 90, "invalid message should fit status label: %s" % invalid_msg)
+	_check("не удалось" in Reporter._configuration_failure_message("missing", false),
+		"configuration failure must not claim that a failed local save succeeded")
 
 	# SCRUM-720: контракт хранения фидбека. Локальный фолбэк и пользовательский конфиг
 	# ОБЯЗАНЫ жить в user:// (вне репозитория) — иначе отчёты (текст игрока + скриншоты)

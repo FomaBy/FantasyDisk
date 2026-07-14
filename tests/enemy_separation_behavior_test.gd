@@ -9,8 +9,9 @@ extends SceneTree
 #      попадает ударом после замаха;
 #  (c) два врага, наложенные в одну точку в 300px от игрока, расходятся
 #      steering-сепарацией на ≥30px, оба остаются в contact_range (engaged);
-#  (d) стрелок в hold-полосе НЕ замерзает: тангенциальный строб (velocity != 0);
-#  (e) спавн-фильтр меряет до ЖИВОГО игрока: точка в 100px от игрока вдали от
+#  (d) сосед, умерший между refresh и hot-frame query, пропускается до cast;
+#  (e) стрелок в hold-полосе НЕ замерзает: тангенциальный строб (velocity != 0);
+#  (f) спавн-фильтр меряет до ЖИВОГО игрока: точка в 100px от игрока вдали от
 #      центра арены отклоняется; given-position спавн выталкивается на ≥320px.
 #
 # Движение гоняется вручную: enemy.set_physics_process(false) + прямые вызовы
@@ -81,6 +82,7 @@ func _initialize() -> void:
 	await _test_melee_arrival(errors)
 	await _test_deep_overlap_backoff(errors)
 	await _test_pair_separation(errors)
+	await _test_freed_cached_neighbor(errors)
 	await _test_shooter_strafe(errors)
 	await _test_spawn_protection(errors)
 
@@ -171,7 +173,36 @@ func _test_pair_separation(errors: Array[String]) -> void:
 	await process_frame
 
 
-# (d) Стрелок в hold-полосе стробит (не freeze).
+# (d) Cached и общий frame-snapshot соседа могут пережить его Node lifetime.
+func _test_freed_cached_neighbor(errors: Array[String]) -> void:
+	var player := _make_player(Vector2(2048, 1152))
+	var survivor := _make_enemy(player.global_position + Vector2(240, 0))
+	var doomed := _make_enemy(survivor.global_position + Vector2(12, 0))
+	await process_frame
+
+	survivor.call("_refresh_separation_neighbors")
+	var neighbors: Array = survivor.get("_separation_neighbors")
+	if not neighbors.has(doomed):
+		errors.append("(d) fixture не закэшировал doomed-соседа до free().")
+	doomed.free()
+
+	# No await: both the per-enemy cache and CombatTargetQuery frame snapshot
+	# still contain the now-invalid Object Variant. Both paths must validate it
+	# before `as Node2D` or any property access.
+	var velocity: Vector2 = survivor.call("_separation_velocity")
+	survivor.call("_refresh_separation_neighbors")
+	var refreshed_neighbors: Array = survivor.get("_separation_neighbors")
+	for cached_neighbor in refreshed_neighbors:
+		if not is_instance_valid(cached_neighbor):
+			errors.append("(d) refresh повторно сохранил freed neighbor.")
+	if not velocity.is_finite():
+		errors.append("(d) separation вернул non-finite velocity после freed neighbor.")
+
+	_cleanup([survivor, player])
+	await process_frame
+
+
+# (e) Стрелок в hold-полосе стробит (не freeze).
 func _test_shooter_strafe(errors: Array[String]) -> void:
 	var player := _make_player(Vector2(2048, 1152))
 	var desired := 280.0
@@ -183,19 +214,19 @@ func _test_shooter_strafe(errors: Array[String]) -> void:
 	enemy.call("_physics_process", DT)
 	var strafe_velocity: Vector2 = enemy.get("velocity")
 	if strafe_velocity.length() < 5.0:
-		errors.append("(d) стрелок в hold-полосе заморожен: |velocity|=%.2f (ожидали строб)." % strafe_velocity.length())
+		errors.append("(e) стрелок в hold-полосе заморожен: |velocity|=%.2f (ожидали строб)." % strafe_velocity.length())
 	else:
 		var toward: Vector2 = (player.global_position - enemy.global_position).normalized()
 		var radial_share: float = absf(strafe_velocity.normalized().dot(toward))
 		if radial_share > 0.5:
-			errors.append("(d) строб не тангенциален: радиальная доля %.2f > 0.5." % radial_share)
-	print("INFO (d): strafe velocity=%s (|v|=%.1f)" % [strafe_velocity, strafe_velocity.length()])
+			errors.append("(e) строб не тангенциален: радиальная доля %.2f > 0.5." % radial_share)
+	print("INFO (e): strafe velocity=%s (|v|=%.1f)" % [strafe_velocity, strafe_velocity.length()])
 
 	_cleanup([enemy, player])
 	await process_frame
 
 
-# (e) Спавн-фильтр меряет до живого игрока; given-позиции выталкиваются на 320px.
+# (f) Спавн-фильтр меряет до живого игрока; given-позиции выталкиваются на 320px.
 func _test_spawn_protection(errors: Array[String]) -> void:
 	var game := GameStub.new()
 	root.add_child(game)
@@ -208,15 +239,15 @@ func _test_spawn_protection(errors: Array[String]) -> void:
 
 	var near_player: Vector2 = player.global_position + Vector2(100, 0)
 	if bool(director.call("_is_spawn_position_clear", near_player)):
-		errors.append("(e) точка в 100px от живого игрока принята (фильтр всё ещё меряет до ARENA_CENTER).")
+		errors.append("(f) точка в 100px от живого игрока принята (фильтр всё ещё меряет до ARENA_CENTER).")
 	# Центр арены далеко от игрока — теперь легальная точка спавна.
 	if not bool(director.call("_is_spawn_position_clear", game.ARENA_CENTER)):
-		errors.append("(e) точка у центра арены (игрок далеко) отклонена — фильтр не перешёл на живого игрока.")
+		errors.append("(f) точка у центра арены (игрок далеко) отклонена — фильтр не перешёл на живого игрока.")
 	# given-position спавн (пачка/свита) выталкивается от игрока на ≥320px.
 	var pushed: Vector2 = director.call("_push_spawn_from_player", player.global_position + Vector2(50, 0), 320.0)
 	if pushed.distance_to(player.global_position) < 320.0 - 0.5:
-		errors.append("(e) given-position спавн не вытолкнут: d=%.1f < 320." % pushed.distance_to(player.global_position))
-	print("INFO (e): near reject OK, center accept OK, pushed d=%.1f" % pushed.distance_to(player.global_position))
+		errors.append("(f) given-position спавн не вытолкнут: d=%.1f < 320." % pushed.distance_to(player.global_position))
+	print("INFO (f): near reject OK, center accept OK, pushed d=%.1f" % pushed.distance_to(player.global_position))
 
 	_cleanup([player, game])
 	await process_frame

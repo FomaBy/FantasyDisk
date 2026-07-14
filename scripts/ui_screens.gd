@@ -18,6 +18,7 @@ var _rebind_is_gamepad := false
 var _atlas := {}
 # Скрытые звезды, чью церемонию рассеивания тумана уже показали в этой сессии.
 var _atlas_hidden_seen := {}
+var _feedback_request_id := 0
 
 const HeroStatRadar := preload("res://scripts/ui/hero_stat_radar.gd")
 const SemanticTypography := preload("res://scripts/ui/semantic_typography.gd")
@@ -30,6 +31,7 @@ const ArtifactRewardPresenter := preload("res://scripts/artifact_reward_presente
 const ShopUIConstants := preload("res://scripts/ui/shop_ui_constants.gd")
 const HeroSelectConstants := preload("res://scripts/ui/hero_select_constants.gd")
 const FEEDBACK_REPORTER_SCRIPT := preload("res://scripts/feedback_reporter.gd")
+const FeedbackOverlayController := preload("res://scripts/ui/feedback_overlay.gd")
 const DisplayResolution := preload("res://scripts/display_resolution.gd")
 const StatFormulas := preload("res://scripts/stat_formulas.gd")
 const GlobalTooltip := preload("res://scripts/ui/global_tooltip.gd")
@@ -2656,9 +2658,9 @@ const CODEX_SECTIONS := [
 	{"id": "characters", "title": "Персонажи"},
 	{"id": "monsters", "title": "Монстры"},
 	{"id": "artifacts", "title": "Артефакты"},
-	{"id": "characteristics", "title": "Характеристики"},
+	{"id": "characteristics", "title": "Параметры"},
 	{"id": "attributes", "title": "Атрибуты"},
-	{"id": "ascension", "title": "Возвышение"},
+	{"id": "ascension", "title": "Возвыш."},
 ]
 
 
@@ -5467,31 +5469,22 @@ func _show_codex_screen() -> void:
 
 	# Six fixed Russian labels. The category-emblem path is intentionally absent:
 	# actual canonical images belong to entries, not to navigation furniture.
-	var nav_y := [12.0, 130.0, 248.0, 366.0, 484.0, 602.0]
+	var nav_y := [24.0, 142.0, 260.0, 378.0, 496.0, 614.0]
 	for section_index in range(CODEX_SECTIONS.size()):
 		var section: Dictionary = CODEX_SECTIONS[section_index]
 		var section_id := str(section["id"])
 		var tab_button := Button.new()
 		tab_button.name = "CodexTab_%s" % section_id
 		tab_button.text = str(section["title"])
-		tab_button.custom_minimum_size = Vector2(260, 104)
+		tab_button.custom_minimum_size = Vector2(260, 72)
 		tab_button.mouse_default_cursor_shape = Control.CURSOR_POINTING_HAND
-		_apply_fantasy_button_theme(tab_button, "default", UIButtonFamily.FAMILY_CODEX_TAB)
+		_apply_fantasy_button_theme(tab_button, "default", UIButtonFamily.FAMILY_MAIN_MENU)
 		tab_button.add_theme_font_size_override("font_size", _readable_font_size(SemanticTypography.ROLE_TAB, 16))
 		tab_button.alignment = HORIZONTAL_ALIGNMENT_CENTER
 		tab_button.autowrap_mode = TextServer.AUTOWRAP_OFF
 		tab_button.clip_text = false
-		_codex_bind_stage_font(tab_button, SemanticTypography.ROLE_TAB, 22, SemanticTypography.role_min(SemanticTypography.ROLE_TAB), SemanticTypography.role_max(SemanticTypography.ROLE_TAB))
-		for tab_state in ["normal", "hover", "pressed", "disabled", "focus"]:
-			var source_style := tab_button.get_theme_stylebox(tab_state)
-			var tab_style := source_style.duplicate() if source_style != null else null
-			if tab_style != null:
-				tab_style.content_margin_left = 20.0
-				tab_style.content_margin_right = 20.0
-				tab_style.content_margin_top = 18.0
-				tab_style.content_margin_bottom = 18.0
-				tab_button.add_theme_stylebox_override(tab_state, tab_style)
-		_codex_set_design_rect(tab_button, Rect2(0, nav_y[section_index], 260, 104))
+		_codex_bind_stage_font(tab_button, SemanticTypography.ROLE_TAB, 20, SemanticTypography.role_min(SemanticTypography.ROLE_TAB), SemanticTypography.role_max(SemanticTypography.ROLE_TAB))
+		_codex_set_design_rect(tab_button, Rect2(0, nav_y[section_index], 260, 72))
 		tab_button.pressed.connect(_show_codex_section.bind(content, section_id))
 		_connect_ui_sfx(tab_button, "click")
 		tabs_row.add_child(tab_button)
@@ -13426,176 +13419,14 @@ func _apply_video_settings() -> void:
 	game.save_game_settings()
 
 
-# SCRUM-484: координатная спека @2560×1440 — форма фидбэка (модалка со скроллом).
-# Панель clamp(viewport-80, [480,940] × [380,780]) → @2K = 940×780, центрирована.
-# _panel_style margins (58,72,58,66) → safe-area. Сверху фикс заголовок, снизу фикс
-# статус + ряд кнопок (Отправить 260×64, Отмена 220×64, sep 18); середина (ScrollContainer)
-# тянется и прокручивает поле ввода (h≥130) и превью скриншота (h 240). Кнопки никогда
-# не уезжают за нижний край (SCRUM-460).
+# FAN-1057: runtime-builder формы фидбэка вынесен в FeedbackOverlayController.
+# Актуальная responsive-геометрия, safe zones и 720p/1080p/2K контрольные размеры
+# зафиксированы в docs/design/mockups/FAN-1057_feedback_privacy/spec.md и
+# tests/feedback_privacy_ui_test.gd; фасад ниже сохраняет публичный API UIScreens.
 
 
 func _show_feedback_overlay(screenshot: Image = null) -> void:
-	_close_feedback_overlay()
-	# Пауза при открытии формы фидбека — как Escape (оверлей PROCESS_MODE_ALWAYS,
-	# поэтому ввод в форму работает на паузе). Снимается в _close_feedback_overlay.
-	game.push_pause("feedback")
-
-	game.feedback_overlay_layer = CanvasLayer.new()
-	game.feedback_overlay_layer.name = "FeedbackOverlayLayer"
-	game.feedback_overlay_layer.layer = 128
-	game.feedback_overlay_layer.process_mode = Node.PROCESS_MODE_ALWAYS
-	game.add_child(game.feedback_overlay_layer)
-
-	var root := Control.new()
-	root.name = "FeedbackOverlay"
-	root.set_anchors_preset(Control.PRESET_FULL_RECT)
-	root.mouse_filter = Control.MOUSE_FILTER_STOP
-	game.feedback_overlay_layer.add_child(root)
-	_prepare_global_tooltips(root)
-
-	var dim := ColorRect.new()
-	dim.name = "FeedbackDim"
-	dim.set_anchors_preset(Control.PRESET_FULL_RECT)
-	dim.color = Color(0.0, 0.0, 0.0, 0.62)
-	dim.mouse_filter = Control.MOUSE_FILTER_STOP
-	root.add_child(dim)
-
-	# Размер панели подгоняется под вьюпорт (минус поля), с потолком — иначе на
-	# 1600x970 контент (~720px) переполнял фиксированную панель 700px и кнопки
-	# уезжали за нижний край экрана (SCRUM-460).
-	var viewport_size: Vector2 = root.get_viewport_rect().size
-	if viewport_size.x <= 0.0 or viewport_size.y <= 0.0:
-		viewport_size = Vector2(1280.0, 720.0)
-	var panel_width: float = clampf(viewport_size.x - 80.0, 480.0, 940.0)
-	var panel_height: float = clampf(viewport_size.y - 80.0, 380.0, 780.0)
-
-	var panel := PanelContainer.new()
-	panel.name = "FeedbackPanel"
-	panel.anchor_left = 0.5
-	panel.anchor_top = 0.5
-	panel.anchor_right = 0.5
-	panel.anchor_bottom = 0.5
-	panel.offset_left = -panel_width * 0.5
-	panel.offset_top = -panel_height * 0.5
-	panel.offset_right = panel_width * 0.5
-	panel.offset_bottom = panel_height * 0.5
-	panel.mouse_filter = Control.MOUSE_FILTER_STOP
-	# SCRUM-486: @2K per-слот фрейм формы фидбэка (fb_panel 940×780; на 2K панель ровно
-	# 940×780, на меньших вьюпортах 9-slice бордюры скейлятся от source 940×780).
-	panel.add_theme_stylebox_override("panel", _overhaul_2k_frame_style("fb_panel", Vector2(panel_width, panel_height)))
-	root.add_child(panel)
-
-	var box := VBoxContainer.new()
-	box.name = "FeedbackContent"
-	box.add_theme_constant_override("separation", 10)
-	panel.add_child(box)
-
-	var title := Label.new()
-	title.text = "Отправить фидбек"
-	title.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	title.add_theme_font_size_override("font_size", _readable_font_size(SemanticTypography.ROLE_TITLE, 32))
-	title.add_theme_color_override("font_color", Color(0.96, 0.90, 0.68, 1.0))
-	box.add_child(title)
-
-	# Середина прокручивается: при любой высоте экрана заголовок сверху, а статус
-	# и кнопки «Отправить»/«Отмена» снизу остаются закреплены и видимы.
-	var scroll := ScrollContainer.new()
-	scroll.name = "FeedbackScroll"
-	scroll.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-	scroll.size_flags_vertical = Control.SIZE_EXPAND_FILL
-	scroll.horizontal_scroll_mode = ScrollContainer.SCROLL_MODE_DISABLED
-	box.add_child(scroll)
-
-	var scroll_body := VBoxContainer.new()
-	scroll_body.name = "FeedbackScrollBody"
-	scroll_body.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-	scroll_body.add_theme_constant_override("separation", 10)
-	scroll.add_child(scroll_body)
-
-	var hint := Label.new()
-	hint.text = "Опиши баг или впечатление. Скриншот ниже уже снят до открытия формы."
-	hint.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	hint.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
-	hint.add_theme_font_size_override("font_size", SemanticTypography.resolve_fixed(
-		SemanticTypography.ROLE_CAPTION,
-		_readable_font_size(SemanticTypography.ROLE_CAPTION, 16),
-		SemanticTypography.role_min(SemanticTypography.ROLE_CAPTION),
-		SemanticTypography.role_max(SemanticTypography.ROLE_CAPTION)
-	))
-	hint.add_theme_color_override("font_color", Color(0.88, 0.86, 0.78, 1.0))
-	scroll_body.add_child(hint)
-
-	var text_edit := TextEdit.new()
-	text_edit.name = "FeedbackTextEdit"
-	text_edit.custom_minimum_size = Vector2(0, 130)
-	text_edit.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-	text_edit.placeholder_text = "Что случилось? Где ты был в игре? Что ожидал увидеть?"
-	text_edit.wrap_mode = TextEdit.LINE_WRAPPING_BOUNDARY
-	text_edit.add_theme_font_size_override("font_size", SemanticTypography.resolve_fixed(
-		SemanticTypography.ROLE_BODY,
-		_readable_font_size(SemanticTypography.ROLE_BODY, 17),
-		SemanticTypography.role_min(SemanticTypography.ROLE_BODY),
-		SemanticTypography.role_max(SemanticTypography.ROLE_BODY)
-	))
-	text_edit.add_theme_color_override("font_color", Color(0.96, 0.93, 0.84, 1.0))
-	text_edit.add_theme_color_override("font_placeholder_color", Color(0.66, 0.64, 0.58, 1.0))
-	scroll_body.add_child(text_edit)
-
-	var preview_frame := PanelContainer.new()
-	preview_frame.name = "FeedbackScreenshotFrame"
-	preview_frame.custom_minimum_size = Vector2(0, 240)
-	preview_frame.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-	preview_frame.add_theme_stylebox_override("panel", _character_card_style())
-	scroll_body.add_child(preview_frame)
-
-	var preview := TextureRect.new()
-	preview.name = "FeedbackScreenshotPreview"
-	preview.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
-	preview.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
-	preview.custom_minimum_size = Vector2(0, 224)
-	var safe_screenshot: Image = FEEDBACK_REPORTER_SCRIPT._normalized_screenshot(screenshot)
-	preview.texture = ImageTexture.create_from_image(safe_screenshot)
-	preview_frame.add_child(preview)
-
-	var status := Label.new()
-	status.name = "FeedbackStatusLabel"
-	status.text = "Отправка происходит только после нажатия «Отправить»."
-	status.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	status.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
-	status.add_theme_font_size_override("font_size", _readable_font_size(SemanticTypography.ROLE_VALUE, 14))
-	status.add_theme_color_override("font_color", Color(0.74, 0.82, 0.88, 1.0))
-	box.add_child(status)
-
-	var buttons := HBoxContainer.new()
-	buttons.name = "FeedbackButtons"
-	buttons.alignment = BoxContainer.ALIGNMENT_CENTER
-	buttons.add_theme_constant_override("separation", 18)
-	box.add_child(buttons)
-
-	var send_button := _make_button("Отправить")
-	send_button.name = "FeedbackSendButton"
-	_set_action_button_size(send_button, 260.0, 64.0)
-	buttons.add_child(send_button)
-
-	var cancel_button := _make_button("Отмена")
-	cancel_button.name = "FeedbackCancelButton"
-	_set_action_button_size(cancel_button, 220.0, 64.0)
-	cancel_button.pressed.connect(_close_feedback_overlay)
-	buttons.add_child(cancel_button)
-
-	send_button.pressed.connect(func() -> void:
-		send_button.disabled = true
-		status.text = "Отправляем..."
-		var reporter: Node = _feedback_reporter()
-		reporter.connect("report_finished", func(success: bool, message: String, local_path: String) -> void:
-			status.text = message if local_path == "" else "%s\n%s" % [message, local_path]
-			status.add_theme_color_override("font_color", Color(0.74, 0.96, 0.74, 1.0) if success else Color(1.0, 0.82, 0.50, 1.0))
-			send_button.disabled = false
-		, CONNECT_ONE_SHOT)
-		reporter.call("submit_report", text_edit.text, safe_screenshot, _feedback_metadata())
-	)
-
-	text_edit.grab_focus()
+	FeedbackOverlayController.show(self, game, screenshot)
 
 
 func _is_feedback_overlay_open() -> bool:
@@ -13603,6 +13434,11 @@ func _is_feedback_overlay_open() -> bool:
 
 
 func _close_feedback_overlay() -> void:
+	if _feedback_request_id > 0:
+		var reporter := game.get_node_or_null("FeedbackReporter") as Node
+		if reporter != null and is_instance_valid(reporter):
+			reporter.call("cancel_active_report", _feedback_request_id)
+		_feedback_request_id = 0
 	if game.feedback_overlay_layer != null and is_instance_valid(game.feedback_overlay_layer):
 		game.feedback_overlay_layer.queue_free()
 	game.feedback_overlay_layer = null
@@ -13619,6 +13455,25 @@ func _feedback_reporter() -> Node:
 	reporter.process_mode = Node.PROCESS_MODE_ALWAYS
 	game.add_child(reporter)
 	return reporter
+
+
+func _feedback_privacy_configuration() -> Dictionary:
+	var operator_name := str(ProjectSettings.get_setting(
+		FEEDBACK_REPORTER_SCRIPT.PRIVACY_OPERATOR_SETTING, "")).strip_edges()
+	var contact_url := str(ProjectSettings.get_setting(
+		FEEDBACK_REPORTER_SCRIPT.PRIVACY_CONTACT_SETTING, "")).strip_edges()
+	var retention_notice := str(ProjectSettings.get_setting(
+		FEEDBACK_REPORTER_SCRIPT.PRIVACY_RETENTION_SETTING, "")).strip_edges()
+	var policy_url := str(ProjectSettings.get_setting(
+		FEEDBACK_REPORTER_SCRIPT.PRIVACY_POLICY_SETTING, "")).strip_edges()
+	return {
+		"operator": operator_name,
+		"contact": contact_url,
+		"retention": retention_notice,
+		"policy": policy_url,
+		"complete": FEEDBACK_REPORTER_SCRIPT._privacy_configuration_complete(
+			operator_name, contact_url, retention_notice, policy_url),
+	}
 
 
 func _feedback_metadata() -> Dictionary:
@@ -14850,7 +14705,7 @@ func _button_state_style(button: Button, _role: String, state: String, tint := C
 		var plus_tint := BUTTON_NEUTRAL_HOVER_TINT if state == "hover" and tint == Color.WHITE else tint
 		return _global_texture_style(plus_path, COMBAT_HUD_LEVEL_UP_MARGINS, plus_tint, COMBAT_HUD_LEVEL_UP_CONTENT)
 	var texture_state := state if UIButtonFamily.STATES.has(state) else "normal"
-	var descriptor := UIButtonFamily.descriptor(family, texture_state)
+	var descriptor := UIButtonFamily.descriptor_for_size(family, texture_state, button.custom_minimum_size)
 	if descriptor.is_empty():
 		return _global_texture_style(GLOBAL_BUTTON_FRAME_PATH, Vector4(50, 28, 50, 28), tint, Vector4(64, 32, 64, 32))
 	var final_tint := tint

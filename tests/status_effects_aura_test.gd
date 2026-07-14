@@ -35,6 +35,14 @@ func _test_status_duration_damage_and_dot(errors: Array) -> void:
 		"dot_interval": 0.20,
 		"marker_color": Color(1.0, 0.4, 0.4, 1.0),
 	})
+	StatusEffects.apply_status(enemy, "bastion_taunt", {
+		"duration": 0.50,
+		"taunt_owner": 4242,
+	})
+	if int(StatusEffects.status_value(enemy, "bastion_taunt", "taunt_owner", 0)) != 4242:
+		errors.append("Expected scalar status lookup without a full snapshot.")
+	if int(StatusEffects.status_value(enemy, "missing", "taunt_owner", 7)) != 7:
+		errors.append("Expected scalar status lookup to preserve its default.")
 	enemy.call("take_damage", 20.0)
 	if float(enemy.get("health")) > 975.1:
 		errors.append("Expected vulnerability to increase incoming damage.")
@@ -46,6 +54,8 @@ func _test_status_duration_damage_and_dot(errors: Array) -> void:
 	StatusEffects.tick(enemy, 0.45)
 	if StatusEffects.has_status(enemy, "test_vulnerable"):
 		errors.append("Expected status to expire after duration.")
+	if enemy.has_meta(StatusEffects.META_KEY) or enemy.has_meta(StatusEffects.MARKER_META_KEY):
+		errors.append("Expected final status expiry to remove status and marker metadata.")
 	holder.queue_free()
 	await process_frame
 

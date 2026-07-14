@@ -675,8 +675,8 @@ func load_run_autosave() -> bool:
 	return true
 
 
-func clear_run_autosave() -> void:
-	RUN_AUTOSAVE.clear_run()
+func clear_run_autosave() -> bool:
+	return RUN_AUTOSAVE.clear_run()
 
 
 # SCRUM-976: публичный backend-контракт для Settings/Game (SCRUM-1025).

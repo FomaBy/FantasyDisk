@@ -9,6 +9,9 @@ const TARGET_QUERY := preload("res://scripts/combat_target_query.gd")
 const ProgressionData := preload("res://scripts/progression_data.gd")
 const PROJECTILE_VISUALS := preload("res://scripts/projectile_visual_registry.gd")
 const STORM_LONGBOW_VOLLEY_VFX_SCENE := preload("res://scenes/vfx/StormLongbowVolleyVfx.tscn")
+const SENTRY_TURRET_SCENE := preload("res://scenes/SentryTurret.tscn")
+const ENGINEER_ORBIT_DRONE_SCRIPT := preload("res://scripts/engineer_orbit_drone.gd")
+const ENGINEER_MINE_SCRIPT := preload("res://scripts/engineer_mine.gd")
 
 # SCRUM-553: абсолютный z-слой наземных луж/декалей (summon-пулы химика и пр.).
 # Ниже сущностей (игрок/монстры/пикапы z≈0), но выше фона арены (-100) и бордера (-20).
@@ -2999,8 +3002,10 @@ func _fire_bayonet_countershot_line(origin: Vector2, through_position: Vector2, 
 	_register_effect(AttackVfx.beam(_projectile_parent(), origin, line_end, maxf(beam_width * 0.55, 10.0), visual_color))
 	var half_width := maxf(beam_width * 0.75, 14.0)
 	for target in TARGET_QUERY.enemies(self):
+		if not is_instance_valid(target):
+			continue
 		var enemy := target as Node2D
-		if enemy == null or not is_instance_valid(enemy):
+		if enemy == null:
 			continue
 		var relative := enemy.global_position - origin
 		var forward := relative.dot(line_direction)
@@ -4719,7 +4724,7 @@ func _fire_engineer_sentry_link(owner_node: Node2D, direction: Vector2) -> void:
 	if _deployed_amps.size() >= turret_limit:
 		return
 	_emit_weapon_animation_event(owner_node, "deploy", 0.62, direction, {"pulse_interval": amp_pulse_interval})
-	var turret_scene := load("res://scenes/SentryTurret.tscn") as PackedScene
+	var turret_scene := SENTRY_TURRET_SCENE as PackedScene
 	if turret_scene == null:
 		return
 	var turret := turret_scene.instantiate() as Node2D
@@ -4796,7 +4801,7 @@ func _fire_engineer_orbit_drone(owner_node: Node2D, direction: Vector2) -> void:
 	while alive_drones.size() < target_count:
 		var drone := Node2D.new()
 		drone.name = "EngineerOrbitDrone"
-		drone.set_script(load("res://scripts/engineer_orbit_drone.gd"))
+		drone.set_script(ENGINEER_ORBIT_DRONE_SCRIPT)
 		var visual := Sprite2D.new()
 		visual.texture = _weapon_visual_texture()
 		visual.scale = Vector2.ONE * 0.16
@@ -4866,7 +4871,7 @@ func _fire_engineer_pressure_mines(owner_node: Node2D, direction: Vector2) -> vo
 func _spawn_engineer_pressure_mine(owner_node: Node2D, mine_position: Vector2, mine_index: int) -> void:
 	var mine := Node2D.new()
 	mine.name = "EngineerPressureMine"
-	mine.set_script(load("res://scripts/engineer_mine.gd"))
+	mine.set_script(ENGINEER_MINE_SCRIPT)
 	var visual := Sprite2D.new()
 	visual.texture = _weapon_visual_texture()
 	visual.scale = Vector2.ONE * 0.18

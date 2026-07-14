@@ -106,7 +106,7 @@ Run existing project tests when available:
 
 Also run UI-specific smoke or no-overlap tests if they exist in the repository.
 
-## 7. Task And Jira Bookkeeping
+## 7. Multica And Task-Mirror Bookkeeping
 
 For task-tracked work, update:
 
@@ -115,6 +115,6 @@ For task-tracked work, update:
 - changed runtime files;
 - generated asset paths;
 - test results;
-- Jira status/comment through the project sync workflow.
+- Multica status/comment with implementation and QA evidence.
 
 If another role must continue, create a handoff task with the mockup/spec links and safe-zone requirements.

@@ -1,0 +1,4 @@
+interface:
+  display_name: "FantasyDisk Code Quality"
+  short_description: "Audit code, performance, and quality gates"
+  default_prompt: "Use $fantasydisk-code-quality-director to audit and improve FantasyDisk code quality safely."

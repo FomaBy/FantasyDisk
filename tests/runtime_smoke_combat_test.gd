@@ -148,6 +148,10 @@ func _initialize() -> void:
 	# SCRUM-708: спавн-кап волны — инвариант. CombatDirector кэширует _active_enemy_cap()
 	# один раз на волну; проверяем, что число врагов в группе никогда не превышает кап
 	# даже после нескольких подряд волн (включая small-pack спавны).
+	# Freeze must happen before queue_free()+await: Main._process() is another wave
+	# producer and may otherwise refill the group during that first awaited frame.
+	var previous_spawn_cooldown := float(main.get("spawn_cooldown"))
+	main.set("spawn_cooldown", 3600.0)
 	for stray in main.get_tree().get_nodes_in_group("enemies"):
 		if is_instance_valid(stray):
 			stray.queue_free()
@@ -171,6 +175,7 @@ func _initialize() -> void:
 		if is_instance_valid(stray):
 			stray.queue_free()
 	await process_frame
+	main.set("spawn_cooldown", previous_spawn_cooldown)
 
 	await _test_death_flow(main_scene)
 	await _test_hud_no_overlap_layouts(main_scene)

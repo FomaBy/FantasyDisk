@@ -1,6 +1,6 @@
 # SCRUM-983 Escape Hero Dossier — UI Mockup Specification
 
-Status: Accepted and implemented; SCRUM-1056 no-scroll/main-menu-button corrective pass
+Status: Accepted historical base; runtime action geometry superseded by FAN-1047
 Role owner: Back-end `/root`
 Task: `docs/tasks/SCRUM-1056.md`
 Jira: SCRUM-983, superseded for runtime geometry by SCRUM-1056
@@ -8,6 +8,10 @@ Base resolution: 1920×1080
 Responsive targets: 1280×720, 1920×1080, 2560×1440
 Production outer frame: `assets/sprites/ui/meta40/frame_border.png`
 PixelLab source/preview: recorded in `docs/design/references/scrum983_escape_dossier/manifest.json`
+
+FAN-1047 amendment: `docs/design/mockups/fan1047_unified_action_buttons/spec.md`.
+That amendment is authoritative for current Codex/Pause action geometry: compact
+Pause targets use a right vertical rail and 1080p/2K use a horizontal footer.
 
 ## Source Request
 
@@ -133,10 +137,11 @@ chip, icon or pointer hitbox enters the scrollbar lane.
 
 ## Button And Focus Contract
 
-- All four pause actions use `main_menu_380x104` normal/hover/focus/pressed/
-  disabled textures with `Color.WHITE` tint. Compact tiers scale the documented
-  texture/content margins proportionally to fit the horizontal footer; no action
-  receives a pause-specific or danger-red override.
+- All four pause actions use the exact `main_menu_380x104` five-state texture
+  family with `Color.WHITE` tint. Compact tiers place ratio-preserving buttons
+  in a right action rail; 1080p/2K use a horizontal footer. Texture and content
+  margins share one uniform scale, and no action receives a pause-specific or
+  danger-red override.
 - Initial focus is Continue. Left/right forms a non-destructive action ring:
   Continue → Settings → End Run → Main Menu → Continue.
 - Up from an action moves to the nearest final visible stat chip; down from the

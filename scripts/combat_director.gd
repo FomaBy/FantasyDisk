@@ -1,5 +1,7 @@
 extends RefCounted
 
+const SCENE_CONTRACTS := preload("res://scripts/scene_contracts.gd")
+
 # Боевой цикл: старт/конец боя, спавн волн, баланс врагов/элиток/боссов,
 # арена, pickups и снапшот игрока между узлами.
 
@@ -532,7 +534,9 @@ func _spawn_random_enemy(enemy_scene_override: PackedScene = null, spawn_positio
 	if enemy_packed_scene == null:
 		return null
 
-	var enemy := enemy_packed_scene.instantiate() as Node2D
+	var enemy := SCENE_CONTRACTS.instantiate_node_2d(enemy_packed_scene, "CombatDirector enemy spawn")
+	if enemy == null:
+		return null
 	game.add_child(enemy)
 	# Этап B: явные точки (пачки/свита) тоже держат дистанцию до живого игрока.
 	enemy.global_position = _push_spawn_from_player(_clamp_spawn_position(spawn_position), GIVEN_SPAWN_MIN_PLAYER_DISTANCE) if use_given_position else _random_spawn_position()
@@ -556,7 +560,9 @@ func _maybe_spawn_mini_elite(asc: Dictionary, remaining_slots: int) -> int:
 		elite_scene = _random_elite_scene()
 	if elite_scene == null:
 		return 0
-	var elite := elite_scene.instantiate() as Node2D
+	var elite := SCENE_CONTRACTS.instantiate_node_2d(elite_scene, "CombatDirector mini-elite spawn")
+	if elite == null:
+		return 0
 	elite.set_meta("epic_scale_profile", "mini_elite")
 	elite.set_meta("drop_class", "mini_elite")
 	elite.add_to_group("elite_enemies")
@@ -585,8 +591,9 @@ func _maybe_spawn_mini_elite(asc: Dictionary, remaining_slots: int) -> int:
 		if minion_scene == null:
 			break
 		var offset: Vector2 = Vector2.RIGHT.rotated(game.rng.randf() * TAU) * game.rng.randf_range(48.0, 96.0)
-		_spawn_random_enemy(minion_scene, elite.global_position + offset, true)
-		used += 1
+		var minion := _spawn_random_enemy(minion_scene, elite.global_position + offset, true)
+		if minion != null:
+			used += 1
 	return used
 
 
@@ -668,6 +675,8 @@ func _spawn_enemy_wave() -> void:
 	var raw_count := int(round(float(base_count + stage_bonus + wave_bonus + elapsed_bonus) * density))
 	var spawn_count: int = mini(mini(raw_count, int(round(float(spawn_limit) * density))), remaining_slots)
 	for index in range(spawn_count):
+		if remaining_slots <= 0:
+			return
 		var packed_scene := _random_enemy_scene()
 		if packed_scene == null:
 			return
@@ -678,12 +687,15 @@ func _spawn_enemy_wave() -> void:
 			pack_count = mini(game.rng.randi_range(3, 4), remaining_slots)
 
 		for pack_index in range(pack_count):
-			if game.get_tree().get_nodes_in_group("enemies").size() >= active_cap:
+			if remaining_slots <= 0:
 				return
 			var offset := Vector2.ZERO
 			if pack_count > 1:
 				offset = Vector2.RIGHT.rotated(game.rng.randf() * TAU) * game.rng.randf_range(18.0, 54.0)
-			_spawn_random_enemy(packed_scene, base_position + offset, true)
+			var spawned := _spawn_random_enemy(packed_scene, base_position + offset, true)
+			if spawned == null:
+				return
+			remaining_slots -= 1
 
 
 func _active_enemy_cap() -> int:
@@ -840,7 +852,9 @@ func _spawn_boss() -> void:
 	if selected_boss_scene == null:
 		return
 
-	var boss := selected_boss_scene.instantiate() as Node2D
+	var boss := SCENE_CONTRACTS.instantiate_node_2d(selected_boss_scene, "CombatDirector boss spawn")
+	if boss == null:
+		return
 	boss.set_meta("epic_scale_profile", "boss")
 	game.add_child(boss)
 	game.boss_hud_target = boss  # SCRUM-874: цель HUD-боссбара сверху экрана
@@ -896,7 +910,9 @@ func _spawn_elite_enemy() -> void:
 		use_fallback_modifier = true
 	if elite_scene == null:
 		return
-	var elite := elite_scene.instantiate() as Node2D
+	var elite := SCENE_CONTRACTS.instantiate_node_2d(elite_scene, "CombatDirector elite spawn")
+	if elite == null:
+		return
 	elite.name = "EliteEnemy"
 	elite.set_meta("epic_scale_profile", "elite")
 	elite.add_to_group("elite_enemies")
@@ -1074,7 +1090,9 @@ func _on_enemy_died(enemy: Node2D) -> void:
 func _spawn_pickup(pickup_type: String, amount: int, position: Vector2) -> void:
 	if game.pickup_scene == null or amount <= 0:
 		return
-	var pickup = game.pickup_scene.instantiate() as Node2D
+	var pickup := SCENE_CONTRACTS.instantiate_node_2d(game.pickup_scene, "CombatDirector pickup spawn")
+	if pickup == null:
+		return
 	game.add_child(pickup)
 	pickup.global_position = position
 	if pickup.has_method("setup"):

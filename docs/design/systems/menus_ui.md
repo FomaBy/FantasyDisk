@@ -1,10 +1,10 @@
 # Menus And UI
 
-Обновлено: 2026-07-12
+Обновлено: 2026-07-13
 
 Этот файл собирает UI-направление FantasyDisk после domain split. Полное фактическое состояние остается в `docs/design/current_game_state.md`, а канонические IDs и assets - в `docs/design/content_registry.md`.
 
-## SCRUM-1049/1051 Unified Semantic Button Families
+## FAN-1047 / SCRUM-1049/1051 Unified Semantic Button Families
 
 Runtime buttons now expose an explicit `ui_button_family` contract through
 `scripts/ui/ui_button_family.gd`. The registry resolves the accepted
@@ -15,12 +15,19 @@ content rows/cards, Settings fields/toggles, Route nodes, Atlas sockets,
 Hero-carousel arrows and @2K conflict controls remain
 documented shape-specific siblings of the same FantasyDisk family.
 
-Codex keeps the accepted frameless SCRUM-954 three-column layout. Its six tabs
-use the quiet `minimal/codex_tab` book-divider accent in all five states, while
-entry cards stay `content_row`; hover/focus/pressed/disabled do not alter content
-margins or geometry. Compact Shop/Attribute actions are now named
+Codex keeps the accepted frameless SCRUM-954 three-column layout. FAN-1047
+removes the old yellow `minimal/codex_tab` exception: all six left tabs now use
+the exact five-state `text/main_menu_380x104` family at a ratio-preserving
+260×72 target. The longest tab caption uses the compact synonym «Параметры»
+so it remains inside the plate content lane at 720p. Entry cards stay
+`content_row`; hover/focus/pressed/disabled do
+not alter content margins or geometry. Compact Shop/Attribute actions are now named
 `slim_action` instead of borrowing rebind-field semantics. Pause dossier actions
 consume the same shared resolver instead of a copied path/threshold table.
+At 648p/720p/900p they form a right vertical rail at 219×60 or 263×72;
+1080p/2K retain a centered horizontal footer at 320×88 or native 380×104.
+Texture and content margins always scale by one uniform factor, so the Main
+Menu ornament is never cropped independently from the label lane.
 
 `MainMenuCreditsButton` is an icon-only gratitude action using the transparent
 PixelLab asset `assets/sprites/ui/icons/credits/ui_icon_gratitude.png`; its face
@@ -1325,11 +1332,12 @@ decorative art, not text containers. QA dump:
 
 SCRUM-693 changes the active-combat Escape entry point: when no other run screen
 is covering gameplay, Escape opens the pause dossier / character board directly.
-SCRUM-983 moves the four run actions from the old left/header placement into a
-fixed bottom footer, with Continue focused first. SCRUM-1056 supersedes the
-old pause-only/danger styling: Continue, Settings, End Run and Main Menu all use
-the exact `main_menu_380x104` five-state family with geometry-stable 72px compact
-or 104px wide heights. The old
+SCRUM-983 originally moved the four run actions into a fixed footer, with
+Continue focused first. SCRUM-1056 removed the pause-only/danger styling, and
+FAN-1047 fixes the remaining source cropping: Continue, Settings, End Run and
+Main Menu all use the exact `main_menu_380x104` five-state family. Compact
+targets use the right vertical rail described above; 1080p/2K keep the bottom
+footer. The old
 standalone `RunPauseMenuRoot` is still available for noncombat overlays such as
 route/shop/event/level-up/reward contexts, but it must not appear over or instead
 of the character board for clean active gameplay. Resume, Settings Back, and
@@ -1393,14 +1401,31 @@ after instantiation. Spec note: `docs/design/mockups/scrum840_global_tooltips/sp
 `P` opens `FeedbackOverlayLayer`, a separate top-level overlay that does not call
 `_clear_ui()` and therefore does not reset the underlying combat, route map,
 shop, event, level-up or reward screen. The overlay contains `FeedbackTextEdit`,
-`FeedbackScreenshotPreview`, `FeedbackSendButton` and `FeedbackCancelButton`.
-Escape closes only this overlay, while normal text input remains inside the text
-field.
+`FeedbackScreenshotPreview`, default-on `FeedbackScreenshotToggle`, complete
+privacy/operator/retention/local-fallback disclosure, `FeedbackSendButton` and
+`FeedbackCancelButton`. Escape closes only this overlay, while normal text
+input remains inside the text field.
 
 The screenshot is captured before the overlay is created. Sending is handled by
-`scripts/feedback_reporter.gd`: webhook reports use Discord-compatible
-multipart payloads, while missing/failed webhook delivery falls back to
-`user://feedback/<timestamp>/`. Details: `docs/design/systems/feedback_reporting.md`.
+`scripts/feedback_reporter.gd`: schema-v2 relay reports use a bounded JPEG or
+explicit JSON `null`; opted-out reports never retain/encode/send/save image
+bytes. Missing/failed delivery falls back to `user://feedback/<timestamp>/`,
+and the opt-out path creates only `report.txt`.
+
+FAN-1057/FAN-1059 replaces the old narrow vertical form with a PixelLab-first
+responsive contract. At 1920×1080 the centered 1400×990 panel uses a two-column
+description/screenshot row plus a full-width privacy field; 2560×1440 scales
+the geometry uniformly to 1866×1320. At 1280×720 the 1200×672 panel keeps
+title/status/actions pinned and changes the middle to a one-column 824px scroll
+body. Live resize switches the same Controls without losing player text.
+Intermediate panel geometry is continuous at 1400/1401 and 1599/1600; a
+constrained middle body remains scrollable. Focus is TextEdit →
+ScreenshotToggle → Send → Cancel, while the right stick scrolls disclosure from
+any focus stop. PixelLab source,
+provenance, exact zones and fit evidence:
+`docs/design/mockups/FAN-1057_feedback_privacy/` and
+`docs/design/references/FAN-1057_feedback_privacy/`; runtime/protocol details:
+`docs/design/systems/feedback_reporting.md`.
 
 ## Settings Tabs
 

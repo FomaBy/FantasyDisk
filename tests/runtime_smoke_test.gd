@@ -57,10 +57,10 @@ const HUD_RESOURCE_PANEL_TEXTURE_2K := "res://assets/sprites/ui/hud/combat_hud_v
 const HUD_V2_BAR_TRACK_TEXTURE := "res://assets/sprites/ui/hud/combat_hud_v2/ui_hud_v2_bar_track.png"
 const HUD_V2_MONEY_ICON_TEXTURE := "res://assets/sprites/ui/hud/combat_hud_v2/ui_hud_v2_icon_money.png"
 const HUD_TIMER_PANEL_TEXTURE_2K := "res://assets/sprites/ui/hud/combat_hud_v2/ui_hud_v2_cluster_bg.png"  # SCRUM-806 reopen: без жёлтой рамки, единая подложка
-# SCRUM-879: кодекс на едином атлас-стиле — COVERED-фон atlas_style, панели-чипы
-# StyleBoxFlat, полая рама meta40 поверх; табы — глобальный кит codex_tab.
+# FAN-1047: кодекс на едином атлас-стиле; левые вкладки используют
+# точно ту же пятисостояниевую пластину 380×104, что и главное меню.
 const CODEX_FRAME_BORDER_SUFFIX := "meta40/frame_border.png"
-const CODEX_TAB_KIT_TEXTURE_PART := "minimal_metal_codex_tab"
+const CODEX_TAB_KIT_TEXTURE_PART := "ui_btn_text_unique_main_menu_380x104"
 const EXPECTED_PLAYER_COMBAT_VISUAL_SCALE := 0.64  # SCRUM-823: lock-step with player.gd visual-only bump.
 const ROUTE_START_BATTLE_ONLY_ROWS := 2
 const EXPECTED_CODEX_CHARACTER_PORTRAIT_SIZE := Vector2(216.0, 216.0)
@@ -1169,7 +1169,7 @@ func _initialize() -> void:
 		_fail("Expected active-combat Esc to attach the pause stats character board.")
 		return
 	# SCRUM-983: informational header + hero/derived body + fixed action footer.
-	var control_buttons := pause_menu.find_child("PauseControlButtons", true, false) as HBoxContainer
+	var control_buttons := pause_menu.find_child("PauseControlButtons", true, false) as GridContainer
 	var hero_card := pause_menu.find_child("HeroCard", true, false) as PanelContainer
 	var base_stats_list := pause_menu.find_child("BaseStatsList", true, false) as VBoxContainer
 	var base_stats_grid := pause_menu.find_child("BaseStatsGrid", true, false) as GridContainer
@@ -5961,8 +5961,22 @@ func _test_feedback_overlay_and_local_fallback(main_scene: PackedScene) -> void:
 		return
 	var text_edit := feedback_main.find_child("FeedbackTextEdit", true, false) as TextEdit
 	var preview := feedback_main.find_child("FeedbackScreenshotPreview", true, false) as TextureRect
-	if text_edit == null or preview == null or preview.texture == null:
-		_fail("Expected feedback overlay to show text input and screenshot preview.")
+	var screenshot_toggle := feedback_main.find_child("FeedbackScreenshotToggle", true, false) as CheckBox
+	var privacy_body := feedback_main.find_child("FeedbackPrivacyBody", true, false) as Label
+	var operator_retention := feedback_main.find_child("FeedbackOperatorRetentionLabel", true, false) as Label
+	var fallback_label := feedback_main.find_child("FeedbackLocalFallbackLabel", true, false) as Label
+	if text_edit == null or preview == null or preview.texture == null \
+			or screenshot_toggle == null or privacy_body == null \
+			or operator_retention == null or fallback_label == null:
+		_fail("Expected feedback overlay to show input, preview, opt-out and complete privacy disclosure.")
+		feedback_main.queue_free()
+		await process_frame
+		return
+	if not screenshot_toggle.button_pressed \
+			or not ("UUID" in privacy_body.text and "IP" in privacy_body.text) \
+			or not ("Оператор" in operator_retention.text and "Срок хранения" in operator_retention.text) \
+			or not ("только на этом устройстве" in fallback_label.text):
+		_fail("Expected feedback privacy controls to default include and disclose UUID/IP/operator/retention/local storage.")
 		feedback_main.queue_free()
 		await process_frame
 		return
@@ -5990,6 +6004,15 @@ func _test_feedback_overlay_and_local_fallback(main_scene: PackedScene) -> void:
 		feedback_main.queue_free()
 		await process_frame
 		return
+	var feedback_ui = feedback_main.get("ui")
+	var lifecycle_reporter: Node = feedback_ui._feedback_reporter()
+	var close_callback_calls := {"count": 0}
+	var close_callback := func(_success: bool, _message: String, _local_path: String) -> void:
+		close_callback_calls["count"] = int(close_callback_calls["count"]) + 1
+	var overlay_request_id: int = lifecycle_reporter._begin_report(
+		"cancel on close", FeedbackReporter._normalized_screenshot(null),
+		{"screen": "runtime_smoke"}, close_callback)
+	feedback_ui._feedback_request_id = overlay_request_id
 	var cancel_pad_event := InputEventJoypadButton.new()
 	cancel_pad_event.button_index = JOY_BUTTON_B
 	cancel_pad_event.pressed = true
@@ -5997,6 +6020,17 @@ func _test_feedback_overlay_and_local_fallback(main_scene: PackedScene) -> void:
 	await process_frame
 	if feedback_main.get("feedback_overlay_layer") != null:
 		_fail("Expected gamepad B to close feedback overlay.")
+		feedback_main.queue_free()
+		await process_frame
+		return
+	if lifecycle_reporter.is_request_active(overlay_request_id):
+		_fail("Expected closing feedback overlay to cancel its active request.")
+		feedback_main.queue_free()
+		await process_frame
+		return
+	lifecycle_reporter._finish_report(overlay_request_id, true, "late", "")
+	if int(close_callback_calls["count"]) != 0:
+		_fail("Expected a cancelled feedback request to drop its UI callback.")
 		feedback_main.queue_free()
 		await process_frame
 		return
@@ -6012,6 +6046,16 @@ func _test_feedback_overlay_and_local_fallback(main_scene: PackedScene) -> void:
 		feedback_main.queue_free()
 		await process_frame
 		return
+	var text_only_path := FeedbackReporter.save_local_report(
+		"Smoke feedback without screenshot", screenshot,
+		{"screen": "runtime_smoke", "version": "test"},
+		FeedbackReporter._new_report_uuid(), false)
+	if not FileAccess.file_exists("%s/report.txt" % text_only_path) \
+			or FileAccess.file_exists("%s/screenshot.png" % text_only_path):
+		_fail("Expected screenshot opt-out local fallback to write only report.txt under %s." % text_only_path)
+		feedback_main.queue_free()
+		await process_frame
+		return
 	var boundary := "----FantasyDiskSmokeBoundary"
 	var multipart := FeedbackReporter.multipart_payload("Smoke payload", screenshot, {"screen": "runtime_smoke"}, boundary)
 	if not _packed_bytes_contains(multipart, "payload_json".to_utf8_buffer()) or not _packed_bytes_contains(multipart, FeedbackReporter.UPLOAD_FILENAME.to_utf8_buffer()):
@@ -6020,6 +6064,12 @@ func _test_feedback_overlay_and_local_fallback(main_scene: PackedScene) -> void:
 		await process_frame
 		return
 	var payload_json := _feedback_multipart_payload_json(multipart, boundary)
+	var allowed_mentions: Dictionary = payload_json.get("allowed_mentions", {}) as Dictionary
+	if allowed_mentions.get("parse", ["unsafe"]) != []:
+		_fail("Expected direct debug feedback payload to disable Discord mentions.")
+		feedback_main.queue_free()
+		await process_frame
+		return
 	var multipart_filename := _feedback_multipart_file_filename(multipart)
 	var attachments: Array = payload_json.get("attachments", [])
 	if attachments.size() != 1 or not attachments[0] is Dictionary:
@@ -7765,12 +7815,12 @@ func _test_codex_screen(main_scene: PackedScene) -> void:
 		return
 
 	var character_tab := codex_main.find_child("CodexTab_characters", true, false) as Button
-	if character_tab == null or character_tab.icon != null or not _stylebox_texture_path(character_tab.get_theme_stylebox("normal")).contains("minimal_metal_codex_tab"):
-		_fail("Expected SCRUM-1051 Codex tabs to use centered Russian-only quiet Codex-family buttons without category emblems.")
+	if character_tab == null or character_tab.icon != null or not _stylebox_texture_path(character_tab.get_theme_stylebox("normal")).contains("ui_btn_text_unique_main_menu_380x104_normal"):
+		_fail("Expected FAN-1047 Codex tabs to use centered Russian-only Main Menu buttons without category emblems.")
 		return
 	var codex_back_button := codex_main.find_child("CodexBackButton", true, false) as Button
 	if codex_back_button == null or not (codex_back_button.get_theme_stylebox("normal") is StyleBoxTexture):
-		_fail("Expected SCRUM-879 Codex back button to use the global minimal-metal kit.")
+		_fail("Expected SCRUM-879 Codex back button to use the global text-button kit.")
 		return
 
 	var codex_center_rect := codex_content.get_global_rect().grow(1.0)

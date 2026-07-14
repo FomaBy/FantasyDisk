@@ -56,7 +56,7 @@ python3 tools/jira_to_multica.py
 python3 tools/jira_to_multica.py \
   --apply \
   --limit 10 \
-  --project 'Jira Archive'
+  --project a2cb75b5-d6c9-451c-8a29-4d267f09d67d
 ```
 
 В интерфейсе проверить:
@@ -74,7 +74,8 @@ python3 tools/jira_to_multica.py \
 Без comments:
 
 ```bash
-python3 tools/jira_to_multica.py --apply --project 'Jira Archive'
+python3 tools/jira_to_multica.py --apply \
+  --project a2cb75b5-d6c9-451c-8a29-4d267f09d67d
 ```
 
 С comments:
@@ -82,7 +83,7 @@ python3 tools/jira_to_multica.py --apply --project 'Jira Archive'
 ```bash
 python3 tools/jira_to_multica.py \
   --apply \
-  --project 'Jira Archive' \
+  --project a2cb75b5-d6c9-451c-8a29-4d267f09d67d \
   --include-comments
 ```
 
@@ -104,7 +105,7 @@ State и report сохраняются вне Git:
 ```bash
 python3 tools/jira_to_multica.py \
   --apply --repair --limit 10 \
-  --project '<jira-archive-project-id>'
+  --project a2cb75b5-d6c9-451c-8a29-4d267f09d67d
 ```
 
 Existing issue не дублируется: importer находит её по `jira_key` и восстанавливает
@@ -115,15 +116,15 @@ canonical metadata.
 ```bash
 python3 tools/jira_to_multica.py \
   --verify \
-  --project '<jira-archive-project-id>'
+  --project a2cb75b5-d6c9-451c-8a29-4d267f09d67d
 multica issue list --metadata jira_key=SCRUM-1 --output json
 cat ~/.multica/fantasydisk-jira-migration-report.json
 ```
 
 `--verify` сам читает Multica страницами по 100 строк (CLI ограничивает размер
 одной страницы даже при большем `--limit`) и сравнивает полный набор Jira keys,
-дубли, status, assignee и archival metadata. Для `--project` использовать ID из
-`multica project list --output json`, а не отображаемое название проекта.
+дубли, status, assignee и archival metadata. `--project` fail-closed принимает
+только pinned ID `Jira Archive`, чтобы importer не мог писать в live project.
 
 Критерии завершения:
 
@@ -161,4 +162,7 @@ authoritative tracker оформляется отдельным cutover task п�
 - state, baseline report и live verification report остаются вне Git в
   `~/.multica/`.
 
-Jira остаётся authoritative tracker до отдельного explicit cutover gate.
+Explicit cutover gate пройден 2026-07-13 (approver Sergey Fomin, project owner):
+Multica (project `FantasyDisk`, issues `FAN-*`) теперь authoritative tracker, а
+Jira (`SCRUM-*`) — read-only historical archive. См.
+`docs/process/jira_to_multica_cutover.md`.

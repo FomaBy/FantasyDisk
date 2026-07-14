@@ -1,6 +1,7 @@
 extends Node2D
 
 const TARGET_QUERY := preload("res://scripts/combat_target_query.gd")
+const SCENE_CONTRACTS := preload("res://scripts/scene_contracts.gd")
 const CONSTELLATION_FINAL_MECHANICS := {
 	"homunculus_intercept_death_burst": "summon_death",
 	"pack_alpha_pounce_guard": "command",
@@ -205,7 +206,9 @@ func _summon(play_cast_animation := true) -> bool:
 	if _active_weapon_summons(owner_node).size() >= max_summons:
 		return false
 
-	var ally := ally_scene.instantiate() as Node2D
+	var ally := SCENE_CONTRACTS.instantiate_node_2d(ally_scene, "SummonerWeapon ally spawn")
+	if ally == null:
+		return false
 	var parent := owner_node.get_tree().current_scene
 	if parent == null or not is_instance_valid(parent) or not parent.is_inside_tree():
 		parent = owner_node.get_parent()
@@ -485,7 +488,9 @@ func _pair_tank_alive() -> bool:
 func _spawn_pair_tank(owner_node: Node2D) -> Node2D:
 	if ally_scene == null:
 		return null
-	var tank := ally_scene.instantiate() as Node2D
+	var tank := SCENE_CONTRACTS.instantiate_node_2d(ally_scene, "SummonerWeapon pair tank spawn")
+	if tank == null:
+		return null
 	var parent := owner_node.get_tree().current_scene
 	if parent == null or not is_instance_valid(parent) or not parent.is_inside_tree():
 		parent = owner_node.get_parent()

@@ -95,6 +95,8 @@ const ARENA_ENTITY_MARGIN := 48.0
 const CUTOUT_RIG_SCRIPT := preload("res://scripts/cutout_rig_2d.gd")
 const HEALTH_BAR_SCRIPT := preload("res://scripts/enemy_health_bar.gd")
 const StatusEffects := preload("res://scripts/status_effects.gd")
+const TARGET_QUERY := preload("res://scripts/combat_target_query.gd")
+const SCENE_CONTRACTS := preload("res://scripts/scene_contracts.gd")
 const GAMEPLAY_SANDBOX := preload("res://scripts/gameplay_sandbox.gd")
 const FullFrameAnimationRegistry := preload("res://scripts/full_frame_animation_registry.gd")
 const ENEMY_PROJECTILE_SCENE := preload("res://scenes/EnemyProjectile.tscn")
@@ -447,8 +449,9 @@ func _separation_rank_weight() -> float:
 	return 1.0
 
 
-# Кэш 3-4 ближайших соседей: один проход по группе enemies раз в 0.2s (со
-# stagger по id), горячий кадр работает только по кэшу — O(48×4) на всё поле.
+# Кэш 3-4 ближайших соседей: общий snapshot группы строится максимум один раз
+# за кадр, каждый enemy фильтрует его раз в 0.2s (со stagger по id), а горячий
+# кадр работает только по 4 соседям.
 func _refresh_separation_neighbors() -> void:
 	_separation_neighbors.clear()
 	_separation_scratch_dist.clear()
@@ -457,9 +460,11 @@ func _refresh_separation_neighbors() -> void:
 		return
 	var search_limit := SEPARATION_MAX_RANGE + SEPARATION_SEARCH_SLACK
 	var limit_sq := search_limit * search_limit
-	for node in get_tree().get_nodes_in_group("enemies"):
+	for node in TARGET_QUERY.enemies(self):
+		if not is_instance_valid(node):
+			continue
 		var other := node as Node2D
-		if other == null or other == self or not is_instance_valid(other):
+		if other == null or other == self:
 			continue
 		var dist_sq := global_position.distance_squared_to(other.global_position)
 		if dist_sq >= limit_sq:
@@ -483,8 +488,12 @@ func _separation_velocity() -> Vector2:
 		return Vector2.ZERO
 	var push := Vector2.ZERO
 	for node in _separation_neighbors:
+		# A cached neighbor may die between 0.2 s refreshes. Casting a freed
+		# Variant raises before a post-cast is_instance_valid() guard can run.
+		if not is_instance_valid(node):
+			continue
 		var other := node as Node2D
-		if other == null or not is_instance_valid(other) or not other.is_inside_tree():
+		if other == null or not other.is_inside_tree():
 			continue
 		var offset := global_position - other.global_position
 		var dist := offset.length()
@@ -1621,12 +1630,9 @@ func _combat_target() -> Node2D:
 
 
 func _taunt_target() -> Node2D:
-	var statuses := StatusEffects.snapshot(self)
-	var status_raw = statuses.get("bastion_taunt", {})
-	if not (status_raw is Dictionary):
-		return null
-	var status: Dictionary = status_raw
-	var owner_id := int(status.get("taunt_owner", 0))
+	# Target selection runs every physics tick: read one scalar instead of
+	# deep-copying every active status and nested feedback dictionary.
+	var owner_id := int(StatusEffects.status_value(self, "bastion_taunt", "taunt_owner", 0))
 	if owner_id <= 0:
 		return null
 	var owner := instance_from_id(owner_id) as Node2D
@@ -1679,7 +1685,10 @@ func _update_summoning(delta: float) -> void:
 		_summon_cooldown = summon_interval * 0.5
 		return
 
-	var summoned := summoned_enemy_scene.instantiate() as Node2D
+	var summoned := SCENE_CONTRACTS.instantiate_node_2d(summoned_enemy_scene, "Enemy summon")
+	if summoned == null:
+		_summon_cooldown = summon_interval
+		return
 	var parent := get_tree().current_scene
 	if parent == null:
 		parent = get_tree().root

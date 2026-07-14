@@ -150,7 +150,7 @@ Act 2 начинается с бюджета boss Act 1 и достигает п
   Runtime records monsters/bosses when they are encountered in combat and
   artifacts when the reward is applied, giving the Codex a save/load-backed
   unlock source without changing the visual Codex layout.
-- **Фидбек/баг-репорт**: SCRUM-362 добавил глобальное действие `feedback` (по умолчанию `P`). Оно открывает отдельный верхний `FeedbackOverlayLayer` с текстовым полем и preview текущего viewport screenshot. Отправка идет через Discord-compatible webhook из `FANTASYDISK_FEEDBACK_WEBHOOK`, bundled `res://feedback_webhook.cfg` (release-сборка генерирует его из секрета/env) или legacy `user://feedback_config.cfg`; multipart `payload_json.attachments[0]` ссылается на `files[0]`, чтобы Discord сохранял ужатый JPG-скриншот, а локальный fallback хранит полный PNG. Без валидного webhook/сети отчет сохраняется в `user://feedback/<timestamp>/`, UI показывает config/offline/send failure, а успех показывается только после HTTP success.
+- **Фидбек/баг-репорт**: SCRUM-362 добавил глобальное действие `feedback` (по умолчанию `P`). FAN-1057/FAN-1059 превращает верхний `FeedbackOverlayLayer` в responsive privacy-first форму: текст, preview, default-on `FeedbackScreenshotToggle`, полный allowlist game/OS metadata, persistent pseudonymous installation UUID, edge-observed IP, оператор/retention и локальное хранение раскрыты до подтверждения; фокус идёт TextEdit → Toggle → Send → Cancel, а правый стик прокручивает disclosure из любого focus stop. Schema-v2 relay использует bounded JPEG либо явный `null`; opt-out не хранит `Image`, не кодирует JPEG и не создаёт локальный `screenshot.png`. Dev/CI raw Discord остаётся только debug-путём; player export не содержит credential. Любой network transport fail-closed, пока public `feedback/privacy_*` значения не утверждены, а `feedback/relay_session_url` остаётся пустым. При отсутствующем/неуспешном online route отчёт сохраняется в `user://feedback/<timestamp>_<uuid>/`; локальная копия хранится на устройстве до удаления игроком.
 
 В настройках доступны:
 
@@ -1681,7 +1681,7 @@ SCRUM-654/SCRUM-663 cleanup now resolves to a single visible level-up plaque: `L
 ## Навигация И UX
 
 - Escape = назад на меню/предзабеговых экранах через единый стек: главное меню -> игровой диалог подтверждения выхода, настройки/кодекс/выбор персонажа -> меню; выбор оружия -> выбор персонажа. Кнопка «Выйти из игры» в главном меню открывает тот же `QuitConfirmationDialog`; реальный quit вызывается только по «Выйти», а «Отмена» в фокусе по умолчанию. В активном бою Escape сразу открывает досье/доску персонажа с левыми run-controls (Продолжить, Настройки, Завершить забег, Главное меню), ставит gameplay на паузу и не показывает старое standalone pause menu поверх или вместо доски. Повторный Escape или «Продолжить» закрывают overlay и возвращают в тот же run state без изменения таймера, позиции, предметов и прогресса. На route map, в магазине, level-up, докачке атрибутов, событии и награде элитки сохраняется существующая pause-overlay семантика поверх текущего экрана без reroll/сброса; событие по-прежнему требует выбора действия, если skip не разрешен.
-- `P` открывает фидбек/bug-report overlay поверх текущего экрана через отдельный top-level `FeedbackOverlayLayer`, не очищая текущий UI и не сбрасывая состояние магазина/карты/level-up. Escape внутри overlay закрывает только форму фидбека, а ввод текста остается в `FeedbackTextEdit`.
+- `P` открывает фидбек/bug-report overlay поверх текущего экрана через отдельный top-level `FeedbackOverlayLayer`, не очищая текущий UI и не сбрасывая состояние магазина/карты/level-up. Escape/B закрывает только форму, ввод остаётся в `FeedbackTextEdit`; Tab/D-pad ведёт к `FeedbackScreenshotToggle`, затем к Send/Cancel. На 720p прокручивается только middle body, а title/status/actions остаются закреплены.
 - Экран выбора героя — fullscreen `HeroSelectScreen`: активный runtime
   (SCRUM-798 поверх редизайна пользователя 2026-06-30) убирает все декоративные
   UI-рамки, PixelLab backdrop, title frame и compass/radar. Экран строится на
@@ -1733,6 +1733,12 @@ SCRUM-955 реализует принятый PixelLab/content-zone пакет S
 восемь характеристик, а лексические совпадения больше не создают ложные связи.
 Player-facing названия, описания и влияния характеристик
 русскоязычны; raw ids убраны из строк и чипов персонажей, монстров и параметров.
+
+FAN-1047 сохраняет эту трёхколоночную геометрию, но убирает жёлтое исключение
+`minimal/codex_tab`: шесть `CodexTab_*` используют точную
+`text/main_menu_380x104` production-семью с равномерным масштабированием в
+`260×72`. Компактные подписи `Параметры` и `Возвыш.` остаются внутри label lane,
+а все пять состояний сохраняют одинаковые bounds и content margins.
 
 Остальные разделы: Персонажи (17 игровых классов, стиль игры, сильные/слабые
 стороны, оружие), Монстры (31 запись: 11 обычных + 4 элитки + 10 мини-элиток +
@@ -1814,7 +1820,7 @@ accepted SCRUM-345/SCRUM-403 frame kit. QA dumps: `build/qa/scrum331/`.
 | Магазин | Frameless wall-предметы поверх canonical shop backdrop `ui_backdrop_merchant_archive.png`: иконка, тень, компактная цена, описание только hover tooltip, unavailable dim/price и empty-hook после покупки |
 | Событие | Выбор одного из вариантов события поверх canonical event backdrop `ui_backdrop_arcane_lab.png`; длинный текст исхода находится внутри SCRUM-437 wide economy choice-card safe-zone, риск маркируется один раз без дубля `Риск: Риск:` |
 | Отдых | SCRUM-981 outer gold shell поверх canonical system/campfire backdrop; общий resource HUD и FAB занимают отдельную верхнюю safe-полосу, лечение/защитный бонус/Back остаются внутри scroll-safe локальной панели с compact tier |
-| Pause menu / stats | В активном бою Escape сразу открывает SCRUM-983/1056 hero dossier внутри общей полой `meta40/frame_border.png` shell. Экран использует всю frame-safe область без scrollbars: две колонки перестраиваются в плотную 2-column сетку, оружие/ульта/артефакты сохраняются в видимой build-summary строке с полным tooltip, а четыре действия закреплены отдельным footer и используют точную `main_menu_380x104` family. Полная identity-строка класса + оружия имеет измеряемую text-lane без ellipsis и 24px запаса до нерегулярного правого орнамента. Контент, hitboxes и focus outlines остаются внутри inner rect на 1152×648, 1280×720, 1600×900, 1920×1080 и 2560×1440; B/Escape и Continue сохраняют прежний pause-stack/run state. |
+| Pause menu / stats | В активном бою Escape сразу открывает SCRUM-983/1056/FAN-1047 hero dossier внутри общей полой `meta40/frame_border.png` shell. Экран использует всю frame-safe область без scrollbars: hero/derived-колонки остаются слева, оружие/ульта/артефакты сохраняются в видимой build-summary строке с полным tooltip. Четыре действия используют точную `main_menu_380x104` family без обрезки: на 648p/720p/900p это правая вертикальная action-колонка, на 1080p/2K — горизонтальный footer. Все texture/content margins масштабируются одинаково во всех пяти состояниях. Контент, hitboxes и focus outlines остаются внутри inner rect на 1152×648, 1280×720, 1600×900, 1920×1080 и 2560×1440; B/Escape и Continue сохраняют прежний pause-stack/run state. |
 | Смерть | SCRUM-981 outer gold shell вокруг локального Defeat result modal; summary и responsive action plate остаются внутри frame safe-zone |
 | Победа | SCRUM-981 outer gold shell вокруг локального Victory result modal; русский итог, crest, summary и responsive action plate остаются внутри frame safe-zone. SCRUM-986 центрирует и короткий transient `VictoryBannerFrame` на любом viewport без 720p clipping |
 
@@ -1859,7 +1865,7 @@ Escape stats menu layout (SCRUM-1056 supersedes the SCRUM-983 overflow rules):
 - `HeroCardScroll` and `DerivedStatsScroll` remain clip owners but both horizontal and vertical scroll modes are disabled. Their content minimum height is asserted `<= viewport height`; hiding overflow is not accepted.
 - `BaseStatsGrid` is always two columns. At compact heights it uses meaningful tight Russian labels while preserving 44px base rows/icons and 17/18px name/value text. Derived groups remain 2×2; the 648p tier hides only redundant group headings and uses tighter aliases while the visible colored/stat semantics and full tooltips remain.
 - The former long Arsenal/Equipment prose is represented by always-visible `RunBuildSummaryPanel` (`Оружие`, `Ульта`, artifact count); its tooltip contains the complete weapon/ultimate descriptions and artifact names. The detailed portrait block appears at 2K, while the header keeps hero/weapon identity at smaller sizes.
-- `PauseControlButtons` is a fixed horizontal footer. Continue, Settings, End Run and Main Menu all use the exact `main_menu_380x104` normal/hover/focus/pressed/disabled textures with white tint; compact targets use 72px height and 1080p/2K use 104px.
+- `PauseControlButtons` is a responsive `GridContainer`. Continue, Settings, End Run and Main Menu all use the exact `main_menu_380x104` normal/hover/focus/pressed/disabled textures with white tint and one uniform texture/content-margin scale. Compact targets use a right vertical rail (`219×60` at 648p; `263×72` at 720p/900p); 1080p/2K use a horizontal footer (`320×88` / `380×104`).
 - The End Run confirmation uses two equal 240x72 `continue_240x72` buttons; the wider content band keeps both `Завершить` (including its final `ь`) and `Отмена` fully visible without changing the modal frame or safe Cancel focus.
 - Verified rect/content-fit evidence covers 1152×648, 1280×720, 1600×900, 1920×1080 and 2560×1440 in `build/qa/scrum983/escape_dossier_visual_matrix.md`; focused/live-resize coverage is `tests/scrum983_escape_dossier_test.gd` and the repository matrix is `tests/ui_no_overlap_matrix_test.gd`.
 
@@ -2241,6 +2247,20 @@ sustained-модель dot-оси и infected-фактор; тюнеры кит�
 
 Основные runtime-правила после performance/code quality review:
 
+- FAN-1040: известные ресурсы Engineer kit (`SentryTurret`, orbit drone, mine)
+  preload'ятся вместе с `ClassWeapon`, поэтому первый деплой не выполняет
+  синхронный `load()` во время боя.
+- FAN-1040: separation и threat indicators используют один per-frame
+  `CombatTargetQuery` snapshot. Threat model фильтруется с частотой 10 Hz без
+  тройного group scan/дубликатов boss+elite, но позиции маркеров по-прежнему
+  рисуются каждый кадр.
+- FAN-1040: taunt status читается scalar API без deep snapshot на каждый enemy
+  physics tick; reflection для DoT выполняется только при наступившем damage
+  tick. Wave spawn поддерживает локальный remaining-cap вместо повторного group
+  scan после каждого enemy.
+- FAN-1040: run autosave заменяет checkpoint транзакционно через `.tmp`/`.bak` с
+  rollback, а основные configurable Node2D spawner boundaries валидируются
+  общим `SceneContracts` перед использованием instance.
 - `scripts/main.gd` кэширует Texture2D для меню, портретов, route map и фоновых экранов через локальный texture cache, чтобы не дергать `load()` повторно при перестроении UI.
 - `scripts/ui_icon_registry.gd` кэширует иконки характеристик/HUD, поэтому level-up, stats menu и HUD могут безопасно переиспользовать registry без повторной загрузки PNG.
 - Inline shop item icons, shop slot frames and cursor variants используют тот же texture cache; отсутствующие Design PNG кэшируются как `null` и не вызывают повторный `load()` при перестроении магазина.
@@ -2293,19 +2313,17 @@ matrix; screenshot evidence is under `build/qa/design_review/`.
 
 ## Проверка Перед Сдачей Геймплейных Изменений
 
-Runtime smoke test:
-
 ```bash
-/Users/sergeyfomin/Downloads/Godot.app/Contents/MacOS/Godot --headless --path /Users/sergeyfomin/Documents/AI\ Agent --script res://tests/runtime_smoke_test.gd
+python3 tools/quality_gate.py --profile changed --changed-ref origin/dev
+python3 tools/quality_gate.py --profile full
 ```
 
-Animation smoke test:
+`tools/quality_gate.py` одинаково работает на macOS/Linux/Windows, обнаруживает
+direct и inherited GDScript suites, изолирует `user://` и вызывает Godot только
+через semaphore `tools/godot_gate.py`. Windows profile должен выполняться
+нативно на Windows: `python tools/quality_gate.py --profile windows`.
 
-```bash
-/Users/sergeyfomin/Downloads/Godot.app/Contents/MacOS/Godot --headless --path /Users/sergeyfomin/Documents/AI\ Agent --script res://tests/animation_smoke_test.gd
-```
-
-Документационные правки не требуют запуска тестов, если не меняют код, сцены или ассеты.
+Документационные правки не требуют Godot-тестов, если не меняют код, сцены или ассеты; static gate остаётся обязательным для process/tool changes.
 
 ## SCRUM-541 Current Secret Boss State
 

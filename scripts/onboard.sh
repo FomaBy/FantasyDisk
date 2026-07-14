@@ -64,20 +64,33 @@ link_skills() {
 printf 'Linking Codex skills...\n'
 link_skills "$REPO_ROOT/skills/codex" "$HOME/.codex/skills"
 
-# (3) Claude skills: <repo>/skills/claude/* -> ~/.claude/skills/<name>
+# (3) Claude skills: <repo>/.claude/skills/* -> ~/.claude/skills/<name>
 printf 'Linking Claude skills...\n'
-link_skills "$REPO_ROOT/skills/claude" "$HOME/.claude/skills"
+link_skills "$REPO_ROOT/.claude/skills" "$HOME/.claude/skills"
 
-# (4) Auto-land hook: каждый чат/агент сразу лендит зелёные коммиты в dev
-#     (локально + origin). core.hooksPath — per-repo config, поэтому ставим его
-#     в КАЖДОМ клоне/worktree при онбординге. Идемпотентно.
-if [ -x "$REPO_ROOT/.githooks/post-commit" ]; then
-  git -C "$REPO_ROOT" config core.hooksPath "$REPO_ROOT/.githooks"
-  printf 'Auto-land hook enabled (core.hooksPath -> %s/.githooks)\n' "$REPO_ROOT"
-  printf '  (отключить в этом клоне: git config --unset core.hooksPath  |  разово: FSD_NO_AUTOLAND=1)\n'
+# (4) Remove only the retired repo-owned background autoland hook setting.
+#     Preserve any unrelated custom hooksPath configured by the user.
+LEGACY_HOOKS_PATH="$(git -C "$REPO_ROOT" config --local --get core.hooksPath 2>/dev/null || true)"
+case "$LEGACY_HOOKS_PATH" in
+  .githooks|"$REPO_ROOT/.githooks")
+    git -C "$REPO_ROOT" config --local --unset core.hooksPath
+    printf 'Retired background autoland hook disabled.\n'
+    ;;
+esac
+
+# (5) Multica runtime check. Onboarding stays usable on machines that only run
+#     the game, so a missing CLI is a warning rather than a failure.
+if command -v multica >/dev/null 2>&1; then
+  if multica daemon status >/dev/null 2>&1; then
+    printf 'Multica daemon connected.\n'
+  else
+    printf 'WARN: Multica CLI found, but daemon is not connected; run multica setup cloud.\n'
+  fi
+else
+  printf 'WARN: Multica CLI not found; agent task execution requires Multica.\n'
 fi
 
-# (5) Onboarding banner.
+# (6) Onboarding banner.
 cat <<'BANNER'
 
 ============================================================
@@ -86,10 +99,15 @@ cat <<'BANNER'
   Start here:
     .claude/skills/fantasydisk-onboarding/SKILL.md
     docs/process/ai_agent_memorandum.md
+    docs/process/multica_workflow.md
 
-  Jira-only rule:
-    ALL work lives in Jira. Every task you pick up or hand off
-    is a Jira SCRUM ticket — no out-of-band tasks.
+  Multica-only rule:
+    ALL work lives in Multica (project FantasyDisk, FAN-* issues),
+    driven via the `multica` CLI. Every task you pick up or hand
+    off is a Multica issue — no out-of-band tasks.
+    Legacy Jira (SCRUM-*) is a read-only historical archive; do
+    not claim or sync work there. See:
+    docs/process/jira_to_multica_cutover.md
 
   Repo:
     https://github.com/FomaBy/FantasyDisk

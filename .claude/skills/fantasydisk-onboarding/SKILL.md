@@ -1,37 +1,45 @@
 ---
 name: fantasydisk-onboarding
-description: Compact startup protocol for FantasyDisk agents. Use when first opening the repo or when unsure about Jira, ownership, branches, skills, or QA flow.
+description: Compact startup protocol for FantasyDisk agents. Use when first opening the repo or when unsure about Multica tracking, ownership, branches, skills, or QA flow.
 ---
 
 # FantasyDisk Onboarding
 
-Read `AGENTS.md` first. It is intentionally short and points to deeper docs only
-when needed.
+Read `AGENTS.md`, then `docs/process/multica_workflow.md`.
 
-## Essentials
+## Before Work
 
 - Godot 4 project. Work on `dev`; `main` is release/stable.
-- Jira `SCRUM` is the task/status/owner source of truth.
+- **Multica is the task/status/owner source of truth** — workspace `FantasyDisk`,
+  project `FantasyDisk`, issues `FAN-*`, driven via the `multica` CLI. Legacy Jira
+  (`SCRUM-*`) is a read-only historical archive; never claim or sync work there
+  (see `docs/process/jira_to_multica_cutover.md`).
 - `docs/tasks/*.md` and `docs/process/task_board.md` are mirrors/evidence.
 - One task = one owner = one lane = one locked-path set.
 - Do not edit files locked by another active owner.
 - In-scope work is pre-approved; do not ask routine approval.
 
-## Before Work
+Verify the runtime and issue before edits:
 
 ```bash
+multica daemon status
 git branch --show-current
 git status --short --branch
-python tools/jira_next_task.py --role <role> --lane <codex|claude|otherai> --json
+multica issue get <FAN-issue-id> --output json
+multica issue comment list <FAN-issue-id> --recent 10 --output json
 ```
 
-Claim before edits:
+Work only the Multica issue whose exact `assignee_id`/owner matches you. Never
+self-select an unassigned issue. After verification, move it to `in_progress`
+and post a start comment with owner/lane/locked paths through `--content-file`:
 
 ```bash
-python tools/jira_next_task.py --role <role> --lane <lane> --claim --worker <id> --json
+multica issue status <FAN-issue-id> in_progress
+multica issue comment add <FAN-issue-id> --content-file ./start.md
 ```
 
-Then update Jira with owner/thread/locked paths, and mirror locally if present.
+Check `multica issue comment list <id> --recent 10` for the latest owner/handoff
+context before editing, and mirror status locally if a task `.md` exists.
 
 ## Mandatory Skills
 
@@ -43,5 +51,6 @@ Then update Jira with owner/thread/locked paths, and mirror locally if present.
 
 ## Finish
 
-Run focused tests/smokes, update docs/mirrors, comment Jira, move to QA/review
-or done as workflow allows. QA PASSED is required for final `Готово`.
+Run focused tests/smokes, update docs/mirrors, push owned files to `origin/dev`,
+comment the Multica issue, and move it to `in_review` (QA gate). QA PASSED is
+required before an issue becomes `done`.

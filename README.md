@@ -11,9 +11,12 @@ bash scripts/onboard.sh
 ```
 Дальше: AI-агенты автоматически видят мастер-скилл **`fantasydisk-onboarding`**
 (в `.claude/skills/`), люди читают [`docs/process/ai_agent_memorandum.md`](docs/process/ai_agent_memorandum.md).
-**Правило №1:** все задачи создаются в и берутся из **Jira** (проект SCRUM) —
-`docs/tasks/*.md` и `docs/process/task_board.md` лишь зеркала/кэш. Ветки: `main`=релиз,
-`dev`=работа (default), теги `vX.Y.Z`=версии.
+**Правило №1:** все задачи создаются в и берутся из **Multica** (проект
+`FantasyDisk`, issues `FAN-*`) через `multica` CLI — `docs/tasks/*.md` и
+`docs/process/task_board.md` лишь зеркала/кэш. Legacy Jira (`SCRUM-*`) — read-only
+исторический архив, не источник новой работы (см.
+[`docs/process/jira_to_multica_cutover.md`](docs/process/jira_to_multica_cutover.md)).
+Ветки: `main`=релиз, `dev`=работа (default), теги `vX.Y.Z`=версии.
 
 ## Требования
 - **Godot 4.7** (стандартная сборка, ветка 4.x). Скачать: https://godotengine.org/download
@@ -30,16 +33,28 @@ bash scripts/onboard.sh
 
 Работай в `dev`: правки → коммит → push в `dev`. На другой машине — `git pull`.
 
-## Headless smoke-тесты
-macOS:
+## Quality gate и headless smoke-тесты
+
+Кроссплатформенный changed-profile (static checks + тесты затронутых доменов):
 ```bash
-~/Downloads/Godot.app/Contents/MacOS/Godot --headless --path . --script res://tests/runtime_smoke_test.gd
+python3 tools/quality_gate.py --profile changed
 ```
-Windows (путь под свою установку Godot):
+Полный набор direct + inherited suites:
+```bash
+python3 tools/quality_gate.py --profile full
+```
+GitHub Actions выполняет certifying static profile через `--static-only`; он
+ловит case/version/Windows preset/architecture/credential regressions, но не
+заменяет локальный Godot `changed`/`full`.
+Нативный Windows-profile (PowerShell; предварительно задать путь к Godot):
 ```powershell
-& "C:\Godot\Godot_v4.7-stable_win64.exe" --headless --path . --script res://tests/runtime_smoke_test.gd
+$env:GODOT_BIN = "C:\Godot\Godot_v4.7-stable_win64.exe"
+python tools/quality_gate.py --profile windows
 ```
-Другие наборы: `animation_smoke_test.gd`, `attack_vfx_smoke_test.gd`, `meta_smoke_test.gd`, `ui_no_overlap_matrix_test.gd`.
+Все автоматические вызовы Godot проходят через `tools/godot_gate.py`; runner
+изолирует `user://` и видит также suites, наследующие другой тестовый скрипт.
+Основные наборы: `runtime_smoke_test.gd`, `animation_smoke_test.gd`,
+`attack_vfx_smoke_test.gd`, `ui_no_overlap_matrix_test.gd`.
 `ui_no_overlap_matrix_test.gd` является UI render gate: открывает экраны headless
 на 1080p/2K/4K, ловит overflow текста, overlap контролов и некорректный stretch
 точноразмерных UI frame TextureRect.
@@ -60,11 +75,12 @@ tools/build_release.sh <версия>    # напр. 0.1.6 — собирает 
 - `scenes/` — сцены Godot (`.tscn`)
 - `assets/` — спрайты, фоны, аудио, шрифты, UI
 - `tests/` — headless smoke-тесты
-- `tools/` — утилиты (сборка, Jira-синк, фидбек)
+- `tools/` — утилиты (сборка, фидбек; legacy Jira-хелперы — archive-only)
 - `docs/` — дизайн-доки, процессы, задачи
 
 ## AI-автоматизация (только macOS)
 Агентная оркестрация (Codex-скиллы в `~/.codex/`, scheduled-task рутины,
-`tools/jira_board_sync.py` через macOS Keychain) специфична для Mac-машины и **не
-переносится в репозиторий**. На Windows работает сама игра — Godot кросс-платформенный;
-AI-оркестрация остаётся на Mac.
+локальный Multica daemon, запускающий Codex/Claude) специфична для Mac-машины и
+**не переносится в репозиторий**. Задачи ведутся в Multica (`multica` CLI); legacy
+`tools/jira_*.py` — archive-only. На Windows работает сама игра — Godot
+кросс-платформенный; AI-оркестрация остаётся на Mac.

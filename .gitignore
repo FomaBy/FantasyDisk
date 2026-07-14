@@ -35,6 +35,10 @@ desktop.ini
 .vscode/
 *.tmp
 
+# Python tooling/test caches must never dirty quality-gate worktrees.
+__pycache__/
+*.py[cod]
+
 # Build-артефакты (помимо build/ и releases/ — на всякий случай)
 *.dmg
 *.exe

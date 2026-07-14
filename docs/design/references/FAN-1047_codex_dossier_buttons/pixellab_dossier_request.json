@@ -1,0 +1,21 @@
+{
+  "description": "Orthographic full-screen pixel-art RPG hero dossier interface reference, D&D dark fantasy dragon style, hollow blackened-steel outer shell, calm obsidian content wells. Four bottom action buttons use exactly one heroic main-menu dragon-metal plate family with identical exterior bounds and generous internal label zones. No action plate may be cropped, squeezed, or hidden by the shell. Empty interiors only, no text, no letters, no pseudo-text, no hero, no portrait, no icons, no watermark. Neutral silver focus, restrained ruby accents, no bright yellow frames, stable geometry for normal hover pressed focus disabled.",
+  "width": 688,
+  "height": 384,
+  "color_palette": "blackened steel, smoky obsidian, aged silver, restrained ruby, muted warm gold only as minor accent",
+  "no_background": false,
+  "name": "FAN-1047 dossier unclipped main-menu action reference",
+  "pieces": [
+    {"id":"shell","kind":"rounded_rect","x":12,"y":12,"w":488,"h":264,"radius":5},
+    {"id":"title","kind":"rounded_rect","x":40,"y":28,"w":180,"h":28,"radius":4},
+    {"id":"hero","kind":"rounded_rect","x":40,"y":70,"w":150,"h":140,"radius":4},
+    {"id":"stats1","kind":"rounded_rect","x":205,"y":70,"w":125,"h":64,"radius":4},
+    {"id":"stats2","kind":"rounded_rect","x":340,"y":70,"w":125,"h":64,"radius":4},
+    {"id":"stats3","kind":"rounded_rect","x":205,"y":146,"w":125,"h":64,"radius":4},
+    {"id":"stats4","kind":"rounded_rect","x":340,"y":146,"w":125,"h":64,"radius":4},
+    {"id":"action1","kind":"rounded_rect","x":40,"y":228,"w":102,"h":28,"radius":5},
+    {"id":"action2","kind":"rounded_rect","x":150,"y":228,"w":102,"h":28,"radius":5},
+    {"id":"action3","kind":"rounded_rect","x":260,"y":228,"w":102,"h":28,"radius":5},
+    {"id":"action4","kind":"rounded_rect","x":370,"y":228,"w":102,"h":28,"radius":5}
+  ]
+}

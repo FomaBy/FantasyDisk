@@ -224,6 +224,15 @@ def make_candidate(rel_path: str, category: str, reason: str) -> dict[str, str]:
     return {"path": rel_path, "category": category, "reason": reason}
 
 
+def dynamic_id_from_filename(filename: str, pattern: str) -> str | None:
+    prefix, suffix = pattern.split("{id}", 1)
+    if not filename.startswith(prefix) or not filename.endswith(suffix):
+        return None
+    end = len(filename) - len(suffix) if suffix else len(filename)
+    embedded_id = filename[len(prefix):end]
+    return embedded_id or None
+
+
 def build_candidates() -> tuple[list[dict[str, str]], dict[str, int]]:
     source_text = collect_source_text()
     runtime_source_text = collect_runtime_source_text()
@@ -265,8 +274,7 @@ def build_candidates() -> tuple[list[dict[str, str]], dict[str, int]]:
 
         id_dir = next((directory for directory in ID_MATCHED_DIRS if rel_dir == directory), None)
         if id_dir is not None:
-            prefix = ID_MATCHED_DIRS[id_dir].split("{id}")[0]
-            embedded_id = name[len(prefix):].rsplit(".", 1)[0]
+            embedded_id = dynamic_id_from_filename(name, ID_MATCHED_DIRS[id_dir])
             if embedded_id in game_ids:
                 stats["dynamic_kept"] += 1
                 continue
@@ -309,7 +317,10 @@ def sidecars_for(rel_path: str) -> list[str]:
 def dynamic_inventory() -> list[dict[str, object]]:
     # Перечисляет фактические файлы под каждым динамическим семейством — для
     # отчёта и для проверки «ни один из них не попал в кандидаты на удаление».
+    # Для id-семейств динамическими являются только актуальные registry IDs:
+    # физический orphan в той же папке остаётся cleanup candidate.
     inventory: list[dict[str, object]] = []
+    game_ids = known_game_ids()
     for family in DYNAMIC_FAMILIES:
         members: list[str] = []
         if family["kind"] == "files":
@@ -319,6 +330,10 @@ def dynamic_inventory() -> list[dict[str, object]]:
             if directory.exists():
                 for path in sorted(directory.rglob("*")):
                     if path.is_file() and not rel(path).endswith(SIDECAR_SUFFIXES):
+                        if family["kind"] == "id":
+                            embedded_id = dynamic_id_from_filename(path.name, family["pattern"])
+                            if embedded_id not in game_ids:
+                                continue
                         members.append(rel(path))
         inventory.append({"family": family, "members": members})
     return inventory
