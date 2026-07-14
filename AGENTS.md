@@ -36,6 +36,17 @@ Autonomy and approval:
 - Это hard-правило приёмки: наложение контента на орнамент рамки = QA FAILED
   (см. `docs/process/qa_protocol.md` «Контент только в пустой зоне фрейма»).
 
+**ФОНОВЫЕ ИЗОБРАЖЕНИЯ — ТОЛЬКО ВСТРОЕННЫЙ OPENAI IMAGE GENERATOR
+(директива пользователя 2026-07-14, ОБЯЗАТЕЛЬНО для ВСЕХ агентов).**
+Все новые и редактируемые full-canvas backgrounds, scenic backdrops,
+environment art, фоны меню/экранов, loading/splash art и illustrated underlays
+создаются встроенным OpenAI Image Generator в Codex через
+`fantasydisk-builtin-image-generator`. PixelLab для таких фоновых слоёв
+запрещён. OpenAI Images API разрешён только после отдельного явного указания
+Сергея Фомина, если результат встроенного генератора его не устроил. Требование
+прозрачного фона у изолированной иконки, спрайта, рамки или персонажа не делает
+такой ассет фоновым изображением и не меняет его профильный pipeline.
+
 Role boundaries:
 - A PM chat forms requirements and issues tasks; its workflow is `docs/process/pm_workflow.md`. Since the 2026-07-13 cutover Multica is the authoritative task queue/status/ownership source (workspace/project `FantasyDisk`, issues `FAN-*`, `multica` CLI); `docs/process/task_board.md` and `docs/tasks/*.md` are local mirrors/spec/evidence, not the source of new work. Legacy Jira (`SCRUM-*`) is a read-only historical archive (see `docs/process/jira_to_multica_cutover.md`).
 - Design, Back-end, and Animator agents must do only their own discipline-specific work: Design owns art/sprites/UI visuals, Back-end owns logic/code/balance/tests, Animator owns motion/rigs/animation states.
@@ -272,30 +283,35 @@ Project practices:
   проверки и landing выполняются синхронно, без фонового autoland.
 - **Изменения интерфейса — ТОЛЬКО через скилл `fantasydisk-ui-director`**
   (Codex skill, `~/.codex/skills/fantasydisk-ui-director/`). Перед любым
-  внедрением/перерисовкой UI сначала создать OpenAI-API-generated mockup страницы
-  со всеми элементами, точными зонами контента, safe margins и responsive-правилами,
-  показать превью в чате при наличии PNG, затем воспроизводить расположение в
-  Godot по mockup/spec. Единый стиль всех экранов: D&D + Dark Fantasy Dragon,
+  внедрением/перерисовкой UI сначала создать generator-routed mockup package со
+  всеми элементами, точными зонами контента, safe margins и
+  responsive-правилами: фон/illustrated underlay — встроенный OpenAI Image
+  Generator, нефоновые рамки/панели/кнопки/иконки — PixelLab MCP. Показать
+  превью в чате при наличии PNG, затем воспроизводить расположение в Godot по
+  mockup/spec. Единый стиль всех экранов: D&D + Dark Fantasy Dragon,
   отталкиваться от текущих красивых кнопок; старые/ручные пайплайны генерации
   макетов не использовать как fallback.
 - **PixelLab-first для будущих redraw-задач (SCRUM-689).** Перерисовки
   персонажей, монстров, элиток, боссов, animation/source packs, UI frame/source
   kits и других redraw source assets по умолчанию идут через PixelLab MCP /
-  PixelLab-ориентированные skills. Старый generic OpenAI/asset-generator путь
+  PixelLab-ориентированные skills. Фоновые изображения из глобального правила
+  2026-07-14 явно исключены из PixelLab redraw scope. Старый generic
+  OpenAI/asset-generator путь
   нельзя использовать как fallback для redraw, если Multica issue/task прямо не
   записывает исключение с причиной (`OpenAI Images override`, `existing source
   reuse`, `PixelLab unavailable`, и т.п.). Исключение должно быть видно в Multica
   comment, task mirror/result и evidence.
-- **Генерация графики/ассетов — через `fantasydisk-asset-generator` только для
-  задач вне PixelLab-redraw scope или при явном Multica issue override**
+- **Генерация нефоновой графики/ассетов — через
+  `fantasydisk-asset-generator` только для задач вне PixelLab-redraw scope или
+  при явном Multica issue override**
   (Codex skill, `~/.codex/skills/fantasydisk-asset-generator/`, SCRUM-324):
-  `scripts/generate_asset.py --issue FAN-123 --prompt "<...>" --output
-  <тема/файл> --size <WxH> --quality high` (OpenAI Images API, модель
-  `gpt-image-2`, PNG). Для разрешённых
-  non-redraw/override задач все ассеты — на ПРОЗРАЧНОМ фоне; исходник сохраняется
-  в `docs/design/references/<тема>/` (для единообразия на будущее), затем
-  внедряется в `assets/`. Стиль — D&D + Dark Fantasy Dragon (см. UI Overhaul
-  SCRUM-327).
+  нефоновые персонажи, объекты, спрайты, иконки, рамки и UI-компоненты следуют
+  PixelLab-маршруту навыка. Исторический `scripts/generate_asset.py` (OpenAI
+  Images API) не является fallback и используется только по отдельному явному
+  указанию пользователя. Для разрешённых non-redraw/override задач все
+  изолированные ассеты — на ПРОЗРАЧНОМ фоне; исходник сохраняется в
+  `docs/design/references/<тема>/`, затем внедряется в `assets/`. Стиль — D&D +
+  Dark Fantasy Dragon (см. UI Overhaul SCRUM-327).
 - **Постеры/инфографика/UI-элементы с текстом поверх AI-картинки — через скилл
   `content-zone-image-compositor`** (Codex skill,
   `~/.codex/skills/content-zone-image-compositor/`, repo mirror:

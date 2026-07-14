@@ -1,11 +1,11 @@
 ---
 name: fantasydisk-ui-director
-description: Use this skill when planning, generating, redesigning, integrating, validating, or fixing FantasyDisk UI screens, HUD, menus, popups, buttons, frames, icons, mockups, Control layouts, StyleBox/TextureRect frames, or Godot UI safe-zone issues. Requires a PixelLab MCP generated mockup/art layer before implementation, unified D&D + Dark Fantasy Dragon direction, and strict frame content-zone rules.
+description: "Use this skill when planning, generating, redesigning, integrating, validating, or fixing FantasyDisk UI screens, HUD, menus, popups, buttons, frames, icons, mockups, Control layouts, StyleBox/TextureRect frames, or Godot UI safe-zone issues. Requires a generator-routed mockup/art package before implementation: built-in OpenAI Image Generator for every scenic background or illustrated underlay, PixelLab MCP for non-background UI art, unified D&D + Dark Fantasy Dragon direction, and strict frame content-zone rules."
 ---
 
 # FantasyDisk UI Director
 
-Use this skill for every FantasyDisk interface change. The workflow is mockup first, implementation second: create a complete PixelLab MCP generated page mockup or art layer with all required elements, document exact bounds and safe zones, then recreate the layout in Godot.
+Use this skill for every FantasyDisk interface change. The workflow is mockup first, implementation second: create a complete generator-routed page mockup or art package with all required elements, document exact bounds and safe zones, then recreate the layout in Godot. Generate scenic backgrounds and illustrated underlays with the built-in OpenAI Image Generator; generate non-background frames, buttons, icons, and UI art through PixelLab MCP.
 
 ## Required Reading
 
@@ -29,15 +29,15 @@ Then read only the references needed for the current step:
 ## Non-Negotiable Rules
 
 1. Create or update the mockup before touching runtime UI implementation. Tiny emergency bug fixes may skip only when the user explicitly says no mockup is needed.
-2. Generate the mockup and new UI art through PixelLab MCP. Use `$fantasydisk-asset-generator` for the PixelLab asset workflow. Do not use OpenAI Images, built-in image generation, old/random/manual image pipelines, or `generate_asset.py` as a fallback.
+2. Route each generated layer by asset type. Use `$fantasydisk-builtin-image-generator` and the built-in OpenAI Image Generator for every full-canvas scenic background, menu/screen background, loading/splash image, or illustrated underlay; never use PixelLab for those layers. Use `$fantasydisk-asset-generator` and PixelLab MCP for non-background mockup/UI art such as frames, panels, buttons, icons, and HUD ornaments. Compose the routed layers into the complete mockup when both are needed.
 3. Show the generated mockup or preview in chat whenever a preview file exists, using Markdown image syntax with an absolute filesystem path.
-4. If PixelLab MCP credentials, model access, exports, or generation fail, read `../pixellab_mcp_auth.md` and run the config-based smoke before marking the task blocked or creating a handoff. Do not silently replace the PixelLab-generated mockup with a hand-drawn or different-model substitute. Stale tool discovery or missing ambient `AUTH_HEADER` is not enough evidence for a PixelLab blocker.
+4. If PixelLab MCP credentials, model access, exports, or generation fail for non-background UI art, read `../pixellab_mcp_auth.md` and run the config-based smoke before marking the task blocked or creating a handoff. If built-in OpenAI generation fails for a background, record that blocker and do not substitute PixelLab; use the OpenAI Images API only when the user explicitly asks for it. Never cross-fallback between the required routes.
 5. Keep all FantasyDisk pages in one visual family: D&D + Dark Fantasy Dragon, using the current button style as the main reference family.
 6. Never place UI content on frame texture, borders, ornaments, gems, spikes, metal, seals, or decorative corners. Buttons, text, icons, portraits, carousels, slots, previews, and selection controls belong only in the empty internal content zone or on a background underlay.
 7. Content margins must be at least `texture margins + reserve`. For irregular frames, the content zone is the real internal empty area, not the rectangular bounding box.
 8. Implement the Godot layout from the mockup/spec. If implementation needs different bounds, update the mockup/spec first and record the reason.
 9. Respect role boundaries: Design owns visual mockups and art assets, Back-end owns runtime UI wiring/tests, Animator owns motion/animated UI only when animation behavior is the task. Create a handoff instead of doing another role's specialist work.
-10. Avoid the known traps in `references/common-pitfalls.md`: confirm PixelLab MCP/export access before promising art output; generate or export frames at the panel's real aspect or 9-slice them so `STRETCH_SCALE` does not distort ornament; confirm the swapped asset is the one actually rendered (watch for a combined "unified" frame); and inset content to each frame's real inner transparent zone so nothing overlaps the border.
+10. Avoid the known traps in `references/common-pitfalls.md`: classify backgrounds before generation; confirm required generator access before promising art output; generate or export frames at the panel's real aspect or 9-slice them so `STRETCH_SCALE` does not distort ornament; confirm the swapped asset is the one actually rendered (watch for a combined "unified" frame); and inset content to each frame's real inner transparent zone so nothing overlaps the border.
 
 ## Workflow
 
@@ -46,14 +46,17 @@ Then read only the references needed for the current step:
    - every visible element, state, tooltip, popup, disabled state, and input state;
    - data-driven content such as hero names, class stats, inventory counts, upgrade cards, or selected ascension.
 2. Produce a mockup package:
-   - PixelLab MCP generated page mockup PNG or frame/layout layer;
+   - generator-routed page mockup PNG or frame/layout package;
+   - built-in OpenAI generated background/underlay when the screen needs one;
+   - PixelLab MCP generated non-background frame, panel, button, icon, or layout art;
    - annotated spec with element rectangles, anchors, z-order, safe zones, and responsive behavior;
    - asset list with frame margins, content margins, and 9-slice notes when applicable.
 3. Present the preview:
    - show the generated PNG in chat with `![preview](/absolute/path.png)`;
    - include only concise notes about dimensions, safe zones, and unresolved risks.
 4. Generate or update assets:
-   - use `$fantasydisk-asset-generator` for PixelLab MCP generated frames, buttons, icons, backgrounds, mockups, and UI reference sheets;
+   - use `$fantasydisk-builtin-image-generator` for backgrounds and illustrated underlays, with built-in OpenAI generation as the default and no PixelLab;
+   - use `$fantasydisk-asset-generator` for PixelLab MCP generated frames, buttons, icons, non-background mockup art, and UI reference sheets;
    - keep source references under `docs/design/references/<topic>/`;
    - keep previews under `docs/design/previews/`;
    - move accepted runtime assets to `assets/...` only when integration is part of the task.
@@ -78,6 +81,7 @@ Every UI change result should include:
 - target resolution and responsive matrix;
 - element bounds, safe zones, frame margins, and content margins;
 - generated asset paths and runtime asset paths;
+- generator provenance for each generated layer;
 - Godot scene/script/style paths changed;
 - screenshot or QA preview paths;
 - test commands and results.

@@ -57,9 +57,15 @@ Every frame asset must declare:
 
 Thin frames are preferred for dense screens. If a decorative frame is visually thick, expand the asset or shrink the content area instead of letting content overlap the ornament.
 
-## PixelLab Generation Notes
+## Generator Notes
 
-For mockups, ask for:
+For scenic backgrounds, menu/screen backgrounds, loading/splash images, and
+illustrated underlays, use the built-in OpenAI Image Generator through
+`$fantasydisk-builtin-image-generator`. Never use PixelLab for these layers.
+Specify the exact aspect ratio, focal area, low-noise UI-safe zones, and all
+forbidden text/logo/watermark requirements.
+
+For PixelLab-generated non-background mockup and UI art, ask for:
 
 - full game UI screen mockup;
 - exact aspect ratio and base resolution;
@@ -69,7 +75,7 @@ For mockups, ask for:
 - UI style matching D&D + Dark Fantasy Dragon and current ornate red/gold buttons;
 - clear separation between frame borders and content areas.
 
-For final UI assets, ask for:
+For final non-background UI assets, ask for:
 
 - isolated PNG asset;
 - transparent background when possible, or clean removable background;

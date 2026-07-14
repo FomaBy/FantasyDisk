@@ -1,15 +1,19 @@
 ---
 name: fantasydisk-asset-generator
-description: Use this skill when creating or editing FantasyDisk characters, objects, props, sprites, icons, UI frames, HUD elements, buttons, sprite sheets, 9-slice frames, or Godot-ready PNG assets. All new visual asset creation must use the PixelLab MCP workflow, with D&D + Dark Fantasy Dragon art direction, transparent/source PNG exports, reference/runtime path discipline, and QA evidence.
+description: Use this skill when creating or editing FantasyDisk characters, objects, props, sprites, icons, UI frames, HUD elements, buttons, sprite sheets, 9-slice frames, or other non-background Godot-ready PNG assets. Use PixelLab MCP for these non-background assets with D&D + Dark Fantasy Dragon art direction, transparent/source PNG exports, reference/runtime path discipline, and QA evidence. Route every full-canvas background, scenic backdrop, environment image, splash/loading image, or illustrated UI underlay to $fantasydisk-builtin-image-generator and never use PixelLab for it.
 ---
 
 # Game Asset Art Director
 
 You are helping build a Godot dark fantasy D&D-style game.
 
-## Mandatory PixelLab Rule
+## Generator Routing
 
-For every new FantasyDisk character, object, prop, sprite, UI frame, HUD element, icon, button, mockup art layer, or production-ready PNG, use PixelLab through MCP as the source generation/editing tool.
+For every new FantasyDisk character, object, prop, sprite, UI frame, HUD element, icon, button, non-background mockup art layer, or other isolated production-ready PNG, use PixelLab through MCP as the source generation/editing tool.
+
+For every full-canvas background, scenic backdrop, environment image, menu or screen background, loading/splash image, or illustrated underlay, stop this workflow and use `$fantasydisk-builtin-image-generator`. The built-in OpenAI Image Generator is the mandatory default for backgrounds. Never generate or edit a background with PixelLab. Use the OpenAI Images API only when the user explicitly requests it.
+
+Do not confuse an isolated asset that should have a transparent background with the background image itself. Transparent sprites, icons, frames, and props remain in the PixelLab workflow.
 
 - First try exposed PixelLab MCP tools in the chat. If tools are not visible, use tool discovery for `pixellab`.
 - If the PixelLab MCP server is configured locally but not exposed as direct tools, read `../pixellab_mcp_auth.md`, then call it through the configured MCP bridge without printing tokens, headers, or secrets.
@@ -32,13 +36,14 @@ Always produce assets with:
 ## Generation Workflow
 
 1. Confirm the Multica issue owner/status and locked paths before creating files.
-2. Build a concise PixelLab prompt/spec from the task: asset type, canonical ID, target use, size/aspect, style, forbidden text, safe zones, alpha needs, and animation/state needs.
-3. Use PixelLab MCP to create, revise, or fetch the source asset. Prefer stable tags matching the canonical ID, for example `berserk`, `artifact_blood_sigil`, `ui_frame_combat_hud_health`.
-4. Export source PNGs from PixelLab into `docs/design/references/<task_or_pack>/`.
-5. Save a `manifest.json` beside the source files with PixelLab IDs/tags, prompt/spec, export dimensions, frame/state names, and source filenames. Never store API tokens or Authorization headers.
-6. Postprocess the result before presenting it as game-ready.
-7. Create preview/contact sheets when useful, especially for batches, state sheets, frames, or animations.
-8. Promote accepted runtime assets to `assets/...` only when integration is part of the task.
+2. Classify the requested image before choosing a generator. Route background imagery to `$fantasydisk-builtin-image-generator` and continue here only for non-background assets.
+3. Build a concise PixelLab prompt/spec from the task: asset type, canonical ID, target use, size/aspect, style, forbidden text, safe zones, alpha needs, and animation/state needs.
+4. Use PixelLab MCP to create, revise, or fetch the source asset. Prefer stable tags matching the canonical ID, for example `berserk`, `artifact_blood_sigil`, `ui_frame_combat_hud_health`.
+5. Export source PNGs from PixelLab into `docs/design/references/<task_or_pack>/`.
+6. Save a `manifest.json` beside the source files with PixelLab IDs/tags, prompt/spec, export dimensions, frame/state names, and source filenames. Never store API tokens or Authorization headers.
+7. Postprocess the result before presenting it as game-ready.
+8. Create preview/contact sheets when useful, especially for batches, state sheets, frames, or animations.
+9. Promote accepted runtime assets to `assets/...` only when integration is part of the task.
 
 After generation, postprocess the result before presenting it as game-ready:
 
@@ -49,7 +54,7 @@ After generation, postprocess the result before presenting it as game-ready:
 - write safe content padding notes for UI assets;
 - create or update the implementation task when the asset must be integrated.
 
-Legacy note: `tools/artgen/generate_asset.py` and `~/.codex/skills/fantasydisk-asset-generator/scripts/generate_asset.py` are historical OpenAI Images helpers. Do not use them for new production asset creation unless the user explicitly overrides the PixelLab rule in the active Multica issue and its evidence records that exception.
+Legacy note: `tools/artgen/generate_asset.py` and `~/.codex/skills/fantasydisk-asset-generator/scripts/generate_asset.py` are OpenAI Images API helpers. Do not use them by default. For backgrounds, prefer the built-in generator through `$fantasydisk-builtin-image-generator`; use the API helpers only when the user explicitly requests the API route. Do not use the helpers for non-background assets unless the user explicitly overrides their PixelLab route.
 
 ## UI Frames
 
@@ -92,9 +97,9 @@ Use descriptive folder names matching the task or reference pack, for example `s
 
 Every asset task should finish with:
 
-- PixelLab source ID/tag/name and exported source paths;
+- generator provenance: PixelLab source ID/tag/name for non-background assets, or built-in/API OpenAI provenance for backgrounds;
 - final runtime paths when promoted;
 - size, alpha, crop/padding, state/frame count, and safe content margins;
 - preview/contact sheet path when useful;
 - tests or visual QA performed;
-- explicit note that PixelLab MCP was used, or a blocker/handoff explaining why it could not be used.
+- explicit note that the required generator route was used, or a blocker/handoff explaining why it could not be used.

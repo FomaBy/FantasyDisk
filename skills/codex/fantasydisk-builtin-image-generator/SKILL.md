@@ -1,29 +1,34 @@
 ---
 name: fantasydisk-builtin-image-generator
-description: Deprecated FantasyDisk image-generation fallback. Use only to redirect old requests that mention Codex/ChatGPT built-in Images, no API key, image_gen, or the former non-PixelLab workflow. New FantasyDisk characters, objects, UI frames, HUD elements, icons, sprites, mockups, and production assets must be generated through PixelLab MCP via $fantasydisk-asset-generator instead.
+description: Generate or edit FantasyDisk full-canvas background imagery with the built-in OpenAI Image Generator. Use for menu and screen backgrounds, scenic backdrops, environment art, loading or splash art, illustrated underlays, and other repository-bound background images. Built-in OpenAI generation is mandatory by default for backgrounds; never use PixelLab for them. Use the OpenAI Images API only when the user explicitly requests it after preferring or reviewing the built-in result.
 ---
 
 # FantasyDisk Built-in Image Generator
 
-Do not use this skill to create new FantasyDisk production art. It exists only to catch old prompts that ask for built-in image generation and redirect them to the current PixelLab MCP workflow.
+Use the built-in OpenAI Image Generator for every new or edited FantasyDisk background image, including production and repository-bound art.
 
 ## Core Rules
 
-- For FantasyDisk characters, objects, UI frames, HUD, icons, sprites, mockups, and production assets, use `$fantasydisk-asset-generator` and PixelLab MCP.
-- If PixelLab appears unavailable, read `../pixellab_mcp_auth.md` through the production skill path and run the config-based smoke before treating it as a blocker. Do not use this deprecated fallback because of stale MCP discovery in an already-open thread.
-- Do not call `image_gen` for in-repository FantasyDisk asset creation unless the active user request explicitly says to bypass PixelLab for a one-off non-production concept.
-- If a task requests the old built-in or OpenAI flow, update/record the task decision: PixelLab MCP is now mandatory. If PixelLab is unavailable, block or hand off instead of generating elsewhere.
-- Never promote built-in generated art to `assets/...` for FantasyDisk runtime unless the user explicitly overrides the PixelLab rule in that task and the Multica issue records the exception.
+- Treat this as a permanent project rule: never use PixelLab to generate or edit background images.
+- Use the built-in OpenAI Image Generator first. Do not require an API key and do not switch to the OpenAI Images API merely because it is available.
+- Use the OpenAI Images API only after the user explicitly asks for the API route. A prior negative opinion about PixelLab is not permission to select the API over the built-in generator.
+- If built-in generation is unavailable, report or record the blocker. Do not fall back to PixelLab.
+- Keep PixelLab routing for non-background assets such as characters, isolated objects, props, sprites, icons, UI frames, HUD elements, buttons, and animation frames through the appropriate FantasyDisk skill.
+- Do not confuse a transparent-background requirement for an isolated asset with a background image. This skill applies to the full-canvas scene or underlay itself.
+- Preserve D&D + Dark Fantasy Dragon art direction, requested aspect ratio, UI-safe composition, and the prohibition on unwanted text, labels, logos, and watermarks.
 
 ## Workflow
 
-1. Read the active request/task and identify the asset type.
-2. If it is FantasyDisk production or repository-bound art, switch to `$fantasydisk-asset-generator` and use PixelLab MCP.
-3. If the user explicitly asks for a non-production built-in concept despite the PixelLab rule, state in the task notes that it is not a production asset and must not be promoted to runtime without a PixelLab pass.
+1. Read the active Multica issue/request, confirm its owner and locked paths, and identify the asset type.
+2. Classify it as a background when it is a full-canvas scenic image, environment, backdrop, loading/splash art, menu or screen background, or illustrated underlay behind runtime content.
+3. For a background, prepare the source prompt, dimensions/aspect, focal areas, low-noise UI-safe zones, forbidden content, and intended runtime path before generation.
+4. Call the built-in OpenAI Image Generator. Follow its output contract exactly and make the generation call the last conversational action of that turn when required by the tool.
+5. If the user explicitly requests the OpenAI Images API, use the approved API workflow without exposing secrets and record that the API route was user-selected.
+6. For a non-background asset, route to `$fantasydisk-asset-generator` or the more specific character, animation, item-icon, or UI skill.
 
 ## Prompt Patterns
 
-Legacy examples below are prompt references only. Convert them into PixelLab prompts/specs before production use.
+Use the examples as starting points and adapt composition to the actual screen geometry.
 
 Main menu background:
 
@@ -31,25 +36,26 @@ Main menu background:
 FantasyDisk main menu background, dark fantasy D&D painting, epic ruined battlefield near a glowing cursed disk portal, two heroic silhouettes facing distant bosses, ornate gothic atmosphere, cinematic 16:9 composition, left and top UI-safe areas with lower visual noise, high detail, no text, no labels, no logo, no watermark
 ```
 
-Icon or item:
+Gameplay backdrop:
 
 ```text
-FantasyDisk game item icon, dark fantasy D&D style, <object>, strong readable silhouette, centered object, transparent-friendly dark contrast, no text, no numbers, no watermark
+FantasyDisk gameplay background, D&D dark fantasy dragon world, <environment and narrative moment>, cinematic depth, readable gameplay plane, restrained contrast behind actors and HUD, low-noise UI-safe zones at <coordinates>, <aspect ratio>, no text, no labels, no logo, no watermark
 ```
 
-UI frame:
+Loading or splash background:
 
 ```text
-FantasyDisk ornate UI frame, dark metal and aged gold, red gem accents, stretchable clean center, detailed corners, content-safe inner area, transparent-friendly, no text, no icons, no watermark
+FantasyDisk loading-screen background, dark fantasy D&D illustration, <subject and location>, dramatic but coherent lighting, strong focal composition away from the loading indicator and tip zones, <aspect ratio>, no text, no labels, no logo, no watermark
 ```
 
 ## Handoff Notes
 
 For every accepted asset, capture:
 
+- Multica issue ID and generator-routing decision;
 - source prompt;
 - generated output path or preview link;
 - intended runtime path;
 - Godot import status;
 - screenshot or smoke/UI check result;
-- whether this is PixelLab MCP production output or an explicitly approved non-production built-in exception.
+- whether the built-in OpenAI generator or the explicitly user-selected OpenAI Images API was used.

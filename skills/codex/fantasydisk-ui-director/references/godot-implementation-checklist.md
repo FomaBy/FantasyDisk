@@ -7,7 +7,9 @@ Use this checklist before and after changing FantasyDisk Godot UI scenes, script
 - Confirm the current branch is the active project branch.
 - Read the mockup spec and preview.
 - Confirm every runtime element has bounds, anchors, and a safe-zone parent.
-- Confirm new art was generated through PixelLab MCP or is an accepted existing asset.
+- Confirm new art used the required route or is an accepted existing asset:
+  built-in OpenAI for backgrounds/illustrated underlays and PixelLab MCP for
+  non-background UI art.
 - Identify role ownership: Design for art/mockup, Back-end for runtime UI, Animator only for animated UI/motion.
 
 ## Node And Layout Rules
