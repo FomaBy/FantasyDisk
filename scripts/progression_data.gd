@@ -33,6 +33,7 @@ const CROWD_CLEAR_TARGET_COUNTS := BalanceData.CROWD_CLEAR_TARGET_COUNTS
 const CROWD_CLEAR_ENEMY_HP := BalanceData.CROWD_CLEAR_ENEMY_HP
 const CROWD_CLEAR_CORRIDOR := BalanceData.CROWD_CLEAR_CORRIDOR
 const CROWD_CLEAR_SOLO_CORRIDOR := BalanceData.CROWD_CLEAR_SOLO_CORRIDOR
+const BOSS_HAZARD_MAX_HP_FRACTION := BalanceData.BOSS_HAZARD_MAX_HP_FRACTION  # FAN-1031 S2: кап зон/сламов босса долей max HP
 const SURVIVABILITY_DEFENSE_CAP := BalanceData.SURVIVABILITY_DEFENSE_CAP
 const SURVIVABILITY_DEFENSE_DIMINISH := BalanceData.SURVIVABILITY_DEFENSE_DIMINISH
 const SURVIVABILITY_DODGE_CAP := BalanceData.SURVIVABILITY_DODGE_CAP
@@ -233,8 +234,7 @@ static func is_stat_relevant(stat_id: String, character_id: String) -> bool:
 # блокируется — отсекается именно КОМБАТ/билд-сустейн (решение тикета).
 const DOCTOR_FORBIDDEN_SUSTAIN_ATTRS := {
 	"regeneration": true,
-	"vampiric_amount": true,
-	"vampiric_chance": true,
+	"vampiric": true,  # FAN-1034: единая ось (мерж vampiric_amount + vampiric_chance)
 }
 const DOCTOR_FORBIDDEN_SUSTAIN_REWARD_IDS := {
 	"leech_heart": true,
@@ -508,18 +508,15 @@ static func reward_attribute_dependency(reward: Dictionary) -> String:
 				return "max_health"
 			"move_speed_multiplier":
 				return "move_speed"
-			"sector_multiplier":
+			# FAN-1034: aoe_radius — единая ось геометрии (сектор/радиус/аура).
+			"sector_multiplier", "aoe_radius_multiplier", "aura_radius_flat":
 				return "aoe_radius"
-			"aoe_radius_multiplier":
-				return "aura_radius"
 			"magic_damage_multiplier":
 				return "magic_focus"
 			"pickup_radius_flat":
 				return "pickup_radius"
 			"defense_flat":
 				return "defense"
-			"knockback_multiplier":
-				return "knockback"
 			"crit_chance_flat":
 				return "crit_chance"
 			"crit_damage_flat":
@@ -528,14 +525,11 @@ static func reward_attribute_dependency(reward: Dictionary) -> String:
 				return "dodge"
 			"range_multiplier":
 				return "range"
-			"dot_damage_flat":
+			# FAN-1034: темп тиков слит в ось dot_damage. projectile_speed/knockback
+			# больше не level-up атрибуты: их источники (артефакты) взвешиваются
+			# нейтрально через пустую зависимость.
+			"dot_damage_flat", "dot_speed_flat":
 				return "dot_damage"
-			"dot_speed_flat":
-				return "dot_speed"
-			"projectile_speed_flat":
-				return "projectile_speed"
-			"aura_radius_flat":
-				return "aura_radius"
 			"buff_power_flat":
 				return "buff_power"
 			"summon_bonus":
@@ -544,10 +538,8 @@ static func reward_attribute_dependency(reward: Dictionary) -> String:
 				return "absorb"
 			"regeneration_flat":
 				return "regeneration"
-			"vampiric_amount_flat":
-				return "vampiric_amount"
-			"vampiric_chance_flat":
-				return "vampiric_chance"
+			"vampiric_amount_flat", "vampiric_chance_flat":
+				return "vampiric"
 			"ultimate_flat":
 				return "ultimate_power"
 	return ""
@@ -574,6 +566,27 @@ static func reward_is_optional(reward: Dictionary, character_id: String) -> bool
 	return attribute_relevance(attr, character_id) == "optional"
 
 
+# FAN-1031 S4 (random-floor): урон-оси level-up наград. Карта релевантна УРОНУ класса, если
+# несёт одну из этих осей И ось для класса НЕ optional (matrix primary/secondary). Физ-урон
+# «damage» мёртв у маг-классов и наоборот — ATTRIBUTE_RELEVANCE это уже кодирует (для мага
+# «damage» → optional), поэтому проверки relevance достаточно, дубль-карты класса не нужны.
+const DAMAGE_RELEVANT_ATTRS := ["damage", "magic_focus", "attack_speed", "crit_chance", "crit_damage", "dot_damage"]
+
+
+static func reward_is_damage_relevant(reward: Dictionary, character_id: String) -> bool:
+	var attr := str(reward.get("attr", ""))
+	if not DAMAGE_RELEVANT_ATTRS.has(attr):
+		return false
+	return attribute_relevance(attr, character_id) != "optional"
+
+
+static func _reg_has_damage_relevant(pool: Array, character_id: String) -> bool:
+	for reward in pool:
+		if reward_is_damage_relevant(reward, character_id):
+			return true
+	return false
+
+
 # SCRUM-695: взвешенный индекс выбора из пула (детерминированно через переданный rng).
 static func weighted_level_up_index(pool: Array, character_id: String, rng: RandomNumberGenerator) -> int:
 	if pool.size() <= 1:
@@ -598,30 +611,44 @@ static func weighted_level_up_index(pool: Array, character_id: String, rng: Rand
 # не более 1 optional-атрибута на показ и минимум 1 primary/secondary (или основная
 # характеристика). prefill — уже выбранные награды (например capstone «Озарение»);
 # они учитываются в балансе optional/non-optional. Пулы не мутируются (работаем на копиях).
+# FAN-1031 S4 (random-floor, план §2.1-S4): КАЖДЫЙ показ гарантирует ≥1 карту, релевантную
+# УРОНУ класса (reward_is_damage_relevant). Без этого слабые/дно-классы вынуждены в некоторых
+# оферах брать не-урон (защита/утилита), и их random-билд-пол проседает (worst-класс v8 0.86).
+# Форс — только на ПОСЛЕДНЕМ слоте и только если в regular-пуле реально есть damage-карта класса
+# (иначе грациозно пропускаем). damage-релевантная карта non-optional по построению, поэтому
+# гарантия УСИЛИВАЕТ инвариант «≥1 non-optional», не нарушая «≤1 optional».
 static func weighted_level_up_selection(regular_pool: Array, stat_pool: Array, count: int, character_id: String, rng: RandomNumberGenerator, rare_slot_chance := 0.05, prefill := []) -> Array:
 	var rewards: Array = prefill.duplicate()
 	var reg: Array = regular_pool.duplicate()
 	var stat: Array = stat_pool.duplicate()
 	var optional_count := 0
 	var non_optional_count := 0
+	var damage_count := 0
 	for reward in rewards:
 		if reward_is_optional(reward, character_id):
 			optional_count += 1
 		else:
 			non_optional_count += 1
+		if reward_is_damage_relevant(reward, character_id):
+			damage_count += 1
 	while rewards.size() < count and (not reg.is_empty() or not stat.is_empty()):
+		var slots_left: int = count - rewards.size()
+		# FAN-1031 S4: на последнем слоте, если урон-карты ещё нет и в regular-пуле она есть —
+		# закрываем этот слот именно ей (не отдаём рарному стат-слоту, не фильтруем в не-урон).
+		var must_secure_damage: bool = damage_count == 0 and slots_left <= 1 and _reg_has_damage_relevant(reg, character_id)
 		var want_rare: bool = not stat.is_empty() and rng.randf() < rare_slot_chance
-		if want_rare or reg.is_empty():
+		if (want_rare or reg.is_empty()) and not must_secure_damage:
 			var s_index: int = weighted_level_up_index(stat, character_id, rng)
 			rewards.append(stat[s_index])
 			stat.remove_at(s_index)
 			non_optional_count += 1
 			continue
-		var slots_left: int = count - rewards.size()
 		var allow_optional: bool = optional_count < 1
 		var need_non_optional: bool = non_optional_count == 0 and slots_left <= 1
 		var candidates: Array = []
 		for reward in reg:
+			if must_secure_damage and not reward_is_damage_relevant(reward, character_id):
+				continue
 			var rel: String = attribute_relevance(str(reward.get("attr", "")), character_id)
 			if rel == "optional" and (not allow_optional or need_non_optional):
 				continue
@@ -635,6 +662,8 @@ static func weighted_level_up_selection(regular_pool: Array, stat_pool: Array, c
 			optional_count += 1
 		else:
 			non_optional_count += 1
+		if reward_is_damage_relevant(picked, character_id):
+			damage_count += 1
 	return rewards
 
 
@@ -664,24 +693,6 @@ static func _soft_capped_run_multiplier(multiplier: float, softcap: float, knee:
 
 
 # SCRUM-947 «Проводник стихий»: класс-trait Элементалиста, data-driven запись
-# CLASS_TRAITS.elementalist.magic_bonus_effectiveness = 1.30 (реестр SCRUM-935).
-# Каждый источник бонуса МАГИЧЕСКОГО урона на 30% эффективнее (bonus-effectiveness
-# scaling: +15% источник → +19.5% фактически; НЕ флэт-множитель прямого урона).
-# Детерминированный порядок стакинга (см. derived_parameters, дублируется в
-# docs/design/systems/characters_weapons.md): каждый magic-tagged источник
-# усиливается РОВНО ОДИН РАЗ, отдельно от остальных, ДО перемножения источников:
-#   1) забеговый run_modifiers.magic_damage_multiplier — softcap → ×1.30 на избыток
-#      (усиливается уже задиминишенный бонус, глобальный анти-runaway остаётся
-#      арбитром) → upgrade_damage_exponent;
-#   2) пассив оружия passive_mods.magic_damage_multiplier (класс-прогрессия) —
-#      ×1.30 на бонусную часть;
-#   3) magic-tagged бафы (prayer_opening_*) — ×1.30 на саму добавку;
-#   4) атрибутный источник: дельта интеллекта НАД базой класса (после
-#      growth-скаляра CLASS_LEVEL_STAT_GROWTH_SCALARS) → ×1.30 только в канале
-#      magic_damage. Изоляция типов урона (SCRUM-524) не нарушается: интеллект
-#      владеет только магией, другие каналы не видят усиления.
-# НЕ усиливаются: universal damage_multiplier/damage_flat (не magic-tagged),
-# physical-only и periodic-only (dot_*) источники, а также штрафы (<1.0).
 static func _magic_bonus_effectiveness_for(character_id: String) -> float:
 	if character_id == "":
 		return 1.0
@@ -1322,6 +1333,28 @@ static func _crowd_clear_target_factor(config: Dictionary, target_count: int) ->
 	return factor
 
 
+# FAN-1031 3c-final (peer review MAJOR): калибровочная база силы взрыва ворона для бюджет-модели.
+# raven_damage_multiplier — per-hit СИЛА (рантайм), не hit-COUNT: держим модель на этой фикс-базе,
+# чтобы доводка множителя двигала живой per-hit «сверх бюджета», а не съедалась авто-тюнером bdm.
+const RAVEN_BUDGET_REF_MULTIPLIER := 0.85
+
+
+# FAN-1031 3c-final (peer review MINOR): Σ диминиш-факторов по `count` целям — зеркало рантайм-капа
+# `_damage_enemies_in_circle_capped` (ближние `full` полный вес, дальше 1/(1+(rank−full+1)·diminish)).
+# Сентинел override <0 → (full_default/diminish_default). Дробный count — линейно на последней цели.
+static func _capped_coverage(count: float, full_override: int, diminish_override: float, full_default: int, diminish_default: float) -> float:
+	var full := full_override if full_override >= 0 else full_default
+	var diminish := diminish_override if diminish_override >= 0.0 else diminish_default
+	var total := 0.0
+	var whole := int(floor(count))
+	for i in range(whole):
+		total += 1.0 if i < full else 1.0 / (1.0 + float(i - full + 1) * diminish)
+	var frac := count - float(whole)
+	if frac > 0.0:
+		total += frac * (1.0 if whole < full else 1.0 / (1.0 + float(whole - full + 1) * diminish))
+	return total
+
+
 static func _budget_hit_model(config: Dictionary) -> Dictionary:
 	var mode := str(config.get("attack_mode", config.get("attack_shape", "single")))
 	var attack_range := float(config.get("attack_range", 240.0))
@@ -1357,7 +1390,14 @@ static func _budget_hit_model(config: Dictionary) -> Dictionary:
 		"aoe_projectile":
 			var projectile_count := float(config.get("projectile_count", 1.0))
 			var blast_hits := clampf(1.0 + aoe_radius / 145.0, 1.0, 3.0)
-			return {"solo_hits": 1.0, "five_hits": clampf(projectile_count * blast_hits, 1.0, 5.0), "pool_targets": clampf(1.0 + aoe_radius / 130.0, 1.0, 4.0)}
+			# FAN-1031 3c-final (peer review MINOR): зеркалим per-weapon кап прямого AoE-взрыва
+			# (S1 aoe_full_targets/aoe_target_diminish) в оценку hits. Без этого для оружий с
+			# override (restore_potion F=1/D=4.0) модель считала полный blast_hits, завышая
+			# aoe_dps ×1.7 → bdm не отражал живой срез. Сентинел <0 → дефолт (mirror class_weapon
+			# AOE_PROJECTILE_* = 5/2.0); при blast_hits ≤ 3 < full=5 diminish не срабатывает →
+			# нулевое изменение для всех оружий, кроме тех, у кого full < blast_hits (restore_potion).
+			var capped_blast := _capped_coverage(blast_hits, int(config.get("aoe_full_targets", -1)), float(config.get("aoe_target_diminish", -1.0)), 5, 2.0)
+			return {"solo_hits": 1.0, "five_hits": clampf(projectile_count * capped_blast, 1.0, 5.0), "pool_targets": clampf(1.0 + aoe_radius / 130.0, 1.0, 4.0)}
 		"homing_curse":
 			return {"solo_hits": 1.0, "five_hits": clampf(1.0 + aoe_radius / 180.0, 1.0, 2.0), "dot_targets": 1.0}
 		"dark_chain_burst":
@@ -1423,7 +1463,14 @@ static func _budget_hit_model(config: Dictionary) -> Dictionary:
 				var raven_pulse := maxf(float(config.get("amp_pulse_interval", 1.1)), 0.2)
 				var raven_lifetime := maxf(float(config.get("amp_lifetime", 8.0)), deploy_interval)
 				var totems := minf(raven_lifetime / deploy_interval, maxf(float(config.get("max_summons_cap", 6.0)), 1.0))
-				var ravens_per_deploy := (deploy_interval / raven_pulse) * totems * maxf(float(config.get("raven_damage_multiplier", 0.85)), 0.0)
+				# FAN-1031 3c-final fix (peer review MAJOR): raven_damage_multiplier — это per-hit
+				# СИЛА взрыва (рантайм _resolve_raven_impact: _rolled_damage × множитель), НЕ hit-COUNT.
+				# Раньше она зеркалилась в hits → авто-тюнер (bdm) компенсировал ×1.59-буст оживления
+				# вдвое (bdm 1.671→1.235, live per-hit +17% вместо +59%). Модель нормирует по СТРУКТУРНОМУ
+				# числу воронов (rate × totems) при ФИКСИРОВАННОЙ калибровочной силе взрыва
+				# RAVEN_BUDGET_REF_MULTIPLIER, поэтому доводка raven_damage_multiplier двигает живой
+				# per-hit «сверх бюджета» напрямую (как summon-множители у pure_summon) и НЕ сдвигает bdm.
+				var ravens_per_deploy := (deploy_interval / raven_pulse) * totems * RAVEN_BUDGET_REF_MULTIPLIER
 				var explosion_targets := clampf(1.0 + float(config.get("raven_explosion_radius", 120.0)) / 145.0, 1.0, 3.0)
 				return {"solo_hits": clampf(ravens_per_deploy, 1.0, 8.0), "five_hits": clampf(ravens_per_deploy * explosion_targets, 1.0, 16.0)}
 			var active_ratio := float(config.get("amp_lifetime", 6.0)) / maxf(float(config.get("fire_interval", 2.0)), 0.25)
@@ -1871,7 +1918,7 @@ static func _budget_sentry_ammo_model(config: Dictionary, params: Dictionary, st
 # SCRUM-906: контактный DPS орбитальных дронов — зеркало
 # scripts/engineer_orbit_drone.gd + class_weapon._engineer_drone_target_count.
 # Число дронов = max_summons + floor(max(summon_amount - threshold, 0) / step),
-# рельс max_summons_cap (база Инженера ~12.5 → ровно 1 дрон). Оборотов/с =
+# рельс max_summons_cap (база Инженера ~12.5 → ровно 2 дрона). Оборотов/с =
 # drone_orbit_speed × attack_speed / TAU (скорость атаки крутит RPM, AC);
 # хитов/с на дрона по одной цели = min(обороты, 1/hit_cooldown) — дрон
 # пересекает угловую позицию цели раз за оборот, per-enemy кулдаун гейтит
@@ -1893,7 +1940,12 @@ static func _budget_orbit_drone_dps(config: Dictionary, params: Dictionary, stat
 	var role_factor := _budget_summon_role_damage_factor(config, params, stats)
 	var contact_damage := float(params.get(str(config.get("damage_parameter", "damage")), params.get("damage", 1.0))) 		* float(config.get("summon_damage_multiplier", 0.9)) * role_factor
 	var solo_dps := count * contact_damage * pass_rate
-	var outer_radius := maxf(float(config.get("drone_orbit_radius", 78.0)), 24.0) * (1.0 + 0.14 * (count - 1.0))
+	# FAN-1075: стартовая пара находится на одном кольце; спираль начинается
+	# с третьего дрона и зеркалит engineer_orbit_drone._orbit_radius.
+	var outer_slot := 0.0
+	if count > 2.0:
+		outer_slot = count - 1.0
+	var outer_radius := maxf(float(config.get("drone_orbit_radius", 121.0)), 24.0) * (1.0 + 0.14 * outer_slot)
 	var ring_coverage := clampf(1.0 + (outer_radius + maxf(float(config.get("drone_contact_radius", 44.0)), 8.0)) / 58.0, 1.0, 5.0)
 	return {
 		"summon_dps": solo_dps,
@@ -2140,17 +2192,6 @@ static func derived_parameters(stats: Dictionary, run_modifiers: Dictionary, wea
 	if crit_overflow_ratio > 0.0:
 		crit_damage_flat += maxf(crit_chance_raw - float(crit_profile.get("cap", CRIT_CHANCE_CAP)), 0.0) * crit_overflow_ratio
 	# SCRUM-524: урон каждого ТИПА масштабируется ТОЛЬКО от своего атрибута.
-	# Изоляция по типам урона — жёсткий инвариант: прокачка атрибута типа X меняет
-	# урон ТОЛЬКО типа X и НИКАК не влияет на остальные типы (см. систему типов
-	# урона SCRUM-523 и гейт tests/damage_type_isolation_test.gd). Поэтому здесь
-	# НЕТ «splash»-вкладов чужих атрибутов и НЕТ архетип-множителя: он зависел от
-	# ВСЕХ атрибутов и одинаково домножал все три типа, протекая между ними.
-	# Владельцы атрибутов по типам: сила→физический, интеллект→магический,
-	# знание→периодический (DoT). SCRUM-898: звуковой тип удалён (бывшие
-	# sound-оружия Гитариста/Друида переведены на магический канал). damage_flat и
-	# dot_damage_flat — забеговые/пассивные модификаторы (не атрибуты), поэтому
-	# общий вклад в типы инвариант изоляции не нарушает (тест проверяет атрибуты).
-	# Баланс по DPS добирается классовым budget-множителем (budget_tuning_for).
 	var universal_damage_flat := float(run_modifiers.get("damage_flat", 0.0))
 	var physical_base := 15.0 * strength / 10.0
 	# SCRUM-947: атрибутный источник магического бонуса — дельта интеллекта НАД

@@ -1,5 +1,9 @@
 extends RefCounted
 
+const SCENE_CONTRACTS := preload("res://scripts/scene_contracts.gd")
+const LORE_DATA := preload("res://scripts/lore_data.gd")
+const CODEX_DATA := preload("res://scripts/codex_data.gd")
+
 # Боевой цикл: старт/конец боя, спавн волн, баланс врагов/элиток/боссов,
 # арена, pickups и снапшот игрока между узлами.
 
@@ -49,6 +53,9 @@ const ADVANCED_SHOOTER_WEIGHT_MAX := 2.00
 const ADVANCED_SUMMONER_WEIGHT_MAX := 2.20
 const ADVANCED_HEAVY_WEIGHT_MAX := 1.66
 const BOSS_DEATH_VICTORY_DELAY := 2.0
+# Этап B (спавн-защита): pack-члены/свита/given-position спавны — минимум до
+# живого игрока (edge-спавны фильтруются шире, SPAWN_PLAYER_SAFE_RADIUS=420).
+const GIVEN_SPAWN_MIN_PLAYER_DISTANCE := 320.0
 const BOSS_VICTORY_PRESSURE_GROUPS := ["enemies", "summoned_enemies", "projectiles", "enemy_projectiles", "enemy_hazards"]
 
 # SCRUM-528: «элитка реально убита в этом бою». Награда элитного узла (выбор
@@ -529,9 +536,12 @@ func _spawn_random_enemy(enemy_scene_override: PackedScene = null, spawn_positio
 	if enemy_packed_scene == null:
 		return null
 
-	var enemy := enemy_packed_scene.instantiate() as Node2D
+	var enemy := SCENE_CONTRACTS.instantiate_node_2d(enemy_packed_scene, "CombatDirector enemy spawn")
+	if enemy == null:
+		return null
 	game.add_child(enemy)
-	enemy.global_position = _clamp_spawn_position(spawn_position) if use_given_position else _random_spawn_position()
+	# Этап B: явные точки (пачки/свита) тоже держат дистанцию до живого игрока.
+	enemy.global_position = _push_spawn_from_player(_clamp_spawn_position(spawn_position), GIVEN_SPAWN_MIN_PLAYER_DISTANCE) if use_given_position else _random_spawn_position()
 	_scale_enemy_for_current_wave(enemy)
 	game.record_codex_enemy_discovery(enemy)
 	_connect_enemy_rewards(enemy)
@@ -552,7 +562,9 @@ func _maybe_spawn_mini_elite(asc: Dictionary, remaining_slots: int) -> int:
 		elite_scene = _random_elite_scene()
 	if elite_scene == null:
 		return 0
-	var elite := elite_scene.instantiate() as Node2D
+	var elite := SCENE_CONTRACTS.instantiate_node_2d(elite_scene, "CombatDirector mini-elite spawn")
+	if elite == null:
+		return 0
 	elite.set_meta("epic_scale_profile", "mini_elite")
 	elite.set_meta("drop_class", "mini_elite")
 	elite.add_to_group("elite_enemies")
@@ -581,8 +593,9 @@ func _maybe_spawn_mini_elite(asc: Dictionary, remaining_slots: int) -> int:
 		if minion_scene == null:
 			break
 		var offset: Vector2 = Vector2.RIGHT.rotated(game.rng.randf() * TAU) * game.rng.randf_range(48.0, 96.0)
-		_spawn_random_enemy(minion_scene, elite.global_position + offset, true)
-		used += 1
+		var minion := _spawn_random_enemy(minion_scene, elite.global_position + offset, true)
+		if minion != null:
+			used += 1
 	return used
 
 
@@ -664,6 +677,8 @@ func _spawn_enemy_wave() -> void:
 	var raw_count := int(round(float(base_count + stage_bonus + wave_bonus + elapsed_bonus) * density))
 	var spawn_count: int = mini(mini(raw_count, int(round(float(spawn_limit) * density))), remaining_slots)
 	for index in range(spawn_count):
+		if remaining_slots <= 0:
+			return
 		var packed_scene := _random_enemy_scene()
 		if packed_scene == null:
 			return
@@ -674,12 +689,15 @@ func _spawn_enemy_wave() -> void:
 			pack_count = mini(game.rng.randi_range(3, 4), remaining_slots)
 
 		for pack_index in range(pack_count):
-			if game.get_tree().get_nodes_in_group("enemies").size() >= active_cap:
+			if remaining_slots <= 0:
 				return
 			var offset := Vector2.ZERO
 			if pack_count > 1:
 				offset = Vector2.RIGHT.rotated(game.rng.randf() * TAU) * game.rng.randf_range(18.0, 54.0)
-			_spawn_random_enemy(packed_scene, base_position + offset, true)
+			var spawned := _spawn_random_enemy(packed_scene, base_position + offset, true)
+			if spawned == null:
+				return
+			remaining_slots -= 1
 
 
 func _active_enemy_cap() -> int:
@@ -836,7 +854,9 @@ func _spawn_boss() -> void:
 	if selected_boss_scene == null:
 		return
 
-	var boss := selected_boss_scene.instantiate() as Node2D
+	var boss := SCENE_CONTRACTS.instantiate_node_2d(selected_boss_scene, "CombatDirector boss spawn")
+	if boss == null:
+		return
 	boss.set_meta("epic_scale_profile", "boss")
 	game.add_child(boss)
 	game.boss_hud_target = boss  # SCRUM-874: цель HUD-боссбара сверху экрана
@@ -853,7 +873,13 @@ func _spawn_boss() -> void:
 	# (на смерти/победе сам узел уже удалён; имя резолвится здесь, пока он жив).
 	if not game.run_metrics.is_empty():
 		game.run_metrics["last_boss_name"] = boss_name if boss_name != "" else "БОСС"
-	game.ui._show_combat_title_banner(boss_name if boss_name != "" else "БОСС", Color(1.0, 0.34, 0.3), true)
+	# FAN-1080: под титулом Владыки — короткая лор-подводка (кто он и зачем).
+	game.ui._show_combat_title_banner(
+		boss_name if boss_name != "" else "БОСС",
+		Color(1.0, 0.34, 0.3),
+		true,
+		LORE_DATA.boss_intro_line(game.current_boss_id)
+	)
 
 
 const BONE_ARCHON_BOSS_SCENE := preload("res://scenes/BossBoneArchon.tscn")
@@ -892,7 +918,9 @@ func _spawn_elite_enemy() -> void:
 		use_fallback_modifier = true
 	if elite_scene == null:
 		return
-	var elite := elite_scene.instantiate() as Node2D
+	var elite := SCENE_CONTRACTS.instantiate_node_2d(elite_scene, "CombatDirector elite spawn")
+	if elite == null:
+		return
 	elite.name = "EliteEnemy"
 	elite.set_meta("epic_scale_profile", "elite")
 	elite.add_to_group("elite_enemies")
@@ -908,13 +936,34 @@ func _spawn_elite_enemy() -> void:
 	game.record_codex_enemy_discovery(elite)
 	_connect_enemy_rewards(elite)
 	# Появление элитки: краткая вспышка имени над ареной.
+	# FAN-1080: русский канонический титул из Кодекса вместо англ.
+	# enemy_type_name + строка «офицера прибоя» под именем.
 	var elite_name := str(elite.get("enemy_type_name"))
-	game.ui._show_combat_title_banner(elite_name if elite_name != "" else "ЭЛИТА", Color(1.0, 0.6, 0.32), false)
+	var elite_codex_id := str(game.CODEX_ENEMY_NAME_TO_ID.get(elite_name, ""))
+	var elite_title := _codex_monster_title(elite_codex_id)
+	if elite_title == "":
+		elite_title = elite_name
+	game.ui._show_combat_title_banner(
+		elite_title if elite_title != "" else "ЭЛИТА",
+		Color(1.0, 0.6, 0.32),
+		false,
+		LORE_DATA.elite_lore(elite_codex_id)
+	)
 
 
 func _random_elite_scene() -> PackedScene:
 	# SCRUM-499: детерминированный выбор типа элитки от seed узла — совпадает с превью.
 	return game.node_elite_scene(game.current_node_seed)
+
+
+func _codex_monster_title(codex_id: String) -> String:
+	# FAN-1080: канонический русский титул сущности из Кодекса (для баннеров).
+	if codex_id == "":
+		return ""
+	for monster in CODEX_DATA.monsters():
+		if str(monster.get("id", "")) == codex_id:
+			return str(monster.get("title", ""))
+	return ""
 
 
 func _apply_elite_modifier(enemy: Node2D) -> void:
@@ -1070,7 +1119,9 @@ func _on_enemy_died(enemy: Node2D) -> void:
 func _spawn_pickup(pickup_type: String, amount: int, position: Vector2) -> void:
 	if game.pickup_scene == null or amount <= 0:
 		return
-	var pickup = game.pickup_scene.instantiate() as Node2D
+	var pickup := SCENE_CONTRACTS.instantiate_node_2d(game.pickup_scene, "CombatDirector pickup spawn")
+	if pickup == null:
+		return
 	game.add_child(pickup)
 	pickup.global_position = position
 	if pickup.has_method("setup"):
@@ -1110,6 +1161,12 @@ func _collect_pickup(pickup: Node) -> void:
 
 
 func _setup_arena_world(is_boss_fight: bool) -> void:
+	# Combat Feel Rework (этап A): Y-сортировка актёров арены. game (корень Main)
+	# — плоский родитель игрока/врагов/пикапов: кто ниже по Y (origin = ноги),
+	# тот рисуется поверх. Продублировано в рантайме поверх Main.tscn защитно —
+	# на случай динамически созданного/подменённого корня. Фон/границы/снаряды
+	# не страдают: у них явный z_index. UI живёт в CanvasLayer и не сортируется.
+	game.y_sort_enabled = true
 	_spawn_arena_background(is_boss_fight)
 	_create_arena_boundaries()
 
@@ -1189,7 +1246,18 @@ func _random_spawn_position() -> Vector2:
 		var position := _random_edge_spawn_position()
 		if _is_spawn_position_clear(position):
 			return position
-	return _clamp_spawn_position(_random_edge_spawn_position())
+	# Этап B: все попытки провалились (игрок стоит у кромки) — фолбэк не голый
+	# clamp случайной точки, а точка кромки, МАКСИМАЛЬНО удалённая от игрока.
+	var player_position := _live_player_position()
+	var best := _clamp_spawn_position(_random_edge_spawn_position())
+	var best_distance := best.distance_to(player_position)
+	for attempt in range(8):
+		var candidate := _clamp_spawn_position(_random_edge_spawn_position())
+		var candidate_distance := candidate.distance_to(player_position)
+		if candidate_distance > best_distance:
+			best = candidate
+			best_distance = candidate_distance
+	return best
 
 
 func _random_edge_spawn_position() -> Vector2:
@@ -1212,8 +1280,33 @@ func _random_active_spawn_edge() -> int:
 	return int(game.active_spawn_edges[game.rng.randi_range(0, game.active_spawn_edges.size() - 1)])
 
 
+# Этап B: живая позиция игрока для спавн-защиты. Раньше фильтр мерил дистанцию
+# до ФИКСИРОВАННОГО ARENA_CENTER — у краёв арены мобы спавнились вплотную к
+# игроку. Фолбэк на центр остаётся только когда игрока нет (меж-боевые экраны).
+func _live_player_position() -> Vector2:
+	if game.current_player != null and is_instance_valid(game.current_player):
+		return game.current_player.global_position
+	var player := game.get_tree().get_first_node_in_group("player") as Node2D
+	if player != null and is_instance_valid(player):
+		return player.global_position
+	return game.ARENA_CENTER
+
+
+# Этап B: pack/retinue/given-position спавны не садятся на голову игроку —
+# точка ближе min_distance выталкивается вдоль направления игрок→точка
+# (затем клампится в арену; у самой кромки допускаем частичный возврат).
+func _push_spawn_from_player(position: Vector2, min_distance: float) -> Vector2:
+	var player_position := _live_player_position()
+	var offset := position - player_position
+	var distance := offset.length()
+	if distance >= min_distance:
+		return position
+	var away := offset / distance if distance > 0.001 else Vector2.RIGHT.rotated(game.rng.randf() * TAU)
+	return _clamp_spawn_position(player_position + away * min_distance)
+
+
 func _is_spawn_position_clear(position: Vector2) -> bool:
-	if position.distance_to(game.ARENA_CENTER) < game.SPAWN_PLAYER_SAFE_RADIUS:
+	if position.distance_to(_live_player_position()) < game.SPAWN_PLAYER_SAFE_RADIUS:
 		return false
 	for obstacle in game.get_tree().get_nodes_in_group("arena_obstacles"):
 		var obstacle_node := obstacle as Node2D

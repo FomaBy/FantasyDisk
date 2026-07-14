@@ -1,0 +1,50 @@
+{
+  "provider": "PixelLab MCP (config bridge)",
+  "assets": [
+    {
+      "name": "codex_panel_kit",
+      "tool": "ui",
+      "id": "d49ad290-6fe7-43b5-9a96-c202005ae36b",
+      "file": "codex_panel_kit.png",
+      "seed": 21065,
+      "image_url": "https://backblaze.pixellab.ai/file/pixellab-characters/ui/7a9fb7cd-0060-48a4-a4dc-50f7b1124b0c/d49ad290-6fe7-43b5-9a96-c202005ae36b/full.png?t=1784015038877",
+      "description": null
+    },
+    {
+      "name": "entry_card_kit",
+      "tool": "ui",
+      "id": "d9a90bae-2dc3-4bfb-9c0e-30f7900944b3",
+      "file": "entry_card_kit.png",
+      "seed": 31065,
+      "image_url": "https://backblaze.pixellab.ai/file/pixellab-characters/ui/7a9fb7cd-0060-48a4-a4dc-50f7b1124b0c/d9a90bae-2dc3-4bfb-9c0e-30f7900944b3/full.png?t=1784014937657",
+      "description": null
+    },
+    {
+      "name": "dossier_parchment_kit",
+      "tool": "ui",
+      "id": "18689c57-1115-4e63-8da8-e4f7510003bd",
+      "file": "dossier_parchment_kit.png",
+      "seed": 41065,
+      "image_url": "https://backblaze.pixellab.ai/file/pixellab-characters/ui/7a9fb7cd-0060-48a4-a4dc-50f7b1124b0c/18689c57-1115-4e63-8da8-e4f7510003bd/full.png?t=1784015060073",
+      "description": null
+    },
+    {
+      "name": "codex_crest",
+      "tool": "obj",
+      "id": "6a5c5a0c-af8c-4396-bc33-c56fde0391f5",
+      "file": "codex_crest.png",
+      "seed": null,
+      "image_url": null,
+      "description": null
+    },
+    {
+      "name": "sanctum_backdrop",
+      "tool": "ui",
+      "id": "f6bb36b2-51b5-4b44-8941-43791eb38e8b",
+      "file": "codex_sanctum_backdrop.png",
+      "seed": 11065,
+      "image_url": "https://backblaze.pixellab.ai/file/pixellab-characters/ui/7a9fb7cd-0060-48a4-a4dc-50f7b1124b0c/f6bb36b2-51b5-4b44-8941-43791eb38e8b/full.png?t=1784015304731",
+      "description": null
+    }
+  ]
+}

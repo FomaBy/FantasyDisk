@@ -9,7 +9,7 @@ extends SceneTree
 #      (warrior_charm 2/4/7; splinter_gloves ×1.10/×1.18/×1.30; sturdy_amulet 15/25/40);
 #   в) elite_artifact_choices(0, 3, "berserk") — 3 УНИКАЛЬНЫХ id;
 #   г) boss_completion_*: семьи — фиксированно тир 3 (эпический, cost 95);
-#   д) reward_pool: все 32 семьи присутствуют материализованными (без tiers-ключа),
+#   д) reward_pool: все 29 семей присутствуют материализованными (без tiers-ключа),
 #      ролл на ~300 выборок даёт все три тира с убыванием частоты т1 > т2 > т3;
 #   е) player.apply_reward пишет tier в player.artifacts из материализованного
 #      оффера и переживает legacy-награды без tier.
@@ -18,7 +18,9 @@ extends SceneTree
 
 const PD := preload("res://scripts/progression_data.gd")
 
-const EXPECTED_FAMILY_COUNT := 32
+# FAN-1038: 32 → 29 после удаления семей мёртвых осей battle_fan / ram_horn /
+# falcon_feather (follow-up FAN-1034).
+const EXPECTED_FAMILY_COUNT := 29
 const ROLL_SAMPLES := 300
 
 var _errors: Array = []

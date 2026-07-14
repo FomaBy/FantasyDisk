@@ -119,16 +119,33 @@ static func telegraph(parent: Node2D, radius: float, color: Color, windup: float
 	holder.add_child(rim)
 
 	# grow + fade in over the first part of the windup
+	var fade_in := minf(windup * 0.4, 0.25)
 	var grow := holder.create_tween()
 	grow.set_parallel(true)
 	grow.tween_property(zone, "scale", Vector2.ONE * target_scale, minf(windup * 0.5, 0.3)).set_trans(Tween.TRANS_BACK).set_ease(Tween.EASE_OUT)
-	grow.tween_property(zone, "modulate:a", 0.5, minf(windup * 0.4, 0.25))
-	grow.tween_property(rim, "modulate:a", 0.9, minf(windup * 0.4, 0.25))
-	# urgency pulse for the rest of the windup
+	# Этап C (читаемость): пик альфы зоны 0.5 → 0.62 — телеграф виден и на
+	# светлых аренах / под шумом боя.
+	grow.tween_property(zone, "modulate:a", 0.62, fade_in)
+	grow.tween_property(rim, "modulate:a", 0.9, fade_in)
+	# urgency pulse for the middle of the windup
 	var pulse := holder.create_tween()
 	pulse.set_loops()
-	pulse.tween_property(zone, "modulate:a", 0.78, 0.32).set_delay(minf(windup * 0.4, 0.25)).set_trans(Tween.TRANS_SINE)
-	pulse.tween_property(zone, "modulate:a", 0.42, 0.32).set_trans(Tween.TRANS_SINE)
+	pulse.tween_property(zone, "modulate:a", 0.78, 0.32).set_delay(fade_in).set_trans(Tween.TRANS_SINE)
+	pulse.tween_property(zone, "modulate:a", 0.5, 0.32).set_trans(Tween.TRANS_SINE)
+	# Этап C (читаемость): последние ~25% замаха — ускоренный пульс «сейчас
+	# рванёт» (период ~0.12s, пик 0.85). Отдельный tween глушит средний пульс и
+	# мигает чаще; при queue_free телеграфа все tween'ы узла гаснут сами.
+	var urgent := holder.create_tween()
+	urgent.tween_interval(maxf(windup * 0.75, fade_in))
+	urgent.tween_callback(func() -> void:
+		pulse.kill()
+		if not is_instance_valid(holder) or not is_instance_valid(zone):
+			return
+		var fast := holder.create_tween()
+		fast.set_loops()
+		fast.tween_property(zone, "modulate:a", 0.85, 0.06).set_trans(Tween.TRANS_SINE)
+		fast.tween_property(zone, "modulate:a", 0.55, 0.06).set_trans(Tween.TRANS_SINE)
+	)
 	return holder
 
 
@@ -271,6 +288,32 @@ static func aura_pulse(parent: Node2D, radius: float, color: Color) -> void:
 	tween.tween_property(ring2, "modulate:a", 0.0, 0.4).set_delay(0.12)
 	tween.tween_property(glow, "modulate:a", 0.0, 0.4)
 	tween.chain().tween_callback(holder.queue_free)
+
+
+## Этап C (fairness): ПОСТОЯННАЯ аура шипов отражения на время активной защиты
+## (reflect_thorns). Одноразового aura_pulse при сработке мало: игрок должен
+## ВИДЕТЬ, что бить врага сейчас больно, ещё ДО удара. Возвращает узел-холдер
+## ("ReflectThornsAura", ребёнок parent — движется/паузится/умирает вместе с
+## носителем); вызывающий освобождает его при снятии защиты.
+static func thorns_aura(parent: Node2D, radius: float, color: Color) -> Node2D:
+	if not is_instance_valid(parent) or not parent.is_inside_tree():
+		return null
+	var holder := Node2D.new()
+	holder.name = "ReflectThornsAura"
+	holder.z_index = -1
+	parent.add_child(holder)
+
+	var glow := _additive(REFLECT_THORNS_TEXTURE, Color(color.r, color.g, color.b, 0.0))
+	glow.scale = Vector2.ONE * (radius / _texture_radius(REFLECT_THORNS_TEXTURE))
+	holder.add_child(glow)
+
+	var appear := holder.create_tween()
+	appear.tween_property(glow, "modulate:a", 0.55, 0.14)
+	var pulse := holder.create_tween()
+	pulse.set_loops()
+	pulse.tween_property(glow, "modulate:a", 0.72, 0.45).set_delay(0.14).set_trans(Tween.TRANS_SINE)
+	pulse.tween_property(glow, "modulate:a", 0.45, 0.45).set_trans(Tween.TRANS_SINE)
+	return holder
 
 
 ## Short-lived defensive front plate used for elite/boss shield activation.

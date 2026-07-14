@@ -437,7 +437,7 @@ func _test_player_animation() -> void:
 	if float(split_pose["pelvis_x"]) >= float(lockshot_pose["pelvis_x"]) - 1.0:
 		_fail("Expected sniper shatter rounds pose to recoil harder than lockshot.")
 	for sniper_pose in [lockshot_pose, kill_zone_pose, split_pose]:
-		if float(sniper_pose["socket_x"]) <= 8.0 or abs(float(sniper_pose["socket_y"])) >= 36.0:
+		if float(sniper_pose["socket_x"]) <= 8.0 or abs(float(sniper_pose["socket_y"]) - float(sniper_pose["socket_bias"])) >= 36.0:
 			_fail("Expected sniper weapon socket to stay readable near the firing hand.")
 
 	var sanctify_pose: Dictionary = _sample_player_weapon_action_pose(player, "priest", "priest_reliquary", "shoot", 0.12)
@@ -452,7 +452,7 @@ func _test_player_animation() -> void:
 	if float(prayer_pose["arm_r_y"]) >= float(ward_pose["arm_r_y"]) - 4.0:
 		_fail("Expected priest prayer chain pose to lift into a chime/chant.")
 	for priest_pose in [sanctify_pose, ward_pose, prayer_pose]:
-		if float(priest_pose["socket_x"]) <= 8.0 or abs(float(priest_pose["socket_y"])) >= 38.0:
+		if float(priest_pose["socket_x"]) <= 8.0 or abs(float(priest_pose["socket_y"]) - float(priest_pose["socket_bias"])) >= 38.0:
 			_fail("Expected priest weapon socket to stay readable near the casting hand.")
 
 	var spore_pose: Dictionary = _sample_player_weapon_action_pose(player, "biologist", "biologist_spore_lens", "shoot", 0.12)
@@ -467,7 +467,7 @@ func _test_player_animation() -> void:
 	if float(symbiote_pose["pelvis_y"]) <= float(spore_pose["pelvis_y"]) + 2.0 or float(symbiote_pose["arm_r_y"]) <= float(sample_pose["arm_r_y"]) + 2.0:
 		_fail("Expected biologist symbiote seed pose to plant low into a web gesture.")
 	for biologist_pose in [spore_pose, sample_pose, symbiote_pose]:
-		if float(biologist_pose["socket_x"]) <= 8.0 or abs(float(biologist_pose["socket_y"])) >= 40.0:
+		if float(biologist_pose["socket_x"]) <= 8.0 or abs(float(biologist_pose["socket_y"]) - float(biologist_pose["socket_bias"])) >= 40.0:
 			_fail("Expected biologist weapon socket to stay readable near the specimen hand.")
 
 	var anchor_pose: Dictionary = _sample_player_weapon_action_pose(player, "robot", "robot_magnetic_anchor", "shoot", 0.12)
@@ -482,7 +482,7 @@ func _test_player_animation() -> void:
 	if float(reactor_pose["arm_l_x"]) >= float(anchor_pose["arm_l_x"]) - 2.0 or float(reactor_pose["arm_r_x"]) <= float(anchor_pose["arm_r_x"]) + 1.0:
 		_fail("Expected robot reactor core pose to open both arms for venting.")
 	for robot_pose in [anchor_pose, press_pose, reactor_pose]:
-		if float(robot_pose["socket_x"]) <= 8.0 or abs(float(robot_pose["socket_y"])) >= 42.0:
+		if float(robot_pose["socket_x"]) <= 8.0 or abs(float(robot_pose["socket_y"]) - float(robot_pose["socket_bias"])) >= 42.0:
 			_fail("Expected robot weapon socket to stay readable near the construct hand.")
 
 	var wrench_pose: Dictionary = _sample_player_weapon_action_pose(player, "engineer", "engineer_sentry_wrench", "shoot", 0.12)
@@ -497,7 +497,7 @@ func _test_player_animation() -> void:
 	if float(mines_pose["pelvis_y"]) <= float(wrench_pose["pelvis_y"]) + 2.0 or float(mines_pose["arm_r_y"]) <= float(wrench_pose["arm_r_y"]) + 3.0:
 		_fail("Expected engineer pressure mines pose to crouch and place low.")
 	for engineer_pose in [wrench_pose, drone_pose, mines_pose]:
-		if float(engineer_pose["socket_x"]) <= 8.0 or abs(float(engineer_pose["socket_y"])) >= 42.0:
+		if float(engineer_pose["socket_x"]) <= 8.0 or abs(float(engineer_pose["socket_y"]) - float(engineer_pose["socket_bias"])) >= 42.0:
 			_fail("Expected engineer weapon socket to stay readable near the tool hand.")
 
 	_test_weapon_animation_timing_events(player)
@@ -608,7 +608,7 @@ func _test_legacy_player_weapon_pose_hooks(player: Node) -> void:
 		summon_pose, briar_pose, raven_pose,
 	]
 	for sample in legacy_samples:
-		if float(sample["socket_x"]) <= -120.0 or float(sample["socket_x"]) >= 180.0 or abs(float(sample["socket_y"])) >= 180.0:
+		if float(sample["socket_x"]) <= -120.0 or float(sample["socket_x"]) >= 180.0 or abs(float(sample["socket_y"]) - float(sample["socket_bias"])) >= 180.0:
 			_fail("Expected legacy player weapon socket to stay readable near the acting hand.")
 
 
@@ -728,6 +728,9 @@ func _sample_player_weapon_action_pose(player: Node, character_id: String, weapo
 		"pelvis_y": pelvis.position.y,
 		"socket_x": weapon_socket.position.x,
 		"socket_y": weapon_socket.position.y,
+		# Этап A (feet-origin): штатный вертикальный bias орбиты (−8 − lift/2) —
+		# проверки «сокет у руки» вычитают его, оценивая только отклонение позы.
+		"socket_bias": float(weapon_socket.get_meta("weapon_orbit_vertical_bias", 0.0)),
 		"arm_l_x": arm_l.position.x,
 		"arm_l_y": arm_l.position.y,
 		"arm_l_rot": arm_l.rotation,

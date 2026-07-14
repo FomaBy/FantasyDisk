@@ -1,8 +1,14 @@
 # FantasyDisk: переход с Jira на Multica и инструкции для AI-агентов
 
-Статус: план миграции и операционный регламент  
+Статус: план миграции и операционный регламент (**cutover выполнен 2026-07-13**)\
 Дата проверки Multica: 2026-07-11  
 Jira migration task: SCRUM-1076
+
+> ✅ **Cutover завершён 2026-07-13** (approver Sergey Fomin, project owner).
+> Multica теперь authoritative source (project `FantasyDisk`, issues `FAN-*`),
+> а legacy Jira (`SCRUM-*`) — read-only historical archive. Материал ниже —
+> исторический plan/gate/rollback reference.
+> См. `docs/process/jira_to_multica_cutover.md`.
 
 ## Назначение документа
 
@@ -11,10 +17,13 @@ Jira migration task: SCRUM-1076
 Jira как ежедневный task tracker, запускать локальные Codex и Claude через
 Multica и объективно измерять качество, скорость, стоимость и автономность.
 
-Переход выполняется поэтапно. Пока cutover явно не объявлен, Jira остаётся
-authoritative source. AI-агент не должен самостоятельно отключать Jira,
-переписывать процессные документы или удалять Jira credentials до успешного
-пилота и зафиксированного решения о переключении.
+Переход выполнялся поэтапно. **До cutover (объявлен 2026-07-13) Jira оставалась
+authoritative source**; на том этапе AI-агент не должен был самостоятельно
+отключать Jira, переписывать процессные документы или удалять Jira credentials до
+успешного пилота и зафиксированного решения о переключении. **Cutover уже пройден
+(2026-07-13, approver Sergey Fomin): authoritative source теперь Multica
+(`FAN-*`), Jira (`SCRUM-*`) — read-only archive.** Текст ниже сохранён как
+исторический reference. См. `docs/process/jira_to_multica_cutover.md`.
 
 ## Что такое Multica
 

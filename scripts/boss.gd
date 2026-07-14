@@ -42,6 +42,21 @@ const SECRET_BEAM_HALF_WIDTH_PX := 48.0  # внутри видимой поло�
 
 const BOSS_PHASE_MARKERS := [0.66, 0.33]
 const SECRET_BOSS_PHASE_MARKERS := [0.50, 0.25]
+# Combat Feel Rework (этап C): честные АОЕ/рывки.
+# Замах перед рывком босса: направление лочится в НАЧАЛЕ замаха (сайдстеп
+# работает), исполнение — по истечении. Не сжимается ascension'ом.
+const BOSS_DASH_WINDUP := 0.45
+# Вампирский укус был худшим нарушителем (0.42s) — база поднята ДО пола fairness.
+const VAMPIRIC_BITE_BASE_WINDUP := 0.6
+# Боковой запас побега из направленных зон (cone/beam): полуширина + этот margin.
+const DIRECTIONAL_LATERAL_ESCAPE_MARGIN := 36.0
+# Пост-фазовый burst смягчён: после смены фазы кулдауны клампятся НЕ НИЖЕ этих
+# значений (раньше 0.45–1.1s — игрока накрывало залпом зон одновременно со
+# спавном phase-hazard'а). Вынесено в const для fairness-гейта.
+const PHASE_UP_COOLDOWN_CLAMPS := {
+	"burst": 1.20, "slam": 1.30, "rift_zone": 1.35,
+	"dash": 1.45, "summon": 1.60, "shield": 1.80,
+}
 # SCRUM-596: жёсткий потолок одновременно живых призывов босса. _summon_riftlings
 # обязан только ДОЗАПОЛНЯТЬ до этого числа (учитывая уже живых), а не спавнить
 # безусловную пачку поверх лимита.
@@ -51,6 +66,8 @@ var _burst_cooldown := 2.0
 var _dash_cooldown := 3.0
 var _dash_time_left := 0.0
 var _dash_direction := Vector2.ZERO
+# Этап C: остаток замаха рывка (<0 — замаха нет); направление уже залочено.
+var _dash_windup_left := -1.0
 var _shield_cooldown := 4.0
 var _shield_time_left := 0.0
 var _boss_summon_cooldown := 5.0
@@ -74,6 +91,10 @@ func _ready() -> void:
 	_apply_unique_encounter_pattern_meta(boss_behavior)
 	if _full_frame_body() == null:
 		_configure_full_frame_animation()
+	# Этап A: пересчёт круга под ногами — на момент super() босс ещё не был в
+	# группе "bosses" (другая alpha) и мог мерить статический Body вместо живого
+	# full-frame визуала, сконфигурированного строкой выше.
+	_ensure_ground_circle()
 	set_meta("boss_phase", boss_phase)
 	var phase_markers := _phase_markers_for_behavior()
 	set_meta("boss_phase_markers", phase_markers)
@@ -85,7 +106,18 @@ func _ready() -> void:
 
 
 func _physics_process(delta: float) -> void:
-	if _dash_time_left > 0.0:
+	if _dash_windup_left >= 0.0:
+		# Этап C (fairness): замах рывка — босс стоит, тинт+трейл читаются,
+		# направление залочено ещё в _start_dash_toward (сайдстеп работает).
+		_dash_windup_left -= delta
+		velocity = Vector2.ZERO
+		move_and_slide()
+		_update_movement_animation(delta)
+		if _dash_windup_left < 0.0:
+			_dash_time_left = dash_duration
+			_update_shield_visual()
+			_play_rig_action("attack", _dash_direction)
+	elif _dash_time_left > 0.0:
 		_dash_time_left -= delta
 		velocity = _dash_direction * dash_speed
 		move_and_slide()
@@ -290,7 +322,9 @@ func _spawn_secret_sector_ring(center: Vector2) -> void:
 	parent.add_child(marker)
 	var radius := _safe_radius(250.0 + float(boss_phase - 1) * 34.0)
 	var color := Color(0.78, 0.24, 1.0, 1.0)
-	var windup := _ascension_telegraph(0.78)
+	# Центральный круг кастуется в позицию игрока → побег = полный радиус
+	# (offset-семантика учитывает кламп у кромки арены и вызовы от позиции босса).
+	var windup := _fair_telegraph(0.78, CombatFairness.circle_escape_distance(marker.global_position, radius, _player()))
 	# SCRUM-790: доставленный radial ring-PNG вместо процедурного круга (зона круговая —
 	# геометрия совпадает, ротация не нужна). Только секретный босс.
 	var ring_tex: Texture2D = SECRET_RING_TELEGRAPH if boss_behavior == "secret_ascension_boss" else null
@@ -305,7 +339,7 @@ func _spawn_secret_sector_ring(center: Vector2) -> void:
 		HazardVfx.detonate(m, radius, color)
 		var player := get_tree().get_first_node_in_group("player") as Node2D
 		if player != null and player.global_position.distance_to(m.global_position) <= radius and player.has_method("take_damage"):
-			player.take_damage(_outgoing_damage(projectile_damage * (0.82 + float(boss_phase - 1) * 0.18)), "secret_sector_ring")
+			player.take_damage(_hazard_hit(projectile_damage * (0.82 + float(boss_phase - 1) * 0.18), player), "secret_sector_ring")
 	)
 	tween.tween_interval(0.45)
 	tween.tween_callback(marker.queue_free)
@@ -392,9 +426,18 @@ func _spawn_secret_directional_zone(kind: String, dir: Vector2, texture: Texture
 	marker.z_index = 10
 	parent.add_child(marker)
 	var angle := dir.angle()
-	var windup := _ascension_telegraph(0.82)
 	var length_world := length_px * scale_factor
 	var half_extent_world := (half_extent * scale_factor) if kind == "beam" else half_extent
+	# Этап C: побег из направленной зоны — боковой шаг: полуширина полосы (beam)
+	# либо полуширина конуса на дистанции игрока (cone) + запас на габарит героя.
+	var lateral_escape := half_extent_world + DIRECTIONAL_LATERAL_ESCAPE_MARGIN
+	if kind != "beam":
+		var escape_player := _player()
+		var player_distance := length_world
+		if escape_player != null:
+			player_distance = minf(escape_player.global_position.distance_to(marker.global_position), length_world)
+		lateral_escape = tan(half_extent) * player_distance + DIRECTIONAL_LATERAL_ESCAPE_MARGIN
+	var windup := _fair_telegraph(0.82, lateral_escape)
 	HazardVfx.directional_telegraph(marker, texture, anchor_px, scale_factor, angle, color, windup)
 	var marker_ref: WeakRef = weakref(marker)
 	var tween := marker.create_tween()
@@ -409,7 +452,7 @@ func _spawn_secret_directional_zone(kind: String, dir: Vector2, texture: Texture
 		var player := get_tree().get_first_node_in_group("player") as Node2D
 		if player != null and player.has_method("take_damage") \
 				and directional_hit(kind, m.global_position, dir, length_world, half_extent_world, player.global_position):
-			player.take_damage(_outgoing_damage(projectile_damage * (0.80 + float(boss_phase - 1) * 0.16)), "secret_" + kind)
+			player.take_damage(_hazard_hit(projectile_damage * (0.80 + float(boss_phase - 1) * 0.16), player), "secret_" + kind)
 	)
 	tween.tween_interval(0.5)
 	tween.tween_callback(marker.queue_free)
@@ -429,7 +472,8 @@ func _spawn_gravity_well(target_position: Vector2) -> void:
 	parent.add_child(well)
 	var radius := _safe_radius(150.0 + float(boss_phase - 1) * 16.0)
 	var well_color := Color(0.42, 0.24, 1.0, 1.0)
-	var windup := _ascension_telegraph(0.72)
+	# Воронка кастуется в позицию игрока → побег = полный радиус.
+	var windup := _fair_telegraph(0.72, CombatFairness.circle_escape_distance(well.global_position, radius, _player()))
 	HazardVfx.telegraph(well, radius, well_color, windup)
 	var well_ref: WeakRef = weakref(well)
 	var tween := well.create_tween()
@@ -448,7 +492,7 @@ func _spawn_gravity_well(target_position: Vector2) -> void:
 		if to_center.length_squared() > 0.001:
 			player.global_position = _clamp_to_arena(player.global_position + to_center.normalized() * minf(92.0, to_center.length() * 0.45))
 		if player.has_method("take_damage"):
-			player.take_damage(_outgoing_damage(projectile_damage * (0.65 + float(boss_phase - 1) * 0.12)), "gravity_well")
+			player.take_damage(_hazard_hit(projectile_damage * (0.65 + float(boss_phase - 1) * 0.12), player), "gravity_well")
 	)
 	tween.tween_interval(0.55)
 	tween.tween_callback(well.queue_free)
@@ -468,7 +512,9 @@ func _spawn_vampiric_bite(player: Node2D) -> void:
 	parent.add_child(bite)
 	var radius := _safe_radius(132.0 + float(boss_phase - 1) * 12.0)
 	var bite_color := Color(0.92, 0.12, 0.20, 1.0)
-	var windup := _ascension_telegraph(0.42)
+	# Худший нарушитель (0.42s): база поднята до VAMPIRIC_BITE_BASE_WINDUP ещё ДО
+	# пола. Зона с центром на боссе → побег = radius × 0.6.
+	var windup := _fair_telegraph(VAMPIRIC_BITE_BASE_WINDUP, radius * CombatFairness.CASTER_CENTERED_ESCAPE_RATIO)
 	HazardVfx.telegraph(bite, radius, bite_color, windup)
 	var bite_ref: WeakRef = weakref(bite)
 	var tween := bite.create_tween()
@@ -481,7 +527,7 @@ func _spawn_vampiric_bite(player: Node2D) -> void:
 		var current_player := get_tree().get_first_node_in_group("player") as Node2D
 		if current_player == null or current_player.global_position.distance_to(b.global_position) > radius:
 			return
-		var bite_damage: float = _outgoing_damage(contact_damage * (1.05 + float(boss_phase - 1) * 0.14))
+		var bite_damage: float = _hazard_hit(contact_damage * (1.05 + float(boss_phase - 1) * 0.14), current_player)
 		if current_player.has_method("take_damage") and current_player.take_damage(bite_damage, "devourer_vampiric_bite"):
 			health = minf(max_health, health + bite_damage * 0.55)
 			_update_health_bar()
@@ -517,7 +563,8 @@ func _spawn_molten_armor_pulse() -> void:
 	parent.add_child(pulse)
 	var radius := _safe_radius(170.0 + float(boss_phase - 1) * 14.0)
 	var pulse_color := Color(1.0, 0.48, 0.14, 1.0)
-	var windup := _ascension_telegraph(0.55)
+	# Пульс брони с центром на боссе → побег = radius × 0.6.
+	var windup := _fair_telegraph(0.55, radius * CombatFairness.CASTER_CENTERED_ESCAPE_RATIO)
 	HazardVfx.telegraph(pulse, radius, pulse_color, windup)
 	var pulse_ref: WeakRef = weakref(pulse)
 	var tween := pulse.create_tween()
@@ -529,7 +576,7 @@ func _spawn_molten_armor_pulse() -> void:
 		HazardVfx.detonate(p, radius, pulse_color)
 		var current_player := get_tree().get_first_node_in_group("player") as Node2D
 		if current_player != null and current_player.global_position.distance_to(p.global_position) <= radius and current_player.has_method("take_damage"):
-			current_player.take_damage(_outgoing_damage(contact_damage * 0.75), "molten_armor")
+			current_player.take_damage(_hazard_hit(contact_damage * 0.75, current_player), "molten_armor")
 	)
 	tween.tween_interval(0.55)
 	tween.tween_callback(pulse.queue_free)
@@ -552,7 +599,8 @@ func _spawn_bloodthorn_spike_ring(center: Vector2) -> void:
 	parent.add_child(ring)
 	var radius := _safe_radius(150.0 + float(boss_phase - 1) * 16.0)
 	var thorn_color := Color(0.78, 0.10, 0.16, 1.0)
-	var windup := _ascension_telegraph(0.55)
+	# Нова шипов кастуется в позицию героя → побег = полный радиус.
+	var windup := _fair_telegraph(0.55, CombatFairness.circle_escape_distance(ring.global_position, radius, _player()))
 	HazardVfx.telegraph(ring, radius, thorn_color, windup)
 	var thorn_damage := contact_damage * 0.7
 	var ring_ref: WeakRef = weakref(ring)
@@ -565,7 +613,7 @@ func _spawn_bloodthorn_spike_ring(center: Vector2) -> void:
 		HazardVfx.detonate(r, radius, thorn_color)
 		var current_player := get_tree().get_first_node_in_group("player") as Node2D
 		if current_player != null and current_player.global_position.distance_to(r.global_position) <= radius and current_player.has_method("take_damage"):
-			current_player.take_damage(_outgoing_damage(thorn_damage), "bloodthorn_spike")
+			current_player.take_damage(_hazard_hit(thorn_damage, current_player), "bloodthorn_spike")
 	)
 	tween.tween_interval(0.5)
 	tween.tween_callback(ring.queue_free)
@@ -580,11 +628,18 @@ func _spawn_bloodthorn_spike_ring(center: Vector2) -> void:
 
 
 func _start_dash_toward(player: Node2D) -> void:
+	# Этап C (fairness): раньше рывок хоминг-стартовал В ТОТ ЖЕ кадр (только
+	# rig-анимация) — ноль-телеграф. Теперь решение взводит замах BOSS_DASH_WINDUP:
+	# направление ФИКСИРУЕТСЯ здесь, тело подсвечивается, теневой трейл рисует
+	# коридор рывка. Исполнение — в _physics_process по истечении замаха.
 	var direction := player.global_position - global_position
-	if direction.length_squared() > 0.0:
-		_dash_direction = direction.normalized()
-		_dash_time_left = dash_duration
-		_play_rig_action("attack", _dash_direction)
+	if direction.length_squared() <= 0.0:
+		return
+	_dash_direction = direction.normalized()
+	_dash_windup_left = BOSS_DASH_WINDUP
+	_set_body_tint(Color(1.0, 0.62, 0.30, 1.0))
+	_play_rig_action("cast", _dash_direction)
+	_spawn_shadow_trail(global_position, _clamp_to_arena(global_position + _dash_direction * dash_speed * dash_duration), BOSS_DASH_WINDUP)
 
 
 func _update_shield(delta: float) -> void:
@@ -683,7 +738,9 @@ func _spawn_rift_zone(target_position: Vector2, play_visual := true) -> void:
 	parent.add_child(zone)
 	var radius := _safe_radius(92.0 + float(boss_phase - 1) * 16.0)
 	var zone_color := Color(0.64, 0.34, 1.0, 1.0)
-	var zone_telegraph := _ascension_telegraph(0.65)
+	# Зона в точку игрока → полный радиус; зоны колец/стен (смещённые) через ту же
+	# offset-семантику получают меньший пробег — коридор там гарантирован гэпами.
+	var zone_telegraph := _fair_telegraph(0.65, CombatFairness.circle_escape_distance(zone.global_position, radius, _player()))
 	# SCRUM-790: доставленный radial rupture-PNG для наземной круговой зоны секретного
 	# босса (geometry-match). _spawn_rift_zone — общая для боссов, поэтому гейтим по
 	# boss_behavior: остальные боссы получают null = прежний процедурный круг (без регресса).
@@ -699,7 +756,7 @@ func _spawn_rift_zone(target_position: Vector2, play_visual := true) -> void:
 		HazardVfx.detonate(z, radius, zone_color)
 		var player := get_tree().get_first_node_in_group("player") as Node2D
 		if player != null and player.global_position.distance_to(z.global_position) <= radius and player.has_method("take_damage"):
-			player.take_damage(_outgoing_damage(zone_damage), "rift_zone")
+			player.take_damage(_hazard_hit(zone_damage, player), "rift_zone")
 	)
 	zone_tween.tween_interval(1.45)
 	zone_tween.tween_callback(zone.queue_free)
@@ -725,7 +782,8 @@ func _spawn_disk_slam() -> void:
 	# Энрейдж Колосса: волны шире (cap безопасного коридора сохраняется).
 	var radius := _safe_radius((132.0 + float(boss_phase - 1) * 18.0) * (1.18 if _enraged else 1.0))
 	var slam_color := Color(1.0, 0.42, 0.18, 1.0)
-	var slam_telegraph := _ascension_telegraph(0.48)
+	# Slam с центром на боссе → побег = radius × 0.6.
+	var slam_telegraph := _fair_telegraph(0.48, radius * CombatFairness.CASTER_CENTERED_ESCAPE_RATIO)
 	HazardVfx.telegraph(slam, radius, slam_color, slam_telegraph)
 	var slam_ref: WeakRef = weakref(slam)
 	var slam_tween := slam.create_tween()
@@ -737,7 +795,7 @@ func _spawn_disk_slam() -> void:
 		HazardVfx.detonate(s, radius, slam_color)
 		var player := get_tree().get_first_node_in_group("player") as Node2D
 		if player != null and player.global_position.distance_to(s.global_position) <= radius and player.has_method("take_damage"):
-			player.take_damage(_outgoing_damage(slam_damage), "disk_slam")
+			player.take_damage(_hazard_hit(slam_damage, player), "disk_slam")
 		# Пепельный Колосс: после удара остаётся тлеющая зона (наказывает стояние).
 		if boss_behavior == "ashen_colossus" or boss_behavior == "secret_ascension_boss":
 			_spawn_ember_zone(s.global_position, radius * 0.62)
@@ -762,7 +820,8 @@ func _spawn_web_zone(target_position: Vector2) -> void:
 	parent.add_child(zone)
 	var radius := _safe_radius(108.0 + float(boss_phase - 1) * 14.0)
 	var web_color := Color(0.84, 0.92, 0.78, 1.0)
-	var windup := _ascension_telegraph(0.6)
+	# Паутина летит в игрока (или со смещением) → offset-семантика по живой позиции.
+	var windup := _fair_telegraph(0.6, CombatFairness.circle_escape_distance(zone.global_position, radius, _player()))
 	HazardVfx.telegraph(zone, radius, web_color, windup)
 	var web_damage := projectile_damage * 0.4
 	var zone_ref: WeakRef = weakref(zone)
@@ -778,7 +837,7 @@ func _spawn_web_zone(target_position: Vector2) -> void:
 			if player.has_method("apply_web_slow"):
 				player.apply_web_slow(2.2, 0.55)
 			if player.has_method("take_damage"):
-				player.take_damage(_outgoing_damage(web_damage), "brood_web")
+				player.take_damage(_hazard_hit(web_damage, player), "brood_web")
 	)
 	tween.tween_interval(1.1)
 	tween.tween_callback(zone.queue_free)
@@ -809,7 +868,7 @@ func _spawn_ember_zone(origin: Vector2, radius: float) -> void:
 				return
 			var player := get_tree().get_first_node_in_group("player") as Node2D
 			if player != null and player.global_position.distance_to(z.global_position) <= radius and player.has_method("take_damage"):
-				player.take_damage(_outgoing_damage(ember_damage), "ash_ember")
+				player.take_damage(_hazard_hit(ember_damage, player), "ash_ember")
 		)
 	tween.tween_callback(zone.queue_free)
 
@@ -843,10 +902,14 @@ func _summon_riftlings() -> void:
 	else:
 		_play_rig_action("cast", Vector2.UP)
 	for index in range(summon_count):
-		var summon := scene.instantiate() as Node2D
+		var summon := SCENE_CONTRACTS.instantiate_node_2d(scene, "Boss riftling summon")
+		if summon == null:
+			return
 		parent.add_child(summon)
 		summon.add_to_group("summoned_enemies")
-		summon.global_position = _clamp_to_arena(global_position + Vector2.RIGHT.rotated(TAU * float(index) / float(summon_count) + randf() * 0.35) * 84.0)
+		# Этап B: кольцо рифтлингов вокруг босса, но не вплотную к игроку (≥140px).
+		var riftling_position := _clamp_to_arena(global_position + Vector2.RIGHT.rotated(TAU * float(index) / float(summon_count) + randf() * 0.35) * 84.0)
+		summon.global_position = _push_point_from_player(riftling_position, MINION_SPAWN_MIN_PLAYER_DISTANCE)
 		HazardVfx.summon_portal(summon, 82.0, Color(0.58, 0.30, 1.0, 1.0))
 
 
@@ -872,8 +935,13 @@ func _phase_interval_multiplier(extra_multiplier := 1.0) -> float:
 	return extra_multiplier * (1.0 - float(boss_phase - 1) * 0.14)
 
 
-func _ascension_telegraph(base: float) -> float:
-	return base * float(get_meta("ascension_telegraph_mult", 1.0))
+# Этап C (fairness): ЕДИНАЯ точка замаха боссовых телеграфов. Ascension-
+# множитель (boss_telegraph_mult, на L5 = 0.72) сжимает базу, но НИКОГДА не
+# пробивает пол CombatFairness (реакция + пробег до кромки + slow-компенсация).
+# escape_distance выбирается на кол-сайте по семантике из combat_fairness.gd.
+func _fair_telegraph(base: float, escape_distance: float) -> float:
+	return CombatFairness.fair_windup(base, escape_distance,
+		float(get_meta("ascension_telegraph_mult", 1.0)), _player())
 
 
 # SCRUM-713: чистая (без self/SceneTree) функция порога фаз — вынесена из
@@ -919,12 +987,15 @@ func _update_boss_phase() -> void:
 			_cached_audio = get_node_or_null("/root/AudioManager")
 		if _cached_audio != null and _cached_audio.has_method("play_sfx"):
 			_cached_audio.play_sfx("boss_phase")
-	_burst_cooldown = minf(_burst_cooldown, 0.45)
-	_dash_cooldown = minf(_dash_cooldown, 0.65)
-	_slam_cooldown = minf(_slam_cooldown, 0.55)
-	_rift_zone_cooldown = minf(_rift_zone_cooldown, 0.60)
-	_boss_summon_cooldown = minf(_boss_summon_cooldown, 0.85)
-	_shield_cooldown = minf(_shield_cooldown, 1.10)
+	# Этап C (fairness): пост-фазовый burst был 0.45–1.1s — залп зон накрывал
+	# игрока одновременно с phase-hazard'ом. Клампы подняты до 1.2–1.8s
+	# (PHASE_UP_COOLDOWN_CLAMPS), относительный порядок атак сохранён.
+	_burst_cooldown = minf(_burst_cooldown, float(PHASE_UP_COOLDOWN_CLAMPS["burst"]))
+	_dash_cooldown = minf(_dash_cooldown, float(PHASE_UP_COOLDOWN_CLAMPS["dash"]))
+	_slam_cooldown = minf(_slam_cooldown, float(PHASE_UP_COOLDOWN_CLAMPS["slam"]))
+	_rift_zone_cooldown = minf(_rift_zone_cooldown, float(PHASE_UP_COOLDOWN_CLAMPS["rift_zone"]))
+	_boss_summon_cooldown = minf(_boss_summon_cooldown, float(PHASE_UP_COOLDOWN_CLAMPS["summon"]))
+	_shield_cooldown = minf(_shield_cooldown, float(PHASE_UP_COOLDOWN_CLAMPS["shield"]))
 	if boss_phase == 2:
 		move_speed *= 1.08
 		dash_speed *= 1.08
@@ -960,7 +1031,8 @@ func _spawn_phase_transition_hazard() -> void:
 
 	var radius := _safe_radius(178.0 + float(boss_phase - 2) * 46.0)
 	var phase_color := Color(1.0, 0.32, 0.18, 1.0)
-	var windup := _ascension_telegraph(0.55)
+	# Фазовый взрыв с центром на боссе → побег = radius × 0.6.
+	var windup := _fair_telegraph(0.55, radius * CombatFairness.CASTER_CENTERED_ESCAPE_RATIO)
 	HazardVfx.telegraph(zone, radius, phase_color, windup)
 
 	var zone_ref: WeakRef = weakref(zone)
@@ -973,7 +1045,7 @@ func _spawn_phase_transition_hazard() -> void:
 		HazardVfx.detonate(z, radius, phase_color)
 		var player := get_tree().get_first_node_in_group("player") as Node2D
 		if player != null and player.global_position.distance_to(z.global_position) <= radius and player.has_method("take_damage"):
-			player.take_damage(_outgoing_damage(projectile_damage * (1.35 + float(boss_phase - 1) * 0.25)), "boss_phase")
+			player.take_damage(_hazard_hit(projectile_damage * (1.35 + float(boss_phase - 1) * 0.25), player), "boss_phase")
 	)
 	tween.tween_interval(0.70)
 	tween.tween_callback(zone.queue_free)

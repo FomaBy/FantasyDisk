@@ -1,0 +1,112 @@
+{
+  "task": "FAN-1059",
+  "parent": "FAN-1057",
+  "canonical_id": "fan1057_feedback_privacy_overlay",
+  "status": "ready_for_image",
+  "base_canvas": {"width": 1920, "height": 1080},
+  "pixellab_canvas": {
+    "width": 672,
+    "height": 378,
+    "virtual_width": 512,
+    "virtual_height": 288,
+    "scale_policy": "proportional 16:9 only"
+  },
+  "policy": {
+    "min_gap": 16,
+    "allow_overlap": false,
+    "baked_runtime_text": false,
+    "decoration_inside_content_zones": false,
+    "runtime_art_promotion": false
+  },
+  "elements_1920x1080": [
+    {"id": "feedback_dim", "kind": "backdrop", "rect": [0, 0, 1920, 1080], "focusable": false},
+    {"id": "feedback_panel", "kind": "panel", "rect": [260, 45, 1400, 990], "content_rect": [330, 100, 1260, 855], "focusable": false},
+    {"id": "feedback_title", "kind": "text", "rect": [375, 100, 1170, 70], "role": "title", "focusable": false},
+    {"id": "feedback_scroll", "kind": "scroll_area", "rect": [330, 186, 1260, 595], "scrollbar_reserve": 18, "focusable": false},
+    {"id": "feedback_description", "kind": "text_edit", "rect": [350, 205, 690, 330], "role": "body", "focus_order": 1},
+    {"id": "feedback_screenshot", "kind": "image", "rect": [1074, 205, 496, 279], "aspect": "16:9", "focusable": false},
+    {"id": "feedback_screenshot_toggle", "kind": "checkbox", "rect": [1070, 506, 500, 64], "role": "action", "focus_order": 2},
+    {"id": "feedback_privacy_disclosure", "kind": "text", "rect": [350, 586, 1220, 179], "role": "description", "focusable": false},
+    {"id": "feedback_status_fallback", "kind": "status", "rect": [350, 800, 1220, 50], "role": "value", "focusable": false},
+    {"id": "feedback_send", "kind": "button", "rect": [1050, 875, 260, 64], "role": "action", "focus_order": 3},
+    {"id": "feedback_cancel", "kind": "button", "rect": [1330, 875, 220, 64], "role": "action", "focus_order": 4}
+  ],
+  "pixellab_pieces_virtual_512x288": [
+    {"id": "modal", "kind": "rounded_rect", "x": 69, "y": 12, "w": 374, "h": 264, "radius": 7},
+    {"id": "title", "kind": "rounded_rect", "x": 100, "y": 27, "w": 312, "h": 19, "radius": 3},
+    {"id": "description", "kind": "rounded_rect", "x": 93, "y": 55, "w": 184, "h": 88, "radius": 3},
+    {"id": "screenshot", "kind": "rounded_rect", "x": 285, "y": 55, "w": 133, "h": 75, "radius": 3},
+    {"id": "screenshot_toggle", "kind": "rounded_rect", "x": 285, "y": 135, "w": 133, "h": 17, "radius": 3},
+    {"id": "privacy", "kind": "rounded_rect", "x": 93, "y": 156, "w": 325, "h": 48, "radius": 3},
+    {"id": "status", "kind": "rounded_rect", "x": 93, "y": 211, "w": 325, "h": 13, "radius": 3},
+    {"id": "send", "kind": "rounded_rect", "x": 280, "y": 231, "w": 69, "h": 17, "radius": 4},
+    {"id": "cancel", "kind": "rounded_rect", "x": 355, "y": 231, "w": 59, "h": 17, "radius": 4}
+  ],
+  "responsive": {
+    "1280x720": {
+      "mode": "compact_scroll",
+      "panel": [40, 24, 1200, 672],
+      "content_rect": [96, 64, 1088, 612],
+      "title": [96, 64, 1088, 40],
+      "scroll_viewport": [96, 120, 1088, 420],
+      "scroll_body_height": 824,
+      "description_in_body": [0, 0, 1088, 160],
+      "screenshot_toggle_in_body": [0, 180, 1088, 48],
+      "screenshot_in_body": [272, 244, 544, 306],
+      "privacy_in_body": [0, 574, 1088, 190],
+      "status": [96, 556, 1088, 40],
+      "send": [686, 612, 260, 64],
+      "cancel": [964, 612, 220, 64],
+      "controller_scroll": "JOY_AXIS_RIGHT_Y from every form focus stop; 0.45 deadzone; 65% viewport step",
+      "rule": "Title, status and actions stay pinned; only the middle content scrolls. Description, screenshot toggle, screenshot and disclosure stack in that order."
+    },
+    "intermediate": {
+      "panel_rule": "Continuously interpolate 1200x672 to 1400x990 by limiting viewport scale between 1280x720 and 1920x1080.",
+      "1400x720_panel": [1200, 672],
+      "1401x720_panel": [1200, 672],
+      "1599x899_panel": [1299.4, 830.1],
+      "1600x900_panel": [1300, 831],
+      "column_breakpoint": [1600, 900],
+      "constrained_two_column_scroll_allowed": true
+    },
+    "1920x1080": {
+      "mode": "desktop_two_column",
+      "panel": [260, 45, 1400, 990],
+      "rule": "Use elements_1920x1080 exactly; scrollbar lane remains reserved even when not visible."
+    },
+    "2560x1440": {
+      "mode": "desktop_two_column_scaled",
+      "scale_from_1920": 1.3333333333,
+      "panel": [347, 60, 1866, 1320],
+      "description_min_height": 440,
+      "screenshot_frame": [666.7, 374.7],
+      "toggle_min_height": 85.3,
+      "privacy_min_height": 240,
+      "scroll_body_min_height": 786.7,
+      "send_min_size": [346.7, 85.3],
+      "cancel_min_size": [293.3, 85.3],
+      "rule": "Uniformly scale the 1920 control geometry; nine-slice rails follow resolved controls and semantic typography remains token-driven."
+    }
+  },
+  "focus": {
+    "initial": "feedback_description",
+    "order": ["feedback_description", "feedback_screenshot_toggle", "feedback_send", "feedback_cancel"],
+    "escape": "close overlay only",
+    "gamepad_cancel": "close overlay only",
+    "screenshot_preview": "not focusable",
+    "scroll_container": "not a Tab stop; wheel/right-stick scrolls while any form control is focused"
+  },
+  "runtime_copy_slots": {
+    "title": "Отправить фидбек",
+    "description_hint": "Что случилось, где вы были и что ожидали увидеть?",
+    "screenshot_toggle_on": "Приложить скриншот",
+    "screenshot_toggle_off": "Не прикладывать скриншот",
+    "privacy_heading": "Что попадёт в отчёт",
+    "privacy_body": "Текст и выбранный скриншот; версия игры, экран, разрешение, ОС, персонаж, оружие, Возвышение, акт/этап и состояние боя; случайный ID установки. Сервер или edge видит IP соединения для защиты от спама.",
+    "operator_retention": "Оператор: {operator}. Хранение: до {retention_days} дней.",
+    "policy_gate": "Если operator или retention_days не заданы в deployment-конфигурации, online send остаётся disabled.",
+    "local_fallback": "Если онлайн-отправка недоступна, локальная копия сохранится только на этом устройстве; путь будет показан ниже.",
+    "send": "Отправить",
+    "cancel": "Отмена"
+  }
+}

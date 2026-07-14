@@ -15,7 +15,7 @@ compatibility/default_parent_skeleton_in_mesh_instance_3d=true
 [application]
 
 config/name="FantasyDisk"
-config/version="0.2.1"
+config/version="0.2.2"
 run/main_scene="res://scenes/Main.tscn"
 config/features=PackedStringArray("4.7")
 config/icon="res://icon.svg"
@@ -30,6 +30,20 @@ InputDeviceManager="*res://scripts/input_device_manager.gd"
 window/size/viewport_width=2560
 window/size/viewport_height=1440
 window/stretch/mode="canvas_items"
+
+[feedback]
+
+; Public, non-secret production relay session endpoint. Keep empty until FAN-1041
+; infrastructure and player privacy disclosure/retention policy are approved;
+; an empty value preserves the local fallback.
+relay_session_url=""
+; These public disclosure values must all be reviewed and non-empty before the
+; client will use a configured relay endpoint. Empty values keep online
+; delivery fail-closed while local feedback remains available.
+privacy_operator_name=""
+privacy_contact_url=""
+privacy_retention_notice=""
+privacy_policy_url=""
 
 [rendering]
 

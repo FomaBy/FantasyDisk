@@ -13,9 +13,9 @@ For every new FantasyDisk character, object, prop, sprite, UI frame, HUD element
 
 - First try exposed PixelLab MCP tools in the chat. If tools are not visible, use tool discovery for `pixellab`.
 - If the PixelLab MCP server is configured locally but not exposed as direct tools, read `../pixellab_mcp_auth.md`, then call it through the configured MCP bridge without printing tokens, headers, or secrets.
-- If PixelLab MCP appears unavailable, read `../pixellab_mcp_auth.md` and run the config-based smoke before marking Jira blocked. Do not treat stale tool discovery or missing ambient `AUTH_HEADER` as proof of broken auth.
+- If PixelLab MCP appears unavailable, read `../pixellab_mcp_auth.md` and run the config-based smoke before marking the Multica issue blocked. Do not treat stale tool discovery or missing ambient `AUTH_HEADER` as proof of broken auth.
 - If the post-fix MCP smoke truly fails, mark the task blocked or create the correct handoff. Do not silently fall back to OpenAI Images, `image_gen`, hand drawing, old random generators, or the legacy `generate_asset.py` pipeline.
-- Record the PixelLab source asset/project ID, tag/name, export IDs when available, prompt/spec, exported source paths, runtime paths, and QA evidence in the task/Jira result.
+- Record the PixelLab source asset/project ID, tag/name, export IDs when available, prompt/spec, exported source paths, runtime paths, and QA evidence in the Multica result.
 
 Always produce assets with:
 
@@ -31,7 +31,7 @@ Always produce assets with:
 
 ## Generation Workflow
 
-1. Confirm the task owner/Jira state and locked paths before creating files.
+1. Confirm the Multica issue owner/status and locked paths before creating files.
 2. Build a concise PixelLab prompt/spec from the task: asset type, canonical ID, target use, size/aspect, style, forbidden text, safe zones, alpha needs, and animation/state needs.
 3. Use PixelLab MCP to create, revise, or fetch the source asset. Prefer stable tags matching the canonical ID, for example `berserk`, `artifact_blood_sigil`, `ui_frame_combat_hud_health`.
 4. Export source PNGs from PixelLab into `docs/design/references/<task_or_pack>/`.
@@ -49,7 +49,7 @@ After generation, postprocess the result before presenting it as game-ready:
 - write safe content padding notes for UI assets;
 - create or update the implementation task when the asset must be integrated.
 
-Legacy note: `tools/artgen/generate_asset.py` and `~/.codex/skills/fantasydisk-asset-generator/scripts/generate_asset.py` are historical OpenAI Images helpers. Do not use them for new production asset creation unless the user explicitly overrides the PixelLab rule in the active task and the Jira/task evidence records that exception.
+Legacy note: `tools/artgen/generate_asset.py` and `~/.codex/skills/fantasydisk-asset-generator/scripts/generate_asset.py` are historical OpenAI Images helpers. Do not use them for new production asset creation unless the user explicitly overrides the PixelLab rule in the active Multica issue and its evidence records that exception.
 
 ## UI Frames
 

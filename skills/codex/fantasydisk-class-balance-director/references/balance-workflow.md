@@ -6,7 +6,7 @@ Follow this workflow for class, weapon, progression, or defensive balance tasks.
 
 Identify the affected classes, weapons, and mechanics:
 
-- Read the active task and Jira context.
+- Read the active Multica issue and task-mirror context.
 - Confirm current branch is `dev`.
 - Inspect `scripts/progression_data_weapons.gd`, `ProgressionData.WEAPONS_BY_CLASS`, and any relevant weapon scenes/scripts.
 - Check whether the change affects damage, target count, crowd-clear, survival, control, scaling, or live combat timing.
@@ -82,4 +82,4 @@ Update relevant docs in the same task:
 - `docs/design/systems/characters_weapons.md` for class or weapon roster behavior.
 - `docs/design/systems/combat.md` for combat mechanics and runtime behavior.
 
-Use task/Jira sync rules from the repo, and leave a short before/after result in the task file.
+Use Multica evidence rules from the repo, and leave a short before/after result in the task mirror.

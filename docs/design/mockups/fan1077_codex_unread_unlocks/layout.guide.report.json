@@ -1,0 +1,148 @@
+{
+  "ok": true,
+  "zones": [
+    {
+      "id": "board_title",
+      "rect": [
+        164,
+        4,
+        360,
+        24
+      ],
+      "ok": true,
+      "kind": "guide"
+    },
+    {
+      "id": "main_title",
+      "rect": [
+        28,
+        48,
+        144,
+        30
+      ],
+      "ok": true,
+      "kind": "guide"
+    },
+    {
+      "id": "main_codex",
+      "rect": [
+        44,
+        214,
+        88,
+        34
+      ],
+      "ok": true,
+      "kind": "guide"
+    },
+    {
+      "id": "main_codex_badge",
+      "rect": [
+        140,
+        218,
+        22,
+        22
+      ],
+      "ok": true,
+      "kind": "guide"
+    },
+    {
+      "id": "codex_title",
+      "rect": [
+        214,
+        48,
+        276,
+        30
+      ],
+      "ok": true,
+      "kind": "guide"
+    },
+    {
+      "id": "codex_row_new",
+      "rect": [
+        302,
+        104,
+        46,
+        42
+      ],
+      "ok": true,
+      "kind": "guide"
+    },
+    {
+      "id": "codex_row_new_badge",
+      "rect": [
+        352,
+        104,
+        18,
+        18
+      ],
+      "ok": true,
+      "kind": "guide"
+    },
+    {
+      "id": "codex_row_read",
+      "rect": [
+        302,
+        166,
+        68,
+        42
+      ],
+      "ok": true,
+      "kind": "guide"
+    },
+    {
+      "id": "victory_title",
+      "rect": [
+        530,
+        48,
+        132,
+        30
+      ],
+      "ok": true,
+      "kind": "guide"
+    },
+    {
+      "id": "victory_summary",
+      "rect": [
+        530,
+        88,
+        132,
+        62
+      ],
+      "ok": true,
+      "kind": "guide"
+    },
+    {
+      "id": "victory_unlocks_title",
+      "rect": [
+        536,
+        164,
+        116,
+        28
+      ],
+      "ok": true,
+      "kind": "guide"
+    },
+    {
+      "id": "victory_unlocks_body",
+      "rect": [
+        536,
+        196,
+        108,
+        78
+      ],
+      "ok": true,
+      "kind": "guide"
+    },
+    {
+      "id": "victory_button",
+      "rect": [
+        542,
+        310,
+        108,
+        34
+      ],
+      "ok": true,
+      "kind": "guide"
+    }
+  ]
+}

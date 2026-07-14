@@ -1,18 +1,20 @@
-[gd_scene load_steps=4 format=3]
+[gd_scene load_steps=5 format=3]
 
 [ext_resource type="Script" path="res://scripts/vfx/storm_longbow_volley_vfx.gd" id="1_script"]
 [ext_resource type="SpriteFrames" path="res://assets/sprites/effects/storm_longbow/storm_longbow_release_spriteframes.tres" id="2_frames"]
 
-[sub_resource type="CanvasItemMaterial" id="CanvasItemMaterial_storm"]
-blend_mode = 1
-light_mode = 1
+[sub_resource type="Shader" id="Shader_bow_compact"]
+code = "shader_type canvas_item;\nrender_mode blend_add;\n\nconst float SOURCE_WIDTH_PX = 256.0;\nconst float SOURCE_PIVOT_X_PX = 26.0;\nconst float SOURCE_PIVOT_Y_PX = 128.0;\nconst float BOW_SPLIT_X_PX = 51.0;\nconst float BOW_SCALE = 0.40;\n\nvoid fragment() {\n\tfloat destination_x = UV.x * SOURCE_WIDTH_PX;\n\tfloat destination_y = UV.y * SOURCE_WIDTH_PX;\n\tfloat compressed_split_x = SOURCE_PIVOT_X_PX + (BOW_SPLIT_X_PX - SOURCE_PIVOT_X_PX) * BOW_SCALE;\n\tfloat source_x;\n\tfloat source_y = destination_y;\n\tif (destination_x <= compressed_split_x) {\n\t\tsource_x = SOURCE_PIVOT_X_PX + (destination_x - SOURCE_PIVOT_X_PX) / BOW_SCALE;\n\t\tsource_y = SOURCE_PIVOT_Y_PX + (destination_y - SOURCE_PIVOT_Y_PX) / BOW_SCALE;\n\t} else {\n\t\tsource_x = destination_x + (BOW_SPLIT_X_PX - compressed_split_x);\n\t}\n\tif (source_x < 0.0 || source_x >= SOURCE_WIDTH_PX || source_y < 0.0 || source_y >= SOURCE_WIDTH_PX) {\n\t\tCOLOR = vec4(0.0);\n\t} else {\n\t\tvec2 source_uv = vec2(source_x, source_y) / SOURCE_WIDTH_PX;\n\t\tCOLOR = texture(TEXTURE, source_uv) * COLOR;\n\t}\n}\n"
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_bow_compact"]
+shader = SubResource("Shader_bow_compact")
 
 [node name="StormLongbowVolleyVfx" type="Node2D"]
 script = ExtResource("1_script")
 
 [node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="."]
 texture_filter = 1
-material = SubResource("CanvasItemMaterial_storm")
+material = SubResource("ShaderMaterial_bow_compact")
 modulate = Color(0.78, 0.92, 1, 0.62)
 position = Vector2(102, 0)
 z_index = 10

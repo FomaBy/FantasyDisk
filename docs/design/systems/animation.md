@@ -143,6 +143,18 @@ Audit of the animation **runtime** loaders only (no art/motion/clip changes):
 
 ## Player Motion
 
+- FAN-1071 (2026-07-14) replaces the live playable footline dependency on
+  legacy `sliced_rig_manifest.foot_y` with frame-aware alpha grounding. For all
+  17 full-frame player resources, `player_sprite_grounding.gd` derives the
+  visible bottom of the active texture and adjusts only
+  `Player/VisualRoot/Body.position.y` whenever the animation or frame changes.
+  The world/gameplay origin, `GroundCircle`,
+  collision and damage geometry do not move. Canonical idle lift still drives
+  the stable camera/weapon/feedback bias, while individual locomotion frames
+  cannot vertically drift away from the platform. Legacy cutout/skeletal
+  fallback keeps the authored manifest footline. Permanent coverage iterates
+  every idle/move/walk frame of the full playable roster in
+  `tests/feet_anchor_ground_circle_test.gd`.
 - SCRUM-456 defines the new cartoon/anime playable-character restyle source
   contract. The Design package lives under
   `docs/design/references/chars_cartoon/` and establishes Berserk as the
@@ -636,6 +648,7 @@ Audit of the animation **runtime** loaders only (no art/motion/clip changes):
 - Player cutout rig использует per-character `walk_blend_rate` / `direction_blend_rate`: `berserk` двигается тяжелее, `dark_mage` мягче и с меньшим robe/body lean, `guitarist` быстрее. Pass 2026-06-12 добавил отдельные visual motion profiles для новых классов: `assassin` быстрый/резкий, `ranger` собранный, `doctor` спокойный тяжелый, `chemist` чуть нервный, `knight` тяжелый инертный, `druid` мягкий ритуальный. Pass SCRUM-168 2026-06-13 добавил `soldier`: средневесовый дисциплинированный шаг, меньше arm swing, умеренный body bob. Pass SCRUM-169 2026-06-13 добавил `thief`: легкий осторожный шаг с быстрым direction blend, меньшим bob и сдержанным переносом веса. Pass SCRUM-163 2026-06-13 добавил `elementalist`: плавный энергичный caster-step, легче Dark Mage, с выраженным breath/channel sway. Pass SCRUM-167 2026-06-13 добавил `sniper`: controlled ranged/sniper gait, low bob, low arm swing, steady aim stance without melee lunge feel. Pass SCRUM-165 2026-06-13 добавил `priest`: calm healer/support caster gait, low aggression, restrained arm swing, readable robe bob and support-caster sway. Pass SCRUM-162 2026-06-13 добавил `biologist`: careful field-scientist gait, modest bob, specimen-handling arm posture, distinct from Chemist/Doctor. Pass SCRUM-166 2026-06-13 добавил `robot`: heavy construct gait, slow inertial walk, strong mass bob, low arm swing, slower direction blend. Pass SCRUM-164 2026-06-13 добавил `engineer`: practical tinkerer gait with workshop backpack/tools, moderate bob, measured arm swing, distinct from Druid/Robot.
 - Все cutout rigs имеют контактную `GroundShadow`; на новых плоских фонах она остается основным grounding cue и не должна удаляться при будущих visual passes.
 - Berserk attack pose получает animation variant из текущего `weapon_id`: `sword` = forward thrust, `axe` = wide arc, `hammer` = overhead slam. SCRUM-880 дополнительно делает runtime VFX для `axe` визуально шире под live 180-degree / 250px sweep и добавляет actual `two_handed_axe.png` weapon overlay в signature layer. Это только motion/VFX layer; damage shape/window остаются в weapon/backend конфигурации.
+- FAN-1079 (2026-07-14) унифицирует release-readability всех 51 оружий через существующие weapon-signature PNG: cue появляется у героя, компактно вылетает по aim-направлению и не кодирует размер/форму зоны урона. Exact-zone `Polygon2D` удалён из Berserk/Knight melee path; остаются weapon, projectile, beam, slash, spiral и scene-specific VFX. Storm Longbow продолжает использовать принятые PixelLab SCRUM-912 кадры: runtime shader сжимает только authored bow-region до `0.40` (силуэт более чем вдвое меньше), сдвигает trail без разрыва и пересчитывает uniform scene scale так, чтобы пять стрел по-прежнему визуально проходили live range. Новых raster/source ассетов нет; damage geometry/timing/targeting не менялись.
 - Legacy player pass SCRUM-186 (2026-06-13) добавил bespoke 3-weapon silhouettes для старых классов без изменения gameplay: `dark_mage` (book/skull/wand casts), `guitarist` (strum/bass pulse/amp deploy), `assassin` (chakram/dagger/wire), `ranger` (crossbow/longbow/trap), `doctor` (restore/syringe/saw), `chemist` (powder/flask/vial), `knight` (spear/shield/flail), `druid` (summon/briar/totem). Smoke проверяет distinct silhouettes и socket sanity по фактическим `progression_data.gd` weapon IDs.
 - Soldier shoot pose получает animation variant из текущего `weapon_id`: `soldier_rifle` = suppression recoil, `soldier_grenade` = cook/throw, `soldier_bayonet` = defensive brace. Это только motion layer; attack modes/timing остаются в `ClassWeapon`.
 - Thief shoot pose получает animation variant из текущего `weapon_id`: `thief_coin_pouch` = быстрый щелчок монетой вперед, `thief_shadow_cloak` = сжатие и backstab-рывок, `thief_smoke_bomb` = dodge-back и низкий бросок дымовой бомбы. Это только motion layer; `coin_ricochet`, `shadow_backstab` и `smoke_bomb` gameplay остаются в Back-end.

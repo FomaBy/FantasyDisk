@@ -8,10 +8,12 @@ extends Control
 ## или мертва. Обычные melee-мобы не маркируются (Enemy.threat_marker_rank() == "").
 
 const SemanticTypography := preload("res://scripts/ui/semantic_typography.gd")
+const CombatTargetQuery := preload("res://scripts/combat_target_query.gd")
 
 const EDGE_INSET := 34.0          # отступ маркера от края экрана
 const ARROW_LENGTH := 26.0
 const ARROW_HALF_WIDTH := 13.0
+const THREAT_REFRESH_INTERVAL := 0.10
 
 # Ранг → цвет/масштаб/глиф. boss крупнее и краснее, дальнобой компактный жёлтый.
 const RANK_STYLE := {
@@ -21,6 +23,8 @@ const RANK_STYLE := {
 }
 
 var game: Node  # game-синглтон (Main); проставляется в ui_screens._create_hud()
+var _threat_refresh_left := 0.0
+var _cached_threats: Array[Node2D] = []
 
 
 func _ready() -> void:
@@ -32,7 +36,14 @@ func _ready() -> void:
 	# Full-rect под CombatHudRoot (его origin = 0,0) → локальные координаты = координаты вьюпорта.
 
 
-func _process(_delta: float) -> void:
+func _process(delta: float) -> void:
+	if game != null and is_instance_valid(game) and bool(game.get("combat_active")):
+		_threat_refresh_left -= delta
+		if _threat_refresh_left <= 0.0:
+			_threat_refresh_left = THREAT_REFRESH_INTERVAL
+			_refresh_threat_candidates()
+	elif not _cached_threats.is_empty():
+		_cached_threats.clear()
 	queue_redraw()
 
 
@@ -131,11 +142,23 @@ func _draw_marker(pos: Vector2, dir: Vector2, style: Dictionary) -> void:
 
 
 func _threat_candidates() -> Array:
-	var out := []
-	var tree := get_tree()
-	if tree == null:
-		return out
-	out.append_array(tree.get_nodes_in_group("bosses"))
-	out.append_array(tree.get_nodes_in_group("elite_enemies"))
-	out.append_array(tree.get_nodes_in_group("enemies"))
-	return out
+	return _cached_threats
+
+
+func _refresh_threat_candidates() -> void:
+	_cached_threats.clear()
+	if not is_inside_tree():
+		return
+	# Bosses and elites are already members of `enemies`; scanning the three
+	# groups used to duplicate them and allocated three arrays on every draw.
+	# Keep only nodes which currently expose a visible marker, while `_draw()`
+	# continues to update their screen positions every frame for smooth motion.
+	for node in CombatTargetQuery.enemies(self):
+		if node == null or not is_instance_valid(node) or node.is_queued_for_deletion():
+			continue
+		if not node.has_method("threat_marker_rank"):
+			continue
+		var rank := str(node.call("threat_marker_rank"))
+		if rank == "" or not RANK_STYLE.has(rank):
+			continue
+		_cached_threats.append(node)

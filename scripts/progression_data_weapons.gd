@@ -138,15 +138,10 @@ const DARK_MAGE_WEAPONS := {
 		# Базовый темп тиков (тик/с при dot_speed=1.0): «быстрый прожиг».
 		"curse_tick_rate": 7.0,
 		# ДОКУМЕНТИРОВАННЫЙ curse-пайплайн (AC SCRUM-940): сила тика =
-		# dot_damage * curse_tick_multiplier * (1 + Интеллект * curse_int_scale).
-		# Атрибуты проклятия: Знание (dot_damage), Интеллект (глубина проклятия,
-		# канон «Интеллект кормит тьму... глубже вгрызаются проклятия»),
-		# dot_damage_flat моды и dot_speed (темп). Чистые magic_damage-множители
-		# по-прежнему НЕ участвуют. Пара (0.58, 0.08) держит базовый тик на
-		# уровне ~8.3 и даёт киту int-скейл в SCRUM-469-коридоре lvl20-оптимума;
-		# формулы зеркалятся в бюджет-модели (_budget_dot_dps).
-		"curse_tick_multiplier": 0.58,
+		"curse_tick_multiplier": 0.36,
 		"curse_int_scale": 0.08,
+		# FAN-1031 3c(b): кап STATUS fan-out крауд-проклятия. v3 lvl20_ideal_20t=96.9k
+		"status_full_targets": 4, "status_target_diminish": 1.0,
 		"projectile_speed": 680.0,
 		"visual_color": Color(0.78, 0.16, 1.0, 0.42),
 		"passive_mods": {"dot_speed_flat": 0.25},
@@ -178,17 +173,6 @@ const DARK_MAGE_WEAPONS := {
 }
 
 # SCRUM-899: Гитарист = магический кастер с барбар-формами атак и деплой-геймплеем.
-# Электрогитара — УЗКАЯ передняя полоса riff_strip (частые низко-средние маг. хиты,
-# позиционирование важно; НЕ широкая generic-волна). Бас — большое кольцо частых
-# слабых пульсов под кайт (ранняя слабость — урон, не радиус). Усилитель — ядро
-# саммонер-петли: наземные маг. AoE-турели. Канон саммонер-скейлинга ампа:
-#   • число ампов: 1 + floor(Лидерство/4), кап max_summons_cap (+amp_cap_bonus);
-#   • uptime: Лидерство продлевает жизнь ампа (amp_leadership_lifetime_*);
-#   • сила: summon_amount учащает пульс (amp_summon_haste, формула канона
-#     summoner_weapon: min(summon_amount*0.014 + leadership*0.006, 0.30));
-#   • каденция установки: attack_speed через generic fire_interval-скейл;
-#   • урон пульса — ТОЛЬКО magic_damage (никакой «лидерской» оси урона).
-# Trait «Разогрев» (SCRUM-1006) — CLASS_TRAITS.guitarist в progression_data_characters.gd.
 const GUITARIST_WEAPONS := {
 	"electric_guitar": {
 		"id": "electric_guitar",
@@ -197,7 +181,8 @@ const GUITARIST_WEAPONS := {
 		"scene_path": "res://scenes/ElectricGuitar.tscn",
 		"attack_mode": "riff_strip",
 		"damage_parameter": "magic_damage",
-		"damage_multiplier": 0.66,
+		# FAN-1031 3d-final (v7): guitarist total 0.61 FAIL+ (solo 0.36/aoe 0.56/crowd 0.73).
+		"damage_multiplier": 1.30,
 		"fire_interval": 0.55,
 		"attack_range": 520.0,
 		"aoe_radius": 110.0,
@@ -213,7 +198,11 @@ const GUITARIST_WEAPONS := {
 		"scene_path": "res://scenes/BassGuitar.tscn",
 		"attack_mode": "pulse",
 		"damage_parameter": "magic_damage",
-		"damage_multiplier": 0.26,
+		# FAN-1031 3d-final (v7): raw-buff (bass клампнут ceil). identity-кап баса поднят под то же
+		# продуктовое решение координатора (см. electric_guitar). Бас остаётся САМЫМ слабым по urону
+		# в ките (bass < electric) — «ранняя слабость в уроне» как ОТНОСИТЕЛЬНАЯ identity сохранена.
+		# FAN-1031 v8-микротрим: raw-шаг 0.48→0.50 к потолку identity-капа (bass<electric 1.30 цел).
+		"damage_multiplier": 0.50,
 		"fire_interval": 0.78,
 		"attack_range": 330.0,
 		"aoe_radius": 330.0,
@@ -228,7 +217,12 @@ const GUITARIST_WEAPONS := {
 		"scene_path": "res://scenes/SoundAmp.tscn",
 		"attack_mode": "amp",
 		"damage_parameter": "magic_damage",
-		"damage_multiplier": 0.85,
+		# FAN-1031 3d-final (v7): raw-buff под то же продуктовое решение (амп не в identity-гейте, только
+		# budget-кламп). db 1.25 держит амп ближе к ceil → больше raw лендится. Калибровать по v8.
+		# FAN-1031 v8-микротрим: амп — ГЛАВНЫЙ (uncapped identity-гейтом) рычаг лифта дна 0.84→≥0.85:
+		# raw 1.60→1.85. Budget_dm амп 2.40 (не ceil) → лендится частично, но напрямую двигает kit-mean.
+		# ⚠️ CSV comfort-веса амп (COMFORT_*_OVERRIDES guitarist/sound_amp) стейл → Stage-4 рекалибровка.
+		"damage_multiplier": 1.85,
 		"fire_interval": 2.40,
 		"attack_range": 520.0,
 		"aoe_radius": 235.0,
@@ -258,6 +252,12 @@ const ASSASSIN_WEAPONS := {
 		"scene_path": "res://scenes/Chakrams.tscn",
 		"attack_mode": "boomerang", "damage_parameter": "damage",
 		"damage_multiplier": 0.45, "fire_interval": 0.62,
+		# FAN-1031 3d (v6): assassin crowd-ось 0.38 остаётся низкой, НО геометрический widen
+		# бумеранга (aoe_radius/beam_width) НЕ поднял crowd в замере (болванки уже в коридоре;
+		# beam_width>61 упирает five_hits в кламп 3.4 → per-hit ПАДАЕТ, лишних целей нет) —
+		# измеренный live 20t 5508→4385 ушёл ВНИЗ. Геометрия здесь не рычаг. Откат к оригиналу;
+		# assassin (total 0.93, in-corridor) — crowd-ось требует ДРУГОЙ механики (напр. крауд-хит
+		# на возвратной дуге сверх дедупа) — deferred, решение координатора (см. handoff).
 		"attack_range": 460.0, "aoe_radius": 60.0, "beam_width": 56.0,
 		"projectile_speed": 760.0,
 		# Возврат — квадратичная дуга через ЛЕВУЮ сторону от направления броска;
@@ -295,7 +295,7 @@ const ASSASSIN_WEAPONS := {
 	},
 	"venom_wire": {
 		"id": "venom_wire", "title": "Ядовитая струна",
-		"description": "Ядовитая гаррота от самой руки: пробивает ряд врагов по линии и душит тех, кто вцепился вплотную. Крит-удар делает яд злее.",
+		"description": "Ядовитая гаррота от самой руки: пробивает ряд врагов по линии и душит тех, кто вцепился вплотную. Яд брызгает на ближнюю толпу за линией. Крит-удар делает яд злее.",
 		"scene_path": "res://scenes/VenomWire.tscn",
 		"attack_mode": "dot_beam", "damage_parameter": "damage",
 		"damage_multiplier": 0.68, "fire_interval": 0.78,
@@ -308,6 +308,17 @@ const ASSASSIN_WEAPONS := {
 		"close_contact_radius": 80.0,
 		"dot_crit_snapshot_ratio": 0.6,
 		"crit_shadow_burst_radius": 92.0,
+		# FAN-1031 v7 (координаторское решение): assassin crowd-ниша через venom_wire — «яд-спред
+		# по толпе в существующих капах». После пирса струна брызгает ядом по врагам ВНЕ пробитой
+		# линии; крауд-канал, ортогональный solo (пробитые исключены → на 1 цели спреда нет).
+		# Кап ШИРИНЫ — те же поля, что у прямого AoE (venom_wire их иначе не использует):
+		# aoe_max_targets 6 (жёсткий потолок), aoe_full_targets 2 (первые 2 — полный яд),
+		# aoe_target_diminish 1.6 (спад дальних). Цель crowd_norm ≥0.45 (профиль 0.70). Величину
+		# dot_beam_spread_ratio калибрует координатор по v8 live-пересъёму (лейн live не тянет).
+		"dot_beam_spread_ratio": 0.55,
+		"aoe_full_targets": 2,
+		"aoe_target_diminish": 1.6,
+		"aoe_max_targets": 6,
 		"visual_color": Color(0.32, 0.95, 0.28, 0.46),
 		"passive_mods": {"crit_chance_flat": 0.04},
 	},
@@ -343,15 +354,6 @@ const RANGER_WEAPONS := {
 	},
 	"storm_longbow": {
 		# SCRUM-911: дальнобойный КОНУС пробивающих стрел — beam_count стрел
-		# равномерно по полному раствору cone_degrees, каждая летит на
-		# attack_range и пробивает до pierce_count врагов БЕЗ спада урона
-		# (pierce_damage_falloff по умолчанию 1.0); одна цель получает не
-		# больше одного хита за залп (дедуп у вершины конуса — и урона, и
-		# отброса). Артефакт «Грозовой пробойник» (+2 пирса) и «Ядро
-		# Расщепления» (extra_projectile → +стрела в конусе) работают поверх.
-		# Геометрия для VFX SCRUM-912: вершина у героя (+26px по направлению
-		# атаки), 5 коридоров шириной 30px равномерно через раствор 34°
-		# (офсеты -17°/-8.5°/0°/+8.5°/+17°), длина 980 (×1.06 range passive).
 		"id": "storm_longbow", "title": "Грозовой длинный лук",
 		"description": "Дальний конус из 5 пробивающих стрел: каждая проходит врагов насквозь, каждое попадание отбрасывает от Рейнджера. Стойка заряжает залп.",
 		"scene_path": "res://scenes/StormLongbow.tscn",
@@ -366,17 +368,6 @@ const RANGER_WEAPONS := {
 	},
 	"hunter_trap": {
 		# SCRUM-913: ПЕРМАНЕНТНЫЙ капкан — не истекает по таймеру, живёт до
-		# срабатывания либо штатной очистки (смена оружия/смерть/сброс сцены).
-		# Игрок капкан не запускает (проверка только по группе enemies).
-		# Триггер: физический AoE-хлопок + жёсткий паралич trap_paralyze_seconds
-		# (movement_locked — жертва реально стоит; боссы/элиты ×0.25) + зелёное
-		# кровотечение по dot-оси (dot_damage ← Знание): dot_ticks тиков ×
-		# trap_bleed_tick_interval = 5.0с — течёт во время паралича и ~2.8с
-		# после него. Кап поля — ClassWeapon.HUNTER_TRAP_ACTIVE_CAP=6 живых
-		# капканов (кап, НЕ таймер: старейший тихо снимается); артефакт
-		# «Корневой капкан» — +2 к капу и +0.6с параличу. Отброса на триггере
-		# больше НЕТ (паралич держит жертву в капкане) — trait «Сторожевой лук»
-		# на капкан не распространяется, ключ knockback капкану не нужен.
 		"id": "hunter_trap", "title": "Охотничий капкан",
 		"description": "Ставит вечный капкан перед Рейнджером: игроку безопасен, а первого врага захлопывает — урон по области, паралич и зелёное кровотечение.",
 		"scene_path": "res://scenes/HunterTrap.tscn",
@@ -401,13 +392,22 @@ const RANGER_WEAPONS := {
 const DOCTOR_WEAPONS := {
 	"restore_potion": {
 		"id": "restore_potion", "title": "Зелье восстановления",
-		"description": "Бросок зелья: магический взрыв по области; Доктор лечится на долю фактически нанесенного урона.",
+		"description": "Бросок зелья: магический взрыв по цели с быстро спадающим сплэшем; Доктор лечится на долю фактически нанесённого урона.",
 		"scene_path": "res://scenes/RestorePotion.tscn",
 		"attack_mode": "aoe_projectile", "damage_parameter": "magic_damage",
 		"damage_multiplier": 2.7, "fire_interval": 1.15,
 		"attack_range": 520.0, "aoe_radius": 150.0,
 		"projectile_speed": 620.0,
 		"heal_percent_of_damage": 0.16,
+		# FAN-1031 S3 (Stage 3a): хил-склянка возвращена в сустейн/solo-нишу. До правки
+		# restore_potion был #3 AoE-оружием ростера (baseline v2: 68.9k DPS@20t, 15× медианы)
+		# — для лечащего оружия это дефект. Кап сплэша до основной цели (full=1) + крутой
+		# диминиш (4.0): осн. цель получает полный урон-и-хил, соседи — быстро спадающий
+		# бонус. 20t 68.9k → ~19.5k (−72%), 5t 1410 → ~408, 1t 243 без изменений (solo-хил
+		# сохранён точно). Остаточная per-hit инфляция — часть общего crowd-runaway
+		# (S1/3c numeric); структурная роль «безопасный ranged-сустейн, не чистка толпы»
+		# восстановлена. Сустейн не страдает: хил всё равно упирается в drain-budget 7/с.
+		"aoe_full_targets": 1, "aoe_target_diminish": 4.0,
 		"visual_color": Color(0.35, 0.95, 0.55, 0.42),
 		"passive_mods": {"max_health_multiplier": 1.10},
 	},
@@ -464,6 +464,9 @@ const CHEMIST_WEAPONS := {
 		"attack_range": 430.0, "aoe_radius": 150.0, "projectile_speed": 640.0,
 		"visual_color": Color(0.95, 0.72, 0.22, 0.44),
 		"passive_mods": {"aoe_radius_multiplier": 1.10},
+		# FAN-1031 3c(b2): blast_powder идёт прямым AoE-взрывом (attack_mode aoe_projectile
+		"aoe_full_targets": 2, "aoe_target_diminish": 3.0,
+		"aoe_max_targets": 3,
 	},
 	# SCRUM-944: зонный контроль пола — долгоживущие ПОЛУПРОЗРАЧНЫЕ лужи. Монстр,
 	# зашедший в лужу, получает один ВЕЧНЫЙ кислотный заряд ОТ ЭТОЙ лужи (статус
@@ -472,7 +475,7 @@ const CHEMIST_WEAPONS := {
 	# Trait «Катализатор» множит и тики лужи, и заряды (+50%).
 	"acid_flask": {
 		"id": "acid_flask", "title": "Кислотная колба",
-		"description": "Долгая полупрозрачная кислотная лужа: пока враг в луже — тики, а каждый контакт с новой лужей вешает вечный кислотный заряд (до 5).",
+		"description": "Долгая полупрозрачная кислотная лужа: враги в её ядре получают тики (ближайшие к центру), а каждый контакт с новой лужей вешает вечный кислотный заряд (до 5).",
 		"scene_path": "res://scenes/AcidFlask.tscn",
 		"attack_mode": "aoe_projectile", "damage_parameter": "magic_damage",
 		"damage_multiplier": 0.24, "fire_interval": 1.25,
@@ -480,6 +483,20 @@ const CHEMIST_WEAPONS := {
 		"leaves_pool": true, "pool_element": "poison", "pool_duration": 7.0, "pool_tick_interval": 0.75,
 		"pool_tick_damage_multiplier": 0.90,
 		"pool_direct_damage_multiplier": 0.38,
+		# FAN-1031 3c(a): пул-канал колбы уважает data-driven кап. Тик лужи по толпе теперь
+		# спадает круче (diminish 1.5→3.0), возвращая колбу к area-denial (ядро пака полный
+		# тик, хвост душится), не трогая одиночную цель (rank0). Это ПЕРВИЧНОЕ пул-сужение
+		# по образцу S1; финальная величина + numeric per-hit — против живого v3-пересъёма
+		# (см. build/stage3c_pool_caps_fan1031.md). Персистентные acid_charge (status
+		# fan-out) — отдельный канал 3c(b), здесь НЕ трогается.
+		"pool_target_diminish": 3.0,
+		# FAN-1031 3c(final): ЖЁСТКИЙ кап ШИРИНЫ тика лужи (residual acid). Лужа остаётся
+		# area-denial по ядру пака (≤6 ближайших к центру тикают), но перестаёт заливать
+		# уроном весь экран на 20 целях. Заряды (acid_charge, status-канал) НЕ тронуты —
+		# у них свой кап числа стаков на цель. FAN-1031 3d (v6): пул-тик колбы 20t 1.11× —
+		# в коридоре, но при db 0.95 chemist и ужатом blast колба остаётся вторичным AoE;
+		# кап ширины 6→4 держит её area-denial-нишей (ядро пака), не заливает 20-толпу.
+		"pool_max_targets": 4,
 		"pool_translucent": true,
 		"pool_contact_charges": true, "pool_charge_tick_multiplier": 0.30,
 		"pool_charge_tick_interval": 0.9, "pool_charge_cap": 5,
@@ -487,8 +504,8 @@ const CHEMIST_WEAPONS := {
 		"passive_mods": {"aoe_radius_multiplier": 1.08},
 	},
 	# SCRUM-946: ПОСТОЯННАЯ пара гомункулов (без таймера жизни):
-	# - танк: 4x max HP Химика, таунт-пульсы (враги грызут его, а не игрока),
-	#   смертен; после смерти переспавнивается через fire_interval (4с);
+	# - танк: 4x max HP Химика, глобальный приоритет аггро, 50% регена и
+	#   вампиризма владельца; смертен, после смерти переспавнивается через 4с;
 	# - кастер: неуязвим (Node2D-эффект вне групп allies/боевого лимита), ходит
 	#   рядом с танком (fallback — плечо Химика), каждые summon_wave_interval
 	#   вешает волной вечный DoT-заряд (кап summon_wave_stack_cap, trait ×1.5).
@@ -496,7 +513,7 @@ const CHEMIST_WEAPONS := {
 	# использует: популяцию ведёт _update_homunculus_pair).
 	"homunculus_vial": {
 		"id": "homunculus_vial", "title": "Склянка гомункула",
-		"description": "Постоянная пара гомункулов: живучий танк-провокатор (4x HP Химика) и неуязвимый кастер, копящий волнами вечный периодический урон.",
+		"description": "Постоянная крупная пара: танк (4x HP, глобальное аггро, 50% регена и вампиризма Химика) и неуязвимый кастер с широкой волной вечного периодического урона.",
 		"scene_path": "res://scenes/HomunculusVial.tscn",
 		"damage_parameter": "magic_damage",
 		"summon_damage_multiplier": 2.40,  # SCRUM-546: подъём с пола DPS-полосы (был 0.52)
@@ -514,8 +531,12 @@ const CHEMIST_WEAPONS := {
 		"summon_control_knockback": 95.0,
 		"summon_pair_mode": true,
 		"pair_tank_visual_id": "homunculus_tank",
+		"pair_tank_visual_scale": 1.20,
+		"pair_caster_visual_scale": 2.40,
+		"pair_tank_regen_share": 0.50,
+		"pair_tank_vampiric_share": 0.50,
 		"summon_wave_interval": 1.7,
-		"summon_wave_radius": 150.0,
+		"summon_wave_radius": 240.0,
 		"summon_wave_dot_multiplier": 0.35,
 		"summon_wave_dot_interval": 1.0,
 		"summon_wave_stack_cap": 4,
@@ -553,15 +574,6 @@ const KNIGHT_WEAPONS := {
 	},
 	"tower_shield": {
 		# SCRUM-922 «Конусный баш»: конус целится в НАПРАВЛЕНИЕ ближайшего
-		# монстра (штатный _target_direction BerserkWeapon), все цели конуса
-		# получают урон И отброс прочь от Рыцаря. Формула импульса:
-		# (260 + knockback_power×stagger_knockback_stat_ratio) ×
-		# melee_stagger_knockback_multiplier, где knockback_power = derived
-		# (база оружия + endurance×4 + leadership×3) × knockback_multiplier ×
-		# meta-множитель — вложения в отброс видимо усиливают смещение.
-		# Боссы/главные элиты: импульс × epic_stagger_knockback_factor (кап 25%,
-		# таксономия CombatTargetQuery.is_epic_displacement_immune; мини-элиты —
-		# полный отброс). Контроль-оружие: урон ниже офф-опций (dmg 0.72).
 		"id": "tower_shield", "title": "Башенный щит",
 		"description": "Конусный баш в сторону ближайшего врага: вся стая в конусе 95° отлетает прочь, сила отброса растет от вложений в отброс. Меньше урона, сильная защита и мощная block/counter ответка.",
 		"scene_path": "res://scenes/TowerShield.tscn",
@@ -578,15 +590,6 @@ const KNIGHT_WEAPONS := {
 	},
 	"holy_flail": {
 		# SCRUM-923 «Расширяющаяся спираль»: каст = spiral_steps шагов через
-		# spiral_step_time; на шаге k дуга шириной spiral_arm_degrees стоит под
-		# углом base + 360°×(k+1)/steps, радиус фронта растёт от
-		# aoe_radius×spiral_start_radius_ratio до полного aoe_radius — урон
-		# ложится ОТ ЦЕНТРА НАРУЖУ по спирали, а не мгновенным кругом. Правило
-		# анти-runaway: максимум ОДИН хит по цели за каст (дедуп _hit_targets).
-		# Последний шаг замыкает оборот на стартовом углу с полным радиусом —
-		# соло-цель гарантированно накрыта к концу каста. Бюджет: спиральное
-		# покрытие диска 0.85 в «circle»-ветке budget-модели. Параметры спирали
-		# для VFX (SCRUM-924) — см. комментарий в Jira SCRUM-923.
 		"id": "holy_flail", "title": "Освященный кистень",
 		"description": "Спираль от центра наружу: цепь кистеня раскручивается за 7 шагов до полного радиуса, накрывая врагов на разных дистанциях по мере роста. Одна цель — один удар за оборот.",
 		"scene_path": "res://scenes/HolyFlail.tscn",
@@ -614,7 +617,14 @@ const DRUID_WEAPONS := {
 		"description": "Зовет призрачный ростер: ближние духи рвут физически по площади, дальние бьют магическими снарядами; состав случаен, стая растет от Лидерства.",
 		"scene_path": "res://scenes/SummonAmulet.tscn",
 		"damage_parameter": "magic_damage",
-		"summon_damage_multiplier": 1.85,  # SCRUM-546: подъём с пола DPS-полосы (был 0.58)
+		# FAN-1031 3c-c: амулет держал ~97% crowd-суммы кита (v4 20t=203566, 45× медианы) и
+		# делал briar/raven «мёртвыми» слотами (кит-mean раздут). Призыв — pure_summon, поэтому
+		# budget_tuning (direct) его НЕ ведёт (bdm на нижнем клампе 0.28): единственные живые
+		# рычаги силы роя — summon_damage_multiplier/summon_role_damage_multiplier. Режем рой
+		# 1.85→0.85 (и роль 1.45→1.15) → амулет ~×0.36; остаётся crowd-лидером кита, но не
+		# ломает ростер. Замер суммона самый ШУМНЫЙ (v4 разброс 1.90–4.91) — точную величину
+		# калибровать по A/B focused-тесту + среднему live, НЕ по одному прогону.
+		"summon_damage_multiplier": 0.78,  # FAN-1031 v8-микротрим: druid total 1.23 (aoe 1.64 — амулет чуть перелетел ПОСЛЕ ревайва ворона, kit-mean поднялся). Малый шаг роя вниз 0.85→0.78 (призыв pure_summon → db его НЕ ведёт, живой рычаг = summon_damage_multiplier). Остаётся crowd-лидером кита, ворон/briar живы. Калибровать по v9.
 		"damage_multiplier": 1.0, "fire_interval": 3.0,
 		"upgrade_damage_exponent": 1.22,  # SCRUM-505: lvl20 summon-profile lift; empty run_modifiers stay 1.0
 		"attack_range": 420.0, "aoe_radius": 60.0,
@@ -631,7 +641,7 @@ const DRUID_WEAPONS := {
 		"max_summons": 5,
 		"command_mode": "attack_target",
 		"summon_role": "pack_damage",
-		"summon_role_damage_multiplier": 1.45,  # SCRUM-546 (был 1.06)
+		"summon_role_damage_multiplier": 1.15,  # FAN-1031 3c-c: 1.45→1.15 (см. summon_damage_multiplier)
 		"summon_health_multiplier": 0.30,
 		"summon_attack_interval": 0.34,  # SCRUM-546 (lvl1-нейтрально); темп растёт от haste
 		"summon_speed_multiplier": 1.15,
@@ -666,19 +676,13 @@ const DRUID_WEAPONS := {
 		"leaves_pool": true, "pool_duration": 3.6, "pool_tick_interval": 0.55,
 		"pool_element": "briar",
 		# SCRUM-903: контракт терновой зоны (зеркало бюджета — _budget_pool_dps,
-		# briar-ветка; рантайм — class_weapon._briar_zone_tick):
-		#   briar_zone         — зона работает повторными физ-хитами вместо
-		#                        generic dot-тиков (dot_damage НЕ участвует);
-		#   briar_hit_multiplier — урон одного хита = физ. damage × множитель;
-		#   briar_hit_cap      — КАП хитов на ОДНОГО врага с ОДНОЙ зоны (время
-		#                        внутри/проход сквозь зону дают до cap читаемых
-		#                        ударов раз в pool_tick_interval; повторный вход
-		#                        в ту же зону хиты не сбрасывает — анти-runaway,
-		#                        общий потолок зон MAX_ACTIVE_DAMAGE_POOLS=6);
-		#   briar_slow_multiplier — слоу внутри зоны (спадает при выходе).
 		"briar_zone": true,
-		"briar_hit_multiplier": 0.34,
-		"briar_hit_cap": 5,
+		# FAN-1031 3c-c: briar был «мёртвым» слотом из-за раздутого амулета (кит-mean).
+		# С амулетом вниз оживляем зону терний как честную area-denial/aoe-ось: сила хита
+		# 0.34→0.46 (×1.35) + cap 5→6 читаемых ударов. Рычаг briar_hit_multiplier —
+		# отдельный per-hit зоны, не budget-direct, поэтому двигает живой урон напрямую.
+		"briar_hit_multiplier": 0.46,
+		"briar_hit_cap": 6,
 		"briar_slow_multiplier": 0.62,
 		# SCRUM-903: зона полупрозрачна — поле боя читается сквозь шипы.
 		"pool_translucent": true,
@@ -695,20 +699,13 @@ const DRUID_WEAPONS := {
 		# SCRUM-903: деплой-тотем живёт ~8с (AC 6-10с) и раз в amp_pulse_interval
 		# выпускает самонаводящегося ворона; baseline-лимит = base 2 +
 		# floor(Лидерство 9 / 4) = 4 активных тотема (кап 6 — рост от Лидерства).
-		"amp_lifetime": 8.0, "amp_pulse_interval": 1.10, "max_summons": 2,
+		"amp_lifetime": 8.0, "amp_pulse_interval": 0.95, "max_summons": 2,  # FAN-1031 3c-c: чуть чаще пульс (1.10→0.95) для оживления raven-ниши
 		"max_summons_cap": 6,
 		# SCRUM-903: контракт воронов (рантайм — class_weapon._launch_totem_raven;
-		# зеркало бюджета — _budget_hit_model, amp+raven_homing ветка):
-		#   raven_homing            — пульс тотема = самонаводящийся ворон-снаряд
-		#                             (кривая Безье с живым доведением до цели),
-		#                             взрыв по области в точке попадания;
-		#   raven_damage_multiplier — урон взрыва = _rolled_damage × множитель;
-		#   raven_explosion_radius  — радиус взрыва (полный урон первым
-		#                             RAVEN_EXPLOSION_FULL_TARGETS целям, дальше
-		#                             диминиш — анти-стакинг толпы).
 		"raven_homing": true,
-		"raven_damage_multiplier": 0.85,
-		"raven_explosion_radius": 120.0,
+		# FAN-1031 3c-c: raven был «мёртвым» по всем осям (v4 1t=60/5t=202/20t=425, 0.09–0.20×).
+		"raven_damage_multiplier": 2.4,
+		"raven_explosion_radius": 150.0,
 		"deploy_role": "support_totem",
 		"summon_role": "support_totem",
 		"summon_role_damage_multiplier": 1.08,
@@ -757,10 +754,15 @@ const SOLDIER_WEAPONS := {
 		"damage_multiplier": 0.92, "fire_interval": 0.82,
 		"attack_range": 205.0, "aoe_radius": 205.0,
 		"cone_degrees": 105.0, "knockback": 96.0,
-		"bayonet_auto_shot_chance": 0.25,
+		# FAN-1031 3d (v6): bayonet — SOLO-спайк кита (1t 3.35× медианы при 5t 1.10×). Оба
+		# усилителя ниже (close-bonus + авто-выстрел) БЮДЖЕТИРОВАНЫ (тюнер частично
+		# компенсирует), но при lvl20-ideal их live-амплификация выше формульной оценки на
+		# base_stats → мягкое ужатие сглаживает именно живой solo-спайк, не роняя aoe/crowd.
+		# auto_shot 0.25→0.18, close-mult 1.12→1.06. Uniform per-hit кита давит db 1.00→0.82.
+		"bayonet_auto_shot_chance": 0.18,
 		"bayonet_shot_range": 560.0,
 		"bayonet_shot_damage_multiplier": 0.7,
-		"melee_close_bonus_radius": 150.0, "melee_close_damage_multiplier": 1.12,
+		"melee_close_bonus_radius": 150.0, "melee_close_damage_multiplier": 1.06,
 		"melee_stagger_knockback_multiplier": 1.25,
 		"visual_color": Color(0.58, 0.86, 1.0, 0.40),
 		"passive_mods": {"defense_flat": 0.03},
@@ -841,13 +843,27 @@ const ELEMENTALIST_WEAPONS := {
 		# периодика, потому тяжело масштабируется оптимально) + отброс от центра
 		# на каждом тике. Геометрия/доли — константы SQUARE_* в class_weapon.gd.
 		"id": "elementalist_orb_ring", "title": "Кольцо Четырёх Стихий",
-		"description": "Квадрат четырёх стихий вспыхивает в точке каста: тики бьют физикой, магией и ожогом и отбрасывают врагов прочь от центра.",
+		"description": "Квадрат четырёх стихий вспыхивает в точке каста: тики бьют физикой, магией и ожогом ближайших к центру и отбрасывают их прочь.",
 		"scene_path": "res://scenes/ElementalistOrbRing.tscn",
 		"attack_mode": "elemental_orbit", "damage_parameter": "magic_damage",
 		"damage_multiplier": 1.35, "fire_interval": 1.52,
 		"attack_range": 360.0, "aoe_radius": 230.0,
 		"projectile_count": 4, "orbit_duration": 1.35, "storm_ticks": 4,
 		"dot_ticks": 2, "knockback": 46.0,
+		# FAN-1031 3c(b2): квадратный тик раздавал magic+phys+ожог КАЖДОМУ врагу в зоне
+		# полным тиком → чистый крауд fan-out (v3'' 20t ≈197.8k ≈43× медианы, elementalist
+		# crowd 14.65 не двигался пул/status-капами — его runaway жил ИМЕННО тут). Кап:
+		# 3 ближайших к центру — полный тик (identity зоны/малый пак целы), дальний хвост
+		# толпы душится (Σfactor 20t 20→5.50 = −72.5%; 5t −23%; 1t 0%). Остаток до коридора
+		# (per-hit magnitude) — 3c-c numeric; здесь только геометрия (direction гарантирован
+		# вниз, точный live 20t за v3'''-пересъёмом). Гейт tests/orbit_falloff_cap_gate.gd.
+		"orbit_full_targets": 3, "orbit_target_diminish": 1.0,
+		# FAN-1031 3c(final): ЖЁСТКИЙ кап ШИРИНЫ тика квадрата. Диминиш (выше) душил per-hit
+		# хвоста, но тик всё равно раздавался каждому в зоне. Кап на 6 ближайших к центру:
+		# орбита чистит пак, но не весь экран. Identity зоны + 1t/5t целы. FAN-1031 3d (v6):
+		# orb_ring crowd всё ещё 2.18× (20t) — ширина квадрата. Кап 6→4 + db 0.82→0.70 (per-hit
+		# prism/meteor/orb). Осторожно с двойным нерфом crowd — калибровать по v7.
+		"orbit_max_targets": 4,
 		"visual_color": Color(0.40, 0.82, 1.0, 0.42),
 		"passive_mods": {"aoe_radius_multiplier": 1.06},
 	},
@@ -947,18 +963,6 @@ const SNIPER_WEAPONS := {
 }
 
 # SCRUM-927/928/929: редизайн кита Священника — оружейный сустейн выпилен
-# ПОЛНОСТЬЮ (никаких heal_percent_* / regen-пассивок: сустейном класса владеет
-# trait «Молитва боя», SCRUM-925), три РАЗНЫЕ ниши:
-#   реликварий — быстрый дальний бурст «тик-тик-тик»: серия storm_ticks быстрых
-#     святых вспышек МАЛОГО радиуса по цели (sanctify_tick_ratio ролла за тик),
-#     самый длинный range кита, самый быстрый темп;
-#   кадило — большой БЛИЗКИЙ AoE: редкие тяжёлые волны вокруг Священника,
-#     радиус много больше реликвария, range короче, кулдаун длиннее
-#     (AoE-специалист: соло ниже реликвария, толпа выше — geometric-mean
-#     тюнинг budget_tuning_for это гарантирует конструктивно);
-#   колокол — dual toll: каждый удар взрывается у ЦЕЛИ и у СВЯЩЕННИКА
-#     одновременно; перекрытие капится дедупом по instance id (враг ≤ 1
-#     полный взрыв за каст — документированное правило per-enemy max-hit).
 const PRIEST_WEAPONS := {
 	"priest_reliquary": {
 		"id": "priest_reliquary", "title": "Светлый Реликварий",
@@ -971,6 +975,14 @@ const PRIEST_WEAPONS := {
 		"storm_ticks": 3, "burst_interval": 0.11,
 		"sanctify_tick_ratio": 0.38,
 		"damage_falloff": 0.62,
+		# FAN-1031 3d (v6): reliquary — крауд-драйвер Священника (20t 3.24×/5t 2.06× при 1t 1.22×).
+		# Бурст-тик идёт через _damage_enemies_in_circle_falloff (радиальный спад + крауд-кап
+		# ХВОСТА _falloff_fanout_factor). Диминиш-кап ширины: 4 ближайших к центру полным,
+		# дальний хвост толпы душится → режет crowd/aoe БЕЗ solo (1 цель = rank 0 = полный).
+		# Identity «серия быстрых вспышек по цели» цела. Per-hit мягко давит db 0.92→0.86.
+		# FAN-1031 3d: 4/1.5 дал live crowd −20% (25825→20626, всё ещё 2.6×) — слабо для
+		# single-target-burst оружия; ужат до 3/2.2 (3 ближних полным, хвост толпы душится круче).
+		"falloff_full_targets": 3, "falloff_target_diminish": 2.2,
 		"visual_color": Color(1.0, 0.92, 0.48, 0.42),
 		"passive_mods": {"attack_speed_multiplier": 1.04},
 	},
@@ -982,6 +994,15 @@ const PRIEST_WEAPONS := {
 		"damage_multiplier": 0.58, "fire_interval": 2.05,
 		"attack_range": 235.0, "aoe_radius": 320.0,
 		"storm_ticks": 2, "burst_interval": 0.24,
+		# FAN-1031 v9-финал: крауд-добор Жреца через ШИРИНУ кадила (координаторское решение —
+		# режем толпу, НЕ каденцию). Волна ward'а идёт через _damage_enemies_in_circle_capped:
+		# ближних к Жрецу цели — полный урон, дальний хвост толпы душится (тот же диминиш-контракт,
+		# что прямой AoE blast/acid). NET-ZERO power-shift: v9 ужат 4/1.2→3/1.7 — режем crowd 1.59
+		# ниже (3 ближних полным, хвост толпы душится круче), компенсируя лифт base/solo (reliquary
+		# каденс 1.18→1.08 + solo_target 1.03→1.10) для net-zero total. Крауд↓ БЕЗ solo (1 цель =
+		# полная). Жёсткого max нет → «большой близкий AoE, выжигающий всё вокруг» identity цела:
+		# все в радиусе задеты, дальние — слабее → player-facing описание кадила НЕ меняем.
+		"aoe_full_targets": 3, "aoe_target_diminish": 1.7,
 		"visual_color": Color(0.96, 1.0, 0.70, 0.36),
 		"passive_mods": {"defense_flat": 0.02},
 	},
@@ -999,23 +1020,10 @@ const PRIEST_WEAPONS := {
 }
 
 # SCRUM-896: редизайн кита Биолога — хрупкий био-реактивный класс с гибридным
-# скейлом (физ/маг/DoT) и тремя РАЗНЫМИ нишами:
-#   линза — ЛОКАЛЬНЫЙ AoE у персонажа (range резко срезан) + замедление всех
-#     задетых 5%→20% от нормированной прогрессии (spore_slow_base/max);
-#   инъектор — самый длинный пирсинг-луч: урон по всей длине (маг.ролл +
-#     INJECTOR_PHYSICAL_SHARE канала damage — ось Силы) и малый бурст анализа
-#     на конце (tip_burst_ratio, aoe_radius много меньше Линзы);
-#   семя — дальняя темпоральная зона: прорастание через grenade_delay,
-#     стартовый маг.хит (seed_impact_ratio), главный пейофф — биоинфекция
-#     (dot_ticks × curse_tick_multiplier; generic-ключи периодики).
-# Периодика всех трёх — status bio_infection с source_id владельца (топливо
-# trait'а «Разбор образцов» SCRUM-1005). Оси скейла по оружиям задокументированы
-# в docs/design/systems/characters_weapons.md; зеркала бюджета — bio-ветки
-# _budget_hit_model/_budget_dot_dps.
 const BIOLOGIST_WEAPONS := {
 	"biologist_spore_lens": {
 		"id": "biologist_spore_lens", "title": "Споровая Линза",
-		"description": "Spore bloom: три расширяющихся споровых кольца у самого Биолога — ранят, заражают и замедляют задетых (замедление растёт с прогрессией).",
+		"description": "Spore bloom: три расширяющихся споровых кольца у самого Биолога — ранят и замедляют задетых, заражая ближайших из них (замедление растёт с прогрессией).",
 		"scene_path": "res://scenes/BiologistSporeLens.tscn",
 		"attack_mode": "bio_spore_bloom", "damage_parameter": "magic_damage",
 		"damage_multiplier": 0.66, "fire_interval": 1.18,
@@ -1024,6 +1032,17 @@ const BIOLOGIST_WEAPONS := {
 		"damage_falloff": 0.70, "dot_ticks": 2,
 		"curse_tick_rate": 2.0, "curse_tick_multiplier": 1.0,
 		"spore_slow_base": 0.05, "spore_slow_max": 0.20,
+		# FAN-1031 3c(b): кап STATUS fan-out крауд-инфекции спор. v3 lvl20_ideal_20t=
+		# 114.5k ≈25× медианы при 1t=293 — bio_infection блэнкетит толпу полным DoT.
+		# F=4/D=1.0 (см. cursed_skull): ближние 4 полностью, хвост 20-толпы −68%
+		# (≈×3.1), пак 1t/5t почти цел (identity «споровое облако заражает задетых»).
+		# Первичное сужение; per-hit numeric биолога (3c-c) + доводка величины по v3'.
+		"status_full_targets": 4, "status_target_diminish": 1.0,
+		# FAN-1031 3c(final): ЖЁСТКИЙ кап ШИРИНЫ заражения. Диминиш (выше) душил per-hit
+		# хвоста, но статус вешался на КАЖДОГО в кольце. Кап на 6 заражаемых: облако чистит
+		# пак, но не заражает толпу из 20. Identity «облако заражает задетых» + прямой
+		# ring-урон (_damage_enemies_in_circle_falloff, НЕ капнут) целы. Старт — калибровать.
+		"status_max_targets": 6,
 		"visual_color": Color(0.46, 1.0, 0.42, 0.40),
 		"passive_mods": {"dot_damage_flat": 1.0},
 	},
@@ -1050,6 +1069,15 @@ const BIOLOGIST_WEAPONS := {
 		"grenade_delay": 0.55, "damage_falloff": 0.58,
 		"dot_ticks": 6, "curse_tick_rate": 1.0, "curse_tick_multiplier": 1.6,
 		"seed_impact_ratio": 0.85,
+		# FAN-1031 3c(b): кап STATUS fan-out крауд-инфекции семени. v3 lvl20_ideal_20t=
+		# 69.1k ≈15× медианы при 1t=173 — прорастание заражает всю толпу полным DoT.
+		# F=4/D=1.0 (см. cursed_skull): хвост 20-толпы −68% (≈×3.1), 1t/5t почти цел
+		# (identity «долгие пульсы заражения, урон приходит со временем» сохранена).
+		# Первичное сужение; per-hit numeric биолога (3c-c) + доводка по v3'.
+		"status_full_targets": 4, "status_target_diminish": 1.0,
+		# FAN-1031 3c(final): ЖЁСТКИЙ кап ШИРИНЫ заражения семени (см. spore_lens). Кап на 6
+		# заражаемых; linked_targets (constellation, кап 5) отдельны. Старт — калибровать.
+		"status_max_targets": 6,
 		"visual_color": Color(0.36, 0.92, 0.58, 0.42),
 		"passive_mods": {"aura_radius_multiplier": 1.04},
 	},
@@ -1126,14 +1154,6 @@ const ENGINEER_WEAPONS := {
 		"scene_path": "res://scenes/EngineerSentryWrench.tscn",
 		"attack_mode": "engineer_sentry_link", "damage_parameter": "damage",
 		# SCRUM-905: ТУРЕЛИ С БОЕЗАПАСОМ. Турель не живёт по таймеру и не
-		# заменяется старейшей: каждая несёт sentry_shot_magazine выстрелов и
-		# сворачивается, расстреляв их. Темп стрельбы = amp_pulse_interval /
-		# (tempo-lift Лидерства) / attack_speed — скорость атаки ускоряет
-		# стрельбу и, следовательно, расход боезапаса. Предел активных турелей =
-		# max_summons + floor(summon_amount/4), жёсткий рельс max_summons_cap;
-		# при полном парке новый деплой пропускается (SCRUM-964-паттерн).
-		# Бюджет: _budget_sentry_ammo_model (пропускная способность боезапаса =
-		# min(спрос парка, magazine/деплой) зеркалит рантайм 1:1).
 		"damage_multiplier": 0.55, "fire_interval": 2.70,
 		"upgrade_damage_exponent": 2.45,  # SCRUM-505: sentry scales from lvl20 DPS upgrades, not lvl1 flat damage
 		"attack_range": 560.0, "aoe_radius": 170.0,
@@ -1165,14 +1185,15 @@ const ENGINEER_WEAPONS := {
 		"attack_mode": "engineer_orbit_drone", "damage_parameter": "damage",
 		# fire_interval — каданс обслуживания парка (доспавн недостающих дронов),
 		# НЕ канал урона: весь урон — контактный (summon-канал бюджета,
-		# _budget_orbit_drone_dps). Число дронов = 1 + floor(max(summon_amount -
+		# _budget_orbit_drone_dps). Число дронов = 2 + floor(max(summon_amount -
 		# drone_count_threshold, 0) / drone_count_step), рельс max_summons_cap:
-		# базовый профиль Инженера (summon_amount ~12.5) даёт РОВНО 1 дрон,
-		# прокачка Лидерства добирает 2..6 (AC SCRUM-906: >=5 на хай-энде).
+		# базовый профиль Инженера (summon_amount ~12.5) даёт РОВНО 2 дрона,
+		# расположенных напротив друг друга; прокачка Лидерства добирает 3..6.
 		"damage_multiplier": 2.4, "fire_interval": 1.20,
 		"attack_range": 540.0, "aoe_radius": 150.0,
-		"max_summons": 1, "max_summons_cap": 6,
-		"drone_orbit_radius": 78.0,     # базовый радиус орбиты (спираль: +14% за слот)
+		"max_summons": 2, "max_summons_cap": 6,
+		"drone_orbit_radius": 121.0,    # FAN-1075: +55% к прежним 78 px
+		"drone_visual_scale": 0.24,     # FAN-1075: +50% к прежним 0.16
 		"drone_orbit_speed": 3.6,       # рад/с; × attack_speed (RPM растёт от скорости атаки)
 		"drone_contact_radius": 44.0,   # радиус контакта дрона
 		"drone_hit_cooldown": 0.85,     # per-enemy кулдаун (защита от every-frame урона)

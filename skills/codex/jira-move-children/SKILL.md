@@ -5,6 +5,12 @@ description: Move all Jira child issues from one parent issue to another, especi
 
 # Jira Move Children
 
+> **LEGACY / ARCHIVE-ONLY — not part of the FantasyDisk workflow.** Since the
+> 2026-07-13 Jira → Multica cutover, FantasyDisk work lives in **Multica** (project
+> FantasyDisk, `FAN-*`); reparenting is done with `multica issue update <id>
+> --parent <issue-id>` (see `docs/process/jira_to_multica_cutover.md`). This generic
+> Jira reparenting skill is retained only for unrelated external Jira projects.
+
 ## Overview
 
 Use this skill to safely reparent Jira child issues from a source issue to a target issue. The common case is moving all tasks from one Epic to another Epic.

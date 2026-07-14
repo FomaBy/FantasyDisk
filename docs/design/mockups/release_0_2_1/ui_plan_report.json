@@ -1,0 +1,96 @@
+{
+  "ok": true,
+  "decision": "ready_for_image",
+  "errors": [],
+  "warnings": [],
+  "elements": [
+    {
+      "id": "poster",
+      "kind": "panel",
+      "rect": [
+        0,
+        0,
+        1920,
+        1080
+      ],
+      "ok": true,
+      "warnings": []
+    },
+    {
+      "id": "release",
+      "kind": "text",
+      "rect": [
+        100,
+        64,
+        760,
+        82
+      ],
+      "ok": true,
+      "warnings": [],
+      "fit_font_size": 58
+    },
+    {
+      "id": "brand",
+      "kind": "icon",
+      "rect": [
+        100,
+        174,
+        840,
+        140
+      ],
+      "ok": true,
+      "warnings": []
+    },
+    {
+      "id": "subtitle",
+      "kind": "text",
+      "rect": [
+        104,
+        352,
+        870,
+        60
+      ],
+      "ok": true,
+      "warnings": [],
+      "fit_font_size": 38
+    },
+    {
+      "id": "highlights",
+      "kind": "text",
+      "rect": [
+        100,
+        462,
+        880,
+        344
+      ],
+      "ok": true,
+      "warnings": [],
+      "fit_font_size": 34
+    },
+    {
+      "id": "footer",
+      "kind": "text",
+      "rect": [
+        100,
+        952,
+        770,
+        56
+      ],
+      "ok": true,
+      "warnings": [],
+      "fit_font_size": 30
+    },
+    {
+      "id": "cinematic_scene",
+      "kind": "decor",
+      "rect": [
+        1020,
+        34,
+        850,
+        1000
+      ],
+      "ok": true,
+      "warnings": []
+    }
+  ]
+}

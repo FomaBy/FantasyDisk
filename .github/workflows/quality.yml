@@ -1,0 +1,58 @@
+name: Quality
+
+on:
+  push:
+    branches: [dev]
+  pull_request:
+    branches: [dev]
+  merge_group:
+
+permissions:
+  contents: read
+
+jobs:
+  static-quality:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v6
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-python@v6
+        with:
+          python-version: "3.12"
+      - name: Assert exact candidate SHA
+        run: |
+          test "$(git rev-parse HEAD)" = "$GITHUB_SHA"
+          mkdir -p build
+          printf '%s\n' "$GITHUB_SHA" > build/quality_gate_candidate_sha.txt
+      - name: Repository and Python gates (push range)
+        if: github.event_name == 'push'
+        run: python3 tools/quality_gate.py --static-only --changed-ref "${{ github.event.before }}"
+      - name: Repository and Python gates (pull request range)
+        if: github.event_name == 'pull_request'
+        run: python3 tools/quality_gate.py --static-only --changed-ref "${{ github.event.pull_request.base.sha }}"
+      - name: Repository and Python gates (merge queue candidate)
+        if: github.event_name == 'merge_group'
+        run: python3 tools/quality_gate.py --static-only --changed-ref "${{ github.event.merge_group.base_sha }}"
+      - name: Hash quality evidence
+        if: always()
+        run: |
+          test -f build/quality_gate_report.json
+          (cd build && sha256sum quality_gate_report.json > quality_gate_report.sha256)
+          (cd build && sha256sum -c quality_gate_report.sha256)
+      - name: Upload exact-SHA quality evidence
+        if: always()
+        uses: actions/upload-artifact@v7
+        with:
+          name: quality-${{ github.event_name }}-${{ github.sha }}
+          path: |
+            build/quality_gate_candidate_sha.txt
+            build/quality_gate_report.json
+            build/quality_gate_report.sha256
+          if-no-files-found: error
+          retention-days: 30
+
+# The full gate additionally requires the project's exact Godot 4.7 toolchain
+# and remains a required local/release check:
+# python3 tools/quality_gate.py --profile full

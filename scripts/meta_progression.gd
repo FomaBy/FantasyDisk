@@ -20,6 +20,7 @@ extends RefCounted
 
 const DEFAULT_SAVE_PATH := "user://fantasydisk_meta.cfg"
 const CODEX_DATA := preload("res://scripts/codex_data.gd")
+const CODEX_UNLOCK_STATE := preload("res://scripts/codex_unlock_state.gd")
 const TREE_DATA := preload("res://scripts/meta_progression_tree_data.gd")
 const SCHEMA6_DATA := preload("res://scripts/constellation_schema6_data.gd")
 # SCRUM-516: лестница возвышений сжата 10→5. Единый кап и для дорожки сложности,
@@ -130,11 +131,8 @@ const CLASS_PROGRESSION := [
 # discovery-only layer: they reveal hidden side nodes and grant no currency or
 # combat modifiers.
 const CLASS_CHALLENGE_MAX_BONUS := 0.05
-const CODEX_DISCOVERY_CATEGORIES := {
-	"monsters": "discovered_monsters",
-	"bosses": "discovered_bosses",
-	"artifacts": "discovered_artifacts",
-}
+const CODEX_DISCOVERY_CATEGORIES := CODEX_UNLOCK_STATE.DISCOVERY_CATEGORIES
+const CODEX_UNREAD_SAVE_KEY := CODEX_UNLOCK_STATE.UNREAD_SAVE_KEY
 const CLASS_CHALLENGES := [
 	{"id": "weapon_master", "title": "Мастер арсенала", "desc": "Победы 3 разными оружиями этого класса открывают тайные звёзды.", "condition_metric": "weapon_diversity", "threshold": 3, "effects": {}},
 	{"id": "peak_climber", "title": "Покоритель вершин", "desc": "Победа на возвышении 3+ открывает тайные звёзды.", "condition_metric": "best_ascension", "threshold": 3, "effects": {}},
@@ -161,6 +159,9 @@ static func default_state() -> Dictionary:
 		"discovered_monsters": [],
 		"discovered_bosses": [],
 		"discovered_artifacts": [],
+		"discovered_characters": [],
+		"discovered_weapons": [],
+		CODEX_UNREAD_SAVE_KEY: {},
 	}
 
 
@@ -255,7 +256,8 @@ static func load_state(save_path := DEFAULT_SAVE_PATH) -> Dictionary:
 	state["class_challenges_done"] = cc_done
 	for category in CODEX_DISCOVERY_CATEGORIES.keys():
 		var save_key: String = CODEX_DISCOVERY_CATEGORIES[category]
-		state[save_key] = _normalized_id_list(config.get_value(SECTION, save_key, []), category)
+		state[save_key] = CODEX_UNLOCK_STATE.normalized_id_list(config.get_value(SECTION, save_key, []), category)
+	state[CODEX_UNREAD_SAVE_KEY] = CODEX_UNLOCK_STATE.normalized_unread(config.get_value(SECTION, CODEX_UNREAD_SAVE_KEY, {}))
 	if schema == TREE_SCHEMA_VERSION:
 		state["legacy_mastery"] = _normalized_legacy_mastery(config.get_value(SECTION, "legacy_mastery", {}))
 		state["hidden_reveal_facts"] = _normalized_hidden_reveal_facts(config.get_value(SECTION, "hidden_reveal_facts", {}))
@@ -289,7 +291,8 @@ static func save_state(state: Dictionary, save_path := DEFAULT_SAVE_PATH) -> voi
 	config.set_value(SECTION, "class_challenges_done", state.get("class_challenges_done", {}))
 	for category in CODEX_DISCOVERY_CATEGORIES.keys():
 		var save_key: String = CODEX_DISCOVERY_CATEGORIES[category]
-		config.set_value(SECTION, save_key, _normalized_id_list(state.get(save_key, []), category))
+		config.set_value(SECTION, save_key, CODEX_UNLOCK_STATE.normalized_id_list(state.get(save_key, []), category))
+	config.set_value(SECTION, CODEX_UNREAD_SAVE_KEY, CODEX_UNLOCK_STATE.normalized_unread(state.get(CODEX_UNREAD_SAVE_KEY, {})))
 	config.save(save_path)
 
 
@@ -516,63 +519,44 @@ static func _normalized_schema6_purchases(state: Dictionary, raw_nodes: Array, s
 	return accepted
 
 
-static func _normalized_id_list(raw, category := "") -> Array:
-	var result := []
-	if not (raw is Array):
-		return result
-	for value in raw:
-		var id := str(value).strip_edges()
-		if id != "" and (category == "" or _is_valid_codex_discovery_id(category, id)) and not result.has(id):
-			result.append(id)
-	return result
-
-
 static func _canonical_codex_ids(category: String) -> Dictionary:
-	var ids := {}
-	match category:
-		"monsters":
-			for entry in CODEX_DATA.monsters():
-				if str(entry.get("kind", "")) != "boss":
-					ids[str(entry.get("id", ""))] = true
-		"bosses":
-			for entry in CODEX_DATA.monsters():
-				if str(entry.get("kind", "")) == "boss":
-					ids[str(entry.get("id", ""))] = true
-		"artifacts":
-			for entry in CODEX_DATA.artifacts():
-				ids[str(entry.get("id", ""))] = true
-	return ids
+	return CODEX_UNLOCK_STATE.canonical_ids(category)
 
 
-static func _is_valid_codex_discovery_id(category: String, content_id: String) -> bool:
-	return _canonical_codex_ids(category).has(content_id)
-
-
-static func _discovery_save_key(category: String) -> String:
-	return str(CODEX_DISCOVERY_CATEGORIES.get(category, ""))
+static func codex_weapon_id(character_id: String, weapon_id: String) -> String:
+	return CODEX_UNLOCK_STATE.weapon_id(character_id, weapon_id)
 
 
 static func discovered_ids(state: Dictionary, category: String) -> Array:
-	var save_key := _discovery_save_key(category)
-	if save_key == "":
-		return []
-	return _normalized_id_list(state.get(save_key, []), category)
+	return CODEX_UNLOCK_STATE.discovered_ids(state, category)
 
 
 static func is_codex_discovered(state: Dictionary, category: String, content_id: String) -> bool:
-	return discovered_ids(state, category).has(content_id)
+	return CODEX_UNLOCK_STATE.is_discovered(state, category, content_id)
+
+
+static func unread_codex_ids(state: Dictionary, category: String) -> Array:
+	return CODEX_UNLOCK_STATE.unread_ids(state, category)
+
+
+static func is_codex_unread(state: Dictionary, category: String, content_id: String) -> bool:
+	return CODEX_UNLOCK_STATE.is_unread(state, category, content_id)
+
+
+static func has_codex_unread(state: Dictionary, categories := []) -> bool:
+	return CODEX_UNLOCK_STATE.has_unread(state, categories)
+
+
+static func record_codex_unread(state: Dictionary, category: String, content_id: String) -> Dictionary:
+	return CODEX_UNLOCK_STATE.record_unread(state, category, content_id)
+
+
+static func mark_codex_read(state: Dictionary, category: String, content_id: String) -> Dictionary:
+	return CODEX_UNLOCK_STATE.mark_read(state, category, content_id)
 
 
 static func record_codex_discovery(state: Dictionary, category: String, content_id: String) -> Dictionary:
-	var save_key := _discovery_save_key(category)
-	var id := content_id.strip_edges()
-	if save_key == "" or id == "" or not _is_valid_codex_discovery_id(category, id):
-		return state
-	var ids := _normalized_id_list(state.get(save_key, []), category)
-	if not ids.has(id):
-		ids.append(id)
-	state[save_key] = ids
-	return state
+	return CODEX_UNLOCK_STATE.record_discovery(state, category, content_id)
 
 
 static func record_codex_discoveries(state: Dictionary, category: String, content_ids: Array) -> Dictionary:

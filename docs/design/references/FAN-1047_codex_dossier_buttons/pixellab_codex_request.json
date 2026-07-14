@@ -1,0 +1,21 @@
+{
+  "description": "Orthographic full-screen pixel-art RPG Codex interface reference, D&D dark fantasy dragon style, blackened steel and smoky obsidian, restrained antique silver and tiny ruby accents. One title well, one upper-right navigation action, three calm content columns. The six left navigation actions must use the same ornate dark-metal dragon-claw plate language as a heroic main menu, with quiet neutral silver focus rather than bright yellow. Empty interiors only, no text, no letters, no pseudo-text, no characters, no portraits, no icons, no watermark. Crisp stable borders, identical button silhouettes for every state, generous safe zones, no ornament inside content rectangles.",
+  "width": 688,
+  "height": 384,
+  "color_palette": "smoky black, gunmetal, aged silver, muted warm gold only as a tiny accent, restrained ruby pins, deep blue-black background",
+  "no_background": false,
+  "name": "FAN-1047 Codex main-menu button family reference",
+  "pieces": [
+    {"id":"title","kind":"rounded_rect","x":20,"y":10,"w":90,"h":28,"radius":3},
+    {"id":"back","kind":"rounded_rect","x":405,"y":10,"w":86,"h":28,"radius":5},
+    {"id":"nav","kind":"rounded_rect","x":20,"y":50,"w":100,"h":220,"radius":4},
+    {"id":"tab1","kind":"rounded_rect","x":29,"y":62,"w":82,"h":27,"radius":4},
+    {"id":"tab2","kind":"rounded_rect","x":29,"y":96,"w":82,"h":27,"radius":4},
+    {"id":"tab3","kind":"rounded_rect","x":29,"y":130,"w":82,"h":27,"radius":4},
+    {"id":"tab4","kind":"rounded_rect","x":29,"y":164,"w":82,"h":27,"radius":4},
+    {"id":"tab5","kind":"rounded_rect","x":29,"y":198,"w":82,"h":27,"radius":4},
+    {"id":"tab6","kind":"rounded_rect","x":29,"y":232,"w":82,"h":27,"radius":4},
+    {"id":"list","kind":"rounded_rect","x":130,"y":50,"w":155,"h":220,"radius":4},
+    {"id":"detail","kind":"rounded_rect","x":295,"y":50,"w":196,"h":220,"radius":4}
+  ]
+}

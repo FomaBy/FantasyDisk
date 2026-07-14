@@ -2,7 +2,6 @@ class_name BerserkWeapon
 extends Node2D
 
 const TARGET_QUERY := preload("res://scripts/combat_target_query.gd")
-const EXACT_ZONE_OVERLAY_ALPHA := 0.60
 const CONTACT_STUCK_HIT_RADIUS := 40.0
 # SCRUM-1043: Berserk's full-frame body extends farther below its origin than
 # above it. Keep the former 150 px upper reach while moving the hammer ground
@@ -394,7 +393,6 @@ func _show_thrust_step_area(owner_node: Node2D, thrust_direction: Vector2) -> vo
 	if scene == null:
 		scene = get_tree().root
 	AttackVfx.beam(scene, owner_node.global_position + thrust_direction * start_distance, owner_node.global_position + thrust_direction * attack_range, inner_width, visual_color)
-	_show_exact_zone_overlay(owner_node, _strip_zone_points(thrust_direction))
 
 
 # SCRUM-923: шаг спирали — фронт-дуга spiral_arm_degrees под углом
@@ -441,16 +439,6 @@ func _show_spiral_step_area(owner_node: Node2D, arm_angle: float, front_radius: 
 		scene = get_tree().root
 	var arm_direction := Vector2.from_angle(arm_angle)
 	AttackVfx.beam(scene, owner_node.global_position, owner_node.global_position + arm_direction * front_radius, 26.0, visual_color)
-	_show_exact_zone_overlay(owner_node, _spiral_zone_points(arm_angle, front_radius))
-
-
-func _spiral_zone_points(arm_angle: float, front_radius: float) -> PackedVector2Array:
-	var half_arm := deg_to_rad(maxf(spiral_arm_degrees, 10.0) * 0.5)
-	var points := PackedVector2Array([Vector2.ZERO])
-	for point_index in range(13):
-		var angle := arm_angle + lerpf(-half_arm, half_arm, float(point_index) / 12.0)
-		points.append(Vector2.from_angle(angle) * front_radius)
-	return points
 
 
 # SCRUM-961 «Призрачный топор»: полупрозрачный призрачный взмах-афтеримидж
@@ -842,14 +830,8 @@ func _show_weapon_signature(owner_node: Node2D, attack_direction: Vector2) -> vo
 	var scene := get_tree().current_scene
 	if scene == null:
 		scene = get_tree().root
-	var center := owner_node.global_position + direction * minf(maxf(attack_range * 0.45, 72.0), 260.0)
+	var release_origin := owner_node.global_position + direction * 26.0
 	var radius := maxf(aoe_radius, inner_width * 1.45)
-	if attack_shape == "circle":
-		center = _circle_attack_center(owner_node)
-		radius = maxf(_effective_circle_radius(), 96.0)
-	elif attack_shape == "strip":
-		center = owner_node.global_position + direction * ((start_distance + attack_range) * 0.5)
-		radius = maxf(inner_width * 2.0, 96.0)
 	var weapon_texture: Texture2D = null
 	var weapon_rotation := 0.0
 	var weapon_scale := 0.58
@@ -862,7 +844,7 @@ func _show_weapon_signature(owner_node: Node2D, attack_direction: Vector2) -> vo
 			weapon_offset = Vector2(10.0, -2.0)
 	var signature := AttackVfx.weapon_signature(
 		scene,
-		center,
+		release_origin,
 		weapon_id,
 		radius,
 		visual_color,
@@ -873,8 +855,6 @@ func _show_weapon_signature(owner_node: Node2D, attack_direction: Vector2) -> vo
 		weapon_offset
 	)
 	if signature != null:
-		if attack_shape == "circle":
-			signature.scale *= _circle_attack_visual_scale()
 		signature.add_to_group("player_weapon_effects")
 
 
@@ -887,30 +867,6 @@ func _show_strip_area(owner_node: Node2D, attack_direction: Vector2) -> void:
 	var start: Vector2 = owner_node.global_position + direction * start_distance
 	var finish: Vector2 = owner_node.global_position + direction * attack_range
 	AttackVfx.beam(scene, start, finish, inner_width, visual_color)
-	_show_exact_zone_overlay(owner_node, _strip_zone_points(direction))
-
-
-func _strip_zone_points(direction: Vector2) -> PackedVector2Array:
-	var perpendicular := Vector2(-direction.y, direction.x) * inner_width * 0.5
-	return PackedVector2Array([
-		direction * start_distance + perpendicular,
-		direction * attack_range + perpendicular,
-		direction * attack_range - perpendicular,
-		direction * start_distance - perpendicular,
-	])
-
-
-func _show_exact_zone_overlay(owner_node: Node2D, points: PackedVector2Array) -> void:
-	# Полупрозрачный контур фактической зоны урона поверх художественного VFX.
-	var overlay := Polygon2D.new()
-	overlay.name = "BerserkExactAttackZone"
-	overlay.color = Color(visual_color.r, visual_color.g, visual_color.b, EXACT_ZONE_OVERLAY_ALPHA)
-	overlay.polygon = points
-	overlay.z_index = 9
-	owner_node.add_child(overlay)
-	var tween := overlay.create_tween()
-	tween.tween_property(overlay, "color:a", 0.0, 0.18)
-	tween.tween_callback(overlay.queue_free)
 
 
 func _show_frustum_area(owner_node: Node2D, attack_direction: Vector2) -> void:

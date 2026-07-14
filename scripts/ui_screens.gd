@@ -18,6 +18,8 @@ var _rebind_is_gamepad := false
 var _atlas := {}
 # Скрытые звезды, чью церемонию рассеивания тумана уже показали в этой сессии.
 var _atlas_hidden_seen := {}
+var _feedback_request_id := 0
+var codex_unlock_presenter
 
 const HeroStatRadar := preload("res://scripts/ui/hero_stat_radar.gd")
 const SemanticTypography := preload("res://scripts/ui/semantic_typography.gd")
@@ -30,6 +32,7 @@ const ArtifactRewardPresenter := preload("res://scripts/artifact_reward_presente
 const ShopUIConstants := preload("res://scripts/ui/shop_ui_constants.gd")
 const HeroSelectConstants := preload("res://scripts/ui/hero_select_constants.gd")
 const FEEDBACK_REPORTER_SCRIPT := preload("res://scripts/feedback_reporter.gd")
+const FeedbackOverlayController := preload("res://scripts/ui/feedback_overlay.gd")
 const DisplayResolution := preload("res://scripts/display_resolution.gd")
 const StatFormulas := preload("res://scripts/stat_formulas.gd")
 const GlobalTooltip := preload("res://scripts/ui/global_tooltip.gd")
@@ -37,6 +40,11 @@ const GlobalTooltipControl := preload("res://scripts/ui/global_tooltip_control.g
 # SCRUM-810/816: реестр глифов кнопок геймпада (null-safe; нет ассета → текст).
 const InputGlyphRegistry := preload("res://scripts/ui/input_glyph_registry.gd")
 const CodexImageFit := preload("res://scripts/ui/codex_image_fit.gd")
+const CodexUnlockPresenter := preload("res://scripts/codex_unlock_presenter.gd")
+# FAN-1087: лор-модуль FAN-1080 подключается явным preload, как остальные
+# вынесенные UI-модули: глобальное имя класса из global_script_class_cache
+# не гарантировано в холодном/устаревшем чекауте и роняло компиляцию main.gd.
+const LoreScreens := preload("res://scripts/ui/lore_screens.gd")
 const BATTLE_PRAYER_ICON_IDS := {
 	"prayer_wrath": "damage",
 	"prayer_mending": "regeneration",
@@ -463,9 +471,19 @@ const ATLAS_CLASS_GENITIVE := {
 # safe-зоне, полая рама frame_border поверх, панели — _atlas_chip_style, кнопки —
 # глобальный кит (_make_button/_set_action_button_size).
 const ATLAS_STYLE_DIR := "res://assets/sprites/ui/atlas_style/"
+const CODEX_RUNTIME_DIR := ATLAS_STYLE_DIR + "codex/"
+const CODEX_SANCTUM_BG_PATH := CODEX_RUNTIME_DIR + "bg_codex_sanctum.png"
+const CODEX_PANEL_FRAME_PATH := CODEX_RUNTIME_DIR + "panel_9slice.png"
+const CODEX_ENTRY_CARD_PATH := CODEX_RUNTIME_DIR + "entry_card_516x154.png"
+const CODEX_CHIP_FRAME_PATH := CODEX_RUNTIME_DIR + "chip_bar.png"
+const CODEX_DOSSIER_FRAME_PATH := CODEX_RUNTIME_DIR + "dossier_frame.png"
+const CODEX_CREST_PATH := CODEX_RUNTIME_DIR + "codex_crest.png"
+const CODEX_PANEL_TEXTURE_MARGINS := Vector4(46.0, 46.0, 46.0, 46.0)
+const CODEX_CHIP_TEXTURE_MARGINS := Vector4(40.0, 20.0, 40.0, 20.0)
+const CODEX_DOSSIER_TEXTURE_MARGINS := Vector4(96.0, 96.0, 96.0, 96.0)
 const ATLAS_STYLE_BG_PATHS := {
 	"hero_select": ATLAS_STYLE_DIR + "bg_hero_hall.png",
-	"codex": ATLAS_STYLE_DIR + "bg_codex_archive.png",
+	"codex": CODEX_SANCTUM_BG_PATH,
 	"patch_notes": ATLAS_STYLE_DIR + "bg_chronicle.png",
 	"settings": ATLAS_STYLE_DIR + "bg_sanctum.png",
 }
@@ -486,6 +504,7 @@ const REWARD_ELITE_CARD_SIZE := Vector2(320.0, 430.0)
 
 func _init(game_ref) -> void:
 	game = game_ref
+	codex_unlock_presenter = CodexUnlockPresenter.new(game_ref)
 
 
 # SCRUM-1059 supersedes the SCRUM-981 2×3 action grid while preserving its
@@ -846,7 +865,8 @@ func _show_main_menu() -> void:
 		if game.run_autosave_has_run():
 			_show_continue_run_dialog()
 		else:
-			_show_character_select()
+			# FAN-1080: перед самым первым забегом — вступление истории (1 раз).
+			_maybe_show_lore_intro(_show_character_select)
 	)
 	action_box.add_child(start_button)
 
@@ -901,6 +921,8 @@ func _show_main_menu() -> void:
 	codex_button.name = "MainMenuCodexButton"
 	codex_button.pressed.connect(_show_codex_screen)
 	action_box.add_child(codex_button)
+	var main_codex_badge: TextureRect = codex_unlock_presenter.add_unread_badge(codex_button, "MainMenuCodexUnreadBadge", 40.0, 52.0)
+	main_codex_badge.visible = game.META_PROGRESSION.has_codex_unread(game.meta_state)
 
 	var exit_button := _make_button("Выйти из игры")
 	exit_button.name = "MainMenuExitButton"
@@ -1272,7 +1294,8 @@ func _show_continue_run_dialog() -> void:
 	_apply_overhaul_2k_button_theme(new_game_button, "cr_btn", CR_BTN_NEWGAME_2K.size)
 	new_game_button.pressed.connect(func() -> void:
 		game.clear_run_autosave()
-		_show_character_select()
+		# FAN-1080: старые профили без флага lore_intro_seen тоже видят вступление.
+		_maybe_show_lore_intro(_show_character_select)
 	)
 	button_row.add_child(new_game_button)
 
@@ -2652,13 +2675,15 @@ func _show_character_select() -> void:
 
 
 const CODEX_DATA := preload("res://scripts/codex_data.gd")
+const LORE_DATA := preload("res://scripts/lore_data.gd")
 const CODEX_SECTIONS := [
 	{"id": "characters", "title": "Персонажи"},
 	{"id": "monsters", "title": "Монстры"},
 	{"id": "artifacts", "title": "Артефакты"},
-	{"id": "characteristics", "title": "Характеристики"},
+	{"id": "characteristics", "title": "Параметры"},
 	{"id": "attributes", "title": "Атрибуты"},
-	{"id": "ascension", "title": "Возвышение"},
+	{"id": "ascension", "title": "Возвыш."},
+	{"id": "chronicle", "title": "Летопись"},
 ]
 
 
@@ -4923,7 +4948,7 @@ func _atlas_buy_selected() -> void:
 		game._play_sfx("ui_error")
 		return
 	game.meta_state = game.META_PROGRESSION.allocate_node(game.meta_state, node_id)
-	game.META_PROGRESSION.save_state(game.meta_state)
+	game.save_meta_progression()
 	# SCRUM-968: успешная покупка узла Атласа — трата звёздной пыли.
 	game._play_sfx("purchase")
 	_atlas_refresh()
@@ -4965,7 +4990,7 @@ func _atlas_toggle_keystone() -> void:
 		return
 	var active: bool = game.META_PROGRESSION.is_keystone_active(game.meta_state, node_id)
 	game.meta_state = game.META_PROGRESSION.set_active_keystone(game.meta_state, class_id, "" if active else node_id)
-	game.META_PROGRESSION.save_state(game.meta_state)
+	game.save_meta_progression()
 	_atlas_refresh()
 
 
@@ -4995,7 +5020,7 @@ func _atlas_respec_confirm() -> void:
 		game.meta_state = game.META_PROGRESSION.reset_constellation(game.meta_state, "")
 	else:
 		game.meta_state = game.META_PROGRESSION.reset_constellation(game.meta_state, str(_atlas.get("class_id", "")))
-	game.META_PROGRESSION.save_state(game.meta_state)
+	game.save_meta_progression()
 	_atlas_respec_cancel()
 	_atlas_refresh()
 
@@ -5364,6 +5389,16 @@ func _add_credits_body(parent: Control, text: String) -> void:
 	parent.add_child(label)
 
 
+# FAN-1080: вступление истории и остальной лор-UI живут в scripts/ui/lore_screens.gd
+# (извлечено под static-quality ратчет); здесь — тонкие точки входа.
+func _maybe_show_lore_intro(next_action: Callable) -> void:
+	LoreScreens.maybe_show_intro(self, next_action)
+
+
+func _show_lore_intro(on_finish: Callable, mark_seen := true) -> void:
+	LoreScreens.show_intro(self, on_finish, mark_seen)
+
+
 func _show_codex_screen() -> void:
 	# SCRUM-954: the accepted SCRUM-1017 PixelLab contract is authored on a
 	# 1920x1080 stage. The stage scales uniformly and letterboxes instead of
@@ -5381,6 +5416,7 @@ func _show_codex_screen() -> void:
 	_prepare_global_tooltips(root)
 
 	_unified_add_background(root, "codex")
+	root.set_meta("codex_runtime_skin", "fan1065_atlas_settings")
 
 	var stage := Control.new()
 	stage.name = "CodexStage"
@@ -5388,6 +5424,20 @@ func _show_codex_screen() -> void:
 	root.add_child(stage)
 	_codex_update_stage_transform(stage)
 	root.resized.connect(_codex_update_stage_transform.bind(stage))
+
+	# FAN-1069: the PixelLab crest is a quiet header accent in the empty stage
+	# band. Runtime text stays separate from the art; tabs/Back remain the exact
+	# shared Main Menu button family requested by the user.
+	if ResourceLoader.exists(CODEX_CREST_PATH):
+		var crest := TextureRect.new()
+		crest.name = "CodexCrest"
+		crest.texture = game._cached_texture(CODEX_CREST_PATH)
+		crest.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
+		crest.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
+		crest.mouse_filter = Control.MOUSE_FILTER_IGNORE
+		_codex_pl_make_nearest(crest)
+		_codex_set_design_rect(crest, Rect2(908, 24, 104, 104))
+		stage.add_child(crest)
 
 	# Header frame and Back use the same restrained metal/button family as the
 	# rest of the product. No category emblem competes with the screen title.
@@ -5465,36 +5515,32 @@ func _show_codex_screen() -> void:
 	content.set_meta("codex_section_title", center_title)
 	content.set_meta("codex_active_section", "characters")
 
-	# Six fixed Russian labels. The category-emblem path is intentionally absent:
-	# actual canonical images belong to entries, not to navigation furniture.
-	var nav_y := [12.0, 130.0, 248.0, 366.0, 484.0, 602.0]
+	# Seven fixed Russian labels (FAN-1080 added «Летопись»). The category-emblem
+	# path is intentionally absent: canonical images belong to entries, not to
+	# navigation furniture. Pitch 104 keeps the 7th plate inside the 752px
+	# content zone of the nav panel (840 - 38 top - 50 bottom margins).
+	var nav_y := [24.0, 128.0, 232.0, 336.0, 440.0, 544.0, 648.0]
 	for section_index in range(CODEX_SECTIONS.size()):
 		var section: Dictionary = CODEX_SECTIONS[section_index]
 		var section_id := str(section["id"])
 		var tab_button := Button.new()
 		tab_button.name = "CodexTab_%s" % section_id
 		tab_button.text = str(section["title"])
-		tab_button.custom_minimum_size = Vector2(260, 104)
+		tab_button.custom_minimum_size = Vector2(260, 72)
 		tab_button.mouse_default_cursor_shape = Control.CURSOR_POINTING_HAND
-		_apply_fantasy_button_theme(tab_button, "default", UIButtonFamily.FAMILY_CODEX_TAB)
+		_apply_fantasy_button_theme(tab_button, "default", UIButtonFamily.FAMILY_MAIN_MENU)
 		tab_button.add_theme_font_size_override("font_size", _readable_font_size(SemanticTypography.ROLE_TAB, 16))
 		tab_button.alignment = HORIZONTAL_ALIGNMENT_CENTER
 		tab_button.autowrap_mode = TextServer.AUTOWRAP_OFF
 		tab_button.clip_text = false
-		_codex_bind_stage_font(tab_button, SemanticTypography.ROLE_TAB, 22, SemanticTypography.role_min(SemanticTypography.ROLE_TAB), SemanticTypography.role_max(SemanticTypography.ROLE_TAB))
-		for tab_state in ["normal", "hover", "pressed", "disabled", "focus"]:
-			var source_style := tab_button.get_theme_stylebox(tab_state)
-			var tab_style := source_style.duplicate() if source_style != null else null
-			if tab_style != null:
-				tab_style.content_margin_left = 20.0
-				tab_style.content_margin_right = 20.0
-				tab_style.content_margin_top = 18.0
-				tab_style.content_margin_bottom = 18.0
-				tab_button.add_theme_stylebox_override(tab_state, tab_style)
-		_codex_set_design_rect(tab_button, Rect2(0, nav_y[section_index], 260, 104))
+		_codex_bind_stage_font(tab_button, SemanticTypography.ROLE_TAB, 20, SemanticTypography.role_min(SemanticTypography.ROLE_TAB), SemanticTypography.role_max(SemanticTypography.ROLE_TAB))
+		_codex_set_design_rect(tab_button, Rect2(0, nav_y[section_index], 260, 72))
 		tab_button.pressed.connect(_show_codex_section.bind(content, section_id))
 		_connect_ui_sfx(tab_button, "click")
 		tabs_row.add_child(tab_button)
+		if ["characters", "monsters", "artifacts"].has(section_id):
+			var tab_badge: TextureRect = codex_unlock_presenter.add_unread_badge(tab_button, "CodexTabUnreadBadge_%s" % section_id, 28.0, 30.0)
+			tab_badge.visible = codex_unlock_presenter.section_has_unread(section_id)
 
 	_show_codex_section(content, "characters")
 
@@ -5566,13 +5612,82 @@ func _codex_refresh_stage_fonts(stage: Control) -> void:
 		))
 
 
-func _codex_panel_style(alpha: float, margins: Vector4) -> StyleBoxFlat:
+func _codex_texture_style(path: String, texture_margins: Vector4, margins: Vector4, alpha := 1.0) -> StyleBox:
+	return _global_texture_style(
+		path,
+		texture_margins,
+		Color(1.0, 1.0, 1.0, clampf(alpha, 0.0, 1.0)),
+		margins,
+		false
+	)
+
+
+func _codex_panel_style(alpha: float, margins: Vector4) -> StyleBox:
+	return _codex_texture_style(CODEX_PANEL_FRAME_PATH, CODEX_PANEL_TEXTURE_MARGINS, margins, alpha)
+
+
+func _codex_chip_style(alpha: float, margins: Vector4) -> StyleBox:
+	return _codex_texture_style(CODEX_CHIP_FRAME_PATH, CODEX_CHIP_TEXTURE_MARGINS, margins, alpha)
+
+
+func _codex_dossier_style(alpha: float, margins: Vector4) -> StyleBox:
+	return _codex_texture_style(CODEX_DOSSIER_FRAME_PATH, CODEX_DOSSIER_TEXTURE_MARGINS, margins, alpha)
+
+
+func _codex_lore_style(margins: Vector4) -> StyleBox:
+	# The square dossier art is safe for the 300x300 portrait well, but its broad
+	# dragon corners enter the accepted 610x304 lore content lane when stretched
+	# to 684x356. Keep that locked content rect and use the thinner Codex panel
+	# frame with a restrained parchment-warm tint instead.
+	return _global_texture_style(
+		CODEX_PANEL_FRAME_PATH,
+		CODEX_PANEL_TEXTURE_MARGINS,
+		Color(1.06, 0.96, 0.82, 0.98),
+		margins,
+		false
+	)
+
+
+func _codex_inset_style(alpha: float, margins: Vector4) -> StyleBoxFlat:
 	var style := _atlas_chip_style(alpha, 0.0)
 	style.content_margin_left = margins.x
 	style.content_margin_top = margins.y
 	style.content_margin_right = margins.z
 	style.content_margin_bottom = margins.w
 	return style
+
+
+func _codex_clear_content_style(margins: Vector4) -> StyleBoxFlat:
+	var style := StyleBoxFlat.new()
+	style.bg_color = Color(0.0, 0.0, 0.0, 0.0)
+	style.set_border_width_all(0)
+	style.content_margin_left = margins.x
+	style.content_margin_top = margins.y
+	style.content_margin_right = margins.z
+	style.content_margin_bottom = margins.w
+	return style
+
+
+func _codex_entry_style(tint: Color) -> StyleBox:
+	return _global_texture_style(
+		CODEX_ENTRY_CARD_PATH,
+		Vector4.ZERO,
+		tint,
+		Vector4(20.0, 20.0, 30.0, 20.0),
+		false
+	)
+
+
+func _codex_apply_entry_theme(button: Button, selected := false) -> void:
+	# Preserve the semantic content-row family/focus contract, then replace only
+	# its painted surface with the accepted PixelLab card. Every state keeps the
+	# same content margins, so selection/hover never shifts the 516x154 geometry.
+	_unified_apply_row_theme(button, 10.0, selected)
+	button.add_theme_stylebox_override("normal", _codex_entry_style(Color(1.08, 1.02, 0.88, 1.0) if selected else Color(0.88, 0.88, 0.88, 0.96)))
+	button.add_theme_stylebox_override("hover", _codex_entry_style(Color(1.10, 1.08, 1.02, 1.0)))
+	button.add_theme_stylebox_override("pressed", _codex_entry_style(Color(0.82, 0.78, 0.72, 1.0)))
+	button.add_theme_stylebox_override("focus", _codex_entry_style(Color(1.12, 1.04, 0.82, 1.0)))
+	button.add_theme_stylebox_override("disabled", _codex_entry_style(Color(0.50, 0.50, 0.50, 0.72)))
 
 
 func _show_codex_section(content: PanelContainer, section_id: String) -> void:
@@ -5644,6 +5759,8 @@ func _show_codex_section(content: PanelContainer, section_id: String) -> void:
 			_build_codex_stats(list, "derived")
 		"ascension":
 			_build_codex_ascensions(list)
+		"chronicle":
+			_build_codex_chronicle(list)
 	var default_detail: Dictionary = scroll.get_meta("codex_default_detail", {})
 	if detail_panel != null and not default_detail.is_empty():
 		_codex_update_detail(detail_panel, default_detail)
@@ -5651,7 +5768,7 @@ func _show_codex_section(content: PanelContainer, section_id: String) -> void:
 			_codex_set_selected_entry(content, scroll.get_meta("codex_default_entry_button") as Button)
 
 
-func _codex_entry_panel(list: VBoxContainer, detail_data := {}) -> HBoxContainer:
+func _codex_entry_panel(list: VBoxContainer, detail_data := {}, unread_refs := []) -> HBoxContainer:
 	# SCRUM-954: 516x154 authored row. Its 20px inner reserve keeps the actual
 	# image well and centered Russian name clear of the leather/metal bevel.
 	var panel := Button.new()
@@ -5661,18 +5778,25 @@ func _codex_entry_panel(list: VBoxContainer, detail_data := {}) -> HBoxContainer
 	panel.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	panel.mouse_default_cursor_shape = Control.CURSOR_POINTING_HAND
 	panel.focus_mode = Control.FOCUS_ALL
-	_unified_apply_row_theme(panel, 10.0, false)
+	_codex_apply_entry_theme(panel, false)
 	list.add_child(panel)
 	var row := HBoxContainer.new()
 	row.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	row.set_anchors_preset(Control.PRESET_FULL_RECT)
 	row.offset_left = 20.0
 	row.offset_top = 20.0
-	row.offset_right = -30.0
+	row.offset_right = -86.0 if not unread_refs.is_empty() else -30.0
 	row.offset_bottom = -20.0
 	row.add_theme_constant_override("separation", 14)
 	panel.add_child(row)
 	row.set_meta("entry_button", panel)
+	panel.set_meta("codex_unread_refs", unread_refs.duplicate(true))
+	panel.set_meta("codex_is_unread", not unread_refs.is_empty())
+	if detail_data is Dictionary:
+		panel.set_meta("codex_entry_id", str((detail_data as Dictionary).get("codex_entry_id", "")))
+		panel.set_meta("codex_entry_category", str((detail_data as Dictionary).get("codex_entry_category", "")))
+	if not unread_refs.is_empty():
+		codex_unlock_presenter.add_unread_badge(panel, "CodexUnreadBadge", 36.0, 34.0, 22.0)
 	if detail_data is Dictionary and not (detail_data as Dictionary).is_empty():
 		_codex_attach_entry_detail(list, row, detail_data)
 	return row
@@ -5699,11 +5823,10 @@ func _codex_icon_slot(row: HBoxContainer, texture: Texture2D, size: Vector2, nod
 	slot.custom_minimum_size = Vector2(122.0, 114.0)
 	slot.size_flags_vertical = Control.SIZE_SHRINK_CENTER
 	slot.size_flags_horizontal = Control.SIZE_SHRINK_CENTER
-	var slot_style := _atlas_translucent_style(0.45, 6.0)
-	slot_style.content_margin_left = 17.0
-	slot_style.content_margin_right = 17.0
-	slot_style.content_margin_top = 9.0
-	slot_style.content_margin_bottom = 9.0
+	# The PixelLab entry-card already paints the recessed well. This transparent
+	# content owner keeps the accepted 122x114 -> 88x96 reserve without drawing a
+	# second field over that authored well.
+	var slot_style := _codex_clear_content_style(Vector4(17.0, 9.0, 17.0, 9.0))
 	slot.add_theme_stylebox_override("panel", slot_style)
 	_codex_pl_make_nearest(slot)
 	row.add_child(slot)
@@ -5802,8 +5925,8 @@ func _codex_set_selected_entry(content: PanelContainer, button: Button) -> void:
 	if previous == button:
 		return
 	if previous != null and is_instance_valid(previous):
-		_unified_apply_row_theme(previous, 10.0, false)
-	_unified_apply_row_theme(button, 10.0, true)
+		_codex_apply_entry_theme(previous, false)
+	_codex_apply_entry_theme(button, true)
 	content.set_meta("codex_selected_entry", button)
 
 
@@ -5820,9 +5943,37 @@ func _codex_attach_entry_detail(list: VBoxContainer, row: HBoxContainer, detail_
 		return
 	button.set_meta("codex_detail_data", detail_data)
 	button.pressed.connect(func() -> void:
+		_codex_mark_entry_read(list, button)
 		_codex_set_selected_entry(content, button)
 		_codex_update_detail(detail_panel, detail_data)
 	)
+
+
+func _codex_mark_entry_read(list: VBoxContainer, button: Button) -> void:
+	if button == null or not bool(button.get_meta("codex_is_unread", false)):
+		return
+	var refs: Array = button.get_meta("codex_unread_refs", []) as Array
+	for raw_ref in refs:
+		var ref := raw_ref as Dictionary
+		game.meta_state = game.META_PROGRESSION.mark_codex_read(game.meta_state, str(ref.get("category", "")), str(ref.get("id", "")))
+	game.save_meta_progression()
+	button.set_meta("codex_is_unread", false)
+	button.set_meta("codex_unread_refs", [])
+	var badge := button.get_node_or_null("CodexUnreadBadge") as TextureRect
+	if badge != null:
+		badge.visible = false
+	var row: HBoxContainer = null
+	if button.get_child_count() > 0:
+		row = button.get_child(0) as HBoxContainer
+	if row != null:
+		row.offset_right = -30.0
+	var unread_count := 0
+	for sibling in list.get_children():
+		if sibling != button and bool(sibling.get_meta("codex_is_unread", false)):
+			unread_count += 1
+	list.move_child(button, unread_count)
+	var content := list.get_meta("codex_content_panel", null) as PanelContainer
+	codex_unlock_presenter.refresh_tab_badges(content)
 
 
 func _codex_update_detail(detail_panel: PanelContainer, detail_data: Dictionary) -> void:
@@ -5867,11 +6018,7 @@ func _codex_update_detail(detail_panel: PanelContainer, detail_data: Dictionary)
 	var portrait_slot := PanelContainer.new()
 	portrait_slot.name = "CodexDetailPortraitSlot"
 	portrait_slot.set_anchors_preset(Control.PRESET_FULL_RECT)
-	var portrait_style := _atlas_translucent_style(0.55, 10.0)
-	portrait_style.content_margin_left = 32.0
-	portrait_style.content_margin_top = 26.0
-	portrait_style.content_margin_right = 32.0
-	portrait_style.content_margin_bottom = 26.0
+	var portrait_style := _codex_dossier_style(1.0, Vector4(32.0, 26.0, 32.0, 26.0))
 	portrait_slot.add_theme_stylebox_override("panel", portrait_style)
 	left_rail.add_child(portrait_slot)
 	var texture := detail_data.get("texture", null) as Texture2D
@@ -5914,7 +6061,7 @@ func _codex_update_detail(detail_panel: PanelContainer, detail_data: Dictionary)
 			chip.name = "CodexDetailChip"
 			chip.custom_minimum_size = Vector2(330, 70)
 			chip.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-			chip.add_theme_stylebox_override("panel", _codex_panel_style(0.86, Vector4(18, 14, 18, 14)))
+			chip.add_theme_stylebox_override("panel", _codex_chip_style(0.96, Vector4(18, 14, 18, 14)))
 			chip_column.add_child(chip)
 			var chip_label := Label.new()
 			chip_label.text = str(chip_text)
@@ -5928,7 +6075,7 @@ func _codex_update_detail(detail_panel: PanelContainer, detail_data: Dictionary)
 
 	var parchment := PanelContainer.new()
 	parchment.name = "CodexDetailParchmentInset"
-	parchment.add_theme_stylebox_override("panel", _codex_panel_style(0.74, Vector4(32, 26, 42, 26)))
+	parchment.add_theme_stylebox_override("panel", _codex_lore_style(Vector4(32, 26, 42, 26)))
 	_codex_set_design_rect(parchment, Rect2(12, 398, 684, 356))
 	detail_root.add_child(parchment)
 	var text_scroll := ScrollContainer.new()
@@ -5948,7 +6095,7 @@ func _codex_update_detail(detail_panel: PanelContainer, detail_data: Dictionary)
 		var related_panel := PanelContainer.new()
 		related_panel.name = "CodexDetailRelatedPanel"
 		related_panel.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-		related_panel.add_theme_stylebox_override("panel", _codex_panel_style(0.72, Vector4(14, 12, 14, 12)))
+		related_panel.add_theme_stylebox_override("panel", _codex_inset_style(0.72, Vector4(14, 12, 14, 12)))
 		text_box.add_child(related_panel)
 		var related_box := VBoxContainer.new()
 		related_box.name = "CodexDetailRelatedContent"
@@ -6016,6 +6163,10 @@ func _codex_update_detail(detail_panel: PanelContainer, detail_data: Dictionary)
 func _codex_character_sections(character: Dictionary) -> Array:
 	var character_id := str(character.get("id", ""))
 	var sections := []
+	# FAN-1080: происхождение Хранителя — осколок-мир из лора (lore_data.gd).
+	var origin := LORE_DATA.class_origin(character_id)
+	if origin != "":
+		sections.append({"heading": "Происхождение", "lines": [origin]})
 	# Идентичность/роль: описание конфига + механическая идентичность класса + плейстайл.
 	var identity: Dictionary = game.PROGRESSION_DATA.class_mechanic_identity(character_id)
 	var identity_lines := []
@@ -6102,74 +6253,9 @@ func _codex_character_sections(character: Dictionary) -> Array:
 
 
 func _codex_monster_sections(monster: Dictionary) -> Array:
-	var monster_id := str(monster.get("id", ""))
-	var kind := str(monster.get("kind", "standard"))
-	var sections := []
-	# Профиль угрозы: тип из ENEMY_SIZE_PROFILES + поведение.
-	var profile_id := "ordinary"
-	match kind:
-		"elite":
-			profile_id = "elite"
-		"mini_elite":
-			profile_id = "mini_elite"
-		"boss":
-			profile_id = "boss"
-	var size_profile: Dictionary = game.PROGRESSION_DATA.enemy_size_profile(profile_id)
-	var behavior_lines := []
-	if str(size_profile.get("label", "")) != "":
-		behavior_lines.append("Класс угрозы: %s (габарит ×%.2f)." % [str(size_profile["label"]), float(size_profile.get("scale", 1.0))])
-	if str(monster.get("behavior", "")) != "":
-		behavior_lines.append(str(monster["behavior"]))
-	if not behavior_lines.is_empty():
-		sections.append({"heading": "Тип и поведение", "lines": behavior_lines})
-	# Умения — канонические имена и описания из codex_data.
-	var ability_lines := []
-	for ability in monster.get("abilities", []):
-		ability_lines.append({"title": str((ability as Dictionary).get("title", "")), "text": str((ability as Dictionary).get("description", ""))})
-	if not ability_lines.is_empty():
-		sections.append({"heading": "Умения", "lines": ability_lines})
-	# Боевой паттерн элиток/боссов: UNIQUE_ENCOUNTER_PATTERNS + каталог механик.
-	var pattern: Dictionary = game.PROGRESSION_DATA.unique_encounter_pattern(monster_id)
-	if not pattern.is_empty():
-		var pattern_lines := []
-		if str(pattern.get("summary", "")) != "":
-			pattern_lines.append({"title": str(pattern.get("title", "")), "text": "Паттерн боя: %s." % str(pattern["summary"])})
-		var mechanic_catalog: Dictionary = game.PROGRESSION_DATA.enemy_mechanic_catalog()
-		for mechanic_id in pattern.get("mechanics", []):
-			var mechanic: Dictionary = mechanic_catalog.get(str(mechanic_id), {})
-			if mechanic.is_empty():
-				continue
-			var mechanic_text := str(mechanic.get("desc", ""))
-			if bool(mechanic.get("telegraph", false)):
-				mechanic_text += " Телеграфится заранее."
-			pattern_lines.append({"title": str(mechanic.get("title", mechanic_id)), "text": mechanic_text})
-		if not pattern_lines.is_empty():
-			sections.append({"heading": "Боевой паттерн", "lines": pattern_lines})
-	# Боевые параметры из конфигов: спецатака элитки / множители мини-элитки.
-	var combat_lines := []
-	var attack_source_id := monster_id
-	var mini_kind: Dictionary = {}
-	if kind == "mini_elite":
-		mini_kind = game.PROGRESSION_DATA.mini_elite_kind_by_id(monster_id)
-		if not mini_kind.is_empty():
-			combat_lines.append("Относительно базовой элитки: здоровье ×%.2f; скорость ×%.2f; урон ×%.2f." % [float(mini_kind.get("hp_mult", 1.0)), float(mini_kind.get("speed_mult", 1.0)), float(mini_kind.get("damage_mult", 1.0))])
-			attack_source_id = str(mini_kind.get("behavior", monster_id))
-	var attack_config: Dictionary = game.PROGRESSION_DATA.elite_attack_config(attack_source_id)
-	if not attack_config.is_empty():
-		var attack_bits := PackedStringArray()
-		if float(attack_config.get("cooldown", 0.0)) > 0.0:
-			attack_bits.append("перезарядка %.1f с" % float(attack_config["cooldown"]))
-		if float(attack_config.get("trigger_range", 0.0)) > 0.0:
-			attack_bits.append("дистанция срабатывания %d" % int(attack_config["trigger_range"]))
-		if float(attack_config.get("radius", 0.0)) > 0.0:
-			attack_bits.append("радиус %d" % int(attack_config["radius"]))
-		if float(attack_config.get("damage_factor", 0.0)) > 0.0:
-			attack_bits.append("урон ×%.1f от базового" % float(attack_config["damage_factor"]))
-		if not attack_bits.is_empty():
-			combat_lines.append("Спецатака: %s." % "; ".join(attack_bits))
-	if not combat_lines.is_empty():
-		sections.append({"heading": "Боевые параметры", "lines": combat_lines})
-	return sections
+	# FAN-1080: сборка досье монстра перенесена в scripts/ui/lore_screens.gd
+	# (static-quality ратчет ui_screens.gd; лор-секции живут там же).
+	return LoreScreens.codex_monster_sections(self, monster)
 
 
 # SCRUM-963: классовый артефакт заперт в кодексе, пока мета-Возвышение ЕГО
@@ -6276,7 +6362,9 @@ func _codex_ascension_sections(entry: Dictionary) -> Array:
 
 
 func _build_codex_characters(list: VBoxContainer) -> void:
-	for character in CODEX_DATA.characters():
+	var characters: Array = CODEX_DATA.characters()
+	for character in codex_unlock_presenter.unread_first(characters, Callable(codex_unlock_presenter, "character_unread_refs")):
+		var unread_refs: Array = codex_unlock_presenter.character_unread_refs(character)
 		var body_lines := [
 			str(character["playstyle"]),
 			"Сильное: %s" % character["strengths"],
@@ -6291,6 +6379,8 @@ func _build_codex_characters(list: VBoxContainer) -> void:
 		if str(character["sprite"]) != "" and ResourceLoader.exists(str(character["sprite"])):
 			texture = game._cached_texture(str(character["sprite"]))
 		var row := _codex_entry_panel(list, {
+			"codex_entry_id": str(character["id"]),
+			"codex_entry_category": "characters",
 			"title": str(character["title"]),
 			"summary": str(character["playstyle"]),
 			"texture": texture,
@@ -6300,36 +6390,42 @@ func _build_codex_characters(list: VBoxContainer) -> void:
 			"chips": ["Герой"],
 			"body_lines": body_lines,
 			"sections": _codex_character_sections(character),
-		})
+		}, unread_refs)
 		_codex_portrait(row, str(character["sprite"]), _codex_entry_portrait_size(), CodexImageFit.POLICY_CHARACTER)
 		_codex_add_entry_name(row, str(character["title"]))
 
 
 func _build_codex_monsters(list: VBoxContainer) -> void:
 	var kind_titles := {"standard": "Обычные Монстры", "elite": "Элитные Монстры", "mini_elite": "Мини-элитки (свита Возвышения)", "boss": "Боссы"}
+	var monsters := []
 	for kind in ["standard", "elite", "mini_elite", "boss"]:
 		for monster in CODEX_DATA.monsters():
-			if str(monster["kind"]) != kind:
-				continue
-			var body_lines := [str(monster["behavior"])]
-			for ability in monster["abilities"]:
-				body_lines.append("✦ %s — %s" % [ability["title"], ability["description"]])
-			var texture: Texture2D = null
-			if str(monster["sprite"]) != "" and ResourceLoader.exists(str(monster["sprite"])):
-				texture = game._cached_texture(str(monster["sprite"]))
-			var row := _codex_entry_panel(list, {
-				"title": str(monster["title"]),
-				"summary": str(monster["behavior"]),
-				"texture": texture,
-				"texture_path": str(monster["sprite"]),
-				"image_policy": CodexImageFit.POLICY_MONSTER,
-				"covered_portrait": false,
-				"chips": [str(kind_titles[kind])],
-				"body_lines": body_lines,
-				"sections": _codex_monster_sections(monster),
-			})
-			_codex_portrait(row, str(monster["sprite"]), _codex_entry_portrait_size(), CodexImageFit.POLICY_MONSTER)
-			_codex_add_entry_name(row, str(monster["title"]))
+			if str(monster["kind"]) == kind:
+				monsters.append(monster)
+	for monster in codex_unlock_presenter.unread_first(monsters, Callable(codex_unlock_presenter, "monster_unread_refs")):
+		var kind := str(monster["kind"])
+		var unread_refs: Array = codex_unlock_presenter.monster_unread_refs(monster)
+		var body_lines := [str(monster["behavior"])]
+		for ability in monster["abilities"]:
+			body_lines.append("✦ %s — %s" % [ability["title"], ability["description"]])
+		var texture: Texture2D = null
+		if str(monster["sprite"]) != "" and ResourceLoader.exists(str(monster["sprite"])):
+			texture = game._cached_texture(str(monster["sprite"]))
+		var row := _codex_entry_panel(list, {
+			"codex_entry_id": str(monster["id"]),
+			"codex_entry_category": "bosses" if kind == "boss" else "monsters",
+			"title": str(monster["title"]),
+			"summary": str(monster["behavior"]),
+			"texture": texture,
+			"texture_path": str(monster["sprite"]),
+			"image_policy": CodexImageFit.POLICY_MONSTER,
+			"covered_portrait": false,
+			"chips": [str(kind_titles[kind])],
+			"body_lines": body_lines,
+			"sections": _codex_monster_sections(monster),
+		}, unread_refs)
+		_codex_portrait(row, str(monster["sprite"]), _codex_entry_portrait_size(), CodexImageFit.POLICY_MONSTER)
+		_codex_add_entry_name(row, str(monster["title"]))
 
 
 # SCRUM-963: тёмный силуэт иконки запертой записи + дим всего чип-ряда — тот же
@@ -6339,7 +6435,9 @@ const CODEX_LOCKED_ROW_TINT := Color(0.70, 0.72, 0.78, 0.82)
 
 
 func _build_codex_artifacts(list: VBoxContainer) -> void:
-	for artifact in CODEX_DATA.artifacts():
+	var artifacts: Array = CODEX_DATA.artifacts()
+	for artifact in codex_unlock_presenter.unread_first(artifacts, Callable(codex_unlock_presenter, "artifact_unread_refs")):
+		var unread_refs: Array = codex_unlock_presenter.artifact_unread_refs(artifact)
 		var artifact_definition: Dictionary = game.PROGRESSION_DATA.artifact_definition(str(artifact["id"]))
 		var locked := _codex_artifact_locked(artifact_definition)
 		var tier_text := _artifact_tier_text(artifact_definition)
@@ -6370,6 +6468,8 @@ func _build_codex_artifacts(list: VBoxContainer) -> void:
 		var icon_texture := _artifact_icon_texture(str(artifact["id"]))
 		var icon_path := _artifact_icon_path(str(artifact["id"]))
 		var row := _codex_entry_panel(list, {
+			"codex_entry_id": str(artifact["id"]),
+			"codex_entry_category": "artifacts",
 			"title": str(artifact["title"]),
 			"summary": summary,
 			"texture": icon_texture,
@@ -6380,7 +6480,7 @@ func _build_codex_artifacts(list: VBoxContainer) -> void:
 			"chips": chips,
 			"body_lines": body_lines,
 			"sections": _codex_artifact_sections(artifact, artifact_definition, locked),
-		})
+		}, unread_refs)
 		_codex_icon_slot(row, icon_texture, _codex_entry_portrait_size(), "CodexArtifactIconSlot", CodexImageFit.POLICY_ARTIFACT, icon_path)
 		if locked:
 			# Запертая запись: силуэт иконки, дим ряда, вместо эффекта — условие.
@@ -6407,6 +6507,11 @@ func _build_codex_ascensions(list: VBoxContainer) -> void:
 		})
 		_codex_icon_slot(row, ascension_texture, _codex_entry_portrait_size(), "CodexAscensionIconSlot")
 		_codex_add_entry_name(row, "%d. %s" % [entry["level"], entry["title"]])
+
+
+# FAN-1080: вкладка «Летопись» — реализация в scripts/ui/lore_screens.gd.
+func _build_codex_chronicle(list: VBoxContainer) -> void:
+	LoreScreens.build_chronicle(self, list)
 
 
 func _build_codex_stats(list: VBoxContainer, stat_type: String) -> void:
@@ -11238,7 +11343,12 @@ func _show_victory_screen() -> void:
 	if not game.run_progression_eligible():
 		progression_line = "Пользовательский sandbox: метапрогрессия и достижения не начисляются."
 		ascension_summary = "Текущий предел Возвышения: %d из %d. Без изменений в пользовательском sandbox." % [ascension_level, game.META_PROGRESSION.MAX_ASCENSION_LEVEL]
-	var subtitle := "Финальный босс повержен.\n%s завершил забег.\nОчки наследия: %d.\n%s\n%s" % [
+	# FAN-1080: первая строка — лорная Печать (вместо плоской «Финальный босс
+	# повержен»); вариант «Разлом уйдёт глубже», пока остаются витки Возвышения.
+	var rift_goes_deeper: bool = game.run_progression_eligible() \
+		and run_level < game.META_PROGRESSION.MAX_ASCENSION_LEVEL
+	var subtitle := "%s\n%s завершил забег.\nОчки наследия: %d.\n%s\n%s" % [
+		LORE_DATA.victory_line(rift_goes_deeper),
 		character_title,
 		game.meta_points,
 		progression_line,
@@ -11246,6 +11356,7 @@ func _show_victory_screen() -> void:
 	]
 	var result_layout := _create_result_menu_box("Победа", subtitle, "victory")
 	_add_result_crest_to_slot(result_layout["crest_slot"] as Control, "victory")
+	codex_unlock_presenter.add_victory_unlocks(result_layout["summary_column"] as VBoxContainer, self)
 	_add_run_summary_rows(result_layout["summary_column"] as VBoxContainer, true, true)  # SCRUM-502: сводка прогона
 	var finish_run := func() -> void:
 		game.current_act = 1
@@ -11276,6 +11387,8 @@ func _show_death_screen(reason := "") -> void:
 	var subtitle := str(reason)
 	if subtitle == "":
 		subtitle = "Забег завершён: %s, этап маршрута %d." % [game.act_progress_label(), game.route_stage + 1]
+	# FAN-1080: лорная строка поражения — Диск помнит павших, цикл продолжается.
+	subtitle += "\n%s" % LORE_DATA.defeat_line()
 	var result_layout := _create_result_menu_box("Поражение", subtitle, "death")
 	_add_result_crest_to_slot(result_layout["crest_slot"] as Control, "death")
 	_add_run_summary_rows(result_layout["summary_column"] as VBoxContainer, false, true)  # SCRUM-502: сводка прогона
@@ -11306,7 +11419,7 @@ func _show_death_screen(reason := "") -> void:
 # контейнерном пути он кладётся в box; в no-scroll result layout — в компактную
 # RunSummaryColumn. Все строки MOUSE_FILTER_IGNORE, чтобы не перехватывать клик
 # кнопки и Escape. Стабильные имена узлов — для matrix-теста.
-func _add_run_summary_rows(box: VBoxContainer, _is_victory: bool, force_compact := false) -> void:
+func _add_run_summary_rows(box: VBoxContainer, is_victory: bool, force_compact := false) -> void:
 	var metrics: Dictionary = game.run_metrics if not game.run_metrics.is_empty() else {}
 	var outcome := str(metrics.get("outcome_reason", ""))
 	var summary_parent := _result_summary_parent(box)
@@ -11350,6 +11463,9 @@ func _add_run_summary_rows(box: VBoxContainer, _is_victory: bool, force_compact 
 		["level", "Финальный уровень", str(int(metrics.get("final_level", 0)))],
 		["artifacts", "Артефактов", str(artifacts.size())],
 	]
+	var unlocks: Array = metrics.get("new_unlocks", []) as Array
+	if is_victory and not unlocks.is_empty():
+		rows = [rows[0], rows[2], rows[5], rows[6]]
 	for row in rows:
 		var name_label := Label.new()
 		name_label.name = "RunSummaryStatName_%s" % str(row[0])
@@ -11378,7 +11494,7 @@ func _add_run_summary_rows(box: VBoxContainer, _is_victory: bool, force_compact 
 		value_label.mouse_filter = Control.MOUSE_FILTER_IGNORE
 		grid.add_child(value_label)
 
-	if not artifacts.is_empty():
+	if not artifacts.is_empty() and (not is_victory or unlocks.is_empty()):
 		var names := []
 		for artifact in artifacts:
 			if artifact is Dictionary:
@@ -12186,14 +12302,19 @@ func _spawn_level_up_effect() -> void:
 		effect.setup(game.current_player)
 
 
-func _show_combat_title_banner(title: String, color: Color, big := false) -> void:
+func _show_combat_title_banner(title: String, color: Color, big := false, lore_line := "") -> void:
 	# Баннер появления элитки/босса: имя/титул вспыхивает над ареной и гаснет,
 	# бой не ставится на паузу. Самоосвобождается; привязан к HUD-слою.
+	# FAN-1080: lore_line — короткая лор-подводка (кто это и зачем он здесь),
+	# отдельной строкой без рамки под баннером; живёт чуть дольше титула.
 	if game.hud_layer == null or not is_instance_valid(game.hud_layer):
 		return
 	var existing: Node = game.hud_layer.get_node_or_null("CombatIntroBanner")
 	if existing != null:
 		existing.queue_free()
+	var existing_lore: Node = game.hud_layer.get_node_or_null("CombatIntroLoreLine")
+	if existing_lore != null:
+		existing_lore.queue_free()
 	var ctb_slot := "ctb_big" if big else "ctb_small"
 	var ctb_spec: Rect2 = CTB_BIG_2K if big else CTB_SMALL_2K
 	var ctb_half_width := ctb_spec.size.x * 0.5
@@ -12246,6 +12367,9 @@ func _show_combat_title_banner(title: String, color: Color, big := false) -> voi
 	tween.chain().tween_interval(1.1 if big else 0.7)
 	tween.chain().tween_property(banner, "modulate:a", 0.0, 0.4)
 	tween.chain().tween_callback(banner.queue_free)
+
+	# FAN-1080: лор-подводка отдельной строкой под баннером (scripts/ui/lore_screens.gd).
+	LoreScreens.show_banner_lore_line(self, lore_line, ctb_spec, ctb_half_width, big)
 
 
 func _update_level_up_button() -> void:
@@ -13426,176 +13550,14 @@ func _apply_video_settings() -> void:
 	game.save_game_settings()
 
 
-# SCRUM-484: координатная спека @2560×1440 — форма фидбэка (модалка со скроллом).
-# Панель clamp(viewport-80, [480,940] × [380,780]) → @2K = 940×780, центрирована.
-# _panel_style margins (58,72,58,66) → safe-area. Сверху фикс заголовок, снизу фикс
-# статус + ряд кнопок (Отправить 260×64, Отмена 220×64, sep 18); середина (ScrollContainer)
-# тянется и прокручивает поле ввода (h≥130) и превью скриншота (h 240). Кнопки никогда
-# не уезжают за нижний край (SCRUM-460).
+# FAN-1057: runtime-builder формы фидбэка вынесен в FeedbackOverlayController.
+# Актуальная responsive-геометрия, safe zones и 720p/1080p/2K контрольные размеры
+# зафиксированы в docs/design/mockups/FAN-1057_feedback_privacy/spec.md и
+# tests/feedback_privacy_ui_test.gd; фасад ниже сохраняет публичный API UIScreens.
 
 
 func _show_feedback_overlay(screenshot: Image = null) -> void:
-	_close_feedback_overlay()
-	# Пауза при открытии формы фидбека — как Escape (оверлей PROCESS_MODE_ALWAYS,
-	# поэтому ввод в форму работает на паузе). Снимается в _close_feedback_overlay.
-	game.push_pause("feedback")
-
-	game.feedback_overlay_layer = CanvasLayer.new()
-	game.feedback_overlay_layer.name = "FeedbackOverlayLayer"
-	game.feedback_overlay_layer.layer = 128
-	game.feedback_overlay_layer.process_mode = Node.PROCESS_MODE_ALWAYS
-	game.add_child(game.feedback_overlay_layer)
-
-	var root := Control.new()
-	root.name = "FeedbackOverlay"
-	root.set_anchors_preset(Control.PRESET_FULL_RECT)
-	root.mouse_filter = Control.MOUSE_FILTER_STOP
-	game.feedback_overlay_layer.add_child(root)
-	_prepare_global_tooltips(root)
-
-	var dim := ColorRect.new()
-	dim.name = "FeedbackDim"
-	dim.set_anchors_preset(Control.PRESET_FULL_RECT)
-	dim.color = Color(0.0, 0.0, 0.0, 0.62)
-	dim.mouse_filter = Control.MOUSE_FILTER_STOP
-	root.add_child(dim)
-
-	# Размер панели подгоняется под вьюпорт (минус поля), с потолком — иначе на
-	# 1600x970 контент (~720px) переполнял фиксированную панель 700px и кнопки
-	# уезжали за нижний край экрана (SCRUM-460).
-	var viewport_size: Vector2 = root.get_viewport_rect().size
-	if viewport_size.x <= 0.0 or viewport_size.y <= 0.0:
-		viewport_size = Vector2(1280.0, 720.0)
-	var panel_width: float = clampf(viewport_size.x - 80.0, 480.0, 940.0)
-	var panel_height: float = clampf(viewport_size.y - 80.0, 380.0, 780.0)
-
-	var panel := PanelContainer.new()
-	panel.name = "FeedbackPanel"
-	panel.anchor_left = 0.5
-	panel.anchor_top = 0.5
-	panel.anchor_right = 0.5
-	panel.anchor_bottom = 0.5
-	panel.offset_left = -panel_width * 0.5
-	panel.offset_top = -panel_height * 0.5
-	panel.offset_right = panel_width * 0.5
-	panel.offset_bottom = panel_height * 0.5
-	panel.mouse_filter = Control.MOUSE_FILTER_STOP
-	# SCRUM-486: @2K per-слот фрейм формы фидбэка (fb_panel 940×780; на 2K панель ровно
-	# 940×780, на меньших вьюпортах 9-slice бордюры скейлятся от source 940×780).
-	panel.add_theme_stylebox_override("panel", _overhaul_2k_frame_style("fb_panel", Vector2(panel_width, panel_height)))
-	root.add_child(panel)
-
-	var box := VBoxContainer.new()
-	box.name = "FeedbackContent"
-	box.add_theme_constant_override("separation", 10)
-	panel.add_child(box)
-
-	var title := Label.new()
-	title.text = "Отправить фидбек"
-	title.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	title.add_theme_font_size_override("font_size", _readable_font_size(SemanticTypography.ROLE_TITLE, 32))
-	title.add_theme_color_override("font_color", Color(0.96, 0.90, 0.68, 1.0))
-	box.add_child(title)
-
-	# Середина прокручивается: при любой высоте экрана заголовок сверху, а статус
-	# и кнопки «Отправить»/«Отмена» снизу остаются закреплены и видимы.
-	var scroll := ScrollContainer.new()
-	scroll.name = "FeedbackScroll"
-	scroll.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-	scroll.size_flags_vertical = Control.SIZE_EXPAND_FILL
-	scroll.horizontal_scroll_mode = ScrollContainer.SCROLL_MODE_DISABLED
-	box.add_child(scroll)
-
-	var scroll_body := VBoxContainer.new()
-	scroll_body.name = "FeedbackScrollBody"
-	scroll_body.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-	scroll_body.add_theme_constant_override("separation", 10)
-	scroll.add_child(scroll_body)
-
-	var hint := Label.new()
-	hint.text = "Опиши баг или впечатление. Скриншот ниже уже снят до открытия формы."
-	hint.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	hint.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
-	hint.add_theme_font_size_override("font_size", SemanticTypography.resolve_fixed(
-		SemanticTypography.ROLE_CAPTION,
-		_readable_font_size(SemanticTypography.ROLE_CAPTION, 16),
-		SemanticTypography.role_min(SemanticTypography.ROLE_CAPTION),
-		SemanticTypography.role_max(SemanticTypography.ROLE_CAPTION)
-	))
-	hint.add_theme_color_override("font_color", Color(0.88, 0.86, 0.78, 1.0))
-	scroll_body.add_child(hint)
-
-	var text_edit := TextEdit.new()
-	text_edit.name = "FeedbackTextEdit"
-	text_edit.custom_minimum_size = Vector2(0, 130)
-	text_edit.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-	text_edit.placeholder_text = "Что случилось? Где ты был в игре? Что ожидал увидеть?"
-	text_edit.wrap_mode = TextEdit.LINE_WRAPPING_BOUNDARY
-	text_edit.add_theme_font_size_override("font_size", SemanticTypography.resolve_fixed(
-		SemanticTypography.ROLE_BODY,
-		_readable_font_size(SemanticTypography.ROLE_BODY, 17),
-		SemanticTypography.role_min(SemanticTypography.ROLE_BODY),
-		SemanticTypography.role_max(SemanticTypography.ROLE_BODY)
-	))
-	text_edit.add_theme_color_override("font_color", Color(0.96, 0.93, 0.84, 1.0))
-	text_edit.add_theme_color_override("font_placeholder_color", Color(0.66, 0.64, 0.58, 1.0))
-	scroll_body.add_child(text_edit)
-
-	var preview_frame := PanelContainer.new()
-	preview_frame.name = "FeedbackScreenshotFrame"
-	preview_frame.custom_minimum_size = Vector2(0, 240)
-	preview_frame.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-	preview_frame.add_theme_stylebox_override("panel", _character_card_style())
-	scroll_body.add_child(preview_frame)
-
-	var preview := TextureRect.new()
-	preview.name = "FeedbackScreenshotPreview"
-	preview.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
-	preview.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
-	preview.custom_minimum_size = Vector2(0, 224)
-	var safe_screenshot: Image = FEEDBACK_REPORTER_SCRIPT._normalized_screenshot(screenshot)
-	preview.texture = ImageTexture.create_from_image(safe_screenshot)
-	preview_frame.add_child(preview)
-
-	var status := Label.new()
-	status.name = "FeedbackStatusLabel"
-	status.text = "Отправка происходит только после нажатия «Отправить»."
-	status.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	status.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
-	status.add_theme_font_size_override("font_size", _readable_font_size(SemanticTypography.ROLE_VALUE, 14))
-	status.add_theme_color_override("font_color", Color(0.74, 0.82, 0.88, 1.0))
-	box.add_child(status)
-
-	var buttons := HBoxContainer.new()
-	buttons.name = "FeedbackButtons"
-	buttons.alignment = BoxContainer.ALIGNMENT_CENTER
-	buttons.add_theme_constant_override("separation", 18)
-	box.add_child(buttons)
-
-	var send_button := _make_button("Отправить")
-	send_button.name = "FeedbackSendButton"
-	_set_action_button_size(send_button, 260.0, 64.0)
-	buttons.add_child(send_button)
-
-	var cancel_button := _make_button("Отмена")
-	cancel_button.name = "FeedbackCancelButton"
-	_set_action_button_size(cancel_button, 220.0, 64.0)
-	cancel_button.pressed.connect(_close_feedback_overlay)
-	buttons.add_child(cancel_button)
-
-	send_button.pressed.connect(func() -> void:
-		send_button.disabled = true
-		status.text = "Отправляем..."
-		var reporter: Node = _feedback_reporter()
-		reporter.connect("report_finished", func(success: bool, message: String, local_path: String) -> void:
-			status.text = message if local_path == "" else "%s\n%s" % [message, local_path]
-			status.add_theme_color_override("font_color", Color(0.74, 0.96, 0.74, 1.0) if success else Color(1.0, 0.82, 0.50, 1.0))
-			send_button.disabled = false
-		, CONNECT_ONE_SHOT)
-		reporter.call("submit_report", text_edit.text, safe_screenshot, _feedback_metadata())
-	)
-
-	text_edit.grab_focus()
+	FeedbackOverlayController.show(self, game, screenshot)
 
 
 func _is_feedback_overlay_open() -> bool:
@@ -13603,6 +13565,11 @@ func _is_feedback_overlay_open() -> bool:
 
 
 func _close_feedback_overlay() -> void:
+	if _feedback_request_id > 0:
+		var reporter := game.get_node_or_null("FeedbackReporter") as Node
+		if reporter != null and is_instance_valid(reporter):
+			reporter.call("cancel_active_report", _feedback_request_id)
+		_feedback_request_id = 0
 	if game.feedback_overlay_layer != null and is_instance_valid(game.feedback_overlay_layer):
 		game.feedback_overlay_layer.queue_free()
 	game.feedback_overlay_layer = null
@@ -13619,6 +13586,25 @@ func _feedback_reporter() -> Node:
 	reporter.process_mode = Node.PROCESS_MODE_ALWAYS
 	game.add_child(reporter)
 	return reporter
+
+
+func _feedback_privacy_configuration() -> Dictionary:
+	var operator_name := str(ProjectSettings.get_setting(
+		FEEDBACK_REPORTER_SCRIPT.PRIVACY_OPERATOR_SETTING, "")).strip_edges()
+	var contact_url := str(ProjectSettings.get_setting(
+		FEEDBACK_REPORTER_SCRIPT.PRIVACY_CONTACT_SETTING, "")).strip_edges()
+	var retention_notice := str(ProjectSettings.get_setting(
+		FEEDBACK_REPORTER_SCRIPT.PRIVACY_RETENTION_SETTING, "")).strip_edges()
+	var policy_url := str(ProjectSettings.get_setting(
+		FEEDBACK_REPORTER_SCRIPT.PRIVACY_POLICY_SETTING, "")).strip_edges()
+	return {
+		"operator": operator_name,
+		"contact": contact_url,
+		"retention": retention_notice,
+		"policy": policy_url,
+		"complete": FEEDBACK_REPORTER_SCRIPT._privacy_configuration_complete(
+			operator_name, contact_url, retention_notice, policy_url),
+	}
 
 
 func _feedback_metadata() -> Dictionary:
@@ -14850,7 +14836,7 @@ func _button_state_style(button: Button, _role: String, state: String, tint := C
 		var plus_tint := BUTTON_NEUTRAL_HOVER_TINT if state == "hover" and tint == Color.WHITE else tint
 		return _global_texture_style(plus_path, COMBAT_HUD_LEVEL_UP_MARGINS, plus_tint, COMBAT_HUD_LEVEL_UP_CONTENT)
 	var texture_state := state if UIButtonFamily.STATES.has(state) else "normal"
-	var descriptor := UIButtonFamily.descriptor(family, texture_state)
+	var descriptor := UIButtonFamily.descriptor_for_size(family, texture_state, button.custom_minimum_size)
 	if descriptor.is_empty():
 		return _global_texture_style(GLOBAL_BUTTON_FRAME_PATH, Vector4(50, 28, 50, 28), tint, Vector4(64, 32, 64, 32))
 	var final_tint := tint

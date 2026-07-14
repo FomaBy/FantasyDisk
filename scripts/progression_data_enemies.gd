@@ -43,29 +43,32 @@ const ENEMY_MECHANIC_CATALOG := {
 	"split_spawn": {"title": "Раскол/выводок", "telegraph": false, "desc": "Создает дополнительную угрозу при фазе или низком HP."},
 }
 
+# Combat Feel Rework (этап C): windup подняты 0.45–0.6 → 0.65–0.8 (относительный
+# порядок сохранён: plague < night = shard < iron). Рантайм дополнительно
+# floor'ит замах через CombatFairness.fair_windup (реакция + пробег до кромки).
 const ELITE_ATTACK_CONFIGS := {
 	"iron_bastion": {
 		"attack_id": "slam_wave",
-		"cooldown": 6.0, "windup": 0.6, "strike": 0.25, "recover": 0.5,
+		"cooldown": 6.0, "windup": 0.8, "strike": 0.25, "recover": 0.5,
 		"trigger_range": 340.0, "radius": 260.0,
 		"damage_factor": 2.0, "knockback": 150.0,
 	},
 	"night_stalker": {
 		"attack_id": "shadow_strike",
-		"cooldown": 7.0, "windup": 0.5, "strike": 0.18, "recover": 0.45,
+		"cooldown": 7.0, "windup": 0.7, "strike": 0.18, "recover": 0.45,
 		"trigger_range": 540.0, "radius": 92.0,
 		"damage_factor": 2.4, "behind_offset": 74.0,
 	},
 	"plague_prophet": {
 		"attack_id": "poison_volley",
-		"cooldown": 8.0, "windup": 0.45, "strike": 0.35, "recover": 0.5,
+		"cooldown": 8.0, "windup": 0.65, "strike": 0.35, "recover": 0.5,
 		"trigger_range": 560.0, "radius": 56.0,
 		"damage_factor": 0.8, "lob_count": 3, "lob_spread": 130.0,
 		"puddle_duration": 3.0, "tick_interval": 0.6, "lob_travel_time": 0.4,
 	},
 	"shard_marshal": {
 		"attack_id": "shard_fan",
-		"cooldown": 6.0, "windup": 0.5, "strike": 0.2, "recover": 0.4,
+		"cooldown": 6.0, "windup": 0.7, "strike": 0.2, "recover": 0.4,
 		"trigger_range": 620.0, "radius": 0.0,
 		"damage_factor": 1.0, "shard_count": 5, "spread_degrees": 60.0,
 		"shard_speed": 430.0,

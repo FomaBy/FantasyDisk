@@ -1,0 +1,27 @@
+{
+  "screen": "Codex",
+  "issue": "FAN-1066",
+  "parent": "FAN-1065",
+  "base_resolution": [1920, 1080],
+  "stage_scaling": "uniform min(vw/1920, vh/1080), centered, letterboxed (see _codex_update_stage_transform)",
+  "geometry_source": "SCRUM-954 / SCRUM-1017 accepted contract — LOCKED, unchanged",
+  "responsive_targets": [[1152,648],[1280,720],[1920,1080],[2048,1152],[2560,1440]],
+  "elements": [
+    {"id":"CodexStage","rect":[0,0,1920,1080],"z":0,"note":"design stage, uniform scale"},
+    {"id":"CodexTitleFrame","rect":[72,36,340,112],"z":3,"asset":"derived/panel_9slice.png","nine_slice":[46,46,46,46],"content_margins":[36,22,36,22],"content":"КОДЕКС title label (runtime text, gold #F5E6AE)"},
+    {"id":"CodexCrest","rect":[908,24,104,104],"z":4,"asset":"source/codex_crest.png","note":"heraldic header accent in empty backdrop space, not on any panel"},
+    {"id":"CodexBackButton","rect":[1580,46,268,96],"z":3,"asset":"assets/sprites/ui/frames/minimal_metal_buttons/ui_btn_minimal_metal_main_menu*.png","family":"main_menu_380x104","states":["default","hover","pressed","focus","disabled"]},
+    {"id":"CodexNavPanel","rect":[72,172,324,840],"z":2,"asset":"derived/panel_9slice.png","nine_slice":[46,46,46,46],"content_margins":[32,38,32,50],"forbidden":["bronze corner brackets","outer bevel"]},
+    {"id":"CodexTabs","parent":"CodexNavPanel","tab_size":[260,72],"tab_x":104,"tab_y":[234,352,470,588,706,824],"asset":"assets/sprites/ui/frames/minimal_metal_buttons/ui_btn_minimal_metal_codex_tab*.png","family":"main_menu button family","states":["default","hover","pressed","focus","disabled","selected"],"note":"six fixed Russian tabs; selected = focus/gold-edge"},
+    {"id":"CodexContent","rect":[420,172,620,840],"z":2,"asset":"derived/panel_9slice.png","nine_slice":[46,46,46,46],"content_margins":[32,36,32,44]},
+    {"id":"CodexCenterTitle","rect":[540,222,380,44],"z":5,"content":"section title (runtime text, gold)"},
+    {"id":"CodexCenterListHost","rect":[452,278,556,690],"z":5,"clip":true,"note":"scroll host for entry cards"},
+    {"id":"CodexEntryCard","rect_first":[460,290,516,154],"stride_y":170,"count_visible":4,"z":6,"asset":"derived/entry_card_516x154.png","content_reserve":[20,20,30,20],"content":"left image well 122x114 (image 88x96) + centered name","states":["default","hover","pressed","focus","selected"]},
+    {"id":"CodexDetailPanel","rect":[1064,172,784,840],"z":2,"asset":"derived/panel_9slice.png","nine_slice":[46,46,46,46],"content_margins":[32,36,32,44]},
+    {"id":"CodexDetailTitle","rect":[1200,216,508,60],"z":5,"content":"entry title (runtime text, gold)"},
+    {"id":"CodexDetailWell","rect":[1108,284,300,300],"z":5,"asset":"source/dossier_parchment_kit.png","image_zone":[1140,310,236,248],"slot_content_margins":[32,26,32,26],"content":"entry portrait/creature image 236x248 (STRETCH_KEEP_ASPECT_CENTERED)","forbidden":["bronze/dragon-scale corners","parchment mat"]},
+    {"id":"CodexDetailChip1","rect":[1432,310,330,70],"z":5,"asset":"derived/chip_bar.png","nine_slice":[40,20,40,20],"content_margins":[18,14,18,14],"content":"semantic/affinity chip (runtime text, bronze #C7A870)"},
+    {"id":"CodexDetailChip2","rect":[1432,396,330,70],"z":5,"asset":"derived/chip_bar.png","nine_slice":[40,20,40,20],"content_margins":[18,14,18,14],"content":"second chip / «Заперто» locked state"},
+    {"id":"CodexDetailParchment","rect":[1108,606,684,356],"z":5,"asset":"source/dossier_parchment_kit.png","nine_slice":[96,96,96,96],"content_margins":[32,26,42,26],"content":"lore/parchment scroll — dossier text + related params (runtime text)","note":"the allowed restrained lore/parchment accent"}
+  ]
+}

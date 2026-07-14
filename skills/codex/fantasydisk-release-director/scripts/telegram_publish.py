@@ -101,8 +101,13 @@ def main():
     rel = os.path.join(root, "releases", "v%s" % a.version)
     if not os.path.isdir(rel):
         sys.exit("Нет каталога релиза: %s" % rel)
-    files = [os.path.join(rel, f) for f in sorted(os.listdir(rel))
-             if f.endswith((".dmg", ".exe", ".zip", ".txt"))]
+    files = [
+        os.path.join(rel, f)
+        for f in sorted(os.listdir(rel))
+        if f.endswith(".dmg")
+        or f.endswith("-windows-setup.exe")
+        or f == "SHA256SUMS.txt"
+    ]
     if not files:
         sys.exit("Нет файлов сборки в %s" % rel)
 

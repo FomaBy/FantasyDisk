@@ -69,6 +69,8 @@ func _initialize() -> void:
 	_test_reward_pools_filtered(errors)
 	await _test_trait_runtime_on_player(errors)
 	await _test_restore_potion_aoe_heal(errors)
+	await _test_restore_potion_splash_cap(errors)
+	await _test_restore_potion_vapor_cap(errors)
 	await _test_plague_infection_ramp_spread_cap(errors)
 	await _test_saw_sector_geometry_and_heal(errors)
 	await _test_drain_budget_caps_weapon_heal(errors)
@@ -158,7 +160,7 @@ func _test_reward_pools_filtered(errors: Array) -> void:
 	var doctor_attrs := {}
 	for reward in PD.level_up_rewards("doctor"):
 		doctor_attrs[str((reward as Dictionary).get("attr", ""))] = true
-	for forbidden_attr in ["regeneration", "vampiric_amount", "vampiric_chance"]:
+	for forbidden_attr in ["regeneration", "vampiric"]:
 		if doctor_attrs.has(forbidden_attr):
 			errors.append("level-up пул Доктора предлагает '%s'" % forbidden_attr)
 	var ranger_attrs := {}
@@ -372,6 +374,118 @@ func _test_restore_potion_aoe_heal(errors: Array) -> void:
 	await process_frame
 	if owner.drain_healed > healed_before + EPS:
 		errors.append("зелье: хил без нанесённого урона (промах должен лечить на 0)")
+	await _cleanup(holder)
+
+
+# FAN-1031 S3 (Stage 3a): хил-склянка возвращена в сустейн/solo-нишу. Baseline v2:
+# restore_potion 68.9k DPS@20t = #3 AoE-оружие ростера (для лечащего оружия — дефект).
+# Правка — data-driven кап прямого AoE (S1): aoe_full_targets=1, aoe_target_diminish=4.0
+# → осн. цель получает полный урон/хил, сплэш круто спадает. Тест A/B на живой
+# _damage_enemies_in_circle_capped: override vs default. 1t solo не тронут (rank0=full).
+func _test_restore_potion_splash_cap(errors: Array) -> void:
+	var holder := _new_scene("PotionSplashScene")
+	var owner := _new_owner(holder)
+
+	# Цели по лучу с растущим удалением от точки взрыва (все в aoe_radius=150),
+	# ранг = удалённость: rank0 полный, дальше диминиш.
+	var origin := owner.global_position + Vector2(300, 0)
+	var ranks: Array = []
+	for k in range(4):
+		ranks.append(_new_enemy(holder, origin + Vector2(float(k) * 25.0, 0.0)))
+	await process_frame
+
+	# A. restore_potion (override F=1, D=4): 2-я цель уже срезана, не полная.
+	var weapon := _new_weapon(owner, "restore_potion")
+	if weapon.aoe_full_targets != 1 or absf(weapon.aoe_target_diminish - 4.0) > EPS:
+		errors.append("зелье-сплэш: конфиг не загрузился (aoe_full_targets=%d, aoe_target_diminish=%.2f; ждали 1 / 4.0) — silent-retune?" % [weapon.aoe_full_targets, weapon.aoe_target_diminish])
+	weapon.call("_damage_aoe_projectile_explosion", origin, weapon.aoe_radius, 100.0)
+	await process_frame
+	var d0: float = ranks[0].total_damage
+	var d1: float = ranks[1].total_damage
+	var d2: float = ranks[2].total_damage
+	if absf(d0 - 100.0) > 0.5:
+		errors.append("зелье-сплэш: осн. цель %.1f != 100 (rank0 обязан быть полным — solo-хил не должен страдать)" % d0)
+	# rank1 = 100 / (1 + 1*4) = 20; rank2 = 100 / (1 + 2*4) = 11.11.
+	if absf(d1 - 20.0) > 0.5:
+		errors.append("зелье-сплэш: 2-я цель %.1f != 20 (кап F=1/D=4 не сработал — сплэш всё ещё бьёт как F=5)" % d1)
+	if d1 >= d0 * 0.5:
+		errors.append("зелье-сплэш: сплэш не круто спадает (2-я %.1f >= 50%% осн. %.1f)" % [d1, d0])
+	if absf(d2 - 100.0 / 9.0) > 0.5:
+		errors.append("зелье-сплэш: 3-я цель %.1f != 11.1 (диминиш формулы нарушен)" % d2)
+
+	# B. Контроль — тот же конфиг БЕЗ override: default F=5 → 2-я цель полная.
+	var control_owner := _new_owner(holder, owner.global_position + Vector2(0, 600))
+	var control_origin := control_owner.global_position + Vector2(300, 0)
+	var control_ranks: Array = []
+	for k in range(4):
+		control_ranks.append(_new_enemy(holder, control_origin + Vector2(float(k) * 25.0, 0.0)))
+	await process_frame
+	var default_cfg: Dictionary = PD.weapon("doctor", "restore_potion").duplicate(true)
+	default_cfg.erase("aoe_full_targets")
+	default_cfg.erase("aoe_target_diminish")
+	var control := ClassWeapon.new()
+	control_owner.add_child(control)
+	control.configure_weapon(default_cfg)
+	control.set_process(false)
+	control.call("_damage_aoe_projectile_explosion", control_origin, control.aoe_radius, 100.0)
+	await process_frame
+	if absf(float(control_ranks[1].total_damage) - 100.0) > 0.5:
+		errors.append("зелье-сплэш(контроль): без override 2-я цель %.1f != 100 — сентинел-механика data-driven капа не работает" % float(control_ranks[1].total_damage))
+
+	await _cleanup(holder)
+
+
+# FAN-1031 3c-final (peer review MAJOR): vapor-канал «Восстановительного пара»
+# (_spawn_restore_vapor) наследует сустейн-нишевый кап зелья (aoe_full/diminish=1/4.0)
+# вместо прежнего хардкода 2/1.5 — это был ГЛАВНЫЙ некапнутый хвост, из-за которого живой
+# 20t restore_potion упал лишь −24% (а не −72%). Поведенческий red-before/green-after:
+# с override rank1 круто срезан (×0.2); контроль без override — 2 ближних полным (2/1.5).
+func _test_restore_potion_vapor_cap(errors: Array) -> void:
+	var holder := _new_scene("PotionVaporScene")
+	var owner := _new_owner(holder)
+	var center := owner.global_position + Vector2(300, 0)
+	var ranks: Array = []
+	for k in range(4):
+		ranks.append(_new_enemy(holder, center + Vector2(float(k) * 22.0, 0.0)))
+	await process_frame
+	# A. restore_potion: vapor наследует override F=1/D=4.0. link_damage 100 → tick=28, ×2 тика.
+	var weapon := _new_weapon(owner, "restore_potion")
+	weapon.call("_spawn_restore_vapor", owner, center, 100.0)
+	await create_timer(1.7).timeout
+	await process_frame
+	var d0: float = ranks[0].total_damage
+	var d1: float = ranks[1].total_damage
+	if d0 <= 0.0:
+		errors.append("зелье-пар: rank0 урон 0 — vapor-тик не сработал в окне теста (тест недействителен, не ложный pass)")
+		await _cleanup(holder)
+		return
+	if d1 >= d0 * 0.5:
+		errors.append("зелье-пар: rank1 %.1f >= 50%% rank0 %.1f — vapor НЕ наследует кап зелья (хардкод 2/1.5 = главный некапнутый хвост S3)" % [d1, d0])
+	if absf(d1 - d0 * 0.2) > d0 * 0.06 + 0.5:
+		errors.append("зелье-пар: rank1 %.1f != ~0.2×rank0 %.1f (override F=1/D=4 не проведён в vapor)" % [d1, d0])
+	# B. Контроль — тот же конфиг БЕЗ override → default vapor 2/1.5 → 2 ближних полным.
+	var c_owner := _new_owner(holder, owner.global_position + Vector2(0, 700))
+	var c_center := c_owner.global_position + Vector2(300, 0)
+	var c_ranks: Array = []
+	for k in range(4):
+		c_ranks.append(_new_enemy(holder, c_center + Vector2(float(k) * 22.0, 0.0)))
+	await process_frame
+	var default_cfg: Dictionary = PD.weapon("doctor", "restore_potion").duplicate(true)
+	default_cfg.erase("aoe_full_targets")
+	default_cfg.erase("aoe_target_diminish")
+	var control := ClassWeapon.new()
+	c_owner.add_child(control)
+	control.configure_weapon(default_cfg)
+	control.set_process(false)
+	control.call("_spawn_restore_vapor", c_owner, c_center, 100.0)
+	await create_timer(1.7).timeout
+	await process_frame
+	var cd0: float = c_ranks[0].total_damage
+	var cd1: float = c_ranks[1].total_damage
+	if cd0 <= 0.0:
+		errors.append("зелье-пар(контроль): rank0 урон 0 — vapor-тик не сработал (тест недействителен)")
+	elif absf(cd1 - cd0) > cd0 * 0.06 + 0.5:
+		errors.append("зелье-пар(контроль): без override rank1 %.1f != rank0 %.1f — default vapor 2/1.5 бьёт 2 ближних полно (сентинел-механика сломана)" % [cd1, cd0])
 	await _cleanup(holder)
 
 

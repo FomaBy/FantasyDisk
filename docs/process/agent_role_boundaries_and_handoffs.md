@@ -6,52 +6,53 @@
 `Design`, `Back-end`, `Animator`, `QA`.
 
 Задачи формирует PM-чат/другая LLM по регламенту `docs/process/pm_workflow.md`.
-Активен текущий Jira sprint на board 1 (`Спринт 0.2.1` на 2026-07-03; всегда
-проверять live Jira перед dispatch/claim): v0.1.5 выпущен, feature block 0.1.5
+Активна текущая Multica board / release target (`0.2.1` на 2026-07-03; всегда
+проверять live Multica board перед dispatch/claim): v0.1.5 выпущен, feature block 0.1.5
 снят. Плановые версии `0.1.8` и `0.1.9` отменены/superseded; новые
-tasks/fixVersions/sprint notes используют live active sprint/release
-(`0.2.1` на момент обновления) и далее `0.2.2`, `0.2.3`, ... С 2026-06-27
-Jira проект `SCRUM` является authoritative task queue/status/owner source.
+tasks/fixVersions/release notes используют live active board/release
+(`0.2.1` на момент обновления) и далее `0.2.2`, `0.2.3`, ... С 2026-07-13
+Multica проект `FantasyDisk` (issues `FAN-*`) является authoritative task
+queue/status/owner source; local task files/board — mirrors/evidence only.
+Legacy Jira (SCRUM-*) — read-only historical archive (см.
+docs/process/jira_to_multica_cutover.md).
 Директива пользователя 2026-07-03: все задачи, которые пользователь добавляет
-в любые чаты, сразу заводятся в active Jira sprint; backlog допустим только при
-явном freeze/hold marker. Новые задачи текущего спринта берутся только из
-активного Jira sprint. PM/Documentation
-dispatcher может маршрутизировать задачи вручную, но role agents также могут
-автоматически брать одну eligible задачу своей роли/контура через Jira-pull
-claim-first, с проверкой зависимостей и активного владельца.
+в любые чаты, сразу заводятся в active Multica board; backlog допустим только при
+явном freeze/hold marker. Новые задачи текущего цикла берутся только из
+активной Multica board. PM/Documentation dispatcher является единственным writer
+назначения: role agents получают одну issue с exact `assignee_id`, но не берут
+eligible/unassigned работу самостоятельно.
 `docs/tasks/*.md` и `docs/process/task_board.md` — локальные mirrors/spec/evidence
 и dashboard/cache.
 
-При взятии задачи исполнитель сначала обновляет Jira issue/comment/status, затем
+При взятии задачи исполнитель сначала обновляет Multica issue/comment/status, затем
 локальный task mirror (`Статус: in_progress`) при наличии. По завершении —
-Jira + mirror `done` (или `review`) с коротким резюме результата. Закрытие
+Multica + mirror `done` (или `in_review`) с коротким резюме результата. Закрытие
 задачи — ответственность исполнителя/ревьюера: dispatcher не ставит `done` за
-агента, а только синхронизирует уже записанный в Jira/task результат или QA-вердикт.
+агента, а только синхронизирует уже записанный в Multica/task результат или QA-вердикт.
 
 Любой агент, меняющий task status или создающий handoff/bug/QA task, обязан
-сначала проверить/создать `Jira: SCRUM-*`, обновить Jira status/comment, затем
-обновить локальный mirror. Jira API token нельзя записывать в репозиторий или
-task-файлы.
+сначала проверить/создать `Multica: FAN-*`, обновить Multica status/comment, затем
+обновить локальный mirror.
 
-## Живая Синхронизация Jira (директива пользователя 2026-06-13)
+## Живая Синхронизация Multica (директива пользователя 2026-06-13)
 
-Пользователь управляет разработкой по Jira — она ОБЯЗАНА всегда отражать
-реальность. На каждом шаге работы агент держит Jira синхронной:
-- новая задача → сначала Jira issue, затем локальный `.md`/board mirror;
-- взял задачу → Jira `in_progress`/comment с owner/thread/locked paths, затем mirror;
-- завершил → `done` + sync (тикет «Контроль качества» → после QA PASSED «Готово»);
-- **передаёшь основную работу другому агенту** → создаёшь/обновляешь Jira issue
-  handoff'а И комментарием в ИСХОДНОМ Jira-тикете отмечаешь, кому и что передано
+Пользователь управляет разработкой по Multica — она ОБЯЗАНА всегда отражать
+реальность. На каждом шаге работы агент держит Multica синхронной:
+- новая задача → сначала Multica issue, затем локальный `.md`/board mirror;
+- взял задачу → Multica `in_progress`/comment с owner/thread/locked paths, затем mirror;
+- завершил → `done` + sync (тикет `in_review` → после QA PASSED `done`);
+- **передаёшь основную работу другому агенту** → создаёшь/обновляешь Multica issue
+  handoff'а И комментарием в ИСХОДНОМ Multica-тикете отмечаешь, кому и что передано
   (ключ handoff'а), затем локальный handoff-`.md` mirror при необходимости;
-- заблокировал/дубль/superseded → отрази статусом и комментарием в Jira.
-Правило: «не закрыл/не передал в Jira — работа не считается сделанной».
+- заблокировал/дубль/superseded → отрази статусом и комментарием в Multica.
+Правило: «не закрыл/не передал в Multica — работа не считается сделанной».
 
 ## Главное Правило
 
 Каждый агент делает только свою часть работы. Если для завершения задачи нужен кусок работы другого специалиста, агент не должен сам делать чужую часть "как получится". Он должен:
 
 1. Выполнить свою часть.
-2. Создать или обновить Jira issue/handoff comment для другого специалиста.
+2. Создать или обновить Multica issue/handoff comment для другого специалиста.
 3. Создать или обновить локальную `.md` mirror-задачу в `docs/tasks/`, если
    нужны подробная спецификация или evidence.
 4. Четко описать, что нужно другому специалисту.
@@ -60,32 +61,29 @@ task-файлы.
 
 Пользователь заранее одобрил in-scope изменения, поэтому агенты не спрашивают разрешение на работу. Но cross-discipline работу нужно передавать правильному агенту.
 
-## Single-owner / Jira-pull Lock
+## Single-owner / Dispatcher Assignment Lock
 
-Новая работа попадает к исполнителю только из Jira current sprint. Локальная
+Новая работа попадает к исполнителю только из активной Multica board. Локальная
 доска не является очередью. Роль-агенты не выбирают `new` rows из
-`docs/process/task_board.md`, но могут автоматически claim'ить ровно одну
-eligible Jira issue своей роли/контура через:
+`docs/process/task_board.md` и не claim'ят unassigned issues. Единственный
+dispatcher резервирует ровно одну parked Multica issue (`FAN-*`) exact UUID
+исполнителя, перепроверяет assignee/status, пишет lock comment и только затем
+enqueue'ит её переходом в `todo`:
 
 ```bash
-python3 tools/jira_next_task.py \
-  --role <backend|design|animator|qa> \
-  --lane <codex|claude|otherai> \
-  [--required-label <worker-scope>] \
-  --claim \
-  --worker <thread-or-worker-id> \
-  --json
+multica issue update <FAN-id> --status backlog --assignee-id <agent-uuid>
+multica issue get <FAN-id> --output json
+multica issue comment add <FAN-id> --content-file ./assignment.md
+multica issue status <FAN-id> todo
 ```
 
-Jira-pull разрешён только для issue в активном sprint, status category `To Do`,
-с role label, matching lane label, без `hold/user-hold/blocked`, без assignee и
-без признаков чужого owner/locked-path overlap. Claim-first comment/status в
-Jira является lock. После успешного claim агент обновляет локальный `.md`/board
-mirror только как bookkeeping.
+Worker принимает только issue со своим exact `assignee_id`, повторно проверяет
+comments/locks, переводит её в `in_progress` и обновляет локальный `.md`/board
+mirror только как bookkeeping. Свободная issue, status change без assignee или
+второй dispatcher не дают права начать работу.
 
-PM/Documentation dispatcher остаётся нужен для декомпозиции, handoff, спорных
-owner cases, duplicate cleanup, зеркал и ручного назначения задач, но он больше
-не является единственным способом выдать обычную unowned current-sprint задачу.
+PM/Documentation dispatcher остаётся единственным writer назначения до появления
+server-side compare-and-swap claim; параллельные dispatchers запрещены.
 
 Для параллельной работы Codex и Claude каждая активная задача должна иметь
 execution-lane metadata:
@@ -99,58 +97,58 @@ Locked paths: <основные файлы/папки/ассеты/экраны>
 
 Перед dispatch или взятием задачи обязательно проверить:
 
-- Jira issue: status, assignee, labels, sprint, comments, linked issues;
+- Multica issue: status, assignee, labels, board, comments, linked issues;
 - строку `docs/process/task_board.md`;
 - `Статус`, `Исполнитель`, `Dispatch`, `Owner`, `Thread` и свежие логи в task-файле;
 - `Контур` и `Locked paths` в task-файле или board note;
-- Jira key/status/комментарии через `docs/process/jira_sync.md` и локальный sync map;
+- Multica key/status/комментарии в issue timeline;
 - последние сообщения всех role threads этой роли;
 - dirty worktree и пересекающиеся файлы/ассеты/экраны.
 
 Задачу нельзя брать или повторно отправлять, если есть хотя бы один сигнал
-активного владельца: `in_progress`, свежий dispatch note, thread id, Jira
+активного владельца: `in_progress`, свежий dispatch note, thread id, Multica
 assignee/comment, незавершённый role-thread heartbeat по этой задаче, или
 пересечение основных файлов/ассетов с активной задачей. В сомнительном случае
-dispatcher оставляет задачу без dispatch и пишет Jira/PM/board note вместо параллельной
+dispatcher оставляет задачу без dispatch и пишет Multica/PM/board note вместо параллельной
 работы.
 
-При dispatch или Jira-pull claim owner фиксируется в явном виде:
+При dispatcher assignment или direct-control ownership owner фиксируется явно:
 
 - в task-файле: `Dispatch: отправлено <Role>/<Thread name> (<thread id>) <YYYY-MM-DD HH:MM>`;
 - в task-файле: `Контур`, `Owner`, `Thread`, `Locked paths` должны совпадать с
   фактическим исполнителем и scope;
 - на board: роль/примечание должны показывать конкретного владельца, если таких
   владельцев несколько;
-- в Jira: status/comment должен отражать, кто взял работу, каким способом
-  (`dispatch` или `Jira-pull`), lane/role/thread-or-worker и какой handoff
+- в Multica: status/comment должен отражать, кто взял работу, каким способом
+  (`dispatcher assignment` или `direct control`), lane/role/thread-or-worker и какой handoff
   создан, если работа передана.
 
-Active claim health is mandatory. `В работе` means a live worker is still
+Active claim health is mandatory. `in_progress` means a live worker is still
 responsible now, not that somebody once intended to work on the issue.
 
 - The claim/start comment must include owner/thread, lane, locked paths,
   branch/worktree, and next verification step.
-- Long work requires a Jira heartbeat at least every 60 minutes and before the
+- Long work requires a Multica heartbeat at least every 60 minutes and before the
   worker switches context or ends the run.
-- A worker may hold only one unrelated active issue. Multiple active Jira issues
+- A worker may hold only one unrelated active issue. Multiple active Multica issues
   require an explicit dispatcher comment that they are one combined scope with
   shared locked paths.
 - Before stopping, the worker must move the issue to a truthful state:
-  `Контроль качества` with branch/commit/tests, `Готово` only after QA PASSED,
-  `К выполнению` if released, or blocked/handoff with a precise reason.
-- Dispatcher cleanup may release stale claims back to `К выполнению` when Jira
+  `in_review` with branch/commit/tests, `done` only after QA PASSED,
+  `todo` if released, or blocked/handoff with a precise reason.
+- Dispatcher cleanup may release stale claims back to `todo` when Multica
   lacks a fresh heartbeat/result, active worker evidence, or single-owner
   consistency.
 
 Disk cleanup is also mandatory. Any role agent or QA worker that creates a
-separate worktree/clone/cache must delete it after the result is pushed and Jira
+separate worktree/clone/cache must delete it after the result is pushed and Multica
 is updated. The final task report must include `Disk cleanup:` with removed
 paths or locked leftovers. Disposable paths include `D:\FantasyDisk_worktrees\*`,
-`D:\FantasyDisk_qa\*`, `*SCRUM-*` worktrees, `.godot/`, `.vs/`, `__pycache__/`,
+`D:\FantasyDisk_qa\*`, per-issue (`*FAN-*`) worktrees, `.godot/`, `.vs/`, `__pycache__/`,
 and untracked Godot `.import`/`.uid` sidecars. Do not remove committed evidence,
 runtime assets, the main repository, or unrelated user files.
 
-Codex thread cleanup is mandatory for one-off worker threads. After Jira/GitHub,
+Codex thread cleanup is mandatory for one-off worker threads. After Multica/GitHub,
 local mirrors, memory, tests/evidence, and disk cleanup are truthful, an
 automation-created Codex worker must archive its own current thread by calling
 `codex_app.set_thread_archived` with `archived: true` and no `threadId`. Treat
@@ -164,12 +162,13 @@ threads whose ownership/status is unclear. Final reports should include
 Codex и Claude могут работать одновременно в одной ветке `dev`, но не над одной
 задачей, проблемой или locked path.
 
-- Codex role thread работает автономно только если задача явно помечена
-  `Контур: Codex`/label `codex`, была dispatched на этот thread или успешно
-  claimed этим thread через Jira-pull, и не имеет свежего Claude/OtherAI
-  owner/comment по тому же scope.
-- Claude Code/Claude worker работает автономно только если задача явно помечена
-  `Контур: Claude`/label `claude`, была assigned/claimed этим worker, или
+- Codex role thread работает автономно только если задача имеет lane
+  `Контур: Codex` в description/dispatcher comment и была assigned/dispatched на
+  этот thread либо имеет подтверждённый direct-control owner comment; optional
+  label `codex` не заменяет ownership. Свежего Claude/OtherAI owner/comment по
+  тому же scope быть не должно.
+- Claude Code/Claude worker работает автономно только если задача имеет lane
+  `Контур: Claude` и была assigned этим worker, или
   является отдельной review/bug задачей после Codex-result.
 - Нельзя превращать review в параллельную реализацию. Claude review Codex-работы
   начинается после Codex `done/review`, а найденные проблемы оформляются как
@@ -178,11 +177,11 @@ Codex и Claude могут работать одновременно в одно
   начинает работу: помечает задачу `blocked` или оставляет `new` с note о
   конфликте owner/scope.
 - Если Claude видит `Контур: Codex`, `Dispatch` на Codex thread или Codex WIP в
-  Jira/task mirror, он не берёт этот issue и не правит те же файлы без
+  Multica/task mirror, он не берёт этот issue и не правит те же файлы без
   отдельной review/bug задачи.
 - Если оба контура нужны в одной фиче, PM делит работу на цепочку задач:
   source/design -> runtime/backend -> animation -> QA/review. Каждая задача имеет
-  свой owner и свои locked paths; handoff связывает их через Jira comments.
+  свой owner и свои locked paths; handoff связывает их через Multica comments.
 - Documentation dispatcher не делает реализацию и не закрывает работу за role
   agents. Его автономия ограничена routing/sync/dedupe/owner notes.
 
@@ -195,10 +194,10 @@ files в locked paths другого контура блокируют стар�
 
 `Design main` и `Designer 2` — два отдельных исполнителя, а не одна общая
 очередь. У Design-задачи в любой момент может быть только один активный владелец.
-Для auto-pull Design-задачи должны иметь дополнительный Jira label:
-`design-main` для Design main или `designer2` для Designer 2. Обычный общий
-label `design` без worker-scope label не даёт права автоматического взятия
-Design-задачи; её должен разметить PM/dispatcher.
+Перед dispatcher assignment Design-задача должна получить worker scope
+`design-main` или `designer2` в description/dispatcher comment. Optional Multica
+label с тем же значением разрешён для поиска, но label сам по себе не даёт права
+на работу и его отсутствие не блокирует issue с exact assignee и scope comment.
 
 - `Design main` обычно получает крупные visual direction/UI-source/style-anchor
   задачи, где важны цельный арт-дирекшен, mockup/spec, источники и handoff.
@@ -263,7 +262,7 @@ Design отвечает за:
 PixelLab-first redraw rule (SCRUM-689): future Design redraw tasks for
 characters, enemies, bosses, UI/frame source kits and comparable redraw source
 assets must use PixelLab as the default source pipeline. Older generic
-OpenAI/asset-generator redraw paths are allowed only when Jira/task explicitly
+OpenAI/asset-generator redraw paths are allowed only when Multica/task explicitly
 records an exception and reason. Design results must still include transparent
 source/runtime PNGs, source/evidence under `docs/design/references` or previews,
 runtime-safe sizing/readability evidence, and content-zone/safe-area notes for
@@ -347,7 +346,7 @@ Animator отвечает за:
   явно указаны в задаче.
 - соблюдение PixelLab-first redraw rule: если Animator-задача требует новых или
   перерисованных character/enemy/boss/source frames, источник по умолчанию
-  PixelLab. Non-PixelLab source допустим только как явный Jira/task override.
+  PixelLab. Non-PixelLab source допустим только как явный Multica/task override.
   Animation delivery должна сохранять transparent background, pivots,
   8-direction/required animation contract и runtime-safe sizing evidence.
 
@@ -396,7 +395,7 @@ qa_review-задача (QA-воркер не перепроверяет файл
 
 ## Handoff Формат
 
-Любой cross-agent handoff должен сначала быть Jira issue/comment chain, а затем
+Любой cross-agent handoff должен сначала быть Multica issue/comment chain, а затем
 локальным `.md` mirror-файлом в `docs/tasks/`, если нужны подробная спецификация
 или evidence.
 
@@ -423,13 +422,13 @@ docs/tasks/<role>_<short_task_name>.md
 Owner: unassigned
 Thread: n/a
 Locked paths: <ключевые файлы/папки/ассеты/экраны>
-Jira: SCRUM-<номер>
+Multica: FAN-<номер>
 
 ## Autonomy / Approval
 Пользователь заранее одобрил все изменения в рамках этой задачи...
 Directive 2026-06-28: agents should not ask the user for routine confirmations.
-For a claimed Jira issue, the agent has full in-repository approval to pull,
-claim/update Jira, edit project files, run tests, update docs, commit, and push
+For a claimed Multica issue, the agent has full in-repository approval to pull,
+claim/update Multica, edit project files, run tests, update docs, commit, and push
 its own task files. Escalate only platform-enforced approval gates, secrets,
 destructive external actions, or true blockers.
 

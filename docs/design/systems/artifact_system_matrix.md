@@ -1,6 +1,6 @@
 # Артефакты 0.2.1 — финальная матрица (SCRUM-959)
 
-Контракт для реализации: SCRUM-960 (универсальный пул), SCRUM-961 (классовые), SCRUM-962 (иконки), SCRUM-963 (UI/локализация), SCRUM-964 (QA). Источник данных: `scripts/progression_data_content.gd` (`ARTIFACTS`). Итог: **32 семьи + 37 сохранённых + 85 классовых = 154 артефакта**; удаляется 17 легаси-id.
+Контракт для реализации: SCRUM-960 (универсальный пул), SCRUM-961 (классовые), SCRUM-962 (иконки), SCRUM-963 (UI/локализация), SCRUM-964 (QA). Источник данных: `scripts/progression_data_content.gd` (`ARTIFACTS`). Итог изначальной поставки: **32 семьи + 37 сохранённых + 85 классовых = 154 артефакта**; удалялось 17 легаси-id. **FAN-1038** убрал 3 семьи мёртвых осей (`battle_fan` / `ram_horn` / `falcon_feather`) → **29 семей, 151 артефакт** в `ARTIFACTS`; 154 icon-PNG остаются на диске (3 осиротели, см. §2/§5).
 
 ---
 
@@ -111,7 +111,14 @@ Call sites (SCRUM-961, все в `ui_screens.gd`) передают `game.ascensi
 
 ---
 
-## 2. Универсальные семьи (32)
+## 2. Универсальные семьи (29)
+
+> FAN-1038 (follow-up FAN-1034): убраны семьи мёртвых осей `battle_fan`
+> (`sector_multiplier`, no-op для 46/51 оружий), `ram_horn` (`knockback_multiplier`,
+> боссы/элитки displacement-immune) и `falcon_feather` (`projectile_speed_flat`,
+> только косметика задержки импакта). Derived-механики живут дальше (их кормят
+> статы/мета); удалены только предметы-ловушки из `ARTIFACTS`. Их 3 icon-PNG
+> остаются на диске осиротевшими ассетами (см. §5).
 
 ### 2.1 Базовые статы (8 семей; stats: +2/+4/+7)
 
@@ -126,7 +133,7 @@ Call sites (SCRUM-961, все в `ui_screens.gd`) передают `game.ascensi
 | `stone_heart` | Каменное сердце | `endurance` | stone_heart | REUSE |
 | `banner_seed` | Семя знамени | `leadership` | banner_seed | REUSE |
 
-### 2.2 Производные атрибуты (24 семьи)
+### 2.2 Производные атрибуты (21 семья)
 
 Ключ эффекта = ключ level-up карточки атрибута (сверено с `LEVEL_UP_REWARDS` и `_default_run_modifiers`/потребителями). У `vampiric_amount` двойной ключ — как у карточки.
 
@@ -136,18 +143,15 @@ Call sites (SCRUM-961, все в `ui_screens.gd`) передают `game.ascensi
 | `quickstring` | Быстрая струна | attack_speed | `attack_speed_multiplier` | 1.10 / 1.18 / 1.30 | quickstring | REUSE |
 | `sturdy_amulet` | Крепкий амулет | max_health | `max_health_flat` | +15 / +25 / +40 | sturdy_amulet | REUSE |
 | `fast_boots` | Легкие сапоги | move_speed | `move_speed_multiplier` | 1.10 / 1.18 / 1.30 | fast_boots (+поглощён swift_ink) | REUSE |
-| `battle_fan` | Боевой веер | aoe_radius | `sector_multiplier` | 1.10 / 1.18 / 1.30 | — | NEW: ornate war fan, blades spread wide, steel ribs |
 | `magnetic_buckle` | Магнитный талисман | pickup_radius | `pickup_radius_flat` | +35 / +55 / +90 | magnetic_buckle | REUSE |
 | `iron_scale` | Железная чешуя | defense | `defense_flat` | +0.10 / +0.18 / +0.30 | — | NEW: single heavy iron scale plate, riveted edge |
 | `arcane_prism` | Чародейская призма | magic_focus | `magic_damage_multiplier` | 1.10 / 1.18 / 1.30 | — | NEW: floating crystal prism refracting violet arcane light |
-| `ram_horn` | Рог тарана | knockback | `knockback_multiplier` | 1.10 / 1.18 / 1.30 | — | NEW: curled bronze ram horn, battering ring mount |
 | `sharp_talisman` | Острый талисман | crit_chance | `crit_chance_flat` | +0.10 / +0.18 / +0.30 | sharp_talisman | REUSE |
 | `executioner_edge` | Грань палача | crit_damage | `crit_damage_flat` | +0.10 / +0.18 / +0.30 | — | NEW: broad executioner axe blade fragment, notched edge |
 | `ghost_ribbon` | Лента призрака | dodge | `dodge_flat` | +0.10 / +0.18 / +0.30 | — | NEW: translucent spectral silk ribbon, drifting curl |
 | `wide_sigil` | Дальняя печать | range | `range_multiplier` | 1.10 / 1.18 / 1.30 | wide_sigil | REUSE |
 | `venom_vial` | Флакон отравы | dot_damage | `dot_damage_flat` | +2 / +4 / +6 | — | NEW: cracked vial dripping thick green venom |
 | `plague_metronome` | Чумной метроном | dot_speed | `dot_speed_flat` | +0.2 / +0.3 / +0.5 | — | NEW: bone metronome, swinging pendulum, sickly green aura |
-| `falcon_feather` | Перо сокола | projectile_speed | `projectile_speed_flat` | +70 / +110 / +180 | — | NEW: sleek falcon feather fletching, wind streaks |
 | `wide_halo` | Широкий нимб | aura_radius | `aoe_radius_multiplier` | 1.10 / 1.18 / 1.30 | — | NEW: golden ring halo, expanding concentric glow |
 | `war_banner` | Боевое знамя | buff_power | `buff_power_flat` | +0.10 / +0.18 / +0.30 | — | NEW: tattered crimson war banner on broken pole |
 | `summoners_bell` | Колокольчик призывателя | summon_amount | `summon_bonus` | +1.5 / +2.5 / +4 | summoners_bell | REUSE |

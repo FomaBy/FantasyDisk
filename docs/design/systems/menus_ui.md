@@ -1,10 +1,103 @@
 # Menus And UI
 
-Обновлено: 2026-07-12
+Обновлено: 2026-07-14
 
 Этот файл собирает UI-направление FantasyDisk после domain split. Полное фактическое состояние остается в `docs/design/current_game_state.md`, а канонические IDs и assets - в `docs/design/content_registry.md`.
 
-## SCRUM-1049/1051 Unified Semantic Button Families
+## FAN-1080 Лор: Интро Истории, «Летопись» Кодекса, Лорные Баннеры И Исходы
+
+Канон текстов: `docs/design/lore.md`; рантайм-данные: `scripts/lore_data.gd`.
+
+- **Интро истории.** «Начать новую игру» (и «Новая игра» из continue-диалога)
+  идут через `_maybe_show_lore_intro`: при первом запуске профиля показывается
+  `LoreIntroScreen` — 4 слайда (Диск → Разлом → Хранитель → Печать) на
+  codex-sanctum фоне, центральная панель кодекс-кита 920×560 с content margins
+  56/44 (контент только в пустой зоне рамы). Кнопки «Пропустить»/«Далее» (на
+  последнем слайде «В путь»), Esc/B — пропуск, фокус-ринг горизонтальный.
+  Показ один раз: `settings.cfg: lore_intro_seen` (ключ в
+  `game_settings.DEFAULTS`); пересмотр — запись «Вступление» на вкладке
+  «Летопись». Headless-тесты байпасят интро через
+  `main.force_skip_lore_intro = true`.
+- **«Летопись» — 7-я вкладка Кодекса** (`CODEX_SECTIONS`, шаг nav-плит 104 вместо
+  118, последняя плита y=648+72=720 в 752px content-зоне). Записи из
+  `LORE_DATA.CHRONICLE`: Вступление (те же 4 слайда), Диск, Разлом, Владыки
+  Разлома (по строке «что убило его мир» на каждого босса; строка Истока
+  добавляется только при `META_PROGRESSION.secret_boss_defeated`), Хранители,
+  Печать и Возвышение. Досье классов получило секцию «Происхождение»
+  (осколок-мир), боссов — «Владыка Разлома», элиток — «Офицер прибоя».
+- **Боевые баннеры.** `_show_combat_title_banner(title, color, big, lore_line)`:
+  необязательная лор-строка без рамки (outline-текст) под баннером, живёт чуть
+  дольше титула. Боссы передают `LORE_DATA.boss_intro_line(boss_id)`, элитки —
+  `elite_lore(id)` и русский титул из Кодекса вместо англ. `enemy_type_name`.
+  Сцены Стража Разлома и Пожирателя Диска получили русские `boss_display_name`,
+  секретный босс — «Исток».
+- **Исходы.** Победа: первая строка subtitle — «Печать наложена…» (вариант «…
+  Разлом уйдёт глубже», пока `run_level < MAX_ASCENSION_LEVEL`); смерть —
+  добавленная строка «Диск вписал павшего в Летопись…». Число строк victory
+  subtitle не выросло (лор-строка заменила «Финальный босс повержен»).
+- Тесты: `tests/lore_screens_test.gd` (данные + интро + Летопись + спойлер-гард),
+  обновлены `codex_scrum954_layout_test` (7 вкладок), `runtime_smoke_test`
+  (строка победы, байпас интро), `gamepad_full_flow_smoke_test` (байпас интро).
+
+## FAN-1077 Codex Unread And Victory Unlock Journal
+
+New Codex discoveries persist canonical discovery lists plus a separate
+`codex_unread` map for characters, weapons, monsters, bosses and artifacts.
+The discovery lists remain the source
+for locked artifact/enemy knowledge; unread is presentation state. Old saves
+load with an empty unread map, so migration never marks the whole historical
+Codex as new. Opening an entry explicitly clears and immediately saves all of
+its unread references. Merely landing on the default dossier does not clear it.
+
+Unread rows are stable-partitioned before read rows. Character rows aggregate
+their own ID and all nested `character_id/weapon_id` references, so a newly
+presented weapon raises its owning dossier. The 36×36 PixelLab exclamation
+badge stays inside the 516×154 card at `x=446,y=22`; unread rows reserve 86px
+on the right rather than covering the name. Category badges aggregate
+characters+weapons, monsters+bosses and artifacts. `MainMenuCodexUnreadBadge`
+shows while any category remains unread.
+
+`codex_unlock_state.gd`, `codex_run_unlocks.gd` and
+`codex_unlock_presenter.gd` own the focused persistence, journal and view
+contracts while `MetaProgression`, Main and `UIScreens` keep compatibility
+facades. `run_metrics.new_unlocks` keeps acquisition order and deduplicates by
+category+ID. A successful result with entries adds `VictoryUnlockPanel` and a
+nested `VictoryUnlockScroll` before a four-row compact stat summary, showing
+every artifact, hero and weapon rather than truncating the run journal. Hero
+and weapon unlock conditions are deliberately future work: FAN-1077 provides
+validated presentation APIs without locking the currently accessible roster.
+Design evidence and safe-zone reports live under
+`docs/design/mockups/fan1077_codex_unread_unlocks/`; responsive coverage is
+`tests/codex_unread_victory_test.gd`.
+
+## FAN-1065 / FAN-1066 / FAN-1069 Codex Atlas/Settings Runtime Skin
+
+The active Codex visual canon is the PixelLab package
+`docs/design/mockups/fan1065_codex_atlas_settings_redesign/`, promoted into
+`assets/sprites/ui/atlas_style/codex/`. The accepted SCRUM-954/FAN-1047
+1920×1080 stage and all runtime rects remain unchanged: nav
+`72,172,324,840`, list `420,172,620,840`, dossier `1064,172,784,840`, 516×154
+entry rows, 300×300 dossier well with a contained 236×248 image, and a 684×356
+lower scroll whose live text lane remains 610×304. Uniform stage scaling and
+letterboxing remain the only responsive transform.
+
+Runtime uses the cropped sanctum scene, PixelLab panel 9-slice, entry cards,
+dossier portrait frame, chip bar and crest. Text, icons and portraits remain
+separate Controls inside the documented empty zones. The square dossier frame
+is used only on the 300×300 portrait well: visual QA proved that stretching its
+broad dragon corners over the 684×356 lower scroll would cover the locked text
+lane, so that scroll uses the thinner parchment-warm Codex panel 9-slice.
+
+The six left tabs and `CodexBackButton` stay on the canonical Main Menu action
+family (`text/main_menu_380x104` / Back plate). The retired yellow
+`minimal_metal_codex_tab` family must never return. Button states, lazy section
+cache, focus neighbors, LB/RB section cycling, B/Esc Back behavior and exactly
+two active vertical scrollbar lanes remain unchanged. Regression coverage:
+`codex_scrum954_layout_test.gd`, `runtime_smoke_test.gd`,
+`ui_no_overlap_matrix_test.gd` and `dark_fantasy_ui_theme_test.gd`; real Codex
+screenshots are written under `build/qa/scrum954/`.
+
+## FAN-1047 / SCRUM-1049/1051 Unified Semantic Button Families
 
 Runtime buttons now expose an explicit `ui_button_family` contract through
 `scripts/ui/ui_button_family.gd`. The registry resolves the accepted
@@ -15,12 +108,19 @@ content rows/cards, Settings fields/toggles, Route nodes, Atlas sockets,
 Hero-carousel arrows and @2K conflict controls remain
 documented shape-specific siblings of the same FantasyDisk family.
 
-Codex keeps the accepted frameless SCRUM-954 three-column layout. Its six tabs
-use the quiet `minimal/codex_tab` book-divider accent in all five states, while
-entry cards stay `content_row`; hover/focus/pressed/disabled do not alter content
-margins or geometry. Compact Shop/Attribute actions are now named
+Codex keeps the accepted frameless SCRUM-954 three-column layout. FAN-1047
+removes the old yellow `minimal/codex_tab` exception: all six left tabs now use
+the exact five-state `text/main_menu_380x104` family at a ratio-preserving
+260×72 target. The longest tab caption uses the compact synonym «Параметры»
+so it remains inside the plate content lane at 720p. Entry cards stay
+`content_row`; hover/focus/pressed/disabled do
+not alter content margins or geometry. Compact Shop/Attribute actions are now named
 `slim_action` instead of borrowing rebind-field semantics. Pause dossier actions
 consume the same shared resolver instead of a copied path/threshold table.
+At 648p/720p/900p they form a right vertical rail at 219×60 or 263×72;
+1080p/2K retain a centered horizontal footer at 320×88 or native 380×104.
+Texture and content margins always scale by one uniform factor, so the Main
+Menu ornament is never cropped independently from the label lane.
 
 `MainMenuCreditsButton` is an icon-only gratitude action using the transparent
 PixelLab asset `assets/sprites/ui/icons/credits/ui_icon_gratitude.png`; its face
@@ -574,22 +674,20 @@ Central-window screens use role-specific dark fantasy backdrops from `assets/bac
 Backdrops are full-rect `TextureRect` nodes with cover scaling and a readable shade layer. Route map and combat arena backgrounds remain separate systems.
 
 Main menu uses `assets/backgrounds/main_menu_epic_battle_v3.png` through
-`MAIN_MENU_BACKGROUND`. SCRUM-1001 replaces the 0.2.0 cosmic atlas image with a
-2560x1440 OpenAI-generated clean cartoon-realistic dark-fantasy background. The
-latest active pass is regenerated from scratch without previous
-screen/background reference input: only the clean board of current runtime
-characters and bosses was used as the visual reference. The composition is a
-moonlit mountain-pass/citadel key-art scene with the party in 3/4 front/side
-poses on the center-right/right side, a clearly front/3/4 readable guitarist
-holding the guitar naturally, distant boss threats, no old central
-portal/atlas/music-line layout and no baked UI text. The calm left
-button-safe column and readable title-safe area are preserved, the
-asset is prepared for proportional cover-crop rather than one-axis stretching,
-and it contains no baked UI text/buttons/frames/logos. Source, reference sheet,
-backup, preview and safe-zone evidence are tracked in
-`docs/design/mockups/main_menu_openai_clean_background/spec.md`. This is an
-explicit OpenAI Images override because the user directly requested OpenAI image
-generation. SCRUM-680 release refresh keeps the title as
+`MAIN_MENU_BACKGROUND`. FAN-1088 replaces the previous party/boss key art with
+a 2560x1440 PixelLab-composited dark-fantasy scene: exactly one canonical
+north-facing Berserk stands on a basalt cliff above a large violet disk-shaped
+rift. The focal art stays center-right/right, while the calm left button column
+and title-safe area remain free of key silhouettes. The image is prepared for
+proportional cover-crop and contains no baked UI text, buttons, frames, labels,
+logo or watermark. PixelLab object IDs, source prompts, alpha-cleaned exports,
+backup, preview, responsive matrix and safe-zone evidence are tracked in
+`docs/design/mockups/fan1088_main_menu_disk_rift/spec.md` and
+`docs/design/references/fan1088_main_menu_disk_rift/manifest.json`. The
+historical SCRUM-1001 source package remains under
+`docs/design/mockups/main_menu_openai_clean_background/`, and its former runtime
+image is backed up under `docs/design/backups/fan1088_main_menu_disk_rift/`.
+SCRUM-680 release refresh keeps the title as
 `assets/sprites/ui/menu_title/main_menu_title_fantasy_disk.png` (`960x360`,
 transparent, PixelLab crest source in
 `docs/design/references/main_menu_logo_release_fix/`). The historical
@@ -1325,11 +1423,12 @@ decorative art, not text containers. QA dump:
 
 SCRUM-693 changes the active-combat Escape entry point: when no other run screen
 is covering gameplay, Escape opens the pause dossier / character board directly.
-SCRUM-983 moves the four run actions from the old left/header placement into a
-fixed bottom footer, with Continue focused first. SCRUM-1056 supersedes the
-old pause-only/danger styling: Continue, Settings, End Run and Main Menu all use
-the exact `main_menu_380x104` five-state family with geometry-stable 72px compact
-or 104px wide heights. The old
+SCRUM-983 originally moved the four run actions into a fixed footer, with
+Continue focused first. SCRUM-1056 removed the pause-only/danger styling, and
+FAN-1047 fixes the remaining source cropping: Continue, Settings, End Run and
+Main Menu all use the exact `main_menu_380x104` five-state family. Compact
+targets use the right vertical rail described above; 1080p/2K keep the bottom
+footer. The old
 standalone `RunPauseMenuRoot` is still available for noncombat overlays such as
 route/shop/event/level-up/reward contexts, but it must not appear over or instead
 of the character board for clean active gameplay. Resume, Settings Back, and
@@ -1393,14 +1492,31 @@ after instantiation. Spec note: `docs/design/mockups/scrum840_global_tooltips/sp
 `P` opens `FeedbackOverlayLayer`, a separate top-level overlay that does not call
 `_clear_ui()` and therefore does not reset the underlying combat, route map,
 shop, event, level-up or reward screen. The overlay contains `FeedbackTextEdit`,
-`FeedbackScreenshotPreview`, `FeedbackSendButton` and `FeedbackCancelButton`.
-Escape closes only this overlay, while normal text input remains inside the text
-field.
+`FeedbackScreenshotPreview`, default-on `FeedbackScreenshotToggle`, complete
+privacy/operator/retention/local-fallback disclosure, `FeedbackSendButton` and
+`FeedbackCancelButton`. Escape closes only this overlay, while normal text
+input remains inside the text field.
 
 The screenshot is captured before the overlay is created. Sending is handled by
-`scripts/feedback_reporter.gd`: webhook reports use Discord-compatible
-multipart payloads, while missing/failed webhook delivery falls back to
-`user://feedback/<timestamp>/`. Details: `docs/design/systems/feedback_reporting.md`.
+`scripts/feedback_reporter.gd`: schema-v2 relay reports use a bounded JPEG or
+explicit JSON `null`; opted-out reports never retain/encode/send/save image
+bytes. Missing/failed delivery falls back to `user://feedback/<timestamp>/`,
+and the opt-out path creates only `report.txt`.
+
+FAN-1057/FAN-1059 replaces the old narrow vertical form with a PixelLab-first
+responsive contract. At 1920×1080 the centered 1400×990 panel uses a two-column
+description/screenshot row plus a full-width privacy field; 2560×1440 scales
+the geometry uniformly to 1866×1320. At 1280×720 the 1200×672 panel keeps
+title/status/actions pinned and changes the middle to a one-column 824px scroll
+body. Live resize switches the same Controls without losing player text.
+Intermediate panel geometry is continuous at 1400/1401 and 1599/1600; a
+constrained middle body remains scrollable. Focus is TextEdit →
+ScreenshotToggle → Send → Cancel, while the right stick scrolls disclosure from
+any focus stop. PixelLab source,
+provenance, exact zones and fit evidence:
+`docs/design/mockups/FAN-1057_feedback_privacy/` and
+`docs/design/references/FAN-1057_feedback_privacy/`; runtime/protocol details:
+`docs/design/systems/feedback_reporting.md`.
 
 ## Settings Tabs
 

@@ -53,7 +53,7 @@ func _initialize() -> void:
 	_expect_family(main.find_child("CodexBackButton", true, false) as BaseButton, "text/back_260x104", "CodexBackButton")
 	for section_id in ["characters", "monsters", "artifacts", "characteristics", "attributes", "ascension"]:
 		var tab := main.find_child("CodexTab_%s" % section_id, true, false) as Button
-		_expect_family(tab, UIButtonFamily.FAMILY_CODEX_TAB, "CodexTab_%s" % section_id)
+		_expect_family(tab, UIButtonFamily.FAMILY_MAIN_MENU, "CodexTab_%s" % section_id)
 		_expect_stable_state_geometry(tab, "CodexTab_%s" % section_id)
 	var entry := main.find_child("CodexEntryCard", true, false) as BaseButton
 	_expect_family(entry, UIButtonFamily.FAMILY_CONTENT_ROW, "CodexEntryCard")
@@ -68,8 +68,9 @@ func _initialize() -> void:
 			errors.append("Pause dossier is missing %s." % node_name)
 			continue
 		var family := str(pause_button.get_meta(UIButtonFamily.META_FAMILY, ""))
-		if not family.begins_with("text/"):
-			errors.append("%s must resolve through the shared text family, got '%s'." % [node_name, family])
+		if family != UIButtonFamily.FAMILY_MAIN_MENU:
+			errors.append("%s must use the exact main-menu family, got '%s'." % [node_name, family])
+		_expect_stable_state_geometry(pause_button, node_name)
 
 	var slim := Button.new()
 	slim.name = "SCRUM1051SlimProbe"

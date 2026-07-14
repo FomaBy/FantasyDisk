@@ -24,6 +24,7 @@ import urllib.request
 
 DEFAULT_JIRA_URL = "https://fantasydisk.atlassian.net"
 DEFAULT_JIRA_EMAIL = "fomamoney@gmail.com"
+JIRA_ARCHIVE_PROJECT_ID = "a2cb75b5-d6c9-451c-8a29-4d267f09d67d"
 METADATA_WORKERS = 4
 
 
@@ -135,11 +136,21 @@ def jira_comments(issue_key: str) -> list[dict]:
             return comments
 
 
-def run_multica(args: list[str], expect_json: bool = False):
+def run_multica(
+    args: list[str],
+    expect_json: bool = False,
+    stdin_text: str | None = None,
+):
     command = ["multica", *args]
     if expect_json:
         command += ["--output", "json"]
-    result = subprocess.run(command, capture_output=True, text=True, check=False)
+    result = subprocess.run(
+        command,
+        capture_output=True,
+        text=True,
+        input=stdin_text,
+        check=False,
+    )
     if result.returncode:
         raise RuntimeError(
             f"Command failed ({result.returncode}): {' '.join(command)}\n"
@@ -173,12 +184,27 @@ def issue_identity(value) -> str:
     raise RuntimeError(f"Cannot find issue identity in Multica response: {value}")
 
 
-def find_existing(jira_key: str) -> str | None:
+def find_existing(jira_key: str, project: str) -> str | None:
+    if project != JIRA_ARCHIVE_PROJECT_ID:
+        raise RuntimeError("archive lookup requires the pinned Jira Archive project")
     response = run_multica(
-        ["issue", "list", "--metadata", f"jira_key={jira_key}", "--limit", "2"],
+        [
+            "issue",
+            "list",
+            "--project",
+            project,
+            "--metadata",
+            f"jira_key={jira_key}",
+            "--limit",
+            "2",
+        ],
         expect_json=True,
     )
     rows = rows_from_json(response)
+    if len(rows) > 1:
+        raise RuntimeError(
+            f"duplicate archival jira_key {jira_key} in project {project}"
+        )
     return issue_identity(rows[0]) if rows else None
 
 
@@ -233,12 +259,16 @@ def create_issue(issue: dict, project: str | None) -> str:
     fields = issue["fields"]
     command = [
         "issue", "create", "--title", fields["summary"],
-        "--description", imported_description(issue),
+        "--description-stdin",
         "--status", "done", "--priority", priority_name(fields.get("priority")),
     ]
     if project:
         command += ["--project", project]
-    created = run_multica(command, expect_json=True)
+    created = run_multica(
+        command,
+        expect_json=True,
+        stdin_text=imported_description(issue),
+    )
     identity = issue_identity(created)
     set_issue_metadata(issue, identity)
     return identity
@@ -271,7 +301,10 @@ def copy_comments(issue: dict, multica_id: str) -> int:
         created = comment.get("created") or "unknown time"
         body = adf_to_markdown(comment.get("body")).strip()
         content = f"[Imported Jira comment — {author}, {created}]\n\n{body}"
-        run_multica(["issue", "comment", "add", multica_id, "--content", content])
+        run_multica(
+            ["issue", "comment", "add", multica_id, "--content-stdin"],
+            stdin_text=content,
+        )
         count += 1
     return count
 
@@ -295,7 +328,10 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--verify", action="store_true", help="Compare the complete Jira Done key set with a paginated Multica project audit")
     parser.add_argument("--repair", action="store_true", help="Recheck state rows and restore canonical metadata on existing issues (requires --apply)")
     parser.add_argument("--limit", type=int, help="Pilot/import at most N issues")
-    parser.add_argument("--project", help="Target Multica project name or ID")
+    parser.add_argument(
+        "--project",
+        help=f"Target Multica Jira Archive project ID ({JIRA_ARCHIVE_PROJECT_ID})",
+    )
     parser.add_argument("--include-comments", action="store_true", help="Copy Jira comments as attributed archival comments")
     parser.add_argument("--state-file", type=Path, default=Path.home() / ".multica" / "fantasydisk-jira-migration-state.json")
     parser.add_argument("--report", type=Path, default=Path.home() / ".multica" / "fantasydisk-jira-migration-report.json")
@@ -356,6 +392,10 @@ def verify_migration(args: argparse.Namespace, issues: list[dict], type_counts: 
 
 def main() -> int:
     args = parse_args()
+    if (args.apply or args.verify) and args.project != JIRA_ARCHIVE_PROJECT_ID:
+        raise RuntimeError(
+            "archive apply/verify requires --project " + JIRA_ARCHIVE_PROJECT_ID
+        )
     if args.repair and not args.apply:
         raise RuntimeError("--repair requires --apply")
     issues = completed_issues(args.limit)
@@ -383,7 +423,7 @@ def main() -> int:
             if key in state["migrated"] and not args.repair:
                 counters["resumed"] += 1
                 continue
-            existing = find_existing(key)
+            existing = find_existing(key, args.project)
             if existing:
                 identity = existing
                 set_issue_metadata(issue, identity)

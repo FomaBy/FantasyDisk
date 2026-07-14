@@ -113,7 +113,10 @@ func _assert_release(effect: Node2D, weapon: Node, owner: Node2D, aim: Vector2, 
 		errors.append("release origin %s != live origin %s" % [str(effect.global_position), str(expected_position)])
 	if absf(wrapf(effect.rotation - aim.angle(), -PI, PI)) > 0.001:
 		errors.append("release rotation %.4f != live aim %.4f" % [effect.rotation, aim.angle()])
-	var expected_scale := (float(weapon.attack_range) - 26.0) / (230.0 - 26.0)
+	var contract := effect.call("geometry_contract") as Dictionary
+	if float(contract.get("bow_silhouette_scale", 1.0)) > 0.50:
+		errors.append("bow silhouette was not reduced by at least 2x")
+	var expected_scale := (float(weapon.attack_range) - 26.0) / (float(contract.get("display_endpoint_x_px", 0.0)) - 26.0)
 	if not is_equal_approx(effect.scale.x, expected_scale) or not is_equal_approx(effect.scale.y, expected_scale):
 		errors.append("release scale %s != live range scale %.4f" % [str(effect.scale), expected_scale])
 	if not effect.is_in_group("player_weapon_effects"):

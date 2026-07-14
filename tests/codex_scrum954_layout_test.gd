@@ -1,15 +1,24 @@
 extends SceneTree
 
 const MAIN_SCENE := preload("res://scenes/Main.tscn")
+const MainCompileGuard := preload("res://tests/main_compile_guard.gd")
 const CodexData := preload("res://scripts/codex_data.gd")
+const LoreData := preload("res://scripts/lore_data.gd")
 const UIIconRegistry := preload("res://scripts/ui_icon_registry.gd")
 const UIButtonFamily := preload("res://scripts/ui/ui_button_family.gd")
 const VIEWPORT_SIZES := [Vector2i(1280, 720), Vector2i(1920, 1080), Vector2i(2560, 1440)]
 const ASCENSION_ICON_PATH := "res://assets/sprites/ui/hud/combat_hud_v2/ui_hud_v2_icon_ascension.png"
+const CODEX_RUNTIME_DIR := "res://assets/sprites/ui/atlas_style/codex/"
+const CODEX_BG_PATH := CODEX_RUNTIME_DIR + "bg_codex_sanctum.png"
+const CODEX_PANEL_PATH := CODEX_RUNTIME_DIR + "panel_9slice.png"
+const CODEX_ENTRY_PATH := CODEX_RUNTIME_DIR + "entry_card_516x154.png"
+const CODEX_DOSSIER_PATH := CODEX_RUNTIME_DIR + "dossier_frame.png"
+const CODEX_CREST_PATH := CODEX_RUNTIME_DIR + "codex_crest.png"
 const EXPECTED_TABS := [
 	["characters", "Персонажи"], ["monsters", "Монстры"],
-	["artifacts", "Артефакты"], ["characteristics", "Характеристики"],
-	["attributes", "Атрибуты"], ["ascension", "Возвышение"],
+	["artifacts", "Артефакты"], ["characteristics", "Параметры"],
+	["attributes", "Атрибуты"], ["ascension", "Возвыш."],
+	["chronicle", "Летопись"],
 ]
 
 var errors := PackedStringArray()
@@ -17,6 +26,13 @@ var report := PackedStringArray(["# SCRUM-954 Codex Layout Matrix", ""])
 
 
 func _initialize() -> void:
+	# FAN-1087: компиляция/инстанцирование Main — жёсткий гейт, не false-green.
+	var gate_problems := MainCompileGuard.blocking_errors()
+	if not gate_problems.is_empty():
+		for problem in gate_problems:
+			push_error("FAN-1087 main-dependency gate: %s" % problem)
+		quit(1)
+		return
 	for viewport_size in VIEWPORT_SIZES:
 		await _check_viewport(viewport_size)
 	var qa_dir := ProjectSettings.globalize_path("res://build/qa/scrum954")
@@ -63,6 +79,7 @@ func _check_viewport(viewport_size: Vector2i) -> void:
 	var rect_contract := {
 		"CodexTitleFrame": Rect2(72, 36, 340, 112),
 		"CodexBackButton": Rect2(1580, 46, 268, 96),
+		"CodexCrest": Rect2(908, 24, 104, 104),
 		"CodexNavPanel": Rect2(72, 172, 324, 840),
 		"CodexContent": Rect2(420, 172, 620, 840),
 		"CodexCenterListHost": Rect2(452, 278, 556, 690),
@@ -70,7 +87,7 @@ func _check_viewport(viewport_size: Vector2i) -> void:
 		"CodexPortraitSlot": Rect2(480, 310, 122, 114),
 		"CodexEntryName": Rect2(616, 337, 330, 60),
 		"CodexDetailPanel": Rect2(1064, 172, 784, 840),
-		"CodexDetailTitle": Rect2(1200, 222, 508, 46),
+		"CodexDetailTitle": Rect2(1200, 216, 508, 60),
 		"CodexDetailPortraitSlot": Rect2(1108, 284, 300, 300),
 		"CodexDetailPortraitTexture": Rect2(1140, 310, 236, 248),
 		"CodexDetailParchmentInset": Rect2(1108, 606, 684, 356),
@@ -85,11 +102,31 @@ func _check_viewport(viewport_size: Vector2i) -> void:
 		report.append("- `%s`: `%s`" % [node_name, str(actual)])
 		if not _rect_near(actual, expected, 1.5):
 			errors.append("%s: %s rect %s != %s." % [context, node_name, str(actual), str(expected)])
+	var background := main.find_child("UnifiedBackground_codex", true, false) as TextureRect
+	if background == null or background.texture == null or background.texture.resource_path != CODEX_BG_PATH:
+		errors.append("%s: Codex background is not the FAN-1069 sanctum skin." % context)
+	var crest := main.find_child("CodexCrest", true, false) as TextureRect
+	if crest == null or crest.texture == null or crest.texture.resource_path != CODEX_CREST_PATH:
+		errors.append("%s: missing FAN-1069 Codex crest." % context)
+	for panel_name in ["CodexTitleFrame", "CodexNavPanel", "CodexContent", "CodexDetailPanel"]:
+		var panel := main.find_child(panel_name, true, false) as PanelContainer
+		if panel == null or _style_texture_path(panel.get_theme_stylebox("panel")) != CODEX_PANEL_PATH:
+			errors.append("%s: %s does not use the FAN-1069 panel skin." % [context, panel_name])
+	var first_card := main.find_child("CodexEntryCard", true, false) as Button
+	if first_card == null or _style_texture_path(first_card.get_theme_stylebox("normal")) != CODEX_ENTRY_PATH:
+		errors.append("%s: first Codex entry does not use the FAN-1069 entry card." % context)
+	var dossier_slot := main.find_child("CodexDetailPortraitSlot", true, false) as PanelContainer
+	var dossier_scroll := main.find_child("CodexDetailParchmentInset", true, false) as PanelContainer
+	if dossier_slot == null or _style_texture_path(dossier_slot.get_theme_stylebox("panel")) != CODEX_DOSSIER_PATH:
+		errors.append("%s: dossier frame is missing from CodexDetailPortraitSlot." % context)
+	if dossier_scroll == null or _style_texture_path(dossier_scroll.get_theme_stylebox("panel")) != CODEX_PANEL_PATH:
+		errors.append("%s: lore scroll does not use the ornament-safe FAN-1069 panel frame." % context)
 	var codex_back := main.find_child("CodexBackButton", true, false) as Button
 	if codex_back != null:
 		_check_button_family(codex_back, "text/back_260x104", "%s back" % context)
 
-	var nav_y := [222.0, 340.0, 458.0, 576.0, 694.0, 812.0]
+	# FAN-1080: 7 вкладок с шагом 104 (Летопись добавлена последней).
+	var nav_y := [234.0, 338.0, 442.0, 546.0, 650.0, 754.0, 858.0]
 	for tab_index in range(EXPECTED_TABS.size()):
 		var tab_spec: Array = EXPECTED_TABS[tab_index]
 		var tab := main.find_child("CodexTab_%s" % str(tab_spec[0]), true, false) as Button
@@ -98,10 +135,15 @@ func _check_viewport(viewport_size: Vector2i) -> void:
 			continue
 		if tab.text != str(tab_spec[1]) or tab.icon != null or tab.alignment != HORIZONTAL_ALIGNMENT_CENTER:
 			errors.append("%s: tab %s must be centered Russian-only text without an emblem." % [context, tab_spec[0]])
-		_check_button_family(tab, UIButtonFamily.FAMILY_CODEX_TAB, "%s tab %s" % [context, tab_spec[0]])
-		var expected_tab_rect := _scaled_rect(viewport_size, Rect2(104, nav_y[tab_index], 260, 104))
+		_check_button_family(tab, UIButtonFamily.FAMILY_MAIN_MENU, "%s tab %s" % [context, tab_spec[0]])
+		var expected_tab_rect := _scaled_rect(viewport_size, Rect2(104, nav_y[tab_index], 260, 72))
 		if not _rect_near(tab.get_global_rect(), expected_tab_rect, 1.5):
 			errors.append("%s: tab %s rect %s != %s." % [context, tab_spec[0], str(tab.get_global_rect()), str(expected_tab_rect)])
+		var tab_style := tab.get_theme_stylebox("normal") as StyleBoxTexture
+		if tab_style == null or tab_style.texture == null or tab_style.texture.resource_path.contains("minimal_metal_codex_tab"):
+			errors.append("%s: tab %s still uses the retired yellow Codex plate." % [context, tab_spec[0]])
+		elif tab.get_minimum_size().x > tab.size.x + 0.5:
+			errors.append("%s: tab %s text/content safe zone clips at %s." % [context, tab_spec[0], str(tab.size)])
 
 	var section_instance_ids := {}
 	for tab_spec in EXPECTED_TABS:
@@ -203,6 +245,9 @@ func _expected_entries(section_id: String) -> Array:
 		"ascension":
 			for entry in CodexData.ascensions():
 				result.append({"title": "%d. %s" % [entry["level"], entry["title"]], "texture": ASCENSION_ICON_PATH})
+		"chronicle":
+			for entry in LoreData.chronicle_entries():
+				result.append({"title": str(entry["title"]), "texture": str(entry["icon"])})
 	return result
 
 
@@ -311,6 +356,13 @@ func _canonical_texture_path(texture: Texture2D) -> String:
 		var atlas := (texture as AtlasTexture).atlas
 		return atlas.resource_path if atlas != null else ""
 	return texture.resource_path
+
+
+func _style_texture_path(style: StyleBox) -> String:
+	if not (style is StyleBoxTexture):
+		return ""
+	var texture := (style as StyleBoxTexture).texture
+	return texture.resource_path if texture != null else ""
 
 
 func _check_button_family(button: Button, expected_family: String, context: String) -> void:

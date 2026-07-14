@@ -1,6 +1,6 @@
 # Combat
 
-Обновлено: 2026-07-03 (0.2.0 refactor-wave reconcile; ядро системы — 0.1.5+)
+Обновлено: 2026-07-14 (0.2.0 refactor-wave reconcile; ядро системы — 0.1.5+)
 
 Этот файл описывает активную боевую систему `dev`. Snapshot полного состояния: `docs/design/current_game_state.md`. Канонические ID: `docs/design/content_registry.md`. Балансовый аудит: `docs/design/reviews/mechanics_balance_audit_2026_06.md`.
 
@@ -57,6 +57,14 @@
   about x1.5 from the previous `0.425` combat scale. The player collision radius
   remains `8.9`, so readability improves without changing combat ranges, contact
   behavior or balance.
+- FAN-1071 makes the gameplay origin/GroundCircle the authoritative playable
+  footline. `Player` measures the current full-frame texture's visible alpha
+  bottom, caches its center-to-foot distance and reapplies the visual-only lift
+  on every `animation_changed`/`frame_changed`. All 17 heroes therefore keep
+  every idle/move/walk frame on the damage-position platform even when a
+  PixelLab pack uses a different transparent canvas placement than its legacy
+  `sliced_rig_manifest` art. Collision, hurtbox, world position, targeting,
+  camera ownership and combat ranges remain unchanged.
 - Дебаг-режим (SCRUM-375): если persisted setting `debug_mode` включен, то
   только в активном combat ПКМ или Shift+ЛКМ задают точку плавного движения
   игрока на арене, а средняя кнопка мыши мгновенно переносит игрока в выбранную
@@ -66,7 +74,7 @@
 - Targeting для оружия игрока: ближайший живой враг в `attack_range`, затем ближайший враг на арене, затем последнее направление атаки. Направление движения не перетирает направление атаки.
 - Анимация, VFX и фактический урон используют одно направление.
 - Held-weapon visual placement (SCRUM-455): `Player/VisualRoot/WeaponSocket` is a runtime orbit anchor, not a body-center/hand overlap point. It sits on a 104px orbit toward the active aim/attack direction and renders behind the hero body (`z_index=-8`, attached weapon/root visual normalized to relative `z_index=0`) so weapon art reads as circling/held around the character without covering the playable sprite. Damage, cooldowns, hit shapes and targeting stay data-driven and unchanged.
-- Attack VFX calmness (SCRUM-457/SCRUM-854): shared `AttackVfx` helpers apply `_calmed_color()` to additive flashes/beams/slashes, cap alpha, slightly narrow beam visuals, slow projectile/skull trail ghosting, and reduce dust/note particle counts. Weapon signature plates keep a dedicated non-additive `WeaponSignatureBody` at alpha `0.60` so the actual weapon silhouette is visible during every attack; glow/rim layers stay restrained. This is visual-only: the same damage radii, hit corridors, cooldowns, timings, targeting and VFX center positions remain authoritative.
+- Attack VFX calmness (SCRUM-457/SCRUM-854/FAN-1079): shared `AttackVfx` helpers apply `_calmed_color()` to additive flashes/beams/slashes, cap alpha, slightly narrow beam visuals, slow projectile/skull trail ghosting, and reduce dust/note particle counts. Every weapon signature is now a compact `64..100px` release cue that travels `54px` from the character instead of scaling or positioning itself like a painted damage-zone plate. The dedicated non-additive `WeaponSignatureBody` stays at alpha `0.60`; glow/rim layers remain restrained. Berserk axe and Knight long-spear/holy-flail attacks expose only their weapon/projectile/slash/spiral effects and no exact `Polygon2D` damage overlay. This is visual-only: damage radii, hit corridors, cooldowns, timings and targeting remain authoritative in weapon logic.
 
 ## Damage And Feedback
 
@@ -142,7 +150,7 @@
 - Удар `AllyMinion` наносит основной цели полный урон один раз, затем бьет соседних врагов в data-driven малом splash radius (`summon_aoe_radius`, обычно 72-78 px) с `summon_aoe_damage_multiplier`, без повторного урона primary target.
 - SCRUM-854/864/SCRUM-875/SCRUM-880: Berserk `sweep` damage remains an outward wedge from the character, but sword/axe attacks no longer show the exact sector overlay during the animation. Their visible crescent slash is rotated 180 degrees while targeting, damage geometry, cooldowns and balance stay unchanged. SCRUM-880 makes the `axe` visual read as a broad 180-degree, 250px cleave by widening only the VFX lateral scale and adding the actual two-handed axe sprite into the weapon-signature layer. Chemist/Druid-style ground pools keep up to 6 active pools per weapon owner and expire by their own `pool_duration`; Engineer pressure mines are persistent hazards that tick each `pool_tick_interval` while enemies remain inside and clean up only at lifetime end.
 - SCRUM-854: mobile summon weapons prefill about half of the current `max_summons` at battle start (`ceil(max_summons / 2)`), then fill the rest through normal summon cadence. Summon command/counting is scoped by owner+weapon metadata so different summon sources do not consume each other's caps.
-- SCRUM-859: ClassWeapon deploys may define `deploy_role` and `max_summons_cap`. Guitarist amp is `stage_pulse`, Druid raven totem is `support_totem`, Engineer sentry is `turret_dps`, repair drone is `repair_chain`, and pressure mines are `mine_grid`; sentry shots remember already-hit targets during one cycle, then retarget only after exhausting the local pool, with a small capped splash around the primary target.
+- SCRUM-859/SCRUM-906/FAN-1075: ClassWeapon deploys may define `deploy_role` and `max_summons_cap`. Guitarist amp is `stage_pulse`, Druid raven totem is `support_totem`, Engineer sentry is `turret_dps`, the orbital drone is `orbit_drone` (2 enlarged drones by default, opposite on a 121 px ring, cap 6), and pressure mines are `mine_grid`; sentry shots remember already-hit targets during one cycle, then retarget only after exhausting the local pool, with a small capped splash around the primary target.
 - Временные эффекты оружия добавляются в cleanup groups (`player_weapon_effects`, `deployed_sound_amps`, projectiles/hazards).
 - Gameplay effects не должны использовать `SceneTreeTimer`; текущие длительные эффекты привязаны к node-bound tweens и уважают паузу.
 
@@ -156,6 +164,12 @@
   указывает на живого валидного игрока/владельца в дереве, movement, shooting,
   contact damage и elite targeting используют владельца taunt как combat target;
   при истечении статуса или invalid owner враг возвращается к обычному `_player()`.
+- FAN-1076: живой танк пары `chemist/homunculus_vial` регистрируется в группе
+  `chemist_tank_homunculi`, а его instance id хранится на владельце без
+  аллокаций group-query в enemy hot path. Танк имеет приоритет над локальным
+  `bastion_taunt` для общего `_combat_target()`: движение, стрельба, contact
+  damage и elite targeting всех базовых `Enemy` направлены на него по всей
+  арене; после смерти/удаления выбор атомарно возвращается к taunt или игроку.
 - `AllyMinion` применяет status damage/speed buffs к атакам и перемещению.
 - `Player` раздает thematic on-hit debuffs: arcane vulnerability (Dark Mage/Elementalist), toxic DoT (Chemist/Doctor/Assassin/Biologist), stagger slow (Soldier/Knight/Robot).
 - Биолог (SCRUM-896/1005): статус `bio_infection` — периодический урон с

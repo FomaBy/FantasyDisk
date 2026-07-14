@@ -1,6 +1,6 @@
 extends Node2D
 
-# SCRUM-906: орбитальный боевой дрон инженера («Орбитальный Дрон»).
+# SCRUM-906, FAN-1075: орбитальный боевой дрон инженера («Орбитальный Дрон»).
 # Кружит вокруг владельца (радиус спирали растёт со слотом: base × (1 + 0.14 ×
 # slot)), фазы слотов равномерно распределены — несколько дронов читаются как
 # спираль/кольцо, а не один спрайт. Наносит ФИЗИЧЕСКИЙ контактный урон каждому
@@ -78,9 +78,13 @@ func _phase_offset() -> float:
 
 func _orbit_radius() -> float:
 	var weapon := instance_from_id(_weapon_instance_id) as Node
-	var base_radius := 78.0
+	var base_radius := 121.0
 	if weapon != null and is_instance_valid(weapon) and weapon.get("drone_orbit_radius") != null:
 		base_radius = maxf(float(weapon.get("drone_orbit_radius")), 24.0)
+	# FAN-1075: стартовая пара делит одно кольцо и остаётся строго
+	# антиподальной; спиральное разнесение включается только с третьего дрона.
+	if _slot_count <= 2:
+		return base_radius
 	return base_radius * (1.0 + SPIRAL_RADIUS_STEP * float(_slot_index))
 
 

@@ -2,8 +2,9 @@
 
 Введен: 2026-06-12 (решение пользователя). Исполнители: чат «QA testing chat»
 и фоновый воркер `fantasydisk-qa-board-worker`.
-Обновлено: 2026-06-27 — Jira-first: QA выбирает задачи из Jira, локальные
-`docs/tasks/*.md` использует как spec/evidence mirror.
+Обновлено: 2026-07-13 — Multica-first: dispatcher назначает QA отдельную child
+issue в проекте FantasyDisk для parent `FAN-*` в статусе `in_review`; QA не
+self-select'ит parent. Локальные `docs/tasks/*.md` — spec/evidence mirror.
 
 ## Правило «UI не наползает» (пользователь, 2026-06-12, ОБЯЗАТЕЛЬНО)
 
@@ -33,41 +34,53 @@ QA для КАЖДОЙ задачи с рамками/панелями пров�
 bug-задача, даже если no-overlap между плашками прошёл.
 
 ## Правило
-КАЖДАЯ задача после завершения (статус `done`) проходит обязательное QA-тестирование —
-максимально точное и детальное. Задача считается полностью закрытой только после
-блока «## QA-Вердикт» в её файле.
+КАЖДАЯ задача после завершения исполнителем (статус `in_review`) проходит
+обязательное QA-тестирование — максимально точное и детальное. Задача считается
+полностью закрытой (`done`) только после QA-Вердикта PASSED и блока
+«## QA-Вердикт» в её файле.
 
 ## Цикл задачи (обновленный)
 ```text
-new → in_progress → done (исполнитель) → QA-тест → QA-Вердикт: PASSED
-                                       ↘ QA-Вердикт: FAILED + bug-таски на доску
+parent: todo → in_progress → in_review ───────────────→ done (QA PASS)
+QA child: backlog(reserved) → todo → in_progress → done + verdict
+                                                ↘ RED: parent stays in_review + linked bug
 ```
-Исполнители НИЧЕГО не меняют в своем процессе: ставят done как раньше.
-QA сам находит done-задачи без QA-вердикта.
+Исполнители НИЧЕГО не меняют в своем процессе: ставят issue в `in_review` по
+завершении. Единственный dispatcher находит parent без verdict, создаёт отдельную
+QA child issue, резервирует exact QA agent UUID и enqueue'ит её. QA worker не
+self-select'ит implementation parent и не меняет его owner.
 
-## Как QA выбирает задачу
-1. Сканировать Jira project `SCRUM`: задачи в «Контроль качества» / `done`
-   без QA PASSED/FAILED verdict comment/label. Локальный `docs/tasks/*.md`
-   использовать как подробную спецификацию и evidence mirror.
-2. Первым действием — застолбить в Jira comment/assignee/label:
-   `QA: in_progress (<дата время>, <agent>)`. Если есть свежий QA claim
-   (< 2 часов), пропускать. При наличии `.md` mirror можно продублировать туда
-   строку `QA: in_progress`.
-3. Одна задача за прогон. Приоритет — самые свежие done (актуальный код).
+## Как QA получает задачу
+1. Dispatcher сканирует Multica parent issues `FAN-*` в `in_review`, проверяет
+   отсутствие существующей QA child/verdict и создаёт child с parent ID, exact
+   candidate SHA и acceptance/evidence links.
+2. Child создаётся в `backlog` с exact QA `assignee_id`, затем dispatcher
+   перепроверяет ownership/comment locks и переводит child в `todo`.
+3. QA worker принимает только назначенную child, повторно читает parent/child и
+   recent comments, ставит child `in_progress` и пишет start comment через
+   `--content-file`. Одна child за прогон.
 
 ## Как тестировать (минимальный обязательный объем)
 1. **По Acceptance Criteria задачи** — каждый пункт проверяется фактически,
    а не «по отчету исполнителя»: прогнать команды, открыть экраны, замерить.
 2. **Целевые тесты задачи** — прогнать все упомянутые тесты headless; убедиться,
    что тест реально проверяет заявленное (заглянуть в код теста), а не пустышка.
-3. **Регрессия**: все 4 smoke-теста (runtime, animation, meta, targeting).
+3. **Регрессия**: `python3 tools/quality_gate.py --profile changed` для task diff;
+   `--profile full` перед release. Runner обнаруживает direct и inherited suites,
+   изолирует user-data и вызывает Godot только через semaphore. Ручной
+   focused-запуск не заменяет certifying profile.
 4. **Краевые случаи** — минимум 3 на задачу: граничные значения, повторные
    входы/выходы, пауза посреди эффекта, разрешение 1280x720, смерть/победа
    в момент действия механики.
 5. **Визуальные задачи**: оконный запуск, скриншоты до сохранять в
    `build/qa/<task>/`, смотреть глазами (артефакты, перекрытия, читаемость).
-6. **Производительность**, если задача массовая (волны/VFX): прогон с 100+
-   врагами, без заметных просадок.
+6. **Производительность**, если задача массовая (волны/VFX): детерминированный
+   сценарий на целевом cap (или 100+, если это AC задачи) с проверяемым бюджетом:
+   число group snapshots/candidate visits, cap активных узлов и отсутствие
+   per-frame allocations. Формулировка «без заметных просадок» без счётчика или
+   профиля не является достаточным evidence. Для enemy separation обязательный
+   минимум — `tests/runtime_hotpath_cache_test.gd`: 48 enemies, один общий group
+   snapshot в кадре, не более четырёх cached neighbors на enemy.
 
 ## Windowed lifecycle gate (SCRUM-1031)
 
@@ -91,6 +104,19 @@ viewport, ждёт ещё 4 frames и проверяет его `WeakRef`. По�
 вызывает `AudioManager.stop_music()` и ждёт 8 frames до quit. Capture обязан
 сделать любую ошибку этих ownership-barriers реальным exit `1`; сам helper не
 глушит stderr и не меняет production `AudioManager`/UI.
+
+## Main-dependency gate фокусных Main-тестов (FAN-1087)
+
+`tests/main_compile_guard.gd` — общий RefCounted-хелпер для тестов, которые
+preload'ят `res://scenes/Main.tscn` (`lore_screens_test`,
+`codex_unread_victory_test`, `codex_scrum954_layout_test`,
+`ui_no_overlap_matrix_test`). В начале `_initialize()` он проверяет, что
+`main.gd` и `ui_screens.gd` компилируются (`can_instantiate()`) и что инстанс
+Main получает script и `ui`/`route`/`combat`; любой провал — немедленный
+`quit(1)`. Причина: PackedScene загружается даже с некомпилирующимися
+скриптами, и без гейта тест продолжал работу на «пустом» Main, глотал
+runtime-ошибки и печатал success с exit 0 (false-green FAN-1087). Новые
+фокусные тесты, инстанцирующие Main, обязаны вызывать этот гейт первым шагом.
 
 ## Мета 4.1 Keystone Behavioral Gate (SCRUM-837)
 
@@ -121,8 +147,9 @@ viewport, ждёт ещё 4 frames и проверяет его `WeakRef`. По�
 Карта управления — `docs/design/systems/input_controls.md`.
 
 ## Вердикт (дописывается в файл задачи)
-Вердикт сначала добавляется в Jira comment/status, затем дублируется в локальный
-task mirror при наличии:
+Вердикт сначала фиксируется comment'ом в QA child issue, после чего завершённая
+QA child переводится в `done` при любом фактическом verdict. Затем verdict
+дублируется в локальный task mirror при наличии:
 
 ```md
 ## QA-Вердикт (<дата>)
@@ -131,12 +158,15 @@ task mirror при наличии:
 Краевые случаи: <что прогнали>
 Баги: нет | список с ссылками на bug-таски
 ```
-На локальном dashboard в примечание задачи дописать `QA: passed` или
-`QA: failed (N багов)`.
+При `PASSED` parent переводится в `done`. При `FAILED` parent остаётся
+`in_review` с blocker, а defect получает отдельную child issue. Вернуть parent в
+`todo` может только dispatcher/PM после явного решения о повторной реализации;
+QA worker не меняет parent owner или execution status самостоятельно.
 
 ## Баги
-На КАЖДЫЙ найденный баг — сначала отдельный Jira bug issue, затем локальный
-mirror-файл `docs/tasks/bug_<short_name>_task.md` при необходимости:
+На КАЖДЫЙ найденный баг — сначала отдельный Multica bug issue (проект FantasyDisk,
+FAN-*), затем локальный mirror-файл `docs/tasks/bug_<short_name>_task.md` при
+необходимости:
 ```md
 # BUG: <короткое название>
 Статус: new
@@ -152,11 +182,11 @@ mirror-файл `docs/tasks/bug_<short_name>_task.md` при необходим�
 ```
 + строка на локальный dashboard `docs/process/task_board.md` (секция «Баги от QA»,
 создать при первом баге) со статусом new — только как mirror; воркеры/чаты берут
-чинить Jira issue.
+чинить Multica issue (FAN-*).
 Критический баг (краш, потеря сейва, софтлок) — дополнительно пометить
 ПРИОРИТЕТ в начале строки доски.
 
 ## Запреты QA
 - Не чинить баги самому (кроме опечаток в доках) — только фиксировать и заводить таски.
 - Не перепроверять задачи с уже имеющимся QA-Вердиктом (если код не менялся).
-- Не держать больше одной задачи в QA: in_progress за прогон.
+- Не держать больше одной review issue `in_progress` за прогон.

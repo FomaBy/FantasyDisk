@@ -1,6 +1,7 @@
 extends SceneTree
 
 const MAIN_SCENE := preload("res://scenes/Main.tscn")
+const MainCompileGuard := preload("res://tests/main_compile_guard.gd")
 const CodexData := preload("res://scripts/codex_data.gd")
 const UIButtonFamily := preload("res://scripts/ui/ui_button_family.gd")
 const VIEWPORT_SIZES := [
@@ -22,9 +23,15 @@ const CR_BTN_2K_FRAME_PATH := "res://assets/sprites/ui/frames/text_buttons_uniqu
 const CR_BTN_CONTINUE_LONG_FRAME_PATH := "res://assets/sprites/ui/frames/text_buttons_unique/ui_btn_text_unique_continue_run_long_420x72_normal.png"
 const RC_PANEL_2K_FRAME_PATH := "res://assets/sprites/ui/frames/overhaul_2k/ui_frame_2k_rc_panel.png"
 const RC_BTN_2K_FRAME_PATH := "res://assets/sprites/ui/frames/overhaul_2k/ui_frame_2k_rc_btn.png"
-# SCRUM-879: кодекс на едином атлас-стиле — COVERED-фон atlas_style, панели-чипы
-# StyleBoxFlat в safe-зоне полой рамы meta40 (ассерты совпадают с runtime_smoke_test.gd).
+# FAN-1069: Codex keeps the accepted 1920x1080 stage but promotes the accepted
+# PixelLab Atlas/Settings skin into dedicated runtime textures.
 const CODEX_FRAME_BORDER_SUFFIX := "meta40/frame_border.png"
+const CODEX_RUNTIME_DIR := "res://assets/sprites/ui/atlas_style/codex/"
+const CODEX_BG_PATH := CODEX_RUNTIME_DIR + "bg_codex_sanctum.png"
+const CODEX_PANEL_PATH := CODEX_RUNTIME_DIR + "panel_9slice.png"
+const CODEX_ENTRY_PATH := CODEX_RUNTIME_DIR + "entry_card_516x154.png"
+const CODEX_DOSSIER_PATH := CODEX_RUNTIME_DIR + "dossier_frame.png"
+const CODEX_CREST_PATH := CODEX_RUNTIME_DIR + "codex_crest.png"
 const LUT_TOAST_2K_FRAME_PATH := "res://assets/sprites/ui/frames/overhaul_2k/ui_frame_2k_lut_toast.png"
 const CTB_BIG_2K_FRAME_PATH := "res://assets/sprites/ui/frames/overhaul_2k/ui_frame_2k_ctb_big.png"
 const CHUD_RESOURCE_2K_FRAME_PATH := "res://assets/sprites/ui/hud/combat_hud_v2/ui_hud_v2_cluster_bg.png"  # SCRUM-806
@@ -33,6 +40,13 @@ const CHUD_V2_BAR_TRACK_PATH := "res://assets/sprites/ui/hud/combat_hud_v2/ui_hu
 
 
 func _initialize() -> void:
+	# FAN-1087: компиляция/инстанцирование Main — жёсткий гейт, не false-green.
+	var gate_problems := MainCompileGuard.blocking_errors()
+	if not gate_problems.is_empty():
+		for problem in gate_problems:
+			push_error("FAN-1087 main-dependency gate: %s" % problem)
+		quit(1)
+		return
 	var dump_lines := PackedStringArray()
 	dump_lines.append("# UI No-Overlap Matrix")
 	dump_lines.append("")
@@ -319,8 +333,8 @@ func _append_codex_split_errors(main: Node, context: String, errors: Array, dump
 		return
 	var expected_tabs := [
 		["characters", "Персонажи"], ["monsters", "Монстры"],
-		["artifacts", "Артефакты"], ["characteristics", "Характеристики"],
-		["attributes", "Атрибуты"], ["ascension", "Возвышение"],
+		["artifacts", "Артефакты"], ["characteristics", "Параметры"],
+		["attributes", "Атрибуты"], ["ascension", "Возвыш."],
 	]
 	var tab_rects := []
 	for pair in expected_tabs:
@@ -961,6 +975,8 @@ func _screen_specific_assertions(main: Node, screen_id: String, context: String)
 			var codex_background := main.find_child("UnifiedBackground_codex", true, false) as TextureRect
 			if codex_background == null or codex_background.texture == null:
 				return "%s: expected UnifiedBackground_codex with a loaded texture." % context
+			if codex_background.texture.resource_path != CODEX_BG_PATH:
+				return "%s: expected Codex Atlas/Settings sanctum background %s, got %s." % [context, CODEX_BG_PATH, codex_background.texture.resource_path]
 			if codex_background.stretch_mode != TextureRect.STRETCH_KEEP_ASPECT_COVERED or codex_background.expand_mode != TextureRect.EXPAND_IGNORE_SIZE:
 				return "%s: expected UnifiedBackground_codex to cover the viewport without axis stretch." % context
 			if main.find_child("CodexFrame", true, false) != null:
@@ -978,19 +994,21 @@ func _screen_specific_assertions(main: Node, screen_id: String, context: String)
 				var codex_panel := main.find_child(str(codex_panel_name), true, false) as PanelContainer
 				if codex_panel == null or not codex_panel.get_global_rect().has_area():
 					return "%s: expected visible %s." % [context, codex_panel_name]
-				var codex_chip := codex_panel.get_theme_stylebox("panel") as StyleBoxFlat
-				if codex_chip == null or codex_chip.bg_color.a < 0.8 or codex_chip.bg_color.v > 0.35:
-					return "%s: expected %s to use a dark atlas chip StyleBoxFlat (alpha >= 0.8)." % [context, codex_panel_name]
+				if _stylebox_texture_path(codex_panel.get_theme_stylebox("panel")) != CODEX_PANEL_PATH:
+					return "%s: expected %s to use the FAN-1069 Codex panel skin." % [context, codex_panel_name]
 				var expected_panel_rect := _codex_scaled_design_rect(codex_vp, panel_contract[codex_panel_name])
 				if not _rect_approximately_equal(codex_panel.get_global_rect(), expected_panel_rect, 1.5):
 					return "%s: expected %s rect %s, got %s." % [context, codex_panel_name, str(expected_panel_rect), str(codex_panel.get_global_rect())]
 			var entry_card := main.find_child("CodexEntryCard", true, false) as Button
-			if entry_card == null or not (entry_card.get_theme_stylebox("normal") is StyleBoxFlat):
-				return "%s: expected CodexEntryCard to use the unified leather row StyleBoxFlat." % context
+			if entry_card == null or _stylebox_texture_path(entry_card.get_theme_stylebox("normal")) != CODEX_ENTRY_PATH:
+				return "%s: expected CodexEntryCard to use the accepted PixelLab entry-card texture." % context
+			var codex_crest := main.find_child("CodexCrest", true, false) as TextureRect
+			if codex_crest == null or codex_crest.texture == null or codex_crest.texture.resource_path != CODEX_CREST_PATH:
+				return "%s: expected the accepted PixelLab Codex crest." % context
 			var tab_button := main.find_child("CodexTab_characters", true, false) as Button
 			var tab_style_path := _stylebox_texture_path(tab_button.get_theme_stylebox("normal")) if tab_button != null else ""
-			if tab_button == null or not tab_style_path.contains("minimal_metal_codex_tab"):
-				return "%s: expected CodexTab_characters to use the explicit quiet Codex tab family." % context
+			if tab_button == null or not tab_style_path.contains("ui_btn_text_unique_main_menu_380x104_normal"):
+				return "%s: expected CodexTab_characters to use the exact Main Menu action plate." % context
 			if tab_button.icon != null:
 				return "%s: Codex navigation must not render generic category emblems." % context
 			var center_panel := main.find_child("CodexContent", true, false) as Control
@@ -1005,6 +1023,10 @@ func _screen_specific_assertions(main: Node, screen_id: String, context: String)
 				if required_control == null or not required_control.get_global_rect().has_area():
 					var required_name := str(required_control.name) if required_control != null else "<missing>"
 					return "%s: expected SCRUM-884 Codex list/dossier zone %s to be visible." % [context, required_name]
+			if _stylebox_texture_path((detail_portrait as PanelContainer).get_theme_stylebox("panel")) != CODEX_DOSSIER_PATH:
+				return "%s: expected Codex portrait well to use the FAN-1069 dossier frame." % context
+			if _stylebox_texture_path((detail_text as PanelContainer).get_theme_stylebox("panel")) != CODEX_PANEL_PATH:
+				return "%s: expected Codex lore scroll to use the ornament-safe FAN-1069 panel frame." % context
 			for absent_name in ["CodexCenterOverviewRow", "CodexCenterObjectStage", "CodexCenterObjectTexture", "CodexCenterSummaryPanel", "CodexCenterSummaryBody"]:
 				if main.find_child(str(absent_name), true, false) != null:
 					return "%s: expected SCRUM-884 codex center preview node %s to be removed." % [context, str(absent_name)]

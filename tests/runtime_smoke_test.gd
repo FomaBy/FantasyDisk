@@ -57,10 +57,16 @@ const HUD_RESOURCE_PANEL_TEXTURE_2K := "res://assets/sprites/ui/hud/combat_hud_v
 const HUD_V2_BAR_TRACK_TEXTURE := "res://assets/sprites/ui/hud/combat_hud_v2/ui_hud_v2_bar_track.png"
 const HUD_V2_MONEY_ICON_TEXTURE := "res://assets/sprites/ui/hud/combat_hud_v2/ui_hud_v2_icon_money.png"
 const HUD_TIMER_PANEL_TEXTURE_2K := "res://assets/sprites/ui/hud/combat_hud_v2/ui_hud_v2_cluster_bg.png"  # SCRUM-806 reopen: без жёлтой рамки, единая подложка
-# SCRUM-879: кодекс на едином атлас-стиле — COVERED-фон atlas_style, панели-чипы
-# StyleBoxFlat, полая рама meta40 поверх; табы — глобальный кит codex_tab.
+# FAN-1047: кодекс на едином атлас-стиле; левые вкладки используют
+# точно ту же пятисостояниевую пластину 380×104, что и главное меню.
 const CODEX_FRAME_BORDER_SUFFIX := "meta40/frame_border.png"
-const CODEX_TAB_KIT_TEXTURE_PART := "minimal_metal_codex_tab"
+const CODEX_TAB_KIT_TEXTURE_PART := "ui_btn_text_unique_main_menu_380x104"
+const CODEX_RUNTIME_DIR := "res://assets/sprites/ui/atlas_style/codex/"
+const CODEX_BG_PATH := CODEX_RUNTIME_DIR + "bg_codex_sanctum.png"
+const CODEX_PANEL_PATH := CODEX_RUNTIME_DIR + "panel_9slice.png"
+const CODEX_ENTRY_PATH := CODEX_RUNTIME_DIR + "entry_card_516x154.png"
+const CODEX_DOSSIER_PATH := CODEX_RUNTIME_DIR + "dossier_frame.png"
+const CODEX_CREST_PATH := CODEX_RUNTIME_DIR + "codex_crest.png"
 const EXPECTED_PLAYER_COMBAT_VISUAL_SCALE := 0.64  # SCRUM-823: lock-step with player.gd visual-only bump.
 const ROUTE_START_BATTLE_ONLY_ROWS := 2
 const EXPECTED_CODEX_CHARACTER_PORTRAIT_SIZE := Vector2(216.0, 216.0)
@@ -1169,7 +1175,7 @@ func _initialize() -> void:
 		_fail("Expected active-combat Esc to attach the pause stats character board.")
 		return
 	# SCRUM-983: informational header + hero/derived body + fixed action footer.
-	var control_buttons := pause_menu.find_child("PauseControlButtons", true, false) as HBoxContainer
+	var control_buttons := pause_menu.find_child("PauseControlButtons", true, false) as GridContainer
 	var hero_card := pause_menu.find_child("HeroCard", true, false) as PanelContainer
 	var base_stats_list := pause_menu.find_child("BaseStatsList", true, false) as VBoxContainer
 	var base_stats_grid := pause_menu.find_child("BaseStatsGrid", true, false) as GridContainer
@@ -1589,13 +1595,15 @@ func _test_new_boss_roster(main_scene: PackedScene) -> void:
 	var m := main_scene.instantiate()
 	root.add_child(m)
 	await process_frame
+	# FAN-1080: все боссы получили русские display-имена; секретный босс в бою
+	# зовётся лорным именем «Исток» (канон: docs/design/lore.md).
 	var expected := {
-		"rift_warden": "",
-		"disk_devourer": "",
+		"rift_warden": "Страж Разлома",
+		"disk_devourer": "Пожиратель Диска",
 		"bone_archon": "Костяной Архонт",
 		"brood_mother": "Матерь Роя",
 		"ashen_colossus": "Пепельный Колосс",
-		"secret_ascension_boss": "Secret Ascension Boss",
+		"secret_ascension_boss": "Исток",
 	}
 	var expected_unique_nodes := {
 		"rift_warden": "BossGravityWell",
@@ -1986,7 +1994,11 @@ func _assert_weapon_orbit_pose(player: Node, expected_direction: Vector2, label:
 	if weapon_canvas != null and weapon_visual != null and socket.z_index + weapon_canvas.z_index + weapon_visual.z_index >= body.z_index:
 		_fail("Expected %s weapon visual effective z to stay behind the hero body." % label)
 		return false
-	var actual_direction := socket.position.normalized()
+	# Этап A (feet-origin): орбита = direction * RADIUS + (0, vertical_bias); bias
+	# теперь тянет сокет к торсу поднятого визуала — вычитаем его перед проверкой
+	# направления (сама проверка «сокет следует за направлением атаки» не меняется).
+	var orbit_bias := float(socket.get_meta("weapon_orbit_vertical_bias", 0.0))
+	var actual_direction := (socket.position - Vector2(0.0, orbit_bias)).normalized()
 	var expected := expected_direction.normalized()
 	if actual_direction.dot(expected) < 0.82:
 		_fail("Expected %s weapon socket to follow attack direction %s, got %s." % [label, str(expected), str(actual_direction)])
@@ -2413,10 +2425,14 @@ func _test_shop_reentry_until_next_level(main_scene: PackedScene) -> void:
 	shop_main.set("route_stage", 0)
 	shop_main.set("route_nodes", [
 		[
-			{"type": "shop", "name": "Shop 1: Test Caravan", "row": 0, "branch": 0, "next_branches": [0]},
+			{"type": "battle", "name": "Battle 1A: Side Road", "row": 0, "branch": 0, "next_branches": [0]},
+			{"type": "shop", "name": "Shop 1B: Test Caravan", "row": 0, "branch": 1, "next_branches": [1]},
+			{"type": "event", "name": "Event 1C: Side Path", "row": 0, "branch": 2, "next_branches": [2]},
 		],
 		[
-			{"type": "battle", "name": "Battle 2: Test Road", "row": 1, "branch": 0, "next_branches": [0]},
+			{"type": "battle", "name": "Battle 2A: Left Road", "row": 1, "branch": 0, "next_branches": [0]},
+			{"type": "battle", "name": "Battle 2B: Forward Road", "row": 1, "branch": 1, "next_branches": [0]},
+			{"type": "battle", "name": "Battle 2C: Right Road", "row": 1, "branch": 2, "next_branches": [0]},
 		],
 		[
 			{"type": "boss", "name": "Rift Warden", "boss_id": "rift_warden", "row": 2, "branch": 0},
@@ -2427,17 +2443,21 @@ func _test_shop_reentry_until_next_level(main_scene: PackedScene) -> void:
 	await process_frame
 
 	var route_scroll := shop_main.find_child("RouteMapScroll", true, false) as ScrollContainer
-	var shop_button := shop_main.find_child("RouteNode_shop_0_0", true, false) as Button
+	var shop_button := shop_main.find_child("RouteNode_shop_0_1", true, false) as Button
 	if route_scroll == null or shop_button == null or shop_button.disabled:
 		_fail("Expected test shop route node to start clickable.")
 		return
 	var route_nodes: Array = shop_main.get("route_nodes")
-	var shop_route_node: Dictionary = route_nodes[0][0]
-	_send_route_node_mouse_press(shop_main, shop_button, route_scroll, 0, shop_route_node, 0)
-	_send_route_node_mouse_release(shop_main, shop_button, route_scroll, 0, shop_route_node, 0)
+	var shop_route_node: Dictionary = route_nodes[0][1]
+	_send_route_node_mouse_press(shop_main, shop_button, route_scroll, 1, shop_route_node, 0)
+	_send_route_node_mouse_release(shop_main, shop_button, route_scroll, 1, shop_route_node, 0)
 	await process_frame
 	if shop_main.find_child("ShopScreen", true, false) == null:
 		_fail("Expected clicking a shop route node to open the shop.")
+		return
+	var selected_route: Array = shop_main.get("route_selected_indices")
+	if selected_route.size() <= 0 or int(selected_route[0]) != 1:
+		_fail("Expected selecting the shop to record branch 1 as the chosen route node, got %s." % str(selected_route))
 		return
 	var initial_shop_key := str(shop_main.get("current_shop_node_key"))
 	var initial_shop_ids: Array[String] = []
@@ -2469,18 +2489,31 @@ func _test_shop_reentry_until_next_level(main_scene: PackedScene) -> void:
 	if shop_main.find_child("RouteMapScreen", true, false) == null:
 		_fail("Expected leaving shop to return to the route map.")
 		return
-	shop_button = shop_main.find_child("RouteNode_shop_0_0", true, false) as Button
-	var next_battle_button := shop_main.find_child("RouteNode_battle_1_0", true, false) as Button
+	shop_button = shop_main.find_child("RouteNode_shop_0_1", true, false) as Button
+	var sibling_left := shop_main.find_child("RouteNode_battle_0_0", true, false) as Button
+	var sibling_right := shop_main.find_child("RouteNode_event_0_2", true, false) as Button
+	var next_left := shop_main.find_child("RouteNode_battle_1_0", true, false) as Button
+	var next_battle_button := shop_main.find_child("RouteNode_battle_1_1", true, false) as Button
+	var next_right := shop_main.find_child("RouteNode_battle_1_2", true, false) as Button
 	if shop_button == null or shop_button.disabled or next_battle_button == null or next_battle_button.disabled:
 		_fail("Expected both the visited shop and next route node to be clickable before leaving the level. shop=%s next=%s" % [str(shop_button), str(next_battle_button)])
+		return
+	if sibling_left == null or not sibling_left.disabled or sibling_right == null or not sibling_right.disabled:
+		_fail("FAN-1078: expected sibling nodes beside the selected shop to stay locked. left=%s right=%s" % [str(sibling_left), str(sibling_right)])
+		return
+	if next_left == null or not next_left.disabled or next_right == null or not next_right.disabled:
+		_fail("FAN-1078: expected only the connected forward node to unlock after the shop. left=%s right=%s" % [str(next_left), str(next_right)])
+		return
+	if shop_button.find_child("RouteNodeCompletedMark", true, false) == null:
+		_fail("Expected the selected returnable shop to keep its completed mark.")
 		return
 
 	route_scroll = shop_main.find_child("RouteMapScroll", true, false) as ScrollContainer
 	if route_scroll == null:
 		_fail("Expected route map scroll to exist before revisiting shop.")
 		return
-	_send_route_node_mouse_press(shop_main, shop_button, route_scroll, 0, shop_route_node, 0)
-	_send_route_node_mouse_release(shop_main, shop_button, route_scroll, 0, shop_route_node, 0)
+	_send_route_node_mouse_press(shop_main, shop_button, route_scroll, 1, shop_route_node, 0)
+	_send_route_node_mouse_release(shop_main, shop_button, route_scroll, 1, shop_route_node, 0)
 	await process_frame
 	if shop_main.find_child("ShopScreen", true, false) == null:
 		_fail("Expected revisiting the pending shop to reopen shop screen.")
@@ -2504,13 +2537,13 @@ func _test_shop_reentry_until_next_level(main_scene: PackedScene) -> void:
 	await process_frame
 	await process_frame
 	route_scroll = shop_main.find_child("RouteMapScroll", true, false) as ScrollContainer
-	next_battle_button = shop_main.find_child("RouteNode_battle_1_0", true, false) as Button
+	next_battle_button = shop_main.find_child("RouteNode_battle_1_1", true, false) as Button
 	if route_scroll == null or next_battle_button == null or next_battle_button.disabled:
 		_fail("Expected next battle node to stay clickable after a repeated shop visit.")
 		return
-	var next_route_node: Dictionary = route_nodes[1][0]
-	_send_route_node_mouse_press(shop_main, next_battle_button, route_scroll, 0, next_route_node, 1)
-	_send_route_node_mouse_release(shop_main, next_battle_button, route_scroll, 0, next_route_node, 1)
+	var next_route_node: Dictionary = route_nodes[1][1]
+	_send_route_node_mouse_press(shop_main, next_battle_button, route_scroll, 1, next_route_node, 1)
+	_send_route_node_mouse_release(shop_main, next_battle_button, route_scroll, 1, next_route_node, 1)
 	await process_frame
 	if int(shop_main.get("route_stage")) != 1 or bool(shop_main.get("shop_reentry_pending")):
 		_fail("Expected choosing the next route node to advance route_stage and clear shop reentry pending.")
@@ -2615,6 +2648,8 @@ func _test_run_autosave_continue_prompt(main_scene: PackedScene) -> void:
 		_fail("Expected manual run autosave fixture to save.")
 		return
 	var new_main := main_scene.instantiate()
+	# FAN-1080: детерминизм — интро истории зависит от машинного settings.cfg.
+	new_main.set("force_skip_lore_intro", true)
 	root.add_child(new_main)
 	await process_frame
 	var new_start := new_main.find_child("MainMenuStartButton", true, false) as Button
@@ -3938,7 +3973,8 @@ func _test_victory_flow(main: Node) -> void:
 		if victory_text.contains(forbidden):
 			_fail("Expected victory screen text to hide internal technical token '%s'." % forbidden)
 			return
-	for expected in ["Победа", "Финальный босс повержен", "Очки наследия", "Возвышения"]:
+	# FAN-1080: первая строка победы — лорная Печать (оба варианта строки).
+	for expected in ["Победа", "Печать наложена", "Очки наследия", "Возвышения"]:
 		if not victory_text.contains(expected):
 			_fail("Expected victory screen text to include '%s'." % expected)
 			return
@@ -4168,7 +4204,11 @@ func _test_class_weapon_rework() -> void:
 		_fail("Expected cursed skull to tick frequently through the dot pipeline.")
 		return
 	var bass_config: Dictionary = ProgressionData.weapon("guitarist", "bass_guitar")
-	if float(bass_config.get("damage_multiplier", 1.0)) > 0.35 or float(bass_config.get("fire_interval", 9.9)) > 0.9 or float(bass_config.get("knockback", 0.0)) < 150.0:
+	# FAN-1031 3d-final: identity-кап баса поднят задокументированным продуктовым
+	# решением (координатор, DoD FAN-1028): порог 0.35 → 0.50 зеркалит guitarist
+	# kit-тест (bass ≤ 0.50, bass < electric). Контроль-идентичность (частый пульс,
+	# жёсткий отброс) остаётся запинена.
+	if float(bass_config.get("damage_multiplier", 1.0)) > 0.50 or float(bass_config.get("fire_interval", 9.9)) > 0.9 or float(bass_config.get("knockback", 0.0)) < 150.0:
 		_fail("Expected bass guitar to be a fast low-damage control pulse.")
 		return
 	var amp_config: Dictionary = ProgressionData.weapon("guitarist", "sound_amp")
@@ -4698,15 +4738,15 @@ func _test_universal_attribute_interpretations() -> void:
 		_fail("Expected leadership interpretation to trigger echo weapon damage.")
 		return
 
+	# FAN-1034: пул берсерка после ревизии атрибутов — мёртвые оси
+	# (projectile_speed/knockback/сектор) удалены, buff_power/magic_focus гейтнуты
+	# affinity, дот-темп и вампиризм-пара приезжают внутри объединённых карт.
 	var rewards := ProgressionData.level_up_rewards("berserk")
 	var derived_icons_seen := {}
 	var mod_display := {
-			"dot_damage_flat": "dot_damage",
-			"dot_speed_flat": "dot_speed",
-			"projectile_speed_flat": "projectile_speed",
-			"aoe_radius_multiplier": "aura_radius",
-			"aura_radius_flat": "aura_radius",
-		"buff_power_flat": "buff_power",
+		"dot_damage_flat": "dot_damage",
+		"dot_speed_flat": "dot_speed",
+		"aoe_radius_multiplier": "aura_radius",
 		"summon_bonus": "summon_amount",
 		"absorb_flat": "absorb",
 		"regeneration_flat": "regeneration",
@@ -4720,12 +4760,16 @@ func _test_universal_attribute_interpretations() -> void:
 			var icon_id := str(mod_display.get(str(modifier_id), ""))
 			if icon_id != "":
 				derived_icons_seen[icon_id] = true
-	for icon_id in ["dot_damage", "dot_speed", "projectile_speed", "aura_radius", "buff_power", "summon_amount", "absorb", "regeneration", "vampiric_amount", "vampiric_chance", "ultimate_multiplier"]:
+	for icon_id in ["dot_damage", "dot_speed", "aura_radius", "summon_amount", "absorb", "regeneration", "vampiric_amount", "vampiric_chance", "ultimate_multiplier"]:
 		if not derived_icons_seen.has(icon_id):
 			_fail("Expected level-up pool to expose derived attribute reward %s." % icon_id)
 			return
 		if not UIIconRegistry.has_texture(icon_id):
 			_fail("Expected derived attribute %s to resolve to an icon texture." % icon_id)
+			return
+	for gated_reward in rewards:
+		if str(gated_reward.get("id", "")) in ["buff_power_up", "magic_focus_up"]:
+			_fail("Expected %s to be affinity-gated away from berserk (FAN-1034)." % str(gated_reward.get("id", "")))
 			return
 
 	holder.queue_free()
@@ -5949,8 +5993,22 @@ func _test_feedback_overlay_and_local_fallback(main_scene: PackedScene) -> void:
 		return
 	var text_edit := feedback_main.find_child("FeedbackTextEdit", true, false) as TextEdit
 	var preview := feedback_main.find_child("FeedbackScreenshotPreview", true, false) as TextureRect
-	if text_edit == null or preview == null or preview.texture == null:
-		_fail("Expected feedback overlay to show text input and screenshot preview.")
+	var screenshot_toggle := feedback_main.find_child("FeedbackScreenshotToggle", true, false) as CheckBox
+	var privacy_body := feedback_main.find_child("FeedbackPrivacyBody", true, false) as Label
+	var operator_retention := feedback_main.find_child("FeedbackOperatorRetentionLabel", true, false) as Label
+	var fallback_label := feedback_main.find_child("FeedbackLocalFallbackLabel", true, false) as Label
+	if text_edit == null or preview == null or preview.texture == null \
+			or screenshot_toggle == null or privacy_body == null \
+			or operator_retention == null or fallback_label == null:
+		_fail("Expected feedback overlay to show input, preview, opt-out and complete privacy disclosure.")
+		feedback_main.queue_free()
+		await process_frame
+		return
+	if not screenshot_toggle.button_pressed \
+			or not ("UUID" in privacy_body.text and "IP" in privacy_body.text) \
+			or not ("Оператор" in operator_retention.text and "Срок хранения" in operator_retention.text) \
+			or not ("только на этом устройстве" in fallback_label.text):
+		_fail("Expected feedback privacy controls to default include and disclose UUID/IP/operator/retention/local storage.")
 		feedback_main.queue_free()
 		await process_frame
 		return
@@ -5978,6 +6036,15 @@ func _test_feedback_overlay_and_local_fallback(main_scene: PackedScene) -> void:
 		feedback_main.queue_free()
 		await process_frame
 		return
+	var feedback_ui = feedback_main.get("ui")
+	var lifecycle_reporter: Node = feedback_ui._feedback_reporter()
+	var close_callback_calls := {"count": 0}
+	var close_callback := func(_success: bool, _message: String, _local_path: String) -> void:
+		close_callback_calls["count"] = int(close_callback_calls["count"]) + 1
+	var overlay_request_id: int = lifecycle_reporter._begin_report(
+		"cancel on close", FeedbackReporter._normalized_screenshot(null),
+		{"screen": "runtime_smoke"}, close_callback)
+	feedback_ui._feedback_request_id = overlay_request_id
 	var cancel_pad_event := InputEventJoypadButton.new()
 	cancel_pad_event.button_index = JOY_BUTTON_B
 	cancel_pad_event.pressed = true
@@ -5985,6 +6052,17 @@ func _test_feedback_overlay_and_local_fallback(main_scene: PackedScene) -> void:
 	await process_frame
 	if feedback_main.get("feedback_overlay_layer") != null:
 		_fail("Expected gamepad B to close feedback overlay.")
+		feedback_main.queue_free()
+		await process_frame
+		return
+	if lifecycle_reporter.is_request_active(overlay_request_id):
+		_fail("Expected closing feedback overlay to cancel its active request.")
+		feedback_main.queue_free()
+		await process_frame
+		return
+	lifecycle_reporter._finish_report(overlay_request_id, true, "late", "")
+	if int(close_callback_calls["count"]) != 0:
+		_fail("Expected a cancelled feedback request to drop its UI callback.")
 		feedback_main.queue_free()
 		await process_frame
 		return
@@ -6000,6 +6078,16 @@ func _test_feedback_overlay_and_local_fallback(main_scene: PackedScene) -> void:
 		feedback_main.queue_free()
 		await process_frame
 		return
+	var text_only_path := FeedbackReporter.save_local_report(
+		"Smoke feedback without screenshot", screenshot,
+		{"screen": "runtime_smoke", "version": "test"},
+		FeedbackReporter._new_report_uuid(), false)
+	if not FileAccess.file_exists("%s/report.txt" % text_only_path) \
+			or FileAccess.file_exists("%s/screenshot.png" % text_only_path):
+		_fail("Expected screenshot opt-out local fallback to write only report.txt under %s." % text_only_path)
+		feedback_main.queue_free()
+		await process_frame
+		return
 	var boundary := "----FantasyDiskSmokeBoundary"
 	var multipart := FeedbackReporter.multipart_payload("Smoke payload", screenshot, {"screen": "runtime_smoke"}, boundary)
 	if not _packed_bytes_contains(multipart, "payload_json".to_utf8_buffer()) or not _packed_bytes_contains(multipart, FeedbackReporter.UPLOAD_FILENAME.to_utf8_buffer()):
@@ -6008,6 +6096,12 @@ func _test_feedback_overlay_and_local_fallback(main_scene: PackedScene) -> void:
 		await process_frame
 		return
 	var payload_json := _feedback_multipart_payload_json(multipart, boundary)
+	var allowed_mentions: Dictionary = payload_json.get("allowed_mentions", {}) as Dictionary
+	if allowed_mentions.get("parse", ["unsafe"]) != []:
+		_fail("Expected direct debug feedback payload to disable Discord mentions.")
+		feedback_main.queue_free()
+		await process_frame
+		return
 	var multipart_filename := _feedback_multipart_file_filename(multipart)
 	var attachments: Array = payload_json.get("attachments", [])
 	if attachments.size() != 1 or not attachments[0] is Dictionary:
@@ -6691,17 +6785,22 @@ func _test_class_relevance_and_offer_fixation(main_scene: PackedScene) -> void:
 		_fail("Expected +10 strength NOT to change dark mage magic damage (SCRUM-524 damage-type isolation).")
 		return
 
-	# 2. Пулы: больше не скрывают magic focus или «чужие» базовые статы.
-	# Skill Tree 3.0 keeps magic focus visible to Berserk, but routes it through
-	# an isolated magic channel so physical melee damage is unchanged.
-	var berserk_magic_focus_reward: Dictionary = {}
+	# 2. FAN-1034: magic focus гейтнут class_affinity на маг-классы — у Берсерка
+	# ось magic_damage мертва (ни одно его оружие не читает magic-канал), карта-
+	# пустышка исключена из его пула. Маг-классам карта остаётся, канал изолирован
+	# (проверяем изоляцию на статах берсерка как и раньше).
 	for reward in ProgressionData.level_up_rewards("berserk"):
 		if str(reward.get("id")) == "magic_focus_up":
-			berserk_magic_focus_reward = reward
-	if berserk_magic_focus_reward.is_empty():
-		_fail("Expected magic focus upgrade to remain available to berserk as a low-value universal pool card.")
+			_fail("Expected magic focus upgrade to be affinity-gated away from berserk (dead axis, FAN-1034).")
+			return
+	var mage_magic_focus_reward: Dictionary = {}
+	for reward in ProgressionData.level_up_rewards("dark_mage"):
+		if str(reward.get("id")) == "magic_focus_up":
+			mage_magic_focus_reward = reward
+	if mage_magic_focus_reward.is_empty():
+		_fail("Expected magic focus upgrade to stay in the dark mage level-up pool.")
 		return
-	var magic_focus_mods: Dictionary = berserk_magic_focus_reward.get("mods", {}) as Dictionary
+	var magic_focus_mods: Dictionary = mage_magic_focus_reward.get("mods", {}) as Dictionary
 	if float(magic_focus_mods.get("magic_damage_multiplier", 1.0)) <= 1.0:
 		_fail("Expected magic focus to map to the isolated magic damage multiplier.")
 		return
@@ -7648,6 +7747,7 @@ func _test_codex_screen(main_scene: PackedScene) -> void:
 
 	var codex_background := codex_main.find_child("UnifiedBackground_codex", true, false) as TextureRect
 	var codex_stage := codex_main.find_child("CodexStage", true, false) as Control
+	var codex_crest := codex_main.find_child("CodexCrest", true, false) as TextureRect
 	var codex_title_frame := codex_main.find_child("CodexTitleFrame", true, false) as PanelContainer
 	var codex_nav_panel := codex_main.find_child("CodexNavPanel", true, false) as PanelContainer
 	var codex_tabs := codex_main.find_child("CodexTabs", true, false) as Control
@@ -7662,7 +7762,7 @@ func _test_codex_screen(main_scene: PackedScene) -> void:
 	var detail_title := codex_main.find_child("CodexDetailTitle", true, false) as Label
 	var detail_chip_row := codex_main.find_child("CodexDetailChipRow", true, false) as Control
 	var detail_text_safe := codex_main.find_child("CodexDetailParchmentInset", true, false) as Control
-	if codex_background == null or codex_stage == null or codex_title_frame == null or codex_nav_panel == null or codex_content == null or codex_detail == null or codex_tabs == null or codex_center_list == null or default_section == null or default_entry == null or default_portrait == null or default_entry_name == null or detail_portrait == null or detail_title == null or detail_chip_row == null or detail_text_safe == null:
+	if codex_background == null or codex_stage == null or codex_crest == null or codex_title_frame == null or codex_nav_panel == null or codex_content == null or codex_detail == null or codex_tabs == null or codex_center_list == null or default_section == null or default_entry == null or default_portrait == null or default_entry_name == null or detail_portrait == null or detail_title == null or detail_chip_row == null or detail_text_safe == null:
 		_fail("Expected SCRUM-954 Codex stage to include title/back, nav/list/detail panels, canonical row, and dossier zones.")
 		return
 	if codex_main.find_child("CodexFrame", true, false) != null:
@@ -7679,6 +7779,12 @@ func _test_codex_screen(main_scene: PackedScene) -> void:
 	if codex_background.texture == null or codex_background.stretch_mode != TextureRect.STRETCH_KEEP_ASPECT_COVERED or codex_background.expand_mode != TextureRect.EXPAND_IGNORE_SIZE:
 		_fail("Expected UnifiedBackground_codex to cover the viewport without axis stretch.")
 		return
+	if codex_background.texture.resource_path != CODEX_BG_PATH:
+		_fail("Expected FAN-1069 Codex sanctum background %s, got %s." % [CODEX_BG_PATH, codex_background.texture.resource_path])
+		return
+	if codex_crest.texture == null or codex_crest.texture.resource_path != CODEX_CREST_PATH:
+		_fail("Expected FAN-1069 Codex crest texture.")
+		return
 
 	var codex_viewport_size := codex_screen.get_viewport_rect().size
 	var codex_scale := minf(codex_viewport_size.x / 1920.0, codex_viewport_size.y / 1080.0)
@@ -7689,6 +7795,7 @@ func _test_codex_screen(main_scene: PackedScene) -> void:
 	var codex_rect_contract := {
 		"CodexTitleFrame": Rect2(72, 36, 340, 112),
 		"CodexBackButton": Rect2(1580, 46, 268, 96),
+		"CodexCrest": Rect2(908, 24, 104, 104),
 		"CodexNavPanel": Rect2(72, 172, 324, 840),
 		"CodexContent": Rect2(420, 172, 620, 840),
 		"CodexCenterListHost": Rect2(452, 278, 556, 690),
@@ -7714,20 +7821,22 @@ func _test_codex_screen(main_scene: PackedScene) -> void:
 			return
 
 	for codex_panel in [codex_nav_panel, codex_content, codex_detail]:
-		var codex_chip := (codex_panel as PanelContainer).get_theme_stylebox("panel") as StyleBoxFlat
-		if codex_chip == null or codex_chip.bg_color.a < 0.8 or codex_chip.bg_color.v > 0.35:
-			_fail("Expected %s to use a dark atlas chip StyleBoxFlat (alpha >= 0.8)." % str((codex_panel as Control).name))
+		if _stylebox_texture_path((codex_panel as PanelContainer).get_theme_stylebox("panel")) != CODEX_PANEL_PATH:
+			_fail("Expected %s to use the FAN-1069 PixelLab panel skin." % str((codex_panel as Control).name))
 			return
 
 	var slot_style := default_portrait.get_theme_stylebox("panel")
 	if not (slot_style is StyleBoxFlat):
 		_fail("Expected Codex entry portrait slot to use a translucent StyleBoxFlat, not a dark field texture.")
 		return
-	if not (detail_portrait.get_theme_stylebox("panel") is StyleBoxFlat):
-		_fail("Expected SCRUM-879 Codex detail portrait slot to use a translucent StyleBoxFlat.")
+	if _stylebox_texture_path(detail_portrait.get_theme_stylebox("panel")) != CODEX_DOSSIER_PATH:
+		_fail("Expected FAN-1069 Codex detail portrait slot to use the dossier frame.")
 		return
-	if not ((default_entry as Button).get_theme_stylebox("normal") is StyleBoxFlat):
-		_fail("Expected SCRUM-954 Codex list cards to use the unified leather row StyleBoxFlat.")
+	if _stylebox_texture_path((default_entry as Button).get_theme_stylebox("normal")) != CODEX_ENTRY_PATH:
+		_fail("Expected FAN-1069 Codex list cards to use the accepted PixelLab entry card.")
+		return
+	if _stylebox_texture_path((detail_text_safe as PanelContainer).get_theme_stylebox("panel")) != CODEX_PANEL_PATH:
+		_fail("Expected FAN-1069 Codex lore scroll to use the ornament-safe panel frame.")
 		return
 	if default_entry_name.text != "Берсерк" or default_entry_name.text.contains(" — ") or default_entry_name.horizontal_alignment != HORIZONTAL_ALIGNMENT_CENTER:
 		_fail("Expected SCRUM-954 center row to show only the centered canonical Russian name Берсерк.")
@@ -7748,12 +7857,12 @@ func _test_codex_screen(main_scene: PackedScene) -> void:
 		return
 
 	var character_tab := codex_main.find_child("CodexTab_characters", true, false) as Button
-	if character_tab == null or character_tab.icon != null or not _stylebox_texture_path(character_tab.get_theme_stylebox("normal")).contains("minimal_metal_codex_tab"):
-		_fail("Expected SCRUM-1051 Codex tabs to use centered Russian-only quiet Codex-family buttons without category emblems.")
+	if character_tab == null or character_tab.icon != null or not _stylebox_texture_path(character_tab.get_theme_stylebox("normal")).contains("ui_btn_text_unique_main_menu_380x104_normal"):
+		_fail("Expected FAN-1047 Codex tabs to use centered Russian-only Main Menu buttons without category emblems.")
 		return
 	var codex_back_button := codex_main.find_child("CodexBackButton", true, false) as Button
 	if codex_back_button == null or not (codex_back_button.get_theme_stylebox("normal") is StyleBoxTexture):
-		_fail("Expected SCRUM-879 Codex back button to use the global minimal-metal kit.")
+		_fail("Expected SCRUM-879 Codex back button to use the global text-button kit.")
 		return
 
 	var codex_center_rect := codex_content.get_global_rect().grow(1.0)

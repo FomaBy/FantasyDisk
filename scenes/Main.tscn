@@ -22,6 +22,7 @@
 [ext_resource type="PackedScene" path="res://scenes/EliteCommander.tscn" id="20_elite_commander"]
 
 [node name="Main" type="Node2D"]
+y_sort_enabled = true
 script = ExtResource("1_main")
 player_scene = ExtResource("2_player")
 enemy_scene = ExtResource("3_enemy")

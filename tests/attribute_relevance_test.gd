@@ -1,9 +1,10 @@
 extends SceneTree
 
-# SCRUM-695: data-валидатор матрицы релевантности атрибутов + правила level-up-наград.
-# Ловит любое нарушение жёсткого инварианта 2/8/7 по каждому атрибуту, рассинхрон
-# каноничного реестра/матрицы/LEVEL_UP_REWARDS, неверный порядок весов и нарушение
-# правила показа наград (≤1 optional, ≥1 primary/secondary).
+# SCRUM-695/FAN-1034: data-валидатор матрицы релевантности атрибутов + правила
+# level-up-наград. Инвариант по каждому атрибуту: ровно 2 primary, 5..8 secondary,
+# минимум 1 optional, полное разбиение 17 классов; на класс 1..3 primary-атрибута.
+# Плюс рассинхрон каноничного реестра/матрицы/LEVEL_UP_REWARDS, порядок весов и
+# правило показа наград (≤1 optional, ≥1 primary/secondary).
 #
 # Запуск: Godot --headless --path . --script res://tests/attribute_relevance_test.gd
 # Отдельный изолированный файл (анти-коллизия с занятыми runtime_smoke/harness).
@@ -11,8 +12,11 @@ extends SceneTree
 const ProgressionData := preload("res://scripts/progression_data.gd")
 
 const EXPECT_PRIMARY := 2
-const EXPECT_SECONDARY := 8
-const EXPECT_OPTIONAL := 7
+const MIN_SECONDARY := 5
+const MAX_SECONDARY := 8
+const MIN_OPTIONAL := 1
+const MIN_CLASS_PRIMARY := 1
+const MAX_CLASS_PRIMARY := 3
 const OFFER_SIZE := 3
 const SAMPLE_SEEDS := 200
 
@@ -30,17 +34,20 @@ func _initialize() -> void:
 	if class_count != 17:
 		_fail("Ожидалось 17 классов, получено %d." % class_count)
 
-	# A) Жёсткий инвариант по каждому атрибуту: 2 primary / 8 secondary / 7 optional,
-	# разбиение всех 17 классов без дублей и пропусков, валидные id классов.
+	# A) Инвариант по каждому атрибуту (FAN-1034): ровно 2 primary, 5..8 secondary,
+	# минимум 1 optional, разбиение всех 17 классов без дублей и пропусков,
+	# валидные id классов. Жёсткое «ровно 8/7» снято: гейтнутые оси
+	# (magic_focus/buff_power) не должны врать про мёртвые для класса оси.
 	var matrix: Dictionary = ProgressionData.ATTRIBUTE_RELEVANCE
+	var class_primary_counts := {}
 	for attr in matrix.keys():
 		var row: Dictionary = matrix[attr]
 		var primary: Array = row.get("primary", [])
 		var secondary: Array = row.get("secondary", [])
 		if primary.size() != EXPECT_PRIMARY:
 			_fail("%s: primary=%d (ожидалось %d)." % [attr, primary.size(), EXPECT_PRIMARY])
-		if secondary.size() != EXPECT_SECONDARY:
-			_fail("%s: secondary=%d (ожидалось %d)." % [attr, secondary.size(), EXPECT_SECONDARY])
+		if secondary.size() < MIN_SECONDARY or secondary.size() > MAX_SECONDARY:
+			_fail("%s: secondary=%d (ожидалось %d..%d)." % [attr, secondary.size(), MIN_SECONDARY, MAX_SECONDARY])
 		var seen := {}
 		var optional_count := 0
 		for character_id in classes:
@@ -50,15 +57,24 @@ func _initialize() -> void:
 			if rel == "optional":
 				optional_count += 1
 			seen[character_id] = rel
-		if optional_count != EXPECT_OPTIONAL:
-			_fail("%s: optional=%d (ожидалось %d)." % [attr, optional_count, EXPECT_OPTIONAL])
+		if optional_count < MIN_OPTIONAL:
+			_fail("%s: optional=%d (< %d, порядок весов не проверяем)." % [attr, optional_count, MIN_OPTIONAL])
 		for character_id in primary + secondary:
 			if not classes.has(str(character_id)):
 				_fail("%s: неизвестный класс '%s' в матрице." % [attr, character_id])
+		for character_id in primary:
+			class_primary_counts[str(character_id)] = int(class_primary_counts.get(str(character_id), 0)) + 1
 		# Нет пересечения primary/secondary.
 		for character_id in primary:
 			if secondary.has(character_id):
 				_fail("%s: класс '%s' одновременно primary и secondary." % [attr, character_id])
+
+	# A2) На класс приходится 1..3 primary-атрибута: у каждого класса есть
+	# сигнатурные оси, и ни один класс не монополизирует primary-слоты.
+	for character_id in classes:
+		var primary_count := int(class_primary_counts.get(str(character_id), 0))
+		if primary_count < MIN_CLASS_PRIMARY or primary_count > MAX_CLASS_PRIMARY:
+			_fail("%s: %d primary-атрибутов (ожидалось %d..%d)." % [character_id, primary_count, MIN_CLASS_PRIMARY, MAX_CLASS_PRIMARY])
 
 	# B) Реестр ↔ матрица ↔ LEVEL_UP_REWARDS — единый источник правды без расхождений.
 	var registry: Array = ProgressionData.ATTRIBUTE_REGISTRY
@@ -142,7 +158,7 @@ func _initialize() -> void:
 		push_error("Attribute relevance validator FAILED.")
 		quit(1)
 		return
-	print("Attribute relevance validator passed: %d атрибутов × %d классов, инвариант 2/8/7 и правило наград соблюдены." % [matrix.size(), class_count])
+	print("Attribute relevance validator passed: %d атрибутов × %d классов, инвариант 2 primary / 5..8 secondary / ≥1 optional и правило наград соблюдены." % [matrix.size(), class_count])
 	quit(0)
 
 

@@ -2,22 +2,33 @@ extends RefCounted
 
 # SCRUM-198: balance model, economy curve and drop-scaling constants. No value changes.
 
+# FAN-1031 3c-c: пер-классовый numeric down-tune перекормленных верхов делается
+# ЗДЕСЬ (damage_budget/solo_target/aoe_target), а НЕ через weapon.damage_multiplier.
+# Причина (проверено пробой progression_data.gd::budget_tuning_for): живой урон =
+# damage_multiplier × budget_damage_multiplier, где budget_damage_multiplier
+# авто-компенсирует damage_multiplier до формульной цели (solo_target/aoe_target ×
+# damage_budget) с клампом [0.28, 2.80]. Т.е. правка weapon.damage_multiplier сама по
+# себе живой DPS почти не двигает (кроме клампнутых оружий), а вот сдвиг цели профиля
+# двигает живой per-hit по ВСЕМ каналам (solo/aoe/crowd) И реебейзит формульный
+# smoke-гейт (остаётся зелёным). Crowd-ось при этом падает пропорционально per-hit,
+# но её РАЗБЕГ (coverage: залп-по-цели/рой-по-цели/пирс-луч) формулой не бюджетится —
+# см. build/stage3c_c_numeric_fan1031.md (карта каналов + решение по coverage-капу).
 const CLASS_BUDGET_PROFILES := {
-	"berserk": {"profile": "balanced", "survival": "sturdy", "damage_budget": 1.00, "solo_target": 1.00, "aoe_target": 1.00},
-	"soldier": {"profile": "balanced", "survival": "steady", "damage_budget": 1.00, "solo_target": 1.00, "aoe_target": 1.00},
+	"berserk": {"profile": "balanced", "survival": "sturdy", "damage_budget": 0.82, "solo_target": 1.00, "aoe_target": 1.00},  # FAN-1031 3d (v6): damage-оси over-budget (v6 solo 1.09/aoe 1.38/crowd 1.42, axe crowd 2.68×). db 1.00→0.82 давит per-hit sword/axe (hammer clamped ceil — не двигается). def 1.41 = survival "sturdy" (in-profile, не трогаем). Калибровать по v7.
+	"soldier": {"profile": "balanced", "survival": "steady", "damage_budget": 0.68, "solo_target": 1.00, "aoe_target": 1.00},  # FAN-1031 v9-финал: total 1.17 (solo 1.50 bayonet-driven при профиле 1.00). db 0.72→0.68 — ещё один малый uniform per-hit шаг вниз всех трёх (unclamped, лендится 1:1). def 1.22 = steady (in-profile, не трогаем). Приёмка координатора по budget-dump + --pair live. [v8-история: total 1.17; db 0.76→0.72. v7: total 1.19; db 0.82→0.76.]
 	"thief": {"profile": "balanced", "survival": "fragile", "damage_budget": 1.08, "solo_target": 1.00, "aoe_target": 1.00},
-	"elementalist": {"profile": "aoe", "survival": "fragile", "damage_budget": 1.08, "solo_target": 1.00, "aoe_target": 1.10},
-	"sniper": {"profile": "solo", "survival": "steady", "damage_budget": 1.00, "solo_target": 1.15, "aoe_target": 0.80},
-	"priest": {"profile": "balanced", "survival": "steady", "damage_budget": 0.92, "solo_target": 1.03, "aoe_target": 1.05},
+	"elementalist": {"profile": "aoe", "survival": "fragile", "damage_budget": 0.63, "solo_target": 0.92, "aoe_target": 1.10},  # FAN-1031 3d-final (v7): total 1.16 (crowd 1.75 prism_focus 3.57×-driven, aoe 1.27). db 0.70→0.63 — один малый шаг per-hit prism/meteor/orb (unclamped). Остаточный crowd-лид — prism (orbit уже width-капнут orbit_max 4); aoe_target 1.10 профиля не трогаем. Калибровать по v8.
+	"sniper": {"profile": "solo", "survival": "steady", "damage_budget": 1.35, "solo_target": 1.15, "aoe_target": 0.80},  # FAN-1031 3d-final (v7): total 0.86 FAIL — solo-класс НЕДОдаёт по своей же оси (solo_norm 0.73 при цели 1.15). db 1.15→1.35 «ещё шаг» поднимает budget_dm всех трёх (unclamped, лендится 1:1) + deadeye усилен отдельно (DEADEYE_ENDPOINT_BLAST_RATIO 0.35→0.42, вне budget-компенсации). Калибровать по v8.
+	"priest": {"profile": "balanced", "survival": "steady", "damage_budget": 0.86, "solo_target": 1.10, "aoe_target": 1.05},  # FAN-1031 v9-финал: random-A1 0.87<1.0 (единственный fail ascension-гейта) — NET-ZERO power-shift крауд→base/solo. solo_target 1.03→1.10 поднимает per-hit reliquary (unclamped budget_dm лендит; censer/chime clamped ceil — не двигаются) по ВСЕМ осям → лифт floor/random. Крауд-компенсация (net-zero total 1.14) — width-кап кадила ниже (aoe_full 4→3/diminish 1.2→1.7) + reliquary crowd falloff-капнут (3/2.2). Профиль 'balanced' → ordering solo>aoe допустим. Приёмка по budget-dump + --pair live. [v6-история: db 0.92→0.86; falloff/каденс-рычаги.]
 	"biologist": {"profile": "aoe", "survival": "fragile", "damage_budget": 1.08, "solo_target": 0.92, "aoe_target": 1.18},
-	"robot": {"profile": "balanced", "survival": "tank", "damage_budget": 0.88, "solo_target": 1.07, "aoe_target": 1.05},
+	"robot": {"profile": "balanced", "survival": "tank", "damage_budget": 0.75, "solo_target": 1.07, "aoe_target": 1.05},  # FAN-1031 v8-микротрим: total 1.22, но это ТАНК-driven (def 2.12; damage-оси solo 0.84/aoe 1.05/crowd 1.30). db 0.80→0.75 давит crowd/aoe per-hit ещё на шаг (magnetic_anchor near-clamp; reactor clamped ceil — db его почти не двигает). ⚠️ ОСТАТОК total >1.15 = identity-price ТАНКА (ось defense=EHP): survival "tank" НЕ режем (координаторское решение v7, подтверждено v8). Судить по damage-осям, не по total (v9). [v7-история: db 0.88→0.80.]
 	"engineer": {"profile": "balanced", "survival": "steady", "damage_budget": 0.96, "solo_target": 0.98, "aoe_target": 1.12},
-	"dark_mage": {"profile": "aoe", "survival": "fragile", "damage_budget": 1.15, "solo_target": 0.84, "aoe_target": 1.30},
-	"guitarist": {"profile": "aoe", "survival": "control", "damage_budget": 1.00, "solo_target": 1.00, "aoe_target": 1.30},
+	"dark_mage": {"profile": "aoe", "survival": "fragile", "damage_budget": 0.48, "solo_target": 0.66, "aoe_target": 1.30},  # FAN-1031 v8-микротрим: total 1.16 (чуть над коридором). db 0.52→0.48 — ещё один малый шаг per-hit dark_book/dark_wand (unclamped, direct); cursed_skull curse_only DoT db НЕ трогает. aoe_target 1.30 профиля не трогаем. Калибровать по v9. [v7-история: total 1.16, aoe 1.69/crowd 1.33; db 0.58→0.52.] Ниже — история 3c-c: overbudget v4 total 1.82 (solo 1.33 при цели 0.84 — сильнее всего над профилем) → per-hit down-tune; cursed_skull DoT режется отдельно (curse_tick_multiplier). 3d (v6): total 1.41 (aoe 2.19/crowd 1.72, dark_book mirror 3.76×/3.16×, dark_wand chain 2.71×). db 0.72→0.58 давит per-hit dark_book/dark_wand (оба unclamped, direct-канал); cursed_skull curse_only → его DoT db НЕ трогает (уже низок 0.34× crowd). Калибровать по v7.
+	"guitarist": {"profile": "aoe", "survival": "control", "damage_budget": 1.50, "solo_target": 1.00, "aoe_target": 1.30},  # FAN-1031 v7: db 1.00→1.50 держит кит клампнутым на budget_dm=2.80 ceil ПОСЛЕ raw-буста identity-капов (riff/bass/amp) → raw лендится 1:1 (иначе тюнер частично компенсирует). Живой рычаг остаётся RAW; db тут только держит насыщение клампа. Продуктовое решение координатора (control-класс недооценён trio-моделью — см. progression_data_weapons electric_guitar). Калибровать по v8.
 	"assassin": {"profile": "solo", "survival": "fragile", "damage_budget": 1.15, "solo_target": 1.30, "aoe_target": 0.70},
-	"ranger": {"profile": "solo", "survival": "fragile", "damage_budget": 1.15, "solo_target": 1.30, "aoe_target": 0.70},
+	"ranger": {"profile": "solo", "survival": "fragile", "damage_budget": 1.38, "solo_target": 1.30, "aoe_target": 0.70},  # FAN-1031 v8-микротрим: total 0.88 FAIL (дно, crowd 0.56). db 1.26→1.38 — ещё шаг вверх, поднимает raw всех трёх (unclamped, лендится 1:1). crowd 0.56 частично by-profile (solo-класс, aoe_target 0.70); остаток — S4 random-floor офер-гарантия ниже. Калибровать по v9. [v6-история: total 0.80, все оси низки; db 1.15→1.26.]
 	"doctor": {"profile": "balanced", "survival": "tank", "damage_budget": 0.85, "solo_target": 1.00, "aoe_target": 1.00},
-	"chemist": {"profile": "aoe", "survival": "fragile", "damage_budget": 1.15, "solo_target": 0.84, "aoe_target": 1.30},
+	"chemist": {"profile": "aoe", "survival": "fragile", "damage_budget": 0.80, "solo_target": 0.84, "aoe_target": 1.30},  # FAN-1031 v8-микротрим: total 1.18 (чуть над коридором, aoe-лид blast). db 0.85→0.80 — ещё один малый шаг per-hit blast/acid (unclamped). Остаточный aoe-лид — blast per-hit (уже aoe-width капнут aoe_max 3); aoe_target 1.30 (профиль crowd-специалиста) НЕ выгрызаем до бессмысленности — принимаем как profile-identity с примечанием. Калибровать по v9. [v7-история: total 1.36, aoe 2.16 blast 5.29×; db 0.95→0.85.]
 	"knight": {"profile": "balanced", "survival": "tank", "damage_budget": 0.85, "solo_target": 1.05, "aoe_target": 1.00},
 	"druid": {"profile": "balanced", "survival": "steady", "damage_budget": 1.00, "solo_target": 1.00, "aoe_target": 1.00},
 }
@@ -49,36 +60,31 @@ const CLASS_BUDGET_PROFILES := {
 # Per-weapon переопределения (COMFORT_WEIGHT_OVERRIDES) — для оружий, чей «сырой»
 # crowd_dps заметно отличается от среднего по классу (призыв/устройство у соло-класса
 # или наоборот): вес = weapon_raw / median_all_raw.
-const COMFORT_WEIGHTS := {
-	"berserk": 0.98,
-	"soldier": 1.01,
-	"thief": 1.11,
-	"elementalist": 1.22,
-	"sniper": 0.78,
-	"priest": 1.00,
-	"biologist": 1.33,
-	"robot": 0.93,
-	"engineer": 1.17,
-	"dark_mage": 1.50,
-	"guitarist": 1.36,
-	"assassin": 0.79,
-	"ranger": 0.81,
-	"doctor": 0.79,
-	"chemist": 1.55,
-	"knight": 0.83,
-	"druid": 1.04,
+const COMFORT_WEIGHTS := {  # FAN-1032: перекалибровано после ребаланса FAN-1031 (tools/comfort_raw_dump.gd + приёмочный CSV v9)
+	"assassin": 0.832,
+	"berserk": 0.848,
+	"biologist": 1.411,
+	"chemist": 1.14,
+	"dark_mage": 0.684,
+	"doctor": 0.896,
+	"druid": 1.013,
+	"elementalist": 0.76,
+	"engineer": 1.089,
+	"guitarist": 2.159,
+	"knight": 0.879,
+	"priest": 1.0,
+	"ranger": 1.019,
+	"robot": 0.83,
+	"sniper": 1.139,
+	"soldier": 0.717,
+	"thief": 1.139,
 }
 
 # Per-weapon comfort переопределения: ключ "<class>/<weapon_id>". Используется,
 # когда конкретное оружие требует иной вовлечённости, чем класс в среднем
 # (одиночный луч/проджектайл у AoE-класса — выше; авто-призыв у соло-класса — ниже).
 const COMFORT_WEIGHT_OVERRIDES := {
-	"druid/summon_amulet": 0.96,
-	"druid/raven_totem": 0.96,
-	"engineer/engineer_sentry_wrench": 1.03,  # SCRUM-546: ключ = реальный weapon_id; SCRUM-888: пересчитан под турели — implied 1.033 (raw/median по 1/5/20), оставлен
-	"engineer/engineer_repair_drone": 1.03,
-	"chemist/homunculus_vial": 1.43,
-	"guitarist/sound_amp": 1.25,
+
 }
 
 # Допуск полосы: comfort-нормированный DPS каждого оружия должен лежать в
@@ -104,23 +110,23 @@ const COMFORT_DEFAULT_WEIGHT := 1.00
 # (тот по-прежнему использует плоский COMFORT_WEIGHTS на base_stats).
 const COMFORT_BAND_SLICES := ["ideal_1", "ideal_5", "ideal_20"]
 const COMFORT_BAND_SLICE_WEIGHTS := {
-	"assassin": {"ideal_1": 1.647, "ideal_5": 0.900, "ideal_20": 0.858},
-	"berserk": {"ideal_1": 1.137, "ideal_5": 1.153, "ideal_20": 1.099},
-	"biologist": {"ideal_1": 1.031, "ideal_5": 1.334, "ideal_20": 1.312},
-	"chemist": {"ideal_1": 0.994, "ideal_5": 1.509, "ideal_20": 1.527},
-	"dark_mage": {"ideal_1": 0.927, "ideal_5": 1.457, "ideal_20": 1.389},
-	"doctor": {"ideal_1": 0.495, "ideal_5": 0.519, "ideal_20": 0.459},
-	"druid": {"ideal_1": 0.859, "ideal_5": 0.871, "ideal_20": 0.843},
-	"elementalist": {"ideal_1": 1.020, "ideal_5": 1.132, "ideal_20": 1.144},
-	"engineer": {"ideal_1": 0.960, "ideal_5": 1.114, "ideal_20": 1.048},
-	"guitarist": {"ideal_1": 1.041, "ideal_5": 1.374, "ideal_20": 1.404},
-	"knight": {"ideal_1": 0.957, "ideal_5": 0.925, "ideal_20": 0.882},
-	"priest": {"ideal_1": 1.001, "ideal_5": 1.030, "ideal_20": 1.052},
-	"ranger": {"ideal_1": 1.465, "ideal_5": 0.792, "ideal_20": 0.763},
-	"robot": {"ideal_1": 1.004, "ideal_5": 0.999, "ideal_20": 0.973},
-	"sniper": {"ideal_1": 1.170, "ideal_5": 0.818, "ideal_20": 0.795},
-	"soldier": {"ideal_1": 0.982, "ideal_5": 0.995, "ideal_20": 0.970},
-	"thief": {"ideal_1": 0.989, "ideal_5": 1.000, "ideal_20": 0.973},
+	"assassin": {"ideal_1": 1.829, "ideal_20": 0.32, "ideal_5": 0.729},
+	"berserk": {"ideal_1": 0.914, "ideal_20": 1.549, "ideal_5": 1.131},
+	"biologist": {"ideal_1": 0.973, "ideal_20": 0.808, "ideal_5": 0.884},
+	"chemist": {"ideal_1": 0.663, "ideal_20": 1.217, "ideal_5": 1.02},
+	"dark_mage": {"ideal_1": 1.0, "ideal_20": 1.204, "ideal_5": 1.787},
+	"doctor": {"ideal_1": 1.305, "ideal_20": 0.959, "ideal_5": 0.952},
+	"druid": {"ideal_1": 0.601, "ideal_20": 1.069, "ideal_5": 0.764},
+	"elementalist": {"ideal_1": 0.716, "ideal_20": 1.442, "ideal_5": 1.06},
+	"engineer": {"ideal_1": 1.012, "ideal_20": 0.625, "ideal_5": 1.274},
+	"guitarist": {"ideal_1": 0.579, "ideal_20": 1.596, "ideal_5": 1.0},
+	"knight": {"ideal_1": 0.748, "ideal_20": 0.697, "ideal_5": 0.437},
+	"priest": {"ideal_1": 0.71, "ideal_20": 2.573, "ideal_5": 1.61},
+	"ranger": {"ideal_1": 1.389, "ideal_20": 0.719, "ideal_5": 0.805},
+	"robot": {"ideal_1": 0.691, "ideal_20": 1.173, "ideal_5": 0.904},
+	"sniper": {"ideal_1": 1.016, "ideal_20": 0.82, "ideal_5": 1.0},
+	"soldier": {"ideal_1": 1.176, "ideal_20": 1.325, "ideal_5": 0.915},
+	"thief": {"ideal_1": 1.067, "ideal_20": 0.635, "ideal_5": 1.056},
 }
 
 # Per-weapon per-slice переопределения для оружий, чей «сырой» DPS заметно
@@ -128,18 +134,43 @@ const COMFORT_BAND_SLICE_WEIGHTS := {
 # класса). Ключ "<class>/<weapon>" → {slice: weight}. Частичный набор срезов
 # допустим (отсутствующий срез падает на class-вес). Вес = weapon_raw / slice_median.
 const COMFORT_BAND_SLICE_OVERRIDES := {
-	"assassin/venom_wire": {"ideal_1": 0.442, "ideal_5": 0.242, "ideal_20": 0.230},
-	"berserk/sword": {"ideal_1": 0.732, "ideal_5": 0.743, "ideal_20": 0.708},
-	"biologist/biologist_spore_lens": {"ideal_1": 0.753, "ideal_5": 1.113},
-	"chemist/homunculus_vial": {"ideal_1": 0.546, "ideal_5": 0.857, "ideal_20": 0.801},
-	"dark_mage/cursed_skull": {"ideal_1": 0.736, "ideal_5": 1.197, "ideal_20": 1.164},
-	"doctor/bone_saw": {"ideal_1": 0.317, "ideal_5": 0.322, "ideal_20": 0.307},
-	"doctor/restore_potion": {"ideal_1": 1.491, "ideal_5": 1.493, "ideal_20": 1.320},
-	"druid/raven_totem": {"ideal_1": 1.025, "ideal_5": 1.131, "ideal_20": 1.056},
-	# SCRUM-888 (турели): аналитические raw новой механики = старым ±0.2% по всем
-	# срезам (residual-пара тюнера сохранена 0.389/0.774/1.29) — CSV-веса валидны.
-	"engineer/engineer_sentry_wrench": {"ideal_1": 0.733, "ideal_5": 0.909, "ideal_20": 0.849},
-	"guitarist/sound_amp": {"ideal_20": 1.142},
+	"assassin/chakrams": {"ideal_1": 2.437, "ideal_20": 0.581},
+	"assassin/shadow_daggers": {"ideal_1": 1.154, "ideal_5": 1.02},
+	"berserk/hammer": {"ideal_1": 1.342, "ideal_5": 2.228},
+	"berserk/sword": {"ideal_1": 0.571, "ideal_20": 0.294, "ideal_5": 0.149},
+	"biologist/biologist_sample_injector": {"ideal_1": 1.401},
+	"biologist/biologist_spore_lens": {"ideal_20": 1.353, "ideal_5": 1.495},
+	"biologist/biologist_symbiote_seed": {"ideal_1": 0.502},
+	"chemist/blast_powder": {"ideal_1": 1.71, "ideal_20": 1.729, "ideal_5": 3.56},
+	"dark_mage/cursed_skull": {"ideal_1": 0.542, "ideal_20": 0.356, "ideal_5": 0.755},
+	"dark_mage/dark_book": {"ideal_1": 1.479, "ideal_20": 2.463, "ideal_5": 2.519},
+	"doctor/bone_saw": {"ideal_1": 2.286, "ideal_20": 1.842, "ideal_5": 1.553},
+	"doctor/plague_syringe": {"ideal_20": 0.105, "ideal_5": 0.336},
+	"druid/raven_totem": {"ideal_1": 0.451, "ideal_20": 0.355, "ideal_5": 0.551},
+	"druid/summon_amulet": {"ideal_1": 1.762, "ideal_20": 2.077, "ideal_5": 2.827},
+	"elementalist/elementalist_orb_ring": {"ideal_20": 0.488},
+	"elementalist/elementalist_prism_focus": {"ideal_1": 1.74, "ideal_20": 3.564, "ideal_5": 1.939},
+	"engineer/engineer_pressure_mines": {"ideal_1": 0.05, "ideal_20": 2.037, "ideal_5": 0.477},
+	"engineer/engineer_sentry_wrench": {"ideal_1": 3.94, "ideal_5": 1.543},
+	"guitarist/electric_guitar": {"ideal_1": 0.877, "ideal_20": 0.75, "ideal_5": 0.788},
+	"knight/holy_flail": {"ideal_1": 0.464, "ideal_20": 2.047, "ideal_5": 1.129},
+	"knight/long_spear": {"ideal_20": 0.453},
+	"knight/tower_shield": {"ideal_1": 1.126},
+	"priest/priest_censer": {"ideal_1": 0.503, "ideal_20": 1.0, "ideal_5": 0.811},
+	"priest/priest_reliquary": {"ideal_1": 1.189},
+	"ranger/hunter_trap": {"ideal_1": 0.609, "ideal_20": 0.908},
+	"ranger/moon_crossbow": {"ideal_5": 2.225},
+	"ranger/storm_longbow": {"ideal_5": 0.46},
+	"robot/robot_reactor_core": {"ideal_1": 1.06, "ideal_5": 1.24},
+	"sniper/sniper_deadeye_rifle": {"ideal_1": 1.646},
+	"sniper/sniper_shatter_rounds": {"ideal_20": 0.357},
+	"sniper/sniper_spotter_scope": {"ideal_1": 0.683, "ideal_20": 1.124},
+	"soldier/soldier_bayonet": {"ideal_1": 2.279},
+	"soldier/soldier_grenade": {"ideal_20": 1.608, "ideal_5": 1.654},
+	"soldier/soldier_rifle": {"ideal_1": 0.902, "ideal_20": 0.829},
+	"thief/thief_coin_pouch": {"ideal_1": 0.8, "ideal_20": 0.479},
+	"thief/thief_shadow_cloak": {"ideal_1": 2.807},
+	"thief/thief_smoke_bomb": {"ideal_20": 2.193, "ideal_5": 1.631},
 }
 
 const CLASS_LEVEL_STAT_GROWTH_SCALARS := {
@@ -173,6 +204,18 @@ const CROWD_CLEAR_TARGET_COUNTS := [5, 10, 20]
 const CROWD_CLEAR_ENEMY_HP := 80.0
 const CROWD_CLEAR_CORRIDOR := 0.30
 const CROWD_CLEAR_SOLO_CORRIDOR := 0.20
+
+# FAN-1031 S2 (Stage 3a): потолок урона ЗОН/СЛАМОВ/ХАЗАРДОВ босса долей ТЕКУЩЕГО
+# max HP игрока за тик. Контактный урон капится 0.20 (enemy._update_contact_damage),
+# элитный — 0.25 (enemy._elite_attack_damage); зоны/сламы/укусы босса были ЕДИНСТВЕННЫМ
+# каналом урона БЕЗ такого капа, поэтому hazard фазы 4 на A5 (~164 урона, худший —
+# секретный босс) ваншотил ВСЕ 17 классов (typ HP 50–157) с полного здоровья.
+# Baseline v2 (FAN-1029): «ваншот-вердикт — все 17 классов валятся hazard-ом фазы 4».
+# 0.80 подобран так, что провал доджа по-прежнему почти смертелен (телеграфы честные
+# после combat-feel этапа C — увернуться реально), но full-HP герой больше не удаляется
+# одним неравным тиком; это единственный реалистичный путь к DoD «каждый класс проходит
+# A5» без раздувания HP хрупких классов в ~3×. Гейт: tests/boss_hazard_cap_gate.gd.
+const BOSS_HAZARD_MAX_HP_FRACTION := 0.80
 
 const SURVIVABILITY_DEFENSE_CAP := 0.62
 const SURVIVABILITY_DEFENSE_DIMINISH := 0.55

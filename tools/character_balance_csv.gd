@@ -527,8 +527,15 @@ func _measure_dps(character_id: String, weapon_id: String, target_count: int, re
 	for enemy in dummies:
 		hp_before += _node_number(enemy, "health", DUMMY_HP, "%s/%s hp_before" % [character_id, weapon_id])
 
+	# FAN-1031: делим на ФАКТИЧЕСКОЕ игровое время окна, не на номинал 8с.
+	# Оружие стреляет в _process(delta): под нагрузкой (20 целей, лужи) кадры
+	# длиннее, 480 кадров = сильно больше 8с игрового времени → фиксированный
+	# знаменатель раздувал crowd-DPS (до 12×) и был главным источником шума
+	# между прогонами (см. FAN-1039). Профиль: casts 6→68 на одном окне.
+	var elapsed_game_time := 0.0
 	for _frame in range(FRAMES):
 		await process_frame
+		elapsed_game_time += _holder.get_process_delta_time()
 		for i in range(dummies.size()):
 			var enemy := dummies[i] as Node2D
 			if is_instance_valid(enemy):
@@ -538,7 +545,7 @@ func _measure_dps(character_id: String, weapon_id: String, target_count: int, re
 	for enemy in dummies:
 		if is_instance_valid(enemy):
 			hp_after += _node_number(enemy, "health", DUMMY_HP, "%s/%s hp_after" % [character_id, weapon_id])
-	return maxf(hp_before - hp_after, 0.0) / WINDOW_SECONDS
+	return maxf(hp_before - hp_after, 0.0) / maxf(elapsed_game_time, 0.001)
 
 
 # Жёсткий синхронный снос всех детей холдера (player/враги/призывы) без deferred-окна.

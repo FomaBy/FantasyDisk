@@ -74,7 +74,11 @@ func _assert_weapon_orbit_pose(player: Node, expected_direction: Vector2, label:
 	if weapon_visual != null and weapon_visual.texture == null:
 		_fail("Expected %s WeaponVisual texture to remain set (used by projectiles/traps/orbs)." % label)
 		return false
-	var actual_direction := socket.position.normalized()
+	# Этап A (feet-origin): орбита = direction * RADIUS + (0, vertical_bias); bias
+	# теперь тянет сокет к торсу поднятого визуала — вычитаем его перед проверкой
+	# направления (сама проверка «сокет следует за направлением атаки» не меняется).
+	var orbit_bias := float(socket.get_meta("weapon_orbit_vertical_bias", 0.0))
+	var actual_direction := (socket.position - Vector2(0.0, orbit_bias)).normalized()
 	var expected := expected_direction.normalized()
 	if actual_direction.dot(expected) < 0.82:
 		_fail("Expected %s pose socket to follow %s, got %s." % [label, str(expected), str(actual_direction)])

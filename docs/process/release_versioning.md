@@ -1,15 +1,16 @@
 # Release & Versioning — FantasyDisk
 
-Обновлено: 2026-07-02
+Обновлено: 2026-07-13
 Ведет: PM. Исполняет сборки: Back-end.
 
 ## Версионирование
 
 - Схема: **SemVer** `MAJOR.MINOR.PATCH`; до выхода 1.0 — `0.MINOR.PATCH`
   (0.1.0 → 0.2.0 — новые фичи; 0.2.1 — только хотфиксы).
-- Текущий active target: `0.2.0`. Плановые `0.1.8` и `0.1.9` отменены/superseded:
-  не создавать под них sprint, Jira fixVersion, changelog-финализацию или release
-  tasks. После `0.2.0` следующая patch-линия: `0.2.1`, `0.2.2`, ...
+- Текущий active target: `0.2.2`. Плановые `0.1.8` и `0.1.9` отменены/superseded:
+  не создавать под них sprint, Multica release metadata (`release`),
+  changelog-финализацию или release tasks. После `0.2.0` следующая patch-линия:
+  `0.2.1`, `0.2.2`, ...
 - **Источник истины версии** — `project.godot` → `[application] config/version`.
   Код может читать её через `ProjectSettings.get_setting("application/config/version")`
   (показывать в главном меню мелким текстом).
@@ -34,7 +35,7 @@ dev  — основная ветка разработки. Все чаты (Back
 
 1. Все задачи версии на доске `done`; документация в `docs/design/` обновлена.
 2. Code freeze: новые задачи в dev не выдаются до конца релиза.
-3. Backend прогоняет все smoke-тесты + ручной чек-лист (меню, забег, бой, элитка,
+3. Backend прогоняет `python3 tools/quality_gate.py --profile full` + ручной чек-лист (меню, забег, бой, элитка,
    босс, магазин, пауза) на macOS и Windows-сборке.
 3a. **Гейт «чистый HEAD зелёный»** (урок SCRUM-171, 2026-06-13): smoke на рабочем
    дереве НЕ достаточно — прогнать 6 сьютов на ЧИСТОМ `git worktree --detach HEAD`
@@ -57,15 +58,16 @@ dev  — основная ветка разработки. Все чаты (Back
    `releases/vX.Y.Z/CHANGELOG-X.Y.Z.md` (раздел версии из CHANGELOG.md) — чтобы
    получатель билда видел, что нового, без доступа к репозиторию.
 9. Smoke-проверка установленных билдов.
-10. **Jira-спринт и Jira-релиз** (правило пользователя 2026-06-12: спринт = релиз):
-    - завершить активный спринт (complete) на доске SCRUM;
-    - пометить Jira-версию X.Y.Z released (Releases проекта SCRUM), в описание
+10. **Релиз в Multica** (правило пользователя 2026-06-12: спринт = релиз;
+    live board — проект FantasyDisk, issues FAN-*):
+    - закрыть все issues версии в статус `done` на доске FantasyDisk;
+    - пометить Multica release metadata (`release`) X.Y.Z как released, в описание
       версии — краткий ченджлог + ссылка releases/vX.Y.Z/CHANGELOG-X.Y.Z.md;
-    - создать следующую Jira-версию X.Y.Z+1 (unreleased) с кратким описанием
-      плана; создать и запустить «Спринт X.Y.Z+1»;
-    - tools/jira_board_sync.py автоматически ставит новым тикетам
-      fixVersion = версия из имени активного спринта (тикеты «Версия: <след>»
-      остаются в бэклоге без fixVersion до своего спринта).
+    - открыть следующую версию X.Y.Z+1 (unreleased) с кратким описанием плана и
+      завести под неё issues FAN-* в статусе `todo`;
+    - новым issues версии проставлять release metadata (`release`) = активная
+      целевая версия (issues следующей версии остаются в backlog без `release`
+      до своей стабилизации).
 11. **Патч-ноуты в игре**: обновить игровой файл патч-ноутов (см. задачу
     backend_ingame_patch_notes_task.md / экран «Что нового») — человекочитаемые
     заметки версии для игрока, по-русски, синхронно с CHANGELOG. Это часть
@@ -73,8 +75,8 @@ dev  — основная ветка разработки. Все чаты (Back
 
 ## Feature Block
 
-Feature block 0.1.5 снят релизом v0.1.5 (2026-06-15). На 2026-07-02 активной
-freeze-директивы нет; текущий Jira sprint/release target — `0.2.0`. При следующей
+Feature block 0.1.5 снят релизом v0.1.5 (2026-06-15). На 2026-07-14 активной
+freeze-директивы нет; текущий Multica release target — `0.2.2`. При следующей
 стабилизации PM включает freeze отдельной директивой: в текущий релиз остаются
 уже заведенные строки доски, bugfix/QA defect/regression/release-blocker задачи
 и явно разрешенные PM исключения; новые не-баговые фичи уходят в следующую
@@ -89,9 +91,16 @@ SemVer patch/minor версию.
 (сейчас 4.7). Templates ставятся один раз: Editor → Manage Export Templates.
 
 ### macOS
-- Пресет `macOS` (уже есть в `export_presets.cfg`), формат экспорта — **.dmg**.
-- Подпись: ad-hoc (без Apple Developer аккаунта). У пользователей Gatekeeper
-  попросит правый клик → Open при первом запуске — это нормально для не-стора.
+- Пресет `macOS` экспортирует `.app` в zip; `tools/build_release.sh` распаковывает
+  окончательный bundle, удаляет quarantine/xattr и **после всех изменений**
+  повторно подписывает его. `MACOS_SIGN_IDENTITY` включает Developer ID +
+  hardened runtime; без него применяется финальная ad-hoc подпись.
+- Подпись обязательно проверяется через `codesign --verify --deep --strict` как
+  до упаковки, так и после монтирования итогового DMG.
+- Если задан keychain profile `MACOS_NOTARY_PROFILE`, скрипт отправляет DMG в
+  `notarytool`, ждёт результат, делает `stapler staple` и `stapler validate`.
+- DMG содержит `FantasyDisk.app`, ярлык `Applications` и фоновую стрелку для
+  понятного drag-to-Applications потока.
 - Выход: `releases/vX.Y.Z/FantasyDisk-X.Y.Z-macos.dmg`.
 
 ### Windows (собирается с этого же Mac)
@@ -99,16 +108,12 @@ SemVer patch/minor версию.
   иконка — .ico, сгенерированный из `icon.svg`.
 - Для иконки/метаданных exe нужен `rcedit` + wine; если ставить wine нежелательно —
   допустимо собирать без кастомной иконки exe (не блокер релиза).
-- «Установочный файл»: инсталлер **NSIS** (`brew install makensis`) — скрипт
-  `tools/windows_installer.nsi`, на выходе `FantasyDisk-X.Y.Z-windows-setup.exe`.
-  Запасной вариант: zip `FantasyDisk-X.Y.Z-windows.zip` с exe.
-- Headless-сборка обеих платформ:
-  ```bash
-  GODOT="/Users/sergeyfomin/Downloads/Godot.app/Contents/MacOS/Godot"
-  "$GODOT" --headless --path . --export-release "macOS" "releases/vX.Y.Z/FantasyDisk-X.Y.Z-macos.dmg"
-  "$GODOT" --headless --path . --export-release "Windows Desktop" "releases/vX.Y.Z/win/FantasyDisk.exe"
-  ```
-  Обертка: `tools/build_release.sh` (создает Back-end).
+- Игрокам публикуется только инсталлер **NSIS** (`brew install makensis`) —
+  `FantasyDisk-X.Y.Z-windows-setup.exe`. Сырой exe нужен только как временный
+  вход сборки; отдельный Windows zip больше не создаётся и не публикуется.
+- Headless-экспорт обеих платформ выполняется только через
+  `tools/build_release.sh X.Y.Z`, который вызывает Godot через
+  `tools/godot_gate.py`, а не напрямую.
 
 ## Кроссплатформенная совместимость (правила для всех агентов)
 
@@ -117,8 +122,8 @@ SemVer patch/minor версию.
    (на macOS в редакторе ошибка не всплывет, в Windows-сборке — сломается).
 2. Сохранения/настройки — только в `user://`, никогда в `res://` (read-only в сборке).
 3. Не использовать платформо-специфичные шорткаты/API без `OS.get_name()` проверки.
-4. Рендерер проекта должен оставаться совместимым (Forward+ ок для desktop;
-   не включать Metal/DirectX-специфику).
+4. Рендерер проекта должен оставаться `gl_compatibility`; ANGLE/D3D12 и другая
+   платформенная специфика включаются только после A/B профиля на реальной Windows.
 5. Каждый релиз тестируется на обеих платформах до публикации.
 6. `.godot/`, `build/`, `releases/` не коммитятся.
 
@@ -138,7 +143,8 @@ SemVer patch/minor версию.
   `std::bad_alloc` (ломается даже бандловый пример). `tools/build_release.sh`
   выставляет `LC_ALL=en_US.UTF-8` сам; при ручном запуске makensis — не забывать.
 - `assets/icon.ico` (16-256) сгенерирован из `icon.svg`: `qlmanage -t -s 256` -> PNG -> Pillow.
-- macOS dmg подписывается ad-hoc; GL-ошибки "Texture leaked" при выходе релизной
+- macOS `.app` подписывается последним шагом перед DMG; при отсутствии Developer
+  ID используется ad-hoc. GL-ошибки "Texture leaked" при выходе релизной
   сборки с `--quit-after` — известный безвредный артефакт принудительного выхода
   в gl_compatibility, не считать регрессией.
 - **NSIS CRC**: алгоритм exehead — crc32 файла с байта 512 до поля CRC (firstheader + length_of_all_following_data - 4); makensis на macOS пишет его корректно. `build_release.sh` делает verify-only проверку по этому алгоритму (НЕ перезаписывать хвост файла — формула crc32(file[:-4]) неверна и портит инсталлер). Компрессор — zlib: solid-lzma поток кросс-собранного makensis подозревается в «integrity check failed» на реальной Windows.

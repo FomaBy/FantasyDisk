@@ -1,8 +1,49 @@
 # Visual Style Assets
 
-Обновлено: 2026-06-13
+Обновлено: 2026-07-14
 
 Этот файл фиксирует reusable visual assets FantasyDisk после domain split. Подробные таблицы сущностей остаются в `docs/design/content_registry.md`.
+
+## FAN-1077 Codex Unread Badge
+
+`assets/sprites/ui/icons/codex/ui_badge_codex_unread.png` is the accepted
+256×256 transparent PixelLab object (`661aefb3-25e0-4054-9dfe-cd21a7ebe9ad`):
+a deep-red enamel medallion, antique-gold rim and one bold gold exclamation.
+Runtime draws the same source at 18px in victory rows, 28px in Codex tabs,
+36px in entry cards and 40px on the Main Menu action. It is an additive icon,
+never a replacement for existing button/card frames.
+
+Source PNGs, the rejected contact-sheet attempt, prompt summaries and IDs are
+preserved in
+`docs/design/references/fan1077_codex_unread_unlocks/manifest.json`. The
+three-surface PixelLab reference board, content-zone plan, composited preview,
+debug overlay and successful fit reports live in the adjacent mockup/preview
+directories. No runtime text is baked into the badge.
+
+## FAN-1065 Codex Atlas/Settings Skin
+
+The current Codex runtime art package lives at
+`assets/sprites/ui/atlas_style/codex/`:
+
+- `bg_codex_sanctum.png` — inner-scene crop of the PixelLab sanctum source,
+  drawn `STRETCH_KEEP_ASPECT_COVERED`;
+- `panel_9slice.png` — nav/list/detail/title surfaces and the ornament-safe
+  lower lore scroll;
+- `entry_card_516x154.png` — exact-size center rows; runtime portrait/name are
+  separate Controls;
+- `dossier_frame.png` — the near-square 300×300 portrait well only;
+- `chip_bar.png` — two 330×70 semantic/locked chips;
+- `codex_crest.png` — 104×104 top-center accent.
+
+All runtime bitmaps are promoted or mechanically cropped from the accepted
+PixelLab MCP source package under
+`docs/design/references/fan1065_codex_atlas_settings_redesign/`; IDs, prompts,
+seeds, dimensions and derivation are preserved in its `manifest.json` and
+`provenance.json`. The clean/annotated mockups and state sheet live in the
+adjacent mockup/preview directories. No runtime text is baked into these
+assets. The old `bg_codex_archive` and historical Codex frame kits remain source
+history, not the active Codex surface set. Main Menu tab/Back textures are
+referenced from their existing global family and were not regenerated.
 
 ## Semantic Typography Content-Zone Anchor
 
@@ -16,6 +57,20 @@ dragon/D&D frames with empty interiors and decoration confined to outer rails.
 Plan, exact zones, composite, debug overlay and fit reports live in
 `docs/design/mockups/scrum1073_semantic_band_migration/`. This source is not a
 runtime texture; it documents content-zone rules for geometry migration.
+
+## Feedback Privacy Overlay Reference
+
+FAN-1057/FAN-1059 adds the PixelLab MCP source
+`docs/design/references/FAN-1057_feedback_privacy/feedback_privacy_overlay_pixellab_source.png`
+(asset `6e87754b-e6e0-4c74-8682-46af7fe65ab7`, 672×378 RGBA) and proportional
+1920×1080 review preview. It is a textless design reference only, not a runtime
+texture. Empty wells cover title, description, optional 16:9 screenshot,
+include/omit control, privacy copy, status and actions; blackened-steel rails
+and restrained ruby dragon accents stay outside those interiors. Exact
+1280×720/1920×1080/2560×1440 geometry, provenance and visual QA live under
+`docs/design/mockups/FAN-1057_feedback_privacy/` and the adjacent reference
+manifest. Runtime recreates the layout with Godot Controls and existing
+feedback frame/button families.
 
 ## Artifact And Shop Icons
 
@@ -287,6 +342,14 @@ the ornamental rails or reserve band.
 Plans, fit reports, composite/debug overlay and provenance live under
 `docs/design/mockups/scrum983_escape_dossier/` and
 `docs/design/previews/scrum983_escape_dossier/`.
+
+FAN-1047 unifies ordinary Codex navigation and the four dossier footer actions
+with the exact live `text/main_menu_380x104` five-state material. Codex tabs
+use uniform `260×72` scaling; dossier actions preserve the source aspect in a
+compact right rail or wide footer. The old yellow `minimal_metal_codex_tab`
+remains a historical asset only. Supplemental PixelLab references are under
+`docs/design/references/FAN-1047_codex_dossier_buttons/`; no generated bitmap
+is promoted to runtime.
 
 SCRUM-588 adds `assets/sprites/ui/frames/overhaul_2k/ui_frame_2k_lut_toast.png`,
 the level-up toast frame. It is a generated transparent RGBA `480x300` asset
@@ -629,7 +692,7 @@ Canonical live Hero Select frame assets live in
 - `ui_frame_hero_select_thumbnail.png`, `ui_frame_hero_select_asc_button.png`,
   `ui_frame_hero_select_asc_label.png`, `ui_frame_hero_select_asc_mods.png`.
 
-Canonical live button assets live in `assets/sprites/ui/frames/minimal_metal_buttons/`:
+Canonical legacy/minimal button assets live in `assets/sprites/ui/frames/minimal_metal_buttons/`:
 
 - `ui_btn_minimal_metal_standard.png`, `ui_btn_minimal_metal_max.png`,
   `ui_btn_minimal_metal_main_menu.png`, `ui_btn_minimal_metal_hero_confirm.png`;
@@ -640,6 +703,10 @@ Canonical live button assets live in `assets/sprites/ui/frames/minimal_metal_but
 - `ui_btn_minimal_metal_fab.png`, `ui_btn_minimal_metal_utility.png`,
   `ui_btn_minimal_metal_pause.png`;
 - every file has `_hover`, `_focus`, `_pressed` and `_disabled` state variants.
+
+`ui_btn_minimal_metal_codex_tab*` is retained for history/metadata checks but
+is no longer a live Codex family after FAN-1047. Ordinary text actions use the
+canonical `assets/sprites/ui/frames/text_buttons_unique/` five-state kit.
 
 State language:
 
@@ -861,20 +928,18 @@ SCRUM-337 is the current full attack VFX art baseline. Six generated source shee
   node icons, HUD v2 assets and the hollow `meta40/frame_border.png` shell.
 - SCRUM-158 dark fantasy UI backdrops live in `assets/backgrounds/ui/`: `ui_backdrop_system_cathedral.png`, `ui_backdrop_merchant_archive.png`, `ui_backdrop_arcane_lab.png`, `ui_backdrop_reward_hall.png`, `ui_backdrop_defeat_crypt.png`. Each is `2560x1440` with a calm low-contrast center for central panels and richer material detail pushed to the edges. SCRUM-418 removed the old compatibility copies from `assets/sprites/ui/screens/`; runtime mapping now points directly at this canonical backdrop set. Preview: `docs/design/previews/ui_screen_backdrops_dark_fantasy_contact.png`.
 - `assets/backgrounds/main_menu_epic_battle_v3.png` is the active start-screen
-  art. SCRUM-1001 replaces the previous 0.2.0 cosmic atlas with an
-  OpenAI-generated clean cartoon-realistic D&D/dark-fantasy background. The
-  latest active SCRUM-1001 pass is a reimagined from-scratch generation that
-  excludes previous screen/background reference input and uses only current
-  runtime character and boss sprites as the visual reference. It keeps a calm
-  dark left column for the six runtime menu buttons and a readable title-safe
-  area, places the 3/4 front/side party and boss threat center-right/right,
-  keeps the guitarist front/3/4 readable with the guitar on the torso, avoids
-  the old portal/atlas/music line layout, and contains no baked UI
-  text/buttons/frames. Source, character/
-  boss reference sheets, backup, preview, comparisons and safe-zone evidence are
-  documented in
-  `docs/design/mockups/main_menu_openai_clean_background/spec.md`. This task is
-  an explicit OpenAI Images override by direct user request.
+  art. FAN-1088 uses a 2560x1440 PixelLab-composited D&D/dark-fantasy scene:
+  one canonical north-facing Berserk on a monumental basalt cliff above a
+  violet disk-shaped dimensional rift. The focal silhouette is center-right,
+  while the left column remains dark and quiet for the six runtime actions and
+  title texture. The RGB runtime image contains no baked UI text, labels,
+  controls, frames, logo or watermark. New cliff/rift source objects, their
+  PixelLab IDs/prompts, postprocessed alpha exports, the canonical Berserk ID,
+  backup, mockup and safe-zone evidence are documented in
+  `docs/design/references/fan1088_main_menu_disk_rift/manifest.json` and
+  `docs/design/mockups/fan1088_main_menu_disk_rift/spec.md`. The former
+  SCRUM-1001 art is preserved under the FAN-1088 backup folder; its historical
+  OpenAI source package remains unchanged for provenance.
 - SCRUM-369 (2026-06-14) replaced the active combat arena set with 10
   `2560x1440` realistic D&D/dark fantasy battle backgrounds generated through
   `fantasydisk-asset-generator` and normalized for gameplay readability:

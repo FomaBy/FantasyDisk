@@ -5,7 +5,7 @@ Use this before declaring any FantasyDisk PixelLab task blocked by MCP auth.
 ## Current Codex Desktop Config
 
 PixelLab is configured in `~/.codex/config.toml`, not in the repository. Never
-copy the bearer token into Jira, task files, commits, prompts, or logs.
+copy the bearer token into Multica, task files, commits, prompts, or logs.
 
 Expected shape:
 
@@ -80,8 +80,8 @@ If you capture logs, redact any `Bearer ...` value before storing or pasting.
 - If direct PixelLab tools are exposed, use them normally.
 - If direct tools are stale but the config-based bridge succeeds, either use the
   local JSON-RPC bridge for read/create/fetch calls or move the work to a fresh
-  Codex thread where MCP discovery can reload. Do not mark Jira blocked for the
+  Codex thread where MCP discovery can reload. Do not mark the Multica issue blocked for the
   old auth issue.
-- Record in Jira/task evidence: `PixelLab MCP config smoke PASS`, the tool used
+- Record in Multica/task evidence: `PixelLab MCP config smoke PASS`, the tool used
   (`get_balance`, `tools/list`, `create_character`, etc.), and that no secrets
   were printed.

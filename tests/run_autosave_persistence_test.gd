@@ -49,6 +49,8 @@ func _initialize() -> void:
 	var dir := DirAccess.open("user://")
 	if dir != null and dir.file_exists(TEST_PATH + ".tmp"):
 		errors.append("остался .tmp после успешного save (не атомарно прибрано)")
+	if dir != null and dir.file_exists(TEST_PATH + ".bak"):
+		errors.append("остался .bak после успешного save")
 
 	# 4. Перезапись: второй save заменяет состояние.
 	if not RunAutosave.save_run({"character_id": "ranger", "route_stage": 1}, TEST_PATH):
@@ -59,12 +61,39 @@ func _initialize() -> void:
 	if reloaded.has("weapon_id"):
 		errors.append("перезапись должна была вытеснить старые ключи")
 
-	# 5. Очистка → пусто.
-	RunAutosave.clear_run(TEST_PATH)
-	if RunAutosave.has_run(TEST_PATH):
-		errors.append("после clear_run has_run должен быть false")
+	# 5. Прерванный swap: основного файла уже нет, но last-known-good лежит в
+	# .bak. load_run обязан вернуть checkpoint, а следующий save — восстановиться.
+	if dir != null and dir.rename(TEST_PATH, TEST_PATH + ".bak") != OK:
+		errors.append("не удалось подготовить interrupted-swap fixture")
+	var recovered := RunAutosave.load_run(TEST_PATH)
+	if str(recovered.get("character_id", "")) != "ranger":
+		errors.append("load_run должен восстановить checkpoint из .bak")
+	if not RunAutosave.save_run({"character_id": "druid", "route_stage": 2}, TEST_PATH):
+		errors.append("save_run должен восстановиться после interrupted swap")
+	var after_recovery := RunAutosave.load_run(TEST_PATH)
+	if str(after_recovery.get("character_id", "")) != "druid":
+		errors.append("новый checkpoint после recovery не применился")
 
-	# 6. Повреждённый файл → {} (как будто нет), не крэшит.
+	# 6. Очистка primary + stale backup не должна позволить load_run() воскресить
+	# завершённый забег. Auxiliary-файлы всегда удаляются раньше primary: crash до
+	# последнего шага оставляет committed checkpoint, после него recovery уже нет.
+	var stale_backup := ConfigFile.new()
+	stale_backup.set_value("meta", "schema_version", RunAutosave.SCHEMA_VERSION)
+	stale_backup.set_value("run", "character_id", "stale_completed_run")
+	if stale_backup.save(TEST_PATH + ".bak") != OK:
+		errors.append("не удалось подготовить primary + .bak clear fixture")
+	var clear_paths: Array[String] = RunAutosave._clear_paths(TEST_PATH)
+	if clear_paths != [TEST_PATH + ".tmp", TEST_PATH + ".bak", TEST_PATH]:
+		errors.append("clear_run должен удалять auxiliary-файлы раньше primary")
+	if not RunAutosave.clear_run(TEST_PATH):
+		errors.append("clear_run должен вернуть true при успешной очистке")
+	if RunAutosave.has_run(TEST_PATH):
+		errors.append("после clear_run primary + .bak has_run должен быть false")
+	for path in clear_paths:
+		if FileAccess.file_exists(path):
+			errors.append("после clear_run остался файл: %s" % path)
+
+	# 7. Повреждённый файл → {} (как будто нет), не крэшит.
 	var f := FileAccess.open(TEST_PATH, FileAccess.WRITE)
 	if f != null:
 		f.store_string("not a valid config file {{{ === ]]] garbage\nkey_without_section = broken [[[")
@@ -73,7 +102,7 @@ func _initialize() -> void:
 		errors.append("повреждённый файл должен дать {}")
 	RunAutosave.clear_run(TEST_PATH)
 
-	# 7. Несовместимая схема → {} (игнор).
+	# 8. Несовместимая схема → {} (игнор).
 	var bad := ConfigFile.new()
 	bad.set_value("meta", "schema_version", RunAutosave.SCHEMA_VERSION + 999)
 	bad.set_value("run", "character_id", "berserk")
@@ -81,7 +110,7 @@ func _initialize() -> void:
 	if not RunAutosave.load_run(TEST_PATH).is_empty():
 		errors.append("несовместимая схема должна дать {}")
 
-	# 8. SCRUM-650: строковый/нечисловой schema_version → {}. Старый lossy int()-каст
+	# 9. SCRUM-650: строковый/нечисловой schema_version → {}. Старый lossy int()-каст
 	# парсил "001"→1, "1abc"→1, "1.5"→1 и ошибочно принимал повреждённый сейв.
 	for bogus_version in ["%03d" % RunAutosave.SCHEMA_VERSION, "%dabc" % RunAutosave.SCHEMA_VERSION, "%d.5" % RunAutosave.SCHEMA_VERSION]:
 		var tainted := ConfigFile.new()
@@ -100,7 +129,7 @@ func _initialize() -> void:
 		push_error("Run autosave persistence: %d нарушений." % errors.size())
 		quit(1)
 		return
-	print("Run autosave persistence passed (round-trip/atomic/corrupt/version/clear).")
+	print("Run autosave persistence passed (round-trip/atomic/corrupt/version/safe-clear).")
 	quit(0)
 
 
@@ -108,6 +137,6 @@ func _cleanup() -> void:
 	var dir := DirAccess.open("user://")
 	if dir == null:
 		return
-	for p in [TEST_PATH, TEST_PATH + ".tmp"]:
+	for p in [TEST_PATH, TEST_PATH + ".tmp", TEST_PATH + ".bak"]:
 		if dir.file_exists(p):
 			dir.remove(p)

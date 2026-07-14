@@ -1,29 +1,30 @@
-# Task Board — FantasyDisk (живой дашборд)
+# Task Board — FantasyDisk (frozen legacy snapshot)
 
 Обновлено: 2026-07-04
-Ведёт: PM/dispatcher как локальный dashboard/cache. С 2026-06-27 Jira проект
-`SCRUM` является authoritative task queue/status/owner source. Эта доска
-показывает активную работу, review/QA gates и важные recent rows только для
-anti-duplicate/owner audit и локального удобства. Новые задачи нельзя брать
-из этого файла напрямую: они должны существовать и назначаться в Jira.
-Статусы: `new` | `in_progress` | `review` | `blocked` | `done`. Источник истины
-по очереди/status/owner — Jira; `docs/tasks/*.md` содержит подробную спецификацию
-и evidence mirror.
-Новые или обновляемые active Jira issues/mirror rows обязаны иметь lane/owner
+Ведёт: PM/dispatcher как локальный legacy dashboard/evidence mirror. После
+Jira→Multica cutover (2026-07-13, approver Sergey Fomin) authoritative task
+queue/status/owner source — **Multica** (project `FantasyDisk`, issues `FAN-*`).
+Эта доска теперь только **локальный legacy dashboard / evidence mirror** и **не
+является источником новой работы**: новые задачи ведутся и назначаются в Multica.
+Legacy Jira (`SCRUM-*`) — read-only historical archive; строки ниже сохранены как
+историческое evidence. Статусы: `new` | `in_progress` | `review` | `blocked` |
+`done`. Источник истины по очереди/status/owner — Multica (`FAN-*`);
+`docs/tasks/*.md` содержит подробную спецификацию и evidence mirror.
+См. `docs/process/jira_to_multica_cutover.md`.
+Новые или обновляемые active Multica issues/mirror rows обязаны иметь lane/owner
 metadata: `Контур: Codex|Claude|OtherAI`, `Owner`, `Thread/Worker`, `Locked paths`.
-Автоматическая работа role agents разрешена только по Jira issues с label `foma`
-(задачи от пользователя/PM/dispatcher для AI-автоматики); остальные issues
-запускаются вручную явным поручением пользователя конкретному агенту.
+Eligibility для daemon-работы определяется exact assignee и свежим dispatcher
+comment, а для текущего direct-control chat — explicit owner comment после
+duplicate/lock audit. Legacy labels из строк ниже не являются gate.
 
-## Live Sprint 0.2.1 — активная разработка
+## Исторический снимок Jira Sprint 0.2.1
 
-`Спринт 0.1.6` (id 100) закрыт в Jira 2026-06-27 (66/66 готово); `v0.1.6` влита в
-`main`. На 2026-07-03 live active sprint: **`Спринт 0.2.1`** (id 199).
-Всегда проверять live Jira перед dispatch/claim. Jira version `0.2.1` — текущий
-target release; `0.1.8` и `0.1.9` больше не используются как плановые версии.
-По директиве пользователя 2026-07-03 все задачи, добавляемые в любые чаты, сразу
-заводятся в active Jira sprint с fixVersion активного sprint/release. Backlog
-используется только при явном freeze/hold marker. Доска — локальный кэш.
+Ниже сохранён снимок планирования до cutover. `Спринт 0.1.6` (id 100) был закрыт
+в Jira 2026-06-27 (66/66 готово), а на 2026-07-03 Jira sprint `0.2.1` (id 199)
+считался активным. Эти сведения нужны только для provenance старых `SCRUM-*`
+строк и не являются инструкцией по dispatch, assignment или release planning.
+Текущие queue, status, owner и release target всегда читаются из Multica-проекта
+FantasyDisk; новые задачи создаются и назначаются только как `FAN-*` issues.
 
 **Sprint intake 2026-07-08 (user request):** создана и сразу взята в работу
 Codex/backend documentation задача на review-friendly таблицу всех playable
@@ -106,12 +107,13 @@ QA-пройден (стартовая разведка читала старый
 SCRUM-474 (скелетная анимация, был USER HOLD), SCRUM-476 (ребаланс наград событий),
 SCRUM-480 (рантайм-интеграция минимал-UI).
 
-**Sprint intake 2026-07-03 (user request):** создана и перенесена в active sprint
+**Historical sprint intake snapshot 2026-07-03 (user request):** до Multica
+cutover была создана и перенесена в active Jira sprint
 `Спринт 0.2.1` пара задач на следующий
 редизайн внутриигрового Кодекса в стиле Atlas/Settings v6: object-first,
 крупные изображения, краткая центральная область, подробная правая область и
 минимум рамок без смысловой нагрузки. Jira: `SCRUM-849`, `SCRUM-850` находятся
-в active sprint; брать только через claim-first и owner/locked-path проверку.
+в тогдашнем active sprint; это archive evidence, не live intake/claim инструкция.
 
 | Jira | Задача | Lane | Prio |
 | --- | --- | --- | --- |

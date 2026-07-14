@@ -8,7 +8,7 @@ Create one spec for every FantasyDisk UI mockup. The spec is the bridge between 
 Status: draft | ready_for_integration | implemented | blocked
 Role owner: Design | Back-end | PM/Coordination
 Task: <docs/tasks/...md or none>
-Jira: SCRUM-<id or none>
+Multica: FAN-<id>
 Base resolution: 1920x1080
 Responsive targets: 1280x720, 1920x1080, 2560x1440
 Mockup PNG: <path>
@@ -67,7 +67,7 @@ Generated with: PixelLab MCP via <skill/tool>; source ID/tag/name: <id/tag/name>
 - [ ] Runtime content fits inside safe zones at every responsive target.
 - [ ] Hover/focus/pressed/disabled states do not resize or shift layout.
 - [ ] Screenshot comparison completed after implementation.
-- [ ] Task/Jira updated when applicable.
+- [ ] Multica evidence and task mirror updated when applicable.
 
 ## Deviations
 

@@ -51,12 +51,29 @@ var _elite_shield_time_left := 0.0
 var _elite_dash_cooldown := 2.8
 var _elite_dash_time_left := 0.0
 var _elite_dash_direction := Vector2.ZERO
+# Этап C (fairness): замах перед рывком сталкера — решение ≠ исполнение.
+# < 0 — замаха нет; направление лочится в момент решения (_prepare_elite_dash).
+var _elite_dash_windup_left := -1.0
 var _elite_hazard_cooldown := 3.4
 var _elite_aura_cooldown := 3.2
 var _elite_shield_active := false
 var _rig_source_scale := Vector2.ZERO
 var _knockback_velocity := Vector2.ZERO
+# Combat Feel Rework (этап B): состояние движения — гистерезис отхода из
+# глубокого оверлапа, знаки орбиты/строба (пер-инстанс из id, пачки расползаются
+# в обе стороны) и кэш steering-сепарации от соседей по группе enemies.
+var _melee_backoff_active := false
+var _orbit_sign := 1.0
+var _strafe_sign := 1.0
+var _strafe_flip_left := 3.0
+var _strafe_bound_flip_done := false
+var _separation_neighbors: Array = []
+var _separation_scratch_dist: Array = []
+var _separation_refresh_left := 0.0
+var _separation_weight := 1.0
+var _separation_radius := 32.0
 var _cached_player: Node2D = null
+var _cached_homunculus_tank: Node2D = null
 var _cached_body: Sprite2D = null
 var _cached_rig: Node2D = null
 var _cached_full_frame_body: AnimatedSprite2D = null
@@ -72,6 +89,7 @@ var _elite_instant_phase_applied := false
 
 const COLLISION_LAYER_PLAYER := 1
 const COLLISION_LAYER_GROUND_ENEMY := 2
+const HOMUNCULUS_TANK_OWNER_META := "chemist_tank_instance_id"
 const COLLISION_LAYER_FLYING_ENEMY := 4
 const COLLISION_LAYER_SOLID := 32
 const ARENA_SIZE := Vector2(4096, 2304)  # SCRUM-518: синхронно с main.gd (×1.6)
@@ -79,6 +97,8 @@ const ARENA_ENTITY_MARGIN := 48.0
 const CUTOUT_RIG_SCRIPT := preload("res://scripts/cutout_rig_2d.gd")
 const HEALTH_BAR_SCRIPT := preload("res://scripts/enemy_health_bar.gd")
 const StatusEffects := preload("res://scripts/status_effects.gd")
+const TARGET_QUERY := preload("res://scripts/combat_target_query.gd")
+const SCENE_CONTRACTS := preload("res://scripts/scene_contracts.gd")
 const GAMEPLAY_SANDBOX := preload("res://scripts/gameplay_sandbox.gd")
 const FullFrameAnimationRegistry := preload("res://scripts/full_frame_animation_registry.gd")
 const ENEMY_PROJECTILE_SCENE := preload("res://scenes/EnemyProjectile.tscn")
@@ -93,6 +113,56 @@ const ELITE_SHARD_FAN_BURST_TEXTURE := preload("res://assets/sprites/effects/ene
 
 # Половина видимой ширины игрока: contact_range считается как сумма радиусов.
 const PLAYER_CONTACT_PADDING := 26.0
+# Combat Feel Rework (этап B): анти-прилипание — полосы поведения melee вместо
+# «едем в точный центр игрока». engage-кольцо ВСЕГДА внутри contact_range
+# (уптайм контактного урона — жёсткий контракт TTK-гейтов и smoke-тестов).
+const MELEE_ENGAGE_RATIO := 0.8            # engage = 0.8×contact_range
+const MELEE_DECELERATION_BAND := 60.0      # полоса плавного торможения перед engage, px
+const MELEE_APPROACH_MIN_FACTOR := 0.35    # скорость у самой кромки engage
+const MELEE_ORBIT_SPEED_FACTOR := 0.25     # тангенциальный дрейф на кольце
+const MELEE_BACKOFF_SPEED_FACTOR := 0.45   # мягкий отход из глубокого оверлапа
+const MELEE_BACKOFF_ENTER_RATIO := 0.62    # d < 0.62×engage → начать отход
+const MELEE_BACKOFF_EXIT_RATIO := 0.75     # отход до 0.75×engage (= 0.6×contact_range, замах не рвётся)
+# Стрелки/саммонеры: вместо freeze в hold-полосе — медленный тангенциальный строб
+# с гистерезисом (убирает дребезг «стоп/шаг» на кромке полосы).
+const RANGED_RETREAT_RATIO := 0.78         # d < 0.78×desired → отходим
+const RANGED_APPROACH_RATIO := 0.92        # d > 0.92×desired → подходим
+const RANGED_STRAFE_SPEED_FACTOR := 0.4    # скорость строба в hold-полосе
+const STRAFE_FLIP_INTERVAL_MIN := 2.5      # пер-инстансный таймер смены направления строба
+const STRAFE_FLIP_INTERVAL_MAX := 4.0
+const STRAFE_BOUND_MARGIN := 120.0         # у кромки арены — разворот строба
+# Сепарация врагов: только steering (БЕЗ физики — контракт «игрок проходит сквозь»).
+const SEPARATION_REFRESH_INTERVAL := 0.2   # пересчёт кэша соседей, s (со stagger по id)
+const SEPARATION_MAX_NEIGHBORS := 4        # держим 3-4 ближайших
+const SEPARATION_MAX_RANGE := 90.0         # кап радиуса расталкивания, px
+const SEPARATION_SEARCH_SLACK := 50.0      # запас поиска: соседи двигаются между рефрешами
+const SEPARATION_MAX_SPEED := 90.0         # потолок push-скорости, px/s
+const SEPARATION_ELITE_WEIGHT := 0.4       # элитки толкаются слабее; боссы (0.0) — никогда
+# «Клюнул и ударил»: на время замаха контакт-удара steering падает до 20%.
+const CONTACT_WINDUP_STEERING_FACTOR := 0.2
+# Читаемый нокбек: вес chase-вклада = clamp(1 − |kb|/300, 0, 1).
+const KNOCKBACK_STEERING_SUPPRESS_SPEED := 300.0
+# Спавн-защита: миньоны саммонера/рифтлинги босса не появляются вплотную к игроку.
+const MINION_SPAWN_MIN_PLAYER_DISTANCE := 140.0
+# Combat Feel Rework (этап C): честные АОЕ. Замах рывка элитки-сталкера ДО
+# старта движения (направление лочится при решении — сайдстеп работает) и
+# параметры ядовитой зоны элитки (радиус/база замаха — пол считает CombatFairness).
+const ELITE_DASH_WINDUP := 0.4
+const ELITE_HAZARD_RADIUS := 72.0
+const ELITE_HAZARD_WINDUP_BASE := 0.55
+# Второй теневой удар night_stalker (фаза 2): база телеграфа до fair-пола.
+const SHADOW_SECOND_STRIKE_BASE_WINDUP := 0.35
+# Combat Feel Rework (этап A): feet-origin визуал + тень-круг под ногами.
+# Origin узла не двигается — поднимается только фолбэк-визуал (cutout/статический
+# спрайт центрирован по арту, ноги ~на 0.38 высоты ниже центра). Живой full-frame
+# путь уже feet-anchored ручными offsets в full_frame_animation_registry.
+const STATIC_VISUAL_FEET_LIFT_RATIO := 0.38
+const GROUND_CIRCLE_Z_INDEX := -8
+const GROUND_CIRCLE_SEGMENTS := 32
+const GROUND_CIRCLE_WIDTH_FACTOR := 0.34   # доля видимой ширины (полная ширина эллипса)
+const GROUND_CIRCLE_HEIGHT_RATIO := 0.32
+const GROUND_CIRCLE_ALPHA := 0.16
+const GROUND_CIRCLE_BOSS_ALPHA := 0.20
 const FULL_FRAME_DEATH_DURATION_FALLBACK := 0.62
 const COMBAT_FEEDBACK_LABEL_GROUP := "combat_feedback_labels"
 const COMBAT_FEEDBACK_FLASH_GROUP := "combat_feedback_flashes"
@@ -158,7 +228,18 @@ func _ready() -> void:
 	if not _configure_full_frame_animation():
 		_configure_enemy_rig()
 	_fit_contact_range_to_sprite()
+	# Combat Feel Rework (этап B): пер-инстансные знаки орбиты/строба из чётности
+	# instance id (детерминированный разъезд пачек в обе стороны) + видимый радиус
+	# для сепарации (после fit/epic scale) + stagger рефреша кэша соседей, чтобы
+	# 48 мобов не сканировали группу в один и тот же кадр.
+	_orbit_sign = 1.0 if get_instance_id() % 2 == 0 else -1.0
+	_strafe_sign = 1.0 if (get_instance_id() >> 1) % 2 == 0 else -1.0
+	_strafe_flip_left = randf_range(STRAFE_FLIP_INTERVAL_MIN, STRAFE_FLIP_INTERVAL_MAX)
+	var visible_size := _visible_sprite_size()
+	_separation_radius = maxf(visible_size.x, visible_size.y) * 0.5
+	_separation_refresh_left = float(get_instance_id() % 199) * 0.001
 	_create_health_bar()
+	_ensure_ground_circle()
 	var config := _elite_attack_config()
 	if not config.is_empty():
 		elite_attack_id = str(config.get("attack_id", ""))
@@ -257,21 +338,21 @@ func _physics_process(delta: float) -> void:
 		_update_movement_animation(delta)
 		return
 
+	# Combat Feel Rework (этап B): анти-прилипание. Вместо «едем в точный центр
+	# игрока» — полосы поведения (подход → торможение → тангенциальный дрейф у
+	# engage-кольца → мягкий отход из глубокого оверлапа), steering-сепарация от
+	# соседей (без физики) и строб дальнобоев вместо freeze. Во время замаха
+	# контакт-удара steering гасится («клюнул и ударил»), нокбек применяется
+	# полностью и подавляет chase-вклад весом — удары реально отбрасывают.
+	_tick_separation_cache(delta)
 	var status_speed := StatusEffects.speed_multiplier(self)
-	if can_summon and distance < desired_summoning_distance * 0.85:
-		velocity = -direction.normalized() * move_speed * status_speed
-	elif can_summon and distance <= desired_summoning_distance * 1.15:
-		velocity = Vector2.ZERO
-	elif can_shoot and distance < desired_shooting_distance * 0.85:
-		velocity = -direction.normalized() * move_speed * status_speed
-	elif can_shoot and distance <= desired_shooting_distance:
-		velocity = Vector2.ZERO
-	elif direction.length_squared() > 0.0:
-		velocity = direction.normalized() * move_speed * status_speed
-	else:
-		velocity = Vector2.ZERO
-
-	velocity += _consume_knockback(delta)
+	var steering := _band_steering(direction, distance, move_speed * status_speed, delta)
+	steering += _separation_velocity()
+	if _contact_windup_left >= 0.0:
+		steering *= CONTACT_WINDUP_STEERING_FACTOR
+	var knockback := _consume_knockback(delta)
+	var knockback_weight := clampf(1.0 - knockback.length() / KNOCKBACK_STEERING_SUPPRESS_SPEED, 0.0, 1.0)
+	velocity = steering * knockback_weight + knockback
 	move_and_slide()
 	global_position = _clamp_to_arena(global_position)
 	_update_movement_animation(delta)
@@ -279,6 +360,183 @@ func _physics_process(delta: float) -> void:
 	_update_shooting(delta, target)
 	_update_summoning(delta)
 	_update_elite_patterns(delta, target, distance)
+
+
+# --- Combat Feel Rework (этап B): steering-движение -------------------------
+
+
+# Пер-инстансное стабильное направление-фолбэк (для нулевых дистанций).
+func _fallback_direction() -> Vector2:
+	return Vector2.RIGHT.rotated(float(get_instance_id() % 628) * 0.01)
+
+
+# Кольцо остановки melee: всегда внутри contact_range (уптайм контакт-урона —
+# жёсткий контракт). Пересчитывается от текущего contact_range: fit по спрайту
+# и epic scale уже учтены внутри него.
+func _melee_engage_distance() -> float:
+	return contact_range * MELEE_ENGAGE_RATIO
+
+
+func _band_steering(direction: Vector2, distance: float, speed: float, delta: float) -> Vector2:
+	var toward := direction / distance if distance > 0.001 else _fallback_direction()
+	if can_summon:
+		return _ranged_band_steering(toward, distance, desired_summoning_distance, speed, delta)
+	if can_shoot:
+		return _ranged_band_steering(toward, distance, desired_shooting_distance, speed, delta)
+	return _melee_band_steering(toward, distance, speed)
+
+
+func _melee_band_steering(toward: Vector2, distance: float, speed: float) -> Vector2:
+	var engage := _melee_engage_distance()
+	# Гистерезис отхода: вход в глубоком оверлапе (<0.62×engage — игрок сам
+	# зашёл в моба или спавн-наложение), выход на 0.75×engage = 0.6×contact_range.
+	# Добровольно враг НИКОГДА не отходит за contact_range — замах не рвётся.
+	if _melee_backoff_active and distance >= engage * MELEE_BACKOFF_EXIT_RATIO:
+		_melee_backoff_active = false
+	elif not _melee_backoff_active and distance < engage * MELEE_BACKOFF_ENTER_RATIO:
+		_melee_backoff_active = true
+	if _melee_backoff_active:
+		return -toward * speed * MELEE_BACKOFF_SPEED_FACTOR
+	if distance <= engage:
+		# Кольцо: держим свою точку и бьём с неё; тангенциальный дрейф — знак
+		# фиксирован чётностью instance id, пачка расползается в обе стороны.
+		return toward.orthogonal() * _orbit_sign * speed * MELEE_ORBIT_SPEED_FACTOR
+	if distance <= engage + MELEE_DECELERATION_BAND:
+		var band_t := (distance - engage) / MELEE_DECELERATION_BAND
+		return toward * speed * lerpf(MELEE_APPROACH_MIN_FACTOR, 1.0, band_t)
+	return toward * speed
+
+
+func _ranged_band_steering(toward: Vector2, distance: float, desired: float, speed: float, delta: float) -> Vector2:
+	if distance < desired * RANGED_RETREAT_RATIO:
+		return -toward * speed
+	if distance > desired * RANGED_APPROACH_RATIO:
+		return toward * speed
+	_tick_strafe_direction(delta)
+	return toward.orthogonal() * _strafe_sign * speed * RANGED_STRAFE_SPEED_FACTOR
+
+
+func _tick_strafe_direction(delta: float) -> void:
+	_strafe_flip_left -= delta
+	if _strafe_flip_left <= 0.0:
+		_strafe_flip_left = randf_range(STRAFE_FLIP_INTERVAL_MIN, STRAFE_FLIP_INTERVAL_MAX)
+		_strafe_sign = -_strafe_sign
+	# У кромки арены — ОДИН разворот на вход в приграничную зону (без дребезга
+	# каждый кадр); флаг сбрасывается при выходе из зоны.
+	var near_bound := global_position.x < STRAFE_BOUND_MARGIN \
+		or global_position.y < STRAFE_BOUND_MARGIN \
+		or global_position.x > ARENA_SIZE.x - STRAFE_BOUND_MARGIN \
+		or global_position.y > ARENA_SIZE.y - STRAFE_BOUND_MARGIN
+	if near_bound and not _strafe_bound_flip_done:
+		_strafe_bound_flip_done = true
+		_strafe_sign = -_strafe_sign
+	elif not near_bound:
+		_strafe_bound_flip_done = false
+
+
+func _tick_separation_cache(delta: float) -> void:
+	_separation_refresh_left -= delta
+	if _separation_refresh_left > 0.0:
+		return
+	_separation_refresh_left = SEPARATION_REFRESH_INTERVAL
+	_refresh_separation_neighbors()
+
+
+func _separation_rank_weight() -> float:
+	# Боссы не толкаются вовсе, элитки — слабее рядовых; summon = ordinary.
+	if is_in_group("bosses"):
+		return 0.0
+	if elite_behavior != "" or is_in_group("elite_enemies"):
+		return SEPARATION_ELITE_WEIGHT
+	return 1.0
+
+
+# Кэш 3-4 ближайших соседей: общий snapshot группы строится максимум один раз
+# за кадр, каждый enemy фильтрует его раз в 0.2s (со stagger по id), а горячий
+# кадр работает только по 4 соседям.
+func _refresh_separation_neighbors() -> void:
+	_separation_neighbors.clear()
+	_separation_scratch_dist.clear()
+	_separation_weight = _separation_rank_weight()
+	if _separation_weight <= 0.0 or not is_inside_tree():
+		return
+	var search_limit := SEPARATION_MAX_RANGE + SEPARATION_SEARCH_SLACK
+	var limit_sq := search_limit * search_limit
+	for node in TARGET_QUERY.enemies(self):
+		if not is_instance_valid(node):
+			continue
+		var other := node as Node2D
+		if other == null or other == self:
+			continue
+		var dist_sq := global_position.distance_squared_to(other.global_position)
+		if dist_sq >= limit_sq:
+			continue
+		var insert_at := _separation_scratch_dist.size()
+		for index in range(_separation_scratch_dist.size()):
+			if dist_sq < float(_separation_scratch_dist[index]):
+				insert_at = index
+				break
+		if insert_at >= SEPARATION_MAX_NEIGHBORS:
+			continue
+		_separation_scratch_dist.insert(insert_at, dist_sq)
+		_separation_neighbors.insert(insert_at, other)
+		if _separation_scratch_dist.size() > SEPARATION_MAX_NEIGHBORS:
+			_separation_scratch_dist.resize(SEPARATION_MAX_NEIGHBORS)
+			_separation_neighbors.resize(SEPARATION_MAX_NEIGHBORS)
+
+
+func _separation_velocity() -> Vector2:
+	if _separation_weight <= 0.0 or _separation_neighbors.is_empty():
+		return Vector2.ZERO
+	var push := Vector2.ZERO
+	for node in _separation_neighbors:
+		# A cached neighbor may die between 0.2 s refreshes. Casting a freed
+		# Variant raises before a post-cast is_instance_valid() guard can run.
+		if not is_instance_valid(node):
+			continue
+		var other := node as Node2D
+		if other == null or not other.is_inside_tree():
+			continue
+		var offset := global_position - other.global_position
+		var dist := offset.length()
+		var other_radius := 32.0
+		var raw_radius = other.get("_separation_radius")
+		if raw_radius != null:
+			other_radius = float(raw_radius)
+		var reach := minf((_separation_radius + other_radius) * 0.9, SEPARATION_MAX_RANGE)
+		if reach <= 0.0 or dist >= reach:
+			continue
+		var away := Vector2.ZERO
+		if dist > 0.001:
+			away = offset / dist
+		else:
+			# Идеальная стопка (pack-спавн в одну точку): анти-симметричный
+			# детерминированный развод — XOR id даёт общий угол, знак по порядку
+			# id гарантирует противоположные стороны у обоих участников.
+			var stack_angle := float((get_instance_id() ^ other.get_instance_id()) % 628) * 0.01
+			away = Vector2.RIGHT.rotated(stack_angle) * (1.0 if get_instance_id() > other.get_instance_id() else -1.0)
+		# Вес по глубине перекрытия: вплотную — полный push, у кромки — ноль.
+		push += away * (1.0 - dist / reach)
+	if push == Vector2.ZERO:
+		return Vector2.ZERO
+	return push.limit_length(1.0) * SEPARATION_MAX_SPEED * _separation_weight
+
+
+# Спавн-защита минионов (саммонер/босс-рифтлинги): точка ближе min_distance к
+# игроку выталкивается наружу вдоль направления игрок→точка (в пределах арены).
+func _push_point_from_player(point: Vector2, min_distance: float) -> Vector2:
+	var player := _player()
+	if player == null:
+		return point
+	var offset := point - player.global_position
+	var dist := offset.length()
+	if dist >= min_distance:
+		return point
+	var away := offset / dist if dist > 0.001 else Vector2.RIGHT.rotated(randf() * TAU)
+	return _clamp_to_arena(player.global_position + away * min_distance)
+
+
+# --- /Combat Feel Rework (этап B) --------------------------------------------
 
 
 func _sandbox_attack_delta(delta: float) -> float:
@@ -583,6 +841,7 @@ func _update_elite_shield(delta: float) -> void:
 			_elite_shield_active = false
 			_elite_shield_cooldown = 5.4
 			_set_body_tint(Color.WHITE)
+			_set_reflect_thorns_aura_visible(false)
 		return
 
 	_elite_shield_cooldown -= delta
@@ -591,24 +850,57 @@ func _update_elite_shield(delta: float) -> void:
 		_elite_shield_time_left = 1.8
 		_set_body_tint(Color(0.62, 0.86, 1.0, 1.0))
 		HazardVfx.shield_block(self, Color(0.62, 0.86, 1.0, 1.0))
+		_set_reflect_thorns_aura_visible(true)
 		_play_rig_action("cast", Vector2.UP)
+
+
+# Этап C (fairness/читаемость): reflect_thorns остаётся реактивной механикой
+# (мгновенный ответ на удар по активной защите), но пока защита активна, на
+# носителе ОБЯЗАНА висеть постоянная аура шипов — игрок видит «сейчас бить
+# больно» ДО своего удара, а не после.
+func _set_reflect_thorns_aura_visible(active: bool) -> void:
+	var mechanics: Array = get_meta("unique_mechanics", []) as Array
+	if not mechanics.has("reflect_thorns"):
+		return
+	var aura := get_node_or_null("ReflectThornsAura")
+	if active and aura == null:
+		HazardVfx.thorns_aura(self, 150.0, Color(0.78, 0.92, 1.0, 1.0))
+	elif not active and aura != null:
+		aura.queue_free()
 
 
 func _prepare_elite_dash(delta: float, player: Node2D, distance: float) -> void:
 	_elite_dash_cooldown -= delta
 	if _elite_dash_cooldown > 0.0 or distance < 80.0:
 		return
+	if _elite_dash_windup_left >= 0.0 or _elite_dash_time_left > 0.0:
+		return
 	var direction := player.global_position - global_position
 	if direction.length_squared() <= 0.0:
 		return
+	# Этап C (fairness): раньше рывок стартовал В ТОТ ЖЕ кадр, что и решение
+	# (только тинт) — ноль-телеграф. Теперь решение взводит замах ELITE_DASH_WINDUP:
+	# направление ЛОЧИТСЯ здесь (сайдстеп игрока работает), тело подсвечивается,
+	# теневой трейл показывает коридор рывка. Кулдаун — как раньше, с решения.
 	_elite_dash_direction = direction.normalized()
-	_elite_dash_time_left = elite_dash_duration
+	_elite_dash_windup_left = ELITE_DASH_WINDUP
 	_elite_dash_cooldown = 4.2
 	_set_body_tint(Color(1.0, 0.78, 0.36, 1.0))
-	_play_rig_action("attack", _elite_dash_direction)
+	_play_rig_action("cast", _elite_dash_direction)
+	var dash_reach := move_speed * elite_dash_speed_multiplier * elite_dash_duration
+	_spawn_shadow_trail(global_position, _clamp_to_arena(global_position + _elite_dash_direction * dash_reach), ELITE_DASH_WINDUP)
 
 
 func _update_elite_dash(delta: float, _player: Node2D, _distance: float) -> bool:
+	# Этап C: фаза замаха — стоим на месте (velocity = 0), телеграф читается;
+	# по истечении замаха рывок исполняется вдоль ЗАЛОЧЕННОГО направления.
+	if _elite_dash_windup_left >= 0.0:
+		_elite_dash_windup_left -= delta
+		velocity = Vector2.ZERO
+		if _elite_dash_windup_left < 0.0:
+			_elite_dash_time_left = elite_dash_duration
+			_play_rig_action("attack", _elite_dash_direction)
+		return true
 	if _elite_dash_time_left <= 0.0:
 		return false
 	_elite_dash_time_left -= delta
@@ -640,15 +932,21 @@ func _spawn_elite_hazard(target_position: Vector2) -> void:
 	parent.add_child(hazard)
 
 	var hazard_color := Color(0.55, 0.95, 0.30, 1.0)
-	HazardVfx.telegraph(hazard, 72.0, hazard_color, 0.55)
+	# Этап C (fairness): зона кастуется в позицию игрока → дистанция побега =
+	# полный радиус (offset-семантика покрывает и кламп у кромки арены). Замах
+	# не короче пола CombatFairness — из зоны всегда можно выйти.
+	var caster_player := _player()
+	var escape := CombatFairness.circle_escape_distance(hazard.global_position, ELITE_HAZARD_RADIUS, caster_player)
+	var windup := CombatFairness.fair_windup(ELITE_HAZARD_WINDUP_BASE, escape, 1.0, caster_player)
+	HazardVfx.telegraph(hazard, ELITE_HAZARD_RADIUS, hazard_color, windup)
 
 	# Tween на hazard замораживается вместе с паузой дерева, в отличие от SceneTreeTimer.
 	var hazard_tween := hazard.create_tween()
-	hazard_tween.tween_interval(0.55)
+	hazard_tween.tween_interval(windup)
 	hazard_tween.tween_callback(func() -> void:
-		HazardVfx.detonate(hazard, 72.0, hazard_color, "poison")
+		HazardVfx.detonate(hazard, ELITE_HAZARD_RADIUS, hazard_color, "poison")
 		var player := get_tree().get_first_node_in_group("player") as Node2D
-		if player != null and player.global_position.distance_to(hazard.global_position) <= 72.0 and player.has_method("take_damage"):
+		if player != null and player.global_position.distance_to(hazard.global_position) <= ELITE_HAZARD_RADIUS and player.has_method("take_damage"):
 			player.take_damage(hazard_damage, "poison_zone")
 	)
 	hazard_tween.tween_interval(1.45)
@@ -769,15 +1067,41 @@ func _play_elite_attack_phase_animation(phase: String, duration: float) -> void:
 	rig.play_action(action_name, _elite_attack_direction, variant, duration)
 
 
+# Этап C (fairness): дистанция побега для уникальной атаки элитки — по
+# семантике CombatFairness (центр на кастере → radius×0.6; зона за спиной
+# игрока → radius − behind_offset; лоб в игрока → полный радиус).
+func _elite_attack_escape_distance(config: Dictionary, phase2: bool) -> float:
+	match elite_behavior:
+		"iron_bastion":
+			# Волна от самого танка (radius×1.3 в фазе 2, cap безопасного коридора).
+			return _safe_radius(float(config.get("radius", 260.0)) * (1.3 if phase2 else 1.0)) \
+				* CombatFairness.CASTER_CENTERED_ESCAPE_RATIO
+		"night_stalker":
+			# Точка выхода из тени лежит ЗА игроком на behind_offset — до кромки
+			# зоны игроку остаётся radius − offset.
+			return maxf(float(config.get("radius", 92.0)) - float(config.get("behind_offset", 74.0)), 0.0)
+		"plague_prophet":
+			# Первый лоб летит точно в игрока → полный радиус лужи.
+			return float(config.get("radius", 56.0))
+		"shard_marshal":
+			# Веер снарядов: боковой выход из телеграф-круга у дула.
+			return 64.0
+	return float(config.get("radius", 56.0))
+
+
 func _begin_elite_attack_windup(config: Dictionary, player: Node2D) -> void:
 	_elite_attack_targets.clear()
-	var windup := float(config.get("windup", 0.5))
-	_set_elite_attack_phase("windup", windup)
 	var to_player := player.global_position - global_position
 	if to_player.length_squared() > 0.001:
 		_elite_attack_direction = to_player.normalized()
 
 	var phase2 := _elite_in_phase2()
+	# Этап C (fairness): замах не короче пола CombatFairness. Ascension L3
+	# (elite_instant_phase) обнуляет только СТАРТОВЫЙ кулдаун — сам замах ниже
+	# пола (≥ ABS_MIN_WINDUP 0.55 > 0.45) не проваливается никогда.
+	var windup := CombatFairness.fair_windup(float(config.get("windup", 0.5)),
+		_elite_attack_escape_distance(config, phase2), 1.0, player)
+	_set_elite_attack_phase("windup", windup)
 	match elite_behavior:
 		"iron_bastion":
 			# Телеграф совпадает с фаза-2 расширением волны (честное окно уворота).
@@ -899,14 +1223,32 @@ func _strike_shadow_strike(config: Dictionary, player: Node2D) -> void:
 		if player.has_method("take_damage"):
 			player.take_damage(_elite_attack_damage(config, player), "elite_shadow_strike")
 	# Фаза 2: серия из двух ударов из тени — второй заход с другой стороны.
+	# Этап C (fairness): раньше второй удар бил по ЖИВОЙ позиции игрока в тот же
+	# кадр — гарантированный неизбегаемый урон. Теперь цель — СНАПШОТ точки в
+	# момент спавна телеграфа/трейла; после честного окна (fair_windup с
+	# escape = полный радиус) урон проходит ТОЛЬКО в радиусе снапшота.
 	if _elite_in_phase2():
+		var radius := float(config.get("radius", 92.0))
 		var second := _clamp_to_arena(player.global_position - _elite_attack_direction * float(config.get("behind_offset", 74.0)))
-		_spawn_shadow_trail(global_position, second, 0.18)
-		global_position = second
-		_play_rig_action("attack", player.global_position - global_position)
-		if player.global_position.distance_to(global_position) <= float(config.get("radius", 92.0)):
-			if player.has_method("take_damage"):
-				player.take_damage(_elite_attack_damage(config, player), "elite_shadow_strike")
+		var second_windup := CombatFairness.fair_windup(SHADOW_SECOND_STRIKE_BASE_WINDUP, radius, 1.0, player)
+		_spawn_elite_telegraph(second, radius, second_windup)
+		_spawn_shadow_trail(global_position, second, second_windup)
+		var second_damage := _elite_attack_damage(config, player)
+		# Tween на самом враге: умер до удара — второй заход честно отменяется.
+		var second_tween := create_tween()
+		second_tween.tween_interval(second_windup)
+		second_tween.tween_callback(func() -> void:
+			if not is_inside_tree():
+				return
+			global_position = second
+			_set_body_alpha(1.0)
+			var current_player := get_tree().get_first_node_in_group("player") as Node2D
+			if current_player == null:
+				return
+			_play_rig_action("attack", current_player.global_position - global_position)
+			if current_player.global_position.distance_to(second) <= radius and current_player.has_method("take_damage"):
+				current_player.take_damage(second_damage, "elite_shadow_strike")
+		)
 
 
 func _strike_poison_volley(config: Dictionary, player: Node2D) -> void:
@@ -1000,7 +1342,10 @@ func _spawn_shockwave_ring(origin: Vector2, radius: float) -> void:
 	ring.add_child(sprite)
 	var tween := ring.create_tween()
 	tween.set_parallel(true)
-	tween.tween_property(sprite, "scale", Vector2.ONE * (radius / texture_radius), 0.30).set_trans(Tween.TRANS_QUAD).set_ease(Tween.EASE_OUT)
+	# Этап C (fairness): урон slam-волны наносится В МОМЕНТ старта, а ринг раньше
+	# расползался 0.30s — визуальная ложь «волна ещё не дошла, а урон уже прошёл».
+	# Экспансия ужата до 0.15s, чтобы картинка догоняла факт.
+	tween.tween_property(sprite, "scale", Vector2.ONE * (radius / texture_radius), 0.15).set_trans(Tween.TRANS_QUAD).set_ease(Tween.EASE_OUT)
 	tween.tween_property(sprite, "modulate:a", 0.0, 0.34)
 	tween.chain().tween_callback(ring.queue_free)
 
@@ -1112,6 +1457,17 @@ func _set_body_alpha(alpha: float) -> void:
 
 
 func _visible_sprite_size() -> Vector2:
+	# Combat Feel Rework (этап A): если активен живой FullFrameBody — меряем ЕГО
+	# текущий кадр (раньше мерился скрытый статический Body, и health-bar/фидбек/
+	# contact-fit тюнились по невидимому арту). Фолбэк — статический спрайт.
+	var full_frame := _full_frame_body()
+	if full_frame != null and full_frame.visible and full_frame.sprite_frames != null:
+		var animation_name := str(full_frame.animation)
+		if full_frame.sprite_frames.has_animation(animation_name) and full_frame.sprite_frames.get_frame_count(animation_name) > 0:
+			var frame_index: int = clampi(full_frame.frame, 0, full_frame.sprite_frames.get_frame_count(animation_name) - 1)
+			var frame_texture := full_frame.sprite_frames.get_frame_texture(animation_name, frame_index)
+			if frame_texture != null:
+				return frame_texture.get_size() * full_frame.scale.abs() * scale.abs()
 	var body := get_node_or_null("Body") as Sprite2D
 	if body == null:
 		body = get_node_or_null("Sprite2D") as Sprite2D
@@ -1125,6 +1481,42 @@ func _fit_contact_range_to_sprite() -> void:
 	# радиус врага + радиус игрока, экспортное значение остается минимумом.
 	var visible_radius: float = maxf(_visible_sprite_size().x, _visible_sprite_size().y) * 0.5
 	contact_range = maxf(contact_range, visible_radius * 0.82 + PLAYER_CONTACT_PADDING)
+
+
+func _ensure_ground_circle() -> void:
+	# Combat Feel Rework (этап A): мягкая тень-эллипс под ногами (origin) —
+	# визуальная «точка отсчёта» врага. Ребёнок узла: двигается/паузится/умирает
+	# вместе с актёром, epic-масштаб элиток/боссов наследуется автоматически
+	# (поэтому размеры полигона считаются в ЛОКАЛЬНЫХ координатах, без node scale).
+	# Идемпотентна: boss.gd зовёт повторно после конфигурации full-frame визуала.
+	var node_scale := scale.abs()
+	var local_width: float = _visible_sprite_size().x / maxf(node_scale.x, 0.01)
+	var radius_x := local_width * GROUND_CIRCLE_WIDTH_FACTOR * 0.5
+	var radius_y := radius_x * GROUND_CIRCLE_HEIGHT_RATIO
+	var is_boss_actor := is_in_group("bosses") or _epic_scale_profile_id() == "boss"
+	var alpha := GROUND_CIRCLE_BOSS_ALPHA if is_boss_actor else GROUND_CIRCLE_ALPHA
+	var circle := get_node_or_null("GroundCircle") as Node2D
+	var fill: Polygon2D = null
+	if circle == null:
+		circle = Node2D.new()
+		circle.name = "GroundCircle"
+		circle.position = Vector2.ZERO
+		circle.z_as_relative = true
+		circle.z_index = GROUND_CIRCLE_Z_INDEX
+		fill = Polygon2D.new()
+		fill.name = "Fill"
+		circle.add_child(fill)
+		add_child(circle)
+	else:
+		fill = circle.get_node_or_null("Fill") as Polygon2D
+	if fill == null:
+		return
+	var points := PackedVector2Array()
+	for index in range(GROUND_CIRCLE_SEGMENTS):
+		var angle := TAU * float(index) / float(GROUND_CIRCLE_SEGMENTS)
+		points.append(Vector2(cos(angle) * radius_x, sin(angle) * radius_y))
+	fill.polygon = points
+	fill.color = Color(0.0, 0.0, 0.0, alpha)
 
 
 func _uses_hud_boss_bar() -> bool:
@@ -1233,19 +1625,53 @@ func _player() -> Node2D:
 
 
 func _combat_target() -> Node2D:
+	var homunculus_tank := _homunculus_tank_target()
+	if homunculus_tank != null:
+		return homunculus_tank
 	var taunt_target := _taunt_target()
 	if taunt_target != null:
 		return taunt_target
 	return _player()
 
 
-func _taunt_target() -> Node2D:
-	var statuses := StatusEffects.snapshot(self)
-	var status_raw = statuses.get("bastion_taunt", {})
-	if not (status_raw is Dictionary):
+func _homunculus_tank_target() -> Node2D:
+	# Freed Object-ссылка не может быть передана в типизированный аргумент даже
+	# для проверки is_instance_valid внутри функции — отсеиваем её заранее.
+	if _cached_homunculus_tank != null and is_instance_valid(_cached_homunculus_tank) \
+			and _valid_homunculus_tank(_cached_homunculus_tank):
+		return _cached_homunculus_tank
+	_cached_homunculus_tank = null
+	# Не аллоцируем get_nodes_in_group на hot path каждого врага: оружие хранит
+	# instance id актуального танка прямо на своём владельце.
+	var player := _player()
+	if player == null:
 		return null
-	var status: Dictionary = status_raw
-	var owner_id := int(status.get("taunt_owner", 0))
+	var tank_id := int(player.get_meta(HOMUNCULUS_TANK_OWNER_META, 0))
+	if tank_id <= 0:
+		return null
+	var tank := instance_from_id(tank_id) as Node2D
+	if _valid_homunculus_tank(tank):
+		_cached_homunculus_tank = tank
+		return tank
+	return null
+
+
+func _valid_homunculus_tank(tank: Node2D) -> bool:
+	if tank == null or not is_instance_valid(tank) or tank.is_queued_for_deletion():
+		return false
+	if not tank.is_inside_tree() or not tank.has_method("take_damage"):
+		return false
+	var health_value = tank.get("health")
+	if health_value != null and float(health_value) <= 0.0:
+		return false
+	var tank_owner = tank.get("owner_node")
+	return tank_owner == _player()
+
+
+func _taunt_target() -> Node2D:
+	# Target selection runs every physics tick: read one scalar instead of
+	# deep-copying every active status and nested feedback dictionary.
+	var owner_id := int(StatusEffects.status_value(self, "bastion_taunt", "taunt_owner", 0))
 	if owner_id <= 0:
 		return null
 	var owner := instance_from_id(owner_id) as Node2D
@@ -1298,13 +1724,18 @@ func _update_summoning(delta: float) -> void:
 		_summon_cooldown = summon_interval * 0.5
 		return
 
-	var summoned := summoned_enemy_scene.instantiate() as Node2D
+	var summoned := SCENE_CONTRACTS.instantiate_node_2d(summoned_enemy_scene, "Enemy summon")
+	if summoned == null:
+		_summon_cooldown = summon_interval
+		return
 	var parent := get_tree().current_scene
 	if parent == null:
 		parent = get_tree().root
 	parent.add_child(summoned)
 	summoned.add_to_group("summoned_enemies")
-	summoned.global_position = _clamp_to_arena(global_position + Vector2.RIGHT.rotated(randf() * TAU) * 44.0)
+	# Этап B: кольцо призыва вокруг саммонера, но не вплотную к игроку (≥140px).
+	var minion_position := _clamp_to_arena(global_position + Vector2.RIGHT.rotated(randf() * TAU) * 44.0)
+	summoned.global_position = _push_point_from_player(minion_position, MINION_SPAWN_MIN_PLAYER_DISTANCE)
 	_play_rig_action("cast", Vector2.UP)
 	_summon_cooldown = summon_interval
 
@@ -1352,6 +1783,20 @@ func _update_contact_damage(delta: float, player: Node2D, distance: float) -> vo
 
 func _outgoing_damage(amount: float) -> float:
 	return maxf(amount * StatusEffects.damage_multiplier(self), 0.0)
+
+
+# FAN-1031 S2 (Stage 3a): урон зоны/слама/хазарда/укуса босса, ограниченный долей
+# ТЕКУЩЕГО max HP игрока за тик — зеркало контактного (0.20) и элитного (0.25) капов.
+# Зоны/сламы босса были единственным каналом урона без такого предела и ваншотили
+# все 17 классов на A5. Кап применяется ПОСЛЕ _outgoing_damage (по фактически
+# доставляемому урону) и не меняет булев результат take_damage (только уменьшает).
+func _hazard_hit(base_amount: float, player: Node2D) -> float:
+	var amount := _outgoing_damage(base_amount)
+	if player != null and player.get("max_health") != null:
+		var player_max_health := float(player.get("max_health"))
+		if player_max_health > 0.0:
+			amount = minf(amount, player_max_health * ProgressionData.BOSS_HAZARD_MAX_HP_FRACTION)
+	return amount
 
 
 func _play_contact_windup() -> void:
@@ -1465,6 +1910,14 @@ func _configure_enemy_rig() -> void:
 			"is_elite": is_in_group("elite_enemies") or elite_behavior != "",
 			"is_boss": is_in_group("bosses") or enemy_type_name.to_lower().contains("warden") or enemy_type_name.to_lower().contains("devourer"),
 		})
+	# Combat Feel Rework (этап A): fallback-путь (cutout/статический арт) тоже
+	# feet-origin — визуал поднимается так, чтобы низ спрайта сел ≈ на origin
+	# (единая простая доля высоты, как residual-оффсеты registry на живом пути).
+	# Origin/коллизии/contact_range НЕ двигаются. Full-frame путь не трогаем:
+	# у него ручные offsets в full_frame_animation_registry.
+	var static_lift := body.texture.get_size().y * body.scale.abs().y * STATIC_VISUAL_FEET_LIFT_RATIO
+	rig.position = Vector2(0.0, -static_lift)
+	body.position = Vector2(0.0, -static_lift)
 
 
 func _cutout_rig() -> Node2D:

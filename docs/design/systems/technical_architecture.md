@@ -1,6 +1,6 @@
 # Technical Architecture
 
-Обновлено: 2026-06-17 (0.1.6)
+Обновлено: 2026-07-13 (0.2.1 quality/performance pass)
 
 Этот файл кратко описывает runtime architecture FantasyDisk для будущих Back-end задач.
 
@@ -23,8 +23,12 @@
   checkpoint autosaves (`user://fantasydisk_autosave.cfg`), with schema checks
   and atomic `.tmp` writes.
 - `scripts/feedback_reporter.gd`: in-game feedback/bug-report delivery helper
-  for Discord-compatible webhook multipart sends plus `user://feedback/` local
-  fallback reports.
+  for explicitly configured Discord-compatible webhook sends plus checked
+  `user://feedback/` local fallback reports. Client exports never contain a
+  webhook credential; production network delivery requires a server-side relay.
+- `scripts/scene_contracts.gd`: typed PackedScene instantiation boundary for
+  configurable Node2D spawners; wrong-root scenes fail locally without a null
+  dereference or orphan instance.
 
 `scripts/class_weapon.gd` owns non-Berserk class weapon runtime behavior. SCRUM-196
 replaced the old long `attack_mode` dispatch match with `ATTACK_MODE_EXECUTORS`,
@@ -91,15 +95,38 @@ Use groups for temporary runtime nodes:
 - Artifact HUD rebuilds only when artifact list changes.
 - Enemy HP bars redraw only when HP changes.
 - Avoid per-frame `get_node_or_null`/`get_nodes_in_group` in large enemy loops where cached references or limited scans are practical.
+- `CombatTargetQuery.enemies()` owns the once-per-frame enemy-group snapshot;
+  separation refreshes reuse it and keep at most four neighbors per enemy.
+- Status hot paths use scalar reads (`StatusEffects.status_value`) rather than a
+  deep snapshot; DoT method-signature introspection runs only when a tick is due.
 - Route map builds once per open, not every frame.
+- Known scenes/scripts used during combat are preloaded or explicitly prewarmed;
+  first-use synchronous `load()` is not allowed in spawn/hit/tick paths.
+- Shared enemy scans go through `CombatTargetQuery`. A model/candidate cache may
+  refresh at 5–10 Hz while rendering positions continues every frame.
+- Any new long-lived texture/resource cache must define an owner, eviction or
+  teardown rule, and a regression assertion for its upper bound.
+- Static cost reductions are reported as hot-path improvements. A Windows
+  performance claim requires a native release build with scenario, baseline
+  SHA, p50/p95/p99 frame time, stalls over 100 ms, and RSS/VRAM evidence.
 
 ## Tests
 
-Main umbrella check:
+Unified required check:
 
 ```bash
-/Users/sergeyfomin/Downloads/Godot.app/Contents/MacOS/Godot --headless --path /Users/sergeyfomin/Documents/AI\ Agent --script res://tests/runtime_smoke_test.gd
+python3 tools/quality_gate.py --profile changed --changed-ref origin/dev
+python3 tools/quality_gate.py --profile full
 ```
+
+The Python runner discovers direct and inherited SceneTree suites, gives every
+process isolated HOME/XDG/AppData/`user://`, scans client sources for embedded
+credentials, and routes every Godot invocation through `tools/godot_gate.py`.
+CI runs the certifying static-only compatibility profile; local/release
+verification uses changed/full with the exact Godot 4.7 toolchain. See
+`docs/process/code_quality_and_performance.md`.
+The `windows` profile refuses to run on another OS, because a macOS cross-export
+does not validate native Windows correctness or frame pacing.
 
 Focused runtime smoke suites (SCRUM-202) reuse the umbrella helper/assertion layer and are intended for faster refactor regression checks:
 
@@ -162,8 +189,9 @@ Snapshot of the runtime-smoke architecture after the 0.2.0 refactor-wave pass.
   these are load-sensitive and run serialized via `tools/godot_gate.py`. Prefer
   `await process_frame` / condition polling for new tests; only use timed waits when
   exercising real elapsed-time behaviour, and document why.
-- **Python unit test** `tests/test_jira_board_sync.py` (4 cases) covers board-sync
-  status mapping and is run with `python3 tests/test_jira_board_sync.py`.
+- **Python unit test** `tests/test_jira_archive_guards.py` proves retired Jira
+  entry points fail before credential/network access and asset generation cannot
+  invoke legacy synchronization.
 
 Gate everything through the semaphore wrapper to avoid headless single-instance
 crashes: `python3 tools/godot_gate.py --headless --path . --script res://tests/<suite>.gd`.
@@ -173,5 +201,5 @@ crashes: `python3 tools/godot_gate.py --headless --path . --script res://tests/<
 Follow `docs/process/versioning_and_branching.md`:
 
 - `main` = stable released `0.1.x` line;
-- `dev` = active `0.2.x` working line; текущий sprint target — `0.2.0`;
+- `dev` = active `0.2.x` working line; текущий sprint target — `0.2.1`;
 - new feature work happens in `dev` unless explicitly stated otherwise.

@@ -96,6 +96,14 @@ historical/fallback asset references and are not the live static portrait source
 Regression coverage: `tests/character_sprite_registry_alignment_test.gd` and
 `tests/runtime_smoke_test.gd`; QA dumps under `build/qa/scrum416/`.
 
+FAN-1071 adds one roster-wide runtime placement contract without changing these
+canonical IDs or asset paths: every playable SpriteFrames idle/move/walk texture
+is grounded from its own visible alpha bottom onto the `Player` gameplay origin.
+Legacy `sliced_rig_manifest.foot_y` is now fallback-only for cutout/skeletal
+visuals and must not be treated as the footline of a PixelLab runtime pack.
+Focused coverage: `tests/feet_anchor_ground_circle_test.gd` iterates all 17
+classes, all directional locomotion rows and every frame.
+
 SCRUM-869 refreshes the playable PixelLab source/runtime packs from the live
 PixelLab manifests without changing canonical character IDs or portrait paths.
 The refreshed complete packs are `assassin`
@@ -660,7 +668,7 @@ VFX новых боссовских mechanics SCRUM-259/SCRUM-261:
 | `robot_hydraulic_press` | Гидравлический Пресс | Робот | Compression line: урон по ВСЕЙ ширине коридора suppression_width (300, ×1.30 с «Калибратором»), прижимает рядовых к оси 0.80/каст; элитки/боссы — полный урон, резист смещения ×0.25; SCRUM-917 PixelLab VFX сжимается side-to-centre и синхронизирует active frame с hit delay 0.20с | `ProgressionData.ROBOT_WEAPONS`, `scenes/RobotHydraulicPress.tscn`, `scenes/vfx/RobotHydraulicPressCompressionVfx.tscn`, `assets/sprites/weapons/robot_hydraulic_press.png`, `assets/sprites/effects/robot_hydraulic_press_compression/`, `scripts/cutout_rig_2d.gd` | Реализовано |
 | `robot_reactor_core` | Реакторное Ядро | Робот | Reactor vent: ровно 4 вентиля 90° от мировой фазы (без самонаведения), паттерн +6°/каст — веер обходит круг за 15 атак; урон вентиля = ролл ×0.42, extra_projectile расширяет лопасти | `ProgressionData.ROBOT_WEAPONS`, `scenes/RobotReactorCore.tscn`, `assets/sprites/weapons/robot_reactor_core.png`, `scripts/cutout_rig_2d.gd` | Реализовано |
 | `engineer_sentry_wrench` | Ключ Часового | Инженер | Sentry turret (SCRUM-888): разворачивает персистентные стационарные турели (жёсткий лимит 2, старейшая заменяется), турели сами обстреливают ближайших врагов залпом снарядов с capped splash | `ProgressionData.ENGINEER_WEAPONS`, `scenes/EngineerSentryWrench.tscn`, `scenes/SentryTurret.tscn`, `scripts/sentry_turret.gd`, `assets/sprites/weapons/engineer_sentry_wrench.png`, `assets/sprites/weapons/engineer_turret/sentry_turret.png`, `scripts/cutout_rig_2d.gd` | Реализовано |
-| `engineer_repair_drone` | Ремонтный Дрон | Инженер | Repair drone: цепная дуга по врагам возвращает часть урона в ремонт героя | `ProgressionData.ENGINEER_WEAPONS`, `scenes/EngineerRepairDrone.tscn`, `assets/sprites/weapons/engineer_repair_drone.png`, `scripts/cutout_rig_2d.gd` | Реализовано |
+| `engineer_repair_drone` | Орбитальный Дрон | Инженер | SCRUM-906/FAN-1075: 2 увеличенных контактных дрона по умолчанию, строго напротив друг друга на кольце 121 px; visual scale 0.24, спираль с третьего дрона, кап 6 | `ProgressionData.ENGINEER_WEAPONS`, `scenes/EngineerRepairDrone.tscn`, `assets/sprites/weapons/engineer_repair_drone.png`, `scripts/engineer_orbit_drone.gd`, `scripts/cutout_rig_2d.gd` | Реализовано |
 | `engineer_pressure_mines` | Минная Сетка | Инженер | Pressure mine grid: три мины веером срабатывают отдельно при касании врагом | `ProgressionData.ENGINEER_WEAPONS`, `scenes/EngineerPressureMines.tscn`, `assets/sprites/weapons/engineer_pressure_mines.png`, `scripts/cutout_rig_2d.gd` | Реализовано |
 | `dark_book` | Книга тьмы | Темный маг | Два AoE-снаряда в две ближайшие цели | `ProgressionData.DARK_MAGE_WEAPONS` | Реализовано |
 | `cursed_skull` | Проклятый череп | Темный маг | Самонаводящееся проклятие, DoT и небольшой splash по цели | `ProgressionData.DARK_MAGE_WEAPONS` | Реализовано |
@@ -844,6 +852,34 @@ and `bloodthorn_lion` still stays out of random route rotation until a separate
 QA-gated route-pool task. QA evidence:
 `build/qa/scrum793_boss_pixellab_promotion/` and
 `docs/design/previews/boss_pixellab_full_redraw_2026_07_runtime_contact.png`.
+
+## Лор И Летопись (FAN-1080)
+
+Канонический лор мира: `docs/design/lore.md`; единственная рантайм-проекция —
+`scripts/lore_data.gd` (интро-слайды, записи «Летописи», BOSS_LORE/ELITE_LORE/
+CLASS_ORIGIN, строки исхода забега). Лор объясняет существующие сущности и не
+переименовывает их. Канонические лор-имена (надстройка над сущностями):
+
+| Лор-имя | Значение | Где в UI |
+| --- | --- | --- |
+| Диск | Мир-ковчег из осколков погибших миров | Интро, Летопись |
+| Око | Центр Диска, будит Хранителей | Интро, Летопись |
+| Разлом | Трещина Пустоты, источник врагов (эмблема игры) | Интро, Летопись |
+| Владыки Разлома | Собирательное имя боссов; ротация = «вахта у кромки» | Летопись, досье боссов |
+| Прибой / офицеры прибоя | Волны врагов / элитки | Летопись, досье элиток, баннер элитки |
+| Хранители | Собирательное имя 17 классов; у каждого «осколок-мир» | Летопись, досье классов («Происхождение») |
+| Путь | Забег по маршрутной карте | Интро, Летопись |
+| Печать | Победа над боссом (закрывает Разлом на время) | Экран победы |
+| Возвышение-«витки» | 5 уровней Возвышения = витки Разлома вглубь | Летопись |
+| Исток | Лор-имя `secret_ascension_boss`; спойлер-гард до победы | Баннер секретного боя, Летопись (после `secret_boss_defeated`) |
+
+Рантайм-точки: интро-экран новой игры (`_show_lore_intro`, показ один раз через
+`settings.cfg: lore_intro_seen`, тест-байпас `main.force_skip_lore_intro`),
+вкладка Кодекса «Летопись» (`_build_codex_chronicle`, 7-я вкладка), лор-строка
+под боевым баннером босса/элитки (`_show_combat_title_banner(..., lore_line)`),
+лорные строки победы/поражения. Сцены `BossWarden.tscn`/`BossDiskDevourer.tscn`
+получили русские `boss_display_name` («Страж Разлома», «Пожиратель Диска»),
+`BossSecretAscension.tscn` — «Исток». Тест: `tests/lore_screens_test.gd`.
 
 ## Узлы Маршрутной Карты
 
@@ -1096,7 +1132,7 @@ preview: `docs/design/previews/scrum451_minimal_metal_rollout_contact.png`.
 | `ui_btn_red_gold_hero_confirm_*` | `assets/sprites/ui/frames/red_gold/ui_btn_red_gold_hero_confirm.png` + hover/pressed/disabled | Hero confirm 320x104 buttons |
 | `ui_btn_red_gold_reset_audio_*` | `assets/sprites/ui/frames/red_gold/ui_btn_red_gold_reset_audio.png` + hover/pressed/disabled | Settings reset audio 420x104 buttons |
 | `ui_btn_red_gold_reset_bindings_*` | `assets/sprites/ui/frames/red_gold/ui_btn_red_gold_reset_bindings.png` + hover/pressed/disabled | Settings reset bindings 440x104 buttons |
-| `ui_btn_red_gold_codex_tab_*` | `assets/sprites/ui/frames/red_gold/ui_btn_red_gold_codex_tab.png` + hover/pressed/disabled | Codex tab buttons |
+| `ui_btn_red_gold_codex_tab_*` | `assets/sprites/ui/frames/red_gold/ui_btn_red_gold_codex_tab.png` + hover/pressed/disabled | Historical Codex tab family; superseded in live runtime by FAN-1047 `text/main_menu_380x104` |
 | `ui_btn_red_gold_back_s/m/l_*` | `assets/sprites/ui/frames/red_gold/ui_btn_red_gold_back_s.png` / `back_m.png` / `back_l.png` + states | Navigation/back buttons by width |
 | `ui_btn_red_gold_attr_selector_*` | `assets/sprites/ui/frames/red_gold/ui_btn_red_gold_attr_selector.png` + hover/pressed/disabled | Attribute selector 560x104 buttons |
 | `ui_btn_red_gold_fab_*` | `assets/sprites/ui/frames/red_gold/ui_btn_red_gold_fab.png` + hover/pressed/disabled | Upgrade FAB 50x50 |
@@ -1238,6 +1274,7 @@ SCRUM-269 read-only asset/image cleanup audit 2026-06-14: отчет `docs/desig
 | Базовые характеристики | `strength`, `agility`, `intelligence`, `perception`, `energy`, `knowledge`, `endurance`, `leadership` | `assets/sprites/ui/icons/stats/` | Реализовано |
 | Производные параметры | `damage`, `magic_damage`, `crit_chance`, `crit_damage_multiplier`, `attack_speed`, `dodge`, `move_speed`, `defense`, `absorb`, `health_point`, `knockback_distance`, `summon_amount`, `attack_range`, `range_multiplier`, `regeneration`, `vampiric_amount`, `vampiric_chance`, `dot_damage`, `dot_speed`, `aoe_radius`, `aura_radius`, `buff_power`, `knockback_power`, `projectile_speed`, `ultimate_multiplier`, `pickup_radius` | `assets/sprites/ui/icons/derived/` | Реализовано |
 | HUD ресурсы | `hp`, `xp`, `money` | `assets/sprites/ui/hud/` | Реализовано |
+| Кодекс: непрочитанное | `ui_badge_codex_unread` | `assets/sprites/ui/icons/codex/ui_badge_codex_unread.png` | Реализовано (FAN-1077) |
 
 Escape stats menu, level-up reward cards и combat HUD должны брать иконки только через этот registry. Финальный PNG asset pack реализован; code-native fallback не является целевым визуальным состоянием.
 
@@ -1301,7 +1338,7 @@ SCRUM-956 закрепляет player-facing naming без смены id: `red_w
 «Масло темпа» — магазинный `shop_weapon_cooldown`, «Пыльный артефакт» —
 магазинный `shop_artifact`. Отдельного `dusty_artifact` не существует.
 
-### Универсальные семьи (32, rarity_scaling)
+### Универсальные семьи (29, rarity_scaling)
 
 8 семей базовых статов (+2/+4/+7):
 
@@ -1316,7 +1353,9 @@ SCRUM-956 закрепляет player-facing naming без смены id: `red_w
 | `stone_heart` | Каменное сердце | Выносливость |
 | `banner_seed` | Семя знамени | Лидерство |
 
-24 семьи производных атрибутов (ключ эффекта = ключ level-up карточки):
+21 семья производных атрибутов (ключ эффекта = ключ level-up карточки). FAN-1038
+убрал семьи мёртвых осей `battle_fan` / `ram_horn` / `falcon_feather`
+(follow-up FAN-1034):
 
 | ID | Имя | Ключ эффекта | т1 / т2 / т3 |
 | --- | --- | --- | --- |
@@ -1324,18 +1363,15 @@ SCRUM-956 закрепляет player-facing naming без смены id: `red_w
 | `quickstring` | Быстрая струна | `attack_speed_multiplier` | ×1.10 / ×1.18 / ×1.30 |
 | `sturdy_amulet` | Крепкий амулет | `max_health_flat` | +15 / +25 / +40 |
 | `fast_boots` | Легкие сапоги | `move_speed_multiplier` | ×1.10 / ×1.18 / ×1.30 |
-| `battle_fan` | Боевой веер | `sector_multiplier` | ×1.10 / ×1.18 / ×1.30 |
 | `magnetic_buckle` | Магнитный талисман | `pickup_radius_flat` | +35 / +55 / +90 |
 | `iron_scale` | Железная чешуя | `defense_flat` | +0.10 / +0.18 / +0.30 |
 | `arcane_prism` | Чародейская призма | `magic_damage_multiplier` | ×1.10 / ×1.18 / ×1.30 |
-| `ram_horn` | Рог тарана | `knockback_multiplier` | ×1.10 / ×1.18 / ×1.30 |
 | `sharp_talisman` | Острый талисман | `crit_chance_flat` | +0.10 / +0.18 / +0.30 |
 | `executioner_edge` | Грань палача | `crit_damage_flat` | +0.10 / +0.18 / +0.30 |
 | `ghost_ribbon` | Лента призрака | `dodge_flat` | +0.10 / +0.18 / +0.30 |
 | `wide_sigil` | Дальняя печать | `range_multiplier` | ×1.10 / ×1.18 / ×1.30 |
 | `venom_vial` | Флакон отравы | `dot_damage_flat` | +2 / +4 / +6 |
 | `plague_metronome` | Чумной метроном | `dot_speed_flat` | +0.2 / +0.3 / +0.5 |
-| `falcon_feather` | Перо сокола | `projectile_speed_flat` | +70 / +110 / +180 |
 | `wide_halo` | Широкий нимб | `aoe_radius_multiplier` | ×1.10 / ×1.18 / ×1.30 |
 | `war_banner` | Боевое знамя | `buff_power_flat` | +0.10 / +0.18 / +0.30 |
 | `summoners_bell` | Колокольчик призывателя | `summon_bonus` | +1.5 / +2.5 / +4 |

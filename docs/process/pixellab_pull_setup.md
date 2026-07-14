@@ -91,4 +91,4 @@ PixelLab auth smoke PASS: get_balance returned a JSON-RPC result.
 ```
 
 The smoke script never prints the token. If it fails, follow
-`skills/codex/pixellab_mcp_auth.md` before marking a Jira issue blocked.
+`skills/codex/pixellab_mcp_auth.md` before marking a Multica issue blocked.
