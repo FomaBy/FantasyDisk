@@ -60,36 +60,31 @@ const CLASS_BUDGET_PROFILES := {
 # Per-weapon переопределения (COMFORT_WEIGHT_OVERRIDES) — для оружий, чей «сырой»
 # crowd_dps заметно отличается от среднего по классу (призыв/устройство у соло-класса
 # или наоборот): вес = weapon_raw / median_all_raw.
-const COMFORT_WEIGHTS := {
-	"berserk": 0.98,
-	"soldier": 1.01,
-	"thief": 1.11,
-	"elementalist": 1.22,
-	"sniper": 0.78,
-	"priest": 1.00,
-	"biologist": 1.33,
-	"robot": 0.93,
-	"engineer": 1.17,
-	"dark_mage": 1.50,
-	"guitarist": 1.36,
-	"assassin": 0.79,
-	"ranger": 0.81,
-	"doctor": 0.79,
-	"chemist": 1.55,
-	"knight": 0.83,
-	"druid": 1.04,
+const COMFORT_WEIGHTS := {  # FAN-1032: перекалибровано после ребаланса FAN-1031 (tools/comfort_raw_dump.gd + приёмочный CSV v9)
+	"assassin": 0.832,
+	"berserk": 0.848,
+	"biologist": 1.411,
+	"chemist": 1.14,
+	"dark_mage": 0.684,
+	"doctor": 0.896,
+	"druid": 1.013,
+	"elementalist": 0.76,
+	"engineer": 1.089,
+	"guitarist": 2.159,
+	"knight": 0.879,
+	"priest": 1.0,
+	"ranger": 1.019,
+	"robot": 0.83,
+	"sniper": 1.139,
+	"soldier": 0.717,
+	"thief": 1.139,
 }
 
 # Per-weapon comfort переопределения: ключ "<class>/<weapon_id>". Используется,
 # когда конкретное оружие требует иной вовлечённости, чем класс в среднем
 # (одиночный луч/проджектайл у AoE-класса — выше; авто-призыв у соло-класса — ниже).
 const COMFORT_WEIGHT_OVERRIDES := {
-	"druid/summon_amulet": 0.96,
-	"druid/raven_totem": 0.96,
-	"engineer/engineer_sentry_wrench": 1.03,  # SCRUM-546: ключ = реальный weapon_id; SCRUM-888: пересчитан под турели — implied 1.033 (raw/median по 1/5/20), оставлен
-	"engineer/engineer_repair_drone": 1.03,
-	"chemist/homunculus_vial": 1.43,
-	"guitarist/sound_amp": 1.25,
+
 }
 
 # Допуск полосы: comfort-нормированный DPS каждого оружия должен лежать в
@@ -115,23 +110,23 @@ const COMFORT_DEFAULT_WEIGHT := 1.00
 # (тот по-прежнему использует плоский COMFORT_WEIGHTS на base_stats).
 const COMFORT_BAND_SLICES := ["ideal_1", "ideal_5", "ideal_20"]
 const COMFORT_BAND_SLICE_WEIGHTS := {
-	"assassin": {"ideal_1": 1.647, "ideal_5": 0.900, "ideal_20": 0.858},
-	"berserk": {"ideal_1": 1.137, "ideal_5": 1.153, "ideal_20": 1.099},
-	"biologist": {"ideal_1": 1.031, "ideal_5": 1.334, "ideal_20": 1.312},
-	"chemist": {"ideal_1": 0.994, "ideal_5": 1.509, "ideal_20": 1.527},
-	"dark_mage": {"ideal_1": 0.927, "ideal_5": 1.457, "ideal_20": 1.389},
-	"doctor": {"ideal_1": 0.495, "ideal_5": 0.519, "ideal_20": 0.459},
-	"druid": {"ideal_1": 0.859, "ideal_5": 0.871, "ideal_20": 0.843},
-	"elementalist": {"ideal_1": 1.020, "ideal_5": 1.132, "ideal_20": 1.144},
-	"engineer": {"ideal_1": 0.960, "ideal_5": 1.114, "ideal_20": 1.048},
-	"guitarist": {"ideal_1": 1.041, "ideal_5": 1.374, "ideal_20": 1.404},
-	"knight": {"ideal_1": 0.957, "ideal_5": 0.925, "ideal_20": 0.882},
-	"priest": {"ideal_1": 1.001, "ideal_5": 1.030, "ideal_20": 1.052},
-	"ranger": {"ideal_1": 1.465, "ideal_5": 0.792, "ideal_20": 0.763},
-	"robot": {"ideal_1": 1.004, "ideal_5": 0.999, "ideal_20": 0.973},
-	"sniper": {"ideal_1": 1.170, "ideal_5": 0.818, "ideal_20": 0.795},
-	"soldier": {"ideal_1": 0.982, "ideal_5": 0.995, "ideal_20": 0.970},
-	"thief": {"ideal_1": 0.989, "ideal_5": 1.000, "ideal_20": 0.973},
+	"assassin": {"ideal_1": 1.829, "ideal_20": 0.32, "ideal_5": 0.729},
+	"berserk": {"ideal_1": 0.914, "ideal_20": 1.549, "ideal_5": 1.131},
+	"biologist": {"ideal_1": 0.973, "ideal_20": 0.808, "ideal_5": 0.884},
+	"chemist": {"ideal_1": 0.663, "ideal_20": 1.217, "ideal_5": 1.02},
+	"dark_mage": {"ideal_1": 1.0, "ideal_20": 1.204, "ideal_5": 1.787},
+	"doctor": {"ideal_1": 1.305, "ideal_20": 0.959, "ideal_5": 0.952},
+	"druid": {"ideal_1": 0.601, "ideal_20": 1.069, "ideal_5": 0.764},
+	"elementalist": {"ideal_1": 0.716, "ideal_20": 1.442, "ideal_5": 1.06},
+	"engineer": {"ideal_1": 1.012, "ideal_20": 0.625, "ideal_5": 1.274},
+	"guitarist": {"ideal_1": 0.579, "ideal_20": 1.596, "ideal_5": 1.0},
+	"knight": {"ideal_1": 0.748, "ideal_20": 0.697, "ideal_5": 0.437},
+	"priest": {"ideal_1": 0.71, "ideal_20": 2.573, "ideal_5": 1.61},
+	"ranger": {"ideal_1": 1.389, "ideal_20": 0.719, "ideal_5": 0.805},
+	"robot": {"ideal_1": 0.691, "ideal_20": 1.173, "ideal_5": 0.904},
+	"sniper": {"ideal_1": 1.016, "ideal_20": 0.82, "ideal_5": 1.0},
+	"soldier": {"ideal_1": 1.176, "ideal_20": 1.325, "ideal_5": 0.915},
+	"thief": {"ideal_1": 1.067, "ideal_20": 0.635, "ideal_5": 1.056},
 }
 
 # Per-weapon per-slice переопределения для оружий, чей «сырой» DPS заметно
@@ -139,18 +134,43 @@ const COMFORT_BAND_SLICE_WEIGHTS := {
 # класса). Ключ "<class>/<weapon>" → {slice: weight}. Частичный набор срезов
 # допустим (отсутствующий срез падает на class-вес). Вес = weapon_raw / slice_median.
 const COMFORT_BAND_SLICE_OVERRIDES := {
-	"assassin/venom_wire": {"ideal_1": 0.442, "ideal_5": 0.242, "ideal_20": 0.230},
-	"berserk/sword": {"ideal_1": 0.732, "ideal_5": 0.743, "ideal_20": 0.708},
-	"biologist/biologist_spore_lens": {"ideal_1": 0.753, "ideal_5": 1.113},
-	"chemist/homunculus_vial": {"ideal_1": 0.546, "ideal_5": 0.857, "ideal_20": 0.801},
-	"dark_mage/cursed_skull": {"ideal_1": 0.736, "ideal_5": 1.197, "ideal_20": 1.164},
-	"doctor/bone_saw": {"ideal_1": 0.317, "ideal_5": 0.322, "ideal_20": 0.307},
-	"doctor/restore_potion": {"ideal_1": 1.491, "ideal_5": 1.493, "ideal_20": 1.320},
-	"druid/raven_totem": {"ideal_1": 1.025, "ideal_5": 1.131, "ideal_20": 1.056},
-	# SCRUM-888 (турели): аналитические raw новой механики = старым ±0.2% по всем
-	# срезам (residual-пара тюнера сохранена 0.389/0.774/1.29) — CSV-веса валидны.
-	"engineer/engineer_sentry_wrench": {"ideal_1": 0.733, "ideal_5": 0.909, "ideal_20": 0.849},
-	"guitarist/sound_amp": {"ideal_20": 1.142},
+	"assassin/chakrams": {"ideal_1": 2.437, "ideal_20": 0.581},
+	"assassin/shadow_daggers": {"ideal_1": 1.154, "ideal_5": 1.02},
+	"berserk/hammer": {"ideal_1": 1.342, "ideal_5": 2.228},
+	"berserk/sword": {"ideal_1": 0.571, "ideal_20": 0.294, "ideal_5": 0.149},
+	"biologist/biologist_sample_injector": {"ideal_1": 1.401},
+	"biologist/biologist_spore_lens": {"ideal_20": 1.353, "ideal_5": 1.495},
+	"biologist/biologist_symbiote_seed": {"ideal_1": 0.502},
+	"chemist/blast_powder": {"ideal_1": 1.71, "ideal_20": 1.729, "ideal_5": 3.56},
+	"dark_mage/cursed_skull": {"ideal_1": 0.542, "ideal_20": 0.356, "ideal_5": 0.755},
+	"dark_mage/dark_book": {"ideal_1": 1.479, "ideal_20": 2.463, "ideal_5": 2.519},
+	"doctor/bone_saw": {"ideal_1": 2.286, "ideal_20": 1.842, "ideal_5": 1.553},
+	"doctor/plague_syringe": {"ideal_20": 0.105, "ideal_5": 0.336},
+	"druid/raven_totem": {"ideal_1": 0.451, "ideal_20": 0.355, "ideal_5": 0.551},
+	"druid/summon_amulet": {"ideal_1": 1.762, "ideal_20": 2.077, "ideal_5": 2.827},
+	"elementalist/elementalist_orb_ring": {"ideal_20": 0.488},
+	"elementalist/elementalist_prism_focus": {"ideal_1": 1.74, "ideal_20": 3.564, "ideal_5": 1.939},
+	"engineer/engineer_pressure_mines": {"ideal_1": 0.05, "ideal_20": 2.037, "ideal_5": 0.477},
+	"engineer/engineer_sentry_wrench": {"ideal_1": 3.94, "ideal_5": 1.543},
+	"guitarist/electric_guitar": {"ideal_1": 0.877, "ideal_20": 0.75, "ideal_5": 0.788},
+	"knight/holy_flail": {"ideal_1": 0.464, "ideal_20": 2.047, "ideal_5": 1.129},
+	"knight/long_spear": {"ideal_20": 0.453},
+	"knight/tower_shield": {"ideal_1": 1.126},
+	"priest/priest_censer": {"ideal_1": 0.503, "ideal_20": 1.0, "ideal_5": 0.811},
+	"priest/priest_reliquary": {"ideal_1": 1.189},
+	"ranger/hunter_trap": {"ideal_1": 0.609, "ideal_20": 0.908},
+	"ranger/moon_crossbow": {"ideal_5": 2.225},
+	"ranger/storm_longbow": {"ideal_5": 0.46},
+	"robot/robot_reactor_core": {"ideal_1": 1.06, "ideal_5": 1.24},
+	"sniper/sniper_deadeye_rifle": {"ideal_1": 1.646},
+	"sniper/sniper_shatter_rounds": {"ideal_20": 0.357},
+	"sniper/sniper_spotter_scope": {"ideal_1": 0.683, "ideal_20": 1.124},
+	"soldier/soldier_bayonet": {"ideal_1": 2.279},
+	"soldier/soldier_grenade": {"ideal_20": 1.608, "ideal_5": 1.654},
+	"soldier/soldier_rifle": {"ideal_1": 0.902, "ideal_20": 0.829},
+	"thief/thief_coin_pouch": {"ideal_1": 0.8, "ideal_20": 0.479},
+	"thief/thief_shadow_cloak": {"ideal_1": 2.807},
+	"thief/thief_smoke_bomb": {"ideal_20": 2.193, "ideal_5": 1.631},
 }
 
 const CLASS_LEVEL_STAT_GROWTH_SCALARS := {
