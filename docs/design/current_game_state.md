@@ -145,11 +145,15 @@ Act 2 начинается с бюджета boss Act 1 и достигает п
   The whole footer wrapper collapses on Game, preserving its exact `892x242`
   viewport and `878x520` canvas. Headless/Metal coverage includes the 760px
   compact threshold in `tests/settings_footer_scrum1053_test.gd`.
-- **Codex unlock tracking (SCRUM-621)**: `scripts/meta_progression.gd` persists
-  discovered monsters, bosses and artifacts in `user://fantasydisk_meta.cfg`.
-  Runtime records monsters/bosses when they are encountered in combat and
-  artifacts when the reward is applied, giving the Codex a save/load-backed
-  unlock source without changing the visual Codex layout.
+- **Codex unlock tracking (SCRUM-621 / FAN-1077)**: `scripts/meta_progression.gd`
+  persists discovered characters, weapons, monsters, bosses and artifacts plus an independent
+  `codex_unread` map for characters, weapons, monsters, bosses and artifacts in
+  `user://fantasydisk_meta.cfg`. Runtime records enemies on encounter and
+  artifacts when their reward is applied. New discoveries become unread once;
+  old saves migrate with no unread flood. Opening an entry clears and saves its
+  marks. Main Menu, Codex tabs and unread-first rows share the generated
+  exclamation badge. Hero/weapon presentation APIs are ready, while their
+  future unlock rules do not yet restrict the current roster.
 - **Фидбек/баг-репорт**: SCRUM-362 добавил глобальное действие `feedback` (по умолчанию `P`). FAN-1057/FAN-1059 превращает верхний `FeedbackOverlayLayer` в responsive privacy-first форму: текст, preview, default-on `FeedbackScreenshotToggle`, полный allowlist game/OS metadata, persistent pseudonymous installation UUID, edge-observed IP, оператор/retention и локальное хранение раскрыты до подтверждения; фокус идёт TextEdit → Toggle → Send → Cancel, а правый стик прокручивает disclosure из любого focus stop. Schema-v2 relay использует bounded JPEG либо явный `null`; opt-out не хранит `Image`, не кодирует JPEG и не создаёт локальный `screenshot.png`. Dev/CI raw Discord остаётся только debug-путём; player export не содержит credential. Любой network transport fail-closed, пока public `feedback/privacy_*` значения не утверждены, а `feedback/relay_session_url` остаётся пустым. При отсутствующем/неуспешном online route отчёт сохраняется в `user://feedback/<timestamp>_<uuid>/`; локальная копия хранится на устройстве до удаления игроком.
 
 В настройках доступны:
@@ -1701,6 +1705,7 @@ Runtime smoke split 0.1.4: focused suites наследуют helper/assertion с
 - После обычного победного боя: затемнение + крупная золотая надпись «ПОБЕДА» (клик или 1.3с) -> окно докачки атрибутов -> карта.
 - После элитного победного боя: «ПОБЕДА» -> экран выбора 1 из 3 артефактов -> окно докачки атрибутов -> карта.
 - Босс ведет на отдельный экран победы, как раньше; дополнительно игрок получает гарантированный tier-3 артефакт и крупное золото.
+- FAN-1077: успешный итог добавляет прокручиваемый журнал всех новых артефактов/героев/оружия в порядке получения. При непустом журнале сводка сжимается до времени, убийств, золота и финального уровня, не обрезая список открытий.
 - Окно докачки: выбор 1 из 2 случайных характеристик (+1) за `ProgressionData.stage_scaled_cost(18 + 6 * route_stage, route_stage)` золота; «Обновить» пары за `stage_scaled_cost(6 + 2 * route_stage, route_stage)` (2 раза за окно); «Пропустить»; Escape = пропуск.
 - Кнопка возврата к level-up появляется при непотраченных выборах в бою и на небоевых экранах; она открывает тот же зафиксированный набор из 3 карт и показывает pending-бейдж. В бою это SCRUM-390 квадратная `LevelUpPlusButton` с символом `+`, закрепленная в правом нижнем углу, полностью непрозрачная и использующая dedicated combat HUD plus textures с нейтральным hover/focus без желтого свечения. SCRUM-982 удаляет прежний `UpgradeFabButton` для ручной платной докачки и при наличии, и при отсутствии pending-уровней на Route Map/Rest/Shop/Event/Escape; это не затрагивает `LevelUpPlusButton`, который остаётся единственной точкой возврата к сохранённому level-up набору при `pending_level_ups > 0`. Кнопка «Позже» на самом level-up окне использует SCRUM-682 dedicated later-button textures and responsive safe-zone placement, чтобы текст, орнамент и весь контрол оставались внутри viewport/content-зоны даже на 1280x720. При самом событии получения уровня HUD-toast использует SCRUM-588 generated @2K frame `assets/sprites/ui/frames/overhaul_2k/ui_frame_2k_lut_toast.png` (`480x300`, content margins `70/112/70/112`), центрируется на `190px` выше экранной позиции героя, поднимается только до `0.70` opacity и показывает единственный текст `Level Up` внутри пустой зоны этой рамки; world-space `LevelUpEffect` рядом с героем оставлен только как flash/ring/spark burst без отдельной текстовой плашки. Быстрые несколько level-up создают self-cleaning эффекты/toasts и не меняют XP/reward/pause flow.
 
@@ -1739,11 +1744,21 @@ SCRUM-654/SCRUM-663 cleanup now resolves to a single visible level-up plaque: `L
 
 Кнопка «Кодекс» в главном меню открывает внутриигровую энциклопедию (`_show_codex_screen` в `scripts/ui_screens.gd`). Данные — data-driven из `scripts/codex_data.gd`: персонажи/оружие/артефакты/характеристики собираются из `progression_data.gd` и `stat_formulas.gd`, описания монстров и канонические имена умений живут в `CODEX_DATA.MONSTERS` и зарегистрированы в `docs/design/content_registry.md` (раздел «Умения Монстров»). SCRUM-438 rebuild сделал live Codex v2: единый main frame, вертикальные вкладки слева, центральный scrollable список записей и правый detail panel с портретом/чипами/текстом. SCRUM-725 заменил старую геометрию на accepted `docs/design/mockups/codex_redesign_2026_06/layout_map.md` с `codex_pl_backdrop`, textless 9-slice `codex_pl` frame set and safe cream/gold text. SCRUM-849 prepared the object-first source package (`docs/design/mockups/codex_object_first_redesign/spec.md`, `layout_zones.json`, preview/contact PNGs), and SCRUM-850 made that package live in runtime: base 1920x1080 rects are `CodexMainPanel` 72,54,1776,972; `CodexNavPanel` 96,210,300,700; `CodexContent` 438,210,490,700; `CodexDetailPanel` 960,210,840,700. SCRUM-884 then simplified the center column to the list-only flow (no object preview stage), and SCRUM-889 removes the live `Глоссарий` category entirely. The right detail overlay has a larger contained portrait/icon stage, chip row and `CodexDetailParchmentInset` body text. Character portraits still use the SCRUM-416 full-frame idle `sprite_path` source as Hero Select, while artifacts use canonical artifact/shop icons. QA path/rect dumps: `build/qa/scrum416/codex_character_portrait_runtime_paths.md`, `build/qa/scrum417/codex_character_portrait_runtime_dump.md`, `build/qa/scrum438/codex_v2_runtime_dump.md`, `build/qa/scrum438/codex_v2_no_overlap_matrix.md`; SCRUM-725 source/evidence: `docs/design/references/codex_redesign_2026_06/`, `docs/design/previews/codex_redesign_2026_06_runtime_contact.png`, `build/qa/design_review/codex_1280x720.png`, `build/qa/design_review/codex_1920x1080.png`, `build/qa/design_review/codex_2560x1440.png`; SCRUM-850 screenshot evidence: `build/qa/codex_object_first/`.
 
-SCRUM-621 adds backend unlock state for future Codex filtering: persistent meta
-stores `discovered_monsters`, `discovered_bosses` and `discovered_artifacts`.
+SCRUM-621 adds backend unlock state for future Codex filtering; FAN-1077 extends
+the persistent meta set to `discovered_characters`, `discovered_weapons`,
+`discovered_monsters`, `discovered_bosses` and `discovered_artifacts`.
 The live Codex data projection still exposes the full canonical roster, while
 runtime gameplay hooks populate the discovery lists as the player sees enemies
 and receives artifacts.
+
+FAN-1077 adds persistent unread presentation without changing that availability
+contract. A generated red/gold exclamation badge marks the Main Menu Codex
+action, affected category tabs and unread-first rows. Weapons remain nested in
+character dossiers, so an unread weapon raises and marks its owner row; an
+explicit row open clears every aggregated mark and saves immediately. Run-local
+`new_unlocks` records power the complete scrollable victory journal. Character
+and weapon unlock conditions remain intentionally undefined, and the existing
+roster stays accessible until that progression design lands.
 
 SCRUM-955 реализует принятый PixelLab/content-zone пакет SCRUM-1013 и строго
 разделяет справочник параметров. Live-навигация теперь содержит шесть русских

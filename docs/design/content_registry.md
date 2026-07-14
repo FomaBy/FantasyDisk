@@ -1246,6 +1246,7 @@ SCRUM-269 read-only asset/image cleanup audit 2026-06-14: отчет `docs/desig
 | Базовые характеристики | `strength`, `agility`, `intelligence`, `perception`, `energy`, `knowledge`, `endurance`, `leadership` | `assets/sprites/ui/icons/stats/` | Реализовано |
 | Производные параметры | `damage`, `magic_damage`, `crit_chance`, `crit_damage_multiplier`, `attack_speed`, `dodge`, `move_speed`, `defense`, `absorb`, `health_point`, `knockback_distance`, `summon_amount`, `attack_range`, `range_multiplier`, `regeneration`, `vampiric_amount`, `vampiric_chance`, `dot_damage`, `dot_speed`, `aoe_radius`, `aura_radius`, `buff_power`, `knockback_power`, `projectile_speed`, `ultimate_multiplier`, `pickup_radius` | `assets/sprites/ui/icons/derived/` | Реализовано |
 | HUD ресурсы | `hp`, `xp`, `money` | `assets/sprites/ui/hud/` | Реализовано |
+| Кодекс: непрочитанное | `ui_badge_codex_unread` | `assets/sprites/ui/icons/codex/ui_badge_codex_unread.png` | Реализовано (FAN-1077) |
 
 Escape stats menu, level-up reward cards и combat HUD должны брать иконки только через этот registry. Финальный PNG asset pack реализован; code-native fallback не является целевым визуальным состоянием.
 

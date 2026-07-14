@@ -1,0 +1,43 @@
+{
+  "canvas": {"width": 688, "height": 384},
+  "policy": {"min_gap": 4, "allow_overlap": false},
+  "content": {
+    "board_title": "НОВЫЕ ОТКРЫТИЯ И КОДЕКС",
+    "main_title": "ГЛАВНОЕ МЕНЮ",
+    "main_codex": "КОДЕКС",
+    "codex_title": "КОДЕКС",
+    "codex_row_new": "НОВЫЙ АРТЕФАКТ",
+    "codex_row_read": "ИЗУЧЕННАЯ ЗАПИСЬ",
+    "victory_title": "ПОБЕДА",
+    "unlocks_title": "ОТКРЫТО В ЭТОМ ЗАБЕГЕ",
+    "unlocks_body": "Артефакт: Печать разлома\nГерой: будущая разблокировка\nОружие: будущая разблокировка",
+    "continue": "НОВЫЙ ЗАБЕГ"
+  },
+  "elements": [
+    {"id": "board_title", "kind": "text", "content_zone": true, "collision": false, "x": 164, "y": 4, "w": 360, "h": 24, "text_key": "board_title", "max_font": 18, "min_font": 10},
+
+    {"id": "main_panel", "kind": "panel", "x": 12, "y": 32, "w": 176, "h": 343, "min_w": 160, "min_h": 300},
+    {"id": "main_title", "kind": "text", "parent": "main_panel", "content_zone": true, "x": 28, "y": 48, "w": 144, "h": 30, "text_key": "main_title", "max_font": 16, "min_font": 9},
+    {"id": "main_button_1", "kind": "button", "parent": "main_panel", "content_zone": true, "x": 32, "y": 96, "w": 136, "h": 48},
+    {"id": "main_button_2", "kind": "button", "parent": "main_panel", "content_zone": true, "x": 32, "y": 152, "w": 136, "h": 48},
+    {"id": "main_codex_button", "kind": "button", "parent": "main_panel", "content_zone": true, "x": 32, "y": 208, "w": 136, "h": 48, "text_key": "main_codex", "max_font": 16, "min_font": 10},
+    {"id": "main_codex_badge", "kind": "icon", "parent": "main_codex_button", "content_zone": true, "collision": false, "x": 140, "y": 218, "w": 22, "h": 22, "text": "!", "max_font": 17, "min_font": 12},
+
+    {"id": "codex_panel", "kind": "panel", "x": 198, "y": 32, "w": 308, "h": 343, "min_w": 280, "min_h": 300},
+    {"id": "codex_title", "kind": "text", "parent": "codex_panel", "content_zone": true, "x": 214, "y": 48, "w": 276, "h": 30, "text_key": "codex_title", "max_font": 18, "min_font": 10},
+    {"id": "codex_nav", "kind": "panel", "parent": "codex_panel", "content_zone": true, "x": 210, "y": 88, "w": 72, "h": 269},
+    {"id": "codex_list", "kind": "scroll_area", "parent": "codex_panel", "content_zone": true, "x": 290, "y": 88, "w": 98, "h": 269, "scroll": "auto", "item_count": 8, "item_h": 54, "item_gap": 6, "scrollbar_w": 8},
+    {"id": "codex_row_new", "kind": "button", "parent": "codex_list", "content_zone": true, "collision": false, "x": 298, "y": 98, "w": 78, "h": 54, "text_key": "codex_row_new", "max_font": 11, "min_font": 7},
+    {"id": "codex_row_new_badge", "kind": "icon", "parent": "codex_row_new", "content_zone": true, "collision": false, "x": 352, "y": 104, "w": 18, "h": 18, "text": "!", "max_font": 14, "min_font": 10},
+    {"id": "codex_row_read", "kind": "button", "parent": "codex_list", "content_zone": true, "collision": false, "x": 298, "y": 160, "w": 78, "h": 54, "text_key": "codex_row_read", "max_font": 11, "min_font": 7},
+    {"id": "codex_detail", "kind": "panel", "parent": "codex_panel", "content_zone": true, "x": 396, "y": 88, "w": 98, "h": 269},
+
+    {"id": "victory_panel", "kind": "panel", "x": 516, "y": 32, "w": 160, "h": 343, "min_w": 150, "min_h": 300},
+    {"id": "victory_title", "kind": "text", "parent": "victory_panel", "content_zone": true, "x": 530, "y": 48, "w": 132, "h": 30, "text_key": "victory_title", "max_font": 18, "min_font": 11},
+    {"id": "victory_summary", "kind": "text", "parent": "victory_panel", "content_zone": true, "x": 530, "y": 88, "w": 132, "h": 62, "text": "Финальный босс повержен.", "max_font": 12, "min_font": 8},
+    {"id": "victory_unlocks", "kind": "scroll_area", "parent": "victory_panel", "content_zone": true, "x": 530, "y": 158, "w": 132, "h": 124, "scroll": "auto", "content_h": 220, "scrollbar_w": 8},
+    {"id": "victory_unlocks_title", "kind": "text", "parent": "victory_unlocks", "content_zone": true, "collision": false, "x": 536, "y": 164, "w": 116, "h": 28, "text_key": "unlocks_title", "max_font": 11, "min_font": 7},
+    {"id": "victory_unlocks_body", "kind": "text", "parent": "victory_unlocks", "content_zone": true, "collision": false, "x": 536, "y": 196, "w": 108, "h": 78, "text_key": "unlocks_body", "max_font": 9, "min_font": 6},
+    {"id": "victory_button", "kind": "button", "parent": "victory_panel", "content_zone": true, "x": 538, "y": 306, "w": 116, "h": 42, "text_key": "continue", "max_font": 13, "min_font": 8}
+  ]
+}

@@ -1,5 +1,7 @@
 extends Node2D
 
+const CODEX_RUN_UNLOCKS := preload("res://scripts/codex_run_unlocks.gd")
+
 @export var player_scene: PackedScene
 @export var enemy_scene: PackedScene
 @export var shooter_enemy_scene: PackedScene
@@ -496,6 +498,7 @@ var route
 var combat
 var dev_console: CanvasLayer = null
 var meta_state := {}
+var meta_save_path := META_PROGRESSION.DEFAULT_SAVE_PATH
 # Подача боя: тряска камеры (тумблер в настройках, умеренная по умолчанию).
 var screen_shake_enabled := true
 var combat_feedback_enabled := true
@@ -756,6 +759,7 @@ func reset_run_metrics() -> void:
 		"route_stage_reached": 0,
 		"final_level": 0,
 		"artifacts": [],
+		"new_unlocks": [],
 		"outcome_reason": "",
 		"sandbox": run_sandbox_metadata(),
 	}
@@ -832,7 +836,7 @@ func evaluate_run_achievements() -> void:
 		return
 	var result: Dictionary = ACHIEVEMENTS_DATA.evaluate_run(meta_state, run_metrics)
 	if int(result.get("awarded", 0)) > 0 or not (result.get("newly_unlocked", []) as Array).is_empty():
-		META_PROGRESSION.save_state(meta_state)
+		save_meta_progression()
 		meta_points = int(meta_state.get("meta_points", 0))
 
 
@@ -1038,9 +1042,13 @@ func _apply_audio_settings() -> void:
 
 
 func _load_meta_progression() -> void:
-	meta_state = META_PROGRESSION.load_state()
+	meta_state = META_PROGRESSION.load_state(meta_save_path)
 	meta_points = int(meta_state.get("meta_points", 0))
 	berserk_ascension_unlocked = ascension_level_for("berserk") >= 1
+
+
+func save_meta_progression() -> void:
+	META_PROGRESSION.save_state(meta_state, meta_save_path)
 
 
 func record_codex_discovery(category: String, content_id: String) -> void:
@@ -1050,17 +1058,49 @@ func record_codex_discovery(category: String, content_id: String) -> void:
 	if id == "":
 		return
 	if meta_state.is_empty():
-		meta_state = META_PROGRESSION.load_state()
+		meta_state = META_PROGRESSION.load_state(meta_save_path)
 	if META_PROGRESSION.is_codex_discovered(meta_state, category, id):
 		return
 	meta_state = META_PROGRESSION.record_codex_discovery(meta_state, category, id)
-	META_PROGRESSION.save_state(meta_state)
+	save_meta_progression()
+
+
+func record_run_unlock(category: String, content_id: String, title: String, icon_path := "", owner_character_id := "") -> void:
+	if run_metrics.is_empty():
+		reset_run_metrics()
+	run_metrics = CODEX_RUN_UNLOCKS.record(run_metrics, category, content_id, title, icon_path, owner_character_id)
+
+
+func record_future_codex_unlock(category: String, content_id: String, title: String, owner_character_id := "", icon_path := "") -> bool:
+	if not run_progression_eligible() or not ["characters", "weapons"].has(category):
+		return false
+	if meta_state.is_empty():
+		meta_state = META_PROGRESSION.load_state(meta_save_path)
+	var id := content_id.strip_edges()
+	if category == "weapons":
+		id = META_PROGRESSION.codex_weapon_id(owner_character_id, id)
+	if id == "" or META_PROGRESSION.is_codex_discovered(meta_state, category, id):
+		return false
+	meta_state = META_PROGRESSION.record_codex_discovery(meta_state, category, id)
+	if not META_PROGRESSION.is_codex_discovered(meta_state, category, id):
+		return false
+	save_meta_progression()
+	record_run_unlock(category, id, title, icon_path, owner_character_id)
+	return true
 
 
 func record_codex_artifact_discovery(reward: Dictionary) -> void:
 	if str(reward.get("kind", "")) != "artifact":
 		return
-	record_codex_discovery("artifacts", str(reward.get("id", "")))
+	var artifact_id := str(reward.get("id", "")).strip_edges()
+	if artifact_id == "":
+		return
+	if meta_state.is_empty():
+		meta_state = META_PROGRESSION.load_state(meta_save_path)
+	var was_discovered := META_PROGRESSION.is_codex_discovered(meta_state, "artifacts", artifact_id)
+	record_codex_discovery("artifacts", artifact_id)
+	if not was_discovered and META_PROGRESSION.is_codex_discovered(meta_state, "artifacts", artifact_id):
+		record_run_unlock("artifacts", artifact_id, str(reward.get("title", artifact_id)), str(reward.get("icon_path", "")))
 
 
 func record_codex_enemy_discovery(enemy: Node) -> void:
@@ -1129,7 +1169,7 @@ func record_boss_victory() -> void:
 	if secret_boss_active:
 		meta_state = META_PROGRESSION.record_secret_boss_victory(meta_state)
 		secret_boss_active = false
-	META_PROGRESSION.save_state(meta_state)
+	save_meta_progression()
 	meta_points = int(meta_state.get("meta_points", 0))
 	berserk_ascension_unlocked = ascension_level_for("berserk") >= 1
 
