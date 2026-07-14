@@ -6249,84 +6249,9 @@ func _codex_character_sections(character: Dictionary) -> Array:
 
 
 func _codex_monster_sections(monster: Dictionary) -> Array:
-	var monster_id := str(monster.get("id", ""))
-	var kind := str(monster.get("kind", "standard"))
-	var sections := []
-	# Профиль угрозы: тип из ENEMY_SIZE_PROFILES + поведение.
-	var profile_id := "ordinary"
-	match kind:
-		"elite":
-			profile_id = "elite"
-		"mini_elite":
-			profile_id = "mini_elite"
-		"boss":
-			profile_id = "boss"
-	var size_profile: Dictionary = game.PROGRESSION_DATA.enemy_size_profile(profile_id)
-	var behavior_lines := []
-	if str(size_profile.get("label", "")) != "":
-		behavior_lines.append("Класс угрозы: %s (габарит ×%.2f)." % [str(size_profile["label"]), float(size_profile.get("scale", 1.0))])
-	if str(monster.get("behavior", "")) != "":
-		behavior_lines.append(str(monster["behavior"]))
-	if not behavior_lines.is_empty():
-		sections.append({"heading": "Тип и поведение", "lines": behavior_lines})
-	# FAN-1080: лор — боссы получают строку гибели своего мира («Владыка
-	# Разлома»), элитки — строку офицера прибоя (lore_data.gd / lore.md).
-	if kind == "boss":
-		var doom := LORE_DATA.boss_doom_line(monster_id)
-		if doom != "":
-			sections.append({"heading": "Владыка Разлома", "lines": [doom]})
-	elif kind == "elite":
-		var elite_line := LORE_DATA.elite_lore(monster_id)
-		if elite_line != "":
-			sections.append({"heading": "Офицер прибоя", "lines": [elite_line]})
-	# Умения — канонические имена и описания из codex_data.
-	var ability_lines := []
-	for ability in monster.get("abilities", []):
-		ability_lines.append({"title": str((ability as Dictionary).get("title", "")), "text": str((ability as Dictionary).get("description", ""))})
-	if not ability_lines.is_empty():
-		sections.append({"heading": "Умения", "lines": ability_lines})
-	# Боевой паттерн элиток/боссов: UNIQUE_ENCOUNTER_PATTERNS + каталог механик.
-	var pattern: Dictionary = game.PROGRESSION_DATA.unique_encounter_pattern(monster_id)
-	if not pattern.is_empty():
-		var pattern_lines := []
-		if str(pattern.get("summary", "")) != "":
-			pattern_lines.append({"title": str(pattern.get("title", "")), "text": "Паттерн боя: %s." % str(pattern["summary"])})
-		var mechanic_catalog: Dictionary = game.PROGRESSION_DATA.enemy_mechanic_catalog()
-		for mechanic_id in pattern.get("mechanics", []):
-			var mechanic: Dictionary = mechanic_catalog.get(str(mechanic_id), {})
-			if mechanic.is_empty():
-				continue
-			var mechanic_text := str(mechanic.get("desc", ""))
-			if bool(mechanic.get("telegraph", false)):
-				mechanic_text += " Телеграфится заранее."
-			pattern_lines.append({"title": str(mechanic.get("title", mechanic_id)), "text": mechanic_text})
-		if not pattern_lines.is_empty():
-			sections.append({"heading": "Боевой паттерн", "lines": pattern_lines})
-	# Боевые параметры из конфигов: спецатака элитки / множители мини-элитки.
-	var combat_lines := []
-	var attack_source_id := monster_id
-	var mini_kind: Dictionary = {}
-	if kind == "mini_elite":
-		mini_kind = game.PROGRESSION_DATA.mini_elite_kind_by_id(monster_id)
-		if not mini_kind.is_empty():
-			combat_lines.append("Относительно базовой элитки: здоровье ×%.2f; скорость ×%.2f; урон ×%.2f." % [float(mini_kind.get("hp_mult", 1.0)), float(mini_kind.get("speed_mult", 1.0)), float(mini_kind.get("damage_mult", 1.0))])
-			attack_source_id = str(mini_kind.get("behavior", monster_id))
-	var attack_config: Dictionary = game.PROGRESSION_DATA.elite_attack_config(attack_source_id)
-	if not attack_config.is_empty():
-		var attack_bits := PackedStringArray()
-		if float(attack_config.get("cooldown", 0.0)) > 0.0:
-			attack_bits.append("перезарядка %.1f с" % float(attack_config["cooldown"]))
-		if float(attack_config.get("trigger_range", 0.0)) > 0.0:
-			attack_bits.append("дистанция срабатывания %d" % int(attack_config["trigger_range"]))
-		if float(attack_config.get("radius", 0.0)) > 0.0:
-			attack_bits.append("радиус %d" % int(attack_config["radius"]))
-		if float(attack_config.get("damage_factor", 0.0)) > 0.0:
-			attack_bits.append("урон ×%.1f от базового" % float(attack_config["damage_factor"]))
-		if not attack_bits.is_empty():
-			combat_lines.append("Спецатака: %s." % "; ".join(attack_bits))
-	if not combat_lines.is_empty():
-		sections.append({"heading": "Боевые параметры", "lines": combat_lines})
-	return sections
+	# FAN-1080: сборка досье монстра перенесена в scripts/ui/lore_screens.gd
+	# (static-quality ратчет ui_screens.gd; лор-секции живут там же).
+	return LoreScreens.codex_monster_sections(self, monster)
 
 
 # SCRUM-963: классовый артефакт заперт в кодексе, пока мета-Возвышение ЕГО
