@@ -19,8 +19,11 @@
 set -u
 REF="${1:-origin/dev}"
 MAIN_REPO="${FSD_MAIN_REPO:-/Users/sergeyfomin/Documents/AI Agent}"
-WT="/private/tmp/fsd_balance_validation"
-OUT_DIR="$MAIN_REPO/build/qa/fan1028_validation"
+# FAN-1062: уникальные пути на запуск — два параллельных контракта (QA-лейн +
+# калибровочный) не должны сносить worktree/логи друг друга.
+RUN_TAG="$$_$(date +%H%M%S)"
+WT="/private/tmp/fsd_balance_validation_${RUN_TAG}"
+OUT_DIR="$MAIN_REPO/build/qa/fan1028_validation_${RUN_TAG}"
 mkdir -p "$OUT_DIR"
 SUMMARY="$OUT_DIR/summary.md"
 
@@ -179,6 +182,8 @@ cp build/ascension_viability_report.md "$OUT_DIR/ascension_viability_after.md" 2
 
 cd "$MAIN_REPO"
 git worktree remove "$WT" --force 2>/dev/null
+git worktree prune 2>/dev/null
+rm -rf "$WT" 2>/dev/null
 echo "" >> "$SUMMARY"
 echo "Итог: $([ $FAILED -eq 0 ] && echo 'ВСЕ ЗЕЛЁНЫЕ ✅' || echo \"КРАСНЫХ: $FAILED ❌\") — $(date '+%Y-%m-%d %H:%M')" >> "$SUMMARY"
 cat "$SUMMARY"
