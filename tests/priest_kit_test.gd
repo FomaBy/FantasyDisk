@@ -44,7 +44,9 @@ func _initialize() -> void:
 	_check_priest_weapon_niches()
 	await _check_reliquary_burst_no_heal()
 	await _check_censer_large_close_aoe()
+	await _check_censer_width_cap()
 	await _check_bell_dual_toll()
+	await _check_cadence_tax()
 
 	if not _errors.is_empty():
 		for e in _errors:
@@ -401,6 +403,47 @@ func _check_reliquary_burst_no_heal() -> void:
 	await process_frame
 
 
+# --- FAN-1031 v7: базовый каданс-тэ reliquary/censer на точке потребления ------
+# priest crowd резался КАДЕНЦИЕЙ (не width): _fire_interval_artifact_factor замедляет
+# базовый fire_interval reliquary ×1.30 / censer ×1.15 → throughput всех осей ↓ (DPS ∝
+# 1/cooldown). Анти-silent-retune пин: числа зафиксированы, изменение = задокументированная
+# правка. chime/прочие оружия НЕ обложены (фактор 1.0) — сентинел-контракт (нулевой A/B).
+
+func _check_cadence_tax() -> void:
+	# FAN-1031 v9-финал: reliquary каденс-налог досмягчён 1.18→1.08 (random-A1 0.87<1.0 — NET-ZERO
+	# power-shift крауд→base/solo; каденс↓ = base/solo↑); крауд-компенсация — ужатая ширина кадила
+	# (aoe_full 4→3/diminish 1.2→1.7, см. _check_censer_width_cap). censer/chime каденс не тронуты.
+	var expected := {"priest_reliquary": 1.08, "priest_censer": 1.15, "priest_chime": 1.0}
+	for weapon_id in expected.keys():
+		var player := _make_player("priest", str(weapon_id))
+		var weapon: Node = player.get("equipped_weapon")
+		if weapon == null:
+			_errors.append("cadence: нет equipped_weapon для %s" % weapon_id)
+			player.free()
+			await process_frame
+			continue
+		weapon.set_process(false)
+		weapon.set_physics_process(false)
+		# Базовое поведение: гасим mode-моды (barrage/vow), тэ должен быть чисто базовым.
+		player.set("run_modifiers", {})
+		var factor := float(weapon.call("_fire_interval_artifact_factor"))
+		if absf(factor - float(expected[weapon_id])) > 0.001:
+			_errors.append("cadence: %s базовый fire_interval-фактор %.3f != %.3f (пин каденс-тэ)" % [weapon_id, factor, float(expected[weapon_id])])
+		player.free()
+		await process_frame
+	# A/B-контроль: у не-priest оружия фактор ровно 1.0 (тэ не протёк в другие классы).
+	var control := _make_player("elementalist", "elementalist_orb_ring")
+	var control_weapon: Node = control.get("equipped_weapon")
+	if control_weapon != null:
+		control_weapon.set_process(false)
+		control_weapon.set_physics_process(false)
+		control.set("run_modifiers", {})
+		if absf(float(control_weapon.call("_fire_interval_artifact_factor")) - 1.0) > 0.001:
+			_errors.append("cadence: тэ протёк на не-priest оружие (elementalist_orb_ring != 1.0)")
+	control.free()
+	await process_frame
+
+
 # --- SCRUM-928: кадило — большой БЛИЗКИЙ AoE без скрытого сустейна --------------
 # Самая широкая волна кадила достигает ПОЛНОГО aoe_radius (SCRUM-928: lerp до 1.0),
 # накрывая врага у 0.9× радиуса и не задевая врага за радиусом; хила на атаке нет.
@@ -450,6 +493,27 @@ func _check_censer_large_close_aoe() -> void:
 	player.free()
 	inside.free()
 	outside.free()
+	await process_frame
+
+
+# --- FAN-1031 v8-микротрим: кадило несёт width-кап крауд-хвоста -----------------
+# Крауд-добор Жреца перенесён с каденции реликвария (смягчена 1.30→1.18) на ШИРИНУ кадила:
+# _fire_priest_ward льёт волну через _damage_enemies_in_circle_capped, а конфиг опт-инится
+# полями aoe_full_targets/aoe_target_diminish. Здесь — data-контракт (пин + anti-silent-retune):
+# кадило ДОЛЖНО нести опт-ин, иначе канал снова полный по всей толпе. Поведенческий диминиш
+# хвоста + A/B-сентинел на РЕАЛЬНОМ конфиге кадила — tests/coverage_cap_gate.gd.
+
+func _check_censer_width_cap() -> void:
+	var censer: Dictionary = PD.weapon("priest", "priest_censer")
+	var full := int(censer.get("aoe_full_targets", -1))
+	var diminish := float(censer.get("aoe_target_diminish", -1.0))
+	if full < 1:
+		_errors.append("censer-width: aoe_full_targets=%d — кадило не опт-инено в кап ширины (крауд-добор не режется)" % full)
+	if diminish <= 0.0:
+		_errors.append("censer-width: aoe_target_diminish=%.2f — нет диминиша хвоста толпы (кап ширины неактивен)" % diminish)
+	# Жёсткого max НЕ ставим: identity «выжигают ВСЁ вокруг» — все в радиусе задеты, дальние слабее.
+	if int(censer.get("aoe_max_targets", -1)) >= 0:
+		_errors.append("censer-width: aoe_max_targets=%d — жёсткий обрез ломает identity «большой AoE вокруг»" % int(censer.get("aoe_max_targets", -1)))
 	await process_frame
 
 

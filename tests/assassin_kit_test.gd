@@ -87,6 +87,7 @@ func _initialize() -> void:
 	await _test_flurry_tempo_player_flow(errors)
 	await _test_venom_wire_close_contact(errors)
 	await _test_venom_wire_crit_snapshot(errors)
+	await _test_venom_wire_crowd_spread(errors)
 	await _test_dodge_veil(errors)
 
 	if not errors.is_empty():
@@ -418,9 +419,13 @@ func _test_venom_wire_close_contact(errors: Array) -> void:
 	await _cleanup(holder)
 
 	# Пирс-лимит общий для близких и коридорных целей: 5 кандидатов, 4 хита.
+	# FAN-1031 v7: изолируем ПИРС-канал — гасим отдельный крауд-спред (dot_beam_spread_ratio),
+	# он тестируется своим сабтестом _test_venom_wire_crowd_spread. Контракт «бесплатных пирс-хитов
+	# нет» проверяется чисто по пирсу; спред — ОРТОГОНАЛЬНЫЙ капнутый канал, не пирс.
 	var limit_holder := _new_scene("VenomPierceLimit")
 	var limit_owner := _new_owner(limit_holder)
 	var limit_weapon := _new_weapon(limit_owner, "venom_wire")
+	limit_weapon.set("dot_beam_spread_ratio", 0.0)
 	var limit_origin := limit_owner.global_position
 	var close_first := _new_enemy(limit_holder, limit_origin + Vector2(20, 20))
 	_new_enemy(limit_holder, limit_origin + Vector2(150, 0))
@@ -482,6 +487,68 @@ func _test_venom_wire_crit_snapshot(errors: Array) -> void:
 		if absf(tick - 6.0) > 0.05:
 			errors.append("снапшот-контроль: некритовый тик %.3f != 6.0" % tick)
 	await _cleanup(plain_holder)
+
+
+# --- FAN-1031 v7: ядовитый крауд-спред (assassin crowd-ниша, в существующих капах) ---
+
+
+func _test_venom_wire_crowd_spread(errors: Array) -> void:
+	# (1) Solo-ОРТОГОНАЛЬНОСТЬ: 1 цель пробивается → исключена из спреда → урон со спредом
+	# РАВЕН урону без спреда (сентинел A/B). Гарантия: крауд-канал не раздувает solo-ось.
+	var on_holder := _new_scene("VenomSpreadSoloOn")
+	var on_owner := _new_owner(on_holder)
+	var on_weapon := _new_weapon(on_owner, "venom_wire")
+	var on_enemy := _new_enemy(on_holder, on_owner.global_position + Vector2(200, 0))
+	await process_frame
+	on_weapon.call("_fire_single_dot_beam", on_owner, Vector2.RIGHT)
+	await process_frame
+	var solo_on_dmg: float = on_enemy.total_damage
+	await _cleanup(on_holder)
+
+	var off_holder := _new_scene("VenomSpreadSoloOff")
+	var off_owner := _new_owner(off_holder)
+	var off_weapon := _new_weapon(off_owner, "venom_wire")
+	off_weapon.set("dot_beam_spread_ratio", 0.0)
+	var off_enemy := _new_enemy(off_holder, off_owner.global_position + Vector2(200, 0))
+	await process_frame
+	off_weapon.call("_fire_single_dot_beam", off_owner, Vector2.RIGHT)
+	await process_frame
+	var solo_off_dmg: float = off_enemy.total_damage
+	await _cleanup(off_holder)
+
+	if absf(solo_on_dmg - solo_off_dmg) > 0.05:
+		errors.append("спред: solo %.3f (спред) != %.3f (без спреда) — пробитая цель не исключена, крауд-канал раздувает solo" % [solo_on_dmg, solo_off_dmg])
+
+	# (2)+(3): 4 пробитых на линии (ровно pierce_count) + 8 НЕ-пробитых кучно вокруг самой
+	# глубокой пробитой (в aoe_radius 75, но ВНЕ коридора beam_width 32 → не пирс-кандидаты).
+	# Контракт: спред задевает не-пробитых (крауд-канал жив), но не больше aoe_max_targets (кап ширины).
+	var crowd := _new_scene("VenomSpreadCrowd")
+	var crowd_owner := _new_owner(crowd)
+	var crowd_weapon := _new_weapon(crowd_owner, "venom_wire")
+	var o: Vector2 = crowd_owner.global_position
+	_new_enemy(crowd, o + Vector2(60, 0))
+	_new_enemy(crowd, o + Vector2(120, 0))
+	_new_enemy(crowd, o + Vector2(180, 0))
+	var deep := _new_enemy(crowd, o + Vector2(240, 0))  # самая глубокая пробитая — ядро спреда
+	var extras: Array = []
+	for i in range(8):
+		# столбцы выше/ниже линии (|y| >= 40 > half-corridor 16) в радиусе 45 < aoe_radius 75
+		var dy := 40.0 if i % 2 == 0 else -40.0
+		var dx := float(i - 4) * 12.0
+		extras.append(_new_enemy(crowd, deep.global_position + Vector2(dx, dy)))
+	await process_frame
+	crowd_weapon.call("_fire_single_dot_beam", crowd_owner, Vector2.RIGHT)
+	await process_frame
+	var sprayed := 0
+	for e in extras:
+		if e.total_damage > 0.0:
+			sprayed += 1
+	var cap := int(crowd_weapon.get("aoe_max_targets"))
+	if sprayed <= 0:
+		errors.append("спред: ни один не-пробитый враг в радиусе не задет ядом — крауд-канал мёртв")
+	if sprayed > cap:
+		errors.append("спред: %d не-пробитых задето > кап aoe_max_targets %d — ширина не капнута" % [sprayed, cap])
+	await _cleanup(crowd)
 
 
 # --- «Теневая завеса»: самоцентричная аура уворота ---

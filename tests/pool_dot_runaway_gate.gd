@@ -37,7 +37,10 @@ const ZERO_EPS := 0.01
 # без каких-либо правок диминишинга луж (замер 74.8k при dot_speed_flat 0.2,
 # затюнено до 0.15). Потолок рекалиброван с прежним запасом: откат
 # pool-диминишинга (паттерн ×2.5, т.е. ≥170k от новой базы) ловится уверенно.
-const MAX_POOL_IDEAL_20T := 80000.0
+# FAN-1062: потолок перекалиброван под честную времябазу (см. _measure_dps):
+# старый 80000 калибровался на раздутом фикс-окне (замер 67549); честные
+# значения 6993..7803 (±6%, N=2). Потолок = среднее ×~1.35 (шум + малый рост).
+const MAX_POOL_IDEAL_20T := 10000.0
 
 # Оружие-лужи (leaves_pool), которые давали выброс на плотном паке.
 # SCRUM-943: blast_powder больше не оставляет лужу (редизайн — быстрый прямой
@@ -241,8 +244,17 @@ func _measure_dps(character_id: String, weapon_id: String, target_count: int, re
 	for enemy in dummies:
 		hp_before += float(enemy.get("health"))
 
-	for _frame in range(FRAMES):
+	# FAN-1039/FAN-1062: окно по ИГРОВОМУ времени с ранним выходом (зеркало фикса
+	# tools/character_balance_csv.gd 8dd7e4fb4). Прежние 480 фикс-кадров под
+	# пул-нагрузкой ползли по стене >15 мин (кадры дорожают с числом луж) — гейт
+	# зависал; при этом деление на номинал 8с раздувало DPS. Теперь: крутим до
+	# 8с игрового времени (или страховочного капа кадров) и делим на факт.
+	var elapsed_game_time := 0.0
+	var frames := 0
+	while elapsed_game_time < WINDOW_SECONDS and frames < FRAMES * 2:
 		await process_frame
+		elapsed_game_time += _holder.get_process_delta_time()
+		frames += 1
 		for i in range(dummies.size()):
 			var enemy := dummies[i] as Node2D
 			if is_instance_valid(enemy):
@@ -252,7 +264,7 @@ func _measure_dps(character_id: String, weapon_id: String, target_count: int, re
 	for enemy in dummies:
 		if is_instance_valid(enemy):
 			hp_after += float(enemy.get("health"))
-	return maxf(hp_before - hp_after, 0.0) / WINDOW_SECONDS
+	return maxf(hp_before - hp_after, 0.0) / maxf(elapsed_game_time, 0.001)
 
 
 func _spawn_dummies(player_pos: Vector2, target_count: int) -> Array:

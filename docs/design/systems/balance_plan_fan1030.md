@@ -81,7 +81,9 @@ fragile 0.55..0.80 · steady 0.85..1.15 · sturdy 1.25..1.60 · tank 1.85..2.35.
 2. **3b. Дно-киты (mechanic-first)**: guitarist, sniper, assassin, thief, knight, engineer.
 3. **3c. Перекормленные (numeric против v3)**: chemist, elementalist, biologist, dark_mage,
    druid (кит-перестройка), ranger, soldier, priest, robot.
-4. **3d. Пол random-билда** (S4) + перекалибровка comfort-band весов.
+4. **3d. Пол random-билда** (S4 — ✅ реализовано в v8-микротрим: офер-гарантия ≥1 damage-карты
+   класса в `weighted_level_up_selection` + `tests/level_up_damage_floor_gate.gd`) + перекалибровка
+   comfort-band весов (Stage 4, за координатором).
 
 ## 4. Контракт валидации Stage 3/4
 

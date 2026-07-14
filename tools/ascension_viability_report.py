@@ -60,6 +60,7 @@ STAGE_ELITE_LATE = 12
 HP_TYPICAL_GROWTH = 1.45  # консервативная оценка HP-карт/статов к lvl20
 DPS_OK = 1.25
 DPS_RISK = 1.0
+HAZARD_HP_FRACTION_CAP = 0.80  # зеркало BOSS_HAZARD_MAX_HP_FRACTION (FAN-1031 S2)
 
 
 def parse_tscn_stats(path: Path) -> dict:
@@ -233,7 +234,11 @@ def main() -> int:
             heal5 = float(adiff5["healing_mult"])
             ehp5 = ehp(hp_typ, d5["defense"], d5["dodge"], d5["absorb"], d5["regeneration"], php, heal5)
             rot = BOSS_ROTATION_A2 + [SECRET_BOSS]
-            hz5 = max(boss_hazard(b, STAGE_BOSS_A2, 4, "hazard") for b in rot)
+            hz5_raw = max(boss_hazard(b, STAGE_BOSS_A2, 4, "hazard") for b in rot)
+            # FAN-1031 S2: boss hazard/slam капится долей max HP игрока за тик
+            # (BOSS_HAZARD_MAX_HP_FRACTION, progression_data_balance.gd) — ваншот
+            # с полного HP исключён механикой; репортим эффективный % после капа.
+            hz5 = min(hz5_raw, HAZARD_HP_FRACTION_CAP * max(hp_typ * php, 1.0))
             hz_pct = hz5 / max(hp_typ * php, 1.0) * 100.0
             surv = "ONESHOT" if hz_pct >= 100.0 else ("RISK" if hz_pct >= 65.0 else "OK")
             if build_key == "id_1":
