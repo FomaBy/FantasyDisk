@@ -7,7 +7,7 @@
 
 Входы: build/character_balance_dps.csv (живой CSV, lvl20_ideal/random) и
 build/ascension_params.json (per-weapon EHP формульного слоя — ось defense).
-Выход: build/class_trio_before_fan1028.md.
+Выход: build/class_trio_fan1028.md.
 """
 
 import json
@@ -45,7 +45,7 @@ def main() -> None:
 
     out = []
     w = out.append
-    w("# Class-trio таблица «до» (FAN-1028, живой слой lvl20_ideal)")
+    w("# Class-trio таблица (FAN-1028, живой слой lvl20_ideal, текущий код)")
     w("")
     w("Скоры = метрика класса / медиана ростера. Модель осей — class-balance-model.md;")
     w(f"медианы ростера: solo {med['solo']:.0f}, aoe(5t) {med['aoe']:.0f}, "
@@ -98,8 +98,8 @@ def main() -> None:
     for _, line in sorted(flagged, reverse=True):
         w(line)
 
-    (ROOT / "build/class_trio_before_fan1028.md").write_text("\n".join(out) + "\n", encoding="utf-8")
-    print("written: build/class_trio_before_fan1028.md")
+    (ROOT / "build/class_trio_fan1028.md").write_text("\n".join(out) + "\n", encoding="utf-8")
+    print("written: build/class_trio_fan1028.md")
 
 
 if __name__ == "__main__":
