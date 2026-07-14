@@ -27,6 +27,8 @@ SUMMARY="$OUT_DIR/summary.md"
 cd "$MAIN_REPO" || exit 2
 git fetch origin -q
 git worktree remove "$WT" --force 2>/dev/null
+git worktree prune 2>/dev/null
+rm -rf "$WT" 2>/dev/null
 git worktree add "$WT" "$REF" >/dev/null || exit 2
 HEAD_SHA=$(git -C "$WT" rev-parse --short HEAD)
 echo "# Валидация баланса FAN-1028 — $REF @ $HEAD_SHA" > "$SUMMARY"
