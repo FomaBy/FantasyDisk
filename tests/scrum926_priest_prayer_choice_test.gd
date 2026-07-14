@@ -131,6 +131,14 @@ func _check_priest_resolution(target: Vector2i) -> void:
 		if buttons.size() == 3 and buttons[0].get_viewport().gui_get_focus_owner() != buttons[0]:
 			_errors.append("%s: %s stole prayer-card focus." % [context, cancel_event.get_class()])
 
+	var verify_movement_rearm := target == TARGETS[0] and player is CharacterBody2D
+	var position_before_choice := Vector2.ZERO
+	if verify_movement_rearm:
+		(player as CharacterBody2D).set_physics_process(false)
+		position_before_choice = (player as CharacterBody2D).global_position
+		# FAN-1096: Up is both UI navigation and combat movement. Holding it while
+		# confirming the mandatory pre-battle choice must not leak into combat.
+		Input.action_press(&"move_up")
 	if buttons.size() == 3:
 		buttons[1].emit_signal("pressed")
 		buttons[1].emit_signal("pressed") # same-frame duplicate must be ignored
@@ -143,6 +151,8 @@ func _check_priest_resolution(target: Vector2i) -> void:
 		_errors.append("%s: prayer pause remained after valid selection." % context)
 	if get_nodes_in_group("elite_enemies").size() != 1:
 		_errors.append("%s: combat continuation spawned %d elites, expected exactly one." % [context, get_nodes_in_group("elite_enemies").size()])
+	if verify_movement_rearm:
+		_assert_movement_rearms_after_choice(player as CharacterBody2D, position_before_choice, context)
 	await _cleanup(viewport, main)
 
 
@@ -201,12 +211,33 @@ func _assert_level_up_card_safe(button: Button, context: String) -> void:
 		_errors.append("%s: %s content escapes its Level Up safe zone." % [context, button.name])
 
 
+func _assert_movement_rearms_after_choice(player: CharacterBody2D, start_position: Vector2, context: String) -> void:
+	player.call("_physics_process", 1.0 / 60.0)
+	if not player.global_position.is_equal_approx(start_position) or not player.velocity.is_zero_approx():
+		_errors.append("%s: held UI Up leaked into combat movement: position=%s velocity=%s." % [context, str(player.global_position), str(player.velocity)])
+
+	Input.action_release(&"move_up")
+	player.call("_physics_process", 1.0 / 60.0)
+	var neutral_position := player.global_position
+	Input.action_press(&"move_up")
+	player.call("_physics_process", 1.0 / 60.0)
+	if player.global_position.y >= neutral_position.y or player.velocity.y >= 0.0:
+		_errors.append("%s: movement did not re-arm after Up returned to neutral." % context)
+
+	Input.action_release(&"move_up")
+	player.call("_physics_process", 1.0 / 60.0)
+	if not player.velocity.is_zero_approx():
+		_errors.append("%s: movement did not stop after the fresh Up press was released: %s." % [context, str(player.velocity)])
+	player.set_physics_process(true)
+
+
 func _settle() -> void:
 	for _frame in range(6):
 		await process_frame
 
 
 func _cleanup(viewport: SubViewport, main: Node) -> void:
+	Input.action_release(&"move_up")
 	paused = false
 	if main != null and is_instance_valid(main):
 		main.call("_clear_all_game_pauses")

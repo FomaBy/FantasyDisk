@@ -105,6 +105,11 @@ SCRUM-846 усилил этот контракт: если старый или �
   превышает текущую максимальную скорость персонажа.
 - Deadzone по умолчанию `0.25`; runtime может переопределить его через setting
   key/root meta `gamepad_deadzone`.
+- FAN-1096: новый боевой `Player` принимает направление только после того, как
+  общие `move_*` / `ui_*` биндинги один раз вернулись в нейтраль. Поэтому
+  удержанный `Up`/D-pad/стик из обязательного предбоевого выбора не протекает в
+  начавшийся бой: герой остаётся на месте до отпускания, а следующий свежий
+  ввод снова двигает его штатно.
 - `_ensure_default_input_actions()` идемпотентно добавляет keyboard, left-stick
   и D-pad events к `move_*` actions без удаления существующих биндингов и без
   дублей при повторном init.
@@ -125,6 +130,10 @@ SCRUM-846 усилил этот контракт: если старый или �
 - `tests/gamepad_player_movement_test.gd` проверяет synthetic left-stick axis
   `0.7`, deadzone axis `0.1`, D-pad movement, no-op vibration helper and
   отсутствие дублей input events после repeated init.
+- `tests/scrum926_priest_prayer_choice_test.gd` дополнительно держит FAN-1096
+  regression: удержанный `Up` на экране молитвы не двигает героя после выбора,
+  нейтраль перевооружает ввод, а свежий press/release снова двигает и
+  останавливает персонажа.
 - `tests/gamepad_core_input_test.gd` (SCRUM-811): autoload зарегистрирован;
   клавиатурные события выживают, joypad-события долиты во все 8 игровых и 6
   `ui_*` экшенов по канон-раскладке; `ensure_joypad_bindings()` идемпотентен;
