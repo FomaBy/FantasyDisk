@@ -36,10 +36,35 @@ if [ $? -ne 0 ]; then
 fi
 
 FAILED=0
+# FAN-1062: watchdog — ни один гейт не держит контракт бесконечно. Повисший
+# Godot убивается по порогу (FSD_GATE_TIMEOUT, сек; дефолт 480) и гейт честно
+# краснеет строкой в сводке вместо вечного 100% CPU.
+# Дефолт 570с: худшая CSV-пара (biologist spore, пул/статус-энтити-шторм на
+# 20 бессмертных болванках) ≈ 5 мин локально, ~7 на медленной среде.
+GATE_TIMEOUT="${FSD_GATE_TIMEOUT:-570}"
+run_with_watchdog() {
+	local log="$1"; shift
+	"$@" > "$log" 2>&1 &
+	local pid=$!
+	local waited=0
+	while kill -0 $pid 2>/dev/null; do
+		if [ $waited -ge $GATE_TIMEOUT ]; then
+			pkill -9 -P $pid 2>/dev/null
+			kill -9 $pid 2>/dev/null
+			echo "[watchdog] превышен порог ${GATE_TIMEOUT}с — процесс убит" >> "$log"
+			wait $pid 2>/dev/null
+			return 124
+		fi
+		sleep 5
+		waited=$((waited+5))
+	done
+	wait $pid
+	return $?
+}
 run_gate() {
 	local name="$1"; local script="$2"; shift 2
 	local log="$OUT_DIR/${name}.log"
-	python3 tools/godot_gate.py --headless --path . --script "$script" "$@" > "$log" 2>&1
+	run_with_watchdog "$log" python3 tools/godot_gate.py --headless --path . --script "$script" "$@"
 	local code=$?
 	# exit 144/247 = коллизия инстансов Godot — один ретрай
 	if [ $code -eq 144 ] || [ $code -eq 247 ]; then
@@ -75,17 +100,16 @@ if [ "${FSD_SKIP_CSV:-0}" != "1" ]; then
 	# не переживает агентские tool-таймауты; band-проверка чанков пропускается
 	# (subset-режим), полная полоса судится по merged-CSV python-слоем ниже.
 	CSV_OK=1
-	rm -f "$OUT_DIR"/csv_chunk_*.csv
-	# Чанки ПО КЛАССАМ (17 × ~2-5.5 мин): пул/статус-тяжёлые классы не влезают
-	# даже девятью парами в агентские ~10-мин tool-таймауты, а один класс —
-	# гарантированно влезает. Ростер зафиксирован контрактными тестами
-	# (progression_data_character_contract_test).
-	CSV_CLASSES=(berserk soldier thief elementalist sniper priest biologist robot engineer dark_mage guitarist assassin ranger doctor chemist knight druid)
+	rm -f "$OUT_DIR"/csv_chunk_*.csv 2>/dev/null || true
+	# FAN-1062: чанки ПО ПАРАМ (51 × ~0.5-3 мин, худшая пара — пул/статус 20t).
+	# Классовые чанки не влезали в порог на медленных средах (biologist >15 мин
+	# у QA). Каждая пара + watchdog = контракт строго ограничен по времени.
+	# Ростер зафиксирован progression_data_character_contract_test.
 	CSV_I=0
-	for CID in "${CSV_CLASSES[@]}"; do
-		run_gate "live_csv_${CID}" res://tools/character_balance_csv.gd -- --mode=live --class=${CID}
+	while [ $CSV_I -lt 51 ]; do
+		run_gate "live_csv_row$(printf '%02d' ${CSV_I})" res://tools/character_balance_csv.gd -- --mode=live --offset=${CSV_I} --limit=1
 		if [ -f build/character_balance_dps.csv ]; then
-			cp build/character_balance_dps.csv "$OUT_DIR/csv_chunk_$(printf '%02d' ${CSV_I})_${CID}.csv"
+			cp build/character_balance_dps.csv "$OUT_DIR/csv_chunk_$(printf '%02d' ${CSV_I}).csv"
 		else
 			CSV_OK=0
 		fi
@@ -112,7 +136,7 @@ PYEOF
 		echo "| live_csv (merge) | ❌ FAIL | csv_chunk_*.csv |" >> "$SUMMARY"
 		FAILED=$((FAILED+1))
 	else
-		echo "| live_csv (3 чанка, merged) | ✅ PASS | csv_chunk_*.csv |" >> "$SUMMARY"
+		echo "| live_csv (51 per-pair чанк, merged) | ✅ PASS | csv_chunk_*.csv |" >> "$SUMMARY"
 	fi
 	cp build/character_balance_dps.csv "$OUT_DIR/character_balance_dps_after.csv" 2>/dev/null
 fi
