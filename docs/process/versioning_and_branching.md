@@ -6,14 +6,14 @@
 
 FantasyDisk использует SemVer до 1.0:
 
-- `main` - стабильная линия выпущенных `0.1.x` версий;
+- `main` - стабильная линия выпущенных версий;
 - `dev` - активная рабочая ветка текущей линии `0.2.x`;
 - Multica проект `FantasyDisk` (issues `FAN-*`) - authoritative task
   queue/status/owner source; local task files and task board are
   mirrors/spec/evidence only. Legacy Jira (SCRUM-*) — read-only historical
   archive (см. docs/process/jira_to_multica_cutover.md).
-- текущая разработка: активная Multica board / release target `0.2.1` на `dev`
-  (на 2026-07-03); релиз `0.1.6` закрыт 2026-06-27, `v0.1.6` влита в `main`.
+- текущая разработка: активная Multica board / release target `0.2.2` на `dev`
+  (на 2026-07-14); релиз `0.2.2` подготовлен к слиянию в `main`.
 - `0.1.8` и `0.1.9` отменены как плановые версии: новые Multica issues, mirrors,
   fixVersions и release/freeze notes не должны использовать эти номера.
 - после `0.2.0` patch-линия идет как `0.2.1`, `0.2.2`, ...
@@ -22,7 +22,7 @@ FantasyDisk использует SemVer до 1.0:
 ## Feature Block
 
 Feature block 0.1.5 снят релизом `v0.1.5` (2026-06-15). Сейчас активна
-Multica board / release target `0.2.1` (на 2026-07-03): задачи ведутся через
+Multica board / release target `0.2.2` (на 2026-07-14): задачи ведутся через
 Multica (task board — локальное зеркало), с обязательной проверкой `Контур`,
 owner, locked paths и dirty worktree. Директива пользователя 2026-07-03: все
 задачи, добавляемые в любые чаты, сразу попадают в active Multica board с
@@ -34,7 +34,7 @@ fixVersion активного release. Перед стабилизацией с�
 
 | Branch | Назначение | Правило |
 | --- | --- | --- |
-| `main` | Стабильная выпущенная линия `0.1.x` | Не вести обычную разработку напрямую |
+| `main` | Стабильная выпущенная линия | Не вести обычную разработку напрямую |
 | `dev` | Активная рабочая ветка `0.2.x` | Работать по Multica (task board — зеркало); параллельные Codex/Claude задачи разводить через owner и locked paths |
 
 ## Правила Для Агентов
@@ -89,7 +89,7 @@ dev
 
 Текущий ожидаемый flow:
 
-1. `main` хранит `0.1` (выпущена `0.1.6`).
+1. `main` хранит последнюю проверенную стабильную версию.
 2. `dev` используется для активной разработки текущего live Multica board/release.
 3. Активные задачи, баги, QA defects и release blockers закрываются в текущем
    release-цикле; Codex и Claude могут работать параллельно только при разных
@@ -115,9 +115,9 @@ dev
 - Не начинать новую задачу без предварительного безопасного pull из GitHub.
 - Не оставлять завершённую задачу незапушенной.
 
-## Текущий Статус На 2026-07-13
+## Текущий Статус На 2026-07-14
 
 - Активная ветка: `dev`.
-- `main` = выпущенная `0.1.6` (линия версии `0.1`).
-- `dev` используется для активной live Multica board / release target `0.2.1`
-  (на 2026-07-03); `0.1.8` и `0.1.9` skipped/superseded.
+- `main` получает проверенный релиз `0.2.2` после release merge.
+- `dev` используется для активной live Multica board / release target `0.2.2`
+  (на 2026-07-14); `0.1.8` и `0.1.9` skipped/superseded.

@@ -1,0 +1,16 @@
+{
+  "jsonrpc": "2.0",
+  "id": 22,
+  "method": "tools/call",
+  "params": {
+    "name": "create_ui_asset",
+    "arguments": {
+      "name": "release_0_2_2_character_notes",
+      "width": 632,
+      "height": 424,
+      "no_background": false,
+      "color_palette": "near-black, blackened iron, dark stone, worn gold, restrained crimson gems, subtle violet disk-rift glow",
+      "description": "Premium brutal but restrained dark-fantasy D&D dragon-forged release-notes poster frame. One continuous full-canvas near-black background with blackened iron, dark stone, worn gold, tiny crimson gems, subtle violet disk-rift light and restrained dragon ornaments around the outside and the central divider. Leave these proportional areas completely empty, dark, calm and readable for later content: upper-left release badge; upper-left brand logo beneath it; upper-right subtitle; full-width intro strip; two large equal body columns below; full-width footer strip. Decorative metal, dragon heads, gems, spikes, seams, smoke, characters, weapons and bright highlights must stay outside those interiors. Draw only the final frame/layout layer around the empty zones. No text, numbers, letters, pseudo-text, logo, watermark, UI labels or placeholder glyphs anywhere. Premium, elegant, epic, strict, beautiful, not loud, not cluttered, not over-detailed."
+    }
+  }
+}

@@ -1,0 +1,29 @@
+{
+  "canvas": {"width": 1350, "height": 1350},
+  "defaults": {
+    "font": "/System/Library/Fonts/Supplemental/Arial Unicode.ttf",
+    "color": "#F8E8C4",
+    "stroke_fill": "#12080B",
+    "stroke_width": 4,
+    "line_spacing": 1.08,
+    "align": "left",
+    "valign": "middle"
+  },
+  "content": {
+    "release": "0.2.2",
+    "subtitle": "БАЛАНС • КОДЕКС • ЛОР",
+    "intro": "Все 17 классов и 51 вид оружия получили честные роли — без мёртвых вариантов и бесконечного разгона на толпе.",
+    "left": "БЕРСЕРК — стабильнее бьёт толпы; топор и молот без случайных пиков.\n\nСОЛДАТ — выровнен штык; три оружия лучше держат свои роли.\n\nВОР — усилены рикошеты, кинжал и дымовая бомба.\n\nЭЛЕМЕНТАЛИСТ — Кольцо стихий больше не разгоняется бесконечно.\n\nСНАЙПЕР — повышен урон по одиночной цели.\n\nСВЯЩЕННИК — Реликварий сильнее соло, Кадило честнее в толпе.\n\nБИОЛОГ — ограничено распространение инфекций; урон выровнен.\n\nРОБОТ — сохранён тяжёлый танк-контроль без лишнего урона.\n\nИНЖЕНЕР — строй дронов шире; турели и мины выровнены.",
+    "right": "ТЁМНЫЙ МАГ — проклятия больше не разгоняются бесконечно на больших толпах.\n\nГИТАРИСТ — усилены рифф, бас-кольцо и усилители; класс заметно увереннее.\n\nАССАСИН — чакрамы лучше справляются с группами, сохраняя сильный урон по цели.\n\nРЕЙНДЖЕР — усилены все три оружия и надёжность дальнего контроля.\n\nДОКТОР — зелье и пары исцеляют честнее; выживание осталось оружейной нишей.\n\nХИМИК — укрощены порох и кислота, усилена постоянная пара гомункулов.\n\nРЫЦАРЬ — сохранены высокая стойкость, контратаки и тяжёлый контроль.\n\nДРУИД — оживлены Терновый посох и Тотем ворона; звери уравновешены.",
+    "footer": "КОДЕКС И ЛОР РАСШИРЕНЫ • НОВЫЙ ФОН МЕНЮ • macOS + Windows"
+  },
+  "zones": [
+    {"id": "release", "content_key": "release", "role": "badge", "x": 80, "y": 55, "w": 145, "h": 80, "max_font": 40, "min_font": 26, "color": "#FFCE74", "stroke_width": 5, "uppercase": true, "debug_color": "#ffcc33"},
+    {"id": "brand", "image_path": "assets/sprites/ui/menu_title/main_menu_title_fantasy_disk.png", "role": "title", "x": 240, "y": 50, "w": 300, "h": 90, "required": true, "debug_color": "#66ccff"},
+    {"id": "subtitle", "content_key": "subtitle", "role": "subtitle", "x": 870, "y": 55, "w": 370, "h": 80, "max_font": 26, "min_font": 18, "color": "#DDAA59", "stroke_width": 4, "align": "center", "debug_color": "#cc88ff"},
+    {"id": "intro", "content_key": "intro", "role": "intro", "x": 86, "y": 190, "w": 1180, "h": 150, "max_font": 28, "min_font": 19, "color": "#E8C98B", "stroke_width": 4, "align": "center", "debug_color": "#ff9966"},
+    {"id": "left", "content_key": "left", "role": "body", "x": 82, "y": 410, "w": 580, "h": 704, "max_font": 22, "min_font": 17, "color": "#F8E8C4", "stroke_width": 3, "valign": "top", "debug_color": "#66ff99"},
+    {"id": "right", "content_key": "right", "role": "body", "x": 692, "y": 410, "w": 576, "h": 704, "max_font": 22, "min_font": 17, "color": "#F8E8C4", "stroke_width": 3, "valign": "top", "debug_color": "#66ff99"},
+    {"id": "footer", "content_key": "footer", "role": "footer", "x": 88, "y": 1188, "w": 1174, "h": 112, "max_font": 24, "min_font": 17, "color": "#CFA45E", "stroke_width": 4, "align": "center", "debug_color": "#ff6699"}
+  ]
+}

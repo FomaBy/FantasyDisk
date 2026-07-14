@@ -106,7 +106,11 @@ def main():
     if not os.path.isdir(rel):
         sys.exit("Нет каталога релиза: %s (сначала tools/build_release.sh %s)" % (rel, a.version))
     arts = sorted(os.listdir(rel))
-    installers = [f for f in arts if f.endswith((".dmg", ".exe", ".zip"))]
+    installers = [
+        f
+        for f in arts
+        if f.endswith(".dmg") or f.endswith("-windows-setup.exe")
+    ]
     smalls = [f for f in arts if f.endswith((".txt", ".md"))]
 
     hl = read_highlights(root, a.version, a.highlights)

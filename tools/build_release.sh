@@ -1,5 +1,6 @@
 #!/bin/bash
-# Релизная сборка FantasyDisk для macOS (dmg) и Windows (exe + NSIS installer + zip).
+# Релизная сборка FantasyDisk для macOS (подписанный drag-to-Applications DMG)
+# и Windows (только NSIS installer).
 #
 # Использование: tools/build_release.sh <версия>   # пример: tools/build_release.sh 0.1.0
 #
@@ -74,9 +75,51 @@ if ! run_godot --headless --import --path "${WORKTREE_DIR}" >"${IMPORT_LOG}" 2>&
   exit 2
 fi
 
-echo "==> Экспорт macOS (dmg, ad-hoc подпись)"
+echo "==> Экспорт macOS (.app в zip; подпись будет последним изменением bundle)"
 run_godot --headless --path "${WORKTREE_DIR}" \
-  --export-release "macOS" "${WORKTREE_DIR}/build/FantasyDisk-${VERSION}-macos.dmg"
+  --export-release "macOS" "${WORKTREE_DIR}/build/FantasyDisk-${VERSION}-macos.zip"
+
+echo "==> Финализация и подпись готового .app"
+MAC_STAGE="${WORKTREE_DIR}/build/macos-stage"
+mkdir -p "${MAC_STAGE}"
+ditto -x -k "${WORKTREE_DIR}/build/FantasyDisk-${VERSION}-macos.zip" "${MAC_STAGE}"
+APP_PATH="$(find "${MAC_STAGE}" -maxdepth 2 -type d -name '*.app' -print -quit)"
+if [[ -z "${APP_PATH}" ]]; then
+  echo "    ERROR: macOS export не содержит .app"
+  exit 2
+fi
+xattr -cr "${APP_PATH}"
+MACOS_SIGN_IDENTITY="${MACOS_SIGN_IDENTITY:--}"
+if [[ "${MACOS_SIGN_IDENTITY}" == "-" ]]; then
+  echo "    Developer ID Application не задан; ставим финальную ad-hoc подпись"
+  codesign --force --deep --sign - "${APP_PATH}"
+else
+  echo "    Подпись Developer ID Application (hardened runtime + timestamp)"
+  codesign --force --deep --options runtime --timestamp \
+    --sign "${MACOS_SIGN_IDENTITY}" "${APP_PATH}"
+fi
+codesign --verify --deep --strict --verbose=4 "${APP_PATH}"
+
+echo "==> Создание DMG с ярлыком Applications и стрелкой"
+MAC_DMG="${WORKTREE_DIR}/build/FantasyDisk-${VERSION}-macos.dmg"
+bash "${REPO_DIR}/tools/create_macos_dmg.sh" "${APP_PATH}" "${MAC_DMG}" "${VERSION}"
+if [[ "${MACOS_SIGN_IDENTITY}" != "-" ]]; then
+  codesign --force --timestamp --sign "${MACOS_SIGN_IDENTITY}" "${MAC_DMG}"
+fi
+
+if [[ -n "${MACOS_NOTARY_PROFILE:-}" ]]; then
+  if [[ "${MACOS_SIGN_IDENTITY}" == "-" ]]; then
+    echo "    ERROR: MACOS_NOTARY_PROFILE задан, но Developer ID Application отсутствует"
+    exit 2
+  fi
+  echo "==> Apple notarization + stapling"
+  xcrun notarytool submit "${MAC_DMG}" \
+    --keychain-profile "${MACOS_NOTARY_PROFILE}" --wait
+  xcrun stapler staple "${MAC_DMG}"
+  xcrun stapler validate "${MAC_DMG}"
+else
+  echo "==> Notarization пропущена: MACOS_NOTARY_PROFILE не задан"
+fi
 
 echo "==> Экспорт Windows (x86_64, embed_pck)"
 run_godot --headless --path "${WORKTREE_DIR}" \
@@ -109,23 +152,25 @@ assert stored == computed, "NSIS CRC битый: stored %08x != computed %08x" %
 print("NSIS CRC OK (firstheader @ %d, crc @ %d)" % (fh_off, crc_off))
 PYCRC
 
-echo "==> Zip-запаска Windows"
-(cd "${WORKTREE_DIR}/build" && cp FantasyDisk-Windows.exe "FantasyDisk-${VERSION}.exe" \
-  && zip -q "FantasyDisk-${VERSION}-windows.zip" "FantasyDisk-${VERSION}.exe")
-
-echo "==> Read-only mount macOS DMG для secret scan app/PCK"
+echo "==> Read-only mount macOS DMG для проверки подписи, layout и secret scan"
 DMG_MOUNT_DIR="${WORKTREE_DIR}/build/secret-scan-dmg"
 mkdir -p "${DMG_MOUNT_DIR}"
-hdiutil attach "${WORKTREE_DIR}/build/FantasyDisk-${VERSION}-macos.dmg" \
+hdiutil attach "${MAC_DMG}" \
   -readonly -nobrowse -mountpoint "${DMG_MOUNT_DIR}" >/dev/null
+if [[ ! -L "${DMG_MOUNT_DIR}/Applications" ]] \
+    || [[ "$(readlink "${DMG_MOUNT_DIR}/Applications")" != "/Applications" ]]; then
+  echo "    ERROR: DMG не содержит корректный ярлык Applications"
+  exit 2
+fi
+MOUNTED_APP="${DMG_MOUNT_DIR}/$(basename "${APP_PATH}")"
+codesign --verify --deep --strict --verbose=4 "${MOUNTED_APP}"
 
 echo "==> Secret scan staged player payloads до публикации"
 set +e
 python3 "${REPO_DIR}/tools/scan_release_secrets.py" \
   "${DMG_MOUNT_DIR}" \
   "${WORKTREE_DIR}/build/FantasyDisk-Windows.exe" \
-  "${WORKTREE_DIR}/build/FantasyDisk-${VERSION}-windows-setup.exe" \
-  "${WORKTREE_DIR}/build/FantasyDisk-${VERSION}-windows.zip"
+  "${WORKTREE_DIR}/build/FantasyDisk-${VERSION}-windows-setup.exe"
 SECRET_SCAN_STATUS=$?
 set -e
 hdiutil detach "${DMG_MOUNT_DIR}" >/dev/null
@@ -137,9 +182,23 @@ fi
 
 echo "==> Публикация проверенных staged artifacts"
 mkdir -p "${RELEASE_DIR}"
-cp "${WORKTREE_DIR}/build/FantasyDisk-${VERSION}-macos.dmg" "${RELEASE_DIR}/"
+rm -f "${RELEASE_DIR}/FantasyDisk-${VERSION}-windows.zip"
+rm -f "${RELEASE_DIR}/FantasyDisk-Windows.exe"
+cp "${MAC_DMG}" "${RELEASE_DIR}/"
 cp "${WORKTREE_DIR}/build/FantasyDisk-${VERSION}-windows-setup.exe" "${RELEASE_DIR}/"
-cp "${WORKTREE_DIR}/build/FantasyDisk-${VERSION}-windows.zip" "${RELEASE_DIR}/"
+awk -v marker="## [${VERSION}]" '
+  index($0, marker) == 1 { capture = 1 }
+  capture && printed && index($0, "## [") == 1 { exit }
+  capture { print; printed = 1 }
+' "${WORKTREE_DIR}/CHANGELOG.md" > "${RELEASE_DIR}/CHANGELOG-${VERSION}.md"
+if [[ ! -s "${RELEASE_DIR}/CHANGELOG-${VERSION}.md" ]]; then
+  echo "    ERROR: раздел ${VERSION} не найден в CHANGELOG.md"
+  exit 2
+fi
+POSTER_PATH="${WORKTREE_DIR}/assets/marketing/fantasydisk_${VERSION//./}_announcement_telegram_discord.png"
+if [[ -f "${POSTER_PATH}" ]]; then
+  cp "${POSTER_PATH}" "${RELEASE_DIR}/"
+fi
 
 echo "==> SHA256SUMS.txt (контроль порчи при передаче файлов)"
 (cd "${RELEASE_DIR}" && shasum -a 256 FantasyDisk-* > SHA256SUMS.txt && cat SHA256SUMS.txt)

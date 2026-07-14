@@ -7,7 +7,7 @@
 
 - Схема: **SemVer** `MAJOR.MINOR.PATCH`; до выхода 1.0 — `0.MINOR.PATCH`
   (0.1.0 → 0.2.0 — новые фичи; 0.2.1 — только хотфиксы).
-- Текущий active target: `0.2.1`. Плановые `0.1.8` и `0.1.9` отменены/superseded:
+- Текущий active target: `0.2.2`. Плановые `0.1.8` и `0.1.9` отменены/superseded:
   не создавать под них sprint, Multica release metadata (`release`),
   changelog-финализацию или release tasks. После `0.2.0` следующая patch-линия:
   `0.2.1`, `0.2.2`, ...
@@ -75,8 +75,8 @@ dev  — основная ветка разработки. Все чаты (Back
 
 ## Feature Block
 
-Feature block 0.1.5 снят релизом v0.1.5 (2026-06-15). На 2026-07-02 активной
-freeze-директивы нет; текущий Multica release target — `0.2.1`. При следующей
+Feature block 0.1.5 снят релизом v0.1.5 (2026-06-15). На 2026-07-14 активной
+freeze-директивы нет; текущий Multica release target — `0.2.2`. При следующей
 стабилизации PM включает freeze отдельной директивой: в текущий релиз остаются
 уже заведенные строки доски, bugfix/QA defect/regression/release-blocker задачи
 и явно разрешенные PM исключения; новые не-баговые фичи уходят в следующую
@@ -91,9 +91,16 @@ SemVer patch/minor версию.
 (сейчас 4.7). Templates ставятся один раз: Editor → Manage Export Templates.
 
 ### macOS
-- Пресет `macOS` (уже есть в `export_presets.cfg`), формат экспорта — **.dmg**.
-- Подпись: ad-hoc (без Apple Developer аккаунта). У пользователей Gatekeeper
-  попросит правый клик → Open при первом запуске — это нормально для не-стора.
+- Пресет `macOS` экспортирует `.app` в zip; `tools/build_release.sh` распаковывает
+  окончательный bundle, удаляет quarantine/xattr и **после всех изменений**
+  повторно подписывает его. `MACOS_SIGN_IDENTITY` включает Developer ID +
+  hardened runtime; без него применяется финальная ad-hoc подпись.
+- Подпись обязательно проверяется через `codesign --verify --deep --strict` как
+  до упаковки, так и после монтирования итогового DMG.
+- Если задан keychain profile `MACOS_NOTARY_PROFILE`, скрипт отправляет DMG в
+  `notarytool`, ждёт результат, делает `stapler staple` и `stapler validate`.
+- DMG содержит `FantasyDisk.app`, ярлык `Applications` и фоновую стрелку для
+  понятного drag-to-Applications потока.
 - Выход: `releases/vX.Y.Z/FantasyDisk-X.Y.Z-macos.dmg`.
 
 ### Windows (собирается с этого же Mac)
@@ -101,16 +108,12 @@ SemVer patch/minor версию.
   иконка — .ico, сгенерированный из `icon.svg`.
 - Для иконки/метаданных exe нужен `rcedit` + wine; если ставить wine нежелательно —
   допустимо собирать без кастомной иконки exe (не блокер релиза).
-- «Установочный файл»: инсталлер **NSIS** (`brew install makensis`) — скрипт
-  `tools/windows_installer.nsi`, на выходе `FantasyDisk-X.Y.Z-windows-setup.exe`.
-  Запасной вариант: zip `FantasyDisk-X.Y.Z-windows.zip` с exe.
-- Headless-сборка обеих платформ:
-  ```bash
-  GODOT="/Users/sergeyfomin/Downloads/Godot.app/Contents/MacOS/Godot"
-  "$GODOT" --headless --path . --export-release "macOS" "releases/vX.Y.Z/FantasyDisk-X.Y.Z-macos.dmg"
-  "$GODOT" --headless --path . --export-release "Windows Desktop" "releases/vX.Y.Z/win/FantasyDisk.exe"
-  ```
-  Обертка: `tools/build_release.sh` (создает Back-end).
+- Игрокам публикуется только инсталлер **NSIS** (`brew install makensis`) —
+  `FantasyDisk-X.Y.Z-windows-setup.exe`. Сырой exe нужен только как временный
+  вход сборки; отдельный Windows zip больше не создаётся и не публикуется.
+- Headless-экспорт обеих платформ выполняется только через
+  `tools/build_release.sh X.Y.Z`, который вызывает Godot через
+  `tools/godot_gate.py`, а не напрямую.
 
 ## Кроссплатформенная совместимость (правила для всех агентов)
 
@@ -140,7 +143,8 @@ SemVer patch/minor версию.
   `std::bad_alloc` (ломается даже бандловый пример). `tools/build_release.sh`
   выставляет `LC_ALL=en_US.UTF-8` сам; при ручном запуске makensis — не забывать.
 - `assets/icon.ico` (16-256) сгенерирован из `icon.svg`: `qlmanage -t -s 256` -> PNG -> Pillow.
-- macOS dmg подписывается ad-hoc; GL-ошибки "Texture leaked" при выходе релизной
+- macOS `.app` подписывается последним шагом перед DMG; при отсутствии Developer
+  ID используется ad-hoc. GL-ошибки "Texture leaked" при выходе релизной
   сборки с `--quit-after` — известный безвредный артефакт принудительного выхода
   в gl_compatibility, не считать регрессией.
 - **NSIS CRC**: алгоритм exehead — crc32 файла с байта 512 до поля CRC (firstheader + length_of_all_following_data - 4); makensis на macOS пишет его корректно. `build_release.sh` делает verify-only проверку по этому алгоритму (НЕ перезаписывать хвост файла — формула crc32(file[:-4]) неверна и портит инсталлер). Компрессор — zlib: solid-lzma поток кросс-собранного makensis подозревается в «integrity check failed» на реальной Windows.

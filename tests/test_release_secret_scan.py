@@ -62,9 +62,29 @@ class ReleaseSecretScanTests(unittest.TestCase):
         scan_at = script.index('echo "==> Secret scan staged player payloads до публикации"')
         publish_at = script.index('echo "==> Публикация проверенных staged artifacts"')
         self.assertLess(scan_at, publish_at)
-        self.assertIn('hdiutil attach "${WORKTREE_DIR}/build/FantasyDisk-${VERSION}-macos.dmg"', script)
+        self.assertIn('MAC_DMG="${WORKTREE_DIR}/build/FantasyDisk-${VERSION}-macos.dmg"', script)
+        self.assertIn('hdiutil attach "${MAC_DMG}"', script)
         self.assertIn('"${DMG_MOUNT_DIR}"', script[scan_at:publish_at])
         self.assertNotIn('"${RELEASE_DIR}/FantasyDisk-', script[:publish_at])
+
+    def test_release_pipeline_signs_final_app_before_dmg_and_publishes_installer_only(self) -> None:
+        script = (ROOT / "tools" / "build_release.sh").read_text(encoding="utf-8")
+        clear_xattr_at = script.index('xattr -cr "${APP_PATH}"')
+        sign_at = script.index('codesign --force --deep --sign - "${APP_PATH}"')
+        verify_at = script.index('codesign --verify --deep --strict --verbose=4 "${APP_PATH}"')
+        dmg_at = script.index('bash "${REPO_DIR}/tools/create_macos_dmg.sh"')
+        self.assertLess(clear_xattr_at, sign_at)
+        self.assertLess(sign_at, verify_at)
+        self.assertLess(verify_at, dmg_at)
+
+        publish_at = script.index('echo "==> Публикация проверенных staged artifacts"')
+        published = script[publish_at:]
+        self.assertIn(
+            'cp "${WORKTREE_DIR}/build/FantasyDisk-${VERSION}-windows-setup.exe"',
+            published,
+        )
+        self.assertNotIn('cp "${WORKTREE_DIR}/build/FantasyDisk-Windows.exe"', published)
+        self.assertNotIn('cp "${WORKTREE_DIR}/build/FantasyDisk-${VERSION}-windows.zip"', published)
 
 
 class _captured_streams:
