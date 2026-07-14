@@ -1168,3 +1168,36 @@ healing stays `0.68×1.20=0.816` of A0, and reward pressure is bounded at
 
 Gate: `tests/guild_atlas_scrum1069_balance_test.gd`; exact audit:
 `docs/design/reports/scrum1069_guild_atlas_balance_audit.md`.
+
+## FAN-1028 Полный ребаланс классов — финальный итог (Stage 4, 2026-07-14)
+
+Пересмотр баланса всех 17 классов как полных three-weapon китов (FAN-1028,
+ветка `agent/claude/53f2a056`). Сводный before/after v2→финал с пер-классовыми
+и пер-оружейными таблицами, механизмами капов и валидацией:
+**`build/stage4_before_after_fan1028.md`**.
+
+Итог (roster-relative kit-total; времябаза честная с `8dd7e4fb`, roster-relative
+скоры сравнимы через границу времябазы):
+
+- **Разброс китов `0.49 … 7.56` (v2, 15.4×) → `0.87 … 1.21` (финал, 1.39×)**;
+  13/17 внутри ±12%, все 17 внутри ±21% (верхние — задокументированный
+  identity-price танков robot 1.19 / knight 1.12 + погранзначения priest 1.21 /
+  soldier 1.19).
+- **Мёртвых слотов `≥4 → 0/51`** (homunculus_vial, briar_staff, raven_totem
+  ×1.84–2.41, pressure_mines оживлены).
+- **Crowd-runaway капнут data-driven** по 5 каналам (прямой AoE / pool / status
+  fan-out / falloff / orbit width-skip) + boss-hazard ≤80% max HP; за-каповый
+  хвост толпы ПРОПУСКАЕТСЯ (skip, не «хит нулём»). Пик v2 chemist/blast_powder
+  crowd 79.4× медианы → в коридоре.
+- **Ascension (DoD A1/A5):** формальный гейт `tests/ascension_viability_gate.gd`
+  — все 17 классов проходят A5 (худшая маржа guitarist 6.08 ≥1.5), секретный
+  босс ≥1.2, random-A1 ≥0.95 (худшие живые 0.97–0.99), ваншоты исключены капом.
+- **Comfort-band:** разброс `3.62× → 1.24×`, `comfort_band_cross_class_gate` зелёный.
+- **Валидация (tip `90352a6c`):** все балансные гейты зелёные (6 cap + ascension
+  + comfort + damage/survivability smoke + 16 kit + pool_dot_runaway 67549≤80000).
+  `weapon_integrity_test` — pre-existing на базе `078833fc` (не относится к
+  ребалансу); berserk — живой шум, проходит на 4-прогонном среднем.
+- Peer review: 25 агентов, 19 находок (1 опровергнута), 8 actionable зафикшены.
+
+Остаток: QA child issue (lifecycle FAN-1048, оконный визуальный смоук 2–3
+классов) → Stage 5 PR `agent/claude/53f2a056` → `dev`.
