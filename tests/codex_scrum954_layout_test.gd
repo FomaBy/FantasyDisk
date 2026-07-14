@@ -6,6 +6,12 @@ const UIIconRegistry := preload("res://scripts/ui_icon_registry.gd")
 const UIButtonFamily := preload("res://scripts/ui/ui_button_family.gd")
 const VIEWPORT_SIZES := [Vector2i(1280, 720), Vector2i(1920, 1080), Vector2i(2560, 1440)]
 const ASCENSION_ICON_PATH := "res://assets/sprites/ui/hud/combat_hud_v2/ui_hud_v2_icon_ascension.png"
+const CODEX_RUNTIME_DIR := "res://assets/sprites/ui/atlas_style/codex/"
+const CODEX_BG_PATH := CODEX_RUNTIME_DIR + "bg_codex_sanctum.png"
+const CODEX_PANEL_PATH := CODEX_RUNTIME_DIR + "panel_9slice.png"
+const CODEX_ENTRY_PATH := CODEX_RUNTIME_DIR + "entry_card_516x154.png"
+const CODEX_DOSSIER_PATH := CODEX_RUNTIME_DIR + "dossier_frame.png"
+const CODEX_CREST_PATH := CODEX_RUNTIME_DIR + "codex_crest.png"
 const EXPECTED_TABS := [
 	["characters", "Персонажи"], ["monsters", "Монстры"],
 	["artifacts", "Артефакты"], ["characteristics", "Параметры"],
@@ -63,6 +69,7 @@ func _check_viewport(viewport_size: Vector2i) -> void:
 	var rect_contract := {
 		"CodexTitleFrame": Rect2(72, 36, 340, 112),
 		"CodexBackButton": Rect2(1580, 46, 268, 96),
+		"CodexCrest": Rect2(908, 24, 104, 104),
 		"CodexNavPanel": Rect2(72, 172, 324, 840),
 		"CodexContent": Rect2(420, 172, 620, 840),
 		"CodexCenterListHost": Rect2(452, 278, 556, 690),
@@ -85,6 +92,25 @@ func _check_viewport(viewport_size: Vector2i) -> void:
 		report.append("- `%s`: `%s`" % [node_name, str(actual)])
 		if not _rect_near(actual, expected, 1.5):
 			errors.append("%s: %s rect %s != %s." % [context, node_name, str(actual), str(expected)])
+	var background := main.find_child("UnifiedBackground_codex", true, false) as TextureRect
+	if background == null or background.texture == null or background.texture.resource_path != CODEX_BG_PATH:
+		errors.append("%s: Codex background is not the FAN-1069 sanctum skin." % context)
+	var crest := main.find_child("CodexCrest", true, false) as TextureRect
+	if crest == null or crest.texture == null or crest.texture.resource_path != CODEX_CREST_PATH:
+		errors.append("%s: missing FAN-1069 Codex crest." % context)
+	for panel_name in ["CodexTitleFrame", "CodexNavPanel", "CodexContent", "CodexDetailPanel"]:
+		var panel := main.find_child(panel_name, true, false) as PanelContainer
+		if panel == null or _style_texture_path(panel.get_theme_stylebox("panel")) != CODEX_PANEL_PATH:
+			errors.append("%s: %s does not use the FAN-1069 panel skin." % [context, panel_name])
+	var first_card := main.find_child("CodexEntryCard", true, false) as Button
+	if first_card == null or _style_texture_path(first_card.get_theme_stylebox("normal")) != CODEX_ENTRY_PATH:
+		errors.append("%s: first Codex entry does not use the FAN-1069 entry card." % context)
+	var dossier_slot := main.find_child("CodexDetailPortraitSlot", true, false) as PanelContainer
+	var dossier_scroll := main.find_child("CodexDetailParchmentInset", true, false) as PanelContainer
+	if dossier_slot == null or _style_texture_path(dossier_slot.get_theme_stylebox("panel")) != CODEX_DOSSIER_PATH:
+		errors.append("%s: dossier frame is missing from CodexDetailPortraitSlot." % context)
+	if dossier_scroll == null or _style_texture_path(dossier_scroll.get_theme_stylebox("panel")) != CODEX_PANEL_PATH:
+		errors.append("%s: lore scroll does not use the ornament-safe FAN-1069 panel frame." % context)
 	var codex_back := main.find_child("CodexBackButton", true, false) as Button
 	if codex_back != null:
 		_check_button_family(codex_back, "text/back_260x104", "%s back" % context)
@@ -316,6 +342,13 @@ func _canonical_texture_path(texture: Texture2D) -> String:
 		var atlas := (texture as AtlasTexture).atlas
 		return atlas.resource_path if atlas != null else ""
 	return texture.resource_path
+
+
+func _style_texture_path(style: StyleBox) -> String:
+	if not (style is StyleBoxTexture):
+		return ""
+	var texture := (style as StyleBoxTexture).texture
+	return texture.resource_path if texture != null else ""
 
 
 func _check_button_family(button: Button, expected_family: String, context: String) -> void:

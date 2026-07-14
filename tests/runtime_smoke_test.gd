@@ -61,6 +61,12 @@ const HUD_TIMER_PANEL_TEXTURE_2K := "res://assets/sprites/ui/hud/combat_hud_v2/u
 # точно ту же пятисостояниевую пластину 380×104, что и главное меню.
 const CODEX_FRAME_BORDER_SUFFIX := "meta40/frame_border.png"
 const CODEX_TAB_KIT_TEXTURE_PART := "ui_btn_text_unique_main_menu_380x104"
+const CODEX_RUNTIME_DIR := "res://assets/sprites/ui/atlas_style/codex/"
+const CODEX_BG_PATH := CODEX_RUNTIME_DIR + "bg_codex_sanctum.png"
+const CODEX_PANEL_PATH := CODEX_RUNTIME_DIR + "panel_9slice.png"
+const CODEX_ENTRY_PATH := CODEX_RUNTIME_DIR + "entry_card_516x154.png"
+const CODEX_DOSSIER_PATH := CODEX_RUNTIME_DIR + "dossier_frame.png"
+const CODEX_CREST_PATH := CODEX_RUNTIME_DIR + "codex_crest.png"
 const EXPECTED_PLAYER_COMBAT_VISUAL_SCALE := 0.64  # SCRUM-823: lock-step with player.gd visual-only bump.
 const ROUTE_START_BATTLE_ONLY_ROWS := 2
 const EXPECTED_CODEX_CHARACTER_PORTRAIT_SIZE := Vector2(216.0, 216.0)
@@ -7715,6 +7721,7 @@ func _test_codex_screen(main_scene: PackedScene) -> void:
 
 	var codex_background := codex_main.find_child("UnifiedBackground_codex", true, false) as TextureRect
 	var codex_stage := codex_main.find_child("CodexStage", true, false) as Control
+	var codex_crest := codex_main.find_child("CodexCrest", true, false) as TextureRect
 	var codex_title_frame := codex_main.find_child("CodexTitleFrame", true, false) as PanelContainer
 	var codex_nav_panel := codex_main.find_child("CodexNavPanel", true, false) as PanelContainer
 	var codex_tabs := codex_main.find_child("CodexTabs", true, false) as Control
@@ -7729,7 +7736,7 @@ func _test_codex_screen(main_scene: PackedScene) -> void:
 	var detail_title := codex_main.find_child("CodexDetailTitle", true, false) as Label
 	var detail_chip_row := codex_main.find_child("CodexDetailChipRow", true, false) as Control
 	var detail_text_safe := codex_main.find_child("CodexDetailParchmentInset", true, false) as Control
-	if codex_background == null or codex_stage == null or codex_title_frame == null or codex_nav_panel == null or codex_content == null or codex_detail == null or codex_tabs == null or codex_center_list == null or default_section == null or default_entry == null or default_portrait == null or default_entry_name == null or detail_portrait == null or detail_title == null or detail_chip_row == null or detail_text_safe == null:
+	if codex_background == null or codex_stage == null or codex_crest == null or codex_title_frame == null or codex_nav_panel == null or codex_content == null or codex_detail == null or codex_tabs == null or codex_center_list == null or default_section == null or default_entry == null or default_portrait == null or default_entry_name == null or detail_portrait == null or detail_title == null or detail_chip_row == null or detail_text_safe == null:
 		_fail("Expected SCRUM-954 Codex stage to include title/back, nav/list/detail panels, canonical row, and dossier zones.")
 		return
 	if codex_main.find_child("CodexFrame", true, false) != null:
@@ -7746,6 +7753,12 @@ func _test_codex_screen(main_scene: PackedScene) -> void:
 	if codex_background.texture == null or codex_background.stretch_mode != TextureRect.STRETCH_KEEP_ASPECT_COVERED or codex_background.expand_mode != TextureRect.EXPAND_IGNORE_SIZE:
 		_fail("Expected UnifiedBackground_codex to cover the viewport without axis stretch.")
 		return
+	if codex_background.texture.resource_path != CODEX_BG_PATH:
+		_fail("Expected FAN-1069 Codex sanctum background %s, got %s." % [CODEX_BG_PATH, codex_background.texture.resource_path])
+		return
+	if codex_crest.texture == null or codex_crest.texture.resource_path != CODEX_CREST_PATH:
+		_fail("Expected FAN-1069 Codex crest texture.")
+		return
 
 	var codex_viewport_size := codex_screen.get_viewport_rect().size
 	var codex_scale := minf(codex_viewport_size.x / 1920.0, codex_viewport_size.y / 1080.0)
@@ -7756,6 +7769,7 @@ func _test_codex_screen(main_scene: PackedScene) -> void:
 	var codex_rect_contract := {
 		"CodexTitleFrame": Rect2(72, 36, 340, 112),
 		"CodexBackButton": Rect2(1580, 46, 268, 96),
+		"CodexCrest": Rect2(908, 24, 104, 104),
 		"CodexNavPanel": Rect2(72, 172, 324, 840),
 		"CodexContent": Rect2(420, 172, 620, 840),
 		"CodexCenterListHost": Rect2(452, 278, 556, 690),
@@ -7781,20 +7795,22 @@ func _test_codex_screen(main_scene: PackedScene) -> void:
 			return
 
 	for codex_panel in [codex_nav_panel, codex_content, codex_detail]:
-		var codex_chip := (codex_panel as PanelContainer).get_theme_stylebox("panel") as StyleBoxFlat
-		if codex_chip == null or codex_chip.bg_color.a < 0.8 or codex_chip.bg_color.v > 0.35:
-			_fail("Expected %s to use a dark atlas chip StyleBoxFlat (alpha >= 0.8)." % str((codex_panel as Control).name))
+		if _stylebox_texture_path((codex_panel as PanelContainer).get_theme_stylebox("panel")) != CODEX_PANEL_PATH:
+			_fail("Expected %s to use the FAN-1069 PixelLab panel skin." % str((codex_panel as Control).name))
 			return
 
 	var slot_style := default_portrait.get_theme_stylebox("panel")
 	if not (slot_style is StyleBoxFlat):
 		_fail("Expected Codex entry portrait slot to use a translucent StyleBoxFlat, not a dark field texture.")
 		return
-	if not (detail_portrait.get_theme_stylebox("panel") is StyleBoxFlat):
-		_fail("Expected SCRUM-879 Codex detail portrait slot to use a translucent StyleBoxFlat.")
+	if _stylebox_texture_path(detail_portrait.get_theme_stylebox("panel")) != CODEX_DOSSIER_PATH:
+		_fail("Expected FAN-1069 Codex detail portrait slot to use the dossier frame.")
 		return
-	if not ((default_entry as Button).get_theme_stylebox("normal") is StyleBoxFlat):
-		_fail("Expected SCRUM-954 Codex list cards to use the unified leather row StyleBoxFlat.")
+	if _stylebox_texture_path((default_entry as Button).get_theme_stylebox("normal")) != CODEX_ENTRY_PATH:
+		_fail("Expected FAN-1069 Codex list cards to use the accepted PixelLab entry card.")
+		return
+	if _stylebox_texture_path((detail_text_safe as PanelContainer).get_theme_stylebox("panel")) != CODEX_PANEL_PATH:
+		_fail("Expected FAN-1069 Codex lore scroll to use the ornament-safe panel frame.")
 		return
 	if default_entry_name.text != "Берсерк" or default_entry_name.text.contains(" — ") or default_entry_name.horizontal_alignment != HORIZONTAL_ALIGNMENT_CENTER:
 		_fail("Expected SCRUM-954 center row to show only the centered canonical Russian name Берсерк.")

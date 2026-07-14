@@ -1,8 +1,35 @@
 # Menus And UI
 
-Обновлено: 2026-07-13
+Обновлено: 2026-07-14
 
 Этот файл собирает UI-направление FantasyDisk после domain split. Полное фактическое состояние остается в `docs/design/current_game_state.md`, а канонические IDs и assets - в `docs/design/content_registry.md`.
+
+## FAN-1065 / FAN-1066 / FAN-1069 Codex Atlas/Settings Runtime Skin
+
+The active Codex visual canon is the PixelLab package
+`docs/design/mockups/fan1065_codex_atlas_settings_redesign/`, promoted into
+`assets/sprites/ui/atlas_style/codex/`. The accepted SCRUM-954/FAN-1047
+1920×1080 stage and all runtime rects remain unchanged: nav
+`72,172,324,840`, list `420,172,620,840`, dossier `1064,172,784,840`, 516×154
+entry rows, 300×300 dossier well with a contained 236×248 image, and a 684×356
+lower scroll whose live text lane remains 610×304. Uniform stage scaling and
+letterboxing remain the only responsive transform.
+
+Runtime uses the cropped sanctum scene, PixelLab panel 9-slice, entry cards,
+dossier portrait frame, chip bar and crest. Text, icons and portraits remain
+separate Controls inside the documented empty zones. The square dossier frame
+is used only on the 300×300 portrait well: visual QA proved that stretching its
+broad dragon corners over the 684×356 lower scroll would cover the locked text
+lane, so that scroll uses the thinner parchment-warm Codex panel 9-slice.
+
+The six left tabs and `CodexBackButton` stay on the canonical Main Menu action
+family (`text/main_menu_380x104` / Back plate). The retired yellow
+`minimal_metal_codex_tab` family must never return. Button states, lazy section
+cache, focus neighbors, LB/RB section cycling, B/Esc Back behavior and exactly
+two active vertical scrollbar lanes remain unchanged. Regression coverage:
+`codex_scrum954_layout_test.gd`, `runtime_smoke_test.gd`,
+`ui_no_overlap_matrix_test.gd` and `dark_fantasy_ui_theme_test.gd`; real Codex
+screenshots are written under `build/qa/scrum954/`.
 
 ## FAN-1047 / SCRUM-1049/1051 Unified Semantic Button Families
 

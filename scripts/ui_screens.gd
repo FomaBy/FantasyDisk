@@ -465,9 +465,19 @@ const ATLAS_CLASS_GENITIVE := {
 # safe-зоне, полая рама frame_border поверх, панели — _atlas_chip_style, кнопки —
 # глобальный кит (_make_button/_set_action_button_size).
 const ATLAS_STYLE_DIR := "res://assets/sprites/ui/atlas_style/"
+const CODEX_RUNTIME_DIR := ATLAS_STYLE_DIR + "codex/"
+const CODEX_SANCTUM_BG_PATH := CODEX_RUNTIME_DIR + "bg_codex_sanctum.png"
+const CODEX_PANEL_FRAME_PATH := CODEX_RUNTIME_DIR + "panel_9slice.png"
+const CODEX_ENTRY_CARD_PATH := CODEX_RUNTIME_DIR + "entry_card_516x154.png"
+const CODEX_CHIP_FRAME_PATH := CODEX_RUNTIME_DIR + "chip_bar.png"
+const CODEX_DOSSIER_FRAME_PATH := CODEX_RUNTIME_DIR + "dossier_frame.png"
+const CODEX_CREST_PATH := CODEX_RUNTIME_DIR + "codex_crest.png"
+const CODEX_PANEL_TEXTURE_MARGINS := Vector4(46.0, 46.0, 46.0, 46.0)
+const CODEX_CHIP_TEXTURE_MARGINS := Vector4(40.0, 20.0, 40.0, 20.0)
+const CODEX_DOSSIER_TEXTURE_MARGINS := Vector4(96.0, 96.0, 96.0, 96.0)
 const ATLAS_STYLE_BG_PATHS := {
 	"hero_select": ATLAS_STYLE_DIR + "bg_hero_hall.png",
-	"codex": ATLAS_STYLE_DIR + "bg_codex_archive.png",
+	"codex": CODEX_SANCTUM_BG_PATH,
 	"patch_notes": ATLAS_STYLE_DIR + "bg_chronicle.png",
 	"settings": ATLAS_STYLE_DIR + "bg_sanctum.png",
 }
@@ -5383,6 +5393,7 @@ func _show_codex_screen() -> void:
 	_prepare_global_tooltips(root)
 
 	_unified_add_background(root, "codex")
+	root.set_meta("codex_runtime_skin", "fan1065_atlas_settings")
 
 	var stage := Control.new()
 	stage.name = "CodexStage"
@@ -5390,6 +5401,20 @@ func _show_codex_screen() -> void:
 	root.add_child(stage)
 	_codex_update_stage_transform(stage)
 	root.resized.connect(_codex_update_stage_transform.bind(stage))
+
+	# FAN-1069: the PixelLab crest is a quiet header accent in the empty stage
+	# band. Runtime text stays separate from the art; tabs/Back remain the exact
+	# shared Main Menu button family requested by the user.
+	if ResourceLoader.exists(CODEX_CREST_PATH):
+		var crest := TextureRect.new()
+		crest.name = "CodexCrest"
+		crest.texture = game._cached_texture(CODEX_CREST_PATH)
+		crest.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
+		crest.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
+		crest.mouse_filter = Control.MOUSE_FILTER_IGNORE
+		_codex_pl_make_nearest(crest)
+		_codex_set_design_rect(crest, Rect2(908, 24, 104, 104))
+		stage.add_child(crest)
 
 	# Header frame and Back use the same restrained metal/button family as the
 	# rest of the product. No category emblem competes with the screen title.
@@ -5559,13 +5584,82 @@ func _codex_refresh_stage_fonts(stage: Control) -> void:
 		))
 
 
-func _codex_panel_style(alpha: float, margins: Vector4) -> StyleBoxFlat:
+func _codex_texture_style(path: String, texture_margins: Vector4, margins: Vector4, alpha := 1.0) -> StyleBox:
+	return _global_texture_style(
+		path,
+		texture_margins,
+		Color(1.0, 1.0, 1.0, clampf(alpha, 0.0, 1.0)),
+		margins,
+		false
+	)
+
+
+func _codex_panel_style(alpha: float, margins: Vector4) -> StyleBox:
+	return _codex_texture_style(CODEX_PANEL_FRAME_PATH, CODEX_PANEL_TEXTURE_MARGINS, margins, alpha)
+
+
+func _codex_chip_style(alpha: float, margins: Vector4) -> StyleBox:
+	return _codex_texture_style(CODEX_CHIP_FRAME_PATH, CODEX_CHIP_TEXTURE_MARGINS, margins, alpha)
+
+
+func _codex_dossier_style(alpha: float, margins: Vector4) -> StyleBox:
+	return _codex_texture_style(CODEX_DOSSIER_FRAME_PATH, CODEX_DOSSIER_TEXTURE_MARGINS, margins, alpha)
+
+
+func _codex_lore_style(margins: Vector4) -> StyleBox:
+	# The square dossier art is safe for the 300x300 portrait well, but its broad
+	# dragon corners enter the accepted 610x304 lore content lane when stretched
+	# to 684x356. Keep that locked content rect and use the thinner Codex panel
+	# frame with a restrained parchment-warm tint instead.
+	return _global_texture_style(
+		CODEX_PANEL_FRAME_PATH,
+		CODEX_PANEL_TEXTURE_MARGINS,
+		Color(1.06, 0.96, 0.82, 0.98),
+		margins,
+		false
+	)
+
+
+func _codex_inset_style(alpha: float, margins: Vector4) -> StyleBoxFlat:
 	var style := _atlas_chip_style(alpha, 0.0)
 	style.content_margin_left = margins.x
 	style.content_margin_top = margins.y
 	style.content_margin_right = margins.z
 	style.content_margin_bottom = margins.w
 	return style
+
+
+func _codex_clear_content_style(margins: Vector4) -> StyleBoxFlat:
+	var style := StyleBoxFlat.new()
+	style.bg_color = Color(0.0, 0.0, 0.0, 0.0)
+	style.set_border_width_all(0)
+	style.content_margin_left = margins.x
+	style.content_margin_top = margins.y
+	style.content_margin_right = margins.z
+	style.content_margin_bottom = margins.w
+	return style
+
+
+func _codex_entry_style(tint: Color) -> StyleBox:
+	return _global_texture_style(
+		CODEX_ENTRY_CARD_PATH,
+		Vector4.ZERO,
+		tint,
+		Vector4(20.0, 20.0, 30.0, 20.0),
+		false
+	)
+
+
+func _codex_apply_entry_theme(button: Button, selected := false) -> void:
+	# Preserve the semantic content-row family/focus contract, then replace only
+	# its painted surface with the accepted PixelLab card. Every state keeps the
+	# same content margins, so selection/hover never shifts the 516x154 geometry.
+	_unified_apply_row_theme(button, 10.0, selected)
+	button.add_theme_stylebox_override("normal", _codex_entry_style(Color(1.08, 1.02, 0.88, 1.0) if selected else Color(0.88, 0.88, 0.88, 0.96)))
+	button.add_theme_stylebox_override("hover", _codex_entry_style(Color(1.10, 1.08, 1.02, 1.0)))
+	button.add_theme_stylebox_override("pressed", _codex_entry_style(Color(0.82, 0.78, 0.72, 1.0)))
+	button.add_theme_stylebox_override("focus", _codex_entry_style(Color(1.12, 1.04, 0.82, 1.0)))
+	button.add_theme_stylebox_override("disabled", _codex_entry_style(Color(0.50, 0.50, 0.50, 0.72)))
 
 
 func _show_codex_section(content: PanelContainer, section_id: String) -> void:
@@ -5654,7 +5748,7 @@ func _codex_entry_panel(list: VBoxContainer, detail_data := {}) -> HBoxContainer
 	panel.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	panel.mouse_default_cursor_shape = Control.CURSOR_POINTING_HAND
 	panel.focus_mode = Control.FOCUS_ALL
-	_unified_apply_row_theme(panel, 10.0, false)
+	_codex_apply_entry_theme(panel, false)
 	list.add_child(panel)
 	var row := HBoxContainer.new()
 	row.mouse_filter = Control.MOUSE_FILTER_IGNORE
@@ -5692,11 +5786,10 @@ func _codex_icon_slot(row: HBoxContainer, texture: Texture2D, size: Vector2, nod
 	slot.custom_minimum_size = Vector2(122.0, 114.0)
 	slot.size_flags_vertical = Control.SIZE_SHRINK_CENTER
 	slot.size_flags_horizontal = Control.SIZE_SHRINK_CENTER
-	var slot_style := _atlas_translucent_style(0.45, 6.0)
-	slot_style.content_margin_left = 17.0
-	slot_style.content_margin_right = 17.0
-	slot_style.content_margin_top = 9.0
-	slot_style.content_margin_bottom = 9.0
+	# The PixelLab entry-card already paints the recessed well. This transparent
+	# content owner keeps the accepted 122x114 -> 88x96 reserve without drawing a
+	# second field over that authored well.
+	var slot_style := _codex_clear_content_style(Vector4(17.0, 9.0, 17.0, 9.0))
 	slot.add_theme_stylebox_override("panel", slot_style)
 	_codex_pl_make_nearest(slot)
 	row.add_child(slot)
@@ -5795,8 +5888,8 @@ func _codex_set_selected_entry(content: PanelContainer, button: Button) -> void:
 	if previous == button:
 		return
 	if previous != null and is_instance_valid(previous):
-		_unified_apply_row_theme(previous, 10.0, false)
-	_unified_apply_row_theme(button, 10.0, true)
+		_codex_apply_entry_theme(previous, false)
+	_codex_apply_entry_theme(button, true)
 	content.set_meta("codex_selected_entry", button)
 
 
@@ -5860,11 +5953,7 @@ func _codex_update_detail(detail_panel: PanelContainer, detail_data: Dictionary)
 	var portrait_slot := PanelContainer.new()
 	portrait_slot.name = "CodexDetailPortraitSlot"
 	portrait_slot.set_anchors_preset(Control.PRESET_FULL_RECT)
-	var portrait_style := _atlas_translucent_style(0.55, 10.0)
-	portrait_style.content_margin_left = 32.0
-	portrait_style.content_margin_top = 26.0
-	portrait_style.content_margin_right = 32.0
-	portrait_style.content_margin_bottom = 26.0
+	var portrait_style := _codex_dossier_style(1.0, Vector4(32.0, 26.0, 32.0, 26.0))
 	portrait_slot.add_theme_stylebox_override("panel", portrait_style)
 	left_rail.add_child(portrait_slot)
 	var texture := detail_data.get("texture", null) as Texture2D
@@ -5907,7 +5996,7 @@ func _codex_update_detail(detail_panel: PanelContainer, detail_data: Dictionary)
 			chip.name = "CodexDetailChip"
 			chip.custom_minimum_size = Vector2(330, 70)
 			chip.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-			chip.add_theme_stylebox_override("panel", _codex_panel_style(0.86, Vector4(18, 14, 18, 14)))
+			chip.add_theme_stylebox_override("panel", _codex_chip_style(0.96, Vector4(18, 14, 18, 14)))
 			chip_column.add_child(chip)
 			var chip_label := Label.new()
 			chip_label.text = str(chip_text)
@@ -5921,7 +6010,7 @@ func _codex_update_detail(detail_panel: PanelContainer, detail_data: Dictionary)
 
 	var parchment := PanelContainer.new()
 	parchment.name = "CodexDetailParchmentInset"
-	parchment.add_theme_stylebox_override("panel", _codex_panel_style(0.74, Vector4(32, 26, 42, 26)))
+	parchment.add_theme_stylebox_override("panel", _codex_lore_style(Vector4(32, 26, 42, 26)))
 	_codex_set_design_rect(parchment, Rect2(12, 398, 684, 356))
 	detail_root.add_child(parchment)
 	var text_scroll := ScrollContainer.new()
@@ -5941,7 +6030,7 @@ func _codex_update_detail(detail_panel: PanelContainer, detail_data: Dictionary)
 		var related_panel := PanelContainer.new()
 		related_panel.name = "CodexDetailRelatedPanel"
 		related_panel.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-		related_panel.add_theme_stylebox_override("panel", _codex_panel_style(0.72, Vector4(14, 12, 14, 12)))
+		related_panel.add_theme_stylebox_override("panel", _codex_inset_style(0.72, Vector4(14, 12, 14, 12)))
 		text_box.add_child(related_panel)
 		var related_box := VBoxContainer.new()
 		related_box.name = "CodexDetailRelatedContent"

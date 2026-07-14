@@ -1,8 +1,33 @@
 # Visual Style Assets
 
-Обновлено: 2026-06-13
+Обновлено: 2026-07-14
 
 Этот файл фиксирует reusable visual assets FantasyDisk после domain split. Подробные таблицы сущностей остаются в `docs/design/content_registry.md`.
+
+## FAN-1065 Codex Atlas/Settings Skin
+
+The current Codex runtime art package lives at
+`assets/sprites/ui/atlas_style/codex/`:
+
+- `bg_codex_sanctum.png` — inner-scene crop of the PixelLab sanctum source,
+  drawn `STRETCH_KEEP_ASPECT_COVERED`;
+- `panel_9slice.png` — nav/list/detail/title surfaces and the ornament-safe
+  lower lore scroll;
+- `entry_card_516x154.png` — exact-size center rows; runtime portrait/name are
+  separate Controls;
+- `dossier_frame.png` — the near-square 300×300 portrait well only;
+- `chip_bar.png` — two 330×70 semantic/locked chips;
+- `codex_crest.png` — 104×104 top-center accent.
+
+All runtime bitmaps are promoted or mechanically cropped from the accepted
+PixelLab MCP source package under
+`docs/design/references/fan1065_codex_atlas_settings_redesign/`; IDs, prompts,
+seeds, dimensions and derivation are preserved in its `manifest.json` and
+`provenance.json`. The clean/annotated mockups and state sheet live in the
+adjacent mockup/preview directories. No runtime text is baked into these
+assets. The old `bg_codex_archive` and historical Codex frame kits remain source
+history, not the active Codex surface set. Main Menu tab/Back textures are
+referenced from their existing global family and were not regenerated.
 
 ## Semantic Typography Content-Zone Anchor
 
