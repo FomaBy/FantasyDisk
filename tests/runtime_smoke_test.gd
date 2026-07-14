@@ -2423,10 +2423,14 @@ func _test_shop_reentry_until_next_level(main_scene: PackedScene) -> void:
 	shop_main.set("route_stage", 0)
 	shop_main.set("route_nodes", [
 		[
-			{"type": "shop", "name": "Shop 1: Test Caravan", "row": 0, "branch": 0, "next_branches": [0]},
+			{"type": "battle", "name": "Battle 1A: Side Road", "row": 0, "branch": 0, "next_branches": [0]},
+			{"type": "shop", "name": "Shop 1B: Test Caravan", "row": 0, "branch": 1, "next_branches": [1]},
+			{"type": "event", "name": "Event 1C: Side Path", "row": 0, "branch": 2, "next_branches": [2]},
 		],
 		[
-			{"type": "battle", "name": "Battle 2: Test Road", "row": 1, "branch": 0, "next_branches": [0]},
+			{"type": "battle", "name": "Battle 2A: Left Road", "row": 1, "branch": 0, "next_branches": [0]},
+			{"type": "battle", "name": "Battle 2B: Forward Road", "row": 1, "branch": 1, "next_branches": [0]},
+			{"type": "battle", "name": "Battle 2C: Right Road", "row": 1, "branch": 2, "next_branches": [0]},
 		],
 		[
 			{"type": "boss", "name": "Rift Warden", "boss_id": "rift_warden", "row": 2, "branch": 0},
@@ -2437,17 +2441,21 @@ func _test_shop_reentry_until_next_level(main_scene: PackedScene) -> void:
 	await process_frame
 
 	var route_scroll := shop_main.find_child("RouteMapScroll", true, false) as ScrollContainer
-	var shop_button := shop_main.find_child("RouteNode_shop_0_0", true, false) as Button
+	var shop_button := shop_main.find_child("RouteNode_shop_0_1", true, false) as Button
 	if route_scroll == null or shop_button == null or shop_button.disabled:
 		_fail("Expected test shop route node to start clickable.")
 		return
 	var route_nodes: Array = shop_main.get("route_nodes")
-	var shop_route_node: Dictionary = route_nodes[0][0]
-	_send_route_node_mouse_press(shop_main, shop_button, route_scroll, 0, shop_route_node, 0)
-	_send_route_node_mouse_release(shop_main, shop_button, route_scroll, 0, shop_route_node, 0)
+	var shop_route_node: Dictionary = route_nodes[0][1]
+	_send_route_node_mouse_press(shop_main, shop_button, route_scroll, 1, shop_route_node, 0)
+	_send_route_node_mouse_release(shop_main, shop_button, route_scroll, 1, shop_route_node, 0)
 	await process_frame
 	if shop_main.find_child("ShopScreen", true, false) == null:
 		_fail("Expected clicking a shop route node to open the shop.")
+		return
+	var selected_route: Array = shop_main.get("route_selected_indices")
+	if selected_route.size() <= 0 or int(selected_route[0]) != 1:
+		_fail("Expected selecting the shop to record branch 1 as the chosen route node, got %s." % str(selected_route))
 		return
 	var initial_shop_key := str(shop_main.get("current_shop_node_key"))
 	var initial_shop_ids: Array[String] = []
@@ -2479,18 +2487,31 @@ func _test_shop_reentry_until_next_level(main_scene: PackedScene) -> void:
 	if shop_main.find_child("RouteMapScreen", true, false) == null:
 		_fail("Expected leaving shop to return to the route map.")
 		return
-	shop_button = shop_main.find_child("RouteNode_shop_0_0", true, false) as Button
-	var next_battle_button := shop_main.find_child("RouteNode_battle_1_0", true, false) as Button
+	shop_button = shop_main.find_child("RouteNode_shop_0_1", true, false) as Button
+	var sibling_left := shop_main.find_child("RouteNode_battle_0_0", true, false) as Button
+	var sibling_right := shop_main.find_child("RouteNode_event_0_2", true, false) as Button
+	var next_left := shop_main.find_child("RouteNode_battle_1_0", true, false) as Button
+	var next_battle_button := shop_main.find_child("RouteNode_battle_1_1", true, false) as Button
+	var next_right := shop_main.find_child("RouteNode_battle_1_2", true, false) as Button
 	if shop_button == null or shop_button.disabled or next_battle_button == null or next_battle_button.disabled:
 		_fail("Expected both the visited shop and next route node to be clickable before leaving the level. shop=%s next=%s" % [str(shop_button), str(next_battle_button)])
+		return
+	if sibling_left == null or not sibling_left.disabled or sibling_right == null or not sibling_right.disabled:
+		_fail("FAN-1078: expected sibling nodes beside the selected shop to stay locked. left=%s right=%s" % [str(sibling_left), str(sibling_right)])
+		return
+	if next_left == null or not next_left.disabled or next_right == null or not next_right.disabled:
+		_fail("FAN-1078: expected only the connected forward node to unlock after the shop. left=%s right=%s" % [str(next_left), str(next_right)])
+		return
+	if shop_button.find_child("RouteNodeCompletedMark", true, false) == null:
+		_fail("Expected the selected returnable shop to keep its completed mark.")
 		return
 
 	route_scroll = shop_main.find_child("RouteMapScroll", true, false) as ScrollContainer
 	if route_scroll == null:
 		_fail("Expected route map scroll to exist before revisiting shop.")
 		return
-	_send_route_node_mouse_press(shop_main, shop_button, route_scroll, 0, shop_route_node, 0)
-	_send_route_node_mouse_release(shop_main, shop_button, route_scroll, 0, shop_route_node, 0)
+	_send_route_node_mouse_press(shop_main, shop_button, route_scroll, 1, shop_route_node, 0)
+	_send_route_node_mouse_release(shop_main, shop_button, route_scroll, 1, shop_route_node, 0)
 	await process_frame
 	if shop_main.find_child("ShopScreen", true, false) == null:
 		_fail("Expected revisiting the pending shop to reopen shop screen.")
@@ -2514,13 +2535,13 @@ func _test_shop_reentry_until_next_level(main_scene: PackedScene) -> void:
 	await process_frame
 	await process_frame
 	route_scroll = shop_main.find_child("RouteMapScroll", true, false) as ScrollContainer
-	next_battle_button = shop_main.find_child("RouteNode_battle_1_0", true, false) as Button
+	next_battle_button = shop_main.find_child("RouteNode_battle_1_1", true, false) as Button
 	if route_scroll == null or next_battle_button == null or next_battle_button.disabled:
 		_fail("Expected next battle node to stay clickable after a repeated shop visit.")
 		return
-	var next_route_node: Dictionary = route_nodes[1][0]
-	_send_route_node_mouse_press(shop_main, next_battle_button, route_scroll, 0, next_route_node, 1)
-	_send_route_node_mouse_release(shop_main, next_battle_button, route_scroll, 0, next_route_node, 1)
+	var next_route_node: Dictionary = route_nodes[1][1]
+	_send_route_node_mouse_press(shop_main, next_battle_button, route_scroll, 1, next_route_node, 1)
+	_send_route_node_mouse_release(shop_main, next_battle_button, route_scroll, 1, next_route_node, 1)
 	await process_frame
 	if int(shop_main.get("route_stage")) != 1 or bool(shop_main.get("shop_reentry_pending")):
 		_fail("Expected choosing the next route node to advance route_stage and clear shop reentry pending.")
