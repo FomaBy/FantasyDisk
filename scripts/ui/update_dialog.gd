@@ -3,6 +3,7 @@ extends Control
 signal close_requested
 
 const SemanticTypography := preload("res://scripts/ui/semantic_typography.gd")
+const UpdateManagerScript := preload("res://scripts/update_manager.gd")
 
 var presenter
 var update_manager
@@ -189,7 +190,10 @@ func _versions_text() -> String:
 func _body_text() -> String:
 	match mode:
 		"available":
-			return "Скачать официальный установщик с GitHub Releases? Файл будет проверен по размеру и SHA-256 перед запуском."
+			var body := "Скачать официальный установщик с GitHub Releases? Файл будет проверен по размеру и SHA-256 перед запуском."
+			if _macos_unsigned_disclosure_needed():
+				body += "\n" + UpdateManagerScript.MACOS_UNSIGNED_NOTICE
+			return body
 		"checking":
 			return "Ищем последнюю публичную версию FantasyDisk на GitHub Releases."
 		"downloading":
@@ -200,6 +204,10 @@ func _body_text() -> String:
 			return "Завершите обновление в открывшемся системном установщике, затем перезапустите FantasyDisk."
 		_:
 			return "У вас уже установлена последняя публичная версия FantasyDisk."
+
+
+func _macos_unsigned_disclosure_needed() -> bool:
+	return OS.get_name() == "macOS" and UpdateManagerScript.macos_update_is_unsigned()
 
 
 func _primary_text() -> String:

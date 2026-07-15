@@ -104,14 +104,24 @@ class LocalReleaseTests(unittest.TestCase):
             ["git", *args], cwd=self.repo, check=True, text=True, capture_output=True
         ).stdout.strip()
 
-    def _materialize(self):
+    def _materialize(self, macos_channel: str = "signed"):
         with mock.patch.object(local_release.platform, "system", return_value="Linux"):
             return local_release.materialize_package(
                 version="9.8.7",
                 repo_root=self.repo,
                 source_release=self.source_release,
                 config=self.config,
+                macos_channel=macos_channel,
             )
+
+    def _verify(self, macos_channel: str = "signed"):
+        return local_release.verify_local_release(
+            version="9.8.7",
+            repo_root=self.repo,
+            config=self.config,
+            require_app=False,
+            macos_channel=macos_channel,
+        )
 
     def test_materializes_exact_tag_and_verifies_stable_godot_project(self) -> None:
         destination, manifest = self._materialize()
@@ -193,6 +203,106 @@ class LocalReleaseTests(unittest.TestCase):
         content = self.projects_file.read_text(encoding="utf-8")
         self.assertIn("favorite=true", content)
         self.assertNotIn("favorite=false", content)
+
+    def test_unsigned_channel_is_recorded_and_requires_explicit_verification(self) -> None:
+        destination, manifest = self._materialize(macos_channel="unsigned")
+        self.assertEqual(manifest["macos_channel"], "unsigned")
+        recorded = json.loads(
+            (destination / "LOCAL_RELEASE.json").read_text(encoding="utf-8")
+        )
+        self.assertEqual(recorded["macos_channel"], "unsigned")
+        current = local_release._update_current_project(destination.parent, "9.8.7")
+        local_release._register_godot(self.projects_file, current)
+
+        verified = self._verify(macos_channel="unsigned")
+        self.assertEqual(verified["macos_channel"], "unsigned")
+        # The strict default never silently accepts an unsigned release.
+        with self.assertRaisesRegex(local_release.LocalReleaseError, "recorded as 'unsigned'"):
+            self._verify()
+        # A materialized release can never be relabeled into another channel.
+        with self.assertRaisesRegex(local_release.LocalReleaseError, "refusing to relabel"):
+            self._materialize(macos_channel="signed")
+
+    def test_signed_release_cannot_be_downgraded_to_unsigned_verification(self) -> None:
+        destination, manifest = self._materialize()
+        self.assertEqual(manifest["macos_channel"], "signed")
+        current = local_release._update_current_project(destination.parent, "9.8.7")
+        local_release._register_godot(self.projects_file, current)
+        self._verify()
+        with self.assertRaisesRegex(local_release.LocalReleaseError, "recorded as 'signed'"):
+            self._verify(macos_channel="unsigned")
+
+    def test_macos_channel_resolution_is_explicit_and_fail_closed(self) -> None:
+        with mock.patch.dict(os.environ, {}, clear=True):
+            self.assertEqual(local_release.resolve_macos_channel(), "signed")
+        with mock.patch.dict(os.environ, {local_release.CHANNEL_ENV: "unsigned"}, clear=True):
+            self.assertEqual(local_release.resolve_macos_channel(), "unsigned")
+            self.assertEqual(local_release.resolve_macos_channel("signed"), "signed")
+        with mock.patch.dict(os.environ, {local_release.CHANNEL_ENV: "adhoc"}, clear=True):
+            with self.assertRaisesRegex(local_release.LocalReleaseError, "macOS channel"):
+                local_release.resolve_macos_channel()
+        with self.assertRaisesRegex(local_release.LocalReleaseError, "macOS channel"):
+            local_release.resolve_macos_channel("notarized")
+
+    def test_unsigned_channel_skips_only_signature_checks_for_macos_app(self) -> None:
+        app = self.root / "FantasyDisk.app"
+        (app / "Contents" / "MacOS").mkdir(parents=True)
+        plist = app / "Contents" / "Info.plist"
+        plist.write_bytes(
+            b'<?xml version="1.0" encoding="UTF-8"?>\n'
+            b'<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN"'
+            b' "http://www.apple.com/DTDs/PropertyList-1.0.dtd">\n'
+            b'<plist version="1.0"><dict>'
+            b"<key>CFBundleShortVersionString</key><string>9.8.7</string>"
+            b"</dict></plist>\n"
+        )
+        with mock.patch.object(local_release, "_run") as run_mock:
+            local_release.verify_macos_app(app, "9.8.7", launch_smoke=False, signed=False)
+        self.assertEqual(run_mock.call_args_list, [])
+        with mock.patch.object(local_release, "_run") as run_mock:
+            local_release.verify_macos_app(app, "9.8.7", launch_smoke=False, signed=True)
+        tools = [call.args[0][0] for call in run_mock.call_args_list]
+        self.assertEqual(tools, ["codesign", "xcrun", "spctl"])
+        # The version gate stays mandatory in both channels.
+        with self.assertRaisesRegex(local_release.LocalReleaseError, "expected 1.0.0"):
+            local_release.verify_macos_app(app, "1.0.0", launch_smoke=False, signed=False)
+
+    def test_build_script_macos_channel_is_fail_closed(self) -> None:
+        script_path = ROOT / "tools" / "build_release.sh"
+        script = script_path.read_text(encoding="utf-8")
+        self.assertIn('MACOS_CHANNEL="${FANTASYDISK_MACOS_CHANNEL:-signed}"', script)
+        self.assertIn('--macos-channel "${MACOS_CHANNEL}"', script)
+        self.assertIn("MACOS_UPDATE_CHANNEL", script)
+
+        base_env = {
+            key: value
+            for key, value in os.environ.items()
+            if key
+            not in {"MACOS_SIGN_IDENTITY", "MACOS_NOTARY_PROFILE", "FANTASYDISK_MACOS_CHANNEL"}
+        }
+
+        def run_script(extra_env: dict[str, str]) -> subprocess.CompletedProcess[str]:
+            return subprocess.run(
+                ["bash", str(script_path), "9.9.9"],
+                cwd=ROOT,
+                env={**base_env, **extra_env},
+                text=True,
+                capture_output=True,
+            )
+
+        missing = run_script({})
+        self.assertEqual(missing.returncode, 2)
+        self.assertIn("MACOS_SIGN_IDENTITY is required", missing.stdout)
+
+        conflicting = run_script(
+            {"FANTASYDISK_MACOS_CHANNEL": "unsigned", "MACOS_SIGN_IDENTITY": "Developer ID"}
+        )
+        self.assertEqual(conflicting.returncode, 2)
+        self.assertIn("unsigned channel refuses to run", conflicting.stdout)
+
+        invalid = run_script({"FANTASYDISK_MACOS_CHANNEL": "adhoc"})
+        self.assertEqual(invalid.returncode, 2)
+        self.assertIn("must be 'signed' or 'unsigned'", invalid.stdout)
 
     def test_config_never_infers_or_accepts_multica_worktree(self) -> None:
         (self.repo / "release_webhook.cfg").write_text("[release]\n", encoding="utf-8")

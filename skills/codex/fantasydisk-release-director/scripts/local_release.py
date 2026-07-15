@@ -31,10 +31,27 @@ MANIFEST_NAME = "LOCAL_RELEASE.json"
 CONFIG_ENV = "FANTASYDISK_LOCAL_RELEASE_CONFIG"
 ROOT_ENV = "FANTASYDISK_LOCAL_ROOT"
 APP_ENV = "FANTASYDISK_LOCAL_APP"
+CHANNEL_ENV = "FANTASYDISK_MACOS_CHANNEL"
+MACOS_CHANNELS = ("signed", "unsigned")
 
 
 class LocalReleaseError(RuntimeError):
     """A release cannot be safely materialized or verified."""
+
+
+def resolve_macos_channel(value: str | None = None) -> str:
+    """Resolve the explicit macOS trust channel; the default is strict signed.
+
+    The unsigned channel (owner decision, FAN-1121) must be requested explicitly
+    via --macos-channel or FANTASYDISK_MACOS_CHANNEL — verification never
+    downgrades on its own.
+    """
+    channel = value or os.environ.get(CHANNEL_ENV, "") or "signed"
+    if channel not in MACOS_CHANNELS:
+        raise LocalReleaseError(
+            f"macOS channel must be one of {'/'.join(MACOS_CHANNELS)}: {channel}"
+        )
+    return channel
 
 
 @dataclass(frozen=True)
@@ -367,6 +384,7 @@ def _manifest(
     package_files: Iterable[str],
     app_target: Path,
     app_required: bool,
+    macos_channel: str,
 ) -> dict:
     return {
         "schema": 1,
@@ -381,6 +399,7 @@ def _manifest(
         },
         "macos_app": os.fspath(app_target),
         "macos_app_required": app_required,
+        "macos_channel": macos_channel,
     }
 
 
@@ -391,14 +410,24 @@ def materialize_package(
     source_release: Path,
     config: LocalConfig,
     dry_run: bool = False,
+    macos_channel: str = "signed",
 ) -> tuple[Path, dict]:
     if not SEMVER_RE.fullmatch(version):
         raise LocalReleaseError(f"invalid SemVer release version: {version}")
+    if macos_channel not in MACOS_CHANNELS:
+        raise LocalReleaseError(f"invalid macOS channel: {macos_channel}")
     tag = f"v{version}"
     source_release = source_release.resolve()
     source_files = _validate_package(source_release, version)
     releases_root = config.local_root / "releases"
     destination = releases_root / tag
+    existing_manifest = _load_json(destination / MANIFEST_NAME) if destination.exists() else {}
+    recorded_channel = existing_manifest.get("macos_channel")
+    if recorded_channel is not None and recorded_channel != macos_channel:
+        raise LocalReleaseError(
+            f"existing local release {tag} is recorded as '{recorded_channel}'; "
+            f"refusing to relabel it as '{macos_channel}'"
+        )
 
     with tempfile.TemporaryDirectory(prefix=f"fantasydisk-{tag}-") as temporary:
         expected_project = Path(temporary) / "project"
@@ -419,6 +448,7 @@ def materialize_package(
                 "tag_commit": commit,
                 "source_tree_sha256": expected_tree,
                 "package_files": sorted(source_files),
+                "macos_channel": macos_channel,
             }
 
         releases_root.mkdir(parents=True, exist_ok=True)
@@ -460,6 +490,7 @@ def materialize_package(
         package_files=source_files,
         app_target=config.macos_app,
         app_required=platform.system() == "Darwin",
+        macos_channel=macos_channel,
     )
     _atomic_json(destination / MANIFEST_NAME, manifest)
     return destination, manifest
@@ -477,16 +508,17 @@ def _bundle_version(app: Path) -> str:
     return str(value)
 
 
-def verify_macos_app(app: Path, version: str, *, launch_smoke: bool) -> None:
+def verify_macos_app(app: Path, version: str, *, launch_smoke: bool, signed: bool = True) -> None:
     if not app.is_dir():
         raise LocalReleaseError(f"macOS app is not installed: {app}")
     if _bundle_version(app) != version:
         raise LocalReleaseError(
             f"installed app version is {_bundle_version(app)}, expected {version}"
         )
-    _run(["codesign", "--verify", "--deep", "--strict", "--verbose=4", app])
-    _run(["xcrun", "stapler", "validate", app])
-    _run(["spctl", "--assess", "--type", "execute", "--verbose=4", app])
+    if signed:
+        _run(["codesign", "--verify", "--deep", "--strict", "--verbose=4", app])
+        _run(["xcrun", "stapler", "validate", app])
+        _run(["spctl", "--assess", "--type", "execute", "--verbose=4", app])
     if launch_smoke:
         executables = [
             path
@@ -526,22 +558,23 @@ def _mount_dmg(dmg: Path, mountpoint: Path) -> tuple[Path, str]:
     raise LocalReleaseError(f"DMG did not mount: {dmg}")
 
 
-def verify_macos_dmg(dmg: Path, version: str) -> None:
+def verify_macos_dmg(dmg: Path, version: str, *, signed: bool = True) -> None:
     _run(["hdiutil", "verify", dmg], timeout=300)
-    _run(["codesign", "--verify", "--strict", "--verbose=4", dmg])
-    _run(["xcrun", "stapler", "validate", dmg])
-    _run(
-        [
-            "spctl",
-            "--assess",
-            "--type",
-            "open",
-            "--context",
-            "context:primary-signature",
-            "--verbose=4",
-            dmg,
-        ]
-    )
+    if signed:
+        _run(["codesign", "--verify", "--strict", "--verbose=4", dmg])
+        _run(["xcrun", "stapler", "validate", dmg])
+        _run(
+            [
+                "spctl",
+                "--assess",
+                "--type",
+                "open",
+                "--context",
+                "context:primary-signature",
+                "--verbose=4",
+                dmg,
+            ]
+        )
     with tempfile.TemporaryDirectory(prefix="fantasydisk-dmg-verify-") as temporary:
         device = ""
         try:
@@ -552,7 +585,7 @@ def verify_macos_dmg(dmg: Path, version: str) -> None:
             apps = list(mountpoint.glob("*.app"))
             if len(apps) != 1:
                 raise LocalReleaseError(f"DMG must contain exactly one app: {dmg}")
-            verify_macos_app(apps[0], version, launch_smoke=False)
+            verify_macos_app(apps[0], version, launch_smoke=False, signed=signed)
         finally:
             if device:
                 try:
@@ -567,8 +600,9 @@ def install_macos_from_dmg(
     target: Path,
     version: str,
     launch_smoke: bool = True,
+    signed: bool = True,
 ) -> None:
-    verify_macos_dmg(dmg, version)
+    verify_macos_dmg(dmg, version, signed=signed)
     target.parent.mkdir(parents=True, exist_ok=True)
     with tempfile.TemporaryDirectory(prefix="fantasydisk-dmg-") as temporary:
         device = ""
@@ -577,21 +611,21 @@ def install_macos_from_dmg(
             apps = list(mountpoint.glob("*.app"))
             if len(apps) != 1:
                 raise LocalReleaseError(f"DMG must contain exactly one app: {dmg}")
-            verify_macos_app(apps[0], version, launch_smoke=False)
+            verify_macos_app(apps[0], version, launch_smoke=False, signed=signed)
 
             stage = target.parent / f".{target.name}.stage.{os.getpid()}"
             backup = target.parent / f".{target.name}.backup.{os.getpid()}"
             if stage.exists() or backup.exists():
                 raise LocalReleaseError(f"stale app install stage exists beside {target}")
             _run(["ditto", "--rsrc", "--extattr", apps[0], stage])
-            verify_macos_app(stage, version, launch_smoke=False)
+            verify_macos_app(stage, version, launch_smoke=False, signed=signed)
             moved_old = False
             try:
                 if target.exists():
                     os.replace(target, backup)
                     moved_old = True
                 os.replace(stage, target)
-                verify_macos_app(target, version, launch_smoke=launch_smoke)
+                verify_macos_app(target, version, launch_smoke=launch_smoke, signed=signed)
             except Exception:
                 if target.exists():
                     shutil.rmtree(target, ignore_errors=True)
@@ -651,6 +685,7 @@ def verify_local_release(
     config: LocalConfig,
     require_app: bool,
     launch_smoke: bool = False,
+    macos_channel: str = "signed",
 ) -> dict:
     tag = f"v{version}"
     release_dir = config.local_root / "releases" / tag
@@ -660,6 +695,18 @@ def verify_local_release(
     commit = _run(["git", "rev-parse", f"{tag}^{{commit}}"], cwd=repo_root).stdout.strip()
     if manifest.get("version") != version or manifest.get("tag_commit") != commit:
         raise LocalReleaseError(f"local manifest does not match {tag}")
+    if macos_channel not in MACOS_CHANNELS:
+        raise LocalReleaseError(f"invalid macOS channel: {macos_channel}")
+    # Releases materialized before the channel existed are strict signed ones.
+    recorded_channel = str(manifest.get("macos_channel", "signed"))
+    if recorded_channel not in MACOS_CHANNELS:
+        raise LocalReleaseError(f"local manifest has an unknown macOS channel: {recorded_channel}")
+    if recorded_channel != macos_channel:
+        raise LocalReleaseError(
+            f"local release {tag} is recorded as '{recorded_channel}' but verification "
+            f"was requested for '{macos_channel}'; pass the matching --macos-channel "
+            f"(or {CHANNEL_ENV}) explicitly"
+        )
     with tempfile.TemporaryDirectory(prefix=f"fantasydisk-verify-{tag}-") as temporary:
         expected_project = Path(temporary) / "project"
         archived_commit = _extract_tag(repo_root, tag, expected_project)
@@ -700,8 +747,9 @@ def verify_local_release(
     if not re.search(r"(?m)^favorite=true$", projects_content[start:end]):
         raise LocalReleaseError("current-project is not a Godot favorite")
     if require_app:
-        verify_macos_dmg(release_dir / f"FantasyDisk-{version}-macos.dmg", version)
-        verify_macos_app(config.macos_app, version, launch_smoke=launch_smoke)
+        signed = recorded_channel == "signed"
+        verify_macos_dmg(release_dir / f"FantasyDisk-{version}-macos.dmg", version, signed=signed)
+        verify_macos_app(config.macos_app, version, launch_smoke=launch_smoke, signed=signed)
     return manifest
 
 
@@ -717,6 +765,14 @@ def _parser() -> argparse.ArgumentParser:
     parser.add_argument("--godot-projects-file", type=Path)
     parser.add_argument("--dry-run", action="store_true")
     parser.add_argument("--launch-smoke", action="store_true")
+    parser.add_argument(
+        "--macos-channel",
+        choices=MACOS_CHANNELS,
+        help=(
+            "explicit macOS trust channel; default is strict 'signed', "
+            f"falls back to ${CHANNEL_ENV} when omitted"
+        ),
+    )
     return parser
 
 
@@ -732,6 +788,7 @@ def main(argv: Sequence[str] | None = None) -> int:
             godot_projects_file=args.godot_projects_file,
         )
         require_app = platform.system() == "Darwin"
+        macos_channel = resolve_macos_channel(args.macos_channel)
         if args.action == "materialize":
             source_release = args.release_dir or repo_root / "releases" / f"v{args.version}"
             destination, summary = materialize_package(
@@ -740,6 +797,7 @@ def main(argv: Sequence[str] | None = None) -> int:
                 source_release=source_release,
                 config=config,
                 dry_run=args.dry_run,
+                macos_channel=macos_channel,
             )
             if args.dry_run:
                 print(json.dumps({"destination": os.fspath(destination), **summary}, indent=2))
@@ -750,6 +808,7 @@ def main(argv: Sequence[str] | None = None) -> int:
                     target=config.macos_app,
                     version=args.version,
                     launch_smoke=True,
+                    signed=macos_channel == "signed",
                 )
             current = _update_current_project(destination.parent, args.version)
             _register_godot(config.godot_projects_file, current)
@@ -759,6 +818,7 @@ def main(argv: Sequence[str] | None = None) -> int:
             config=config,
             require_app=require_app,
             launch_smoke=args.launch_smoke,
+            macos_channel=macos_channel,
         )
     except LocalReleaseError as exc:
         print(f"local release ERROR: {exc}", file=sys.stderr)
@@ -772,6 +832,7 @@ def main(argv: Sequence[str] | None = None) -> int:
                 "current_project": os.fspath(config.local_root / "releases" / "current-project"),
                 "macos_app": os.fspath(config.macos_app) if require_app else "platform-exception",
                 "tag_commit": manifest["tag_commit"],
+                "macos_channel": str(manifest.get("macos_channel", "signed")),
             },
             ensure_ascii=False,
             indent=2,

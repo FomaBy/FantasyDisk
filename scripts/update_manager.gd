@@ -7,6 +7,13 @@ signal download_finished(success: bool, installer_path: String, message: String)
 signal state_changed(state: String, message: String)
 
 const MANIFEST_SCHEMA_VERSION := 1
+# Канал доверия macOS-артефактов. Обязан совпадать с каналом релизного
+# пайплайна: tools/build_release.sh сверяет эту метку с FANTASYDISK_MACOS_CHANNEL
+# и отказывается собирать релиз, если клиентские подсказки стали бы ложью.
+# "unsigned" — принятое владельцем решение (FAN-1121): без Developer ID и
+# нотаризации, с ручным подтверждением Gatekeeper при первом запуске.
+const MACOS_UPDATE_CHANNEL := "unsigned"
+const MACOS_UNSIGNED_NOTICE := "Сборка для macOS распространяется без подписи Apple Developer ID и без нотаризации. Если Gatekeeper заблокирует первый запуск, откройте Системные настройки → Конфиденциальность и безопасность и нажмите «Всё равно открыть» (Open Anyway)."
 const DEFAULT_MANIFEST_URL := "https://github.com/FomaBy/FantasyDisk/releases/latest/download/update-manifest.json"
 const DEFAULT_RELEASE_URL := "https://github.com/FomaBy/FantasyDisk/releases/latest"
 const TRUSTED_RELEASE_PREFIX := "https://github.com/FomaBy/FantasyDisk/releases/"
@@ -144,7 +151,7 @@ func download_installer() -> bool:
 	_download_request.set_meta("expected_size", expected_size)
 	add_child(_download_request)
 	_download_request.request_completed.connect(_on_download_request_completed, CONNECT_ONE_SHOT)
-	_set_state(STATE_DOWNLOADING, "Скачиваем подписанный установщик…")
+	_set_state(STATE_DOWNLOADING, "Скачиваем официальный установщик с GitHub Releases…")
 	download_started.emit(latest_manifest.duplicate(true))
 	var error := _download_request.request(str(asset["url"]), [
 		"Accept: application/octet-stream",
@@ -411,9 +418,16 @@ static func _is_trusted_release_download_url(url: String, version: String) -> bo
 	return url.begins_with("https://github.com/FomaBy/FantasyDisk/releases/download/v%s/" % version)
 
 
+static func macos_update_is_unsigned() -> bool:
+	return MACOS_UPDATE_CHANNEL == "unsigned"
+
+
 static func _installer_opened_message(platform_name: String) -> String:
 	if platform_name == "macOS":
-		return "DMG открыт. Перетащите FantasyDisk в Applications и перезапустите игру."
+		var message := "DMG открыт. Перетащите FantasyDisk в Applications и перезапустите игру."
+		if macos_update_is_unsigned():
+			message += " " + MACOS_UNSIGNED_NOTICE
+		return message
 	if platform_name == "Windows":
 		return "Установщик открыт. Следуйте его шагам; при запросе закройте игру."
 	return "Страница релиза открыта в браузере."

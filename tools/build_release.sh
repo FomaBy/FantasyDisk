@@ -1,8 +1,16 @@
 #!/bin/bash
-# Релизная сборка FantasyDisk для macOS (подписанный drag-to-Applications DMG)
-# и Windows (только NSIS installer).
+# Релизная сборка FantasyDisk для macOS (drag-to-Applications DMG) и Windows
+# (только NSIS installer).
 #
 # Использование: tools/build_release.sh <версия>   # пример: tools/build_release.sh 0.1.0
+#
+# macOS-канал выбирается ЯВНО через FANTASYDISK_MACOS_CHANNEL:
+#   signed (default) — строгий production-канал: Developer ID + notarization
+#     обязательны; отсутствие credentials — ошибка, а не тихий downgrade.
+#   unsigned — одобренный владельцем канал без Apple credentials (FAN-1121,
+#     после отмены FAN-1094): codesign/notarytool/stapler/spctl не выполняются,
+#     все остальные гейты (exact tag, layout, secret scan, SHA-256, manifest)
+#     сохраняются, а клиент/док обязаны честно помечать сборку как unsigned.
 #
 # Сборка идет только из git-тега v<версия> через ОТДЕЛЬНЫЙ git worktree, чтобы не
 # трогать рабочую ветку dev. Build inputs поверх тега не накладываются: сохранённый
@@ -22,25 +30,40 @@ RELEASE_DIR="${WORKTREE_DIR}/build/release-package"
 DMG_MOUNT_DIR=""
 MACOS_SIGN_IDENTITY="${MACOS_SIGN_IDENTITY:-}"
 MACOS_NOTARY_PROFILE="${MACOS_NOTARY_PROFILE:-}"
+MACOS_CHANNEL="${FANTASYDISK_MACOS_CHANNEL:-signed}"
 MACOS_ARROW_REL="docs/design/references/fan1094_macos_installer/pixellab_arrow.png"
 
-if [[ -z "${MACOS_SIGN_IDENTITY}" ]]; then
-  echo "ERROR: MACOS_SIGN_IDENTITY is required; release builds may not use ad-hoc signing"
+if [[ "${MACOS_CHANNEL}" != "signed" && "${MACOS_CHANNEL}" != "unsigned" ]]; then
+  echo "ERROR: FANTASYDISK_MACOS_CHANNEL must be 'signed' or 'unsigned', got '${MACOS_CHANNEL}'"
   exit 2
 fi
-if [[ -z "${MACOS_NOTARY_PROFILE}" ]]; then
-  echo "ERROR: MACOS_NOTARY_PROFILE is required; release builds must be notarized"
-  exit 2
-fi
-if ! security find-identity -v -p codesigning 2>/dev/null \
-    | grep -F "${MACOS_SIGN_IDENTITY}" | grep -q "Developer ID Application"; then
-  echo "ERROR: MACOS_SIGN_IDENTITY is not an installed Developer ID Application identity"
-  exit 2
-fi
-if ! xcrun notarytool history --keychain-profile "${MACOS_NOTARY_PROFILE}" \
-    --output-format json >/dev/null 2>&1; then
-  echo "ERROR: MACOS_NOTARY_PROFILE is missing or cannot authenticate with Apple"
-  exit 2
+if [[ "${MACOS_CHANNEL}" == "unsigned" ]]; then
+  # Fail-closed в обе стороны: unsigned-канал запускается только явным выбором
+  # и отказывается работать, когда signing credentials присутствуют, чтобы
+  # никогда не выпустить unsigned там, где возможен signed.
+  if [[ -n "${MACOS_SIGN_IDENTITY}" || -n "${MACOS_NOTARY_PROFILE}" ]]; then
+    echo "ERROR: unsigned channel refuses to run while MACOS_SIGN_IDENTITY/MACOS_NOTARY_PROFILE are set; use the signed channel or unset them"
+    exit 2
+  fi
+else
+  if [[ -z "${MACOS_SIGN_IDENTITY}" ]]; then
+    echo "ERROR: MACOS_SIGN_IDENTITY is required; release builds may not use ad-hoc signing (owner-approved credential-free builds must set FANTASYDISK_MACOS_CHANNEL=unsigned explicitly)"
+    exit 2
+  fi
+  if [[ -z "${MACOS_NOTARY_PROFILE}" ]]; then
+    echo "ERROR: MACOS_NOTARY_PROFILE is required; release builds must be notarized"
+    exit 2
+  fi
+  if ! security find-identity -v -p codesigning 2>/dev/null \
+      | grep -F "${MACOS_SIGN_IDENTITY}" | grep -q "Developer ID Application"; then
+    echo "ERROR: MACOS_SIGN_IDENTITY is not an installed Developer ID Application identity"
+    exit 2
+  fi
+  if ! xcrun notarytool history --keychain-profile "${MACOS_NOTARY_PROFILE}" \
+      --output-format json >/dev/null 2>&1; then
+    echo "ERROR: MACOS_NOTARY_PROFILE is missing or cannot authenticate with Apple"
+    exit 2
+  fi
 fi
 run_godot() {
   GODOT_BIN="${GODOT_PATH}" python3 "${WORKTREE_DIR}/tools/godot_gate.py" "$@"
@@ -114,6 +137,14 @@ if ! grep -q "application/short_version=\"${VERSION}\"" "${WORKTREE_DIR}/export_
   exit 2
 fi
 
+echo "==> Проверка честной маркировки macOS-канала в клиенте тега"
+CLIENT_MACOS_CHANNEL="$(sed -n 's/^const MACOS_UPDATE_CHANNEL := "\([a-z]*\)".*$/\1/p' \
+  "${WORKTREE_DIR}/scripts/update_manager.gd" | head -1)"
+if [[ "${CLIENT_MACOS_CHANNEL}" != "${MACOS_CHANNEL}" ]]; then
+  echo "    ERROR: клиент тега помечает macOS-канал как '${CLIENT_MACOS_CHANNEL:-<нет метки>}', сборка идёт в канале '${MACOS_CHANNEL}'; трастовые подсказки в UI стали бы ложью"
+  exit 2
+fi
+
 echo "==> Feedback delivery"
 RELAY_SESSION_URL="$(sed -n 's/^relay_session_url="\([^"]*\)"$/\1/p' "${WORKTREE_DIR}/project.godot" | head -1)"
 if [[ -n "${RELAY_SESSION_URL}" ]]; then
@@ -164,35 +195,41 @@ if [[ "${DMG_BACKGROUND_WIDTH}x${DMG_BACKGROUND_HEIGHT}" != "720x480" ]]; then
 fi
 
 xattr -cr "${APP_PATH}"
-echo "    Подпись Developer ID Application (hardened runtime + timestamp)"
-codesign --force --deep --options runtime --timestamp \
-  --sign "${MACOS_SIGN_IDENTITY}" "${APP_PATH}"
-codesign --verify --deep --strict --verbose=4 "${APP_PATH}"
+if [[ "${MACOS_CHANNEL}" == "signed" ]]; then
+  echo "    Подпись Developer ID Application (hardened runtime + timestamp)"
+  codesign --force --deep --options runtime --timestamp \
+    --sign "${MACOS_SIGN_IDENTITY}" "${APP_PATH}"
+  codesign --verify --deep --strict --verbose=4 "${APP_PATH}"
 
-echo "==> Apple notarization + stapling приложения"
-APP_NOTARY_ZIP="${WORKTREE_DIR}/build/FantasyDisk-${VERSION}-macos-notary.zip"
-APP_NOTARY_REPORT="${WORKTREE_DIR}/build/notary-app.json"
-ditto -c -k --sequesterRsrc --keepParent "${APP_PATH}" "${APP_NOTARY_ZIP}"
-submit_notary_artifact "${APP_NOTARY_ZIP}" "FantasyDisk.app" "${APP_NOTARY_REPORT}"
-rm -f "${APP_NOTARY_ZIP}"
-xcrun stapler staple "${APP_PATH}"
-xcrun stapler validate "${APP_PATH}"
-codesign --verify --deep --strict --verbose=4 "${APP_PATH}"
-spctl --assess --type execute --verbose=4 "${APP_PATH}"
+  echo "==> Apple notarization + stapling приложения"
+  APP_NOTARY_ZIP="${WORKTREE_DIR}/build/FantasyDisk-${VERSION}-macos-notary.zip"
+  APP_NOTARY_REPORT="${WORKTREE_DIR}/build/notary-app.json"
+  ditto -c -k --sequesterRsrc --keepParent "${APP_PATH}" "${APP_NOTARY_ZIP}"
+  submit_notary_artifact "${APP_NOTARY_ZIP}" "FantasyDisk.app" "${APP_NOTARY_REPORT}"
+  rm -f "${APP_NOTARY_ZIP}"
+  xcrun stapler staple "${APP_PATH}"
+  xcrun stapler validate "${APP_PATH}"
+  codesign --verify --deep --strict --verbose=4 "${APP_PATH}"
+  spctl --assess --type execute --verbose=4 "${APP_PATH}"
+else
+  echo "    Канал unsigned (FAN-1121): Developer ID подпись и Apple notarization не выполняются; Gatekeeper потребует ручного «Всё равно открыть»"
+fi
 
 echo "==> Создание DMG с ярлыком Applications и стрелкой"
 MAC_DMG="${WORKTREE_DIR}/build/FantasyDisk-${VERSION}-macos.dmg"
 bash "${WORKTREE_DIR}/tools/create_macos_dmg.sh" "${APP_PATH}" "${MAC_DMG}" "${VERSION}"
-codesign --force --timestamp --sign "${MACOS_SIGN_IDENTITY}" "${MAC_DMG}"
-codesign --verify --strict --verbose=4 "${MAC_DMG}"
+if [[ "${MACOS_CHANNEL}" == "signed" ]]; then
+  codesign --force --timestamp --sign "${MACOS_SIGN_IDENTITY}" "${MAC_DMG}"
+  codesign --verify --strict --verbose=4 "${MAC_DMG}"
 
-echo "==> Apple notarization + stapling DMG"
-DMG_NOTARY_REPORT="${WORKTREE_DIR}/build/notary-dmg.json"
-submit_notary_artifact "${MAC_DMG}" "FantasyDisk DMG" "${DMG_NOTARY_REPORT}"
-xcrun stapler staple "${MAC_DMG}"
-xcrun stapler validate "${MAC_DMG}"
-codesign --verify --strict --verbose=4 "${MAC_DMG}"
-spctl --assess --type open --context context:primary-signature --verbose=4 "${MAC_DMG}"
+  echo "==> Apple notarization + stapling DMG"
+  DMG_NOTARY_REPORT="${WORKTREE_DIR}/build/notary-dmg.json"
+  submit_notary_artifact "${MAC_DMG}" "FantasyDisk DMG" "${DMG_NOTARY_REPORT}"
+  xcrun stapler staple "${MAC_DMG}"
+  xcrun stapler validate "${MAC_DMG}"
+  codesign --verify --strict --verbose=4 "${MAC_DMG}"
+  spctl --assess --type open --context context:primary-signature --verbose=4 "${MAC_DMG}"
+fi
 
 echo "==> Экспорт Windows (x86_64, embed_pck)"
 run_godot --headless --path "${WORKTREE_DIR}" \
@@ -236,9 +273,15 @@ if [[ ! -L "${DMG_MOUNT_DIR}/Applications" ]] \
   exit 2
 fi
 MOUNTED_APP="${DMG_MOUNT_DIR}/$(basename "${APP_PATH}")"
-codesign --verify --deep --strict --verbose=4 "${MOUNTED_APP}"
-xcrun stapler validate "${MOUNTED_APP}"
-spctl --assess --type execute --verbose=4 "${MOUNTED_APP}"
+if [[ ! -d "${MOUNTED_APP}" ]]; then
+  echo "    ERROR: DMG не содержит ${MOUNTED_APP}"
+  exit 2
+fi
+if [[ "${MACOS_CHANNEL}" == "signed" ]]; then
+  codesign --verify --deep --strict --verbose=4 "${MOUNTED_APP}"
+  xcrun stapler validate "${MOUNTED_APP}"
+  spctl --assess --type execute --verbose=4 "${MOUNTED_APP}"
+fi
 
 echo "==> Secret scan staged player payloads до публикации"
 set +e
@@ -296,7 +339,8 @@ python3 "${WORKTREE_DIR}/skills/codex/fantasydisk-release-director/scripts/local
   materialize \
   --version "${VERSION}" \
   --repo-root "${REPO_DIR}" \
-  --release-dir "${RELEASE_DIR}"
+  --release-dir "${RELEASE_DIR}" \
+  --macos-channel "${MACOS_CHANNEL}"
 
 echo "==> Готово:"
 ls -lh "${RELEASE_DIR}"

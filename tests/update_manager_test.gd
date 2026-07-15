@@ -15,8 +15,31 @@ func _initialize() -> void:
 	if not _check_manifest_response_state():
 		quit(1)
 		return
-	print("FAN-1112 update manager manifest/SemVer tests passed.")
+	if not _check_unsigned_channel_trust_labeling():
+		quit(1)
+		return
+	print("FAN-1112/FAN-1121 update manager manifest/SemVer/trust-labeling tests passed.")
 	quit(0)
+
+
+func _check_unsigned_channel_trust_labeling() -> bool:
+	# FAN-1121: до возвращения Developer ID клиент обязан честно помечать
+	# macOS-канал как unsigned и давать ручную Gatekeeper-инструкцию.
+	if UPDATE_MANAGER.MACOS_UPDATE_CHANNEL != "unsigned":
+		return _fail("macOS update channel label must be 'unsigned' (FAN-1121), got '%s'." % UPDATE_MANAGER.MACOS_UPDATE_CHANNEL)
+	if not UPDATE_MANAGER.macos_update_is_unsigned():
+		return _fail("macos_update_is_unsigned() must reflect the unsigned channel.")
+	var opened: String = UPDATE_MANAGER._installer_opened_message("macOS")
+	if not opened.contains("без подписи Apple Developer ID"):
+		return _fail("macOS installer-opened message must disclose the unsigned build: %s" % opened)
+	if not opened.contains("Конфиденциальность и безопасность") or not opened.contains("Всё равно открыть"):
+		return _fail("macOS installer-opened message must give the manual Gatekeeper Open Anyway path: %s" % opened)
+	if opened.contains("нотаризован") or opened.contains("notarized"):
+		return _fail("macOS installer-opened message must not claim notarization: %s" % opened)
+	var windows_opened: String = UPDATE_MANAGER._installer_opened_message("Windows")
+	if windows_opened.contains("Gatekeeper") or windows_opened.contains("Всё равно открыть"):
+		return _fail("Windows installer-opened message must not carry macOS Gatekeeper guidance: %s" % windows_opened)
+	return true
 
 
 func _check_version_ordering() -> bool:

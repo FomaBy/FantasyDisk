@@ -96,5 +96,40 @@ class UpdateReleasePipelineTests(unittest.TestCase):
                 )
 
 
+class UnsignedChannelLabelingTests(unittest.TestCase):
+    """FAN-1121: the unsigned macOS channel must be labeled truthfully everywhere."""
+
+    def test_client_labels_unsigned_macos_channel_truthfully(self) -> None:
+        manager = (ROOT / "scripts" / "update_manager.gd").read_text(encoding="utf-8")
+        self.assertIn('const MACOS_UPDATE_CHANNEL := "unsigned"', manager)
+        self.assertIn("без подписи Apple Developer ID", manager)
+        self.assertIn("Конфиденциальность и безопасность", manager)
+        self.assertIn("«Всё равно открыть» (Open Anyway)", manager)
+        self.assertNotIn("подписанный установщик", manager)
+
+        dialog = (ROOT / "scripts" / "ui" / "update_dialog.gd").read_text(encoding="utf-8")
+        self.assertIn("MACOS_UNSIGNED_NOTICE", dialog)
+        self.assertIn("macos_update_is_unsigned", dialog)
+
+    def test_release_docs_do_not_claim_apple_trust_for_unsigned_channel(self) -> None:
+        docs = (ROOT / "docs" / "process" / "game_updates.md").read_text(encoding="utf-8")
+        self.assertNotIn("signed/notarized", docs)
+        self.assertIn("FANTASYDISK_MACOS_CHANNEL=unsigned", docs)
+        self.assertIn("Всё равно открыть", docs)
+        skill = (
+            ROOT / "skills" / "codex" / "fantasydisk-release-director" / "SKILL.md"
+        ).read_text(encoding="utf-8")
+        self.assertIn("FANTASYDISK_MACOS_CHANNEL", skill)
+        self.assertIn("unsigned", skill)
+
+    def test_build_script_cross_checks_client_channel_label(self) -> None:
+        script = (ROOT / "tools" / "build_release.sh").read_text(encoding="utf-8")
+        label_check_at = script.index("const MACOS_UPDATE_CHANNEL := ")
+        export_at = script.index('--export-release "macOS"')
+        self.assertLess(label_check_at, export_at)
+        self.assertIn('CLIENT_MACOS_CHANNEL="$(sed -n', script)
+        self.assertIn('if [[ "${CLIENT_MACOS_CHANNEL}" != "${MACOS_CHANNEL}" ]]', script)
+
+
 if __name__ == "__main__":
     unittest.main()

@@ -1,6 +1,6 @@
 ---
 name: fantasydisk-release-director
-description: Cut, package, verify, and publish a FantasyDisk release. Use for requests to release, ship, publish, or build a version (for example “релизим 0.2.2”, “собрать релиз”, or “опубликовать версию”), including player-facing notes, a content-zone release image, signed/notarized macOS DMG, Windows installer, Git tags, public GitHub Releases, the 0.2.2-only Telegram transition, and Discord delivery.
+description: Cut, package, verify, and publish a FantasyDisk release. Use for requests to release, ship, publish, or build a version (for example “релизим 0.2.2”, “собрать релиз”, or “опубликовать версию”), including player-facing notes, a content-zone release image, the macOS DMG (strict signed/notarized channel, or the explicit owner-approved unsigned channel), Windows installer, Git tags, public GitHub Releases, the 0.2.2-only Telegram transition, and Discord delivery.
 ---
 
 # FantasyDisk Release Director
@@ -77,14 +77,32 @@ Require `releases/vX.Y.Z/` to contain:
 
 Do not create or publish a raw Windows exe or Windows zip.
 
-### macOS signing order
+### macOS trust channels
+
+`FANTASYDISK_MACOS_CHANNEL` selects the channel explicitly; both directions are
+fail-closed and there is never a silent downgrade:
+
+- `signed` (default) — the strict production channel below. Missing Developer ID
+  or notary credentials aborts the build (exit 2); ad-hoc signing is forbidden.
+- `unsigned` — the owner-approved credential-free channel (FAN-1121, after
+  FAN-1094 was cancelled). It must be requested explicitly and refuses to run
+  while `MACOS_SIGN_IDENTITY`/`MACOS_NOTARY_PROFILE` are set. Only
+  codesign/notarization/stapling/`spctl` are skipped; exact-tag inputs, DMG
+  layout, NSIS CRC, secret scan, SHA-256 sums, and the update manifest remain
+  mandatory, and asset names do not change. The build cross-checks
+  `MACOS_UPDATE_CHANNEL` in the tag's `scripts/update_manager.gd` so the client
+  truthfully labels the artifact unsigned and shows the manual Gatekeeper
+  «Всё равно открыть» (Open Anyway) instruction. Never claim Developer ID,
+  notarization, stapling, or a positive `spctl` result for an unsigned build.
+
+### macOS signing order (signed channel)
 
 1. Export the macOS `.app` into a zip/staging directory.
 2. Finish every bundle modification, then clear stale extended attributes.
 3. Sign the final `.app` **last**. Use `MACOS_SIGN_IDENTITY` for Developer ID
    Application signing with hardened runtime and timestamp. Missing Developer ID
-   or notary credentials blocks a publishable release; ad-hoc release builds are
-   forbidden.
+   or notary credentials blocks a publishable signed release; ad-hoc release
+   builds are forbidden.
 4. Run `codesign --verify --deep --strict --verbose=4` on the staged app.
 5. Build a DMG containing the app, an `Applications` symlink, and the arrow
    background supplied by `tools/create_macos_dmg.sh`.
@@ -131,20 +149,27 @@ Require all of the following before any external upload:
 - the complete package, including the mandatory versioned poster PNG, is
   retained under `<local_root>/releases/vX.Y.Z/`;
 - `project/` is immutable evidence from an exact `git archive` of `vX.Y.Z`, with
-  tag SHA and every package hash recorded in `LOCAL_RELEASE.json`;
-- existing releases are byte-compared and never overwritten on mismatch;
+  tag SHA, every package hash, and the macOS trust channel (`macos_channel`)
+  recorded in `LOCAL_RELEASE.json`;
+- existing releases are byte-compared and never overwritten on mismatch, and a
+  materialized release is never relabeled into another channel;
 - `godot-project/` is a separate editable copy; `<local_root>/releases/current-project`
   points to it and is explicitly `favorite=true` in Godot's `projects.cfg`;
 - on macOS, the app is installed atomically from the retained DMG at the
   configured local path. The retained DMG, contained app, and installed app pass
-  layout, version, `hdiutil verify`, `codesign`, `stapler`, `spctl`, and headless
-  launch smoke checks.
+  layout, version, `hdiutil verify`, and headless launch smoke checks; in the
+  signed channel `codesign`, `stapler`, and `spctl` are additionally mandatory,
+  while the unsigned channel skips exactly those three and nothing else.
 
 There is no macOS skip flag. Windows/Linux may use the explicit platform
 exception for app installation, but package, tag snapshot, manifest, current
 pointer, and Godot registration remain mandatory. Every publication script runs
 `local_release.py verify` before resolving credentials or sending anything, then
 upload only files from the verified `local_release` path returned by that check.
+`verify` compares the requested channel (`--macos-channel` /
+`FANTASYDISK_MACOS_CHANNEL`, default strict `signed`) against the recorded
+`macos_channel` and fails on mismatch, so an unsigned release can only be
+published with the operator's explicit unsigned acknowledgement.
 The release poster PNG is a GitHub/Discord asset and is additionally sent to
 Telegram for v0.2.2 only. `update-manifest.json` must match both retained
 installers byte-for-byte by name, size, URL, and SHA-256.
@@ -192,8 +217,9 @@ Never print or commit secrets.
 ## 8. Finish
 
 Update `docs/design/current_game_state.md` and release/versioning docs. Record
-the exact SHA/tag, push state, gates, artifacts, hashes, signing identity type,
-notarization result, publication result, residual risks, and `Disk cleanup:` in
+the exact SHA/tag, push state, gates, artifacts, hashes, macOS trust channel
+(signed identity type and notarization result, or the explicit unsigned-channel
+decision), publication result, residual risks, and `Disk cleanup:` in
 Multica. Include the durable local release path, `current-project` target,
 installed app path, and local verification result. Move implementation to
 `in_review`; set `done` only after independent QA says `QA verdict: PASSED`.

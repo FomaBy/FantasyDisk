@@ -62,6 +62,17 @@ func _check_viewport(viewport_size: Vector2i) -> bool:
 			return _fail("Update prompt control escaped viewport at %s: %s" % [str(viewport_size), str((control as Control).get_global_rect())])
 	if primary.text != "Скачать и установить" or primary.disabled:
 		return _fail("Update prompt primary action regressed at %s." % str(viewport_size))
+	var body := main.find_child("GameUpdateBody", true, false) as Label
+	if body == null:
+		return _fail("Update prompt body is missing at %s." % str(viewport_size))
+	if OS.get_name() == "macOS":
+		# FAN-1121: перед загрузкой игрок должен видеть, что macOS-сборка не
+		# подписана, и получить ручную Gatekeeper-инструкцию.
+		if not body.text.contains("без подписи Apple Developer ID") \
+			or not body.text.contains("Всё равно открыть"):
+			return _fail("Update prompt must disclose the unsigned macOS build and Open Anyway step at %s: %s" % [str(viewport_size), body.text])
+		if not panel.get_global_rect().grow(1.0).encloses(body.get_global_rect()):
+			return _fail("Unsigned disclosure escaped the update panel at %s." % str(viewport_size))
 	if DisplayServer.get_name() != "headless":
 		await _save_capture_stable(viewport, viewport_size)
 
