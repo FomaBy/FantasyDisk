@@ -83,13 +83,28 @@ NON_CUE_CHECKLIST_SUBJECT_RE = re.compile(
     r"|(?:доступност\w*|документ\w*|оформлен\w*|ясност\w*|текст\w*)",
     re.IGNORECASE,
 )
-CUE_SCORING_ACTION_RE = re.compile(
-    r"\b(?:rate|rates|rated|rating|score|scores|scored|scoring|evaluate|evaluates|"
-    r"evaluated|evaluating|assess|assesses|assessed|assessing)\b|оцен\w*",
-    re.IGNORECASE,
+_CUE_SCORING_ACTION_PATTERN = (
+    r"(?:\b(?:rate|rates|rated|rating|score|scores|scored|scoring|evaluate|evaluates|"
+    r"evaluated|evaluating|assess|assesses|assessed|assessing)\b|оцен\w*)"
 )
-CUE_HOLISTIC_MARKER_RE = re.compile(
-    r"\bholistically\b|целостно|целиком",
+CUE_SCORING_ACTION_RE = re.compile(_CUE_SCORING_ACTION_PATTERN, re.IGNORECASE)
+_CUE_FACTOR_TOKEN_PATTERN = (
+    r"(?:\bcomplexity\b|сложност\w*|\buncertainty\b|неопредел[её]нн?\w*|"
+    r"\befforts?\b|усили\w*|трудозатрат\w*)"
+)
+_CUE_HOLISTIC_MARKER_PATTERN = r"(?:\bholistically\b|целостно|целиком)"
+# The holistic marker only proves a holistic CUE assessment when it sits inside
+# the CUE scoring predicate itself: directly next to the scoring action or one of
+# the CUE factors (allowing only punctuation between them). A marker separated by
+# an intervening clause — e.g. "review the document holistically and assess CUE" —
+# belongs to that other predicate and must not license the scale drop.
+_CUE_PREDICATE_TOKEN_PATTERN = (
+    r"(?:" + _CUE_SCORING_ACTION_PATTERN + r"|" + _CUE_FACTOR_TOKEN_PATTERN + r")"
+)
+CUE_HOLISTIC_SCORING_PREDICATE_RE = re.compile(
+    _CUE_HOLISTIC_MARKER_PATTERN + r"\s*[,;:]?\s*" + _CUE_PREDICATE_TOKEN_PATTERN
+    + r"|"
+    + _CUE_PREDICATE_TOKEN_PATTERN + r"\s*[,;:]?\s*" + _CUE_HOLISTIC_MARKER_PATTERN,
     re.IGNORECASE,
 )
 SEPARATE_CHECKLIST_START_RE = re.compile(
@@ -157,7 +172,7 @@ def scoring_context_after_holistic_cue_action(before_scale: str) -> str:
         predicate_context = before_scale[: boundary.start()]
         if (
             has_cue_reference(predicate_context)
-            and CUE_HOLISTIC_MARKER_RE.search(predicate_context)
+            and CUE_HOLISTIC_SCORING_PREDICATE_RE.search(predicate_context)
             and len(CUE_SCORING_ACTION_RE.findall(predicate_context)) == 1
         ):
             return before_scale[boundary.start("checklist") :]

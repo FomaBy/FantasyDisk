@@ -339,6 +339,20 @@ Metadata: story_points и estimation_model.
                 "трудозатраты от одного до пяти.",
                 True,
             ),
+            (
+                "english_holistic_marker_on_document_review",
+                "Review the document holistically and assess Complexity, Uncertainty and "
+                "Effort, while a separate quality checklist rates document clarity from one "
+                "to five.",
+                True,
+            ),
+            (
+                "russian_holistic_marker_on_document_review",
+                "Проверяйте документ целостно и оценивайте сложность, неопределённость и "
+                "трудозатраты, а отдельный чек-лист качества оценивает ясность документа от "
+                "одного до пяти.",
+                True,
+            ),
         )
         for name, statement, should_reject in cases:
             with self.subTest(case=name):
