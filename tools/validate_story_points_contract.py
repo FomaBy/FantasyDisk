@@ -66,25 +66,91 @@ WORDED_THRESHOLD_RE = re.compile(
     re.IGNORECASE,
 )
 MARKDOWN_TABLE_ROW_RE = re.compile(r"^\s*\|(?P<cells>.*)\|\s*$")
-UNIT_BOUNDARY_RE = re.compile(r"(?<=[.!?;])\s+|\n+")
+MARKDOWN_LIST_ITEM_RE = re.compile(r"^\s*(?:[-*+]\s+|\d+[.)]\s+)")
+SENTENCE_BOUNDARY_RE = re.compile(r"(?<=[.!?;])\s+")
+STORY_POINTS_HEADER_RE = re.compile(
+    r"\b(?:SP|story\s*points?|storypoints?|стори[-\s]?поинт\w*|"
+    r"балл\w*\s+истори\w*|истори\w*\s+балл\w*)\b",
+    re.IGNORECASE,
+)
+SEPARATE_CHECKLIST_RE = re.compile(
+    r"(?:\bseparate\b|\bотдельн\w*)\s+(?:[\w-]+\s+){0,3}"
+    r"(?:checklists?|чек[-\s]?лист\w*)",
+    re.IGNORECASE,
+)
+
+
+def semantic_instruction_units(source: str) -> list[str]:
+    """Keep Markdown paragraphs and list items intact across soft line wraps."""
+    units: list[str] = []
+    current: list[str] = []
+    current_is_list = False
+
+    def flush() -> None:
+        nonlocal current, current_is_list
+        if current:
+            units.append(" ".join(current))
+        current = []
+        current_is_list = False
+
+    for line in source.splitlines():
+        stripped = line.strip()
+        if not stripped:
+            flush()
+            continue
+        if MARKDOWN_TABLE_ROW_RE.match(line):
+            flush()
+            units.append(stripped)
+            continue
+        if MARKDOWN_LIST_ITEM_RE.match(line):
+            flush()
+            current.append(MARKDOWN_LIST_ITEM_RE.sub("", line).strip())
+            current_is_list = True
+            continue
+        if current_is_list and not line[:1].isspace():
+            flush()
+        current.append(stripped)
+    flush()
+    return units
+
+
+def has_cue_reference(source: str) -> bool:
+    """Return whether text explicitly names the CUE rubric."""
+    return (
+        all(factor.search(source) for factor in CUE_FACTOR_RE)
+        or bool(CUE_ABBREVIATION_RE.search(source))
+        or bool(FORMULA_RE.search(source))
+    )
+
+
+def is_separate_checklist(source: str) -> bool:
+    """Recognize a checklist explicitly separated from CUE scoring."""
+    return bool(SEPARATE_CHECKLIST_RE.search(source))
 
 
 def has_natural_language_factor_scale(source: str) -> bool:
     """Detect a scale applied to CUE factors within one instruction unit."""
-    for unit in UNIT_BOUNDARY_RE.split(source):
-        if not FACTOR_SCALE_RE.search(unit):
-            continue
-        if all(factor.search(unit) for factor in CUE_FACTOR_RE) or CUE_ABBREVIATION_RE.search(unit):
-            return True
+    for unit in semantic_instruction_units(source):
+        for sentence in SENTENCE_BOUNDARY_RE.split(unit):
+            if not FACTOR_SCALE_RE.search(sentence) or is_separate_checklist(sentence):
+                continue
+            if has_cue_reference(sentence):
+                return True
     return False
 
 
 def has_per_factor_score(source: str) -> bool:
     """Detect an explicit instruction to score each factor from one to five."""
-    return any(
-        PER_FACTOR_RE.search(unit) and FACTOR_SCALE_RE.search(unit)
-        for unit in UNIT_BOUNDARY_RE.split(source)
-    )
+    for unit in semantic_instruction_units(source):
+        sentences = [sentence.strip() for sentence in SENTENCE_BOUNDARY_RE.split(unit) if sentence.strip()]
+        for sentence in sentences:
+            if not (PER_FACTOR_RE.search(sentence) and FACTOR_SCALE_RE.search(sentence)):
+                continue
+            if is_separate_checklist(sentence):
+                continue
+            if has_cue_reference(unit):
+                return True
+    return False
 
 
 def has_markdown_threshold_table(source: str) -> bool:
@@ -92,7 +158,10 @@ def has_markdown_threshold_table(source: str) -> bool:
     lines = source.splitlines()
     for header_index, header in enumerate(lines):
         header_match = MARKDOWN_TABLE_ROW_RE.match(header)
-        if not header_match or not re.search(r"\bSP\b", header, re.IGNORECASE):
+        if not header_match or not any(
+            STORY_POINTS_HEADER_RE.search(cell)
+            for cell in header_match.group("cells").split("|")
+        ):
             continue
         for row in lines[header_index + 1 :]:
             row_match = MARKDOWN_TABLE_ROW_RE.match(row)

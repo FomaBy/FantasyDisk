@@ -47,6 +47,13 @@ Metadata: story_points и estimation_model.
         self.assertIn("forbidden C + U + E conversion formula", result.stderr)
         self.assertIn("forbidden per-factor 1-to-5 CUE rubric", result.stderr)
 
+    def test_per_factor_score_in_a_cue_paragraph_is_rejected(self) -> None:
+        result = self._validate_source(
+            self.CONTRACT_PREAMBLE + "Каждый фактор получает значение от 1 до 5."
+        )
+        self.assertNotEqual(result.returncode, 0)
+        self.assertIn("forbidden per-factor 1-to-5 CUE rubric", result.stderr)
+
     def test_natural_language_factor_scale_is_rejected(self) -> None:
         statements = (
             "Оцените Complexity, Uncertainty и Effort по пятибалльной шкале 1–5.",
@@ -68,6 +75,8 @@ Metadata: story_points и estimation_model.
         statements = (
             "После оценки примените пороги: итог 3–5 = SP 1, 6–8 = SP 2, 9–15 = SP 3.",
             "| Total | SP |\n| --- | --- |\n| 3–5 | 1 |\n| 6–8 | 2 |",
+            "| Total | Story points |\n| --- | --- |\n| 3–5 | 1 |\n| 6–8 | 2 |",
+            "| Итого | Баллы истории |\n| --- | --- |\n| 3–5 | 1 |\n| 6–8 | 2 |",
             "A total from three to five maps to SP 1; six to eight maps to SP 2.",
             "Итог от трёх до пяти соответствует SP 1; от шести до восьми соответствует SP 2.",
         )
@@ -90,6 +99,52 @@ Metadata: story_points и estimation_model.
             with self.subTest(statement=statement):
                 result = self._validate_source(self.CONTRACT_PREAMBLE + statement)
                 self.assertEqual(result.returncode, 0, result.stderr)
+
+    def test_semantic_edge_matrix_handles_wrapped_cue_and_separate_checklists(self) -> None:
+        cases = (
+            (
+                "english_accessibility_factors",
+                "Complexity, Uncertainty and Effort are considered holistically. "
+                "Each factor in a separate accessibility checklist is rated from 1 to 5.",
+                False,
+            ),
+            (
+                "russian_accessibility_factors",
+                "Сложность, неопределённость и трудозатраты рассматриваются целиком. "
+                "Каждый фактор отдельного чек-листа доступности оценивается от 1 до 5.",
+                False,
+            ),
+            (
+                "same_sentence_separate_checklist",
+                "CUE is evaluated holistically while a separate five-point accessibility "
+                "checklist reviews document presentation only.",
+                False,
+            ),
+            (
+                "wrapped_english_factor_scale",
+                "- Rate Complexity,\n  Uncertainty,\n  and Effort from one to five.",
+                True,
+            ),
+            (
+                "wrapped_russian_factor_scale",
+                "- Оцените сложность,\n  неопределённость\n  и трудозатраты от одного до пяти.",
+                True,
+            ),
+            (
+                "wrapped_cue_abbreviation_scale",
+                "- Rate C,\n  U and E independently from 1 to 5.",
+                True,
+            ),
+            (
+                "markdown_story_points_header",
+                "| Total | Story points |\n| --- | --- |\n| 3–5 | 1 |\n| 6–8 | 2 |",
+                True,
+            ),
+        )
+        for name, statement, should_reject in cases:
+            with self.subTest(case=name):
+                result = self._validate_source(self.CONTRACT_PREAMBLE + statement)
+                self.assertEqual(result.returncode != 0, should_reject, result.stderr)
 
 
 if __name__ == "__main__":
