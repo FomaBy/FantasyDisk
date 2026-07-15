@@ -23,35 +23,97 @@ REQUIRED_MARKERS = (
     "estimation_model",
 )
 FORMULA_RE = re.compile(r"\bC\s*\+\s*U\s*\+\s*E\b")
-PER_FACTOR_SCORE_RE = re.compile(
-    r"(?:кажд\w*|each)\s+(?:фактор|factor).{0,100}?\b(?:от|from)\s*1\s*(?:до|to)\s*5\b",
-    re.IGNORECASE | re.DOTALL,
-)
 FACTOR_SCALE_RE = re.compile(
-    r"\b1\s*(?:[-–—]|to|до)\s*5\b|(?:пяти|five)[-\s]?(?:балльн\w*|point\w*)",
+    r"\b(?:from\s+)?1\s*(?:[-–—]|to|до)\s*5\b"
+    r"|\b(?:from\s+)?one\s+to\s+five\b"
+    r"|\b(?:от\s+)?одного\s+до\s+пяти\b"
+    r"|(?:пяти|five)[-\s]?(?:балльн\w*|points?)",
     re.IGNORECASE,
 )
 CUE_FACTOR_RE = (
     re.compile(r"\bcomplexity\b|сложност\w*", re.IGNORECASE),
     re.compile(r"\buncertainty\b|неопредел[её]нн?\w*", re.IGNORECASE),
-    re.compile(r"\beffort\b|усили\w*|трудозатрат\w*", re.IGNORECASE),
+    re.compile(r"\befforts?\b|усили\w*|трудозатрат\w*", re.IGNORECASE),
 )
-THRESHOLD_CONVERSION_RE = re.compile(
-    r"\b\d+\s*(?:[-–—]|to|до)\s*\d+\b"
-    r"(?:\s+(?:балл\w*|points?))?\s*"
-    r"(?:=|:|→|->|\||соответству\w*|gives?|maps?\s+to|becomes?)\s*"
-    r"(?:SP\s*)?\d+\b",
+CUE_ABBREVIATION_RE = re.compile(
+    r"\bC\s*(?:(?:,|/|&|\+)\s*)?(?:(?:and|и)\s+)?U\s*"
+    r"(?:(?:,|/|&|\+)\s*)?(?:(?:and|и)\s+)?E\b",
     re.IGNORECASE,
 )
+PER_FACTOR_RE = re.compile(r"(?:кажд\w*|each)\s+(?:фактор\w*|factors?)\b", re.IGNORECASE)
+NUMERIC_RANGE_RE = re.compile(r"\b\d+\s*(?:[-–—]|to|до)\s*\d+\b", re.IGNORECASE)
+SP_VALUE_RE = r"(?:SP\s*[:=]?\s*\d+|\d+\s*SP)\b"
+NUMERIC_THRESHOLD_RE = re.compile(
+    NUMERIC_RANGE_RE.pattern
+    + r"(?:\s+(?:балл\w*|points?))?\s*"
+    + r"(?:=|:|→|->|соответству\w*|gives?|maps?\s+to|becomes?)\s*"
+    + SP_VALUE_RE,
+    re.IGNORECASE,
+)
+NUMBER_WORD_RE = (
+    r"(?:one|two|three|four|five|six|seven|eight|nine|ten|eleven|twelve|"
+    r"thirteen|fourteen|fifteen|один|одного|одна|одну|два|двух|три|тр[её]х|"
+    r"четыре|четыр[её]х|пять|пяти|шесть|шести|семь|семи|восемь|восьми|"
+    r"девять|девяти|десять|десяти)"
+)
+WORDED_THRESHOLD_RE = re.compile(
+    r"\b(?:from\s+|от\s+)?"
+    + NUMBER_WORD_RE
+    + r"\s+(?:to|до)\s+"
+    + NUMBER_WORD_RE
+    + r"\s*(?:=|:|→|->|соответству\w*|gives?|maps?\s+to|becomes?)\s*"
+    + SP_VALUE_RE,
+    re.IGNORECASE,
+)
+MARKDOWN_TABLE_ROW_RE = re.compile(r"^\s*\|(?P<cells>.*)\|\s*$")
+UNIT_BOUNDARY_RE = re.compile(r"(?<=[.!?;])\s+|\n+")
 
 
 def has_natural_language_factor_scale(source: str) -> bool:
-    """Detect a 1-to-5 scale applied to all three CUE factors by name."""
-    for scale in FACTOR_SCALE_RE.finditer(source):
-        window = source[max(0, scale.start() - 200) : scale.end() + 200]
-        if all(factor.search(window) for factor in CUE_FACTOR_RE):
+    """Detect a scale applied to CUE factors within one instruction unit."""
+    for unit in UNIT_BOUNDARY_RE.split(source):
+        if not FACTOR_SCALE_RE.search(unit):
+            continue
+        if all(factor.search(unit) for factor in CUE_FACTOR_RE) or CUE_ABBREVIATION_RE.search(unit):
             return True
     return False
+
+
+def has_per_factor_score(source: str) -> bool:
+    """Detect an explicit instruction to score each factor from one to five."""
+    return any(
+        PER_FACTOR_RE.search(unit) and FACTOR_SCALE_RE.search(unit)
+        for unit in UNIT_BOUNDARY_RE.split(source)
+    )
+
+
+def has_markdown_threshold_table(source: str) -> bool:
+    """Detect a numeric range-to-SP mapping in one Markdown table."""
+    lines = source.splitlines()
+    for header_index, header in enumerate(lines):
+        header_match = MARKDOWN_TABLE_ROW_RE.match(header)
+        if not header_match or not re.search(r"\bSP\b", header, re.IGNORECASE):
+            continue
+        for row in lines[header_index + 1 :]:
+            row_match = MARKDOWN_TABLE_ROW_RE.match(row)
+            if not row_match:
+                break
+            cells = [cell.strip() for cell in row_match.group("cells").split("|")]
+            if any(NUMERIC_RANGE_RE.search(cell) for cell in cells) and any(
+                re.fullmatch(r"(?:SP\s*[:=]?\s*)?\d+(?:\s*SP)?", cell, re.IGNORECASE)
+                for cell in cells
+            ):
+                return True
+    return False
+
+
+def has_threshold_conversion(source: str) -> bool:
+    """Detect explicit numeric or worded conversion of a range to an SP value."""
+    return bool(
+        NUMERIC_THRESHOLD_RE.search(source)
+        or WORDED_THRESHOLD_RE.search(source)
+        or has_markdown_threshold_table(source)
+    )
 
 
 def validate(path: Path) -> list[str]:
@@ -68,11 +130,11 @@ def validate(path: Path) -> list[str]:
         errors.append(f"{path}: missing integral CUE/no-formula rule")
     if FORMULA_RE.search(source):
         errors.append(f"{path}: forbidden C + U + E conversion formula")
-    if PER_FACTOR_SCORE_RE.search(source):
+    if has_per_factor_score(source):
         errors.append(f"{path}: forbidden per-factor 1-to-5 CUE rubric")
     if has_natural_language_factor_scale(source):
         errors.append(f"{path}: forbidden natural-language per-factor 1-to-5 CUE rubric")
-    if THRESHOLD_CONVERSION_RE.search(source):
+    if has_threshold_conversion(source):
         errors.append(f"{path}: forbidden conversion-threshold CUE rubric")
     return errors
 

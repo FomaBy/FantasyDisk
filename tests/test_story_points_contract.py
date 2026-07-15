@@ -12,6 +12,12 @@ VALIDATOR = ROOT / "tools" / "validate_story_points_contract.py"
 
 
 class StoryPointsContractTest(unittest.TestCase):
+    CONTRACT_PREAMBLE = """\
+CUE не складывается по формуле.
+Шкала: 1, 2, 3, 5, 8, 13. Label: SP:<N>.
+Metadata: story_points и estimation_model.
+"""
+
     def _run(self, *args: str) -> subprocess.CompletedProcess[str]:
         return subprocess.run(
             [sys.executable, str(VALIDATOR), *args],
@@ -21,22 +27,22 @@ class StoryPointsContractTest(unittest.TestCase):
             check=False,
         )
 
+    def _validate_source(self, source: str) -> subprocess.CompletedProcess[str]:
+        with tempfile.TemporaryDirectory() as directory:
+            candidate = Path(directory) / "candidate.md"
+            candidate.write_text(source, encoding="utf-8")
+            return self._run("--document", str(candidate))
+
     def test_canonical_documents_share_the_contract(self) -> None:
         result = self._run()
         self.assertEqual(result.returncode, 0, result.stderr)
 
     def test_formula_based_cue_rubric_is_rejected(self) -> None:
-        incompatible = """\
-CUE не складывается по формуле, но эта строка ниже намеренно нарушает контракт.
-Шкала: 1, 2, 3, 5, 8, 13. Label: SP:<N>.
-Metadata: story_points и estimation_model.
+        incompatible = self.CONTRACT_PREAMBLE + """\
 Каждый фактор получает значение от 1 до 5.
 Сложить C + U + E и выбрать размер.
 """
-        with tempfile.TemporaryDirectory() as directory:
-            candidate = Path(directory) / "incompatible.md"
-            candidate.write_text(incompatible, encoding="utf-8")
-            result = self._run("--document", str(candidate))
+        result = self._validate_source(incompatible)
         self.assertNotEqual(result.returncode, 0)
         self.assertIn("forbidden C + U + E conversion formula", result.stderr)
         self.assertIn("forbidden per-factor 1-to-5 CUE rubric", result.stderr)
@@ -45,38 +51,45 @@ Metadata: story_points и estimation_model.
         statements = (
             "Оцените Complexity, Uncertainty и Effort по пятибалльной шкале 1–5.",
             "Оцените сложность, неопределённость и трудозатраты по шкале от 1 до 5.",
+            "Rate Complexity, Uncertainty and Effort from one to five.",
+            "Оцените сложность, неопределённость и трудозатраты от одного до пяти.",
+            "Rate C, U and E independently from 1 to 5.",
         )
         for statement in statements:
             with self.subTest(statement=statement):
                 self._assert_natural_language_factor_scale_is_rejected(statement)
 
     def _assert_natural_language_factor_scale_is_rejected(self, statement: str) -> None:
-        incompatible = f"""\
-CUE не складывается по формуле.
-Шкала: 1, 2, 3, 5, 8, 13. Label: SP:<N>.
-Metadata: story_points и estimation_model.
-{statement}
-"""
-        with tempfile.TemporaryDirectory() as directory:
-            candidate = Path(directory) / "natural-language-factor-scale.md"
-            candidate.write_text(incompatible, encoding="utf-8")
-            result = self._run("--document", str(candidate))
+        result = self._validate_source(self.CONTRACT_PREAMBLE + statement)
         self.assertNotEqual(result.returncode, 0)
         self.assertIn("forbidden natural-language per-factor 1-to-5 CUE rubric", result.stderr)
 
     def test_conversion_threshold_rubric_is_rejected(self) -> None:
-        incompatible = """\
-CUE не складывается по формуле.
-Шкала: 1, 2, 3, 5, 8, 13. Label: SP:<N>.
-Metadata: story_points и estimation_model.
-После оценки примените пороги: итог 3–5 = SP 1, 6–8 = SP 2, 9–15 = SP 3.
-"""
-        with tempfile.TemporaryDirectory() as directory:
-            candidate = Path(directory) / "conversion-threshold.md"
-            candidate.write_text(incompatible, encoding="utf-8")
-            result = self._run("--document", str(candidate))
-        self.assertNotEqual(result.returncode, 0)
-        self.assertIn("forbidden conversion-threshold CUE rubric", result.stderr)
+        statements = (
+            "После оценки примените пороги: итог 3–5 = SP 1, 6–8 = SP 2, 9–15 = SP 3.",
+            "| Total | SP |\n| --- | --- |\n| 3–5 | 1 |\n| 6–8 | 2 |",
+            "A total from three to five maps to SP 1; six to eight maps to SP 2.",
+            "Итог от трёх до пяти соответствует SP 1; от шести до восьми соответствует SP 2.",
+        )
+        for statement in statements:
+            with self.subTest(statement=statement):
+                result = self._validate_source(self.CONTRACT_PREAMBLE + statement)
+                self.assertNotEqual(result.returncode, 0)
+                self.assertIn("forbidden conversion-threshold CUE rubric", result.stderr)
+
+    def test_nearby_non_cue_scales_and_ranges_are_accepted(self) -> None:
+        statements = (
+            "Complexity, Uncertainty and Effort are considered holistically. "
+            "A separate five-point accessibility checklist reviews document presentation only.",
+            "Сложность, неопределённость и трудозатраты рассматриваются целиком. "
+            "Отдельный пятибалльный чек-лист проверяет только качество текста.",
+            "Complexity, Uncertainty and Effort are considered holistically. "
+            "Operational evidence rule: attempts 1–3 → 2 sanitized log copies.",
+        )
+        for statement in statements:
+            with self.subTest(statement=statement):
+                result = self._validate_source(self.CONTRACT_PREAMBLE + statement)
+                self.assertEqual(result.returncode, 0, result.stderr)
 
 
 if __name__ == "__main__":
