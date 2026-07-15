@@ -27,6 +27,31 @@ PER_FACTOR_SCORE_RE = re.compile(
     r"(?:кажд\w*|each)\s+(?:фактор|factor).{0,100}?\b(?:от|from)\s*1\s*(?:до|to)\s*5\b",
     re.IGNORECASE | re.DOTALL,
 )
+FACTOR_SCALE_RE = re.compile(
+    r"\b1\s*(?:[-–—]|to|до)\s*5\b|(?:пяти|five)[-\s]?(?:балльн\w*|point\w*)",
+    re.IGNORECASE,
+)
+CUE_FACTOR_RE = (
+    re.compile(r"\bcomplexity\b|сложност\w*", re.IGNORECASE),
+    re.compile(r"\buncertainty\b|неопредел[её]нн?\w*", re.IGNORECASE),
+    re.compile(r"\beffort\b|усили\w*|трудозатрат\w*", re.IGNORECASE),
+)
+THRESHOLD_CONVERSION_RE = re.compile(
+    r"\b\d+\s*(?:[-–—]|to|до)\s*\d+\b"
+    r"(?:\s+(?:балл\w*|points?))?\s*"
+    r"(?:=|:|→|->|\||соответству\w*|gives?|maps?\s+to|becomes?)\s*"
+    r"(?:SP\s*)?\d+\b",
+    re.IGNORECASE,
+)
+
+
+def has_natural_language_factor_scale(source: str) -> bool:
+    """Detect a 1-to-5 scale applied to all three CUE factors by name."""
+    for scale in FACTOR_SCALE_RE.finditer(source):
+        window = source[max(0, scale.start() - 200) : scale.end() + 200]
+        if all(factor.search(window) for factor in CUE_FACTOR_RE):
+            return True
+    return False
 
 
 def validate(path: Path) -> list[str]:
@@ -45,6 +70,10 @@ def validate(path: Path) -> list[str]:
         errors.append(f"{path}: forbidden C + U + E conversion formula")
     if PER_FACTOR_SCORE_RE.search(source):
         errors.append(f"{path}: forbidden per-factor 1-to-5 CUE rubric")
+    if has_natural_language_factor_scale(source):
+        errors.append(f"{path}: forbidden natural-language per-factor 1-to-5 CUE rubric")
+    if THRESHOLD_CONVERSION_RE.search(source):
+        errors.append(f"{path}: forbidden conversion-threshold CUE rubric")
     return errors
 
 
