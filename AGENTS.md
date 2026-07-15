@@ -14,6 +14,8 @@ Before making gameplay, balance, character, enemy, UI, or progression changes, r
 - `docs/process/agent_role_boundaries_and_handoffs.md` for Design/Back-end/Animator ownership and cross-chat handoff rules.
 - `docs/process/versioning_and_branching.md` for the active version/branch policy.
 - `docs/process/human_readable_comments.md` for the mandatory human-readable Multica comment style (user directive 2026-07-15).
+- `docs/process/story_points.md` for mandatory CUE/Fibonacci sizing of every
+  actionable Multica task (user directive 2026-07-15).
 
 Autonomy and approval:
 - The user pre-approves all in-scope project changes requested in task files or direct prompts.
@@ -59,6 +61,19 @@ Role boundaries:
 - Use `docs/process/agent_role_boundaries_and_handoffs.md` as the source of truth for ownership and handoff format.
 - When taking a task, update the Multica issue status/comment first, then set local mirror `Статус: in_progress` if a task file exists; when finishing, update Multica and set local mirror `done` (or `review`) with a short result summary so PM/dispatcher can sync mirrors.
 - Multica is mandatory and authoritative for task tracking. Every task is a Multica issue (`FAN-*`) in the live `FantasyDisk` project, and only then may have a local `.md` spec/evidence mirror. Multica status/comment/assignee/labels must match reality. Do not create, claim, or sync work in legacy Jira. Never store any API tokens in the repository.
+
+**STORY POINTS — ОБЯЗАТЕЛЬНЫ ДЛЯ ВСЕХ ЗАДАЧ (директива пользователя 2026-07-15).**
+Каждая новая или существенно изменяемая actionable issue — включая feature,
+bug, improvement, QA/review, design, animation, release, documentation, process
+и handoff — получает относительную оценку CUE (Complexity, Uncertainty, Effort)
+по шкале Фибоначчи `1, 2, 3, 5, 8, 13`. До assignment/dispatch/`in_progress`
+в description обязаны быть `Story points: <N>` и короткое обоснование, а в
+Multica metadata — числовой `story_points=<N>` и `estimation_model="CUE
+Fibonacci 1,2,3,5,8,13"`. Задача больше `13 SP` обязательно декомпозируется;
+при существенном изменении scope оценка и причина обновляются до продолжения
+работы. SP нельзя переводить в часы или использовать для сравнения людей и
+агентов. Полная рубрика, readiness gate и переходное правило:
+`docs/process/story_points.md`.
 
 **АВТОНОМНАЯ QA-ОЧЕРЕДЬ — ОБЯЗАТЕЛЬНЫЙ КОНТРАКТ (директива пользователя 2026-07-15).**
 QA Codex Sol (`f992a646-a8ea-4935-ba94-212595803052`) является единственным

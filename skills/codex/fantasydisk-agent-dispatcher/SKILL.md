@@ -49,6 +49,13 @@ Before assigning, inspect capacity with `multica agent list --output json`,
 `in_progress` issue lists. Do not queue a second issue to a busy agent. QA Codex
 Sol must keep runtime concurrency `1` and at most one QA child `in_progress`.
 
+Every actionable issue, including QA/review and follow-up children, must satisfy
+repo `docs/process/story_points.md` before execution: description contains
+`Story points: <N>` plus a CUE rationale; numeric metadata `story_points` matches
+one of `1, 2, 3, 5, 8, 13`; `estimation_model` is
+`CUE Fibonacci 1,2,3,5,8,13`. Return missing or inconsistent estimates to PM.
+Never dispatch an issue sized above `13 SP`; require decomposition first.
+
 ## Assign Without Duplicate Claims
 
 1. Require a `DISPATCH_CONTROL_FAN` for the run. Post a `--content-file` lease
@@ -57,7 +64,8 @@ Sol must keep runtime concurrency `1` and at most one QA child `in_progress`.
    Refresh before every assignment. A second dispatcher observes only.
 2. Re-read the candidate immediately before assignment:
    `multica issue get <FAN-id> --output json` and recent comments.
-3. Require `todo`, no active assignee, no blocker, and no overlapping owner/lock.
+3. Require `todo`, no active assignee, no blocker, no overlapping owner/lock,
+   and a valid story-points readiness check from `docs/process/story_points.md`.
    Capture the latest comment timestamp/ID. Never feed an implementation parent
    already in `in_review` through this general assignment path; QA Codex Sol owns
    that lane and creates/reuses its own separate QA child.
@@ -104,6 +112,10 @@ ACL denies self-assignment, so QA creates or reuses an unassigned `backlog` QA
 child and records exact child metadata `qa_owner_id=f992a646-a8ea-4935-ba94-212595803052`,
 `qa_run_id=<current-task-id>`, `qa_candidate_sha=<exact-sha>`, and
 `qa_claim_mode=autonomous_unassigned`, plus a matching owner/run/SHA comment.
+Before moving the QA child to `in_progress`, QA also records its CUE/Fibonacci
+estimate and matching `story_points`/`estimation_model` metadata. Every new
+`BUG:` / `IMPROVEMENT:` child receives the same estimate block and metadata
+before it becomes dispatchable.
 QA then re-reads parent, child, metadata, and comments. The claim is valid only
 when all four values match, the current run is live, the SHA is unchanged, and
 there is no competing claim/verdict. QA moves that child directly to

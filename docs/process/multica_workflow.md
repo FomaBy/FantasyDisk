@@ -37,6 +37,14 @@ Multica issue до первой правки. Если запрос продол
 отдельной issue. Обнаруженный в ходе такого ответа новый объём работы сначала
 оформляется в Multica и только затем исполняется.
 
+Каждая actionable issue независимо от типа и роли получает оценку сложности по
+`docs/process/story_points.md`: CUE (Complexity, Uncertainty, Effort), шкала
+Фибоначчи `1, 2, 3, 5, 8, 13`. Description содержит `Story points: <N>` и
+короткое обоснование, Multica metadata — числовой `story_points=<N>` и
+`estimation_model="CUE Fibonacci 1,2,3,5,8,13"`. Без этого задача не готова к
+assignment, dispatch или `in_progress`; оценка больше `13 SP` означает
+обязательную декомпозицию.
+
 ## Проверка подключения
 
 ```bash
@@ -74,7 +82,8 @@ runs, locked paths и dirty worktrees. Если объём уже покрыт �
 же файлы, ассеты или экран.
 
 Новая пользовательская задача по умолчанию создаётся в `todo` с project ID,
-priority, проверяемым описанием и acceptance criteria:
+priority, проверяемым описанием, acceptance criteria и блоком оценки из
+`docs/process/story_points.md`:
 
 ```bash
 multica issue create \
@@ -85,6 +94,22 @@ multica issue create \
   --priority <urgent|high|medium|low> \
   --output json
 ```
+
+Сразу после создания записать ту же оценку как metadata и перепроверить
+совпадение текста и числа до назначения или запуска:
+
+```bash
+multica issue metadata set FAN-123 --key story_points --value <1|2|3|5|8|13> --type number
+multica issue metadata set FAN-123 --key estimation_model \
+  --value "CUE Fibonacci 1,2,3,5,8,13" --type string
+multica issue metadata list FAN-123 --output json
+```
+
+Если требования недостаточны для обоснованной оценки, issue остаётся
+неисполняемой до уточнения. Существующие `backlog`/`todo` без SP оцениваются до
+следующего dispatch; `in_progress`/`in_review` — при ближайшем содержательном
+обновлении. Исторические `done`/`cancelled` и Jira Archive массово не
+переоцениваются.
 
 `backlog` используется только для явно отложенной работы, freeze/hold или
 ожидания зависимости, когда issue ещё не готова к dispatch. Реальный blocker,
@@ -109,6 +134,9 @@ multica issue status FAN-123 todo
 ```
 
 Переход зарезервированной назначенной issue в `todo` создаёт task в очереди.
+Перед reservation dispatcher обязан подтвердить допустимую числовую metadata
+`story_points`, совпадающее обоснование в description и отсутствие оценки выше
+`13 SP`; иначе issue возвращается PM на оценку или декомпозицию.
 Обычный daemon worker начинает работу только после повторной проверки
 собственного exact assignee UUID; он не ищет и не claim'ит свободную issue.
 Единственное исключение — отдельный автономный QA queue-sweep ниже. QA всегда
@@ -141,7 +169,9 @@ writer review-очереди и работает с `max_concurrent_tasks = 1`. 
    эквивалентную inactive child на том же SHA. До смены статуса он записывает в
    child metadata `qa_owner_id=f992a646-a8ea-4935-ba94-212595803052`,
    `qa_run_id=<current-task-id>`, `qa_candidate_sha=<exact-sha>` и
-   `qa_claim_mode=autonomous_unassigned`, затем добавляет owner/run/SHA
+   `qa_claim_mode=autonomous_unassigned`, а также CUE/Fibonacci
+   `story_points`/`estimation_model` по `docs/process/story_points.md`; description
+   содержит ту же оценку и обоснование. Затем QA добавляет owner/run/SHA
    claim-comment. Это поддерживаемая замена self-assignment: live Multica ACL
    запрещает agent actor назначить child самому себе.
 4. Повторно читает parent, children, child metadata и comments. Claim валиден,
@@ -164,8 +194,9 @@ post-claim re-read остаётся последним guard. General dispatcher
 
 Если Codex/Claude уже получил прямой запрос пользователя и выполняет его в
 текущем чате, issue создаётся или обновляется без agent assignment, переводится
-в `in_progress` только после duplicate/lock audit, а первый комментарий через
-`--content-file` содержит:
+в `in_progress` только после duplicate/lock audit и записи обязательной оценки
+из `docs/process/story_points.md`, а первый комментарий через `--content-file`
+содержит:
 
 ```text
 Owner: Codex|Claude / <thread-or-control-chat>

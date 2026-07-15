@@ -82,6 +82,9 @@ PM формирует требования, **создаёт Multica issue FAN-<
 PM обязан:
 
 - превращать запрос пользователя в проверяемый Multica issue FAN-<n>;
+- оценивать каждую actionable issue по CUE/Fibonacci `1, 2, 3, 5, 8, 13`,
+  записывать `Story points` с обоснованием в description и числовую metadata
+  `story_points`; scope больше `13 SP` декомпозировать до dispatch;
 - выбрать роль и execution lane;
 - указать `Контур`, `Owner`, `Thread/Worker`, `Locked paths`;
 - создать/обновить local `.md`/board mirror только после Multica issue key (FAN-<n>);
@@ -96,6 +99,8 @@ threads. Он не реализует gameplay, UI, art, animation, balance, rel
 Dispatcher обязан:
 
 - делать duplicate/active-owner audit перед routing;
+- не dispatch'ить issue без допустимой metadata `story_points`, совпадающего
+  обоснования в description или с недекомпозированным scope больше `13 SP`;
 - не отправлять задачу, если есть owner, dispatch note, `in_progress`, Multica
   ownership, unresolved blocker, QA gate или dirty/locked-path overlap;
 - отправлять не более одной новой задачи в один role thread за heartbeat;
@@ -330,7 +335,8 @@ Multica обязательна. Работа не считается сдела�
 
 Обязательные действия:
 
-- новая задача: Multica issue FAN-<n> first, local `.md`/board mirror second;
+- новая задача: требования и CUE/Fibonacci `Story points` first, затем Multica
+  issue FAN-<n> + числовая metadata `story_points`, local `.md`/board mirror second;
 - взял задачу: Multica status/comment + `.md` mirror `in_progress`;
 - завершил: Multica status/comment + `.md` mirror `done/in_review`;
 - QA passed: Multica issue в `done`;
