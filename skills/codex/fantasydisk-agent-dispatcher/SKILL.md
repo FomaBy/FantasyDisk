@@ -57,6 +57,12 @@ matches `SP:<N>` where N is one of `1, 2, 3, 5, 8, 13`; numeric metadata
 Return missing, duplicate, or inconsistent labels/estimates to PM. Never
 dispatch an issue sized above `13 SP`; require decomposition first.
 
+`docs/process/story_points.md` is the only CUE contract. CUE is discussed as a
+whole and **does not sum by formula**: reject a separate per-factor score,
+mechanical C/U/E total, or conversion-threshold rubric in an attachment or handoff.
+Portable instructions may only restate the canonical relative rubric, including
+its re-estimation and team/process-only reporting boundaries.
+
 ## Assign Without Duplicate Claims
 
 1. Require a `DISPATCH_CONTROL_FAN` for the run. Post a `--content-file` lease
