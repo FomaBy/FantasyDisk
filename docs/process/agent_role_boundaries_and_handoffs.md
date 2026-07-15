@@ -19,8 +19,11 @@ docs/process/jira_to_multica_cutover.md).
 в любые чаты, сразу заводятся в active Multica board; backlog допустим только при
 явном freeze/hold marker. Новые задачи текущего цикла берутся только из
 активной Multica board. PM/Documentation dispatcher является единственным writer
-назначения: role agents получают одну issue с exact `assignee_id`, но не берут
-eligible/unassigned работу самостоятельно.
+назначения implementation-задач: role agents получают одну issue с exact
+`assignee_id`, но не берут eligible/unassigned работу самостоятельно. Узкое
+исключение: QA Codex Sol — единственный writer review-очереди и может выбрать
+одну eligible parent issue уже в `in_review`, оформив ownership отдельной QA
+child без изменения implementation assignee.
 `docs/tasks/*.md` и `docs/process/task_board.md` — локальные mirrors/spec/evidence
 и dashboard/cache.
 
@@ -84,6 +87,14 @@ mirror только как bookkeeping. Свободная issue, status change 
 
 PM/Documentation dispatcher остаётся единственным writer назначения до появления
 server-side compare-and-swap claim; параллельные dispatchers запрещены.
+
+QA lane имеет отдельного единственного writer: QA Codex Sol
+(`f992a646-a8ea-4935-ba94-212595803052`, runtime concurrency `1`). В queue-sweep
+он может self-select только parent в `in_review` после полного duplicate/SHA/
+dependency/lock audit, написать parent claim comment и создать/переиспользовать
+свою QA child. General dispatcher не создаёт конкурирующую child и не выдаёт ту
+же проверку другому reviewer. Это исключение не распространяется на
+implementation issues, локальные board rows или других role agents.
 
 Для параллельной работы Codex и Claude каждая активная задача должна иметь
 execution-lane metadata:
@@ -372,13 +383,27 @@ Animator не должен самостоятельно делать:
 
 QA отвечает за:
 
+- автономный просмотр live Multica `in_review` queue и безопасный claim ровно
+  одной eligible проверки через отдельную QA child на exact QA UUID;
+- сохранение исходного implementation assignee и независимости reviewer;
 - приемочное ревью задач после реализации;
-- проверку acceptance criteria из task-файлов;
-- проверку smoke/regression результатов, логов и артефактов;
+- перевод каждого acceptance criterion в фактическую проверку и evidence;
+- самостоятельный risk-based план: focused/regression/integration/negative/
+  edge/manual/windowed/performance/platform/save-load/pause/input coverage по
+  затронутому scope;
+- чтение changed code, тестов и fixtures для исключения false-green;
+- создание и удаление disposable QA probes, если существующих тестов недостаточно;
+- проверку smoke/regression результатов, логов и артефактов на exact pushed SHA;
+- screenshots/video/rect dumps/logs/traces/profiler evidence для visual/UI/runtime
+  acceptance, когда они materially доказывают результат;
 - поиск регрессий в бою, карте, меню, UI, анимациях, арте и балансе;
-- фиксацию найденных багов отдельными `backend_`, `design_` или `animation_`
-  handoff-задачами;
+- создание linked Multica child issue на каждый подтверждённый `BUG:` и каждое
+  обязательное `IMPROVEMENT:` с reproduction, expected/actual, environment/SHA,
+  severity/priority, evidence, acceptance и recommended implementation role;
 - подтверждение, что документация и CHANGELOG обновлены для выполненной работы.
+- подробный verdict report с traceability, командами/results, manual scenarios,
+  evidence, findings, tested/not-tested/blocked scope, residual risks, cleanup и
+  ровно одной recommendation: `Go`, `Go with known risks` или `No-Go`.
 
 QA не должен самостоятельно делать:
 
@@ -387,11 +412,15 @@ QA не должен самостоятельно делать:
 - animation/rig правки;
 - баланс-изменения;
 - коммиты релизов или merge/tag операции.
+- переназначение implementation parent на себя или production fixes внутри QA child.
 
-Парные qa_review-задачи НЕ создаются (упразднено PM 2026-06-12): каждая задача
-после `done` автоматически тестируется QA-воркером по `docs/process/qa_protocol.md`.
-Исключение — повторная проверка после вердикта FAILED: на нее заводится отдельная
-qa_review-задача (QA-воркер не перепроверяет файлы с уже выданным вердиктом).
+Каждая implementation issue после перехода в `in_review` получает отдельную QA
+child по `docs/process/qa_protocol.md`. QA Codex Sol создаёт/переиспользует её
+сам в текущем queue-sweep run; общий dispatcher только наблюдает или будит QA.
+`PASSED` закрывает child и parent в `done`. `FAILED` закрывает QA child с
+verdict, оставляет parent в `in_review` и создаёт linked bug/improvement issues.
+Повторная проверка всегда использует новый candidate SHA и отдельную re-QA child;
+старый verdict не перезаписывается.
 
 ## Handoff Формат
 

@@ -50,7 +50,7 @@ environment art, фоны меню/экранов, loading/splash art и illustr
 Role boundaries:
 - A PM chat forms requirements and issues tasks; its workflow is `docs/process/pm_workflow.md`. Since the 2026-07-13 cutover Multica is the authoritative task queue/status/ownership source (workspace/project `FantasyDisk`, issues `FAN-*`, `multica` CLI); `docs/process/task_board.md` and `docs/tasks/*.md` are local mirrors/spec/evidence, not the source of new work. Legacy Jira (`SCRUM-*`) is a read-only historical archive (see `docs/process/jira_to_multica_cutover.md`).
 - Design, Back-end, and Animator agents must do only their own discipline-specific work: Design owns art/sprites/UI visuals, Back-end owns logic/code/balance/tests, Animator owns motion/rigs/animation states.
-- New work is taken from the live Multica board (project `FantasyDisk`), not from the local board or Jira. A daemon role agent works exactly the one `FAN-*` issue assigned to its exact agent UUID and never self-selects an unassigned issue. The single dispatcher reserves ownership before enqueue; a direct user control chat may own an unassigned issue only after a duplicate/lock audit and an explicit owner comment. Local mirrors are bookkeeping only. Agents must not self-select a local `new` row, a wrong-lane issue, a blocked/hold/review-gated issue, or any issue with active owner/locked-path overlap.
+- New work is taken from the live Multica board (project `FantasyDisk`), not from the local board or Jira. A daemon role agent works exactly the one `FAN-*` issue assigned to its exact agent UUID and never self-selects an unassigned issue. The single dispatcher reserves implementation ownership before enqueue; a direct user control chat may own an unassigned issue only after a duplicate/lock audit and an explicit owner comment. The sole exception is the autonomous QA queue-owner contract below: QA Codex Sol may select one eligible implementation parent already in `in_review`, but must own the review through a separate QA child and never replace the implementation assignee. Local mirrors are bookkeeping only. All other agents must not self-select a local `new` row, a wrong-lane issue, a blocked/hold/review-gated issue, or any issue with active owner/locked-path overlap.
 - Single-owner rule: before taking or routing work, check the Multica issue status/comments/assignee/labels first, then local task file, board row, recent role-thread messages, and dirty worktree. If any recent dispatch note, `in_progress` status, owner/thread id, Multica assignee/comment, or overlapping active file/asset scope exists, do not take or resend the task.
 - Parallel Codex/Claude rule: every active task belongs to exactly one execution lane, `Контур: Codex`, `Контур: Claude`, or `Контур: OtherAI`, and must record `Owner`, `Thread/Worker`, and locked files/assets/screens before work starts. Codex/Claude/other AI work autonomously only on tasks whose exact Multica assignee/owner comment matches their lane; every other lane must skip them. Review/fix work across lanes requires a separate review or bug issue after the owner records a result; do not edit the same files in both lanes at the same time.
 - Design pool rule: Design main and Designer 2 are separate owners, not a shared queue. A Design task must name exactly one active Design owner/thread while in progress. The other Design thread may review only when explicitly asked, and must not start the same task or a task with overlapping source assets/screens.
@@ -58,6 +58,44 @@ Role boundaries:
 - Use `docs/process/agent_role_boundaries_and_handoffs.md` as the source of truth for ownership and handoff format.
 - When taking a task, update the Multica issue status/comment first, then set local mirror `Статус: in_progress` if a task file exists; when finishing, update Multica and set local mirror `done` (or `review`) with a short result summary so PM/dispatcher can sync mirrors.
 - Multica is mandatory and authoritative for task tracking. Every task is a Multica issue (`FAN-*`) in the live `FantasyDisk` project, and only then may have a local `.md` spec/evidence mirror. Multica status/comment/assignee/labels must match reality. Do not create, claim, or sync work in legacy Jira. Never store any API tokens in the repository.
+
+**АВТОНОМНАЯ QA-ОЧЕРЕДЬ — ОБЯЗАТЕЛЬНЫЙ КОНТРАКТ (директива пользователя 2026-07-15).**
+QA Codex Sol (`f992a646-a8ea-4935-ba94-212595803052`) является единственным
+writer/owner очереди независимого QA. В QA queue-sweep run он может сам выбрать
+ровно один eligible parent `FAN-*` в `in_review`, но только после проверки
+priority, dependencies, comments, existing QA children/verdicts, active runs,
+exact candidate SHA в `origin/dev`, reviewer independence и locked-path
+overlap. Runtime concurrency QA должен оставаться `1`; второй QA claim или
+параллельный QA-dispatch запрещён.
+
+- QA не переназначает implementation parent. Он пишет claim-comment в parent,
+  создаёт или безопасно переиспользует отдельную QA child issue с exact QA UUID,
+  перепроверяет отсутствие гонки и ведёт её `in_progress` в текущем run.
+- Общий dispatcher может разбудить QA/сообщить о новой review-очереди, но не
+  создаёт конкурирующую QA child и не назначает ту же проверку другому агенту.
+- QA самостоятельно формирует risk-based plan и выполняет всю необходимую
+  acceptance, focused, regression, edge-case, integration, manual/windowed,
+  performance, platform и visual проверку на exact SHA. Developer report, code
+  review и CI сами по себе не являются QA evidence. Тесты нужно прочитать и
+  убедиться, что они действительно доказывают acceptance.
+- Для визуального/UI/runtime поведения QA делает скриншоты или видео, когда они
+  materially подтверждают результат, сохраняет evidence в task-owned
+  `build/qa/<FAN-id>/` либо прикладывает его к Multica comment и указывает пути,
+  viewport/platform/timestamp. Логи, дампы rect'ов, traces и profiler output
+  прикладываются, когда они являются лучшим доказательством.
+- Итоговый отчёт обязан содержать: exact SHA и environment, traceability
+  acceptance→checks, фактические команды/results, manual scenarios, evidence,
+  findings, `passed/failed/blocked/not tested`, residual risks, `Disk cleanup:`
+  и ровно одну recommendation: `Go`, `Go with known risks` или `No-Go`.
+- Каждый подтверждённый дефект или обязательное улучшение QA оформляет отдельной
+  linked Multica child issue (`BUG:` / `IMPROVEMENT:`) с reproduction,
+  expected/actual, environment/SHA, severity/priority, evidence, affected scope,
+  acceptance criteria и recommended implementation role. QA не чинит production
+  implementation в review scope; disposable probes разрешены и удаляются до
+  verdict.
+- `QA verdict: PASSED` переводит QA child и parent в `done`. `FAILED` завершает
+  QA child с правдивым отчётом, оставляет parent в `in_review` и линкует все
+  follow-up issues. Непроверенное нельзя объявлять пройденным.
 
 **ЖИВАЯ СИНХРОНИЗАЦИЯ MULTICA — ОБЯЗАТЕЛЬНА (директива пользователя 2026-06-13, обновлено при cutover 2026-07-13).**
 Пользователь управляет разработкой по Multica, поэтому Multica ВСЕГДА должна

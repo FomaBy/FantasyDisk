@@ -13,6 +13,7 @@ Cutover record: `FAN-1044`; operational hardening: `FAN-1048`
 - Project: `FantasyDisk` (`2ac963eb-b644-4540-8042-a1a4508f1a65`)
 - Codex agent: `Codex` (`4eccbced-60b5-4e7a-87fd-d9f3699d3bed`)
 - Claude agent: `Claude` (`e2e1c89f-587d-4a2d-bbaa-ce9b5dea908d`)
+- QA queue owner: `QA Codex Sol` (`f992a646-a8ea-4935-ba94-212595803052`)
 - Repository resource: `https://github.com/FomaBy/FantasyDisk.git`
 - Integration branch: `dev`
 
@@ -108,12 +109,48 @@ multica issue status FAN-123 todo
 ```
 
 Переход зарезервированной назначенной issue в `todo` создаёт task в очереди.
-Daemon worker начинает работу только после повторной проверки собственного exact
-assignee UUID; он не ищет и не claim'ит свободную issue. Для QA создаётся
-отдельная child review issue, чтобы не перезаписывать owner реализации.
+Обычный daemon worker начинает работу только после повторной проверки
+собственного exact assignee UUID; он не ищет и не claim'ит свободную issue.
+Единственное исключение — отдельный автономный QA queue-sweep ниже. QA всегда
+владеет проверкой через child review issue и не перезаписывает owner реализации.
 Параллельные dispatchers запрещены, пока сервер не поддерживает
 `claim-if-unassigned/expected-status`. Нельзя одновременно назначить issue
 daemon-агенту и выполнять тот же scope вручную в другом чате.
+
+### Автономный QA queue-sweep
+
+QA Codex Sol (`f992a646-a8ea-4935-ba94-212595803052`) является единственным
+writer review-очереди и работает с `max_concurrent_tasks = 1`. Общий dispatcher
+может разбудить QA или сообщить, что появился `in_review`, но не создаёт QA child,
+не переназначает parent и не отправляет ту же проверку другому reviewer.
+
+В queue-sweep run QA:
+
+1. Читает `AGENTS.md`, этот workflow и `docs/process/qa_protocol.md`, проверяет
+   собственные active tasks и assignee-filtered QA children. Если кроме текущего
+   run есть активный QA claim, новый не создаётся.
+2. Сканирует все страницы `in_review` и выбирает ровно один eligible parent:
+   сначала higher priority, затем самый старый ready item. Перед claim читает
+   parent, recent comments, children, metadata и candidate evidence. Parent
+   должен иметь exact pushed SHA, завершённую implementation работу, отсутствие
+   blocker/dependency, существующего verdict, живой QA child или другого reviewer
+   claim; implementation author не может быть независимым reviewer.
+3. Пишет в parent `QA claim` comment через `--content-file` с QA UUID, текущим
+   run/session, exact candidate SHA, environment/workdir и review scope. Затем
+   создаёт отдельную QA child в `backlog`, назначенную exact QA UUID, или
+   переиспользует только эквивалентную inactive child на том же SHA.
+4. Повторно читает parent/children/comments. Если появился конкурентный
+   claim/verdict или изменился SHA, QA отменяет собственную duplicate child и не
+   тестирует stale candidate. Иначе переводит child напрямую в `in_progress` и
+   выполняет её в текущем queue-sweep run; `todo` не используется, чтобы не
+   породить второй daemon task.
+5. Держит parent assignee/status неизменными до verdict. QA не делает production
+   fix в review scope и не держит больше одной review child `in_progress`.
+
+Это узкое исключение не разрешает self-claim implementation задачам, другим
+role agents или второму QA dispatcher. Single-writer + runtime concurrency `1`
+снижают риск гонки при отсутствии server-side compare-and-swap; обязательный
+post-claim re-read остаётся последним guard.
 
 ### Текущий пользовательский control chat
 
@@ -199,23 +236,43 @@ Issue нельзя считать review-ready или done, пока комме�
 
 ## QA
 
-Реализация переводит issue в `in_review`. Для независимой проверки создаётся
-child review issue и назначается другому агенту; это не отменяет task владельца
-исходной issue и сохраняет отдельную историю run/usage.
+Реализация переводит issue в `in_review`. QA Codex Sol автономно выбирает один
+eligible parent по протоколу выше и создаёт/переиспользует отдельную child review
+issue на себя. Это не отменяет task владельца исходной issue и сохраняет
+отдельную историю claim, run, evidence и usage.
 
-QA пишет verdict с exact SHA и evidence:
+QA самостоятельно строит risk-based test plan и проверяет acceptance фактически:
+читает тесты, запускает focused и certifying gates на exact SHA, добавляет
+integration/negative/edge/manual/windowed/performance/platform coverage по риску.
+Developer report, code review и CI без фактического QA не считаются verdict.
+Для visual/UI/runtime acceptance QA прикладывает screenshots/video, rect dumps,
+logs, traces или profiler evidence, когда они materially доказывают результат.
+
+QA пишет подробный verdict в child и итоговую ссылку/summary в parent:
 
 ```text
 QA verdict: PASSED|FAILED
 Verified SHA: <sha>
-Checks: <commands/results>
-Findings: <none or list>
+Environment: <OS/Godot/build/config>
+Acceptance traceability: <criterion -> check/evidence>
+Checks: <commands/results + manual scenarios>
+Evidence: <Multica attachments and/or repo paths>
+Findings: <passed/failed/blocked/not tested>
+Follow-ups: <linked BUG/IMPROVEMENT FAN IDs or none>
+Residual risk: <explicit>
+Release recommendation: Go|Go with known risks|No-Go
 Disk cleanup: <result>
 ```
 
-При `PASSED` parent issue становится `done`. При `FAILED` review issue закрывает
-свой run правдивым результатом, а defect оформляется child bug/follow-up issue;
-исходная задача возвращается в `todo` или остаётся `in_review` с явным blocker.
+Каждый подтверждённый дефект или обязательное улучшение создаётся QA как linked
+child issue исходного implementation parent (`BUG:` / `IMPROVEMENT:`) с
+reproduction, expected/actual, exact SHA/environment, severity/priority,
+evidence, affected scope, acceptance criteria и recommended implementation role.
+
+При `PASSED` QA child и parent становятся `done`. При `FAILED` QA child также
+закрывает свой run в `done` с правдивым verdict, parent остаётся `in_review`, а
+все follow-up issues линкуются в обоих отчётах. Возврат parent в `todo` выполняет
+dispatcher/PM или новый implementation owner, но не QA в review scope.
 
 ## Handoff и зависимости
 

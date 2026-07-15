@@ -7,7 +7,8 @@ description: Coordinate continuous FantasyDisk multi-agent delivery from Multica
 
 Run a central Multica dispatcher. Multica project `FantasyDisk` is authoritative;
 legacy Jira is a read-only archive. Never let workers discover and claim the same
-unassigned issue independently.
+unassigned implementation issue independently. The only self-selection exception
+is the exclusive QA queue owner defined below.
 
 ## Context
 
@@ -21,6 +22,7 @@ Canonical IDs:
 - project: `2ac963eb-b644-4540-8042-a1a4508f1a65`
 - Codex agent: `4eccbced-60b5-4e7a-87fd-d9f3699d3bed`
 - Claude agent: `e2e1c89f-587d-4a2d-bbaa-ce9b5dea908d`
+- QA Codex Sol: `f992a646-a8ea-4935-ba94-212595803052`
 
 ## Discover
 
@@ -37,13 +39,15 @@ multica issue list --project 2ac963eb-b644-4540-8042-a1a4508f1a65 --status block
 Page with `--offset` if a result reaches the limit. The list result does not
 contain the comment/lock history: for every candidate run `multica issue get
 <FAN-id> --output json` and `multica issue comment list <FAN-id> --recent 10
---output json`. Reject blocked/dependent/stale-owner candidates. Prefer QA for
-`in_review`, then small backend/balance work, then non-overlapping UI/design and
-animation work.
+--output json`. Reject blocked/dependent/stale-owner candidates. Treat
+`in_review` as the exclusive QA lane: observe or wake QA Codex Sol, but do not
+create a competing QA child. Then dispatch small backend/balance work, followed
+by non-overlapping UI/design and animation work.
 
 Before assigning, inspect capacity with `multica agent list --output json`,
 `multica agent tasks <agent-uuid> --output json`, and assignee-filtered `todo` /
-`in_progress` issue lists. Do not queue a second issue to a busy agent.
+`in_progress` issue lists. Do not queue a second issue to a busy agent. QA Codex
+Sol must keep runtime concurrency `1` and at most one QA child `in_progress`.
 
 ## Assign Without Duplicate Claims
 
@@ -54,15 +58,9 @@ Before assigning, inspect capacity with `multica agent list --output json`,
 2. Re-read the candidate immediately before assignment:
    `multica issue get <FAN-id> --output json` and recent comments.
 3. Require `todo`, no active assignee, no blocker, and no overlapping owner/lock.
-   Capture the latest comment timestamp/ID. For implementation already in
-   `in_review`, create or reuse a separate QA child; do not replace its owner:
-
-   ```bash
-   multica issue create --title "QA: <parent title>" \
-     --description-file ./qa-description.md --parent <parent-FAN> \
-     --project 2ac963eb-b644-4540-8042-a1a4508f1a65 --status backlog \
-     --assignee-id <qa-agent-uuid> --priority <priority>
-   ```
+   Capture the latest comment timestamp/ID. Never feed an implementation parent
+   already in `in_review` through this general assignment path; QA Codex Sol owns
+   that lane and creates/reuses its own separate QA child.
 4. Multica CLI has no compare-and-swap claim. Under the single-dispatcher rule,
    reserve without starting the daemon in one update:
    `multica issue update <FAN-id> --status backlog --assignee-id <agent-uuid>
@@ -92,6 +90,27 @@ Record the failure. This lease/re-read protocol reduces but cannot eliminate a
 server race; true multi-dispatcher safety requires server-side
 claim-if-unassigned/expected-status. Never run multiple dispatcher writers.
 
+## Autonomous QA Lane
+
+QA Codex Sol is the sole writer for `in_review` selection. The general
+dispatcher may trigger a QA queue sweep when the agent is idle, then observes.
+It must not pre-create the QA child, replace the parent assignee, or send the
+same parent to another reviewer.
+
+In one queue-sweep run QA selects one eligible parent by priority then age,
+audits parent/comments/children/dependencies/active runs/exact pushed SHA and
+reviewer independence, writes a parent claim comment, creates or reuses a
+`backlog` QA child assigned to itself, then re-reads for races. If the claim is
+still unique and the SHA unchanged, QA moves the child directly to
+`in_progress` and completes it in the same run; it does not use `todo` and spawn
+a second daemon task. On a race it cancels its duplicate child and does not test
+the stale/contested candidate.
+
+Load `references/qa-loop.md` whenever waking or reconciling this lane. QA must
+perform the complete independent verification, attach visual/runtime evidence
+when needed, write the detailed report, create linked `BUG:` / `IMPROVEMENT:`
+children for every confirmed follow-up, and clean its disposable worktree/data.
+
 When using an in-process subagent instead of a Multica daemon agent, the central
 dispatcher must first set `in_progress` and post a direct-control owner/lock
 comment. Do not assign a daemon agent as well.
@@ -109,7 +128,8 @@ Give a worker exactly one FAN ID per run. It must:
 - post exact SHA, commands/results, residual risk, and cleanup evidence;
 - move implementation to `in_review`; a QA PASS marks both the QA child and its
   implementation parent `done`; QA RED completes the QA child with verdict
-  evidence but leaves the parent `in_review` and creates/links a defect;
+  evidence but leaves the parent `in_review` and creates/links every confirmed
+  defect or required improvement;
 - stop after that issue so the central dispatcher chooses the next assignment.
 
 Never leave background commands or workers running past the owning Multica turn.
