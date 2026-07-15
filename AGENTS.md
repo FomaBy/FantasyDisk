@@ -13,6 +13,7 @@ Before making gameplay, balance, character, enemy, UI, or progression changes, r
 - `docs/design/content_registry.md` for canonical entity IDs and names.
 - `docs/process/agent_role_boundaries_and_handoffs.md` for Design/Back-end/Animator ownership and cross-chat handoff rules.
 - `docs/process/versioning_and_branching.md` for the active version/branch policy.
+- `docs/process/human_readable_comments.md` for the mandatory human-readable Multica comment style (user directive 2026-07-15).
 
 Autonomy and approval:
 - The user pre-approves all in-scope project changes requested in task files or direct prompts.
@@ -106,6 +107,16 @@ overlap. Runtime concurrency QA должен оставаться `1`; втор�
 - `QA verdict: PASSED` переводит QA child и parent в `done`. `FAILED` завершает
   QA child с правдивым отчётом, оставляет parent в `in_review` и линкует все
   follow-up issues. Непроверенное нельзя объявлять пройденным.
+
+**ЧЕЛОВЕКОЧИТАЕМЫЕ КОММЕНТАРИИ В MULTICA (директива пользователя 2026-07-15, ОБЯЗАТЕЛЬНО для ВСЕХ агентов).**
+Каждый комментарий в Multica issue начинается с короткого резюме простым
+человекочитаемым русским языком — что произошло, в каком состоянии задача, что
+дальше — и только затем технические детали (SHA, команды, логи, процессные
+поля). Любой блокер или проблема описывается так, чтобы Сергей Фомин понял без
+уточняющих вопросов: что сломалось, что это значит для игры/проекта, что уже
+попробовано и что нужно для разблокировки. Сырые логи, жаргон и внутренние
+сокращения вместо объяснения — это FAILED-комментарий. Полные правила, шаблон
+блокера и чек-лист самопроверки: `docs/process/human_readable_comments.md`.
 
 **ЖИВАЯ СИНХРОНИЗАЦИЯ MULTICA — ОБЯЗАТЕЛЬНА (директива пользователя 2026-06-13, обновлено при cutover 2026-07-13).**
 Пользователь управляет разработкой по Multica, поэтому Multica ВСЕГДА должна
