@@ -78,18 +78,22 @@ SEPARATE_CHECKLIST_RE = re.compile(
     r"(?:checklists?|чек[-\s]?лист\w*)",
     re.IGNORECASE,
 )
-NON_CUE_CHECKLIST_CONTEXT_RE = re.compile(
-    r"\b(?:accessibility|document|presentation|formatting|quality)\b"
-    r"|(?:доступност\w*|документ\w*|оформлен\w*|качеств\w*|текст\w*)",
+NON_CUE_CHECKLIST_SUBJECT_RE = re.compile(
+    r"\b(?:accessibility|document|presentation|formatting|clarity|text)\b"
+    r"|(?:доступност\w*|документ\w*|оформлен\w*|ясност\w*|текст\w*)",
     re.IGNORECASE,
 )
-OPERATIONAL_RANGE_PREFIX_RE = re.compile(
-    r"(?:\bretr\w*\b|\battempt\w*\b|\brepeat\w*\b|повтор\w*|попыт\w*)"
-    r"[^.!?;]{0,48}$",
+CUE_SCORING_ACTION_RE = re.compile(
+    r"\b(?:rate|rates|rated|rating|score|scores|scored|scoring|evaluate|evaluates|"
+    r"evaluated|evaluating|assess|assesses|assessed|assessing)\b|оцен\w*",
+    re.IGNORECASE,
+)
+CUE_HOLISTIC_CONTEXT_RE = re.compile(
+    r"\bCUE\b\s+(?:is\s+)?(?:evaluat\w*|considered)\s+holistically",
     re.IGNORECASE,
 )
 OPERATIONAL_RANGE_SUFFIX_RE = re.compile(
-    r"^\s*(?:times?|attempts?|retries?|раз(?:а)?|попыт\w*)\b",
+    r"^\s*(?:[\w-]+\s+){0,4}(?:times?|attempts?|retries?|раз(?:а)?|попыт\w*)\b",
     re.IGNORECASE,
 )
 
@@ -143,25 +147,29 @@ def is_separate_checklist(source: str) -> bool:
 
 
 def is_independent_non_cue_checklist_scale(sentence: str, scale: re.Match[str]) -> bool:
-    """Allow a scale only when its wording structurally belongs to a non-CUE checklist."""
-    checklist = SEPARATE_CHECKLIST_RE.search(sentence)
-    if not checklist or not NON_CUE_CHECKLIST_CONTEXT_RE.search(sentence):
+    """Allow a scale only when a separate checklist proves its non-CUE subject."""
+    before_scale = sentence[: scale.start()]
+    holistic_context = CUE_HOLISTIC_CONTEXT_RE.search(before_scale)
+    direct_context = before_scale[holistic_context.end() :] if holistic_context else before_scale
+    if has_cue_reference(direct_context) and CUE_SCORING_ACTION_RE.search(direct_context):
         return False
-    if checklist.start() <= scale.start() <= checklist.end():
-        return True
-    return scale.start() > checklist.end() and bool(
-        PER_FACTOR_RE.search(sentence[: checklist.start()])
-    )
+
+    for checklist in SEPARATE_CHECKLIST_RE.finditer(sentence):
+        if checklist.start() <= scale.start() <= checklist.end():
+            subject_context = sentence[checklist.start() :]
+        elif scale.start() > checklist.end():
+            subject_context = sentence[checklist.start() : scale.start()]
+        else:
+            continue
+        if NON_CUE_CHECKLIST_SUBJECT_RE.search(subject_context):
+            return True
+    return False
 
 
 def is_operational_range(sentence: str, scale: re.Match[str]) -> bool:
     """Distinguish retry/attempt counts from a scale applied to CUE factors."""
-    before = sentence[max(0, scale.start() - 80) : scale.start()]
     after = sentence[scale.end() : scale.end() + 40]
-    return bool(
-        OPERATIONAL_RANGE_PREFIX_RE.search(before)
-        or OPERATIONAL_RANGE_SUFFIX_RE.match(after)
-    )
+    return bool(OPERATIONAL_RANGE_SUFFIX_RE.match(after))
 
 
 def has_natural_language_factor_scale(source: str) -> bool:

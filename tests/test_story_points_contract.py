@@ -92,6 +92,8 @@ Metadata: story_points и estimation_model.
             "A separate five-point accessibility checklist reviews document presentation only.",
             "Сложность, неопределённость и трудозатраты рассматриваются целиком. "
             "Отдельный пятибалльный чек-лист проверяет только качество текста.",
+            "CUE is evaluated holistically while a separate five-point accessibility "
+            "checklist reviews document presentation only.",
             "Complexity, Uncertainty and Effort are considered holistically. "
             "Operational evidence rule: attempts 1–3 → 2 sanitized log copies.",
         )
@@ -198,6 +200,62 @@ Metadata: story_points и estimation_model.
                 "markdown_story_points_header",
                 "| Total | Story points |\n| --- | --- |\n| 3–5 | 1 |\n| 6–8 | 2 |",
                 True,
+            ),
+        )
+        for name, statement, should_reject in cases:
+            with self.subTest(case=name):
+                result = self._validate_source(self.CONTRACT_PREAMBLE + statement)
+                self.assertEqual(result.returncode != 0, should_reject, result.stderr)
+
+    def test_bounded_subject_context_matrix(self) -> None:
+        cases = (
+            (
+                "english_cue_via_quality_checklist",
+                "Rate Complexity, Uncertainty and Effort using a separate five-point "
+                "quality checklist.",
+                True,
+            ),
+            (
+                "russian_cue_via_quality_checklist",
+                "Оцените сложность, неопределённость и трудозатраты с помощью отдельного "
+                "пятибалльного чек-листа качества.",
+                True,
+            ),
+            (
+                "english_attempts_to_score_cue",
+                "The reviewer attempts to rate Complexity, Uncertainty and Effort "
+                "from one to five.",
+                True,
+            ),
+            (
+                "russian_attempt_to_score_cue",
+                "Проверяющий делает попытку оценить сложность, неопределённость и "
+                "трудозатраты от одного до пяти.",
+                True,
+            ),
+            (
+                "english_independent_quality_subject",
+                "Complexity, Uncertainty and Effort are considered holistically. "
+                "A separate quality checklist rates document clarity from one to five.",
+                False,
+            ),
+            (
+                "russian_independent_quality_subject",
+                "Сложность, неопределённость и трудозатраты рассматриваются целиком. "
+                "Отдельный чек-лист качества оценивает ясность документа от одного до пяти.",
+                False,
+            ),
+            (
+                "english_modified_export_attempts",
+                "Complexity, Uncertainty and Effort are considered holistically, while "
+                "the reviewer performs from one to five sanitized export attempts.",
+                False,
+            ),
+            (
+                "russian_modified_export_attempts",
+                "Сложность, неопределённость и трудозатраты рассматриваются целиком, а "
+                "проверяющий выполняет от одного до пяти повторных попыток экспорта.",
+                False,
             ),
         )
         for name, statement, should_reject in cases:
