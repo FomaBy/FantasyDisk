@@ -20,6 +20,7 @@ var _atlas := {}
 var _atlas_hidden_seen := {}
 var _feedback_request_id := 0
 var codex_unlock_presenter
+var _update_presenter
 
 const HeroStatRadar := preload("res://scripts/ui/hero_stat_radar.gd")
 const SemanticTypography := preload("res://scripts/ui/semantic_typography.gd")
@@ -45,6 +46,7 @@ const CodexUnlockPresenter := preload("res://scripts/codex_unlock_presenter.gd")
 # вынесенные UI-модули: глобальное имя класса из global_script_class_cache
 # не гарантировано в холодном/устаревшем чекауте и роняло компиляцию main.gd.
 const LoreScreens := preload("res://scripts/ui/lore_screens.gd")
+const UpdatePresenter := preload("res://scripts/ui/update_presenter.gd")
 const BATTLE_PRAYER_ICON_IDS := {
 	"prayer_wrath": "damage",
 	"prayer_mending": "regeneration",
@@ -1001,6 +1003,10 @@ func _show_main_menu() -> void:
 # Панель PanelContainer (offset ±300×±170 от центра → 600×340), _panel_style content
 # margins (58,72,58,66) → safe-area. Контент: заголовок, подзаголовок, ряд из двух
 # кнопок 220×72 (separation 18). Всё помещается внутри safe-area без наслоений.
+
+
+func _connect_update_manager(manager) -> void:
+	_update_presenter = UpdatePresenter.new(self, manager)
 
 
 func _show_quit_confirmation_dialog() -> void:
@@ -7215,6 +7221,13 @@ func _show_settings_menu(requested_return_origin := "") -> void:
 	action_row.offset_bottom = 64.0
 	action_row.custom_minimum_size = Vector2(settings_panel_w, 64.0)
 	action_safe.add_child(action_row)
+	var update_button := _settings_v6_make_action_button("Обновить игру", "SettingsUpdateButton", 280.0, 64.0)
+	update_button.pressed.connect(_update_presenter.request_check)
+	action_row.add_child(update_button)
+	var action_spacer := Control.new()
+	action_spacer.name = "SettingsBottomActionsSpacer"
+	action_spacer.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	action_row.add_child(action_spacer)
 	var revert_button := _settings_v6_make_action_button("Вернуть", "SettingsRevertButton", 280.0, 64.0)
 	revert_button.disabled = not _settings_video_dirty()
 	revert_button.pressed.connect(_revert_pending_video_settings)
@@ -7223,7 +7236,7 @@ func _show_settings_menu(requested_return_origin := "") -> void:
 	apply_button.disabled = not _settings_video_dirty()
 	apply_button.pressed.connect(_apply_pending_video_settings)
 	action_row.add_child(apply_button)
-	_settings_fit_kit_row([revert_button, apply_button], 280.0, 64.0)
+	_settings_fit_kit_row([update_button, revert_button, apply_button], 280.0, 64.0)
 	# Apply/Revert belong only to pending Screen settings. The accepted Game-tab
 	# mockup has no irrelevant footer; hiding it also restores the exact compact
 	# scroll viewport while tabs/header remain fixed.

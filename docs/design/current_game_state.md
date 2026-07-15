@@ -152,6 +152,13 @@ Act 2 начинается с бюджета boss Act 1 и достигает п
   The whole footer wrapper collapses on Game, preserving its exact `892x242`
   viewport and `878x520` canvas. Headless/Metal coverage includes the 760px
   compact threshold in `tests/settings_footer_scrum1053_test.gd`.
+- **Обновления игры (FAN-1112)**: начиная с 0.2.2 экспортированный клиент один
+  раз за сессию проверяет public GitHub Releases; offline-ошибка старта не мешает
+  игре, а новая SemVer вызывает prompt. `SettingsUpdateButton` доступна на первых
+  трёх вкладках Settings и запускает явную проверку с результатом. Финальные DMG
+  и Windows Setup скачиваются в `user://updates` и открываются только после
+  строгой проверки trusted URL, имени, размера и SHA-256; self-overwrite игры не
+  используется. Полный runtime/release контракт: `docs/process/game_updates.md`.
 - **Codex unlock tracking (SCRUM-621 / FAN-1077)**: `scripts/meta_progression.gd`
   persists discovered characters, weapons, monsters, bosses and artifacts plus an independent
   `codex_unread` map for characters, weapons, monsters, bosses and artifacts in
@@ -1869,7 +1876,7 @@ accepted SCRUM-345/SCRUM-403 frame kit. QA dumps: `build/qa/scrum331/`.
 | Экран | Описание |
 | --- | --- |
 | Главное меню | SCRUM-1059: принятые battle-art фон, логотип и полая `meta40/frame_border.png` рама сохранены; шесть действий размещены одной адаптивной вертикальной колонкой слева внутри authored inner-zone (320×54 @1152×648 → 380×96 @2K), без scrollbar; SCRUM-1080/1093/1095 держит компактный utility-блок справа снизу: неизменный PixelLab Gratitude PNG рисуется через alpha-aware runtime `AtlasTexture`, icon-only благодарности стоят сразу слева от динамической версии, чей прямоугольник равен ширине live-строки + 6px и заканчивается за 8px до frame-safe границы; glow-to-label gap = 2px, реальные alpha-to-glyph gaps = 15/17/17/19px на 1280/1920/2048/2560, длинный будущий semver не клампится; Up/Down образует кольцо колонки, Right ведёт к благодарностям |
-| Настройки | Вкладки «Экран» / «Звук» / «Управление»: live SCRUM-439 Settings v2 modal + 3-slot switcher, монитор, режим окна, HiDPI-aware разрешения только 2560x1440/1920x1080, full-width audio sliders, mute, debug mode, rebinding движения/паузы/ultimate |
+| Настройки | Четыре вкладки «Экран» / «Звук» / «Управление» / «Игра»: Atlas Settings shell, монитор, режим окна, HiDPI-aware разрешения 2560x1440/1920x1080, audio, rebinding, gameplay sandbox и FAN-1112 ручная проверка GitHub-обновления кнопкой «Обновить игру» на первых трёх вкладках |
 | Выбор персонажа | Live HS4/Atlas layout: слева крупное responsive rotating selected hero preview и старт, справа scroll-safe structured dossier SCRUM-1064 (trait → имя → 3 оружия → top-3 BASE_STATS → primary/secondary/weak без прозы/тримминга) + фиксированные 8 stat Line Bars; SCRUM-1063 `HS4AscensionFrame` показывает unified wide `−` / `Возвышение N` / `+` с tooltip-only модификаторами; нижняя carousel циклично синхронизирует first↔last для pointer/keyboard/gamepad и сохраняет ≥3 слота |
 | Выбор оружия | SCRUM-870 native redraw: no `WeaponSelectPixelLabRuntimeLayer`; dark opaque `MenuPanel_weapon_select`, three large `1674x260` live `WeaponOption_*` cards with `204x204` icon wells, `176x176` weapon sprites, readable title/`Отличие:`/concise mechanic/role text, right stat panel for range/radius/cooldown/context, normal fantasy Back button, and preserved mouse/keyboard/gamepad flow |
 | Карта маршрута | SCRUM-1057/1079: horizontal left-to-right карта внутри общей полой gold shell; header/title, боевой resource HUD, node viewport, bottom horizontal lane и pending-level FAB находятся в точных five-target safe-зонах; vertical scroll отключён |

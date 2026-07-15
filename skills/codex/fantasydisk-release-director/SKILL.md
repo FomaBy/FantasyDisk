@@ -1,6 +1,6 @@
 ---
 name: fantasydisk-release-director
-description: Cut, package, verify, and publish a FantasyDisk release. Use for requests to release, ship, publish, or build a version (for example “релизим 0.2.2”, “собрать релиз”, or “опубликовать версию”), including player-facing notes for every playable character, a content-zone release image, a final-signed/notarized macOS DMG, the Windows installer, Git tags, and Discord/Telegram delivery.
+description: Cut, package, verify, and publish a FantasyDisk release. Use for requests to release, ship, publish, or build a version (for example “релизим 0.2.2”, “собрать релиз”, or “опубликовать версию”), including player-facing notes, a content-zone release image, signed/notarized macOS DMG, Windows installer, Git tags, public GitHub Releases, the 0.2.2-only Telegram transition, and Discord delivery.
 ---
 
 # FantasyDisk Release Director
@@ -46,7 +46,9 @@ Use `content-zone-image-compositor` before any image generation:
 4. Composite only the declared text/logo inside those zones, then keep the base,
    final PNG, debug overlay, fit report, plan, layout, prompt/source ID, and spec.
 5. Require the final render report to contain `ok: true`; save the publishable
-   PNG under `assets/marketing/`.
+   PNG under `assets/marketing/`. Use the legacy
+   `fantasydisk_022_announcement_telegram_discord.png` name only for v0.2.2;
+   every later release uses neutral `fantasydisk_XYZ_announcement.png`.
 
 ## 4. Git release state
 
@@ -70,7 +72,8 @@ Require `releases/vX.Y.Z/` to contain:
 - `FantasyDisk-X.Y.Z-windows-setup.exe` (the only Windows download);
 - `SHA256SUMS.txt`;
 - `CHANGELOG-X.Y.Z.md`;
-- the mandatory release poster PNG.
+- the mandatory release poster PNG;
+- `update-manifest.json` (schema 1, generated from the final installer bytes).
 
 Do not create or publish a raw Windows exe or Windows zip.
 
@@ -139,35 +142,52 @@ Require all of the following before any external upload:
 
 There is no macOS skip flag. Windows/Linux may use the explicit platform
 exception for app installation, but package, tag snapshot, manifest, current
-pointer, and Godot registration remain mandatory. Both publication scripts run
+pointer, and Godot registration remain mandatory. Every publication script runs
 `local_release.py verify` before resolving credentials or sending anything, then
 upload only files from the verified `local_release` path returned by that check.
-The release poster PNG is part of both Discord and Telegram publication.
+The release poster PNG is a GitHub/Discord asset and is additionally sent to
+Telegram for v0.2.2 only. `update-manifest.json` must match both retained
+installers byte-for-byte by name, size, URL, and SHA-256.
 
 ## 7. Integrity and publication
 
 1. Verify `shasum -a 256 -c SHA256SUMS.txt`, the DMG mount/layout/signature, app
    bundle version, and NSIS CRC. Record the lack of native Windows runtime QA if
    no Windows machine is available.
-2. Dry-run Telegram publication first:
+2. Dry-run the canonical public GitHub Release, then publish it:
+
+```bash
+python3 skills/codex/fantasydisk-release-director/scripts/github_release_publish.py \
+  --version X.Y.Z --dry-run
+python3 skills/codex/fantasydisk-release-director/scripts/github_release_publish.py \
+  --version X.Y.Z
+```
+
+   Require a public, non-draft `vX.Y.Z` release containing DMG, Windows setup,
+   SHA256SUMS, changelog, poster and update manifest. The publisher uploads the
+   manifest last and marks the release latest only after all assets exist.
+3. **Only for v0.2.2**, also dry-run and publish Telegram. Never run Telegram for
+   later versions; `telegram_publish.py` must fail closed above 0.2.2.
 
 ```bash
 python3 skills/codex/fantasydisk-release-director/scripts/telegram_publish.py \
-  --version X.Y.Z --dry-run
+  --version 0.2.2 --dry-run
+python3 skills/codex/fantasydisk-release-director/scripts/telegram_publish.py \
+  --version 0.2.2
 ```
 
-3. Upload the DMG, Windows setup.exe, and SHA file to Telegram only when the
-   channel/session config resolves. Then publish the player-facing news and
-   Telegram download link to Discord:
+4. Publish the player-facing news to Discord. Its download link must be the
+   public GitHub Release, including for v0.2.2 (Telegram is an extra delivery
+   channel, not the canonical URL):
 
 ```bash
 python3 skills/codex/fantasydisk-release-director/scripts/release_publish.py \
   --version X.Y.Z
 ```
 
-Keep webhook URLs, Telegram credentials, session files, signing identities, and
-notary profiles in ignored local config/keychain state. Never print or commit
-secrets.
+Keep GitHub tokens, webhook URLs, legacy Telegram credentials/session files,
+signing identities, and notary profiles in ignored local config/keychain state.
+Never print or commit secrets.
 
 ## 8. Finish
 

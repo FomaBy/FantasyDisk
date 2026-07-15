@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import hashlib
 import importlib.util
+import json
 import os
 import subprocess
 import sys
@@ -44,7 +45,7 @@ class LocalReleaseTests(unittest.TestCase):
             "FantasyDisk-9.8.7-macos.dmg": b"dmg fixture",
             "FantasyDisk-9.8.7-windows-setup.exe": b"windows fixture",
             "CHANGELOG-9.8.7.md": b"# fixture\n",
-            "fantasydisk_987_announcement_telegram_discord.png": b"poster fixture",
+            "fantasydisk_987_announcement.png": b"poster fixture",
         }
         for name, data in artifacts.items():
             (self.source_release / name).write_bytes(data)
@@ -54,6 +55,33 @@ class LocalReleaseTests(unittest.TestCase):
             checksum_lines.append(f"{digest}  {name}")
         (self.source_release / "SHA256SUMS.txt").write_text(
             "\n".join(checksum_lines) + "\n", encoding="utf-8"
+        )
+        (self.source_release / "update-manifest.json").write_text(
+            json.dumps(
+                {
+                    "schema_version": 1,
+                    "version": "9.8.7",
+                    "minimum_supported_version": "0.2.2",
+                    "release_url": "https://github.com/FomaBy/FantasyDisk/releases/tag/v9.8.7",
+                    "assets": {
+                        "macos": {
+                            "name": "FantasyDisk-9.8.7-macos.dmg",
+                            "url": "https://github.com/FomaBy/FantasyDisk/releases/download/v9.8.7/FantasyDisk-9.8.7-macos.dmg",
+                            "sha256": checksum_lines[0].split()[0],
+                            "size": (self.source_release / "FantasyDisk-9.8.7-macos.dmg").stat().st_size,
+                        },
+                        "windows": {
+                            "name": "FantasyDisk-9.8.7-windows-setup.exe",
+                            "url": "https://github.com/FomaBy/FantasyDisk/releases/download/v9.8.7/FantasyDisk-9.8.7-windows-setup.exe",
+                            "sha256": checksum_lines[1].split()[0],
+                            "size": (self.source_release / "FantasyDisk-9.8.7-windows-setup.exe").stat().st_size,
+                        },
+                    },
+                },
+                indent=2,
+            )
+            + "\n",
+            encoding="utf-8",
         )
 
         self.local_root = self.root / "operator"
@@ -115,7 +143,7 @@ class LocalReleaseTests(unittest.TestCase):
         )
         self.assertIn(f"[{current}]", self.projects_file.read_text(encoding="utf-8"))
         self.assertTrue(
-            (destination / "fantasydisk_987_announcement_telegram_discord.png").is_file()
+            (destination / "fantasydisk_987_announcement.png").is_file()
         )
 
     def test_refuses_to_overwrite_changed_existing_release(self) -> None:
@@ -134,7 +162,7 @@ class LocalReleaseTests(unittest.TestCase):
                 )
 
     def test_requires_poster_and_distinct_installer_checksums(self) -> None:
-        poster = self.source_release / "fantasydisk_987_announcement_telegram_discord.png"
+        poster = self.source_release / "fantasydisk_987_announcement.png"
         poster.unlink()
         with self.assertRaisesRegex(local_release.LocalReleaseError, "incomplete"):
             local_release._validate_package(self.source_release, "9.8.7")
@@ -190,7 +218,9 @@ class LocalReleaseTests(unittest.TestCase):
     def test_pipeline_and_publishers_enforce_local_gate(self) -> None:
         build = (ROOT / "tools" / "build_release.sh").read_text(encoding="utf-8")
         checksum_at = build.index('echo "==> SHA256SUMS.txt')
-        local_at = build.index('local_release.py"')
+        local_at = build.index(
+            'python3 "${WORKTREE_DIR}/skills/codex/fantasydisk-release-director/scripts/local_release.py"'
+        )
         done_at = build.index('echo "==> Готово:"')
         self.assertLess(checksum_at, local_at)
         self.assertLess(local_at, done_at)
@@ -202,6 +232,13 @@ class LocalReleaseTests(unittest.TestCase):
             self.assertIn('json.loads(result.stdout)["local_release"]', source)
             self.assertIn('".png"', source)
 
+        github = (SCRIPT.parent / "github_release_publish.py").read_text(encoding="utf-8")
+        self.assertIn("release_dir = verify_local_release(root, args.version)", github)
+        self.assertIn('"verify", "--version"', github)
+        self.assertIn('json.loads(result.stdout)["local_release"]', github)
+        self.assertIn('release_dir / "update-manifest.json"', github)
+        self.assertIn('release_dir.glob("*.png")', github)
+
         self.assertNotIn('cp "${REPO_DIR}/export_presets.cfg"', build)
         self.assertIn('RELEASE_DIR="${WORKTREE_DIR}/build/release-package"', build)
         self.assertIn('"${WORKTREE_DIR}/tools/create_macos_dmg.sh"', build)
@@ -209,11 +246,13 @@ class LocalReleaseTests(unittest.TestCase):
         self.assertIn('"${WORKTREE_DIR}/tools/scan_release_secrets.py"', build)
 
         telegram = (SCRIPT.parent / "telegram_publish.py").read_text(encoding="utf-8")
+        self.assertIn("FINAL_TELEGRAM_RELEASE = (0, 2, 2)", telegram)
         self.assertIn("CheckChatInviteRequest", telegram)
         self.assertNotIn("next((d.entity for d in client.get_dialogs()", telegram)
         self.assertIn("posters[0], caption=caption, force_document=False", telegram)
 
         discord = (SCRIPT.parent / "release_publish.py").read_text(encoding="utf-8")
+        self.assertIn("github_release_url(a.version)", discord)
         self.assertIn('content_type = "image/png"', discord)
         self.assertIn("hl = read_highlights(rel, a.version)", discord)
         self.assertIn('os.path.join(release_dir, "project", "scripts"', discord)

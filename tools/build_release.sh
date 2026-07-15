@@ -86,7 +86,9 @@ for required_input in \
   tools/create_macos_dmg.sh \
   tools/godot_gate.py \
   tools/scan_release_secrets.py \
-  tools/windows_installer.nsi; do
+  tools/windows_installer.nsi \
+  skills/codex/fantasydisk-release-director/scripts/build_update_manifest.py \
+  skills/codex/fantasydisk-release-director/scripts/local_release.py; do
   if [[ ! -f "${WORKTREE_DIR}/${required_input}" ]]; then
     echo "    ERROR: тег ${TAG} не содержит build input ${required_input}"
     exit 2
@@ -268,7 +270,12 @@ if [[ ! -s "${RELEASE_DIR}/CHANGELOG-${VERSION}.md" ]]; then
   echo "    ERROR: раздел ${VERSION} не найден в CHANGELOG.md"
   exit 2
 fi
-POSTER_PATH="${WORKTREE_DIR}/assets/marketing/fantasydisk_${VERSION//./}_announcement_telegram_discord.png"
+if [[ "${VERSION}" == "0.2.2" ]]; then
+  POSTER_NAME="fantasydisk_${VERSION//./}_announcement_telegram_discord.png"
+else
+  POSTER_NAME="fantasydisk_${VERSION//./}_announcement.png"
+fi
+POSTER_PATH="${WORKTREE_DIR}/assets/marketing/${POSTER_NAME}"
 if [[ ! -f "${POSTER_PATH}" ]]; then
   echo "    ERROR: обязательный release poster отсутствует: ${POSTER_PATH}"
   exit 2
@@ -278,8 +285,14 @@ cp "${POSTER_PATH}" "${RELEASE_DIR}/"
 echo "==> SHA256SUMS.txt (контроль порчи при передаче файлов)"
 (cd "${RELEASE_DIR}" && shasum -a 256 FantasyDisk-* > SHA256SUMS.txt && cat SHA256SUMS.txt)
 
+echo "==> Публичный update-manifest.json для клиента 0.2.2+"
+python3 "${WORKTREE_DIR}/skills/codex/fantasydisk-release-director/scripts/build_update_manifest.py" \
+  --version "${VERSION}" \
+  --minimum-supported-version "0.2.2" \
+  --release-dir "${RELEASE_DIR}"
+
 echo "==> Постоянная локальная копия, Godot snapshot и установка macOS"
-python3 "${REPO_DIR}/skills/codex/fantasydisk-release-director/scripts/local_release.py" \
+python3 "${WORKTREE_DIR}/skills/codex/fantasydisk-release-director/scripts/local_release.py" \
   materialize \
   --version "${VERSION}" \
   --repo-root "${REPO_DIR}" \

@@ -26,7 +26,7 @@ from pathlib import Path, PurePosixPath
 from typing import Iterable, Sequence
 
 
-SEMVER_RE = re.compile(r"^[0-9]+\.[0-9]+\.[0-9]+$")
+SEMVER_RE = re.compile(r"^(0|[1-9][0-9]*)\.(0|[1-9][0-9]*)\.(0|[1-9][0-9]*)$")
 MANIFEST_NAME = "LOCAL_RELEASE.json"
 CONFIG_ENV = "FANTASYDISK_LOCAL_RELEASE_CONFIG"
 ROOT_ENV = "FANTASYDISK_LOCAL_ROOT"
@@ -202,12 +202,14 @@ def _release_files(release_dir: Path) -> dict[str, Path]:
 
 
 def _validate_package(release_dir: Path, version: str) -> dict[str, Path]:
-    poster = f"fantasydisk_{version.replace('.', '')}_announcement_telegram_discord.png"
+    poster_suffix = "announcement_telegram_discord" if version == "0.2.2" else "announcement"
+    poster = f"fantasydisk_{version.replace('.', '')}_{poster_suffix}.png"
     required = {
         f"FantasyDisk-{version}-macos.dmg",
         f"FantasyDisk-{version}-windows-setup.exe",
         f"CHANGELOG-{version}.md",
         "SHA256SUMS.txt",
+        "update-manifest.json",
         poster,
     }
     files = _release_files(release_dir)
@@ -242,7 +244,53 @@ def _validate_package(release_dir: Path, version: str) -> dict[str, Path]:
         checked[name] = expected.lower()
     if set(checked) != expected_installers:
         raise LocalReleaseError("SHA256SUMS.txt must verify both platform installers")
+    _validate_update_manifest(files["update-manifest.json"], release_dir, version, checked)
     return files
+
+
+def _validate_update_manifest(
+    manifest_path: Path,
+    release_dir: Path,
+    version: str,
+    installer_hashes: dict[str, str],
+) -> None:
+    try:
+        manifest = json.loads(manifest_path.read_text(encoding="utf-8"))
+    except (OSError, json.JSONDecodeError) as exc:
+        raise LocalReleaseError("invalid update-manifest.json") from exc
+    expected_release_url = f"https://github.com/FomaBy/FantasyDisk/releases/tag/v{version}"
+    if (
+        not isinstance(manifest, dict)
+        or manifest.get("schema_version") != 1
+        or manifest.get("version") != version
+        or not SEMVER_RE.fullmatch(str(manifest.get("minimum_supported_version", "")))
+        or manifest.get("release_url") != expected_release_url
+    ):
+        raise LocalReleaseError("update manifest metadata does not match the release")
+    minimum_supported = str(manifest["minimum_supported_version"])
+    if tuple(map(int, minimum_supported.split("."))) > tuple(map(int, version.split("."))):
+        raise LocalReleaseError("update manifest minimum version is newer than the release")
+    assets = manifest.get("assets")
+    if not isinstance(assets, dict) or set(assets) != {"macos", "windows"}:
+        raise LocalReleaseError("update manifest must contain macOS and Windows assets")
+    expected_names = {
+        "macos": f"FantasyDisk-{version}-macos.dmg",
+        "windows": f"FantasyDisk-{version}-windows-setup.exe",
+    }
+    for platform_name, name in expected_names.items():
+        asset = assets.get(platform_name)
+        expected_url = (
+            f"https://github.com/FomaBy/FantasyDisk/releases/download/v{version}/{name}"
+        )
+        installer = release_dir / name
+        if (
+            not isinstance(asset, dict)
+            or asset.get("name") != name
+            or asset.get("url") != expected_url
+            or asset.get("sha256") != installer_hashes[name]
+            or asset.get("size") != installer.stat().st_size
+        ):
+            raise LocalReleaseError(f"update manifest asset does not match {name}")
 
 
 def _extract_tag(repo_root: Path, tag: str, destination: Path) -> str:

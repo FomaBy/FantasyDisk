@@ -2,16 +2,15 @@
 """Публикация релиза FantasyDisk в Discord (releases webhook).
 
 Постит новость версии с выделенными ключевыми изменениями, SHA256 и размерами;
-прикладывает файлы <25 МБ (changelog, SHA256SUMS); на инсталлеры даёт ссылки
-(--download-base) или печатает локальные пути, если хостинга нет.
+прикладывает файлы <25 МБ (changelog, SHA256SUMS, poster), а каноническая
+ссылка на установщики ведёт на публичный GitHub Release.
 
 URL вебхука: release_webhook.cfg (корень проекта, [release] discord_webhook_url) —
 секрет, в .gitignore. User-Agent обязателен (иначе Discord 403).
 
-Запуск: python3 release_publish.py --version X.Y.Z [--download-base URL] [--dry-run]
+Запуск: python3 release_publish.py --version X.Y.Z [--dry-run]
 """
 import argparse
-import configparser
 import json
 import os
 import subprocess
@@ -44,13 +43,8 @@ def repo_root() -> str:
     return os.environ.get("FANTASYDISK_REPO", os.getcwd())
 
 
-def telegram_url(root: str) -> str:
-    cfg = configparser.ConfigParser()
-    cfg.read(os.path.join(root, "release_webhook.cfg"))
-    try:
-        return cfg.get("release", "telegram_download_url").strip().strip('"')
-    except Exception:
-        return ""
+def github_release_url(version: str) -> str:
+    return "https://github.com/FomaBy/FantasyDisk/releases/tag/v%s" % version
 
 
 def webhook_url(root: str) -> str:
@@ -112,7 +106,6 @@ def post(url, content, files, dry):
 def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--version", required=True)
-    ap.add_argument("--download-base", default="")
     ap.add_argument("--dry-run", action="store_true")
     a = ap.parse_args()
     root = repo_root()
@@ -140,12 +133,8 @@ def main():
         lines += ["**✨ Главное:**"] + ["**•** %s" % h for h in key] + [""]
     if rest:
         lines += ["Также:"] + ["• %s" % h for h in rest] + [""]
-    tg = a.download_base or telegram_url(root)
-    lines.append("**\U0001F4E5 Скачать (macOS + Windows):**")
-    if tg:
-        lines.append(tg)
-    else:
-        lines.append("_(ссылка на скачивание не задана)_")
+    lines.append("**\U0001F4E5 Скачать (macOS + Windows) на GitHub Releases:**")
+    lines.append(github_release_url(a.version))
     lines.append("")
     lines.append("_Сборки: %s. SHA256 — во вложении._" % ", ".join(installers))
 

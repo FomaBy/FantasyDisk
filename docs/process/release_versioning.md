@@ -1,6 +1,6 @@
 # Release & Versioning — FantasyDisk
 
-Обновлено: 2026-07-14
+Обновлено: 2026-07-15
 Ведет: PM. Исполняет сборки: Back-end.
 
 ## Версионирование
@@ -58,7 +58,7 @@ dev  — основная ветка разработки. Все чаты (Back
    `releases/vX.Y.Z/CHANGELOG-X.Y.Z.md` (раздел версии из CHANGELOG.md) — чтобы
    получатель билда видел, что нового, без доступа к репозиторию.
 9. Smoke-проверка установленных билдов.
-9a. **Постоянная локальная копия — блокирующий гейт.** До Telegram/Discord
+9a. **Постоянная локальная копия — блокирующий гейт.** До любой внешней публикации
     `tools/build_release.sh` обязан вызвать bundled
     `skills/codex/fantasydisk-release-director/scripts/local_release.py` и:
     - собирать package в отдельный staging и только затем атомарно создать
@@ -72,10 +72,22 @@ dev  — основная ветка разработки. Все чаты (Back
       retained DMG layout/signature, bundle version, `hdiutil verify`, `codesign`,
       `stapler`, `spctl` и headless launch smoke.
     Существующий локальный релиз с отличающимися байтами не перезаписывается.
-    Telegram/Discord clients повторно запускают verify, отправляют байты только
+    GitHub/Discord и legacy Telegram clients повторно запускают verify, отправляют
+    байты только
     из возвращённого проверенного локального пути и обязательно прикладывают PNG
     release poster. Локальный root задаётся явно/env/config и никогда не
     угадывается по временному worktree.
+9b. **Public GitHub Release + updater manifest (начиная с 0.2.2).** Пакет обязан
+    содержать `update-manifest.json` schema 1 с точными именами, размерами,
+    SHA-256 и GitHub download URL обоих установщиков. Сначала выполнить dry-run,
+    затем `github_release_publish.py --version X.Y.Z`: remote tag уже должен
+    существовать, новый release создаётся draft, манифест загружается последним,
+    и только полный release становится public/latest. Стабильный клиентский URL:
+    `https://github.com/FomaBy/FantasyDisk/releases/latest/download/update-manifest.json`.
+    `v0.2.2` дополнительно публикуется в Telegram. Любая версия после `0.2.2`
+    **не публикуется в Telegram**; `telegram_publish.py` блокирует её. Discord
+    всегда ведёт на публичный GitHub Release. Полный контракт:
+    `docs/process/game_updates.md`.
 10. **Релиз в Multica** (правило пользователя 2026-06-12: спринт = релиз;
     live board — проект FantasyDisk, issues FAN-*):
     - закрыть все issues версии в статус `done` на доске FantasyDisk;
@@ -174,4 +186,6 @@ SemVer patch/minor версию.
   в gl_compatibility, не считать регрессией.
 - **NSIS CRC**: алгоритм exehead — crc32 файла с байта 512 до поля CRC (firstheader + length_of_all_following_data - 4); makensis на macOS пишет его корректно. `build_release.sh` делает verify-only проверку по этому алгоритму (НЕ перезаписывать хвост файла — формула crc32(file[:-4]) неверна и портит инсталлер). Компрессор — zlib: solid-lzma поток кросс-собранного makensis подозревается в «integrity check failed» на реальной Windows.
 - `SHA256SUMS.txt` генерируется в каталоге релиза; пользователь сверяет на Windows через `certutil -hashfile <файл> SHA256`.
+- `update-manifest.json` генерируется только после финальных DMG/NSIS байтов и
+  проходит повторную проверку в durable local release до GitHub upload.
 - Windows-бинарь и инсталлер на Mac не запускаются — финальный тест на Windows-машине делает пользователь.

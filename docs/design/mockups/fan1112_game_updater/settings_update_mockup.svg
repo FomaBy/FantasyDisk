@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="2560" height="1440" viewBox="0 0 2560 1440">
+  <image href="settings_update_base_2560x1440.png" x="0" y="0" width="2560" height="1440"/>
+  <rect x="508" y="1138" width="280" height="64" rx="10" fill="#211a14" stroke="#c7a870" stroke-width="4"/>
+  <rect x="520" y="1150" width="256" height="40" rx="7" fill="#3a2b1d" stroke="#856a3d" stroke-width="2"/>
+  <text x="648" y="1178" text-anchor="middle" font-family="Arial, sans-serif" font-size="23" fill="#f5e6ae">Обновить игру</text>
+  <rect x="498" y="1128" width="300" height="84" rx="14" fill="none" stroke="#78dba0" stroke-width="3" stroke-dasharray="12 8"/>
+  <path d="M 805 1144 L 960 1060" fill="none" stroke="#78dba0" stroke-width="3"/>
+  <rect x="960" y="1008" width="640" height="92" rx="12" fill="#0d1512" stroke="#78dba0" stroke-width="3"/>
+  <text x="988" y="1042" font-family="Arial, sans-serif" font-size="24" fill="#d9f5e4">Новый footer action использует существующую</text>
+  <text x="988" y="1075" font-family="Arial, sans-serif" font-size="24" fill="#d9f5e4">плиту 280×64 и остаётся внутри safe-zone.</text>
+</svg>

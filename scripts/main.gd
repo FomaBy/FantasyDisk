@@ -495,11 +495,13 @@ const GAMEPLAY_SANDBOX := preload("res://scripts/gameplay_sandbox.gd")
 const RUN_AUTOSAVE := preload("res://scripts/run_autosave.gd")
 const FEEDBACK_REPORTER_SCRIPT := preload("res://scripts/feedback_reporter.gd")
 const DEV_CONSOLE_SCRIPT := preload("res://scripts/dev_console.gd")
+const UPDATE_MANAGER_SCRIPT := preload("res://scripts/update_manager.gd")
 
 var ui
 var route
 var combat
 var dev_console: CanvasLayer = null
+var update_manager = null
 var meta_state := {}
 var meta_save_path := META_PROGRESSION.DEFAULT_SAVE_PATH
 # Подача боя: тряска камеры (тумблер в настройках, умеренная по умолчанию).
@@ -554,6 +556,8 @@ func _ready() -> void:
 	_load_game_settings()
 	ui._setup_default_input_actions()
 	ui._apply_game_cursor()
+	update_manager = UPDATE_MANAGER_SCRIPT.new()
+	update_manager.install(self, ui)
 	dev_console = DEV_CONSOLE_SCRIPT.new(self)
 	add_child(dev_console)
 	ui._show_main_menu()

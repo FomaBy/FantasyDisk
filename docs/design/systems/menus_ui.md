@@ -4,6 +4,23 @@
 
 Этот файл собирает UI-направление FantasyDisk после domain split. Полное фактическое состояние остается в `docs/design/current_game_state.md`, а канонические IDs и assets - в `docs/design/content_registry.md`.
 
+## FAN-1112 Game Updater
+
+Settings tabs 0–2 now keep `SettingsUpdateButton` («Обновить игру») at the left
+edge of the existing frame-safe footer, separated by an expanding spacer from
+Screen-only Revert/Apply. The Game tab still collapses the complete footer.
+Manual checks always report current/error/available state; the exported startup
+check prompts only when a newer public GitHub Release exists and stays silent
+offline. The modal uses the accepted Atlas chip and global action-button families,
+traps keyboard/gamepad focus, restores the previous Escape action, and scales
+inside 1280×720, 1920×1080 and 2560×1440 viewports.
+
+The accepted no-new-art mockup/spec package is
+`docs/design/mockups/fan1112_game_updater/`. Runtime and responsive checks are
+`tests/update_settings_ui_test.gd` and `tests/settings_footer_scrum1053_test.gd`.
+The network, trust and installer contract is documented in
+`docs/process/game_updates.md`.
+
 ## FAN-1098 Codex Background
 
 The live Codex now uses a cohesive 2560x1440 RGB draconic-archive background at

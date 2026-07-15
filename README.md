@@ -63,7 +63,7 @@ python tools/quality_gate.py --profile windows
 Эти файлы в `.gitignore`; нужны только для фидбека/релиза, на саму игру не влияют:
 - `feedback_webhook.cfg` — Discord-webhook внутриигрового фидбека (шаблон: `feedback_webhook.cfg.example`).
 - `release_webhook.cfg` — Discord-webhook публикации релизов.
-- `fantasydisk_release.session` — Telethon-сессия (создаётся при первом логине).
+- `fantasydisk_release.session` — legacy Telethon-сессия только для релиза 0.2.2.
 
 ## Сборка релиза (macOS)
 ```bash
@@ -74,6 +74,9 @@ tools/build_release.sh <версия>    # собирает из git-тега; a
 
 macOS-релиз fail-closed: нужны Developer ID, Apple notarization/stapling и
 успешный `spctl` для приложения и DMG. Без них publishable артефакт не создаётся.
+Проверенный пакет публикуется как public GitHub Release через bundled
+`github_release_publish.py`; клиент 0.2.2+ читает `update-manifest.json` из
+`releases/latest`. Telegram используется дополнительно только для v0.2.2.
 
 ## Структура
 - `scripts/` — игровая логика (GDScript)

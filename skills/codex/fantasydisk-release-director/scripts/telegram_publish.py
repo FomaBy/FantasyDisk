@@ -1,5 +1,8 @@
 #!/usr/bin/env python3
-"""Загрузка релизных сборок FantasyDisk в Telegram (userbot, Telethon).
+"""Legacy-загрузка FantasyDisk v0.2.2 в Telegram (userbot, Telethon).
+
+v0.2.2 — последний разрешённый Telegram-релиз. Более новые версии должны
+публиковаться через public GitHub Releases; этот скрипт отклоняет их fail-closed.
 
 Зачем userbot, а не бот: cloud Bot API ограничен 50 МБ, инсталлеры ~200 МБ.
 Telethon на пользовательском аккаунте грузит до 2 ГБ.
@@ -28,8 +31,24 @@ import argparse
 import configparser
 import json
 import os
+import re
 import subprocess
 import sys
+
+
+FINAL_TELEGRAM_RELEASE = (0, 2, 2)
+SEMVER_RE = re.compile(r"^(0|[1-9][0-9]*)\.(0|[1-9][0-9]*)\.(0|[1-9][0-9]*)$")
+
+
+def ensure_telegram_release_allowed(version):
+    if not SEMVER_RE.fullmatch(version):
+        sys.exit("Версия должна иметь формат X.Y.Z")
+    parts = tuple(int(part) for part in version.split("."))
+    if parts > FINAL_TELEGRAM_RELEASE:
+        sys.exit(
+            "Telegram publication завершена после v0.2.2. "
+            "Публикуй релиз через github_release_publish.py; Discord ведёт на GitHub Releases."
+        )
 
 
 def verify_local_release(root, version):
@@ -116,6 +135,7 @@ def main():
 
     if not a.version:
         sys.exit("Укажи --version X.Y.Z (или --list-chats / --test)")
+    ensure_telegram_release_allowed(a.version)
     rel = verify_local_release(root, a.version)
     if not os.path.isdir(rel):
         sys.exit("Нет каталога релиза: %s" % rel)
