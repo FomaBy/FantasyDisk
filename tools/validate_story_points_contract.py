@@ -92,6 +92,11 @@ CUE_HOLISTIC_MARKER_RE = re.compile(
     r"\bholistically\b|целостно|целиком",
     re.IGNORECASE,
 )
+SEPARATE_CHECKLIST_START_RE = re.compile(
+    r"(?:\b(?:while|and)\s+(?:(?:a|the)\s+)?|[,;]\s*(?:а|и)\s*)"
+    r"(?P<checklist>separate|отдельн\w*)\b",
+    re.IGNORECASE,
+)
 OPERATIONAL_RANGE_SUFFIX_RE = re.compile(
     r"^\s*(?:[\w-]+\s+){0,4}(?:times?|attempts?|retries?|раз(?:а)?|попыт\w*)\b",
     re.IGNORECASE,
@@ -147,13 +152,15 @@ def is_separate_checklist(source: str) -> bool:
 
 
 def scoring_context_after_holistic_cue_action(before_scale: str) -> str:
-    """Drop a completed holistic CUE predicate before a separate checklist."""
-    for marker in CUE_HOLISTIC_MARKER_RE.finditer(before_scale):
-        preceding_context = before_scale[: marker.start()]
-        if has_cue_reference(preceding_context) and CUE_SCORING_ACTION_RE.search(
-            preceding_context
+    """Drop one completed holistic CUE predicate before a separate checklist."""
+    for boundary in SEPARATE_CHECKLIST_START_RE.finditer(before_scale):
+        predicate_context = before_scale[: boundary.start()]
+        if (
+            has_cue_reference(predicate_context)
+            and CUE_HOLISTIC_MARKER_RE.search(predicate_context)
+            and len(CUE_SCORING_ACTION_RE.findall(predicate_context)) == 1
         ):
-            return before_scale[marker.end() :]
+            return before_scale[boundary.start("checklist") :]
     return before_scale
 
 

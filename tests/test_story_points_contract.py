@@ -266,6 +266,30 @@ Metadata: story_points и estimation_model.
     def test_subject_predicate_boundary_matrix(self) -> None:
         cases = (
             (
+                "english_holistic_adverb_first_clarity_subject",
+                "Holistically assess Complexity, Uncertainty and Effort, while a separate "
+                "quality checklist rates document clarity from one to five.",
+                False,
+            ),
+            (
+                "russian_holistic_adverb_first_clarity_subject",
+                "Целостно оценивайте сложность, неопределённость и трудозатраты, а "
+                "отдельный чек-лист качества оценивает ясность документа от одного до пяти.",
+                False,
+            ),
+            (
+                "english_holistic_medial_adverb_clarity_subject",
+                "Assess, holistically, Complexity, Uncertainty and Effort, while a separate "
+                "quality checklist rates document clarity from one to five.",
+                False,
+            ),
+            (
+                "russian_holistic_medial_adverb_clarity_subject",
+                "Оценивайте целостно сложность, неопределённость и трудозатраты, а "
+                "отдельный чек-лист качества оценивает ясность документа от одного до пяти.",
+                False,
+            ),
+            (
                 "english_holistic_action_then_clarity_subject",
                 "Assess Complexity, Uncertainty and Effort holistically, while a separate "
                 "quality checklist rates document clarity from one to five.",
