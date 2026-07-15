@@ -100,8 +100,44 @@ Metadata: story_points и estimation_model.
                 result = self._validate_source(self.CONTRACT_PREAMBLE + statement)
                 self.assertEqual(result.returncode, 0, result.stderr)
 
-    def test_semantic_edge_matrix_handles_wrapped_cue_and_separate_checklists(self) -> None:
+    def test_semantic_edge_matrix_preserves_cue_context_and_range_subjects(self) -> None:
         cases = (
+            (
+                "two_sentence_english_cue_scale",
+                "- Rate Complexity, Uncertainty and Effort independently.\n"
+                "  Use a scale from 1 to 5.",
+                True,
+            ),
+            (
+                "two_sentence_russian_cue_scale",
+                "Оцените сложность, неопределённость и трудозатраты отдельно. "
+                "Используйте шкалу от одного до пяти.",
+                True,
+            ),
+            (
+                "english_cue_scale_with_separate_checklist_evasion",
+                "Rate Complexity, Uncertainty and Effort from 1 to 5 "
+                "in a separate scoring checklist.",
+                True,
+            ),
+            (
+                "russian_cue_scale_with_separate_checklist_evasion",
+                "Оцените сложность, неопределённость и трудозатраты от одного до пяти "
+                "в отдельном чек-листе оценки.",
+                True,
+            ),
+            (
+                "english_retry_range",
+                "Complexity, Uncertainty and Effort are considered holistically, while "
+                "the reviewer retries the export from one to five times.",
+                False,
+            ),
+            (
+                "russian_retry_range",
+                "Сложность, неопределённость и трудозатраты рассматриваются целиком, а "
+                "проверяющий повторяет экспорт от одного до пяти раз.",
+                False,
+            ),
             (
                 "english_accessibility_factors",
                 "Complexity, Uncertainty and Effort are considered holistically. "
@@ -116,8 +152,8 @@ Metadata: story_points и estimation_model.
             ),
             (
                 "same_sentence_separate_checklist",
-                "CUE is evaluated holistically while a separate five-point accessibility "
-                "checklist reviews document presentation only.",
+                "Complexity, Uncertainty and Effort are considered holistically while a "
+                "separate five-point accessibility checklist reviews document presentation only.",
                 False,
             ),
             (
@@ -134,6 +170,29 @@ Metadata: story_points и estimation_model.
                 "wrapped_cue_abbreviation_scale",
                 "- Rate C,\n  U and E independently from 1 to 5.",
                 True,
+            ),
+            (
+                "two_sentence_cue_abbreviation_each_factor",
+                "- Score C, U and E independently.\n"
+                "  Each factor uses a scale from 1 to 5.",
+                True,
+            ),
+            (
+                "numbered_soft_wrap",
+                "1. Rate Complexity,\n"
+                "   Uncertainty and Effort from one to five.",
+                True,
+            ),
+            (
+                "blockquote_soft_wrap",
+                "> Rate Complexity,\n"
+                "> Uncertainty and Effort from one to five.",
+                True,
+            ),
+            (
+                "operational_table_without_story_points",
+                "| Attempts | Sanitized copies |\n| --- | --- |\n| 1–3 | 2 |",
+                False,
             ),
             (
                 "markdown_story_points_header",

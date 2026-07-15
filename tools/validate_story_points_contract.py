@@ -78,6 +78,20 @@ SEPARATE_CHECKLIST_RE = re.compile(
     r"(?:checklists?|чек[-\s]?лист\w*)",
     re.IGNORECASE,
 )
+NON_CUE_CHECKLIST_CONTEXT_RE = re.compile(
+    r"\b(?:accessibility|document|presentation|formatting|quality)\b"
+    r"|(?:доступност\w*|документ\w*|оформлен\w*|качеств\w*|текст\w*)",
+    re.IGNORECASE,
+)
+OPERATIONAL_RANGE_PREFIX_RE = re.compile(
+    r"(?:\bretr\w*\b|\battempt\w*\b|\brepeat\w*\b|повтор\w*|попыт\w*)"
+    r"[^.!?;]{0,48}$",
+    re.IGNORECASE,
+)
+OPERATIONAL_RANGE_SUFFIX_RE = re.compile(
+    r"^\s*(?:times?|attempts?|retries?|раз(?:а)?|попыт\w*)\b",
+    re.IGNORECASE,
+)
 
 
 def semantic_instruction_units(source: str) -> list[str]:
@@ -128,13 +142,39 @@ def is_separate_checklist(source: str) -> bool:
     return bool(SEPARATE_CHECKLIST_RE.search(source))
 
 
+def is_independent_non_cue_checklist_scale(sentence: str, scale: re.Match[str]) -> bool:
+    """Allow a scale only when its wording structurally belongs to a non-CUE checklist."""
+    checklist = SEPARATE_CHECKLIST_RE.search(sentence)
+    if not checklist or not NON_CUE_CHECKLIST_CONTEXT_RE.search(sentence):
+        return False
+    if checklist.start() <= scale.start() <= checklist.end():
+        return True
+    return scale.start() > checklist.end() and bool(
+        PER_FACTOR_RE.search(sentence[: checklist.start()])
+    )
+
+
+def is_operational_range(sentence: str, scale: re.Match[str]) -> bool:
+    """Distinguish retry/attempt counts from a scale applied to CUE factors."""
+    before = sentence[max(0, scale.start() - 80) : scale.start()]
+    after = sentence[scale.end() : scale.end() + 40]
+    return bool(
+        OPERATIONAL_RANGE_PREFIX_RE.search(before)
+        or OPERATIONAL_RANGE_SUFFIX_RE.match(after)
+    )
+
+
 def has_natural_language_factor_scale(source: str) -> bool:
-    """Detect a scale applied to CUE factors within one instruction unit."""
+    """Detect a scale applied to CUE factors within one Markdown unit."""
     for unit in semantic_instruction_units(source):
+        if not has_cue_reference(unit):
+            continue
         for sentence in SENTENCE_BOUNDARY_RE.split(unit):
-            if not FACTOR_SCALE_RE.search(sentence) or is_separate_checklist(sentence):
-                continue
-            if has_cue_reference(sentence):
+            for scale in FACTOR_SCALE_RE.finditer(sentence):
+                if is_operational_range(sentence, scale):
+                    continue
+                if is_independent_non_cue_checklist_scale(sentence, scale):
+                    continue
                 return True
     return False
 
@@ -144,9 +184,12 @@ def has_per_factor_score(source: str) -> bool:
     for unit in semantic_instruction_units(source):
         sentences = [sentence.strip() for sentence in SENTENCE_BOUNDARY_RE.split(unit) if sentence.strip()]
         for sentence in sentences:
-            if not (PER_FACTOR_RE.search(sentence) and FACTOR_SCALE_RE.search(sentence)):
+            scale = FACTOR_SCALE_RE.search(sentence)
+            if not (PER_FACTOR_RE.search(sentence) and scale):
                 continue
-            if is_separate_checklist(sentence):
+            if is_operational_range(sentence, scale):
+                continue
+            if is_independent_non_cue_checklist_scale(sentence, scale):
                 continue
             if has_cue_reference(unit):
                 return True
