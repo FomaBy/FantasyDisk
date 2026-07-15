@@ -159,8 +159,15 @@ Animator стартует только после accepted Design source/handoff
 QA Codex Sol (`f992a646-a8ea-4935-ba94-212595803052`) — единственный автономный
 owner review-очереди. В queue-sweep run он сам выбирает одну eligible задачу
 `in_review` после duplicate/lock/SHA/dependency audit, оставляет implementation
-assignee неизменным и создаёт/переиспользует отдельную QA child issue на себя.
-Остальные role agents и общий dispatcher не создают конкурирующий QA claim.
+assignee неизменным и создаёт/переиспользует отдельную QA child issue. Из-за
+live agent ACL child остаётся unassigned; ownership существует только при exact
+metadata `qa_owner_id=f992a646-a8ea-4935-ba94-212595803052`,
+`qa_run_id=<current-task-id>`, `qa_candidate_sha=<exact-sha>`,
+`qa_claim_mode=autonomous_unassigned`, совпадающем claim-comment и live run.
+После записи QA перечитывает parent/child/comments/metadata и при race прекращает
+claim; уникальную child переводит напрямую `backlog → in_progress` без `todo`.
+Остальные role agents и общий dispatcher считают этот metadata claim занятым и
+не создают конкурирующий QA claim.
 
 QA выполняет полный независимый цикл по `docs/process/qa_protocol.md`: проверяет
 acceptance и реальный user flow, читает и запускает тесты, добавляет edge cases,

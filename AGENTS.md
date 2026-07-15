@@ -68,9 +68,19 @@ exact candidate SHA в `origin/dev`, reviewer independence и locked-path
 overlap. Runtime concurrency QA должен оставаться `1`; второй QA claim или
 параллельный QA-dispatch запрещён.
 
-- QA не переназначает implementation parent. Он пишет claim-comment в parent,
-  создаёт или безопасно переиспользует отдельную QA child issue с exact QA UUID,
-  перепроверяет отсутствие гонки и ведёт её `in_progress` в текущем run.
+- QA не переназначает implementation parent. Он пишет claim-comment в parent и
+  создаёт или безопасно переиспользует отдельную QA child issue. Поскольку live
+  Multica ACL не разрешает agent actor назначить child самому себе, штатный
+  queue-sweep claim оставляет child unassigned и до `in_progress` записывает в
+  неё metadata `qa_owner_id=f992a646-a8ea-4935-ba94-212595803052`,
+  `qa_run_id=<current-task-id>`, `qa_candidate_sha=<exact-sha>` и
+  `qa_claim_mode=autonomous_unassigned`, а также owner/run/SHA claim-comment.
+  Только полный набор exact metadata + comment + текущий live run считается
+  ownership. После записи QA повторно читает parent, child, metadata и comments;
+  при любом конфликте отменяет собственную duplicate child. Уникальную child он
+  ведёт напрямую `backlog → in_progress` в текущем run, не используя `todo` и не
+  создавая второй daemon task. Это исключение не даёт право self-claim другим
+  unassigned workers или implementation issues.
 - Общий dispatcher может разбудить QA/сообщить о новой review-очереди, но не
   создаёт конкурирующую QA child и не назначает ту же проверку другому агенту.
 - QA самостоятельно формирует risk-based plan и выполняет всю необходимую

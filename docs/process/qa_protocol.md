@@ -43,7 +43,7 @@ bug-задача, даже если no-overlap между плашками пр�
 ## Цикл задачи (обновленный)
 ```text
 parent: todo → in_progress → in_review ───────────────→ done (QA PASS)
-QA child: backlog(self-reserved) → in_progress → done + verdict
+QA child: backlog(metadata-reserved, unassigned) → in_progress → done + verdict
                                             ↘ RED: parent stays in_review + linked follow-ups
 ```
 Исполнители НИЧЕГО не меняют в своем процессе: ставят issue в `in_review` по
@@ -54,8 +54,8 @@ QA child: backlog(self-reserved) → in_progress → done + verdict
 
 ## Как QA получает задачу
 1. QA runtime работает с `max_concurrent_tasks = 1`. В начале queue-sweep QA
-   проверяет свои active tasks и уже существующие QA children; при другом живом
-   QA claim новый не создаётся.
+   проверяет свои active tasks, уже существующие QA children и их metadata
+   ownership; при другом живом QA claim новый не создаётся.
 2. QA сканирует все страницы Multica parent issues `FAN-*` в `in_review` и
    выбирает ровно одну ready issue: сначала higher priority, затем самый старый
    ready item. Локальная доска не является источником очереди.
@@ -65,13 +65,23 @@ QA child: backlog(self-reserved) → in_progress → done + verdict
    locked-path overlap с продолжающимся writer scope.
 4. QA пишет parent `QA claim` comment через `--content-file` с QA UUID,
    run/session, candidate SHA, environment/workdir и review scope; затем создаёт
-   child в `backlog` с exact QA assignee или переиспользует только inactive child
-   на том же SHA.
-5. QA повторно читает parent/children/comments. При race, новом SHA или уже
-   появившемся verdict собственная duplicate child отменяется. Иначе QA ставит
-   child прямо в `in_progress` и выполняет её в текущем run, не создавая второй
-   daemon task через `todo`.
+   unassigned child в `backlog` или переиспользует только inactive child на том
+   же SHA. Live Multica agent ACL запрещает self-assignment, поэтому до смены
+   статуса QA записывает в child exact metadata:
+   `qa_owner_id=f992a646-a8ea-4935-ba94-212595803052`,
+   `qa_run_id=<current-task-id>`, `qa_candidate_sha=<exact-sha>`,
+   `qa_claim_mode=autonomous_unassigned`, и добавляет совпадающий owner/run/SHA
+   claim-comment.
+5. QA повторно читает parent/children/child metadata/comments. Claim валиден
+   только при полном exact metadata set, совпадающем comment, live current run,
+   прежнем SHA и отсутствии второго claim/verdict. При race, новом SHA или
+   конфликте собственная duplicate child отменяется. Иначе QA ставит child прямо
+   в `in_progress` и выполняет её в текущем run, не создавая второй daemon task
+   через `todo`. Любой dispatcher считает полный metadata claim живым ownership
+   signal, даже если `assignee_id=null`.
 6. Одна child за прогон. Parent assignee/status остаются неизменными до verdict.
+   Этот unassigned metadata claim разрешён только QA queue owner и не разрешает
+   self-claim implementation work или другим агентам.
 
 ## Полная самостоятельность QA
 

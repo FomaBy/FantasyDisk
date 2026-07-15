@@ -23,7 +23,9 @@ docs/process/jira_to_multica_cutover.md).
 `assignee_id`, но не берут eligible/unassigned работу самостоятельно. Узкое
 исключение: QA Codex Sol — единственный writer review-очереди и может выбрать
 одну eligible parent issue уже в `in_review`, оформив ownership отдельной QA
-child без изменения implementation assignee.
+child без изменения implementation assignee. Live Multica ACL не разрешает
+agent actor self-assignment, поэтому QA child может оставаться unassigned только
+при полном metadata claim, описанном ниже.
 `docs/tasks/*.md` и `docs/process/task_board.md` — локальные mirrors/spec/evidence
 и dashboard/cache.
 
@@ -92,9 +94,14 @@ QA lane имеет отдельного единственного writer: QA Co
 (`f992a646-a8ea-4935-ba94-212595803052`, runtime concurrency `1`). В queue-sweep
 он может self-select только parent в `in_review` после полного duplicate/SHA/
 dependency/lock audit, написать parent claim comment и создать/переиспользовать
-свою QA child. General dispatcher не создаёт конкурирующую child и не выдаёт ту
-же проверку другому reviewer. Это исключение не распространяется на
-implementation issues, локальные board rows или других role agents.
+свою QA child. Штатный ownership для unassigned child доказывается только exact
+metadata `qa_owner_id`, `qa_run_id`, `qa_candidate_sha`,
+`qa_claim_mode=autonomous_unassigned`, owner/run/SHA comment и live current run.
+QA перечитывает все сигналы до прямого `backlog → in_progress`; conflict/stale
+SHA отменяет claim. General dispatcher считает такой metadata claim живым, не
+создаёт конкурирующую child и не выдаёт ту же проверку другому reviewer. Это
+исключение не распространяется на implementation issues, локальные board rows
+или других role agents.
 
 Для параллельной работы Codex и Claude каждая активная задача должна иметь
 execution-lane metadata:
@@ -384,7 +391,8 @@ Animator не должен самостоятельно делать:
 QA отвечает за:
 
 - автономный просмотр live Multica `in_review` queue и безопасный claim ровно
-  одной eligible проверки через отдельную QA child на exact QA UUID;
+  одной eligible проверки через отдельную QA child с exact QA metadata owner,
+  run, candidate SHA и claim mode (child остаётся unassigned из-за agent ACL);
 - сохранение исходного implementation assignee и независимости reviewer;
 - приемочное ревью задач после реализации;
 - перевод каждого acceptance criterion в фактическую проверку и evidence;

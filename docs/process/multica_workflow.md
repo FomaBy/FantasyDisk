@@ -127,8 +127,8 @@ writer review-очереди и работает с `max_concurrent_tasks = 1`. 
 В queue-sweep run QA:
 
 1. Читает `AGENTS.md`, этот workflow и `docs/process/qa_protocol.md`, проверяет
-   собственные active tasks и assignee-filtered QA children. Если кроме текущего
-   run есть активный QA claim, новый не создаётся.
+   собственные active tasks, QA children и их `qa_owner_id` / `qa_run_id`
+   metadata. Если кроме текущего run есть активный QA claim, новый не создаётся.
 2. Сканирует все страницы `in_review` и выбирает ровно один eligible parent:
    сначала higher priority, затем самый старый ready item. Перед claim читает
    parent, recent comments, children, metadata и candidate evidence. Parent
@@ -137,20 +137,28 @@ writer review-очереди и работает с `max_concurrent_tasks = 1`. 
    claim; implementation author не может быть независимым reviewer.
 3. Пишет в parent `QA claim` comment через `--content-file` с QA UUID, текущим
    run/session, exact candidate SHA, environment/workdir и review scope. Затем
-   создаёт отдельную QA child в `backlog`, назначенную exact QA UUID, или
-   переиспользует только эквивалентную inactive child на том же SHA.
-4. Повторно читает parent/children/comments. Если появился конкурентный
-   claim/verdict или изменился SHA, QA отменяет собственную duplicate child и не
-   тестирует stale candidate. Иначе переводит child напрямую в `in_progress` и
-   выполняет её в текущем queue-sweep run; `todo` не используется, чтобы не
-   породить второй daemon task.
+   создаёт отдельную unassigned QA child в `backlog` или переиспользует только
+   эквивалентную inactive child на том же SHA. До смены статуса он записывает в
+   child metadata `qa_owner_id=f992a646-a8ea-4935-ba94-212595803052`,
+   `qa_run_id=<current-task-id>`, `qa_candidate_sha=<exact-sha>` и
+   `qa_claim_mode=autonomous_unassigned`, затем добавляет owner/run/SHA
+   claim-comment. Это поддерживаемая замена self-assignment: live Multica ACL
+   запрещает agent actor назначить child самому себе.
+4. Повторно читает parent, children, child metadata и comments. Claim валиден,
+   только если все четыре metadata exact, comment совпадает, current run жив,
+   SHA не изменился и нет второго claim/verdict. При любом конфликте QA отменяет
+   собственную duplicate child и не тестирует stale candidate. Иначе переводит
+   child напрямую в `in_progress` и выполняет её в текущем queue-sweep run;
+   `todo` не используется, чтобы не породить второй daemon task.
 5. Держит parent assignee/status неизменными до verdict. QA не делает production
    fix в review scope и не держит больше одной review child `in_progress`.
 
 Это узкое исключение не разрешает self-claim implementation задачам, другим
 role agents или второму QA dispatcher. Single-writer + runtime concurrency `1`
 снижают риск гонки при отсутствии server-side compare-and-swap; обязательный
-post-claim re-read остаётся последним guard.
+post-claim re-read остаётся последним guard. General dispatcher и другие агенты
+обязаны считать QA child с полным metadata claim живым owner signal, даже когда
+`assignee_id` равен `null`.
 
 ### Текущий пользовательский control chat
 
@@ -238,8 +246,8 @@ Issue нельзя считать review-ready или done, пока комме�
 
 Реализация переводит issue в `in_review`. QA Codex Sol автономно выбирает один
 eligible parent по протоколу выше и создаёт/переиспользует отдельную child review
-issue на себя. Это не отменяет task владельца исходной issue и сохраняет
-отдельную историю claim, run, evidence и usage.
+issue с exact metadata ownership текущего QA run. Это не отменяет task владельца
+исходной issue и сохраняет отдельную историю claim, run, evidence и usage.
 
 QA самостоятельно строит risk-based test plan и проверяет acceptance фактически:
 читает тесты, запускает focused и certifying gates на exact SHA, добавляет

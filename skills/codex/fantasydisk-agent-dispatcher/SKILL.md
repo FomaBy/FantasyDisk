@@ -99,12 +99,20 @@ same parent to another reviewer.
 
 In one queue-sweep run QA selects one eligible parent by priority then age,
 audits parent/comments/children/dependencies/active runs/exact pushed SHA and
-reviewer independence, writes a parent claim comment, creates or reuses a
-`backlog` QA child assigned to itself, then re-reads for races. If the claim is
-still unique and the SHA unchanged, QA moves the child directly to
+reviewer independence, and writes a parent claim comment. Live Multica agent
+ACL denies self-assignment, so QA creates or reuses an unassigned `backlog` QA
+child and records exact child metadata `qa_owner_id=f992a646-a8ea-4935-ba94-212595803052`,
+`qa_run_id=<current-task-id>`, `qa_candidate_sha=<exact-sha>`, and
+`qa_claim_mode=autonomous_unassigned`, plus a matching owner/run/SHA comment.
+QA then re-reads parent, child, metadata, and comments. The claim is valid only
+when all four values match, the current run is live, the SHA is unchanged, and
+there is no competing claim/verdict. QA moves that child directly to
 `in_progress` and completes it in the same run; it does not use `todo` and spawn
-a second daemon task. On a race it cancels its duplicate child and does not test
-the stale/contested candidate.
+a second daemon task. On any mismatch it cancels its duplicate child and does
+not test the stale/contested candidate. Every dispatcher treats this complete
+metadata claim as a live owner signal even though `assignee_id` is null. This is
+a narrow QA-only exception; unassigned implementation workers still cannot
+self-claim.
 
 Load `references/qa-loop.md` whenever waking or reconciling this lane. QA must
 perform the complete independent verification, attach visual/runtime evidence
