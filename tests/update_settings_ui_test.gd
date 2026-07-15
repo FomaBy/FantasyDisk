@@ -2,7 +2,13 @@ extends SceneTree
 
 const MAIN_SCENE := preload("res://scenes/Main.tscn")
 const QA_CAPTURE_TEARDOWN := preload("res://tools/qa_capture_teardown.gd")
+const UI_BUTTON_FAMILY := preload("res://scripts/ui/ui_button_family.gd")
 const VIEWPORT_SIZES := [Vector2i(1280, 720), Vector2i(1920, 1080), Vector2i(2560, 1440)]
+
+const EXPECTED_PRIMARY_FAMILY := "text/continue_run_long_420x72"
+const EXPECTED_CLOSE_FAMILY := "text/continue_240x72"
+const EXPECTED_PRIMARY_FOCUS := "res://assets/sprites/ui/frames/text_buttons_unique/ui_btn_text_unique_continue_run_long_420x72_focus.png"
+const EXPECTED_CLOSE_FOCUS := "res://assets/sprites/ui/frames/text_buttons_unique/ui_btn_text_unique_continue_240x72_focus.png"
 
 var _capture_teardown := QA_CAPTURE_TEARDOWN.new()
 
@@ -62,6 +68,30 @@ func _check_viewport(viewport_size: Vector2i) -> bool:
 			return _fail("Update prompt control escaped viewport at %s: %s" % [str(viewport_size), str((control as Control).get_global_rect())])
 	if primary.text != "Скачать и установить" or primary.disabled:
 		return _fail("Update prompt primary action regressed at %s." % str(viewport_size))
+	if not _check_update_button_family(primary, EXPECTED_PRIMARY_FAMILY, EXPECTED_PRIMARY_FOCUS, viewport_size):
+		return false
+	if not _check_update_button_family(close_button, EXPECTED_CLOSE_FAMILY, EXPECTED_CLOSE_FOCUS, viewport_size):
+		return false
+	if primary.custom_minimum_size != Vector2(420.0, 72.0) \
+		or close_button.custom_minimum_size != Vector2(240.0, 72.0):
+		return _fail("Updater button geometry changed at %s: %s / %s" % [
+			str(viewport_size), str(primary.custom_minimum_size), str(close_button.custom_minimum_size)])
+	for neighbor in [
+		primary.focus_neighbor_left,
+		primary.focus_neighbor_right,
+		primary.focus_neighbor_top,
+		primary.focus_neighbor_bottom,
+	]:
+		if neighbor != close_button.get_path():
+			return _fail("Updater primary focus cycle regressed at %s." % str(viewport_size))
+	for neighbor in [
+		close_button.focus_neighbor_left,
+		close_button.focus_neighbor_right,
+		close_button.focus_neighbor_top,
+		close_button.focus_neighbor_bottom,
+	]:
+		if neighbor != primary.get_path():
+			return _fail("Updater close focus cycle regressed at %s." % str(viewport_size))
 	var body := main.find_child("GameUpdateBody", true, false) as Label
 	if body == null:
 		return _fail("Update prompt body is missing at %s." % str(viewport_size))
@@ -83,6 +113,24 @@ func _check_viewport(viewport_size: Vector2i) -> bool:
 	var teardown_errors := await _capture_teardown.release_viewport(self, viewport)
 	if not teardown_errors.is_empty():
 		return _fail("Update UI teardown failed at %s: %s" % [str(viewport_size), "; ".join(teardown_errors)])
+	return true
+
+
+func _check_update_button_family(
+	button: Button,
+	expected_family: String,
+	expected_focus_path: String,
+	viewport_size: Vector2i
+) -> bool:
+	var family := str(button.get_meta(UI_BUTTON_FAMILY.META_FAMILY, ""))
+	if family != expected_family or not bool(button.get_meta(UI_BUTTON_FAMILY.META_FAMILY_EXPLICIT, false)):
+		return _fail("Updater button lost its explicit text family at %s: %s -> %s" % [
+			str(viewport_size), str(button.name), family])
+	var descriptor: Dictionary = UI_BUTTON_FAMILY.descriptor(family, "focus")
+	var focus_path := str(descriptor.get("path", ""))
+	if focus_path != expected_focus_path or focus_path.contains("minimal_metal_buttons"):
+		return _fail("Updater button resolved a disallowed focus texture at %s: %s -> %s" % [
+			str(viewport_size), str(button.name), focus_path])
 	return true
 
 

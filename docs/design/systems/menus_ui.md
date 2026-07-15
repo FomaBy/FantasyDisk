@@ -15,6 +15,14 @@ offline. The modal uses the accepted Atlas chip and global action-button familie
 traps keyboard/gamepad focus, restores the previous Escape action, and scales
 inside 1280×720, 1920×1080 and 2560×1440 viewports.
 
+FAN-1124 makes the updater action routing explicit after final button sizing:
+the 420×72 primary uses `text/continue_run_long_420x72`, while the 240×72 close
+action uses `text/continue_240x72`. Their dedicated neutral-bright focus PNGs
+replace the accidental bright-yellow `minimal/standard` fallback without
+changing action-row geometry, copy, initial focus, cyclic navigation or Escape
+restoration. Geometry and safe-zone contract:
+`docs/design/mockups/fan1124_update_focus/spec.md`.
+
 The accepted no-new-art mockup/spec package is
 `docs/design/mockups/fan1112_game_updater/`. Runtime and responsive checks are
 `tests/update_settings_ui_test.gd` and `tests/settings_footer_scrum1053_test.gd`.

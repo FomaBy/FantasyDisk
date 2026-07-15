@@ -5,6 +5,10 @@ signal close_requested
 const SemanticTypography := preload("res://scripts/ui/semantic_typography.gd")
 const UpdateManagerScript := preload("res://scripts/update_manager.gd")
 
+const PRIMARY_BUTTON_FAMILY := "text/continue_run_long_420x72"
+const COMPACT_PRIMARY_BUTTON_FAMILY := "text/later_260x72"
+const CLOSE_BUTTON_FAMILY := "text/continue_240x72"
+
 var presenter
 var update_manager
 var mode := "current"
@@ -135,6 +139,10 @@ func _build_dialog() -> void:
 	var primary := presenter._make_button(_primary_text()) as Button
 	primary.name = "GameUpdatePrimaryButton"
 	presenter._set_action_button_size(primary, 420.0 if mode == "available" else 280.0, 72.0)
+	# FAN-1124: this 420x72 action must not fall through the size-based
+	# minimal-metal resolver, whose standard focus texture is bright yellow.
+	var primary_family := PRIMARY_BUTTON_FAMILY if mode == "available" else COMPACT_PRIMARY_BUTTON_FAMILY
+	presenter._apply_fantasy_button_theme(primary, "primary", primary_family)
 	primary.disabled = mode in ["checking", "downloading"]
 	primary.pressed.connect(_on_primary_pressed)
 	button_row.add_child(primary)
@@ -142,6 +150,7 @@ func _build_dialog() -> void:
 	var secondary := presenter._make_button("Позже" if mode == "available" else "Закрыть") as Button
 	secondary.name = "GameUpdateCloseButton"
 	presenter._set_action_button_size(secondary, 240.0, 72.0)
+	presenter._apply_fantasy_button_theme(secondary, "secondary", CLOSE_BUTTON_FAMILY)
 	secondary.pressed.connect(close_requested.emit)
 	button_row.add_child(secondary)
 
