@@ -44,8 +44,9 @@ PM-чат:
    задачи больше `13 SP` декомпозирует до создания executable scope.
 4. Создает задачу в Multica проекте `FantasyDisk` (issues `FAN-*`) и сразу
    добавляет ее в live active sprint; локальный `.md` создаётся/обновляется
-   только как spec/evidence mirror после появления Multica key; числовое
-   значение дублирует в metadata `story_points`.
+   только как spec/evidence mirror после появления Multica key; прикрепляет
+   ровно один канонический `SP:<N>` Label и дублирует число в metadata
+   `story_points`.
 5. Назначает каждую задачу правильному исполнителю (Design / Back-end / Animator).
 6. Ведет Multica board (проект `FantasyDisk`) как источник очереди и статусов;
    локальную доску `docs/process/task_board.md` держит как read-only dashboard/cache.
@@ -76,12 +77,18 @@ Uncertainty, Effort) и шкала Фибоначчи `1, 2, 3, 5, 8, 13`. Оц�
 и cleanup до Definition of Done.
 
 PM записывает в requirements-блок `Story points: <N>`, модель и короткое
-обоснование, затем ставит числовую metadata `story_points=<N>` и строковую
-`estimation_model="CUE Fibonacci 1,2,3,5,8,13"`. Dispatcher не выдаёт задачу,
-если значение отсутствует, не входит в шкалу, расходится с description или
-превышает `13 SP`. При существенном изменении scope PM переоценивает задачу и
-фиксирует старое/новое значение и причину в комментарии до продолжения работы.
-Story points не переводятся в часы и не используются для KPI людей или агентов.
+обоснование, прикрепляет ровно один канонический Label `SP:<N>`, затем ставит
+числовую metadata `story_points=<N>` и строковую
+`estimation_model="CUE Fibonacci 1,2,3,5,8,13"`. Label — обязательное измерение
+для отчётов, metadata — зеркало для числового суммирования. Dispatcher не выдаёт
+задачу, если Label отсутствует/не единственный, значение не входит в шкалу,
+расходится с description/metadata или превышает `13 SP`. При существенном
+изменении scope PM заменяет Label, обновляет описание и metadata, затем фиксирует
+старое/новое значение и причину в комментарии до продолжения работы.
+
+Отчёты по эффективности группируют поток по `SP:<N>`: выполненные SP за период,
+cycle time, first-pass QA/rework, возраст WIP и план/факт scope. Story points не
+переводятся в часы и не используются для KPI людей или агентов.
 
 ## Распределение Ролей (краткая памятка)
 
@@ -392,6 +399,7 @@ Multica: FAN-<номер>
 
 ## Оценка Сложности
 Story points: <1 | 2 | 3 | 5 | 8 | 13>
+Label: `SP:<N>`
 Модель: CUE / Fibonacci `1, 2, 3, 5, 8, 13`
 Обоснование: <1–3 предложения про complexity, uncertainty и полный effort>
 
@@ -428,8 +436,9 @@ docs/process/agent_role_boundaries_and_handoffs.md и укажи это в фи�
 
 - Новая задача создается в Multica со статусом `todo`; значение `new` существует
   только в локальном mirror, который создаётся после получения Multica key.
-- До assignment/dispatch/`in_progress` description и metadata `story_points`
-  обязаны совпадать; задача больше `13 SP` сначала декомпозируется.
+- До assignment/dispatch/`in_progress` у issue должен быть ровно один
+  канонический `SP:<N>` Label; description и metadata `story_points` обязаны с
+  ним совпадать; задача больше `13 SP` сначала декомпозируется.
 - Исполнитель при взятии в работу обновляет Multica first (`in_progress`/comment),
   затем локальный mirror. По завершении — Multica + mirror `done` (или
   `in_review`, если нужна проверка PM) и короткое резюме результата.
@@ -467,5 +476,6 @@ docs/process/agent_role_boundaries_and_handoffs.md и укажи это в фи�
 4. Указаны точные пути/ID, а не «где-то в проекте».
 5. Указано, какую документацию обновить.
 6. Задача создана/обновлена в Multica и только затем отражена в локальном mirror/dashboard.
-7. Указаны Story points по CUE/Fibonacci, есть обоснование, metadata совпадает с
-   description, а scope не превышает `13 SP` без декомпозиции.
+7. Указаны Story points по CUE/Fibonacci, есть обоснование и ровно один
+   канонический `SP:<N>` Label; Label, metadata и description совпадают, а scope
+   не превышает `13 SP` без декомпозиции.

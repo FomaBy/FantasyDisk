@@ -39,11 +39,14 @@ Multica issue до первой правки. Если запрос продол
 
 Каждая actionable issue независимо от типа и роли получает оценку сложности по
 `docs/process/story_points.md`: CUE (Complexity, Uncertainty, Effort), шкала
-Фибоначчи `1, 2, 3, 5, 8, 13`. Description содержит `Story points: <N>` и
-короткое обоснование, Multica metadata — числовой `story_points=<N>` и
-`estimation_model="CUE Fibonacci 1,2,3,5,8,13"`. Без этого задача не готова к
-assignment, dispatch или `in_progress`; оценка больше `13 SP` означает
-обязательную декомпозицию.
+Фибоначчи `1, 2, 3, 5, 8, 13`. Description содержит `Story points: <N>`,
+`Label: SP:<N>` и короткое обоснование; issue — ровно один канонический Label
+из `SP:1`, `SP:2`, `SP:3`, `SP:5`, `SP:8`, `SP:13`; Multica metadata —
+совпадающий числовой `story_points=<N>` и
+`estimation_model="CUE Fibonacci 1,2,3,5,8,13"`. Label является обязательным
+измерением для отчётов, metadata — числовым зеркалом. Без полного совпадения
+задача не готова к assignment, dispatch или `in_progress`; оценка больше
+`13 SP` означает обязательную декомпозицию.
 
 ## Проверка подключения
 
@@ -95,21 +98,25 @@ multica issue create \
   --output json
 ```
 
-Сразу после создания записать ту же оценку как metadata и перепроверить
-совпадение текста и числа до назначения или запуска:
+Сразу после создания найти канонический Label, прикрепить его, записать
+числовое зеркало и перепроверить совпадение Label, текста и metadata до
+назначения или запуска:
 
 ```bash
+multica label list --output json
+multica issue label add FAN-123 <uuid-label-SP:N> --output json
 multica issue metadata set FAN-123 --key story_points --value <1|2|3|5|8|13> --type number
 multica issue metadata set FAN-123 --key estimation_model \
   --value "CUE Fibonacci 1,2,3,5,8,13" --type string
+multica issue label list FAN-123 --output json
 multica issue metadata list FAN-123 --output json
 ```
 
 Если требования недостаточны для обоснованной оценки, issue остаётся
-неисполняемой до уточнения. Существующие `backlog`/`todo` без SP оцениваются до
-следующего dispatch; `in_progress`/`in_review` — при ближайшем содержательном
-обновлении. Исторические `done`/`cancelled` и Jira Archive массово не
-переоцениваются.
+неисполняемой до уточнения. Существующие `backlog`/`todo` без канонического SP
+Label оцениваются до следующего dispatch; `in_progress`/`in_review` — при
+ближайшем содержательном обновлении. Исторические `done`/`cancelled` и Jira
+Archive массово не переоцениваются.
 
 `backlog` используется только для явно отложенной работы, freeze/hold или
 ожидания зависимости, когда issue ещё не готова к dispatch. Реальный blocker,
@@ -134,8 +141,8 @@ multica issue status FAN-123 todo
 ```
 
 Переход зарезервированной назначенной issue в `todo` создаёт task в очереди.
-Перед reservation dispatcher обязан подтвердить допустимую числовую metadata
-`story_points`, совпадающее обоснование в description и отсутствие оценки выше
+Перед reservation dispatcher обязан подтвердить ровно один канонический
+`SP:<N>` Label, совпадающие `story_points`/description и отсутствие оценки выше
 `13 SP`; иначе issue возвращается PM на оценку или декомпозицию.
 Обычный daemon worker начинает работу только после повторной проверки
 собственного exact assignee UUID; он не ищет и не claim'ит свободную issue.
@@ -170,10 +177,11 @@ writer review-очереди и работает с `max_concurrent_tasks = 1`. 
    child metadata `qa_owner_id=f992a646-a8ea-4935-ba94-212595803052`,
    `qa_run_id=<current-task-id>`, `qa_candidate_sha=<exact-sha>` и
    `qa_claim_mode=autonomous_unassigned`, а также CUE/Fibonacci
-   `story_points`/`estimation_model` по `docs/process/story_points.md`; description
-   содержит ту же оценку и обоснование. Затем QA добавляет owner/run/SHA
-   claim-comment. Это поддерживаемая замена self-assignment: live Multica ACL
-   запрещает agent actor назначить child самому себе.
+   `story_points`/`estimation_model` по `docs/process/story_points.md`; QA
+   прикрепляет ровно один совпадающий `SP:<N>` Label, а description содержит ту
+   же оценку и обоснование. Затем QA добавляет owner/run/SHA claim-comment. Это
+   поддерживаемая замена self-assignment: live Multica ACL запрещает agent actor
+   назначить child самому себе.
 4. Повторно читает parent, children, child metadata и comments. Claim валиден,
    только если все четыре metadata exact, comment совпадает, current run жив,
    SHA не изменился и нет второго claim/verdict. При любом конфликте QA отменяет

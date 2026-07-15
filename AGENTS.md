@@ -67,9 +67,12 @@ Role boundaries:
 bug, improvement, QA/review, design, animation, release, documentation, process
 и handoff — получает относительную оценку CUE (Complexity, Uncertainty, Effort)
 по шкале Фибоначчи `1, 2, 3, 5, 8, 13`. До assignment/dispatch/`in_progress`
-в description обязаны быть `Story points: <N>` и короткое обоснование, а в
-Multica metadata — числовой `story_points=<N>` и `estimation_model="CUE
-Fibonacci 1,2,3,5,8,13"`. Задача больше `13 SP` обязательно декомпозируется;
+в description обязаны быть `Story points: <N>`, `Label: SP:<N>` и короткое
+обоснование; на issue — ровно один канонический Label из `SP:1`, `SP:2`, `SP:3`,
+`SP:5`, `SP:8`, `SP:13`; в Multica metadata — совпадающий числовой
+`story_points=<N>` и `estimation_model="CUE Fibonacci 1,2,3,5,8,13"`. Label —
+обязательное измерение для отчётов, metadata — числовое зеркало. Задача больше
+`13 SP` обязательно декомпозируется;
 при существенном изменении scope оценка и причина обновляются до продолжения
 работы. SP нельзя переводить в часы или использовать для сравнения людей и
 агентов. Полная рубрика, readiness gate и переходное правило:

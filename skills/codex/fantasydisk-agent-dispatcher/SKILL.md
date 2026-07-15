@@ -51,10 +51,11 @@ Sol must keep runtime concurrency `1` and at most one QA child `in_progress`.
 
 Every actionable issue, including QA/review and follow-up children, must satisfy
 repo `docs/process/story_points.md` before execution: description contains
-`Story points: <N>` plus a CUE rationale; numeric metadata `story_points` matches
-one of `1, 2, 3, 5, 8, 13`; `estimation_model` is
-`CUE Fibonacci 1,2,3,5,8,13`. Return missing or inconsistent estimates to PM.
-Never dispatch an issue sized above `13 SP`; require decomposition first.
+`Story points: <N>` plus a CUE rationale; exactly one canonical issue Label
+matches `SP:<N>` where N is one of `1, 2, 3, 5, 8, 13`; numeric metadata
+`story_points` matches N; `estimation_model` is `CUE Fibonacci 1,2,3,5,8,13`.
+Return missing, duplicate, or inconsistent labels/estimates to PM. Never
+dispatch an issue sized above `13 SP`; require decomposition first.
 
 ## Assign Without Duplicate Claims
 
@@ -113,9 +114,10 @@ child and records exact child metadata `qa_owner_id=f992a646-a8ea-4935-ba94-2125
 `qa_run_id=<current-task-id>`, `qa_candidate_sha=<exact-sha>`, and
 `qa_claim_mode=autonomous_unassigned`, plus a matching owner/run/SHA comment.
 Before moving the QA child to `in_progress`, QA also records its CUE/Fibonacci
-estimate and matching `story_points`/`estimation_model` metadata. Every new
-`BUG:` / `IMPROVEMENT:` child receives the same estimate block and metadata
-before it becomes dispatchable.
+estimate, exactly one matching `SP:<N>` Label, and matching
+`story_points`/`estimation_model` metadata. Every new `BUG:` / `IMPROVEMENT:`
+child receives the same estimate block, Label, and metadata before it becomes
+dispatchable.
 QA then re-reads parent, child, metadata, and comments. The claim is valid only
 when all four values match, the current run is live, the SHA is unchanged, and
 there is no competing claim/verdict. QA moves that child directly to
