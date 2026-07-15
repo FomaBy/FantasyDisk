@@ -69,8 +69,10 @@ dev  — основная ветка разработки. Все чаты (Back
       `releases/current-project` и зарегистрировать путь как `favorite=true`, не
       изменяя рабочий `dev` оператора и immutable evidence;
     - на macOS атомарно установить приложение из итогового DMG и проверить
-      retained DMG layout/signature, bundle version, `hdiutil verify`, `codesign`,
-      `stapler`, `spctl` и headless launch smoke.
+      retained DMG layout, bundle version, `hdiutil verify` и headless launch
+      smoke для обоих каналов; `codesign`, `stapler` и `spctl` проверяются
+      дополнительно только в канале `signed` (в `unsigned` они пропускаются, а
+      `verify` требует явного совпадения записанного `macos_channel`).
     Существующий локальный релиз с отличающимися байтами не перезаписывается.
     GitHub/Discord и legacy Telegram clients повторно запускают verify, отправляют
     байты только
@@ -121,20 +123,37 @@ SemVer patch/minor версию.
 (сейчас 4.7). Templates ставятся один раз: Editor → Manage Export Templates.
 
 ### macOS
+`tools/build_release.sh` поддерживает два взаимоисключающих канала, выбираемых
+ЯВНО через `FANTASYDISK_MACOS_CHANNEL`; тихий downgrade запрещён в обе стороны.
+Текущий выбранный канал — `unsigned` (решение владельца, FAN-1121, после отмены
+FAN-1094); `signed` остаётся строгим default и включается автоматически, когда
+Apple credentials снова доступны. Полный клиентский контракт:
+`docs/process/game_updates.md`.
+
 - Пресет `macOS` экспортирует `.app` в zip; `tools/build_release.sh` распаковывает
-  окончательный bundle, удаляет quarantine/xattr и **после всех изменений**
-  повторно подписывает его. `MACOS_SIGN_IDENTITY` обязан указывать установленный
-  `Developer ID Application`; ad-hoc подпись для publishable release запрещена.
-- Подпись обязательно проверяется через `codesign --verify --deep --strict` как
-  до упаковки, так и после монтирования итогового DMG.
-- `MACOS_NOTARY_PROFILE` обязателен. Скрипт отдельно отправляет подписанное
-  приложение и затем подписанный DMG в `notarytool`, требует `Accepted`, staples
-  tickets в оба артефакта и проверяет их через `stapler validate` + `spctl`.
-- Любое отсутствие credentials, отказ Apple, ошибка staple или Gatekeeper
-  assessment останавливает сборку до публикации.
-- DMG содержит только `FantasyDisk.app`, ярлык `Applications` и одну фоновую
-  стрелку. Стрелка хранится внутри signed app bundle; `.background`,
-  `.fseventsd` и другие видимые root-служебные элементы запрещены allowlist-гейтом.
+  окончательный bundle и удаляет quarantine/xattr для обоих каналов.
+- Канал `signed` (строгий default): **после всех изменений** bundle повторно
+  подписывается. `MACOS_SIGN_IDENTITY` обязан указывать установленный
+  `Developer ID Application` (ad-hoc подпись для publishable release запрещена);
+  подпись проверяется через `codesign --verify --deep --strict` до упаковки и
+  после монтирования итогового DMG. `MACOS_NOTARY_PROFILE` обязателен: скрипт
+  отдельно отправляет подписанное приложение и затем подписанный DMG в
+  `notarytool`, требует `Accepted`, staples tickets в оба артефакта и проверяет
+  их через `stapler validate` + `spctl`. Любое отсутствие credentials, отказ
+  Apple, ошибка staple или Gatekeeper assessment останавливает сборку до
+  публикации (exit 2), а не переходит на unsigned.
+- Канал `unsigned` (текущий, FAN-1121): запускается только явным
+  `FANTASYDISK_MACOS_CHANNEL=unsigned` и отказывается работать, если
+  `MACOS_SIGN_IDENTITY`/`MACOS_NOTARY_PROFILE` установлены. Пропускаются ТОЛЬКО
+  codesign/notarization/stapler/spctl; DMG и .app остаются без подписи Developer
+  ID и нотаризации, а клиент явно помечает сборку unsigned и даёт ручную
+  Gatekeeper-инструкцию. Никаких заявлений о подписи/нотаризации в этом канале.
+- Для ОБОИХ каналов сохраняются exact-tag inputs, headless import/export, layout
+  DMG, secret scan, `SHA256SUMS.txt` и `update-manifest.json`. DMG содержит
+  только `FantasyDisk.app`, ярлык `Applications` и одну фоновую стрелку; стрелка
+  хранится внутри app bundle, а `.background`, `.fseventsd` и другие видимые
+  root-служебные элементы запрещены allowlist-гейтом. Имена артефактов не
+  меняются (клиентский контракт требует точные имена).
 - Выход: `releases/vX.Y.Z/FantasyDisk-X.Y.Z-macos.dmg`.
 
 ### Windows (собирается с этого же Mac)
@@ -179,8 +198,10 @@ SemVer patch/minor версию.
   `std::bad_alloc` (ломается даже бандловый пример). `tools/build_release.sh`
   выставляет `LC_ALL=en_US.UTF-8` сам; при ручном запуске makensis — не забывать.
 - `assets/icon.ico` (16-256) сгенерирован из `icon.svg`: `qlmanage -t -s 256` -> PNG -> Pillow.
-- macOS `.app` подписывается Developer ID последним шагом перед app notarization
-  и DMG; отсутствие Developer ID/notary profile является release blocker.
+- В канале `signed` macOS `.app` подписывается Developer ID последним шагом перед
+  app notarization и DMG; в этом канале отсутствие Developer ID/notary profile —
+  release blocker. В текущем канале `unsigned` (FAN-1121) этот шаг осознанно
+  пропускается, а наличие credentials, наоборот, отклоняется.
   GL-ошибки "Texture leaked" при выходе релизной
   сборки с `--quit-after` — известный безвредный артефакт принудительного выхода
   в gl_compatibility, не считать регрессией.

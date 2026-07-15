@@ -99,6 +99,15 @@ class UpdateReleasePipelineTests(unittest.TestCase):
 class UnsignedChannelLabelingTests(unittest.TestCase):
     """FAN-1121: the unsigned macOS channel must be labeled truthfully everywhere."""
 
+    # Every canonical release document a release agent may follow. FAN-1123
+    # extended coverage beyond game_updates.md after current_game_state.md and
+    # release_versioning.md kept mandating signed-only delivery.
+    ACTIVE_RELEASE_DOCS = (
+        Path("docs") / "process" / "game_updates.md",
+        Path("docs") / "design" / "current_game_state.md",
+        Path("docs") / "process" / "release_versioning.md",
+    )
+
     def test_client_labels_unsigned_macos_channel_truthfully(self) -> None:
         manager = (ROOT / "scripts" / "update_manager.gd").read_text(encoding="utf-8")
         self.assertIn('const MACOS_UPDATE_CHANNEL := "unsigned"', manager)
@@ -121,6 +130,38 @@ class UnsignedChannelLabelingTests(unittest.TestCase):
         ).read_text(encoding="utf-8")
         self.assertIn("FANTASYDISK_MACOS_CHANNEL", skill)
         self.assertIn("unsigned", skill)
+
+    def test_every_active_release_doc_describes_both_channels(self) -> None:
+        # FAN-1123: all canonical release documents must present the explicit
+        # signed/unsigned channels and name unsigned as the current selection, so
+        # a release agent cannot follow one document into a signed-only block.
+        for relative in self.ACTIVE_RELEASE_DOCS:
+            with self.subTest(doc=str(relative)):
+                doc = (ROOT / relative).read_text(encoding="utf-8")
+                self.assertIn("FANTASYDISK_MACOS_CHANNEL", doc)
+                self.assertIn("unsigned", doc)
+                self.assertIn("FAN-1121", doc)
+                self.assertNotIn("signed/notarized", doc)
+
+    def test_snapshot_and_versioning_docs_supersede_fan1094_signed_only(self) -> None:
+        # FAN-1123 regression: these two documents previously mandated signed-only
+        # macOS delivery and presented cancelled FAN-1094 as the current rule.
+        state = (ROOT / "docs" / "design" / "current_game_state.md").read_text(
+            encoding="utf-8"
+        )
+        self.assertNotIn("FAN-1094 делает macOS installer fail-closed", state)
+        self.assertIn("текущий выбранный канал", state)
+
+        versioning = (ROOT / "docs" / "process" / "release_versioning.md").read_text(
+            encoding="utf-8"
+        )
+        # codesign/notarytool/stapler/spctl must be scoped to the signed channel,
+        # not asserted as a universal release blocker.
+        self.assertNotIn(
+            "отсутствие Developer ID/notary profile является release blocker",
+            versioning,
+        )
+        self.assertIn("Канал `unsigned`", versioning)
 
     def test_build_script_cross_checks_client_channel_label(self) -> None:
         script = (ROOT / "tools" / "build_release.sh").read_text(encoding="utf-8")

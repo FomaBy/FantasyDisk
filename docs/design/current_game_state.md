@@ -27,15 +27,31 @@ Domain docs для подробностей по областям:
   Главный акцент — полный ребаланс всех 17 классов и 51 оружия без мёртвых
   вариантов и неконтролируемого crowd-разгона, обновлённый Кодекс с «Летописью»,
   новый фон главного меню и исправленная поставка macOS.
-- Основная рабочая платформа: macOS. Релизные платформы: macOS (Developer ID
-  signed + Apple-notarized DMG с ярлыком Applications) и Windows (x86_64
-  NSIS-инсталлер с embed_pck; отдельный zip/exe игрокам не публикуется).
-- FAN-1094 делает macOS installer fail-closed: ad-hoc/unnotarized релиз больше
-  нельзя собрать или опубликовать. Finder DMG показывает только нативные
-  `FantasyDisk.app` и `Applications` с одной тонкой стрелкой между ними; baked
-  copy, рамки, `.background`, `.fseventsd` и прочие root-служебные элементы
-  запрещены и проверяются при sealing. `stapler` + `spctl` обязательны отдельно
-  для приложения и итогового DMG.
+- Основная рабочая платформа: macOS. Релизные платформы: macOS (DMG с ярлыком
+  Applications) и Windows (x86_64 NSIS-инсталлер с embed_pck; отдельный zip/exe
+  игрокам не публикуется).
+- macOS-канал сборки выбирается ЯВНО через `FANTASYDISK_MACOS_CHANNEL`; тихий
+  downgrade запрещён в обе стороны. Полный контракт — `docs/process/game_updates.md`
+  и `docs/process/release_versioning.md`:
+  - `signed` — строгий default, включается автоматически при наличии credentials:
+    `MACOS_SIGN_IDENTITY` (Developer ID Application) и `MACOS_NOTARY_PROFILE`
+    обязательны; codesign, notarytool, `stapler` и `spctl` выполняются отдельно
+    для приложения и итогового DMG.
+  - `unsigned` — текущий выбранный канал (решение владельца, FAN-1121, после
+    отмены FAN-1094): DMG и .app без подписи Developer ID и нотаризации.
+    Пропускаются ТОЛЬКО codesign/notarization/stapler/spctl; целостность
+    гарантируется HTTPS + доверенным манифестом + точным именем/размером/SHA-256,
+    а клиент явно помечает сборку unsigned и даёт ручную Gatekeeper-инструкцию
+    («Всё равно открыть» / Open Anyway).
+- Для ОБОИХ каналов Finder DMG показывает только нативные `FantasyDisk.app` и
+  `Applications` с одной тонкой стрелкой между ними; baked copy, рамки,
+  `.background`, `.fseventsd` и прочие root-служебные элементы запрещены и
+  проверяются при sealing вместе с exact-tag inputs, layout, secret scan,
+  `SHA256SUMS.txt` и `update-manifest.json`.
+- Исторически FAN-1094 требовал fail-closed signed-only поставку
+  (ad-hoc/unnotarized релиз запрещён), но задача отменена и заменена
+  unsigned-каналом FAN-1121, поэтому signed-only больше не является текущим
+  универсальным правилом.
 - Версионирование: SemVer, источник истины `project.godot::config/version`; релизы — теги `vX.Y.Z` на main, разработка в `dev` (см. `docs/process/release_versioning.md`). Сборка: `tools/build_release.sh <версия>`.
 - Основная сцена: `scenes/Main.tscn`.
 - Основной управляющий скрипт: `scripts/main.gd` — тонкий координатор (state, пауза, основной цикл, делегирующие стабы для тестов). Он владеет модулями-компонентами: `scripts/ui_screens.gd` (меню/экраны/HUD/стили), `scripts/route_map_screen.gd` (генерация маршрута и экран карты), `scripts/combat_director.gd` (бой, спавн, баланс, арена, pickups). Модули — RefCounted с ссылкой `game` на main; общее состояние живет в main.
