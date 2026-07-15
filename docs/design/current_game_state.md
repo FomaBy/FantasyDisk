@@ -1,6 +1,6 @@
 # FantasyDisk Current Game State
 
-Обновлено: 2026-07-14 (0.2.2 release snapshot)
+Обновлено: 2026-07-15 (0.2.2 + post-release dev snapshot)
 
 Этот документ описывает то, что уже есть в текущей версии игры. Он нужен агентам и разработчикам как быстрый фактический снимок проекта перед изменениями в геймплее, балансе, UI, персонажах, врагах, прогрессии и ассетах.
 
@@ -1748,6 +1748,15 @@ SCRUM-654/SCRUM-663 cleanup now resolves to a single visible level-up plaque: `L
 - Фон маршрутной карты: если существует `assets/backgrounds/route_map_backdrop.png`, он подключается с cover-растяжением и затемнением 0.62 для читаемости узлов; иначе — прежний однотонный фон (graceful fallback до выхода арта).
 
 ## Кодекс (Энциклопедия)
+
+FAN-1098 replaces the already-wired Codex background at
+`assets/sprites/ui/atlas_style/codex/bg_codex_sanctum.png` with a cohesive
+2560x1440 RGB draconic archive created exclusively through the built-in OpenAI
+Image Generator in Codex. PixelLab and the OpenAI Images API were not used.
+Runtime layout, controls, text, focus, and data are unchanged. Actual Godot
+captures at 1280x720, 1920x1080, and 2560x1440, the prompt, hashes, safe-zone
+report, previous-asset backup, and implementation spec live under
+`docs/design/{references,mockups,previews,backups}/fan1098_codex_openai_background/`.
 
 Кнопка «Кодекс» в главном меню открывает внутриигровую энциклопедию (`_show_codex_screen` в `scripts/ui_screens.gd`). Данные — data-driven из `scripts/codex_data.gd`: персонажи/оружие/артефакты/характеристики собираются из `progression_data.gd` и `stat_formulas.gd`, описания монстров и канонические имена умений живут в `CODEX_DATA.MONSTERS` и зарегистрированы в `docs/design/content_registry.md` (раздел «Умения Монстров»). SCRUM-438 rebuild сделал live Codex v2: единый main frame, вертикальные вкладки слева, центральный scrollable список записей и правый detail panel с портретом/чипами/текстом. SCRUM-725 заменил старую геометрию на accepted `docs/design/mockups/codex_redesign_2026_06/layout_map.md` с `codex_pl_backdrop`, textless 9-slice `codex_pl` frame set and safe cream/gold text. SCRUM-849 prepared the object-first source package (`docs/design/mockups/codex_object_first_redesign/spec.md`, `layout_zones.json`, preview/contact PNGs), and SCRUM-850 made that package live in runtime: base 1920x1080 rects are `CodexMainPanel` 72,54,1776,972; `CodexNavPanel` 96,210,300,700; `CodexContent` 438,210,490,700; `CodexDetailPanel` 960,210,840,700. SCRUM-884 then simplified the center column to the list-only flow (no object preview stage), and SCRUM-889 removes the live `Глоссарий` category entirely. The right detail overlay has a larger contained portrait/icon stage, chip row and `CodexDetailParchmentInset` body text. Character portraits still use the SCRUM-416 full-frame idle `sprite_path` source as Hero Select, while artifacts use canonical artifact/shop icons. QA path/rect dumps: `build/qa/scrum416/codex_character_portrait_runtime_paths.md`, `build/qa/scrum417/codex_character_portrait_runtime_dump.md`, `build/qa/scrum438/codex_v2_runtime_dump.md`, `build/qa/scrum438/codex_v2_no_overlap_matrix.md`; SCRUM-725 source/evidence: `docs/design/references/codex_redesign_2026_06/`, `docs/design/previews/codex_redesign_2026_06_runtime_contact.png`, `build/qa/design_review/codex_1280x720.png`, `build/qa/design_review/codex_1920x1080.png`, `build/qa/design_review/codex_2560x1440.png`; SCRUM-850 screenshot evidence: `build/qa/codex_object_first/`.
 

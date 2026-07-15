@@ -1,0 +1,111 @@
+{
+  "issue": "FAN-1098",
+  "source": "docs/design/previews/fan1098_codex_openai_background/codex_background_mockup_2560x1440.png",
+  "target_size": [
+    2560,
+    1440
+  ],
+  "design_size": [
+    1920,
+    1080
+  ],
+  "scale": 1.3333333333333333,
+  "zones": {
+    "CodexTitleFrame": {
+      "rect_1920x1080": [
+        72,
+        36,
+        340,
+        112
+      ],
+      "rect_2560x1440": [
+        96,
+        48,
+        453,
+        149
+      ],
+      "mean_luminance_0_255": 18,
+      "rms_luminance_0_255": 19.47
+    },
+    "CodexCrest": {
+      "rect_1920x1080": [
+        908,
+        24,
+        104,
+        104
+      ],
+      "rect_2560x1440": [
+        1211,
+        32,
+        138,
+        139
+      ],
+      "mean_luminance_0_255": 24,
+      "rms_luminance_0_255": 25.08
+    },
+    "CodexBackButton": {
+      "rect_1920x1080": [
+        1580,
+        46,
+        268,
+        96
+      ],
+      "rect_2560x1440": [
+        2107,
+        61,
+        357,
+        128
+      ],
+      "mean_luminance_0_255": 19,
+      "rms_luminance_0_255": 22.25
+    },
+    "CodexNavPanel": {
+      "rect_1920x1080": [
+        72,
+        172,
+        324,
+        840
+      ],
+      "rect_2560x1440": [
+        96,
+        229,
+        432,
+        1120
+      ],
+      "mean_luminance_0_255": 25,
+      "rms_luminance_0_255": 28.18
+    },
+    "CodexContent": {
+      "rect_1920x1080": [
+        420,
+        172,
+        620,
+        840
+      ],
+      "rect_2560x1440": [
+        560,
+        229,
+        827,
+        1120
+      ],
+      "mean_luminance_0_255": 29,
+      "rms_luminance_0_255": 32.12
+    },
+    "CodexDetailPanel": {
+      "rect_1920x1080": [
+        1064,
+        172,
+        784,
+        840
+      ],
+      "rect_2560x1440": [
+        1419,
+        229,
+        1045,
+        1120
+      ],
+      "mean_luminance_0_255": 25,
+      "rms_luminance_0_255": 28.7
+    }
+  }
+}

@@ -4,6 +4,21 @@
 
 Этот файл собирает UI-направление FantasyDisk после domain split. Полное фактическое состояние остается в `docs/design/current_game_state.md`, а канонические IDs и assets - в `docs/design/content_registry.md`.
 
+## FAN-1098 Codex Background
+
+The live Codex now uses a cohesive 2560x1440 RGB draconic-archive background at
+the existing `assets/sprites/ui/atlas_style/codex/bg_codex_sanctum.png` path.
+It was created only with the built-in OpenAI Image Generator in Codex, then
+center-cropped and proportionally normalized; PixelLab and the OpenAI Images API
+were not used. All panels, title, crest, buttons, text, content geometry, focus,
+and navigation remain separate unchanged runtime Controls.
+
+The dark low-frequency field preserves the exact accepted 1920x1080 safe zones
+for title, crest, Back, navigation, list, and dossier. Real renderer captures at
+1280x720, 1920x1080, and 2560x1440 plus source provenance, hashes, prompt,
+safe-zone luminance, backup, and implementation contract live under
+`docs/design/{references,mockups,previews,backups}/fan1098_codex_openai_background/`.
+
 ## FAN-1080 Лор: Интро Истории, «Летопись» Кодекса, Лорные Баннеры И Исходы
 
 Канон текстов: `docs/design/lore.md`; рантайм-данные: `scripts/lore_data.gd`.
@@ -75,16 +90,17 @@ Design evidence and safe-zone reports live under
 
 ## FAN-1065 / FAN-1066 / FAN-1069 Codex Atlas/Settings Runtime Skin
 
-The active Codex visual canon is the PixelLab package
+The active Codex component canon is the FAN-1065 PixelLab package
 `docs/design/mockups/fan1065_codex_atlas_settings_redesign/`, promoted into
-`assets/sprites/ui/atlas_style/codex/`. The accepted SCRUM-954/FAN-1047
+`assets/sprites/ui/atlas_style/codex/`, except for the FAN-1098 full-canvas
+background described above. The accepted SCRUM-954/FAN-1047
 1920×1080 stage and all runtime rects remain unchanged: nav
 `72,172,324,840`, list `420,172,620,840`, dossier `1064,172,784,840`, 516×154
 entry rows, 300×300 dossier well with a contained 236×248 image, and a 684×356
 lower scroll whose live text lane remains 610×304. Uniform stage scaling and
 letterboxing remain the only responsive transform.
 
-Runtime uses the cropped sanctum scene, PixelLab panel 9-slice, entry cards,
+Runtime uses the FAN-1098 built-in OpenAI archive scene, PixelLab panel 9-slice, entry cards,
 dossier portrait frame, chip bar and crest. Text, icons and portraits remain
 separate Controls inside the documented empty zones. The square dossier frame
 is used only on the 300×300 portrait well: visual QA proved that stretching its

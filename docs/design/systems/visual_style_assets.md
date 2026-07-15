@@ -1,6 +1,6 @@
 # Visual Style Assets
 
-Обновлено: 2026-07-14
+Обновлено: 2026-07-15
 
 Этот файл фиксирует reusable visual assets FantasyDisk после domain split. Подробные таблицы сущностей остаются в `docs/design/content_registry.md`.
 
@@ -44,8 +44,9 @@ directories. No runtime text is baked into the badge.
 The current Codex runtime art package lives at
 `assets/sprites/ui/atlas_style/codex/`:
 
-- `bg_codex_sanctum.png` — inner-scene crop of the PixelLab sanctum source,
-  drawn `STRETCH_KEEP_ASPECT_COVERED`;
+- `bg_codex_sanctum.png` — FAN-1098 2560x1440 RGB draconic archive created
+  with the built-in OpenAI Image Generator and drawn
+  `STRETCH_KEEP_ASPECT_COVERED`;
 - `panel_9slice.png` — nav/list/detail/title surfaces and the ornament-safe
   lower lore scroll;
 - `entry_card_516x154.png` — exact-size center rows; runtime portrait/name are
@@ -54,8 +55,8 @@ The current Codex runtime art package lives at
 - `chip_bar.png` — two 330×70 semantic/locked chips;
 - `codex_crest.png` — 104×104 top-center accent.
 
-All runtime bitmaps are promoted or mechanically cropped from the accepted
-PixelLab MCP source package under
+All non-background runtime bitmaps are promoted or mechanically cropped from the
+accepted PixelLab MCP source package under
 `docs/design/references/fan1065_codex_atlas_settings_redesign/`; IDs, prompts,
 seeds, dimensions and derivation are preserved in its `manifest.json` and
 `provenance.json`. The clean/annotated mockups and state sheet live in the
@@ -63,6 +64,13 @@ adjacent mockup/preview directories. No runtime text is baked into these
 assets. The old `bg_codex_archive` and historical Codex frame kits remain source
 history, not the active Codex surface set. Main Menu tab/Back textures are
 referenced from their existing global family and were not regenerated.
+
+FAN-1098 replaces only the already-wired full-canvas Codex background. Its
+built-in source, prompt, normalization record, SHA-256 hashes, previous bitmap
+backup, clean mockup, safe-zone overlay/report, and real 1280x720, 1920x1080,
+and 2560x1440 runtime captures live under
+`docs/design/{references,mockups,previews,backups}/fan1098_codex_openai_background/`.
+PixelLab and the OpenAI Images API were not used for this background.
 
 ## Semantic Typography Content-Zone Anchor
 
@@ -946,6 +954,12 @@ SCRUM-337 is the current full attack VFX art baseline. Six generated source shee
   runtime, and production continues to reuse `route_map_backdrop.png`, canonical
   node icons, HUD v2 assets and the hollow `meta40/frame_border.png` shell.
 - SCRUM-158 dark fantasy UI backdrops live in `assets/backgrounds/ui/`: `ui_backdrop_system_cathedral.png`, `ui_backdrop_merchant_archive.png`, `ui_backdrop_arcane_lab.png`, `ui_backdrop_reward_hall.png`, `ui_backdrop_defeat_crypt.png`. Each is `2560x1440` with a calm low-contrast center for central panels and richer material detail pushed to the edges. SCRUM-418 removed the old compatibility copies from `assets/sprites/ui/screens/`; runtime mapping now points directly at this canonical backdrop set. Preview: `docs/design/previews/ui_screen_backdrops_dark_fantasy_contact.png`.
+- `assets/sprites/ui/atlas_style/codex/bg_codex_sanctum.png` is the FAN-1098
+  active Codex-specific 2560x1440 RGB backdrop: a dark draconic archive with a
+  calm three-column content field and architecture concentrated toward the
+  edges. It was generated with the built-in OpenAI Image Generator in Codex;
+  PixelLab and the OpenAI Images API were not used. Provenance and responsive
+  evidence live in the FAN-1098 design package documented above.
 - `assets/backgrounds/main_menu_epic_battle_v3.png` is the active start-screen
   art. FAN-1097 uses a cohesive 2560x1440 cinematic dark-fantasy scene generated
   and corrected through the built-in OpenAI Image Generator in Codex: one

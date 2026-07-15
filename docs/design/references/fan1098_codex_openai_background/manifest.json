@@ -1,0 +1,50 @@
+{
+  "issue": "FAN-1098",
+  "generated_on": "2026-07-15",
+  "generator": {
+    "route": "built-in OpenAI Image Generator in Codex",
+    "tool": "image_gen",
+    "pixellab_used": false,
+    "openai_images_api_used": false
+  },
+  "source": {
+    "path": "docs/design/references/fan1098_codex_openai_background/codex_openai_builtin_source.png",
+    "dimensions": [1672, 941],
+    "mode": "RGB",
+    "sha256": "61e66b480091379f6c2a1c7ac5f934cb5872b2572003d3d6330cd678cf7b73d5",
+    "prompt_path": "docs/design/references/fan1098_codex_openai_background/prompt.md"
+  },
+  "normalization": {
+    "operation": "center crop 1672x941 to 1664x936, then proportional resize",
+    "target_dimensions": [2560, 1440],
+    "target_mode": "RGB",
+    "stretched": false
+  },
+  "accepted": {
+    "runtime_path": "assets/sprites/ui/atlas_style/codex/bg_codex_sanctum.png",
+    "mockup_path": "docs/design/previews/fan1098_codex_openai_background/codex_background_mockup_2560x1440.png",
+    "sha256": "145ce19aca8e64aada150003f2b7316236e1120e307e277339cb84a2b8a660cb"
+  },
+  "previous_runtime": {
+    "backup_path": "docs/design/backups/fan1098_codex_openai_background/bg_codex_sanctum_pre_fan1098.png",
+    "dimensions": [488, 274],
+    "sha256": "03026f8d1640e2ad3da6d47794ea10638fc5e16fbd83f939df7767ecd38a9300"
+  },
+  "safe_zone_evidence": {
+    "overlay": "docs/design/previews/fan1098_codex_openai_background/codex_background_safe_zones_2560x1440.png",
+    "report": "docs/design/previews/fan1098_codex_openai_background/safe_zone_report.json",
+    "mean_luminance_0_255": {
+      "title": 18,
+      "crest": 24,
+      "back": 19,
+      "navigation": 25,
+      "content": 29,
+      "detail": 25
+    }
+  },
+  "runtime_captures": [
+    "docs/design/previews/fan1098_codex_openai_background/codex_runtime_1280x720.png",
+    "docs/design/previews/fan1098_codex_openai_background/codex_runtime_1920x1080.png",
+    "docs/design/previews/fan1098_codex_openai_background/codex_runtime_2560x1440.png"
+  ]
+}
