@@ -295,9 +295,9 @@ const ATTACK_MODE_EXECUTORS := {
 @export var sentry_shot_magazine := 15
 # SCRUM-906, FAN-1075: орбитальные дроны (см. scripts/engineer_orbit_drone.gd).
 @export var drone_orbit_radius := 121.0
-@export var drone_visual_scale := 0.24
+@export var drone_visual_scale := 0.36
 @export var drone_orbit_speed := 3.6
-@export var drone_contact_radius := 44.0
+@export var drone_contact_radius := 66.0
 @export var drone_hit_cooldown := 0.85
 @export var drone_count_threshold := 12.0
 @export var drone_count_step := 4.0

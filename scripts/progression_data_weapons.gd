@@ -1193,9 +1193,9 @@ const ENGINEER_WEAPONS := {
 		"attack_range": 540.0, "aoe_radius": 150.0,
 		"max_summons": 2, "max_summons_cap": 6,
 		"drone_orbit_radius": 121.0,    # FAN-1075: +55% к прежним 78 px
-		"drone_visual_scale": 0.24,     # FAN-1075: +50% к прежним 0.16
+		"drone_visual_scale": 0.36,     # FAN-1101: +50% к 0.24 (физически крупнее дроны); FAN-1075: 0.16→0.24
 		"drone_orbit_speed": 3.6,       # рад/с; × attack_speed (RPM растёт от скорости атаки)
-		"drone_contact_radius": 44.0,   # радиус контакта дрона
+		"drone_contact_radius": 66.0,   # FAN-1101: +50% к 44 — физический контакт растёт вместе с телом дрона
 		"drone_hit_cooldown": 0.85,     # per-enemy кулдаун (защита от every-frame урона)
 		"drone_count_threshold": 12.0,  # порог summon_amount базового профиля
 		"drone_count_step": 4.0,        # +1 дрон за каждые step сверх порога
