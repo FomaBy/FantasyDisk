@@ -34,6 +34,9 @@ func _initialize() -> void:
 	if not await _assert_dpad_motion(player, errors):
 		await _finish(player, errors)
 		return
+	if not _assert_opposing_inputs_require_all_neutral(player, errors):
+		await _finish(player, errors)
+		return
 	if not _assert_vibration_helper_noop(player, errors):
 		await _finish(player, errors)
 		return
@@ -85,6 +88,56 @@ func _assert_dpad_motion(player: CharacterBody2D, errors: Array[String]) -> bool
 		errors.append("D-pad right should move at full speed %.2f, got velocity %s." % [speed, str(velocity)])
 		return false
 	print("SCRUM-814 D-pad right velocity: %s (speed %.2f)" % [str(velocity), speed])
+	return true
+
+
+func _assert_opposing_inputs_require_all_neutral(player: CharacterBody2D, errors: Array[String]) -> bool:
+	# FAN-1107: a zero resultant vector is not neutral when two shared movement
+	# actions are still held. The gate may arm only after all four actions have
+	# simultaneously returned inside the movement deadzone.
+	Input.action_release(&"move_up")
+	Input.action_release(&"move_down")
+	player.set("_movement_input_armed", false)
+	Input.action_press(&"move_up")
+	Input.action_press(&"move_down")
+	var cancelled := player.call("_movement_input_direction") as Vector2
+	if not cancelled.is_zero_approx() or bool(player.get("_movement_input_armed")):
+		errors.append("Opposing Up+Down must stay blocked without arming, got direction=%s armed=%s." % [str(cancelled), str(player.get("_movement_input_armed"))])
+		return false
+
+	Input.action_release(&"move_down")
+	var still_held := player.call("_movement_input_direction") as Vector2
+	if not still_held.is_zero_approx() or bool(player.get("_movement_input_armed")):
+		errors.append("Releasing only Down must not activate never-released Up, got direction=%s armed=%s." % [str(still_held), str(player.get("_movement_input_armed"))])
+		return false
+
+	Input.action_release(&"move_up")
+	var neutral := player.call("_movement_input_direction") as Vector2
+	if not neutral.is_zero_approx() or not bool(player.get("_movement_input_armed")):
+		errors.append("All-neutral frame did not re-arm movement, got direction=%s armed=%s." % [str(neutral), str(player.get("_movement_input_armed"))])
+		return false
+
+	Input.action_press(&"move_up")
+	var fresh_press := player.call("_movement_input_direction") as Vector2
+	Input.action_release(&"move_up")
+	if fresh_press.distance_to(Vector2.UP) > EPS:
+		errors.append("Fresh Up after all-neutral rearm must retain full digital strength, got %s." % str(fresh_press))
+		return false
+
+	# The neutral helper must share Input.get_vector's circular deadzone. Two
+	# 0.2-axis contributors are individually below 0.25 but jointly active.
+	player.set("_movement_input_armed", false)
+	_send_left_stick(0.2, 0.2)
+	var diagonal_inside_actions := player.call("_movement_input_direction") as Vector2
+	if not diagonal_inside_actions.is_zero_approx() or bool(player.get("_movement_input_armed")):
+		errors.append("Diagonal stick activity outside the circular deadzone armed movement: direction=%s armed=%s." % [str(diagonal_inside_actions), str(player.get("_movement_input_armed"))])
+		return false
+	_release_left_stick()
+	player.call("_movement_input_direction")
+	if not bool(player.get("_movement_input_armed")):
+		errors.append("Released diagonal stick did not re-arm movement.")
+		return false
+	print("FAN-1107 opposing-input neutral-rearm test passed.")
 	return true
 
 
@@ -167,6 +220,8 @@ func _send_dpad(button_index: int, pressed: bool) -> void:
 func _finish(player: Node, errors: Array[String]) -> void:
 	_release_left_stick()
 	_send_dpad(JOY_BUTTON_DPAD_RIGHT, false)
+	Input.action_release(&"move_up")
+	Input.action_release(&"move_down")
 	if player != null and is_instance_valid(player):
 		player.queue_free()
 	await process_frame

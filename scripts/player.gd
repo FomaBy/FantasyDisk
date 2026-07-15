@@ -30,6 +30,7 @@ const KNIGHT_SPRITE := preload("res://assets/sprites/characters/knight.png")
 const ROBOT_SPRITE := preload("res://assets/sprites/characters/robot.png")
 const DRUID_SPRITE := preload("res://assets/sprites/characters/druid.png")
 const PROGRESSION_DATA := preload("res://scripts/progression_data.gd")
+const PLAYER_MOVEMENT_INPUT := preload("res://scripts/player_movement_input.gd")
 const CUTOUT_RIG_SCRIPT := preload("res://scripts/cutout_rig_2d.gd")
 const PLAYER_SPRITE_GROUNDING := preload("res://scripts/player_sprite_grounding.gd")
 # Combat Feel Rework (этап A): per-class foot_y для legacy feet-origin fallback.
@@ -266,8 +267,7 @@ var _ultimate_active := false
 var _ultimate_tween: Tween = null
 var _debug_move_target_active := false
 var _debug_move_target := Vector2.ZERO
-var _movement_input_armed := false # FAN-1096: neutral-rearm blocks held UI direction.
-
+var _movement_input_armed := false # FAN-1096/FAN-1107: all-action neutral rearm blocks held UI direction.
 
 # SCRUM-709: единый источник дефолтных run_modifiers. Раньше тот же 22-ключевой
 # литерал дублировался дословно в инициализаторе var и в configure_character — при
@@ -3816,7 +3816,7 @@ func _gamepad_deadzone() -> float:
 func _movement_input_direction() -> Vector2:
 	var direction := Input.get_vector("move_left", "move_right", "move_up", "move_down", _gamepad_deadzone())
 	if not _movement_input_armed:
-		_movement_input_armed = direction.is_zero_approx()
+		_movement_input_armed = PLAYER_MOVEMENT_INPUT.all_actions_neutral(_gamepad_deadzone())
 		return Vector2.ZERO
 	return direction
 
