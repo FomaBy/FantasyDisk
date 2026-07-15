@@ -865,8 +865,9 @@ func _show_main_menu() -> void:
 		if game.run_autosave_has_run():
 			_show_continue_run_dialog()
 		else:
-			# FAN-1080: перед самым первым забегом — вступление истории (1 раз).
-			_maybe_show_lore_intro(_show_character_select)
+			# FAN-1099: вступление истории убрано из запуска игры — рассказ о мире
+			# остался только в Кодексе («Летопись» → «Вступление»).
+			_show_character_select()
 	)
 	action_box.add_child(start_button)
 
@@ -1294,8 +1295,9 @@ func _show_continue_run_dialog() -> void:
 	_apply_overhaul_2k_button_theme(new_game_button, "cr_btn", CR_BTN_NEWGAME_2K.size)
 	new_game_button.pressed.connect(func() -> void:
 		game.clear_run_autosave()
-		# FAN-1080: старые профили без флага lore_intro_seen тоже видят вступление.
-		_maybe_show_lore_intro(_show_character_select)
+		# FAN-1099: вступление истории убрано из запуска игры — рассказ о мире
+		# остался только в Кодексе («Летопись» → «Вступление»).
+		_show_character_select()
 	)
 	button_row.add_child(new_game_button)
 

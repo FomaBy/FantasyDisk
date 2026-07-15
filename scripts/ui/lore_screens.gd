@@ -13,9 +13,12 @@ const CODEX_IMAGE_FIT := preload("res://scripts/ui/codex_image_fit.gd")
 const GAME_SETTINGS := preload("res://scripts/game_settings.gd")
 
 
-# Вступление истории: 4 слайда перед первым забегом. Показ один раз
-# (settings.cfg: lore_intro_seen), пропуск Esc/B/кнопкой; пересмотр — запись
-# «Вступление» на вкладке «Летопись» Кодекса.
+# Вступление истории: 4 слайда, показ один раз (settings.cfg: lore_intro_seen),
+# пропуск Esc/B/кнопкой; пересмотр — запись «Вступление» на вкладке «Летопись»
+# Кодекса.
+# FAN-1099: экран больше НЕ показывается при запуске игры — рассказ о мире живёт
+# только в Кодексе. Показ-хелперы сохранены для пересмотра/тестов и на случай
+# возврата интро в поток запуска.
 static func maybe_show_intro(ui, next_action: Callable) -> void:
 	if ui.game.force_skip_lore_intro:
 		next_action.call()
