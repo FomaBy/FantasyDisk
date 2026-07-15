@@ -263,6 +263,64 @@ Metadata: story_points и estimation_model.
                 result = self._validate_source(self.CONTRACT_PREAMBLE + statement)
                 self.assertEqual(result.returncode != 0, should_reject, result.stderr)
 
+    def test_subject_predicate_boundary_matrix(self) -> None:
+        cases = (
+            (
+                "english_holistic_action_then_clarity_subject",
+                "Assess Complexity, Uncertainty and Effort holistically, while a separate "
+                "quality checklist rates document clarity from one to five.",
+                False,
+            ),
+            (
+                "russian_holistic_action_then_clarity_subject",
+                "Оценивайте сложность, неопределённость и трудозатраты целостно, а "
+                "отдельный чек-лист качества оценивает ясность документа от одного до пяти.",
+                False,
+            ),
+            (
+                "english_direct_cue_quality_checklist_with_clarity_subject",
+                "Rate Complexity, Uncertainty and Effort using a separate quality checklist "
+                "that rates document clarity from one to five.",
+                True,
+            ),
+            (
+                "russian_direct_cue_quality_checklist_with_clarity_subject",
+                "Оцените сложность, неопределённость и трудозатраты с помощью отдельного "
+                "чек-листа качества, который оценивает ясность документа от одного до пяти.",
+                True,
+            ),
+            (
+                "english_mixed_clarity_and_cue_subject",
+                "Assess Complexity, Uncertainty and Effort holistically, while a separate "
+                "quality checklist rates document clarity and Complexity, Uncertainty and "
+                "Effort from one to five.",
+                True,
+            ),
+            (
+                "russian_mixed_clarity_and_cue_subject",
+                "Оценивайте сложность, неопределённость и трудозатраты целостно, а "
+                "отдельный чек-лист качества оценивает ясность документа, сложность, "
+                "неопределённость и трудозатраты от одного до пяти.",
+                True,
+            ),
+            (
+                "english_attempts_to_score_cue",
+                "The reviewer attempts to rate Complexity, Uncertainty and Effort from one "
+                "to five.",
+                True,
+            ),
+            (
+                "russian_attempts_to_score_cue",
+                "Проверяющий делает попытку оценить сложность, неопределённость и "
+                "трудозатраты от одного до пяти.",
+                True,
+            ),
+        )
+        for name, statement, should_reject in cases:
+            with self.subTest(case=name):
+                result = self._validate_source(self.CONTRACT_PREAMBLE + statement)
+                self.assertEqual(result.returncode != 0, should_reject, result.stderr)
+
 
 if __name__ == "__main__":
     unittest.main()

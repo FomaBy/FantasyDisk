@@ -88,8 +88,8 @@ CUE_SCORING_ACTION_RE = re.compile(
     r"evaluated|evaluating|assess|assesses|assessed|assessing)\b|оцен\w*",
     re.IGNORECASE,
 )
-CUE_HOLISTIC_CONTEXT_RE = re.compile(
-    r"\bCUE\b\s+(?:is\s+)?(?:evaluat\w*|considered)\s+holistically",
+CUE_HOLISTIC_MARKER_RE = re.compile(
+    r"\bholistically\b|целостно|целиком",
     re.IGNORECASE,
 )
 OPERATIONAL_RANGE_SUFFIX_RE = re.compile(
@@ -146,11 +146,21 @@ def is_separate_checklist(source: str) -> bool:
     return bool(SEPARATE_CHECKLIST_RE.search(source))
 
 
+def scoring_context_after_holistic_cue_action(before_scale: str) -> str:
+    """Drop a completed holistic CUE predicate before a separate checklist."""
+    for marker in CUE_HOLISTIC_MARKER_RE.finditer(before_scale):
+        preceding_context = before_scale[: marker.start()]
+        if has_cue_reference(preceding_context) and CUE_SCORING_ACTION_RE.search(
+            preceding_context
+        ):
+            return before_scale[marker.end() :]
+    return before_scale
+
+
 def is_independent_non_cue_checklist_scale(sentence: str, scale: re.Match[str]) -> bool:
     """Allow a scale only when a separate checklist proves its non-CUE subject."""
     before_scale = sentence[: scale.start()]
-    holistic_context = CUE_HOLISTIC_CONTEXT_RE.search(before_scale)
-    direct_context = before_scale[holistic_context.end() :] if holistic_context else before_scale
+    direct_context = scoring_context_after_holistic_cue_action(before_scale)
     if has_cue_reference(direct_context) and CUE_SCORING_ACTION_RE.search(direct_context):
         return False
 
