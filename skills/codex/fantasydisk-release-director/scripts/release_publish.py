@@ -11,6 +11,7 @@ URL вебхука: release_webhook.cfg (корень проекта, [release] 
 Запуск: python3 release_publish.py --version X.Y.Z [--dry-run]
 """
 import argparse
+import configparser
 import json
 import os
 import subprocess

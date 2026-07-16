@@ -75,7 +75,7 @@ static func show_intro(ui, on_finish: Callable, mark_seen := true) -> void:
 	caption.name = "LoreIntroCaption"
 	caption.text = "ЛЕТОПИСЬ ДИСКА"
 	caption.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	caption.add_theme_font_size_override("font_size", ui._readable_font_size(SemanticTypography.ROLE_CAPTION, 16))
+	caption.add_theme_font_size_override("font_size", ui._readable_font_size(SemanticTypography.ROLE_SECTION, 16))
 	caption.add_theme_color_override("font_color", Color(0.78, 0.66, 0.44, 1.0))
 	column.add_child(caption)
 
@@ -92,14 +92,19 @@ static func show_intro(ui, on_finish: Callable, mark_seen := true) -> void:
 	body_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	body_label.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
 	body_label.size_flags_vertical = Control.SIZE_EXPAND_FILL
-	body_label.add_theme_font_size_override("font_size", ui._readable_font_size(SemanticTypography.ROLE_BODY, 21))
+	body_label.add_theme_font_size_override("font_size", SemanticTypography.resolve_fixed(
+		SemanticTypography.ROLE_BODY,
+		ui._readable_font_size(SemanticTypography.ROLE_BODY, 21),
+		SemanticTypography.role_min(SemanticTypography.ROLE_BODY),
+		SemanticTypography.role_max(SemanticTypography.ROLE_BODY)
+	))
 	body_label.add_theme_color_override("font_color", Color(0.90, 0.92, 0.97, 0.97))
 	column.add_child(body_label)
 
 	var progress := Label.new()
 	progress.name = "LoreIntroProgress"
 	progress.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	progress.add_theme_font_size_override("font_size", ui._readable_font_size(SemanticTypography.ROLE_CAPTION, 15))
+	progress.add_theme_font_size_override("font_size", ui._readable_font_size(SemanticTypography.ROLE_VALUE, 15))
 	progress.add_theme_color_override("font_color", Color(0.72, 0.70, 0.62, 0.92))
 	column.add_child(progress)
 
@@ -244,7 +249,12 @@ static func show_banner_lore_line(ui, lore_line: String, ctb_spec: Rect2, ctb_ha
 	lore_label.offset_right = ctb_half_width
 	lore_label.offset_top = ctb_spec.position.y + ctb_spec.size.y + 10.0
 	lore_label.offset_bottom = ctb_spec.position.y + ctb_spec.size.y + 66.0
-	lore_label.add_theme_font_size_override("font_size", ui._readable_font_size(SemanticTypography.ROLE_SECTION, 26 if big else 20))
+	lore_label.add_theme_font_size_override("font_size", SemanticTypography.resolve_fixed(
+		SemanticTypography.ROLE_SECTION,
+		ui._readable_font_size(SemanticTypography.ROLE_SECTION, 26 if big else 20),
+		SemanticTypography.role_min(SemanticTypography.ROLE_SECTION),
+		SemanticTypography.role_max(SemanticTypography.ROLE_SECTION)
+	))
 	lore_label.add_theme_color_override("font_color", Color(0.93, 0.88, 0.74, 0.98))
 	lore_label.add_theme_color_override("font_outline_color", Color(0.06, 0.03, 0.02, 1.0))
 	lore_label.add_theme_constant_override("outline_size", 5)

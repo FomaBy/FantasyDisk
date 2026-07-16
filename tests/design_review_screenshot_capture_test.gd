@@ -68,8 +68,16 @@ func _capture_screen(viewport_size: Vector2i, screen_id: String, absolute_out: S
 	await _open_screen(main, screen_id)
 	for _i in range(45):
 		await process_frame
-	var image := viewport.get_texture().get_image()
 	var path := "%s/%s_%dx%d.png" % [absolute_out, screen_id, viewport_size.x, viewport_size.y]
+	# The CI gate uses Godot's dummy headless renderer, which intentionally has
+	# no readable SubViewport texture. Keep the complete screen-opening matrix,
+	# but record the unavailable raster instead of treating the renderer contract
+	# as a product-layout failure.
+	if DisplayServer.get_name() == "headless":
+		viewport.queue_free()
+		await process_frame
+		return "%s (unavailable from headless renderer)" % path
+	var image := viewport.get_texture().get_image()
 	if image == null:
 		_missing_captures.append("%s %s: viewport image unavailable" % [screen_id, str(viewport_size)])
 		viewport.queue_free()

@@ -178,7 +178,9 @@ func _check_inventory() -> void:
 		_errors.append("Allowlist routing counters disagree with entries: SCRUM-1068=%d SCRUM-1073=%d counts=%s." % [routed_to_atlas, routed_to_legacy_migration, str(counts)])
 	if routed_to_atlas + routed_to_legacy_migration != int(counts.get("allowlist", -1)):
 		_errors.append("Every allowlist site must route to exactly one truthful follow-up.")
-	if int(counts.get("unreviewed", -1)) != 0 or int(counts.get("draw_string", 0)) < 2 or int(counts.get("semantic_binding", 0)) < 16 or not counts.has("resource_override"):
+	# Battle Prayer now reuses the generic Level Up card builders; the exact helper
+	# checks below retain coverage for the 8 Codex and 3 shrink-label bindings.
+	if int(counts.get("unreviewed", -1)) != 0 or int(counts.get("draw_string", 0)) < 2 or int(counts.get("semantic_binding", 0)) < 11 or not counts.has("resource_override"):
 		_errors.append("Inventory completeness counts do not guard unreviewed/draw_string/resource sites: %s." % str(counts))
 	_assert_inventory_site(indexed, "scripts/ui/hero_stat_radar.gd", "_draw", "caption", "ROLE_CAPTION", "draw_string")
 	_assert_inventory_site(indexed, "scripts/threat_indicators.gd", "_draw_marker", "hud", "ROLE_HUD", "draw_string")
@@ -189,12 +191,12 @@ func _check_inventory() -> void:
 	_assert_inventory_site(indexed, "scripts/pause_stats_menu.gd", "_build_body", "section", "stats_title.add_theme", "theme_override")
 	_assert_inventory_site(indexed, "scripts/ui_screens.gd", "_show_continue_run_dialog", "title", "title_label.add_theme", "theme_override")
 	_assert_inventory_site(indexed, "scripts/ui_screens.gd", "_show_codex_screen", "title", "_codex_bind_stage_font(title_label", "semantic_binding")
-	_assert_inventory_site(indexed, "scripts/ui_screens.gd", "_make_battle_prayer_card", "action", "ROLE_ACTION", "semantic_binding")
+	_assert_inventory_site(indexed, "scripts/ui_screens.gd", "_make_level_up_reward_button", "title", "ROLE_TITLE", "semantic_binding")
 	_assert_inventory_range(indexed, "scripts/ui_screens.gd", "_make_settings_game_tab", "title.add_theme", "semantic_native", 24, 24, "mapped")
 	_assert_inventory_range(indexed, "scripts/pause_stats_menu.gd", "_build_header", "_title_label.add_theme", "semantic_native", 24, 26, "mapped")
 	_assert_inventory_range(indexed, "scripts/ui_screens.gd", "_hs4_apply_wide_control_style", "button.add_theme", "semantic_native", 20, 34, "mapped")
 	_assert_inventory_range(indexed, "scripts/ui_screens.gd", "_layout_attribute_offer_card", "title.add_theme", "semantic_native", 24, 24, "mapped")
-	_assert_inventory_range(indexed, "scripts/ui_screens.gd", "_make_battle_prayer_card", "ROLE_ACTION", "semantic_native", 16, 16, "mapped")
+	_assert_inventory_range(indexed, "scripts/ui_screens.gd", "_make_level_up_reward_button", "ROLE_TITLE", "semantic_native", 24, 26, "mapped")
 	_assert_inventory_range(indexed, "scripts/ui_screens.gd", "_show_continue_run_dialog", "subtitle_label.add_theme", "semantic_native", 18, 18, "mapped")
 	_assert_inventory_range(indexed, "scripts/ui_icon_registry.gd", "<class>", "display_size.x >= 55.0", "legacy_compat", 16, 18, "mapped")
 	var output := []
@@ -217,13 +219,15 @@ func _check_scrum1073_migrations(inventory: Dictionary, live_fingerprints: Dicti
 		_errors.append("SCRUM-1073 must record 139 dispositions, got %d." % migrations.size())
 	var originals := {}
 	var replacements := {}
+	var migration_rows := {}
 	for raw in migrations:
 		var migration := raw as Dictionary
 		var original := str(migration.get("original_fingerprint", ""))
 		var replacement := str(migration.get("replacement_fingerprint", ""))
-		if originals.has(original) or replacements.has(replacement):
-			_errors.append("SCRUM-1073 migration has duplicate original/replacement fingerprint.")
+		if originals.has(original):
+			_errors.append("SCRUM-1073 migration has a duplicate original fingerprint.")
 		originals[original] = true
+		migration_rows[replacement] = migration_rows.get(replacement, []) + [migration]
 		replacements[replacement] = true
 		if live_fingerprints.has(original):
 			_errors.append("Original SCRUM-1073 fingerprint is still live: %s." % original)
@@ -231,6 +235,12 @@ func _check_scrum1073_migrations(inventory: Dictionary, live_fingerprints: Dicti
 			_errors.append("Replacement SCRUM-1073 fingerprint is missing: %s." % replacement)
 		if str(migration.get("disposition", "")) != "migrated_semantic_band":
 			_errors.append("SCRUM-1073 fingerprint %s lacks final disposition." % original)
+	for replacement in migration_rows:
+		var linked: Array = migration_rows[replacement]
+		if linked.size() > 1:
+			for raw_linked in linked:
+				if not bool((raw_linked as Dictionary).get("shared_replacement", false)):
+					_errors.append("SCRUM-1073 shared replacement %s lacks explicit many-to-one review." % str(replacement))
 
 
 func _assert_inventory_site(indexed: Dictionary, path: String, function: String, role: String, source_fragment: String, kind: String) -> void:

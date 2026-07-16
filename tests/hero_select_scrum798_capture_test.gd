@@ -93,7 +93,7 @@ func _capture_layout(viewport_size: Vector2i, hero_id: String, dump: PackedStrin
 		if stat_button == null or stat_fill == null or not stat_button.tooltip_text.contains(" — ") or stat_button.tooltip_text.contains("Формула:"):
 			_fail("Expected concise stat line bar tooltip for %s at %s." % [stat_id, context])
 			return
-	for relevance in ["primary", "secondary", "optional"]:
+	for relevance in ["primary", "secondary", "weak"]:
 		var label := main.find_child("HS4BuildGuidance_%s" % relevance, true, false) as Label
 		if label == null or label.text.strip_edges() == "":
 			_fail("Expected build guidance %s at %s." % [relevance, context])
@@ -108,7 +108,7 @@ func _capture_layout(viewport_size: Vector2i, hero_id: String, dump: PackedStrin
 	dump.append("- `HS4ChooseButton`: `%s`" % str(choose_rect))
 	dump.append("- `HS4Carousel`: `%s`" % str(carousel_rect))
 	dump.append("- `HeroThumbnailSample`: `%s`, visible slots `%d`" % [str(first_slot.get_global_rect()), slots.size()])
-	for relevance in ["primary", "secondary", "optional"]:
+	for relevance in ["primary", "secondary", "weak"]:
 		var label := main.find_child("HS4BuildGuidance_%s" % relevance, true, false) as Label
 		dump.append("- `%s`: `%s`" % [label.name, label.text])
 	dump.append("")

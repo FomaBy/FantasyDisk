@@ -2060,11 +2060,14 @@ func _build_character_select_v4() -> void:
 		stat_name.text = str(game.PROGRESSION_DATA.STAT_NAMES.get(sid, sid))
 		stat_name.text_overrun_behavior = TextServer.OVERRUN_TRIM_ELLIPSIS
 		stat_name.visible = stat_rows_show_text
+		# A compact 2×4 cell has a 90px name lane. This is a terse stat caption,
+		# not a form field: use the documented 12px caption floor so full Russian
+		# names remain visible without abbreviating or stealing the bar/value lanes.
 		stat_name.add_theme_font_size_override("font_size", SemanticTypography.resolve_fixed(
-			SemanticTypography.ROLE_FIELD,
+			SemanticTypography.ROLE_CAPTION,
 			stat_text_font_size,
-			SemanticTypography.role_min(SemanticTypography.ROLE_FIELD),
-			SemanticTypography.role_max(SemanticTypography.ROLE_FIELD)
+			SemanticTypography.role_min(SemanticTypography.ROLE_CAPTION),
+			SemanticTypography.role_max(SemanticTypography.ROLE_CAPTION)
 		))
 		stat_name.add_theme_color_override("font_color", _hs4_stat_text_color(sid))
 		stat_row.add_child(stat_name)

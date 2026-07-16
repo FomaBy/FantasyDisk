@@ -1122,9 +1122,10 @@ SCRUM-1091 добавляет только presentation contract, не нову�
   target caps. SCRUM-859 split stationary deploy/summon loops into stage pulse,
   support totem, turret DPS, repair chain, and mine grid. SCRUM-860 added
   Assassin-only capped kill-growth without adding a new vampirism/sustain loop.
-- SCRUM-469 закрыл SCRUM-453 optimum-выбросы: актуальный `Lvl20 optimum`
-  `relative_score` держится в диапазоне `0.938..1.097`, Base lvl1 — в
-  `0.982..1.010`, Lvl20 random avg не имеет HIGH/LOW-флагов. Остаточные
+- FAN-1128 повторно откалибровал SCRUM-469 после обновления live-kit'ов, не
+  меняя Base lvl1, budget profile или оружейные механики: актуальный `Lvl20
+  optimum` `relative_score` держится в диапазоне `0.912..1.067`, Base lvl1 —
+  в `0.988..1.005`, а Lvl20 random avg не имеет HIGH/LOW-флагов. Остаточные
   различия остаются предметом ручного feel/playtest, а не блокером формульного
   баланса.
 - Performance/code review считает текущие числа пригодными для demo, но баланс должен продолжать уточняться после игровых прогонов.

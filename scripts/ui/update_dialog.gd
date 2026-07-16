@@ -102,7 +102,12 @@ func _build_dialog() -> void:
 	versions.name = "GameUpdateVersions"
 	versions.text = _versions_text()
 	versions.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	versions.add_theme_font_size_override("font_size", 20)
+	versions.add_theme_font_size_override("font_size", SemanticTypography.resolve_fixed(
+		SemanticTypography.ROLE_VALUE,
+		20,
+		SemanticTypography.role_min(SemanticTypography.ROLE_VALUE),
+		SemanticTypography.role_max(SemanticTypography.ROLE_VALUE)
+	))
 	versions.add_theme_color_override("font_color", Color(0.78, 0.82, 0.90, 1.0))
 	versions.visible = not versions.text.is_empty()
 	box.add_child(versions)
@@ -115,7 +120,12 @@ func _build_dialog() -> void:
 	body.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	body.custom_minimum_size = Vector2(0.0, 112.0)
 	body.size_flags_vertical = Control.SIZE_EXPAND_FILL
-	body.add_theme_font_size_override("font_size", 20)
+	body.add_theme_font_size_override("font_size", SemanticTypography.resolve_fixed(
+		SemanticTypography.ROLE_BODY,
+		20,
+		SemanticTypography.role_min(SemanticTypography.ROLE_BODY),
+		SemanticTypography.role_max(SemanticTypography.ROLE_BODY)
+	))
 	body.add_theme_color_override("font_color", Color(0.90, 0.88, 0.78, 1.0))
 	box.add_child(body)
 
@@ -124,7 +134,12 @@ func _build_dialog() -> void:
 	status.text = detail_message
 	status.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	status.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
-	status.add_theme_font_size_override("font_size", 18)
+	status.add_theme_font_size_override("font_size", SemanticTypography.resolve_fixed(
+		SemanticTypography.ROLE_CAPTION,
+		18,
+		SemanticTypography.role_min(SemanticTypography.ROLE_CAPTION),
+		SemanticTypography.role_max(SemanticTypography.ROLE_CAPTION)
+	))
 	status.add_theme_color_override("font_color", _status_color())
 	status.visible = not status.text.is_empty()
 	box.add_child(status)

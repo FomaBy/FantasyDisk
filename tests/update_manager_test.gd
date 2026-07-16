@@ -64,9 +64,9 @@ func _check_manifest_contract() -> bool:
 		return _fail("Valid manifest rejected: %s" % str(validation))
 	var macos: Dictionary = UPDATE_MANAGER.asset_for_platform(manifest, "macOS")
 	var windows: Dictionary = UPDATE_MANAGER.asset_for_platform(manifest, "Windows")
-	if not bool(macos.get("ok", false)) or str((macos["asset"] as Dictionary).get("name", "")) != "FantasyDisk-0.2.3-macos.dmg":
+	if not bool(macos.get("ok", false)) or str((macos["asset"] as Dictionary).get("name", "")) != "FantasyDisk-0.2.4-macos.dmg":
 		return _fail("macOS asset selection failed.")
-	if not bool(windows.get("ok", false)) or str((windows["asset"] as Dictionary).get("name", "")) != "FantasyDisk-0.2.3-windows-setup.exe":
+	if not bool(windows.get("ok", false)) or str((windows["asset"] as Dictionary).get("name", "")) != "FantasyDisk-0.2.4-windows-setup.exe":
 		return _fail("Windows asset selection failed.")
 	if bool(UPDATE_MANAGER.asset_for_platform(manifest, "Linux").get("ok", true)):
 		return _fail("Unsupported platform was accepted.")
@@ -84,7 +84,7 @@ func _check_manifest_contract() -> bool:
 	if bool(UPDATE_MANAGER.validate_manifest(bad_version).get("ok", true)):
 		return _fail("Non-strict SemVer was accepted.")
 	var future_minimum := manifest.duplicate(true)
-	future_minimum["minimum_supported_version"] = "0.2.4"
+	future_minimum["minimum_supported_version"] = "0.2.5"
 	if bool(UPDATE_MANAGER.validate_manifest(future_minimum).get("ok", true)):
 		return _fail("A minimum version newer than the release was accepted.")
 	return true
@@ -93,19 +93,19 @@ func _check_manifest_contract() -> bool:
 func _valid_manifest() -> Dictionary:
 	return {
 		"schema_version": 1,
-		"version": "0.2.3",
+		"version": "0.2.4",
 		"minimum_supported_version": "0.2.2",
-		"release_url": "https://github.com/FomaBy/FantasyDisk/releases/tag/v0.2.3",
+		"release_url": "https://github.com/FomaBy/FantasyDisk/releases/tag/v0.2.4",
 		"assets": {
 			"macos": {
-				"name": "FantasyDisk-0.2.3-macos.dmg",
-				"url": "https://github.com/FomaBy/FantasyDisk/releases/download/v0.2.3/FantasyDisk-0.2.3-macos.dmg",
+				"name": "FantasyDisk-0.2.4-macos.dmg",
+				"url": "https://github.com/FomaBy/FantasyDisk/releases/download/v0.2.4/FantasyDisk-0.2.4-macos.dmg",
 				"sha256": HASH_A,
 				"size": 123456,
 			},
 			"windows": {
-				"name": "FantasyDisk-0.2.3-windows-setup.exe",
-				"url": "https://github.com/FomaBy/FantasyDisk/releases/download/v0.2.3/FantasyDisk-0.2.3-windows-setup.exe",
+				"name": "FantasyDisk-0.2.4-windows-setup.exe",
+				"url": "https://github.com/FomaBy/FantasyDisk/releases/download/v0.2.4/FantasyDisk-0.2.4-windows-setup.exe",
 				"sha256": HASH_B,
 				"size": 654321,
 			},
@@ -129,7 +129,7 @@ func _check_manifest_response_state() -> bool:
 		manager.free()
 		return _fail("New manifest did not enter available state.")
 	var captured_result := captured["result"] as Dictionary
-	if str(captured_result.get("latest_version", "")) != "0.2.3" or bool(captured_result.get("manual", true)):
+	if str(captured_result.get("latest_version", "")) != "0.2.4" or bool(captured_result.get("manual", true)):
 		manager.free()
 		return _fail("Available response signal lost version/manual state: %s" % str(captured))
 	manager.free()

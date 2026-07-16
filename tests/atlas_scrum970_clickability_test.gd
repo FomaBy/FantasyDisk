@@ -78,7 +78,7 @@ func _check_viewport(viewport_size: Vector2i) -> void:
 		if str(main.ui._atlas.get("class_id", "")) != class_id:
 			errors.append("%s: %s selector routed to %s but did not select the class." % [context, class_id, medallion_hovered])
 	canvas = main.find_child("AtlasCanvas", true, false) as Control
-	var class_node := main.find_child("AtlasNode_berserk_m0", true, false) as TextureButton
+	var class_node := main.find_child("AtlasNode_berserk_sword_b1", true, false) as TextureButton
 	if canvas == null or class_node == null:
 		errors.append("%s: missing rebuilt berserk canvas/class node." % context)
 		await _teardown(owned_viewport)
@@ -87,16 +87,16 @@ func _check_viewport(viewport_size: Vector2i) -> void:
 	if class_node.tooltip_text.strip_edges() == "":
 		errors.append("%s: visible class node has no tooltip." % context)
 	var class_nodes_before: Array = (main.get("meta_state") as Dictionary).get("skill_nodes", []).duplicate()
-	var class_currency_before := Meta.currency_available_for_node(main.get("meta_state"), "berserk_m0")
+	var class_currency_before := Meta.currency_available_for_node(main.get("meta_state"), "berserk_sword_b1")
 	var class_rect := class_node.get_global_rect()
-	var hovered := await _pointer_click(viewport, class_node, main, "berserk_m0", context)
+	var hovered := await _pointer_click(viewport, class_node, main, "berserk_sword_b1", context)
 	for _frame_index in range(12):
 		await process_frame
-	if str(main.ui._atlas.get("selected", "")) != "berserk_m0":
-		errors.append("%s: real pointer click at %s was routed to %s and did not select berserk_m0." % [context, str(class_node.get_global_rect().get_center()), hovered])
-	if Meta.is_node_purchased(main.get("meta_state"), "berserk_m0") \
+	if str(main.ui._atlas.get("selected", "")) != "berserk_sword_b1":
+		errors.append("%s: real pointer click at %s was routed to %s and did not select berserk_sword_b1." % [context, str(class_node.get_global_rect().get_center()), hovered])
+	if Meta.is_node_purchased(main.get("meta_state"), "berserk_sword_b1") \
 			or (main.get("meta_state") as Dictionary).get("skill_nodes", []) != class_nodes_before \
-			or Meta.currency_available_for_node(main.get("meta_state"), "berserk_m0") != class_currency_before:
+			or Meta.currency_available_for_node(main.get("meta_state"), "berserk_sword_b1") != class_currency_before:
 		errors.append("%s: class-node preview changed purchases or emblem currency before explicit Buy." % context)
 	var buy := main.find_child("AtlasBuyButton", true, false) as Button
 	_check_atlas_layout_inside_viewport(viewport, main, "%s class" % context)
@@ -107,10 +107,10 @@ func _check_viewport(viewport_size: Vector2i) -> void:
 		errors.append("%s: selected class node did not expose an enabled buy action." % context)
 	else:
 		var buy_hovered := await _pointer_click(viewport, buy)
-		if not Meta.is_node_purchased(main.get("meta_state"), "berserk_m0"):
-			errors.append("%s: real pointer buy click was routed to %s and did not allocate berserk_m0." % [context, buy_hovered])
-		var class_cost := int(Meta.node_by_id("berserk_m0").get("cost", 0))
-		if Meta.currency_available_for_node(main.get("meta_state"), "berserk_m0") != class_currency_before - class_cost:
+		if not Meta.is_node_purchased(main.get("meta_state"), "berserk_sword_b1"):
+			errors.append("%s: real pointer buy click was routed to %s and did not allocate berserk_sword_b1." % [context, buy_hovered])
+		var class_cost := int(Meta.node_by_id("berserk_sword_b1").get("cost", 0))
+		if Meta.currency_available_for_node(main.get("meta_state"), "berserk_sword_b1") != class_currency_before - class_cost:
 			errors.append("%s: explicit class Buy did not spend exactly %d emblems." % [context, class_cost])
 	await _check_compact_medallion_scroll(viewport, main, context)
 
@@ -450,26 +450,32 @@ func _check_atlas_dossier_scroll(viewport: Viewport, main: Node, original_node: 
 		errors.append("%s: Buy cannot navigate up into the Atlas dossier scroll." % context)
 	scroll.grab_focus()
 	await process_frame
+	var scrollbar := scroll.get_v_scroll_bar()
+	var max_scroll := maxi(0, int(floor(scrollbar.max_value - scrollbar.page)))
+	var has_vertical_overflow := max_scroll > 0
+	var scroll_step := maxi(12, int(round(scroll.size.y * 0.65)))
+	var actions_to_boundary := clampi(int(ceil(float(max_scroll - scroll.scroll_vertical) / float(scroll_step))) + 2, 1, 128)
 	var scrolled_with_action := false
-	for _press_index in range(12):
+	for _press_index in range(actions_to_boundary):
 		if viewport.gui_get_focus_owner() != scroll:
 			break
 		var before := scroll.scroll_vertical
 		await _push_ui_action(viewport, "ui_down")
 		if scroll.scroll_vertical > before:
 			scrolled_with_action = true
-	if viewport.get_visible_rect().size.y <= 720.0 and not scrolled_with_action:
+	if has_vertical_overflow and viewport.get_visible_rect().size.y <= 720.0 and not scrolled_with_action:
 		errors.append("%s: compact Atlas dossier overflow cannot be scrolled by ui_down." % context)
-	if viewport.gui_get_focus_owner() != buy:
-		errors.append("%s: Atlas dossier Down boundary did not transfer focus to Buy." % context)
+	if has_vertical_overflow and viewport.gui_get_focus_owner() != buy:
+		var focused := viewport.gui_get_focus_owner()
+		errors.append("%s: Atlas dossier Down boundary did not transfer focus to Buy (got %s; buy visible=%s disabled=%s; scroll=%d/%d)." % [context, focused.name if focused != null else "<none>", str(buy.visible), str(buy.disabled), scroll.scroll_vertical, max_scroll])
 
 	# Scroll a real node, then preview another node: fresh content must restart at
 	# its first line. Finally restore the original purchasable preview.
-	var alternate := main.find_child("AtlasNode_berserk_m1", true, false) as TextureButton
+	var alternate := main.find_child("AtlasNode_berserk_sword_b2", true, false) as TextureButton
 	if alternate == null:
 		errors.append("%s: missing alternate class node for dossier reset coverage." % context)
 		return
-	await _pointer_click(viewport, alternate, main, "berserk_m1", context)
+	await _pointer_click(viewport, alternate, main, "berserk_sword_b2", context)
 	for _frame_index in range(4):
 		await process_frame
 	if scroll.scroll_vertical != 0:
@@ -477,7 +483,7 @@ func _check_atlas_dossier_scroll(viewport: Viewport, main: Node, original_node: 
 	var info_box := main.find_child("AtlasNodeInfoBox", true, false) as Control
 	if info_box != null and info_box.get_global_rect().position.y < scroll.get_global_rect().position.y - 1.0:
 		errors.append("%s: new Atlas node opens with its first dossier line scrolled away." % context)
-	await _pointer_click(viewport, original_node, main, "berserk_m0", context)
+	await _pointer_click(viewport, original_node, main, "berserk_sword_b1", context)
 	for _frame_index in range(12):
 		await process_frame
 

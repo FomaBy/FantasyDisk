@@ -19,7 +19,7 @@ const UIScreens := preload("res://scripts/ui_screens.gd")
 # Подставной PROGRESSION_DATA: reward_pool отдаёт массив фиксированного размера.
 class StubProgression extends RefCounted:
 	var pool_size: int = 0
-	func reward_pool(_character_id: String) -> Array:
+	func reward_pool(_character_id := "", _ascension_level := 0, _cross_class_ids: Array = []) -> Array:
 		var pool: Array = []
 		for i in range(pool_size):
 			pool.append({"kind": "stat", "title": "Stub %d" % i, "weight": 1.0, "stats": {"strength": 1.0}})
@@ -32,6 +32,10 @@ class StubGame extends RefCounted:
 	var selected_character_id: String = "berserk"
 	var rng := RandomNumberGenerator.new()
 	var PROGRESSION_DATA := StubProgression.new()
+	var current_player = null
+	var run_player_snapshot := {"run_modifiers": {}}
+	func ascension_level_for(_character_id: String) -> int:
+		return 0
 
 
 func _initialize() -> void:
