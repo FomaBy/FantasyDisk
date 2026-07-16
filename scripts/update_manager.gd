@@ -381,16 +381,22 @@ static func asset_for_platform(manifest: Dictionary, platform_name: String) -> D
 
 
 static func _release_version_parts(version: String) -> PackedInt32Array:
-	var raw_parts := version.strip_edges().split(".")
+	var raw_parts := version.split(".")
 	if raw_parts.size() != 3 and raw_parts.size() != 4:
 		return PackedInt32Array()
 	var parsed := PackedInt32Array()
 	for raw_part in raw_parts:
 		var part := str(raw_part)
-		if part == "" or not part.is_valid_int() or int(part) < 0:
+		if part == "":
 			return PackedInt32Array()
 		if part.length() > 1 and part.begins_with("0"):
 			return PackedInt32Array()
+		# Keep the updater aligned with the release tooling: each component is
+		# canonical ASCII digits only. is_valid_int() also accepts forms such as
+		# "+1", while trimming would accept external whitespace.
+		for character in part:
+			if not "0123456789".contains(character):
+				return PackedInt32Array()
 		parsed.append(int(part))
 	if parsed.size() == 3:
 		parsed.append(0)

@@ -3,6 +3,7 @@ extends SceneTree
 const UPDATE_MANAGER := preload("res://scripts/update_manager.gd")
 const HASH_A := "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
 const HASH_B := "0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef"
+const VERSION_CONTRACT_PATH := "res://tests/release_version_contract.json"
 
 
 func _initialize() -> void:
@@ -87,6 +88,14 @@ func _check_manifest_contract() -> bool:
 	bad_version["version"] = "0.2.3-beta"
 	if bool(UPDATE_MANAGER.validate_manifest(bad_version).get("ok", true)):
 		return _fail("Malformed release version was accepted.")
+	var invalid_versions := _version_contract_values("invalid")
+	if invalid_versions.is_empty():
+		return _fail("Shared release-version invalid matrix is missing.")
+	for invalid_version in invalid_versions:
+		var invalid_manifest := manifest.duplicate(true)
+		invalid_manifest["version"] = invalid_version
+		if bool(UPDATE_MANAGER.validate_manifest(invalid_manifest).get("ok", true)):
+			return _fail("Non-canonical release version was accepted: %s" % invalid_version)
 	var hotfix := manifest.duplicate(true)
 	hotfix["version"] = "0.2.3.1"
 	hotfix["release_url"] = "https://github.com/FomaBy/FantasyDisk-Releases/releases/tag/v0.2.3.1"
@@ -107,6 +116,21 @@ func _check_manifest_contract() -> bool:
 	if bool(UPDATE_MANAGER.validate_manifest(future_minimum).get("ok", true)):
 		return _fail("A minimum version newer than the release was accepted.")
 	return true
+
+
+func _version_contract_values(key: String) -> PackedStringArray:
+	var raw: Variant = JSON.parse_string(FileAccess.get_file_as_string(VERSION_CONTRACT_PATH))
+	if typeof(raw) != TYPE_DICTIONARY:
+		return PackedStringArray()
+	var values: Variant = (raw as Dictionary).get(key, null)
+	if typeof(values) != TYPE_ARRAY:
+		return PackedStringArray()
+	var result := PackedStringArray()
+	for value in values as Array:
+		if typeof(value) != TYPE_STRING:
+			return PackedStringArray()
+		result.append(value)
+	return result
 
 
 func _valid_manifest() -> Dictionary:

@@ -28,7 +28,14 @@ def _load(name: str):
 build_update_manifest = _load("build_update_manifest")
 github_release_publish = _load("github_release_publish")
 github_release_verify = _load("github_release_verify")
+local_release = _load("local_release")
 telegram_publish = _load("telegram_publish")
+
+VERSION_CONTRACT = json.loads(
+    (ROOT / "tests" / "release_version_contract.json").read_text(encoding="utf-8")
+)
+SUPPORTED_RELEASE_VERSIONS = tuple(VERSION_CONTRACT["valid"])
+INVALID_RELEASE_VERSIONS = tuple(VERSION_CONTRACT["invalid"])
 
 
 class UpdateReleasePipelineTests(unittest.TestCase):
@@ -119,14 +126,13 @@ class UpdateReleasePipelineTests(unittest.TestCase):
 
     def test_rejects_non_strict_release_version(self) -> None:
         with tempfile.TemporaryDirectory() as temporary:
-            with self.assertRaises(build_update_manifest.ManifestError):
-                build_update_manifest.build_manifest(
-                    version="0.2.03", release_dir=Path(temporary)
-                )
-            with self.assertRaises(build_update_manifest.ManifestError):
-                build_update_manifest.build_manifest(
-                    version="0.2.3.1.1", release_dir=Path(temporary)
-                )
+            for version in INVALID_RELEASE_VERSIONS:
+                with self.subTest(version=version), self.assertRaises(
+                    build_update_manifest.ManifestError
+                ):
+                    build_update_manifest.build_manifest(
+                        version=version, release_dir=Path(temporary)
+                    )
 
     def test_rejects_minimum_newer_than_release(self) -> None:
         with tempfile.TemporaryDirectory() as temporary:
@@ -142,13 +148,14 @@ class UpdateReleasePipelineTests(unittest.TestCase):
             build_update_manifest,
             github_release_publish,
             github_release_verify,
+            local_release,
             telegram_publish,
         )
-        for version in ("0.2.4", "0.2.3.1"):
+        for version in SUPPORTED_RELEASE_VERSIONS:
             for gate in gates:
                 with self.subTest(version=version, gate=gate.__name__):
                     self.assertTrue(gate.RELEASE_VERSION_RE.fullmatch(version))
-        for invalid in ("0.2.03", "0.2.3.1.1", "0.2.3-beta"):
+        for invalid in INVALID_RELEASE_VERSIONS:
             for gate in gates:
                 with self.subTest(version=invalid, gate=gate.__name__):
                     self.assertIsNone(gate.RELEASE_VERSION_RE.fullmatch(invalid))
