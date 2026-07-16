@@ -1,10 +1,10 @@
 # UI Mockup Spec — Updater Neutral Focus
 
-Status: ready_for_integration
+Status: implemented
 
 Role owner: Back-end
 
-Task: Multica `FAN-1124`
+Task: Multica `FAN-1124`; geometry regression follow-up `FAN-1131`
 
 Base resolution: 1920x1080
 
@@ -23,6 +23,11 @@ Runtime focused captures:
 - `build/qa/FAN-1124/captures/update_prompt_1280x720.png` — SHA-256 `a0f4292ca4ad18be31b355c8a1ca7929370dddaf55e52913effb5c746a86246c`;
 - `build/qa/FAN-1124/captures/update_prompt_1920x1080.png` — SHA-256 `461fb10515cdc7cde268ba1d0fe97ac3724112ed284c52497b91303b110ea886`;
 - `build/qa/FAN-1124/captures/update_prompt_2560x1440.png` — SHA-256 `1cdaf5dfbb8e4e951e1e843a32e1568a10659898bf1dcc1f56802d7668220d7f`.
+
+Canonical geometry evidence: macOS unsigned-disclosure probe from Multica
+`FAN-1130` (`FAN-1130_interaction_geometry_probe.txt`). The values below are
+the authored-pixel form of live `get_global_rect()` measurements; the regression
+allows at most 1 px for container rounding.
 
 ## Source Request
 
@@ -44,9 +49,9 @@ per-size source provenance remains recorded in the shared button metadata.
 | `GameUpdateVersions` | Label lane | current/latest versions | `434,316,1052,27` | fill width | content-driven | 521 | visible/hidden | `GameUpdatePanel` |
 | `GameUpdateBody` | Label lane | download and trust guidance | `434,359,1052,338` | expand/fill | `0x112` | 521 | wrapped | `GameUpdatePanel` |
 | `GameUpdateStatus` | Label lane | result/status copy | `434,713,1052,25` | fill width | content-driven | 521 | visible/hidden | `GameUpdatePanel` |
-| `GameUpdateButtons` | HBoxContainer | action row | `434,754,1052,72` | fill width, centered | `0x72` | 521 | static | `GameUpdatePanel` |
-| `GameUpdatePrimaryButton` | Button | `Скачать и установить` | `621,754,420,72` | centered row | `420x72` | 522 | normal/hover/pressed/focus/disabled | primary button content rect |
-| `GameUpdateCloseButton` | Button | `Позже` | `1059,754,240,72` | centered row | `240x72` | 522 | normal/hover/pressed/focus/disabled | close button content rect |
+| `GameUpdateButtons` | HBoxContainer | action row | `434,760,1052,72` | fill width, centered | `0x72` | 521 | static | `GameUpdatePanel` |
+| `GameUpdatePrimaryButton` | Button | `Скачать и установить` | `621,760,420,72` | centered row | `420x72` | 522 | normal/hover/pressed/focus/disabled | primary button content rect |
+| `GameUpdateCloseButton` | Button | `Позже` | `1059,760,240,72` | centered row | `240x72` | 522 | normal/hover/pressed/focus/disabled | close button content rect |
 
 The unaffected label lanes are enclosing layout lanes from the existing VBox
 contract. The implementation must not change them; this task changes only the
@@ -71,9 +76,19 @@ Runtime labels remain inside source content rectangles `54,14,312,44` and
 
 ## Responsive Rules
 
-- 1280x720: panel `80,50,1120,620`; primary `301,574,420,72`; close `739,574,240,72`.
-- 1920x1080: panel `400,230,1120,620`; primary `621,754,420,72`; close `1059,754,240,72`.
-- 2560x1440: panel `720,410,1120,620`; primary `941,934,420,72`; close `1379,934,240,72`.
+- macOS unsigned-disclosure case (canonical `get_global_rect()` source):
+  - 1280x720: panel `80,50,1120,620`; primary `301,580,420,72`; close `739,580,240,72`.
+  - 1920x1080: panel `400,230,1120,620`; primary `621,760,420,72`; close `1059,760,240,72`.
+  - 2560x1440: panel `720,410,1120,620`; primary `941,934,420,72`; close `1379,934,240,72`.
+- The macOS disclosure adds wrapped trust guidance, so the action row is 6 px
+  lower at 1280x720 and 1920x1080. The non-macOS dialog does not render that
+  notice and is intentionally not the exact-rect source for this specification.
+- The regression checks live panel and button rects in the macOS
+  unsigned-disclosure case with a per-edge tolerance of at most 1 px.
+- Exact action-row rects apply to a dialog freshly opened at each target. During
+  a live resize, the panel must resolve to its target rect while the existing
+  action row remains contained, non-overlapping and keeps its 18 px gap; its
+  wrapped-text vertical reflow is not an authored-coordinate source.
 - The panel remains at its current maximum size for all three targets. The
   centered action row keeps an 18px gap and exact button geometry.
 
@@ -105,10 +120,17 @@ Runtime labels remain inside source content rectangles `54,14,312,44` and
 - [x] Texture/content margins and forbidden cap/rail zones are documented.
 - [x] Both updater buttons resolve to the specified `text/*` families.
 - [x] No updater focus descriptor uses `minimal_metal_buttons`.
-- [x] Geometry remains exact across the responsive matrix.
+- [x] Live panel and button rects match the macOS unsigned-disclosure responsive
+  matrix within 1 px per edge.
+- [x] Live resize checks the target panel rect plus the 18 px action gap and
+  containment without overlap.
 - [x] Focus/navigation/activation/close/restoration regressions pass.
 - [x] Runtime screenshots confirm the neutral-bright focus treatment.
 
 ## Deviations
 
-None planned. Copy, controls, panel geometry and content zones remain unchanged.
+No runtime-layout change is needed. The initial table documented the action row
+6 px too high at 1280x720 and 1920x1080 because it omitted the wrapped macOS
+unsigned-disclosure case; the canonical live geometry above corrects that
+documentation and its regression oracle. Copy, controls, panel geometry and
+content zones remain unchanged.
