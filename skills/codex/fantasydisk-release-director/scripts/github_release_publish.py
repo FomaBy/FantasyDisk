@@ -5,8 +5,10 @@ from __future__ import annotations
 
 import argparse
 import base64
+import hashlib
 import json
 import os
+import re
 import shutil
 import subprocess
 import sys
@@ -34,6 +36,9 @@ README_FORBIDDEN_MARKERS = (
     "api_key",
     ".gd",
 )
+HTTP_STATUS_RE = re.compile(r"(?m)^HTTP/[^\s]+\s+(\d{3})\b")
+
+
 def repo_root() -> Path:
     return Path(os.environ.get("FANTASYDISK_REPO", os.getcwd())).resolve()
 
@@ -141,25 +146,79 @@ def assert_safe_public_distribution_repository(repository: str) -> str:
     return default_branch
 
 
-def _assert_release_assets(repository: str, tag: str, expected: list[Path]) -> str:
+def _sha256(path: Path) -> str:
+    digest = hashlib.sha256()
+    with path.open("rb") as handle:
+        for block in iter(lambda: handle.read(1024 * 1024), b""):
+            digest.update(block)
+    return digest.hexdigest()
+
+
+def _assert_release_assets(
+    repository: str, tag: str, expected: list[Path], *, draft: bool
+) -> str:
     release = run(
         ["gh", "release", "view", tag, "--repo", repository, "--json", "url,isDraft,assets"]
     )
-    payload = json.loads(release.stdout)
-    if payload.get("isDraft"):
-        raise RuntimeError("public distribution release is still draft")
-    names = {
-        str(asset.get("name", ""))
-        for asset in payload.get("assets", [])
-        if isinstance(asset, dict)
-    }
-    expected_names = {path.name for path in expected}
-    if names != expected_names:
+    try:
+        payload = json.loads(release.stdout)
+    except json.JSONDecodeError as error:
+        raise RuntimeError("distribution release verification returned invalid JSON") from error
+    if not isinstance(payload, dict) or payload.get("isDraft") is not draft:
+        state = "draft" if draft else "public"
+        raise RuntimeError(f"distribution release is not the expected {state} state")
+    assets = payload.get("assets")
+    if not isinstance(assets, list):
+        raise RuntimeError("distribution release assets have an invalid response shape")
+    expected_by_name = {path.name: path for path in expected}
+    if len(expected_by_name) != len(expected):
+        raise RuntimeError("release asset input names must be unique")
+    actual_by_name: dict[str, dict] = {}
+    for asset in assets:
+        if not isinstance(asset, dict) or not isinstance(asset.get("name"), str):
+            raise RuntimeError("distribution release contains a malformed asset")
+        name = asset["name"]
+        if name in actual_by_name:
+            raise RuntimeError(f"distribution release contains duplicate asset {name}")
+        actual_by_name[name] = asset
+    if set(actual_by_name) != set(expected_by_name):
         raise RuntimeError(
             "public distribution release asset allowlist mismatch: "
-            f"expected {sorted(expected_names)}, got {sorted(names)}"
+            f"expected {sorted(expected_by_name)}, got {sorted(actual_by_name)}"
         )
-    return str(payload["url"])
+    for name, path in expected_by_name.items():
+        asset = actual_by_name[name]
+        if (
+            asset.get("state") != "uploaded"
+            or asset.get("size") != path.stat().st_size
+            or asset.get("digest") != f"sha256:{_sha256(path)}"
+        ):
+            raise RuntimeError(f"distribution release asset verification failed: {name}")
+    url = payload.get("url")
+    if not isinstance(url, str) or not url:
+        raise RuntimeError("distribution release has no URL")
+    return url
+
+
+def assert_unclaimed_distribution_release(repository: str, tag: str) -> None:
+    """Continue only after the release-tag API proves that no release exists."""
+    result = run(
+        ["gh", "api", "--include", f"repos/{repository}/releases/tags/{tag}"],
+        check=False,
+    )
+    statuses = HTTP_STATUS_RE.findall(f"{result.stdout}\n{result.stderr}")
+    if len(statuses) != 1:
+        raise RuntimeError(
+            f"cannot verify whether distribution release {tag} already exists"
+        )
+    status = int(statuses[0])
+    if status == 404 and result.returncode:
+        return
+    if status == 200 and not result.returncode:
+        raise RuntimeError(
+            f"distribution release {tag} already exists; never overwrite a published public release"
+        )
+    raise RuntimeError(f"cannot verify whether distribution release {tag} already exists")
 
 
 def assert_unclaimed_distribution_tag(repository: str, tag: str) -> None:
@@ -194,14 +253,7 @@ def publish(repository: str, version: str, files: list[Path], changelog: Path) -
     run(["gh", "auth", "status", "--hostname", "github.com"])
     default_branch = assert_safe_public_distribution_repository(repository)
     tag = f"v{version}"
-    view = run(
-        ["gh", "release", "view", tag, "--repo", repository, "--json", "url,isDraft"],
-        check=False,
-    )
-    if not view.returncode:
-        raise RuntimeError(
-            f"distribution release {tag} already exists; never overwrite a published public release"
-        )
+    assert_unclaimed_distribution_release(repository, tag)
     assert_unclaimed_distribution_tag(repository, tag)
     title = f"FantasyDisk v{version}"
     run(
@@ -212,14 +264,17 @@ def publish(repository: str, version: str, files: list[Path], changelog: Path) -
             *[os.fspath(path) for path in files],
         ]
     )
+    _assert_release_assets(repository, tag, files, draft=True)
     run(
         [
             "gh", "release", "edit", tag, "--repo", repository,
             "--title", title, "--notes-file", os.fspath(changelog),
-            "--draft=false", "--prerelease=false", "--latest",
+            "--draft=false", "--prerelease=false", "--latest=false",
         ]
     )
-    return _assert_release_assets(repository, tag, files)
+    release_url = _assert_release_assets(repository, tag, files, draft=False)
+    run(["gh", "release", "edit", tag, "--repo", repository, "--latest"])
+    return release_url
 
 
 def main() -> int:

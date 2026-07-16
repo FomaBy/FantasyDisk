@@ -7,6 +7,7 @@ import argparse
 import base64
 import hashlib
 import json
+import re
 import shutil
 import subprocess
 import sys
@@ -78,12 +79,20 @@ def _sha256_download(url: str) -> tuple[int, str]:
     return size, digest.hexdigest()
 
 
-def _checksums(payload: str) -> dict[str, str]:
+def _checksums(payload: str, expected_names: set[str]) -> dict[str, str]:
     parsed: dict[str, str] = {}
     for line in payload.splitlines():
-        parts = line.strip().split(maxsplit=1)
-        if len(parts) == 2 and re.fullmatch(r"[0-9a-fA-F]{64}", parts[0]):
-            parsed[parts[1].lstrip(" *")] = parts[0].lower()
+        match = re.fullmatch(r"([0-9a-fA-F]{64}) ([ *])(.+)", line)
+        if match is None:
+            raise PublicVerificationError("SHA256SUMS contains a malformed entry")
+        digest, _marker, name = match.groups()
+        if name not in expected_names:
+            raise PublicVerificationError(f"SHA256SUMS contains an unexpected entry: {name}")
+        if name in parsed:
+            raise PublicVerificationError(f"SHA256SUMS contains a duplicate entry: {name}")
+        parsed[name] = digest.lower()
+    if set(parsed) != expected_names:
+        raise PublicVerificationError("SHA256SUMS must verify both platform installers")
     return parsed
 
 
@@ -160,7 +169,13 @@ def verify_public_distribution(repository: str, version: str, local_release: Pat
     release_url = f"https://github.com/{repository}/releases/tag/{tag}"
     if manifest.get("release_url") != release_url:
         raise PublicVerificationError("latest public update manifest has an untrusted release URL")
-    sums = _checksums(_request(assets["SHA256SUMS.txt"]).decode("utf-8"))
+    installer_names = {
+        f"FantasyDisk-{version}-macos.dmg",
+        f"FantasyDisk-{version}-windows-setup.exe",
+    }
+    sums = _checksums(
+        _request(assets["SHA256SUMS.txt"]).decode("utf-8"), installer_names
+    )
     verified: dict[str, dict[str, int | str]] = {}
     for platform, name in (("macos", f"FantasyDisk-{version}-macos.dmg"), ("windows", f"FantasyDisk-{version}-windows-setup.exe")):
         asset = manifest.get("assets", {}).get(platform)

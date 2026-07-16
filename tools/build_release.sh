@@ -140,20 +140,14 @@ fi
 MACOS_ARROW_SOURCE="${WORKTREE_DIR}/${MACOS_ARROW_REL}"
 
 echo "==> Проверка версии тега и export presets"
-TAG_PROJECT_VERSION="$(grep 'config/version' "${WORKTREE_DIR}/project.godot" | cut -d'"' -f2)"
-if [[ "${TAG_PROJECT_VERSION}" != "${VERSION}" ]]; then
-  echo "    ERROR: config/version в теге ${TAG} = ${TAG_PROJECT_VERSION}, ожидали ${VERSION}"
+if ! VERSION_MAPPING="$(python3 "${WORKTREE_DIR}/tools/release_version_mapping.py" \
+  --version "${VERSION}" \
+  --project "${WORKTREE_DIR}/project.godot" \
+  --export-presets "${WORKTREE_DIR}/export_presets.cfg")"; then
+  echo "    ERROR: version assignments в project.godot/export_presets.cfg не точны, конфликтуют или находятся не в своём preset"
   exit 2
 fi
-VERSION_MAPPING="$(python3 "${WORKTREE_DIR}/tools/release_version_mapping.py" --version "${VERSION}")"
 IFS=$'\t' read -r MACOS_SHORT_VERSION MACOS_BUILD_VERSION WINDOWS_PRODUCT_VERSION WINDOWS_FILE_VERSION <<< "${VERSION_MAPPING}"
-if ! grep -F -q "application/short_version=\"${MACOS_SHORT_VERSION}\"" "${WORKTREE_DIR}/export_presets.cfg" \
-    || ! grep -F -q "application/version=\"${MACOS_BUILD_VERSION}\"" "${WORKTREE_DIR}/export_presets.cfg" \
-    || ! grep -F -q "application/product_version=\"${WINDOWS_PRODUCT_VERSION}\"" "${WORKTREE_DIR}/export_presets.cfg" \
-    || ! grep -F -q "application/file_version=\"${WINDOWS_FILE_VERSION}\"" "${WORKTREE_DIR}/export_presets.cfg"; then
-  echo "    ERROR: export_presets.cfg не соответствует platform mapping logical version ${VERSION}"
-  exit 2
-fi
 
 echo "==> Проверка честной маркировки macOS-канала в клиенте тега"
 CLIENT_MACOS_CHANNEL="$(sed -n 's/^const MACOS_UPDATE_CHANNEL := "\([a-z]*\)".*$/\1/p' \

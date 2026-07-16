@@ -28,9 +28,10 @@ read-only history. Run from the repository root; do not hardcode a checkout path
    version and does not run this release flow. Set `project.godot::config/version`
    to the logical `<version>`. For macOS, normalize `X.Y.Z` as `X.Y.Z.0`, keep
    `application/short_version` at `X.Y.Z`, and set `application/version` to
-   `X.Y.(1000*Z+R)`; `R` must be `0…999`. This keeps the user-visible Version
-   and machine-readable Build at three numeric components while preserving hotfix
-   order. Windows `product_version` remains `<version>`; `file_version` is
+   `(X+1).Y.(10*Z+R)`. Bounds are `MAJOR=0…9998`, `MINOR=0…99`,
+   `PATCH=0…9`, `HOTFIX=0…9`, which keeps a positive first Apple build component
+   and at most two digits in its third component while preserving hotfix order.
+   Windows `product_version` remains `<version>`; `file_version` is
    `<version>.0` for three components and `<version>` for four. Validate every
    field with `tools/release_version_mapping.py --version <version>`.
 2. Finalize `CHANGELOG.md` as `## [<version>] — YYYY-MM-DD`, then leave a new empty

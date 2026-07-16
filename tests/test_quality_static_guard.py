@@ -98,11 +98,11 @@ class QualityStaticGuardTest(unittest.TestCase):
             exports.write_text(text, encoding="utf-8")
             errors = self.module.version_and_windows_errors(root)
             self.assertIn(
-                "export_presets.cfg: application/short_version must equal '0.2.3'",
+                "export_presets.cfg macOS preset: application/short_version must equal '0.2.3'",
                 errors,
             )
             self.assertIn(
-                "export_presets.cfg: application/version must equal '1.2.31'",
+                "export_presets.cfg macOS preset: application/version must equal '1.2.31'",
                 errors,
             )
 
@@ -127,8 +127,60 @@ class QualityStaticGuardTest(unittest.TestCase):
         self.assertIn('tools/release_version_contract.py', script)
         self.assertIn('tools/release_version_mapping.py', script)
         self.assertIn('MACOS_SHORT_VERSION MACOS_BUILD_VERSION WINDOWS_PRODUCT_VERSION WINDOWS_FILE_VERSION', script)
-        self.assertIn('grep -F -q "application/short_version=', script)
-        self.assertIn('grep -F -q "application/version=', script)
+        self.assertIn('--project "${WORKTREE_DIR}/project.godot"', script)
+        self.assertIn('--export-presets "${WORKTREE_DIR}/export_presets.cfg"', script)
+        self.assertNotIn('grep -F -q "application/short_version=', script)
+
+    def test_rejects_duplicate_or_suffix_version_assignments(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            shutil.copy(ROOT / "project.godot", root / "project.godot")
+            shutil.copy(ROOT / "export_presets.cfg", root / "export_presets.cfg")
+            project = root / "project.godot"
+            exports = root / "export_presets.cfg"
+            project.write_text(
+                project.read_text(encoding="utf-8").replace(
+                    'config/version="0.2.4"',
+                    'config/version="0.2.4"\nconfig/version="0.2.3"',
+                ),
+                encoding="utf-8",
+            )
+            exports.write_text(
+                exports.read_text(encoding="utf-8").replace(
+                    'application/short_version="0.2.4"',
+                    'application/short_version="0.2.4" # stale suffix',
+                ),
+                encoding="utf-8",
+            )
+            errors = self.module.version_and_windows_errors(root)
+            self.assertIn(
+                "project.godot [application]: config/version must have exactly one assignment",
+                errors,
+            )
+            self.assertIn(
+                "export_presets.cfg macOS preset: application/short_version must equal '0.2.4'",
+                errors,
+            )
+
+    def test_rejects_version_field_in_the_wrong_platform_preset(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            shutil.copy(ROOT / "project.godot", root / "project.godot")
+            shutil.copy(ROOT / "export_presets.cfg", root / "export_presets.cfg")
+            exports = root / "export_presets.cfg"
+            text = exports.read_text(encoding="utf-8")
+            text = text.replace('application/short_version="0.2.4"\n', "", 1)
+            windows_marker = 'application/product_version="0.2.4"'
+            text = text.replace(
+                windows_marker,
+                windows_marker + '\napplication/short_version="0.2.4"',
+                1,
+            )
+            exports.write_text(text, encoding="utf-8")
+            self.assertIn(
+                "export_presets.cfg macOS preset: application/short_version must have exactly one assignment",
+                self.module.version_and_windows_errors(root),
+            )
 
     def test_rejects_five_component_release_version(self):
         with tempfile.TemporaryDirectory() as tmp:

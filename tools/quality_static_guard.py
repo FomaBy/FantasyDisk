@@ -14,7 +14,7 @@ if str(TOOLS_DIR) not in sys.path:
     sys.path.insert(0, str(TOOLS_DIR))
 
 from release_version_contract import RELEASE_VERSION_RE, is_valid_release_version
-from release_version_mapping import platform_version_mapping
+from release_version_mapping import platform_version_mapping, release_assignment_errors
 
 
 RUNTIME_SUFFIXES = {".gd", ".godot", ".tscn", ".tres", ".cfg"}
@@ -115,15 +115,8 @@ def version_and_windows_errors(root: Path) -> list[str]:
             mapping = platform_version_mapping(version)
         except ValueError as error:
             errors.append(f"project.godot: config/version {error}")
-    expected = {
-        "application/short_version": mapping.macos_short_version if mapping else "",
-        "application/version": mapping.macos_build_version if mapping else "",
-        "application/product_version": mapping.windows_product_version if mapping else "",
-        "application/file_version": mapping.windows_file_version if mapping else "",
-    }
-    for key, value in expected.items():
-        if _quoted_value(exports, key) != value:
-            errors.append(f"export_presets.cfg: {key} must equal {value!r}")
+    if mapping is not None:
+        errors.extend(release_assignment_errors(project, exports, version, mapping))
 
     required_project = [
         'config/features=PackedStringArray("4.7")',

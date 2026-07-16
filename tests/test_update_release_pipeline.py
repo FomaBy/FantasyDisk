@@ -162,7 +162,7 @@ class UpdateReleasePipelineTests(unittest.TestCase):
 
     def test_publisher_refuses_existing_immutable_tag(self) -> None:
         existing = subprocess.CompletedProcess(
-            ["gh", "release", "view"], 0, stdout='{"url":"https://example.invalid"}', stderr=""
+            ["gh", "api"], 0, stdout="HTTP/2 200 OK\n{}", stderr=""
         )
         with mock.patch.object(github_release_publish.shutil, "which", return_value="gh"), \
              mock.patch.object(github_release_publish, "assert_safe_public_distribution_repository", return_value="main"), \
@@ -174,7 +174,7 @@ class UpdateReleasePipelineTests(unittest.TestCase):
 
     def test_publisher_refuses_existing_bare_immutable_tag(self) -> None:
         missing_release = subprocess.CompletedProcess(
-            ["gh", "release", "view"], 1, stdout="", stderr="not found"
+            ["gh", "api"], 1, stdout="HTTP/2 404 Not Found\n", stderr=""
         )
         bare_tag = subprocess.CompletedProcess(
             ["gh", "api"], 0,
@@ -195,7 +195,7 @@ class UpdateReleasePipelineTests(unittest.TestCase):
 
     def test_publisher_fails_closed_when_bare_tag_preflight_is_unavailable(self) -> None:
         missing_release = subprocess.CompletedProcess(
-            ["gh", "release", "view"], 1, stdout="", stderr="not found"
+            ["gh", "api"], 1, stdout="HTTP/2 404 Not Found\n", stderr=""
         )
         failed_preflight = subprocess.CompletedProcess(
             ["gh", "api"], 1, stdout="", stderr="network failure"
@@ -214,7 +214,7 @@ class UpdateReleasePipelineTests(unittest.TestCase):
 
     def test_publisher_allows_a_missing_bare_tag(self) -> None:
         missing_release = subprocess.CompletedProcess(
-            ["gh", "release", "view"], 1, stdout="", stderr="not found"
+            ["gh", "api"], 1, stdout="HTTP/2 404 Not Found\n", stderr=""
         )
         absent_tag = subprocess.CompletedProcess(
             ["gh", "api"], 0, stdout="[]", stderr=""
@@ -226,16 +226,156 @@ class UpdateReleasePipelineTests(unittest.TestCase):
              mock.patch.object(github_release_publish, "_assert_release_assets", return_value="https://example.invalid/v0.2.3.1"), \
              mock.patch.object(github_release_publish, "run", side_effect=[
                  subprocess.CompletedProcess(["gh", "auth"], 0, stdout="", stderr=""),
-                 missing_release,
-                 absent_tag,
-                 created,
-                 published,
-             ]) as run_mock:
+                missing_release,
+                absent_tag,
+                created,
+                published,
+                published,
+            ]) as run_mock:
             published_url = github_release_publish.publish(
                 "FomaBy/FantasyDisk-Releases", "0.2.3.1", [], Path("CHANGELOG.md")
             )
         self.assertEqual(published_url, "https://example.invalid/v0.2.3.1")
         self.assertTrue(any("create" in call.args[0] for call in run_mock.call_args_list))
+
+    def test_publisher_fails_closed_when_release_preflight_returns_server_error(self) -> None:
+        unavailable = subprocess.CompletedProcess(
+            ["gh", "api"], 1, stdout="HTTP/2 503 Service Unavailable\n", stderr=""
+        )
+        with mock.patch.object(github_release_publish.shutil, "which", return_value="gh"), \
+             mock.patch.object(github_release_publish, "assert_safe_public_distribution_repository", return_value="main"), \
+             mock.patch.object(github_release_publish, "run", side_effect=[
+                 subprocess.CompletedProcess(["gh", "auth"], 0, stdout="", stderr=""),
+                 unavailable,
+             ]) as run_mock:
+            with self.assertRaisesRegex(RuntimeError, "cannot verify"):
+                github_release_publish.publish(
+                    "FomaBy/FantasyDisk-Releases", "0.2.3.1", [], Path("CHANGELOG.md")
+                )
+        self.assertFalse(any("create" in call.args[0] for call in run_mock.call_args_list))
+
+    def test_publisher_checks_draft_assets_before_publication_or_latest(self) -> None:
+        missing_release = subprocess.CompletedProcess(
+            ["gh", "api"], 1, stdout="HTTP/2 404 Not Found\n", stderr=""
+        )
+        absent_tag = subprocess.CompletedProcess(
+            ["gh", "api"], 0, stdout="[]", stderr=""
+        )
+        created = subprocess.CompletedProcess(["gh", "release", "create"], 0, stdout="", stderr="")
+        with mock.patch.object(github_release_publish.shutil, "which", return_value="gh"), \
+             mock.patch.object(github_release_publish, "assert_safe_public_distribution_repository", return_value="main"), \
+             mock.patch.object(github_release_publish, "_assert_release_assets", side_effect=RuntimeError("draft assets are incomplete")), \
+             mock.patch.object(github_release_publish, "run", side_effect=[
+                 subprocess.CompletedProcess(["gh", "auth"], 0, stdout="", stderr=""),
+                 missing_release,
+                 absent_tag,
+                 created,
+             ]) as run_mock:
+            with self.assertRaisesRegex(RuntimeError, "draft assets are incomplete"):
+                github_release_publish.publish(
+                    "FomaBy/FantasyDisk-Releases", "0.2.3.1", [], Path("CHANGELOG.md")
+                )
+        self.assertFalse(
+            any(call.args[0][:3] == ["gh", "release", "edit"] for call in run_mock.call_args_list)
+        )
+
+    def test_draft_asset_verification_requires_uploaded_exact_bytes(self) -> None:
+        with tempfile.TemporaryDirectory() as temporary:
+            asset = Path(temporary) / "FantasyDisk-0.2.4-macos.dmg"
+            asset.write_bytes(b"verified-byte-fixture")
+            payload = {
+                "url": "https://example.invalid/v0.2.4",
+                "isDraft": True,
+                "assets": [{
+                    "name": asset.name,
+                    "state": "uploaded",
+                    "size": asset.stat().st_size,
+                    "digest": f"sha256:{hashlib.sha256(asset.read_bytes()).hexdigest()}",
+                }],
+            }
+            completed = subprocess.CompletedProcess(
+                ["gh", "release", "view"], 0, stdout=json.dumps(payload), stderr=""
+            )
+            with mock.patch.object(github_release_publish, "run", return_value=completed):
+                self.assertEqual(
+                    github_release_publish._assert_release_assets(
+                        "FomaBy/FantasyDisk-Releases", "v0.2.4", [asset], draft=True
+                    ),
+                    "https://example.invalid/v0.2.4",
+                )
+            payload["assets"][0]["state"] = "starter"
+            completed = subprocess.CompletedProcess(
+                ["gh", "release", "view"], 0, stdout=json.dumps(payload), stderr=""
+            )
+            with mock.patch.object(github_release_publish, "run", return_value=completed):
+                with self.assertRaisesRegex(RuntimeError, "asset verification failed"):
+                    github_release_publish._assert_release_assets(
+                        "FomaBy/FantasyDisk-Releases", "v0.2.4", [asset], draft=True
+                    )
+
+    def test_verifier_rejects_malformed_checksum_entries_before_downloads(self) -> None:
+        version = "0.2.4"
+        repository = "FomaBy/FantasyDisk-Releases"
+        names = {
+            f"FantasyDisk-{version}-macos.dmg",
+            f"FantasyDisk-{version}-windows-setup.exe",
+            "SHA256SUMS.txt",
+            f"CHANGELOG-{version}.md",
+            f"fantasydisk_{version.replace('.', '')}_announcement.png",
+            "update-manifest.json",
+        }
+        assets = [
+            {"name": name, "browser_download_url": f"https://example.invalid/{name}"}
+            for name in names
+        ]
+        latest = {"tag_name": f"v{version}", "draft": False, "prerelease": False, "assets": assets}
+        manifest = {
+            "version": version,
+            "release_url": f"https://github.com/{repository}/releases/tag/v{version}",
+            "assets": {
+                platform: {
+                    "name": name,
+                    "url": f"https://github.com/{repository}/releases/download/v{version}/{name}",
+                }
+                for platform, name in (
+                    ("macos", f"FantasyDisk-{version}-macos.dmg"),
+                    ("windows", f"FantasyDisk-{version}-windows-setup.exe"),
+                )
+            },
+        }
+        with mock.patch.object(github_release_verify, "_verify_public_tree"), \
+             mock.patch.object(github_release_verify, "_json", return_value=latest), \
+             mock.patch.object(github_release_verify, "_request", side_effect=[
+                 json.dumps(manifest).encode("utf-8"), b"not-a-checksum\n",
+             ]), \
+             mock.patch.object(github_release_verify, "_sha256_download") as download:
+            with self.assertRaisesRegex(github_release_verify.PublicVerificationError, "malformed"):
+                github_release_verify.verify_public_distribution(
+                    repository, version, Path("/unneeded-after-checksum-error")
+                )
+        download.assert_not_called()
+
+    def test_checksum_parser_rejects_duplicate_missing_and_unexpected_entries(self) -> None:
+        names = {"FantasyDisk-0.2.4-macos.dmg", "FantasyDisk-0.2.4-windows-setup.exe"}
+        mac, windows = sorted(names)
+        digest = "a" * 64
+        self.assertEqual(
+            github_release_verify._checksums(
+                f"{digest}  {mac}\n{digest} *{windows}\n", names
+            ),
+            {mac: digest, windows: digest},
+        )
+        invalid_payloads = (
+            f"{digest}  {mac}\n",
+            f"{digest}  {mac}\n{digest}  {mac}\n",
+            f"{digest}  {mac}\n{digest}  ../unexpected.exe\n",
+            "not-a-checksum\n",
+            f"{digest}  {mac}\n\n{digest}  {windows}\n",
+        )
+        for payload in invalid_payloads:
+            with self.subTest(payload=payload):
+                with self.assertRaises(github_release_verify.PublicVerificationError):
+                    github_release_verify._checksums(payload, names)
 
     def test_public_verifier_cannot_prune_immutable_releases(self) -> None:
         source = (SCRIPTS / "github_release_verify.py").read_text(encoding="utf-8")
@@ -419,6 +559,30 @@ class ReleaseDocumentationConsistencyTests(unittest.TestCase):
             "Telegram получает release poster, macOS DMG, Windows Setup и `SHA256SUMS.txt`; затем Discord публикует player-facing новость с Telegram download link.",
         ),
     }
+    MACOS_MAPPING_CONTRACTS = {
+        SKILL: (
+            "(X+1).Y.(10*Z+R)",
+            "MAJOR=0…9998",
+            "MINOR=0…99",
+            "PATCH=0…9",
+            "HOTFIX=0…9",
+        ),
+        RELEASE_VERSIONING: (
+            "(X+1).Y.(10*Z+R)",
+            "MAJOR=0…9998",
+            "MINOR=0…99",
+            "PATCH=0…9",
+            "HOTFIX=0…9",
+        ),
+        GAME_UPDATES: (
+            "(X+1).Y.(10*Z+R)",
+            "MAJOR=0…9998",
+            "MINOR=0…99",
+            "PATCH=0…9",
+            "HOTFIX=0…9",
+            "1.2.30 < 1.2.31 < 1.2.40",
+        ),
+    }
     ENTRY_POINT_VERSIONING = {
         README: (
             "Текущий опубликованный stable release: `0.2.4`",
@@ -444,7 +608,7 @@ class ReleaseDocumentationConsistencyTests(unittest.TestCase):
 
     @classmethod
     def read_documents(cls) -> dict[Path, str]:
-        paths = set(cls.OPERATIONAL_PLACEHOLDERS) | set(cls.DELIVERY_CONTRACTS) | {
+        paths = set(cls.OPERATIONAL_PLACEHOLDERS) | set(cls.DELIVERY_CONTRACTS) | set(cls.MACOS_MAPPING_CONTRACTS) | {
             cls.BRANCHING,
             cls.CURRENT_STATE,
         } | set(cls.ENTRY_POINT_VERSIONING)
@@ -471,6 +635,18 @@ class ReleaseDocumentationConsistencyTests(unittest.TestCase):
             for clause in clauses:
                 if clause not in document:
                     errors.append(f"{relative}: missing delivery contract clause {clause}")
+        return errors
+
+    @classmethod
+    def macos_mapping_errors(cls, documents: dict[Path, str]) -> list[str]:
+        errors: list[str] = []
+        for relative, clauses in cls.MACOS_MAPPING_CONTRACTS.items():
+            document = cls.normalize(documents[relative])
+            for clause in clauses:
+                if clause not in document:
+                    errors.append(f"{relative}: missing canonical macOS mapping clause {clause}")
+            if "(X+1).Y.(1000*Z+R)" in document:
+                errors.append(f"{relative}: contains stale macOS mapping radix")
         return errors
 
     @classmethod
@@ -538,6 +714,20 @@ class ReleaseDocumentationConsistencyTests(unittest.TestCase):
                 mutated = dict(documents)
                 mutated[relative] = mutated[relative].replace(expected, replacement, 1)
                 self.assertNotEqual(self.delivery_contract_errors(mutated), [])
+
+    def test_macos_mapping_contract_is_canonical_in_every_release_instruction(self) -> None:
+        documents = self.read_documents()
+        self.assertEqual(self.macos_mapping_errors(documents), [])
+
+        for relative in self.MACOS_MAPPING_CONTRACTS:
+            with self.subTest(document=str(relative)):
+                mutated = dict(documents)
+                mutated[relative] = mutated[relative].replace(
+                    "(X+1).Y.(10*Z+R)", "(X+1).Y.(1000*Z+R)", 1
+                )
+                errors = self.macos_mapping_errors(mutated)
+                self.assertTrue(any("canonical macOS mapping" in error for error in errors))
+                self.assertTrue(any("stale macOS mapping radix" in error for error in errors))
 
     def test_published_024_cannot_be_described_as_an_active_frozen_release(self) -> None:
         documents = self.read_documents()

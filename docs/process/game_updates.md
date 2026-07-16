@@ -102,8 +102,10 @@ version, URL, имена, размеры и хэши до любой внешн�
   `application/short_version` в user-visible Xcode Version, а
   `application/version` — в machine-readable Xcode Build. Для logical
   `X.Y.Z.R` (у `X.Y.Z` считать `R=0`) `short_version` равен `X.Y.Z`, а build
-  равен `X.Y.(1000*Z+R)`. `R` ограничен `0…999`; это сохраняет порядок
-  `0.2.3 < 0.2.3.1 < 0.2.4` как `0.2.3000 < 0.2.3001 < 0.2.4000` и оставляет
+  равен `(X+1).Y.(10*Z+R)`. Канонические bounds — `MAJOR=0…9998`,
+  `MINOR=0…99`, `PATCH=0…9`, `HOTFIX=0…9`; поэтому Apple build имеет
+  положительный первый компонент и не более двух цифр в третьем. Это сохраняет
+  порядок `0.2.3 < 0.2.3.1 < 0.2.4` как `1.2.30 < 1.2.31 < 1.2.40` и оставляет
   оба Info.plist поля трёхкомпонентными. Источник контракта:
   [Apple CFBundleShortVersionString](https://developer.apple.com/documentation/bundleresources/information-property-list/cfbundleshortversionstring),
   [Apple CFBundleVersion](https://developer.apple.com/documentation/bundleresources/information-property-list/cfbundleversion)
