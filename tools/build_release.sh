@@ -66,7 +66,12 @@ else
   fi
 fi
 run_godot() {
-  GODOT_BIN="${GODOT_PATH}" python3 "${WORKTREE_DIR}/tools/godot_gate.py" "$@"
+  # Fresh macOS headless imports in Godot 4.7 can otherwise dispatch an audio
+  # reimport notification from a worker thread and crash in
+  # Node::propagate_notification. Release inputs are immutable and do not need
+  # sub-thread scene groups, so make the build path deterministic.
+  GODOT_BIN="${GODOT_PATH}" python3 "${WORKTREE_DIR}/tools/godot_gate.py" \
+    --single-threaded-scene "$@"
 }
 
 submit_notary_artifact() {
