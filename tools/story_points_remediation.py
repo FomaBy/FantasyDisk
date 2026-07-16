@@ -48,7 +48,19 @@ RETROSPECTIVE_MARKER = "retrospective"
 SP_LABEL_RE = re.compile(r"^SP:(1|2|3|5|8|13)$")
 CLOSED_STATUSES = ("done", "cancelled")
 REMOVABLE_METADATA_KEYS = ("story_points", "estimation_model")
-DESCRIPTION_ESTIMATE_RE = re.compile(r"Story points:\s*(\d+)", re.IGNORECASE)
+# A canonical pre-work estimate is one full line `Story points: N` with N a
+# Fibonacci point value and nothing else on the line (horizontal whitespace
+# and a CRLF ending are tolerated). Anchoring the whole line is what rejects
+# `5.0`, `5abc` and any other continuation: a numeric prefix of a malformed
+# value must never parse as an estimate (FAN-1170).
+DESCRIPTION_ESTIMATE_RE = re.compile(
+    r"^[ \t]*Story points:[ \t]*(13|8|5|3|2|1)[ \t]*\r?$",
+    re.IGNORECASE | re.MULTILINE,
+)
+# Every `Story points:` marker, canonical or not. Counting markers separately
+# from canonical lines is what makes malformed/duplicate blocks fail closed
+# even when one valid estimate line is also present (FAN-1170).
+ESTIMATE_MARKER_RE = re.compile(r"Story points[ \t]*:", re.IGNORECASE)
 
 PAGE_LIMIT = 100
 
@@ -129,14 +141,26 @@ def sp_labels(issue: dict) -> list[dict]:
 
 
 def description_estimates(issue: dict) -> list[int]:
-    """Integer values of every ``Story points: <N>`` in the description.
+    """Values of every canonical full-line ``Story points: N`` estimate.
 
-    A canonical pre-work estimate carries exactly one such value; a missing,
-    malformed (no integer), or duplicated block disqualifies the issue from
-    being counted as an accepted pre-work estimate.
+    Only a complete line whose whole value is one Fibonacci point counts.
+    `Story points: 5.0`, `Story points: 5abc` and similar malformed values
+    yield nothing here — the numeric prefix is not an estimate (FAN-1170).
+    Compare against :func:`description_markers` to detect malformed blocks.
     """
     text = issue.get("description") or ""
     return [int(m.group(1)) for m in DESCRIPTION_ESTIMATE_RE.finditer(text)]
+
+
+def description_markers(issue: dict) -> int:
+    """Count of every ``Story points:`` marker, canonical or malformed.
+
+    A marker that is not simultaneously a canonical estimate line is a
+    malformed or extra estimate record; its presence must fail the issue
+    closed even next to one valid line (FAN-1170).
+    """
+    text = issue.get("description") or ""
+    return len(ESTIMATE_MARKER_RE.findall(text))
 
 
 def canonical_sp_labels(issue: dict) -> list[dict]:
@@ -166,7 +190,12 @@ def single_sp_label(issue: dict) -> dict | None:
 
 
 def has_estimate_block(issue: dict) -> bool:
-    return bool(description_estimates(issue))
+    """True when the description carries any ``Story points:`` marker.
+
+    Malformed markers count: a broken pre-work record is still a record and
+    must be preserved/reviewed, not treated as absent (FAN-1170).
+    """
+    return description_markers(issue) > 0
 
 
 def label_points(label: dict) -> int:
@@ -189,7 +218,7 @@ def classify(issue: dict) -> str:
     model = str(meta.get("estimation_model", ""))
     retrospective = RETROSPECTIVE_MARKER in model.lower()
     estimates = description_estimates(issue)
-    block = bool(estimates)
+    markers = description_markers(issue)
     labels = sp_labels(issue)
     has_sp_data = bool(labels) or "story_points" in meta or bool(model)
     if retrospective:
@@ -199,15 +228,19 @@ def classify(issue: dict) -> str:
         # legitimate — so it goes to manual review, never silent mutation.
         if single_sp_label(issue) is None:
             return AMBIGUOUS
-        return CONFLICTED if block else RETROSPECTIVE_BACKFILL
+        return CONFLICTED if markers else RETROSPECTIVE_BACKFILL
     if not has_sp_data:
         return UNESTIMATED
-    # Accepted only when the single description estimate exactly matches the
-    # single canonical Label and the numeric metadata. A missing, malformed,
-    # duplicated, or mismatched description value fails closed to
-    # ``inconsistent_needs_review`` and stays out of the canonical report.
+    # Accepted only when the description carries exactly one `Story points:`
+    # marker, that marker is the one full canonical estimate line, and its
+    # value exactly matches the single canonical Label and the numeric
+    # metadata. A missing, malformed, duplicated, or mismatched marker —
+    # even next to one valid line — fails closed to
+    # ``inconsistent_needs_review`` and stays out of the canonical report
+    # (FAN-1166, FAN-1170).
     if (
-        len(estimates) == 1
+        markers == 1
+        and len(estimates) == 1
         and model == CANONICAL_MODEL
         and len(labels) == 1
         and label_points(labels[0]) == estimates[0]

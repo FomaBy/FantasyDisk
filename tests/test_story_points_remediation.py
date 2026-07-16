@@ -194,6 +194,150 @@ class ClassifyTest(unittest.TestCase):
             [5, 5],
         )
 
+    def test_description_estimates_reject_partial_values(self):
+        # FAN-1170: a numeric prefix of a malformed value is not an estimate.
+        for text in (
+            "Story points: 5.0",
+            "Story points: 5abc",
+            "Story points: 5 later prose",
+            "Story points: 4",       # not a Fibonacci point value
+            "Story points: 55",      # not a point value; `5` prefix must not parse
+            "Story points: 135",     # `13` prefix must not parse
+            "Story points:",         # marker without a value
+            "see the Story points: 5 marker inline",  # not a full line
+        ):
+            self.assertEqual(
+                spr.description_estimates(make_issue(description=text)),
+                [],
+                text,
+            )
+
+    def test_description_estimates_accept_whitespace_and_crlf_boundaries(self):
+        self.assertEqual(
+            spr.description_estimates(
+                make_issue(description="Story points: 13")
+            ),
+            [13],
+        )
+        self.assertEqual(
+            spr.description_estimates(
+                make_issue(
+                    description="## Оценка сложности\r\n\r\nStory points: 5\r\n"
+                                "Label: `SP:5`\r\n"
+                )
+            ),
+            [5],
+        )
+        self.assertEqual(
+            spr.description_estimates(
+                make_issue(description="  Story points: 5  \nLabel: `SP:5`\n")
+            ),
+            [5],
+        )
+        self.assertEqual(
+            spr.description_estimates(
+                make_issue(description="story points: 5")
+            ),
+            [5],
+        )
+
+    def test_description_markers_count_every_marker(self):
+        self.assertEqual(spr.description_markers(make_issue(description="")), 0)
+        self.assertEqual(
+            spr.description_markers(make_issue(description=DESCRIPTION_BLOCK)), 1
+        )
+        self.assertEqual(
+            spr.description_markers(
+                make_issue(description="Story points: five\nStory points: 5")
+            ),
+            2,
+        )
+        self.assertEqual(
+            spr.description_markers(
+                make_issue(description="see the `Story points:` marker inline")
+            ),
+            1,
+        )
+        self.assertEqual(
+            spr.description_markers(
+                make_issue(description="Story points : 5")
+            ),
+            1,
+        )
+
+
+class MalformedMarkerTest(unittest.TestCase):
+    """FAN-1170: malformed/duplicate `Story points:` markers fail closed."""
+
+    def _canonical_issue(self, description) -> dict:
+        # Canonical Label SP:5 + numeric metadata 5 + canonical model: the
+        # bug reproduction where only the description marker is broken.
+        return make_issue(
+            description=description,
+            labels=[SP5_LABEL],
+            metadata={
+                "story_points": 5,
+                "estimation_model": spr.CANONICAL_MODEL,
+            },
+        )
+
+    def test_decimal_value_is_inconsistent(self):
+        # Was falsely accepted: `5.0` parsed as `5` via its numeric prefix.
+        issue = self._canonical_issue("Story points: 5.0")
+        self.assertEqual(spr.classify(issue), spr.INCONSISTENT)
+
+    def test_suffixed_value_is_inconsistent(self):
+        # Was falsely accepted: `5abc` parsed as `5` via its numeric prefix.
+        issue = self._canonical_issue("Story points: 5abc")
+        self.assertEqual(spr.classify(issue), spr.INCONSISTENT)
+
+    def test_malformed_marker_next_to_valid_line_is_inconsistent(self):
+        # Was falsely accepted: `five` was invisible, leaving one valid line.
+        issue = self._canonical_issue("Story points: five\nStory points: 5")
+        self.assertEqual(spr.classify(issue), spr.INCONSISTENT)
+
+    def test_valueless_marker_next_to_valid_line_is_inconsistent(self):
+        issue = self._canonical_issue("Story points:\nStory points: 5")
+        self.assertEqual(spr.classify(issue), spr.INCONSISTENT)
+
+    def test_inline_marker_next_to_valid_line_is_inconsistent(self):
+        issue = self._canonical_issue(
+            "prose quoting a `Story points:` marker\n\nStory points: 5"
+        )
+        self.assertEqual(spr.classify(issue), spr.INCONSISTENT)
+
+    def test_non_fibonacci_value_is_inconsistent(self):
+        issue = self._canonical_issue("Story points: 4")
+        self.assertEqual(spr.classify(issue), spr.INCONSISTENT)
+
+    def test_crlf_estimate_block_stays_accepted(self):
+        issue = self._canonical_issue(
+            "## Оценка сложности\r\n\r\nStory points: 5\r\nLabel: `SP:5`\r\n"
+            "Модель: CUE / Fibonacci `1, 2, 3, 5, 8, 13`\r\n"
+        )
+        self.assertEqual(spr.classify(issue), spr.ACCEPTED_PREWORK)
+
+    def test_trailing_whitespace_estimate_line_stays_accepted(self):
+        issue = self._canonical_issue(
+            "## Оценка сложности\n\nStory points: 5  \nLabel: `SP:5`\n"
+        )
+        self.assertEqual(spr.classify(issue), spr.ACCEPTED_PREWORK)
+
+    def test_exact_accepted_control_stays_accepted(self):
+        issue = self._canonical_issue(DESCRIPTION_BLOCK)
+        self.assertEqual(spr.classify(issue), spr.ACCEPTED_PREWORK)
+
+    def test_retrospective_with_malformed_marker_is_conflicted(self):
+        # A broken pre-work record is still a description record: cleanup may
+        # remove backfill Label/metadata but must flag the description as
+        # conflicted, never treat it as absent.
+        issue = make_issue(
+            description="Story points: five",
+            labels=[SP8_LABEL],
+            metadata={"story_points": 8, "estimation_model": RETRO_MODEL},
+        )
+        self.assertEqual(spr.classify(issue), spr.CONFLICTED)
+
 
 class AmbiguousSpLabelTest(unittest.TestCase):
     """FAN-1167: exactly one removable SP Label is required for cleanup."""
