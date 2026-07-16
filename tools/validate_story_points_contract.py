@@ -95,16 +95,18 @@ _CUE_FACTOR_TOKEN_PATTERN = (
 _CUE_HOLISTIC_MARKER_PATTERN = r"(?:\bholistically\b|целостно|целиком)"
 # The holistic marker only proves a holistic CUE assessment when it sits inside
 # the CUE scoring predicate itself: directly next to the scoring action or one of
-# the CUE factors (allowing only punctuation between them). A marker separated by
-# an intervening clause — e.g. "review the document holistically and assess CUE" —
+# the CUE factors, allowing only in-clause punctuation (comma or colon) between
+# them. A marker separated by an intervening clause — e.g. "review the document
+# holistically and assess CUE" — or across a sentence/predicate boundary — e.g.
+# "review the document holistically;assess CUE" even without a following space —
 # belongs to that other predicate and must not license the scale drop.
 _CUE_PREDICATE_TOKEN_PATTERN = (
     r"(?:" + _CUE_SCORING_ACTION_PATTERN + r"|" + _CUE_FACTOR_TOKEN_PATTERN + r")"
 )
 CUE_HOLISTIC_SCORING_PREDICATE_RE = re.compile(
-    _CUE_HOLISTIC_MARKER_PATTERN + r"\s*[,;:]?\s*" + _CUE_PREDICATE_TOKEN_PATTERN
+    _CUE_HOLISTIC_MARKER_PATTERN + r"\s*[,:]?\s*" + _CUE_PREDICATE_TOKEN_PATTERN
     + r"|"
-    + _CUE_PREDICATE_TOKEN_PATTERN + r"\s*[,;:]?\s*" + _CUE_HOLISTIC_MARKER_PATTERN,
+    + _CUE_PREDICATE_TOKEN_PATTERN + r"\s*[,:]?\s*" + _CUE_HOLISTIC_MARKER_PATTERN,
     re.IGNORECASE,
 )
 SEPARATE_CHECKLIST_START_RE = re.compile(

@@ -359,6 +359,61 @@ Metadata: story_points и estimation_model.
                 result = self._validate_source(self.CONTRACT_PREAMBLE + statement)
                 self.assertEqual(result.returncode != 0, should_reject, result.stderr)
 
+    def test_semicolon_predicate_boundary_without_whitespace(self) -> None:
+        cases = (
+            (
+                "english_unrelated_marker_semicolon_without_space",
+                "Review the document holistically;assess Complexity, Uncertainty and "
+                "Effort, while a separate quality checklist rates document clarity from "
+                "one to five.",
+                True,
+            ),
+            (
+                "russian_unrelated_marker_semicolon_without_space",
+                "Проверяйте документ целостно;оценивайте сложность, неопределённость и "
+                "трудозатраты, а отдельный чек-лист качества оценивает ясность документа "
+                "от одного до пяти.",
+                True,
+            ),
+            (
+                "english_unrelated_marker_with_and_then",
+                "Review the document holistically and then assess Complexity, "
+                "Uncertainty and Effort, while a separate quality checklist rates "
+                "document clarity from one to five.",
+                True,
+            ),
+            (
+                "russian_unrelated_marker_with_then",
+                "Проверяйте документ целостно, затем оценивайте сложность, "
+                "неопределённость и трудозатраты, а отдельный чек-лист качества "
+                "оценивает ясность документа от одного до пяти.",
+                True,
+            ),
+            (
+                "english_colon_inside_cue_predicate",
+                "Assess: holistically, Complexity, Uncertainty and Effort, while a "
+                "separate quality checklist rates document clarity from one to five.",
+                False,
+            ),
+            (
+                "russian_colon_inside_cue_predicate",
+                "Оценивайте: целостно, сложность, неопределённость и трудозатраты, а "
+                "отдельный чек-лист качества оценивает ясность документа от одного до "
+                "пяти.",
+                False,
+            ),
+            (
+                "english_trailing_marker_with_commas",
+                "Assess Complexity, Uncertainty and Effort, holistically, while a "
+                "separate quality checklist rates document clarity from one to five.",
+                False,
+            ),
+        )
+        for name, statement, should_reject in cases:
+            with self.subTest(case=name):
+                result = self._validate_source(self.CONTRACT_PREAMBLE + statement)
+                self.assertEqual(result.returncode != 0, should_reject, result.stderr)
+
 
 if __name__ == "__main__":
     unittest.main()
