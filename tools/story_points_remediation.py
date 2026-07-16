@@ -241,6 +241,15 @@ def execute_action(issue: dict, action: dict, runner=run_multica) -> None:
 
 def apply_plan(plan: list[dict], limit: int | None, runner=run_multica,
                fetch=None) -> dict:
+    # Fail-closed on a bad canary limit: reject non-positive values before any
+    # fetch or mutation. A negative ``limit`` would otherwise become the slice
+    # ``plan[:limit]`` (e.g. ``plan[:-1]``) and silently run a near-full apply
+    # instead of the intended single-issue canary (FAN-1165).
+    if limit is not None and limit <= 0:
+        raise RemediationError(
+            f"--limit must be a positive integer for a canary apply "
+            f"(got {limit}); refusing to run before any fetch or mutation"
+        )
     fetch = fetch or (lambda issue_id: multica_json("issue", "get", issue_id))
     log = {"applied": [], "skipped": [], "errors": []}
     targets = plan if limit is None else plan[:limit]

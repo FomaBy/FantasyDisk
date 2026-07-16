@@ -246,6 +246,92 @@ class ApplyPlanTest(unittest.TestCase):
         self.assertEqual(log["applied"], [])
         self.assertEqual(len(log["errors"]), 1)
 
+    @staticmethod
+    def _fail_fetch(issue_id):
+        raise AssertionError(
+            f"fetch must not run for an invalid limit: {issue_id}"
+        )
+
+    def _single_retro_plan(self):
+        retro = make_issue(
+            id="issue-r", identifier="FAN-10", number=10,
+            labels=[SP8_LABEL],
+            metadata={"story_points": 8, "estimation_model": RETRO_MODEL},
+        )
+        return spr.build_plan([retro])
+
+    def test_apply_rejects_negative_limit_before_any_fetch_or_mutation(self):
+        plan = self._single_retro_plan()
+        with self.assertRaises(spr.RemediationError):
+            spr.apply_plan(
+                plan, -1,
+                runner=ExecuteActionGuardTest._forbidden_runner,
+                fetch=self._fail_fetch,
+            )
+
+    def test_apply_rejects_zero_limit_before_any_fetch_or_mutation(self):
+        plan = self._single_retro_plan()
+        with self.assertRaises(spr.RemediationError):
+            spr.apply_plan(
+                plan, 0,
+                runner=ExecuteActionGuardTest._forbidden_runner,
+                fetch=self._fail_fetch,
+            )
+
+    def test_apply_positive_canary_limit_touches_only_first_entry(self):
+        first = make_issue(
+            id="issue-r10", identifier="FAN-10", number=10,
+            labels=[SP8_LABEL],
+            metadata={"story_points": 8, "estimation_model": RETRO_MODEL},
+        )
+        second = make_issue(
+            id="issue-r20", identifier="FAN-20", number=20,
+            labels=[SP8_LABEL],
+            metadata={"story_points": 8, "estimation_model": RETRO_MODEL},
+        )
+        plan = spr.build_plan([first, second])
+        by_id = {"issue-r10": first, "issue-r20": second}
+        fetched: list[str] = []
+        commands: list[list[str]] = []
+
+        def fetch(issue_id):
+            fetched.append(issue_id)
+            return by_id[issue_id]
+
+        def runner(args):
+            commands.append(args)
+
+        log = spr.apply_plan(plan, 1, runner=runner, fetch=fetch)
+        self.assertEqual([e["identifier"] for e in log["applied"]], ["FAN-10"])
+        self.assertEqual(fetched, ["issue-r10"])
+        self.assertEqual(len(commands), 3)
+        for args in commands:
+            self.assertIn("issue-r10", args)
+            self.assertNotIn("issue-r20", args)
+
+    def test_apply_without_limit_covers_every_plan_entry(self):
+        first = make_issue(
+            id="issue-r10", identifier="FAN-10", number=10,
+            labels=[SP8_LABEL],
+            metadata={"story_points": 8, "estimation_model": RETRO_MODEL},
+        )
+        second = make_issue(
+            id="issue-r20", identifier="FAN-20", number=20,
+            labels=[SP8_LABEL],
+            metadata={"story_points": 8, "estimation_model": RETRO_MODEL},
+        )
+        plan = spr.build_plan([first, second])
+        by_id = {"issue-r10": first, "issue-r20": second}
+
+        log = spr.apply_plan(
+            plan, None,
+            runner=lambda args: None,
+            fetch=lambda issue_id: by_id[issue_id],
+        )
+        self.assertEqual(
+            [e["identifier"] for e in log["applied"]], ["FAN-10", "FAN-20"]
+        )
+
 
 class ReportTest(unittest.TestCase):
     def test_rows_group_by_completion_date_and_keep_provenance(self):
