@@ -20,6 +20,13 @@ DESCRIPTION_BLOCK = (
 )
 
 
+def estimate_block(points) -> str:
+    return (
+        f"## Оценка сложности\n\nStory points: {points}\nLabel: `SP:{points}`\n"
+        "Модель: CUE / Fibonacci `1, 2, 3, 5, 8, 13`\nОбоснование: bounded.\n"
+    )
+
+
 def make_issue(**overrides) -> dict:
     issue = {
         "id": "issue-1",
@@ -88,6 +95,101 @@ class ClassifyTest(unittest.TestCase):
             },
         )
         self.assertEqual(spr.classify(issue), spr.INCONSISTENT)
+
+    def test_description_5_vs_label_metadata_8_is_inconsistent(self):
+        # FAN-1166 repro: description says 5 while Label/metadata say 8.
+        issue = make_issue(
+            description="Story points: 5",
+            labels=[SP8_LABEL],
+            metadata={
+                "story_points": 8,
+                "estimation_model": spr.CANONICAL_MODEL,
+            },
+        )
+        self.assertEqual(spr.classify(issue), spr.INCONSISTENT)
+
+    def test_description_8_vs_label_metadata_5_is_inconsistent(self):
+        # Opposite direction: description says 8 while Label/metadata say 5.
+        issue = make_issue(
+            description="Story points: 8",
+            labels=[SP5_LABEL],
+            metadata={
+                "story_points": 5,
+                "estimation_model": spr.CANONICAL_MODEL,
+            },
+        )
+        self.assertEqual(spr.classify(issue), spr.INCONSISTENT)
+
+    def test_missing_description_estimate_is_inconsistent(self):
+        issue = make_issue(
+            description="No estimate block here.",
+            labels=[SP5_LABEL],
+            metadata={
+                "story_points": 5,
+                "estimation_model": spr.CANONICAL_MODEL,
+            },
+        )
+        self.assertEqual(spr.classify(issue), spr.INCONSISTENT)
+
+    def test_malformed_description_estimate_is_inconsistent(self):
+        issue = make_issue(
+            description="Story points: five",
+            labels=[SP5_LABEL],
+            metadata={
+                "story_points": 5,
+                "estimation_model": spr.CANONICAL_MODEL,
+            },
+        )
+        self.assertEqual(spr.classify(issue), spr.INCONSISTENT)
+
+    def test_duplicate_description_estimate_is_inconsistent(self):
+        issue = make_issue(
+            description="Story points: 5\n...\nStory points: 5",
+            labels=[SP5_LABEL],
+            metadata={
+                "story_points": 5,
+                "estimation_model": spr.CANONICAL_MODEL,
+            },
+        )
+        self.assertEqual(spr.classify(issue), spr.INCONSISTENT)
+
+    def test_accepted_with_string_metadata_points(self):
+        issue = make_issue(
+            description=estimate_block(5),
+            labels=[SP5_LABEL],
+            metadata={
+                "story_points": "5",
+                "estimation_model": spr.CANONICAL_MODEL,
+            },
+        )
+        self.assertEqual(spr.classify(issue), spr.ACCEPTED_PREWORK)
+
+    def test_description_estimates_parsing(self):
+        self.assertEqual(
+            spr.description_estimates(make_issue(description=DESCRIPTION_BLOCK)),
+            [5],
+        )
+        self.assertEqual(
+            spr.description_estimates(make_issue(description="")), []
+        )
+        self.assertEqual(
+            spr.description_estimates(
+                make_issue(description="Story points: 8")
+            ),
+            [8],
+        )
+        self.assertEqual(
+            spr.description_estimates(
+                make_issue(description="Story points: five")
+            ),
+            [],
+        )
+        self.assertEqual(
+            spr.description_estimates(
+                make_issue(description="Story points: 5\nStory points: 5")
+            ),
+            [5, 5],
+        )
 
 
 class BuildPlanTest(unittest.TestCase):

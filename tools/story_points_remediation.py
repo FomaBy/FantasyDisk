@@ -48,7 +48,7 @@ RETROSPECTIVE_MARKER = "retrospective"
 SP_LABEL_RE = re.compile(r"^SP:(1|2|3|5|8|13)$")
 CLOSED_STATUSES = ("done", "cancelled")
 REMOVABLE_METADATA_KEYS = ("story_points", "estimation_model")
-DESCRIPTION_ESTIMATE_RE = re.compile(r"Story points:\s*\d+", re.IGNORECASE)
+DESCRIPTION_ESTIMATE_RE = re.compile(r"Story points:\s*(\d+)", re.IGNORECASE)
 
 PAGE_LIMIT = 100
 
@@ -124,15 +124,42 @@ def sp_labels(issue: dict) -> list[dict]:
     ]
 
 
+def description_estimates(issue: dict) -> list[int]:
+    """Integer values of every ``Story points: <N>`` in the description.
+
+    A canonical pre-work estimate carries exactly one such value; a missing,
+    malformed (no integer), or duplicated block disqualifies the issue from
+    being counted as an accepted pre-work estimate.
+    """
+    text = issue.get("description") or ""
+    return [int(m.group(1)) for m in DESCRIPTION_ESTIMATE_RE.finditer(text)]
+
+
 def has_estimate_block(issue: dict) -> bool:
-    return bool(DESCRIPTION_ESTIMATE_RE.search(issue.get("description") or ""))
+    return bool(description_estimates(issue))
+
+
+def label_points(label: dict) -> int:
+    return int(label["name"].split(":")[1])
+
+
+def metadata_points(meta: dict) -> int | None:
+    """Numeric ``story_points`` metadata, or ``None`` when absent/non-numeric."""
+    value = meta.get("story_points")
+    if value is None or isinstance(value, bool):
+        return None
+    if isinstance(value, int):
+        return value
+    text = str(value).strip()
+    return int(text) if text.isdigit() else None
 
 
 def classify(issue: dict) -> str:
     meta = issue.get("metadata") or {}
     model = str(meta.get("estimation_model", ""))
     retrospective = RETROSPECTIVE_MARKER in model.lower()
-    block = has_estimate_block(issue)
+    estimates = description_estimates(issue)
+    block = bool(estimates)
     labels = sp_labels(issue)
     has_sp_data = bool(labels) or "story_points" in meta or bool(model)
     if retrospective and block:
@@ -141,11 +168,16 @@ def classify(issue: dict) -> str:
         return RETROSPECTIVE_BACKFILL
     if not has_sp_data:
         return UNESTIMATED
+    # Accepted only when the single description estimate exactly matches the
+    # single canonical Label and the numeric metadata. A missing, malformed,
+    # duplicated, or mismatched description value fails closed to
+    # ``inconsistent_needs_review`` and stays out of the canonical report.
     if (
-        block
+        len(estimates) == 1
         and model == CANONICAL_MODEL
         and len(labels) == 1
-        and str(meta.get("story_points", "")) == labels[0]["name"].split(":")[1]
+        and label_points(labels[0]) == estimates[0]
+        and metadata_points(meta) == estimates[0]
     ):
         return ACCEPTED_PREWORK
     return INCONSISTENT
