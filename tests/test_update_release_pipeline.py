@@ -257,12 +257,6 @@ class UnsignedChannelLabelingTests(unittest.TestCase):
 class Published024ReleaseDocumentationTests(unittest.TestCase):
     """FAN-1226: operator docs must describe the already published 0.2.4 release."""
 
-    CANONICAL_RELEASE_DOCS = (
-        Path("docs") / "process" / "game_updates.md",
-        Path("docs") / "process" / "release_versioning.md",
-        Path("docs") / "release_telegram_setup.md",
-    )
-
     def test_snapshot_marks_024_as_the_current_published_stable_release(self) -> None:
         state = (ROOT / "docs" / "design" / "current_game_state.md").read_text(
             encoding="utf-8"
@@ -283,11 +277,187 @@ class Published024ReleaseDocumentationTests(unittest.TestCase):
         self.assertNotIn("legacy Telethon-сессия только для релиза 0.2.2", readme)
 
     def test_canonical_release_docs_keep_the_public_github_and_telegram_contract(self) -> None:
-        for relative in self.CANONICAL_RELEASE_DOCS:
-            with self.subTest(doc=str(relative)):
-                doc = (ROOT / relative).read_text(encoding="utf-8")
-                self.assertIn("FomaBy/FantasyDisk-Releases", doc)
-                self.assertIn("Telegram", doc)
+        documents = ReleaseDocumentationConsistencyTests.read_documents()
+        self.assertEqual(
+            ReleaseDocumentationConsistencyTests.delivery_contract_errors(documents),
+            [],
+        )
+
+
+class ReleaseDocumentationConsistencyTests(unittest.TestCase):
+    """FAN-1235: release instructions must preserve the hotfix delivery contract."""
+
+    SKILL = Path("skills") / "codex" / "fantasydisk-release-director" / "SKILL.md"
+    RELEASE_VERSIONING = Path("docs") / "process" / "release_versioning.md"
+    BRANCHING = Path("docs") / "process" / "versioning_and_branching.md"
+    TELEGRAM_SETUP = Path("docs") / "release_telegram_setup.md"
+    GAME_UPDATES = Path("docs") / "process" / "game_updates.md"
+    CURRENT_STATE = Path("docs") / "design" / "current_game_state.md"
+
+    # These are operational examples, not the SemVer/hotfix policy examples that
+    # intentionally retain X.Y.Z and X.Y.Z.R terminology.
+    OPERATIONAL_PLACEHOLDERS = {
+        SKILL: (
+            "## [<version>] — YYYY-MM-DD",
+            "fantasydisk_<version>_announcement.png",
+            "exact release commit as `v<version>`",
+            "CHANGELOG-<version>.md",
+            "<local_root>/releases/v<version>/",
+        ),
+        RELEASE_VERSIONING: (
+            "тегом v<version>",
+            "## [<version>] — дата",
+            "releases/v<version>/CHANGELOG-<version>.md",
+            "exact tag `v<version>`",
+            "FantasyDisk-<version>-macos.dmg",
+            "FantasyDisk-<version>-windows-setup.exe",
+            "tools/build_release.sh <version>",
+            "git worktree add --detach /tmp/... v<version>",
+        ),
+        TELEGRAM_SETUP: ("--version <version>",),
+    }
+    OPERATIONAL_XYZ_ONLY = {
+        SKILL: (
+            "## [X.Y.Z] — YYYY-MM-DD",
+            "fantasydisk_XYZ_announcement.png",
+            "exact release commit as `vX.Y.Z`",
+            "CHANGELOG-X.Y.Z.md",
+            "<local_root>/releases/vX.Y.Z/",
+        ),
+        RELEASE_VERSIONING: (
+            "тегом vX.Y.Z",
+            "## [X.Y.Z] — дата",
+            "releases/vX.Y.Z/",
+            "CHANGELOG-X.Y.Z.md",
+            "exact tag `vX.Y.Z`",
+            "FantasyDisk-X.Y.Z-macos.dmg",
+            "FantasyDisk-X.Y.Z-windows-setup.exe",
+            "tools/build_release.sh X.Y.Z",
+            "git worktree add --detach /tmp/... vX.Y.Z",
+        ),
+        TELEGRAM_SETUP: ("--version X.Y.Z",),
+    }
+    DELIVERY_CONTRACTS = {
+        GAME_UPDATES: (
+            "канонический источник клиентских обновлений — отдельный публичный binary-only репозиторий [FomaBy/FantasyDisk-Releases]",
+            "Telegram обязателен для каждого stable release: dry-run, затем отправка poster, DMG, Windows Setup и SHA256SUMS из verified durable path.",
+            "После успешной Telegram delivery опубликовать Discord news с Telegram download link и ссылкой на public GitHub latest release.",
+        ),
+        RELEASE_VERSIONING: (
+            "public binary-only repository `FomaBy/FantasyDisk-Releases`",
+            "Каждый stable release обязательно отправляется в Telegram (poster, DMG, Windows Setup, SHA256SUMS), после чего Discord публикует Telegram download link и GitHub release URL.",
+        ),
+        TELEGRAM_SETUP: (
+            "Telegram — обязательный канал файловой доставки, а public binary-only GitHub repository `FomaBy/FantasyDisk-Releases` — канонический источник updater manifest и latest downloads.",
+            "Telegram получает release poster, macOS DMG, Windows Setup и `SHA256SUMS.txt`; затем Discord публикует player-facing новость с Telegram download link.",
+        ),
+    }
+
+    @staticmethod
+    def normalize(document: str) -> str:
+        return " ".join(document.split())
+
+    @classmethod
+    def read_documents(cls) -> dict[Path, str]:
+        paths = set(cls.OPERATIONAL_PLACEHOLDERS) | set(cls.DELIVERY_CONTRACTS) | {
+            cls.BRANCHING,
+            cls.CURRENT_STATE,
+        }
+        return {relative: (ROOT / relative).read_text(encoding="utf-8") for relative in paths}
+
+    @classmethod
+    def operational_version_errors(cls, documents: dict[Path, str]) -> list[str]:
+        errors: list[str] = []
+        for relative, placeholders in cls.OPERATIONAL_PLACEHOLDERS.items():
+            document = documents[relative]
+            for placeholder in placeholders:
+                if placeholder not in document:
+                    errors.append(f"{relative}: missing operational placeholder {placeholder}")
+            for xyz_only in cls.OPERATIONAL_XYZ_ONLY[relative]:
+                if xyz_only in document:
+                    errors.append(f"{relative}: X.Y.Z-only operational example {xyz_only}")
+        return errors
+
+    @classmethod
+    def delivery_contract_errors(cls, documents: dict[Path, str]) -> list[str]:
+        errors: list[str] = []
+        for relative, clauses in cls.DELIVERY_CONTRACTS.items():
+            document = cls.normalize(documents[relative])
+            for clause in clauses:
+                if clause not in document:
+                    errors.append(f"{relative}: missing delivery contract clause {clause}")
+        return errors
+
+    @classmethod
+    def published_release_lifecycle_errors(cls, documents: dict[Path, str]) -> list[str]:
+        errors: list[str] = []
+        required = {
+            cls.CURRENT_STATE: "Текущий опубликованный stable release: `0.2.4`",
+            cls.RELEASE_VERSIONING: "его historical release freeze в рамках FAN-1128/FAN-1210 завершён.",
+            cls.BRANCHING: "Release freeze FAN-1128/FAN-1210 завершён публикацией `0.2.4`; новые продуктовые изменения идут в следующую SemVer-версию.",
+        }
+        forbidden = {
+            cls.BRANCHING: (
+                "На время FAN-1128 действует release freeze:",
+                "новые продуктовые изменения не входят в 0.2.3",
+            ),
+            cls.RELEASE_VERSIONING: ("`0.2.4` готовится из `dev`",),
+        }
+        for relative, clause in required.items():
+            if clause not in cls.normalize(documents[relative]):
+                errors.append(f"{relative}: missing published-release lifecycle clause {clause}")
+        for relative, stale_clauses in forbidden.items():
+            for clause in stale_clauses:
+                if clause in cls.normalize(documents[relative]):
+                    errors.append(f"{relative}: stale active/frozen release clause {clause}")
+        return errors
+
+    def test_operational_examples_support_both_release_version_shapes(self) -> None:
+        documents = self.read_documents()
+        self.assertEqual(self.operational_version_errors(documents), [])
+
+        mutations = (
+            (self.SKILL, "## [<version>] — YYYY-MM-DD", "## [X.Y.Z] — YYYY-MM-DD"),
+            (self.RELEASE_VERSIONING, "releases/v<version>/", "releases/vX.Y.Z/"),
+            (self.TELEGRAM_SETUP, "--version <version>", "--version X.Y.Z"),
+        )
+        for relative, expected, xyz_only in mutations:
+            with self.subTest(document=str(relative), mutation=xyz_only):
+                mutated = dict(documents)
+                mutated[relative] = mutated[relative].replace(expected, xyz_only, 1)
+                self.assertTrue(
+                    any(xyz_only in error for error in self.operational_version_errors(mutated))
+                )
+
+    def test_delivery_contract_is_semantic_and_rejects_token_only_mutations(self) -> None:
+        documents = self.read_documents()
+        self.assertEqual(self.delivery_contract_errors(documents), [])
+
+        mutations = (
+            (self.GAME_UPDATES, "канонический источник клиентских обновлений", "дополнительный источник клиентских обновлений"),
+            (self.RELEASE_VERSIONING, "Каждый stable release обязательно отправляется", "Каждый stable release может отправляться"),
+            (self.TELEGRAM_SETUP, "обязательный канал файловой доставки", "дополнительный канал файловой доставки"),
+        )
+        for relative, expected, replacement in mutations:
+            with self.subTest(document=str(relative), mutation=replacement):
+                mutated = dict(documents)
+                mutated[relative] = mutated[relative].replace(expected, replacement, 1)
+                self.assertNotEqual(self.delivery_contract_errors(mutated), [])
+
+    def test_published_024_cannot_be_described_as_an_active_frozen_release(self) -> None:
+        documents = self.read_documents()
+        self.assertEqual(self.published_release_lifecycle_errors(documents), [])
+
+        stale = "На время FAN-1128 действует release freeze: новые продуктовые изменения не входят в 0.2.3."
+        mutated = dict(documents)
+        mutated[self.BRANCHING] = mutated[self.BRANCHING].replace(
+            "Release freeze FAN-1128/FAN-1210 завершён публикацией `0.2.4`;\nновые продуктовые изменения идут в следующую SemVer-версию.",
+            stale,
+            1,
+        )
+        errors = self.published_release_lifecycle_errors(mutated)
+        self.assertTrue(any("published-release lifecycle" in error for error in errors))
+        self.assertTrue(any("stale active/frozen" in error for error in errors))
 
 
 if __name__ == "__main__":

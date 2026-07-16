@@ -31,7 +31,7 @@
 ## Ветки
 
 ```text
-main — только релизные состояния. Каждый коммит в main = релиз с тегом vX.Y.Z.
+main — только релизные состояния. Каждый коммит в main = релиз с тегом v<version>.
 dev  — основная ветка разработки. Все чаты (Backend/Designer/Animator/PM) работают здесь.
 ```
 
@@ -66,7 +66,7 @@ dev  — основная ветка разработки. Все чаты (Back
    (вызовы есть в HEAD, определения — в несведённом дереве). Красный чистый HEAD —
    блокер релиза.
 4. **CHANGELOG — ОБЯЗАТЕЛЬНЫЙ ШАГ КАЖДОГО ДЕПЛОЯ** (правило пользователя, 2026-06-12):
-   - финализировать раздел версии: Unreleased → `## [X.Y.Z] — дата`;
+   - финализировать раздел версии: Unreleased → `## [<version>] — дата`;
    - сверить ПОЛНОТУ с фактическим составом релиза: `git log v<пред>..HEAD --oneline` —
      каждое игровое/видимое изменение должно иметь пункт (внутренние docs/чекпоинты
      можно опускать); пункты — человеческим языком, для игрока/тестера;
@@ -75,18 +75,18 @@ dev  — основная ветка разработки. Все чаты (Back
 5. Поднять версию: `config/version` в project.godot.
 6. Коммит в dev → `git checkout main` → `git merge dev --no-ff` → `git tag v<version>`
    → `git checkout dev`.
-7. Backend собирает релизные билды для Windows и macOS (см. ниже) в `releases/vX.Y.Z/`
+7. Backend собирает релизные билды для Windows и macOS (см. ниже) в `releases/v<version>/`
    (каталог в .gitignore — артефакты не коммитятся).
 8. Положить копию changelog версии в артефакты релиза:
-   `releases/vX.Y.Z/CHANGELOG-X.Y.Z.md` (раздел версии из CHANGELOG.md) — чтобы
+   `releases/v<version>/CHANGELOG-<version>.md` (раздел версии из CHANGELOG.md) — чтобы
    получатель билда видел, что нового, без доступа к репозиторию.
 9. Smoke-проверка установленных билдов.
 9a. **Постоянная локальная копия — блокирующий гейт.** До любой внешней публикации
     `tools/build_release.sh` обязан вызвать bundled
     `skills/codex/fantasydisk-release-director/scripts/local_release.py` и:
     - собирать package в отдельный staging и только затем атомарно создать
-      `<local_root>/releases/vX.Y.Z/` независимо от временного agent worktree;
-    - извлечь в `project/` неизменяемое evidence exact tag `vX.Y.Z`, записать tag
+      `<local_root>/releases/v<version>/` независимо от временного agent worktree;
+    - извлечь в `project/` неизменяемое evidence exact tag `v<version>`, записать tag
       SHA и SHA256 всех файлов в `LOCAL_RELEASE.json`;
     - создать отдельную редактируемую `godot-project/`, атомарно направить на неё
       `releases/current-project` и зарегистрировать путь как `favorite=true`, не
@@ -119,8 +119,8 @@ dev  — основная ветка разработки. Все чаты (Back
 10. **Релиз в Multica** (правило пользователя 2026-06-12: спринт = релиз;
     live board — проект FantasyDisk, issues FAN-*):
     - закрыть все issues версии в статус `done` на доске FantasyDisk;
-    - пометить Multica release metadata (`release`) X.Y.Z как released, в описание
-      версии — краткий ченджлог + ссылка releases/vX.Y.Z/CHANGELOG-X.Y.Z.md;
+    - пометить Multica release metadata (`release`) `<version>` как released, в описание
+      версии — краткий ченджлог + ссылка releases/v<version>/CHANGELOG-<version>.md;
     - открыть следующую обычную product-версию (unreleased) с кратким описанием плана и
       завести под неё issues FAN-* в статусе `todo`;
     - новым issues версии проставлять release metadata (`release`) = активная
@@ -178,7 +178,7 @@ Apple credentials снова доступны. Полный клиентский
   хранится внутри app bundle, а `.background`, `.fseventsd` и другие видимые
   root-служебные элементы запрещены allowlist-гейтом. Имена артефактов не
   меняются (клиентский контракт требует точные имена).
-- Выход: `releases/vX.Y.Z/FantasyDisk-X.Y.Z-macos.dmg`.
+- Выход: `releases/v<version>/FantasyDisk-<version>-macos.dmg`.
 
 ### Windows (собирается с этого же Mac)
 - Добавить пресет `Windows Desktop` (x86_64): exe + embedded pck (`binary_format/embed_pck=true`),
@@ -186,10 +186,10 @@ Apple credentials снова доступны. Полный клиентский
 - Для иконки/метаданных exe нужен `rcedit` + wine; если ставить wine нежелательно —
   допустимо собирать без кастомной иконки exe (не блокер релиза).
 - Игрокам публикуется только инсталлер **NSIS** (`brew install makensis`) —
-  `FantasyDisk-X.Y.Z-windows-setup.exe`. Сырой exe нужен только как временный
+  `FantasyDisk-<version>-windows-setup.exe`. Сырой exe нужен только как временный
   вход сборки; отдельный Windows zip больше не создаётся и не публикуется.
 - Headless-экспорт обеих платформ выполняется только через
-  `tools/build_release.sh X.Y.Z`, который вызывает Godot через
+  `tools/build_release.sh <version>`, который вызывает Godot через
   `tools/godot_gate.py`, а не напрямую.
 
 ## Кроссплатформенная совместимость (правила для всех агентов)
@@ -207,7 +207,7 @@ Apple credentials снова доступны. Полный клиентский
 
 ## Фактические Нюансы Сборки (выявлено при v0.1.0)
 
-- Сборка из тега идет через **отдельный git worktree** (`git worktree add --detach /tmp/... vX.Y.Z`),
+- Сборка из тега идет через **отдельный git worktree** (`git worktree add --detach /tmp/... v<version>`),
   а не checkout в рабочем каталоге: в каталоге параллельно работают другие агенты,
   переключение ветки под ними недопустимо. Реализовано в `tools/build_release.sh`.
 - Все входы сборки (`export_presets.cfg`, иконки, NSIS source, DMG helper/arrow)

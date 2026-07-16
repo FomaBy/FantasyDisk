@@ -28,7 +28,7 @@ read-only history. Run from the repository root; do not hardcode a checkout path
    version and does not run this release flow. Set `project.godot::config/version`
    and macOS fields to `<version>`; Windows `file_version` is `<version>.0` for
    three components and `<version>` for four.
-2. Finalize `CHANGELOG.md` as `## [X.Y.Z] — YYYY-MM-DD`, then leave a new empty
+2. Finalize `CHANGELOG.md` as `## [<version>] — YYYY-MM-DD`, then leave a new empty
    `Unreleased` section above it.
 3. Add the newest entry first in `scripts/patch_notes_data.gd`.
 4. When character balance or mechanics changed, include a concise player-facing
@@ -52,13 +52,13 @@ Use `content-zone-image-compositor` before any image generation:
 5. Require the final render report to contain `ok: true`; save the publishable
    PNG under `assets/marketing/`. Use the legacy
    `fantasydisk_022_announcement_telegram_discord.png` name only for v0.2.2;
-   every later release uses neutral `fantasydisk_XYZ_announcement.png`.
+   every later release uses neutral `fantasydisk_<version>_announcement.png`.
 
 ## 4. Git release state
 
 1. Commit the green release preparation and push it to `origin/dev`.
 2. Integrate current `dev` into `main` with a release merge commit, tag the
-   exact release commit as `vX.Y.Z`, and push `main` plus the tag.
+   exact release commit as `v<version>`, and push `main` plus the tag.
 3. Return the task worktree to its agent branch/dev flow. Never switch another
    worker’s checkout.
 
@@ -75,7 +75,7 @@ Require `releases/v<version>/` to contain:
 - `FantasyDisk-<version>-macos.dmg`;
 - `FantasyDisk-<version>-windows-setup.exe` (the only Windows download);
 - `SHA256SUMS.txt`;
-- `CHANGELOG-X.Y.Z.md`;
+- `CHANGELOG-<version>.md`;
 - the mandatory release poster PNG;
 - `update-manifest.json` (schema 1, generated from the final installer bytes).
 
@@ -149,10 +149,10 @@ python3 skills/codex/fantasydisk-release-director/scripts/local_release.py \
 Require all of the following before any external upload:
 
 - the build writes into an isolated staging directory; only `local_release.py`
-  may atomically create `<local_root>/releases/vX.Y.Z/`;
+  may atomically create `<local_root>/releases/v<version>/`;
 - the complete package, including the mandatory versioned poster PNG, is
-  retained under `<local_root>/releases/vX.Y.Z/`;
-- `project/` is immutable evidence from an exact `git archive` of `vX.Y.Z`, with
+  retained under `<local_root>/releases/v<version>/`;
+- `project/` is immutable evidence from an exact `git archive` of `v<version>`, with
   tag SHA, every package hash, and the macOS trust channel (`macos_channel`)
   recorded in `LOCAL_RELEASE.json`;
 - existing releases are byte-compared and never overwritten on mismatch, and a
