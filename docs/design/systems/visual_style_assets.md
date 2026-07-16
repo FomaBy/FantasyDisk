@@ -1,8 +1,27 @@
 # Visual Style Assets
 
-Обновлено: 2026-07-14
+Обновлено: 2026-07-15
 
 Этот файл фиксирует reusable visual assets FantasyDisk после domain split. Подробные таблицы сущностей остаются в `docs/design/content_registry.md`.
+
+## FAN-1094 macOS Installer Arrow
+
+The macOS DMG deliberately has no FantasyDisk frame, title, instructions,
+scenery, ornament or baked icon labels. Finder renders only the native
+`FantasyDisk.app` and `Applications` items; the one permitted drawable element
+is the thin charcoal arrow from PixelLab MCP object
+`eefc2d99-8fb4-407f-8a84-13f043c4f017`.
+
+Source/provenance and the accepted build input live under
+`docs/design/references/fan1094_macos_installer/`; exact `720×480`
+geometry/root allowlisting is
+documented in `docs/design/mockups/fan1094_macos_installer/spec.md`. Rejected
+PixelLab UI-panel attempts are recorded by ID only because they added forbidden
+buttons, text, scenery and character art. The final DMG stores its padded
+arrow-only Finder background inside the signed app bundle, so users who show
+hidden files do not see a `.background` folder. The mounted Finder proof is
+`docs/design/previews/fan1094_macos_installer_runtime.png` (Retina `1440×960`
+capture of the fixed `720×480` logical window).
 
 ## FAN-1077 Codex Unread Badge
 
@@ -25,8 +44,9 @@ directories. No runtime text is baked into the badge.
 The current Codex runtime art package lives at
 `assets/sprites/ui/atlas_style/codex/`:
 
-- `bg_codex_sanctum.png` — inner-scene crop of the PixelLab sanctum source,
-  drawn `STRETCH_KEEP_ASPECT_COVERED`;
+- `bg_codex_sanctum.png` — FAN-1098 2560x1440 RGB draconic archive created
+  with the built-in OpenAI Image Generator and drawn
+  `STRETCH_KEEP_ASPECT_COVERED`;
 - `panel_9slice.png` — nav/list/detail/title surfaces and the ornament-safe
   lower lore scroll;
 - `entry_card_516x154.png` — exact-size center rows; runtime portrait/name are
@@ -35,8 +55,8 @@ The current Codex runtime art package lives at
 - `chip_bar.png` — two 330×70 semantic/locked chips;
 - `codex_crest.png` — 104×104 top-center accent.
 
-All runtime bitmaps are promoted or mechanically cropped from the accepted
-PixelLab MCP source package under
+All non-background runtime bitmaps are promoted or mechanically cropped from the
+accepted PixelLab MCP source package under
 `docs/design/references/fan1065_codex_atlas_settings_redesign/`; IDs, prompts,
 seeds, dimensions and derivation are preserved in its `manifest.json` and
 `provenance.json`. The clean/annotated mockups and state sheet live in the
@@ -44,6 +64,13 @@ adjacent mockup/preview directories. No runtime text is baked into these
 assets. The old `bg_codex_archive` and historical Codex frame kits remain source
 history, not the active Codex surface set. Main Menu tab/Back textures are
 referenced from their existing global family and were not regenerated.
+
+FAN-1098 replaces only the already-wired full-canvas Codex background. Its
+built-in source, prompt, normalization record, SHA-256 hashes, previous bitmap
+backup, clean mockup, safe-zone overlay/report, and real 1280x720, 1920x1080,
+and 2560x1440 runtime captures live under
+`docs/design/{references,mockups,previews,backups}/fan1098_codex_openai_background/`.
+PixelLab and the OpenAI Images API were not used for this background.
 
 ## Semantic Typography Content-Zone Anchor
 
@@ -927,19 +954,26 @@ SCRUM-337 is the current full attack VFX art baseline. Six generated source shee
   runtime, and production continues to reuse `route_map_backdrop.png`, canonical
   node icons, HUD v2 assets and the hollow `meta40/frame_border.png` shell.
 - SCRUM-158 dark fantasy UI backdrops live in `assets/backgrounds/ui/`: `ui_backdrop_system_cathedral.png`, `ui_backdrop_merchant_archive.png`, `ui_backdrop_arcane_lab.png`, `ui_backdrop_reward_hall.png`, `ui_backdrop_defeat_crypt.png`. Each is `2560x1440` with a calm low-contrast center for central panels and richer material detail pushed to the edges. SCRUM-418 removed the old compatibility copies from `assets/sprites/ui/screens/`; runtime mapping now points directly at this canonical backdrop set. Preview: `docs/design/previews/ui_screen_backdrops_dark_fantasy_contact.png`.
+- `assets/sprites/ui/atlas_style/codex/bg_codex_sanctum.png` is the FAN-1098
+  active Codex-specific 2560x1440 RGB backdrop: a dark draconic archive with a
+  calm three-column content field and architecture concentrated toward the
+  edges. It was generated with the built-in OpenAI Image Generator in Codex;
+  PixelLab and the OpenAI Images API were not used. Provenance and responsive
+  evidence live in the FAN-1098 design package documented above.
 - `assets/backgrounds/main_menu_epic_battle_v3.png` is the active start-screen
-  art. FAN-1088 uses a 2560x1440 PixelLab-composited D&D/dark-fantasy scene:
-  one canonical north-facing Berserk on a monumental basalt cliff above a
-  violet disk-shaped dimensional rift. The focal silhouette is center-right,
-  while the left column remains dark and quiet for the six runtime actions and
-  title texture. The RGB runtime image contains no baked UI text, labels,
-  controls, frames, logo or watermark. New cliff/rift source objects, their
-  PixelLab IDs/prompts, postprocessed alpha exports, the canonical Berserk ID,
+  art. FAN-1097 uses a cohesive 2560x1440 cinematic dark-fantasy scene generated
+  and corrected through the built-in OpenAI Image Generator in Codex: one
+  unarmed barbarian on a monumental basalt cliff above a violet disk-shaped
+  dimensional rift, with storm mountains and ruined spires behind him. The focal
+  silhouette is center-right, while the left column remains dark and quiet for
+  the six runtime actions and title texture; the lower-right utility zone is also
+  subdued. The RGB runtime image contains no baked UI text, labels, controls,
+  frames, logo, cursor or watermark. Initial/accepted sources, both prompts,
   backup, mockup and safe-zone evidence are documented in
-  `docs/design/references/fan1088_main_menu_disk_rift/manifest.json` and
-  `docs/design/mockups/fan1088_main_menu_disk_rift/spec.md`. The former
-  SCRUM-1001 art is preserved under the FAN-1088 backup folder; its historical
-  OpenAI source package remains unchanged for provenance.
+  `docs/design/references/fan1097_main_menu_openai_background/manifest.json` and
+  `docs/design/mockups/fan1097_main_menu_openai_background/spec.md`. The former
+  FAN-1088 art is preserved under the FAN-1097 backup folder; its package remains
+  unchanged as historical provenance.
 - SCRUM-369 (2026-06-14) replaced the active combat arena set with 10
   `2560x1440` realistic D&D/dark fantasy battle backgrounds generated through
   `fantasydisk-asset-generator` and normalized for gameplay readability:

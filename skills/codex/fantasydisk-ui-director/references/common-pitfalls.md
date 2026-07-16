@@ -3,17 +3,26 @@
 Hard-won lessons. Check these before generating UI art or integrating frames so
 the same mistakes do not repeat.
 
-## PixelLab MCP generation/export
+## Generator routing and export
 
-- **Use PixelLab MCP for new art.** Characters, objects, props, frames, HUD,
-  icons, buttons, mockups, and production UI art must come from PixelLab MCP.
+- **Classify the layer first.** Full-canvas scenic backgrounds, menu/screen
+  backgrounds, loading/splash images, and illustrated underlays must use the
+  built-in OpenAI Image Generator through `$fantasydisk-builtin-image-generator`.
+  Never use PixelLab for them. Frames, HUD, icons, buttons, panels, and other
+  non-background UI art must use PixelLab MCP.
+- **Do not confuse alpha with asset type.** An icon or frame that needs a
+  transparent background is still a non-background asset and remains on the
+  PixelLab route.
 - **Tool visibility.** If direct PixelLab tools are not exposed, use tool
   discovery or the configured local MCP bridge. Never print or commit tokens,
   Authorization headers, or raw config containing secrets.
 - **Unavailable PixelLab => block/handoff.** Do not silently replace a PixelLab
   mockup with OpenAI Images, `image_gen`, old manual art, or `generate_asset.py`.
+- **Unavailable built-in OpenAI => block/handoff.** Do not replace a background
+  with PixelLab. Use the OpenAI Images API only after an explicit user request.
 - **Record provenance.** Save PixelLab source/project IDs, tags/names, prompts,
-  export dimensions, and source filenames in the task/spec or a nearby manifest.
+  export dimensions, and source filenames for non-background art. Save the
+  OpenAI prompt, output path, dimensions, and built-in/API route for backgrounds.
 - **Export for the target shape.** Very wide bars and irregular frames should be
   generated/exported at the real panel aspect when possible, or designed as
   9-slice/composed pieces so Godot does not stretch ornament.

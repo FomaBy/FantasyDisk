@@ -8,6 +8,7 @@ extends SceneTree
 # applies/ticks a real status effect in a headless SceneTree mini-arena.
 
 const Meta := preload("res://scripts/meta_progression.gd")
+const Schema6 := preload("res://scripts/constellation_schema6_data.gd")
 const TreeData := preload("res://scripts/meta_progression_tree_data.gd")
 const PlayerScript := preload("res://scripts/player.gd")
 const StatusEffects := preload("res://scripts/status_effects.gd")
@@ -77,22 +78,8 @@ const REQUIRED_PLAYER_METHODS := [
 	"meta_apply_priest_ward",
 ]
 
-const REQUIRED_CLASS_SPECIFIC_KEYS := {
-	"soldier": ["enemy_hit_damage_down", "stance_attack_speed_bonus"],
-	"thief": ["rush_crit_bonus", "gold_damage_per_50", "shop_price_mult"],
-	"elementalist": ["elemental_resonance_bonus", "elemental_orb_extra_count"],
-	"priest": ["heal_to_holy_damage_ratio", "ward_absorb_bonus"],
-	"robot": ["reactor_heat_damage_bonus", "reactor_heat_incoming_damage", "magnet_radius_mult"],
-	"engineer": ["device_attack_speed_bonus", "mine_extra_count"],
-	"dark_mage": ["dot_death_spread_duration", "beam_duration_mult"],
-	"guitarist": ["guitar_aura_radius_mult", "riff_streak_damage_bonus"],
-	"assassin": ["shadow_burst_invisibility_time"],
-	"ranger": ["charged_shot_extra_pierce", "trap_extra_count"],
-	"doctor": ["drain_extra_targets", "surgical_close_damage_bonus"],
-	"chemist": ["cloud_detonation_radius_mult", "homunculus_power_mult"],
-	"druid": ["pet_damage_mult", "briar_radius_mult"],
-	"knight": ["bastion_defense_bonus", "bastion_taunt"],
-}
+const WEAPON_BRANCHES_PER_CLASS := 3
+const NODES_PER_WEAPON_BRANCH := 6
 
 
 func _initialize() -> void:
@@ -156,35 +143,47 @@ func _test_semantic_surface(errors: Array) -> void:
 
 
 func _test_keystone_signatures_are_not_flattened(errors: Array) -> void:
-	var repeated_signatures := {}
-	for class_id in REQUIRED_CLASS_SPECIFIC_KEYS.keys():
-		var k0 := Meta.node_by_id("%s_k0" % str(class_id))
-		var k1 := Meta.node_by_id("%s_k1" % str(class_id))
-		if k0.is_empty() or k1.is_empty():
-			errors.append("Class '%s' missing k0/k1 keystone nodes." % str(class_id))
+	# Schema 6 replaced the retired k0/k1 stars with three six-node weapon
+	# branches per class. The anti-flattening invariant is now a unique final
+	# mechanic for each of the 51 branches, plus a free class core for every hero.
+	var classes := Schema6.classes_by_id()
+	if classes.size() != Schema6.EXPECTED_CLASS_COUNT:
+		errors.append("Schema 6 has %d classes, expected %d." % [classes.size(), Schema6.EXPECTED_CLASS_COUNT])
+	var mechanic_owners := {}
+	for raw_class_id in classes.keys():
+		var class_id := str(raw_class_id)
+		var entry := Schema6.class_entry(class_id)
+		var core := entry.get("core", {}) as Dictionary
+		if core.is_empty() or str(core.get("id", "")) != "%s_core" % class_id or str(core.get("role", "")) != "free_core":
+			errors.append("Class '%s' lacks its Schema 6 free core." % class_id)
+		var branches := entry.get("weapon_branches", []) as Array
+		if branches.size() != WEAPON_BRANCHES_PER_CLASS:
+			errors.append("Class '%s' has %d weapon branches, expected %d." % [class_id, branches.size(), WEAPON_BRANCHES_PER_CLASS])
 			continue
-		var key_union := {}
-		for node in [k0, k1]:
-			var effects: Dictionary = node.get("effects", {})
-			var keys: Array = effects.keys()
-			keys.sort()
-			var signature := "%s:" % str(class_id)
-			for key in keys:
-				key_union[str(key)] = true
-				signature += "%s=%.4f;" % [str(key), float(effects[key])]
-			if repeated_signatures.has(signature):
-				errors.append("Keystone signature repeated: %s and %s." % [str(node.get("id", "")), str(repeated_signatures[signature])])
-			repeated_signatures[signature] = str(node.get("id", ""))
-		for required_key in REQUIRED_CLASS_SPECIFIC_KEYS[str(class_id)]:
-			if not key_union.has(str(required_key)):
-				errors.append("Class '%s' k0/k1 still lacks class-specific semantic key '%s'." % [str(class_id), str(required_key)])
-		var has_class_semantic_key := false
-		for key in key_union.keys():
-			if REQUIRED_SEMANTIC_KEYS.has(str(key)) or (REQUIRED_CLASS_SPECIFIC_KEYS[str(class_id)] as Array).has(str(key)):
-				has_class_semantic_key = true
-				break
-		if not has_class_semantic_key:
-			errors.append("Class '%s' k0/k1 are flattened to generic conditional/stat keys." % str(class_id))
+		for raw_branch in branches:
+			var branch := raw_branch as Dictionary
+			var weapon_id := str(branch.get("weapon_id", ""))
+			var nodes := branch.get("nodes", []) as Array
+			if weapon_id == "" or nodes.size() != NODES_PER_WEAPON_BRANCH:
+				errors.append("Class '%s' weapon '%s' has malformed six-node branch." % [class_id, weapon_id])
+				continue
+			for node_index in range(nodes.size()):
+				var node := nodes[node_index] as Dictionary
+				if str(node.get("class_id", "")) != class_id or str(node.get("weapon_id", "")) != weapon_id:
+					errors.append("Class '%s' weapon '%s' node %d leaked affinity." % [class_id, weapon_id, node_index + 1])
+				var expected_role := "weapon_final" if node_index == NODES_PER_WEAPON_BRANCH - 1 else "weapon_boon"
+				if str(node.get("role", "")) != expected_role:
+					errors.append("Class '%s' weapon '%s' node %d has role '%s', expected '%s'." % [class_id, weapon_id, node_index + 1, str(node.get("role", "")), expected_role])
+				if node_index == NODES_PER_WEAPON_BRANCH - 1:
+					var mechanic_id := str(node.get("mechanic_id", ""))
+					if mechanic_id == "" or Schema6.mechanic(mechanic_id).is_empty():
+						errors.append("Class '%s' weapon '%s' final has no indexed mechanic." % [class_id, weapon_id])
+					elif mechanic_owners.has(mechanic_id):
+						errors.append("Schema 6 flattened mechanic '%s' across %s and %s/%s." % [mechanic_id, str(mechanic_owners[mechanic_id]), class_id, weapon_id])
+					else:
+						mechanic_owners[mechanic_id] = "%s/%s" % [class_id, weapon_id]
+	if mechanic_owners.size() != Schema6.EXPECTED_MECHANIC_COUNT:
+		errors.append("Schema 6 indexed %d distinct weapon-final mechanics, expected %d." % [mechanic_owners.size(), Schema6.EXPECTED_MECHANIC_COUNT])
 
 
 func _test_existing_condition_outcomes(holder: Node2D, errors: Array) -> void:

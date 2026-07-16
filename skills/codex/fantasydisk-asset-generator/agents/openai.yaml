@@ -1,4 +1,4 @@
 interface:
   display_name: "Game Asset Art Director"
-  short_description: "Create PixelLab MCP FantasyDisk assets"
-  default_prompt: "Use $fantasydisk-asset-generator to create a Godot-ready FantasyDisk asset through PixelLab MCP with source paths, safe content notes, and QA evidence."
+  short_description: "Create routed FantasyDisk game assets"
+  default_prompt: "Use $fantasydisk-asset-generator to route backgrounds to built-in OpenAI generation and create other Godot-ready FantasyDisk assets through PixelLab with source paths and QA evidence."

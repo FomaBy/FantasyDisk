@@ -1,6 +1,6 @@
 # UI Mockup Spec Template
 
-Create one spec for every FantasyDisk UI mockup. The spec is the bridge between PixelLab MCP generated mockup art and Godot implementation.
+Create one spec for every FantasyDisk UI mockup. The spec is the bridge between generator-routed mockup art and Godot implementation: built-in OpenAI for backgrounds and illustrated underlays, PixelLab MCP for non-background UI art.
 
 ```markdown
 # UI Mockup Spec - <Screen Name>
@@ -13,7 +13,8 @@ Base resolution: 1920x1080
 Responsive targets: 1280x720, 1920x1080, 2560x1440
 Mockup PNG: <path>
 Preview PNG: <path>
-Generated with: PixelLab MCP via <skill/tool>; source ID/tag/name: <id/tag/name>
+Generators: background=<built-in OpenAI | user-selected OpenAI API | existing>; non-background UI=<PixelLab MCP | existing>
+Source IDs/paths: <IDs, tags, output paths>
 
 ## Source Request
 
@@ -59,7 +60,8 @@ Generated with: PixelLab MCP via <skill/tool>; source ID/tag/name: <id/tag/name>
 
 ## Acceptance Checks
 
-- [ ] Mockup generated through PixelLab MCP.
+- [ ] Every generated layer used the required generator route.
+- [ ] No background or illustrated underlay was generated with PixelLab.
 - [ ] Preview shown in chat when generated.
 - [ ] All visible elements are listed in the elements table.
 - [ ] Every frame has texture margins and content margins.

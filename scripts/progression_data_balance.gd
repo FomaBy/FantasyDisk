@@ -174,23 +174,27 @@ const COMFORT_BAND_SLICE_OVERRIDES := {
 }
 
 const CLASS_LEVEL_STAT_GROWTH_SCALARS := {
+	"biologist": 1.30,
 	"soldier": {"strength": 0.95, "agility": 0.95},
 	"elementalist": {"agility": 0.92, "intelligence": 0.92},
-	"priest": {"agility": 0.95, "intelligence": 0.95},
-	# SCRUM-504/SCRUM-506: two-sided balance pass. Priest/robot/knight get enough
-	# lvl20 stat growth to leave the solo bottom pack without breaching class-kit
-	# corridors; guitarist keeps its AoE identity but uses a fair solo_target;
-	# assassin loses the excessive lvl20 growth tail that drove solo spread.
-	"robot": {"strength": 0.88, "agility": 0.88},
+	"priest": {"agility": 0.85, "intelligence": 0.85},
+	# FAN-1128: после обновления live-kit'ов заново измерен SCRUM-469: 17 классов,
+	# lvl20 optimum (+19 очков) и 64 seeded random-build'а. Это только калибровка
+	# роста очков сверх стартовых статов: Base lvl1, CLASS_BUDGET_PROFILES, оружие,
+	# геометрия, темп и уникальные механики не изменяются. Для классов с числом
+	# множитель применяется ко всем bonus stats; у Друида оставлена явная карта,
+	# чтобы не раздувать случайные непрофильные investment'ы. Гейт 0.90..1.10:
+	# tests/class_damage_table_3variants_test.gd.
+	"robot": 0.75,
 	"engineer": {"strength": 0.72, "agility": 0.72, "leadership": 0.80},
 	"dark_mage": {"agility": 0.84, "intelligence": 0.84},
-	"guitarist": {"energy": 1.68},
+	"guitarist": 0.75,
 	"assassin": {"strength": 1.668, "agility": 1.668},
-	"doctor": {"agility": 1.10, "intelligence": 1.80},
-	"chemist": {"agility": 1.70, "intelligence": 1.70},
-	"knight": {"strength": 0.801, "agility": 0.801},
-	"druid": {"energy": 1.70, "perception": 0.55, "leadership": 0.70},
-	"berserk": {"strength": 1.18, "agility": 1.10},
+	"doctor": 0.70,
+	"chemist": 0.78,
+	"knight": 0.70,
+	"druid": {"strength": 0.95, "agility": 0.95, "intelligence": 0.25, "energy": 0.75, "knowledge": 0.25, "endurance": 0.70, "perception": 0.55, "leadership": 0.70},
+	"berserk": {"strength": 1.10, "agility": 1.03},
 	"thief": {"strength": 0.86, "agility": 0.86},
 }
 

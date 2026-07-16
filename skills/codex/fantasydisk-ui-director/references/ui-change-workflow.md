@@ -25,12 +25,16 @@ docs/design/mockups/<task_or_screen_slug>/
 
 The package must contain:
 
-- PixelLab MCP generated full-page mockup PNG or frame/layout layer;
+- generator-routed full-page mockup PNG or frame/layout package;
+- built-in OpenAI generated background/underlay when the screen needs one;
+- PixelLab MCP generated non-background frames, panels, buttons, icons, or layout art;
 - markdown spec using `references/mockup-spec.md`;
 - optional annotated PNG with safe zones and element IDs;
 - generated reference assets, if the mockup uses new frames/buttons/icons.
 
-Use `$fantasydisk-asset-generator` to generate the mockup/art layer through PixelLab MCP. If the task needs exact geometry, use a prompt/spec that asks for clean orthographic UI layout, no perspective, no baked labels unless explicitly required, transparent/empty content areas where runtime text will go, and clear internal safe zones.
+Use `$fantasydisk-builtin-image-generator` for every full-canvas scenic background, menu/screen background, loading/splash image, or illustrated underlay. The built-in OpenAI Image Generator is mandatory by default; never use PixelLab for these layers. Use the OpenAI Images API only after an explicit user request.
+
+Use `$fantasydisk-asset-generator` and PixelLab MCP for non-background mockup/UI art. If the task needs exact geometry, use a prompt/spec that asks for clean orthographic UI layout, no perspective, no baked labels unless explicitly required, transparent/empty content areas where runtime text will go, and clear internal safe zones. Compose the routed layers into the final mockup.
 
 After generation, show the mockup in chat:
 
@@ -38,7 +42,7 @@ After generation, show the mockup in chat:
 ![mockup](/absolute/path/to/mockup.png)
 ```
 
-Do this whenever the file exists. If PixelLab MCP generation/export is unavailable, block the task rather than substituting a manual, OpenAI Images, built-in, or other image pipeline.
+Do this whenever the file exists. If PixelLab MCP generation/export is unavailable for non-background art, block that portion rather than substituting OpenAI or another pipeline. If built-in OpenAI generation is unavailable for a background, block that portion rather than substituting PixelLab; use the API only when the user explicitly requests it.
 
 ## 3. Spec The Geometry
 
@@ -57,12 +61,12 @@ The spec is the contract. Implementation follows it. If an implementer discovers
 
 ## 4. Asset Generation
 
-Generate new UI assets through `$fantasydisk-asset-generator`, which must use PixelLab MCP for new production art.
+Route new UI assets by type: backgrounds and illustrated underlays through `$fantasydisk-builtin-image-generator`; non-background UI art through `$fantasydisk-asset-generator` and PixelLab MCP.
 
 Required asset notes:
 
 - source prompt;
-- PixelLab source ID/tag/name;
+- generator route and source ID/tag/name or built-in output path;
 - output path;
 - size;
 - transparent background or postprocessing plan;

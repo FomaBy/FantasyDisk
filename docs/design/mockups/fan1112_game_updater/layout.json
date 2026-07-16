@@ -1,0 +1,42 @@
+{
+  "task": "FAN-1112",
+  "base_resolution": [2560, 1440],
+  "generator_routes": {
+    "background": "existing runtime Settings capture",
+    "non_background_ui": "existing FantasyDisk global button/modal kit"
+  },
+  "elements": {
+    "SettingsUpdateButton": {
+      "rect": [508, 1138, 280, 64],
+      "safe_parent": "SettingsBottomActionsSafe",
+      "states": ["normal", "hover", "pressed", "focus", "disabled"]
+    },
+    "UpdatePromptPanel": {
+      "rect": [720, 410, 1120, 620],
+      "content_rect": [760, 450, 1040, 540],
+      "states": ["available", "downloading", "verified", "error", "up_to_date"]
+    },
+    "UpdateInstallButton": {"rect": [866, 842, 420, 88]},
+    "UpdateLaterButton": {"rect": [1310, 842, 280, 88]}
+  },
+  "responsive": {
+    "1280x720": {
+      "footer_width": 960,
+      "button_size": [280, 64],
+      "bottom_ornament_reserve": 24,
+      "modal_max_width": 960,
+      "modal_max_height": 560
+    },
+    "1920x1080": {
+      "footer_width": 1158,
+      "button_size": [280, 64],
+      "modal_max_width": 1000,
+      "modal_max_height": 580
+    },
+    "2560x1440": {
+      "footer_width": 1544,
+      "button_size": [280, 64],
+      "modal_size": [1120, 620]
+    }
+  }
+}

@@ -120,6 +120,10 @@ authoritative meaning carriers.
 - Runtime application: only HS4 stat row construction/refresh in
   `scripts/ui_screens.gd`.
 - No new runtime texture, frame, node reflow, or input behavior.
+- The compact name lane uses the semantic `caption` token (12px floor), not
+  the 16px form-field token: it is a short read-only stat caption and this is
+  the documented fit needed for full `Восприятие`/`Выносливость` names in the
+  unchanged 90px 1280×720 lanes.
 
 ## Acceptance Checks
 

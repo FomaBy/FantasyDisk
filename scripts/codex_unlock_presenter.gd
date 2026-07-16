@@ -116,7 +116,12 @@ func add_victory_unlocks(box: VBoxContainer, ui) -> void:
 	title.name = "VictoryUnlockTitle"
 	title.text = "НОВОЕ ОТКРЫТО"
 	title.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	title.add_theme_font_size_override("font_size", ui._readable_font_size(SemanticTypography.ROLE_SECTION, 10 if ultra_compact else 12, 10, 16))
+	title.add_theme_font_size_override("font_size", SemanticTypography.resolve_fixed(
+		SemanticTypography.ROLE_DESCRIPTION,
+		ui._readable_font_size(SemanticTypography.ROLE_DESCRIPTION, 10 if ultra_compact else 12, 10, 16),
+		SemanticTypography.role_min(SemanticTypography.ROLE_DESCRIPTION),
+		SemanticTypography.role_max(SemanticTypography.ROLE_DESCRIPTION)
+	))
 	title.add_theme_color_override("font_color", Color(0.96, 0.80, 0.40, 1.0))
 	title.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	column.add_child(title)
@@ -155,7 +160,12 @@ func add_victory_unlocks(box: VBoxContainer, ui) -> void:
 		label.text_overrun_behavior = TextServer.OVERRUN_TRIM_ELLIPSIS
 		label.clip_text = true
 		label.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-		label.add_theme_font_size_override("font_size", ui._readable_font_size(SemanticTypography.ROLE_BODY, 10 if ultra_compact else 11, 10, 15))
+		label.add_theme_font_size_override("font_size", SemanticTypography.resolve_fixed(
+			SemanticTypography.ROLE_DESCRIPTION,
+			ui._readable_font_size(SemanticTypography.ROLE_DESCRIPTION, 10 if ultra_compact else 11, 10, 15),
+			SemanticTypography.role_min(SemanticTypography.ROLE_DESCRIPTION),
+			SemanticTypography.role_max(SemanticTypography.ROLE_DESCRIPTION)
+		))
 		label.add_theme_color_override("font_color", Color(0.90, 0.88, 0.78, 1.0))
 		label.mouse_filter = Control.MOUSE_FILTER_IGNORE
 		row.add_child(label)

@@ -9,7 +9,8 @@ extends SceneTree
 #       антиподальна на одном кольце, с третьего дрона — спираль по слотам),
 #       физический контактный урон с per-enemy кулдауном; число дронов
 #       2+floor(max(sa-12,0)/4) (2 на базовом профиле, 6 при sa=28, рельс 6);
-#       FAN-1075: радиус 121 px, визуальный scale 0.24; RPM растёт от attack_speed.
+#       FAN-1075: радиус 121 px; FAN-1101: визуальный scale 0.36, контакт 66 px
+#       (физически крупнее дроны); RPM растёт от attack_speed.
 #   907 «Минная Сетка»: ровно 2 персистентные мины за деплой в случайном
 #       кольце 110..260; таймера жизни НЕТ; враг подрывает сразу (и в первые
 #       3с), сам игрок — только после 3с; кап живых 6 (skip, не retire).
@@ -145,8 +146,10 @@ func _test_trait_registry_and_configs(errors: Array) -> void:
 		errors.append("drone max_summons/cap != 2/6")
 	if absf(float(drone.get("drone_orbit_radius", 0.0)) - 121.0) > EPS:
 		errors.append("drone_orbit_radius != 121 (+55% к 78)")
-	if absf(float(drone.get("drone_visual_scale", 0.0)) - 0.24) > EPS:
-		errors.append("drone_visual_scale != 0.24 (+50% к 0.16)")
+	if absf(float(drone.get("drone_visual_scale", 0.0)) - 0.36) > EPS:
+		errors.append("drone_visual_scale != 0.36 (FAN-1101: +50% к 0.24)")
+	if absf(float(drone.get("drone_contact_radius", 0.0)) - 66.0) > EPS:
+		errors.append("drone_contact_radius != 66 (FAN-1101: +50% к 44)")
 
 	# 907: ровно 2 мины, персистентные ключи, таймер жизни удалён.
 	if int(mines.get("projectile_count", 0)) != 2:
@@ -365,8 +368,8 @@ func _test_orbit_drone_orbit_and_contact(errors: Array) -> void:
 	if first_direction.dot(second_direction) > -0.999:
 		errors.append("стартовые дроны не напротив друг друга (dot %.4f)" % first_direction.dot(second_direction))
 	var visual := drone.get_child(0) as Sprite2D
-	if visual == null or absf(visual.scale.x - 0.24) > EPS or absf(visual.scale.y - 0.24) > EPS:
-		errors.append("визуальный scale дрона != 0.24")
+	if visual == null or absf(visual.scale.x - 0.36) > EPS or absf(visual.scale.y - 0.36) > EPS:
+		errors.append("визуальный scale дрона != 0.36")
 
 	# Контакт: враг в точке дрона получает физический урон РОВНО раз за кулдаун.
 	var enemy := _new_enemy(holder, drone.global_position)

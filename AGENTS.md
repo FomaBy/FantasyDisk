@@ -13,6 +13,9 @@ Before making gameplay, balance, character, enemy, UI, or progression changes, r
 - `docs/design/content_registry.md` for canonical entity IDs and names.
 - `docs/process/agent_role_boundaries_and_handoffs.md` for Design/Back-end/Animator ownership and cross-chat handoff rules.
 - `docs/process/versioning_and_branching.md` for the active version/branch policy.
+- `docs/process/human_readable_comments.md` for the mandatory human-readable Multica comment style (user directive 2026-07-15).
+- `docs/process/story_points.md` for mandatory CUE/Fibonacci sizing of every
+  actionable Multica task (user directive 2026-07-15).
 
 Autonomy and approval:
 - The user pre-approves all in-scope project changes requested in task files or direct prompts.
@@ -36,10 +39,21 @@ Autonomy and approval:
 - Это hard-правило приёмки: наложение контента на орнамент рамки = QA FAILED
   (см. `docs/process/qa_protocol.md` «Контент только в пустой зоне фрейма»).
 
+**ФОНОВЫЕ ИЗОБРАЖЕНИЯ — ТОЛЬКО ВСТРОЕННЫЙ OPENAI IMAGE GENERATOR
+(директива пользователя 2026-07-14, ОБЯЗАТЕЛЬНО для ВСЕХ агентов).**
+Все новые и редактируемые full-canvas backgrounds, scenic backdrops,
+environment art, фоны меню/экранов, loading/splash art и illustrated underlays
+создаются встроенным OpenAI Image Generator в Codex через
+`fantasydisk-builtin-image-generator`. PixelLab для таких фоновых слоёв
+запрещён. OpenAI Images API разрешён только после отдельного явного указания
+Сергея Фомина, если результат встроенного генератора его не устроил. Требование
+прозрачного фона у изолированной иконки, спрайта, рамки или персонажа не делает
+такой ассет фоновым изображением и не меняет его профильный pipeline.
+
 Role boundaries:
 - A PM chat forms requirements and issues tasks; its workflow is `docs/process/pm_workflow.md`. Since the 2026-07-13 cutover Multica is the authoritative task queue/status/ownership source (workspace/project `FantasyDisk`, issues `FAN-*`, `multica` CLI); `docs/process/task_board.md` and `docs/tasks/*.md` are local mirrors/spec/evidence, not the source of new work. Legacy Jira (`SCRUM-*`) is a read-only historical archive (see `docs/process/jira_to_multica_cutover.md`).
 - Design, Back-end, and Animator agents must do only their own discipline-specific work: Design owns art/sprites/UI visuals, Back-end owns logic/code/balance/tests, Animator owns motion/rigs/animation states.
-- New work is taken from the live Multica board (project `FantasyDisk`), not from the local board or Jira. A daemon role agent works exactly the one `FAN-*` issue assigned to its exact agent UUID and never self-selects an unassigned issue. The single dispatcher reserves ownership before enqueue; a direct user control chat may own an unassigned issue only after a duplicate/lock audit and an explicit owner comment. Local mirrors are bookkeeping only. Agents must not self-select a local `new` row, a wrong-lane issue, a blocked/hold/review-gated issue, or any issue with active owner/locked-path overlap.
+- New work is taken from the live Multica board (project `FantasyDisk`), not from the local board or Jira. A daemon role agent works exactly the one `FAN-*` issue assigned to its exact agent UUID and never self-selects an unassigned issue. The single dispatcher reserves implementation ownership before enqueue; a direct user control chat may own an unassigned issue only after a duplicate/lock audit and an explicit owner comment. The sole exception is the autonomous QA queue-owner contract below: QA Codex Sol may select one eligible implementation parent already in `in_review`, but must own the review through a separate QA child and never replace the implementation assignee. Local mirrors are bookkeeping only. All other agents must not self-select a local `new` row, a wrong-lane issue, a blocked/hold/review-gated issue, or any issue with active owner/locked-path overlap.
 - Single-owner rule: before taking or routing work, check the Multica issue status/comments/assignee/labels first, then local task file, board row, recent role-thread messages, and dirty worktree. If any recent dispatch note, `in_progress` status, owner/thread id, Multica assignee/comment, or overlapping active file/asset scope exists, do not take or resend the task.
 - Parallel Codex/Claude rule: every active task belongs to exactly one execution lane, `Контур: Codex`, `Контур: Claude`, or `Контур: OtherAI`, and must record `Owner`, `Thread/Worker`, and locked files/assets/screens before work starts. Codex/Claude/other AI work autonomously only on tasks whose exact Multica assignee/owner comment matches their lane; every other lane must skip them. Review/fix work across lanes requires a separate review or bug issue after the owner records a result; do not edit the same files in both lanes at the same time.
 - Design pool rule: Design main and Designer 2 are separate owners, not a shared queue. A Design task must name exactly one active Design owner/thread while in progress. The other Design thread may review only when explicitly asked, and must not start the same task or a task with overlapping source assets/screens.
@@ -47,6 +61,80 @@ Role boundaries:
 - Use `docs/process/agent_role_boundaries_and_handoffs.md` as the source of truth for ownership and handoff format.
 - When taking a task, update the Multica issue status/comment first, then set local mirror `Статус: in_progress` if a task file exists; when finishing, update Multica and set local mirror `done` (or `review`) with a short result summary so PM/dispatcher can sync mirrors.
 - Multica is mandatory and authoritative for task tracking. Every task is a Multica issue (`FAN-*`) in the live `FantasyDisk` project, and only then may have a local `.md` spec/evidence mirror. Multica status/comment/assignee/labels must match reality. Do not create, claim, or sync work in legacy Jira. Never store any API tokens in the repository.
+
+**STORY POINTS — ОБЯЗАТЕЛЬНЫ ДЛЯ ВСЕХ ЗАДАЧ (директива пользователя 2026-07-15).**
+Каждая новая или существенно изменяемая actionable issue — включая feature,
+bug, improvement, QA/review, design, animation, release, documentation, process
+и handoff — получает относительную оценку CUE (Complexity, Uncertainty, Effort)
+по шкале Фибоначчи `1, 2, 3, 5, 8, 13`. До assignment/dispatch/`in_progress`
+в description обязаны быть `Story points: <N>`, `Label: SP:<N>` и короткое
+обоснование; на issue — ровно один канонический Label из `SP:1`, `SP:2`, `SP:3`,
+`SP:5`, `SP:8`, `SP:13`; в Multica metadata — совпадающий числовой
+`story_points=<N>` и `estimation_model="CUE Fibonacci 1,2,3,5,8,13"`. Label —
+обязательное измерение для отчётов, metadata — числовое зеркало. Задача больше
+`13 SP` обязательно декомпозируется;
+при существенном изменении scope оценка и причина обновляются до продолжения
+работы. SP нельзя переводить в часы или использовать для сравнения людей и
+агентов. Полная рубрика, readiness gate и переходное правило:
+`docs/process/story_points.md`.
+
+**АВТОНОМНАЯ QA-ОЧЕРЕДЬ — ОБЯЗАТЕЛЬНЫЙ КОНТРАКТ (директива пользователя 2026-07-15).**
+QA Codex Sol (`f992a646-a8ea-4935-ba94-212595803052`) является единственным
+writer/owner очереди независимого QA. В QA queue-sweep run он может сам выбрать
+ровно один eligible parent `FAN-*` в `in_review`, но только после проверки
+priority, dependencies, comments, existing QA children/verdicts, active runs,
+exact candidate SHA в `origin/dev`, reviewer independence и locked-path
+overlap. Runtime concurrency QA должен оставаться `1`; второй QA claim или
+параллельный QA-dispatch запрещён.
+
+- QA не переназначает implementation parent. Он пишет claim-comment в parent и
+  создаёт или безопасно переиспользует отдельную QA child issue. Поскольку live
+  Multica ACL не разрешает agent actor назначить child самому себе, штатный
+  queue-sweep claim оставляет child unassigned и до `in_progress` записывает в
+  неё metadata `qa_owner_id=f992a646-a8ea-4935-ba94-212595803052`,
+  `qa_run_id=<current-task-id>`, `qa_candidate_sha=<exact-sha>` и
+  `qa_claim_mode=autonomous_unassigned`, а также owner/run/SHA claim-comment.
+  Только полный набор exact metadata + comment + текущий live run считается
+  ownership. После записи QA повторно читает parent, child, metadata и comments;
+  при любом конфликте отменяет собственную duplicate child. Уникальную child он
+  ведёт напрямую `backlog → in_progress` в текущем run, не используя `todo` и не
+  создавая второй daemon task. Это исключение не даёт право self-claim другим
+  unassigned workers или implementation issues.
+- Общий dispatcher может разбудить QA/сообщить о новой review-очереди, но не
+  создаёт конкурирующую QA child и не назначает ту же проверку другому агенту.
+- QA самостоятельно формирует risk-based plan и выполняет всю необходимую
+  acceptance, focused, regression, edge-case, integration, manual/windowed,
+  performance, platform и visual проверку на exact SHA. Developer report, code
+  review и CI сами по себе не являются QA evidence. Тесты нужно прочитать и
+  убедиться, что они действительно доказывают acceptance.
+- Для визуального/UI/runtime поведения QA делает скриншоты или видео, когда они
+  materially подтверждают результат, сохраняет evidence в task-owned
+  `build/qa/<FAN-id>/` либо прикладывает его к Multica comment и указывает пути,
+  viewport/platform/timestamp. Логи, дампы rect'ов, traces и profiler output
+  прикладываются, когда они являются лучшим доказательством.
+- Итоговый отчёт обязан содержать: exact SHA и environment, traceability
+  acceptance→checks, фактические команды/results, manual scenarios, evidence,
+  findings, `passed/failed/blocked/not tested`, residual risks, `Disk cleanup:`
+  и ровно одну recommendation: `Go`, `Go with known risks` или `No-Go`.
+- Каждый подтверждённый дефект или обязательное улучшение QA оформляет отдельной
+  linked Multica child issue (`BUG:` / `IMPROVEMENT:`) с reproduction,
+  expected/actual, environment/SHA, severity/priority, evidence, affected scope,
+  acceptance criteria и recommended implementation role. QA не чинит production
+  implementation в review scope; disposable probes разрешены и удаляются до
+  verdict.
+- `QA verdict: PASSED` переводит QA child и parent в `done`. `FAILED` завершает
+  QA child с правдивым отчётом, оставляет parent в `in_review` и линкует все
+  follow-up issues. Непроверенное нельзя объявлять пройденным.
+
+**ЧЕЛОВЕКОЧИТАЕМЫЕ КОММЕНТАРИИ В MULTICA (директива пользователя 2026-07-15, ОБЯЗАТЕЛЬНО для ВСЕХ агентов).**
+Каждый комментарий в Multica issue начинается с короткого резюме простым
+человекочитаемым русским языком — что произошло, в каком состоянии задача, что
+дальше — и только затем технические детали (SHA, команды, логи, процессные
+поля). Любой блокер или проблема описывается так, чтобы Сергей Фомин понял без
+уточняющих вопросов: что сломалось, что это значит для игры/проекта, что уже
+попробовано и что нужно для разблокировки. Сырые логи, жаргон и внутренние
+сокращения вместо объяснения — это FAILED-комментарий. Полные правила, шаблон
+блокера и чек-лист самопроверки: `docs/process/human_readable_comments.md`.
 
 **ЖИВАЯ СИНХРОНИЗАЦИЯ MULTICA — ОБЯЗАТЕЛЬНА (директива пользователя 2026-06-13, обновлено при cutover 2026-07-13).**
 Пользователь управляет разработкой по Multica, поэтому Multica ВСЕГДА должна
@@ -132,6 +220,29 @@ comment proves current ownership.
    (dirty tree / невлитые коммиты / активный владелец) ветки и worktree НЕ трогать.
 4. `dev` и `main` не удалять никогда; это правило дополняет DISK HYGIENE ниже,
    не заменяет его гарды.
+
+**СИНК ЛОКАЛЬНОГО GODOT ПОСЛЕ ПУША В DEV (директива пользователя 2026-07-14, все lane).**
+Пользователь проверяет актуальную сборку в своём **локальном** Godot-редакторе, а
+номер версии в углу меню читается вживую из `project.godot → config/version`
+(`scripts/ui_screens.gd`). Поэтому после КАЖДОГО успешного `git push origin HEAD:dev`
+агент обязан подтянуть операторскую локальную рабочую копию проекта до только что
+запушенного `origin/dev`, чтобы там сразу была актуальная версия:
+1. Целевой путь на этом runtime-хосте: `/Users/sergeyfomin/Documents/AI Agent`
+   (канонический локальный Godot-проект оператора; это отдельный clone того же
+   репозитория, НЕ agent-worktree). Если пути нет — тихо пропустить (значит хост другой).
+2. Синк только безопасным fast-forward:
+   `git -C "/Users/sergeyfomin/Documents/AI Agent" fetch origin` затем
+   `git -C "/Users/sergeyfomin/Documents/AI Agent" merge --ff-only origin/dev`.
+   НИКОГДА не делать `reset --hard`, `checkout -f`, force-pull или иное затирание —
+   незакоммиченную работу оператора терять нельзя.
+3. Если ff не проходит из-за рабочего дерева: застэшить/убрать ТОЛЬКО очевидный
+   редакторский шум (пересейвы `project.godot` без смысловых правок, побайтово
+   идентичные апстриму `*.uid`/`*.import` сайдкары) и повторить ff. При реальном
+   расхождении или чужом WIP — НЕ форсить: оставить как есть и записать в финальном
+   комментарии Multica, что локальный mirror требует ручного `pull`.
+4. Godot можно не закрывать; оператор увидит новую версию после `Project → Reload
+   Current Project`. В финальном комментарии задачи указать, что локальный Godot
+   синкнут на `<sha>` (в углу меню — актуальный `config/version`).
 
 **DISK HYGIENE — MANDATORY (user directive 2026-06-28).**
 Agents must clean up their own temporary disk usage before reporting a task as
@@ -219,10 +330,10 @@ Feature block:
 - **ФРИЗ СНЯТ релизом v0.1.5 (2026-06-15).** Пользовательская директива
   2026-07-03: все задачи, добавляемые пользователем в любые чаты, сразу
   заводятся в активный Multica-проект `FantasyDisk` (issues `FAN-*`) и получают
-  metadata `release` активного релиза. Активный релиз-таргет — `0.2.2`; всегда
+  metadata `release` активного релиза. Активный релиз-таргет — `0.2.3`; всегда
   проверяй live Multica board перед auto-pull/dispatch. Активные issues берутся
   обычным порядком из Multica. Плановые версии `0.1.8` и `0.1.9`
-  отменены/superseded; далее используется SemVer patch-линия `0.2.1`, `0.2.2`, ...
+  отменены/superseded; далее используется SemVer patch-линия `0.2.1`, `0.2.2`, `0.2.3`, ...
 - Механизм сохраняется: перед стабилизацией следующего релиза PM снова включает
   фриз явной директивой/hold-marker; без такого marker новые задачи идут в
   Multica `todo`, а не в `backlog`.
@@ -249,30 +360,35 @@ Project practices:
   проверки и landing выполняются синхронно, без фонового autoland.
 - **Изменения интерфейса — ТОЛЬКО через скилл `fantasydisk-ui-director`**
   (Codex skill, `~/.codex/skills/fantasydisk-ui-director/`). Перед любым
-  внедрением/перерисовкой UI сначала создать OpenAI-API-generated mockup страницы
-  со всеми элементами, точными зонами контента, safe margins и responsive-правилами,
-  показать превью в чате при наличии PNG, затем воспроизводить расположение в
-  Godot по mockup/spec. Единый стиль всех экранов: D&D + Dark Fantasy Dragon,
+  внедрением/перерисовкой UI сначала создать generator-routed mockup package со
+  всеми элементами, точными зонами контента, safe margins и
+  responsive-правилами: фон/illustrated underlay — встроенный OpenAI Image
+  Generator, нефоновые рамки/панели/кнопки/иконки — PixelLab MCP. Показать
+  превью в чате при наличии PNG, затем воспроизводить расположение в Godot по
+  mockup/spec. Единый стиль всех экранов: D&D + Dark Fantasy Dragon,
   отталкиваться от текущих красивых кнопок; старые/ручные пайплайны генерации
   макетов не использовать как fallback.
 - **PixelLab-first для будущих redraw-задач (SCRUM-689).** Перерисовки
   персонажей, монстров, элиток, боссов, animation/source packs, UI frame/source
   kits и других redraw source assets по умолчанию идут через PixelLab MCP /
-  PixelLab-ориентированные skills. Старый generic OpenAI/asset-generator путь
+  PixelLab-ориентированные skills. Фоновые изображения из глобального правила
+  2026-07-14 явно исключены из PixelLab redraw scope. Старый generic
+  OpenAI/asset-generator путь
   нельзя использовать как fallback для redraw, если Multica issue/task прямо не
   записывает исключение с причиной (`OpenAI Images override`, `existing source
   reuse`, `PixelLab unavailable`, и т.п.). Исключение должно быть видно в Multica
   comment, task mirror/result и evidence.
-- **Генерация графики/ассетов — через `fantasydisk-asset-generator` только для
-  задач вне PixelLab-redraw scope или при явном Multica issue override**
+- **Генерация нефоновой графики/ассетов — через
+  `fantasydisk-asset-generator` только для задач вне PixelLab-redraw scope или
+  при явном Multica issue override**
   (Codex skill, `~/.codex/skills/fantasydisk-asset-generator/`, SCRUM-324):
-  `scripts/generate_asset.py --issue FAN-123 --prompt "<...>" --output
-  <тема/файл> --size <WxH> --quality high` (OpenAI Images API, модель
-  `gpt-image-2`, PNG). Для разрешённых
-  non-redraw/override задач все ассеты — на ПРОЗРАЧНОМ фоне; исходник сохраняется
-  в `docs/design/references/<тема>/` (для единообразия на будущее), затем
-  внедряется в `assets/`. Стиль — D&D + Dark Fantasy Dragon (см. UI Overhaul
-  SCRUM-327).
+  нефоновые персонажи, объекты, спрайты, иконки, рамки и UI-компоненты следуют
+  PixelLab-маршруту навыка. Исторический `scripts/generate_asset.py` (OpenAI
+  Images API) не является fallback и используется только по отдельному явному
+  указанию пользователя. Для разрешённых non-redraw/override задач все
+  изолированные ассеты — на ПРОЗРАЧНОМ фоне; исходник сохраняется в
+  `docs/design/references/<тема>/`, затем внедряется в `assets/`. Стиль — D&D +
+  Dark Fantasy Dragon (см. UI Overhaul SCRUM-327).
 - **Постеры/инфографика/UI-элементы с текстом поверх AI-картинки — через скилл
   `content-zone-image-compositor`** (Codex skill,
   `~/.codex/skills/content-zone-image-compositor/`, repo mirror:

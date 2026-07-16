@@ -358,7 +358,9 @@ weapon-числа), а не здесь, чтобы не пересекать dam
   - `_budget_orbit_drone_dps` — контактный DPS дронов: `число дронов × урон контакта ×
     min(обороты/с (drone_orbit_speed × attack_speed / TAU), 1/drone_hit_cooldown)`;
     FAN-1075 задаёт базу 2 дрона на общем антиподальном кольце 121 px (+55% к 78),
-    visual scale 0.24 (+50% к 0.16), рельс 6; спираль начинается с третьего дрона.
+    рельс 6; спираль начинается с третьего дрона. FAN-1101 укрупняет тело дрона:
+    visual scale 0.36 (+50% к 0.24) и контакт 66 px (+50% к 44) — тюнер сам
+    компенсирует более широкое кольцо покрытия, суммарный AoE-бюджет держится.
     Покрытие толпы — `clamp(1 + (внешний радиус кольца/спирали + контакт)/58, 1, 5)`.
   - `_budget_network_factor` — фактор trait'а «Сеть мастерской»: ожидаемые стеки в
     устойчивом бою (турели — min(парк, жизнь магазина/деплой); дроны — постоянный парк;
@@ -1120,9 +1122,10 @@ SCRUM-1091 добавляет только presentation contract, не нову�
   target caps. SCRUM-859 split stationary deploy/summon loops into stage pulse,
   support totem, turret DPS, repair chain, and mine grid. SCRUM-860 added
   Assassin-only capped kill-growth without adding a new vampirism/sustain loop.
-- SCRUM-469 закрыл SCRUM-453 optimum-выбросы: актуальный `Lvl20 optimum`
-  `relative_score` держится в диапазоне `0.938..1.097`, Base lvl1 — в
-  `0.982..1.010`, Lvl20 random avg не имеет HIGH/LOW-флагов. Остаточные
+- FAN-1128 повторно откалибровал SCRUM-469 после обновления live-kit'ов, не
+  меняя Base lvl1, budget profile или оружейные механики: актуальный `Lvl20
+  optimum` `relative_score` держится в диапазоне `0.912..1.067`, Base lvl1 —
+  в `0.988..1.005`, а Lvl20 random avg не имеет HIGH/LOW-флагов. Остаточные
   различия остаются предметом ручного feel/playtest, а не блокером формульного
   баланса.
 - Performance/code review считает текущие числа пригодными для demo, но баланс должен продолжать уточняться после игровых прогонов.

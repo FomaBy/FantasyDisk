@@ -82,6 +82,10 @@ PM формирует требования, **создаёт Multica issue FAN-<
 PM обязан:
 
 - превращать запрос пользователя в проверяемый Multica issue FAN-<n>;
+- оценивать каждую actionable issue по CUE/Fibonacci `1, 2, 3, 5, 8, 13`,
+  записывать `Story points` с обоснованием в description, прикреплять ровно один
+  канонический Label `SP:<N>` и совпадающую числовую metadata `story_points`;
+  scope больше `13 SP` декомпозировать до dispatch;
 - выбрать роль и execution lane;
 - указать `Контур`, `Owner`, `Thread/Worker`, `Locked paths`;
 - создать/обновить local `.md`/board mirror только после Multica issue key (FAN-<n>);
@@ -96,6 +100,9 @@ threads. Он не реализует gameplay, UI, art, animation, balance, rel
 Dispatcher обязан:
 
 - делать duplicate/active-owner audit перед routing;
+- не dispatch'ить issue без ровно одного допустимого `SP:<N>` Label, совпадающих
+  metadata `story_points` и обоснования в description или с
+  недекомпозированным scope больше `13 SP`;
 - не отправлять задачу, если есть owner, dispatch note, `in_progress`, Multica
   ownership, unresolved blocker, QA gate или dirty/locked-path overlap;
 - отправлять не более одной новой задачи в один role thread за heartbeat;
@@ -156,9 +163,26 @@ Animator стартует только после accepted Design source/handoff
 
 ### QA Agent
 
-QA проверяет `done` задачи по `docs/process/qa_protocol.md`. QA не чинит код,
-арт или анимацию в исходной задаче. Если найден дефект, QA создаёт отдельный
-`bug_*_task.md`, board row и Multica issue FAN-<n>/comment.
+QA Codex Sol (`f992a646-a8ea-4935-ba94-212595803052`) — единственный автономный
+owner review-очереди. В queue-sweep run он сам выбирает одну eligible задачу
+`in_review` после duplicate/lock/SHA/dependency audit, оставляет implementation
+assignee неизменным и создаёт/переиспользует отдельную QA child issue. Из-за
+live agent ACL child остаётся unassigned; ownership существует только при exact
+metadata `qa_owner_id=f992a646-a8ea-4935-ba94-212595803052`,
+`qa_run_id=<current-task-id>`, `qa_candidate_sha=<exact-sha>`,
+`qa_claim_mode=autonomous_unassigned`, совпадающем claim-comment и live run.
+После записи QA перечитывает parent/child/comments/metadata и при race прекращает
+claim; уникальную child переводит напрямую `backlog → in_progress` без `todo`.
+Остальные role agents и общий dispatcher считают этот metadata claim занятым и
+не создают конкурирующий QA claim.
+
+QA выполняет полный независимый цикл по `docs/process/qa_protocol.md`: проверяет
+acceptance и реальный user flow, читает и запускает тесты, добавляет edge cases,
+manual/windowed/visual/performance coverage по риску и прикладывает screenshots,
+video/logs/traces, когда они нужны как evidence. QA не чинит production code,
+арт или анимацию в review scope. Каждый подтверждённый баг или обязательное
+улучшение становится linked Multica child `BUG:` / `IMPROVEMENT:` с деталями,
+evidence и acceptance; локальный `bug_*_task.md` допустим только как mirror.
 
 Задача полностью закрыта только после `## QA-Вердикт: PASSED`.
 
@@ -313,7 +337,9 @@ Multica обязательна. Работа не считается сдела�
 
 Обязательные действия:
 
-- новая задача: Multica issue FAN-<n> first, local `.md`/board mirror second;
+- новая задача: требования и CUE/Fibonacci `Story points` first, затем Multica
+  issue FAN-<n> + канонический Label `SP:<N>` + числовая metadata
+  `story_points`, local `.md`/board mirror second;
 - взял задачу: Multica status/comment + `.md` mirror `in_progress`;
 - завершил: Multica status/comment + `.md` mirror `done/in_review`;
 - QA passed: Multica issue в `done`;
@@ -565,7 +591,10 @@ Common blockers:
   task-owned files without asking for confirmation. Only stop for platform-enforced
   approval gates, secrets, destructive external actions, or impossible blockers.
 - Do not self-select local board rows or unassigned Multica issues; accept only
-  the FAN issue assigned/owned by you after dispatcher verification.
+  the FAN issue assigned/owned by you after dispatcher verification. Sole
+  exception: QA Codex Sol may select one eligible `in_review` parent under the
+  exclusive QA queue-owner protocol, while owning a separate QA child and never
+  replacing the implementation assignee.
 - Do not route one task to multiple agents.
 - Do not edit files locked by another owner/lane.
 - Do not use destructive git commands without explicit instruction.

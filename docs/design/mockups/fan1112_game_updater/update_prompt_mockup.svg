@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="2560" height="1440" viewBox="0 0 2560 1440">
+  <image href="settings_update_base_2560x1440.png" x="0" y="0" width="2560" height="1440"/>
+  <rect x="0" y="0" width="2560" height="1440" fill="#000000" opacity="0.72"/>
+  <rect x="720" y="410" width="1120" height="620" rx="24" fill="#17120e" stroke="#856a3d" stroke-width="6"/>
+  <rect x="760" y="450" width="1040" height="540" rx="18" fill="#211a14" stroke="#c7a870" stroke-width="3"/>
+  <text x="1280" y="535" text-anchor="middle" font-family="Arial, sans-serif" font-size="46" fill="#f5e6ae">Доступна версия 0.2.3</text>
+  <text x="1280" y="610" text-anchor="middle" font-family="Arial, sans-serif" font-size="28" fill="#eadfbf">Установлена 0.2.2 · установщик будет проверен по SHA-256</text>
+  <text x="1280" y="682" text-anchor="middle" font-family="Arial, sans-serif" font-size="27" fill="#d5c9aa">Игра скачает подписанный установщик с GitHub Releases.</text>
+  <text x="1280" y="725" text-anchor="middle" font-family="Arial, sans-serif" font-size="27" fill="#d5c9aa">После проверки откроется стандартная установка macOS или Windows.</text>
+  <rect x="866" y="842" width="420" height="88" rx="12" fill="#4a2b19" stroke="#d7a554" stroke-width="4"/>
+  <text x="1076" y="897" text-anchor="middle" font-family="Arial, sans-serif" font-size="26" fill="#fff1c2">Скачать и установить</text>
+  <rect x="1310" y="842" width="280" height="88" rx="12" fill="#27221e" stroke="#8f806e" stroke-width="4"/>
+  <text x="1450" y="897" text-anchor="middle" font-family="Arial, sans-serif" font-size="26" fill="#eadfbf">Позже</text>
+</svg>

@@ -43,7 +43,7 @@
 | 17 | Что нового / патч-ноуты | `PatchNotesScreen` | `_show_patch_notes_screen` | ui_screens.gd:2215 |
 | 18 | Победа | — | `_show_victory_screen` | ui_screens.gd:5003 |
 | 19 | Смерть | — | `_show_death_screen` | ui_screens.gd:5038 |
-| 20 | Интро истории (FAN-1080, показ 1 раз при новой игре) | `LoreIntroScreen` | `_maybe_show_lore_intro` → `_show_lore_intro` | ui_screens.gd |
+| 20 | Интро истории (FAN-1080; FAN-1099: убрано из запуска игры, доступно только как пересмотр «Вступление» в Кодексе/тестах) | `LoreIntroScreen` | `_show_lore_intro` (`_maybe_show_lore_intro` больше не вызывается из потока запуска) | ui_screens.gd |
 
 **Разделы Кодекса** (под-вкладки одного экрана, не отдельные экраны): персонажи
 (`_build_codex_characters`), монстры, артефакты, вознесения, статы, глоссарий,

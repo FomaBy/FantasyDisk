@@ -1,6 +1,6 @@
 # Versioning And Branching Policy
 
-Обновлено: 2026-07-13
+Обновлено: 2026-07-16
 
 ## Текущее Правило
 
@@ -12,23 +12,23 @@ FantasyDisk использует SemVer до 1.0:
   queue/status/owner source; local task files and task board are
   mirrors/spec/evidence only. Legacy Jira (SCRUM-*) — read-only historical
   archive (см. docs/process/jira_to_multica_cutover.md).
-- текущая разработка: активная Multica board / release target `0.2.2` на `dev`
-  (на 2026-07-14); релиз `0.2.2` подготовлен к слиянию в `main`.
+- текущая разработка: активная Multica board / release target `0.2.3` на `dev`
+  (на 2026-07-16); релиз `0.2.3` проходит финализацию перед слиянием в `main`.
 - `0.1.8` и `0.1.9` отменены как плановые версии: новые Multica issues, mirrors,
   fixVersions и release/freeze notes не должны использовать эти номера.
-- после `0.2.0` patch-линия идет как `0.2.1`, `0.2.2`, ...
+- после `0.2.0` patch-линия идет как `0.2.1`, `0.2.2`, `0.2.3`, ...
 - **Кадэнс спринтов — короткий, ~2 дня** (агентная скорость разработки), НЕ недельный.
 
 ## Feature Block
 
 Feature block 0.1.5 снят релизом `v0.1.5` (2026-06-15). Сейчас активна
-Multica board / release target `0.2.2` (на 2026-07-14): задачи ведутся через
+Multica board / release target `0.2.3` (на 2026-07-16): задачи ведутся через
 Multica (task board — локальное зеркало), с обязательной проверкой `Контур`,
 owner, locked paths и dirty worktree. Директива пользователя 2026-07-03: все
 задачи, добавляемые в любые чаты, сразу попадают в active Multica board с
-fixVersion активного release. Перед стабилизацией следующего релиза PM может
-включить новый freeze отдельной директивой; тогда новые не-баговые задачи
-уходят в Multica `backlog` следующей версии только при явном freeze/hold marker.
+fixVersion активного release. На время FAN-1128 действует release freeze:
+новые продуктовые изменения не входят в 0.2.3 и ждут следующего SemVer; разрешены
+только доказанные release blockers и их QA.
 
 ## Branch Ownership
 
@@ -115,9 +115,9 @@ dev
 - Не начинать новую задачу без предварительного безопасного pull из GitHub.
 - Не оставлять завершённую задачу незапушенной.
 
-## Текущий Статус На 2026-07-14
+## Текущий Статус На 2026-07-16
 
 - Активная ветка: `dev`.
-- `main` получает проверенный релиз `0.2.2` после release merge.
-- `dev` используется для активной live Multica board / release target `0.2.2`
-  (на 2026-07-14); `0.1.8` и `0.1.9` skipped/superseded.
+- `main` получает проверенный релиз `0.2.3` после release merge.
+- `dev` заморожен для финализации release target `0.2.3`; `0.1.8` и `0.1.9`
+  skipped/superseded, существующий `v0.2.2` остаётся immutable.

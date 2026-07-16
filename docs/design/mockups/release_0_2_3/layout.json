@@ -1,0 +1,29 @@
+{
+  "canvas": {"width": 1350, "height": 1350},
+  "defaults": {
+    "font": "/System/Library/Fonts/Supplemental/Arial Unicode.ttf",
+    "color": "#F8E8C4",
+    "stroke_fill": "#12080B",
+    "stroke_width": 4,
+    "line_spacing": 1.08,
+    "align": "left",
+    "valign": "middle"
+  },
+  "content": {
+    "release": "0.2.3",
+    "subtitle": "ОБНОВЛЕНИЯ • УПРАВЛЕНИЕ • НОВЫЙ ОБЛИК",
+    "intro": "FantasyDisk сам находит проверенные обновления. Все 17 героев получили надёжный старт движения, а меню и Кодекс — новый тёмно-фэнтезийный облик.",
+    "left": "БЕРСЕРК — молот бьёт точным кругом; движение ждёт отпускания направления.\n\nСОЛДАТ — набор без изменений; исправлен случайный старт движения.\n\nВОР — набор без изменений; исправлен случайный старт движения.\n\nЭЛЕМЕНТАЛИСТ — набор без изменений; исправлен случайный старт движения.\n\nСНАЙПЕР — набор без изменений; исправлен случайный старт движения.\n\nСВЯЩЕННИК — набор без изменений; исправлен случайный старт движения.\n\nБИОЛОГ — набор без изменений; исправлен случайный старт движения.\n\nРОБОТ — набор без изменений; исправлен случайный старт движения.\n\nИНЖЕНЕР — орбитальные дроны крупнее и заметнее; темп атак сохранён.",
+    "right": "ТЁМНЫЙ МАГ — набор без изменений; исправлен случайный старт движения.\n\nГИТАРИСТ — набор без изменений; исправлен случайный старт движения.\n\nАССАСИН — набор без изменений; исправлен случайный старт движения.\n\nРЕЙНДЖЕР — набор без изменений; исправлен случайный старт движения.\n\nДОКТОР — набор без изменений; исправлен случайный старт движения.\n\nХИМИК — набор без изменений; исправлен случайный старт движения.\n\nРЫЦАРЬ — набор без изменений; исправлен случайный старт движения.\n\nДРУИД — набор без изменений; исправлен случайный старт движения.",
+    "footer": "GITHUB RELEASES • macOS + WINDOWS • НОВЫЕ ФОНЫ МЕНЮ И КОДЕКСА"
+  },
+  "zones": [
+    {"id": "release", "content_key": "release", "role": "badge", "x": 80, "y": 55, "w": 145, "h": 80, "max_font": 40, "min_font": 26, "color": "#FFCE74", "stroke_width": 5, "uppercase": true, "debug_color": "#ffcc33"},
+    {"id": "brand", "image_path": "assets/sprites/ui/menu_title/main_menu_title_fantasy_disk.png", "role": "title", "x": 240, "y": 50, "w": 300, "h": 90, "required": true, "debug_color": "#66ccff"},
+    {"id": "subtitle", "content_key": "subtitle", "role": "subtitle", "x": 790, "y": 55, "w": 460, "h": 80, "max_font": 24, "min_font": 17, "color": "#DDAA59", "stroke_width": 4, "align": "center", "debug_color": "#cc88ff"},
+    {"id": "intro", "content_key": "intro", "role": "intro", "x": 86, "y": 190, "w": 1180, "h": 150, "max_font": 28, "min_font": 19, "color": "#E8C98B", "stroke_width": 4, "align": "center", "debug_color": "#ff9966"},
+    {"id": "left", "content_key": "left", "role": "body", "x": 82, "y": 410, "w": 580, "h": 704, "max_font": 22, "min_font": 17, "color": "#F8E8C4", "stroke_width": 3, "valign": "top", "debug_color": "#66ff99"},
+    {"id": "right", "content_key": "right", "role": "body", "x": 692, "y": 410, "w": 576, "h": 704, "max_font": 22, "min_font": 17, "color": "#F8E8C4", "stroke_width": 3, "valign": "top", "debug_color": "#66ff99"},
+    {"id": "footer", "content_key": "footer", "role": "footer", "x": 88, "y": 1188, "w": 1174, "h": 112, "max_font": 24, "min_font": 17, "color": "#CFA45E", "stroke_width": 4, "align": "center", "debug_color": "#ff6699"}
+  ]
+}

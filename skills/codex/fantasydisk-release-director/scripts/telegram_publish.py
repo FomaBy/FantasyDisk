@@ -1,5 +1,8 @@
 #!/usr/bin/env python3
-"""Загрузка релизных сборок FantasyDisk в Telegram (userbot, Telethon).
+"""Legacy-загрузка FantasyDisk v0.2.2 в Telegram (userbot, Telethon).
+
+v0.2.2 — последний разрешённый Telegram-релиз. Более новые версии должны
+публиковаться через public GitHub Releases; этот скрипт отклоняет их fail-closed.
 
 Зачем userbot, а не бот: cloud Bot API ограничен 50 МБ, инсталлеры ~200 МБ.
 Telethon на пользовательском аккаунте грузит до 2 ГБ.
@@ -26,8 +29,42 @@ API-доступ (api_id/api_hash/session) — release_webhook.cfg (корень
 """
 import argparse
 import configparser
+import json
 import os
+import re
+import subprocess
 import sys
+
+
+FINAL_TELEGRAM_RELEASE = (0, 2, 2)
+SEMVER_RE = re.compile(r"^(0|[1-9][0-9]*)\.(0|[1-9][0-9]*)\.(0|[1-9][0-9]*)$")
+
+
+def ensure_telegram_release_allowed(version):
+    if not SEMVER_RE.fullmatch(version):
+        sys.exit("Версия должна иметь формат X.Y.Z")
+    parts = tuple(int(part) for part in version.split("."))
+    if parts > FINAL_TELEGRAM_RELEASE:
+        sys.exit(
+            "Telegram publication завершена после v0.2.2. "
+            "Публикуй релиз через github_release_publish.py; Discord ведёт на GitHub Releases."
+        )
+
+
+def verify_local_release(root, version):
+    helper = os.path.join(os.path.dirname(__file__), "local_release.py")
+    result = subprocess.run(
+        [sys.executable, helper, "verify", "--version", version, "--repo-root", root],
+        text=True,
+        stdout=subprocess.PIPE,
+        stderr=subprocess.PIPE,
+    )
+    if result.returncode:
+        sys.exit("Локальная копия релиза не прошла проверку; Telegram upload запрещён")
+    try:
+        return json.loads(result.stdout)["local_release"]
+    except (KeyError, TypeError, json.JSONDecodeError):
+        sys.exit("Локальная проверка не вернула путь к проверенным байтам релиза")
 
 
 def cfg(root):
@@ -98,7 +135,8 @@ def main():
 
     if not a.version:
         sys.exit("Укажи --version X.Y.Z (или --list-chats / --test)")
-    rel = os.path.join(root, "releases", "v%s" % a.version)
+    ensure_telegram_release_allowed(a.version)
+    rel = verify_local_release(root, a.version)
     if not os.path.isdir(rel):
         sys.exit("Нет каталога релиза: %s" % rel)
     files = [
@@ -107,9 +145,14 @@ def main():
         if f.endswith(".dmg")
         or f.endswith("-windows-setup.exe")
         or f == "SHA256SUMS.txt"
+        or f.endswith(".png")
     ]
     if not files:
         sys.exit("Нет файлов сборки в %s" % rel)
+    posters = [path for path in files if path.endswith(".png")]
+    build_files = [path for path in files if not path.endswith(".png")]
+    if len(posters) != 1:
+        sys.exit("Ожидался ровно один проверенный PNG release poster")
 
     chat = resolve_channel(root)
     caption = a.caption or ("FantasyDisk v%s — сборки macOS + Windows. SHA256 — в комплекте." % a.version)
@@ -126,7 +169,7 @@ def main():
 
     try:
         from telethon.sync import TelegramClient
-        from telethon.tl.functions.messages import ImportChatInviteRequest
+        from telethon.tl.functions.messages import CheckChatInviteRequest, ImportChatInviteRequest
     except ImportError:
         sys.exit("Нужен Telethon: pip install telethon")
 
@@ -141,16 +184,24 @@ def main():
             entity = client.get_entity(int(chat))
         elif "+" in chat or "joinchat" in chat:
             invite = chat.rstrip("/").split("/")[-1].lstrip("+")
-            try:
-                client(ImportChatInviteRequest(invite))
-            except Exception:
-                pass  # уже участник
-            entity = next((d.entity for d in client.get_dialogs() if d.is_group or d.is_channel), chat)
+            checked = client(CheckChatInviteRequest(invite))
+            entity = getattr(checked, "chat", None)
+            if entity is None:
+                joined = client(ImportChatInviteRequest(invite))
+                joined_chats = list(getattr(joined, "chats", []))
+                if len(joined_chats) != 1:
+                    sys.exit("Не удалось однозначно определить Telegram-канал по invite link")
+                entity = joined_chats[0]
         else:
             entity = chat
-        print("Загружаю %d файл(ов) в Telegram..." % len(files))
-        # все файлы одним альбомом-сообщением с подписью на первом
-        client.send_file(entity, files, caption=caption, force_document=True)
+        print("Публикую release poster и %d файл(ов) сборки в Telegram..." % len(build_files))
+        client.send_file(entity, posters[0], caption=caption, force_document=False)
+        client.send_file(
+            entity,
+            build_files,
+            caption="FantasyDisk v%s — DMG, Windows setup и SHA256." % a.version,
+            force_document=True,
+        )
         print("Готово ✓ — сборки опубликованы в Telegram.")
 
 

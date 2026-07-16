@@ -67,7 +67,7 @@ func _check_viewport(viewport_size: Vector2i) -> void:
 		if tabs.current_tab != tab_index or not footer_safe.visible or not footer.visible:
 			_fail("Screen/Sound/Controls footer visibility regressed on tab %d at %s." % [tab_index, str(viewport_size)])
 			return
-		for button_name in ["SettingsRevertButton", "SettingsApplyButton"]:
+		for button_name in ["SettingsUpdateButton", "SettingsRevertButton", "SettingsApplyButton"]:
 			var button := main.find_child(button_name, true, false) as Button
 			if button == null or button.focus_mode != Control.FOCUS_ALL or button.pressed.get_connections().is_empty():
 				_fail("Settings footer action %s lost focus/signal wiring at %s." % [button_name, str(viewport_size)])

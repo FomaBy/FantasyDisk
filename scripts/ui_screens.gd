@@ -20,6 +20,7 @@ var _atlas := {}
 var _atlas_hidden_seen := {}
 var _feedback_request_id := 0
 var codex_unlock_presenter
+var _update_presenter
 
 const HeroStatRadar := preload("res://scripts/ui/hero_stat_radar.gd")
 const SemanticTypography := preload("res://scripts/ui/semantic_typography.gd")
@@ -45,6 +46,7 @@ const CodexUnlockPresenter := preload("res://scripts/codex_unlock_presenter.gd")
 # вынесенные UI-модули: глобальное имя класса из global_script_class_cache
 # не гарантировано в холодном/устаревшем чекауте и роняло компиляцию main.gd.
 const LoreScreens := preload("res://scripts/ui/lore_screens.gd")
+const UpdatePresenter := preload("res://scripts/ui/update_presenter.gd")
 const BATTLE_PRAYER_ICON_IDS := {
 	"prayer_wrath": "damage",
 	"prayer_mending": "regeneration",
@@ -865,8 +867,9 @@ func _show_main_menu() -> void:
 		if game.run_autosave_has_run():
 			_show_continue_run_dialog()
 		else:
-			# FAN-1080: перед самым первым забегом — вступление истории (1 раз).
-			_maybe_show_lore_intro(_show_character_select)
+			# FAN-1099: вступление истории убрано из запуска игры — рассказ о мире
+			# остался только в Кодексе («Летопись» → «Вступление»).
+			_show_character_select()
 	)
 	action_box.add_child(start_button)
 
@@ -1000,6 +1003,10 @@ func _show_main_menu() -> void:
 # Панель PanelContainer (offset ±300×±170 от центра → 600×340), _panel_style content
 # margins (58,72,58,66) → safe-area. Контент: заголовок, подзаголовок, ряд из двух
 # кнопок 220×72 (separation 18). Всё помещается внутри safe-area без наслоений.
+
+
+func _connect_update_manager(manager) -> void:
+	_update_presenter = UpdatePresenter.new(self, manager)
 
 
 func _show_quit_confirmation_dialog() -> void:
@@ -1294,8 +1301,9 @@ func _show_continue_run_dialog() -> void:
 	_apply_overhaul_2k_button_theme(new_game_button, "cr_btn", CR_BTN_NEWGAME_2K.size)
 	new_game_button.pressed.connect(func() -> void:
 		game.clear_run_autosave()
-		# FAN-1080: старые профили без флага lore_intro_seen тоже видят вступление.
-		_maybe_show_lore_intro(_show_character_select)
+		# FAN-1099: вступление истории убрано из запуска игры — рассказ о мире
+		# остался только в Кодексе («Летопись» → «Вступление»).
+		_show_character_select()
 	)
 	button_row.add_child(new_game_button)
 
@@ -2052,11 +2060,14 @@ func _build_character_select_v4() -> void:
 		stat_name.text = str(game.PROGRESSION_DATA.STAT_NAMES.get(sid, sid))
 		stat_name.text_overrun_behavior = TextServer.OVERRUN_TRIM_ELLIPSIS
 		stat_name.visible = stat_rows_show_text
+		# A compact 2×4 cell has a 90px name lane. This is a terse stat caption,
+		# not a form field: use the documented 12px caption floor so full Russian
+		# names remain visible without abbreviating or stealing the bar/value lanes.
 		stat_name.add_theme_font_size_override("font_size", SemanticTypography.resolve_fixed(
-			SemanticTypography.ROLE_FIELD,
+			SemanticTypography.ROLE_CAPTION,
 			stat_text_font_size,
-			SemanticTypography.role_min(SemanticTypography.ROLE_FIELD),
-			SemanticTypography.role_max(SemanticTypography.ROLE_FIELD)
+			SemanticTypography.role_min(SemanticTypography.ROLE_CAPTION),
+			SemanticTypography.role_max(SemanticTypography.ROLE_CAPTION)
 		))
 		stat_name.add_theme_color_override("font_color", _hs4_stat_text_color(sid))
 		stat_row.add_child(stat_name)
@@ -3184,7 +3195,7 @@ func _layout_attribute_offer_card(button: Button) -> void:
 		interpretation_h = 38.0
 		influence_h = 50.0
 		price_h = 24.0
-	elif display_size.y < 400.0:
+	elif display_size.y <= 410.0:
 		# At the 1080p tier the icon is redundant with the title and tooltip;
 		# yield its lane to the four semantic-size derived preview rows.
 		icon_side = 0.0
@@ -3257,10 +3268,10 @@ func _layout_attribute_offer_card(button: Button) -> void:
 		))
 	if preview != null:
 		preview.add_theme_font_size_override("font_size", SemanticTypography.resolve_fixed(
-			SemanticTypography.ROLE_BODY,
-			base_font,
-			SemanticTypography.role_min(SemanticTypography.ROLE_BODY),
-			SemanticTypography.role_max(SemanticTypography.ROLE_BODY)
+			SemanticTypography.ROLE_DESCRIPTION,
+			base_font - 2,
+			SemanticTypography.role_min(SemanticTypography.ROLE_DESCRIPTION),
+			SemanticTypography.role_max(SemanticTypography.ROLE_DESCRIPTION)
 		))
 	if price != null:
 		price.add_theme_font_size_override("font_size", SemanticTypography.resolve_fixed(
@@ -7213,6 +7224,13 @@ func _show_settings_menu(requested_return_origin := "") -> void:
 	action_row.offset_bottom = 64.0
 	action_row.custom_minimum_size = Vector2(settings_panel_w, 64.0)
 	action_safe.add_child(action_row)
+	var update_button := _settings_v6_make_action_button("Обновить игру", "SettingsUpdateButton", 280.0, 64.0)
+	update_button.pressed.connect(_update_presenter.request_check)
+	action_row.add_child(update_button)
+	var action_spacer := Control.new()
+	action_spacer.name = "SettingsBottomActionsSpacer"
+	action_spacer.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	action_row.add_child(action_spacer)
 	var revert_button := _settings_v6_make_action_button("Вернуть", "SettingsRevertButton", 280.0, 64.0)
 	revert_button.disabled = not _settings_video_dirty()
 	revert_button.pressed.connect(_revert_pending_video_settings)
@@ -7221,7 +7239,7 @@ func _show_settings_menu(requested_return_origin := "") -> void:
 	apply_button.disabled = not _settings_video_dirty()
 	apply_button.pressed.connect(_apply_pending_video_settings)
 	action_row.add_child(apply_button)
-	_settings_fit_kit_row([revert_button, apply_button], 280.0, 64.0)
+	_settings_fit_kit_row([update_button, revert_button, apply_button], 280.0, 64.0)
 	# Apply/Revert belong only to pending Screen settings. The accepted Game-tab
 	# mockup has no irrelevant footer; hiding it also restores the exact compact
 	# scroll viewport while tabs/header remain fixed.

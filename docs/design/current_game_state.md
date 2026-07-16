@@ -1,6 +1,6 @@
 # FantasyDisk Current Game State
 
-Обновлено: 2026-07-14 (0.2.2 release snapshot)
+Обновлено: 2026-07-16 (release snapshot 0.2.3)
 
 Этот документ описывает то, что уже есть в текущей версии игры. Он нужен агентам и разработчикам как быстрый фактический снимок проекта перед изменениями в геймплее, балансе, UI, персонажах, врагах, прогрессии и ассетах.
 
@@ -23,13 +23,36 @@ Domain docs для подробностей по областям:
 
 - Движок: Godot 4.
 - Жанр: 2D top-down loot-action survival roguelite с RPG-билдкрафтом.
-- Текущий релизный snapshot: `0.2.2`, подготовленный из `dev` 2026-07-14.
-  Главный акцент — полный ребаланс всех 17 классов и 51 оружия без мёртвых
-  вариантов и неконтролируемого crowd-разгона, обновлённый Кодекс с «Летописью»,
-  новый фон главного меню и исправленная поставка macOS.
-- Основная рабочая платформа: macOS. Релизные платформы: macOS (подписанный DMG
-  с ярлыком Applications) и Windows (x86_64 NSIS-инсталлер с embed_pck; отдельный
-  zip/exe игрокам не публикуется).
+- Текущий релизный snapshot: `0.2.3`, подготовленный из `dev` 2026-07-16.
+  Главный акцент — безопасные обновления через GitHub Releases, надёжный rearm
+  движения после экранов выбора, прямой переход к выбору героя, новые фоны
+  главного меню и Кодекса, круглая зона молота Берсерка и более заметные дроны
+  Инженера. Баланс остальных героев сохранён от принятой версии 0.2.2.
+- Основная рабочая платформа: macOS. Релизные платформы: macOS (DMG с ярлыком
+  Applications) и Windows (x86_64 NSIS-инсталлер с embed_pck; отдельный zip/exe
+  игрокам не публикуется).
+- macOS-канал сборки выбирается ЯВНО через `FANTASYDISK_MACOS_CHANNEL`; тихий
+  downgrade запрещён в обе стороны. Полный контракт — `docs/process/game_updates.md`
+  и `docs/process/release_versioning.md`:
+  - `signed` — строгий default, включается автоматически при наличии credentials:
+    `MACOS_SIGN_IDENTITY` (Developer ID Application) и `MACOS_NOTARY_PROFILE`
+    обязательны; codesign, notarytool, `stapler` и `spctl` выполняются отдельно
+    для приложения и итогового DMG.
+  - `unsigned` — текущий выбранный канал (решение владельца, FAN-1121, после
+    отмены FAN-1094): DMG и .app без подписи Developer ID и нотаризации.
+    Пропускаются ТОЛЬКО codesign/notarization/stapler/spctl; целостность
+    гарантируется HTTPS + доверенным манифестом + точным именем/размером/SHA-256,
+    а клиент явно помечает сборку unsigned и даёт ручную Gatekeeper-инструкцию
+    («Всё равно открыть» / Open Anyway).
+- Для ОБОИХ каналов Finder DMG показывает только нативные `FantasyDisk.app` и
+  `Applications` с одной тонкой стрелкой между ними; baked copy, рамки,
+  `.background`, `.fseventsd` и прочие root-служебные элементы запрещены и
+  проверяются при sealing вместе с exact-tag inputs, layout, secret scan,
+  `SHA256SUMS.txt` и `update-manifest.json`.
+- Исторически FAN-1094 требовал fail-closed signed-only поставку
+  (ad-hoc/unnotarized релиз запрещён), но задача отменена и заменена
+  unsigned-каналом FAN-1121, поэтому signed-only больше не является текущим
+  универсальным правилом.
 - Версионирование: SemVer, источник истины `project.godot::config/version`; релизы — теги `vX.Y.Z` на main, разработка в `dev` (см. `docs/process/release_versioning.md`). Сборка: `tools/build_release.sh <версия>`.
 - Основная сцена: `scenes/Main.tscn`.
 - Основной управляющий скрипт: `scripts/main.gd` — тонкий координатор (state, пауза, основной цикл, делегирующие стабы для тестов). Он владеет модулями-компонентами: `scripts/ui_screens.gd` (меню/экраны/HUD/стили), `scripts/route_map_screen.gd` (генерация маршрута и экран карты), `scripts/combat_director.gd` (бой, спавн, баланс, арена, pickups). Модули — RefCounted с ссылкой `game` на main; общее состояние живет в main.
@@ -133,7 +156,7 @@ Act 2 начинается с бюджета boss Act 1 и достигает п
 - **Персистенс / Continue Run**: дисплей, звук (включая `ui_volume`, `mute_when_unfocused`, `low_hp_warning_enabled`), `aim_mode`, `debug_mode`, `combat_feedback`, `input_bindings`, а также геймпад-ключи (`input_mode`, `gamepad_bindings`, `gamepad_deadzone`, `gamepad_vibration`) сохраняются в `user://settings.cfg` (`scripts/game_settings.gd`) и применяются при старте. SCRUM-816 добавил запись этих геймпад-ключей в `main.save_game_settings()` (раньше их писало только ядро при старте, и любое сохранение настроек перезаписывало их дефолтами) + зеркалит `gamepad_deadzone`/`gamepad_vibration` в root-мету для `player.gd`. SCRUM-976 добавил пять gameplay-sandbox множителей с нейтральным `1.0`; при подтверждении оружия они копируются в неизменяемый snapshot забега и отдельно входят в autosave. Изменение/сброс настроек влияет только на следующий забег. Активный забег сохраняется отдельно через `scripts/run_autosave.gd` в `user://fantasydisk_autosave.cfg` после безопасных route checkpoints с `current_act` 1..2; legacy `current_act=3` нормализуется в финальный Act 2 checkpoint с сохранением route/build state. Главное меню предлагает «Продолжить»/«Новая игра» через widened SCRUM-842 continue-run dialog (840×380 panel, 420×72 primary continue button). SCRUM-1062 заменил отдельный Luminari PNG-wordmark заголовка на живой `ContinueRunTitle` Label с точным текстом `Продолжить забег?`, общим theme/default Font resource и fit-safe effective tier `38/40/42/42px`; glyph effects остаются внутри пустой `696×70` title-zone на 648p/720p/1080p/2K и live resize. Autosave callbacks/focus не менялись; смерть/финальная победа по-прежнему очищают autosave.
 
 - **Gameplay sandbox (SCRUM-976)**: диапазоны — HP монстров `0.5–3.0`, урон монстров `0.5–3.0`, урон игрока `0.5–2.0`, скорость атак игрока `0.5–2.0`, скорость атак монстров `0.5–3.0`, шаг `0.1`. `scripts/gameplay_sandbox.gd` — единый контракт normalize/snapshot/metadata. HP/урон применяются один раз в общем `Enemy` (поэтому покрыты обычные враги, призывы, элитки и боссы); скорость монстров ускоряет только attack cooldown countdown, не telegraph/windup/recover. Игрок получает финальный exact-множитель после release softcaps. Любой не-нейтральный snapshot помечает `progression_eligible=false`, блокирует достижения, Codex, boss/meta/Ascension progression и не принимается как release-balance evidence; run-local XP, золото, предметы и сводка сохраняются.
-- **Лор и повествование (FAN-1080)**: канон мира в `docs/design/lore.md` (Диск/Разлом/Владыки/Хранители/Печать/Возвышение-витки/Исток), рантайм-проекция `scripts/lore_data.gd`. Интро истории из 4 слайдов при первом «Начать новую игру» (`lore_intro_seen` в settings.cfg, тест-байпас `force_skip_lore_intro`), 7-я вкладка Кодекса «Летопись» (шаг nav-плит 104), лор-секции в досье классов («Происхождение»), боссов («Владыка Разлома») и элиток («Офицер прибоя»), лор-строка под боевым баннером босса/элитки (элитки заодно получили русские титулы из Кодекса), лорные строки победы («Печать наложена…») и поражения. Спойлер-гард Истока — по `secret_boss_defeated`. Русские `boss_display_name` добавлены Стражу Разлома и Пожирателю Диска, секретный босс — «Исток». Тест: `tests/lore_screens_test.gd`.
+- **Лор и повествование (FAN-1080, FAN-1099)**: канон мира в `docs/design/lore.md` (Диск/Разлом/Владыки/Хранители/Печать/Возвышение-витки/Исток), рантайм-проекция `scripts/lore_data.gd`. FAN-1099: интро истории из 4 слайдов больше НЕ показывается при запуске игры («Начать новую игру» и «Новая игра» ведут сразу в выбор героя) — рассказ о мире остался только в Кодексе, запись «Вступление» на вкладке «Летопись» (те же 4 слайда). Экран `LoreIntroScreen` и хелперы `_maybe_show_lore_intro`/`_show_lore_intro`, флаг `lore_intro_seen` и тест-байпас `force_skip_lore_intro` сохранены в коде для пересмотра/тестов и возможного возврата интро, но в потоке запуска сейчас не задействованы. Кодекс: 7-я вкладка «Летопись» (шаг nav-плит 104), лор-секции в досье классов («Происхождение»), боссов («Владыка Разлома») и элиток («Офицер прибоя»), лор-строка под боевым баннером босса/элитки (элитки заодно получили русские титулы из Кодекса), лорные строки победы («Печать наложена…») и поражения. Спойлер-гард Истока — по `secret_boss_defeated`. Русские `boss_display_name` добавлены Стражу Разлома и Пожирателю Диска, секретный босс — «Исток». Тест: `tests/lore_screens_test.gd`.
 - **Gameplay sandbox UI (SCRUM-1025)**: вкладка «Игра» читает ranges/step/values только из SCRUM-976 API, показывает `%.1f×`, нейтральный/пользовательский статус и предупреждение о progression/evidence gate. Изменения сохраняются немедленно, но не мутируют snapshot активного забега; Reset делает один атомарный save и disabled в neutral. `SettingsBottomActions` (экранные Apply/Revert) скрыт на Game, а `SettingsGameScroll` занимает расширенный прозрачный content owner `960/1158/1544` и сохраняет отдельный 14px scrollbar lane на 720p. PixelLab compact mockup задавал `306px` видимой высоты без live Atlas frame; runtime намеренно ограничивает её до `242px` на 720p (`878×520` canvas, max scroll `278`), чтобы ни строки, ни Reset не уходили под нижний орнамент. Focused Metal/headless matrix: `tests/settings_game_scrum1025_test.gd`.
 - **Settings footer frame safety (SCRUM-1053)**: on the compact tier
   `SettingsBottomActionsSafe` structurally reserves `64px` for the native
@@ -146,6 +169,13 @@ Act 2 начинается с бюджета boss Act 1 и достигает п
   The whole footer wrapper collapses on Game, preserving its exact `892x242`
   viewport and `878x520` canvas. Headless/Metal coverage includes the 760px
   compact threshold in `tests/settings_footer_scrum1053_test.gd`.
+- **Обновления игры (FAN-1112)**: начиная с 0.2.2 экспортированный клиент один
+  раз за сессию проверяет public GitHub Releases; offline-ошибка старта не мешает
+  игре, а новая SemVer вызывает prompt. `SettingsUpdateButton` доступна на первых
+  трёх вкладках Settings и запускает явную проверку с результатом. Финальные DMG
+  и Windows Setup скачиваются в `user://updates` и открываются только после
+  строгой проверки trusted URL, имени, размера и SHA-256; self-overwrite игры не
+  используется. Полный runtime/release контракт: `docs/process/game_updates.md`.
 - **Codex unlock tracking (SCRUM-621 / FAN-1077)**: `scripts/meta_progression.gd`
   persists discovered characters, weapons, monsters, bosses and artifacts plus an independent
   `codex_unread` map for characters, weapons, monsters, bosses and artifacts in
@@ -206,21 +236,21 @@ Act 2 начинается с бюджета boss Act 1 и достигает п
 
 Все 10 боевых фонов нарисованы в нативном 2560x1440. С SCRUM-518 арена увеличена до 4096x2304, поэтому `_spawn_arena_background` апскейлит фон под арену (scale ≈ 1.6) — фоны теперь слегка мылятся (ожидаемый компромисс ради простора; перерисовка набора под 4K вынесена в отдельную арт-задачу через `fantasydisk-asset-generator`). SCRUM-369 (2026-06-14) заменил весь набор через `fantasydisk-asset-generator`: `field_marsh`, `field_meadow`, `field_misty_marsh`, `field_ruined_courtyard`, `field_dusty_badlands`, `field_enchanted_meadow`, `field_ashen_rift`, `field_cursed_grove`, `field_dry_road`, `field_stone_garden`. Новый стиль — реалистичный D&D/dark fantasy top-down battlefield floor с богатым материалом по биомам, но приглушенной центральной зоной для читаемости героев, монстров, projectile/VFX и анимаций. `field_dry_road` и `field_stone_garden` теперь существуют как реальные PNG, поэтому live links из `ARENA_BACKGROUND_OPTIONS` больше не битые. QA previews: `docs/design/previews/arena_backgrounds_scrum369_contact.png`, `docs/design/previews/arena_backgrounds_scrum369_readability.png`.
 `main_menu_epic_battle_v3.png` используется стартовым экраном как активный фон
-главного меню. FAN-1088 заменяет прежний party/boss key art на 2560x1440
-PixelLab-composited D&D/dark-fantasy сцену: один north-facing Berserk стоит на
-краю монументального базальтового утёса, а внизу читается большой фиолетовый
-disk-shaped dimensional rift. Фокус целиком вынесен в center-right/right;
-спокойная левая колонка под 6 runtime-кнопок и title-safe область под
-`MainMenuTitleLabel` остаются без ключевых силуэтов. Фон не содержит baked UI,
-text, logo, buttons или watermark; runtime texture path и UI wiring не менялись.
-PixelLab map-object IDs, canonical Berserk source, prompts, alpha-cleaned exports,
-backup, preview и точные safe zones задокументированы в
-`docs/design/mockups/fan1088_main_menu_disk_rift/spec.md` и
-`docs/design/references/fan1088_main_menu_disk_rift/manifest.json`. Предыдущий
-SCRUM-1001 runtime фон сохранён в
-`docs/design/backups/fan1088_main_menu_disk_rift/main_menu_epic_battle_v3_pre_fan1088.png`;
-его исторический source package остаётся в
-`docs/design/mockups/main_menu_openai_clean_background/spec.md`.
+главного меню. FAN-1097 заново собрал сцену как цельный 2560x1440 cinematic
+dark-fantasy key art через встроенный OpenAI Image Generator в Codex: один
+безоружный варвар стоит спиной на базальтовом утёсе над огромным фиолетовым
+disk-shaped dimensional rift, а руины и грозовой горный горизонт создают глубину.
+Фокус целиком вынесен в center-right/right; спокойная левая колонка под 6
+runtime-кнопок и title-safe область под `MainMenuTitleLabel` остаются без ключевых
+силуэтов, а lower-right utility zone локально приглушена. Фон не содержит baked
+UI, text, logo, buttons, frame, cursor или watermark; runtime texture path и UI
+wiring не менялись. Built-in source/targeted edit, оба prompt, backup, mockup,
+responsive previews и точные safe zones задокументированы в
+`docs/design/mockups/fan1097_main_menu_openai_background/spec.md` и
+`docs/design/references/fan1097_main_menu_openai_background/manifest.json`.
+Предыдущий FAN-1088 runtime фон сохранён в
+`docs/design/backups/fan1097_main_menu_openai_background/main_menu_epic_battle_v3_pre_fan1097.png`;
+FAN-1088 package остаётся историческим provenance.
 SCRUM-680 release refresh (2026-07-02) заменил runtime logo на PixelLab-based
 `assets/sprites/ui/menu_title/main_menu_title_fantasy_disk.png` (`960x360`,
 transparent; source/provenance `docs/design/references/main_menu_logo_release_fix/`)
@@ -1743,6 +1773,15 @@ SCRUM-654/SCRUM-663 cleanup now resolves to a single visible level-up plaque: `L
 
 ## Кодекс (Энциклопедия)
 
+FAN-1098 replaces the already-wired Codex background at
+`assets/sprites/ui/atlas_style/codex/bg_codex_sanctum.png` with a cohesive
+2560x1440 RGB draconic archive created exclusively through the built-in OpenAI
+Image Generator in Codex. PixelLab and the OpenAI Images API were not used.
+Runtime layout, controls, text, focus, and data are unchanged. Actual Godot
+captures at 1280x720, 1920x1080, and 2560x1440, the prompt, hashes, safe-zone
+report, previous-asset backup, and implementation spec live under
+`docs/design/{references,mockups,previews,backups}/fan1098_codex_openai_background/`.
+
 Кнопка «Кодекс» в главном меню открывает внутриигровую энциклопедию (`_show_codex_screen` в `scripts/ui_screens.gd`). Данные — data-driven из `scripts/codex_data.gd`: персонажи/оружие/артефакты/характеристики собираются из `progression_data.gd` и `stat_formulas.gd`, описания монстров и канонические имена умений живут в `CODEX_DATA.MONSTERS` и зарегистрированы в `docs/design/content_registry.md` (раздел «Умения Монстров»). SCRUM-438 rebuild сделал live Codex v2: единый main frame, вертикальные вкладки слева, центральный scrollable список записей и правый detail panel с портретом/чипами/текстом. SCRUM-725 заменил старую геометрию на accepted `docs/design/mockups/codex_redesign_2026_06/layout_map.md` с `codex_pl_backdrop`, textless 9-slice `codex_pl` frame set and safe cream/gold text. SCRUM-849 prepared the object-first source package (`docs/design/mockups/codex_object_first_redesign/spec.md`, `layout_zones.json`, preview/contact PNGs), and SCRUM-850 made that package live in runtime: base 1920x1080 rects are `CodexMainPanel` 72,54,1776,972; `CodexNavPanel` 96,210,300,700; `CodexContent` 438,210,490,700; `CodexDetailPanel` 960,210,840,700. SCRUM-884 then simplified the center column to the list-only flow (no object preview stage), and SCRUM-889 removes the live `Глоссарий` category entirely. The right detail overlay has a larger contained portrait/icon stage, chip row and `CodexDetailParchmentInset` body text. Character portraits still use the SCRUM-416 full-frame idle `sprite_path` source as Hero Select, while artifacts use canonical artifact/shop icons. QA path/rect dumps: `build/qa/scrum416/codex_character_portrait_runtime_paths.md`, `build/qa/scrum417/codex_character_portrait_runtime_dump.md`, `build/qa/scrum438/codex_v2_runtime_dump.md`, `build/qa/scrum438/codex_v2_no_overlap_matrix.md`; SCRUM-725 source/evidence: `docs/design/references/codex_redesign_2026_06/`, `docs/design/previews/codex_redesign_2026_06_runtime_contact.png`, `build/qa/design_review/codex_1280x720.png`, `build/qa/design_review/codex_1920x1080.png`, `build/qa/design_review/codex_2560x1440.png`; SCRUM-850 screenshot evidence: `build/qa/codex_object_first/`.
 
 SCRUM-621 adds backend unlock state for future Codex filtering; FAN-1077 extends
@@ -1854,7 +1893,7 @@ accepted SCRUM-345/SCRUM-403 frame kit. QA dumps: `build/qa/scrum331/`.
 | Экран | Описание |
 | --- | --- |
 | Главное меню | SCRUM-1059: принятые battle-art фон, логотип и полая `meta40/frame_border.png` рама сохранены; шесть действий размещены одной адаптивной вертикальной колонкой слева внутри authored inner-zone (320×54 @1152×648 → 380×96 @2K), без scrollbar; SCRUM-1080/1093/1095 держит компактный utility-блок справа снизу: неизменный PixelLab Gratitude PNG рисуется через alpha-aware runtime `AtlasTexture`, icon-only благодарности стоят сразу слева от динамической версии, чей прямоугольник равен ширине live-строки + 6px и заканчивается за 8px до frame-safe границы; glow-to-label gap = 2px, реальные alpha-to-glyph gaps = 15/17/17/19px на 1280/1920/2048/2560, длинный будущий semver не клампится; Up/Down образует кольцо колонки, Right ведёт к благодарностям |
-| Настройки | Вкладки «Экран» / «Звук» / «Управление»: live SCRUM-439 Settings v2 modal + 3-slot switcher, монитор, режим окна, HiDPI-aware разрешения только 2560x1440/1920x1080, full-width audio sliders, mute, debug mode, rebinding движения/паузы/ultimate |
+| Настройки | Четыре вкладки «Экран» / «Звук» / «Управление» / «Игра»: Atlas Settings shell, монитор, режим окна, HiDPI-aware разрешения 2560x1440/1920x1080, audio, rebinding, gameplay sandbox и FAN-1112 ручная проверка GitHub-обновления кнопкой «Обновить игру» на первых трёх вкладках |
 | Выбор персонажа | Live HS4/Atlas layout: слева крупное responsive rotating selected hero preview и старт, справа scroll-safe structured dossier SCRUM-1064 (trait → имя → 3 оружия → top-3 BASE_STATS → primary/secondary/weak без прозы/тримминга) + фиксированные 8 stat Line Bars; SCRUM-1063 `HS4AscensionFrame` показывает unified wide `−` / `Возвышение N` / `+` с tooltip-only модификаторами; нижняя carousel циклично синхронизирует first↔last для pointer/keyboard/gamepad и сохраняет ≥3 слота |
 | Выбор оружия | SCRUM-870 native redraw: no `WeaponSelectPixelLabRuntimeLayer`; dark opaque `MenuPanel_weapon_select`, three large `1674x260` live `WeaponOption_*` cards with `204x204` icon wells, `176x176` weapon sprites, readable title/`Отличие:`/concise mechanic/role text, right stat panel for range/radius/cooldown/context, normal fantasy Back button, and preserved mouse/keyboard/gamepad flow |
 | Карта маршрута | SCRUM-1057/1079: horizontal left-to-right карта внутри общей полой gold shell; header/title, боевой resource HUD, node viewport, bottom horizontal lane и pending-level FAB находятся в точных five-target safe-зонах; vertical scroll отключён |
@@ -2268,14 +2307,16 @@ sustained-модель dot-оси и infected-фактор; тюнеры кит�
 - При любом уроне по игроку боевой HUD показывает легкое покраснение экрана (`DamageFlashOverlay`): фиксированный пик alpha 0.20 без стакания, затухание ~0.32с, эффект замирает на паузе (PROCESS_MODE_PAUSABLE). Сигнал: `Player.damaged`.
 - SCRUM-521: при HP игрока ниже 30% боевой HUD показывает мягкую красную виньетку по краям (`LowHpVignetteOverlay`) с прозрачным центром, чтобы не закрывать бой и HUD. Виньетка гаснет после восстановления до 34%+ HP, уважает persisted toggle `combat_feedback`, не перехватывает ввод и рисуется за HUD-карточками.
 - SCRUM-852 (2026-07-03): стартовый молот Берсерка — `aoe_radius=150`, `attack_range=150`, `max_aoe_radius=0`; Radius scaling увеличивает круг, а плотные паки ограничены `circle_full_targets=4` / `circle_target_diminish=0.62`. `upgrade_aoe_exponent=1.08` и `upgrade_damage_exponent=1.05` сохранены; live-гейт `tests/berserk_dps_runaway_gate.gd` держит `lvl20_ideal_20t <= 3600` и `lvl20_ideal_1t <= 650`.
-- SCRUM-1043 (2026-07-11): hammer-only ground membership следует footline
-  full-frame Берсерка: `_circle_attack_center(owner_node)` смещает центр на
-  `16px` вниз, а `_circle_attack_visual_scale()` возвращает
-  `Vector2(1.0, 1.12)` и одинаково применяется damage-query и slam VFX. При
-  базовом `150px` верхний reach остаётся около `150px`, нижний становится около
-  `184px`, горизонталь практически не меняется. Damage, cooldown, Radius growth,
-  dense-pack diminishing, sword/axe и Knight `holy_flail` не изменены;
-  dedicated-регрессия — `tests/scrum1043_hammer_lower_hit_zone_test.gd`.
+- SCRUM-1043 (2026-07-11) / FAN-1100 (2026-07-15): hammer-only ground membership
+  следует footline full-frame Берсерка — `_circle_attack_center(owner_node)`
+  смещает центр на `16px` вниз. FAN-1100 сделал AoE круглым вместо овального:
+  `_circle_attack_visual_scale()` теперь возвращает `Vector2.ONE` (прежний
+  вертикальный растяг `Vector2(1.0, 1.12)` убран) и одинаково применяется
+  damage-query и slam VFX. При базовом `150px` reach равномерный ~`150px` от
+  смещённого центра во все стороны (верх ~`134px`, низ ~`166px` от origin);
+  горизонталь без изменений. Damage, cooldown, Radius growth, dense-pack
+  diminishing, sword/axe и Knight `holy_flail` не изменены; dedicated-регрессия —
+  `tests/scrum1043_hammer_lower_hit_zone_test.gd`.
 - SCRUM-858 (2026-07-04): Knight counter pass перенес часть tank identity в incoming-based retaliation. `tower_shield` снижает контактный удар и отвечает по фронтальной стае с radius/arc/target caps (5 incoming damage дает около 25 retaliation до cap), `long_spear` оставлен reach/pierce с легкой узкой ответкой, `holy_flail` держит широкий circular holy-control counter. Cooldown сбрасывается при `configure_character`, чтобы смена оружия/старт забега не наследовали старое окно.
 - SCRUM-860 (2026-07-04): Assassin kill-growth closes the growth/sustain slice of the full rebalance. `shadow_momentum` stacks only from normal non-boss/non-elite kills, caps at 6 refreshed 6s stacks, clears on expiry/weapon swap, and is validated by `tests/kill_scaling_identity_test.gd`.
 

@@ -4,10 +4,13 @@ extends Node2D
 const TARGET_QUERY := preload("res://scripts/combat_target_query.gd")
 const CONTACT_STUCK_HIT_RADIUS := 40.0
 # SCRUM-1043: Berserk's full-frame body extends farther below its origin than
-# above it. Keep the former 150 px upper reach while moving the hammer ground
-# impact toward the footline and giving the same contract to hit queries/VFX.
+# above it, so the hammer ground impact centers 16 px toward the footline; the
+# same offset feeds both the hit query and the slam VFX.
+# FAN-1100: the AoE must read round, not oval. The former vertical 1.12 stretch
+# is gone — the damage query and VFX are now a true circle of aoe_radius around
+# that shifted center (uniform reach in every direction; DPS/radius unchanged).
 const HAMMER_CIRCLE_CENTER_OFFSET := Vector2(0.0, 16.0)
-const HAMMER_CIRCLE_VISUAL_SCALE := Vector2(1.0, 1.12)
+const HAMMER_CIRCLE_VISUAL_SCALE := Vector2.ONE
 const CONSTELLATION_FINAL_MECHANICS := {
 	"sword_repeat_execute": "hit",
 	"axe_outer_followthrough": "attack_resolved",

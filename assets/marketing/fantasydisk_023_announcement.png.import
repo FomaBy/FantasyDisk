@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://rsmrcrjdvumk"
-path="res://.godot/imported/dmg_background.svg-4ddb8004222315dc4b1df2c09ead4c9c.ctex"
+uid="uid://duxne2j33v0ay"
+path="res://.godot/imported/fantasydisk_023_announcement.png-ae55e34421682a886c4d18ed7e0f922a.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://tools/dmg_background.svg"
-dest_files=["res://.godot/imported/dmg_background.svg-4ddb8004222315dc4b1df2c09ead4c9c.ctex"]
+source_file="res://assets/marketing/fantasydisk_023_announcement.png"
+dest_files=["res://.godot/imported/fantasydisk_023_announcement.png-ae55e34421682a886c4d18ed7e0f922a.ctex"]
 
 [params]
 
@@ -38,6 +38,3 @@ process/hdr_as_srgb=false
 process/hdr_clamp_exposure=false
 process/size_limit=0
 detect_3d/compress_to=1
-svg/scale=1.0
-editor/scale_with_editor_scale=false
-editor/convert_colors_with_editor_theme=false

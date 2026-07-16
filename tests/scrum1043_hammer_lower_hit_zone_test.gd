@@ -30,13 +30,16 @@ func _run() -> void:
 
 	var expected_center := owner.global_position + Vector2(0.0, 16.0)
 	_assert_vec2(hammer.call("_circle_attack_center", owner), expected_center, "hammer center must move 16 px toward the footline")
-	_assert_vec2(hammer.call("_circle_attack_visual_scale"), Vector2(1.0, 1.12), "hammer visual scale must mirror the vertically stretched hit query")
+	_assert_vec2(hammer.call("_circle_attack_visual_scale"), Vector2.ONE, "FAN-1100: hammer AoE must be a true circle, not a vertically stretched oval")
 
-	# Cardinal owner-space probes. The former upper reach stays valid, the lower
-	# side gains clearance before contact, and left/right remain close to 150 px.
-	_assert_membership(hammer, owner, Vector2(0.0, -150.0), true, "top 150 px boundary regressed")
-	_assert_membership(hammer, owner, Vector2(0.0, 180.0), true, "bottom 180 px must be inside the corrected slam")
-	_assert_membership(hammer, owner, Vector2(0.0, 185.0), false, "bottom correction must remain a close-AoE, not an unbounded radius buff")
+	# FAN-1100 cardinal owner-space probes. The AoE is a true circle of radius
+	# aoe_radius (150) centered 16 px toward the footline: uniform reach of 150 px
+	# from that center in every direction (top ~134 px / bottom ~166 px from the
+	# owner origin), with no vertical over-reach.
+	_assert_membership(hammer, owner, Vector2(0.0, -133.0), true, "top reach (150 px above the shifted center) regressed")
+	_assert_membership(hammer, owner, Vector2(0.0, -135.0), false, "top must stay circular: no vertical over-reach above the center")
+	_assert_membership(hammer, owner, Vector2(0.0, 165.0), true, "bottom reach (150 px below the shifted center) regressed")
+	_assert_membership(hammer, owner, Vector2(0.0, 167.0), false, "bottom correction must remain a close-AoE, not an unbounded radius buff")
 	_assert_membership(hammer, owner, Vector2(-149.0, 0.0), true, "left cardinal reach regressed")
 	_assert_membership(hammer, owner, Vector2(149.0, 0.0), true, "right cardinal reach regressed")
 	_assert_membership(hammer, owner, Vector2(-151.0, 0.0), false, "left horizontal radius expanded unexpectedly")
@@ -50,7 +53,7 @@ func _run() -> void:
 		_failures.append("HammerSlamVfx was not created")
 	else:
 		_assert_vec2(slam.global_position, expected_center, "visible hammer slam center diverges from damage center")
-		_assert_vec2(slam.scale, Vector2(1.0, 1.12), "visible hammer slam shape diverges from damage scale")
+		_assert_vec2(slam.scale, Vector2.ONE, "visible hammer slam shape diverges from the circular damage scale")
 
 	# Holy Flail is also a circle in BerserkWeapon but must retain its original
 	# centered circular membership and visual contract.
@@ -67,7 +70,7 @@ func _run() -> void:
 	_assert_membership(flail, owner, Vector2(0.0, 151.0), false, "Holy Flail radius expanded")
 
 	if _failures.is_empty():
-		print("SCRUM-1043 hammer lower hit-zone test passed: top=150, bottom=180 inside, horizontal=149, VFX aligned; Holy Flail unchanged.")
+		print("SCRUM-1043/FAN-1100 hammer hit-zone test passed: true circle r=150 centered +16px (top~134, bottom~166, horizontal~150), VFX aligned; Holy Flail unchanged.")
 		quit(0)
 		return
 	for failure in _failures:

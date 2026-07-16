@@ -2,9 +2,10 @@
 
 Введен: 2026-06-12 (решение пользователя). Исполнители: чат «QA testing chat»
 и фоновый воркер `fantasydisk-qa-board-worker`.
-Обновлено: 2026-07-13 — Multica-first: dispatcher назначает QA отдельную child
-issue в проекте FantasyDisk для parent `FAN-*` в статусе `in_review`; QA не
-self-select'ит parent. Локальные `docs/tasks/*.md` — spec/evidence mirror.
+Обновлено: 2026-07-15 — Multica-first autonomous QA: QA Codex Sol является
+единственным writer review-очереди, сам выбирает одну eligible parent issue
+`FAN-*` в `in_review` и владеет проверкой через отдельную QA child. Локальные
+`docs/tasks/*.md` — только spec/evidence mirror.
 
 ## Правило «UI не наползает» (пользователь, 2026-06-12, ОБЯЗАТЕЛЬНО)
 
@@ -42,23 +43,61 @@ bug-задача, даже если no-overlap между плашками пр�
 ## Цикл задачи (обновленный)
 ```text
 parent: todo → in_progress → in_review ───────────────→ done (QA PASS)
-QA child: backlog(reserved) → todo → in_progress → done + verdict
-                                                ↘ RED: parent stays in_review + linked bug
+QA child: backlog(metadata-reserved, unassigned) → in_progress → done + verdict
+                                            ↘ RED: parent stays in_review + linked follow-ups
 ```
 Исполнители НИЧЕГО не меняют в своем процессе: ставят issue в `in_review` по
-завершении. Единственный dispatcher находит parent без verdict, создаёт отдельную
-QA child issue, резервирует exact QA agent UUID и enqueue'ит её. QA worker не
-self-select'ит implementation parent и не меняет его owner.
+завершении. QA Codex Sol (`f992a646-a8ea-4935-ba94-212595803052`) автономно
+сканирует review-очередь, claim'ит одну проверку через отдельную QA child и не
+меняет implementation owner. Общий dispatcher может разбудить QA, но не создаёт
+конкурирующий QA claim.
 
 ## Как QA получает задачу
-1. Dispatcher сканирует Multica parent issues `FAN-*` в `in_review`, проверяет
-   отсутствие существующей QA child/verdict и создаёт child с parent ID, exact
-   candidate SHA и acceptance/evidence links.
-2. Child создаётся в `backlog` с exact QA `assignee_id`, затем dispatcher
-   перепроверяет ownership/comment locks и переводит child в `todo`.
-3. QA worker принимает только назначенную child, повторно читает parent/child и
-   recent comments, ставит child `in_progress` и пишет start comment через
-   `--content-file`. Одна child за прогон.
+1. QA runtime работает с `max_concurrent_tasks = 1`. В начале queue-sweep QA
+   проверяет свои active tasks, уже существующие QA children и их metadata
+   ownership; при другом живом QA claim новый не создаётся.
+2. QA сканирует все страницы Multica parent issues `FAN-*` в `in_review` и
+   выбирает ровно одну ready issue: сначала higher priority, затем самый старый
+   ready item. Локальная доска не является источником очереди.
+3. Перед claim QA читает parent, recent comments, children, metadata и evidence,
+   проверяет dependencies/blockers, exact candidate SHA в `origin/dev`, reviewer
+   independence, отсутствие существующего verdict/живой QA child и отсутствие
+   locked-path overlap с продолжающимся writer scope.
+4. QA пишет parent `QA claim` comment через `--content-file` с QA UUID,
+   run/session, candidate SHA, environment/workdir и review scope; затем создаёт
+   unassigned child в `backlog` или переиспользует только inactive child на том
+   же SHA. Live Multica agent ACL запрещает self-assignment, поэтому до смены
+   статуса QA записывает в child exact metadata:
+   `qa_owner_id=f992a646-a8ea-4935-ba94-212595803052`,
+   `qa_run_id=<current-task-id>`, `qa_candidate_sha=<exact-sha>`,
+   `qa_claim_mode=autonomous_unassigned`, и добавляет совпадающий owner/run/SHA
+   claim-comment.
+5. QA повторно читает parent/children/child metadata/comments. Claim валиден
+   только при полном exact metadata set, совпадающем comment, live current run,
+   прежнем SHA и отсутствии второго claim/verdict. При race, новом SHA или
+   конфликте собственная duplicate child отменяется. Иначе QA ставит child прямо
+   в `in_progress` и выполняет её в текущем run, не создавая второй daemon task
+   через `todo`. Любой dispatcher считает полный metadata claim живым ownership
+   signal, даже если `assignee_id=null`.
+6. Одна child за прогон. Parent assignee/status остаются неизменными до verdict.
+   Этот unassigned metadata claim разрешён только QA queue owner и не разрешает
+   self-claim implementation work или другим агентам.
+
+## Полная самостоятельность QA
+
+QA отвечает за весь verification scope, а не только за повтор команд
+implementation-агента:
+
+- превращает acceptance criteria в traceable risk-based test plan;
+- читает changed code, тесты и test fixtures, чтобы исключить false-green;
+- самостоятельно выбирает нужные focused, regression, integration, negative,
+  edge, manual/windowed, performance, platform, save/load, pause/focus/input и
+  visual проверки;
+- создаёт disposable QA probes/capture helpers, когда существующей проверки
+  недостаточно, но удаляет их до verdict и не меняет production behavior;
+- фиксирует `passed`, `failed`, `blocked`, `not tested` и `inconclusive`
+  раздельно; developer report, code review или CI сами по себе не заменяют QA;
+- не заканчивает run без подробного отчёта и связанных follow-up issues.
 
 ## Как тестировать (минимальный обязательный объем)
 1. **По Acceptance Criteria задачи** — каждый пункт проверяется фактически,
@@ -72,8 +111,12 @@ self-select'ит implementation parent и не меняет его owner.
 4. **Краевые случаи** — минимум 3 на задачу: граничные значения, повторные
    входы/выходы, пауза посреди эффекта, разрешение 1280x720, смерть/победа
    в момент действия механики.
-5. **Визуальные задачи**: оконный запуск, скриншоты до сохранять в
-   `build/qa/<task>/`, смотреть глазами (артефакты, перекрытия, читаемость).
+5. **Визуальные задачи**: оконный запуск и фактический visual review. Скриншоты
+   сохранять в task-owned `build/qa/<FAN-id>/` и/или прикладывать к Multica
+   verdict comment; указывать viewport/platform/timestamp. Для динамического
+   поведения использовать видео/GIF или последовательность кадров, если один
+   screenshot не доказывает acceptance. Проверять артефакты, перекрытия,
+   content zones, читаемость, focus и responsive layout глазами и измерениями.
 6. **Производительность**, если задача массовая (волны/VFX): детерминированный
    сценарий на целевом cap (или 100+, если это AC задачи) с проверяемым бюджетом:
    число group snapshots/candidate visits, cap активных узлов и отсутствие
@@ -146,27 +189,37 @@ runtime-ошибки и печатал success с exit 0 (false-green FAN-1087).
    `gamepad_core_input_test.gd` (ядро, SCRUM-811).
 Карта управления — `docs/design/systems/input_controls.md`.
 
-## Вердикт (дописывается в файл задачи)
-Вердикт сначала фиксируется comment'ом в QA child issue, после чего завершённая
-QA child переводится в `done` при любом фактическом verdict. Затем verdict
-дублируется в локальный task mirror при наличии:
+## Вердикт и отчёт
+Вердикт сначала фиксируется подробным comment'ом в QA child issue, затем summary
+со ссылками на evidence/follow-ups добавляется в parent. QA child переводится в
+`done` при любом фактическом verdict. Локальный task mirror обновляется при
+наличии:
 
 ```md
 ## QA-Вердикт (<дата>)
 Статус: PASSED | FAILED
-Проверено: <список фактических проверок и команд>
-Краевые случаи: <что прогнали>
-Баги: нет | список с ссылками на bug-таски
+Verified SHA / environment: <sha, OS, Godot, build/config>
+Acceptance traceability: <criterion -> check/evidence>
+Автоматические проверки: <commands + results>
+Manual/windowed scenarios: <steps + results>
+Evidence: <Multica attachments / repo paths / logs / screenshots / video>
+Findings: <passed | failed | blocked | not tested | inconclusive>
+Баги/улучшения: нет | linked FAN issues
+Residual risks: <явно>
+Release recommendation: Go | Go with known risks | No-Go
+Disk cleanup: <removed paths | none created | blocked by lock>
 ```
 При `PASSED` parent переводится в `done`. При `FAILED` parent остаётся
-`in_review` с blocker, а defect получает отдельную child issue. Вернуть parent в
-`todo` может только dispatcher/PM после явного решения о повторной реализации;
-QA worker не меняет parent owner или execution status самостоятельно.
+`in_review`, а все defects/required improvements получают отдельные linked child
+issues. Вернуть parent в `todo` может только dispatcher/PM или новый
+implementation owner после явного решения; QA worker не меняет parent owner и
+не становится implementation executor.
 
-## Баги
-На КАЖДЫЙ найденный баг — сначала отдельный Multica bug issue (проект FantasyDisk,
-FAN-*), затем локальный mirror-файл `docs/tasks/bug_<short_name>_task.md` при
-необходимости:
+## Баги и обязательные улучшения
+На КАЖДЫЙ подтверждённый баг или обязательное улучшение — сначала отдельная
+linked Multica child issue исходного implementation parent (проект FantasyDisk,
+FAN-*; title `BUG:` или `IMPROVEMENT:`), затем локальный mirror-файл
+`docs/tasks/bug_<short_name>_task.md` при необходимости:
 ```md
 # BUG: <короткое название>
 Статус: new
@@ -179,6 +232,10 @@ FAN-*), затем локальный mirror-файл `docs/tasks/bug_<short_nam
 ## Ожидание / Реальность
 ## Окружение
 <разрешение, класс, уровень возвышения, коммит>
+## Evidence
+<attachments, screenshots/video/logs/traces, частота/число попыток>
+## Severity / Priority / Recommended Role
+## Acceptance Criteria
 ```
 + строка на локальный dashboard `docs/process/task_board.md` (секция «Баги от QA»,
 создать при первом баге) со статусом new — только как mirror; воркеры/чаты берут
@@ -190,3 +247,5 @@ FAN-*), затем локальный mirror-файл `docs/tasks/bug_<short_nam
 - Не чинить баги самому (кроме опечаток в доках) — только фиксировать и заводить таски.
 - Не перепроверять задачи с уже имеющимся QA-Вердиктом (если код не менялся).
 - Не держать больше одной review issue `in_progress` за прогон.
+- Не брать implementation parent в assignee и не использовать QA child как fix task.
+- Не объявлять PASS при `not tested`, `blocked` или непокрытом critical acceptance.

@@ -2,19 +2,19 @@
 """Публикация релиза FantasyDisk в Discord (releases webhook).
 
 Постит новость версии с выделенными ключевыми изменениями, SHA256 и размерами;
-прикладывает файлы <25 МБ (changelog, SHA256SUMS); на инсталлеры даёт ссылки
-(--download-base) или печатает локальные пути, если хостинга нет.
+прикладывает файлы <25 МБ (changelog, SHA256SUMS, poster), а каноническая
+ссылка на установщики ведёт на публичный GitHub Release.
 
 URL вебхука: release_webhook.cfg (корень проекта, [release] discord_webhook_url) —
 секрет, в .gitignore. User-Agent обязателен (иначе Discord 403).
 
-Запуск: python3 release_publish.py --version X.Y.Z [--download-base URL]
-        [--highlights "пункт1||пункт2||..."] [--dry-run]
+Запуск: python3 release_publish.py --version X.Y.Z [--dry-run]
 """
 import argparse
 import configparser
 import json
 import os
+import subprocess
 import sys
 import urllib.request
 import urllib.error
@@ -23,18 +23,29 @@ DISCORD_LIMIT = 24 * 1024 * 1024  # ~25 МБ лимит вложений веб�
 UA = "FantasyDisk-Release/1.0"
 
 
+def verify_local_release(root: str, version: str) -> str:
+    helper = os.path.join(os.path.dirname(__file__), "local_release.py")
+    result = subprocess.run(
+        [sys.executable, helper, "verify", "--version", version, "--repo-root", root],
+        text=True,
+        stdout=subprocess.PIPE,
+        stderr=subprocess.PIPE,
+    )
+    if result.returncode:
+        sys.exit("Локальная копия релиза не прошла проверку; Discord publication запрещена")
+    try:
+        return json.loads(result.stdout)["local_release"]
+    except (KeyError, TypeError, json.JSONDecodeError):
+        sys.exit("Локальная проверка не вернула путь к проверенным байтам релиза")
+
+
 def repo_root() -> str:
     # скрипт лежит в ~/.codex/skills/...; корень репо берём из CWD или env
     return os.environ.get("FANTASYDISK_REPO", os.getcwd())
 
 
-def telegram_url(root: str) -> str:
-    cfg = configparser.ConfigParser()
-    cfg.read(os.path.join(root, "release_webhook.cfg"))
-    try:
-        return cfg.get("release", "telegram_download_url").strip().strip('"')
-    except Exception:
-        return ""
+def github_release_url(version: str) -> str:
+    return "https://github.com/FomaBy/FantasyDisk/releases/tag/v%s" % version
 
 
 def webhook_url(root: str) -> str:
@@ -45,11 +56,10 @@ def webhook_url(root: str) -> str:
     return cfg.get("release", "discord_webhook_url").strip().strip('"')
 
 
-def read_highlights(root: str, version: str, override: str) -> list:
-    if override:
-        return [h.strip() for h in override.split("||") if h.strip()]
-    # 1) чистые русские highlights из in-game patch_notes_data.gd для этой версии
-    pn = os.path.join(root, "scripts", "patch_notes_data.gd")
+def read_highlights(release_dir: str, version: str) -> list:
+    """Read publication text only from the verified durable release package."""
+    # 1) clean Russian highlights from the immutable exact-tag source snapshot
+    pn = os.path.join(release_dir, "project", "scripts", "patch_notes_data.gd")
     if os.path.exists(pn):
         import re
         src = open(pn, encoding="utf-8").read()
@@ -58,9 +68,8 @@ def read_highlights(root: str, version: str, override: str) -> list:
             hs = re.findall(r'"((?:[^"\\]|\\.)*)"', m.group(1))
             if hs:
                 return [h.replace('\\"', '"') for h in hs][:12]
-    # из CHANGELOG-<version>.md или releases/v<version>/CHANGELOG-<version>.md
-    for cand in [os.path.join(root, "releases", "v%s" % version, "CHANGELOG-%s.md" % version),
-                 os.path.join(root, "CHANGELOG.md")]:
+    # 2) the changelog retained alongside the verified installers
+    for cand in [os.path.join(release_dir, "CHANGELOG-%s.md" % version)]:
         if os.path.exists(cand):
             lines = [l.strip("-* \t").rstrip() for l in open(cand, encoding="utf-8")
                      if l.strip().startswith(("-", "*"))]
@@ -83,7 +92,8 @@ def post(url, content, files, dry):
         body += ("--%s\r\n" % boundary).encode()
         body += ('Content-Disposition: form-data; name="files[%d]"; filename="%s"\r\n'
                  % (i, name)).encode()
-        body += b"Content-Type: application/octet-stream\r\n\r\n" + data + b"\r\n"
+        content_type = "image/png" if name.lower().endswith(".png") else "application/octet-stream"
+        body += ("Content-Type: %s\r\n\r\n" % content_type).encode() + data + b"\r\n"
     body += ("--%s--\r\n" % boundary).encode()
     req = urllib.request.Request(url, data=body, method="POST", headers={
         "Content-Type": "multipart/form-data; boundary=%s" % boundary, "User-Agent": UA})
@@ -97,12 +107,10 @@ def post(url, content, files, dry):
 def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--version", required=True)
-    ap.add_argument("--download-base", default="")
-    ap.add_argument("--highlights", default="")
     ap.add_argument("--dry-run", action="store_true")
     a = ap.parse_args()
     root = repo_root()
-    rel = os.path.join(root, "releases", "v%s" % a.version)
+    rel = verify_local_release(root, a.version)
     if not os.path.isdir(rel):
         sys.exit("Нет каталога релиза: %s (сначала tools/build_release.sh %s)" % (rel, a.version))
     arts = sorted(os.listdir(rel))
@@ -111,9 +119,14 @@ def main():
         for f in arts
         if f.endswith(".dmg") or f.endswith("-windows-setup.exe")
     ]
-    smalls = [f for f in arts if f.endswith((".txt", ".md"))]
+    posters = [f for f in arts if f.endswith(".png")]
+    if len(posters) != 1:
+        sys.exit("Ожидался ровно один проверенный PNG release poster")
+    if os.path.getsize(os.path.join(rel, posters[0])) > DISCORD_LIMIT:
+        sys.exit("Release poster превышает лимит Discord webhook")
+    smalls = [f for f in arts if f.endswith((".txt", ".md", ".png"))]
 
-    hl = read_highlights(root, a.version, a.highlights)
+    hl = read_highlights(rel, a.version)
     key = hl[:5]
     rest = hl[5:]
     lines = ["# 🐉 FantasyDisk v%s" % a.version, ""]
@@ -121,12 +134,8 @@ def main():
         lines += ["**✨ Главное:**"] + ["**•** %s" % h for h in key] + [""]
     if rest:
         lines += ["Также:"] + ["• %s" % h for h in rest] + [""]
-    tg = a.download_base or telegram_url(root)
-    lines.append("**\U0001F4E5 Скачать (macOS + Windows):**")
-    if tg:
-        lines.append(tg)
-    else:
-        lines.append("_(ссылка на скачивание не задана)_")
+    lines.append("**\U0001F4E5 Скачать (macOS + Windows) на GitHub Releases:**")
+    lines.append(github_release_url(a.version))
     lines.append("")
     lines.append("_Сборки: %s. SHA256 — во вложении._" % ", ".join(installers))
 
@@ -136,7 +145,8 @@ def main():
         if os.path.getsize(p) <= DISCORD_LIMIT:
             files.append((f, open(p, "rb").read()))
 
-    post(webhook_url(root), "\n".join(lines), files, a.dry_run)
+    destination = "dry-run" if a.dry_run else webhook_url(root)
+    post(destination, "\n".join(lines), files, a.dry_run)
 
 
 if __name__ == "__main__":

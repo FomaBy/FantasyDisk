@@ -77,7 +77,7 @@ func _check_layout(viewport_size: Vector2i) -> void:
 	owned_viewport.size = viewport_size
 	owned_viewport.render_target_update_mode = SubViewport.UPDATE_ALWAYS
 	root.add_child(owned_viewport)
-	var main := await _spawn_main(owned_viewport, ["berserk_m0"])
+	var main := await _spawn_main(owned_viewport, ["berserk_sword_b1"])
 	main.ui._show_atlas_screen()
 	await _settle()
 
@@ -157,7 +157,7 @@ func _check_live_resize() -> void:
 	owned_viewport.size = Vector2i(1152, 648)
 	owned_viewport.render_target_update_mode = SubViewport.UPDATE_ALWAYS
 	root.add_child(owned_viewport)
-	var main := await _spawn_main(owned_viewport, ["berserk_m0"])
+	var main := await _spawn_main(owned_viewport, ["berserk_sword_b1"])
 	main.ui._show_atlas_screen()
 	await _settle()
 	var button := main.find_child("AtlasRespecButton", true, false) as Button
@@ -235,7 +235,7 @@ func _check_reset_scopes() -> void:
 	owned_viewport.size = Vector2i(1920, 1080)
 	owned_viewport.render_target_update_mode = SubViewport.UPDATE_ALWAYS
 	root.add_child(owned_viewport)
-	var main := await _spawn_main(owned_viewport, ["berserk_m0", "atlas_m0"])
+	var main := await _spawn_main(owned_viewport, ["berserk_sword_b1", "atlas_m0"])
 	main.ui._show_atlas_screen()
 	await _settle()
 	var button := main.find_child("AtlasRespecButton", true, false) as Button
@@ -253,18 +253,18 @@ func _check_reset_scopes() -> void:
 		_errors.append("reset scopes: constellation press did not open confirmation.")
 	cancel.pressed.emit()
 	await process_frame
-	if popup.visible or not Meta.is_node_purchased(main.meta_state, "berserk_m0") or not Meta.is_node_purchased(main.meta_state, "atlas_m0"):
+	if popup.visible or not Meta.is_node_purchased(main.meta_state, "berserk_sword_b1") or not Meta.is_node_purchased(main.meta_state, "atlas_m0"):
 		_errors.append("reset scopes: Cancel changed purchases or left popup open.")
 	button.pressed.emit()
 	confirm.pressed.emit()
 	await _settle()
-	if Meta.is_node_purchased(main.meta_state, "berserk_m0") or not Meta.is_node_purchased(main.meta_state, "atlas_m0"):
+	if Meta.is_node_purchased(main.meta_state, "berserk_sword_b1") or not Meta.is_node_purchased(main.meta_state, "atlas_m0"):
 		_errors.append("reset scopes: constellation reset did not refund only the selected class.")
 	if Meta.class_sigils_available(main.meta_state, "berserk") != Meta.class_sigils_earned(main.meta_state, "berserk"):
 		_errors.append("reset scopes: constellation emblems were not fully refunded.")
 
 	var state: Dictionary = main.meta_state
-	state["skill_nodes"] = ["berserk_m0", "atlas_m0"]
+	state["skill_nodes"] = ["berserk_sword_b1", "atlas_m0"]
 	main.meta_state = state
 	main.ui._show_atlas_screen()
 	await _settle()
@@ -277,7 +277,7 @@ func _check_reset_scopes() -> void:
 	button.pressed.emit()
 	confirm.pressed.emit()
 	await _settle()
-	if not Meta.is_node_purchased(main.meta_state, "berserk_m0") or Meta.is_node_purchased(main.meta_state, "atlas_m0"):
+	if not Meta.is_node_purchased(main.meta_state, "berserk_sword_b1") or Meta.is_node_purchased(main.meta_state, "atlas_m0"):
 		_errors.append("reset scopes: Guild reset did not refund only Atlas purchases.")
 	if Meta.stardust_available(main.meta_state) != Meta.stardust_earned(main.meta_state):
 		_errors.append("reset scopes: Guild stardust was not fully refunded.")
@@ -343,7 +343,7 @@ func _check_repeated_lifecycle_probe() -> void:
 		viewport.size = Vector2i(1280, 720)
 		viewport.render_target_update_mode = SubViewport.UPDATE_ALWAYS
 		root.add_child(viewport)
-		var main := await _spawn_main(viewport, ["berserk_m0"])
+		var main := await _spawn_main(viewport, ["berserk_sword_b1"])
 		main.ui._show_atlas_screen()
 		await _settle()
 		await _teardown(viewport)

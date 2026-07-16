@@ -1,23 +1,66 @@
 # Menus And UI
 
-Обновлено: 2026-07-14
+Обновлено: 2026-07-15
 
 Этот файл собирает UI-направление FantasyDisk после domain split. Полное фактическое состояние остается в `docs/design/current_game_state.md`, а канонические IDs и assets - в `docs/design/content_registry.md`.
+
+## FAN-1112 Game Updater
+
+Settings tabs 0–2 now keep `SettingsUpdateButton` («Обновить игру») at the left
+edge of the existing frame-safe footer, separated by an expanding spacer from
+Screen-only Revert/Apply. The Game tab still collapses the complete footer.
+Manual checks always report current/error/available state; the exported startup
+check prompts only when a newer public GitHub Release exists and stays silent
+offline. The modal uses the accepted Atlas chip and global action-button families,
+traps keyboard/gamepad focus, restores the previous Escape action, and scales
+inside 1280×720, 1920×1080 and 2560×1440 viewports.
+
+FAN-1124 makes the updater action routing explicit after final button sizing:
+the 420×72 primary uses `text/continue_run_long_420x72`, while the 240×72 close
+action uses `text/continue_240x72`. Their dedicated neutral-bright focus PNGs
+replace the accidental bright-yellow `minimal/standard` fallback without
+changing action-row geometry, copy, initial focus, cyclic navigation or Escape
+restoration. Geometry and safe-zone contract:
+`docs/design/mockups/fan1124_update_focus/spec.md`.
+
+The accepted no-new-art mockup/spec package is
+`docs/design/mockups/fan1112_game_updater/`. Runtime and responsive checks are
+`tests/update_settings_ui_test.gd` and `tests/settings_footer_scrum1053_test.gd`.
+The network, trust and installer contract is documented in
+`docs/process/game_updates.md`.
+
+## FAN-1098 Codex Background
+
+The live Codex now uses a cohesive 2560x1440 RGB draconic-archive background at
+the existing `assets/sprites/ui/atlas_style/codex/bg_codex_sanctum.png` path.
+It was created only with the built-in OpenAI Image Generator in Codex, then
+center-cropped and proportionally normalized; PixelLab and the OpenAI Images API
+were not used. All panels, title, crest, buttons, text, content geometry, focus,
+and navigation remain separate unchanged runtime Controls.
+
+The dark low-frequency field preserves the exact accepted 1920x1080 safe zones
+for title, crest, Back, navigation, list, and dossier. Real renderer captures at
+1280x720, 1920x1080, and 2560x1440 plus source provenance, hashes, prompt,
+safe-zone luminance, backup, and implementation contract live under
+`docs/design/{references,mockups,previews,backups}/fan1098_codex_openai_background/`.
 
 ## FAN-1080 Лор: Интро Истории, «Летопись» Кодекса, Лорные Баннеры И Исходы
 
 Канон текстов: `docs/design/lore.md`; рантайм-данные: `scripts/lore_data.gd`.
 
-- **Интро истории.** «Начать новую игру» (и «Новая игра» из continue-диалога)
-  идут через `_maybe_show_lore_intro`: при первом запуске профиля показывается
-  `LoreIntroScreen` — 4 слайда (Диск → Разлом → Хранитель → Печать) на
+- **Интро истории (FAN-1099: убрано из запуска игры).** «Начать новую игру» и
+  «Новая игра» из continue-диалога больше НЕ показывают вступление — оба ведут
+  сразу в выбор героя (`_show_character_select`). Рассказ о мире остался только в
+  Кодексе: запись «Вступление» на вкладке «Летопись» (те же 4 слайда). Экран
+  `LoreIntroScreen` и хелперы `_maybe_show_lore_intro`/`_show_lore_intro`
+  (`LoreScreens.show_intro`) сохранены для пересмотра/тестов и на случай возврата
+  интро в поток запуска: 4 слайда (Диск → Разлом → Хранитель → Печать) на
   codex-sanctum фоне, центральная панель кодекс-кита 920×560 с content margins
-  56/44 (контент только в пустой зоне рамы). Кнопки «Пропустить»/«Далее» (на
-  последнем слайде «В путь»), Esc/B — пропуск, фокус-ринг горизонтальный.
-  Показ один раз: `settings.cfg: lore_intro_seen` (ключ в
-  `game_settings.DEFAULTS`); пересмотр — запись «Вступление» на вкладке
-  «Летопись». Headless-тесты байпасят интро через
-  `main.force_skip_lore_intro = true`.
+  56/44 (контент только в пустой зоне рамы), кнопки «Пропустить»/«Далее» (на
+  последнем слайде «В путь»), Esc/B — пропуск, фокус-ринг горизонтальный. Флаг
+  «показ один раз» `settings.cfg: lore_intro_seen` (`game_settings.DEFAULTS`) и
+  тест-байпас `main.force_skip_lore_intro = true` остаются в коде, но в потоке
+  запуска сейчас не задействованы.
 - **«Летопись» — 7-я вкладка Кодекса** (`CODEX_SECTIONS`, шаг nav-плит 104 вместо
   118, последняя плита y=648+72=720 в 752px content-зоне). Записи из
   `LORE_DATA.CHRONICLE`: Вступление (те же 4 слайда), Диск, Разлом, Владыки
@@ -72,16 +115,17 @@ Design evidence and safe-zone reports live under
 
 ## FAN-1065 / FAN-1066 / FAN-1069 Codex Atlas/Settings Runtime Skin
 
-The active Codex visual canon is the PixelLab package
+The active Codex component canon is the FAN-1065 PixelLab package
 `docs/design/mockups/fan1065_codex_atlas_settings_redesign/`, promoted into
-`assets/sprites/ui/atlas_style/codex/`. The accepted SCRUM-954/FAN-1047
+`assets/sprites/ui/atlas_style/codex/`, except for the FAN-1098 full-canvas
+background described above. The accepted SCRUM-954/FAN-1047
 1920×1080 stage and all runtime rects remain unchanged: nav
 `72,172,324,840`, list `420,172,620,840`, dossier `1064,172,784,840`, 516×154
 entry rows, 300×300 dossier well with a contained 236×248 image, and a 684×356
 lower scroll whose live text lane remains 610×304. Uniform stage scaling and
 letterboxing remain the only responsive transform.
 
-Runtime uses the cropped sanctum scene, PixelLab panel 9-slice, entry cards,
+Runtime uses the FAN-1098 built-in OpenAI archive scene, PixelLab panel 9-slice, entry cards,
 dossier portrait frame, chip bar and crest. Text, icons and portraits remain
 separate Controls inside the documented empty zones. The square dossier frame
 is used only on the 300×300 portrait well: visual QA proved that stretching its
@@ -674,19 +718,21 @@ Central-window screens use role-specific dark fantasy backdrops from `assets/bac
 Backdrops are full-rect `TextureRect` nodes with cover scaling and a readable shade layer. Route map and combat arena backgrounds remain separate systems.
 
 Main menu uses `assets/backgrounds/main_menu_epic_battle_v3.png` through
-`MAIN_MENU_BACKGROUND`. FAN-1088 replaces the previous party/boss key art with
-a 2560x1440 PixelLab-composited dark-fantasy scene: exactly one canonical
-north-facing Berserk stands on a basalt cliff above a large violet disk-shaped
-rift. The focal art stays center-right/right, while the calm left button column
-and title-safe area remain free of key silhouettes. The image is prepared for
-proportional cover-crop and contains no baked UI text, buttons, frames, labels,
-logo or watermark. PixelLab object IDs, source prompts, alpha-cleaned exports,
-backup, preview, responsive matrix and safe-zone evidence are tracked in
-`docs/design/mockups/fan1088_main_menu_disk_rift/spec.md` and
-`docs/design/references/fan1088_main_menu_disk_rift/manifest.json`. The
-historical SCRUM-1001 source package remains under
-`docs/design/mockups/main_menu_openai_clean_background/`, and its former runtime
-image is backed up under `docs/design/backups/fan1088_main_menu_disk_rift/`.
+`MAIN_MENU_BACKGROUND`. FAN-1097 replaces the composited FAN-1088 art with one
+cohesive 2560x1440 scene generated and corrected through the built-in OpenAI
+Image Generator in Codex: one unarmed barbarian stands on a basalt cliff above a
+large violet disk-shaped rift, backed by ruined spires and storm mountains. The
+focal art stays center-right/right, while the calm left button column and
+title-safe area remain free of key silhouettes; a targeted second pass also
+quieted the lower-right utility zone. The proportional cover-crop contains no
+baked UI text, buttons, frames, labels, logo, cursor or watermark. Built-in
+sources, both prompts, backup, mockup, responsive matrix and safe-zone evidence
+are tracked in
+`docs/design/mockups/fan1097_main_menu_openai_background/spec.md` and
+`docs/design/references/fan1097_main_menu_openai_background/manifest.json`.
+The former FAN-1088 runtime image is backed up under
+`docs/design/backups/fan1097_main_menu_openai_background/`; the FAN-1088 package
+remains historical provenance.
 SCRUM-680 release refresh keeps the title as
 `assets/sprites/ui/menu_title/main_menu_title_fantasy_disk.png` (`960x360`,
 transparent, PixelLab crest source in

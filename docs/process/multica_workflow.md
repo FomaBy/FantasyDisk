@@ -13,6 +13,7 @@ Cutover record: `FAN-1044`; operational hardening: `FAN-1048`
 - Project: `FantasyDisk` (`2ac963eb-b644-4540-8042-a1a4508f1a65`)
 - Codex agent: `Codex` (`4eccbced-60b5-4e7a-87fd-d9f3699d3bed`)
 - Claude agent: `Claude` (`e2e1c89f-587d-4a2d-bbaa-ce9b5dea908d`)
+- QA queue owner: `QA Codex Sol` (`f992a646-a8ea-4935-ba94-212595803052`)
 - Repository resource: `https://github.com/FomaBy/FantasyDisk.git`
 - Integration branch: `dev`
 
@@ -35,6 +36,22 @@ Multica issue до первой правки. Если запрос продол
 Простой вопрос, чтение статуса или объяснение без изменения состояния не требует
 отдельной issue. Обнаруженный в ходе такого ответа новый объём работы сначала
 оформляется в Multica и только затем исполняется.
+
+Каждая actionable issue независимо от типа и роли получает оценку сложности по
+`docs/process/story_points.md`: CUE (Complexity, Uncertainty, Effort), шкала
+Фибоначчи `1, 2, 3, 5, 8, 13`. Description содержит `Story points: <N>`,
+`Label: SP:<N>` и короткое обоснование; issue — ровно один канонический Label
+из `SP:1`, `SP:2`, `SP:3`, `SP:5`, `SP:8`, `SP:13`; Multica metadata —
+совпадающий числовой `story_points=<N>` и
+`estimation_model="CUE Fibonacci 1,2,3,5,8,13"`. Label является обязательным
+измерением для отчётов, metadata — числовым зеркалом. Без полного совпадения
+задача не готова к assignment, dispatch или `in_progress`; оценка больше
+`13 SP` означает обязательную декомпозицию.
+
+CUE не складывается по формуле: dispatcher и worker используют целостную
+относительную рубрику из `docs/process/story_points.md`, а не отдельные баллы
+факторов, механическую сумму C, U и E или пороги перевода. Любая инструкция
+должна быть переносимым пересказом этого единственного контракта.
 
 ## Проверка подключения
 
@@ -73,7 +90,8 @@ runs, locked paths и dirty worktrees. Если объём уже покрыт �
 же файлы, ассеты или экран.
 
 Новая пользовательская задача по умолчанию создаётся в `todo` с project ID,
-priority, проверяемым описанием и acceptance criteria:
+priority, проверяемым описанием, acceptance criteria и блоком оценки из
+`docs/process/story_points.md`:
 
 ```bash
 multica issue create \
@@ -84,6 +102,26 @@ multica issue create \
   --priority <urgent|high|medium|low> \
   --output json
 ```
+
+Сразу после создания найти канонический Label, прикрепить его, записать
+числовое зеркало и перепроверить совпадение Label, текста и metadata до
+назначения или запуска:
+
+```bash
+multica label list --output json
+multica issue label add FAN-123 <uuid-label-SP:N> --output json
+multica issue metadata set FAN-123 --key story_points --value <1|2|3|5|8|13> --type number
+multica issue metadata set FAN-123 --key estimation_model \
+  --value "CUE Fibonacci 1,2,3,5,8,13" --type string
+multica issue label list FAN-123 --output json
+multica issue metadata list FAN-123 --output json
+```
+
+Если требования недостаточны для обоснованной оценки, issue остаётся
+неисполняемой до уточнения. Существующие `backlog`/`todo` без канонического SP
+Label оцениваются до следующего dispatch; `in_progress`/`in_review` — при
+ближайшем содержательном обновлении. Исторические `done`/`cancelled` и Jira
+Archive массово не переоцениваются.
 
 `backlog` используется только для явно отложенной работы, freeze/hold или
 ожидания зависимости, когда issue ещё не готова к dispatch. Реальный blocker,
@@ -108,19 +146,70 @@ multica issue status FAN-123 todo
 ```
 
 Переход зарезервированной назначенной issue в `todo` создаёт task в очереди.
-Daemon worker начинает работу только после повторной проверки собственного exact
-assignee UUID; он не ищет и не claim'ит свободную issue. Для QA создаётся
-отдельная child review issue, чтобы не перезаписывать owner реализации.
+Перед reservation dispatcher обязан подтвердить ровно один канонический
+`SP:<N>` Label, совпадающие `story_points`/description и отсутствие оценки выше
+`13 SP`; иначе issue возвращается PM на оценку или декомпозицию.
+Обычный daemon worker начинает работу только после повторной проверки
+собственного exact assignee UUID; он не ищет и не claim'ит свободную issue.
+Единственное исключение — отдельный автономный QA queue-sweep ниже. QA всегда
+владеет проверкой через child review issue и не перезаписывает owner реализации.
 Параллельные dispatchers запрещены, пока сервер не поддерживает
 `claim-if-unassigned/expected-status`. Нельзя одновременно назначить issue
 daemon-агенту и выполнять тот же scope вручную в другом чате.
+
+### Автономный QA queue-sweep
+
+QA Codex Sol (`f992a646-a8ea-4935-ba94-212595803052`) является единственным
+writer review-очереди и работает с `max_concurrent_tasks = 1`. Общий dispatcher
+может разбудить QA или сообщить, что появился `in_review`, но не создаёт QA child,
+не переназначает parent и не отправляет ту же проверку другому reviewer.
+
+В queue-sweep run QA:
+
+1. Читает `AGENTS.md`, этот workflow и `docs/process/qa_protocol.md`, проверяет
+   собственные active tasks, QA children и их `qa_owner_id` / `qa_run_id`
+   metadata. Если кроме текущего run есть активный QA claim, новый не создаётся.
+2. Сканирует все страницы `in_review` и выбирает ровно один eligible parent:
+   сначала higher priority, затем самый старый ready item. Перед claim читает
+   parent, recent comments, children, metadata и candidate evidence. Parent
+   должен иметь exact pushed SHA, завершённую implementation работу, отсутствие
+   blocker/dependency, существующего verdict, живой QA child или другого reviewer
+   claim; implementation author не может быть независимым reviewer.
+3. Пишет в parent `QA claim` comment через `--content-file` с QA UUID, текущим
+   run/session, exact candidate SHA, environment/workdir и review scope. Затем
+   создаёт отдельную unassigned QA child в `backlog` или переиспользует только
+   эквивалентную inactive child на том же SHA. До смены статуса он записывает в
+   child metadata `qa_owner_id=f992a646-a8ea-4935-ba94-212595803052`,
+   `qa_run_id=<current-task-id>`, `qa_candidate_sha=<exact-sha>` и
+   `qa_claim_mode=autonomous_unassigned`, а также CUE/Fibonacci
+   `story_points`/`estimation_model` по `docs/process/story_points.md`; QA
+   прикрепляет ровно один совпадающий `SP:<N>` Label, а description содержит ту
+   же оценку и обоснование. Затем QA добавляет owner/run/SHA claim-comment. Это
+   поддерживаемая замена self-assignment: live Multica ACL запрещает agent actor
+   назначить child самому себе.
+4. Повторно читает parent, children, child metadata и comments. Claim валиден,
+   только если все четыре metadata exact, comment совпадает, current run жив,
+   SHA не изменился и нет второго claim/verdict. При любом конфликте QA отменяет
+   собственную duplicate child и не тестирует stale candidate. Иначе переводит
+   child напрямую в `in_progress` и выполняет её в текущем queue-sweep run;
+   `todo` не используется, чтобы не породить второй daemon task.
+5. Держит parent assignee/status неизменными до verdict. QA не делает production
+   fix в review scope и не держит больше одной review child `in_progress`.
+
+Это узкое исключение не разрешает self-claim implementation задачам, другим
+role agents или второму QA dispatcher. Single-writer + runtime concurrency `1`
+снижают риск гонки при отсутствии server-side compare-and-swap; обязательный
+post-claim re-read остаётся последним guard. General dispatcher и другие агенты
+обязаны считать QA child с полным metadata claim живым owner signal, даже когда
+`assignee_id` равен `null`.
 
 ### Текущий пользовательский control chat
 
 Если Codex/Claude уже получил прямой запрос пользователя и выполняет его в
 текущем чате, issue создаётся или обновляется без agent assignment, переводится
-в `in_progress` только после duplicate/lock audit, а первый комментарий через
-`--content-file` содержит:
+в `in_progress` только после duplicate/lock audit и записи обязательной оценки
+из `docs/process/story_points.md`, а первый комментарий через `--content-file`
+содержит:
 
 ```text
 Owner: Codex|Claude / <thread-or-control-chat>
@@ -199,23 +288,43 @@ Issue нельзя считать review-ready или done, пока комме�
 
 ## QA
 
-Реализация переводит issue в `in_review`. Для независимой проверки создаётся
-child review issue и назначается другому агенту; это не отменяет task владельца
-исходной issue и сохраняет отдельную историю run/usage.
+Реализация переводит issue в `in_review`. QA Codex Sol автономно выбирает один
+eligible parent по протоколу выше и создаёт/переиспользует отдельную child review
+issue с exact metadata ownership текущего QA run. Это не отменяет task владельца
+исходной issue и сохраняет отдельную историю claim, run, evidence и usage.
 
-QA пишет verdict с exact SHA и evidence:
+QA самостоятельно строит risk-based test plan и проверяет acceptance фактически:
+читает тесты, запускает focused и certifying gates на exact SHA, добавляет
+integration/negative/edge/manual/windowed/performance/platform coverage по риску.
+Developer report, code review и CI без фактического QA не считаются verdict.
+Для visual/UI/runtime acceptance QA прикладывает screenshots/video, rect dumps,
+logs, traces или profiler evidence, когда они materially доказывают результат.
+
+QA пишет подробный verdict в child и итоговую ссылку/summary в parent:
 
 ```text
 QA verdict: PASSED|FAILED
 Verified SHA: <sha>
-Checks: <commands/results>
-Findings: <none or list>
+Environment: <OS/Godot/build/config>
+Acceptance traceability: <criterion -> check/evidence>
+Checks: <commands/results + manual scenarios>
+Evidence: <Multica attachments and/or repo paths>
+Findings: <passed/failed/blocked/not tested>
+Follow-ups: <linked BUG/IMPROVEMENT FAN IDs or none>
+Residual risk: <explicit>
+Release recommendation: Go|Go with known risks|No-Go
 Disk cleanup: <result>
 ```
 
-При `PASSED` parent issue становится `done`. При `FAILED` review issue закрывает
-свой run правдивым результатом, а defect оформляется child bug/follow-up issue;
-исходная задача возвращается в `todo` или остаётся `in_review` с явным blocker.
+Каждый подтверждённый дефект или обязательное улучшение создаётся QA как linked
+child issue исходного implementation parent (`BUG:` / `IMPROVEMENT:`) с
+reproduction, expected/actual, exact SHA/environment, severity/priority,
+evidence, affected scope, acceptance criteria и recommended implementation role.
+
+При `PASSED` QA child и parent становятся `done`. При `FAILED` QA child также
+закрывает свой run в `done` с правдивым verdict, parent остаётся `in_review`, а
+все follow-up issues линкуются в обоих отчётах. Возврат parent в `todo` выполняет
+dispatcher/PM или новый implementation owner, но не QA в review scope.
 
 ## Handoff и зависимости
 

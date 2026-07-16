@@ -63,12 +63,31 @@ python tools/quality_gate.py --profile windows
 Эти файлы в `.gitignore`; нужны только для фидбека/релиза, на саму игру не влияют:
 - `feedback_webhook.cfg` — Discord-webhook внутриигрового фидбека (шаблон: `feedback_webhook.cfg.example`).
 - `release_webhook.cfg` — Discord-webhook публикации релизов.
-- `fantasydisk_release.session` — Telethon-сессия (создаётся при первом логине).
+- `fantasydisk_release.session` — legacy Telethon-сессия только для релиза 0.2.2.
 
 ## Сборка релиза (macOS)
+
+Текущий одобренный канал — явный `unsigned`:
+
 ```bash
-tools/build_release.sh <версия>    # напр. 0.1.6 — собирает из git-тега
+FANTASYDISK_MACOS_CHANNEL=unsigned tools/build_release.sh <версия>
 ```
+
+Строгий подписанный канал включается отдельно, когда доступны Apple credentials:
+
+```bash
+export MACOS_SIGN_IDENTITY="Developer ID Application: <owner> (<TEAMID>)"
+export MACOS_NOTARY_PROFILE="fantasydisk-notary" # credentials stored in Keychain
+FANTASYDISK_MACOS_CHANNEL=signed tools/build_release.sh <версия>
+```
+
+Оба канала fail-closed и не переключаются молча. `signed` требует Developer ID,
+Apple notarization/stapling и успешный `spctl`; `unsigned` отказывается работать
+при заданных Apple credentials, пропускает только Apple trust-проверки и честно
+показывает игроку инструкцию Gatekeeper «Всё равно открыть».
+Проверенный пакет публикуется как public GitHub Release через bundled
+`github_release_publish.py`; клиент 0.2.2+ читает `update-manifest.json` из
+`releases/latest`. Telegram используется дополнительно только для v0.2.2.
 
 ## Структура
 - `scripts/` — игровая логика (GDScript)

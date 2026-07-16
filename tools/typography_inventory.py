@@ -386,7 +386,9 @@ def validate(document_data: dict) -> list[str]:
     bindings = [item for item in document_data["entries"] if item.get("kind") == "semantic_binding"]
     expected_binding_counts = {
         "_codex_bind_stage_font": 8,
-        "_battle_prayer_label": 5,
+        # SCRUM-1088 now reuses the production Level Up card shell. The retired
+        # prayer-only helper therefore has no live typography consumers.
+        "_battle_prayer_label": 0,
         "_shrink_label_font_to_width": 3,
     }
     for helper, expected_count in expected_binding_counts.items():
@@ -398,8 +400,12 @@ def validate(document_data: dict) -> list[str]:
         current_fingerprints = {item["fingerprint"] for item in document_data["entries"]}
         originals = [item.get("original_fingerprint", "") for item in migrations]
         replacements = [item.get("replacement_fingerprint", "") for item in migrations]
-        if len(migrations) != 139 or len(set(originals)) != 139 or len(set(replacements)) != 139:
-            errors.append("SCRUM-1073 migration manifest must contain 139 unique original/replacement fingerprints")
+        if len(migrations) != 139 or len(set(originals)) != 139:
+            errors.append("SCRUM-1073 migration manifest must contain 139 unique original fingerprints")
+        for replacement in set(replacements):
+            linked = [item for item in migrations if item.get("replacement_fingerprint") == replacement]
+            if len(linked) > 1 and not all(bool(item.get("shared_replacement", False)) for item in linked):
+                errors.append("SCRUM-1073 shared replacement %s is missing explicit many-to-one review" % replacement)
         if set(originals) & current_fingerprints:
             errors.append("SCRUM-1073 original fingerprints still exist in the live inventory")
         missing_replacements = set(replacements) - current_fingerprints
