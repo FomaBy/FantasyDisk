@@ -38,6 +38,10 @@ if ! [[ "${VERSION}" =~ ${RELEASE_VERSION_RE} ]]; then
   echo "ERROR: version must have format X.Y.Z or X.Y.Z.R"
   exit 2
 fi
+if ! python3 "${REPO_DIR}/tools/release_version_mapping.py" --version "${VERSION}" >/dev/null 2>&1; then
+  echo "ERROR: version must satisfy the canonical bounded X.Y.Z or X.Y.Z.R contract"
+  exit 2
+fi
 if [[ "${MACOS_CHANNEL}" != "signed" && "${MACOS_CHANNEL}" != "unsigned" ]]; then
   echo "ERROR: FANTASYDISK_MACOS_CHANNEL must be 'signed' or 'unsigned', got '${MACOS_CHANNEL}'"
   exit 2
@@ -118,6 +122,7 @@ for required_input in \
   tools/build_release.sh \
   tools/create_macos_dmg.sh \
   tools/godot_gate.py \
+  tools/release_version_contract.py \
   tools/release_version_mapping.py \
   tools/scan_release_secrets.py \
   tools/windows_installer.nsi \
@@ -142,10 +147,10 @@ if [[ "${TAG_PROJECT_VERSION}" != "${VERSION}" ]]; then
 fi
 VERSION_MAPPING="$(python3 "${WORKTREE_DIR}/tools/release_version_mapping.py" --version "${VERSION}")"
 IFS=$'\t' read -r MACOS_SHORT_VERSION MACOS_BUILD_VERSION WINDOWS_PRODUCT_VERSION WINDOWS_FILE_VERSION <<< "${VERSION_MAPPING}"
-if ! grep -q "application/short_version=\"${MACOS_SHORT_VERSION}\"" "${WORKTREE_DIR}/export_presets.cfg" \
-    || ! grep -q "application/version=\"${MACOS_BUILD_VERSION}\"" "${WORKTREE_DIR}/export_presets.cfg" \
-    || ! grep -q "application/product_version=\"${WINDOWS_PRODUCT_VERSION}\"" "${WORKTREE_DIR}/export_presets.cfg" \
-    || ! grep -q "application/file_version=\"${WINDOWS_FILE_VERSION}\"" "${WORKTREE_DIR}/export_presets.cfg"; then
+if ! grep -F -q "application/short_version=\"${MACOS_SHORT_VERSION}\"" "${WORKTREE_DIR}/export_presets.cfg" \
+    || ! grep -F -q "application/version=\"${MACOS_BUILD_VERSION}\"" "${WORKTREE_DIR}/export_presets.cfg" \
+    || ! grep -F -q "application/product_version=\"${WINDOWS_PRODUCT_VERSION}\"" "${WORKTREE_DIR}/export_presets.cfg" \
+    || ! grep -F -q "application/file_version=\"${WINDOWS_FILE_VERSION}\"" "${WORKTREE_DIR}/export_presets.cfg"; then
   echo "    ERROR: export_presets.cfg не соответствует platform mapping logical version ${VERSION}"
   exit 2
 fi

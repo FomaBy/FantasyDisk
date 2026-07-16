@@ -154,11 +154,11 @@ class UpdateReleasePipelineTests(unittest.TestCase):
         for version in SUPPORTED_RELEASE_VERSIONS:
             for gate in gates:
                 with self.subTest(version=version, gate=gate.__name__):
-                    self.assertTrue(gate.RELEASE_VERSION_RE.fullmatch(version))
+                    self.assertTrue(gate.is_valid_release_version(version))
         for invalid in INVALID_RELEASE_VERSIONS:
             for gate in gates:
                 with self.subTest(version=invalid, gate=gate.__name__):
-                    self.assertIsNone(gate.RELEASE_VERSION_RE.fullmatch(invalid))
+                    self.assertFalse(gate.is_valid_release_version(invalid))
 
     def test_publisher_refuses_existing_immutable_tag(self) -> None:
         existing = subprocess.CompletedProcess(
@@ -171,6 +171,71 @@ class UpdateReleasePipelineTests(unittest.TestCase):
                 github_release_publish.publish(
                     "FomaBy/FantasyDisk-Releases", "0.2.3.1", [], Path("CHANGELOG.md")
                 )
+
+    def test_publisher_refuses_existing_bare_immutable_tag(self) -> None:
+        missing_release = subprocess.CompletedProcess(
+            ["gh", "release", "view"], 1, stdout="", stderr="not found"
+        )
+        bare_tag = subprocess.CompletedProcess(
+            ["gh", "api"], 0,
+            stdout='[{"ref":"refs/tags/v0.2.3.1"}]', stderr=""
+        )
+        with mock.patch.object(github_release_publish.shutil, "which", return_value="gh"), \
+             mock.patch.object(github_release_publish, "assert_safe_public_distribution_repository", return_value="main"), \
+             mock.patch.object(github_release_publish, "run", side_effect=[
+                 subprocess.CompletedProcess(["gh", "auth"], 0, stdout="", stderr=""),
+                 missing_release,
+                 bare_tag,
+             ]) as run_mock:
+            with self.assertRaisesRegex(RuntimeError, "never reuse"):
+                github_release_publish.publish(
+                    "FomaBy/FantasyDisk-Releases", "0.2.3.1", [], Path("CHANGELOG.md")
+                )
+        self.assertFalse(any("create" in call.args[0] for call in run_mock.call_args_list))
+
+    def test_publisher_fails_closed_when_bare_tag_preflight_is_unavailable(self) -> None:
+        missing_release = subprocess.CompletedProcess(
+            ["gh", "release", "view"], 1, stdout="", stderr="not found"
+        )
+        failed_preflight = subprocess.CompletedProcess(
+            ["gh", "api"], 1, stdout="", stderr="network failure"
+        )
+        with mock.patch.object(github_release_publish.shutil, "which", return_value="gh"), \
+             mock.patch.object(github_release_publish, "assert_safe_public_distribution_repository", return_value="main"), \
+             mock.patch.object(github_release_publish, "run", side_effect=[
+                 subprocess.CompletedProcess(["gh", "auth"], 0, stdout="", stderr=""),
+                 missing_release,
+                 failed_preflight,
+             ]):
+            with self.assertRaisesRegex(RuntimeError, "cannot verify"):
+                github_release_publish.publish(
+                    "FomaBy/FantasyDisk-Releases", "0.2.3.1", [], Path("CHANGELOG.md")
+                )
+
+    def test_publisher_allows_a_missing_bare_tag(self) -> None:
+        missing_release = subprocess.CompletedProcess(
+            ["gh", "release", "view"], 1, stdout="", stderr="not found"
+        )
+        absent_tag = subprocess.CompletedProcess(
+            ["gh", "api"], 0, stdout="[]", stderr=""
+        )
+        created = subprocess.CompletedProcess(["gh", "release", "create"], 0, stdout="", stderr="")
+        published = subprocess.CompletedProcess(["gh", "release", "edit"], 0, stdout="", stderr="")
+        with mock.patch.object(github_release_publish.shutil, "which", return_value="gh"), \
+             mock.patch.object(github_release_publish, "assert_safe_public_distribution_repository", return_value="main"), \
+             mock.patch.object(github_release_publish, "_assert_release_assets", return_value="https://example.invalid/v0.2.3.1"), \
+             mock.patch.object(github_release_publish, "run", side_effect=[
+                 subprocess.CompletedProcess(["gh", "auth"], 0, stdout="", stderr=""),
+                 missing_release,
+                 absent_tag,
+                 created,
+                 published,
+             ]) as run_mock:
+            published_url = github_release_publish.publish(
+                "FomaBy/FantasyDisk-Releases", "0.2.3.1", [], Path("CHANGELOG.md")
+            )
+        self.assertEqual(published_url, "https://example.invalid/v0.2.3.1")
+        self.assertTrue(any("create" in call.args[0] for call in run_mock.call_args_list))
 
     def test_public_verifier_cannot_prune_immutable_releases(self) -> None:
         source = (SCRIPTS / "github_release_verify.py").read_text(encoding="utf-8")
@@ -293,6 +358,8 @@ class ReleaseDocumentationConsistencyTests(unittest.TestCase):
     TELEGRAM_SETUP = Path("docs") / "release_telegram_setup.md"
     GAME_UPDATES = Path("docs") / "process" / "game_updates.md"
     CURRENT_STATE = Path("docs") / "design" / "current_game_state.md"
+    README = Path("README.md")
+    AGENTS = Path("AGENTS.md")
 
     # These are operational examples, not the SemVer/hotfix policy examples that
     # intentionally retain X.Y.Z and X.Y.Z.R terminology.
@@ -352,6 +419,24 @@ class ReleaseDocumentationConsistencyTests(unittest.TestCase):
             "Telegram получает release poster, macOS DMG, Windows Setup и `SHA256SUMS.txt`; затем Discord публикует player-facing новость с Telegram download link.",
         ),
     }
+    ENTRY_POINT_VERSIONING = {
+        README: (
+            "Текущий опубликованный stable release: `0.2.4`",
+            "технический релиз с изменёнными байтами и без новых игровых функций использует `X.Y.Z.R`",
+            "tag `v<version>` и опубликованные байты immutable",
+        ),
+        CURRENT_STATE: (
+            "техническое исправление изменённых байтов без нового игрового поведения использует `X.Y.Z.R`",
+            "immutable релизы — теги `v<version>`",
+            "FAN-1128/FAN-1210 завершён публикацией `0.2.4`",
+        ),
+        AGENTS: (
+            "`main` contains the current published stable release `0.2.4`.",
+            "byte-changing technical fixes use `X.Y.Z.R`.",
+            "Every `v<version>` tag and its published bytes are immutable.",
+            "historical release freeze FAN-1128/FAN-1210 завершён.",
+        ),
+    }
 
     @staticmethod
     def normalize(document: str) -> str:
@@ -362,7 +447,7 @@ class ReleaseDocumentationConsistencyTests(unittest.TestCase):
         paths = set(cls.OPERATIONAL_PLACEHOLDERS) | set(cls.DELIVERY_CONTRACTS) | {
             cls.BRANCHING,
             cls.CURRENT_STATE,
-        }
+        } | set(cls.ENTRY_POINT_VERSIONING)
         return {relative: (ROOT / relative).read_text(encoding="utf-8") for relative in paths}
 
     @classmethod
@@ -412,6 +497,16 @@ class ReleaseDocumentationConsistencyTests(unittest.TestCase):
                     errors.append(f"{relative}: stale active/frozen release clause {clause}")
         return errors
 
+    @classmethod
+    def entry_point_versioning_errors(cls, documents: dict[Path, str]) -> list[str]:
+        errors: list[str] = []
+        for relative, clauses in cls.ENTRY_POINT_VERSIONING.items():
+            document = cls.normalize(documents[relative])
+            for clause in clauses:
+                if cls.normalize(clause) not in document:
+                    errors.append(f"{relative}: missing entry-point versioning clause {clause}")
+        return errors
+
     def test_operational_examples_support_both_release_version_shapes(self) -> None:
         documents = self.read_documents()
         self.assertEqual(self.operational_version_errors(documents), [])
@@ -458,6 +553,19 @@ class ReleaseDocumentationConsistencyTests(unittest.TestCase):
         errors = self.published_release_lifecycle_errors(mutated)
         self.assertTrue(any("published-release lifecycle" in error for error in errors))
         self.assertTrue(any("stale active/frozen" in error for error in errors))
+
+    def test_entry_point_docs_describe_current_hotfix_and_immutable_contract(self) -> None:
+        documents = self.read_documents()
+        self.assertEqual(self.entry_point_versioning_errors(documents), [])
+
+        mutated = dict(documents)
+        mutated[self.AGENTS] = mutated[self.AGENTS].replace(
+            "`main` contains the current published stable release `0.2.4`.",
+            "`main` is the stable `0.1` line.",
+            1,
+        )
+        errors = self.entry_point_versioning_errors(mutated)
+        self.assertTrue(any("entry-point versioning" in error for error in errors))
 
 
 if __name__ == "__main__":

@@ -20,6 +20,10 @@ const TRUSTED_RELEASE_PREFIX := "https://github.com/FomaBy/FantasyDisk-Releases/
 const UPDATE_DIR := "user://updates"
 const MANIFEST_BODY_LIMIT := 256 * 1024
 const DOWNLOAD_BODY_LIMIT := 1024 * 1024 * 1024
+const MAX_RELEASE_MAJOR := 9998
+const MAX_RELEASE_MINOR := 99
+const MAX_RELEASE_PATCH := 9
+const MAX_RELEASE_HOTFIX := 9
 
 const STATE_IDLE := "idle"
 const STATE_CHECKING := "checking"
@@ -384,8 +388,15 @@ static func _release_version_parts(version: String) -> PackedInt32Array:
 	var raw_parts := version.split(".")
 	if raw_parts.size() != 3 and raw_parts.size() != 4:
 		return PackedInt32Array()
+	var limits := PackedInt32Array([
+		MAX_RELEASE_MAJOR,
+		MAX_RELEASE_MINOR,
+		MAX_RELEASE_PATCH,
+		MAX_RELEASE_HOTFIX,
+	])
 	var parsed := PackedInt32Array()
-	for raw_part in raw_parts:
+	for index in range(raw_parts.size()):
+		var raw_part = raw_parts[index]
 		var part := str(raw_part)
 		if part == "":
 			return PackedInt32Array()
@@ -394,10 +405,15 @@ static func _release_version_parts(version: String) -> PackedInt32Array:
 		# Keep the updater aligned with the release tooling: each component is
 		# canonical ASCII digits only. is_valid_int() also accepts forms such as
 		# "+1", while trimming would accept external whitespace.
+		var value := 0
 		for character in part:
 			if not "0123456789".contains(character):
 				return PackedInt32Array()
-		parsed.append(int(part))
+			var digit := int(character)
+			if value > (limits[index] - digit) / 10:
+				return PackedInt32Array()
+			value = value * 10 + digit
+		parsed.append(value)
 	if parsed.size() == 3:
 		parsed.append(0)
 	return parsed

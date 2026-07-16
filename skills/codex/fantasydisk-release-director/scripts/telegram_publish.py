@@ -10,18 +10,19 @@ import argparse
 import configparser
 import json
 import os
-import re
 import subprocess
 import sys
+from pathlib import Path
 
 
-RELEASE_VERSION_RE = re.compile(
-    r"^(0|[1-9][0-9]*)\.(0|[1-9][0-9]*)\.(0|[1-9][0-9]*)(?:\.(0|[1-9][0-9]*))?$"
-)
+TOOLS_DIR = Path(__file__).resolve().parents[4] / "tools"
+if str(TOOLS_DIR) not in sys.path:
+    sys.path.insert(0, str(TOOLS_DIR))
 
+from release_version_contract import RELEASE_VERSION_RE, is_valid_release_version
 
 def ensure_telegram_release_version(version: str) -> None:
-    if not RELEASE_VERSION_RE.fullmatch(version):
+    if not is_valid_release_version(version):
         sys.exit("Версия должна иметь формат X.Y.Z или X.Y.Z.R")
 
 

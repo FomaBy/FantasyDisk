@@ -13,14 +13,12 @@ TOOLS_DIR = Path(__file__).resolve().parent
 if str(TOOLS_DIR) not in sys.path:
     sys.path.insert(0, str(TOOLS_DIR))
 
+from release_version_contract import RELEASE_VERSION_RE, is_valid_release_version
 from release_version_mapping import platform_version_mapping
 
 
 RUNTIME_SUFFIXES = {".gd", ".godot", ".tscn", ".tres", ".cfg"}
 RESOURCE_RE = re.compile(r"res://[A-Za-z0-9_./@+\-]+")
-RELEASE_VERSION_RE = re.compile(
-    r"^(0|[1-9][0-9]*)\.(0|[1-9][0-9]*)\.(0|[1-9][0-9]*)(?:\.(0|[1-9][0-9]*))?$"
-)
 LEGACY_LINE_CEILINGS = {
     "scripts/ui_screens.gd": 17000,
     "scripts/class_weapon.gd": 6000,
@@ -109,13 +107,14 @@ def version_and_windows_errors(root: Path) -> list[str]:
     version = _quoted_value(project, "config/version")
     if not version:
         errors.append("project.godot: config/version is missing")
-    elif not RELEASE_VERSION_RE.fullmatch(version):
-        errors.append("project.godot: config/version must use X.Y.Z or X.Y.Z.R")
-    try:
-        mapping = platform_version_mapping(version)
-    except ValueError as error:
-        errors.append(f"project.godot: config/version {error}")
-        mapping = None
+    elif not is_valid_release_version(version):
+        errors.append("project.godot: config/version must use the canonical bounded X.Y.Z or X.Y.Z.R contract")
+    mapping = None
+    if is_valid_release_version(version):
+        try:
+            mapping = platform_version_mapping(version)
+        except ValueError as error:
+            errors.append(f"project.godot: config/version {error}")
     expected = {
         "application/short_version": mapping.macos_short_version if mapping else "",
         "application/version": mapping.macos_build_version if mapping else "",

@@ -57,8 +57,8 @@ class QualityStaticGuardTest(unittest.TestCase):
                 'application/short_version="0.2.4"',
                 'application/short_version="0.2.3"',
             ).replace(
-                'application/version="0.2.4000"',
-                'application/version="0.2.3001"',
+                'application/version="1.2.40"',
+                'application/version="1.2.31"',
             ).replace(
                 'application/product_version="0.2.4"',
                 'application/product_version="0.2.3.1"',
@@ -86,7 +86,7 @@ class QualityStaticGuardTest(unittest.TestCase):
                 'application/short_version="0.2.4"',
                 'application/short_version="0.2.3.1"',
             ).replace(
-                'application/version="0.2.4000"',
+                'application/version="1.2.40"',
                 'application/version="0.2.3.1"',
             ).replace(
                 'application/product_version="0.2.4"',
@@ -102,7 +102,7 @@ class QualityStaticGuardTest(unittest.TestCase):
                 errors,
             )
             self.assertIn(
-                "export_presets.cfg: application/version must equal '0.2.3001'",
+                "export_presets.cfg: application/version must equal '1.2.31'",
                 errors,
             )
 
@@ -113,15 +113,22 @@ class QualityStaticGuardTest(unittest.TestCase):
         ]
         self.assertEqual(
             [mapping.macos_build_version for mapping in mappings],
-            ["0.2.3000", "0.2.3001", "0.2.4000"],
+            ["1.2.30", "1.2.31", "1.2.40"],
         )
-        with self.assertRaisesRegex(ValueError, "0..999"):
-            self.module.platform_version_mapping("0.2.3.1000")
+        self.assertEqual(
+            self.module.platform_version_mapping("0.2.4.1").macos_build_version,
+            "1.2.41",
+        )
+        with self.assertRaisesRegex(ValueError, "0..9"):
+            self.module.platform_version_mapping("0.2.3.10")
 
     def test_build_script_uses_the_tagged_platform_mapping_tool(self):
         script = (ROOT / "tools" / "build_release.sh").read_text(encoding="utf-8")
+        self.assertIn('tools/release_version_contract.py', script)
         self.assertIn('tools/release_version_mapping.py', script)
         self.assertIn('MACOS_SHORT_VERSION MACOS_BUILD_VERSION WINDOWS_PRODUCT_VERSION WINDOWS_FILE_VERSION', script)
+        self.assertIn('grep -F -q "application/short_version=', script)
+        self.assertIn('grep -F -q "application/version=', script)
 
     def test_rejects_five_component_release_version(self):
         with tempfile.TemporaryDirectory() as tmp:
@@ -136,7 +143,7 @@ class QualityStaticGuardTest(unittest.TestCase):
                 encoding="utf-8",
             )
             self.assertIn(
-                "project.godot: config/version must use X.Y.Z or X.Y.Z.R",
+                "project.godot: config/version must use the canonical bounded X.Y.Z or X.Y.Z.R contract",
                 self.module.version_and_windows_errors(root),
             )
 

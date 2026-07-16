@@ -54,7 +54,13 @@ Domain docs для подробностей по областям:
   (ad-hoc/unnotarized релиз запрещён), но задача отменена и заменена
   unsigned-каналом FAN-1121, поэтому signed-only больше не является текущим
   универсальным правилом.
-- Версионирование: SemVer, источник истины `project.godot::config/version`; релизы — теги `vX.Y.Z` на main, разработка в `dev` (см. `docs/process/release_versioning.md`). Сборка: `tools/build_release.sh <версия>`.
+- Версионирование: продуктовые версии используют SemVer `X.Y.Z`; техническое
+  исправление изменённых байтов без нового игрового поведения использует
+  `X.Y.Z.R`. Источник истины — `project.godot::config/version`; immutable
+  релизы — теги `v<version>` на `main`, разработка — в `dev` (см.
+  `docs/process/release_versioning.md`). Исторический release freeze
+  FAN-1128/FAN-1210 завершён публикацией `0.2.4`. Сборка:
+  `tools/build_release.sh <version>`.
 - Основная сцена: `scenes/Main.tscn`.
 - Основной управляющий скрипт: `scripts/main.gd` — тонкий координатор (state, пауза, основной цикл, делегирующие стабы для тестов). Он владеет модулями-компонентами: `scripts/ui_screens.gd` (меню/экраны/HUD/стили), `scripts/route_map_screen.gd` (генерация маршрута и экран карты), `scripts/combat_director.gd` (бой, спавн, баланс, арена, pickups). Модули — RefCounted с ссылкой `game` на main; общее состояние живет в main.
 - Иконка приложения: `icon.svg`, подключена через `project.godot` `application/config/icon` и оформлена как fantasy disk emblem с золотым ободом и фиолетовым разломом.

@@ -13,6 +13,10 @@
   игровых функций, баланса или заметного поведения. Например,
   `0.2.3 < 0.2.3.1 < 0.2.4`; отсутствие HOTFIX означает ноль. Этот формат не
   объявляется SemVer и не применяется молча до успешного tooling gate.
+- Канонические границы, проверяемые updater, manifest, publication и platform
+  mapping: `MAJOR=0…9998`, `MINOR=0…99`, `PATCH=0…9`, `HOTFIX=0…9`. Они нужны,
+  чтобы одна logical version безопасно представлялась и Godot, и macOS bundle
+  metadata; версия вне этих границ отклоняется до сборки или публикации.
 - Текущий опубликованный stable release: `0.2.4`. Плановые `0.1.8` и `0.1.9` отменены/superseded:
   не создавать под них sprint, Multica release metadata (`release`),
   changelog-финализацию или release tasks. После `0.2.0` следующая patch-линия:
@@ -24,9 +28,9 @@
 - Export presets отделяют logical release version от macOS bundle metadata.
   Для logical `X.Y.Z.R` (у `X.Y.Z` считать `R=0`) macOS
   `application/short_version` равен `X.Y.Z`, а `application/version` равен
-  `X.Y.(1000*Z+R)`; четвёртый компонент технического hotfix ограничен
-  `0…999`. Так Apple Version/Build остаются трёхкомпонентными и сохраняют
-  порядок hotfix (см. [Apple CFBundleVersion](https://developer.apple.com/documentation/bundleresources/information-property-list/cfbundleversion)
+  `(X+1).Y.(10*Z+R)`. Так machine-readable Apple build всегда имеет
+  положительный первый компонент и третий компонент не длиннее двух цифр,
+  остаётся трёхкомпонентным и сохраняет порядок hotfix (см. [Apple CFBundleVersion](https://developer.apple.com/documentation/bundleresources/information-property-list/cfbundleversion)
   и [Godot macOS exporter](https://docs.godotengine.org/en/4.7/classes/class_editorexportplatformmacos.html)). Windows `application/product_version` равен `<version>`, а
   `application/file_version` равен `<version>.0` для `X.Y.Z` и самому
   `<version>` для `X.Y.Z.R`.

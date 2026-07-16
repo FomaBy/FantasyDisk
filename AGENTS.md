@@ -289,8 +289,10 @@ archive it from the active thread list.
   thread`, `not a disposable worker thread`, or `archive unavailable`.
 
 Versioning:
-- `main` is the stable `0.1` line.
-- `dev` is the active working branch for the current `0.1.x` line.
+- `main` contains the current published stable release `0.2.4`.
+- `dev` is the active working branch for the live Multica board.
+- Product releases use `X.Y.Z`; byte-changing technical fixes use `X.Y.Z.R`.
+- Every `v<version>` tag and its published bytes are immutable.
 - All implementation tasks should be done on `dev` unless a task explicitly says otherwise.
 - Check the current branch before making changes; do not do ordinary feature work directly on `main`.
 
@@ -329,11 +331,13 @@ Full autonomy (user directive, 2026-06-12):
 Feature block:
 - **ФРИЗ СНЯТ релизом v0.1.5 (2026-06-15).** Пользовательская директива
   2026-07-03: все задачи, добавляемые пользователем в любые чаты, сразу
-  заводятся в активный Multica-проект `FantasyDisk` (issues `FAN-*`) и получают
-  metadata `release` активного релиза. Активный релиз-таргет — `0.2.3`; всегда
-  проверяй live Multica board перед auto-pull/dispatch. Активные issues берутся
-  обычным порядком из Multica. Плановые версии `0.1.8` и `0.1.9`
-  отменены/superseded; далее используется SemVer patch-линия `0.2.1`, `0.2.2`, `0.2.3`, ...
+  заводятся в активный Multica-проект `FantasyDisk` (issues `FAN-*`). Текущий
+  опубликованный stable release — `0.2.4`; historical release freeze
+  FAN-1128/FAN-1210 завершён. Всегда проверяй live Multica board перед
+  auto-pull/dispatch. Активные issues берутся обычным порядком из Multica.
+  Плановые версии `0.1.8` и `0.1.9` отменены/superseded; обычные новые игровые
+  изменения используют следующую SemVer-версию, а технические byte-changing
+  исправления — `X.Y.Z.R`.
 - Механизм сохраняется: перед стабилизацией следующего релиза PM снова включает
   фриз явной директивой/hold-marker; без такого marker новые задачи идут в
   Multica `todo`, а не в `backlog`.

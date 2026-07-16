@@ -30,12 +30,10 @@ TOOLS_DIR = Path(__file__).resolve().parents[4] / "tools"
 if str(TOOLS_DIR) not in sys.path:
     sys.path.insert(0, str(TOOLS_DIR))
 
+from release_version_contract import RELEASE_VERSION_RE, is_valid_release_version, release_version_key
 from release_version_mapping import PlatformVersionMapping, platform_version_mapping
 
 
-RELEASE_VERSION_RE = re.compile(
-    r"^(0|[1-9][0-9]*)\.(0|[1-9][0-9]*)\.(0|[1-9][0-9]*)(?:\.(0|[1-9][0-9]*))?$"
-)
 MANIFEST_NAME = "LOCAL_RELEASE.json"
 CONFIG_ENV = "FANTASYDISK_LOCAL_RELEASE_CONFIG"
 ROOT_ENV = "FANTASYDISK_LOCAL_ROOT"
@@ -56,10 +54,10 @@ class MacOSBundleVersions:
 
 
 def _version_key(version: str) -> tuple[int, int, int, int]:
-    if not RELEASE_VERSION_RE.fullmatch(version):
-        raise LocalReleaseError(f"invalid release version (expected X.Y.Z or X.Y.Z.R): {version}")
-    parts = [int(part) for part in version.split(".")]
-    return tuple(parts + [0] * (4 - len(parts)))  # type: ignore[return-value]
+    try:
+        return release_version_key(version)
+    except ValueError as error:
+        raise LocalReleaseError(f"invalid release version: {error}: {version}") from error
 
 
 def resolve_macos_channel(value: str | None = None) -> str:

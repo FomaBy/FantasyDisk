@@ -7,7 +7,6 @@ import argparse
 import base64
 import hashlib
 import json
-import re
 import shutil
 import subprocess
 import sys
@@ -15,6 +14,12 @@ import urllib.error
 import urllib.request
 from pathlib import Path
 
+
+TOOLS_DIR = Path(__file__).resolve().parents[4] / "tools"
+if str(TOOLS_DIR) not in sys.path:
+    sys.path.insert(0, str(TOOLS_DIR))
+
+from release_version_contract import RELEASE_VERSION_RE, is_valid_release_version
 
 DEFAULT_REPOSITORY = "FomaBy/FantasyDisk-Releases"
 EXPECTED_ROOT_PATHS = {"README.md"}
@@ -30,9 +35,6 @@ README_FORBIDDEN_MARKERS = {
     "api_key",
     ".gd",
 }
-RELEASE_VERSION_RE = re.compile(
-    r"^(0|[1-9][0-9]*)\.(0|[1-9][0-9]*)\.(0|[1-9][0-9]*)(?:\.(0|[1-9][0-9]*))?$"
-)
 USER_AGENT = "FantasyDisk-Public-Release-Verify/1.0"
 
 
@@ -125,7 +127,7 @@ def _verify_public_tree(repository: str) -> None:
 
 
 def verify_public_distribution(repository: str, version: str, local_release: Path) -> dict:
-    if not RELEASE_VERSION_RE.fullmatch(version):
+    if not is_valid_release_version(version):
         raise PublicVerificationError("release version must use X.Y.Z or X.Y.Z.R")
     _verify_public_tree(repository)
     tag = f"v{version}"
@@ -196,7 +198,7 @@ def main() -> int:
     parser.add_argument("--repository", default=DEFAULT_REPOSITORY)
     parser.add_argument("--local-release", required=True, type=Path)
     args = parser.parse_args()
-    if not RELEASE_VERSION_RE.fullmatch(args.version):
+    if not is_valid_release_version(args.version):
         parser.error("--version must use X.Y.Z or X.Y.Z.R")
     try:
         report = verify_public_distribution(args.repository, args.version, args.local_release.resolve())

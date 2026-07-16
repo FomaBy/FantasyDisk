@@ -51,8 +51,8 @@ func _check_version_ordering() -> bool:
 		["0.2.3.1", "0.2.4", -1],
 		["0.2.3.1", "0.2.3", 1],
 		["0.2.3.0", "0.2.3", 0],
-		["0.10.0", "0.2.99", 1],
-		["1.0.0", "0.99.99", 1],
+		["0.10.0", "0.2.9", 1],
+		["1.0.0", "0.99.9", 1],
 		["invalid", "0.2.2", 0],
 	]
 	for case in cases:
@@ -96,6 +96,12 @@ func _check_manifest_contract() -> bool:
 		invalid_manifest["version"] = invalid_version
 		if bool(UPDATE_MANAGER.validate_manifest(invalid_manifest).get("ok", true)):
 			return _fail("Non-canonical release version was accepted: %s" % invalid_version)
+	var valid_versions := _version_contract_values("valid")
+	if valid_versions.is_empty():
+		return _fail("Shared release-version valid matrix is missing.")
+	for valid_version in valid_versions:
+		if UPDATE_MANAGER._release_version_parts(valid_version).is_empty():
+			return _fail("Canonical release version was rejected: %s" % valid_version)
 	var hotfix := manifest.duplicate(true)
 	hotfix["version"] = "0.2.3.1"
 	hotfix["release_url"] = "https://github.com/FomaBy/FantasyDisk-Releases/releases/tag/v0.2.3.1"

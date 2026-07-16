@@ -4,13 +4,11 @@ from __future__ import annotations
 
 import argparse
 from dataclasses import dataclass
-import re
+
+from release_version_contract import RELEASE_VERSION_RE, release_version_parts
 
 
-RELEASE_VERSION_RE = re.compile(
-    r"^(0|[1-9][0-9]*)\.(0|[1-9][0-9]*)\.(0|[1-9][0-9]*)(?:\.(0|[1-9][0-9]*))?$"
-)
-HOTFIX_RADIX = 1000
+HOTFIX_RADIX = 10
 
 
 @dataclass(frozen=True)
@@ -29,18 +27,14 @@ def platform_version_mapping(version: str) -> PlatformVersionMapping:
     is packed into the build patch component, while the user-visible macOS
     version remains the three-component product version.
     """
-    match = RELEASE_VERSION_RE.fullmatch(version)
-    if match is None:
-        raise ValueError("version must use canonical X.Y.Z or X.Y.Z.R")
-
-    major, minor, patch = (int(component) for component in match.group(1, 2, 3))
-    hotfix = int(match.group(4) or "0")
-    if hotfix >= HOTFIX_RADIX:
-        raise ValueError(f"hotfix component must be in 0..{HOTFIX_RADIX - 1} for macOS mapping")
+    major, minor, patch, hotfix = release_version_parts(version)
 
     macos_short_version = f"{major}.{minor}.{patch}"
-    macos_build_version = f"{major}.{minor}.{patch * HOTFIX_RADIX + hotfix}"
-    windows_file_version = version if match.group(4) is not None else f"{version}.0"
+    # CFBundleVersion retains three numeric components. The first component is
+    # positive and the third stays within two digits, as required by the
+    # compatibility policy based on Apple's Info.plist guidance.
+    macos_build_version = f"{major + 1}.{minor}.{patch * HOTFIX_RADIX + hotfix}"
+    windows_file_version = version if version.count(".") == 3 else f"{version}.0"
     return PlatformVersionMapping(
         logical_version=version,
         macos_short_version=macos_short_version,

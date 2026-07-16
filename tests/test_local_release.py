@@ -262,7 +262,7 @@ class LocalReleaseTests(unittest.TestCase):
             b' "http://www.apple.com/DTDs/PropertyList-1.0.dtd">\n'
             b'<plist version="1.0"><dict>'
             b"<key>CFBundleShortVersionString</key><string>9.8.7</string>"
-            b"<key>CFBundleVersion</key><string>9.8.7001</string>"
+            b"<key>CFBundleVersion</key><string>10.8.71</string>"
             b"</dict></plist>\n"
         )
         with mock.patch.object(local_release, "_run") as run_mock:
@@ -274,8 +274,8 @@ class LocalReleaseTests(unittest.TestCase):
         self.assertEqual(tools, ["codesign", "xcrun", "spctl"])
         # The version gate stays mandatory in both channels and rejects a direct
         # four-component CFBundleVersion replacement.
-        plist.write_bytes(plist.read_bytes().replace(b"9.8.7001", b"9.8.7.1"))
-        with self.assertRaisesRegex(local_release.LocalReleaseError, "build=9.8.7001"):
+        plist.write_bytes(plist.read_bytes().replace(b"10.8.71", b"9.8.7.1"))
+        with self.assertRaisesRegex(local_release.LocalReleaseError, "build=10.8.71"):
             local_release.verify_macos_app(app, "9.8.7.1", launch_smoke=False, signed=False)
 
     def test_macos_verifier_can_use_immutable_tag_export_metadata(self) -> None:

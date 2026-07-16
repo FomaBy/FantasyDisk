@@ -7,12 +7,17 @@ import argparse
 import base64
 import json
 import os
-import re
 import shutil
 import subprocess
 import sys
 from pathlib import Path
 
+
+TOOLS_DIR = Path(__file__).resolve().parents[4] / "tools"
+if str(TOOLS_DIR) not in sys.path:
+    sys.path.insert(0, str(TOOLS_DIR))
+
+from release_version_contract import RELEASE_VERSION_RE, is_valid_release_version
 
 DEFAULT_REPOSITORY = "FomaBy/FantasyDisk-Releases"
 ALLOWED_DISTRIBUTION_ROOT_PATHS = frozenset({"README.md"})
@@ -29,11 +34,6 @@ README_FORBIDDEN_MARKERS = (
     "api_key",
     ".gd",
 )
-RELEASE_VERSION_RE = re.compile(
-    r"^(0|[1-9][0-9]*)\.(0|[1-9][0-9]*)\.(0|[1-9][0-9]*)(?:\.(0|[1-9][0-9]*))?$"
-)
-
-
 def repo_root() -> Path:
     return Path(os.environ.get("FANTASYDISK_REPO", os.getcwd())).resolve()
 
@@ -55,7 +55,7 @@ def verify_local_release(root: Path, version: str) -> Path:
 
 
 def release_files(release_dir: Path, version: str) -> tuple[list[Path], Path]:
-    if not RELEASE_VERSION_RE.fullmatch(version):
+    if not is_valid_release_version(version):
         raise RuntimeError("release version must use X.Y.Z or X.Y.Z.R")
     posters = sorted(release_dir.glob("*.png"))
     if len(posters) != 1:
@@ -162,8 +162,32 @@ def _assert_release_assets(repository: str, tag: str, expected: list[Path]) -> s
     return str(payload["url"])
 
 
+def assert_unclaimed_distribution_tag(repository: str, tag: str) -> None:
+    """Fail closed unless the exact immutable distribution tag is absent."""
+    result = run(
+        ["gh", "api", f"repos/{repository}/git/matching-refs/tags/{tag}"],
+        check=False,
+    )
+    if result.returncode:
+        raise RuntimeError(f"cannot verify whether distribution tag {tag} already exists")
+    try:
+        refs = json.loads(result.stdout)
+    except json.JSONDecodeError as error:
+        raise RuntimeError("distribution tag preflight returned invalid JSON") from error
+    if not isinstance(refs, list):
+        raise RuntimeError("distribution tag preflight returned an invalid response shape")
+    expected_ref = f"refs/tags/{tag}"
+    for ref in refs:
+        if not isinstance(ref, dict) or not isinstance(ref.get("ref"), str):
+            raise RuntimeError("distribution tag preflight returned malformed references")
+        if ref["ref"] == expected_ref:
+            raise RuntimeError(
+                f"distribution tag {tag} already exists; never reuse an immutable public tag"
+            )
+
+
 def publish(repository: str, version: str, files: list[Path], changelog: Path) -> str:
-    if not RELEASE_VERSION_RE.fullmatch(version):
+    if not is_valid_release_version(version):
         raise RuntimeError("release version must use X.Y.Z or X.Y.Z.R")
     if shutil.which("gh") is None:
         raise RuntimeError("GitHub CLI `gh` не установлен")
@@ -178,6 +202,7 @@ def publish(repository: str, version: str, files: list[Path], changelog: Path) -
         raise RuntimeError(
             f"distribution release {tag} already exists; never overwrite a published public release"
         )
+    assert_unclaimed_distribution_tag(repository, tag)
     title = f"FantasyDisk v{version}"
     run(
         [
@@ -203,7 +228,7 @@ def main() -> int:
     parser.add_argument("--repository", default=DEFAULT_REPOSITORY)
     parser.add_argument("--dry-run", action="store_true")
     args = parser.parse_args()
-    if not RELEASE_VERSION_RE.fullmatch(args.version):
+    if not is_valid_release_version(args.version):
         parser.error("--version must use X.Y.Z or X.Y.Z.R")
     root = repo_root()
     release_dir = verify_local_release(root, args.version)

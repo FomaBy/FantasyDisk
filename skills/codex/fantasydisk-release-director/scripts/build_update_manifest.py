@@ -6,27 +6,28 @@ from __future__ import annotations
 import argparse
 import hashlib
 import json
-import re
+import sys
 from pathlib import Path
 
+
+TOOLS_DIR = Path(__file__).resolve().parents[4] / "tools"
+if str(TOOLS_DIR) not in sys.path:
+    sys.path.insert(0, str(TOOLS_DIR))
+
+from release_version_contract import RELEASE_VERSION_RE, is_valid_release_version, release_version_key
 
 REPOSITORY = "FomaBy/FantasyDisk-Releases"
 SCHEMA_VERSION = 1
 FIRST_UPDATER_VERSION = "0.2.2"
-RELEASE_VERSION_RE = re.compile(
-    r"^(0|[1-9][0-9]*)\.(0|[1-9][0-9]*)\.(0|[1-9][0-9]*)(?:\.(0|[1-9][0-9]*))?$"
-)
-
-
 class ManifestError(RuntimeError):
     """The release package cannot produce a trustworthy update manifest."""
 
 
 def _version_key(version: str) -> tuple[int, int, int, int]:
-    if not RELEASE_VERSION_RE.fullmatch(version):
-        raise ManifestError(f"version must use X.Y.Z or X.Y.Z.R: {version}")
-    parts = [int(part) for part in version.split(".")]
-    return tuple(parts + [0] * (4 - len(parts)))  # type: ignore[return-value]
+    try:
+        return release_version_key(version)
+    except ValueError as error:
+        raise ManifestError(f"invalid release version: {error}: {version}") from error
 
 
 def _sha256(path: Path) -> str:

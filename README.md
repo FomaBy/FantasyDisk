@@ -16,7 +16,12 @@ bash scripts/onboard.sh
 `docs/process/task_board.md` лишь зеркала/кэш. Legacy Jira (`SCRUM-*`) — read-only
 исторический архив, не источник новой работы (см.
 [`docs/process/jira_to_multica_cutover.md`](docs/process/jira_to_multica_cutover.md)).
-Ветки: `main`=релиз, `dev`=работа (default), теги `vX.Y.Z`=версии.
+Ветки: `main`=релиз, `dev`=работа (default), immutable теги `v<version>`=версии.
+
+Текущий опубликованный stable release: `0.2.4`. Обычный продуктовый релиз
+использует `X.Y.Z`; технический релиз с изменёнными байтами и без новых игровых
+функций использует `X.Y.Z.R`. Для обоих форм tag `v<version>` и опубликованные
+байты immutable; повторная доставка не меняет их.
 
 ## Требования
 - **Godot 4.7** (стандартная сборка, ветка 4.x). Скачать: https://godotengine.org/download
@@ -71,7 +76,7 @@ python tools/quality_gate.py --profile windows
 Текущий одобренный канал — явный `unsigned`:
 
 ```bash
-FANTASYDISK_MACOS_CHANNEL=unsigned tools/build_release.sh <версия>
+FANTASYDISK_MACOS_CHANNEL=unsigned tools/build_release.sh <version>
 ```
 
 Строгий подписанный канал включается отдельно, когда доступны Apple credentials:
@@ -79,7 +84,7 @@ FANTASYDISK_MACOS_CHANNEL=unsigned tools/build_release.sh <версия>
 ```bash
 export MACOS_SIGN_IDENTITY="Developer ID Application: <owner> (<TEAMID>)"
 export MACOS_NOTARY_PROFILE="fantasydisk-notary" # credentials stored in Keychain
-FANTASYDISK_MACOS_CHANNEL=signed tools/build_release.sh <версия>
+FANTASYDISK_MACOS_CHANNEL=signed tools/build_release.sh <version>
 ```
 
 Оба канала fail-closed и не переключаются молча. `signed` требует Developer ID,
