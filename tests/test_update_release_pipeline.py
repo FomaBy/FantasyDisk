@@ -383,6 +383,214 @@ class UpdateReleasePipelineTests(unittest.TestCase):
         self.assertNotIn('"gh", "release", "delete"', source)
 
 
+class PublicVerifierAssetContractTests(unittest.TestCase):
+    """FAN-1257: ambiguous or malformed public API asset lists must fail closed."""
+
+    VERSION = "0.2.4"
+    REPOSITORY = "FomaBy/FantasyDisk-Releases"
+    TAG = "v0.2.4"
+
+    def _write_release_fixture(self, release: Path) -> tuple[dict[str, bytes], list[dict]]:
+        version = self.VERSION
+        installer_names = (
+            f"FantasyDisk-{version}-macos.dmg",
+            f"FantasyDisk-{version}-windows-setup.exe",
+        )
+        payloads = {
+            name: f"public-bytes:{name}".encode("utf-8")
+            for name in (
+                *installer_names,
+                f"CHANGELOG-{version}.md",
+                f"fantasydisk_{version.replace('.', '')}_announcement.png",
+            )
+        }
+        manifest = {
+            "version": version,
+            "release_url": f"https://github.com/{self.REPOSITORY}/releases/tag/{self.TAG}",
+            "assets": {
+                platform: {
+                    "name": name,
+                    "url": (
+                        f"https://github.com/{self.REPOSITORY}/releases/download/{self.TAG}/{name}"
+                    ),
+                    "size": len(payloads[name]),
+                    "sha256": hashlib.sha256(payloads[name]).hexdigest(),
+                }
+                for platform, name in zip(("macos", "windows"), installer_names)
+            },
+        }
+        payloads["update-manifest.json"] = json.dumps(manifest).encode("utf-8")
+        payloads["SHA256SUMS.txt"] = "".join(
+            f"{hashlib.sha256(payloads[name]).hexdigest()}  {name}\n"
+            for name in installer_names
+        ).encode("utf-8")
+        for name, data in payloads.items():
+            (release / name).write_bytes(data)
+        api_assets = [
+            {"name": name, "browser_download_url": f"https://example.invalid/assets/{name}"}
+            for name in sorted(payloads)
+        ]
+        return payloads, api_assets
+
+    def _run_verifier(self, release: Path, payloads: dict[str, bytes], api_assets, error=None):
+        latest = {
+            "tag_name": self.TAG,
+            "draft": False,
+            "prerelease": False,
+            "assets": api_assets,
+        }
+        manifest_url = (
+            f"https://github.com/{self.REPOSITORY}/releases/latest/download/update-manifest.json"
+        )
+
+        def fake_request(url: str) -> bytes:
+            if url == manifest_url:
+                return payloads["update-manifest.json"]
+            if url == "https://example.invalid/assets/SHA256SUMS.txt":
+                return payloads["SHA256SUMS.txt"]
+            raise AssertionError(f"unexpected public request: {url}")
+
+        def fake_download(url: str) -> tuple[int, str]:
+            data = payloads[url.rsplit("/", 1)[-1]]
+            return len(data), hashlib.sha256(data).hexdigest()
+
+        with mock.patch.object(github_release_verify, "_verify_public_tree"), \
+             mock.patch.object(github_release_verify, "_json", return_value=latest), \
+             mock.patch.object(
+                 github_release_verify, "_request", side_effect=fake_request
+             ) as request, \
+             mock.patch.object(
+                 github_release_verify, "_sha256_download", side_effect=fake_download
+             ) as download:
+            if error is None:
+                report = github_release_verify.verify_public_distribution(
+                    self.REPOSITORY, self.VERSION, release
+                )
+            else:
+                report = None
+                with self.assertRaisesRegex(
+                    github_release_verify.PublicVerificationError, error
+                ):
+                    github_release_verify.verify_public_distribution(
+                        self.REPOSITORY, self.VERSION, release
+                    )
+        return report, request, download
+
+    def test_full_verifier_accepts_exactly_six_unique_assets(self) -> None:
+        with tempfile.TemporaryDirectory() as temporary:
+            release = Path(temporary)
+            payloads, api_assets = self._write_release_fixture(release)
+            report, _request, download = self._run_verifier(release, payloads, api_assets)
+        self.assertTrue(report["ok"])
+        self.assertEqual(report["repository"], self.REPOSITORY)
+        self.assertEqual(
+            report["assets"]["macos"]["sha256"],
+            hashlib.sha256(payloads[f"FantasyDisk-{self.VERSION}-macos.dmg"]).hexdigest(),
+        )
+        self.assertEqual(
+            report["assets"]["windows"]["size"],
+            len(payloads[f"FantasyDisk-{self.VERSION}-windows-setup.exe"]),
+        )
+        self.assertEqual(download.call_count, 6)
+
+    def test_verifier_rejects_duplicate_api_asset_names_before_downloads(self) -> None:
+        mac = f"FantasyDisk-{self.VERSION}-macos.dmg"
+        with tempfile.TemporaryDirectory() as temporary:
+            release = Path(temporary)
+            payloads, api_assets = self._write_release_fixture(release)
+            duplicate = {
+                "name": mac,
+                "browser_download_url": "https://example.invalid/other/location",
+            }
+            seven_entries = api_assets + [duplicate]
+            self.assertEqual(len(seven_entries), 7)
+            report, request, download = self._run_verifier(
+                release, payloads, seven_entries, error="duplicate asset name"
+            )
+        self.assertIsNone(report)
+        request.assert_not_called()
+        download.assert_not_called()
+
+    def test_verifier_rejects_malformed_or_empty_api_asset_entries_before_downloads(self) -> None:
+        mac = f"FantasyDisk-{self.VERSION}-macos.dmg"
+        url = f"https://example.invalid/assets/{mac}"
+        cases = (
+            ("assets-not-a-list", {"name": mac}, "must be a list"),
+            ("entry-not-an-object", mac, "not an object"),
+            ("missing-name", {"browser_download_url": url}, "non-empty string"),
+            ("empty-name", {"name": "", "browser_download_url": url}, "non-empty string"),
+            ("non-string-name", {"name": 7, "browser_download_url": url}, "non-empty string"),
+            ("missing-url", {"name": mac}, "non-empty string"),
+            ("empty-url", {"name": mac, "browser_download_url": ""}, "non-empty string"),
+            (
+                "non-string-url",
+                {"name": mac, "browser_download_url": None},
+                "non-empty string",
+            ),
+        )
+        with tempfile.TemporaryDirectory() as temporary:
+            release = Path(temporary)
+            payloads, api_assets = self._write_release_fixture(release)
+            for label, mutation, error in cases:
+                with self.subTest(case=label):
+                    if label == "assets-not-a-list":
+                        mutated = mutation
+                    else:
+                        mutated = [mutation] + [
+                            entry for entry in api_assets if entry["name"] != mac
+                        ]
+                    report, request, download = self._run_verifier(
+                        release, payloads, mutated, error=error
+                    )
+                    self.assertIsNone(report)
+                    request.assert_not_called()
+                    download.assert_not_called()
+
+    def test_verifier_rejects_missing_and_unexpected_asset_names_before_downloads(self) -> None:
+        with tempfile.TemporaryDirectory() as temporary:
+            release = Path(temporary)
+            payloads, api_assets = self._write_release_fixture(release)
+            without_sums = [
+                entry for entry in api_assets if entry["name"] != "SHA256SUMS.txt"
+            ]
+            unexpected = api_assets + [{
+                "name": f"FantasyDisk-{self.VERSION}-linux.AppImage",
+                "browser_download_url": "https://example.invalid/assets/linux",
+            }]
+            for label, mutated, error in (
+                ("missing-required", without_sums, "missing required assets"),
+                ("unexpected-name", unexpected, "unexpected asset"),
+            ):
+                with self.subTest(case=label):
+                    report, request, download = self._run_verifier(
+                        release, payloads, mutated, error=error
+                    )
+                    self.assertIsNone(report)
+                    request.assert_not_called()
+                    download.assert_not_called()
+
+    def test_verifier_rejects_checksum_mismatch_for_installer_bytes(self) -> None:
+        mac = f"FantasyDisk-{self.VERSION}-macos.dmg"
+        windows = f"FantasyDisk-{self.VERSION}-windows-setup.exe"
+        with tempfile.TemporaryDirectory() as temporary:
+            release = Path(temporary)
+            payloads, api_assets = self._write_release_fixture(release)
+            corrupted = (
+                f"{'0' * 64}  {mac}\n"
+                f"{hashlib.sha256(payloads[windows]).hexdigest()}  {windows}\n"
+            ).encode("utf-8")
+            payloads["SHA256SUMS.txt"] = corrupted
+            (release / "SHA256SUMS.txt").write_bytes(corrupted)
+            report, _request, download = self._run_verifier(
+                release,
+                payloads,
+                api_assets,
+                error="public installer bytes do not match durable release",
+            )
+        self.assertIsNone(report)
+        download.assert_called()
+
+
 class UnsignedChannelLabelingTests(unittest.TestCase):
     """FAN-1121: the unsigned macOS channel must be labeled truthfully everywhere."""
 

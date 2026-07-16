@@ -152,13 +152,27 @@ def verify_public_distribution(repository: str, version: str, local_release: Pat
         f"fantasydisk_{version.replace('.', '')}_announcement.png",
         "update-manifest.json",
     }
-    assets = {
-        str(asset.get("name", "")): str(asset.get("browser_download_url", ""))
-        for asset in latest.get("assets", [])
-        if isinstance(asset, dict)
-    }
-    if set(assets) != names or not all(assets.values()):
-        raise PublicVerificationError("public release asset allowlist mismatch")
+    raw_assets = latest.get("assets")
+    if not isinstance(raw_assets, list):
+        raise PublicVerificationError("public release assets must be a list of asset objects")
+    assets: dict[str, str] = {}
+    for entry in raw_assets:
+        if not isinstance(entry, dict):
+            raise PublicVerificationError("public release asset entry is not an object")
+        name = entry.get("name")
+        url = entry.get("browser_download_url")
+        if not isinstance(name, str) or not name or not isinstance(url, str) or not url:
+            raise PublicVerificationError(
+                "public release asset entry must have non-empty string name and browser_download_url"
+            )
+        if name not in names:
+            raise PublicVerificationError(f"public release contains an unexpected asset: {name}")
+        if name in assets:
+            raise PublicVerificationError(f"public release contains a duplicate asset name: {name}")
+        assets[name] = url
+    if set(assets) != names:
+        missing = sorted(names - set(assets))
+        raise PublicVerificationError(f"public release is missing required assets: {missing}")
     manifest_url = f"https://github.com/{repository}/releases/latest/download/update-manifest.json"
     try:
         manifest = json.loads(_request(manifest_url).decode("utf-8"))
