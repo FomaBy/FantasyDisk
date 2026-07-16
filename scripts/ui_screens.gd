@@ -3195,7 +3195,7 @@ func _layout_attribute_offer_card(button: Button) -> void:
 		interpretation_h = 38.0
 		influence_h = 50.0
 		price_h = 24.0
-	elif display_size.y < 400.0:
+	elif display_size.y <= 410.0:
 		# At the 1080p tier the icon is redundant with the title and tooltip;
 		# yield its lane to the four semantic-size derived preview rows.
 		icon_side = 0.0
@@ -3268,10 +3268,10 @@ func _layout_attribute_offer_card(button: Button) -> void:
 		))
 	if preview != null:
 		preview.add_theme_font_size_override("font_size", SemanticTypography.resolve_fixed(
-			SemanticTypography.ROLE_BODY,
-			base_font,
-			SemanticTypography.role_min(SemanticTypography.ROLE_BODY),
-			SemanticTypography.role_max(SemanticTypography.ROLE_BODY)
+			SemanticTypography.ROLE_DESCRIPTION,
+			base_font - 2,
+			SemanticTypography.role_min(SemanticTypography.ROLE_DESCRIPTION),
+			SemanticTypography.role_max(SemanticTypography.ROLE_DESCRIPTION)
 		))
 	if price != null:
 		price.add_theme_font_size_override("font_size", SemanticTypography.resolve_fixed(

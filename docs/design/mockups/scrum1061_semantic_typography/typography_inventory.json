@@ -1749,16 +1749,16 @@
       "mapping_source": "reviewed_manifest"
     },
     {
-      "fingerprint": "3a7994d0fe162385",
+      "fingerprint": "6d5d959ce94a5775",
       "path": "scripts/ui_screens.gd",
       "function": "_layout_attribute_offer_card",
       "line": 3270,
       "kind": "theme_override",
-      "source": "preview.add_theme_font_size_override(\"font_size\", SemanticTypography.resolve_fixed( SemanticTypography.ROLE_BODY, base_font, SemanticTypography.role_min(SemanticTypography.ROLE_BODY), SemanticTypography.role_max(SemanticTypography.ROLE_BODY) ))",
-      "role": "body",
+      "source": "preview.add_theme_font_size_override(\"font_size\", SemanticTypography.resolve_fixed( SemanticTypography.ROLE_DESCRIPTION, base_font - 2, SemanticTypography.role_min(SemanticTypography.ROLE_DESCRIPTION), SemanticTypography.role_max(SemanticTypography.ROLE_DESCRIPTION) ))",
+      "role": "description",
       "status": "mapped",
       "mapping_mode": "semantic_native",
-      "effective_min": 16,
+      "effective_min": 14,
       "effective_max": 20,
       "migration_task": "SCRUM-1073",
       "replaces_fingerprint": "f59642f34793a0c4",
@@ -5342,16 +5342,16 @@
     },
     {
       "original_fingerprint": "f59642f34793a0c4",
-      "replacement_fingerprint": "3a7994d0fe162385",
+      "replacement_fingerprint": "6d5d959ce94a5775",
       "path": "scripts/ui_screens.gd",
       "function": "_layout_attribute_offer_card",
-      "role": "body",
+      "role": "description",
       "effective_before": [
         9,
         20
       ],
       "effective_after": [
-        16,
+        14,
         20
       ],
       "disposition": "migrated_semantic_band"
