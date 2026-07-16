@@ -1,0 +1,22 @@
+{
+  "canvas": {"width": 1350, "height": 1350},
+  "policy": {"min_gap": 24, "allow_overlap": false},
+  "content": {
+    "release": "0.2.4",
+    "subtitle": "ОТКРЫТЫЕ ОБНОВЛЕНИЯ",
+    "intro": "FantasyDisk теперь получает обновления из отдельного публичного каталога: без входа в GitHub, с проверкой размера и SHA-256.",
+    "left": "ОТКРЫТЫЙ КАТАЛОГ\nАктуальный стабильный релиз доступен всем игрокам.\n\nmacOS + WINDOWS\nDMG и Setup публикуются только после проверки пакетов.",
+    "right": "TELEGRAM-ДОСТАВКА\nPoster, обе сборки и SHA256SUMS приходят в Telegram.\n\nПРОВЕРЕННЫЕ БАЙТЫ\nРазмер и SHA-256 каждого установщика сверяются перед запуском.",
+    "footer": "GITHUB RELEASES  •  TELEGRAM  •  macOS + WINDOWS"
+  },
+  "elements": [
+    {"id": "poster", "kind": "panel", "x": 0, "y": 0, "w": 1350, "h": 1350, "min_w": 1350, "min_h": 1350},
+    {"id": "release", "kind": "text", "parent": "poster", "content_zone": true, "collision": false, "x": 92, "y": 108, "w": 378, "h": 177, "text_key": "release", "max_font": 56, "min_font": 32},
+    {"id": "brand", "kind": "icon", "parent": "poster", "content_zone": true, "collision": false, "x": 494, "y": 108, "w": 367, "h": 177},
+    {"id": "subtitle", "kind": "text", "parent": "poster", "content_zone": true, "collision": false, "x": 886, "y": 108, "w": 378, "h": 177, "text_key": "subtitle", "max_font": 34, "min_font": 20},
+    {"id": "intro", "kind": "text", "parent": "poster", "content_zone": true, "collision": false, "x": 100, "y": 340, "w": 1150, "h": 145, "text_key": "intro", "max_font": 33, "min_font": 22},
+    {"id": "left", "kind": "text", "parent": "poster", "content_zone": true, "collision": false, "x": 95, "y": 550, "w": 550, "h": 510, "text_key": "left", "max_font": 29, "min_font": 19},
+    {"id": "right", "kind": "text", "parent": "poster", "content_zone": true, "collision": false, "x": 705, "y": 550, "w": 550, "h": 510, "text_key": "right", "max_font": 29, "min_font": 19},
+    {"id": "footer", "kind": "text", "parent": "poster", "content_zone": true, "collision": false, "x": 100, "y": 1110, "w": 1150, "h": 150, "text_key": "footer", "max_font": 27, "min_font": 18}
+  ]
+}

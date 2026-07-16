@@ -275,7 +275,7 @@ def _validate_update_manifest(
         manifest = json.loads(manifest_path.read_text(encoding="utf-8"))
     except (OSError, json.JSONDecodeError) as exc:
         raise LocalReleaseError("invalid update-manifest.json") from exc
-    expected_release_url = f"https://github.com/FomaBy/FantasyDisk/releases/tag/v{version}"
+    expected_release_url = f"https://github.com/FomaBy/FantasyDisk-Releases/releases/tag/v{version}"
     if (
         not isinstance(manifest, dict)
         or manifest.get("schema_version") != 1
@@ -297,7 +297,7 @@ def _validate_update_manifest(
     for platform_name, name in expected_names.items():
         asset = assets.get(platform_name)
         expected_url = (
-            f"https://github.com/FomaBy/FantasyDisk/releases/download/v{version}/{name}"
+            f"https://github.com/FomaBy/FantasyDisk-Releases/releases/download/v{version}/{name}"
         )
         installer = release_dir / name
         if (

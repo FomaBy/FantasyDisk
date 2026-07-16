@@ -9,7 +9,10 @@ const VIEWPORTS := [
 	Vector2i(2560, 1440),
 ]
 const HEROES := ["berserk", "dark_mage", "guitarist", "priest"]
-const QA_DIR := "res://build/qa/scrum-798"
+# Test evidence must not overwrite the tracked historical QA snapshot: layout
+# coordinates vary by renderer/frame timing, while the assertions below are the
+# release gate. Keep per-run diagnostics in the isolated Godot user directory.
+const QA_DIR := "user://qa/scrum-798"
 const PREVIEW_MIN_SIZE := 320.0
 const SLOT_MIN_SIZE := 180.0
 

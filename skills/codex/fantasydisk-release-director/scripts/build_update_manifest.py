@@ -10,7 +10,7 @@ import re
 from pathlib import Path
 
 
-REPOSITORY = "FomaBy/FantasyDisk"
+REPOSITORY = "FomaBy/FantasyDisk-Releases"
 SCHEMA_VERSION = 1
 FIRST_UPDATER_VERSION = "0.2.2"
 SEMVER_RE = re.compile(r"^(0|[1-9][0-9]*)\.(0|[1-9][0-9]*)\.(0|[1-9][0-9]*)$")

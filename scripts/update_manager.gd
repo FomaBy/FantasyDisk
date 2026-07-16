@@ -14,9 +14,9 @@ const MANIFEST_SCHEMA_VERSION := 1
 # нотаризации, с ручным подтверждением Gatekeeper при первом запуске.
 const MACOS_UPDATE_CHANNEL := "unsigned"
 const MACOS_UNSIGNED_NOTICE := "Сборка для macOS распространяется без подписи Apple Developer ID и без нотаризации. Если Gatekeeper заблокирует первый запуск, откройте Системные настройки → Конфиденциальность и безопасность и нажмите «Всё равно открыть» (Open Anyway)."
-const DEFAULT_MANIFEST_URL := "https://github.com/FomaBy/FantasyDisk/releases/latest/download/update-manifest.json"
-const DEFAULT_RELEASE_URL := "https://github.com/FomaBy/FantasyDisk/releases/latest"
-const TRUSTED_RELEASE_PREFIX := "https://github.com/FomaBy/FantasyDisk/releases/"
+const DEFAULT_MANIFEST_URL := "https://github.com/FomaBy/FantasyDisk-Releases/releases/latest/download/update-manifest.json"
+const DEFAULT_RELEASE_URL := "https://github.com/FomaBy/FantasyDisk-Releases/releases/latest"
+const TRUSTED_RELEASE_PREFIX := "https://github.com/FomaBy/FantasyDisk-Releases/releases/"
 const UPDATE_DIR := "user://updates"
 const MANIFEST_BODY_LIMIT := 256 * 1024
 const DOWNLOAD_BODY_LIMIT := 1024 * 1024 * 1024
@@ -341,7 +341,7 @@ static func validate_manifest(raw: Variant) -> Dictionary:
 	if compare_versions(minimum_supported, version) > 0:
 		return {"ok": false, "error": "minimum_supported_version новее самого релиза"}
 	if str(manifest.get("release_url", "")) != \
-			"https://github.com/FomaBy/FantasyDisk/releases/tag/v%s" % version:
+			"https://github.com/FomaBy/FantasyDisk-Releases/releases/tag/v%s" % version:
 		return {"ok": false, "error": "release_url не принадлежит FantasyDisk Releases"}
 	var assets_value: Variant = manifest.get("assets", null)
 	if typeof(assets_value) != TYPE_DICTIONARY:
@@ -407,7 +407,7 @@ static func _is_sha256(value: String) -> bool:
 
 static func _is_trusted_manifest_url(url: String) -> bool:
 	return url == DEFAULT_MANIFEST_URL \
-		or url.begins_with("https://github.com/FomaBy/FantasyDisk/releases/download/")
+		or url.begins_with("https://github.com/FomaBy/FantasyDisk-Releases/releases/download/")
 
 
 static func _is_trusted_release_url(url: String) -> bool:
@@ -415,7 +415,7 @@ static func _is_trusted_release_url(url: String) -> bool:
 
 
 static func _is_trusted_release_download_url(url: String, version: String) -> bool:
-	return url.begins_with("https://github.com/FomaBy/FantasyDisk/releases/download/v%s/" % version)
+	return url.begins_with("https://github.com/FomaBy/FantasyDisk-Releases/releases/download/v%s/" % version)
 
 
 static func macos_update_is_unsigned() -> bool:

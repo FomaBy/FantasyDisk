@@ -1,0 +1,9 @@
+{
+  "tool": "create_ui_asset",
+  "width": 632,
+  "height": 424,
+  "name": "release_0_2_4_empty_distribution_frame",
+  "no_background": false,
+  "color_palette": "blackened iron, dark stone, worn gold, restrained crimson and violet ember glow",
+  "description": "Premium brutal but restrained dark-fantasy D&D dragon-forged release-notes poster frame. One continuous full-canvas near-black background with blackened iron, dark stone, worn gold, tiny crimson gems, subtle violet disk-rift light and restrained dragon ornaments around the outside and the central divider. Leave seven proportional areas completely empty, dark, calm and readable for later content: three small top rectangles; one full-width horizontal strip below them; two large equal rectangles below; one full-width bottom strip. Decorative metal, dragon heads, gems, spikes, seams, smoke, characters, weapons and bright highlights must stay outside those interiors. Draw only the final frame/layout layer around the empty zones. Absolutely no text, words, letters, numbers, pseudo-text, placeholder glyphs, logo, watermark, UI labels or symbols anywhere. Premium, elegant, epic, strict, beautiful, not loud, not cluttered, not over-detailed. One integrated poster frame, never a sprite sheet or component atlas."
+}

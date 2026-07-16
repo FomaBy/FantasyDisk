@@ -23,11 +23,12 @@ Domain docs для подробностей по областям:
 
 - Движок: Godot 4.
 - Жанр: 2D top-down loot-action survival roguelite с RPG-билдкрафтом.
-- Текущий релизный snapshot: `0.2.3`, подготовленный из `dev` 2026-07-16.
-  Главный акцент — безопасные обновления через GitHub Releases, надёжный rearm
-  движения после экранов выбора, прямой переход к выбору героя, новые фоны
-  главного меню и Кодекса, круглая зона молота Берсерка и более заметные дроны
-  Инженера. Баланс остальных героев сохранён от принятой версии 0.2.2.
+- Текущий релизный snapshot: `0.2.4`, готовится из `dev` 2026-07-16. Главный
+  акцент — исправление публичной доставки: private source repository остаётся
+  закрытым, а updater получает manifest и installers из отдельного public
+  binary-only `FomaBy/FantasyDisk-Releases`. Telegram снова доставляет игрокам
+  poster, DMG, Windows Setup и SHA256SUMS; Discord публикует Telegram link.
+  Игровой баланс и контент принятой версии 0.2.3 не меняются.
 - Основная рабочая платформа: macOS. Релизные платформы: macOS (DMG с ярлыком
   Applications) и Windows (x86_64 NSIS-инсталлер с embed_pck; отдельный zip/exe
   игрокам не публикуется).
@@ -2306,7 +2307,7 @@ sustained-модель dot-оси и infected-фактор; тюнеры кит�
 - SCRUM-497: попадания по врагам показывают короткие floating damage numbers, красный hit-outline/flash и отдельный `!` marker на critical hits; лечение игрока и vampirism/drain показывают зелёное `+N` над игроком. Это visual-only layer с persisted toggle `combat_feedback` и global caps для плотных AoE; урон, тайминги и targeting не менялись.
 - При любом уроне по игроку боевой HUD показывает легкое покраснение экрана (`DamageFlashOverlay`): фиксированный пик alpha 0.20 без стакания, затухание ~0.32с, эффект замирает на паузе (PROCESS_MODE_PAUSABLE). Сигнал: `Player.damaged`.
 - SCRUM-521: при HP игрока ниже 30% боевой HUD показывает мягкую красную виньетку по краям (`LowHpVignetteOverlay`) с прозрачным центром, чтобы не закрывать бой и HUD. Виньетка гаснет после восстановления до 34%+ HP, уважает persisted toggle `combat_feedback`, не перехватывает ввод и рисуется за HUD-карточками.
-- SCRUM-852 (2026-07-03): стартовый молот Берсерка — `aoe_radius=150`, `attack_range=150`, `max_aoe_radius=0`; Radius scaling увеличивает круг, а плотные паки ограничены `circle_full_targets=4` / `circle_target_diminish=0.62`. `upgrade_aoe_exponent=1.08` и `upgrade_damage_exponent=1.05` сохранены; live-гейт `tests/berserk_dps_runaway_gate.gd` держит `lvl20_ideal_20t <= 3600` и `lvl20_ideal_1t <= 650`.
+- SCRUM-852/FAN-1210: стартовый молот Берсерка — `aoe_radius=150`, `attack_range=150`, `max_aoe_radius=0`; Radius scaling увеличивает круг, а плотные паки ограничены `circle_full_targets=4` / `circle_target_diminish=0.62`. `upgrade_aoe_exponent=1.08` и `upgrade_damage_exponent=1.05` сохранены. Live-гейт `tests/berserk_dps_runaway_gate.gd` симулирует ровно 8 секунд игрового времени (не номинальные 480 кадров) и держит `lvl20_ideal_20t <= 10000`, `lvl20_ideal_1t <= 1300`; пять повторов после исправления дали 20t 7337..8545 и 1t 789..1038.
 - SCRUM-1043 (2026-07-11) / FAN-1100 (2026-07-15): hammer-only ground membership
   следует footline full-frame Берсерка — `_circle_attack_center(owner_node)`
   смещает центр на `16px` вниз. FAN-1100 сделал AoE круглым вместо овального:

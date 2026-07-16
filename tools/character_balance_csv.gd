@@ -28,7 +28,9 @@ const PLAYER_SCENE := preload("res://scenes/Player.tscn")
 const ENEMY_SCENE := preload("res://scenes/Enemy.tscn")
 
 const WINDOW_SECONDS := 8.0
-const FRAMES := 480                 # 8с * 60fps
+# Measure an actual simulation-time window. A nominal 480 process frames is
+# not eight seconds under load because weapons consume _process(delta).
+const MAX_MEASUREMENT_FRAMES := 2400
 const DUMMY_HP := 1.0e9             # болванки не умирают — чистый DPS
 const TARGET_COUNTS := [1, 5, 20]
 const TARGET_LEVEL := 20
@@ -527,19 +529,23 @@ func _measure_dps(character_id: String, weapon_id: String, target_count: int, re
 	for enemy in dummies:
 		hp_before += _node_number(enemy, "health", DUMMY_HP, "%s/%s hp_before" % [character_id, weapon_id])
 
-	# FAN-1031: делим на ФАКТИЧЕСКОЕ игровое время окна, не на номинал 8с.
-	# Оружие стреляет в _process(delta): под нагрузкой (20 целей, лужи) кадры
-	# длиннее, 480 кадров = сильно больше 8с игрового времени → фиксированный
-	# знаменатель раздувал crowd-DPS (до 12×) и был главным источником шума
-	# между прогонами (см. FAN-1039). Профиль: casts 6→68 на одном окне.
+	# FAN-1210: run the promised fixed simulation-time window. The old 480-frame
+	# loop let _process(delta) fit different cast counts into a sample under load;
+	# using real delta only as a denominator was not enough to make the sample
+	# comparable. MAX_MEASUREMENT_FRAMES is a hang guard, never a short window.
 	var elapsed_game_time := 0.0
-	for _frame in range(FRAMES):
+	var sampled_frames := 0
+	while elapsed_game_time < WINDOW_SECONDS and sampled_frames < MAX_MEASUREMENT_FRAMES:
 		await process_frame
-		elapsed_game_time += _holder.get_process_delta_time()
+		sampled_frames += 1
+		elapsed_game_time += maxf(_holder.get_process_delta_time(), 0.0)
 		for i in range(dummies.size()):
 			var enemy := dummies[i] as Node2D
 			if is_instance_valid(enemy):
 				enemy.global_position = anchor_positions[i]
+	if elapsed_game_time < WINDOW_SECONDS:
+		_fatal_errors.append("%s/%s: simulation did not advance %.1fs within %d frames" % [character_id, weapon_id, WINDOW_SECONDS, MAX_MEASUREMENT_FRAMES])
+		return -1.0
 
 	var hp_after := 0.0
 	for enemy in dummies:

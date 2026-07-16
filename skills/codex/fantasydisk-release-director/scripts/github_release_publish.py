@@ -1,9 +1,10 @@
 #!/usr/bin/env python3
-"""Publish a verified FantasyDisk package as the public GitHub Release."""
+"""Publish verified FantasyDisk bytes to the public binary-only repository."""
 
 from __future__ import annotations
 
 import argparse
+import base64
 import json
 import os
 import re
@@ -13,7 +14,21 @@ import sys
 from pathlib import Path
 
 
-DEFAULT_REPOSITORY = "FomaBy/FantasyDisk"
+DEFAULT_REPOSITORY = "FomaBy/FantasyDisk-Releases"
+ALLOWED_DISTRIBUTION_ROOT_PATHS = frozenset({"README.md"})
+README_MAX_BYTES = 8 * 1024
+README_FORBIDDEN_MARKERS = (
+    "project.godot",
+    "export_presets.cfg",
+    "release_webhook",
+    "feedback_webhook",
+    "authorization:",
+    "github_pat_",
+    "ghp_",
+    "private key",
+    "api_key",
+    ".gd",
+)
 SEMVER_RE = re.compile(r"^(0|[1-9][0-9]*)\.(0|[1-9][0-9]*)\.(0|[1-9][0-9]*)$")
 
 
@@ -48,11 +63,10 @@ def release_files(release_dir: Path, version: str) -> tuple[list[Path], Path]:
         release_dir / "SHA256SUMS.txt",
         changelog,
         posters[0],
-        # Upload last: /releases/latest/download/update-manifest.json must never
-        # point at a release whose installers have not finished uploading.
+        # Upload last: latest/download must never point to incomplete installers.
         release_dir / "update-manifest.json",
     ]
-    missing = [path.name for path in ordered if not path.is_file()]
+    missing = [path.name for path in ordered if not path.is_file() or path.is_symlink()]
     if missing:
         raise RuntimeError(f"Проверенный релиз неполон: {', '.join(missing)}")
     manifest = json.loads(ordered[-1].read_text(encoding="utf-8"))
@@ -69,35 +83,104 @@ def run(command: list[str], *, check: bool = True) -> subprocess.CompletedProces
     return result
 
 
+def safe_distribution_paths(paths: list[str]) -> list[str]:
+    """Return paths that would expose non-metadata content in the public repo."""
+    return sorted(set(paths) - ALLOWED_DISTRIBUTION_ROOT_PATHS)
+
+
+def _api_json(route: str) -> dict:
+    result = run(["gh", "api", route])
+    try:
+        payload = json.loads(result.stdout)
+    except json.JSONDecodeError as exc:
+        raise RuntimeError(f"GitHub API returned invalid JSON for {route}") from exc
+    if not isinstance(payload, dict):
+        raise RuntimeError(f"GitHub API returned an unexpected response for {route}")
+    return payload
+
+
+def assert_safe_public_distribution_repository(repository: str) -> str:
+    """Prove the distribution repository is public and has no source/secrets."""
+    metadata = _api_json(f"repos/{repository}")
+    if metadata.get("private") is not False or metadata.get("archived") is True:
+        raise RuntimeError("distribution repository must be a non-archived public repository")
+    default_branch = str(metadata.get("default_branch", ""))
+    if not default_branch:
+        raise RuntimeError("distribution repository has no bootstrap branch")
+    tree = _api_json(f"repos/{repository}/git/trees/{default_branch}?recursive=1")
+    paths = [
+        str(item.get("path", ""))
+        for item in tree.get("tree", [])
+        if isinstance(item, dict) and item.get("type") == "blob"
+    ]
+    unsafe_paths = safe_distribution_paths(paths)
+    if unsafe_paths or set(paths) != ALLOWED_DISTRIBUTION_ROOT_PATHS:
+        rendered = ", ".join(unsafe_paths or sorted(paths))
+        raise RuntimeError(
+            "public distribution repository may contain only README.md before publication; "
+            f"found: {rendered or 'no README.md'}"
+        )
+    readme = _api_json(f"repos/{repository}/contents/README.md")
+    try:
+        content = base64.b64decode(str(readme["content"]), validate=False)
+    except (KeyError, ValueError) as exc:
+        raise RuntimeError("cannot read public distribution README") from exc
+    if len(content) > README_MAX_BYTES:
+        raise RuntimeError("public distribution README is too large for minimal metadata")
+    lowered = content.decode("utf-8", errors="replace").lower()
+    markers = [marker for marker in README_FORBIDDEN_MARKERS if marker in lowered]
+    if markers:
+        raise RuntimeError(
+            "public distribution README contains source/secret-like material: "
+            + ", ".join(markers)
+        )
+    return default_branch
+
+
+def _assert_release_assets(repository: str, tag: str, expected: list[Path]) -> str:
+    release = run(
+        ["gh", "release", "view", tag, "--repo", repository, "--json", "url,isDraft,assets"]
+    )
+    payload = json.loads(release.stdout)
+    if payload.get("isDraft"):
+        raise RuntimeError("public distribution release is still draft")
+    names = {
+        str(asset.get("name", ""))
+        for asset in payload.get("assets", [])
+        if isinstance(asset, dict)
+    }
+    expected_names = {path.name for path in expected}
+    if names != expected_names:
+        raise RuntimeError(
+            "public distribution release asset allowlist mismatch: "
+            f"expected {sorted(expected_names)}, got {sorted(names)}"
+        )
+    return str(payload["url"])
+
+
 def publish(repository: str, version: str, files: list[Path], changelog: Path) -> str:
     if shutil.which("gh") is None:
         raise RuntimeError("GitHub CLI `gh` не установлен")
     run(["gh", "auth", "status", "--hostname", "github.com"])
+    default_branch = assert_safe_public_distribution_repository(repository)
     tag = f"v{version}"
-    run(["gh", "api", f"repos/{repository}/git/ref/tags/{tag}"])
     view = run(
         ["gh", "release", "view", tag, "--repo", repository, "--json", "url,isDraft"],
         check=False,
     )
+    if not view.returncode:
+        raise RuntimeError(
+            f"distribution release {tag} already exists; never overwrite a published public release"
+        )
     title = f"FantasyDisk v{version}"
-    if view.returncode:
-        run(
-            [
-                "gh", "release", "create", tag, "--repo", repository,
-                "--verify-tag", "--draft", "--title", title,
-                "--notes-file", os.fspath(changelog),
-                *[os.fspath(path) for path in files],
-            ]
-        )
-    else:
-        # The durable local gate makes --clobber idempotent and prevents an
-        # operator from replacing published assets with unverified bytes.
-        run(
-            [
-                "gh", "release", "upload", tag, "--repo", repository,
-                "--clobber", *[os.fspath(path) for path in files],
-            ]
-        )
+    run(
+        [
+            "gh", "release", "create", tag, "--repo", repository,
+            "--target", default_branch, "--draft", "--title", title,
+            "--notes-file", os.fspath(changelog),
+            *[os.fspath(path) for path in files],
+        ]
+    )
     run(
         [
             "gh", "release", "edit", tag, "--repo", repository,
@@ -105,8 +188,7 @@ def publish(repository: str, version: str, files: list[Path], changelog: Path) -
             "--draft=false", "--prerelease=false", "--latest",
         ]
     )
-    final = run(["gh", "release", "view", tag, "--repo", repository, "--json", "url"])
-    return str(json.loads(final.stdout)["url"])
+    return _assert_release_assets(repository, tag, files)
 
 
 def main() -> int:
@@ -125,7 +207,7 @@ def main() -> int:
             print(f"[dry-run] public release: https://github.com/{args.repository}/releases/tag/v{args.version}")
             for path in files:
                 print(f"  • {path.name}")
-            print("[dry-run] update-manifest.json uploads last; nothing was published.")
+            print("[dry-run] local verification passed; manifest uploads last; nothing was published.")
             return 0
         print(publish(args.repository, args.version, files, changelog))
     except (OSError, RuntimeError, json.JSONDecodeError) as exc:

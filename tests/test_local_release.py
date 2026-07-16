@@ -62,17 +62,17 @@ class LocalReleaseTests(unittest.TestCase):
                     "schema_version": 1,
                     "version": "9.8.7",
                     "minimum_supported_version": "0.2.2",
-                    "release_url": "https://github.com/FomaBy/FantasyDisk/releases/tag/v9.8.7",
+                    "release_url": "https://github.com/FomaBy/FantasyDisk-Releases/releases/tag/v9.8.7",
                     "assets": {
                         "macos": {
                             "name": "FantasyDisk-9.8.7-macos.dmg",
-                            "url": "https://github.com/FomaBy/FantasyDisk/releases/download/v9.8.7/FantasyDisk-9.8.7-macos.dmg",
+                            "url": "https://github.com/FomaBy/FantasyDisk-Releases/releases/download/v9.8.7/FantasyDisk-9.8.7-macos.dmg",
                             "sha256": checksum_lines[0].split()[0],
                             "size": (self.source_release / "FantasyDisk-9.8.7-macos.dmg").stat().st_size,
                         },
                         "windows": {
                             "name": "FantasyDisk-9.8.7-windows-setup.exe",
-                            "url": "https://github.com/FomaBy/FantasyDisk/releases/download/v9.8.7/FantasyDisk-9.8.7-windows-setup.exe",
+                            "url": "https://github.com/FomaBy/FantasyDisk-Releases/releases/download/v9.8.7/FantasyDisk-9.8.7-windows-setup.exe",
                             "sha256": checksum_lines[1].split()[0],
                             "size": (self.source_release / "FantasyDisk-9.8.7-windows-setup.exe").stat().st_size,
                         },
@@ -337,10 +337,10 @@ class LocalReleaseTests(unittest.TestCase):
 
         for name in ("release_publish.py", "telegram_publish.py"):
             source = (SCRIPT.parent / name).read_text(encoding="utf-8")
-            self.assertIn("rel = verify_local_release(root, a.version)", source)
+            self.assertIn("rel = verify_local_release(root, args.version)", source)
             self.assertIn('"verify", "--version"', source)
             self.assertIn('json.loads(result.stdout)["local_release"]', source)
-            self.assertIn('".png"', source)
+            self.assertIn("_announcement.png", source)
 
         github = (SCRIPT.parent / "github_release_publish.py").read_text(encoding="utf-8")
         self.assertIn("release_dir = verify_local_release(root, args.version)", github)
@@ -356,17 +356,19 @@ class LocalReleaseTests(unittest.TestCase):
         self.assertIn('"${WORKTREE_DIR}/tools/scan_release_secrets.py"', build)
 
         telegram = (SCRIPT.parent / "telegram_publish.py").read_text(encoding="utf-8")
-        self.assertIn("FINAL_TELEGRAM_RELEASE = (0, 2, 2)", telegram)
+        self.assertIn("ensure_telegram_release_version", telegram)
+        self.assertIn("public_download_url", telegram)
         self.assertIn("CheckChatInviteRequest", telegram)
         self.assertNotIn("next((d.entity for d in client.get_dialogs()", telegram)
-        self.assertIn("posters[0], caption=caption, force_document=False", telegram)
+        self.assertIn("client.send_file(entity, poster, caption=caption", telegram)
 
         discord = (SCRIPT.parent / "release_publish.py").read_text(encoding="utf-8")
-        self.assertIn("github_release_url(a.version)", discord)
+        self.assertIn("github_release_url(args.version)", discord)
+        self.assertIn("public_download_url(root)", discord)
         self.assertIn('content_type = "image/png"', discord)
-        self.assertIn("hl = read_highlights(rel, a.version)", discord)
+        self.assertIn("highlights = read_highlights(rel, args.version)", discord)
         self.assertIn('os.path.join(release_dir, "project", "scripts"', discord)
-        self.assertNotIn("read_highlights(root, a.version", discord)
+        self.assertNotIn("read_highlights(root, args.version", discord)
         self.assertNotIn('ap.add_argument("--highlights"', discord)
         self.assertIn("Release poster превышает лимит Discord webhook", discord)
 

@@ -85,9 +85,11 @@ FANTASYDISK_MACOS_CHANNEL=signed tools/build_release.sh <версия>
 Apple notarization/stapling и успешный `spctl`; `unsigned` отказывается работать
 при заданных Apple credentials, пропускает только Apple trust-проверки и честно
 показывает игроку инструкцию Gatekeeper «Всё равно открыть».
-Проверенный пакет публикуется как public GitHub Release через bundled
-`github_release_publish.py`; клиент 0.2.2+ читает `update-manifest.json` из
-`releases/latest`. Telegram используется дополнительно только для v0.2.2.
+Проверенный пакет публикуется только в public binary-only repository
+`FomaBy/FantasyDisk-Releases` через bundled `github_release_publish.py`; клиент
+0.2.2+ читает `update-manifest.json` из `releases/latest` этого repository.
+Каждый stable release дополнительно доставляется в Telegram (poster, DMG, Windows
+Setup и SHA256SUMS), а Discord сообщает Telegram download link.
 
 ## Структура
 - `scripts/` — игровая логика (GDScript)

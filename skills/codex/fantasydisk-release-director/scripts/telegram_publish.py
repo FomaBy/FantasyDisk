@@ -1,32 +1,11 @@
 #!/usr/bin/env python3
-"""Legacy-загрузка FantasyDisk v0.2.2 в Telegram (userbot, Telethon).
+"""Mandatory FantasyDisk file delivery to Telegram through Telethon userbot.
 
-v0.2.2 — последний разрешённый Telegram-релиз. Более новые версии должны
-публиковаться через public GitHub Releases; этот скрипт отклоняет их fail-closed.
-
-Зачем userbot, а не бот: cloud Bot API ограничен 50 МБ, инсталлеры ~200 МБ.
-Telethon на пользовательском аккаунте грузит до 2 ГБ.
-
-API-доступ (api_id/api_hash/session) — release_webhook.cfg (корень проекта,
-в .gitignore), секция [telegram]:
-  api_id = 12345                  ; с https://my.telegram.org
-  api_hash = "..."                ; оттуда же
-  session = fantasydisk_release   ; имя файла сессии (создаётся при первом логине)
-
-Канал релизов (chat) НЕ хранится в git — задаётся на каждой машине отдельно,
-приоритет сверху вниз:
-  1. переменная окружения FANTASYDISK_RELEASE_TG_CHANNEL, например
-       export FANTASYDISK_RELEASE_TG_CHANNEL='https://t.me/+ВАШ_ИНВАЙТ'
-     (можно @username или числовой id канала, например -1001234567890);
-  2. файл release_tg.cfg рядом с release_webhook.cfg (в .gitignore) — одна строка
-     со ссылкой/@username/id (допускается и формат `chat = "..."`).
-Если канал не задан ни одним способом — скрипт завершится с понятной ошибкой.
-
-Первый запуск спросит телефон + код (вход в ТВОЙ аккаунт) — делает пользователь сам,
-создаётся <session>.session (секрет, в .gitignore). Дальше — без вопросов.
-
-Запуск: python3 telegram_publish.py --version X.Y.Z [--caption "текст"] [--dry-run]
+Each stable release sends the release poster, macOS DMG, Windows Setup and
+SHA256SUMS from the verified durable copy. GitHub remains the canonical updater
+host; Telegram is the mandatory player-facing file-delivery channel.
 """
+
 import argparse
 import configparser
 import json
@@ -36,22 +15,15 @@ import subprocess
 import sys
 
 
-FINAL_TELEGRAM_RELEASE = (0, 2, 2)
 SEMVER_RE = re.compile(r"^(0|[1-9][0-9]*)\.(0|[1-9][0-9]*)\.(0|[1-9][0-9]*)$")
 
 
-def ensure_telegram_release_allowed(version):
+def ensure_telegram_release_version(version: str) -> None:
     if not SEMVER_RE.fullmatch(version):
         sys.exit("Версия должна иметь формат X.Y.Z")
-    parts = tuple(int(part) for part in version.split("."))
-    if parts > FINAL_TELEGRAM_RELEASE:
-        sys.exit(
-            "Telegram publication завершена после v0.2.2. "
-            "Публикуй релиз через github_release_publish.py; Discord ведёт на GitHub Releases."
-        )
 
 
-def verify_local_release(root, version):
+def verify_local_release(root: str, version: str) -> str:
     helper = os.path.join(os.path.dirname(__file__), "local_release.py")
     result = subprocess.run(
         [sys.executable, helper, "verify", "--version", version, "--repo-root", root],
@@ -67,103 +39,127 @@ def verify_local_release(root, version):
         sys.exit("Локальная проверка не вернула путь к проверенным байтам релиза")
 
 
-def cfg(root):
-    """API-доступ из release_webhook.cfg [telegram]: api_id, api_hash, session."""
-    c = configparser.ConfigParser()
-    if not c.read(os.path.join(root, "release_webhook.cfg")):
+def cfg(root: str) -> tuple[str, str, str]:
+    """API access from release_webhook.cfg [telegram], without printing secrets."""
+    config = configparser.ConfigParser()
+    if not config.read(os.path.join(root, "release_webhook.cfg")):
         sys.exit("release_webhook.cfg не найден")
-    if not c.has_section("telegram"):
+    if not config.has_section("telegram"):
         sys.exit("В release_webhook.cfg нет секции [telegram] (api_id/api_hash). См. docs/release_telegram_setup.md")
-    g = lambda k, d="": c.get("telegram", k, fallback=d).strip().strip('"')
-    return g("api_id"), g("api_hash"), g("session", "fantasydisk_release")
+    value = lambda key, default="": config.get("telegram", key, fallback=default).strip().strip('"')
+    return value("api_id"), value("api_hash"), value("session", "fantasydisk_release")
 
 
-def resolve_channel(root):
-    """Канал релизов: env FANTASYDISK_RELEASE_TG_CHANNEL → release_tg.cfg → понятная ошибка.
+def _release_channel_config(root: str) -> tuple[str, str]:
+    path = os.path.join(root, "release_tg.cfg")
+    channel = ""
+    download_url = ""
+    if not os.path.exists(path):
+        return channel, download_url
+    with open(path, encoding="utf-8") as handle:
+        for raw in handle:
+            line = raw.strip()
+            if not line or line.startswith((";", "#", "[")):
+                continue
+            if "=" not in line and not channel:
+                channel = line.strip().strip('"')
+                continue
+            key, value = line.split("=", 1)
+            key = key.strip().lower()
+            value = value.strip().strip('"')
+            if key in {"chat", "channel"}:
+                channel = value
+            elif key in {"download_url", "telegram_download_url"}:
+                download_url = value
+    return channel, download_url
 
-    Канал НЕ коммитим в git. release_tg.cfg (gitignored) — одна строка:
-    ссылка/@username/id, либо строка вида `chat = "..."`.
-    """
-    chan = os.environ.get("FANTASYDISK_RELEASE_TG_CHANNEL", "").strip().strip('"')
-    if chan:
-        return chan
-    p = os.path.join(root, "release_tg.cfg")
-    if os.path.exists(p):
-        with open(p, encoding="utf-8") as fh:
-            for line in fh:
-                line = line.strip()
-                if not line or line.startswith((";", "#", "[")):
-                    continue
-                if "=" in line:
-                    line = line.split("=", 1)[1]
-                return line.strip().strip('"')
+
+def resolve_channel(root: str) -> str:
+    channel = os.environ.get("FANTASYDISK_RELEASE_TG_CHANNEL", "").strip().strip('"')
+    if channel:
+        return channel
+    configured_channel, _download_url = _release_channel_config(root)
+    if configured_channel:
+        return configured_channel
     sys.exit(
-        "Telegram-канал релизов не задан.\n"
-        "Канал НЕ хранится в git ради безопасности — задай его на этой машине одним из способов:\n"
-        "  1) export FANTASYDISK_RELEASE_TG_CHANNEL='https://t.me/+ВАШ_ИНВАЙТ'  (или @username / -100…id)\n"
-        "  2) или положи канал одной строкой в release_tg.cfg рядом с release_webhook.cfg (в .gitignore)\n"
+        "Telegram-канал релизов не задан. Задай FANTASYDISK_RELEASE_TG_CHANNEL "
+        "или gitignored release_tg.cfg (chat = \"https://t.me/...\")."
     )
 
 
-def main():
-    ap = argparse.ArgumentParser()
-    ap.add_argument("--version", required=False)
-    ap.add_argument("--list-chats", action="store_true", help="показать свои группы и их id (после логина)")
-    ap.add_argument("--test", action="store_true", help="отправить тестовое сообщение в канал")
-    ap.add_argument("--caption", default="")
-    ap.add_argument("--dry-run", action="store_true", help="показать, что и куда будет отправлено, без отправки")
-    a = ap.parse_args()
+def public_download_url(root: str) -> str:
+    """Return the player-facing Telegram link required in the Discord announcement."""
+    direct = os.environ.get("FANTASYDISK_RELEASE_TG_DOWNLOAD_URL", "").strip().strip('"')
+    if direct:
+        return direct
+    channel, configured_url = _release_channel_config(root)
+    if configured_url:
+        return configured_url
+    channel = channel or os.environ.get("FANTASYDISK_RELEASE_TG_CHANNEL", "").strip().strip('"')
+    if channel.startswith("https://t.me/") or channel.startswith("http://t.me/"):
+        return channel
+    if channel.startswith("@") and len(channel) > 1:
+        return "https://t.me/" + channel[1:]
+    sys.exit(
+        "Нужна player-facing Telegram download link: задай "
+        "FANTASYDISK_RELEASE_TG_DOWNLOAD_URL или download_url в release_tg.cfg."
+    )
+
+
+def _release_files(release_dir: str, version: str) -> tuple[str, list[str]]:
+    poster = os.path.join(release_dir, f"fantasydisk_{version.replace('.', '')}_announcement.png")
+    build_files = [
+        os.path.join(release_dir, f"FantasyDisk-{version}-macos.dmg"),
+        os.path.join(release_dir, f"FantasyDisk-{version}-windows-setup.exe"),
+        os.path.join(release_dir, "SHA256SUMS.txt"),
+    ]
+    missing = [path for path in [poster, *build_files] if not os.path.isfile(path)]
+    if missing:
+        sys.exit("Проверенный релиз неполон для Telegram: " + ", ".join(os.path.basename(path) for path in missing))
+    return poster, build_files
+
+
+def main() -> None:
+    parser = argparse.ArgumentParser()
+    parser.add_argument("--version", required=False)
+    parser.add_argument("--list-chats", action="store_true", help="показать свои группы и их id")
+    parser.add_argument("--test", action="store_true", help="отправить тестовое сообщение в канал")
+    parser.add_argument("--caption", default="")
+    parser.add_argument("--dry-run", action="store_true", help="проверить канал и файлы без отправки")
+    args = parser.parse_args()
     root = os.environ.get("FANTASYDISK_REPO", os.getcwd())
 
-    # --list-chats / --test: не требуют каталога релиза
-    if a.list_chats or a.test:
+    if args.list_chats or args.test:
         from telethon.sync import TelegramClient
+
         api_id, api_hash, session = cfg(root)
         with TelegramClient(os.path.join(root, session), int(api_id), api_hash) as client:
-            if a.list_chats:
+            if args.list_chats:
                 print("Твои группы/каналы (id — для FANTASYDISK_RELEASE_TG_CHANNEL / release_tg.cfg):")
-                for d in client.get_dialogs():
-                    if d.is_group or d.is_channel:
-                        print("  %s\t%s" % (d.entity.id, d.name))
+                for dialog in client.get_dialogs():
+                    if dialog.is_group or dialog.is_channel:
+                        print("  %s\t%s" % (dialog.entity.id, dialog.name))
                 return
-            # --test: отправить тестовое текстовое сообщение в канал
             chat = resolve_channel(root)
             entity = client.get_entity(int(chat)) if chat.lstrip("-").isdigit() else chat
-            client.send_message(entity, a.caption or "\U0001F9EA Тест канала релизов FantasyDisk. Сюда будут приходить сборки (mac/win) и новости версий.")
+            client.send_message(entity, args.caption or "🧪 Тест канала релизов FantasyDisk.")
             print("Тестовое сообщение отправлено в Telegram ✓")
         return
 
-    if not a.version:
+    if not args.version:
         sys.exit("Укажи --version X.Y.Z (или --list-chats / --test)")
-    ensure_telegram_release_allowed(a.version)
-    rel = verify_local_release(root, a.version)
-    if not os.path.isdir(rel):
-        sys.exit("Нет каталога релиза: %s" % rel)
-    files = [
-        os.path.join(rel, f)
-        for f in sorted(os.listdir(rel))
-        if f.endswith(".dmg")
-        or f.endswith("-windows-setup.exe")
-        or f == "SHA256SUMS.txt"
-        or f.endswith(".png")
-    ]
-    if not files:
-        sys.exit("Нет файлов сборки в %s" % rel)
-    posters = [path for path in files if path.endswith(".png")]
-    build_files = [path for path in files if not path.endswith(".png")]
-    if len(posters) != 1:
-        sys.exit("Ожидался ровно один проверенный PNG release poster")
-
+    ensure_telegram_release_version(args.version)
+    rel = verify_local_release(root, args.version)
+    poster, build_files = _release_files(rel, args.version)
     chat = resolve_channel(root)
-    caption = a.caption or ("FantasyDisk v%s — сборки macOS + Windows. SHA256 — в комплекте." % a.version)
+    download_link = public_download_url(root)
+    caption = args.caption or ("FantasyDisk v%s — проверенные сборки macOS + Windows." % args.version)
 
-    # --dry-run: проверка резолва канала и списка файлов без отправки и без Telethon
-    if a.dry_run:
-        print("[dry-run] канал:", chat)
-        print("[dry-run] подпись:", caption)
-        print("[dry-run] файлов: %d" % len(files))
-        for f in files:
-            print("   •", os.path.basename(f))
+    if args.dry_run:
+        print("[dry-run] канал настроен; player link:", download_link)
+        print("[dry-run] poster:", os.path.basename(poster))
+        for path in build_files:
+            print("[dry-run] file:", os.path.basename(path))
         print("[dry-run] ничего не отправлено.")
         return
 
@@ -176,10 +172,7 @@ def main():
     api_id, api_hash, session = cfg(root)
     if not api_id or not api_hash:
         sys.exit("Заполни [telegram] api_id/api_hash в release_webhook.cfg")
-    session_path = os.path.join(root, session)
-
-    with TelegramClient(session_path, int(api_id), api_hash) as client:
-        # резолв целевого чата: числовой id (надёжно) или инвайт-ссылка
+    with TelegramClient(os.path.join(root, session), int(api_id), api_hash) as client:
         if chat.lstrip("-").isdigit():
             entity = client.get_entity(int(chat))
         elif "+" in chat or "joinchat" in chat:
@@ -194,15 +187,14 @@ def main():
                 entity = joined_chats[0]
         else:
             entity = chat
-        print("Публикую release poster и %d файл(ов) сборки в Telegram..." % len(build_files))
-        client.send_file(entity, posters[0], caption=caption, force_document=False)
+        client.send_file(entity, poster, caption=caption, force_document=False)
         client.send_file(
             entity,
             build_files,
-            caption="FantasyDisk v%s — DMG, Windows setup и SHA256." % a.version,
+            caption="FantasyDisk v%s — DMG, Windows Setup и SHA256. %s" % (args.version, download_link),
             force_document=True,
         )
-        print("Готово ✓ — сборки опубликованы в Telegram.")
+    print("Готово ✓ — poster, DMG, Windows Setup и SHA256 опубликованы в Telegram.")
 
 
 if __name__ == "__main__":

@@ -95,17 +95,17 @@ func _valid_manifest() -> Dictionary:
 		"schema_version": 1,
 		"version": "0.2.4",
 		"minimum_supported_version": "0.2.2",
-		"release_url": "https://github.com/FomaBy/FantasyDisk/releases/tag/v0.2.4",
+		"release_url": "https://github.com/FomaBy/FantasyDisk-Releases/releases/tag/v0.2.4",
 		"assets": {
 			"macos": {
 				"name": "FantasyDisk-0.2.4-macos.dmg",
-				"url": "https://github.com/FomaBy/FantasyDisk/releases/download/v0.2.4/FantasyDisk-0.2.4-macos.dmg",
+				"url": "https://github.com/FomaBy/FantasyDisk-Releases/releases/download/v0.2.4/FantasyDisk-0.2.4-macos.dmg",
 				"sha256": HASH_A,
 				"size": 123456,
 			},
 			"windows": {
 				"name": "FantasyDisk-0.2.4-windows-setup.exe",
-				"url": "https://github.com/FomaBy/FantasyDisk/releases/download/v0.2.4/FantasyDisk-0.2.4-windows-setup.exe",
+				"url": "https://github.com/FomaBy/FantasyDisk-Releases/releases/download/v0.2.4/FantasyDisk-0.2.4-windows-setup.exe",
 				"sha256": HASH_B,
 				"size": 654321,
 			},
@@ -122,14 +122,25 @@ func _check_manifest_response_state() -> bool:
 		captured["result"]["manual"] = manual
 	)
 	manager._manual_check = false
-	var body := JSON.stringify(_valid_manifest()).to_utf8_buffer()
+	# The project itself is now 0.2.4; use a strictly newer synthetic manifest
+	# so this state-machine test continues to exercise STATE_AVAILABLE.
+	var manifest := _valid_manifest()
+	manifest["version"] = "0.2.5"
+	manifest["release_url"] = "https://github.com/FomaBy/FantasyDisk-Releases/releases/tag/v0.2.5"
+	for platform_key in ["macos", "windows"]:
+		var asset := manifest["assets"][platform_key] as Dictionary
+		var extension := "dmg" if platform_key == "macos" else "exe"
+		var suffix := "macos" if platform_key == "macos" else "windows-setup"
+		asset["name"] = "FantasyDisk-0.2.5-%s.%s" % [suffix, extension]
+		asset["url"] = "https://github.com/FomaBy/FantasyDisk-Releases/releases/download/v0.2.5/%s" % asset["name"]
+	var body := JSON.stringify(manifest).to_utf8_buffer()
 	manager._on_manifest_request_completed(
 		HTTPRequest.RESULT_SUCCESS, 200, PackedStringArray(), body)
 	if manager.state != manager.STATE_AVAILABLE:
 		manager.free()
 		return _fail("New manifest did not enter available state.")
 	var captured_result := captured["result"] as Dictionary
-	if str(captured_result.get("latest_version", "")) != "0.2.4" or bool(captured_result.get("manual", true)):
+	if str(captured_result.get("latest_version", "")) != "0.2.5" or bool(captured_result.get("manual", true)):
 		manager.free()
 		return _fail("Available response signal lost version/manual state: %s" % str(captured))
 	manager.free()

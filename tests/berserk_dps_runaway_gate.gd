@@ -20,7 +20,9 @@ const PLAYER_SCENE := preload("res://scenes/Player.tscn")
 const ENEMY_SCENE := preload("res://scenes/Enemy.tscn")
 
 const WINDOW_SECONDS := 8.0
-const FRAMES := 480                 # 8с * 60fps — как в tools/character_balance_csv.gd
+# The live gate measures a time window, not a nominal frame count: a fixed 480
+# process frames can represent very different simulation durations under load.
+const MAX_MEASUREMENT_FRAMES := 2400
 const DUMMY_HP := 1.0e9             # болванки не умирают — чистый DPS
 const TARGET_LEVEL := 20
 const LEVELUPS := 19                # уровни 2..20
@@ -277,18 +279,23 @@ func _measure_dps(character_id: String, weapon_id: String, target_count: int, re
 	for enemy in dummies:
 		hp_before += float(enemy.get("health"))
 
-	# FAN-1039: честный знаменатель — фактическое игровое время окна (зеркало
-	# fix'а tools/character_balance_csv.gd 8dd7e4fb4). Фиксированный номинал 8с
-	# при переменной длине кадра раздувал DPS под нагрузкой и давал шум 2×
-	# (замеры 3422..7049 на одном коде) — ложные красные потолка.
+	# FAN-1210: sample exactly WINDOW_SECONDS of simulation. Counting a fixed
+	# 480 frames while attacks use _process(delta) changed the number of casts
+	# under load, even though the denominator used real delta time. The hard
+	# frame limit is only a hang guard; it never changes the target window.
 	var elapsed_game_time := 0.0
-	for _frame in range(FRAMES):
+	var sampled_frames := 0
+	while elapsed_game_time < WINDOW_SECONDS and sampled_frames < MAX_MEASUREMENT_FRAMES:
 		await process_frame
-		elapsed_game_time += _holder.get_process_delta_time()
+		sampled_frames += 1
+		elapsed_game_time += maxf(_holder.get_process_delta_time(), 0.0)
 		for i in range(dummies.size()):
 			var enemy := dummies[i] as Node2D
 			if is_instance_valid(enemy):
 				enemy.global_position = anchor_positions[i]
+	if elapsed_game_time < WINDOW_SECONDS:
+		push_error("Berserk runaway gate did not advance %.1fs of simulation within %d frames." % [WINDOW_SECONDS, MAX_MEASUREMENT_FRAMES])
+		return -1.0
 
 	var hp_after := 0.0
 	for enemy in dummies:
