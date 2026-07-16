@@ -35,6 +35,9 @@ func _initialize() -> void:
 	if not _require_scratch_user_dir():
 		quit(2)
 		return
+	if not _check_rect_edge_tolerance_contract():
+		quit(1)
+		return
 	for viewport_size in VIEWPORT_SIZES:
 		if not await _check_viewport(viewport_size):
 			quit(1)
@@ -231,8 +234,22 @@ func _check_macos_unsigned_live_resize_safety(
 func _rect_matches_with_tolerance(actual: Rect2, expected: Rect2, tolerance: float) -> bool:
 	return absf(actual.position.x - expected.position.x) <= tolerance \
 		and absf(actual.position.y - expected.position.y) <= tolerance \
-		and absf(actual.size.x - expected.size.x) <= tolerance \
-		and absf(actual.size.y - expected.size.y) <= tolerance
+		and absf(actual.end.x - expected.end.x) <= tolerance \
+		and absf(actual.end.y - expected.end.y) <= tolerance
+
+
+func _check_rect_edge_tolerance_contract() -> bool:
+	for entry in [
+		["primary", Rect2(621, 760, 420, 72)],
+		["close", Rect2(1059, 760, 240, 72)],
+	]:
+		var label := str(entry[0])
+		var expected := entry[1] as Rect2
+		for mutation in [Vector2(1.0, 0.0), Vector2(0.0, 1.0)]:
+			var actual := Rect2(expected.position + mutation, expected.size + mutation)
+			if _rect_matches_with_tolerance(actual, expected, MACOS_UNSIGNED_DISCLOSURE_RECT_TOLERANCE):
+				return _fail("%s rect accepted a 2 px far-edge drift for mutation %s." % [label, str(mutation)])
+	return true
 
 
 func _save_capture_stable(viewport: SubViewport, viewport_size: Vector2i) -> void:
