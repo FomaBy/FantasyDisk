@@ -1,0 +1,604 @@
+#!/usr/bin/env python3
+"""FAN-1135: remediation of the retrospective story-points backfill.
+
+The 2026-07-15 backfill attached retrospective ``SP:<N>`` Labels and
+``story_points``/``estimation_model`` metadata to closed live FantasyDisk
+issues and to the whole read-only Jira Archive, violating the transition
+rule in ``docs/process/story_points.md`` («Исторические done, cancelled и
+Jira Archive массово не переоцениваются»).
+
+Subcommands (all read-only except ``apply``):
+
+- ``inventory`` — page every issue of the live FantasyDisk and Jira
+  Archive projects into a rollback snapshot under ``build/FAN-1135/``.
+- ``plan`` — classify closed live issues by estimate provenance and emit
+  an idempotent mutation plan restricted to the live project.
+- ``apply`` — execute the plan with per-issue re-verification; refuses
+  any target outside the live project or outside ``done``/``cancelled``.
+- ``audit`` — re-fetch both projects and verify post-change invariants,
+  including that the Jira Archive was not modified at all.
+- ``report`` — regenerate the closed story-points report with accepted
+  pre-work estimates explicitly separated from non-canonical
+  retrospective analytics.
+
+The Jira Archive project is hard-guarded: no code path in this tool may
+issue a mutating command against it. Every mutation re-fetches its target
+and re-checks project, status and provenance before writing.
+"""
+from __future__ import annotations
+
+import argparse
+import csv
+import json
+import re
+import subprocess
+import sys
+from collections import defaultdict
+from pathlib import Path
+
+ROOT = Path(__file__).resolve().parents[1]
+DEFAULT_WORKDIR = ROOT / "build" / "FAN-1135"
+
+LIVE_PROJECT_ID = "2ac963eb-b644-4540-8042-a1a4508f1a65"
+ARCHIVE_PROJECT_ID = "a2cb75b5-d6c9-451c-8a29-4d267f09d67d"
+PROJECTS = {"live": LIVE_PROJECT_ID, "archive": ARCHIVE_PROJECT_ID}
+
+CANONICAL_MODEL = "CUE Fibonacci 1,2,3,5,8,13"
+RETROSPECTIVE_MARKER = "retrospective"
+SP_LABEL_RE = re.compile(r"^SP:(1|2|3|5|8|13)$")
+CLOSED_STATUSES = ("done", "cancelled")
+REMOVABLE_METADATA_KEYS = ("story_points", "estimation_model")
+DESCRIPTION_ESTIMATE_RE = re.compile(r"Story points:\s*\d+", re.IGNORECASE)
+
+PAGE_LIMIT = 100
+
+# Classes whose Labels/metadata were written by the 2026-07-15 backfill and
+# must be removed from closed live issues. ``conflicted`` issues additionally
+# carry a pre-work `Story points:` block in the description, which the
+# backfill overwrote with a different retrospective value; the description
+# record is preserved untouched.
+CLEANABLE_CLASSES = ("retrospective_backfill", "conflicted_needs_review")
+
+# Provenance classes.
+RETROSPECTIVE_BACKFILL = "retrospective_backfill"
+ACCEPTED_PREWORK = "accepted_prework"
+UNESTIMATED = "unestimated"
+INCONSISTENT = "inconsistent_needs_review"
+CONFLICTED = "conflicted_needs_review"
+
+
+class RemediationError(RuntimeError):
+    pass
+
+
+def run_multica(args: list[str]) -> str:
+    proc = subprocess.run(
+        ["multica", *args], text=True, capture_output=True, check=False
+    )
+    if proc.returncode != 0:
+        raise RemediationError(
+            "multica {} failed: {}".format(
+                " ".join(args), (proc.stderr or proc.stdout).strip()
+            )
+        )
+    return proc.stdout
+
+
+def multica_json(*args: str) -> object:
+    return json.loads(run_multica([*args, "--output", "json"]))
+
+
+def fetch_issues(project_id: str) -> list[dict]:
+    issues: list[dict] = []
+    offset = 0
+    while True:
+        page = multica_json(
+            "issue", "list",
+            "--project", project_id,
+            "--sort", "created_at", "--direction", "asc",
+            "--limit", str(PAGE_LIMIT), "--offset", str(offset),
+        )
+        batch = page["issues"]
+        issues.extend(batch)
+        offset += len(batch)
+        if not page.get("has_more") or not batch:
+            break
+    ids = {issue["id"] for issue in issues}
+    if len(ids) != len(issues):
+        raise RemediationError(
+            f"duplicate issues while paging project {project_id}"
+        )
+    for issue in issues:
+        if issue["project_id"] != project_id:
+            raise RemediationError(
+                f"issue {issue['identifier']} outside requested project"
+            )
+    return issues
+
+
+def sp_labels(issue: dict) -> list[dict]:
+    return [
+        label
+        for label in (issue.get("labels") or [])
+        if SP_LABEL_RE.match(label.get("name", ""))
+    ]
+
+
+def has_estimate_block(issue: dict) -> bool:
+    return bool(DESCRIPTION_ESTIMATE_RE.search(issue.get("description") or ""))
+
+
+def classify(issue: dict) -> str:
+    meta = issue.get("metadata") or {}
+    model = str(meta.get("estimation_model", ""))
+    retrospective = RETROSPECTIVE_MARKER in model.lower()
+    block = has_estimate_block(issue)
+    labels = sp_labels(issue)
+    has_sp_data = bool(labels) or "story_points" in meta or bool(model)
+    if retrospective and block:
+        return CONFLICTED
+    if retrospective:
+        return RETROSPECTIVE_BACKFILL
+    if not has_sp_data:
+        return UNESTIMATED
+    if (
+        block
+        and model == CANONICAL_MODEL
+        and len(labels) == 1
+        and str(meta.get("story_points", "")) == labels[0]["name"].split(":")[1]
+    ):
+        return ACCEPTED_PREWORK
+    return INCONSISTENT
+
+
+def derive_actions(issue: dict) -> list[dict]:
+    """Cleanup actions for one retrospectively backfilled closed live issue."""
+    actions: list[dict] = []
+    for label in sp_labels(issue):
+        actions.append(
+            {
+                "op": "label_remove",
+                "label_id": label["id"],
+                "label_name": label["name"],
+            }
+        )
+    meta = issue.get("metadata") or {}
+    for key in REMOVABLE_METADATA_KEYS:
+        if key in meta:
+            actions.append(
+                {"op": "metadata_delete", "key": key, "old_value": meta[key]}
+            )
+    return actions
+
+
+def build_plan(live_issues: list[dict]) -> list[dict]:
+    plan: list[dict] = []
+    for issue in sorted(live_issues, key=lambda i: i.get("number") or 0):
+        if issue["project_id"] == ARCHIVE_PROJECT_ID:
+            raise RemediationError(
+                f"{issue['identifier']}: Jira Archive is read-only; "
+                "it must never enter a mutation plan"
+            )
+        if issue["project_id"] != LIVE_PROJECT_ID:
+            raise RemediationError(
+                f"{issue['identifier']}: outside the live FantasyDisk project"
+            )
+        if issue["status"] not in CLOSED_STATUSES:
+            continue
+        cls = classify(issue)
+        if cls not in CLEANABLE_CLASSES:
+            continue
+        actions = derive_actions(issue)
+        if not actions:
+            continue
+        plan.append(
+            {
+                "issue_id": issue["id"],
+                "identifier": issue["identifier"],
+                "status": issue["status"],
+                "classification": cls,
+                "updated_at": issue["updated_at"],
+                "actions": actions,
+            }
+        )
+    return plan
+
+
+def execute_action(issue: dict, action: dict, runner=run_multica) -> None:
+    """Run one mutation. Fail-closed: only live-project closed issues."""
+    if issue["project_id"] != LIVE_PROJECT_ID:
+        raise RemediationError(
+            f"{issue['identifier']}: refusing to mutate an issue outside "
+            "the live FantasyDisk project (Jira Archive is read-only)"
+        )
+    if issue["status"] not in CLOSED_STATUSES:
+        raise RemediationError(
+            f"{issue['identifier']}: refusing to mutate a non-closed issue"
+        )
+    if action["op"] == "label_remove":
+        if not SP_LABEL_RE.match(action["label_name"]):
+            raise RemediationError(
+                f"{issue['identifier']}: refusing to remove non-SP label "
+                f"{action['label_name']}"
+            )
+        runner(
+            ["issue", "label", "remove", issue["id"], action["label_id"],
+             "--output", "json"]
+        )
+    elif action["op"] == "metadata_delete":
+        if action["key"] not in REMOVABLE_METADATA_KEYS:
+            raise RemediationError(
+                f"{issue['identifier']}: refusing to delete metadata key "
+                f"{action['key']}"
+            )
+        runner(
+            ["issue", "metadata", "delete", issue["id"],
+             "--key", action["key"], "--output", "json"]
+        )
+    else:
+        raise RemediationError(f"unknown action op {action['op']}")
+
+
+def apply_plan(plan: list[dict], limit: int | None, runner=run_multica,
+               fetch=None) -> dict:
+    fetch = fetch or (lambda issue_id: multica_json("issue", "get", issue_id))
+    log = {"applied": [], "skipped": [], "errors": []}
+    targets = plan if limit is None else plan[:limit]
+    for entry in targets:
+        fresh = fetch(entry["issue_id"])
+        if fresh["project_id"] != LIVE_PROJECT_ID:
+            log["errors"].append(
+                {"identifier": entry["identifier"],
+                 "error": "outside live project at apply time"}
+            )
+            continue
+        if fresh["status"] not in CLOSED_STATUSES:
+            log["errors"].append(
+                {"identifier": entry["identifier"],
+                 "error": f"status changed to {fresh['status']} since plan"}
+            )
+            continue
+        if classify(fresh) not in CLEANABLE_CLASSES:
+            log["skipped"].append(
+                {"identifier": entry["identifier"],
+                 "reason": "no retrospective backfill present (already clean)"}
+            )
+            continue
+        actions = derive_actions(fresh)
+        for action in actions:
+            execute_action(fresh, action, runner=runner)
+        log["applied"].append(
+            {"identifier": entry["identifier"], "issue_id": entry["issue_id"],
+             "actions": actions}
+        )
+    return log
+
+
+def summarize(issues: list[dict]) -> dict:
+    summary: dict = {
+        "total": len(issues),
+        "by_status": defaultdict(int),
+        "closed": {
+            "total": 0,
+            "by_class": defaultdict(int),
+        },
+    }
+    for issue in issues:
+        summary["by_status"][issue["status"]] += 1
+        if issue["status"] in CLOSED_STATUSES:
+            summary["closed"]["total"] += 1
+            summary["closed"]["by_class"][classify(issue)] += 1
+    summary["by_status"] = dict(summary["by_status"])
+    summary["closed"]["by_class"] = dict(summary["closed"]["by_class"])
+    return summary
+
+
+def completion_date(issue: dict) -> tuple[str, str]:
+    """Return (YYYY-MM-DD, source) preserving the original close date."""
+    meta = issue.get("metadata") or {}
+    for key in ("completed_at", "jira_resolved"):
+        value = str(meta.get(key, "")).strip()
+        if value:
+            return value[:10], key
+    return str(issue.get("updated_at", ""))[:10], "updated_at_fallback"
+
+
+def write_json(path: Path, payload: object) -> None:
+    path.parent.mkdir(parents=True, exist_ok=True)
+    path.write_text(
+        json.dumps(payload, ensure_ascii=False, indent=2, sort_keys=True)
+        + "\n",
+        encoding="utf-8",
+    )
+
+
+def load_json(path: Path) -> object:
+    return json.loads(path.read_text(encoding="utf-8"))
+
+
+def snapshot_index(issues: list[dict]) -> dict:
+    return {issue["id"]: issue for issue in issues}
+
+
+def issue_fingerprint(issue: dict) -> dict:
+    """Fields that remediation must never change."""
+    return {
+        "status": issue["status"],
+        "description": issue.get("description"),
+        "assignee_id": issue.get("assignee_id"),
+        "created_at": issue["created_at"],
+        "completed": completion_date(issue),
+    }
+
+
+def cmd_inventory(args: argparse.Namespace) -> int:
+    workdir = Path(args.workdir)
+    for name, project_id in PROJECTS.items():
+        issues = fetch_issues(project_id)
+        write_json(workdir / f"inventory_{name}.json", issues)
+        summary = summarize(issues)
+        write_json(workdir / f"inventory_{name}_summary.json", summary)
+        print(f"[{name}] {summary['total']} issues, "
+              f"closed={summary['closed']['total']}, "
+              f"by_class={summary['closed']['by_class']}")
+    print(f"Inventory written to {workdir}")
+    return 0
+
+
+def cmd_plan(args: argparse.Namespace) -> int:
+    workdir = Path(args.workdir)
+    live = load_json(workdir / "inventory_live.json")
+    plan = build_plan(live)
+    write_json(workdir / "plan.json", plan)
+    total_actions = sum(len(entry["actions"]) for entry in plan)
+    print(f"Plan: {len(plan)} live closed issues to clean, "
+          f"{total_actions} actions -> {workdir / 'plan.json'}")
+    for entry in plan:
+        ops = ", ".join(
+            a["op"] + ":" + a.get("label_name", a.get("key", ""))
+            for a in entry["actions"]
+        )
+        print(f"  {entry['identifier']} [{entry['status']}] {ops}")
+    return 0
+
+
+def cmd_apply(args: argparse.Namespace) -> int:
+    workdir = Path(args.workdir)
+    plan = load_json(workdir / "plan.json")
+    log = apply_plan(plan, args.limit)
+    suffix = "canary" if args.limit is not None else "full"
+    write_json(workdir / f"apply_log_{suffix}.json", log)
+    print(f"Applied: {len(log['applied'])}, skipped: {len(log['skipped'])}, "
+          f"errors: {len(log['errors'])}")
+    for err in log["errors"]:
+        print(f"  ERROR {err['identifier']}: {err['error']}")
+    return 1 if log["errors"] else 0
+
+
+def cmd_audit(args: argparse.Namespace) -> int:
+    workdir = Path(args.workdir)
+    failures: list[str] = []
+    plan = load_json(workdir / "plan.json")
+    planned_ids = {entry["issue_id"] for entry in plan}
+
+    live_before = snapshot_index(load_json(workdir / "inventory_live.json"))
+    live_now = fetch_issues(LIVE_PROJECT_ID)
+    write_json(workdir / "audit_live.json", live_now)
+
+    for issue in live_now:
+        if issue["status"] not in CLOSED_STATUSES:
+            continue
+        cls = classify(issue)
+        if cls in CLEANABLE_CLASSES:
+            failures.append(
+                f"live {issue['identifier']}: retrospective backfill still "
+                f"present ({cls})"
+            )
+        before = live_before.get(issue["id"])
+        if before is None or before["status"] not in CLOSED_STATUSES:
+            # Closed after the inventory snapshot by another actor; not part
+            # of the remediation scope.
+            continue
+        if issue_fingerprint(before) != issue_fingerprint(issue):
+            failures.append(
+                f"live {issue['identifier']}: status/description/assignee/"
+                "dates changed during remediation"
+            )
+        if issue["id"] not in planned_ids:
+            if classify(before) != classify(issue):
+                failures.append(
+                    f"live {issue['identifier']}: out-of-plan provenance "
+                    f"change {classify(before)} -> {classify(issue)}"
+                )
+
+    archive_before = snapshot_index(load_json(workdir / "inventory_archive.json"))
+    archive_now = fetch_issues(ARCHIVE_PROJECT_ID)
+    write_json(workdir / "audit_archive.json", archive_now)
+    if len(archive_now) != len(archive_before):
+        failures.append(
+            f"archive issue count changed: {len(archive_before)} -> "
+            f"{len(archive_now)}"
+        )
+    for issue in archive_now:
+        before = archive_before.get(issue["id"])
+        if before is None:
+            failures.append(f"archive {issue['identifier']}: new issue appeared")
+            continue
+        if issue["updated_at"] != before["updated_at"]:
+            failures.append(
+                f"archive {issue['identifier']}: updated_at changed — "
+                "the read-only archive was touched"
+            )
+
+    summary = {
+        "live": summarize(live_now),
+        "archive": summarize(archive_now),
+        "planned_issue_count": len(plan),
+        "failures": failures,
+    }
+    write_json(workdir / "audit_summary.json", summary)
+    print(json.dumps(summary["live"], ensure_ascii=False, indent=2))
+    if failures:
+        print("AUDIT FAILED:")
+        for failure in failures:
+            print(f"  {failure}")
+        return 1
+    print("AUDIT PASSED: no retrospective backfill on closed live issues, "
+          "no side effects, Jira Archive untouched.")
+    return 0
+
+
+def build_report_rows(issues: list[dict], provenance: str) -> list[dict]:
+    daily: dict[tuple[str, str], dict] = {}
+    for issue in issues:
+        date, source = completion_date(issue)
+        meta = issue.get("metadata") or {}
+        labels = sp_labels(issue)
+        points = meta.get("story_points")
+        if points is None and labels:
+            points = int(labels[0]["name"].split(":")[1])
+        if points is None:
+            continue
+        key = (date, provenance)
+        row = daily.setdefault(
+            key,
+            {"date": date, "provenance": provenance, "issues": 0,
+             "story_points": 0, "date_sources": set()},
+        )
+        row["issues"] += 1
+        row["story_points"] += int(points)
+        row["date_sources"].add(source)
+    rows = []
+    for _, row in sorted(daily.items()):
+        row["date_sources"] = ",".join(sorted(row["date_sources"]))
+        rows.append(row)
+    return rows
+
+
+def write_report_csv(path: Path, rows: list[dict]) -> None:
+    path.parent.mkdir(parents=True, exist_ok=True)
+    fieldnames = ["date", "provenance", "issues", "story_points",
+                  "date_sources"]
+    with path.open("w", encoding="utf-8-sig", newline="") as handle:
+        writer = csv.DictWriter(handle, fieldnames=fieldnames)
+        writer.writeheader()
+        total_issues = sum(r["issues"] for r in rows)
+        total_points = sum(r["story_points"] for r in rows)
+        for row in rows:
+            writer.writerow(row)
+        writer.writerow(
+            {"date": "TOTAL", "provenance": rows[0]["provenance"] if rows else "",
+             "issues": total_issues, "story_points": total_points,
+             "date_sources": ""}
+        )
+
+
+def cmd_report(args: argparse.Namespace) -> int:
+    workdir = Path(args.workdir)
+    live_path = workdir / "audit_live.json"
+    if not live_path.exists():
+        live_path = workdir / "inventory_live.json"
+    archive_path = workdir / "audit_archive.json"
+    if not archive_path.exists():
+        archive_path = workdir / "inventory_archive.json"
+    live = load_json(live_path)
+    archive = load_json(archive_path)
+
+    accepted = [
+        issue for issue in live
+        if issue["status"] in CLOSED_STATUSES
+        and classify(issue) == ACCEPTED_PREWORK
+    ]
+    retrospective_archive = [
+        issue for issue in archive
+        if issue["status"] in CLOSED_STATUSES
+        and classify(issue) in CLEANABLE_CLASSES
+    ]
+
+    accepted_rows = build_report_rows(accepted, "accepted_prework")
+    retro_rows = build_report_rows(
+        retrospective_archive,
+        "retrospective_non_canonical_jira_archive_read_only",
+    )
+    report_dir = workdir / "report"
+    write_report_csv(
+        report_dir / "closed_story_points_accepted.csv", accepted_rows
+    )
+    write_report_csv(
+        report_dir / "jira_archive_retrospective_reference.csv", retro_rows
+    )
+
+    accepted_sp = sum(r["story_points"] for r in accepted_rows)
+    retro_sp = sum(r["story_points"] for r in retro_rows)
+    summary_md = "\n".join(
+        [
+            "# Closed story points — provenance-separated report",
+            "",
+            "## Accepted pre-work estimates (canonical, live FantasyDisk)",
+            "",
+            f"- issues: {len(accepted)}",
+            f"- story points: {accepted_sp}",
+            "- source: exactly-one canonical `SP:<N>` Label + matching",
+            "  `story_points` metadata + `estimation_model="
+            f"\"{CANONICAL_MODEL}\"` + `Story points:` block in description.",
+            "",
+            "## Retrospective analytics (NON-canonical, reference only)",
+            "",
+            f"- Jira Archive issues carrying `CUE retrospective v1` marks: "
+            f"{len(retrospective_archive)}",
+            f"- story points (non-canonical): {retro_sp}",
+            "- The Jira Archive is read-only legacy history: these values were",
+            "  written by the 2026-07-15 backfill, are not accepted pre-work",
+            "  estimates, are excluded from live readiness/plan-vs-fact",
+            "  reporting, and are kept here only as clearly-labelled",
+            "  reference until Сергей Фомин explicitly authorizes or retires",
+            "  retrospective analytics.",
+            "",
+            "Cleaned live issues (backfill removed, rollback snapshot in",
+            "`inventory_live.json`): see `plan.json` / `apply_log_full.json`.",
+            "",
+        ]
+    )
+    (report_dir / "closed_story_points_summary.md").write_text(
+        summary_md, encoding="utf-8"
+    )
+    print(f"Report written to {report_dir}")
+    print(f"  accepted: {len(accepted)} issues / {accepted_sp} SP")
+    print(f"  retrospective archive reference: "
+          f"{len(retrospective_archive)} issues / {retro_sp} SP")
+    return 0
+
+
+def main(argv: list[str] | None = None) -> int:
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument(
+        "--workdir", default=str(DEFAULT_WORKDIR),
+        help="artifact directory (default: build/FAN-1135)",
+    )
+    sub = parser.add_subparsers(dest="command", required=True)
+    sub.add_parser("inventory", help="snapshot both projects (read-only)")
+    sub.add_parser("plan", help="build the live-project mutation plan")
+    apply_parser = sub.add_parser("apply", help="execute the plan")
+    apply_parser.add_argument(
+        "--limit", type=int, default=None,
+        help="apply only the first N plan entries (canary)",
+    )
+    sub.add_parser("audit", help="verify post-change invariants (read-only)")
+    sub.add_parser("report", help="regenerate provenance-separated report")
+    args = parser.parse_args(argv)
+    handlers = {
+        "inventory": cmd_inventory,
+        "plan": cmd_plan,
+        "apply": cmd_apply,
+        "audit": cmd_audit,
+        "report": cmd_report,
+    }
+    try:
+        return handlers[args.command](args)
+    except RemediationError as error:
+        print(f"ERROR: {error}", file=sys.stderr)
+        return 1
+
+
+if __name__ == "__main__":
+    sys.exit(main())
