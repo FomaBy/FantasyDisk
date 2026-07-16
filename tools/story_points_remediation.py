@@ -65,6 +65,10 @@ ACCEPTED_PREWORK = "accepted_prework"
 UNESTIMATED = "unestimated"
 INCONSISTENT = "inconsistent_needs_review"
 CONFLICTED = "conflicted_needs_review"
+# A retrospective backfill that cannot be auto-cleaned because its SP-label
+# provenance is ambiguous (zero or more than one removable SP Label). These
+# issues are diverted to manual review and never mutated automatically.
+AMBIGUOUS = "ambiguous_needs_review"
 
 
 class RemediationError(RuntimeError):
@@ -135,6 +139,32 @@ def description_estimates(issue: dict) -> list[int]:
     return [int(m.group(1)) for m in DESCRIPTION_ESTIMATE_RE.finditer(text)]
 
 
+def canonical_sp_labels(issue: dict) -> list[dict]:
+    """SP Labels on ``issue`` de-duplicated by label id.
+
+    A raw issue payload can repeat the exact same label record; those are a
+    single attachment and collapse to one entry. Two *distinct* label ids are
+    kept separate even when they share a name, because two different label
+    records both encoding a story-point value is precisely the ambiguous
+    provenance this tool must refuse to auto-resolve.
+    """
+    unique: dict[str, dict] = {}
+    for label in sp_labels(issue):
+        unique.setdefault(label["id"], label)
+    return list(unique.values())
+
+
+def single_sp_label(issue: dict) -> dict | None:
+    """Return the one removable SP Label, or ``None`` when ambiguous.
+
+    Ambiguous means zero SP Labels or more than one distinct SP Label record.
+    Automatic cleanup requires exactly one removable SP Label; any other count
+    is diverted to manual review and never auto-mutated (fail-closed).
+    """
+    labels = canonical_sp_labels(issue)
+    return labels[0] if len(labels) == 1 else None
+
+
 def has_estimate_block(issue: dict) -> bool:
     return bool(description_estimates(issue))
 
@@ -162,10 +192,14 @@ def classify(issue: dict) -> str:
     block = bool(estimates)
     labels = sp_labels(issue)
     has_sp_data = bool(labels) or "story_points" in meta or bool(model)
-    if retrospective and block:
-        return CONFLICTED
     if retrospective:
-        return RETROSPECTIVE_BACKFILL
+        # Fail-closed: a retrospective backfill is only auto-cleanable when it
+        # carries exactly one removable SP Label. Zero or multiple SP Labels is
+        # ambiguous provenance — we cannot tell which estimate (if any) is
+        # legitimate — so it goes to manual review, never silent mutation.
+        if single_sp_label(issue) is None:
+            return AMBIGUOUS
+        return CONFLICTED if block else RETROSPECTIVE_BACKFILL
     if not has_sp_data:
         return UNESTIMATED
     # Accepted only when the single description estimate exactly matches the
@@ -184,16 +218,29 @@ def classify(issue: dict) -> str:
 
 
 def derive_actions(issue: dict) -> list[dict]:
-    """Cleanup actions for one retrospectively backfilled closed live issue."""
-    actions: list[dict] = []
-    for label in sp_labels(issue):
-        actions.append(
-            {
-                "op": "label_remove",
-                "label_id": label["id"],
-                "label_name": label["name"],
-            }
+    """Cleanup actions for one retrospectively backfilled closed live issue.
+
+    Requires exactly one removable SP Label. An ambiguous issue (zero or
+    multiple SP Labels) must be diverted to manual review before this is
+    called; reaching here with ambiguous provenance is a fail-closed error,
+    never a silent multi-label removal.
+    """
+    label = single_sp_label(issue)
+    if label is None:
+        raise RemediationError(
+            "{}: ambiguous SP Labels {} — automatic cleanup requires exactly "
+            "one removable SP Label; divert to manual review".format(
+                issue.get("identifier", issue.get("id", "?")),
+                sorted(existing["name"] for existing in sp_labels(issue)),
+            )
         )
+    actions: list[dict] = [
+        {
+            "op": "label_remove",
+            "label_id": label["id"],
+            "label_name": label["name"],
+        }
+    ]
     meta = issue.get("metadata") or {}
     for key in REMOVABLE_METADATA_KEYS:
         if key in meta:
@@ -234,6 +281,19 @@ def build_plan(live_issues: list[dict]) -> list[dict]:
             }
         )
     return plan
+
+
+def review_needed(live_issues: list[dict]) -> list[dict]:
+    """Closed live issues whose ambiguous SP Labels block automatic cleanup."""
+    flagged: list[dict] = []
+    for issue in live_issues:
+        if issue.get("project_id") != LIVE_PROJECT_ID:
+            continue
+        if issue["status"] not in CLOSED_STATUSES:
+            continue
+        if classify(issue) == AMBIGUOUS:
+            flagged.append(issue)
+    return flagged
 
 
 def execute_action(issue: dict, action: dict, runner=run_multica) -> None:
@@ -299,7 +359,15 @@ def apply_plan(plan: list[dict], limit: int | None, runner=run_multica,
                  "error": f"status changed to {fresh['status']} since plan"}
             )
             continue
-        if classify(fresh) not in CLEANABLE_CLASSES:
+        cls = classify(fresh)
+        if cls == AMBIGUOUS:
+            log["errors"].append(
+                {"identifier": entry["identifier"],
+                 "error": "ambiguous SP Labels at apply time — exactly one "
+                          "removable SP Label required; refused, manual review"}
+            )
+            continue
+        if cls not in CLEANABLE_CLASSES:
             log["skipped"].append(
                 {"identifier": entry["identifier"],
                  "reason": "no retrospective backfill present (already clean)"}
@@ -400,6 +468,30 @@ def cmd_plan(args: argparse.Namespace) -> int:
             for a in entry["actions"]
         )
         print(f"  {entry['identifier']} [{entry['status']}] {ops}")
+
+    review = review_needed(live)
+    if review:
+        write_json(
+            workdir / "needs_review.json",
+            [
+                {
+                    "identifier": issue["identifier"],
+                    "issue_id": issue["id"],
+                    "status": issue["status"],
+                    "sp_labels": sorted(
+                        label["name"] for label in sp_labels(issue)
+                    ),
+                }
+                for issue in review
+            ],
+        )
+        print(f"MANUAL REVIEW REQUIRED: {len(review)} closed issue(s) with "
+              "ambiguous SP Labels were NOT auto-cleaned -> "
+              f"{workdir / 'needs_review.json'}")
+        for issue in review:
+            names = ", ".join(sorted(l["name"] for l in sp_labels(issue)))
+            print(f"  {issue['identifier']} [{issue['status']}] "
+                  f"SP Labels: {names or '(none)'}")
     return 0
 
 

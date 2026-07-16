@@ -12,6 +12,9 @@ import story_points_remediation as spr  # noqa: E402
 
 SP8_LABEL = {"id": "label-sp8", "name": "SP:8"}
 SP5_LABEL = {"id": "label-sp5", "name": "SP:5"}
+# A second, distinct SP:5 label record (different id, same name) — two label
+# records both encoding "5" is ambiguous provenance, not a single estimate.
+SP5_LABEL_DUP = {"id": "label-sp5-b", "name": "SP:5"}
 OTHER_LABEL = {"id": "label-bug", "name": "bug"}
 RETRO_MODEL = "CUE retrospective v1; Fibonacci 1,2,3,5,8,13"
 DESCRIPTION_BLOCK = (
@@ -192,6 +195,89 @@ class ClassifyTest(unittest.TestCase):
         )
 
 
+class AmbiguousSpLabelTest(unittest.TestCase):
+    """FAN-1167: exactly one removable SP Label is required for cleanup."""
+
+    def _retro_meta(self, points=8):
+        return {"story_points": points, "estimation_model": RETRO_MODEL}
+
+    def test_two_distinct_sp_labels_is_ambiguous(self):
+        issue = make_issue(
+            labels=[SP5_LABEL, SP8_LABEL], metadata=self._retro_meta()
+        )
+        self.assertEqual(spr.classify(issue), spr.AMBIGUOUS)
+
+    def test_same_name_distinct_ids_is_ambiguous(self):
+        issue = make_issue(
+            labels=[SP5_LABEL, SP5_LABEL_DUP], metadata=self._retro_meta(5)
+        )
+        self.assertEqual(spr.classify(issue), spr.AMBIGUOUS)
+
+    def test_zero_sp_labels_retrospective_is_ambiguous(self):
+        # Backfill metadata but no SP Label: still ambiguous, no cleanup.
+        issue = make_issue(metadata=self._retro_meta())
+        self.assertEqual(spr.classify(issue), spr.AMBIGUOUS)
+
+    def test_conflicted_with_multiple_labels_is_ambiguous(self):
+        issue = make_issue(
+            description=DESCRIPTION_BLOCK,
+            labels=[SP5_LABEL, SP8_LABEL],
+            metadata=self._retro_meta(),
+        )
+        self.assertEqual(spr.classify(issue), spr.AMBIGUOUS)
+
+    def test_repeated_same_label_id_collapses_to_one(self):
+        # The exact same label record repeated is one attachment: still clean.
+        issue = make_issue(
+            labels=[SP5_LABEL, dict(SP5_LABEL)], metadata=self._retro_meta(5)
+        )
+        self.assertEqual(spr.classify(issue), spr.RETROSPECTIVE_BACKFILL)
+        self.assertEqual(spr.single_sp_label(issue), SP5_LABEL)
+        removes = [
+            a for a in spr.derive_actions(issue) if a["op"] == "label_remove"
+        ]
+        self.assertEqual(len(removes), 1)
+        self.assertEqual(removes[0]["label_name"], "SP:5")
+
+    def test_derive_actions_refuses_multiple_distinct_sp_labels(self):
+        issue = make_issue(
+            labels=[SP5_LABEL, SP8_LABEL], metadata=self._retro_meta()
+        )
+        with self.assertRaises(spr.RemediationError):
+            spr.derive_actions(issue)
+
+    def test_derive_actions_refuses_zero_sp_labels(self):
+        issue = make_issue(metadata=self._retro_meta())
+        with self.assertRaises(spr.RemediationError):
+            spr.derive_actions(issue)
+
+    def test_plan_diverts_ambiguous_issue_to_manual_review(self):
+        # Reproduction from the bug: SP:5 + SP:8 must NOT yield two removals.
+        ambiguous = make_issue(
+            id="issue-amb", identifier="FAN-20", number=20,
+            labels=[SP5_LABEL, SP8_LABEL], metadata=self._retro_meta(),
+        )
+        plan = spr.build_plan([ambiguous])
+        self.assertEqual(plan, [])
+        self.assertEqual(spr.review_needed([ambiguous]), [ambiguous])
+
+    def test_plan_keeps_clean_issue_and_flags_ambiguous_one(self):
+        clean = make_issue(
+            id="issue-c", identifier="FAN-30", number=30,
+            labels=[SP8_LABEL], metadata=self._retro_meta(),
+        )
+        ambiguous = make_issue(
+            id="issue-a", identifier="FAN-31", number=31,
+            labels=[SP5_LABEL, SP8_LABEL], metadata=self._retro_meta(),
+        )
+        plan = spr.build_plan([clean, ambiguous])
+        self.assertEqual([e["identifier"] for e in plan], ["FAN-30"])
+        self.assertEqual(
+            [i["identifier"] for i in spr.review_needed([clean, ambiguous])],
+            ["FAN-31"],
+        )
+
+
 class BuildPlanTest(unittest.TestCase):
     def test_plan_covers_only_closed_cleanable_issues(self):
         retro = make_issue(
@@ -331,6 +417,30 @@ class ApplyPlanTest(unittest.TestCase):
         self.assertEqual(log["applied"], [])
         self.assertEqual(len(log["skipped"]), 1)
         self.assertEqual(commands, [])
+
+    def test_apply_refuses_issue_that_became_ambiguous(self):
+        # Planned as clean, but a second SP Label appears before apply:
+        # re-verification must refuse it with zero mutation commands.
+        retro = make_issue(
+            id="issue-r", identifier="FAN-10", number=10,
+            labels=[SP8_LABEL],
+            metadata={"story_points": 8, "estimation_model": RETRO_MODEL},
+        )
+        plan = spr.build_plan([retro])
+        self.assertEqual(len(plan), 1)
+        ambiguous = make_issue(
+            id="issue-r", identifier="FAN-10", number=10,
+            labels=[SP8_LABEL, SP5_LABEL],
+            metadata={"story_points": 8, "estimation_model": RETRO_MODEL},
+        )
+        log = spr.apply_plan(
+            plan, None,
+            runner=ExecuteActionGuardTest._forbidden_runner,
+            fetch=lambda issue_id: ambiguous,
+        )
+        self.assertEqual(log["applied"], [])
+        self.assertEqual(len(log["errors"]), 1)
+        self.assertIn("ambiguous", log["errors"][0]["error"].lower())
 
     def test_apply_records_error_when_issue_left_live_project(self):
         retro = make_issue(
