@@ -189,5 +189,41 @@ class UnsignedChannelLabelingTests(unittest.TestCase):
         self.assertIn('if [[ "${CLIENT_MACOS_CHANNEL}" != "${MACOS_CHANNEL}" ]]', script)
 
 
+class Published024ReleaseDocumentationTests(unittest.TestCase):
+    """FAN-1226: operator docs must describe the already published 0.2.4 release."""
+
+    CANONICAL_RELEASE_DOCS = (
+        Path("docs") / "process" / "game_updates.md",
+        Path("docs") / "process" / "release_versioning.md",
+        Path("docs") / "release_telegram_setup.md",
+    )
+
+    def test_snapshot_marks_024_as_the_current_published_stable_release(self) -> None:
+        state = (ROOT / "docs" / "design" / "current_game_state.md").read_text(
+            encoding="utf-8"
+        )
+        self.assertIn("опубликован stable release 0.2.4", state)
+        self.assertIn("Текущий опубликованный stable release: `0.2.4`", state)
+        self.assertNotIn("release snapshot 0.2.3", state)
+        self.assertNotIn("`0.2.4`, готовится из `dev`", state)
+        self.assertNotIn("Игровой баланс и контент принятой версии 0.2.3 не меняются", state)
+
+    def test_readme_requires_current_telethon_session_for_every_stable_release(self) -> None:
+        readme = (ROOT / "README.md").read_text(encoding="utf-8")
+        self.assertIn(
+            "текущая локальная Telethon-сессия (секрет) для\n"
+            "  обязательной Telegram-доставки файлов каждого stable release",
+            readme,
+        )
+        self.assertNotIn("legacy Telethon-сессия только для релиза 0.2.2", readme)
+
+    def test_canonical_release_docs_keep_the_public_github_and_telegram_contract(self) -> None:
+        for relative in self.CANONICAL_RELEASE_DOCS:
+            with self.subTest(doc=str(relative)):
+                doc = (ROOT / relative).read_text(encoding="utf-8")
+                self.assertIn("FomaBy/FantasyDisk-Releases", doc)
+                self.assertIn("Telegram", doc)
+
+
 if __name__ == "__main__":
     unittest.main()

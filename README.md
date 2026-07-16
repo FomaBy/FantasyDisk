@@ -63,7 +63,8 @@ python tools/quality_gate.py --profile windows
 Эти файлы в `.gitignore`; нужны только для фидбека/релиза, на саму игру не влияют:
 - `feedback_webhook.cfg` — Discord-webhook внутриигрового фидбека (шаблон: `feedback_webhook.cfg.example`).
 - `release_webhook.cfg` — Discord-webhook публикации релизов.
-- `fantasydisk_release.session` — legacy Telethon-сессия только для релиза 0.2.2.
+- `fantasydisk_release.session` — текущая локальная Telethon-сессия (секрет) для
+  обязательной Telegram-доставки файлов каждого stable release.
 
 ## Сборка релиза (macOS)
 
