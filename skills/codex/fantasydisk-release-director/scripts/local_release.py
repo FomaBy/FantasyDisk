@@ -26,6 +26,13 @@ from pathlib import Path, PurePosixPath
 from typing import Iterable, Sequence
 
 
+TOOLS_DIR = Path(__file__).resolve().parents[4] / "tools"
+if str(TOOLS_DIR) not in sys.path:
+    sys.path.insert(0, str(TOOLS_DIR))
+
+from release_version_mapping import PlatformVersionMapping, platform_version_mapping
+
+
 RELEASE_VERSION_RE = re.compile(
     r"^(0|[1-9][0-9]*)\.(0|[1-9][0-9]*)\.(0|[1-9][0-9]*)(?:\.(0|[1-9][0-9]*))?$"
 )
@@ -35,10 +42,17 @@ ROOT_ENV = "FANTASYDISK_LOCAL_ROOT"
 APP_ENV = "FANTASYDISK_LOCAL_APP"
 CHANNEL_ENV = "FANTASYDISK_MACOS_CHANNEL"
 MACOS_CHANNELS = ("signed", "unsigned")
+MACOS_BUNDLE_VERSION_RE = re.compile(r"^[0-9]+\.[0-9]+\.[0-9]+$")
 
 
 class LocalReleaseError(RuntimeError):
     """A release cannot be safely materialized or verified."""
+
+
+@dataclass(frozen=True)
+class MacOSBundleVersions:
+    short_version: str
+    build_version: str
 
 
 def _version_key(version: str) -> tuple[int, int, int, int]:
@@ -504,24 +518,64 @@ def materialize_package(
     return destination, manifest
 
 
-def _bundle_version(app: Path) -> str:
+def _macos_bundle_versions_from_project(project_root: Path) -> MacOSBundleVersions:
+    presets = project_root / "export_presets.cfg"
+    if not presets.is_file():
+        raise LocalReleaseError(f"macOS export presets are missing: {presets}")
+    source = presets.read_text(encoding="utf-8")
+    values = {
+        key: re.search(rf'(?m)^{re.escape(key)}="([^"]*)"$', source)
+        for key in ("application/short_version", "application/version")
+    }
+    short_match = values["application/short_version"]
+    build_match = values["application/version"]
+    if short_match is None or build_match is None:
+        raise LocalReleaseError("macOS export presets are missing bundle version fields")
+    versions = MacOSBundleVersions(short_match.group(1), build_match.group(1))
+    if not MACOS_BUNDLE_VERSION_RE.fullmatch(versions.short_version) \
+            or not MACOS_BUNDLE_VERSION_RE.fullmatch(versions.build_version):
+        raise LocalReleaseError("macOS export versions must each have three numeric components")
+    return versions
+
+
+def _macos_bundle_versions_from_logical(version: str) -> MacOSBundleVersions:
+    try:
+        mapping: PlatformVersionMapping = platform_version_mapping(version)
+    except ValueError as error:
+        raise LocalReleaseError(str(error)) from error
+    return MacOSBundleVersions(mapping.macos_short_version, mapping.macos_build_version)
+
+
+def _bundle_versions(app: Path) -> MacOSBundleVersions:
     plist = app / "Contents" / "Info.plist"
     if not plist.is_file():
         raise LocalReleaseError(f"installed app has no Info.plist: {app}")
     with plist.open("rb") as handle:
         payload = plistlib.load(handle)
-    value = payload.get("CFBundleShortVersionString") or payload.get("CFBundleVersion")
-    if not value:
-        raise LocalReleaseError(f"installed app has no bundle version: {app}")
-    return str(value)
+    short_version = payload.get("CFBundleShortVersionString")
+    build_version = payload.get("CFBundleVersion")
+    if not short_version or not build_version:
+        raise LocalReleaseError(f"installed app has incomplete bundle versions: {app}")
+    return MacOSBundleVersions(str(short_version), str(build_version))
 
 
-def verify_macos_app(app: Path, version: str, *, launch_smoke: bool, signed: bool = True) -> None:
+def verify_macos_app(
+    app: Path,
+    version: str,
+    *,
+    launch_smoke: bool,
+    signed: bool = True,
+    expected_versions: MacOSBundleVersions | None = None,
+) -> None:
     if not app.is_dir():
         raise LocalReleaseError(f"macOS app is not installed: {app}")
-    if _bundle_version(app) != version:
+    expected = expected_versions or _macos_bundle_versions_from_logical(version)
+    actual = _bundle_versions(app)
+    if actual != expected:
         raise LocalReleaseError(
-            f"installed app version is {_bundle_version(app)}, expected {version}"
+            "installed app bundle versions are "
+            f"short={actual.short_version}, build={actual.build_version}; expected "
+            f"short={expected.short_version}, build={expected.build_version}"
         )
     if signed:
         _run(["codesign", "--verify", "--deep", "--strict", "--verbose=4", app])
@@ -566,7 +620,13 @@ def _mount_dmg(dmg: Path, mountpoint: Path) -> tuple[Path, str]:
     raise LocalReleaseError(f"DMG did not mount: {dmg}")
 
 
-def verify_macos_dmg(dmg: Path, version: str, *, signed: bool = True) -> None:
+def verify_macos_dmg(
+    dmg: Path,
+    version: str,
+    *,
+    signed: bool = True,
+    expected_versions: MacOSBundleVersions | None = None,
+) -> None:
     _run(["hdiutil", "verify", dmg], timeout=300)
     if signed:
         _run(["codesign", "--verify", "--strict", "--verbose=4", dmg])
@@ -593,7 +653,13 @@ def verify_macos_dmg(dmg: Path, version: str, *, signed: bool = True) -> None:
             apps = list(mountpoint.glob("*.app"))
             if len(apps) != 1:
                 raise LocalReleaseError(f"DMG must contain exactly one app: {dmg}")
-            verify_macos_app(apps[0], version, launch_smoke=False, signed=signed)
+            verify_macos_app(
+                apps[0],
+                version,
+                launch_smoke=False,
+                signed=signed,
+                expected_versions=expected_versions,
+            )
         finally:
             if device:
                 try:
@@ -609,8 +675,9 @@ def install_macos_from_dmg(
     version: str,
     launch_smoke: bool = True,
     signed: bool = True,
+    expected_versions: MacOSBundleVersions | None = None,
 ) -> None:
-    verify_macos_dmg(dmg, version, signed=signed)
+    verify_macos_dmg(dmg, version, signed=signed, expected_versions=expected_versions)
     target.parent.mkdir(parents=True, exist_ok=True)
     with tempfile.TemporaryDirectory(prefix="fantasydisk-dmg-") as temporary:
         device = ""
@@ -619,21 +686,39 @@ def install_macos_from_dmg(
             apps = list(mountpoint.glob("*.app"))
             if len(apps) != 1:
                 raise LocalReleaseError(f"DMG must contain exactly one app: {dmg}")
-            verify_macos_app(apps[0], version, launch_smoke=False, signed=signed)
+            verify_macos_app(
+                apps[0],
+                version,
+                launch_smoke=False,
+                signed=signed,
+                expected_versions=expected_versions,
+            )
 
             stage = target.parent / f".{target.name}.stage.{os.getpid()}"
             backup = target.parent / f".{target.name}.backup.{os.getpid()}"
             if stage.exists() or backup.exists():
                 raise LocalReleaseError(f"stale app install stage exists beside {target}")
             _run(["ditto", "--rsrc", "--extattr", apps[0], stage])
-            verify_macos_app(stage, version, launch_smoke=False, signed=signed)
+            verify_macos_app(
+                stage,
+                version,
+                launch_smoke=False,
+                signed=signed,
+                expected_versions=expected_versions,
+            )
             moved_old = False
             try:
                 if target.exists():
                     os.replace(target, backup)
                     moved_old = True
                 os.replace(stage, target)
-                verify_macos_app(target, version, launch_smoke=launch_smoke, signed=signed)
+                verify_macos_app(
+                    target,
+                    version,
+                    launch_smoke=launch_smoke,
+                    signed=signed,
+                    expected_versions=expected_versions,
+                )
             except Exception:
                 if target.exists():
                     shutil.rmtree(target, ignore_errors=True)
@@ -757,8 +842,20 @@ def verify_local_release(
         raise LocalReleaseError("current-project is not a Godot favorite")
     if require_app:
         signed = recorded_channel == "signed"
-        verify_macos_dmg(release_dir / f"FantasyDisk-{version}-macos.dmg", version, signed=signed)
-        verify_macos_app(config.macos_app, version, launch_smoke=launch_smoke, signed=signed)
+        expected_versions = _macos_bundle_versions_from_project(project)
+        verify_macos_dmg(
+            release_dir / f"FantasyDisk-{version}-macos.dmg",
+            version,
+            signed=signed,
+            expected_versions=expected_versions,
+        )
+        verify_macos_app(
+            config.macos_app,
+            version,
+            launch_smoke=launch_smoke,
+            signed=signed,
+            expected_versions=expected_versions,
+        )
     return manifest
 
 
@@ -812,12 +909,14 @@ def main(argv: Sequence[str] | None = None) -> int:
                 print(json.dumps({"destination": os.fspath(destination), **summary}, indent=2))
                 return 0
             if require_app:
+                expected_versions = _macos_bundle_versions_from_project(destination / "project")
                 install_macos_from_dmg(
                     dmg=destination / f"FantasyDisk-{args.version}-macos.dmg",
                     target=config.macos_app,
                     version=args.version,
                     launch_smoke=True,
                     signed=macos_channel == "signed",
+                    expected_versions=expected_versions,
                 )
             current = _update_current_project(destination.parent, args.version)
             _register_godot(config.godot_projects_file, current)

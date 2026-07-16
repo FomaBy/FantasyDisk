@@ -38,11 +38,6 @@ if ! [[ "${VERSION}" =~ ${RELEASE_VERSION_RE} ]]; then
   echo "ERROR: version must have format X.Y.Z or X.Y.Z.R"
   exit 2
 fi
-WINDOWS_FILE_VERSION="${VERSION}.0"
-if [[ "${VERSION}" == *.*.*.* ]]; then
-  WINDOWS_FILE_VERSION="${VERSION}"
-fi
-
 if [[ "${MACOS_CHANNEL}" != "signed" && "${MACOS_CHANNEL}" != "unsigned" ]]; then
   echo "ERROR: FANTASYDISK_MACOS_CHANNEL must be 'signed' or 'unsigned', got '${MACOS_CHANNEL}'"
   exit 2
@@ -123,6 +118,7 @@ for required_input in \
   tools/build_release.sh \
   tools/create_macos_dmg.sh \
   tools/godot_gate.py \
+  tools/release_version_mapping.py \
   tools/scan_release_secrets.py \
   tools/windows_installer.nsi \
   skills/codex/fantasydisk-release-director/scripts/build_update_manifest.py \
@@ -144,11 +140,13 @@ if [[ "${TAG_PROJECT_VERSION}" != "${VERSION}" ]]; then
   echo "    ERROR: config/version в теге ${TAG} = ${TAG_PROJECT_VERSION}, ожидали ${VERSION}"
   exit 2
 fi
-if ! grep -q "application/short_version=\"${VERSION}\"" "${WORKTREE_DIR}/export_presets.cfg" \
-    || ! grep -q "application/version=\"${VERSION}\"" "${WORKTREE_DIR}/export_presets.cfg" \
-    || ! grep -q "application/product_version=\"${VERSION}\"" "${WORKTREE_DIR}/export_presets.cfg" \
+VERSION_MAPPING="$(python3 "${WORKTREE_DIR}/tools/release_version_mapping.py" --version "${VERSION}")"
+IFS=$'\t' read -r MACOS_SHORT_VERSION MACOS_BUILD_VERSION WINDOWS_PRODUCT_VERSION WINDOWS_FILE_VERSION <<< "${VERSION_MAPPING}"
+if ! grep -q "application/short_version=\"${MACOS_SHORT_VERSION}\"" "${WORKTREE_DIR}/export_presets.cfg" \
+    || ! grep -q "application/version=\"${MACOS_BUILD_VERSION}\"" "${WORKTREE_DIR}/export_presets.cfg" \
+    || ! grep -q "application/product_version=\"${WINDOWS_PRODUCT_VERSION}\"" "${WORKTREE_DIR}/export_presets.cfg" \
     || ! grep -q "application/file_version=\"${WINDOWS_FILE_VERSION}\"" "${WORKTREE_DIR}/export_presets.cfg"; then
-  echo "    ERROR: export_presets.cfg версии не совпадают с ${VERSION}"
+  echo "    ERROR: export_presets.cfg не соответствует platform mapping logical version ${VERSION}"
   exit 2
 fi
 

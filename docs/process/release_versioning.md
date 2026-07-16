@@ -21,10 +21,15 @@
   Код может читать её через `ProjectSettings.get_setting("application/config/version")`
   (показывать в главном меню мелким текстом).
 - Каждый релиз помечается immutable git-тегом `v<version>` на ветке `main`.
-- Версия дублируется в экспорт-пресетах: macOS `application/short_version` и
-  `application/version`, Windows `application/product_version` равны
-  `<version>`; `application/file_version` равен `<version>.0` для `X.Y.Z` и
-  самому `<version>` для `X.Y.Z.R`.
+- Export presets отделяют logical release version от macOS bundle metadata.
+  Для logical `X.Y.Z.R` (у `X.Y.Z` считать `R=0`) macOS
+  `application/short_version` равен `X.Y.Z`, а `application/version` равен
+  `X.Y.(1000*Z+R)`; четвёртый компонент технического hotfix ограничен
+  `0…999`. Так Apple Version/Build остаются трёхкомпонентными и сохраняют
+  порядок hotfix (см. [Apple CFBundleVersion](https://developer.apple.com/documentation/bundleresources/information-property-list/cfbundleversion)
+  и [Godot macOS exporter](https://docs.godotengine.org/en/4.7/classes/class_editorexportplatformmacos.html)). Windows `application/product_version` равен `<version>`, а
+  `application/file_version` равен `<version>.0` для `X.Y.Z` и самому
+  `<version>` для `X.Y.Z.R`.
 - История изменений — `CHANGELOG.md` (раздел Unreleased пополняется по ходу dev,
   при релизе переименовывается в номер версии с датой).
 

@@ -252,7 +252,7 @@ class LocalReleaseTests(unittest.TestCase):
         with self.assertRaisesRegex(local_release.LocalReleaseError, "macOS channel"):
             local_release.resolve_macos_channel("notarized")
 
-    def test_unsigned_channel_skips_only_signature_checks_for_macos_app(self) -> None:
+    def test_macos_verifier_checks_mapped_short_and_build_versions(self) -> None:
         app = self.root / "FantasyDisk.app"
         (app / "Contents" / "MacOS").mkdir(parents=True)
         plist = app / "Contents" / "Info.plist"
@@ -262,18 +262,31 @@ class LocalReleaseTests(unittest.TestCase):
             b' "http://www.apple.com/DTDs/PropertyList-1.0.dtd">\n'
             b'<plist version="1.0"><dict>'
             b"<key>CFBundleShortVersionString</key><string>9.8.7</string>"
+            b"<key>CFBundleVersion</key><string>9.8.7001</string>"
             b"</dict></plist>\n"
         )
         with mock.patch.object(local_release, "_run") as run_mock:
-            local_release.verify_macos_app(app, "9.8.7", launch_smoke=False, signed=False)
+            local_release.verify_macos_app(app, "9.8.7.1", launch_smoke=False, signed=False)
         self.assertEqual(run_mock.call_args_list, [])
         with mock.patch.object(local_release, "_run") as run_mock:
-            local_release.verify_macos_app(app, "9.8.7", launch_smoke=False, signed=True)
+            local_release.verify_macos_app(app, "9.8.7.1", launch_smoke=False, signed=True)
         tools = [call.args[0][0] for call in run_mock.call_args_list]
         self.assertEqual(tools, ["codesign", "xcrun", "spctl"])
-        # The version gate stays mandatory in both channels.
-        with self.assertRaisesRegex(local_release.LocalReleaseError, "expected 1.0.0"):
-            local_release.verify_macos_app(app, "1.0.0", launch_smoke=False, signed=False)
+        # The version gate stays mandatory in both channels and rejects a direct
+        # four-component CFBundleVersion replacement.
+        plist.write_bytes(plist.read_bytes().replace(b"9.8.7001", b"9.8.7.1"))
+        with self.assertRaisesRegex(local_release.LocalReleaseError, "build=9.8.7001"):
+            local_release.verify_macos_app(app, "9.8.7.1", launch_smoke=False, signed=False)
+
+    def test_macos_verifier_can_use_immutable_tag_export_metadata(self) -> None:
+        project = self.root / "tag-project"
+        project.mkdir()
+        (project / "export_presets.cfg").write_text(
+            'application/short_version="0.2.4"\napplication/version="0.2.4"\n',
+            encoding="utf-8",
+        )
+        expected = local_release._macos_bundle_versions_from_project(project)
+        self.assertEqual(expected, local_release.MacOSBundleVersions("0.2.4", "0.2.4"))
 
     def test_build_script_macos_channel_is_fail_closed(self) -> None:
         script_path = ROOT / "tools" / "build_release.sh"

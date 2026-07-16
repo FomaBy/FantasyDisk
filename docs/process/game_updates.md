@@ -94,10 +94,20 @@ version, URL, имена, размеры и хэши до любой внешн�
   повторная доставка не является новым release.
 - Если меняется хотя бы один технический байт, нужен новый immutable tag и
   версия `X.Y.Z.R`; нельзя заменять файлы или manifest под прежним номером.
-  Перед запуском такого hotfix все поля `project.godot`, macOS и Windows export
-  metadata, имена артефактов, manifest и publication commands получают тот же
-  новый номер. Для трёхкомпонентной версии Windows `file_version` имеет
-  дополнительный `.0`, для hotfix из четырёх компонентов он равен версии.
+  `project.godot`, имена артефактов, manifest и publication commands получают
+  тот же logical номер. Windows сохраняет его в `application/product_version`,
+  а `application/file_version` имеет дополнительный `.0` для `X.Y.Z` и равен
+  logical версии для `X.Y.Z.R`.
+- macOS exporter не получает четвёртый компонент напрямую: Godot записывает
+  `application/short_version` в user-visible Xcode Version, а
+  `application/version` — в machine-readable Xcode Build. Для logical
+  `X.Y.Z.R` (у `X.Y.Z` считать `R=0`) `short_version` равен `X.Y.Z`, а build
+  равен `X.Y.(1000*Z+R)`. `R` ограничен `0…999`; это сохраняет порядок
+  `0.2.3 < 0.2.3.1 < 0.2.4` как `0.2.3000 < 0.2.3001 < 0.2.4000` и оставляет
+  оба Info.plist поля трёхкомпонентными. Источник контракта:
+  [Apple CFBundleShortVersionString](https://developer.apple.com/documentation/bundleresources/information-property-list/cfbundleshortversionstring),
+  [Apple CFBundleVersion](https://developer.apple.com/documentation/bundleresources/information-property-list/cfbundleversion)
+  и [Godot 4.7 macOS exporter](https://docs.godotengine.org/en/4.7/classes/class_editorexportplatformmacos.html).
 
 ## Каналы сборки macOS
 

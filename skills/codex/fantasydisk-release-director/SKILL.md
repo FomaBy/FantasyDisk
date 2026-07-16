@@ -26,8 +26,13 @@ read-only history. Run from the repository root; do not hardcode a checkout path
    release is `X.Y.Z`; a byte-changing technical-only hotfix may be `X.Y.Z.R`.
    Re-delivery of byte-identical existing artifacts keeps the old immutable
    version and does not run this release flow. Set `project.godot::config/version`
-   and macOS fields to `<version>`; Windows `file_version` is `<version>.0` for
-   three components and `<version>` for four.
+   to the logical `<version>`. For macOS, normalize `X.Y.Z` as `X.Y.Z.0`, keep
+   `application/short_version` at `X.Y.Z`, and set `application/version` to
+   `X.Y.(1000*Z+R)`; `R` must be `0…999`. This keeps the user-visible Version
+   and machine-readable Build at three numeric components while preserving hotfix
+   order. Windows `product_version` remains `<version>`; `file_version` is
+   `<version>.0` for three components and `<version>` for four. Validate every
+   field with `tools/release_version_mapping.py --version <version>`.
 2. Finalize `CHANGELOG.md` as `## [<version>] — YYYY-MM-DD`, then leave a new empty
    `Unreleased` section above it.
 3. Add the newest entry first in `scripts/patch_notes_data.gd`.

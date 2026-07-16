@@ -39,7 +39,7 @@ class QualityStaticGuardTest(unittest.TestCase):
             self.assertEqual(len(errors), 1)
             self.assertIn("resource case mismatch", errors[0])
 
-    def test_accepts_four_component_hotfix_and_uses_it_for_windows_file_version(self):
+    def test_maps_four_component_hotfix_to_three_component_macos_metadata(self):
         with tempfile.TemporaryDirectory() as tmp:
             root = Path(tmp)
             shutil.copy(ROOT / "project.godot", root / "project.godot")
@@ -53,16 +53,75 @@ class QualityStaticGuardTest(unittest.TestCase):
                 encoding="utf-8",
             )
             text = exports.read_text(encoding="utf-8")
-            text = re.sub(
-                r'(?m)^application/(short_version|version|product_version)="0\.2\.4"$',
-                lambda match: f'application/{match.group(1)}="0.2.3.1"',
-                text,
+            text = text.replace(
+                'application/short_version="0.2.4"',
+                'application/short_version="0.2.3"',
+            ).replace(
+                'application/version="0.2.4000"',
+                'application/version="0.2.3001"',
+            ).replace(
+                'application/product_version="0.2.4"',
+                'application/product_version="0.2.3.1"',
             ).replace(
                 'application/file_version="0.2.4.0"',
                 'application/file_version="0.2.3.1"',
             )
             exports.write_text(text, encoding="utf-8")
             self.assertEqual(self.module.version_and_windows_errors(root), [])
+
+    def test_rejects_direct_four_component_macos_metadata(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            shutil.copy(ROOT / "project.godot", root / "project.godot")
+            shutil.copy(ROOT / "export_presets.cfg", root / "export_presets.cfg")
+            project = root / "project.godot"
+            exports = root / "export_presets.cfg"
+            project.write_text(
+                project.read_text(encoding="utf-8").replace(
+                    'config/version="0.2.4"', 'config/version="0.2.3.1"'
+                ),
+                encoding="utf-8",
+            )
+            text = exports.read_text(encoding="utf-8").replace(
+                'application/short_version="0.2.4"',
+                'application/short_version="0.2.3.1"',
+            ).replace(
+                'application/version="0.2.4000"',
+                'application/version="0.2.3.1"',
+            ).replace(
+                'application/product_version="0.2.4"',
+                'application/product_version="0.2.3.1"',
+            ).replace(
+                'application/file_version="0.2.4.0"',
+                'application/file_version="0.2.3.1"',
+            )
+            exports.write_text(text, encoding="utf-8")
+            errors = self.module.version_and_windows_errors(root)
+            self.assertIn(
+                "export_presets.cfg: application/short_version must equal '0.2.3'",
+                errors,
+            )
+            self.assertIn(
+                "export_presets.cfg: application/version must equal '0.2.3001'",
+                errors,
+            )
+
+    def test_mapping_is_monotonic_and_bounds_the_hotfix_component(self):
+        mappings = [
+            self.module.platform_version_mapping(version)
+            for version in ("0.2.3", "0.2.3.1", "0.2.4")
+        ]
+        self.assertEqual(
+            [mapping.macos_build_version for mapping in mappings],
+            ["0.2.3000", "0.2.3001", "0.2.4000"],
+        )
+        with self.assertRaisesRegex(ValueError, "0..999"):
+            self.module.platform_version_mapping("0.2.3.1000")
+
+    def test_build_script_uses_the_tagged_platform_mapping_tool(self):
+        script = (ROOT / "tools" / "build_release.sh").read_text(encoding="utf-8")
+        self.assertIn('tools/release_version_mapping.py', script)
+        self.assertIn('MACOS_SHORT_VERSION MACOS_BUILD_VERSION WINDOWS_PRODUCT_VERSION WINDOWS_FILE_VERSION', script)
 
     def test_rejects_five_component_release_version(self):
         with tempfile.TemporaryDirectory() as tmp:

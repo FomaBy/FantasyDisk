@@ -9,6 +9,13 @@ import sys
 from pathlib import Path
 
 
+TOOLS_DIR = Path(__file__).resolve().parent
+if str(TOOLS_DIR) not in sys.path:
+    sys.path.insert(0, str(TOOLS_DIR))
+
+from release_version_mapping import platform_version_mapping
+
+
 RUNTIME_SUFFIXES = {".gd", ".godot", ".tscn", ".tres", ".cfg"}
 RESOURCE_RE = re.compile(r"res://[A-Za-z0-9_./@+\-]+")
 RELEASE_VERSION_RE = re.compile(
@@ -104,12 +111,16 @@ def version_and_windows_errors(root: Path) -> list[str]:
         errors.append("project.godot: config/version is missing")
     elif not RELEASE_VERSION_RE.fullmatch(version):
         errors.append("project.godot: config/version must use X.Y.Z or X.Y.Z.R")
-    windows_file_version = version if version.count(".") == 3 else f"{version}.0"
+    try:
+        mapping = platform_version_mapping(version)
+    except ValueError as error:
+        errors.append(f"project.godot: config/version {error}")
+        mapping = None
     expected = {
-        "application/short_version": version,
-        "application/version": version,
-        "application/product_version": version,
-        "application/file_version": windows_file_version,
+        "application/short_version": mapping.macos_short_version if mapping else "",
+        "application/version": mapping.macos_build_version if mapping else "",
+        "application/product_version": mapping.windows_product_version if mapping else "",
+        "application/file_version": mapping.windows_file_version if mapping else "",
     }
     for key, value in expected.items():
         if _quoted_value(exports, key) != value:
