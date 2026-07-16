@@ -83,7 +83,9 @@ func _test_engineer_mine_detonates_once_and_persists(errors: Array) -> void:
 	root.add_child(owner)
 	root.add_child(enemy)
 	owner.global_position = Vector2(200, 200)
-	enemy.global_position = Vector2(232, 200)
+	# Сперва фиксируем созданную мину. Если враг сразу стоит в радиусе, корректная
+	# мина может взорваться на первом physics-кадре раньше самой проверки spawn.
+	enemy.global_position = Vector2(800, 200)
 	enemy.add_to_group("enemies")
 
 	weapon.damage = 8.0
@@ -105,6 +107,7 @@ func _test_engineer_mine_detonates_once_and_persists(errors: Array) -> void:
 	# Враг рядом: детонация одним взрывом (полный ролл 10.0 = derived damage
 	# владельца через _rolled_damage; weapon.damage=8 — только fallback без
 	# владельца) и уборка.
+	enemy.global_position = Vector2(232, 200)
 	await create_timer(0.30).timeout
 	if absf(enemy.damage_taken - 10.0) > 0.01:
 		errors.append("Expected single full-damage detonation of 10.0 (owner derived damage), got %.2f." % enemy.damage_taken)

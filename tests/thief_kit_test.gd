@@ -545,7 +545,12 @@ func _test_smoke_cloud_player_dodge(errors: Array) -> void:
 	player.call("register_smoke_cloud", player_node.global_position, 170.0, 0.25, 0.35)
 	if float(player.call("smoke_cloud_dodge_bonus")) <= EPS:
 		errors.append("дым: свежее короткое облако не даёт бонус")
-	await create_timer(0.40).timeout
+	# Player хранит время жизни облака в Time.get_ticks_msec() (реальное монотонное
+	# время), а headless-таймер может отработать 0.40 игрового времени раньше
+	# 250 мс реального. Ждём по тому же источнику времени, иначе gate флапает.
+	var expiry_deadline_msec := Time.get_ticks_msec() + 400
+	while Time.get_ticks_msec() < expiry_deadline_msec:
+		await process_frame
 	if float(player.call("smoke_cloud_dodge_bonus")) > EPS:
 		errors.append("дым: бонус пережил истечение облака")
 	player.queue_free()
