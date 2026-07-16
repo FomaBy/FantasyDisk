@@ -1,16 +1,16 @@
 # Release & Versioning — FantasyDisk
 
-Обновлено: 2026-07-15
+Обновлено: 2026-07-16
 Ведет: PM. Исполняет сборки: Back-end.
 
 ## Версионирование
 
 - Схема: **SemVer** `MAJOR.MINOR.PATCH`; до выхода 1.0 — `0.MINOR.PATCH`
   (0.1.0 → 0.2.0 — новые фичи; 0.2.1 — только хотфиксы).
-- Текущий active target: `0.2.2`. Плановые `0.1.8` и `0.1.9` отменены/superseded:
+- Текущий active target: `0.2.3`. Плановые `0.1.8` и `0.1.9` отменены/superseded:
   не создавать под них sprint, Multica release metadata (`release`),
   changelog-финализацию или release tasks. После `0.2.0` следующая patch-линия:
-  `0.2.1`, `0.2.2`, ...
+  `0.2.1`, `0.2.2`, `0.2.3`, ...
 - **Источник истины версии** — `project.godot` → `[application] config/version`.
   Код может читать её через `ProjectSettings.get_setting("application/config/version")`
   (показывать в главном меню мелким текстом).
@@ -107,12 +107,10 @@ dev  — основная ветка разработки. Все чаты (Back
 
 ## Feature Block
 
-Feature block 0.1.5 снят релизом v0.1.5 (2026-06-15). На 2026-07-14 активной
-freeze-директивы нет; текущий Multica release target — `0.2.2`. При следующей
-стабилизации PM включает freeze отдельной директивой: в текущий релиз остаются
-уже заведенные строки доски, bugfix/QA defect/regression/release-blocker задачи
-и явно разрешенные PM исключения; новые не-баговые фичи уходят в следующую
-SemVer patch/minor версию.
+Feature block 0.1.5 снят релизом v0.1.5 (2026-06-15). На 2026-07-16 включён
+release freeze для `0.2.3` в рамках FAN-1128: в текущий релиз входят только уже
+принятый integration head, release finalization и доказанные blockers/QA defects.
+Новые продуктовые изменения уходят в следующую SemVer patch/minor версию.
 
 Исторически блок 0.1.3 был снят релизом v0.1.3 (2026-06-12); механизм остается
 тем же для каждой релизной стабилизации.

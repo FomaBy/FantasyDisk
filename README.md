@@ -66,14 +66,25 @@ python tools/quality_gate.py --profile windows
 - `fantasydisk_release.session` — legacy Telethon-сессия только для релиза 0.2.2.
 
 ## Сборка релиза (macOS)
+
+Текущий одобренный канал — явный `unsigned`:
+
+```bash
+FANTASYDISK_MACOS_CHANNEL=unsigned tools/build_release.sh <версия>
+```
+
+Строгий подписанный канал включается отдельно, когда доступны Apple credentials:
+
 ```bash
 export MACOS_SIGN_IDENTITY="Developer ID Application: <owner> (<TEAMID>)"
 export MACOS_NOTARY_PROFILE="fantasydisk-notary" # credentials stored in Keychain
-tools/build_release.sh <версия>    # собирает из git-тега; ad-hoc build запрещён
+FANTASYDISK_MACOS_CHANNEL=signed tools/build_release.sh <версия>
 ```
 
-macOS-релиз fail-closed: нужны Developer ID, Apple notarization/stapling и
-успешный `spctl` для приложения и DMG. Без них publishable артефакт не создаётся.
+Оба канала fail-closed и не переключаются молча. `signed` требует Developer ID,
+Apple notarization/stapling и успешный `spctl`; `unsigned` отказывается работать
+при заданных Apple credentials, пропускает только Apple trust-проверки и честно
+показывает игроку инструкцию Gatekeeper «Всё равно открыть».
 Проверенный пакет публикуется как public GitHub Release через bundled
 `github_release_publish.py`; клиент 0.2.2+ читает `update-manifest.json` из
 `releases/latest`. Telegram используется дополнительно только для v0.2.2.

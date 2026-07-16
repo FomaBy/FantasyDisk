@@ -1,0 +1,82 @@
+{
+  "ok": true,
+  "zones": [
+    {
+      "id": "release",
+      "rect": [
+        80,
+        55,
+        145,
+        80
+      ],
+      "ok": true,
+      "kind": "guide"
+    },
+    {
+      "id": "brand",
+      "rect": [
+        240,
+        50,
+        300,
+        90
+      ],
+      "ok": true,
+      "kind": "guide"
+    },
+    {
+      "id": "subtitle",
+      "rect": [
+        790,
+        55,
+        460,
+        80
+      ],
+      "ok": true,
+      "kind": "guide"
+    },
+    {
+      "id": "intro",
+      "rect": [
+        86,
+        190,
+        1180,
+        150
+      ],
+      "ok": true,
+      "kind": "guide"
+    },
+    {
+      "id": "left",
+      "rect": [
+        82,
+        410,
+        580,
+        704
+      ],
+      "ok": true,
+      "kind": "guide"
+    },
+    {
+      "id": "right",
+      "rect": [
+        692,
+        410,
+        576,
+        704
+      ],
+      "ok": true,
+      "kind": "guide"
+    },
+    {
+      "id": "footer",
+      "rect": [
+        88,
+        1188,
+        1174,
+        112
+      ],
+      "ok": true,
+      "kind": "guide"
+    }
+  ]
+}
