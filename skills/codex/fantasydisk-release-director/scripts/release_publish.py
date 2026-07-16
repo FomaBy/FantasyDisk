@@ -1,26 +1,21 @@
 #!/usr/bin/env python3
-"""Публикация релиза FantasyDisk в Discord (releases webhook).
+"""Publish the verified FantasyDisk release news to Discord after Telegram delivery."""
 
-Постит новость версии с выделенными ключевыми изменениями, SHA256 и размерами;
-прикладывает файлы <25 МБ (changelog, SHA256SUMS, poster), а каноническая
-ссылка на установщики ведёт на публичный GitHub Release.
-
-URL вебхука: release_webhook.cfg (корень проекта, [release] discord_webhook_url) —
-секрет, в .gitignore. User-Agent обязателен (иначе Discord 403).
-
-Запуск: python3 release_publish.py --version X.Y.Z [--dry-run]
-"""
 import argparse
 import configparser
 import json
 import os
 import subprocess
 import sys
-import urllib.request
 import urllib.error
+import urllib.request
 
-DISCORD_LIMIT = 24 * 1024 * 1024  # ~25 МБ лимит вложений вебхука
+from telegram_publish import public_download_url
+
+
+DISCORD_LIMIT = 24 * 1024 * 1024
 UA = "FantasyDisk-Release/1.0"
+DISTRIBUTION_REPOSITORY = "FomaBy/FantasyDisk-Releases"
 
 
 def verify_local_release(root: str, version: str) -> str:
@@ -40,113 +35,101 @@ def verify_local_release(root: str, version: str) -> str:
 
 
 def repo_root() -> str:
-    # скрипт лежит в ~/.codex/skills/...; корень репо берём из CWD или env
     return os.environ.get("FANTASYDISK_REPO", os.getcwd())
 
 
 def github_release_url(version: str) -> str:
-    return "https://github.com/FomaBy/FantasyDisk/releases/tag/v%s" % version
+    return "https://github.com/%s/releases/tag/v%s" % (DISTRIBUTION_REPOSITORY, version)
 
 
 def webhook_url(root: str) -> str:
-    cfg = configparser.ConfigParser()
-    p = os.path.join(root, "release_webhook.cfg")
-    if not cfg.read(p):
+    config = configparser.ConfigParser()
+    path = os.path.join(root, "release_webhook.cfg")
+    if not config.read(path):
         sys.exit("release_webhook.cfg не найден в %s" % root)
-    return cfg.get("release", "discord_webhook_url").strip().strip('"')
+    return config.get("release", "discord_webhook_url").strip().strip('"')
 
 
-def read_highlights(release_dir: str, version: str) -> list:
-    """Read publication text only from the verified durable release package."""
-    # 1) clean Russian highlights from the immutable exact-tag source snapshot
-    pn = os.path.join(release_dir, "project", "scripts", "patch_notes_data.gd")
-    if os.path.exists(pn):
+def read_highlights(release_dir: str, version: str) -> list[str]:
+    patch_notes = os.path.join(release_dir, "project", "scripts", "patch_notes_data.gd")
+    if os.path.exists(patch_notes):
         import re
-        src = open(pn, encoding="utf-8").read()
-        m = re.search(r'"version":\s*"%s".*?"highlights":\s*\[(.*?)\]' % re.escape(version), src, re.S)
-        if m:
-            hs = re.findall(r'"((?:[^"\\]|\\.)*)"', m.group(1))
-            if hs:
-                return [h.replace('\\"', '"') for h in hs][:12]
-    # 2) the changelog retained alongside the verified installers
-    for cand in [os.path.join(release_dir, "CHANGELOG-%s.md" % version)]:
-        if os.path.exists(cand):
-            lines = [l.strip("-* \t").rstrip() for l in open(cand, encoding="utf-8")
-                     if l.strip().startswith(("-", "*"))]
-            if lines:
-                return lines[:12]
+
+        source = open(patch_notes, encoding="utf-8").read()
+        match = re.search(r'"version":\s*"%s".*?"highlights":\s*\[(.*?)\]' % re.escape(version), source, re.S)
+        if match:
+            highlights = re.findall(r'"((?:[^"\\]|\\.)*)"', match.group(1))
+            if highlights:
+                return [highlight.replace('\\"', '"') for highlight in highlights][:12]
+    changelog = os.path.join(release_dir, "CHANGELOG-%s.md" % version)
+    if os.path.exists(changelog):
+        lines = [line.strip("-* \t").rstrip() for line in open(changelog, encoding="utf-8") if line.strip().startswith(("-", "*"))]
+        if lines:
+            return lines[:12]
     return []
 
 
-def post(url, content, files, dry):
-    if dry:
+def post(url: str, content: str, files: list[tuple[str, bytes]], dry_run: bool) -> None:
+    if dry_run:
         print("[dry-run] content:\n" + content)
-        print("[dry-run] attach:", [f for f, _ in files])
+        print("[dry-run] attach:", [name for name, _data in files])
         return
     boundary = "----FantasyDiskRelease"
     body = b""
     body += ("--%s\r\n" % boundary).encode()
     body += b'Content-Disposition: form-data; name="payload_json"\r\nContent-Type: application/json\r\n\r\n'
     body += json.dumps({"username": "FantasyDisk Releases", "content": content[:1900]}).encode() + b"\r\n"
-    for i, (name, data) in enumerate(files):
+    for index, (name, data) in enumerate(files):
         body += ("--%s\r\n" % boundary).encode()
-        body += ('Content-Disposition: form-data; name="files[%d]"; filename="%s"\r\n'
-                 % (i, name)).encode()
+        body += ('Content-Disposition: form-data; name="files[%d]"; filename="%s"\r\n' % (index, name)).encode()
         content_type = "image/png" if name.lower().endswith(".png") else "application/octet-stream"
         body += ("Content-Type: %s\r\n\r\n" % content_type).encode() + data + b"\r\n"
     body += ("--%s--\r\n" % boundary).encode()
-    req = urllib.request.Request(url, data=body, method="POST", headers={
-        "Content-Type": "multipart/form-data; boundary=%s" % boundary, "User-Agent": UA})
+    request = urllib.request.Request(url, data=body, method="POST", headers={"Content-Type": "multipart/form-data; boundary=%s" % boundary, "User-Agent": UA})
     try:
-        r = urllib.request.urlopen(req)
-        print("Discord:", r.status, "— опубликовано ✓")
-    except urllib.error.HTTPError as e:
-        sys.exit("Discord ошибка %s: %s" % (e.code, e.read().decode()[:200]))
+        with urllib.request.urlopen(request) as response:
+            print("Discord:", response.status, "— опубликовано ✓")
+    except urllib.error.HTTPError as exc:
+        sys.exit("Discord ошибка %s: %s" % (exc.code, exc.read().decode()[:200]))
 
 
-def main():
-    ap = argparse.ArgumentParser()
-    ap.add_argument("--version", required=True)
-    ap.add_argument("--dry-run", action="store_true")
-    a = ap.parse_args()
+def main() -> None:
+    parser = argparse.ArgumentParser()
+    parser.add_argument("--version", required=True)
+    parser.add_argument("--dry-run", action="store_true")
+    args = parser.parse_args()
     root = repo_root()
-    rel = verify_local_release(root, a.version)
-    if not os.path.isdir(rel):
-        sys.exit("Нет каталога релиза: %s (сначала tools/build_release.sh %s)" % (rel, a.version))
-    arts = sorted(os.listdir(rel))
-    installers = [
-        f
-        for f in arts
-        if f.endswith(".dmg") or f.endswith("-windows-setup.exe")
-    ]
-    posters = [f for f in arts if f.endswith(".png")]
-    if len(posters) != 1:
-        sys.exit("Ожидался ровно один проверенный PNG release poster")
-    if os.path.getsize(os.path.join(rel, posters[0])) > DISCORD_LIMIT:
+    rel = verify_local_release(root, args.version)
+    installers = [f"FantasyDisk-{args.version}-macos.dmg", f"FantasyDisk-{args.version}-windows-setup.exe"]
+    poster = f"fantasydisk_{args.version.replace('.', '')}_announcement.png"
+    required = [*installers, "SHA256SUMS.txt", "CHANGELOG-%s.md" % args.version, poster]
+    missing = [name for name in required if not os.path.isfile(os.path.join(rel, name))]
+    if missing:
+        sys.exit("Проверенный релиз неполон для Discord: " + ", ".join(missing))
+    if os.path.getsize(os.path.join(rel, poster)) > DISCORD_LIMIT:
         sys.exit("Release poster превышает лимит Discord webhook")
-    smalls = [f for f in arts if f.endswith((".txt", ".md", ".png"))]
-
-    hl = read_highlights(rel, a.version)
-    key = hl[:5]
-    rest = hl[5:]
-    lines = ["# 🐉 FantasyDisk v%s" % a.version, ""]
-    if key:
-        lines += ["**✨ Главное:**"] + ["**•** %s" % h for h in key] + [""]
-    if rest:
-        lines += ["Также:"] + ["• %s" % h for h in rest] + [""]
-    lines.append("**\U0001F4E5 Скачать (macOS + Windows) на GitHub Releases:**")
-    lines.append(github_release_url(a.version))
-    lines.append("")
-    lines.append("_Сборки: %s. SHA256 — во вложении._" % ", ".join(installers))
-
+    highlights = read_highlights(rel, args.version)
+    telegram_link = public_download_url(root)
+    lines = ["# 🐉 FantasyDisk v%s" % args.version, ""]
+    if highlights:
+        lines += ["**✨ Главное:**"] + ["**•** %s" % line for line in highlights[:5]] + [""]
+    if len(highlights) > 5:
+        lines += ["Также:"] + ["• %s" % line for line in highlights[5:]] + [""]
+    lines += [
+        "**📨 Скачать файлы (macOS + Windows) в Telegram:**",
+        telegram_link,
+        "",
+        "**🔄 Автообновления и текущий стабильный релиз:**",
+        github_release_url(args.version),
+        "",
+        "_Сборки: %s. SHA256 — во вложении и в Telegram._" % ", ".join(installers),
+    ]
     files = []
-    for f in smalls:  # changelog + SHA256SUMS — обычно <25 МБ
-        p = os.path.join(rel, f)
-        if os.path.getsize(p) <= DISCORD_LIMIT:
-            files.append((f, open(p, "rb").read()))
-
-    destination = "dry-run" if a.dry_run else webhook_url(root)
-    post(destination, "\n".join(lines), files, a.dry_run)
+    for name in ["CHANGELOG-%s.md" % args.version, "SHA256SUMS.txt", poster]:
+        path = os.path.join(rel, name)
+        if os.path.getsize(path) <= DISCORD_LIMIT:
+            files.append((name, open(path, "rb").read()))
+    post("dry-run" if args.dry_run else webhook_url(root), "\n".join(lines), files, args.dry_run)
 
 
 if __name__ == "__main__":

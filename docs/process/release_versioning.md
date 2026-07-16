@@ -1,16 +1,16 @@
 # Release & Versioning — FantasyDisk
 
-Обновлено: 2026-07-16
+Обновлено: 2026-07-16 (FAN-1210)
 Ведет: PM. Исполняет сборки: Back-end.
 
 ## Версионирование
 
 - Схема: **SemVer** `MAJOR.MINOR.PATCH`; до выхода 1.0 — `0.MINOR.PATCH`
   (0.1.0 → 0.2.0 — новые фичи; 0.2.1 — только хотфиксы).
-- Текущий active target: `0.2.3`. Плановые `0.1.8` и `0.1.9` отменены/superseded:
+- Текущий active target: `0.2.4`. Плановые `0.1.8` и `0.1.9` отменены/superseded:
   не создавать под них sprint, Multica release metadata (`release`),
   changelog-финализацию или release tasks. После `0.2.0` следующая patch-линия:
-  `0.2.1`, `0.2.2`, `0.2.3`, ...
+  `0.2.1`, `0.2.2`, `0.2.3`, `0.2.4`, ...
 - **Источник истины версии** — `project.godot` → `[application] config/version`.
   Код может читать её через `ProjectSettings.get_setting("application/config/version")`
   (показывать в главном меню мелким текстом).
@@ -74,21 +74,24 @@ dev  — основная ветка разработки. Все чаты (Back
       дополнительно только в канале `signed` (в `unsigned` они пропускаются, а
       `verify` требует явного совпадения записанного `macos_channel`).
     Существующий локальный релиз с отличающимися байтами не перезаписывается.
-    GitHub/Discord и legacy Telegram clients повторно запускают verify, отправляют
-    байты только
-    из возвращённого проверенного локального пути и обязательно прикладывают PNG
-    release poster. Локальный root задаётся явно/env/config и никогда не
-    угадывается по временному worktree.
-9b. **Public GitHub Release + updater manifest (начиная с 0.2.2).** Пакет обязан
-    содержать `update-manifest.json` schema 1 с точными именами, размерами,
-    SHA-256 и GitHub download URL обоих установщиков. Сначала выполнить dry-run,
-    затем `github_release_publish.py --version X.Y.Z`: remote tag уже должен
-    существовать, новый release создаётся draft, манифест загружается последним,
-    и только полный release становится public/latest. Стабильный клиентский URL:
-    `https://github.com/FomaBy/FantasyDisk/releases/latest/download/update-manifest.json`.
-    `v0.2.2` дополнительно публикуется в Telegram. Любая версия после `0.2.2`
-    **не публикуется в Telegram**; `telegram_publish.py` блокирует её. Discord
-    всегда ведёт на публичный GitHub Release. Полный контракт:
+    GitHub, Telegram и Discord clients повторно запускают verify, отправляют
+    байты только из возвращённого проверенного локального пути и обязательно
+    прикладывают PNG release poster. Локальный root задаётся явно/env/config и
+    никогда не угадывается по временному worktree.
+9b. **Public GitHub distribution + updater manifest (начиная с 0.2.2).** Private
+    source repository `FomaBy/FantasyDisk` не используется как download host.
+    Пакет обязан содержать `update-manifest.json` schema 1 с точными именами,
+    размерами, SHA-256 и URLs обоих installers в public binary-only repository
+    `FomaBy/FantasyDisk-Releases`. До upload publisher доказывает, что public
+    Git tree содержит только минимальный README, без source/secrets; release
+    создаётся draft, manifest загружается последним и только полный allowlisted
+    package становится latest. Стабильный клиентский URL:
+    `https://github.com/FomaBy/FantasyDisk-Releases/releases/latest/download/update-manifest.json`.
+    Затем `github_release_verify.py` без GitHub credentials сверяет page,
+    manifest, installers, hashes и durable bytes и лишь после PASS удаляет stale
+    distribution releases/tags. Каждый stable release обязательно отправляется
+    в Telegram (poster, DMG, Windows Setup, SHA256SUMS), после чего Discord
+    публикует Telegram download link и GitHub release URL. Полный контракт:
     `docs/process/game_updates.md`.
 10. **Релиз в Multica** (правило пользователя 2026-06-12: спринт = релиз;
     live board — проект FantasyDisk, issues FAN-*):
@@ -108,8 +111,8 @@ dev  — основная ветка разработки. Все чаты (Back
 ## Feature Block
 
 Feature block 0.1.5 снят релизом v0.1.5 (2026-06-15). На 2026-07-16 включён
-release freeze для `0.2.3` в рамках FAN-1128: в текущий релиз входят только уже
-принятый integration head, release finalization и доказанные blockers/QA defects.
+release freeze для `0.2.4` в рамках FAN-1128/FAN-1210: в текущий релиз входит
+только исправление публичного updater/distribution и доказанные release gates.
 Новые продуктовые изменения уходят в следующую SemVer patch/minor версию.
 
 Исторически блок 0.1.3 был снят релизом v0.1.3 (2026-06-12); механизм остается

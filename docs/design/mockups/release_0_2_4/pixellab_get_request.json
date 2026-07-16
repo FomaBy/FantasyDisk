@@ -1,0 +1,7 @@
+{
+  "tool": "get_source",
+  "source_id": "a3df8aa6-2e0a-492f-a57e-949cb67cd742",
+  "source_sha256": "7c4892bbd9180d74b29d56e5104ec29341bf525cd69a5c31e8b78b0fd2921614",
+  "source_dimensions": [632, 424],
+  "note": "The accepted empty-frame source was composited only inside declared content zones; no source text or pseudo-text was retained."
+}

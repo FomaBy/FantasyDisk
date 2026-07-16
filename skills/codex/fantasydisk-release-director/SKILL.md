@@ -1,6 +1,6 @@
 ---
 name: fantasydisk-release-director
-description: Cut, package, verify, and publish a FantasyDisk release. Use for requests to release, ship, publish, or build a version (for example “релизим 0.2.2”, “собрать релиз”, or “опубликовать версию”), including player-facing notes, a content-zone release image, the macOS DMG (strict signed/notarized channel, or the explicit owner-approved unsigned channel), Windows installer, Git tags, public GitHub Releases, the 0.2.2-only Telegram transition, and Discord delivery.
+description: Cut, package, verify, and publish a FantasyDisk release. Use for requests to release, ship, publish, or build a version, including player-facing notes, a content-zone release image, the macOS DMG, Windows installer, source tags, public binary-only GitHub distribution, mandatory Telegram files, and Discord delivery.
 ---
 
 # FantasyDisk Release Director
@@ -170,40 +170,46 @@ upload only files from the verified `local_release` path returned by that check.
 `FANTASYDISK_MACOS_CHANNEL`, default strict `signed`) against the recorded
 `macos_channel` and fails on mismatch, so an unsigned release can only be
 published with the operator's explicit unsigned acknowledgement.
-The release poster PNG is a GitHub/Discord asset and is additionally sent to
-Telegram for v0.2.2 only. `update-manifest.json` must match both retained
-installers byte-for-byte by name, size, URL, and SHA-256.
+The release poster PNG is a GitHub/Discord asset and is also sent to Telegram
+for every stable release together with DMG, Windows Setup and SHA256SUMS.
+`update-manifest.json` must match both retained installers byte-for-byte by
+name, size, URL, and SHA-256.
 
 ## 7. Integrity and publication
 
 1. Verify `shasum -a 256 -c SHA256SUMS.txt`, the DMG mount/layout/signature, app
    bundle version, and NSIS CRC. Record the lack of native Windows runtime QA if
    no Windows machine is available.
-2. Dry-run the canonical public GitHub Release, then publish it:
+2. Publish only to `FomaBy/FantasyDisk-Releases`, a public binary-only
+repository. Before upload, prove its Git tree has no source/secrets; then
+dry-run, publish the allowlisted assets with manifest last, and verify the page,
+latest manifest and installers without GitHub credentials:
 
 ```bash
 python3 skills/codex/fantasydisk-release-director/scripts/github_release_publish.py \
   --version X.Y.Z --dry-run
 python3 skills/codex/fantasydisk-release-director/scripts/github_release_publish.py \
   --version X.Y.Z
+python3 skills/codex/fantasydisk-release-director/scripts/github_release_verify.py \
+  --version X.Y.Z --local-release /absolute/durable/releases/vX.Y.Z --prune-previous
 ```
 
    Require a public, non-draft `vX.Y.Z` release containing DMG, Windows setup,
    SHA256SUMS, changelog, poster and update manifest. The publisher uploads the
    manifest last and marks the release latest only after all assets exist.
-3. **Only for v0.2.2**, also dry-run and publish Telegram. Never run Telegram for
-   later versions; `telegram_publish.py` must fail closed above 0.2.2.
+3. Dry-run and publish Telegram for **every stable release**. Telegram delivery
+   is mandatory and contains the poster, DMG, Windows Setup and SHA256SUMS.
 
 ```bash
 python3 skills/codex/fantasydisk-release-director/scripts/telegram_publish.py \
-  --version 0.2.2 --dry-run
+  --version X.Y.Z --dry-run
 python3 skills/codex/fantasydisk-release-director/scripts/telegram_publish.py \
-  --version 0.2.2
+  --version X.Y.Z
 ```
 
-4. Publish the player-facing news to Discord. Its download link must be the
-   public GitHub Release, including for v0.2.2 (Telegram is an extra delivery
-   channel, not the canonical URL):
+4. After verified Telegram file delivery, publish the player-facing news to
+   Discord. It must include the Telegram download link and the public GitHub
+   release used by the updater:
 
 ```bash
 python3 skills/codex/fantasydisk-release-director/scripts/release_publish.py \
