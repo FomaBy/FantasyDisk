@@ -11,6 +11,9 @@ from pathlib import Path
 
 RUNTIME_SUFFIXES = {".gd", ".godot", ".tscn", ".tres", ".cfg"}
 RESOURCE_RE = re.compile(r"res://[A-Za-z0-9_./@+\-]+")
+RELEASE_VERSION_RE = re.compile(
+    r"^(0|[1-9][0-9]*)\.(0|[1-9][0-9]*)\.(0|[1-9][0-9]*)(?:\.(0|[1-9][0-9]*))?$"
+)
 LEGACY_LINE_CEILINGS = {
     "scripts/ui_screens.gd": 17000,
     "scripts/class_weapon.gd": 6000,
@@ -99,11 +102,14 @@ def version_and_windows_errors(root: Path) -> list[str]:
     version = _quoted_value(project, "config/version")
     if not version:
         errors.append("project.godot: config/version is missing")
+    elif not RELEASE_VERSION_RE.fullmatch(version):
+        errors.append("project.godot: config/version must use X.Y.Z or X.Y.Z.R")
+    windows_file_version = version if version.count(".") == 3 else f"{version}.0"
     expected = {
         "application/short_version": version,
         "application/version": version,
         "application/product_version": version,
-        "application/file_version": f"{version}.0",
+        "application/file_version": windows_file_version,
     }
     for key, value in expected.items():
         if _quoted_value(exports, key) != value:

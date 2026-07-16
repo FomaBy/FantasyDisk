@@ -46,6 +46,10 @@ func _check_version_ordering() -> bool:
 	var cases := [
 		["0.2.2", "0.2.2", 0],
 		["0.2.1", "0.2.2", -1],
+		["0.2.3", "0.2.3.1", -1],
+		["0.2.3.1", "0.2.4", -1],
+		["0.2.3.1", "0.2.3", 1],
+		["0.2.3.0", "0.2.3", 0],
 		["0.10.0", "0.2.99", 1],
 		["1.0.0", "0.99.99", 1],
 		["invalid", "0.2.2", 0],
@@ -82,7 +86,22 @@ func _check_manifest_contract() -> bool:
 	var bad_version := manifest.duplicate(true)
 	bad_version["version"] = "0.2.3-beta"
 	if bool(UPDATE_MANAGER.validate_manifest(bad_version).get("ok", true)):
-		return _fail("Non-strict SemVer was accepted.")
+		return _fail("Malformed release version was accepted.")
+	var hotfix := manifest.duplicate(true)
+	hotfix["version"] = "0.2.3.1"
+	hotfix["release_url"] = "https://github.com/FomaBy/FantasyDisk-Releases/releases/tag/v0.2.3.1"
+	for platform_key in ["macos", "windows"]:
+		var asset := hotfix["assets"][platform_key] as Dictionary
+		var extension := "dmg" if platform_key == "macos" else "exe"
+		var suffix := "macos" if platform_key == "macos" else "windows-setup"
+		asset["name"] = "FantasyDisk-0.2.3.1-%s.%s" % [suffix, extension]
+		asset["url"] = "https://github.com/FomaBy/FantasyDisk-Releases/releases/download/v0.2.3.1/%s" % asset["name"]
+	if not bool(UPDATE_MANAGER.validate_manifest(hotfix).get("ok", false)):
+		return _fail("Four-component technical hotfix manifest was rejected.")
+	var too_many_parts := manifest.duplicate(true)
+	too_many_parts["version"] = "0.2.3.1.1"
+	if bool(UPDATE_MANAGER.validate_manifest(too_many_parts).get("ok", true)):
+		return _fail("Five-component release version was accepted.")
 	var future_minimum := manifest.duplicate(true)
 	future_minimum["minimum_supported_version"] = "0.2.5"
 	if bool(UPDATE_MANAGER.validate_manifest(future_minimum).get("ok", true)):

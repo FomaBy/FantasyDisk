@@ -33,6 +33,16 @@ MACOS_NOTARY_PROFILE="${MACOS_NOTARY_PROFILE:-}"
 MACOS_CHANNEL="${FANTASYDISK_MACOS_CHANNEL:-signed}"
 MACOS_ARROW_REL="docs/design/references/fan1094_macos_installer/pixellab_arrow.png"
 
+RELEASE_VERSION_RE='^(0|[1-9][0-9]*)\.(0|[1-9][0-9]*)\.(0|[1-9][0-9]*)(\.(0|[1-9][0-9]*))?$'
+if ! [[ "${VERSION}" =~ ${RELEASE_VERSION_RE} ]]; then
+  echo "ERROR: version must have format X.Y.Z or X.Y.Z.R"
+  exit 2
+fi
+WINDOWS_FILE_VERSION="${VERSION}.0"
+if [[ "${VERSION}" == *.*.*.* ]]; then
+  WINDOWS_FILE_VERSION="${VERSION}"
+fi
+
 if [[ "${MACOS_CHANNEL}" != "signed" && "${MACOS_CHANNEL}" != "unsigned" ]]; then
   echo "ERROR: FANTASYDISK_MACOS_CHANNEL must be 'signed' or 'unsigned', got '${MACOS_CHANNEL}'"
   exit 2
@@ -137,7 +147,7 @@ fi
 if ! grep -q "application/short_version=\"${VERSION}\"" "${WORKTREE_DIR}/export_presets.cfg" \
     || ! grep -q "application/version=\"${VERSION}\"" "${WORKTREE_DIR}/export_presets.cfg" \
     || ! grep -q "application/product_version=\"${VERSION}\"" "${WORKTREE_DIR}/export_presets.cfg" \
-    || ! grep -q "application/file_version=\"${VERSION}.0\"" "${WORKTREE_DIR}/export_presets.cfg"; then
+    || ! grep -q "application/file_version=\"${WINDOWS_FILE_VERSION}\"" "${WORKTREE_DIR}/export_presets.cfg"; then
   echo "    ERROR: export_presets.cfg версии не совпадают с ${VERSION}"
   exit 2
 fi

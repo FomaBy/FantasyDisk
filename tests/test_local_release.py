@@ -171,6 +171,14 @@ class LocalReleaseTests(unittest.TestCase):
                     dry_run=True,
                 )
 
+    def test_release_version_parser_supports_hotfix_component(self) -> None:
+        self.assertEqual(local_release._version_key("0.2.3"), (0, 2, 3, 0))
+        self.assertEqual(local_release._version_key("0.2.3.1"), (0, 2, 3, 1))
+        self.assertLess(local_release._version_key("0.2.3"), local_release._version_key("0.2.3.1"))
+        self.assertLess(local_release._version_key("0.2.3.1"), local_release._version_key("0.2.4"))
+        with self.assertRaisesRegex(local_release.LocalReleaseError, "X.Y.Z or X.Y.Z.R"):
+            local_release._version_key("0.2.3.1.1")
+
     def test_requires_poster_and_distinct_installer_checksums(self) -> None:
         poster = self.source_release / "fantasydisk_987_announcement.png"
         poster.unlink()

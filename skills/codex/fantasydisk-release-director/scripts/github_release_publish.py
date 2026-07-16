@@ -29,7 +29,9 @@ README_FORBIDDEN_MARKERS = (
     "api_key",
     ".gd",
 )
-SEMVER_RE = re.compile(r"^(0|[1-9][0-9]*)\.(0|[1-9][0-9]*)\.(0|[1-9][0-9]*)$")
+RELEASE_VERSION_RE = re.compile(
+    r"^(0|[1-9][0-9]*)\.(0|[1-9][0-9]*)\.(0|[1-9][0-9]*)(?:\.(0|[1-9][0-9]*))?$"
+)
 
 
 def repo_root() -> Path:
@@ -53,6 +55,8 @@ def verify_local_release(root: Path, version: str) -> Path:
 
 
 def release_files(release_dir: Path, version: str) -> tuple[list[Path], Path]:
+    if not RELEASE_VERSION_RE.fullmatch(version):
+        raise RuntimeError("release version must use X.Y.Z or X.Y.Z.R")
     posters = sorted(release_dir.glob("*.png"))
     if len(posters) != 1:
         raise RuntimeError("Ожидался ровно один проверенный PNG release poster")
@@ -159,6 +163,8 @@ def _assert_release_assets(repository: str, tag: str, expected: list[Path]) -> s
 
 
 def publish(repository: str, version: str, files: list[Path], changelog: Path) -> str:
+    if not RELEASE_VERSION_RE.fullmatch(version):
+        raise RuntimeError("release version must use X.Y.Z or X.Y.Z.R")
     if shutil.which("gh") is None:
         raise RuntimeError("GitHub CLI `gh` не установлен")
     run(["gh", "auth", "status", "--hostname", "github.com"])
@@ -197,8 +203,8 @@ def main() -> int:
     parser.add_argument("--repository", default=DEFAULT_REPOSITORY)
     parser.add_argument("--dry-run", action="store_true")
     args = parser.parse_args()
-    if not SEMVER_RE.fullmatch(args.version):
-        parser.error("--version must be strict SemVer X.Y.Z")
+    if not RELEASE_VERSION_RE.fullmatch(args.version):
+        parser.error("--version must use X.Y.Z or X.Y.Z.R")
     root = repo_root()
     release_dir = verify_local_release(root, args.version)
     try:

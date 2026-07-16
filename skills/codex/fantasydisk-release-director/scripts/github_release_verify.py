@@ -30,7 +30,9 @@ README_FORBIDDEN_MARKERS = {
     "api_key",
     ".gd",
 }
-SEMVER_RE = re.compile(r"^(0|[1-9][0-9]*)\.(0|[1-9][0-9]*)\.(0|[1-9][0-9]*)$")
+RELEASE_VERSION_RE = re.compile(
+    r"^(0|[1-9][0-9]*)\.(0|[1-9][0-9]*)\.(0|[1-9][0-9]*)(?:\.(0|[1-9][0-9]*))?$"
+)
 USER_AGENT = "FantasyDisk-Public-Release-Verify/1.0"
 
 
@@ -123,6 +125,8 @@ def _verify_public_tree(repository: str) -> None:
 
 
 def verify_public_distribution(repository: str, version: str, local_release: Path) -> dict:
+    if not RELEASE_VERSION_RE.fullmatch(version):
+        raise PublicVerificationError("release version must use X.Y.Z or X.Y.Z.R")
     _verify_public_tree(repository)
     tag = f"v{version}"
     api = f"https://api.github.com/repos/{repository}"
@@ -186,52 +190,16 @@ def verify_public_distribution(repository: str, version: str, local_release: Pat
     }
 
 
-def prune_previous_releases(repository: str, version: str) -> None:
-    result = subprocess.run(
-        ["gh", "release", "list", "--repo", repository, "--limit", "100", "--json", "tagName"],
-        text=True,
-        stdout=subprocess.PIPE,
-        stderr=subprocess.PIPE,
-    )
-    if result.returncode:
-        raise PublicVerificationError("cannot list public distribution releases for cleanup")
-    releases = json.loads(result.stdout)
-    keep = f"v{version}"
-    for release in releases:
-        tag = str(release.get("tagName", ""))
-        if tag and tag != keep:
-            deleted = subprocess.run(
-                ["gh", "release", "delete", tag, "--repo", repository, "--cleanup-tag", "--yes"],
-                text=True,
-                stdout=subprocess.PIPE,
-                stderr=subprocess.PIPE,
-            )
-            if deleted.returncode:
-                raise PublicVerificationError(f"cannot remove stale public distribution release {tag}")
-    remaining = subprocess.run(
-        ["gh", "release", "list", "--repo", repository, "--limit", "100", "--json", "tagName"],
-        text=True,
-        stdout=subprocess.PIPE,
-        stderr=subprocess.PIPE,
-    )
-    if remaining.returncode or {item.get("tagName") for item in json.loads(remaining.stdout)} != {keep}:
-        raise PublicVerificationError("public distribution cleanup did not leave exactly one stable release")
-
-
 def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--version", required=True)
     parser.add_argument("--repository", default=DEFAULT_REPOSITORY)
     parser.add_argument("--local-release", required=True, type=Path)
-    parser.add_argument("--prune-previous", action="store_true")
     args = parser.parse_args()
-    if not SEMVER_RE.fullmatch(args.version):
-        parser.error("--version must be strict SemVer X.Y.Z")
+    if not RELEASE_VERSION_RE.fullmatch(args.version):
+        parser.error("--version must use X.Y.Z or X.Y.Z.R")
     try:
         report = verify_public_distribution(args.repository, args.version, args.local_release.resolve())
-        if args.prune_previous:
-            prune_previous_releases(args.repository, args.version)
-            report["pruned_previous_releases"] = True
         print(json.dumps(report, ensure_ascii=False, sort_keys=True))
     except (OSError, PublicVerificationError, json.JSONDecodeError) as exc:
         parser.error(str(exc))

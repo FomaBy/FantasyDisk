@@ -22,8 +22,12 @@ read-only history. Run from the repository root; do not hardcode a checkout path
 
 ## 2. Version and player notes
 
-1. Set `project.godot::config/version` and every macOS/Windows version field in
-   `export_presets.cfg` to `X.Y.Z`.
+1. Choose a supported `<version>` before touching release inputs: a product
+   release is `X.Y.Z`; a byte-changing technical-only hotfix may be `X.Y.Z.R`.
+   Re-delivery of byte-identical existing artifacts keeps the old immutable
+   version and does not run this release flow. Set `project.godot::config/version`
+   and macOS fields to `<version>`; Windows `file_version` is `<version>.0` for
+   three components and `<version>` for four.
 2. Finalize `CHANGELOG.md` as `## [X.Y.Z] — YYYY-MM-DD`, then leave a new empty
    `Unreleased` section above it.
 3. Add the newest entry first in `scripts/patch_notes_data.gd`.
@@ -63,13 +67,13 @@ Use `content-zone-image-compositor` before any image generation:
 Run:
 
 ```bash
-tools/build_release.sh X.Y.Z
+tools/build_release.sh <version>
 ```
 
-Require `releases/vX.Y.Z/` to contain:
+Require `releases/v<version>/` to contain:
 
-- `FantasyDisk-X.Y.Z-macos.dmg`;
-- `FantasyDisk-X.Y.Z-windows-setup.exe` (the only Windows download);
+- `FantasyDisk-<version>-macos.dmg`;
+- `FantasyDisk-<version>-windows-setup.exe` (the only Windows download);
 - `SHA256SUMS.txt`;
 - `CHANGELOG-X.Y.Z.md`;
 - the mandatory release poster PNG;
@@ -138,8 +142,8 @@ exact tag; overlaying current worktree files onto the tag is forbidden.
 
 ```bash
 python3 skills/codex/fantasydisk-release-director/scripts/local_release.py \
-  materialize --version X.Y.Z --repo-root "$PWD" \
-  --release-dir "$PWD/releases/vX.Y.Z"
+  materialize --version <version> --repo-root "$PWD" \
+  --release-dir "$PWD/releases/v<version>"
 ```
 
 Require all of the following before any external upload:
@@ -187,14 +191,14 @@ latest manifest and installers without GitHub credentials:
 
 ```bash
 python3 skills/codex/fantasydisk-release-director/scripts/github_release_publish.py \
-  --version X.Y.Z --dry-run
+  --version <version> --dry-run
 python3 skills/codex/fantasydisk-release-director/scripts/github_release_publish.py \
-  --version X.Y.Z
+  --version <version>
 python3 skills/codex/fantasydisk-release-director/scripts/github_release_verify.py \
-  --version X.Y.Z --local-release /absolute/durable/releases/vX.Y.Z --prune-previous
+  --version <version> --local-release /absolute/durable/releases/v<version>
 ```
 
-   Require a public, non-draft `vX.Y.Z` release containing DMG, Windows setup,
+   Require a public, non-draft `v<version>` release containing DMG, Windows setup,
    SHA256SUMS, changelog, poster and update manifest. The publisher uploads the
    manifest last and marks the release latest only after all assets exist.
 3. Dry-run and publish Telegram for **every stable release**. Telegram delivery
@@ -202,9 +206,9 @@ python3 skills/codex/fantasydisk-release-director/scripts/github_release_verify.
 
 ```bash
 python3 skills/codex/fantasydisk-release-director/scripts/telegram_publish.py \
-  --version X.Y.Z --dry-run
+  --version <version> --dry-run
 python3 skills/codex/fantasydisk-release-director/scripts/telegram_publish.py \
-  --version X.Y.Z
+  --version <version>
 ```
 
 4. After verified Telegram file delivery, publish the player-facing news to
@@ -213,7 +217,7 @@ python3 skills/codex/fantasydisk-release-director/scripts/telegram_publish.py \
 
 ```bash
 python3 skills/codex/fantasydisk-release-director/scripts/release_publish.py \
-  --version X.Y.Z
+  --version <version>
 ```
 
 Keep GitHub tokens, webhook URLs, legacy Telegram credentials/session files,

@@ -3,10 +3,12 @@ from __future__ import annotations
 import hashlib
 import importlib.util
 import json
+import subprocess
 import sys
 import tempfile
 import unittest
 from pathlib import Path
+from unittest import mock
 
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -53,6 +55,24 @@ class UpdateReleasePipelineTests(unittest.TestCase):
             )
             self.assertIn("/releases/download/v0.2.4/", manifest["assets"]["macos"]["url"])
 
+    def test_manifest_supports_four_component_technical_hotfix(self) -> None:
+        with tempfile.TemporaryDirectory() as temporary:
+            release = Path(temporary)
+            version = "0.2.3.1"
+            for name in (
+                f"FantasyDisk-{version}-macos.dmg",
+                f"FantasyDisk-{version}-windows-setup.exe",
+            ):
+                (release / name).write_bytes(name.encode("utf-8"))
+            manifest = build_update_manifest.build_manifest(
+                version=version,
+                minimum_supported_version="0.2.3",
+                release_dir=release,
+            )
+            self.assertEqual(manifest["version"], version)
+            self.assertEqual(manifest["minimum_supported_version"], "0.2.3")
+            self.assertIn("/releases/download/v0.2.3.1/", manifest["assets"]["windows"]["url"])
+
     def test_github_asset_order_publishes_manifest_last(self) -> None:
         with tempfile.TemporaryDirectory() as temporary:
             release = Path(temporary)
@@ -76,6 +96,7 @@ class UpdateReleasePipelineTests(unittest.TestCase):
     def test_telegram_delivery_is_allowed_for_current_stable_versions(self) -> None:
         telegram_publish.ensure_telegram_release_version("0.2.2")
         telegram_publish.ensure_telegram_release_version("0.2.4")
+        telegram_publish.ensure_telegram_release_version("0.2.3.1")
         with self.assertRaisesRegex(SystemExit, "формат X.Y.Z"):
             telegram_publish.ensure_telegram_release_version("0.2.03")
 
@@ -102,6 +123,10 @@ class UpdateReleasePipelineTests(unittest.TestCase):
                 build_update_manifest.build_manifest(
                     version="0.2.03", release_dir=Path(temporary)
                 )
+            with self.assertRaises(build_update_manifest.ManifestError):
+                build_update_manifest.build_manifest(
+                    version="0.2.3.1.1", release_dir=Path(temporary)
+                )
 
     def test_rejects_minimum_newer_than_release(self) -> None:
         with tempfile.TemporaryDirectory() as temporary:
@@ -111,6 +136,39 @@ class UpdateReleasePipelineTests(unittest.TestCase):
                     minimum_supported_version="0.2.3",
                     release_dir=Path(temporary),
                 )
+
+    def test_all_publication_gates_accept_both_supported_version_shapes(self) -> None:
+        gates = (
+            build_update_manifest,
+            github_release_publish,
+            github_release_verify,
+            telegram_publish,
+        )
+        for version in ("0.2.4", "0.2.3.1"):
+            for gate in gates:
+                with self.subTest(version=version, gate=gate.__name__):
+                    self.assertTrue(gate.RELEASE_VERSION_RE.fullmatch(version))
+        for invalid in ("0.2.03", "0.2.3.1.1", "0.2.3-beta"):
+            for gate in gates:
+                with self.subTest(version=invalid, gate=gate.__name__):
+                    self.assertIsNone(gate.RELEASE_VERSION_RE.fullmatch(invalid))
+
+    def test_publisher_refuses_existing_immutable_tag(self) -> None:
+        existing = subprocess.CompletedProcess(
+            ["gh", "release", "view"], 0, stdout='{"url":"https://example.invalid"}', stderr=""
+        )
+        with mock.patch.object(github_release_publish.shutil, "which", return_value="gh"), \
+             mock.patch.object(github_release_publish, "assert_safe_public_distribution_repository", return_value="main"), \
+             mock.patch.object(github_release_publish, "run", return_value=existing):
+            with self.assertRaisesRegex(RuntimeError, "never overwrite"):
+                github_release_publish.publish(
+                    "FomaBy/FantasyDisk-Releases", "0.2.3.1", [], Path("CHANGELOG.md")
+                )
+
+    def test_public_verifier_cannot_prune_immutable_releases(self) -> None:
+        source = (SCRIPTS / "github_release_verify.py").read_text(encoding="utf-8")
+        self.assertNotIn("--prune-previous", source)
+        self.assertNotIn('"gh", "release", "delete"', source)
 
 
 class UnsignedChannelLabelingTests(unittest.TestCase):

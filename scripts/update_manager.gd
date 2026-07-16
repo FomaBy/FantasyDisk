@@ -314,11 +314,11 @@ func _file_size(path: String) -> int:
 
 
 static func compare_versions(left: String, right: String) -> int:
-	var left_parts := _semver_parts(left)
-	var right_parts := _semver_parts(right)
+	var left_parts := _release_version_parts(left)
+	var right_parts := _release_version_parts(right)
 	if left_parts.is_empty() or right_parts.is_empty():
 		return 0
-	for index in range(3):
+	for index in range(4):
 		if int(left_parts[index]) < int(right_parts[index]):
 			return -1
 		if int(left_parts[index]) > int(right_parts[index]):
@@ -333,11 +333,11 @@ static func validate_manifest(raw: Variant) -> Dictionary:
 	if int(manifest.get("schema_version", 0)) != MANIFEST_SCHEMA_VERSION:
 		return {"ok": false, "error": "неподдерживаемая версия схемы"}
 	var version := str(manifest.get("version", ""))
-	if _semver_parts(version).is_empty():
-		return {"ok": false, "error": "version не является SemVer X.Y.Z"}
+	if _release_version_parts(version).is_empty():
+		return {"ok": false, "error": "version не имеет формат X.Y.Z или X.Y.Z.R"}
 	var minimum_supported := str(manifest.get("minimum_supported_version", version))
-	if _semver_parts(minimum_supported).is_empty():
-		return {"ok": false, "error": "minimum_supported_version не является SemVer X.Y.Z"}
+	if _release_version_parts(minimum_supported).is_empty():
+		return {"ok": false, "error": "minimum_supported_version не имеет формат X.Y.Z или X.Y.Z.R"}
 	if compare_versions(minimum_supported, version) > 0:
 		return {"ok": false, "error": "minimum_supported_version новее самого релиза"}
 	if str(manifest.get("release_url", "")) != \
@@ -380,9 +380,9 @@ static func asset_for_platform(manifest: Dictionary, platform_name: String) -> D
 	return {"ok": true, "asset": (assets[platform_key] as Dictionary).duplicate(true)}
 
 
-static func _semver_parts(version: String) -> PackedInt32Array:
+static func _release_version_parts(version: String) -> PackedInt32Array:
 	var raw_parts := version.strip_edges().split(".")
-	if raw_parts.size() != 3:
+	if raw_parts.size() != 3 and raw_parts.size() != 4:
 		return PackedInt32Array()
 	var parsed := PackedInt32Array()
 	for raw_part in raw_parts:
@@ -392,6 +392,8 @@ static func _semver_parts(version: String) -> PackedInt32Array:
 		if part.length() > 1 and part.begins_with("0"):
 			return PackedInt32Array()
 		parsed.append(int(part))
+	if parsed.size() == 3:
+		parsed.append(0)
 	return parsed
 
 

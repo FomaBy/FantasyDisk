@@ -1,6 +1,6 @@
 # Game Updates (0.2.2+)
 
-Обновлено: 2026-07-16 (FAN-1210: public binary-only distribution)
+Обновлено: 2026-07-16 (FAN-1213: immutable republish and technical hotfixes)
 
 ## Публичный источник
 
@@ -22,18 +22,23 @@ https://github.com/FomaBy/FantasyDisk-Releases/releases/latest/download/update-m
 
 ## Клиентский контракт
 
-- `application/config/version` — установленная строгая SemVer `X.Y.Z`.
+- `application/config/version` — установленная release-версия `X.Y.Z` либо
+  технический hotfix `X.Y.Z.R`. Обычный продуктовый выпуск остаётся строгим
+  SemVer `X.Y.Z`; четвёртый компонент разрешён только когда меняются
+  технические байты без новых игровых функций, баланса или заметного поведения.
 - В экспортированной игре выполняется одна фоновая проверка при запуске. Если
   сети нет, она молчит и не мешает игре; найденная новая версия всегда показывает
   prompt. В редакторе и headless автопроверка отключена.
 - `Настройки → Обновить игру` выполняет явную проверку и всегда показывает
   результат, включая offline/error.
-- Новая версия определяется числовым сравнением трёх SemVer-компонентов, не
-  строковым сравнением.
+- Новая версия определяется числовым сравнением четырёх компонентов с нулём для
+  отсутствующего hotfix: `0.2.3 < 0.2.3.1 < 0.2.4`. Это сохраняет работу
+  существующих manifests `X.Y.Z` и не использует строковое сравнение.
 - Клиент принимает только HTTPS URL внутри `FomaBy/FantasyDisk-Releases` GitHub
-  Releases, точные имена `FantasyDisk-X.Y.Z-macos.dmg` и
-  `FantasyDisk-X.Y.Z-windows-setup.exe`, положительный размер не более 1 GiB и
-  64-символьный SHA-256.
+  Releases, точные имена `FantasyDisk-<version>-macos.dmg` и
+  `FantasyDisk-<version>-windows-setup.exe`, положительный размер не более 1 GiB
+  и 64-символьный SHA-256; `<version>` обязан совпадать с manifest и иметь
+  формат `X.Y.Z` или `X.Y.Z.R`.
 - Файл сначала пишется как `user://updates/<name>.partial`, затем проверяется по
   размеру и SHA-256 и только после этого атомарно переименовывается. Ошибочный
   файл удаляется; текущая установка и сохранения не изменяются.
@@ -77,6 +82,23 @@ https://github.com/FomaBy/FantasyDisk-Releases/releases/latest/download/update-m
 `build_update_manifest.py`. `local_release.py verify` повторно сверяет schema,
 version, URL, имена, размеры и хэши до любой внешней публикации.
 
+## Неизменяемость и повторная доставка
+
+- Опубликованный tag/version — immutable: GitHub publisher отказывается от
+  существующего `v<version>`, а durable local release сравнивает все байты и
+  отвергает отличия. Публикатор и verifier не удаляют старые distribution
+  releases/tags.
+- Если DMG, Windows Setup, SHA256SUMS и manifest уже проверены и их SHA-256 не
+  меняются, их можно повторно отправить в новый Telegram/Discord-канал или дать
+  на них новую ссылку. Номер, tag, manifest и asset bytes при этом не меняются;
+  повторная доставка не является новым release.
+- Если меняется хотя бы один технический байт, нужен новый immutable tag и
+  версия `X.Y.Z.R`; нельзя заменять файлы или manifest под прежним номером.
+  Перед запуском такого hotfix все поля `project.godot`, macOS и Windows export
+  metadata, имена артефактов, manifest и publication commands получают тот же
+  новый номер. Для трёхкомпонентной версии Windows `file_version` имеет
+  дополнительный `.0`, для hotfix из четырёх компонентов он равен версии.
+
 ## Каналы сборки macOS
 
 `FANTASYDISK_MACOS_CHANNEL` выбирается явно; тихий downgrade запрещён:
@@ -96,7 +118,8 @@ durable path.
 ## Публикация
 
 1. Собрать и materialize exact tag через
-   `FANTASYDISK_MACOS_CHANNEL=unsigned tools/build_release.sh X.Y.Z`.
+   `FANTASYDISK_MACOS_CHANNEL=unsigned tools/build_release.sh <version>`, где
+   `<version>` — `X.Y.Z` либо явно обоснованный технический `X.Y.Z.R`.
 2. До upload публичный repo должен быть создан как `FomaBy/FantasyDisk-Releases`,
    быть public и содержать только минимальный `README.md`. Publisher проверяет
    tree и README на source/secret-like content, затем загружает assets в draft,
@@ -107,11 +130,11 @@ durable path.
 
 ```bash
 python3 skills/codex/fantasydisk-release-director/scripts/github_release_verify.py \
-  --version X.Y.Z --local-release /absolute/durable/releases/vX.Y.Z --prune-previous
+  --version <version> --local-release /absolute/durable/releases/v<version>
 ```
 
-   Только после успешной проверки удаляются stale public distribution releases и
-   их distribution tags. Source tags и durable releases не затрагиваются.
+   Проверка не удаляет stale public distribution releases или tags: все
+   опубликованные версии остаются immutable.
 4. Telegram обязателен для каждого stable release: dry-run, затем отправка
    poster, DMG, Windows Setup и SHA256SUMS из verified durable path.
 5. После успешной Telegram delivery опубликовать Discord news с Telegram download

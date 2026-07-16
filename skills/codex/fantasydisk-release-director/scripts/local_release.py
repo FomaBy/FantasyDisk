@@ -26,7 +26,9 @@ from pathlib import Path, PurePosixPath
 from typing import Iterable, Sequence
 
 
-SEMVER_RE = re.compile(r"^(0|[1-9][0-9]*)\.(0|[1-9][0-9]*)\.(0|[1-9][0-9]*)$")
+RELEASE_VERSION_RE = re.compile(
+    r"^(0|[1-9][0-9]*)\.(0|[1-9][0-9]*)\.(0|[1-9][0-9]*)(?:\.(0|[1-9][0-9]*))?$"
+)
 MANIFEST_NAME = "LOCAL_RELEASE.json"
 CONFIG_ENV = "FANTASYDISK_LOCAL_RELEASE_CONFIG"
 ROOT_ENV = "FANTASYDISK_LOCAL_ROOT"
@@ -37,6 +39,13 @@ MACOS_CHANNELS = ("signed", "unsigned")
 
 class LocalReleaseError(RuntimeError):
     """A release cannot be safely materialized or verified."""
+
+
+def _version_key(version: str) -> tuple[int, int, int, int]:
+    if not RELEASE_VERSION_RE.fullmatch(version):
+        raise LocalReleaseError(f"invalid release version (expected X.Y.Z or X.Y.Z.R): {version}")
+    parts = [int(part) for part in version.split(".")]
+    return tuple(parts + [0] * (4 - len(parts)))  # type: ignore[return-value]
 
 
 def resolve_macos_channel(value: str | None = None) -> str:
@@ -280,12 +289,12 @@ def _validate_update_manifest(
         not isinstance(manifest, dict)
         or manifest.get("schema_version") != 1
         or manifest.get("version") != version
-        or not SEMVER_RE.fullmatch(str(manifest.get("minimum_supported_version", "")))
+        or not RELEASE_VERSION_RE.fullmatch(str(manifest.get("minimum_supported_version", "")))
         or manifest.get("release_url") != expected_release_url
     ):
         raise LocalReleaseError("update manifest metadata does not match the release")
     minimum_supported = str(manifest["minimum_supported_version"])
-    if tuple(map(int, minimum_supported.split("."))) > tuple(map(int, version.split("."))):
+    if _version_key(minimum_supported) > _version_key(version):
         raise LocalReleaseError("update manifest minimum version is newer than the release")
     assets = manifest.get("assets")
     if not isinstance(assets, dict) or set(assets) != {"macos", "windows"}:
@@ -412,8 +421,7 @@ def materialize_package(
     dry_run: bool = False,
     macos_channel: str = "signed",
 ) -> tuple[Path, dict]:
-    if not SEMVER_RE.fullmatch(version):
-        raise LocalReleaseError(f"invalid SemVer release version: {version}")
+    _version_key(version)
     if macos_channel not in MACOS_CHANNELS:
         raise LocalReleaseError(f"invalid macOS channel: {macos_channel}")
     tag = f"v{version}"
@@ -687,6 +695,7 @@ def verify_local_release(
     launch_smoke: bool = False,
     macos_channel: str = "signed",
 ) -> dict:
+    _version_key(version)
     tag = f"v{version}"
     release_dir = config.local_root / "releases" / tag
     package_files = _validate_package(release_dir, version)

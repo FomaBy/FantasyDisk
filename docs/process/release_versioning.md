@@ -1,22 +1,30 @@
 # Release & Versioning — FantasyDisk
 
-Обновлено: 2026-07-16 (FAN-1210)
+Обновлено: 2026-07-16 (FAN-1213)
 Ведет: PM. Исполняет сборки: Back-end.
 
 ## Версионирование
 
-- Схема: **SemVer** `MAJOR.MINOR.PATCH`; до выхода 1.0 — `0.MINOR.PATCH`
-  (0.1.0 → 0.2.0 — новые фичи; 0.2.1 — только хотфиксы).
-- Текущий active target: `0.2.4`. Плановые `0.1.8` и `0.1.9` отменены/superseded:
+- Обычная продуктовая схема: **SemVer** `MAJOR.MINOR.PATCH`; до выхода 1.0 —
+  `0.MINOR.PATCH` (0.1.0 → 0.2.0 — новые фичи; patch меняется для видимого
+  продукта, баланса или геймплея).
+- Техническая схема: `MAJOR.MINOR.PATCH.HOTFIX` разрешена только после уже
+  выпущенного patch, когда меняются байты технического исправления без новых
+  игровых функций, баланса или заметного поведения. Например,
+  `0.2.3 < 0.2.3.1 < 0.2.4`; отсутствие HOTFIX означает ноль. Этот формат не
+  объявляется SemVer и не применяется молча до успешного tooling gate.
+- Текущий опубликованный stable release: `0.2.4`. Плановые `0.1.8` и `0.1.9` отменены/superseded:
   не создавать под них sprint, Multica release metadata (`release`),
   changelog-финализацию или release tasks. После `0.2.0` следующая patch-линия:
   `0.2.1`, `0.2.2`, `0.2.3`, `0.2.4`, ...
 - **Источник истины версии** — `project.godot` → `[application] config/version`.
   Код может читать её через `ProjectSettings.get_setting("application/config/version")`
   (показывать в главном меню мелким текстом).
-- Каждый релиз помечается git-тегом `vX.Y.Z` на ветке `main`.
-- Версия дублируется в экспорт-пресетах (macOS `application/version`, Windows
-  `application/file_version`/`product_version`) — Back-end синхронизирует при сборке.
+- Каждый релиз помечается immutable git-тегом `v<version>` на ветке `main`.
+- Версия дублируется в экспорт-пресетах: macOS `application/short_version` и
+  `application/version`, Windows `application/product_version` равны
+  `<version>`; `application/file_version` равен `<version>.0` для `X.Y.Z` и
+  самому `<version>` для `X.Y.Z.R`.
 - История изменений — `CHANGELOG.md` (раздел Unreleased пополняется по ходу dev,
   при релизе переименовывается в номер версии с датой).
 
@@ -29,7 +37,22 @@ dev  — основная ветка разработки. Все чаты (Back
 
 - Все агенты работают в одном рабочем каталоге, поэтому **текущая checked-out
   ветка всегда dev**. Переключение на main делает только PM в момент релиза.
-- Хотфикс релиза: ветка от main → фикс → merge в main (tag vX.Y.Z+1) → merge main в dev.
+- Хотфикс релиза: ветка от main → технический фикс → merge в main → новый
+  immutable tag `vX.Y.Z.R` → merge main в dev. Новый игровой результат использует
+  обычный SemVer `vX.Y.Z`, а не четвёртый компонент.
+
+## Повторная публикация и immutable bytes
+
+1. Если артефакты не меняются, сверить durable `SHA256SUMS.txt` и manifest с
+   ранее опубликованной версией, затем повторно доставить те же файлы в новый
+   Telegram/Discord-канал или опубликовать новые release notes со ссылкой на
+   существующий public GitHub Release. Version/tag/assets не редактировать.
+2. Если хотя бы один байт меняется, создать новую версию `X.Y.Z.R`, обновить все
+   version fields и собрать новый package. Никогда не заменять bytes, manifest,
+   tag или GitHub Release под существующим version.
+3. `github_release_verify.py` не удаляет прошлые distribution releases/tags;
+   опция pruning запрещена. Это сохраняет повторяемую доставку и доказуемую
+   историю байтов.
 
 ## Релизный цикл (чек-лист PM)
 
@@ -50,7 +73,7 @@ dev  — основная ветка разработки. Все чаты (Back
    - создать новый пустой раздел Unreleased сверху.
    Релиз без финализированного changelog НЕ выполняется — это блокирующий гейт.
 5. Поднять версию: `config/version` в project.godot.
-6. Коммит в dev → `git checkout main` → `git merge dev --no-ff` → `git tag vX.Y.Z`
+6. Коммит в dev → `git checkout main` → `git merge dev --no-ff` → `git tag v<version>`
    → `git checkout dev`.
 7. Backend собирает релизные билды для Windows и macOS (см. ниже) в `releases/vX.Y.Z/`
    (каталог в .gitignore — артефакты не коммитятся).
@@ -88,7 +111,7 @@ dev  — основная ветка разработки. Все чаты (Back
     package становится latest. Стабильный клиентский URL:
     `https://github.com/FomaBy/FantasyDisk-Releases/releases/latest/download/update-manifest.json`.
     Затем `github_release_verify.py` без GitHub credentials сверяет page,
-    manifest, installers, hashes и durable bytes и лишь после PASS удаляет stale
+    manifest, installers, hashes и durable bytes, не удаляя другие immutable
     distribution releases/tags. Каждый stable release обязательно отправляется
     в Telegram (poster, DMG, Windows Setup, SHA256SUMS), после чего Discord
     публикует Telegram download link и GitHub release URL. Полный контракт:
@@ -98,7 +121,7 @@ dev  — основная ветка разработки. Все чаты (Back
     - закрыть все issues версии в статус `done` на доске FantasyDisk;
     - пометить Multica release metadata (`release`) X.Y.Z как released, в описание
       версии — краткий ченджлог + ссылка releases/vX.Y.Z/CHANGELOG-X.Y.Z.md;
-    - открыть следующую версию X.Y.Z+1 (unreleased) с кратким описанием плана и
+    - открыть следующую обычную product-версию (unreleased) с кратким описанием плана и
       завести под неё issues FAN-* в статусе `todo`;
     - новым issues версии проставлять release metadata (`release`) = активная
       целевая версия (issues следующей версии остаются в backlog без `release`
@@ -110,10 +133,10 @@ dev  — основная ветка разработки. Все чаты (Back
 
 ## Feature Block
 
-Feature block 0.1.5 снят релизом v0.1.5 (2026-06-15). На 2026-07-16 включён
-release freeze для `0.2.4` в рамках FAN-1128/FAN-1210: в текущий релиз входит
-только исправление публичного updater/distribution и доказанные release gates.
-Новые продуктовые изменения уходят в следующую SemVer patch/minor версию.
+Feature block 0.1.5 снят релизом v0.1.5 (2026-06-15). Релиз `0.2.4` уже
+опубликован; его historical release freeze в рамках FAN-1128/FAN-1210 завершён.
+Новые продуктовые изменения используют следующую SemVer patch/minor версию, а
+техническая коррекция байтов опубликованного patch следует hotfix-правилу выше.
 
 Исторически блок 0.1.3 был снят релизом v0.1.3 (2026-06-12); механизм остается
 тем же для каждой релизной стабилизации.
