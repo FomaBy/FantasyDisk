@@ -251,17 +251,28 @@ python3 skills/codex/fantasydisk-release-director/scripts/github_release_verify.
      public — possibly latest — release on the claimed tag before our draft
      create. Never delete, edit, demote, or reuse the foreign release or
      tag; burn the version number for this attempt.
-   - **Successful public non-latest.** Once our public edit has been issued —
-     even if its response is lost (applied-but-response-lost) or a
-     post-public check fails (foreign tag, missing immutability) — a public
-     non-latest release remains and requires manual reconciliation without
-     deleting, editing, or reusing anything; burn the version number.
+   - **Successful public non-latest.** Our public edit was confirmed applied
+     (`gh release edit --draft=false --latest=false` returned success) but a
+     post-public check fails (foreign tag, missing immutability, or an asset
+     mismatch): the public non-latest release we created remains. Leave it
+     exactly as observed — never mark it latest, edit, demote, delete, or
+     reuse it — and burn the version number.
    - **Latest-only failure.** The release is already public, byte-exact
      verified, and GitHub-immutable; only the final `--latest` marking
      failed. This is the one state that does not burn the version: after
      confirming the release page, rerun
      `gh release edit v<version> --repo FomaBy/FantasyDisk-Releases --latest`
      manually instead of recreating anything.
+
+   A lost public-edit response (applied-but-response-lost) does not by itself
+   prove a successful public non-latest release. Until a re-read resolves the
+   ambiguity, four outcomes are documented separately: the release may still
+   be an unpublished draft (the edit did not apply → Failed draft create), a
+   public non-latest release (the edit applied → Successful public
+   non-latest), an unexpected public latest release (handle it like a
+   foreign/racing public latest and never demote it), or an unreadable state
+   (Ambiguous create). Never treat a lost response as proof of a public
+   non-latest state.
 
    Every other failed attempt burns that version number, and the next
    attempt must use the next `<version>` (hotfix component).

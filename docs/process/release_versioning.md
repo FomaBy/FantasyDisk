@@ -90,18 +90,28 @@ dev  — основная ветка разработки. Все чаты (Back
      GitHub, затем сжечь номер версии;
    - foreign/racing public release — параллельный publisher успел создать
      public (возможно latest) release на захваченном tag до нашего draft
-     create: чужой release/tag нельзя удалять, редактировать или
-     переиспользовать; сжечь номер версии этой попытки;
-   - successful public non-latest — наш public-edit отправлен, включая
-     потерянный ответ (applied-but-response-lost) и проваленную post-public
-     проверку (foreign tag, отсутствие immutability): публичный non-latest
-     release остаётся и требует ручной reconciliation без rollback; сжечь
-     номер версии;
+     create: чужой release/tag нельзя удалять, редактировать, понижать
+     (demote) или переиспользовать — даже помеченный latest он остаётся как
+     есть, его метку latest не трогают; сжечь номер версии этой попытки;
+   - successful public non-latest — наш public-edit подтверждён применённым
+     (`gh release edit --draft=false --latest=false` вернул успех), но
+     провалилась post-public проверка (foreign tag, отсутствие immutability,
+     несовпадение assets): созданный нами публичный non-latest release
+     остаётся; оставить его как есть, не помечать latest и не редактировать, и
+     сжечь номер версии;
    - latest-only failure — release уже public, byte-exact verified и
      immutable, не удалась только пометка latest: единственное состояние без
      сжигания версии; после проверки страницы release вручную повторить
      `gh release edit v<version> --repo FomaBy/FantasyDisk-Releases --latest`,
      ничего не пересоздавая.
+   Applied-but-response-lost (потерянный ответ public-edit) сам по себе не
+   доказывает successful public non-latest: пока re-read не разрешит
+   неоднозначность, отдельно возможны четыре исхода — release всё ещё draft
+   (edit не применился → failed draft create), public non-latest (edit
+   применился → successful public non-latest), неожиданный public latest
+   (обращаться как с foreign/racing public latest: никогда не понижать) или
+   нечитаемое состояние (ambiguous create). Потерянный ответ никогда не
+   считается доказательством public non-latest.
    Любая другая неудачная попытка сжигает номер версии, следующая попытка
    использует следующий hotfix-компонент `X.Y.Z.R`.
 

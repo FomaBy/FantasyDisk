@@ -44,10 +44,12 @@ COMMIT_SHA_RE = re.compile(r"[0-9a-f]{40}")
 # types must be guaranteed server-side before the first external side effect.
 REQUIRED_TAG_RULE_TYPES = frozenset({"update", "deletion"})
 RECONCILIATION_GUIDANCE = (
-    "the supported path has no rollback: it never deletes, force-updates, or "
-    "reuses a published release or tag. Manually inspect the release and tag on "
-    "GitHub, keep any public release non-latest, burn this version number, and "
-    "publish the next attempt under the next version"
+    "the supported path has no rollback: it never deletes, force-updates, "
+    "demotes, or reuses a published release or tag, and never edits or demotes "
+    "a release it did not create and fully verify. Manually inspect the release "
+    "and tag on GitHub, leave whatever is already there exactly as observed, "
+    "burn this version number, and publish the next attempt under the next "
+    "version"
 )
 
 
@@ -607,8 +609,10 @@ def publish(repository: str, version: str, files: list[Path], changelog: Path) -
             f"{tag}, and this process issued no public edit, but a concurrent "
             "publisher may already own a public release on the claimed tag, so "
             "a draft-only leftover is not guaranteed. Best-effort re-read: "
-            f"{release_state}; {tag_state}. Never delete, edit, or reuse a "
-            f"foreign release or tag: {RECONCILIATION_GUIDANCE}"
+            f"{release_state}; {tag_state}. A racing public release stays "
+            "exactly as observed even when it is marked latest — never delete, "
+            "edit, demote, or reuse a foreign release or tag: "
+            f"{RECONCILIATION_GUIDANCE}"
         )
     assert_owned_distribution_tag(repository, tag, release_commit)
     _assert_release_assets(repository, tag, files, draft=True)
@@ -629,6 +633,11 @@ def publish(repository: str, version: str, files: list[Path], changelog: Path) -
         raise RuntimeError(
             f"public release edit returned an error but may still have been "
             f"applied server-side (applied-but-response-lost): {detail}\n"
+            "A lost edit response does not prove a public non-latest release; "
+            "until the re-read below resolves it this is ambiguous and may be a "
+            "still-unpublished draft (the edit did not apply), a public "
+            "non-latest release (the edit applied), an unexpected public latest "
+            "release, or an unreadable state. Best-effort re-read: "
             f"{state}; {RECONCILIATION_GUIDANCE}"
         )
     try:

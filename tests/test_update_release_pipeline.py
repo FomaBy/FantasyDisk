@@ -1409,6 +1409,46 @@ class PublisherCreateRaceRecoveryTests(unittest.TestCase):
                 ]
                 self.assertTrue(any(index > create_at for index in tag_reads))
 
+    def test_racing_public_latest_create_error_forbids_demotion(self) -> None:
+        # FAN-1277: when the re-read sees a foreign racing public release marked
+        # latest, the error must forbid delete/edit/demote/reuse and must NOT
+        # advise making any public release non-latest — demoting a foreign
+        # latest release is exactly the unsafe edit the runtime warns against.
+        create_conflict = _gh(
+            ["gh", "release", "create"], 1, "",
+            "HTTP 422: Validation Failed (already_exists)",
+        )
+        state_reads = [
+            _release_view(draft=False, immutable=True),
+            _latest_release(self.TAG),
+            _tag_probe(self.TAG),
+        ]
+        with mock.patch.object(github_release_publish.shutil, "which", return_value="gh"), \
+             mock.patch.object(github_release_publish, "assert_safe_public_distribution_repository", return_value="main"), \
+             mock.patch.object(github_release_publish, "run", side_effect=[
+                 _auth_ok(),
+                 _immutability_enforced(),
+                 *_tag_protection_ok(),
+                 _missing_release(),
+                 _absent_tag(),
+                 _branch_head(),
+                 _tag_ref(self.TAG),
+                 create_conflict,
+                 *state_reads,
+             ]):
+            with self.assertRaisesRegex(
+                RuntimeError, "draft release creation failed"
+            ) as caught:
+                self._publish()
+        message = str(caught.exception)
+        self.assertIn(
+            f"release {self.TAG} is currently PUBLIC and is marked latest", message
+        )
+        self.assertIn("demote", message)
+        self.assertNotRegex(
+            message, r"(?:keep|make|mark|demote|hold)\b[^.]{0,40}non-latest"
+        )
+
 
 class PublicVerifierAssetContractTests(unittest.TestCase):
     """FAN-1257: ambiguous or malformed public API asset lists must fail closed."""
@@ -1952,6 +1992,12 @@ class ReleaseDocumentationConsistencyTests(unittest.TestCase):
             "Never delete, edit, demote, or reuse the foreign release or tag",
             "This is the one state that does not burn the version",
             "the ruleset endpoint itself is proven before the claim and is not re-read after publication",
+            # FAN-1277: applied-but-response-lost is ambiguous until re-read and
+            # is never equated with a public non-latest release, and a
+            # foreign/racing public latest release is never demoted.
+            "does not by itself prove a successful public non-latest release",
+            "never mark it latest, edit, demote, delete, or reuse it",
+            "handle it like a foreign/racing public latest and never demote it",
         ),
         RELEASE_VERSIONING: (
             "failed draft create",
@@ -1962,6 +2008,12 @@ class ReleaseDocumentationConsistencyTests(unittest.TestCase):
             "не обещает draft-only state без доказательства",
             "сам ruleset endpoint повторно не читается",
             "единственное состояние без сжигания версии",
+            # FAN-1277: the applied-but-response-lost re-read is separate from the
+            # public non-latest state, and the racing public latest release keeps
+            # its latest marker untouched.
+            "сам по себе не доказывает successful public non-latest",
+            "его метку latest не трогают",
+            "никогда не понижать",
         ),
     }
     MANIFEST_INVARIANT_CONTRACTS = {
@@ -1975,7 +2027,51 @@ class ReleaseDocumentationConsistencyTests(unittest.TestCase):
     MANIFEST_ORDER_CONTRADICTION_PATTERNS = (
         (
             "manifest safety derived from upload completion order",
-            r"(?:загружа\w+\s+последним|uploaded\s+last|uploads\s+last|upload\s+last),?\s+(?:поэтому|so)\b",
+            r"(?:загружа\w+\s+последним|uploaded\s+last|uploads\s+last|upload\s+last"
+            r"|завершает\s+загрузку\s+последним|final\s+asset\s+to\s+upload)[,]?\s*"
+            r"(?:поэтому|значит|\bso\b|which\s+(?:means|guarantees)|therefore)\b",
+        ),
+        # FAN-1277: catch equivalent completion-order wordings that attribute
+        # latest safety to the manifest merely being uploaded last/final,
+        # instead of to byte-exact draft verification.
+        (
+            "manifest-last position claimed to make latest safe",
+            r"(?:manifest|манифест)[^.]{0,50}(?:\blast\b|final\s+asset\s+to\s+upload"
+            r"|последн\w+)[^.]{0,50}(?:\bsafe\b|never\s+(?:exposes|shows)"
+            r"|безопас\w+|гарантир\w+\s+(?:latest|безопас))",
+        ),
+    )
+    # FAN-1277: reject append-only contradictions that invert the safe action
+    # for each of the five truthful recovery states, not only exact canonical
+    # tokens. Each pattern targets an affirmative dangerous instruction so the
+    # canonical negations ("never demote", "не доказывает") stay green.
+    RECOVERY_STATE_CONTRADICTION_PATTERNS = (
+        (
+            "failed draft create leftover reused instead of burned",
+            r"(?:\breuse\b|переиспольз\w+|\boverwrite\b|перезапис\w+|force-?updat\w+)\s+"
+            r"(?:the\s+|это\s+|наш\s+|захвач\w+\s+|claimed\s+|leftover\s+|остав\w+\s+)*"
+            r"(?:tag|тег|draft|черновик|release|релиз)",
+        ),
+        (
+            "ambiguous/failed create claimed to be a guaranteed draft-only state",
+            r"(?:ambiguous\s+create|failed\s+draft\s+create|неоднозначн\w+)"
+            r"[^.]{0,60}(?:guaranteed|гарантир\w+|\balways\b|всегда|только)"
+            r"[^.]{0,40}(?:draft|черновик)",
+        ),
+        (
+            "foreign/public release advised to be demoted to non-latest",
+            r"(?:demote\w*|понизить|понижать|\bmake\b|\bkeep\b|\bmark\b|сделать"
+            r"|держать|снять|перевести|переводить)\s+[^.]{0,25}\bnon-latest\b",
+        ),
+        (
+            "applied-but-response-lost claimed to prove a public non-latest release",
+            r"(?:applied-but-response-lost|потерянн\w+\s+ответ)"
+            r"[^.]{0,40}(?:означает|это|proves(?:\s+a)?|гарантирует)\s+public",
+        ),
+        (
+            "latest-only failure claimed to burn the version or require recreation",
+            r"latest-only\s+failure[^.]{0,60}(?:burn\w*\s+the\s+version|\brecreat\w+"
+            r"|пересозда\w+|сжига\w+\s+(?:номер|верси)|тоже\s+сжига\w+)",
         ),
     )
     ENTRY_POINT_VERSIONING = {
@@ -2092,6 +2188,11 @@ class ReleaseDocumentationConsistencyTests(unittest.TestCase):
             for clause in clauses:
                 if cls.normalize(clause) not in document:
                     errors.append(f"{relative}: missing release recovery clause {clause}")
+            for label, pattern in cls.RECOVERY_STATE_CONTRADICTION_PATTERNS:
+                if re.search(pattern, document, flags=re.IGNORECASE):
+                    errors.append(
+                        f"{relative}: contradictory recovery state clause ({label})"
+                    )
         for relative, clauses in cls.MANIFEST_INVARIANT_CONTRACTS.items():
             document = cls.normalize(documents[relative])
             for clause in clauses:
@@ -2231,6 +2332,81 @@ class ReleaseDocumentationConsistencyTests(unittest.TestCase):
                 self.assertTrue(
                     any("contradictory manifest invariant" in error for error in errors)
                 )
+
+    def test_recovery_guard_rejects_state_and_manifest_contradictions(self) -> None:
+        # FAN-1277: the semantic guard must reject an append-only contradiction
+        # for EACH of the five truthful recovery states and for equivalent
+        # manifest-order wordings — not only the exact canonical phrase. The
+        # earlier guard was false-green: it passed contradictory recovery-state
+        # inserts and paraphrased manifest-order claims.
+        documents = self.read_documents()
+        self.assertEqual(self.release_recovery_errors(documents), [])
+
+        recovery_state_contradictions = (
+            # Failed draft create: reuse the claimed tag instead of burning it.
+            "\nFailed draft create всегда оставляет только draft, поэтому можно "
+            "переиспользовать захваченный tag.\n",
+            # Ambiguous create: treat the unread state as a guaranteed draft.
+            "\nAmbiguous create гарантированно оставляет draft-only leftover, "
+            "публиковать можно поверх.\n",
+            # Foreign/racing public latest: demote the foreign release.
+            "\nЧужой racing public latest release можно понизить до non-latest, "
+            "чтобы наш стал latest.\n",
+            # The exact FAN-1277 runtime inversion: keep any public release
+            # non-latest, regardless of ownership.
+            "\nManually inspect the release and keep any public release "
+            "non-latest.\n",
+            # Applied-but-response-lost: claim it proves a public non-latest state.
+            "\nApplied-but-response-lost означает public non-latest, поэтому "
+            "reconciliation не нужна.\n",
+            # Latest-only failure: claim it also burns the version and recreate.
+            "\nLatest-only failure тоже сжигает номер версии, release нужно "
+            "пересоздать.\n",
+        )
+        for relative in self.RECOVERY_CONTRACTS:
+            for contradiction in recovery_state_contradictions:
+                with self.subTest(document=str(relative), mutation=contradiction):
+                    mutated = dict(documents)
+                    mutated[relative] += contradiction
+                    errors = self.release_recovery_errors(mutated)
+                    self.assertTrue(
+                        any(
+                            "contradictory recovery state clause" in error
+                            for error in errors
+                        ),
+                        msg=f"{relative} guard missed: {contradiction!r}",
+                    )
+
+        manifest_order_equivalents = (
+            "\nМанифест завершает загрузку последним, значит latest безопасен.\n",
+            "\nBecause the manifest is the final asset to upload, latest never "
+            "exposes a partial set.\n",
+        )
+        for relative in self.MANIFEST_INVARIANT_CONTRACTS:
+            for contradiction in manifest_order_equivalents:
+                with self.subTest(document=str(relative), mutation=contradiction):
+                    mutated = dict(documents)
+                    mutated[relative] += contradiction
+                    errors = self.release_recovery_errors(mutated)
+                    self.assertTrue(
+                        any(
+                            "contradictory manifest invariant" in error
+                            for error in errors
+                        ),
+                        msg=f"{relative} guard missed: {contradiction!r}",
+                    )
+
+    def test_reconciliation_guidance_never_advises_demotion(self) -> None:
+        # FAN-1277: the shared recovery guidance must never tell the operator to
+        # make/keep any public release non-latest (that would demote a foreign
+        # or racing latest release), and must explicitly forbid demotion.
+        guidance = github_release_publish.RECONCILIATION_GUIDANCE
+        self.assertNotRegex(
+            guidance,
+            r"(?:keep|make|mark|demote|hold)\b[^.]{0,40}non-latest",
+        )
+        self.assertRegex(guidance, r"demote")
+        self.assertIn("no rollback", guidance)
 
     def test_entry_point_docs_describe_current_hotfix_and_immutable_contract(self) -> None:
         documents = self.read_documents()
