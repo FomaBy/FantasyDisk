@@ -24,16 +24,15 @@ class PlatformVersionMapping:
 
 
 def _sections(text: str) -> dict[str, list[str]]:
-    """Return raw Godot config sections without normalizing duplicate lines."""
-    sections: dict[str, list[str]] = {}
+    """Return raw Godot config sections, including Godot's empty root section."""
+    sections: dict[str, list[str]] = {"": []}
     current = ""
     for line in text.splitlines():
         if line.startswith("[") and line.endswith("]"):
             current = line[1:-1]
             sections.setdefault(current, [])
             continue
-        if current:
-            sections[current].append(line)
+        sections[current].append(line)
     return sections
 
 
@@ -55,7 +54,10 @@ def _managed_assignment_locations(
     locations = {key: [] for key in keys}
     for section_name, lines in sections.items():
         for line in lines:
-            if "=" not in line or line.lstrip().startswith("#"):
+            # ConfigFile accepts sectionless assignments and uses `;` (not `#`)
+            # for comments. A `#` prefix remains part of an assignment key, so
+            # it must be scanned as a managed-key look-alike and rejected.
+            if "=" not in line or line.lstrip().startswith(";"):
                 continue
             left_hand_side = line.split("=", 1)[0]
             for key in keys:

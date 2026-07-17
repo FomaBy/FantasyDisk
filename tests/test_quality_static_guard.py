@@ -24,6 +24,14 @@ class QualityStaticGuardTest(unittest.TestCase):
     def setUp(self):
         self.module = load_module()
 
+    def release_assignment_errors(self, root: Path) -> list[str]:
+        return self.module.release_assignment_errors(
+            (root / "project.godot").read_text(encoding="utf-8"),
+            (root / "export_presets.cfg").read_text(encoding="utf-8"),
+            "0.2.4",
+            self.module.platform_version_mapping("0.2.4"),
+        )
+
     def test_current_checkout_passes(self):
         self.assertEqual(self.module.collect_errors(ROOT), [])
 
@@ -314,6 +322,71 @@ class QualityStaticGuardTest(unittest.TestCase):
                 self.module.version_and_windows_errors(root),
             )
 
+    def test_rejects_sectionless_managed_version_assignments(self):
+        cases = (
+            (
+                "project version",
+                "project.godot",
+                'config/version="9.9.9"\n',
+                "project.godot: config/version must have exactly one exact assignment "
+                "in [application]",
+            ),
+            (
+                "macOS build version",
+                "export_presets.cfg",
+                'application/version="9.9.99"\n',
+                "export_presets.cfg: application/version must have exactly one exact "
+                "assignment in macOS preset options",
+            ),
+            (
+                "Windows file version",
+                "export_presets.cfg",
+                'application/file_version="9.9.99.9"\n',
+                "export_presets.cfg: application/file_version must have exactly one exact "
+                "assignment in Windows Desktop preset options",
+            ),
+        )
+        for name, filename, assignment, expected_error in cases:
+            with self.subTest(name=name), tempfile.TemporaryDirectory() as tmp:
+                root = Path(tmp)
+                shutil.copy(ROOT / "project.godot", root / "project.godot")
+                shutil.copy(ROOT / "export_presets.cfg", root / "export_presets.cfg")
+                config = root / filename
+                config.write_text(
+                    assignment + config.read_text(encoding="utf-8"), encoding="utf-8"
+                )
+                self.assertIn(expected_error, self.release_assignment_errors(root))
+
+    def test_scans_hash_lookalikes_and_ignores_semicolon_comments(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            shutil.copy(ROOT / "project.godot", root / "project.godot")
+            shutil.copy(ROOT / "export_presets.cfg", root / "export_presets.cfg")
+            exports = root / "export_presets.cfg"
+            exports.write_text(
+                exports.read_text(encoding="utf-8").replace(
+                    'application/version="1.2.40"',
+                    'application/version="1.2.40"\n#application/version="9.9.99"',
+                    1,
+                ),
+                encoding="utf-8",
+            )
+            self.assertIn(
+                "export_presets.cfg: application/version must have exactly one exact "
+                "assignment in macOS preset options",
+                self.release_assignment_errors(root),
+            )
+
+            exports.write_text(
+                exports.read_text(encoding="utf-8").replace(
+                    '#application/version="9.9.99"',
+                    '  ;application/version="9.9.99"',
+                    1,
+                ),
+                encoding="utf-8",
+            )
+            self.assertEqual(self.release_assignment_errors(root), [])
+
     def test_mapping_cli_fails_closed_for_foreign_platform_version(self):
         with tempfile.TemporaryDirectory() as tmp:
             root = Path(tmp)
@@ -326,6 +399,39 @@ class QualityStaticGuardTest(unittest.TestCase):
                     'application/product_version="0.2.4"\napplication/version="9.9.99"',
                     1,
                 ),
+                encoding="utf-8",
+            )
+            result = subprocess.run(
+                [
+                    sys.executable,
+                    ROOT / "tools" / "release_version_mapping.py",
+                    "--version",
+                    "0.2.4",
+                    "--project",
+                    root / "project.godot",
+                    "--export-presets",
+                    exports,
+                ],
+                check=False,
+                capture_output=True,
+                text=True,
+            )
+            self.assertEqual(result.returncode, 2)
+            self.assertIn(
+                "application/version must have exactly one exact assignment "
+                "in macOS preset options",
+                result.stderr,
+            )
+
+    def test_mapping_cli_fails_closed_for_sectionless_platform_version(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            shutil.copy(ROOT / "project.godot", root / "project.godot")
+            shutil.copy(ROOT / "export_presets.cfg", root / "export_presets.cfg")
+            exports = root / "export_presets.cfg"
+            exports.write_text(
+                'application/version="9.9.99"\n'
+                + exports.read_text(encoding="utf-8"),
                 encoding="utf-8",
             )
             result = subprocess.run(
