@@ -48,6 +48,22 @@ def _exact_assignment_errors(
     return []
 
 
+def _managed_assignment_locations(
+    sections: dict[str, list[str]], keys: tuple[str, ...]
+) -> dict[str, list[tuple[str, str]]]:
+    """Find every managed assignment, including nonexact look-alike keys."""
+    locations = {key: [] for key in keys}
+    for section_name, lines in sections.items():
+        for line in lines:
+            if "=" not in line or line.lstrip().startswith("#"):
+                continue
+            left_hand_side = line.split("=", 1)[0]
+            for key in keys:
+                if key in left_hand_side:
+                    locations[key].append((section_name, line))
+    return locations
+
+
 def release_assignment_errors(
     project_text: str, export_text: str, version: str, mapping: PlatformVersionMapping
 ) -> list[str]:
@@ -60,6 +76,15 @@ def release_assignment_errors(
             application, "config/version", version, "project.godot [application]"
         )
     )
+    project_locations = _managed_assignment_locations(
+        project_sections, ("config/version",)
+    )
+    expected_project_location = ("application", f'config/version="{version}"')
+    if project_locations["config/version"] != [expected_project_location]:
+        errors.append(
+            "project.godot: config/version must have exactly one exact assignment "
+            "in [application]"
+        )
 
     export_sections = _sections(export_text)
     platform_fields = {
@@ -72,6 +97,7 @@ def release_assignment_errors(
             "application/file_version": mapping.windows_file_version,
         },
     }
+    expected_locations: dict[str, tuple[str, str, str]] = {}
     for platform, fields in platform_fields.items():
         preset_sections = [
             name
@@ -90,6 +116,28 @@ def release_assignment_errors(
             continue
         for key, expected in fields.items():
             errors.extend(_exact_assignment_errors(options, key, expected, label))
+            expected_locations[key] = (
+                f"{preset}.options",
+                f'{key}="{expected}"',
+                platform,
+            )
+
+    # Version fields are global release identity, not preset-local conveniences.
+    # A correct assignment in the owner preset must not conceal a duplicate or
+    # conflicting copy in another platform's options (or any other section).
+    locations = _managed_assignment_locations(
+        export_sections, tuple(expected_locations)
+    )
+    for key, (
+        expected_section,
+        expected_line,
+        platform,
+    ) in expected_locations.items():
+        if locations[key] != [(expected_section, expected_line)]:
+            errors.append(
+                f"export_presets.cfg: {key} must have exactly one exact assignment "
+                f"in {platform} preset options"
+            )
     return errors
 
 

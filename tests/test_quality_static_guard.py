@@ -1,6 +1,8 @@
 import importlib.util
 import re
 import shutil
+import subprocess
+import sys
 import tempfile
 import unittest
 from pathlib import Path
@@ -180,6 +182,172 @@ class QualityStaticGuardTest(unittest.TestCase):
             self.assertIn(
                 "export_presets.cfg macOS preset: application/short_version must have exactly one assignment",
                 self.module.version_and_windows_errors(root),
+            )
+
+    def test_rejects_global_conflicting_platform_version_assignments(self):
+        cases = (
+            (
+                "macOS short version in Windows options",
+                'application/product_version="0.2.4"',
+                'application/short_version="9.9.99"',
+                "application/short_version",
+                "macOS",
+            ),
+            (
+                "macOS build version in Windows options",
+                'application/product_version="0.2.4"',
+                'application/version="9.9.99"',
+                "application/version",
+                "macOS",
+            ),
+            (
+                "Windows product version in macOS options",
+                'application/version="1.2.40"',
+                'application/product_version="9.9.99"',
+                "application/product_version",
+                "Windows Desktop",
+            ),
+            (
+                "Windows file version in macOS options",
+                'application/version="1.2.40"',
+                'application/file_version="9.9.99.9"',
+                "application/file_version",
+                "Windows Desktop",
+            ),
+            (
+                "macOS build version in a preset header",
+                'platform="Windows Desktop"',
+                'application/version="9.9.99"',
+                "application/version",
+                "macOS",
+            ),
+        )
+        for name, marker, foreign_assignment, key, owner in cases:
+            with self.subTest(name=name), tempfile.TemporaryDirectory() as tmp:
+                root = Path(tmp)
+                shutil.copy(ROOT / "project.godot", root / "project.godot")
+                shutil.copy(ROOT / "export_presets.cfg", root / "export_presets.cfg")
+                exports = root / "export_presets.cfg"
+                exports.write_text(
+                    exports.read_text(encoding="utf-8").replace(
+                        marker, f"{marker}\n{foreign_assignment}", 1
+                    ),
+                    encoding="utf-8",
+                )
+                self.assertIn(
+                    f"export_presets.cfg: {key} must have exactly one exact assignment "
+                    f"in {owner} preset options",
+                    self.module.version_and_windows_errors(root),
+                )
+
+    def test_rejects_duplicate_or_lookalike_global_version_assignments(self):
+        cases = (
+            (
+                "duplicate macOS build",
+                'application/version="1.2.40"',
+                'application/version="1.2.40"',
+                "application/version",
+                "macOS",
+            ),
+            (
+                "nonexact macOS short value suffix",
+                'application/short_version="0.2.4"',
+                'application/short_version="0.2.4" # stale suffix',
+                "application/short_version",
+                "macOS",
+            ),
+            (
+                "nonexact macOS build value junk",
+                'application/version="1.2.40"',
+                'application/version="1.2.40"junk',
+                "application/version",
+                "macOS",
+            ),
+            (
+                "macOS build key suffix",
+                'application/version="1.2.40"',
+                'application/version_shadow="1.2.40"',
+                "application/version",
+                "macOS",
+            ),
+            (
+                "Windows file key prefix",
+                'application/file_version="0.2.4.0"',
+                'shadow_application/file_version="0.2.4.0"',
+                "application/file_version",
+                "Windows Desktop",
+            ),
+        )
+        for name, marker, extra_assignment, key, owner in cases:
+            with self.subTest(name=name), tempfile.TemporaryDirectory() as tmp:
+                root = Path(tmp)
+                shutil.copy(ROOT / "project.godot", root / "project.godot")
+                shutil.copy(ROOT / "export_presets.cfg", root / "export_presets.cfg")
+                exports = root / "export_presets.cfg"
+                exports.write_text(
+                    exports.read_text(encoding="utf-8").replace(
+                        marker, f"{marker}\n{extra_assignment}", 1
+                    ),
+                    encoding="utf-8",
+                )
+                self.assertIn(
+                    f"export_presets.cfg: {key} must have exactly one exact assignment "
+                    f"in {owner} preset options",
+                    self.module.version_and_windows_errors(root),
+                )
+
+    def test_rejects_global_project_version_assignment(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            shutil.copy(ROOT / "project.godot", root / "project.godot")
+            shutil.copy(ROOT / "export_presets.cfg", root / "export_presets.cfg")
+            project = root / "project.godot"
+            project.write_text(
+                project.read_text(encoding="utf-8").replace(
+                    "[rendering]", '[rendering]\nconfig/version="9.9.9"', 1
+                ),
+                encoding="utf-8",
+            )
+            self.assertIn(
+                "project.godot: config/version must have exactly one exact assignment "
+                "in [application]",
+                self.module.version_and_windows_errors(root),
+            )
+
+    def test_mapping_cli_fails_closed_for_foreign_platform_version(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            shutil.copy(ROOT / "project.godot", root / "project.godot")
+            shutil.copy(ROOT / "export_presets.cfg", root / "export_presets.cfg")
+            exports = root / "export_presets.cfg"
+            exports.write_text(
+                exports.read_text(encoding="utf-8").replace(
+                    'application/product_version="0.2.4"',
+                    'application/product_version="0.2.4"\napplication/version="9.9.99"',
+                    1,
+                ),
+                encoding="utf-8",
+            )
+            result = subprocess.run(
+                [
+                    sys.executable,
+                    ROOT / "tools" / "release_version_mapping.py",
+                    "--version",
+                    "0.2.4",
+                    "--project",
+                    root / "project.godot",
+                    "--export-presets",
+                    exports,
+                ],
+                check=False,
+                capture_output=True,
+                text=True,
+            )
+            self.assertEqual(result.returncode, 2)
+            self.assertIn(
+                "application/version must have exactly one exact assignment "
+                "in macOS preset options",
+                result.stderr,
             )
 
     def test_rejects_five_component_release_version(self):
