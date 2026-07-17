@@ -20,7 +20,7 @@
     {"id": "game_title", "content_key": "game_title", "role": "title", "x": 110, "y": 125, "w": 330, "h": 125, "max_font": 44, "min_font": 28, "color": "#FFCE74", "stroke_width": 4, "uppercase": true, "debug_color": "#ffcc33"},
     {"id": "version", "content_key": "version", "role": "version", "x": 510, "y": 125, "w": 330, "h": 125, "max_font": 44, "min_font": 28, "color": "#F8E8C4", "stroke_width": 4, "debug_color": "#66ccff"},
     {"id": "release_date", "content_key": "release_date", "role": "date", "x": 910, "y": 125, "w": 330, "h": 125, "max_font": 32, "min_font": 20, "color": "#DDAA59", "stroke_width": 3, "debug_color": "#cc88ff"},
-    {"id": "key_changes", "content_key": "key_changes", "role": "key_changes", "x": 125, "y": 575, "w": 500, "h": 425, "max_font": 24, "min_font": 18, "color": "#F8E8C4", "stroke_width": 3, "align": "left", "valign": "top", "debug_color": "#66ff99"},
-    {"id": "fixed_bugs", "content_key": "fixed_bugs", "role": "fixed_bugs", "x": 725, "y": 575, "w": 500, "h": 425, "max_font": 24, "min_font": 18, "color": "#F8E8C4", "stroke_width": 3, "align": "left", "valign": "top", "debug_color": "#ff9966"}
+    {"id": "key_changes", "content_key": "key_changes", "role": "key_changes", "x": 125, "y": 575, "w": 500, "h": 425, "max_font": 20, "min_font": 18, "color": "#F8E8C4", "stroke_width": 3, "align": "left", "valign": "top", "debug_color": "#66ff99"},
+    {"id": "fixed_bugs", "content_key": "fixed_bugs", "role": "fixed_bugs", "x": 725, "y": 575, "w": 500, "h": 425, "max_font": 20, "min_font": 18, "color": "#F8E8C4", "stroke_width": 3, "align": "left", "valign": "top", "debug_color": "#ff9966"}
   ]
 }
