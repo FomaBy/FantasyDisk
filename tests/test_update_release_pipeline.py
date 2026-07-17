@@ -481,6 +481,39 @@ class UpdateReleasePipelineTests(unittest.TestCase):
                     ),
                     "https://example.invalid/v0.2.4",
                 )
+            for malformed_size in (
+                True,
+                False,
+                None,
+                str(asset.stat().st_size),
+                float(asset.stat().st_size),
+                -1,
+                asset.stat().st_size + 1,
+            ):
+                with self.subTest(size=repr(malformed_size)):
+                    malformed_payload = dict(
+                        payload,
+                        assets=[dict(payload["assets"][0], size=malformed_size)],
+                    )
+                    completed = subprocess.CompletedProcess(
+                        ["gh", "release", "view"],
+                        0,
+                        stdout=json.dumps(malformed_payload),
+                        stderr="",
+                    )
+                    with mock.patch.object(
+                        github_release_publish, "run", return_value=completed
+                    ):
+                        with self.assertRaisesRegex(
+                            RuntimeError, "asset verification failed"
+                        ) as error:
+                            github_release_publish._assert_release_assets(
+                                "FomaBy/FantasyDisk-Releases",
+                                "v0.2.4",
+                                [asset],
+                                draft=True,
+                            )
+                    self.assertNotIn(str(malformed_size), str(error.exception))
             payload["assets"][0]["state"] = "starter"
             completed = subprocess.CompletedProcess(
                 ["gh", "release", "view"], 0, stdout=json.dumps(payload), stderr=""

@@ -584,9 +584,13 @@ def _assert_release_assets(
         )
     for name, path in expected_by_name.items():
         asset = actual_by_name[name]
+        asset_size = asset.get("size")
         if (
             asset.get("state") != "uploaded"
-            or asset.get("size") != path.stat().st_size
+            or isinstance(asset_size, bool)
+            or not isinstance(asset_size, int)
+            or asset_size < 0
+            or asset_size != path.stat().st_size
             or asset.get("digest") != f"sha256:{_sha256(path)}"
         ):
             raise RuntimeError(f"distribution release asset verification failed: {name}")
