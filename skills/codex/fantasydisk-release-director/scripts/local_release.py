@@ -557,6 +557,28 @@ def _bundle_versions(app: Path) -> MacOSBundleVersions:
     return MacOSBundleVersions(str(short_version), str(build_version))
 
 
+def _bundle_executable(app: Path) -> Path:
+    plist = app / "Contents" / "Info.plist"
+    if not plist.is_file():
+        raise LocalReleaseError(f"installed app has no Info.plist: {app}")
+    with plist.open("rb") as handle:
+        payload = plistlib.load(handle)
+    executable_name = payload.get("CFBundleExecutable")
+    if (
+        not isinstance(executable_name, str)
+        or not executable_name
+        or Path(executable_name).name != executable_name
+        or executable_name in {".", ".."}
+    ):
+        raise LocalReleaseError(f"installed app has an invalid CFBundleExecutable: {app}")
+    executable = app / "Contents" / "MacOS" / executable_name
+    if not executable.is_file() or not os.access(executable, os.X_OK):
+        raise LocalReleaseError(
+            f"CFBundleExecutable does not name an executable file: {executable}"
+        )
+    return executable
+
+
 def verify_macos_app(
     app: Path,
     version: str,
@@ -575,19 +597,24 @@ def verify_macos_app(
             f"short={actual.short_version}, build={actual.build_version}; expected "
             f"short={expected.short_version}, build={expected.build_version}"
         )
+    executable = _bundle_executable(app)
+    # Both Apple Silicon and Intel slices are contractual for the universal
+    # macOS preset.  Verify the bundle's declared executable, not an arbitrary
+    # executable file that happens to be in Contents/MacOS.
+    _run(["lipo", "-verify_arch", "x86_64", "arm64", executable])
+    # This is an integrity check, not a publisher-trust check: it must pass for
+    # both Developer ID and explicitly unsigned (ad-hoc sealed) artifacts.
+    _run(["codesign", "--verify", "--deep", "--strict", "--verbose=4", app])
     if signed:
-        _run(["codesign", "--verify", "--deep", "--strict", "--verbose=4", app])
         _run(["xcrun", "stapler", "validate", app])
         _run(["spctl", "--assess", "--type", "execute", "--verbose=4", app])
     if launch_smoke:
-        executables = [
-            path
-            for path in (app / "Contents" / "MacOS").iterdir()
-            if path.is_file() and os.access(path, os.X_OK)
-        ]
-        if len(executables) != 1:
-            raise LocalReleaseError(f"cannot identify app executable in {app}")
-        _run([executables[0], "--headless", "--quit-after", "2"], timeout=30)
+        # Route the smoke through LaunchServices so the test covers Finder's
+        # bundle validation rather than merely executing the Mach-O directly.
+        _run(
+            ["open", "-n", "-W", app, "--args", "--headless", "--quit-after", "2"],
+            timeout=30,
+        )
 
 
 def _mount_dmg(dmg: Path, mountpoint: Path) -> tuple[Path, str]:

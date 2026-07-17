@@ -263,15 +263,30 @@ class LocalReleaseTests(unittest.TestCase):
             b'<plist version="1.0"><dict>'
             b"<key>CFBundleShortVersionString</key><string>9.8.7</string>"
             b"<key>CFBundleVersion</key><string>10.8.71</string>"
+            b"<key>CFBundleExecutable</key><string>FantasyDisk</string>"
             b"</dict></plist>\n"
         )
+        executable = app / "Contents" / "MacOS" / "FantasyDisk"
+        executable.write_bytes(b"fixture")
+        executable.chmod(0o755)
         with mock.patch.object(local_release, "_run") as run_mock:
             local_release.verify_macos_app(app, "9.8.7.1", launch_smoke=False, signed=False)
-        self.assertEqual(run_mock.call_args_list, [])
+        tools = [call.args[0][0] for call in run_mock.call_args_list]
+        self.assertEqual(tools, ["lipo", "codesign"])
         with mock.patch.object(local_release, "_run") as run_mock:
             local_release.verify_macos_app(app, "9.8.7.1", launch_smoke=False, signed=True)
         tools = [call.args[0][0] for call in run_mock.call_args_list]
-        self.assertEqual(tools, ["codesign", "xcrun", "spctl"])
+        self.assertEqual(tools, ["lipo", "codesign", "xcrun", "spctl"])
+        with mock.patch.object(local_release, "_run") as run_mock:
+            local_release.verify_macos_app(app, "9.8.7.1", launch_smoke=True, signed=False)
+        self.assertEqual(
+            run_mock.call_args_list[-1].args[0],
+            ["open", "-n", "-W", app, "--args", "--headless", "--quit-after", "2"],
+        )
+        plist.write_bytes(plist.read_bytes().replace(b"FantasyDisk", b"MissingDisk"))
+        with self.assertRaisesRegex(local_release.LocalReleaseError, "CFBundleExecutable"):
+            local_release.verify_macos_app(app, "9.8.7.1", launch_smoke=False, signed=False)
+        plist.write_bytes(plist.read_bytes().replace(b"MissingDisk", b"FantasyDisk"))
         # The version gate stays mandatory in both channels and rejects a direct
         # four-component CFBundleVersion replacement.
         plist.write_bytes(plist.read_bytes().replace(b"10.8.71", b"9.8.7.1"))

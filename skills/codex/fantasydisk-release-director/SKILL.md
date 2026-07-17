@@ -96,10 +96,12 @@ fail-closed and there is never a silent downgrade:
   or notary credentials aborts the build (exit 2); ad-hoc signing is forbidden.
 - `unsigned` — the owner-approved credential-free channel (FAN-1121, after
   FAN-1094 was cancelled). It must be requested explicitly and refuses to run
-  while `MACOS_SIGN_IDENTITY`/`MACOS_NOTARY_PROFILE` are set. Only
-  codesign/notarization/stapling/`spctl` are skipped; exact-tag inputs, DMG
-  layout, NSIS CRC, secret scan, SHA-256 sums, and the update manifest remain
-  mandatory, and asset names do not change. The build cross-checks
+  while `MACOS_SIGN_IDENTITY`/`MACOS_NOTARY_PROFILE` are set. After every bundle
+  mutation, apply an ad-hoc seal and verify its integrity to replace any export
+  template signature; it does not identify the publisher or make the artifact
+  trusted by Gatekeeper. Developer ID/notarization/stapling/`spctl` are skipped;
+  exact-tag inputs, DMG layout, NSIS CRC, secret scan, SHA-256 sums, and the
+  update manifest remain mandatory, and asset names do not change. The build cross-checks
   `MACOS_UPDATE_CHANNEL` in the tag's `scripts/update_manager.gd` so the client
   truthfully labels the artifact unsigned and shows the manual Gatekeeper
   «Всё равно открыть» (Open Anyway) instruction. Never claim Developer ID,

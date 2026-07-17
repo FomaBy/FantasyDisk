@@ -8,8 +8,10 @@
 #   signed (default) — строгий production-канал: Developer ID + notarization
 #     обязательны; отсутствие credentials — ошибка, а не тихий downgrade.
 #   unsigned — одобренный владельцем канал без Apple credentials (FAN-1121,
-#     после отмены FAN-1094): codesign/notarytool/stapler/spctl не выполняются,
-#     все остальные гейты (exact tag, layout, secret scan, SHA-256, manifest)
+#     после отмены FAN-1094): финальный bundle получает только ad-hoc seal,
+#     чтобы заменить унаследованную подпись export template и проверить
+#     целостность. Developer ID/notarytool/stapler/spctl не выполняются; все
+#     остальные гейты (exact tag, layout, secret scan, SHA-256, manifest)
 #     сохраняются, а клиент/док обязаны честно помечать сборку как unsigned.
 #
 # Сборка идет только из git-тега v<версия> через ОТДЕЛЬНЫЙ git worktree, чтобы не
@@ -224,7 +226,20 @@ if [[ "${MACOS_CHANNEL}" == "signed" ]]; then
   codesign --verify --deep --strict --verbose=4 "${APP_PATH}"
   spctl --assess --type execute --verbose=4 "${APP_PATH}"
 else
-  echo "    Канал unsigned (FAN-1121): Developer ID подпись и Apple notarization не выполняются; Gatekeeper потребует ручного «Всё равно открыть»"
+  echo "    Канал unsigned (FAN-1121): ставим только ad-hoc seal без Apple identity"
+  # Godot export templates can carry an embedded vendor signature.  Adding the
+  # DMG background invalidates its resource seal, which Tahoe treats as a
+  # damaged app instead of a normal unsigned app.  Replace it with a local
+  # ad-hoc seal: it verifies bundle integrity but does not identify a publisher
+  # or change the manual Gatekeeper/Open Anyway requirement.
+  codesign --force --sign - "${APP_PATH}"
+  codesign --verify --deep --strict --verbose=4 "${APP_PATH}"
+  APP_SIGNATURE_DETAILS="$(codesign -dv --verbose=4 "${APP_PATH}" 2>&1)"
+  if ! grep -Fqx "Signature=adhoc" <<< "${APP_SIGNATURE_DETAILS}"; then
+    echo "    ERROR: unsigned app was not sealed with an ad-hoc signature"
+    exit 2
+  fi
+  echo "    Developer ID и Apple notarization не выполняются; Gatekeeper потребует ручного «Всё равно открыть»"
 fi
 
 echo "==> Создание DMG с ярлыком Applications и стрелкой"
@@ -293,6 +308,13 @@ if [[ "${MACOS_CHANNEL}" == "signed" ]]; then
   codesign --verify --deep --strict --verbose=4 "${MOUNTED_APP}"
   xcrun stapler validate "${MOUNTED_APP}"
   spctl --assess --type execute --verbose=4 "${MOUNTED_APP}"
+else
+  codesign --verify --deep --strict --verbose=4 "${MOUNTED_APP}"
+  MOUNTED_SIGNATURE_DETAILS="$(codesign -dv --verbose=4 "${MOUNTED_APP}" 2>&1)"
+  if ! grep -Fqx "Signature=adhoc" <<< "${MOUNTED_SIGNATURE_DETAILS}"; then
+    echo "    ERROR: mounted unsigned app lost its ad-hoc integrity seal"
+    exit 2
+  fi
 fi
 
 echo "==> Secret scan staged player payloads до публикации"

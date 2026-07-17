@@ -131,7 +131,9 @@ version, URL, имена, размеры и хэши до любой внешн�
   проходит codesign/notary/stapler/spctl для app и DMG.
 - `unsigned` — одобренный владельцем канал без Apple credentials (FAN-1121).
   Он запускается только с `FANTASYDISK_MACOS_CHANNEL=unsigned`, отказывается
-  работать при заданных Apple credentials и пропускает только Apple trust checks.
+  работать при заданных Apple credentials и после изменения bundle ставит только
+  локальную ad-hoc подпись для проверки целостности. Это не подпись Developer ID
+  и не отменяет ручное подтверждение Gatekeeper; Apple trust checks пропускаются.
   Exact-tag inputs, DMG layout, NSIS + CRC, secret scan, `SHA256SUMS.txt` и
   update manifest остаются обязательными.
 

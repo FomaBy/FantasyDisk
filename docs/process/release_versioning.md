@@ -243,10 +243,12 @@ Apple credentials снова доступны. Полный клиентский
   публикации (exit 2), а не переходит на unsigned.
 - Канал `unsigned` (текущий, FAN-1121): запускается только явным
   `FANTASYDISK_MACOS_CHANNEL=unsigned` и отказывается работать, если
-  `MACOS_SIGN_IDENTITY`/`MACOS_NOTARY_PROFILE` установлены. Пропускаются ТОЛЬКО
-  codesign/notarization/stapler/spctl; DMG и .app остаются без подписи Developer
-  ID и нотаризации, а клиент явно помечает сборку unsigned и даёт ручную
-  Gatekeeper-инструкцию. Никаких заявлений о подписи/нотаризации в этом канале.
+  `MACOS_SIGN_IDENTITY`/`MACOS_NOTARY_PROFILE` установлены. После всех изменений
+  bundle получает только локальную ad-hoc подпись: она заменяет унаследованную
+  подпись export template и проверяет целостность, но не является подписью
+  Developer ID и не меняет Gatekeeper-путь. Notarization, stapler и `spctl`
+  пропускаются; клиент явно помечает сборку unsigned и даёт ручную инструкцию
+  «Всё равно открыть». Никаких заявлений о доверии Apple в этом канале.
 - Для ОБОИХ каналов сохраняются exact-tag inputs, headless import/export, layout
   DMG, secret scan, `SHA256SUMS.txt` и `update-manifest.json`. DMG содержит
   только `FantasyDisk.app`, ярлык `Applications` и одну фоновую стрелку; стрелка
