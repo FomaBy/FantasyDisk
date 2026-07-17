@@ -1,0 +1,85 @@
+{
+  "ok": true,
+  "decision": "ready_for_image",
+  "errors": [],
+  "warnings": [],
+  "elements": [
+    {
+      "id": "frame",
+      "kind": "panel",
+      "rect": [
+        0,
+        0,
+        1350,
+        1350
+      ],
+      "ok": true,
+      "warnings": []
+    },
+    {
+      "id": "game_title",
+      "kind": "text",
+      "rect": [
+        110,
+        125,
+        330,
+        125
+      ],
+      "ok": true,
+      "warnings": [],
+      "fit_font_size": 44
+    },
+    {
+      "id": "version",
+      "kind": "text",
+      "rect": [
+        510,
+        125,
+        330,
+        125
+      ],
+      "ok": true,
+      "warnings": [],
+      "fit_font_size": 44
+    },
+    {
+      "id": "release_date",
+      "kind": "text",
+      "rect": [
+        910,
+        125,
+        330,
+        125
+      ],
+      "ok": true,
+      "warnings": [],
+      "fit_font_size": 32
+    },
+    {
+      "id": "key_changes",
+      "kind": "text",
+      "rect": [
+        125,
+        575,
+        500,
+        425
+      ],
+      "ok": true,
+      "warnings": [],
+      "fit_font_size": 22
+    },
+    {
+      "id": "fixed_bugs",
+      "kind": "text",
+      "rect": [
+        725,
+        575,
+        500,
+        425
+      ],
+      "ok": true,
+      "warnings": [],
+      "fit_font_size": 22
+    }
+  ]
+}

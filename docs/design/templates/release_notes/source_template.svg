@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape" width="1350" height="1350" viewBox="0 0 1350 1350">
+  <title>FantasyDisk release-notes source template v1</title>
+  <desc>Editable textless frame layer. Live release content is inserted only in the five named content zones.</desc>
+  <metadata>{"profile":"fantasydisk-release-notes-square-v1","canvas":"1350x1350","content":"text is composited by render_release_notes.py"}</metadata>
+  <g id="frame-layer" inkscape:groupmode="layer" inkscape:label="Frame layer">
+    <image id="pixellab-frame-source" x="0" y="0" width="1350" height="1350" href="../../mockups/release_0_2_4/release_0_2_4_base_clean.png" preserveAspectRatio="none" />
+  </g>
+  <g id="content-zone-guides" inkscape:groupmode="layer" inkscape:label="Content zones (toggle visibility)" display="none" fill="none" stroke="#55e6a5" stroke-width="3" stroke-dasharray="10 8">
+    <rect id="zone-game-title" data-zone-id="game_title" x="110" y="125" width="330" height="125" />
+    <rect id="zone-version" data-zone-id="version" x="510" y="125" width="330" height="125" />
+    <rect id="zone-release-date" data-zone-id="release_date" x="910" y="125" width="330" height="125" />
+    <rect id="zone-key-changes" data-zone-id="key_changes" x="125" y="575" width="500" height="425" />
+    <rect id="zone-fixed-bugs" data-zone-id="fixed_bugs" x="725" y="575" width="500" height="425" />
+  </g>
+</svg>

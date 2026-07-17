@@ -1,0 +1,41 @@
+{
+  "profile_id": "fantasydisk-release-notes-square-v1",
+  "profile_version": 1,
+  "source_template": "source_template.svg",
+  "base_layer": "../../mockups/release_0_2_4/release_0_2_4_base_clean.png",
+  "canvas": {
+    "width": 1350,
+    "height": 1350,
+    "format": "PNG",
+    "color_mode": "RGB",
+    "dpi": 96
+  },
+  "safe_margin_px": 24,
+  "typography": {
+    "font": "/System/Library/Fonts/Supplemental/Arial Unicode.ttf",
+    "min_readable_px": 18,
+    "line_spacing": 1.08,
+    "stroke_width_px": 3
+  },
+  "content_budget": {
+    "body_max_items": 5,
+    "body_max_item_chars": 84,
+    "body_max_rendered_lines": 12,
+    "body_shortening": "trim each item at a word boundary; keep four items and replace the rest with one deterministic summary item"
+  },
+  "zones": [
+    {"id": "game_title", "purpose": "game name", "rect": [110, 125, 330, 125], "max_lines": 1, "max_font": 44},
+    {"id": "version", "purpose": "release version", "rect": [510, 125, 330, 125], "max_lines": 1},
+    {"id": "release_date", "purpose": "release date", "rect": [910, 125, 330, 125], "max_lines": 1},
+    {"id": "key_changes", "purpose": "key changes", "rect": [125, 575, 500, 425], "max_lines": 12},
+    {"id": "fixed_bugs", "purpose": "fixed bugs", "rect": [725, 575, 500, 425], "max_lines": 12}
+  ],
+  "outputs": {
+    "publishable": "final/final.png",
+    "debug_overlay": "qa/final.debug.png",
+    "planning_guide": "qa/layout.guide.png",
+    "render_report": "qa/render_report.json",
+    "fit_report": "fit_report.json",
+    "planning_report": "ui_plan.report.json"
+  }
+}

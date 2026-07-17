@@ -1,0 +1,19 @@
+{
+  "canvas": {"width": 1350, "height": 1350},
+  "policy": {"min_gap": 24, "allow_overlap": false},
+  "content": {
+    "game_title": "FANTASYDISK",
+    "version": "v0.2.4",
+    "release_date": "2026-07-17",
+    "key_changes": "КЛЮЧЕВЫЕ ИЗМЕНЕНИЯ\n• Публичный каталог обновлений доступен без входа в GitHub.\n• Размер и SHA-256 пакетов сверяются до публикации.",
+    "fixed_bugs": "ИСПРАВЛЕННЫЕ ОШИБКИ\n• Клиент больше не принимает неполный набор файлов релиза.\n• Повторная проверка установщика не теряет причину ошибки."
+  },
+  "elements": [
+    {"id": "frame", "kind": "panel", "x": 0, "y": 0, "w": 1350, "h": 1350, "min_w": 1350, "min_h": 1350, "collision": false},
+    {"id": "game_title", "kind": "text", "parent": "frame", "content_zone": true, "collision": true, "x": 110, "y": 125, "w": 330, "h": 125, "text_key": "game_title", "max_font": 44, "min_font": 28},
+    {"id": "version", "kind": "text", "parent": "frame", "content_zone": true, "collision": true, "x": 510, "y": 125, "w": 330, "h": 125, "text_key": "version", "max_font": 44, "min_font": 28},
+    {"id": "release_date", "kind": "text", "parent": "frame", "content_zone": true, "collision": true, "x": 910, "y": 125, "w": 330, "h": 125, "text_key": "release_date", "max_font": 32, "min_font": 20},
+    {"id": "key_changes", "kind": "text", "parent": "frame", "content_zone": true, "collision": true, "x": 125, "y": 575, "w": 500, "h": 425, "text_key": "key_changes", "max_font": 24, "min_font": 18},
+    {"id": "fixed_bugs", "kind": "text", "parent": "frame", "content_zone": true, "collision": true, "x": 725, "y": 575, "w": 500, "h": 425, "text_key": "fixed_bugs", "max_font": 24, "min_font": 18}
+  ]
+}

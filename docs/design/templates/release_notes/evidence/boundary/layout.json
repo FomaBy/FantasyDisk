@@ -1,0 +1,99 @@
+{
+  "canvas": {
+    "width": 1350,
+    "height": 1350
+  },
+  "defaults": {
+    "font": "/System/Library/Fonts/Supplemental/Arial Unicode.ttf",
+    "color": "#F8E8C4",
+    "stroke_fill": "#12080B",
+    "stroke_width": 3,
+    "line_spacing": 1.08,
+    "align": "center",
+    "valign": "middle"
+  },
+  "content": {
+    "game_title": "FANTASYDISK",
+    "version": "v0.2.4",
+    "release_date": "2026-07-17",
+    "key_changes": "КЛЮЧЕВЫЕ ИЗМЕНЕНИЯ\n• Публичный каталог обновлений доступен без входа в GitHub и ведёт к стабильной…\n• macOS DMG и Windows Setup получают одинаковое описание и проверяемый SHA-256.\n• Клиент показывает игроку понятный источник загрузки до запуска установщика.\n• Telegram получает полный комплект файлов после локальной проверки публикации.\n• Последняя стабильная версия остаётся доступной по единому адресу обновления.",
+    "fixed_bugs": "ИСПРАВЛЕННЫЕ ОШИБКИ\n• Неполный набор файлов релиза больше не считается готовым к публикации.\n• Размер установщика сверяется перед записью контрольной суммы в manifest.\n• Повторная проверка не теряет название файла, который не прошёл проверку.\n• Пустой URL обновления отклоняется до того, как его увидит клиент.\n• Постер и архивы не смешиваются между двумя версиями релиза."
+  },
+  "zones": [
+    {
+      "id": "game_title",
+      "content_key": "game_title",
+      "role": "title",
+      "x": 110,
+      "y": 125,
+      "w": 330,
+      "h": 125,
+      "max_font": 44,
+      "min_font": 28,
+      "color": "#FFCE74",
+      "stroke_width": 4,
+      "uppercase": true,
+      "debug_color": "#ffcc33"
+    },
+    {
+      "id": "version",
+      "content_key": "version",
+      "role": "version",
+      "x": 510,
+      "y": 125,
+      "w": 330,
+      "h": 125,
+      "max_font": 44,
+      "min_font": 28,
+      "color": "#F8E8C4",
+      "stroke_width": 4,
+      "debug_color": "#66ccff"
+    },
+    {
+      "id": "release_date",
+      "content_key": "release_date",
+      "role": "date",
+      "x": 910,
+      "y": 125,
+      "w": 330,
+      "h": 125,
+      "max_font": 32,
+      "min_font": 20,
+      "color": "#DDAA59",
+      "stroke_width": 3,
+      "debug_color": "#cc88ff"
+    },
+    {
+      "id": "key_changes",
+      "content_key": "key_changes",
+      "role": "key_changes",
+      "x": 125,
+      "y": 575,
+      "w": 500,
+      "h": 425,
+      "max_font": 24,
+      "min_font": 18,
+      "color": "#F8E8C4",
+      "stroke_width": 3,
+      "align": "left",
+      "valign": "top",
+      "debug_color": "#66ff99"
+    },
+    {
+      "id": "fixed_bugs",
+      "content_key": "fixed_bugs",
+      "role": "fixed_bugs",
+      "x": 725,
+      "y": 575,
+      "w": 500,
+      "h": 425,
+      "max_font": 24,
+      "min_font": 18,
+      "color": "#F8E8C4",
+      "stroke_width": 3,
+      "align": "left",
+      "valign": "top",
+      "debug_color": "#ff9966"
+    }
+  ]
+}
