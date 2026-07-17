@@ -262,13 +262,20 @@ def assert_release_tag_protection(repository: str, tag: str) -> None:
         )
     guaranteed_rule_types: set[str] = set()
     for summary in summaries:
-        if not isinstance(summary, dict) or not isinstance(summary.get("id"), int):
+        if not isinstance(summary, dict) or type(summary.get("id")) is not int:
             raise RuntimeError(
-                "tag protection ruleset listing returned malformed entries"
+                "tag protection ruleset summary returned malformed ID"
             )
+        summary_id = summary["id"]
         if summary.get("target") != "tag" or summary.get("enforcement") != "active":
             continue
-        detail = _api_json(f"repos/{repository}/rulesets/{summary['id']}")
+        detail = _api_json(f"repos/{repository}/rulesets/{summary_id}")
+        if type(detail.get("id")) is not int:
+            raise RuntimeError("tag protection ruleset detail returned malformed ID")
+        if detail["id"] != summary_id:
+            raise RuntimeError(
+                "tag protection ruleset detail ID does not match summary ID"
+            )
         if detail.get("target") != "tag" or detail.get("enforcement") != "active":
             continue
         # GitHub returns bypass_actors only to callers with write access to

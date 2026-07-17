@@ -96,8 +96,12 @@ def _ruleset_list(entries: list[dict] | None = None):
     return _gh(["gh", "api"], 0, json.dumps(entries))
 
 
+_MISSING_RULESET_ID = object()
+
+
 def _ruleset_detail(
     *,
+    ruleset_id: object = 42,
     include: tuple[str, ...] = ("refs/tags/v*",),
     exclude: tuple[str, ...] = (),
     rules: tuple[str, ...] = ("update", "deletion"),
@@ -105,16 +109,18 @@ def _ruleset_detail(
     target: str = "tag",
     enforcement: str = "active",
 ):
+    payload = {
+        "target": target,
+        "enforcement": enforcement,
+        "bypass_actors": list(bypass),
+        "conditions": {"ref_name": {"include": list(include), "exclude": list(exclude)}},
+        "rules": [{"type": rule} for rule in rules],
+    }
+    if ruleset_id is not _MISSING_RULESET_ID:
+        payload["id"] = ruleset_id
     return _gh(
         ["gh", "api"], 0,
-        json.dumps({
-            "id": 42,
-            "target": target,
-            "enforcement": enforcement,
-            "bypass_actors": list(bypass),
-            "conditions": {"ref_name": {"include": list(include), "exclude": list(exclude)}},
-            "rules": [{"type": rule} for rule in rules],
-        }),
+        json.dumps(payload),
     )
 
 
@@ -1042,6 +1048,61 @@ class PublisherClaimContinuityTests(unittest.TestCase):
                 [_gh(["gh", "api"], 0, "{not-json")],
                 "invalid JSON",
             ),
+            (
+                "summary-bool-id",
+                [_ruleset_list([{"id": True, "target": "tag", "enforcement": "active"}])],
+                "summary returned malformed ID",
+            ),
+            (
+                "summary-missing-id",
+                [_ruleset_list([{"target": "tag", "enforcement": "active"}])],
+                "summary returned malformed ID",
+            ),
+            (
+                "summary-non-integer-id",
+                [_ruleset_list([{"id": "42", "target": "tag", "enforcement": "active"}])],
+                "summary returned malformed ID",
+            ),
+            (
+                "summary-null-id",
+                [_ruleset_list([{"id": None, "target": "tag", "enforcement": "active"}])],
+                "summary returned malformed ID",
+            ),
+            (
+                "summary-float-id",
+                [_ruleset_list([{"id": 42.0, "target": "tag", "enforcement": "active"}])],
+                "summary returned malformed ID",
+            ),
+            (
+                "detail-bool-id",
+                [_ruleset_list(), _ruleset_detail(ruleset_id=True)],
+                "detail returned malformed ID",
+            ),
+            (
+                "detail-missing-id",
+                [_ruleset_list(), _ruleset_detail(ruleset_id=_MISSING_RULESET_ID)],
+                "detail returned malformed ID",
+            ),
+            (
+                "detail-non-integer-id",
+                [_ruleset_list(), _ruleset_detail(ruleset_id="42")],
+                "detail returned malformed ID",
+            ),
+            (
+                "detail-null-id",
+                [_ruleset_list(), _ruleset_detail(ruleset_id=None)],
+                "detail returned malformed ID",
+            ),
+            (
+                "detail-float-id",
+                [_ruleset_list(), _ruleset_detail(ruleset_id=42.0)],
+                "detail returned malformed ID",
+            ),
+            (
+                "detail-mismatched-id",
+                [_ruleset_list(), _ruleset_detail(ruleset_id=999)],
+                "detail ID does not match summary ID",
+            ),
         )
         for label, responses, error in cases:
             with self.subTest(case=label):
@@ -1057,6 +1118,9 @@ class PublisherClaimContinuityTests(unittest.TestCase):
                 commands = self._commands(run_mock)
                 self.assertFalse(any("POST" in command for command in commands))
                 self.assertFalse(any("create" in command for command in commands))
+                self.assertFalse(
+                    any("upload" in part.lower() for command in commands for part in command)
+                )
                 self.assertFalse(any("edit" in command for command in commands))
 
     def test_unknown_or_malformed_bypass_visibility_blocks_before_any_side_effect(self) -> None:
