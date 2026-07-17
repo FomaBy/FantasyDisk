@@ -43,6 +43,13 @@ COMMIT_SHA_RE = re.compile(r"[0-9a-f]{40}")
 # trustworthy only while the platform itself rejects tag rewrites. Both rule
 # types must be guaranteed server-side before the first external side effect.
 REQUIRED_TAG_RULE_TYPES = frozenset({"update", "deletion"})
+# Draft release assets have no server-side freeze at all: any account with
+# contents write access can rewrite them until the release goes public, and
+# administration write can rewrite the protections themselves, so both
+# permissions void the sole-writer boundary publication depends on.
+RELEASE_MUTATING_APP_PERMISSIONS = ("administration", "contents")
+# A listing proves an inventory only when one page provably holds every entry.
+COMPLETE_LISTING_LIMIT = 100
 RECONCILIATION_GUIDANCE = (
     "the supported path has no rollback: it never deletes, force-updates, "
     "demotes, or reuses a published release or tag, and never edits or demotes "
@@ -90,8 +97,9 @@ def release_files(release_dir: Path, version: str) -> tuple[list[Path], Path]:
         # but `gh release create` uploads assets concurrently, so completion
         # order is not guaranteed. The enforced invariant lives in publish():
         # the release stays a draft until every asset, including the manifest,
-        # is verified uploaded byte-exact, so latest/download can never expose
-        # an incomplete installer set.
+        # is verified uploaded byte-exact — and re-verified under the proven
+        # sole-writer boundary immediately before the public edit — so
+        # latest/download can never expose an incomplete installer set.
         release_dir / "update-manifest.json",
     ]
     missing = [path.name for path in ordered if not path.is_file() or path.is_symlink()]
@@ -305,6 +313,148 @@ def assert_release_tag_protection(repository: str, tag: str) -> None:
             f"distribution repository does not protect release tag {tag} against "
             f"{', '.join(sorted(missing))}; enable an active tag ruleset without "
             "bypass actors that blocks tag update and deletion before publication"
+        )
+
+
+def _api_json_array(route: str) -> list:
+    result = run(["gh", "api", route])
+    try:
+        payload = json.loads(result.stdout)
+    except json.JSONDecodeError as exc:
+        raise RuntimeError(f"GitHub API returned invalid JSON for {route}") from exc
+    if not isinstance(payload, list):
+        raise RuntimeError(f"GitHub API returned an unexpected response for {route}")
+    return payload
+
+
+def _complete_listing(route: str, inventory: str) -> list:
+    """Read a listing only when a single page provably holds every entry."""
+    separator = "&" if "?" in route else "?"
+    entries = _api_json_array(f"{route}{separator}per_page={COMPLETE_LISTING_LIMIT}")
+    if len(entries) >= COMPLETE_LISTING_LIMIT:
+        raise RuntimeError(
+            f"cannot prove the distribution repository {inventory} inventory is "
+            "complete within one page; publication requires a provably complete "
+            "writer inventory"
+        )
+    return entries
+
+
+def _installation_covers_repository(installation_id: int, repository: str) -> bool:
+    """Prove whether a selected-repositories App installation reaches the repo."""
+    payload = _api_json(
+        f"user/installations/{installation_id}/repositories"
+        f"?per_page={COMPLETE_LISTING_LIMIT}"
+    )
+    repositories = payload.get("repositories")
+    total = payload.get("total_count")
+    if not isinstance(repositories, list) or not isinstance(total, int):
+        raise RuntimeError("GitHub App installation repositories are unreadable")
+    if total != len(repositories):
+        raise RuntimeError(
+            "cannot prove the GitHub App installation repository list is "
+            "complete within one page; publication requires a provably "
+            "complete writer inventory"
+        )
+    covered = set()
+    for entry in repositories:
+        if not isinstance(entry, dict) or not isinstance(entry.get("full_name"), str):
+            raise RuntimeError("GitHub App installation repositories are unreadable")
+        covered.add(entry["full_name"].casefold())
+    return repository.casefold() in covered
+
+
+def assert_sole_publisher_write_access(repository: str) -> None:
+    """Prove no other account can rewrite draft release assets before publication.
+
+    GitHub keeps every draft release asset writable for any actor with
+    contents write access until the moment the release goes public, and the
+    draft→public edit has no server-side precondition on asset bytes, so
+    verify-then-publish is race-free only while this caller is provably the
+    sole write-capable account. The distribution repository must be owned by
+    the authenticated user, list no other collaborator and no pending
+    collaboration invitation, hold no deploy key that can push (a pushed
+    workflow file would mint a repository-scoped write token), and be covered
+    by no GitHub App installation with contents or administration write.
+    Hidden, malformed, or unprovably paginated state blocks publication
+    instead of being assumed safe.
+    """
+    login = _api_json("user").get("login")
+    if not isinstance(login, str) or not login:
+        raise RuntimeError("cannot identify the authenticated publisher account")
+    owner = _api_json(f"repos/{repository}").get("owner")
+    if not isinstance(owner, dict):
+        raise RuntimeError("distribution repository ownership is unreadable")
+    if owner.get("type") != "User" or owner.get("login") != login:
+        raise RuntimeError(
+            "distribution repository must be owned by the authenticated "
+            "publisher account; a foreign- or organization-owned repository "
+            "cannot prove that no other account rewrites draft release assets"
+        )
+    for collaborator in _complete_listing(
+        f"repos/{repository}/collaborators?affiliation=all", "collaborator"
+    ):
+        if not isinstance(collaborator, dict) or not isinstance(
+            collaborator.get("login"), str
+        ):
+            raise RuntimeError("distribution repository collaborators are unreadable")
+        if collaborator["login"] != login:
+            raise RuntimeError(
+                "distribution repository grants access to another account "
+                f"({collaborator['login']}); remove every other collaborator "
+                "before publication"
+            )
+    if _complete_listing(f"repos/{repository}/invitations", "invitation"):
+        raise RuntimeError(
+            "distribution repository has pending collaboration invitations; "
+            "withdraw them before publication"
+        )
+    for key in _complete_listing(f"repos/{repository}/keys", "deploy key"):
+        if not isinstance(key, dict) or key.get("read_only") is not True:
+            raise RuntimeError(
+                "distribution repository holds a deploy key that is not "
+                "provably read-only; remove it before publication"
+            )
+    installations_payload = _api_json(
+        f"user/installations?per_page={COMPLETE_LISTING_LIMIT}"
+    )
+    installations = installations_payload.get("installations")
+    total = installations_payload.get("total_count")
+    if not isinstance(installations, list) or not isinstance(total, int):
+        raise RuntimeError("GitHub App installations are unreadable")
+    if total != len(installations) or total >= COMPLETE_LISTING_LIMIT:
+        raise RuntimeError(
+            "cannot prove the GitHub App installation inventory is complete "
+            "within one page; publication requires a provably complete writer "
+            "inventory"
+        )
+    for installation in installations:
+        if not isinstance(installation, dict) or not isinstance(
+            installation.get("id"), int
+        ):
+            raise RuntimeError("GitHub App installations are unreadable")
+        permissions = installation.get("permissions")
+        if not isinstance(permissions, dict):
+            raise RuntimeError("GitHub App installations are unreadable")
+        granted = [
+            name
+            for name in RELEASE_MUTATING_APP_PERMISSIONS
+            if permissions.get(name) not in (None, "read")
+        ]
+        if not granted:
+            continue
+        if installation.get(
+            "repository_selection"
+        ) == "selected" and not _installation_covers_repository(
+            installation["id"], repository
+        ):
+            continue
+        raise RuntimeError(
+            "GitHub App installation "
+            f"{installation.get('app_slug', 'with an unknown slug')} holds "
+            f"{', '.join(granted)} write access that can reach the "
+            "distribution repository; uninstall it or exclude the repository "
+            "before publication"
         )
 
 
@@ -579,6 +729,7 @@ def publish(repository: str, version: str, files: list[Path], changelog: Path) -
     assert_immutable_release_enforcement(repository)
     tag = f"v{version}"
     assert_release_tag_protection(repository, tag)
+    assert_sole_publisher_write_access(repository)
     assert_unclaimed_distribution_release(repository, tag)
     assert_unclaimed_distribution_tag(repository, tag)
     release_commit = resolve_release_target_commit(repository, default_branch)
@@ -616,9 +767,23 @@ def publish(repository: str, version: str, files: list[Path], changelog: Path) -
         )
     assert_owned_distribution_tag(repository, tag, release_commit)
     _assert_release_assets(repository, tag, files, draft=True)
-    # Last pre-public identity check: from here to the public edit only the
+    # Last pre-public boundary: GitHub has no publish-with-expected-bytes
+    # precondition, so re-prove that no other account can rewrite the draft,
+    # re-check the claimed tag, and re-verify every asset byte-exact as the
+    # final read before the irreversible edit. From that read to the edit the
+    # proven sole-writer boundary is what keeps the assets frozen, and the
     # server-side tag ruleset proven before the claim keeps the tag frozen.
+    assert_sole_publisher_write_access(repository)
     assert_owned_distribution_tag(repository, tag, release_commit)
+    try:
+        _assert_release_assets(repository, tag, files, draft=True)
+    except RuntimeError as error:
+        raise RuntimeError(
+            f"{error}\ndraft release assets changed after the last clean "
+            "verification: a concurrent writer mutated the draft between "
+            "verification and publication, so the public edit was refused and "
+            f"no public release was created; {RECONCILIATION_GUIDANCE}"
+        ) from error
     published = run(
         [
             "gh", "release", "edit", tag, "--repo", repository,

@@ -23,6 +23,14 @@ upload начинается последним, но `gh` загружает ass
 остаётся draft, пока весь allowlisted package, включая manifest, не проверен
 byte-exact (имя, размер, SHA-256), и только затем становится public и latest —
 поэтому `latest` никогда не указывает на ещё не готовые установщики.
+Перед необратимым `--draft=false` publisher дополнительно доказывает
+sole-writer boundary (FAN-1276): никакой другой аккаунт не может переписать
+draft assets — репозиторий принадлежит самому публикатору, других
+collaborators и pending invitations нет, deploy keys только read-only, и ни
+одна GitHub App installation с contents/administration write не покрывает
+репозиторий, — и повторно byte-exact сверяет все draft assets последним
+чтением перед публичным edit. Подмена файла после последней чистой проверки
+останавливает публикацию, пока release ещё draft.
 
 ## Клиентский контракт
 
@@ -141,7 +149,11 @@ durable path.
    tree и README на source/secret-like content, затем загружает assets в draft
    (upload в `gh` параллельный, порядок завершения не гарантирован) и делает
    release public, а затем latest, только после байт-точной allowlist-проверки
-   всех draft assets, включая manifest.
+   всех draft assets, включая manifest. Перед самим `--draft=false` publisher
+   повторно доказывает sole-writer boundary и повторно сверяет байты draft
+   assets; любой другой аккаунт с правом записи, непроверяемое состояние или
+   несовпадение байтов блокируют публикацию fail-closed, пока release ещё
+   draft (FAN-1276).
 3. Выполнить unauthenticated byte verification без GitHub credentials, сверив
    page, `releases/latest/download/update-manifest.json`, оба installers, размеры
    и SHA-256 с durable release:

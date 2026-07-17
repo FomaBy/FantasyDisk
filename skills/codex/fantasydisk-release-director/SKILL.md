@@ -212,6 +212,26 @@ python3 skills/codex/fantasydisk-release-director/scripts/github_release_verify.
    (name, size, SHA-256), and only a fully verified draft is made public and
    then latest — `latest/download` can never expose an incomplete installer set.
 
+   FAN-1276 sole-writer boundary: draft release assets stay writable to any
+   account with contents write access until the release goes public, and
+   GitHub offers no publish-with-expected-bytes precondition, so
+   verify-then-publish is race-free only while the publisher is provably the
+   only write-capable account. Before the first external side effect — and
+   again immediately before the public edit — the publisher proves that the
+   distribution repository is owned by the authenticated publisher account
+   (user-owned), lists no other collaborator and no pending collaboration
+   invitation, holds no deploy key that can push, and is covered by no GitHub
+   App installation with contents or administration write; hidden, malformed,
+   or unprovably paginated state blocks publication. Every draft asset is
+   then re-verified byte-exact (name, size, SHA-256) as the last read before
+   `gh release edit --draft=false`, so a concurrent asset swap after the last
+   clean verification aborts the attempt while the release is still an
+   unpublished draft — swapped bytes never become public or immutable. The
+   boundary is intentionally strict and read-only: a foreign collaborator,
+   invitation, writable deploy key, or write-capable App installation on the
+   distribution repository fails publication closed until it is removed
+   manually; the publisher never changes those settings itself.
+
    FAN-1249/FAN-1265/FAN-1272 fail-closed contract: the distribution repository must
    have GitHub-enforced immutable releases enabled (`Settings → General →
    Releases`) **and** an active tag ruleset with no bypass actors that blocks

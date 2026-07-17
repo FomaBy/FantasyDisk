@@ -172,6 +172,17 @@ dev  — основная ветка разработки. Все чаты (Back
     гарантирован) и становится public, а затем latest, только после байт-точной
     проверки полного allowlisted package в draft, включая manifest — поэтому
     latest/download никогда не указывает на неполный набор installers.
+    Публикация дополнительно защищена sole-writer boundary (FAN-1276): до
+    первого внешнего side effect и повторно непосредственно перед
+    `--draft=false` publisher доказывает, что переписать draft assets не может
+    никакой другой аккаунт — репозиторий принадлежит аутентифицированному
+    публикатору, других collaborators и pending invitations нет, deploy keys
+    только read-only, и ни одна GitHub App installation с contents или
+    administration write не покрывает репозиторий, — а затем повторно
+    byte-exact сверяет все draft assets последним чтением перед публичным
+    edit. Конкурентная подмена asset после последней чистой проверки блокирует
+    публикацию, пока release ещё draft; непроверяемое состояние тоже блокирует
+    (fail-closed), и publisher сам никогда не меняет эти настройки GitHub.
     Стабильный клиентский URL:
     `https://github.com/FomaBy/FantasyDisk-Releases/releases/latest/download/update-manifest.json`.
     Затем `github_release_verify.py` без GitHub credentials сверяет page,

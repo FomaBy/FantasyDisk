@@ -153,6 +153,49 @@ def _latest_release(tag_name: str):
     return _gh(["gh", "api"], 0, json.dumps({"tag_name": tag_name}))
 
 
+# FAN-1276 fixtures: the sole-writer boundary the publisher proves before the
+# first external side effect and re-proves immediately before the public edit.
+PUBLISHER_LOGIN = "FomaBy"
+
+
+def _publisher_identity(login: str = PUBLISHER_LOGIN):
+    return _gh(["gh", "api"], 0, json.dumps({"login": login}))
+
+
+def _user_owned_repository(login: str = PUBLISHER_LOGIN, owner_type: str = "User"):
+    return _gh(
+        ["gh", "api"], 0, json.dumps({"owner": {"login": login, "type": owner_type}})
+    )
+
+
+def _sole_collaborator(login: str = PUBLISHER_LOGIN):
+    return _gh(["gh", "api"], 0, json.dumps([{"login": login}]))
+
+
+def _no_invitations():
+    return _gh(["gh", "api"], 0, "[]")
+
+
+def _no_deploy_keys():
+    return _gh(["gh", "api"], 0, "[]")
+
+
+def _no_installations():
+    return _gh(["gh", "api"], 0, json.dumps({"total_count": 0, "installations": []}))
+
+
+def _sole_write_access_ok(login: str = PUBLISHER_LOGIN):
+    """FAN-1276 proof sextet: authenticated owner with no other write path."""
+    return (
+        _publisher_identity(login),
+        _user_owned_repository(login),
+        _sole_collaborator(login),
+        _no_invitations(),
+        _no_deploy_keys(),
+        _no_installations(),
+    )
+
+
 class UpdateReleasePipelineTests(unittest.TestCase):
     def test_manifest_matches_both_installers_and_public_urls(self) -> None:
         with tempfile.TemporaryDirectory() as temporary:
@@ -285,6 +328,7 @@ class UpdateReleasePipelineTests(unittest.TestCase):
                  _auth_ok(),
                  _immutability_enforced(),
                  *_tag_protection_ok(),
+                 *_sole_write_access_ok(),
                  existing,
              ]):
             with self.assertRaisesRegex(RuntimeError, "never overwrite"):
@@ -303,6 +347,7 @@ class UpdateReleasePipelineTests(unittest.TestCase):
                  _auth_ok(),
                  _immutability_enforced(),
                  *_tag_protection_ok(),
+                 *_sole_write_access_ok(),
                  _missing_release(),
                  bare_tag,
              ]) as run_mock:
@@ -322,6 +367,7 @@ class UpdateReleasePipelineTests(unittest.TestCase):
                  _auth_ok(),
                  _immutability_enforced(),
                  *_tag_protection_ok(),
+                 *_sole_write_access_ok(),
                  _missing_release(),
                  failed_preflight,
              ]):
@@ -341,12 +387,14 @@ class UpdateReleasePipelineTests(unittest.TestCase):
                  _auth_ok(),
                  _immutability_enforced(),
                  *_tag_protection_ok(),
+                 *_sole_write_access_ok(),
                  _missing_release(),
                  _absent_tag(),
                  _branch_head(),
                  _tag_ref(tag),
                  created,
                  _tag_ref(tag),
+                 *_sole_write_access_ok(),
                  _tag_ref(tag),
                  published,
                  _tag_ref(tag),
@@ -368,6 +416,7 @@ class UpdateReleasePipelineTests(unittest.TestCase):
                  _auth_ok(),
                  _immutability_enforced(),
                  *_tag_protection_ok(),
+                 *_sole_write_access_ok(),
                  unavailable,
              ]) as run_mock:
             with self.assertRaisesRegex(RuntimeError, "cannot verify"):
@@ -386,6 +435,7 @@ class UpdateReleasePipelineTests(unittest.TestCase):
                  _auth_ok(),
                  _immutability_enforced(),
                  *_tag_protection_ok(),
+                 *_sole_write_access_ok(),
                  _missing_release(),
                  _absent_tag(),
                  _branch_head(),
@@ -593,6 +643,7 @@ class PublisherRaceAndImmutabilityTests(unittest.TestCase):
                  _auth_ok(),
                  _immutability_enforced(),
                  *_tag_protection_ok(),
+                 *_sole_write_access_ok(),
                  _missing_release(),
                  _absent_tag(),
                  _branch_head(),
@@ -641,6 +692,7 @@ class PublisherRaceAndImmutabilityTests(unittest.TestCase):
                          _auth_ok(),
                          _immutability_enforced(),
                          *_tag_protection_ok(),
+                         *_sole_write_access_ok(),
                          _missing_release(),
                          _absent_tag(),
                          _branch_head(),
@@ -679,6 +731,7 @@ class PublisherRaceAndImmutabilityTests(unittest.TestCase):
                          _auth_ok(),
                          _immutability_enforced(),
                          *_tag_protection_ok(),
+                         *_sole_write_access_ok(),
                          _missing_release(),
                          _absent_tag(),
                          _gh(["gh", "api"], 0, json.dumps(payload)),
@@ -698,6 +751,7 @@ class PublisherRaceAndImmutabilityTests(unittest.TestCase):
                  _auth_ok(),
                  _immutability_enforced(),
                  *_tag_protection_ok(),
+                 *_sole_write_access_ok(),
                  _missing_release(),
                  _absent_tag(),
                  _branch_head(),
@@ -723,12 +777,14 @@ class PublisherRaceAndImmutabilityTests(unittest.TestCase):
                  _auth_ok(),
                  _immutability_enforced(),
                  *_tag_protection_ok(),
+                 *_sole_write_access_ok(),
                  _missing_release(),
                  _absent_tag(),
                  _branch_head(),
                  _tag_ref(self.TAG),
                  created,
                  _tag_ref(self.TAG),
+                 *_sole_write_access_ok(),
                  _tag_ref(self.TAG),
                  published,
                  _tag_ref(self.TAG, FOREIGN_COMMIT),
@@ -749,6 +805,7 @@ class PublisherRaceAndImmutabilityTests(unittest.TestCase):
                  _auth_ok(),
                  _immutability_enforced(),
                  *_tag_protection_ok(),
+                 *_sole_write_access_ok(),
                  _missing_release(),
                  _absent_tag(),
                  _branch_head(),
@@ -756,7 +813,9 @@ class PublisherRaceAndImmutabilityTests(unittest.TestCase):
                  created,
                  _tag_ref(self.TAG),
                  _release_view(draft=True, immutable=False),
+                 *_sole_write_access_ok(),
                  _tag_ref(self.TAG),
+                 _release_view(draft=True, immutable=False),
                  published,
                  _release_view(draft=False, immutable=False),
              ]) as run_mock:
@@ -802,6 +861,7 @@ class PublisherRaceAndImmutabilityTests(unittest.TestCase):
                  _auth_ok(),
                  _immutability_enforced(),
                  *_tag_protection_ok(),
+                 *_sole_write_access_ok(),
                  _missing_release(),
                  _absent_tag(),
                  _branch_head(),
@@ -809,7 +869,9 @@ class PublisherRaceAndImmutabilityTests(unittest.TestCase):
                  created,
                  _tag_ref(self.TAG),
                  _release_view(draft=True, immutable=False, url=url),
+                 *_sole_write_access_ok(),
                  _tag_ref(self.TAG),
+                 _release_view(draft=True, immutable=False, url=url),
                  published,
                  _release_view(draft=False, immutable=True, url=url),
                  _tag_ref(self.TAG),
@@ -862,6 +924,27 @@ class PublisherRaceAndImmutabilityTests(unittest.TestCase):
         self.assertTrue(
             any(draft_view_at < index < publish_at for index in identity_checks)
         )
+        # FAN-1276: the sole-writer boundary is proven before the first side
+        # effect and re-proven after draft verification, and the draft assets
+        # are re-verified again immediately before the public edit.
+        ownership_checks = [
+            index for index, command in enumerate(commands)
+            if command[:2] == ["gh", "api"] and command[-1] == "user"
+        ]
+        self.assertTrue(any(index < claim_at for index in ownership_checks))
+        self.assertTrue(
+            any(draft_view_at < index < publish_at for index in ownership_checks)
+        )
+        draft_views = [
+            index for index, command in enumerate(commands)
+            if command[:3] == ["gh", "release", "view"] and index < publish_at
+        ]
+        self.assertEqual(len(draft_views), 2)
+        # The byte-exact re-verification is the last read before the edit.
+        last_ownership_check = max(
+            index for index in ownership_checks if index < publish_at
+        )
+        self.assertLess(last_ownership_check, draft_views[-1])
 
     def test_supported_publisher_path_has_no_destructive_commands(self) -> None:
         source = (SCRIPTS / "github_release_publish.py").read_text(encoding="utf-8")
@@ -1030,6 +1113,7 @@ class PublisherClaimContinuityTests(unittest.TestCase):
                  _auth_ok(),
                  _immutability_enforced(),
                  *_tag_protection_ok(),
+                 *_sole_write_access_ok(),
                  _missing_release(),
                  _absent_tag(),
                  _branch_head(),
@@ -1072,12 +1156,14 @@ class PublisherClaimContinuityTests(unittest.TestCase):
                  _auth_ok(),
                  _immutability_enforced(),
                  *_tag_protection_ok(),
+                 *_sole_write_access_ok(),
                  _missing_release(),
                  _absent_tag(),
                  _branch_head(),
                  _tag_ref(self.TAG),
                  created,
                  _tag_ref(self.TAG),
+                 *_sole_write_access_ok(),
                  _tag_ref(self.TAG, FOREIGN_COMMIT),
              ]) as run_mock:
             with self.assertRaisesRegex(
@@ -1143,12 +1229,14 @@ class PublisherClaimContinuityTests(unittest.TestCase):
                          _auth_ok(),
                          _immutability_enforced(),
                          *_tag_protection_ok(),
+                         *_sole_write_access_ok(),
                          _missing_release(),
                          _absent_tag(),
                          _branch_head(),
                          _tag_ref(self.TAG),
                          created,
                          _tag_ref(self.TAG),
+                         *_sole_write_access_ok(),
                          _tag_ref(self.TAG),
                          edit_lost,
                          *state_reads,
@@ -1194,6 +1282,7 @@ class PublisherClaimContinuityTests(unittest.TestCase):
                          _auth_ok(),
                          _immutability_enforced(),
                          *_tag_protection_ok(),
+                         *_sole_write_access_ok(),
                          _missing_release(),
                          _absent_tag(),
                          _branch_head(),
@@ -1201,7 +1290,9 @@ class PublisherClaimContinuityTests(unittest.TestCase):
                          created,
                          _tag_ref(self.TAG),
                          _release_view(draft=True, immutable=False),
+                         *_sole_write_access_ok(),
                          _tag_ref(self.TAG),
+                         _release_view(draft=True, immutable=False),
                          published,
                          *post_public,
                      ]) as run_mock:
@@ -1227,6 +1318,7 @@ class PublisherClaimContinuityTests(unittest.TestCase):
                  _auth_ok(),
                  _immutability_enforced(),
                  *_tag_protection_ok(),
+                 *_sole_write_access_ok(),
                  _missing_release(),
                  _absent_tag(),
                  _branch_head(),
@@ -1234,7 +1326,9 @@ class PublisherClaimContinuityTests(unittest.TestCase):
                  created,
                  _tag_ref(self.TAG),
                  _release_view(draft=True, immutable=False),
+                 *_sole_write_access_ok(),
                  _tag_ref(self.TAG),
+                 _release_view(draft=True, immutable=False),
                  published,
                  _release_view(draft=False, immutable=True),
                  _tag_ref(self.TAG),
@@ -1352,6 +1446,7 @@ class PublisherCreateRaceRecoveryTests(unittest.TestCase):
                          _auth_ok(),
                          _immutability_enforced(),
                          *_tag_protection_ok(),
+                         *_sole_write_access_ok(),
                          _missing_release(),
                          _absent_tag(),
                          _branch_head(),
@@ -1429,6 +1524,7 @@ class PublisherCreateRaceRecoveryTests(unittest.TestCase):
                  _auth_ok(),
                  _immutability_enforced(),
                  *_tag_protection_ok(),
+                 *_sole_write_access_ok(),
                  _missing_release(),
                  _absent_tag(),
                  _branch_head(),
@@ -1448,6 +1544,431 @@ class PublisherCreateRaceRecoveryTests(unittest.TestCase):
         self.assertNotRegex(
             message, r"(?:keep|make|mark|demote|hold)\b[^.]{0,40}non-latest"
         )
+
+
+class PublisherDraftAssetRaceTests(unittest.TestCase):
+    """FAN-1276: verified draft bytes cannot be swapped before the public edit.
+
+    GitHub keeps every draft release asset writable for any account with
+    contents write access until the release goes public and offers no
+    publish-with-expected-bytes precondition. These scenarios drive the real
+    publish() command sequence through a stateful mock GitHub: the publisher
+    must prove a sole-writer boundary before the first external side effect,
+    re-prove it after draft verification, re-verify every asset byte-exact
+    immediately before the public edit, and refuse the edit when any proof
+    fails — a concurrent swap must burn the attempt while the release is
+    still an unpublished draft, never after it became public and immutable.
+    """
+
+    REPOSITORY = "FomaBy/FantasyDisk-Releases"
+    VERSION = "0.2.3.1"
+    TAG = "v0.2.3.1"
+
+    def setUp(self) -> None:
+        temporary = tempfile.TemporaryDirectory()
+        self.addCleanup(temporary.cleanup)
+        self.asset = Path(temporary.name) / f"FantasyDisk-{self.VERSION}-macos.dmg"
+        self.asset.write_bytes(b"verified-installer-bytes")
+        self.changelog = Path(temporary.name) / f"CHANGELOG-{self.VERSION}.md"
+        self.changelog.write_text("release notes", encoding="utf-8")
+        self.clean_digest = (
+            f"sha256:{hashlib.sha256(self.asset.read_bytes()).hexdigest()}"
+        )
+        self.url = f"https://github.com/{self.REPOSITORY}/releases/tag/{self.TAG}"
+
+    def _publish(self) -> str:
+        return github_release_publish.publish(
+            self.REPOSITORY, self.VERSION, [self.asset], self.changelog
+        )
+
+    def _stateful_github(
+        self,
+        *,
+        mutate_asset_after_clean_verification: bool = False,
+        grant_writer_after_clean_verification: bool = False,
+    ):
+        """Stateful production-sequence mock: one GitHub, mutated mid-flight."""
+        state = {
+            "collaborators": [{"login": PUBLISHER_LOGIN}],
+            "digest": self.clean_digest,
+            "release": None,
+            "draft_views": 0,
+            "latest": False,
+            "commands": [],
+        }
+
+        def fake_run(command, *, check=True):
+            state["commands"].append(list(command))
+            if command[:2] == ["gh", "auth"]:
+                return _gh(command, 0)
+            if command[:3] == ["gh", "release", "create"]:
+                state["release"] = "draft"
+                return _gh(command, 0)
+            if command[:3] == ["gh", "release", "view"]:
+                payload = {
+                    "url": self.url,
+                    "isDraft": state["release"] == "draft",
+                    "isImmutable": state["release"] == "public",
+                    "assets": [{
+                        "name": self.asset.name,
+                        "state": "uploaded",
+                        "size": self.asset.stat().st_size,
+                        "digest": state["digest"],
+                    }],
+                }
+                response = _gh(command, 0, json.dumps(payload))
+                if state["release"] == "draft":
+                    state["draft_views"] += 1
+                    if state["draft_views"] == 1:
+                        # The concurrent authorized writer strikes in exactly
+                        # the FAN-1275 window: after the last clean draft
+                        # verification and before the public edit.
+                        if mutate_asset_after_clean_verification:
+                            state["digest"] = "sha256:" + "f" * 64
+                        if grant_writer_after_clean_verification:
+                            state["collaborators"].append({"login": "mallory"})
+                return response
+            if command[:3] == ["gh", "release", "edit"]:
+                if "--draft=false" in command:
+                    state["release"] = "public"
+                    return _gh(command, 0)
+                if command[-1] == "--latest":
+                    state["latest"] = True
+                    return _gh(command, 0)
+                return _gh(command, 1, "", "unexpected edit")
+            self.assertEqual(command[:2], ["gh", "api"])
+            if "--method" in command and "POST" in command:
+                return _gh(command, 0, json.dumps({
+                    "ref": f"refs/tags/{self.TAG}",
+                    "object": {"type": "commit", "sha": CLAIMED_COMMIT},
+                }))
+            route = command[-1]
+            if route == "user":
+                return _gh(command, 0, json.dumps({"login": PUBLISHER_LOGIN}))
+            if route == f"repos/{self.REPOSITORY}":
+                return _gh(command, 0, json.dumps(
+                    {"owner": {"login": PUBLISHER_LOGIN, "type": "User"}}
+                ))
+            if "/collaborators" in route:
+                return _gh(command, 0, json.dumps(state["collaborators"]))
+            if "/invitations" in route:
+                return _gh(command, 0, "[]")
+            if "/keys" in route:
+                return _gh(command, 0, "[]")
+            if "user/installations" in route:
+                return _gh(
+                    command, 0, json.dumps({"total_count": 0, "installations": []})
+                )
+            if "immutable-releases" in route:
+                return _immutability_enforced()
+            if "rulesets?" in route:
+                return _ruleset_list()
+            if "rulesets/" in route:
+                return _ruleset_detail()
+            if f"releases/tags/{self.TAG}" in route:
+                return _missing_release()
+            if f"git/matching-refs/tags/{self.TAG}" in route:
+                return _absent_tag()
+            if route.endswith("git/ref/heads/main"):
+                return _branch_head()
+            if route.endswith(f"git/ref/tags/{self.TAG}"):
+                return _tag_ref(self.TAG)
+            raise AssertionError(f"unexpected gh command: {command}")
+
+        return state, fake_run
+
+    def test_asset_mutation_after_clean_draft_verification_blocks_public_edit(
+        self,
+    ) -> None:
+        state, fake_run = self._stateful_github(
+            mutate_asset_after_clean_verification=True
+        )
+        with mock.patch.object(github_release_publish.shutil, "which", return_value="gh"), \
+             mock.patch.object(github_release_publish, "assert_safe_public_distribution_repository", return_value="main"), \
+             mock.patch.object(github_release_publish, "run", side_effect=fake_run):
+            with self.assertRaisesRegex(
+                RuntimeError, "changed after the last clean verification"
+            ) as caught:
+                self._publish()
+        message = str(caught.exception)
+        self.assertIn("asset verification failed", message)
+        self.assertIn("the public edit was refused", message)
+        self.assertIn("no rollback", message)
+        # The mutation happened after a clean verification and was still
+        # caught by the byte-exact re-verification before the edit: the
+        # release never left the draft state and no destructive command ran.
+        self.assertEqual(state["draft_views"], 2)
+        self.assertEqual(state["release"], "draft")
+        self.assertFalse(state["latest"])
+        commands = state["commands"]
+        self.assertFalse(any("--draft=false" in command for command in commands))
+        self.assertFalse(
+            any(command[:3] == ["gh", "release", "edit"] for command in commands)
+        )
+        self.assertFalse(
+            any("delete" in part.lower() for command in commands for part in command)
+        )
+
+    def test_writer_granted_after_clean_draft_verification_blocks_public_edit(
+        self,
+    ) -> None:
+        state, fake_run = self._stateful_github(
+            grant_writer_after_clean_verification=True
+        )
+        with mock.patch.object(github_release_publish.shutil, "which", return_value="gh"), \
+             mock.patch.object(github_release_publish, "assert_safe_public_distribution_repository", return_value="main"), \
+             mock.patch.object(github_release_publish, "run", side_effect=fake_run):
+            with self.assertRaisesRegex(
+                RuntimeError, "remove every other collaborator"
+            ):
+                self._publish()
+        # The sole-writer re-proof caught the mid-flight grant before the
+        # final asset read: the bytes could no longer be trusted frozen.
+        self.assertEqual(state["release"], "draft")
+        self.assertFalse(state["latest"])
+        commands = state["commands"]
+        self.assertFalse(any("--draft=false" in command for command in commands))
+        self.assertFalse(
+            any(command[:3] == ["gh", "release", "edit"] for command in commands)
+        )
+
+    def test_stateful_happy_path_publishes_only_reverified_bytes(self) -> None:
+        state, fake_run = self._stateful_github()
+        with mock.patch.object(github_release_publish.shutil, "which", return_value="gh"), \
+             mock.patch.object(github_release_publish, "assert_safe_public_distribution_repository", return_value="main"), \
+             mock.patch.object(github_release_publish, "run", side_effect=fake_run):
+            self.assertEqual(self._publish(), self.url)
+        self.assertEqual(state["release"], "public")
+        self.assertTrue(state["latest"])
+        self.assertEqual(state["draft_views"], 2)
+        commands = state["commands"]
+        ownership_checks = [
+            index for index, command in enumerate(commands)
+            if command[:2] == ["gh", "api"] and command[-1] == "user"
+        ]
+        claim_at = next(
+            index for index, command in enumerate(commands)
+            if "--method" in command and "POST" in command
+        )
+        create_at = next(
+            index for index, command in enumerate(commands)
+            if command[:3] == ["gh", "release", "create"]
+        )
+        views = [
+            index for index, command in enumerate(commands)
+            if command[:3] == ["gh", "release", "view"]
+        ]
+        publish_at = next(
+            index for index, command in enumerate(commands)
+            if "--draft=false" in command
+        )
+        latest_at = next(
+            index for index, command in enumerate(commands)
+            if command[-1] == "--latest"
+        )
+        # claim → draft → verified draft → re-proof → re-verify → public
+        # non-latest → latest, with the byte re-read as the last pre-edit read.
+        self.assertEqual(len(ownership_checks), 2)
+        self.assertLess(ownership_checks[0], claim_at)
+        self.assertLess(claim_at, create_at)
+        self.assertLess(create_at, views[0])
+        self.assertLess(views[0], ownership_checks[1])
+        self.assertLess(ownership_checks[1], views[1])
+        self.assertLess(views[1], publish_at)
+        self.assertEqual(publish_at, views[1] + 1)
+        self.assertIn("--latest=false", commands[publish_at])
+        self.assertIn("--prerelease=false", commands[publish_at])
+        self.assertLess(publish_at, latest_at)
+        self.assertEqual(latest_at, len(commands) - 1)
+
+    def test_foreign_writer_blocks_before_any_side_effect(self) -> None:
+        with mock.patch.object(github_release_publish.shutil, "which", return_value="gh"), \
+             mock.patch.object(github_release_publish, "assert_safe_public_distribution_repository", return_value="main"), \
+             mock.patch.object(github_release_publish, "run", side_effect=[
+                 _auth_ok(),
+                 _immutability_enforced(),
+                 *_tag_protection_ok(),
+                 _publisher_identity(),
+                 _user_owned_repository(),
+                 _gh(["gh", "api"], 0, json.dumps(
+                     [{"login": PUBLISHER_LOGIN}, {"login": "mallory"}]
+                 )),
+             ]) as run_mock:
+            with self.assertRaisesRegex(
+                RuntimeError, "remove every other collaborator"
+            ):
+                self._publish()
+        commands = [list(call.args[0]) for call in run_mock.call_args_list]
+        self.assertFalse(any("POST" in command for command in commands))
+        self.assertFalse(any("create" in command for command in commands))
+        self.assertFalse(any("edit" in command for command in commands))
+
+    def test_sole_writer_boundary_fails_closed_on_unprovable_state(self) -> None:
+        identity = (_publisher_identity(), _user_owned_repository())
+        no_writers = (*identity, _sole_collaborator(), _no_invitations())
+        write_app = {
+            "id": 7,
+            "app_slug": "ci-bot",
+            "repository_selection": "all",
+            "permissions": {"contents": "write"},
+        }
+        cases = (
+            (
+                "anonymous-viewer",
+                [_gh(["gh", "api"], 0, "{}")],
+                "cannot identify the authenticated publisher",
+            ),
+            (
+                "foreign-owner",
+                [_publisher_identity(), _user_owned_repository("SomeoneElse")],
+                "owned by the authenticated publisher",
+            ),
+            (
+                "organization-owner",
+                [
+                    _publisher_identity(),
+                    _user_owned_repository(PUBLISHER_LOGIN, "Organization"),
+                ],
+                "owned by the authenticated publisher",
+            ),
+            (
+                "unprovable-collaborator-page",
+                [
+                    *identity,
+                    _gh(["gh", "api"], 0, json.dumps(
+                        [{"login": PUBLISHER_LOGIN}] * 100
+                    )),
+                ],
+                "provably complete writer inventory",
+            ),
+            (
+                "malformed-collaborator",
+                [*identity, _gh(["gh", "api"], 0, json.dumps([{"id": 1}]))],
+                "collaborators are unreadable",
+            ),
+            (
+                "pending-invitation",
+                [
+                    *identity,
+                    _sole_collaborator(),
+                    _gh(["gh", "api"], 0, json.dumps(
+                        [{"id": 5, "permissions": "read"}]
+                    )),
+                ],
+                "pending collaboration invitations",
+            ),
+            (
+                "writable-deploy-key",
+                [
+                    *no_writers,
+                    _gh(["gh", "api"], 0, json.dumps(
+                        [{"id": 1, "read_only": False}]
+                    )),
+                ],
+                "not provably read-only",
+            ),
+            (
+                "malformed-deploy-key",
+                [*no_writers, _gh(["gh", "api"], 0, json.dumps([{"id": 1}]))],
+                "not provably read-only",
+            ),
+            (
+                "write-app-all-repositories",
+                [
+                    *no_writers,
+                    _no_deploy_keys(),
+                    _gh(["gh", "api"], 0, json.dumps(
+                        {"total_count": 1, "installations": [write_app]}
+                    )),
+                ],
+                "can reach the distribution repository",
+            ),
+            (
+                "write-app-covering-selected-repository",
+                [
+                    *no_writers,
+                    _no_deploy_keys(),
+                    _gh(["gh", "api"], 0, json.dumps({
+                        "total_count": 1,
+                        "installations": [
+                            dict(write_app, repository_selection="selected")
+                        ],
+                    })),
+                    _gh(["gh", "api"], 0, json.dumps({
+                        "total_count": 1,
+                        "repositories": [
+                            {"full_name": self.REPOSITORY.upper()}
+                        ],
+                    })),
+                ],
+                "can reach the distribution repository",
+            ),
+            (
+                "unprovable-installation-count",
+                [
+                    *no_writers,
+                    _no_deploy_keys(),
+                    _gh(["gh", "api"], 0, json.dumps(
+                        {"total_count": 2, "installations": [write_app]}
+                    )),
+                ],
+                "provably complete writer inventory",
+            ),
+            (
+                "unreadable-installations",
+                [
+                    *no_writers,
+                    _no_deploy_keys(),
+                    _gh(["gh", "api"], 1, "", "HTTP 500"),
+                ],
+                "invalid JSON for user/installations",
+            ),
+        )
+        for label, responses, error in cases:
+            with self.subTest(case=label):
+                with mock.patch.object(
+                    github_release_publish, "run", side_effect=responses
+                ):
+                    with self.assertRaisesRegex(RuntimeError, error):
+                        github_release_publish.assert_sole_publisher_write_access(
+                            self.REPOSITORY
+                        )
+
+    def test_sole_writer_boundary_accepts_only_provably_harmless_grants(
+        self,
+    ) -> None:
+        responses = [
+            _publisher_identity(),
+            _user_owned_repository(),
+            _sole_collaborator(),
+            _no_invitations(),
+            _gh(["gh", "api"], 0, json.dumps([{"id": 1, "read_only": True}])),
+            _gh(["gh", "api"], 0, json.dumps({
+                "total_count": 2,
+                "installations": [
+                    {
+                        "id": 7,
+                        "app_slug": "notifier",
+                        "repository_selection": "all",
+                        "permissions": {"metadata": "read", "contents": "read"},
+                    },
+                    {
+                        "id": 9,
+                        "app_slug": "builder",
+                        "repository_selection": "selected",
+                        "permissions": {"contents": "write"},
+                    },
+                ],
+            })),
+            _gh(["gh", "api"], 0, json.dumps({
+                "total_count": 1,
+                "repositories": [{"full_name": "FomaBy/OtherProject"}],
+            })),
+        ]
+        with mock.patch.object(github_release_publish, "run", side_effect=responses):
+            github_release_publish.assert_sole_publisher_write_access(
+                self.REPOSITORY
+            )
 
 
 class PublicVerifierAssetContractTests(unittest.TestCase):
