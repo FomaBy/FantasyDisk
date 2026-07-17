@@ -459,16 +459,17 @@ class UpdateReleasePipelineTests(unittest.TestCase):
 
     def test_draft_asset_verification_requires_uploaded_exact_bytes(self) -> None:
         with tempfile.TemporaryDirectory() as temporary:
-            asset = Path(temporary) / "FantasyDisk-0.2.4-macos.dmg"
-            asset.write_bytes(b"verified-byte-fixture")
+            asset = Path(temporary) / "zero-byte-fixture.dmg"
+            asset.write_bytes(b"")
+            expected_digest = f"sha256:{hashlib.sha256(asset.read_bytes()).hexdigest()}"
             payload = {
                 "url": "https://example.invalid/v0.2.4",
                 "isDraft": True,
                 "assets": [{
                     "name": asset.name,
                     "state": "uploaded",
-                    "size": asset.stat().st_size,
-                    "digest": f"sha256:{hashlib.sha256(asset.read_bytes()).hexdigest()}",
+                    "size": 0,
+                    "digest": expected_digest,
                 }],
             }
             completed = subprocess.CompletedProcess(
@@ -484,11 +485,11 @@ class UpdateReleasePipelineTests(unittest.TestCase):
             for malformed_size in (
                 True,
                 False,
+                0.0,
                 None,
-                str(asset.stat().st_size),
-                float(asset.stat().st_size),
+                "0",
                 -1,
-                asset.stat().st_size + 1,
+                1,
             ):
                 with self.subTest(size=repr(malformed_size)):
                     malformed_payload = dict(
@@ -513,7 +514,11 @@ class UpdateReleasePipelineTests(unittest.TestCase):
                                 [asset],
                                 draft=True,
                             )
-                    self.assertNotIn(str(malformed_size), str(error.exception))
+                    message = str(error.exception)
+                    self.assertNotIn(json.dumps(malformed_size), message)
+                    self.assertNotIn(str(asset), message)
+                    self.assertNotIn(expected_digest, message)
+                    self.assertNotIn(json.dumps(malformed_payload), message)
             payload["assets"][0]["state"] = "starter"
             completed = subprocess.CompletedProcess(
                 ["gh", "release", "view"], 0, stdout=json.dumps(payload), stderr=""
@@ -1805,6 +1810,61 @@ class PublisherDraftAssetRaceTests(unittest.TestCase):
         self.assertFalse(
             any("delete" in part.lower() for command in commands for part in command)
         )
+
+    def test_malformed_draft_asset_metadata_blocks_real_publish(self) -> None:
+        for malformed_size in (
+            False,
+            True,
+            0.0,
+            None,
+            "0",
+            -1,
+            self.asset.stat().st_size + 1,
+        ):
+            with self.subTest(size=repr(malformed_size)):
+                state, fake_run = self._stateful_github()
+                raw_response = {}
+
+                def malformed_run(command, *, check=True):
+                    response = fake_run(command, check=check)
+                    if command[:3] == ["gh", "release", "view"]:
+                        payload = json.loads(response.stdout)
+                        payload["assets"][0]["size"] = malformed_size
+                        raw_response["body"] = json.dumps(payload)
+                        return _gh(command, 0, raw_response["body"])
+                    return response
+
+                with mock.patch.object(
+                    github_release_publish.shutil, "which", return_value="gh"
+                ), mock.patch.object(
+                    github_release_publish,
+                    "assert_safe_public_distribution_repository",
+                    return_value="main",
+                ), mock.patch.object(
+                    github_release_publish, "run", side_effect=malformed_run
+                ):
+                    with self.assertRaisesRegex(
+                        RuntimeError, "asset verification failed"
+                    ) as caught:
+                        self._publish()
+
+                message = str(caught.exception)
+                self.assertNotIn(json.dumps(malformed_size), message)
+                self.assertNotIn(str(self.asset), message)
+                self.assertNotIn(self.clean_digest, message)
+                self.assertNotIn(raw_response["body"], message)
+                self.assertEqual(state["draft_views"], 1)
+                self.assertEqual(state["release"], "draft")
+                self.assertFalse(state["latest"])
+                commands = state["commands"]
+                self.assertFalse(any("--draft=false" in command for command in commands))
+                self.assertFalse(any(command[-1] == "--latest" for command in commands))
+                self.assertFalse(
+                    any(command[:3] == ["gh", "release", "edit"] for command in commands)
+                )
+                self.assertFalse(
+                    any("delete" in part.lower() for command in commands for part in command)
+                )
 
     def test_writer_granted_after_clean_draft_verification_blocks_public_edit(
         self,
