@@ -207,6 +207,17 @@ python3 skills/codex/fantasydisk-release-director/scripts/github_release_verify.
    Require a public, non-draft `v<version>` release containing DMG, Windows setup,
    SHA256SUMS, changelog, poster and update manifest. The publisher uploads the
    manifest last and marks the release latest only after all assets exist.
+
+   FAN-1249 fail-closed contract: the distribution repository must have
+   GitHub-enforced immutable releases enabled (`Settings → General → Releases`)
+   or the publisher refuses to run before any external side effect. The release
+   tag is claimed atomically at the exact default-branch commit; a tag or
+   release that appears between preflight and create blocks publication instead
+   of being reused. Tag identity is re-verified after create and after publish,
+   and the published release must report GitHub immutability before it is marked
+   latest. There is no delete/clobber/force path: a failed attempt leaves at
+   most a bare claimed tag and an unpublished draft, burns that version number,
+   and the next attempt must use the next `<version>` (hotfix component).
 3. Dry-run and publish Telegram for **every stable release**. Telegram delivery
    is mandatory and contains the poster, DMG, Windows Setup and SHA256SUMS.
 

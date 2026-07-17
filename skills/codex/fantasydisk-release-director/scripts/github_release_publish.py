@@ -37,6 +37,7 @@ README_FORBIDDEN_MARKERS = (
     ".gd",
 )
 HTTP_STATUS_RE = re.compile(r"(?m)^HTTP/[^\s]+\s+(\d{3})\b")
+COMMIT_SHA_RE = re.compile(r"[0-9a-f]{40}")
 
 
 def repo_root() -> Path:
@@ -146,6 +147,114 @@ def assert_safe_public_distribution_repository(repository: str) -> str:
     return default_branch
 
 
+def assert_immutable_release_enforcement(repository: str) -> None:
+    """Prove GitHub-enforced release immutability before any external side effect."""
+    result = run(
+        ["gh", "api", "--include", f"repos/{repository}/immutable-releases"],
+        check=False,
+    )
+    combined = f"{result.stdout}\n{result.stderr}"
+    statuses = HTTP_STATUS_RE.findall(combined)
+    if len(statuses) != 1:
+        raise RuntimeError(
+            "cannot verify immutable release enforcement for the distribution repository"
+        )
+    status = int(statuses[0])
+    if status == 404 and result.returncode:
+        raise RuntimeError(
+            "distribution repository does not enforce immutable releases; "
+            "enable immutable releases before publication"
+        )
+    if status != 200 or result.returncode:
+        raise RuntimeError(
+            "cannot verify immutable release enforcement for the distribution repository"
+        )
+    body_start = result.stdout.find("{")
+    if body_start < 0:
+        raise RuntimeError("immutable release enforcement check returned no response body")
+    try:
+        payload = json.loads(result.stdout[body_start:])
+    except json.JSONDecodeError as error:
+        raise RuntimeError(
+            "immutable release enforcement check returned invalid JSON"
+        ) from error
+    if not isinstance(payload, dict) or payload.get("enabled") is not True:
+        raise RuntimeError(
+            "distribution repository does not enforce immutable releases; "
+            "enable immutable releases before publication"
+        )
+
+
+def resolve_release_target_commit(repository: str, branch: str) -> str:
+    """Return the exact commit the immutable release tag must own."""
+    payload = _api_json(f"repos/{repository}/git/ref/heads/{branch}")
+    if payload.get("ref") != f"refs/heads/{branch}":
+        raise RuntimeError("distribution branch lookup returned a different reference")
+    target = payload.get("object")
+    if (
+        not isinstance(target, dict)
+        or target.get("type") != "commit"
+        or not isinstance(target.get("sha"), str)
+        or not COMMIT_SHA_RE.fullmatch(target["sha"])
+    ):
+        raise RuntimeError("distribution branch does not resolve to an exact commit")
+    return target["sha"]
+
+
+def claim_distribution_tag(repository: str, tag: str, commit_sha: str) -> None:
+    """Atomically create the release tag; any conflict or ambiguity fails closed.
+
+    The refs API is create-only: it fails when the reference already exists, so a
+    tag that appeared between preflight and this claim blocks publication instead
+    of being silently reused. The supported path never deletes, force-updates, or
+    reuses an existing tag; a failed claim burns the version number.
+    """
+    result = run(
+        [
+            "gh", "api", "--method", "POST", f"repos/{repository}/git/refs",
+            "-f", f"ref=refs/tags/{tag}", "-f", f"sha={commit_sha}",
+        ],
+        check=False,
+    )
+    if result.returncode:
+        raise RuntimeError(
+            f"cannot atomically claim distribution tag {tag}; "
+            "a concurrent tag/release or an API failure blocks publication"
+        )
+    try:
+        payload = json.loads(result.stdout)
+    except json.JSONDecodeError as error:
+        raise RuntimeError("distribution tag claim returned invalid JSON") from error
+    if not isinstance(payload, dict) or payload.get("ref") != f"refs/tags/{tag}":
+        raise RuntimeError("distribution tag claim returned an unexpected reference")
+    claimed = payload.get("object")
+    if (
+        not isinstance(claimed, dict)
+        or claimed.get("type") != "commit"
+        or claimed.get("sha") != commit_sha
+    ):
+        raise RuntimeError("distribution tag claim does not own the expected commit")
+
+
+def assert_owned_distribution_tag(repository: str, tag: str, commit_sha: str) -> None:
+    """Fail closed unless the exact tag still points at our claimed commit."""
+    payload = _api_json(f"repos/{repository}/git/ref/tags/{tag}")
+    if payload.get("ref") != f"refs/tags/{tag}":
+        raise RuntimeError(
+            f"distribution tag {tag} identity check returned a different reference"
+        )
+    target = payload.get("object")
+    if (
+        not isinstance(target, dict)
+        or target.get("type") != "commit"
+        or target.get("sha") != commit_sha
+    ):
+        raise RuntimeError(
+            f"distribution tag {tag} no longer points at the claimed release commit; "
+            "never reuse or edit a foreign tag"
+        )
+
+
 def _sha256(path: Path) -> str:
     digest = hashlib.sha256()
     with path.open("rb") as handle:
@@ -158,7 +267,10 @@ def _assert_release_assets(
     repository: str, tag: str, expected: list[Path], *, draft: bool
 ) -> str:
     release = run(
-        ["gh", "release", "view", tag, "--repo", repository, "--json", "url,isDraft,assets"]
+        [
+            "gh", "release", "view", tag, "--repo", repository,
+            "--json", "url,isDraft,isImmutable,assets",
+        ]
     )
     try:
         payload = json.loads(release.stdout)
@@ -167,6 +279,10 @@ def _assert_release_assets(
     if not isinstance(payload, dict) or payload.get("isDraft") is not draft:
         state = "draft" if draft else "public"
         raise RuntimeError(f"distribution release is not the expected {state} state")
+    if not draft and payload.get("isImmutable") is not True:
+        raise RuntimeError(
+            "published distribution release is not GitHub-enforced immutable"
+        )
     assets = payload.get("assets")
     if not isinstance(assets, list):
         raise RuntimeError("distribution release assets have an invalid response shape")
@@ -252,18 +368,24 @@ def publish(repository: str, version: str, files: list[Path], changelog: Path) -
         raise RuntimeError("GitHub CLI `gh` не установлен")
     run(["gh", "auth", "status", "--hostname", "github.com"])
     default_branch = assert_safe_public_distribution_repository(repository)
+    assert_immutable_release_enforcement(repository)
     tag = f"v{version}"
     assert_unclaimed_distribution_release(repository, tag)
     assert_unclaimed_distribution_tag(repository, tag)
+    release_commit = resolve_release_target_commit(repository, default_branch)
+    # First external side effect: the atomic create-only claim. A tag that
+    # appeared after preflight fails the claim before create/upload/edit.
+    claim_distribution_tag(repository, tag, release_commit)
     title = f"FantasyDisk v{version}"
     run(
         [
             "gh", "release", "create", tag, "--repo", repository,
-            "--target", default_branch, "--draft", "--title", title,
+            "--target", release_commit, "--draft", "--title", title,
             "--notes-file", os.fspath(changelog),
             *[os.fspath(path) for path in files],
         ]
     )
+    assert_owned_distribution_tag(repository, tag, release_commit)
     _assert_release_assets(repository, tag, files, draft=True)
     run(
         [
@@ -273,6 +395,7 @@ def publish(repository: str, version: str, files: list[Path], changelog: Path) -
         ]
     )
     release_url = _assert_release_assets(repository, tag, files, draft=False)
+    assert_owned_distribution_tag(repository, tag, release_commit)
     run(["gh", "release", "edit", tag, "--repo", repository, "--latest"])
     return release_url
 

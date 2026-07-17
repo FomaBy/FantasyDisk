@@ -37,6 +37,55 @@ VERSION_CONTRACT = json.loads(
 SUPPORTED_RELEASE_VERSIONS = tuple(VERSION_CONTRACT["valid"])
 INVALID_RELEASE_VERSIONS = tuple(VERSION_CONTRACT["invalid"])
 
+# FAN-1249 publisher fixtures: the exact commit the publisher claims for the
+# immutable release tag, and a foreign commit a racing actor could inject.
+CLAIMED_COMMIT = "a" * 40
+FOREIGN_COMMIT = "b" * 40
+
+
+def _gh(args: list[str], returncode: int = 0, stdout: str = "", stderr: str = ""):
+    return subprocess.CompletedProcess(args, returncode, stdout=stdout, stderr=stderr)
+
+
+def _auth_ok():
+    return _gh(["gh", "auth"], 0)
+
+
+def _immutability_enforced():
+    return _gh(
+        ["gh", "api"], 0,
+        'HTTP/2.0 200 OK\n\n{"enabled":true,"enforced_by_owner":true}',
+    )
+
+
+def _missing_release():
+    return _gh(["gh", "api"], 1, "HTTP/2 404 Not Found\n")
+
+
+def _absent_tag():
+    return _gh(["gh", "api"], 0, "[]")
+
+
+def _branch_head(branch: str = "main", sha: str = CLAIMED_COMMIT):
+    return _gh(
+        ["gh", "api"], 0,
+        json.dumps({"ref": f"refs/heads/{branch}", "object": {"type": "commit", "sha": sha}}),
+    )
+
+
+def _tag_ref(tag: str, sha: str = CLAIMED_COMMIT):
+    return _gh(
+        ["gh", "api"], 0,
+        json.dumps({"ref": f"refs/tags/{tag}", "object": {"type": "commit", "sha": sha}}),
+    )
+
+
+def _release_view(*, draft: bool, immutable: bool, url: str = "https://example.invalid/tag"):
+    return _gh(
+        ["gh", "release", "view"], 0,
+        json.dumps({"url": url, "isDraft": draft, "isImmutable": immutable, "assets": []}),
+    )
+
 
 class UpdateReleasePipelineTests(unittest.TestCase):
     def test_manifest_matches_both_installers_and_public_urls(self) -> None:
@@ -166,16 +215,17 @@ class UpdateReleasePipelineTests(unittest.TestCase):
         )
         with mock.patch.object(github_release_publish.shutil, "which", return_value="gh"), \
              mock.patch.object(github_release_publish, "assert_safe_public_distribution_repository", return_value="main"), \
-             mock.patch.object(github_release_publish, "run", return_value=existing):
+             mock.patch.object(github_release_publish, "run", side_effect=[
+                 _auth_ok(),
+                 _immutability_enforced(),
+                 existing,
+             ]):
             with self.assertRaisesRegex(RuntimeError, "never overwrite"):
                 github_release_publish.publish(
                     "FomaBy/FantasyDisk-Releases", "0.2.3.1", [], Path("CHANGELOG.md")
                 )
 
     def test_publisher_refuses_existing_bare_immutable_tag(self) -> None:
-        missing_release = subprocess.CompletedProcess(
-            ["gh", "api"], 1, stdout="HTTP/2 404 Not Found\n", stderr=""
-        )
         bare_tag = subprocess.CompletedProcess(
             ["gh", "api"], 0,
             stdout='[{"ref":"refs/tags/v0.2.3.1"}]', stderr=""
@@ -183,8 +233,9 @@ class UpdateReleasePipelineTests(unittest.TestCase):
         with mock.patch.object(github_release_publish.shutil, "which", return_value="gh"), \
              mock.patch.object(github_release_publish, "assert_safe_public_distribution_repository", return_value="main"), \
              mock.patch.object(github_release_publish, "run", side_effect=[
-                 subprocess.CompletedProcess(["gh", "auth"], 0, stdout="", stderr=""),
-                 missing_release,
+                 _auth_ok(),
+                 _immutability_enforced(),
+                 _missing_release(),
                  bare_tag,
              ]) as run_mock:
             with self.assertRaisesRegex(RuntimeError, "never reuse"):
@@ -194,17 +245,15 @@ class UpdateReleasePipelineTests(unittest.TestCase):
         self.assertFalse(any("create" in call.args[0] for call in run_mock.call_args_list))
 
     def test_publisher_fails_closed_when_bare_tag_preflight_is_unavailable(self) -> None:
-        missing_release = subprocess.CompletedProcess(
-            ["gh", "api"], 1, stdout="HTTP/2 404 Not Found\n", stderr=""
-        )
         failed_preflight = subprocess.CompletedProcess(
             ["gh", "api"], 1, stdout="", stderr="network failure"
         )
         with mock.patch.object(github_release_publish.shutil, "which", return_value="gh"), \
              mock.patch.object(github_release_publish, "assert_safe_public_distribution_repository", return_value="main"), \
              mock.patch.object(github_release_publish, "run", side_effect=[
-                 subprocess.CompletedProcess(["gh", "auth"], 0, stdout="", stderr=""),
-                 missing_release,
+                 _auth_ok(),
+                 _immutability_enforced(),
+                 _missing_release(),
                  failed_preflight,
              ]):
             with self.assertRaisesRegex(RuntimeError, "cannot verify"):
@@ -213,25 +262,25 @@ class UpdateReleasePipelineTests(unittest.TestCase):
                 )
 
     def test_publisher_allows_a_missing_bare_tag(self) -> None:
-        missing_release = subprocess.CompletedProcess(
-            ["gh", "api"], 1, stdout="HTTP/2 404 Not Found\n", stderr=""
-        )
-        absent_tag = subprocess.CompletedProcess(
-            ["gh", "api"], 0, stdout="[]", stderr=""
-        )
+        tag = "v0.2.3.1"
         created = subprocess.CompletedProcess(["gh", "release", "create"], 0, stdout="", stderr="")
         published = subprocess.CompletedProcess(["gh", "release", "edit"], 0, stdout="", stderr="")
         with mock.patch.object(github_release_publish.shutil, "which", return_value="gh"), \
              mock.patch.object(github_release_publish, "assert_safe_public_distribution_repository", return_value="main"), \
              mock.patch.object(github_release_publish, "_assert_release_assets", return_value="https://example.invalid/v0.2.3.1"), \
              mock.patch.object(github_release_publish, "run", side_effect=[
-                 subprocess.CompletedProcess(["gh", "auth"], 0, stdout="", stderr=""),
-                missing_release,
-                absent_tag,
-                created,
-                published,
-                published,
-            ]) as run_mock:
+                 _auth_ok(),
+                 _immutability_enforced(),
+                 _missing_release(),
+                 _absent_tag(),
+                 _branch_head(),
+                 _tag_ref(tag),
+                 created,
+                 _tag_ref(tag),
+                 published,
+                 _tag_ref(tag),
+                 published,
+             ]) as run_mock:
             published_url = github_release_publish.publish(
                 "FomaBy/FantasyDisk-Releases", "0.2.3.1", [], Path("CHANGELOG.md")
             )
@@ -245,7 +294,8 @@ class UpdateReleasePipelineTests(unittest.TestCase):
         with mock.patch.object(github_release_publish.shutil, "which", return_value="gh"), \
              mock.patch.object(github_release_publish, "assert_safe_public_distribution_repository", return_value="main"), \
              mock.patch.object(github_release_publish, "run", side_effect=[
-                 subprocess.CompletedProcess(["gh", "auth"], 0, stdout="", stderr=""),
+                 _auth_ok(),
+                 _immutability_enforced(),
                  unavailable,
              ]) as run_mock:
             with self.assertRaisesRegex(RuntimeError, "cannot verify"):
@@ -255,21 +305,20 @@ class UpdateReleasePipelineTests(unittest.TestCase):
         self.assertFalse(any("create" in call.args[0] for call in run_mock.call_args_list))
 
     def test_publisher_checks_draft_assets_before_publication_or_latest(self) -> None:
-        missing_release = subprocess.CompletedProcess(
-            ["gh", "api"], 1, stdout="HTTP/2 404 Not Found\n", stderr=""
-        )
-        absent_tag = subprocess.CompletedProcess(
-            ["gh", "api"], 0, stdout="[]", stderr=""
-        )
+        tag = "v0.2.3.1"
         created = subprocess.CompletedProcess(["gh", "release", "create"], 0, stdout="", stderr="")
         with mock.patch.object(github_release_publish.shutil, "which", return_value="gh"), \
              mock.patch.object(github_release_publish, "assert_safe_public_distribution_repository", return_value="main"), \
              mock.patch.object(github_release_publish, "_assert_release_assets", side_effect=RuntimeError("draft assets are incomplete")), \
              mock.patch.object(github_release_publish, "run", side_effect=[
-                 subprocess.CompletedProcess(["gh", "auth"], 0, stdout="", stderr=""),
-                 missing_release,
-                 absent_tag,
+                 _auth_ok(),
+                 _immutability_enforced(),
+                 _missing_release(),
+                 _absent_tag(),
+                 _branch_head(),
+                 _tag_ref(tag),
                  created,
+                 _tag_ref(tag),
              ]) as run_mock:
             with self.assertRaisesRegex(RuntimeError, "draft assets are incomplete"):
                 github_release_publish.publish(
@@ -386,6 +435,339 @@ class UpdateReleasePipelineTests(unittest.TestCase):
         source = (SCRIPTS / "github_release_verify.py").read_text(encoding="utf-8")
         self.assertNotIn("--prune-previous", source)
         self.assertNotIn('"gh", "release", "delete"', source)
+
+
+class PublisherRaceAndImmutabilityTests(unittest.TestCase):
+    """FAN-1249: race-safe tag ownership and GitHub-enforced immutability.
+
+    Every scenario drives the real publish() command sequence through a mocked
+    ``run`` and asserts which external commands were and were not issued.
+    """
+
+    REPOSITORY = "FomaBy/FantasyDisk-Releases"
+    VERSION = "0.2.3.1"
+    TAG = "v0.2.3.1"
+
+    def _publish(self) -> str:
+        return github_release_publish.publish(
+            self.REPOSITORY, self.VERSION, [], Path("CHANGELOG.md")
+        )
+
+    @staticmethod
+    def _commands(run_mock) -> list[list[str]]:
+        return [list(call.args[0]) for call in run_mock.call_args_list]
+
+    def test_publisher_requires_enforced_immutability_before_any_side_effect(self) -> None:
+        cases = (
+            (
+                "disabled-404",
+                _gh(["gh", "api"], 1, "HTTP/2 404 Not Found\n"),
+                "does not enforce immutable releases",
+            ),
+            (
+                "enabled-false",
+                _gh(
+                    ["gh", "api"], 0,
+                    'HTTP/2.0 200 OK\n\n{"enabled":false,"enforced_by_owner":false}',
+                ),
+                "does not enforce immutable releases",
+            ),
+            (
+                "server-error",
+                _gh(["gh", "api"], 1, "HTTP/2 503 Service Unavailable\n"),
+                "cannot verify immutable release enforcement",
+            ),
+            (
+                "multiple-statuses",
+                _gh(["gh", "api"], 0, 'HTTP/2 100 Continue\nHTTP/2 200 OK\n\n{"enabled":true}'),
+                "cannot verify immutable release enforcement",
+            ),
+            (
+                "error-exit-despite-200",
+                _gh(["gh", "api"], 1, 'HTTP/2 200 OK\n\n{"enabled":true}'),
+                "cannot verify immutable release enforcement",
+            ),
+            (
+                "no-body",
+                _gh(["gh", "api"], 0, "HTTP/2 200 OK\n"),
+                "no response body",
+            ),
+            (
+                "malformed-json",
+                _gh(["gh", "api"], 0, "HTTP/2 200 OK\n\n{not-json"),
+                "invalid JSON",
+            ),
+        )
+        for label, response, error in cases:
+            with self.subTest(case=label):
+                with mock.patch.object(github_release_publish.shutil, "which", return_value="gh"), \
+                     mock.patch.object(github_release_publish, "assert_safe_public_distribution_repository", return_value="main"), \
+                     mock.patch.object(github_release_publish, "run", side_effect=[
+                         _auth_ok(),
+                         response,
+                     ]) as run_mock:
+                    with self.assertRaisesRegex(RuntimeError, error):
+                        self._publish()
+                # The enforcement gate is the last call: no preflight, claim,
+                # create, upload, or edit may follow a failed proof.
+                self.assertEqual(len(run_mock.call_args_list), 2)
+
+    def test_racing_tag_after_preflight_blocks_publication_before_create(self) -> None:
+        claim_conflict = _gh(["gh", "api"], 1, "", "HTTP 422: Reference already exists")
+        with mock.patch.object(github_release_publish.shutil, "which", return_value="gh"), \
+             mock.patch.object(github_release_publish, "assert_safe_public_distribution_repository", return_value="main"), \
+             mock.patch.object(github_release_publish, "run", side_effect=[
+                 _auth_ok(),
+                 _immutability_enforced(),
+                 _missing_release(),
+                 _absent_tag(),
+                 _branch_head(),
+                 claim_conflict,
+             ]) as run_mock:
+            with self.assertRaisesRegex(RuntimeError, "cannot atomically claim"):
+                self._publish()
+        commands = self._commands(run_mock)
+        self.assertFalse(any("create" in command for command in commands))
+        self.assertFalse(any("edit" in command for command in commands))
+        self.assertFalse(any("upload" in command for command in commands))
+
+    def test_claim_response_must_prove_exact_tag_ownership(self) -> None:
+        cases = (
+            ("invalid-json", "{not-json", "invalid JSON"),
+            (
+                "foreign-ref",
+                json.dumps({
+                    "ref": "refs/tags/v9.9.9",
+                    "object": {"type": "commit", "sha": CLAIMED_COMMIT},
+                }),
+                "unexpected reference",
+            ),
+            (
+                "foreign-commit",
+                json.dumps({
+                    "ref": f"refs/tags/{self.TAG}",
+                    "object": {"type": "commit", "sha": FOREIGN_COMMIT},
+                }),
+                "does not own the expected commit",
+            ),
+            (
+                "non-commit-object",
+                json.dumps({
+                    "ref": f"refs/tags/{self.TAG}",
+                    "object": {"type": "tag", "sha": CLAIMED_COMMIT},
+                }),
+                "does not own the expected commit",
+            ),
+        )
+        for label, stdout, error in cases:
+            with self.subTest(case=label):
+                with mock.patch.object(github_release_publish.shutil, "which", return_value="gh"), \
+                     mock.patch.object(github_release_publish, "assert_safe_public_distribution_repository", return_value="main"), \
+                     mock.patch.object(github_release_publish, "run", side_effect=[
+                         _auth_ok(),
+                         _immutability_enforced(),
+                         _missing_release(),
+                         _absent_tag(),
+                         _branch_head(),
+                         _gh(["gh", "api"], 0, stdout),
+                     ]) as run_mock:
+                    with self.assertRaisesRegex(RuntimeError, error):
+                        self._publish()
+                commands = self._commands(run_mock)
+                self.assertFalse(any("create" in command for command in commands))
+                self.assertFalse(any("edit" in command for command in commands))
+
+    def test_ambiguous_branch_head_blocks_before_tag_claim(self) -> None:
+        cases = (
+            (
+                "foreign-ref",
+                {"ref": "refs/heads/other", "object": {"type": "commit", "sha": CLAIMED_COMMIT}},
+                "different reference",
+            ),
+            (
+                "non-commit",
+                {"ref": "refs/heads/main", "object": {"type": "tag", "sha": CLAIMED_COMMIT}},
+                "exact commit",
+            ),
+            (
+                "short-sha",
+                {"ref": "refs/heads/main", "object": {"type": "commit", "sha": "abc123"}},
+                "exact commit",
+            ),
+            ("missing-object", {"ref": "refs/heads/main"}, "exact commit"),
+        )
+        for label, payload, error in cases:
+            with self.subTest(case=label):
+                with mock.patch.object(github_release_publish.shutil, "which", return_value="gh"), \
+                     mock.patch.object(github_release_publish, "assert_safe_public_distribution_repository", return_value="main"), \
+                     mock.patch.object(github_release_publish, "run", side_effect=[
+                         _auth_ok(),
+                         _immutability_enforced(),
+                         _missing_release(),
+                         _absent_tag(),
+                         _gh(["gh", "api"], 0, json.dumps(payload)),
+                     ]) as run_mock:
+                    with self.assertRaisesRegex(RuntimeError, error):
+                        self._publish()
+                commands = self._commands(run_mock)
+                self.assertFalse(any("POST" in command for command in commands))
+                self.assertFalse(any("create" in command for command in commands))
+
+    def test_foreign_tag_after_create_blocks_publication_edit(self) -> None:
+        created = _gh(["gh", "release", "create"], 0)
+        with mock.patch.object(github_release_publish.shutil, "which", return_value="gh"), \
+             mock.patch.object(github_release_publish, "assert_safe_public_distribution_repository", return_value="main"), \
+             mock.patch.object(github_release_publish, "_assert_release_assets") as assets_mock, \
+             mock.patch.object(github_release_publish, "run", side_effect=[
+                 _auth_ok(),
+                 _immutability_enforced(),
+                 _missing_release(),
+                 _absent_tag(),
+                 _branch_head(),
+                 _tag_ref(self.TAG),
+                 created,
+                 _tag_ref(self.TAG, FOREIGN_COMMIT),
+             ]) as run_mock:
+            with self.assertRaisesRegex(
+                RuntimeError, "no longer points at the claimed release commit"
+            ):
+                self._publish()
+        assets_mock.assert_not_called()
+        commands = self._commands(run_mock)
+        self.assertFalse(any("edit" in command for command in commands))
+
+    def test_foreign_tag_after_publication_blocks_latest(self) -> None:
+        created = _gh(["gh", "release", "create"], 0)
+        published = _gh(["gh", "release", "edit"], 0)
+        with mock.patch.object(github_release_publish.shutil, "which", return_value="gh"), \
+             mock.patch.object(github_release_publish, "assert_safe_public_distribution_repository", return_value="main"), \
+             mock.patch.object(github_release_publish, "_assert_release_assets", return_value="https://example.invalid/v0.2.3.1"), \
+             mock.patch.object(github_release_publish, "run", side_effect=[
+                 _auth_ok(),
+                 _immutability_enforced(),
+                 _missing_release(),
+                 _absent_tag(),
+                 _branch_head(),
+                 _tag_ref(self.TAG),
+                 created,
+                 _tag_ref(self.TAG),
+                 published,
+                 _tag_ref(self.TAG, FOREIGN_COMMIT),
+             ]) as run_mock:
+            with self.assertRaisesRegex(
+                RuntimeError, "no longer points at the claimed release commit"
+            ):
+                self._publish()
+        commands = self._commands(run_mock)
+        self.assertFalse(any(command[-1] == "--latest" for command in commands))
+
+    def test_non_immutable_public_release_blocks_latest_in_real_sequence(self) -> None:
+        created = _gh(["gh", "release", "create"], 0)
+        published = _gh(["gh", "release", "edit"], 0)
+        with mock.patch.object(github_release_publish.shutil, "which", return_value="gh"), \
+             mock.patch.object(github_release_publish, "assert_safe_public_distribution_repository", return_value="main"), \
+             mock.patch.object(github_release_publish, "run", side_effect=[
+                 _auth_ok(),
+                 _immutability_enforced(),
+                 _missing_release(),
+                 _absent_tag(),
+                 _branch_head(),
+                 _tag_ref(self.TAG),
+                 created,
+                 _tag_ref(self.TAG),
+                 _release_view(draft=True, immutable=False),
+                 published,
+                 _release_view(draft=False, immutable=False),
+             ]) as run_mock:
+            with self.assertRaisesRegex(RuntimeError, "not GitHub-enforced immutable"):
+                self._publish()
+        commands = self._commands(run_mock)
+        self.assertFalse(any(command[-1] == "--latest" for command in commands))
+
+    def test_public_release_asset_check_requires_github_immutability(self) -> None:
+        payload = {
+            "url": "https://example.invalid/v0.2.3.1",
+            "isDraft": False,
+            "isImmutable": False,
+            "assets": [],
+        }
+        with mock.patch.object(
+            github_release_publish, "run",
+            return_value=_gh(["gh", "release", "view"], 0, json.dumps(payload)),
+        ):
+            with self.assertRaisesRegex(RuntimeError, "not GitHub-enforced immutable"):
+                github_release_publish._assert_release_assets(
+                    self.REPOSITORY, self.TAG, [], draft=False
+                )
+        payload["isImmutable"] = True
+        with mock.patch.object(
+            github_release_publish, "run",
+            return_value=_gh(["gh", "release", "view"], 0, json.dumps(payload)),
+        ):
+            self.assertEqual(
+                github_release_publish._assert_release_assets(
+                    self.REPOSITORY, self.TAG, [], draft=False
+                ),
+                "https://example.invalid/v0.2.3.1",
+            )
+
+    def test_unused_tag_happy_path_executes_full_fail_closed_sequence(self) -> None:
+        created = _gh(["gh", "release", "create"], 0)
+        published = _gh(["gh", "release", "edit"], 0)
+        url = f"https://github.com/{self.REPOSITORY}/releases/tag/{self.TAG}"
+        with mock.patch.object(github_release_publish.shutil, "which", return_value="gh"), \
+             mock.patch.object(github_release_publish, "assert_safe_public_distribution_repository", return_value="main"), \
+             mock.patch.object(github_release_publish, "run", side_effect=[
+                 _auth_ok(),
+                 _immutability_enforced(),
+                 _missing_release(),
+                 _absent_tag(),
+                 _branch_head(),
+                 _tag_ref(self.TAG),
+                 created,
+                 _tag_ref(self.TAG),
+                 _release_view(draft=True, immutable=False, url=url),
+                 published,
+                 _release_view(draft=False, immutable=True, url=url),
+                 _tag_ref(self.TAG),
+                 published,
+             ]) as run_mock:
+            self.assertEqual(self._publish(), url)
+        commands = self._commands(run_mock)
+        claim_at = next(
+            index for index, command in enumerate(commands)
+            if "--method" in command and "POST" in command
+        )
+        create_at = next(
+            index for index, command in enumerate(commands)
+            if command[:3] == ["gh", "release", "create"]
+        )
+        publish_at = next(
+            index for index, command in enumerate(commands) if "--draft=false" in command
+        )
+        latest_at = next(
+            index for index, command in enumerate(commands) if command[-1] == "--latest"
+        )
+        self.assertLess(claim_at, create_at)
+        self.assertLess(create_at, publish_at)
+        self.assertLess(publish_at, latest_at)
+        self.assertEqual(latest_at, len(commands) - 1)
+        self.assertIn(f"ref=refs/tags/{self.TAG}", commands[claim_at])
+        self.assertIn(f"sha={CLAIMED_COMMIT}", commands[claim_at])
+        # Release create pins the exact claimed commit, not a drifting branch.
+        self.assertIn("--target", commands[create_at])
+        self.assertIn(CLAIMED_COMMIT, commands[create_at])
+
+    def test_supported_publisher_path_has_no_destructive_commands(self) -> None:
+        source = (SCRIPTS / "github_release_publish.py").read_text(encoding="utf-8")
+        for forbidden in (
+            '"gh", "release", "delete"',
+            "--clobber",
+            '"DELETE"',
+            "force=true",
+            '"--force"',
+        ):
+            self.assertNotIn(forbidden, source)
 
 
 class PublicVerifierAssetContractTests(unittest.TestCase):
