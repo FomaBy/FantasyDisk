@@ -348,9 +348,9 @@ def _installation_covers_repository(installation_id: int, repository: str) -> bo
     )
     repositories = payload.get("repositories")
     total = payload.get("total_count")
-    if not isinstance(repositories, list) or not isinstance(total, int):
+    if not isinstance(repositories, list) or type(total) is not int:
         raise RuntimeError("GitHub App installation repositories are unreadable")
-    if total != len(repositories):
+    if total != len(repositories) or total >= COMPLETE_LISTING_LIMIT:
         raise RuntimeError(
             "cannot prove the GitHub App installation repository list is "
             "complete within one page; publication requires a provably "
@@ -420,7 +420,7 @@ def assert_sole_publisher_write_access(repository: str) -> None:
     )
     installations = installations_payload.get("installations")
     total = installations_payload.get("total_count")
-    if not isinstance(installations, list) or not isinstance(total, int):
+    if not isinstance(installations, list) or type(total) is not int:
         raise RuntimeError("GitHub App installations are unreadable")
     if total != len(installations) or total >= COMPLETE_LISTING_LIMIT:
         raise RuntimeError(

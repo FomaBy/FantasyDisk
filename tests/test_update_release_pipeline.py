@@ -1934,6 +1934,161 @@ class PublisherDraftAssetRaceTests(unittest.TestCase):
                             self.REPOSITORY
                         )
 
+    def test_malformed_app_inventory_blocks_production_sequence_before_any_write(
+        self,
+    ) -> None:
+        write_app = {
+            "id": 7,
+            "app_slug": "ci-bot",
+            "repository_selection": "all",
+            "permissions": {"contents": "write"},
+        }
+        selected_write_app = dict(write_app, repository_selection="selected")
+        no_writers = [
+            _publisher_identity(),
+            _user_owned_repository(),
+            _sole_collaborator(),
+            _no_invitations(),
+            _no_deploy_keys(),
+        ]
+        installation_cases = (
+            (
+                "boolean-true",
+                {"total_count": True, "installations": [write_app]},
+                "GitHub App installations are unreadable",
+            ),
+            (
+                "boolean-false",
+                {"total_count": False, "installations": []},
+                "GitHub App installations are unreadable",
+            ),
+            (
+                "null",
+                {"total_count": None, "installations": []},
+                "GitHub App installations are unreadable",
+            ),
+            (
+                "string",
+                {"total_count": "1", "installations": [write_app]},
+                "GitHub App installations are unreadable",
+            ),
+            (
+                "float",
+                {"total_count": 1.0, "installations": [write_app]},
+                "GitHub App installations are unreadable",
+            ),
+            (
+                "mismatched-count",
+                {"total_count": 2, "installations": [write_app]},
+                "provably complete writer inventory",
+            ),
+            (
+                "full-page-count",
+                {"total_count": 100, "installations": [write_app] * 100},
+                "provably complete writer inventory",
+            ),
+        )
+        selected_repository_cases = (
+            (
+                "boolean-true",
+                {"total_count": True, "repositories": [{"full_name": "FomaBy/Other"}]},
+                "GitHub App installation repositories are unreadable",
+            ),
+            (
+                "boolean-false",
+                {"total_count": False, "repositories": []},
+                "GitHub App installation repositories are unreadable",
+            ),
+            (
+                "null",
+                {"total_count": None, "repositories": []},
+                "GitHub App installation repositories are unreadable",
+            ),
+            (
+                "string",
+                {"total_count": "1", "repositories": [{"full_name": "FomaBy/Other"}]},
+                "GitHub App installation repositories are unreadable",
+            ),
+            (
+                "float",
+                {"total_count": 1.0, "repositories": [{"full_name": "FomaBy/Other"}]},
+                "GitHub App installation repositories are unreadable",
+            ),
+            (
+                "mismatched-count",
+                {"total_count": 2, "repositories": [{"full_name": "FomaBy/Other"}]},
+                "provably complete writer inventory",
+            ),
+            (
+                "full-page-count",
+                {
+                    "total_count": 100,
+                    "repositories": [{"full_name": "FomaBy/Other"}] * 100,
+                },
+                "provably complete writer inventory",
+            ),
+        )
+        cases = [
+            (f"installations-{label}", payload, error, None)
+            for label, payload, error in installation_cases
+        ] + [
+            (f"selected-repositories-{label}", payload, error, selected_write_app)
+            for label, payload, error in selected_repository_cases
+        ]
+        for label, malformed_payload, error, selected_app in cases:
+            with self.subTest(case=label):
+                responses = [
+                    _auth_ok(),
+                    _immutability_enforced(),
+                    *_tag_protection_ok(),
+                    *no_writers,
+                ]
+                if selected_app is None:
+                    responses.append(_gh(["gh", "api"], 0, json.dumps(malformed_payload)))
+                else:
+                    responses.extend([
+                        _gh(
+                            ["gh", "api"],
+                            0,
+                            json.dumps({
+                                "total_count": 1,
+                                "installations": [selected_app],
+                            }),
+                        ),
+                        _gh(["gh", "api"], 0, json.dumps(malformed_payload)),
+                    ])
+                with mock.patch.object(
+                    github_release_publish.shutil, "which", return_value="gh"
+                ), mock.patch.object(
+                    github_release_publish,
+                    "assert_safe_public_distribution_repository",
+                    return_value="main",
+                ), mock.patch.object(
+                    github_release_publish, "run", side_effect=responses
+                ) as run_mock:
+                    with self.assertRaisesRegex(RuntimeError, error):
+                        self._publish()
+                commands = [list(call.args[0]) for call in run_mock.call_args_list]
+                self.assertFalse(
+                    any(
+                        "--method" in command and "POST" in command
+                        for command in commands
+                    )
+                )
+                self.assertFalse(
+                    any(command[:3] == ["gh", "release", "create"] for command in commands)
+                )
+                self.assertFalse(
+                    any(
+                        "upload" in part.lower()
+                        for command in commands
+                        for part in command
+                    )
+                )
+                self.assertFalse(
+                    any(command[:3] == ["gh", "release", "edit"] for command in commands)
+                )
+
     def test_sole_writer_boundary_accepts_only_provably_harmless_grants(
         self,
     ) -> None:
