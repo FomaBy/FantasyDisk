@@ -118,6 +118,25 @@ def _ruleset_detail(
     )
 
 
+# FAN-1271 sentinel: the detail response omits bypass_actors entirely, as
+# GitHub does for callers without write access to the ruleset.
+_HIDDEN_BYPASS_ACTORS = object()
+
+
+def _ruleset_detail_with_bypass_shape(bypass_actors: object):
+    """FAN-1271 fixture: covering tag ruleset with a raw bypass_actors shape."""
+    payload = {
+        "id": 42,
+        "target": "tag",
+        "enforcement": "active",
+        "conditions": {"ref_name": {"include": ["refs/tags/v*"], "exclude": []}},
+        "rules": [{"type": "update"}, {"type": "deletion"}],
+    }
+    if bypass_actors is not _HIDDEN_BYPASS_ACTORS:
+        payload["bypass_actors"] = bypass_actors
+    return _gh(["gh", "api"], 0, json.dumps(payload))
+
+
 def _tag_protection_ok():
     """FAN-1265 preflight pair: tag ruleset listing plus a covering detail."""
     return (_ruleset_list(), _ruleset_detail())
@@ -938,6 +957,49 @@ class PublisherClaimContinuityTests(unittest.TestCase):
                          _auth_ok(),
                          _immutability_enforced(),
                          *responses,
+                     ]) as run_mock:
+                    with self.assertRaisesRegex(RuntimeError, error):
+                        self._publish()
+                commands = self._commands(run_mock)
+                self.assertFalse(any("POST" in command for command in commands))
+                self.assertFalse(any("create" in command for command in commands))
+                self.assertFalse(any("edit" in command for command in commands))
+
+    def test_unknown_or_malformed_bypass_visibility_blocks_before_any_side_effect(self) -> None:
+        """FAN-1271: only an explicit empty bypass_actors list proves no bypass.
+
+        GitHub returns bypass_actors only to callers with write access to the
+        ruleset, so a hidden field means unknown visibility and any non-list
+        shape breaks the documented contract. Both must stop the publisher
+        before the tag claim, release creation, and release edit.
+        """
+        cases = (
+            (
+                "hidden-without-ruleset-write-access",
+                _HIDDEN_BYPASS_ACTORS,
+                "does not disclose bypass actors",
+            ),
+            ("null", None, "malformed bypass actors"),
+            ("empty-object", {}, "malformed bypass actors"),
+            (
+                "non-empty-object",
+                {"actor_id": 1, "actor_type": "Team", "bypass_mode": "always"},
+                "malformed bypass actors",
+            ),
+            ("empty-string", "", "malformed bypass actors"),
+            ("non-empty-string", "none", "malformed bypass actors"),
+            ("false", False, "malformed bypass actors"),
+            ("zero", 0, "malformed bypass actors"),
+        )
+        for label, shape, error in cases:
+            with self.subTest(case=label):
+                with mock.patch.object(github_release_publish.shutil, "which", return_value="gh"), \
+                     mock.patch.object(github_release_publish, "assert_safe_public_distribution_repository", return_value="main"), \
+                     mock.patch.object(github_release_publish, "run", side_effect=[
+                         _auth_ok(),
+                         _immutability_enforced(),
+                         _ruleset_list(),
+                         _ruleset_detail_with_bypass_shape(shape),
                      ]) as run_mock:
                     with self.assertRaisesRegex(RuntimeError, error):
                         self._publish()

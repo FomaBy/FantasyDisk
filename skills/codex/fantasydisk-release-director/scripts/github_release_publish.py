@@ -261,8 +261,24 @@ def assert_release_tag_protection(repository: str, tag: str) -> None:
         detail = _api_json(f"repos/{repository}/rulesets/{summary['id']}")
         if detail.get("target") != "tag" or detail.get("enforcement") != "active":
             continue
+        # GitHub returns bypass_actors only to callers with write access to
+        # the ruleset, so a missing field is unknown visibility, never proof
+        # of absence. Only an explicit, well-typed empty list proves nobody
+        # can bypass this ruleset; hidden or malformed visibility stops
+        # publication here, before the tag claim and any release side effect.
+        if "bypass_actors" not in detail:
+            raise RuntimeError(
+                "tag protection ruleset does not disclose bypass actors to "
+                "this caller; publication requires proof that no bypass "
+                "actors exist"
+            )
+        bypass_actors = detail["bypass_actors"]
+        if not isinstance(bypass_actors, list):
+            raise RuntimeError(
+                "tag protection ruleset returned malformed bypass actors"
+            )
         # Any bypass actor voids the server-side guarantee for this ruleset.
-        if detail.get("bypass_actors"):
+        if bypass_actors:
             continue
         conditions = detail.get("conditions")
         if not isinstance(conditions, dict):
