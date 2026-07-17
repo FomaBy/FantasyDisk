@@ -6,6 +6,7 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
 WORKFLOW = ROOT / ".github" / "workflows" / "quality.yml"
+CI_REQUIREMENTS = ROOT / "requirements-ci.txt"
 
 
 class QualityWorkflowContractTests(unittest.TestCase):
@@ -40,6 +41,15 @@ class QualityWorkflowContractTests(unittest.TestCase):
 
     def test_job_has_bounded_runtime(self) -> None:
         self.assertIn("timeout-minutes: 30", self.source)
+
+    def test_ci_dependencies_are_installed_before_quality_gate(self) -> None:
+        self.assertEqual(CI_REQUIREMENTS.read_text(encoding="utf-8").splitlines(), [
+            "# Python packages required by the repository's deterministic CI/static gates.",
+            "Pillow==11.3.0",
+        ])
+        install = "python -m pip install --requirement requirements-ci.txt"
+        self.assertIn(install, self.source)
+        self.assertLess(self.source.index(install), self.source.index("tools/quality_gate.py"))
 
 
 if __name__ == "__main__":
