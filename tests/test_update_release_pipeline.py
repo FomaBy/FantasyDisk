@@ -3,6 +3,7 @@ from __future__ import annotations
 import hashlib
 import importlib.util
 import json
+import re
 import subprocess
 import sys
 import tempfile
@@ -1231,6 +1232,18 @@ class ReleaseDocumentationConsistencyTests(unittest.TestCase):
             "Telegram получает release poster, macOS DMG, Windows Setup и `SHA256SUMS.txt`; затем Discord публикует player-facing новость с Telegram download link.",
         ),
     }
+    DELIVERY_CONTRADICTION_PATTERNS = (
+        (
+            "Telegram is optional",
+            r"(?:\bTelegram\b.{0,120}\b(?:optional|необязатель\w*)\b|"
+            r"\b(?:optional|необязатель\w*)\b.{0,120}\bTelegram\b)",
+        ),
+        (
+            "GitHub is secondary",
+            r"(?:\bGitHub\b.{0,120}\b(?:secondary|вторич\w*)\b|"
+            r"\b(?:secondary|вторич\w*)\b.{0,120}\bGitHub\b)",
+        ),
+    )
     MACOS_MAPPING_CONTRACTS = {
         SKILL: (
             "(X+1).Y.(10*Z+R)",
@@ -1255,6 +1268,38 @@ class ReleaseDocumentationConsistencyTests(unittest.TestCase):
             "1.2.30 < 1.2.31 < 1.2.40",
         ),
     }
+    STALE_MACOS_MAPPING_PATTERN = (
+        r"(?:X|\(X\s*\+\s*1\))\s*\.\s*Y\s*\.\s*"
+        r"\(\s*1000\s*\*\s*Z\s*\+\s*R\s*\)"
+    )
+    IMMUTABILITY_CONTRACTS = {
+        SKILL: (
+            "There is no delete/clobber/force path:",
+            "instead of being reused.",
+        ),
+        RELEASE_VERSIONING: (
+            "Delete/clobber/force путей нет:",
+            "блокирует публикацию без reuse/edit.",
+        ),
+        GAME_UPDATES: (
+            "Публикатор и verifier не удаляют старые distribution releases/tags.",
+            "нельзя заменять файлы или manifest под прежним номером.",
+        ),
+    }
+    IMMUTABILITY_CONTRADICTION_PATTERNS = (
+        (
+            "published release may be deleted, overwritten, or reused",
+            r"\b(?:existing|published|immutable)\s+(?:tag|release|version)\b"
+            r".{0,120}\b(?:may|can|allowed)\b.{0,120}"
+            r"\b(?:delete\w*|overwrite\w*|reuse\w*)\b",
+        ),
+        (
+            "опубликованную версию можно удалить, перезаписать или повторно использовать",
+            r"\b(?:опубликован\w*|immutable)\s+(?:верси\w*|релиз\w*|tag)\b"
+            r".{0,120}\b(?:можно|разреш\w*|допуска\w*)\b.{0,120}"
+            r"\b(?:удал\w*|перезапис\w*|переиспольз\w*)\b",
+        ),
+    )
     ENTRY_POINT_VERSIONING = {
         README: (
             "Текущий опубликованный stable release: `0.2.4`",
@@ -1280,7 +1325,7 @@ class ReleaseDocumentationConsistencyTests(unittest.TestCase):
 
     @classmethod
     def read_documents(cls) -> dict[Path, str]:
-        paths = set(cls.OPERATIONAL_PLACEHOLDERS) | set(cls.DELIVERY_CONTRACTS) | set(cls.MACOS_MAPPING_CONTRACTS) | {
+        paths = set(cls.OPERATIONAL_PLACEHOLDERS) | set(cls.DELIVERY_CONTRACTS) | set(cls.MACOS_MAPPING_CONTRACTS) | set(cls.IMMUTABILITY_CONTRACTS) | {
             cls.BRANCHING,
             cls.CURRENT_STATE,
         } | set(cls.ENTRY_POINT_VERSIONING)
@@ -1307,6 +1352,9 @@ class ReleaseDocumentationConsistencyTests(unittest.TestCase):
             for clause in clauses:
                 if clause not in document:
                     errors.append(f"{relative}: missing delivery contract clause {clause}")
+            for label, pattern in cls.DELIVERY_CONTRADICTION_PATTERNS:
+                if re.search(pattern, document, flags=re.IGNORECASE):
+                    errors.append(f"{relative}: contradictory delivery clause ({label})")
         return errors
 
     @classmethod
@@ -1317,8 +1365,21 @@ class ReleaseDocumentationConsistencyTests(unittest.TestCase):
             for clause in clauses:
                 if clause not in document:
                     errors.append(f"{relative}: missing canonical macOS mapping clause {clause}")
-            if "(X+1).Y.(1000*Z+R)" in document:
+            if re.search(cls.STALE_MACOS_MAPPING_PATTERN, document):
                 errors.append(f"{relative}: contains stale macOS mapping radix")
+        return errors
+
+    @classmethod
+    def immutable_release_errors(cls, documents: dict[Path, str]) -> list[str]:
+        errors: list[str] = []
+        for relative, clauses in cls.IMMUTABILITY_CONTRACTS.items():
+            document = cls.normalize(documents[relative])
+            for clause in clauses:
+                if cls.normalize(clause) not in document:
+                    errors.append(f"{relative}: missing immutable-release clause {clause}")
+            for label, pattern in cls.IMMUTABILITY_CONTRADICTION_PATTERNS:
+                if re.search(pattern, document, flags=re.IGNORECASE):
+                    errors.append(f"{relative}: contradictory immutable-release clause ({label})")
         return errors
 
     @classmethod
@@ -1376,16 +1437,13 @@ class ReleaseDocumentationConsistencyTests(unittest.TestCase):
         documents = self.read_documents()
         self.assertEqual(self.delivery_contract_errors(documents), [])
 
-        mutations = (
-            (self.GAME_UPDATES, "канонический источник клиентских обновлений", "дополнительный источник клиентских обновлений"),
-            (self.RELEASE_VERSIONING, "Каждый stable release обязательно отправляется", "Каждый stable release может отправляться"),
-            (self.TELEGRAM_SETUP, "обязательный канал файловой доставки", "дополнительный канал файловой доставки"),
-        )
-        for relative, expected, replacement in mutations:
-            with self.subTest(document=str(relative), mutation=replacement):
+        contradiction = "\nContradiction: Telegram is optional; GitHub is secondary.\n"
+        for relative in self.DELIVERY_CONTRACTS:
+            with self.subTest(document=str(relative), mutation=contradiction):
                 mutated = dict(documents)
-                mutated[relative] = mutated[relative].replace(expected, replacement, 1)
-                self.assertNotEqual(self.delivery_contract_errors(mutated), [])
+                mutated[relative] += contradiction
+                errors = self.delivery_contract_errors(mutated)
+                self.assertTrue(any("contradictory delivery clause" in error for error in errors))
 
     def test_macos_mapping_contract_is_canonical_in_every_release_instruction(self) -> None:
         documents = self.read_documents()
@@ -1394,12 +1452,26 @@ class ReleaseDocumentationConsistencyTests(unittest.TestCase):
         for relative in self.MACOS_MAPPING_CONTRACTS:
             with self.subTest(document=str(relative)):
                 mutated = dict(documents)
-                mutated[relative] = mutated[relative].replace(
-                    "(X+1).Y.(10*Z+R)", "(X+1).Y.(1000*Z+R)", 1
-                )
+                mutated[relative] += "\nLegacy mapping: X.Y.(1000*Z+R).\n"
                 errors = self.macos_mapping_errors(mutated)
-                self.assertTrue(any("canonical macOS mapping" in error for error in errors))
                 self.assertTrue(any("stale macOS mapping radix" in error for error in errors))
+
+    def test_immutable_release_contract_rejects_append_only_overwrite_permission(self) -> None:
+        documents = self.read_documents()
+        self.assertEqual(self.immutable_release_errors(documents), [])
+
+        contradiction = (
+            "\nContradiction: an existing published version may be deleted, "
+            "overwritten, or reused.\n"
+        )
+        for relative in self.IMMUTABILITY_CONTRACTS:
+            with self.subTest(document=str(relative), mutation=contradiction):
+                mutated = dict(documents)
+                mutated[relative] += contradiction
+                errors = self.immutable_release_errors(mutated)
+                self.assertTrue(
+                    any("contradictory immutable-release clause" in error for error in errors)
+                )
 
     def test_published_024_cannot_be_described_as_an_active_frozen_release(self) -> None:
         documents = self.read_documents()
