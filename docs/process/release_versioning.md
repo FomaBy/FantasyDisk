@@ -154,9 +154,12 @@ dev  — основная ветка разработки. Все чаты (Back
       изменяя рабочий `dev` оператора и immutable evidence;
     - на macOS атомарно установить приложение из итогового DMG и проверить
       retained DMG layout, bundle version, `hdiutil verify` и headless launch
-      smoke для обоих каналов; `codesign`, `stapler` и `spctl` проверяются
-      дополнительно только в канале `signed` (в `unsigned` они пропускаются, а
-      `verify` требует явного совпадения записанного `macos_channel`).
+      smoke и `codesign --verify --deep --strict` как integrity check для
+      обоих каналов, включая unsigned с локальной ad-hoc seal. В канале
+      `signed` дополнительно выполняются Apple trust checks через `stapler`
+      и `spctl`; unsigned не требует Developer ID/notarization и пропускает
+      только эти trust steps, а `verify` требует явного совпадения записанного
+      `macos_channel`.
     Существующий локальный релиз с отличающимися байтами не перезаписывается.
     GitHub, Telegram и Discord clients повторно запускают verify, отправляют
     байты только из возвращённого проверенного локального пути и обязательно
@@ -244,11 +247,13 @@ Apple credentials снова доступны. Полный клиентский
 - Канал `unsigned` (текущий, FAN-1121): запускается только явным
   `FANTASYDISK_MACOS_CHANNEL=unsigned` и отказывается работать, если
   `MACOS_SIGN_IDENTITY`/`MACOS_NOTARY_PROFILE` установлены. После всех изменений
-  bundle получает только локальную ad-hoc подпись: она заменяет унаследованную
-  подпись export template и проверяет целостность, но не является подписью
-  Developer ID и не меняет Gatekeeper-путь. Notarization, stapler и `spctl`
-  пропускаются; клиент явно помечает сборку unsigned и даёт ручную инструкцию
-  «Всё равно открыть». Никаких заявлений о доверии Apple в этом канале.
+  bundle получает локальную ad-hoc seal и проходит
+  `codesign --verify --deep --strict` для проверки целостности. Эта seal
+  заменяет унаследованную подпись export template, но не является подписью
+  Developer ID и не делает artifact доверенным для Gatekeeper. Developer ID
+  signing, notarization, `stapler` и `spctl` в этом канале не выполняются;
+  клиент явно помечает сборку unsigned и даёт ручную инструкцию «Всё равно
+  открыть». Никаких заявлений о доверии Apple в этом канале.
 - Для ОБОИХ каналов сохраняются exact-tag inputs, headless import/export, layout
   DMG, secret scan, `SHA256SUMS.txt` и `update-manifest.json`. DMG содержит
   только `FantasyDisk.app`, ярлык `Applications` и одну фоновую стрелку; стрелка
@@ -301,8 +306,10 @@ Apple credentials снова доступны. Полный клиентский
 - `assets/icon.ico` (16-256) сгенерирован из `icon.svg`: `qlmanage -t -s 256` -> PNG -> Pillow.
 - В канале `signed` macOS `.app` подписывается Developer ID последним шагом перед
   app notarization и DMG; в этом канале отсутствие Developer ID/notary profile —
-  release blocker. В текущем канале `unsigned` (FAN-1121) этот шаг осознанно
-  пропускается, а наличие credentials, наоборот, отклоняется.
+  release blocker. В текущем канале `unsigned` (FAN-1121) пропускается только
+  Developer ID/notarization этап, а локальная ad-hoc seal и
+  `codesign --verify --deep --strict` для проверки целостности обязательны;
+  наличие credentials, наоборот, отклоняется.
   GL-ошибки "Texture leaked" при выходе релизной
   сборки с `--quit-after` — известный безвредный артефакт принудительного выхода
   в gl_compatibility, не считать регрессией.

@@ -2542,6 +2542,41 @@ class UnsignedChannelLabelingTests(unittest.TestCase):
         )
         self.assertIn("Канал `unsigned`", versioning)
 
+    def test_unsigned_channel_requires_codesign_integrity_but_not_apple_trust(self) -> None:
+        # FAN-1283 regression: unsigned still receives an ad-hoc seal and must
+        # pass codesign integrity verification; only Apple trust checks differ.
+        versioning = (ROOT / "docs" / "process" / "release_versioning.md").read_text(
+            encoding="utf-8"
+        )
+        unsigned_start = versioning.index("- Канал `unsigned`")
+        versioning_unsigned = versioning[
+            unsigned_start : versioning.index("- Для ОБОИХ каналов", unsigned_start)
+        ]
+        versioning_unsigned_normalized = re.sub(r"\s+", " ", versioning_unsigned)
+        self.assertIn("codesign --verify --deep --strict", versioning_unsigned_normalized)
+        self.assertIn("локальную ad-hoc seal", versioning_unsigned_normalized)
+        self.assertIn("Developer ID signing, notarization", versioning_unsigned_normalized)
+        self.assertIn(
+            "`stapler` и `spctl` в этом канале не выполняются",
+            versioning_unsigned_normalized,
+        )
+
+        skill = (
+            ROOT / "skills" / "codex" / "fantasydisk-release-director" / "SKILL.md"
+        ).read_text(encoding="utf-8")
+        unsigned_start = skill.index("- `unsigned` —")
+        skill_unsigned = skill[
+            unsigned_start : skill.index("### macOS signing order", unsigned_start)
+        ]
+        self.assertIn("codesign --verify --deep --strict", skill_unsigned)
+        self.assertIn("Developer ID signing, notarization", skill_unsigned)
+        self.assertIn("stapling, and `spctl` are skipped", skill_unsigned)
+
+        verification = skill[skill.index("- on macOS,") :]
+        self.assertIn("codesign`\n  integrity verification in both channels", verification)
+        self.assertIn("unsigned channel skips only those", verification)
+        self.assertNotIn("unsigned channel skips exactly those three", verification)
+
     def test_build_script_cross_checks_client_channel_label(self) -> None:
         script = (ROOT / "tools" / "build_release.sh").read_text(encoding="utf-8")
         label_check_at = script.index("const MACOS_UPDATE_CHANNEL := ")

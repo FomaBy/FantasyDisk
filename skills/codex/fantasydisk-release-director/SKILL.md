@@ -97,15 +97,17 @@ fail-closed and there is never a silent downgrade:
 - `unsigned` — the owner-approved credential-free channel (FAN-1121, after
   FAN-1094 was cancelled). It must be requested explicitly and refuses to run
   while `MACOS_SIGN_IDENTITY`/`MACOS_NOTARY_PROFILE` are set. After every bundle
-  mutation, apply an ad-hoc seal and verify its integrity to replace any export
-  template signature; it does not identify the publisher or make the artifact
-  trusted by Gatekeeper. Developer ID/notarization/stapling/`spctl` are skipped;
-  exact-tag inputs, DMG layout, NSIS CRC, secret scan, SHA-256 sums, and the
-  update manifest remain mandatory, and asset names do not change. The build cross-checks
-  `MACOS_UPDATE_CHANNEL` in the tag's `scripts/update_manager.gd` so the client
-  truthfully labels the artifact unsigned and shows the manual Gatekeeper
-  «Всё равно открыть» (Open Anyway) instruction. Never claim Developer ID,
-  notarization, stapling, or a positive `spctl` result for an unsigned build.
+  mutation, apply an ad-hoc seal and run
+  `codesign --verify --deep --strict` to verify bundle integrity and replace any
+  export template signature; this seal does not identify the publisher or make
+  the artifact trusted by Gatekeeper. Developer ID signing, notarization,
+  stapling, and `spctl` are skipped; exact-tag inputs, DMG layout, NSIS CRC,
+  secret scan, SHA-256 sums, and the update manifest remain mandatory, and asset
+  names do not change. The build cross-checks `MACOS_UPDATE_CHANNEL` in the
+  tag's `scripts/update_manager.gd` so the client truthfully labels the artifact
+  unsigned and shows the manual Gatekeeper «Всё равно открыть» (Open Anyway)
+  instruction. Never claim Developer ID, notarization, stapling, or a positive
+  `spctl` result for an unsigned build.
 
 ### macOS signing order (signed channel)
 
@@ -169,9 +171,11 @@ Require all of the following before any external upload:
   points to it and is explicitly `favorite=true` in Godot's `projects.cfg`;
 - on macOS, the app is installed atomically from the retained DMG at the
   configured local path. The retained DMG, contained app, and installed app pass
-  layout, version, `hdiutil verify`, and headless launch smoke checks; in the
-  signed channel `codesign`, `stapler`, and `spctl` are additionally mandatory,
-  while the unsigned channel skips exactly those three and nothing else.
+  layout, version, `hdiutil verify`, headless launch smoke, and `codesign`
+  integrity verification in both channels (unsigned uses its local ad-hoc seal).
+  The signed channel additionally requires `stapler` and `spctl` after
+  Developer ID signing and notarization; the unsigned channel skips only those
+  Apple trust requirements and nothing else.
 
 There is no macOS skip flag. Windows/Linux may use the explicit platform
 exception for app installation, but package, tag snapshot, manifest, current
