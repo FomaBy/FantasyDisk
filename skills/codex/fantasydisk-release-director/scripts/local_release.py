@@ -601,7 +601,7 @@ def verify_macos_app(
     # Both Apple Silicon and Intel slices are contractual for the universal
     # macOS preset.  Verify the bundle's declared executable, not an arbitrary
     # executable file that happens to be in Contents/MacOS.
-    _run(["lipo", "-verify_arch", "x86_64", "arm64", executable])
+    _run(["lipo", executable, "-verify_arch", "x86_64", "arm64"])
     # This is an integrity check, not a publisher-trust check: it must pass for
     # both Developer ID and explicitly unsigned (ad-hoc sealed) artifacts.
     _run(["codesign", "--verify", "--deep", "--strict", "--verbose=4", app])

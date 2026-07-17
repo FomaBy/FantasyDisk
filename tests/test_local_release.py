@@ -273,6 +273,10 @@ class LocalReleaseTests(unittest.TestCase):
             local_release.verify_macos_app(app, "9.8.7.1", launch_smoke=False, signed=False)
         tools = [call.args[0][0] for call in run_mock.call_args_list]
         self.assertEqual(tools, ["lipo", "codesign"])
+        self.assertEqual(
+            run_mock.call_args_list[0].args[0],
+            ["lipo", executable, "-verify_arch", "x86_64", "arm64"],
+        )
         with mock.patch.object(local_release, "_run") as run_mock:
             local_release.verify_macos_app(app, "9.8.7.1", launch_smoke=False, signed=True)
         tools = [call.args[0][0] for call in run_mock.call_args_list]
