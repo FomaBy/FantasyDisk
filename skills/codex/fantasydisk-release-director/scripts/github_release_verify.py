@@ -161,7 +161,13 @@ def verify_public_distribution(repository: str, version: str, local_release: Pat
             raise PublicVerificationError("public release asset entry is not an object")
         name = entry.get("name")
         url = entry.get("browser_download_url")
-        if not isinstance(name, str) or not name or not isinstance(url, str) or not url:
+        if not isinstance(name, str) or not isinstance(url, str):
+            raise PublicVerificationError(
+                "public release asset entry must have non-empty string name and browser_download_url"
+            )
+        name = name.strip()
+        url = url.strip()
+        if not name or not url:
             raise PublicVerificationError(
                 "public release asset entry must have non-empty string name and browser_download_url"
             )
@@ -169,6 +175,10 @@ def verify_public_distribution(repository: str, version: str, local_release: Pat
             raise PublicVerificationError(f"public release contains an unexpected asset: {name}")
         if name in assets:
             raise PublicVerificationError(f"public release contains a duplicate asset name: {name}")
+        if url != f"https://github.com/{repository}/releases/download/{tag}/{name}":
+            raise PublicVerificationError(
+                f"public release asset URL is not the canonical HTTPS release download URL: {name}"
+            )
         assets[name] = url
     if set(assets) != names:
         missing = sorted(names - set(assets))

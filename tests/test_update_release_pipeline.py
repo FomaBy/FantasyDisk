@@ -325,7 +325,12 @@ class UpdateReleasePipelineTests(unittest.TestCase):
             "update-manifest.json",
         }
         assets = [
-            {"name": name, "browser_download_url": f"https://example.invalid/{name}"}
+            {
+                "name": name,
+                "browser_download_url": (
+                    f"https://github.com/{repository}/releases/download/v{version}/{name}"
+                ),
+            }
             for name in names
         ]
         latest = {"tag_name": f"v{version}", "draft": False, "prerelease": False, "assets": assets}
@@ -427,10 +432,16 @@ class PublicVerifierAssetContractTests(unittest.TestCase):
         for name, data in payloads.items():
             (release / name).write_bytes(data)
         api_assets = [
-            {"name": name, "browser_download_url": f"https://example.invalid/assets/{name}"}
+            {
+                "name": name,
+                "browser_download_url": self._canonical_asset_url(name),
+            }
             for name in sorted(payloads)
         ]
         return payloads, api_assets
+
+    def _canonical_asset_url(self, name: str) -> str:
+        return f"https://github.com/{self.REPOSITORY}/releases/download/{self.TAG}/{name}"
 
     def _run_verifier(self, release: Path, payloads: dict[str, bytes], api_assets, error=None):
         latest = {
@@ -446,7 +457,7 @@ class PublicVerifierAssetContractTests(unittest.TestCase):
         def fake_request(url: str) -> bytes:
             if url == manifest_url:
                 return payloads["update-manifest.json"]
-            if url == "https://example.invalid/assets/SHA256SUMS.txt":
+            if url == self._canonical_asset_url("SHA256SUMS.txt"):
                 return payloads["SHA256SUMS.txt"]
             raise AssertionError(f"unexpected public request: {url}")
 
@@ -513,15 +524,25 @@ class PublicVerifierAssetContractTests(unittest.TestCase):
 
     def test_verifier_rejects_malformed_or_empty_api_asset_entries_before_downloads(self) -> None:
         mac = f"FantasyDisk-{self.VERSION}-macos.dmg"
-        url = f"https://example.invalid/assets/{mac}"
+        url = self._canonical_asset_url(mac)
         cases = (
             ("assets-not-a-list", {"name": mac}, "must be a list"),
             ("entry-not-an-object", mac, "not an object"),
             ("missing-name", {"browser_download_url": url}, "non-empty string"),
             ("empty-name", {"name": "", "browser_download_url": url}, "non-empty string"),
+            (
+                "whitespace-only-name",
+                {"name": "   ", "browser_download_url": url},
+                "non-empty string",
+            ),
             ("non-string-name", {"name": 7, "browser_download_url": url}, "non-empty string"),
             ("missing-url", {"name": mac}, "non-empty string"),
             ("empty-url", {"name": mac, "browser_download_url": ""}, "non-empty string"),
+            (
+                "whitespace-only-url",
+                {"name": mac, "browser_download_url": "   "},
+                "non-empty string",
+            ),
             (
                 "non-string-url",
                 {"name": mac, "browser_download_url": None},
@@ -564,6 +585,67 @@ class PublicVerifierAssetContractTests(unittest.TestCase):
                 with self.subTest(case=label):
                     report, request, download = self._run_verifier(
                         release, payloads, mutated, error=error
+                    )
+                    self.assertIsNone(report)
+                    request.assert_not_called()
+                    download.assert_not_called()
+
+    def test_verifier_rejects_whitespace_only_asset_urls_before_any_network_operations(self) -> None:
+        # FAN-1261: a browser_download_url of only whitespace is an ambiguous API
+        # record and must fail the raw-assets preflight for every required asset,
+        # with zero downstream requests or downloads.
+        required = {
+            f"FantasyDisk-{self.VERSION}-macos.dmg",
+            f"FantasyDisk-{self.VERSION}-windows-setup.exe",
+            "SHA256SUMS.txt",
+            f"CHANGELOG-{self.VERSION}.md",
+            f"fantasydisk_{self.VERSION.replace('.', '')}_announcement.png",
+            "update-manifest.json",
+        }
+        with tempfile.TemporaryDirectory() as temporary:
+            release = Path(temporary)
+            payloads, api_assets = self._write_release_fixture(release)
+            self.assertEqual({entry["name"] for entry in api_assets}, required)
+            for target in sorted(required):
+                with self.subTest(asset=target):
+                    mutated = [
+                        {**entry, "browser_download_url": "   "}
+                        if entry["name"] == target
+                        else dict(entry)
+                        for entry in api_assets
+                    ]
+                    report, request, download = self._run_verifier(
+                        release, payloads, mutated, error="non-empty string"
+                    )
+                    self.assertIsNone(report)
+                    request.assert_not_called()
+                    download.assert_not_called()
+
+    def test_verifier_rejects_non_canonical_asset_urls_before_downloads(self) -> None:
+        # FAN-1261: every asset URL must be the exact canonical HTTPS release
+        # download URL for this repository, tag, and asset name.
+        mac = f"FantasyDisk-{self.VERSION}-macos.dmg"
+        canonical = self._canonical_asset_url(mac)
+        bad_urls = (
+            canonical.replace("https://", "http://", 1),
+            f"https://example.invalid/assets/{mac}",
+            f"https://github.com/other/repository/releases/download/{self.TAG}/{mac}",
+            f"https://github.com/{self.REPOSITORY}/releases/download/v9.9.9/{mac}",
+            self._canonical_asset_url("SHA256SUMS.txt"),
+        )
+        with tempfile.TemporaryDirectory() as temporary:
+            release = Path(temporary)
+            payloads, api_assets = self._write_release_fixture(release)
+            for bad_url in bad_urls:
+                with self.subTest(url=bad_url):
+                    mutated = [
+                        {**entry, "browser_download_url": bad_url}
+                        if entry["name"] == mac
+                        else dict(entry)
+                        for entry in api_assets
+                    ]
+                    report, request, download = self._run_verifier(
+                        release, payloads, mutated, error="canonical"
                     )
                     self.assertIsNone(report)
                     request.assert_not_called()
