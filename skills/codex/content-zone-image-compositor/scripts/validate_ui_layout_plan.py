@@ -102,7 +102,9 @@ def text_fits(e: dict[str, Any], content: dict[str, Any]) -> tuple[bool, int | N
 
     for size in range(max_font, min_font - 1, -1):
         font = load_font(size, e.get("font"))
-        avg_char_w = max(1, size * 0.54)
+        # Keep the planning wrap conservative on Linux fonts such as DejaVuSans;
+        # the compositor performs the final exact-metric fit check afterwards.
+        avg_char_w = max(1, size * 0.60)
         max_chars = max(1, int(w / avg_char_w))
         words = text.split()
         lines: list[str] = []
