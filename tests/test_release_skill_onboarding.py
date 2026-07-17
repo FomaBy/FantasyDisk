@@ -44,14 +44,15 @@ def _inventory(root: Path) -> dict[str, tuple[str, ...]]:
     entries: dict[str, tuple[str, ...]] = {}
     for path in sorted(root.rglob("*")):
         relative = path.relative_to(root).as_posix()
+        mode = f"{os.lstat(path).st_mode & 0o7777:04o}"
         if path.is_symlink():
             entries[relative] = ("symlink", os.readlink(path))
         elif path.is_dir():
-            entries[relative] = ("directory",)
+            entries[relative] = ("directory", mode)
         elif path.is_file():
-            entries[relative] = ("file", _file_sha256(path))
+            entries[relative] = ("file", mode, _file_sha256(path))
         else:
-            entries[relative] = ("other",)
+            entries[relative] = ("other", mode)
     return entries
 
 
@@ -74,11 +75,13 @@ def _extract_legacy_skill(destination: Path) -> None:
             output = destination / relative
             if member.isdir():
                 output.mkdir(parents=True, exist_ok=True)
+                output.chmod(0o755)
             elif member.isfile():
                 output.parent.mkdir(parents=True, exist_ok=True)
                 source = tar.extractfile(member)
                 assert source is not None
                 output.write_bytes(source.read())
+                output.chmod(0o644)
             else:
                 raise AssertionError(f"unexpected legacy archive entry: {member.name}")
 
@@ -215,6 +218,90 @@ class ReleaseSkillOnboardingTest(unittest.TestCase):
                 self.assertTrue(target.is_dir())
                 self.assertFalse(target.is_symlink())
                 self.assertEqual(_inventory(target), before)
+
+    def test_symlinked_entries_are_preserved_and_block_without_following_targets(self) -> None:
+        mutations = {}
+        with tempfile.TemporaryDirectory(prefix="fantasydisk-onboard-link-target-") as raw:
+            external = Path(raw) / "external-skill.md"
+            external.write_bytes(b"same bytes as the tracked legacy file\n")
+            mutations["same-byte SKILL.md symlink"] = lambda target: (
+                (target / "SKILL.md").unlink(),
+                (target / "SKILL.md").symlink_to(external),
+            )
+
+            for name, mutate in mutations.items():
+                with self.subTest(name=name), tempfile.TemporaryDirectory(
+                    prefix="fantasydisk-onboard-symlink-"
+                ) as home_raw:
+                    home = Path(home_raw)
+                    target = home / ".codex" / "skills" / "fantasydisk-release-director"
+                    target.mkdir(parents=True)
+                    _extract_legacy_skill(target)
+                    external.write_bytes((target / "SKILL.md").read_bytes())
+                    mutate(target)
+                    before = _inventory(target)
+                    external_before = _file_sha256(external)
+
+                    result = _run_onboard(ONBOARD, home)
+
+                    self.assertNotEqual(result.returncode, 0, result.stdout)
+                    self.assertIn("BLOCK", result.stdout)
+                    self.assertEqual(_inventory(target), before)
+                    self.assertEqual(_file_sha256(external), external_before)
+                    self.assertTrue((target / "SKILL.md").is_symlink())
+
+        with tempfile.TemporaryDirectory(prefix="fantasydisk-onboard-symlink-") as raw:
+            home = Path(raw)
+            target = home / ".codex" / "skills" / "fantasydisk-release-director"
+            target.mkdir(parents=True)
+            _extract_legacy_skill(target)
+            dangling = target / "dangling-link"
+            dangling.symlink_to(home / "missing-target")
+            extra = target / "extra-link"
+            extra.symlink_to(home, target_is_directory=True)
+            before = _inventory(target)
+
+            result = _run_onboard(ONBOARD, home)
+
+            self.assertNotEqual(result.returncode, 0, result.stdout)
+            self.assertIn("BLOCK", result.stdout)
+            self.assertEqual(_inventory(target), before)
+            self.assertEqual(os.readlink(dangling), str(home / "missing-target"))
+            self.assertEqual(os.readlink(extra), str(home))
+
+    def test_fifo_is_preserved_and_blocks(self) -> None:
+        with tempfile.TemporaryDirectory(prefix="fantasydisk-onboard-fifo-") as raw:
+            home = Path(raw)
+            target = home / ".codex" / "skills" / "fantasydisk-release-director"
+            target.mkdir(parents=True)
+            _extract_legacy_skill(target)
+            fifo = target / "operator-pipe"
+            os.mkfifo(fifo)
+            before = _inventory(target)
+
+            result = _run_onboard(ONBOARD, home)
+
+            self.assertNotEqual(result.returncode, 0, result.stdout)
+            self.assertIn("BLOCK", result.stdout)
+            self.assertEqual(_inventory(target), before)
+            self.assertTrue(fifo.exists())
+
+    def test_mode_drift_is_preserved_and_blocks(self) -> None:
+        with tempfile.TemporaryDirectory(prefix="fantasydisk-onboard-mode-") as raw:
+            home = Path(raw)
+            target = home / ".codex" / "skills" / "fantasydisk-release-director"
+            target.mkdir(parents=True)
+            _extract_legacy_skill(target)
+            skill_md = target / "SKILL.md"
+            skill_md.chmod(0o600)
+            before = _inventory(target)
+
+            result = _run_onboard(ONBOARD, home)
+
+            self.assertNotEqual(result.returncode, 0, result.stdout)
+            self.assertIn("BLOCK", result.stdout)
+            self.assertEqual(_inventory(target), before)
+            self.assertEqual(before["SKILL.md"][1], "0600")
 
     def test_fresh_isolated_home_selects_repo_provenance(self) -> None:
         with tempfile.TemporaryDirectory(prefix="fantasydisk-onboard-fresh-") as raw:

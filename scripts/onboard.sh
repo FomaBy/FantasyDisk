@@ -25,26 +25,44 @@ REPO_ROOT="$(cd "$SCRIPT_DIR/.." && pwd)"
 # safe to replace; any other real directory may contain operator data and must
 # remain untouched.  The tree fingerprint includes every entry and every file
 # hash, so an added or changed local file cannot pass this allowlist.
-KNOWN_LEGACY_RELEASE_SKILL_MD_SHA256="9ae5871b81165d655f262efbae410891af4eb384504dd7158c2de79d9a348a50"
-KNOWN_LEGACY_RELEASE_SKILL_TREE_SHA256="e8a6fc5c6ec25892d6043bcf605064c54a6ba54be85593314b5b26786ea865d9"
+KNOWN_LEGACY_RELEASE_SKILL_TREE_SHA256="e06e85fdd5fb3f78cffe172814e8dcc7878d573afe5ba6716b4c0613222da5ad"
 
 sha256_file() {
   shasum -a 256 "$1" | awk '{print $1}'
 }
 
+# Return the permission bits without following symlinks.  The legacy allowlist
+# is intentionally platform-aware because macOS and GNU stat use different
+# format flags.
+entry_mode() {
+  local mode
+  case "$(uname -s)" in
+    Darwin) mode="$(stat -f '%Mp%Lp' "$1")" ;;
+    *) mode="$(stat -c '%a' "$1")" ;;
+  esac
+  printf '%04s\n' "$mode" | tr ' ' '0'
+}
+
 # Print a deterministic fingerprint for a skill directory without exposing
-# file contents.  Entry types are included so symlinks and empty directories
-# containing operator data cannot be mistaken for the known legacy snapshot.
+# file contents.  Entry types and modes are included so symlinks, special
+# entries, and permission drift cannot be mistaken for the known legacy
+# snapshot.  Extended attributes are a documented platform residual: this
+# portable fingerprint does not claim to cover xattr-only drift.
 tree_fingerprint() {
   local dir="$1"
   (
     cd "$dir" || exit 1
     find -P . ! -path . -print | LC_ALL=C sort | while IFS= read -r rel; do
-      if [ -d "$rel" ]; then
-        printf 'D\t%s\n' "$rel"
+      if [ -L "$rel" ]; then
+        link_target="$(readlink "$rel")" || exit 1
+        printf 'L\t%s\t%s\n' "$rel" "$link_target"
+      elif [ -d "$rel" ]; then
+        mode="$(entry_mode "$rel")" || exit 1
+        printf 'D\t%s\t%s\n' "$rel" "$mode"
       elif [ -f "$rel" ]; then
         hash="$(sha256_file "$rel")" || exit 1
-        printf 'F\t%s\t%s\n' "$rel" "$hash"
+        mode="$(entry_mode "$rel")" || exit 1
+        printf 'F\t%s\t%s\t%s\n' "$rel" "$mode" "$hash"
       else
         printf 'O\t%s\n' "$rel"
       fi
@@ -55,7 +73,7 @@ tree_fingerprint() {
 sync_release_skill_dir() {
   local src_dir="$1"
   local dest="$2"
-  local source_tree target_tree target_skill_hash
+  local source_tree target_tree
 
   source_tree="$(tree_fingerprint "$src_dir")" || {
     printf '  BLOCK %s (cannot fingerprint repo skill source)\n' "$dest" >&2
@@ -66,17 +84,7 @@ sync_release_skill_dir() {
     return 1
   }
 
-  if [ -f "$dest/SKILL.md" ]; then
-    target_skill_hash="$(sha256_file "$dest/SKILL.md")" || {
-      printf '  BLOCK %s (cannot inspect SKILL.md; kept)\n' "$dest" >&2
-      return 1
-    }
-  else
-    target_skill_hash=""
-  fi
-
-  if [ "$target_tree" = "$KNOWN_LEGACY_RELEASE_SKILL_TREE_SHA256" ] \
-    && [ "$target_skill_hash" = "$KNOWN_LEGACY_RELEASE_SKILL_MD_SHA256" ]; then
+  if [ "$target_tree" = "$KNOWN_LEGACY_RELEASE_SKILL_TREE_SHA256" ]; then
     printf '  MIGRATE %s (known repo-owned legacy release skill)\n' "$dest"
   elif [ "$target_tree" = "$source_tree" ]; then
     printf '  relink %s (exact repo mirror)\n' "$dest"
