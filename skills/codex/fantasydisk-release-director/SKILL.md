@@ -192,8 +192,8 @@ name, size, URL, and SHA-256.
    no Windows machine is available.
 2. Publish only to `FomaBy/FantasyDisk-Releases`, a public binary-only
 repository. Before upload, prove its Git tree has no source/secrets; then
-dry-run, publish the allowlisted assets with manifest last, and verify the page,
-latest manifest and installers without GitHub credentials:
+dry-run, publish the allowlisted assets, and verify the page, latest manifest
+and installers without GitHub credentials:
 
 ```bash
 python3 skills/codex/fantasydisk-release-director/scripts/github_release_publish.py \
@@ -205,19 +205,37 @@ python3 skills/codex/fantasydisk-release-director/scripts/github_release_verify.
 ```
 
    Require a public, non-draft `v<version>` release containing DMG, Windows setup,
-   SHA256SUMS, changelog, poster and update manifest. The publisher uploads the
-   manifest last and marks the release latest only after all assets exist.
+   SHA256SUMS, changelog, poster and update manifest. The manifest upload starts
+   last, but `gh` uploads assets concurrently, so completion order is not the
+   safety mechanism. The verifiable invariant is: the release stays a draft
+   until every asset, including the manifest, is verified uploaded byte-exact
+   (name, size, SHA-256), and only a fully verified draft is made public and
+   then latest — `latest/download` can never expose an incomplete installer set.
 
-   FAN-1249 fail-closed contract: the distribution repository must have
-   GitHub-enforced immutable releases enabled (`Settings → General → Releases`)
-   or the publisher refuses to run before any external side effect. The release
-   tag is claimed atomically at the exact default-branch commit; a tag or
-   release that appears between preflight and create blocks publication instead
-   of being reused. Tag identity is re-verified after create and after publish,
-   and the published release must report GitHub immutability before it is marked
-   latest. There is no delete/clobber/force path: a failed attempt leaves at
-   most a bare claimed tag and an unpublished draft, burns that version number,
-   and the next attempt must use the next `<version>` (hotfix component).
+   FAN-1249/FAN-1265 fail-closed contract: the distribution repository must
+   have GitHub-enforced immutable releases enabled (`Settings → General →
+   Releases`) **and** an active tag ruleset with no bypass actors that blocks
+   update and deletion of the release tags (pattern covering `v*`), or the
+   publisher refuses to run before any external side effect. GitHub offers no
+   atomic publish-with-expected-SHA, so that server-side ruleset is what keeps
+   the atomically claimed tag frozen between the last pre-public identity check
+   and publication. The release tag is claimed atomically at the exact
+   default-branch commit; a tag or release that appears between preflight and
+   create blocks publication instead of being reused. Draft creation passes
+   `--verify-tag`: if the claimed tag disappears after the claim, creation
+   aborts instead of implicitly recreating the tag. Tag identity is re-verified
+   after create, again immediately before the public edit, and after publish,
+   and the published release must report GitHub immutability before it is
+   marked latest. There is no delete/clobber/force path: the publisher never
+   removes a claimed tag, a draft, or a public release, and a published release
+   has no rollback. Truthful failure states: before the public edit, a failed
+   attempt leaves at most the claimed bare tag and an unpublished draft
+   (possibly with partial assets); once the public edit has been issued — even
+   if its response is lost (applied-but-response-lost) or a post-public check
+   fails (foreign tag, missing immutability) — a public non-latest release
+   remains and requires manual reconciliation without deleting, editing, or
+   reusing anything. Every failed attempt burns that version number, and the
+   next attempt must use the next `<version>` (hotfix component).
 3. Dry-run and publish Telegram for **every stable release**. Telegram delivery
    is mandatory and contains the poster, DMG, Windows Setup and SHA256SUMS.
 

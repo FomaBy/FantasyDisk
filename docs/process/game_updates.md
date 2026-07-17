@@ -134,8 +134,10 @@ durable path.
    `<version>` — `X.Y.Z` либо явно обоснованный технический `X.Y.Z.R`.
 2. До upload публичный repo должен быть создан как `FomaBy/FantasyDisk-Releases`,
    быть public и содержать только минимальный `README.md`. Publisher проверяет
-   tree и README на source/secret-like content, затем загружает assets в draft,
-   manifest последним и только после allowlist-проверки делает release latest.
+   tree и README на source/secret-like content, затем загружает assets в draft
+   (upload в `gh` параллельный, порядок завершения не гарантирован) и делает
+   release public, а затем latest, только после байт-точной allowlist-проверки
+   всех draft assets, включая manifest.
 3. Выполнить unauthenticated byte verification без GitHub credentials, сверив
    page, `releases/latest/download/update-manifest.json`, оба installers, размеры
    и SHA-256 с durable release:

@@ -88,6 +88,41 @@ def _release_view(*, draft: bool, immutable: bool, url: str = "https://example.i
     )
 
 
+def _ruleset_list(entries: list[dict] | None = None):
+    if entries is None:
+        entries = [
+            {"id": 42, "name": "release-tags", "target": "tag", "enforcement": "active"}
+        ]
+    return _gh(["gh", "api"], 0, json.dumps(entries))
+
+
+def _ruleset_detail(
+    *,
+    include: tuple[str, ...] = ("refs/tags/v*",),
+    exclude: tuple[str, ...] = (),
+    rules: tuple[str, ...] = ("update", "deletion"),
+    bypass: tuple[dict, ...] = (),
+    target: str = "tag",
+    enforcement: str = "active",
+):
+    return _gh(
+        ["gh", "api"], 0,
+        json.dumps({
+            "id": 42,
+            "target": target,
+            "enforcement": enforcement,
+            "bypass_actors": list(bypass),
+            "conditions": {"ref_name": {"include": list(include), "exclude": list(exclude)}},
+            "rules": [{"type": rule} for rule in rules],
+        }),
+    )
+
+
+def _tag_protection_ok():
+    """FAN-1265 preflight pair: tag ruleset listing plus a covering detail."""
+    return (_ruleset_list(), _ruleset_detail())
+
+
 class UpdateReleasePipelineTests(unittest.TestCase):
     def test_manifest_matches_both_installers_and_public_urls(self) -> None:
         with tempfile.TemporaryDirectory() as temporary:
@@ -219,6 +254,7 @@ class UpdateReleasePipelineTests(unittest.TestCase):
              mock.patch.object(github_release_publish, "run", side_effect=[
                  _auth_ok(),
                  _immutability_enforced(),
+                 *_tag_protection_ok(),
                  existing,
              ]):
             with self.assertRaisesRegex(RuntimeError, "never overwrite"):
@@ -236,6 +272,7 @@ class UpdateReleasePipelineTests(unittest.TestCase):
              mock.patch.object(github_release_publish, "run", side_effect=[
                  _auth_ok(),
                  _immutability_enforced(),
+                 *_tag_protection_ok(),
                  _missing_release(),
                  bare_tag,
              ]) as run_mock:
@@ -254,6 +291,7 @@ class UpdateReleasePipelineTests(unittest.TestCase):
              mock.patch.object(github_release_publish, "run", side_effect=[
                  _auth_ok(),
                  _immutability_enforced(),
+                 *_tag_protection_ok(),
                  _missing_release(),
                  failed_preflight,
              ]):
@@ -272,11 +310,13 @@ class UpdateReleasePipelineTests(unittest.TestCase):
              mock.patch.object(github_release_publish, "run", side_effect=[
                  _auth_ok(),
                  _immutability_enforced(),
+                 *_tag_protection_ok(),
                  _missing_release(),
                  _absent_tag(),
                  _branch_head(),
                  _tag_ref(tag),
                  created,
+                 _tag_ref(tag),
                  _tag_ref(tag),
                  published,
                  _tag_ref(tag),
@@ -297,6 +337,7 @@ class UpdateReleasePipelineTests(unittest.TestCase):
              mock.patch.object(github_release_publish, "run", side_effect=[
                  _auth_ok(),
                  _immutability_enforced(),
+                 *_tag_protection_ok(),
                  unavailable,
              ]) as run_mock:
             with self.assertRaisesRegex(RuntimeError, "cannot verify"):
@@ -314,6 +355,7 @@ class UpdateReleasePipelineTests(unittest.TestCase):
              mock.patch.object(github_release_publish, "run", side_effect=[
                  _auth_ok(),
                  _immutability_enforced(),
+                 *_tag_protection_ok(),
                  _missing_release(),
                  _absent_tag(),
                  _branch_head(),
@@ -520,6 +562,7 @@ class PublisherRaceAndImmutabilityTests(unittest.TestCase):
              mock.patch.object(github_release_publish, "run", side_effect=[
                  _auth_ok(),
                  _immutability_enforced(),
+                 *_tag_protection_ok(),
                  _missing_release(),
                  _absent_tag(),
                  _branch_head(),
@@ -567,6 +610,7 @@ class PublisherRaceAndImmutabilityTests(unittest.TestCase):
                      mock.patch.object(github_release_publish, "run", side_effect=[
                          _auth_ok(),
                          _immutability_enforced(),
+                         *_tag_protection_ok(),
                          _missing_release(),
                          _absent_tag(),
                          _branch_head(),
@@ -604,6 +648,7 @@ class PublisherRaceAndImmutabilityTests(unittest.TestCase):
                      mock.patch.object(github_release_publish, "run", side_effect=[
                          _auth_ok(),
                          _immutability_enforced(),
+                         *_tag_protection_ok(),
                          _missing_release(),
                          _absent_tag(),
                          _gh(["gh", "api"], 0, json.dumps(payload)),
@@ -622,6 +667,7 @@ class PublisherRaceAndImmutabilityTests(unittest.TestCase):
              mock.patch.object(github_release_publish, "run", side_effect=[
                  _auth_ok(),
                  _immutability_enforced(),
+                 *_tag_protection_ok(),
                  _missing_release(),
                  _absent_tag(),
                  _branch_head(),
@@ -646,11 +692,13 @@ class PublisherRaceAndImmutabilityTests(unittest.TestCase):
              mock.patch.object(github_release_publish, "run", side_effect=[
                  _auth_ok(),
                  _immutability_enforced(),
+                 *_tag_protection_ok(),
                  _missing_release(),
                  _absent_tag(),
                  _branch_head(),
                  _tag_ref(self.TAG),
                  created,
+                 _tag_ref(self.TAG),
                  _tag_ref(self.TAG),
                  published,
                  _tag_ref(self.TAG, FOREIGN_COMMIT),
@@ -670,6 +718,7 @@ class PublisherRaceAndImmutabilityTests(unittest.TestCase):
              mock.patch.object(github_release_publish, "run", side_effect=[
                  _auth_ok(),
                  _immutability_enforced(),
+                 *_tag_protection_ok(),
                  _missing_release(),
                  _absent_tag(),
                  _branch_head(),
@@ -677,6 +726,7 @@ class PublisherRaceAndImmutabilityTests(unittest.TestCase):
                  created,
                  _tag_ref(self.TAG),
                  _release_view(draft=True, immutable=False),
+                 _tag_ref(self.TAG),
                  published,
                  _release_view(draft=False, immutable=False),
              ]) as run_mock:
@@ -721,6 +771,7 @@ class PublisherRaceAndImmutabilityTests(unittest.TestCase):
              mock.patch.object(github_release_publish, "run", side_effect=[
                  _auth_ok(),
                  _immutability_enforced(),
+                 *_tag_protection_ok(),
                  _missing_release(),
                  _absent_tag(),
                  _branch_head(),
@@ -728,6 +779,7 @@ class PublisherRaceAndImmutabilityTests(unittest.TestCase):
                  created,
                  _tag_ref(self.TAG),
                  _release_view(draft=True, immutable=False, url=url),
+                 _tag_ref(self.TAG),
                  published,
                  _release_view(draft=False, immutable=True, url=url),
                  _tag_ref(self.TAG),
@@ -755,9 +807,31 @@ class PublisherRaceAndImmutabilityTests(unittest.TestCase):
         self.assertEqual(latest_at, len(commands) - 1)
         self.assertIn(f"ref=refs/tags/{self.TAG}", commands[claim_at])
         self.assertIn(f"sha={CLAIMED_COMMIT}", commands[claim_at])
-        # Release create pins the exact claimed commit, not a drifting branch.
+        # Release create pins the exact claimed commit, not a drifting branch,
+        # and refuses to implicitly recreate a deleted claimed tag.
         self.assertIn("--target", commands[create_at])
         self.assertIn(CLAIMED_COMMIT, commands[create_at])
+        self.assertIn("--verify-tag", commands[create_at])
+        # The tag ruleset boundary is proven before the first side effect.
+        ruleset_at = next(
+            index for index, command in enumerate(commands)
+            if command[:2] == ["gh", "api"] and "rulesets" in command[-1]
+        )
+        self.assertLess(ruleset_at, claim_at)
+        # A final identity check runs after draft verification, immediately
+        # before the release becomes public.
+        draft_view_at = next(
+            index for index, command in enumerate(commands)
+            if command[:3] == ["gh", "release", "view"]
+        )
+        identity_checks = [
+            index for index, command in enumerate(commands)
+            if command[:2] == ["gh", "api"]
+            and command[-1].endswith(f"git/ref/tags/{self.TAG}")
+        ]
+        self.assertTrue(
+            any(draft_view_at < index < publish_at for index in identity_checks)
+        )
 
     def test_supported_publisher_path_has_no_destructive_commands(self) -> None:
         source = (SCRIPTS / "github_release_publish.py").read_text(encoding="utf-8")
@@ -769,6 +843,304 @@ class PublisherRaceAndImmutabilityTests(unittest.TestCase):
             '"--force"',
         ):
             self.assertNotIn(forbidden, source)
+
+
+class PublisherClaimContinuityTests(unittest.TestCase):
+    """FAN-1265: the atomically claimed tag stays provably ours end-to-end.
+
+    Every scenario drives the real publish() command sequence through a mocked
+    ``run`` and asserts that no impermissible public state can be produced —
+    not merely that ``--latest`` is withheld.
+    """
+
+    REPOSITORY = "FomaBy/FantasyDisk-Releases"
+    VERSION = "0.2.3.1"
+    TAG = "v0.2.3.1"
+
+    def _publish(self) -> str:
+        return github_release_publish.publish(
+            self.REPOSITORY, self.VERSION, [], Path("CHANGELOG.md")
+        )
+
+    @staticmethod
+    def _commands(run_mock) -> list[list[str]]:
+        return [list(call.args[0]) for call in run_mock.call_args_list]
+
+    def test_tag_ruleset_pattern_matching_is_tag_scoped(self) -> None:
+        matches = github_release_publish._tag_ruleset_pattern_matches
+        self.assertTrue(matches("~ALL", self.TAG))
+        self.assertTrue(matches("refs/tags/v*", self.TAG))
+        self.assertTrue(matches(f"refs/tags/{self.TAG}", self.TAG))
+        self.assertTrue(matches("v*", self.TAG))
+        self.assertFalse(matches("refs/heads/*", self.TAG))
+        self.assertFalse(matches("refs/tags/release-*", self.TAG))
+        self.assertFalse(matches("w*", self.TAG))
+
+    def test_missing_or_insufficient_tag_ruleset_blocks_before_any_side_effect(self) -> None:
+        bypass_actor = {"actor_id": 1, "actor_type": "Team", "bypass_mode": "always"}
+        cases = (
+            ("no-rulesets", [_ruleset_list([])], "does not protect release tag"),
+            (
+                "inactive-ruleset",
+                [_ruleset_list([
+                    {"id": 42, "target": "tag", "enforcement": "evaluate"}
+                ])],
+                "does not protect release tag",
+            ),
+            (
+                "branch-ruleset-only",
+                [_ruleset_list([
+                    {"id": 42, "target": "branch", "enforcement": "active"}
+                ])],
+                "does not protect release tag",
+            ),
+            (
+                "bypass-actors-void-the-guarantee",
+                [_ruleset_list(), _ruleset_detail(bypass=(bypass_actor,))],
+                "does not protect release tag",
+            ),
+            (
+                "missing-deletion-rule",
+                [_ruleset_list(), _ruleset_detail(rules=("update",))],
+                "does not protect release tag v0.2.3.1 against deletion",
+            ),
+            (
+                "missing-update-rule",
+                [_ruleset_list(), _ruleset_detail(rules=("deletion",))],
+                "does not protect release tag v0.2.3.1 against update",
+            ),
+            (
+                "pattern-does-not-cover-tag",
+                [_ruleset_list(), _ruleset_detail(include=("refs/tags/release-*",))],
+                "does not protect release tag",
+            ),
+            (
+                "tag-excluded",
+                [_ruleset_list(), _ruleset_detail(exclude=("refs/tags/v0.2.3.*",))],
+                "does not protect release tag",
+            ),
+            (
+                "listing-unavailable",
+                [_gh(["gh", "api"], 1, "", "HTTP 503")],
+                "cannot verify tag protection rulesets",
+            ),
+            (
+                "listing-malformed",
+                [_gh(["gh", "api"], 0, "{not-json")],
+                "invalid JSON",
+            ),
+        )
+        for label, responses, error in cases:
+            with self.subTest(case=label):
+                with mock.patch.object(github_release_publish.shutil, "which", return_value="gh"), \
+                     mock.patch.object(github_release_publish, "assert_safe_public_distribution_repository", return_value="main"), \
+                     mock.patch.object(github_release_publish, "run", side_effect=[
+                         _auth_ok(),
+                         _immutability_enforced(),
+                         *responses,
+                     ]) as run_mock:
+                    with self.assertRaisesRegex(RuntimeError, error):
+                        self._publish()
+                commands = self._commands(run_mock)
+                self.assertFalse(any("POST" in command for command in commands))
+                self.assertFalse(any("create" in command for command in commands))
+                self.assertFalse(any("edit" in command for command in commands))
+
+    def test_deleted_claimed_tag_aborts_draft_creation_without_recreation(self) -> None:
+        create_abort = _gh(
+            ["gh", "release", "create"], 1, "",
+            "tag v0.2.3.1 doesn't exist in FomaBy/FantasyDisk-Releases and --verify-tag is set",
+        )
+        with mock.patch.object(github_release_publish.shutil, "which", return_value="gh"), \
+             mock.patch.object(github_release_publish, "assert_safe_public_distribution_repository", return_value="main"), \
+             mock.patch.object(github_release_publish, "run", side_effect=[
+                 _auth_ok(),
+                 _immutability_enforced(),
+                 *_tag_protection_ok(),
+                 _missing_release(),
+                 _absent_tag(),
+                 _branch_head(),
+                 _tag_ref(self.TAG),
+                 create_abort,
+             ]) as run_mock:
+            with self.assertRaisesRegex(RuntimeError, "verify-tag") as caught:
+                self._publish()
+        self.assertIn("draft release creation failed", str(caught.exception))
+        commands = self._commands(run_mock)
+        creates = [
+            command for command in commands
+            if command[:3] == ["gh", "release", "create"]
+        ]
+        self.assertEqual(len(creates), 1)
+        self.assertIn("--verify-tag", creates[0])
+        # Exactly one atomic claim: the deleted tag is never recreated.
+        claims = [
+            command for command in commands
+            if "--method" in command and "POST" in command
+        ]
+        self.assertEqual(len(claims), 1)
+        self.assertFalse(any("edit" in command for command in commands))
+        self.assertFalse(any("--draft=false" in command for command in commands))
+
+    def test_tag_mutation_after_draft_verification_blocks_public_edit(self) -> None:
+        created = _gh(["gh", "release", "create"], 0)
+        with mock.patch.object(github_release_publish.shutil, "which", return_value="gh"), \
+             mock.patch.object(github_release_publish, "assert_safe_public_distribution_repository", return_value="main"), \
+             mock.patch.object(github_release_publish, "_assert_release_assets", return_value="https://example.invalid/v0.2.3.1"), \
+             mock.patch.object(github_release_publish, "run", side_effect=[
+                 _auth_ok(),
+                 _immutability_enforced(),
+                 *_tag_protection_ok(),
+                 _missing_release(),
+                 _absent_tag(),
+                 _branch_head(),
+                 _tag_ref(self.TAG),
+                 created,
+                 _tag_ref(self.TAG),
+                 _tag_ref(self.TAG, FOREIGN_COMMIT),
+             ]) as run_mock:
+            with self.assertRaisesRegex(
+                RuntimeError, "no longer points at the claimed release commit"
+            ):
+                self._publish()
+        commands = self._commands(run_mock)
+        # The mutated tag is caught before the release ever becomes public.
+        self.assertFalse(any("--draft=false" in command for command in commands))
+        self.assertFalse(any("edit" in command for command in commands))
+
+    def test_ambiguous_public_edit_failure_reports_possible_public_state(self) -> None:
+        created = _gh(["gh", "release", "create"], 0)
+        edit_lost = _gh(["gh", "release", "edit"], 1, "", "timeout awaiting response")
+        cases = (
+            (
+                "now-public",
+                _gh(
+                    ["gh", "release", "view"], 0,
+                    json.dumps({"isDraft": False, "isImmutable": True}),
+                ),
+                "currently PUBLIC",
+            ),
+            (
+                "still-draft",
+                _gh(
+                    ["gh", "release", "view"], 0,
+                    json.dumps({"isDraft": True, "isImmutable": False}),
+                ),
+                "still an unpublished draft",
+            ),
+            (
+                "state-unreadable",
+                _gh(["gh", "release", "view"], 1, "", "HTTP 500"),
+                "could not be read",
+            ),
+        )
+        for label, state_view, state_text in cases:
+            with self.subTest(case=label):
+                with mock.patch.object(github_release_publish.shutil, "which", return_value="gh"), \
+                     mock.patch.object(github_release_publish, "assert_safe_public_distribution_repository", return_value="main"), \
+                     mock.patch.object(github_release_publish, "_assert_release_assets", return_value="https://example.invalid/v0.2.3.1"), \
+                     mock.patch.object(github_release_publish, "run", side_effect=[
+                         _auth_ok(),
+                         _immutability_enforced(),
+                         *_tag_protection_ok(),
+                         _missing_release(),
+                         _absent_tag(),
+                         _branch_head(),
+                         _tag_ref(self.TAG),
+                         created,
+                         _tag_ref(self.TAG),
+                         _tag_ref(self.TAG),
+                         edit_lost,
+                         state_view,
+                     ]) as run_mock:
+                    with self.assertRaisesRegex(
+                        RuntimeError, "applied-but-response-lost"
+                    ) as caught:
+                        self._publish()
+                message = str(caught.exception)
+                self.assertIn(state_text, message)
+                self.assertIn("no rollback", message)
+                commands = self._commands(run_mock)
+                self.assertFalse(
+                    any(command[-1] == "--latest" for command in commands)
+                )
+
+    def test_post_public_failures_report_truthful_public_state(self) -> None:
+        created = _gh(["gh", "release", "create"], 0)
+        published = _gh(["gh", "release", "edit"], 0)
+        cases = (
+            (
+                "foreign-after-public",
+                [
+                    _release_view(draft=False, immutable=True),
+                    _tag_ref(self.TAG, FOREIGN_COMMIT),
+                ],
+                "no longer points at the claimed release commit",
+            ),
+            (
+                "non-immutable-public",
+                [_release_view(draft=False, immutable=False)],
+                "not GitHub-enforced immutable",
+            ),
+        )
+        for label, post_public, error in cases:
+            with self.subTest(case=label):
+                with mock.patch.object(github_release_publish.shutil, "which", return_value="gh"), \
+                     mock.patch.object(github_release_publish, "assert_safe_public_distribution_repository", return_value="main"), \
+                     mock.patch.object(github_release_publish, "run", side_effect=[
+                         _auth_ok(),
+                         _immutability_enforced(),
+                         *_tag_protection_ok(),
+                         _missing_release(),
+                         _absent_tag(),
+                         _branch_head(),
+                         _tag_ref(self.TAG),
+                         created,
+                         _tag_ref(self.TAG),
+                         _release_view(draft=True, immutable=False),
+                         _tag_ref(self.TAG),
+                         published,
+                         *post_public,
+                     ]) as run_mock:
+                    with self.assertRaisesRegex(RuntimeError, error) as caught:
+                        self._publish()
+                message = str(caught.exception)
+                # No false "at most a draft remains" promise: the error admits
+                # the release is already public and cannot be rolled back.
+                self.assertIn("public reconciliation required", message)
+                self.assertIn("no rollback", message)
+                commands = self._commands(run_mock)
+                self.assertFalse(
+                    any(command[-1] == "--latest" for command in commands)
+                )
+
+    def test_latest_marking_failure_reports_safe_manual_retry(self) -> None:
+        created = _gh(["gh", "release", "create"], 0)
+        published = _gh(["gh", "release", "edit"], 0)
+        latest_failed = _gh(["gh", "release", "edit"], 1, "", "HTTP 502")
+        with mock.patch.object(github_release_publish.shutil, "which", return_value="gh"), \
+             mock.patch.object(github_release_publish, "assert_safe_public_distribution_repository", return_value="main"), \
+             mock.patch.object(github_release_publish, "run", side_effect=[
+                 _auth_ok(),
+                 _immutability_enforced(),
+                 *_tag_protection_ok(),
+                 _missing_release(),
+                 _absent_tag(),
+                 _branch_head(),
+                 _tag_ref(self.TAG),
+                 created,
+                 _tag_ref(self.TAG),
+                 _release_view(draft=True, immutable=False),
+                 _tag_ref(self.TAG),
+                 published,
+                 _release_view(draft=False, immutable=True),
+                 _tag_ref(self.TAG),
+                 latest_failed,
+             ]):
+            with self.assertRaisesRegex(
+                RuntimeError, "already public, verified, and immutable"
+            ):
+                self._publish()
 
 
 class PublicVerifierAssetContractTests(unittest.TestCase):

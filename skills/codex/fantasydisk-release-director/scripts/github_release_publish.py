@@ -5,6 +5,7 @@ from __future__ import annotations
 
 import argparse
 import base64
+import fnmatch
 import hashlib
 import json
 import os
@@ -38,6 +39,16 @@ README_FORBIDDEN_MARKERS = (
 )
 HTTP_STATUS_RE = re.compile(r"(?m)^HTTP/[^\s]+\s+(\d{3})\b")
 COMMIT_SHA_RE = re.compile(r"[0-9a-f]{40}")
+# GitHub has no atomic publish-with-expected-SHA, so the create-only claim stays
+# trustworthy only while the platform itself rejects tag rewrites. Both rule
+# types must be guaranteed server-side before the first external side effect.
+REQUIRED_TAG_RULE_TYPES = frozenset({"update", "deletion"})
+RECONCILIATION_GUIDANCE = (
+    "the supported path has no rollback: it never deletes, force-updates, or "
+    "reuses a published release or tag. Manually inspect the release and tag on "
+    "GitHub, keep any public release non-latest, burn this version number, and "
+    "publish the next attempt under the next version"
+)
 
 
 def repo_root() -> Path:
@@ -73,7 +84,12 @@ def release_files(release_dir: Path, version: str) -> tuple[list[Path], Path]:
         release_dir / "SHA256SUMS.txt",
         changelog,
         posters[0],
-        # Upload last: latest/download must never point to incomplete installers.
+        # The manifest is listed last so its upload starts after the installers,
+        # but `gh release create` uploads assets concurrently, so completion
+        # order is not guaranteed. The enforced invariant lives in publish():
+        # the release stays a draft until every asset, including the manifest,
+        # is verified uploaded byte-exact, so latest/download can never expose
+        # an incomplete installer set.
         release_dir / "update-manifest.json",
     ]
     missing = [path.name for path in ordered if not path.is_file() or path.is_symlink()]
@@ -182,6 +198,95 @@ def assert_immutable_release_enforcement(repository: str) -> None:
         raise RuntimeError(
             "distribution repository does not enforce immutable releases; "
             "enable immutable releases before publication"
+        )
+
+
+def _tag_ruleset_pattern_matches(pattern: str, tag: str) -> bool:
+    if pattern == "~ALL":
+        return True
+    if pattern.startswith("refs/tags/"):
+        return fnmatch.fnmatchcase(f"refs/tags/{tag}", pattern)
+    if pattern.startswith("refs/"):
+        return False
+    return fnmatch.fnmatchcase(tag, pattern)
+
+
+def _tag_ruleset_patterns(ref_name: object, key: str) -> list[str]:
+    if not isinstance(ref_name, dict):
+        raise RuntimeError("tag protection ruleset returned malformed conditions")
+    patterns = ref_name.get(key, [])
+    if not isinstance(patterns, list) or any(
+        not isinstance(pattern, str) for pattern in patterns
+    ):
+        raise RuntimeError("tag protection ruleset returned malformed conditions")
+    return patterns
+
+
+def assert_release_tag_protection(repository: str, tag: str) -> None:
+    """Prove GitHub keeps the claimed tag frozen until immutable publication.
+
+    The refs API claim is atomic, but publication is not: between the last
+    pre-public identity check and `gh release edit --draft=false` a mutated tag
+    would become a public release on a foreign commit, and immutable releases
+    forbid rollback. Only a server-side tag ruleset closes that window, so
+    require an active tag ruleset without bypass actors whose rules block both
+    update and deletion of this exact release tag before any external side
+    effect.
+    """
+    listing = run(
+        ["gh", "api", f"repos/{repository}/rulesets?per_page=100"], check=False
+    )
+    if listing.returncode:
+        raise RuntimeError(
+            "cannot verify tag protection rulesets for the distribution repository"
+        )
+    try:
+        summaries = json.loads(listing.stdout)
+    except json.JSONDecodeError as error:
+        raise RuntimeError(
+            "tag protection ruleset listing returned invalid JSON"
+        ) from error
+    if not isinstance(summaries, list):
+        raise RuntimeError(
+            "tag protection ruleset listing returned an invalid response shape"
+        )
+    guaranteed_rule_types: set[str] = set()
+    for summary in summaries:
+        if not isinstance(summary, dict) or not isinstance(summary.get("id"), int):
+            raise RuntimeError(
+                "tag protection ruleset listing returned malformed entries"
+            )
+        if summary.get("target") != "tag" or summary.get("enforcement") != "active":
+            continue
+        detail = _api_json(f"repos/{repository}/rulesets/{summary['id']}")
+        if detail.get("target") != "tag" or detail.get("enforcement") != "active":
+            continue
+        # Any bypass actor voids the server-side guarantee for this ruleset.
+        if detail.get("bypass_actors"):
+            continue
+        conditions = detail.get("conditions")
+        if not isinstance(conditions, dict):
+            raise RuntimeError("tag protection ruleset returned malformed conditions")
+        ref_name = conditions.get("ref_name")
+        include = _tag_ruleset_patterns(ref_name, "include")
+        exclude = _tag_ruleset_patterns(ref_name, "exclude")
+        if any(_tag_ruleset_pattern_matches(pattern, tag) for pattern in exclude):
+            continue
+        if not any(_tag_ruleset_pattern_matches(pattern, tag) for pattern in include):
+            continue
+        rules = detail.get("rules")
+        if not isinstance(rules, list):
+            raise RuntimeError("tag protection ruleset returned malformed rules")
+        for rule in rules:
+            if not isinstance(rule, dict) or not isinstance(rule.get("type"), str):
+                raise RuntimeError("tag protection ruleset returned malformed rules")
+            guaranteed_rule_types.add(rule["type"])
+    missing = REQUIRED_TAG_RULE_TYPES - guaranteed_rule_types
+    if missing:
+        raise RuntimeError(
+            f"distribution repository does not protect release tag {tag} against "
+            f"{', '.join(sorted(missing))}; enable an active tag ruleset without "
+            "bypass actors that blocks tag update and deletion before publication"
         )
 
 
@@ -361,6 +466,30 @@ def assert_unclaimed_distribution_tag(repository: str, tag: str) -> None:
             )
 
 
+def _describe_public_release_state(repository: str, tag: str) -> str:
+    """Best-effort state read for a truthful post-failure reconciliation report."""
+    view = run(
+        [
+            "gh", "release", "view", tag, "--repo", repository,
+            "--json", "isDraft,isImmutable",
+        ],
+        check=False,
+    )
+    if not view.returncode:
+        try:
+            payload = json.loads(view.stdout)
+        except json.JSONDecodeError:
+            payload = None
+        if isinstance(payload, dict) and isinstance(payload.get("isDraft"), bool):
+            if payload["isDraft"]:
+                return f"release {tag} is currently still an unpublished draft"
+            return f"release {tag} is currently PUBLIC and non-latest"
+    return (
+        f"the current state of release {tag} could not be read; it may be an "
+        "unpublished draft or already public"
+    )
+
+
 def publish(repository: str, version: str, files: list[Path], changelog: Path) -> str:
     if not is_valid_release_version(version):
         raise RuntimeError("release version must use X.Y.Z or X.Y.Z.R")
@@ -370,6 +499,7 @@ def publish(repository: str, version: str, files: list[Path], changelog: Path) -
     default_branch = assert_safe_public_distribution_repository(repository)
     assert_immutable_release_enforcement(repository)
     tag = f"v{version}"
+    assert_release_tag_protection(repository, tag)
     assert_unclaimed_distribution_release(repository, tag)
     assert_unclaimed_distribution_tag(repository, tag)
     release_commit = resolve_release_target_commit(repository, default_branch)
@@ -377,26 +507,65 @@ def publish(repository: str, version: str, files: list[Path], changelog: Path) -
     # appeared after preflight fails the claim before create/upload/edit.
     claim_distribution_tag(repository, tag, release_commit)
     title = f"FantasyDisk v{version}"
-    run(
+    created = run(
         [
             "gh", "release", "create", tag, "--repo", repository,
-            "--target", release_commit, "--draft", "--title", title,
-            "--notes-file", os.fspath(changelog),
+            "--target", release_commit, "--verify-tag", "--draft",
+            "--title", title, "--notes-file", os.fspath(changelog),
             *[os.fspath(path) for path in files],
-        ]
+        ],
+        check=False,
     )
+    if created.returncode:
+        detail = (created.stderr or created.stdout).strip()
+        raise RuntimeError(
+            f"draft release creation failed after the atomic tag claim: {detail}\n"
+            "--verify-tag forbids implicitly recreating a deleted claimed tag "
+            f"{tag}; at most the claimed bare tag and an unpublished draft with "
+            f"partial assets can remain, and {RECONCILIATION_GUIDANCE}"
+        )
     assert_owned_distribution_tag(repository, tag, release_commit)
     _assert_release_assets(repository, tag, files, draft=True)
-    run(
+    # Last pre-public identity check: from here to the public edit only the
+    # server-side tag ruleset proven before the claim keeps the tag frozen.
+    assert_owned_distribution_tag(repository, tag, release_commit)
+    published = run(
         [
             "gh", "release", "edit", tag, "--repo", repository,
             "--title", title, "--notes-file", os.fspath(changelog),
             "--draft=false", "--prerelease=false", "--latest=false",
-        ]
+        ],
+        check=False,
     )
-    release_url = _assert_release_assets(repository, tag, files, draft=False)
-    assert_owned_distribution_tag(repository, tag, release_commit)
-    run(["gh", "release", "edit", tag, "--repo", repository, "--latest"])
+    if published.returncode:
+        detail = (published.stderr or published.stdout).strip()
+        state = _describe_public_release_state(repository, tag)
+        raise RuntimeError(
+            f"public release edit returned an error but may still have been "
+            f"applied server-side (applied-but-response-lost): {detail}\n"
+            f"{state}; {RECONCILIATION_GUIDANCE}"
+        )
+    try:
+        release_url = _assert_release_assets(repository, tag, files, draft=False)
+        assert_owned_distribution_tag(repository, tag, release_commit)
+    except RuntimeError as error:
+        raise RuntimeError(
+            f"{error}\npublic reconciliation required: release {tag} was already "
+            f"made public before this verification failed and will stay public "
+            f"and non-latest; {RECONCILIATION_GUIDANCE}"
+        ) from error
+    marked_latest = run(
+        ["gh", "release", "edit", tag, "--repo", repository, "--latest"],
+        check=False,
+    )
+    if marked_latest.returncode:
+        detail = (marked_latest.stderr or marked_latest.stdout).strip()
+        raise RuntimeError(
+            f"failed to mark the verified public release {tag} as latest: {detail}\n"
+            f"the release is already public, verified, and immutable; after "
+            f"confirming the release page, rerun `gh release edit {tag} --repo "
+            f"{repository} --latest` manually instead of recreating anything"
+        )
     return release_url
 
 
@@ -416,7 +585,11 @@ def main() -> int:
             print(f"[dry-run] public release: https://github.com/{args.repository}/releases/tag/v{args.version}")
             for path in files:
                 print(f"  • {path.name}")
-            print("[dry-run] local verification passed; manifest uploads last; nothing was published.")
+            print(
+                "[dry-run] local verification passed; the release goes public only "
+                "after every draft asset, including the manifest, verifies "
+                "byte-exact; nothing was published."
+            )
             return 0
         print(publish(args.repository, args.version, files, changelog))
     except (OSError, RuntimeError, json.JSONDecodeError) as exc:

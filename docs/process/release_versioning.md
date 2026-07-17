@@ -62,12 +62,23 @@ dev  — основная ветка разработки. Все чаты (Back
 3. `github_release_verify.py` не удаляет прошлые distribution releases/tags;
    опция pruning запрещена. Это сохраняет повторяемую доставку и доказуемую
    историю байтов.
-4. FAN-1249: публикация возможна только при включённой на
-   `FomaBy/FantasyDisk-Releases` GitHub-защите immutable releases; publisher
-   проверяет это до любых внешних действий и после публикации (release обязан
-   отчитаться как immutable до пометки latest). Release-тег захватывается
-   атомарно на exact commit; появившийся параллельно чужой tag/release
-   блокирует публикацию без reuse/edit. Delete/clobber/force путей нет:
+4. FAN-1249/FAN-1265: публикация возможна только при включённой на
+   `FomaBy/FantasyDisk-Releases` GitHub-защите immutable releases и при
+   активном tag ruleset без bypass actors, который блокирует update и deletion
+   release-тегов (`v*`); publisher проверяет оба precondition до любых внешних
+   действий и повторяет проверки после публикации (release обязан отчитаться
+   как immutable до пометки latest). GitHub не даёт атомарного
+   publish-with-expected-SHA, поэтому именно server-side ruleset держит
+   захваченный tag неизменным между последней pre-public проверкой identity и
+   публикацией. Release-тег захватывается атомарно на exact commit; появившийся
+   параллельно чужой tag/release блокирует публикацию без reuse/edit. Draft
+   создаётся с `--verify-tag`: исчезнувший после claim tag прерывает создание
+   вместо тихого пересоздания. Delete/clobber/force путей нет: до public-edit
+   неудачная попытка оставляет максимум bare claimed tag и unpublished draft
+   (возможно с частью assets); после отправленного public-edit — включая
+   потерянный ответ (applied-but-response-lost) и проваленную post-public
+   проверку (foreign tag, отсутствие immutability) — публичный non-latest
+   release остаётся и требует ручной reconciliation без rollback. Любая
    неудачная попытка сжигает номер версии, следующая попытка использует
    следующий hotfix-компонент `X.Y.Z.R`.
 
@@ -124,8 +135,11 @@ dev  — основная ветка разработки. Все чаты (Back
     размерами, SHA-256 и URLs обоих installers в public binary-only repository
     `FomaBy/FantasyDisk-Releases`. До upload publisher доказывает, что public
     Git tree содержит только минимальный README, без source/secrets; release
-    создаётся draft, manifest загружается последним и только полный allowlisted
-    package становится latest. Стабильный клиентский URL:
+    создаётся draft (upload assets в `gh` параллельный, порядок завершения не
+    гарантирован) и становится public, а затем latest, только после байт-точной
+    проверки полного allowlisted package в draft, включая manifest — поэтому
+    latest/download никогда не указывает на неполный набор installers.
+    Стабильный клиентский URL:
     `https://github.com/FomaBy/FantasyDisk-Releases/releases/latest/download/update-manifest.json`.
     Затем `github_release_verify.py` без GitHub credentials сверяет page,
     manifest, installers, hashes и durable bytes, не удаляя другие immutable
