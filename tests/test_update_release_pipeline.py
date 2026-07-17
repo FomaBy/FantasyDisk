@@ -142,6 +142,17 @@ def _tag_protection_ok():
     return (_ruleset_list(), _ruleset_detail())
 
 
+def _tag_probe(tag: str, sha: str = CLAIMED_COMMIT):
+    """FAN-1272 fixture: best-effort --include tag re-read with HTTP status."""
+    body = json.dumps({"ref": f"refs/tags/{tag}", "object": {"type": "commit", "sha": sha}})
+    return _gh(["gh", "api"], 0, f"HTTP/2 200 OK\n\n{body}")
+
+
+def _latest_release(tag_name: str):
+    """FAN-1272 fixture: repos/<repo>/releases/latest payload."""
+    return _gh(["gh", "api"], 0, json.dumps({"tag_name": tag_name}))
+
+
 class UpdateReleasePipelineTests(unittest.TestCase):
     def test_manifest_matches_both_installers_and_public_urls(self) -> None:
         with tempfile.TemporaryDirectory() as temporary:
@@ -1024,10 +1035,18 @@ class PublisherClaimContinuityTests(unittest.TestCase):
                  _branch_head(),
                  _tag_ref(self.TAG),
                  create_abort,
+                 # FAN-1272 best-effort re-read: no release view, no public
+                 # release on the tag, and the claimed tag itself is gone.
+                 _gh(["gh", "release", "view"], 1, "", "release not found"),
+                 _missing_release(),
+                 _missing_release(),
              ]) as run_mock:
             with self.assertRaisesRegex(RuntimeError, "verify-tag") as caught:
                 self._publish()
-        self.assertIn("draft release creation failed", str(caught.exception))
+        message = str(caught.exception)
+        self.assertIn("draft release creation failed", message)
+        self.assertIn(f"no public release exists on tag {self.TAG}", message)
+        self.assertIn(f"the claimed tag {self.TAG} no longer exists", message)
         commands = self._commands(run_mock)
         creates = [
             command for command in commands
@@ -1076,27 +1095,46 @@ class PublisherClaimContinuityTests(unittest.TestCase):
         cases = (
             (
                 "now-public",
-                _gh(
-                    ["gh", "release", "view"], 0,
-                    json.dumps({"isDraft": False, "isImmutable": True}),
-                ),
+                [
+                    _gh(
+                        ["gh", "release", "view"], 0,
+                        json.dumps({"isDraft": False, "isImmutable": True}),
+                    ),
+                    _latest_release("v0.0.9"),
+                ],
                 "currently PUBLIC",
             ),
             (
+                "now-public-latest-unreadable",
+                [
+                    _gh(
+                        ["gh", "release", "view"], 0,
+                        json.dumps({"isDraft": False, "isImmutable": True}),
+                    ),
+                    _gh(["gh", "api"], 1, "", "HTTP 500"),
+                ],
+                "may be marked latest",
+            ),
+            (
                 "still-draft",
-                _gh(
-                    ["gh", "release", "view"], 0,
-                    json.dumps({"isDraft": True, "isImmutable": False}),
-                ),
+                [
+                    _gh(
+                        ["gh", "release", "view"], 0,
+                        json.dumps({"isDraft": True, "isImmutable": False}),
+                    ),
+                ],
                 "still an unpublished draft",
             ),
             (
                 "state-unreadable",
-                _gh(["gh", "release", "view"], 1, "", "HTTP 500"),
+                [
+                    _gh(["gh", "release", "view"], 1, "", "HTTP 500"),
+                    _gh(["gh", "api"], 1, "HTTP/2 503 Service Unavailable\n"),
+                ],
                 "could not be read",
             ),
         )
-        for label, state_view, state_text in cases:
+        for label, state_reads, state_text in cases:
             with self.subTest(case=label):
                 with mock.patch.object(github_release_publish.shutil, "which", return_value="gh"), \
                      mock.patch.object(github_release_publish, "assert_safe_public_distribution_repository", return_value="main"), \
@@ -1113,7 +1151,7 @@ class PublisherClaimContinuityTests(unittest.TestCase):
                          _tag_ref(self.TAG),
                          _tag_ref(self.TAG),
                          edit_lost,
-                         state_view,
+                         *state_reads,
                      ]) as run_mock:
                     with self.assertRaisesRegex(
                         RuntimeError, "applied-but-response-lost"
@@ -1121,6 +1159,9 @@ class PublisherClaimContinuityTests(unittest.TestCase):
                         self._publish()
                 message = str(caught.exception)
                 self.assertIn(state_text, message)
+                # FAN-1272: an observed public state is reported with the
+                # best-effort latest marker, never as an unproven "non-latest".
+                self.assertNotIn("PUBLIC and non-latest", message)
                 self.assertIn("no rollback", message)
                 commands = self._commands(run_mock)
                 self.assertFalse(
@@ -1203,6 +1244,170 @@ class PublisherClaimContinuityTests(unittest.TestCase):
                 RuntimeError, "already public, verified, and immutable"
             ):
                 self._publish()
+
+
+class PublisherCreateRaceRecoveryTests(unittest.TestCase):
+    """FAN-1272: a create error after the tag claim re-reads real GitHub state.
+
+    Between the atomic tag claim and `gh release create --draft` a concurrent
+    publisher can create a public — even latest — release on the claimed tag.
+    Every scenario drives the real publish() command sequence through a mocked
+    ``run``: the create-error handler must best-effort re-read the release and
+    tag state, admit an observed public/latest release, never promise a
+    draft-only leftover without proof, and never delete, edit, overwrite, or
+    reuse anything.
+    """
+
+    REPOSITORY = "FomaBy/FantasyDisk-Releases"
+    VERSION = "0.2.3.1"
+    TAG = "v0.2.3.1"
+
+    def _publish(self) -> str:
+        return github_release_publish.publish(
+            self.REPOSITORY, self.VERSION, [], Path("CHANGELOG.md")
+        )
+
+    @staticmethod
+    def _commands(run_mock) -> list[list[str]]:
+        return [list(call.args[0]) for call in run_mock.call_args_list]
+
+    def test_racing_release_create_error_reports_observed_state(self) -> None:
+        create_conflict = _gh(
+            ["gh", "release", "create"], 1, "",
+            "HTTP 422: Validation Failed (already_exists)",
+        )
+        unreadable = _gh(["gh", "api"], 1, "HTTP/2 503 Service Unavailable\n")
+        cases = (
+            (
+                "racing-public-latest",
+                [
+                    _release_view(draft=False, immutable=True),
+                    _latest_release(self.TAG),
+                    _tag_probe(self.TAG),
+                ],
+                (
+                    f"release {self.TAG} is currently PUBLIC and is marked latest",
+                    f"the claimed tag {self.TAG} still points at the claimed commit",
+                ),
+            ),
+            (
+                "racing-public-non-latest",
+                [
+                    _release_view(draft=False, immutable=True),
+                    _latest_release("v9.9.9"),
+                    _tag_probe(self.TAG),
+                ],
+                (f"release {self.TAG} is currently PUBLIC and is not marked latest",),
+            ),
+            (
+                "racing-public-latest-marker-unreadable",
+                [
+                    _release_view(draft=False, immutable=True),
+                    _gh(["gh", "api"], 1, "", "HTTP 500"),
+                    _tag_probe(self.TAG),
+                ],
+                ("may be marked latest (the latest marker could not be read)",),
+            ),
+            (
+                "foreign-draft-remains",
+                [
+                    _release_view(draft=True, immutable=False),
+                    _tag_probe(self.TAG),
+                ],
+                (f"release {self.TAG} is currently still an unpublished draft",),
+            ),
+            (
+                "state-unreadable-admits-public-latest",
+                [unreadable, unreadable, unreadable],
+                (
+                    f"the current state of release {self.TAG} could not be read",
+                    "already public and marked latest",
+                    f"the current state of the claimed tag {self.TAG} could not be read",
+                ),
+            ),
+            (
+                "proven-no-public-release",
+                [
+                    _gh(["gh", "release", "view"], 1, "", "release not found"),
+                    _missing_release(),
+                    _tag_probe(self.TAG),
+                ],
+                (f"no public release exists on tag {self.TAG}",),
+            ),
+            (
+                "racing-tag-mutation",
+                [
+                    _release_view(draft=False, immutable=True),
+                    _latest_release(self.TAG),
+                    _tag_probe(self.TAG, FOREIGN_COMMIT),
+                ],
+                (f"the claimed tag {self.TAG} no longer points at the claimed commit",),
+            ),
+        )
+        for label, state_reads, expected_fragments in cases:
+            with self.subTest(case=label):
+                with mock.patch.object(github_release_publish.shutil, "which", return_value="gh"), \
+                     mock.patch.object(github_release_publish, "assert_safe_public_distribution_repository", return_value="main"), \
+                     mock.patch.object(github_release_publish, "run", side_effect=[
+                         _auth_ok(),
+                         _immutability_enforced(),
+                         *_tag_protection_ok(),
+                         _missing_release(),
+                         _absent_tag(),
+                         _branch_head(),
+                         _tag_ref(self.TAG),
+                         create_conflict,
+                         *state_reads,
+                     ]) as run_mock:
+                    with self.assertRaisesRegex(
+                        RuntimeError, "draft release creation failed"
+                    ) as caught:
+                        self._publish()
+                message = str(caught.exception)
+                self.assertIn("Best-effort re-read:", message)
+                for fragment in expected_fragments:
+                    self.assertIn(fragment, message)
+                # No false success and no false draft-only/rollback promise.
+                self.assertNotIn("at most the claimed bare tag", message)
+                self.assertIn("a draft-only leftover is not guaranteed", message)
+                self.assertIn("no rollback", message)
+                commands = self._commands(run_mock)
+                creates = [
+                    command for command in commands
+                    if command[:3] == ["gh", "release", "create"]
+                ]
+                claims = [
+                    command for command in commands
+                    if "--method" in command and "POST" in command
+                ]
+                self.assertEqual(len(creates), 1)
+                self.assertEqual(len(claims), 1)
+                # Recovery observes only: no edit/delete/clobber/force, no
+                # publication, and no second claim or create.
+                self.assertFalse(
+                    any(command[:3] == ["gh", "release", "edit"] for command in commands)
+                )
+                self.assertFalse(any("--draft=false" in command for command in commands))
+                self.assertFalse(any(command[-1] == "--latest" for command in commands))
+                self.assertFalse(
+                    any("delete" in part.lower() for command in commands for part in command)
+                )
+                self.assertFalse(
+                    any("--clobber" in part for command in commands for part in command)
+                )
+                # The release and tag state re-reads run after the failed create.
+                create_at = commands.index(creates[0])
+                view_reads = [
+                    index for index, command in enumerate(commands)
+                    if command[:3] == ["gh", "release", "view"]
+                ]
+                self.assertTrue(any(index > create_at for index in view_reads))
+                tag_reads = [
+                    index for index, command in enumerate(commands)
+                    if command[:2] == ["gh", "api"]
+                    and command[-1].endswith(f"git/ref/tags/{self.TAG}")
+                ]
+                self.assertTrue(any(index > create_at for index in tag_reads))
 
 
 class PublicVerifierAssetContractTests(unittest.TestCase):
@@ -1734,6 +1939,45 @@ class ReleaseDocumentationConsistencyTests(unittest.TestCase):
             r"\b(?:удал\w*|перезапис\w*|переиспольз\w*)\b",
         ),
     )
+    # FAN-1272: recovery docs must distinguish the truthful failure states and
+    # never derive manifest safety from concurrent upload completion order.
+    RECOVERY_CONTRACTS = {
+        SKILL: (
+            "**Failed draft create.**",
+            "**Ambiguous create.**",
+            "**Foreign/racing public release.**",
+            "**Successful public non-latest.**",
+            "**Latest-only failure.**",
+            "it never promises a draft-only state without that proof",
+            "Never delete, edit, demote, or reuse the foreign release or tag",
+            "This is the one state that does not burn the version",
+            "the ruleset endpoint itself is proven before the claim and is not re-read after publication",
+        ),
+        RELEASE_VERSIONING: (
+            "failed draft create",
+            "ambiguous create",
+            "foreign/racing public release",
+            "successful public non-latest",
+            "latest-only failure",
+            "не обещает draft-only state без доказательства",
+            "сам ruleset endpoint повторно не читается",
+            "единственное состояние без сжигания версии",
+        ),
+    }
+    MANIFEST_INVARIANT_CONTRACTS = {
+        SKILL: ("completion order is not the safety mechanism",),
+        RELEASE_VERSIONING: ("порядок завершения не гарантирован",),
+        GAME_UPDATES: (
+            "порядок завершения ничего не гарантирует",
+            "release остаётся draft, пока весь allowlisted package, включая manifest, не проверен byte-exact (имя, размер, SHA-256)",
+        ),
+    }
+    MANIFEST_ORDER_CONTRADICTION_PATTERNS = (
+        (
+            "manifest safety derived from upload completion order",
+            r"(?:загружа\w+\s+последним|uploaded\s+last|uploads\s+last|upload\s+last),?\s+(?:поэтому|so)\b",
+        ),
+    )
     ENTRY_POINT_VERSIONING = {
         README: (
             "Текущий опубликованный stable release: `0.2.4`",
@@ -1762,7 +2006,7 @@ class ReleaseDocumentationConsistencyTests(unittest.TestCase):
         paths = set(cls.OPERATIONAL_PLACEHOLDERS) | set(cls.DELIVERY_CONTRACTS) | set(cls.MACOS_MAPPING_CONTRACTS) | set(cls.IMMUTABILITY_CONTRACTS) | {
             cls.BRANCHING,
             cls.CURRENT_STATE,
-        } | set(cls.ENTRY_POINT_VERSIONING)
+        } | set(cls.ENTRY_POINT_VERSIONING) | set(cls.RECOVERY_CONTRACTS) | set(cls.MANIFEST_INVARIANT_CONTRACTS)
         return {relative: (ROOT / relative).read_text(encoding="utf-8") for relative in paths}
 
     @classmethod
@@ -1838,6 +2082,26 @@ class ReleaseDocumentationConsistencyTests(unittest.TestCase):
             for clause in stale_clauses:
                 if clause in cls.normalize(documents[relative]):
                     errors.append(f"{relative}: stale active/frozen release clause {clause}")
+        return errors
+
+    @classmethod
+    def release_recovery_errors(cls, documents: dict[Path, str]) -> list[str]:
+        errors: list[str] = []
+        for relative, clauses in cls.RECOVERY_CONTRACTS.items():
+            document = cls.normalize(documents[relative])
+            for clause in clauses:
+                if cls.normalize(clause) not in document:
+                    errors.append(f"{relative}: missing release recovery clause {clause}")
+        for relative, clauses in cls.MANIFEST_INVARIANT_CONTRACTS.items():
+            document = cls.normalize(documents[relative])
+            for clause in clauses:
+                if cls.normalize(clause) not in document:
+                    errors.append(f"{relative}: missing manifest invariant clause {clause}")
+            for label, pattern in cls.MANIFEST_ORDER_CONTRADICTION_PATTERNS:
+                if re.search(pattern, document, flags=re.IGNORECASE):
+                    errors.append(
+                        f"{relative}: contradictory manifest invariant clause ({label})"
+                    )
         return errors
 
     @classmethod
@@ -1921,6 +2185,52 @@ class ReleaseDocumentationConsistencyTests(unittest.TestCase):
         errors = self.published_release_lifecycle_errors(mutated)
         self.assertTrue(any("published-release lifecycle" in error for error in errors))
         self.assertTrue(any("stale active/frozen" in error for error in errors))
+
+    def test_release_recovery_docs_distinguish_truthful_failure_states(self) -> None:
+        documents = self.read_documents()
+        self.assertEqual(self.release_recovery_errors(documents), [])
+
+        # Semantic mutations, not just token removals, must be detected.
+        mutations = (
+            (
+                self.SKILL,
+                "This is the one state that does not burn the version",
+                "Like every failure this burns the version",
+            ),
+            (
+                self.RELEASE_VERSIONING,
+                "единственное состояние без",
+                "состояние, которое тоже требует",
+            ),
+            (
+                self.GAME_UPDATES,
+                "завершения ничего не гарантирует",
+                "завершения гарантирует безопасность",
+            ),
+        )
+        for relative, expected, replacement in mutations:
+            with self.subTest(document=str(relative), mutation=replacement):
+                mutated = dict(documents)
+                self.assertIn(expected, mutated[relative])
+                mutated[relative] = mutated[relative].replace(expected, replacement, 1)
+                self.assertTrue(
+                    any(
+                        str(relative) in error
+                        for error in self.release_recovery_errors(mutated)
+                    )
+                )
+
+        # Re-deriving manifest safety from upload completion order must fail
+        # in every canonical release document.
+        contradiction = "\nМанифест загружают последним, поэтому latest безопасен.\n"
+        for relative in self.MANIFEST_INVARIANT_CONTRACTS:
+            with self.subTest(document=str(relative), mutation=contradiction):
+                mutated = dict(documents)
+                mutated[relative] += contradiction
+                errors = self.release_recovery_errors(mutated)
+                self.assertTrue(
+                    any("contradictory manifest invariant" in error for error in errors)
+                )
 
     def test_entry_point_docs_describe_current_hotfix_and_immutable_contract(self) -> None:
         documents = self.read_documents()

@@ -18,7 +18,11 @@ https://github.com/FomaBy/FantasyDisk-Releases/releases/latest/download/update-m
 ```
 
 Манифест — asset того же публичного Release, что DMG и Windows Setup. Его
-загружают последним, поэтому `latest` не указывает на ещё не готовые установщики.
+upload начинается последним, но `gh` загружает assets параллельно, и порядок
+завершения ничего не гарантирует. Инвариант безопасности другой: release
+остаётся draft, пока весь allowlisted package, включая manifest, не проверен
+byte-exact (имя, размер, SHA-256), и только затем становится public и latest —
+поэтому `latest` никогда не указывает на ещё не готовые установщики.
 
 ## Клиентский контракт
 

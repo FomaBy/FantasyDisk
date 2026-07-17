@@ -212,7 +212,7 @@ python3 skills/codex/fantasydisk-release-director/scripts/github_release_verify.
    (name, size, SHA-256), and only a fully verified draft is made public and
    then latest — `latest/download` can never expose an incomplete installer set.
 
-   FAN-1249/FAN-1265 fail-closed contract: the distribution repository must
+   FAN-1249/FAN-1265/FAN-1272 fail-closed contract: the distribution repository must
    have GitHub-enforced immutable releases enabled (`Settings → General →
    Releases`) **and** an active tag ruleset with no bypass actors that blocks
    update and deletion of the release tags (pattern covering `v*`), or the
@@ -226,16 +226,45 @@ python3 skills/codex/fantasydisk-release-director/scripts/github_release_verify.
    aborts instead of implicitly recreating the tag. Tag identity is re-verified
    after create, again immediately before the public edit, and after publish,
    and the published release must report GitHub immutability before it is
-   marked latest. There is no delete/clobber/force path: the publisher never
-   removes a claimed tag, a draft, or a public release, and a published release
-   has no rollback. Truthful failure states: before the public edit, a failed
-   attempt leaves at most the claimed bare tag and an unpublished draft
-   (possibly with partial assets); once the public edit has been issued — even
-   if its response is lost (applied-but-response-lost) or a post-public check
-   fails (foreign tag, missing immutability) — a public non-latest release
-   remains and requires manual reconciliation without deleting, editing, or
-   reusing anything. Every failed attempt burns that version number, and the
-   next attempt must use the next `<version>` (hotfix component).
+   marked latest. The post-public checks the publisher actually repeats are
+   the release's public state, byte-exact asset verification, tag identity,
+   and GitHub-reported release immutability; the ruleset endpoint itself is
+   proven before the claim and is not re-read after publication. After any
+   create error or ambiguity the publisher performs a best-effort re-read of
+   the release state (draft/public, latest marker) and the claimed tag, and
+   reports what it observed — it never promises a draft-only state without
+   that proof, because a concurrent publisher may already own a public, even
+   latest, release on the claimed tag. There is no delete/clobber/force path:
+   the publisher never removes a claimed tag, a draft, or a public release,
+   and a published release has no rollback. Truthful failure states, each
+   with its only safe action:
+
+   - **Failed draft create.** `gh release create` failed after the claim and
+     the best-effort re-read proves no public release exists: this process
+     left at most the claimed bare tag and an unpublished draft (possibly
+     with partial assets). Leave them in place and burn the version number.
+   - **Ambiguous create.** The create error or the state re-read is
+     inconclusive: the release may be a draft or already public (even
+     latest). Manually inspect the release and tag on GitHub, then burn the
+     version number.
+   - **Foreign/racing public release.** A concurrent publisher created a
+     public — possibly latest — release on the claimed tag before our draft
+     create. Never delete, edit, demote, or reuse the foreign release or
+     tag; burn the version number for this attempt.
+   - **Successful public non-latest.** Once our public edit has been issued —
+     even if its response is lost (applied-but-response-lost) or a
+     post-public check fails (foreign tag, missing immutability) — a public
+     non-latest release remains and requires manual reconciliation without
+     deleting, editing, or reusing anything; burn the version number.
+   - **Latest-only failure.** The release is already public, byte-exact
+     verified, and GitHub-immutable; only the final `--latest` marking
+     failed. This is the one state that does not burn the version: after
+     confirming the release page, rerun
+     `gh release edit v<version> --repo FomaBy/FantasyDisk-Releases --latest`
+     manually instead of recreating anything.
+
+   Every other failed attempt burns that version number, and the next
+   attempt must use the next `<version>` (hotfix component).
 3. Dry-run and publish Telegram for **every stable release**. Telegram delivery
    is mandatory and contains the poster, DMG, Windows Setup and SHA256SUMS.
 

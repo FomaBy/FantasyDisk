@@ -482,8 +482,27 @@ def assert_unclaimed_distribution_tag(repository: str, tag: str) -> None:
             )
 
 
-def _describe_public_release_state(repository: str, tag: str) -> str:
-    """Best-effort state read for a truthful post-failure reconciliation report."""
+def _describe_latest_marking(repository: str, tag: str) -> str:
+    """Best-effort latest-marker read; unknown never downgrades to non-latest."""
+    latest = run(["gh", "api", f"repos/{repository}/releases/latest"], check=False)
+    if not latest.returncode:
+        try:
+            payload = json.loads(latest.stdout)
+        except json.JSONDecodeError:
+            payload = None
+        if isinstance(payload, dict) and isinstance(payload.get("tag_name"), str):
+            if payload["tag_name"] == tag:
+                return "and is marked latest"
+            return "and is not marked latest"
+    return "and may be marked latest (the latest marker could not be read)"
+
+
+def _describe_release_state(repository: str, tag: str) -> str:
+    """Best-effort release state re-read for a truthful post-failure report.
+
+    Reads are evidence, never proof of absence: an unreadable state is
+    reported as possibly public and possibly latest, not as draft-only.
+    """
     view = run(
         [
             "gh", "release", "view", tag, "--repo", repository,
@@ -499,11 +518,53 @@ def _describe_public_release_state(repository: str, tag: str) -> str:
         if isinstance(payload, dict) and isinstance(payload.get("isDraft"), bool):
             if payload["isDraft"]:
                 return f"release {tag} is currently still an unpublished draft"
-            return f"release {tag} is currently PUBLIC and non-latest"
+            return (
+                f"release {tag} is currently PUBLIC "
+                f"{_describe_latest_marking(repository, tag)}"
+            )
+    probe = run(
+        ["gh", "api", "--include", f"repos/{repository}/releases/tags/{tag}"],
+        check=False,
+    )
+    statuses = HTTP_STATUS_RE.findall(f"{probe.stdout}\n{probe.stderr}")
+    if len(statuses) == 1 and int(statuses[0]) == 404 and probe.returncode:
+        return (
+            f"no public release exists on tag {tag} right now, though an "
+            "unpublished draft may remain"
+        )
     return (
         f"the current state of release {tag} could not be read; it may be an "
-        "unpublished draft or already public"
+        "unpublished draft or already public and marked latest"
     )
+
+
+def _describe_claimed_tag_state(repository: str, tag: str, commit_sha: str) -> str:
+    """Best-effort claimed-tag re-read for a truthful post-failure report."""
+    ref = run(
+        ["gh", "api", "--include", f"repos/{repository}/git/ref/tags/{tag}"],
+        check=False,
+    )
+    statuses = HTTP_STATUS_RE.findall(f"{ref.stdout}\n{ref.stderr}")
+    if len(statuses) == 1 and int(statuses[0]) == 404 and ref.returncode:
+        return f"the claimed tag {tag} no longer exists"
+    if not ref.returncode and len(statuses) == 1 and int(statuses[0]) == 200:
+        body_start = ref.stdout.find("{")
+        payload = None
+        if body_start >= 0:
+            try:
+                payload = json.loads(ref.stdout[body_start:])
+            except json.JSONDecodeError:
+                payload = None
+        if isinstance(payload, dict) and payload.get("ref") == f"refs/tags/{tag}":
+            target = payload.get("object")
+            if (
+                isinstance(target, dict)
+                and target.get("type") == "commit"
+                and target.get("sha") == commit_sha
+            ):
+                return f"the claimed tag {tag} still points at the claimed commit"
+            return f"the claimed tag {tag} no longer points at the claimed commit"
+    return f"the current state of the claimed tag {tag} could not be read"
 
 
 def publish(repository: str, version: str, files: list[Path], changelog: Path) -> str:
@@ -534,11 +595,20 @@ def publish(repository: str, version: str, files: list[Path], changelog: Path) -
     )
     if created.returncode:
         detail = (created.stderr or created.stdout).strip()
+        # The claim is ours, but the release namespace is not: a concurrent
+        # publisher may have created a public — even latest — release on the
+        # claimed tag before our draft create. Re-read the real state instead
+        # of promising a draft-only leftover this process cannot prove.
+        release_state = _describe_release_state(repository, tag)
+        tag_state = _describe_claimed_tag_state(repository, tag, release_commit)
         raise RuntimeError(
             f"draft release creation failed after the atomic tag claim: {detail}\n"
             "--verify-tag forbids implicitly recreating a deleted claimed tag "
-            f"{tag}; at most the claimed bare tag and an unpublished draft with "
-            f"partial assets can remain, and {RECONCILIATION_GUIDANCE}"
+            f"{tag}, and this process issued no public edit, but a concurrent "
+            "publisher may already own a public release on the claimed tag, so "
+            "a draft-only leftover is not guaranteed. Best-effort re-read: "
+            f"{release_state}; {tag_state}. Never delete, edit, or reuse a "
+            f"foreign release or tag: {RECONCILIATION_GUIDANCE}"
         )
     assert_owned_distribution_tag(repository, tag, release_commit)
     _assert_release_assets(repository, tag, files, draft=True)
@@ -555,7 +625,7 @@ def publish(repository: str, version: str, files: list[Path], changelog: Path) -
     )
     if published.returncode:
         detail = (published.stderr or published.stdout).strip()
-        state = _describe_public_release_state(repository, tag)
+        state = _describe_release_state(repository, tag)
         raise RuntimeError(
             f"public release edit returned an error but may still have been "
             f"applied server-side (applied-but-response-lost): {detail}\n"
