@@ -230,6 +230,12 @@ def _lstat_signature(path: Path) -> tuple[str, ...]:
     return ("other", mode)
 
 
+def _physical_signature(path: Path) -> tuple[str, ...]:
+    """Include no-follow physical identity to distinguish equivalent links."""
+    metadata = os.lstat(path)
+    return (str(metadata.st_dev), str(metadata.st_ino), *_lstat_signature(path))
+
+
 def _lstat_or_absent(path: Path) -> tuple[str, ...]:
     if path.exists() or path.is_symlink():
         return _lstat_signature(path)
@@ -1212,6 +1218,263 @@ class ReleaseSkillOnboardingTest(unittest.TestCase):
             retry_after = _run_onboard(script, home)
             self.assertEqual(retry_after.returncode, 0, retry_after.stdout)
             _assert_durable_selected_tree(home, source)
+
+    def test_selection_activation_rejects_replaced_captured_entries(self) -> None:
+        """Selection must not commit a stage, parent, destination, or marker replacement."""
+        for replacement_kind in ("parent", "stage", "destination", "marker", "equivalent-stage"):
+            with self.subTest(replacement=replacement_kind), tempfile.TemporaryDirectory(
+                prefix="fantasydisk-onboard-selection-activation-"
+            ) as raw:
+                workspace = Path(raw)
+                home = workspace / "home"
+                checkout = _make_disposable_source_checkout(workspace / "checkout")
+                script = checkout / "scripts" / "onboard.sh"
+                self.assertEqual(_run_onboard(script, home).returncode, 0)
+                old_target = os.readlink(_selected(home))
+                _commit_source_change(checkout, f"selection-{replacement_kind}")
+                pause = workspace / "before-selection-commit"
+                process = _start_onboard(
+                    script,
+                    home,
+                    extra={"FANTASYDISK_ONBOARD_TEST_PAUSE_BEFORE_SELECTION_COMMIT": str(pause)},
+                )
+                _wait_for_marker(pause, process)
+
+                selection_parent = _selected(home).parent
+                stage = next(selection_parent.glob(".fantasydisk-release-director.selection.*"))
+                marker = next(
+                    selection_parent.glob(
+                        ".fantasydisk-release-director.residue-owner.selection.*"
+                    )
+                )
+                external = workspace / "external-sentinel"
+                external.mkdir()
+                (external / "keep.txt").write_bytes(b"must not be touched\n")
+                external_before = _inventory(external)
+
+                if replacement_kind == "parent":
+                    moved_parent = workspace / "original-selection-parent"
+                    selection_parent.rename(moved_parent)
+                    selection_parent.mkdir()
+                    replacement = selection_parent / stage.name
+                    replacement.symlink_to(external, target_is_directory=True)
+                    replacement_marker = selection_parent / marker.name
+                    replacement_marker.write_bytes(b"replacement marker\n")
+                    expected = (_physical_signature(replacement), _physical_signature(replacement_marker))
+                elif replacement_kind == "destination":
+                    replacement = _selected(home)
+                    replacement.unlink()
+                    replacement.symlink_to(old_target, target_is_directory=True)
+                    expected = _physical_signature(replacement)
+                elif replacement_kind == "marker":
+                    replacement = marker
+                    marker.unlink()
+                    marker.write_bytes(b"replacement marker\n")
+                    expected = _physical_signature(replacement)
+                else:
+                    replacement = stage
+                    original = _physical_signature(stage)
+                    raw_target = os.readlink(stage)
+                    stage.unlink()
+                    stage.symlink_to(
+                        raw_target if replacement_kind == "equivalent-stage" else external,
+                        target_is_directory=True,
+                    )
+                    expected = _physical_signature(replacement)
+                    if replacement_kind == "equivalent-stage":
+                        self.assertEqual(os.readlink(replacement), raw_target)
+                        self.assertNotEqual(expected, original)
+
+                pause.unlink()
+                output = process.communicate(timeout=10)[0]
+
+                self.assertNotEqual(process.returncode, 0, output)
+                self.assertNotIn("SELECTION_COMMIT", output)
+                self.assertNotIn("linked ", output)
+                self.assertEqual(_inventory(external), external_before)
+                if replacement_kind == "parent":
+                    self.assertEqual(
+                        (
+                            _physical_signature(selection_parent / stage.name),
+                            _physical_signature(selection_parent / marker.name),
+                        ),
+                        expected,
+                    )
+                else:
+                    self.assertEqual(_physical_signature(replacement), expected)
+                if replacement_kind == "destination":
+                    self.assertEqual(os.readlink(_selected(home)), old_target)
+
+    def test_mirror_activation_rejects_replaced_captured_entries(self) -> None:
+        """Mirror activation has the same immediate identity contract as selection."""
+        for replacement_kind in ("parent", "stage", "destination", "marker", "equivalent-stage"):
+            with self.subTest(replacement=replacement_kind), tempfile.TemporaryDirectory(
+                prefix="fantasydisk-onboard-mirror-activation-"
+            ) as raw:
+                workspace = Path(raw)
+                home = workspace / "home"
+                checkout = _make_disposable_source_checkout(workspace / "checkout")
+                script = checkout / "scripts" / "onboard.sh"
+                self.assertEqual(_run_onboard(script, home).returncode, 0)
+                old_mirror_target = os.readlink(_mirror_pointer(home))
+                _commit_source_change(checkout, f"mirror-{replacement_kind}")
+                source = checkout / "skills" / "codex" / "fantasydisk-release-director"
+                pause = workspace / "before-mirror-commit"
+                process = _start_onboard(
+                    script,
+                    home,
+                    extra={"FANTASYDISK_ONBOARD_TEST_PAUSE_BEFORE_MIRROR_COMMIT": str(pause)},
+                )
+                _wait_for_marker(pause, process)
+
+                mirror_parent = _mirror_pointer(home).parent
+                stage = next(mirror_parent.glob(".fantasydisk-release-director.mirror-stage.*"))
+                marker = next(
+                    mirror_parent.glob(
+                        ".fantasydisk-release-director.residue-owner.mirror-stage.*"
+                    )
+                )
+                external = workspace / "external-sentinel"
+                external.mkdir()
+                (external / "keep.txt").write_bytes(b"must not be touched\n")
+                external_before = _inventory(external)
+
+                if replacement_kind == "parent":
+                    moved_parent = workspace / "original-mirror-parent"
+                    mirror_parent.rename(moved_parent)
+                    mirror_parent.mkdir()
+                    replacement = mirror_parent / stage.name
+                    replacement.symlink_to(external, target_is_directory=True)
+                    replacement_marker = mirror_parent / marker.name
+                    replacement_marker.write_bytes(b"replacement marker\n")
+                    expected = (_physical_signature(replacement), _physical_signature(replacement_marker))
+                elif replacement_kind == "destination":
+                    replacement = _mirror_pointer(home)
+                    replacement.unlink()
+                    replacement.symlink_to(old_mirror_target, target_is_directory=True)
+                    expected = _physical_signature(replacement)
+                elif replacement_kind == "marker":
+                    replacement = marker
+                    marker.unlink()
+                    marker.write_bytes(b"replacement marker\n")
+                    expected = _physical_signature(replacement)
+                else:
+                    replacement = stage
+                    original = _physical_signature(stage)
+                    raw_target = os.readlink(stage)
+                    stage.unlink()
+                    stage.symlink_to(
+                        raw_target if replacement_kind == "equivalent-stage" else external,
+                        target_is_directory=True,
+                    )
+                    expected = _physical_signature(replacement)
+                    if replacement_kind == "equivalent-stage":
+                        self.assertEqual(os.readlink(replacement), raw_target)
+                        self.assertNotEqual(expected, original)
+
+                pause.unlink()
+                output = process.communicate(timeout=10)[0]
+
+                self.assertNotEqual(process.returncode, 0, output)
+                self.assertIn("SELECTION_COMMIT", output)
+                self.assertNotIn("MIRROR_POINTER", output)
+                self.assertNotIn("linked ", output)
+                self.assertEqual(_inventory(external), external_before)
+                if replacement_kind == "parent":
+                    # The actor moved the mirror parent itself, so the prior
+                    # selected path may be dangling.  It must not be rebound
+                    # through the replacement parent or external sentinel.
+                    self.assertEqual(
+                        (
+                            _physical_signature(mirror_parent / stage.name),
+                            _physical_signature(mirror_parent / marker.name),
+                        ),
+                        expected,
+                    )
+                else:
+                    # Selection committed before mirror activation.  A mirror
+                    # identity mismatch therefore leaves the old mirror in
+                    # place and a verified new selection; it must not claim
+                    # that the two pointers are synchronized.
+                    self.assertTrue(_selected(home).is_symlink())
+                    self.assertEqual(
+                        _inventory(Path(os.path.realpath(_selected(home)))), _inventory(source)
+                    )
+                    self.assertEqual(_physical_signature(replacement), expected)
+                    self.assertEqual(os.readlink(_mirror_pointer(home)), old_mirror_target)
+                if replacement_kind == "destination":
+                    self.assertEqual(os.readlink(_mirror_pointer(home)), old_mirror_target)
+
+    def test_legacy_backup_or_marker_replacement_keeps_verified_new_pointer(self) -> None:
+        """A substituted legacy backup/marker blocks without deleting its replacement."""
+        for flow, replacement_kind in (
+            ("selection", "backup"),
+            ("selection", "marker"),
+            ("mirror", "backup"),
+            ("mirror", "marker"),
+        ):
+            with self.subTest(flow=flow, replacement=replacement_kind), tempfile.TemporaryDirectory(
+                prefix="fantasydisk-onboard-legacy-activation-"
+            ) as raw:
+                workspace = Path(raw)
+                home = workspace / "home"
+                checkout = _make_disposable_source_checkout(workspace / "checkout")
+                script = checkout / "scripts" / "onboard.sh"
+                self.assertEqual(_run_onboard(script, home).returncode, 0)
+                source = checkout / "skills" / "codex" / "fantasydisk-release-director"
+
+                if flow == "selection":
+                    _selected(home).unlink()
+                    _extract_legacy_skill(_selected(home))
+                    pause_variable = "FANTASYDISK_ONBOARD_TEST_PAUSE_AFTER_SELECTION_LEGACY_BACKUP"
+                    residue_pattern = ".fantasydisk-release-director.legacy.*"
+                    marker_pattern = ".fantasydisk-release-director.residue-owner.legacy.*"
+                    parent = _selected(home).parent
+                    required_success = "SELECTION_COMMIT"
+                    forbidden_success = "linked "
+                else:
+                    mirror_pointer = _mirror_pointer(home)
+                    previous_target = Path(os.path.realpath(mirror_pointer))
+                    mirror_pointer.unlink()
+                    shutil.copytree(previous_target, mirror_pointer)
+                    _commit_source_change(checkout, "mirror-legacy-backup")
+                    source = checkout / "skills" / "codex" / "fantasydisk-release-director"
+                    pause_variable = "FANTASYDISK_ONBOARD_TEST_PAUSE_AFTER_MIRROR_LEGACY_BACKUP"
+                    residue_pattern = ".fantasydisk-release-director.legacy-mirror.*"
+                    marker_pattern = ".fantasydisk-release-director.residue-owner.legacy-mirror.*"
+                    parent = mirror_pointer.parent
+                    required_success = "MIRROR_POINTER"
+                    forbidden_success = "linked "
+
+                pause = workspace / f"before-{flow}-legacy-commit"
+                process = _start_onboard(script, home, extra={pause_variable: str(pause)})
+                _wait_for_marker(pause, process)
+                residue = next(parent.glob(residue_pattern))
+                marker = next(parent.glob(marker_pattern))
+                external = workspace / "external-sentinel"
+                external.mkdir()
+                (external / "keep.txt").write_bytes(b"must not be touched\n")
+                external_before = _inventory(external)
+
+                if replacement_kind == "backup":
+                    replacement = residue
+                    residue.rename(workspace / "original-legacy-backup")
+                    replacement.symlink_to(external, target_is_directory=True)
+                else:
+                    replacement = marker
+                    marker.unlink()
+                    marker.write_bytes(b"replacement marker\n")
+                expected = _physical_signature(replacement)
+
+                pause.unlink()
+                output = process.communicate(timeout=10)[0]
+
+                self.assertNotEqual(process.returncode, 0, output)
+                self.assertNotIn(required_success, output)
+                self.assertNotIn(forbidden_success, output)
+                self.assertEqual(_physical_signature(replacement), expected)
+                self.assertEqual(_inventory(external), external_before)
+                _assert_durable_selected_tree(home, source)
 
     def _assert_signal_recovery_contract(self, interrupt: signal.Signals) -> None:
         for phase, expected_new in (("before", False), ("after", True)):

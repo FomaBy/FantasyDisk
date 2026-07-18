@@ -54,6 +54,9 @@ RELEASE_STAGE_IDENTITY=""
 RELEASE_SELECTION_STAGE=""
 RELEASE_SELECTION_STAGE_MARKER=""
 RELEASE_SELECTION_STAGE_IDENTITY=""
+RELEASE_SELECTION_DEST_IDENTITY=""
+RELEASE_SELECTION_COMMITTED_IDENTITY=""
+RELEASE_SELECTION_LEGACY_TREE=""
 RELEASE_SELECTION_BACKUP=""
 RELEASE_SELECTION_BACKUP_MARKER=""
 RELEASE_SELECTION_BACKUP_IDENTITY=""
@@ -61,6 +64,8 @@ RELEASE_SELECTION_DEST=""
 RELEASE_MIRROR_STAGE=""
 RELEASE_MIRROR_STAGE_MARKER=""
 RELEASE_MIRROR_STAGE_IDENTITY=""
+RELEASE_MIRROR_DEST_IDENTITY=""
+RELEASE_MIRROR_COMMITTED_IDENTITY=""
 RELEASE_MIRROR_BACKUP=""
 RELEASE_MIRROR_BACKUP_MARKER=""
 RELEASE_MIRROR_BACKUP_IDENTITY=""
@@ -175,6 +180,7 @@ release_residue_write_marker() {
   local target="$6"
   local tree="$7"
   local owner_pid="$$"
+  local expected_parent_identity="${8:-}"
   local marker
 
   marker="$(release_residue_marker_path "$parent" "$namespace" "$suffix")" || return 1
@@ -184,7 +190,7 @@ import os
 import re
 import sys
 
-marker, parent, skill_name, namespace, suffix, kind, target, tree, owner_pid = sys.argv[1:]
+marker, parent, skill_name, namespace, suffix, kind, target, tree, owner_pid, expected_parent_identity = sys.argv[1:]
 if os.path.realpath(parent) != parent or not os.path.isdir(parent):
     raise SystemExit(1)
 if not re.fullmatch(r"[A-Za-z0-9._-]+", namespace):
@@ -197,6 +203,13 @@ residue_name = f".{skill_name}.{namespace}.{suffix}"
 expected_marker = os.path.join(parent, f".{skill_name}.residue-owner.{namespace}.{suffix}")
 if marker != expected_marker:
     raise SystemExit(1)
+if expected_parent_identity:
+    try:
+        expected_parent = tuple(int(part) for part in expected_parent_identity.split(":"))
+    except ValueError:
+        raise SystemExit(1)
+    if len(expected_parent) != 2:
+        raise SystemExit(1)
 target_b64 = base64.urlsafe_b64encode(target.encode("utf-8")).decode("ascii")
 content = (
     "magic=fantasydisk-release-director-residue-v1\n"
@@ -209,22 +222,33 @@ content = (
     f"pid={owner_pid}\n"
     "files=7\n"
 ).encode("ascii")
+parent_flags = os.O_RDONLY | getattr(os, "O_DIRECTORY", 0) | getattr(os, "O_NOFOLLOW", 0)
 flags = os.O_WRONLY | os.O_CREAT | os.O_EXCL | getattr(os, "O_NOFOLLOW", 0)
 try:
-    fd = os.open(marker, flags, 0o600)
+    parent_fd = os.open(parent, parent_flags)
 except OSError:
     raise SystemExit(1)
 try:
-    with os.fdopen(fd, "wb") as stream:
-        stream.write(content)
-except Exception:
+    parent_stat = os.fstat(parent_fd)
+    if expected_parent_identity and (parent_stat.st_dev, parent_stat.st_ino) != expected_parent:
+        raise SystemExit(1)
     try:
-        os.unlink(marker)
+        fd = os.open(os.path.basename(marker), flags, 0o600, dir_fd=parent_fd)
     except OSError:
-        pass
-    raise SystemExit(1)
+        raise SystemExit(1)
+    try:
+        with os.fdopen(fd, "wb") as stream:
+            stream.write(content)
+    except Exception:
+        try:
+            os.unlink(os.path.basename(marker), dir_fd=parent_fd)
+        except OSError:
+            pass
+        raise SystemExit(1)
+finally:
+    os.close(parent_fd)
 ' "$marker" "$parent" "$RELEASE_SKILL_NAME" "$namespace" "$suffix" \
-    "$kind" "$target" "$tree" "$owner_pid" || {
+    "$kind" "$target" "$tree" "$owner_pid" "$expected_parent_identity" || {
     printf '  BLOCK %s (cannot publish residue ownership record safely)\n' "$marker" >&2
     return 1
   }
@@ -353,6 +377,236 @@ if not stat.S_ISREG(marker_stat.st_mode) or stat.S_ISLNK(marker_stat.st_mode):
 print(f"{parent_stat.st_dev}:{parent_stat.st_ino}:{residue_stat.st_dev}:{residue_stat.st_ino}:{marker_stat.st_dev}:{marker_stat.st_ino}")
 ' "$parent" "$residue" "$marker" "$kind")" || return 1
   printf -v "$variable_name" '%s' "$identity"
+}
+
+release_residue_capture_entry_identity() {
+  local variable_name="$1"
+  local parent="$2"
+  local entry="$3"
+  local identity
+
+  identity="$(python3 -c '
+import os
+import stat
+import sys
+
+parent, entry = sys.argv[1:]
+if os.path.dirname(entry) != parent:
+    raise SystemExit(1)
+flags = os.O_RDONLY | getattr(os, "O_DIRECTORY", 0) | getattr(os, "O_NOFOLLOW", 0)
+parent_fd = os.open(parent, flags)
+try:
+    parent_stat = os.fstat(parent_fd)
+    try:
+        entry_stat = os.stat(os.path.basename(entry), dir_fd=parent_fd, follow_symlinks=False)
+    except FileNotFoundError:
+        print(f"{parent_stat.st_dev}:{parent_stat.st_ino}:absent")
+        raise SystemExit(0)
+    if stat.S_ISLNK(entry_stat.st_mode):
+        kind = "symlink"
+    elif stat.S_ISDIR(entry_stat.st_mode):
+        kind = "directory"
+    elif stat.S_ISREG(entry_stat.st_mode):
+        kind = "file"
+    else:
+        kind = "other"
+    print(f"{parent_stat.st_dev}:{parent_stat.st_ino}:{kind}:{entry_stat.st_dev}:{entry_stat.st_ino}")
+finally:
+    os.close(parent_fd)
+' "$parent" "$entry")" || return 1
+  printf -v "$variable_name" '%s' "$identity"
+}
+
+release_residue_entry_identity_matches() {
+  local parent="$1"
+  local entry="$2"
+  local expected="$3"
+  local actual
+
+  release_residue_capture_entry_identity actual "$parent" "$entry" || return 1
+  [ "$actual" = "$expected" ]
+}
+
+release_residue_identity_kind() {
+  local identity="$1"
+  local _parent_device _parent_inode kind _entry_device _entry_inode
+
+  IFS=: read -r _parent_device _parent_inode kind _entry_device _entry_inode <<< "$identity"
+  printf '%s\n' "$kind"
+}
+
+release_residue_identity_parent() {
+  local identity="$1"
+  local parent_device parent_inode _rest
+
+  IFS=: read -r parent_device parent_inode _rest <<< "$identity"
+  printf '%s:%s\n' "$parent_device" "$parent_inode"
+}
+
+release_residue_move_runtime_directory() {
+  local identity="$1"
+  local parent="$2"
+  local residue="$3"
+  local backup="$4"
+
+  python3 -c '
+import ctypes
+import errno
+import os
+import platform
+import stat
+import sys
+
+identity, parent, residue, backup = sys.argv[1:]
+try:
+    expected = identity.split(":")
+    parent_expected = (int(expected[0]), int(expected[1]))
+    kind = expected[2]
+    residue_expected = (int(expected[3]), int(expected[4]))
+except (IndexError, ValueError):
+    raise SystemExit(1)
+if len(expected) != 5 or kind != "directory":
+    raise SystemExit(1)
+if os.path.dirname(residue) != parent or os.path.dirname(backup) != parent:
+    raise SystemExit(1)
+flags = os.O_RDONLY | getattr(os, "O_DIRECTORY", 0) | getattr(os, "O_NOFOLLOW", 0)
+
+def rename_no_replace(parent_fd, source, destination):
+    libc = ctypes.CDLL(None, use_errno=True)
+    source_b = source.encode("utf-8")
+    destination_b = destination.encode("utf-8")
+    if sys.platform == "darwin":
+        operation = getattr(libc, "renameatx_np", None)
+        if operation is None:
+            raise OSError(errno.ENOSYS, "renameatx_np unavailable")
+        operation.argtypes = [ctypes.c_int, ctypes.c_char_p, ctypes.c_int, ctypes.c_char_p, ctypes.c_uint]
+        operation.restype = ctypes.c_int
+        result = operation(parent_fd, source_b, parent_fd, destination_b, 0x00000004)
+    elif sys.platform.startswith("linux"):
+        operation = getattr(libc, "renameat2", None)
+        if operation is not None:
+            operation.argtypes = [ctypes.c_int, ctypes.c_char_p, ctypes.c_int, ctypes.c_char_p, ctypes.c_uint]
+            operation.restype = ctypes.c_int
+            result = operation(parent_fd, source_b, parent_fd, destination_b, 1)
+        else:
+            syscall_numbers = {"x86_64": 316, "amd64": 316, "aarch64": 276, "arm64": 276, "riscv64": 276}
+            number = syscall_numbers.get(platform.machine().lower())
+            if number is None:
+                raise OSError(errno.ENOSYS, "renameat2 unavailable")
+            result = libc.syscall(number, parent_fd, source_b, parent_fd, destination_b, 1)
+    else:
+        raise OSError(errno.ENOSYS, "atomic no-replace rename unavailable")
+    if result != 0:
+        error = ctypes.get_errno()
+        raise OSError(error or errno.EIO, os.strerror(error or errno.EIO))
+
+parent_fd = os.open(parent, flags)
+try:
+    parent_stat = os.fstat(parent_fd)
+    if (parent_stat.st_dev, parent_stat.st_ino) != parent_expected:
+        raise SystemExit(1)
+    residue_name = os.path.basename(residue)
+    backup_name = os.path.basename(backup)
+    residue_stat = os.stat(residue_name, dir_fd=parent_fd, follow_symlinks=False)
+    if (residue_stat.st_dev, residue_stat.st_ino) != residue_expected:
+        raise SystemExit(1)
+    if not stat.S_ISDIR(residue_stat.st_mode) or stat.S_ISLNK(residue_stat.st_mode):
+        raise SystemExit(1)
+    try:
+        os.stat(backup_name, dir_fd=parent_fd, follow_symlinks=False)
+    except FileNotFoundError:
+        pass
+    else:
+        raise SystemExit(1)
+    rename_no_replace(parent_fd, residue_name, backup_name)
+finally:
+    os.close(parent_fd)
+' "$identity" "$parent" "$residue" "$backup" || {
+    printf '  BLOCK %s (legacy destination changed before safe backup activation)\n' "$residue" >&2
+    return 1
+  }
+}
+
+release_residue_replace_runtime_link() {
+  local identity="$1"
+  local parent="$2"
+  local stage="$3"
+  local marker="$4"
+  local dest="$5"
+  local dest_identity="$6"
+
+  python3 -c '
+import os
+import stat
+import sys
+
+identity, parent, stage, marker, dest, dest_identity = sys.argv[1:]
+try:
+    expected = tuple(int(part) for part in identity.split(":"))
+except ValueError:
+    raise SystemExit(1)
+if len(expected) != 6:
+    raise SystemExit(1)
+parts = dest_identity.split(":")
+try:
+    dest_parent = (int(parts[0]), int(parts[1]))
+except (IndexError, ValueError):
+    raise SystemExit(1)
+if dest_parent != expected[:2] or len(parts) not in {3, 5}:
+    raise SystemExit(1)
+if len(parts) == 3:
+    if parts[2] != "absent":
+        raise SystemExit(1)
+    dest_expected = None
+else:
+    try:
+        dest_expected = (parts[2], int(parts[3]), int(parts[4]))
+    except ValueError:
+        raise SystemExit(1)
+if os.path.dirname(stage) != parent or os.path.dirname(marker) != parent or os.path.dirname(dest) != parent:
+    raise SystemExit(1)
+flags = os.O_RDONLY | getattr(os, "O_DIRECTORY", 0) | getattr(os, "O_NOFOLLOW", 0)
+parent_fd = os.open(parent, flags)
+try:
+    parent_stat = os.fstat(parent_fd)
+    if (parent_stat.st_dev, parent_stat.st_ino) != expected[:2]:
+        raise SystemExit(1)
+    stage_name = os.path.basename(stage)
+    marker_name = os.path.basename(marker)
+    dest_name = os.path.basename(dest)
+    stage_stat = os.stat(stage_name, dir_fd=parent_fd, follow_symlinks=False)
+    marker_stat = os.stat(marker_name, dir_fd=parent_fd, follow_symlinks=False)
+    if (stage_stat.st_dev, stage_stat.st_ino) != expected[2:4] or not stat.S_ISLNK(stage_stat.st_mode):
+        raise SystemExit(1)
+    if (marker_stat.st_dev, marker_stat.st_ino) != expected[4:6] or not stat.S_ISREG(marker_stat.st_mode):
+        raise SystemExit(1)
+    try:
+        dest_stat = os.stat(dest_name, dir_fd=parent_fd, follow_symlinks=False)
+    except FileNotFoundError:
+        if dest_expected is not None:
+            raise SystemExit(1)
+    else:
+        if dest_expected is None:
+            raise SystemExit(1)
+        if stat.S_ISLNK(dest_stat.st_mode):
+            dest_kind = "symlink"
+        elif stat.S_ISDIR(dest_stat.st_mode):
+            dest_kind = "directory"
+        elif stat.S_ISREG(dest_stat.st_mode):
+            dest_kind = "file"
+        else:
+            dest_kind = "other"
+        if (dest_kind, dest_stat.st_dev, dest_stat.st_ino) != dest_expected:
+            raise SystemExit(1)
+        if dest_kind == "directory":
+            raise SystemExit(1)
+    os.replace(stage_name, dest_name, src_dir_fd=parent_fd, dst_dir_fd=parent_fd)
+finally:
+    os.close(parent_fd)
+' "$identity" "$parent" "$stage" "$marker" "$dest" "$dest_identity" || {
+    printf '  BLOCK %s (activation identity changed; replacement preserved)\n' "$dest" >&2
+    return 1
+  }
 }
 
 release_residue_remove_runtime_entry() {
@@ -491,7 +745,10 @@ release_residue_restore_runtime_directory() {
   [ -n "$identity" ] || return 1
   onboard_test_pause FANTASYDISK_ONBOARD_TEST_PAUSE_BEFORE_RUNTIME_CLEANUP || return 1
   python3 -c '
+import ctypes
+import errno
 import os
+import platform
 import stat
 import sys
 
@@ -503,6 +760,36 @@ except ValueError:
 if len(expected) != 6 or os.path.dirname(residue) != parent or os.path.dirname(dest) != parent or os.path.dirname(marker) != parent:
     raise SystemExit(1)
 flags = os.O_RDONLY | getattr(os, "O_DIRECTORY", 0) | getattr(os, "O_NOFOLLOW", 0)
+
+def rename_no_replace(parent_fd, source, destination):
+    libc = ctypes.CDLL(None, use_errno=True)
+    source_b = source.encode("utf-8")
+    destination_b = destination.encode("utf-8")
+    if sys.platform == "darwin":
+        operation = getattr(libc, "renameatx_np", None)
+        if operation is None:
+            raise OSError(errno.ENOSYS, "renameatx_np unavailable")
+        operation.argtypes = [ctypes.c_int, ctypes.c_char_p, ctypes.c_int, ctypes.c_char_p, ctypes.c_uint]
+        operation.restype = ctypes.c_int
+        result = operation(parent_fd, source_b, parent_fd, destination_b, 0x00000004)
+    elif sys.platform.startswith("linux"):
+        operation = getattr(libc, "renameat2", None)
+        if operation is not None:
+            operation.argtypes = [ctypes.c_int, ctypes.c_char_p, ctypes.c_int, ctypes.c_char_p, ctypes.c_uint]
+            operation.restype = ctypes.c_int
+            result = operation(parent_fd, source_b, parent_fd, destination_b, 1)
+        else:
+            syscall_numbers = {"x86_64": 316, "amd64": 316, "aarch64": 276, "arm64": 276, "riscv64": 276}
+            number = syscall_numbers.get(platform.machine().lower())
+            if number is None:
+                raise OSError(errno.ENOSYS, "renameat2 unavailable")
+            result = libc.syscall(number, parent_fd, source_b, parent_fd, destination_b, 1)
+    else:
+        raise OSError(errno.ENOSYS, "atomic no-replace rename unavailable")
+    if result != 0:
+        error = ctypes.get_errno()
+        raise OSError(error or errno.EIO, os.strerror(error or errno.EIO))
+
 parent_fd = os.open(parent, flags)
 try:
     parent_stat = os.fstat(parent_fd)
@@ -518,7 +805,7 @@ try:
         pass
     else:
         raise SystemExit(1)
-    os.rename(os.path.basename(residue), os.path.basename(dest), src_dir_fd=parent_fd, dst_dir_fd=parent_fd)
+    rename_no_replace(parent_fd, os.path.basename(residue), os.path.basename(dest))
 finally:
     os.close(parent_fd)
 ' "$identity" "$parent" "$residue" "$dest" "$marker" || {
@@ -1009,6 +1296,7 @@ release_selection_is_safe_to_replace() {
       printf '  BLOCK %s (unknown real dir — preserved; remove or review it manually before relinking)\n' "$dest" >&2
       return 1
     fi
+    RELEASE_SELECTION_LEGACY_TREE="$target_tree"
     printf '  MIGRATE %s (known repo-owned legacy release skill)\n' "$dest"
   elif [ -e "$dest" ] && [ ! -h "$dest" ]; then
     printf '  BLOCK %s (existing non-directory entry — preserved)\n' "$dest" >&2
@@ -1045,33 +1333,69 @@ make_staged_selection_link() {
 
 activate_staged_selection_link() {
   local dest="$1"
-  local backup_tree
+  local backup_tree parent_identity legacy_dest_identity
+  local parent_device parent_inode stage_device stage_inode _marker_device _marker_inode
 
   RELEASE_SELECTION_BACKUP=""
-  if [ -d "$dest" ] && [ ! -h "$dest" ]; then
+  if [ "$(release_residue_identity_kind "$RELEASE_SELECTION_DEST_IDENTITY")" = "directory" ]; then
+    legacy_dest_identity="$RELEASE_SELECTION_DEST_IDENTITY"
     RELEASE_SELECTION_BACKUP="$RELEASE_SELECTION_PARENT/.${RELEASE_SKILL_NAME}.legacy.$$"
-    backup_tree="$(tree_fingerprint "$dest")" || return 1
-    if ! mv "$dest" "$RELEASE_SELECTION_BACKUP"; then
-      printf '  BLOCK %s (cannot preserve known legacy directory before activation)\n' "$dest" >&2
-      return 1
-    fi
+    backup_tree="$RELEASE_SELECTION_LEGACY_TREE"
+    [ -n "$backup_tree" ] || return 1
+    release_residue_move_runtime_directory "$RELEASE_SELECTION_DEST_IDENTITY" \
+      "$RELEASE_SELECTION_PARENT" "$dest" "$RELEASE_SELECTION_BACKUP" || return 1
+    parent_identity="$(release_residue_identity_parent "$RELEASE_SELECTION_DEST_IDENTITY")"
     release_residue_write_marker RELEASE_SELECTION_BACKUP_MARKER \
-      "$RELEASE_SELECTION_PARENT" "legacy" "$$" "directory" "-" "$backup_tree" || return 1
+      "$RELEASE_SELECTION_PARENT" "legacy" "$$" "directory" "-" "$backup_tree" \
+      "$parent_identity" || return 1
     release_residue_capture_runtime_identity RELEASE_SELECTION_BACKUP_IDENTITY \
       "$RELEASE_SELECTION_PARENT" "$RELEASE_SELECTION_BACKUP" \
       "$RELEASE_SELECTION_BACKUP_MARKER" "directory" || return 1
+    release_residue_capture_entry_identity RELEASE_SELECTION_DEST_IDENTITY \
+      "$RELEASE_SELECTION_PARENT" "$dest" || return 1
+    [ "$(release_residue_identity_kind "$RELEASE_SELECTION_DEST_IDENTITY")" = "absent" ] || return 1
+    onboard_test_pause FANTASYDISK_ONBOARD_TEST_PAUSE_AFTER_SELECTION_LEGACY_BACKUP || return 1
   fi
-  if ! python3 -c 'import os, sys; os.replace(sys.argv[1], sys.argv[2])' \
-    "$RELEASE_SELECTION_STAGE" "$dest"; then
-    printf '  BLOCK %s (cannot atomically activate durable selected link)\n' "$dest" >&2
+  if ! release_residue_replace_runtime_link "$RELEASE_SELECTION_STAGE_IDENTITY" \
+    "$RELEASE_SELECTION_PARENT" "$RELEASE_SELECTION_STAGE" \
+    "$RELEASE_SELECTION_STAGE_MARKER" "$dest" "$RELEASE_SELECTION_DEST_IDENTITY"; then
     if [ -n "$RELEASE_SELECTION_BACKUP" ]; then
       release_residue_restore_runtime_directory "$RELEASE_SELECTION_BACKUP_IDENTITY" \
         "$RELEASE_SELECTION_PARENT" "$RELEASE_SELECTION_BACKUP" "$dest" \
         "$RELEASE_SELECTION_BACKUP_MARKER" || true
+      if release_residue_entry_identity_matches "$RELEASE_SELECTION_PARENT" "$dest" \
+        "$legacy_dest_identity"; then
+        release_residue_remove_runtime_marker "$RELEASE_SELECTION_BACKUP_IDENTITY" \
+          "$RELEASE_SELECTION_PARENT" "$RELEASE_SELECTION_BACKUP_MARKER" || true
+        RELEASE_SELECTION_BACKUP=""
+        RELEASE_SELECTION_BACKUP_MARKER=""
+        RELEASE_SELECTION_BACKUP_IDENTITY=""
+      fi
     fi
     return 1
   fi
+  IFS=: read -r parent_device parent_inode stage_device stage_inode _marker_device _marker_inode \
+    <<< "$RELEASE_SELECTION_STAGE_IDENTITY"
+  RELEASE_SELECTION_COMMITTED_IDENTITY="${parent_device}:${parent_inode}:symlink:${stage_device}:${stage_inode}"
   RELEASE_SELECTION_STAGE=""
+  if ! release_residue_entry_identity_matches "$RELEASE_SELECTION_PARENT" "$dest" \
+    "$RELEASE_SELECTION_COMMITTED_IDENTITY"; then
+    printf '  BLOCK %s (selected link changed after activation; legacy backup preserved)\n' "$dest" >&2
+    return 1
+  fi
+  # Keep the current-run ownership marker until the normal EXIT cleanup.  A
+  # SIGKILL immediately after this verified commit cannot run that cleanup,
+  # so the marker deliberately remains as fail-closed evidence for the next
+  # invocation instead of allowing it to mistake the interrupted run for a
+  # completed one.
+  if [ -n "$RELEASE_SELECTION_BACKUP" ]; then
+    release_residue_remove_runtime_entry "$RELEASE_SELECTION_BACKUP_IDENTITY" \
+      "$RELEASE_SELECTION_PARENT" "$RELEASE_SELECTION_BACKUP" \
+      "$RELEASE_SELECTION_BACKUP_MARKER" "directory" || return 1
+    RELEASE_SELECTION_BACKUP=""
+    RELEASE_SELECTION_BACKUP_MARKER=""
+    RELEASE_SELECTION_BACKUP_IDENTITY=""
+  fi
 }
 
 cleanup_release_runtime_residue() {
@@ -1122,10 +1446,15 @@ cleanup_release_runtime_residue() {
         release_residue_remove_runtime_marker "$RELEASE_SELECTION_BACKUP_IDENTITY" \
           "$RELEASE_SELECTION_PARENT" "$RELEASE_SELECTION_BACKUP_MARKER" || true
       fi
-    else
+    elif [ -n "${RELEASE_SELECTION_COMMITTED_IDENTITY:-}" ] \
+      && release_residue_entry_identity_matches "$RELEASE_SELECTION_PARENT" \
+        "$RELEASE_SELECTION_DEST" "$RELEASE_SELECTION_COMMITTED_IDENTITY"; then
       release_residue_remove_runtime_entry "$RELEASE_SELECTION_BACKUP_IDENTITY" \
         "$RELEASE_SELECTION_PARENT" "$RELEASE_SELECTION_BACKUP" \
         "$RELEASE_SELECTION_BACKUP_MARKER" "directory" || true
+    else
+      printf '  BLOCK %s (legacy selection backup preserved after destination changed)\n' \
+        "$RELEASE_SELECTION_BACKUP" >&2
     fi
     RELEASE_SELECTION_BACKUP=""
     RELEASE_SELECTION_BACKUP_MARKER=""
@@ -1137,9 +1466,23 @@ cleanup_release_runtime_residue() {
     RELEASE_SELECTION_BACKUP_IDENTITY=""
   fi
   if [ -n "${RELEASE_MIRROR_BACKUP:-}" ] && [ -n "${RELEASE_MIRROR_BACKUP_IDENTITY:-}" ]; then
-    release_residue_remove_runtime_entry "$RELEASE_MIRROR_BACKUP_IDENTITY" \
-      "$RELEASE_MIRROR_PARENT" "$RELEASE_MIRROR_BACKUP" "$RELEASE_MIRROR_BACKUP_MARKER" \
-      "directory" || true
+    if [ ! -e "$RELEASE_MIRROR" ] && [ ! -h "$RELEASE_MIRROR" ]; then
+      if release_residue_restore_runtime_directory "$RELEASE_MIRROR_BACKUP_IDENTITY" \
+        "$RELEASE_MIRROR_PARENT" "$RELEASE_MIRROR_BACKUP" "$RELEASE_MIRROR" \
+        "$RELEASE_MIRROR_BACKUP_MARKER"; then
+        release_residue_remove_runtime_marker "$RELEASE_MIRROR_BACKUP_IDENTITY" \
+          "$RELEASE_MIRROR_PARENT" "$RELEASE_MIRROR_BACKUP_MARKER" || true
+      fi
+    elif [ -n "${RELEASE_MIRROR_COMMITTED_IDENTITY:-}" ] \
+      && release_residue_entry_identity_matches "$RELEASE_MIRROR_PARENT" \
+        "$RELEASE_MIRROR" "$RELEASE_MIRROR_COMMITTED_IDENTITY"; then
+      release_residue_remove_runtime_entry "$RELEASE_MIRROR_BACKUP_IDENTITY" \
+        "$RELEASE_MIRROR_PARENT" "$RELEASE_MIRROR_BACKUP" "$RELEASE_MIRROR_BACKUP_MARKER" \
+        "directory" || true
+    else
+      printf '  BLOCK %s (legacy mirror backup preserved after destination changed)\n' \
+        "$RELEASE_MIRROR_BACKUP" >&2
+    fi
     RELEASE_MIRROR_BACKUP=""
     RELEASE_MIRROR_BACKUP_MARKER=""
     RELEASE_MIRROR_BACKUP_IDENTITY=""
@@ -1188,8 +1531,14 @@ release_mirror_target() {
 
 activate_mirror_pointer() {
   local target="$1"
-  local target_tree backup_tree
+  local target_tree backup_tree parent_identity legacy_dest_identity
+  local parent_device parent_inode stage_device stage_inode _marker_device _marker_inode
 
+  release_residue_capture_entry_identity RELEASE_MIRROR_DEST_IDENTITY \
+    "$RELEASE_MIRROR_PARENT" "$RELEASE_MIRROR" || return 1
+  if [ "$(release_residue_identity_kind "$RELEASE_MIRROR_DEST_IDENTITY")" = "directory" ]; then
+    backup_tree="$(tree_fingerprint "$RELEASE_MIRROR")" || return 1
+  fi
   RELEASE_MIRROR_STAGE="$RELEASE_MIRROR_PARENT/.${RELEASE_SKILL_NAME}.mirror-stage.$$"
   target_tree="$(tree_fingerprint "$target")" || return 1
   ln -s "$target" "$RELEASE_MIRROR_STAGE" || return 1
@@ -1198,23 +1547,62 @@ activate_mirror_pointer() {
   release_residue_capture_runtime_identity RELEASE_MIRROR_STAGE_IDENTITY \
     "$RELEASE_MIRROR_PARENT" "$RELEASE_MIRROR_STAGE" "$RELEASE_MIRROR_STAGE_MARKER" \
     "symlink" || return 1
-  if [ -d "$RELEASE_MIRROR" ] && [ ! -h "$RELEASE_MIRROR" ]; then
+  onboard_test_pause FANTASYDISK_ONBOARD_TEST_PAUSE_BEFORE_MIRROR_COMMIT || return 1
+  if [ "$(release_residue_identity_kind "$RELEASE_MIRROR_DEST_IDENTITY")" = "directory" ]; then
+    legacy_dest_identity="$RELEASE_MIRROR_DEST_IDENTITY"
     RELEASE_MIRROR_BACKUP="$RELEASE_MIRROR_PARENT/.${RELEASE_SKILL_NAME}.legacy-mirror.$$"
-    backup_tree="$(tree_fingerprint "$RELEASE_MIRROR")" || return 1
-    mv "$RELEASE_MIRROR" "$RELEASE_MIRROR_BACKUP" || return 1
+    release_residue_move_runtime_directory "$RELEASE_MIRROR_DEST_IDENTITY" \
+      "$RELEASE_MIRROR_PARENT" "$RELEASE_MIRROR" "$RELEASE_MIRROR_BACKUP" || return 1
+    parent_identity="$(release_residue_identity_parent "$RELEASE_MIRROR_DEST_IDENTITY")"
     release_residue_write_marker RELEASE_MIRROR_BACKUP_MARKER \
-      "$RELEASE_MIRROR_PARENT" "legacy-mirror" "$$" "directory" "-" "$backup_tree" || return 1
+      "$RELEASE_MIRROR_PARENT" "legacy-mirror" "$$" "directory" "-" "$backup_tree" \
+      "$parent_identity" || return 1
     release_residue_capture_runtime_identity RELEASE_MIRROR_BACKUP_IDENTITY \
       "$RELEASE_MIRROR_PARENT" "$RELEASE_MIRROR_BACKUP" \
       "$RELEASE_MIRROR_BACKUP_MARKER" "directory" || return 1
+    release_residue_capture_entry_identity RELEASE_MIRROR_DEST_IDENTITY \
+      "$RELEASE_MIRROR_PARENT" "$RELEASE_MIRROR" || return 1
+    [ "$(release_residue_identity_kind "$RELEASE_MIRROR_DEST_IDENTITY")" = "absent" ] || return 1
+    onboard_test_pause FANTASYDISK_ONBOARD_TEST_PAUSE_AFTER_MIRROR_LEGACY_BACKUP || return 1
   fi
-  if ! python3 -c 'import os, sys; os.replace(sys.argv[1], sys.argv[2])' \
-    "$RELEASE_MIRROR_STAGE" "$RELEASE_MIRROR"; then
-    printf '  BLOCK %s (cannot atomically update the managed mirror pointer)\n' \
+  if ! release_residue_replace_runtime_link "$RELEASE_MIRROR_STAGE_IDENTITY" \
+    "$RELEASE_MIRROR_PARENT" "$RELEASE_MIRROR_STAGE" "$RELEASE_MIRROR_STAGE_MARKER" \
+    "$RELEASE_MIRROR" "$RELEASE_MIRROR_DEST_IDENTITY"; then
+    if [ -n "$RELEASE_MIRROR_BACKUP" ]; then
+      release_residue_restore_runtime_directory "$RELEASE_MIRROR_BACKUP_IDENTITY" \
+        "$RELEASE_MIRROR_PARENT" "$RELEASE_MIRROR_BACKUP" "$RELEASE_MIRROR" \
+        "$RELEASE_MIRROR_BACKUP_MARKER" || true
+      if release_residue_entry_identity_matches "$RELEASE_MIRROR_PARENT" "$RELEASE_MIRROR" \
+        "$legacy_dest_identity"; then
+        release_residue_remove_runtime_marker "$RELEASE_MIRROR_BACKUP_IDENTITY" \
+          "$RELEASE_MIRROR_PARENT" "$RELEASE_MIRROR_BACKUP_MARKER" || true
+        RELEASE_MIRROR_BACKUP=""
+        RELEASE_MIRROR_BACKUP_MARKER=""
+        RELEASE_MIRROR_BACKUP_IDENTITY=""
+      fi
+    fi
+    return 1
+  fi
+  IFS=: read -r parent_device parent_inode stage_device stage_inode _marker_device _marker_inode \
+    <<< "$RELEASE_MIRROR_STAGE_IDENTITY"
+  RELEASE_MIRROR_COMMITTED_IDENTITY="${parent_device}:${parent_inode}:symlink:${stage_device}:${stage_inode}"
+  RELEASE_MIRROR_STAGE=""
+  if ! release_residue_entry_identity_matches "$RELEASE_MIRROR_PARENT" "$RELEASE_MIRROR" \
+    "$RELEASE_MIRROR_COMMITTED_IDENTITY"; then
+    printf '  BLOCK %s (mirror link changed after activation; legacy backup preserved)\n' \
       "$RELEASE_MIRROR" >&2
     return 1
   fi
-  RELEASE_MIRROR_STAGE=""
+  # See the corresponding selection marker: retain this marker until EXIT so
+  # a hard-killed process leaves evidence that blocks an unsafe retry.
+  if [ -n "$RELEASE_MIRROR_BACKUP" ]; then
+    release_residue_remove_runtime_entry "$RELEASE_MIRROR_BACKUP_IDENTITY" \
+      "$RELEASE_MIRROR_PARENT" "$RELEASE_MIRROR_BACKUP" \
+      "$RELEASE_MIRROR_BACKUP_MARKER" "directory" || return 1
+    RELEASE_MIRROR_BACKUP=""
+    RELEASE_MIRROR_BACKUP_MARKER=""
+    RELEASE_MIRROR_BACKUP_IDENTITY=""
+  fi
 }
 
 install_release_skill() {
@@ -1282,6 +1670,8 @@ install_release_skill() {
 
   if [ "$selected_needs_update" = "1" ]; then
     make_staged_selection_link "$dest" "$version_dir" "$source_tree" || return 1
+    release_residue_capture_entry_identity RELEASE_SELECTION_DEST_IDENTITY \
+      "$RELEASE_SELECTION_PARENT" "$dest" || return 1
     onboard_test_pause FANTASYDISK_ONBOARD_TEST_PAUSE_BEFORE_SELECTION_COMMIT || return 1
     if onboard_test_failure_requested "${FANTASYDISK_ONBOARD_TEST_FAIL_BEFORE_SELECTION_COMMIT:-0}"; then
       printf '  BLOCK %s (test failure injected before selection commit)\n' "$dest" >&2

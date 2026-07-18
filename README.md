@@ -14,7 +14,10 @@ bash scripts/onboard.sh
 `~/.codex/skill-mirrors/FantasyDisk/fantasydisk-release-director`, затем
 сохраняет проверенное дерево в immutable version store и одной atomic selection
 commit point переключает `~/.codex/skills/fantasydisk-release-director` на
-полностью готовую версию. Canonical mirror pointer обновляется после этого
+полностью готовую версию. Непосредственно перед каждой atomic activation
+onboarding заново проверяет физическую identity managed parent, stage, marker
+и destination через descriptor-relative no-follow операции; подмена прерывает
+run без success signal. Canonical mirror pointer обновляется после этого
 commit point; старые version trees не удаляются во время обновления, поэтому
 читатель, уже разрешивший старую версию, может дочитать её целиком. Обновления
 сериализуются managed lock; после обычного сбоя или SIGTERM временный residue
