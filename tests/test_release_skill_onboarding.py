@@ -5,10 +5,13 @@ from __future__ import annotations
 import hashlib
 import io
 import os
+import signal
 import shutil
 import subprocess
 import tarfile
 import tempfile
+import threading
+import time
 import unittest
 from pathlib import Path
 
@@ -32,6 +35,12 @@ EXPECTED_RELEASE_SKILL_FILES = {
 }
 MIRROR_RELATIVE_PATH = Path(
     ".codex", "skill-mirrors", "FantasyDisk", "fantasydisk-release-director"
+)
+VERSIONS_RELATIVE_PATH = Path(
+    ".codex",
+    "skill-mirrors",
+    "FantasyDisk",
+    ".fantasydisk-release-director.versions",
 )
 SELECTED_RELATIVE_PATH = Path(".codex", "skills", "fantasydisk-release-director")
 
@@ -100,26 +109,36 @@ def _fake_multica(home: Path) -> Path:
     return fake_bin
 
 
-def _run_onboard(
-    script: Path, home: Path, *, path_prefix: Path | None = None
-) -> subprocess.CompletedProcess[str]:
+def _onboard_environment(
+    script: Path,
+    home: Path,
+    *,
+    path_prefix: Path | None = None,
+    extra: dict[str, str] | None = None,
+) -> dict[str, str]:
     environment = os.environ.copy()
     fake_bin = _fake_multica(home)
     if path_prefix is not None:
         path = f"{path_prefix}{os.pathsep}{fake_bin}{os.pathsep}{environment['PATH']}"
     else:
         path = f"{fake_bin}{os.pathsep}{environment['PATH']}"
-    environment.update(
-        {
-            "HOME": str(home),
-            "XDG_CONFIG_HOME": str(home / "config"),
-            "PATH": path,
-        }
-    )
+    environment.update({"HOME": str(home), "XDG_CONFIG_HOME": str(home / "config"), "PATH": path})
+    if extra:
+        environment.update(extra)
+    return environment
+
+
+def _run_onboard(
+    script: Path,
+    home: Path,
+    *,
+    path_prefix: Path | None = None,
+    extra: dict[str, str] | None = None,
+) -> subprocess.CompletedProcess[str]:
     return subprocess.run(
         ["bash", str(script)],
         cwd=script.parents[1],
-        env=environment,
+        env=_onboard_environment(script, home, path_prefix=path_prefix, extra=extra),
         text=True,
         stdout=subprocess.PIPE,
         stderr=subprocess.STDOUT,
@@ -127,19 +146,68 @@ def _run_onboard(
     )
 
 
+def _start_onboard(
+    script: Path,
+    home: Path,
+    *,
+    extra: dict[str, str] | None = None,
+) -> subprocess.Popen[str]:
+    return subprocess.Popen(
+        ["bash", str(script)],
+        cwd=script.parents[1],
+        env=_onboard_environment(script, home, extra=extra),
+        text=True,
+        stdout=subprocess.PIPE,
+        stderr=subprocess.STDOUT,
+        start_new_session=True,
+    )
+
+
+def _wait_for_marker(marker: Path, process: subprocess.Popen[str]) -> None:
+    deadline = time.monotonic() + 10
+    while time.monotonic() < deadline:
+        if marker.exists():
+            return
+        if process.poll() is not None:
+            output = process.communicate()[0]
+            raise AssertionError(f"onboarding exited before marker: {output}")
+        time.sleep(0.01)
+    process.kill()
+    process.wait()
+    raise AssertionError(f"onboarding did not reach marker {marker}")
+
+
+def _commit_source_change(checkout: Path, suffix: str) -> Path:
+    skill_md = checkout / "skills" / "codex" / "fantasydisk-release-director" / "SKILL.md"
+    skill_md.write_text(skill_md.read_text(encoding="utf-8") + f"\n{suffix}\n", encoding="utf-8")
+    subprocess.run(["git", "add", str(skill_md.relative_to(checkout))], cwd=checkout, check=True)
+    subprocess.run(["git", "commit", "-m", f"updated source {suffix}"], cwd=checkout, check=True)
+    return skill_md
+
+
 def _selected(home: Path) -> Path:
     return home / SELECTED_RELATIVE_PATH
 
 
 def _mirror(home: Path) -> Path:
+    return Path(os.path.realpath(home / MIRROR_RELATIVE_PATH))
+
+
+def _mirror_pointer(home: Path) -> Path:
     return home / MIRROR_RELATIVE_PATH
+
+
+def _versions(home: Path) -> Path:
+    return home / VERSIONS_RELATIVE_PATH
 
 
 def _assert_durable_selected_tree(home: Path, expected_source: Path) -> None:
     target = _selected(home)
     mirror = _mirror(home)
     assert target.is_symlink()
+    assert _mirror_pointer(home).is_symlink()
     assert os.path.realpath(os.readlink(target)) == os.path.realpath(mirror)
+    assert os.path.realpath(os.readlink(_mirror_pointer(home))) == os.path.realpath(mirror)
     assert mirror.is_dir()
     assert not mirror.is_symlink()
     assert target.resolve() == mirror.resolve()
@@ -414,7 +482,7 @@ class ReleaseSkillOnboardingTest(unittest.TestCase):
             self.assertIn("up-to-date", second.stdout)
             self.assertEqual(_inventory(_mirror(home)), before)
             self.assertEqual(
-                list(_mirror(home).parent.glob(".fantasydisk-release-director.staging.*")), []
+                list(_versions(home).glob(".fantasydisk-release-director.staging.*")), []
             )
 
     def test_failed_staging_preserves_last_known_good_mirror_and_selection(self) -> None:
@@ -451,13 +519,182 @@ class ReleaseSkillOnboardingTest(unittest.TestCase):
             failed = _run_onboard(script, home, path_prefix=fake_bin)
 
             self.assertNotEqual(failed.returncode, 0, failed.stdout)
-            self.assertIn("staged mirror", failed.stdout)
+            self.assertIn("immutable version", failed.stdout)
             self.assertEqual(_inventory(_mirror(home)), mirror_before)
             self.assertEqual(os.readlink(_selected(home)), selected_before)
             self.assertTrue((_selected(home) / "SKILL.md").is_file())
             self.assertEqual(
-                list(_mirror(home).parent.glob(".fantasydisk-release-director.staging.*")), []
+                list(_versions(home).glob(".fantasydisk-release-director.staging.*")), []
             )
+
+    def test_changed_source_has_continuous_old_or_new_selection(self) -> None:
+        with tempfile.TemporaryDirectory(prefix="fantasydisk-onboard-continuity-") as raw:
+            workspace = Path(raw)
+            home = workspace / "home"
+            checkout = _make_disposable_source_checkout(workspace / "checkout")
+            script = checkout / "scripts" / "onboard.sh"
+            self.assertEqual(_run_onboard(script, home).returncode, 0)
+            old_target = Path(os.path.realpath(_selected(home)))
+            old_snapshot = _inventory(old_target)
+
+            _commit_source_change(checkout, "changed-source-continuity")
+            new_source = checkout / "skills" / "codex" / "fantasydisk-release-director"
+            new_snapshot = _inventory(new_source)
+            before = workspace / "before-selection-commit"
+            after = workspace / "after-selection-commit"
+            process = _start_onboard(
+                script,
+                home,
+                extra={
+                    "FANTASYDISK_ONBOARD_TEST_PAUSE_BEFORE_SELECTION_COMMIT": str(before),
+                    "FANTASYDISK_ONBOARD_TEST_PAUSE_AFTER_SELECTION_COMMIT": str(after),
+                },
+            )
+            _wait_for_marker(before, process)
+            self.assertEqual(_inventory(Path(os.path.realpath(_selected(home)))), old_snapshot)
+
+            errors: list[str] = []
+            stop_reader = threading.Event()
+
+            def read_selected_until_done() -> None:
+                while not stop_reader.is_set():
+                    try:
+                        selected_target = _selected(home)
+                        if not selected_target.is_symlink():
+                            raise AssertionError("selected path stopped being a symlink")
+                        resolved = Path(os.path.realpath(selected_target))
+                        observed = _inventory(resolved)
+                        if observed not in (old_snapshot, new_snapshot):
+                            raise AssertionError("reader observed mixed or unexpected inventory")
+                    except (OSError, AssertionError) as exc:
+                        errors.append(str(exc))
+                        return
+
+            reader = threading.Thread(target=read_selected_until_done)
+            reader.start()
+            before.unlink()
+            _wait_for_marker(after, process)
+            self.assertEqual(_inventory(old_target), old_snapshot)
+            self.assertEqual(_inventory(Path(os.path.realpath(_selected(home)))), new_snapshot)
+            after.unlink()
+            output = process.communicate(timeout=10)[0]
+            stop_reader.set()
+            reader.join(timeout=10)
+
+            self.assertEqual(process.returncode, 0, output)
+            self.assertEqual(errors, [])
+            _assert_durable_selected_tree(home, new_source)
+
+    def test_failure_before_commit_preserves_old_and_after_commit_keeps_new(self) -> None:
+        with tempfile.TemporaryDirectory(prefix="fantasydisk-onboard-fault-boundaries-") as raw:
+            workspace = Path(raw)
+            home = workspace / "home"
+            checkout = _make_disposable_source_checkout(workspace / "checkout")
+            script = checkout / "scripts" / "onboard.sh"
+            self.assertEqual(_run_onboard(script, home).returncode, 0)
+            old_snapshot = _inventory(Path(os.path.realpath(_selected(home))))
+
+            _commit_source_change(checkout, "pre-commit-fault")
+            source = checkout / "skills" / "codex" / "fantasydisk-release-director"
+            new_snapshot = _inventory(source)
+            failed_before = _run_onboard(
+                script,
+                home,
+                extra={"FANTASYDISK_ONBOARD_TEST_FAIL_BEFORE_SELECTION_COMMIT": "1"},
+            )
+            self.assertNotEqual(failed_before.returncode, 0, failed_before.stdout)
+            self.assertEqual(_inventory(Path(os.path.realpath(_selected(home)))), old_snapshot)
+            retry_before = _run_onboard(script, home)
+            self.assertEqual(retry_before.returncode, 0, retry_before.stdout)
+            self.assertEqual(_inventory(Path(os.path.realpath(_selected(home)))), new_snapshot)
+
+            _commit_source_change(checkout, "post-commit-fault")
+            source = checkout / "skills" / "codex" / "fantasydisk-release-director"
+            newest_snapshot = _inventory(source)
+            failed_after = _run_onboard(
+                script,
+                home,
+                extra={"FANTASYDISK_ONBOARD_TEST_FAIL_AFTER_SELECTION_COMMIT": "1"},
+            )
+            self.assertNotEqual(failed_after.returncode, 0, failed_after.stdout)
+            self.assertEqual(_inventory(Path(os.path.realpath(_selected(home)))), newest_snapshot)
+            retry_after = _run_onboard(script, home)
+            self.assertEqual(retry_after.returncode, 0, retry_after.stdout)
+            _assert_durable_selected_tree(home, source)
+
+    def test_sigterm_and_sigkill_reconcile_old_or_new_selection(self) -> None:
+        for phase, interrupt, expected_new in (
+            ("before", signal.SIGTERM, False),
+            ("before", signal.SIGKILL, False),
+            ("after", signal.SIGTERM, True),
+            ("after", signal.SIGKILL, True),
+        ):
+            with self.subTest(phase=phase, interrupt=interrupt.name), tempfile.TemporaryDirectory(
+                prefix="fantasydisk-onboard-signal-"
+            ) as raw:
+                workspace = Path(raw)
+                home = workspace / "home"
+                checkout = _make_disposable_source_checkout(workspace / "checkout")
+                script = checkout / "scripts" / "onboard.sh"
+                self.assertEqual(_run_onboard(script, home).returncode, 0)
+                old_snapshot = _inventory(Path(os.path.realpath(_selected(home))))
+                _commit_source_change(checkout, f"signal-{phase}-{interrupt.name}")
+                source = checkout / "skills" / "codex" / "fantasydisk-release-director"
+                new_snapshot = _inventory(source)
+                marker = workspace / f"{phase}-selection-commit"
+                variable = (
+                    "FANTASYDISK_ONBOARD_TEST_PAUSE_BEFORE_SELECTION_COMMIT"
+                    if phase == "before"
+                    else "FANTASYDISK_ONBOARD_TEST_PAUSE_AFTER_SELECTION_COMMIT"
+                )
+                process = _start_onboard(script, home, extra={variable: str(marker)})
+                _wait_for_marker(marker, process)
+                os.killpg(process.pid, interrupt)
+                output = process.communicate(timeout=10)[0]
+                marker.unlink(missing_ok=True)
+
+                self.assertNotEqual(process.returncode, 0, output)
+                expected = new_snapshot if expected_new else old_snapshot
+                self.assertEqual(
+                    _inventory(Path(os.path.realpath(_selected(home)))), expected, output
+                )
+                retry = _run_onboard(script, home)
+                self.assertEqual(retry.returncode, 0, retry.stdout)
+                self.assertEqual(_inventory(Path(os.path.realpath(_selected(home)))), new_snapshot)
+                self.assertEqual(
+                    list(_versions(home).glob(".fantasydisk-release-director.staging.*")), []
+                )
+
+    def test_concurrent_updater_fails_closed_without_touching_active_selection(self) -> None:
+        with tempfile.TemporaryDirectory(prefix="fantasydisk-onboard-concurrent-") as raw:
+            workspace = Path(raw)
+            home = workspace / "home"
+            first_checkout = _make_disposable_source_checkout(workspace / "first-checkout")
+            second_checkout = _make_disposable_source_checkout(workspace / "second-checkout")
+            first_script = first_checkout / "scripts" / "onboard.sh"
+            second_script = second_checkout / "scripts" / "onboard.sh"
+            self.assertEqual(_run_onboard(first_script, home).returncode, 0)
+            _commit_source_change(first_checkout, "first-concurrent-update")
+            _commit_source_change(second_checkout, "second-concurrent-update")
+            first_source = first_checkout / "skills" / "codex" / "fantasydisk-release-director"
+            first_snapshot = _inventory(first_source)
+            marker = workspace / "first-before-selection-commit"
+            first = _start_onboard(
+                first_script,
+                home,
+                extra={"FANTASYDISK_ONBOARD_TEST_PAUSE_BEFORE_SELECTION_COMMIT": str(marker)},
+            )
+            _wait_for_marker(marker, first)
+            second = _run_onboard(second_script, home)
+            self.assertNotEqual(second.returncode, 0, second.stdout)
+            self.assertIn("lock", second.stdout.lower())
+            self.assertTrue(_selected(home).is_symlink())
+
+            marker.unlink()
+            first_output = first.communicate(timeout=10)[0]
+            self.assertEqual(first.returncode, 0, first_output)
+            self.assertEqual(_inventory(Path(os.path.realpath(_selected(home)))), first_snapshot)
+            self.assertEqual(_inventory(_mirror(home)), first_snapshot)
 
     def test_durable_mirror_survives_disposable_source_checkout_removal(self) -> None:
         with tempfile.TemporaryDirectory(prefix="fantasydisk-onboard-checkout-loss-") as raw:

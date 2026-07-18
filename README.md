@@ -12,8 +12,14 @@ bash scripts/onboard.sh
 Для release skill это не обычная ссылка на текущий checkout: onboarding сначала
 собирает и полностью проверяет managed mirror в
 `~/.codex/skill-mirrors/FantasyDisk/fantasydisk-release-director`, затем
-атомарно переключает `~/.codex/skills/fantasydisk-release-director` только на
-этот mirror. Поэтому завершённый Multica task/worktree не остаётся persistent
+сохраняет проверенное дерево в immutable version store и одной atomic selection
+commit point переключает `~/.codex/skills/fantasydisk-release-director` на
+полностью готовую версию. Canonical mirror pointer обновляется после этого
+commit point; старые version trees не удаляются во время обновления, поэтому
+читатель, уже разрешивший старую версию, может дочитать её целиком. Обновления
+сериализуются managed lock; после обычного сбоя или SIGTERM временный residue
+убирается, а после SIGKILL следующий onboarding безопасно reconciles только свои
+staging/backup paths. Завершённый Multica task/worktree не остаётся persistent
 source. Неизвестная реальная локальная папка сохраняется и останавливает
 onboarding; внешняя или dangling ссылка никогда не используется как source.
 Дальше: AI-агенты автоматически видят мастер-скилл **`fantasydisk-onboarding`**

@@ -37,6 +37,22 @@ scripts/github_release_verify.py
 scripts/local_release.py
 scripts/release_publish.py
 scripts/telegram_publish.py'
+RELEASE_VERSIONS_NAME=".${RELEASE_SKILL_NAME}.versions"
+RELEASE_LOCK_NAME=".${RELEASE_SKILL_NAME}.lock"
+
+RELEASE_MIRROR_PARENT=""
+RELEASE_MIRROR=""
+RELEASE_VERSIONS=""
+RELEASE_LOCK_DIR=""
+RELEASE_LOCK_OWNED="0"
+RELEASE_STAGE=""
+RELEASE_SELECTION_STAGE=""
+RELEASE_SELECTION_BACKUP=""
+RELEASE_SELECTION_DEST=""
+RELEASE_MIRROR_STAGE=""
+RELEASE_MIRROR_BACKUP=""
+RELEASE_INTERRUPT_REQUESTED="0"
+RELEASE_TEST_PAUSE_ACTIVE="0"
 
 sha256_file() {
   shasum -a 256 "$1" | awk '{print $1}'
@@ -158,6 +174,80 @@ prepare_release_mirror() {
     return 1
   fi
   RELEASE_MIRROR="$RELEASE_MIRROR_PARENT/$RELEASE_SKILL_NAME"
+  RELEASE_VERSIONS="$RELEASE_MIRROR_PARENT/$RELEASE_VERSIONS_NAME"
+  RELEASE_LOCK_DIR="$RELEASE_MIRROR_PARENT/$RELEASE_LOCK_NAME"
+}
+
+release_lock_is_live() {
+  local lock_pid
+
+  [ -r "$RELEASE_LOCK_DIR/pid" ] || return 1
+  lock_pid="$(<"$RELEASE_LOCK_DIR/pid")"
+  case "$lock_pid" in
+    ''|*[!0-9]*) return 1 ;;
+  esac
+  kill -0 "$lock_pid" 2>/dev/null
+}
+
+acquire_release_lock() {
+  if mkdir "$RELEASE_LOCK_DIR" 2>/dev/null; then
+    printf '%s\n' "$$" > "$RELEASE_LOCK_DIR/pid" || {
+      rm -rf "$RELEASE_LOCK_DIR"
+      return 1
+    }
+    RELEASE_LOCK_OWNED="1"
+    return 0
+  fi
+  if release_lock_is_live; then
+    printf '  BLOCK %s (another onboarding updater owns the managed mirror lock)\n' \
+      "$RELEASE_MIRROR_PARENT" >&2
+    return 1
+  fi
+  # A killed updater cannot run its EXIT trap.  Its private lock is safe to
+  # reclaim only after the recorded process is gone; a live second updater is
+  # always failed closed above.
+  rm -rf "$RELEASE_LOCK_DIR" || return 1
+  if ! mkdir "$RELEASE_LOCK_DIR" 2>/dev/null; then
+    printf '  BLOCK %s (managed mirror lock changed while reclaiming stale state)\n' \
+      "$RELEASE_MIRROR_PARENT" >&2
+    return 1
+  fi
+  printf '%s\n' "$$" > "$RELEASE_LOCK_DIR/pid" || {
+    rm -rf "$RELEASE_LOCK_DIR"
+    return 1
+  }
+  RELEASE_LOCK_OWNED="1"
+}
+
+release_lock() {
+  if [ "${RELEASE_LOCK_OWNED:-0}" = "1" ]; then
+    rm -rf "$RELEASE_LOCK_DIR"
+    RELEASE_LOCK_OWNED="0"
+  fi
+}
+
+onboard_test_pause() {
+  local variable_name="$1"
+  local marker="${!variable_name:-}"
+
+  [ -n "$marker" ] || return 0
+  RELEASE_TEST_PAUSE_ACTIVE="1"
+  if ! : > "$marker"; then
+    RELEASE_TEST_PAUSE_ACTIVE="0"
+    return 1
+  fi
+  while [ -e "$marker" ]; do
+    sleep 0.01
+    if [ "${RELEASE_INTERRUPT_REQUESTED:-0}" = "1" ]; then
+      RELEASE_TEST_PAUSE_ACTIVE="0"
+      return 143
+    fi
+  done
+  RELEASE_TEST_PAUSE_ACTIVE="0"
+}
+
+onboard_test_failure_requested() {
+  [ "${1:-0}" = "1" ]
 }
 
 release_selection_is_safe_to_replace() {
@@ -190,10 +280,11 @@ release_selection_is_safe_to_replace() {
 
 make_staged_selection_link() {
   local dest="$1"
+  local target="$2"
 
   mkdir -p "$(dirname "$dest")" || return 1
   RELEASE_SELECTION_STAGE="$(dirname "$dest")/.${RELEASE_SKILL_NAME}.selection.$$"
-  if ! ln -s "$RELEASE_MIRROR" "$RELEASE_SELECTION_STAGE"; then
+  if ! ln -s "$target" "$RELEASE_SELECTION_STAGE"; then
     printf '  BLOCK %s (cannot stage durable selected link)\n' "$dest" >&2
     return 1
   fi
@@ -222,123 +313,226 @@ activate_staged_selection_link() {
   RELEASE_SELECTION_STAGE=""
 }
 
-cleanup_release_stage() {
+cleanup_release_runtime_residue() {
+  local backup residue
+
   if [ -n "${RELEASE_STAGE:-}" ] && [ -d "$RELEASE_STAGE" ]; then
     rm -rf "$RELEASE_STAGE"
   fi
   RELEASE_STAGE=""
-  if [ -n "${RELEASE_SELECTION_BACKUP:-}" ] && [ -d "$RELEASE_SELECTION_BACKUP" ]; then
-    rm -rf "$RELEASE_SELECTION_BACKUP"
+  if [ -n "${RELEASE_MIRROR_STAGE:-}" ] && [ -h "$RELEASE_MIRROR_STAGE" ]; then
+    rm -f "$RELEASE_MIRROR_STAGE"
   fi
-  RELEASE_SELECTION_BACKUP=""
+  RELEASE_MIRROR_STAGE=""
   if [ -n "${RELEASE_SELECTION_STAGE:-}" ] && [ -h "$RELEASE_SELECTION_STAGE" ]; then
     rm -f "$RELEASE_SELECTION_STAGE"
   fi
   RELEASE_SELECTION_STAGE=""
+  if [ -n "${RELEASE_SELECTION_BACKUP:-}" ] && [ -d "$RELEASE_SELECTION_BACKUP" ]; then
+    if [ -n "${RELEASE_SELECTION_DEST:-}" ] \
+      && [ ! -e "$RELEASE_SELECTION_DEST" ] && [ ! -h "$RELEASE_SELECTION_DEST" ]; then
+      mv "$RELEASE_SELECTION_BACKUP" "$RELEASE_SELECTION_DEST" || true
+    else
+      rm -rf "$RELEASE_SELECTION_BACKUP"
+    fi
+  fi
+  RELEASE_SELECTION_BACKUP=""
+  if [ -n "${RELEASE_MIRROR_BACKUP:-}" ] && [ -d "$RELEASE_MIRROR_BACKUP" ]; then
+    rm -rf "$RELEASE_MIRROR_BACKUP"
+  fi
+  RELEASE_MIRROR_BACKUP=""
 }
 
-restore_release_mirror() {
-  local failed_mirror
+reconcile_release_residue() {
+  local backup residue
 
-  if [ -z "${RELEASE_MIRROR_BACKUP:-}" ]; then
-    if [ "${RELEASE_MIRROR_CREATED:-0}" = "1" ] && [ -d "$RELEASE_MIRROR" ]; then
-      rm -rf "$RELEASE_MIRROR"
-      RELEASE_MIRROR_CREATED="0"
+  for residue in \
+    "$RELEASE_MIRROR_PARENT"/.${RELEASE_SKILL_NAME}.staging.* \
+    "$RELEASE_VERSIONS"/.${RELEASE_SKILL_NAME}.staging.* \
+    "$RELEASE_MIRROR_PARENT"/.${RELEASE_SKILL_NAME}.mirror-stage.*; do
+    if [ -d "$residue" ] || [ -h "$residue" ]; then
+      rm -rf "$residue" || return 1
     fi
-    return 0
+  done
+
+  for residue in "$(dirname "$RELEASE_SELECTION_DEST")"/.${RELEASE_SKILL_NAME}.selection.*; do
+    if [ -h "$residue" ]; then
+      rm -f "$residue" || return 1
+    fi
+  done
+
+  for backup in "$(dirname "$RELEASE_SELECTION_DEST")"/.${RELEASE_SKILL_NAME}.legacy.*; do
+    if [ -d "$backup" ] && [ ! -h "$backup" ]; then
+      if [ -e "$RELEASE_SELECTION_DEST" ] || [ -h "$RELEASE_SELECTION_DEST" ]; then
+        rm -rf "$backup" || return 1
+      elif [ "$(tree_fingerprint "$backup")" = "$KNOWN_LEGACY_RELEASE_SKILL_TREE_SHA256" ]; then
+        mv "$backup" "$RELEASE_SELECTION_DEST" || return 1
+      else
+        printf '  BLOCK %s (stale selection backup is not the known legacy tree; preserved)\n' \
+          "$backup" >&2
+        return 1
+      fi
+    fi
+  done
+
+  # These backups are created only after selection has committed, so they are
+  # never active targets.  Keep the check before removing them in case an
+  # operator has placed an unrelated directory under the managed namespace.
+  for backup in "$RELEASE_MIRROR_PARENT"/.${RELEASE_SKILL_NAME}.legacy-mirror.*; do
+    if [ -d "$backup" ] && [ ! -h "$backup" ]; then
+      release_skill_tree_is_valid "$backup" || {
+        printf '  BLOCK %s (stale mirror backup is not a valid managed tree; preserved)\n' \
+          "$backup" >&2
+        return 1
+      }
+      rm -rf "$backup" || return 1
+    fi
+  done
+}
+
+release_mirror_target() {
+  local target
+
+  if [ -h "$RELEASE_MIRROR" ]; then
+    target="$(python3 -c 'import os, sys; print(os.path.realpath(sys.argv[1]))' "$RELEASE_MIRROR")" || return 1
+    case "$target" in
+      "$RELEASE_VERSIONS"/*) ;;
+      *)
+        printf '  BLOCK %s (managed mirror pointer leaves the private version store)\n' \
+          "$RELEASE_MIRROR" >&2
+        return 1
+        ;;
+    esac
+    [ -d "$target" ] && [ ! -h "$target" ] || return 1
+    release_skill_tree_is_valid "$target" || return 1
+    printf '%s\n' "$target"
+  elif [ -d "$RELEASE_MIRROR" ]; then
+    release_skill_tree_is_valid "$RELEASE_MIRROR" || return 1
+    printf '%s\n' "$RELEASE_MIRROR"
+  elif [ -e "$RELEASE_MIRROR" ]; then
+    printf '  BLOCK %s (managed mirror is not a directory or trusted version pointer)\n' \
+      "$RELEASE_MIRROR" >&2
+    return 1
   fi
-  failed_mirror="$RELEASE_MIRROR_PARENT/.${RELEASE_SKILL_NAME}.failed.$$"
-  if [ -e "$RELEASE_MIRROR" ]; then
-    mv "$RELEASE_MIRROR" "$failed_mirror" || return 1
+  return 0
+}
+
+activate_mirror_pointer() {
+  local target="$1"
+
+  RELEASE_MIRROR_STAGE="$RELEASE_MIRROR_PARENT/.${RELEASE_SKILL_NAME}.mirror-stage.$$"
+  ln -s "$target" "$RELEASE_MIRROR_STAGE" || return 1
+  if [ -d "$RELEASE_MIRROR" ] && [ ! -h "$RELEASE_MIRROR" ]; then
+    RELEASE_MIRROR_BACKUP="$RELEASE_MIRROR_PARENT/.${RELEASE_SKILL_NAME}.legacy-mirror.$$"
+    mv "$RELEASE_MIRROR" "$RELEASE_MIRROR_BACKUP" || return 1
   fi
-  mv "$RELEASE_MIRROR_BACKUP" "$RELEASE_MIRROR" || return 1
-  RELEASE_MIRROR_BACKUP=""
-  RELEASE_MIRROR_CREATED="0"
-  [ ! -e "$failed_mirror" ] || rm -rf "$failed_mirror"
+  if ! python3 -c 'import os, sys; os.replace(sys.argv[1], sys.argv[2])' \
+    "$RELEASE_MIRROR_STAGE" "$RELEASE_MIRROR"; then
+    printf '  BLOCK %s (cannot atomically update the managed mirror pointer)\n' \
+      "$RELEASE_MIRROR" >&2
+    return 1
+  fi
+  RELEASE_MIRROR_STAGE=""
 }
 
 install_release_skill() {
   local src_dir="$1"
   local dest="$2"
-  local source_tree mirror_tree
+  local source_tree version_dir selection_target mirror_target
+  local selected_needs_update="1"
 
-  RELEASE_STAGE=""
-  RELEASE_SELECTION_STAGE=""
-  RELEASE_SELECTION_BACKUP=""
-  RELEASE_MIRROR_BACKUP=""
-  RELEASE_MIRROR_CREATED="0"
+  RELEASE_SELECTION_DEST="$dest"
   release_source_is_verified "$src_dir" || return 1
   prepare_release_mirror || return 1
+  acquire_release_lock || return 1
+  reconcile_release_residue || return 1
   release_selection_is_safe_to_replace "$dest" || return 1
-  make_staged_selection_link "$dest" || return 1
 
   source_tree="$(tree_fingerprint "$src_dir")" || {
     printf '  BLOCK %s (cannot fingerprint verified release source)\n' "$src_dir" >&2
-    cleanup_release_stage
     return 1
   }
-  if [ -e "$RELEASE_MIRROR" ] || [ -h "$RELEASE_MIRROR" ]; then
-    if [ -h "$RELEASE_MIRROR" ] || ! release_skill_tree_is_valid "$RELEASE_MIRROR"; then
-      printf '  BLOCK %s (existing managed mirror is not a valid real tree)\n' "$RELEASE_MIRROR" >&2
-      cleanup_release_stage
+  mkdir -p "$RELEASE_VERSIONS" || return 1
+  if [ -e "$RELEASE_VERSIONS/$source_tree" ] || [ -h "$RELEASE_VERSIONS/$source_tree" ]; then
+    version_dir="$RELEASE_VERSIONS/$source_tree"
+    if [ -h "$version_dir" ] || ! release_skill_tree_is_valid "$version_dir" \
+      || [ "$(tree_fingerprint "$version_dir")" != "$source_tree" ]; then
+      printf '  BLOCK %s (existing immutable version is invalid; preserved)\n' "$version_dir" >&2
       return 1
     fi
-    mirror_tree="$(tree_fingerprint "$RELEASE_MIRROR")" || {
-      printf '  BLOCK %s (cannot fingerprint existing managed mirror)\n' "$RELEASE_MIRROR" >&2
-      cleanup_release_stage
-      return 1
-    }
   else
-    mirror_tree=""
-  fi
-
-  if [ "$mirror_tree" != "$source_tree" ]; then
-    RELEASE_STAGE="$RELEASE_MIRROR_PARENT/.${RELEASE_SKILL_NAME}.staging.$$"
+    version_dir="$RELEASE_VERSIONS/$source_tree"
+    RELEASE_STAGE="$RELEASE_VERSIONS/.${RELEASE_SKILL_NAME}.staging.$$"
     if ! mkdir "$RELEASE_STAGE" || ! cp -R "$src_dir/." "$RELEASE_STAGE" \
       || ! release_skill_tree_is_valid "$RELEASE_STAGE" \
-      || [ "$(tree_fingerprint "$RELEASE_STAGE")" != "$source_tree" ]; then
-      printf '  BLOCK %s (staged mirror inventory/type/SHA-256 verification failed; kept last known-good mirror)\n' "$RELEASE_MIRROR" >&2
-      cleanup_release_stage
-      return 1
-    fi
-    if [ -n "$mirror_tree" ]; then
-      RELEASE_MIRROR_BACKUP="$RELEASE_MIRROR_PARENT/.${RELEASE_SKILL_NAME}.backup.$$"
-      if ! mv "$RELEASE_MIRROR" "$RELEASE_MIRROR_BACKUP"; then
-        printf '  BLOCK %s (cannot prepare atomic mirror replacement)\n' "$RELEASE_MIRROR" >&2
-        cleanup_release_stage
-        return 1
-      fi
-    fi
-    if ! mv "$RELEASE_STAGE" "$RELEASE_MIRROR"; then
-      printf '  BLOCK %s (cannot activate staged mirror; restoring last known-good mirror)\n' "$RELEASE_MIRROR" >&2
-      RELEASE_STAGE=""
-      restore_release_mirror || true
-      cleanup_release_stage
+      || [ "$(tree_fingerprint "$RELEASE_STAGE")" != "$source_tree" ] \
+      || ! mv "$RELEASE_STAGE" "$version_dir"; then
+      printf '  BLOCK %s (staged immutable version verification failed; kept last known-good selection)\n' \
+        "$version_dir" >&2
       return 1
     fi
     RELEASE_STAGE=""
-    RELEASE_MIRROR_CREATED="1"
-    printf '  MIRROR %s (verified staged inventory/type/SHA-256)\n' "$RELEASE_MIRROR"
-  else
-    printf '  MIRROR %s (verified and up-to-date)\n' "$RELEASE_MIRROR"
+    printf '  MIRROR %s (verified immutable inventory/type/SHA-256)\n' "$version_dir"
   fi
 
-  if ! activate_staged_selection_link "$dest"; then
-    cleanup_release_stage
-    restore_release_mirror || true
-    return 1
+  mirror_target="$(release_mirror_target)" || return 1
+  if [ -h "$dest" ]; then
+    selection_target="$(python3 -c 'import os, sys; print(os.path.realpath(sys.argv[1]))' "$dest")" || return 1
+    if [ "$selection_target" = "$version_dir" ] && release_skill_tree_is_valid "$selection_target"; then
+      selected_needs_update="0"
+    fi
   fi
-  if [ -n "$RELEASE_MIRROR_BACKUP" ]; then
-    rm -rf "$RELEASE_MIRROR_BACKUP"
+
+  if [ "$selected_needs_update" = "1" ]; then
+    make_staged_selection_link "$dest" "$version_dir" || return 1
+    onboard_test_pause FANTASYDISK_ONBOARD_TEST_PAUSE_BEFORE_SELECTION_COMMIT || return 1
+    if onboard_test_failure_requested "${FANTASYDISK_ONBOARD_TEST_FAIL_BEFORE_SELECTION_COMMIT:-0}"; then
+      printf '  BLOCK %s (test failure injected before selection commit)\n' "$dest" >&2
+      return 1
+    fi
+    activate_staged_selection_link "$dest" || return 1
+    printf '  SELECTION_COMMIT %s -> %s\n' "$dest" "$version_dir"
+    if onboard_test_failure_requested "${FANTASYDISK_ONBOARD_TEST_FAIL_AFTER_SELECTION_COMMIT:-0}"; then
+      printf '  BLOCK %s (test failure injected after selection commit)\n' "$dest" >&2
+      return 1
+    fi
+    onboard_test_pause FANTASYDISK_ONBOARD_TEST_PAUSE_AFTER_SELECTION_COMMIT || return 1
+  else
+    printf '  SELECTION %s (verified and up-to-date)\n' "$dest"
   fi
-  RELEASE_MIRROR_BACKUP=""
-  RELEASE_MIRROR_CREATED="0"
-  if [ -n "$RELEASE_SELECTION_BACKUP" ]; then
-    rm -rf "$RELEASE_SELECTION_BACKUP"
+
+  if [ "$mirror_target" != "$version_dir" ]; then
+    activate_mirror_pointer "$version_dir" || return 1
+    printf '  MIRROR_POINTER %s -> %s\n' "$RELEASE_MIRROR" "$version_dir"
+  else
+    printf '  MIRROR_POINTER %s (verified and up-to-date)\n' "$RELEASE_MIRROR"
   fi
-  RELEASE_SELECTION_BACKUP=""
-  printf '  linked %s -> %s\n' "$dest" "$RELEASE_MIRROR"
+  printf '  linked %s -> %s\n' "$dest" "$version_dir"
 }
+
+onboard_exit() {
+  local status="$?"
+
+  if [ "${RELEASE_LOCK_OWNED:-0}" = "1" ]; then
+    cleanup_release_runtime_residue || true
+    release_lock || true
+  fi
+  trap - EXIT
+  exit "$status"
+}
+
+# TERM/INT are observed by the deterministic pause hook before it can cross a
+# selection boundary.  KILL cannot run a trap; its stale lock and private
+# residue are reconciled by the next invocation after the owner disappears.
+onboard_interrupt() {
+  RELEASE_INTERRUPT_REQUESTED="1"
+  if [ "${RELEASE_TEST_PAUSE_ACTIVE:-0}" != "1" ]; then
+    exit 143
+  fi
+}
+
+trap onboard_interrupt TERM INT
+trap onboard_exit EXIT
 
 # link_skills <src_dir> <dest_dir>
 # Symlinks every immediate subdirectory of <src_dir> into <dest_dir>,
