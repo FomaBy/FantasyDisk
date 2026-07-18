@@ -436,9 +436,10 @@ def assert_sole_publisher_write_access(repository: str) -> None:
             "inventory"
         )
     for installation in installations:
-        if not isinstance(installation, dict) or not isinstance(
-            installation.get("id"), int
-        ):
+        installation_id = (
+            installation.get("id") if isinstance(installation, dict) else None
+        )
+        if type(installation_id) is not int or installation_id <= 0:
             raise RuntimeError("GitHub App installations are unreadable")
         permissions = installation.get("permissions")
         if not isinstance(permissions, dict):
@@ -453,7 +454,7 @@ def assert_sole_publisher_write_access(repository: str) -> None:
         if installation.get(
             "repository_selection"
         ) == "selected" and not _installation_covers_repository(
-            installation["id"], repository
+            installation_id, repository
         ):
             continue
         raise RuntimeError(

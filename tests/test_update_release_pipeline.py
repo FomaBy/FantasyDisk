@@ -202,6 +202,31 @@ def _sole_write_access_ok(login: str = PUBLISHER_LOGIN):
     )
 
 
+def _classify_publisher_commands(
+    commands: list[list[str]],
+) -> dict[str, list[list[str]]]:
+    """Classify every command shape that can modify the distribution release."""
+    write_commands: list[list[str]] = []
+    release_write_subcommands = {"create", "upload", "edit", "delete"}
+    read_only_http_methods = {"GET", "HEAD", "OPTIONS"}
+    for command in commands:
+        if command[:2] == ["gh", "api"]:
+            method = "GET"
+            if "--method" in command:
+                method_at = command.index("--method") + 1
+                if method_at < len(command):
+                    method = command[method_at].upper()
+            if method not in read_only_http_methods:
+                write_commands.append(command)
+        elif (
+            command[:2] == ["gh", "release"]
+            and len(command) > 2
+            and command[2] in release_write_subcommands
+        ):
+            write_commands.append(command)
+    return {"write_commands": write_commands}
+
+
 class UpdateReleasePipelineTests(unittest.TestCase):
     def test_manifest_matches_both_installers_and_public_urls(self) -> None:
         with tempfile.TemporaryDirectory() as temporary:
@@ -2060,6 +2085,29 @@ class PublisherDraftAssetRaceTests(unittest.TestCase):
                 ],
                 "can reach the distribution repository",
             ),
+            *[
+                (
+                    f"malformed-installation-id-{label}",
+                    [
+                        *no_writers,
+                        _no_deploy_keys(),
+                        _gh(["gh", "api"], 0, json.dumps({
+                            "total_count": 1,
+                            "installations": [dict(write_app, id=installation_id)],
+                        })),
+                    ],
+                    "GitHub App installations are unreadable",
+                )
+                for label, installation_id in (
+                    ("true", True),
+                    ("false", False),
+                    ("null", None),
+                    ("string", "7"),
+                    ("float", 7.0),
+                    ("zero", 0),
+                    ("negative", -7),
+                )
+            ],
             (
                 "unprovable-installation-count",
                 [
@@ -2134,6 +2182,25 @@ class PublisherDraftAssetRaceTests(unittest.TestCase):
                 {"total_count": 1.0, "installations": [write_app]},
                 "GitHub App installations are unreadable",
             ),
+            *[
+                (
+                    f"id-{label}",
+                    {
+                        "total_count": 1,
+                        "installations": [dict(write_app, id=installation_id)],
+                    },
+                    "GitHub App installations are unreadable",
+                )
+                for label, installation_id in (
+                    ("true", True),
+                    ("false", False),
+                    ("null", None),
+                    ("string", "7"),
+                    ("float", 7.0),
+                    ("zero", 0),
+                    ("negative", -7),
+                )
+            ],
             (
                 "mismatched-count",
                 {"total_count": 2, "installations": [write_app]},
@@ -2226,25 +2293,8 @@ class PublisherDraftAssetRaceTests(unittest.TestCase):
                     with self.assertRaisesRegex(RuntimeError, error):
                         self._publish()
                 commands = [list(call.args[0]) for call in run_mock.call_args_list]
-                self.assertFalse(
-                    any(
-                        "--method" in command and "POST" in command
-                        for command in commands
-                    )
-                )
-                self.assertFalse(
-                    any(command[:3] == ["gh", "release", "create"] for command in commands)
-                )
-                self.assertFalse(
-                    any(
-                        "upload" in part.lower()
-                        for command in commands
-                        for part in command
-                    )
-                )
-                self.assertFalse(
-                    any(command[:3] == ["gh", "release", "edit"] for command in commands)
-                )
+                write_commands = _classify_publisher_commands(commands)["write_commands"]
+                self.assertEqual(write_commands, [], label)
 
     def test_sole_writer_boundary_accepts_only_provably_harmless_grants(
         self,
