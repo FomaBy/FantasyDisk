@@ -7,6 +7,8 @@ import io
 import os
 import signal
 import shutil
+import socket
+import stat
 import subprocess
 import tarfile
 import tempfile
@@ -199,6 +201,61 @@ def _mirror_pointer(home: Path) -> Path:
 
 def _versions(home: Path) -> Path:
     return home / VERSIONS_RELATIVE_PATH
+
+
+def _lstat_signature(path: Path) -> tuple[str, ...]:
+    """Return a stable root-type/content signature without following links."""
+    metadata = os.lstat(path)
+    mode = f"{metadata.st_mode & 0o7777:04o}"
+    if stat.S_ISLNK(metadata.st_mode):
+        return ("symlink", os.readlink(path), mode)
+    if stat.S_ISDIR(metadata.st_mode):
+        return ("directory", mode)
+    if stat.S_ISREG(metadata.st_mode):
+        return ("file", mode, _file_sha256(path))
+    if stat.S_ISFIFO(metadata.st_mode):
+        return ("fifo", mode)
+    if stat.S_ISSOCK(metadata.st_mode):
+        return ("socket", mode)
+    return ("other", mode)
+
+
+def _make_external_versions_sentinel(root: Path) -> None:
+    """Create ordinary and residue-pattern entries that onboarding must not touch."""
+    root.mkdir(parents=True)
+    (root / "ordinary-sentinel.txt").write_bytes(b"operator data must survive\n")
+    for suffix in (
+        "staging.external",
+        "mirror-stage.external",
+        "legacy-mirror.external",
+    ):
+        residue = root / f".fantasydisk-release-director.{suffix}"
+        residue.mkdir()
+        (residue / "sentinel.txt").write_bytes(b"do not remove\n")
+
+
+def _install_unsafe_versions_root(
+    path: Path, kind: str, external: Path
+) -> socket.socket | None:
+    """Install one disposable unsafe root; return an open Unix socket when needed."""
+    path.parent.mkdir(parents=True, exist_ok=True)
+    if kind == "symlink-to-directory":
+        path.symlink_to(external, target_is_directory=True)
+        return None
+    if kind == "dangling-symlink":
+        path.symlink_to(external.parent / "missing-version-store")
+        return None
+    if kind == "regular-file":
+        path.write_bytes(b"not a directory\n")
+        return None
+    if kind == "fifo":
+        os.mkfifo(path)
+        return None
+    if kind == "socket":
+        listener = socket.socket(socket.AF_UNIX, socket.SOCK_STREAM)
+        listener.bind(str(path))
+        return listener
+    raise AssertionError(f"unknown unsafe root kind: {kind}")
 
 
 def _assert_durable_selected_tree(home: Path, expected_source: Path) -> None:
@@ -429,7 +486,119 @@ class ReleaseSkillOnboardingTest(unittest.TestCase):
             result = _run_onboard(ONBOARD, home)
 
             self.assertEqual(result.returncode, 0, result.stdout)
+            self.assertTrue(_versions(home).is_dir())
+            self.assertFalse(_versions(home).is_symlink())
             _assert_durable_selected_tree(home, SOURCE_SKILL)
+
+    def test_unsafe_versions_root_fails_closed_before_first_run_traversal(self) -> None:
+        for kind in (
+            "symlink-to-directory",
+            "dangling-symlink",
+            "regular-file",
+            "fifo",
+            "socket",
+        ):
+            with self.subTest(kind=kind), tempfile.TemporaryDirectory(
+                prefix="u-"
+            ) as raw:
+                workspace = Path(raw).resolve()
+                home = Path(tempfile.mkdtemp(prefix="h-", dir="/tmp")).resolve()
+                self.addCleanup(shutil.rmtree, home, ignore_errors=True)
+                external = workspace / "external-sentinel"
+                _make_external_versions_sentinel(external)
+                listener = None
+                try:
+                    listener = _install_unsafe_versions_root(_versions(home), kind, external)
+                    external_before = _inventory(external)
+                    root_before = _lstat_signature(_versions(home))
+                    result = _run_onboard(ONBOARD, home)
+
+                    self.assertNotEqual(result.returncode, 0, result.stdout)
+                    self.assertIn("BLOCK", result.stdout)
+                    self.assertIn("version store", result.stdout.lower())
+                    self.assertEqual(_inventory(external), external_before)
+                    self.assertEqual(_lstat_signature(_versions(home)), root_before)
+                    self.assertFalse(_selected(home).exists())
+                    self.assertFalse(_selected(home).is_symlink())
+                    self.assertFalse(_mirror_pointer(home).exists())
+                    self.assertFalse(_mirror_pointer(home).is_symlink())
+                    managed_parent = _versions(home).parent
+                    self.assertFalse(
+                        (managed_parent / ".fantasydisk-release-director.lock").exists()
+                    )
+                    self.assertEqual(
+                        list(managed_parent.glob(".fantasydisk-release-director.staging.*")),
+                        [],
+                    )
+                    self.assertEqual(
+                        list(managed_parent.glob(".fantasydisk-release-director.mirror-stage.*")),
+                        [],
+                    )
+                finally:
+                    if listener is not None:
+                        listener.close()
+
+    def test_unsafe_versions_root_preserves_existing_selection_and_mirror(self) -> None:
+        for kind in (
+            "symlink-to-directory",
+            "dangling-symlink",
+            "regular-file",
+            "fifo",
+            "socket",
+        ):
+            with self.subTest(kind=kind), tempfile.TemporaryDirectory(
+                prefix="u-"
+            ) as raw:
+                workspace = Path(raw).resolve()
+                home = Path(tempfile.mkdtemp(prefix="h-", dir="/tmp")).resolve()
+                self.addCleanup(shutil.rmtree, home, ignore_errors=True)
+                initial = _run_onboard(ONBOARD, home)
+                self.assertEqual(initial.returncode, 0, initial.stdout)
+
+                previous_target = Path(os.path.realpath(_mirror_pointer(home)))
+                previous_inventory = _inventory(previous_target)
+                preserved_target = workspace / "prior-valid-tree"
+                shutil.copytree(previous_target, preserved_target)
+
+                # Keep both durable pointers byte-identical throughout the
+                # unsafe-root probe while their prior valid target remains
+                # resolvable outside the root being rejected.
+                for pointer in (_selected(home), _mirror_pointer(home)):
+                    pointer.unlink()
+                    pointer.symlink_to(preserved_target)
+                selected_before = os.readlink(_selected(home))
+                mirror_before = os.readlink(_mirror_pointer(home))
+
+                shutil.rmtree(_versions(home))
+                external = workspace / "external-sentinel"
+                _make_external_versions_sentinel(external)
+                listener = None
+                try:
+                    listener = _install_unsafe_versions_root(_versions(home), kind, external)
+                    external_before = _inventory(external)
+                    root_before = _lstat_signature(_versions(home))
+                    result = _run_onboard(ONBOARD, home)
+
+                    self.assertNotEqual(result.returncode, 0, result.stdout)
+                    self.assertIn("BLOCK", result.stdout)
+                    self.assertIn("version store", result.stdout.lower())
+                    self.assertEqual(os.readlink(_selected(home)), selected_before)
+                    self.assertEqual(os.readlink(_mirror_pointer(home)), mirror_before)
+                    self.assertEqual(
+                        Path(os.path.realpath(_selected(home))), preserved_target.resolve()
+                    )
+                    self.assertEqual(
+                        Path(os.path.realpath(_mirror_pointer(home))), preserved_target.resolve()
+                    )
+                    self.assertEqual(_inventory(preserved_target), previous_inventory)
+                    self.assertEqual(_inventory(external), external_before)
+                    self.assertEqual(_lstat_signature(_versions(home)), root_before)
+                    self.assertFalse(
+                        (home / ".codex" / "skill-mirrors" / "FantasyDisk" / ".fantasydisk-release-director.lock").exists()
+                    )
+                finally:
+                    if listener is not None:
+                        listener.close()
 
     def test_selected_skill_uses_durable_mirror_not_the_source_checkout(self) -> None:
         with tempfile.TemporaryDirectory(prefix="fantasydisk-onboard-durable-") as raw:

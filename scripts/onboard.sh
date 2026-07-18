@@ -154,6 +154,59 @@ path_is_ephemeral_or_repo_owned() {
   return 1
 }
 
+validate_release_versions_root() {
+  local expected_path="$RELEASE_MIRROR_PARENT/$RELEASE_VERSIONS_NAME"
+  local physical_path
+
+  # The private version store is a trust boundary.  Keep this check ahead of
+  # the lock, residue reconciliation, and every glob/read/delete below it.
+  # The lexical check also prevents a future caller from passing a path that
+  # merely happens to resolve under the managed mirror parent.
+  if [ "$RELEASE_VERSIONS" != "$expected_path" ]; then
+    printf '  BLOCK %s (private version store must be the managed child path)\n' \
+      "$RELEASE_VERSIONS" >&2
+    return 1
+  fi
+
+  if [ -h "$RELEASE_VERSIONS" ]; then
+    printf '  BLOCK %s (private version store must not be a symlink)\n' \
+      "$RELEASE_VERSIONS" >&2
+    return 1
+  elif [ -d "$RELEASE_VERSIONS" ]; then
+    :
+  elif [ -e "$RELEASE_VERSIONS" ] || [ -p "$RELEASE_VERSIONS" ] \
+    || [ -S "$RELEASE_VERSIONS" ] || [ -b "$RELEASE_VERSIONS" ] \
+    || [ -c "$RELEASE_VERSIONS" ]; then
+    printf '  BLOCK %s (private version store has an unsafe root type)\n' \
+      "$RELEASE_VERSIONS" >&2
+    return 1
+  else
+    # An absent root is the only path that onboarding may create.  Use mkdir
+    # without -p so a late unexpected entry cannot be silently accepted.
+    if ! mkdir "$RELEASE_VERSIONS"; then
+      printf '  BLOCK %s (cannot create private version store safely)\n' \
+        "$RELEASE_VERSIONS" >&2
+      return 1
+    fi
+  fi
+
+  if [ -h "$RELEASE_VERSIONS" ] || [ ! -d "$RELEASE_VERSIONS" ]; then
+    printf '  BLOCK %s (private version store is not a real directory)\n' \
+      "$RELEASE_VERSIONS" >&2
+    return 1
+  fi
+  physical_path="$(cd -P "$RELEASE_VERSIONS" && pwd -P)" || {
+    printf '  BLOCK %s (private version store path cannot be resolved safely)\n' \
+      "$RELEASE_VERSIONS" >&2
+    return 1
+  }
+  if [ "$physical_path" != "$expected_path" ]; then
+    printf '  BLOCK %s (private version store resolves outside the managed child)\n' \
+      "$RELEASE_VERSIONS" >&2
+    return 1
+  fi
+}
+
 prepare_release_mirror() {
   local requested_parent="$HOME/.codex/skill-mirrors/FantasyDisk"
   local git_probe
@@ -176,6 +229,7 @@ prepare_release_mirror() {
   RELEASE_MIRROR="$RELEASE_MIRROR_PARENT/$RELEASE_SKILL_NAME"
   RELEASE_VERSIONS="$RELEASE_MIRROR_PARENT/$RELEASE_VERSIONS_NAME"
   RELEASE_LOCK_DIR="$RELEASE_MIRROR_PARENT/$RELEASE_LOCK_NAME"
+  validate_release_versions_root || return 1
 }
 
 release_lock_is_live() {

@@ -21,7 +21,10 @@ commit point; старые version trees не удаляются во время
 убирается, а после SIGKILL следующий onboarding безопасно reconciles только свои
 staging/backup paths. Завершённый Multica task/worktree не остаётся persistent
 source. Неизвестная реальная локальная папка сохраняется и останавливает
-onboarding; внешняя или dangling ссылка никогда не используется как source.
+onboarding; private version store создаётся только как реальная директория внутри
+managed mirror parent, а symlink, файл, FIFO, socket или другой неожиданный тип
+останавливает onboarding до любого чтения или удаления под этим путём. Внешняя
+или dangling ссылка никогда не используется как source.
 Дальше: AI-агенты автоматически видят мастер-скилл **`fantasydisk-onboarding`**
 (в `.claude/skills/`), люди читают [`docs/process/ai_agent_memorandum.md`](docs/process/ai_agent_memorandum.md).
 **Правило №1:** все задачи создаются в и берутся из **Multica** (проект
