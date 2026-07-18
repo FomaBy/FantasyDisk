@@ -484,6 +484,98 @@ class ReleaseSkillOnboardingTest(unittest.TestCase):
                 self.assertFalse(target.is_symlink())
                 self.assertEqual(_inventory(target), before)
 
+    def test_unproven_residue_namespaces_preserve_directories_and_symlinks(self) -> None:
+        """Filename matches never authorize cleanup in any managed namespace."""
+        cases = (
+            ("staging-mirror", "staging", "mirror"),
+            ("staging-versions", "staging", "versions"),
+            ("mirror-stage", "mirror-stage", "mirror"),
+            ("selection", "selection", "selection"),
+            ("legacy-selection", "legacy", "selection"),
+            ("legacy-mirror", "legacy-mirror", "mirror"),
+        )
+        for case_name, namespace, parent_kind in cases:
+            for residue_kind in ("directory", "symlink"):
+                with self.subTest(case=case_name, residue_kind=residue_kind), tempfile.TemporaryDirectory(
+                    prefix="fantasydisk-onboard-unproven-residue-"
+                ) as raw:
+                    workspace = Path(raw)
+                    home = workspace / "home"
+                    mirror_parent = home / ".codex" / "skill-mirrors" / "FantasyDisk"
+                    versions = mirror_parent / ".fantasydisk-release-director.versions"
+                    selection_parent = home / ".codex" / "skills"
+                    mirror_parent.mkdir(parents=True)
+                    versions.mkdir()
+                    selection_parent.mkdir(parents=True)
+
+                    parent = mirror_parent if parent_kind == "mirror" else (
+                        versions if parent_kind == "versions" else selection_parent
+                    )
+                    residue = parent / f".fantasydisk-release-director.{namespace}.operator"
+                    external = workspace / "external-sentinel"
+                    external.mkdir()
+                    (external / "keep.txt").write_bytes(b"operator data must survive\n")
+                    if residue_kind == "directory":
+                        residue.mkdir()
+                        (residue / "keep.txt").write_bytes(b"operator data must survive\n")
+                        residue_before = _inventory(residue)
+                    else:
+                        residue.symlink_to(external, target_is_directory=True)
+                        residue_before = _lstat_or_absent(residue)
+                    external_before = _inventory(external)
+
+                    result = _run_onboard(ONBOARD, home)
+
+                    self.assertNotEqual(result.returncode, 0, result.stdout)
+                    self.assertIn("BLOCK", result.stdout)
+                    self.assertIn("preserved", result.stdout.lower())
+                    if residue_kind == "directory":
+                        self.assertEqual(_inventory(residue), residue_before)
+                    else:
+                        self.assertEqual(_lstat_or_absent(residue), residue_before)
+                    self.assertEqual(_inventory(external), external_before)
+
+    def test_malformed_residue_provenance_is_preserved_and_blocks(self) -> None:
+        marker_variants = ("malformed", "incomplete", "unreadable", "symlink")
+        for variant in marker_variants:
+            with self.subTest(variant=variant), tempfile.TemporaryDirectory(
+                prefix="fantasydisk-onboard-malformed-residue-"
+            ) as raw:
+                workspace = Path(raw)
+                home = workspace / "home"
+                parent = home / ".codex" / "skill-mirrors" / "FantasyDisk"
+                versions = parent / ".fantasydisk-release-director.versions"
+                parent.mkdir(parents=True)
+                versions.mkdir()
+                residue = parent / ".fantasydisk-release-director.staging.operator"
+                residue.mkdir()
+                (residue / "keep.txt").write_bytes(b"operator data must survive\n")
+                marker = parent / ".fantasydisk-release-director.residue-owner.staging.operator"
+                external = workspace / "external-marker-target"
+                external.write_bytes(b"external marker target\n")
+                if variant == "malformed":
+                    marker.write_text("not a provenance record\n", encoding="ascii")
+                elif variant == "incomplete":
+                    marker.write_text(
+                        "magic=fantasydisk-release-director-residue-v1\n", encoding="ascii"
+                    )
+                elif variant == "unreadable":
+                    marker.write_text("unreadable\n", encoding="ascii")
+                    marker.chmod(0)
+                else:
+                    marker.symlink_to(external)
+                residue_before = _inventory(residue)
+                marker_before = _metadata_signature(marker)
+                external_before = _inventory(external)
+
+                result = _run_onboard(ONBOARD, home)
+
+                self.assertNotEqual(result.returncode, 0, result.stdout)
+                self.assertIn("BLOCK", result.stdout)
+                self.assertEqual(_inventory(residue), residue_before)
+                self.assertEqual(_metadata_signature(marker), marker_before)
+                self.assertEqual(_inventory(external), external_before)
+
     def test_symlinked_entries_are_preserved_and_block_without_following_targets(self) -> None:
         mutations = {}
         with tempfile.TemporaryDirectory(prefix="fantasydisk-onboard-link-target-") as raw:
