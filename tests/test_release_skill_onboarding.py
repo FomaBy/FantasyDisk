@@ -231,9 +231,14 @@ def _lstat_signature(path: Path) -> tuple[str, ...]:
 
 
 def _physical_signature(path: Path) -> tuple[str, ...]:
-    """Include no-follow physical identity to distinguish equivalent links."""
+    """Include no-follow identity plus ctime to catch immediate inode reuse."""
     metadata = os.lstat(path)
-    return (str(metadata.st_dev), str(metadata.st_ino), *_lstat_signature(path))
+    return (
+        str(metadata.st_dev),
+        str(metadata.st_ino),
+        str(metadata.st_ctime_ns),
+        *_lstat_signature(path),
+    )
 
 
 def _lstat_or_absent(path: Path) -> tuple[str, ...]:
@@ -1405,8 +1410,8 @@ class ReleaseSkillOnboardingTest(unittest.TestCase):
                 if replacement_kind == "destination":
                     self.assertEqual(os.readlink(_mirror_pointer(home)), old_mirror_target)
 
-    def test_legacy_backup_or_marker_replacement_keeps_verified_new_pointer(self) -> None:
-        """A substituted legacy backup/marker blocks without deleting its replacement."""
+    def test_legacy_backup_or_marker_replacement_preserves_the_absent_destination(self) -> None:
+        """A substituted legacy backup/marker fails closed without a replacement pointer."""
         for flow, replacement_kind in (
             ("selection", "backup"),
             ("selection", "marker"),
@@ -1474,7 +1479,19 @@ class ReleaseSkillOnboardingTest(unittest.TestCase):
                 self.assertNotIn(forbidden_success, output)
                 self.assertEqual(_physical_signature(replacement), expected)
                 self.assertEqual(_inventory(external), external_before)
-                _assert_durable_selected_tree(home, source)
+                if flow == "selection":
+                    # The known legacy directory was moved aside before the
+                    # attacker changed its backup/marker.  Do not activate a
+                    # new selected pointer or restore through that replacement.
+                    self.assertFalse(os.path.lexists(_selected(home)))
+                else:
+                    # Selection was already independently committed; mirror
+                    # activation must leave its missing destination absent.
+                    self.assertFalse(os.path.lexists(_mirror_pointer(home)))
+                    self.assertTrue(_selected(home).is_symlink())
+                    self.assertEqual(
+                        _inventory(Path(os.path.realpath(_selected(home)))), _inventory(source)
+                    )
 
     def _assert_signal_recovery_contract(self, interrupt: signal.Signals) -> None:
         for phase, expected_new in (("before", False), ("after", True)):
