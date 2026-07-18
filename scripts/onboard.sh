@@ -266,22 +266,61 @@ release_lock_owner_target_at() {
   printf '%s\n' "$owner_dir"
 }
 
+# Classify an owner PID as live (0), conclusively dead (1), or unknown (2).
+# Only the dead result permits callers to reclaim state.
+release_lock_probe_liveness() {
+  local lock_pid="$1"
+  local probe_result
+
+  # Python exposes portable errno-specific exceptions without parsing
+  # localized shell diagnostics. Only ProcessLookupError proves that the
+  # owner is gone; permission errors, other probe errors, and invalid PIDs
+  # remain unknown so callers fail closed.
+  probe_result="$(python3 -c '
+import os
+import sys
+
+try:
+    pid = int(sys.argv[1])
+    os.kill(pid, 0)
+except ProcessLookupError:
+    print("dead")
+except PermissionError:
+    print("unknown")
+except OSError:
+    print("unknown")
+except (TypeError, ValueError, OverflowError):
+    print("unknown")
+except Exception:
+    print("unknown")
+else:
+    print("live")
+' "$lock_pid" 2>/dev/null)" || return 2
+  case "$probe_result" in
+    live) return 0 ;;
+    dead) return 1 ;;
+    *) return 2 ;;
+  esac
+}
+
 # Return 0 for a complete/live record, 1 for an absent or complete/dead
-# record, and 2 for malformed, unreadable, incomplete, or foreign state.
-# Callers must never reclaim state in the third case.
+# record, and 2 for malformed, unreadable, incomplete, foreign, or unknown
+# state. Callers must never reclaim state in the third case.
 release_lock_state_at() {
   local lock_path="$1"
-  local owner_dir lock_pid
+  local owner_dir lock_pid liveness_state
 
   if [ ! -e "$lock_path" ] && [ ! -h "$lock_path" ]; then
     return 1
   fi
   owner_dir="$(release_lock_owner_target_at "$lock_path")" || return 2
   lock_pid="$(<"$owner_dir/pid")" || return 2
-  if kill -0 "$lock_pid" 2>/dev/null; then
-    return 0
+  if release_lock_probe_liveness "$lock_pid"; then
+    liveness_state="0"
+  else
+    liveness_state="$?"
   fi
-  return 1
+  return "$liveness_state"
 }
 
 release_lock_create_owner_record() {
@@ -360,7 +399,7 @@ release_lock_reclaim_marker() {
 }
 
 release_lock_reconcile_orphan_owners() {
-  local owner_dir owner_pid
+  local owner_dir owner_pid liveness_state
 
   for owner_dir in "$RELEASE_MIRROR_PARENT"/.${RELEASE_SKILL_NAME}.lock-owner.*; do
     [ -e "$owner_dir" ] || [ -h "$owner_dir" ] || continue
@@ -372,12 +411,31 @@ release_lock_reconcile_orphan_owners() {
       return 1
     fi
     owner_pid="$(<"$owner_dir/pid")"
-    if kill -0 "$owner_pid" 2>/dev/null; then
-      printf '  BLOCK %s (another onboarding updater is publishing the managed mirror lock)\n' \
-        "$RELEASE_MIRROR_PARENT" >&2
-      return 1
+    if release_lock_probe_liveness "$owner_pid"; then
+      liveness_state="0"
+    else
+      liveness_state="$?"
     fi
-    rm -rf "$owner_dir" || return 1
+    case "$liveness_state" in
+      0)
+        printf '  BLOCK %s (another onboarding updater is publishing the managed mirror lock)\n' \
+          "$RELEASE_MIRROR_PARENT" >&2
+        return 1
+        ;;
+      2)
+        printf '  BLOCK %s (managed mirror lock owner liveness is unknown; preserved)\n' \
+          "$RELEASE_MIRROR_PARENT" >&2
+        return 1
+        ;;
+      1)
+        rm -rf "$owner_dir" || return 1
+        ;;
+      *)
+        printf '  BLOCK %s (managed mirror lock owner liveness probe failed; preserved)\n' \
+          "$RELEASE_MIRROR_PARENT" >&2
+        return 1
+        ;;
+    esac
   done
 }
 

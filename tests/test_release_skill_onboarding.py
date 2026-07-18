@@ -10,6 +10,7 @@ import shutil
 import socket
 import stat
 import subprocess
+import sys
 import tarfile
 import tempfile
 import threading
@@ -328,6 +329,57 @@ def _make_disposable_source_checkout(destination: Path) -> Path:
     ):
         subprocess.run(command, cwd=destination, check=True, stdout=subprocess.PIPE)
     return destination
+
+
+def _make_liveness_python_shim(destination: Path) -> Path:
+    """Inject errno-specific process-probe outcomes without host privileges."""
+    destination.mkdir(parents=True, exist_ok=True)
+    shim = destination / "python3"
+    shim.write_text(
+        f"""#!{sys.executable}
+import errno
+import os
+import sys
+
+if len(sys.argv) > 3 and sys.argv[1] == "-c" and "os.kill" in sys.argv[2]:
+    mode = os.environ.get("FANTASYDISK_ONBOARD_TEST_LIVENESS")
+    if mode == "failure":
+        raise SystemExit(73)
+
+    def injected_kill(_pid, _signal):
+        if mode == "live":
+            return None
+        if mode == "dead":
+            raise ProcessLookupError(errno.ESRCH, "injected dead owner")
+        if mode == "unknown":
+            raise PermissionError(errno.EPERM, "injected permission denial")
+        if mode == "error":
+            raise OSError(errno.EIO, "injected probe failure")
+        if mode == "invalid":
+            return None
+        raise AssertionError(f"unexpected test mode: {{mode!r}}")
+
+    probe_code = sys.argv[2]
+    probe_pid = "not-a-pid" if mode == "invalid" else sys.argv[3]
+    os.kill = injected_kill
+    sys.argv = ["release-lock-probe", probe_pid]
+    exec(probe_code, {{"__name__": "__main__"}})
+    raise SystemExit(0)
+
+os.execv(sys.executable, [sys.executable, *sys.argv[1:]])
+""",
+        encoding="utf-8",
+    )
+    shim.chmod(0o755)
+    return destination
+
+
+def _install_complete_lock_owner(home: Path, suffix: str = "fixture") -> Path:
+    parent = Path(os.path.realpath(_versions(home).parent))
+    owner = parent / f".fantasydisk-release-director.lock-owner.{suffix}"
+    owner.mkdir()
+    (owner / "pid").write_text("1\n", encoding="ascii")
+    return owner
 
 
 def _write_pre_fix_onboard(destination: Path) -> Path:
@@ -994,6 +1046,67 @@ class ReleaseSkillOnboardingTest(unittest.TestCase):
             self.assertFalse(_lock(home).exists() or _lock(home).is_symlink())
             self.assertFalse(_lock_reclaim(home).exists() or _lock_reclaim(home).is_symlink())
             self.assertFalse(list(_versions(home).parent.glob(".fantasydisk-release-director.lock-owner.*")))
+
+    def test_lock_liveness_probe_is_tri_state_and_unknown_is_preserved(self) -> None:
+        cases = (
+            ("canonical-live", "live", "canonical", False),
+            ("canonical-dead", "dead", "canonical", True),
+            ("canonical-permission-denied", "unknown", "canonical", False),
+            ("canonical-oserror", "error", "canonical", False),
+            ("canonical-invalid-pid", "invalid", "canonical", False),
+            ("canonical-probe-failure", "failure", "canonical", False),
+            ("reclaim-marker-permission-denied", "unknown", "marker", False),
+            ("orphan-permission-denied", "unknown", "orphan", False),
+        )
+        for name, outcome, lock_kind, reclaims in cases:
+            with self.subTest(name=name), tempfile.TemporaryDirectory(
+                prefix="fantasydisk-onboard-lock-probe-"
+            ) as raw:
+                workspace = Path(raw)
+                home = workspace / "home"
+                checkout = _make_disposable_source_checkout(workspace / "checkout")
+                script = checkout / "scripts" / "onboard.sh"
+                source = checkout / "skills" / "codex" / "fantasydisk-release-director"
+                initial = _run_onboard(script, home)
+                self.assertEqual(initial.returncode, 0, initial.stdout)
+
+                owner = _install_complete_lock_owner(home)
+                if lock_kind == "canonical":
+                    _lock(home).symlink_to(owner, target_is_directory=True)
+                elif lock_kind == "marker":
+                    _lock_reclaim(home).symlink_to(owner, target_is_directory=True)
+                before = _managed_lock_state(home)
+                selection_hook = workspace / "selection-hook"
+                shim = _make_liveness_python_shim(workspace / "python-shim")
+
+                result = _run_onboard(
+                    script,
+                    home,
+                    path_prefix=shim,
+                    extra={
+                        "FANTASYDISK_ONBOARD_TEST_LIVENESS": outcome,
+                        "FANTASYDISK_ONBOARD_TEST_PAUSE_BEFORE_SELECTION_COMMIT": str(
+                            selection_hook
+                        ),
+                    },
+                )
+
+                if reclaims:
+                    self.assertEqual(result.returncode, 0, result.stdout)
+                    self.assertFalse(_lock(home).exists() or _lock(home).is_symlink())
+                    self.assertFalse(
+                        _lock_reclaim(home).exists() or _lock_reclaim(home).is_symlink()
+                    )
+                    self.assertFalse(owner.exists())
+                    self.assertFalse(
+                        list(_versions(home).parent.glob(".fantasydisk-release-director.lock-owner.*"))
+                    )
+                    _assert_durable_selected_tree(home, source)
+                else:
+                    self.assertNotEqual(result.returncode, 0, result.stdout)
+                    self.assertIn("lock", result.stdout.lower())
+                    self.assertFalse(selection_hook.exists())
+                    self.assertEqual(_managed_lock_state(home), before)
 
     def test_malformed_unreadable_incomplete_and_foreign_locks_fail_closed(self) -> None:
         cases = ("incomplete", "malformed", "unreadable", "foreign")
