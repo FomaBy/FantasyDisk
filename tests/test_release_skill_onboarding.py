@@ -5,6 +5,7 @@ from __future__ import annotations
 import hashlib
 import io
 import os
+import shutil
 import subprocess
 import tarfile
 import tempfile
@@ -29,6 +30,10 @@ EXPECTED_RELEASE_SKILL_FILES = {
     "scripts/release_publish.py",
     "scripts/telegram_publish.py",
 }
+MIRROR_RELATIVE_PATH = Path(
+    ".codex", "skill-mirrors", "FantasyDisk", "fantasydisk-release-director"
+)
+SELECTED_RELATIVE_PATH = Path(".codex", "skills", "fantasydisk-release-director")
 
 
 def _file_sha256(path: Path) -> str:
@@ -88,31 +93,79 @@ def _extract_legacy_skill(destination: Path) -> None:
 
 def _fake_multica(home: Path) -> Path:
     fake_bin = home / "fake-bin"
-    fake_bin.mkdir()
+    fake_bin.mkdir(parents=True, exist_ok=True)
     multica = fake_bin / "multica"
     multica.write_text("#!/bin/sh\nexit 1\n", encoding="utf-8")
     multica.chmod(0o755)
     return fake_bin
 
 
-def _run_onboard(script: Path, home: Path) -> subprocess.CompletedProcess[str]:
+def _run_onboard(
+    script: Path, home: Path, *, path_prefix: Path | None = None
+) -> subprocess.CompletedProcess[str]:
     environment = os.environ.copy()
+    fake_bin = _fake_multica(home)
+    if path_prefix is not None:
+        path = f"{path_prefix}{os.pathsep}{fake_bin}{os.pathsep}{environment['PATH']}"
+    else:
+        path = f"{fake_bin}{os.pathsep}{environment['PATH']}"
     environment.update(
         {
             "HOME": str(home),
             "XDG_CONFIG_HOME": str(home / "config"),
-            "PATH": f"{_fake_multica(home)}{os.pathsep}{environment['PATH']}",
+            "PATH": path,
         }
     )
     return subprocess.run(
         ["bash", str(script)],
-        cwd=ROOT,
+        cwd=script.parents[1],
         env=environment,
         text=True,
         stdout=subprocess.PIPE,
         stderr=subprocess.STDOUT,
         check=False,
     )
+
+
+def _selected(home: Path) -> Path:
+    return home / SELECTED_RELATIVE_PATH
+
+
+def _mirror(home: Path) -> Path:
+    return home / MIRROR_RELATIVE_PATH
+
+
+def _assert_durable_selected_tree(home: Path, expected_source: Path) -> None:
+    target = _selected(home)
+    mirror = _mirror(home)
+    assert target.is_symlink()
+    assert os.path.realpath(os.readlink(target)) == os.path.realpath(mirror)
+    assert mirror.is_dir()
+    assert not mirror.is_symlink()
+    assert target.resolve() == mirror.resolve()
+    assert _inventory(mirror) == _inventory(expected_source)
+    assert set(path.relative_to(mirror).as_posix() for path in mirror.rglob("*") if path.is_file()) == (
+        EXPECTED_RELEASE_SKILL_FILES
+    )
+
+
+def _make_disposable_source_checkout(destination: Path) -> Path:
+    """Create a small, clean Git checkout that onboarding may safely verify."""
+    (destination / "scripts").mkdir(parents=True)
+    shutil.copy2(ONBOARD, destination / "scripts" / "onboard.sh")
+    shutil.copytree(
+        SOURCE_SKILL,
+        destination / "skills" / "codex" / "fantasydisk-release-director",
+    )
+    for command in (
+        ["git", "init"],
+        ["git", "config", "user.email", "test@example.invalid"],
+        ["git", "config", "user.name", "FantasyDisk test"],
+        ["git", "add", "scripts/onboard.sh", "skills/codex/fantasydisk-release-director"],
+        ["git", "commit", "-m", "test source"],
+    ):
+        subprocess.run(command, cwd=destination, check=True, stdout=subprocess.PIPE)
+    return destination
 
 
 def _write_pre_fix_onboard(destination: Path) -> Path:
@@ -163,7 +216,7 @@ class ReleaseSkillOnboardingTest(unittest.TestCase):
     def test_known_legacy_copy_is_migrated_to_complete_repo_tree(self) -> None:
         with tempfile.TemporaryDirectory(prefix="fantasydisk-onboard-migrate-") as raw:
             home = Path(raw)
-            target = home / ".codex" / "skills" / "fantasydisk-release-director"
+            target = _selected(home)
             target.mkdir(parents=True)
             _extract_legacy_skill(target)
 
@@ -171,9 +224,7 @@ class ReleaseSkillOnboardingTest(unittest.TestCase):
 
             self.assertEqual(result.returncode, 0, result.stdout)
             self.assertIn("MIGRATE", result.stdout)
-            self.assertTrue(target.is_symlink())
-            self.assertEqual(target.resolve(), SOURCE_SKILL.resolve())
-            self.assertEqual(_inventory(target.resolve()), _inventory(SOURCE_SKILL))
+            _assert_durable_selected_tree(home, SOURCE_SKILL)
             self.assertTrue(EXPECTED_RELEASE_SKILL_FILES.issubset(_inventory(SOURCE_SKILL)))
 
             skill_text = (target / "SKILL.md").read_text(encoding="utf-8")
@@ -310,11 +361,138 @@ class ReleaseSkillOnboardingTest(unittest.TestCase):
             result = _run_onboard(ONBOARD, home)
 
             self.assertEqual(result.returncode, 0, result.stdout)
-            target = home / ".codex" / "skills" / "fantasydisk-release-director"
+            _assert_durable_selected_tree(home, SOURCE_SKILL)
+
+    def test_selected_skill_uses_durable_mirror_not_the_source_checkout(self) -> None:
+        with tempfile.TemporaryDirectory(prefix="fantasydisk-onboard-durable-") as raw:
+            home = Path(raw)
+
+            result = _run_onboard(ONBOARD, home)
+
+            self.assertEqual(result.returncode, 0, result.stdout)
+            _assert_durable_selected_tree(home, SOURCE_SKILL)
+            self.assertNotIn(str(SOURCE_SKILL.resolve()), os.readlink(_selected(home)))
+            self.assertNotIn("multica_workspaces", os.readlink(_selected(home)))
+
+    def test_untrusted_selected_links_are_rejected_without_reading_operator_data(self) -> None:
+        with tempfile.TemporaryDirectory(prefix="fantasydisk-onboard-link-repair-") as raw:
+            home = Path(raw)
+            self.assertEqual(_run_onboard(ONBOARD, home).returncode, 0)
+            target = _selected(home)
+            external = home / "operator-wip"
+            external.mkdir()
+            (external / "notes.txt").write_text("do not copy or remove\n", encoding="utf-8")
+            external_before = _inventory(external)
+
+            target.unlink()
+            target.symlink_to(external, target_is_directory=True)
+            repaired = _run_onboard(ONBOARD, home)
+
+            self.assertEqual(repaired.returncode, 0, repaired.stdout)
+            self.assertIn("REJECT", repaired.stdout)
+            self.assertEqual(_inventory(external), external_before)
+            _assert_durable_selected_tree(home, SOURCE_SKILL)
+
+            target.unlink()
+            target.symlink_to(home / "removed-task-worktree")
+            repaired_dangling = _run_onboard(ONBOARD, home)
+
+            self.assertEqual(repaired_dangling.returncode, 0, repaired_dangling.stdout)
+            self.assertIn("REJECT", repaired_dangling.stdout)
+            _assert_durable_selected_tree(home, SOURCE_SKILL)
+
+    def test_managed_mirror_update_is_idempotent(self) -> None:
+        with tempfile.TemporaryDirectory(prefix="fantasydisk-onboard-idempotent-") as raw:
+            home = Path(raw)
+
+            first = _run_onboard(ONBOARD, home)
+            before = _inventory(_mirror(home))
+            second = _run_onboard(ONBOARD, home)
+
+            self.assertEqual(first.returncode, 0, first.stdout)
+            self.assertEqual(second.returncode, 0, second.stdout)
+            self.assertIn("up-to-date", second.stdout)
+            self.assertEqual(_inventory(_mirror(home)), before)
+            self.assertEqual(
+                list(_mirror(home).parent.glob(".fantasydisk-release-director.staging.*")), []
+            )
+
+    def test_failed_staging_preserves_last_known_good_mirror_and_selection(self) -> None:
+        with tempfile.TemporaryDirectory(prefix="fantasydisk-onboard-rollback-") as raw:
+            workspace = Path(raw)
+            home = workspace / "home"
+            checkout = _make_disposable_source_checkout(workspace / "disposable-checkout")
+            script = checkout / "scripts" / "onboard.sh"
+            initial = _run_onboard(script, home)
+            self.assertEqual(initial.returncode, 0, initial.stdout)
+            mirror_before = _inventory(_mirror(home))
+            selected_before = os.readlink(_selected(home))
+
+            skill_md = checkout / "skills" / "codex" / "fantasydisk-release-director" / "SKILL.md"
+            skill_md.write_text(skill_md.read_text(encoding="utf-8") + "\n", encoding="utf-8")
+            subprocess.run(
+                ["git", "add", str(skill_md.relative_to(checkout))],
+                cwd=checkout,
+                check=True,
+            )
+            subprocess.run(["git", "commit", "-m", "updated test source"], cwd=checkout, check=True)
+
+            fake_bin = _fake_multica(home)
+            fake_cp = fake_bin / "cp"
+            fake_cp.write_text(
+                "#!/bin/sh\n"
+                "/bin/cp \"$@\" || exit $?\n"
+                "for arg in \"$@\"; do destination=\"$arg\"; done\n"
+                "printf 'staging mutation\\n' > \"$destination/unexpected-file\"\n",
+                encoding="utf-8",
+            )
+            fake_cp.chmod(0o755)
+
+            failed = _run_onboard(script, home, path_prefix=fake_bin)
+
+            self.assertNotEqual(failed.returncode, 0, failed.stdout)
+            self.assertIn("staged mirror", failed.stdout)
+            self.assertEqual(_inventory(_mirror(home)), mirror_before)
+            self.assertEqual(os.readlink(_selected(home)), selected_before)
+            self.assertTrue((_selected(home) / "SKILL.md").is_file())
+            self.assertEqual(
+                list(_mirror(home).parent.glob(".fantasydisk-release-director.staging.*")), []
+            )
+
+    def test_durable_mirror_survives_disposable_source_checkout_removal(self) -> None:
+        with tempfile.TemporaryDirectory(prefix="fantasydisk-onboard-checkout-loss-") as raw:
+            workspace = Path(raw)
+            home = workspace / "home"
+            checkout = _make_disposable_source_checkout(workspace / "disposable-checkout")
+            source = checkout / "skills" / "codex" / "fantasydisk-release-director"
+            result = _run_onboard(checkout / "scripts" / "onboard.sh", home)
+
+            self.assertEqual(result.returncode, 0, result.stdout)
+            _assert_durable_selected_tree(home, source)
+            retired_checkout = workspace / "removed-checkout"
+            checkout.rename(retired_checkout)
+            shutil.rmtree(retired_checkout)
+
+            target = _selected(home)
             self.assertTrue(target.is_symlink())
-            self.assertEqual(target.resolve(), SOURCE_SKILL.resolve())
-            self.assertEqual(_inventory(target.resolve()), _inventory(SOURCE_SKILL))
-            self.assertTrue(EXPECTED_RELEASE_SKILL_FILES.issubset(_inventory(target.resolve())))
+            self.assertTrue((target / "SKILL.md").is_file())
+            self.assertEqual(set(path.relative_to(_mirror(home)).as_posix() for path in _mirror(home).rglob("*") if path.is_file()), EXPECTED_RELEASE_SKILL_FILES)
+            fresh_process = subprocess.run(
+                [
+                    "python3",
+                    "-c",
+                    "from pathlib import Path; import os; "
+                    "skill = Path(os.environ['HOME']) / '.codex/skills/fantasydisk-release-director'; "
+                    "assert (skill / 'SKILL.md').is_file(); "
+                    "assert len([path for path in skill.rglob('*') if path.is_file()]) == 7",
+                ],
+                env={**os.environ, "HOME": str(home)},
+                check=False,
+                stdout=subprocess.PIPE,
+                stderr=subprocess.PIPE,
+                text=True,
+            )
+            self.assertEqual(fresh_process.returncode, 0, fresh_process.stderr)
 
 
 if __name__ == "__main__":

@@ -9,6 +9,13 @@
 ```bash
 bash scripts/onboard.sh
 ```
+Для release skill это не обычная ссылка на текущий checkout: onboarding сначала
+собирает и полностью проверяет managed mirror в
+`~/.codex/skill-mirrors/FantasyDisk/fantasydisk-release-director`, затем
+атомарно переключает `~/.codex/skills/fantasydisk-release-director` только на
+этот mirror. Поэтому завершённый Multica task/worktree не остаётся persistent
+source. Неизвестная реальная локальная папка сохраняется и останавливает
+onboarding; внешняя или dangling ссылка никогда не используется как source.
 Дальше: AI-агенты автоматически видят мастер-скилл **`fantasydisk-onboarding`**
 (в `.claude/skills/`), люди читают [`docs/process/ai_agent_memorandum.md`](docs/process/ai_agent_memorandum.md).
 **Правило №1:** все задачи создаются в и берутся из **Multica** (проект
