@@ -203,6 +203,14 @@ def _versions(home: Path) -> Path:
     return home / VERSIONS_RELATIVE_PATH
 
 
+def _lock(home: Path) -> Path:
+    return _versions(home).parent / ".fantasydisk-release-director.lock"
+
+
+def _lock_reclaim(home: Path) -> Path:
+    return _versions(home).parent / ".fantasydisk-release-director.lock.reclaim"
+
+
 def _lstat_signature(path: Path) -> tuple[str, ...]:
     """Return a stable root-type/content signature without following links."""
     metadata = os.lstat(path)
@@ -218,6 +226,35 @@ def _lstat_signature(path: Path) -> tuple[str, ...]:
     if stat.S_ISSOCK(metadata.st_mode):
         return ("socket", mode)
     return ("other", mode)
+
+
+def _lstat_or_absent(path: Path) -> tuple[str, ...]:
+    if path.exists() or path.is_symlink():
+        return _lstat_signature(path)
+    return ("absent",)
+
+
+def _metadata_signature(path: Path) -> tuple[str, ...]:
+    """Capture type/mode/size without reading a possibly unreadable file."""
+    metadata = os.lstat(path)
+    mode = f"{metadata.st_mode & 0o7777:04o}"
+    if stat.S_ISLNK(metadata.st_mode):
+        return ("symlink", os.readlink(path), mode)
+    if stat.S_ISDIR(metadata.st_mode):
+        return ("directory", mode)
+    if stat.S_ISREG(metadata.st_mode):
+        return ("file", mode, str(metadata.st_size))
+    return ("other", mode, str(metadata.st_size))
+
+
+def _managed_lock_state(home: Path) -> tuple[dict[str, tuple[str, ...]], tuple[str, ...], tuple[str, ...]]:
+    """Capture every managed mirror entry plus both selected pointers."""
+    parent = _versions(home).parent
+    return (
+        _inventory(parent),
+        _lstat_or_absent(_selected(home)),
+        _lstat_or_absent(_mirror_pointer(home)),
+    )
 
 
 def _make_external_versions_sentinel(root: Path) -> None:
@@ -833,6 +870,191 @@ class ReleaseSkillOnboardingTest(unittest.TestCase):
                 self.assertEqual(
                     list(_versions(home).glob(".fantasydisk-release-director.staging.*")), []
                 )
+
+    def test_prepublication_contention_fails_closed_without_managed_mutation(self) -> None:
+        with tempfile.TemporaryDirectory(prefix="fantasydisk-onboard-lock-prepub-") as raw:
+            workspace = Path(raw)
+            home = workspace / "home"
+            first_checkout = _make_disposable_source_checkout(workspace / "first-checkout")
+            second_checkout = _make_disposable_source_checkout(workspace / "second-checkout")
+            first_script = first_checkout / "scripts" / "onboard.sh"
+            second_script = second_checkout / "scripts" / "onboard.sh"
+            self.assertEqual(_run_onboard(first_script, home).returncode, 0)
+            _commit_source_change(first_checkout, "first-before-lock-publication")
+            _commit_source_change(second_checkout, "second-before-lock-publication")
+
+            lock_publication = workspace / "before-lock-publication"
+            selection_hook = workspace / "second-selection-hook"
+            first = _start_onboard(
+                first_script,
+                home,
+                extra={
+                    "FANTASYDISK_ONBOARD_TEST_PAUSE_BEFORE_LOCK_PUBLICATION": str(
+                        lock_publication
+                    )
+                },
+            )
+            _wait_for_marker(lock_publication, first)
+            self.assertFalse(_lock(home).exists() or _lock(home).is_symlink())
+            before_loser = _managed_lock_state(home)
+
+            second = _run_onboard(
+                second_script,
+                home,
+                extra={
+                    "FANTASYDISK_ONBOARD_TEST_PAUSE_BEFORE_SELECTION_COMMIT": str(
+                        selection_hook
+                    )
+                },
+            )
+            self.assertNotEqual(second.returncode, 0, second.stdout)
+            self.assertIn("lock", second.stdout.lower())
+            self.assertFalse(selection_hook.exists())
+            self.assertEqual(_managed_lock_state(home), before_loser)
+
+            lock_publication.unlink()
+            first_output = first.communicate(timeout=10)[0]
+            self.assertEqual(first.returncode, 0, first_output)
+            self.assertFalse(_lock(home).exists() or _lock(home).is_symlink())
+            self.assertFalse(list(_versions(home).parent.glob(".fantasydisk-release-director.lock-owner.*")))
+
+    def test_postpublication_contention_rejects_loser_before_selection_hook(self) -> None:
+        with tempfile.TemporaryDirectory(prefix="fantasydisk-onboard-lock-postpub-") as raw:
+            workspace = Path(raw)
+            home = workspace / "home"
+            first_checkout = _make_disposable_source_checkout(workspace / "first-checkout")
+            second_checkout = _make_disposable_source_checkout(workspace / "second-checkout")
+            first_script = first_checkout / "scripts" / "onboard.sh"
+            second_script = second_checkout / "scripts" / "onboard.sh"
+            self.assertEqual(_run_onboard(first_script, home).returncode, 0)
+            _commit_source_change(first_checkout, "first-after-lock-publication")
+            _commit_source_change(second_checkout, "second-after-lock-publication")
+
+            lock_publication = workspace / "after-lock-publication"
+            selection_hook = workspace / "second-selection-hook"
+            first = _start_onboard(
+                first_script,
+                home,
+                extra={
+                    "FANTASYDISK_ONBOARD_TEST_PAUSE_AFTER_LOCK_PUBLICATION": str(
+                        lock_publication
+                    )
+                },
+            )
+            _wait_for_marker(lock_publication, first)
+            self.assertTrue(_lock(home).is_symlink())
+            before_loser = _managed_lock_state(home)
+
+            second = _run_onboard(
+                second_script,
+                home,
+                extra={
+                    "FANTASYDISK_ONBOARD_TEST_PAUSE_BEFORE_SELECTION_COMMIT": str(
+                        selection_hook
+                    )
+                },
+            )
+            self.assertNotEqual(second.returncode, 0, second.stdout)
+            self.assertIn("lock", second.stdout.lower())
+            self.assertFalse(selection_hook.exists())
+            self.assertEqual(_managed_lock_state(home), before_loser)
+
+            lock_publication.unlink()
+            first_output = first.communicate(timeout=10)[0]
+            self.assertEqual(first.returncode, 0, first_output)
+            self.assertFalse(_lock(home).exists() or _lock(home).is_symlink())
+            self.assertFalse(_lock_reclaim(home).exists() or _lock_reclaim(home).is_symlink())
+
+    def test_sigkill_after_lock_publication_reclaims_dead_owner(self) -> None:
+        with tempfile.TemporaryDirectory(prefix="fantasydisk-onboard-lock-sigkill-") as raw:
+            workspace = Path(raw)
+            home = workspace / "home"
+            checkout = _make_disposable_source_checkout(workspace / "checkout")
+            script = checkout / "scripts" / "onboard.sh"
+            self.assertEqual(_run_onboard(script, home).returncode, 0)
+            _commit_source_change(checkout, "sigkill-after-lock-publication")
+            source = checkout / "skills" / "codex" / "fantasydisk-release-director"
+            marker = workspace / "after-lock-publication"
+            process = _start_onboard(
+                script,
+                home,
+                extra={"FANTASYDISK_ONBOARD_TEST_PAUSE_AFTER_LOCK_PUBLICATION": str(marker)},
+            )
+            _wait_for_marker(marker, process)
+            self.assertTrue(_lock(home).is_symlink())
+
+            os.killpg(process.pid, signal.SIGKILL)
+            killed_output = process.communicate(timeout=10)[0]
+            marker.unlink(missing_ok=True)
+            self.assertEqual(process.returncode, -signal.SIGKILL, killed_output)
+
+            retry = _run_onboard(script, home)
+            self.assertEqual(retry.returncode, 0, retry.stdout)
+            _assert_durable_selected_tree(home, source)
+            self.assertFalse(_lock(home).exists() or _lock(home).is_symlink())
+            self.assertFalse(_lock_reclaim(home).exists() or _lock_reclaim(home).is_symlink())
+            self.assertFalse(list(_versions(home).parent.glob(".fantasydisk-release-director.lock-owner.*")))
+
+    def test_malformed_unreadable_incomplete_and_foreign_locks_fail_closed(self) -> None:
+        cases = ("incomplete", "malformed", "unreadable", "foreign")
+        for kind in cases:
+            with self.subTest(kind=kind), tempfile.TemporaryDirectory(
+                prefix="fantasydisk-onboard-lock-state-"
+            ) as raw:
+                workspace = Path(raw)
+                home = workspace / "home"
+                checkout = _make_disposable_source_checkout(workspace / "checkout")
+                script = checkout / "scripts" / "onboard.sh"
+                parent = _versions(home).parent
+                parent.mkdir(parents=True)
+                _versions(home).mkdir()
+                owner = (
+                    workspace / "foreign-owner"
+                    if kind == "foreign"
+                    else parent / ".fantasydisk-release-director.lock-owner.fixture"
+                )
+                owner.mkdir()
+                pid = owner / "pid"
+                if kind == "malformed":
+                    pid.write_text("not-a-pid\n", encoding="utf-8")
+                elif kind == "unreadable":
+                    pid.write_text(f"{os.getpid()}\n", encoding="utf-8")
+                    pid.chmod(0)
+                elif kind == "foreign":
+                    pid.write_text(f"{os.getpid()}\n", encoding="utf-8")
+                elif kind == "incomplete":
+                    pass
+                if kind == "incomplete":
+                    _lock(home).mkdir()
+                else:
+                    _lock(home).symlink_to(owner, target_is_directory=True)
+
+                if kind == "unreadable":
+                    before = (
+                        _metadata_signature(_lock(home)),
+                        _metadata_signature(owner),
+                        _metadata_signature(pid),
+                    )
+                else:
+                    before = _managed_lock_state(home)
+                try:
+                    result = _run_onboard(script, home)
+                    self.assertNotEqual(result.returncode, 0, result.stdout)
+                    self.assertIn("lock", result.stdout.lower())
+                    if kind == "unreadable":
+                        self.assertEqual(
+                            (
+                                _metadata_signature(_lock(home)),
+                                _metadata_signature(owner),
+                                _metadata_signature(pid),
+                            ),
+                            before,
+                        )
+                    else:
+                        self.assertEqual(_managed_lock_state(home), before)
+                finally:
+                    if pid.exists():
+                        pid.chmod(0o600)
 
     def test_concurrent_updater_fails_closed_without_touching_active_selection(self) -> None:
         with tempfile.TemporaryDirectory(prefix="fantasydisk-onboard-concurrent-") as raw:

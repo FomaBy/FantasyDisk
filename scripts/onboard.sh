@@ -45,6 +45,8 @@ RELEASE_MIRROR=""
 RELEASE_VERSIONS=""
 RELEASE_LOCK_DIR=""
 RELEASE_LOCK_OWNED="0"
+RELEASE_LOCK_OWNER=""
+RELEASE_LOCK_RECLAIM_OWNER=""
 RELEASE_STAGE=""
 RELEASE_SELECTION_STAGE=""
 RELEASE_SELECTION_BACKUP=""
@@ -232,52 +234,271 @@ prepare_release_mirror() {
   validate_release_versions_root || return 1
 }
 
-release_lock_is_live() {
-  local lock_pid
+release_lock_owner_dir_is_complete() {
+  local owner_dir="$1"
+  local owner_prefix="${RELEASE_MIRROR_PARENT}/.${RELEASE_SKILL_NAME}.lock-owner."
+  local entries line_count lock_pid
 
-  [ -r "$RELEASE_LOCK_DIR/pid" ] || return 1
-  lock_pid="$(<"$RELEASE_LOCK_DIR/pid")"
-  case "$lock_pid" in
-    ''|*[!0-9]*) return 1 ;;
+  [ -d "$owner_dir" ] && [ ! -h "$owner_dir" ] || return 1
+  case "$owner_dir" in
+    "$owner_prefix"*) ;;
+    *) return 1 ;;
   esac
-  kill -0 "$lock_pid" 2>/dev/null
+  [ "$(cd -P "$owner_dir" && pwd -P)" = "$owner_dir" ] || return 1
+  entries="$(cd "$owner_dir" && find -P . ! -path . -print | LC_ALL=C sort)" || return 1
+  [ "$entries" = "./pid" ] || return 1
+  [ -f "$owner_dir/pid" ] && [ ! -h "$owner_dir/pid" ] || return 1
+  line_count="$(wc -l < "$owner_dir/pid" | tr -d '[:space:]')" || return 1
+  [ "$line_count" = "1" ] || return 1
+  lock_pid="$(<"$owner_dir/pid")" || return 1
+  case "$lock_pid" in
+    ''|0|*[!0-9]*) return 1 ;;
+  esac
 }
 
-acquire_release_lock() {
-  if mkdir "$RELEASE_LOCK_DIR" 2>/dev/null; then
-    printf '%s\n' "$$" > "$RELEASE_LOCK_DIR/pid" || {
-      rm -rf "$RELEASE_LOCK_DIR"
-      return 1
-    }
-    RELEASE_LOCK_OWNED="1"
-    return 0
-  fi
-  if release_lock_is_live; then
-    printf '  BLOCK %s (another onboarding updater owns the managed mirror lock)\n' \
-      "$RELEASE_MIRROR_PARENT" >&2
+release_lock_owner_target_at() {
+  local lock_path="$1"
+  local owner_dir
+
+  [ -h "$lock_path" ] || return 1
+  owner_dir="$(readlink "$lock_path")" || return 1
+  release_lock_owner_dir_is_complete "$owner_dir" || return 1
+  printf '%s\n' "$owner_dir"
+}
+
+# Return 0 for a complete/live record, 1 for an absent or complete/dead
+# record, and 2 for malformed, unreadable, incomplete, or foreign state.
+# Callers must never reclaim state in the third case.
+release_lock_state_at() {
+  local lock_path="$1"
+  local owner_dir lock_pid
+
+  if [ ! -e "$lock_path" ] && [ ! -h "$lock_path" ]; then
     return 1
   fi
-  # A killed updater cannot run its EXIT trap.  Its private lock is safe to
-  # reclaim only after the recorded process is gone; a live second updater is
-  # always failed closed above.
-  rm -rf "$RELEASE_LOCK_DIR" || return 1
-  if ! mkdir "$RELEASE_LOCK_DIR" 2>/dev/null; then
+  owner_dir="$(release_lock_owner_target_at "$lock_path")" || return 2
+  lock_pid="$(<"$owner_dir/pid")" || return 2
+  if kill -0 "$lock_pid" 2>/dev/null; then
+    return 0
+  fi
+  return 1
+}
+
+release_lock_create_owner_record() {
+  local owner_variable="$1"
+  local owner_dir pid_stage
+
+  owner_dir="$(mktemp -d "$RELEASE_MIRROR_PARENT/.${RELEASE_SKILL_NAME}.lock-owner.XXXXXX")" || return 1
+  # Publish the PID into the private owner record before the record can ever
+  # become reachable through a canonical lock path.  The caller publishes the
+  # completed record with one atomic no-clobber symlink operation.
+  printf -v "$owner_variable" '%s' "$owner_dir"
+  pid_stage="$owner_dir/.pid.$$"
+  if ! (umask 077; printf '%s\n' "$$" > "$pid_stage") \
+    || ! mv "$pid_stage" "$owner_dir/pid"; then
+    rm -rf "$owner_dir"
+    return 1
+  fi
+  release_lock_owner_dir_is_complete "$owner_dir" || {
+    rm -rf "$owner_dir"
+    return 1
+  }
+}
+
+release_lock_publish_owner_record() {
+  local owner_dir="$1"
+  local lock_path="$2"
+
+  # os.symlink() is atomic and fails when lock_path already exists.  Using
+  # Python here avoids mv/ln implementations that may silently place a new
+  # entry inside an existing directory instead of failing closed.
+  python3 -c 'import os, sys; os.symlink(sys.argv[1], sys.argv[2])' \
+    "$owner_dir" "$lock_path"
+}
+
+release_lock_discard_owner_record() {
+  local owner_dir="$1"
+
+  if [ -n "$owner_dir" ] && [ -d "$owner_dir" ] && [ ! -h "$owner_dir" ]; then
+    rm -rf "$owner_dir"
+  fi
+}
+
+release_lock_reclaim_marker() {
+  local marker="$RELEASE_LOCK_DIR.reclaim"
+  local marker_state marker_owner
+
+  if [ ! -e "$marker" ] && [ ! -h "$marker" ]; then
+    return 0
+  fi
+  if release_lock_state_at "$marker"; then
+    marker_state="0"
+  else
+    marker_state="$?"
+  fi
+  case "$marker_state" in
+    0)
+      printf '  BLOCK %s (another updater is reclaiming the managed mirror lock)\n' \
+        "$RELEASE_MIRROR_PARENT" >&2
+      return 1
+      ;;
+    2)
+      printf '  BLOCK %s (managed mirror lock reclaimer state is malformed; preserved)\n' \
+        "$RELEASE_MIRROR_PARENT" >&2
+      return 1
+      ;;
+    1)
+      marker_owner="$(release_lock_owner_target_at "$marker")" || {
+        printf '  BLOCK %s (managed mirror lock reclaimer state is malformed; preserved)\n' \
+          "$RELEASE_MIRROR_PARENT" >&2
+        return 1
+      }
+      rm -f "$marker" || return 1
+      release_lock_discard_owner_record "$marker_owner"
+      ;;
+  esac
+}
+
+release_lock_reconcile_orphan_owners() {
+  local owner_dir owner_pid
+
+  for owner_dir in "$RELEASE_MIRROR_PARENT"/.${RELEASE_SKILL_NAME}.lock-owner.*; do
+    [ -e "$owner_dir" ] || [ -h "$owner_dir" ] || continue
+    [ "$owner_dir" = "${RELEASE_LOCK_OWNER:-}" ] && continue
+    [ "$owner_dir" = "${RELEASE_LOCK_RECLAIM_OWNER:-}" ] && continue
+    if ! release_lock_owner_dir_is_complete "$owner_dir"; then
+      printf '  BLOCK %s (managed mirror lock owner state is incomplete or foreign; preserved)\n' \
+        "$owner_dir" >&2
+      return 1
+    fi
+    owner_pid="$(<"$owner_dir/pid")"
+    if kill -0 "$owner_pid" 2>/dev/null; then
+      printf '  BLOCK %s (another onboarding updater is publishing the managed mirror lock)\n' \
+        "$RELEASE_MIRROR_PARENT" >&2
+      return 1
+    fi
+    rm -rf "$owner_dir" || return 1
+  done
+}
+
+release_lock_start_reclaimer() {
+  local marker="$RELEASE_LOCK_DIR.reclaim"
+
+  release_lock_create_owner_record RELEASE_LOCK_RECLAIM_OWNER || return 1
+  if ! release_lock_publish_owner_record "$RELEASE_LOCK_RECLAIM_OWNER" "$marker"; then
+    release_lock_discard_owner_record "$RELEASE_LOCK_RECLAIM_OWNER"
+    RELEASE_LOCK_RECLAIM_OWNER=""
+    return 1
+  fi
+}
+
+release_lock_finish_reclaimer() {
+  local marker="$RELEASE_LOCK_DIR.reclaim"
+  local linked_owner=""
+
+  if [ -n "${RELEASE_LOCK_RECLAIM_OWNER:-}" ] && [ -h "$marker" ]; then
+    linked_owner="$(readlink "$marker" 2>/dev/null || true)"
+    if [ "$linked_owner" = "$RELEASE_LOCK_RECLAIM_OWNER" ]; then
+      rm -f "$marker" || true
+    fi
+  fi
+  release_lock_discard_owner_record "${RELEASE_LOCK_RECLAIM_OWNER:-}"
+  RELEASE_LOCK_RECLAIM_OWNER=""
+}
+
+release_lock_reclaim_dead_canonical() {
+  local stale_owner current_owner marker_state
+
+  release_lock_start_reclaimer || {
+    printf '  BLOCK %s (managed mirror lock changed while starting stale-state reclaim)\n' \
+      "$RELEASE_MIRROR_PARENT" >&2
+    return 1
+  }
+  if release_lock_state_at "$RELEASE_LOCK_DIR"; then
+    marker_state="0"
+  else
+    marker_state="$?"
+  fi
+  if [ "$marker_state" != "1" ]; then
     printf '  BLOCK %s (managed mirror lock changed while reclaiming stale state)\n' \
       "$RELEASE_MIRROR_PARENT" >&2
     return 1
   fi
-  printf '%s\n' "$$" > "$RELEASE_LOCK_DIR/pid" || {
-    rm -rf "$RELEASE_LOCK_DIR"
+  stale_owner="$(release_lock_owner_target_at "$RELEASE_LOCK_DIR")" || return 1
+  current_owner="$(release_lock_owner_target_at "$RELEASE_LOCK_DIR")" || return 1
+  [ "$current_owner" = "$stale_owner" ] || return 1
+  rm -f "$RELEASE_LOCK_DIR" || return 1
+  release_lock_discard_owner_record "$stale_owner" || return 1
+}
+
+acquire_release_lock() {
+  local lock_state
+
+  release_lock_reclaim_marker || return 1
+  if [ -e "$RELEASE_LOCK_DIR" ] || [ -h "$RELEASE_LOCK_DIR" ]; then
+    if release_lock_state_at "$RELEASE_LOCK_DIR"; then
+      lock_state="0"
+    else
+      lock_state="$?"
+    fi
+    case "$lock_state" in
+      0)
+        printf '  BLOCK %s (another onboarding updater owns the managed mirror lock)\n' \
+          "$RELEASE_MIRROR_PARENT" >&2
+        return 1
+        ;;
+      2)
+        printf '  BLOCK %s (managed mirror lock is malformed or foreign; preserved)\n' \
+          "$RELEASE_MIRROR_PARENT" >&2
+        return 1
+        ;;
+      1)
+        release_lock_reclaim_dead_canonical || {
+          release_lock_finish_reclaimer || true
+          return 1
+        }
+        ;;
+    esac
+  fi
+
+  # A pre-publication owner record is deliberately fail-closed.  It is not
+  # the canonical lock yet, but it proves another updater is in the process of
+  # publishing one and must not be reclaimed or bypassed.
+  release_lock_reconcile_orphan_owners || return 1
+  if [ -e "$RELEASE_LOCK_DIR" ] || [ -h "$RELEASE_LOCK_DIR" ]; then
+    printf '  BLOCK %s (managed mirror lock changed while acquiring)\n' \
+      "$RELEASE_MIRROR_PARENT" >&2
     return 1
-  }
+  fi
+
+  release_lock_create_owner_record RELEASE_LOCK_OWNER || return 1
+  if ! onboard_test_pause FANTASYDISK_ONBOARD_TEST_PAUSE_BEFORE_LOCK_PUBLICATION; then
+    return 1
+  fi
+  if ! release_lock_publish_owner_record "$RELEASE_LOCK_OWNER" "$RELEASE_LOCK_DIR"; then
+    printf '  BLOCK %s (managed mirror lock changed before publication)\n' \
+      "$RELEASE_MIRROR_PARENT" >&2
+    return 1
+  fi
   RELEASE_LOCK_OWNED="1"
+  release_lock_finish_reclaimer
+  if ! onboard_test_pause FANTASYDISK_ONBOARD_TEST_PAUSE_AFTER_LOCK_PUBLICATION; then
+    return 1
+  fi
 }
 
 release_lock() {
-  if [ "${RELEASE_LOCK_OWNED:-0}" = "1" ]; then
-    rm -rf "$RELEASE_LOCK_DIR"
-    RELEASE_LOCK_OWNED="0"
+  local linked_owner=""
+
+  if [ -n "${RELEASE_LOCK_OWNER:-}" ] && [ -h "$RELEASE_LOCK_DIR" ]; then
+    linked_owner="$(readlink "$RELEASE_LOCK_DIR" 2>/dev/null || true)"
+    if [ "$linked_owner" = "$RELEASE_LOCK_OWNER" ]; then
+      rm -f "$RELEASE_LOCK_DIR" || true
+    fi
   fi
+  release_lock_discard_owner_record "${RELEASE_LOCK_OWNER:-}"
+  RELEASE_LOCK_OWNER=""
+  RELEASE_LOCK_OWNED="0"
 }
 
 onboard_test_pause() {
@@ -569,8 +790,9 @@ onboard_exit() {
 
   if [ "${RELEASE_LOCK_OWNED:-0}" = "1" ]; then
     cleanup_release_runtime_residue || true
-    release_lock || true
   fi
+  release_lock || true
+  release_lock_finish_reclaimer || true
   trap - EXIT
   exit "$status"
 }
