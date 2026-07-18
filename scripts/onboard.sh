@@ -50,15 +50,20 @@ RELEASE_LOCK_OWNER=""
 RELEASE_LOCK_RECLAIM_OWNER=""
 RELEASE_STAGE=""
 RELEASE_STAGE_MARKER=""
+RELEASE_STAGE_IDENTITY=""
 RELEASE_SELECTION_STAGE=""
 RELEASE_SELECTION_STAGE_MARKER=""
+RELEASE_SELECTION_STAGE_IDENTITY=""
 RELEASE_SELECTION_BACKUP=""
 RELEASE_SELECTION_BACKUP_MARKER=""
+RELEASE_SELECTION_BACKUP_IDENTITY=""
 RELEASE_SELECTION_DEST=""
 RELEASE_MIRROR_STAGE=""
 RELEASE_MIRROR_STAGE_MARKER=""
+RELEASE_MIRROR_STAGE_IDENTITY=""
 RELEASE_MIRROR_BACKUP=""
 RELEASE_MIRROR_BACKUP_MARKER=""
+RELEASE_MIRROR_BACKUP_IDENTITY=""
 RELEASE_INTERRUPT_REQUESTED="0"
 RELEASE_TEST_PAUSE_ACTIVE="0"
 
@@ -226,228 +231,300 @@ except Exception:
   printf -v "$marker_variable" '%s' "$marker"
 }
 
-release_residue_marker_is_valid() {
+release_residue_parent_is_real_or_absent() {
   local parent="$1"
-  local residue="$2"
-  local marker="$3"
-  local namespace="$4"
-  local kind="$5"
-  local target_root="$6"
-  local allow_absent="$7"
 
   python3 -c '
-import base64
 import os
-import re
 import stat
 import sys
 
-parent, residue, marker, skill_name, namespace, kind, target_root, allow_absent = sys.argv[1:]
-if os.path.realpath(parent) != parent or not os.path.isdir(parent):
-    raise SystemExit(1)
-if os.path.dirname(residue) != parent:
-    raise SystemExit(1)
-prefix = f".{skill_name}.{namespace}."
-residue_name = os.path.basename(residue)
-if not residue_name.startswith(prefix) or not residue_name[len(prefix):]:
-    raise SystemExit(1)
-suffix = residue_name[len(prefix):]
-if not re.fullmatch(r"[A-Za-z0-9._-]+", suffix):
-    raise SystemExit(1)
-expected_marker = os.path.join(parent, f".{skill_name}.residue-owner.{namespace}.{suffix}")
-if marker != expected_marker or os.path.dirname(marker) != parent:
-    raise SystemExit(1)
-try:
-    marker_stat = os.lstat(marker)
-    if not stat.S_ISREG(marker_stat.st_mode) or marker_stat.st_mode & 0o7777 != 0o600:
-        raise SystemExit(1)
-    fd = os.open(marker, os.O_RDONLY | getattr(os, "O_NOFOLLOW", 0))
-    with os.fdopen(fd, "rb") as stream:
-        raw = stream.read()
-except (OSError, UnicodeError):
-    raise SystemExit(1)
-try:
-    fields = raw.decode("ascii").splitlines()
-except UnicodeDecodeError:
-    raise SystemExit(1)
-if len(fields) != 9:
-    raise SystemExit(1)
-parsed = {}
-for line in fields:
-    if "=" not in line:
-        raise SystemExit(1)
-    key, value = line.split("=", 1)
-    if key in parsed:
-        raise SystemExit(1)
-    parsed[key] = value
-if set(parsed) != {"magic", "namespace", "residue", "parent", "kind", "target", "tree", "pid", "files"}:
-    raise SystemExit(1)
-if parsed["magic"] != "fantasydisk-release-director-residue-v1":
-    raise SystemExit(1)
-if parsed["namespace"] != namespace or parsed["residue"] != residue_name:
-    raise SystemExit(1)
-if parsed["parent"] != parent or parsed["kind"] != kind or parsed["files"] != "7":
-    raise SystemExit(1)
-if parsed["pid"] == "0" or not re.fullmatch(r"[0-9]+", parsed["pid"]) or not re.fullmatch(r"[0-9a-f]{64}", parsed["tree"]):
-    raise SystemExit(1)
-try:
-    target = base64.urlsafe_b64decode(parsed["target"].encode("ascii")).decode("utf-8")
-except (ValueError, UnicodeError):
-    raise SystemExit(1)
-if kind == "directory" and target != "-":
-    raise SystemExit(1)
-if kind == "symlink":
-    if not target or target == "-" or not os.path.isabs(target) or target_root == "-":
-        raise SystemExit(1)
-    if os.path.realpath(target_root) != target_root or not os.path.isdir(target_root):
-        raise SystemExit(1)
+parent = os.path.abspath(sys.argv[1])
+home_lexical = os.path.abspath(os.environ["HOME"])
+for home in (home_lexical, os.path.realpath(home_lexical)):
     try:
-        if os.path.commonpath([os.path.realpath(target), target_root]) != target_root:
-            raise SystemExit(1)
+        relative = os.path.relpath(parent, home)
     except ValueError:
-        raise SystemExit(1)
-if os.path.lexists(residue):
-    residue_stat = os.lstat(residue)
-    if kind == "directory":
-        if not stat.S_ISDIR(residue_stat.st_mode) or stat.S_ISLNK(residue_stat.st_mode):
+        continue
+    if relative == ".." or relative.startswith(f"..{os.sep}"):
+        continue
+    current = home
+    if relative == ".":
+        raise SystemExit(0)
+    for component in relative.split(os.sep):
+        current = os.path.join(current, component)
+        try:
+            entry = os.lstat(current)
+        except FileNotFoundError:
+            # A missing managed child has no entries to inspect and may be
+            # created later by the regular parent preparation path.
+            raise SystemExit(0)
+        except OSError:
             raise SystemExit(1)
-        if os.path.realpath(residue) != residue:
+        if not stat.S_ISDIR(entry.st_mode) or stat.S_ISLNK(entry.st_mode):
             raise SystemExit(1)
-    elif kind == "symlink":
-        if not stat.S_ISLNK(residue_stat.st_mode) or os.readlink(residue) != target:
-            raise SystemExit(1)
-    else:
-        raise SystemExit(1)
-elif allow_absent != "1":
-    raise SystemExit(1)
-' "$parent" "$residue" "$marker" "$RELEASE_SKILL_NAME" "$namespace" \
-    "$kind" "$target_root" "$allow_absent"
-}
-
-release_residue_directory_is_safe() {
-  local residue="$1"
-  local namespace="$2"
-  local entries entry marker expected_tree actual_tree
-
-  [ -d "$residue" ] && [ ! -h "$residue" ] || return 1
-  if [ "$namespace" != "staging" ]; then
-    release_skill_tree_is_valid "$residue" || return 1
-    marker="$(release_residue_marker_path "$(dirname "$residue")" "$namespace" \
-      "${residue##*.${RELEASE_SKILL_NAME}.${namespace}.}")" || return 1
-    expected_tree="$(awk -F= '$1 == "tree" { print $2 }' "$marker")" || return 1
-    actual_tree="$(tree_fingerprint "$residue")" || return 1
-    [ "$actual_tree" = "$expected_tree" ] || return 1
-    return 0
-  fi
-
-  # A staging copy may be incomplete after SIGKILL, so require only the
-  # allowlisted seven-file shape and reject every extra or linked entry before
-  # deleting it.  This preserves operator data even when a valid-looking
-  # staging directory was modified after publication.
-  entries="$(cd "$residue" && find -P . ! -path . -print | LC_ALL=C sort)" || return 1
-  if [ -n "$entries" ]; then
-    while IFS= read -r entry; do
-      if [ -L "$residue/$entry" ]; then
-        return 1
-      fi
-      case "$entry" in
-        ./scripts)
-          [ -d "$residue/$entry" ] || return 1
-          ;;
-        ./SKILL.md|./scripts/build_update_manifest.py|./scripts/github_release_publish.py|\
-        ./scripts/github_release_verify.py|./scripts/local_release.py|./scripts/release_publish.py|\
-        ./scripts/telegram_publish.py)
-          [ -f "$residue/$entry" ] || return 1
-          ;;
-        *)
-          return 1
-          ;;
-      esac
-    done <<< "$entries"
-  fi
+    raise SystemExit(0)
+raise SystemExit(1)
+' "$parent"
 }
 
 release_residue_namespace_check() {
   local parent="$1"
   local namespace="$2"
-  local kind="$3"
-  local target_root="$4"
-  local residue marker suffix
+  local residue marker
 
+  if ! release_residue_parent_is_real_or_absent "$parent"; then
+    printf '  BLOCK %s (managed residue parent is not a real directory; preserved)\n' \
+      "$parent" >&2
+    return 1
+  fi
+
+  # Persistent filesystem evidence is same-UID forgeable.  Do not inspect its
+  # contents, target, tree, PID, xattrs, or mode in an attempt to recover it:
+  # any existing matching entry is preserved and requires explicit operator
+  # remediation before onboarding can mutate the managed selection or mirror.
   for residue in "$parent"/.${RELEASE_SKILL_NAME}.${namespace}.*; do
     if [ ! -e "$residue" ] && [ ! -h "$residue" ]; then
       continue
     fi
-    suffix="$(basename "$residue")"
-    suffix="${suffix#.${RELEASE_SKILL_NAME}.${namespace}.}"
-    marker="$(release_residue_marker_path "$parent" "$namespace" "$suffix")"
-    if ! release_residue_marker_is_valid "$parent" "$residue" "$marker" \
-      "$namespace" "$kind" "$target_root" "0"; then
-      printf '  BLOCK %s (unproven %s residue preserved)\n' "$residue" "$namespace" >&2
-      return 1
-    fi
-    if [ "$kind" = "directory" ] && ! release_residue_directory_is_safe "$residue" "$namespace"; then
-      printf '  BLOCK %s (owned %s residue shape is not safe; preserved)\n' \
-        "$residue" "$namespace" >&2
-      return 1
-    fi
+    printf '  BLOCK %s (pre-existing %s residue preserved; remove it manually before retrying)\n' \
+      "$residue" "$namespace" >&2
+    return 1
   done
 
   for marker in "$parent"/.${RELEASE_SKILL_NAME}.residue-owner.${namespace}.*; do
     if [ ! -e "$marker" ] && [ ! -h "$marker" ]; then
       continue
     fi
-    suffix="$(basename "$marker")"
-    suffix="${suffix#.${RELEASE_SKILL_NAME}.residue-owner.${namespace}.}"
-    residue="$parent/.${RELEASE_SKILL_NAME}.${namespace}.${suffix}"
-    if [ -e "$residue" ] || [ -h "$residue" ]; then
-      continue
-    fi
-    if ! release_residue_marker_is_valid "$parent" "$residue" "$marker" \
-      "$namespace" "$kind" "$target_root" "1"; then
-      printf '  BLOCK %s (unproven %s ownership record preserved)\n' "$marker" "$namespace" >&2
-      return 1
-    fi
+    printf '  BLOCK %s (pre-existing %s ownership record preserved; remove it manually before retrying)\n' \
+      "$marker" "$namespace" >&2
+    return 1
   done
 }
 
-release_residue_namespace_cleanup() {
-  local parent="$1"
-  local namespace="$2"
-  local kind="$3"
-  local target_root="$4"
-  local residue marker suffix
+release_residue_preflight() {
+  local mirror_parent="$1"
+  local versions="$2"
+  local selection_parent="$3"
 
-  for residue in "$parent"/.${RELEASE_SKILL_NAME}.${namespace}.*; do
-    if [ ! -e "$residue" ] && [ ! -h "$residue" ]; then
-      continue
-    fi
-    suffix="$(basename "$residue")"
-    suffix="${suffix#.${RELEASE_SKILL_NAME}.${namespace}.}"
-    marker="$(release_residue_marker_path "$parent" "$namespace" "$suffix")"
-    release_residue_marker_is_valid "$parent" "$residue" "$marker" \
-      "$namespace" "$kind" "$target_root" "0" || return 1
-    if [ "$kind" = "directory" ]; then
-      release_residue_directory_is_safe "$residue" "$namespace" || return 1
-    fi
-    rm -rf "$residue" || return 1
-    rm -f "$marker" || return 1
-  done
+  if ! release_residue_parent_is_real_or_absent "$versions"; then
+    printf '  BLOCK %s (private version store must be a real directory; preserved)\n' \
+      "$versions" >&2
+    return 1
+  fi
 
-  for marker in "$parent"/.${RELEASE_SKILL_NAME}.residue-owner.${namespace}.*; do
-    if [ ! -e "$marker" ] && [ ! -h "$marker" ]; then
-      continue
-    fi
-    suffix="$(basename "$marker")"
-    suffix="${suffix#.${RELEASE_SKILL_NAME}.residue-owner.${namespace}.}"
-    residue="$parent/.${RELEASE_SKILL_NAME}.${namespace}.${suffix}"
-    if [ -e "$residue" ] || [ -h "$residue" ]; then
-      continue
-    fi
-    release_residue_marker_is_valid "$parent" "$residue" "$marker" \
-      "$namespace" "$kind" "$target_root" "1" || return 1
-    rm -f "$marker" || return 1
-  done
+  release_residue_namespace_check "$mirror_parent" "staging" || return 1
+  release_residue_namespace_check "$versions" "staging" || return 1
+  release_residue_namespace_check "$mirror_parent" "mirror-stage" || return 1
+  release_residue_namespace_check "$selection_parent" "selection" || return 1
+  release_residue_namespace_check "$selection_parent" "legacy" || return 1
+  release_residue_namespace_check "$mirror_parent" "legacy-mirror" || return 1
+}
+
+release_residue_capture_runtime_identity() {
+  local variable_name="$1"
+  local parent="$2"
+  local residue="$3"
+  local marker="$4"
+  local kind="$5"
+  local identity
+
+  identity="$(python3 -c '
+import os
+import stat
+import sys
+
+parent, residue, marker, kind = sys.argv[1:]
+parent_stat = os.lstat(parent)
+residue_stat = os.lstat(residue)
+marker_stat = os.lstat(marker)
+if not stat.S_ISDIR(parent_stat.st_mode) or stat.S_ISLNK(parent_stat.st_mode):
+    raise SystemExit(1)
+if kind == "directory":
+    if not stat.S_ISDIR(residue_stat.st_mode) or stat.S_ISLNK(residue_stat.st_mode):
+        raise SystemExit(1)
+elif kind == "symlink":
+    if not stat.S_ISLNK(residue_stat.st_mode):
+        raise SystemExit(1)
+else:
+    raise SystemExit(1)
+if not stat.S_ISREG(marker_stat.st_mode) or stat.S_ISLNK(marker_stat.st_mode):
+    raise SystemExit(1)
+print(f"{parent_stat.st_dev}:{parent_stat.st_ino}:{residue_stat.st_dev}:{residue_stat.st_ino}:{marker_stat.st_dev}:{marker_stat.st_ino}")
+' "$parent" "$residue" "$marker" "$kind")" || return 1
+  printf -v "$variable_name" '%s' "$identity"
+}
+
+release_residue_remove_runtime_entry() {
+  local identity="$1"
+  local parent="$2"
+  local residue="$3"
+  local marker="$4"
+  local kind="$5"
+
+  [ -n "$identity" ] || return 1
+  onboard_test_pause FANTASYDISK_ONBOARD_TEST_PAUSE_BEFORE_RUNTIME_CLEANUP || return 1
+  python3 -c '
+import os
+import stat
+import sys
+
+identity, parent, residue, marker, kind = sys.argv[1:]
+try:
+    expected = tuple(int(part) for part in identity.split(":"))
+except ValueError:
+    raise SystemExit(1)
+if len(expected) != 6:
+    raise SystemExit(1)
+residue_name = os.path.basename(residue)
+marker_name = os.path.basename(marker)
+if os.path.dirname(residue) != parent or os.path.dirname(marker) != parent:
+    raise SystemExit(1)
+flags = os.O_RDONLY | getattr(os, "O_DIRECTORY", 0) | getattr(os, "O_NOFOLLOW", 0)
+
+def remove_directory_contents(directory_fd):
+    for entry in os.listdir(directory_fd):
+        entry_stat = os.stat(entry, dir_fd=directory_fd, follow_symlinks=False)
+        if stat.S_ISDIR(entry_stat.st_mode) and not stat.S_ISLNK(entry_stat.st_mode):
+            child_fd = os.open(entry, flags, dir_fd=directory_fd)
+            try:
+                child_stat = os.fstat(child_fd)
+                if (child_stat.st_dev, child_stat.st_ino) != (entry_stat.st_dev, entry_stat.st_ino):
+                    raise SystemExit(1)
+                remove_directory_contents(child_fd)
+            finally:
+                os.close(child_fd)
+            current = os.stat(entry, dir_fd=directory_fd, follow_symlinks=False)
+            if (current.st_dev, current.st_ino) != (entry_stat.st_dev, entry_stat.st_ino):
+                raise SystemExit(1)
+            os.rmdir(entry, dir_fd=directory_fd)
+        else:
+            os.unlink(entry, dir_fd=directory_fd)
+
+parent_fd = os.open(parent, flags)
+try:
+    parent_stat = os.fstat(parent_fd)
+    if (parent_stat.st_dev, parent_stat.st_ino) != expected[:2]:
+        raise SystemExit(1)
+    residue_stat = os.stat(residue_name, dir_fd=parent_fd, follow_symlinks=False)
+    marker_stat = os.stat(marker_name, dir_fd=parent_fd, follow_symlinks=False)
+    if (residue_stat.st_dev, residue_stat.st_ino) != expected[2:4]:
+        raise SystemExit(1)
+    if (marker_stat.st_dev, marker_stat.st_ino) != expected[4:6]:
+        raise SystemExit(1)
+    if kind == "directory":
+        if not stat.S_ISDIR(residue_stat.st_mode):
+            raise SystemExit(1)
+        residue_fd = os.open(residue_name, flags, dir_fd=parent_fd)
+        try:
+            opened_residue = os.fstat(residue_fd)
+            if (opened_residue.st_dev, opened_residue.st_ino) != expected[2:4]:
+                raise SystemExit(1)
+            remove_directory_contents(residue_fd)
+        finally:
+            os.close(residue_fd)
+        residue_stat = os.stat(residue_name, dir_fd=parent_fd, follow_symlinks=False)
+        if (residue_stat.st_dev, residue_stat.st_ino) != expected[2:4]:
+            raise SystemExit(1)
+        os.rmdir(residue_name, dir_fd=parent_fd)
+    elif kind == "symlink":
+        if not stat.S_ISLNK(residue_stat.st_mode):
+            raise SystemExit(1)
+        os.unlink(residue_name, dir_fd=parent_fd)
+    else:
+        raise SystemExit(1)
+    marker_stat = os.stat(marker_name, dir_fd=parent_fd, follow_symlinks=False)
+    if (marker_stat.st_dev, marker_stat.st_ino) != expected[4:6]:
+        raise SystemExit(1)
+    os.unlink(marker_name, dir_fd=parent_fd)
+finally:
+    os.close(parent_fd)
+' "$identity" "$parent" "$residue" "$marker" "$kind" || {
+    printf '  BLOCK %s (current-run residue changed; preserved)\n' "$residue" >&2
+    return 1
+  }
+}
+
+release_residue_remove_runtime_marker() {
+  local identity="$1"
+  local parent="$2"
+  local marker="$3"
+
+  [ -n "$identity" ] || return 1
+  python3 -c '
+import os
+import stat
+import sys
+
+identity, parent, marker = sys.argv[1:]
+try:
+    expected = tuple(int(part) for part in identity.split(":"))
+except ValueError:
+    raise SystemExit(1)
+if len(expected) != 6 or os.path.dirname(marker) != parent:
+    raise SystemExit(1)
+flags = os.O_RDONLY | getattr(os, "O_DIRECTORY", 0) | getattr(os, "O_NOFOLLOW", 0)
+parent_fd = os.open(parent, flags)
+try:
+    parent_stat = os.fstat(parent_fd)
+    marker_stat = os.stat(os.path.basename(marker), dir_fd=parent_fd, follow_symlinks=False)
+    if (parent_stat.st_dev, parent_stat.st_ino) != expected[:2] or (marker_stat.st_dev, marker_stat.st_ino) != expected[4:6]:
+        raise SystemExit(1)
+    if not stat.S_ISREG(marker_stat.st_mode):
+        raise SystemExit(1)
+    os.unlink(os.path.basename(marker), dir_fd=parent_fd)
+finally:
+    os.close(parent_fd)
+' "$identity" "$parent" "$marker" || {
+    printf '  BLOCK %s (current-run ownership record changed; preserved)\n' "$marker" >&2
+    return 1
+  }
+}
+
+release_residue_restore_runtime_directory() {
+  local identity="$1"
+  local parent="$2"
+  local residue="$3"
+  local dest="$4"
+  local marker="$5"
+
+  [ -n "$identity" ] || return 1
+  onboard_test_pause FANTASYDISK_ONBOARD_TEST_PAUSE_BEFORE_RUNTIME_CLEANUP || return 1
+  python3 -c '
+import os
+import stat
+import sys
+
+identity, parent, residue, dest, marker = sys.argv[1:]
+try:
+    expected = tuple(int(part) for part in identity.split(":"))
+except ValueError:
+    raise SystemExit(1)
+if len(expected) != 6 or os.path.dirname(residue) != parent or os.path.dirname(dest) != parent or os.path.dirname(marker) != parent:
+    raise SystemExit(1)
+flags = os.O_RDONLY | getattr(os, "O_DIRECTORY", 0) | getattr(os, "O_NOFOLLOW", 0)
+parent_fd = os.open(parent, flags)
+try:
+    parent_stat = os.fstat(parent_fd)
+    residue_stat = os.stat(os.path.basename(residue), dir_fd=parent_fd, follow_symlinks=False)
+    marker_stat = os.stat(os.path.basename(marker), dir_fd=parent_fd, follow_symlinks=False)
+    if (parent_stat.st_dev, parent_stat.st_ino) != expected[:2] or (residue_stat.st_dev, residue_stat.st_ino) != expected[2:4] or (marker_stat.st_dev, marker_stat.st_ino) != expected[4:6]:
+        raise SystemExit(1)
+    if not stat.S_ISDIR(residue_stat.st_mode) or stat.S_ISLNK(residue_stat.st_mode) or not stat.S_ISREG(marker_stat.st_mode):
+        raise SystemExit(1)
+    try:
+        os.stat(os.path.basename(dest), dir_fd=parent_fd, follow_symlinks=False)
+    except FileNotFoundError:
+        pass
+    else:
+        raise SystemExit(1)
+    os.rename(os.path.basename(residue), os.path.basename(dest), src_dir_fd=parent_fd, dst_dir_fd=parent_fd)
+finally:
+    os.close(parent_fd)
+' "$identity" "$parent" "$residue" "$dest" "$marker" || {
+    printf '  BLOCK %s (current-run backup changed; preserved)\n' "$residue" >&2
+    return 1
+  }
 }
 
 path_is_ephemeral_or_repo_owned() {
@@ -955,12 +1032,15 @@ make_staged_selection_link() {
 
   mkdir -p "$selection_parent" || return 1
   RELEASE_SELECTION_STAGE="$selection_parent/.${RELEASE_SKILL_NAME}.selection.$$"
-  release_residue_write_marker RELEASE_SELECTION_STAGE_MARKER \
-    "$selection_parent" "selection" "$$" "symlink" "$target" "$tree" || return 1
   if ! ln -s "$target" "$RELEASE_SELECTION_STAGE"; then
     printf '  BLOCK %s (cannot stage durable selected link)\n' "$dest" >&2
     return 1
   fi
+  release_residue_write_marker RELEASE_SELECTION_STAGE_MARKER \
+    "$selection_parent" "selection" "$$" "symlink" "$target" "$tree" || return 1
+  release_residue_capture_runtime_identity RELEASE_SELECTION_STAGE_IDENTITY \
+    "$selection_parent" "$RELEASE_SELECTION_STAGE" "$RELEASE_SELECTION_STAGE_MARKER" \
+    "symlink" || return 1
 }
 
 activate_staged_selection_link() {
@@ -971,23 +1051,23 @@ activate_staged_selection_link() {
   if [ -d "$dest" ] && [ ! -h "$dest" ]; then
     RELEASE_SELECTION_BACKUP="$RELEASE_SELECTION_PARENT/.${RELEASE_SKILL_NAME}.legacy.$$"
     backup_tree="$(tree_fingerprint "$dest")" || return 1
-    release_residue_write_marker RELEASE_SELECTION_BACKUP_MARKER \
-      "$RELEASE_SELECTION_PARENT" "legacy" "$$" "directory" "-" "$backup_tree" || return 1
     if ! mv "$dest" "$RELEASE_SELECTION_BACKUP"; then
       printf '  BLOCK %s (cannot preserve known legacy directory before activation)\n' "$dest" >&2
       return 1
     fi
+    release_residue_write_marker RELEASE_SELECTION_BACKUP_MARKER \
+      "$RELEASE_SELECTION_PARENT" "legacy" "$$" "directory" "-" "$backup_tree" || return 1
+    release_residue_capture_runtime_identity RELEASE_SELECTION_BACKUP_IDENTITY \
+      "$RELEASE_SELECTION_PARENT" "$RELEASE_SELECTION_BACKUP" \
+      "$RELEASE_SELECTION_BACKUP_MARKER" "directory" || return 1
   fi
   if ! python3 -c 'import os, sys; os.replace(sys.argv[1], sys.argv[2])' \
     "$RELEASE_SELECTION_STAGE" "$dest"; then
     printf '  BLOCK %s (cannot atomically activate durable selected link)\n' "$dest" >&2
     if [ -n "$RELEASE_SELECTION_BACKUP" ]; then
-      mv "$RELEASE_SELECTION_BACKUP" "$dest" || true
-      RELEASE_SELECTION_BACKUP=""
-    fi
-    if [ -n "${RELEASE_SELECTION_BACKUP_MARKER:-}" ]; then
-      rm -f "$RELEASE_SELECTION_BACKUP_MARKER" || true
-      RELEASE_SELECTION_BACKUP_MARKER=""
+      release_residue_restore_runtime_directory "$RELEASE_SELECTION_BACKUP_IDENTITY" \
+        "$RELEASE_SELECTION_PARENT" "$RELEASE_SELECTION_BACKUP" "$dest" \
+        "$RELEASE_SELECTION_BACKUP_MARKER" || true
     fi
     return 1
   fi
@@ -995,106 +1075,88 @@ activate_staged_selection_link() {
 }
 
 cleanup_release_runtime_residue() {
-  local backup residue
-
-  if [ -n "${RELEASE_STAGE:-}" ] && [ -d "$RELEASE_STAGE" ]; then
-    rm -rf "$RELEASE_STAGE"
+  if [ -n "${RELEASE_STAGE:-}" ] && [ -n "${RELEASE_STAGE_IDENTITY:-}" ]; then
+    release_residue_remove_runtime_entry "$RELEASE_STAGE_IDENTITY" "$RELEASE_VERSIONS" \
+      "$RELEASE_STAGE" "$RELEASE_STAGE_MARKER" "directory" || true
+    RELEASE_STAGE=""
+    RELEASE_STAGE_MARKER=""
+    RELEASE_STAGE_IDENTITY=""
+  elif [ -n "${RELEASE_STAGE_MARKER:-}" ] && [ -n "${RELEASE_STAGE_IDENTITY:-}" ]; then
+    release_residue_remove_runtime_marker "$RELEASE_STAGE_IDENTITY" "$RELEASE_VERSIONS" \
+      "$RELEASE_STAGE_MARKER" || true
+    RELEASE_STAGE_MARKER=""
+    RELEASE_STAGE_IDENTITY=""
   fi
-  RELEASE_STAGE=""
-  if [ -n "${RELEASE_STAGE_MARKER:-}" ]; then
-    rm -f "$RELEASE_STAGE_MARKER" || true
+  if [ -n "${RELEASE_MIRROR_STAGE:-}" ] && [ -n "${RELEASE_MIRROR_STAGE_IDENTITY:-}" ]; then
+    release_residue_remove_runtime_entry "$RELEASE_MIRROR_STAGE_IDENTITY" \
+      "$RELEASE_MIRROR_PARENT" "$RELEASE_MIRROR_STAGE" "$RELEASE_MIRROR_STAGE_MARKER" \
+      "symlink" || true
+    RELEASE_MIRROR_STAGE=""
+    RELEASE_MIRROR_STAGE_MARKER=""
+    RELEASE_MIRROR_STAGE_IDENTITY=""
+  elif [ -n "${RELEASE_MIRROR_STAGE_MARKER:-}" ] && [ -n "${RELEASE_MIRROR_STAGE_IDENTITY:-}" ]; then
+    release_residue_remove_runtime_marker "$RELEASE_MIRROR_STAGE_IDENTITY" \
+      "$RELEASE_MIRROR_PARENT" "$RELEASE_MIRROR_STAGE_MARKER" || true
+    RELEASE_MIRROR_STAGE_MARKER=""
+    RELEASE_MIRROR_STAGE_IDENTITY=""
   fi
-  RELEASE_STAGE_MARKER=""
-  if [ -n "${RELEASE_MIRROR_STAGE:-}" ] && [ -h "$RELEASE_MIRROR_STAGE" ]; then
-    rm -f "$RELEASE_MIRROR_STAGE"
+  if [ -n "${RELEASE_SELECTION_STAGE:-}" ] && [ -n "${RELEASE_SELECTION_STAGE_IDENTITY:-}" ]; then
+    release_residue_remove_runtime_entry "$RELEASE_SELECTION_STAGE_IDENTITY" \
+      "$RELEASE_SELECTION_PARENT" "$RELEASE_SELECTION_STAGE" "$RELEASE_SELECTION_STAGE_MARKER" \
+      "symlink" || true
+    RELEASE_SELECTION_STAGE=""
+    RELEASE_SELECTION_STAGE_MARKER=""
+    RELEASE_SELECTION_STAGE_IDENTITY=""
+  elif [ -n "${RELEASE_SELECTION_STAGE_MARKER:-}" ] && [ -n "${RELEASE_SELECTION_STAGE_IDENTITY:-}" ]; then
+    release_residue_remove_runtime_marker "$RELEASE_SELECTION_STAGE_IDENTITY" \
+      "$RELEASE_SELECTION_PARENT" "$RELEASE_SELECTION_STAGE_MARKER" || true
+    RELEASE_SELECTION_STAGE_MARKER=""
+    RELEASE_SELECTION_STAGE_IDENTITY=""
   fi
-  RELEASE_MIRROR_STAGE=""
-  if [ -n "${RELEASE_MIRROR_STAGE_MARKER:-}" ]; then
-    rm -f "$RELEASE_MIRROR_STAGE_MARKER" || true
-  fi
-  RELEASE_MIRROR_STAGE_MARKER=""
-  if [ -n "${RELEASE_SELECTION_STAGE:-}" ] && [ -h "$RELEASE_SELECTION_STAGE" ]; then
-    rm -f "$RELEASE_SELECTION_STAGE"
-  fi
-  RELEASE_SELECTION_STAGE=""
-  if [ -n "${RELEASE_SELECTION_STAGE_MARKER:-}" ]; then
-    rm -f "$RELEASE_SELECTION_STAGE_MARKER" || true
-  fi
-  RELEASE_SELECTION_STAGE_MARKER=""
-  if [ -n "${RELEASE_SELECTION_BACKUP:-}" ] && [ -d "$RELEASE_SELECTION_BACKUP" ]; then
+  if [ -n "${RELEASE_SELECTION_BACKUP:-}" ] && [ -n "${RELEASE_SELECTION_BACKUP_IDENTITY:-}" ]; then
     if [ -n "${RELEASE_SELECTION_DEST:-}" ] \
       && [ ! -e "$RELEASE_SELECTION_DEST" ] && [ ! -h "$RELEASE_SELECTION_DEST" ]; then
-      mv "$RELEASE_SELECTION_BACKUP" "$RELEASE_SELECTION_DEST" || true
+      if release_residue_restore_runtime_directory "$RELEASE_SELECTION_BACKUP_IDENTITY" \
+        "$RELEASE_SELECTION_PARENT" "$RELEASE_SELECTION_BACKUP" "$RELEASE_SELECTION_DEST" \
+        "$RELEASE_SELECTION_BACKUP_MARKER"; then
+        release_residue_remove_runtime_marker "$RELEASE_SELECTION_BACKUP_IDENTITY" \
+          "$RELEASE_SELECTION_PARENT" "$RELEASE_SELECTION_BACKUP_MARKER" || true
+      fi
     else
-      rm -rf "$RELEASE_SELECTION_BACKUP"
+      release_residue_remove_runtime_entry "$RELEASE_SELECTION_BACKUP_IDENTITY" \
+        "$RELEASE_SELECTION_PARENT" "$RELEASE_SELECTION_BACKUP" \
+        "$RELEASE_SELECTION_BACKUP_MARKER" "directory" || true
     fi
+    RELEASE_SELECTION_BACKUP=""
+    RELEASE_SELECTION_BACKUP_MARKER=""
+    RELEASE_SELECTION_BACKUP_IDENTITY=""
+  elif [ -n "${RELEASE_SELECTION_BACKUP_MARKER:-}" ] && [ -n "${RELEASE_SELECTION_BACKUP_IDENTITY:-}" ]; then
+    release_residue_remove_runtime_marker "$RELEASE_SELECTION_BACKUP_IDENTITY" \
+      "$RELEASE_SELECTION_PARENT" "$RELEASE_SELECTION_BACKUP_MARKER" || true
+    RELEASE_SELECTION_BACKUP_MARKER=""
+    RELEASE_SELECTION_BACKUP_IDENTITY=""
   fi
-  RELEASE_SELECTION_BACKUP=""
-  if [ -n "${RELEASE_SELECTION_BACKUP_MARKER:-}" ]; then
-    rm -f "$RELEASE_SELECTION_BACKUP_MARKER" || true
+  if [ -n "${RELEASE_MIRROR_BACKUP:-}" ] && [ -n "${RELEASE_MIRROR_BACKUP_IDENTITY:-}" ]; then
+    release_residue_remove_runtime_entry "$RELEASE_MIRROR_BACKUP_IDENTITY" \
+      "$RELEASE_MIRROR_PARENT" "$RELEASE_MIRROR_BACKUP" "$RELEASE_MIRROR_BACKUP_MARKER" \
+      "directory" || true
+    RELEASE_MIRROR_BACKUP=""
+    RELEASE_MIRROR_BACKUP_MARKER=""
+    RELEASE_MIRROR_BACKUP_IDENTITY=""
+  elif [ -n "${RELEASE_MIRROR_BACKUP_MARKER:-}" ] && [ -n "${RELEASE_MIRROR_BACKUP_IDENTITY:-}" ]; then
+    release_residue_remove_runtime_marker "$RELEASE_MIRROR_BACKUP_IDENTITY" \
+      "$RELEASE_MIRROR_PARENT" "$RELEASE_MIRROR_BACKUP_MARKER" || true
+    RELEASE_MIRROR_BACKUP_MARKER=""
+    RELEASE_MIRROR_BACKUP_IDENTITY=""
   fi
-  RELEASE_SELECTION_BACKUP_MARKER=""
-  if [ -n "${RELEASE_MIRROR_BACKUP:-}" ] && [ -d "$RELEASE_MIRROR_BACKUP" ]; then
-    rm -rf "$RELEASE_MIRROR_BACKUP"
-  fi
-  RELEASE_MIRROR_BACKUP=""
-  if [ -n "${RELEASE_MIRROR_BACKUP_MARKER:-}" ]; then
-    rm -f "$RELEASE_MIRROR_BACKUP_MARKER" || true
-  fi
-  RELEASE_MIRROR_BACKUP_MARKER=""
 }
 
 reconcile_release_residue() {
-  local backup residue marker selection_parent
+  local selection_parent
 
   selection_parent="${RELEASE_SELECTION_PARENT:-$(dirname "$RELEASE_SELECTION_DEST")}"
 
-  # Preflight every namespace before removing anything.  A single foreign
-  # lookalike therefore blocks the whole reconciliation without partially
-  # deleting another, valid crash residue.
-  release_residue_namespace_check \
-    "$RELEASE_MIRROR_PARENT" "staging" "directory" "-" || return 1
-  release_residue_namespace_check \
-    "$RELEASE_VERSIONS" "staging" "directory" "-" || return 1
-  release_residue_namespace_check \
-    "$RELEASE_MIRROR_PARENT" "mirror-stage" "symlink" "$RELEASE_VERSIONS" || return 1
-  release_residue_namespace_check \
-    "$selection_parent" "selection" "symlink" "$RELEASE_VERSIONS" || return 1
-  release_residue_namespace_check \
-    "$selection_parent" "legacy" "directory" "-" || return 1
-  release_residue_namespace_check \
-    "$RELEASE_MIRROR_PARENT" "legacy-mirror" "directory" "-" || return 1
-
-  release_residue_namespace_cleanup \
-    "$RELEASE_MIRROR_PARENT" "staging" "directory" "-" || return 1
-  release_residue_namespace_cleanup \
-    "$RELEASE_VERSIONS" "staging" "directory" "-" || return 1
-  release_residue_namespace_cleanup \
-    "$RELEASE_MIRROR_PARENT" "mirror-stage" "symlink" "$RELEASE_VERSIONS" || return 1
-  release_residue_namespace_cleanup \
-    "$selection_parent" "selection" "symlink" "$RELEASE_VERSIONS" || return 1
-
-  for backup in "$selection_parent"/.${RELEASE_SKILL_NAME}.legacy.*; do
-    if [ ! -e "$backup" ] && [ ! -h "$backup" ]; then
-      continue
-    fi
-    residue="$(basename "$backup")"
-    residue="${residue#.${RELEASE_SKILL_NAME}.legacy.}"
-    marker="$(release_residue_marker_path "$selection_parent" "legacy" "$residue")"
-    release_residue_marker_is_valid "$selection_parent" "$backup" "$marker" \
-      "legacy" "directory" "-" "0" || return 1
-    if [ -e "$RELEASE_SELECTION_DEST" ] || [ -h "$RELEASE_SELECTION_DEST" ]; then
-      rm -rf "$backup" || return 1
-    else
-      mv "$backup" "$RELEASE_SELECTION_DEST" || return 1
-    fi
-    rm -f "$marker" || return 1
-  done
-  release_residue_namespace_cleanup \
-    "$selection_parent" "legacy" "directory" "-" || return 1
-
-  release_residue_namespace_cleanup \
-    "$RELEASE_MIRROR_PARENT" "legacy-mirror" "directory" "-" || return 1
+  release_residue_preflight "$RELEASE_MIRROR_PARENT" "$RELEASE_VERSIONS" "$selection_parent"
 }
 
 release_mirror_target() {
@@ -1130,15 +1192,21 @@ activate_mirror_pointer() {
 
   RELEASE_MIRROR_STAGE="$RELEASE_MIRROR_PARENT/.${RELEASE_SKILL_NAME}.mirror-stage.$$"
   target_tree="$(tree_fingerprint "$target")" || return 1
+  ln -s "$target" "$RELEASE_MIRROR_STAGE" || return 1
   release_residue_write_marker RELEASE_MIRROR_STAGE_MARKER \
     "$RELEASE_MIRROR_PARENT" "mirror-stage" "$$" "symlink" "$target" "$target_tree" || return 1
-  ln -s "$target" "$RELEASE_MIRROR_STAGE" || return 1
+  release_residue_capture_runtime_identity RELEASE_MIRROR_STAGE_IDENTITY \
+    "$RELEASE_MIRROR_PARENT" "$RELEASE_MIRROR_STAGE" "$RELEASE_MIRROR_STAGE_MARKER" \
+    "symlink" || return 1
   if [ -d "$RELEASE_MIRROR" ] && [ ! -h "$RELEASE_MIRROR" ]; then
     RELEASE_MIRROR_BACKUP="$RELEASE_MIRROR_PARENT/.${RELEASE_SKILL_NAME}.legacy-mirror.$$"
     backup_tree="$(tree_fingerprint "$RELEASE_MIRROR")" || return 1
+    mv "$RELEASE_MIRROR" "$RELEASE_MIRROR_BACKUP" || return 1
     release_residue_write_marker RELEASE_MIRROR_BACKUP_MARKER \
       "$RELEASE_MIRROR_PARENT" "legacy-mirror" "$$" "directory" "-" "$backup_tree" || return 1
-    mv "$RELEASE_MIRROR" "$RELEASE_MIRROR_BACKUP" || return 1
+    release_residue_capture_runtime_identity RELEASE_MIRROR_BACKUP_IDENTITY \
+      "$RELEASE_MIRROR_PARENT" "$RELEASE_MIRROR_BACKUP" \
+      "$RELEASE_MIRROR_BACKUP_MARKER" "directory" || return 1
   fi
   if ! python3 -c 'import os, sys; os.replace(sys.argv[1], sys.argv[2])' \
     "$RELEASE_MIRROR_STAGE" "$RELEASE_MIRROR"; then
@@ -1156,6 +1224,9 @@ install_release_skill() {
   local selected_needs_update="1"
 
   RELEASE_SELECTION_DEST="$dest"
+  release_residue_preflight "$HOME/.codex/skill-mirrors/FantasyDisk" \
+    "$HOME/.codex/skill-mirrors/FantasyDisk/$RELEASE_VERSIONS_NAME" \
+    "$HOME/.codex/skills" || return 1
   prepare_release_selection_parent "$dest" || return 1
   RELEASE_SELECTION_DEST="$RELEASE_SELECTION_PARENT/$RELEASE_SKILL_NAME"
   dest="$RELEASE_SELECTION_DEST"
@@ -1180,9 +1251,12 @@ install_release_skill() {
   else
     version_dir="$RELEASE_VERSIONS/$source_tree"
     RELEASE_STAGE="$RELEASE_VERSIONS/.${RELEASE_SKILL_NAME}.staging.$$"
+    mkdir "$RELEASE_STAGE" || return 1
     release_residue_write_marker RELEASE_STAGE_MARKER \
-      "$RELEASE_VERSIONS" "staging" "$$" "directory" "-" "$source_tree" || return 1
-    if ! mkdir "$RELEASE_STAGE" || ! cp -R "$src_dir/." "$RELEASE_STAGE" \
+    "$RELEASE_VERSIONS" "staging" "$$" "directory" "-" "$source_tree" || return 1
+    release_residue_capture_runtime_identity RELEASE_STAGE_IDENTITY \
+      "$RELEASE_VERSIONS" "$RELEASE_STAGE" "$RELEASE_STAGE_MARKER" "directory" || return 1
+    if ! cp -R "$src_dir/." "$RELEASE_STAGE" \
       || ! release_skill_tree_is_valid "$RELEASE_STAGE" \
       || [ "$(tree_fingerprint "$RELEASE_STAGE")" != "$source_tree" ] \
       || ! mv "$RELEASE_STAGE" "$version_dir"; then
@@ -1191,8 +1265,10 @@ install_release_skill() {
       return 1
     fi
     RELEASE_STAGE=""
-    rm -f "$RELEASE_STAGE_MARKER" || return 1
+    release_residue_remove_runtime_marker "$RELEASE_STAGE_IDENTITY" "$RELEASE_VERSIONS" \
+      "$RELEASE_STAGE_MARKER" || return 1
     RELEASE_STAGE_MARKER=""
+    RELEASE_STAGE_IDENTITY=""
     printf '  MIRROR %s (verified immutable inventory/type/SHA-256)\n' "$version_dir"
   fi
 
@@ -1244,8 +1320,8 @@ onboard_exit() {
 }
 
 # TERM/INT are observed by the deterministic pause hook before it can cross a
-# selection boundary.  KILL cannot run a trap; its stale lock and private
-# residue are reconciled by the next invocation after the owner disappears.
+# selection boundary. KILL cannot run a trap, so its private residue is left
+# untouched and the next invocation fails closed until an operator removes it.
 onboard_interrupt() {
   RELEASE_INTERRUPT_REQUESTED="1"
   if [ "${RELEASE_TEST_PAUSE_ACTIVE:-0}" != "1" ]; then
@@ -1269,6 +1345,9 @@ link_skills() {
 
   if [ "$src_dir" = "$REPO_ROOT/skills/codex" ] \
     && [ -d "$src_dir/$RELEASE_SKILL_NAME" ]; then
+    release_residue_preflight "$HOME/.codex/skill-mirrors/FantasyDisk" \
+      "$HOME/.codex/skill-mirrors/FantasyDisk/$RELEASE_VERSIONS_NAME" \
+      "$HOME/.codex/skills" || return 1
     prepare_release_selection_parent "$dest_dir/$RELEASE_SKILL_NAME" || return 1
   else
     mkdir -p "$dest_dir"

@@ -18,9 +18,13 @@ commit point переключает `~/.codex/skills/fantasydisk-release-directo
 commit point; старые version trees не удаляются во время обновления, поэтому
 читатель, уже разрешивший старую версию, может дочитать её целиком. Обновления
 сериализуются managed lock; после обычного сбоя или SIGTERM временный residue
-убирается, а после SIGKILL следующий onboarding безопасно reconciles только свои
-staging/backup paths. Завершённый Multica task/worktree не остаётся persistent
-source. Неизвестная реальная локальная папка сохраняется и останавливает
+убирается только в том же live-процессе после проверки физической идентичности.
+После SIGKILL residue и ownership marker намеренно сохраняются: следующий
+onboarding останавливается до изменения selection/mirror и просит оператора
+удалить или проверить эти пути вручную. Persistent marker, PID, режим, имя или
+содержимое никогда не считаются доказательством авторства для cross-run cleanup.
+Завершённый Multica task/worktree не остаётся persistent source. Неизвестная
+реальная локальная папка сохраняется и останавливает
 onboarding; private version store создаётся только как реальная директория внутри
 managed mirror parent, а symlink, файл, FIFO, socket или другой неожиданный тип
 останавливает onboarding до любого чтения или удаления под этим путём. Внешняя

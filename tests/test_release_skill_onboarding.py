@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import base64
 import hashlib
 import io
 import os
@@ -382,6 +383,33 @@ def _install_complete_lock_owner(home: Path, suffix: str = "fixture") -> Path:
     return owner
 
 
+def _write_schema_valid_residue_marker(
+    parent: Path,
+    namespace: str,
+    suffix: str,
+    kind: str,
+    target: str,
+    tree: str,
+) -> Path:
+    """Create the old public v1 shape without claiming it is trustworthy."""
+    marker = parent / f".fantasydisk-release-director.residue-owner.{namespace}.{suffix}"
+    encoded_target = base64.urlsafe_b64encode(target.encode("utf-8")).decode("ascii")
+    marker.write_text(
+        "magic=fantasydisk-release-director-residue-v1\n"
+        f"namespace={namespace}\n"
+        f"residue=.fantasydisk-release-director.{namespace}.{suffix}\n"
+        f"parent={parent}\n"
+        f"kind={kind}\n"
+        f"target={encoded_target}\n"
+        f"tree={tree}\n"
+        f"pid={os.getpid()}\n"
+        "files=7\n",
+        encoding="ascii",
+    )
+    marker.chmod(0o600)
+    return marker
+
+
 def _write_pre_fix_onboard(destination: Path) -> Path:
     result = subprocess.run(
         ["git", "show", f"{PRE_FIX_ONBOARD_COMMIT}:scripts/onboard.sh"],
@@ -575,6 +603,219 @@ class ReleaseSkillOnboardingTest(unittest.TestCase):
                 self.assertEqual(_inventory(residue), residue_before)
                 self.assertEqual(_metadata_signature(marker), marker_before)
                 self.assertEqual(_inventory(external), external_before)
+
+    def test_all_persistent_residue_and_marker_states_block_without_mutation(self) -> None:
+        """A same-UID process can forge every persistent v1 evidence shape."""
+        namespaces = (
+            ("staging-mirror", "staging", "mirror", "directory"),
+            ("staging-versions", "staging", "versions", "directory"),
+            ("mirror-stage", "mirror-stage", "mirror", "symlink"),
+            ("selection", "selection", "selection", "symlink"),
+            ("legacy-selection", "legacy", "selection", "directory"),
+            ("legacy-mirror", "legacy-mirror", "mirror", "directory"),
+        )
+        marker_variants = (
+            "exact-schema",
+            "marker-only",
+            "malformed",
+            "incomplete",
+            "unreadable",
+            "wrong-type",
+            "symlinked",
+        )
+        for case_name, namespace, parent_kind, expected_kind in namespaces:
+            for variant in marker_variants:
+                with self.subTest(case=case_name, variant=variant), tempfile.TemporaryDirectory(
+                    prefix="fantasydisk-onboard-persistent-state-"
+                ) as raw:
+                    workspace = Path(raw)
+                    home = workspace / "home"
+                    mirror_parent = home / ".codex" / "skill-mirrors" / "FantasyDisk"
+                    versions = _versions(home)
+                    selection_parent = home / ".codex" / "skills"
+                    mirror_parent.mkdir(parents=True)
+                    versions.mkdir()
+                    selection_parent.mkdir(parents=True)
+                    parent = (
+                        mirror_parent
+                        if parent_kind == "mirror"
+                        else versions
+                        if parent_kind == "versions"
+                        else selection_parent
+                    )
+                    suffix = "operator"
+                    residue = parent / f".fantasydisk-release-director.{namespace}.{suffix}"
+                    marker = parent / (
+                        f".fantasydisk-release-director.residue-owner.{namespace}.{suffix}"
+                    )
+                    external = workspace / "external-sentinel"
+                    external.mkdir()
+                    (external / "keep.txt").write_bytes(b"must not be followed or changed\n")
+
+                    if variant != "marker-only":
+                        actual_kind = (
+                            "symlink"
+                            if variant == "wrong-type" and expected_kind == "directory"
+                            else "directory"
+                            if variant == "wrong-type"
+                            else expected_kind
+                        )
+                        if actual_kind == "directory":
+                            residue.mkdir()
+                            (residue / "keep.txt").write_bytes(b"operator residue\n")
+                        else:
+                            residue.symlink_to(external, target_is_directory=True)
+
+                    if variant == "malformed":
+                        marker.write_text("not a marker\n", encoding="ascii")
+                    elif variant == "incomplete":
+                        marker.write_text(
+                            "magic=fantasydisk-release-director-residue-v1\n",
+                            encoding="ascii",
+                        )
+                    elif variant == "unreadable":
+                        marker.write_text("unreadable\n", encoding="ascii")
+                        marker.chmod(0)
+                    elif variant == "wrong-type":
+                        marker.mkdir()
+                    elif variant == "symlinked":
+                        marker.symlink_to(external / "keep.txt")
+                    else:
+                        marker = _write_schema_valid_residue_marker(
+                            parent,
+                            namespace,
+                            suffix,
+                            expected_kind,
+                            str(external) if expected_kind == "symlink" else "-",
+                            "0" * 64,
+                        )
+
+                    mirror_before = (
+                        None if variant == "unreadable" else _inventory(mirror_parent)
+                    )
+                    selection_before = (
+                        None if variant == "unreadable" else _inventory(selection_parent)
+                    )
+                    residue_before = _lstat_or_absent(residue)
+                    marker_before = _metadata_signature(marker)
+                    external_before = _inventory(external)
+                    selection_hook = workspace / "selection-hook"
+                    result = _run_onboard(
+                        ONBOARD,
+                        home,
+                        extra={
+                            "FANTASYDISK_ONBOARD_TEST_PAUSE_BEFORE_SELECTION_COMMIT": str(
+                                selection_hook
+                            )
+                        },
+                    )
+
+                    self.assertNotEqual(result.returncode, 0, result.stdout)
+                    self.assertIn("BLOCK", result.stdout)
+                    self.assertIn("pre-existing", result.stdout)
+                    self.assertFalse(selection_hook.exists())
+                    if mirror_before is not None:
+                        self.assertEqual(_inventory(mirror_parent), mirror_before)
+                    if selection_before is not None:
+                        self.assertEqual(_inventory(selection_parent), selection_before)
+                    self.assertEqual(_lstat_or_absent(residue), residue_before)
+                    self.assertEqual(_metadata_signature(marker), marker_before)
+                    self.assertEqual(_inventory(external), external_before)
+                    if variant == "unreadable":
+                        marker.chmod(0o600)
+
+    def test_marker_without_residue_variants_are_preserved_in_every_namespace(self) -> None:
+        namespaces = (
+            ("staging-mirror", "staging", "mirror", "directory"),
+            ("staging-versions", "staging", "versions", "directory"),
+            ("mirror-stage", "mirror-stage", "mirror", "symlink"),
+            ("selection", "selection", "selection", "symlink"),
+            ("legacy-selection", "legacy", "selection", "directory"),
+            ("legacy-mirror", "legacy-mirror", "mirror", "directory"),
+        )
+        variants = (
+            "exact-schema",
+            "malformed",
+            "incomplete",
+            "unreadable",
+            "wrong-type",
+            "symlinked",
+            "foreign",
+        )
+        for case_name, namespace, parent_kind, expected_kind in namespaces:
+            for variant in variants:
+                with self.subTest(case=case_name, variant=variant), tempfile.TemporaryDirectory(
+                    prefix="fantasydisk-onboard-marker-only-"
+                ) as raw:
+                    workspace = Path(raw)
+                    home = workspace / "home"
+                    mirror_parent = home / ".codex" / "skill-mirrors" / "FantasyDisk"
+                    versions = _versions(home)
+                    selection_parent = home / ".codex" / "skills"
+                    mirror_parent.mkdir(parents=True)
+                    versions.mkdir()
+                    selection_parent.mkdir(parents=True)
+                    parent = (
+                        mirror_parent
+                        if parent_kind == "mirror"
+                        else versions
+                        if parent_kind == "versions"
+                        else selection_parent
+                    )
+                    suffix = "marker-only"
+                    marker = parent / (
+                        f".fantasydisk-release-director.residue-owner.{namespace}.{suffix}"
+                    )
+                    external = workspace / "external-sentinel"
+                    external.write_bytes(b"must not be opened or changed\n")
+                    if variant == "malformed":
+                        marker.write_bytes(b"not a marker\n")
+                    elif variant == "incomplete":
+                        marker.write_bytes(b"magic=fantasydisk-release-director-residue-v1\n")
+                    elif variant == "unreadable":
+                        marker.write_bytes(b"unreadable\n")
+                        marker.chmod(0)
+                    elif variant == "wrong-type":
+                        marker.mkdir()
+                    elif variant == "symlinked":
+                        marker.symlink_to(external)
+                    else:
+                        marker = _write_schema_valid_residue_marker(
+                            parent,
+                            namespace,
+                            suffix,
+                            expected_kind,
+                            str(external) if expected_kind == "symlink" else "-",
+                            "0" * 64,
+                        )
+                        if variant == "foreign":
+                            marker.write_text(
+                                marker.read_text(encoding="ascii").replace(
+                                    f"parent={parent}", f"parent={external.parent}"
+                                ),
+                                encoding="ascii",
+                            )
+
+                    marker_before = _metadata_signature(marker)
+                    external_before = _file_sha256(external)
+                    selection_hook = workspace / "selection-hook"
+                    result = _run_onboard(
+                        ONBOARD,
+                        home,
+                        extra={
+                            "FANTASYDISK_ONBOARD_TEST_PAUSE_BEFORE_SELECTION_COMMIT": str(
+                                selection_hook
+                            )
+                        },
+                    )
+
+                    self.assertNotEqual(result.returncode, 0, result.stdout)
+                    self.assertIn("pre-existing", result.stdout)
+                    self.assertFalse(selection_hook.exists())
+                    self.assertEqual(_metadata_signature(marker), marker_before)
+                    self.assertEqual(_file_sha256(external), external_before)
+                    if variant == "unreadable":
+                        marker.chmod(0o600)
 
     def test_symlinked_entries_are_preserved_and_block_without_following_targets(self) -> None:
         mutations = {}
@@ -972,13 +1213,8 @@ class ReleaseSkillOnboardingTest(unittest.TestCase):
             self.assertEqual(retry_after.returncode, 0, retry_after.stdout)
             _assert_durable_selected_tree(home, source)
 
-    def test_sigterm_and_sigkill_reconcile_old_or_new_selection(self) -> None:
-        for phase, interrupt, expected_new in (
-            ("before", signal.SIGTERM, False),
-            ("before", signal.SIGKILL, False),
-            ("after", signal.SIGTERM, True),
-            ("after", signal.SIGKILL, True),
-        ):
+    def _assert_signal_recovery_contract(self, interrupt: signal.Signals) -> None:
+        for phase, expected_new in (("before", False), ("after", True)):
             with self.subTest(phase=phase, interrupt=interrupt.name), tempfile.TemporaryDirectory(
                 prefix="fantasydisk-onboard-signal-"
             ) as raw:
@@ -1008,12 +1244,124 @@ class ReleaseSkillOnboardingTest(unittest.TestCase):
                 self.assertEqual(
                     _inventory(Path(os.path.realpath(_selected(home)))), expected, output
                 )
-                retry = _run_onboard(script, home)
-                self.assertEqual(retry.returncode, 0, retry.stdout)
-                self.assertEqual(_inventory(Path(os.path.realpath(_selected(home)))), new_snapshot)
-                self.assertEqual(
-                    list(_versions(home).glob(".fantasydisk-release-director.staging.*")), []
+                selection_parent = _selected(home).parent
+                persistent = sorted(
+                    [
+                        *selection_parent.glob(".fantasydisk-release-director.selection.*"),
+                        *selection_parent.glob(
+                            ".fantasydisk-release-director.residue-owner.selection.*"
+                        ),
+                    ]
                 )
+                persistent_before_retry = {
+                    path: _metadata_signature(path) for path in persistent
+                }
+                retry = _run_onboard(script, home)
+                if interrupt == signal.SIGKILL:
+                    self.assertTrue(persistent_before_retry)
+                    self.assertNotEqual(retry.returncode, 0, retry.stdout)
+                    self.assertIn("pre-existing", retry.stdout)
+                    self.assertEqual(
+                        {path: _metadata_signature(path) for path in persistent_before_retry},
+                        persistent_before_retry,
+                    )
+                    self.assertEqual(
+                        _inventory(Path(os.path.realpath(_selected(home)))), expected
+                    )
+                else:
+                    self.assertEqual(retry.returncode, 0, retry.stdout)
+                    self.assertEqual(_inventory(Path(os.path.realpath(_selected(home)))), new_snapshot)
+                    self.assertEqual(persistent_before_retry, {})
+                    self.assertEqual(
+                        list(_versions(home).glob(".fantasydisk-release-director.staging.*")), []
+                    )
+
+    def test_sigterm_cleans_current_run_residue(self) -> None:
+        self._assert_signal_recovery_contract(signal.SIGTERM)
+
+    def test_sigkill_preserves_residue_and_blocks_next_run(self) -> None:
+        self._assert_signal_recovery_contract(signal.SIGKILL)
+
+    def test_current_run_cleanup_preserves_replaced_parent_residue_and_marker(self) -> None:
+        """Descriptor-relative cleanup must not touch a replacement after its pause hook."""
+        for replacement_kind in ("parent", "residue", "marker"):
+            with self.subTest(replacement=replacement_kind), tempfile.TemporaryDirectory(
+                prefix="fantasydisk-onboard-runtime-replacement-"
+            ) as raw:
+                workspace = Path(raw)
+                home = workspace / "home"
+                checkout = _make_disposable_source_checkout(workspace / "checkout")
+                script = checkout / "scripts" / "onboard.sh"
+                self.assertEqual(_run_onboard(script, home).returncode, 0)
+                _commit_source_change(checkout, f"runtime-{replacement_kind}-replacement")
+                cleanup_pause = workspace / "before-runtime-cleanup"
+                process = _start_onboard(
+                    script,
+                    home,
+                    extra={
+                        "FANTASYDISK_ONBOARD_TEST_FAIL_BEFORE_SELECTION_COMMIT": "1",
+                        "FANTASYDISK_ONBOARD_TEST_PAUSE_BEFORE_RUNTIME_CLEANUP": str(
+                            cleanup_pause
+                        ),
+                    },
+                )
+                _wait_for_marker(cleanup_pause, process)
+
+                selection_parent = _selected(home).parent
+                residue = next(
+                    selection_parent.glob(".fantasydisk-release-director.selection.*")
+                )
+                marker = next(
+                    selection_parent.glob(
+                        ".fantasydisk-release-director.residue-owner.selection.*"
+                    )
+                )
+                external = workspace / "external-sentinel"
+                external.mkdir()
+                (external / "keep.txt").write_bytes(b"must not be touched\n")
+
+                if replacement_kind == "parent":
+                    moved_parent = workspace / "original-selection-parent"
+                    selection_parent.rename(moved_parent)
+                    selection_parent.mkdir(parents=True)
+                    replacement = selection_parent / residue.name
+                    replacement.symlink_to(external, target_is_directory=True)
+                    replacement_marker = selection_parent / marker.name
+                    replacement_marker.write_bytes(b"replacement marker\n")
+                    expected_replacement = (
+                        _lstat_signature(replacement),
+                        _lstat_signature(replacement_marker),
+                    )
+                elif replacement_kind == "residue":
+                    original_residue = workspace / "original-residue"
+                    residue.rename(original_residue)
+                    residue.symlink_to(external, target_is_directory=True)
+                    expected_replacement = (_lstat_signature(residue), _lstat_signature(marker))
+                else:
+                    original_marker = workspace / "original-marker"
+                    marker.rename(original_marker)
+                    marker.write_bytes(b"replacement marker\n")
+                    expected_replacement = (_lstat_signature(residue), _lstat_signature(marker))
+                external_before = _inventory(external)
+
+                cleanup_pause.unlink()
+                output = process.communicate(timeout=10)[0]
+
+                self.assertNotEqual(process.returncode, 0, output)
+                self.assertIn("current-run", output)
+                if replacement_kind == "parent":
+                    self.assertEqual(
+                        (
+                            _lstat_signature(selection_parent / residue.name),
+                            _lstat_signature(selection_parent / marker.name),
+                        ),
+                        expected_replacement,
+                    )
+                else:
+                    self.assertEqual(
+                        (_lstat_signature(residue), _lstat_signature(marker)), expected_replacement
+                    )
+                self.assertEqual(_inventory(external), external_before)
 
     def test_prepublication_contention_fails_closed_without_managed_mutation(self) -> None:
         with tempfile.TemporaryDirectory(prefix="fantasydisk-onboard-lock-prepub-") as raw:
@@ -1139,17 +1487,9 @@ class ReleaseSkillOnboardingTest(unittest.TestCase):
             self.assertFalse(_lock_reclaim(home).exists() or _lock_reclaim(home).is_symlink())
             self.assertFalse(list(_versions(home).parent.glob(".fantasydisk-release-director.lock-owner.*")))
 
-    def test_lock_liveness_probe_is_tri_state_and_unknown_is_preserved(self) -> None:
-        cases = (
-            ("canonical-live", "live", "canonical", False),
-            ("canonical-dead", "dead", "canonical", True),
-            ("canonical-permission-denied", "unknown", "canonical", False),
-            ("canonical-oserror", "error", "canonical", False),
-            ("canonical-invalid-pid", "invalid", "canonical", False),
-            ("canonical-probe-failure", "failure", "canonical", False),
-            ("reclaim-marker-permission-denied", "unknown", "marker", False),
-            ("orphan-permission-denied", "unknown", "orphan", False),
-        )
+    def _assert_lock_liveness_cases(
+        self, cases: tuple[tuple[str, str, str, bool], ...]
+    ) -> None:
         for name, outcome, lock_kind, reclaims in cases:
             with self.subTest(name=name), tempfile.TemporaryDirectory(
                 prefix="fantasydisk-onboard-lock-probe-"
@@ -1199,6 +1539,38 @@ class ReleaseSkillOnboardingTest(unittest.TestCase):
                     self.assertIn("lock", result.stdout.lower())
                     self.assertFalse(selection_hook.exists())
                     self.assertEqual(_managed_lock_state(home), before)
+
+    def test_lock_liveness_probe_distinguishes_live_from_esrch(self) -> None:
+        self._assert_lock_liveness_cases(
+            (
+                ("canonical-live", "live", "canonical", False),
+                ("canonical-dead", "dead", "canonical", True),
+            )
+        )
+
+    def test_lock_liveness_probe_preserves_canonical_unknown_results(self) -> None:
+        self._assert_lock_liveness_cases(
+            (
+                ("canonical-permission-denied", "unknown", "canonical", False),
+                ("canonical-oserror", "error", "canonical", False),
+            )
+        )
+
+    def test_lock_liveness_probe_preserves_invalid_and_probe_failure(self) -> None:
+        self._assert_lock_liveness_cases(
+            (
+                ("canonical-invalid-pid", "invalid", "canonical", False),
+                ("canonical-probe-failure", "failure", "canonical", False),
+            )
+        )
+
+    def test_lock_liveness_probe_preserves_reclaimer_and_orphan_unknown_state(self) -> None:
+        self._assert_lock_liveness_cases(
+            (
+                ("reclaim-marker-permission-denied", "unknown", "marker", False),
+                ("orphan-permission-denied", "unknown", "orphan", False),
+            )
+        )
 
     def test_malformed_unreadable_incomplete_and_foreign_locks_fail_closed(self) -> None:
         cases = ("incomplete", "malformed", "unreadable", "foreign")
