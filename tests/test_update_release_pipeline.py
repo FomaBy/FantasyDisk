@@ -2815,6 +2815,52 @@ class ReleaseDocumentationConsistencyTests(unittest.TestCase):
             "1.2.30 < 1.2.31 < 1.2.40",
         ),
     }
+    MACOS_CODESIGN_DOCUMENTS = (SKILL, RELEASE_VERSIONING)
+    MACOS_CODESIGN_CONTRADICTION_PATTERNS = (
+        (
+            "unsigned skips codesign integrity verification",
+            r"\bunsigned\b[^.!?]{0,220}"
+            r"(?:skip\w*|omit\w*|not\s+(?:run|required|verified)|"
+            r"does\s+not\s+(?:run|require|verify)|пропуска\w*|"
+            r"не\s+(?:выполня\w*|треб\w*|проверя\w*))[^.!?]{0,48}"
+            r"`?codesign\b",
+        ),
+        (
+            "codesign is signed-only",
+            r"`?codesign\b[^.!?]{0,180}"
+            r"(?:signed[- ]only|only\s+(?:for\s+)?signed|"
+            r"только\s+(?:для\s+)?(?:`?signed|подпис\w*)|только\s+signed)",
+        ),
+        (
+            "signed-only rule excludes unsigned codesign",
+            r"(?:signed[- ]only|только\s+(?:для\s+)?(?:`?signed|подпис\w*))"
+            r"[^.!?]{0,120}`?codesign\b",
+        ),
+    )
+    EARLY_CODESIGN_LIES = {
+        SKILL: (
+            "- on macOS, the old cross-channel rule says `codesign` is only for signed; "
+            "unsigned skips `codesign`, stapler, and `spctl`.",
+            "- on macOS,",
+        ),
+        RELEASE_VERSIONING: (
+            "    Старое правило для обоих каналов: `codesign` выполняется только для "
+            "signed; unsigned пропускает codesign, stapler и spctl.",
+            "    - на macOS",
+        ),
+    }
+    TRUTHFUL_CODESIGN_NEGATIVE_CONTROLS = {
+        SKILL: (
+            "- on macOS, unsigned still runs `codesign --verify --deep --strict` "
+            "for integrity and skips only Apple trust steps.",
+            "- on macOS,",
+        ),
+        RELEASE_VERSIONING: (
+            "    Для unsigned `codesign --verify --deep --strict` остаётся обязательной "
+            "проверкой целостности, а пропускаются только Apple trust steps.",
+            "    - на macOS",
+        ),
+    }
     STALE_MACOS_MAPPING_PATTERN = (
         r"(?:X|\(X\s*\+\s*1\))\s*\.\s*Y\s*\.\s*"
         r"\(\s*1000\s*\*\s*Z\s*\+\s*R\s*\)"
@@ -3012,6 +3058,28 @@ class ReleaseDocumentationConsistencyTests(unittest.TestCase):
         return errors
 
     @classmethod
+    def macos_codesign_contract_errors(cls, documents: dict[Path, str]) -> list[str]:
+        """Reject unsigned codesign exclusions anywhere in either canonical doc.
+
+        The cross-channel gate and the detailed unsigned subsection are both
+        active instructions.  Scan each complete document so a stale early
+        statement cannot hide behind a later truthful paragraph.
+        """
+        errors: list[str] = []
+        for relative in cls.MACOS_CODESIGN_DOCUMENTS:
+            document = cls.normalize(documents[relative])
+            if "codesign --verify --deep --strict" not in document:
+                errors.append(f"{relative}: missing codesign integrity contract")
+            if "unsigned" not in document.lower():
+                errors.append(f"{relative}: missing unsigned channel contract")
+            for label, pattern in cls.MACOS_CODESIGN_CONTRADICTION_PATTERNS:
+                if re.search(pattern, document, flags=re.IGNORECASE):
+                    errors.append(
+                        f"{relative}: contradictory macOS codesign clause ({label})"
+                    )
+        return errors
+
+    @classmethod
     def immutable_release_errors(cls, documents: dict[Path, str]) -> list[str]:
         errors: list[str] = []
         for relative, clauses in cls.IMMUTABILITY_CONTRACTS.items():
@@ -3122,6 +3190,37 @@ class ReleaseDocumentationConsistencyTests(unittest.TestCase):
                 mutated[relative] += "\nLegacy mapping: X.Y.(1000*Z+R).\n"
                 errors = self.macos_mapping_errors(mutated)
                 self.assertTrue(any("stale macOS mapping radix" in error for error in errors))
+
+    def test_codesign_guard_rejects_early_unsigned_lie_in_each_canonical_doc(self) -> None:
+        documents = self.read_documents()
+        self.assertEqual(self.macos_codesign_contract_errors(documents), [])
+
+        for relative, (lie, anchor) in self.EARLY_CODESIGN_LIES.items():
+            with self.subTest(document=str(relative)):
+                mutated = dict(documents)
+                self.assertIn(anchor, mutated[relative])
+                mutated[relative] = mutated[relative].replace(
+                    anchor, f"{lie}\n{anchor}", 1
+                )
+                errors = self.macos_codesign_contract_errors(mutated)
+                self.assertTrue(
+                    any("contradictory macOS codesign clause" in error for error in errors),
+                    errors,
+                )
+
+    def test_codesign_guard_accepts_unsigned_trust_only_negative_control(self) -> None:
+        documents = self.read_documents()
+
+        for relative, (truthful_clause, anchor) in (
+            self.TRUTHFUL_CODESIGN_NEGATIVE_CONTROLS.items()
+        ):
+            with self.subTest(document=str(relative)):
+                mutated = dict(documents)
+                self.assertIn(anchor, mutated[relative])
+                mutated[relative] = mutated[relative].replace(
+                    anchor, f"{truthful_clause}\n{anchor}", 1
+                )
+                self.assertEqual(self.macos_codesign_contract_errors(mutated), [])
 
     def test_immutable_release_contract_rejects_append_only_overwrite_permission(self) -> None:
         documents = self.read_documents()
