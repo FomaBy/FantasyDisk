@@ -150,6 +150,23 @@ def _run_onboard(
     )
 
 
+def _run_release_only(
+    script: Path,
+    home: Path,
+    *,
+    extra: dict[str, str] | None = None,
+) -> subprocess.CompletedProcess[str]:
+    return subprocess.run(
+        ["bash", str(script), "--release-only"],
+        cwd=script.parents[1],
+        env=_onboard_environment(script, home, extra=extra),
+        text=True,
+        stdout=subprocess.PIPE,
+        stderr=subprocess.STDOUT,
+        check=False,
+    )
+
+
 def _start_onboard(
     script: Path,
     home: Path,
@@ -434,6 +451,112 @@ def _write_pre_fix_onboard(destination: Path) -> Path:
 
 
 class ReleaseSkillOnboardingTest(unittest.TestCase):
+    def test_release_only_mode_isolated_from_unrelated_runtime_state(self) -> None:
+        with tempfile.TemporaryDirectory(prefix="fantasydisk-release-only-") as raw:
+            workspace = Path(raw)
+            home = workspace / "home"
+            checkout = workspace / "checkout"
+            _make_disposable_source_checkout(checkout)
+
+            codex_skill = home / ".codex" / "skills" / "unrelated-codex-skill"
+            claude_skill = home / ".claude" / "skills" / "unrelated-claude-skill"
+            codex_skill.mkdir(parents=True)
+            claude_skill.mkdir(parents=True)
+            (codex_skill / "operator.md").write_bytes(b"Codex operator data\n")
+            (claude_skill / "operator.md").write_bytes(b"Claude operator data\n")
+            operator_file = home / ".codex" / "operator-state.json"
+            daemon_file = home / ".multica" / "daemon-state.json"
+            operator_file.write_bytes(b'{"operator":"keep"}\n')
+            daemon_file.parent.mkdir(parents=True)
+            daemon_file.write_bytes(b'{"daemon":"keep"}\n')
+
+            hooks_path = workspace / "custom-hooks"
+            hooks_path.mkdir()
+            subprocess.run(
+                ["git", "config", "--local", "core.hooksPath", str(hooks_path)],
+                cwd=checkout,
+                check=True,
+            )
+            git_config = checkout / ".git" / "config"
+            before = {
+                "git_config": git_config.read_bytes(),
+                "codex": _inventory(codex_skill),
+                "claude": _inventory(claude_skill),
+                "operator": operator_file.read_bytes(),
+                "daemon": daemon_file.read_bytes(),
+                "hooks": subprocess.run(
+                    ["git", "config", "--local", "--get", "core.hooksPath"],
+                    cwd=checkout,
+                    check=True,
+                    stdout=subprocess.PIPE,
+                    text=True,
+                ).stdout,
+            }
+
+            result = _run_release_only(checkout / "scripts" / "onboard.sh", home)
+
+            self.assertEqual(result.returncode, 0, result.stdout)
+            self.assertIn("MIRROR", result.stdout)
+            self.assertIn("SELECTION", result.stdout)
+            self.assertNotIn("Linking Codex skills", result.stdout)
+            self.assertNotIn("Linking Claude skills", result.stdout)
+            self.assertNotIn("onboarding complete", result.stdout.lower())
+            self.assertNotIn("daemon", result.stdout.lower())
+            _assert_durable_selected_tree(
+                home,
+                checkout / "skills" / "codex" / "fantasydisk-release-director",
+            )
+            selected_publisher = (
+                _selected(home)
+                / "scripts"
+                / "github_release_publish.py"
+            ).read_text(encoding="utf-8")
+            self.assertIn(
+                "type(installation_id) is not int or installation_id <= 0",
+                selected_publisher,
+            )
+
+            self.assertEqual(git_config.read_bytes(), before["git_config"])
+            self.assertEqual(_inventory(codex_skill), before["codex"])
+            self.assertEqual(_inventory(claude_skill), before["claude"])
+            self.assertEqual(operator_file.read_bytes(), before["operator"])
+            self.assertEqual(daemon_file.read_bytes(), before["daemon"])
+            hooks_after = subprocess.run(
+                ["git", "config", "--local", "--get", "core.hooksPath"],
+                cwd=checkout,
+                check=True,
+                stdout=subprocess.PIPE,
+                text=True,
+            ).stdout
+            self.assertEqual(hooks_after, before["hooks"])
+
+    def test_release_only_mode_rejects_extra_arguments_without_creating_state(self) -> None:
+        with tempfile.TemporaryDirectory(prefix="fantasydisk-release-only-args-") as raw:
+            workspace = Path(raw)
+            home = workspace / "home"
+            checkout = workspace / "checkout"
+            _make_disposable_source_checkout(checkout)
+
+            result = subprocess.run(
+                [
+                    "bash",
+                    str(checkout / "scripts" / "onboard.sh"),
+                    "--release-only",
+                    "--unexpected",
+                ],
+                cwd=checkout,
+                env=_onboard_environment(checkout / "scripts" / "onboard.sh", home),
+                text=True,
+                stdout=subprocess.PIPE,
+                stderr=subprocess.STDOUT,
+                check=False,
+            )
+
+            self.assertEqual(result.returncode, 2, result.stdout)
+            self.assertIn("usage:", result.stdout)
+            self.assertNotIn("Linking Codex skills", result.stdout)
+            self.assertFalse((home / ".codex").exists())
+
     def test_previous_onboarding_reproduces_silent_skip_and_drift(self) -> None:
         with tempfile.TemporaryDirectory(prefix="fantasydisk-onboard-before-") as raw:
             home = Path(raw)

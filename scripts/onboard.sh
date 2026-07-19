@@ -1,9 +1,13 @@
 #!/usr/bin/env bash
-# usage: bash scripts/onboard.sh
+# usage: bash scripts/onboard.sh [--release-only]
 #
 # FantasyDisk one-line onboarding. Run ONCE after cloning the repo.
 # Symlinks repo-tracked skills into your home Codex/Claude skill dirs and
 # prints a short orientation banner. Safe to re-run (idempotent).
+#
+# --release-only invokes only the managed, atomic release-skill activation
+# path. It deliberately skips all unrelated skill linking, Git hook cleanup,
+# Multica checks, and the general onboarding banner.
 
 set -euo pipefail
 
@@ -1901,6 +1905,30 @@ link_skills() {
 
   [ "$linked" -gt 0 ] || printf '  (no skills found in %s)\n' "$src_dir"
 }
+
+run_release_only() {
+  local source_dir="$REPO_ROOT/skills/codex/$RELEASE_SKILL_NAME"
+  local destination="$HOME/.codex/skills/$RELEASE_SKILL_NAME"
+
+  if [ "$#" -ne 1 ]; then
+    printf 'usage: bash scripts/onboard.sh --release-only\n' >&2
+    return 2
+  fi
+  if [ ! -d "$source_dir" ]; then
+    printf '  BLOCK %s (managed release source is absent)\n' "$source_dir" >&2
+    return 1
+  fi
+
+  # Keep this mode intentionally narrow: install_release_skill is the sole
+  # entrypoint for source verification, immutable version materialization,
+  # durable mirror activation, and selected-runtime activation.
+  install_release_skill "$source_dir" "$destination"
+}
+
+if [ "${1:-}" = "--release-only" ]; then
+  run_release_only "$@"
+  exit "$?"
+fi
 
 # (2) Codex skills: <repo>/skills/codex/* -> ~/.codex/skills/<name>
 printf 'Linking Codex skills...\n'
