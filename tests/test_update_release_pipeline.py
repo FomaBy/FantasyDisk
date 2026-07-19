@@ -2893,7 +2893,7 @@ class ReleaseDocumentationConsistencyTests(unittest.TestCase):
         (
             "Telegram secondary (EN)",
             r"\bTelegram(?:\s+(?:delivery|channel|files?))?\s+"
-            r"(?:is|remains|becomes)\s+(?:a\s+)?secondary\b",
+            r"(?:is|remains|becomes)\s+(?:only\s+)?(?:a\s+)?secondary\b",
         ),
         (
             "Telegram fallback (RU)",
@@ -2903,7 +2903,7 @@ class ReleaseDocumentationConsistencyTests(unittest.TestCase):
         (
             "Telegram secondary (RU)",
             r"\bTelegram(?:\s+(?:delivery|channel|files?|доставк\w*|канал\w*))?\s*"
-            r"(?:—|:|это\s+|явля\w+\s+)?\s*вторичн\w*\b",
+            r"(?:—|:|это\s+|явля\w+\s+)?\s*(?:только\s+)?вторичн\w*\b",
         ),
         (
             "GitHub secondary (EN)",
@@ -2928,7 +2928,7 @@ class ReleaseDocumentationConsistencyTests(unittest.TestCase):
         (
             "GitHub optional (EN)",
             r"\bGitHub(?:\s+(?:repository|repo|source))?\s+"
-            r"(?:is|remains|becomes)\s+(?:an?\s+)?optional\b",
+            r"(?:is|remains|becomes)\s+(?:only\s+)?(?:an?\s+)?optional\b",
         ),
         (
             "GitHub backup (EN)",
@@ -2937,7 +2937,7 @@ class ReleaseDocumentationConsistencyTests(unittest.TestCase):
         ),
         (
             "GitHub not required (EN)",
-            r"\bGitHub(?:\s+(?:repository|repo|source))?\s+"
+            r"\bGitHub(?:\s+(?:repository|repo|source|publication))?\s+"
             r"(?:is|remains|becomes)\s+not\s+(?:required|necessary|needed)\b",
         ),
         (
@@ -3444,15 +3444,19 @@ class ReleaseDocumentationConsistencyTests(unittest.TestCase):
             ("Telegram не является обязательным.", "Telegram not required (RU)"),
             ("Telegram is a fallback channel.", "Telegram fallback (EN)"),
             ("Telegram is a secondary channel.", "Telegram secondary (EN)"),
+            ("Telegram is only a secondary channel.", "Telegram secondary (EN)"),
             ("Telegram — запасной канал.", "Telegram fallback (RU)"),
             ("Telegram — вторичный канал.", "Telegram secondary (RU)"),
+            ("Telegram — только вторичный канал.", "Telegram secondary (RU)"),
             ("GitHub is a secondary source.", "GitHub secondary (EN)"),
             ("GitHub is a fallback source.", "GitHub fallback (EN)"),
             ("GitHub — вторичный источник.", "GitHub secondary (RU)"),
             ("GitHub — резервный источник.", "GitHub fallback (RU)"),
             ("GitHub is optional.", "GitHub optional (EN)"),
+            ("GitHub is only optional.", "GitHub optional (EN)"),
             ("GitHub is a backup source.", "GitHub backup (EN)"),
             ("GitHub is not required.", "GitHub not required (EN)"),
+            ("GitHub publication is not required.", "GitHub not required (EN)"),
             ("GitHub — необязательный источник.", "GitHub optional (RU)"),
             ("GitHub — запасной источник.", "GitHub backup (RU)"),
             ("GitHub не требуется.", "GitHub not required (RU)"),
@@ -3473,6 +3477,10 @@ class ReleaseDocumentationConsistencyTests(unittest.TestCase):
             (
                 "Telegram is a secondary channel; GitHub is optional.",
                 ("Telegram secondary (EN)", "GitHub optional (EN)"),
+            ),
+            (
+                "Telegram is only a secondary channel; GitHub publication is not required.",
+                ("Telegram secondary (EN)", "GitHub not required (EN)"),
             ),
             (
                 "Telegram — вторичный канал; GitHub — необязательный источник.",
@@ -3502,6 +3510,16 @@ class ReleaseDocumentationConsistencyTests(unittest.TestCase):
                 "Telegram не является необязательным, резервным, запасным или вторичным каналом; "
                 "GitHub не является необязательным, резервным, запасным, вторичным или fallback-источником; "
                 "GitHub обязателен.",
+            ),
+            (
+                "EN strengthened",
+                "Telegram is not only a secondary channel; GitHub publication is required; "
+                "GitHub publication is not optional.",
+            ),
+            (
+                "RU strengthened",
+                "Telegram — не только вторичный канал; GitHub publication is required; "
+                "GitHub publication is not optional.",
             ),
         )
         for language, safe_negation in safe_negations:
