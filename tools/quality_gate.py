@@ -19,6 +19,7 @@ import signal
 import subprocess
 import sys
 import tempfile
+import threading
 import time
 from pathlib import Path
 from typing import Iterable, Sequence
@@ -58,6 +59,8 @@ PATH_TEST_RULES = {
     "scripts/ui/feedback_overlay.gd": {"feedback_privacy_ui_test"},
     "tests/feedback_webhook_config_test.gd": {"feedback_webhook_config_test"},
 }
+DEFAULT_STATIC_TEST_TIMEOUT = 1200.0
+DEFAULT_PYTHON_UNIT_IDLE_TIMEOUT = 60.0
 
 
 def discover_godot_tests() -> list[Path]:
@@ -132,14 +135,21 @@ def select_godot_tests(
     return [by_name[name] for name in sorted(selected_names) if name in by_name]
 
 
-def _run_command(name: str, command: Sequence[str], timeout: float) -> dict:
+def _run_command(
+    name: str,
+    command: Sequence[str],
+    timeout: float,
+    idle_timeout: float | None = None,
+) -> dict:
     started = time.monotonic()
     # Python unittest/compileall commands otherwise create __pycache__ inside
     # the checkout, making the gate fail its own clean-worktree certification.
     with tempfile.TemporaryDirectory(prefix="fsd-python-cache-") as python_cache:
         env = os.environ.copy()
         env["PYTHONPYCACHEPREFIX"] = python_cache
-        exit_code, output, timed_out = _run_captured(command, env, timeout)
+        exit_code, output, timed_out = _run_captured(
+            command, env, timeout, idle_timeout=idle_timeout
+        )
     if output:
         print(output, end="" if output.endswith("\n") else "\n", flush=True)
     return {
@@ -237,10 +247,29 @@ def _is_certifying(args: argparse.Namespace, worktree_status: Sequence[str]) -> 
     )
 
 
-def run_static_checks(fail_fast: bool, timeout: float, changed_ref: str) -> list[dict]:
+def run_static_checks(
+    fail_fast: bool,
+    timeout: float,
+    changed_ref: str,
+    python_unit_idle_timeout: float = DEFAULT_PYTHON_UNIT_IDLE_TIMEOUT,
+) -> list[dict]:
     commands: list[tuple[str, list[str]]] = [
         ("repository-invariants", [sys.executable, "tools/quality_static_guard.py"]),
-        ("python-unit", [sys.executable, "-m", "unittest", "discover", "-s", "tests", "-p", "test_*.py"]),
+        (
+            "python-unit",
+            [
+                sys.executable,
+                "-u",
+                "-m",
+                "unittest",
+                "discover",
+                "-v",
+                "-s",
+                "tests",
+                "-p",
+                "test_*.py",
+            ],
+        ),
         ("python-syntax", [sys.executable, "-m", "compileall", "-q", "tools", "tests"]),
         ("asset-audit", [sys.executable, "tools/test_audit_unused_assets.py"]),
         ("constellation-validator", [sys.executable, "tools/test_validate_scrum1067_constellation_spec.py"]),
@@ -257,7 +286,12 @@ def run_static_checks(fail_fast: bool, timeout: float, changed_ref: str) -> list
     results: list[dict] = []
     for name, command in commands:
         print(f"STATIC {name}", flush=True)
-        outcome = _run_command(name, command, timeout)
+        outcome = _run_command(
+            name,
+            command,
+            timeout,
+            idle_timeout=python_unit_idle_timeout if name == "python-unit" else None,
+        )
         results.append(outcome)
         if outcome["status"] == "failed" and fail_fast:
             return results
@@ -304,7 +338,25 @@ def _godot_environment(user_data: Path) -> dict[str, str]:
     return env
 
 
-def _run_captured(command: Sequence[str], env: dict[str, str], timeout: float) -> tuple[int, str, bool]:
+def _terminate_process(process: subprocess.Popen[str]) -> None:
+    if os.name == "nt":
+        subprocess.run(
+            ["taskkill", "/F", "/T", "/PID", str(process.pid)],
+            stdout=subprocess.DEVNULL,
+            stderr=subprocess.DEVNULL,
+            check=False,
+        )
+    else:
+        os.killpg(process.pid, signal.SIGKILL)
+
+
+def _run_captured(
+    command: Sequence[str],
+    env: dict[str, str],
+    timeout: float,
+    *,
+    idle_timeout: float | None = None,
+) -> tuple[int, str, bool]:
     kwargs: dict = {
         "cwd": ROOT,
         "env": env,
@@ -317,21 +369,50 @@ def _run_captured(command: Sequence[str], env: dict[str, str], timeout: float) -
     else:
         kwargs["start_new_session"] = True
     process = subprocess.Popen(command, **kwargs)
-    try:
-        output, _ = process.communicate(timeout=timeout)
-        return process.returncode, output, False
-    except subprocess.TimeoutExpired:
-        if os.name == "nt":
-            subprocess.run(
-                ["taskkill", "/F", "/T", "/PID", str(process.pid)],
-                stdout=subprocess.DEVNULL,
-                stderr=subprocess.DEVNULL,
-                check=False,
-            )
-        else:
-            os.killpg(process.pid, signal.SIGKILL)
-        output, _ = process.communicate()
-        return 124, output, True
+    if idle_timeout is None:
+        try:
+            output, _ = process.communicate(timeout=timeout)
+            return process.returncode, output, False
+        except subprocess.TimeoutExpired:
+            _terminate_process(process)
+            output, _ = process.communicate()
+            return 124, output, True
+
+    output_parts: list[str] = []
+    last_output_at = [time.monotonic()]
+
+    def drain_output() -> None:
+        assert process.stdout is not None
+        try:
+            while True:
+                chunk = process.stdout.readline()
+                if not chunk:
+                    return
+                output_parts.append(chunk)
+                last_output_at[0] = time.monotonic()
+        except (OSError, ValueError):
+            return
+
+    reader = threading.Thread(target=drain_output, name="quality-output-reader", daemon=True)
+    reader.start()
+    timed_out = False
+    started = time.monotonic()
+    while process.poll() is None:
+        now = time.monotonic()
+        if now - started >= timeout or now - last_output_at[0] >= idle_timeout:
+            timed_out = True
+            break
+        time.sleep(0.01)
+
+    if timed_out:
+        _terminate_process(process)
+    process.wait()
+    if timed_out and process.stdout is not None:
+        process.stdout.close()
+    reader.join(timeout=1.0)
+    if process.stdout is not None:
+        process.stdout.close()
+    return (124 if timed_out else process.returncode), "".join(output_parts), timed_out
 
 
 def run_godot_test(path: Path, timeout: float) -> dict:
@@ -404,8 +485,16 @@ def _parse_args(argv: Sequence[str] | None) -> argparse.Namespace:
     parser.add_argument(
         "--static-timeout",
         type=float,
-        default=float(os.getenv("FSD_STATIC_TEST_TIMEOUT", "600")),
-        help="per-static-command timeout in seconds (default: 600)",
+        default=float(os.getenv("FSD_STATIC_TEST_TIMEOUT", str(DEFAULT_STATIC_TEST_TIMEOUT))),
+        help="per-static-command timeout in seconds (default: 1200)",
+    )
+    parser.add_argument(
+        "--python-unit-idle-timeout",
+        type=float,
+        default=float(
+            os.getenv("FSD_PYTHON_UNIT_IDLE_TIMEOUT", str(DEFAULT_PYTHON_UNIT_IDLE_TIMEOUT))
+        ),
+        help="maximum silent interval for verbose Python discovery (default: 60)",
     )
     parser.add_argument("--list", action="store_true", help="list selected Godot tests and exit")
     parser.add_argument("--report", default="build/quality_gate_report.json")
@@ -416,8 +505,8 @@ def main(argv: Sequence[str] | None = None) -> int:
     args = _parse_args(argv)
     if args.static_only:
         args.profile = "static"
-    if args.test_timeout <= 0 or args.static_timeout <= 0:
-        print("quality_gate: test/static timeouts must be positive", file=sys.stderr)
+    if args.test_timeout <= 0 or args.static_timeout <= 0 or args.python_unit_idle_timeout <= 0:
+        print("quality_gate: test/static/idle timeouts must be positive", file=sys.stderr)
         return 2
     if args.skip_static and (args.skip_godot or args.profile == "static"):
         print("quality_gate: refusing an empty run (--skip-static + --skip-godot)", file=sys.stderr)
@@ -445,7 +534,10 @@ def main(argv: Sequence[str] | None = None) -> int:
 
     started = time.monotonic()
     static_results = [] if args.skip_static else run_static_checks(
-        args.fail_fast, args.static_timeout, args.changed_ref
+        args.fail_fast,
+        args.static_timeout,
+        args.changed_ref,
+        args.python_unit_idle_timeout,
     )
     failed = any(item["status"] == "failed" for item in static_results)
     godot_results: list[dict] = []
@@ -478,6 +570,8 @@ def main(argv: Sequence[str] | None = None) -> int:
         "skip_static": args.skip_static,
         "skip_godot": args.skip_godot,
         "skip_umbrella": args.skip_umbrella,
+        "static_timeout_seconds": args.static_timeout,
+        "python_unit_idle_timeout_seconds": args.python_unit_idle_timeout,
         "worktree_clean": not worktree_status,
         "worktree_status": worktree_status,
         "discovered_godot_tests": len(discover_godot_tests()),

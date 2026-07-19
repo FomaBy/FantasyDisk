@@ -107,6 +107,58 @@ class QualityGateTests(unittest.TestCase):
         self.assertTrue(timed_out)
         self.assertEqual(code, 124)
 
+    def test_python_discovery_watchdog_allows_progress_and_kills_hang(self) -> None:
+        with tempfile.TemporaryDirectory(prefix="quality-python-cache-") as cache:
+            env = os.environ.copy()
+            env["PYTHONPYCACHEPREFIX"] = cache
+            bounded_code, bounded_output, bounded_timeout = self.quality._run_captured(
+                [
+                    sys.executable,
+                    "-u",
+                    "-m",
+                    "unittest",
+                    "discover",
+                    "-v",
+                    "-s",
+                    "tests",
+                    "-p",
+                    "test_godot_gate.py",
+                ],
+                env,
+                10.0,
+                idle_timeout=1.0,
+            )
+        self.assertEqual(bounded_code, 0, bounded_output)
+        self.assertFalse(bounded_timeout)
+        self.assertIn("Ran ", bounded_output)
+
+        hang_code, _hang_output, hang_timeout = self.quality._run_captured(
+            [sys.executable, "-c", "import time; time.sleep(5)"],
+            os.environ.copy(),
+            5.0,
+            idle_timeout=0.05,
+        )
+        self.assertTrue(hang_timeout)
+        self.assertEqual(hang_code, 124)
+
+    def test_python_unit_command_keeps_full_discovery(self) -> None:
+        with mock.patch.object(
+            self.quality,
+            "_run_command",
+            return_value={"name": "stub", "status": "passed"},
+        ) as run_command:
+            self.quality.run_static_checks(False, 1.0, "origin/dev", 1.0)
+        python_command = next(
+            call.args[1]
+            for call in run_command.call_args_list
+            if call.args[0] == "python-unit"
+        )
+        self.assertIn("discover", python_command)
+        self.assertIn("-s", python_command)
+        self.assertIn("tests", python_command)
+        self.assertIn("-p", python_command)
+        self.assertIn("test_*.py", python_command)
+
     def test_static_command_routes_python_cache_outside_checkout(self) -> None:
         with mock.patch.object(
             self.quality, "_run_captured", return_value=(0, "", False)
