@@ -3317,30 +3317,77 @@ class ReleaseDocumentationConsistencyTests(unittest.TestCase):
     def normalize(document: str) -> str:
         return " ".join(document.split())
 
-    @staticmethod
-    def _has_unnegated_match(document: str, pattern: str) -> bool:
+    _NEGATION_PATTERN = re.compile(
+        r"(?:\bdo\s+not\b|\bdon't\b|\b(?:not|never|without|no)\b|"
+        r"\b(?:не|нельзя|никогда|без)\b)",
+        flags=re.IGNORECASE,
+    )
+    _CONTRAST_PATTERN = re.compile(
+        r"\b(?:but|however|yet|rather|though|although|но|однако|зато)\b",
+        flags=re.IGNORECASE,
+    )
+    _NEGATION_SCOPE_BOUNDARIES = (".", "!", "?", ";", "\n")
+    _NEGATION_TOKEN_LIMIT = 64
+
+    @classmethod
+    def _negation_reaches_match(cls, gap: str) -> bool:
+        """Return whether a negation still governs the matched predicate.
+
+        Punctuation is only a scope boundary when it introduces a new clause.
+        A paired comma parenthetical and ``do the following:``/``do this —``
+        complement preserve the negation, while a completed predicate followed
+        by a comma, newline, or contrastive conjunction does not.  This keeps
+        the association bounded by tokens rather than an arbitrary character
+        count and works for the bilingual controls used by the release guard.
+        """
+        if cls._CONTRAST_PATTERN.search(gap):
+            return False
+
+        stripped = gap.strip()
+        if ":" in gap or "—" in gap or "–" in gap:
+            return bool(
+                re.fullmatch(
+                    r"(?:do|perform|take)\s+(?:the\s+following|this|that)\s*[:—–]"
+                    r"|(?:дела(?:ть|йте)|сдела(?:ть|йте))\s+(?:следующ\w*|это)\s*[:—–]",
+                    stripped,
+                    flags=re.IGNORECASE,
+                )
+            )
+
+        if "," in gap:
+            return (
+                gap.lstrip().startswith(",")
+                and gap.count(",") == 2
+            )
+
+        return True
+
+    @classmethod
+    def _has_unnegated_match(cls, document: str, pattern: str) -> bool:
         """Return whether a contradiction appears outside a local negation.
 
         Release documents intentionally contain truthful controls such as
-        ``Do not skip Telegram delivery`` and ``is not a backup``.  Inspecting
-        only the current clause prefix keeps those controls safe while still
-        finding a later contradiction in the same document.  Commas and other
-        clause punctuation matter here: ``Do not wait, skip Telegram`` does
-        not negate the second clause.
+        ``Do not skip Telegram delivery`` and ``is not a backup``.  Keep the
+        original line and clause structure while looking backwards from each
+        match: sentence punctuation and newlines end the scope, contrastive
+        conjunctions split it, and only a bounded token prefix is inspected.
         """
         for match in re.finditer(pattern, document, flags=re.IGNORECASE):
             clause_start = max(
                 document.rfind(boundary, 0, match.start())
-                for boundary in (".", "!", "?", ";", ",", ":", "\n", "—", "–")
+                for boundary in cls._NEGATION_SCOPE_BOUNDARIES
             )
-            prefix = document[clause_start + 1 : match.start()]
-            if re.search(
-                r"(?:\b(?:not|never|without|no)\b|\b(?:не|без)\b)[^.!?;,:]{0,24}$",
-                prefix,
-                flags=re.IGNORECASE,
-            ):
-                continue
-            return True
+            scope = document[clause_start + 1 : match.start()]
+            tokens = list(re.finditer(r"\b[\w]+(?:[-'][\w]+)*\b", scope, flags=re.UNICODE))
+            if len(tokens) > cls._NEGATION_TOKEN_LIMIT:
+                scope = scope[tokens[-cls._NEGATION_TOKEN_LIMIT].start() :]
+
+            negations = list(cls._NEGATION_PATTERN.finditer(scope))
+            for negation in reversed(negations):
+                if cls._negation_reaches_match(scope[negation.end() :]):
+                    break
+            else:
+                return True
         return False
 
     @classmethod
@@ -3368,12 +3415,13 @@ class ReleaseDocumentationConsistencyTests(unittest.TestCase):
     def delivery_contract_errors(cls, documents: dict[Path, str]) -> list[str]:
         errors: list[str] = []
         for relative, clauses in cls.DELIVERY_CONTRACTS.items():
-            document = cls.normalize(documents[relative])
+            raw_document = documents[relative]
+            document = cls.normalize(raw_document)
             for clause in clauses:
                 if clause not in document:
                     errors.append(f"{relative}: missing delivery contract clause {clause}")
             for label, pattern in cls.DELIVERY_CONTRADICTION_PATTERNS:
-                if cls._has_unnegated_match(document, pattern):
+                if cls._has_unnegated_match(raw_document, pattern):
                     errors.append(f"{relative}: contradictory delivery clause ({label})")
         return errors
 
@@ -3714,6 +3762,90 @@ class ReleaseDocumentationConsistencyTests(unittest.TestCase):
                     mutated = dict(documents)
                     mutated[relative] += f"\nLocal-negation control: {control}\n"
                     self.assertEqual(self.delivery_contract_errors(mutated), [])
+
+    def test_delivery_guard_handles_bilingual_boundary_matrix(self) -> None:
+        documents = self.read_documents()
+        boundary_cases = (
+            (
+                "safe parenthetical EN",
+                "Do not, even temporarily, skip Telegram delivery.",
+                (),
+            ),
+            (
+                "safe complement colon EN",
+                "Do not do the following: skip Telegram delivery.",
+                (),
+            ),
+            (
+                "safe complement dash EN",
+                "Do not do this — skip Telegram delivery.",
+                (),
+            ),
+            ("safe contraction EN", "Don't skip Telegram delivery.", ()),
+            (
+                "safe long modifier EN",
+                "Do not under any circumstances whatsoever skip Telegram delivery.",
+                (),
+            ),
+            ("safe prohibition RU", "Нельзя пропускать доставку в Telegram.", ()),
+            (
+                "safe parenthetical RU",
+                "Не, даже временно, пропускать доставку в Telegram.",
+                (),
+            ),
+            (
+                "safe complement colon RU",
+                "Не делайте следующее: пропускать доставку в Telegram.",
+                (),
+            ),
+            (
+                "safe long modifier RU",
+                "Не при каких обстоятельствах и ни при каких условиях пропускать доставку в Telegram.",
+                (),
+            ),
+            (
+                "safe parenthetical updater source",
+                "Do not, even temporarily, claim FomaBy/FantasyDisk-Releases is a backup source.",
+                (),
+            ),
+            (
+                "dangerous newline EN",
+                "Do not wait\nSkip Telegram delivery.",
+                ("Telegram bypass (EN)",),
+            ),
+            (
+                "dangerous contrast EN",
+                "Do not delay but skip Telegram delivery.",
+                ("Telegram bypass (EN)",),
+            ),
+            (
+                "dangerous newline RU",
+                "Не ждать\nПропускать доставку в Telegram.",
+                ("Telegram bypass (RU)",),
+            ),
+            (
+                "dangerous contrast RU",
+                "Не ждать, но пропускать доставку в Telegram.",
+                ("Telegram bypass (RU)",),
+            ),
+            (
+                "dangerous newline updater source",
+                "Do not wait\nFomaBy/FantasyDisk-Releases is a backup source.",
+                ("Updater source backup (EN)",),
+            ),
+        )
+        for name, statement, expected_labels in boundary_cases:
+            for relative in self.DELIVERY_CONTRACTS:
+                with self.subTest(document=str(relative), case=name):
+                    mutated = dict(documents)
+                    mutated[relative] += f"\nBoundary matrix control: {statement}\n"
+                    errors = self.delivery_contract_errors(mutated)
+                    labels = tuple(
+                        error.split("contradictory delivery clause (", 1)[1][:-1]
+                        for error in errors
+                        if "contradictory delivery clause (" in error
+                    )
+                    self.assertEqual(labels, expected_labels, errors)
 
     def test_four_required_qa_mutations_are_rejected_individually(self) -> None:
         documents = self.read_documents()
