@@ -2774,6 +2774,11 @@ class ReleaseDocumentationConsistencyTests(unittest.TestCase):
     # These are operational examples, not the SemVer/hotfix policy examples that
     # intentionally retain X.Y.Z and X.Y.Z.R terminology.
     OPERATIONAL_PLACEHOLDERS = {
+        README: (
+            "FANTASYDISK_MACOS_CHANNEL=unsigned tools/build_release.sh <version>",
+            "FANTASYDISK_MACOS_CHANNEL=signed tools/build_release.sh <version>",
+            "tools/build_release.sh <version>",
+        ),
         SKILL: (
             "## [<version>] — YYYY-MM-DD",
             "fantasydisk_<version>_announcement.png",
@@ -2794,6 +2799,11 @@ class ReleaseDocumentationConsistencyTests(unittest.TestCase):
         TELEGRAM_SETUP: ("--version <version>",),
     }
     OPERATIONAL_XYZ_ONLY = {
+        README: (
+            "FANTASYDISK_MACOS_CHANNEL=unsigned tools/build_release.sh X.Y.Z",
+            "FANTASYDISK_MACOS_CHANNEL=signed tools/build_release.sh X.Y.Z",
+            "tools/build_release.sh X.Y.Z",
+        ),
         SKILL: (
             "## [X.Y.Z] — YYYY-MM-DD",
             "fantasydisk_XYZ_announcement.png",
@@ -2815,6 +2825,19 @@ class ReleaseDocumentationConsistencyTests(unittest.TestCase):
         TELEGRAM_SETUP: ("--version X.Y.Z",),
     }
     DELIVERY_CONTRACTS = {
+        README: (
+            "Проверенный пакет публикуется только в public binary-only repository `FomaBy/FantasyDisk-Releases` через bundled `github_release_publish.py`;",
+            "Каждый stable release дополнительно доставляется в Telegram (poster, DMG, Windows Setup и SHA256SUMS), а Discord сообщает Telegram download link.",
+        ),
+        SKILL: (
+            "Publish only to `FomaBy/FantasyDisk-Releases`, a public binary-only repository.",
+            "Telegram delivery is mandatory and contains the poster, DMG, Windows Setup and SHA256SUMS.",
+            "the public GitHub release used by the updater",
+        ),
+        CURRENT_STATE: (
+            "updater получает manifest и installers из отдельного public binary-only `FomaBy/FantasyDisk-Releases`.",
+            "Telegram снова доставляет игрокам poster, DMG, Windows Setup и SHA256SUMS; Discord публикует Telegram link.",
+        ),
         GAME_UPDATES: (
             "канонический источник клиентских обновлений — отдельный публичный binary-only репозиторий [FomaBy/FantasyDisk-Releases]",
             "Telegram обязателен для каждого stable release: dry-run, затем отправка poster, DMG, Windows Setup и SHA256SUMS из verified durable path.",
@@ -2831,14 +2854,108 @@ class ReleaseDocumentationConsistencyTests(unittest.TestCase):
     }
     DELIVERY_CONTRADICTION_PATTERNS = (
         (
-            "Telegram is optional",
-            r"(?:\bTelegram\b.{0,120}\b(?:optional|необязатель\w*)\b|"
-            r"\b(?:optional|необязатель\w*)\b.{0,120}\bTelegram\b)",
+            "Telegram optional (EN)",
+            r"\bTelegram(?:\s+(?:delivery|channel|files?))?\s+"
+            r"(?:is|remains|becomes)\s+(?:an?\s+)?optional\b",
         ),
         (
-            "GitHub is secondary",
-            r"(?:\bGitHub\b.{0,120}\b(?:secondary|вторич\w*)\b|"
-            r"\b(?:secondary|вторич\w*)\b.{0,120}\bGitHub\b)",
+            "Telegram backup (EN)",
+            r"\bTelegram(?:\s+(?:delivery|channel|files?))?\s+"
+            r"(?:is|remains|becomes)\s+(?:only\s+)?(?:a\s+)?backup\b",
+        ),
+        (
+            "Telegram not required (EN)",
+            r"\bTelegram(?:\s+(?:delivery|channel|files?))?\s+"
+            r"(?:is|remains|becomes)\s+not\s+(?:required|necessary|needed)\b",
+        ),
+        (
+            "Telegram optional (RU)",
+            r"\bTelegram(?:\s+(?:delivery|channel|files?|доставк\w*|канал\w*))?\s*"
+            r"(?:—|:|явля\w+\s+)?\s*необязател\w*\b",
+        ),
+        (
+            "Telegram backup (RU)",
+            r"\bTelegram(?:\s+(?:delivery|channel|files?|доставк\w*|канал\w*))?\s*"
+            r"(?:—|:|это\s+|явля\w+\s+)?\s*резервн\w*\b",
+        ),
+        (
+            "Telegram not required (RU)",
+            r"\bTelegram(?:\s+(?:delivery|channel|files?|доставк\w*|канал\w*))?\s*"
+            r"(?:—|:|это\s+|явля\w+\s+)?\s*не\s+(?:требу\w*|нужн?\w*|обязател\w*)\b|"
+            r"\bTelegram(?:\s+(?:delivery|channel|files?|доставк\w*|канал\w*))?\s*"
+            r"не\s+явля\w+\s+обязател\w*\b",
+        ),
+        (
+            "Telegram fallback (EN)",
+            r"\bTelegram(?:\s+(?:delivery|channel|files?))?\s+"
+            r"(?:is|remains|becomes)\s+(?:only\s+)?(?:a\s+)?fallback\b",
+        ),
+        (
+            "Telegram secondary (EN)",
+            r"\bTelegram(?:\s+(?:delivery|channel|files?))?\s+"
+            r"(?:is|remains|becomes)\s+(?:only\s+)?(?:a\s+)?secondary\b",
+        ),
+        (
+            "Telegram fallback (RU)",
+            r"\bTelegram(?:\s+(?:delivery|channel|files?|доставк\w*|канал\w*))?\s*"
+            r"(?:—|:|это\s+|явля\w+\s+)?\s*запасн\w*\b",
+        ),
+        (
+            "Telegram secondary (RU)",
+            r"\bTelegram(?:\s+(?:delivery|channel|files?|доставк\w*|канал\w*))?\s*"
+            r"(?:—|:|это\s+|явля\w+\s+)?\s*(?:только\s+)?вторичн\w*\b",
+        ),
+        (
+            "GitHub secondary (EN)",
+            r"\bGitHub(?:\s+(?:repository|repo|source))?\s+"
+            r"(?:is|remains|becomes)\s+(?:a\s+)?secondary\b",
+        ),
+        (
+            "GitHub fallback (EN)",
+            r"\bGitHub(?:\s+(?:repository|repo|source))?\s+"
+            r"(?:is|remains|becomes)\s+(?:only\s+)?(?:a\s+)?fallback\b",
+        ),
+        (
+            "GitHub secondary (RU)",
+            r"\bGitHub(?:\s+(?:repository|repo|source|репозитор\w*|источник\w*))?\s*"
+            r"(?:—|:|это\s+|явля\w+\s+)?\s*вторичн\w*\b",
+        ),
+        (
+            "GitHub fallback (RU)",
+            r"\bGitHub(?:\s+(?:repository|repo|source|репозитор\w*|источник\w*))?\s*"
+            r"(?:—|:|это\s+|явля\w+\s+)?\s*резервн\w*\b",
+        ),
+        (
+            "GitHub optional (EN)",
+            r"\bGitHub(?:\s+(?:repository|repo|source))?\s+"
+            r"(?:is|remains|becomes)\s+(?:only\s+)?(?:an?\s+)?optional\b",
+        ),
+        (
+            "GitHub backup (EN)",
+            r"\bGitHub(?:\s+(?:repository|repo|source))?\s+"
+            r"(?:is|remains|becomes)\s+(?:only\s+)?(?:a\s+)?backup\b",
+        ),
+        (
+            "GitHub not required (EN)",
+            r"\bGitHub(?:\s+(?:repository|repo|source|publication))?\s+"
+            r"(?:is|remains|becomes)\s+not\s+(?:required|necessary|needed)\b",
+        ),
+        (
+            "GitHub optional (RU)",
+            r"\bGitHub(?:\s+(?:repository|repo|source|репозитор\w*|источник\w*))?\s*"
+            r"(?:—|:|это\s+|явля\w+\s+)?\s*необязател\w*\b",
+        ),
+        (
+            "GitHub backup (RU)",
+            r"\bGitHub(?:\s+(?:repository|repo|source|репозитор\w*|источник\w*))?\s*"
+            r"(?:—|:|это\s+|явля\w+\s+)?\s*запасн\w*\b",
+        ),
+        (
+            "GitHub not required (RU)",
+            r"\bGitHub(?:\s+(?:repository|repo|source|репозитор\w*|источник\w*))?\s*"
+            r"(?:—|:|это\s+|явля\w+\s+)?\s*не\s+(?:требу\w*|нужн?\w*|обязател\w*)\b|"
+            r"\bGitHub(?:\s+(?:repository|repo|source|репозитор\w*|источник\w*))?\s*"
+            r"не\s+явля\w+\s+обязател\w*\b",
         ),
     )
     MACOS_MAPPING_CONTRACTS = {
@@ -2916,6 +3033,9 @@ class ReleaseDocumentationConsistencyTests(unittest.TestCase):
         r"\(\s*1000\s*\*\s*Z\s*\+\s*R\s*\)"
     )
     IMMUTABILITY_CONTRACTS = {
+        README: (
+            "Для обоих форм tag `v<version>` и опубликованные байты immutable; повторная доставка не меняет их.",
+        ),
         SKILL: (
             "There is no delete/clobber/force path:",
             "instead of being reused.",
@@ -2931,16 +3051,95 @@ class ReleaseDocumentationConsistencyTests(unittest.TestCase):
     }
     IMMUTABILITY_CONTRADICTION_PATTERNS = (
         (
-            "published release may be deleted, overwritten, or reused",
-            r"\b(?:existing|published|immutable)\s+(?:tag|release|version)\b"
-            r".{0,120}\b(?:may|can|allowed)\b.{0,120}"
-            r"\b(?:delete\w*|overwrite\w*|reuse\w*)\b",
+            "published item may be deleted (EN)",
+            r"\b(?:existing\s+published|published|immutable)\s+"
+            r"(?:version|tag|release|bytes?|assets?)\b[^.!?]{0,60}"
+            r"\b(?:may|can)\s+(?:be\s+)?(?:deleted?|removed?)\b",
         ),
         (
-            "опубликованную версию можно удалить, перезаписать или повторно использовать",
-            r"\b(?:опубликован\w*|immutable)\s+(?:верси\w*|релиз\w*|tag)\b"
-            r".{0,120}\b(?:можно|разреш\w*|допуска\w*)\b.{0,120}"
-            r"\b(?:удал\w*|перезапис\w*|переиспольз\w*)\b",
+            "published item may be overwritten (EN)",
+            r"\b(?:existing\s+published|published|immutable)\s+"
+            r"(?:version|tag|release|bytes?|assets?)\b[^.!?]{0,60}"
+            r"\b(?:may|can)\s+(?:be\s+)?(?:overwritten?|clobbered?)\b",
+        ),
+        (
+            "published item may be replaced (EN)",
+            r"\b(?:existing\s+published|published|immutable)\s+"
+            r"(?:version|tag|release|bytes?|assets?)\b[^.!?]{0,60}"
+            r"\b(?:may|can)\s+(?:be\s+)?replaced?\b",
+        ),
+        (
+            "published item may be reused (EN)",
+            r"\b(?:existing\s+published|published|immutable)\s+"
+            r"(?:version|tag|release|bytes?|assets?)\b[^.!?]{0,60}"
+            r"\b(?:may|can)\s+be\s+reused?\b",
+        ),
+        (
+            "опубликованный объект можно удалить (RU)",
+            r"\b(?:существующ\w*\s+)?опубликован\w*\s+"
+            r"(?:верси\w*|тег\w*|релиз\w*|байт\w*|файл\w*|артефакт\w*)\b"
+            r"[^.!?]{0,60}\b(?:можно|разреш\w*|допуска\w*)\b"
+            r"[^.!?]{0,30}\b(?:удал\w*|убра\w*)\b",
+        ),
+        (
+            "опубликованный объект можно перезаписать (RU)",
+            r"\b(?:существующ\w*\s+)?опубликован\w*\s+"
+            r"(?:верси\w*|тег\w*|релиз\w*|байт\w*|файл\w*|артефакт\w*)\b"
+            r"[^.!?]{0,60}\b(?:можно|разреш\w*|допуска\w*)\b"
+            r"[^.!?]{0,30}\bперезапис\w*\b",
+        ),
+        (
+            "опубликованный объект можно заменить (RU)",
+            r"\b(?:существующ\w*\s+)?опубликован\w*\s+"
+            r"(?:верси\w*|тег\w*|релиз\w*|байт\w*|файл\w*|артефакт\w*)\b"
+            r"[^.!?]{0,60}\b(?:можно|разреш\w*|допуска\w*)\b"
+            r"[^.!?]{0,30}\bзамен\w*\b",
+        ),
+        (
+            "опубликованный объект можно переиспользовать (RU)",
+            r"\b(?:существующ\w*\s+)?опубликован\w*\s+"
+            r"(?:верси\w*|тег\w*|релиз\w*|байт\w*|файл\w*|артефакт\w*)\b"
+            r"[^.!?]{0,60}\b(?:можно|разреш\w*|допуска\w*)\b"
+            r"[^.!?]{0,30}\bпереиспольз\w*\b",
+        ),
+    )
+    LIFECYCLE_DOCUMENTS = (CURRENT_STATE, RELEASE_VERSIONING, BRANCHING)
+    LIFECYCLE_CONTRADICTION_PATTERNS = (
+        (
+            "published 0.2.4 freeze remains active (EN)",
+            r"\brelease\s+freeze\b\s+(?:for|of|on)\s+0\.2\.4\b\s+"
+            r"(?:is\s+(?:still\s+)?|remains\s+|stays\s+|continues\s+to\s+be\s+)"
+            r"(?:active|ongoing|frozen|in\s+force)\b",
+        ),
+        (
+            "published 0.2.4 freeze remains active (EN, version-first)",
+            r"\b0\.2\.4\b\s+(?:release\s+)?freeze\b\s+"
+            r"(?:is\s+(?:still\s+)?|remains\s+|stays\s+|continues\s+to\s+be\s+)"
+            r"(?:active|ongoing|frozen|in\s+force)\b",
+        ),
+        (
+            "published 0.2.4 remains active or frozen (EN)",
+            r"\b(?:published\s+)?0\.2\.4\b\s+"
+            r"(?:remains\s+|stays\s+|is\s+(?:still\s+)?|continues\s+to\s+be\s+)"
+            r"(?:active|ongoing|frozen|in\s+force)\b",
+        ),
+        (
+            "опубликованная 0.2.4 всё ещё заморожена (RU)",
+            r"\b(?:замороз\w*|freeze)\b\s+(?:релиз\w*\s+)?0\.2\.4\b\s+"
+            r"(?:всё\s+ещё\s+|по-прежнему\s+)?"
+            r"(?:актив\w*|действу\w*|продолжа\w*|заморож\w*)\b",
+        ),
+        (
+            "заморозка 0.2.4 продолжает действовать (RU)",
+            r"\b(?:для|на)\s+0\.2\.4\b\s+"
+            r"(?:по-прежнему\s+|всё\s+ещё\s+)?"
+            r"(?:действу\w*|актив\w*|заморож\w*)\b",
+        ),
+        (
+            "опубликованная 0.2.4 остаётся активной или замороженной (RU)",
+            r"\b(?:опубликован\w*\s+)?(?:релиз\w*\s+)?0\.2\.4\b\s+"
+            r"(?:оста\w+\s+|всё\s+ещё\s+|по-прежнему\s+)"
+            r"(?:актив\w*|действу\w*|заморож\w*)\b",
         ),
     )
     # FAN-1272: recovery docs must distinguish the truthful failure states and
@@ -3078,7 +3277,7 @@ class ReleaseDocumentationConsistencyTests(unittest.TestCase):
                 if placeholder not in document:
                     errors.append(f"{relative}: missing operational placeholder {placeholder}")
             for xyz_only in cls.OPERATIONAL_XYZ_ONLY[relative]:
-                if xyz_only in document:
+                if re.search(rf"{re.escape(xyz_only)}(?![.\d])", document):
                     errors.append(f"{relative}: X.Y.Z-only operational example {xyz_only}")
         return errors
 
@@ -3164,6 +3363,13 @@ class ReleaseDocumentationConsistencyTests(unittest.TestCase):
             for clause in stale_clauses:
                 if clause in cls.normalize(documents[relative]):
                     errors.append(f"{relative}: stale active/frozen release clause {clause}")
+        for relative in cls.LIFECYCLE_DOCUMENTS:
+            document = cls.normalize(documents[relative])
+            for label, pattern in cls.LIFECYCLE_CONTRADICTION_PATTERNS:
+                if re.search(pattern, document, flags=re.IGNORECASE):
+                    errors.append(
+                        f"{relative}: contradictory published-release lifecycle clause ({label})"
+                    )
         return errors
 
     @classmethod
@@ -3205,30 +3411,162 @@ class ReleaseDocumentationConsistencyTests(unittest.TestCase):
         documents = self.read_documents()
         self.assertEqual(self.operational_version_errors(documents), [])
 
-        mutations = (
-            (self.SKILL, "## [<version>] — YYYY-MM-DD", "## [X.Y.Z] — YYYY-MM-DD"),
-            (self.RELEASE_VERSIONING, "releases/v<version>/", "releases/vX.Y.Z/"),
-            (self.TELEGRAM_SETUP, "--version <version>", "--version X.Y.Z"),
-        )
-        for relative, expected, xyz_only in mutations:
-            with self.subTest(document=str(relative), mutation=xyz_only):
+        for relative, xyz_only_values in self.OPERATIONAL_XYZ_ONLY.items():
+            for xyz_only in xyz_only_values:
+                with self.subTest(document=str(relative), mutation=xyz_only):
+                    mutated = dict(documents)
+                    mutated[relative] += f"\nLegacy command: {xyz_only}\n"
+                    errors = self.operational_version_errors(mutated)
+                    self.assertIn(
+                        f"{relative}: X.Y.Z-only operational example {xyz_only}",
+                        errors,
+                    )
+
+    def test_operational_guard_accepts_hotfix_commands_without_truncating_version(self) -> None:
+        documents = self.read_documents()
+        for relative in self.OPERATIONAL_XYZ_ONLY:
+            with self.subTest(document=str(relative)):
                 mutated = dict(documents)
-                mutated[relative] = mutated[relative].replace(expected, xyz_only, 1)
-                self.assertTrue(
-                    any(xyz_only in error for error in self.operational_version_errors(mutated))
-                )
+                mutated[relative] += "\nValid hotfix command: tools/build_release.sh X.Y.Z.R\n"
+                self.assertEqual(self.operational_version_errors(mutated), [])
 
     def test_delivery_contract_is_semantic_and_rejects_token_only_mutations(self) -> None:
         documents = self.read_documents()
         self.assertEqual(self.delivery_contract_errors(documents), [])
 
-        contradiction = "\nContradiction: Telegram is optional; GitHub is secondary.\n"
+        mutations = (
+            ("Telegram delivery is optional.", "Telegram optional (EN)"),
+            ("Telegram is only a backup delivery channel.", "Telegram backup (EN)"),
+            ("Telegram delivery is not required.", "Telegram not required (EN)"),
+            ("Telegram необязателен.", "Telegram optional (RU)"),
+            ("Telegram — резервный канал.", "Telegram backup (RU)"),
+            ("Telegram не требуется.", "Telegram not required (RU)"),
+            ("Telegram не является обязательным.", "Telegram not required (RU)"),
+            ("Telegram is a fallback channel.", "Telegram fallback (EN)"),
+            ("Telegram is a secondary channel.", "Telegram secondary (EN)"),
+            ("Telegram is only a secondary channel.", "Telegram secondary (EN)"),
+            ("Telegram — запасной канал.", "Telegram fallback (RU)"),
+            ("Telegram — вторичный канал.", "Telegram secondary (RU)"),
+            ("Telegram — только вторичный канал.", "Telegram secondary (RU)"),
+            ("GitHub is a secondary source.", "GitHub secondary (EN)"),
+            ("GitHub is a fallback source.", "GitHub fallback (EN)"),
+            ("GitHub — вторичный источник.", "GitHub secondary (RU)"),
+            ("GitHub — резервный источник.", "GitHub fallback (RU)"),
+            ("GitHub is optional.", "GitHub optional (EN)"),
+            ("GitHub is only optional.", "GitHub optional (EN)"),
+            ("GitHub is a backup source.", "GitHub backup (EN)"),
+            ("GitHub is not required.", "GitHub not required (EN)"),
+            ("GitHub publication is not required.", "GitHub not required (EN)"),
+            ("GitHub — необязательный источник.", "GitHub optional (RU)"),
+            ("GitHub — запасной источник.", "GitHub backup (RU)"),
+            ("GitHub не требуется.", "GitHub not required (RU)"),
+        )
         for relative in self.DELIVERY_CONTRACTS:
+            for contradiction, expected_label in mutations:
+                with self.subTest(document=str(relative), mutation=contradiction):
+                    mutated = dict(documents)
+                    mutated[relative] += f"\nContradiction: {contradiction}\n"
+                    errors = self.delivery_contract_errors(mutated)
+                    self.assertIn(f"({expected_label})", "\n".join(errors), errors)
+
+        combined_mutations = (
+            (
+                "Telegram is only a backup delivery channel; GitHub is a fallback source.",
+                ("Telegram backup (EN)", "GitHub fallback (EN)"),
+            ),
+            (
+                "Telegram is a secondary channel; GitHub is optional.",
+                ("Telegram secondary (EN)", "GitHub optional (EN)"),
+            ),
+            (
+                "Telegram is only a secondary channel; GitHub publication is not required.",
+                ("Telegram secondary (EN)", "GitHub not required (EN)"),
+            ),
+            (
+                "Telegram — вторичный канал; GitHub — необязательный источник.",
+                ("Telegram secondary (RU)", "GitHub optional (RU)"),
+            ),
+        )
+        for contradiction, expected_labels in combined_mutations:
+            for relative in self.DELIVERY_CONTRACTS:
+                with self.subTest(document=str(relative), mutation=contradiction):
+                    mutated = dict(documents)
+                    mutated[relative] += f"\nContradiction: {contradiction}\n"
+                    errors = self.delivery_contract_errors(mutated)
+                    joined_errors = "\n".join(errors)
+                    for expected_label in expected_labels:
+                        self.assertIn(f"({expected_label})", joined_errors, errors)
+
+    def test_delivery_guard_accepts_canonical_negations(self) -> None:
+        documents = self.read_documents()
+        safe_negations = (
+            (
+                "EN",
+                "Telegram is not optional; Telegram is not a backup, fallback, or secondary channel; "
+                "GitHub is not optional, a backup, secondary, or a fallback; GitHub is required.",
+            ),
+            (
+                "RU",
+                "Telegram не является необязательным, резервным, запасным или вторичным каналом; "
+                "GitHub не является необязательным, резервным, запасным, вторичным или fallback-источником; "
+                "GitHub обязателен.",
+            ),
+            (
+                "EN strengthened",
+                "Telegram is not only a secondary channel; GitHub publication is required; "
+                "GitHub publication is not optional.",
+            ),
+            (
+                "RU strengthened",
+                "Telegram — не только вторичный канал; GitHub publication is required; "
+                "GitHub publication is not optional.",
+            ),
+        )
+        for language, safe_negation in safe_negations:
+            for relative in self.DELIVERY_CONTRACTS:
+                with self.subTest(document=str(relative), language=language):
+                    mutated = dict(documents)
+                    mutated[relative] += f"\nSafe control ({language}): {safe_negation}\n"
+                    self.assertEqual(self.delivery_contract_errors(mutated), [])
+
+    def test_four_required_qa_mutations_are_rejected_individually(self) -> None:
+        documents = self.read_documents()
+        required_mutations = (
+            (
+                self.SKILL,
+                "Telegram is only a backup delivery channel; GitHub is a fallback source.",
+                self.delivery_contract_errors,
+                ("Telegram backup (EN)", "GitHub fallback (EN)"),
+            ),
+            (
+                self.BRANCHING,
+                "release freeze for 0.2.4 remains active.",
+                self.published_release_lifecycle_errors,
+                ("published 0.2.4 freeze remains active (EN)",),
+            ),
+            (
+                self.RELEASE_VERSIONING,
+                "an existing published release may be replaced in place.",
+                self.immutable_release_errors,
+                ("published item may be replaced (EN)",),
+            ),
+            (
+                self.README,
+                "tools/build_release.sh X.Y.Z",
+                self.operational_version_errors,
+                ("README.md: X.Y.Z-only operational example tools/build_release.sh X.Y.Z",),
+            ),
+        )
+        for relative, contradiction, helper, expected_labels in required_mutations:
             with self.subTest(document=str(relative), mutation=contradiction):
                 mutated = dict(documents)
-                mutated[relative] += contradiction
-                errors = self.delivery_contract_errors(mutated)
-                self.assertTrue(any("contradictory delivery clause" in error for error in errors))
+                mutated[relative] += f"\nRequired QA mutation: {contradiction}\n"
+                errors = helper(mutated)
+                for expected_label in expected_labels:
+                    if expected_label.startswith(str(relative)):
+                        self.assertIn(expected_label, errors)
+                    else:
+                        self.assertIn(expected_label, "\n".join(errors), errors)
 
     def test_macos_mapping_contract_is_canonical_in_every_release_instruction(self) -> None:
         documents = self.read_documents()
@@ -3276,18 +3614,38 @@ class ReleaseDocumentationConsistencyTests(unittest.TestCase):
         documents = self.read_documents()
         self.assertEqual(self.immutable_release_errors(documents), [])
 
-        contradiction = (
-            "\nContradiction: an existing published version may be deleted, "
-            "overwritten, or reused.\n"
+        mutations = (
+            ("published version may be deleted", "published item may be deleted (EN)"),
+            ("published tag may be overwritten", "published item may be overwritten (EN)"),
+            ("existing published release may be replaced in place", "published item may be replaced (EN)"),
+            ("published bytes may be reused", "published item may be reused (EN)"),
+            ("опубликованную версию можно удалить", "опубликованный объект можно удалить (RU)"),
+            ("опубликованный тег можно перезаписать", "опубликованный объект можно перезаписать (RU)"),
+            ("опубликованный релиз можно заменить", "опубликованный объект можно заменить (RU)"),
+            ("опубликованные байты можно переиспользовать", "опубликованный объект можно переиспользовать (RU)"),
         )
         for relative in self.IMMUTABILITY_CONTRACTS:
-            with self.subTest(document=str(relative), mutation=contradiction):
-                mutated = dict(documents)
-                mutated[relative] += contradiction
-                errors = self.immutable_release_errors(mutated)
-                self.assertTrue(
-                    any("contradictory immutable-release clause" in error for error in errors)
-                )
+            for contradiction, expected_label in mutations:
+                with self.subTest(document=str(relative), mutation=contradiction):
+                    mutated = dict(documents)
+                    mutated[relative] += f"\nContradiction: {contradiction}.\n"
+                    errors = self.immutable_release_errors(mutated)
+                    self.assertIn(f"({expected_label})", "\n".join(errors), errors)
+
+    def test_immutable_guard_accepts_negated_and_repeat_delivery_controls(self) -> None:
+        documents = self.read_documents()
+        safe_controls = (
+            "Published version, tag, release and bytes are immutable and may not be "
+            "deleted, overwritten, replaced or reused.",
+            "Опубликованные версия, тег, релиз и байты immutable: их нельзя удалить, "
+            "перезаписать, заменить или переиспользовать.",
+        )
+        for relative in self.IMMUTABILITY_CONTRACTS:
+            for safe_control in safe_controls:
+                with self.subTest(document=str(relative), control=safe_control):
+                    mutated = dict(documents)
+                    mutated[relative] += f"\nSafe control: {safe_control}\n"
+                    self.assertEqual(self.immutable_release_errors(mutated), [])
 
     def test_published_024_cannot_be_described_as_an_active_frozen_release(self) -> None:
         documents = self.read_documents()
@@ -3303,6 +3661,55 @@ class ReleaseDocumentationConsistencyTests(unittest.TestCase):
         errors = self.published_release_lifecycle_errors(mutated)
         self.assertTrue(any("published-release lifecycle" in error for error in errors))
         self.assertTrue(any("stale active/frozen" in error for error in errors))
+
+    def test_published_024_lifecycle_guard_rejects_english_and_russian_equivalents(self) -> None:
+        documents = self.read_documents()
+        mutations = (
+            (
+                "release freeze for 0.2.4 remains active.",
+                "published 0.2.4 freeze remains active (EN)",
+            ),
+            (
+                "the 0.2.4 release freeze is still in force.",
+                "published 0.2.4 freeze remains active (EN, version-first)",
+            ),
+            (
+                "published 0.2.4 remains frozen.",
+                "published 0.2.4 remains active or frozen (EN)",
+            ),
+            (
+                "заморозка релиза 0.2.4 всё ещё активна.",
+                "опубликованная 0.2.4 всё ещё заморожена (RU)",
+            ),
+            (
+                "для 0.2.4 по-прежнему действует freeze.",
+                "заморозка 0.2.4 продолжает действовать (RU)",
+            ),
+            (
+                "релиз 0.2.4 всё ещё заморожен.",
+                "опубликованная 0.2.4 остаётся активной или замороженной (RU)",
+            ),
+        )
+        for relative in self.LIFECYCLE_DOCUMENTS:
+            for contradiction, expected_label in mutations:
+                with self.subTest(document=str(relative), mutation=contradiction):
+                    mutated = dict(documents)
+                    mutated[relative] += f"\nContradiction: {contradiction}\n"
+                    errors = self.published_release_lifecycle_errors(mutated)
+                    self.assertIn(expected_label, "\n".join(errors), errors)
+
+    def test_published_024_lifecycle_guard_accepts_completed_freeze_negations(self) -> None:
+        documents = self.read_documents()
+        safe_controls = (
+            "The release freeze for 0.2.4 is no longer active; it is historical and complete.",
+            "Для 0.2.4 заморозка больше не действует: публикация завершена.",
+        )
+        for relative in self.LIFECYCLE_DOCUMENTS:
+            for safe_control in safe_controls:
+                with self.subTest(document=str(relative), control=safe_control):
+                    mutated = dict(documents)
+                    mutated[relative] += f"\nSafe control: {safe_control}\n"
+                    self.assertEqual(self.published_release_lifecycle_errors(mutated), [])
 
     def test_release_recovery_docs_distinguish_truthful_failure_states(self) -> None:
         documents = self.read_documents()
