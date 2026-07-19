@@ -3323,17 +3323,19 @@ class ReleaseDocumentationConsistencyTests(unittest.TestCase):
 
         Release documents intentionally contain truthful controls such as
         ``Do not skip Telegram delivery`` and ``is not a backup``.  Inspecting
-        the short clause prefix keeps those controls safe while still finding
-        a later contradiction in the same document.
+        only the current clause prefix keeps those controls safe while still
+        finding a later contradiction in the same document.  Commas and other
+        clause punctuation matter here: ``Do not wait, skip Telegram`` does
+        not negate the second clause.
         """
         for match in re.finditer(pattern, document, flags=re.IGNORECASE):
             clause_start = max(
                 document.rfind(boundary, 0, match.start())
-                for boundary in ".!?;\n"
+                for boundary in (".", "!", "?", ";", ",", ":", "\n", "—", "–")
             )
             prefix = document[clause_start + 1 : match.start()]
             if re.search(
-                r"(?:\b(?:not|never|without|no)\b|\b(?:не|без)\b)[^.!?;]{0,24}$",
+                r"(?:\b(?:not|never|without|no)\b|\b(?:не|без)\b)[^.!?;,:]{0,24}$",
                 prefix,
                 flags=re.IGNORECASE,
             ):
@@ -3646,6 +3648,71 @@ class ReleaseDocumentationConsistencyTests(unittest.TestCase):
                 with self.subTest(document=str(relative), language=language):
                     mutated = dict(documents)
                     mutated[relative] += f"\nSafe control ({language}): {safe_negation}\n"
+                    self.assertEqual(self.delivery_contract_errors(mutated), [])
+
+    def test_delivery_guard_binds_negation_to_the_local_clause(self) -> None:
+        documents = self.read_documents()
+        comma_prefixed_contradictions = (
+            ("Do not wait, skip Telegram delivery.", "Telegram bypass (EN)"),
+            ("Не ждать, пропускать доставку в Telegram.", "Telegram bypass (RU)"),
+            (
+                "Do not delay, FomaBy/FantasyDisk-Releases is a backup source.",
+                "Updater source backup (EN)",
+            ),
+            (
+                "Do not delay, FomaBy/FantasyDisk-Releases is a secondary source.",
+                "Updater source secondary (EN)",
+            ),
+            (
+                "Do not delay, FomaBy/FantasyDisk-Releases is a fallback source.",
+                "Updater source fallback (EN)",
+            ),
+            (
+                "Не ждать, FomaBy/FantasyDisk-Releases — резервный источник.",
+                "Updater source backup (RU)",
+            ),
+            (
+                "Не ждать, FomaBy/FantasyDisk-Releases — вторичный источник.",
+                "Updater source secondary (RU)",
+            ),
+            (
+                "Не ждать, FomaBy/FantasyDisk-Releases — запасной источник.",
+                "Updater source fallback (RU)",
+            ),
+        )
+        for relative in self.DELIVERY_CONTRACTS:
+            for contradiction, expected_label in comma_prefixed_contradictions:
+                with self.subTest(document=str(relative), contradiction=contradiction):
+                    mutated = dict(documents)
+                    mutated[relative] += f"\nComma-prefix contradiction: {contradiction}\n"
+                    self.assertEqual(
+                        self.delivery_contract_errors(mutated),
+                        [f"{relative}: contradictory delivery clause ({expected_label})"],
+                    )
+
+        locally_negated_controls = (
+            "Do not skip Telegram delivery.",
+            "Не пропускать доставку в Telegram.",
+            "FomaBy/FantasyDisk-Releases is not a backup source.",
+            "FomaBy/FantasyDisk-Releases is not a secondary source.",
+            "FomaBy/FantasyDisk-Releases is not a fallback source.",
+            "FomaBy/FantasyDisk-Releases не является резервным источником.",
+            "FomaBy/FantasyDisk-Releases не является вторичным источником.",
+            "FomaBy/FantasyDisk-Releases не является запасным источником.",
+            "Do not wait, do not skip Telegram delivery.",
+            "Не ждать, не пропускать доставку в Telegram.",
+            "Do not delay, FomaBy/FantasyDisk-Releases is not a backup source.",
+            "Do not delay, FomaBy/FantasyDisk-Releases is not a secondary source.",
+            "Do not delay, FomaBy/FantasyDisk-Releases is not a fallback source.",
+            "Не ждать, FomaBy/FantasyDisk-Releases не является резервным источником.",
+            "Не ждать, FomaBy/FantasyDisk-Releases не является вторичным источником.",
+            "Не ждать, FomaBy/FantasyDisk-Releases не является запасным источником.",
+        )
+        for relative in self.DELIVERY_CONTRACTS:
+            for control in locally_negated_controls:
+                with self.subTest(document=str(relative), control=control):
+                    mutated = dict(documents)
+                    mutated[relative] += f"\nLocal-negation control: {control}\n"
                     self.assertEqual(self.delivery_contract_errors(mutated), [])
 
     def test_four_required_qa_mutations_are_rejected_individually(self) -> None:
