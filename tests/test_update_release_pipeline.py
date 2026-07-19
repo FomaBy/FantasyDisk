@@ -2886,6 +2886,26 @@ class ReleaseDocumentationConsistencyTests(unittest.TestCase):
             r"не\s+явля\w+\s+обязател\w*\b",
         ),
         (
+            "Telegram fallback (EN)",
+            r"\bTelegram(?:\s+(?:delivery|channel|files?))?\s+"
+            r"(?:is|remains|becomes)\s+(?:only\s+)?(?:a\s+)?fallback\b",
+        ),
+        (
+            "Telegram secondary (EN)",
+            r"\bTelegram(?:\s+(?:delivery|channel|files?))?\s+"
+            r"(?:is|remains|becomes)\s+(?:a\s+)?secondary\b",
+        ),
+        (
+            "Telegram fallback (RU)",
+            r"\bTelegram(?:\s+(?:delivery|channel|files?|доставк\w*|канал\w*))?\s*"
+            r"(?:—|:|это\s+|явля\w+\s+)?\s*запасн\w*\b",
+        ),
+        (
+            "Telegram secondary (RU)",
+            r"\bTelegram(?:\s+(?:delivery|channel|files?|доставк\w*|канал\w*))?\s*"
+            r"(?:—|:|это\s+|явля\w+\s+)?\s*вторичн\w*\b",
+        ),
+        (
             "GitHub secondary (EN)",
             r"\bGitHub(?:\s+(?:repository|repo|source))?\s+"
             r"(?:is|remains|becomes)\s+(?:a\s+)?secondary\b",
@@ -2903,7 +2923,39 @@ class ReleaseDocumentationConsistencyTests(unittest.TestCase):
         (
             "GitHub fallback (RU)",
             r"\bGitHub(?:\s+(?:repository|repo|source|репозитор\w*|источник\w*))?\s*"
-            r"(?:—|:|это\s+|явля\w+\s+)?\s*(?:резервн\w*|запасн\w*)\b",
+            r"(?:—|:|это\s+|явля\w+\s+)?\s*резервн\w*\b",
+        ),
+        (
+            "GitHub optional (EN)",
+            r"\bGitHub(?:\s+(?:repository|repo|source))?\s+"
+            r"(?:is|remains|becomes)\s+(?:an?\s+)?optional\b",
+        ),
+        (
+            "GitHub backup (EN)",
+            r"\bGitHub(?:\s+(?:repository|repo|source))?\s+"
+            r"(?:is|remains|becomes)\s+(?:only\s+)?(?:a\s+)?backup\b",
+        ),
+        (
+            "GitHub not required (EN)",
+            r"\bGitHub(?:\s+(?:repository|repo|source))?\s+"
+            r"(?:is|remains|becomes)\s+not\s+(?:required|necessary|needed)\b",
+        ),
+        (
+            "GitHub optional (RU)",
+            r"\bGitHub(?:\s+(?:repository|repo|source|репозитор\w*|источник\w*))?\s*"
+            r"(?:—|:|это\s+|явля\w+\s+)?\s*необязател\w*\b",
+        ),
+        (
+            "GitHub backup (RU)",
+            r"\bGitHub(?:\s+(?:repository|repo|source|репозитор\w*|источник\w*))?\s*"
+            r"(?:—|:|это\s+|явля\w+\s+)?\s*запасн\w*\b",
+        ),
+        (
+            "GitHub not required (RU)",
+            r"\bGitHub(?:\s+(?:repository|repo|source|репозитор\w*|источник\w*))?\s*"
+            r"(?:—|:|это\s+|явля\w+\s+)?\s*не\s+(?:требу\w*|нужн?\w*|обязател\w*)\b|"
+            r"\bGitHub(?:\s+(?:repository|repo|source|репозитор\w*|источник\w*))?\s*"
+            r"не\s+явля\w+\s+обязател\w*\b",
         ),
     )
     MACOS_MAPPING_CONTRACTS = {
@@ -3390,10 +3442,20 @@ class ReleaseDocumentationConsistencyTests(unittest.TestCase):
             ("Telegram — резервный канал.", "Telegram backup (RU)"),
             ("Telegram не требуется.", "Telegram not required (RU)"),
             ("Telegram не является обязательным.", "Telegram not required (RU)"),
+            ("Telegram is a fallback channel.", "Telegram fallback (EN)"),
+            ("Telegram is a secondary channel.", "Telegram secondary (EN)"),
+            ("Telegram — запасной канал.", "Telegram fallback (RU)"),
+            ("Telegram — вторичный канал.", "Telegram secondary (RU)"),
             ("GitHub is a secondary source.", "GitHub secondary (EN)"),
             ("GitHub is a fallback source.", "GitHub fallback (EN)"),
             ("GitHub — вторичный источник.", "GitHub secondary (RU)"),
             ("GitHub — резервный источник.", "GitHub fallback (RU)"),
+            ("GitHub is optional.", "GitHub optional (EN)"),
+            ("GitHub is a backup source.", "GitHub backup (EN)"),
+            ("GitHub is not required.", "GitHub not required (EN)"),
+            ("GitHub — необязательный источник.", "GitHub optional (RU)"),
+            ("GitHub — запасной источник.", "GitHub backup (RU)"),
+            ("GitHub не требуется.", "GitHub not required (RU)"),
         )
         for relative in self.DELIVERY_CONTRACTS:
             for contradiction, expected_label in mutations:
@@ -3403,27 +3465,51 @@ class ReleaseDocumentationConsistencyTests(unittest.TestCase):
                     errors = self.delivery_contract_errors(mutated)
                     self.assertIn(f"({expected_label})", "\n".join(errors), errors)
 
-        contradiction = "\nContradiction: Telegram is only a backup delivery channel; GitHub is a fallback source.\n"
-        for relative in self.DELIVERY_CONTRACTS:
-            with self.subTest(document=str(relative), mutation=contradiction):
-                mutated = dict(documents)
-                mutated[relative] += contradiction
-                errors = self.delivery_contract_errors(mutated)
-                joined_errors = "\n".join(errors)
-                self.assertIn("(Telegram backup (EN))", joined_errors, errors)
-                self.assertIn("(GitHub fallback (EN))", joined_errors, errors)
+        combined_mutations = (
+            (
+                "Telegram is only a backup delivery channel; GitHub is a fallback source.",
+                ("Telegram backup (EN)", "GitHub fallback (EN)"),
+            ),
+            (
+                "Telegram is a secondary channel; GitHub is optional.",
+                ("Telegram secondary (EN)", "GitHub optional (EN)"),
+            ),
+            (
+                "Telegram — вторичный канал; GitHub — необязательный источник.",
+                ("Telegram secondary (RU)", "GitHub optional (RU)"),
+            ),
+        )
+        for contradiction, expected_labels in combined_mutations:
+            for relative in self.DELIVERY_CONTRACTS:
+                with self.subTest(document=str(relative), mutation=contradiction):
+                    mutated = dict(documents)
+                    mutated[relative] += f"\nContradiction: {contradiction}\n"
+                    errors = self.delivery_contract_errors(mutated)
+                    joined_errors = "\n".join(errors)
+                    for expected_label in expected_labels:
+                        self.assertIn(f"({expected_label})", joined_errors, errors)
 
     def test_delivery_guard_accepts_canonical_negations(self) -> None:
         documents = self.read_documents()
-        safe_negation = (
-            "Telegram is mandatory, not optional and not a backup channel; "
-            "GitHub is the canonical source, not secondary and not a fallback."
+        safe_negations = (
+            (
+                "EN",
+                "Telegram is not optional; Telegram is not a backup, fallback, or secondary channel; "
+                "GitHub is not optional, a backup, secondary, or a fallback; GitHub is required.",
+            ),
+            (
+                "RU",
+                "Telegram не является необязательным, резервным, запасным или вторичным каналом; "
+                "GitHub не является необязательным, резервным, запасным, вторичным или fallback-источником; "
+                "GitHub обязателен.",
+            ),
         )
-        for relative in self.DELIVERY_CONTRACTS:
-            with self.subTest(document=str(relative)):
-                mutated = dict(documents)
-                mutated[relative] += f"\nSafe control: {safe_negation}\n"
-                self.assertEqual(self.delivery_contract_errors(mutated), [])
+        for language, safe_negation in safe_negations:
+            for relative in self.DELIVERY_CONTRACTS:
+                with self.subTest(document=str(relative), language=language):
+                    mutated = dict(documents)
+                    mutated[relative] += f"\nSafe control ({language}): {safe_negation}\n"
+                    self.assertEqual(self.delivery_contract_errors(mutated), [])
 
     def test_four_required_qa_mutations_are_rejected_individually(self) -> None:
         documents = self.read_documents()
