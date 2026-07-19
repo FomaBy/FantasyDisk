@@ -339,15 +339,20 @@ def _godot_environment(user_data: Path) -> dict[str, str]:
 
 
 def _terminate_process(process: subprocess.Popen[str]) -> None:
-    if os.name == "nt":
-        subprocess.run(
-            ["taskkill", "/F", "/T", "/PID", str(process.pid)],
-            stdout=subprocess.DEVNULL,
-            stderr=subprocess.DEVNULL,
-            check=False,
-        )
-    else:
-        os.killpg(process.pid, signal.SIGKILL)
+    try:
+        if os.name == "nt":
+            subprocess.run(
+                ["taskkill", "/F", "/T", "/PID", str(process.pid)],
+                stdout=subprocess.DEVNULL,
+                stderr=subprocess.DEVNULL,
+                check=False,
+            )
+        else:
+            os.killpg(process.pid, signal.SIGKILL)
+    except ProcessLookupError:
+        # The direct process may have exited while its inherited stdout is
+        # still draining.  The reader lifecycle below remains authoritative.
+        pass
 
 
 def _run_captured(
@@ -379,7 +384,9 @@ def _run_captured(
             return 124, output, True
 
     output_parts: list[str] = []
-    last_output_at = [time.monotonic()]
+    reader_done = threading.Event()
+    started = time.monotonic()
+    last_output_at = [started]
 
     def drain_output() -> None:
         assert process.stdout is not None
@@ -391,13 +398,14 @@ def _run_captured(
                 output_parts.append(chunk)
                 last_output_at[0] = time.monotonic()
         except (OSError, ValueError):
-            return
+            pass
+        finally:
+            reader_done.set()
 
     reader = threading.Thread(target=drain_output, name="quality-output-reader", daemon=True)
     reader.start()
     timed_out = False
-    started = time.monotonic()
-    while process.poll() is None:
+    while process.poll() is None or not reader_done.is_set():
         now = time.monotonic()
         if now - started >= timeout or now - last_output_at[0] >= idle_timeout:
             timed_out = True
@@ -407,9 +415,10 @@ def _run_captured(
     if timed_out:
         _terminate_process(process)
     process.wait()
-    if timed_out and process.stdout is not None:
-        process.stdout.close()
-    reader.join(timeout=1.0)
+    # Never close a buffered stream while another thread may be in readline().
+    # A timed-out process group is killed above; its inherited descriptors then
+    # reach EOF and let the reader finish cleanly.
+    reader.join()
     if process.stdout is not None:
         process.stdout.close()
     return (124 if timed_out else process.returncode), "".join(output_parts), timed_out

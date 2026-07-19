@@ -6,6 +6,7 @@ import os
 import subprocess
 import sys
 import tempfile
+import time
 import unittest
 from pathlib import Path
 from unittest import mock
@@ -140,6 +141,58 @@ class QualityGateTests(unittest.TestCase):
         )
         self.assertTrue(hang_timeout)
         self.assertEqual(hang_code, 124)
+
+    def test_watchdog_kills_pipe_holding_descendant_after_parent_exit(self) -> None:
+        with tempfile.TemporaryDirectory(prefix="quality-descendant-") as scratch:
+            marker = Path(scratch) / "descendant-survived"
+            env = os.environ.copy()
+            env["QUALITY_DESCENDANT_MARKER"] = str(marker)
+            env["QUALITY_DESCENDANT_CODE"] = (
+                "import os,time; time.sleep(2.0); "
+                "open(os.environ['QUALITY_DESCENDANT_MARKER'], 'w').write('alive')"
+            )
+            parent = (
+                "import os,subprocess,sys; "
+                "subprocess.Popen([sys.executable, '-c', os.environ['QUALITY_DESCENDANT_CODE']]); "
+                "print('parent-done', flush=True)"
+            )
+            started = time.monotonic()
+            code, output, timed_out = self.quality._run_captured(
+                [sys.executable, "-u", "-c", parent],
+                env,
+                0.5,
+                idle_timeout=0.2,
+            )
+            elapsed = time.monotonic() - started
+            descendant_survived = marker.exists()
+
+        self.assertEqual(code, 124)
+        self.assertTrue(timed_out)
+        self.assertIn("parent-done", output)
+        self.assertLess(elapsed, 1.25)
+        self.assertFalse(descendant_survived)
+
+    def test_watchdog_accepts_parent_exit_after_descendant_closes_stdout(self) -> None:
+        with tempfile.TemporaryDirectory(prefix="quality-descendant-control-") as scratch:
+            env = os.environ.copy()
+            env["QUALITY_DESCENDANT_CODE"] = (
+                "import sys,time; sys.stdout.close(); sys.stderr.close(); time.sleep(0.05)"
+            )
+            parent = (
+                "import os,subprocess,sys; "
+                "subprocess.Popen([sys.executable, '-c', os.environ['QUALITY_DESCENDANT_CODE']]); "
+                "print('parent-done', flush=True)"
+            )
+            code, output, timed_out = self.quality._run_captured(
+                [sys.executable, "-u", "-c", parent],
+                env,
+                0.5,
+                idle_timeout=0.2,
+            )
+
+        self.assertEqual(code, 0, output)
+        self.assertIn("parent-done", output)
+        self.assertFalse(timed_out)
 
     def test_python_unit_command_keeps_full_discovery(self) -> None:
         with mock.patch.object(
