@@ -2854,6 +2854,29 @@ class ReleaseDocumentationConsistencyTests(unittest.TestCase):
     }
     DELIVERY_CONTRADICTION_PATTERNS = (
         (
+            "Telegram bypass (EN)",
+            r"(?:\b(?:skip|omit|avoid|bypass)\s+(?:the\s+)?Telegram"
+            r"(?:\s+(?:delivery|channel|files?))?\b|"
+            r"\bTelegram(?:\s+(?:delivery|channel|files?))?\s+"
+            r"(?:is|remains|becomes|should|must|can|may)\s+(?:be\s+)?"
+            r"(?:skip\w*|omit\w*|avoid\w*|bypass\w*)\b|"
+            r"\b(?:do\s+not|don't)\s+(?:send|deliver|publish|upload|distribute)\b"
+            r"[^.!?;]{0,80}\b(?:via|through|to)\s+Telegram\b|"
+            r"\b(?:do\s+not|don't)\s+(?:send|deliver|publish|upload|distribute)\b"
+            r"\s+(?:the\s+)?Telegram\s+(?:delivery|channel|files?)\b)",
+        ),
+        (
+            "Telegram bypass (RU)",
+            r"(?:\b(?:пропуска\w*|пропуст\w*|обход\w*)\s+"
+            r"(?:доставк\w*|файл\w*|канал\w*)[^.!?;]{0,60}\bTelegram\b|"
+            r"\bTelegram\s+(?:доставк\w*|файл\w*|канал\w*)\s+"
+            r"(?:можно\s+|нужно\s+|следует\s+)?(?:пропуска\w*|пропуст\w*|игнор\w*)\b|"
+            r"\bне\s+(?:отправля\w*|доставля\w*|публику\w*|загружа\w*)\b"
+            r"[^.!?;]{0,80}\b(?:в|через|на)\s+Telegram\b|"
+            r"\bне\s+(?:отправля\w*|доставля\w*|публику\w*|загружа\w*)\b"
+            r"\s+(?:файл\w*|доставк\w*|канал\w*)\s+Telegram\b)",
+        ),
+        (
             "Telegram optional (EN)",
             r"\bTelegram(?:\s+(?:delivery|channel|files?))?\s+"
             r"(?:is|remains|becomes)\s+(?:an?\s+)?optional\b",
@@ -2956,6 +2979,40 @@ class ReleaseDocumentationConsistencyTests(unittest.TestCase):
             r"(?:—|:|это\s+|явля\w+\s+)?\s*не\s+(?:требу\w*|нужн?\w*|обязател\w*)\b|"
             r"\bGitHub(?:\s+(?:repository|repo|source|репозитор\w*|источник\w*))?\s*"
             r"не\s+явля\w+\s+обязател\w*\b",
+        ),
+        (
+            "Updater source backup (EN)",
+            r"\bFomaBy/FantasyDisk-Releases\b\s+"
+            r"(?:is|remains|becomes|serves\s+as|acts\s+as)\s+"
+            r"(?:only\s+|merely\s+|just\s+)?(?:a\s+)?backup\b",
+        ),
+        (
+            "Updater source secondary (EN)",
+            r"\bFomaBy/FantasyDisk-Releases\b\s+"
+            r"(?:is|remains|becomes|serves\s+as|acts\s+as)\s+"
+            r"(?:only\s+|merely\s+|just\s+)?(?:a\s+)?secondary\b",
+        ),
+        (
+            "Updater source fallback (EN)",
+            r"\bFomaBy/FantasyDisk-Releases\b\s+"
+            r"(?:is|remains|becomes|serves\s+as|acts\s+as)\s+"
+            r"(?:only\s+|merely\s+|just\s+)?(?:a\s+)?fallback\b",
+        ),
+        (
+            "Updater source backup (RU)",
+            r"\bFomaBy/FantasyDisk-Releases\b\s*"
+            r"(?:—|:|это\s+|явля\w+\s+)?\s*(?:только\s+|лишь\s+)?резервн\w*\b",
+        ),
+        (
+            "Updater source secondary (RU)",
+            r"\bFomaBy/FantasyDisk-Releases\b\s*"
+            r"(?:—|:|это\s+|явля\w+\s+)?\s*(?:только\s+|лишь\s+)?вторичн\w*\b",
+        ),
+        (
+            "Updater source fallback (RU)",
+            r"\bFomaBy/FantasyDisk-Releases\b\s*"
+            r"(?:—|:|это\s+|явля\w+\s+)?\s*(?:только\s+|лишь\s+)?"
+            r"(?:запасн\w*|fallback)\b",
         ),
     )
     MACOS_MAPPING_CONTRACTS = {
@@ -3260,6 +3317,30 @@ class ReleaseDocumentationConsistencyTests(unittest.TestCase):
     def normalize(document: str) -> str:
         return " ".join(document.split())
 
+    @staticmethod
+    def _has_unnegated_match(document: str, pattern: str) -> bool:
+        """Return whether a contradiction appears outside a local negation.
+
+        Release documents intentionally contain truthful controls such as
+        ``Do not skip Telegram delivery`` and ``is not a backup``.  Inspecting
+        the short clause prefix keeps those controls safe while still finding
+        a later contradiction in the same document.
+        """
+        for match in re.finditer(pattern, document, flags=re.IGNORECASE):
+            clause_start = max(
+                document.rfind(boundary, 0, match.start())
+                for boundary in ".!?;\n"
+            )
+            prefix = document[clause_start + 1 : match.start()]
+            if re.search(
+                r"(?:\b(?:not|never|without|no)\b|\b(?:не|без)\b)[^.!?;]{0,24}$",
+                prefix,
+                flags=re.IGNORECASE,
+            ):
+                continue
+            return True
+        return False
+
     @classmethod
     def read_documents(cls) -> dict[Path, str]:
         paths = set(cls.OPERATIONAL_PLACEHOLDERS) | set(cls.DELIVERY_CONTRACTS) | set(cls.MACOS_MAPPING_CONTRACTS) | set(cls.IMMUTABILITY_CONTRACTS) | {
@@ -3290,7 +3371,7 @@ class ReleaseDocumentationConsistencyTests(unittest.TestCase):
                 if clause not in document:
                     errors.append(f"{relative}: missing delivery contract clause {clause}")
             for label, pattern in cls.DELIVERY_CONTRADICTION_PATTERNS:
-                if re.search(pattern, document, flags=re.IGNORECASE):
+                if cls._has_unnegated_match(document, pattern):
                     errors.append(f"{relative}: contradictory delivery clause ({label})")
         return errors
 
@@ -3435,6 +3516,11 @@ class ReleaseDocumentationConsistencyTests(unittest.TestCase):
         self.assertEqual(self.delivery_contract_errors(documents), [])
 
         mutations = (
+            ("Skip Telegram delivery.", "Telegram bypass (EN)"),
+            ("Telegram delivery should be skipped.", "Telegram bypass (EN)"),
+            ("Do not send release files through Telegram.", "Telegram bypass (EN)"),
+            ("Пропускать доставку в Telegram.", "Telegram bypass (RU)"),
+            ("Не отправлять файлы в Telegram.", "Telegram bypass (RU)"),
             ("Telegram delivery is optional.", "Telegram optional (EN)"),
             ("Telegram is only a backup delivery channel.", "Telegram backup (EN)"),
             ("Telegram delivery is not required.", "Telegram not required (EN)"),
@@ -3460,6 +3546,30 @@ class ReleaseDocumentationConsistencyTests(unittest.TestCase):
             ("GitHub — необязательный источник.", "GitHub optional (RU)"),
             ("GitHub — запасной источник.", "GitHub backup (RU)"),
             ("GitHub не требуется.", "GitHub not required (RU)"),
+            (
+                "FomaBy/FantasyDisk-Releases is only a backup.",
+                "Updater source backup (EN)",
+            ),
+            (
+                "FomaBy/FantasyDisk-Releases is a secondary source.",
+                "Updater source secondary (EN)",
+            ),
+            (
+                "FomaBy/FantasyDisk-Releases is a fallback source.",
+                "Updater source fallback (EN)",
+            ),
+            (
+                "FomaBy/FantasyDisk-Releases — резервный источник.",
+                "Updater source backup (RU)",
+            ),
+            (
+                "FomaBy/FantasyDisk-Releases — вторичный источник.",
+                "Updater source secondary (RU)",
+            ),
+            (
+                "FomaBy/FantasyDisk-Releases — запасной источник.",
+                "Updater source fallback (RU)",
+            ),
         )
         for relative in self.DELIVERY_CONTRACTS:
             for contradiction, expected_label in mutations:
@@ -3486,6 +3596,10 @@ class ReleaseDocumentationConsistencyTests(unittest.TestCase):
                 "Telegram — вторичный канал; GitHub — необязательный источник.",
                 ("Telegram secondary (RU)", "GitHub optional (RU)"),
             ),
+            (
+                "Skip Telegram delivery; FomaBy/FantasyDisk-Releases is only a backup.",
+                ("Telegram bypass (EN)", "Updater source backup (EN)"),
+            ),
         )
         for contradiction, expected_labels in combined_mutations:
             for relative in self.DELIVERY_CONTRACTS:
@@ -3502,13 +3616,18 @@ class ReleaseDocumentationConsistencyTests(unittest.TestCase):
         safe_negations = (
             (
                 "EN",
-                "Telegram is not optional; Telegram is not a backup, fallback, or secondary channel; "
-                "GitHub is not optional, a backup, secondary, or a fallback; GitHub is required.",
+                "Do not skip Telegram delivery; Telegram is not optional; "
+                "Telegram is not a backup, fallback, or secondary channel; "
+                "GitHub is not optional, a backup, secondary, or a fallback; "
+                "FomaBy/FantasyDisk-Releases is not a backup, secondary, or fallback source; "
+                "GitHub is required.",
             ),
             (
                 "RU",
-                "Telegram не является необязательным, резервным, запасным или вторичным каналом; "
+                "Не пропускать доставку в Telegram; Telegram не является необязательным, "
+                "резервным, запасным или вторичным каналом; "
                 "GitHub не является необязательным, резервным, запасным, вторичным или fallback-источником; "
+                "FomaBy/FantasyDisk-Releases не является резервным, запасным, вторичным или fallback-источником; "
                 "GitHub обязателен.",
             ),
             (
