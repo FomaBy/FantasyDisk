@@ -2855,7 +2855,7 @@ class ReleaseDocumentationConsistencyTests(unittest.TestCase):
     DELIVERY_CONTRADICTION_PATTERNS = (
         (
             "Telegram bypass (EN)",
-            r"(?:\b(?:skip|omit|avoid|bypass)\s+(?:the\s+)?Telegram"
+            r"(?:\b(?:skip\w*|omit\w*|avoid\w*|bypass\w*)\s+(?:the\s+)?Telegram"
             r"(?:\s+(?:delivery|channel|files?))?\b|"
             r"\bTelegram(?:\s+(?:delivery|channel|files?))?\s+"
             r"(?:is|remains|becomes|should|must|can|may)\s+(?:be\s+)?"
@@ -3339,51 +3339,118 @@ class ReleaseDocumentationConsistencyTests(unittest.TestCase):
         r"вс[её]\s+же)\b",
         flags=re.IGNORECASE,
     )
-    _PARENTHETICAL_LIMITER_PATTERN = re.compile(
+    # Closed-class discourse connectives, focus/epistemic adverbs and limiter
+    # adjuncts a writer may set off with paired commas without ending the
+    # negated clause.  This is a bounded grammatical category, not a list of
+    # fixture sentences: anything outside it (an imperative verb, a second
+    # directive, a bare object such as ``skip validation`` or ``comply``) is
+    # not matched, so the scope fails closed on unrecognised parentheticals.
+    _DISCOURSE_ASIDE_PATTERN = re.compile(
+        r"(?:"
+        r"but|however|yet|rather|though|although|instead|nevertheless|"
+        r"nonetheless|whereas|conversely|even\s+so|still|regardless|anyway|"
+        r"anyhow|"
+        r"in\s+fact|indeed|of\s+course|in\s+particular|particularly|"
+        r"specifically|notably|naturally|obviously|clearly|evidently|"
+        r"certainly|admittedly|arguably|presumably|after\s+all|"
+        r"for\s+that\s+matter|for\s+example|for\s+instance|that\s+is|namely|"
+        r"likewise|similarly|moreover|furthermore|additionally|besides|"
+        r"meanwhile|therefore|thus|hence|accordingly|consequently|"
+        r"generally|typically|usually|essentially|basically|ultimately|"
+        r"frankly|honestly|ideally|again|also|too|as\s+such|that\s+said|"
+        r"first(?:ly)?|second(?:ly)?|then|finally|importantly|"
         r"(?:even\s+)?(?:temporarily|briefly|momentarily|ever)|"
-        r"(?:даже\s+)?(?:временн\w*|кратковременн\w*|однократн\w*)",
+        r"но|однако|зато|напротив|вс[её]\s+же|впрочем|тем\s+не\s+менее|"
+        r"в\s+частности|в\s+самом\s+деле|на\s+самом\s+деле|конечно|"
+        r"разумеется|безусловно|действительно|естественно|очевидно|"
+        r"кстати|между\s+прочим|к\s+тому\s+же|кроме\s+того|более\s+того|"
+        r"тем\s+более|также|тоже|следовательно|таким\s+образом|итак|"
+        r"в\s+конце\s+концов|в\s+целом|в\s+общем|как\s+правило|обычно|"
+        r"по\s+сути|в\s+сущности|собственно|стало\s+быть|значит|"
+        r"вообще(?:-то)?|скорее|притом|прич[её]м|"
+        r"(?:даже\s+)?(?:временн\w*|кратковременн\w*|однократн\w*)"
+        r")",
         flags=re.IGNORECASE,
     )
+    # Deontic modals that select a following predicate (``не следует … X`` =
+    # "should not X").  When such a modal sits between the negation and the
+    # predicate the negation still carries through it, so a leading modal is
+    # transparent — unlike an ordinary main verb, which completes its own
+    # negated clause (``Не ждать, … пропускать`` = "do not wait; … skip").
+    _TRANSPARENT_MODAL_PATTERN = re.compile(
+        r"(?:следует|нужно|надо|должн\w*|стоит|требуется|необходимо|"
+        r"надлежит|полагается|прид[её]тся|приходится|"
+        r"should|must|ought|shall)\b",
+        flags=re.IGNORECASE,
+    )
+    # Positive execution / permission governor of a colon- or dash-introduced
+    # complement clause (``do the following:`` / ``делайте следующее:``): the
+    # negation still governs the listed predicate.  The verb slot stays open to
+    # any non-inverting imperative (structurally bounded to a short verb group
+    # closing on a demonstrative); prohibition governors are ruled out earlier
+    # as polarity inverters, so a novel governor needs no fixture enumeration.
     _COMPLEMENT_INTRODUCER_PATTERN = re.compile(
-        r"(?:do|perform|take|execute|follow|permit|allow|authorize|approve|"
-        r"carry\s+out)\s+(?:the\s+)?(?:following|this|that|below)|"
-        r"(?:следует\s+)?(?:дела\w*|сдела\w*|выполня\w*|выполн\w*|"
-        r"осуществ\w*|разреш\w*|допуска\w*|одобря\w*)\s+"
-        r"(?:следующ\w*|нижеследующ\w*|это)",
+        r"(?:\w+\s+){1,3}(?:the\s+)?(?:following|this|that|below|these|those)|"
+        r"(?:\w+\s+){1,3}(?:следующе\w*|нижеследующе\w*|это|этого)",
         flags=re.IGNORECASE,
     )
-    _NEGATION_SCOPE_BOUNDARIES = (".", "!", "?", ";", "\n")
+    # A negation whose immediate object is a prohibition verb is inverted:
+    # ``do not forbid X`` / ``не запрещайте X`` / ``not prohibited to X`` all
+    # license X, so such a negation must not be treated as protecting a later
+    # contradiction.  Bounded to the prohibition-verb class in both languages.
+    _NEGATION_INVERTER_PATTERN = re.compile(
+        r"\b(?:forbid\w*|prohibit\w*|disallow\w*|proscrib\w*)\b|"
+        r"\b(?:запрещ\w*|запрет\w*|воспрещ\w*|воспрет\w*)\b",
+        flags=re.IGNORECASE,
+    )
+    # ``|`` is a Markdown table-cell boundary: a negation in one cell does not
+    # reach a contradiction in another, so it fails closed like a line break.
+    _NEGATION_SCOPE_BOUNDARIES = (".", "!", "?", ";", "\n", "|")
     _NEGATION_TOKEN_LIMIT = 64
 
     @classmethod
     def _negation_reaches_match(cls, gap: str) -> bool:
         """Return whether a negation still governs the matched predicate.
 
-        Punctuation is only a scope boundary when it introduces a new clause.
-        Leading paired-comma discourse/limiter parentheticals and complements
-        with a positive execution or permission governor preserve negation.
-        Complete fixture phrases are not enumerated; the bounded grammatical
-        categories fail closed when polarity is ambiguous.  A completed
-        predicate followed by a comma, hard line boundary, or contrastive
-        conjunction does not preserve scope.
+        The text between a negation and a later contradiction keeps the
+        negation in force only when it is filled by transparent material that
+        directly follows the negation: a deontic modal that carries the
+        negation onto a following predicate, then paired-comma discourse or
+        limiter asides, or a positive execution/permission complement
+        introduced by a colon or dash.  A prohibition governor inverts the
+        polarity; a contrastive conjunction, a clause-splitting comma, a
+        table-cell boundary or any unrecognised parenthetical ends the scope.
+        Position matters: an aside is only transparent while it still adjoins
+        the negation, so ``Не следует, в частности, пропускать`` is protected
+        while ``Не ждать, напротив, пропускать`` (a completed clause, then a
+        contrasting directive) is not.  Bounded grammatical categories fail
+        closed when polarity is ambiguous, so novel discourse markers and
+        complement governors are covered without enumerating fixtures.
         """
-        association_gap = gap.lstrip()
-        while association_gap.startswith(","):
-            parenthetical_end = association_gap.find(",", 1)
-            if parenthetical_end == -1:
-                break
-            parenthetical = association_gap[1:parenthetical_end].strip()
-            parenthetical_tokens = re.findall(r"\b\w+\b", parenthetical)
-            if (
-                not parenthetical
-                or len(parenthetical_tokens) > 8
-                or not (
-                    cls._CONTRAST_PATTERN.fullmatch(parenthetical)
-                    or cls._PARENTHETICAL_LIMITER_PATTERN.fullmatch(parenthetical)
-                )
-            ):
-                break
-            association_gap = association_gap[parenthetical_end + 1 :].lstrip()
+        association_gap = " ".join(gap.split())
+
+        # A prohibition verb governed by the negation flips its polarity, so
+        # the later contradiction is no longer protected.
+        if cls._NEGATION_INVERTER_PATTERN.search(association_gap):
+            return False
+
+        # Peel transparent leading material adjoining the negation: deontic
+        # modals that carry the negation onto a following predicate, then
+        # paired-comma discourse/limiter asides.  Both delimiting commas of an
+        # aside are consumed so the residue is not mistaken for a new clause.
+        while association_gap:
+            modal = cls._TRANSPARENT_MODAL_PATTERN.match(association_gap)
+            if modal:
+                association_gap = association_gap[modal.end() :].lstrip()
+                continue
+            if association_gap.startswith(","):
+                aside_end = association_gap.find(",", 1)
+                if aside_end != -1:
+                    aside = association_gap[1:aside_end].strip()
+                    if aside and cls._DISCOURSE_ASIDE_PATTERN.fullmatch(aside):
+                        association_gap = association_gap[aside_end + 1 :].lstrip()
+                        continue
+            break
 
         if cls._CONTRAST_PATTERN.search(association_gap):
             return False
@@ -4042,6 +4109,85 @@ class ReleaseDocumentationConsistencyTests(unittest.TestCase):
                 with self.subTest(document=str(relative), case=name):
                     mutated = dict(documents)
                     mutated[relative] += f"\nBoundary matrix control: {statement}\n"
+                    errors = self.delivery_contract_errors(mutated)
+                    labels = tuple(
+                        error.split("contradictory delivery clause (", 1)[1][:-1]
+                        for error in errors
+                        if "contradictory delivery clause (" in error
+                    )
+                    self.assertEqual(labels, expected_labels, errors)
+
+    def test_delivery_guard_scopes_novel_negation_forms(self) -> None:
+        """FAN-1518: bounded scope must generalise beyond fixture lexemes.
+
+        Every control below uses discourse markers, complement governors and
+        prohibition inverters that are absent from the checked-in fixture
+        tables, plus inverse/double negation and a Markdown table-cell
+        boundary in each language.  They exercise the grammatical categories,
+        not spelling variants of a lexical list, so a fixture-shaped guard
+        would regress on them.
+        """
+        documents = self.read_documents()
+        novel_scope_cases = (
+            # Discourse-marker asides never listed in the fixtures.
+            ("discourse marker EN", "Do not, of course, skip Telegram delivery.", ()),
+            ("discourse marker RU", "Не, по сути, пропускать доставку в Telegram.", ()),
+            # A deontic modal carries the negation across a non-leading aside.
+            (
+                "modal-scoped discourse RU",
+                "Не нужно, в частности, пропускать доставку в Telegram.",
+                (),
+            ),
+            # Complement governors never listed in the fixtures.
+            (
+                "complement governor EN",
+                "Do not complete the following: skip Telegram delivery.",
+                (),
+            ),
+            (
+                "complement governor RU",
+                "Не осуществляйте следующее: пропускать доставку в Telegram.",
+                (),
+            ),
+            # Inverse negation: a prohibition governor flips the polarity.
+            (
+                "inverse negation EN",
+                "Do not disallow skipping Telegram delivery.",
+                ("Telegram bypass (EN)",),
+            ),
+            (
+                "inverse negation RU",
+                "Не воспрещайте пропускать доставку в Telegram.",
+                ("Telegram bypass (RU)",),
+            ),
+            # Double negation: ``not prohibited`` / ``не запрещено`` license it.
+            (
+                "double negation EN",
+                "It is not prohibited to skip Telegram delivery.",
+                ("Telegram bypass (EN)",),
+            ),
+            (
+                "double negation RU",
+                "Не запрещено обходить доставку Telegram.",
+                ("Telegram bypass (RU)",),
+            ),
+            # Markdown table-cell boundary: the negation is in another cell.
+            (
+                "markdown cell boundary EN",
+                "| Do not delay | Skip Telegram delivery. |",
+                ("Telegram bypass (EN)",),
+            ),
+            (
+                "markdown cell boundary RU",
+                "| Не медлить | Пропускать доставку в Telegram. |",
+                ("Telegram bypass (RU)",),
+            ),
+        )
+        for name, statement, expected_labels in novel_scope_cases:
+            for relative in self.DELIVERY_CONTRACTS:
+                with self.subTest(document=str(relative), case=name):
+                    mutated = dict(documents)
+                    mutated[relative] += f"\nNovel scope control: {statement}\n"
                     errors = self.delivery_contract_errors(mutated)
                     labels = tuple(
                         error.split("contradictory delivery clause (", 1)[1][:-1]
