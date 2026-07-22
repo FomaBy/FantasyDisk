@@ -3450,7 +3450,10 @@ class ReleaseDocumentationConsistencyTests(unittest.TestCase):
             position = 0
             while position < len(raw_line):
                 character = raw_line[position]
-                if character == "`" and not escaped:
+                # Backslashes escape a delimiter only before a code span opens.
+                # Within a CommonMark code span they are literal text, so a
+                # following same-length backtick run still closes that span.
+                if character == "`" and (inline_delimiter is not None or not escaped):
                     run_end = position
                     while run_end < len(raw_line) and raw_line[run_end] == "`":
                         run_end += 1
@@ -3472,9 +3475,11 @@ class ReleaseDocumentationConsistencyTests(unittest.TestCase):
                     buffer.append(" ")
                 else:
                     buffer.append(character)
-                escaped = character == "\\" and not escaped
-                if character != "\\":
-                    escaped = False
+                escaped = (
+                    inline_delimiter is None
+                    and character == "\\"
+                    and not escaped
+                )
                 position += 1
         flush()
         return tuple(units)
@@ -3562,7 +3567,7 @@ class ReleaseDocumentationConsistencyTests(unittest.TestCase):
 
     @staticmethod
     def _is_exact_inline_code_span(text: str) -> bool:
-        """Prove that ``text`` is one unescaped, matching Markdown code span."""
+        """Prove that ``text`` is one matching Markdown code span."""
         opener = re.match(r"(`+)(?!`)", text)
         if not opener:
             return False
@@ -3570,9 +3575,6 @@ class ReleaseDocumentationConsistencyTests(unittest.TestCase):
         content_start = opener.end()
         position = content_start
         while position < len(text):
-            if text[position] == "\\":
-                position += 2
-                continue
             if text[position] != "`":
                 position += 1
                 continue
@@ -3603,7 +3605,10 @@ class ReleaseDocumentationConsistencyTests(unittest.TestCase):
         if object_bridge.endswith(","):
             object_bridge = object_bridge[:-1].rstrip()
         code_start = object_bridge.find("`")
-        if code_start <= 0:
+        backslash_count = len(object_bridge[:code_start]) - len(
+            object_bridge[:code_start].rstrip("\\")
+        )
+        if code_start <= 0 or backslash_count % 2:
             return False
         governor_words = re.findall(
             r"[\w'-]+", object_bridge[:code_start].casefold(), flags=re.UNICODE
@@ -4931,7 +4936,7 @@ class ReleaseDocumentationConsistencyTests(unittest.TestCase):
                     self.assertEqual(labels, expected_labels, errors)
 
     def test_delivery_guard_matches_inline_code_delimiter_runs(self) -> None:
-        """A code span closes only on the same unescaped backtick run."""
+        """A code span closes only on the same-length delimiter run."""
         documents = self.read_documents()
         safe_cases = (
             ("single delimiter", "Do not use `dry-run | release` to skip Telegram delivery."),
@@ -4962,6 +4967,73 @@ class ReleaseDocumentationConsistencyTests(unittest.TestCase):
                     self.delivery_contract_errors(mutated),
                     [f"{relative}: contradictory delivery clause (Telegram bypass (EN))"],
                 )
+
+    def test_delivery_guard_treats_backslash_as_literal_inside_inline_code(self) -> None:
+        """FAN-1536: an escaped-looking closer still closes Markdown code."""
+        documents = self.read_documents()
+        dangerous_cases = (
+            (
+                "exception bridge EN",
+                r"Do not use `safe\` except ` to skip Telegram delivery.",
+                ("Telegram bypass (EN)",),
+            ),
+            (
+                "contrast bridge EN",
+                r"Do not use `safe\` but only ` to skip Telegram delivery.",
+                ("Telegram bypass (EN)",),
+            ),
+            (
+                "exception bridge RU",
+                r"Не используйте `safe\` кроме как ` чтобы пропустить доставку в Telegram.",
+                ("Telegram bypass (RU)",),
+            ),
+            (
+                "contrast bridge RU",
+                r"Не используйте `safe\` но только ` чтобы пропустить доставку в Telegram.",
+                ("Telegram bypass (RU)",),
+            ),
+        )
+        safe_cases = (
+            (
+                "literal backslash before closer EN",
+                r"Do not use `safe\` to skip Telegram delivery.",
+            ),
+            (
+                "literal backslash before closer RU",
+                r"Не используйте `safe\`, чтобы пропускать доставку в Telegram.",
+            ),
+        )
+
+        for relative in self.DELIVERY_CONTRACTS:
+            for name, statement, expected_labels in dangerous_cases:
+                with self.subTest(document=str(relative), case=name):
+                    mutated = dict(documents)
+                    mutated[relative] += f"\nFAN-1536 delimiter control: {statement}\n"
+                    errors = self.delivery_contract_errors(mutated)
+                    labels = tuple(
+                        error.split("contradictory delivery clause (", 1)[1][:-1]
+                        for error in errors
+                        if "contradictory delivery clause (" in error
+                    )
+                    self.assertEqual(labels, expected_labels, errors)
+
+            for name, statement in safe_cases:
+                with self.subTest(document=str(relative), case=name):
+                    mutated = dict(documents)
+                    mutated[relative] += f"\nFAN-1536 delimiter control: {statement}\n"
+                    self.assertEqual(self.delivery_contract_errors(mutated), [])
+
+        malformed_bridges = (
+            r"use `safe\` except ` to",
+            "use `safe to",
+            "use ``safe` to",
+            "use `safe`` to",
+            r"use \`safe` to",
+        )
+        for bridge in malformed_bridges:
+            with self.subTest(bridge=bridge):
+                self.assertFalse(self._is_safe_inline_code_purpose_bridge(bridge))
+        self.assertTrue(self._is_safe_inline_code_purpose_bridge(r"use \\`safe` to"))
 
     def test_four_required_qa_mutations_are_rejected_individually(self) -> None:
         documents = self.read_documents()
