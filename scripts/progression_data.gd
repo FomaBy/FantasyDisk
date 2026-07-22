@@ -1161,13 +1161,20 @@ static func estimate_weapon_budget(character_id: String, weapon_config: Dictiona
 	return estimate_weapon_budget_for_stats(character_id, weapon_config, base_stats(character_id), apply_budget)
 
 
-static func estimate_weapon_budget_for_stats(character_id: String, weapon_config: Dictionary, stats: Dictionary, apply_budget := true) -> Dictionary:
+static func estimate_weapon_budget_for_stats(
+	character_id: String,
+	weapon_config: Dictionary,
+	stats: Dictionary,
+	apply_budget := true,
+	run_modifiers := {},
+	include_ultimate := true
+) -> Dictionary:
 	var config := weapon_config.duplicate(true)
 	config["character_id"] = character_id
 	if not apply_budget:
 		config.erase("budget_damage_multiplier")
 		config.erase("budget_tuning")
-	var params := derived_parameters(stats, {}, config)
+	var params := derived_parameters(stats, run_modifiers, config)
 	var damage_parameter := str(config.get("damage_parameter", damage_parameter_for(character_id)))
 	var base_damage := float(params.get(damage_parameter, params.get("damage", 1.0)))
 	var crit_factor := 1.0 + float(params.get("crit_chance", 0.0)) * maxf(float(params.get("crit_damage_multiplier", 1.0)) - 1.0, 0.0)
@@ -1250,9 +1257,10 @@ static func estimate_weapon_budget_for_stats(character_id: String, weapon_config
 	var rage_factor := class_rage_expected_damage_factor(character_id)
 	solo_dps *= rage_factor
 	aoe_dps *= rage_factor
-	var ultimate := _budget_ultimate_dps(character_id, params)
-	solo_dps += float(ultimate.get("solo", 0.0))
-	aoe_dps += float(ultimate.get("aoe", 0.0))
+	if include_ultimate:
+		var ultimate := _budget_ultimate_dps(character_id, params)
+		solo_dps += float(ultimate.get("solo", 0.0))
+		aoe_dps += float(ultimate.get("aoe", 0.0))
 	if apply_budget:
 		solo_dps *= float(config.get("budget_solo_multiplier", 1.0))
 		aoe_dps *= float(config.get("budget_aoe_multiplier", 1.0))
@@ -1270,10 +1278,25 @@ static func estimate_crowd_clear_budget(character_id: String, weapon_config: Dic
 	return estimate_crowd_clear_budget_for_stats(character_id, weapon_config, target_count, base_stats(character_id), apply_budget)
 
 
-static func estimate_crowd_clear_budget_for_stats(character_id: String, weapon_config: Dictionary, target_count: int, stats: Dictionary, apply_budget := true) -> Dictionary:
+static func estimate_crowd_clear_budget_for_stats(
+	character_id: String,
+	weapon_config: Dictionary,
+	target_count: int,
+	stats: Dictionary,
+	apply_budget := true,
+	run_modifiers := {},
+	include_ultimate := true
+) -> Dictionary:
 	var count: int = maxi(target_count, 1)
 	var profile := class_budget_profile(character_id)
-	var metrics := estimate_weapon_budget_for_stats(character_id, weapon_config, stats, apply_budget)
+	var metrics := estimate_weapon_budget_for_stats(
+		character_id,
+		weapon_config,
+		stats,
+		apply_budget,
+		run_modifiers,
+		include_ultimate
+	)
 	var tuning: Dictionary = weapon_config.get("budget_tuning", {})
 	var aoe_target := float(tuning.get(
 		"aoe_target",

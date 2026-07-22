@@ -1204,3 +1204,34 @@ Gate: `tests/guild_atlas_scrum1069_balance_test.gd`; exact audit:
 
 Остаток: QA child issue (lifecycle FAN-1048, оконный визуальный смоук 2–3
 классов) → Stage 5 PR `agent/claude/53f2a056` → `dev`.
+
+## FAN-1438 — воспроизводимый A5-срез ростера
+
+`tools/a5_balance_report.gd` собирает единый набор данных для текущих
+`ProgressionData.character_ids()` и `WEAPONS_BY_CLASS`, затем из него рендерит
+Markdown, CSV и raw JSON в `docs/design/reports/fan1438_a5_balance/`.
+
+Контролируемая матрица использует A5 вместе с накопленными наградами A1–A5,
+уровни 1 и 20, а также четыре состояния меты: без меты, полное созвездие класса
+schema 6, созвездие плюс легальный Atlas 50 и явно неигровой верхний Atlas 59.
+Уровень 20 — синтетическая балансная модель: ровно 19 целых неотрицательных
+очков базовых характеристик и один общий билд на всю тройку оружия класса. Это
+не реконструкция 19 выпавших в реальном забеге reward-карт.
+
+Формульный слой повторно использует `ProgressionData` и принимает A5/meta
+`run_modifiers`; опциональный `include_ultimate=false` исключает ульту из
+пер-оружейного sustain-DPM. Ульта показывается отдельно на уровне class kit.
+Schema-6 flat/cadence/geometry/axis/final профиль берётся из канонического
+`MetaProgression.skill_modifiers_for_weapon`. Нелинейный слой проверяется
+реальными headless Player/Enemy-пробами всех runtime-пар с фиксированными
+сидами, warm-up и фиксированным игровым окном.
+
+Выживаемость привязана к одному явно описанному normal-wave A5 contact-pressure
+сценарию. Глобальный множитель обычных врагов не переносится на boss/elite
+ветки, у которых в runtime отдельные consumers. Условные control, timed absorb,
+one-hit ward и death-save не маскируются под постоянный shield HP.
+
+Гейт: `tests/a5_balance_report_integrity_test.gd`. Он динамически проверяет
+полное декартово покрытие ростера, общие 19-точечные билды, расходы и связность
+Atlas 50/59, отсутствие ульты в weapon rows, class-kit строки, полное множество
+attack modes/final mechanics в live evidence и согласованность CSV/raw/Markdown.
