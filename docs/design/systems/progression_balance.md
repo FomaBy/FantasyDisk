@@ -1209,7 +1209,12 @@ Gate: `tests/guild_atlas_scrum1069_balance_test.gd`; exact audit:
 
 `tools/a5_balance_report.gd` собирает единый набор данных для текущих
 `ProgressionData.character_ids()` и `WEAPONS_BY_CLASS`, затем из него рендерит
-Markdown, CSV и raw JSON в `docs/design/reports/fan1438_a5_balance/`.
+Markdown, CSV и raw JSON в `docs/design/reports/fan1438_a5_balance/`. Команда
+регенерации принимает только точный `--source-commit=<SHA>`: tree и committer
+timestamp она получает через `git show -s --format=%H%n%T%n%cI <SHA>`, а не из
+wall-clock или ручных флагов. Неразрешимый, неполный или расходящийся Git tuple
+останавливает генерацию до записи артефактов; integrity gate повторно сверяет
+commit/tree/timestamp и содержит отрицательный mismatch-case.
 
 Для class-kit ultimate сборщик всегда берёт контролируемые level stats из
 `no_meta` строки и ровно один раз применяет class/Atlas attribute и run

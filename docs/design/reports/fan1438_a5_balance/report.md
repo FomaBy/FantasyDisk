@@ -1,6 +1,6 @@
 # FAN-1438 — A5 character and weapon balance report
 
-Source commit `2195aca4916ede15ef2427bb979d0d1f0f074d3a` (tree `ae5dfdcd82daf1fe9e6d0ef7c7c19b21edc7d1d2`, timestamp `2026-07-22T20:19:40+03:00`), Godot `4.7-stable (official)`. Dataset digest: `6b3c0bfa95235c0ad7aa96145f3aaae8b0e96459773091b57855f851288f08d0`.
+Source commit `2195aca4916ede15ef2427bb979d0d1f0f074d3a` (tree `ae5dfdcd82daf1fe9e6d0ef7c7c19b21edc7d1d2`, timestamp `2026-07-22T20:19:34+03:00`), Godot `4.7-stable (official)`. Dataset digest: `dac697e5562ec5e3097bb4fe9d005f6e6b69d188b9b4db743a338990ec96d79e`.
 
 The live roster is **17 classes / 51 class-weapon pairs**. The primary matrix is **408 rows** = pairs × 2 levels × 4 meta scenarios. This report changes no balance values.
 

@@ -3879,7 +3879,7 @@
 			"weaknesses": "survival 1.01× and convenience 1.04× roster median."
 		}
 	],
-	"dataset_digest_sha256": "6b3c0bfa95235c0ad7aa96145f3aaae8b0e96459773091b57855f851288f08d0",
+	"dataset_digest_sha256": "dac697e5562ec5e3097bb4fe9d005f6e6b69d188b9b4db743a338990ec96d79e",
 	"formula_live_parity": [
 		{
 			"attack_mode": "sweep",
@@ -5412,7 +5412,7 @@
 			]
 		}
 	],
-	"generation_command": "python3 tools/godot_gate.py --headless --fixed-fps 60 --path . --script res://tools/a5_balance_report.gd -- --mode=full --source-commit=<A> --source-tree=<TREE_A> --source-timestamp=<ISO_A>",
+	"generation_command": "python3 tools/godot_gate.py --headless --fixed-fps 60 --path . --script res://tools/a5_balance_report.gd -- --mode=full --source-commit=<A>",
 	"issue_id": "FAN-1438",
 	"limitations": [
 		"The level-20 model is a synthetic 19-base-stat-point balance convention, not a replay of 19 live reward-card choices.",
@@ -7383,7 +7383,7 @@
 	"schema": "fan1438.a5-balance.v1",
 	"source": {
 		"commit": "2195aca4916ede15ef2427bb979d0d1f0f074d3a",
-		"commit_timestamp": "2026-07-22T20:19:40+03:00",
+		"commit_timestamp": "2026-07-22T20:19:34+03:00",
 		"godot": "4.7-stable (official)",
 		"tree": "ae5dfdcd82daf1fe9e6d0ef7c7c19b21edc7d1d2"
 	},

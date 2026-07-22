@@ -39,8 +39,8 @@ const PLAYER_IFRAME_SECONDS := 0.32
 
 var _mode := "full"
 var _source_commit := "UNSPECIFIED"
-var _source_tree := "UNSPECIFIED"
-var _source_timestamp := "1970-01-01T00:00:00Z"
+var _source_tree := ""
+var _source_timestamp := ""
 var _holder: Node2D
 var _errors := PackedStringArray()
 
@@ -88,15 +88,15 @@ func _parse_args() -> void:
 			_mode = arg.trim_prefix("--mode=")
 		elif arg.begins_with("--source-commit="):
 			_source_commit = arg.trim_prefix("--source-commit=")
-		elif arg.begins_with("--source-tree="):
-			_source_tree = arg.trim_prefix("--source-tree=")
-		elif arg.begins_with("--source-timestamp="):
-			_source_timestamp = arg.trim_prefix("--source-timestamp=")
+		elif arg.begins_with("--source-tree=") or arg.begins_with("--source-timestamp="):
+			_errors.append("%s is derived from --source-commit and cannot be overridden" % arg.get_slice("=", 0))
 	if not ["formula", "full"].has(_mode):
 		_errors.append("unsupported mode %s (expected formula or full)" % _mode)
 
 
 func generate_dataset() -> Dictionary:
+	if not _resolve_source_provenance():
+		return {}
 	var class_ids: Array = PD.character_ids()
 	var pair_keys := []
 	var builds := {}
@@ -149,7 +149,7 @@ func generate_dataset() -> Dictionary:
 		"schema": "fan1438.a5-balance.v1",
 		"issue_id": ISSUE_ID,
 		"source": {"commit": _source_commit, "tree": _source_tree, "commit_timestamp": _source_timestamp, "godot": Engine.get_version_info().get("string", "unknown")},
-		"generation_command": "python3 tools/godot_gate.py --headless --fixed-fps 60 --path . --script res://tools/a5_balance_report.gd -- --mode=full --source-commit=<A> --source-tree=<TREE_A> --source-timestamp=<ISO_A>",
+		"generation_command": "python3 tools/godot_gate.py --headless --fixed-fps 60 --path . --script res://tools/a5_balance_report.gd -- --mode=full --source-commit=<A>",
 		"roster": {"class_ids": class_ids, "pair_keys": pair_keys, "class_count": class_ids.size(), "weapon_pair_count": pair_keys.size()},
 		"methodology": methodology,
 		"builds": builds,
@@ -170,6 +170,59 @@ func generate_dataset() -> Dictionary:
 	dataset["dataset_digest_sha256"] = _sha256(JSON.stringify(dataset, "", true, true))
 	_validate_dataset(dataset)
 	return dataset
+
+
+func _resolve_source_provenance() -> bool:
+	var result := resolve_source_provenance(_source_commit)
+	if not bool(result.get("ok", false)):
+		_errors.append(str(result.get("error", "cannot resolve source provenance")))
+		return false
+	var source: Dictionary = result.get("source", {})
+	_source_commit = str(source.get("commit", ""))
+	_source_tree = str(source.get("tree", ""))
+	_source_timestamp = str(source.get("commit_timestamp", ""))
+	return true
+
+
+static func resolve_source_provenance(source_commit: String) -> Dictionary:
+	var requested := source_commit.strip_edges()
+	if requested.is_empty() or requested == "UNSPECIFIED":
+		return {"ok": false, "error": "--source-commit must name an exact Git commit"}
+	var output := []
+	var exit_code := OS.execute("git", ["show", "-s", "--format=%H%n%T%n%cI", requested], output, false)
+	if exit_code != 0:
+		return {"ok": false, "error": "cannot resolve Git source commit %s (git show exit %d)" % [requested, exit_code]}
+	var fields := "".join(PackedStringArray(output)).strip_edges().split("\n", false)
+	if fields.size() != 3:
+		return {"ok": false, "error": "Git source provenance for %s is malformed" % requested}
+	var source := {"commit": str(fields[0]), "tree": str(fields[1]), "commit_timestamp": str(fields[2])}
+	if not _is_git_object_id(str(source["commit"])) or not _is_git_object_id(str(source["tree"])) or not _is_iso_timestamp(str(source["commit_timestamp"])):
+		return {"ok": false, "error": "Git source provenance for %s is incomplete or malformed" % requested}
+	return {"ok": true, "source": source}
+
+
+static func verify_source_provenance(source: Dictionary) -> Dictionary:
+	var result := resolve_source_provenance(str(source.get("commit", "")))
+	if not bool(result.get("ok", false)):
+		return result
+	var expected: Dictionary = result.get("source", {})
+	for field in ["commit", "tree", "commit_timestamp"]:
+		if str(source.get(field, "")) != str(expected.get(field, "")):
+			return {"ok": false, "error": "source %s does not match its Git commit" % field}
+	return {"ok": true, "source": expected}
+
+
+static func _is_git_object_id(value: String) -> bool:
+	if value.length() != 40:
+		return false
+	for character in value:
+		if not (character >= "0" and character <= "9") and not (character >= "a" and character <= "f"):
+			return false
+	return true
+
+
+static func _is_iso_timestamp(value: String) -> bool:
+	return value.length() >= 20 and value.contains("T") and (value.ends_with("Z") or value.contains("+"))
 
 
 func _scenario_manifest() -> Dictionary:
@@ -715,6 +768,9 @@ func _outliers(class_rows: Array, parity: Array) -> Dictionary:
 
 
 func _validate_dataset(dataset: Dictionary) -> void:
+	var provenance := verify_source_provenance(dataset.get("source", {}))
+	if not bool(provenance.get("ok", false)):
+		_errors.append("source provenance verification failed: %s" % provenance.get("error", "unknown error"))
 	var pairs: Array = dataset["roster"]["pair_keys"]
 	var expected_rows := pairs.size() * LEVELS.size() * SCENARIO_IDS.size()
 	var rows: Array = dataset["weapon_rows"]

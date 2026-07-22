@@ -25,6 +25,7 @@ func _initialize() -> void:
 	_check(str(dataset.get("issue_id", "")) == "FAN-1438", "issue id mismatch")
 	_check(str((dataset.get("source", {}) as Dictionary).get("commit", "")) not in ["", "UNSPECIFIED", "TEST"], "source commit is not pinned")
 	_check(str((dataset.get("source", {}) as Dictionary).get("tree", "")) not in ["", "UNSPECIFIED", "TEST"], "source tree is not pinned")
+	_validate_source_provenance(dataset)
 	_check(str(dataset.get("dataset_digest_sha256", "")).length() == 64, "dataset digest is missing")
 	_validate_roster(dataset)
 	_validate_builds(dataset)
@@ -36,6 +37,22 @@ func _initialize() -> void:
 	_validate_csv(dataset)
 	_validate_markdown(dataset, report_text)
 	_finish()
+
+
+func _validate_source_provenance(dataset: Dictionary) -> void:
+	var source: Dictionary = dataset.get("source", {})
+	var verification := Generator.verify_source_provenance(source)
+	_check(bool(verification.get("ok", false)), "source provenance is not the exact Git commit/tree/timestamp tuple: %s" % verification.get("error", "unknown error"))
+	if not bool(verification.get("ok", false)):
+		return
+	var expected: Dictionary = verification.get("source", {})
+	_check(str(source.get("commit_timestamp", "")) == str(expected.get("commit_timestamp", "")), "source commit_timestamp differs from git show -s --format=%cI")
+	var mismatched := source.duplicate(true)
+	mismatched["commit_timestamp"] = "1970-01-01T00:00:00Z"
+	if str(source.get("commit_timestamp", "")) == str(mismatched["commit_timestamp"]):
+		mismatched["commit_timestamp"] = "1970-01-01T00:00:01Z"
+	var mismatch_verification := Generator.verify_source_provenance(mismatched)
+	_check(not bool(mismatch_verification.get("ok", false)), "source provenance accepts a deliberately mismatched commit_timestamp")
 
 
 func _validate_roster(dataset: Dictionary) -> void:
