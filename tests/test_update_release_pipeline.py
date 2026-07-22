@@ -3347,21 +3347,41 @@ class ReleaseDocumentationConsistencyTests(unittest.TestCase):
         "стоит", "требуется", "необходимо", "надлежит", "полагается",
         "придётся", "придется", "приходится",
     })
+    # A signed list complement is a negated command to execute, begin, or
+    # communicate the named instruction.  The groups below describe semantic
+    # roles rather than test phrases: execution, initiation/attempt, and
+    # directive/reporting.  Their opposites (forbid, postpone, obstruct,
+    # forget, or an unknown governor) remain fail-closed because a syntactic
+    # ``verb + following`` shape alone cannot prove the complement's polarity.
     _POSITIVE_COMPLEMENT_STEMS = (
-        "do", "perform", "execut", "carry", "undertak", "complet",
+        "do", "use", "perform", "execut", "carry", "undertak", "complet",
         "fulfil", "fulfill", "follow", "implement", "apply", "permit",
         "allow", "authoriz", "approv", "accept", "enact", "conduct",
-        "дела", "сдела", "выполн", "осуществ", "предприним", "исполн",
-        "реализ", "примен", "разреш", "допуск", "одобр", "позвол",
-    )
-    _POSITIVE_REPORTING_STEMS = (
+        "start", "begin", "commenc", "attempt", "try", "initiat",
+        "launch", "resume", "continu", "proceed",
+        "issue", "instruct", "command", "direct", "tell", "declare",
         "claim", "call", "describe", "state", "label", "present", "treat",
+        "дела", "сдела", "использ", "выполн", "осуществ", "предприним", "исполн",
+        "реализ", "примен", "разреш", "допуск", "одобр", "позвол",
+        "нач", "приступ", "пыт", "проб", "продолж", "возобнов",
+        "указ", "предпис", "команд", "сообщ", "объяв", "отда",
         "счит", "назыв", "описыва", "обознач",
     )
     _POSTFIX_PROHIBITION_STEMS = (
         "forbid", "prohibit", "disallow", "ban", "bar", "impermiss",
         "unlawful", "illegal", "запрещ", "воспрещ", "недопуст",
         "незакон", "неразреш",
+    )
+    _ENGLISH_PREPOSITION = (
+        r"(?:about|above|across|after|against|along|among|around|as|at|before|"
+        r"behind|below|beneath|beside|between|beyond|by|despite|during|except|"
+        r"for|from|in|inside|into|near|of|off|on|onto|out|outside|over|past|"
+        r"per|regarding|since|through|throughout|to|toward|under|until|upon|via|"
+        r"with|within|without)"
+    )
+    _RUSSIAN_PREPOSITION = (
+        r"(?:без|в|во|вокруг|для|до|за|из|из-за|к|как|между|на|над|о|об|обо|"
+        r"от|перед|по|под|после|при|про|с|со|согласно|среди|через)"
     )
     _ENGLISH_FUNCTION_ASIDES = frozenset({
         "however", "nevertheless", "nonetheless", "of course", "in fact",
@@ -3387,7 +3407,7 @@ class ReleaseDocumentationConsistencyTests(unittest.TestCase):
         """
         units: list[str] = []
         buffer: list[str] = []
-        inline_code = False
+        inline_delimiter: int | None = None
         fenced_code = False
 
         def flush() -> None:
@@ -3399,7 +3419,7 @@ class ReleaseDocumentationConsistencyTests(unittest.TestCase):
         for raw_line in document.splitlines(keepends=True):
             if raw_line.lstrip().startswith(("```", "~~~")):
                 flush()
-                inline_code = False
+                inline_delimiter = None
                 fenced_code = not fenced_code
                 continue
             if fenced_code:
@@ -3408,13 +3428,25 @@ class ReleaseDocumentationConsistencyTests(unittest.TestCase):
                 flush()
                 continue
             escaped = False
-            for character in raw_line:
+            position = 0
+            while position < len(raw_line):
+                character = raw_line[position]
                 if character == "`" and not escaped:
-                    inline_code = not inline_code
-                    buffer.append(character)
-                elif character == "|" and not inline_code and not escaped:
+                    run_end = position
+                    while run_end < len(raw_line) and raw_line[run_end] == "`":
+                        run_end += 1
+                    delimiter = run_end - position
+                    if inline_delimiter is None:
+                        inline_delimiter = delimiter
+                    elif inline_delimiter == delimiter:
+                        inline_delimiter = None
+                    buffer.append(raw_line[position:run_end])
+                    position = run_end
+                    escaped = False
+                    continue
+                if character == "|" and inline_delimiter is None and not escaped:
                     flush()
-                elif character in ".!?;" and not inline_code:
+                elif character in ".!?;" and inline_delimiter is None:
                     buffer.append(character)
                     flush()
                 elif character == "\n":
@@ -3424,6 +3456,7 @@ class ReleaseDocumentationConsistencyTests(unittest.TestCase):
                 escaped = character == "\\" and not escaped
                 if character != "\\":
                     escaped = False
+                position += 1
         flush()
         return tuple(units)
 
@@ -3439,7 +3472,10 @@ class ReleaseDocumentationConsistencyTests(unittest.TestCase):
             return True
         if re.fullmatch(r"(?:[\w'-]+ly\s+)?[\w'-]+ing", normalized):
             return True
-        if re.fullmatch(r"(?:of|in|at|for|with|without|by|under)\s+[\w'-]+(?:\s+[\w'-]+){0,2}", normalized):
+        if re.fullmatch(
+            rf"{cls._ENGLISH_PREPOSITION}\s+[\w'-]+(?:\s+[\w'-]+){{0,2}}",
+            normalized,
+        ):
             return True
         if re.fullmatch(r"even\s+[\w'-]+ly", normalized):
             return True
@@ -3451,7 +3487,10 @@ class ReleaseDocumentationConsistencyTests(unittest.TestCase):
             return False
         return bool(
             re.fullmatch(r"(?:[а-яё-]+\s+){0,3}(?:говоря|временно|срочно|ясно)", normalized)
-            or re.fullmatch(r"(?:в|во|по|при|без|с|со|на)\s+[а-яё-]+(?:\s+[а-яё-]+){0,2}", normalized)
+            or re.fullmatch(
+                rf"{cls._RUSSIAN_PREPOSITION}\s+[а-яё-]+(?:\s+[а-яё-]+){{0,2}}",
+                normalized,
+            )
         )
 
     @classmethod
@@ -3528,15 +3567,20 @@ class ReleaseDocumentationConsistencyTests(unittest.TestCase):
             return cls._is_positive_list_complement(complement.group("head"))
 
         # A purpose infinitive/``чтобы`` is direct attachment to the later
-        # action.  Copular predicates (``it is not illegal to …``) are not a
-        # command, so they remain fail-closed even though they also end in
-        # ``to``.
+        # action only when its governor has a known positive sign.  Copular
+        # predicates (``it is not illegal to …``) and unknown governors
+        # (``do not forget to …``) remain fail-closed even though they also
+        # end in ``to``.
         if re.search(r"(?:\bto|\bчтобы)\s*$", gap, flags=re.IGNORECASE):
             if re.search(r"\b(?:is|are|was|were|be|being|been)\s*$", left_context, flags=re.IGNORECASE):
                 return False
-            return len(re.findall(r"[\w'-]+", gap, flags=re.UNICODE)) >= 2
+            purpose_words = re.findall(r"[\w'-]+", gap.casefold(), flags=re.UNICODE)
+            return any(
+                word.startswith(cls._POSITIVE_COMPLEMENT_STEMS)
+                for word in purpose_words[:-1]
+            )
         words = re.findall(r"[\w'-]+", gap.casefold(), flags=re.UNICODE)
-        if len(words) == 1 and words[0].startswith(cls._POSITIVE_REPORTING_STEMS):
+        if len(words) == 1 and words[0].startswith(cls._POSITIVE_COMPLEMENT_STEMS):
             return True
         return False
 
@@ -3554,15 +3598,14 @@ class ReleaseDocumentationConsistencyTests(unittest.TestCase):
             for match in re.finditer(pattern, unit, flags=re.IGNORECASE):
                 if cls._postfix_prohibits_match(unit, match):
                     continue
-                negations = [
-                    negation for negation in cls._NEGATION_PATTERN.finditer(unit[: match.start()])
-                ]
-                if negations:
-                    negation = negations[-1]
-                    if cls._negation_protects_match(
+                negations = reversed(tuple(cls._NEGATION_PATTERN.finditer(unit[: match.start()])))
+                if any(
+                    cls._negation_protects_match(
                         unit[negation.end() : match.start()], unit[: negation.start()]
-                    ):
-                        continue
+                    )
+                    for negation in negations
+                ):
+                    continue
                 return True
         return False
 
@@ -4319,6 +4362,16 @@ class ReleaseDocumentationConsistencyTests(unittest.TestCase):
                 ("Telegram bypass (RU)",),
             ),
             (
+                "unknown EN purpose governor fails closed",
+                "Do not forget to skip Telegram delivery.",
+                ("Telegram bypass (EN)",),
+            ),
+            (
+                "unknown RU purpose governor fails closed",
+                "Не забывайте пропускать доставку в Telegram.",
+                ("Telegram bypass (RU)",),
+            ),
+            (
                 "EN predicate-shaped comma span",
                 "Do not, revise documentation, skip Telegram delivery.",
                 ("Telegram bypass (EN)",),
@@ -4356,6 +4409,97 @@ class ReleaseDocumentationConsistencyTests(unittest.TestCase):
                         if "contradictory delivery clause (" in error
                     )
                     self.assertEqual(labels, expected_labels, errors)
+
+    def test_delivery_guard_accepts_structural_local_prohibition_matrix(self) -> None:
+        """FAN-1524: semantic controls remain independent of guard internals."""
+        documents = self.read_documents()
+        safe_cases = (
+            ("positive complement EN", "Do not start the following: skip Telegram delivery."),
+            ("positive complement RU", "Не начинайте следующее: пропускать доставку в Telegram."),
+            (
+                "double-delimiter inline code EN",
+                "Do not use ``dry-run | release`` to skip Telegram delivery.",
+            ),
+            (
+                "double-delimiter inline code RU",
+                "Не используйте ``dry-run | release``, чтобы пропускать доставку в Telegram.",
+            ),
+            ("prepositional aside EN", "Do not, after validation, skip Telegram delivery."),
+            (
+                "prepositional aside RU",
+                "Не следует, после проверки, пропускать доставку в Telegram.",
+            ),
+            ("aspectual complement EN", "Do not commence the following: skip Telegram delivery."),
+            (
+                "aspectual complement RU",
+                "Не приступайте к следующему: пропускать доставку в Telegram.",
+            ),
+            (
+                "incidental inner negation EN",
+                "Do not, with no exceptions, skip Telegram delivery.",
+            ),
+            (
+                "directive complement EN",
+                "Do not issue the following instruction: skip Telegram delivery.",
+            ),
+            (
+                "directive complement RU",
+                "Не отдавайте следующую команду: пропускать доставку в Telegram.",
+            ),
+            (
+                "prepositional paraphrase EN",
+                "Do not, as a precaution, skip Telegram delivery.",
+            ),
+            (
+                "prepositional paraphrase RU",
+                "Не, согласно правилу, пропускать доставку в Telegram.",
+            ),
+        )
+        for relative in self.DELIVERY_CONTRACTS:
+            for name, statement in safe_cases:
+                with self.subTest(document=str(relative), case=name):
+                    mutated = dict(documents)
+                    mutated[relative] += f"\nFAN-1524 safe control: {statement}\n"
+                    errors = self.delivery_contract_errors(mutated)
+                    labels = tuple(
+                        error.split("contradictory delivery clause (", 1)[1][:-1]
+                        for error in errors
+                        if "contradictory delivery clause (" in error
+                    )
+                    self.assertEqual(labels, (), errors)
+
+    def test_delivery_guard_matches_inline_code_delimiter_runs(self) -> None:
+        """A code span closes only on the same unescaped backtick run."""
+        documents = self.read_documents()
+        safe_cases = (
+            ("single delimiter", "Do not use `dry-run | release` to skip Telegram delivery."),
+            ("double delimiter", "Do not use ``dry-run | release`` to skip Telegram delivery."),
+            (
+                "triple delimiter with shorter internal run",
+                "Do not use ```dry-run ` | release``` to skip Telegram delivery.",
+            ),
+        )
+        for relative in self.DELIVERY_CONTRACTS:
+            for name, statement in safe_cases:
+                with self.subTest(document=str(relative), case=name):
+                    mutated = dict(documents)
+                    mutated[relative] += f"\nFAN-1524 code control: {statement}\n"
+                    errors = self.delivery_contract_errors(mutated)
+                    labels = tuple(
+                        error.split("contradictory delivery clause (", 1)[1][:-1]
+                        for error in errors
+                        if "contradictory delivery clause (" in error
+                    )
+                    self.assertEqual(labels, (), errors)
+
+        for relative in self.DELIVERY_CONTRACTS:
+            with self.subTest(document=str(relative), case="unescaped table boundary"):
+                mutated = dict(documents)
+                mutated[relative] += "\n| Do not wait | Skip Telegram delivery. |\n"
+                self.assertEqual(
+                    self.delivery_contract_errors(mutated),
+                    [f"{relative}: contradictory delivery clause (Telegram bypass (EN))"],
+                )
 
     def test_four_required_qa_mutations_are_rejected_individually(self) -> None:
         documents = self.read_documents()
