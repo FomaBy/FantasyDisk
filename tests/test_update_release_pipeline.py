@@ -3561,12 +3561,58 @@ class ReleaseDocumentationConsistencyTests(unittest.TestCase):
         return cls._is_safe_list_complement_governor(governor_words)
 
     @staticmethod
-    def _has_matching_inline_code_span(text: str) -> bool:
-        delimiters = tuple(re.finditer(r"(?<!`)(`+)(?!`)", text))
-        return any(
-            left.group(1) == right.group(1)
-            for index, left in enumerate(delimiters)
-            for right in delimiters[index + 1 :]
+    def _is_exact_inline_code_span(text: str) -> bool:
+        """Prove that ``text`` is one unescaped, matching Markdown code span."""
+        opener = re.match(r"(`+)(?!`)", text)
+        if not opener:
+            return False
+        delimiter_length = len(opener.group(1))
+        content_start = opener.end()
+        position = content_start
+        while position < len(text):
+            if text[position] == "\\":
+                position += 2
+                continue
+            if text[position] != "`":
+                position += 1
+                continue
+            run_end = position
+            while run_end < len(text) and text[run_end] == "`":
+                run_end += 1
+            run_length = run_end - position
+            if run_length == delimiter_length:
+                return bool(text[content_start:position].strip()) and run_end == len(text)
+            if run_length > delimiter_length:
+                return False
+            position = run_end
+        return False
+
+    @classmethod
+    def _is_safe_inline_code_purpose_bridge(cls, bridge: str) -> bool:
+        """Require one safe governor, one code object and a direct purpose marker.
+
+        This deliberately proves the entire bridge rather than treating a safe
+        first token as permission to ignore later exception or contrast prose.
+        Unknown content outside the code span therefore remains fail-closed.
+        """
+        normalized = " ".join(bridge.split())
+        purpose = re.search(r"(?:\bto\b|\bчтобы\b)\s*$", normalized, flags=re.IGNORECASE)
+        if not purpose:
+            return False
+        object_bridge = normalized[: purpose.start()].rstrip()
+        if object_bridge.endswith(","):
+            object_bridge = object_bridge[:-1].rstrip()
+        code_start = object_bridge.find("`")
+        if code_start <= 0:
+            return False
+        governor_words = re.findall(
+            r"[\w'-]+", object_bridge[:code_start].casefold(), flags=re.UNICODE
+        )
+        code_span = object_bridge[code_start:]
+        return (
+            bool(governor_words)
+            and cls._is_safe_list_complement_governor(governor_words)
+            and cls._is_exact_inline_code_span(code_span)
         )
 
     @classmethod
@@ -3680,10 +3726,7 @@ class ReleaseDocumentationConsistencyTests(unittest.TestCase):
         if re.search(r"(?:\bto|\bчтобы)\s*$", gap, flags=re.IGNORECASE):
             if re.search(r"\b(?:is|are|was|were|be|being|been)\s*$", left_context, flags=re.IGNORECASE):
                 return False
-            purpose_words = re.findall(r"[\w'-]+", gap.casefold(), flags=re.UNICODE)
-            if not purpose_words or not cls._has_matching_inline_code_span(gap):
-                return False
-            return cls._is_safe_list_complement_governor(purpose_words[:1])
+            return cls._is_safe_inline_code_purpose_bridge(gap)
         words = re.findall(r"[\w'-]+", gap.casefold(), flags=re.UNICODE)
         return bool(
             len(words) == 1
@@ -4693,6 +4736,74 @@ class ReleaseDocumentationConsistencyTests(unittest.TestCase):
                 with self.subTest(document=str(relative), case=name):
                     mutated = dict(documents)
                     mutated[relative] += f"\nFAN-1531 role control: {statement}\n"
+                    errors = self.delivery_contract_errors(mutated)
+                    labels = tuple(
+                        error.split("contradictory delivery clause (", 1)[1][:-1]
+                        for error in errors
+                        if "contradictory delivery clause (" in error
+                    )
+                    self.assertEqual(labels, expected_labels, errors)
+
+    def test_delivery_guard_fan1534_proves_whole_inline_code_purpose_bridge(self) -> None:
+        """FAN-1534: inline-code purpose admission rejects bridge exceptions."""
+        documents = self.read_documents()
+        cases = (
+            (
+                "exception bridge EN",
+                "Do not use `dry-run | release` except to skip Telegram delivery.",
+                ("Telegram bypass (EN)",),
+            ),
+            (
+                "exception bridge EN unseen",
+                "Do not use `dry-run | release` other than to skip Telegram delivery.",
+                ("Telegram bypass (EN)",),
+            ),
+            (
+                "contrast bridge EN unseen",
+                "Do not use `dry-run | release` but only to skip Telegram delivery.",
+                ("Telegram bypass (EN)",),
+            ),
+            (
+                "exception bridge RU",
+                "Не используйте `dry-run | release`, кроме как чтобы пропустить доставку в Telegram.",
+                ("Telegram bypass (RU)",),
+            ),
+            (
+                "exception bridge RU unseen",
+                "Не используйте `dry-run | release`, за исключением того чтобы пропустить доставку в Telegram.",
+                ("Telegram bypass (RU)",),
+            ),
+            (
+                "contrast bridge RU unseen",
+                "Не используйте `dry-run | release`, но только чтобы пропустить доставку в Telegram.",
+                ("Telegram bypass (RU)",),
+            ),
+            (
+                "safe single delimiter EN",
+                "Do not use `dry-run | release` to skip Telegram delivery.",
+                (),
+            ),
+            (
+                "safe double delimiter EN",
+                "Do not use ``dry-run | release`` to skip Telegram delivery.",
+                (),
+            ),
+            (
+                "safe single delimiter RU",
+                "Не используйте `dry-run | release`, чтобы пропускать доставку в Telegram.",
+                (),
+            ),
+            (
+                "safe double delimiter RU",
+                "Не используйте ``dry-run | release``, чтобы пропускать доставку в Telegram.",
+                (),
+            ),
+        )
+        for relative in self.DELIVERY_CONTRACTS:
+            for name, statement, expected_labels in cases:
+                with self.subTest(document=str(relative), case=name):
+                    mutated = dict(documents)
+                    mutated[relative] += f"\nFAN-1534 bridge control: {statement}\n"
                     errors = self.delivery_contract_errors(mutated)
                     labels = tuple(
                         error.split("contradictory delivery clause (", 1)[1][:-1]
