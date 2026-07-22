@@ -513,6 +513,16 @@ func _apply_class_relative_scores(rows: Array) -> void:
 				row["aoe_score"] = snappedf(float(row["mean_crowd_10_dpm"]) / maxf(crowd_median, 0.001), 0.001)
 				row["defense_score"] = snappedf(float(row["mean_ehp"]) / maxf(defense_median, 0.001), 0.001)
 				row["convenience_relative"] = snappedf(float(row["convenience_score"]) / maxf(convenience_median, 0.001), 0.001)
+				var ranked := [
+					{"name": "solo", "value": float(row["solo_score"])},
+					{"name": "AoE", "value": float(row["aoe_score"])},
+					{"name": "survival", "value": float(row["defense_score"])},
+					{"name": "convenience", "value": float(row["convenience_relative"])},
+				]
+				ranked.sort_custom(func(a, b): return float(a["value"]) > float(b["value"]))
+				row["strengths"] = "%s %.2f× and %s %.2f× roster median." % [ranked[0]["name"], ranked[0]["value"], ranked[1]["name"], ranked[1]["value"]]
+				row["weaknesses"] = "%s %.2f× and %s %.2f× roster median." % [ranked[3]["name"], ranked[3]["value"], ranked[2]["name"], ranked[2]["value"]]
+				row["outlier_flag"] = "OUTLIER solo=%.2f× AoE=%.2f×" % [row["solo_score"], row["aoe_score"]] if float(row["solo_score"]) < 0.80 or float(row["solo_score"]) > 1.20 or float(row["aoe_score"]) < 0.80 or float(row["aoe_score"]) > 1.20 else "ok"
 
 
 func _apply_live_evidence_to_rows(rows: Array, parity: Array) -> void:
@@ -760,10 +770,10 @@ func _markdown(dataset: Dictionary) -> String:
 	lines.append("")
 	lines.append("## Class-kit summary")
 	lines.append("")
-	lines.append("| Class | Lvl | Scenario | Weapon roles | Solo score | AoE score | Defense score | Convenience score | Ult first minute | Strengths | Weaknesses |")
-	lines.append("| --- | ---: | --- | --- | ---: | ---: | ---: | ---: | ---: | --- | --- |")
+	lines.append("| Class | Lvl | Scenario | Weapon roles | Solo score | AoE score | Defense score | Convenience score | Ult first minute | Strengths | Weaknesses | Flag |")
+	lines.append("| --- | ---: | --- | --- | ---: | ---: | ---: | ---: | ---: | --- | --- | --- |")
 	for row in dataset["class_rows"]:
-		lines.append("| %s | %d | %s | %s | %.3f | %.3f | %.3f | %.3f | %.2f | %s | %s |" % [row["class_id"], row["level"], row["scenario"], "; ".join(row["roles"]), row["solo_score"], row["aoe_score"], row["defense_score"], row["convenience_relative"], row["first_minute_ultimate_damage"], row["strengths"], row["weaknesses"]])
+		lines.append("| %s | %d | %s | %s | %.3f | %.3f | %.3f | %.3f | %.2f | %s | %s | %s |" % [row["class_id"], row["level"], row["scenario"], "; ".join(row["roles"]), row["solo_score"], row["aoe_score"], row["defense_score"], row["convenience_relative"], row["first_minute_ultimate_damage"], row["strengths"], row["weaknesses"], row["outlier_flag"]])
 	lines.append("")
 	lines.append("## Per-weapon matrix")
 	lines.append("")
