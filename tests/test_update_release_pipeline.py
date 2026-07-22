@@ -2889,7 +2889,8 @@ class ReleaseDocumentationConsistencyTests(unittest.TestCase):
         (
             "Telegram not required (EN)",
             r"\bTelegram(?:\s+(?:delivery|channel|files?))?\s+"
-            r"(?:is|remains|becomes)\s+not\s+(?:required|necessary|needed)\b",
+            r"(?:is|remains|becomes)\s+not\s+"
+            r"(?:required|necessary|needed|mandatory)\b",
         ),
         (
             "Telegram optional (RU)",
@@ -2906,7 +2907,9 @@ class ReleaseDocumentationConsistencyTests(unittest.TestCase):
             r"\bTelegram(?:\s+(?:delivery|channel|files?|доставк\w*|канал\w*))?\s*"
             r"(?:—|:|это\s+|явля\w+\s+)?\s*не\s+(?:требу\w*|нужн?\w*|обязател\w*)\b|"
             r"\bTelegram(?:\s+(?:delivery|channel|files?|доставк\w*|канал\w*))?\s*"
-            r"не\s+явля\w+\s+обязател\w*\b",
+            r"не\s+явля\w+\s+обязател\w*\b|"
+            r"\bдоставк\w*\s+(?:в|через)\s+Telegram\s+"
+            r"не\s+(?:требу\w*|нужн?\w*|обязател\w*)\b",
         ),
         (
             "Telegram fallback (EN)",
@@ -2961,7 +2964,8 @@ class ReleaseDocumentationConsistencyTests(unittest.TestCase):
         (
             "GitHub not required (EN)",
             r"\bGitHub(?:\s+(?:repository|repo|source|publication))?\s+"
-            r"(?:is|remains|becomes)\s+not\s+(?:required|necessary|needed)\b",
+            r"(?:is|remains|becomes)\s+not\s+"
+            r"(?:required|necessary|needed|mandatory)\b",
         ),
         (
             "GitHub optional (RU)",
@@ -2990,7 +2994,9 @@ class ReleaseDocumentationConsistencyTests(unittest.TestCase):
             "Updater source secondary (EN)",
             r"\bFomaBy/FantasyDisk-Releases\b\s+"
             r"(?:is|remains|becomes|serves\s+as|acts\s+as)\s+"
-            r"(?:only\s+|merely\s+|just\s+)?(?:a\s+)?secondary\b",
+            r"(?:only\s+|merely\s+|just\s+)?(?:a\s+)?(?:secondary\b|"
+            r"(?:not\s+|no\s+longer\s+)(?:the\s+)?(?:primary|main|canonical)\s+"
+            r"(?:updater\s+)?source\b)",
         ),
         (
             "Updater source fallback (EN)",
@@ -3006,7 +3012,12 @@ class ReleaseDocumentationConsistencyTests(unittest.TestCase):
         (
             "Updater source secondary (RU)",
             r"\bFomaBy/FantasyDisk-Releases\b\s*"
-            r"(?:—|:|это\s+|явля\w+\s+)?\s*(?:только\s+|лишь\s+)?вторичн\w*\b",
+            r"(?:(?:—|:|это\s+|явля\w+\s+)?\s*(?:только\s+|лишь\s+)?"
+            r"вторичн\w*\b|"
+            r"(?:(?:не\s+(?:явля\w+|счита\w+|оста\w+))|"
+            r"(?:(?:явля\w+|счита\w+|оста\w+)\s+не))\s+"
+            r"(?:основн\w*|главн\w*|каноническ\w*)\s+"
+            r"источник\w*(?:\s+обновлен\w*)?\b)",
         ),
         (
             "Updater source fallback (RU)",
@@ -3323,7 +3334,22 @@ class ReleaseDocumentationConsistencyTests(unittest.TestCase):
         flags=re.IGNORECASE,
     )
     _CONTRAST_PATTERN = re.compile(
-        r"\b(?:but|however|yet|rather|though|although|но|однако|зато)\b",
+        r"\b(?:but|however|yet|rather|though|although|instead|nevertheless|"
+        r"nonetheless|whereas|conversely|но|однако|зато|напротив|"
+        r"вс[её]\s+же)\b",
+        flags=re.IGNORECASE,
+    )
+    _PARENTHETICAL_LIMITER_PATTERN = re.compile(
+        r"(?:even\s+)?(?:temporarily|briefly|momentarily|ever)|"
+        r"(?:даже\s+)?(?:временн\w*|кратковременн\w*|однократн\w*)",
+        flags=re.IGNORECASE,
+    )
+    _COMPLEMENT_INTRODUCER_PATTERN = re.compile(
+        r"(?:do|perform|take|execute|follow|permit|allow|authorize|approve|"
+        r"carry\s+out)\s+(?:the\s+)?(?:following|this|that|below)|"
+        r"(?:следует\s+)?(?:дела\w*|сдела\w*|выполня\w*|выполн\w*|"
+        r"осуществ\w*|разреш\w*|допуска\w*|одобря\w*)\s+"
+        r"(?:следующ\w*|нижеследующ\w*|это)",
         flags=re.IGNORECASE,
     )
     _NEGATION_SCOPE_BOUNDARIES = (".", "!", "?", ";", "\n")
@@ -3334,30 +3360,48 @@ class ReleaseDocumentationConsistencyTests(unittest.TestCase):
         """Return whether a negation still governs the matched predicate.
 
         Punctuation is only a scope boundary when it introduces a new clause.
-        A paired comma parenthetical and ``do the following:``/``do this —``
-        complement preserve the negation, while a completed predicate followed
-        by a comma, newline, or contrastive conjunction does not.  This keeps
-        the association bounded by tokens rather than an arbitrary character
-        count and works for the bilingual controls used by the release guard.
+        Leading paired-comma discourse/limiter parentheticals and complements
+        with a positive execution or permission governor preserve negation.
+        Complete fixture phrases are not enumerated; the bounded grammatical
+        categories fail closed when polarity is ambiguous.  A completed
+        predicate followed by a comma, hard line boundary, or contrastive
+        conjunction does not preserve scope.
         """
-        if cls._CONTRAST_PATTERN.search(gap):
+        association_gap = gap.lstrip()
+        while association_gap.startswith(","):
+            parenthetical_end = association_gap.find(",", 1)
+            if parenthetical_end == -1:
+                break
+            parenthetical = association_gap[1:parenthetical_end].strip()
+            parenthetical_tokens = re.findall(r"\b\w+\b", parenthetical)
+            if (
+                not parenthetical
+                or len(parenthetical_tokens) > 8
+                or not (
+                    cls._CONTRAST_PATTERN.fullmatch(parenthetical)
+                    or cls._PARENTHETICAL_LIMITER_PATTERN.fullmatch(parenthetical)
+                )
+            ):
+                break
+            association_gap = association_gap[parenthetical_end + 1 :].lstrip()
+
+        if cls._CONTRAST_PATTERN.search(association_gap):
             return False
 
-        stripped = gap.strip()
-        if ":" in gap or "—" in gap or "–" in gap:
-            return bool(
-                re.fullmatch(
-                    r"(?:do|perform|take)\s+(?:the\s+following|this|that)\s*[:—–]"
-                    r"|(?:дела(?:ть|йте)|сдела(?:ть|йте))\s+(?:следующ\w*|это)\s*[:—–]",
-                    stripped,
-                    flags=re.IGNORECASE,
-                )
-            )
+        if "," in association_gap:
+            return False
 
-        if "," in gap:
-            return (
-                gap.lstrip().startswith(",")
-                and gap.count(",") == 2
+        boundary_positions = tuple(
+            association_gap.find(boundary)
+            for boundary in (":", "—", "–")
+            if boundary in association_gap
+        )
+        if boundary_positions:
+            boundary = min(boundary_positions)
+            complement = association_gap[:boundary].rstrip()
+            continuation = association_gap[boundary + 1 :].strip()
+            return not continuation and bool(
+                cls._COMPLEMENT_INTRODUCER_PATTERN.fullmatch(complement)
             )
 
         return True
@@ -3697,6 +3741,165 @@ class ReleaseDocumentationConsistencyTests(unittest.TestCase):
                     mutated = dict(documents)
                     mutated[relative] += f"\nSafe control ({language}): {safe_negation}\n"
                     self.assertEqual(self.delivery_contract_errors(mutated), [])
+
+    def test_delivery_guard_accepts_required_bilingual_local_prohibitions(self) -> None:
+        documents = self.read_documents()
+        safe_controls = (
+            "Do not, however, skip Telegram delivery.",
+            "Не, однако, пропускать доставку в Telegram.",
+            "Do not carry out the following: skip Telegram delivery.",
+            "Не следует делать следующее: пропускать доставку в Telegram.",
+        )
+        for relative in self.DELIVERY_CONTRACTS:
+            for control in safe_controls:
+                with self.subTest(document=str(relative), control=control):
+                    mutated = dict(documents)
+                    mutated[relative] += f"\nRequired safe control: {control}\n"
+                    self.assertEqual(self.delivery_contract_errors(mutated), [])
+
+    def test_delivery_guard_rejects_required_negative_predicates_exactly(self) -> None:
+        documents = self.read_documents()
+        dangerous_controls = (
+            (
+                "Telegram delivery is not mandatory.",
+                "Telegram not required (EN)",
+            ),
+            (
+                "Доставка в Telegram не обязательна.",
+                "Telegram not required (RU)",
+            ),
+            ("GitHub is not mandatory.", "GitHub not required (EN)"),
+            ("GitHub не обязателен.", "GitHub not required (RU)"),
+            (
+                "FomaBy/FantasyDisk-Releases is not the primary updater source.",
+                "Updater source secondary (EN)",
+            ),
+            (
+                "FomaBy/FantasyDisk-Releases не является основным источником обновлений.",
+                "Updater source secondary (RU)",
+            ),
+        )
+        for relative in self.DELIVERY_CONTRACTS:
+            for control, expected_label in dangerous_controls:
+                with self.subTest(document=str(relative), control=control):
+                    mutated = dict(documents)
+                    mutated[relative] += f"\nRequired dangerous control: {control}\n"
+                    self.assertEqual(
+                        self.delivery_contract_errors(mutated),
+                        [f"{relative}: contradictory delivery clause ({expected_label})"],
+                    )
+
+    def test_delivery_guard_generalizes_parentheticals_complements_and_boundaries(self) -> None:
+        documents = self.read_documents()
+        adversarial_cases = (
+            (
+                "safe alternate parenthetical EN",
+                "Do not, nevertheless, omit the Telegram channel.",
+                (),
+            ),
+            (
+                "safe alternate parenthetical RU",
+                "Не, всё же, пропускать доставку в Telegram.",
+                (),
+            ),
+            (
+                "safe alternate complement EN",
+                "Never perform the following: omit Telegram delivery.",
+                (),
+            ),
+            (
+                "safe alternate complement RU",
+                "Нельзя выполнять следующее: пропускать доставку в Telegram.",
+                (),
+            ),
+            (
+                "safe permission complement EN",
+                "Do not permit the following: skip Telegram delivery.",
+                (),
+            ),
+            (
+                "safe permission complement RU",
+                "Не разрешайте следующее: пропускать доставку в Telegram.",
+                (),
+            ),
+            (
+                "dangerous inverse complement EN",
+                "Do not forbid the following: skip Telegram delivery.",
+                ("Telegram bypass (EN)",),
+            ),
+            (
+                "dangerous inverse complement RU",
+                "Не запрещайте следующее: пропускать доставку в Telegram.",
+                ("Telegram bypass (RU)",),
+            ),
+            (
+                "dangerous non-adjunct parenthetical EN",
+                "Do not, skip validation, skip Telegram delivery.",
+                ("Telegram bypass (EN)",),
+            ),
+            (
+                "dangerous non-adjunct parenthetical RU",
+                "Не, пропустите проверку, пропускать доставку в Telegram.",
+                ("Telegram bypass (RU)",),
+            ),
+            (
+                "dangerous adverb-shaped command EN",
+                "Do not, comply, skip Telegram delivery.",
+                ("Telegram bypass (EN)",),
+            ),
+            (
+                "dangerous adverb-shaped command RU",
+                "Не, пропустите, пропускать доставку в Telegram.",
+                ("Telegram bypass (RU)",),
+            ),
+            (
+                "dangerous true contrast EN",
+                "Do not pause, nevertheless skip Telegram delivery.",
+                ("Telegram bypass (EN)",),
+            ),
+            (
+                "dangerous true contrast RU",
+                "Не ждать, всё же пропускать доставку в Telegram.",
+                ("Telegram bypass (RU)",),
+            ),
+            (
+                "dangerous newline EN",
+                "Never pause\nOmit Telegram delivery.",
+                ("Telegram bypass (EN)",),
+            ),
+            (
+                "dangerous newline RU",
+                "Нельзя ждать\nПропускать доставку в Telegram.",
+                ("Telegram bypass (RU)",),
+            ),
+            (
+                "dangerous alternate updater predicate EN",
+                "FomaBy/FantasyDisk-Releases is no longer the canonical updater source.",
+                ("Updater source secondary (EN)",),
+            ),
+            (
+                "dangerous alternate updater predicate RU copula order",
+                "FomaBy/FantasyDisk-Releases является не главным источником обновлений.",
+                ("Updater source secondary (RU)",),
+            ),
+            (
+                "dangerous alternate updater predicate RU copula",
+                "FomaBy/FantasyDisk-Releases не считается основным источником обновлений.",
+                ("Updater source secondary (RU)",),
+            ),
+        )
+        for name, statement, expected_labels in adversarial_cases:
+            for relative in self.DELIVERY_CONTRACTS:
+                with self.subTest(document=str(relative), case=name):
+                    mutated = dict(documents)
+                    mutated[relative] += f"\nAdversarial control: {statement}\n"
+                    errors = self.delivery_contract_errors(mutated)
+                    labels = tuple(
+                        error.split("contradictory delivery clause (", 1)[1][:-1]
+                        for error in errors
+                        if "contradictory delivery clause (" in error
+                    )
+                    self.assertEqual(labels, expected_labels, errors)
 
     def test_delivery_guard_binds_negation_to_the_local_clause(self) -> None:
         documents = self.read_documents()
