@@ -3334,38 +3334,33 @@ class ReleaseDocumentationConsistencyTests(unittest.TestCase):
         r"\b(?:не|нельзя|никогда)\b)",
         flags=re.IGNORECASE,
     )
-    # The only open vocabulary in this guard is the document itself.  Scope is
-    # established from Markdown structure and local syntax, never from a
-    # growing list of fixture-shaped discourse markers.  The small inventories
-    # below are signed grammatical operators: deontic auxiliaries, verbs whose
-    # negated *list complement* is an execution/permission prohibition, and
-    # passive prohibition predicates.  An unknown governor is deliberately not
-    # transparent, so ``do not ignore/refuse/forget the following`` fails
-    # closed instead of silently licensing its complement.
+    # Scope is established from Markdown structure and local syntax, never from
+    # a growing allow-list of example verbs.  The small inventories below are
+    # signed grammatical operators: deontic auxiliaries, negative-control roles
+    # that reverse or obscure complement polarity, assertion roles outside the
+    # supported list frame, and passive prohibition predicates.  A structurally
+    # valid demonstrative list frame is open-vocabulary except for the bounded
+    # negative roles; an unknown governor outside that frame remains fail-closed.
     _DEONTIC_AUXILIARIES = frozenset({
         "should", "must", "ought", "shall", "следует", "нужно", "надо",
         "стоит", "требуется", "необходимо", "надлежит", "полагается",
         "придётся", "придется", "приходится",
     })
-    # A signed list complement is a negated command to execute, begin, or
-    # communicate the named instruction.  The groups below describe semantic
-    # roles rather than test phrases: execution, initiation/attempt, and
-    # directive/reporting.  Their opposites (forbid, postpone, obstruct,
-    # forget, or an unknown governor) remain fail-closed because a syntactic
-    # ``verb + following`` shape alone cannot prove the complement's polarity.
-    _POSITIVE_COMPLEMENT_STEMS = (
-        "do", "use", "perform", "execut", "carry", "undertak", "complet",
-        "fulfil", "fulfill", "follow", "implement", "apply", "permit",
-        "allow", "authoriz", "approv", "accept", "enact", "conduct",
-        "start", "begin", "commenc", "attempt", "try", "initiat",
-        "launch", "resume", "continu", "proceed",
-        "issue", "instruct", "command", "direct", "tell", "declare",
-        "claim", "call", "describe", "state", "label", "present", "treat",
-        "дела", "сдела", "использ", "выполн", "осуществ", "предприним", "исполн",
-        "реализ", "примен", "разреш", "допуск", "одобр", "позвол",
-        "нач", "приступ", "пыт", "проб", "продолж", "возобнов",
-        "указ", "предпис", "команд", "сообщ", "объяв", "отда",
-        "счит", "назыв", "описыва", "обознач",
+    # Negative-control roles form a deny-list, not an admission vocabulary.
+    # They either invert a negated governor (``do not refuse/avoid/veto X``)
+    # or leave the truth of X opaque (``do not debate/doubt X``).  Extending
+    # this bounded polarity class cannot make a new positive fixture pass.
+    _NEGATIVE_CONTROL_GOVERNOR_STEMS = (
+        "avoid", "block", "debate", "defer", "delay", "deny", "disput",
+        "doubt", "fail", "forget", "ignor", "obstruct", "oppos", "postpon",
+        "prevent", "question", "refus", "reject", "veto",
+        "блокир", "возраж", "забыв", "запамят", "игнор", "избег", "меша",
+        "обсужда", "оспар", "отверга", "отказыва", "откладыва", "отклон",
+        "отсроч", "препятств", "предотвращ", "сомнева",
+    )
+    _ASSERTION_GOVERNOR_STEMS = (
+        "assert", "claim", "declar", "report", "state",
+        "заяв", "объяв", "сообщ", "счит", "утвержд",
     )
     _POSTFIX_PROHIBITION_STEMS = (
         "forbid", "prohibit", "disallow", "ban", "bar", "impermiss",
@@ -3376,12 +3371,12 @@ class ReleaseDocumentationConsistencyTests(unittest.TestCase):
         r"(?:about|above|across|after|against|along|among|around|as|at|before|"
         r"behind|below|beneath|beside|between|beyond|by|despite|during|except|"
         r"for|from|in|inside|into|near|of|off|on|onto|out|outside|over|past|"
-        r"per|regarding|since|through|throughout|to|toward|under|until|upon|via|"
+        r"notwithstanding|per|regarding|since|through|throughout|to|toward|under|until|upon|via|"
         r"with|within|without)"
     )
     _RUSSIAN_PREPOSITION = (
         r"(?:без|в|во|вокруг|для|до|за|из|из-за|к|как|между|на|над|о|об|обо|"
-        r"от|перед|по|под|после|при|про|с|со|согласно|среди|через)"
+        r"от|перед|по|под|после|при|про|с|со|согласно|среди|через|вопреки)"
     )
     _ENGLISH_FUNCTION_ASIDES = frozenset({
         "however", "nevertheless", "nonetheless", "of course", "in fact",
@@ -3473,7 +3468,7 @@ class ReleaseDocumentationConsistencyTests(unittest.TestCase):
         if re.fullmatch(r"(?:[\w'-]+ly\s+)?[\w'-]+ing", normalized):
             return True
         if re.fullmatch(
-            rf"{cls._ENGLISH_PREPOSITION}\s+[\w'-]+(?:\s+[\w'-]+){{0,2}}",
+            rf"(?:even\s+)?{cls._ENGLISH_PREPOSITION}\s+[\w'-]+(?:\s+[\w'-]+){{0,2}}",
             normalized,
         ):
             return True
@@ -3488,36 +3483,114 @@ class ReleaseDocumentationConsistencyTests(unittest.TestCase):
         return bool(
             re.fullmatch(r"(?:[а-яё-]+\s+){0,3}(?:говоря|временно|срочно|ясно)", normalized)
             or re.fullmatch(
-                rf"{cls._RUSSIAN_PREPOSITION}\s+[а-яё-]+(?:\s+[а-яё-]+){{0,2}}",
+                rf"(?:даже\s+)?{cls._RUSSIAN_PREPOSITION}\s+[а-яё-]+(?:\s+[а-яё-]+){{0,2}}",
                 normalized,
             )
         )
 
     @classmethod
-    def _is_positive_list_complement(cls, head: str) -> bool:
-        """Allow only signed execution/permission list governors.
+    def _starts_with_role(cls, word: str, stems: tuple[str, ...]) -> bool:
+        return any(word.startswith(stem) for stem in stems)
 
-        This is deliberately not a catch-all ``verb + demonstrative`` rule:
-        a governor whose polarity is not proven positive remains a violation.
+    @classmethod
+    def _is_structural_list_complement(cls, head: str) -> bool:
+        """Recognise an open-vocabulary demonstrative list-complement frame.
+
+        The frame, not an exemplar verb, establishes attachment.  Bounded
+        negative-control and prohibition roles remain fail-closed because
+        negating them licenses or leaves ambiguous the embedded action.
         """
-        words = re.findall(r"[\w'-]+", head.casefold(), flags=re.UNICODE)
-        if not words:
+        normalized = " ".join(head.casefold().split())
+        if not normalized or "," in normalized:
             return False
-        demonstrative_index = next(
-            (
-                index for index, word in enumerate(words)
-                if word in {"following", "this", "that", "below", "these", "those"}
-                or word.startswith(("следующ", "нижеследующ"))
-            ),
-            None,
+        if re.search(r"\b(?:but|however|instead|yet|а|зато|но|однако)\b", normalized):
+            return False
+
+        frame = re.search(
+            r"(?:\b(?:the\s+)?(?:following|below|this|that|these|those)"
+            r"(?:\s+(?:action|command|directive|instruction|item|procedure|step)s?)?"
+            r"|(?:\bк\s+)?\b(?:следующ[а-яё-]*|нижеследующ[а-яё-]*)"
+            r"(?:\s+[а-яё-]+){0,2})\s*$",
+            normalized,
+            flags=re.IGNORECASE,
         )
-        if demonstrative_index is None:
+        if not frame:
             return False
+        governor = normalized[: frame.start()].strip()
+        governor_words = re.findall(r"[\w'-]+", governor, flags=re.UNICODE)
+        if not governor_words or cls._NEGATION_PATTERN.search(governor):
+            return False
+        negative_roles = cls._NEGATIVE_CONTROL_GOVERNOR_STEMS + cls._POSTFIX_PROHIBITION_STEMS
+        return not any(
+            cls._starts_with_role(word, negative_roles)
+            for word in governor_words
+        )
+
+    @staticmethod
+    def _has_matching_inline_code_span(text: str) -> bool:
+        delimiters = tuple(re.finditer(r"(?<!`)(`+)(?!`)", text))
         return any(
-            word.startswith(stem)
-            for word in words[:demonstrative_index]
-            for stem in cls._POSITIVE_COMPLEMENT_STEMS
+            left.group(1) == right.group(1)
+            for index, left in enumerate(delimiters)
+            for right in delimiters[index + 1 :]
         )
+
+    @classmethod
+    def _is_effective_negation_bridge(cls, bridge: str) -> bool:
+        """Return whether two negators share one local attachment path."""
+        gap = " ".join(bridge.split())
+        while gap:
+            first, separator, remainder = gap.partition(" ")
+            modal = first.rstrip(",").casefold()
+            if modal in cls._DEONTIC_AUXILIARIES or modal.startswith("должн"):
+                gap = remainder.lstrip() if separator else ""
+                if first.endswith(",") and gap:
+                    gap = "," + gap
+                continue
+            if gap.startswith(","):
+                aside_end = gap.find(",", 1)
+                if aside_end == -1 or not cls._is_transparent_aside(gap[1:aside_end]):
+                    return False
+                gap = gap[aside_end + 1 :].lstrip()
+                continue
+            break
+
+        if not gap:
+            return True
+        if re.fullmatch(
+            r"under\s+(?:any|no|all)\s+[\w'-]+(?:\s+[\w'-]+){0,3}",
+            gap,
+            flags=re.IGNORECASE,
+        ):
+            return True
+        if re.fullmatch(
+            r"при\s+[^,]{1,80}(?:обстоятельств\w*|услов\w*)[^,]{0,40}",
+            gap,
+            flags=re.IGNORECASE,
+        ):
+            return True
+
+        words = re.findall(r"[\w'-]+", gap.casefold(), flags=re.UNICODE)
+        polarity_modifiers = {
+            "actually", "again", "also", "always", "ever", "explicitly",
+            "intentionally", "just", "merely", "necessarily", "really",
+            "simply", "still", "yet", "вновь", "всё", "все", "действительно",
+            "ещё", "еще", "намеренно", "опять", "по-прежнему", "просто",
+            "снова", "также", "явно", "же",
+        }
+        if words and len(words) <= 5 and all(
+            word in polarity_modifiers or word.endswith("ly")
+            for word in words
+        ):
+            return True
+        if words and len(words) <= 4:
+            negative_roles = cls._NEGATIVE_CONTROL_GOVERNOR_STEMS + cls._POSTFIX_PROHIBITION_STEMS
+            if cls._starts_with_role(words[0], negative_roles) and all(
+                word in {"be", "been", "being", "быть", "to", "чтобы"}
+                for word in words[1:]
+            ):
+                return True
+        return False
 
     @classmethod
     def _postfix_prohibits_match(cls, unit: str, match: re.Match[str]) -> bool:
@@ -3564,25 +3637,25 @@ class ReleaseDocumentationConsistencyTests(unittest.TestCase):
 
         complement = re.fullmatch(r"(?P<head>.+?)\s*[:—–]\s*", gap)
         if complement:
-            return cls._is_positive_list_complement(complement.group("head"))
+            return cls._is_structural_list_complement(complement.group("head"))
 
-        # A purpose infinitive/``чтобы`` is direct attachment to the later
-        # action only when its governor has a known positive sign.  Copular
-        # predicates (``it is not illegal to …``) and unknown governors
-        # (``do not forget to …``) remain fail-closed even though they also
-        # end in ``to``.
+        # A purpose infinitive/``чтобы`` is structurally attached when the
+        # negated action has an explicit inline-code object.  Copular predicates
+        # (``it is not illegal to …``) and unframed opaque governors
+        # (``do not forget to …``) remain fail-closed.
         if re.search(r"(?:\bto|\bчтобы)\s*$", gap, flags=re.IGNORECASE):
             if re.search(r"\b(?:is|are|was|were|be|being|been)\s*$", left_context, flags=re.IGNORECASE):
                 return False
             purpose_words = re.findall(r"[\w'-]+", gap.casefold(), flags=re.UNICODE)
-            return any(
-                word.startswith(cls._POSITIVE_COMPLEMENT_STEMS)
-                for word in purpose_words[:-1]
-            )
+            if not purpose_words or not cls._has_matching_inline_code_span(gap):
+                return False
+            negative_roles = cls._NEGATIVE_CONTROL_GOVERNOR_STEMS + cls._POSTFIX_PROHIBITION_STEMS
+            return not cls._starts_with_role(purpose_words[0], negative_roles)
         words = re.findall(r"[\w'-]+", gap.casefold(), flags=re.UNICODE)
-        if len(words) == 1 and words[0].startswith(cls._POSITIVE_COMPLEMENT_STEMS):
-            return True
-        return False
+        return bool(
+            len(words) == 1
+            and cls._starts_with_role(words[0], cls._ASSERTION_GOVERNOR_STEMS)
+        )
 
     @classmethod
     def _has_unnegated_match(cls, document, pattern: str) -> bool:
@@ -3598,12 +3671,23 @@ class ReleaseDocumentationConsistencyTests(unittest.TestCase):
             for match in re.finditer(pattern, unit, flags=re.IGNORECASE):
                 if cls._postfix_prohibits_match(unit, match):
                     continue
-                negations = reversed(tuple(cls._NEGATION_PATTERN.finditer(unit[: match.start()])))
-                if any(
-                    cls._negation_protects_match(
-                        unit[negation.end() : match.start()], unit[: negation.start()]
+                negations = tuple(cls._NEGATION_PATTERN.finditer(unit[: match.start()]))
+                protecting_index = next(
+                    (
+                        index
+                        for index in range(len(negations) - 1, -1, -1)
+                        if cls._negation_protects_match(
+                            unit[negations[index].end() : match.start()],
+                            unit[: negations[index].start()],
+                        )
+                    ),
+                    None,
+                )
+                if protecting_index is not None and not any(
+                    cls._is_effective_negation_bridge(
+                        unit[earlier.end() : negations[protecting_index].start()]
                     )
-                    for negation in negations
+                    for earlier in negations[:protecting_index]
                 ):
                     continue
                 return True
@@ -4467,6 +4551,162 @@ class ReleaseDocumentationConsistencyTests(unittest.TestCase):
                         if "contradictory delivery clause (" in error
                     )
                     self.assertEqual(labels, (), errors)
+
+    def test_delivery_guard_fan1528_exact_reproductions(self) -> None:
+        """FAN-1528: the four QA reproductions stay exact in all six docs."""
+        documents = self.read_documents()
+        cases = (
+            (
+                "open-vocabulary frame EN",
+                "Do not organize the following: skip Telegram delivery.",
+                (),
+            ),
+            (
+                "open-vocabulary frame RU",
+                "Не организуйте следующее: пропускать доставку в Telegram.",
+                (),
+            ),
+            (
+                "adjacent double negation EN",
+                "Do not not skip Telegram delivery.",
+                ("Telegram bypass (EN)",),
+            ),
+            (
+                "adjacent double negation RU",
+                "Не не пропускайте доставку в Telegram.",
+                ("Telegram bypass (RU)",),
+            ),
+        )
+        for relative in self.DELIVERY_CONTRACTS:
+            for name, statement, expected_labels in cases:
+                with self.subTest(document=str(relative), case=name):
+                    mutated = dict(documents)
+                    mutated[relative] += f"\nFAN-1528 reproduction: {statement}\n"
+                    errors = self.delivery_contract_errors(mutated)
+                    labels = tuple(
+                        error.split("contradictory delivery clause (", 1)[1][:-1]
+                        for error in errors
+                        if "contradictory delivery clause (" in error
+                    )
+                    self.assertEqual(labels, expected_labels, errors)
+
+    def test_delivery_guard_fan1528_independent_structural_matrix(self) -> None:
+        """FAN-1528: structural controls are independent of disclosed verbs."""
+        documents = self.read_documents()
+        cases = (
+            (
+                "framed governor EN",
+                "Do not schedule the following action: skip Telegram delivery.",
+                (),
+            ),
+            (
+                "framed governor RU",
+                "Не планируйте следующее действие: пропускать доставку в Telegram.",
+                (),
+            ),
+            (
+                "same unframed governor EN",
+                "Do not schedule skipping Telegram delivery.",
+                ("Telegram bypass (EN)",),
+            ),
+            (
+                "same unframed governor RU",
+                "Не планируйте пропускать доставку в Telegram.",
+                ("Telegram bypass (RU)",),
+            ),
+            (
+                "inverse framed governor EN",
+                "Do not veto the following action: skip Telegram delivery.",
+                ("Telegram bypass (EN)",),
+            ),
+            (
+                "inverse framed governor RU",
+                "Не блокируйте следующее действие: пропускать доставку в Telegram.",
+                ("Telegram bypass (RU)",),
+            ),
+            (
+                "adjacent double EN",
+                "Do not not omit Telegram delivery.",
+                ("Telegram bypass (EN)",),
+            ),
+            (
+                "adjacent double RU",
+                "Не не обходите доставку Telegram.",
+                ("Telegram bypass (RU)",),
+            ),
+            (
+                "aside-separated double EN",
+                "Do not, even during a hotfix, not omit Telegram delivery.",
+                ("Telegram bypass (EN)",),
+            ),
+            (
+                "aside-separated double RU",
+                "Не, даже при хотфиксе, не обходите доставку Telegram.",
+                ("Telegram bypass (RU)",),
+            ),
+            (
+                "unseen prepositional aside EN",
+                "Do not, notwithstanding prior advice, omit Telegram delivery.",
+                (),
+            ),
+            (
+                "unseen prepositional aside RU",
+                "Не следует, вопреки прежнему совету, обходить доставку Telegram.",
+                (),
+            ),
+            (
+                "single-backtick EN",
+                "Do not apply `audit | ship` to omit Telegram delivery.",
+                (),
+            ),
+            (
+                "single-backtick RU",
+                "Не применяйте `audit | ship`, чтобы обходить доставку Telegram.",
+                (),
+            ),
+            (
+                "double-backtick EN",
+                "Do not apply ``audit ` | ship`` to omit Telegram delivery.",
+                (),
+            ),
+            (
+                "double-backtick RU",
+                "Не применяйте ``audit ` | ship``, чтобы обходить доставку Telegram.",
+                (),
+            ),
+            (
+                "triple-backtick EN",
+                "Do not apply ```audit `` | ship``` to omit Telegram delivery.",
+                (),
+            ),
+            (
+                "triple-backtick RU",
+                "Не применяйте ```audit `` | ship```, чтобы обходить доставку Telegram.",
+                (),
+            ),
+            (
+                "true table boundary EN",
+                "| Do not defer | Omit Telegram delivery. |",
+                ("Telegram bypass (EN)",),
+            ),
+            (
+                "true table boundary RU",
+                "| Не откладывать | Обходить доставку Telegram. |",
+                ("Telegram bypass (RU)",),
+            ),
+        )
+        for relative in self.DELIVERY_CONTRACTS:
+            for name, statement, expected_labels in cases:
+                with self.subTest(document=str(relative), case=name):
+                    mutated = dict(documents)
+                    mutated[relative] += f"\nFAN-1528 structural control: {statement}\n"
+                    errors = self.delivery_contract_errors(mutated)
+                    labels = tuple(
+                        error.split("contradictory delivery clause (", 1)[1][:-1]
+                        for error in errors
+                        if "contradictory delivery clause (" in error
+                    )
+                    self.assertEqual(labels, expected_labels, errors)
 
     def test_delivery_guard_matches_inline_code_delimiter_runs(self) -> None:
         """A code span closes only on the same unescaped backtick run."""
