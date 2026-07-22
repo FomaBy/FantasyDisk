@@ -8,6 +8,7 @@ import subprocess
 import sys
 import tempfile
 import unittest
+from functools import lru_cache
 from pathlib import Path
 from unittest import mock
 
@@ -3374,6 +3375,7 @@ class ReleaseDocumentationConsistencyTests(unittest.TestCase):
     )
 
     @classmethod
+    @lru_cache(maxsize=32)
     def _markdown_scan_units(cls, document: str) -> tuple[str, ...]:
         """Return prose/table cells that can be checked without cross-talk.
 
@@ -3386,6 +3388,7 @@ class ReleaseDocumentationConsistencyTests(unittest.TestCase):
         units: list[str] = []
         buffer: list[str] = []
         inline_code = False
+        fenced_code = False
 
         def flush() -> None:
             text = "".join(buffer).strip()
@@ -3397,6 +3400,9 @@ class ReleaseDocumentationConsistencyTests(unittest.TestCase):
             if raw_line.lstrip().startswith(("```", "~~~")):
                 flush()
                 inline_code = False
+                fenced_code = not fenced_code
+                continue
+            if fenced_code:
                 continue
             if not raw_line.strip():
                 flush()
@@ -3477,7 +3483,10 @@ class ReleaseDocumentationConsistencyTests(unittest.TestCase):
     @classmethod
     def _postfix_prohibits_match(cls, unit: str, match: re.Match[str]) -> bool:
         """Recognise a passive prohibition immediately following a predicate."""
-        tail = unit[match.end() :]
+        # This is an immediate predicate check, not a document-wide search.
+        # Keeping the window bounded also prevents a long Markdown paragraph
+        # from turning each candidate into a repeated full-tail tokenization.
+        tail = unit[match.end() : match.end() + 160]
         words = re.findall(r"[\w'-]+", tail.casefold(), flags=re.UNICODE)
         if not words:
             return False
@@ -3579,19 +3588,27 @@ class ReleaseDocumentationConsistencyTests(unittest.TestCase):
         return errors
 
     @classmethod
-    def delivery_contract_errors(cls, documents: dict[Path, str]) -> list[str]:
+    @lru_cache(maxsize=64)
+    def _delivery_document_errors(cls, relative: Path, raw_document: str) -> tuple[str, ...]:
+        """Evaluate one immutable document once per exact Markdown content."""
         errors: list[str] = []
-        for relative, clauses in cls.DELIVERY_CONTRACTS.items():
-            raw_document = documents[relative]
-            document = cls.normalize(raw_document)
-            units = cls._markdown_scan_units(raw_document)
-            for clause in clauses:
-                if clause not in document:
-                    errors.append(f"{relative}: missing delivery contract clause {clause}")
-            for label, pattern in cls.DELIVERY_CONTRADICTION_PATTERNS:
-                if cls._has_unnegated_match(units, pattern):
-                    errors.append(f"{relative}: contradictory delivery clause ({label})")
-        return errors
+        document = cls.normalize(raw_document)
+        units = cls._markdown_scan_units(raw_document)
+        for clause in cls.DELIVERY_CONTRACTS[relative]:
+            if clause not in document:
+                errors.append(f"{relative}: missing delivery contract clause {clause}")
+        for label, pattern in cls.DELIVERY_CONTRADICTION_PATTERNS:
+            if cls._has_unnegated_match(units, pattern):
+                errors.append(f"{relative}: contradictory delivery clause ({label})")
+        return tuple(errors)
+
+    @classmethod
+    def delivery_contract_errors(cls, documents: dict[Path, str]) -> list[str]:
+        return [
+            error
+            for relative in cls.DELIVERY_CONTRACTS
+            for error in cls._delivery_document_errors(relative, documents[relative])
+        ]
 
     @classmethod
     def macos_mapping_errors(cls, documents: dict[Path, str]) -> list[str]:
