@@ -4,6 +4,8 @@ extends SceneTree
 
 const PD := preload("res://scripts/progression_data.gd")
 const Meta := preload("res://scripts/meta_progression.gd")
+const PlayerScript := preload("res://scripts/player.gd")
+const CodexData := preload("res://scripts/codex_data.gd")
 const Schema6 := preload("res://scripts/constellation_schema6_data.gd")
 const Generator := preload("res://tools/a5_balance_report.gd")
 
@@ -24,17 +26,16 @@ func _initialize() -> void:
 	_check(str((dataset.get("source", {}) as Dictionary).get("commit", "")) not in ["", "UNSPECIFIED", "TEST"], "source commit is not pinned")
 	_check(str((dataset.get("source", {}) as Dictionary).get("tree", "")) not in ["", "UNSPECIFIED", "TEST"], "source tree is not pinned")
 	_check(str(dataset.get("dataset_digest_sha256", "")).length() == 64, "dataset digest is missing")
+	_validate_dataset_digest(dataset)
 	_validate_roster(dataset)
 	_validate_builds(dataset)
 	_validate_meta(dataset)
 	_validate_weapon_rows(dataset)
 	_validate_class_rows(dataset)
+	_validate_class_ultimate_oracle(dataset)
 	_validate_live_coverage(dataset)
 	_validate_csv(dataset)
-	_check(report_text.contains("## Per-weapon matrix"), "Markdown lacks per-weapon matrix")
-	_check(report_text.contains("## Formula / live parity"), "Markdown lacks formula/live section")
-	_check(report_text.contains(Generator.NON_PLAYABLE_LABEL), "Markdown lacks mandatory non-playable label")
-	_check(report_text.contains("changes no balance values") or report_text.contains("No balance values"), "Markdown does not state the no-balance-change scope")
+	_validate_markdown(dataset, report_text)
 	_finish()
 
 
@@ -177,6 +178,117 @@ func _validate_class_rows(dataset: Dictionary) -> void:
 	_check(keys.size() == expected, "class-kit keys are not unique")
 
 
+func _validate_class_ultimate_oracle(dataset: Dictionary) -> void:
+	# This deliberately does not call the report generator's modifier helper or
+	# class-row implementation. It rebuilds every class ultimate from raw level
+	# stats and canonical runtime APIs, which catches a second attribute-flat pass.
+	var rows: Array = dataset.get("class_rows", [])
+	var meta_rows := 0
+	var numerically_distinct_double_rows := 0
+	var numerically_neutral_double_rows := 0
+	for row_value in rows:
+		var row: Dictionary = row_value
+		var class_id := str(row.get("class_id", ""))
+		var level := int(row.get("level", 0))
+		var scenario_id := str(row.get("scenario", ""))
+		var build: Dictionary = (dataset.get("builds", {}) as Dictionary).get(class_id, {})
+		var stats: Dictionary = (build.get("level1_stats", {}) if level == 1 else build.get("level20_stats", {})).duplicate(true)
+		var state := _oracle_state(dataset, class_id, scenario_id)
+		var mods: Dictionary = Meta.skill_modifiers_for_class(state, class_id) if scenario_id != "no_meta" else {}
+		var run_mods := _oracle_a5_run_modifiers(class_id)
+		_apply_meta_once(stats, run_mods, mods)
+		var expected := _oracle_first_minute_ultimate(class_id, stats, run_mods, mods)
+		_check(is_equal_approx(float(row.get("first_minute_ultimate_damage", -1.0)), expected), "%s class ultimate is not the single-application runtime value" % row.get("key", "?"))
+		_check(is_equal_approx(float(row.get("atlas_start_charge", -1.0)), snappedf(float(mods.get("ult_start_charge", 0.0)), 0.01)), "%s Atlas ultimate charge attribution differs from canonical meta state" % row.get("key", "?"))
+		if scenario_id == "no_meta":
+			continue
+		meta_rows += 1
+		var double_stats := stats.duplicate(true)
+		_apply_attribute_flats(double_stats, mods)
+		var double_applied := _oracle_first_minute_ultimate(class_id, double_stats, run_mods, mods)
+		if is_equal_approx(expected, double_applied):
+			numerically_neutral_double_rows += 1
+		else:
+			numerically_distinct_double_rows += 1
+			_check(not is_equal_approx(float(row.get("first_minute_ultimate_damage", -1.0)), double_applied), "%s still stores a double-applied meta ultimate" % row.get("key", "?"))
+	_check(meta_rows == 102, "meta ultimate oracle covers %d rows, expected 102" % meta_rows)
+	_check(numerically_distinct_double_rows == 99 and numerically_neutral_double_rows == 3, "double-application regression shape changed: distinct=%d neutral=%d" % [numerically_distinct_double_rows, numerically_neutral_double_rows])
+
+
+func _oracle_state(dataset: Dictionary, class_id: String, scenario_id: String) -> Dictionary:
+	var state := Meta.default_state()
+	state["ascension_levels"] = {class_id: 5}
+	if scenario_id == "no_meta":
+		return state
+	var build: Dictionary = (dataset.get("meta_builds", {}) as Dictionary).get(class_id, {})
+	var purchased: Array = (build.get("purchased_ids", []) as Array).duplicate()
+	state["hidden_reveal_facts"] = {class_id: (build.get("hidden_reveal_facts", []) as Array).duplicate()}
+	if scenario_id in ["class_atlas50", "class_atlas59_upper"]:
+		var scenario: Dictionary = (dataset.get("scenarios", {}) as Dictionary).get(scenario_id, {})
+		for atlas_id in scenario.get("atlas_ids", []):
+			purchased.append(str(atlas_id))
+		var monster_ids := []
+		for raw_monster in CodexData.monsters():
+			monster_ids.append(str((raw_monster as Dictionary).get("id", "")))
+		state["discovered_monsters"] = monster_ids
+		state["secret_boss_defeated"] = true
+	state["skill_nodes"] = purchased
+	return state
+
+
+func _oracle_a5_run_modifiers(class_id: String) -> Dictionary:
+	var run_mods := {}
+	var ascension: Dictionary = PD.ascension_mods(class_id, 5)
+	for key_value in ascension:
+		var key := str(key_value)
+		var value := float(ascension[key_value])
+		if key.ends_with("_multiplier"):
+			run_mods[key] = float(run_mods.get(key, 1.0)) * value
+		else:
+			run_mods[key] = float(run_mods.get(key, 0.0)) + value
+	var difficulty := PD.ascension_difficulty_mods(5)
+	run_mods["xp_gain_multiplier"] = float(run_mods.get("xp_gain_multiplier", 1.0)) * float(difficulty.get("reward_mult", 1.0))
+	run_mods["money_gain_multiplier"] = float(run_mods.get("money_gain_multiplier", 1.0)) * float(difficulty.get("reward_mult", 1.0))
+	run_mods["healing_multiplier"] = float(run_mods.get("healing_multiplier", 1.0)) * float(difficulty.get("healing_mult", 1.0))
+	run_mods["max_health_multiplier"] = float(run_mods.get("max_health_multiplier", 1.0)) * float(difficulty.get("player_max_hp_mult", 1.0))
+	return run_mods
+
+
+func _apply_meta_once(stats: Dictionary, run_mods: Dictionary, mods: Dictionary) -> void:
+	_apply_attribute_flats(stats, mods)
+	for source_key in PlayerScript.META_SKILL_MULT_MAP:
+		if mods.has(source_key):
+			var run_key := str(PlayerScript.META_SKILL_MULT_MAP[source_key])
+			run_mods[run_key] = float(run_mods.get(run_key, 1.0)) * (1.0 + float(mods[source_key]))
+	for source_key in PlayerScript.META_SKILL_FLAT_MAP:
+		if mods.has(source_key):
+			var run_key := str(PlayerScript.META_SKILL_FLAT_MAP[source_key])
+			run_mods[run_key] = float(run_mods.get(run_key, 0.0)) + float(mods[source_key])
+
+
+func _apply_attribute_flats(stats: Dictionary, mods: Dictionary) -> void:
+	for source_key in PlayerScript.META_SKILL_ATTRIBUTE_FLAT_MAP:
+		if mods.has(source_key):
+			var stat_key := str(PlayerScript.META_SKILL_ATTRIBUTE_FLAT_MAP[source_key])
+			stats[stat_key] = float(stats.get(stat_key, 0.0)) + float(mods[source_key])
+
+
+func _oracle_first_minute_ultimate(class_id: String, stats: Dictionary, run_mods: Dictionary, mods: Dictionary) -> float:
+	var first_weapon := str(PD.weapon_ids(class_id)[0])
+	var config := PD.weapon(class_id, first_weapon)
+	config["character_id"] = class_id
+	var params := PD.derived_parameters(stats, run_mods, config)
+	var ultimate := PD._budget_ultimate_dps(class_id, params)
+	var result := (float(ultimate.get("solo", 0.0)) + float(ultimate.get("aoe", 0.0))) * 30.0
+	var start_charge := float(mods.get("ult_start_charge", 0.0))
+	if start_charge > 0.0:
+		var ultimate_config := PD.ultimate_config(class_id)
+		var base_damage := maxf(float(params.get("damage", 1.0)), float(params.get("magic_damage", 1.0)))
+		var activation_damage := base_damage * float(ultimate_config.get("damage", 1.0)) * float(params.get("ultimate_multiplier", 1.0))
+		result += activation_damage * start_charge
+	return snappedf(result, 0.01)
+
+
 func _validate_live_coverage(dataset: Dictionary) -> void:
 	var parity: Array = dataset.get("formula_live_parity", [])
 	var expected_pairs: Array = dataset["roster"]["pair_keys"]
@@ -208,25 +320,74 @@ func _validate_live_coverage(dataset: Dictionary) -> void:
 	_check(actual_finals == expected_finals, "live nonlinear final coverage set mismatch")
 
 
+func _validate_dataset_digest(dataset: Dictionary) -> void:
+	var canonical: Dictionary = dataset.duplicate(true)
+	canonical.erase("dataset_digest_sha256")
+	var expected := _sha256(JSON.stringify(canonical, "", true, true))
+	_check(str(dataset.get("dataset_digest_sha256", "")) == expected, "raw dataset digest does not match the canonical payload")
+
+
 func _validate_csv(dataset: Dictionary) -> void:
 	var file := FileAccess.open(Generator.CSV_PATH, FileAccess.READ)
 	_check(file != null, "per_weapon.csv is missing")
 	if file == null:
 		return
 	var header := file.get_csv_line()
-	var key_index := Array(header).find("key")
-	_check(key_index >= 0, "CSV lacks key column")
-	var keys := {}
+	var indices := {}
+	var valid_header := true
+	for column in ["key", "class_id", "weapon_id", "level", "scenario", "solo_dpm", "crowd_10_total_dpm", "hp", "ehp", "ttd_seconds", "ult_start_charge"]:
+		var index := Array(header).find(column)
+		_check(index >= 0, "CSV lacks %s column" % column)
+		indices[column] = index
+		valid_header = valid_header and index >= 0
+	if not valid_header:
+		file.close()
+		return
+	var rows_by_key := {}
 	while not file.eof_reached():
 		var cells := file.get_csv_line()
 		if cells.size() == 1 and str(cells[0]) == "":
 			continue
-		if key_index >= 0 and cells.size() > key_index:
-			keys[str(cells[key_index])] = true
+		var key_index := int(indices["key"])
+		if cells.size() > key_index:
+			rows_by_key[str(cells[key_index])] = cells
 	file.close()
-	_check(keys.size() == (dataset.get("weapon_rows", []) as Array).size(), "CSV row/key count mismatch")
+	_check(rows_by_key.size() == (dataset.get("weapon_rows", []) as Array).size(), "CSV row/key count mismatch")
 	for row_value in dataset["weapon_rows"]:
-		_check(keys.has(str((row_value as Dictionary).get("key", ""))), "CSV missing key %s" % (row_value as Dictionary).get("key", "?"))
+		var row: Dictionary = row_value
+		var key := str(row.get("key", ""))
+		_check(rows_by_key.has(key), "CSV missing key %s" % key)
+		if not rows_by_key.has(key):
+			continue
+		var cells = rows_by_key[key]
+		_check(str(cells[int(indices["class_id"])]) == str(row.get("class_id", "")), "CSV class differs for %s" % key)
+		_check(str(cells[int(indices["weapon_id"])]) == str(row.get("weapon_id", "")), "CSV weapon differs for %s" % key)
+		_check(int(cells[int(indices["level"])]) == int(row.get("level", -1)), "CSV level differs for %s" % key)
+		_check(str(cells[int(indices["scenario"])]) == str(row.get("scenario", "")), "CSV scenario differs for %s" % key)
+		for metric in ["solo_dpm", "crowd_10_total_dpm", "hp", "ehp", "ttd_seconds", "ult_start_charge"]:
+			_check(is_equal_approx(float(cells[int(indices[metric])]), float(row.get(metric, INF))), "CSV %s differs for %s" % [metric, key])
+
+
+func _validate_markdown(dataset: Dictionary, report_text: String) -> void:
+	_check(report_text.contains("## Per-weapon matrix"), "Markdown lacks per-weapon matrix")
+	_check(report_text.contains("## Formula / live parity"), "Markdown lacks formula/live section")
+	_check(report_text.contains(Generator.NON_PLAYABLE_LABEL), "Markdown lacks mandatory non-playable label")
+	_check(report_text.contains("changes no balance values") or report_text.contains("No balance values"), "Markdown does not state the no-balance-change scope")
+	_check(report_text.contains("applies class/Atlas attribute and run modifiers exactly once"), "Markdown does not state the single-application ultimate rule")
+	var source: Dictionary = dataset.get("source", {})
+	_check(report_text.contains("Source commit `%s` (tree `%s`, timestamp `%s`)" % [source.get("commit", ""), source.get("tree", ""), source.get("commit_timestamp", "")]), "Markdown source provenance differs from raw.json")
+	_check(report_text.contains("Dataset digest: `%s`" % dataset.get("dataset_digest_sha256", "")), "Markdown dataset digest differs from raw.json")
+	for row_value in dataset.get("class_rows", []):
+		var row: Dictionary = row_value
+		var prefix := "| %s | %d | %s | %s | %.3f | %.3f | %.3f | %.3f | %.2f |" % [row["class_id"], row["level"], row["scenario"], "; ".join(row["roles"]), row["solo_score"], row["aoe_score"], row["defense_score"], row["convenience_relative"], row["first_minute_ultimate_damage"]]
+		_check(report_text.contains(prefix), "Markdown class row differs from raw.json for %s" % row.get("key", "?"))
+
+
+func _sha256(text: String) -> String:
+	var context := HashingContext.new()
+	context.start(HashingContext.HASH_SHA256)
+	context.update(text.to_utf8_buffer())
+	return context.finish().hex_encode()
 
 
 func _read_text(path: String) -> String:

@@ -1211,6 +1211,11 @@ Gate: `tests/guild_atlas_scrum1069_balance_test.gd`; exact audit:
 `ProgressionData.character_ids()` и `WEAPONS_BY_CLASS`, затем из него рендерит
 Markdown, CSV и raw JSON в `docs/design/reports/fan1438_a5_balance/`.
 
+Для class-kit ultimate сборщик всегда берёт контролируемые level stats из
+`no_meta` строки и ровно один раз применяет class/Atlas attribute и run
+modifiers. Поэтому мета-бонусы не переносятся повторно из weapon rows, а ultimate
+остаётся class-level показателем, не привязанным к конкретному оружию.
+
 Контролируемая матрица использует A5 вместе с накопленными наградами A1–A5,
 уровни 1 и 20, а также четыре состояния меты: без меты, полное созвездие класса
 schema 6, созвездие плюс легальный Atlas 50 и явно неигровой верхний Atlas 59.

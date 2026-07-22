@@ -140,7 +140,7 @@ func generate_dataset() -> Dictionary:
 		"level20": "exactly 19 nonnegative integer points across canonical base stats, greedily maximizing the mean normalized output of the class's three weapons; one shared allocation per class",
 		"weapon_dpm": "canonical ProgressionData estimator with A5/meta run modifiers and include_ultimate=false; schema-6 owning-weapon flat/cadence/geometry/axis/final factors layered from the canonical profile",
 		"modifier_order": "ascension reward multipliers multiply and flats add; A5 reward/healing/max-HP multipliers then apply; meta fractions become 1+sum and multiply the matching run modifier; flats add; owning-weapon profile remains isolated by exact weapon_id",
-		"ultimate": "class-kit-only first-minute formula; never attributed to a weapon row",
+		"ultimate": "class-kit-only first-minute formula starts from unmodified level stats and applies class/Atlas attribute and run modifiers exactly once; it is never attributed to a weapon row",
 		"targets": {"solo": [SOLO_OFFSET.x, SOLO_OFFSET.y], "pack_count": TARGET_COUNT, "pack_radius": PACK_RADIUS, "layout": "one primary east target plus deterministic compact golden-angle pack"},
 		"live": {"mode": _mode, "seeds": LIVE_SEEDS, "runs": LIVE_SEEDS.size(), "warmup_seconds": LIVE_WARMUP_SECONDS, "measurement_seconds": LIVE_WINDOW_SECONDS, "dummy_hp": DUMMY_HP, "stationary": true},
 		"survivability": {"threat": "normal-wave contact pressure only", "base_hit": A5_NORMAL_CONTACT_DAMAGE, "attempted_hits_per_second": A5_NORMAL_CONTACT_RATE, "player_iframe_seconds": PLAYER_IFRAME_SECONDS, "a5_enemy_damage_multiplier": PD.ascension_difficulty_mods(5).get("enemy_damage_mult", 1.0), "order": "flat absorb (42% hit floor), defense, expected dodge, sustain; one death-save event is added separately"},
@@ -461,6 +461,18 @@ func _class_rows(class_ids: Array, weapon_rows: Array) -> Array:
 	for class_id_value in class_ids:
 		var class_id := str(class_id_value)
 		for level in LEVELS:
+			# Weapon rows retain their scenario-adjusted stats for per-weapon metrics.
+			# The class ultimate must instead begin with the controlled no-meta level
+			# stats, then apply the class/Atlas modifier order once below.
+			var level_stats: Dictionary = {}
+			for candidate_value in weapon_rows:
+				var candidate: Dictionary = candidate_value
+				if candidate["class_id"] == class_id and candidate["level"] == level and candidate["scenario"] == "no_meta":
+					level_stats = (candidate.get("stats", {}) as Dictionary).duplicate(true)
+					break
+			if level_stats.is_empty():
+				_errors.append("missing no-meta level stats for class ultimate %s L%d" % [class_id, level])
+				continue
 			for scenario_id in SCENARIO_IDS:
 				var rows := []
 				for row in weapon_rows:
@@ -474,7 +486,7 @@ func _class_rows(class_ids: Array, weapon_rows: Array) -> Array:
 				var state := _scenario_state(class_id, scenario_id)
 				var skill_mods := Meta.skill_modifiers_for_class(state, class_id) if scenario_id != "no_meta" else {}
 				var first_weapon := str(PD.weapon_ids(class_id)[0])
-				var stats: Dictionary = (rows[0].get("stats", {}) as Dictionary).duplicate(true)
+				var stats: Dictionary = level_stats.duplicate(true)
 				var run_mods := _a5_run_modifiers(class_id)
 				if scenario_id != "no_meta":
 					_apply_meta_formula_mods(stats, run_mods, skill_mods)
