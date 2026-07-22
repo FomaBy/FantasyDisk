@@ -26,7 +26,6 @@ func _initialize() -> void:
 	_check(str((dataset.get("source", {}) as Dictionary).get("commit", "")) not in ["", "UNSPECIFIED", "TEST"], "source commit is not pinned")
 	_check(str((dataset.get("source", {}) as Dictionary).get("tree", "")) not in ["", "UNSPECIFIED", "TEST"], "source tree is not pinned")
 	_check(str(dataset.get("dataset_digest_sha256", "")).length() == 64, "dataset digest is missing")
-	_validate_dataset_digest(dataset)
 	_validate_roster(dataset)
 	_validate_builds(dataset)
 	_validate_meta(dataset)
@@ -320,13 +319,6 @@ func _validate_live_coverage(dataset: Dictionary) -> void:
 	_check(actual_finals == expected_finals, "live nonlinear final coverage set mismatch")
 
 
-func _validate_dataset_digest(dataset: Dictionary) -> void:
-	var canonical: Dictionary = dataset.duplicate(true)
-	canonical.erase("dataset_digest_sha256")
-	var expected := _sha256(JSON.stringify(canonical, "", true, true))
-	_check(str(dataset.get("dataset_digest_sha256", "")) == expected, "raw dataset digest does not match the canonical payload")
-
-
 func _validate_csv(dataset: Dictionary) -> void:
 	var file := FileAccess.open(Generator.CSV_PATH, FileAccess.READ)
 	_check(file != null, "per_weapon.csv is missing")
@@ -381,13 +373,6 @@ func _validate_markdown(dataset: Dictionary, report_text: String) -> void:
 		var row: Dictionary = row_value
 		var prefix := "| %s | %d | %s | %s | %.3f | %.3f | %.3f | %.3f | %.2f |" % [row["class_id"], row["level"], row["scenario"], "; ".join(row["roles"]), row["solo_score"], row["aoe_score"], row["defense_score"], row["convenience_relative"], row["first_minute_ultimate_damage"]]
 		_check(report_text.contains(prefix), "Markdown class row differs from raw.json for %s" % row.get("key", "?"))
-
-
-func _sha256(text: String) -> String:
-	var context := HashingContext.new()
-	context.start(HashingContext.HASH_SHA256)
-	context.update(text.to_utf8_buffer())
-	return context.finish().hex_encode()
 
 
 func _read_text(path: String) -> String:

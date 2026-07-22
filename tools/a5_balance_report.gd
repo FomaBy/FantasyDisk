@@ -768,7 +768,7 @@ func _markdown(dataset: Dictionary) -> String:
 	lines.append("- Level 1 uses base stats. Level 20 is the requested synthetic 19-point base-stat model, one shared allocation across all three weapons of a class; it is not represented as live reward-card history.")
 	lines.append("- Per-weapon DPM is sustained output with `include_ultimate=false`. First-minute ultimate contribution appears only in the class-kit table.")
 	lines.append("- Ten-target DPM is total throughput over a compact deterministic pack; per-target DPM is total / 10.")
-	lines.append("- Formula rows use canonical `ProgressionData`, `MetaProgression`, schema-6 profiles, and the A5 runtime modifier order. Full-constellation L20 live probes instantiate real Player/Enemy scenes for every pair (%d seeds, %.1fs warm-up, %.1fs measured)." % [LIVE_SEEDS.size(), LIVE_WARMUP_SECONDS, LIVE_WINDOW_SECONDS])
+	lines.append("- Formula rows use canonical `ProgressionData`, `MetaProgression`, schema-6 profiles, and the A5 runtime modifier order. The class-kit ultimate starts from unmodified level stats and applies class/Atlas attribute and run modifiers exactly once. Full-constellation L20 live probes instantiate real Player/Enemy scenes for every pair (%d seeds, %.1fs warm-up, %.1fs measured)." % [LIVE_SEEDS.size(), LIVE_WARMUP_SECONDS, LIVE_WINDOW_SECONDS])
 	lines.append("- Survival is a normal-wave A5 contact-pressure model: %.1f base damage, %.1f attempted hits/s, actual 0.32s player i-frame; absorb → defense → expected dodge → sustain. Boss/elite multipliers are intentionally not substituted." % [A5_NORMAL_CONTACT_DAMAGE, A5_NORMAL_CONTACT_RATE])
 	lines.append("")
 	lines.append("## Meta legality")
