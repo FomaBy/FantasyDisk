@@ -3329,175 +3329,231 @@ class ReleaseDocumentationConsistencyTests(unittest.TestCase):
         return " ".join(document.split())
 
     _NEGATION_PATTERN = re.compile(
-        r"(?:\bdo\s+not\b|\bdon't\b|\b(?:not|never|without|no)\b|"
-        r"\b(?:не|нельзя|никогда|без)\b)",
+        r"(?:\bdo\s+not\b|\bdon't\b|\b(?:not|never|no)\b|"
+        r"\b(?:не|нельзя|никогда)\b)",
         flags=re.IGNORECASE,
     )
-    _CONTRAST_PATTERN = re.compile(
-        r"\b(?:but|however|yet|rather|though|although|instead|nevertheless|"
-        r"nonetheless|whereas|conversely|но|однако|зато|напротив|"
-        r"вс[её]\s+же)\b",
+    # The only open vocabulary in this guard is the document itself.  Scope is
+    # established from Markdown structure and local syntax, never from a
+    # growing list of fixture-shaped discourse markers.  The small inventories
+    # below are signed grammatical operators: deontic auxiliaries, verbs whose
+    # negated *list complement* is an execution/permission prohibition, and
+    # passive prohibition predicates.  An unknown governor is deliberately not
+    # transparent, so ``do not ignore/refuse/forget the following`` fails
+    # closed instead of silently licensing its complement.
+    _DEONTIC_AUXILIARIES = frozenset({
+        "should", "must", "ought", "shall", "следует", "нужно", "надо",
+        "стоит", "требуется", "необходимо", "надлежит", "полагается",
+        "придётся", "придется", "приходится",
+    })
+    _POSITIVE_COMPLEMENT_STEMS = (
+        "do", "perform", "execut", "carry", "undertak", "complet",
+        "fulfil", "fulfill", "follow", "implement", "apply", "permit",
+        "allow", "authoriz", "approv", "accept", "enact", "conduct",
+        "дела", "сдела", "выполн", "осуществ", "предприним", "исполн",
+        "реализ", "примен", "разреш", "допуск", "одобр", "позвол",
+    )
+    _POSITIVE_REPORTING_STEMS = (
+        "claim", "call", "describe", "state", "label", "present", "treat",
+        "счит", "назыв", "описыва", "обознач",
+    )
+    _POSTFIX_PROHIBITION_STEMS = (
+        "forbid", "prohibit", "disallow", "ban", "bar", "impermiss",
+        "unlawful", "illegal", "запрещ", "воспрещ", "недопуст",
+        "незакон", "неразреш",
+    )
+    _ENGLISH_FUNCTION_ASIDES = frozenset({
+        "however", "nevertheless", "nonetheless", "of course", "in fact",
+    })
+    _RUSSIAN_FUNCTION_ASIDES = frozenset({
+        "однако", "всё же", "все же", "по сути", "в частности",
+    })
+    _RUSSIAN_FINITE_VERB_ENDING = re.compile(
+        r"(?:йте|ите|ешь|ете|ют|ут|ат|ят|ал|ала|ало|али)$",
         flags=re.IGNORECASE,
     )
-    # Closed-class discourse connectives, focus/epistemic adverbs and limiter
-    # adjuncts a writer may set off with paired commas without ending the
-    # negated clause.  This is a bounded grammatical category, not a list of
-    # fixture sentences: anything outside it (an imperative verb, a second
-    # directive, a bare object such as ``skip validation`` or ``comply``) is
-    # not matched, so the scope fails closed on unrecognised parentheticals.
-    _DISCOURSE_ASIDE_PATTERN = re.compile(
-        r"(?:"
-        r"but|however|yet|rather|though|although|instead|nevertheless|"
-        r"nonetheless|whereas|conversely|even\s+so|still|regardless|anyway|"
-        r"anyhow|"
-        r"in\s+fact|indeed|of\s+course|in\s+particular|particularly|"
-        r"specifically|notably|naturally|obviously|clearly|evidently|"
-        r"certainly|admittedly|arguably|presumably|after\s+all|"
-        r"for\s+that\s+matter|for\s+example|for\s+instance|that\s+is|namely|"
-        r"likewise|similarly|moreover|furthermore|additionally|besides|"
-        r"meanwhile|therefore|thus|hence|accordingly|consequently|"
-        r"generally|typically|usually|essentially|basically|ultimately|"
-        r"frankly|honestly|ideally|again|also|too|as\s+such|that\s+said|"
-        r"first(?:ly)?|second(?:ly)?|then|finally|importantly|"
-        r"(?:even\s+)?(?:temporarily|briefly|momentarily|ever)|"
-        r"но|однако|зато|напротив|вс[её]\s+же|впрочем|тем\s+не\s+менее|"
-        r"в\s+частности|в\s+самом\s+деле|на\s+самом\s+деле|конечно|"
-        r"разумеется|безусловно|действительно|естественно|очевидно|"
-        r"кстати|между\s+прочим|к\s+тому\s+же|кроме\s+того|более\s+того|"
-        r"тем\s+более|также|тоже|следовательно|таким\s+образом|итак|"
-        r"в\s+конце\s+концов|в\s+целом|в\s+общем|как\s+правило|обычно|"
-        r"по\s+сути|в\s+сущности|собственно|стало\s+быть|значит|"
-        r"вообще(?:-то)?|скорее|притом|прич[её]м|"
-        r"(?:даже\s+)?(?:временн\w*|кратковременн\w*|однократн\w*)"
-        r")",
-        flags=re.IGNORECASE,
-    )
-    # Deontic modals that select a following predicate (``не следует … X`` =
-    # "should not X").  When such a modal sits between the negation and the
-    # predicate the negation still carries through it, so a leading modal is
-    # transparent — unlike an ordinary main verb, which completes its own
-    # negated clause (``Не ждать, … пропускать`` = "do not wait; … skip").
-    _TRANSPARENT_MODAL_PATTERN = re.compile(
-        r"(?:следует|нужно|надо|должн\w*|стоит|требуется|необходимо|"
-        r"надлежит|полагается|прид[её]тся|приходится|"
-        r"should|must|ought|shall)\b",
-        flags=re.IGNORECASE,
-    )
-    # Positive execution / permission governor of a colon- or dash-introduced
-    # complement clause (``do the following:`` / ``делайте следующее:``): the
-    # negation still governs the listed predicate.  The verb slot stays open to
-    # any non-inverting imperative (structurally bounded to a short verb group
-    # closing on a demonstrative); prohibition governors are ruled out earlier
-    # as polarity inverters, so a novel governor needs no fixture enumeration.
-    _COMPLEMENT_INTRODUCER_PATTERN = re.compile(
-        r"(?:\w+\s+){1,3}(?:the\s+)?(?:following|this|that|below|these|those)|"
-        r"(?:\w+\s+){1,3}(?:следующе\w*|нижеследующе\w*|это|этого)",
-        flags=re.IGNORECASE,
-    )
-    # A negation whose immediate object is a prohibition verb is inverted:
-    # ``do not forbid X`` / ``не запрещайте X`` / ``not prohibited to X`` all
-    # license X, so such a negation must not be treated as protecting a later
-    # contradiction.  Bounded to the prohibition-verb class in both languages.
-    _NEGATION_INVERTER_PATTERN = re.compile(
-        r"\b(?:forbid\w*|prohibit\w*|disallow\w*|proscrib\w*)\b|"
-        r"\b(?:запрещ\w*|запрет\w*|воспрещ\w*|воспрет\w*)\b",
-        flags=re.IGNORECASE,
-    )
-    # ``|`` is a Markdown table-cell boundary: a negation in one cell does not
-    # reach a contradiction in another, so it fails closed like a line break.
-    _NEGATION_SCOPE_BOUNDARIES = (".", "!", "?", ";", "\n", "|")
-    _NEGATION_TOKEN_LIMIT = 64
 
     @classmethod
-    def _negation_reaches_match(cls, gap: str) -> bool:
-        """Return whether a negation still governs the matched predicate.
+    def _markdown_scan_units(cls, document: str) -> tuple[str, ...]:
+        """Return prose/table cells that can be checked without cross-talk.
 
-        The text between a negation and a later contradiction keeps the
-        negation in force only when it is filled by transparent material that
-        directly follows the negation: a deontic modal that carries the
-        negation onto a following predicate, then paired-comma discourse or
-        limiter asides, or a positive execution/permission complement
-        introduced by a colon or dash.  A prohibition governor inverts the
-        polarity; a contrastive conjunction, a clause-splitting comma, a
-        table-cell boundary or any unrecognised parenthetical ends the scope.
-        Position matters: an aside is only transparent while it still adjoins
-        the negation, so ``Не следует, в частности, пропускать`` is protected
-        while ``Не ждать, напротив, пропускать`` (a completed clause, then a
-        contrasting directive) is not.  Bounded grammatical categories fail
-        closed when polarity is ambiguous, so novel discourse markers and
-        complement governors are covered without enumerating fixtures.
+        Markdown hardens the scan before linguistic analysis: unescaped table
+        pipes end a cell, while pipes inside inline code remain ordinary text.
+        A normal Markdown line wrap is a space, not a clause boundary; a later
+        verb still has to pass the local-negation model below.  Fenced code is
+        intentionally excluded because it is an example, not a directive.
         """
-        association_gap = " ".join(gap.split())
+        units: list[str] = []
+        buffer: list[str] = []
+        inline_code = False
 
-        # A prohibition verb governed by the negation flips its polarity, so
-        # the later contradiction is no longer protected.
-        if cls._NEGATION_INVERTER_PATTERN.search(association_gap):
-            return False
+        def flush() -> None:
+            text = "".join(buffer).strip()
+            if text:
+                units.append(text)
+            buffer.clear()
 
-        # Peel transparent leading material adjoining the negation: deontic
-        # modals that carry the negation onto a following predicate, then
-        # paired-comma discourse/limiter asides.  Both delimiting commas of an
-        # aside are consumed so the residue is not mistaken for a new clause.
-        while association_gap:
-            modal = cls._TRANSPARENT_MODAL_PATTERN.match(association_gap)
-            if modal:
-                association_gap = association_gap[modal.end() :].lstrip()
+        for raw_line in document.splitlines(keepends=True):
+            if raw_line.lstrip().startswith(("```", "~~~")):
+                flush()
+                inline_code = False
                 continue
-            if association_gap.startswith(","):
-                aside_end = association_gap.find(",", 1)
-                if aside_end != -1:
-                    aside = association_gap[1:aside_end].strip()
-                    if aside and cls._DISCOURSE_ASIDE_PATTERN.fullmatch(aside):
-                        association_gap = association_gap[aside_end + 1 :].lstrip()
-                        continue
+            if not raw_line.strip():
+                flush()
+                continue
+            escaped = False
+            for character in raw_line:
+                if character == "`" and not escaped:
+                    inline_code = not inline_code
+                    buffer.append(character)
+                elif character == "|" and not inline_code and not escaped:
+                    flush()
+                elif character in ".!?;" and not inline_code:
+                    buffer.append(character)
+                    flush()
+                elif character == "\n":
+                    buffer.append(" ")
+                else:
+                    buffer.append(character)
+                escaped = character == "\\" and not escaped
+                if character != "\\":
+                    escaped = False
+        flush()
+        return tuple(units)
+
+    @classmethod
+    def _is_transparent_aside(cls, aside: str) -> bool:
+        """Recognise a bounded non-predicative comma aside in EN or RU."""
+        normalized = " ".join(aside.casefold().split())
+        if not normalized or len(re.findall(r"\w+", normalized, flags=re.UNICODE)) > 5:
+            return False
+        if normalized in cls._ENGLISH_FUNCTION_ASIDES or normalized in cls._RUSSIAN_FUNCTION_ASIDES:
+            return True
+        if re.fullmatch(r"to\s+(?:be\s+)?[\w'-]+(?:\s+[\w'-]+){0,2}", normalized):
+            return True
+        if re.fullmatch(r"(?:[\w'-]+ly\s+)?[\w'-]+ing", normalized):
+            return True
+        if re.fullmatch(r"(?:of|in|at|for|with|without|by|under)\s+[\w'-]+(?:\s+[\w'-]+){0,2}", normalized):
+            return True
+        if re.fullmatch(r"even\s+[\w'-]+ly", normalized):
+            return True
+
+        russian_tokens = re.findall(r"[а-яё-]+", normalized, flags=re.IGNORECASE)
+        if not russian_tokens:
+            return False
+        if any(cls._RUSSIAN_FINITE_VERB_ENDING.search(token) for token in russian_tokens):
+            return False
+        return bool(
+            re.fullmatch(r"(?:[а-яё-]+\s+){0,3}(?:говоря|временно|срочно|ясно)", normalized)
+            or re.fullmatch(r"(?:в|во|по|при|без|с|со|на)\s+[а-яё-]+(?:\s+[а-яё-]+){0,2}", normalized)
+        )
+
+    @classmethod
+    def _is_positive_list_complement(cls, head: str) -> bool:
+        """Allow only signed execution/permission list governors.
+
+        This is deliberately not a catch-all ``verb + demonstrative`` rule:
+        a governor whose polarity is not proven positive remains a violation.
+        """
+        words = re.findall(r"[\w'-]+", head.casefold(), flags=re.UNICODE)
+        if not words:
+            return False
+        demonstrative_index = next(
+            (
+                index for index, word in enumerate(words)
+                if word in {"following", "this", "that", "below", "these", "those"}
+                or word.startswith(("следующ", "нижеследующ"))
+            ),
+            None,
+        )
+        if demonstrative_index is None:
+            return False
+        return any(
+            word.startswith(stem)
+            for word in words[:demonstrative_index]
+            for stem in cls._POSITIVE_COMPLEMENT_STEMS
+        )
+
+    @classmethod
+    def _postfix_prohibits_match(cls, unit: str, match: re.Match[str]) -> bool:
+        """Recognise a passive prohibition immediately following a predicate."""
+        tail = unit[match.end() :]
+        words = re.findall(r"[\w'-]+", tail.casefold(), flags=re.UNICODE)
+        if not words:
+            return False
+        while words and words[0] in {"is", "are", "was", "were", "be", "being", "been", "это"}:
+            words.pop(0)
+        if len(words) >= 2 and words[0] in {"not", "не"} and words[1].startswith(("allow", "permit", "разреш", "позвол")):
+            return True
+        return bool(words) and words[0].startswith(cls._POSTFIX_PROHIBITION_STEMS)
+
+    @classmethod
+    def _negation_protects_match(cls, prefix: str, left_context: str) -> bool:
+        """Return whether the closest preceding negation prohibits this match."""
+        gap = " ".join(prefix.split())
+        while gap:
+            first, separator, remainder = gap.partition(" ")
+            modal = first.rstrip(",").casefold()
+            if modal in cls._DEONTIC_AUXILIARIES or modal.startswith("должн"):
+                gap = remainder.lstrip() if separator else ""
+                if first.endswith(",") and gap:
+                    gap = "," + gap
+                continue
+            if gap.startswith(","):
+                aside_end = gap.find(",", 1)
+                if aside_end == -1 or not cls._is_transparent_aside(gap[1:aside_end]):
+                    return False
+                gap = gap[aside_end + 1 :].lstrip()
+                continue
             break
 
-        if cls._CONTRAST_PATTERN.search(association_gap):
-            return False
+        if not gap:
+            return True
+        if re.fullmatch(r"under\s+(?:any|no|all)\s+[\w'-]+(?:\s+[\w'-]+){0,3}", gap, flags=re.IGNORECASE):
+            return True
+        if re.fullmatch(r"при\s+[^,]{1,80}(?:обстоятельств\w*|услов\w*)[^,]{0,40}", gap, flags=re.IGNORECASE):
+            return True
 
-        if "," in association_gap:
-            return False
+        complement = re.fullmatch(r"(?P<head>.+?)\s*[:—–]\s*", gap)
+        if complement:
+            return cls._is_positive_list_complement(complement.group("head"))
 
-        boundary_positions = tuple(
-            association_gap.find(boundary)
-            for boundary in (":", "—", "–")
-            if boundary in association_gap
-        )
-        if boundary_positions:
-            boundary = min(boundary_positions)
-            complement = association_gap[:boundary].rstrip()
-            continuation = association_gap[boundary + 1 :].strip()
-            return not continuation and bool(
-                cls._COMPLEMENT_INTRODUCER_PATTERN.fullmatch(complement)
-            )
-
-        return True
+        # A purpose infinitive/``чтобы`` is direct attachment to the later
+        # action.  Copular predicates (``it is not illegal to …``) are not a
+        # command, so they remain fail-closed even though they also end in
+        # ``to``.
+        if re.search(r"(?:\bto|\bчтобы)\s*$", gap, flags=re.IGNORECASE):
+            if re.search(r"\b(?:is|are|was|were|be|being|been)\s*$", left_context, flags=re.IGNORECASE):
+                return False
+            return len(re.findall(r"[\w'-]+", gap, flags=re.UNICODE)) >= 2
+        words = re.findall(r"[\w'-]+", gap.casefold(), flags=re.UNICODE)
+        if len(words) == 1 and words[0].startswith(cls._POSITIVE_REPORTING_STEMS):
+            return True
+        return False
 
     @classmethod
-    def _has_unnegated_match(cls, document: str, pattern: str) -> bool:
+    def _has_unnegated_match(cls, document, pattern: str) -> bool:
         """Return whether a contradiction appears outside a local negation.
 
-        Release documents intentionally contain truthful controls such as
-        ``Do not skip Telegram delivery`` and ``is not a backup``.  Keep the
-        original line and clause structure while looking backwards from each
-        match: sentence punctuation and newlines end the scope, contrastive
-        conjunctions split it, and only a bounded token prefix is inspected.
+        Every candidate is evaluated inside one Markdown scan unit.  The
+        nearest preceding negation may protect it only through a direct,
+        structurally recognised attachment; all other governors, nested
+        polarity and table-cell crossings remain visible as contradictions.
         """
-        for match in re.finditer(pattern, document, flags=re.IGNORECASE):
-            clause_start = max(
-                document.rfind(boundary, 0, match.start())
-                for boundary in cls._NEGATION_SCOPE_BOUNDARIES
-            )
-            scope = document[clause_start + 1 : match.start()]
-            tokens = list(re.finditer(r"\b[\w]+(?:[-'][\w]+)*\b", scope, flags=re.UNICODE))
-            if len(tokens) > cls._NEGATION_TOKEN_LIMIT:
-                scope = scope[tokens[-cls._NEGATION_TOKEN_LIMIT].start() :]
-
-            negations = list(cls._NEGATION_PATTERN.finditer(scope))
-            for negation in reversed(negations):
-                if cls._negation_reaches_match(scope[negation.end() :]):
-                    break
-            else:
+        units = cls._markdown_scan_units(document) if isinstance(document, str) else document
+        for unit in units:
+            for match in re.finditer(pattern, unit, flags=re.IGNORECASE):
+                if cls._postfix_prohibits_match(unit, match):
+                    continue
+                negations = [
+                    negation for negation in cls._NEGATION_PATTERN.finditer(unit[: match.start()])
+                ]
+                if negations:
+                    negation = negations[-1]
+                    if cls._negation_protects_match(
+                        unit[negation.end() : match.start()], unit[: negation.start()]
+                    ):
+                        continue
                 return True
         return False
 
@@ -3528,11 +3584,12 @@ class ReleaseDocumentationConsistencyTests(unittest.TestCase):
         for relative, clauses in cls.DELIVERY_CONTRACTS.items():
             raw_document = documents[relative]
             document = cls.normalize(raw_document)
+            units = cls._markdown_scan_units(raw_document)
             for clause in clauses:
                 if clause not in document:
                     errors.append(f"{relative}: missing delivery contract clause {clause}")
             for label, pattern in cls.DELIVERY_CONTRADICTION_PATTERNS:
-                if cls._has_unnegated_match(raw_document, pattern):
+                if cls._has_unnegated_match(units, pattern):
                     errors.append(f"{relative}: contradictory delivery clause ({label})")
         return errors
 
@@ -4188,6 +4245,93 @@ class ReleaseDocumentationConsistencyTests(unittest.TestCase):
                 with self.subTest(document=str(relative), case=name):
                     mutated = dict(documents)
                     mutated[relative] += f"\nNovel scope control: {statement}\n"
+                    errors = self.delivery_contract_errors(mutated)
+                    labels = tuple(
+                        error.split("contradictory delivery clause (", 1)[1][:-1]
+                        for error in errors
+                        if "contradictory delivery clause (" in error
+                    )
+                    self.assertEqual(labels, expected_labels, errors)
+
+    def test_delivery_guard_models_markdown_units_and_signed_governors(self) -> None:
+        """FAN-1521: exact EN/RU polarity and Markdown controls.
+
+        These controls use different phrasing from the signed-operator
+        inventories above.  They prove that scope comes from local syntax and
+        Markdown units: a soft wrap is not a clause break, a table cell is,
+        and an unknown governor must not turn an unsafe predicate into a safe
+        one merely because it follows a negator.
+        """
+        documents = self.read_documents()
+        cases = (
+            (
+                "non-finite EN aside",
+                "Do not, to make this plain, skip Telegram delivery.",
+                (),
+            ),
+            (
+                "non-finite RU aside",
+                "Не следует, без лишних сомнений, пропускать доставку в Telegram.",
+                (),
+            ),
+            ("soft-wrap EN", "Do not\nskip Telegram delivery.", ()),
+            ("soft-wrap RU", "Не следует\nпропускать доставку в Telegram.", ()),
+            (
+                "inline-code EN",
+                "Do not use `dry-run | release` to skip Telegram delivery.",
+                (),
+            ),
+            (
+                "inline-code RU",
+                "Не используйте `dry-run | release`, чтобы пропускать доставку в Telegram.",
+                (),
+            ),
+            (
+                "RU table cells never join into a contradiction",
+                "| Пропускайте доставку | в Telegram |",
+                (),
+            ),
+            (
+                "unknown EN complement fails closed",
+                "Do not debate the following: skip Telegram delivery.",
+                ("Telegram bypass (EN)",),
+            ),
+            (
+                "unknown RU complement fails closed",
+                "Не обсуждайте следующее: пропускать доставку в Telegram.",
+                ("Telegram bypass (RU)",),
+            ),
+            (
+                "EN predicate-shaped comma span",
+                "Do not, revise documentation, skip Telegram delivery.",
+                ("Telegram bypass (EN)",),
+            ),
+            (
+                "RU predicate-shaped comma span",
+                "Не, проверьте документы, пропускать доставку в Telegram.",
+                ("Telegram bypass (RU)",),
+            ),
+            (
+                "EN table cell boundary",
+                "| Do not wait | Skip Telegram delivery |",
+                ("Telegram bypass (EN)",),
+            ),
+            (
+                "positive permission predicate EN",
+                "Skipping Telegram delivery is permitted.",
+                ("Telegram bypass (EN)",),
+            ),
+            (
+                "positive permission predicate RU",
+                "Пропускать доставку в Telegram разрешено.",
+                ("Telegram bypass (RU)",),
+            ),
+        )
+        for name, statement, expected_labels in cases:
+            for relative in self.DELIVERY_CONTRACTS:
+                with self.subTest(document=str(relative), case=name):
+                    mutated = dict(documents)
+                    mutated[relative] += f"\nFAN-1521 control: {statement}\n"
                     errors = self.delivery_contract_errors(mutated)
                     labels = tuple(
                         error.split("contradictory delivery clause (", 1)[1][:-1]
