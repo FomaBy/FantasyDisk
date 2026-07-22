@@ -1161,14 +1161,7 @@ static func estimate_weapon_budget(character_id: String, weapon_config: Dictiona
 	return estimate_weapon_budget_for_stats(character_id, weapon_config, base_stats(character_id), apply_budget)
 
 
-static func estimate_weapon_budget_for_stats(
-	character_id: String,
-	weapon_config: Dictionary,
-	stats: Dictionary,
-	apply_budget := true,
-	run_modifiers := {},
-	include_ultimate := true
-) -> Dictionary:
+static func estimate_weapon_budget_for_stats(character_id: String, weapon_config: Dictionary, stats: Dictionary, apply_budget := true, run_modifiers := {}, include_ultimate := true) -> Dictionary:
 	var config := weapon_config.duplicate(true)
 	config["character_id"] = character_id
 	if not apply_budget:
@@ -1278,25 +1271,10 @@ static func estimate_crowd_clear_budget(character_id: String, weapon_config: Dic
 	return estimate_crowd_clear_budget_for_stats(character_id, weapon_config, target_count, base_stats(character_id), apply_budget)
 
 
-static func estimate_crowd_clear_budget_for_stats(
-	character_id: String,
-	weapon_config: Dictionary,
-	target_count: int,
-	stats: Dictionary,
-	apply_budget := true,
-	run_modifiers := {},
-	include_ultimate := true
-) -> Dictionary:
+static func estimate_crowd_clear_budget_for_stats(character_id: String, weapon_config: Dictionary, target_count: int, stats: Dictionary, apply_budget := true, run_modifiers := {}, include_ultimate := true) -> Dictionary:
 	var count: int = maxi(target_count, 1)
 	var profile := class_budget_profile(character_id)
-	var metrics := estimate_weapon_budget_for_stats(
-		character_id,
-		weapon_config,
-		stats,
-		apply_budget,
-		run_modifiers,
-		include_ultimate
-	)
+	var metrics := estimate_weapon_budget_for_stats(character_id, weapon_config, stats, apply_budget, run_modifiers, include_ultimate)
 	var tuning: Dictionary = weapon_config.get("budget_tuning", {})
 	var aoe_target := float(tuning.get(
 		"aoe_target",
