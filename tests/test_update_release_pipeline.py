@@ -3334,18 +3334,42 @@ class ReleaseDocumentationConsistencyTests(unittest.TestCase):
         r"\b(?:не|нельзя|никогда)\b)",
         flags=re.IGNORECASE,
     )
-    # Scope is established from Markdown structure and local syntax, never from
-    # a growing allow-list of example verbs.  The small inventories below are
-    # signed grammatical operators: deontic auxiliaries, negative-control roles
-    # that reverse or obscure complement polarity, assertion roles outside the
-    # supported list frame, and passive prohibition predicates.  A structurally
-    # valid demonstrative list frame is open-vocabulary except for the bounded
-    # negative roles; an unknown governor outside that frame remains fail-closed.
+    # Scope is established from Markdown structure and local syntax.  A
+    # demonstrative list-complement additionally needs a positively proven,
+    # bounded semantic role: surface syntax cannot distinguish an organising
+    # command from an inverse governor such as ``discourage``.  The inventories
+    # below are signed grammatical operators: deontic auxiliaries,
+    # safe list-complement roles, negative-control roles that reverse or obscure
+    # complement polarity, assertion roles outside the supported list frame,
+    # and passive prohibition predicates.
     _DEONTIC_AUXILIARIES = frozenset({
         "should", "must", "ought", "shall", "следует", "нужно", "надо",
         "стоит", "требуется", "необходимо", "надлежит", "полагается",
         "придётся", "придется", "приходится",
     })
+    # Each class contains only roles for which negating the governor
+    # unambiguously prohibits the embedded list item.  The longer stems
+    # deliberately normalize ordinary EN/RU inflections; short English ``do``
+    # forms stay exact so an unrelated word such as ``document`` cannot gain
+    # admission by prefix.
+    _SAFE_LIST_COMPLEMENT_GOVERNOR_ROLE_FORMS = {
+        "action_execution": frozenset({
+            "do", "does", "did", "doing", "use", "uses", "used", "using",
+        }),
+        "function_words": frozenset({"be", "been", "being", "out"}),
+    }
+    _SAFE_LIST_COMPLEMENT_GOVERNOR_ROLE_STEMS = {
+        "action_execution": (
+            "carry", "complet", "perform", "выполня", "дела", "осуществля",
+        ),
+        "planning_or_initiation": (
+            "commenc", "organiz", "organis", "plan", "schedul", "start",
+            "начина", "организ", "планир", "приступ",
+        ),
+        "directive_issuance": ("issu", "отдава"),
+        "permission_withholding": ("permit", "разреш"),
+        "tool_application": ("appl", "использ", "примен"),
+    }
     # Negative-control roles form a deny-list, not an admission vocabulary.
     # They either invert a negated governor (``do not refuse/avoid/veto X``)
     # or leave the truth of X opaque (``do not debate/doubt X``).  Extending
@@ -3493,12 +3517,26 @@ class ReleaseDocumentationConsistencyTests(unittest.TestCase):
         return any(word.startswith(stem) for stem in stems)
 
     @classmethod
-    def _is_structural_list_complement(cls, head: str) -> bool:
-        """Recognise an open-vocabulary demonstrative list-complement frame.
+    def _is_safe_list_complement_governor(cls, words: list[str]) -> bool:
+        """Require every governor token to prove a bounded safe role."""
+        safe_forms = frozenset().union(*cls._SAFE_LIST_COMPLEMENT_GOVERNOR_ROLE_FORMS.values())
+        safe_stems = tuple(
+            stem
+            for stems in cls._SAFE_LIST_COMPLEMENT_GOVERNOR_ROLE_STEMS.values()
+            for stem in stems
+        )
+        return bool(words) and all(
+            word in safe_forms or cls._starts_with_role(word, safe_stems)
+            for word in words
+        )
 
-        The frame, not an exemplar verb, establishes attachment.  Bounded
-        negative-control and prohibition roles remain fail-closed because
-        negating them licenses or leaves ambiguous the embedded action.
+    @classmethod
+    def _is_structural_list_complement(cls, head: str) -> bool:
+        """Recognise a demonstrative list complement with a safe governor.
+
+        The frame establishes attachment, while the governor must belong to a
+        bounded safe role class.  Unknown, inverse and opaque governors remain
+        fail-closed even when they fit the same local syntax.
         """
         normalized = " ".join(head.casefold().split())
         if not normalized or "," in normalized:
@@ -3520,11 +3558,7 @@ class ReleaseDocumentationConsistencyTests(unittest.TestCase):
         governor_words = re.findall(r"[\w'-]+", governor, flags=re.UNICODE)
         if not governor_words or cls._NEGATION_PATTERN.search(governor):
             return False
-        negative_roles = cls._NEGATIVE_CONTROL_GOVERNOR_STEMS + cls._POSTFIX_PROHIBITION_STEMS
-        return not any(
-            cls._starts_with_role(word, negative_roles)
-            for word in governor_words
-        )
+        return cls._is_safe_list_complement_governor(governor_words)
 
     @staticmethod
     def _has_matching_inline_code_span(text: str) -> bool:
@@ -3649,8 +3683,7 @@ class ReleaseDocumentationConsistencyTests(unittest.TestCase):
             purpose_words = re.findall(r"[\w'-]+", gap.casefold(), flags=re.UNICODE)
             if not purpose_words or not cls._has_matching_inline_code_span(gap):
                 return False
-            negative_roles = cls._NEGATIVE_CONTROL_GOVERNOR_STEMS + cls._POSTFIX_PROHIBITION_STEMS
-            return not cls._starts_with_role(purpose_words[0], negative_roles)
+            return cls._is_safe_list_complement_governor(purpose_words[:1])
         words = re.findall(r"[\w'-]+", gap.casefold(), flags=re.UNICODE)
         return bool(
             len(words) == 1
@@ -4582,6 +4615,84 @@ class ReleaseDocumentationConsistencyTests(unittest.TestCase):
                 with self.subTest(document=str(relative), case=name):
                     mutated = dict(documents)
                     mutated[relative] += f"\nFAN-1528 reproduction: {statement}\n"
+                    errors = self.delivery_contract_errors(mutated)
+                    labels = tuple(
+                        error.split("contradictory delivery clause (", 1)[1][:-1]
+                        for error in errors
+                        if "contradictory delivery clause (" in error
+                    )
+                    self.assertEqual(labels, expected_labels, errors)
+
+    def test_delivery_guard_fan1531_requires_proven_safe_governor_roles(self) -> None:
+        """FAN-1531: list and purpose governors default closed until proven safe."""
+        documents = self.read_documents()
+        cases = (
+            (
+                "safe base role EN",
+                "Do not organize the following action: skip Telegram delivery.",
+                (),
+            ),
+            (
+                "safe inflected role EN",
+                "The team must not be organizing the following action: skip Telegram delivery.",
+                (),
+            ),
+            (
+                "safe base role RU",
+                "Не организуйте следующее действие: пропускать доставку в Telegram.",
+                (),
+            ),
+            (
+                "safe inflected role RU",
+                "Вы не организовывали следующее действие: пропускать доставку в Telegram.",
+                (),
+            ),
+            (
+                "inverse list governor EN",
+                "Do not discourage the following action: skip Telegram delivery.",
+                ("Telegram bypass (EN)",),
+            ),
+            (
+                "inverse list governor EN with unseen role",
+                "Do not hinder the following action: skip Telegram delivery.",
+                ("Telegram bypass (EN)",),
+            ),
+            (
+                "opaque list governor EN",
+                "Do not catalogue the following action: skip Telegram delivery.",
+                ("Telegram bypass (EN)",),
+            ),
+            (
+                "inverse list governor RU",
+                "Не отговаривайте от следующего действия: пропускать доставку в Telegram.",
+                ("Telegram bypass (RU)",),
+            ),
+            (
+                "inverse list governor RU with unseen role",
+                "Не удерживайте от следующего действия: пропускать доставку в Telegram.",
+                ("Telegram bypass (RU)",),
+            ),
+            (
+                "opaque list governor RU",
+                "Не осуждайте следующее действие: пропускать доставку в Telegram.",
+                ("Telegram bypass (RU)",),
+            ),
+            (
+                "opaque inline-code purpose governor EN",
+                "Do not describe `dry-run | release` to skip Telegram delivery.",
+                ("Telegram bypass (EN)",),
+            ),
+            (
+                "opaque inline-code purpose governor RU",
+                "Не описывайте `dry-run | release`, чтобы пропускать доставку в Telegram.",
+                ("Telegram bypass (RU)",),
+            ),
+        )
+        for relative in self.DELIVERY_CONTRACTS:
+            for name, statement, expected_labels in cases:
+                with self.subTest(document=str(relative), case=name):
+                    mutated = dict(documents)
+                    mutated[relative] += f"\nFAN-1531 role control: {statement}\n"
                     errors = self.delivery_contract_errors(mutated)
                     labels = tuple(
                         error.split("contradictory delivery clause (", 1)[1][:-1]
