@@ -32,6 +32,7 @@ func _initialize() -> void:
 	_validate_meta(dataset)
 	_validate_weapon_rows(dataset)
 	_validate_class_rows(dataset)
+	_validate_class_corridor(dataset, report_text)
 	_validate_class_ultimate_oracle(dataset)
 	_validate_live_coverage(dataset)
 	_validate_csv(dataset)
@@ -192,6 +193,92 @@ func _validate_class_rows(dataset: Dictionary) -> void:
 		for score_key in ["solo_score", "aoe_score", "defense_score", "convenience_relative"]:
 			_check(float(row.get(score_key, 0.0)) > 0.0, "%s lacks %s" % [row.get("key", "?"), score_key])
 	_check(keys.size() == expected, "class-kit keys are not unique")
+
+
+func _validate_class_corridor(dataset: Dictionary, report_text: String) -> void:
+	var verifier := Generator.verify_class_corridor_artifacts(dataset)
+	_check(bool(verifier.get("ok", false)), "class corridor artifacts must match canonical three-axis status: %s" % "; ".join(verifier.get("errors", [])))
+	var expected_count := 0
+	var defense_only_rows := []
+	for row_value in dataset.get("class_rows", []):
+		var row: Dictionary = row_value
+		var expected_axes := _strict_corridor_axes(row)
+		var actual_status := Generator.class_corridor_status(float(row["solo_score"]), float(row["aoe_score"]), float(row["defense_score"]))
+		_check(_axis_names(actual_status.get("axes", [])) == expected_axes, "%s corridor axes differ from strict three-axis oracle" % row.get("key", "?"))
+		_check((str(row.get("outlier_flag", "")) != "ok") == not expected_axes.is_empty(), "%s outlier flag does not agree with strict three-axis oracle" % row.get("key", "?"))
+		if not expected_axes.is_empty():
+			expected_count += 1
+		if expected_axes == ["defense"]:
+			defense_only_rows.append(row)
+			_check(str(row.get("outlier_flag", "")) != "ok", "%s defense-only outlier is marked ok" % row.get("key", "?"))
+	_check(expected_count == 120, "three-axis class corridor union is %d, expected 120" % expected_count)
+	_check(defense_only_rows.size() == 15, "defense-only class corridor count is %d, expected 15" % defense_only_rows.size())
+	var summary: Array = (dataset.get("outliers", {}) as Dictionary).get("class_corridor_80_120", [])
+	_check(summary.size() == 120, "raw class corridor summary count is %d, expected 120" % summary.size())
+	for row_value in defense_only_rows:
+		var row: Dictionary = row_value
+		var matching_entries := []
+		for entry_value in summary:
+			var entry: Dictionary = entry_value
+			if str(entry.get("key", "")) == str(row["key"]):
+				matching_entries.append(entry)
+		_check(matching_entries.size() == 1, "%s defense-only row must have exactly one raw summary entry" % row["key"])
+		if matching_entries.size() == 1:
+			var entry: Dictionary = matching_entries[0]
+			_check(entry.get("axes", []) == ["defense"], "%s summary must explicitly list defense as its only outlier axis" % row["key"])
+			_check(is_equal_approx(float(entry.get("defense_vs_median", 0.0)), float(row["defense_score"])), "%s summary defense ratio differs from class row" % row["key"])
+	var lower_boundary := Generator.class_corridor_status(0.80, 1.0, 1.0)
+	var upper_boundary := Generator.class_corridor_status(1.0, 1.0, 1.20)
+	_check(not bool(lower_boundary.get("is_outlier", true)) and str(lower_boundary.get("flag", "")) == "ok", "0.80 must remain inside the class corridor")
+	_check(not bool(upper_boundary.get("is_outlier", true)) and str(upper_boundary.get("flag", "")) == "ok", "1.20 must remain inside the class corridor")
+	var multi_axis := Generator.class_corridor_status(0.799, 1.201, 0.799)
+	_check(_axis_names(multi_axis.get("axes", [])) == ["solo", "AoE", "defense"], "multi-axis corridor status must keep solo/AoE/defense order")
+	_check(str(multi_axis.get("flag", "")).contains("solo=0.80×") and str(multi_axis.get("flag", "")).contains("AoE=1.20×") and str(multi_axis.get("flag", "")).contains("defense=0.80×"), "multi-axis flag must name every triggered axis")
+	_check(report_text.contains("- Class corridor flags (outside 80–120% of the same level/scenario median across solo, AoE, or defense): **120**."), "Markdown class corridor counter does not publish the three-axis total")
+	if defense_only_rows.is_empty():
+		return
+	var defense_only_key := str((defense_only_rows[0] as Dictionary)["key"])
+	var score_mutation := dataset.duplicate(true)
+	for row_value in score_mutation["class_rows"]:
+		var row: Dictionary = row_value
+		if str(row["key"]) == defense_only_key:
+			row["defense_score"] = 1.0
+			break
+	_check(not bool(Generator.verify_class_corridor_artifacts(score_mutation).get("ok", true)), "defense-score mutation must fail closed when flag and summary are stale")
+	var flag_mutation := dataset.duplicate(true)
+	for row_value in flag_mutation["class_rows"]:
+		var row: Dictionary = row_value
+		if str(row["key"]) == defense_only_key:
+			row["outlier_flag"] = "ok"
+			break
+	_check(not bool(Generator.verify_class_corridor_artifacts(flag_mutation).get("ok", true)), "defense-only flag mutation must fail closed")
+	var summary_mutation := dataset.duplicate(true)
+	var mutated_summary: Array = (summary_mutation.get("outliers", {}) as Dictionary).get("class_corridor_80_120", [])
+	for index in range(mutated_summary.size()):
+		if str((mutated_summary[index] as Dictionary).get("key", "")) == defense_only_key:
+			mutated_summary.remove_at(index)
+			break
+	_check(not bool(Generator.verify_class_corridor_artifacts(summary_mutation).get("ok", true)), "defense-only summary-count mutation must fail closed")
+
+
+func _strict_corridor_axes(row: Dictionary) -> Array:
+	var axes := []
+	for axis in [
+		{"name": "solo", "score": float(row["solo_score"])},
+		{"name": "AoE", "score": float(row["aoe_score"])},
+		{"name": "defense", "score": float(row["defense_score"])},
+	]:
+		var score := float(axis["score"])
+		if score < 0.80 or score > 1.20:
+			axes.append(str(axis["name"]))
+	return axes
+
+
+func _axis_names(axes: Array) -> Array:
+	var names := []
+	for axis_value in axes:
+		names.append(str((axis_value as Dictionary).get("name", "")))
+	return names
 
 
 func _validate_class_ultimate_oracle(dataset: Dictionary) -> void:

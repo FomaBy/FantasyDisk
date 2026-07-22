@@ -36,6 +36,8 @@ const PACK_RADIUS := 42.0
 const A5_NORMAL_CONTACT_DAMAGE := 6.0
 const A5_NORMAL_CONTACT_RATE := 5.0
 const PLAYER_IFRAME_SECONDS := 0.32
+const CLASS_CORRIDOR_LOWER := 0.80
+const CLASS_CORRIDOR_UPPER := 1.20
 
 var _mode := "full"
 var _source_commit := "UNSPECIFIED"
@@ -587,7 +589,85 @@ func _apply_class_relative_scores(rows: Array) -> void:
 				ranked.sort_custom(func(a, b): return float(a["value"]) > float(b["value"]))
 				row["strengths"] = "%s %.2f× and %s %.2f× roster median." % [ranked[0]["name"], ranked[0]["value"], ranked[1]["name"], ranked[1]["value"]]
 				row["weaknesses"] = "%s %.2f× and %s %.2f× roster median." % [ranked[3]["name"], ranked[3]["value"], ranked[2]["name"], ranked[2]["value"]]
-				row["outlier_flag"] = "OUTLIER solo=%.2f× AoE=%.2f×" % [row["solo_score"], row["aoe_score"]] if float(row["solo_score"]) < 0.80 or float(row["solo_score"]) > 1.20 or float(row["aoe_score"]) < 0.80 or float(row["aoe_score"]) > 1.20 else "ok"
+				row["outlier_flag"] = str(class_corridor_status(float(row["solo_score"]), float(row["aoe_score"]), float(row["defense_score"])).get("flag", "ok"))
+
+
+static func class_corridor_status(solo_score: float, aoe_score: float, defense_score: float) -> Dictionary:
+	var axes := []
+	for axis in [
+		{"name": "solo", "value": solo_score},
+		{"name": "AoE", "value": aoe_score},
+		{"name": "defense", "value": defense_score},
+	]:
+		var value := float(axis["value"])
+		if value < CLASS_CORRIDOR_LOWER or value > CLASS_CORRIDOR_UPPER:
+			axes.append(axis)
+	var parts := PackedStringArray()
+	for axis_value in axes:
+		var axis: Dictionary = axis_value
+		parts.append("%s=%.2f×" % [axis["name"], axis["value"]])
+	return {
+		"is_outlier": not axes.is_empty(),
+		"axes": axes,
+		"flag": "OUTLIER %s" % "; ".join(parts) if not axes.is_empty() else "ok",
+	}
+
+
+static func _class_corridor_entry(row: Dictionary, status: Dictionary) -> Dictionary:
+	var axis_names := []
+	for axis_value in status.get("axes", []):
+		axis_names.append(str((axis_value as Dictionary).get("name", "")))
+	return {
+		"key": row["key"],
+		"axes": axis_names,
+		"solo_vs_median": snappedf(float(row["solo_score"]), 0.001),
+		"crowd_vs_median": snappedf(float(row["aoe_score"]), 0.001),
+		"defense_vs_median": snappedf(float(row["defense_score"]), 0.001),
+	}
+
+
+static func _class_corridor_entry_matches(actual: Dictionary, expected: Dictionary) -> bool:
+	if str(actual.get("key", "")) != str(expected.get("key", "")) or actual.get("axes", []) != expected.get("axes", []):
+		return false
+	for ratio_key in ["solo_vs_median", "crowd_vs_median", "defense_vs_median"]:
+		if not actual.has(ratio_key) or not is_equal_approx(float(actual[ratio_key]), float(expected[ratio_key])):
+			return false
+	return true
+
+
+static func verify_class_corridor_artifacts(dataset: Dictionary) -> Dictionary:
+	var errors := PackedStringArray()
+	var expected_entries := []
+	for row_value in dataset.get("class_rows", []):
+		var row: Dictionary = row_value
+		var status := class_corridor_status(float(row.get("solo_score", 0.0)), float(row.get("aoe_score", 0.0)), float(row.get("defense_score", 0.0)))
+		var expected_flag := str(status["flag"])
+		if str(row.get("outlier_flag", "")) != expected_flag:
+			errors.append("%s corridor flag differs from canonical status" % row.get("key", "?"))
+		if bool(status["is_outlier"]):
+			expected_entries.append(_class_corridor_entry(row, status))
+	var outliers: Dictionary = dataset.get("outliers", {})
+	var actual_entries = outliers.get("class_corridor_80_120", [])
+	if not actual_entries is Array:
+		errors.append("class corridor summary is not an array")
+		return {"ok": false, "errors": errors}
+	if actual_entries.size() != expected_entries.size():
+		errors.append("class corridor summary count %d differs from canonical %d" % [actual_entries.size(), expected_entries.size()])
+	var actual_by_key := {}
+	for entry_value in actual_entries:
+		var entry: Dictionary = entry_value
+		var key := str(entry.get("key", ""))
+		if actual_by_key.has(key):
+			errors.append("class corridor summary duplicates %s" % key)
+		actual_by_key[key] = entry
+	for expected_value in expected_entries:
+		var expected: Dictionary = expected_value
+		var key := str(expected["key"])
+		if not actual_by_key.has(key):
+			errors.append("class corridor summary misses %s" % key)
+		elif not _class_corridor_entry_matches(actual_by_key[key], expected):
+			errors.append("class corridor summary differs for %s" % key)
+	return {"ok": errors.is_empty(), "errors": errors}
 
 
 func _apply_live_evidence_to_rows(rows: Array, parity: Array) -> void:
@@ -747,19 +827,11 @@ func _teardown() -> void:
 
 func _outliers(class_rows: Array, parity: Array) -> Dictionary:
 	var class_outliers := []
-	for level in LEVELS:
-		for scenario_id in SCENARIO_IDS:
-			var scoped := []
-			for row in class_rows:
-				if row["level"] == level and row["scenario"] == scenario_id:
-					scoped.append(row)
-			var solo_median := _median_metric(scoped, "mean_solo_dpm")
-			var crowd_median := _median_metric(scoped, "mean_crowd_10_dpm")
-			for row in scoped:
-				var solo_ratio := float(row["mean_solo_dpm"]) / maxf(solo_median, 0.001)
-				var crowd_ratio := float(row["mean_crowd_10_dpm"]) / maxf(crowd_median, 0.001)
-				if solo_ratio < 0.80 or solo_ratio > 1.20 or crowd_ratio < 0.80 or crowd_ratio > 1.20:
-					class_outliers.append({"key": row["key"], "solo_vs_median": snappedf(solo_ratio, 0.001), "crowd_vs_median": snappedf(crowd_ratio, 0.001)})
+	for row_value in class_rows:
+		var row: Dictionary = row_value
+		var status := class_corridor_status(float(row["solo_score"]), float(row["aoe_score"]), float(row["defense_score"]))
+		if bool(status["is_outlier"]):
+			class_outliers.append(_class_corridor_entry(row, status))
 	var parity_outliers := []
 	for row in parity:
 		if absf(float(row.get("solo_delta_pct", 0.0))) > 35.0 or absf(float(row.get("pack_delta_pct", 0.0))) > 35.0:
@@ -796,6 +868,10 @@ func _validate_dataset(dataset: Dictionary) -> void:
 		_errors.append("Atlas upper-bound contract mismatch")
 	if _mode == "full" and (dataset["formula_live_parity"] as Array).size() != pairs.size():
 		_errors.append("live parity does not cover every runtime pair")
+	var corridor_verification := verify_class_corridor_artifacts(dataset)
+	if not bool(corridor_verification.get("ok", false)):
+		for error_value in corridor_verification.get("errors", []):
+			_errors.append(str(error_value))
 
 
 func _csv(dataset: Dictionary) -> String:
@@ -864,7 +940,7 @@ func _markdown(dataset: Dictionary) -> String:
 	lines.append("")
 	lines.append("## Outliers and conclusions")
 	lines.append("")
-	lines.append("- Class corridor flags (outside 80–120%% of the same level/scenario median): **%d**." % (dataset["outliers"]["class_corridor_80_120"] as Array).size())
+	lines.append("- Class corridor flags (outside 80–120%% of the same level/scenario median across solo, AoE, or defense): **%d**." % (dataset["outliers"]["class_corridor_80_120"] as Array).size())
 	lines.append("- Formula/live differences over 35%% on either axis: **%d**. These are instrumentation/tuning investigation candidates, not automatic nerf/buff decisions." % (dataset["outliers"]["formula_live_delta_over_35pct"] as Array).size())
 	lines.append("- Raw outlier keys and exact ratios are in `raw.json`; the complete numeric matrix is in `per_weapon.csv`.")
 	lines.append("- No balance values or mechanics were changed by FAN-1438.")

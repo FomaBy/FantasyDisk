@@ -1241,7 +1241,14 @@ Schema-6 flat/cadence/geometry/axis/final профиль берётся из к�
 ветки, у которых в runtime отдельные consumers. Условные control, timed absorb,
 one-hit ward и death-save не маскируются под постоянный shield HP.
 
+Class-kit corridor использует один строгий контракт для `solo`, `AoE` и
+`defense`: выбросом считается только значение `<0.80×` или `>1.20×` медианы
+того же level/scenario; ровно `0.80×` и `1.20×` остаются внутри коридора. Флаг
+строки и raw summary получают результат из одного helper, поэтому перечисляют
+все сработавшие оси в стабильном порядке `solo`, `AoE`, `defense`.
+
 Гейт: `tests/a5_balance_report_integrity_test.gd`. Он динамически проверяет
 полное декартово покрытие ростера, общие 19-точечные билды, расходы и связность
 Atlas 50/59, отсутствие ульты в weapon rows, class-kit строки, полное множество
-attack modes/final mechanics в live evidence и согласованность CSV/raw/Markdown.
+attack modes/final mechanics в live evidence и согласованность CSV/raw/Markdown,
+включая fail-closed совпадение corridor-флагов и summary по трём осям.

@@ -492,7 +492,7 @@
 			"mean_ehp": 109.45,
 			"mean_solo_dpm": 2747.6,
 			"mean_ttd_seconds": 3.54,
-			"outlier_flag": "ok",
+			"outlier_flag": "OUTLIER defense=1.48×",
 			"roles": [
 				"sword:solo",
 				"axe:crowd",
@@ -517,7 +517,7 @@
 			"mean_ehp": 109.45,
 			"mean_solo_dpm": 6612.67,
 			"mean_ttd_seconds": 3.54,
-			"outlier_flag": "ok",
+			"outlier_flag": "OUTLIER defense=1.48×",
 			"roles": [
 				"sword:solo",
 				"axe:crowd",
@@ -542,7 +542,7 @@
 			"mean_ehp": 109.45,
 			"mean_solo_dpm": 6612.67,
 			"mean_ttd_seconds": 6.6000000000000005,
-			"outlier_flag": "ok",
+			"outlier_flag": "OUTLIER defense=1.48×",
 			"roles": [
 				"sword:solo",
 				"axe:crowd",
@@ -567,7 +567,7 @@
 			"mean_ehp": 109.45,
 			"mean_solo_dpm": 6612.67,
 			"mean_ttd_seconds": 6.6000000000000005,
-			"outlier_flag": "ok",
+			"outlier_flag": "OUTLIER defense=1.48×",
 			"roles": [
 				"sword:solo",
 				"axe:crowd",
@@ -592,7 +592,7 @@
 			"mean_ehp": 120.62,
 			"mean_solo_dpm": 14145.800000000001,
 			"mean_ttd_seconds": 3.9,
-			"outlier_flag": "ok",
+			"outlier_flag": "OUTLIER defense=1.52×",
 			"roles": [
 				"sword:solo",
 				"axe:crowd",
@@ -617,7 +617,7 @@
 			"mean_ehp": 120.62,
 			"mean_solo_dpm": 25943.16,
 			"mean_ttd_seconds": 3.9,
-			"outlier_flag": "ok",
+			"outlier_flag": "OUTLIER defense=1.52×",
 			"roles": [
 				"sword:solo",
 				"axe:crowd",
@@ -642,7 +642,7 @@
 			"mean_ehp": 120.62,
 			"mean_solo_dpm": 25943.16,
 			"mean_ttd_seconds": 7.08,
-			"outlier_flag": "ok",
+			"outlier_flag": "OUTLIER defense=1.52×",
 			"roles": [
 				"sword:solo",
 				"axe:crowd",
@@ -667,7 +667,7 @@
 			"mean_ehp": 120.62,
 			"mean_solo_dpm": 25943.16,
 			"mean_ttd_seconds": 7.08,
-			"outlier_flag": "ok",
+			"outlier_flag": "OUTLIER defense=1.52×",
 			"roles": [
 				"sword:solo",
 				"axe:crowd",
@@ -692,7 +692,7 @@
 			"mean_ehp": 93.72,
 			"mean_solo_dpm": 2267.4,
 			"mean_ttd_seconds": 3.0300000000000002,
-			"outlier_flag": "OUTLIER solo=0.74× AoE=0.74×",
+			"outlier_flag": "OUTLIER solo=0.74×; AoE=0.74×; defense=1.27×",
 			"roles": [
 				"soldier_rifle:defense",
 				"soldier_grenade:aoe",
@@ -717,7 +717,7 @@
 			"mean_ehp": 93.72,
 			"mean_solo_dpm": 5863.41,
 			"mean_ttd_seconds": 3.0300000000000002,
-			"outlier_flag": "OUTLIER solo=0.76× AoE=0.80×",
+			"outlier_flag": "OUTLIER solo=0.76×; AoE=0.80×; defense=1.27×",
 			"roles": [
 				"soldier_rifle:defense",
 				"soldier_grenade:aoe",
@@ -742,7 +742,7 @@
 			"mean_ehp": 93.72,
 			"mean_solo_dpm": 5863.41,
 			"mean_ttd_seconds": 5.95,
-			"outlier_flag": "OUTLIER solo=0.76× AoE=0.80×",
+			"outlier_flag": "OUTLIER solo=0.76×; AoE=0.80×; defense=1.27×",
 			"roles": [
 				"soldier_rifle:defense",
 				"soldier_grenade:aoe",
@@ -767,7 +767,7 @@
 			"mean_ehp": 93.72,
 			"mean_solo_dpm": 5863.41,
 			"mean_ttd_seconds": 5.95,
-			"outlier_flag": "OUTLIER solo=0.76× AoE=0.80×",
+			"outlier_flag": "OUTLIER solo=0.76×; AoE=0.80×; defense=1.27×",
 			"roles": [
 				"soldier_rifle:defense",
 				"soldier_grenade:aoe",
@@ -792,7 +792,7 @@
 			"mean_ehp": 100.10000000000001,
 			"mean_solo_dpm": 11312.4,
 			"mean_ttd_seconds": 3.23,
-			"outlier_flag": "OUTLIER solo=0.74× AoE=0.75×",
+			"outlier_flag": "OUTLIER solo=0.74×; AoE=0.75×; defense=1.26×",
 			"roles": [
 				"soldier_rifle:defense",
 				"soldier_grenade:aoe",
@@ -817,7 +817,7 @@
 			"mean_ehp": 100.10000000000001,
 			"mean_solo_dpm": 21072.71,
 			"mean_ttd_seconds": 3.23,
-			"outlier_flag": "OUTLIER solo=0.81× AoE=0.78×",
+			"outlier_flag": "OUTLIER AoE=0.78×; defense=1.26×",
 			"roles": [
 				"soldier_rifle:defense",
 				"soldier_grenade:aoe",
@@ -842,7 +842,7 @@
 			"mean_ehp": 100.10000000000001,
 			"mean_solo_dpm": 21072.71,
 			"mean_ttd_seconds": 6.21,
-			"outlier_flag": "OUTLIER solo=0.81× AoE=0.78×",
+			"outlier_flag": "OUTLIER AoE=0.78×; defense=1.26×",
 			"roles": [
 				"soldier_rifle:defense",
 				"soldier_grenade:aoe",
@@ -867,7 +867,7 @@
 			"mean_ehp": 100.10000000000001,
 			"mean_solo_dpm": 21072.71,
 			"mean_ttd_seconds": 6.21,
-			"outlier_flag": "OUTLIER solo=0.81× AoE=0.78×",
+			"outlier_flag": "OUTLIER AoE=0.78×; defense=1.26×",
 			"roles": [
 				"soldier_rifle:defense",
 				"soldier_grenade:aoe",
@@ -917,7 +917,7 @@
 			"mean_ehp": 61.49,
 			"mean_solo_dpm": 7805.93,
 			"mean_ttd_seconds": 1.99,
-			"outlier_flag": "OUTLIER solo=1.01× AoE=1.22×",
+			"outlier_flag": "OUTLIER AoE=1.22×",
 			"roles": [
 				"thief_coin_pouch:crowd",
 				"thief_shadow_cloak:solo",
@@ -942,7 +942,7 @@
 			"mean_ehp": 61.49,
 			"mean_solo_dpm": 7805.93,
 			"mean_ttd_seconds": 4.59,
-			"outlier_flag": "OUTLIER solo=1.01× AoE=1.22×",
+			"outlier_flag": "OUTLIER AoE=1.22×",
 			"roles": [
 				"thief_coin_pouch:crowd",
 				"thief_shadow_cloak:solo",
@@ -967,7 +967,7 @@
 			"mean_ehp": 61.49,
 			"mean_solo_dpm": 7805.93,
 			"mean_ttd_seconds": 4.59,
-			"outlier_flag": "OUTLIER solo=1.01× AoE=1.22×",
+			"outlier_flag": "OUTLIER AoE=1.22×",
 			"roles": [
 				"thief_coin_pouch:crowd",
 				"thief_shadow_cloak:solo",
@@ -1092,7 +1092,7 @@
 			"mean_ehp": 42.34,
 			"mean_solo_dpm": 1914.0,
 			"mean_ttd_seconds": 1.37,
-			"outlier_flag": "OUTLIER solo=0.63× AoE=0.76×",
+			"outlier_flag": "OUTLIER solo=0.63×; AoE=0.76×; defense=0.57×",
 			"roles": [
 				"elementalist_orb_ring:aoe",
 				"elementalist_prism_focus:crowd",
@@ -1117,7 +1117,7 @@
 			"mean_ehp": 42.34,
 			"mean_solo_dpm": 3463.54,
 			"mean_ttd_seconds": 1.37,
-			"outlier_flag": "OUTLIER solo=0.45× AoE=0.84×",
+			"outlier_flag": "OUTLIER solo=0.45×; defense=0.57×",
 			"roles": [
 				"elementalist_orb_ring:aoe",
 				"elementalist_prism_focus:crowd",
@@ -1142,7 +1142,7 @@
 			"mean_ehp": 42.34,
 			"mean_solo_dpm": 3463.54,
 			"mean_ttd_seconds": 3.7800000000000002,
-			"outlier_flag": "OUTLIER solo=0.45× AoE=0.84×",
+			"outlier_flag": "OUTLIER solo=0.45×; defense=0.57×",
 			"roles": [
 				"elementalist_orb_ring:aoe",
 				"elementalist_prism_focus:crowd",
@@ -1167,7 +1167,7 @@
 			"mean_ehp": 42.34,
 			"mean_solo_dpm": 3463.54,
 			"mean_ttd_seconds": 3.7800000000000002,
-			"outlier_flag": "OUTLIER solo=0.45× AoE=0.84×",
+			"outlier_flag": "OUTLIER solo=0.45×; defense=0.57×",
 			"roles": [
 				"elementalist_orb_ring:aoe",
 				"elementalist_prism_focus:crowd",
@@ -1192,7 +1192,7 @@
 			"mean_ehp": 46.95,
 			"mean_solo_dpm": 9333.4,
 			"mean_ttd_seconds": 1.52,
-			"outlier_flag": "OUTLIER solo=0.61× AoE=0.75×",
+			"outlier_flag": "OUTLIER solo=0.61×; AoE=0.75×; defense=0.59×",
 			"roles": [
 				"elementalist_orb_ring:aoe",
 				"elementalist_prism_focus:crowd",
@@ -1217,7 +1217,7 @@
 			"mean_ehp": 46.95,
 			"mean_solo_dpm": 14497.18,
 			"mean_ttd_seconds": 1.52,
-			"outlier_flag": "OUTLIER solo=0.56× AoE=0.94×",
+			"outlier_flag": "OUTLIER solo=0.56×; defense=0.59×",
 			"roles": [
 				"elementalist_orb_ring:aoe",
 				"elementalist_prism_focus:crowd",
@@ -1242,7 +1242,7 @@
 			"mean_ehp": 46.95,
 			"mean_solo_dpm": 14497.18,
 			"mean_ttd_seconds": 3.98,
-			"outlier_flag": "OUTLIER solo=0.56× AoE=0.94×",
+			"outlier_flag": "OUTLIER solo=0.56×; defense=0.59×",
 			"roles": [
 				"elementalist_orb_ring:aoe",
 				"elementalist_prism_focus:crowd",
@@ -1267,7 +1267,7 @@
 			"mean_ehp": 46.95,
 			"mean_solo_dpm": 14497.18,
 			"mean_ttd_seconds": 3.98,
-			"outlier_flag": "OUTLIER solo=0.56× AoE=0.94×",
+			"outlier_flag": "OUTLIER solo=0.56×; defense=0.59×",
 			"roles": [
 				"elementalist_orb_ring:aoe",
 				"elementalist_prism_focus:crowd",
@@ -1292,7 +1292,7 @@
 			"mean_ehp": 110.24000000000001,
 			"mean_solo_dpm": 5186.2,
 			"mean_ttd_seconds": 3.56,
-			"outlier_flag": "OUTLIER solo=1.70× AoE=1.14×",
+			"outlier_flag": "OUTLIER solo=1.70×; defense=1.49×",
 			"roles": [
 				"sniper_deadeye_rifle:solo",
 				"sniper_spotter_scope:solo",
@@ -1317,7 +1317,7 @@
 			"mean_ehp": 110.24000000000001,
 			"mean_solo_dpm": 13617.880000000001,
 			"mean_ttd_seconds": 3.56,
-			"outlier_flag": "OUTLIER solo=1.77× AoE=1.36×",
+			"outlier_flag": "OUTLIER solo=1.77×; AoE=1.36×; defense=1.49×",
 			"roles": [
 				"sniper_deadeye_rifle:solo",
 				"sniper_spotter_scope:solo",
@@ -1342,7 +1342,7 @@
 			"mean_ehp": 110.24000000000001,
 			"mean_solo_dpm": 13617.880000000001,
 			"mean_ttd_seconds": 6.640000000000001,
-			"outlier_flag": "OUTLIER solo=1.77× AoE=1.36×",
+			"outlier_flag": "OUTLIER solo=1.77×; AoE=1.36×; defense=1.49×",
 			"roles": [
 				"sniper_deadeye_rifle:solo",
 				"sniper_spotter_scope:solo",
@@ -1367,7 +1367,7 @@
 			"mean_ehp": 110.24000000000001,
 			"mean_solo_dpm": 13617.880000000001,
 			"mean_ttd_seconds": 6.640000000000001,
-			"outlier_flag": "OUTLIER solo=1.77× AoE=1.36×",
+			"outlier_flag": "OUTLIER solo=1.77×; AoE=1.36×; defense=1.49×",
 			"roles": [
 				"sniper_deadeye_rifle:solo",
 				"sniper_spotter_scope:solo",
@@ -1392,7 +1392,7 @@
 			"mean_ehp": 117.94,
 			"mean_solo_dpm": 25203.4,
 			"mean_ttd_seconds": 3.81,
-			"outlier_flag": "OUTLIER solo=1.65× AoE=1.12×",
+			"outlier_flag": "OUTLIER solo=1.65×; defense=1.48×",
 			"roles": [
 				"sniper_deadeye_rifle:solo",
 				"sniper_spotter_scope:solo",
@@ -1417,7 +1417,7 @@
 			"mean_ehp": 117.94,
 			"mean_solo_dpm": 47671.3,
 			"mean_ttd_seconds": 3.81,
-			"outlier_flag": "OUTLIER solo=1.84× AoE=1.11×",
+			"outlier_flag": "OUTLIER solo=1.84×; defense=1.48×",
 			"roles": [
 				"sniper_deadeye_rifle:solo",
 				"sniper_spotter_scope:solo",
@@ -1442,7 +1442,7 @@
 			"mean_ehp": 117.94,
 			"mean_solo_dpm": 47671.3,
 			"mean_ttd_seconds": 6.96,
-			"outlier_flag": "OUTLIER solo=1.84× AoE=1.11×",
+			"outlier_flag": "OUTLIER solo=1.84×; defense=1.48×",
 			"roles": [
 				"sniper_deadeye_rifle:solo",
 				"sniper_spotter_scope:solo",
@@ -1467,7 +1467,7 @@
 			"mean_ehp": 117.94,
 			"mean_solo_dpm": 47671.3,
 			"mean_ttd_seconds": 6.96,
-			"outlier_flag": "OUTLIER solo=1.84× AoE=1.11×",
+			"outlier_flag": "OUTLIER solo=1.84×; defense=1.48×",
 			"roles": [
 				"sniper_deadeye_rifle:solo",
 				"sniper_spotter_scope:solo",
@@ -1517,7 +1517,7 @@
 			"mean_ehp": 73.84,
 			"mean_solo_dpm": 5408.35,
 			"mean_ttd_seconds": 2.39,
-			"outlier_flag": "OUTLIER solo=0.70× AoE=0.89×",
+			"outlier_flag": "OUTLIER solo=0.70×",
 			"roles": [
 				"priest_reliquary:defense",
 				"priest_censer:defense",
@@ -1542,7 +1542,7 @@
 			"mean_ehp": 73.84,
 			"mean_solo_dpm": 5408.35,
 			"mean_ttd_seconds": 5.11,
-			"outlier_flag": "OUTLIER solo=0.70× AoE=0.89×",
+			"outlier_flag": "OUTLIER solo=0.70×",
 			"roles": [
 				"priest_reliquary:defense",
 				"priest_censer:defense",
@@ -1567,7 +1567,7 @@
 			"mean_ehp": 73.84,
 			"mean_solo_dpm": 5408.35,
 			"mean_ttd_seconds": 5.11,
-			"outlier_flag": "OUTLIER solo=0.70× AoE=0.89×",
+			"outlier_flag": "OUTLIER solo=0.70×",
 			"roles": [
 				"priest_reliquary:defense",
 				"priest_censer:defense",
@@ -1692,7 +1692,7 @@
 			"mean_ehp": 57.89,
 			"mean_solo_dpm": 3239.6,
 			"mean_ttd_seconds": 1.87,
-			"outlier_flag": "OUTLIER solo=1.06× AoE=1.41×",
+			"outlier_flag": "OUTLIER AoE=1.41×; defense=0.78×",
 			"roles": [
 				"biologist_spore_lens:crowd",
 				"biologist_sample_injector:solo",
@@ -1717,7 +1717,7 @@
 			"mean_ehp": 57.89,
 			"mean_solo_dpm": 8790.23,
 			"mean_ttd_seconds": 1.87,
-			"outlier_flag": "OUTLIER solo=1.14× AoE=2.10×",
+			"outlier_flag": "OUTLIER AoE=2.10×; defense=0.78×",
 			"roles": [
 				"biologist_spore_lens:crowd",
 				"biologist_sample_injector:solo",
@@ -1742,7 +1742,7 @@
 			"mean_ehp": 57.89,
 			"mean_solo_dpm": 8790.23,
 			"mean_ttd_seconds": 4.44,
-			"outlier_flag": "OUTLIER solo=1.14× AoE=2.10×",
+			"outlier_flag": "OUTLIER AoE=2.10×; defense=0.78×",
 			"roles": [
 				"biologist_spore_lens:crowd",
 				"biologist_sample_injector:solo",
@@ -1767,7 +1767,7 @@
 			"mean_ehp": 57.89,
 			"mean_solo_dpm": 8790.23,
 			"mean_ttd_seconds": 4.44,
-			"outlier_flag": "OUTLIER solo=1.14× AoE=2.10×",
+			"outlier_flag": "OUTLIER AoE=2.10×; defense=0.78×",
 			"roles": [
 				"biologist_spore_lens:crowd",
 				"biologist_sample_injector:solo",
@@ -1792,7 +1792,7 @@
 			"mean_ehp": 65.31,
 			"mean_solo_dpm": 16237.800000000001,
 			"mean_ttd_seconds": 2.12,
-			"outlier_flag": "OUTLIER solo=1.06× AoE=1.37×",
+			"outlier_flag": "OUTLIER AoE=1.37×",
 			"roles": [
 				"biologist_spore_lens:crowd",
 				"biologist_sample_injector:solo",
@@ -1817,7 +1817,7 @@
 			"mean_ehp": 65.31,
 			"mean_solo_dpm": 30943.24,
 			"mean_ttd_seconds": 2.12,
-			"outlier_flag": "OUTLIER solo=1.19× AoE=1.67×",
+			"outlier_flag": "OUTLIER AoE=1.67×",
 			"roles": [
 				"biologist_spore_lens:crowd",
 				"biologist_sample_injector:solo",
@@ -1842,7 +1842,7 @@
 			"mean_ehp": 65.31,
 			"mean_solo_dpm": 30943.24,
 			"mean_ttd_seconds": 4.76,
-			"outlier_flag": "OUTLIER solo=1.19× AoE=1.67×",
+			"outlier_flag": "OUTLIER AoE=1.67×",
 			"roles": [
 				"biologist_spore_lens:crowd",
 				"biologist_sample_injector:solo",
@@ -1867,7 +1867,7 @@
 			"mean_ehp": 65.31,
 			"mean_solo_dpm": 30943.24,
 			"mean_ttd_seconds": 4.76,
-			"outlier_flag": "OUTLIER solo=1.19× AoE=1.67×",
+			"outlier_flag": "OUTLIER AoE=1.67×",
 			"roles": [
 				"biologist_spore_lens:crowd",
 				"biologist_sample_injector:solo",
@@ -1892,7 +1892,7 @@
 			"mean_ehp": 183.77,
 			"mean_solo_dpm": 2479.6,
 			"mean_ttd_seconds": 5.95,
-			"outlier_flag": "ok",
+			"outlier_flag": "OUTLIER defense=2.48×",
 			"roles": [
 				"robot_magnetic_anchor:defense",
 				"robot_hydraulic_press:crowd",
@@ -1917,7 +1917,7 @@
 			"mean_ehp": 202.0,
 			"mean_solo_dpm": 3968.78,
 			"mean_ttd_seconds": 6.54,
-			"outlier_flag": "OUTLIER solo=0.52× AoE=0.71×",
+			"outlier_flag": "OUTLIER solo=0.52×; AoE=0.71×; defense=2.73×",
 			"roles": [
 				"robot_magnetic_anchor:defense",
 				"robot_hydraulic_press:crowd",
@@ -1942,7 +1942,7 @@
 			"mean_ehp": 202.0,
 			"mean_solo_dpm": 3968.78,
 			"mean_ttd_seconds": 10.52,
-			"outlier_flag": "OUTLIER solo=0.52× AoE=0.71×",
+			"outlier_flag": "OUTLIER solo=0.52×; AoE=0.71×; defense=2.73×",
 			"roles": [
 				"robot_magnetic_anchor:defense",
 				"robot_hydraulic_press:crowd",
@@ -1967,7 +1967,7 @@
 			"mean_ehp": 202.0,
 			"mean_solo_dpm": 3968.78,
 			"mean_ttd_seconds": 10.52,
-			"outlier_flag": "OUTLIER solo=0.52× AoE=0.71×",
+			"outlier_flag": "OUTLIER solo=0.52×; AoE=0.71×; defense=2.73×",
 			"roles": [
 				"robot_magnetic_anchor:defense",
 				"robot_hydraulic_press:crowd",
@@ -1992,7 +1992,7 @@
 			"mean_ehp": 200.34,
 			"mean_solo_dpm": 12280.2,
 			"mean_ttd_seconds": 6.48,
-			"outlier_flag": "ok",
+			"outlier_flag": "OUTLIER defense=2.52×",
 			"roles": [
 				"robot_magnetic_anchor:defense",
 				"robot_hydraulic_press:crowd",
@@ -2017,7 +2017,7 @@
 			"mean_ehp": 220.21,
 			"mean_solo_dpm": 17890.39,
 			"mean_ttd_seconds": 7.13,
-			"outlier_flag": "OUTLIER solo=0.69× AoE=0.85×",
+			"outlier_flag": "OUTLIER solo=0.69×; defense=2.77×",
 			"roles": [
 				"robot_magnetic_anchor:defense",
 				"robot_hydraulic_press:crowd",
@@ -2042,7 +2042,7 @@
 			"mean_ehp": 220.21,
 			"mean_solo_dpm": 17890.39,
 			"mean_ttd_seconds": 11.290000000000001,
-			"outlier_flag": "OUTLIER solo=0.69× AoE=0.85×",
+			"outlier_flag": "OUTLIER solo=0.69×; defense=2.77×",
 			"roles": [
 				"robot_magnetic_anchor:defense",
 				"robot_hydraulic_press:crowd",
@@ -2067,7 +2067,7 @@
 			"mean_ehp": 220.21,
 			"mean_solo_dpm": 17890.39,
 			"mean_ttd_seconds": 11.290000000000001,
-			"outlier_flag": "OUTLIER solo=0.69× AoE=0.85×",
+			"outlier_flag": "OUTLIER solo=0.69×; defense=2.77×",
 			"roles": [
 				"robot_magnetic_anchor:defense",
 				"robot_hydraulic_press:crowd",
@@ -2117,7 +2117,7 @@
 			"mean_ehp": 74.03,
 			"mean_solo_dpm": 14109.86,
 			"mean_ttd_seconds": 2.39,
-			"outlier_flag": "OUTLIER solo=1.83× AoE=1.95×",
+			"outlier_flag": "OUTLIER solo=1.83×; AoE=1.95×",
 			"roles": [
 				"engineer_sentry_wrench:solo",
 				"engineer_repair_drone:defense",
@@ -2142,7 +2142,7 @@
 			"mean_ehp": 74.03,
 			"mean_solo_dpm": 14109.86,
 			"mean_ttd_seconds": 5.12,
-			"outlier_flag": "OUTLIER solo=1.83× AoE=1.95×",
+			"outlier_flag": "OUTLIER solo=1.83×; AoE=1.95×",
 			"roles": [
 				"engineer_sentry_wrench:solo",
 				"engineer_repair_drone:defense",
@@ -2167,7 +2167,7 @@
 			"mean_ehp": 74.03,
 			"mean_solo_dpm": 14109.86,
 			"mean_ttd_seconds": 5.12,
-			"outlier_flag": "OUTLIER solo=1.83× AoE=1.95×",
+			"outlier_flag": "OUTLIER solo=1.83×; AoE=1.95×",
 			"roles": [
 				"engineer_sentry_wrench:solo",
 				"engineer_repair_drone:defense",
@@ -2217,7 +2217,7 @@
 			"mean_ehp": 76.94,
 			"mean_solo_dpm": 36756.6,
 			"mean_ttd_seconds": 2.49,
-			"outlier_flag": "OUTLIER solo=1.42× AoE=1.47×",
+			"outlier_flag": "OUTLIER solo=1.42×; AoE=1.47×",
 			"roles": [
 				"engineer_sentry_wrench:solo",
 				"engineer_repair_drone:defense",
@@ -2242,7 +2242,7 @@
 			"mean_ehp": 76.94,
 			"mean_solo_dpm": 36756.6,
 			"mean_ttd_seconds": 5.24,
-			"outlier_flag": "OUTLIER solo=1.42× AoE=1.47×",
+			"outlier_flag": "OUTLIER solo=1.42×; AoE=1.47×",
 			"roles": [
 				"engineer_sentry_wrench:solo",
 				"engineer_repair_drone:defense",
@@ -2267,7 +2267,7 @@
 			"mean_ehp": 76.94,
 			"mean_solo_dpm": 36756.6,
 			"mean_ttd_seconds": 5.24,
-			"outlier_flag": "OUTLIER solo=1.42× AoE=1.47×",
+			"outlier_flag": "OUTLIER solo=1.42×; AoE=1.47×",
 			"roles": [
 				"engineer_sentry_wrench:solo",
 				"engineer_repair_drone:defense",
@@ -2292,7 +2292,7 @@
 			"mean_ehp": 41.95,
 			"mean_solo_dpm": 1047.2,
 			"mean_ttd_seconds": 1.36,
-			"outlier_flag": "OUTLIER solo=0.34× AoE=0.69×",
+			"outlier_flag": "OUTLIER solo=0.34×; AoE=0.69×; defense=0.57×",
 			"roles": [
 				"dark_book:aoe",
 				"cursed_skull:crowd",
@@ -2317,7 +2317,7 @@
 			"mean_ehp": 41.95,
 			"mean_solo_dpm": 2418.14,
 			"mean_ttd_seconds": 1.36,
-			"outlier_flag": "OUTLIER solo=0.31× AoE=0.79×",
+			"outlier_flag": "OUTLIER solo=0.31×; AoE=0.79×; defense=0.57×",
 			"roles": [
 				"dark_book:aoe",
 				"cursed_skull:crowd",
@@ -2342,7 +2342,7 @@
 			"mean_ehp": 41.95,
 			"mean_solo_dpm": 2418.14,
 			"mean_ttd_seconds": 3.77,
-			"outlier_flag": "OUTLIER solo=0.31× AoE=0.79×",
+			"outlier_flag": "OUTLIER solo=0.31×; AoE=0.79×; defense=0.57×",
 			"roles": [
 				"dark_book:aoe",
 				"cursed_skull:crowd",
@@ -2367,7 +2367,7 @@
 			"mean_ehp": 41.95,
 			"mean_solo_dpm": 2418.14,
 			"mean_ttd_seconds": 3.77,
-			"outlier_flag": "OUTLIER solo=0.31× AoE=0.79×",
+			"outlier_flag": "OUTLIER solo=0.31×; AoE=0.79×; defense=0.57×",
 			"roles": [
 				"dark_book:aoe",
 				"cursed_skull:crowd",
@@ -2392,7 +2392,7 @@
 			"mean_ehp": 46.82,
 			"mean_solo_dpm": 5268.8,
 			"mean_ttd_seconds": 1.51,
-			"outlier_flag": "OUTLIER solo=0.35× AoE=0.70×",
+			"outlier_flag": "OUTLIER solo=0.35×; AoE=0.70×; defense=0.59×",
 			"roles": [
 				"dark_book:aoe",
 				"cursed_skull:crowd",
@@ -2417,7 +2417,7 @@
 			"mean_ehp": 46.82,
 			"mean_solo_dpm": 10922.4,
 			"mean_ttd_seconds": 1.51,
-			"outlier_flag": "OUTLIER solo=0.42× AoE=0.94×",
+			"outlier_flag": "OUTLIER solo=0.42×; defense=0.59×",
 			"roles": [
 				"dark_book:aoe",
 				"cursed_skull:crowd",
@@ -2442,7 +2442,7 @@
 			"mean_ehp": 46.82,
 			"mean_solo_dpm": 10922.4,
 			"mean_ttd_seconds": 3.97,
-			"outlier_flag": "OUTLIER solo=0.42× AoE=0.94×",
+			"outlier_flag": "OUTLIER solo=0.42×; defense=0.59×",
 			"roles": [
 				"dark_book:aoe",
 				"cursed_skull:crowd",
@@ -2467,7 +2467,7 @@
 			"mean_ehp": 46.82,
 			"mean_solo_dpm": 10922.4,
 			"mean_ttd_seconds": 3.97,
-			"outlier_flag": "OUTLIER solo=0.42× AoE=0.94×",
+			"outlier_flag": "OUTLIER solo=0.42×; defense=0.59×",
 			"roles": [
 				"dark_book:aoe",
 				"cursed_skull:crowd",
@@ -2492,7 +2492,7 @@
 			"mean_ehp": 58.42,
 			"mean_solo_dpm": 4963.8,
 			"mean_ttd_seconds": 1.8900000000000001,
-			"outlier_flag": "OUTLIER solo=1.63× AoE=2.15×",
+			"outlier_flag": "OUTLIER solo=1.63×; AoE=2.15×; defense=0.79×",
 			"roles": [
 				"electric_guitar:solo",
 				"bass_guitar:defense",
@@ -2517,7 +2517,7 @@
 			"mean_ehp": 58.42,
 			"mean_solo_dpm": 11331.25,
 			"mean_ttd_seconds": 1.8900000000000001,
-			"outlier_flag": "OUTLIER solo=1.47× AoE=2.18×",
+			"outlier_flag": "OUTLIER solo=1.47×; AoE=2.18×; defense=0.79×",
 			"roles": [
 				"electric_guitar:solo",
 				"bass_guitar:defense",
@@ -2542,7 +2542,7 @@
 			"mean_ehp": 58.42,
 			"mean_solo_dpm": 11331.25,
 			"mean_ttd_seconds": 4.46,
-			"outlier_flag": "OUTLIER solo=1.47× AoE=2.18×",
+			"outlier_flag": "OUTLIER solo=1.47×; AoE=2.18×; defense=0.79×",
 			"roles": [
 				"electric_guitar:solo",
 				"bass_guitar:defense",
@@ -2567,7 +2567,7 @@
 			"mean_ehp": 58.42,
 			"mean_solo_dpm": 11331.25,
 			"mean_ttd_seconds": 4.46,
-			"outlier_flag": "OUTLIER solo=1.47× AoE=2.18×",
+			"outlier_flag": "OUTLIER solo=1.47×; AoE=2.18×; defense=0.79×",
 			"roles": [
 				"electric_guitar:solo",
 				"bass_guitar:defense",
@@ -2592,7 +2592,7 @@
 			"mean_ehp": 59.6,
 			"mean_solo_dpm": 24213.600000000002,
 			"mean_ttd_seconds": 1.93,
-			"outlier_flag": "OUTLIER solo=1.58× AoE=2.15×",
+			"outlier_flag": "OUTLIER solo=1.58×; AoE=2.15×; defense=0.75×",
 			"roles": [
 				"electric_guitar:solo",
 				"bass_guitar:defense",
@@ -2617,7 +2617,7 @@
 			"mean_ehp": 59.6,
 			"mean_solo_dpm": 39201.53,
 			"mean_ttd_seconds": 1.93,
-			"outlier_flag": "OUTLIER solo=1.51× AoE=2.03×",
+			"outlier_flag": "OUTLIER solo=1.51×; AoE=2.03×; defense=0.75×",
 			"roles": [
 				"electric_guitar:solo",
 				"bass_guitar:defense",
@@ -2642,7 +2642,7 @@
 			"mean_ehp": 59.6,
 			"mean_solo_dpm": 39201.53,
 			"mean_ttd_seconds": 4.51,
-			"outlier_flag": "OUTLIER solo=1.51× AoE=2.03×",
+			"outlier_flag": "OUTLIER solo=1.51×; AoE=2.03×; defense=0.75×",
 			"roles": [
 				"electric_guitar:solo",
 				"bass_guitar:defense",
@@ -2667,7 +2667,7 @@
 			"mean_ehp": 59.6,
 			"mean_solo_dpm": 39201.53,
 			"mean_ttd_seconds": 4.51,
-			"outlier_flag": "OUTLIER solo=1.51× AoE=2.03×",
+			"outlier_flag": "OUTLIER solo=1.51×; AoE=2.03×; defense=0.75×",
 			"roles": [
 				"electric_guitar:solo",
 				"bass_guitar:defense",
@@ -2692,7 +2692,7 @@
 			"mean_ehp": 78.95,
 			"mean_solo_dpm": 4956.6,
 			"mean_ttd_seconds": 2.5500000000000003,
-			"outlier_flag": "OUTLIER solo=1.62× AoE=0.85×",
+			"outlier_flag": "OUTLIER solo=1.62×",
 			"roles": [
 				"chakrams:solo",
 				"shadow_daggers:defense",
@@ -2717,7 +2717,7 @@
 			"mean_ehp": 80.08,
 			"mean_solo_dpm": 28056.25,
 			"mean_ttd_seconds": 2.59,
-			"outlier_flag": "OUTLIER solo=3.64× AoE=1.65×",
+			"outlier_flag": "OUTLIER solo=3.64×; AoE=1.65×",
 			"roles": [
 				"chakrams:solo",
 				"shadow_daggers:defense",
@@ -2742,7 +2742,7 @@
 			"mean_ehp": 80.08,
 			"mean_solo_dpm": 28056.25,
 			"mean_ttd_seconds": 5.37,
-			"outlier_flag": "OUTLIER solo=3.64× AoE=1.65×",
+			"outlier_flag": "OUTLIER solo=3.64×; AoE=1.65×",
 			"roles": [
 				"chakrams:solo",
 				"shadow_daggers:defense",
@@ -2767,7 +2767,7 @@
 			"mean_ehp": 80.08,
 			"mean_solo_dpm": 28056.25,
 			"mean_ttd_seconds": 5.37,
-			"outlier_flag": "OUTLIER solo=3.64× AoE=1.65×",
+			"outlier_flag": "OUTLIER solo=3.64×; AoE=1.65×",
 			"roles": [
 				"chakrams:solo",
 				"shadow_daggers:defense",
@@ -2792,7 +2792,7 @@
 			"mean_ehp": 80.08,
 			"mean_solo_dpm": 23782.8,
 			"mean_ttd_seconds": 2.59,
-			"outlier_flag": "OUTLIER solo=1.56× AoE=0.83×",
+			"outlier_flag": "OUTLIER solo=1.56×",
 			"roles": [
 				"chakrams:solo",
 				"shadow_daggers:defense",
@@ -2817,7 +2817,7 @@
 			"mean_ehp": 81.21000000000001,
 			"mean_solo_dpm": 47027.58,
 			"mean_ttd_seconds": 2.62,
-			"outlier_flag": "OUTLIER solo=1.81× AoE=0.78×",
+			"outlier_flag": "OUTLIER solo=1.81×; AoE=0.78×",
 			"roles": [
 				"chakrams:solo",
 				"shadow_daggers:defense",
@@ -2842,7 +2842,7 @@
 			"mean_ehp": 81.21000000000001,
 			"mean_solo_dpm": 47027.58,
 			"mean_ttd_seconds": 5.42,
-			"outlier_flag": "OUTLIER solo=1.81× AoE=0.78×",
+			"outlier_flag": "OUTLIER solo=1.81×; AoE=0.78×",
 			"roles": [
 				"chakrams:solo",
 				"shadow_daggers:defense",
@@ -2867,7 +2867,7 @@
 			"mean_ehp": 81.21000000000001,
 			"mean_solo_dpm": 47027.58,
 			"mean_ttd_seconds": 5.42,
-			"outlier_flag": "OUTLIER solo=1.81× AoE=0.78×",
+			"outlier_flag": "OUTLIER solo=1.81×; AoE=0.78×",
 			"roles": [
 				"chakrams:solo",
 				"shadow_daggers:defense",
@@ -2892,7 +2892,7 @@
 			"mean_ehp": 61.18,
 			"mean_solo_dpm": 5996.2,
 			"mean_ttd_seconds": 1.98,
-			"outlier_flag": "OUTLIER solo=1.97× AoE=1.07×",
+			"outlier_flag": "OUTLIER solo=1.97×",
 			"roles": [
 				"moon_crossbow:solo",
 				"storm_longbow:crowd",
@@ -2917,7 +2917,7 @@
 			"mean_ehp": 61.18,
 			"mean_solo_dpm": 12975.01,
 			"mean_ttd_seconds": 1.98,
-			"outlier_flag": "OUTLIER solo=1.69× AoE=1.00×",
+			"outlier_flag": "OUTLIER solo=1.69×",
 			"roles": [
 				"moon_crossbow:solo",
 				"storm_longbow:crowd",
@@ -2942,7 +2942,7 @@
 			"mean_ehp": 61.18,
 			"mean_solo_dpm": 12975.01,
 			"mean_ttd_seconds": 4.57,
-			"outlier_flag": "OUTLIER solo=1.69× AoE=1.00×",
+			"outlier_flag": "OUTLIER solo=1.69×",
 			"roles": [
 				"moon_crossbow:solo",
 				"storm_longbow:crowd",
@@ -2967,7 +2967,7 @@
 			"mean_ehp": 61.18,
 			"mean_solo_dpm": 12975.01,
 			"mean_ttd_seconds": 4.57,
-			"outlier_flag": "OUTLIER solo=1.69× AoE=1.00×",
+			"outlier_flag": "OUTLIER solo=1.69×",
 			"roles": [
 				"moon_crossbow:solo",
 				"storm_longbow:crowd",
@@ -2992,7 +2992,7 @@
 			"mean_ehp": 67.1,
 			"mean_solo_dpm": 26804.0,
 			"mean_ttd_seconds": 2.17,
-			"outlier_flag": "OUTLIER solo=1.75× AoE=1.00×",
+			"outlier_flag": "OUTLIER solo=1.75×",
 			"roles": [
 				"moon_crossbow:solo",
 				"storm_longbow:crowd",
@@ -3017,7 +3017,7 @@
 			"mean_ehp": 67.1,
 			"mean_solo_dpm": 46261.17,
 			"mean_ttd_seconds": 2.17,
-			"outlier_flag": "OUTLIER solo=1.78× AoE=0.99×",
+			"outlier_flag": "OUTLIER solo=1.78×",
 			"roles": [
 				"moon_crossbow:solo",
 				"storm_longbow:crowd",
@@ -3042,7 +3042,7 @@
 			"mean_ehp": 67.1,
 			"mean_solo_dpm": 46261.17,
 			"mean_ttd_seconds": 4.82,
-			"outlier_flag": "OUTLIER solo=1.78× AoE=0.99×",
+			"outlier_flag": "OUTLIER solo=1.78×",
 			"roles": [
 				"moon_crossbow:solo",
 				"storm_longbow:crowd",
@@ -3067,7 +3067,7 @@
 			"mean_ehp": 67.1,
 			"mean_solo_dpm": 46261.17,
 			"mean_ttd_seconds": 4.82,
-			"outlier_flag": "OUTLIER solo=1.78× AoE=0.99×",
+			"outlier_flag": "OUTLIER solo=1.78×",
 			"roles": [
 				"moon_crossbow:solo",
 				"storm_longbow:crowd",
@@ -3117,7 +3117,7 @@
 			"mean_ehp": 78.81,
 			"mean_solo_dpm": 5277.34,
 			"mean_ttd_seconds": 3.83,
-			"outlier_flag": "OUTLIER solo=0.69× AoE=0.72×",
+			"outlier_flag": "OUTLIER solo=0.69×; AoE=0.72×",
 			"roles": [
 				"restore_potion:defense",
 				"plague_syringe:crowd",
@@ -3142,7 +3142,7 @@
 			"mean_ehp": 78.81,
 			"mean_solo_dpm": 5277.34,
 			"mean_ttd_seconds": 10.85,
-			"outlier_flag": "OUTLIER solo=0.69× AoE=0.72×",
+			"outlier_flag": "OUTLIER solo=0.69×; AoE=0.72×",
 			"roles": [
 				"restore_potion:defense",
 				"plague_syringe:crowd",
@@ -3167,7 +3167,7 @@
 			"mean_ehp": 78.81,
 			"mean_solo_dpm": 5277.34,
 			"mean_ttd_seconds": 10.85,
-			"outlier_flag": "OUTLIER solo=0.69× AoE=0.72×",
+			"outlier_flag": "OUTLIER solo=0.69×; AoE=0.72×",
 			"roles": [
 				"restore_potion:defense",
 				"plague_syringe:crowd",
@@ -3217,7 +3217,7 @@
 			"mean_ehp": 83.87,
 			"mean_solo_dpm": 23200.41,
 			"mean_ttd_seconds": 1882.43,
-			"outlier_flag": "OUTLIER solo=0.89× AoE=0.72×",
+			"outlier_flag": "OUTLIER AoE=0.72×",
 			"roles": [
 				"restore_potion:defense",
 				"plague_syringe:crowd",
@@ -3242,7 +3242,7 @@
 			"mean_ehp": 83.87,
 			"mean_solo_dpm": 23200.41,
 			"mean_ttd_seconds": 2449.7400000000002,
-			"outlier_flag": "OUTLIER solo=0.89× AoE=0.72×",
+			"outlier_flag": "OUTLIER AoE=0.72×",
 			"roles": [
 				"restore_potion:defense",
 				"plague_syringe:crowd",
@@ -3267,7 +3267,7 @@
 			"mean_ehp": 83.87,
 			"mean_solo_dpm": 23200.41,
 			"mean_ttd_seconds": 2449.7400000000002,
-			"outlier_flag": "OUTLIER solo=0.89× AoE=0.72×",
+			"outlier_flag": "OUTLIER AoE=0.72×",
 			"roles": [
 				"restore_potion:defense",
 				"plague_syringe:crowd",
@@ -3292,7 +3292,7 @@
 			"mean_ehp": 47.160000000000004,
 			"mean_solo_dpm": 2216.0,
 			"mean_ttd_seconds": 1.52,
-			"outlier_flag": "OUTLIER solo=0.73× AoE=1.13×",
+			"outlier_flag": "OUTLIER solo=0.73×; defense=0.64×",
 			"roles": [
 				"blast_powder:aoe",
 				"acid_flask:crowd",
@@ -3317,7 +3317,7 @@
 			"mean_ehp": 47.160000000000004,
 			"mean_solo_dpm": 7701.8,
 			"mean_ttd_seconds": 1.52,
-			"outlier_flag": "OUTLIER solo=1.00× AoE=2.09×",
+			"outlier_flag": "OUTLIER AoE=2.09×; defense=0.64×",
 			"roles": [
 				"blast_powder:aoe",
 				"acid_flask:crowd",
@@ -3342,7 +3342,7 @@
 			"mean_ehp": 47.160000000000004,
 			"mean_solo_dpm": 7701.8,
 			"mean_ttd_seconds": 3.98,
-			"outlier_flag": "OUTLIER solo=1.00× AoE=2.09×",
+			"outlier_flag": "OUTLIER AoE=2.09×; defense=0.64×",
 			"roles": [
 				"blast_powder:aoe",
 				"acid_flask:crowd",
@@ -3367,7 +3367,7 @@
 			"mean_ehp": 47.160000000000004,
 			"mean_solo_dpm": 7701.8,
 			"mean_ttd_seconds": 3.98,
-			"outlier_flag": "OUTLIER solo=1.00× AoE=2.09×",
+			"outlier_flag": "OUTLIER AoE=2.09×; defense=0.64×",
 			"roles": [
 				"blast_powder:aoe",
 				"acid_flask:crowd",
@@ -3392,7 +3392,7 @@
 			"mean_ehp": 49.86,
 			"mean_solo_dpm": 9989.6,
 			"mean_ttd_seconds": 1.61,
-			"outlier_flag": "OUTLIER solo=0.65× AoE=1.05×",
+			"outlier_flag": "OUTLIER solo=0.65×; defense=0.63×",
 			"roles": [
 				"blast_powder:aoe",
 				"acid_flask:crowd",
@@ -3417,7 +3417,7 @@
 			"mean_ehp": 49.86,
 			"mean_solo_dpm": 18218.21,
 			"mean_ttd_seconds": 1.61,
-			"outlier_flag": "OUTLIER solo=0.70× AoE=1.47×",
+			"outlier_flag": "OUTLIER solo=0.70×; AoE=1.47×; defense=0.63×",
 			"roles": [
 				"blast_powder:aoe",
 				"acid_flask:crowd",
@@ -3442,7 +3442,7 @@
 			"mean_ehp": 49.86,
 			"mean_solo_dpm": 18218.21,
 			"mean_ttd_seconds": 4.1,
-			"outlier_flag": "OUTLIER solo=0.70× AoE=1.47×",
+			"outlier_flag": "OUTLIER solo=0.70×; AoE=1.47×; defense=0.63×",
 			"roles": [
 				"blast_powder:aoe",
 				"acid_flask:crowd",
@@ -3467,7 +3467,7 @@
 			"mean_ehp": 49.86,
 			"mean_solo_dpm": 18218.21,
 			"mean_ttd_seconds": 4.1,
-			"outlier_flag": "OUTLIER solo=0.70× AoE=1.47×",
+			"outlier_flag": "OUTLIER solo=0.70×; AoE=1.47×; defense=0.63×",
 			"roles": [
 				"blast_powder:aoe",
 				"acid_flask:crowd",
@@ -3492,7 +3492,7 @@
 			"mean_ehp": 178.09,
 			"mean_solo_dpm": 2972.4,
 			"mean_ttd_seconds": 5.76,
-			"outlier_flag": "ok",
+			"outlier_flag": "OUTLIER defense=2.41×",
 			"roles": [
 				"long_spear:solo",
 				"tower_shield:defense",
@@ -3517,7 +3517,7 @@
 			"mean_ehp": 194.52,
 			"mean_solo_dpm": 5308.31,
 			"mean_ttd_seconds": 6.29,
-			"outlier_flag": "OUTLIER solo=0.69× AoE=0.73×",
+			"outlier_flag": "OUTLIER solo=0.69×; AoE=0.73×; defense=2.63×",
 			"roles": [
 				"long_spear:solo",
 				"tower_shield:defense",
@@ -3542,7 +3542,7 @@
 			"mean_ehp": 194.52,
 			"mean_solo_dpm": 5308.31,
 			"mean_ttd_seconds": 10.19,
-			"outlier_flag": "OUTLIER solo=0.69× AoE=0.73×",
+			"outlier_flag": "OUTLIER solo=0.69×; AoE=0.73×; defense=2.63×",
 			"roles": [
 				"long_spear:solo",
 				"tower_shield:defense",
@@ -3567,7 +3567,7 @@
 			"mean_ehp": 194.52,
 			"mean_solo_dpm": 5308.31,
 			"mean_ttd_seconds": 10.19,
-			"outlier_flag": "OUTLIER solo=0.69× AoE=0.73×",
+			"outlier_flag": "OUTLIER solo=0.69×; AoE=0.73×; defense=2.63×",
 			"roles": [
 				"long_spear:solo",
 				"tower_shield:defense",
@@ -3592,7 +3592,7 @@
 			"mean_ehp": 194.24,
 			"mean_solo_dpm": 15281.0,
 			"mean_ttd_seconds": 6.28,
-			"outlier_flag": "ok",
+			"outlier_flag": "OUTLIER defense=2.44×",
 			"roles": [
 				"long_spear:solo",
 				"tower_shield:defense",
@@ -3617,7 +3617,7 @@
 			"mean_ehp": 212.15,
 			"mean_solo_dpm": 25287.48,
 			"mean_ttd_seconds": 6.86,
-			"outlier_flag": "ok",
+			"outlier_flag": "OUTLIER defense=2.67×",
 			"roles": [
 				"long_spear:solo",
 				"tower_shield:defense",
@@ -3642,7 +3642,7 @@
 			"mean_ehp": 212.15,
 			"mean_solo_dpm": 25287.48,
 			"mean_ttd_seconds": 10.94,
-			"outlier_flag": "ok",
+			"outlier_flag": "OUTLIER defense=2.67×",
 			"roles": [
 				"long_spear:solo",
 				"tower_shield:defense",
@@ -3667,7 +3667,7 @@
 			"mean_ehp": 212.15,
 			"mean_solo_dpm": 25287.48,
 			"mean_ttd_seconds": 10.94,
-			"outlier_flag": "ok",
+			"outlier_flag": "OUTLIER defense=2.67×",
 			"roles": [
 				"long_spear:solo",
 				"tower_shield:defense",
@@ -3717,7 +3717,7 @@
 			"mean_ehp": 74.82000000000001,
 			"mean_solo_dpm": 19652.97,
 			"mean_ttd_seconds": 2.42,
-			"outlier_flag": "OUTLIER solo=2.55× AoE=2.40×",
+			"outlier_flag": "OUTLIER solo=2.55×; AoE=2.40×",
 			"roles": [
 				"summon_amulet:solo",
 				"briar_staff:crowd",
@@ -3742,7 +3742,7 @@
 			"mean_ehp": 74.82000000000001,
 			"mean_solo_dpm": 19652.97,
 			"mean_ttd_seconds": 5.15,
-			"outlier_flag": "OUTLIER solo=2.55× AoE=2.40×",
+			"outlier_flag": "OUTLIER solo=2.55×; AoE=2.40×",
 			"roles": [
 				"summon_amulet:solo",
 				"briar_staff:crowd",
@@ -3767,7 +3767,7 @@
 			"mean_ehp": 74.82000000000001,
 			"mean_solo_dpm": 19652.97,
 			"mean_ttd_seconds": 5.15,
-			"outlier_flag": "OUTLIER solo=2.55× AoE=2.40×",
+			"outlier_flag": "OUTLIER solo=2.55×; AoE=2.40×",
 			"roles": [
 				"summon_amulet:solo",
 				"briar_staff:crowd",
@@ -3817,7 +3817,7 @@
 			"mean_ehp": 80.68,
 			"mean_solo_dpm": 63313.62,
 			"mean_ttd_seconds": 2.61,
-			"outlier_flag": "OUTLIER solo=2.44× AoE=2.26×",
+			"outlier_flag": "OUTLIER solo=2.44×; AoE=2.26×",
 			"roles": [
 				"summon_amulet:solo",
 				"briar_staff:crowd",
@@ -3842,7 +3842,7 @@
 			"mean_ehp": 80.68,
 			"mean_solo_dpm": 63313.62,
 			"mean_ttd_seconds": 5.4,
-			"outlier_flag": "OUTLIER solo=2.44× AoE=2.26×",
+			"outlier_flag": "OUTLIER solo=2.44×; AoE=2.26×",
 			"roles": [
 				"summon_amulet:solo",
 				"briar_staff:crowd",
@@ -3867,7 +3867,7 @@
 			"mean_ehp": 80.68,
 			"mean_solo_dpm": 63313.62,
 			"mean_ttd_seconds": 5.4,
-			"outlier_flag": "OUTLIER solo=2.44× AoE=2.26×",
+			"outlier_flag": "OUTLIER solo=2.44×; AoE=2.26×",
 			"roles": [
 				"summon_amulet:solo",
 				"briar_staff:crowd",
@@ -3879,7 +3879,7 @@
 			"weaknesses": "survival 1.01× and convenience 1.04× roster median."
 		}
 	],
-	"dataset_digest_sha256": "dac697e5562ec5e3097bb4fe9d005f6e6b69d188b9b4db743a338990ec96d79e",
+	"dataset_digest_sha256": "9b0b3b94ebca7761955165cb62ee4786fa2f3d11b86b60c02ee4ef4d5e9d574a",
 	"formula_live_parity": [
 		{
 			"attack_mode": "sweep",
@@ -6451,527 +6451,1196 @@
 		"action": "investigation candidates only; FAN-1438 makes no balance changes",
 		"class_corridor_80_120": [
 			{
+				"axes": [
+					"defense"
+				],
+				"crowd_vs_median": 0.879,
+				"defense_vs_median": 1.478,
+				"key": "berserk|1|no_meta",
+				"solo_vs_median": 0.901
+			},
+			{
+				"axes": [
+					"defense"
+				],
+				"crowd_vs_median": 0.905,
+				"defense_vs_median": 1.478,
+				"key": "berserk|1|class_constellation",
+				"solo_vs_median": 0.859
+			},
+			{
+				"axes": [
+					"defense"
+				],
+				"crowd_vs_median": 0.905,
+				"defense_vs_median": 1.478,
+				"key": "berserk|1|class_atlas50",
+				"solo_vs_median": 0.859
+			},
+			{
+				"axes": [
+					"defense"
+				],
+				"crowd_vs_median": 0.905,
+				"defense_vs_median": 1.478,
+				"key": "berserk|1|class_atlas59_upper",
+				"solo_vs_median": 0.859
+			},
+			{
+				"axes": [
+					"defense"
+				],
+				"crowd_vs_median": 0.917,
+				"defense_vs_median": 1.516,
+				"key": "berserk|20|no_meta",
+				"solo_vs_median": 0.926
+			},
+			{
+				"axes": [
+					"defense"
+				],
+				"crowd_vs_median": 1.0,
+				"defense_vs_median": 1.516,
+				"key": "berserk|20|class_constellation",
+				"solo_vs_median": 1.0
+			},
+			{
+				"axes": [
+					"defense"
+				],
+				"crowd_vs_median": 1.0,
+				"defense_vs_median": 1.516,
+				"key": "berserk|20|class_atlas50",
+				"solo_vs_median": 1.0
+			},
+			{
+				"axes": [
+					"defense"
+				],
+				"crowd_vs_median": 1.0,
+				"defense_vs_median": 1.516,
+				"key": "berserk|20|class_atlas59_upper",
+				"solo_vs_median": 1.0
+			},
+			{
+				"axes": [
+					"solo",
+					"AoE",
+					"defense"
+				],
 				"crowd_vs_median": 0.74,
+				"defense_vs_median": 1.266,
 				"key": "soldier|1|no_meta",
 				"solo_vs_median": 0.743
 			},
 			{
-				"crowd_vs_median": 0.755,
-				"key": "elementalist|1|no_meta",
-				"solo_vs_median": 0.628
-			},
-			{
-				"crowd_vs_median": 1.139,
-				"key": "sniper|1|no_meta",
-				"solo_vs_median": 1.701
-			},
-			{
-				"crowd_vs_median": 1.41,
-				"key": "biologist|1|no_meta",
-				"solo_vs_median": 1.062
-			},
-			{
-				"crowd_vs_median": 0.6900000000000001,
-				"key": "dark_mage|1|no_meta",
-				"solo_vs_median": 0.343
-			},
-			{
-				"crowd_vs_median": 2.145,
-				"key": "guitarist|1|no_meta",
-				"solo_vs_median": 1.6280000000000001
-			},
-			{
-				"crowd_vs_median": 0.851,
-				"key": "assassin|1|no_meta",
-				"solo_vs_median": 1.625
-			},
-			{
-				"crowd_vs_median": 1.067,
-				"key": "ranger|1|no_meta",
-				"solo_vs_median": 1.966
-			},
-			{
-				"crowd_vs_median": 1.1280000000000001,
-				"key": "chemist|1|no_meta",
-				"solo_vs_median": 0.727
-			},
-			{
+				"axes": [
+					"solo",
+					"AoE",
+					"defense"
+				],
 				"crowd_vs_median": 0.797,
+				"defense_vs_median": 1.266,
 				"key": "soldier|1|class_constellation",
 				"solo_vs_median": 0.761
 			},
 			{
-				"crowd_vs_median": 1.215,
-				"key": "thief|1|class_constellation",
-				"solo_vs_median": 1.014
-			},
-			{
-				"crowd_vs_median": 0.844,
-				"key": "elementalist|1|class_constellation",
-				"solo_vs_median": 0.45
-			},
-			{
-				"crowd_vs_median": 1.357,
-				"key": "sniper|1|class_constellation",
-				"solo_vs_median": 1.768
-			},
-			{
-				"crowd_vs_median": 0.887,
-				"key": "priest|1|class_constellation",
-				"solo_vs_median": 0.7020000000000001
-			},
-			{
-				"crowd_vs_median": 2.101,
-				"key": "biologist|1|class_constellation",
-				"solo_vs_median": 1.141
-			},
-			{
-				"crowd_vs_median": 0.712,
-				"key": "robot|1|class_constellation",
-				"solo_vs_median": 0.515
-			},
-			{
-				"crowd_vs_median": 1.952,
-				"key": "engineer|1|class_constellation",
-				"solo_vs_median": 1.832
-			},
-			{
-				"crowd_vs_median": 0.794,
-				"key": "dark_mage|1|class_constellation",
-				"solo_vs_median": 0.314
-			},
-			{
-				"crowd_vs_median": 2.184,
-				"key": "guitarist|1|class_constellation",
-				"solo_vs_median": 1.471
-			},
-			{
-				"crowd_vs_median": 1.645,
-				"key": "assassin|1|class_constellation",
-				"solo_vs_median": 3.6430000000000002
-			},
-			{
-				"crowd_vs_median": 1.0,
-				"key": "ranger|1|class_constellation",
-				"solo_vs_median": 1.685
-			},
-			{
-				"crowd_vs_median": 0.718,
-				"key": "doctor|1|class_constellation",
-				"solo_vs_median": 0.685
-			},
-			{
-				"crowd_vs_median": 2.086,
-				"key": "chemist|1|class_constellation",
-				"solo_vs_median": 1.0
-			},
-			{
-				"crowd_vs_median": 0.731,
-				"key": "knight|1|class_constellation",
-				"solo_vs_median": 0.6890000000000001
-			},
-			{
-				"crowd_vs_median": 2.396,
-				"key": "druid|1|class_constellation",
-				"solo_vs_median": 2.552
-			},
-			{
+				"axes": [
+					"solo",
+					"AoE",
+					"defense"
+				],
 				"crowd_vs_median": 0.797,
+				"defense_vs_median": 1.266,
 				"key": "soldier|1|class_atlas50",
 				"solo_vs_median": 0.761
 			},
 			{
-				"crowd_vs_median": 1.215,
-				"key": "thief|1|class_atlas50",
-				"solo_vs_median": 1.014
-			},
-			{
-				"crowd_vs_median": 0.844,
-				"key": "elementalist|1|class_atlas50",
-				"solo_vs_median": 0.45
-			},
-			{
-				"crowd_vs_median": 1.357,
-				"key": "sniper|1|class_atlas50",
-				"solo_vs_median": 1.768
-			},
-			{
-				"crowd_vs_median": 0.887,
-				"key": "priest|1|class_atlas50",
-				"solo_vs_median": 0.7020000000000001
-			},
-			{
-				"crowd_vs_median": 2.101,
-				"key": "biologist|1|class_atlas50",
-				"solo_vs_median": 1.141
-			},
-			{
-				"crowd_vs_median": 0.712,
-				"key": "robot|1|class_atlas50",
-				"solo_vs_median": 0.515
-			},
-			{
-				"crowd_vs_median": 1.952,
-				"key": "engineer|1|class_atlas50",
-				"solo_vs_median": 1.832
-			},
-			{
-				"crowd_vs_median": 0.794,
-				"key": "dark_mage|1|class_atlas50",
-				"solo_vs_median": 0.314
-			},
-			{
-				"crowd_vs_median": 2.184,
-				"key": "guitarist|1|class_atlas50",
-				"solo_vs_median": 1.471
-			},
-			{
-				"crowd_vs_median": 1.645,
-				"key": "assassin|1|class_atlas50",
-				"solo_vs_median": 3.6430000000000002
-			},
-			{
-				"crowd_vs_median": 1.0,
-				"key": "ranger|1|class_atlas50",
-				"solo_vs_median": 1.685
-			},
-			{
-				"crowd_vs_median": 0.718,
-				"key": "doctor|1|class_atlas50",
-				"solo_vs_median": 0.685
-			},
-			{
-				"crowd_vs_median": 2.086,
-				"key": "chemist|1|class_atlas50",
-				"solo_vs_median": 1.0
-			},
-			{
-				"crowd_vs_median": 0.731,
-				"key": "knight|1|class_atlas50",
-				"solo_vs_median": 0.6890000000000001
-			},
-			{
-				"crowd_vs_median": 2.396,
-				"key": "druid|1|class_atlas50",
-				"solo_vs_median": 2.552
-			},
-			{
+				"axes": [
+					"solo",
+					"AoE",
+					"defense"
+				],
 				"crowd_vs_median": 0.797,
+				"defense_vs_median": 1.266,
 				"key": "soldier|1|class_atlas59_upper",
 				"solo_vs_median": 0.761
 			},
 			{
-				"crowd_vs_median": 1.215,
-				"key": "thief|1|class_atlas59_upper",
-				"solo_vs_median": 1.014
-			},
-			{
-				"crowd_vs_median": 0.844,
-				"key": "elementalist|1|class_atlas59_upper",
-				"solo_vs_median": 0.45
-			},
-			{
-				"crowd_vs_median": 1.357,
-				"key": "sniper|1|class_atlas59_upper",
-				"solo_vs_median": 1.768
-			},
-			{
-				"crowd_vs_median": 0.887,
-				"key": "priest|1|class_atlas59_upper",
-				"solo_vs_median": 0.7020000000000001
-			},
-			{
-				"crowd_vs_median": 2.101,
-				"key": "biologist|1|class_atlas59_upper",
-				"solo_vs_median": 1.141
-			},
-			{
-				"crowd_vs_median": 0.712,
-				"key": "robot|1|class_atlas59_upper",
-				"solo_vs_median": 0.515
-			},
-			{
-				"crowd_vs_median": 1.952,
-				"key": "engineer|1|class_atlas59_upper",
-				"solo_vs_median": 1.832
-			},
-			{
-				"crowd_vs_median": 0.794,
-				"key": "dark_mage|1|class_atlas59_upper",
-				"solo_vs_median": 0.314
-			},
-			{
-				"crowd_vs_median": 2.184,
-				"key": "guitarist|1|class_atlas59_upper",
-				"solo_vs_median": 1.471
-			},
-			{
-				"crowd_vs_median": 1.645,
-				"key": "assassin|1|class_atlas59_upper",
-				"solo_vs_median": 3.6430000000000002
-			},
-			{
-				"crowd_vs_median": 1.0,
-				"key": "ranger|1|class_atlas59_upper",
-				"solo_vs_median": 1.685
-			},
-			{
-				"crowd_vs_median": 0.718,
-				"key": "doctor|1|class_atlas59_upper",
-				"solo_vs_median": 0.685
-			},
-			{
-				"crowd_vs_median": 2.086,
-				"key": "chemist|1|class_atlas59_upper",
-				"solo_vs_median": 1.0
-			},
-			{
-				"crowd_vs_median": 0.731,
-				"key": "knight|1|class_atlas59_upper",
-				"solo_vs_median": 0.6890000000000001
-			},
-			{
-				"crowd_vs_median": 2.396,
-				"key": "druid|1|class_atlas59_upper",
-				"solo_vs_median": 2.552
-			},
-			{
+				"axes": [
+					"solo",
+					"AoE",
+					"defense"
+				],
 				"crowd_vs_median": 0.748,
+				"defense_vs_median": 1.258,
 				"key": "soldier|20|no_meta",
 				"solo_vs_median": 0.74
 			},
 			{
-				"crowd_vs_median": 0.747,
-				"key": "elementalist|20|no_meta",
-				"solo_vs_median": 0.611
-			},
-			{
-				"crowd_vs_median": 1.116,
-				"key": "sniper|20|no_meta",
-				"solo_vs_median": 1.649
-			},
-			{
-				"crowd_vs_median": 1.373,
-				"key": "biologist|20|no_meta",
-				"solo_vs_median": 1.063
-			},
-			{
-				"crowd_vs_median": 0.7020000000000001,
-				"key": "dark_mage|20|no_meta",
-				"solo_vs_median": 0.34500000000000003
-			},
-			{
-				"crowd_vs_median": 2.1510000000000002,
-				"key": "guitarist|20|no_meta",
-				"solo_vs_median": 1.585
-			},
-			{
-				"crowd_vs_median": 0.8270000000000001,
-				"key": "assassin|20|no_meta",
-				"solo_vs_median": 1.556
-			},
-			{
-				"crowd_vs_median": 1.0,
-				"key": "ranger|20|no_meta",
-				"solo_vs_median": 1.754
-			},
-			{
-				"crowd_vs_median": 1.049,
-				"key": "chemist|20|no_meta",
-				"solo_vs_median": 0.654
-			},
-			{
+				"axes": [
+					"AoE",
+					"defense"
+				],
 				"crowd_vs_median": 0.779,
+				"defense_vs_median": 1.258,
 				"key": "soldier|20|class_constellation",
 				"solo_vs_median": 0.812
 			},
 			{
-				"crowd_vs_median": 0.9410000000000001,
-				"key": "elementalist|20|class_constellation",
-				"solo_vs_median": 0.559
-			},
-			{
-				"crowd_vs_median": 1.114,
-				"key": "sniper|20|class_constellation",
-				"solo_vs_median": 1.838
-			},
-			{
-				"crowd_vs_median": 1.674,
-				"key": "biologist|20|class_constellation",
-				"solo_vs_median": 1.193
-			},
-			{
-				"crowd_vs_median": 0.855,
-				"key": "robot|20|class_constellation",
-				"solo_vs_median": 0.6900000000000001
-			},
-			{
-				"crowd_vs_median": 1.471,
-				"key": "engineer|20|class_constellation",
-				"solo_vs_median": 1.417
-			},
-			{
-				"crowd_vs_median": 0.9400000000000001,
-				"key": "dark_mage|20|class_constellation",
-				"solo_vs_median": 0.421
-			},
-			{
-				"crowd_vs_median": 2.033,
-				"key": "guitarist|20|class_constellation",
-				"solo_vs_median": 1.5110000000000001
-			},
-			{
-				"crowd_vs_median": 0.78,
-				"key": "assassin|20|class_constellation",
-				"solo_vs_median": 1.813
-			},
-			{
-				"crowd_vs_median": 0.989,
-				"key": "ranger|20|class_constellation",
-				"solo_vs_median": 1.7830000000000001
-			},
-			{
-				"crowd_vs_median": 0.718,
-				"key": "doctor|20|class_constellation",
-				"solo_vs_median": 0.894
-			},
-			{
-				"crowd_vs_median": 1.473,
-				"key": "chemist|20|class_constellation",
-				"solo_vs_median": 0.7020000000000001
-			},
-			{
-				"crowd_vs_median": 2.261,
-				"key": "druid|20|class_constellation",
-				"solo_vs_median": 2.44
-			},
-			{
+				"axes": [
+					"AoE",
+					"defense"
+				],
 				"crowd_vs_median": 0.779,
+				"defense_vs_median": 1.258,
 				"key": "soldier|20|class_atlas50",
 				"solo_vs_median": 0.812
 			},
 			{
-				"crowd_vs_median": 0.9410000000000001,
-				"key": "elementalist|20|class_atlas50",
-				"solo_vs_median": 0.559
-			},
-			{
-				"crowd_vs_median": 1.114,
-				"key": "sniper|20|class_atlas50",
-				"solo_vs_median": 1.838
-			},
-			{
-				"crowd_vs_median": 1.674,
-				"key": "biologist|20|class_atlas50",
-				"solo_vs_median": 1.193
-			},
-			{
-				"crowd_vs_median": 0.855,
-				"key": "robot|20|class_atlas50",
-				"solo_vs_median": 0.6900000000000001
-			},
-			{
-				"crowd_vs_median": 1.471,
-				"key": "engineer|20|class_atlas50",
-				"solo_vs_median": 1.417
-			},
-			{
-				"crowd_vs_median": 0.9400000000000001,
-				"key": "dark_mage|20|class_atlas50",
-				"solo_vs_median": 0.421
-			},
-			{
-				"crowd_vs_median": 2.033,
-				"key": "guitarist|20|class_atlas50",
-				"solo_vs_median": 1.5110000000000001
-			},
-			{
-				"crowd_vs_median": 0.78,
-				"key": "assassin|20|class_atlas50",
-				"solo_vs_median": 1.813
-			},
-			{
-				"crowd_vs_median": 0.989,
-				"key": "ranger|20|class_atlas50",
-				"solo_vs_median": 1.7830000000000001
-			},
-			{
-				"crowd_vs_median": 0.718,
-				"key": "doctor|20|class_atlas50",
-				"solo_vs_median": 0.894
-			},
-			{
-				"crowd_vs_median": 1.473,
-				"key": "chemist|20|class_atlas50",
-				"solo_vs_median": 0.7020000000000001
-			},
-			{
-				"crowd_vs_median": 2.261,
-				"key": "druid|20|class_atlas50",
-				"solo_vs_median": 2.44
-			},
-			{
+				"axes": [
+					"AoE",
+					"defense"
+				],
 				"crowd_vs_median": 0.779,
+				"defense_vs_median": 1.258,
 				"key": "soldier|20|class_atlas59_upper",
 				"solo_vs_median": 0.812
 			},
 			{
+				"axes": [
+					"AoE"
+				],
+				"crowd_vs_median": 1.215,
+				"defense_vs_median": 0.8310000000000001,
+				"key": "thief|1|class_constellation",
+				"solo_vs_median": 1.014
+			},
+			{
+				"axes": [
+					"AoE"
+				],
+				"crowd_vs_median": 1.215,
+				"defense_vs_median": 0.8310000000000001,
+				"key": "thief|1|class_atlas50",
+				"solo_vs_median": 1.014
+			},
+			{
+				"axes": [
+					"AoE"
+				],
+				"crowd_vs_median": 1.215,
+				"defense_vs_median": 0.8310000000000001,
+				"key": "thief|1|class_atlas59_upper",
+				"solo_vs_median": 1.014
+			},
+			{
+				"axes": [
+					"solo",
+					"AoE",
+					"defense"
+				],
+				"crowd_vs_median": 0.755,
+				"defense_vs_median": 0.5720000000000001,
+				"key": "elementalist|1|no_meta",
+				"solo_vs_median": 0.628
+			},
+			{
+				"axes": [
+					"solo",
+					"defense"
+				],
+				"crowd_vs_median": 0.844,
+				"defense_vs_median": 0.5720000000000001,
+				"key": "elementalist|1|class_constellation",
+				"solo_vs_median": 0.45
+			},
+			{
+				"axes": [
+					"solo",
+					"defense"
+				],
+				"crowd_vs_median": 0.844,
+				"defense_vs_median": 0.5720000000000001,
+				"key": "elementalist|1|class_atlas50",
+				"solo_vs_median": 0.45
+			},
+			{
+				"axes": [
+					"solo",
+					"defense"
+				],
+				"crowd_vs_median": 0.844,
+				"defense_vs_median": 0.5720000000000001,
+				"key": "elementalist|1|class_atlas59_upper",
+				"solo_vs_median": 0.45
+			},
+			{
+				"axes": [
+					"solo",
+					"AoE",
+					"defense"
+				],
+				"crowd_vs_median": 0.747,
+				"defense_vs_median": 0.59,
+				"key": "elementalist|20|no_meta",
+				"solo_vs_median": 0.611
+			},
+			{
+				"axes": [
+					"solo",
+					"defense"
+				],
 				"crowd_vs_median": 0.9410000000000001,
+				"defense_vs_median": 0.59,
+				"key": "elementalist|20|class_constellation",
+				"solo_vs_median": 0.559
+			},
+			{
+				"axes": [
+					"solo",
+					"defense"
+				],
+				"crowd_vs_median": 0.9410000000000001,
+				"defense_vs_median": 0.59,
+				"key": "elementalist|20|class_atlas50",
+				"solo_vs_median": 0.559
+			},
+			{
+				"axes": [
+					"solo",
+					"defense"
+				],
+				"crowd_vs_median": 0.9410000000000001,
+				"defense_vs_median": 0.59,
 				"key": "elementalist|20|class_atlas59_upper",
 				"solo_vs_median": 0.559
 			},
 			{
+				"axes": [
+					"solo",
+					"defense"
+				],
+				"crowd_vs_median": 1.139,
+				"defense_vs_median": 1.489,
+				"key": "sniper|1|no_meta",
+				"solo_vs_median": 1.701
+			},
+			{
+				"axes": [
+					"solo",
+					"AoE",
+					"defense"
+				],
+				"crowd_vs_median": 1.357,
+				"defense_vs_median": 1.489,
+				"key": "sniper|1|class_constellation",
+				"solo_vs_median": 1.768
+			},
+			{
+				"axes": [
+					"solo",
+					"AoE",
+					"defense"
+				],
+				"crowd_vs_median": 1.357,
+				"defense_vs_median": 1.489,
+				"key": "sniper|1|class_atlas50",
+				"solo_vs_median": 1.768
+			},
+			{
+				"axes": [
+					"solo",
+					"AoE",
+					"defense"
+				],
+				"crowd_vs_median": 1.357,
+				"defense_vs_median": 1.489,
+				"key": "sniper|1|class_atlas59_upper",
+				"solo_vs_median": 1.768
+			},
+			{
+				"axes": [
+					"solo",
+					"defense"
+				],
+				"crowd_vs_median": 1.116,
+				"defense_vs_median": 1.482,
+				"key": "sniper|20|no_meta",
+				"solo_vs_median": 1.649
+			},
+			{
+				"axes": [
+					"solo",
+					"defense"
+				],
 				"crowd_vs_median": 1.114,
+				"defense_vs_median": 1.482,
+				"key": "sniper|20|class_constellation",
+				"solo_vs_median": 1.838
+			},
+			{
+				"axes": [
+					"solo",
+					"defense"
+				],
+				"crowd_vs_median": 1.114,
+				"defense_vs_median": 1.482,
+				"key": "sniper|20|class_atlas50",
+				"solo_vs_median": 1.838
+			},
+			{
+				"axes": [
+					"solo",
+					"defense"
+				],
+				"crowd_vs_median": 1.114,
+				"defense_vs_median": 1.482,
 				"key": "sniper|20|class_atlas59_upper",
 				"solo_vs_median": 1.838
 			},
 			{
+				"axes": [
+					"solo"
+				],
+				"crowd_vs_median": 0.887,
+				"defense_vs_median": 0.997,
+				"key": "priest|1|class_constellation",
+				"solo_vs_median": 0.7020000000000001
+			},
+			{
+				"axes": [
+					"solo"
+				],
+				"crowd_vs_median": 0.887,
+				"defense_vs_median": 0.997,
+				"key": "priest|1|class_atlas50",
+				"solo_vs_median": 0.7020000000000001
+			},
+			{
+				"axes": [
+					"solo"
+				],
+				"crowd_vs_median": 0.887,
+				"defense_vs_median": 0.997,
+				"key": "priest|1|class_atlas59_upper",
+				"solo_vs_median": 0.7020000000000001
+			},
+			{
+				"axes": [
+					"AoE",
+					"defense"
+				],
+				"crowd_vs_median": 1.41,
+				"defense_vs_median": 0.782,
+				"key": "biologist|1|no_meta",
+				"solo_vs_median": 1.062
+			},
+			{
+				"axes": [
+					"AoE",
+					"defense"
+				],
+				"crowd_vs_median": 2.101,
+				"defense_vs_median": 0.782,
+				"key": "biologist|1|class_constellation",
+				"solo_vs_median": 1.141
+			},
+			{
+				"axes": [
+					"AoE",
+					"defense"
+				],
+				"crowd_vs_median": 2.101,
+				"defense_vs_median": 0.782,
+				"key": "biologist|1|class_atlas50",
+				"solo_vs_median": 1.141
+			},
+			{
+				"axes": [
+					"AoE",
+					"defense"
+				],
+				"crowd_vs_median": 2.101,
+				"defense_vs_median": 0.782,
+				"key": "biologist|1|class_atlas59_upper",
+				"solo_vs_median": 1.141
+			},
+			{
+				"axes": [
+					"AoE"
+				],
+				"crowd_vs_median": 1.373,
+				"defense_vs_median": 0.8210000000000001,
+				"key": "biologist|20|no_meta",
+				"solo_vs_median": 1.063
+			},
+			{
+				"axes": [
+					"AoE"
+				],
 				"crowd_vs_median": 1.674,
+				"defense_vs_median": 0.8210000000000001,
+				"key": "biologist|20|class_constellation",
+				"solo_vs_median": 1.193
+			},
+			{
+				"axes": [
+					"AoE"
+				],
+				"crowd_vs_median": 1.674,
+				"defense_vs_median": 0.8210000000000001,
+				"key": "biologist|20|class_atlas50",
+				"solo_vs_median": 1.193
+			},
+			{
+				"axes": [
+					"AoE"
+				],
+				"crowd_vs_median": 1.674,
+				"defense_vs_median": 0.8210000000000001,
 				"key": "biologist|20|class_atlas59_upper",
 				"solo_vs_median": 1.193
 			},
 			{
+				"axes": [
+					"defense"
+				],
+				"crowd_vs_median": 0.8,
+				"defense_vs_median": 2.482,
+				"key": "robot|1|no_meta",
+				"solo_vs_median": 0.8130000000000001
+			},
+			{
+				"axes": [
+					"solo",
+					"AoE",
+					"defense"
+				],
+				"crowd_vs_median": 0.712,
+				"defense_vs_median": 2.729,
+				"key": "robot|1|class_constellation",
+				"solo_vs_median": 0.515
+			},
+			{
+				"axes": [
+					"solo",
+					"AoE",
+					"defense"
+				],
+				"crowd_vs_median": 0.712,
+				"defense_vs_median": 2.729,
+				"key": "robot|1|class_atlas50",
+				"solo_vs_median": 0.515
+			},
+			{
+				"axes": [
+					"solo",
+					"AoE",
+					"defense"
+				],
+				"crowd_vs_median": 0.712,
+				"defense_vs_median": 2.729,
+				"key": "robot|1|class_atlas59_upper",
+				"solo_vs_median": 0.515
+			},
+			{
+				"axes": [
+					"defense"
+				],
+				"crowd_vs_median": 0.803,
+				"defense_vs_median": 2.517,
+				"key": "robot|20|no_meta",
+				"solo_vs_median": 0.804
+			},
+			{
+				"axes": [
+					"solo",
+					"defense"
+				],
 				"crowd_vs_median": 0.855,
+				"defense_vs_median": 2.767,
+				"key": "robot|20|class_constellation",
+				"solo_vs_median": 0.6900000000000001
+			},
+			{
+				"axes": [
+					"solo",
+					"defense"
+				],
+				"crowd_vs_median": 0.855,
+				"defense_vs_median": 2.767,
+				"key": "robot|20|class_atlas50",
+				"solo_vs_median": 0.6900000000000001
+			},
+			{
+				"axes": [
+					"solo",
+					"defense"
+				],
+				"crowd_vs_median": 0.855,
+				"defense_vs_median": 2.767,
 				"key": "robot|20|class_atlas59_upper",
 				"solo_vs_median": 0.6900000000000001
 			},
 			{
+				"axes": [
+					"solo",
+					"AoE"
+				],
+				"crowd_vs_median": 1.952,
+				"defense_vs_median": 1.0,
+				"key": "engineer|1|class_constellation",
+				"solo_vs_median": 1.832
+			},
+			{
+				"axes": [
+					"solo",
+					"AoE"
+				],
+				"crowd_vs_median": 1.952,
+				"defense_vs_median": 1.0,
+				"key": "engineer|1|class_atlas50",
+				"solo_vs_median": 1.832
+			},
+			{
+				"axes": [
+					"solo",
+					"AoE"
+				],
+				"crowd_vs_median": 1.952,
+				"defense_vs_median": 1.0,
+				"key": "engineer|1|class_atlas59_upper",
+				"solo_vs_median": 1.832
+			},
+			{
+				"axes": [
+					"solo",
+					"AoE"
+				],
 				"crowd_vs_median": 1.471,
+				"defense_vs_median": 0.967,
+				"key": "engineer|20|class_constellation",
+				"solo_vs_median": 1.417
+			},
+			{
+				"axes": [
+					"solo",
+					"AoE"
+				],
+				"crowd_vs_median": 1.471,
+				"defense_vs_median": 0.967,
+				"key": "engineer|20|class_atlas50",
+				"solo_vs_median": 1.417
+			},
+			{
+				"axes": [
+					"solo",
+					"AoE"
+				],
+				"crowd_vs_median": 1.471,
+				"defense_vs_median": 0.967,
 				"key": "engineer|20|class_atlas59_upper",
 				"solo_vs_median": 1.417
 			},
 			{
+				"axes": [
+					"solo",
+					"AoE",
+					"defense"
+				],
+				"crowd_vs_median": 0.6900000000000001,
+				"defense_vs_median": 0.5670000000000001,
+				"key": "dark_mage|1|no_meta",
+				"solo_vs_median": 0.343
+			},
+			{
+				"axes": [
+					"solo",
+					"AoE",
+					"defense"
+				],
+				"crowd_vs_median": 0.794,
+				"defense_vs_median": 0.5670000000000001,
+				"key": "dark_mage|1|class_constellation",
+				"solo_vs_median": 0.314
+			},
+			{
+				"axes": [
+					"solo",
+					"AoE",
+					"defense"
+				],
+				"crowd_vs_median": 0.794,
+				"defense_vs_median": 0.5670000000000001,
+				"key": "dark_mage|1|class_atlas50",
+				"solo_vs_median": 0.314
+			},
+			{
+				"axes": [
+					"solo",
+					"AoE",
+					"defense"
+				],
+				"crowd_vs_median": 0.794,
+				"defense_vs_median": 0.5670000000000001,
+				"key": "dark_mage|1|class_atlas59_upper",
+				"solo_vs_median": 0.314
+			},
+			{
+				"axes": [
+					"solo",
+					"AoE",
+					"defense"
+				],
+				"crowd_vs_median": 0.7020000000000001,
+				"defense_vs_median": 0.588,
+				"key": "dark_mage|20|no_meta",
+				"solo_vs_median": 0.34500000000000003
+			},
+			{
+				"axes": [
+					"solo",
+					"defense"
+				],
 				"crowd_vs_median": 0.9400000000000001,
+				"defense_vs_median": 0.588,
+				"key": "dark_mage|20|class_constellation",
+				"solo_vs_median": 0.421
+			},
+			{
+				"axes": [
+					"solo",
+					"defense"
+				],
+				"crowd_vs_median": 0.9400000000000001,
+				"defense_vs_median": 0.588,
+				"key": "dark_mage|20|class_atlas50",
+				"solo_vs_median": 0.421
+			},
+			{
+				"axes": [
+					"solo",
+					"defense"
+				],
+				"crowd_vs_median": 0.9400000000000001,
+				"defense_vs_median": 0.588,
 				"key": "dark_mage|20|class_atlas59_upper",
 				"solo_vs_median": 0.421
 			},
 			{
+				"axes": [
+					"solo",
+					"AoE",
+					"defense"
+				],
+				"crowd_vs_median": 2.145,
+				"defense_vs_median": 0.789,
+				"key": "guitarist|1|no_meta",
+				"solo_vs_median": 1.6280000000000001
+			},
+			{
+				"axes": [
+					"solo",
+					"AoE",
+					"defense"
+				],
+				"crowd_vs_median": 2.184,
+				"defense_vs_median": 0.789,
+				"key": "guitarist|1|class_constellation",
+				"solo_vs_median": 1.471
+			},
+			{
+				"axes": [
+					"solo",
+					"AoE",
+					"defense"
+				],
+				"crowd_vs_median": 2.184,
+				"defense_vs_median": 0.789,
+				"key": "guitarist|1|class_atlas50",
+				"solo_vs_median": 1.471
+			},
+			{
+				"axes": [
+					"solo",
+					"AoE",
+					"defense"
+				],
+				"crowd_vs_median": 2.184,
+				"defense_vs_median": 0.789,
+				"key": "guitarist|1|class_atlas59_upper",
+				"solo_vs_median": 1.471
+			},
+			{
+				"axes": [
+					"solo",
+					"AoE",
+					"defense"
+				],
+				"crowd_vs_median": 2.1510000000000002,
+				"defense_vs_median": 0.749,
+				"key": "guitarist|20|no_meta",
+				"solo_vs_median": 1.585
+			},
+			{
+				"axes": [
+					"solo",
+					"AoE",
+					"defense"
+				],
 				"crowd_vs_median": 2.033,
+				"defense_vs_median": 0.749,
+				"key": "guitarist|20|class_constellation",
+				"solo_vs_median": 1.5110000000000001
+			},
+			{
+				"axes": [
+					"solo",
+					"AoE",
+					"defense"
+				],
+				"crowd_vs_median": 2.033,
+				"defense_vs_median": 0.749,
+				"key": "guitarist|20|class_atlas50",
+				"solo_vs_median": 1.5110000000000001
+			},
+			{
+				"axes": [
+					"solo",
+					"AoE",
+					"defense"
+				],
+				"crowd_vs_median": 2.033,
+				"defense_vs_median": 0.749,
 				"key": "guitarist|20|class_atlas59_upper",
 				"solo_vs_median": 1.5110000000000001
 			},
 			{
+				"axes": [
+					"solo"
+				],
+				"crowd_vs_median": 0.851,
+				"defense_vs_median": 1.066,
+				"key": "assassin|1|no_meta",
+				"solo_vs_median": 1.625
+			},
+			{
+				"axes": [
+					"solo",
+					"AoE"
+				],
+				"crowd_vs_median": 1.645,
+				"defense_vs_median": 1.082,
+				"key": "assassin|1|class_constellation",
+				"solo_vs_median": 3.6430000000000002
+			},
+			{
+				"axes": [
+					"solo",
+					"AoE"
+				],
+				"crowd_vs_median": 1.645,
+				"defense_vs_median": 1.082,
+				"key": "assassin|1|class_atlas50",
+				"solo_vs_median": 3.6430000000000002
+			},
+			{
+				"axes": [
+					"solo",
+					"AoE"
+				],
+				"crowd_vs_median": 1.645,
+				"defense_vs_median": 1.082,
+				"key": "assassin|1|class_atlas59_upper",
+				"solo_vs_median": 3.6430000000000002
+			},
+			{
+				"axes": [
+					"solo"
+				],
+				"crowd_vs_median": 0.8270000000000001,
+				"defense_vs_median": 1.006,
+				"key": "assassin|20|no_meta",
+				"solo_vs_median": 1.556
+			},
+			{
+				"axes": [
+					"solo",
+					"AoE"
+				],
 				"crowd_vs_median": 0.78,
+				"defense_vs_median": 1.02,
+				"key": "assassin|20|class_constellation",
+				"solo_vs_median": 1.813
+			},
+			{
+				"axes": [
+					"solo",
+					"AoE"
+				],
+				"crowd_vs_median": 0.78,
+				"defense_vs_median": 1.02,
+				"key": "assassin|20|class_atlas50",
+				"solo_vs_median": 1.813
+			},
+			{
+				"axes": [
+					"solo",
+					"AoE"
+				],
+				"crowd_vs_median": 0.78,
+				"defense_vs_median": 1.02,
 				"key": "assassin|20|class_atlas59_upper",
 				"solo_vs_median": 1.813
 			},
 			{
+				"axes": [
+					"solo"
+				],
+				"crowd_vs_median": 1.067,
+				"defense_vs_median": 0.8260000000000001,
+				"key": "ranger|1|no_meta",
+				"solo_vs_median": 1.966
+			},
+			{
+				"axes": [
+					"solo"
+				],
+				"crowd_vs_median": 1.0,
+				"defense_vs_median": 0.8260000000000001,
+				"key": "ranger|1|class_constellation",
+				"solo_vs_median": 1.685
+			},
+			{
+				"axes": [
+					"solo"
+				],
+				"crowd_vs_median": 1.0,
+				"defense_vs_median": 0.8260000000000001,
+				"key": "ranger|1|class_atlas50",
+				"solo_vs_median": 1.685
+			},
+			{
+				"axes": [
+					"solo"
+				],
+				"crowd_vs_median": 1.0,
+				"defense_vs_median": 0.8260000000000001,
+				"key": "ranger|1|class_atlas59_upper",
+				"solo_vs_median": 1.685
+			},
+			{
+				"axes": [
+					"solo"
+				],
+				"crowd_vs_median": 1.0,
+				"defense_vs_median": 0.843,
+				"key": "ranger|20|no_meta",
+				"solo_vs_median": 1.754
+			},
+			{
+				"axes": [
+					"solo"
+				],
 				"crowd_vs_median": 0.989,
+				"defense_vs_median": 0.843,
+				"key": "ranger|20|class_constellation",
+				"solo_vs_median": 1.7830000000000001
+			},
+			{
+				"axes": [
+					"solo"
+				],
+				"crowd_vs_median": 0.989,
+				"defense_vs_median": 0.843,
+				"key": "ranger|20|class_atlas50",
+				"solo_vs_median": 1.7830000000000001
+			},
+			{
+				"axes": [
+					"solo"
+				],
+				"crowd_vs_median": 0.989,
+				"defense_vs_median": 0.843,
 				"key": "ranger|20|class_atlas59_upper",
 				"solo_vs_median": 1.7830000000000001
 			},
 			{
+				"axes": [
+					"solo",
+					"AoE"
+				],
 				"crowd_vs_median": 0.718,
+				"defense_vs_median": 1.065,
+				"key": "doctor|1|class_constellation",
+				"solo_vs_median": 0.685
+			},
+			{
+				"axes": [
+					"solo",
+					"AoE"
+				],
+				"crowd_vs_median": 0.718,
+				"defense_vs_median": 1.065,
+				"key": "doctor|1|class_atlas50",
+				"solo_vs_median": 0.685
+			},
+			{
+				"axes": [
+					"solo",
+					"AoE"
+				],
+				"crowd_vs_median": 0.718,
+				"defense_vs_median": 1.065,
+				"key": "doctor|1|class_atlas59_upper",
+				"solo_vs_median": 0.685
+			},
+			{
+				"axes": [
+					"AoE"
+				],
+				"crowd_vs_median": 0.718,
+				"defense_vs_median": 1.054,
+				"key": "doctor|20|class_constellation",
+				"solo_vs_median": 0.894
+			},
+			{
+				"axes": [
+					"AoE"
+				],
+				"crowd_vs_median": 0.718,
+				"defense_vs_median": 1.054,
+				"key": "doctor|20|class_atlas50",
+				"solo_vs_median": 0.894
+			},
+			{
+				"axes": [
+					"AoE"
+				],
+				"crowd_vs_median": 0.718,
+				"defense_vs_median": 1.054,
 				"key": "doctor|20|class_atlas59_upper",
 				"solo_vs_median": 0.894
 			},
 			{
+				"axes": [
+					"solo",
+					"defense"
+				],
+				"crowd_vs_median": 1.1280000000000001,
+				"defense_vs_median": 0.637,
+				"key": "chemist|1|no_meta",
+				"solo_vs_median": 0.727
+			},
+			{
+				"axes": [
+					"AoE",
+					"defense"
+				],
+				"crowd_vs_median": 2.086,
+				"defense_vs_median": 0.637,
+				"key": "chemist|1|class_constellation",
+				"solo_vs_median": 1.0
+			},
+			{
+				"axes": [
+					"AoE",
+					"defense"
+				],
+				"crowd_vs_median": 2.086,
+				"defense_vs_median": 0.637,
+				"key": "chemist|1|class_atlas50",
+				"solo_vs_median": 1.0
+			},
+			{
+				"axes": [
+					"AoE",
+					"defense"
+				],
+				"crowd_vs_median": 2.086,
+				"defense_vs_median": 0.637,
+				"key": "chemist|1|class_atlas59_upper",
+				"solo_vs_median": 1.0
+			},
+			{
+				"axes": [
+					"solo",
+					"defense"
+				],
+				"crowd_vs_median": 1.049,
+				"defense_vs_median": 0.626,
+				"key": "chemist|20|no_meta",
+				"solo_vs_median": 0.654
+			},
+			{
+				"axes": [
+					"solo",
+					"AoE",
+					"defense"
+				],
 				"crowd_vs_median": 1.473,
+				"defense_vs_median": 0.626,
+				"key": "chemist|20|class_constellation",
+				"solo_vs_median": 0.7020000000000001
+			},
+			{
+				"axes": [
+					"solo",
+					"AoE",
+					"defense"
+				],
+				"crowd_vs_median": 1.473,
+				"defense_vs_median": 0.626,
+				"key": "chemist|20|class_atlas50",
+				"solo_vs_median": 0.7020000000000001
+			},
+			{
+				"axes": [
+					"solo",
+					"AoE",
+					"defense"
+				],
+				"crowd_vs_median": 1.473,
+				"defense_vs_median": 0.626,
 				"key": "chemist|20|class_atlas59_upper",
 				"solo_vs_median": 0.7020000000000001
 			},
 			{
+				"axes": [
+					"defense"
+				],
+				"crowd_vs_median": 0.904,
+				"defense_vs_median": 2.406,
+				"key": "knight|1|no_meta",
+				"solo_vs_median": 0.975
+			},
+			{
+				"axes": [
+					"solo",
+					"AoE",
+					"defense"
+				],
+				"crowd_vs_median": 0.731,
+				"defense_vs_median": 2.628,
+				"key": "knight|1|class_constellation",
+				"solo_vs_median": 0.6890000000000001
+			},
+			{
+				"axes": [
+					"solo",
+					"AoE",
+					"defense"
+				],
+				"crowd_vs_median": 0.731,
+				"defense_vs_median": 2.628,
+				"key": "knight|1|class_atlas50",
+				"solo_vs_median": 0.6890000000000001
+			},
+			{
+				"axes": [
+					"solo",
+					"AoE",
+					"defense"
+				],
+				"crowd_vs_median": 0.731,
+				"defense_vs_median": 2.628,
+				"key": "knight|1|class_atlas59_upper",
+				"solo_vs_median": 0.6890000000000001
+			},
+			{
+				"axes": [
+					"defense"
+				],
+				"crowd_vs_median": 0.9410000000000001,
+				"defense_vs_median": 2.441,
+				"key": "knight|20|no_meta",
+				"solo_vs_median": 1.0
+			},
+			{
+				"axes": [
+					"defense"
+				],
+				"crowd_vs_median": 0.929,
+				"defense_vs_median": 2.666,
+				"key": "knight|20|class_constellation",
+				"solo_vs_median": 0.975
+			},
+			{
+				"axes": [
+					"defense"
+				],
+				"crowd_vs_median": 0.929,
+				"defense_vs_median": 2.666,
+				"key": "knight|20|class_atlas50",
+				"solo_vs_median": 0.975
+			},
+			{
+				"axes": [
+					"defense"
+				],
+				"crowd_vs_median": 0.929,
+				"defense_vs_median": 2.666,
+				"key": "knight|20|class_atlas59_upper",
+				"solo_vs_median": 0.975
+			},
+			{
+				"axes": [
+					"solo",
+					"AoE"
+				],
+				"crowd_vs_median": 2.396,
+				"defense_vs_median": 1.0110000000000001,
+				"key": "druid|1|class_constellation",
+				"solo_vs_median": 2.552
+			},
+			{
+				"axes": [
+					"solo",
+					"AoE"
+				],
+				"crowd_vs_median": 2.396,
+				"defense_vs_median": 1.0110000000000001,
+				"key": "druid|1|class_atlas50",
+				"solo_vs_median": 2.552
+			},
+			{
+				"axes": [
+					"solo",
+					"AoE"
+				],
+				"crowd_vs_median": 2.396,
+				"defense_vs_median": 1.0110000000000001,
+				"key": "druid|1|class_atlas59_upper",
+				"solo_vs_median": 2.552
+			},
+			{
+				"axes": [
+					"solo",
+					"AoE"
+				],
 				"crowd_vs_median": 2.261,
+				"defense_vs_median": 1.014,
+				"key": "druid|20|class_constellation",
+				"solo_vs_median": 2.44
+			},
+			{
+				"axes": [
+					"solo",
+					"AoE"
+				],
+				"crowd_vs_median": 2.261,
+				"defense_vs_median": 1.014,
+				"key": "druid|20|class_atlas50",
+				"solo_vs_median": 2.44
+			},
+			{
+				"axes": [
+					"solo",
+					"AoE"
+				],
+				"crowd_vs_median": 2.261,
+				"defense_vs_median": 1.014,
 				"key": "druid|20|class_atlas59_upper",
 				"solo_vs_median": 2.44
 			}
@@ -7382,10 +8051,10 @@
 	},
 	"schema": "fan1438.a5-balance.v1",
 	"source": {
-		"commit": "2195aca4916ede15ef2427bb979d0d1f0f074d3a",
-		"commit_timestamp": "2026-07-22T20:19:34+03:00",
+		"commit": "992ac2fc20c43067228864f008eb3789c750d28f",
+		"commit_timestamp": "2026-07-22T23:00:34+03:00",
 		"godot": "4.7-stable (official)",
-		"tree": "ae5dfdcd82daf1fe9e6d0ef7c7c19b21edc7d1d2"
+		"tree": "3feaab97def55ca378a5e944bb5c10153d436d19"
 	},
 	"weapon_rows": [
 		{
