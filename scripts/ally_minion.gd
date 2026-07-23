@@ -63,6 +63,9 @@ const FULL_FRAME_DEATH_DURATION_FALLBACK := 0.62
 var _attack_cooldown := 0.0
 var _attack_anim_time := 0.0
 var _last_facing_right := false
+# Stable spawn-derived direction for the guard formation. ObjectID is opaque
+# runtime identity and must not affect gameplay geometry or timing.
+var _guard_formation_direction := Vector2.RIGHT
 # SCRUM-946: текущий ракурс 4-направленного статичного арта (см.
 # DIRECTIONAL_ALLY_VISUAL_PATHS); юниты без направленного арта его не трогают.
 var _directional_facing := "south"
@@ -99,6 +102,11 @@ func _ready() -> void:
 func set_visual_id(visual_id: String) -> void:
 	ally_visual_id = visual_id
 	_apply_visual()
+
+
+func set_guard_formation_direction(direction: Vector2) -> void:
+	if direction.length_squared() > 0.001:
+		_guard_formation_direction = direction.normalized()
 
 
 func set_combat_profile(profile: Dictionary) -> void:
@@ -311,7 +319,7 @@ func _follow_guard_position() -> void:
 	if owner_node == null or not is_instance_valid(owner_node):
 		velocity = Vector2.ZERO
 		return
-	var guard_offset := Vector2(56.0, 0.0).rotated(float(get_instance_id() % 360) * PI / 180.0)
+	var guard_offset := _guard_formation_direction * 56.0
 	var guard_position := owner_node.global_position + guard_offset
 	var to_guard := guard_position - global_position
 	if to_guard.length() <= 18.0:

@@ -246,7 +246,10 @@ func _summon(play_cast_animation := true) -> bool:
 	ally.set("owner_node", owner_node)
 	ally.set("command_mode", command_mode)
 	var angle := randf() * TAU
-	ally.global_position = owner_node.global_position + Vector2.RIGHT.rotated(angle) * 48.0
+	var spawn_direction := Vector2.RIGHT.rotated(angle)
+	ally.global_position = owner_node.global_position + spawn_direction * 48.0
+	if ally.has_method("set_guard_formation_direction"):
+		ally.call("set_guard_formation_direction", spawn_direction)
 	var profile := _summon_profile(owner_node, roster_entry)
 	# SCRUM-961 «Зов волков»: ближние (melee) духи рвут сильнее (+20% урона).
 	if pack_bias and (selected_visual_id == "druid_beast" or str(roster_entry.get("attack_kind", "")) == "melee"):
