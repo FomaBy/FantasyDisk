@@ -480,9 +480,14 @@ func _damage_target(owner_node: Node2D, enemy_node: Node2D, attack_direction: Ve
 	var hit_context := {"weapon_id": weapon_id, "attack_mode": "melee", "damage_type": "physical"}
 	if owner_node.has_method("meta_context_for_weapon"):
 		hit_context = owner_node.call("meta_context_for_weapon", self, hit_context)
+	if owner_node.has_method("telemetry_context_for_hit"):
+		hit_context = owner_node.call("telemetry_context_for_hit", hit_context)
 	if owner_node.has_method("meta_damage_multiplier"):
 		dealt *= float(owner_node.call("meta_damage_multiplier", hit_context, enemy_node))
-	_call_take_damage(enemy_node, dealt, {"critical": _last_attack_crit, "damage_type": "physical"})
+	var hit_feedback := {"critical": _last_attack_crit, "damage_type": "physical"}
+	if owner_node.has_method("telemetry_feedback_for_hit"):
+		hit_feedback = owner_node.call("telemetry_feedback_for_hit", hit_context, hit_feedback)
+	_call_take_damage(enemy_node, dealt, hit_feedback)
 	if owner_node.has_method("on_weapon_hit"):
 		owner_node.on_weapon_hit(enemy_node, dealt, _last_attack_crit, hit_context)
 	_apply_unique_melee_hit_effects(owner_node, enemy_node, attack_direction, dealt)
@@ -670,12 +675,12 @@ func _apply_unique_melee_hit_effects(owner_node: Node2D, enemy_node: Node2D, att
 		return
 	var distance := owner_node.global_position.distance_to(enemy_node.global_position)
 	if melee_close_bonus_radius > 0.0 and melee_close_damage_multiplier > 1.0 and distance <= melee_close_bonus_radius:
-		enemy_node.take_damage(amount * (melee_close_damage_multiplier - 1.0))
+		_call_take_damage(enemy_node, amount * (melee_close_damage_multiplier - 1.0), {"damage_type": "physical"})
 	if melee_execute_threshold > 0.0 and melee_execute_multiplier > 1.0:
 		var max_hp := float(enemy_node.get("max_health")) if enemy_node.get("max_health") != null else 0.0
 		var health := float(enemy_node.get("health")) if enemy_node.get("health") != null else max_hp
 		if max_hp > 0.0 and health / max_hp <= melee_execute_threshold:
-			enemy_node.take_damage(amount * (melee_execute_multiplier - 1.0))
+			_call_take_damage(enemy_node, amount * (melee_execute_multiplier - 1.0), {"damage_type": "physical"})
 	if melee_stagger_knockback_multiplier > 0.0:
 		var push_direction := enemy_node.global_position - owner_node.global_position
 		if push_direction.length_squared() <= 0.001:
@@ -704,7 +709,7 @@ func _apply_unique_melee_hit_effects(owner_node: Node2D, enemy_node: Node2D, att
 			if nearby == enemy_node:
 				continue
 			if nearby.has_method("take_damage"):
-				nearby.take_damage(splash_damage)
+				_call_take_damage(nearby as Node, splash_damage, {"damage_type": "physical"})
 
 
 func _target_direction(owner_node: Node2D) -> Vector2:
@@ -776,6 +781,10 @@ func _is_enemy_inside_frustum(owner_node: Node2D, enemy_node: Node2D, attack_dir
 func _call_take_damage(enemy: Node, amount: float, feedback := {}) -> void:
 	if _take_damage_accepts_feedback(enemy):
 		var tagged: Dictionary = feedback if feedback is Dictionary else {}
+		var owner_node := _owner_node()
+		if str(tagged.get("telemetry_provenance_id", "")) == "" and owner_node != null and owner_node.has_method("telemetry_context_for_hit") and owner_node.has_method("telemetry_feedback_for_hit"):
+			var telemetry_context: Dictionary = owner_node.call("telemetry_context_for_hit", {"weapon_id": weapon_id, "attack_mode": "melee", "damage_type": str(tagged.get("damage_type", "physical"))})
+			tagged = owner_node.call("telemetry_feedback_for_hit", telemetry_context, tagged)
 		tagged["player_owned"] = true
 		enemy.call("take_damage", amount, tagged)
 	else:

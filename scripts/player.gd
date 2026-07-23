@@ -134,6 +134,7 @@ var aim_mode := "nearest"
 var last_weapon_animation_event: Dictionary = {}
 var equipped_weapon: Node = null
 var stats := {}
+var _telemetry_sequence := {"cast": 0, "hit": 0, "final": 0}
 var run_modifiers := _default_run_modifiers()
 var artifacts := []
 var derived_parameters := {}
@@ -922,12 +923,22 @@ func play_action_animation(action_id: String, direction := Vector2.ZERO, phase :
 	_action_tween.tween_property(self, "_action_scale", Vector2.ONE, recover_time).set_delay(windup_time).set_trans(Tween.TRANS_QUAD).set_ease(Tween.EASE_OUT)
 	_action_tween.tween_callback(_apply_sprite_transform)
 func record_weapon_cast(weapon_id_value: String, attack_mode_value: String, action_id: String, duration := 0.0) -> void:
-	weapon_cast_observed.emit({"weapon_id": weapon_id_value, "attack_mode": attack_mode_value, "action_id": action_id, "phase": "windup", "duration": maxf(float(duration), 0.0), "phase_source": "class_weapon"})
+	_telemetry_sequence["cast"] += 1
+	weapon_cast_observed.emit({"weapon_id": weapon_id_value, "attack_mode": attack_mode_value, "action_id": action_id, "telemetry_cast_id": "cast_%06d" % _telemetry_sequence["cast"], "phase": "windup", "duration": maxf(float(duration), 0.0), "phase_source": "class_weapon"})
+func telemetry_context_for_hit(context := {}) -> Dictionary:
+	_telemetry_sequence["hit"] += 1
+	var tagged: Dictionary = context.duplicate(true) if context is Dictionary else {}
+	tagged.merge({"telemetry_provenance_id": "hit_%06d" % _telemetry_sequence["hit"], "telemetry_cast_id": "cast_%06d" % _telemetry_sequence["cast"] if _telemetry_sequence["cast"] > 0 else ""})
+	return tagged
+func telemetry_feedback_for_hit(context := {}, feedback := {}) -> Dictionary:
+	var tagged: Dictionary = feedback.duplicate(true) if feedback is Dictionary else {}
+	for key in ["telemetry_provenance_id", "telemetry_cast_id", "telemetry_final_activation_id", "telemetry_final_mechanic_id"]:
+		if context is Dictionary and context.has(key): tagged[key] = context[key]
+	return tagged
 func apply_web_slow(duration: float, factor: float) -> void:
 	# Паутина: временное замедление движения (повтор продлевает, фактор общий).
 	_web_slow_until = maxf(_web_slow_until, Time.get_ticks_msec() / 1000.0 + duration)
 	_web_slow_factor = clampf(factor, 0.2, 1.0)
-
 
 # Combat Feel Rework (этап C): скорости побега для CombatFairness.fair_windup.
 # escape_speed — текущая эффективная скорость движения (после паутины и
@@ -1209,8 +1220,7 @@ func trigger_assassin_crit_shadow(target: Node2D, burst_radius: float) -> void:
 	if echo_ratio > 0.0:
 		var echo_damage := maxf(float(derived_parameters.get("damage", 10.0)) * echo_ratio, 1.0)
 		for other_node in TARGET_QUERY.in_radius(self, target.global_position, radius):
-			if other_node.has_method("take_damage"):
-				other_node.take_damage(echo_damage)
+			_apply_player_damage(other_node as Node, echo_damage, {"damage_type": "magic"})
 	var invis_time := float(run_modifiers.get("shadow_burst_invisibility_time", 0.0))
 	if invis_time > 0.0:
 		_shadow_invisible_left = maxf(_shadow_invisible_left, invis_time)
@@ -1331,10 +1341,7 @@ func _knight_counter_damage(incoming_amount: float, passive_mods: Dictionary) ->
 
 
 func _deal_knight_counter_hit(enemy_node: Node2D, amount: float) -> void:
-	if _take_damage_accepts_feedback(enemy_node):
-		enemy_node.take_damage(amount, {"damage_type": "physical"})
-	else:
-		enemy_node.take_damage(amount)
+	_apply_player_damage(enemy_node, amount, {"damage_type": "physical"})
 
 
 func _trigger_thorn_reflect(received_damage: float) -> void:
@@ -1346,8 +1353,8 @@ func _trigger_thorn_reflect(received_damage: float) -> void:
 		var enemy_node := enemy as Node2D
 		if enemy_node == null or not is_instance_valid(enemy_node):
 			continue
-		if global_position.distance_squared_to(enemy_node.global_position) <= 200.0 * 200.0 and enemy_node.has_method("take_damage"):
-			enemy_node.take_damage(reflected)
+		if global_position.distance_squared_to(enemy_node.global_position) <= 200.0 * 200.0:
+			_apply_player_damage(enemy_node, reflected, {"damage_type": "physical"})
 
 
 func _trigger_dodge_rush() -> void:
@@ -1541,6 +1548,8 @@ func meta_damage_multiplier(context := {}, enemy: Node2D = null) -> float:
 	multiplier *= constellation_weapon_axis_multiplier(str(ctx.get("weapon_id", "")))
 	var final_resolution := constellation_weapon_event(str(ctx.get("weapon_id", "")), "hit", ctx, enemy)
 	multiplier *= float(final_resolution.get("damage_multiplier", 1.0))
+	if bool(final_resolution.get("triggered", false)):
+		ctx.merge({"telemetry_final_activation_id": str(final_resolution.get("telemetry_final_activation_id", "")), "telemetry_final_mechanic_id": str(final_resolution.get("mechanic_id", ""))})
 	# SCRUM-942: периодический источник (тики луж / DoT-тики оружия) помечен
 	# damage_type="dot" — усиливаем классовым trait-множителем периодики.
 	if str(ctx.get("damage_type", "")) == "dot":
@@ -1795,8 +1804,7 @@ func _trigger_take_hit_pulse(received_damage: float) -> void:
 		if enemy_node == null or not is_instance_valid(enemy_node):
 			continue
 		if global_position.distance_squared_to(enemy_node.global_position) <= 190.0 * 190.0:
-			if enemy_node.has_method("take_damage"):
-				enemy_node.take_damage(pulse_damage)
+			_apply_player_damage(enemy_node, pulse_damage, {"damage_type": "physical"})
 			if enemy_node.has_method("apply_knockback"):
 				enemy_node.apply_knockback((enemy_node.global_position - global_position).normalized() * 180.0)
 
@@ -2200,6 +2208,9 @@ func constellation_weapon_event(weapon_id_value: String, event: String, context 
 	if not bool(resolution.get("valid", false)):
 		push_error("SCRUM-1068 final runtime rejected %s." % mechanic_id)
 		return {"valid": false, "triggered": false, "damage_multiplier": 1.0, "axis_gain": 1.0}
+	if bool(resolution.get("triggered", false)):
+		_telemetry_sequence["final"] += 1
+		resolution["telemetry_final_activation_id"] = "final_%06d" % _telemetry_sequence["final"]
 	constellation_final_resolved.emit(weapon_id_value, event, enemy, runtime_context.duplicate(true), resolution.duplicate(true))
 	if bool(resolution.get("triggered", false)):
 		run_modifiers["constellation_last_final_action"] = resolution.duplicate(true)
@@ -2477,10 +2488,7 @@ func _apply_meta_crit_execute(enemy: Node2D, context: Dictionary) -> void:
 		return
 	var execute_damage := maxf(current_hp + max_hp * 0.01, 1.0)
 	var feedback := {"critical": true, "damage_type": str(context.get("damage_type", "physical"))}
-	if _take_damage_accepts_feedback(enemy):
-		enemy.take_damage(execute_damage, feedback)
-	else:
-		enemy.take_damage(execute_damage)
+	_apply_player_damage(enemy, execute_damage, feedback)
 
 
 func _is_non_elite_enemy(enemy: Node2D) -> bool:
@@ -2915,11 +2923,8 @@ func _apply_ultimate_damage(enemy: Node2D, amount: float) -> void:
 		final_amount = minf(final_amount, float(enemy.get("max_health")) * float(_ultimate_config().get("boss_cap", 0.1)))
 	# SCRUM-1007: ульта — урон игрока; метка атрибутирует он-килл trait'ы, тип
 	# урона — канал класса (маг. классы красят цифру магией).
-	if _take_damage_accepts_feedback(enemy):
-		var ult_type := "magic" if ProgressionData.damage_parameter_for(character_id) == "magic_damage" else "physical"
-		enemy.take_damage(final_amount, {"damage_type": ult_type, "player_owned": true})
-	else:
-		enemy.take_damage(final_amount)
+	var ult_type := "magic" if ProgressionData.damage_parameter_for(character_id) == "magic_damage" else "physical"
+	_apply_player_damage(enemy, final_amount, {"damage_type": ult_type})
 
 
 func show_combat_feedback_number(amount: float, kind := "heal") -> void:
@@ -2982,8 +2987,7 @@ func _trigger_magic_enchant(enemy: Node2D) -> void:
 	var parent := get_tree().current_scene if get_tree().current_scene != null else get_tree().root
 	AttackVfx.orb_burst(parent, enemy.global_position, radius, Color(0.58, 0.38, 1.0, 0.34))
 	for other_node in TARGET_QUERY.in_radius(self, enemy.global_position, radius):
-		if other_node.has_method("take_damage"):
-			other_node.take_damage(enchant_damage)
+		_apply_player_damage(other_node as Node, enchant_damage, {"damage_type": "magic"})
 
 
 func _trigger_universal_dot(enemy: Node2D) -> void:
@@ -3007,8 +3011,7 @@ func _trigger_universal_dot(enemy: Node2D) -> void:
 
 func _apply_dot_tick(enemy_id: int, tick_damage: float) -> void:
 	var enemy := instance_from_id(enemy_id) as Node
-	if enemy != null and enemy.has_method("take_damage"):
-		enemy.take_damage(tick_damage)
+	_apply_player_damage(enemy, tick_damage, {"damage_type": "dot"})
 
 
 func _trigger_class_status_effects(enemy: Node2D) -> void:
@@ -3183,7 +3186,7 @@ func _trigger_leadership_echo(enemy: Node2D) -> void:
 	var echo_damage := float(derived_parameters.get(PROGRESSION_DATA.damage_parameter_for(character_id), derived_parameters.get("damage", 8.0))) * 0.34
 	var parent := _vfx_parent() as Node2D
 	AttackVfx.slash(parent, (enemy.global_position - global_position).normalized(), 110.0, Color(0.78, 0.90, 1.0, 0.34)).global_position = enemy.global_position
-	enemy.take_damage(echo_damage)
+	_apply_player_damage(enemy, echo_damage, {"damage_type": "magic"})
 
 
 func _on_weapon_hit_echo(enemy: Node2D) -> void:
@@ -3202,8 +3205,7 @@ func _on_weapon_hit_echo(enemy: Node2D) -> void:
 		scene = get_tree().root
 	AttackVfx.orb_burst(scene, blast_position, 140.0, Color(1.0, 0.82, 0.30, 0.5))
 	for other_node in TARGET_QUERY.in_radius(self, blast_position, 140.0):
-		if other_node.has_method("take_damage"):
-			other_node.take_damage(blast_damage)
+		_apply_player_damage(other_node as Node, blast_damage, {"damage_type": "magic"})
 
 
 # SCRUM-500 (on_kill): диспетчер триггеров убийства. Вызывается combat_director из
@@ -3228,8 +3230,8 @@ func on_enemy_killed(enemy: Node2D) -> void:
 			scene = get_tree().root
 		AttackVfx.orb_burst(scene, blast_position, 150.0, Color(1.0, 0.55, 0.20, 0.55))
 		for other_node in TARGET_QUERY.in_radius(self, blast_position, 150.0):
-			if other_node != enemy and other_node.has_method("take_damage"):
-				other_node.take_damage(blast_damage)
+			if other_node != enemy:
+				_apply_player_damage(other_node as Node, blast_damage, {"damage_type": "magic"})
 	# «Сбор Душ»: каждое N-е убийство лечит процент max HP.
 	var streak_every := int(run_modifiers.get("kill_streak_heal_every", 0.0))
 	if streak_every > 0:
@@ -3278,10 +3280,7 @@ func _trigger_class_on_kill_trait(enemy: Node2D) -> void:
 	for other_node in TARGET_QUERY.in_radius(self, blast_position, radius):
 		if other_node == enemy or not other_node.has_method("take_damage"):
 			continue
-		if _take_damage_accepts_feedback(other_node):
-			other_node.take_damage(damage_amount, {"damage_type": "magic", "player_owned": true, "dark_decay": true})
-		else:
-			other_node.take_damage(damage_amount)
+		_apply_player_damage(other_node, damage_amount, {"damage_type": "magic", "dark_decay": true})
 
 
 # SCRUM-940: у Проклятого черепа нет прямого урона → on_weapon_hit не зовётся.
@@ -3473,17 +3472,18 @@ func _apply_heal_to_holy_damage(healed: float) -> void:
 			continue
 		AttackVfx.beam(_vfx_parent(), previous_position, enemy_node.global_position, 26.0, Color(1.0, 0.92, 0.56, 0.38))
 		var chain_damage := damage_amount * pow(0.72, float(index))
-		if _take_damage_accepts_feedback(enemy_node):
-			enemy_node.take_damage(chain_damage, {"damage_type": "magic"})
-		else:
-			enemy_node.take_damage(chain_damage)
+		_apply_player_damage(enemy_node, chain_damage, {"damage_type": "magic"})
 		previous_position = enemy_node.global_position
-
-
+func _apply_player_damage(target: Node, amount: float, feedback := {}) -> void:
+	if target == null or not is_instance_valid(target) or not target.has_method("take_damage"): return
+	if _take_damage_accepts_feedback(target):
+		var tagged: Dictionary = feedback.duplicate(true) if feedback is Dictionary else {}
+		tagged["player_owned"] = true
+		target.call("take_damage", amount, tagged)
+	else: target.call("take_damage", amount)
 func _take_damage_accepts_feedback(target: Node) -> bool:
 	for method in target.get_method_list():
-		if str(method.get("name", "")) == "take_damage":
-			return int((method.get("args", []) as Array).size()) >= 2
+		if str(method.get("name", "")) == "take_damage": return int((method.get("args", []) as Array).size()) >= 2
 	return false
 
 

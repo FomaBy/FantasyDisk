@@ -1237,17 +1237,28 @@ Schema-6 flat/cadence/geometry/axis/final профиль берётся из к�
 сидами, warm-up и фиксированным игровым окном.
 
 Начиная с raw schema `fan1438.a5-balance.v2`, каждая такая проба также содержит
-`fan1511.runtime-telemetry.v1`: стабильный ключ
+`fan1511.runtime-telemetry.v2`: стабильный ключ
 `pair|seed|scenario|fixture|target-cardinality`, trace ID, counters реальных
-casts/hits,
-уникальные target IDs и взаимоисключающие buckets `source×phase`. Cast приходит
-из `Player.weapon_cast_observed`, применённый урон — после канонического расчёта
-HP в `Enemy.damage_applied`, а final resolution и incoming-hit фиксируются
-отдельными runtime-событиями. `final_event_damage` — только помеченное
-подмножество тех же hit buckets и никогда не прибавляется к общему урону второй
-раз. Полный прогон добавляет три репрезентативные фикстуры: обычную offensive,
-mortal target с наблюдаемым kill и детерминированный incoming hit по игроку;
-короткая проверка только этих примитивов доступна через `--mode=telemetry_probe`.
+casts/hits, уникальные target IDs и взаимоисключающие buckets `source×phase`.
+Каждый cast получает стабильный `cast_id`, а каждый применённый игроком hit —
+единственный `provenance_id`; оба идентификатора только наблюдательные и не
+влияют на боевой расчёт. Cast приходит из `Player.weapon_cast_observed`,
+применённый урон — после канонического расчёта HP в `Enemy.damage_applied`.
+
+Наблюдаемое final-событие обязано ссылаться на реальный hit через
+`related_hit_id`, а hit хранит ровно одну взаимную ссылку в `final_event_ids`;
+проверяются цель и причинный порядок. Отложенные или targetless resolver-сигналы
+не считаются наблюдённым финальным уроном до его канонического применения.
+`final_event_damage` — только дедуплицированное помеченное подмножество тех же
+hit buckets и никогда не прибавляется к общему урону второй раз.
+
+Каждая фикстура несёт `hp_ledger`: полный набор целей, сумму канонически
+применённого урона и health loss за measurement-окно. Ledger сверяет runtime
+hits и DPM с фактическим изменением HP с допуском `0.0001`; overkill учитывается
+как оставшийся HP, а не как запрошенный урон. Полный прогон добавляет три
+репрезентативные фикстуры: обычную offensive, mortal target с наблюдаемым kill и
+детерминированный incoming hit по игроку; короткая проверка только этих
+примитивов доступна через `--mode=telemetry_probe`.
 
 Выживаемость привязана к одному явно описанному normal-wave A5 contact-pressure
 сценарию. Глобальный множитель обычных врагов не переносится на boss/elite

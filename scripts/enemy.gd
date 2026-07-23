@@ -584,8 +584,11 @@ func take_damage(amount: float, feedback := {}) -> void:
 	if _elite_shield_active:
 		final_amount *= elite_shield_damage_reduction
 		_apply_elite_reflect_thorns(amount)
+	var health_before := health
 	health -= final_amount
-	damage_applied.emit(self, amount, final_amount, feedback_data.duplicate(true))
+	# FAN-1539: observe the authoritative, overkill-capped HP delta; gameplay below keeps final_amount.
+	var canonical_applied_amount := maxf(health_before - maxf(health, 0.0), 0.0)
+	damage_applied.emit(self, amount, canonical_applied_amount, feedback_data.duplicate(true))
 	_update_health_bar()
 	# SCRUM-502: репортим нанесённый врагу урон в агрегатор забега (экран итогов).
 	# enemy.take_damage(...) — единая точка схода ВСЕХ источников урона по врагу

@@ -13,10 +13,12 @@ var _errors := PackedStringArray()
 
 
 func _initialize() -> void:
-	var raw_text := _read_text(Generator.RAW_PATH)
+	var raw_artifact := Generator.read_raw_artifact()
+	_check(bool(raw_artifact.get("ok", false)), "raw.json.gz must decode and validate: %s" % raw_artifact.get("error", "unknown error"))
+	var raw_text := str(raw_artifact.get("text", ""))
 	var report_text := _read_text(Generator.REPORT_PATH)
 	var raw = JSON.parse_string(raw_text)
-	_check(raw is Dictionary, "raw.json must parse as an object")
+	_check(raw is Dictionary, "raw.json.gz must parse as an object")
 	if not raw is Dictionary:
 		_finish()
 		return
@@ -26,6 +28,7 @@ func _initialize() -> void:
 	_check(str((dataset.get("source", {}) as Dictionary).get("commit", "")) not in ["", "UNSPECIFIED", "TEST"], "source commit is not pinned")
 	_check(str((dataset.get("source", {}) as Dictionary).get("tree", "")) not in ["", "UNSPECIFIED", "TEST"], "source tree is not pinned")
 	_validate_source_provenance(dataset)
+	_validate_raw_artifact(dataset, raw_text)
 	_check(bool(Generator.verify_dataset_digest(dataset).get("ok", false)), "dataset digest does not match canonical raw payload")
 	_validate_roster(dataset)
 	_validate_builds(dataset)
@@ -54,6 +57,31 @@ func _validate_source_provenance(dataset: Dictionary) -> void:
 		mismatched["commit_timestamp"] = "1970-01-01T00:00:01Z"
 	var mismatch_verification := Generator.verify_source_provenance(mismatched)
 	_check(not bool(mismatch_verification.get("ok", false)), "source provenance accepts a deliberately mismatched commit_timestamp")
+
+
+func _validate_raw_artifact(dataset: Dictionary, raw_text: String) -> void:
+	_check(not FileAccess.file_exists(Generator.LEGACY_RAW_PATH), "legacy uncompressed raw.json must not remain tracked")
+	_check(raw_text == JSON.stringify(dataset, "\t", true, true) + "\n", "decoded raw.json.gz is not canonical JSON serialization")
+	var source := FileAccess.open(Generator.RAW_PATH, FileAccess.READ)
+	_check(source != null, "raw.json.gz must be readable for corruption test")
+	if source == null:
+		return
+	var bytes := source.get_buffer(source.get_length())
+	source.close()
+	_check(bytes.size() > 10, "raw.json.gz is unexpectedly short")
+	if bytes.size() <= 10:
+		return
+	bytes[bytes.size() - 1] = int(bytes[bytes.size() - 1]) ^ 1
+	var corrupt_path := "user://fan1438_a5_corrupt_raw.json.gz"
+	var corrupt := FileAccess.open(corrupt_path, FileAccess.WRITE)
+	_check(corrupt != null, "cannot create corrupt gzip validation fixture")
+	if corrupt == null:
+		return
+	corrupt.store_buffer(bytes)
+	corrupt.close()
+	var corrupt_result := Generator.read_raw_artifact(corrupt_path)
+	DirAccess.remove_absolute(ProjectSettings.globalize_path(corrupt_path))
+	_check(not bool(corrupt_result.get("ok", true)), "corrupted raw.json.gz must fail closed")
 
 
 func _validate_roster(dataset: Dictionary) -> void:
@@ -475,6 +503,124 @@ func _validate_live_telemetry(dataset: Dictionary) -> void:
 	var methodology: Dictionary = digest_mutation.get("methodology", {})
 	methodology["telemetry_mutation"] = true
 	_check(not bool(Generator.verify_dataset_digest(digest_mutation).get("ok", true)), "raw payload mutation must fail digest verification")
+	var final_location := _find_final_event(dataset)
+	_check(not final_location.is_empty(), "telemetry evidence must include a linked final event for relationship rejection cases")
+	if final_location.is_empty():
+		return
+	var sample_index := int(final_location["sample_index"])
+	var final_index := int(final_location["event_index"])
+	var related_hit_id := str(final_location["related_hit_id"])
+	var fabricated_final := dataset.duplicate(true)
+	var fabricated_samples: Array = (fabricated_final.get("live_telemetry", {}) as Dictionary).get("samples", [])
+	var fabricated_events: Array = (fabricated_samples[sample_index] as Dictionary).get("events", [])
+	for raw_event in fabricated_events:
+		var event: Dictionary = raw_event
+		if str(event.get("event_id", "")) == related_hit_id:
+			var final_ids: Array = event.get("final_event_ids", [])
+			final_ids.append("forged-final-event")
+			event["final_event_ids"] = final_ids
+			break
+	_expect_telemetry_rejection(fabricated_final, "hit references a fabricated final event id", "fabricated final relation must fail closed")
+	var missing_reciprocal := dataset.duplicate(true)
+	var reciprocal_samples: Array = (missing_reciprocal.get("live_telemetry", {}) as Dictionary).get("samples", [])
+	var reciprocal_events: Array = (reciprocal_samples[sample_index] as Dictionary).get("events", [])
+	var reciprocal_final: Dictionary = reciprocal_events[final_index]
+	reciprocal_final.erase("related_hit_id")
+	_expect_telemetry_rejection(missing_reciprocal, "final event is not linked to a runtime hit", "missing final-to-hit relation must fail closed")
+	var final_phase_mutation := dataset.duplicate(true)
+	var phase_samples: Array = (final_phase_mutation.get("live_telemetry", {}) as Dictionary).get("samples", [])
+	var phase_events: Array = (phase_samples[sample_index] as Dictionary).get("events", [])
+	var phase_final: Dictionary = phase_events[final_index]
+	phase_final["phase"] = "untrusted_final_phase"
+	_expect_telemetry_rejection(final_phase_mutation, "final event has an invalid causal phase", "final source/phase mutation must fail closed")
+	var causal_location := _find_post_hit_final_event(dataset)
+	_check(not causal_location.is_empty(), "telemetry evidence must include a post-hit final event for causal-order rejection")
+	if not causal_location.is_empty():
+		var causal_mutation := dataset.duplicate(true)
+		var causal_samples: Array = (causal_mutation.get("live_telemetry", {}) as Dictionary).get("samples", [])
+		var causal_events: Array = (causal_samples[int(causal_location["sample_index"])] as Dictionary).get("events", [])
+		var causal_final: Dictionary = causal_events[int(causal_location["event_index"])]
+		causal_final["phase"] = "final_resolution"
+		_expect_telemetry_rejection(causal_mutation, "final event causal order is invalid", "causal-order mutation must fail closed")
+	var target_location := _find_target_mismatch_final_event(dataset)
+	_check(not target_location.is_empty(), "telemetry evidence must include a multi-target final event for target-parity rejection")
+	if not target_location.is_empty():
+		var target_mutation := dataset.duplicate(true)
+		var target_mutation_samples: Array = (target_mutation.get("live_telemetry", {}) as Dictionary).get("samples", [])
+		var target_events: Array = (target_mutation_samples[int(target_location["sample_index"])] as Dictionary).get("events", [])
+		var target_final: Dictionary = target_events[int(target_location["event_index"])]
+		target_final["target_id"] = str(target_location["other_target_id"])
+		_expect_telemetry_rejection(target_mutation, "final event target does not match related hit", "final target parity mutation must fail closed")
+	var measurement_location := _find_measurement_hit(dataset)
+	_check(not measurement_location.is_empty(), "telemetry evidence must include a measured player hit for HP-ledger rejection")
+	if not measurement_location.is_empty():
+		var missing_applied := dataset.duplicate(true)
+		var applied_samples: Array = (missing_applied.get("live_telemetry", {}) as Dictionary).get("samples", [])
+		var applied_events: Array = (applied_samples[int(measurement_location["sample_index"])] as Dictionary).get("events", [])
+		var applied_hit: Dictionary = applied_events[int(measurement_location["event_index"])]
+		applied_hit["damage"] = 0.0
+		_expect_telemetry_rejection(missing_applied, "measurement hit damage does not reconcile to hp ledger", "missing applied damage must fail the HP ledger")
+
+
+func _find_final_event(dataset: Dictionary) -> Dictionary:
+	var samples: Array = (dataset.get("live_telemetry", {}) as Dictionary).get("samples", [])
+	for sample_index in range(samples.size()):
+		var events: Array = (samples[sample_index] as Dictionary).get("events", [])
+		for event_index in range(events.size()):
+			var event: Dictionary = events[event_index]
+			if str(event.get("kind", "")) == "final_event" and str(event.get("related_hit_id", "")) != "":
+				return {"sample_index": sample_index, "event_index": event_index, "related_hit_id": str(event["related_hit_id"])}
+	return {}
+
+
+func _find_post_hit_final_event(dataset: Dictionary) -> Dictionary:
+	var samples: Array = (dataset.get("live_telemetry", {}) as Dictionary).get("samples", [])
+	for sample_index in range(samples.size()):
+		var events: Array = (samples[sample_index] as Dictionary).get("events", [])
+		var event_indices := {}
+		for event_index in range(events.size()):
+			event_indices[str((events[event_index] as Dictionary).get("event_id", ""))] = event_index
+		for event_index in range(events.size()):
+			var event: Dictionary = events[event_index]
+			var related_hit_id := str(event.get("related_hit_id", ""))
+			if str(event.get("kind", "")) == "final_event" and event_indices.has(related_hit_id) and event_index > int(event_indices[related_hit_id]):
+				return {"sample_index": sample_index, "event_index": event_index}
+	return {}
+
+
+func _find_target_mismatch_final_event(dataset: Dictionary) -> Dictionary:
+	var samples: Array = (dataset.get("live_telemetry", {}) as Dictionary).get("samples", [])
+	for sample_index in range(samples.size()):
+		var sample: Dictionary = samples[sample_index]
+		var targets: Array = sample.get("fixture_target_ids", [])
+		if targets.size() < 2:
+			continue
+		var events: Array = sample.get("events", [])
+		for event_index in range(events.size()):
+			var event: Dictionary = events[event_index]
+			if str(event.get("kind", "")) != "final_event" or str(event.get("related_hit_id", "")) == "":
+				continue
+			for target_value in targets:
+				if str(target_value) != str(event.get("target_id", "")):
+					return {"sample_index": sample_index, "event_index": event_index, "other_target_id": str(target_value)}
+	return {}
+
+
+func _find_measurement_hit(dataset: Dictionary) -> Dictionary:
+	var samples: Array = (dataset.get("live_telemetry", {}) as Dictionary).get("samples", [])
+	for sample_index in range(samples.size()):
+		var events: Array = (samples[sample_index] as Dictionary).get("events", [])
+		for event_index in range(events.size()):
+			var event: Dictionary = events[event_index]
+			if str(event.get("kind", "")) == "hit" and str(event.get("source", "")) == "player_weapon" and str(event.get("probe_phase", "")) == "measurement":
+				return {"sample_index": sample_index, "event_index": event_index}
+	return {}
+
+
+func _expect_telemetry_rejection(candidate: Dictionary, expected_error: String, message: String) -> void:
+	var verification := Generator.verify_live_telemetry_artifacts(candidate)
+	_check(not bool(verification.get("ok", true)), message)
+	_check("; ".join(verification.get("errors", [])).contains(expected_error), "%s (missing error: %s)" % [message, expected_error])
 
 
 func _validate_csv(dataset: Dictionary) -> void:
@@ -516,7 +662,7 @@ func _validate_csv(dataset: Dictionary) -> void:
 		_check(str(cells[int(indices["scenario"])]) == str(row.get("scenario", "")), "CSV scenario differs for %s" % key)
 		for metric in ["solo_dpm", "crowd_10_total_dpm", "hp", "ehp", "ttd_seconds", "ult_start_charge"]:
 			_check(is_equal_approx(float(cells[int(indices[metric])]), float(row.get(metric, INF))), "CSV %s differs for %s" % [metric, key])
-	_check(_read_text(Generator.CSV_PATH) == Generator.render_csv(dataset), "CSV is not the exact canonical render of raw.json")
+	_check(_read_text(Generator.CSV_PATH) == Generator.render_csv(dataset), "CSV is not the exact canonical render of raw.json.gz")
 
 
 func _validate_markdown(dataset: Dictionary, report_text: String) -> void:
@@ -526,15 +672,15 @@ func _validate_markdown(dataset: Dictionary, report_text: String) -> void:
 	_check(report_text.contains("changes no balance values") or report_text.contains("No balance values"), "Markdown does not state the no-balance-change scope")
 	_check(report_text.contains("applies class/Atlas attribute and run modifiers exactly once"), "Markdown does not state the single-application ultimate rule")
 	var source: Dictionary = dataset.get("source", {})
-	_check(report_text.contains("Source commit `%s` (tree `%s`, timestamp `%s`)" % [source.get("commit", ""), source.get("tree", ""), source.get("commit_timestamp", "")]), "Markdown source provenance differs from raw.json")
-	_check(report_text.contains("Dataset digest: `%s`" % dataset.get("dataset_digest_sha256", "")), "Markdown dataset digest differs from raw.json")
+	_check(report_text.contains("Source commit `%s` (tree `%s`, timestamp `%s`)" % [source.get("commit", ""), source.get("tree", ""), source.get("commit_timestamp", "")]), "Markdown source provenance differs from raw.json.gz")
+	_check(report_text.contains("Dataset digest: `%s`" % dataset.get("dataset_digest_sha256", "")), "Markdown dataset digest differs from raw.json.gz")
 	for row_value in dataset.get("class_rows", []):
 		var row: Dictionary = row_value
 		var prefix := "| %s | %d | %s | %s | %.3f | %.3f | %.3f | %.3f | %.2f |" % [row["class_id"], row["level"], row["scenario"], "; ".join(row["roles"]), row["solo_score"], row["aoe_score"], row["defense_score"], row["convenience_relative"], row["first_minute_ultimate_damage"]]
-		_check(report_text.contains(prefix), "Markdown class row differs from raw.json for %s" % row.get("key", "?"))
+		_check(report_text.contains(prefix), "Markdown class row differs from raw.json.gz for %s" % row.get("key", "?"))
 	_check(report_text.contains("## Live event telemetry"), "Markdown lacks live telemetry projection")
-	_check(report_text.contains("Final-event damage is a tagged subset"), "Markdown does not state final-event non-additivity")
-	_check(report_text == Generator.render_markdown(dataset), "Markdown is not the exact canonical render of raw.json")
+	_check(report_text.contains("Final-event damage is a deduplicated tagged subset"), "Markdown does not state final-event non-additivity")
+	_check(report_text == Generator.render_markdown(dataset), "Markdown is not the exact canonical render of raw.json.gz")
 
 
 func _read_text(path: String) -> String:

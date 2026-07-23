@@ -5036,6 +5036,8 @@ func _damage_enemy(enemy: Node, amount: float, apply_unique_melee_effects := tru
 		var hit_type := damage_type if damage_type != "" else _weapon_damage_type()
 		var owner_node := _owner_node()
 		var hit_context := _meta_context({"damage_type": hit_type})
+		if owner_node != null and owner_node.has_method("telemetry_context_for_hit"):
+			hit_context = owner_node.call("telemetry_context_for_hit", hit_context)
 		var is_critical := _last_attack_crit and apply_unique_melee_effects
 		hit_context["critical"] = is_critical
 		var final_amount := amount
@@ -5053,7 +5055,10 @@ func _damage_enemy(enemy: Node, amount: float, apply_unique_melee_effects := tru
 				final_amount *= infected_multiplier
 			# SCRUM-930 «Дальний расчёт»: урон оружия Снайпера растёт с дистанцией
 			final_amount *= _class_distance_trait_multiplier(owner_node, enemy as Node2D)
-		_call_take_damage(enemy, final_amount, {"critical": is_critical, "damage_type": hit_type})
+		var hit_feedback := {"critical": is_critical, "damage_type": hit_type}
+		if owner_node != null and owner_node.has_method("telemetry_feedback_for_hit"):
+			hit_feedback = owner_node.call("telemetry_feedback_for_hit", hit_context, hit_feedback)
+		_call_take_damage(enemy, final_amount, hit_feedback)
 		_apply_constellation_symbiote_share(enemy, owner_node, final_amount, hit_type)
 		_apply_constellation_prey_distribution(enemy, owner_node, final_amount, hit_type)
 		# SCRUM-961: он-хит статусы и дубль-выстрел солдата (только прямые хиты).
@@ -5564,6 +5569,10 @@ func _has_enemy_in_circle(origin: Vector2, radius: float) -> bool:
 func _call_take_damage(enemy: Node, amount: float, feedback := {}) -> void:
 	if _take_damage_accepts_feedback(enemy):
 		var tagged: Dictionary = feedback if feedback is Dictionary else {}
+		var owner_node := _owner_node()
+		if str(tagged.get("telemetry_provenance_id", "")) == "" and owner_node != null and owner_node.has_method("telemetry_context_for_hit") and owner_node.has_method("telemetry_feedback_for_hit"):
+			var telemetry_context: Dictionary = owner_node.call("telemetry_context_for_hit", {"weapon_id": weapon_id, "attack_mode": attack_mode, "damage_type": str(tagged.get("damage_type", _weapon_damage_type()))})
+			tagged = owner_node.call("telemetry_feedback_for_hit", telemetry_context, tagged)
 		# SCRUM-1007: весь урон классового оружия — урон ИГРОКА. Метка едет в
 		# feedback убившего хита (enemy._record_kill_attribution) и служит
 		# атрибуцией он-килл trait'ов; лишний ключ для остальных читателей шумом

@@ -18,7 +18,9 @@ const ISSUE_ID := "FAN-1438"
 const REPORT_DIR := "res://docs/design/reports/fan1438_a5_balance"
 const REPORT_PATH := REPORT_DIR + "/report.md"
 const CSV_PATH := REPORT_DIR + "/per_weapon.csv"
-const RAW_PATH := REPORT_DIR + "/raw.json"
+const RAW_PATH := REPORT_DIR + "/raw.json.gz"
+const LEGACY_RAW_PATH := REPORT_DIR + "/raw.json"
+const GZIP_ARTIFACT_SCRIPT := "res://tools/a5_gzip_artifact.py"
 const LEVELS := [1, 20]
 const LEVEL20_POINTS := 19
 const TARGET_COUNT := 10
@@ -38,7 +40,7 @@ const A5_NORMAL_CONTACT_RATE := 5.0
 const PLAYER_IFRAME_SECONDS := 0.32
 const CLASS_CORRIDOR_LOWER := 0.80
 const CLASS_CORRIDOR_UPPER := 1.20
-const LIVE_TELEMETRY_SCHEMA := "fan1511.runtime-telemetry.v1"
+const LIVE_TELEMETRY_SCHEMA := "fan1511.runtime-telemetry.v2"
 const LIVE_TRACE_PREFIX := "fan1511"
 const REPRESENTATIVE_CLASS_ID := "berserk"
 const REPRESENTATIVE_WEAPON_ID := "sword"
@@ -60,8 +62,10 @@ class A5TelemetryCollector extends RefCounted:
 	var frame := 0
 	var events: Array = []
 	var _target_labels := {}
-	var _pending_final_events := {}
+	var _pending_final_events_by_provenance := {}
 	var _last_hit_by_target := {}
+	var _measurement_ledger_by_target := {}
+	var _canonical_batches_by_target := {}
 	var _incoming_fixture_active := false
 
 	func _init(trace_id_value: String, sample_key_value: String) -> void:
@@ -73,6 +77,8 @@ class A5TelemetryCollector extends RefCounted:
 			_target_labels[target.get_instance_id()] = label
 
 	func set_phase(value: String) -> void:
+		if phase != value:
+			_flush_canonical_batches()
 		phase = value
 
 	func advance_frame() -> void:
@@ -89,30 +95,96 @@ class A5TelemetryCollector extends RefCounted:
 			"source": "player_weapon",
 			"phase": "windup",
 			"action_id": str(raw_event.get("action_id", "")),
+			"cast_id": str(raw_event.get("telemetry_cast_id", "")),
 			"attack_mode": str(raw_event.get("attack_mode", "")),
 			"damage": 0.0,
 		})
 
 	func on_damage_applied(target: Node2D, _attempted_amount: float, applied_amount: float, feedback: Dictionary) -> void:
-		if target == null or not bool(feedback.get("player_owned", false)) or applied_amount <= 0.0:
+		if target == null or applied_amount <= 0.0:
 			return
 		var target_label := _target_label(target)
+		if phase == "measurement":
+			var ledger: Dictionary = _measurement_ledger_by_target.get(target_label, {"target_id": target_label, "applied_damage": 0.0, "entries": 0})
+			ledger["applied_damage"] = float(ledger.get("applied_damage", 0.0)) + applied_amount
+			ledger["entries"] = int(ledger.get("entries", 0)) + 1
+			_measurement_ledger_by_target[target_label] = ledger
+		var direct_final_mechanic := str(feedback.get("constellation_final", ""))
+		# FAN-1539: the fixture is player-only. Legacy-unmarked secondary damage is
+		# retained as an exact target/phase batch; tagged weapon hits remain individual.
+		if not bool(feedback.get("player_owned", false)):
+			_record_canonical_batch(target_label, applied_amount)
+			if direct_final_mechanic != "":
+				var batched_hit_id := _flush_canonical_batch(target_label)
+				if batched_hit_id != "":
+					var final_id := _append_event({"kind": "final_event", "source": "player_weapon", "phase": "final_damage_application", "target_id": target_label, "event": "damage_application", "mechanic_id": direct_final_mechanic, "related_hit_id": batched_hit_id, "observed": true, "damage": 0.0})
+					_append_final_id_to_hit(batched_hit_id, final_id)
+			return
+		var provenance_id := str(feedback.get("telemetry_provenance_id", ""))
+		if provenance_id == "":
+			provenance_id = "canonical_%06d" % events.size()
 		var event := {
 			"kind": "hit",
 			"source": "player_weapon",
 			"phase": "damage_application",
 			"target_id": target_label,
-			"damage": snappedf(applied_amount, 0.0001),
+			"provenance_id": provenance_id,
+			"cast_id": str(feedback.get("telemetry_cast_id", "")),
+			# Preserve the canonical HP delta exactly; the ledger's 0.0001 tolerance
+			# applies to the aggregate, not to a lossy per-hit projection.
+			"damage": applied_amount,
 		}
-		var pending: Array = _pending_final_events.get(target_label, [])
+		var pending: Array = _pending_final_events_by_provenance.get(provenance_id, [])
 		if not pending.is_empty():
 			event["final_event_ids"] = pending.duplicate()
-			_pending_final_events.erase(target_label)
 		var event_id := _append_event(event)
 		_last_hit_by_target[target_label] = event_id
+		if not pending.is_empty():
+			for final_event_id_value in pending:
+				_link_final_to_hit(str(final_event_id_value), event_id, target_label)
+			_pending_final_events_by_provenance.erase(provenance_id)
+		if direct_final_mechanic != "":
+			var direct_final_id := _append_event({
+				"kind": "final_event",
+				"source": "player_weapon",
+				"phase": "final_damage_application",
+				"target_id": target_label,
+				"event": "damage_application",
+				"mechanic_id": direct_final_mechanic,
+				"related_hit_id": event_id,
+				"observed": true,
+				"damage": 0.0,
+			})
+			_append_final_id_to_hit(event_id, direct_final_id)
 
-	func on_final_resolution(_weapon_id: String, event_name: String, target: Node2D, _context: Dictionary, resolution: Dictionary) -> void:
+	func _record_canonical_batch(target_label: String, applied_amount: float) -> void:
+		var batch: Dictionary = _canonical_batches_by_target.get(target_label, {"damage": 0.0, "entries": 0})
+		batch["damage"] = float(batch.get("damage", 0.0)) + applied_amount
+		batch["entries"] = int(batch.get("entries", 0)) + 1
+		_canonical_batches_by_target[target_label] = batch
+
+	func _flush_canonical_batch(target_label: String) -> String:
+		if not _canonical_batches_by_target.has(target_label):
+			return ""
+		var batch: Dictionary = _canonical_batches_by_target[target_label]
+		_canonical_batches_by_target.erase(target_label)
+		if float(batch.get("damage", 0.0)) <= 0.0:
+			return ""
+		var event_id := _append_event({"kind": "hit", "source": "player_weapon", "phase": "damage_application", "target_id": target_label, "provenance_id": "canonical_batch_%06d" % events.size(), "cast_id": "", "damage": float(batch["damage"]), "canonical_entry_count": int(batch["entries"])})
+		_last_hit_by_target[target_label] = event_id
+		return event_id
+
+	func _flush_canonical_batches() -> void:
+		for target_label_value in _canonical_batches_by_target.keys():
+			_flush_canonical_batch(str(target_label_value))
+
+	func on_final_resolution(_weapon_id: String, event_name: String, target: Node2D, context: Dictionary, resolution: Dictionary) -> void:
 		if not bool(resolution.get("valid", false)) or not bool(resolution.get("triggered", false)):
+			return
+		var provenance_id := str(context.get("telemetry_provenance_id", ""))
+		# Targetless/deferred resolver observations are not damage evidence. Their
+		# later canonical payout is recorded from feedback.constellation_final.
+		if target == null or provenance_id == "":
 			return
 		var target_label := _target_label(target)
 		var event_id := _append_event({
@@ -122,15 +194,17 @@ class A5TelemetryCollector extends RefCounted:
 			"target_id": target_label,
 			"event": event_name,
 			"mechanic_id": str(resolution.get("mechanic_id", "")),
+			"final_activation_id": str(resolution.get("telemetry_final_activation_id", "")),
 			"observed": true,
 			"damage": 0.0,
 		})
-		var pending: Array = _pending_final_events.get(target_label, [])
+		var pending: Array = _pending_final_events_by_provenance.get(provenance_id, [])
 		pending.append(event_id)
-		_pending_final_events[target_label] = pending
+		_pending_final_events_by_provenance[provenance_id] = pending
 
 	func on_target_died(target: Node2D) -> void:
 		var target_label := _target_label(target)
+		_flush_canonical_batch(target_label)
 		var event := {
 			"kind": "final_event",
 			"source": "player_weapon",
@@ -142,7 +216,32 @@ class A5TelemetryCollector extends RefCounted:
 		}
 		if _last_hit_by_target.has(target_label):
 			event["related_hit_id"] = str(_last_hit_by_target[target_label])
-		_append_event(event)
+		var event_id := _append_event(event)
+		if _last_hit_by_target.has(target_label):
+			_append_final_id_to_hit(str(_last_hit_by_target[target_label]), event_id)
+
+	func _link_final_to_hit(final_event_id: String, hit_event_id: String, target_label: String) -> void:
+		for index in range(events.size()):
+			var event: Dictionary = events[index]
+			if str(event.get("event_id", "")) != final_event_id:
+				continue
+			event["related_hit_id"] = hit_event_id
+			event["target_id"] = target_label
+			events[index] = event
+			_append_final_id_to_hit(hit_event_id, final_event_id)
+			return
+
+	func _append_final_id_to_hit(hit_event_id: String, final_event_id: String) -> void:
+		for index in range(events.size()):
+			var event: Dictionary = events[index]
+			if str(event.get("event_id", "")) != hit_event_id:
+				continue
+			var final_ids: Array = event.get("final_event_ids", [])
+			if not final_ids.has(final_event_id):
+				final_ids.append(final_event_id)
+				event["final_event_ids"] = final_ids
+				events[index] = event
+			return
 
 	func on_player_damaged(applied_amount: float) -> void:
 		if not _incoming_fixture_active or applied_amount <= 0.0:
@@ -156,6 +255,7 @@ class A5TelemetryCollector extends RefCounted:
 		})
 
 	func build_sample(pair: String, seed_value: int, scenario_key: String, fixture: String, target_cardinality: int) -> Dictionary:
+		_flush_canonical_batches()
 		var hit_events := []
 		var casts := 0
 		var target_ids := {}
@@ -188,18 +288,20 @@ class A5TelemetryCollector extends RefCounted:
 			var related_hit_id := str(final_event.get("related_hit_id", ""))
 			if related_hit_id != "" and event_by_id.has(related_hit_id):
 				tagged_hits[related_hit_id] = true
-		for hit_value in hit_events:
-			var hit: Dictionary = hit_value
-			for final_event_id in hit.get("final_event_ids", []):
-				tagged_hits[str(final_event_id)] = true
-				# The hit itself is the unique damage carrier for a resolver event.
-				tagged_hits[str(hit.get("event_id", ""))] = true
 		for tagged_id in tagged_hits:
 			if event_by_id.has(tagged_id) and str((event_by_id[tagged_id] as Dictionary).get("kind", "")) == "hit":
 				final_damage += float((event_by_id[tagged_id] as Dictionary).get("damage", 0.0))
 		var fixture_target_ids := []
 		for index in range(target_cardinality):
 			fixture_target_ids.append("player" if fixture == "incoming_hit" else "target_%d" % index)
+		var ledger_rows := []
+		var ledger_total := 0.0
+		for target_id_value in fixture_target_ids:
+			var target_id := str(target_id_value)
+			var ledger: Dictionary = _measurement_ledger_by_target.get(target_id, {"target_id": target_id, "applied_damage": 0.0, "entries": 0})
+			ledger["applied_damage"] = snappedf(float(ledger.get("applied_damage", 0.0)), 0.0001)
+			ledger_total += float(ledger["applied_damage"])
+			ledger_rows.append(ledger)
 		var result := {
 			"telemetry_schema": LIVE_TELEMETRY_SCHEMA,
 			"sample_key": sample_key,
@@ -211,6 +313,13 @@ class A5TelemetryCollector extends RefCounted:
 			"target_cardinality": target_cardinality,
 			"fixture_target_ids": fixture_target_ids,
 			"events": events,
+			"hp_ledger": {
+				"authority": "enemy_damage_applied_health_delta",
+				"probe_phase": "measurement",
+				"tolerance": 0.0001,
+				"rows": ledger_rows,
+				"total_applied_damage": snappedf(ledger_total, 0.0001),
+			},
 			"counters": {
 				"casts": casts,
 				"hits": hit_events.size(),
@@ -274,7 +383,7 @@ func _initialize() -> void:
 		return
 	# JSON is the canonical artifact. Normalize through the exact serializer before
 	# calculating its digest or rendering projections so float representation cannot
-	# make raw.json disagree with CSV/Markdown after a parse round-trip.
+	# make the canonical raw JSON disagree with CSV/Markdown after a parse round-trip.
 	var normalized = JSON.parse_string(JSON.stringify(dataset, "\t", true, true))
 	if not normalized is Dictionary:
 		push_error("FAN-1511 cannot normalize the generated dataset through JSON")
@@ -293,7 +402,7 @@ func _initialize() -> void:
 	var raw_text := JSON.stringify(dataset, "\t", true, true) + "\n"
 	_write_text(CSV_PATH, csv_text)
 	_write_text(REPORT_PATH, markdown_text)
-	_write_text(RAW_PATH, raw_text)
+	_write_raw_artifact(raw_text)
 	if not _errors.is_empty():
 		for error in _errors:
 			push_error(error)
@@ -327,6 +436,11 @@ func _run_representative_telemetry_probe() -> void:
 	var offensive: Dictionary = await _measure_live(REPRESENTATIVE_CLASS_ID, REPRESENTATIVE_WEAPON_ID, 1, stats, state, REPRESENTATIVE_SEED, "representative_offensive", "offensive")
 	var mortal: Dictionary = await _measure_live(REPRESENTATIVE_CLASS_ID, REPRESENTATIVE_WEAPON_ID, 1, stats, state, REPRESENTATIVE_SEED, "representative_mortal", "mortal", MORTAL_TARGET_HP)
 	var incoming: Dictionary = await _measure_incoming_fixture(stats, state)
+	for sample_value in [offensive, mortal, incoming]:
+		var sample: Dictionary = sample_value
+		var verification := verify_live_telemetry_sample(sample)
+		if not bool(verification.get("ok", false)):
+			_errors.append("telemetry probe contract failed for %s: %s" % [sample.get("sample_key", "?"), "; ".join(verification.get("errors", []))])
 	print("FAN-1511 telemetry probe: %s" % JSON.stringify({
 		"offensive": offensive.get("counters", {}),
 		"mortal": mortal.get("counters", {}),
@@ -1046,14 +1160,31 @@ func _measure_live(class_id: String, weapon_id: String, target_count: int, stats
 			enemy.set("health", initial_target_hp)
 		anchors.append((enemy as Node2D).global_position)
 	await _advance_live(LIVE_WARMUP_SECONDS, dummies, anchors, class_id, weapon_id, collector, "warmup")
+	var before_health := _health_snapshot(dummies)
 	var before := _total_health(dummies)
 	var measured := await _advance_live(LIVE_WINDOW_SECONDS, dummies, anchors, class_id, weapon_id, collector, "measurement")
+	var after_health := _health_snapshot(dummies)
 	var after := _total_health(dummies)
 	var sample := collector.build_sample(pair, seed_value, scenario_key, fixture, target_count)
+	var hp_ledger: Dictionary = sample.get("hp_ledger", {})
+	var ledger_rows: Array = hp_ledger.get("rows", [])
+	var snapshot_count := mini(ledger_rows.size(), mini(before_health.size(), after_health.size()))
+	for index in range(snapshot_count):
+		var row: Dictionary = ledger_rows[index]
+		row["health_before"] = float(before_health[index])
+		row["health_after"] = float(after_health[index])
+		row["health_loss"] = snappedf(maxf(float(before_health[index]) - float(after_health[index]), 0.0), 0.0001)
+		ledger_rows[index] = row
+	hp_ledger["rows"] = ledger_rows
+	var measurement_duration := snappedf(measured, 0.0001)
+	hp_ledger["measurement_duration_seconds"] = measurement_duration
+	sample["hp_ledger"] = hp_ledger
 	if measured < LIVE_WINDOW_SECONDS:
 		sample["dpm"] = -1.0
 		return sample
-	sample["dpm"] = snappedf(maxf(before - after, 0.0) / measured * 60.0, 0.01)
+	# FAN-1539: DPM and telemetry reconciliation share the same authoritative
+	# canonical HP ledger, avoiding a second floating-point aggregation path.
+	sample["dpm"] = snappedf(float(hp_ledger.get("total_applied_damage", 0.0)) / measurement_duration * 60.0, 0.01)
 	return sample
 
 
@@ -1149,6 +1280,13 @@ func _total_health(nodes: Array) -> float:
 		if is_instance_valid(node):
 			total += float(node.get("health"))
 	return total
+
+
+func _health_snapshot(nodes: Array) -> Array:
+	var snapshot := []
+	for node in nodes:
+		snapshot.append(maxf(float(node.get("health")), 0.0) if is_instance_valid(node) else 0.0)
+	return snapshot
 
 
 func _teardown() -> void:
@@ -1323,11 +1461,14 @@ static func verify_live_telemetry_sample(sample: Dictionary) -> Dictionary:
 		errors.append("fixture target labels are not deterministic")
 	var events: Array = sample.get("events", [])
 	var event_by_id := {}
+	var event_index_by_id := {}
 	var casts := 0
 	var hits := []
 	var unique_targets := {}
 	var buckets := {}
 	var final_events := []
+	var provenance_ids := {}
+	var cast_ids := {}
 	for index in range(events.size()):
 		var raw_event = events[index]
 		if not raw_event is Dictionary:
@@ -1340,11 +1481,16 @@ static func verify_live_telemetry_sample(sample: Dictionary) -> Dictionary:
 		if event_by_id.has(event_id):
 			errors.append("duplicate trace event id %s" % event_id)
 		event_by_id[event_id] = event
+		event_index_by_id[event_id] = index
 		var kind := str(event.get("kind", ""))
 		if kind == "cast":
 			casts += 1
 			if str(event.get("source", "")) != "player_weapon" or str(event.get("phase", "")) != "windup":
 				errors.append("cast event is not a canonical weapon windup")
+			var cast_id := str(event.get("cast_id", ""))
+			if cast_id == "" or cast_ids.has(cast_id):
+				errors.append("cast provenance id is missing or duplicated")
+			cast_ids[cast_id] = true
 		elif kind == "hit":
 			var source := str(event.get("source", ""))
 			var phase := str(event.get("phase", ""))
@@ -1353,6 +1499,11 @@ static func verify_live_telemetry_sample(sample: Dictionary) -> Dictionary:
 				errors.append("hit has an untrusted source/phase bucket")
 			if not expected_target_ids.has(target_id) or float(event.get("damage", 0.0)) <= 0.0:
 				errors.append("hit target or damage is invalid")
+			if source == "player_weapon":
+				var provenance_id := str(event.get("provenance_id", ""))
+				if provenance_id == "" or provenance_ids.has(provenance_id):
+					errors.append("canonical hit provenance id is missing or duplicated")
+				provenance_ids[provenance_id] = true
 			hits.append(event)
 			unique_targets[target_id] = true
 			var bucket_key := "%s|%s" % [source, phase]
@@ -1361,8 +1512,12 @@ static func verify_live_telemetry_sample(sample: Dictionary) -> Dictionary:
 			bucket["hits"] = int(bucket.get("hits", 0)) + 1
 			buckets[bucket_key] = bucket
 		elif kind == "final_event":
-			if not bool(event.get("observed", false)) or str(event.get("event", "")) == "":
+			if not bool(event.get("observed", false)) or str(event.get("event", "")) == "" or str(event.get("source", "")) != "player_weapon":
 				errors.append("final event is not observed runtime evidence")
+			if str(event.get("phase", "")) not in ["final_resolution", "final_damage_application", "target_death"]:
+				errors.append("final event has an invalid causal phase")
+			if not expected_target_ids.has(str(event.get("target_id", ""))):
+				errors.append("final event target is invalid")
 			final_events.append(event)
 		elif kind != "weapon_phase":
 			errors.append("unknown trace event kind %s" % kind)
@@ -1389,22 +1544,88 @@ static func verify_live_telemetry_sample(sample: Dictionary) -> Dictionary:
 	for final_event_value in final_events:
 		var final_event: Dictionary = final_event_value
 		var related_hit_id := str(final_event.get("related_hit_id", ""))
-		if related_hit_id != "":
-			tagged_hits[related_hit_id] = true
+		var final_event_id := str(final_event.get("event_id", ""))
+		if related_hit_id == "" or not event_by_id.has(related_hit_id) or str((event_by_id.get(related_hit_id, {}) as Dictionary).get("kind", "")) != "hit":
+			errors.append("final event is not linked to a runtime hit")
+			continue
+		var related_hit: Dictionary = event_by_id[related_hit_id]
+		var reciprocal_ids: Array = related_hit.get("final_event_ids", [])
+		if reciprocal_ids.count(final_event_id) != 1:
+			errors.append("final event reciprocal link is missing or duplicated")
+		if str(related_hit.get("target_id", "")) != str(final_event.get("target_id", "")):
+			errors.append("final event target does not match related hit")
+		var final_index := int(event_index_by_id.get(final_event_id, -1))
+		var hit_index := int(event_index_by_id.get(related_hit_id, -1))
+		var final_phase := str(final_event.get("phase", ""))
+		if (final_phase == "final_resolution" and final_index >= hit_index) or (final_phase in ["final_damage_application", "target_death"] and final_index <= hit_index):
+			errors.append("final event causal order is invalid")
+		tagged_hits[related_hit_id] = true
 	for hit_value in hits:
 		var hit: Dictionary = hit_value
-		if not ((hit.get("final_event_ids", []) as Array)).is_empty():
-			tagged_hits[str(hit.get("event_id", ""))] = true
+		var hit_id := str(hit.get("event_id", ""))
+		var final_ids: Array = hit.get("final_event_ids", [])
+		var seen_final_ids := {}
+		for final_id_value in final_ids:
+			var final_id := str(final_id_value)
+			if seen_final_ids.has(final_id):
+				errors.append("hit repeats a final event id")
+			seen_final_ids[final_id] = true
+			if not event_by_id.has(final_id) or str((event_by_id[final_id] as Dictionary).get("kind", "")) != "final_event":
+				errors.append("hit references a fabricated final event id")
+			elif str((event_by_id[final_id] as Dictionary).get("related_hit_id", "")) != hit_id:
+				errors.append("hit/final reciprocal reference mismatch")
 	var final_damage := 0.0
 	for hit_id in tagged_hits:
-		if not event_by_id.has(hit_id) or str((event_by_id[hit_id] as Dictionary).get("kind", "")) != "hit":
-			errors.append("final event is not linked to a runtime hit")
-		else:
-			final_damage += float((event_by_id[hit_id] as Dictionary).get("damage", 0.0))
+		final_damage += float((event_by_id[hit_id] as Dictionary).get("damage", 0.0))
 	if not is_equal_approx(float(counters.get("final_event_damage", -1.0)), snappedf(final_damage, 0.0001)):
 		errors.append("final event damage does not reconstruct from tagged hits")
 	if not is_equal_approx(float(counters.get("damage_total", 0.0)), total_damage):
 		errors.append("final event metrics must not be added to total damage")
+	var ledger: Dictionary = sample.get("hp_ledger", {})
+	if str(ledger.get("authority", "")) != "enemy_damage_applied_health_delta" or str(ledger.get("probe_phase", "")) != "measurement":
+		errors.append("hp ledger authority or phase is invalid")
+	var tolerance := float(ledger.get("tolerance", -1.0))
+	if tolerance < 0.0 or tolerance > 0.001:
+		errors.append("hp ledger tolerance is invalid")
+	var ledger_rows: Array = ledger.get("rows", [])
+	var ledger_by_target := {}
+	var measurement_hits := {}
+	for hit_value in hits:
+		var hit: Dictionary = hit_value
+		if str(hit.get("source", "")) == "player_weapon" and str(hit.get("probe_phase", "")) == "measurement":
+			var target_id := str(hit.get("target_id", ""))
+			measurement_hits[target_id] = float(measurement_hits.get(target_id, 0.0)) + float(hit.get("damage", 0.0))
+	for row_value in ledger_rows:
+		if not row_value is Dictionary:
+			errors.append("hp ledger row is not an object")
+			continue
+		var row: Dictionary = row_value
+		var target_id := str(row.get("target_id", ""))
+		if not expected_target_ids.has(target_id) or ledger_by_target.has(target_id):
+			errors.append("hp ledger target is invalid or duplicated")
+			continue
+		ledger_by_target[target_id] = row
+		var applied := float(row.get("applied_damage", -1.0))
+		if applied < 0.0 or absf(applied - float(measurement_hits.get(target_id, 0.0))) > tolerance:
+			errors.append("measurement hit damage does not reconcile to hp ledger")
+		if fixture != "incoming_hit":
+			var health_loss := float(row.get("health_loss", -1.0))
+			if health_loss < 0.0 or absf(applied - health_loss) > tolerance:
+				errors.append("authoritative health loss does not reconcile to hp ledger")
+	for target_id_value in expected_target_ids:
+		if not ledger_by_target.has(str(target_id_value)):
+			errors.append("hp ledger is missing a fixture target")
+	var ledger_total := 0.0
+	for row_value in ledger_rows:
+		if row_value is Dictionary:
+			ledger_total += float((row_value as Dictionary).get("applied_damage", 0.0))
+	if absf(ledger_total - float(ledger.get("total_applied_damage", -1.0))) > tolerance:
+		errors.append("hp ledger total does not reconstruct from rows")
+	if fixture != "incoming_hit":
+		var measurement_duration := float(ledger.get("measurement_duration_seconds", 0.0))
+		var expected_dpm := snappedf(ledger_total / maxf(measurement_duration, 0.0001) * 60.0, 0.01)
+		if measurement_duration <= 0.0 or not is_equal_approx(float(sample.get("dpm", -1.0)), expected_dpm):
+			errors.append("reported dpm does not reconcile to measurement hp ledger")
 	if str(sample.get("trace_digest_sha256", "")) != _sha256(JSON.stringify(events, "", true, true)):
 		errors.append("trace digest mismatch")
 	return {"ok": errors.is_empty(), "errors": errors}
@@ -1521,7 +1742,7 @@ static func render_markdown(dataset: Dictionary) -> String:
 	if telemetry_samples.is_empty():
 		lines.append("Formula-only generation; runtime telemetry requires `--mode=full`.")
 	else:
-		lines.append("Schema `%s`: every live sample has a deterministic pair/seed/scenario/fixture trace identifier, cast/hit counters, stable target labels, exclusive source×phase damage buckets, and final-event metrics. The representative offensive and incoming fixtures require observed events; a short sustained window may validly record a zero counter for a delayed deploy/summon action. Final-event damage is a tagged subset of those buckets and is not added to total damage again." % telemetry.get("schema", ""))
+		lines.append("Schema `%s`: every live sample has a deterministic pair/seed/scenario/fixture trace identifier, unique cast and canonical-hit provenance IDs, stable target labels, exclusive source×phase damage buckets, reciprocal final-event-to-hit links with target/order validation, and an HP ledger from canonical enemy health deltas. The representative offensive and incoming fixtures require observed events; a short sustained window may validly record a zero counter for a delayed deploy/summon action. Final-event damage is a deduplicated tagged subset of those buckets and is not added to total damage again." % telemetry.get("schema", ""))
 		lines.append("")
 		lines.append("| Representative fixture | Trace | Casts | Hits | Unique targets | Total damage | Final events / tagged damage |")
 		lines.append("| --- | --- | ---: | ---: | --- | ---: | ---: |")
@@ -1535,7 +1756,7 @@ static func render_markdown(dataset: Dictionary) -> String:
 	lines.append("")
 	lines.append("- Class corridor flags (outside 80–120%% of the same level/scenario median across solo, AoE, or defense): **%d**." % (dataset["outliers"]["class_corridor_80_120"] as Array).size())
 	lines.append("- Formula/live differences over 35%% on either axis: **%d**. These are instrumentation/tuning investigation candidates, not automatic nerf/buff decisions." % (dataset["outliers"]["formula_live_delta_over_35pct"] as Array).size())
-	lines.append("- Raw outlier keys and exact ratios are in `raw.json`; the complete numeric matrix is in `per_weapon.csv`.")
+	lines.append("- Raw outlier keys and exact ratios are in `raw.json.gz`; the complete numeric matrix is in `per_weapon.csv`.")
 	lines.append("- No balance values or mechanics were changed by FAN-1438.")
 	lines.append("")
 	lines.append("## Limitations")
@@ -1696,3 +1917,39 @@ func _write_text(path: String, content: String) -> void:
 		return
 	file.store_string(content)
 	file.close()
+
+
+func _write_raw_artifact(content: String) -> void:
+	var staging_path := "user://fan1438_a5_raw_staging.json"
+	_write_text(staging_path, content)
+	if not _errors.is_empty():
+		return
+	var output: Array = []
+	var exit_code := OS.execute("python3", [ProjectSettings.globalize_path(GZIP_ARTIFACT_SCRIPT), "pack", ProjectSettings.globalize_path(staging_path), ProjectSettings.globalize_path(RAW_PATH)], output, true)
+	DirAccess.remove_absolute(ProjectSettings.globalize_path(staging_path))
+	if exit_code != 0:
+		_errors.append("cannot write deterministic gzip raw artifact: %s" % "\n".join(output))
+		return
+	if FileAccess.file_exists(LEGACY_RAW_PATH):
+		var remove_error := DirAccess.remove_absolute(ProjectSettings.globalize_path(LEGACY_RAW_PATH))
+		if remove_error != OK:
+			_errors.append("cannot remove replaced legacy raw artifact %s" % LEGACY_RAW_PATH)
+
+
+static func read_raw_artifact(path := RAW_PATH) -> Dictionary:
+	if not FileAccess.file_exists(path):
+		return {"ok": false, "error": "raw gzip artifact is missing"}
+	var staging_path := "user://fan1438_a5_raw_integrity.json"
+	DirAccess.remove_absolute(ProjectSettings.globalize_path(staging_path))
+	var output: Array = []
+	var exit_code := OS.execute("python3", [ProjectSettings.globalize_path(GZIP_ARTIFACT_SCRIPT), "unpack", ProjectSettings.globalize_path(path), ProjectSettings.globalize_path(staging_path)], output, true)
+	if exit_code != 0:
+		DirAccess.remove_absolute(ProjectSettings.globalize_path(staging_path))
+		return {"ok": false, "error": "\n".join(output)}
+	var file := FileAccess.open(staging_path, FileAccess.READ)
+	if file == null:
+		return {"ok": false, "error": "cannot read decoded raw artifact"}
+	var text := file.get_as_text()
+	file.close()
+	DirAccess.remove_absolute(ProjectSettings.globalize_path(staging_path))
+	return {"ok": true, "text": text}
