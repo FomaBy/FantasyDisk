@@ -1269,12 +1269,29 @@ projection (`legacy HP-delta/raw duration`, `ledger/raw duration`,
 для расчёта report DPM. `tests/a5_balance_report_parity_test.gd` проверяет
 упорядоченный manifest 51 оружий и четыре live/variance поля against exact
 fresh executable oracle `f09f21ec`; это measurement repair, а не balance/config
-tuning. `--mode=observer_neutrality` выполняет deterministic no-op check тех же
-collector callbacks: проверяет неизменность callback input, ledger boundary,
-fixed-frame count и global RNG. Полный enabled/disabled scene replay намеренно
-не используется: для production weapons с `_process(delta)` сама стоимость
-signal delivery меняет host scheduling и потому не является нейтральным
-контрольным измерением.
+tuning.
+
+FAN-1574 заменяет synthetic no-op на production-equivalent observer A/B:
+`--mode=observer_neutrality` запускает 51 оружие × 3 seed × solo/pack, плюс
+три representative fixtures, то есть **309 samples в каждой arm**. Обе arm
+создают тот же `Player.tscn`/`Enemy.tscn`, применяют тот же A5/meta state и
+seed, прогреваются ровно 120 и измеряются ровно 360 process frames при
+`--fixed-fps 60`; canonical duration всегда `360 / 60 = 6.0` seconds.
+Authoritative measurement witness подключён к production `weapon_cast_observed`,
+`constellation_final_resolved`, `damage_applied` и `died` в обеих arm, поэтому
+обе используют один applied-HP `ledger_total` numerator и raw fixed duration.
+Наблюдатель под тестом — второй реальный subscriber этих же signals: он
+подключён только в enabled arm, а disabled arm проверяемо имеет ноль его
+subscriptions и callbacks. Гейт требует exact equality witness events/callback
+input, damage, target order, HP ledger/snapshots, frames, duration, RNG,
+feedback/final events и 51×4 projection; любое drift или отсутствие disabled
+baseline — fail-closed. `health_delta` сохраняется исключительно как legacy
+diagnostic projection и не является DPM source ни в одной arm.
+
+`tests/a5_balance_report_observer_neutrality_test.gd` покрывает fail-closed
+fixtures для missing/identical disabled baseline, numerator/window/frame/RNG
+mutation и каждой из 51×4 projection cells. Полная команда выполняется только
+через gate: `python3 tools/godot_gate.py --headless --fixed-fps 60 --path . --script res://tools/a5_balance_report.gd -- --mode=observer_neutrality`.
 
 Выживаемость привязана к одному явно описанному normal-wave A5 contact-pressure
 сценарию. Глобальный множитель обычных врагов не переносится на boss/elite

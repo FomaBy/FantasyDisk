@@ -30,8 +30,12 @@ const NON_PLAYABLE_LABEL := "NON-PLAYABLE: cap 50"
 const LIVE_SEEDS := [143801, 143802, 143803]
 const LIVE_WARMUP_SECONDS := 2.0
 const LIVE_WINDOW_SECONDS := 6.0
-const MAX_LIVE_FRAMES := 2400
 const DETERMINISTIC_MAX_FPS := 60
+const LIVE_FIXED_DELTA := 1.0 / float(DETERMINISTIC_MAX_FPS)
+const LIVE_WARMUP_FRAMES := 120
+const LIVE_MEASUREMENT_FRAMES := 360
+const OBSERVER_AB_SAMPLE_COUNT := 309
+const MAX_LIVE_FRAMES := 2400
 const DUMMY_HP := 1.0e9
 const PLAYER_POSITION := Vector2(1280.0, 720.0)
 const SOLO_OFFSET := Vector2(80.0, 0.0)
@@ -465,19 +469,43 @@ func _run_representative_telemetry_probe() -> void:
 
 
 func _run_observer_neutrality() -> void:
-	# FAN-1551: signal delivery itself changes host scheduling for _process-based
-	# weapons, so an enabled/disabled scene replay is not a neutral measurement.
-	# Exercise the same collector callbacks as a fixed-step no-op instead: this
-	# proves that observing cannot mutate callback input, ledger boundaries, frame
-	# counters, or global RNG before it is connected to production signals.
-	var first := _observer_noop_signature()
-	var second := _observer_noop_signature()
-	var verification := verify_observer_noop(first, second)
+	# FAN-1574: keep the authoritative applied-HP measurement witness wired in both
+	# arms. The observer under test is a second, real production-signal subscriber
+	# that exists only in the enabled arm. This preserves one ledger numerator and
+	# one fixed-step schedule while proving the extra observer delivery is neutral.
+	var enabled_samples := []
+	var disabled_samples := []
+	for class_id_value in PD.character_ids():
+		var class_id := str(class_id_value)
+		var state := _scenario_state(class_id, "class_constellation")
+		var stats := DamageTable.optimized_stats_for_class(class_id, PD.base_stats(class_id))
+		for weapon_id_value in PD.weapon_ids(class_id):
+			var weapon_id := str(weapon_id_value)
+			for seed_value in LIVE_SEEDS:
+				for fixture_spec in [{"scenario": "observer_solo", "fixture": "sustain", "targets": 1}, {"scenario": "observer_pack", "fixture": "sustain", "targets": TARGET_COUNT}]:
+					var scenario_key := str(fixture_spec["scenario"])
+					var fixture := str(fixture_spec["fixture"])
+					var targets := int(fixture_spec["targets"])
+					disabled_samples.append(await _measure_observer_live(class_id, weapon_id, targets, stats, state, int(seed_value), scenario_key, fixture, false))
+					enabled_samples.append(await _measure_observer_live(class_id, weapon_id, targets, stats, state, int(seed_value), scenario_key, fixture, true))
+	var representative_state := _scenario_state(REPRESENTATIVE_CLASS_ID, "class_constellation")
+	var representative_stats := DamageTable.optimized_stats_for_class(REPRESENTATIVE_CLASS_ID, PD.base_stats(REPRESENTATIVE_CLASS_ID))
+	for fixture_spec in [
+		{"scenario": "observer_representative_offensive", "fixture": "offensive", "targets": 1, "hp": DUMMY_HP},
+		{"scenario": "observer_representative_mortal", "fixture": "mortal", "targets": 1, "hp": MORTAL_TARGET_HP},
+	]:
+		disabled_samples.append(await _measure_observer_live(REPRESENTATIVE_CLASS_ID, REPRESENTATIVE_WEAPON_ID, int(fixture_spec["targets"]), representative_stats, representative_state, REPRESENTATIVE_SEED, str(fixture_spec["scenario"]), str(fixture_spec["fixture"]), false, float(fixture_spec["hp"])))
+		enabled_samples.append(await _measure_observer_live(REPRESENTATIVE_CLASS_ID, REPRESENTATIVE_WEAPON_ID, int(fixture_spec["targets"]), representative_stats, representative_state, REPRESENTATIVE_SEED, str(fixture_spec["scenario"]), str(fixture_spec["fixture"]), true, float(fixture_spec["hp"])))
+	disabled_samples.append(await _measure_observer_incoming(representative_stats, representative_state, false))
+	enabled_samples.append(await _measure_observer_incoming(representative_stats, representative_state, true))
+	var verification := verify_observer_ab({"mode": "enabled", "samples": enabled_samples}, {"mode": "disabled", "samples": disabled_samples})
 	if not bool(verification.get("ok", false)):
 		for error_value in verification.get("errors", []):
 			_errors.append("observer neutrality: %s" % error_value)
 	else:
-		print("FAN-1551 observer no-op neutrality passed: callback input, ledger, fixed-frame count, and RNG are unchanged.")
+		print("FAN-1574 production observer A/B passed: %d enabled/disabled fixed-step samples, digest %s." % [
+			enabled_samples.size(), verification.get("canonical_digest", "unknown"),
+		])
 	if not _errors.is_empty():
 		for error_value in _errors:
 			push_error(error_value)
@@ -486,55 +514,279 @@ func _run_observer_neutrality() -> void:
 	quit(0)
 
 
-func _observer_noop_signature() -> Dictionary:
-	const NOOP_SEED := 1551001
-	const MEASUREMENT_FRAMES := 361
-	seed(NOOP_SEED)
-	var expected_rng := randi()
-	seed(NOOP_SEED)
-	var collector := A5TelemetryCollector.new("fan1551:no-op", "fan1551:no-op")
-	var target := Node2D.new()
-	collector.bind_target(target, "target_0")
-	collector.set_phase("warmup")
-	for _frame in range(120):
-		collector.advance_frame()
-	collector.set_phase("measurement")
-	for _frame in range(MEASUREMENT_FRAMES):
-		collector.advance_frame()
-	var feedback := {"player_owned": true, "telemetry_provenance_id": "fan1551_noop"}
-	var feedback_before := JSON.stringify(feedback, "", true, true)
-	collector.on_damage_applied(target, 12.5, 12.5, feedback)
-	collector.on_weapon_cast({"phase_source": "class_weapon", "phase": "windup", "action_id": "fan1551_noop", "telemetry_cast_id": "fan1551_noop", "attack_mode": "single"})
-	var sample := collector.build_sample("berserk/sword", NOOP_SEED, "observer_noop", "sustain", 1)
-	var signature := {
-		"frame_count": collector.frame,
-		"measurement_frames": MEASUREMENT_FRAMES,
-		"rng_expected": expected_rng,
-		"rng_after_callbacks": randi(),
-		"feedback_before": feedback_before,
-		"feedback_after": JSON.stringify(feedback, "", true, true),
-		"ledger_total": float((sample.get("hp_ledger", {}) as Dictionary).get("total_applied_damage", -1.0)),
-		"event_count": (sample.get("events", []) as Array).size(),
+func _measure_observer_live(class_id: String, weapon_id: String, target_count: int, stats: Dictionary, state: Dictionary, seed_value: int, scenario_key: String, fixture: String, observer_enabled: bool, initial_target_hp := DUMMY_HP) -> Dictionary:
+	await _teardown()
+	seed(seed_value)
+	var pair := "%s/%s" % [class_id, weapon_id]
+	var sample_key := _telemetry_sample_key(pair, seed_value, scenario_key, fixture, target_count)
+	var trace_id := "fan1574:%s" % sample_key
+	var witness := A5TelemetryCollector.new(trace_id, sample_key)
+	var observer: A5TelemetryCollector = A5TelemetryCollector.new(trace_id, sample_key) if observer_enabled else null
+	var player := PLAYER_SCENE.instantiate() as Node2D
+	_holder.add_child(player)
+	if player == null or player.get_script() == null:
+		_errors.append("%s/%s observer live Player failed to instantiate" % [class_id, weapon_id])
+		return _failed_telemetry_sample(pair, seed_value, scenario_key, fixture, target_count, sample_key)
+	player.add_to_group("player")
+	player.global_position = PLAYER_POSITION
+	player.call("configure_character", class_id, weapon_id)
+	player.set("stats", stats.duplicate(true))
+	player.call("_apply_stat_scaling", true)
+	var main := MainScript.new()
+	main.set("selected_character_id", class_id)
+	main.set("selected_ascension_level", 5)
+	main.set("selected_start_boon_id", "")
+	main.set("meta_state", state.duplicate(true))
+	main.set("run_sandbox_captured", false)
+	main.call("apply_ascension_bonuses", player)
+	main.free()
+	player.set("max_health", DUMMY_HP)
+	player.set("health", DUMMY_HP)
+	player.connect("weapon_cast_observed", witness.on_weapon_cast)
+	player.connect("constellation_final_resolved", witness.on_final_resolution)
+	if observer != null:
+		player.connect("weapon_cast_observed", observer.on_weapon_cast)
+		player.connect("constellation_final_resolved", observer.on_final_resolution)
+	await process_frame
+	var dummies := _spawn_dummies(target_count)
+	var anchors := []
+	var observer_connected := observer != null
+	for index in range(dummies.size()):
+		var enemy := dummies[index] as Node2D
+		witness.bind_target(enemy, "target_%d" % index)
+		enemy.connect("damage_applied", witness.on_damage_applied)
+		enemy.connect("died", witness.on_target_died)
+		if observer != null:
+			observer.bind_target(enemy, "target_%d" % index)
+			enemy.connect("damage_applied", observer.on_damage_applied)
+			enemy.connect("died", observer.on_target_died)
+			observer_connected = observer_connected and enemy.is_connected("damage_applied", observer.on_damage_applied) and enemy.is_connected("died", observer.on_target_died)
+		if initial_target_hp < DUMMY_HP:
+			enemy.set("max_health", initial_target_hp)
+			enemy.set("health", initial_target_hp)
+		anchors.append(enemy.global_position)
+	if observer != null:
+		observer_connected = observer_connected and player.is_connected("weapon_cast_observed", observer.on_weapon_cast) and player.is_connected("constellation_final_resolved", observer.on_final_resolution)
+	var collectors := [witness]
+	if observer != null:
+		collectors.append(observer)
+	await _advance_fixed_live(LIVE_WARMUP_FRAMES, dummies, anchors, collectors, "warmup", "%s/%s" % [class_id, weapon_id])
+	var before_health := _health_snapshot(dummies)
+	var before := _total_health(dummies)
+	var measurement: Dictionary = await _advance_fixed_live(LIVE_MEASUREMENT_FRAMES, dummies, anchors, collectors, "measurement", "%s/%s" % [class_id, weapon_id])
+	var after_health := _health_snapshot(dummies)
+	var after := _total_health(dummies)
+	var sample := _finalize_observer_sample(witness.build_sample(pair, seed_value, scenario_key, fixture, target_count), before_health, after_health, before, after, measurement, observer_enabled)
+	var observer_events := 0
+	var observer_matches_witness := false
+	if observer != null:
+		var observer_sample := observer.build_sample(pair, seed_value, scenario_key, fixture, target_count)
+		observer_events = (observer_sample.get("events", []) as Array).size()
+		observer_matches_witness = _observer_callback_signature(observer_sample) == _observer_callback_signature(sample)
+		if not observer_matches_witness:
+			_errors.append("%s observer callback trace differs from production witness" % sample_key)
+	sample["observer_delivery"] = {
+		"mode": "enabled" if observer_enabled else "disabled",
+		"enabled": observer_enabled,
+		"subscription_count": 2 + target_count * 2 if observer_enabled else 0,
+		"callback_event_count": observer_events,
+		"callback_matches_witness": observer_matches_witness,
+		"wiring_verified": observer_connected,
 	}
-	target.free()
-	return signature
+	return sample
 
 
-static func verify_observer_noop(first: Dictionary, second: Dictionary) -> Dictionary:
+func _measure_observer_incoming(stats: Dictionary, state: Dictionary, observer_enabled: bool) -> Dictionary:
+	await _teardown()
+	seed(REPRESENTATIVE_SEED)
+	var pair := "%s/%s" % [REPRESENTATIVE_CLASS_ID, REPRESENTATIVE_WEAPON_ID]
+	var sample_key := _telemetry_sample_key(pair, REPRESENTATIVE_SEED, "observer_representative_incoming", "incoming_hit", 1)
+	var trace_id := "fan1574:%s" % sample_key
+	var witness := A5TelemetryCollector.new(trace_id, sample_key)
+	var observer: A5TelemetryCollector = A5TelemetryCollector.new(trace_id, sample_key) if observer_enabled else null
+	var player := PLAYER_SCENE.instantiate() as Node2D
+	_holder.add_child(player)
+	if player == null or player.get_script() == null:
+		_errors.append("observer incoming fixture Player failed to instantiate")
+		return _failed_telemetry_sample(pair, REPRESENTATIVE_SEED, "observer_representative_incoming", "incoming_hit", 1, sample_key)
+	player.add_to_group("player")
+	player.global_position = PLAYER_POSITION
+	player.call("configure_character", REPRESENTATIVE_CLASS_ID, REPRESENTATIVE_WEAPON_ID)
+	player.set("stats", stats.duplicate(true))
+	player.call("_apply_stat_scaling", true)
+	var main := MainScript.new()
+	main.set("selected_character_id", REPRESENTATIVE_CLASS_ID)
+	main.set("selected_ascension_level", 5)
+	main.set("selected_start_boon_id", "")
+	main.set("meta_state", state.duplicate(true))
+	main.set("run_sandbox_captured", false)
+	main.call("apply_ascension_bonuses", player)
+	main.free()
+	player.set("max_health", DUMMY_HP)
+	player.set("health", DUMMY_HP)
+	var parameters: Dictionary = player.get("derived_parameters")
+	parameters["dodge"] = 0.0
+	player.set("derived_parameters", parameters)
+	witness.enable_incoming_fixture()
+	player.connect("damaged", witness.on_player_damaged)
+	var observer_connected := observer != null
+	if observer != null:
+		observer.enable_incoming_fixture()
+		player.connect("damaged", observer.on_player_damaged)
+		observer_connected = player.is_connected("damaged", observer.on_player_damaged)
+	var collectors := [witness]
+	if observer != null:
+		collectors.append(observer)
+	await _advance_fixed_live(LIVE_WARMUP_FRAMES, [], [], collectors, "warmup", "incoming fixture")
+	for collector_value in collectors:
+		(collector_value as A5TelemetryCollector).set_phase("measurement")
+	var before_health := [float(player.get("health"))]
+	player.call("take_damage", A5_NORMAL_CONTACT_DAMAGE, "fan1574_deterministic_incoming")
+	var measurement: Dictionary = await _advance_fixed_live(LIVE_MEASUREMENT_FRAMES, [], [], collectors, "measurement", "incoming fixture")
+	var after_health := [float(player.get("health"))]
+	var before := float(before_health[0])
+	var after := float(after_health[0])
+	var sample := _finalize_observer_sample(witness.build_sample(pair, REPRESENTATIVE_SEED, "observer_representative_incoming", "incoming_hit", 1), before_health, after_health, before, after, measurement, observer_enabled)
+	var observer_events := 0
+	var observer_matches_witness := false
+	if observer != null:
+		var observer_sample := observer.build_sample(pair, REPRESENTATIVE_SEED, "observer_representative_incoming", "incoming_hit", 1)
+		observer_events = (observer_sample.get("events", []) as Array).size()
+		observer_matches_witness = _observer_callback_signature(observer_sample) == _observer_callback_signature(sample)
+		if not observer_matches_witness:
+			_errors.append("%s observer callback trace differs from production witness" % sample_key)
+	sample["observer_delivery"] = {
+		"mode": "enabled" if observer_enabled else "disabled",
+		"enabled": observer_enabled,
+		"subscription_count": 1 if observer_enabled else 0,
+		"callback_event_count": observer_events,
+		"callback_matches_witness": observer_matches_witness,
+		"wiring_verified": observer_connected,
+	}
+	return sample
+
+
+func _advance_fixed_live(frame_count: int, dummies: Array, anchors: Array, collectors: Array, probe_phase: String, label: String) -> Dictionary:
+	for collector_value in collectors:
+		(collector_value as A5TelemetryCollector).set_phase(probe_phase)
+	for _frame in range(frame_count):
+		await process_frame
+		var process_delta := _holder.get_process_delta_time()
+		if absf(process_delta - LIVE_FIXED_DELTA) > 0.00001:
+			_errors.append("%s fixed-step delta %.8f differs from 1/%d" % [label, process_delta, DETERMINISTIC_MAX_FPS])
+		for collector_value in collectors:
+			(collector_value as A5TelemetryCollector).advance_frame()
+		for index in range(dummies.size()):
+			if is_instance_valid(dummies[index]):
+				(dummies[index] as Node2D).global_position = anchors[index]
+	return {"duration_seconds": frame_count * LIVE_FIXED_DELTA, "frame_count": frame_count}
+
+
+func _finalize_observer_sample(sample: Dictionary, before_health: Array, after_health: Array, before: float, after: float, measurement: Dictionary, observer_enabled: bool) -> Dictionary:
+	var hp_ledger: Dictionary = sample.get("hp_ledger", {})
+	var ledger_rows: Array = hp_ledger.get("rows", [])
+	var snapshot_count := mini(ledger_rows.size(), mini(before_health.size(), after_health.size()))
+	for index in range(snapshot_count):
+		var row: Dictionary = ledger_rows[index]
+		row["health_before"] = float(before_health[index])
+		row["health_after"] = float(after_health[index])
+		row["health_loss"] = maxf(float(before_health[index]) - float(after_health[index]), 0.0)
+		ledger_rows[index] = row
+	var measurement_duration := float(measurement.get("duration_seconds", 0.0))
+	var health_delta := maxf(before - after, 0.0)
+	var ledger_total := float(hp_ledger.get("total_applied_damage", 0.0))
+	hp_ledger["rows"] = ledger_rows
+	hp_ledger["canonical_numerator"] = "ledger_total"
+	hp_ledger["measurement_duration_seconds"] = measurement_duration
+	hp_ledger["measurement_duration_snapped_seconds"] = snappedf(measurement_duration, 0.0001)
+	hp_ledger["measurement_frame_count"] = int(measurement.get("frame_count", 0))
+	hp_ledger["legacy_health_delta_numerator"] = health_delta
+	hp_ledger["dpm_projections"] = {
+		"legacy_hp_delta_raw_duration_dpm": _project_dpm(health_delta, measurement_duration),
+		"ledger_raw_duration_dpm": _project_dpm(ledger_total, measurement_duration),
+		"ledger_snapped_duration_dpm": _project_dpm(ledger_total, snappedf(measurement_duration, 0.0001)),
+		"ledger_minus_legacy_numerator": ledger_total - health_delta,
+	}
+	sample["hp_ledger"] = hp_ledger
+	sample["observer_probe"] = {
+		"mode": "enabled" if observer_enabled else "disabled",
+		"measurement_duration_seconds": measurement_duration,
+		"measurement_frame_count": int(measurement.get("frame_count", 0)),
+		"health_before": before_health,
+		"health_after": after_health,
+		"health_delta": health_delta,
+		"rng_probe": randi(),
+	}
+	# Disabled never substitutes health_delta: both arms project from the same
+	# authoritative applied-HP ledger captured by the invariant witness.
+	sample["dpm"] = _project_dpm(ledger_total, measurement_duration)
+	return sample
+
+
+static func _observer_callback_signature(sample: Dictionary) -> String:
+	# This checks the optional subscriber's actual production callback input. The
+	# witness alone owns the later snapshot/window enrichment of its HP ledger.
+	return JSON.stringify({"events": sample.get("events", []), "counters": sample.get("counters", {})}, "", true, true)
+
+
+static func _observer_canonical_signature(sample: Dictionary) -> String:
+	var observer_probe: Dictionary = (sample.get("observer_probe", {}) as Dictionary).duplicate(true)
+	observer_probe.erase("mode")
+	return JSON.stringify({
+		"sample_key": sample.get("sample_key", ""), "pair": sample.get("pair", ""), "seed": sample.get("seed", -1),
+		"scenario": sample.get("scenario", ""), "fixture": sample.get("fixture", ""), "target_cardinality": sample.get("target_cardinality", -1),
+		"events": sample.get("events", []), "hp_ledger": sample.get("hp_ledger", {}), "counters": sample.get("counters", {}),
+		"dpm": sample.get("dpm", NAN), "observer_probe": observer_probe,
+	}, "", true, true)
+
+
+static func verify_observer_ab(enabled: Dictionary, disabled: Dictionary) -> Dictionary:
 	var errors := PackedStringArray()
-	for signature_value in [first, second]:
-		var signature: Dictionary = signature_value
-		if int(signature.get("frame_count", -1)) != 481 or int(signature.get("measurement_frames", -1)) != 361:
-			errors.append("observer no-op fixed-frame boundary drifted")
-		if int(signature.get("rng_after_callbacks", -1)) != int(signature.get("rng_expected", -2)):
-			errors.append("observer no-op consumed global RNG")
-		if str(signature.get("feedback_before", "")) != str(signature.get("feedback_after", "")):
-			errors.append("observer no-op mutated callback feedback")
-		if not is_equal_approx(float(signature.get("ledger_total", -1.0)), 12.5) or int(signature.get("event_count", -1)) != 2:
-			errors.append("observer no-op changed ledger or event boundary")
-	if first != second:
-		errors.append("observer no-op signature is not deterministic")
-	return {"ok": errors.is_empty(), "errors": errors}
+	if str(enabled.get("mode", "")) != "enabled" or str(disabled.get("mode", "")) != "disabled":
+		errors.append("enabled and disabled observer baselines are required")
+	var enabled_samples: Array = enabled.get("samples", [])
+	var disabled_samples: Array = disabled.get("samples", [])
+	if enabled_samples.size() != OBSERVER_AB_SAMPLE_COUNT or disabled_samples.size() != OBSERVER_AB_SAMPLE_COUNT:
+		errors.append("observer A/B requires exactly %d samples per arm" % [OBSERVER_AB_SAMPLE_COUNT])
+	var sample_count := mini(enabled_samples.size(), disabled_samples.size())
+	var enabled_keys := {}
+	var disabled_keys := {}
+	var canonical := ""
+	for index in range(sample_count):
+		var enabled_sample: Dictionary = enabled_samples[index]
+		var disabled_sample: Dictionary = disabled_samples[index]
+		var enabled_key := str(enabled_sample.get("sample_key", ""))
+		var disabled_key := str(disabled_sample.get("sample_key", ""))
+		if enabled_key.is_empty() or enabled_key != disabled_key or enabled_keys.has(enabled_key) or disabled_keys.has(disabled_key):
+			errors.append("observer A/B sample identity is missing, duplicated, or mismatched at index %d" % index)
+			enabled_keys[enabled_key] = true
+			disabled_keys[disabled_key] = true
+		for arm_value in [{"sample": enabled_sample, "enabled": true, "name": "enabled"}, {"sample": disabled_sample, "enabled": false, "name": "disabled"}]:
+			var sample: Dictionary = arm_value["sample"]
+			var expected_enabled := bool(arm_value["enabled"])
+			var delivery: Dictionary = sample.get("observer_delivery", {})
+			if bool(delivery.get("enabled", not expected_enabled)) != expected_enabled or str(delivery.get("mode", "")) != str(arm_value["name"]):
+				errors.append("%s observer delivery mode is not explicit for %s" % [arm_value["name"], enabled_key])
+			if expected_enabled and (int(delivery.get("subscription_count", 0)) <= 0 or int(delivery.get("callback_event_count", 0)) <= 0 or not bool(delivery.get("callback_matches_witness", false)) or not bool(delivery.get("wiring_verified", false))):
+				errors.append("enabled observer has no verified production signal delivery for %s" % enabled_key)
+			if not expected_enabled and (int(delivery.get("subscription_count", -1)) != 0 or int(delivery.get("callback_event_count", -1)) != 0 or bool(delivery.get("wiring_verified", true))):
+				errors.append("disabled observer still receives production signal delivery for %s" % disabled_key)
+			var ledger: Dictionary = sample.get("hp_ledger", {})
+			var duration := float(ledger.get("measurement_duration_seconds", -1.0))
+			if str(ledger.get("canonical_numerator", "")) != "ledger_total" or int(ledger.get("measurement_frame_count", -1)) != LIVE_MEASUREMENT_FRAMES or not is_equal_approx(duration, LIVE_MEASUREMENT_FRAMES * LIVE_FIXED_DELTA):
+				errors.append("%s does not preserve the canonical fixed ledger window" % enabled_key)
+			var projections: Dictionary = ledger.get("dpm_projections", {})
+			if not is_equal_approx(float(sample.get("dpm", NAN)), _project_dpm(float(ledger.get("total_applied_damage", NAN)), duration)) or not is_equal_approx(float(projections.get("ledger_raw_duration_dpm", NAN)), float(sample.get("dpm", NAN))):
+				errors.append("%s canonical DPM is not ledger/raw-duration" % enabled_key)
+			var probe: Dictionary = sample.get("observer_probe", {})
+			if not probe.has("rng_probe") or int(probe.get("measurement_frame_count", -1)) != LIVE_MEASUREMENT_FRAMES or not is_equal_approx(float(probe.get("measurement_duration_seconds", -1.0)), duration):
+				errors.append("%s lacks fixed-step RNG/timing evidence" % enabled_key)
+		var enabled_signature := _observer_canonical_signature(enabled_sample)
+		var disabled_signature := _observer_canonical_signature(disabled_sample)
+		if enabled_signature != disabled_signature:
+			errors.append("production observer A/B drifted for %s" % enabled_key)
+		canonical += enabled_signature + "\n"
+	return {"ok": errors.is_empty(), "errors": errors, "canonical_digest": _sha256(canonical) if not canonical.is_empty() else ""}
 
 
 func generate_dataset() -> Dictionary:
