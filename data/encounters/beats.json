@@ -1,0 +1,36 @@
+{
+	"schema_version": 1,
+	"contract": "encounter-beats-v1",
+	"enabled": false,
+	"beats": [
+		{
+			"id": "marked_target",
+			"primary": true,
+			"script": "res://scripts/encounters/features/marked_target_feature.gd",
+			"eligibility": {
+				"combat_types": ["battle"],
+				"exclude_boss": true,
+				"exclude_elite": true,
+				"exclude_event": true
+			},
+			"trigger_window": {
+				"min_seconds": 20.0,
+				"max_seconds": 40.0
+			},
+			"duration_seconds": 10.0,
+			"seed_salt": 340593217,
+			"compatibility_tags": ["normal_battle", "solo_target"],
+			"payload": {
+				"marker_color": [1.0, 0.36, 0.32],
+				"marker_radius": 46.0
+			},
+			"success": {
+				"condition": "target_killed_within_window"
+			},
+			"failure": {
+				"condition": "window_expired_or_target_lost"
+			},
+			"metrics_tags": ["encounter_beat", "marked_target"]
+		}
+	]
+}

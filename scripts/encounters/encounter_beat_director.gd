@@ -1,0 +1,189 @@
+extends Node
+## EncounterBeatDirector — рантайм-двигатель битов боя (FAN-1447, contract v1).
+##
+## Один экземпляр живёт ровно один нормальный бой. Узел добавляется в дерево как
+## ребёнок Main с process_mode = PAUSABLE, поэтому его `_process` (и все дети-
+## маркеры) автоматически замерзают на паузе / level-up / молитве и тикают ровно
+## по тем же кадрам, что и боевой `_process` Main (тот тоже гейтится
+## get_tree().paused).
+##
+## Ответственность директора:
+##   - детерминированная sorted discovery eligible primary-битов из каталога;
+##   - планирование РОВНО ОДНОГО primary-бита из node seed + соли (без game.rng);
+##   - lifecycle: trigger → tick → resolve; терминальная очистка на конце боя;
+##   - агрегирование локальных метрик.
+## Новые пакеты-фичи подключаются данными каталога (id + script), НЕ правя ни
+## этот директор, ни адаптер CombatDirector.
+
+const API_VERSION := 1
+const CONFIG := preload("res://scripts/encounters/encounter_config.gd")
+const CONTEXT := preload("res://scripts/encounters/encounter_context.gd")
+const METRICS := preload("res://scripts/encounters/encounter_metrics.gd")
+const FEATURE_BASE := preload("res://scripts/encounters/encounter_feature.gd")
+
+var game
+var combat
+
+var _context
+var _metrics
+var _feature            # активный EncounterFeature (единственный primary-бит)
+var _beat_def: Dictionary = {}
+var _plan: Dictionary = {}
+var _elapsed := 0.0
+# idle -> planned -> active -> done
+var _state := "idle"
+
+
+func setup(game_ref, combat_ref) -> void:
+	game = game_ref
+	combat = combat_ref
+	process_mode = Node.PROCESS_MODE_PAUSABLE
+	_metrics = METRICS.new()
+
+
+# Старт директора для текущего боя. Планирует единственный primary-бит, если бой
+# нормальный и система включена. Иначе остаётся инертным (baseline parity).
+func begin() -> void:
+	_context = CONTEXT.new()
+	_context.game = game
+	_context.combat = combat
+	_context.node_seed = int(game.current_node_seed)
+	_context.combat_type = str(game.current_combat_type)
+	_context.event_active = not game.pending_event_combat.is_empty()
+	_context.boss_active = bool(game.boss_combat_active)
+	_context.round_duration = maxf(float(game.round_time_left), 0.0)
+	_context.elapsed = 0.0
+	_context.presentation_parent = self
+
+	if not _context.is_normal_battle():
+		_state = "done"
+		return
+	_plan_primary_beat()
+
+
+func _plan_primary_beat() -> void:
+	var candidates: Array = []
+	for beat_def in CONFIG.primary_beats():
+		var feature = _instantiate_feature(beat_def)
+		if feature == null:
+			continue
+		if not feature.is_eligible(_context):
+			continue
+		var plan: Dictionary = feature.plan(_context, beat_def)
+		if plan.is_empty():
+			continue
+		candidates.append({"beat": beat_def, "feature": feature, "plan": plan})
+
+	if candidates.is_empty():
+		_state = "done"
+		return
+
+	# Ровно один primary-бит: детерминированный выбор из node seed (отдельный
+	# генератор, глобальный game.rng не расходуется).
+	var pick_rng: RandomNumberGenerator = game.node_aspect_rng(int(game.current_node_seed), CONFIG.PRIMARY_PICK_SALT)
+	var chosen: Dictionary = candidates[pick_rng.randi_range(0, candidates.size() - 1)]
+	_beat_def = chosen["beat"]
+	_feature = chosen["feature"]
+	_plan = chosen["plan"]
+	_state = "planned"
+	_metrics.note_offered(str(_beat_def.get("id", "")))
+
+
+func _instantiate_feature(beat_def: Dictionary):
+	var script_path := str(beat_def.get("script", ""))
+	if script_path == "":
+		push_error("EncounterBeatDirector: бит %s без script" % str(beat_def.get("id", "?")))
+		return null
+	var feature_script = load(script_path)
+	if feature_script == null:
+		push_error("EncounterBeatDirector: не удалось загрузить %s" % script_path)
+		return null
+	var feature = feature_script.new()
+	if not (feature is FEATURE_BASE):
+		push_error("EncounterBeatDirector: %s не наследует EncounterFeature" % script_path)
+		return null
+	if feature.api_version() != FEATURE_BASE.API_VERSION:
+		push_error("EncounterBeatDirector: %s несовместимой API v%d" % [script_path, feature.api_version()])
+		return null
+	return feature
+
+
+func _process(delta: float) -> void:
+	if _state == "idle" or _state == "done":
+		return
+	_elapsed += delta
+	_context.elapsed = _elapsed
+
+	if _state == "planned":
+		if _elapsed >= float(_plan.get("trigger_at", INF)):
+			_trigger()
+	elif _state == "active":
+		_feature.on_tick(_context, delta)
+		if _feature.is_resolved():
+			_resolve_active("resolved")
+
+
+func _trigger() -> void:
+	var started: bool = _feature.on_trigger(_context, _beat_def)
+	if not started:
+		# Нет валидной цели в момент триггера — offer аборчен.
+		var outcome: Dictionary = _feature.resolve(_context, "no_target")
+		_metrics.record_outcome(outcome)
+		_feature = null
+		_state = "done"
+		return
+	_metrics.note_triggered(str(_beat_def.get("id", "")))
+	_state = "active"
+
+
+func _resolve_active(reason: String) -> void:
+	var outcome: Dictionary = _feature.resolve(_context, reason)
+	_metrics.record_outcome(outcome)
+	_feature = null
+	_state = "done"
+
+
+# Терминальная остановка на конце боя/смерти. Резолвит активный бит (метрики +
+# очистка узлов/твинов/колбэков), фиксирует death-флаг, снимает QA-снапшот и
+# освобождает узел. Идемпотентна.
+func shutdown(victory: bool) -> void:
+	if _state == "active" and _feature != null:
+		var outcome: Dictionary = _feature.resolve(_context, "combat_end")
+		if not bool(victory):
+			outcome["player_died"] = true
+		_metrics.record_outcome(outcome)
+	elif _feature != null:
+		# Бит ещё не стартовал (planned) — просто отпускаем ссылку.
+		_feature = null
+	_feature = null
+	_state = "done"
+	if _metrics != null:
+		METRICS.last_summary = _metrics.export_summary()
+	if not is_queued_for_deletion():
+		queue_free()
+
+
+# --- Доступ для тестов/QA ---
+
+func metrics() -> RefCounted:
+	return _metrics
+
+
+func state() -> String:
+	return _state
+
+
+func planned_beat_id() -> String:
+	return str(_beat_def.get("id", ""))
+
+
+func planned_trigger_at() -> float:
+	return float(_plan.get("trigger_at", -1.0))
+
+
+func elapsed_seconds() -> float:
+	return _elapsed
+
+
+func debug_feature():
+	return _feature
