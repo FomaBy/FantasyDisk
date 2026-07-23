@@ -1289,8 +1289,10 @@ baseline — fail-closed. `health_delta` сохраняется исключит
 diagnostic projection и не является DPM source ни в одной arm.
 
 `tests/a5_balance_report_observer_neutrality_test.gd` покрывает fail-closed
-fixtures для missing/identical disabled baseline, numerator/window/frame/RNG
-mutation и каждой из 51×4 projection cells. Полная команда выполняется только
+fixtures для missing/identical disabled baseline, numerator/window/frame/RNG,
+duplicate или substituted 309-sample manifest и каждой из 51×4 projection
+cells. Верификатор требует не только count, но и exact roster/seed/fixture key
+для каждой arm. Полная команда выполняется только
 через gate: `python3 tools/godot_gate.py --headless --fixed-fps 60 --path . --script res://tools/a5_balance_report.gd -- --mode=observer_neutrality`.
 
 Выживаемость привязана к одному явно описанному normal-wave A5 contact-pressure

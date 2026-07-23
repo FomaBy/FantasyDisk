@@ -37,24 +37,51 @@ func _initialize() -> void:
 	probe["rng_probe"] = int(probe["rng_probe"]) + 1
 	_check(not bool(Generator.verify_observer_ab(enabled, rng_change).get("ok", true)), "RNG consumption change must fail closed")
 
+	var duplicate_enabled := _arm(true)
+	var duplicate_disabled := _arm(false)
+	for arm_samples in [duplicate_enabled["samples"], duplicate_disabled["samples"]]:
+		var samples: Array = arm_samples
+		(samples[1] as Dictionary)["sample_key"] = str((samples[0] as Dictionary).get("sample_key", ""))
+	var duplicate_verification := Generator.verify_observer_ab(duplicate_enabled, duplicate_disabled)
+	var duplicate_errors := "; ".join(duplicate_verification.get("errors", []))
+	_check(not bool(duplicate_verification.get("ok", true)) and duplicate_errors.contains("duplicated"), "duplicated observer fixture keys must fail closed")
+
+	var substituted_enabled := _arm(true)
+	var substituted_disabled := _arm(false)
+	(substituted_enabled["samples"] as Array)[0] = _sample("invalid/weapon|999999|observer_solo|sustain|1", 0, true)
+	(substituted_disabled["samples"] as Array)[0] = _sample("invalid/weapon|999999|observer_solo|sustain|1", 0, false)
+	var substituted_verification := Generator.verify_observer_ab(substituted_enabled, substituted_disabled)
+	var substituted_errors := "; ".join(substituted_verification.get("errors", []))
+	_check(not bool(substituted_verification.get("ok", true)) and substituted_errors.contains("manifest is missing") and substituted_errors.contains("manifest has unexpected"), "substituted 309-sample observer manifest must fail closed")
+
 	_validate_every_projection_cell_mutation()
 	_finish()
 
 
 func _arm(observer_enabled: bool) -> Dictionary:
 	var samples := []
-	for index in range(Generator.OBSERVER_AB_SAMPLE_COUNT):
-		samples.append(_sample(index, observer_enabled))
+	var sample_keys: Array = Generator.observer_expected_sample_keys().keys()
+	sample_keys.sort()
+	_check(sample_keys.size() == Generator.OBSERVER_AB_SAMPLE_COUNT, "observer manifest must contain exactly 309 fixture keys")
+	for index in range(sample_keys.size()):
+		samples.append(_sample(str(sample_keys[index]), index, observer_enabled))
 	return {"mode": "enabled" if observer_enabled else "disabled", "samples": samples}
 
 
-func _sample(index: int, observer_enabled: bool) -> Dictionary:
+func _sample(sample_key: String, index: int, observer_enabled: bool) -> Dictionary:
+	var identity := sample_key.split("|", false)
+	_check(identity.size() == 5, "observer fixture key must have five identity fields")
+	var pair := str(identity[0]) if identity.size() == 5 else "fixture/weapon"
+	var seed_value := int(identity[1]) if identity.size() == 5 else 1000 + index
+	var scenario := str(identity[2]) if identity.size() == 5 else "observer_solo"
+	var fixture := str(identity[3]) if identity.size() == 5 else "sustain"
+	var target_cardinality := int(identity[4]) if identity.size() == 5 else 1
 	var numerator := 10.0 + float(index)
 	var duration := Generator.LIVE_MEASUREMENT_FRAMES * Generator.LIVE_FIXED_DELTA
 	var dpm := Generator._project_dpm(numerator, duration)
 	return {
-		"sample_key": "observer-%03d" % index,
-		"pair": "fixture/weapon", "seed": 1000 + index, "scenario": "observer_solo", "fixture": "sustain", "target_cardinality": 1,
+		"sample_key": sample_key,
+		"pair": pair, "seed": seed_value, "scenario": scenario, "fixture": fixture, "target_cardinality": target_cardinality,
 		"events": [{"event_id": "fixture#0000", "trace_id": "fixture", "frame": 120, "probe_phase": "measurement", "kind": "hit", "damage": numerator}],
 		"counters": {"hits": 1, "damage_total": numerator},
 		"hp_ledger": {

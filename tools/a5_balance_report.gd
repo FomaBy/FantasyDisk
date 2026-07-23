@@ -740,6 +740,35 @@ static func _observer_canonical_signature(sample: Dictionary) -> String:
 	}, "", true, true)
 
 
+static func observer_expected_sample_keys() -> Dictionary:
+	# Keep the 309-sample observer oracle tied to the same canonical roster,
+	# seeds, fixtures, and target cardinalities that _run_observer_neutrality
+	# executes. A count-only check could otherwise accept a substituted manifest.
+	var expected := {}
+	for class_id_value in PD.character_ids():
+		var class_id := str(class_id_value)
+		for weapon_id_value in PD.weapon_ids(class_id):
+			var pair := "%s/%s" % [class_id, str(weapon_id_value)]
+			for seed_value in LIVE_SEEDS:
+				expected[_telemetry_sample_key(pair, int(seed_value), "observer_solo", "sustain", 1)] = true
+				expected[_telemetry_sample_key(pair, int(seed_value), "observer_pack", "sustain", TARGET_COUNT)] = true
+	var representative_pair := "%s/%s" % [REPRESENTATIVE_CLASS_ID, REPRESENTATIVE_WEAPON_ID]
+	expected[_telemetry_sample_key(representative_pair, REPRESENTATIVE_SEED, "observer_representative_offensive", "offensive", 1)] = true
+	expected[_telemetry_sample_key(representative_pair, REPRESENTATIVE_SEED, "observer_representative_mortal", "mortal", 1)] = true
+	expected[_telemetry_sample_key(representative_pair, REPRESENTATIVE_SEED, "observer_representative_incoming", "incoming_hit", 1)] = true
+	return expected
+
+
+static func _observer_sample_identity_key(sample: Dictionary) -> String:
+	return _telemetry_sample_key(
+		str(sample.get("pair", "")),
+		int(sample.get("seed", -1)),
+		str(sample.get("scenario", "")),
+		str(sample.get("fixture", "")),
+		int(sample.get("target_cardinality", -1)),
+	)
+
+
 static func verify_observer_ab(enabled: Dictionary, disabled: Dictionary) -> Dictionary:
 	var errors := PackedStringArray()
 	if str(enabled.get("mode", "")) != "enabled" or str(disabled.get("mode", "")) != "disabled":
@@ -751,6 +780,7 @@ static func verify_observer_ab(enabled: Dictionary, disabled: Dictionary) -> Dic
 	var sample_count := mini(enabled_samples.size(), disabled_samples.size())
 	var enabled_keys := {}
 	var disabled_keys := {}
+	var expected_keys := observer_expected_sample_keys()
 	var canonical := ""
 	for index in range(sample_count):
 		var enabled_sample: Dictionary = enabled_samples[index]
@@ -759,8 +789,10 @@ static func verify_observer_ab(enabled: Dictionary, disabled: Dictionary) -> Dic
 		var disabled_key := str(disabled_sample.get("sample_key", ""))
 		if enabled_key.is_empty() or enabled_key != disabled_key or enabled_keys.has(enabled_key) or disabled_keys.has(disabled_key):
 			errors.append("observer A/B sample identity is missing, duplicated, or mismatched at index %d" % index)
-			enabled_keys[enabled_key] = true
-			disabled_keys[disabled_key] = true
+		enabled_keys[enabled_key] = true
+		disabled_keys[disabled_key] = true
+		if enabled_key != _observer_sample_identity_key(enabled_sample) or disabled_key != _observer_sample_identity_key(disabled_sample):
+			errors.append("observer A/B sample key does not match its production identity at index %d" % index)
 		for arm_value in [{"sample": enabled_sample, "enabled": true, "name": "enabled"}, {"sample": disabled_sample, "enabled": false, "name": "disabled"}]:
 			var sample: Dictionary = arm_value["sample"]
 			var expected_enabled := bool(arm_value["enabled"])
@@ -786,6 +818,18 @@ static func verify_observer_ab(enabled: Dictionary, disabled: Dictionary) -> Dic
 		if enabled_signature != disabled_signature:
 			errors.append("production observer A/B drifted for %s" % enabled_key)
 		canonical += enabled_signature + "\n"
+	for expected_key_value in expected_keys:
+		var expected_key := str(expected_key_value)
+		if not enabled_keys.has(expected_key):
+			errors.append("enabled observer A/B manifest is missing %s" % expected_key)
+		if not disabled_keys.has(expected_key):
+			errors.append("disabled observer A/B manifest is missing %s" % expected_key)
+	for enabled_key_value in enabled_keys:
+		if not expected_keys.has(enabled_key_value):
+			errors.append("enabled observer A/B manifest has unexpected %s" % enabled_key_value)
+	for disabled_key_value in disabled_keys:
+		if not expected_keys.has(disabled_key_value):
+			errors.append("disabled observer A/B manifest has unexpected %s" % disabled_key_value)
 	return {"ok": errors.is_empty(), "errors": errors, "canonical_digest": _sha256(canonical) if not canonical.is_empty() else ""}
 
 
@@ -1647,7 +1691,7 @@ static func projection_oracle_digest(dataset: Dictionary) -> Dictionary:
 	return {"ok": true, "digest": _sha256(canonical), "canonical": canonical}
 
 
-func _telemetry_sample_key(pair: String, seed_value: int, scenario_key: String, fixture: String, target_cardinality: int) -> String:
+static func _telemetry_sample_key(pair: String, seed_value: int, scenario_key: String, fixture: String, target_cardinality: int) -> String:
 	return "%s|%d|%s|%s|%d" % [pair, seed_value, scenario_key, fixture, target_cardinality]
 
 
