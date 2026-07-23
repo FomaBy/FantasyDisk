@@ -31,6 +31,7 @@ const LIVE_SEEDS := [143801, 143802, 143803]
 const LIVE_WARMUP_SECONDS := 2.0
 const LIVE_WINDOW_SECONDS := 6.0
 const MAX_LIVE_FRAMES := 2400
+const DETERMINISTIC_MAX_FPS := 60
 const DUMMY_HP := 1.0e9
 const PLAYER_POSITION := Vector2(1280.0, 720.0)
 const SOLO_OFFSET := Vector2(80.0, 0.0)
@@ -51,6 +52,7 @@ var _mode := "full"
 var _source_commit := "UNSPECIFIED"
 var _source_tree := ""
 var _source_timestamp := ""
+var _observer_mode := "enabled"
 var _holder: Node2D
 var _errors := PackedStringArray()
 
@@ -299,7 +301,9 @@ class A5TelemetryCollector extends RefCounted:
 		for target_id_value in fixture_target_ids:
 			var target_id := str(target_id_value)
 			var ledger: Dictionary = _measurement_ledger_by_target.get(target_id, {"target_id": target_id, "applied_damage": 0.0, "entries": 0})
-			ledger["applied_damage"] = snappedf(float(ledger.get("applied_damage", 0.0)), 0.0001)
+			# Keep the ledger numerator at simulation precision. Rounding here used to
+			# change a DPM projection after aggregation; presentation code owns rounding.
+			ledger["applied_damage"] = float(ledger.get("applied_damage", 0.0))
 			ledger_total += float(ledger["applied_damage"])
 			ledger_rows.append(ledger)
 		var result := {
@@ -318,7 +322,7 @@ class A5TelemetryCollector extends RefCounted:
 				"probe_phase": "measurement",
 				"tolerance": 0.0001,
 				"rows": ledger_rows,
-				"total_applied_damage": snappedf(ledger_total, 0.0001),
+				"total_applied_damage": ledger_total,
 			},
 			"counters": {
 				"casts": casts,
@@ -365,7 +369,10 @@ class A5TelemetryCollector extends RefCounted:
 func _initialize() -> void:
 	_parse_args()
 	await process_frame
-	if _mode in ["full", "telemetry_probe"]:
+	if _mode in ["full", "telemetry_probe", "observer_neutrality"]:
+		# The live probe advances production _process callbacks. Cap that clock so
+		# telemetry callback cost cannot change the number or duration of frames.
+		Engine.max_fps = DETERMINISTIC_MAX_FPS
 		_holder = Node2D.new()
 		_holder.name = "FAN1438BalanceHolder"
 		root.add_child(_holder)
@@ -374,6 +381,9 @@ func _initialize() -> void:
 		await process_frame
 	if _mode == "telemetry_probe":
 		await _run_representative_telemetry_probe()
+		return
+	if _mode == "observer_neutrality":
+		await _run_observer_neutrality()
 		return
 	var dataset := await generate_dataset()
 	if not _errors.is_empty():
@@ -425,8 +435,8 @@ func _parse_args() -> void:
 			_source_commit = arg.trim_prefix("--source-commit=")
 		elif arg.begins_with("--source-tree=") or arg.begins_with("--source-timestamp="):
 			_errors.append("%s is derived from --source-commit and cannot be overridden" % arg.get_slice("=", 0))
-	if not ["formula", "full", "telemetry_probe"].has(_mode):
-		_errors.append("unsupported mode %s (expected formula, full, or telemetry_probe)" % _mode)
+	if not ["formula", "full", "telemetry_probe", "observer_neutrality"].has(_mode):
+		_errors.append("unsupported mode %s (expected formula, full, telemetry_probe, or observer_neutrality)" % _mode)
 
 
 func _run_representative_telemetry_probe() -> void:
@@ -442,9 +452,9 @@ func _run_representative_telemetry_probe() -> void:
 		if not bool(verification.get("ok", false)):
 			_errors.append("telemetry probe contract failed for %s: %s" % [sample.get("sample_key", "?"), "; ".join(verification.get("errors", []))])
 	print("FAN-1511 telemetry probe: %s" % JSON.stringify({
-		"offensive": offensive.get("counters", {}),
-		"mortal": mortal.get("counters", {}),
-		"incoming": incoming.get("counters", {}),
+		"offensive": {"dpm": offensive.get("dpm", -1.0), "counters": offensive.get("counters", {})},
+		"mortal": {"dpm": mortal.get("dpm", -1.0), "counters": mortal.get("counters", {})},
+		"incoming": {"dpm": incoming.get("dpm", -1.0), "counters": incoming.get("counters", {})},
 	}, "", false, true))
 	if not _errors.is_empty():
 		for error in _errors:
@@ -452,6 +462,48 @@ func _run_representative_telemetry_probe() -> void:
 		quit(1)
 		return
 	quit(0)
+
+
+func _run_observer_neutrality() -> void:
+	# FAN-1551: the diagnostic intentionally replays the exact fixed-seed live
+	# matrix twice. The disabled pass attaches no callbacks, so any divergence is
+	# gameplay/frame/RNG drift rather than a telemetry serialization difference.
+	_observer_mode = "enabled"
+	var enabled := await _observer_projection_snapshot()
+	_observer_mode = "disabled"
+	var disabled := await _observer_projection_snapshot()
+	_observer_mode = "enabled"
+	var verification := verify_observer_neutrality(enabled, disabled)
+	if not bool(verification.get("ok", false)):
+		for error_value in verification.get("errors", []):
+			_errors.append("observer neutrality: %s" % error_value)
+	else:
+		print("FAN-1551 observer neutrality passed: %d pairs, %d samples, zero 51x4/frame/RNG drift." % [
+			(enabled.get("parity", []) as Array).size(),
+			((enabled.get("telemetry", {}) as Dictionary).get("samples", []) as Array).size(),
+		])
+	if not _errors.is_empty():
+		for error_value in _errors:
+			push_error(error_value)
+		quit(1)
+		return
+	quit(0)
+
+
+func _observer_projection_snapshot() -> Dictionary:
+	var class_ids: Array = PD.character_ids()
+	var builds := {}
+	var scenarios := _scenario_manifest()
+	var live_rows := []
+	for class_id_value in class_ids:
+		var class_id := str(class_id_value)
+		var base_stats := PD.base_stats(class_id)
+		var level20_stats := DamageTable.optimized_stats_for_class(class_id, base_stats)
+		builds[class_id] = {"level20_stats": level20_stats}
+		var state := _scenario_state(class_id, "class_constellation")
+		for weapon_id_value in PD.weapon_ids(class_id):
+			live_rows.append(_weapon_row(class_id, str(weapon_id_value), 20, "class_constellation", level20_stats, state, scenarios["class_constellation"]))
+	return await _live_parity(class_ids, builds, live_rows)
 
 
 func generate_dataset() -> Dictionary:
@@ -1145,16 +1197,18 @@ func _measure_live(class_id: String, weapon_id: String, target_count: int, stats
 	main.free()
 	player.set("max_health", DUMMY_HP)
 	player.set("health", DUMMY_HP)
-	player.connect("weapon_cast_observed", collector.on_weapon_cast)
-	player.connect("constellation_final_resolved", collector.on_final_resolution)
+	if _observer_mode == "enabled":
+		player.connect("weapon_cast_observed", collector.on_weapon_cast)
+		player.connect("constellation_final_resolved", collector.on_final_resolution)
 	await process_frame
 	var dummies := _spawn_dummies(target_count)
 	var anchors := []
 	for index in range(dummies.size()):
 		var enemy = dummies[index]
 		collector.bind_target(enemy as Node2D, "target_%d" % index)
-		(enemy as Node2D).connect("damage_applied", collector.on_damage_applied)
-		(enemy as Node2D).connect("died", collector.on_target_died)
+		if _observer_mode == "enabled":
+			(enemy as Node2D).connect("damage_applied", collector.on_damage_applied)
+			(enemy as Node2D).connect("died", collector.on_target_died)
 		if initial_target_hp < DUMMY_HP:
 			enemy.set("max_health", initial_target_hp)
 			enemy.set("health", initial_target_hp)
@@ -1162,7 +1216,9 @@ func _measure_live(class_id: String, weapon_id: String, target_count: int, stats
 	await _advance_live(LIVE_WARMUP_SECONDS, dummies, anchors, class_id, weapon_id, collector, "warmup")
 	var before_health := _health_snapshot(dummies)
 	var before := _total_health(dummies)
-	var measured := await _advance_live(LIVE_WINDOW_SECONDS, dummies, anchors, class_id, weapon_id, collector, "measurement")
+	var measurement: Dictionary = await _advance_live(LIVE_WINDOW_SECONDS, dummies, anchors, class_id, weapon_id, collector, "measurement")
+	var measured := float(measurement.get("duration_seconds", 0.0))
+	var measurement_frame_count := int(measurement.get("frame_count", 0))
 	var after_health := _health_snapshot(dummies)
 	var after := _total_health(dummies)
 	var sample := collector.build_sample(pair, seed_value, scenario_key, fixture, target_count)
@@ -1173,18 +1229,44 @@ func _measure_live(class_id: String, weapon_id: String, target_count: int, stats
 		var row: Dictionary = ledger_rows[index]
 		row["health_before"] = float(before_health[index])
 		row["health_after"] = float(after_health[index])
-		row["health_loss"] = snappedf(maxf(float(before_health[index]) - float(after_health[index]), 0.0), 0.0001)
+		row["health_loss"] = maxf(float(before_health[index]) - float(after_health[index]), 0.0)
 		ledger_rows[index] = row
 	hp_ledger["rows"] = ledger_rows
-	var measurement_duration := snappedf(measured, 0.0001)
+	var health_delta := maxf(before - after, 0.0)
+	var measurement_duration := measured
+	var measurement_duration_snapped := snappedf(measured, 0.0001)
+	var ledger_total := float(hp_ledger.get("total_applied_damage", 0.0))
+	# The raw frame-stepped duration is canonical. The snapped value is retained
+	# only to account for the FAN-1546 regression and must never be reused as a
+	# DPM denominator.
 	hp_ledger["measurement_duration_seconds"] = measurement_duration
+	hp_ledger["measurement_duration_snapped_seconds"] = measurement_duration_snapped
+	hp_ledger["measurement_frame_count"] = measurement_frame_count
+	hp_ledger["legacy_health_delta_numerator"] = health_delta
+	hp_ledger["dpm_projections"] = {
+		"legacy_hp_delta_raw_duration_dpm": _project_dpm(health_delta, measurement_duration),
+		"ledger_raw_duration_dpm": _project_dpm(ledger_total, measurement_duration),
+		"ledger_snapped_duration_dpm": _project_dpm(ledger_total, measurement_duration_snapped),
+		"ledger_minus_legacy_numerator": ledger_total - health_delta,
+	}
 	sample["hp_ledger"] = hp_ledger
+	sample["observer_probe"] = {
+		"mode": _observer_mode,
+		"measurement_duration_seconds": measurement_duration,
+		"measurement_frame_count": measurement_frame_count,
+		"health_before": before_health,
+		"health_after": after_health,
+		"health_delta": health_delta,
+		# Every next fixture reseeds explicitly, so this probe cannot change a later
+		# measurement. It makes global RNG consumption observable to the A/B gate.
+		"rng_probe": randi(),
+	}
 	if measured < LIVE_WINDOW_SECONDS:
 		sample["dpm"] = -1.0
 		return sample
 	# FAN-1539: DPM and telemetry reconciliation share the same authoritative
 	# canonical HP ledger, avoiding a second floating-point aggregation path.
-	sample["dpm"] = snappedf(float(hp_ledger.get("total_applied_damage", 0.0)) / measurement_duration * 60.0, 0.01)
+	sample["dpm"] = _project_dpm(health_delta if _observer_mode == "disabled" else ledger_total, measurement_duration)
 	return sample
 
 
@@ -1217,17 +1299,27 @@ func _measure_incoming_fixture(stats: Dictionary, state: Dictionary) -> Dictiona
 	var parameters: Dictionary = player.get("derived_parameters")
 	parameters["dodge"] = 0.0
 	player.set("derived_parameters", parameters)
-	collector.enable_incoming_fixture()
-	player.connect("damaged", collector.on_player_damaged)
+	if _observer_mode == "enabled":
+		collector.enable_incoming_fixture()
+		player.connect("damaged", collector.on_player_damaged)
 	await process_frame
 	player.call("take_damage", A5_NORMAL_CONTACT_DAMAGE, "fan1511_deterministic_incoming")
 	await process_frame
 	var sample := collector.build_sample(pair, REPRESENTATIVE_SEED, "representative_incoming_hit", "incoming_hit", 1)
 	sample["dpm"] = 0.0
+	sample["observer_probe"] = {
+		"mode": _observer_mode,
+		"measurement_duration_seconds": 0.0,
+		"measurement_frame_count": 0,
+		"health_before": [DUMMY_HP],
+		"health_after": [float(player.get("health"))],
+		"health_delta": maxf(DUMMY_HP - float(player.get("health")), 0.0),
+		"rng_probe": randi(),
+	}
 	return sample
 
 
-func _advance_live(seconds: float, dummies: Array, anchors: Array, class_id: String, weapon_id: String, collector: A5TelemetryCollector, probe_phase: String) -> float:
+func _advance_live(seconds: float, dummies: Array, anchors: Array, class_id: String, weapon_id: String, collector: A5TelemetryCollector, probe_phase: String) -> Dictionary:
 	collector.set_phase(probe_phase)
 	var elapsed := 0.0
 	var frames := 0
@@ -1241,7 +1333,85 @@ func _advance_live(seconds: float, dummies: Array, anchors: Array, class_id: Str
 				(dummies[index] as Node2D).global_position = anchors[index]
 	if elapsed < seconds:
 		_errors.append("%s/%s live simulation advanced %.2f/%.2fs" % [class_id, weapon_id, elapsed, seconds])
-	return elapsed
+	return {"duration_seconds": elapsed, "frame_count": frames}
+
+
+static func _project_dpm(numerator: float, duration_seconds: float) -> float:
+	return snappedf(numerator / maxf(duration_seconds, 0.0000001) * 60.0, 0.01)
+
+
+static func verify_observer_neutrality(enabled: Dictionary, disabled: Dictionary) -> Dictionary:
+	var errors := PackedStringArray()
+	var enabled_rows: Array = enabled.get("parity", [])
+	var disabled_rows: Array = disabled.get("parity", [])
+	if enabled_rows.size() != disabled_rows.size() or enabled_rows.size() != 51:
+		errors.append("51-key projection coverage differs between observer modes")
+	var disabled_by_pair := {}
+	for row_value in disabled_rows:
+		var row: Dictionary = row_value
+		var pair := str(row.get("pair", ""))
+		if pair.is_empty() or disabled_by_pair.has(pair):
+			errors.append("disabled projection has a missing or duplicate pair")
+		else:
+			disabled_by_pair[pair] = row
+	for row_value in enabled_rows:
+		var enabled_row: Dictionary = row_value
+		var pair := str(enabled_row.get("pair", ""))
+		if not disabled_by_pair.has(pair):
+			errors.append("observer-disabled projection is missing %s" % pair)
+			continue
+		var disabled_row: Dictionary = disabled_by_pair[pair]
+		for field in ["live_solo_dpm_mean", "live_pack_dpm_mean", "live_solo_dpm_stddev", "live_pack_dpm_stddev"]:
+			if not is_equal_approx(float(enabled_row.get(field, NAN)), float(disabled_row.get(field, NAN))):
+				errors.append("51x4 projection drift at %s/%s" % [pair, field])
+	var enabled_samples: Array = (enabled.get("telemetry", {}) as Dictionary).get("samples", [])
+	var disabled_samples: Array = (disabled.get("telemetry", {}) as Dictionary).get("samples", [])
+	if enabled_samples.size() != disabled_samples.size():
+		errors.append("observer sample count differs")
+	var disabled_by_key := {}
+	for sample_value in disabled_samples:
+		var sample: Dictionary = sample_value
+		var key := str(sample.get("sample_key", ""))
+		if key.is_empty() or disabled_by_key.has(key):
+			errors.append("disabled observer sample key is missing or duplicated")
+		else:
+			disabled_by_key[key] = sample
+	for sample_value in enabled_samples:
+		var enabled_sample: Dictionary = sample_value
+		var key := str(enabled_sample.get("sample_key", ""))
+		if not disabled_by_key.has(key):
+			errors.append("observer-disabled sample is missing %s" % key)
+			continue
+		var enabled_probe: Dictionary = enabled_sample.get("observer_probe", {})
+		var disabled_probe: Dictionary = (disabled_by_key[key] as Dictionary).get("observer_probe", {})
+		for field in ["measurement_duration_seconds", "measurement_frame_count", "health_before", "health_after", "health_delta", "rng_probe"]:
+			if enabled_probe.get(field, null) != disabled_probe.get(field, null):
+				errors.append("gameplay/frame/RNG observer drift at %s/%s" % [key, field])
+	return {"ok": errors.is_empty(), "errors": errors}
+
+
+static func projection_oracle_digest(dataset: Dictionary) -> Dictionary:
+	var roster: Dictionary = dataset.get("roster", {})
+	var pair_keys: Array = roster.get("pair_keys", [])
+	var rows_by_pair := {}
+	for row_value in dataset.get("weapon_rows", []):
+		var row: Dictionary = row_value
+		if int(row.get("level", 0)) != 20 or str(row.get("scenario", "")) != "class_constellation":
+			continue
+		var pair := "%s/%s" % [row.get("class_id", ""), row.get("weapon_id", "")]
+		if rows_by_pair.has(pair):
+			return {"ok": false, "error": "duplicate projection row %s" % pair}
+		rows_by_pair[pair] = row
+	if pair_keys.size() != 51 or rows_by_pair.size() != pair_keys.size():
+		return {"ok": false, "error": "projection manifest must contain exactly 51 L20 class-constellation rows"}
+	var canonical := ""
+	for pair_value in pair_keys:
+		var pair := str(pair_value)
+		if not rows_by_pair.has(pair):
+			return {"ok": false, "error": "projection manifest is missing %s" % pair}
+		var row: Dictionary = rows_by_pair[pair]
+		canonical += "%s|%.2f|%.2f|%.2f|%.2f\n" % [pair, float(row.get("live_solo_dpm_mean", NAN)), float(row.get("live_crowd_dpm_mean", NAN)), float(row.get("solo_variance_dpm2", NAN)), float(row.get("crowd_variance_dpm2", NAN))]
+	return {"ok": true, "digest": _sha256(canonical), "canonical": canonical}
 
 
 func _telemetry_sample_key(pair: String, seed_value: int, scenario_key: String, fixture: String, target_cardinality: int) -> String:
@@ -1623,9 +1793,33 @@ static func verify_live_telemetry_sample(sample: Dictionary) -> Dictionary:
 		errors.append("hp ledger total does not reconstruct from rows")
 	if fixture != "incoming_hit":
 		var measurement_duration := float(ledger.get("measurement_duration_seconds", 0.0))
-		var expected_dpm := snappedf(ledger_total / maxf(measurement_duration, 0.0001) * 60.0, 0.01)
+		var snapped_duration := float(ledger.get("measurement_duration_snapped_seconds", -1.0))
+		var frame_count := int(ledger.get("measurement_frame_count", 0))
+		var legacy_numerator := float(ledger.get("legacy_health_delta_numerator", -1.0))
+		var projections: Dictionary = ledger.get("dpm_projections", {})
+		var expected_dpm := _project_dpm(ledger_total, measurement_duration)
 		if measurement_duration <= 0.0 or not is_equal_approx(float(sample.get("dpm", -1.0)), expected_dpm):
 			errors.append("reported dpm does not reconcile to measurement hp ledger")
+		if frame_count < 1 or snapped_duration <= 0.0 or not is_equal_approx(snapped_duration, snappedf(measurement_duration, 0.0001)):
+			errors.append("measurement duration/frame metadata is invalid")
+		if legacy_numerator < 0.0:
+			errors.append("legacy health delta is invalid")
+		var health_loss_total := 0.0
+		for row_value in ledger_rows:
+			health_loss_total += float((row_value as Dictionary).get("health_loss", 0.0))
+		if absf(legacy_numerator - health_loss_total) > tolerance * maxf(1.0, float(ledger_rows.size())):
+			errors.append("legacy health delta does not reconstruct from per-target health loss")
+		if not is_equal_approx(float(projections.get("legacy_hp_delta_raw_duration_dpm", -1.0)), _project_dpm(legacy_numerator, measurement_duration)):
+			errors.append("legacy raw-duration DPM projection is invalid")
+		if not is_equal_approx(float(projections.get("ledger_raw_duration_dpm", -1.0)), expected_dpm):
+			errors.append("canonical ledger raw-duration DPM projection is invalid")
+		if not is_equal_approx(float(projections.get("ledger_snapped_duration_dpm", -1.0)), _project_dpm(ledger_total, snapped_duration)):
+			errors.append("snapped-duration diagnostic DPM projection is invalid")
+		if not is_equal_approx(float(projections.get("ledger_minus_legacy_numerator", NAN)), ledger_total - legacy_numerator):
+			errors.append("ledger/legacy numerator delta is invalid")
+		var observer_probe: Dictionary = sample.get("observer_probe", {})
+		if str(observer_probe.get("mode", "")) != "enabled" or int(observer_probe.get("measurement_frame_count", 0)) != frame_count or not is_equal_approx(float(observer_probe.get("measurement_duration_seconds", -1.0)), measurement_duration) or not is_equal_approx(float(observer_probe.get("health_delta", -1.0)), legacy_numerator):
+			errors.append("observer diagnostic does not reproduce the canonical measurement boundary")
 	if str(sample.get("trace_digest_sha256", "")) != _sha256(JSON.stringify(events, "", true, true)):
 		errors.append("trace digest mismatch")
 	return {"ok": errors.is_empty(), "errors": errors}

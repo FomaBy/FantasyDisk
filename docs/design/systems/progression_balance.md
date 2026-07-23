@@ -1260,6 +1260,19 @@ hits и DPM с фактическим изменением HP с допуско�
 детерминированный incoming hit по игроку; короткая проверка только этих
 примитивов доступна через `--mode=telemetry_probe`.
 
+FAN-1551 фиксирует boundary live-measurement как число simulation steps и
+несокращённую сумму `process_delta_time`: `measurement_duration_seconds` и
+`measurement_frame_count` — canonical denominator для DPM. Округлённая до
+`0.0001` длительность сохранена только как диагностическое поле вместе с тремя
+projection (`legacy HP-delta/raw duration`, `ledger/raw duration`,
+`ledger/snapped duration`) и разностью numerator; она никогда не используется
+для расчёта report DPM. `tests/a5_balance_report_parity_test.gd` проверяет
+упорядоченный manifest 51 оружий и четыре live/variance поля against exact
+fresh executable oracle `f09f21ec`; это measurement repair, а не balance/config
+tuning. `--mode=observer_neutrality` повторяет тот же fixed-seed набор с
+collector enabled и без callback connections и fail-closed проверяет zero drift
+по 51×4 projection, HP snapshots, frame count и RNG probe.
+
 Выживаемость привязана к одному явно описанному normal-wave A5 contact-pressure
 сценарию. Глобальный множитель обычных врагов не переносится на boss/elite
 ветки, у которых в runtime отдельные consumers. Условные control, timed absorb,
