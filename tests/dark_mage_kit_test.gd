@@ -91,6 +91,7 @@ func _initialize() -> void:
 	await _test_book_mirror_geometry(errors)
 	await _test_book_double_hit_overlap(errors)
 	await _test_dark_decay_trait(errors)
+	await _test_dark_decay_secondary_paths_unowned(errors)
 
 	if not errors.is_empty():
 		for error in errors:
@@ -439,6 +440,85 @@ func _test_dark_decay_trait(errors: Array) -> void:
 		errors.append("non-dark-mage classes must not gain the on-kill explosion")
 
 	soldier.queue_free()
+	player.queue_free()
+	await _cleanup(holder)
+
+
+# --- FAN-1545: telemetry не синтезирует player_owned на вторичных путях --------
+# Регресс FAN-1545 (telemetry-репейр FAN-1539): новый helper безусловно помечал
+# вторичные пути (thorn reflect, echo, enchant, DoT-тик и т.п.) как
+# player_owned=true, из-за чего их убийства ложно квалифицировали on-kill trait
+# «Тёмный распад». Здесь прогоняем НАСТОЯЩИЕ функции вторичных путей и проверяем,
+# что их kill НЕ помечен player_owned, НЕ запускает распад и НЕ двигает
+# HP-свидетеля; при этом owned weapon/ульта-путь всё ещё квалифицирует распад.
+func _test_dark_decay_secondary_paths_unowned(errors: Array) -> void:
+	var holder := _new_scene("Fan1545SecondaryUnowned")
+	var player := PLAYER_SCENE.instantiate()
+	holder.add_child(player)
+	player.add_to_group("player")
+	player.global_position = Vector2(900, 700)
+	await process_frame
+	player.call("configure_character", "dark_mage", "dark_wand")
+	_mute_equipped_weapon(player)
+	await process_frame
+
+	var trait_config: Dictionary = PD.class_trait("dark_mage")
+	var trait_radius := float(trait_config.get("on_kill_blast_radius", 0.0))
+	if trait_radius <= 0.0:
+		errors.append("setup: dark_mage decay radius must be positive")
+		await _cleanup(holder)
+		return
+
+	# (a) THORN REFLECT — реальный путь _trigger_thorn_reflect. victim стоит в
+	# радиусе рефлекта игрока (<=200px). Детекторы распада (probe низкого HP и
+	# высокоживучий witness) — ВНУТРИ радиуса распада от victim, но ВНЕ 200px
+	# рефлекта, чтобы сам рефлект их не задел. Базовое поведение: рефлект
+	# неатрибутирован → распада нет → детекторы нетронуты.
+	var reflect_victim := _spawn_real_enemy(holder, Vector2(1099, 700), 10.0)  # dist 199 от игрока
+	var reflect_probe := _spawn_real_enemy(holder, Vector2(1099 + trait_radius * 0.5, 700), 1.0)
+	var reflect_witness := _spawn_real_enemy(holder, Vector2(1099, 760), 100000.0)
+	await process_frame
+	if player.global_position.distance_to(reflect_probe.global_position) <= 200.0 or player.global_position.distance_to(reflect_witness.global_position) <= 200.0:
+		errors.append("setup: decay detectors must sit outside the 200px thorn-reflect range")
+	var reflect_rm: Dictionary = player.get("run_modifiers")
+	reflect_rm["thorn_reflect_multiplier"] = 2.0
+	var reflect_witness_hp := float(reflect_witness.get("health"))
+	player.call("_trigger_thorn_reflect", 100.0)  # reflected = 200 -> убивает victim (HP 10)
+	if float(reflect_victim.get("health")) > 0.0:
+		errors.append("setup: thorn reflect must kill the in-range victim")
+	var reflect_attr: Dictionary = reflect_victim.get_meta("killing_hit_feedback") if reflect_victim.has_meta("killing_hit_feedback") else {}
+	if bool(reflect_attr.get("player_owned", false)):
+		errors.append("thorn-reflect kill must NOT be tagged player_owned (telemetry must not synthesize ownership)")
+	player.call("on_enemy_killed", reflect_victim)
+	if float(reflect_probe.get("health")) <= 0.0:
+		errors.append("thorn-reflect secondary kill must not trigger Dark Decay (probe died)")
+	if absf(float(reflect_witness.get("health")) - reflect_witness_hp) > EPS:
+		errors.append("thorn-reflect secondary kill must not move the HP witness (%.2f -> %.2f)" % [reflect_witness_hp, float(reflect_witness.get("health"))])
+
+	# (b) Второй ранее-unowned путь: универсальный DoT-тик (_apply_dot_tick).
+	var dot_victim := _spawn_real_enemy(holder, Vector2(500, 700), 10.0)
+	var dot_probe := _spawn_real_enemy(holder, Vector2(500 + trait_radius * 0.5, 700), 1.0)
+	await process_frame
+	player.call("_apply_dot_tick", dot_victim.get_instance_id(), 99999.0)
+	if float(dot_victim.get("health")) > 0.0:
+		errors.append("setup: universal DoT-tick must kill the victim")
+	var dot_attr: Dictionary = dot_victim.get_meta("killing_hit_feedback") if dot_victim.has_meta("killing_hit_feedback") else {}
+	if bool(dot_attr.get("player_owned", false)):
+		errors.append("universal DoT-tick kill must NOT be tagged player_owned")
+	player.call("on_enemy_killed", dot_victim)
+	if float(dot_probe.get("health")) <= 0.0:
+		errors.append("universal DoT-tick secondary kill must not trigger Dark Decay (probe died)")
+
+	# (c) Позитивный контроль: owned weapon/ульта-style kill всё ещё квалифицирует
+	# распад — фикс не должен зарубить легитимную атрибуцию.
+	var owned_victim := _spawn_real_enemy(holder, Vector2(300, 900), 10.0)
+	var owned_probe := _spawn_real_enemy(holder, Vector2(300 + trait_radius * 0.5, 900), 1.0)
+	await process_frame
+	owned_victim.call("take_damage", 99999.0, {"damage_type": "magic", "player_owned": true})
+	player.call("on_enemy_killed", owned_victim)
+	if float(owned_probe.get("health")) > 0.0:
+		errors.append("owned weapon/ultimate kill must still qualify Dark Decay (probe survived)")
+
 	player.queue_free()
 	await _cleanup(holder)
 

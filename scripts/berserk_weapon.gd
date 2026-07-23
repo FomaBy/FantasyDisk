@@ -675,12 +675,12 @@ func _apply_unique_melee_hit_effects(owner_node: Node2D, enemy_node: Node2D, att
 		return
 	var distance := owner_node.global_position.distance_to(enemy_node.global_position)
 	if melee_close_bonus_radius > 0.0 and melee_close_damage_multiplier > 1.0 and distance <= melee_close_bonus_radius:
-		_call_take_damage(enemy_node, amount * (melee_close_damage_multiplier - 1.0), {"damage_type": "physical"})
+		enemy_node.take_damage(amount * (melee_close_damage_multiplier - 1.0))
 	if melee_execute_threshold > 0.0 and melee_execute_multiplier > 1.0:
 		var max_hp := float(enemy_node.get("max_health")) if enemy_node.get("max_health") != null else 0.0
 		var health := float(enemy_node.get("health")) if enemy_node.get("health") != null else max_hp
 		if max_hp > 0.0 and health / max_hp <= melee_execute_threshold:
-			_call_take_damage(enemy_node, amount * (melee_execute_multiplier - 1.0), {"damage_type": "physical"})
+			enemy_node.take_damage(amount * (melee_execute_multiplier - 1.0))
 	if melee_stagger_knockback_multiplier > 0.0:
 		var push_direction := enemy_node.global_position - owner_node.global_position
 		if push_direction.length_squared() <= 0.001:
@@ -709,7 +709,7 @@ func _apply_unique_melee_hit_effects(owner_node: Node2D, enemy_node: Node2D, att
 			if nearby == enemy_node:
 				continue
 			if nearby.has_method("take_damage"):
-				_call_take_damage(nearby as Node, splash_damage, {"damage_type": "physical"})
+				nearby.take_damage(splash_damage)
 
 
 func _target_direction(owner_node: Node2D) -> Vector2:

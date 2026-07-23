@@ -1,6 +1,6 @@
 # FAN-1438 — A5 character and weapon balance report
 
-Source commit `f09f21ece5ae744ffc1b917d724d5e581404fae4` (tree `955d7b987b697f8922edeacfea291b4351516773`, timestamp `2026-07-23T04:47:57+03:00`), Godot `4.7-stable (official)`. Dataset digest: `27392cbbe87e2969b80c54dee46db3412d048be9f3e6ce7944b86f2a33c3a8c7`.
+Source commit `f09f21ece5ae744ffc1b917d724d5e581404fae4` (tree `955d7b987b697f8922edeacfea291b4351516773`, timestamp `2026-07-23T04:47:57+03:00`), Godot `4.7-stable (official)`. Dataset digest: `df7994610ea2a19e6f57a024b74dc0abcd9be21333c0c3351b48a5f2d50a5c98`.
 
 The live roster is **17 classes / 51 class-weapon pairs**. The primary matrix is **408 rows** = pairs × 2 levels × 4 meta scenarios. This report changes no balance values.
 
@@ -641,7 +641,7 @@ Schema `fan1511.runtime-telemetry.v2`: every live sample has a deterministic pai
 
 | Representative fixture | Trace | Casts | Hits | Unique targets | Total damage | Final events / tagged damage |
 | --- | --- | ---: | ---: | --- | ---: | ---: |
-| offensive | `fan1511:berserk/sword|1511001|representative_offensive|offensive|1` | 29 | 81 | target_0 | 1585.1318 | 9 / 541.9923 |
+| offensive | `fan1511:berserk/sword|1511001|representative_offensive|offensive|1` | 29 | 31 | target_0 | 1585.1318 | 9 / 541.9923 |
 | mortal | `fan1511:berserk/sword|1511001|representative_mortal|mortal|1` | 29 | 1 | target_0 | 1.0000 | 1 / 1.0000 |
 | incoming_hit | `fan1511:berserk/sword|1511001|representative_incoming_hit|incoming_hit|1` | 0 | 1 | player | 4.1438 | 0 / 0.0000 |
 

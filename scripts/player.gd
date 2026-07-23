@@ -1220,7 +1220,7 @@ func trigger_assassin_crit_shadow(target: Node2D, burst_radius: float) -> void:
 	if echo_ratio > 0.0:
 		var echo_damage := maxf(float(derived_parameters.get("damage", 10.0)) * echo_ratio, 1.0)
 		for other_node in TARGET_QUERY.in_radius(self, target.global_position, radius):
-			_apply_player_damage(other_node as Node, echo_damage, {"damage_type": "magic"})
+			_apply_player_damage(other_node as Node, echo_damage)
 	var invis_time := float(run_modifiers.get("shadow_burst_invisibility_time", 0.0))
 	if invis_time > 0.0:
 		_shadow_invisible_left = maxf(_shadow_invisible_left, invis_time)
@@ -1354,7 +1354,7 @@ func _trigger_thorn_reflect(received_damage: float) -> void:
 		if enemy_node == null or not is_instance_valid(enemy_node):
 			continue
 		if global_position.distance_squared_to(enemy_node.global_position) <= 200.0 * 200.0:
-			_apply_player_damage(enemy_node, reflected, {"damage_type": "physical"})
+			_apply_player_damage(enemy_node, reflected)
 
 
 func _trigger_dodge_rush() -> void:
@@ -1804,7 +1804,7 @@ func _trigger_take_hit_pulse(received_damage: float) -> void:
 		if enemy_node == null or not is_instance_valid(enemy_node):
 			continue
 		if global_position.distance_squared_to(enemy_node.global_position) <= 190.0 * 190.0:
-			_apply_player_damage(enemy_node, pulse_damage, {"damage_type": "physical"})
+			_apply_player_damage(enemy_node, pulse_damage)
 			if enemy_node.has_method("apply_knockback"):
 				enemy_node.apply_knockback((enemy_node.global_position - global_position).normalized() * 180.0)
 
@@ -2924,7 +2924,7 @@ func _apply_ultimate_damage(enemy: Node2D, amount: float) -> void:
 	# SCRUM-1007: ульта — урон игрока; метка атрибутирует он-килл trait'ы, тип
 	# урона — канал класса (маг. классы красят цифру магией).
 	var ult_type := "magic" if ProgressionData.damage_parameter_for(character_id) == "magic_damage" else "physical"
-	_apply_player_damage(enemy, final_amount, {"damage_type": ult_type})
+	_apply_player_damage(enemy, final_amount, {"damage_type": ult_type, "player_owned": true})
 
 
 func show_combat_feedback_number(amount: float, kind := "heal") -> void:
@@ -2987,7 +2987,7 @@ func _trigger_magic_enchant(enemy: Node2D) -> void:
 	var parent := get_tree().current_scene if get_tree().current_scene != null else get_tree().root
 	AttackVfx.orb_burst(parent, enemy.global_position, radius, Color(0.58, 0.38, 1.0, 0.34))
 	for other_node in TARGET_QUERY.in_radius(self, enemy.global_position, radius):
-		_apply_player_damage(other_node as Node, enchant_damage, {"damage_type": "magic"})
+		_apply_player_damage(other_node as Node, enchant_damage)
 
 
 func _trigger_universal_dot(enemy: Node2D) -> void:
@@ -3011,7 +3011,7 @@ func _trigger_universal_dot(enemy: Node2D) -> void:
 
 func _apply_dot_tick(enemy_id: int, tick_damage: float) -> void:
 	var enemy := instance_from_id(enemy_id) as Node
-	_apply_player_damage(enemy, tick_damage, {"damage_type": "dot"})
+	_apply_player_damage(enemy, tick_damage)
 
 
 func _trigger_class_status_effects(enemy: Node2D) -> void:
@@ -3186,7 +3186,7 @@ func _trigger_leadership_echo(enemy: Node2D) -> void:
 	var echo_damage := float(derived_parameters.get(PROGRESSION_DATA.damage_parameter_for(character_id), derived_parameters.get("damage", 8.0))) * 0.34
 	var parent := _vfx_parent() as Node2D
 	AttackVfx.slash(parent, (enemy.global_position - global_position).normalized(), 110.0, Color(0.78, 0.90, 1.0, 0.34)).global_position = enemy.global_position
-	_apply_player_damage(enemy, echo_damage, {"damage_type": "magic"})
+	_apply_player_damage(enemy, echo_damage)
 
 
 func _on_weapon_hit_echo(enemy: Node2D) -> void:
@@ -3205,7 +3205,7 @@ func _on_weapon_hit_echo(enemy: Node2D) -> void:
 		scene = get_tree().root
 	AttackVfx.orb_burst(scene, blast_position, 140.0, Color(1.0, 0.82, 0.30, 0.5))
 	for other_node in TARGET_QUERY.in_radius(self, blast_position, 140.0):
-		_apply_player_damage(other_node as Node, blast_damage, {"damage_type": "magic"})
+		_apply_player_damage(other_node as Node, blast_damage)
 
 
 # SCRUM-500 (on_kill): диспетчер триггеров убийства. Вызывается combat_director из
@@ -3231,7 +3231,7 @@ func on_enemy_killed(enemy: Node2D) -> void:
 		AttackVfx.orb_burst(scene, blast_position, 150.0, Color(1.0, 0.55, 0.20, 0.55))
 		for other_node in TARGET_QUERY.in_radius(self, blast_position, 150.0):
 			if other_node != enemy:
-				_apply_player_damage(other_node as Node, blast_damage, {"damage_type": "magic"})
+				_apply_player_damage(other_node as Node, blast_damage)
 	# «Сбор Душ»: каждое N-е убийство лечит процент max HP.
 	var streak_every := int(run_modifiers.get("kill_streak_heal_every", 0.0))
 	if streak_every > 0:
@@ -3280,7 +3280,7 @@ func _trigger_class_on_kill_trait(enemy: Node2D) -> void:
 	for other_node in TARGET_QUERY.in_radius(self, blast_position, radius):
 		if other_node == enemy or not other_node.has_method("take_damage"):
 			continue
-		_apply_player_damage(other_node, damage_amount, {"damage_type": "magic", "dark_decay": true})
+		_apply_player_damage(other_node, damage_amount, {"damage_type": "magic", "player_owned": true, "dark_decay": true})
 
 
 # SCRUM-940: у Проклятого черепа нет прямого урона → on_weapon_hit не зовётся.
@@ -3474,12 +3474,12 @@ func _apply_heal_to_holy_damage(healed: float) -> void:
 		var chain_damage := damage_amount * pow(0.72, float(index))
 		_apply_player_damage(enemy_node, chain_damage, {"damage_type": "magic"})
 		previous_position = enemy_node.global_position
+# FAN-1545: НЕ синтезирует ownership. `player_owned` (гейт он-килл trait'ов) едет
+# только если его несёт базовый feedback caller'а; вторичные пути остаются unowned.
 func _apply_player_damage(target: Node, amount: float, feedback := {}) -> void:
 	if target == null or not is_instance_valid(target) or not target.has_method("take_damage"): return
 	if _take_damage_accepts_feedback(target):
-		var tagged: Dictionary = feedback.duplicate(true) if feedback is Dictionary else {}
-		tagged["player_owned"] = true
-		target.call("take_damage", amount, tagged)
+		target.call("take_damage", amount, feedback if feedback is Dictionary else {})
 	else: target.call("take_damage", amount)
 func _take_damage_accepts_feedback(target: Node) -> bool:
 	for method in target.get_method_list():
