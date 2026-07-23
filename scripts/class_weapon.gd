@@ -636,6 +636,8 @@ func _attack() -> void:
 
 	if owner_node.has_method("play_action_animation"):
 		owner_node.play_action_animation(_primary_action_animation_for_mode(), direction)
+	if owner_node.has_method("record_weapon_cast"):
+		owner_node.call("record_weapon_cast", weapon_id, attack_mode, _event_action_animation_for_mode(), _estimated_windup_duration())
 	_emit_weapon_animation_event(owner_node, "windup", _estimated_windup_duration(), direction)
 
 	# SCRUM-603: лечение-от-атаки идёт через per-second бюджет (capped), как drain.

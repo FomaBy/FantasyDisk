@@ -1,16 +1,15 @@
 extends CharacterBody2D
 
 const SemanticTypography := preload("res://scripts/ui/semantic_typography.gd")
-
 signal died
 signal leveled_up
 signal damaged(amount: float)
 signal weapon_animation_event(event: Dictionary)
-
+signal weapon_cast_observed(event: Dictionary)
+signal constellation_final_resolved(weapon_id: String, event: String, target: Node2D, context: Dictionary, resolution: Dictionary)
 @export var max_health := 10.0
 @export var speed := 260.0
 @export var damage_invulnerability_time := 0.32
-
 const BERSERK_SPRITE := preload("res://assets/sprites/characters/berserk_unarmed.png")
 const BERSERK_ANIMATED_SPRITE := preload("res://assets/sprites/characters/berserk_walk_sheet_v2.png")
 const ProgressionData := preload("res://scripts/progression_data.gd")
@@ -922,8 +921,8 @@ func play_action_animation(action_id: String, direction := Vector2.ZERO, phase :
 	_action_tween.tween_property(self, "_action_rotation", 0.0, recover_time).set_delay(windup_time).set_trans(Tween.TRANS_QUAD).set_ease(Tween.EASE_OUT)
 	_action_tween.tween_property(self, "_action_scale", Vector2.ONE, recover_time).set_delay(windup_time).set_trans(Tween.TRANS_QUAD).set_ease(Tween.EASE_OUT)
 	_action_tween.tween_callback(_apply_sprite_transform)
-
-
+func record_weapon_cast(weapon_id_value: String, attack_mode_value: String, action_id: String, duration := 0.0) -> void:
+	weapon_cast_observed.emit({"weapon_id": weapon_id_value, "attack_mode": attack_mode_value, "action_id": action_id, "phase": "windup", "duration": maxf(float(duration), 0.0), "phase_source": "class_weapon"})
 func apply_web_slow(duration: float, factor: float) -> void:
 	# Паутина: временное замедление движения (повтор продлевает, фактор общий).
 	_web_slow_until = maxf(_web_slow_until, Time.get_ticks_msec() / 1000.0 + duration)
@@ -2201,6 +2200,7 @@ func constellation_weapon_event(weapon_id_value: String, event: String, context 
 	if not bool(resolution.get("valid", false)):
 		push_error("SCRUM-1068 final runtime rejected %s." % mechanic_id)
 		return {"valid": false, "triggered": false, "damage_multiplier": 1.0, "axis_gain": 1.0}
+	constellation_final_resolved.emit(weapon_id_value, event, enemy, runtime_context.duplicate(true), resolution.duplicate(true))
 	if bool(resolution.get("triggered", false)):
 		run_modifiers["constellation_last_final_action"] = resolution.duplicate(true)
 		if enemy != null and is_instance_valid(enemy):

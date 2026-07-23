@@ -6,6 +6,10 @@ const SemanticTypography := preload("res://scripts/ui/semantic_typography.gd")
 const HIT_FLASH_TEXTURE := preload("res://assets/sprites/effects/impact_flash.png")
 
 signal died(enemy: Node2D)
+# Read-only combat-observation seam for deterministic harnesses. Emitted after
+# the canonical mitigation path has calculated and applied the HP loss; it does
+# not participate in damage, death, rewards, or gameplay state.
+signal damage_applied(target: Node2D, attempted_amount: float, applied_amount: float, feedback: Dictionary)
 # Фазы уникальной атаки элитки для Animator: windup -> strike -> recover -> idle.
 signal elite_attack_phase_changed(attack_id: String, phase: String)
 
@@ -581,6 +585,7 @@ func take_damage(amount: float, feedback := {}) -> void:
 		final_amount *= elite_shield_damage_reduction
 		_apply_elite_reflect_thorns(amount)
 	health -= final_amount
+	damage_applied.emit(self, amount, final_amount, feedback_data.duplicate(true))
 	_update_health_bar()
 	# SCRUM-502: репортим нанесённый врагу урон в агрегатор забега (экран итогов).
 	# enemy.take_damage(...) — единая точка схода ВСЕХ источников урона по врагу

@@ -38,6 +38,12 @@ const A5_NORMAL_CONTACT_RATE := 5.0
 const PLAYER_IFRAME_SECONDS := 0.32
 const CLASS_CORRIDOR_LOWER := 0.80
 const CLASS_CORRIDOR_UPPER := 1.20
+const LIVE_TELEMETRY_SCHEMA := "fan1511.runtime-telemetry.v1"
+const LIVE_TRACE_PREFIX := "fan1511"
+const REPRESENTATIVE_CLASS_ID := "berserk"
+const REPRESENTATIVE_WEAPON_ID := "sword"
+const REPRESENTATIVE_SEED := 1511001
+const MORTAL_TARGET_HP := 1.0
 
 var _mode := "full"
 var _source_commit := "UNSPECIFIED"
@@ -47,25 +53,243 @@ var _holder: Node2D
 var _errors := PackedStringArray()
 
 
+class A5TelemetryCollector extends RefCounted:
+	var trace_id := ""
+	var sample_key := ""
+	var phase := "warmup"
+	var frame := 0
+	var events: Array = []
+	var _target_labels := {}
+	var _pending_final_events := {}
+	var _last_hit_by_target := {}
+	var _incoming_fixture_active := false
+
+	func _init(trace_id_value: String, sample_key_value: String) -> void:
+		trace_id = trace_id_value
+		sample_key = sample_key_value
+
+	func bind_target(target: Node2D, label: String) -> void:
+		if target != null:
+			_target_labels[target.get_instance_id()] = label
+
+	func set_phase(value: String) -> void:
+		phase = value
+
+	func advance_frame() -> void:
+		frame += 1
+
+	func enable_incoming_fixture() -> void:
+		_incoming_fixture_active = true
+
+	func on_weapon_cast(raw_event: Dictionary) -> void:
+		if str(raw_event.get("phase_source", "")) != "class_weapon" or str(raw_event.get("phase", "")) != "windup":
+			return
+		_append_event({
+			"kind": "cast",
+			"source": "player_weapon",
+			"phase": "windup",
+			"action_id": str(raw_event.get("action_id", "")),
+			"attack_mode": str(raw_event.get("attack_mode", "")),
+			"damage": 0.0,
+		})
+
+	func on_damage_applied(target: Node2D, _attempted_amount: float, applied_amount: float, feedback: Dictionary) -> void:
+		if target == null or not bool(feedback.get("player_owned", false)) or applied_amount <= 0.0:
+			return
+		var target_label := _target_label(target)
+		var event := {
+			"kind": "hit",
+			"source": "player_weapon",
+			"phase": "damage_application",
+			"target_id": target_label,
+			"damage": snappedf(applied_amount, 0.0001),
+		}
+		var pending: Array = _pending_final_events.get(target_label, [])
+		if not pending.is_empty():
+			event["final_event_ids"] = pending.duplicate()
+			_pending_final_events.erase(target_label)
+		var event_id := _append_event(event)
+		_last_hit_by_target[target_label] = event_id
+
+	func on_final_resolution(_weapon_id: String, event_name: String, target: Node2D, _context: Dictionary, resolution: Dictionary) -> void:
+		if not bool(resolution.get("valid", false)) or not bool(resolution.get("triggered", false)):
+			return
+		var target_label := _target_label(target)
+		var event_id := _append_event({
+			"kind": "final_event",
+			"source": "player_weapon",
+			"phase": "final_resolution",
+			"target_id": target_label,
+			"event": event_name,
+			"mechanic_id": str(resolution.get("mechanic_id", "")),
+			"observed": true,
+			"damage": 0.0,
+		})
+		var pending: Array = _pending_final_events.get(target_label, [])
+		pending.append(event_id)
+		_pending_final_events[target_label] = pending
+
+	func on_target_died(target: Node2D) -> void:
+		var target_label := _target_label(target)
+		var event := {
+			"kind": "final_event",
+			"source": "player_weapon",
+			"phase": "target_death",
+			"target_id": target_label,
+			"event": "kill",
+			"observed": true,
+			"damage": 0.0,
+		}
+		if _last_hit_by_target.has(target_label):
+			event["related_hit_id"] = str(_last_hit_by_target[target_label])
+		_append_event(event)
+
+	func on_player_damaged(applied_amount: float) -> void:
+		if not _incoming_fixture_active or applied_amount <= 0.0:
+			return
+		_append_event({
+			"kind": "hit",
+			"source": "incoming_fixture",
+			"phase": "incoming_damage",
+			"target_id": "player",
+			"damage": snappedf(applied_amount, 0.0001),
+		})
+
+	func build_sample(pair: String, seed_value: int, scenario_key: String, fixture: String, target_cardinality: int) -> Dictionary:
+		var hit_events := []
+		var casts := 0
+		var target_ids := {}
+		var buckets := {}
+		var final_events := []
+		var event_by_id := {}
+		for raw_event in events:
+			var event: Dictionary = raw_event
+			event_by_id[str(event.get("event_id", ""))] = event
+			if str(event.get("kind", "")) == "cast":
+				casts += 1
+			if str(event.get("kind", "")) == "hit":
+				hit_events.append(event)
+				target_ids[str(event.get("target_id", ""))] = true
+				var bucket_key := "%s|%s" % [event.get("source", ""), event.get("phase", "")]
+				var bucket: Dictionary = buckets.get(bucket_key, {"source": event.get("source", ""), "phase": event.get("phase", ""), "damage": 0.0, "hits": 0})
+				bucket["damage"] = float(bucket.get("damage", 0.0)) + float(event.get("damage", 0.0))
+				bucket["hits"] = int(bucket.get("hits", 0)) + 1
+				buckets[bucket_key] = bucket
+			if str(event.get("kind", "")) == "final_event":
+				final_events.append(event)
+		var bucket_rows := buckets.values()
+		bucket_rows.sort_custom(func(a, b): return "%s|%s" % [a["source"], a["phase"]] < "%s|%s" % [b["source"], b["phase"]])
+		var unique_target_ids := target_ids.keys()
+		unique_target_ids.sort()
+		var final_damage := 0.0
+		var tagged_hits := {}
+		for final_event_value in final_events:
+			var final_event: Dictionary = final_event_value
+			var related_hit_id := str(final_event.get("related_hit_id", ""))
+			if related_hit_id != "" and event_by_id.has(related_hit_id):
+				tagged_hits[related_hit_id] = true
+		for hit_value in hit_events:
+			var hit: Dictionary = hit_value
+			for final_event_id in hit.get("final_event_ids", []):
+				tagged_hits[str(final_event_id)] = true
+				# The hit itself is the unique damage carrier for a resolver event.
+				tagged_hits[str(hit.get("event_id", ""))] = true
+		for tagged_id in tagged_hits:
+			if event_by_id.has(tagged_id) and str((event_by_id[tagged_id] as Dictionary).get("kind", "")) == "hit":
+				final_damage += float((event_by_id[tagged_id] as Dictionary).get("damage", 0.0))
+		var fixture_target_ids := []
+		for index in range(target_cardinality):
+			fixture_target_ids.append("player" if fixture == "incoming_hit" else "target_%d" % index)
+		var result := {
+			"telemetry_schema": LIVE_TELEMETRY_SCHEMA,
+			"sample_key": sample_key,
+			"trace_id": trace_id,
+			"pair": pair,
+			"seed": seed_value,
+			"scenario": scenario_key,
+			"fixture": fixture,
+			"target_cardinality": target_cardinality,
+			"fixture_target_ids": fixture_target_ids,
+			"events": events,
+			"counters": {
+				"casts": casts,
+				"hits": hit_events.size(),
+				"unique_target_ids": unique_target_ids,
+				"unique_target_count": unique_target_ids.size(),
+				"damage_total": snappedf(_damage_total(bucket_rows), 0.0001),
+				"damage_by_source_phase": bucket_rows,
+				"final_event_count": final_events.size(),
+				"final_event_damage": snappedf(final_damage, 0.0001),
+			},
+		}
+		result["trace_digest_sha256"] = _digest(JSON.stringify(events, "", true, true))
+		return result
+
+	func _append_event(raw_event: Dictionary) -> String:
+		var event := raw_event.duplicate(true)
+		var event_id := "%s#%04d" % [trace_id, events.size()]
+		event["event_id"] = event_id
+		event["trace_id"] = trace_id
+		event["frame"] = frame
+		event["probe_phase"] = phase
+		events.append(event)
+		return event_id
+
+	func _target_label(target: Node2D) -> String:
+		if target == null:
+			return "target_unknown"
+		return str(_target_labels.get(target.get_instance_id(), "target_unknown"))
+
+	func _damage_total(bucket_rows: Array) -> float:
+		var total := 0.0
+		for bucket_value in bucket_rows:
+			total += float((bucket_value as Dictionary).get("damage", 0.0))
+		return total
+
+	func _digest(value: String) -> String:
+		var context := HashingContext.new()
+		context.start(HashingContext.HASH_SHA256)
+		context.update(value.to_utf8_buffer())
+		return context.finish().hex_encode()
+
+
 func _initialize() -> void:
 	_parse_args()
 	await process_frame
-	if _mode == "full":
+	if _mode in ["full", "telemetry_probe"]:
 		_holder = Node2D.new()
 		_holder.name = "FAN1438BalanceHolder"
 		root.add_child(_holder)
 		current_scene = _holder
 		root.set_meta("aim_mode", "nearest")
 		await process_frame
+	if _mode == "telemetry_probe":
+		await _run_representative_telemetry_probe()
+		return
 	var dataset := await generate_dataset()
 	if not _errors.is_empty():
 		for error in _errors:
 			push_error(error)
 		quit(1)
 		return
+	# JSON is the canonical artifact. Normalize through the exact serializer before
+	# calculating its digest or rendering projections so float representation cannot
+	# make raw.json disagree with CSV/Markdown after a parse round-trip.
+	var normalized = JSON.parse_string(JSON.stringify(dataset, "\t", true, true))
+	if not normalized is Dictionary:
+		push_error("FAN-1511 cannot normalize the generated dataset through JSON")
+		quit(1)
+		return
+	dataset = normalized as Dictionary
+	var telemetry: Dictionary = dataset.get("live_telemetry", {})
+	for sample_value in telemetry.get("samples", []):
+		var sample: Dictionary = sample_value
+		sample["trace_digest_sha256"] = _sha256(JSON.stringify(sample.get("events", []), "", true, true))
+	dataset.erase("dataset_digest_sha256")
+	dataset["dataset_digest_sha256"] = _sha256(JSON.stringify(dataset, "", true, true))
 	DirAccess.make_dir_recursive_absolute(ProjectSettings.globalize_path(REPORT_DIR))
-	var csv_text := _csv(dataset)
-	var markdown_text := _markdown(dataset)
+	var csv_text := render_csv(dataset)
+	var markdown_text := render_markdown(dataset)
 	var raw_text := JSON.stringify(dataset, "\t", true, true) + "\n"
 	_write_text(CSV_PATH, csv_text)
 	_write_text(REPORT_PATH, markdown_text)
@@ -92,8 +316,28 @@ func _parse_args() -> void:
 			_source_commit = arg.trim_prefix("--source-commit=")
 		elif arg.begins_with("--source-tree=") or arg.begins_with("--source-timestamp="):
 			_errors.append("%s is derived from --source-commit and cannot be overridden" % arg.get_slice("=", 0))
-	if not ["formula", "full"].has(_mode):
-		_errors.append("unsupported mode %s (expected formula or full)" % _mode)
+	if not ["formula", "full", "telemetry_probe"].has(_mode):
+		_errors.append("unsupported mode %s (expected formula, full, or telemetry_probe)" % _mode)
+
+
+func _run_representative_telemetry_probe() -> void:
+	var base_stats := PD.base_stats(REPRESENTATIVE_CLASS_ID)
+	var stats := DamageTable.optimized_stats_for_class(REPRESENTATIVE_CLASS_ID, base_stats)
+	var state := _scenario_state(REPRESENTATIVE_CLASS_ID, "class_constellation")
+	var offensive: Dictionary = await _measure_live(REPRESENTATIVE_CLASS_ID, REPRESENTATIVE_WEAPON_ID, 1, stats, state, REPRESENTATIVE_SEED, "representative_offensive", "offensive")
+	var mortal: Dictionary = await _measure_live(REPRESENTATIVE_CLASS_ID, REPRESENTATIVE_WEAPON_ID, 1, stats, state, REPRESENTATIVE_SEED, "representative_mortal", "mortal", MORTAL_TARGET_HP)
+	var incoming: Dictionary = await _measure_incoming_fixture(stats, state)
+	print("FAN-1511 telemetry probe: %s" % JSON.stringify({
+		"offensive": offensive.get("counters", {}),
+		"mortal": mortal.get("counters", {}),
+		"incoming": incoming.get("counters", {}),
+	}, "", false, true))
+	if not _errors.is_empty():
+		for error in _errors:
+			push_error(error)
+		quit(1)
+		return
+	quit(0)
 
 
 func generate_dataset() -> Dictionary:
@@ -132,8 +376,16 @@ func generate_dataset() -> Dictionary:
 	var class_rows := _class_rows(class_ids, weapon_rows)
 	_apply_class_relative_scores(class_rows)
 	var parity := []
+	var live_telemetry := {
+		"schema": LIVE_TELEMETRY_SCHEMA,
+		"trace_id_format": "%s:<pair>|<seed>|<scenario>|<fixture>|<target-cardinality>" % LIVE_TRACE_PREFIX,
+		"samples": [],
+		"representative_fixtures": [],
+	}
 	if _mode == "full":
-		parity = await _live_parity(class_ids, builds, weapon_rows)
+		var live_evidence: Dictionary = await _live_parity(class_ids, builds, weapon_rows)
+		parity = live_evidence.get("parity", [])
+		live_telemetry = live_evidence.get("telemetry", live_telemetry)
 		_apply_live_evidence_to_rows(weapon_rows, parity)
 
 	var methodology := {
@@ -144,11 +396,11 @@ func generate_dataset() -> Dictionary:
 		"modifier_order": "ascension reward multipliers multiply and flats add; A5 reward/healing/max-HP multipliers then apply; meta fractions become 1+sum and multiply the matching run modifier; flats add; owning-weapon profile remains isolated by exact weapon_id",
 		"ultimate": "class-kit-only first-minute formula starts from unmodified level stats and applies class/Atlas attribute and run modifiers exactly once; it is never attributed to a weapon row",
 		"targets": {"solo": [SOLO_OFFSET.x, SOLO_OFFSET.y], "pack_count": TARGET_COUNT, "pack_radius": PACK_RADIUS, "layout": "one primary east target plus deterministic compact golden-angle pack"},
-		"live": {"mode": _mode, "seeds": LIVE_SEEDS, "runs": LIVE_SEEDS.size(), "warmup_seconds": LIVE_WARMUP_SECONDS, "measurement_seconds": LIVE_WINDOW_SECONDS, "dummy_hp": DUMMY_HP, "stationary": true},
+		"live": {"mode": _mode, "seeds": LIVE_SEEDS, "runs": LIVE_SEEDS.size(), "warmup_seconds": LIVE_WARMUP_SECONDS, "measurement_seconds": LIVE_WINDOW_SECONDS, "dummy_hp": DUMMY_HP, "stationary": true, "telemetry_schema": LIVE_TELEMETRY_SCHEMA, "telemetry_source": "runtime signals: weapon phase, applied enemy damage, final resolution, player damage"},
 		"survivability": {"threat": "normal-wave contact pressure only", "base_hit": A5_NORMAL_CONTACT_DAMAGE, "attempted_hits_per_second": A5_NORMAL_CONTACT_RATE, "player_iframe_seconds": PLAYER_IFRAME_SECONDS, "a5_enemy_damage_multiplier": PD.ascension_difficulty_mods(5).get("enemy_damage_mult", 1.0), "order": "flat absorb (42% hit floor), defense, expected dodge, sustain; one death-save event is added separately"},
 	}
 	var dataset := {
-		"schema": "fan1438.a5-balance.v1",
+		"schema": "fan1438.a5-balance.v2",
 		"issue_id": ISSUE_ID,
 		"source": {"commit": _source_commit, "tree": _source_tree, "commit_timestamp": _source_timestamp, "godot": Engine.get_version_info().get("string", "unknown")},
 		"generation_command": "python3 tools/godot_gate.py --headless --fixed-fps 60 --path . --script res://tools/a5_balance_report.gd -- --mode=full --source-commit=<A>",
@@ -160,11 +412,12 @@ func generate_dataset() -> Dictionary:
 		"weapon_rows": weapon_rows,
 		"class_rows": class_rows,
 		"formula_live_parity": parity,
+		"live_telemetry": live_telemetry,
 		"outliers": _outliers(class_rows, parity),
 		"limitations": [
 			"The level-20 model is a synthetic 19-base-stat-point balance convention, not a replay of 19 live reward-card choices.",
 			"Selected A5 and earned reward tier are separate runtime states; this controlled report intentionally sets both to 5.",
-			"The formula estimates persistent throughput. Live probes are authoritative for nonlinear mechanics, but infinite-HP dummies cannot exercise kill/execute/death-transfer cadence.",
+			"Sustained parity probes use infinite-HP dummies; the separate mortal-target representative fixture records an observed kill event, but it is not a full final-mechanic reconciliation across all 51 pairs.",
 			"Control, taunt, timed absorb, one-hit wards, and enemy damage suppression are reported as conditional utility and are not silently converted into permanent shield HP.",
 			"A5 survival uses normal-wave global damage scaling. Bosses/elites have different runtime consumers and are not conflated with this threat.",
 		],
@@ -694,8 +947,9 @@ func _ultimate_activation_damage(class_id: String, params: Dictionary) -> float:
 	return base_damage * float(config.get("damage", 1.0)) * float(params.get("ultimate_multiplier", 1.0))
 
 
-func _live_parity(class_ids: Array, builds: Dictionary, weapon_rows: Array) -> Array:
+func _live_parity(class_ids: Array, builds: Dictionary, weapon_rows: Array) -> Dictionary:
 	var result := []
+	var telemetry_samples := []
 	for class_id_value in class_ids:
 		var class_id := str(class_id_value)
 		var state := _scenario_state(class_id, "class_constellation")
@@ -704,8 +958,12 @@ func _live_parity(class_ids: Array, builds: Dictionary, weapon_rows: Array) -> A
 			var solo_samples := []
 			var pack_samples := []
 			for seed_value in LIVE_SEEDS:
-				solo_samples.append(await _measure_live(class_id, weapon_id, 1, builds[class_id]["level20_stats"], state, int(seed_value)))
-				pack_samples.append(await _measure_live(class_id, weapon_id, TARGET_COUNT, builds[class_id]["level20_stats"], state, int(seed_value)))
+				var solo_sample: Dictionary = await _measure_live(class_id, weapon_id, 1, builds[class_id]["level20_stats"], state, int(seed_value), "sustain_solo", "sustain")
+				var pack_sample: Dictionary = await _measure_live(class_id, weapon_id, TARGET_COUNT, builds[class_id]["level20_stats"], state, int(seed_value), "sustain_pack", "sustain")
+				telemetry_samples.append(solo_sample)
+				telemetry_samples.append(pack_sample)
+				solo_samples.append(float(solo_sample.get("dpm", -1.0)))
+				pack_samples.append(float(pack_sample.get("dpm", -1.0)))
 			var formula := _find_weapon_row(weapon_rows, class_id, weapon_id, 20, "class_constellation")
 			var solo_mean := _number_mean(solo_samples)
 			var pack_mean := _number_mean(pack_samples)
@@ -722,17 +980,40 @@ func _live_parity(class_ids: Array, builds: Dictionary, weapon_rows: Array) -> A
 				"runtime_observation": "infinite-HP sustained probe" if str(formula.get("final_event", "")) not in ["kill", "execute", "summon_death"] else "final event not fully observable on infinite-HP dummies",
 			})
 			print("FAN-1438 live %s/%s: solo %.1f DPM, pack %.1f DPM" % [class_id, weapon_id, solo_mean, pack_mean])
-	return result
+	var representative_state := _scenario_state(REPRESENTATIVE_CLASS_ID, "class_constellation")
+	var representative_stats: Dictionary = builds[REPRESENTATIVE_CLASS_ID]["level20_stats"]
+	var offensive_fixture: Dictionary = await _measure_live(REPRESENTATIVE_CLASS_ID, REPRESENTATIVE_WEAPON_ID, 1, representative_stats, representative_state, REPRESENTATIVE_SEED, "representative_offensive", "offensive")
+	var mortal_fixture: Dictionary = await _measure_live(REPRESENTATIVE_CLASS_ID, REPRESENTATIVE_WEAPON_ID, 1, representative_stats, representative_state, REPRESENTATIVE_SEED, "representative_mortal", "mortal", MORTAL_TARGET_HP)
+	var incoming_fixture: Dictionary = await _measure_incoming_fixture(representative_stats, representative_state)
+	telemetry_samples.append(offensive_fixture)
+	telemetry_samples.append(mortal_fixture)
+	telemetry_samples.append(incoming_fixture)
+	return {
+		"parity": result,
+		"telemetry": {
+			"schema": LIVE_TELEMETRY_SCHEMA,
+			"trace_id_format": "%s:<pair>|<seed>|<scenario>|<fixture>|<target-cardinality>" % LIVE_TRACE_PREFIX,
+			"samples": telemetry_samples,
+			"representative_fixtures": [
+				{"fixture": "offensive", "sample_key": offensive_fixture.get("sample_key", "")},
+				{"fixture": "mortal", "sample_key": mortal_fixture.get("sample_key", "")},
+				{"fixture": "incoming_hit", "sample_key": incoming_fixture.get("sample_key", "")},
+			],
+		},
+	}
 
 
-func _measure_live(class_id: String, weapon_id: String, target_count: int, stats: Dictionary, state: Dictionary, seed_value: int) -> float:
+func _measure_live(class_id: String, weapon_id: String, target_count: int, stats: Dictionary, state: Dictionary, seed_value: int, scenario_key: String, fixture: String, initial_target_hp := DUMMY_HP) -> Dictionary:
 	await _teardown()
 	seed(seed_value)
+	var pair := "%s/%s" % [class_id, weapon_id]
+	var sample_key := _telemetry_sample_key(pair, seed_value, scenario_key, fixture, target_count)
+	var collector := A5TelemetryCollector.new("%s:%s" % [LIVE_TRACE_PREFIX, sample_key], sample_key)
 	var player := PLAYER_SCENE.instantiate() as Node2D
 	_holder.add_child(player)
 	if player == null or player.get_script() == null:
 		_errors.append("%s/%s live Player failed to instantiate" % [class_id, weapon_id])
-		return -1.0
+		return _failed_telemetry_sample(pair, seed_value, scenario_key, fixture, target_count, sample_key)
 	player.add_to_group("player")
 	player.global_position = PLAYER_POSITION
 	player.call("configure_character", class_id, weapon_id)
@@ -750,33 +1031,97 @@ func _measure_live(class_id: String, weapon_id: String, target_count: int, stats
 	main.free()
 	player.set("max_health", DUMMY_HP)
 	player.set("health", DUMMY_HP)
+	player.connect("weapon_cast_observed", collector.on_weapon_cast)
+	player.connect("constellation_final_resolved", collector.on_final_resolution)
 	await process_frame
 	var dummies := _spawn_dummies(target_count)
 	var anchors := []
-	for enemy in dummies:
+	for index in range(dummies.size()):
+		var enemy = dummies[index]
+		collector.bind_target(enemy as Node2D, "target_%d" % index)
+		(enemy as Node2D).connect("damage_applied", collector.on_damage_applied)
+		(enemy as Node2D).connect("died", collector.on_target_died)
+		if initial_target_hp < DUMMY_HP:
+			enemy.set("max_health", initial_target_hp)
+			enemy.set("health", initial_target_hp)
 		anchors.append((enemy as Node2D).global_position)
-	await _advance_live(LIVE_WARMUP_SECONDS, dummies, anchors, class_id, weapon_id)
+	await _advance_live(LIVE_WARMUP_SECONDS, dummies, anchors, class_id, weapon_id, collector, "warmup")
 	var before := _total_health(dummies)
-	var measured := await _advance_live(LIVE_WINDOW_SECONDS, dummies, anchors, class_id, weapon_id)
+	var measured := await _advance_live(LIVE_WINDOW_SECONDS, dummies, anchors, class_id, weapon_id, collector, "measurement")
 	var after := _total_health(dummies)
+	var sample := collector.build_sample(pair, seed_value, scenario_key, fixture, target_count)
 	if measured < LIVE_WINDOW_SECONDS:
-		return -1.0
-	return snappedf(maxf(before - after, 0.0) / measured * 60.0, 0.01)
+		sample["dpm"] = -1.0
+		return sample
+	sample["dpm"] = snappedf(maxf(before - after, 0.0) / measured * 60.0, 0.01)
+	return sample
 
 
-func _advance_live(seconds: float, dummies: Array, anchors: Array, class_id: String, weapon_id: String) -> float:
+func _measure_incoming_fixture(stats: Dictionary, state: Dictionary) -> Dictionary:
+	await _teardown()
+	seed(REPRESENTATIVE_SEED)
+	var pair := "%s/%s" % [REPRESENTATIVE_CLASS_ID, REPRESENTATIVE_WEAPON_ID]
+	var sample_key := _telemetry_sample_key(pair, REPRESENTATIVE_SEED, "representative_incoming_hit", "incoming_hit", 1)
+	var collector := A5TelemetryCollector.new("%s:%s" % [LIVE_TRACE_PREFIX, sample_key], sample_key)
+	var player := PLAYER_SCENE.instantiate() as Node2D
+	_holder.add_child(player)
+	if player == null or player.get_script() == null:
+		_errors.append("incoming fixture Player failed to instantiate")
+		return _failed_telemetry_sample(pair, REPRESENTATIVE_SEED, "representative_incoming_hit", "incoming_hit", 1, sample_key)
+	player.add_to_group("player")
+	player.global_position = PLAYER_POSITION
+	player.call("configure_character", REPRESENTATIVE_CLASS_ID, REPRESENTATIVE_WEAPON_ID)
+	player.set("stats", stats.duplicate(true))
+	player.call("_apply_stat_scaling", true)
+	var main := MainScript.new()
+	main.set("selected_character_id", REPRESENTATIVE_CLASS_ID)
+	main.set("selected_ascension_level", 5)
+	main.set("selected_start_boon_id", "")
+	main.set("meta_state", state.duplicate(true))
+	main.set("run_sandbox_captured", false)
+	main.call("apply_ascension_bonuses", player)
+	main.free()
+	player.set("max_health", DUMMY_HP)
+	player.set("health", DUMMY_HP)
+	var parameters: Dictionary = player.get("derived_parameters")
+	parameters["dodge"] = 0.0
+	player.set("derived_parameters", parameters)
+	collector.enable_incoming_fixture()
+	player.connect("damaged", collector.on_player_damaged)
+	await process_frame
+	player.call("take_damage", A5_NORMAL_CONTACT_DAMAGE, "fan1511_deterministic_incoming")
+	await process_frame
+	var sample := collector.build_sample(pair, REPRESENTATIVE_SEED, "representative_incoming_hit", "incoming_hit", 1)
+	sample["dpm"] = 0.0
+	return sample
+
+
+func _advance_live(seconds: float, dummies: Array, anchors: Array, class_id: String, weapon_id: String, collector: A5TelemetryCollector, probe_phase: String) -> float:
+	collector.set_phase(probe_phase)
 	var elapsed := 0.0
 	var frames := 0
 	while elapsed < seconds and frames < MAX_LIVE_FRAMES:
 		await process_frame
 		frames += 1
 		elapsed += maxf(_holder.get_process_delta_time(), 0.0)
+		collector.advance_frame()
 		for index in range(dummies.size()):
 			if is_instance_valid(dummies[index]):
 				(dummies[index] as Node2D).global_position = anchors[index]
 	if elapsed < seconds:
 		_errors.append("%s/%s live simulation advanced %.2f/%.2fs" % [class_id, weapon_id, elapsed, seconds])
 	return elapsed
+
+
+func _telemetry_sample_key(pair: String, seed_value: int, scenario_key: String, fixture: String, target_cardinality: int) -> String:
+	return "%s|%d|%s|%s|%d" % [pair, seed_value, scenario_key, fixture, target_cardinality]
+
+
+func _failed_telemetry_sample(pair: String, seed_value: int, scenario_key: String, fixture: String, target_cardinality: int, sample_key: String) -> Dictionary:
+	var collector := A5TelemetryCollector.new("%s:%s" % [LIVE_TRACE_PREFIX, sample_key], sample_key)
+	var sample := collector.build_sample(pair, seed_value, scenario_key, fixture, target_cardinality)
+	sample["dpm"] = -1.0
+	return sample
 
 
 func _spawn_dummies(target_count: int) -> Array:
@@ -843,6 +1188,9 @@ func _validate_dataset(dataset: Dictionary) -> void:
 	var provenance := verify_source_provenance(dataset.get("source", {}))
 	if not bool(provenance.get("ok", false)):
 		_errors.append("source provenance verification failed: %s" % provenance.get("error", "unknown error"))
+	var digest_verification := verify_dataset_digest(dataset)
+	if not bool(digest_verification.get("ok", false)):
+		_errors.append("dataset digest verification failed: %s" % digest_verification.get("error", "unknown error"))
 	var pairs: Array = dataset["roster"]["pair_keys"]
 	var expected_rows := pairs.size() * LEVELS.size() * SCENARIO_IDS.size()
 	var rows: Array = dataset["weapon_rows"]
@@ -868,13 +1216,241 @@ func _validate_dataset(dataset: Dictionary) -> void:
 		_errors.append("Atlas upper-bound contract mismatch")
 	if _mode == "full" and (dataset["formula_live_parity"] as Array).size() != pairs.size():
 		_errors.append("live parity does not cover every runtime pair")
+	if _mode == "full":
+		var telemetry_verification := verify_live_telemetry_artifacts(dataset)
+		if not bool(telemetry_verification.get("ok", false)):
+			for error_value in telemetry_verification.get("errors", []):
+				_errors.append("live telemetry verification failed: %s" % error_value)
 	var corridor_verification := verify_class_corridor_artifacts(dataset)
 	if not bool(corridor_verification.get("ok", false)):
 		for error_value in corridor_verification.get("errors", []):
 			_errors.append(str(error_value))
 
 
-func _csv(dataset: Dictionary) -> String:
+static func verify_dataset_digest(dataset: Dictionary) -> Dictionary:
+	var digest := str(dataset.get("dataset_digest_sha256", ""))
+	if not digest.is_valid_hex_number() or digest.length() != 64 or digest != digest.to_lower():
+		return {"ok": false, "error": "digest is not a lowercase SHA-256 hex string"}
+	var payload := dataset.duplicate(true)
+	payload.erase("dataset_digest_sha256")
+	var expected := _sha256(JSON.stringify(payload, "", true, true))
+	if digest != expected:
+		return {"ok": false, "error": "digest differs from canonical payload"}
+	return {"ok": true}
+
+
+static func verify_live_telemetry_artifacts(dataset: Dictionary) -> Dictionary:
+	var errors := PackedStringArray()
+	var telemetry: Dictionary = dataset.get("live_telemetry", {})
+	if str(telemetry.get("schema", "")) != LIVE_TELEMETRY_SCHEMA:
+		errors.append("telemetry schema mismatch")
+	var samples: Array = telemetry.get("samples", [])
+	var expected_samples := {}
+	var pair_keys: Array = (dataset.get("roster", {}) as Dictionary).get("pair_keys", [])
+	for pair_value in pair_keys:
+		var pair := str(pair_value)
+		for seed_value in LIVE_SEEDS:
+			expected_samples[_telemetry_key(pair, int(seed_value), "sustain_solo", "sustain", 1)] = true
+			expected_samples[_telemetry_key(pair, int(seed_value), "sustain_pack", "sustain", TARGET_COUNT)] = true
+	var actual_samples := {}
+	for sample_value in samples:
+		if not sample_value is Dictionary:
+			errors.append("telemetry sample is not an object")
+			continue
+		var sample: Dictionary = sample_value
+		var sample_key := str(sample.get("sample_key", ""))
+		if actual_samples.has(sample_key):
+			errors.append("duplicate telemetry sample %s" % sample_key)
+		actual_samples[sample_key] = true
+		var sample_verification := verify_live_telemetry_sample(sample)
+		if not bool(sample_verification.get("ok", false)):
+			for error_value in sample_verification.get("errors", []):
+				errors.append("%s: %s" % [sample_key, error_value])
+	for key in expected_samples:
+		if not actual_samples.has(key):
+			errors.append("missing sustained telemetry sample %s" % key)
+	for key in actual_samples:
+		if not expected_samples.has(key) and not str(key).contains("|representative_"):
+			errors.append("unexpected telemetry sample %s" % key)
+	var fixtures: Array = telemetry.get("representative_fixtures", [])
+	var fixture_keys := {}
+	for fixture_value in fixtures:
+		var fixture: Dictionary = fixture_value
+		fixture_keys[str(fixture.get("fixture", ""))] = str(fixture.get("sample_key", ""))
+	for fixture_id in ["offensive", "mortal", "incoming_hit"]:
+		if not fixture_keys.has(fixture_id):
+			errors.append("missing representative fixture %s" % fixture_id)
+		elif not actual_samples.has(fixture_keys[fixture_id]):
+			errors.append("representative fixture %s does not point at a sample" % fixture_id)
+	if fixture_keys.has("offensive") and actual_samples.has(fixture_keys["offensive"]):
+		var offensive := _sample_by_key(samples, fixture_keys["offensive"])
+		var offensive_counters: Dictionary = offensive.get("counters", {})
+		if int(offensive_counters.get("casts", 0)) < 1 or int(offensive_counters.get("hits", 0)) < 1 or float(offensive_counters.get("damage_total", 0.0)) <= 0.0:
+			errors.append("offensive fixture does not contain an observed cast and hit")
+	if fixture_keys.has("mortal") and actual_samples.has(fixture_keys["mortal"]):
+		var mortal := _sample_by_key(samples, fixture_keys["mortal"])
+		if not _has_observed_event(mortal.get("events", []), "kill"):
+			errors.append("mortal fixture does not contain an observed kill event")
+	if fixture_keys.has("incoming_hit") and actual_samples.has(fixture_keys["incoming_hit"]):
+		var incoming := _sample_by_key(samples, fixture_keys["incoming_hit"])
+		if str(incoming.get("fixture", "")) != "incoming_hit" or not _has_damage_bucket(incoming, "incoming_fixture", "incoming_damage"):
+			errors.append("incoming-hit fixture lacks deterministic defensive damage")
+	return {"ok": errors.is_empty(), "errors": errors}
+
+
+static func verify_live_telemetry_sample(sample: Dictionary) -> Dictionary:
+	var errors := PackedStringArray()
+	var pair := str(sample.get("pair", ""))
+	var seed_value := int(sample.get("seed", 0))
+	var scenario := str(sample.get("scenario", ""))
+	var fixture := str(sample.get("fixture", ""))
+	var target_cardinality := int(sample.get("target_cardinality", 0))
+	var sample_key := str(sample.get("sample_key", ""))
+	if str(sample.get("telemetry_schema", "")) != LIVE_TELEMETRY_SCHEMA:
+		errors.append("sample schema mismatch")
+	if target_cardinality < 1 or sample_key != _telemetry_key(pair, seed_value, scenario, fixture, target_cardinality):
+		errors.append("sample identity does not match pair/seed/scenario/fixture/cardinality")
+	var trace_id := str(sample.get("trace_id", ""))
+	if trace_id != "%s:%s" % [LIVE_TRACE_PREFIX, sample_key]:
+		errors.append("trace id does not match sample identity")
+	var fixture_target_ids: Array = sample.get("fixture_target_ids", [])
+	if fixture_target_ids.size() != target_cardinality:
+		errors.append("fixture target cardinality mismatch")
+	var expected_target_ids := []
+	for index in range(target_cardinality):
+		expected_target_ids.append("player" if fixture == "incoming_hit" else "target_%d" % index)
+	if fixture_target_ids != expected_target_ids:
+		errors.append("fixture target labels are not deterministic")
+	var events: Array = sample.get("events", [])
+	var event_by_id := {}
+	var casts := 0
+	var hits := []
+	var unique_targets := {}
+	var buckets := {}
+	var final_events := []
+	for index in range(events.size()):
+		var raw_event = events[index]
+		if not raw_event is Dictionary:
+			errors.append("trace event %d is not an object" % index)
+			continue
+		var event: Dictionary = raw_event
+		var event_id := str(event.get("event_id", ""))
+		if event_id != "%s#%04d" % [trace_id, index] or str(event.get("trace_id", "")) != trace_id:
+			errors.append("trace event identity mismatch at %d" % index)
+		if event_by_id.has(event_id):
+			errors.append("duplicate trace event id %s" % event_id)
+		event_by_id[event_id] = event
+		var kind := str(event.get("kind", ""))
+		if kind == "cast":
+			casts += 1
+			if str(event.get("source", "")) != "player_weapon" or str(event.get("phase", "")) != "windup":
+				errors.append("cast event is not a canonical weapon windup")
+		elif kind == "hit":
+			var source := str(event.get("source", ""))
+			var phase := str(event.get("phase", ""))
+			var target_id := str(event.get("target_id", ""))
+			if source not in ["player_weapon", "incoming_fixture"] or phase not in ["damage_application", "incoming_damage"]:
+				errors.append("hit has an untrusted source/phase bucket")
+			if not expected_target_ids.has(target_id) or float(event.get("damage", 0.0)) <= 0.0:
+				errors.append("hit target or damage is invalid")
+			hits.append(event)
+			unique_targets[target_id] = true
+			var bucket_key := "%s|%s" % [source, phase]
+			var bucket: Dictionary = buckets.get(bucket_key, {"source": source, "phase": phase, "damage": 0.0, "hits": 0})
+			bucket["damage"] = float(bucket.get("damage", 0.0)) + float(event.get("damage", 0.0))
+			bucket["hits"] = int(bucket.get("hits", 0)) + 1
+			buckets[bucket_key] = bucket
+		elif kind == "final_event":
+			if not bool(event.get("observed", false)) or str(event.get("event", "")) == "":
+				errors.append("final event is not observed runtime evidence")
+			final_events.append(event)
+		elif kind != "weapon_phase":
+			errors.append("unknown trace event kind %s" % kind)
+	var counters: Dictionary = sample.get("counters", {})
+	var target_ids := unique_targets.keys()
+	target_ids.sort()
+	if int(counters.get("casts", -1)) != casts or int(counters.get("hits", -1)) != hits.size():
+		errors.append("cast/hit counters do not reconstruct from trace")
+	if counters.get("unique_target_ids", []) != target_ids or int(counters.get("unique_target_count", -1)) != target_ids.size():
+		errors.append("unique target cardinality does not reconstruct from trace")
+	var actual_buckets: Array = counters.get("damage_by_source_phase", [])
+	var expected_buckets := buckets.values()
+	expected_buckets.sort_custom(func(a, b): return "%s|%s" % [a["source"], a["phase"]] < "%s|%s" % [b["source"], b["phase"]])
+	if not _bucket_rows_match(actual_buckets, expected_buckets):
+		errors.append("source/phase buckets do not reconstruct from trace")
+	var total_damage := 0.0
+	for bucket_value in expected_buckets:
+		total_damage += float((bucket_value as Dictionary).get("damage", 0.0))
+	if not is_equal_approx(float(counters.get("damage_total", -1.0)), snappedf(total_damage, 0.0001)):
+		errors.append("damage total is not the exclusive source/phase partition")
+	if int(counters.get("final_event_count", -1)) != final_events.size():
+		errors.append("final event count does not reconstruct from trace")
+	var tagged_hits := {}
+	for final_event_value in final_events:
+		var final_event: Dictionary = final_event_value
+		var related_hit_id := str(final_event.get("related_hit_id", ""))
+		if related_hit_id != "":
+			tagged_hits[related_hit_id] = true
+	for hit_value in hits:
+		var hit: Dictionary = hit_value
+		if not ((hit.get("final_event_ids", []) as Array)).is_empty():
+			tagged_hits[str(hit.get("event_id", ""))] = true
+	var final_damage := 0.0
+	for hit_id in tagged_hits:
+		if not event_by_id.has(hit_id) or str((event_by_id[hit_id] as Dictionary).get("kind", "")) != "hit":
+			errors.append("final event is not linked to a runtime hit")
+		else:
+			final_damage += float((event_by_id[hit_id] as Dictionary).get("damage", 0.0))
+	if not is_equal_approx(float(counters.get("final_event_damage", -1.0)), snappedf(final_damage, 0.0001)):
+		errors.append("final event damage does not reconstruct from tagged hits")
+	if not is_equal_approx(float(counters.get("damage_total", 0.0)), total_damage):
+		errors.append("final event metrics must not be added to total damage")
+	if str(sample.get("trace_digest_sha256", "")) != _sha256(JSON.stringify(events, "", true, true)):
+		errors.append("trace digest mismatch")
+	return {"ok": errors.is_empty(), "errors": errors}
+
+
+static func _telemetry_key(pair: String, seed_value: int, scenario: String, fixture: String, target_cardinality: int) -> String:
+	return "%s|%d|%s|%s|%d" % [pair, seed_value, scenario, fixture, target_cardinality]
+
+
+static func _sample_by_key(samples: Array, sample_key: String) -> Dictionary:
+	for sample_value in samples:
+		var sample: Dictionary = sample_value
+		if str(sample.get("sample_key", "")) == sample_key:
+			return sample
+	return {}
+
+
+static func _bucket_rows_match(actual: Array, expected: Array) -> bool:
+	if actual.size() != expected.size():
+		return false
+	for index in range(actual.size()):
+		var actual_row: Dictionary = actual[index]
+		var expected_row: Dictionary = expected[index]
+		if str(actual_row.get("source", "")) != str(expected_row.get("source", "")) or str(actual_row.get("phase", "")) != str(expected_row.get("phase", "")) or int(actual_row.get("hits", -1)) != int(expected_row.get("hits", -1)) or not is_equal_approx(float(actual_row.get("damage", 0.0)), float(expected_row.get("damage", 0.0))):
+			return false
+	return true
+
+
+static func _has_observed_event(events: Array, event_name: String) -> bool:
+	for event_value in events:
+		var event: Dictionary = event_value
+		if str(event.get("kind", "")) == "final_event" and str(event.get("event", "")) == event_name and bool(event.get("observed", false)):
+			return true
+	return false
+
+
+static func _has_damage_bucket(sample: Dictionary, source: String, phase: String) -> bool:
+	var counters: Dictionary = sample.get("counters", {})
+	for bucket_value in counters.get("damage_by_source_phase", []):
+		var bucket: Dictionary = bucket_value
+		if str(bucket.get("source", "")) == source and str(bucket.get("phase", "")) == phase and float(bucket.get("damage", 0.0)) > 0.0:
+			return true
+	return false
+
+
+static func render_csv(dataset: Dictionary) -> String:
 	var lines := PackedStringArray()
 	lines.append("key,class_id,weapon_id,level,scenario,scenario_label,playable,attack_mode,archetype,axis,final_mechanic,playstyle,strengths,weaknesses,stat_delta,solo_dpm,crowd_10_total_dpm,crowd_10_per_target_dpm,hp,defense,dodge,absorb_flat,conditional_shield_capacity,regeneration_per_second,lifesteal_per_second,mitigation,ehp,ttd_seconds,conditional_defense_factor,pickup_radius,move_speed,healing_multiplier,xp_multiplier,money_multiplier,start_gold,ult_start_charge,death_save,solo_delta_abs,solo_delta_pct,crowd_delta_abs,crowd_delta_pct,ehp_delta_abs,ehp_delta_pct,ttd_delta_abs,ttd_delta_pct,atlas_delta,measurement_method,runs,solo_variance_dpm2,crowd_variance_dpm2")
 	for row in dataset["weapon_rows"]:
@@ -886,7 +1462,7 @@ func _csv(dataset: Dictionary) -> String:
 	return "\n".join(lines) + "\n"
 
 
-func _markdown(dataset: Dictionary) -> String:
+static func render_markdown(dataset: Dictionary) -> String:
 	var lines := PackedStringArray()
 	lines.append("# FAN-1438 — A5 character and weapon balance report")
 	lines.append("")
@@ -937,6 +1513,23 @@ func _markdown(dataset: Dictionary) -> String:
 		lines.append("| --- | --- | --- | ---: | ---: | ---: | ---: | --- |")
 		for row in dataset["formula_live_parity"]:
 			lines.append("| %s | %s | %s (%s) | %.2f / %.2f±%.2f | %+.2f%% | %.2f / %.2f±%.2f | %+.2f%% | %s |" % [row["pair"], row["attack_mode"], row["final_mechanic"], row["final_event"], row["formula_solo_dpm"], row["live_solo_dpm_mean"], row["live_solo_dpm_stddev"], row["solo_delta_pct"], row["formula_pack_dpm"], row["live_pack_dpm_mean"], row["live_pack_dpm_stddev"], row["pack_delta_pct"], row["runtime_observation"]])
+	lines.append("")
+	lines.append("## Live event telemetry")
+	lines.append("")
+	var telemetry: Dictionary = dataset.get("live_telemetry", {})
+	var telemetry_samples: Array = telemetry.get("samples", [])
+	if telemetry_samples.is_empty():
+		lines.append("Formula-only generation; runtime telemetry requires `--mode=full`.")
+	else:
+		lines.append("Schema `%s`: every live sample has a deterministic pair/seed/scenario/fixture trace identifier, cast/hit counters, stable target labels, exclusive source×phase damage buckets, and final-event metrics. The representative offensive and incoming fixtures require observed events; a short sustained window may validly record a zero counter for a delayed deploy/summon action. Final-event damage is a tagged subset of those buckets and is not added to total damage again." % telemetry.get("schema", ""))
+		lines.append("")
+		lines.append("| Representative fixture | Trace | Casts | Hits | Unique targets | Total damage | Final events / tagged damage |")
+		lines.append("| --- | --- | ---: | ---: | --- | ---: | ---: |")
+		for fixture_value in telemetry.get("representative_fixtures", []):
+			var fixture: Dictionary = fixture_value
+			var sample := _sample_by_key(telemetry_samples, str(fixture.get("sample_key", "")))
+			var counters: Dictionary = sample.get("counters", {})
+			lines.append("| %s | `%s` | %d | %d | %s | %.4f | %d / %.4f |" % [fixture.get("fixture", ""), sample.get("trace_id", ""), counters.get("casts", 0), counters.get("hits", 0), ", ".join(counters.get("unique_target_ids", [])), counters.get("damage_total", 0.0), counters.get("final_event_count", 0), counters.get("final_event_damage", 0.0)])
 	lines.append("")
 	lines.append("## Outliers and conclusions")
 	lines.append("")
@@ -1005,7 +1598,7 @@ func _delta_sum(base_stats: Dictionary, stats: Dictionary) -> int:
 	return total
 
 
-func _delta_text(delta: Dictionary) -> String:
+static func _delta_text(delta: Dictionary) -> String:
 	if delta.is_empty():
 		return "base"
 	var parts := PackedStringArray()
@@ -1085,11 +1678,11 @@ func _class_weaknesses(solo: float, crowd: float, ehp: float, utility: float) ->
 	return "%s + %s" % [scores[0]["name"], scores[1]["name"]]
 
 
-func _csv_cell(value: String) -> String:
+static func _csv_cell(value: String) -> String:
 	return "\"%s\"" % value.replace("\"", "\"\"")
 
 
-func _sha256(value: String) -> String:
+static func _sha256(value: String) -> String:
 	var context := HashingContext.new()
 	context.start(HashingContext.HASH_SHA256)
 	context.update(value.to_utf8_buffer())

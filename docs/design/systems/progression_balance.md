@@ -1236,6 +1236,19 @@ Schema-6 flat/cadence/geometry/axis/final профиль берётся из к�
 реальными headless Player/Enemy-пробами всех runtime-пар с фиксированными
 сидами, warm-up и фиксированным игровым окном.
 
+Начиная с raw schema `fan1438.a5-balance.v2`, каждая такая проба также содержит
+`fan1511.runtime-telemetry.v1`: стабильный ключ
+`pair|seed|scenario|fixture|target-cardinality`, trace ID, counters реальных
+casts/hits,
+уникальные target IDs и взаимоисключающие buckets `source×phase`. Cast приходит
+из `Player.weapon_cast_observed`, применённый урон — после канонического расчёта
+HP в `Enemy.damage_applied`, а final resolution и incoming-hit фиксируются
+отдельными runtime-событиями. `final_event_damage` — только помеченное
+подмножество тех же hit buckets и никогда не прибавляется к общему урону второй
+раз. Полный прогон добавляет три репрезентативные фикстуры: обычную offensive,
+mortal target с наблюдаемым kill и детерминированный incoming hit по игроку;
+короткая проверка только этих примитивов доступна через `--mode=telemetry_probe`.
+
 Выживаемость привязана к одному явно описанному normal-wave A5 contact-pressure
 сценарию. Глобальный множитель обычных врагов не переносится на boss/elite
 ветки, у которых в runtime отдельные consumers. Условные control, timed absorb,
@@ -1251,4 +1264,7 @@ Class-kit corridor использует один строгий контракт
 полное декартово покрытие ростера, общие 19-точечные билды, расходы и связность
 Atlas 50/59, отсутствие ульты в weapon rows, class-kit строки, полное множество
 attack modes/final mechanics в live evidence и согласованность CSV/raw/Markdown,
-включая fail-closed совпадение corridor-флагов и summary по трём осям.
+включая fail-closed совпадение corridor-флагов и summary по трём осям. Для
+telemetry gate отдельно реконструирует counters из trace и отвергает missing или
+duplicated events, неверную cardinality цели, подмену source/phase, а также
+рассинхронизацию count/damage final-event.

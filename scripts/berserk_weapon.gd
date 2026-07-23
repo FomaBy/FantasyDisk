@@ -173,6 +173,8 @@ func _start_swing(immediate_damage := false) -> void:
 
 	if owner_node.has_method("play_action_animation"):
 		owner_node.play_action_animation("attack", _last_direction)
+	if owner_node.has_method("record_weapon_cast"):
+		owner_node.call("record_weapon_cast", weapon_id, "melee", "attack", maxf(windup_time, 0.0))
 
 	_animate_weapon(_last_direction)
 	var owner_id := owner_node.get_instance_id()
@@ -773,7 +775,9 @@ func _is_enemy_inside_frustum(owner_node: Node2D, enemy_node: Node2D, attack_dir
 
 func _call_take_damage(enemy: Node, amount: float, feedback := {}) -> void:
 	if _take_damage_accepts_feedback(enemy):
-		enemy.call("take_damage", amount, feedback)
+		var tagged: Dictionary = feedback if feedback is Dictionary else {}
+		tagged["player_owned"] = true
+		enemy.call("take_damage", amount, tagged)
 	else:
 		enemy.call("take_damage", amount)
 

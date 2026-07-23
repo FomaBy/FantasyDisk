@@ -21,12 +21,12 @@ func _initialize() -> void:
 		_finish()
 		return
 	var dataset := raw as Dictionary
-	_check(str(dataset.get("schema", "")) == "fan1438.a5-balance.v1", "raw schema mismatch")
+	_check(str(dataset.get("schema", "")) == "fan1438.a5-balance.v2", "raw schema mismatch")
 	_check(str(dataset.get("issue_id", "")) == "FAN-1438", "issue id mismatch")
 	_check(str((dataset.get("source", {}) as Dictionary).get("commit", "")) not in ["", "UNSPECIFIED", "TEST"], "source commit is not pinned")
 	_check(str((dataset.get("source", {}) as Dictionary).get("tree", "")) not in ["", "UNSPECIFIED", "TEST"], "source tree is not pinned")
 	_validate_source_provenance(dataset)
-	_check(str(dataset.get("dataset_digest_sha256", "")).length() == 64, "dataset digest is missing")
+	_check(bool(Generator.verify_dataset_digest(dataset).get("ok", false)), "dataset digest does not match canonical raw payload")
 	_validate_roster(dataset)
 	_validate_builds(dataset)
 	_validate_meta(dataset)
@@ -421,6 +421,60 @@ func _validate_live_coverage(dataset: Dictionary) -> void:
 					expected_finals[str((raw_node as Dictionary).get("mechanic_id", ""))] = true
 	_check(actual_modes == expected_modes, "live attack-mode coverage set mismatch")
 	_check(actual_finals == expected_finals, "live nonlinear final coverage set mismatch")
+	_validate_live_telemetry(dataset)
+
+
+func _validate_live_telemetry(dataset: Dictionary) -> void:
+	var verification := Generator.verify_live_telemetry_artifacts(dataset)
+	_check(bool(verification.get("ok", false)), "live telemetry contract failed: %s" % "; ".join(verification.get("errors", [])))
+	if not bool(verification.get("ok", false)):
+		return
+	var telemetry: Dictionary = dataset.get("live_telemetry", {})
+	var samples: Array = telemetry.get("samples", [])
+	var expected_count := int((dataset.get("roster", {}) as Dictionary).get("weapon_pair_count", 0)) * Generator.LIVE_SEEDS.size() * 2 + 3
+	_check(samples.size() == expected_count, "telemetry sample count does not cover every parity probe plus three fixtures")
+	if samples.is_empty():
+		return
+	var missing_counter := dataset.duplicate(true)
+	var missing_samples: Array = (missing_counter.get("live_telemetry", {}) as Dictionary).get("samples", [])
+	var missing_counters: Dictionary = (missing_samples[0] as Dictionary).get("counters", {})
+	missing_counters.erase("hits")
+	_check(not bool(Generator.verify_live_telemetry_artifacts(missing_counter).get("ok", true)), "missing hit counter must fail closed")
+	var duplicate_event := dataset.duplicate(true)
+	var duplicate_samples: Array = (duplicate_event.get("live_telemetry", {}) as Dictionary).get("samples", [])
+	var duplicate_events: Array = (duplicate_samples[0] as Dictionary).get("events", [])
+	duplicate_events.append(duplicate_events[0].duplicate(true))
+	_check(not bool(Generator.verify_live_telemetry_artifacts(duplicate_event).get("ok", true)), "duplicated trace event must fail closed")
+	var target_cardinality := dataset.duplicate(true)
+	var target_samples: Array = (target_cardinality.get("live_telemetry", {}) as Dictionary).get("samples", [])
+	var target_counters: Dictionary = (target_samples[0] as Dictionary).get("counters", {})
+	target_counters["unique_target_count"] = int(target_counters.get("unique_target_count", 0)) + 1
+	_check(not bool(Generator.verify_live_telemetry_artifacts(target_cardinality).get("ok", true)), "target cardinality mismatch must fail closed")
+	var source_phase := dataset.duplicate(true)
+	var source_samples: Array = (source_phase.get("live_telemetry", {}) as Dictionary).get("samples", [])
+	var source_counters: Dictionary = (source_samples[0] as Dictionary).get("counters", {})
+	var buckets: Array = source_counters.get("damage_by_source_phase", [])
+	buckets[0]["source"] = "formula_label"
+	_check(not bool(Generator.verify_live_telemetry_artifacts(source_phase).get("ok", true)), "source/phase misattribution must fail closed")
+	var final_count := dataset.duplicate(true)
+	var final_count_samples: Array = (final_count.get("live_telemetry", {}) as Dictionary).get("samples", [])
+	var final_count_counters: Dictionary = (final_count_samples[0] as Dictionary).get("counters", {})
+	final_count_counters["final_event_count"] = int(final_count_counters.get("final_event_count", 0)) + 1
+	_check(not bool(Generator.verify_live_telemetry_artifacts(final_count).get("ok", true)), "final event count mismatch must fail closed")
+	var final_damage := dataset.duplicate(true)
+	var final_damage_samples: Array = (final_damage.get("live_telemetry", {}) as Dictionary).get("samples", [])
+	var final_damage_counters: Dictionary = (final_damage_samples[0] as Dictionary).get("counters", {})
+	final_damage_counters["final_event_damage"] = float(final_damage_counters.get("final_event_damage", 0.0)) + 1.0
+	_check(not bool(Generator.verify_live_telemetry_artifacts(final_damage).get("ok", true)), "final event damage mismatch must fail closed")
+	var trace_id := dataset.duplicate(true)
+	var trace_samples: Array = (trace_id.get("live_telemetry", {}) as Dictionary).get("samples", [])
+	var trace_sample: Dictionary = trace_samples[0]
+	trace_sample["trace_id"] = "fan1511:wrong"
+	_check(not bool(Generator.verify_live_telemetry_artifacts(trace_id).get("ok", true)), "trace identifier mismatch must fail closed")
+	var digest_mutation := dataset.duplicate(true)
+	var methodology: Dictionary = digest_mutation.get("methodology", {})
+	methodology["telemetry_mutation"] = true
+	_check(not bool(Generator.verify_dataset_digest(digest_mutation).get("ok", true)), "raw payload mutation must fail digest verification")
 
 
 func _validate_csv(dataset: Dictionary) -> void:
@@ -462,6 +516,7 @@ func _validate_csv(dataset: Dictionary) -> void:
 		_check(str(cells[int(indices["scenario"])]) == str(row.get("scenario", "")), "CSV scenario differs for %s" % key)
 		for metric in ["solo_dpm", "crowd_10_total_dpm", "hp", "ehp", "ttd_seconds", "ult_start_charge"]:
 			_check(is_equal_approx(float(cells[int(indices[metric])]), float(row.get(metric, INF))), "CSV %s differs for %s" % [metric, key])
+	_check(_read_text(Generator.CSV_PATH) == Generator.render_csv(dataset), "CSV is not the exact canonical render of raw.json")
 
 
 func _validate_markdown(dataset: Dictionary, report_text: String) -> void:
@@ -477,6 +532,9 @@ func _validate_markdown(dataset: Dictionary, report_text: String) -> void:
 		var row: Dictionary = row_value
 		var prefix := "| %s | %d | %s | %s | %.3f | %.3f | %.3f | %.3f | %.2f |" % [row["class_id"], row["level"], row["scenario"], "; ".join(row["roles"]), row["solo_score"], row["aoe_score"], row["defense_score"], row["convenience_relative"], row["first_minute_ultimate_damage"]]
 		_check(report_text.contains(prefix), "Markdown class row differs from raw.json for %s" % row.get("key", "?"))
+	_check(report_text.contains("## Live event telemetry"), "Markdown lacks live telemetry projection")
+	_check(report_text.contains("Final-event damage is a tagged subset"), "Markdown does not state final-event non-additivity")
+	_check(report_text == Generator.render_markdown(dataset), "Markdown is not the exact canonical render of raw.json")
 
 
 func _read_text(path: String) -> String:
