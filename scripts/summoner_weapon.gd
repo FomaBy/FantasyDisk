@@ -540,7 +540,10 @@ func _spawn_pair_tank(owner_node: Node2D) -> Node2D:
 	tank.set("owner_node", owner_node)
 	owner_node.set_meta(HOMUNCULUS_TANK_OWNER_META, tank.get_instance_id())
 	tank.set("command_mode", command_mode)
-	tank.global_position = owner_node.global_position + Vector2.RIGHT.rotated(randf() * TAU) * 48.0
+	var spawn_direction := Vector2.RIGHT.rotated(randf() * TAU)
+	tank.global_position = owner_node.global_position + spawn_direction * 48.0
+	if tank.has_method("set_guard_formation_direction"):
+		tank.call("set_guard_formation_direction", spawn_direction)
 	var profile := _summon_profile(owner_node)
 	# Танк-фантазия: РОВНО 4x max HP Химика (summon_health_multiplier=4.0) ×
 	# мета-артефакты (homunculus_power_mult / «Гомункул-танк»); leadership-bulk
