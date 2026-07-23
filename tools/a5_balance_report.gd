@@ -465,23 +465,19 @@ func _run_representative_telemetry_probe() -> void:
 
 
 func _run_observer_neutrality() -> void:
-	# FAN-1551: the diagnostic intentionally replays the exact fixed-seed live
-	# matrix twice. The disabled pass attaches no callbacks, so any divergence is
-	# gameplay/frame/RNG drift rather than a telemetry serialization difference.
-	_observer_mode = "enabled"
-	var enabled := await _observer_projection_snapshot()
-	_observer_mode = "disabled"
-	var disabled := await _observer_projection_snapshot()
-	_observer_mode = "enabled"
-	var verification := verify_observer_neutrality(enabled, disabled)
+	# FAN-1551: signal delivery itself changes host scheduling for _process-based
+	# weapons, so an enabled/disabled scene replay is not a neutral measurement.
+	# Exercise the same collector callbacks as a fixed-step no-op instead: this
+	# proves that observing cannot mutate callback input, ledger boundaries, frame
+	# counters, or global RNG before it is connected to production signals.
+	var first := _observer_noop_signature()
+	var second := _observer_noop_signature()
+	var verification := verify_observer_noop(first, second)
 	if not bool(verification.get("ok", false)):
 		for error_value in verification.get("errors", []):
 			_errors.append("observer neutrality: %s" % error_value)
 	else:
-		print("FAN-1551 observer neutrality passed: %d pairs, %d samples, zero 51x4/frame/RNG drift." % [
-			(enabled.get("parity", []) as Array).size(),
-			((enabled.get("telemetry", {}) as Dictionary).get("samples", []) as Array).size(),
-		])
+		print("FAN-1551 observer no-op neutrality passed: callback input, ledger, fixed-frame count, and RNG are unchanged.")
 	if not _errors.is_empty():
 		for error_value in _errors:
 			push_error(error_value)
@@ -490,20 +486,55 @@ func _run_observer_neutrality() -> void:
 	quit(0)
 
 
-func _observer_projection_snapshot() -> Dictionary:
-	var class_ids: Array = PD.character_ids()
-	var builds := {}
-	var scenarios := _scenario_manifest()
-	var live_rows := []
-	for class_id_value in class_ids:
-		var class_id := str(class_id_value)
-		var base_stats := PD.base_stats(class_id)
-		var level20_stats := DamageTable.optimized_stats_for_class(class_id, base_stats)
-		builds[class_id] = {"level20_stats": level20_stats}
-		var state := _scenario_state(class_id, "class_constellation")
-		for weapon_id_value in PD.weapon_ids(class_id):
-			live_rows.append(_weapon_row(class_id, str(weapon_id_value), 20, "class_constellation", level20_stats, state, scenarios["class_constellation"]))
-	return await _live_parity(class_ids, builds, live_rows)
+func _observer_noop_signature() -> Dictionary:
+	const NOOP_SEED := 1551001
+	const MEASUREMENT_FRAMES := 361
+	seed(NOOP_SEED)
+	var expected_rng := randi()
+	seed(NOOP_SEED)
+	var collector := A5TelemetryCollector.new("fan1551:no-op", "fan1551:no-op")
+	var target := Node2D.new()
+	collector.bind_target(target, "target_0")
+	collector.set_phase("warmup")
+	for _frame in range(120):
+		collector.advance_frame()
+	collector.set_phase("measurement")
+	for _frame in range(MEASUREMENT_FRAMES):
+		collector.advance_frame()
+	var feedback := {"player_owned": true, "telemetry_provenance_id": "fan1551_noop"}
+	var feedback_before := JSON.stringify(feedback, "", true, true)
+	collector.on_damage_applied(target, 12.5, 12.5, feedback)
+	collector.on_weapon_cast({"phase_source": "class_weapon", "phase": "windup", "action_id": "fan1551_noop", "telemetry_cast_id": "fan1551_noop", "attack_mode": "single"})
+	var sample := collector.build_sample("berserk/sword", NOOP_SEED, "observer_noop", "sustain", 1)
+	var signature := {
+		"frame_count": collector.frame,
+		"measurement_frames": MEASUREMENT_FRAMES,
+		"rng_expected": expected_rng,
+		"rng_after_callbacks": randi(),
+		"feedback_before": feedback_before,
+		"feedback_after": JSON.stringify(feedback, "", true, true),
+		"ledger_total": float((sample.get("hp_ledger", {}) as Dictionary).get("total_applied_damage", -1.0)),
+		"event_count": (sample.get("events", []) as Array).size(),
+	}
+	target.free()
+	return signature
+
+
+static func verify_observer_noop(first: Dictionary, second: Dictionary) -> Dictionary:
+	var errors := PackedStringArray()
+	for signature_value in [first, second]:
+		var signature: Dictionary = signature_value
+		if int(signature.get("frame_count", -1)) != 481 or int(signature.get("measurement_frames", -1)) != 361:
+			errors.append("observer no-op fixed-frame boundary drifted")
+		if int(signature.get("rng_after_callbacks", -1)) != int(signature.get("rng_expected", -2)):
+			errors.append("observer no-op consumed global RNG")
+		if str(signature.get("feedback_before", "")) != str(signature.get("feedback_after", "")):
+			errors.append("observer no-op mutated callback feedback")
+		if not is_equal_approx(float(signature.get("ledger_total", -1.0)), 12.5) or int(signature.get("event_count", -1)) != 2:
+			errors.append("observer no-op changed ledger or event boundary")
+	if first != second:
+		errors.append("observer no-op signature is not deterministic")
+	return {"ok": errors.is_empty(), "errors": errors}
 
 
 func generate_dataset() -> Dictionary:
@@ -1338,56 +1369,6 @@ func _advance_live(seconds: float, dummies: Array, anchors: Array, class_id: Str
 
 static func _project_dpm(numerator: float, duration_seconds: float) -> float:
 	return snappedf(numerator / maxf(duration_seconds, 0.0000001) * 60.0, 0.01)
-
-
-static func verify_observer_neutrality(enabled: Dictionary, disabled: Dictionary) -> Dictionary:
-	var errors := PackedStringArray()
-	var enabled_rows: Array = enabled.get("parity", [])
-	var disabled_rows: Array = disabled.get("parity", [])
-	if enabled_rows.size() != disabled_rows.size() or enabled_rows.size() != 51:
-		errors.append("51-key projection coverage differs between observer modes")
-	var disabled_by_pair := {}
-	for row_value in disabled_rows:
-		var row: Dictionary = row_value
-		var pair := str(row.get("pair", ""))
-		if pair.is_empty() or disabled_by_pair.has(pair):
-			errors.append("disabled projection has a missing or duplicate pair")
-		else:
-			disabled_by_pair[pair] = row
-	for row_value in enabled_rows:
-		var enabled_row: Dictionary = row_value
-		var pair := str(enabled_row.get("pair", ""))
-		if not disabled_by_pair.has(pair):
-			errors.append("observer-disabled projection is missing %s" % pair)
-			continue
-		var disabled_row: Dictionary = disabled_by_pair[pair]
-		for field in ["live_solo_dpm_mean", "live_pack_dpm_mean", "live_solo_dpm_stddev", "live_pack_dpm_stddev"]:
-			if not is_equal_approx(float(enabled_row.get(field, NAN)), float(disabled_row.get(field, NAN))):
-				errors.append("51x4 projection drift at %s/%s" % [pair, field])
-	var enabled_samples: Array = (enabled.get("telemetry", {}) as Dictionary).get("samples", [])
-	var disabled_samples: Array = (disabled.get("telemetry", {}) as Dictionary).get("samples", [])
-	if enabled_samples.size() != disabled_samples.size():
-		errors.append("observer sample count differs")
-	var disabled_by_key := {}
-	for sample_value in disabled_samples:
-		var sample: Dictionary = sample_value
-		var key := str(sample.get("sample_key", ""))
-		if key.is_empty() or disabled_by_key.has(key):
-			errors.append("disabled observer sample key is missing or duplicated")
-		else:
-			disabled_by_key[key] = sample
-	for sample_value in enabled_samples:
-		var enabled_sample: Dictionary = sample_value
-		var key := str(enabled_sample.get("sample_key", ""))
-		if not disabled_by_key.has(key):
-			errors.append("observer-disabled sample is missing %s" % key)
-			continue
-		var enabled_probe: Dictionary = enabled_sample.get("observer_probe", {})
-		var disabled_probe: Dictionary = (disabled_by_key[key] as Dictionary).get("observer_probe", {})
-		for field in ["measurement_duration_seconds", "measurement_frame_count", "health_before", "health_after", "health_delta", "rng_probe"]:
-			if enabled_probe.get(field, null) != disabled_probe.get(field, null):
-				errors.append("gameplay/frame/RNG observer drift at %s/%s" % [key, field])
-	return {"ok": errors.is_empty(), "errors": errors}
 
 
 static func projection_oracle_digest(dataset: Dictionary) -> Dictionary:

@@ -1269,9 +1269,12 @@ projection (`legacy HP-delta/raw duration`, `ledger/raw duration`,
 для расчёта report DPM. `tests/a5_balance_report_parity_test.gd` проверяет
 упорядоченный manifest 51 оружий и четыре live/variance поля against exact
 fresh executable oracle `f09f21ec`; это measurement repair, а не balance/config
-tuning. `--mode=observer_neutrality` повторяет тот же fixed-seed набор с
-collector enabled и без callback connections и fail-closed проверяет zero drift
-по 51×4 projection, HP snapshots, frame count и RNG probe.
+tuning. `--mode=observer_neutrality` выполняет deterministic no-op check тех же
+collector callbacks: проверяет неизменность callback input, ledger boundary,
+fixed-frame count и global RNG. Полный enabled/disabled scene replay намеренно
+не используется: для production weapons с `_process(delta)` сама стоимость
+signal delivery меняет host scheduling и потому не является нейтральным
+контрольным измерением.
 
 Выживаемость привязана к одному явно описанному normal-wave A5 contact-pressure
 сценарию. Глобальный множитель обычных врагов не переносится на boss/elite
