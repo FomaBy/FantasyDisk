@@ -16,6 +16,14 @@ const F09_ORACLE_PROJECTION_SHA256 := "d81092333cdf6e3f4196b8c5ee9198e83ccef8bfe
 # recompute its own counts + current sha) still changes the reconstructed digest,
 # which then diverges from this committed constant and fails closed.
 const CURRENT_BASE_PROJECTION_SHA256 := "ac7710a043848eb4fe895237092c3aa2458ab4c1092258a6ba03d5f02b635494"
+# FAN-1649: external pin of the current integration-base (b8909e30) FULL canonical
+# telemetry payload aggregate over the 309 per-sample digests. Like the projection
+# constant above, it anchors the whole pinned map: a self-consistent manifest tamper
+# (rewrite one sample digest AND recompute its own aggregate) still diverges from
+# this committed constant and fails closed. The value is reproduced by two clean
+# b8909e30 runs through Generator.canonical_full_telemetry (see docs).
+const CURRENT_BASE_TELEMETRY_FULL_SHA256 := "ad1d9a7ae1a36b087370b33582601a51b880d8cf102d3adc461fdb3e1c5d307f"
+const LIVE_TELEMETRY_SCHEMA := "fan1511.runtime-telemetry.v2"
 
 var _errors := PackedStringArray()
 
@@ -29,6 +37,8 @@ func _initialize() -> void:
 	if dataset is Dictionary:
 		_verify_historical_oracle(dataset as Dictionary)
 		_verify_lineage_contract(dataset as Dictionary, raw_text)
+		_verify_full_telemetry_contract(dataset as Dictionary)
+		_verify_projection_duplicate_predicate(dataset as Dictionary)
 	_finish()
 
 
@@ -74,19 +84,26 @@ func _verify_lineage_contract(historical: Dictionary, raw_text: String) -> void:
 	var ancestry := Generator.verify_oracle_lineage_ancestry(manifest)
 	_check(bool(ancestry.get("ok", false)), "oracle lineage ancestry failed: %s" % "; ".join(ancestry.get("errors", [])))
 
-	# 3. A faithful materialization candidate (f09 + accepted deltas) passes the
-	#    exact zero gameplay/event delta gate against the current integration base.
+	# 3. A faithful f09+accepted-deltas candidate matches the reconstructed
+	#    current-base PROJECTION (51x4 + 309 sample-key set)...
 	var candidate := _candidate_with_accepted_deltas(historical, manifest)
-	var candidate_ok := Generator.verify_candidate_against_current_base(candidate, manifest)
-	_check(bool(candidate_ok.get("ok", false)), "faithful current-base candidate must pass the zero-delta gate: %s" % "; ".join(candidate_ok.get("errors", [])))
+	var projection_ok := Generator.verify_candidate_projection_against_current_base(candidate, manifest)
+	_check(bool(projection_ok.get("ok", false)), "faithful current-base projection candidate must pass the projection gate: %s" % "; ".join(projection_ok.get("errors", [])))
+	# ...but it still carries the OLDER f09 event contract (the six measurement-contract
+	# commits between f09 and b8909e30 changed the event stream for every sample), so
+	# the FAN-1649 full-payload gate now REJECTS it. This is exactly the FAN-1642 defect
+	# the FAN-1641 keys-only gate missed: identical 309 keys, different payload.
+	var combined := Generator.verify_candidate_against_current_base(candidate, manifest)
+	_check(not bool(combined.get("ok", true)), "f09-telemetry candidate must be rejected by the full-payload gate")
+	_check("; ".join(combined.get("errors", [])).contains("telemetry sample"), "full-payload rejection must cite a telemetry payload difference")
 
-	# 4. Negative mutations must all fail closed.
+	# 4. Negative projection mutations must all fail the projection gate.
 	# extra projection-cell delta on an unrelated pair.
-	_expect_candidate_failure(_mutate_projection_cell(candidate, "assassin", "chakrams", "live_solo_dpm_mean", 0.01), manifest, "extra projection-cell delta must fail closed")
+	_expect_projection_failure(_mutate_projection_cell(candidate, "assassin", "chakrams", "live_solo_dpm_mean", 0.01), manifest, "extra projection-cell delta must fail closed")
 	# changed accepted value.
-	_expect_candidate_failure(_mutate_projection_cell(candidate, "druid", "summon_amulet", "live_crowd_dpm_mean", 0.01), manifest, "changed accepted value must fail closed")
+	_expect_projection_failure(_mutate_projection_cell(candidate, "druid", "summon_amulet", "live_crowd_dpm_mean", 0.01), manifest, "changed accepted value must fail closed")
 	# false current-base zero: an unpatched f09 candidate is NOT the current base.
-	_expect_candidate_failure(historical.duplicate(true), manifest, "false current-base zero (candidate == historical f09) must fail closed")
+	_expect_projection_failure(historical.duplicate(true), manifest, "false current-base zero (candidate == historical f09) must fail closed")
 
 	# missing lineage entry: drop one accepted delta from the manifest.
 	var missing_entry := manifest.duplicate(true)
@@ -94,7 +111,7 @@ func _verify_lineage_contract(historical: Dictionary, raw_text: String) -> void:
 	if deltas.size() > 0:
 		deltas.remove_at(deltas.size() - 1)
 	_check(not bool(Generator.verify_oracle_lineage(missing_entry, historical, raw_text).get("ok", true)), "missing accepted-delta entry must fail the manifest consistency gate")
-	_check(not bool(Generator.verify_candidate_against_current_base(candidate, missing_entry).get("ok", true)), "missing accepted-delta entry must fail the candidate gate")
+	_check(not bool(Generator.verify_candidate_projection_against_current_base(candidate, missing_entry).get("ok", true)), "missing accepted-delta entry must fail the candidate projection gate")
 
 	# substituted oracle: mutate the historical dataset the manifest is pinned to.
 	var substituted := historical.duplicate(true)
@@ -155,8 +172,189 @@ func _mutate_projection_cell(candidate: Dictionary, class_id: String, weapon_id:
 	return mutated
 
 
-func _expect_candidate_failure(candidate: Dictionary, manifest: Dictionary, message: String) -> void:
-	_check(not bool(Generator.verify_candidate_against_current_base(candidate, manifest).get("ok", true)), message)
+func _expect_projection_failure(candidate: Dictionary, manifest: Dictionary, message: String) -> void:
+	_check(not bool(Generator.verify_candidate_projection_against_current_base(candidate, manifest).get("ok", true)), message)
+
+
+# FAN-1649: the full canonical telemetry PAYLOAD contract. The pinned b8909e30
+# current base is anchored by an external committed constant, and every payload
+# mutation type must fail closed against a faithful synthetic candidate.
+func _verify_full_telemetry_contract(historical: Dictionary) -> void:
+	var loaded := Generator.load_oracle_lineage()
+	if not bool(loaded.get("ok", false)):
+		_check(false, "oracle lineage manifest must load for the telemetry contract")
+		return
+	var manifest: Dictionary = loaded.get("manifest", {})
+	var pinned: Dictionary = (manifest.get("current_integration_base", {}) as Dictionary).get("telemetry_full", {})
+
+	# 1. The pinned current-base full-telemetry map is well formed and externally
+	#    anchored: 309 samples, self-consistent aggregate == manifest full_sha256 ==
+	#    external constant, and its key set equals the historical roster sample keys.
+	_check(not pinned.is_empty(), "manifest must pin a current-base full telemetry payload")
+	var pinned_digests: Dictionary = pinned.get("sample_digests", {})
+	_check(int(pinned.get("sample_count", -1)) == 309, "pinned full telemetry must cover all 309 samples")
+	_check(pinned_digests.size() == 309, "pinned full telemetry digest map must list all 309 samples")
+	_check(str(pinned.get("telemetry_schema", "")) == LIVE_TELEMETRY_SCHEMA, "pinned full telemetry schema mismatch")
+	var recomputed_aggregate := _aggregate_of(pinned_digests)
+	_check(recomputed_aggregate == str(pinned.get("full_sha256", "")), "pinned full telemetry aggregate is internally inconsistent")
+	_check(str(pinned.get("full_sha256", "")) == CURRENT_BASE_TELEMETRY_FULL_SHA256, "manifest full-telemetry digest differs from the externally pinned current base")
+	# key set must equal the historical roster sample-key set (invariant f09<->b8909e30).
+	var historical_keys := {}
+	for sample_value in (historical.get("live_telemetry", {}) as Dictionary).get("samples", []):
+		historical_keys[str((sample_value as Dictionary).get("sample_key", ""))] = true
+	var key_mismatch := historical_keys.size() != pinned_digests.size()
+	for key in pinned_digests:
+		if not historical_keys.has(str(key)):
+			key_mismatch = true
+	_check(not key_mismatch, "pinned full telemetry sample keys differ from the roster sample-key set")
+
+	# 2. Self-consistent manifest/digest tamper: rewrite one pinned sample digest AND
+	#    recompute the manifest's own aggregate. It stays internally consistent, but
+	#    the recomputed aggregate diverges from the external committed constant.
+	var tampered_digests := pinned_digests.duplicate(true)
+	var first_key := ""
+	for key in tampered_digests:
+		first_key = str(key)
+		break
+	tampered_digests[first_key] = "0000000000000000000000000000000000000000000000000000000000000000"
+	_check(_aggregate_of(tampered_digests) != CURRENT_BASE_TELEMETRY_FULL_SHA256, "self-consistent full-telemetry tamper must diverge from the external constant")
+
+	# 3. Faithful synthetic candidate passes; every payload mutation type fails closed.
+	var samples := _synthetic_samples()
+	var full := Generator.canonical_full_telemetry({"live_telemetry": {"samples": samples}})
+	_check(bool(full.get("ok", false)), "synthetic faithful telemetry must be self-consistent: %s" % "; ".join(full.get("errors", [])))
+	var synth_manifest := {"current_integration_base": {"telemetry_full": {
+		"telemetry_schema": LIVE_TELEMETRY_SCHEMA,
+		"sample_count": int(full.get("count", 0)),
+		"full_sha256": str(full.get("digest", "")),
+		"sample_digests": full.get("sample_digests", {}),
+	}}}
+	var faithful := {"live_telemetry": {"samples": _synthetic_samples()}}
+	_check(bool(Generator.verify_candidate_full_telemetry_against_pinned(faithful, synth_manifest).get("ok", false)), "faithful synthetic telemetry candidate must pass the payload gate")
+
+	_expect_payload_failure(synth_manifest, func(s): s[0]["events"][1]["damage"] = float(s[0]["events"][1]["damage"]) + 0.01, "changed event damage must fail closed")
+	_expect_payload_failure(synth_manifest, func(s): s[0]["events"][1]["target_id"] = "target_9", "changed event target must fail closed")
+	_expect_payload_failure(synth_manifest, func(s): s[0]["events"][1]["frame"] = 999.0, "changed event frame/timing must fail closed")
+	_expect_payload_failure(synth_manifest, func(s): s[0]["events"].append(s[0]["events"][0].duplicate(true)), "added event must fail closed")
+	_expect_payload_failure(synth_manifest, func(s): s[0]["events"].remove_at(0), "removed event must fail closed")
+	_expect_payload_failure(synth_manifest, func(s): _swap(s[0]["events"], 0, 1), "reordered events must fail closed")
+	_expect_payload_failure(synth_manifest, func(s): s[0]["hp_ledger"]["rows"][0]["applied_damage"] = 12345.0, "changed HP ledger must fail closed")
+	_expect_payload_failure(synth_manifest, func(s): s[0]["observer_probe"]["rng_probe"] = 424242, "changed RNG/observer probe must fail closed")
+	_expect_payload_failure(synth_manifest, func(s): s[0]["counters"]["hits"] = 999, "changed counters must fail closed")
+	_expect_payload_failure(synth_manifest, func(s): s[0]["dpm"] = 111.0, "changed DPM must fail closed")
+	_expect_payload_failure(synth_manifest, func(s): s[0]["events"][1]["final_event_ids"] = ["forged"], "changed on-kill/final link must fail closed")
+	_expect_payload_failure(synth_manifest, func(s): s[0]["trace_digest_sha256"] = "deadbeef", "tampered stored trace digest must fail closed")
+	_expect_payload_failure(synth_manifest, func(s): s.append(s[0].duplicate(true)), "extra sample must fail closed")
+	_expect_payload_failure(synth_manifest, func(s): s.remove_at(1), "missing sample must fail closed")
+	_expect_payload_failure(synth_manifest, func(s): s[1]["sample_key"] = str(s[0]["sample_key"]), "duplicate sample key must fail closed")
+
+
+func _expect_payload_failure(synth_manifest: Dictionary, mutate: Callable, message: String) -> void:
+	var samples := _synthetic_samples()
+	mutate.call(samples)
+	var result := Generator.verify_candidate_full_telemetry_against_pinned({"live_telemetry": {"samples": samples}}, synth_manifest)
+	_check(not bool(result.get("ok", true)), message)
+
+
+# FAN-1649: two small but structurally faithful telemetry samples covering identity,
+# an ordered event stream with an on-kill/final link, HP ledger, counters, DPM and
+# the observer/RNG probe. Each carries a correctly recomputed trace digest.
+func _synthetic_samples() -> Array:
+	return [_synthetic_sample("druid/summon_amulet|143801|sustain_solo|sustain|1", "target_0"), _synthetic_sample("berserk/sword|143802|sustain_pack|sustain|10", "target_3")]
+
+
+func _synthetic_sample(sample_key: String, target_id: String) -> Dictionary:
+	var trace_id := "fan1511:%s" % sample_key
+	var events := [
+		{"kind": "cast", "source": "player_weapon", "phase": "windup", "action_id": "a", "cast_id": "c0", "attack_mode": "melee", "damage": 0.0, "event_id": "%s#0000" % trace_id, "trace_id": trace_id, "frame": 3.0, "probe_phase": "warmup"},
+		{"kind": "hit", "source": "player_weapon", "phase": "damage_application", "target_id": target_id, "provenance_id": "p0", "cast_id": "c0", "damage": 485.25, "final_event_ids": ["%s#0002" % trace_id], "event_id": "%s#0001" % trace_id, "trace_id": trace_id, "frame": 15.0, "probe_phase": "measurement"},
+		{"kind": "final_event", "source": "player_weapon", "phase": "target_death", "target_id": target_id, "event": "kill", "observed": true, "damage": 0.0, "related_hit_id": "%s#0001" % trace_id, "event_id": "%s#0002" % trace_id, "trace_id": trace_id, "frame": 15.0, "probe_phase": "measurement"},
+	]
+	var sample := {
+		"telemetry_schema": LIVE_TELEMETRY_SCHEMA,
+		"sample_key": sample_key,
+		"trace_id": trace_id,
+		"pair": sample_key.get_slice("|", 0),
+		"seed": int(sample_key.get_slice("|", 1)),
+		"scenario": sample_key.get_slice("|", 2),
+		"fixture": sample_key.get_slice("|", 3),
+		"target_cardinality": int(sample_key.get_slice("|", 4)),
+		"fixture_target_ids": [target_id],
+		"events": events,
+		"hp_ledger": {"authority": "enemy_damage_applied_health_delta", "probe_phase": "measurement", "tolerance": 0.0001, "rows": [{"target_id": target_id, "applied_damage": 485.25, "entries": 1}], "total_applied_damage": 485.25},
+		"counters": {"casts": 1, "hits": 1, "unique_target_ids": [target_id], "unique_target_count": 1, "damage_total": 485.25, "damage_by_source_phase": [{"source": "player_weapon", "phase": "damage_application", "damage": 485.25, "hits": 1}], "final_event_count": 1, "final_event_damage": 485.25},
+		"observer_probe": {"mode": "enabled", "measurement_duration_seconds": 6.0, "measurement_frame_count": 360, "health_before": [1.0e9], "health_after": [1.0e9], "health_delta": 485.25, "rng_probe": 12345},
+		"dpm": 4852.5,
+	}
+	sample["trace_digest_sha256"] = Generator._sha256(JSON.stringify(events, "", true, true))
+	return sample
+
+
+func _aggregate_of(sample_digests: Dictionary) -> String:
+	var keys := sample_digests.keys()
+	keys.sort()
+	var aggregate := ""
+	for key in keys:
+		aggregate += "%s|%s\n" % [str(key), str(sample_digests[key])]
+	return Generator._sha256(aggregate)
+
+
+func _swap(arr: Array, i: int, j: int) -> void:
+	var tmp = arr[i]
+	arr[i] = arr[j]
+	arr[j] = tmp
+
+
+# FAN-1649 / AC5: predicate-based regression that a REAL projection row (level=20,
+# scenario=class_constellation) duplicate is fail-closed, an extra unique projection
+# pair is rejected, and a non-projection-row duplicate is NOT counted as a projection
+# defect. The FAN-1642 QA report claimed a duplicate projection row was accepted; the
+# exact-SHA audit showed _projection_rows already rejects real duplicates and requires
+# exactly 51 pairs, so this proves the true predicate rather than a mislabeled row.
+func _verify_projection_duplicate_predicate(historical: Dictionary) -> void:
+	var baseline := Generator.projection_oracle_digest(historical)
+	_check(bool(baseline.get("ok", false)), "baseline projection must extract cleanly for the duplicate predicate")
+
+	# Duplicate the real druid/summon_amulet L20 class_constellation projection row.
+	var dup := historical.duplicate(true)
+	var rows: Array = dup.get("weapon_rows", [])
+	var real_row := {}
+	for row_value in rows:
+		var row: Dictionary = row_value
+		if int(row.get("level", 0)) == 20 and str(row.get("scenario", "")) == "class_constellation" and str(row.get("class_id", "")) == "druid" and str(row.get("weapon_id", "")) == "summon_amulet":
+			real_row = row.duplicate(true)
+			break
+	_check(not real_row.is_empty(), "duplicate predicate must find the real druid projection row")
+	rows.append(real_row)
+	var dup_result := Generator.projection_oracle_digest(dup)
+	_check(not bool(dup_result.get("ok", true)), "a duplicated real projection row must be rejected")
+	_check(str(dup_result.get("error", "")).contains("duplicate projection row"), "duplicate rejection must name the duplicate projection row")
+
+	# An extra unique L20 class_constellation projection pair is rejected (breaks 51).
+	var extra := historical.duplicate(true)
+	var extra_rows: Array = extra.get("weapon_rows", [])
+	var new_pair := real_row.duplicate(true)
+	new_pair["class_id"] = "druid"
+	new_pair["weapon_id"] = "phantom_totem"
+	extra_rows.append(new_pair)
+	var extra_result := Generator.projection_oracle_digest(extra)
+	_check(not bool(extra_result.get("ok", true)), "an extra unique projection pair must be rejected")
+
+	# A duplicated NON-projection row (level 1) is NOT a projection defect: the
+	# projection stays valid and identical to the baseline.
+	var non_proj := historical.duplicate(true)
+	var non_proj_rows: Array = non_proj.get("weapon_rows", [])
+	var level1_row := {}
+	for row_value in non_proj_rows:
+		var row: Dictionary = row_value
+		if int(row.get("level", 0)) == 1 and str(row.get("scenario", "")) == "class_constellation" and str(row.get("class_id", "")) == "druid" and str(row.get("weapon_id", "")) == "summon_amulet":
+			level1_row = row.duplicate(true)
+			break
+	if not level1_row.is_empty():
+		non_proj_rows.append(level1_row)
+		var non_proj_result := Generator.projection_oracle_digest(non_proj)
+		_check(bool(non_proj_result.get("ok", false)), "a non-projection row duplicate must not be a projection defect")
+		_check(str(non_proj_result.get("digest", "")) == str(baseline.get("digest", "")), "a non-projection row duplicate must not change the projection digest")
 
 
 func _check(condition: bool, message: String) -> void:

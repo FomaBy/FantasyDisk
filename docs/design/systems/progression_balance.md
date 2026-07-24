@@ -1306,16 +1306,68 @@ baseline:
   порядка аллокаций: pinned trees, линейная цепочка `f09 → ec15444e → b8909e30`,
   точный упорядоченный инвентарь и summon-файлы у gameplay-коммитов.
 - `verify_candidate_against_current_base` — замена невозможного
-  `candidate vs ec15444e all-zero`: кандидат материализации обязан иметь exact
-  zero gameplay/event delta к своей immediate current base (оракул + принятые
-  дельты) по всем 204 ячейкам и по 309-ключевому telemetry event-множеству.
+  `candidate vs ec15444e all-zero`. Слой A (`verify_candidate_projection_against_current_base`)
+  требует exact zero delta по всем 204 projection-ячейкам и по 309-ключевому
+  telemetry sample-KEY множеству. Слой B (`verify_candidate_full_telemetry_against_pinned`,
+  FAN-1649) требует exact equality полного canonical telemetry PAYLOAD (см. ниже).
 
 Негативные мутации (лишняя дельта ячейки, изменённое принятое значение,
 пропущенная lineage-запись, подменённый оракул/коммит/tree, ложный current-base
 zero, дрейф current digest, подменённый decoded raw) обязаны fail closed;
 покрытие — в `tests/a5_balance_report_parity_test.gd` (полный контракт + Git
-causality) и `tests/a5_balance_report_integrity_test.gd` (committed oracle ↔
-manifest tie).
+causality + full-payload matrix) и `tests/a5_balance_report_integrity_test.gd`
+(committed oracle ↔ manifest tie + full-telemetry anchor).
+
+#### FAN-1649 — full telemetry payload parity
+
+FAN-1642 QA доказала дефект слоя, проверявшего только 309 sample-KEY: правка
+`damage` существующего события на `+0.01` сохраняла `ok=true`, потому что набор
+ключей `roster × seed × fixture` не менялся. FAN-1649 добавляет проверку полного
+payload.
+
+- **Каноническая schema.** `canonical_telemetry_sample(sample)` сериализует весь
+  sample через `JSON.stringify(sample, "", true, true)` (рекурсивная сортировка
+  ключей словарей, сохранённый порядок массивов, полная точность float).
+  Покрыты: identity (`telemetry_schema`, `sample_key`, `trace_id`, `pair`, `seed`,
+  `scenario`, `fixture`, `target_cardinality`, `fixture_target_ids`); упорядоченный
+  поток `events` (`kind`, `source`, `phase`, `target_id`, `damage`, `frame`,
+  `provenance_id`/`cast_id`, `mechanic_id`/`observed` feedback, on-kill/final
+  связи `related_hit_id`/`final_event_ids`); `hp_ledger` (строки со снимками HP,
+  `total_applied_damage`, фиксированное окно измерения, `dpm_projections`);
+  блок `counters`/DPM (`dpm`); и `observer_probe` (`mode`, HP до/после/delta,
+  `rng_probe`). **Derived** поле `trace_digest_sha256` пересчитывается из массива
+  `events` и независимо проверяется, поэтому одиночная правка digest не проходит.
+  Числа не нормализуются вручную и не округляются — канон берёт ровно
+  full-precision представление; порядок событий значим (reorder = изменение),
+  порядок массива sample'ов не значим (агрегат идёт по отсортированным ключам).
+- **Independently pinned current base.** `f09` telemetry НЕ является базой для
+  payload: шесть measurement-contract коммитов между `f09` и `b8909e30` изменили
+  событийный контракт КАЖДОГО из 309 sample'ов (напр. `berserk/sword` solo: 119
+  событий у f09 против 69 у b8909e30 при неизменной projection). Поэтому payload
+  закреплён напрямую на `b8909e30`: `current_integration_base.telemetry_full`
+  хранит `sample_count=309`, per-sample digest map и агрегат `full_sha256`. Два
+  независимых clean-прогона `--mode=full` на detached `b8909e30` дают побайтово
+  идентичные 309 sample'ов и один и тот же агрегат
+  `ad1d9a7ae1a36b087370b33582601a51b880d8cf102d3adc461fdb3e1c5d307f`
+  (проверено). Агрегат также закреплён внешней константой в parity/integrity
+  тестах, поэтому self-consistent подмена (переписать один pinned digest и
+  пересчитать собственный агрегат манифеста) расходится с внешней константой и
+  fail closed.
+- **Гейт.** `verify_candidate_full_telemetry_against_pinned` требует, чтобы
+  per-sample digest map кандидата точно совпадал с pinned map (тот же набор
+  ключей, те же digest'ы, тот же агрегат). Верный кандидат `b8909e30` проходит;
+  любое extra/missing/duplicate sample, add/remove/reorder event, изменение
+  `damage`/target/frame-timing/HP ledger/RNG-observer/counters-DPM/feedback/
+  on-kill-final link, а также tamper внешнего anchor или self-consistent
+  manifest/digest — fail closed. Матрица мутаций и синтетический faithful кандидат
+  — в `tests/a5_balance_report_parity_test.gd`.
+- **Предикат projection-дубликата.** `_projection_rows` уже отвергает дубликат
+  НАСТОЯЩЕЙ projection-строки (`level=20`, `scenario=class_constellation`) и
+  требует ровно 51 пары. Committed regression дублирует именно настоящую
+  `druid/summon_amulet` строку (отказ), отвергает лишнюю уникальную пару и
+  подтверждает, что дубликат НЕ-projection строки (`level=1`) не считается
+  дефектом (projection digest не меняется). Заявление QA о принятом дубликате
+  относилось к не-projection строке.
 
 Lineage-aware замена FAN-1575 AC6/AC7 (применяется после независимого exact-SHA
 QA PASS этого дефекта):
@@ -1327,10 +1379,15 @@ QA PASS этого дефекта):
   причинно связанных с независимо QA-проверенными FAN-1585/FAN-1596; остальные
   201 ячейки — exact zero diff; solo mean остаётся `68101.14`. Tolerance
   relaxation, wildcard, snapshot substitution или ручная baseline rewrite = FAIL.
-- **AC7′.** Candidate имеет exact zero gameplay/event delta (damage, targets/order,
-  frame/timing, HP mutation, RNG, feedback, on-kill) к своей immediate current
-  integration base (текущий `origin/dev`), а не к `ec15444e`. Исторический
-  инвентарь `ec15444e→current` зафиксирован точно и сегментирован на принятые
+- **AC7′ (FAN-1649).** Candidate имеет exact zero gameplay/event delta к своей
+  immediate current integration base `b8909e30`, а не к `ec15444e`, и это теперь
+  реально исполняется: `verify_candidate_full_telemetry_against_pinned` требует
+  побитового совпадения полного canonical telemetry payload (damage, targets/
+  order, frame/timing, HP ledger, RNG/observer, counters/DPM, feedback,
+  on-kill/final links) с закреплённым на `b8909e30` per-sample digest map. Правка
+  существующего события (напр. `+0.01 damage`) при неизменном 309-ключевом наборе
+  больше не проходит (закрытый дефект FAN-1642). Исторический инвентарь
+  `ec15444e→current` зафиксирован точно и сегментирован на принятые
   measurement-contract и gameplay (FAN-1585/FAN-1596) коммиты. Stage 1 A/B,
   FAN-1539 telemetry, Dark Mage/Homunculus/summon regressions и fail-closed
   mutations остаются зелёными.

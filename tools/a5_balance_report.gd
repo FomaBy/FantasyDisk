@@ -1750,6 +1750,114 @@ static func telemetry_sample_keys_digest(dataset: Dictionary) -> Dictionary:
 	return {"ok": true, "count": keys.size(), "digest": _sha256(canonical)}
 
 
+# FAN-1649: deterministic canonical serialization of one live telemetry sample.
+# It covers the whole sample - identity (schema/sample_key/trace_id/pair/seed/
+# scenario/fixture/target cardinality/target ids), the ORDERED event stream
+# (kind, source, phase, target, damage, frame, provenance/cast ids, mechanic and
+# observed feedback, on-kill/final-event links via related_hit_id/final_event_ids),
+# the HP ledger (rows with health snapshots, totals, fixed measurement window and
+# dpm_projections), the counters/DPM block, and the observer/RNG probe. Godot's
+# JSON.stringify(value, "", true, true) sorts dictionary keys recursively and keeps
+# array order at full float precision, so an event reorder, an added/removed event
+# or any numeric edit changes the canonical text; two independent clean runs of the
+# same base commit reproduce byte-identical output (verified on b8909e30). The
+# stored trace_digest_sha256 is a DERIVED field: it is recomputed from the event
+# array and independently verified, so a lone trace-digest edit cannot pass.
+static func canonical_telemetry_sample(sample: Dictionary) -> Dictionary:
+	var events: Array = sample.get("events", [])
+	var recomputed_trace := _sha256(JSON.stringify(events, "", true, true))
+	var stored_trace := str(sample.get("trace_digest_sha256", ""))
+	var canonical := JSON.stringify(sample, "", true, true)
+	return {
+		"ok": recomputed_trace == stored_trace,
+		"canonical": canonical,
+		"digest": _sha256(canonical),
+		"trace_digest_recomputed": recomputed_trace,
+		"trace_digest_stored": stored_trace,
+	}
+
+
+# FAN-1649: full canonical telemetry payload of a dataset as a per-sample digest
+# map (sample_key -> sha256 of the canonical sample) plus a single aggregate digest
+# over the sorted "sample_key|digest" lines. The map is keyed and sorted by
+# sample_key, so the aggregate is order-independent across samples while the event
+# stream inside each sample stays ordered. This is the event-payload dimension the
+# FAN-1641 sample-key digest missed: it only proved the 309 roster x seed x fixture
+# keys, so a payload mutation that preserved those keys stayed ok=true (FAN-1642).
+static func canonical_full_telemetry(dataset: Dictionary) -> Dictionary:
+	var samples: Array = (dataset.get("live_telemetry", {}) as Dictionary).get("samples", [])
+	var sample_digests := {}
+	var errors := PackedStringArray()
+	for sample_value in samples:
+		if not sample_value is Dictionary:
+			errors.append("telemetry sample is not an object")
+			continue
+		var sample: Dictionary = sample_value
+		var key := str(sample.get("sample_key", ""))
+		if key == "":
+			errors.append("telemetry sample is missing its sample_key")
+			continue
+		if sample_digests.has(key):
+			errors.append("duplicate telemetry sample key %s" % key)
+			continue
+		var canonical := canonical_telemetry_sample(sample)
+		if not bool(canonical.get("ok", false)):
+			errors.append("telemetry sample %s trace digest is not reproducible from its events" % key)
+		sample_digests[key] = str(canonical.get("digest", ""))
+	var keys := sample_digests.keys()
+	keys.sort()
+	var aggregate := ""
+	for key in keys:
+		aggregate += "%s|%s\n" % [str(key), str(sample_digests[key])]
+	return {"ok": errors.is_empty(), "errors": errors, "count": keys.size(), "sample_digests": sample_digests, "digest": _sha256(aggregate)}
+
+
+# FAN-1649: fail-closed exact equality of a candidate's full canonical telemetry
+# payload against the current integration base pinned in the lineage manifest under
+# current_integration_base.telemetry_full. The pinned map is independent of any
+# candidate-owned digest; the parity/integrity tests additionally assert its
+# aggregate against an external committed constant, so a self-consistent tamper
+# (rewrite a pinned sample digest AND its own aggregate) still fails against that
+# constant. The historical f09 oracle is NOT a valid baseline here: the six
+# measurement-contract commits between f09 and b8909e30 changed the event contract
+# for every sample, so full-payload parity is anchored directly on b8909e30.
+static func verify_candidate_full_telemetry_against_pinned(candidate_dataset: Dictionary, manifest: Dictionary) -> Dictionary:
+	var errors := PackedStringArray()
+	var pinned: Dictionary = (manifest.get("current_integration_base", {}) as Dictionary).get("telemetry_full", {})
+	if pinned.is_empty():
+		return {"ok": false, "errors": PackedStringArray(["manifest current base does not pin a full telemetry payload"])}
+	if str(pinned.get("telemetry_schema", "")) != LIVE_TELEMETRY_SCHEMA:
+		errors.append("pinned current-base telemetry schema differs from %s" % LIVE_TELEMETRY_SCHEMA)
+	var pinned_digests: Dictionary = pinned.get("sample_digests", {})
+	var pinned_keys := pinned_digests.keys()
+	pinned_keys.sort()
+	var pinned_aggregate := ""
+	for key in pinned_keys:
+		pinned_aggregate += "%s|%s\n" % [str(key), str(pinned_digests[key])]
+	if _sha256(pinned_aggregate) != str(pinned.get("full_sha256", "")):
+		errors.append("pinned current-base telemetry aggregate is internally inconsistent")
+	if int(pinned.get("sample_count", -1)) != pinned_digests.size():
+		errors.append("pinned current-base telemetry sample_count differs from its digest map")
+	var candidate := canonical_full_telemetry(candidate_dataset)
+	if not bool(candidate.get("ok", false)):
+		for error_value in candidate.get("errors", []):
+			errors.append("candidate telemetry payload is invalid: %s" % str(error_value))
+	var candidate_digests: Dictionary = candidate.get("sample_digests", {})
+	if int(candidate.get("count", -1)) != int(pinned.get("sample_count", -2)):
+		errors.append("candidate telemetry sample count %d differs from the pinned current base %d" % [int(candidate.get("count", -1)), int(pinned.get("sample_count", -1))])
+	for key in pinned_digests:
+		if not candidate_digests.has(key):
+			errors.append("candidate is missing telemetry sample %s" % str(key))
+		elif str(candidate_digests[key]) != str(pinned_digests[key]):
+			errors.append("candidate telemetry sample %s payload differs from the pinned current base" % str(key))
+	for key in candidate_digests:
+		if not pinned_digests.has(key):
+			errors.append("candidate has an unexpected telemetry sample %s" % str(key))
+	if str(candidate.get("digest", "")) != str(pinned.get("full_sha256", "")):
+		errors.append("candidate full telemetry digest differs from the pinned current base")
+	return {"ok": errors.is_empty(), "errors": errors}
+
+
 static func load_oracle_lineage(path := ORACLE_LINEAGE_PATH) -> Dictionary:
 	if not FileAccess.file_exists(path):
 		return {"ok": false, "error": "oracle lineage manifest is missing"}
@@ -1893,10 +2001,35 @@ static func verify_oracle_lineage(manifest: Dictionary, historical_dataset: Dict
 	return {"ok": errors.is_empty(), "errors": errors, "current_digest": current_digest}
 
 
-# FAN-1641: replaces the impossible "candidate vs ec15444e all-zero" gate with an
-# exact zero gameplay/event delta between a materialization candidate and its
-# immediate current integration base (historical oracle + accepted deltas).
+# FAN-1641/FAN-1649: replaces the impossible "candidate vs ec15444e all-zero" gate
+# with an exact zero gameplay/event delta between a materialization candidate and
+# its immediate current integration base. FAN-1641 covered the 51x4 projection and
+# the 309 telemetry sample-KEY set; FAN-1649 adds exact equality of the full
+# canonical telemetry PAYLOAD (events, damage, target/order, frame/timing, HP
+# ledger, counters/DPM, RNG/observer state, feedback, on-kill/final links) against
+# the b8909e30 payload pinned in the manifest, so a payload edit that preserves the
+# 309 keys (e.g. a +0.01 damage mutation, FAN-1642) can no longer self-confirm.
 static func verify_candidate_against_current_base(candidate_dataset: Dictionary, manifest: Dictionary) -> Dictionary:
+	var errors := PackedStringArray()
+	# 51x4 projection cells + 309 sample-KEY identity set (roster x seed x fixture).
+	var projection := verify_candidate_projection_against_current_base(candidate_dataset, manifest)
+	for error_value in projection.get("errors", []):
+		errors.append(str(error_value))
+	# FAN-1649: the projection and sample-KEY digests above only prove the numeric
+	# matrix and the roster identity set. Require exact equality of the full
+	# canonical telemetry PAYLOAD against the current integration base pinned in the
+	# manifest, so a payload edit that preserves the 309 keys (FAN-1642) fails closed.
+	var telemetry_parity := verify_candidate_full_telemetry_against_pinned(candidate_dataset, manifest)
+	for error_value in telemetry_parity.get("errors", []):
+		errors.append(str(error_value))
+	return {"ok": errors.is_empty(), "errors": errors}
+
+
+# FAN-1641: the 51x4 projection + 309 sample-KEY dimension of the candidate gate,
+# split out from verify_candidate_against_current_base so the projection-only
+# negatives stay meaningful now that the full-payload check (FAN-1649) rejects any
+# candidate carrying the older f09 event contract.
+static func verify_candidate_projection_against_current_base(candidate_dataset: Dictionary, manifest: Dictionary) -> Dictionary:
 	var errors := PackedStringArray()
 	var raw := read_raw_artifact()
 	if not bool(raw.get("ok", false)):

@@ -11,6 +11,11 @@ const Generator := preload("res://tools/a5_balance_report.gd")
 # FAN-1641: external pin of the current integration-base (b8909e30) 51x4 digest,
 # so a self-consistent lineage-manifest tamper cannot pass the integrity gate.
 const CURRENT_BASE_PROJECTION_SHA256 := "ac7710a043848eb4fe895237092c3aa2458ab4c1092258a6ba03d5f02b635494"
+# FAN-1649: external pin of the current integration-base full canonical telemetry
+# payload aggregate over the 309 per-sample digests, anchoring the pinned map the
+# same way as the projection digest above.
+const CURRENT_BASE_TELEMETRY_FULL_SHA256 := "ad1d9a7ae1a36b087370b33582601a51b880d8cf102d3adc461fdb3e1c5d307f"
+const LIVE_TELEMETRY_SCHEMA := "fan1511.runtime-telemetry.v2"
 
 var _errors := PackedStringArray()
 
@@ -65,6 +70,30 @@ func _validate_oracle_lineage(dataset: Dictionary, raw_text: String) -> void:
 	var drifted := manifest.duplicate(true)
 	(drifted.get("current_integration_base", {}) as Dictionary)["projection_sha256"] = "0000000000000000000000000000000000000000000000000000000000000000"
 	_check(not bool(Generator.verify_oracle_lineage(drifted, dataset, raw_text).get("ok", true)), "drifted manifest current-base digest must fail closed")
+	# FAN-1649: the pinned current-base FULL telemetry payload is externally anchored
+	# and internally self-consistent (309 samples, aggregate == full_sha256 == const).
+	var pinned: Dictionary = (manifest.get("current_integration_base", {}) as Dictionary).get("telemetry_full", {})
+	_check(not pinned.is_empty(), "manifest must pin a current-base full telemetry payload")
+	var pinned_digests: Dictionary = pinned.get("sample_digests", {})
+	_check(int(pinned.get("sample_count", -1)) == 309 and pinned_digests.size() == 309, "pinned full telemetry must cover all 309 samples")
+	_check(str(pinned.get("telemetry_schema", "")) == LIVE_TELEMETRY_SCHEMA, "pinned full telemetry schema mismatch")
+	var keys := pinned_digests.keys()
+	keys.sort()
+	var aggregate := ""
+	for key in keys:
+		aggregate += "%s|%s\n" % [str(key), str(pinned_digests[key])]
+	_check(Generator._sha256(aggregate) == str(pinned.get("full_sha256", "")), "pinned full telemetry aggregate is internally inconsistent")
+	_check(str(pinned.get("full_sha256", "")) == CURRENT_BASE_TELEMETRY_FULL_SHA256, "manifest full-telemetry digest differs from the externally pinned current base")
+	# A self-consistent tamper (rewrite a sample digest AND recompute the aggregate)
+	# stays internally consistent but diverges from the external committed constant.
+	var tampered := pinned_digests.duplicate(true)
+	tampered[str(keys[0])] = "0000000000000000000000000000000000000000000000000000000000000000"
+	var tampered_keys := tampered.keys()
+	tampered_keys.sort()
+	var tampered_aggregate := ""
+	for key in tampered_keys:
+		tampered_aggregate += "%s|%s\n" % [str(key), str(tampered[key])]
+	_check(Generator._sha256(tampered_aggregate) != CURRENT_BASE_TELEMETRY_FULL_SHA256, "self-consistent full-telemetry tamper must diverge from the external constant")
 
 
 func _validate_source_provenance(dataset: Dictionary) -> void:
