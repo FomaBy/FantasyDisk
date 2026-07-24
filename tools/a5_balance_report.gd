@@ -50,6 +50,20 @@ const LIVE_TRACE_PREFIX := "fan1511"
 const ORACLE_LINEAGE_PATH := "res://tests/fixtures/a5_oracle_lineage.json"
 const ORACLE_LINEAGE_SCHEMA := "fan1641.a5-oracle-lineage.v1"
 const PROJECTION_FIELDS := ["live_solo_dpm_mean", "live_crowd_dpm_mean", "solo_variance_dpm2", "crowd_variance_dpm2"]
+# FAN-1658: immutable runtime trust root for the A5 full-telemetry candidate gate.
+# These are the exact current integration base (b8909e30) identity, live-telemetry
+# sample count, and the aggregate over the 309 canonical per-sample telemetry digests.
+# The value is reproduced by two clean b8909e30 --mode=full runs through
+# canonical_full_telemetry (verified again on FAN-1658). Keeping the trust root in the
+# executable tool - rather than only in the caller/candidate-owned lineage manifest -
+# is what closes the FAN-1650 fail-open: a payload edit that self-repins every
+# candidate-controlled digest/aggregate AND the pinned manifest map still diverges
+# from these constants and fails closed. The lineage manifest may only MATERIALIZE the
+# per-sample map; it can never override this identity, count, or aggregate.
+const TELEMETRY_ANCHOR_BASE_COMMIT := "b8909e30b779afe8f99aad554b909cfa44e4f1a1"
+const TELEMETRY_ANCHOR_BASE_TREE := "73caf39a6004be0fa9c2054e4e4ae0d41d272484"
+const TELEMETRY_ANCHOR_SAMPLE_COUNT := 309
+const TELEMETRY_ANCHOR_FULL_SHA256 := "ad1d9a7ae1a36b087370b33582601a51b880d8cf102d3adc461fdb3e1c5d307f"
 const REPRESENTATIVE_CLASS_ID := "berserk"
 const REPRESENTATIVE_WEAPON_ID := "sword"
 const REPRESENTATIVE_SEED := 1511001
@@ -413,6 +427,24 @@ func _initialize() -> void:
 		sample["trace_digest_sha256"] = _sha256(JSON.stringify(sample.get("events", []), "", true, true))
 	dataset.erase("dataset_digest_sha256")
 	dataset["dataset_digest_sha256"] = _sha256(JSON.stringify(dataset, "", true, true))
+	# FAN-1658: the real --mode=full path verifies the generated 309-sample candidate
+	# against the current integration base BEFORE any accepted artifact is written. A
+	# faithful candidate reproduces the runtime trust root and passes; any projection or
+	# full-telemetry mismatch fails closed with a non-zero exit and leaves no accepted or
+	# partial CSV/Markdown/gzip output. Formula/probe/observer modes do not generate the
+	# full 309-sample telemetry payload and are intentionally not gated here.
+	if _mode == "full":
+		var lineage := load_oracle_lineage()
+		if not bool(lineage.get("ok", false)):
+			push_error("FAN-1658 cannot load the oracle lineage manifest for the candidate gate: %s" % lineage.get("error", "unknown"))
+			quit(1)
+			return
+		var candidate_gate := verify_candidate_against_current_base(dataset, lineage.get("manifest", {}))
+		if not bool(candidate_gate.get("ok", false)):
+			for error_value in candidate_gate.get("errors", []):
+				push_error("FAN-1658 candidate gate rejected the generated --mode=full dataset before write: %s" % str(error_value))
+			quit(1)
+			return
 	DirAccess.make_dir_recursive_absolute(ProjectSettings.globalize_path(REPORT_DIR))
 	var csv_text := render_csv(dataset)
 	var markdown_text := render_markdown(dataset)
@@ -1812,39 +1844,32 @@ static func canonical_full_telemetry(dataset: Dictionary) -> Dictionary:
 	return {"ok": errors.is_empty(), "errors": errors, "count": keys.size(), "sample_digests": sample_digests, "digest": _sha256(aggregate)}
 
 
-# FAN-1649: fail-closed exact equality of a candidate's full canonical telemetry
-# payload against the current integration base pinned in the lineage manifest under
-# current_integration_base.telemetry_full. The pinned map is independent of any
-# candidate-owned digest; the parity/integrity tests additionally assert its
-# aggregate against an external committed constant, so a self-consistent tamper
-# (rewrite a pinned sample digest AND its own aggregate) still fails against that
-# constant. The historical f09 oracle is NOT a valid baseline here: the six
-# measurement-contract commits between f09 and b8909e30 changed the event contract
-# for every sample, so full-payload parity is anchored directly on b8909e30.
-static func verify_candidate_full_telemetry_against_pinned(candidate_dataset: Dictionary, manifest: Dictionary) -> Dictionary:
+# FAN-1658: aggregate over a sample_key -> digest map exactly as canonical_full_
+# telemetry builds it (sorted "sample_key|digest" lines). Shared so the runtime gate
+# and the anchoring of a materialized map reduce a per-sample map the same way.
+static func _full_telemetry_aggregate(sample_digests: Dictionary) -> String:
+	var keys := sample_digests.keys()
+	keys.sort()
+	var aggregate := ""
+	for key in keys:
+		aggregate += "%s|%s\n" % [str(key), str(sample_digests[key])]
+	return _sha256(aggregate)
+
+
+# FAN-1658: candidate-side comparison of a canonical full-telemetry result (as
+# returned by canonical_full_telemetry) against an ALREADY-TRUSTED root: a per-sample
+# digest map, an expected sample count, and an expected aggregate. This helper never
+# derives the trust root from candidate-owned data - the caller supplies it. The
+# production gate supplies the immutable runtime constants; the clearly named
+# test-only seam is the only other caller.
+static func _compare_candidate_full_telemetry(candidate: Dictionary, pinned_digests: Dictionary, expected_count: int, expected_aggregate: String) -> PackedStringArray:
 	var errors := PackedStringArray()
-	var pinned: Dictionary = (manifest.get("current_integration_base", {}) as Dictionary).get("telemetry_full", {})
-	if pinned.is_empty():
-		return {"ok": false, "errors": PackedStringArray(["manifest current base does not pin a full telemetry payload"])}
-	if str(pinned.get("telemetry_schema", "")) != LIVE_TELEMETRY_SCHEMA:
-		errors.append("pinned current-base telemetry schema differs from %s" % LIVE_TELEMETRY_SCHEMA)
-	var pinned_digests: Dictionary = pinned.get("sample_digests", {})
-	var pinned_keys := pinned_digests.keys()
-	pinned_keys.sort()
-	var pinned_aggregate := ""
-	for key in pinned_keys:
-		pinned_aggregate += "%s|%s\n" % [str(key), str(pinned_digests[key])]
-	if _sha256(pinned_aggregate) != str(pinned.get("full_sha256", "")):
-		errors.append("pinned current-base telemetry aggregate is internally inconsistent")
-	if int(pinned.get("sample_count", -1)) != pinned_digests.size():
-		errors.append("pinned current-base telemetry sample_count differs from its digest map")
-	var candidate := canonical_full_telemetry(candidate_dataset)
 	if not bool(candidate.get("ok", false)):
 		for error_value in candidate.get("errors", []):
 			errors.append("candidate telemetry payload is invalid: %s" % str(error_value))
 	var candidate_digests: Dictionary = candidate.get("sample_digests", {})
-	if int(candidate.get("count", -1)) != int(pinned.get("sample_count", -2)):
-		errors.append("candidate telemetry sample count %d differs from the pinned current base %d" % [int(candidate.get("count", -1)), int(pinned.get("sample_count", -1))])
+	if int(candidate.get("count", -1)) != expected_count:
+		errors.append("candidate telemetry sample count %d differs from the pinned current base %d" % [int(candidate.get("count", -1)), expected_count])
 	for key in pinned_digests:
 		if not candidate_digests.has(key):
 			errors.append("candidate is missing telemetry sample %s" % str(key))
@@ -1853,8 +1878,89 @@ static func verify_candidate_full_telemetry_against_pinned(candidate_dataset: Di
 	for key in candidate_digests:
 		if not pinned_digests.has(key):
 			errors.append("candidate has an unexpected telemetry sample %s" % str(key))
-	if str(candidate.get("digest", "")) != str(pinned.get("full_sha256", "")):
+	if str(candidate.get("digest", "")) != expected_aggregate:
 		errors.append("candidate full telemetry digest differs from the pinned current base")
+	return errors
+
+
+# FAN-1658: fail-closed comparison of a candidate's canonical full telemetry against
+# the IMMUTABLE runtime trust root (b8909e30 identity, 309 samples, aggregate
+# TELEMETRY_ANCHOR_FULL_SHA256). The materialized per-sample map `pinned` is ACCEPTED
+# only as convenience input for locating per-sample mismatches: its schema, count and
+# aggregate must reproduce the runtime constants BEFORE it is used, and the candidate
+# must independently reproduce the same constants. Neither the caller manifest nor the
+# candidate can substitute an alternative trust root, so a payload edit that self-
+# repins every candidate-controlled digest/aggregate AND the pinned map still diverges
+# from the constants and fails closed (FAN-1650). `candidate` is the dictionary
+# returned by canonical_full_telemetry.
+static func verify_full_telemetry_against_anchor(candidate: Dictionary, pinned: Dictionary) -> Dictionary:
+	var errors := PackedStringArray()
+	var pinned_digests: Dictionary = pinned.get("sample_digests", {})
+	if str(pinned.get("telemetry_schema", "")) != LIVE_TELEMETRY_SCHEMA:
+		errors.append("pinned current-base telemetry schema differs from %s" % LIVE_TELEMETRY_SCHEMA)
+	if int(pinned.get("sample_count", -1)) != TELEMETRY_ANCHOR_SAMPLE_COUNT:
+		errors.append("pinned current-base telemetry sample_count differs from the runtime trust root %d" % TELEMETRY_ANCHOR_SAMPLE_COUNT)
+	if pinned_digests.size() != TELEMETRY_ANCHOR_SAMPLE_COUNT:
+		errors.append("pinned current-base telemetry map does not list all %d runtime-anchored samples" % TELEMETRY_ANCHOR_SAMPLE_COUNT)
+	if str(pinned.get("full_sha256", "")) != TELEMETRY_ANCHOR_FULL_SHA256:
+		errors.append("pinned current-base telemetry aggregate differs from the runtime trust root")
+	if _full_telemetry_aggregate(pinned_digests) != TELEMETRY_ANCHOR_FULL_SHA256:
+		errors.append("pinned current-base telemetry map does not reproduce the runtime trust root aggregate")
+	for error_value in _compare_candidate_full_telemetry(candidate, pinned_digests, TELEMETRY_ANCHOR_SAMPLE_COUNT, TELEMETRY_ANCHOR_FULL_SHA256):
+		errors.append(str(error_value))
+	return {"ok": errors.is_empty(), "errors": errors}
+
+
+# FAN-1649/FAN-1658: fail-closed exact equality of a candidate's full canonical
+# telemetry payload against the current integration base. FAN-1649 compared the
+# candidate to the map pinned in the manifest; FAN-1650 QA proved that was fail-open,
+# because the manifest is caller/candidate-owned - re-pinning the map + its own
+# aggregate kept the internal self-consistency check green. FAN-1658 anchors the gate
+# on the immutable runtime trust root above: the manifest base identity must equal
+# b8909e30, and its materialized telemetry_full map is only used after its
+# count/aggregate reproduce TELEMETRY_ANCHOR_FULL_SHA256. The historical f09 oracle is
+# NOT a valid baseline: the six measurement-contract commits between f09 and b8909e30
+# changed the event contract for every sample, so full-payload parity is anchored
+# directly on b8909e30.
+static func verify_candidate_full_telemetry_against_pinned(candidate_dataset: Dictionary, manifest: Dictionary) -> Dictionary:
+	var errors := PackedStringArray()
+	var base: Dictionary = manifest.get("current_integration_base", {})
+	# The manifest base identity is untrusted and must equal the runtime anchor.
+	if str(base.get("commit", "")) != TELEMETRY_ANCHOR_BASE_COMMIT:
+		errors.append("manifest current-base commit differs from the runtime telemetry trust root")
+	if str(base.get("tree", "")) != TELEMETRY_ANCHOR_BASE_TREE:
+		errors.append("manifest current-base tree differs from the runtime telemetry trust root")
+	var pinned: Dictionary = base.get("telemetry_full", {})
+	if pinned.is_empty():
+		errors.append("manifest current base does not pin a full telemetry payload")
+		return {"ok": false, "errors": errors}
+	var candidate := canonical_full_telemetry(candidate_dataset)
+	var anchored := verify_full_telemetry_against_anchor(candidate, pinned)
+	for error_value in anchored.get("errors", []):
+		errors.append(str(error_value))
+	return {"ok": errors.is_empty(), "errors": errors}
+
+
+# FAN-1658: TEST-ONLY seam. Verify a candidate's canonical full telemetry against an
+# EXPLICITLY injected root (the pinned map + its own count + its own aggregate) instead
+# of the immutable runtime constants. It exists solely so the small synthetic mutation
+# matrix in tests/a5_balance_report_parity_test.gd can exercise the per-field fail-
+# closed comparison without the full 309-sample b8909e30 anchor. It is never reachable
+# from any production or --mode=full path: generate_dataset()/verify_candidate_against_
+# current_base() only call verify_candidate_full_telemetry_against_pinned(), which pins
+# the runtime constants and ignores any caller-supplied root.
+static func test_only_verify_full_telemetry_with_root(candidate_dataset: Dictionary, pinned: Dictionary) -> Dictionary:
+	var errors := PackedStringArray()
+	var pinned_digests: Dictionary = pinned.get("sample_digests", {})
+	if str(pinned.get("telemetry_schema", "")) != LIVE_TELEMETRY_SCHEMA:
+		errors.append("pinned telemetry schema differs from %s" % LIVE_TELEMETRY_SCHEMA)
+	if _full_telemetry_aggregate(pinned_digests) != str(pinned.get("full_sha256", "")):
+		errors.append("pinned telemetry aggregate is internally inconsistent")
+	if int(pinned.get("sample_count", -1)) != pinned_digests.size():
+		errors.append("pinned telemetry sample_count differs from its digest map")
+	var candidate := canonical_full_telemetry(candidate_dataset)
+	for error_value in _compare_candidate_full_telemetry(candidate, pinned_digests, int(pinned.get("sample_count", -1)), str(pinned.get("full_sha256", ""))):
+		errors.append(str(error_value))
 	return {"ok": errors.is_empty(), "errors": errors}
 
 

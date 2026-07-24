@@ -94,6 +94,15 @@ func _validate_oracle_lineage(dataset: Dictionary, raw_text: String) -> void:
 	for key in tampered_keys:
 		tampered_aggregate += "%s|%s\n" % [str(key), str(tampered[key])]
 	_check(Generator._sha256(tampered_aggregate) != CURRENT_BASE_TELEMETRY_FULL_SHA256, "self-consistent full-telemetry tamper must diverge from the external constant")
+	# FAN-1658: the RUNTIME gate anchors on the immutable trust root in the tool, not on
+	# the caller manifest. The faithful materialized b8909e30 map passes the runtime
+	# anchor, and the self-consistent tamper above (per-sample map + its own aggregate,
+	# both self-repinned) still fails closed against the unchanged runtime constant.
+	var faithful_candidate := {"ok": true, "count": pinned_digests.size(), "sample_digests": pinned_digests.duplicate(true), "digest": Generator._sha256(aggregate)}
+	_check(bool(Generator.verify_full_telemetry_against_anchor(faithful_candidate, pinned).get("ok", false)), "faithful materialized current-base telemetry map must pass the runtime anchor")
+	var tamper_candidate := {"ok": true, "count": tampered.size(), "sample_digests": tampered, "digest": Generator._sha256(tampered_aggregate)}
+	var tamper_pinned := {"telemetry_schema": LIVE_TELEMETRY_SCHEMA, "sample_count": tampered.size(), "full_sha256": Generator._sha256(tampered_aggregate), "sample_digests": tampered}
+	_check(not bool(Generator.verify_full_telemetry_against_anchor(tamper_candidate, tamper_pinned).get("ok", true)), "self-repinned current-base telemetry must fail the runtime anchor")
 
 
 func _validate_source_provenance(dataset: Dictionary) -> void:

@@ -176,9 +176,11 @@ func _expect_projection_failure(candidate: Dictionary, manifest: Dictionary, mes
 	_check(not bool(Generator.verify_candidate_projection_against_current_base(candidate, manifest).get("ok", true)), message)
 
 
-# FAN-1649: the full canonical telemetry PAYLOAD contract. The pinned b8909e30
-# current base is anchored by an external committed constant, and every payload
-# mutation type must fail closed against a faithful synthetic candidate.
+# FAN-1649/FAN-1658: the full canonical telemetry PAYLOAD contract. The current base
+# is anchored by the IMMUTABLE runtime trust root inside the tool (b8909e30 identity,
+# 309 samples, aggregate constant). A faithful materialized map passes; a candidate +
+# manifest pair that self-repins every controlled digest/aggregate still fails closed
+# (FAN-1650); and every per-field payload mutation is detected.
 func _verify_full_telemetry_contract(historical: Dictionary) -> void:
 	var loaded := Generator.load_oracle_lineage()
 	if not bool(loaded.get("ok", false)):
@@ -219,40 +221,77 @@ func _verify_full_telemetry_contract(historical: Dictionary) -> void:
 	tampered_digests[first_key] = "0000000000000000000000000000000000000000000000000000000000000000"
 	_check(_aggregate_of(tampered_digests) != CURRENT_BASE_TELEMETRY_FULL_SHA256, "self-consistent full-telemetry tamper must diverge from the external constant")
 
-	# 3. Faithful synthetic candidate passes; every payload mutation type fails closed.
+	# 2b. FAN-1658: the runtime gate anchors on immutable constants inside the tool, not
+	#     on the caller/candidate-owned manifest. The real materialized b8909e30 per-
+	#     sample map (proven above: aggregate == the external committed constant) is a
+	#     byte-identical materialization of the current base and passes the runtime
+	#     anchor directly.
+	var faithful_candidate := {"ok": true, "count": pinned_digests.size(), "sample_digests": pinned_digests.duplicate(true), "digest": _aggregate_of(pinned_digests)}
+	_check(bool(Generator.verify_full_telemetry_against_anchor(faithful_candidate, pinned).get("ok", false)), "faithful materialized b8909e30 telemetry map must pass the runtime anchor")
+
+	# FAN-1650 self-repin reproduced on the REAL 309-sample materialized map: change one
+	# per-sample digest (as an event-damage edit would) and self-repin EVERY candidate-
+	# controlled field - the per-sample map AND the aggregate - AND the manifest's pinned
+	# map + full_sha256. The candidate/manifest pair stays internally self-consistent, but
+	# the runtime trust root is unchanged, so the gate must fail closed. This is the exact
+	# fail-open FAN-1650 proved; the FAN-1649 synthetic gate could not catch it because it
+	# derived its "pinned" map from the candidate.
+	var repinned_map := pinned_digests.duplicate(true)
+	repinned_map[first_key] = "0000000000000000000000000000000000000000000000000000000000000000"
+	var repinned_aggregate := _aggregate_of(repinned_map)
+	var repinned_candidate := {"ok": true, "count": repinned_map.size(), "sample_digests": repinned_map, "digest": repinned_aggregate}
+	var repinned_pinned := {"telemetry_schema": LIVE_TELEMETRY_SCHEMA, "sample_count": repinned_map.size(), "full_sha256": repinned_aggregate, "sample_digests": repinned_map}
+	var repin_result := Generator.verify_full_telemetry_against_anchor(repinned_candidate, repinned_pinned)
+	_check(not bool(repin_result.get("ok", true)), "self-repinned candidate + manifest must fail the runtime anchor (FAN-1650)")
+	_check("; ".join(repin_result.get("errors", [])).contains("runtime trust root"), "self-repin rejection must cite the runtime trust root")
+
+	# 2c. FAN-1658: the manifest base identity is untrusted. Substituting the pinned
+	#     current-base commit fails the production entry closed before any candidate map
+	#     can be self-confirmed.
+	var wrong_base := manifest.duplicate(true)
+	(wrong_base.get("current_integration_base", {}) as Dictionary)["commit"] = "0000000000000000000000000000000000000000"
+	var wrong_base_result := Generator.verify_candidate_full_telemetry_against_pinned({"live_telemetry": {"samples": _synthetic_samples()}}, wrong_base)
+	_check(not bool(wrong_base_result.get("ok", true)), "substituted current-base commit must fail the telemetry gate")
+	_check("; ".join(wrong_base_result.get("errors", [])).contains("current-base commit"), "substituted commit rejection must cite the base commit")
+
+	# 3. Per-field payload sensitivity: a faithful synthetic candidate passes and every
+	#    payload mutation type fails closed. These small samples cannot carry the full
+	#    309-sample b8909e30 anchor (covered by 2b), so they exercise the per-field
+	#    comparison against a TEST-ONLY injected root. That seam is never reachable from
+	#    any production/--mode=full path (see test_only_verify_full_telemetry_with_root).
 	var samples := _synthetic_samples()
 	var full := Generator.canonical_full_telemetry({"live_telemetry": {"samples": samples}})
 	_check(bool(full.get("ok", false)), "synthetic faithful telemetry must be self-consistent: %s" % "; ".join(full.get("errors", [])))
-	var synth_manifest := {"current_integration_base": {"telemetry_full": {
+	var synth_pinned := {
 		"telemetry_schema": LIVE_TELEMETRY_SCHEMA,
 		"sample_count": int(full.get("count", 0)),
 		"full_sha256": str(full.get("digest", "")),
 		"sample_digests": full.get("sample_digests", {}),
-	}}}
+	}
 	var faithful := {"live_telemetry": {"samples": _synthetic_samples()}}
-	_check(bool(Generator.verify_candidate_full_telemetry_against_pinned(faithful, synth_manifest).get("ok", false)), "faithful synthetic telemetry candidate must pass the payload gate")
+	_check(bool(Generator.test_only_verify_full_telemetry_with_root(faithful, synth_pinned).get("ok", false)), "faithful synthetic telemetry candidate must pass the payload comparison")
 
-	_expect_payload_failure(synth_manifest, func(s): s[0]["events"][1]["damage"] = float(s[0]["events"][1]["damage"]) + 0.01, "changed event damage must fail closed")
-	_expect_payload_failure(synth_manifest, func(s): s[0]["events"][1]["target_id"] = "target_9", "changed event target must fail closed")
-	_expect_payload_failure(synth_manifest, func(s): s[0]["events"][1]["frame"] = 999.0, "changed event frame/timing must fail closed")
-	_expect_payload_failure(synth_manifest, func(s): s[0]["events"].append(s[0]["events"][0].duplicate(true)), "added event must fail closed")
-	_expect_payload_failure(synth_manifest, func(s): s[0]["events"].remove_at(0), "removed event must fail closed")
-	_expect_payload_failure(synth_manifest, func(s): _swap(s[0]["events"], 0, 1), "reordered events must fail closed")
-	_expect_payload_failure(synth_manifest, func(s): s[0]["hp_ledger"]["rows"][0]["applied_damage"] = 12345.0, "changed HP ledger must fail closed")
-	_expect_payload_failure(synth_manifest, func(s): s[0]["observer_probe"]["rng_probe"] = 424242, "changed RNG/observer probe must fail closed")
-	_expect_payload_failure(synth_manifest, func(s): s[0]["counters"]["hits"] = 999, "changed counters must fail closed")
-	_expect_payload_failure(synth_manifest, func(s): s[0]["dpm"] = 111.0, "changed DPM must fail closed")
-	_expect_payload_failure(synth_manifest, func(s): s[0]["events"][1]["final_event_ids"] = ["forged"], "changed on-kill/final link must fail closed")
-	_expect_payload_failure(synth_manifest, func(s): s[0]["trace_digest_sha256"] = "deadbeef", "tampered stored trace digest must fail closed")
-	_expect_payload_failure(synth_manifest, func(s): s.append(s[0].duplicate(true)), "extra sample must fail closed")
-	_expect_payload_failure(synth_manifest, func(s): s.remove_at(1), "missing sample must fail closed")
-	_expect_payload_failure(synth_manifest, func(s): s[1]["sample_key"] = str(s[0]["sample_key"]), "duplicate sample key must fail closed")
+	_expect_payload_failure(synth_pinned, func(s): s[0]["events"][1]["damage"] = float(s[0]["events"][1]["damage"]) + 0.01, "changed event damage must fail closed")
+	_expect_payload_failure(synth_pinned, func(s): s[0]["events"][1]["target_id"] = "target_9", "changed event target must fail closed")
+	_expect_payload_failure(synth_pinned, func(s): s[0]["events"][1]["frame"] = 999.0, "changed event frame/timing must fail closed")
+	_expect_payload_failure(synth_pinned, func(s): s[0]["events"].append(s[0]["events"][0].duplicate(true)), "added event must fail closed")
+	_expect_payload_failure(synth_pinned, func(s): s[0]["events"].remove_at(0), "removed event must fail closed")
+	_expect_payload_failure(synth_pinned, func(s): _swap(s[0]["events"], 0, 1), "reordered events must fail closed")
+	_expect_payload_failure(synth_pinned, func(s): s[0]["hp_ledger"]["rows"][0]["applied_damage"] = 12345.0, "changed HP ledger must fail closed")
+	_expect_payload_failure(synth_pinned, func(s): s[0]["observer_probe"]["rng_probe"] = 424242, "changed RNG/observer probe must fail closed")
+	_expect_payload_failure(synth_pinned, func(s): s[0]["counters"]["hits"] = 999, "changed counters must fail closed")
+	_expect_payload_failure(synth_pinned, func(s): s[0]["dpm"] = 111.0, "changed DPM must fail closed")
+	_expect_payload_failure(synth_pinned, func(s): s[0]["events"][1]["final_event_ids"] = ["forged"], "changed on-kill/final link must fail closed")
+	_expect_payload_failure(synth_pinned, func(s): s[0]["trace_digest_sha256"] = "deadbeef", "tampered stored trace digest must fail closed")
+	_expect_payload_failure(synth_pinned, func(s): s.append(s[0].duplicate(true)), "extra sample must fail closed")
+	_expect_payload_failure(synth_pinned, func(s): s.remove_at(1), "missing sample must fail closed")
+	_expect_payload_failure(synth_pinned, func(s): s[1]["sample_key"] = str(s[0]["sample_key"]), "duplicate sample key must fail closed")
 
 
-func _expect_payload_failure(synth_manifest: Dictionary, mutate: Callable, message: String) -> void:
+func _expect_payload_failure(synth_pinned: Dictionary, mutate: Callable, message: String) -> void:
 	var samples := _synthetic_samples()
 	mutate.call(samples)
-	var result := Generator.verify_candidate_full_telemetry_against_pinned({"live_telemetry": {"samples": samples}}, synth_manifest)
+	var result := Generator.test_only_verify_full_telemetry_with_root({"live_telemetry": {"samples": samples}}, synth_pinned)
 	_check(not bool(result.get("ok", true)), message)
 
 

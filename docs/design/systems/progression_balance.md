@@ -1349,18 +1349,35 @@ payload.
   независимых clean-прогона `--mode=full` на detached `b8909e30` дают побайтово
   идентичные 309 sample'ов и один и тот же агрегат
   `ad1d9a7ae1a36b087370b33582601a51b880d8cf102d3adc461fdb3e1c5d307f`
-  (проверено). Агрегат также закреплён внешней константой в parity/integrity
-  тестах, поэтому self-consistent подмена (переписать один pinned digest и
-  пересчитать собственный агрегат манифеста) расходится с внешней константой и
-  fail closed.
-- **Гейт.** `verify_candidate_full_telemetry_against_pinned` требует, чтобы
-  per-sample digest map кандидата точно совпадал с pinned map (тот же набор
-  ключей, те же digest'ы, тот же агрегат). Верный кандидат `b8909e30` проходит;
-  любое extra/missing/duplicate sample, add/remove/reorder event, изменение
-  `damage`/target/frame-timing/HP ledger/RNG-observer/counters-DPM/feedback/
-  on-kill-final link, а также tamper внешнего anchor или self-consistent
-  manifest/digest — fail closed. Матрица мутаций и синтетический faithful кандидат
-  — в `tests/a5_balance_report_parity_test.gd`.
+  (перепроверено на FAN-1658). Начиная с FAN-1658 этот агрегат вместе с идентичностью
+  базы и `sample_count` закреплён **runtime-константами в исполняемом инструменте**
+  (`TELEMETRY_ANCHOR_*`), а не только внешней константой в тестах. Поэтому
+  self-consistent подмена (переписать pinned digest и пересчитать собственный агрегат
+  манифеста) расходится с runtime trust root и fail closed уже в самом гейте, а не
+  только в тесте. Манифест поставляет лишь материализованную per-sample map; он не
+  может переопределить идентичность базы, count или агрегат.
+- **Гейт (FAN-1658 trust root).** `verify_candidate_full_telemetry_against_pinned`
+  анкорит проверку на **неизменяемый runtime trust root в самом инструменте**, а не
+  на caller/candidate-owned манифесте. Константы `TELEMETRY_ANCHOR_BASE_COMMIT`/
+  `_BASE_TREE`/`_SAMPLE_COUNT`/`_FULL_SHA256` в `tools/a5_balance_report.gd` держат
+  точную идентичность базы `b8909e30`, `309` и агрегат
+  `ad1d9a7ae1a36b087370b33582601a51b880d8cf102d3adc461fdb3e1c5d307f`. Порядок:
+  (1) `current_integration_base.commit`/`tree` манифеста обязаны совпасть с anchor;
+  (2) materialized `telemetry_full` map допускается лишь как вход — его
+  `sample_count`, `full_sha256` и независимо пересчитанный из map агрегат обязаны
+  воспроизвести runtime-константы **до** любого использования; (3) кандидат обязан
+  независимо воспроизвести тот же агрегат и per-sample map. Верный кандидат
+  `b8909e30` проходит; любое extra/missing/duplicate sample, add/remove/reorder
+  event, изменение `damage`/target/frame-timing/HP ledger/RNG-observer/counters-DPM/
+  feedback/on-kill-final link, подмена base identity, а также self-consistent
+  manifest/digest tamper — fail closed. Ключевое отличие от FAN-1649: перепривязка
+  ВСЕХ candidate-controlled полей (per-sample map + агрегат) вместе с переписыванием
+  pinned map манифеста больше не даёт `ok=true`, потому что trust root неизменяем и
+  не берётся из данных (закрытый fail-open FAN-1650). Матрица мутаций,
+  материализованный faithful кандидат и self-repin негатив — в
+  `tests/a5_balance_report_parity_test.gd` и `_integrity_test.gd`. Тестовый seam
+  `test_only_verify_full_telemetry_with_root` (инъекция root для малой синтетической
+  матрицы) не достижим ни из production, ни из `--mode=full` пути.
 - **Предикат projection-дубликата.** `_projection_rows` уже отвергает дубликат
   НАСТОЯЩЕЙ projection-строки (`level=20`, `scenario=class_constellation`) и
   требует ровно 51 пары. Committed regression дублирует именно настоящую
@@ -1368,6 +1385,46 @@ payload.
   подтверждает, что дубликат НЕ-projection строки (`level=1`) не считается
   дефектом (projection digest не меняется). Заявление QA о принятом дубликате
   относилось к не-projection строке.
+
+#### FAN-1658 — runtime trust root и before-write гейт `--mode=full`
+
+FAN-1650 exact-SHA QA доказала, что гейт полного telemetry payload был fail-open:
+`verify_candidate_full_telemetry_against_pinned` сверял кандидата с map, закреплённой
+в манифесте, но манифест — caller/candidate-owned. Изменив `damage` на `+0.01`,
+пересчитав кандидатский trace/per-sample/aggregate И перепривязав pinned map
+манифеста к тому же значению, можно было сохранить `ok=true`: проверялась только
+внутренняя самосогласованность двух подконтрольных атакующему представлений. Внешняя
+константа существовала лишь в тестах, а не в исполняемом гейте. Дополнительно
+настоящий `--mode=full`/`generate_dataset()` не вызывал
+`verify_candidate_against_current_base` для фактически сгенерированного 309-sample
+датасета, поэтому документация была строже реального runtime path.
+
+FAN-1658 закрывает оба разрыва:
+
+- **Единый runtime trust root.** Константы `TELEMETRY_ANCHOR_BASE_COMMIT`,
+  `TELEMETRY_ANCHOR_BASE_TREE`, `TELEMETRY_ANCHOR_SAMPLE_COUNT` и
+  `TELEMETRY_ANCHOR_FULL_SHA256` живут в `tools/a5_balance_report.gd` и видимы в
+  production tool. Гейт сверяет с ними идентичность базы манифеста, count и агрегат;
+  materialized `telemetry_full` map допускается только как вход и обязана независимо
+  воспроизвести константный агрегат до сравнения с кандидатом. Caller не может
+  подставить альтернативный trust root. Инъекция root возможна лишь через отдельную
+  test-only функцию `test_only_verify_full_telemetry_with_root`, недостижимую из
+  production/`--mode=full` пути.
+- **Before-write гейт в `--mode=full`.** После генерации 309-sample кандидата и до
+  записи любого принятого артефакта (`per_weapon.csv`, `report.md`, `raw.json.gz`)
+  путь `--mode=full` вызывает `verify_candidate_against_current_base` (projection +
+  full telemetry). Верный кандидат завершается `0` и пишет вывод; любой mismatch
+  печатает ошибку, завершается non-zero и **не оставляет ни принятого, ни частичного
+  вывода** — `quit(1)` стоит до `make_dir`/любой записи. Formula/telemetry_probe/
+  observer_neutrality режимы не генерируют полный 309-sample payload и намеренно не
+  гейтятся здесь.
+- **Негативы.** Committed матрица доказывает: faithful материализованная `b8909e30`
+  map проходит runtime anchor; self-repin кандидата+манифеста (перепривязка всех
+  candidate-controlled полей при неизменном trust root) fail closed; подмена base
+  identity fail closed; и вся FAN-1649 per-field матрица
+  (extra/missing/duplicate sample, add/remove/reorder event, damage/target/frame/
+  HP ledger/RNG-observer/counters-DPM/feedback/on-kill-final link, tamper trace
+  digest) остаётся fail closed.
 
 Lineage-aware замена FAN-1575 AC6/AC7 (применяется после независимого exact-SHA
 QA PASS этого дефекта):
