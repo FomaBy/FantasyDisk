@@ -37,6 +37,18 @@ func _initialize() -> void:
 	probe["rng_probe"] = int(probe["rng_probe"]) + 1
 	_check(not bool(Generator.verify_observer_ab(enabled, rng_change).get("ok", true)), "RNG consumption change must fail closed")
 
+	# Coherent wrong fixed-window fixture: only the measurement window drifts by
+	# one fixed delta; the fixture stays internally consistent so the sole
+	# violation is the canonical fixed-ledger-window invariant, not an incidental
+	# numerator/frame/RNG/DPM/timing mismatch or an A/B drift.
+	var window_enabled := _arm(true)
+	var window_disabled := _arm(false)
+	_apply_wrong_fixed_window((window_enabled["samples"] as Array)[0] as Dictionary)
+	_apply_wrong_fixed_window((window_disabled["samples"] as Array)[0] as Dictionary)
+	var window_verification := Generator.verify_observer_ab(window_enabled, window_disabled)
+	var window_errors := "; ".join(window_verification.get("errors", []))
+	_check(not bool(window_verification.get("ok", true)) and window_errors.contains("does not preserve the canonical fixed ledger window"), "coherent wrong fixed-window duration must fail closed on the canonical ledger invariant")
+
 	var duplicate_enabled := _arm(true)
 	var duplicate_disabled := _arm(false)
 	for arm_samples in [duplicate_enabled["samples"], duplicate_disabled["samples"]]:
@@ -99,6 +111,26 @@ func _sample(sample_key: String, index: int, observer_enabled: bool) -> Dictiona
 			"callback_matches_witness": observer_enabled, "wiring_verified": observer_enabled,
 		},
 	}
+
+
+func _apply_wrong_fixed_window(sample: Dictionary) -> void:
+	# Shift the measurement window by exactly one fixed delta while leaving the
+	# canonical numerator, frame count, RNG probe, manifest identity, delivery
+	# and events untouched, then rebuild every duration-dependent projection so
+	# the fixture stays internally coherent. Only the fixed-ledger-window
+	# invariant (duration must equal frame_count * fixed delta) is violated.
+	var ledger: Dictionary = sample["hp_ledger"]
+	var numerator := float(ledger["total_applied_damage"])
+	var wrong_duration := (Generator.LIVE_MEASUREMENT_FRAMES + 1) * Generator.LIVE_FIXED_DELTA
+	var wrong_dpm := Generator._project_dpm(numerator, wrong_duration)
+	ledger["measurement_duration_seconds"] = wrong_duration
+	ledger["measurement_duration_snapped_seconds"] = snappedf(wrong_duration, 0.0001)
+	var projections: Dictionary = ledger["dpm_projections"]
+	projections["ledger_raw_duration_dpm"] = wrong_dpm
+	projections["legacy_hp_delta_raw_duration_dpm"] = wrong_dpm
+	sample["dpm"] = wrong_dpm
+	var probe: Dictionary = sample["observer_probe"]
+	probe["measurement_duration_seconds"] = wrong_duration
 
 
 func _validate_every_projection_cell_mutation() -> void:

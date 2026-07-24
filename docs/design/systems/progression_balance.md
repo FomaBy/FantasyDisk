@@ -1289,11 +1289,19 @@ baseline — fail-closed. `health_delta` сохраняется исключит
 diagnostic projection и не является DPM source ни в одной arm.
 
 `tests/a5_balance_report_observer_neutrality_test.gd` покрывает fail-closed
-fixtures для missing/identical disabled baseline, numerator/window/frame/RNG,
-duplicate или substituted 309-sample manifest и каждой из 51×4 projection
-cells. Верификатор требует не только count, но и exact roster/seed/fixture key
-для каждой arm. Полная команда выполняется только
-через gate: `python3 tools/godot_gate.py --headless --fixed-fps 60 --path . --script res://tools/a5_balance_report.gd -- --mode=observer_neutrality`.
+fixtures для missing и identical disabled baseline, canonical numerator, off-by-one
+measurement frame count и RNG consumption. Отдельная coherent wrong-window
+фикстура сдвигает `measurement_duration_seconds` ровно на один fixed delta
+(`(360 + 1) / 60` при канонических 360 frames) и согласованно пересобирает
+snapped duration, `ledger/raw` и `legacy HP-delta/raw` DPM-проекции и probe
+duration, оставляя frame count, numerator, RNG probe, manifest identity, delivery
+и events каноничными. Тест утверждает, что диагностика содержит
+`does not preserve the canonical fixed ledger window`, доказывая, что отказ
+исходит именно от инварианта фиксированного окна, а не от случайного
+рассогласования. Дополнительно покрыты duplicate или substituted 309-sample
+manifest и каждая из 51×4 projection cells. Верификатор требует не только count,
+но и exact roster/seed/fixture key для каждой arm. Полная команда выполняется
+только через gate: `python3 tools/godot_gate.py --headless --fixed-fps 60 --path . --script res://tools/a5_balance_report.gd -- --mode=observer_neutrality`.
 
 Выживаемость привязана к одному явно описанному normal-wave A5 contact-pressure
 сценарию. Глобальный множитель обычных врагов не переносится на boss/elite
