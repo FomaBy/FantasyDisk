@@ -1,0 +1,503 @@
+{
+  "schema": "fan1641.a5-oracle-lineage.v1",
+  "issue_id": "FAN-1641",
+  "source_issue": "FAN-1575",
+  "description": "Fail-closed, lineage-aware A5 numeric/event parity contract. The historical f09 numeric oracle and its committed evidence are preserved unchanged; the three accepted druid/summon_amulet deltas introduced by independently QA-passed FAN-1585/FAN-1596 summon geometry are encoded exactly; and a materialization candidate must show exact zero gameplay/event delta against its immediate current integration base. Wildcards, tolerance relaxation, snapshot substitution and manual baseline rewrites are rejected.",
+  "projection": {
+    "pair_count": 51,
+    "cell_count": 204,
+    "row_level": 20,
+    "row_scenario": "class_constellation",
+    "fields": [
+      "live_solo_dpm_mean",
+      "live_crowd_dpm_mean",
+      "solo_variance_dpm2",
+      "crowd_variance_dpm2"
+    ],
+    "canonical_row_format": "%s|%.2f|%.2f|%.2f|%.2f\\n"
+  },
+  "historical_oracle": {
+    "label": "f09",
+    "commit": "f09f21ece5ae744ffc1b917d724d5e581404fae4",
+    "tree": "955d7b987b697f8922edeacfea291b4351516773",
+    "commit_timestamp": "2026-07-23T04:47:57+03:00",
+    "raw_decoded_sha256": "cd02e0cc9a99f8b6de8cb28684b5b56e740753b675819dbb231bca30a00e9004",
+    "dataset_digest_sha256": "4da51328110cdebab0c02b1f81b8428ea4e50f5622f81686066fafeb0534c8a5",
+    "projection_sha256": "d81092333cdf6e3f4196b8c5ee9198e83ccef8bfe7530a8ef20f911a54d5efd1",
+    "telemetry_sample_key_count": 309,
+    "telemetry_sample_keys_sha256": "715745ebc13721811d8b354476af58300423ab21b6ede059210a23e8df990525",
+    "published_matrix": [
+      {
+        "pair": "berserk/sword",
+        "live_solo_dpm_mean": 11363.9,
+        "live_crowd_dpm_mean": 118968.05,
+        "solo_variance_dpm2": 411265.69,
+        "crowd_variance_dpm2": 11280529.82
+      },
+      {
+        "pair": "berserk/axe",
+        "live_solo_dpm_mean": 14345.74,
+        "live_crowd_dpm_mean": 295340.25,
+        "solo_variance_dpm2": 383495.33,
+        "crowd_variance_dpm2": 36525342.7
+      },
+      {
+        "pair": "berserk/hammer",
+        "live_solo_dpm_mean": 19294.02,
+        "live_crowd_dpm_mean": 145981.36000000002,
+        "solo_variance_dpm2": 329384.17,
+        "crowd_variance_dpm2": 17741702.17
+      },
+      {
+        "pair": "soldier/soldier_rifle",
+        "live_solo_dpm_mean": 13212.09,
+        "live_crowd_dpm_mean": 112701.97,
+        "solo_variance_dpm2": 960596.01,
+        "crowd_variance_dpm2": 145736805.62
+      },
+      {
+        "pair": "soldier/soldier_grenade",
+        "live_solo_dpm_mean": 43786.21,
+        "live_crowd_dpm_mean": 421349.8,
+        "solo_variance_dpm2": 3024364.46,
+        "crowd_variance_dpm2": 693811930.9
+      },
+      {
+        "pair": "soldier/soldier_bayonet",
+        "live_solo_dpm_mean": 25967.8,
+        "live_crowd_dpm_mean": 220311.51,
+        "solo_variance_dpm2": 3654023.4,
+        "crowd_variance_dpm2": 177215733.82
+      },
+      {
+        "pair": "thief/thief_coin_pouch",
+        "live_solo_dpm_mean": 17924.760000000002,
+        "live_crowd_dpm_mean": 84777.15000000001,
+        "solo_variance_dpm2": 757213.23,
+        "crowd_variance_dpm2": 30644417.35
+      },
+      {
+        "pair": "thief/thief_shadow_cloak",
+        "live_solo_dpm_mean": 35499.06,
+        "live_crowd_dpm_mean": 105923.69,
+        "solo_variance_dpm2": 9043071.41,
+        "crowd_variance_dpm2": 32169995.86
+      },
+      {
+        "pair": "thief/thief_smoke_bomb",
+        "live_solo_dpm_mean": 23376.82,
+        "live_crowd_dpm_mean": 253080.37,
+        "solo_variance_dpm2": 1612519.02,
+        "crowd_variance_dpm2": 567943.1
+      },
+      {
+        "pair": "elementalist/elementalist_orb_ring",
+        "live_solo_dpm_mean": 21103.18,
+        "live_crowd_dpm_mean": 258382.3,
+        "solo_variance_dpm2": 94937.93,
+        "crowd_variance_dpm2": 7959846.54
+      },
+      {
+        "pair": "elementalist/elementalist_prism_focus",
+        "live_solo_dpm_mean": 51218.11,
+        "live_crowd_dpm_mean": 753143.58,
+        "solo_variance_dpm2": 16250170.32,
+        "crowd_variance_dpm2": 396430797.72
+      },
+      {
+        "pair": "elementalist/elementalist_meteor_core",
+        "live_solo_dpm_mean": 46355.42,
+        "live_crowd_dpm_mean": 526517.97,
+        "solo_variance_dpm2": 329028.43,
+        "crowd_variance_dpm2": 203181932.56
+      },
+      {
+        "pair": "sniper/sniper_deadeye_rifle",
+        "live_solo_dpm_mean": 45595.7,
+        "live_crowd_dpm_mean": 248735.91,
+        "solo_variance_dpm2": 19670732.93,
+        "crowd_variance_dpm2": 390542572.62
+      },
+      {
+        "pair": "sniper/sniper_spotter_scope",
+        "live_solo_dpm_mean": 30182.88,
+        "live_crowd_dpm_mean": 244986.06,
+        "solo_variance_dpm2": 0.0,
+        "crowd_variance_dpm2": 396248437.88
+      },
+      {
+        "pair": "sniper/sniper_shatter_rounds",
+        "live_solo_dpm_mean": 16755.510000000002,
+        "live_crowd_dpm_mean": 65426.73,
+        "solo_variance_dpm2": 205335.86,
+        "crowd_variance_dpm2": 763736.17
+      },
+      {
+        "pair": "priest/priest_reliquary",
+        "live_solo_dpm_mean": 38788.5,
+        "live_crowd_dpm_mean": 720477.1,
+        "solo_variance_dpm2": 1459457.29,
+        "crowd_variance_dpm2": 90169837.81
+      },
+      {
+        "pair": "priest/priest_censer",
+        "live_solo_dpm_mean": 12026.98,
+        "live_crowd_dpm_mean": 146293.34,
+        "solo_variance_dpm2": 166276.37,
+        "crowd_variance_dpm2": 34561347.63
+      },
+      {
+        "pair": "priest/priest_chime",
+        "live_solo_dpm_mean": 15168.52,
+        "live_crowd_dpm_mean": 242031.42,
+        "solo_variance_dpm2": 71374.47,
+        "crowd_variance_dpm2": 64237820.52
+      },
+      {
+        "pair": "biologist/biologist_spore_lens",
+        "live_solo_dpm_mean": 29005.59,
+        "live_crowd_dpm_mean": 394210.06,
+        "solo_variance_dpm2": 130407.65,
+        "crowd_variance_dpm2": 49549491.94
+      },
+      {
+        "pair": "biologist/biologist_sample_injector",
+        "live_solo_dpm_mean": 51445.41,
+        "live_crowd_dpm_mean": 523990.43,
+        "solo_variance_dpm2": 4245124.54,
+        "crowd_variance_dpm2": 445534577.14
+      },
+      {
+        "pair": "biologist/biologist_symbiote_seed",
+        "live_solo_dpm_mean": 15947.69,
+        "live_crowd_dpm_mean": 256791.42,
+        "solo_variance_dpm2": 1607646.48,
+        "crowd_variance_dpm2": 6334986.96
+      },
+      {
+        "pair": "robot/robot_magnetic_anchor",
+        "live_solo_dpm_mean": 15872.49,
+        "live_crowd_dpm_mean": 184688.53,
+        "solo_variance_dpm2": 906056.5,
+        "crowd_variance_dpm2": 84285986.95
+      },
+      {
+        "pair": "robot/robot_hydraulic_press",
+        "live_solo_dpm_mean": 20068.89,
+        "live_crowd_dpm_mean": 263171.19,
+        "solo_variance_dpm2": 109786.2,
+        "crowd_variance_dpm2": 144279975.96
+      },
+      {
+        "pair": "robot/robot_reactor_core",
+        "live_solo_dpm_mean": 7557.35,
+        "live_crowd_dpm_mean": 123297.77,
+        "solo_variance_dpm2": 91494.15,
+        "crowd_variance_dpm2": 8634018.26
+      },
+      {
+        "pair": "engineer/engineer_sentry_wrench",
+        "live_solo_dpm_mean": 45907.77,
+        "live_crowd_dpm_mean": 51900.29,
+        "solo_variance_dpm2": 154724.22,
+        "crowd_variance_dpm2": 830668.1900000001
+      },
+      {
+        "pair": "engineer/engineer_repair_drone",
+        "live_solo_dpm_mean": 9559.26,
+        "live_crowd_dpm_mean": 70222.49,
+        "solo_variance_dpm2": 75949.85,
+        "crowd_variance_dpm2": 3265754.98
+      },
+      {
+        "pair": "engineer/engineer_pressure_mines",
+        "live_solo_dpm_mean": 11.97,
+        "live_crowd_dpm_mean": 57966.91,
+        "solo_variance_dpm2": 95.45,
+        "crowd_variance_dpm2": 6696754455.690001
+      },
+      {
+        "pair": "dark_mage/dark_book",
+        "live_solo_dpm_mean": 47537.3,
+        "live_crowd_dpm_mean": 606342.3200000001,
+        "solo_variance_dpm2": 0.0,
+        "crowd_variance_dpm2": 23174018.32
+      },
+      {
+        "pair": "dark_mage/cursed_skull",
+        "live_solo_dpm_mean": 4204.32,
+        "live_crowd_dpm_mean": 23514.15,
+        "solo_variance_dpm2": 0.0,
+        "crowd_variance_dpm2": 0.0
+      },
+      {
+        "pair": "dark_mage/dark_wand",
+        "live_solo_dpm_mean": 21884.62,
+        "live_crowd_dpm_mean": 204747.72,
+        "solo_variance_dpm2": 2311312.09,
+        "crowd_variance_dpm2": 34382508.6
+      },
+      {
+        "pair": "guitarist/electric_guitar",
+        "live_solo_dpm_mean": 48765.33,
+        "live_crowd_dpm_mean": 720700.53,
+        "solo_variance_dpm2": 550964.75,
+        "crowd_variance_dpm2": 19332817.55
+      },
+      {
+        "pair": "guitarist/bass_guitar",
+        "live_solo_dpm_mean": 14198.62,
+        "live_crowd_dpm_mean": 229782.97,
+        "solo_variance_dpm2": 14754.96,
+        "crowd_variance_dpm2": 30051227.61
+      },
+      {
+        "pair": "guitarist/sound_amp",
+        "live_solo_dpm_mean": 41983.28,
+        "live_crowd_dpm_mean": 632731.36,
+        "solo_variance_dpm2": 2158548.64,
+        "crowd_variance_dpm2": 9615704.85
+      },
+      {
+        "pair": "assassin/chakrams",
+        "live_solo_dpm_mean": 26185.24,
+        "live_crowd_dpm_mean": 281437.96,
+        "solo_variance_dpm2": 0.0,
+        "crowd_variance_dpm2": 42059245.8
+      },
+      {
+        "pair": "assassin/shadow_daggers",
+        "live_solo_dpm_mean": 27550.88,
+        "live_crowd_dpm_mean": 80033.49,
+        "solo_variance_dpm2": 1238613.18,
+        "crowd_variance_dpm2": 0.0
+      },
+      {
+        "pair": "assassin/venom_wire",
+        "live_solo_dpm_mean": 27171.31,
+        "live_crowd_dpm_mean": 130851.9,
+        "solo_variance_dpm2": 1281740.98,
+        "crowd_variance_dpm2": 15984643.69
+      },
+      {
+        "pair": "ranger/moon_crossbow",
+        "live_solo_dpm_mean": 26147.7,
+        "live_crowd_dpm_mean": 139174.52,
+        "solo_variance_dpm2": 7749208.390000001,
+        "crowd_variance_dpm2": 75120009.15
+      },
+      {
+        "pair": "ranger/storm_longbow",
+        "live_solo_dpm_mean": 31521.63,
+        "live_crowd_dpm_mean": 249081.46,
+        "solo_variance_dpm2": 4978208.82,
+        "crowd_variance_dpm2": 61792805.51
+      },
+      {
+        "pair": "ranger/hunter_trap",
+        "live_solo_dpm_mean": 8547.28,
+        "live_crowd_dpm_mean": 131384.95,
+        "solo_variance_dpm2": 87681.13,
+        "crowd_variance_dpm2": 24161943.63
+      },
+      {
+        "pair": "doctor/restore_potion",
+        "live_solo_dpm_mean": 14780.56,
+        "live_crowd_dpm_mean": 136355.63,
+        "solo_variance_dpm2": 238827.69,
+        "crowd_variance_dpm2": 1105378.88
+      },
+      {
+        "pair": "doctor/plague_syringe",
+        "live_solo_dpm_mean": 10841.77,
+        "live_crowd_dpm_mean": 20071.75,
+        "solo_variance_dpm2": 46989.23,
+        "crowd_variance_dpm2": 104943.6
+      },
+      {
+        "pair": "doctor/bone_saw",
+        "live_solo_dpm_mean": 40663.39,
+        "live_crowd_dpm_mean": 446253.35,
+        "solo_variance_dpm2": 1685712.72,
+        "crowd_variance_dpm2": 28591264.53
+      },
+      {
+        "pair": "chemist/blast_powder",
+        "live_solo_dpm_mean": 34872.31,
+        "live_crowd_dpm_mean": 275146.53,
+        "solo_variance_dpm2": 2928034.32,
+        "crowd_variance_dpm2": 7115129.46
+      },
+      {
+        "pair": "chemist/acid_flask",
+        "live_solo_dpm_mean": 6945.66,
+        "live_crowd_dpm_mean": 61435.11,
+        "solo_variance_dpm2": 22.09,
+        "crowd_variance_dpm2": 504.9
+      },
+      {
+        "pair": "chemist/homunculus_vial",
+        "live_solo_dpm_mean": 11709.72,
+        "live_crowd_dpm_mean": 103397.26,
+        "solo_variance_dpm2": 0.0,
+        "crowd_variance_dpm2": 0.0
+      },
+      {
+        "pair": "knight/long_spear",
+        "live_solo_dpm_mean": 14140.81,
+        "live_crowd_dpm_mean": 136168.85,
+        "solo_variance_dpm2": 219126.97,
+        "crowd_variance_dpm2": 9644378.69
+      },
+      {
+        "pair": "knight/tower_shield",
+        "live_solo_dpm_mean": 16279.26,
+        "live_crowd_dpm_mean": 158012.86000000002,
+        "solo_variance_dpm2": 549021.72,
+        "crowd_variance_dpm2": 5725539.7
+      },
+      {
+        "pair": "knight/holy_flail",
+        "live_solo_dpm_mean": 9623.66,
+        "live_crowd_dpm_mean": 184870.14,
+        "solo_variance_dpm2": 39144.62,
+        "crowd_variance_dpm2": 29487289.25
+      },
+      {
+        "pair": "druid/summon_amulet",
+        "live_solo_dpm_mean": 68101.14,
+        "live_crowd_dpm_mean": 361323.76,
+        "solo_variance_dpm2": 45635023.84,
+        "crowd_variance_dpm2": 36494237500.62
+      },
+      {
+        "pair": "druid/briar_staff",
+        "live_solo_dpm_mean": 28510.06,
+        "live_crowd_dpm_mean": 247810.39,
+        "solo_variance_dpm2": 18716.98,
+        "crowd_variance_dpm2": 183175.44
+      },
+      {
+        "pair": "druid/raven_totem",
+        "live_solo_dpm_mean": 15638.82,
+        "live_crowd_dpm_mean": 115086.41,
+        "solo_variance_dpm2": 234623.98,
+        "crowd_variance_dpm2": 31543948.96
+      }
+    ]
+  },
+  "historical_integration_base": {
+    "label": "ec15444e",
+    "commit": "ec15444e1a30acfe9aeaee3dab6f7e46f1b4f46e",
+    "tree": "57a248d408a4661e63c70ce6b5925d88dfbd7a97",
+    "subject": "FAN-1545 Restore secondary-kill gameplay attribution; keep A5 telemetry"
+  },
+  "current_integration_base": {
+    "label": "b8909e30",
+    "commit": "b8909e30b779afe8f99aad554b909cfa44e4f1a1",
+    "tree": "73caf39a6004be0fa9c2054e4e4ae0d41d272484",
+    "projection_sha256": "ac7710a043848eb4fe895237092c3aa2458ab4c1092258a6ba03d5f02b635494"
+  },
+  "accepted_projection_deltas": [
+    {
+      "pair": "druid/summon_amulet",
+      "field": "live_crowd_dpm_mean",
+      "from": 361323.76,
+      "to": 394715.33,
+      "cause_issues": [
+        "FAN-1585",
+        "FAN-1596"
+      ]
+    },
+    {
+      "pair": "druid/summon_amulet",
+      "field": "solo_variance_dpm2",
+      "from": 45635023.84,
+      "to": 51498851.11,
+      "cause_issues": [
+        "FAN-1585",
+        "FAN-1596"
+      ]
+    },
+    {
+      "pair": "druid/summon_amulet",
+      "field": "crowd_variance_dpm2",
+      "from": 36494237500.62,
+      "to": 36324029697.05,
+      "cause_issues": [
+        "FAN-1585",
+        "FAN-1596"
+      ]
+    }
+  ],
+  "invariant_projection_cells": [
+    {
+      "pair": "druid/summon_amulet",
+      "field": "live_solo_dpm_mean",
+      "value": 68101.14
+    }
+  ],
+  "equal_cell_count": 201,
+  "changed_cell_count": 3,
+  "historical_inventory": {
+    "range": "ec15444e1a30acfe9aeaee3dab6f7e46f1b4f46e..b8909e30b779afe8f99aad554b909cfa44e4f1a1",
+    "commit_count": 8,
+    "gameplay_commit_count": 2,
+    "measurement_contract_commit_count": 6,
+    "gameplay_causal_files": [
+      "scripts/summoner_weapon.gd"
+    ],
+    "ordered_commits": [
+      {
+        "commit": "b43a879891499e8a29713a220b16a9c680c8b549",
+        "segment": "measurement_contract",
+        "subject": "Fix A5 fixed-seed telemetry parity"
+      },
+      {
+        "commit": "7aff1e828a9c54d67e13db8a301386fbb1c752a3",
+        "segment": "measurement_contract",
+        "subject": "Regenerate A5 fixed-seed evidence"
+      },
+      {
+        "commit": "a3bf9ba25f908fc46242bb86af42ce52bfdc71c1",
+        "segment": "measurement_contract",
+        "subject": "fix(a5): add production observer A/B gate"
+      },
+      {
+        "commit": "e0c6c8c598165a97f5b31d6e8272fa940f9ad595",
+        "segment": "gameplay",
+        "subject": "fix(FAN-1585): stabilize druid summon formations",
+        "issue": "FAN-1585"
+      },
+      {
+        "commit": "8376f5c73eb116ec08eef7a0e071c2b966f04a19",
+        "segment": "gameplay",
+        "subject": "fix(FAN-1596): preserve homunculus pair guard direction",
+        "issue": "FAN-1596"
+      },
+      {
+        "commit": "3c279da0ab5d3e1182c63927a4f4b160079c8b9a",
+        "segment": "measurement_contract",
+        "subject": "fix(FAN-1574): harden observer manifest gate",
+        "issue": "FAN-1574"
+      },
+      {
+        "commit": "bb50e9875e08845d68792d87016568ba392ff86b",
+        "segment": "measurement_contract",
+        "subject": "fix(FAN-1612): track required test UID sidecars",
+        "issue": "FAN-1612"
+      },
+      {
+        "commit": "b8909e30b779afe8f99aad554b909cfa44e4f1a1",
+        "segment": "measurement_contract",
+        "subject": "fix(FAN-1611): cover observer A/B fixed-window mutation regression",
+        "issue": "FAN-1611"
+      }
+    ]
+  },
+  "notes": [
+    "Godot renders each projection cell with printf %.2f; the digests above are reproduced by tools/a5_balance_report.gd.",
+    "raw.json.gz, per_weapon.csv and report.md are read-only historical evidence and are not regenerated by FAN-1641.",
+    "Final report materialization and full same-seed event/gameplay parity remain FAN-1575 scope."
+  ]
+}

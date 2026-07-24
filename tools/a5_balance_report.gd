@@ -47,6 +47,9 @@ const CLASS_CORRIDOR_LOWER := 0.80
 const CLASS_CORRIDOR_UPPER := 1.20
 const LIVE_TELEMETRY_SCHEMA := "fan1511.runtime-telemetry.v2"
 const LIVE_TRACE_PREFIX := "fan1511"
+const ORACLE_LINEAGE_PATH := "res://tests/fixtures/a5_oracle_lineage.json"
+const ORACLE_LINEAGE_SCHEMA := "fan1641.a5-oracle-lineage.v1"
+const PROJECTION_FIELDS := ["live_solo_dpm_mean", "live_crowd_dpm_mean", "solo_variance_dpm2", "crowd_variance_dpm2"]
 const REPRESENTATIVE_CLASS_ID := "berserk"
 const REPRESENTATIVE_WEAPON_ID := "sword"
 const REPRESENTATIVE_SEED := 1511001
@@ -1667,7 +1670,7 @@ static func _project_dpm(numerator: float, duration_seconds: float) -> float:
 	return snappedf(numerator / maxf(duration_seconds, 0.0000001) * 60.0, 0.01)
 
 
-static func projection_oracle_digest(dataset: Dictionary) -> Dictionary:
+static func _projection_rows(dataset: Dictionary) -> Dictionary:
 	var roster: Dictionary = dataset.get("roster", {})
 	var pair_keys: Array = roster.get("pair_keys", [])
 	var rows_by_pair := {}
@@ -1681,14 +1684,331 @@ static func projection_oracle_digest(dataset: Dictionary) -> Dictionary:
 		rows_by_pair[pair] = row
 	if pair_keys.size() != 51 or rows_by_pair.size() != pair_keys.size():
 		return {"ok": false, "error": "projection manifest must contain exactly 51 L20 class-constellation rows"}
+	for pair_value in pair_keys:
+		if not rows_by_pair.has(str(pair_value)):
+			return {"ok": false, "error": "projection manifest is missing %s" % str(pair_value)}
+	return {"ok": true, "pair_keys": pair_keys, "rows_by_pair": rows_by_pair}
+
+
+static func projection_oracle_digest(dataset: Dictionary) -> Dictionary:
+	var extraction := _projection_rows(dataset)
+	if not bool(extraction.get("ok", false)):
+		return {"ok": false, "error": extraction.get("error", "unknown")}
+	var pair_keys: Array = extraction["pair_keys"]
+	var rows_by_pair: Dictionary = extraction["rows_by_pair"]
 	var canonical := ""
 	for pair_value in pair_keys:
 		var pair := str(pair_value)
-		if not rows_by_pair.has(pair):
-			return {"ok": false, "error": "projection manifest is missing %s" % pair}
 		var row: Dictionary = rows_by_pair[pair]
 		canonical += "%s|%.2f|%.2f|%.2f|%.2f\n" % [pair, float(row.get("live_solo_dpm_mean", NAN)), float(row.get("live_crowd_dpm_mean", NAN)), float(row.get("solo_variance_dpm2", NAN)), float(row.get("crowd_variance_dpm2", NAN))]
 	return {"ok": true, "digest": _sha256(canonical), "canonical": canonical}
+
+
+# FAN-1641: exposes the 51x4 projection as a per-cell map of the exact %.2f text
+# rendered into the oracle canonical string, keyed by "pair|field".
+static func projection_cell_map(dataset: Dictionary) -> Dictionary:
+	var extraction := _projection_rows(dataset)
+	if not bool(extraction.get("ok", false)):
+		return {"ok": false, "error": extraction.get("error", "unknown")}
+	var pair_keys: Array = extraction["pair_keys"]
+	var rows_by_pair: Dictionary = extraction["rows_by_pair"]
+	var cells := {}
+	for pair_value in pair_keys:
+		var pair := str(pair_value)
+		var row: Dictionary = rows_by_pair[pair]
+		for field_value in PROJECTION_FIELDS:
+			var field := str(field_value)
+			cells["%s|%s" % [pair, field]] = "%.2f" % float(row.get(field, NAN))
+	return {"ok": true, "cells": cells, "pair_keys": pair_keys}
+
+
+static func _projection_canonical_from_cells(pair_keys: Array, cells: Dictionary) -> String:
+	var canonical := ""
+	for pair_value in pair_keys:
+		var pair := str(pair_value)
+		canonical += "%s|%s|%s|%s|%s\n" % [pair, str(cells["%s|live_solo_dpm_mean" % pair]), str(cells["%s|live_crowd_dpm_mean" % pair]), str(cells["%s|solo_variance_dpm2" % pair]), str(cells["%s|crowd_variance_dpm2" % pair])]
+	return canonical
+
+
+# FAN-1641: deterministic digest of the sorted telemetry sample-key set. Summon
+# geometry changes projection values, never the roster x seed x fixture key set,
+# so this is the "event" dimension of the lineage-aware parity contract.
+static func telemetry_sample_keys_digest(dataset: Dictionary) -> Dictionary:
+	var samples: Array = (dataset.get("live_telemetry", {}) as Dictionary).get("samples", [])
+	var keys := []
+	var seen := {}
+	for sample_value in samples:
+		var key := str((sample_value as Dictionary).get("sample_key", ""))
+		if seen.has(key):
+			return {"ok": false, "error": "duplicate telemetry sample key %s" % key}
+		seen[key] = true
+		keys.append(key)
+	keys.sort()
+	var canonical := ""
+	for key in keys:
+		canonical += "%s\n" % str(key)
+	return {"ok": true, "count": keys.size(), "digest": _sha256(canonical)}
+
+
+static func load_oracle_lineage(path := ORACLE_LINEAGE_PATH) -> Dictionary:
+	if not FileAccess.file_exists(path):
+		return {"ok": false, "error": "oracle lineage manifest is missing"}
+	var file := FileAccess.open(path, FileAccess.READ)
+	if file == null:
+		return {"ok": false, "error": "cannot open oracle lineage manifest"}
+	var text := file.get_as_text()
+	file.close()
+	var parsed = JSON.parse_string(text)
+	if not parsed is Dictionary:
+		return {"ok": false, "error": "oracle lineage manifest is not a JSON object"}
+	var manifest: Dictionary = parsed
+	if str(manifest.get("schema", "")) != ORACLE_LINEAGE_SCHEMA:
+		return {"ok": false, "error": "oracle lineage schema mismatch"}
+	return {"ok": true, "manifest": manifest}
+
+
+# FAN-1641: reconstruct the current integration-base 51x4 matrix from the immutable
+# historical oracle plus the exactly-enumerated accepted deltas. No wildcard,
+# tolerance, or hand-written baseline value is ever introduced here.
+static func _lineage_current_cells(manifest: Dictionary, historical_dataset: Dictionary) -> Dictionary:
+	var base := projection_cell_map(historical_dataset)
+	if not bool(base.get("ok", false)):
+		return {"ok": false, "errors": PackedStringArray(["historical projection is invalid: %s" % base.get("error", "unknown")])}
+	var cells: Dictionary = (base.get("cells", {}) as Dictionary).duplicate(true)
+	var errors := PackedStringArray()
+	var changed := {}
+	for delta_value in manifest.get("accepted_projection_deltas", []):
+		var delta: Dictionary = delta_value
+		var key := "%s|%s" % [str(delta.get("pair", "")), str(delta.get("field", ""))]
+		if not cells.has(key):
+			errors.append("accepted delta names unknown projection cell %s" % key)
+			continue
+		if changed.has(key):
+			errors.append("accepted delta %s is listed more than once" % key)
+		var from_text := "%.2f" % float(delta.get("from", NAN))
+		var to_text := "%.2f" % float(delta.get("to", NAN))
+		if str(cells[key]) != from_text:
+			errors.append("accepted delta %s 'from' %s does not match historical oracle %s" % [key, from_text, str(cells[key])])
+		if to_text == from_text:
+			errors.append("accepted delta %s does not change the value" % key)
+		cells[key] = to_text
+		changed[key] = true
+	return {"ok": errors.is_empty(), "errors": errors, "cells": cells, "changed": changed, "pair_keys": base.get("pair_keys", [])}
+
+
+# FAN-1641: fail-closed self-consistency of the checked-in lineage manifest against
+# the immutable committed historical oracle. Preserves the f09 oracle unchanged,
+# proves the exact 201/204 equal + three accepted druid deltas, and derives the
+# current-base digest without relaxing any check.
+static func verify_oracle_lineage(manifest: Dictionary, historical_dataset: Dictionary, historical_raw_text := "") -> Dictionary:
+	var errors := PackedStringArray()
+	var oracle: Dictionary = manifest.get("historical_oracle", {})
+	var projection := projection_oracle_digest(historical_dataset)
+	if not bool(projection.get("ok", false)):
+		errors.append("historical projection is invalid: %s" % projection.get("error", "unknown"))
+	elif str(projection.get("digest", "")) != str(oracle.get("projection_sha256", "")):
+		errors.append("historical projection digest differs from the checked-in oracle")
+	var digest_check := verify_dataset_digest(historical_dataset)
+	if not bool(digest_check.get("ok", false)):
+		errors.append("historical dataset digest is invalid: %s" % digest_check.get("error", "unknown"))
+	elif str(historical_dataset.get("dataset_digest_sha256", "")) != str(oracle.get("dataset_digest_sha256", "")):
+		errors.append("historical dataset digest differs from the checked-in oracle")
+	if historical_raw_text != "" and _sha256(historical_raw_text) != str(oracle.get("raw_decoded_sha256", "")):
+		errors.append("historical decoded raw digest differs from the checked-in oracle")
+	var telemetry := telemetry_sample_keys_digest(historical_dataset)
+	if not bool(telemetry.get("ok", false)):
+		errors.append("historical telemetry keys are invalid: %s" % telemetry.get("error", "unknown"))
+	else:
+		if int(telemetry.get("count", -1)) != int(oracle.get("telemetry_sample_key_count", -2)):
+			errors.append("historical telemetry sample-key count differs from the checked-in oracle")
+		if str(telemetry.get("digest", "")) != str(oracle.get("telemetry_sample_keys_sha256", "")):
+			errors.append("historical telemetry sample-key digest differs from the checked-in oracle")
+	var cell_map := projection_cell_map(historical_dataset)
+	var base_cells: Dictionary = cell_map.get("cells", {}) if bool(cell_map.get("ok", false)) else {}
+	if bool(cell_map.get("ok", false)):
+		var published: Array = oracle.get("published_matrix", [])
+		if published.size() != 51:
+			errors.append("published oracle matrix must list all 51 pairs")
+		var seen_pairs := {}
+		for entry_value in published:
+			var entry: Dictionary = entry_value
+			var pair := str(entry.get("pair", ""))
+			seen_pairs[pair] = true
+			for field_value in PROJECTION_FIELDS:
+				var field := str(field_value)
+				var key := "%s|%s" % [pair, field]
+				if not base_cells.has(key):
+					errors.append("published matrix names unknown cell %s" % key)
+					continue
+				if "%.2f" % float(entry.get(field, NAN)) != str(base_cells[key]):
+					errors.append("published matrix cell %s differs from the live historical oracle" % key)
+		if seen_pairs.size() != base_cells.size() / PROJECTION_FIELDS.size():
+			errors.append("published matrix pair set differs from the historical oracle roster")
+	var current := _lineage_current_cells(manifest, historical_dataset)
+	for error_value in current.get("errors", []):
+		errors.append(str(error_value))
+	var current_digest := ""
+	if bool(current.get("ok", false)) and bool(cell_map.get("ok", false)):
+		var changed: Dictionary = current.get("changed", {})
+		var total: int = (current.get("cells", {}) as Dictionary).size()
+		if total != int((manifest.get("projection", {}) as Dictionary).get("cell_count", -1)):
+			errors.append("projection cell count %d differs from manifest cell_count" % total)
+		if changed.size() != int(manifest.get("changed_cell_count", -1)):
+			errors.append("changed cell count %d differs from manifest changed_cell_count" % changed.size())
+		if total - changed.size() != int(manifest.get("equal_cell_count", -1)):
+			errors.append("equal cell count %d differs from manifest equal_cell_count" % (total - changed.size()))
+		for invariant_value in manifest.get("invariant_projection_cells", []):
+			var invariant: Dictionary = invariant_value
+			var key := "%s|%s" % [str(invariant.get("pair", "")), str(invariant.get("field", ""))]
+			if changed.has(key):
+				errors.append("invariant cell %s is also listed as an accepted delta" % key)
+			if not base_cells.has(key):
+				errors.append("invariant cell %s is not part of the projection" % key)
+			elif "%.2f" % float(invariant.get("value", NAN)) != str(base_cells[key]):
+				errors.append("invariant cell %s differs from the historical oracle" % key)
+		current_digest = _sha256(_projection_canonical_from_cells(current.get("pair_keys", []), current.get("cells", {})))
+		if current_digest != str((manifest.get("current_integration_base", {}) as Dictionary).get("projection_sha256", "")):
+			errors.append("reconstructed current-base projection digest differs from the manifest")
+		if current_digest == str(oracle.get("projection_sha256", "")):
+			errors.append("current base must differ from the historical oracle by the accepted deltas")
+	var gameplay_issues := {}
+	for commit_value in (manifest.get("historical_inventory", {}) as Dictionary).get("ordered_commits", []):
+		var commit: Dictionary = commit_value
+		if str(commit.get("segment", "")) == "gameplay":
+			gameplay_issues[str(commit.get("issue", ""))] = true
+	for delta_value in manifest.get("accepted_projection_deltas", []):
+		var delta: Dictionary = delta_value
+		var causes: Array = delta.get("cause_issues", [])
+		if causes.is_empty():
+			errors.append("accepted delta %s|%s has no causal gameplay issue" % [str(delta.get("pair", "")), str(delta.get("field", ""))])
+		for cause_value in causes:
+			if not gameplay_issues.has(str(cause_value)):
+				errors.append("accepted delta cause %s is not a gameplay commit in the inventory" % str(cause_value))
+	for node_key in ["historical_oracle", "historical_integration_base", "current_integration_base"]:
+		var node: Dictionary = manifest.get(node_key, {})
+		if not _is_git_object_id(str(node.get("commit", ""))):
+			errors.append("%s commit is not a 40-hex Git object id" % node_key)
+		if not _is_git_object_id(str(node.get("tree", ""))):
+			errors.append("%s tree is not a 40-hex Git object id" % node_key)
+	return {"ok": errors.is_empty(), "errors": errors, "current_digest": current_digest}
+
+
+# FAN-1641: replaces the impossible "candidate vs ec15444e all-zero" gate with an
+# exact zero gameplay/event delta between a materialization candidate and its
+# immediate current integration base (historical oracle + accepted deltas).
+static func verify_candidate_against_current_base(candidate_dataset: Dictionary, manifest: Dictionary) -> Dictionary:
+	var errors := PackedStringArray()
+	var raw := read_raw_artifact()
+	if not bool(raw.get("ok", false)):
+		return {"ok": false, "errors": PackedStringArray(["cannot read historical oracle: %s" % raw.get("error", "unknown")])}
+	var historical = JSON.parse_string(str(raw.get("text", "")))
+	if not historical is Dictionary:
+		return {"ok": false, "errors": PackedStringArray(["historical oracle did not parse"])}
+	var base := _lineage_current_cells(manifest, historical)
+	if not bool(base.get("ok", false)):
+		for error_value in base.get("errors", []):
+			errors.append(str(error_value))
+		return {"ok": false, "errors": errors}
+	var base_cells: Dictionary = base.get("cells", {})
+	var candidate := projection_cell_map(candidate_dataset)
+	if not bool(candidate.get("ok", false)):
+		return {"ok": false, "errors": PackedStringArray(["candidate projection is invalid: %s" % candidate.get("error", "unknown")])}
+	var candidate_cells: Dictionary = candidate.get("cells", {})
+	for key in base_cells:
+		if not candidate_cells.has(key):
+			errors.append("candidate is missing projection cell %s" % str(key))
+		elif str(candidate_cells[key]) != str(base_cells[key]):
+			errors.append("candidate cell %s differs from current base (%s vs %s)" % [str(key), str(candidate_cells[key]), str(base_cells[key])])
+	for key in candidate_cells:
+		if not base_cells.has(key):
+			errors.append("candidate has an extra projection cell %s" % str(key))
+	var candidate_digest := projection_oracle_digest(candidate_dataset)
+	if bool(candidate_digest.get("ok", false)) and str(candidate_digest.get("digest", "")) != str((manifest.get("current_integration_base", {}) as Dictionary).get("projection_sha256", "")):
+		errors.append("candidate projection digest differs from the pinned current base")
+	var oracle: Dictionary = manifest.get("historical_oracle", {})
+	var candidate_keys := telemetry_sample_keys_digest(candidate_dataset)
+	if not bool(candidate_keys.get("ok", false)):
+		errors.append("candidate telemetry keys are invalid: %s" % candidate_keys.get("error", "unknown"))
+	else:
+		if int(candidate_keys.get("count", -1)) != int(oracle.get("telemetry_sample_key_count", -2)):
+			errors.append("candidate telemetry sample-key count differs from the current base")
+		if str(candidate_keys.get("digest", "")) != str(oracle.get("telemetry_sample_keys_sha256", "")):
+			errors.append("candidate telemetry event key set differs from the current base")
+	return {"ok": errors.is_empty(), "errors": errors}
+
+
+static func _git_is_ancestor(ancestor: String, descendant: String) -> bool:
+	var output := []
+	return OS.execute("git", ["merge-base", "--is-ancestor", ancestor, descendant], output, false) == 0
+
+
+static func _git_lines(args: Array) -> Dictionary:
+	var output := []
+	var exit_code := OS.execute("git", args, output, false)
+	if exit_code != 0:
+		return {"ok": false, "error": "git command failed (exit %d)" % exit_code}
+	var joined := "".join(PackedStringArray(output))
+	return {"ok": true, "lines": Array(joined.split("\n", false))}
+
+
+# FAN-1641: proves the manifest's commit-level causality against real Git ancestry
+# (not runtime ObjectID/allocation state). Confirms the pinned trees, the linear
+# f09 -> ec15444e -> current chain, the exact ec15444e..current inventory, and that
+# each gameplay commit touches the summon causal files.
+static func verify_oracle_lineage_ancestry(manifest: Dictionary) -> Dictionary:
+	var errors := PackedStringArray()
+	var oracle: Dictionary = manifest.get("historical_oracle", {})
+	var ec: Dictionary = manifest.get("historical_integration_base", {})
+	var current: Dictionary = manifest.get("current_integration_base", {})
+	for node_value in [oracle, ec, current]:
+		var node: Dictionary = node_value
+		var resolved := resolve_source_provenance(str(node.get("commit", "")))
+		if not bool(resolved.get("ok", false)):
+			errors.append("cannot resolve pinned commit %s: %s" % [str(node.get("commit", "")), resolved.get("error", "unknown")])
+			continue
+		if str((resolved.get("source", {}) as Dictionary).get("tree", "")) != str(node.get("tree", "")):
+			errors.append("pinned tree for %s differs from git" % str(node.get("commit", "")))
+	var oracle_resolved := resolve_source_provenance(str(oracle.get("commit", "")))
+	if bool(oracle_resolved.get("ok", false)) and str((oracle_resolved.get("source", {}) as Dictionary).get("commit_timestamp", "")) != str(oracle.get("commit_timestamp", "")):
+		errors.append("historical oracle commit timestamp differs from git")
+	if not _git_is_ancestor(str(oracle.get("commit", "")), str(ec.get("commit", ""))):
+		errors.append("historical oracle is not an ancestor of the historical integration base")
+	if not _git_is_ancestor(str(ec.get("commit", "")), str(current.get("commit", ""))):
+		errors.append("historical integration base is not an ancestor of the current base")
+	var inventory: Dictionary = manifest.get("historical_inventory", {})
+	var ordered: Array = inventory.get("ordered_commits", [])
+	var revlist := _git_lines(["rev-list", "--reverse", "%s..%s" % [str(ec.get("commit", "")), str(current.get("commit", ""))]])
+	if not bool(revlist.get("ok", false)):
+		errors.append(str(revlist.get("error", "git rev-list failed")))
+	else:
+		var actual: Array = revlist.get("lines", [])
+		if actual.size() != ordered.size():
+			errors.append("historical inventory size %d differs from git rev-list %d" % [ordered.size(), actual.size()])
+		else:
+			for index in range(ordered.size()):
+				if str((ordered[index] as Dictionary).get("commit", "")) != str(actual[index]):
+					errors.append("historical inventory commit %d differs from git rev-list" % index)
+	var gameplay_files: Array = inventory.get("gameplay_causal_files", [])
+	var gameplay_count := 0
+	for commit_value in ordered:
+		var commit: Dictionary = commit_value
+		if str(commit.get("segment", "")) != "gameplay":
+			continue
+		gameplay_count += 1
+		var sha := str(commit.get("commit", ""))
+		if not _git_is_ancestor(str(ec.get("commit", "")), sha) or not _git_is_ancestor(sha, str(current.get("commit", ""))):
+			errors.append("gameplay commit %s is not between the integration bases" % sha)
+		var names := _git_lines(["show", "--name-only", "--format=", sha])
+		var touches := false
+		if bool(names.get("ok", false)):
+			for causal_file in gameplay_files:
+				if str(causal_file) in Array(names.get("lines", [])):
+					touches = true
+		if not touches:
+			errors.append("gameplay commit %s does not touch the summon causal files" % sha)
+	if gameplay_count != int(inventory.get("gameplay_commit_count", -1)):
+		errors.append("gameplay commit count %d differs from manifest" % gameplay_count)
+	return {"ok": errors.is_empty(), "errors": errors}
 
 
 static func _telemetry_sample_key(pair: String, seed_value: int, scenario_key: String, fixture: String, target_cardinality: int) -> String:

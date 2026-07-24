@@ -8,6 +8,9 @@ const PlayerScript := preload("res://scripts/player.gd")
 const CodexData := preload("res://scripts/codex_data.gd")
 const Schema6 := preload("res://scripts/constellation_schema6_data.gd")
 const Generator := preload("res://tools/a5_balance_report.gd")
+# FAN-1641: external pin of the current integration-base (b8909e30) 51x4 digest,
+# so a self-consistent lineage-manifest tamper cannot pass the integrity gate.
+const CURRENT_BASE_PROJECTION_SHA256 := "ac7710a043848eb4fe895237092c3aa2458ab4c1092258a6ba03d5f02b635494"
 
 var _errors := PackedStringArray()
 
@@ -40,7 +43,28 @@ func _initialize() -> void:
 	_validate_live_coverage(dataset)
 	_validate_csv(dataset)
 	_validate_markdown(dataset, report_text)
+	_validate_oracle_lineage(dataset, raw_text)
 	_finish()
+
+
+# FAN-1641: the committed oracle and the checked-in lineage manifest must stay
+# fail-closed consistent. The full git-backed commit-level causality (ancestry,
+# inventory segmentation, candidate zero-delta gate, and negative mutations) lives
+# in tests/a5_balance_report_parity_test.gd.
+func _validate_oracle_lineage(dataset: Dictionary, raw_text: String) -> void:
+	var loaded := Generator.load_oracle_lineage()
+	_check(bool(loaded.get("ok", false)), "oracle lineage manifest must load: %s" % loaded.get("error", "unknown"))
+	if not bool(loaded.get("ok", false)):
+		return
+	var manifest: Dictionary = loaded.get("manifest", {})
+	var lineage := Generator.verify_oracle_lineage(manifest, dataset, raw_text)
+	_check(bool(lineage.get("ok", false)), "committed oracle must match the lineage manifest: %s" % "; ".join(lineage.get("errors", [])))
+	_check(str(lineage.get("current_digest", "")) == CURRENT_BASE_PROJECTION_SHA256, "reconstructed current digest differs from the externally pinned current base")
+	_check(str((manifest.get("current_integration_base", {}) as Dictionary).get("projection_sha256", "")) == CURRENT_BASE_PROJECTION_SHA256, "manifest current-base digest differs from the externally pinned current base")
+	_check(str((manifest.get("historical_oracle", {}) as Dictionary).get("dataset_digest_sha256", "")) == str(dataset.get("dataset_digest_sha256", "")), "lineage manifest historical dataset digest differs from committed raw.json.gz")
+	var drifted := manifest.duplicate(true)
+	(drifted.get("current_integration_base", {}) as Dictionary)["projection_sha256"] = "0000000000000000000000000000000000000000000000000000000000000000"
+	_check(not bool(Generator.verify_oracle_lineage(drifted, dataset, raw_text).get("ok", true)), "drifted manifest current-base digest must fail closed")
 
 
 func _validate_source_provenance(dataset: Dictionary) -> void:

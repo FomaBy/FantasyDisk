@@ -1271,6 +1271,70 @@ projection (`legacy HP-delta/raw duration`, `ledger/raw duration`,
 fresh executable oracle `f09f21ec`; это measurement repair, а не balance/config
 tuning.
 
+### FAN-1641 — lineage-aware A5 parity contract
+
+Исторический численный оракул `f09f21ec` и его закоммиченные артефакты
+(`raw.json.gz`, `per_weapon.csv`, `report.md`) остаются read-only и неизменными.
+После принятых и независимо QA-проверенных summon-фиксов FAN-1585 (`e0c6c8c5`,
+druid summon formations) и FAN-1596 (`8376f5c7`, homunculus pair guard) свежая
+регенерация из текущего `origin/dev` детерминированно отличается от f09 ровно в
+трёх из 204 ячеек 51×4 — только у `druid/summon_amulet`: crowd mean
+`361323.76→394715.33`, solo variance `45635023.84→51498851.11`, crowd variance
+`36494237500.62→36324029697.05`; solo mean остаётся `68101.14`. Поэтому буквальный
+all-zero diff к f09/`ec15444e` больше недостижим без отката принятой геометрии
+или подмены baseline.
+
+`tests/fixtures/a5_oracle_lineage.json` (schema `fan1641.a5-oracle-lineage.v1`)
+кодирует это lineage fail-closed: неизменные f09 raw/dataset/projection/telemetry
+хэши и опубликованную 51×4 матрицу; ровно три принятые дельты
+`druid/summon_amulet` с `from/to` и причинными issue FAN-1585/FAN-1596;
+инвариантные 201/204 равные ячейки и solo-mean инвариант; выведенный projection
+digest непосредственной current integration base `b8909e30`; и точный
+сегментированный инвентарь `ec15444e..b8909e30` (8 commits: 6 measurement-contract
++ 2 gameplay), где gameplay-коммиты трогают `scripts/summoner_weapon.gd`.
+
+Верификатор в `tools/a5_balance_report.gd` состоит из трёх слоёв и не допускает
+wildcard, tolerance relaxation, snapshot substitution или ручную перезапись
+baseline:
+
+- `verify_oracle_lineage` — self-consistency манифеста против живого закоммиченного
+  оракула: f09 хэши воспроизводятся, опубликованная матрица равна live-оракулу,
+  принятые дельты реконструируют current base ровно с 201 равной и 3 изменёнными
+  ячейками, а выведенный digest совпадает с pinned значением и отличается от f09.
+- `verify_oracle_lineage_ancestry` — commit-level causality через настоящий Git
+  (`git show`/`merge-base`/`rev-list`), без зависимости от runtime ObjectID или
+  порядка аллокаций: pinned trees, линейная цепочка `f09 → ec15444e → b8909e30`,
+  точный упорядоченный инвентарь и summon-файлы у gameplay-коммитов.
+- `verify_candidate_against_current_base` — замена невозможного
+  `candidate vs ec15444e all-zero`: кандидат материализации обязан иметь exact
+  zero gameplay/event delta к своей immediate current base (оракул + принятые
+  дельты) по всем 204 ячейкам и по 309-ключевому telemetry event-множеству.
+
+Негативные мутации (лишняя дельта ячейки, изменённое принятое значение,
+пропущенная lineage-запись, подменённый оракул/коммит/tree, ложный current-base
+zero, дрейф current digest, подменённый decoded raw) обязаны fail closed;
+покрытие — в `tests/a5_balance_report_parity_test.gd` (полный контракт + Git
+causality) и `tests/a5_balance_report_integrity_test.gd` (committed oracle ↔
+manifest tie).
+
+Lineage-aware замена FAN-1575 AC6/AC7 (применяется после независимого exact-SHA
+QA PASS этого дефекта):
+
+- **AC6′.** Две clean executable f09 regeneration детерминированы, а исторический
+  f09 51×4 oracle/digest сохранён неизменным. Candidate по 51 keys × четырём
+  live/variance полям равен f09 за исключением ровно трёх перечисленных принятых
+  `druid/summon_amulet` дельт (crowd mean, solo variance, crowd variance),
+  причинно связанных с независимо QA-проверенными FAN-1585/FAN-1596; остальные
+  201 ячейки — exact zero diff; solo mean остаётся `68101.14`. Tolerance
+  relaxation, wildcard, snapshot substitution или ручная baseline rewrite = FAIL.
+- **AC7′.** Candidate имеет exact zero gameplay/event delta (damage, targets/order,
+  frame/timing, HP mutation, RNG, feedback, on-kill) к своей immediate current
+  integration base (текущий `origin/dev`), а не к `ec15444e`. Исторический
+  инвентарь `ec15444e→current` зафиксирован точно и сегментирован на принятые
+  measurement-contract и gameplay (FAN-1585/FAN-1596) коммиты. Stage 1 A/B,
+  FAN-1539 telemetry, Dark Mage/Homunculus/summon regressions и fail-closed
+  mutations остаются зелёными.
+
 FAN-1574 заменяет synthetic no-op на production-equivalent observer A/B:
 `--mode=observer_neutrality` запускает 51 оружие × 3 seed × solo/pack, плюс
 три representative fixtures, то есть **309 samples в каждой arm**. Обе arm
