@@ -74,3 +74,5 @@ cache generations и отсутствие per-frame deep copies/introspection. W
 threshold в shared CI допустим только как дополнительный сигнал из-за шумности.
 Финальная Windows release-проверка всё равно включает профиль на реальном Windows
 устройстве и не подменяется macOS headless.
+
+<!-- FAN-1695 QA proof: unrelated-path change, must not pull game-specific suites. Removed with the QA branch. -->

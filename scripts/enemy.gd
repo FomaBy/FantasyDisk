@@ -140,7 +140,7 @@ const SEPARATION_REFRESH_INTERVAL := 0.2   # пересчёт кэша сосе�
 const SEPARATION_MAX_NEIGHBORS := 4        # держим 3-4 ближайших
 const SEPARATION_MAX_RANGE := 90.0         # кап радиуса расталкивания, px
 const SEPARATION_SEARCH_SLACK := 50.0      # запас поиска: соседи двигаются между рефрешами
-const SEPARATION_MAX_SPEED := 0.0          # потолок push-скорости, px/s
+const SEPARATION_MAX_SPEED := 90.0         # потолок push-скорости, px/s
 const SEPARATION_ELITE_WEIGHT := 0.4       # элитки толкаются слабее; боссы (0.0) — никогда
 # «Клюнул и ударил»: на время замаха контакт-удара steering падает до 20%.
 const CONTACT_WINDUP_STEERING_FACTOR := 0.2
