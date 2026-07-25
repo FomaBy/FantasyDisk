@@ -147,7 +147,7 @@ func _test_deep_overlap_backoff(errors: Array[String]) -> void:
 	await process_frame
 
 
-# (c) Два врага в одной точке расходятся сепарацией, оба остаются engaged.
+# (c) [FAN-1693 proof: touch a tests/*.gd path] Два врага в одной точке расходятся сепарацией, оба остаются engaged.
 func _test_pair_separation(errors: Array[String]) -> void:
 	var player := _make_player(Vector2(2048, 1152))
 	var stack_position: Vector2 = player.global_position + Vector2(300, 0)
