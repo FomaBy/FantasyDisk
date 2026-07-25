@@ -1449,6 +1449,54 @@ QA PASS этого дефекта):
   FAN-1539 telemetry, Dark Mage/Homunculus/summon regressions и fail-closed
   mutations остаются зелёными.
 
+#### FAN-1672 — projection trust root и повторяемость `--mode=full`
+
+FAN-1660 exact-SHA QA получила non-zero `--mode=full` на верном кандидате
+`4bd2e710` с тремя `druid/summon_amulet` ячейками из lineage-дельты. Причина не в
+gameplay/RNG/runtime-order: живая druid-телеметрия детерминирована и
+воспроизводит принятые `68101.14 / 394715.33` (см.
+`tests/a5_balance_report_druid_full_determinism_test.gd`). Дефект был в самом
+гейте — `verify_candidate_projection_against_current_base` читал исторический
+оракул из `docs/design/reports/fan1438_a5_balance/raw.json.gz`, то есть из того
+же артефакта, который успешный `--mode=full` перезаписывает своим выводом.
+Поэтому первый прогон на чекауте проходил и подменял f09-оракул текущей базой, а
+каждый следующий прогон в том же чекауте fail closed: принятые `from`-значения в
+файле уже были заменены на `to`-значения. Тот же самоотравленный вход ломал и
+`tests/a5_balance_report_parity_test.gd` / `..._integrity_test.gd` на чекауте
+после регенерации.
+
+FAN-1672 распространяет FAN-1658 trust root на projection-измерение:
+
+- **Константы projection-анкера.** `PROJECTION_ANCHOR_HISTORICAL_SHA256`
+  (`d8109233…`, f09 51×4) и `PROJECTION_ANCHOR_CURRENT_SHA256` (`ac7710a0…`,
+  `b8909e30` 51×4) живут в `tools/a5_balance_report.gd` рядом с telemetry-анкером.
+- **Исторический baseline из закоммиченного манифеста.**
+  `historical_oracle_cells(manifest)` строит 51×4 карту из
+  `historical_oracle.published_matrix` и fail closed, если набор неполон,
+  содержит дубли или его canonical digest не совпадает одновременно с
+  `PROJECTION_ANCHOR_HISTORICAL_SHA256` и с собственным
+  `historical_oracle.projection_sha256` манифеста. Мутабельный сгенерированный
+  артефакт из production-гейта исключён полностью.
+- **Двойной анкер current base.** Реконструкция «f09 + ровно три принятые дельты»
+  и projection digest кандидата обязаны совпасть и с pinned значением манифеста,
+  и с `PROJECTION_ANCHOR_CURRENT_SHA256`. Self-repin манифеста (перепривязка
+  `current_integration_base.projection_sha256` или правка `published_matrix`)
+  fail closed.
+- **Ничего не ослаблено.** Сравнение остаётся exact `%.2f` по всем 204 ячейкам,
+  без tolerance, wildcard и исключённых полей; 309-ключевой telemetry set и
+  FAN-1649/FAN-1658 full-payload слой не изменены; before-write семантика
+  сохранена — при mismatch `quit(1)` стоит до `make_dir`/любой записи.
+- **Следствие контракта.** Настоящий `--mode=full` теперь повторяем: два подряд
+  прогона в одном чекауте дают exit `0` и побитово одинаковые
+  `report.md` / `per_weapon.csv` / `raw.json.gz`.
+
+Остаточное ограничение (вне scope FAN-1672): `verify_oracle_lineage` и A5
+parity/integrity тесты по-прежнему читают исторический DATASET из
+`raw.json.gz`, потому что другого закоммиченного экземпляра f09-датасета в репо
+нет. После локальной регенерации отчёта их нужно запускать на восстановленном
+артефакте (`git restore docs/design/reports/fan1438_a5_balance`). Перенос
+f09-оракула в отдельный immutable fixture — отдельная PM-задача.
+
 FAN-1574 заменяет synthetic no-op на production-equivalent observer A/B:
 `--mode=observer_neutrality` запускает 51 оружие × 3 seed × solo/pack, плюс
 три representative fixtures, то есть **309 samples в каждой arm**. Обе arm

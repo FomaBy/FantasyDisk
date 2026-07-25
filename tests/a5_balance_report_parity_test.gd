@@ -105,6 +105,28 @@ func _verify_lineage_contract(historical: Dictionary, raw_text: String) -> void:
 	# false current-base zero: an unpatched f09 candidate is NOT the current base.
 	_expect_projection_failure(historical.duplicate(true), manifest, "false current-base zero (candidate == historical f09) must fail closed")
 
+	# FAN-1672: the candidate projection gate must take its historical baseline from
+	# the COMMITTED manifest, not from the generated raw artifact the same --mode=full
+	# run rewrites on success. Reading that artifact made the gate consume its own
+	# output: run 1 on a checkout passed, run 2 failed closed because the accepted
+	# druid 'from' values had already been replaced by their accepted 'to' values.
+	var manifest_cells := Generator.historical_oracle_cells(manifest)
+	_check(bool(manifest_cells.get("ok", false)), "manifest-anchored historical matrix must resolve: %s" % "; ".join(manifest_cells.get("errors", [])))
+	_check(str(manifest_cells.get("digest", "")) == F09_ORACLE_PROJECTION_SHA256, "manifest-anchored historical matrix must reproduce the externally pinned f09 oracle digest")
+	# A tampered published matrix must fail closed instead of silently becoming the new
+	# baseline, so the manifest cannot substitute an alternative historical oracle.
+	var tampered_matrix := manifest.duplicate(true)
+	var published: Array = (tampered_matrix.get("historical_oracle", {}) as Dictionary).get("published_matrix", [])
+	if published.size() > 0:
+		(published[0] as Dictionary)["live_solo_dpm_mean"] = float((published[0] as Dictionary).get("live_solo_dpm_mean", 0.0)) + 0.01
+	_check(not bool(Generator.historical_oracle_cells(tampered_matrix).get("ok", true)), "tampered published historical matrix must fail the immutable historical anchor")
+	_expect_projection_failure(candidate, tampered_matrix, "tampered published historical matrix must fail the candidate projection gate")
+	# A manifest that re-pins its own current-base digest still has to reproduce the
+	# immutable runtime anchor, so the candidate gate stays closed.
+	var repinned_current := manifest.duplicate(true)
+	(repinned_current.get("current_integration_base", {}) as Dictionary)["projection_sha256"] = F09_ORACLE_PROJECTION_SHA256
+	_expect_projection_failure(candidate, repinned_current, "re-pinned current-base projection digest must fail the candidate projection gate")
+
 	# missing lineage entry: drop one accepted delta from the manifest.
 	var missing_entry := manifest.duplicate(true)
 	var deltas: Array = missing_entry.get("accepted_projection_deltas", [])

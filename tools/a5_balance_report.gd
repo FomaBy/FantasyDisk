@@ -64,6 +64,23 @@ const TELEMETRY_ANCHOR_BASE_COMMIT := "b8909e30b779afe8f99aad554b909cfa44e4f1a1"
 const TELEMETRY_ANCHOR_BASE_TREE := "73caf39a6004be0fa9c2054e4e4ae0d41d272484"
 const TELEMETRY_ANCHOR_SAMPLE_COUNT := 309
 const TELEMETRY_ANCHOR_FULL_SHA256 := "ad1d9a7ae1a36b087370b33582601a51b880d8cf102d3adc461fdb3e1c5d307f"
+# FAN-1672: immutable runtime trust root for the 51x4 PROJECTION dimension.
+# RAW_PATH used to be both the historical f09 oracle the candidate gate read and
+# the artifact a successful --mode=full run rewrites, so the gate consumed its own
+# output: the first run on a checkout passed, and every later run on that same
+# checkout failed closed because the three accepted druid/summon_amulet 'from'
+# values had already been replaced by their accepted 'to' values. The historical
+# matrix is now taken from the committed lineage manifest
+# (historical_oracle.published_matrix), which must reproduce
+# PROJECTION_ANCHOR_HISTORICAL_SHA256 before it is used, and applying the exactly
+# enumerated accepted deltas must reproduce PROJECTION_ANCHOR_CURRENT_SHA256.
+# Keeping both digests in the executable tool - as FAN-1658 already does for the
+# telemetry payload - means neither a regenerated artifact nor a self-repinned
+# manifest can substitute an alternative projection baseline. No tolerance,
+# wildcard, or excluded field is introduced: the comparison stays exact.
+const PROJECTION_ANCHOR_HISTORICAL_SHA256 := "d81092333cdf6e3f4196b8c5ee9198e83ccef8bfe7530a8ef20f911a54d5efd1"
+const PROJECTION_ANCHOR_CURRENT_SHA256 := "ac7710a043848eb4fe895237092c3aa2458ab4c1092258a6ba03d5f02b635494"
+const PROJECTION_ANCHOR_PAIR_COUNT := 51
 const REPRESENTATIVE_CLASS_ID := "berserk"
 const REPRESENTATIVE_WEAPON_ID := "sword"
 const REPRESENTATIVE_SEED := 1511001
@@ -1988,7 +2005,59 @@ static func _lineage_current_cells(manifest: Dictionary, historical_dataset: Dic
 	var base := projection_cell_map(historical_dataset)
 	if not bool(base.get("ok", false)):
 		return {"ok": false, "errors": PackedStringArray(["historical projection is invalid: %s" % base.get("error", "unknown")])}
-	var cells: Dictionary = (base.get("cells", {}) as Dictionary).duplicate(true)
+	return _lineage_apply_accepted_deltas(manifest, base.get("cells", {}), base.get("pair_keys", []))
+
+
+# FAN-1672: the historical f09 51x4 matrix taken from the COMMITTED lineage manifest
+# instead of the generated raw artifact that a successful --mode=full run rewrites.
+# Fails closed unless the published matrix is a complete, duplicate-free 51x4 cell
+# set whose canonical projection reproduces BOTH the immutable runtime historical
+# anchor and the manifest's own historical projection digest.
+static func historical_oracle_cells(manifest: Dictionary) -> Dictionary:
+	var oracle: Dictionary = manifest.get("historical_oracle", {})
+	var published: Array = oracle.get("published_matrix", [])
+	var errors := PackedStringArray()
+	var pair_keys := []
+	var seen := {}
+	var cells := {}
+	for entry_value in published:
+		if not entry_value is Dictionary:
+			errors.append("published matrix entry is not an object")
+			continue
+		var entry: Dictionary = entry_value
+		var pair := str(entry.get("pair", ""))
+		if pair == "":
+			errors.append("published matrix entry has no pair")
+			continue
+		if seen.has(pair):
+			errors.append("published matrix lists %s more than once" % pair)
+			continue
+		seen[pair] = true
+		pair_keys.append(pair)
+		for field_value in PROJECTION_FIELDS:
+			var field := str(field_value)
+			if not entry.has(field):
+				errors.append("published matrix cell %s|%s is missing" % [pair, field])
+				continue
+			cells["%s|%s" % [pair, field]] = "%.2f" % float(entry.get(field, NAN))
+	if pair_keys.size() != PROJECTION_ANCHOR_PAIR_COUNT or cells.size() != pair_keys.size() * PROJECTION_FIELDS.size():
+		errors.append("published matrix must supply all %d pairs x %d projection fields" % [PROJECTION_ANCHOR_PAIR_COUNT, PROJECTION_FIELDS.size()])
+	if not errors.is_empty():
+		return {"ok": false, "errors": errors}
+	var digest := _sha256(_projection_canonical_from_cells(pair_keys, cells))
+	if digest != PROJECTION_ANCHOR_HISTORICAL_SHA256:
+		errors.append("published historical matrix digest %s differs from the immutable historical anchor" % digest)
+	if digest != str(oracle.get("projection_sha256", "")):
+		errors.append("published historical matrix digest differs from the manifest historical projection digest")
+	return {"ok": errors.is_empty(), "errors": errors, "cells": cells, "pair_keys": pair_keys, "digest": digest}
+
+
+# FAN-1641/FAN-1672: apply the exactly-enumerated accepted deltas to a historical
+# 51x4 cell map. Split out from _lineage_current_cells so the production candidate
+# gate can supply the manifest-anchored historical matrix while the manifest
+# self-consistency check keeps supplying the historical dataset it is pinned to.
+static func _lineage_apply_accepted_deltas(manifest: Dictionary, base_cells: Dictionary, base_pair_keys: Array) -> Dictionary:
+	var cells: Dictionary = base_cells.duplicate(true)
 	var errors := PackedStringArray()
 	var changed := {}
 	for delta_value in manifest.get("accepted_projection_deltas", []):
@@ -2007,7 +2076,7 @@ static func _lineage_current_cells(manifest: Dictionary, historical_dataset: Dic
 			errors.append("accepted delta %s does not change the value" % key)
 		cells[key] = to_text
 		changed[key] = true
-	return {"ok": errors.is_empty(), "errors": errors, "cells": cells, "changed": changed, "pair_keys": base.get("pair_keys", [])}
+	return {"ok": errors.is_empty(), "errors": errors, "cells": cells, "changed": changed, "pair_keys": base_pair_keys}
 
 
 # FAN-1641: fail-closed self-consistency of the checked-in lineage manifest against
@@ -2137,18 +2206,30 @@ static func verify_candidate_against_current_base(candidate_dataset: Dictionary,
 # candidate carrying the older f09 event contract.
 static func verify_candidate_projection_against_current_base(candidate_dataset: Dictionary, manifest: Dictionary) -> Dictionary:
 	var errors := PackedStringArray()
-	var raw := read_raw_artifact()
-	if not bool(raw.get("ok", false)):
-		return {"ok": false, "errors": PackedStringArray(["cannot read historical oracle: %s" % raw.get("error", "unknown")])}
-	var historical = JSON.parse_string(str(raw.get("text", "")))
-	if not historical is Dictionary:
-		return {"ok": false, "errors": PackedStringArray(["historical oracle did not parse"])}
-	var base := _lineage_current_cells(manifest, historical)
+	# FAN-1672: the historical baseline comes from the committed lineage manifest,
+	# never from the generated raw artifact this very command rewrites on success.
+	# Reading RAW_PATH here made the gate consume its own output and fail closed on
+	# every repeat run of a faithful candidate in the same checkout.
+	var historical := historical_oracle_cells(manifest)
+	if not bool(historical.get("ok", false)):
+		for error_value in historical.get("errors", []):
+			errors.append(str(error_value))
+		return {"ok": false, "errors": errors}
+	var base := _lineage_apply_accepted_deltas(manifest, historical.get("cells", {}), historical.get("pair_keys", []))
 	if not bool(base.get("ok", false)):
 		for error_value in base.get("errors", []):
 			errors.append(str(error_value))
 		return {"ok": false, "errors": errors}
 	var base_cells: Dictionary = base.get("cells", {})
+	# The reconstructed current base must reproduce the immutable runtime anchor as
+	# well as the manifest's own pin, so a self-repinned manifest cannot move it.
+	var base_digest := _sha256(_projection_canonical_from_cells(base.get("pair_keys", []), base_cells))
+	if base_digest != PROJECTION_ANCHOR_CURRENT_SHA256:
+		errors.append("reconstructed current-base projection digest %s differs from the immutable current anchor" % base_digest)
+	if base_digest != str((manifest.get("current_integration_base", {}) as Dictionary).get("projection_sha256", "")):
+		errors.append("reconstructed current-base projection digest differs from the manifest current base")
+	if not errors.is_empty():
+		return {"ok": false, "errors": errors}
 	var candidate := projection_cell_map(candidate_dataset)
 	if not bool(candidate.get("ok", false)):
 		return {"ok": false, "errors": PackedStringArray(["candidate projection is invalid: %s" % candidate.get("error", "unknown")])}
@@ -2162,8 +2243,14 @@ static func verify_candidate_projection_against_current_base(candidate_dataset: 
 		if not base_cells.has(key):
 			errors.append("candidate has an extra projection cell %s" % str(key))
 	var candidate_digest := projection_oracle_digest(candidate_dataset)
-	if bool(candidate_digest.get("ok", false)) and str(candidate_digest.get("digest", "")) != str((manifest.get("current_integration_base", {}) as Dictionary).get("projection_sha256", "")):
-		errors.append("candidate projection digest differs from the pinned current base")
+	if not bool(candidate_digest.get("ok", false)):
+		errors.append("candidate projection digest is invalid: %s" % candidate_digest.get("error", "unknown"))
+	else:
+		if str(candidate_digest.get("digest", "")) != str((manifest.get("current_integration_base", {}) as Dictionary).get("projection_sha256", "")):
+			errors.append("candidate projection digest differs from the pinned current base")
+		# FAN-1672: and from the immutable runtime anchor, so the pin cannot be moved.
+		if str(candidate_digest.get("digest", "")) != PROJECTION_ANCHOR_CURRENT_SHA256:
+			errors.append("candidate projection digest differs from the immutable current anchor")
 	var oracle: Dictionary = manifest.get("historical_oracle", {})
 	var candidate_keys := telemetry_sample_keys_digest(candidate_dataset)
 	if not bool(candidate_keys.get("ok", false)):
