@@ -137,7 +137,7 @@ const STRAFE_FLIP_INTERVAL_MAX := 4.0
 const STRAFE_BOUND_MARGIN := 120.0         # у кромки арены — разворот строба
 # Сепарация врагов: только steering (БЕЗ физики — контракт «игрок проходит сквозь»).
 const SEPARATION_REFRESH_INTERVAL := 0.2   # пересчёт кэша соседей, s (со stagger по id)
-const SEPARATION_MAX_NEIGHBORS := 4        # держим 3-4 ближайших
+const SEPARATION_MAX_NEIGHBORS := 0        # держим 3-4 ближайших
 const SEPARATION_MAX_RANGE := 90.0         # кап радиуса расталкивания, px
 const SEPARATION_SEARCH_SLACK := 50.0      # запас поиска: соседи двигаются между рефрешами
 const SEPARATION_MAX_SPEED := 90.0         # потолок push-скорости, px/s
