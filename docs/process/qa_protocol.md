@@ -105,9 +105,16 @@ implementation-агента:
 2. **Целевые тесты задачи** — прогнать все упомянутые тесты headless; убедиться,
    что тест реально проверяет заявленное (заглянуть в код теста), а не пустышка.
 3. **Регрессия**: `python3 tools/quality_gate.py --profile changed` для task diff;
-   `--profile full` перед release. Runner обнаруживает direct и inherited suites,
-   изолирует user-data и вызывает Godot только через semaphore. Ручной
-   focused-запуск не заменяет certifying profile.
+   `--profile full` перед release. Runner обнаруживает direct и inherited suites
+   рекурсивно по всему `tests/**` (включая вложенные каталоги вида
+   `tests/ultimates/`), изолирует user-data и вызывает Godot только через
+   semaphore. Ручной focused-запуск не заменяет certifying profile.
+   Пустой набор — это `failed`, а не `passed`: если для заявленной области не
+   выбран ни один Godot-тест или Python-discovery выполнила 0 тестов, гейт
+   падает и пишет причину в `static_checks` (`godot-test-discovery`,
+   `python-unit-discovery`). В JSON evidence сверяйте `selected_godot_tests`
+   и `executed_python_tests` — нули означают, что проверки не было.
+   Полный список собираемых тестов без прогона: `--list`.
 4. **Краевые случаи** — минимум 3 на задачу: граничные значения, повторные
    входы/выходы, пауза посреди эффекта, разрешение 1280x720, смерть/победа
    в момент действия механики.

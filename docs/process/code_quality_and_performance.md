@@ -15,9 +15,14 @@ Gate требует Godot 4.7 и последовательно проверяе
 отсутствие raw/Base64 webhook credential, Python-тесты/синтаксис и direct +
 inherited Godot suites. `changed` автоматически включает изменённые/новые тесты
 и umbrella fallback для runtime/scene diff; `full` обнаруживает весь текущий
-набор. Любой `SCRIPT ERROR`, `FATAL`, timeout или ненулевой exit — failure.
+набор. Discovery рекурсивна: Godot suites берутся из всего `tests/**`, а
+Python-тесты запускаются отдельной `unittest discover` на каждый каталог с
+`test_*.py`, потому что `unittest` не заходит в non-package подкаталоги.
+Одинаковые имена suites в разных каталогах отвергаются как ambiguous.
+Любой `SCRIPT ERROR`, `FATAL`, timeout или ненулевой exit — failure.
 Filtered/skip-прогон имеет non-certifying статус `partial_pass`, пустой прогон
-запрещён. Staged, unstaged или untracked worktree также всегда non-certifying и
+запрещён: нулевой выбор Godot-тестов или `Ran 0 tests` в Python-discovery дают
+`failed` с записью в `static_checks`, а не зелёный отчёт. Staged, unstaged или untracked worktree также всегда non-certifying и
 фиксируется в JSON evidence; commit-range и index whitespace проверяются
 отдельно. `--static-only` — certifying CI-профиль, но не заменяет полный
 локальный/release gate.

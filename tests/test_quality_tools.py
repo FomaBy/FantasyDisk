@@ -1,7 +1,9 @@
 from __future__ import annotations
 
+import contextlib
 import importlib.util
 import base64
+import json
 import os
 import subprocess
 import sys
@@ -63,6 +65,202 @@ class QualityGateTests(unittest.TestCase):
     @classmethod
     def setUpClass(cls) -> None:
         cls.quality = _load_module("quality_gate_tested", "tools/quality_gate.py")
+
+    def _use_synthetic_tree(self, stack: contextlib.ExitStack, files: dict[str, str]) -> Path:
+        root = Path(stack.enter_context(tempfile.TemporaryDirectory(prefix="quality-tree-")))
+        for relative, content in files.items():
+            path = root / relative
+            path.parent.mkdir(parents=True, exist_ok=True)
+            path.write_text(content, encoding="utf-8")
+        stack.enter_context(mock.patch.object(self.quality, "ROOT", root))
+        stack.enter_context(mock.patch.object(self.quality, "TEST_DIR", root / "tests"))
+        return root
+
+    def test_discovers_nested_godot_suites(self) -> None:
+        with contextlib.ExitStack() as stack:
+            self._use_synthetic_tree(stack, {
+                "tests/flat_test.gd": "extends SceneTree\n",
+                "tests/ultimates/registry_contract_test.gd": "extends SceneTree\n",
+                "tests/ultimates/registry_validator_test.gd":
+                    'extends "res://tests/ultimates/registry_contract_test.gd"\n',
+                "tests/ultimates/notes.md": "not a suite\n",
+            })
+            discovered = {
+                path.name for path in self.quality.discover_godot_tests()
+            }
+            selected = {
+                path.name
+                for path in self.quality.select_godot_tests("full", [], "origin/dev", False)
+            }
+        self.assertEqual(
+            discovered,
+            {"flat_test.gd", "registry_contract_test.gd", "registry_validator_test.gd"},
+        )
+        self.assertEqual(discovered, selected)
+
+    def test_nested_suite_runs_from_its_own_resource_path(self) -> None:
+        nested = ROOT / "tests" / "ultimates" / "registry_contract_test.gd"
+        self.assertEqual(
+            self.quality.script_resource_path(nested),
+            "res://tests/ultimates/registry_contract_test.gd",
+        )
+        with mock.patch.object(
+            self.quality, "_run_captured", return_value=(0, "", False)
+        ) as run_captured:
+            outcome = self.quality.run_godot_test(nested, 1.0)
+        self.assertEqual(outcome["script"], "res://tests/ultimates/registry_contract_test.gd")
+        self.assertIn(
+            "res://tests/ultimates/registry_contract_test.gd", run_captured.call_args.args[0]
+        )
+
+    def test_ambiguous_test_names_across_directories_are_rejected(self) -> None:
+        with contextlib.ExitStack() as stack:
+            self._use_synthetic_tree(stack, {
+                "tests/registry_contract_test.gd": "extends SceneTree\n",
+                "tests/ultimates/registry_contract_test.gd": "extends SceneTree\n",
+            })
+            with self.assertRaises(RuntimeError) as raised:
+                self.quality.select_godot_tests("full", [], "origin/dev", False)
+        self.assertIn("registry_contract_test", str(raised.exception))
+
+    def test_python_discovery_covers_nested_directories(self) -> None:
+        with contextlib.ExitStack() as stack:
+            self._use_synthetic_tree(stack, {
+                "tests/test_flat.py": "",
+                "tests/ultimates/test_registry.py": "",
+            })
+            commands = dict(self.quality.python_unit_commands())
+        self.assertEqual(set(commands), {"python-unit", "python-unit:tests/ultimates"})
+        self.assertEqual(commands["python-unit"][-3:], ["tests", "-p", "test_*.py"])
+        self.assertEqual(
+            commands["python-unit:tests/ultimates"][-3:],
+            ["tests/ultimates", "-p", "test_*.py"],
+        )
+
+    def test_package_subdirectory_is_not_discovered_twice(self) -> None:
+        with contextlib.ExitStack() as stack:
+            self._use_synthetic_tree(stack, {
+                "tests/test_flat.py": "",
+                "tests/package/__init__.py": "",
+                "tests/package/test_inside_package.py": "",
+                "tests/plain/test_outside_package.py": "",
+            })
+            commands = dict(self.quality.python_unit_commands())
+        # `unittest discover -s tests` already descends into importable
+        # packages; only the non-package directory needs its own root.
+        self.assertEqual(set(commands), {"python-unit", "python-unit:tests/plain"})
+
+    def test_every_repository_python_test_belongs_to_one_discovery_root(self) -> None:
+        roots = self.quality.python_unit_discovery_roots()
+        discovered = self.quality.discover_python_tests()
+        self.assertTrue(discovered)
+        for path in discovered:
+            covering = [
+                root for root in roots
+                if self.quality._package_chain_reaches(root, path.parent)
+            ]
+            self.assertEqual(len(covering), 1, f"{path} covered by {covering}")
+        nested = [path for path in discovered if path.parent != self.quality.TEST_DIR]
+        self.assertTrue(nested, "repository must keep a nested suite guarding recursion")
+
+    def test_nested_python_tests_actually_execute(self) -> None:
+        with contextlib.ExitStack() as stack:
+            root = self._use_synthetic_tree(stack, {
+                "tests/ultimates/test_registry.py": (
+                    "import unittest\n\n\n"
+                    "class NestedTests(unittest.TestCase):\n"
+                    "    def test_nested_suite_runs(self) -> None:\n"
+                    "        self.assertTrue(True)\n"
+                ),
+            })
+            command = self.quality.python_unit_commands()[0][1]
+            completed = subprocess.run(
+                command, cwd=root, text=True, check=False,
+                stdout=subprocess.PIPE, stderr=subprocess.STDOUT,
+            )
+        self.assertEqual(completed.returncode, 0, completed.stdout)
+        self.assertIn("test_nested_suite_runs", completed.stdout)
+        self.assertIn("Ran 1 test", completed.stdout)
+
+    def test_missing_python_tests_fail_closed(self) -> None:
+        with contextlib.ExitStack() as stack:
+            self._use_synthetic_tree(stack, {
+                "tests/keep.md": "no suites here\n",
+                "export_presets.cfg": (
+                    'name="Windows Desktop"\n'
+                    "binary_format/embed_pck=true\n"
+                    "texture_format/s3tc_bptc=true\n"
+                    'binary_format/architecture="x86_64"\n'
+                ),
+            })
+            stack.enter_context(mock.patch.object(
+                self.quality,
+                "_run_command",
+                return_value={"name": "stub", "status": "passed"},
+            ))
+            results = self.quality.run_static_checks(False, 1.0, "origin/dev", 1.0)
+        discovery = next(item for item in results if item["name"] == "python-unit-discovery")
+        self.assertEqual(discovery["status"], "failed")
+
+    def test_zero_executed_python_tests_fail_closed(self) -> None:
+        empty = self.quality._run_command(
+            "python-unit",
+            [sys.executable, "-c", "print('Ran 0 tests in 0.000s')"],
+            10.0,
+            expect_tests=True,
+        )
+        self.assertEqual(empty["executed_tests"], 0)
+        self.assertEqual(empty["status"], "failed")
+
+        populated = self.quality._run_command(
+            "python-unit",
+            [sys.executable, "-c", "print('Ran 4 tests in 0.010s')"],
+            10.0,
+            expect_tests=True,
+        )
+        self.assertEqual(populated["executed_tests"], 4)
+        self.assertEqual(populated["status"], "passed")
+
+    def test_empty_godot_selection_is_reported_as_failure(self) -> None:
+        with tempfile.TemporaryDirectory(prefix="quality-empty-selection-") as scratch:
+            report = Path(scratch) / "quality_gate_report.json"
+            code = self.quality.main([
+                "--profile", "full",
+                "--skip-static",
+                "--report", str(report),
+                "no_such_suite_matches_this_filter",
+            ])
+            payload = json.loads(report.read_text(encoding="utf-8"))
+        self.assertEqual(code, 1)
+        self.assertEqual(payload["status"], "failed")
+        self.assertEqual(payload["selected_godot_tests"], 0)
+        discovery = next(
+            item for item in payload["static_checks"] if item["name"] == "test-discovery"
+        )
+        self.assertEqual(discovery["status"], "failed")
+
+    def test_static_profile_fails_closed_when_nothing_is_discovered(self) -> None:
+        with contextlib.ExitStack() as stack:
+            empty = Path(stack.enter_context(tempfile.TemporaryDirectory(prefix="quality-empty-")))
+            report = empty / "report.json"
+            stack.enter_context(mock.patch.object(self.quality, "TEST_DIR", empty / "tests"))
+            code = self.quality.main(["--static-only", "--report", str(report)])
+            payload = json.loads(report.read_text(encoding="utf-8"))
+        self.assertEqual(code, 1)
+        self.assertEqual(payload["status"], "failed")
+        self.assertEqual(payload["discovered_godot_tests"], 0)
+        self.assertEqual(payload["discovered_python_tests"], 0)
+        discovery = next(
+            item for item in payload["static_checks"] if item["name"] == "test-discovery"
+        )
+        self.assertEqual(discovery["status"], "failed")
+        self.assertEqual(len(discovery["errors"]), 2)
+
+    def test_list_mode_fails_closed_on_empty_selection(self) -> None:
+        self.assertEqual(
+            self.quality.main(["--profile", "full", "--list", "no_such_suite_filter"]), 1
+        )
+        self.assertEqual(self.quality.main(["--profile", "full", "--list"]), 0)
 
     def test_discovers_direct_and_inherited_suites(self) -> None:
         names = {path.name for path in self.quality.discover_godot_tests()}

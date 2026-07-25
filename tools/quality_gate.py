@@ -5,6 +5,11 @@ The runner discovers both direct ``extends SceneTree`` tests and inherited test
 suites, isolates ``user://`` per process, and routes every Godot invocation
 through ``tools/godot_gate.py``.  It intentionally runs synchronously so a
 Multica task cannot finish before validation has completed.
+
+Discovery is recursive over ``tests/``: Godot suites and Python suites in nested
+directories (``tests/ultimates/**``) are part of every profile.  An empty test
+set is a gate failure, never a pass — a silently skipped suite must never read
+as green.
 """
 from __future__ import annotations
 
@@ -37,6 +42,8 @@ REAL_DISCORD_WEBHOOK_RE = re.compile(
 )
 BASE64_LITERAL_RE = re.compile(r'["\']([A-Za-z0-9+/]{20,}={0,2})["\']')
 FATAL_OUTPUT_RE = re.compile(r"\bSCRIPT ERROR\b|\bFATAL\b", re.IGNORECASE)
+RAN_TESTS_RE = re.compile(r"^Ran (\d+) tests? in ", re.MULTILINE)
+PYTHON_TEST_PATTERN = "test_*.py"
 
 CORE_CHANGED_TESTS = {
     "combat_target_query_cache_test",
@@ -65,7 +72,7 @@ DEFAULT_PYTHON_UNIT_IDLE_TIMEOUT = 60.0
 
 def discover_godot_tests() -> list[Path]:
     tests: list[Path] = []
-    for path in sorted(TEST_DIR.glob("*.gd")):
+    for path in sorted(TEST_DIR.rglob("*.gd")):
         try:
             source = path.read_text(encoding="utf-8")
         except UnicodeDecodeError:
@@ -73,6 +80,91 @@ def discover_godot_tests() -> list[Path]:
         if EXTENDS_RE.search(source):
             tests.append(path)
     return tests
+
+
+def script_resource_path(path: Path) -> str:
+    """``res://`` path of a discovered suite, including nested directories."""
+    return f"res://{path.relative_to(ROOT).as_posix()}"
+
+
+def _index_by_name(discovered: Sequence[Path]) -> dict[str, Path]:
+    # Selection is name-based (filters, changed-path rules), so two suites that
+    # share a stem across directories would silently shadow each other.  Refuse
+    # the run instead of guessing which one the caller meant.
+    by_name: dict[str, Path] = {}
+    collisions: dict[str, list[Path]] = {}
+    for path in discovered:
+        previous = by_name.get(path.stem)
+        if previous is None:
+            by_name[path.stem] = path
+            continue
+        collisions.setdefault(path.stem, [previous]).append(path)
+    if collisions:
+        details = "; ".join(
+            f"{stem} -> " + ", ".join(item.relative_to(ROOT).as_posix() for item in paths)
+            for stem, paths in sorted(collisions.items())
+        )
+        raise RuntimeError(f"ambiguous Godot test names across directories: {details}")
+    return by_name
+
+
+def discover_python_tests() -> list[Path]:
+    return sorted(path for path in TEST_DIR.rglob(PYTHON_TEST_PATTERN) if path.is_file())
+
+
+def _package_chain_reaches(root: Path, directory: Path) -> bool:
+    """Whether ``unittest discover -s root`` descends all the way to *directory*."""
+    if root == directory:
+        return True
+    try:
+        parts = directory.relative_to(root).parts
+    except ValueError:
+        return False
+    current = root
+    for part in parts:
+        current = current / part
+        if not (current / "__init__.py").is_file():
+            return False
+    return True
+
+
+def python_unit_discovery_roots() -> list[Path]:
+    """Directories that need their own ``unittest discover`` invocation.
+
+    ``unittest`` refuses to descend into directories that are not importable
+    packages, so a single run rooted at ``tests`` silently ignores nested
+    suites.  Package subdirectories stay with their parent root so no suite is
+    collected twice.
+    """
+    roots: list[Path] = []
+    for directory in sorted({path.parent for path in discover_python_tests()}):
+        if any(_package_chain_reaches(root, directory) for root in roots):
+            continue
+        roots.append(directory)
+    return roots
+
+
+def python_unit_commands() -> list[tuple[str, list[str]]]:
+    commands: list[tuple[str, list[str]]] = []
+    for directory in python_unit_discovery_roots():
+        relative = directory.relative_to(ROOT).as_posix()
+        name = "python-unit" if directory == TEST_DIR else f"python-unit:{relative}"
+        commands.append((
+            name,
+            [
+                sys.executable,
+                "-u",
+                "-m",
+                "unittest",
+                "discover",
+                "-v",
+                "-s",
+                relative,
+                "-p",
+                PYTHON_TEST_PATTERN,
+            ],
+        ))
+    return commands
 
 
 def _git_changed_paths(ref: str) -> set[str]:
@@ -107,11 +199,10 @@ def select_godot_tests(
     changed_ref: str,
     skip_umbrella: bool,
 ) -> list[Path]:
-    discovered = discover_godot_tests()
-    by_name = {path.stem: path for path in discovered}
-
     if profile == "static":
         return []
+    by_name = _index_by_name(discover_godot_tests())
+
     if profile in {"full", "windows"}:
         selected_names = set(by_name)
     else:
@@ -140,6 +231,7 @@ def _run_command(
     command: Sequence[str],
     timeout: float,
     idle_timeout: float | None = None,
+    expect_tests: bool = False,
 ) -> dict:
     started = time.monotonic()
     # Python unittest/compileall commands otherwise create __pycache__ inside
@@ -152,13 +244,25 @@ def _run_command(
         )
     if output:
         print(output, end="" if output.endswith("\n") else "\n", flush=True)
-    return {
+    result = {
         "name": name,
         "status": "passed" if exit_code == 0 and not timed_out else "failed",
         "exit_code": exit_code,
         "timed_out": timed_out,
         "duration_seconds": round(time.monotonic() - started, 3),
     }
+    if expect_tests:
+        # `unittest` reports "Ran 0 tests" with exit code 0, which would let a
+        # suite that was never collected certify as green.  Only the trailing
+        # summary counts: nested runners echo their own totals into this output.
+        counts = RAN_TESTS_RE.findall(output)
+        executed = int(counts[-1]) if counts else 0
+        result["executed_tests"] = executed
+        if result["status"] == "passed" and executed == 0:
+            result["status"] = "failed"
+            result["errors"] = [f"{name} executed 0 tests"]
+            print(f"EMPTY TEST SET: {name} executed 0 tests", file=sys.stderr, flush=True)
+    return result
 
 
 def _decoded_base64_candidates(source: str) -> Iterable[str]:
@@ -253,23 +357,10 @@ def run_static_checks(
     changed_ref: str,
     python_unit_idle_timeout: float = DEFAULT_PYTHON_UNIT_IDLE_TIMEOUT,
 ) -> list[dict]:
+    python_commands = python_unit_commands()
     commands: list[tuple[str, list[str]]] = [
         ("repository-invariants", [sys.executable, "tools/quality_static_guard.py"]),
-        (
-            "python-unit",
-            [
-                sys.executable,
-                "-u",
-                "-m",
-                "unittest",
-                "discover",
-                "-v",
-                "-s",
-                "tests",
-                "-p",
-                "test_*.py",
-            ],
-        ),
+        *python_commands,
         ("python-syntax", [sys.executable, "-m", "compileall", "-q", "tools", "tests"]),
         ("asset-audit", [sys.executable, "tools/test_audit_unused_assets.py"]),
         ("constellation-validator", [sys.executable, "tools/test_validate_scrum1067_constellation_spec.py"]),
@@ -284,13 +375,27 @@ def run_static_checks(
         commands.append(("shell-syntax", ["bash", "-n", *[str(path) for path in shell_scripts]]))
 
     results: list[dict] = []
+    if not python_commands:
+        error = f"no Python tests discovered under {TEST_DIR.name}/"
+        print(f"EMPTY TEST SET: {error}", file=sys.stderr, flush=True)
+        results.append({
+            "name": "python-unit-discovery",
+            "status": "failed",
+            "exit_code": 1,
+            "duration_seconds": 0.0,
+            "errors": [error],
+        })
+        if fail_fast:
+            return results
     for name, command in commands:
         print(f"STATIC {name}", flush=True)
+        is_python_unit = name.startswith("python-unit")
         outcome = _run_command(
             name,
             command,
             timeout,
-            idle_timeout=python_unit_idle_timeout if name == "python-unit" else None,
+            idle_timeout=python_unit_idle_timeout if is_python_unit else None,
+            expect_tests=is_python_unit,
         )
         results.append(outcome)
         if outcome["status"] == "failed" and fail_fast:
@@ -427,6 +532,7 @@ def _run_captured(
 def run_godot_test(path: Path, timeout: float) -> dict:
     started = time.monotonic()
     name = path.stem
+    script = script_resource_path(path)
     with tempfile.TemporaryDirectory(prefix=f"fsd-{name}-") as scratch:
         user_data = Path(scratch).resolve()
         command = [
@@ -436,7 +542,7 @@ def run_godot_test(path: Path, timeout: float) -> dict:
             "--path",
             str(ROOT),
             "--script",
-            f"res://tests/{path.name}",
+            script,
             "--",
             f"--user-data-dir={user_data}",
         ]
@@ -457,7 +563,7 @@ def run_godot_test(path: Path, timeout: float) -> dict:
         print(output[-12000:], file=sys.stderr)
     return {
         "name": name,
-        "script": f"res://tests/{path.name}",
+        "script": script,
         "status": "passed" if passed else "failed",
         "exit_code": exit_code,
         "timed_out": timed_out,
@@ -532,25 +638,63 @@ def main(argv: Sequence[str] | None = None) -> int:
         print(f"quality_gate: {exc}", file=sys.stderr)
         return 2
 
+    discovered = discover_godot_tests()
+    python_tests = discover_python_tests()
+    # Fail closed on every empty set: a scope that collected nothing must read
+    # as FAILED, never as a green run that simply had nothing to do.
+    discovery_errors: list[str] = []
+    if not discovered:
+        discovery_errors.append(f"no Godot tests discovered under {TEST_DIR.name}/")
+    if not python_tests:
+        discovery_errors.append(f"no Python tests discovered under {TEST_DIR.name}/")
+    if args.profile != "static" and not args.skip_godot and not selected:
+        scope = f"profile {args.profile}"
+        if args.filters:
+            scope += f" with filters {' '.join(args.filters)}"
+        discovery_errors.append(f"no Godot tests selected for {scope}")
+
     if args.list:
         for path in selected:
             print(path.relative_to(ROOT).as_posix())
         print(f"Selected {len(selected)} Godot test(s).")
-        return 0
-    if args.profile != "static" and not args.skip_godot and not selected:
-        print("quality_gate: no Godot tests selected", file=sys.stderr)
-        return 2
+        for path in python_tests:
+            print(path.relative_to(ROOT).as_posix())
+        print(f"Discovered {len(python_tests)} Python test file(s).")
+        for error in discovery_errors:
+            print(f"EMPTY TEST SET: {error}", file=sys.stderr)
+        return 1 if discovery_errors else 0
 
     started = time.monotonic()
-    static_results = [] if args.skip_static else run_static_checks(
+    for error in discovery_errors:
+        print(f"EMPTY TEST SET: {error}", file=sys.stderr, flush=True)
+    # An empty scope is terminal, so it short-circuits the static suite: the
+    # verdict is already FAILED and the remaining checks cannot change it.
+    static_results = [] if (args.skip_static or discovery_errors) else run_static_checks(
         args.fail_fast,
         args.static_timeout,
         args.changed_ref,
         args.python_unit_idle_timeout,
     )
+    # Discovery evidence is part of every run, including `--skip-static` and the
+    # static CI profile: it is what proves the suites were collected at all.
+    static_results.append({
+        "name": "test-discovery",
+        "status": "failed" if discovery_errors else "passed",
+        "exit_code": 1 if discovery_errors else 0,
+        "duration_seconds": 0.0,
+        "errors": discovery_errors,
+        "discovered_godot_tests": len(discovered),
+        "selected_godot_tests": len(selected),
+        "discovered_python_tests": len(python_tests),
+    })
     failed = any(item["status"] == "failed" for item in static_results)
     godot_results: list[dict] = []
-    if args.profile != "static" and not args.skip_godot and not (failed and args.fail_fast):
+    if (
+        args.profile != "static"
+        and not args.skip_godot
+        and not discovery_errors
+        and not (failed and args.fail_fast)
+    ):
         print(f"GODOT running {len(selected)} test(s) via semaphore gate", flush=True)
         for path in selected:
             outcome = run_godot_test(path, args.test_timeout)
@@ -583,8 +727,12 @@ def main(argv: Sequence[str] | None = None) -> int:
         "python_unit_idle_timeout_seconds": args.python_unit_idle_timeout,
         "worktree_clean": not worktree_status,
         "worktree_status": worktree_status,
-        "discovered_godot_tests": len(discover_godot_tests()),
+        "discovered_godot_tests": len(discovered),
         "selected_godot_tests": len(selected),
+        "discovered_python_tests": len(python_tests),
+        "executed_python_tests": sum(
+            item.get("executed_tests", 0) for item in static_results
+        ),
         "git_sha": subprocess.check_output(["git", "rev-parse", "HEAD"], cwd=ROOT, text=True).strip(),
         "platform": sys.platform,
         "status": status,
