@@ -74,3 +74,5 @@ cache generations и отсутствие per-frame deep copies/introspection. W
 threshold в shared CI допустим только как дополнительный сигнал из-за шумности.
 Финальная Windows release-проверка всё равно включает профиль на реальном Windows
 устройстве и не подменяется macOS headless.
+
+Проверочная строка FAN-1693 (черновик доказательства CI; не мержится).
