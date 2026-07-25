@@ -3,6 +3,8 @@ extends RefCounted
 # Меню, настройки, выбор персонажа/оружия, магазин, события, отдых,
 # level-up, победа/смерть, HUD и общие UI-стили.
 
+const AimController := preload("res://scripts/input/aim_controller.gd")
+
 var game
 var settings_return_origin := "main_menu"
 var settings_video_pending := {}
@@ -11,6 +13,7 @@ var _global_tooltip_theme: Theme = null
 # SCRUM-816: живая строка статуса геймпада на вкладке «Управление» + флаг режима
 # прослушивания ребинда (клавиатура vs геймпад — один диспетчер _handle_rebind_input).
 var _gamepad_status_label: Label = null
+var _aim_mode_hint_label: Label = null  # FAN-1449: подсказка прицеливания, живёт на hot-plug сигналах
 var _rebind_is_gamepad := false
 # SCRUM-827: view-state экрана «Атлас героев» (ссылки на узлы + вкладка/класс/выбор).
 # Все таймеры/твины экрана — property-твины на самих нодах либо колбэки строго через
@@ -7040,15 +7043,27 @@ func _show_settings_menu(requested_return_origin := "") -> void:
 	var aim_options := OptionButton.new()
 	aim_options.name = "SettingsAimModeOption"
 	_settings_v6_apply_field_theme(aim_options, s)
+	# FAN-1449: device-neutral копия — ручной режим одинаково работает курсором
+	# мыши и правым стиком (значение в settings.cfg остаётся `cursor`).
 	aim_options.add_item("Автонаводка на ближайшего")
-	aim_options.add_item("По курсору")
+	aim_options.add_item("Ручное: курсор / стик")
 	aim_options.selected = 1 if str(game.aim_mode) == "cursor" else 0
 	aim_options.item_selected.connect(func(index: int) -> void:
 		game.aim_mode = "cursor" if index == 1 else "nearest"
 		game.get_tree().root.set_meta("aim_mode", game.aim_mode)
 		game.save_game_settings()
+		AimController.apply_hint_label(_aim_mode_hint_label, game.aim_mode, _input_device_manager())
 	)
 	_add_settings_control_row(controls_box, "Прицеливание", aim_options, s)
+	var aim_hint := Label.new()
+	aim_hint.name = "SettingsAimModeHint"
+	aim_hint.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	aim_hint.custom_minimum_size = Vector2(roundf(880.0 * s), 0.0)
+	aim_hint.add_theme_font_size_override("font_size", _settings_v6_font(SemanticTypography.ROLE_CAPTION, 20.0, s))
+	aim_hint.add_theme_color_override("font_color", SETTINGS_V6_HINT_BLUE)
+	controls_box.add_child(aim_hint)
+	_aim_mode_hint_label = aim_hint
+	AimController.apply_hint_label(aim_hint, game.aim_mode, _input_device_manager())
 
 	var debug_toggle := CheckBox.new()
 	debug_toggle.name = "DebugModeToggle"
@@ -7289,6 +7304,7 @@ func _return_from_settings() -> void:
 	# SCRUM-816: live-статус геймпада привязан к Label вкладки — обнуляем ссылку,
 	# чтобы hot-plug коллбэки не трогали освобождённый узел (они гардят валидность).
 	_gamepad_status_label = null
+	_aim_mode_hint_label = null
 	if return_origin == SETTINGS_RETURN_RUN_PAUSE:
 		game.pending_rebind_action = ""
 		game.ui_escape_action = Callable()
@@ -13448,10 +13464,12 @@ func _connect_gamepad_status_signals() -> void:
 
 func _on_gamepad_device_changed(_kind: String) -> void:
 	_refresh_gamepad_status_line()
+	AimController.apply_hint_label(_aim_mode_hint_label, game.aim_mode, _input_device_manager())
 
 
 func _on_gamepad_joy_connection_changed(_device: int, _connected: bool) -> void:
 	_refresh_gamepad_status_line()
+	AimController.apply_hint_label(_aim_mode_hint_label, game.aim_mode, _input_device_manager())
 
 
 func _action_label(action_name: String) -> String:
