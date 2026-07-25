@@ -374,19 +374,16 @@ def run_static_checks(
     if shell_scripts:
         commands.append(("shell-syntax", ["bash", "-n", *[str(path) for path in shell_scripts]]))
 
+    # An empty Python set is fail-closed in `main()`, never here.  `main()`
+    # discovers the same files (`python_tests = discover_python_tests()`),
+    # records `no Python tests discovered under tests/` for an empty result
+    # (`if not python_tests: discovery_errors.append(...)`) and then skips this
+    # function outright (`[] if (args.skip_static or discovery_errors) else
+    # run_static_checks(...)`).  `python_commands` is empty exactly when
+    # `discover_python_tests()` is, so a guard here could not run from any CLI
+    # invocation — the observable contract belongs to `test-discovery` and is
+    # covered by `test_missing_python_tests_fail_closed_through_cli`.
     results: list[dict] = []
-    if not python_commands:
-        error = f"no Python tests discovered under {TEST_DIR.name}/"
-        print(f"EMPTY TEST SET: {error}", file=sys.stderr, flush=True)
-        results.append({
-            "name": "python-unit-discovery",
-            "status": "failed",
-            "exit_code": 1,
-            "duration_seconds": 0.0,
-            "errors": [error],
-        })
-        if fail_fast:
-            return results
     for name, command in commands:
         print(f"STATIC {name}", flush=True)
         is_python_unit = name.startswith("python-unit")

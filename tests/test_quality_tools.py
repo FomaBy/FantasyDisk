@@ -182,35 +182,53 @@ class QualityGateTests(unittest.TestCase):
         self.assertIn("test_nested_suite_runs", completed.stdout)
         self.assertIn("Ran 1 test", completed.stdout)
 
-    def test_missing_python_tests_fail_closed(self) -> None:
+    def test_missing_python_tests_fail_closed_through_cli(self) -> None:
+        # The guarantee is CLI-observable: a tree that still carries Godot
+        # suites but no Python suite must exit 1 through `main()`, before any
+        # static command runs.  Asserting an internal helper's return value
+        # instead would pass even if `main()` stopped checking at all.
         with contextlib.ExitStack() as stack:
-            self._use_synthetic_tree(stack, {
-                "tests/keep.md": "no suites here\n",
-                "export_presets.cfg": (
-                    'name="Windows Desktop"\n'
-                    "binary_format/embed_pck=true\n"
-                    "texture_format/s3tc_bptc=true\n"
-                    'binary_format/architecture="x86_64"\n'
-                ),
-            })
-            stack.enter_context(mock.patch.object(
-                self.quality,
-                "_run_command",
-                return_value={"name": "stub", "status": "passed"},
+            tree = Path(stack.enter_context(
+                tempfile.TemporaryDirectory(prefix="quality-godot-only-")
             ))
-            results = self.quality.run_static_checks(False, 1.0, "origin/dev", 1.0)
-        discovery = next(item for item in results if item["name"] == "python-unit-discovery")
+            (tree / "tests").mkdir()
+            (tree / "tests" / "godot_only_test.gd").write_text(
+                "extends SceneTree\n", encoding="utf-8"
+            )
+            report = tree / "report.json"
+            stack.enter_context(mock.patch.object(self.quality, "TEST_DIR", tree / "tests"))
+            code = self.quality.main(["--static-only", "--report", str(report)])
+            payload = json.loads(report.read_text(encoding="utf-8"))
+        self.assertEqual(code, 1)
+        self.assertEqual(payload["status"], "failed")
+        self.assertEqual(payload["discovered_godot_tests"], 1)
+        self.assertEqual(payload["discovered_python_tests"], 0)
+        discovery = next(
+            item for item in payload["static_checks"] if item["name"] == "test-discovery"
+        )
         self.assertEqual(discovery["status"], "failed")
+        self.assertEqual(discovery["errors"], ["no Python tests discovered under tests/"])
+        # The missing Python half alone is terminal, so the discovery verdict is
+        # the only static check the run may report.
+        self.assertEqual(
+            [item["name"] for item in payload["static_checks"]], ["test-discovery"]
+        )
 
     def test_zero_executed_python_tests_fail_closed(self) -> None:
-        empty = self.quality._run_command(
-            "python-unit",
-            [sys.executable, "-c", "print('Ran 0 tests in 0.000s')"],
-            10.0,
-            expect_tests=True,
-        )
-        self.assertEqual(empty["executed_tests"], 0)
-        self.assertEqual(empty["status"], "failed")
+        # A collected-but-empty suite is the other half of the guarantee, and it
+        # cannot be spotted by the exit code: `unittest` reports "Ran 0 tests"
+        # and still exits 0, so only the executed count fails the check.
+        for name in dict(self.quality.python_unit_commands()):
+            empty = self.quality._run_command(
+                name,
+                [sys.executable, "-c", "print('Ran 0 tests in 0.000s')"],
+                10.0,
+                expect_tests=True,
+            )
+            self.assertEqual(empty["exit_code"], 0)
+            self.assertEqual(empty["executed_tests"], 0)
+            self.assertEqual(empty["status"], "failed")
+            self.assertEqual(empty["errors"], [f"{name} executed 0 tests"])
 
         populated = self.quality._run_command(
             "python-unit",
@@ -220,6 +238,27 @@ class QualityGateTests(unittest.TestCase):
         )
         self.assertEqual(populated["executed_tests"], 4)
         self.assertEqual(populated["status"], "passed")
+
+    def test_every_python_unit_command_is_guarded_by_executed_count(self) -> None:
+        # The guard has to cover every name the gate actually emits —
+        # `python-unit` for tests/ plus `python-unit:<path>` for each nested
+        # discovery root — otherwise a nested suite could collect nothing and
+        # still report green.
+        with mock.patch.object(
+            self.quality,
+            "_run_command",
+            return_value={"name": "stub", "status": "passed"},
+        ) as run_command:
+            self.quality.run_static_checks(False, 1.0, "origin/dev", 1.0)
+        guarded = {
+            call.args[0]: call.kwargs.get("expect_tests")
+            for call in run_command.call_args_list
+            if call.args[0].startswith("python-unit")
+        }
+        expected = set(dict(self.quality.python_unit_commands()))
+        self.assertEqual(set(guarded), expected)
+        self.assertTrue(any(name.startswith("python-unit:") for name in expected))
+        self.assertTrue(all(guarded.values()), guarded)
 
     def test_empty_godot_selection_is_reported_as_failure(self) -> None:
         with tempfile.TemporaryDirectory(prefix="quality-empty-selection-") as scratch:
