@@ -9,7 +9,9 @@ Multica task cannot finish before validation has completed.
 Discovery is recursive over ``tests/``: Godot suites and Python suites in nested
 directories (``tests/ultimates/**``) are part of every profile.  An empty test
 set is a gate failure, never a pass — a silently skipped suite must never read
-as green.
+as green.  A suite that announced a failure is held to the same rule: the
+verdict reads the failure diagnostic in the captured output, so it does not
+depend on a process exit code that deferred-``quit`` ordering can overwrite.
 """
 from __future__ import annotations
 
@@ -42,6 +44,14 @@ REAL_DISCORD_WEBHOOK_RE = re.compile(
 )
 BASE64_LITERAL_RE = re.compile(r'["\']([A-Za-z0-9+/]{20,}={0,2})["\']')
 FATAL_OUTPUT_RE = re.compile(r"\bSCRIPT ERROR\b|\bFATAL\b", re.IGNORECASE)
+# FAN-1700: a GDScript suite reports its own failure through ``push_error()``,
+# which Godot prints as ``ERROR: <message>`` plus an ``at: push_error (...)``
+# frame.  The bare ``ERROR:`` line is indistinguishable from benign engine
+# noise, but that frame is emitted only for a script-level ``push_error`` call,
+# so it is the discriminating signal.  Without it a reported failure survives
+# only as the process exit code, and a deferred ``SceneTree.quit(1)`` that a
+# later ``quit()`` overwrites reads as a green suite.
+PUSH_ERROR_FRAME_RE = re.compile(r"^[ \t]*at: push_error \(", re.MULTILINE)
 RAN_TESTS_RE = re.compile(r"^Ran (\d+) tests? in ", re.MULTILINE)
 PYTHON_TEST_PATTERN = "test_*.py"
 
@@ -526,6 +536,24 @@ def _run_captured(
     return (124 if timed_out else process.returncode), "".join(output_parts), timed_out
 
 
+def fatal_output_signal(output: str) -> str:
+    """Name the diagnostic that proves a Godot suite reported a failure.
+
+    A suite must not be able to end green after it has announced a failure, so
+    detection may not depend on the process exit code alone: ``SceneTree.quit``
+    is deferred, and a later success ``quit()`` overwrites an already requested
+    ``quit(1)``.  Every failure path in ``tests/`` announces itself through
+    ``push_error()`` first, and that call is what this reads.  Returns an empty
+    string when the output carries no failure diagnostic.
+    """
+    match = FATAL_OUTPUT_RE.search(output)
+    if match is not None:
+        return match.group(0)
+    if PUSH_ERROR_FRAME_RE.search(output) is not None:
+        return "push_error"
+    return ""
+
+
 def run_godot_test(path: Path, timeout: float) -> dict:
     started = time.monotonic()
     name = path.stem
@@ -546,16 +574,16 @@ def run_godot_test(path: Path, timeout: float) -> dict:
         exit_code, output, timed_out = _run_captured(
             command, _godot_environment(user_data), timeout
         )
-    fatal_match = FATAL_OUTPUT_RE.search(output)
-    passed = exit_code == 0 and fatal_match is None and not timed_out
+    diagnostic = fatal_output_signal(output)
+    passed = exit_code == 0 and not diagnostic and not timed_out
     if passed:
         print(f"PASS  {name}", flush=True)
     else:
         reason = f"exit {exit_code}"
         if timed_out:
             reason += f", timeout after {timeout:.0f}s"
-        if fatal_match is not None:
-            reason += f", fatal diagnostic: {fatal_match.group(0)}"
+        if diagnostic:
+            reason += f", fatal diagnostic: {diagnostic}"
         print(f"FAIL  {name} ({reason})", file=sys.stderr, flush=True)
         print(output[-12000:], file=sys.stderr)
     return {
@@ -564,7 +592,7 @@ def run_godot_test(path: Path, timeout: float) -> dict:
         "status": "passed" if passed else "failed",
         "exit_code": exit_code,
         "timed_out": timed_out,
-        "fatal_diagnostic": fatal_match.group(0) if fatal_match else "",
+        "fatal_diagnostic": diagnostic,
         "duration_seconds": round(time.monotonic() - started, 3),
     }
 

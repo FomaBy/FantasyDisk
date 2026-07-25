@@ -19,7 +19,13 @@ inherited Godot suites. `changed` автоматически включает и
 Python-тесты запускаются отдельной `unittest discover` на каждый каталог с
 `test_*.py`, потому что `unittest` не заходит в non-package подкаталоги.
 Одинаковые имена suites в разных каталогах отвергаются как ambiguous.
-Любой `SCRIPT ERROR`, `FATAL`, timeout или ненулевой exit — failure.
+Любой `SCRIPT ERROR`, `FATAL`, timeout или ненулевой exit — failure. С FAN-1700
+провал набора не зависит от кода возврата: набор сообщает о провале через
+`push_error()`, Godot печатает при этом кадр `at: push_error (`, и гейт считает
+такой вывод фатальным даже при exit 0. Это закрывает ложно-зелёный прогон, когда
+`_fail()` без `return` доходит до успешного `quit()` (отложенный `quit(1)`
+затирается нулём). Обычные `ERROR:`-строки движка без этого кадра остаются
+безобидными и набор не роняют.
 Filtered/skip-прогон имеет non-certifying статус `partial_pass`, пустой прогон
 запрещён: нулевой выбор Godot-тестов или `Ran 0 tests` в Python-discovery дают
 `failed` с записью в `static_checks`, а не зелёный отчёт. Staged, unstaged или untracked worktree также всегда non-certifying и

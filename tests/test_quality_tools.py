@@ -3,6 +3,7 @@ from __future__ import annotations
 import contextlib
 import importlib.util
 import base64
+import io
 import json
 import os
 import subprocess
@@ -14,6 +15,40 @@ from pathlib import Path
 from unittest import mock
 
 ROOT = Path(__file__).resolve().parents[1]
+
+# FAN-1700: verbatim shapes captured from Godot 4.7 headless runs on origin/dev.
+# A suite announces its own failure with `push_error()`, which prints an
+# `ERROR:` line plus an `at: push_error (` frame; the engine prints `ERROR:`
+# lines of its own that mean nothing for the verdict.
+BENIGN_ENGINE_OUTPUT = """Godot Engine v4.7.stable.official.5b4e0cb0f - https://godotengine.org
+ERROR: Parameter "t" is null.
+   at: texture_2d_get (./servers/rendering/dummy/storage/texture_storage.h:110)
+   GDScript backtrace (most recent call first):
+       [0] _test_hero_select_radar_no_overlap_layouts (res://tests/runtime_smoke_test.gd:7412)
+ERROR: Error calling deferred method: 'RefCounted(ui_screens.gd)::_hide_shop_gold_tooltip_if_inactive': Cannot convert argument 1 from Object to Object.
+   at: _call_function (core/object/message_queue.cpp:220)
+Runtime smoke test passed.
+"""
+REPORTED_FAILURE_OUTPUT = """Godot Engine v4.7.stable.official.5b4e0cb0f - https://godotengine.org
+ERROR: Expected secret boss flow to unlock after the final act (FAN-1700 demo).
+   at: push_error (core/variant/variant_utility.cpp:1023)
+   GDScript backtrace (most recent call first):
+       [0] _fail (res://tests/runtime_smoke_test.gd:9203)
+       [1] _test_secret_boss_after_final_act_flow (res://tests/runtime_smoke_test.gd:9186)
+Runtime smoke test passed.
+"""
+
+
+def _gdscript_func_body(source: str, name: str) -> str:
+    lines = source.splitlines()
+    starts = [index for index, line in enumerate(lines) if line.startswith(f"func {name}(")]
+    assert len(starts) == 1, f"expected exactly one func {name}(), found {len(starts)}"
+    body: list[str] = []
+    for line in lines[starts[0] + 1:]:
+        if line and not line.startswith((" ", "\t")):
+            break
+        body.append(line)
+    return "\n".join(body)
 
 
 def _load_module(name: str, relative_path: str):
@@ -547,6 +582,69 @@ class QualityGateTests(unittest.TestCase):
         self.assertTrue(self.quality._is_certifying(args, []))
         self.assertFalse(self.quality._is_certifying(args, ["M  scripts/example.gd"]))
         self.assertFalse(self.quality._is_certifying(args, ["?? tests/new_test.gd"]))
+
+    def test_reported_failure_is_red_even_when_the_process_exits_zero(self) -> None:
+        # FAN-1700: `SceneTree.quit()` is deferred, so a `_fail()` that is not
+        # followed by `return` lets the suite run on and reach its success
+        # `quit()`, which overwrites the requested exit code 1 with 0.  The
+        # verdict therefore may not rest on the exit code: the suite already
+        # announced the failure through `push_error()`, and that announcement is
+        # what has to be terminal.  Real captured shape, exit code and success
+        # line included, so the case is exactly the false green from the field.
+        with mock.patch.object(
+            self.quality, "_run_captured", return_value=(0, REPORTED_FAILURE_OUTPUT, False)
+        ):
+            with contextlib.redirect_stdout(io.StringIO()), contextlib.redirect_stderr(io.StringIO()):
+                outcome = self.quality.run_godot_test(
+                    ROOT / "tests" / "runtime_smoke_test.gd", 10.0
+                )
+        self.assertEqual(outcome["exit_code"], 0)
+        self.assertFalse(outcome["timed_out"])
+        self.assertEqual(outcome["status"], "failed")
+        self.assertEqual(outcome["fatal_diagnostic"], "push_error")
+
+    def test_benign_engine_errors_do_not_turn_a_green_suite_red(self) -> None:
+        # The other half of the guarantee: the signal must discriminate.  Green
+        # suites do print bare `ERROR:` lines from the headless renderer and the
+        # deferred-call queue (measured on origin/dev: 3 of 259 green suites,
+        # 0 of them with a `push_error` frame), so matching `ERROR:` itself
+        # would paint them red.  Only the `at: push_error (` frame — emitted
+        # solely for a script-level `push_error()` call — may fail a suite.
+        self.assertEqual(self.quality.fatal_output_signal(BENIGN_ENGINE_OUTPUT), "")
+        self.assertEqual(self.quality.fatal_output_signal(REPORTED_FAILURE_OUTPUT), "push_error")
+        # The pre-existing engine-level diagnostics keep their own names.
+        self.assertEqual(
+            self.quality.fatal_output_signal("SCRIPT ERROR: Parse Error: x\n"), "SCRIPT ERROR"
+        )
+        with mock.patch.object(
+            self.quality, "_run_captured", return_value=(0, BENIGN_ENGINE_OUTPUT, False)
+        ):
+            with contextlib.redirect_stdout(io.StringIO()), contextlib.redirect_stderr(io.StringIO()):
+                outcome = self.quality.run_godot_test(
+                    ROOT / "tests" / "runtime_smoke_test.gd", 10.0
+                )
+        self.assertEqual(outcome["status"], "passed")
+        self.assertEqual(outcome["fatal_diagnostic"], "")
+
+    def test_umbrella_cannot_print_passed_after_reporting_a_failure(self) -> None:
+        # The suite side of the same contract: the success exit re-asserts a
+        # failure that `_fail()` already recorded, instead of letting the
+        # deferred `quit(1)` be overwritten by the final `quit()`.
+        source = (ROOT / "tests" / "runtime_smoke_test.gd").read_text(encoding="utf-8")
+        fail_body = _gdscript_func_body(source, "_fail")
+        self.assertIn("_failure_reported = true", fail_body)
+        self.assertLess(
+            fail_body.index("_failure_reported = true"),
+            fail_body.index("push_error("),
+            "the failure flag must be set before anything that can itself fail",
+        )
+        finish_body = _gdscript_func_body(source, "_finish")
+        guard = finish_body.index("if _failure_reported:")
+        self.assertLess(guard, finish_body.index("print("))
+        self.assertLess(finish_body.index("quit(1)"), finish_body.index("print("))
+        # The success message may only leave the suite through that guard.
+        self.assertIn('_finish("Runtime smoke test passed.")', source)
+        self.assertNotIn('print("Runtime smoke test passed.")', source)
 
 
 if __name__ == "__main__":

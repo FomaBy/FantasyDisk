@@ -74,6 +74,12 @@ const DUPLICATE_ARTIFACT_SKIP_DIRS := [".godot", ".git", "tmp", "node_modules"]
 const DUPLICATE_ARTIFACT_SKIP_PATH_PREFIXES := ["res://build/dmg"]
 const DUPLICATE_ARTIFACT_PATTERN := " 2(\\.|$)"
 
+# FAN-1700: липкий флаг провала. quit() в Godot отложенный (выполняется в конце
+# кадра), поэтому после _fail() код продолжает работать и успешный quit() затирает
+# уже запрошенный код 1. Флаг переживает любой порядок выполнения и проверяется
+# в _finish() до печати «passed».
+var _failure_reported := false
+
 func _initialize() -> void:
 	if not _test_no_space_number_duplicate_artifacts():
 		quit(1)
@@ -1526,8 +1532,7 @@ func _initialize() -> void:
 	await _test_new_boss_roster(main_scene)
 	await _test_secret_boss_after_final_act_flow(main_scene)
 
-	print("Runtime smoke test passed.")
-	quit()
+	_finish("Runtime smoke test passed.")
 
 
 func _test_glossary_terms(main: Node) -> void:
@@ -9200,6 +9205,9 @@ func _fail(message: String, evidence_path := "") -> void:
 	# называет сломанную систему/экран (message) и оставляет детерминированный артефакт-
 	# улику build/qa/runtime_smoke_last_failure.md с путём к доп. evidence (если передан).
 	# Вызывается ТОЛЬКО на провале — зелёный прогон сюда не заходит, поведение не меняет.
+	# FAN-1700: флаг ставится ПЕРВЫМ, до любых операций с диском, — заявленный провал
+	# не должен зависеть ни от порядка await, ни от того, стоит ли return после _fail().
+	_failure_reported = true
 	push_error(message)
 	var qa_dir := ProjectSettings.globalize_path("res://build/qa")
 	if not DirAccess.dir_exists_absolute(qa_dir):
@@ -9210,6 +9218,18 @@ func _fail(message: String, evidence_path := "") -> void:
 			message, evidence_path if evidence_path != "" else "(см. контекст push_error в логе выше)"])
 		crumb.close()
 	quit(1)
+
+
+func _finish(passed_message: String) -> void:
+	# FAN-1700: единственный успешный выход набора. Отложенный quit(1) из _fail()
+	# затирается успешным quit(), поэтому провал переспрашивается здесь по флагу:
+	# набор, который уже сообщил о провале, не может напечатать «passed» и выйти нулём.
+	# Наследники (tests/runtime_smoke_*.gd и др.) могут завершаться так же.
+	if _failure_reported:
+		quit(1)
+		return
+	print(passed_message)
+	quit()
 
 
 func _test_boss_hud_shows_timer(main_scene: PackedScene) -> void:
