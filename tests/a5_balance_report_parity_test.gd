@@ -39,7 +39,58 @@ func _initialize() -> void:
 		_verify_lineage_contract(dataset as Dictionary, raw_text)
 		_verify_full_telemetry_contract(dataset as Dictionary)
 		_verify_projection_duplicate_predicate(dataset as Dictionary)
+		_verify_repeat_run_regression(dataset as Dictionary)
 	_finish()
+
+
+# FAN-1681: automatic regression on the original FAN-1672 symptom — a second
+# consecutive `--mode=full` in the same checkout. A successful run rewrites
+# docs/design/reports/fan1438_a5_balance/raw.json.gz with the CURRENT-BASE values, so
+# the next run hands the gate exactly that artifact. Before FAN-1672 the gate took its
+# historical baseline from that same file, so run 2 read the accepted `to` values as if
+# they were the historical `from` values and failed closed. A real `--mode=full` costs
+# ~12 minutes, so this works at the `verify_candidate_projection_against_current_base`
+# level with the poisoned artifact a successful run leaves behind.
+func _verify_repeat_run_regression(historical: Dictionary) -> void:
+	var loaded := Generator.load_oracle_lineage()
+	if not bool(loaded.get("ok", false)):
+		_check(false, "oracle lineage manifest must load for the repeat-run regression")
+		return
+	var manifest: Dictionary = loaded.get("manifest", {})
+	# Exactly what a successful --mode=full writes back to disk: f09 + accepted deltas.
+	var regenerated := _candidate_with_accepted_deltas(historical, manifest)
+	var regenerated_cells := Generator.projection_cell_map(regenerated)
+	_check(bool(regenerated_cells.get("ok", false)), "the regenerated artifact must expose a valid projection")
+	if not bool(regenerated_cells.get("ok", false)):
+		return
+	var cells: Dictionary = regenerated_cells.get("cells", {})
+	var carries_current_base := false
+	for delta_value in manifest.get("accepted_projection_deltas", []):
+		var delta: Dictionary = delta_value
+		var key := "%s|%s" % [str(delta.get("pair", "")), str(delta.get("field", ""))]
+		if str(cells.get(key, "")) == "%.2f" % float(delta.get("to", NAN)):
+			carries_current_base = true
+		_check(str(cells.get(key, "")) != "%.2f" % float(delta.get("from", NAN)), "the regenerated artifact must no longer carry the historical 'from' value for %s" % key)
+	_check(carries_current_base, "the regenerated artifact must carry the accepted current-base values")
+
+	# 1. The pre-FAN-1672 baseline source reproduces the defect exactly: sourcing the
+	#    historical oracle from the regenerated artifact makes the accepted 'from'
+	#    values unmatchable, which is the non-zero run-2 exit FAN-1660 reported.
+	var artifact_baseline := Generator._lineage_current_cells(manifest, regenerated)
+	_check(not bool(artifact_baseline.get("ok", true)), "the pre-FAN-1672 artifact-sourced baseline must fail closed on a regenerated artifact")
+	_check("; ".join(artifact_baseline.get("errors", [])).contains("does not match historical oracle"), "the reproduced FAN-1672 failure must cite the accepted-delta 'from' mismatch")
+
+	# 2. The shipped baseline comes from the committed manifest, so the very same
+	#    regenerated artifact leaves it untouched: still the immutable f09 51x4 matrix.
+	var manifest_baseline := Generator.historical_oracle_cells(manifest)
+	_check(bool(manifest_baseline.get("ok", false)), "the manifest-anchored baseline must stay valid while a current-base artifact is present")
+	_check(str(manifest_baseline.get("digest", "")) == F09_ORACLE_PROJECTION_SHA256, "the manifest-anchored baseline must stay the immutable f09 oracle")
+
+	# 3. Therefore the gate accepts the regenerated artifact, and keeps accepting it on
+	#    every repeat: consecutive --mode=full runs no longer poison each other.
+	for attempt in range(2):
+		var repeat_gate := Generator.verify_candidate_projection_against_current_base(regenerated, manifest)
+		_check(bool(repeat_gate.get("ok", false)), "consecutive run %d over a regenerated current-base artifact must pass the candidate gate: %s" % [attempt + 1, "; ".join(repeat_gate.get("errors", []))])
 
 
 # FAN-1551: the historical f09 oracle is preserved exactly, including fail-closed
@@ -167,6 +218,23 @@ func _verify_lineage_contract(historical: Dictionary, raw_text: String) -> void:
 	var sc_final := Generator.verify_oracle_lineage(self_consistent, historical, raw_text)
 	_check(bool(sc_final.get("ok", false)), "reduced manifest should be internally self-consistent")
 	_check(str(sc_final.get("current_digest", "")) != CURRENT_BASE_PROJECTION_SHA256, "self-consistent manifest tamper must diverge from the external current-base constant")
+
+	# FAN-1681: isolate PROJECTION_ANCHOR_CURRENT_SHA256 itself. The `repinned_current`
+	# negative above only moves the manifest's pin, so the RECONSTRUCTED base digest
+	# still equals the runtime constant and the rejection comes from the pre-FAN-1672
+	# "differs from the manifest current base" comparison — delete the constant and that
+	# negative still passes. Here the manifest AND the candidate are moved together onto
+	# the reduced lineage: the manifest drops one accepted delta and re-pins its own
+	# counts and current sha, and the candidate materialises exactly that reduced base.
+	# Every caller-owned comparison now agrees with itself, so the only thing left that
+	# can reject the pair is the immutable runtime constant.
+	var sc_candidate := _candidate_with_accepted_deltas(historical, self_consistent)
+	var sc_gate := Generator.verify_candidate_projection_against_current_base(sc_candidate, self_consistent)
+	_check(not bool(sc_gate.get("ok", true)), "self-consistent reduced lineage + matching candidate must fail the candidate projection gate")
+	var sc_gate_errors: Array = sc_gate.get("errors", [])
+	_check(not sc_gate_errors.is_empty(), "reduced-lineage rejection must report a reason")
+	for error_value in sc_gate_errors:
+		_check(str(error_value).contains("immutable current anchor"), "reduced-lineage rejection must come only from PROJECTION_ANCHOR_CURRENT_SHA256, got: %s" % str(error_value))
 
 
 func _candidate_with_accepted_deltas(historical: Dictionary, manifest: Dictionary) -> Dictionary:
@@ -372,6 +440,9 @@ func _swap(arr: Array, i: int, j: int) -> void:
 # defect. The FAN-1642 QA report claimed a duplicate projection row was accepted; the
 # exact-SHA audit showed _projection_rows already rejects real duplicates and requires
 # exactly 51 pairs, so this proves the true predicate rather than a mislabeled row.
+# FAN-1681 absorbs the FAN-1649 AC5 residual: FAN-1673 certified FAN-1672's defect
+# scope, never this predicate, so the second half below re-states it against the
+# production candidate gate and both halves are now proven by an executed mutation run.
 func _verify_projection_duplicate_predicate(historical: Dictionary) -> void:
 	var baseline := Generator.projection_oracle_digest(historical)
 	_check(bool(baseline.get("ok", false)), "baseline projection must extract cleanly for the duplicate predicate")
@@ -416,6 +487,51 @@ func _verify_projection_duplicate_predicate(historical: Dictionary) -> void:
 		var non_proj_result := Generator.projection_oracle_digest(non_proj)
 		_check(bool(non_proj_result.get("ok", false)), "a non-projection row duplicate must not be a projection defect")
 		_check(str(non_proj_result.get("digest", "")) == str(baseline.get("digest", "")), "a non-projection row duplicate must not change the projection digest")
+	else:
+		_check(false, "duplicate predicate must find a level-1 non-projection druid row for the control case")
+
+	# FAN-1681 (absorbed FAN-1649 AC5 residual): the same predicate at the PRODUCTION
+	# GATE, not only at the digest helper. `verify_candidate_projection_against_current_base`
+	# is what --mode=full actually runs before writing, so the discrimination has to hold
+	# there: a faithful current-base candidate passes, duplicating its real level-20
+	# class_constellation row is rejected as a duplicate projection row, an extra unique
+	# projection pair is rejected, and duplicating a NON-projection row is still accepted
+	# so the test cannot pass a mislabeled row off as a projection defect.
+	var loaded := Generator.load_oracle_lineage()
+	if not bool(loaded.get("ok", false)):
+		_check(false, "oracle lineage manifest must load for the gate-level duplicate predicate")
+		return
+	var manifest: Dictionary = loaded.get("manifest", {})
+	var faithful := _candidate_with_accepted_deltas(historical, manifest)
+	_check(bool(Generator.verify_candidate_projection_against_current_base(faithful, manifest).get("ok", false)), "the faithful current-base candidate must pass the gate before the duplicate predicate means anything")
+
+	var gate_dup := faithful.duplicate(true)
+	var gate_dup_row := _find_row(gate_dup, "druid", "summon_amulet", 20, "class_constellation")
+	_check(not gate_dup_row.is_empty(), "gate duplicate predicate must find the real druid projection row")
+	(gate_dup.get("weapon_rows", []) as Array).append(gate_dup_row)
+	var gate_dup_result := Generator.verify_candidate_projection_against_current_base(gate_dup, manifest)
+	_check(not bool(gate_dup_result.get("ok", true)), "a duplicated real level-20 class_constellation projection row must be rejected by the gate")
+	_check("; ".join(gate_dup_result.get("errors", [])).contains("duplicate projection row druid/summon_amulet"), "the gate must name the duplicated projection row")
+
+	var gate_extra := faithful.duplicate(true)
+	var gate_extra_row := gate_dup_row.duplicate(true)
+	gate_extra_row["weapon_id"] = "phantom_totem"
+	(gate_extra.get("weapon_rows", []) as Array).append(gate_extra_row)
+	_check(not bool(Generator.verify_candidate_projection_against_current_base(gate_extra, manifest).get("ok", true)), "an extra unique level-20 class_constellation projection pair must be rejected by the gate")
+
+	var gate_non_proj := faithful.duplicate(true)
+	var gate_non_proj_row := _find_row(gate_non_proj, "druid", "summon_amulet", 1, "class_constellation")
+	_check(not gate_non_proj_row.is_empty(), "gate duplicate predicate must find the level-1 control row")
+	(gate_non_proj.get("weapon_rows", []) as Array).append(gate_non_proj_row)
+	_check(bool(Generator.verify_candidate_projection_against_current_base(gate_non_proj, manifest).get("ok", false)), "a duplicated non-projection row must NOT be reported as a projection defect by the gate")
+
+
+func _find_row(dataset: Dictionary, class_id: String, weapon_id: String, level: int, scenario: String) -> Dictionary:
+	for row_value in dataset.get("weapon_rows", []):
+		var row: Dictionary = row_value
+		if int(row.get("level", 0)) == level and str(row.get("scenario", "")) == scenario and str(row.get("class_id", "")) == class_id and str(row.get("weapon_id", "")) == weapon_id:
+			return row.duplicate(true)
+	return {}
 
 
 func _check(condition: bool, message: String) -> void:

@@ -1454,8 +1454,18 @@ QA PASS этого дефекта):
 FAN-1660 exact-SHA QA получила non-zero `--mode=full` на верном кандидате
 `4bd2e710` с тремя `druid/summon_amulet` ячейками из lineage-дельты. Причина не в
 gameplay/RNG/runtime-order: живая druid-телеметрия детерминирована и
-воспроизводит принятые `68101.14 / 394715.33` (см.
-`tests/a5_balance_report_druid_full_determinism_test.gd`). Дефект был в самом
+воспроизводит все четыре принятые ячейки — solo mean `68101.14`, crowd mean
+`394715.33`, solo variance `51498851.11`, crowd variance `36324029697.05`.
+`tests/a5_balance_report_druid_full_determinism_test.gd` утверждает это как
+anchored assertion (FAN-1681): оба прохода агрегируются ровно так же, как
+`_live_parity` + `_apply_live_evidence_to_rows` (snapped mean; variance — квадрат
+уже snapped stddev), и сравниваются с закоммиченными литералами в том же
+`%.2f`-представлении, которое сравнивает гейт; сами литералы сверяются с
+`accepted_projection_deltas` и `invariant_projection_cells` из
+`tests/fixtures/a5_oracle_lineage.json`, поэтому фикстура не может анкериться на
+значении, которого гейт не требует. До FAN-1681 файл сравнивал только свой первый
+проход со вторым, и детерминированный дрейф к новому стабильному значению
+оставлял его зелёным. Дефект был в самом
 гейте — `verify_candidate_projection_against_current_base` читал исторический
 оракул из `docs/design/reports/fan1438_a5_balance/raw.json.gz`, то есть из того
 же артефакта, который успешный `--mode=full` перезаписывает своим выводом.
@@ -1488,7 +1498,16 @@ FAN-1672 распространяет FAN-1658 trust root на projection-изм
   сохранена — при mismatch `quit(1)` стоит до `make_dir`/любой записи.
 - **Следствие контракта.** Настоящий `--mode=full` теперь повторяем: два подряд
   прогона в одном чекауте дают exit `0` и побитово одинаковые
-  `report.md` / `per_weapon.csv` / `raw.json.gz`.
+  `report.md` / `per_weapon.csv` / `raw.json.gz`. Полный прогон стоит ~12 минут,
+  поэтому автоматическая регрессия на этот симптом живёт на уровне
+  `verify_candidate_projection_against_current_base`
+  (`tests/a5_balance_report_parity_test.gd`, FAN-1681) и работает с «отравленным»
+  артефактом — тем самым датасетом с current-base значениями, который успешный
+  прогон оставляет на диске. Она доказывает три вещи разом: pre-FAN-1672 источник
+  baseline (сам сгенерированный артефакт) на нём fail closed с точной диагностикой
+  `'from' … does not match historical oracle`, manifest-anchored baseline при этом
+  остаётся неизменным f09-оракулом, а гейт принимает такой артефакт и на первом, и
+  на повторном вызове.
 
 Остаточное ограничение (вне scope FAN-1672): `verify_oracle_lineage` и A5
 parity/integrity тесты по-прежнему читают исторический DATASET из
@@ -1496,6 +1515,50 @@ parity/integrity тесты по-прежнему читают историче�
 нет. После локальной регенерации отчёта их нужно запускать на восстановленном
 артефакте (`git restore docs/design/reports/fan1438_a5_balance`). Перенос
 f09-оракула в отдельный immutable fixture — отдельная PM-задача.
+
+#### FAN-1681 — покрытие регрессий вокруг projection trust root
+
+Независимая QA FAN-1673 приняла кандидата FAN-1672, но назвала пробелы в будущем
+обнаружении регрессий: проверки существовали, однако часть из них не могла
+упасть. FAN-1681 закрывает их тестами и документацией; поведение гейта,
+tolerance, wildcards, immutable trust root, re-pin семантика и принятые значения
+друида не менялись.
+
+- **Anchored assertion друида** — см. выше. Доказано прогоном: детерминированный
+  сдвиг `_project_dpm` на `+0.01` оставляет repeat-identity зелёной и роняет
+  фикстуру именно на анкере (`68101.15` vs `68101.14`).
+- **Изоляция `PROJECTION_ANCHOR_CURRENT_SHA256`.** Прежний негатив
+  перепривязывал только `current_integration_base.projection_sha256`, поэтому
+  реконструированный digest по-прежнему совпадал с константой, а отказ давала
+  доFAN-1672-проверка «расходится с манифестом»; удаление константы этот негатив
+  не роняло. Новый негатив переводит на сокращённый lineage и манифест, и
+  кандидата: манифест выбрасывает одну принятую дельту и перепривязывает свои
+  счётчики и current sha, кандидат материализует ровно эту сокращённую базу.
+  Все caller-owned сравнения сходятся сами с собой, поэтому единственным
+  источником отказа остаётся immutable runtime-константа. Проверено прогоном:
+  с удалённой константой новый негатив красный, а полный до-FAN-1681 набор
+  негативов остаётся зелёным.
+- **Регрессия на симптом повторного `--mode=full`** — см. выше.
+- **Дубликат projection row (перенесённая AC5 FAN-1649).** Предикат теперь
+  утверждается и на уровне digest-хелпера, и на уровне production-гейта
+  `verify_candidate_projection_against_current_base`: дубликат настоящей
+  `level=20` / `class_constellation` строки и дополнительная уникальная
+  projection pair отклоняются, а дубликат не-projection строки принимается,
+  поэтому mislabeled строка не выдаётся за projection-дефект. Обе ветви
+  фальсифицируемы: снятие duplicate-guard в `_projection_rows` роняет ветвь
+  дубликата, ослабление 51-парной кардинальности роняет ветвь лишней пары, и в
+  обоих прогонах не-projection контроль остаётся зелёным.
+- **Осознанно отложено (hardening, не fail-open).**
+  `historical_oracle.telemetry_sample_key_count` и
+  `telemetry_sample_keys_sha256` остаются единственными компараторами, чья
+  ожидаемая сторона целиком принадлежит манифесту. Ниже по потоку это ловится
+  immutable telemetry-анкером: `TELEMETRY_ANCHOR_FULL_SHA256` считается по
+  строкам `sample_key|digest`, поэтому изменение 309-ключевого набора расходится
+  с runtime-константой в `verify_candidate_full_telemetry_against_pinned`,
+  который production-путь `--mode=full` вызывает через
+  `verify_candidate_against_current_base`. Отдельная runtime-константа для
+  sample-key set добавила бы вторую независимую линию только для
+  projection-only вызовов гейта.
 
 FAN-1574 заменяет synthetic no-op на production-equivalent observer A/B:
 `--mode=observer_neutrality` запускает 51 оружие × 3 seed × solo/pack, плюс

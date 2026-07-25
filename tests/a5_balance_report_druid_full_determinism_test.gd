@@ -19,7 +19,15 @@ extends SceneTree
 # of the fixed-step observer A/B path. That offset is itself deterministic and is
 # baked into every accepted value, so the fixture records the measured count and
 # requires all six samples to agree instead of silently normalising it.
+#
+# FAN-1681: repeat-identity is necessary but not sufficient. A deterministic drift to
+# a NEW stable value keeps every pass-A/pass-B comparison green, so both passes are
+# additionally aggregated exactly as `_live_parity` + `_apply_live_evidence_to_rows`
+# do and asserted against the committed accepted projection cells
+# (`68101.14` / `394715.33` / `51498851.11` / `36324029697.05`), which are themselves
+# cross-checked against tests/fixtures/a5_oracle_lineage.json.
 
+const Generator := preload("res://tools/a5_balance_report.gd")
 const PD := preload("res://scripts/progression_data.gd")
 const Meta := preload("res://scripts/meta_progression.gd")
 const MainScript := preload("res://scripts/main.gd")
@@ -45,6 +53,21 @@ const DUMMY_HP := 1.0e9
 const PLAYER_POSITION := Vector2(1280.0, 720.0)
 const SOLO_OFFSET := Vector2(80.0, 0.0)
 const PACK_RADIUS := 42.0
+
+# FAN-1681: the accepted current-base druid/summon_amulet projection cells, pinned as
+# literals. Until now the fixture only compared its own first pass with its own second
+# pass and the single absolute DPM assertion was `dpm <= 0.0`, so a DETERMINISTIC drift
+# to a NEW stable value stayed green while docs/design/systems/progression_balance.md
+# claimed the fixture reproduces the accepted values. These four literals are exactly
+# the level-20 / class_constellation cells the A5 candidate gate compares
+# (tools/a5_balance_report.gd PROJECTION_FIELDS, anchored by
+# PROJECTION_ANCHOR_CURRENT_SHA256), and _assert_accepted_values_match_lineage below
+# cross-checks them against tests/fixtures/a5_oracle_lineage.json so the fixture can
+# never anchor on a value the gate does not enforce.
+const ACCEPTED_SOLO_DPM_MEAN := 68101.14
+const ACCEPTED_CROWD_DPM_MEAN := 394715.33
+const ACCEPTED_SOLO_VARIANCE_DPM2 := 51498851.11
+const ACCEPTED_CROWD_VARIANCE_DPM2 := 36324029697.05
 
 var _holder: Node2D
 var _errors := PackedStringArray()
@@ -166,6 +189,14 @@ func _initialize() -> void:
 			_errors.append("%s measured %d frames, expected at least the %d-frame window" % [key, int(expected.get("measurement_frame_count", 0)), LIVE_MEASUREMENT_FRAMES])
 		_assert_identical(key, expected, actual)
 
+	# FAN-1681: repeat-identity alone cannot see a deterministic drift to a new stable
+	# value, so both passes are additionally anchored on the committed accepted cells,
+	# and the seam parameters this fixture copies are pinned to production.
+	_assert_seam_matches_production()
+	_assert_accepted_values_match_lineage()
+	_assert_accepted_projection(first_pass, "pass A")
+	_assert_accepted_projection(second_pass, "pass B")
+
 	_teardown_holder()
 	# One compact cross-process witness: two clean processes of the same commit must
 	# print the same line, so a divergence that only appears between runs is visible
@@ -190,6 +221,9 @@ func _initialize() -> void:
 		quit(1)
 		return
 	print("FAN-1672 A5 full-seam druid determinism regression passed: 3 seeds x solo/pack, natural _measure_live, 2 s warmup + 6 s measurement window (%d frames), each sample repeated and byte-identical." % window_frames)
+	print("FAN-1681 accepted-projection anchor passed: both passes reproduce solo mean %.2f, crowd mean %.2f, solo variance %.2f, crowd variance %.2f." % [
+		ACCEPTED_SOLO_DPM_MEAN, ACCEPTED_CROWD_DPM_MEAN, ACCEPTED_SOLO_VARIANCE_DPM2, ACCEPTED_CROWD_VARIANCE_DPM2,
+	])
 	quit(0)
 
 
@@ -254,6 +288,135 @@ func _first_event_difference(expected: Array, actual: Array) -> String:
 		if expected_text != actual_text:
 			return "event %d of %d/%d: %s vs %s" % [index, expected.size(), actual.size(), expected_text, actual_text]
 	return "event counts %d vs %d" % [expected.size(), actual.size()]
+
+
+# FAN-1681 / anchored assertion. Reproduces the production aggregation exactly:
+# `_live_parity` snaps the per-seed mean and stddev to 0.01, and
+# `_apply_live_evidence_to_rows` squares the ALREADY snapped stddev into the variance
+# cell. Comparison uses the same `%.2f` rendering the candidate gate compares
+# (`projection_cell_map`), so this assertion is true at exactly the precision the gate
+# enforces — no tolerance is introduced.
+func _assert_accepted_projection(samples: Dictionary, pass_label: String) -> void:
+	var solo := []
+	var pack := []
+	for seed_value in LIVE_SEEDS:
+		solo.append(_sample_dpm(samples, int(seed_value), "sustain_solo", pass_label))
+		pack.append(_sample_dpm(samples, int(seed_value), "sustain_pack", pass_label))
+	if solo.size() != LIVE_SEEDS.size() or pack.size() != LIVE_SEEDS.size():
+		return
+	var solo_mean := _seed_mean(solo)
+	var pack_mean := _seed_mean(pack)
+	var solo_stddev := snappedf(_seed_stddev(solo, solo_mean), 0.01)
+	var pack_stddev := snappedf(_seed_stddev(pack, pack_mean), 0.01)
+	_assert_cell(pass_label, "live_solo_dpm_mean", snappedf(solo_mean, 0.01), ACCEPTED_SOLO_DPM_MEAN)
+	_assert_cell(pass_label, "live_crowd_dpm_mean", snappedf(pack_mean, 0.01), ACCEPTED_CROWD_DPM_MEAN)
+	_assert_cell(pass_label, "solo_variance_dpm2", snappedf(pow(solo_stddev, 2.0), 0.01), ACCEPTED_SOLO_VARIANCE_DPM2)
+	_assert_cell(pass_label, "crowd_variance_dpm2", snappedf(pow(pack_stddev, 2.0), 0.01), ACCEPTED_CROWD_VARIANCE_DPM2)
+
+
+func _sample_dpm(samples: Dictionary, seed_value: int, fixture: String, pass_label: String) -> float:
+	var key := "%s|%d|%s" % [WEAPON_ID, seed_value, fixture]
+	if not samples.has(key):
+		_errors.append("%s is missing sample %s for the accepted-projection assertion" % [pass_label, key])
+		return -1.0
+	return float((samples[key] as Dictionary).get("dpm", -1.0))
+
+
+func _assert_cell(pass_label: String, field: String, measured: float, accepted: float) -> void:
+	if "%.2f" % measured == "%.2f" % accepted:
+		return
+	_errors.append("%s %s/%s %s drifted from the accepted current-base value: measured %.2f, accepted %.2f. The live seam is still deterministic but no longer reproduces the committed A5 projection cell; re-running --mode=full will fail the candidate gate." % [
+		pass_label, CLASS_ID, WEAPON_ID, field, measured, accepted,
+	])
+
+
+# Mirrors tools/a5_balance_report.gd `_number_mean`.
+func _seed_mean(values: Array) -> float:
+	if values.is_empty():
+		return 0.0
+	var total := 0.0
+	for value in values:
+		total += float(value)
+	return total / values.size()
+
+
+# Mirrors tools/a5_balance_report.gd `_stddev` (population, not sample).
+func _seed_stddev(values: Array, mean: float) -> float:
+	if values.is_empty():
+		return 0.0
+	var total := 0.0
+	for value in values:
+		total += pow(float(value) - mean, 2.0)
+	return sqrt(total / values.size())
+
+
+# FAN-1681: the anchor above must be the SAME accepted value the A5 candidate gate
+# enforces, not a private copy that could be re-pinned on its own. Solo mean is the
+# manifest's invariant f09 cell; the other three are the `to` sides of the accepted
+# FAN-1585/FAN-1596 deltas.
+func _assert_accepted_values_match_lineage() -> void:
+	var loaded := Generator.load_oracle_lineage()
+	if not bool(loaded.get("ok", false)):
+		_errors.append("oracle lineage manifest must load to cross-check the accepted druid values: %s" % loaded.get("error", "unknown"))
+		return
+	var manifest: Dictionary = loaded.get("manifest", {})
+	var pair := "%s/%s" % [CLASS_ID, WEAPON_ID]
+	var expected := {
+		"live_solo_dpm_mean": ACCEPTED_SOLO_DPM_MEAN,
+		"live_crowd_dpm_mean": ACCEPTED_CROWD_DPM_MEAN,
+		"solo_variance_dpm2": ACCEPTED_SOLO_VARIANCE_DPM2,
+		"crowd_variance_dpm2": ACCEPTED_CROWD_VARIANCE_DPM2,
+	}
+	var covered := {}
+	for delta_value in manifest.get("accepted_projection_deltas", []):
+		var delta: Dictionary = delta_value
+		if str(delta.get("pair", "")) != pair:
+			continue
+		var field := str(delta.get("field", ""))
+		if not expected.has(field):
+			continue
+		covered[field] = true
+		if "%.2f" % float(delta.get("to", NAN)) != "%.2f" % float(expected[field]):
+			_errors.append("accepted delta %s|%s pins %.2f, but this fixture anchors on %.2f" % [pair, field, float(delta.get("to", NAN)), float(expected[field])])
+	for cell_value in manifest.get("invariant_projection_cells", []):
+		var cell: Dictionary = cell_value
+		if str(cell.get("pair", "")) != pair:
+			continue
+		var field := str(cell.get("field", ""))
+		if not expected.has(field):
+			continue
+		covered[field] = true
+		if "%.2f" % float(cell.get("value", NAN)) != "%.2f" % float(expected[field]):
+			_errors.append("invariant cell %s|%s pins %.2f, but this fixture anchors on %.2f" % [pair, field, float(cell.get("value", NAN)), float(expected[field])])
+	for field_value in expected.keys():
+		if not covered.has(str(field_value)):
+			_errors.append("%s|%s is anchored by this fixture but is neither an accepted delta nor an invariant cell in the lineage manifest" % [pair, str(field_value)])
+
+
+# FAN-1681: this fixture reproduces the `_measure_live` seam with its own copy (see the
+# header note). Nothing used to stop the two copies from drifting apart. The numeric
+# seam parameters are now pinned to production, and any BEHAVIOURAL divergence of the
+# copy shows up in the anchored assertion above, because a diverged copy can no longer
+# reproduce the committed accepted cells.
+func _assert_seam_matches_production() -> void:
+	var pinned := [
+		["LIVE_SEEDS", str(LIVE_SEEDS), str(Generator.LIVE_SEEDS)],
+		["LIVE_WARMUP_SECONDS", str(LIVE_WARMUP_SECONDS), str(Generator.LIVE_WARMUP_SECONDS)],
+		["LIVE_WINDOW_SECONDS", str(LIVE_WINDOW_SECONDS), str(Generator.LIVE_WINDOW_SECONDS)],
+		["DETERMINISTIC_MAX_FPS", str(DETERMINISTIC_MAX_FPS), str(Generator.DETERMINISTIC_MAX_FPS)],
+		["LIVE_FIXED_DELTA", str(LIVE_FIXED_DELTA), str(Generator.LIVE_FIXED_DELTA)],
+		["LIVE_MEASUREMENT_FRAMES", str(LIVE_MEASUREMENT_FRAMES), str(Generator.LIVE_MEASUREMENT_FRAMES)],
+		["MAX_LIVE_FRAMES", str(MAX_LIVE_FRAMES), str(Generator.MAX_LIVE_FRAMES)],
+		["TARGET_COUNT", str(TARGET_COUNT), str(Generator.TARGET_COUNT)],
+		["DUMMY_HP", str(DUMMY_HP), str(Generator.DUMMY_HP)],
+		["PLAYER_POSITION", str(PLAYER_POSITION), str(Generator.PLAYER_POSITION)],
+		["SOLO_OFFSET", str(SOLO_OFFSET), str(Generator.SOLO_OFFSET)],
+		["PACK_RADIUS", str(PACK_RADIUS), str(Generator.PACK_RADIUS)],
+	]
+	for entry_value in pinned:
+		var entry: Array = entry_value
+		if str(entry[1]) != str(entry[2]):
+			_errors.append("fixture copy of %s (%s) drifted from tools/a5_balance_report.gd (%s)" % [str(entry[0]), str(entry[1]), str(entry[2])])
 
 
 # Mirrors tools/a5_balance_report.gd `_scenario_state(class_id, "class_constellation")`.
@@ -321,7 +484,9 @@ func _measure_live(stats: Dictionary, state: Dictionary, seed_value: int, fixtur
 		"measurement_damage_by_target": collector.measurement_damage_by_target,
 		"health_after": _health_snapshot(dummies),
 		"measurement_frame_count": int(measurement.get("frame_count", 0)),
-		"dpm": snappedf(ledger_total / maxf(duration, 0.0000001) * 60.0, 0.01),
+		# FAN-1681: call the production projection instead of restating it, so the DPM
+		# step of this copied seam cannot drift away from tools/a5_balance_report.gd.
+		"dpm": Generator._project_dpm(ledger_total, duration),
 	}
 
 
