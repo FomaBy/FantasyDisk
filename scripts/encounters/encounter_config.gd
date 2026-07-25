@@ -95,3 +95,11 @@ static func primary_beats() -> Array:
 static func _reset_cache_for_tests() -> void:
 	_catalog_cache = {}
 	_catalog_loaded = false
+
+
+# Тестовый хук: подменить каталог в памяти процесса (фикстура discovery). Нужен,
+# чтобы проверять сортировку на каталоге из нескольких битов, не трогая прод-данные
+# и правило «ровно один primary-бит». Снимается через _reset_cache_for_tests().
+static func _set_catalog_for_tests(data: Dictionary) -> void:
+	_catalog_cache = data.duplicate(true)
+	_catalog_loaded = true

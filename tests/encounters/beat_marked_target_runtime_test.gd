@@ -64,7 +64,10 @@ func _run_enabled_case() -> void:
 
 	# Терминальная очистка на конце боя проверяется в lifecycle-тесте; здесь конец
 	# боя гоняем через combat-директора (у Main нет собственного _end_combat).
+	# Отсутствие combat — это провал, а не повод молча пропустить единственную
+	# проверку финального teardown.
 	var combat = main.get("combat")
+	_expect(combat != null, "enabled: Main must expose its combat director for the teardown check")
 	if combat != null:
 		combat.call("_end_combat", true)
 		await process_frame
@@ -84,6 +87,7 @@ func _run_default_off_case() -> void:
 		"default-off: no beat director may be created (baseline parity)")
 
 	var combat = main.get("combat")
+	_expect(combat != null, "default-off: Main must expose its combat director for the baseline teardown")
 	if combat != null:
 		combat.call("_end_combat", true)
 		await process_frame

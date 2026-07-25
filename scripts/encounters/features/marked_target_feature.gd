@@ -233,6 +233,11 @@ func debug_hud_label() -> Label:
 	return _hud_label
 
 
+# Ссылку берут ДО resolve: _cleanup_nodes() обнуляет поле сразу после kill().
+func debug_tween() -> Tween:
+	return _marker_tween
+
+
 func debug_status() -> String:
 	return _status
 

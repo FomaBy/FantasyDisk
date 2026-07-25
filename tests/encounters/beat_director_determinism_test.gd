@@ -32,6 +32,7 @@ class FakeGame:
 func _initialize() -> void:
 	_check_config_contract()
 	_check_sorted_discovery()
+	_check_sorted_discovery_is_discriminating()
 	_check_plan_determinism()
 	_check_eligibility()
 
@@ -88,6 +89,39 @@ func _check_sorted_discovery() -> void:
 	_expect(primary_ids == sorted_primary, "primary_beats() must be sorted by id")
 
 
+# Проверки выше сравнивают порядок каталога с его же сортировкой, а в прод-каталоге
+# ровно один бит — массив из одного элемента всегда равен своей сортировке, поэтому
+# такой assert не может провалиться. Здесь discovery гоняется на фикстуре каталога,
+# где порядок «в файле» заведомо отличается от отсортированного: удаление
+# sort_custom обязано покрасить тест. Прод-данные и правило «ровно один primary-бит»
+# при этом не трогаются — фикстура живёт только в памяти процесса.
+func _check_sorted_discovery_is_discriminating() -> void:
+	CONFIG._set_catalog_for_tests({
+		"schema_version": CONFIG.CONTRACT_VERSION,
+		"enabled": false,
+		"beats": [
+			{"id": "zulu_probe", "primary": true},
+			{"id": "alpha_probe", "primary": false},
+			{"id": "mike_probe", "primary": true},
+		],
+	})
+
+	var ids: Array = []
+	for beat in CONFIG.all_beats():
+		ids.append(str(beat.get("id", "")))
+	_expect(ids == ["alpha_probe", "mike_probe", "zulu_probe"],
+		"all_beats() must sort a deliberately unsorted catalog by id (got %s)" % str(ids))
+
+	var primary_ids: Array = []
+	for beat in CONFIG.primary_beats():
+		primary_ids.append(str(beat.get("id", "")))
+	_expect(primary_ids == ["mike_probe", "zulu_probe"],
+		"primary_beats() must inherit the sorted order of all_beats() (got %s)" % str(primary_ids))
+
+	CONFIG._reset_cache_for_tests()
+	_expect(CONFIG.all_beats().size() >= 1, "real catalog must be restored after the fixture check")
+
+
 func _marked_target_def() -> Dictionary:
 	for beat in CONFIG.primary_beats():
 		if str(beat.get("id", "")) == "marked_target":
@@ -112,13 +146,26 @@ func _check_plan_determinism() -> void:
 	_expect(trig >= 20.0 and trig <= 40.0, "trigger must land inside the 20-40s window (got %f)" % trig)
 	_expect(is_equal_approx(float(plan_a.get("window", -1.0)), 10.0), "window must equal duration_seconds (10)")
 
-	# Другой seed → детерминированный (обычно иной) момент; в любом случае в окне.
+	# Другой seed → детерминированный и ИНОЙ момент; в любом случае в окне.
 	var plan_c: Dictionary = feature.plan(_make_context(999983), beat_def)
 	var plan_c2: Dictionary = feature.plan(_make_context(999983), beat_def)
 	_expect(is_equal_approx(float(plan_c.get("trigger_at", -1.0)), float(plan_c2.get("trigger_at", -2.0))),
 		"different seed must still be internally deterministic")
 	var trig_c := float(plan_c.get("trigger_at", -1.0))
 	_expect(trig_c >= 20.0 and trig_c <= 40.0, "second-seed trigger must land inside window")
+
+	# Без этого момент, не зависящий от seed вовсе (константа), проходил бы весь
+	# файл: повторяемость и попадание в окно у константы идеальные.
+	_expect(not is_equal_approx(trig_c, trig),
+		"a different node seed must yield a different trigger moment (both gave %f)" % trig)
+
+	# И момент обязан меняться вместе с seed на всей выборке, а не только в одной паре.
+	var distinct := {}
+	for seed_value in [4242, 999983, 777, 5150, 31337]:
+		var plan_n: Dictionary = feature.plan(_make_context(seed_value), beat_def)
+		distinct[float(plan_n.get("trigger_at", -1.0))] = true
+	_expect(distinct.size() >= 4,
+		"trigger moment must vary with node seed (only %d distinct values for 5 seeds)" % distinct.size())
 
 	# Слишком короткий раунд — план отклоняется (окно не влезает).
 	var plan_short: Dictionary = feature.plan(_make_context(4242, "battle", 25.0), beat_def)

@@ -79,6 +79,13 @@ func _initialize() -> void:
 	quit(0)
 
 
+# Изоляция сценариев. METRICS.last_summary — static var, снимок живёт до конца
+# процесса, поэтому без сброса asserts сценария могут быть удовлетворены снимком
+# ПРЕДЫДУЩЕГО сценария и ничего не доказывать про проверяемый.
+func _begin_scenario() -> void:
+	METRICS.last_summary = {}
+
+
 func _new_director(game: Node, manual := true) -> Node:
 	var director = DIRECTOR.new()
 	director.name = "EncounterBeatDirector"
@@ -91,6 +98,7 @@ func _new_director(game: Node, manual := true) -> Node:
 
 
 func _scenario_completed() -> void:
+	_begin_scenario()
 	var game := FakeGame.new()
 	game.current_node_seed = 4242
 	game.build(root)
@@ -115,10 +123,25 @@ func _scenario_completed() -> void:
 	var target: Node2D = feature.debug_target()
 	_expect(target != null and enemies.has(target), "A: marked target must be one of the live normal enemies")
 
+	# Ссылки берём ДО resolve: очистка обнуляет поля фичи, а director отпускает саму фичу.
+	var tween: Tween = feature.debug_tween()
+	var died_cb := Callable(feature, "_on_target_died")
+	_expect(tween != null and tween.is_valid(), "A: marker tween must be alive while the beat is active")
+	_expect(target != null and target.died.is_connected(died_cb),
+		"A: died callback must be connected while the beat is active")
+
 	# Убить помеченную цель → completed, урон = стартовый HP.
 	target.died.emit(target)
 	director._process(0.1)
 	_expect(director.state() == "done", "A: beat must resolve after target death")
+
+	# Твин и колбэк обязаны сниматься самим resolve(), в этом же кадре: узлы пока
+	# только поставлены в очередь на удаление, поэтому автоснятия по факту free ещё
+	# не было и зелёный результат означает именно явные kill()/disconnect().
+	_expect(tween != null and not tween.is_valid(), "A: marker tween must be killed on resolve")
+	_expect(target != null and not target.died.is_connected(died_cb),
+		"A: died callback must be disconnected on resolve")
+
 	var m = director.metrics()
 	var counters: Dictionary = m.counters()
 	_expect(int(counters.get("offered", 0)) == 1, "A: offered must be 1")
@@ -138,6 +161,7 @@ func _scenario_completed() -> void:
 
 
 func _scenario_window_expired() -> void:
+	_begin_scenario()
 	var game := FakeGame.new()
 	game.current_node_seed = 777
 	game.build(root)
@@ -162,6 +186,7 @@ func _scenario_window_expired() -> void:
 
 
 func _scenario_combat_end_death() -> void:
+	_begin_scenario()
 	var game := FakeGame.new()
 	game.current_node_seed = 5150
 	game.build(root)
@@ -172,9 +197,30 @@ func _scenario_combat_end_death() -> void:
 	director._process(director.planned_trigger_at() + 0.05)
 	_expect(director.state() == "active", "C: beat active before combat end")
 	var marker := director.find_child("MarkedTargetMarker", true, false)
+	_expect(marker != null, "C: world marker must exist while active")
+
+	# Ссылки берём ДО shutdown: он резолвит фичу и отпускает её.
+	var feature = director.debug_feature()
+	var target: Node2D = feature.debug_target()
+	var tween: Tween = feature.debug_tween()
+	var died_cb := Callable(feature, "_on_target_died")
+	_expect(tween != null and tween.is_valid(), "C: marker tween must be alive before combat end")
+	_expect(target != null and target.died.is_connected(died_cb),
+		"C: died callback must be connected before combat end")
 
 	# Смерть игрока → _end_combat(false) → shutdown(false).
 	director.shutdown(false)
+
+	# Маркер — ребёнок директора, а shutdown() ставит в очередь на удаление самого
+	# директора, поэтому «маркер исчез через кадр» доказывало бы только смерть
+	# родителя. Проверяем в ТОМ ЖЕ кадре: очередь на удаление ставится пообъектно,
+	# так что собственный флаг маркера поднимает только _cleanup_nodes().
+	_expect(marker != null and is_instance_valid(marker) and marker.is_queued_for_deletion(),
+		"C: marker must be freed by _cleanup_nodes() itself, not merely vanish with the director")
+	_expect(tween != null and not tween.is_valid(), "C: marker tween must be killed on combat-end cleanup")
+	_expect(target != null and not target.died.is_connected(died_cb),
+		"C: died callback must be disconnected on combat-end cleanup")
+
 	_expect(METRICS.last_summary.has("records"), "C: shutdown must snapshot metrics")
 	var recs: Array = METRICS.last_summary.get("records", [])
 	_expect(recs.size() >= 1, "C: a terminal outcome must be recorded on combat end")
@@ -184,12 +230,12 @@ func _scenario_combat_end_death() -> void:
 	_expect(director.is_queued_for_deletion(), "C: director node must be freed on shutdown")
 
 	await process_frame
-	_expect(not is_instance_valid(marker) or marker.is_queued_for_deletion(), "C: marker must be freed on combat-end cleanup")
 	game.queue_free()
 	await process_frame
 
 
 func _scenario_non_normal_battle() -> void:
+	_begin_scenario()
 	var game := FakeGame.new()
 	game.current_node_seed = 4242
 	game.current_combat_type = "boss"
@@ -209,6 +255,7 @@ func _scenario_non_normal_battle() -> void:
 
 
 func _scenario_pause_freeze() -> void:
+	_begin_scenario()
 	var game := FakeGame.new()
 	game.current_node_seed = 31337
 	game.build(root)
