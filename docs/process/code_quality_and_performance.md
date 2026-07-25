@@ -24,8 +24,11 @@ Filtered/skip-прогон имеет non-certifying статус `partial_pass`
 запрещён: нулевой выбор Godot-тестов или `Ran 0 tests` в Python-discovery дают
 `failed` с записью в `static_checks`, а не зелёный отчёт. Staged, unstaged или untracked worktree также всегда non-certifying и
 фиксируется в JSON evidence; commit-range и index whitespace проверяются
-отдельно. `--static-only` — certifying CI-профиль, но не заменяет полный
-локальный/release gate.
+отдельно. `--static-only` — engine-free профиль: `select_godot_tests` возвращает
+для него пустой список, поэтому он допустим только там, где Godot не установлен
+(push в `dev`). Required-проверка на pull request и merge queue запускает
+`changed` на закреплённом Godot `4.7.stable.official.5b4e0cb0f` и не заменяет
+полный локальный/release gate.
 
 ## Реестр находок
 

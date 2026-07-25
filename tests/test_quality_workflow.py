@@ -51,6 +51,69 @@ class QualityWorkflowContractTests(unittest.TestCase):
         self.assertIn(install, self.source)
         self.assertLess(self.source.index(install), self.source.index("tools/quality_gate.py"))
 
+    def test_candidate_events_execute_godot_suites(self) -> None:
+        # `--static-only` selects zero Godot tests by contract, so a gate that
+        # ran it on every trigger certified the whole game as green without
+        # executing one game test.  Candidate events run the changed profile.
+        for base in (
+            "${{ github.event.pull_request.base.sha }}",
+            "${{ github.event.merge_group.base_sha }}",
+        ):
+            self.assertIn(
+                f'python3 tools/quality_gate.py --profile changed --changed-ref "{base}"',
+                self.source,
+            )
+            self.assertNotIn(
+                f'python3 tools/quality_gate.py --static-only --changed-ref "{base}"',
+                self.source,
+            )
+
+    def test_push_keeps_the_cheaper_static_profile(self) -> None:
+        # Push to dev revalidates an already-gated candidate, so it stays on the
+        # static profile and skips the engine entirely.
+        self.assertIn(
+            'python3 tools/quality_gate.py --static-only'
+            ' --changed-ref "${{ github.event.before }}"',
+            self.source,
+        )
+        self.assertIn("if: github.event_name != 'push'", self.source)
+
+    def test_godot_toolchain_is_pinned_verified_and_cached(self) -> None:
+        self.assertIn('GODOT_BUILD_ID: "4.7.stable.official.5b4e0cb0f"', self.source)
+        self.assertIn("uses: actions/cache@v6", self.source)
+        self.assertIn(
+            "key: fsd-godot-${{ runner.os }}-${{ runner.arch }}-${{ env.GODOT_BUILD_ID }}",
+            self.source,
+        )
+        # An unpinned or tampered download would silently certify on a different
+        # engine than the one the release is verified with.
+        self.assertIn('printf \'%s  %s\\n\' "$GODOT_ZIP_SHA512" "$archive" | sha512sum -c -', self.source)
+        self.assertIn(
+            'test "$("$GODOT_DIR/godot" --version | tail -n 1)" = "$GODOT_BUILD_ID"',
+            self.source,
+        )
+
+    def test_candidate_evidence_must_show_executed_godot_suites(self) -> None:
+        # The gate exits non-zero on a red suite, so the only way the old bug
+        # can come back is a green run whose evidence lists no Godot test.
+        self.assertIn("Assert the candidate executed Godot suites", self.source)
+        self.assertIn(
+            "json.load(open('build/quality_gate_report.json'))['godot_tests']",
+            self.source,
+        )
+        self.assertIn('test "$executed" -gt 0', self.source)
+
+    def test_godot_is_launched_only_through_the_semaphore_gate(self) -> None:
+        # Launch logic belongs to tools/godot_gate.py; a second copy in YAML
+        # would drift from the isolation and import-cache contract.
+        self.assertNotIn("--script", self.source)
+        self.assertNotIn("$GODOT_DIR/godot --headless", self.source)
+
+    def test_required_check_job_id_is_stable(self) -> None:
+        # Branch protection binds to the job id: renaming it detaches the
+        # required gate without any visible failure.
+        self.assertIn("\n  static-quality:\n", self.source)
+
 
 if __name__ == "__main__":
     unittest.main()

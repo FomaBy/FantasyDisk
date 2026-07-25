@@ -10,7 +10,17 @@ on:
 permissions:
   contents: read
 
+env:
+  # The candidate gate must run the same engine build that certifies locally,
+  # otherwise a green CI run says nothing about the release toolchain.
+  GODOT_RELEASE: "4.7-stable"
+  GODOT_BUILD_ID: "4.7.stable.official.5b4e0cb0f"
+  GODOT_ZIP_SHA512: "b639ca9c1ddea39bb3df89bd5283a51ca6047467abe6b25e9436566f2b2082ede633025073989ecf39c7d5d3c2493d80ea13e3af6dd5e261bbf89e462d6d2214"
+
 jobs:
+  # Job id is the branch-protection check name: renaming it would silently
+  # detach the required gate, so it stays `static-quality` even though the
+  # candidate events now execute Godot suites too.
   static-quality:
     runs-on: ubuntu-latest
     timeout-minutes: 30
@@ -28,15 +38,57 @@ jobs:
           test "$(git rev-parse HEAD)" = "$GITHUB_SHA"
           mkdir -p build
           printf '%s\n' "$GITHUB_SHA" > build/quality_gate_candidate_sha.txt
+      # Only the candidate events (pull_request, merge_group) run the changed
+      # profile, so only they need the engine.  Push to dev keeps the cheap
+      # static profile and skips the whole Godot toolchain.
+      - name: Resolve pinned Godot location
+        if: github.event_name != 'push'
+        run: echo "GODOT_DIR=$RUNNER_TOOL_CACHE/fsd-godot/$GODOT_BUILD_ID" >> "$GITHUB_ENV"
+      - name: Restore pinned Godot
+        id: godot-cache
+        if: github.event_name != 'push'
+        uses: actions/cache@v6
+        with:
+          path: ${{ env.GODOT_DIR }}
+          key: fsd-godot-${{ runner.os }}-${{ runner.arch }}-${{ env.GODOT_BUILD_ID }}
+      - name: Install pinned Godot
+        if: github.event_name != 'push' && steps.godot-cache.outputs.cache-hit != 'true'
+        run: |
+          set -euo pipefail
+          archive="$RUNNER_TEMP/godot.zip"
+          curl -fsSL --retry 3 -o "$archive" \
+            "https://github.com/godotengine/godot/releases/download/${GODOT_RELEASE}/Godot_v${GODOT_RELEASE}_linux.x86_64.zip"
+          printf '%s  %s\n' "$GODOT_ZIP_SHA512" "$archive" | sha512sum -c -
+          mkdir -p "$GODOT_DIR"
+          unzip -q -o "$archive" -d "$RUNNER_TEMP/godot"
+          mv "$RUNNER_TEMP/godot/Godot_v${GODOT_RELEASE}_linux.x86_64" "$GODOT_DIR/godot"
+          chmod +x "$GODOT_DIR/godot"
+      - name: Assert the pinned Godot build
+        if: github.event_name != 'push'
+        run: |
+          set -euo pipefail
+          echo "godot cache-hit: ${{ steps.godot-cache.outputs.cache-hit }}"
+          test "$("$GODOT_DIR/godot" --version | tail -n 1)" = "$GODOT_BUILD_ID"
+          echo "GODOT_BIN=$GODOT_DIR/godot" >> "$GITHUB_ENV"
       - name: Repository and Python gates (push range)
         if: github.event_name == 'push'
         run: python3 tools/quality_gate.py --static-only --changed-ref "${{ github.event.before }}"
-      - name: Repository and Python gates (pull request range)
+      - name: Repository, Python and Godot gates (pull request range)
         if: github.event_name == 'pull_request'
-        run: python3 tools/quality_gate.py --static-only --changed-ref "${{ github.event.pull_request.base.sha }}"
-      - name: Repository and Python gates (merge queue candidate)
+        run: python3 tools/quality_gate.py --profile changed --changed-ref "${{ github.event.pull_request.base.sha }}"
+      - name: Repository, Python and Godot gates (merge queue candidate)
         if: github.event_name == 'merge_group'
-        run: python3 tools/quality_gate.py --static-only --changed-ref "${{ github.event.merge_group.base_sha }}"
+        run: python3 tools/quality_gate.py --profile changed --changed-ref "${{ github.event.merge_group.base_sha }}"
+      # The gate's exit code already fails on a red suite.  This guards the
+      # other half of the same bug: a green required check whose own evidence
+      # says it executed no game test at all.
+      - name: Assert the candidate executed Godot suites
+        if: github.event_name != 'push'
+        run: |
+          set -euo pipefail
+          executed=$(python3 -c "import json; print(len(json.load(open('build/quality_gate_report.json'))['godot_tests']))")
+          echo "executed Godot suites: $executed"
+          test "$executed" -gt 0
       - name: Hash quality evidence
         if: always()
         run: |
@@ -55,6 +107,7 @@ jobs:
           if-no-files-found: error
           retention-days: 30
 
-# The full gate additionally requires the project's exact Godot 4.7 toolchain
-# and remains a required local/release check:
+# The candidate events run the changed profile: static checks plus the Godot
+# suites selected for the diff.  The exhaustive set stays a local/release check
+# because it costs the full 4.7 toolchain and every discovered suite:
 # python3 tools/quality_gate.py --profile full

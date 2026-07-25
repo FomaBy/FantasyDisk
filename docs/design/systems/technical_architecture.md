@@ -122,8 +122,11 @@ python3 tools/quality_gate.py --profile full
 The Python runner discovers direct and inherited SceneTree suites, gives every
 process isolated HOME/XDG/AppData/`user://`, scans client sources for embedded
 credentials, and routes every Godot invocation through `tools/godot_gate.py`.
-CI runs the certifying static-only compatibility profile; local/release
-verification uses changed/full with the exact Godot 4.7 toolchain. See
+CI runs the changed profile on pull requests and merge-queue candidates with the
+pinned `4.7.stable.official.5b4e0cb0f` toolchain, so a broken selected suite
+turns the required check red; push to dev revalidates an already-gated candidate
+on the engine-free static profile.  The exhaustive `full` run stays a
+local/release check. See
 `docs/process/code_quality_and_performance.md`.
 The `windows` profile refuses to run on another OS, because a macOS cross-export
 does not validate native Windows correctness or frame pacing.

@@ -308,6 +308,26 @@ class QualityGateTests(unittest.TestCase):
         self.assertIn("gamepad_full_flow_smoke_test.gd", names)
         self.assertIn("runtime_smoke_ui_test.gd", names)
 
+    def test_static_profile_selects_no_godot_tests(self) -> None:
+        # The static profile is the engine-free compatibility profile, so it is
+        # only ever safe where no Godot toolchain exists.  A trigger that is
+        # supposed to gate gameplay must use a profile that executes suites.
+        self.assertEqual(
+            self.quality.select_godot_tests("static", [], "origin/dev", False), []
+        )
+
+    def test_changed_profile_selects_core_and_diff_driven_suites(self) -> None:
+        with mock.patch.object(
+            self.quality, "_git_changed_paths", return_value={"scripts/enemy.gd"}
+        ):
+            names = {
+                path.stem
+                for path in self.quality.select_godot_tests("changed", [], "base", False)
+            }
+        self.assertLessEqual(self.quality.CORE_CHANGED_TESTS, names)
+        self.assertIn("enemy_separation_behavior_test", names)
+        self.assertIn(self.quality.RUNTIME_SMOKE, names)
+
     def test_full_filter_and_skip_umbrella(self) -> None:
         selected = self.quality.select_godot_tests(
             "full", ["runtime_smoke"], "origin/dev", True
