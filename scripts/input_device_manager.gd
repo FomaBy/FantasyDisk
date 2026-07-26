@@ -27,6 +27,9 @@ const MOTION_ACTIVATION_DEADZONE := 0.3
 const MOVE_ACTION_DEADZONE := 0.25
 
 const GameSettingsScript := preload("res://scripts/game_settings.gd")
+# FAN-1449: экшены правого стика (ручное прицеливание) — часть канон-раскладки,
+# но ребиндом не управляются, как и ui_*.
+const AimControllerScript := preload("res://scripts/input/aim_controller.gd")
 
 # Канон-раскладка пакета геймпада (SCRUM-810..816): стик+D-pad — движение,
 # Start — пауза, Y — ультимейт, RB — level-up, Back/Select — фидбек, A/B — ui.
@@ -113,6 +116,12 @@ func active_kind() -> String:
 	return _raw_kind
 
 
+func physical_kind() -> String:
+	# В отличие от active_kind(), это фактическое последнее значимое устройство.
+	# Gameplay использует его для гибридного ввода, не меняя UI-предпочтение.
+	return _raw_kind
+
+
 func gamepad_connected() -> bool:
 	return not Input.get_connected_joypads().is_empty()
 
@@ -181,6 +190,7 @@ func ensure_joypad_bindings() -> void:
 	# Идемпотентно доливает joypad-события во все экшены раскладки.
 	# Кастомный бинд экшена полностью замещает его joypad-часть (клавиатурные
 	# события не трогаются никогда).
+	AimControllerScript.ensure_aim_actions()
 	var wanted := _wanted_bindings()
 	for action_name in wanted:
 		if not InputMap.has_action(action_name):
