@@ -185,7 +185,7 @@ class GodotGateTest(unittest.TestCase):
         stub = (
             "import sys, time; "
             "sys.stdout.write('live output started\\n'); sys.stdout.flush(); "
-            "time.sleep(1); "
+            "time.sleep(0.2); "
             f"sys.stdout.write('x' * {output_size}); "
             "sys.stdout.write('\\nSCRIPT ERROR: late parse failure\\n')"
         )
