@@ -53,12 +53,24 @@ def discover_active_surfaces():
 
 
 ACTIVE_SURFACES = discover_active_surfaces()
+# Entry points establish tracker authority. Supporting references inherit the
+# selected skill context and should not repeat onboarding boilerplate.
 AUTHORITY_SURFACES = tuple(
     rel
     for rel in ACTIVE_SURFACES
-    if rel in CORE_ACTIVE_SURFACES
+    if rel
+    in {
+        "AGENTS.md",
+        "README.md",
+        "scripts/onboard.sh",
+        ".claude/skills/fantasydisk-onboarding/SKILL.md",
+        ".claude/skills/add-character/SKILL.md",
+        "skills/scheduled-tasks/fantasydisk-backend-developer/SKILL.md",
+        "skills/codex/fantasydisk-agent-dispatcher/SKILL.md",
+        "docs/process/ai_agent_memorandum.md",
+        "skills/codex/perenos-chata/SKILL.md",
+    }
     or (rel.startswith("skills/codex/fantasydisk-") and rel.endswith("/SKILL.md"))
-    or rel.startswith("skills/codex/perenos-chata/")
 )
 
 # Legacy Jira helper scripts / mechanisms. An active surface that invokes any of
@@ -214,13 +226,15 @@ class CutoverOnboardingTest(unittest.TestCase):
     def test_multica_examples_use_safe_body_transport(self):
         workflow = read("docs/process/multica_workflow.md")
         self.assertNotIn('comment add FAN-123 --content "', workflow)
-        self.assertIn("comment add FAN-123 --content-file", workflow)
+        self.assertNotRegex(workflow, r"comment add\b[^\n]*--content(?:\s|=)")
 
-    def test_dispatcher_discovers_queue_and_reserves_one_owner(self):
+    def test_dispatcher_is_qwen_only_and_uses_one_launch_mechanism(self):
         text = read("skills/codex/fantasydisk-agent-dispatcher/SKILL.md")
-        self.assertIn("multica issue list --project", text)
-        self.assertIn("--status backlog --assignee-id", text)
-        self.assertIn("single-dispatcher", text)
+        self.assertIn("Qwen Operations Dispatcher", text)
+        self.assertIn("unassigned", text)
+        self.assertIn("one launch mechanism", text)
+        self.assertNotIn("--status backlog --assignee-id", text)
+        self.assertNotIn("autonomous QA", text)
         self.assertNotIn("D:\\FantasyDisk", text)
 
     def test_dispatcher_role_prompts_are_path_portable(self):

@@ -1,5 +1,14 @@
-# Dispatcher Heartbeat Prompt
+# Dispatcher cycle
 
-```text
-FantasyDisk dispatcher heartbeat. Resolve the repo path dynamically and use Multica project 2ac963eb-b644-4540-8042-a1a4508f1a65 as the only live queue. List in_review, todo and in_progress with pagination. Reconcile completed/failed agents and exact push evidence. Keep one dispatcher owner for this queue. Re-read each free candidate, reserve it as backlog + exact agent UUID in one update, re-read/assert ownership, add the lock comment, then move it to todo to enqueue. Use a separate QA child for an implementation in_review. Never let workers self-claim unassigned work or start two writers. Prioritize QA, small backend/balance, non-overlapping UI/design, then animation. Each worker gets one FAN ID, uses a clean portable worktree, pushes, updates Multica, cleans owned temp data, and stops. Do not leave background work beyond the current Multica turn.
-```
+Run one fail-closed cycle using the bound
+`multica-workspace-governance` routing-and-dispatch reference.
+
+Read the PM-ready index, quota registry, live capacity, active issue/run
+ownership, dependencies, and overlaps. Launch only an unassigned `backlog`
+candidate with a consistent gate. Resolve the target from live state, re-read
+immediately before mutation, use exactly one assignment-comment → assign →
+re-read → `todo` sequence, and verify exactly one resulting run.
+
+Report launched and skipped issue IDs with observed capacity. If no eligible
+target exists, report `waiting_for_capacity`; do not relax policy or retry in a
+loop.

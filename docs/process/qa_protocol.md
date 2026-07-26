@@ -1,268 +1,123 @@
-# QA-Протокол FantasyDisk
+# FantasyDisk independent QA protocol
 
-Введен: 2026-06-12 (решение пользователя). Исполнители: чат «QA testing chat»
-и фоновый воркер `fantasydisk-qa-board-worker`.
-Обновлено: 2026-07-15 — Multica-first autonomous QA: QA Codex Sol является
-единственным writer review-очереди, сам выбирает одну eligible parent issue
-`FAN-*` в `in_review` и владеет проверкой через отдельную QA child. Локальные
-`docs/tasks/*.md` — только spec/evidence mirror.
+Updated: 2026-07-26
 
-## Правило «UI не наползает» (пользователь, 2026-06-12, ОБЯЗАТЕЛЬНО)
+QA verifies one explicitly assigned child pinned to one pushed candidate SHA.
+QA does not self-select a parent, create competing review, repair production
+code, or allocate rework.
 
-Элементы интерфейса не должны наползать друг на друга ни на одном
-поддерживаемом разрешении (1152x648 / 1280x720 / 1469x908 / 2560x1440 /
-широкие-низкие окна). Для КАЖДОЙ задачи, затрагивающей UI/HUD/экраны, QA
-обязан проверить отсутствие пересечений ФАКТИЧЕСКИХ `global_rect` видимых
-плашек (скриншот или дамп rect'ов; есть переиспользуемый no-overlap хелпер из
-bug_hud_elements_overlap_task — использовать его). Пересечение = FAILED +
-bug-задача, даже если все остальные критерии прошли.
+Multica workspace lifecycle and dispatch transactions live in
+`multica-workspace-governance`; this reference defines FantasyDisk verification.
 
-## Правило «Контент только в пустой зоне фрейма» (пользователь, 2026-06-14, ОБЯЗАТЕЛЬНО)
+## Entry gate
 
-Никакие элементы интерфейса — кнопки, портреты/герои, области выбора (карусели,
-списки, слоты), иконки, текст — НЕ должны накладываться на текстуру/окантовку/
-орнамент рамки (frame). Контент размещается ТОЛЬКО в пустой зоне фрейма: либо в
-прозрачной/тёмной внутренней области, либо на подложке фона. Декоративная рамка
-остаётся полностью видимой и не перекрытой контентом.
+Before testing, read the QA child, implementation parent, recent comments,
+children, metadata, dependencies, active runs, and repository ancestry. Require:
 
-Техническое следствие: у текстурных стилей (StyleBoxTexture / 9-slice)
-**content margins ≥ texture margins (толщины окантовки) + запас** — контент не
-залезает под орнамент. Для радиальных/нестандартных рамок (роза ветров и т.п.)
-content-зона = реальная внутренняя пустая область, а не bounding box.
+- exact `candidate_sha == dispatch_candidate_sha`;
+- candidate is pushed and reachable from the expected integration history;
+- reviewer is not the implementer;
+- exactly one live QA claim and no competing verdict;
+- child and parent refer to the same scope/candidate;
+- Story Points, estimation model, complexity, routing, and acceptance criteria
+  are consistent;
+- blocked dependencies and locked resources do not invalidate the test.
 
-QA для КАЖДОЙ задачи с рамками/панелями проверяет: контент в пределах content-зоны,
-рамка не перекрыта (скриншот). Наложение контента на орнамент рамки = FAILED +
-bug-задача, даже если no-overlap между плашками прошёл.
+Fail closed on any mismatch. Publish the exact blocker; do not test a stale or
+contested candidate and do not issue PASS.
 
-## Правило
-КАЖДАЯ задача после завершения исполнителем (статус `in_review`) проходит
-обязательное QA-тестирование — максимально точное и детальное. Задача считается
-полностью закрытой (`done`) только после QA-Вердикта PASSED и блока
-«## QA-Вердикт» в её файле.
+## Test plan
 
-## Цикл задачи (обновленный)
+Build a risk-based matrix before execution:
+
+| Acceptance criterion | Risk | Check/evidence | Result |
+| --- | --- | --- | --- |
+| observable behavior | regression/failure mode | exact command or manual scenario | pending/pass/fail/blocked |
+
+Read changed code, tests, fixtures, configuration, data, and docs. A developer
+report, code review, or green CI status is context—not independent QA evidence.
+Reject false-green tests that only reproduce their own expected output or avoid
+the affected runtime path.
+
+Choose checks in proportion to risk:
+
+- focused functional behavior;
+- negative and edge cases;
+- integration and regression;
+- save/data compatibility;
+- manual/windowed interaction;
+- platform/export behavior;
+- performance/runtime stability;
+- visual geometry, readability, and frame content zones.
+
+Use `tools/godot_gate.py` for automated Godot execution and the appropriate
+`tools/quality_gate.py` profile for certifying coverage. Never substitute a
+different platform for a platform-specific acceptance criterion.
+
+## Runtime safety
+
+Bound self-reexecuting or engine-heavy harnesses with the repository gate and a
+finite timeout. Monitor early process growth; stop a runaway test before it can
+exhaust the host. Record the failure honestly rather than retrying indefinitely.
+
+Use disposable, task-owned user data and worktrees. Do not change releases,
+tags, repository rules, secrets, external accounts, or production data during
+QA.
+
+## Visual evidence
+
+For UI/visual/runtime acceptance, capture the evidence that materially proves
+the criterion:
+
+- screenshots/video with viewport, platform, and candidate SHA;
+- rect/content-zone dumps;
+- logs/traces/profiler captures;
+- source/runtime asset manifests.
+
+Content may not cover frame ornament. Background and non-background generator
+routing must match repo `AGENTS.md`. Store or attach evidence through the
+task-approved path and sanitize secrets/personal data.
+
+## Findings
+
+Classify each finding:
+
+- passed;
+- failed;
+- blocked;
+- not tested;
+- inconclusive.
+
+For a confirmed defect, report reproduction, expected/actual behavior,
+candidate/environment, severity/impact, evidence, affected scope, and a proposed
+acceptance criterion. PM decides decomposition/estimate/routing; QA does not
+assign or implement it.
+
+## Verdict
+
+Publish:
+
 ```text
-parent: todo → in_progress → in_review ───────────────→ done (QA PASS)
-QA child: backlog(metadata-reserved, unassigned) → in_progress → done + verdict
-                                            ↘ RED: parent stays in_review + linked follow-ups
+QA verdict: PASSED | FAILED | INCONCLUSIVE
+Candidate/base SHA:
+Environment:
+Acceptance → evidence matrix:
+Commands and results:
+Evidence:
+Findings:
+Linked defects: <ids | none>
+Documentation consistency:
+Residual risk:
+Recommendation: Go | Go with known risks | No-Go
+Disk cleanup:
 ```
-Исполнители НИЧЕГО не меняют в своем процессе: ставят issue в `in_review` по
-завершении. QA Codex Sol (`f992a646-a8ea-4935-ba94-212595803052`) автономно
-сканирует review-очередь, claim'ит одну проверку через отдельную QA child и не
-меняет implementation owner. Общий dispatcher может разбудить QA, но не создаёт
-конкурирующий QA claim.
 
-## Как QA получает задачу
-1. QA runtime работает с `max_concurrent_tasks = 1`. В начале queue-sweep QA
-   проверяет свои active tasks, уже существующие QA children и их metadata
-   ownership; при другом живом QA claim новый не создаётся.
-2. QA сканирует все страницы Multica parent issues `FAN-*` в `in_review` и
-   выбирает ровно одну ready issue: сначала higher priority, затем самый старый
-   ready item. Локальная доска не является источником очереди.
-3. Перед claim QA читает parent, recent comments, children, metadata и evidence,
-   проверяет dependencies/blockers, exact candidate SHA в `origin/dev`, reviewer
-   independence, отсутствие существующего verdict/живой QA child и отсутствие
-   locked-path overlap с продолжающимся writer scope.
-4. QA пишет parent `QA claim` comment через `--content-file` с QA UUID,
-   run/session, candidate SHA, environment/workdir и review scope; затем создаёт
-   unassigned child в `backlog` или переиспользует только inactive child на том
-   же SHA. Live Multica agent ACL запрещает self-assignment, поэтому до смены
-   статуса QA записывает в child exact metadata:
-   `qa_owner_id=f992a646-a8ea-4935-ba94-212595803052`,
-   `qa_run_id=<current-task-id>`, `qa_candidate_sha=<exact-sha>`,
-   `qa_claim_mode=autonomous_unassigned`, и добавляет совпадающий owner/run/SHA
-   claim-comment.
-5. QA повторно читает parent/children/child metadata/comments. Claim валиден
-   только при полном exact metadata set, совпадающем comment, live current run,
-   прежнем SHA и отсутствии второго claim/verdict. При race, новом SHA или
-   конфликте собственная duplicate child отменяется. Иначе QA ставит child прямо
-   в `in_progress` и выполняет её в текущем run, не создавая второй daemon task
-   через `todo`. Любой dispatcher считает полный metadata claim живым ownership
-   signal, даже если `assignee_id=null`.
-6. Одна child за прогон. Parent assignee/status остаются неизменными до verdict.
-   Этот unassigned metadata claim разрешён только QA queue owner и не разрешает
-   self-claim implementation work или другим агентам.
+- `PASSED`: every required criterion has sufficient executed evidence; finish
+  the QA child and trigger PM once.
+- `FAILED`: one or more required criteria fail; finish the child with evidence
+  and trigger PM once for bounded rework.
+- `INCONCLUSIVE`: evidence cannot establish the result; record the exact unblock
+  condition and trigger PM once.
 
-## Полная самостоятельность QA
-
-QA отвечает за весь verification scope, а не только за повтор команд
-implementation-агента:
-
-- превращает acceptance criteria в traceable risk-based test plan;
-- читает changed code, тесты и test fixtures, чтобы исключить false-green;
-- самостоятельно выбирает нужные focused, regression, integration, negative,
-  edge, manual/windowed, performance, platform, save/load, pause/focus/input и
-  visual проверки;
-- создаёт disposable QA probes/capture helpers, когда существующей проверки
-  недостаточно, но удаляет их до verdict и не меняет production behavior;
-- фиксирует `passed`, `failed`, `blocked`, `not tested` и `inconclusive`
-  раздельно; developer report, code review или CI сами по себе не заменяют QA;
-- не заканчивает run без подробного отчёта и связанных follow-up issues.
-
-## Как тестировать (минимальный обязательный объем)
-1. **По Acceptance Criteria задачи** — каждый пункт проверяется фактически,
-   а не «по отчету исполнителя»: прогнать команды, открыть экраны, замерить.
-2. **Целевые тесты задачи** — прогнать все упомянутые тесты headless; убедиться,
-   что тест реально проверяет заявленное (заглянуть в код теста), а не пустышка.
-3. **Регрессия**: `python3 tools/quality_gate.py --profile changed` для task diff;
-   `--profile full` перед release. Runner обнаруживает direct и inherited suites
-   рекурсивно по всему `tests/**` (включая вложенные каталоги вида
-   `tests/ultimates/`), изолирует user-data и вызывает Godot только через
-   semaphore. Ручной focused-запуск не заменяет certifying profile.
-   Пустой набор — это `failed`, а не `passed`, и в `static_checks` это видно по
-   двум разным именам:
-   - `test-discovery` — набор не собрался или для заявленной области не выбран
-     ни один Godot-тест. Эта запись есть в каждом прогоне, кроме `--list`
-     (в том числе при `--skip-static` и `--profile static`), и всегда идёт
-     последней в `static_checks`; причина лежит в её `errors`.
-   - `python-unit` (корень `tests/`) и `python-unit:<путь>` для вложенного
-     корня, сейчас `python-unit:tests/tools` — suite собралась, но выполнила
-     ноль тестов: `<имя> executed 0 tests`.
-   Других имён для этих отказов гейт не выдаёт. Важно: при нулевом выполнении
-   Python-тестов процесс завершается с exit code `0`; провал определяет сам
-   гейт по числу выполненных тестов, а не по коду возврата, поэтому ручная
-   проверка «команда вернула 0, значит всё хорошо» здесь даёт ложно-зелёный
-   результат. В JSON evidence сверяйте `selected_godot_tests`
-   и `executed_python_tests` — нули означают, что проверки не было.
-   Полный список собираемых тестов без прогона: `--list`.
-4. **Краевые случаи** — минимум 3 на задачу: граничные значения, повторные
-   входы/выходы, пауза посреди эффекта, разрешение 1280x720, смерть/победа
-   в момент действия механики.
-5. **Визуальные задачи**: оконный запуск и фактический visual review. Скриншоты
-   сохранять в task-owned `build/qa/<FAN-id>/` и/или прикладывать к Multica
-   verdict comment; указывать viewport/platform/timestamp. Для динамического
-   поведения использовать видео/GIF или последовательность кадров, если один
-   screenshot не доказывает acceptance. Проверять артефакты, перекрытия,
-   content zones, читаемость, focus и responsive layout глазами и измерениями.
-6. **Производительность**, если задача массовая (волны/VFX): детерминированный
-   сценарий на целевом cap (или 100+, если это AC задачи) с проверяемым бюджетом:
-   число group snapshots/candidate visits, cap активных узлов и отсутствие
-   per-frame allocations. Формулировка «без заметных просадок» без счётчика или
-   профиля не является достаточным evidence. Для enemy separation обязательный
-   минимум — `tests/runtime_hotpath_cache_test.gd`: 48 enemies, один общий group
-   snapshot в кадре, не более четырёх cached neighbors на enemy.
-
-## Windowed lifecycle gate (SCRUM-1031)
-
-Оконный focused test считается чистым только если он завершился не только с
-exit `0`, но и без `ObjectDB instances were leaked` / `resources still in use at
-exit`. При таком diagnostic QA повторяет запуск с `--verbose` и фиксирует точные
-типы объектов/ресурсов; скрывать warning или фильтровать stderr запрещено.
-
-Owned `SubViewport`/`Main` fixtures освобождаются child-first с ожидаемым
-frame-barrier и проверкой `WeakRef`. Если fixture запускает музыку глобального
-`AudioManager`, перед `SceneTree.quit()` тест вызывает публичный `stop_music()`
-и даёт audio thread несколько кадров снять Ogg playback handles: autoload
-`_exit_tree()` может выполняться слишком поздно относительно windowed
-`AudioServer` shutdown. Headless и production audio behavior этим test-only
-teardown не меняются.
-
-SCRUM-1045 добавляет общий helper `tools/qa_capture_teardown.gd` для windowed
-capture tools. Fixture отключает новые SubViewport updates, освобождает owned
-children, ждёт 3 process frames и проверяет их `WeakRef`, затем освобождает сам
-viewport, ждёт ещё 4 frames и проверяет его `WeakRef`. После всей матрицы helper
-вызывает `AudioManager.stop_music()` и ждёт 8 frames до quit. Capture обязан
-сделать любую ошибку этих ownership-barriers реальным exit `1`; сам helper не
-глушит stderr и не меняет production `AudioManager`/UI.
-
-## Main-dependency gate фокусных Main-тестов (FAN-1087)
-
-`tests/main_compile_guard.gd` — общий RefCounted-хелпер для тестов, которые
-preload'ят `res://scenes/Main.tscn` (`lore_screens_test`,
-`codex_unread_victory_test`, `codex_scrum954_layout_test`,
-`ui_no_overlap_matrix_test`). В начале `_initialize()` он проверяет, что
-`main.gd` и `ui_screens.gd` компилируются (`can_instantiate()`) и что инстанс
-Main получает script и `ui`/`route`/`combat`; любой провал — немедленный
-`quit(1)`. Причина: PackedScene загружается даже с некомпилирующимися
-скриптами, и без гейта тест продолжал работу на «пустом» Main, глотал
-runtime-ошибки и печатал success с exit 0 (false-green FAN-1087). Новые
-фокусные тесты, инстанцирующие Main, обязаны вызывать этот гейт первым шагом.
-
-## Мета 4.1 Keystone Behavioral Gate (SCRUM-837)
-
-Для задач Меты 4.1, которые меняют keystone-эффекты, QA обязан прогнать
-`tests/meta_keystone_behavioral_smoke_test.gd` через `python3 tools/godot_gate.py`
-и проверить лог на отсутствие `SCRIPT ERROR`. Этот тест должен проверять
-фактические боевые исходы в headless SceneTree mini-arena, а не только словари
-модификаторов. Допускается максимум 2 повторных прогона при флаке; тяжёлые
-сценарии запускаются одним инстансом через Godot gate.
-
-## Геймпад-чеклист (SCRUM-815, ОБЯЗАТЕЛЬНО для задач, трогающих UI/ввод)
-Пользователь требует полной проходимости игры с геймпада. Любая задача, которая
-добавляет/меняет экран, попап или ввод, проходит этот чеклист на приёмке:
-1. **Гейт**: `tests/gamepad_full_flow_smoke_test.gd` зелёный headless (2–3 прогона
-   подряд, флаки-чек) через `tools/godot_gate.py`. Это сквозной сценарий
-   «игра проходима только с геймпада» (меню → выбор героя → бой → пауза → level-up
-   → смерть → настройки), навигация — синтетическими InputEventJoypadButton/Motion.
-2. **Per-screen** для нового/изменённого экрана (синтетика joypad):
-   - на старте есть фокус (`gui_get_focus_owner() != null`) на логичном элементе;
-   - крестовина/стик двигают фокус по ВСЕМ интерактивным элементам (недостижимых нет);
-   - A (`ui_accept`) активирует сфокусированное, B (`ui_cancel`) = «Назад»/закрыть;
-   - вкладки/секции листаются LB/RB, если они есть;
-   - мышь/клавиатура продолжают работать (гибрид не сломан).
-3. **Focus-стиль** различим и НЕ жёлтый (курс «без жёлтых рамок»).
-4. Профильные тесты пакета зелёные: `gamepad_menu_focus_test.gd` (мета-меню,
-   SCRUM-813), `gamepad_inrun_ui_test.gd` (внутризабеговые экраны, SCRUM-812),
-   `gamepad_core_input_test.gd` (ядро, SCRUM-811).
-Карта управления — `docs/design/systems/input_controls.md`.
-
-## Вердикт и отчёт
-Вердикт сначала фиксируется подробным comment'ом в QA child issue, затем summary
-со ссылками на evidence/follow-ups добавляется в parent. QA child переводится в
-`done` при любом фактическом verdict. Локальный task mirror обновляется при
-наличии:
-
-```md
-## QA-Вердикт (<дата>)
-Статус: PASSED | FAILED
-Verified SHA / environment: <sha, OS, Godot, build/config>
-Acceptance traceability: <criterion -> check/evidence>
-Автоматические проверки: <commands + results>
-Manual/windowed scenarios: <steps + results>
-Evidence: <Multica attachments / repo paths / logs / screenshots / video>
-Findings: <passed | failed | blocked | not tested | inconclusive>
-Баги/улучшения: нет | linked FAN issues
-Residual risks: <явно>
-Release recommendation: Go | Go with known risks | No-Go
-Disk cleanup: <removed paths | none created | blocked by lock>
-```
-При `PASSED` parent переводится в `done`. При `FAILED` parent остаётся
-`in_review`, а все defects/required improvements получают отдельные linked child
-issues. Вернуть parent в `todo` может только dispatcher/PM или новый
-implementation owner после явного решения; QA worker не меняет parent owner и
-не становится implementation executor.
-
-## Баги и обязательные улучшения
-На КАЖДЫЙ подтверждённый баг или обязательное улучшение — сначала отдельная
-linked Multica child issue исходного implementation parent (проект FantasyDisk,
-FAN-*; title `BUG:` или `IMPROVEMENT:`), затем локальный mirror-файл
-`docs/tasks/bug_<short_name>_task.md` при необходимости:
-```md
-# BUG: <короткое название>
-Статус: new
-Приоритет: critical | high | normal
-Роль: Back-end | Design (по зоне бага)
-Найдено QA при тестировании: <task файл>
-
-## Воспроизведение
-<точные шаги, 1-2-3>
-## Ожидание / Реальность
-## Окружение
-<разрешение, класс, уровень возвышения, коммит>
-## Evidence
-<attachments, screenshots/video/logs/traces, частота/число попыток>
-## Severity / Priority / Recommended Role
-## Acceptance Criteria
-```
-+ строка на локальный dashboard `docs/process/task_board.md` (секция «Баги от QA»,
-создать при первом баге) со статусом new — только как mirror; воркеры/чаты берут
-чинить Multica issue (FAN-*).
-Критический баг (краш, потеря сейва, софтлок) — дополнительно пометить
-ПРИОРИТЕТ в начале строки доски.
-
-## Запреты QA
-- Не чинить баги самому (кроме опечаток в доках) — только фиксировать и заводить таски.
-- Не перепроверять задачи с уже имеющимся QA-Вердиктом (если код не менялся).
-- Не держать больше одной review issue `in_progress` за прогон.
-- Не брать implementation parent в assignee и не использовать QA child как fix task.
-- Не объявлять PASS при `not tested`, `blocked` или непокрытом critical acceptance.
+QA does not directly close/reassign the implementation parent or launch the next
+stage. PM prepares the deterministic gate and Qwen executes it.
