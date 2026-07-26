@@ -30,8 +30,7 @@ func _initialize() -> void:
 			push_error(error)
 		quit(1)
 		return
-	print("SCRUM-1059/1093 Main Menu test passed at six viewports and live resize.")
-	quit(0)
+	_finish("SCRUM-1059/1093 Main Menu test passed at six viewports and live resize.")
 
 
 func _validate_fresh(viewport_size: Vector2i) -> void:

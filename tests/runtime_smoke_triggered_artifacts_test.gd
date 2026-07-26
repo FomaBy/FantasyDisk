@@ -18,8 +18,7 @@ func _initialize() -> void:
 	await _test_on_room_clear_heal()
 	await _test_transient_flags_not_frozen_in_snapshot()
 	await _test_character_change_clears_trigger_latches()
-	print("[triggered_artifacts] PASSED")
-	quit(0)
+	_finish("[triggered_artifacts] PASSED")
 
 
 func _make_player() -> Node2D:

@@ -25,8 +25,7 @@ func _initialize() -> void:
 			push_error(error)
 		quit(1)
 		return
-	print("SCRUM-981 gold menu shell test passed at 1280x720, 1920x1080 and 2560x1440.")
-	quit()
+	_finish("SCRUM-981 gold menu shell test passed at 1280x720, 1920x1080 and 2560x1440.")
 
 
 func _validate_resolution(viewport_size: Vector2i) -> void:

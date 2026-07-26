@@ -182,5 +182,4 @@ func _initialize() -> void:
 
 	main.queue_free()
 	await process_frame
-	print("Runtime combat smoke suite passed.")
-	quit()
+	_finish("Runtime combat smoke suite passed.")

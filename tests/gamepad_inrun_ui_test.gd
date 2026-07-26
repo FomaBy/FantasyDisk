@@ -46,8 +46,7 @@ func _initialize() -> void:
 
 	main.queue_free()
 	await process_frame
-	print("Gamepad in-run UI navigation test passed.")
-	quit()
+	_finish("Gamepad in-run UI navigation test passed.")
 
 
 func _focus_owner(main) -> Control:

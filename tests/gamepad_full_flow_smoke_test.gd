@@ -80,8 +80,7 @@ func _initialize() -> void:
 
 	main.queue_free()
 	await process_frame
-	print("Gamepad full-flow smoke passed.")
-	quit()
+	_finish("Gamepad full-flow smoke passed.")
 
 
 # (a) Главное меню: фокус есть, D-pad ведёт по кнопкам, A открывает выбор героя.

@@ -34,8 +34,7 @@ func _initialize() -> void:
 
 	main.queue_free()
 	await process_frame
-	print("Runtime boss/elite smoke suite passed.")
-	quit()
+	_finish("Runtime boss/elite smoke suite passed.")
 
 
 # SCRUM-702: секретный босс должен использовать ДОСТАВЛЕННУЮ анимацию

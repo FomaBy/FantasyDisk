@@ -181,5 +181,4 @@ func _initialize() -> void:
 
 	main.queue_free()
 	await process_frame
-	print("Dev console smoke passed.")
-	quit()
+	_finish("Dev console smoke passed.")

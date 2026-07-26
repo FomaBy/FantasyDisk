@@ -45,8 +45,7 @@ func _initialize() -> void:
 			push_error("SCRUM-816: %s" % err)
 		quit(1)
 		return
-	print("gamepad_settings_rebind_test passed.")
-	quit(0)
+	_finish("gamepad_settings_rebind_test passed.")
 
 
 func _expect(cond: bool, msg: String) -> bool:

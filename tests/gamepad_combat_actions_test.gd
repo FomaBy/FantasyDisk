@@ -95,8 +95,7 @@ func _initialize() -> void:
 	main.call("_clear_all_game_pauses")
 	main.queue_free()
 	await process_frame
-	print("gamepad_combat_actions_test passed.")
-	quit(0)
+	_finish("gamepad_combat_actions_test passed.")
 
 
 func _ensure_gamepad_action_bindings() -> void:
