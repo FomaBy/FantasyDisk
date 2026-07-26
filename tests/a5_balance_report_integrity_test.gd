@@ -1,6 +1,15 @@
 extends SceneTree
 
-# FAN-1438: fail-closed integrity guard for the committed A5 report artifacts.
+# FAN-1438: fail-closed integrity guard for the CURRENT regenerable A5 report
+# artifacts (report.md, per_weapon.csv, raw.json.gz under Generator.REPORT_DIR).
+#
+# FAN-1730: this suite deliberately reads Generator.RAW_PATH unconditionally and
+# fails closed when that artifact is missing or corrupted — that is its contract.
+# The immutable f09 oracle/lineage contract is therefore NOT here: it lives in
+# tests/a5_balance_report_lineage_test.gd, which reads only
+# tests/fixtures/a5_f09_oracle.json.gz and never opens RAW_PATH. Splitting the two
+# keeps both fail-closed and makes the lineage verdict independent of the state of
+# the artifact a successful `--mode=full` run rewrites.
 
 const PD := preload("res://scripts/progression_data.gd")
 const Meta := preload("res://scripts/meta_progression.gd")
@@ -8,14 +17,6 @@ const PlayerScript := preload("res://scripts/player.gd")
 const CodexData := preload("res://scripts/codex_data.gd")
 const Schema6 := preload("res://scripts/constellation_schema6_data.gd")
 const Generator := preload("res://tools/a5_balance_report.gd")
-# FAN-1641: external pin of the current integration-base (b8909e30) 51x4 digest,
-# so a self-consistent lineage-manifest tamper cannot pass the integrity gate.
-const CURRENT_BASE_PROJECTION_SHA256 := "ac7710a043848eb4fe895237092c3aa2458ab4c1092258a6ba03d5f02b635494"
-# FAN-1649: external pin of the current integration-base full canonical telemetry
-# payload aggregate over the 309 per-sample digests, anchoring the pinned map the
-# same way as the projection digest above.
-const CURRENT_BASE_TELEMETRY_FULL_SHA256 := "ad1d9a7ae1a36b087370b33582601a51b880d8cf102d3adc461fdb3e1c5d307f"
-const LIVE_TELEMETRY_SCHEMA := "fan1511.runtime-telemetry.v2"
 
 var _errors := PackedStringArray()
 
@@ -48,69 +49,7 @@ func _initialize() -> void:
 	_validate_live_coverage(dataset)
 	_validate_csv(dataset)
 	_validate_markdown(dataset, report_text)
-	_validate_oracle_lineage()
 	_finish()
-
-
-# FAN-1641: the committed oracle and the checked-in lineage manifest must stay
-# fail-closed consistent. The full git-backed commit-level causality (ancestry,
-# inventory segmentation, candidate zero-delta gate, and negative mutations) lives
-# in tests/a5_balance_report_parity_test.gd.
-func _validate_oracle_lineage() -> void:
-	var historical_artifact := Generator.read_raw_artifact()
-	_check(bool(historical_artifact.get("ok", false)), "immutable f09 oracle must decode before lineage verification: %s" % historical_artifact.get("error", "unknown error"))
-	var historical_raw_text := str(historical_artifact.get("text", ""))
-	var historical_raw = JSON.parse_string(historical_raw_text)
-	_check(historical_raw is Dictionary, "immutable f09 oracle must parse as an object")
-	if not historical_raw is Dictionary:
-		return
-	var historical_dataset := historical_raw as Dictionary
-	var loaded := Generator.load_oracle_lineage()
-	_check(bool(loaded.get("ok", false)), "oracle lineage manifest must load: %s" % loaded.get("error", "unknown"))
-	if not bool(loaded.get("ok", false)):
-		return
-	var manifest: Dictionary = loaded.get("manifest", {})
-	var lineage := Generator.verify_oracle_lineage(manifest, historical_dataset, historical_raw_text)
-	_check(bool(lineage.get("ok", false)), "committed oracle must match the lineage manifest: %s" % "; ".join(lineage.get("errors", [])))
-	_check(str(lineage.get("current_digest", "")) == CURRENT_BASE_PROJECTION_SHA256, "reconstructed current digest differs from the externally pinned current base")
-	_check(str((manifest.get("current_integration_base", {}) as Dictionary).get("projection_sha256", "")) == CURRENT_BASE_PROJECTION_SHA256, "manifest current-base digest differs from the externally pinned current base")
-	_check(str((manifest.get("historical_oracle", {}) as Dictionary).get("dataset_digest_sha256", "")) == str(historical_dataset.get("dataset_digest_sha256", "")), "lineage manifest historical dataset digest differs from immutable f09 oracle")
-	var drifted := manifest.duplicate(true)
-	(drifted.get("current_integration_base", {}) as Dictionary)["projection_sha256"] = "0000000000000000000000000000000000000000000000000000000000000000"
-	_check(not bool(Generator.verify_oracle_lineage(drifted, historical_dataset, historical_raw_text).get("ok", true)), "drifted manifest current-base digest must fail closed")
-	# FAN-1649: the pinned current-base FULL telemetry payload is externally anchored
-	# and internally self-consistent (309 samples, aggregate == full_sha256 == const).
-	var pinned: Dictionary = (manifest.get("current_integration_base", {}) as Dictionary).get("telemetry_full", {})
-	_check(not pinned.is_empty(), "manifest must pin a current-base full telemetry payload")
-	var pinned_digests: Dictionary = pinned.get("sample_digests", {})
-	_check(int(pinned.get("sample_count", -1)) == 309 and pinned_digests.size() == 309, "pinned full telemetry must cover all 309 samples")
-	_check(str(pinned.get("telemetry_schema", "")) == LIVE_TELEMETRY_SCHEMA, "pinned full telemetry schema mismatch")
-	var keys := pinned_digests.keys()
-	keys.sort()
-	var aggregate := ""
-	for key in keys:
-		aggregate += "%s|%s\n" % [str(key), str(pinned_digests[key])]
-	_check(Generator._sha256(aggregate) == str(pinned.get("full_sha256", "")), "pinned full telemetry aggregate is internally inconsistent")
-	_check(str(pinned.get("full_sha256", "")) == CURRENT_BASE_TELEMETRY_FULL_SHA256, "manifest full-telemetry digest differs from the externally pinned current base")
-	# A self-consistent tamper (rewrite a sample digest AND recompute the aggregate)
-	# stays internally consistent but diverges from the external committed constant.
-	var tampered := pinned_digests.duplicate(true)
-	tampered[str(keys[0])] = "0000000000000000000000000000000000000000000000000000000000000000"
-	var tampered_keys := tampered.keys()
-	tampered_keys.sort()
-	var tampered_aggregate := ""
-	for key in tampered_keys:
-		tampered_aggregate += "%s|%s\n" % [str(key), str(tampered[key])]
-	_check(Generator._sha256(tampered_aggregate) != CURRENT_BASE_TELEMETRY_FULL_SHA256, "self-consistent full-telemetry tamper must diverge from the external constant")
-	# FAN-1658: the RUNTIME gate anchors on the immutable trust root in the tool, not on
-	# the caller manifest. The faithful materialized b8909e30 map passes the runtime
-	# anchor, and the self-consistent tamper above (per-sample map + its own aggregate,
-	# both self-repinned) still fails closed against the unchanged runtime constant.
-	var faithful_candidate := {"ok": true, "count": pinned_digests.size(), "sample_digests": pinned_digests.duplicate(true), "digest": Generator._sha256(aggregate)}
-	_check(bool(Generator.verify_full_telemetry_against_anchor(faithful_candidate, pinned).get("ok", false)), "faithful materialized current-base telemetry map must pass the runtime anchor")
-	var tamper_candidate := {"ok": true, "count": tampered.size(), "sample_digests": tampered, "digest": Generator._sha256(tampered_aggregate)}
-	var tamper_pinned := {"telemetry_schema": LIVE_TELEMETRY_SCHEMA, "sample_count": tampered.size(), "full_sha256": Generator._sha256(tampered_aggregate), "sample_digests": tampered}
-	_check(not bool(Generator.verify_full_telemetry_against_anchor(tamper_candidate, tamper_pinned).get("ok", true)), "self-repinned current-base telemetry must fail the runtime anchor")
 
 
 func _validate_source_provenance(dataset: Dictionary) -> void:

@@ -1290,8 +1290,13 @@ tuning.
 
 ### FAN-1641 — lineage-aware A5 parity contract
 
-Исторический численный оракул `f09f21ec` и его закоммиченные артефакты
-(`raw.json.gz`, `per_weapon.csv`, `report.md`) остаются read-only и неизменными.
+Исторический численный оракул `f09f21ec` неизменен и read-only. Его полный
+DATASET лежит в immutable fixture `tests/fixtures/a5_f09_oracle.json.gz`, а его
+51×4 матрица и хэши — в `tests/fixtures/a5_oracle_lineage.json`; только эти два
+файла являются источником lineage (FAN-1682/FAN-1730). Артефакты
+`docs/design/reports/fan1438_a5_balance/{report.md,per_weapon.csv,raw.json.gz}`
+к f09 не относятся: это ТЕКУЩИЕ регенерируемые артефакты, которые каждый
+успешный `--mode=full` перезаписывает, и они никогда не служат baseline'ом f09.
 После принятых и независимо QA-проверенных summon-фиксов FAN-1585 (`e0c6c8c5`,
 druid summon formations) и FAN-1596 (`8376f5c7`, homunculus pair guard) свежая
 регенерация из текущего `origin/dev` детерминированно отличается от f09 ровно в
@@ -1332,8 +1337,11 @@ baseline:
 пропущенная lineage-запись, подменённый оракул/коммит/tree, ложный current-base
 zero, дрейф current digest, подменённый decoded raw) обязаны fail closed;
 покрытие — в `tests/a5_balance_report_parity_test.gd` (полный контракт + Git
-causality + full-payload matrix) и `tests/a5_balance_report_integrity_test.gd`
-(committed oracle ↔ manifest tie + full-telemetry anchor).
+causality + full-payload matrix) и `tests/a5_balance_report_lineage_test.gd`
+(committed oracle ↔ manifest tie + full-telemetry anchor). Оба набора читают
+только immutable fixture. `tests/a5_balance_report_integrity_test.gd` в lineage
+не участвует: с FAN-1730 он отвечает исключительно за текущие регенерируемые
+артефакты.
 
 #### FAN-1649 — full telemetry payload parity
 
@@ -1392,7 +1400,8 @@ payload.
   pinned map манифеста больше не даёт `ok=true`, потому что trust root неизменяем и
   не берётся из данных (закрытый fail-open FAN-1650). Матрица мутаций,
   материализованный faithful кандидат и self-repin негатив — в
-  `tests/a5_balance_report_parity_test.gd` и `_integrity_test.gd`. Тестовый seam
+  `tests/a5_balance_report_parity_test.gd` и `_lineage_test.gd` (FAN-1730;
+  до разделения вторая половина жила в `_integrity_test.gd`). Тестовый seam
   `test_only_verify_full_telemetry_with_root` (инъекция root для малой синтетической
   матрицы) не достижим ни из production, ни из `--mode=full` пути.
 - **Предикат projection-дубликата.** `_projection_rows` уже отвергает дубликат
@@ -1530,12 +1539,31 @@ FAN-1682 устраняет это остаточное ограничение: 
 закоммиченной immutable fixture
 `tests/fixtures/a5_f09_oracle.json.gz`. `read_raw_artifact()` по умолчанию
 читает именно её, поэтому parity и lineage-проверка больше не получают
-исторический baseline из перезаписываемого отчёта. Integrity-тест явно читает
-`RAW_PATH` только для сверки текущих `raw.json.gz` / CSV / Markdown артефактов,
-а для lineage отдельно использует f09 fixture. Поэтому после локального
-`--mode=full` A5 parity/integrity запускаются в том же checkout без
-`git restore`; decoded-content SHA-256, dataset SHA-256, 51×4 projection anchor
-и все fail-closed негативы остаются обязательными.
+исторический baseline из перезаписываемого отчёта.
+
+FAN-1730 доводит разделение до конца. FAN-1682 перенёс только источник lineage:
+сам lineage-контракт оставался последней секцией integrity-набора, который
+безусловно открывал `RAW_PATH` и выходил раньше при ошибке, поэтому удаление или
+повреждение регенерируемого `raw.json.gz` роняло lineage вместе с ним. Теперь
+два контракта живут в двух наборах, и ни один из них не пропускает проверку
+молча — каждый fail closed на СВОЁМ входе:
+
+- `tests/a5_balance_report_lineage_test.gd` — immutable f09 oracle/lineage.
+  Читает только `tests/fixtures/a5_f09_oracle.json.gz` и
+  `tests/fixtures/a5_oracle_lineage.json`, к `RAW_PATH` не обращается ни при
+  каких условиях. Владеет связкой committed oracle ↔ manifest, внешними анкерами
+  51×4 (`ac7710a0…`) и 309-sample telemetry (`ad1d9a7a…`), а также негативами
+  drifted-manifest и self-repin.
+- `tests/a5_balance_report_integrity_test.gd` — ТЕКУЩИЕ регенерируемые
+  `report.md` / `per_weapon.csv` / `raw.json.gz`. Читает `RAW_PATH` явно и
+  безусловно и обязан fail closed при его отсутствии или повреждении;
+  lineage-проверок не содержит и f09 fixture не открывает.
+- `tests/a5_balance_report_parity_test.gd` — 51×4 executable-oracle parity и Git
+  causality; тоже питается только от immutable fixture.
+
+Поэтому после локального `--mode=full` A5 parity/integrity/lineage запускаются в
+том же checkout без `git restore`; decoded-content SHA-256, dataset SHA-256,
+51×4 projection anchor и все fail-closed негативы остаются обязательными.
 
 #### FAN-1681 — покрытие регрессий вокруг projection trust root
 
