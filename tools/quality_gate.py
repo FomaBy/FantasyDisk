@@ -31,6 +31,11 @@ import time
 from pathlib import Path
 from typing import Iterable, Sequence
 
+try:
+    from tools.godot_gate import FATAL_OUTPUT_RE
+except ModuleNotFoundError:
+    from godot_gate import FATAL_OUTPUT_RE
+
 ROOT = Path(__file__).resolve().parents[1]
 TEST_DIR = ROOT / "tests"
 GODOT_GATE = ROOT / "tools" / "godot_gate.py"
@@ -43,7 +48,6 @@ REAL_DISCORD_WEBHOOK_RE = re.compile(
     r"https://(?:discord(?:app)?\.com)/api/webhooks/[0-9]{15,}/[A-Za-z0-9_-]{20,}"
 )
 BASE64_LITERAL_RE = re.compile(r'["\']([A-Za-z0-9+/]{20,}={0,2})["\']')
-FATAL_OUTPUT_RE = re.compile(r"\bSCRIPT ERROR\b|\bFATAL\b", re.IGNORECASE)
 # FAN-1700: a GDScript suite reports its own failure through ``push_error()``,
 # which Godot prints as ``ERROR: <message>`` plus an ``at: push_error (...)``
 # frame.  The bare ``ERROR:`` line is indistinguishable from benign engine

@@ -16,17 +16,26 @@ Environment:
     FSD_GODOT_MAXWAIT     maximum slot wait in seconds (default: 2400)
     FSD_GODOT_RUN_TIMEOUT maximum Godot runtime in seconds (default: 3600)
     FSD_GODOT_BYPASS_ON_TIMEOUT=1 allows an explicit emergency bypass
+
+Exit status 3 means the requested run printed a fatal Godot diagnostic even
+when the engine process itself exited successfully.
 """
 from __future__ import annotations
 
 import os
+import re
 import shutil
 import subprocess
 import sys
 import tempfile
+import threading
 import time
 from pathlib import Path
 from typing import BinaryIO, Sequence
+
+
+FATAL_OUTPUT_RE = re.compile(r"\bSCRIPT ERROR\b|\bFATAL\b", re.IGNORECASE)
+SCRIPT_LOAD_FAILURE = "Failed to load script"
 
 
 def _positive_int_env(name: str, default: int) -> int:
@@ -84,26 +93,92 @@ def _ensure_import_cache(args: Sequence[str], godot: str) -> int:
         return 0
     project_path = _project_path(args)
     sys.stderr.write("godot_gate: import cache missing, running headless import first\n")
+    # The import pre-pass is intentionally diagnostic-tolerant: existing green
+    # suites can emit unrelated import/resource warnings while warming the
+    # cache. Only the requested executable run below is a certifying call site.
     return _run_godot([godot, "--headless", "--path", project_path, "--import", "--quit"])
 
 
-def _run_godot(command: Sequence[str]) -> int:
+def _write_live_output(chunk: bytes) -> None:
+    """Tee one captured process chunk to the caller's stdout immediately."""
+    try:
+        binary_output = getattr(sys.stdout, "buffer", None)
+        if binary_output is not None:
+            binary_output.write(chunk)
+            binary_output.flush()
+            return
+        sys.stdout.write(chunk.decode("utf-8", errors="replace"))
+        sys.stdout.flush()
+    except (BrokenPipeError, OSError, ValueError):
+        # A closed output consumer must not stop draining the child pipe.
+        pass
+
+
+def _fatal_output_signal(output: str) -> str:
+    match = FATAL_OUTPUT_RE.search(output)
+    if match is not None:
+        return match.group(0)
+    if SCRIPT_LOAD_FAILURE in output:
+        return SCRIPT_LOAD_FAILURE
+    return ""
+
+
+def _run_godot(
+    command: Sequence[str],
+    *,
+    fail_on_fatal_output: bool = False,
+) -> int:
     try:
         timeout = _positive_float_env("FSD_GODOT_RUN_TIMEOUT", 3600.0)
     except ValueError as exc:
         sys.stderr.write(f"godot_gate: invalid FSD_GODOT_RUN_TIMEOUT: {exc}\n")
         return 2
+    process = subprocess.Popen(
+        list(command),
+        stdout=subprocess.PIPE,
+        stderr=subprocess.STDOUT,
+    )
+    assert process.stdout is not None
+    output_parts: list[bytes] = []
+
+    def drain_output() -> None:
+        read_chunk = getattr(process.stdout, "read1", process.stdout.read)
+        while True:
+            chunk = read_chunk(64 * 1024)
+            if not chunk:
+                return
+            output_parts.append(chunk)
+            _write_live_output(chunk)
+
+    reader = threading.Thread(
+        target=drain_output,
+        name="godot-gate-output-reader",
+        daemon=True,
+    )
+    reader.start()
+    timed_out = False
     try:
-        return subprocess.run(
-            list(command),
-            check=False,
-            timeout=timeout if timeout > 0.0 else None,
-        ).returncode
+        process.wait(timeout=timeout if timeout > 0.0 else None)
     except subprocess.TimeoutExpired:
+        timed_out = True
+        process.kill()
+        process.wait()
+    reader.join()
+    process.stdout.close()
+
+    if timed_out:
         sys.stderr.write(
             f"godot_gate: Godot timed out after {timeout:g}s; process terminated\n"
         )
         return 124
+    output = b"".join(output_parts).decode("utf-8", errors="replace")
+    diagnostic = _fatal_output_signal(output) if fail_on_fatal_output else ""
+    if diagnostic:
+        sys.stderr.write(
+            f"godot_gate: fatal Godot diagnostic detected: {diagnostic}\n"
+        )
+        return 3
+    return process.returncode
 
 
 def _prepare_lock_file(file: BinaryIO) -> None:
@@ -203,7 +278,10 @@ def main(argv: Sequence[str] | None = None) -> int:
                 import_code = _ensure_import_cache(args, godot)
                 if import_code != 0:
                     return import_code
-                return _run_godot([godot, *args])
+                return _run_godot(
+                    [godot, *args],
+                    fail_on_fatal_output=True,
+                )
             finally:
                 slot.release()
 
@@ -215,7 +293,10 @@ def main(argv: Sequence[str] | None = None) -> int:
                 import_code = _ensure_import_cache(args, godot)
                 if import_code != 0:
                     return import_code
-                return _run_godot([godot, *args])
+                return _run_godot(
+                    [godot, *args],
+                    fail_on_fatal_output=True,
+                )
             sys.stderr.write(
                 "godot_gate: slot wait timed out; bypass is disabled "
                 "(set FSD_GODOT_BYPASS_ON_TIMEOUT=1 only for manual recovery)\n"
