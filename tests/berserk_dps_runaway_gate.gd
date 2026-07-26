@@ -70,6 +70,18 @@ func _initialize() -> void:
 		return
 	var archetype: String = ProgressionData.weapon_archetype(config)
 
+	# FAN-1712: «идеальный» билд обязан быть ВОСПРОИЗВОДИМЫМ — иначе один и тот же
+	# SHA судится по разным билдам. Свой RandomNumberGenerator ниже покрывает только
+	# level-up офферы; артефакты приходят из ProgressionData.reward_pool(), а он
+	# материализует rarity-семьи через roll_artifact_family_tier() → ГЛОБАЛЬНЫЙ
+	# randf() (scripts/progression_data.gd:143). Тиры (веса ≈0.64/0.29/0.08)
+	# раскатывались заново в каждом процессе: замеры на 071338e9 дали в одном
+	# процессе fox_boots + damage=194.86, в другом captains_coin + damage=239.52,
+	# а удачный ролл тиров поднимал 20t до ~14.8k при нормальном 1t (ложный красный
+	# FAN-1700). Фиксируем глобальный поток тем же BASE_SEED: набор артефактов и их
+	# тиры становятся частью эталона, потолки и чувствительность не меняются.
+	seed(BASE_SEED)
+
 	# Тот же сид, что у tools/character_balance_csv.gd для пары berserk/hammer:
 	# генератор раздаёт seed_counter инкрементом (+2 на пару: ideal+random) в порядке
 	# обхода реестра. Совпадение сидов → число гейта тождественно строке CSV (QA
@@ -250,6 +262,10 @@ func _weighted_index(source: Array, character_id: String, rng: RandomNumberGener
 # --- Замер фактического DPS (зеркало tools/character_balance_csv.gd) -------------
 
 func _measure_dps(character_id: String, weapon_id: String, target_count: int, rewards: Array) -> float:
+	# FAN-1712: окно замера тоже стартует с фиксированной точки глобального потока.
+	# Крит-роллы (scripts/berserk_weapon.gd:824) идут из того же глобального RNG, что
+	# и ролл тиров, поэтому иначе длина предыдущего окна сдвигала бы поток следующего.
+	seed(BASE_SEED + target_count)
 	for child in _holder.get_children():
 		child.queue_free()
 	await process_frame
