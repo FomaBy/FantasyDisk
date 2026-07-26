@@ -75,6 +75,7 @@ func _initialize() -> void:
 			failures.append("%s/%s больше не leaves_pool — гейт устарел, обновить POOL_PAIRS" % [cid, wid])
 			continue
 		var arche: String = ProgressionData.weapon_archetype(config)
+		seed(BASE_SEED)
 		var rng := RandomNumberGenerator.new()
 		rng.seed = int(seed_of.get("%s/%s" % [cid, wid], BASE_SEED))
 		var build: Array = _build_levelups(cid, arche, rng) + _build_artifacts(cid, arche, rng)
@@ -215,6 +216,7 @@ func _weighted_index(source: Array, character_id: String, rng: RandomNumberGener
 
 
 func _measure_dps(character_id: String, weapon_id: String, target_count: int, rewards: Array) -> float:
+	seed(BASE_SEED + target_count)
 	for child in _holder.get_children():
 		child.queue_free()
 	await process_frame
