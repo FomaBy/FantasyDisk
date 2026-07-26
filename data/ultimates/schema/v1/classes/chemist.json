@@ -1,0 +1,145 @@
+{
+  "schema_version": 1,
+  "class_id": "chemist",
+  "class_order": 14,
+  "profiles": [
+    {
+      "weapon_id": "blast_powder",
+      "implementation_state": "declared",
+      "fallback_policy_id": "legacy_class_ultimate",
+      "identity": {
+        "profile_id": "weapon_ultimate.profile.chemist.blast_powder",
+        "title_id": "weapon_ultimate.title.chemist.blast_powder",
+        "mechanic_id": "weapon_ultimate.mechanic.chemist.blast_powder"
+      },
+      "targeting": {
+        "aim_id": "weapon_ultimate.aim.chemist.blast_powder",
+        "strategy_id": "unbound",
+        "params": {}
+      },
+      "charge": {
+        "policy_id": "weapon_ultimate.charge.chemist.blast_powder",
+        "strategy_id": "unbound",
+        "params": {}
+      },
+      "cast_phases": {
+        "acquire": "weapon_ultimate.phase.chemist.blast_powder.acquire",
+        "windup": "weapon_ultimate.phase.chemist.blast_powder.windup",
+        "execute": "weapon_ultimate.phase.chemist.blast_powder.execute",
+        "active": "weapon_ultimate.phase.chemist.blast_powder.active",
+        "recover": "weapon_ultimate.phase.chemist.blast_powder.recover",
+        "cleanup": "weapon_ultimate.phase.chemist.blast_powder.cleanup"
+      },
+      "executor": {
+        "executor_id": "weapon_ultimate.executor.chemist.blast_powder",
+        "strategy_id": "unbound",
+        "params": {}
+      },
+      "total_boss_cap": null,
+      "presentation": {
+        "presentation_id": "weapon_ultimate.presentation.chemist.blast_powder",
+        "animation_id": "weapon_ultimate.animation.chemist.blast_powder",
+        "vfx_id": "weapon_ultimate.vfx.chemist.blast_powder",
+        "sfx_id": "weapon_ultimate.sfx.chemist.blast_powder",
+        "params": {}
+      },
+      "cleanup_policy": {
+        "policy_id": "weapon_ultimate.cleanup.chemist.blast_powder",
+        "strategy_id": "unbound",
+        "params": {}
+      }
+    },
+    {
+      "weapon_id": "acid_flask",
+      "implementation_state": "declared",
+      "fallback_policy_id": "legacy_class_ultimate",
+      "identity": {
+        "profile_id": "weapon_ultimate.profile.chemist.acid_flask",
+        "title_id": "weapon_ultimate.title.chemist.acid_flask",
+        "mechanic_id": "weapon_ultimate.mechanic.chemist.acid_flask"
+      },
+      "targeting": {
+        "aim_id": "weapon_ultimate.aim.chemist.acid_flask",
+        "strategy_id": "unbound",
+        "params": {}
+      },
+      "charge": {
+        "policy_id": "weapon_ultimate.charge.chemist.acid_flask",
+        "strategy_id": "unbound",
+        "params": {}
+      },
+      "cast_phases": {
+        "acquire": "weapon_ultimate.phase.chemist.acid_flask.acquire",
+        "windup": "weapon_ultimate.phase.chemist.acid_flask.windup",
+        "execute": "weapon_ultimate.phase.chemist.acid_flask.execute",
+        "active": "weapon_ultimate.phase.chemist.acid_flask.active",
+        "recover": "weapon_ultimate.phase.chemist.acid_flask.recover",
+        "cleanup": "weapon_ultimate.phase.chemist.acid_flask.cleanup"
+      },
+      "executor": {
+        "executor_id": "weapon_ultimate.executor.chemist.acid_flask",
+        "strategy_id": "unbound",
+        "params": {}
+      },
+      "total_boss_cap": null,
+      "presentation": {
+        "presentation_id": "weapon_ultimate.presentation.chemist.acid_flask",
+        "animation_id": "weapon_ultimate.animation.chemist.acid_flask",
+        "vfx_id": "weapon_ultimate.vfx.chemist.acid_flask",
+        "sfx_id": "weapon_ultimate.sfx.chemist.acid_flask",
+        "params": {}
+      },
+      "cleanup_policy": {
+        "policy_id": "weapon_ultimate.cleanup.chemist.acid_flask",
+        "strategy_id": "unbound",
+        "params": {}
+      }
+    },
+    {
+      "weapon_id": "homunculus_vial",
+      "implementation_state": "declared",
+      "fallback_policy_id": "legacy_class_ultimate",
+      "identity": {
+        "profile_id": "weapon_ultimate.profile.chemist.homunculus_vial",
+        "title_id": "weapon_ultimate.title.chemist.homunculus_vial",
+        "mechanic_id": "weapon_ultimate.mechanic.chemist.homunculus_vial"
+      },
+      "targeting": {
+        "aim_id": "weapon_ultimate.aim.chemist.homunculus_vial",
+        "strategy_id": "unbound",
+        "params": {}
+      },
+      "charge": {
+        "policy_id": "weapon_ultimate.charge.chemist.homunculus_vial",
+        "strategy_id": "unbound",
+        "params": {}
+      },
+      "cast_phases": {
+        "acquire": "weapon_ultimate.phase.chemist.homunculus_vial.acquire",
+        "windup": "weapon_ultimate.phase.chemist.homunculus_vial.windup",
+        "execute": "weapon_ultimate.phase.chemist.homunculus_vial.execute",
+        "active": "weapon_ultimate.phase.chemist.homunculus_vial.active",
+        "recover": "weapon_ultimate.phase.chemist.homunculus_vial.recover",
+        "cleanup": "weapon_ultimate.phase.chemist.homunculus_vial.cleanup"
+      },
+      "executor": {
+        "executor_id": "weapon_ultimate.executor.chemist.homunculus_vial",
+        "strategy_id": "unbound",
+        "params": {}
+      },
+      "total_boss_cap": null,
+      "presentation": {
+        "presentation_id": "weapon_ultimate.presentation.chemist.homunculus_vial",
+        "animation_id": "weapon_ultimate.animation.chemist.homunculus_vial",
+        "vfx_id": "weapon_ultimate.vfx.chemist.homunculus_vial",
+        "sfx_id": "weapon_ultimate.sfx.chemist.homunculus_vial",
+        "params": {}
+      },
+      "cleanup_policy": {
+        "policy_id": "weapon_ultimate.cleanup.chemist.homunculus_vial",
+        "strategy_id": "unbound",
+        "params": {}
+      }
+    }
+  ]
+}

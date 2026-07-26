@@ -1,0 +1,145 @@
+{
+  "schema_version": 1,
+  "class_order": 7,
+  "class_id": "robot",
+  "profiles": [
+    {
+      "weapon_id": "robot_magnetic_anchor",
+      "implementation_state": "declared",
+      "fallback_policy_id": "legacy_class_ultimate",
+      "identity": {
+        "profile_id": "weapon_ultimate.profile.robot.robot_magnetic_anchor",
+        "title_id": "weapon_ultimate.title.robot.robot_magnetic_anchor",
+        "mechanic_id": "weapon_ultimate.mechanic.robot.robot_magnetic_anchor"
+      },
+      "targeting": {
+        "aim_id": "weapon_ultimate.aim.robot.robot_magnetic_anchor",
+        "strategy_id": "unbound",
+        "params": {}
+      },
+      "charge": {
+        "policy_id": "weapon_ultimate.charge.robot.robot_magnetic_anchor",
+        "strategy_id": "unbound",
+        "params": {}
+      },
+      "cast_phases": {
+        "acquire": "weapon_ultimate.phase.robot.robot_magnetic_anchor.acquire",
+        "windup": "weapon_ultimate.phase.robot.robot_magnetic_anchor.windup",
+        "execute": "weapon_ultimate.phase.robot.robot_magnetic_anchor.execute",
+        "active": "weapon_ultimate.phase.robot.robot_magnetic_anchor.active",
+        "recover": "weapon_ultimate.phase.robot.robot_magnetic_anchor.recover",
+        "cleanup": "weapon_ultimate.phase.robot.robot_magnetic_anchor.cleanup"
+      },
+      "executor": {
+        "executor_id": "weapon_ultimate.executor.robot.robot_magnetic_anchor",
+        "strategy_id": "unbound",
+        "params": {}
+      },
+      "total_boss_cap": null,
+      "presentation": {
+        "presentation_id": "weapon_ultimate.presentation.robot.robot_magnetic_anchor",
+        "animation_id": "weapon_ultimate.animation.robot.robot_magnetic_anchor",
+        "vfx_id": "weapon_ultimate.vfx.robot.robot_magnetic_anchor",
+        "sfx_id": "weapon_ultimate.sfx.robot.robot_magnetic_anchor",
+        "params": {}
+      },
+      "cleanup_policy": {
+        "policy_id": "weapon_ultimate.cleanup.robot.robot_magnetic_anchor",
+        "strategy_id": "unbound",
+        "params": {}
+      }
+    },
+    {
+      "weapon_id": "robot_hydraulic_press",
+      "implementation_state": "declared",
+      "fallback_policy_id": "legacy_class_ultimate",
+      "identity": {
+        "profile_id": "weapon_ultimate.profile.robot.robot_hydraulic_press",
+        "title_id": "weapon_ultimate.title.robot.robot_hydraulic_press",
+        "mechanic_id": "weapon_ultimate.mechanic.robot.robot_hydraulic_press"
+      },
+      "targeting": {
+        "aim_id": "weapon_ultimate.aim.robot.robot_hydraulic_press",
+        "strategy_id": "unbound",
+        "params": {}
+      },
+      "charge": {
+        "policy_id": "weapon_ultimate.charge.robot.robot_hydraulic_press",
+        "strategy_id": "unbound",
+        "params": {}
+      },
+      "cast_phases": {
+        "acquire": "weapon_ultimate.phase.robot.robot_hydraulic_press.acquire",
+        "windup": "weapon_ultimate.phase.robot.robot_hydraulic_press.windup",
+        "execute": "weapon_ultimate.phase.robot.robot_hydraulic_press.execute",
+        "active": "weapon_ultimate.phase.robot.robot_hydraulic_press.active",
+        "recover": "weapon_ultimate.phase.robot.robot_hydraulic_press.recover",
+        "cleanup": "weapon_ultimate.phase.robot.robot_hydraulic_press.cleanup"
+      },
+      "executor": {
+        "executor_id": "weapon_ultimate.executor.robot.robot_hydraulic_press",
+        "strategy_id": "unbound",
+        "params": {}
+      },
+      "total_boss_cap": null,
+      "presentation": {
+        "presentation_id": "weapon_ultimate.presentation.robot.robot_hydraulic_press",
+        "animation_id": "weapon_ultimate.animation.robot.robot_hydraulic_press",
+        "vfx_id": "weapon_ultimate.vfx.robot.robot_hydraulic_press",
+        "sfx_id": "weapon_ultimate.sfx.robot.robot_hydraulic_press",
+        "params": {}
+      },
+      "cleanup_policy": {
+        "policy_id": "weapon_ultimate.cleanup.robot.robot_hydraulic_press",
+        "strategy_id": "unbound",
+        "params": {}
+      }
+    },
+    {
+      "weapon_id": "robot_reactor_core",
+      "implementation_state": "declared",
+      "fallback_policy_id": "legacy_class_ultimate",
+      "identity": {
+        "profile_id": "weapon_ultimate.profile.robot.robot_reactor_core",
+        "title_id": "weapon_ultimate.title.robot.robot_reactor_core",
+        "mechanic_id": "weapon_ultimate.mechanic.robot.robot_reactor_core"
+      },
+      "targeting": {
+        "aim_id": "weapon_ultimate.aim.robot.robot_reactor_core",
+        "strategy_id": "unbound",
+        "params": {}
+      },
+      "charge": {
+        "policy_id": "weapon_ultimate.charge.robot.robot_reactor_core",
+        "strategy_id": "unbound",
+        "params": {}
+      },
+      "cast_phases": {
+        "acquire": "weapon_ultimate.phase.robot.robot_reactor_core.acquire",
+        "windup": "weapon_ultimate.phase.robot.robot_reactor_core.windup",
+        "execute": "weapon_ultimate.phase.robot.robot_reactor_core.execute",
+        "active": "weapon_ultimate.phase.robot.robot_reactor_core.active",
+        "recover": "weapon_ultimate.phase.robot.robot_reactor_core.recover",
+        "cleanup": "weapon_ultimate.phase.robot.robot_reactor_core.cleanup"
+      },
+      "executor": {
+        "executor_id": "weapon_ultimate.executor.robot.robot_reactor_core",
+        "strategy_id": "unbound",
+        "params": {}
+      },
+      "total_boss_cap": null,
+      "presentation": {
+        "presentation_id": "weapon_ultimate.presentation.robot.robot_reactor_core",
+        "animation_id": "weapon_ultimate.animation.robot.robot_reactor_core",
+        "vfx_id": "weapon_ultimate.vfx.robot.robot_reactor_core",
+        "sfx_id": "weapon_ultimate.sfx.robot.robot_reactor_core",
+        "params": {}
+      },
+      "cleanup_policy": {
+        "policy_id": "weapon_ultimate.cleanup.robot.robot_reactor_core",
+        "strategy_id": "unbound",
+        "params": {}
+      }
+    }
+  ]
+}

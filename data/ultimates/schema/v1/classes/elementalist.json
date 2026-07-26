@@ -1,0 +1,145 @@
+{
+  "schema_version": 1,
+  "class_order": 3,
+  "class_id": "elementalist",
+  "profiles": [
+    {
+      "weapon_id": "elementalist_orb_ring",
+      "implementation_state": "declared",
+      "fallback_policy_id": "legacy_class_ultimate",
+      "identity": {
+        "profile_id": "weapon_ultimate.profile.elementalist.elementalist_orb_ring",
+        "title_id": "weapon_ultimate.title.elementalist.elementalist_orb_ring",
+        "mechanic_id": "weapon_ultimate.mechanic.elementalist.elementalist_orb_ring"
+      },
+      "targeting": {
+        "aim_id": "weapon_ultimate.aim.elementalist.elementalist_orb_ring",
+        "strategy_id": "unbound",
+        "params": {}
+      },
+      "charge": {
+        "policy_id": "weapon_ultimate.charge.elementalist.elementalist_orb_ring",
+        "strategy_id": "unbound",
+        "params": {}
+      },
+      "cast_phases": {
+        "acquire": "weapon_ultimate.phase.elementalist.elementalist_orb_ring.acquire",
+        "windup": "weapon_ultimate.phase.elementalist.elementalist_orb_ring.windup",
+        "execute": "weapon_ultimate.phase.elementalist.elementalist_orb_ring.execute",
+        "active": "weapon_ultimate.phase.elementalist.elementalist_orb_ring.active",
+        "recover": "weapon_ultimate.phase.elementalist.elementalist_orb_ring.recover",
+        "cleanup": "weapon_ultimate.phase.elementalist.elementalist_orb_ring.cleanup"
+      },
+      "executor": {
+        "executor_id": "weapon_ultimate.executor.elementalist.elementalist_orb_ring",
+        "strategy_id": "unbound",
+        "params": {}
+      },
+      "total_boss_cap": null,
+      "presentation": {
+        "presentation_id": "weapon_ultimate.presentation.elementalist.elementalist_orb_ring",
+        "animation_id": "weapon_ultimate.animation.elementalist.elementalist_orb_ring",
+        "vfx_id": "weapon_ultimate.vfx.elementalist.elementalist_orb_ring",
+        "sfx_id": "weapon_ultimate.sfx.elementalist.elementalist_orb_ring",
+        "params": {}
+      },
+      "cleanup_policy": {
+        "policy_id": "weapon_ultimate.cleanup.elementalist.elementalist_orb_ring",
+        "strategy_id": "unbound",
+        "params": {}
+      }
+    },
+    {
+      "weapon_id": "elementalist_prism_focus",
+      "implementation_state": "declared",
+      "fallback_policy_id": "legacy_class_ultimate",
+      "identity": {
+        "profile_id": "weapon_ultimate.profile.elementalist.elementalist_prism_focus",
+        "title_id": "weapon_ultimate.title.elementalist.elementalist_prism_focus",
+        "mechanic_id": "weapon_ultimate.mechanic.elementalist.elementalist_prism_focus"
+      },
+      "targeting": {
+        "aim_id": "weapon_ultimate.aim.elementalist.elementalist_prism_focus",
+        "strategy_id": "unbound",
+        "params": {}
+      },
+      "charge": {
+        "policy_id": "weapon_ultimate.charge.elementalist.elementalist_prism_focus",
+        "strategy_id": "unbound",
+        "params": {}
+      },
+      "cast_phases": {
+        "acquire": "weapon_ultimate.phase.elementalist.elementalist_prism_focus.acquire",
+        "windup": "weapon_ultimate.phase.elementalist.elementalist_prism_focus.windup",
+        "execute": "weapon_ultimate.phase.elementalist.elementalist_prism_focus.execute",
+        "active": "weapon_ultimate.phase.elementalist.elementalist_prism_focus.active",
+        "recover": "weapon_ultimate.phase.elementalist.elementalist_prism_focus.recover",
+        "cleanup": "weapon_ultimate.phase.elementalist.elementalist_prism_focus.cleanup"
+      },
+      "executor": {
+        "executor_id": "weapon_ultimate.executor.elementalist.elementalist_prism_focus",
+        "strategy_id": "unbound",
+        "params": {}
+      },
+      "total_boss_cap": null,
+      "presentation": {
+        "presentation_id": "weapon_ultimate.presentation.elementalist.elementalist_prism_focus",
+        "animation_id": "weapon_ultimate.animation.elementalist.elementalist_prism_focus",
+        "vfx_id": "weapon_ultimate.vfx.elementalist.elementalist_prism_focus",
+        "sfx_id": "weapon_ultimate.sfx.elementalist.elementalist_prism_focus",
+        "params": {}
+      },
+      "cleanup_policy": {
+        "policy_id": "weapon_ultimate.cleanup.elementalist.elementalist_prism_focus",
+        "strategy_id": "unbound",
+        "params": {}
+      }
+    },
+    {
+      "weapon_id": "elementalist_meteor_core",
+      "implementation_state": "declared",
+      "fallback_policy_id": "legacy_class_ultimate",
+      "identity": {
+        "profile_id": "weapon_ultimate.profile.elementalist.elementalist_meteor_core",
+        "title_id": "weapon_ultimate.title.elementalist.elementalist_meteor_core",
+        "mechanic_id": "weapon_ultimate.mechanic.elementalist.elementalist_meteor_core"
+      },
+      "targeting": {
+        "aim_id": "weapon_ultimate.aim.elementalist.elementalist_meteor_core",
+        "strategy_id": "unbound",
+        "params": {}
+      },
+      "charge": {
+        "policy_id": "weapon_ultimate.charge.elementalist.elementalist_meteor_core",
+        "strategy_id": "unbound",
+        "params": {}
+      },
+      "cast_phases": {
+        "acquire": "weapon_ultimate.phase.elementalist.elementalist_meteor_core.acquire",
+        "windup": "weapon_ultimate.phase.elementalist.elementalist_meteor_core.windup",
+        "execute": "weapon_ultimate.phase.elementalist.elementalist_meteor_core.execute",
+        "active": "weapon_ultimate.phase.elementalist.elementalist_meteor_core.active",
+        "recover": "weapon_ultimate.phase.elementalist.elementalist_meteor_core.recover",
+        "cleanup": "weapon_ultimate.phase.elementalist.elementalist_meteor_core.cleanup"
+      },
+      "executor": {
+        "executor_id": "weapon_ultimate.executor.elementalist.elementalist_meteor_core",
+        "strategy_id": "unbound",
+        "params": {}
+      },
+      "total_boss_cap": null,
+      "presentation": {
+        "presentation_id": "weapon_ultimate.presentation.elementalist.elementalist_meteor_core",
+        "animation_id": "weapon_ultimate.animation.elementalist.elementalist_meteor_core",
+        "vfx_id": "weapon_ultimate.vfx.elementalist.elementalist_meteor_core",
+        "sfx_id": "weapon_ultimate.sfx.elementalist.elementalist_meteor_core",
+        "params": {}
+      },
+      "cleanup_policy": {
+        "policy_id": "weapon_ultimate.cleanup.elementalist.elementalist_meteor_core",
+        "strategy_id": "unbound",
+        "params": {}
+      }
+    }
+  ]
+}
