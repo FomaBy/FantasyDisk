@@ -1526,12 +1526,16 @@ FAN-1672 распространяет FAN-1658 trust root на projection-изм
   остаётся неизменным f09-оракулом, а гейт принимает такой артефакт и на первом, и
   на повторном вызове.
 
-Остаточное ограничение (вне scope FAN-1672): `verify_oracle_lineage` и A5
-parity/integrity тесты по-прежнему читают исторический DATASET из
-`raw.json.gz`, потому что другого закоммиченного экземпляра f09-датасета в репо
-нет. После локальной регенерации отчёта их нужно запускать на восстановленном
-артефакте (`git restore docs/design/reports/fan1438_a5_balance`). Перенос
-f09-оракула в отдельный immutable fixture — отдельная PM-задача.
+FAN-1682 устраняет это остаточное ограничение: полный f09 DATASET хранится в
+закоммиченной immutable fixture
+`tests/fixtures/a5_f09_oracle.json.gz`. `read_raw_artifact()` по умолчанию
+читает именно её, поэтому parity и lineage-проверка больше не получают
+исторический baseline из перезаписываемого отчёта. Integrity-тест явно читает
+`RAW_PATH` только для сверки текущих `raw.json.gz` / CSV / Markdown артефактов,
+а для lineage отдельно использует f09 fixture. Поэтому после локального
+`--mode=full` A5 parity/integrity запускаются в том же checkout без
+`git restore`; decoded-content SHA-256, dataset SHA-256, 51×4 projection anchor
+и все fail-closed негативы остаются обязательными.
 
 #### FAN-1681 — покрытие регрессий вокруг projection trust root
 

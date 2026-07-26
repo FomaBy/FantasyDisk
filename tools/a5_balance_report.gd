@@ -19,6 +19,10 @@ const REPORT_DIR := "res://docs/design/reports/fan1438_a5_balance"
 const REPORT_PATH := REPORT_DIR + "/report.md"
 const CSV_PATH := REPORT_DIR + "/per_weapon.csv"
 const RAW_PATH := REPORT_DIR + "/raw.json.gz"
+# FAN-1682: the historical f09 dataset must never share the path that --mode=full
+# rewrites. read_raw_artifact() defaults to this immutable fixture; callers that
+# validate the generated report pass RAW_PATH explicitly.
+const F09_ORACLE_RAW_PATH := "res://tests/fixtures/a5_f09_oracle.json.gz"
 const LEGACY_RAW_PATH := REPORT_DIR + "/raw.json"
 const GZIP_ARTIFACT_SCRIPT := "res://tools/a5_gzip_artifact.py"
 const LEVELS := [1, 20]
@@ -3053,7 +3057,7 @@ func _write_raw_artifact(content: String) -> void:
 			_errors.append("cannot remove replaced legacy raw artifact %s" % LEGACY_RAW_PATH)
 
 
-static func read_raw_artifact(path := RAW_PATH) -> Dictionary:
+static func read_raw_artifact(path := F09_ORACLE_RAW_PATH) -> Dictionary:
 	if not FileAccess.file_exists(path):
 		return {"ok": false, "error": "raw gzip artifact is missing"}
 	var staging_path := "user://fan1438_a5_raw_integrity.json"

@@ -30,10 +30,10 @@ var _errors := PackedStringArray()
 
 func _initialize() -> void:
 	var raw_artifact := Generator.read_raw_artifact()
-	_check(bool(raw_artifact.get("ok", false)), "raw A5 artifact must decode before parity verification")
+	_check(bool(raw_artifact.get("ok", false)), "immutable f09 A5 oracle must decode before parity verification")
 	var raw_text := str(raw_artifact.get("text", ""))
 	var dataset = JSON.parse_string(raw_text)
-	_check(dataset is Dictionary, "raw A5 artifact must parse before parity verification")
+	_check(dataset is Dictionary, "immutable f09 A5 oracle must parse before parity verification")
 	if dataset is Dictionary:
 		_verify_historical_oracle(dataset as Dictionary)
 		_verify_lineage_contract(dataset as Dictionary, raw_text)

@@ -21,7 +21,7 @@ var _errors := PackedStringArray()
 
 
 func _initialize() -> void:
-	var raw_artifact := Generator.read_raw_artifact()
+	var raw_artifact := Generator.read_raw_artifact(Generator.RAW_PATH)
 	_check(bool(raw_artifact.get("ok", false)), "raw.json.gz must decode and validate: %s" % raw_artifact.get("error", "unknown error"))
 	var raw_text := str(raw_artifact.get("text", ""))
 	var report_text := _read_text(Generator.REPORT_PATH)
@@ -48,7 +48,7 @@ func _initialize() -> void:
 	_validate_live_coverage(dataset)
 	_validate_csv(dataset)
 	_validate_markdown(dataset, report_text)
-	_validate_oracle_lineage(dataset, raw_text)
+	_validate_oracle_lineage()
 	_finish()
 
 
@@ -56,20 +56,28 @@ func _initialize() -> void:
 # fail-closed consistent. The full git-backed commit-level causality (ancestry,
 # inventory segmentation, candidate zero-delta gate, and negative mutations) lives
 # in tests/a5_balance_report_parity_test.gd.
-func _validate_oracle_lineage(dataset: Dictionary, raw_text: String) -> void:
+func _validate_oracle_lineage() -> void:
+	var historical_artifact := Generator.read_raw_artifact()
+	_check(bool(historical_artifact.get("ok", false)), "immutable f09 oracle must decode before lineage verification: %s" % historical_artifact.get("error", "unknown error"))
+	var historical_raw_text := str(historical_artifact.get("text", ""))
+	var historical_raw = JSON.parse_string(historical_raw_text)
+	_check(historical_raw is Dictionary, "immutable f09 oracle must parse as an object")
+	if not historical_raw is Dictionary:
+		return
+	var historical_dataset := historical_raw as Dictionary
 	var loaded := Generator.load_oracle_lineage()
 	_check(bool(loaded.get("ok", false)), "oracle lineage manifest must load: %s" % loaded.get("error", "unknown"))
 	if not bool(loaded.get("ok", false)):
 		return
 	var manifest: Dictionary = loaded.get("manifest", {})
-	var lineage := Generator.verify_oracle_lineage(manifest, dataset, raw_text)
+	var lineage := Generator.verify_oracle_lineage(manifest, historical_dataset, historical_raw_text)
 	_check(bool(lineage.get("ok", false)), "committed oracle must match the lineage manifest: %s" % "; ".join(lineage.get("errors", [])))
 	_check(str(lineage.get("current_digest", "")) == CURRENT_BASE_PROJECTION_SHA256, "reconstructed current digest differs from the externally pinned current base")
 	_check(str((manifest.get("current_integration_base", {}) as Dictionary).get("projection_sha256", "")) == CURRENT_BASE_PROJECTION_SHA256, "manifest current-base digest differs from the externally pinned current base")
-	_check(str((manifest.get("historical_oracle", {}) as Dictionary).get("dataset_digest_sha256", "")) == str(dataset.get("dataset_digest_sha256", "")), "lineage manifest historical dataset digest differs from committed raw.json.gz")
+	_check(str((manifest.get("historical_oracle", {}) as Dictionary).get("dataset_digest_sha256", "")) == str(historical_dataset.get("dataset_digest_sha256", "")), "lineage manifest historical dataset digest differs from immutable f09 oracle")
 	var drifted := manifest.duplicate(true)
 	(drifted.get("current_integration_base", {}) as Dictionary)["projection_sha256"] = "0000000000000000000000000000000000000000000000000000000000000000"
-	_check(not bool(Generator.verify_oracle_lineage(drifted, dataset, raw_text).get("ok", true)), "drifted manifest current-base digest must fail closed")
+	_check(not bool(Generator.verify_oracle_lineage(drifted, historical_dataset, historical_raw_text).get("ok", true)), "drifted manifest current-base digest must fail closed")
 	# FAN-1649: the pinned current-base FULL telemetry payload is externally anchored
 	# and internally self-consistent (309 samples, aggregate == full_sha256 == const).
 	var pinned: Dictionary = (manifest.get("current_integration_base", {}) as Dictionary).get("telemetry_full", {})
