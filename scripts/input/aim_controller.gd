@@ -223,12 +223,13 @@ func sync(player: Node2D, deadzone := DEFAULT_STICK_DEADZONE, mode: Variant = nu
 	# Собственная радиальная мёртвая зона, поэтому у get_vector она 0. Без пада
 	# экшены стика читаются нулём — ветвиться по списку устройств не нужно.
 	update_stick(Input.get_vector("aim_left", "aim_right", "aim_up", "aim_down", 0.0), deadzone)
-	# Устройство наводки следует за общим детектом активного устройства
+	# Устройство наводки следует за последним значимым физическим устройством
 	# (InputDeviceManager): клавиатура/мышь забирают прицел обратно, правый стик
-	# отдаёт его геймпаду. Без менеджера решает сам факт наводки стиком.
+	# отдаёт его геймпаду. active_kind() остаётся UI-предпочтением и не участвует
+	# в gameplay-арбитраже. Без менеджера решает сам факт наводки стиком.
 	# Ненайденный пад отменяет всё: прицелиться стиком, которого нет, нельзя.
 	var pad_available := not Input.get_connected_joypads().is_empty() or has_gamepad_aim()
-	var manager_kind := _manager_kind(player)
+	var manager_kind := _manager_physical_kind(player)
 	_device = DEVICE_GAMEPAD if pad_available \
 		and (manager_kind == DEVICE_GAMEPAD if manager_kind != "" else has_gamepad_aim()) \
 		else DEVICE_MOUSE
@@ -289,13 +290,19 @@ static func apply_hint_label(label: Object, mode: Variant, device_manager: Objec
 	label.set("text", aim_mode_hint_text(mode, connected))
 
 
-func _manager_kind(player: Node2D) -> String:
+func _manager_physical_kind(player: Node2D) -> String:
 	if not player.is_inside_tree():
 		return ""
 	var manager := player.get_node_or_null("/root/InputDeviceManager")
-	if manager == null or not manager.has_method("active_kind"):
+	if manager == null:
 		return ""
-	return str(manager.call("active_kind"))
+	if manager.has_method("physical_kind"):
+		return str(manager.call("physical_kind"))
+	# Совместимость с изолированными/старыми менеджерами: они сохраняют прежнее
+	# поведение, пока не предоставляют разделённый gameplay API.
+	if manager.has_method("active_kind"):
+		return str(manager.call("active_kind"))
+	return ""
 
 
 func _facing_of(player: Node2D) -> Vector2:

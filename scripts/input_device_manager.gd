@@ -116,6 +116,12 @@ func active_kind() -> String:
 	return _raw_kind
 
 
+func physical_kind() -> String:
+	# В отличие от active_kind(), это фактическое последнее значимое устройство.
+	# Gameplay использует его для гибридного ввода, не меняя UI-предпочтение.
+	return _raw_kind
+
+
 func gamepad_connected() -> bool:
 	return not Input.get_connected_joypads().is_empty()
 

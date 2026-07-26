@@ -29,14 +29,15 @@
   поэтому менеджер доливает joypad-события идемпотентно после первого
   `process_frame` и повторно страхуется (`ensure_joypad_bindings()`) при
   подключении пада и при переходе raw-устройства на gamepad.
-- API для потребителей пакета: `active_kind()`, `gamepad_connected()`,
-  `gamepad_name()`, `binding_text(action)` (читаемое имя биндинга активного
-  устройства), `set_input_mode()`, `set_gamepad_bindings()` (формат — как
-  `DEFAULT_GAMEPAD_BINDINGS`; кастомизируются только игровые actions из этого
-  словаря, а `ui_accept/ui_cancel/ui_up/down/left/right` всегда остаются
-  канон-раскладкой A/B/стик/крестовина; пустые/битые saved entries игнорируются
-  и не стирают дефолт), `reset_gamepad_bindings_to_defaults()` — всё для
-  SCRUM-816/SCRUM-846.
+- API для потребителей пакета: `active_kind()` для UI-предпочтения,
+  `physical_kind()` для последнего значимого physical input в gameplay,
+  `gamepad_connected()`, `gamepad_name()`, `binding_text(action)` (читаемое имя
+  биндинга активного устройства), `set_input_mode()`, `set_gamepad_bindings()`
+  (формат — как `DEFAULT_GAMEPAD_BINDINGS`; кастомизируются только игровые
+  actions из этого словаря, а `ui_accept/ui_cancel/ui_up/down/left/right`
+  всегда остаются канон-раскладкой A/B/стик/крестовина; пустые/битые saved
+  entries игнорируются и не стирают дефолт), `reset_gamepad_bindings_to_defaults()`
+  — всё для SCRUM-816/SCRUM-846.
 - Персистенс (в `user://settings.cfg` через `scripts/game_settings.gd`):
   `input_mode` (`auto`), `gamepad_bindings` (`{}`), `gamepad_deadzone` (`0.25`,
   кламп `0.05..0.5`), `gamepad_vibration` (`true`). Владелец UI сохранения —
@@ -147,9 +148,11 @@ SCRUM-846 усилил этот контракт: если старый или �
   прицел не уезжает за кадр.
 
 ### Выбор устройства и hot-plug
-- Устройство наводки следует за `InputDeviceManager.active_kind()`: правый стик
-  отдаёт наводку геймпаду, клавиша или клик мыши возвращают её курсору. Без
-  менеджера (изолированные прогоны) решает сам факт наводки стиком.
+- Устройство наводки следует за `InputDeviceManager.physical_kind()`: правый
+  стик отдаёт наводку геймпаду, клавиша или клик мыши возвращают её курсору при
+  любом `input_mode`. `active_kind()` по-прежнему остаётся UI-предпочтением для
+  подсказок и глифов. Без менеджера (изолированные прогоны) решает сам факт
+  наводки стиком.
 - Отсутствие подключённого пада отменяет геймпадную наводку целиком.
   `Input.joy_connection_changed` при отключении последнего пада мгновенно гасит
   прицел и возвращает ввод мыши (`player._on_aim_joy_connection_changed`).
