@@ -93,6 +93,14 @@ class QualityWorkflowContractTests(unittest.TestCase):
             self.source,
         )
 
+    def test_candidate_jobs_expose_the_pinned_engine_to_the_gate(self) -> None:
+        # The live signature probe in tests/test_quality_tools.py skips where
+        # no engine exists, so candidate jobs must keep advertising the pinned
+        # binary to the gate's environment — otherwise the probe would demote
+        # itself to a skip in CI and the push_error frame the failure detector
+        # reads would again be guarded by nothing.
+        self.assertIn('echo "GODOT_BIN=$GODOT_DIR/godot" >> "$GITHUB_ENV"', self.source)
+
     def test_candidate_evidence_must_show_executed_godot_suites(self) -> None:
         # The gate exits non-zero on a red suite, so the only way the old bug
         # can come back is a green run whose evidence lists no Godot test.

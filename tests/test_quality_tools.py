@@ -6,6 +6,8 @@ import base64
 import io
 import json
 import os
+import re
+import shutil
 import subprocess
 import sys
 import tempfile
@@ -15,6 +17,19 @@ from pathlib import Path
 from unittest import mock
 
 ROOT = Path(__file__).resolve().parents[1]
+WORKFLOW = ROOT / ".github" / "workflows" / "quality.yml"
+
+
+def _pinned_engine_build_id() -> str:
+    """The exact engine build CI certifies with, read from the single pin."""
+    match = re.search(
+        r'^\s*GODOT_BUILD_ID:\s*"([^"]+)"',
+        WORKFLOW.read_text(encoding="utf-8"),
+        re.MULTILINE,
+    )
+    assert match is not None, "GODOT_BUILD_ID pin missing from quality.yml"
+    return match.group(1)
+
 
 # FAN-1700: verbatim shapes captured from Godot 4.7 headless runs on origin/dev.
 # A suite announces its own failure with `push_error()`, which prints an
@@ -626,6 +641,20 @@ class QualityGateTests(unittest.TestCase):
         self.assertEqual(outcome["status"], "passed")
         self.assertEqual(outcome["fatal_diagnostic"], "")
 
+    def test_failure_fixtures_carry_the_pinned_engine_banner(self) -> None:
+        # FAN-1718: the fixtures above are frozen literals, so nothing else
+        # ties them to the engine build CI actually certifies with.  Whoever
+        # moves GODOT_BUILD_ID in quality.yml must recapture (or consciously
+        # re-own) the fixture shapes; this check refuses to let the pin move
+        # alone, so the fixtures cannot rot into describing an engine the
+        # gate no longer runs.
+        banner = f"Godot Engine v{_pinned_engine_build_id()} - https://godotengine.org"
+        for name, fixture in (
+            ("BENIGN_ENGINE_OUTPUT", BENIGN_ENGINE_OUTPUT),
+            ("REPORTED_FAILURE_OUTPUT", REPORTED_FAILURE_OUTPUT),
+        ):
+            self.assertEqual(fixture.splitlines()[0], banner, name)
+
     def test_umbrella_cannot_print_passed_after_reporting_a_failure(self) -> None:
         # The suite side of the same contract: the success exit re-asserts a
         # failure that `_fail()` already recorded, instead of letting the
@@ -645,6 +674,106 @@ class QualityGateTests(unittest.TestCase):
         # The success message may only leave the suite through that guard.
         self.assertIn('_finish("Runtime smoke test passed.")', source)
         self.assertNotIn('print("Runtime smoke test passed.")', source)
+
+
+class LiveEngineSignatureTests(unittest.TestCase):
+    """FAN-1718: prove the pinned engine still prints the frame the detector reads.
+
+    The FAN-1700 regression tests above feed ``run_godot_test`` frozen string
+    literals, so they stay green forever even after the real engine stops
+    printing ``at: push_error (`` — and the failure detector would silently
+    degrade back to exit codes.  These probes run the actual engine on a
+    minimal throwaway project and read its output through the production
+    classifier, so the signature cannot rot unnoticed anywhere an engine
+    exists.  Candidate CI always exports GODOT_BIN (asserted in
+    test_quality_workflow.py), so there the probes always execute; a machine
+    without any engine skips with an explicit reason, while an advertised but
+    broken GODOT_BIN fails loudly instead of demoting itself to a skip.
+    """
+
+    @classmethod
+    def setUpClass(cls) -> None:
+        cls.quality = _load_module("quality_gate_live_probe", "tools/quality_gate.py")
+        scratch = tempfile.TemporaryDirectory(prefix="fsd-signature-probe-")
+        cls.addClassCleanup(scratch.cleanup)
+        cls.probe_root = Path(scratch.name)
+
+        env = cls.quality._godot_environment(cls.probe_root / "resolve-home")
+        binary = (env.get("GODOT_BIN") or env.get("GODOT") or "").strip()
+        expanded = os.path.expanduser(binary)
+        resolved = (shutil.which(expanded) or expanded) if binary else ""
+        usable = bool(resolved) and Path(resolved).is_file() and os.access(resolved, os.X_OK)
+        if not usable:
+            advertised = (os.environ.get("GODOT_BIN") or os.environ.get("GODOT") or "").strip()
+            if advertised:
+                raise AssertionError(
+                    f"GODOT_BIN/GODOT advertises {advertised!r} but it is not an"
+                    " executable file; an advertised engine must never demote"
+                    " the live signature probe to a skip"
+                )
+            raise unittest.SkipTest(
+                "no Godot engine found (GODOT_BIN/GODOT unset, none on PATH or"
+                " in the conventional macOS location): the live push_error"
+                " signature probe needs an engine binary; CI candidate jobs"
+                " always export GODOT_BIN, so the probe always runs there"
+            )
+
+        project = cls.probe_root / "project"
+        project.mkdir()
+        (project / "project.godot").write_text(
+            'config_version=5\n\n[application]\n\nconfig/name="FAN-1718 signature probe"\n',
+            encoding="utf-8",
+        )
+        (project / "probe_push_error.gd").write_text(
+            "extends SceneTree\n\n\nfunc _init() -> void:\n"
+            '\tpush_error("FAN-1718 live signature probe failure")\n\tquit()\n',
+            encoding="utf-8",
+        )
+        (project / "probe_clean.gd").write_text(
+            "extends SceneTree\n\n\nfunc _init() -> void:\n"
+            '\tprint("FAN-1718 live signature probe clean")\n\tquit()\n',
+            encoding="utf-8",
+        )
+
+    def _run_probe(self, script_name: str) -> tuple[int, str]:
+        user_data = Path(tempfile.mkdtemp(prefix="probe-user-", dir=self.probe_root))
+        env = self.quality._godot_environment(user_data)
+        # The probe project is empty and short-lived; a private semaphore
+        # directory keeps it from queueing behind long-running game suites,
+        # which the python-unit idle watchdog would misread as a hang.
+        env["FSD_GODOT_SEM_DIR"] = str(self.probe_root / "sem")
+        env["FSD_GODOT_RUN_TIMEOUT"] = "180"
+        command = [
+            sys.executable,
+            str(ROOT / "tools" / "godot_gate.py"),
+            "--headless",
+            "--path",
+            str(self.probe_root / "project"),
+            "--script",
+            f"res://{script_name}",
+        ]
+        exit_code, output, timed_out = self.quality._run_captured(command, env, 240.0)
+        self.assertFalse(timed_out, output)
+        return exit_code, output
+
+    def test_live_engine_reports_push_error_with_the_pinned_frame(self) -> None:
+        exit_code, output = self._run_probe("probe_push_error.gd")
+        # The suite leaves through its own quit(), so the exit code stays 0 —
+        # exactly the false-green shape whose only surviving evidence is the
+        # frame below.  The message marker proves push_error() really ran.
+        self.assertEqual(exit_code, 0, output)
+        self.assertIn("FAN-1718 live signature probe failure", output)
+        self.assertIsNotNone(self.quality.PUSH_ERROR_FRAME_RE.search(output), output)
+        self.assertEqual(self.quality.fatal_output_signal(output), "push_error", output)
+
+    def test_live_engine_clean_run_carries_no_failure_signal(self) -> None:
+        exit_code, output = self._run_probe("probe_clean.gd")
+        self.assertEqual(exit_code, 0, output)
+        # The marker proves the script executed: an empty or crashed run
+        # would otherwise satisfy "no failure signal" tautologically.
+        self.assertIn("FAN-1718 live signature probe clean", output)
+        self.assertIsNone(self.quality.PUSH_ERROR_FRAME_RE.search(output), output)
+        self.assertEqual(self.quality.fatal_output_signal(output), "", output)
 
 
 if __name__ == "__main__":
