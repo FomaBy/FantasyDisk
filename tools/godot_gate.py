@@ -38,6 +38,7 @@ from typing import BinaryIO, Sequence
 
 FATAL_OUTPUT_RE = re.compile(r"\bSCRIPT ERROR\b|\bFATAL\b", re.IGNORECASE)
 SCRIPT_LOAD_FAILURE = "Failed to load script"
+IMPORT_CACHE_MISSING_MESSAGE = "godot_gate: import cache missing, running headless import first"
 MACHINE_RUN_TOKENS = 64
 
 
@@ -88,8 +89,8 @@ def _project_path(args: Sequence[str]) -> str:
     return "."
 
 
-def _needs_import_cache(args: Sequence[str]) -> bool:
-    if "--script" not in args or "--import" in args:
+def _needs_import_cache(args: Sequence[str], *, require_script: bool = True) -> bool:
+    if (require_script and "--script" not in args) or "--import" in args:
         return False
     project_path = os.path.abspath(_project_path(args))
     imported_dir = os.path.join(project_path, ".godot", "imported")
@@ -103,11 +104,11 @@ def _needs_import_cache(args: Sequence[str]) -> bool:
     return False
 
 
-def _ensure_import_cache(args: Sequence[str], godot: str) -> int:
-    if not _needs_import_cache(args):
+def _ensure_import_cache(args: Sequence[str], godot: str, *, force: bool = False) -> int:
+    if not _needs_import_cache(args, require_script=not force):
         return 0
     project_path = _project_path(args)
-    sys.stderr.write("godot_gate: import cache missing, running headless import first\n")
+    sys.stderr.write(f"{IMPORT_CACHE_MISSING_MESSAGE}\n")
     # The import pre-pass is intentionally diagnostic-tolerant: existing green
     # suites can emit unrelated import/resource warnings while warming the
     # cache. Only the requested executable run below is a certifying call site.
@@ -314,6 +315,9 @@ class _MachineRunLease:
 
 def main(argv: Sequence[str] | None = None) -> int:
     args = list(sys.argv[1:] if argv is None else argv)
+    ensure_import_cache_only = "--ensure-import-cache" in args
+    if ensure_import_cache_only:
+        args = [arg for arg in args if arg != "--ensure-import-cache"]
     try:
         slots = _positive_int_env("FSD_GODOT_SLOTS", 3)
         max_wait = _positive_float_env("FSD_GODOT_MAXWAIT", 2400.0)
@@ -343,9 +347,13 @@ def main(argv: Sequence[str] | None = None) -> int:
                     if not slot.try_acquire():
                         continue
                     try:
-                        import_code = _ensure_import_cache(args, godot)
+                        import_code = _ensure_import_cache(
+                            args, godot, force=ensure_import_cache_only
+                        )
                         if import_code != 0:
                             return import_code
+                        if ensure_import_cache_only:
+                            return 0
                         return _run_godot(
                             [godot, *args],
                             fail_on_fatal_output=True,
@@ -360,9 +368,11 @@ def main(argv: Sequence[str] | None = None) -> int:
                 sys.stderr.write(
                     "godot_gate: slot wait timed out; explicit bypass enabled\n"
                 )
-                import_code = _ensure_import_cache(args, godot)
+                import_code = _ensure_import_cache(args, godot, force=ensure_import_cache_only)
                 if import_code != 0:
                     return import_code
+                if ensure_import_cache_only:
+                    return 0
                 return _run_godot(
                     [godot, *args],
                     fail_on_fatal_output=True,

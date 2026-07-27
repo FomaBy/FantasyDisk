@@ -32,9 +32,9 @@ from pathlib import Path
 from typing import Iterable, Sequence
 
 try:
-    from tools.godot_gate import FATAL_OUTPUT_RE
+    from tools.godot_gate import FATAL_OUTPUT_RE, IMPORT_CACHE_MISSING_MESSAGE
 except ModuleNotFoundError:
-    from godot_gate import FATAL_OUTPUT_RE
+    from godot_gate import FATAL_OUTPUT_RE, IMPORT_CACHE_MISSING_MESSAGE
 
 ROOT = Path(__file__).resolve().parents[1]
 TEST_DIR = ROOT / "tests"
@@ -82,6 +82,7 @@ PATH_TEST_RULES = {
 }
 DEFAULT_STATIC_TEST_TIMEOUT = 1200.0
 DEFAULT_PYTHON_UNIT_IDLE_TIMEOUT = 60.0
+DEFAULT_GODOT_IMPORT_TIMEOUT = 1200.0
 
 
 def discover_godot_tests() -> list[Path]:
@@ -558,6 +559,42 @@ def fatal_output_signal(output: str) -> str:
     return ""
 
 
+def run_godot_import(timeout: float) -> dict:
+    """Warm the shared project import cache without spending a suite's budget."""
+    started = time.monotonic()
+    with tempfile.TemporaryDirectory(prefix="fsd-import-") as scratch:
+        user_data = Path(scratch).resolve()
+        command = [
+            sys.executable,
+            str(GODOT_GATE),
+            "--headless",
+            "--path",
+            str(ROOT),
+            "--ensure-import-cache",
+        ]
+        exit_code, output, timed_out = _run_captured(
+            command, _godot_environment(user_data), timeout
+        )
+    if IMPORT_CACHE_MISSING_MESSAGE in output:
+        print(IMPORT_CACHE_MISSING_MESSAGE, flush=True)
+    passed = exit_code == 0 and not timed_out
+    if passed:
+        print("PASS  Godot import cache pre-pass", flush=True)
+    else:
+        reason = f"exit {exit_code}"
+        if timed_out:
+            reason += f", timeout after {timeout:.0f}s"
+        print(f"FAIL  Godot import cache pre-pass ({reason})", file=sys.stderr, flush=True)
+        print(output[-12000:], file=sys.stderr)
+    return {
+        "name": "godot-import-cache",
+        "status": "passed" if passed else "failed",
+        "exit_code": exit_code,
+        "timed_out": timed_out,
+        "duration_seconds": round(time.monotonic() - started, 3),
+    }
+
+
 def run_godot_test(path: Path, timeout: float) -> dict:
     started = time.monotonic()
     name = path.stem
@@ -627,6 +664,12 @@ def _parse_args(argv: Sequence[str] | None) -> argparse.Namespace:
         help="per-test timeout in seconds (default: 900)",
     )
     parser.add_argument(
+        "--import-timeout",
+        type=float,
+        default=float(os.getenv("FSD_GODOT_IMPORT_TIMEOUT", str(DEFAULT_GODOT_IMPORT_TIMEOUT))),
+        help="import-cache pre-pass timeout in seconds (default: 1200)",
+    )
+    parser.add_argument(
         "--static-timeout",
         type=float,
         default=float(os.getenv("FSD_STATIC_TEST_TIMEOUT", str(DEFAULT_STATIC_TEST_TIMEOUT))),
@@ -649,8 +692,13 @@ def main(argv: Sequence[str] | None = None) -> int:
     args = _parse_args(argv)
     if args.static_only:
         args.profile = "static"
-    if args.test_timeout <= 0 or args.static_timeout <= 0 or args.python_unit_idle_timeout <= 0:
-        print("quality_gate: test/static/idle timeouts must be positive", file=sys.stderr)
+    if (
+        args.test_timeout <= 0
+        or args.import_timeout <= 0
+        or args.static_timeout <= 0
+        or args.python_unit_idle_timeout <= 0
+    ):
+        print("quality_gate: test/import/static/idle timeouts must be positive", file=sys.stderr)
         return 2
     if args.skip_static and (args.skip_godot or args.profile == "static"):
         print("quality_gate: refusing an empty run (--skip-static + --skip-godot)", file=sys.stderr)
@@ -724,14 +772,21 @@ def main(argv: Sequence[str] | None = None) -> int:
         and not discovery_errors
         and not (failed and args.fail_fast)
     ):
-        print(f"GODOT running {len(selected)} test(s) via semaphore gate", flush=True)
-        for path in selected:
-            outcome = run_godot_test(path, args.test_timeout)
-            godot_results.append(outcome)
-            if outcome["status"] == "failed":
-                failed = True
-                if args.fail_fast:
-                    break
+        print("GODOT warming import cache via semaphore gate", flush=True)
+        import_result = run_godot_import(args.import_timeout)
+        if import_result["status"] == "failed":
+            failed = True
+        else:
+            print(f"GODOT running {len(selected)} test(s) via semaphore gate", flush=True)
+            for path in selected:
+                outcome = run_godot_test(path, args.test_timeout)
+                godot_results.append(outcome)
+                if outcome["status"] == "failed":
+                    failed = True
+                    if args.fail_fast:
+                        break
+    else:
+        import_result = None
 
     try:
         final_worktree_status = _worktree_status()
@@ -752,6 +807,8 @@ def main(argv: Sequence[str] | None = None) -> int:
         "skip_static": args.skip_static,
         "skip_godot": args.skip_godot,
         "skip_umbrella": args.skip_umbrella,
+        "godot_test_timeout_seconds": args.test_timeout,
+        "godot_import_timeout_seconds": args.import_timeout,
         "static_timeout_seconds": args.static_timeout,
         "python_unit_idle_timeout_seconds": args.python_unit_idle_timeout,
         "worktree_clean": not worktree_status,
@@ -767,6 +824,7 @@ def main(argv: Sequence[str] | None = None) -> int:
         "status": status,
         "duration_seconds": round(time.monotonic() - started, 3),
         "static_checks": static_results,
+        "godot_import_prepass": import_result,
         "godot_tests": godot_results,
     }
     _write_report((ROOT / args.report).resolve(), payload)
