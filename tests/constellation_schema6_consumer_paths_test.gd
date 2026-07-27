@@ -39,6 +39,12 @@ func _test_berserk_live_hit() -> void:
 	sword.weapon_id = "sword"
 	root.add_child(sword)
 	player._apply_weapon_scaling(sword)
+	# FAN-1720: живой хит роллит крит глобальным randf() (berserk_weapon.gd:824),
+	# а глобальный поток сидится заново в каждом процессе. Проки (~7.5%) множили
+	# dealt на crit_damage_multiplier=1.575 и ломали точное равенство профилей.
+	# Крит — ортогональный контракту слой; выключаем его, как в
+	# constellation_schema6_lifecycle_runtime_test / special_finals_test.
+	player.derived_parameters["crit_chance"] = 0.0
 	var enemy := DummyEnemy.new()
 	root.add_child(enemy)
 	var before := enemy.health
@@ -61,6 +67,10 @@ func _test_holy_flail_live_hit() -> void:
 	flail.weapon_id = "holy_flail"
 	root.add_child(flail)
 	player._apply_weapon_scaling(flail)
+	# FAN-1720: без выключенного крита прок ×1.575 маскировал бы потерянный
+	# префинальный профиль (1.0 × 1.575 > 1.119) — ложно-зелёный односторонней
+	# проверки ниже. С critом 0.0 порог различает профиль детерминированно.
+	player.derived_parameters["crit_chance"] = 0.0
 	var enemy := DummyEnemy.new()
 	root.add_child(enemy)
 	var before := enemy.health
