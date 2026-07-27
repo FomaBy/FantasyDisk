@@ -1,0 +1,145 @@
+{
+  "schema_version": 1,
+  "class_order": 5,
+  "class_id": "priest",
+  "profiles": [
+    {
+      "weapon_id": "priest_reliquary",
+      "implementation_state": "declared",
+      "fallback_policy_id": "legacy_class_ultimate",
+      "identity": {
+        "profile_id": "weapon_ultimate.profile.priest.priest_reliquary",
+        "title_id": "weapon_ultimate.title.priest.priest_reliquary",
+        "mechanic_id": "weapon_ultimate.mechanic.priest.priest_reliquary"
+      },
+      "targeting": {
+        "aim_id": "weapon_ultimate.aim.priest.priest_reliquary",
+        "strategy_id": "unbound",
+        "params": {}
+      },
+      "charge": {
+        "policy_id": "weapon_ultimate.charge.priest.priest_reliquary",
+        "strategy_id": "unbound",
+        "params": {}
+      },
+      "cast_phases": {
+        "acquire": "weapon_ultimate.phase.priest.priest_reliquary.acquire",
+        "windup": "weapon_ultimate.phase.priest.priest_reliquary.windup",
+        "execute": "weapon_ultimate.phase.priest.priest_reliquary.execute",
+        "active": "weapon_ultimate.phase.priest.priest_reliquary.active",
+        "recover": "weapon_ultimate.phase.priest.priest_reliquary.recover",
+        "cleanup": "weapon_ultimate.phase.priest.priest_reliquary.cleanup"
+      },
+      "executor": {
+        "executor_id": "weapon_ultimate.executor.priest.priest_reliquary",
+        "strategy_id": "unbound",
+        "params": {}
+      },
+      "total_boss_cap": null,
+      "presentation": {
+        "presentation_id": "weapon_ultimate.presentation.priest.priest_reliquary",
+        "animation_id": "weapon_ultimate.animation.priest.priest_reliquary",
+        "vfx_id": "weapon_ultimate.vfx.priest.priest_reliquary",
+        "sfx_id": "weapon_ultimate.sfx.priest.priest_reliquary",
+        "params": {}
+      },
+      "cleanup_policy": {
+        "policy_id": "weapon_ultimate.cleanup.priest.priest_reliquary",
+        "strategy_id": "unbound",
+        "params": {}
+      }
+    },
+    {
+      "weapon_id": "priest_censer",
+      "implementation_state": "declared",
+      "fallback_policy_id": "legacy_class_ultimate",
+      "identity": {
+        "profile_id": "weapon_ultimate.profile.priest.priest_censer",
+        "title_id": "weapon_ultimate.title.priest.priest_censer",
+        "mechanic_id": "weapon_ultimate.mechanic.priest.priest_censer"
+      },
+      "targeting": {
+        "aim_id": "weapon_ultimate.aim.priest.priest_censer",
+        "strategy_id": "unbound",
+        "params": {}
+      },
+      "charge": {
+        "policy_id": "weapon_ultimate.charge.priest.priest_censer",
+        "strategy_id": "unbound",
+        "params": {}
+      },
+      "cast_phases": {
+        "acquire": "weapon_ultimate.phase.priest.priest_censer.acquire",
+        "windup": "weapon_ultimate.phase.priest.priest_censer.windup",
+        "execute": "weapon_ultimate.phase.priest.priest_censer.execute",
+        "active": "weapon_ultimate.phase.priest.priest_censer.active",
+        "recover": "weapon_ultimate.phase.priest.priest_censer.recover",
+        "cleanup": "weapon_ultimate.phase.priest.priest_censer.cleanup"
+      },
+      "executor": {
+        "executor_id": "weapon_ultimate.executor.priest.priest_censer",
+        "strategy_id": "unbound",
+        "params": {}
+      },
+      "total_boss_cap": null,
+      "presentation": {
+        "presentation_id": "weapon_ultimate.presentation.priest.priest_censer",
+        "animation_id": "weapon_ultimate.animation.priest.priest_censer",
+        "vfx_id": "weapon_ultimate.vfx.priest.priest_censer",
+        "sfx_id": "weapon_ultimate.sfx.priest.priest_censer",
+        "params": {}
+      },
+      "cleanup_policy": {
+        "policy_id": "weapon_ultimate.cleanup.priest.priest_censer",
+        "strategy_id": "unbound",
+        "params": {}
+      }
+    },
+    {
+      "weapon_id": "priest_chime",
+      "implementation_state": "declared",
+      "fallback_policy_id": "legacy_class_ultimate",
+      "identity": {
+        "profile_id": "weapon_ultimate.profile.priest.priest_chime",
+        "title_id": "weapon_ultimate.title.priest.priest_chime",
+        "mechanic_id": "weapon_ultimate.mechanic.priest.priest_chime"
+      },
+      "targeting": {
+        "aim_id": "weapon_ultimate.aim.priest.priest_chime",
+        "strategy_id": "unbound",
+        "params": {}
+      },
+      "charge": {
+        "policy_id": "weapon_ultimate.charge.priest.priest_chime",
+        "strategy_id": "unbound",
+        "params": {}
+      },
+      "cast_phases": {
+        "acquire": "weapon_ultimate.phase.priest.priest_chime.acquire",
+        "windup": "weapon_ultimate.phase.priest.priest_chime.windup",
+        "execute": "weapon_ultimate.phase.priest.priest_chime.execute",
+        "active": "weapon_ultimate.phase.priest.priest_chime.active",
+        "recover": "weapon_ultimate.phase.priest.priest_chime.recover",
+        "cleanup": "weapon_ultimate.phase.priest.priest_chime.cleanup"
+      },
+      "executor": {
+        "executor_id": "weapon_ultimate.executor.priest.priest_chime",
+        "strategy_id": "unbound",
+        "params": {}
+      },
+      "total_boss_cap": null,
+      "presentation": {
+        "presentation_id": "weapon_ultimate.presentation.priest.priest_chime",
+        "animation_id": "weapon_ultimate.animation.priest.priest_chime",
+        "vfx_id": "weapon_ultimate.vfx.priest.priest_chime",
+        "sfx_id": "weapon_ultimate.sfx.priest.priest_chime",
+        "params": {}
+      },
+      "cleanup_policy": {
+        "policy_id": "weapon_ultimate.cleanup.priest.priest_chime",
+        "strategy_id": "unbound",
+        "params": {}
+      }
+    }
+  ]
+}

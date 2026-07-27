@@ -1,0 +1,145 @@
+{
+  "schema_version": 1,
+  "class_id": "guitarist",
+  "class_order": 10,
+  "profiles": [
+    {
+      "weapon_id": "electric_guitar",
+      "implementation_state": "declared",
+      "fallback_policy_id": "legacy_class_ultimate",
+      "identity": {
+        "profile_id": "weapon_ultimate.profile.guitarist.electric_guitar",
+        "title_id": "weapon_ultimate.title.guitarist.electric_guitar",
+        "mechanic_id": "weapon_ultimate.mechanic.guitarist.electric_guitar"
+      },
+      "targeting": {
+        "aim_id": "weapon_ultimate.aim.guitarist.electric_guitar",
+        "strategy_id": "unbound",
+        "params": {}
+      },
+      "charge": {
+        "policy_id": "weapon_ultimate.charge.guitarist.electric_guitar",
+        "strategy_id": "unbound",
+        "params": {}
+      },
+      "cast_phases": {
+        "acquire": "weapon_ultimate.phase.guitarist.electric_guitar.acquire",
+        "windup": "weapon_ultimate.phase.guitarist.electric_guitar.windup",
+        "execute": "weapon_ultimate.phase.guitarist.electric_guitar.execute",
+        "active": "weapon_ultimate.phase.guitarist.electric_guitar.active",
+        "recover": "weapon_ultimate.phase.guitarist.electric_guitar.recover",
+        "cleanup": "weapon_ultimate.phase.guitarist.electric_guitar.cleanup"
+      },
+      "executor": {
+        "executor_id": "weapon_ultimate.executor.guitarist.electric_guitar",
+        "strategy_id": "unbound",
+        "params": {}
+      },
+      "total_boss_cap": null,
+      "presentation": {
+        "presentation_id": "weapon_ultimate.presentation.guitarist.electric_guitar",
+        "animation_id": "weapon_ultimate.animation.guitarist.electric_guitar",
+        "vfx_id": "weapon_ultimate.vfx.guitarist.electric_guitar",
+        "sfx_id": "weapon_ultimate.sfx.guitarist.electric_guitar",
+        "params": {}
+      },
+      "cleanup_policy": {
+        "policy_id": "weapon_ultimate.cleanup.guitarist.electric_guitar",
+        "strategy_id": "unbound",
+        "params": {}
+      }
+    },
+    {
+      "weapon_id": "bass_guitar",
+      "implementation_state": "declared",
+      "fallback_policy_id": "legacy_class_ultimate",
+      "identity": {
+        "profile_id": "weapon_ultimate.profile.guitarist.bass_guitar",
+        "title_id": "weapon_ultimate.title.guitarist.bass_guitar",
+        "mechanic_id": "weapon_ultimate.mechanic.guitarist.bass_guitar"
+      },
+      "targeting": {
+        "aim_id": "weapon_ultimate.aim.guitarist.bass_guitar",
+        "strategy_id": "unbound",
+        "params": {}
+      },
+      "charge": {
+        "policy_id": "weapon_ultimate.charge.guitarist.bass_guitar",
+        "strategy_id": "unbound",
+        "params": {}
+      },
+      "cast_phases": {
+        "acquire": "weapon_ultimate.phase.guitarist.bass_guitar.acquire",
+        "windup": "weapon_ultimate.phase.guitarist.bass_guitar.windup",
+        "execute": "weapon_ultimate.phase.guitarist.bass_guitar.execute",
+        "active": "weapon_ultimate.phase.guitarist.bass_guitar.active",
+        "recover": "weapon_ultimate.phase.guitarist.bass_guitar.recover",
+        "cleanup": "weapon_ultimate.phase.guitarist.bass_guitar.cleanup"
+      },
+      "executor": {
+        "executor_id": "weapon_ultimate.executor.guitarist.bass_guitar",
+        "strategy_id": "unbound",
+        "params": {}
+      },
+      "total_boss_cap": null,
+      "presentation": {
+        "presentation_id": "weapon_ultimate.presentation.guitarist.bass_guitar",
+        "animation_id": "weapon_ultimate.animation.guitarist.bass_guitar",
+        "vfx_id": "weapon_ultimate.vfx.guitarist.bass_guitar",
+        "sfx_id": "weapon_ultimate.sfx.guitarist.bass_guitar",
+        "params": {}
+      },
+      "cleanup_policy": {
+        "policy_id": "weapon_ultimate.cleanup.guitarist.bass_guitar",
+        "strategy_id": "unbound",
+        "params": {}
+      }
+    },
+    {
+      "weapon_id": "sound_amp",
+      "implementation_state": "declared",
+      "fallback_policy_id": "legacy_class_ultimate",
+      "identity": {
+        "profile_id": "weapon_ultimate.profile.guitarist.sound_amp",
+        "title_id": "weapon_ultimate.title.guitarist.sound_amp",
+        "mechanic_id": "weapon_ultimate.mechanic.guitarist.sound_amp"
+      },
+      "targeting": {
+        "aim_id": "weapon_ultimate.aim.guitarist.sound_amp",
+        "strategy_id": "unbound",
+        "params": {}
+      },
+      "charge": {
+        "policy_id": "weapon_ultimate.charge.guitarist.sound_amp",
+        "strategy_id": "unbound",
+        "params": {}
+      },
+      "cast_phases": {
+        "acquire": "weapon_ultimate.phase.guitarist.sound_amp.acquire",
+        "windup": "weapon_ultimate.phase.guitarist.sound_amp.windup",
+        "execute": "weapon_ultimate.phase.guitarist.sound_amp.execute",
+        "active": "weapon_ultimate.phase.guitarist.sound_amp.active",
+        "recover": "weapon_ultimate.phase.guitarist.sound_amp.recover",
+        "cleanup": "weapon_ultimate.phase.guitarist.sound_amp.cleanup"
+      },
+      "executor": {
+        "executor_id": "weapon_ultimate.executor.guitarist.sound_amp",
+        "strategy_id": "unbound",
+        "params": {}
+      },
+      "total_boss_cap": null,
+      "presentation": {
+        "presentation_id": "weapon_ultimate.presentation.guitarist.sound_amp",
+        "animation_id": "weapon_ultimate.animation.guitarist.sound_amp",
+        "vfx_id": "weapon_ultimate.vfx.guitarist.sound_amp",
+        "sfx_id": "weapon_ultimate.sfx.guitarist.sound_amp",
+        "params": {}
+      },
+      "cleanup_policy": {
+        "policy_id": "weapon_ultimate.cleanup.guitarist.sound_amp",
+        "strategy_id": "unbound",
+        "params": {}
+      }
+    }
+  ]
+}

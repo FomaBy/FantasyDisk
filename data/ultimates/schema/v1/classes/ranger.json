@@ -1,0 +1,145 @@
+{
+  "schema_version": 1,
+  "class_id": "ranger",
+  "class_order": 12,
+  "profiles": [
+    {
+      "weapon_id": "moon_crossbow",
+      "implementation_state": "declared",
+      "fallback_policy_id": "legacy_class_ultimate",
+      "identity": {
+        "profile_id": "weapon_ultimate.profile.ranger.moon_crossbow",
+        "title_id": "weapon_ultimate.title.ranger.moon_crossbow",
+        "mechanic_id": "weapon_ultimate.mechanic.ranger.moon_crossbow"
+      },
+      "targeting": {
+        "aim_id": "weapon_ultimate.aim.ranger.moon_crossbow",
+        "strategy_id": "unbound",
+        "params": {}
+      },
+      "charge": {
+        "policy_id": "weapon_ultimate.charge.ranger.moon_crossbow",
+        "strategy_id": "unbound",
+        "params": {}
+      },
+      "cast_phases": {
+        "acquire": "weapon_ultimate.phase.ranger.moon_crossbow.acquire",
+        "windup": "weapon_ultimate.phase.ranger.moon_crossbow.windup",
+        "execute": "weapon_ultimate.phase.ranger.moon_crossbow.execute",
+        "active": "weapon_ultimate.phase.ranger.moon_crossbow.active",
+        "recover": "weapon_ultimate.phase.ranger.moon_crossbow.recover",
+        "cleanup": "weapon_ultimate.phase.ranger.moon_crossbow.cleanup"
+      },
+      "executor": {
+        "executor_id": "weapon_ultimate.executor.ranger.moon_crossbow",
+        "strategy_id": "unbound",
+        "params": {}
+      },
+      "total_boss_cap": null,
+      "presentation": {
+        "presentation_id": "weapon_ultimate.presentation.ranger.moon_crossbow",
+        "animation_id": "weapon_ultimate.animation.ranger.moon_crossbow",
+        "vfx_id": "weapon_ultimate.vfx.ranger.moon_crossbow",
+        "sfx_id": "weapon_ultimate.sfx.ranger.moon_crossbow",
+        "params": {}
+      },
+      "cleanup_policy": {
+        "policy_id": "weapon_ultimate.cleanup.ranger.moon_crossbow",
+        "strategy_id": "unbound",
+        "params": {}
+      }
+    },
+    {
+      "weapon_id": "storm_longbow",
+      "implementation_state": "declared",
+      "fallback_policy_id": "legacy_class_ultimate",
+      "identity": {
+        "profile_id": "weapon_ultimate.profile.ranger.storm_longbow",
+        "title_id": "weapon_ultimate.title.ranger.storm_longbow",
+        "mechanic_id": "weapon_ultimate.mechanic.ranger.storm_longbow"
+      },
+      "targeting": {
+        "aim_id": "weapon_ultimate.aim.ranger.storm_longbow",
+        "strategy_id": "unbound",
+        "params": {}
+      },
+      "charge": {
+        "policy_id": "weapon_ultimate.charge.ranger.storm_longbow",
+        "strategy_id": "unbound",
+        "params": {}
+      },
+      "cast_phases": {
+        "acquire": "weapon_ultimate.phase.ranger.storm_longbow.acquire",
+        "windup": "weapon_ultimate.phase.ranger.storm_longbow.windup",
+        "execute": "weapon_ultimate.phase.ranger.storm_longbow.execute",
+        "active": "weapon_ultimate.phase.ranger.storm_longbow.active",
+        "recover": "weapon_ultimate.phase.ranger.storm_longbow.recover",
+        "cleanup": "weapon_ultimate.phase.ranger.storm_longbow.cleanup"
+      },
+      "executor": {
+        "executor_id": "weapon_ultimate.executor.ranger.storm_longbow",
+        "strategy_id": "unbound",
+        "params": {}
+      },
+      "total_boss_cap": null,
+      "presentation": {
+        "presentation_id": "weapon_ultimate.presentation.ranger.storm_longbow",
+        "animation_id": "weapon_ultimate.animation.ranger.storm_longbow",
+        "vfx_id": "weapon_ultimate.vfx.ranger.storm_longbow",
+        "sfx_id": "weapon_ultimate.sfx.ranger.storm_longbow",
+        "params": {}
+      },
+      "cleanup_policy": {
+        "policy_id": "weapon_ultimate.cleanup.ranger.storm_longbow",
+        "strategy_id": "unbound",
+        "params": {}
+      }
+    },
+    {
+      "weapon_id": "hunter_trap",
+      "implementation_state": "declared",
+      "fallback_policy_id": "legacy_class_ultimate",
+      "identity": {
+        "profile_id": "weapon_ultimate.profile.ranger.hunter_trap",
+        "title_id": "weapon_ultimate.title.ranger.hunter_trap",
+        "mechanic_id": "weapon_ultimate.mechanic.ranger.hunter_trap"
+      },
+      "targeting": {
+        "aim_id": "weapon_ultimate.aim.ranger.hunter_trap",
+        "strategy_id": "unbound",
+        "params": {}
+      },
+      "charge": {
+        "policy_id": "weapon_ultimate.charge.ranger.hunter_trap",
+        "strategy_id": "unbound",
+        "params": {}
+      },
+      "cast_phases": {
+        "acquire": "weapon_ultimate.phase.ranger.hunter_trap.acquire",
+        "windup": "weapon_ultimate.phase.ranger.hunter_trap.windup",
+        "execute": "weapon_ultimate.phase.ranger.hunter_trap.execute",
+        "active": "weapon_ultimate.phase.ranger.hunter_trap.active",
+        "recover": "weapon_ultimate.phase.ranger.hunter_trap.recover",
+        "cleanup": "weapon_ultimate.phase.ranger.hunter_trap.cleanup"
+      },
+      "executor": {
+        "executor_id": "weapon_ultimate.executor.ranger.hunter_trap",
+        "strategy_id": "unbound",
+        "params": {}
+      },
+      "total_boss_cap": null,
+      "presentation": {
+        "presentation_id": "weapon_ultimate.presentation.ranger.hunter_trap",
+        "animation_id": "weapon_ultimate.animation.ranger.hunter_trap",
+        "vfx_id": "weapon_ultimate.vfx.ranger.hunter_trap",
+        "sfx_id": "weapon_ultimate.sfx.ranger.hunter_trap",
+        "params": {}
+      },
+      "cleanup_policy": {
+        "policy_id": "weapon_ultimate.cleanup.ranger.hunter_trap",
+        "strategy_id": "unbound",
+        "params": {}
+      }
+    }
+  ]
+}
