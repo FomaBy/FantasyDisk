@@ -163,6 +163,73 @@ class QualityGateTests(unittest.TestCase):
             "res://tests/ultimates/registry_contract_test.gd", run_captured.call_args.args[0]
         )
 
+    def test_import_prepass_runs_once_before_equal_per_suite_budgets(self) -> None:
+        selected = [
+            ROOT / "tests" / "a5_balance_report_integrity_test.gd",
+            ROOT / "tests" / "runtime_smoke_test.gd",
+        ]
+        events: list[tuple[str, float]] = []
+
+        def import_prepass(timeout: float) -> dict:
+            events.append(("import", timeout))
+            return {"name": "godot-import-cache", "status": "passed", "duration_seconds": 1.0}
+
+        def godot_test(path: Path, timeout: float) -> dict:
+            events.append((path.stem, timeout))
+            return {"name": path.stem, "status": "passed", "duration_seconds": 1.0}
+
+        with tempfile.TemporaryDirectory(prefix="quality-import-report-") as scratch:
+            report = Path(scratch) / "report.json"
+            with mock.patch.object(self.quality, "select_godot_tests", return_value=selected):
+                with mock.patch.object(self.quality, "_worktree_status", return_value=[]):
+                    with mock.patch.object(
+                        self.quality, "run_godot_import", side_effect=import_prepass
+                    ) as run_import:
+                        with mock.patch.object(
+                            self.quality, "run_godot_test", side_effect=godot_test
+                        ):
+                            code = self.quality.main([
+                                "--profile",
+                                "changed",
+                                "--skip-static",
+                                "--test-timeout",
+                                "17",
+                                "--import-timeout",
+                                "23",
+                                "--report",
+                                str(report),
+                            ])
+            payload = json.loads(report.read_text(encoding="utf-8"))
+
+        self.assertEqual(code, 0)
+        run_import.assert_called_once_with(23.0)
+        self.assertEqual(
+            events,
+            [
+                ("import", 23.0),
+                ("a5_balance_report_integrity_test", 17.0),
+                ("runtime_smoke_test", 17.0),
+            ],
+        )
+        self.assertEqual(payload["godot_test_timeout_seconds"], 17.0)
+        self.assertEqual(payload["godot_import_timeout_seconds"], 23.0)
+        self.assertEqual(payload["godot_import_prepass"]["status"], "passed")
+
+    def test_import_timeout_reads_its_environment_override(self) -> None:
+        with mock.patch.dict(os.environ, {"FSD_GODOT_IMPORT_TIMEOUT": "321"}, clear=False):
+            args = self.quality._parse_args([])
+        self.assertEqual(args.import_timeout, 321.0)
+
+    def test_import_prepass_routes_through_godot_gate(self) -> None:
+        with mock.patch.object(
+            self.quality, "_run_captured", return_value=(0, "", False)
+        ) as run_captured:
+            result = self.quality.run_godot_import(12.0)
+        self.assertEqual(result["status"], "passed")
+        command = run_captured.call_args.args[0]
+        self.assertEqual(command[:2], [sys.executable, str(self.quality.GODOT_GATE)])
+        self.assertIn("--ensure-import-cache", command)
+
     def test_ambiguous_test_names_across_directories_are_rejected(self) -> None:
         with contextlib.ExitStack() as stack:
             self._use_synthetic_tree(stack, {

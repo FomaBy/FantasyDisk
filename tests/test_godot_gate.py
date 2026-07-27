@@ -315,15 +315,53 @@ class GodotGateTest(unittest.TestCase):
                     self.assertEqual(self.module.main([]), 127)
 
     def test_import_prepass_does_not_enable_fatal_output_detection(self):
+        # Contain the real pre-pass announcement: the literal line is a counted
+        # log contract (exactly one cold emission), so a leak from this suite
+        # would double it in every certifying run.
+        captured_stderr = io.StringIO()
         with mock.patch.object(self.module, "_needs_import_cache", return_value=True):
             with mock.patch.object(self.module, "_run_godot", return_value=0) as run:
-                self.assertEqual(
-                    self.module._ensure_import_cache(["--path", "/repo"], "/godot"),
-                    0,
-                )
+                with contextlib.redirect_stderr(captured_stderr):
+                    self.assertEqual(
+                        self.module._ensure_import_cache(["--path", "/repo"], "/godot"),
+                        0,
+                    )
         run.assert_called_once_with(
             ["/godot", "--headless", "--path", "/repo", "--import", "--quit"]
         )
+        self.assertIn(
+            "godot_gate: import cache missing, running headless import first",
+            captured_stderr.getvalue(),
+        )
+
+    def test_ensure_import_cache_only_skips_the_requested_godot_command(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            env = {
+                "FSD_GODOT_SEM_DIR": tmp,
+                "FSD_GODOT_SLOTS": "1",
+                "FSD_GODOT_MAXWAIT": "0",
+            }
+            with mock.patch.dict(os.environ, env, clear=False):
+                with mock.patch.object(
+                    self.module, "_resolve_godot", return_value=sys.executable
+                ):
+                    with mock.patch.object(
+                        self.module, "_ensure_import_cache", return_value=0
+                    ) as ensure_import:
+                        with mock.patch.object(self.module, "_run_godot") as run:
+                            self.assertEqual(
+                                self.module.main([
+                                    "--headless",
+                                    "--path",
+                                    "/repo",
+                                    "--ensure-import-cache",
+                                ]),
+                                0,
+                            )
+        ensure_import.assert_called_once_with(
+            ["--headless", "--path", "/repo"], sys.executable, force=True
+        )
+        run.assert_not_called()
 
     def test_normal_and_bypass_execution_enable_fatal_output_detection(self):
         with tempfile.TemporaryDirectory() as tmp:
