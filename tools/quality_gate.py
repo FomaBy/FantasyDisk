@@ -6,6 +6,11 @@ suites, isolates ``user://`` per process, and routes every Godot invocation
 through ``tools/godot_gate.py``.  It intentionally runs synchronously so a
 Multica task cannot finish before validation has completed.
 
+Timing-sensitive live-balance and runaway suites request machine-wide
+exclusivity for their individual Godot process.  The import pre-pass and every
+ordinary suite explicitly remain non-exclusive, so the quality gate as a whole
+is never serialized behind one nested lease.
+
 Discovery is recursive over ``tests/``: Godot suites and Python suites in nested
 directories (``tests/ultimates/**``) are part of every profile.  An empty test
 set is a gate failure, never a pass — a silently skipped suite must never read
@@ -40,6 +45,11 @@ ROOT = Path(__file__).resolve().parents[1]
 TEST_DIR = ROOT / "tests"
 GODOT_GATE = ROOT / "tools" / "godot_gate.py"
 RUNTIME_SMOKE = "runtime_smoke_test"
+TIMING_SENSITIVE_GODOT_SCRIPTS = frozenset({
+    "res://tests/berserk_dps_runaway_gate.gd",
+    "res://tests/live_balance_simulation_test.gd",
+    "res://tests/pool_dot_runaway_gate.gd",
+})
 EXTENDS_RE = re.compile(
     r'^\s*extends\s+(?:SceneTree|["\']res://tests/[^"\']+\.gd["\'])\s*(?:#.*)?$',
     re.MULTILINE,
@@ -436,7 +446,11 @@ def run_static_checks(
     return results
 
 
-def _godot_environment(user_data: Path) -> dict[str, str]:
+def _godot_environment(
+    user_data: Path,
+    *,
+    exclusive: bool = False,
+) -> dict[str, str]:
     env = os.environ.copy()
     # Resolve before overriding HOME: the conventional macOS binary lives under
     # the real user's Downloads directory, while each test gets a scratch HOME.
@@ -452,6 +466,10 @@ def _godot_environment(user_data: Path) -> dict[str, str]:
     env["XDG_DATA_HOME"] = str(user_data)
     env["APPDATA"] = str(user_data)
     env["LOCALAPPDATA"] = str(user_data)
+    # Callers own the timing classification.  Setting an explicit empty value
+    # keeps imports and ordinary suites non-exclusive even if the parent shell
+    # happens to export FSD_GODOT_EXCLUSIVE=1.
+    env["FSD_GODOT_EXCLUSIVE"] = "1" if exclusive else ""
     return env
 
 
@@ -573,7 +591,9 @@ def run_godot_import(timeout: float) -> dict:
             "--ensure-import-cache",
         ]
         exit_code, output, timed_out = _run_captured(
-            command, _godot_environment(user_data), timeout
+            command,
+            _godot_environment(user_data, exclusive=False),
+            timeout,
         )
     if IMPORT_CACHE_MISSING_MESSAGE in output:
         print(IMPORT_CACHE_MISSING_MESSAGE, flush=True)
@@ -599,6 +619,7 @@ def run_godot_test(path: Path, timeout: float) -> dict:
     started = time.monotonic()
     name = path.stem
     script = script_resource_path(path)
+    exclusive = script in TIMING_SENSITIVE_GODOT_SCRIPTS
     with tempfile.TemporaryDirectory(prefix=f"fsd-{name}-") as scratch:
         user_data = Path(scratch).resolve()
         command = [
@@ -613,7 +634,9 @@ def run_godot_test(path: Path, timeout: float) -> dict:
             f"--user-data-dir={user_data}",
         ]
         exit_code, output, timed_out = _run_captured(
-            command, _godot_environment(user_data), timeout
+            command,
+            _godot_environment(user_data, exclusive=exclusive),
+            timeout,
         )
     diagnostic = fatal_output_signal(output)
     passed = exit_code == 0 and not diagnostic and not timed_out

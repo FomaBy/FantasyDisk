@@ -3,6 +3,10 @@
 # Гоняет ВСЕ балансовые гейты + пересъём живого CSV + матрицу возвышений в
 # ИЗОЛИРОВАННОМ worktree (защита от параллельных агентов в живом чекауте).
 #
+# Таймингозависимые live/DPS/runaway-замеры берут машинную эксклюзивность на
+# уровне каждого отдельного run_gate. Импорт и остальные гейты остаются
+# обычными; оборачивать весь скрипт нельзя из-за вложенных вызовов godot_gate.py.
+#
 # Использование:
 #   zsh tools/run_balance_validation.sh [ref]        # ref по умолчанию origin/dev
 #   FSD_FULL_CSV=1 zsh tools/run_balance_validation.sh   # + живой пересъём CSV
@@ -74,21 +78,33 @@ run_with_watchdog() {
 	return $?
 }
 run_gate() {
+	local timing_sensitive=0
+	if [ "${1:-}" = "--timing-sensitive" ]; then
+		timing_sensitive=1
+		shift
+	fi
 	local name="$1"; local script="$2"; shift 2
 	local log="$OUT_DIR/${name}.log"
 	local -a gate_args
+	local -a gate_env
 	gate_args=(--headless --path .)
+	# Own the environment explicitly so an inherited shell setting cannot make
+	# ordinary balance gates exclusive by accident.
+	gate_env=(env FSD_GODOT_EXCLUSIVE=)
+	if [ $timing_sensitive -eq 1 ]; then
+		gate_env=(env FSD_GODOT_EXCLUSIVE=1)
+	fi
 	if [ "$script" = "res://tools/character_balance_csv.gd" ]; then
 		# Live CSV measures production _process callbacks; keep its process clock
 		# aligned with the tool's Engine.max_fps assertion.
 		gate_args=(--headless --fixed-fps 60 --path .)
 	fi
-	run_with_watchdog "$log" python3 tools/godot_gate.py "${gate_args[@]}" --script "$script" "$@"
+	run_with_watchdog "$log" "${gate_env[@]}" python3 tools/godot_gate.py "${gate_args[@]}" --script "$script" "$@"
 	local code=$?
 	# exit 144/247 = коллизия инстансов Godot — один ретрай
 	if [ $code -eq 144 ] || [ $code -eq 247 ]; then
 		sleep 5
-		python3 tools/godot_gate.py "${gate_args[@]}" --script "$script" "$@" > "$log" 2>&1
+		"${gate_env[@]}" python3 tools/godot_gate.py "${gate_args[@]}" --script "$script" "$@" > "$log" 2>&1
 		code=$?
 	fi
 	if [ $code -eq 0 ] && ! grep -qiE "FAILED|FATAL" "$log"; then
@@ -116,9 +132,9 @@ run_gate damage_smoke res://tests/global_damage_balance_smoke_test.gd
 run_gate survivability_smoke res://tests/global_survivability_balance_smoke_test.gd
 run_gate survivability_harness res://tools/survivability_harness.gd
 run_gate survivability_scenario res://tests/survivability_scenario_test.gd
-run_gate live_balance_simulation res://tests/live_balance_simulation_test.gd
-run_gate berserk_runaway res://tests/berserk_dps_runaway_gate.gd
-run_gate pool_dot_runaway res://tests/pool_dot_runaway_gate.gd
+run_gate --timing-sensitive live_balance_simulation res://tests/live_balance_simulation_test.gd
+run_gate --timing-sensitive berserk_runaway res://tests/berserk_dps_runaway_gate.gd
+run_gate --timing-sensitive pool_dot_runaway res://tests/pool_dot_runaway_gate.gd
 run_gate damage_isolation res://tests/damage_type_isolation_test.gd
 run_gate ascension_curve res://tests/ascension_curve_balance_test.gd
 run_gate runtime_smoke res://tests/runtime_smoke_test.gd
@@ -146,7 +162,7 @@ if [ "${FSD_FULL_CSV:-0}" = "1" ]; then
 	# Ростер зафиксирован progression_data_character_contract_test.
 	CSV_I=$CSV_ROW_START
 	while [ $CSV_I -lt $CSV_ROW_END ]; do
-		run_gate "live_csv_row$(printf '%02d' ${CSV_I})" res://tools/character_balance_csv.gd -- --mode=live --offset=${CSV_I} --limit=1
+		run_gate --timing-sensitive "live_csv_row$(printf '%02d' ${CSV_I})" res://tools/character_balance_csv.gd -- --mode=live --offset=${CSV_I} --limit=1
 		if [ -f build/qa/character_balance_live/character_balance_dps.csv ]; then
 			cp build/qa/character_balance_live/character_balance_dps.csv "$OUT_DIR/csv_chunk_$(printf '%02d' ${CSV_I}).csv"
 		else

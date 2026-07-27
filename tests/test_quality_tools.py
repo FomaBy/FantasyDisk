@@ -221,14 +221,116 @@ class QualityGateTests(unittest.TestCase):
         self.assertEqual(args.import_timeout, 321.0)
 
     def test_import_prepass_routes_through_godot_gate(self) -> None:
-        with mock.patch.object(
-            self.quality, "_run_captured", return_value=(0, "", False)
-        ) as run_captured:
-            result = self.quality.run_godot_import(12.0)
+        with mock.patch.dict(
+            os.environ, {"FSD_GODOT_EXCLUSIVE": "1"}, clear=False
+        ):
+            with mock.patch.object(
+                self.quality, "_run_captured", return_value=(0, "", False)
+            ) as run_captured:
+                result = self.quality.run_godot_import(12.0)
         self.assertEqual(result["status"], "passed")
         command = run_captured.call_args.args[0]
         self.assertEqual(command[:2], [sys.executable, str(self.quality.GODOT_GATE)])
         self.assertIn("--ensure-import-cache", command)
+        self.assertEqual(
+            run_captured.call_args.args[1]["FSD_GODOT_EXCLUSIVE"],
+            "",
+        )
+
+    def test_only_timing_sensitive_suites_request_machine_exclusive(self) -> None:
+        expected_exclusive = {
+            "res://tests/berserk_dps_runaway_gate.gd",
+            "res://tests/live_balance_simulation_test.gd",
+            "res://tests/pool_dot_runaway_gate.gd",
+        }
+        self.assertEqual(
+            self.quality.TIMING_SENSITIVE_GODOT_SCRIPTS,
+            expected_exclusive,
+        )
+        cases = {
+            ROOT / script.removeprefix("res://"): "1"
+            for script in expected_exclusive
+        }
+        cases[ROOT / "tests" / "runtime_smoke_test.gd"] = ""
+        with mock.patch.dict(
+            os.environ, {"FSD_GODOT_EXCLUSIVE": "1"}, clear=False
+        ):
+            for path, expected in cases.items():
+                with self.subTest(path=path.name):
+                    with mock.patch.object(
+                        self.quality, "_run_captured", return_value=(0, "", False)
+                    ) as run_captured:
+                        result = self.quality.run_godot_test(path, 1.0)
+                    self.assertEqual(result["status"], "passed")
+                    self.assertEqual(
+                        run_captured.call_args.args[1]["FSD_GODOT_EXCLUSIVE"],
+                        expected,
+                    )
+
+    def test_balance_runner_marks_only_live_timing_measurements_exclusive(self) -> None:
+        source = (ROOT / "tools" / "run_balance_validation.sh").read_text(
+            encoding="utf-8"
+        )
+        calls = [
+            line.strip()
+            for line in source.splitlines()
+            if line.lstrip().startswith("run_gate ")
+        ]
+        timing_calls = [
+            line for line in calls if line.startswith("run_gate --timing-sensitive ")
+        ]
+        self.assertEqual(len(timing_calls), 4)
+        required_scripts = {
+            "res://tests/live_balance_simulation_test.gd",
+            "res://tests/berserk_dps_runaway_gate.gd",
+            "res://tests/pool_dot_runaway_gate.gd",
+            "res://tools/character_balance_csv.gd",
+        }
+        self.assertEqual(
+            {
+                script
+                for script in required_scripts
+                if any(script in line for line in timing_calls)
+            },
+            required_scripts,
+        )
+        sensitive_calls = [
+            line
+            for line in calls
+            if any(script in line for script in required_scripts)
+        ]
+        self.assertEqual(sensitive_calls, timing_calls)
+        live_csv_call = next(
+            line
+            for line in timing_calls
+            if "res://tools/character_balance_csv.gd" in line
+        )
+        self.assertIn("--mode=live", live_csv_call)
+        ordinary_calls = [line for line in calls if line not in timing_calls]
+        self.assertTrue(ordinary_calls)
+        self.assertFalse(
+            any("--timing-sensitive" in line for line in ordinary_calls)
+        )
+        self.assertIn(
+            'if [ "${1:-}" = "--timing-sensitive" ]; then\n'
+            "\t\ttiming_sensitive=1",
+            source,
+        )
+        self.assertIn(
+            "if [ $timing_sensitive -eq 1 ]; then\n"
+            "\t\tgate_env=(env FSD_GODOT_EXCLUSIVE=1)",
+            source,
+        )
+        self.assertIn("gate_env=(env FSD_GODOT_EXCLUSIVE=1)", source)
+        self.assertIn("gate_env=(env FSD_GODOT_EXCLUSIVE=)", source)
+        self.assertEqual(
+            source.count('"${gate_env[@]}" python3 tools/godot_gate.py'),
+            2,
+        )
+        self.assertNotIn(
+            "FSD_GODOT_EXCLUSIVE",
+            (ROOT / "tools" / "build_release.sh").read_text(encoding="utf-8"),
+        )
 
     def test_ambiguous_test_names_across_directories_are_rejected(self) -> None:
         with contextlib.ExitStack() as stack:
