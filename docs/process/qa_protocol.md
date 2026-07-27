@@ -1,6 +1,6 @@
 # FantasyDisk independent QA protocol
 
-Updated: 2026-07-26
+Updated: 2026-07-27
 
 QA verifies one explicitly assigned child pinned to one pushed candidate SHA.
 QA does not self-select a parent, create competing review, repair production
@@ -53,6 +53,35 @@ Choose checks in proportion to risk:
 Use `tools/godot_gate.py` for automated Godot execution and the appropriate
 `tools/quality_gate.py` profile for certifying coverage. Never substitute a
 different platform for a platform-specific acceptance criterion.
+
+## Gate evidence contract
+
+`tools/quality_gate.py` fails closed on an empty scope and names the failure in
+`static_checks`. Read the names, not the exit code:
+
+- `test-discovery` — appended last to `static_checks` in every run except
+  `--list`, including `--skip-static` and `--profile static`. Its `errors` say
+  which set was empty: no Godot tests discovered, no Python tests discovered,
+  or no Godot test selected for the requested scope.
+- `python-unit` — `unittest discover` rooted at `tests/`.
+- `python-unit:<root-relative dir>` — one check per nested discovery root that
+  `tests/` cannot reach as a package (currently `python-unit:tests/tools`). A
+  suite that collected but ran nothing fails as `<name> executed 0 tests`.
+
+The gate emits no other names for these failures.
+
+`exit code 0` does not prove tests ran: a non-certifying run (`--filters`,
+`--skip-static`, `--skip-godot`, `--skip-umbrella`, or a dirty worktree) is
+`partial_pass` and still exits `0`. Confirm execution in
+`build/quality_gate_report.json`:
+
+- `executed_python_tests` — Python tests actually run across the `python-unit`
+  checks; `0` means there was no Python coverage.
+- `selected_godot_tests` — Godot tests the scope selected; the `godot_tests`
+  array stays empty when they were not executed.
+
+Treat a run as certifying evidence only when the report also has
+`certifying: true`.
 
 ## Runtime safety
 
