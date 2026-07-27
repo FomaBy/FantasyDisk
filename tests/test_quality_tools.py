@@ -289,26 +289,67 @@ class QualityGateTests(unittest.TestCase):
         self.assertEqual(populated["executed_tests"], 4)
         self.assertEqual(populated["status"], "passed")
 
-    def test_every_python_unit_command_is_guarded_by_executed_count(self) -> None:
-        # The guard has to cover every name the gate actually emits —
-        # `python-unit` for tests/ plus `python-unit:<path>` for each nested
-        # discovery root — otherwise a nested suite could collect nothing and
-        # still report green.
-        with mock.patch.object(
-            self.quality,
-            "_run_command",
-            return_value={"name": "stub", "status": "passed"},
-        ) as run_command:
-            self.quality.run_static_checks(False, 1.0, "origin/dev", 1.0)
+    def _assert_python_unit_commands_are_guarded(
+        self,
+        files: dict[str, str],
+        expected_names: set[str],
+    ) -> None:
+        with contextlib.ExitStack() as stack:
+            self._use_synthetic_tree(stack, files)
+            stack.enter_context(mock.patch.object(
+                self.quality, "_scan_client_secrets", return_value=[]
+            ))
+            stack.enter_context(mock.patch.object(
+                self.quality, "_windows_export_config_errors", return_value=[]
+            ))
+            with mock.patch.object(
+                self.quality,
+                "_run_command",
+                return_value={"name": "stub", "status": "passed"},
+            ) as run_command:
+                self.quality.run_static_checks(False, 1.0, "origin/dev", 1.0)
+            expected_commands = dict(self.quality.python_unit_commands())
+
         guarded = {
-            call.args[0]: call.kwargs.get("expect_tests")
+            call.args[0]: (call.args[1], call.kwargs.get("expect_tests"))
             for call in run_command.call_args_list
             if call.args[0].startswith("python-unit")
         }
-        expected = set(dict(self.quality.python_unit_commands()))
-        self.assertEqual(set(guarded), expected)
-        self.assertTrue(any(name.startswith("python-unit:") for name in expected))
-        self.assertTrue(all(guarded.values()), guarded)
+        self.assertEqual(set(expected_commands), expected_names)
+        self.assertEqual(set(guarded), set(expected_commands))
+        self.assertEqual(
+            {name: command for name, (command, _) in guarded.items()},
+            expected_commands,
+        )
+        self.assertEqual(
+            {name: expect_tests for name, (_, expect_tests) in guarded.items()},
+            {name: True for name in expected_commands},
+        )
+
+    def test_every_python_unit_command_is_guarded_by_executed_count(self) -> None:
+        # A fully package-backed tree needs only the root discovery command;
+        # a non-package child needs its own command.  Both contracts must keep
+        # every emitted command behind the executed-test count guard.
+        topologies = {
+            "root_only": (
+                {
+                    "tests/test_root.py": "",
+                    "tests/tools/__init__.py": "",
+                    "tests/tools/test_nested.py": "",
+                },
+                {"python-unit"},
+            ),
+            "root_and_nested": (
+                {
+                    "tests/test_root.py": "",
+                    "tests/tools/test_nested.py": "",
+                },
+                {"python-unit", "python-unit:tests/tools"},
+            ),
+        }
+        for topology, (files, expected_names) in topologies.items():
+            with self.subTest(topology=topology):
+                self._assert_python_unit_commands_are_guarded(files, expected_names)
 
     def test_empty_godot_selection_is_reported_as_failure(self) -> None:
         with tempfile.TemporaryDirectory(prefix="quality-empty-selection-") as scratch:
@@ -416,21 +457,39 @@ class QualityGateTests(unittest.TestCase):
         self.assertEqual(code, 124)
 
     def test_python_discovery_watchdog_allows_progress_and_kills_hang(self) -> None:
-        with tempfile.TemporaryDirectory(prefix="quality-python-cache-") as cache:
+        with contextlib.ExitStack() as stack:
+            cache = stack.enter_context(
+                tempfile.TemporaryDirectory(prefix="quality-python-cache-")
+            )
+            tree = Path(stack.enter_context(
+                tempfile.TemporaryDirectory(prefix="quality-python-discovery-")
+            ))
+            test_dir = tree / "tests"
+            test_dir.mkdir()
+            (test_dir / "test_progress.py").write_text(
+                "import unittest\n\n\n"
+                "class ProgressTests(unittest.TestCase):\n"
+                "    def test_reports_progress(self) -> None:\n"
+                "        print('discovery progress', flush=True)\n"
+                "        self.assertTrue(True)\n",
+                encoding="utf-8",
+            )
             env = os.environ.copy()
             env["PYTHONPYCACHEPREFIX"] = cache
+            env["QUALITY_WATCHDOG_TREE"] = str(tree)
+            runner = (
+                "import os, unittest; "
+                "os.chdir(os.environ['QUALITY_WATCHDOG_TREE']); "
+                "unittest.main(module=None, argv=["
+                "'unittest', 'discover', '-v', '-s', 'tests', "
+                "'-p', 'test_progress.py'])"
+            )
             bounded_code, bounded_output, bounded_timeout = self.quality._run_captured(
                 [
                     sys.executable,
                     "-u",
-                    "-m",
-                    "unittest",
-                    "discover",
-                    "-v",
-                    "-s",
-                    "tests",
-                    "-p",
-                    "test_godot_gate.py",
+                    "-c",
+                    runner,
                 ],
                 env,
                 10.0,
