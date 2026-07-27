@@ -123,10 +123,10 @@ func _initialize() -> void:
 	# тиры становятся частью эталона, потолки и чувствительность не меняются.
 	seed(BASE_SEED)
 
-	# Тот же сид, что у tools/character_balance_csv.gd для пары berserk/hammer:
-	# генератор раздаёт seed_counter инкрементом (+2 на пару: ideal+random) в порядке
-	# обхода реестра. Совпадение сидов → число гейта тождественно строке CSV (QA
-	# может кросс-сверить lvl20_ideal_20t/1t берсерка с этим гейтом).
+	# CSV теперь выводит свои seeds из строковой идентичности пары, чтобы --pair
+	# не зависел от порядка обхода реестра. Этот gate сохраняет исторический
+	# positional seed для своей калиброванной границы: он больше не является
+	# row-for-row seed cross-check для CSV.
 	var rng := RandomNumberGenerator.new()
 	rng.seed = _ideal_seed_for_pair(CHARACTER_ID, WEAPON_ID)
 	var ideal_build: Array = _build_levelups(CHARACTER_ID, archetype, rng) + _build_artifacts(CHARACTER_ID, archetype, rng)

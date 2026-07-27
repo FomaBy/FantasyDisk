@@ -9,6 +9,7 @@ const ATTRIBUTE_BUY_BASE_COST := 18
 const ATTRIBUTE_BUY_STAGE_COST := 6
 const ATTRIBUTE_REROLL_BASE_COST := 6
 const ATTRIBUTE_REROLL_STAGE_COST := 2
+const SHOP_COST_SEED := 20260620
 
 # --- SCRUM-508: EV-в-золото для random-событий (единый источник истины для отчёта и
 # теста tests/runtime_smoke_progression_economy_test.gd). Веса заземлены на реальные
@@ -449,6 +450,9 @@ static func _level_state(expected_xp: float) -> Dictionary:
 
 
 static func _average_shop_cost(stage: int) -> float:
+	# shop_items() materializes rarity families through the global randf() stream.
+	# Keep the route model deterministic while retaining the production shop path.
+	seed(SHOP_COST_SEED + stage)
 	var items := ProgressionData.shop_items(stage)
 	var total := 0.0
 	for item in items:

@@ -43,6 +43,10 @@ const BASE_SEED := 20260620
 const CSV_PATH := "res://build/character_balance_dps.csv"
 const README_PATH := "res://build/character_balance_dps_README.md"
 const BAND_REPORT_PATH := "res://build/character_balance_band.md"
+const LIVE_OUTPUT_DIR := "res://build/qa/character_balance_live"
+const DETERMINISTIC_MAX_FPS := 60
+const LIVE_FIXED_DELTA := 1.0 / float(DETERMINISTIC_MAX_FPS)
+const LIVE_DELTA_TOLERANCE := 0.00001
 # SCRUM-544: срезы, по которым гейтится comfort-нормированная полоса (lvl20-оптимум).
 const BAND_SLICES := ["ideal_1", "ideal_5", "ideal_20"]
 
@@ -154,6 +158,10 @@ func _initialize() -> void:
 		_validate_band(rows)
 		quit(0)
 		return
+	# The live probe advances production _process callbacks. The launcher also
+	# supplies --fixed-fps 60; assert the observed delta below so a missing flag
+	# cannot silently turn a deterministic spot check back into a variable clock.
+	Engine.max_fps = DETERMINISTIC_MAX_FPS
 	await process_frame
 	_holder = Node2D.new()
 	_holder.name = "BalanceCsvHolder"
@@ -162,7 +170,6 @@ func _initialize() -> void:
 	await process_frame
 
 	var rows: Array = []
-	var seed_counter := BASE_SEED
 	var pair_index := 0
 	var selected_count := 0
 	for character_id in ProgressionData.character_ids():
@@ -172,28 +179,31 @@ func _initialize() -> void:
 			var config: Dictionary = ProgressionData.weapon(cid, wid)
 			var archetype: String = ProgressionData.weapon_archetype(config)
 
-			# Детерминированные RNG на пару — воспроизводимо между прогонами.
-			var rng_ideal := RandomNumberGenerator.new()
-			rng_ideal.seed = seed_counter
-			seed_counter += 1
-			var rng_random := RandomNumberGenerator.new()
-			rng_random.seed = seed_counter
-			seed_counter += 1
-
 			if not _pair_selected(cid, wid, pair_index):
 				pair_index += 1
 				continue
 			selected_count += 1
+			# Both local offer RNGs and ProgressionData's global artifact-tier stream
+			# are tied to the pair identity, never traversal position. This keeps a
+			# --pair run byte-identical to the same row in a multi-pair run.
+			var rng_ideal := RandomNumberGenerator.new()
+			rng_ideal.seed = _identity_seed(cid, wid, "ideal_build")
+			seed(_identity_seed(cid, wid, "ideal_build"))
+			var ideal_build := _build_levelups(cid, archetype, true, rng_ideal) + _build_artifacts(cid, archetype, true, rng_ideal)
+			var rng_random := RandomNumberGenerator.new()
+			rng_random.seed = _identity_seed(cid, wid, "random_build")
+			seed(_identity_seed(cid, wid, "random_build"))
+			var random_build := _build_levelups(cid, archetype, false, rng_random) + _build_artifacts(cid, archetype, false, rng_random)
 			var builds := {
 				"lvl1": [],
-				"ideal": _build_levelups(cid, archetype, true, rng_ideal) + _build_artifacts(cid, archetype, true, rng_ideal),
-				"random": _build_levelups(cid, archetype, false, rng_random) + _build_artifacts(cid, archetype, false, rng_random),
+				"ideal": ideal_build,
+				"random": random_build,
 			}
 
 			var row := {"class": cid, "weapon": wid, "archetype": archetype}
 			for state in ["lvl1", "ideal", "random"]:
 				for count in TARGET_COUNTS:
-					var dps: float = await _measure_dps(cid, wid, count, builds[state])
+					var dps: float = await _measure_dps(cid, wid, state, count, builds[state])
 					row["%s_%d" % [state, count]] = dps
 			rows.append(row)
 			print("%s/%s [%s] 1t: l1=%.1f id=%.1f rnd=%.1f | 5t: l1=%.1f id=%.1f rnd=%.1f | 20t: l1=%.1f id=%.1f rnd=%.1f" % [
@@ -459,6 +469,15 @@ func _weighted_index(source: Array, character_id: String, rng: RandomNumberGener
 	return weights.size() - 1
 
 
+func _identity_seed(character_id: String, weapon_id: String, stream: String) -> int:
+	# Do not use hash() or a running counter here: this value is a pure function
+	# of stable strings so filtering/reordering the roster cannot change a row.
+	var value := BASE_SEED
+	for byte_value in ("%s|%s|%s" % [character_id, weapon_id, stream]).to_utf8_buffer():
+		value = int((value * 131 + int(byte_value)) % 2147483647)
+	return value
+
+
 func _build_artifacts(character_id: String, archetype: String, ideal: bool, rng: RandomNumberGenerator) -> Array:
 	# NB: без лямбд с захватом локалов (archetype/self). Intermittent SIGABRT
 	# (freed-lambda) при sort_custom/filter под нагрузкой (SCRUM-551) — заменено
@@ -488,7 +507,10 @@ func _build_artifacts(character_id: String, archetype: String, ideal: bool, rng:
 
 # --- Замер фактического DPS ---------------------------------------------------
 
-func _measure_dps(character_id: String, weapon_id: String, target_count: int, rewards: Array) -> float:
+func _measure_dps(character_id: String, weapon_id: String, state: String, target_count: int, rewards: Array) -> float:
+	# Crit rolls use the same global stream as artifact tiers. Reset it for every
+	# sample so a preceding window cannot shift this sample's production RNG.
+	seed(_identity_seed(character_id, weapon_id, "%s_measure_%d" % [state, target_count]))
 	# SCRUM-551: teardown предыдущего пэка ДО следующего инстанса. Глушим ВСЕ tween'ы
 	# в поддереве (известные поля игрока + cleanup_effects() оружия + рекурсивный обход),
 	# снимаем из дерева и free() сразу — чтобы ни один SceneTreeTween/Callable не
@@ -538,7 +560,15 @@ func _measure_dps(character_id: String, weapon_id: String, target_count: int, re
 	while elapsed_game_time < WINDOW_SECONDS and sampled_frames < MAX_MEASUREMENT_FRAMES:
 		await process_frame
 		sampled_frames += 1
-		elapsed_game_time += maxf(_holder.get_process_delta_time(), 0.0)
+		var process_delta := _holder.get_process_delta_time()
+		if absf(process_delta - LIVE_FIXED_DELTA) > LIVE_DELTA_TOLERANCE:
+			_fatal_errors.append("%s/%s %s/%dt fixed-step delta %.8f differs from 1/%d" % [
+				character_id, weapon_id, state, target_count, process_delta, DETERMINISTIC_MAX_FPS])
+			return -1.0
+		if sampled_frames == 1:
+			print("%s/%s %s/%dt observed fixed-step delta %.8f (1/%d)" % [
+				character_id, weapon_id, state, target_count, process_delta, DETERMINISTIC_MAX_FPS])
+		elapsed_game_time += maxf(process_delta, 0.0)
 		for i in range(dummies.size()):
 			var enemy := dummies[i] as Node2D
 			if is_instance_valid(enemy):
@@ -713,11 +743,13 @@ func _validate_band(rows: Array) -> void:
 	lines.append("")
 	lines.append("**Итог полосы: %s**" % ("ПОЛОСА ВЫДЕРЖАНА (±%.0f%%)" % (tol * 100.0) if all_pass else "ПОЛОСА НЕ ВЫДЕРЖАНА — требуется тюнинг"))
 	print("[BAND] Итог: %s" % ("PASS" if all_pass else "FAIL"))
-	var file := FileAccess.open(BAND_REPORT_PATH, FileAccess.WRITE)
+	var output_path := _band_report_path()
+	DirAccess.make_dir_recursive_absolute(ProjectSettings.globalize_path(output_path).get_base_dir())
+	var file := FileAccess.open(output_path, FileAccess.WRITE)
 	if file != null:
 		file.store_string("\n".join(lines))
 		file.close()
-		print("Band report: %s" % ProjectSettings.globalize_path(BAND_REPORT_PATH))
+		print("Band report: %s" % ProjectSettings.globalize_path(output_path))
 
 
 func _median(sorted_values: Array) -> float:
@@ -732,7 +764,8 @@ func _median(sorted_values: Array) -> float:
 # --- Вывод --------------------------------------------------------------------
 
 func _write_csv(rows: Array) -> void:
-	DirAccess.make_dir_recursive_absolute(ProjectSettings.globalize_path("res://build"))
+	var output_path := _csv_output_path()
+	DirAccess.make_dir_recursive_absolute(ProjectSettings.globalize_path(output_path).get_base_dir())
 	var lines := PackedStringArray()
 	lines.append("class,weapon,archetype," +
 		"lvl1_1t,lvl1_5t,lvl1_20t," +
@@ -744,13 +777,13 @@ func _write_csv(rows: Array) -> void:
 			row["lvl1_1"], row["lvl1_5"], row["lvl1_20"],
 			row["ideal_1"], row["ideal_5"], row["ideal_20"],
 			row["random_1"], row["random_5"], row["random_20"]])
-	var file := FileAccess.open(CSV_PATH, FileAccess.WRITE)
+	var file := FileAccess.open(output_path, FileAccess.WRITE)
 	if file == null:
-		push_error("Не удалось записать CSV: %s" % CSV_PATH)
+		push_error("Не удалось записать CSV: %s" % output_path)
 		return
 	file.store_string("\n".join(lines))
 	file.close()
-	print("Balance CSV: %s (строк %d)" % [ProjectSettings.globalize_path(CSV_PATH), rows.size()])
+	print("Balance CSV: %s (строк %d)" % [ProjectSettings.globalize_path(output_path), rows.size()])
 
 
 func _write_readme(rows: Array) -> void:
@@ -784,9 +817,23 @@ func _write_readme(rows: Array) -> void:
 	lines.append("Воспроизводимость: фиксированные сиды (BASE_SEED=%d). lvl20_random — один представительный «невезучий» прогон на пару, не усреднение." % BASE_SEED)
 	lines.append("")
 	lines.append("Пар измерено: %d. Сетка: 3 состояния × 3 числа целей = 9 DPS-колонок на пару." % rows.size())
-	var file := FileAccess.open(README_PATH, FileAccess.WRITE)
+	var output_path := _readme_output_path()
+	DirAccess.make_dir_recursive_absolute(ProjectSettings.globalize_path(output_path).get_base_dir())
+	var file := FileAccess.open(output_path, FileAccess.WRITE)
 	if file == null:
-		push_error("Не удалось записать README: %s" % README_PATH)
+		push_error("Не удалось записать README: %s" % output_path)
 		return
 	file.store_string("\n".join(lines))
 	file.close()
+
+
+func _csv_output_path() -> String:
+	return CSV_PATH if _mode == "fast" else "%s/character_balance_dps.csv" % LIVE_OUTPUT_DIR
+
+
+func _readme_output_path() -> String:
+	return README_PATH if _mode == "fast" else "%s/character_balance_dps_README.md" % LIVE_OUTPUT_DIR
+
+
+func _band_report_path() -> String:
+	return BAND_REPORT_PATH if _mode == "fast" else "%s/character_balance_band.md" % LIVE_OUTPUT_DIR
