@@ -2,9 +2,11 @@ import contextlib
 import importlib.util
 import io
 import os
+import subprocess
 import sys
 import tempfile
 import threading
+import time
 import unittest
 from pathlib import Path
 from unittest import mock
@@ -27,6 +29,71 @@ class GodotGateTest(unittest.TestCase):
     def setUp(self):
         self.module = load_module()
 
+    @staticmethod
+    def _timed_command(log_path: Path, label: str, duration: float) -> str:
+        return (
+            "import time; "
+            f"log_path = {str(log_path)!r}; label = {label!r}; "
+            "log = open(log_path, 'a', encoding='utf-8'); "
+            "log.write(f'{label} start {time.time_ns()}\\n'); log.flush(); log.close(); "
+            f"time.sleep({duration}); "
+            "log = open(log_path, 'a', encoding='utf-8'); "
+            "log.write(f'{label} end {time.time_ns()}\\n'); log.flush(); log.close()"
+        )
+
+    @staticmethod
+    def _read_intervals(log_path: Path) -> dict[str, dict[str, int]]:
+        intervals: dict[str, dict[str, int]] = {}
+        for line in log_path.read_text(encoding="utf-8").splitlines():
+            label, event, timestamp = line.split()
+            intervals.setdefault(label, {})[event] = int(timestamp)
+        return intervals
+
+    def _wait_for_event(self, log_path: Path, label: str, event: str) -> None:
+        deadline = time.monotonic() + 10
+        while time.monotonic() < deadline:
+            if log_path.exists():
+                intervals = self._read_intervals(log_path)
+                if event in intervals.get(label, {}):
+                    return
+            time.sleep(0.02)
+        self.fail(f"timed out waiting for {label} {event}")
+
+    @staticmethod
+    def _gate_environment(tmpdir: Path, **updates: str) -> dict[str, str]:
+        env = os.environ.copy()
+        env.pop("FSD_GODOT_SEM_DIR", None)
+        env.pop("FSD_GODOT_EXCLUSIVE", None)
+        env.pop("FSD_GODOT_BYPASS_ON_TIMEOUT", None)
+        env.pop("FSD_GODOT_RUN_TIMEOUT", None)
+        env.update(
+            {
+                "TMPDIR": str(tmpdir),
+                "GODOT_BIN": sys.executable,
+                "FSD_GODOT_MAXWAIT": "10",
+                "FSD_GODOT_SLOTS": "1",
+                **updates,
+            }
+        )
+        return env
+
+    @staticmethod
+    def _start_gate(env: dict[str, str], command: str) -> subprocess.Popen[bytes]:
+        return subprocess.Popen(
+            [sys.executable, str(MODULE_PATH), "-c", command],
+            env=env,
+            stdout=subprocess.DEVNULL,
+            stderr=subprocess.PIPE,
+        )
+
+    @staticmethod
+    def _wait_for_gate(process: subprocess.Popen[bytes]) -> tuple[int, str]:
+        code = process.wait(15)
+        assert process.stderr is not None
+        stderr = process.stderr.read().decode()
+        process.stderr.close()
+        return code, stderr
+
     def test_project_path_forms(self):
         self.assertEqual(self.module._project_path(["--path", "/repo", "--headless"]), "/repo")
         self.assertEqual(self.module._project_path(["--path=/other"]), "/other")
@@ -48,6 +115,131 @@ class GodotGateTest(unittest.TestCase):
             finally:
                 first.close()
                 second.close()
+
+    def test_default_semaphore_dir_ignores_task_tmpdir_and_override_wins(self):
+        with tempfile.TemporaryDirectory() as first_tmp, tempfile.TemporaryDirectory() as second_tmp:
+            with mock.patch.dict(
+                os.environ,
+                {"TMPDIR": first_tmp, "FSD_GODOT_SEM_DIR": ""},
+                clear=False,
+            ):
+                first = self.module._semaphore_dir()
+            with mock.patch.dict(
+                os.environ,
+                {"TMPDIR": second_tmp, "FSD_GODOT_SEM_DIR": ""},
+                clear=False,
+            ):
+                second = self.module._semaphore_dir()
+            self.assertEqual(first, second)
+
+            override = Path(first_tmp) / "custom-semaphore"
+            with mock.patch.dict(
+                os.environ,
+                {"TMPDIR": second_tmp, "FSD_GODOT_SEM_DIR": str(override)},
+                clear=False,
+            ):
+                self.assertEqual(self.module._semaphore_dir(), override)
+
+    def test_separate_task_tmpdirs_share_one_slot_without_godot(self):
+        with tempfile.TemporaryDirectory() as root:
+            root_path = Path(root)
+            log_path = root_path / "intervals.log"
+            first_env = self._gate_environment(root_path / "task-one")
+            second_env = self._gate_environment(root_path / "task-two")
+            first = self._start_gate(
+                first_env,
+                self._timed_command(log_path, "first", 0.5),
+            )
+            second = None
+            try:
+                self._wait_for_event(log_path, "first", "start")
+                second = self._start_gate(
+                    second_env,
+                    self._timed_command(log_path, "second", 0.1),
+                )
+                first_code, first_stderr = self._wait_for_gate(first)
+                second_code, second_stderr = self._wait_for_gate(second)
+                self.assertEqual(first_code, 0, first_stderr)
+                self.assertEqual(second_code, 0, second_stderr)
+            finally:
+                if first.poll() is None:
+                    first.kill()
+                    first.wait()
+                if second is not None and second.poll() is None:
+                    second.kill()
+                    second.wait()
+            intervals = self._read_intervals(log_path)
+            self.assertLessEqual(intervals["first"]["end"], intervals["second"]["start"])
+
+    def test_exclusive_run_blocks_runs_with_other_slot_counts(self):
+        with tempfile.TemporaryDirectory() as root:
+            root_path = Path(root)
+            log_path = root_path / "intervals.log"
+            normal = self._start_gate(
+                self._gate_environment(root_path / "normal", FSD_GODOT_SLOTS="3"),
+                self._timed_command(log_path, "normal", 0.5),
+            )
+            exclusive = None
+            try:
+                self._wait_for_event(log_path, "normal", "start")
+                exclusive = self._start_gate(
+                    self._gate_environment(
+                        root_path / "exclusive",
+                        FSD_GODOT_EXCLUSIVE="1",
+                    ),
+                    self._timed_command(log_path, "exclusive", 0.1),
+                )
+                normal_code, normal_stderr = self._wait_for_gate(normal)
+                exclusive_code, exclusive_stderr = self._wait_for_gate(exclusive)
+                self.assertEqual(normal_code, 0, normal_stderr)
+                self.assertEqual(exclusive_code, 0, exclusive_stderr)
+            finally:
+                if normal.poll() is None:
+                    normal.kill()
+                    normal.wait()
+                if exclusive is not None and exclusive.poll() is None:
+                    exclusive.kill()
+                    exclusive.wait()
+            intervals = self._read_intervals(log_path)
+            self.assertLessEqual(intervals["normal"]["end"], intervals["exclusive"]["start"])
+
+    def test_killed_slot_owner_does_not_block_next_gate_run(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            sem_dir = Path(tmp) / "semaphore"
+            sem_dir.mkdir()
+            holder_code = (
+                "import runpy, sys, time; "
+                "module = runpy.run_path(sys.argv[1]); "
+                "lock = module['_SlotLock'](module['Path'](sys.argv[2]) / 'slot0.lock'); "
+                "assert lock.try_acquire(); print('locked', flush=True); time.sleep(60)"
+            )
+            holder = subprocess.Popen(
+                [sys.executable, "-c", holder_code, str(MODULE_PATH), str(sem_dir)],
+                stdout=subprocess.PIPE,
+                stderr=subprocess.DEVNULL,
+                text=True,
+            )
+            try:
+                assert holder.stdout is not None
+                self.assertEqual(holder.stdout.readline().strip(), "locked")
+                holder.kill()
+                holder.wait(10)
+                completed = subprocess.run(
+                    [sys.executable, str(MODULE_PATH), "-c", "pass"],
+                    env=self._gate_environment(
+                        Path(tmp),
+                        FSD_GODOT_SEM_DIR=str(sem_dir),
+                    ),
+                    capture_output=True,
+                    timeout=15,
+                )
+                self.assertEqual(completed.returncode, 0, completed.stderr.decode())
+            finally:
+                if holder.poll() is None:
+                    holder.kill()
+                    holder.wait()
+                if holder.stdout is not None:
+                    holder.stdout.close()
 
     def test_disposable_parse_error_is_fail_closed(self):
         with tempfile.TemporaryDirectory() as tmp:

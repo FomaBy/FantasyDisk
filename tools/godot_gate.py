@@ -12,7 +12,10 @@ Usage:
 Environment:
     FSD_GODOT_SLOTS       concurrent slots (default: 3)
     GODOT_BIN / GODOT     executable path or command name
-    FSD_GODOT_SEM_DIR     lock directory (default: OS temp directory)
+    FSD_GODOT_SEM_DIR     lock directory (default: stable machine-wide directory)
+    FSD_GODOT_EXCLUSIVE=1 waits for every gated run and blocks new ones while
+                          this command executes; use for timing-sensitive work;
+                          emergency timeout bypass is intentionally disabled
     FSD_GODOT_MAXWAIT     maximum slot wait in seconds (default: 2400)
     FSD_GODOT_RUN_TIMEOUT maximum Godot runtime in seconds (default: 3600)
     FSD_GODOT_BYPASS_ON_TIMEOUT=1 allows an explicit emergency bypass
@@ -27,7 +30,6 @@ import re
 import shutil
 import subprocess
 import sys
-import tempfile
 import threading
 import time
 from pathlib import Path
@@ -36,6 +38,7 @@ from typing import BinaryIO, Sequence
 
 FATAL_OUTPUT_RE = re.compile(r"\bSCRIPT ERROR\b|\bFATAL\b", re.IGNORECASE)
 SCRIPT_LOAD_FAILURE = "Failed to load script"
+MACHINE_RUN_TOKENS = 64
 
 
 def _positive_int_env(name: str, default: int) -> int:
@@ -44,6 +47,18 @@ def _positive_int_env(name: str, default: int) -> int:
 
 def _positive_float_env(name: str, default: float) -> float:
     return max(0.0, float(os.getenv(name, str(default))))
+
+
+def _default_semaphore_dir() -> Path:
+    """Return a lock directory that is shared by separate Multica tasks."""
+    if os.name == "nt":
+        return Path(os.getenv("PUBLIC", r"C:\\Users\\Public")) / "FantasyDisk" / "fsd_godot_sem"
+    return Path("/tmp") / "fsd_godot_sem"
+
+
+def _semaphore_dir() -> Path:
+    explicit = os.getenv("FSD_GODOT_SEM_DIR", "").strip()
+    return Path(explicit).expanduser() if explicit else _default_semaphore_dir()
 
 
 def _resolve_godot() -> str:
@@ -245,6 +260,58 @@ class _SlotLock:
             self.file = None
 
 
+class _MachineRunLease:
+    """Coordinates normal and timing-exclusive runs across every slot count.
+
+    A normal run occupies one of the shared run tokens. An exclusive run first
+    closes admission, then acquires every token, so it cannot overlap another
+    gate invocation even when that invocation uses a different slot count.
+    Advisory locks are released by the operating system if their owner dies.
+    """
+
+    def __init__(self, sem_dir: Path, exclusive: bool) -> None:
+        self.exclusive = exclusive
+        self.admission = _SlotLock(sem_dir / "exclusive-admission.lock")
+        self.tokens = [
+            _SlotLock(sem_dir / f"machine-run-{index}.lock")
+            for index in range(MACHINE_RUN_TOKENS)
+        ]
+        self.acquired_tokens: list[_SlotLock] = []
+        self.admission_held = False
+
+    def try_acquire(self) -> bool:
+        if not self.admission.try_acquire():
+            return False
+        self.admission_held = True
+
+        if not self.exclusive:
+            for token in self.tokens:
+                if token.try_acquire():
+                    self.acquired_tokens.append(token)
+                    self.admission.release()
+                    self.admission_held = False
+                    return True
+            self.admission.release()
+            self.admission_held = False
+            return False
+
+        for token in self.tokens:
+            if token.try_acquire():
+                self.acquired_tokens.append(token)
+                continue
+            self.release()
+            return False
+        return True
+
+    def release(self) -> None:
+        for token in reversed(self.acquired_tokens):
+            token.release()
+        self.acquired_tokens.clear()
+        if self.admission_held:
+            self.admission.release()
+            self.admission_held = False
+
+
 def main(argv: Sequence[str] | None = None) -> int:
     args = list(sys.argv[1:] if argv is None else argv)
     try:
@@ -254,10 +321,7 @@ def main(argv: Sequence[str] | None = None) -> int:
         sys.stderr.write(f"godot_gate: invalid numeric environment value: {exc}\n")
         return 2
 
-    sem_dir = Path(os.getenv(
-        "FSD_GODOT_SEM_DIR",
-        os.path.join(tempfile.gettempdir(), "fsd_godot_sem"),
-    )).expanduser()
+    sem_dir = _semaphore_dir()
     sem_dir.mkdir(parents=True, exist_ok=True)
 
     godot = _resolve_godot()
@@ -269,24 +333,30 @@ def main(argv: Sequence[str] | None = None) -> int:
         return 127
 
     deadline = time.monotonic() + max_wait
+    exclusive = os.getenv("FSD_GODOT_EXCLUSIVE", "") == "1"
     while True:
-        for index in range(slots):
-            slot = _SlotLock(sem_dir / f"slot{index}.lock")
-            if not slot.try_acquire():
-                continue
+        lease = _MachineRunLease(sem_dir, exclusive)
+        if lease.try_acquire():
             try:
-                import_code = _ensure_import_cache(args, godot)
-                if import_code != 0:
-                    return import_code
-                return _run_godot(
-                    [godot, *args],
-                    fail_on_fatal_output=True,
-                )
+                for index in range(slots):
+                    slot = _SlotLock(sem_dir / f"slot{index}.lock")
+                    if not slot.try_acquire():
+                        continue
+                    try:
+                        import_code = _ensure_import_cache(args, godot)
+                        if import_code != 0:
+                            return import_code
+                        return _run_godot(
+                            [godot, *args],
+                            fail_on_fatal_output=True,
+                        )
+                    finally:
+                        slot.release()
             finally:
-                slot.release()
+                lease.release()
 
         if time.monotonic() > deadline:
-            if os.getenv("FSD_GODOT_BYPASS_ON_TIMEOUT", "") == "1":
+            if os.getenv("FSD_GODOT_BYPASS_ON_TIMEOUT", "") == "1" and not exclusive:
                 sys.stderr.write(
                     "godot_gate: slot wait timed out; explicit bypass enabled\n"
                 )
@@ -297,6 +367,12 @@ def main(argv: Sequence[str] | None = None) -> int:
                     [godot, *args],
                     fail_on_fatal_output=True,
                 )
+            if exclusive and os.getenv("FSD_GODOT_BYPASS_ON_TIMEOUT", "") == "1":
+                sys.stderr.write(
+                    "godot_gate: slot wait timed out; exclusive runs refuse "
+                    "the emergency bypass\n"
+                )
+                return 124
             sys.stderr.write(
                 "godot_gate: slot wait timed out; bypass is disabled "
                 "(set FSD_GODOT_BYPASS_ON_TIMEOUT=1 only for manual recovery)\n"
