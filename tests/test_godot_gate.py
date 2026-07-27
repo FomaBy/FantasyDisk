@@ -60,15 +60,17 @@ class GodotGateTest(unittest.TestCase):
         self.fail(f"timed out waiting for {label} {event}")
 
     @staticmethod
-    def _gate_environment(tmpdir: Path, **updates: str) -> dict[str, str]:
+    def _gate_environment(tmpdir: Path, sem_dir: Path, **updates: str) -> dict[str, str]:
+        # sem_dir is mandatory: without an explicit override a child falls back to
+        # the machine-wide default and contends with unrelated gated Godot runs.
         env = os.environ.copy()
-        env.pop("FSD_GODOT_SEM_DIR", None)
         env.pop("FSD_GODOT_EXCLUSIVE", None)
         env.pop("FSD_GODOT_BYPASS_ON_TIMEOUT", None)
         env.pop("FSD_GODOT_RUN_TIMEOUT", None)
         env.update(
             {
                 "TMPDIR": str(tmpdir),
+                "FSD_GODOT_SEM_DIR": str(sem_dir),
                 "GODOT_BIN": sys.executable,
                 "FSD_GODOT_MAXWAIT": "10",
                 "FSD_GODOT_SLOTS": "1",
@@ -144,8 +146,9 @@ class GodotGateTest(unittest.TestCase):
         with tempfile.TemporaryDirectory() as root:
             root_path = Path(root)
             log_path = root_path / "intervals.log"
-            first_env = self._gate_environment(root_path / "task-one")
-            second_env = self._gate_environment(root_path / "task-two")
+            sem_dir = root_path / "semaphore"
+            first_env = self._gate_environment(root_path / "task-one", sem_dir)
+            second_env = self._gate_environment(root_path / "task-two", sem_dir)
             first = self._start_gate(
                 first_env,
                 self._timed_command(log_path, "first", 0.5),
@@ -175,8 +178,11 @@ class GodotGateTest(unittest.TestCase):
         with tempfile.TemporaryDirectory() as root:
             root_path = Path(root)
             log_path = root_path / "intervals.log"
+            sem_dir = root_path / "semaphore"
             normal = self._start_gate(
-                self._gate_environment(root_path / "normal", FSD_GODOT_SLOTS="3"),
+                self._gate_environment(
+                    root_path / "normal", sem_dir, FSD_GODOT_SLOTS="3"
+                ),
                 self._timed_command(log_path, "normal", 0.5),
             )
             exclusive = None
@@ -185,6 +191,7 @@ class GodotGateTest(unittest.TestCase):
                 exclusive = self._start_gate(
                     self._gate_environment(
                         root_path / "exclusive",
+                        sem_dir,
                         FSD_GODOT_EXCLUSIVE="1",
                     ),
                     self._timed_command(log_path, "exclusive", 0.1),
@@ -226,10 +233,7 @@ class GodotGateTest(unittest.TestCase):
                 holder.wait(10)
                 completed = subprocess.run(
                     [sys.executable, str(MODULE_PATH), "-c", "pass"],
-                    env=self._gate_environment(
-                        Path(tmp),
-                        FSD_GODOT_SEM_DIR=str(sem_dir),
-                    ),
+                    env=self._gate_environment(Path(tmp), sem_dir),
                     capture_output=True,
                     timeout=15,
                 )
@@ -297,16 +301,18 @@ class GodotGateTest(unittest.TestCase):
             os.environ, {"FSD_GODOT_RUN_TIMEOUT": "invalid"}, clear=False
         ):
             self.assertEqual(self.module._run_godot([sys.executable]), 2)
-        with mock.patch.dict(
-            os.environ,
-            {
-                "FSD_GODOT_SLOTS": "1",
-                "FSD_GODOT_MAXWAIT": "0",
-            },
-            clear=False,
-        ):
-            with mock.patch.object(self.module, "_resolve_godot", return_value=""):
-                self.assertEqual(self.module.main([]), 127)
+        with tempfile.TemporaryDirectory() as tmp:
+            with mock.patch.dict(
+                os.environ,
+                {
+                    "FSD_GODOT_SEM_DIR": tmp,
+                    "FSD_GODOT_SLOTS": "1",
+                    "FSD_GODOT_MAXWAIT": "0",
+                },
+                clear=False,
+            ):
+                with mock.patch.object(self.module, "_resolve_godot", return_value=""):
+                    self.assertEqual(self.module.main([]), 127)
 
     def test_import_prepass_does_not_enable_fatal_output_detection(self):
         with mock.patch.object(self.module, "_needs_import_cache", return_value=True):
