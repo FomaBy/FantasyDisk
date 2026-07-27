@@ -903,8 +903,8 @@ static func class_action_echo_chance(character_id: String) -> float:
 # Data-driven: молитва входит в пул, только если её trait-ключ задан у класса в
 # CLASS_TRAITS (у классов без battle_prayer-ключей пул пуст — утечки нет).
 # Записи: {id, title, description, trait_key, value} — русский player-facing
-# текст для UI SCRUM-926 и численный эффект. Порядок пула = порядок UI;
-# первая запись — временный автовыбор (Player._auto_select_battle_prayer).
+# текст для обязательного UI SCRUM-926 и численный эффект. Порядок пула =
+# порядок UI.
 static func class_battle_prayers(character_id: String) -> Array:
 	var trait_config: Dictionary = CLASS_TRAITS.get(character_id, {})
 	var pool: Array = []

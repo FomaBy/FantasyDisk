@@ -620,8 +620,8 @@ const CLASS_TRAITS := {
 		# (+HP/с штатным regen-пайплайном), Player.take_damage (−входящий
 		# ПОСЛЕДНИМ множителем после поглощения/защиты — концепт «Бронекорпуса»
 		# Робота SCRUM-914, но только на текущий бой и только у Священника).
-		# ВРЕМЕННО до SCRUM-926 (UI выбора): автовыбор первой молитвы пула в
-		# Player.on_battle_start (_auto_select_battle_prayer). Budget-модель
+		# Обязательный UI SCRUM-926 завершает выбор молитвы до Player.on_battle_start.
+		# Budget-модель
 		# молитвы НЕ зеркалит: условный/выборный бафф (прецедент «Разогрева»
 		# Гитариста); сравнение веток — docs/design/class_traits_registry.md.
 		# Покрыт tests/priest_kit_test.gd.
