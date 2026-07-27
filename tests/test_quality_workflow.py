@@ -101,6 +101,38 @@ class QualityWorkflowContractTests(unittest.TestCase):
         # reads would again be guarded by nothing.
         self.assertIn('echo "GODOT_BIN=$GODOT_DIR/godot" >> "$GITHUB_ENV"', self.source)
 
+    def test_import_cache_key_contains_engine_and_asset_fingerprint(self) -> None:
+        start = self.source.index("- name: Restore Godot import cache")
+        end = self.source.index("- name: Report Godot import cache", start)
+        cache_step = self.source[start:end]
+        key_line = next(
+            line.strip()
+            for line in cache_step.splitlines()
+            if line.strip().startswith("key:")
+        )
+
+        self.assertIn("id: godot-import-cache", cache_step)
+        self.assertIn("if: github.event_name != 'push'", cache_step)
+        self.assertIn("path: .godot", cache_step)
+        self.assertIn("${{ env.GODOT_BUILD_ID }}", key_line)
+        self.assertIn("${{ hashFiles(", key_line)
+        for import_input in (
+            "'project.godot'",
+            "'export_presets.cfg'",
+            "'**/*.import'",
+            "'**/*.png'",
+            "'**/*.ogg'",
+            "'**/*.glb'",
+        ):
+            self.assertIn(import_input, key_line)
+        # A partial restore would populate `.godot/` and let the presence-based
+        # pre-pass check skip reimporting an asset whose fingerprint changed.
+        self.assertNotIn("restore-keys:", cache_step)
+        self.assertIn(
+            'godot import cache-hit: ${{ steps.godot-import-cache.outputs.cache-hit }}',
+            self.source,
+        )
+
     def test_candidate_evidence_must_show_executed_godot_suites(self) -> None:
         # The gate exits non-zero on a red suite, so the only way the old bug
         # can come back is a green run whose evidence lists no Godot test.
