@@ -1,0 +1,99 @@
+{
+  "schema_version": 1,
+  "issue": "FAN-1490",
+  "class_id": "robot",
+  "contract": {
+    "schema": "data/ultimates/presentation_schema/v1/weapon_ultimate_presentation_manifest.schema.json",
+    "phase_groups": ["windup", "release", "active", "recovery", "cancel"],
+    "max_timeline_seconds": 10.0,
+    "headless_fallback": "no_op",
+    "runtime_adapter_status": "unbound_shared_adapter_owned_by_FAN-1541"
+  },
+  "generator_provenance": {
+    "route": "reused_accepted_weapon_vfx_no_new_raster_generation",
+    "new_pixellab_assets": [],
+    "reused_sources": {
+      "robot_magnetic_anchor": {
+        "source_path": "docs/design/references/weapon_attack_animations/robot_magnetic_anchor/robot_magnetic_anchor_pixellab_source.png",
+        "runtime_path": "assets/sprites/effects/vfx_weapon_robot_magnetic_anchor.png",
+        "pixellab_source_object_id": "80184364-0712-4722-85f0-2dbcdcbe1363",
+        "source_manifest": "docs/design/references/weapon_attack_animations/robot_magnetic_anchor/manifest.json"
+      },
+      "robot_hydraulic_press": {
+        "source_path": "docs/design/references/weapon_attack_animations/robot_hydraulic_press/robot_hydraulic_press_pixellab_source.png",
+        "runtime_path": "assets/sprites/effects/vfx_weapon_robot_hydraulic_press.png",
+        "pixellab_source_object_id": "99b9c7ec-23d3-4110-a22a-912cf8b455b8",
+        "source_manifest": "docs/design/references/weapon_attack_animations/robot_hydraulic_press/manifest.json"
+      },
+      "robot_reactor_core": {
+        "source_path": "docs/design/references/weapon_attack_animations/robot_reactor_core/robot_reactor_core_pixellab_source.png",
+        "runtime_path": "assets/sprites/effects/vfx_weapon_robot_reactor_core.png",
+        "pixellab_source_object_id": "a5e165f2-6609-45f7-b099-71361a68a0d0",
+        "source_manifest": "docs/design/references/weapon_attack_animations/robot_reactor_core/manifest.json"
+      }
+    }
+  },
+  "weapons": [
+    {
+      "weapon_id": "robot_magnetic_anchor",
+      "title": "Сингулярный Якорь",
+      "scene_path": "scenes/vfx/ultimates/robot/RobotMagneticAnchorSingularity.tscn",
+      "silhouette": "black-point anchor with cyan inward debris arcs",
+      "motion_path": "concentric debris contracts into a singularity then expands as an EMP ring",
+      "impact_language": "black-point implosion followed by one cyan EMP release",
+      "timing_seconds": {"windup": 0.0, "release": 0.45, "active": 1.05, "recovery": 4.25, "cancel": 4.75},
+      "phase_ids": {
+        "windup": "weapon_ultimate.phase.robot.robot_magnetic_anchor.windup",
+        "release": "weapon_ultimate.phase.robot.robot_magnetic_anchor.execute",
+        "active": "weapon_ultimate.phase.robot.robot_magnetic_anchor.active",
+        "recovery": "weapon_ultimate.phase.robot.robot_magnetic_anchor.recover",
+        "cancel": "weapon_ultimate.phase.robot.robot_magnetic_anchor.cleanup"
+      },
+      "performance": {"max_visual_nodes": 8, "crowd_cap": 8, "runtime_enforcement_owner": "FAN-1541"}
+    },
+    {
+      "weapon_id": "robot_hydraulic_press",
+      "title": "Протокол Сжатия",
+      "scene_path": "scenes/vfx/ultimates/robot/RobotHydraulicPressProtocol.tscn",
+      "silhouette": "two colossal steel press walls and a narrow horizontal corridor",
+      "motion_path": "warning rails hold wide, press walls repeatedly crush inward, then recoil",
+      "impact_language": "opposing steel crush with sparks followed by hydraulic release",
+      "timing_seconds": {"windup": 0.0, "release": 0.72, "active": 1.32, "recovery": 3.48, "cancel": 4.05},
+      "phase_ids": {
+        "windup": "weapon_ultimate.phase.robot.robot_hydraulic_press.windup",
+        "release": "weapon_ultimate.phase.robot.robot_hydraulic_press.execute",
+        "active": "weapon_ultimate.phase.robot.robot_hydraulic_press.active",
+        "recovery": "weapon_ultimate.phase.robot.robot_hydraulic_press.recover",
+        "cancel": "weapon_ultimate.phase.robot.robot_hydraulic_press.cleanup"
+      },
+      "performance": {"max_visual_nodes": 2, "crowd_cap": 8, "runtime_enforcement_owner": "FAN-1541"}
+    },
+    {
+      "weapon_id": "robot_reactor_core",
+      "title": "Красная Зона",
+      "scene_path": "scenes/vfx/ultimates/robot/RobotReactorCoreRedZone.tscn",
+      "silhouette": "eight red-orange orbiting reactor vents around an exposed core",
+      "motion_path": "vents unfold, accelerate around the core, then lift as a cooling exhaust column",
+      "impact_language": "accelerating plasma vent wave ending in a vertical white-hot exhaust",
+      "timing_seconds": {"windup": 0.0, "release": 0.56, "active": 1.08, "recovery": 5.42, "cancel": 6.02},
+      "phase_ids": {
+        "windup": "weapon_ultimate.phase.robot.robot_reactor_core.windup",
+        "release": "weapon_ultimate.phase.robot.robot_reactor_core.execute",
+        "active": "weapon_ultimate.phase.robot.robot_reactor_core.active",
+        "recovery": "weapon_ultimate.phase.robot.robot_reactor_core.recover",
+        "cancel": "weapon_ultimate.phase.robot.robot_reactor_core.cleanup"
+      },
+      "performance": {"max_visual_nodes": 8, "crowd_cap": 8, "runtime_enforcement_owner": "FAN-1541"}
+    }
+  ],
+  "evidence": {
+    "contact_sheets": [
+      "docs/design/references/weapon_ultimates/robot/robot_ultimate_timelines_648p.png",
+      "docs/design/references/weapon_ultimates/robot/robot_ultimate_timelines_720p.png",
+      "docs/design/references/weapon_ultimates/robot/robot_ultimate_timelines_1080p.png",
+      "docs/design/references/weapon_ultimates/robot/robot_ultimate_timelines_2k.png"
+    ],
+    "capture_script": "tests/ultimates/presentation/robot_ultimate_contact_capture.gd",
+    "focused_test": "tests/ultimates/presentation/robot_ultimate_presentation_test.gd"
+  }
+}
