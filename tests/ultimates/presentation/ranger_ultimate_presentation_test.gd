@@ -8,12 +8,13 @@ const Registry := preload("res://scripts/ultimates/registry/weapon_ultimate_regi
 const Schema := preload("res://scripts/ultimates/presentation/weapon_ultimate_presentation_schema.gd")
 const Timeline := preload("res://scripts/ultimates/presentation/weapon_ultimate_presentation_timeline.gd")
 const Pack := preload("res://scenes/vfx/ultimates/ranger/ranger_ultimate_presentation_pack.gd")
+const ContactSheet := preload("res://scenes/vfx/ultimates/ranger/ranger_ultimate_contact_sheet.gd")
 const TimelineScene := preload("res://scenes/vfx/ultimates/ranger/ranger_ultimate_timeline_scene.gd")
 
 const PROFILE_PATH := "res://data/ultimates/schema/v1/classes/ranger.json"
 const MANIFEST_PATH := "res://docs/design/references/weapon_ultimates/ranger/manifest.json"
 const CONTACT_SHEET_PATH := "res://docs/design/references/weapon_ultimates/ranger/ranger_ultimate_timelines_contact_sheet.png"
-const CONTACT_SHEET_SIZE := Vector2i(3480, 552)
+const CONTACT_SHEET_SIZE := Vector2i(4680, 594)
 const SCENE_PATHS := {
 	Pack.MOON_CROSSBOW: "res://scenes/vfx/ultimates/ranger/RangerMoonCrossbowMoonHunt.tscn",
 	Pack.STORM_LONGBOW: "res://scenes/vfx/ultimates/ranger/RangerStormLongbowStormEye.tscn",
@@ -187,6 +188,14 @@ func _test_provenance_and_evidence(errors: Array[String]) -> void:
 		var source := sources.get(str(weapon_id), {}) as Dictionary
 		_expect(not str(source.get("source_path", "")).is_empty(), "%s source provenance missing" % weapon_id, errors)
 		_expect(not str(source.get("runtime_path", "")).is_empty(), "%s runtime provenance missing" % weapon_id, errors)
+	var layout := ContactSheet.layout_for_current_assets()
+	var layout_errors := layout.get("errors", []) as Array
+	_expect(layout_errors.is_empty(), "contact-sheet layout inputs must load: %s" % ", ".join(layout_errors), errors)
+	_expect(int(layout.get("sample_count", 0)) == Pack.WEAPON_IDS.size() * PHASE_ORDER.size() * ContactSheet.SAMPLES_PER_PHASE, "contact-sheet bounds must cover every weapon, phase, and sample", errors)
+	var violations := ContactSheet.layout_violations(layout)
+	_expect(violations.is_empty(), "contact-sheet element bounds must stay inside every content zone: %s" % "; ".join(violations), errors)
+	var cell: Vector2i = layout.get("cell", Vector2i.ZERO)
+	_expect(cell * Vector2i(PHASE_ORDER.size() * ContactSheet.SAMPLES_PER_PHASE, Pack.WEAPON_IDS.size()) == CONTACT_SHEET_SIZE, "contact-sheet dimensions must follow the measured layout", errors)
 	_expect(FileAccess.file_exists(CONTACT_SHEET_PATH), "contact-sheet evidence must exist", errors)
 	if FileAccess.file_exists(CONTACT_SHEET_PATH):
 		var contact := Image.load_from_file(CONTACT_SHEET_PATH)
