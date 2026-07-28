@@ -1,0 +1,113 @@
+[gd_scene load_steps=4 format=3]
+
+[ext_resource type="SpriteFrames" path="res://assets/sprites/effects/scrum895_berserk/axe_cleave_spriteframes.tres" id="1_axe"]
+
+[sub_resource type="CanvasItemMaterial" id="CanvasItemMaterial_add"]
+blend_mode = 1
+light_mode = 1
+
+[sub_resource type="Animation" id="Animation_execution_loop"]
+resource_name = "ultimate"
+length = 6.45
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("AxeGhost:position")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 0.45, 0.75, 3.05, 3.35, 5.85, 6.45),
+"transitions": PackedFloat32Array(1, 1, 1, 1, 1, 1, 1),
+"update": 0,
+"values": [Vector2(-22, -26), Vector2(0, -56), Vector2(62, -34), Vector2(410, -82), Vector2(430, 0), Vector2(24, 18), Vector2(0, 0)]
+}
+tracks/1/type = "value"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath("AxeGhost:rotation")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0, 0.45, 0.75, 3.05, 3.35, 5.85, 6.45),
+"transitions": PackedFloat32Array(1, 1, 1, 1, 1, 1, 1),
+"update": 0,
+"values": [0.4, -0.8, 1.8, 14.2, 16.0, 31.0, 31.4]
+}
+tracks/2/type = "value"
+tracks/2/imported = false
+tracks/2/enabled = true
+tracks/2/path = NodePath("AxeGhost:scale")
+tracks/2/interp = 1
+tracks/2/loop_wrap = true
+tracks/2/keys = {
+"times": PackedFloat32Array(0, 0.45, 0.75, 3.05, 3.35, 5.85, 6.45),
+"transitions": PackedFloat32Array(1, 1, 1, 1, 1, 1, 1),
+"update": 0,
+"values": [Vector2(0.42, 0.42), Vector2(0.55, 0.55), Vector2(0.72, 0.72), Vector2(1.1, 1.1), Vector2(1.14, 1.14), Vector2(0.64, 0.64), Vector2(0.3, 0.3)]
+}
+tracks/3/type = "value"
+tracks/3/imported = false
+tracks/3/enabled = true
+tracks/3/path = NodePath("ExecutionMark:modulate:a")
+tracks/3/interp = 1
+tracks/3/loop_wrap = true
+tracks/3/keys = {
+"times": PackedFloat32Array(0, 0.75, 3.1, 3.35, 5.85, 6.45),
+"transitions": PackedFloat32Array(1, 1, 1, 1, 1, 1),
+"update": 0,
+"values": [0.0, 0.0, 0.9, 0.45, 1.0, 0.0]
+}
+
+[sub_resource type="AnimationLibrary" id="AnimationLibrary_execution_loop"]
+_data = {"ultimate": SubResource("Animation_execution_loop")}
+
+[node name="BerserkAxeExecutionLoop" type="Node2D"]
+metadata/ultimate_id = "berserk/axe"
+metadata/silhouette = "single_giant_spinning_execution_axe"
+metadata/motion_path = "aimed_outward_arc_to_arena_edge_then_heavy_return"
+metadata/impact_language = "rune_mark_then_return_detonation"
+metadata/max_visual_nodes = 5
+metadata/crowd_cap = 18
+
+[node name="AimArc" type="Line2D" parent="."]
+material = SubResource("CanvasItemMaterial_add")
+points = PackedVector2Array(0, 0, 64, -40, 144, -62, 240, -78, 332, -72, 430, 0)
+width = 7.0
+default_color = Color(0.86, 0.16, 0.06, 0.58)
+antialiased = true
+
+[node name="RuneChain" type="Line2D" parent="."]
+material = SubResource("CanvasItemMaterial_add")
+points = PackedVector2Array(0, 0, 44, -12, 94, -26, 154, -36, 222, -42, 298, -36, 370, -18, 430, 0)
+width = 3.0
+default_color = Color(1, 0.5, 0.12, 0.86)
+antialiased = true
+
+[node name="AxeGhost" type="AnimatedSprite2D" parent="."]
+material = SubResource("CanvasItemMaterial_add")
+sprite_frames = ExtResource("1_axe")
+animation = &"cleave"
+frame = 3
+position = Vector2(-22, -26)
+rotation = 0.4
+scale = Vector2(0.42, 0.42)
+modulate = Color(1, 0.67, 0.32, 0.96)
+
+[node name="ExecutionMark" type="Line2D" parent="."]
+material = SubResource("CanvasItemMaterial_add")
+points = PackedVector2Array(404, -44, 430, -76, 456, -44, 430, -12, 404, -44, 456, -44)
+width = 8.0
+default_color = Color(1, 0.1, 0.04, 0.94)
+antialiased = true
+modulate = Color(1, 1, 1, 0)
+
+[node name="ReturnTrail" type="Line2D" parent="."]
+material = SubResource("CanvasItemMaterial_add")
+points = PackedVector2Array(430, 0, 342, 22, 250, 28, 162, 26, 74, 18, 0, 0)
+width = 11.0
+default_color = Color(0.55, 0.03, 0.02, 0.42)
+antialiased = true
+
+[node name="Timeline" type="AnimationPlayer" parent="."]
+libraries = {"": SubResource("AnimationLibrary_execution_loop")}
+autoplay = "ultimate"
