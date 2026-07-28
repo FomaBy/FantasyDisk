@@ -1,0 +1,138 @@
+{
+  "schema_version": 1,
+  "issue": "FAN-1482",
+  "class_id": "chemist",
+  "contract": {
+    "schema": "data/ultimates/presentation_schema/v1/weapon_ultimate_presentation_manifest.schema.json",
+    "profile_source": "data/ultimates/schema/v1/classes/chemist.json",
+    "phase_groups": ["windup", "release", "active", "recovery", "cancel"],
+    "max_timeline_seconds": 10.0,
+    "headless_fallback": "no_op",
+    "runtime_adapter_status": "unbound_shared_adapter_owned_by_FAN-1541",
+    "mechanics_status": "damage, taunt, armor dissolve, charges, and ownership remain owned by FAN-1483; this package binds frozen phase IDs only"
+  },
+  "generator_provenance": {
+    "route": "reused_approved_assets_no_new_raster_generation",
+    "pixellab_usage": "not_required_no_new_source_frames",
+    "new_pixellab_assets": [],
+    "reused_sources": {
+      "blast_powder": {
+        "source_path": "assets/sprites/effects/vfx_weapon_blast_powder.png",
+        "runtime_scene": "scenes/vfx/ultimates/chemist/ChemistBlastPowderPhilosophersExplosion.tscn",
+        "note": "Accepted Chemist powder VFX is reused for the five-charge pentagram and transmutation blast."
+      },
+      "acid_flask": {
+        "source_path": "assets/sprites/effects/vfx_weapon_acid_flask.png",
+        "runtime_scene": "scenes/vfx/ultimates/chemist/ChemistAcidFlaskTsarFlask.tscn",
+        "note": "Accepted Chemist acid-flask VFX is reused for the giant cracked flask; lake and pillars are native vector VFX."
+      },
+      "homunculus_vial": {
+        "source_path": "assets/sprites/allies/ally_homunculus.png",
+        "runtime_scene": "scenes/vfx/ultimates/chemist/ChemistHomunculusVialPerfectHomunculus.tscn",
+        "note": "Accepted homunculus, tank, and caster sprites are reused for the fusion/split presentation."
+      }
+    }
+  },
+  "weapons": [
+    {
+      "weapon_id": "blast_powder",
+      "title": "Философский Взрыв",
+      "scene_path": "scenes/vfx/ultimates/chemist/ChemistBlastPowderPhilosophersExplosion.tscn",
+      "silhouette": "five multicolor alchemical charges around a pentagram",
+      "motion_path": "five charges ignite, rotate into a pentagram, then pull inward",
+      "timing_rhythm": "quick five-beat ignition, sharp crystal contraction, then one bright outward release",
+      "impact_language": "crystal implosion becomes one gold-white transmutation blast",
+      "timing_seconds": {
+        "windup": 0.0,
+        "release": 0.5,
+        "active": 1.3,
+        "recovery": 2.2,
+        "cancel": 3.4
+      },
+      "phase_ids": {
+        "windup": "weapon_ultimate.phase.chemist.blast_powder.windup",
+        "release": "weapon_ultimate.phase.chemist.blast_powder.execute",
+        "active": "weapon_ultimate.phase.chemist.blast_powder.active",
+        "recovery": "weapon_ultimate.phase.chemist.blast_powder.recover",
+        "cancel": "weapon_ultimate.phase.chemist.blast_powder.cleanup"
+      },
+      "pivot": [0.5, 0.5],
+      "performance": {
+        "max_visual_nodes": 9,
+        "crowd_cap": 18,
+        "crowd_budget_enforcement_owner": "runtime enforcement FAN-1541",
+        "mechanics_owner": "FAN-1483: normal pull/crystallize and finite transmutation damage"
+      }
+    },
+    {
+      "weapon_id": "acid_flask",
+      "title": "Царь-Колба",
+      "scene_path": "scenes/vfx/ultimates/chemist/ChemistAcidFlaskTsarFlask.tscn",
+      "silhouette": "one colossal cracked flask flooding an irregular green acid lake",
+      "motion_path": "flask tip pours forward, a wave expands outward, then pillars bubble from the lake",
+      "timing_rhythm": "heavy flask reveal, broad flood, sustained bubbling pillars, then a slow evaporation",
+      "impact_language": "corrosive flood, capped charge pillars, and evaporation smoke",
+      "timing_seconds": {
+        "windup": 0.0,
+        "release": 0.75,
+        "active": 1.6,
+        "recovery": 3.7,
+        "cancel": 4.8
+      },
+      "phase_ids": {
+        "windup": "weapon_ultimate.phase.chemist.acid_flask.windup",
+        "release": "weapon_ultimate.phase.chemist.acid_flask.execute",
+        "active": "weapon_ultimate.phase.chemist.acid_flask.active",
+        "recovery": "weapon_ultimate.phase.chemist.acid_flask.recover",
+        "cancel": "weapon_ultimate.phase.chemist.acid_flask.cleanup"
+      },
+      "pivot": [0.5, 0.58],
+      "performance": {
+        "max_visual_nodes": 9,
+        "crowd_cap": 16,
+        "crowd_budget_enforcement_owner": "runtime enforcement FAN-1541",
+        "mechanics_owner": "FAN-1483: permanent charge cap, armor dissolve, and encounter-bound lake lifetime"
+      }
+    },
+    {
+      "weapon_id": "homunculus_vial",
+      "title": "Совершенный Гомункул",
+      "scene_path": "scenes/vfx/ultimates/chemist/ChemistHomunculusVialPerfectHomunculus.tscn",
+      "silhouette": "tank and caster fuse into one towering emerald homunculus",
+      "motion_path": "two allies converge through a circle, giant avatar stomps, then both split back out",
+      "timing_rhythm": "measured convergence, a long avatar action hold with beats, then a clean split",
+      "impact_language": "taunt halo, broad stomp rings, and toxic cascade waves",
+      "timing_seconds": {
+        "windup": 0.0,
+        "release": 0.9,
+        "active": 1.7,
+        "recovery": 4.2,
+        "cancel": 5.4
+      },
+      "phase_ids": {
+        "windup": "weapon_ultimate.phase.chemist.homunculus_vial.windup",
+        "release": "weapon_ultimate.phase.chemist.homunculus_vial.execute",
+        "active": "weapon_ultimate.phase.chemist.homunculus_vial.active",
+        "recovery": "weapon_ultimate.phase.chemist.homunculus_vial.recover",
+        "cancel": "weapon_ultimate.phase.chemist.homunculus_vial.cleanup"
+      },
+      "pivot": [0.5, 0.62],
+      "performance": {
+        "max_visual_nodes": 8,
+        "crowd_cap": 14,
+        "crowd_budget_enforcement_owner": "runtime enforcement FAN-1541",
+        "mechanics_owner": "FAN-1483: taunt, stomp/cascade effects, and safe original-pair ownership restoration"
+      }
+    }
+  ],
+  "evidence": {
+    "contact_sheets": [
+      "docs/design/references/weapon_ultimates/chemist/chemist_ultimate_timelines_648p.png",
+      "docs/design/references/weapon_ultimates/chemist/chemist_ultimate_timelines_720p.png",
+      "docs/design/references/weapon_ultimates/chemist/chemist_ultimate_timelines_1080p.png",
+      "docs/design/references/weapon_ultimates/chemist/chemist_ultimate_timelines_2k.png"
+    ],
+    "capture_script": "tests/ultimates/presentation/chemist_ultimate_contact_capture.gd",
+    "focused_test": "tests/ultimates/presentation/chemist_ultimate_timelines.gd"
+  }
+}
