@@ -21,6 +21,12 @@ extends SceneTree
 ##
 ## Запуск: Godot --headless --path . --script res://tools/character_balance_csv.gd
 ## Вывод: build/character_balance_dps.csv (+ _README.md с методикой).
+##
+## `--mode=band` (FAN-1785) ничего не меряет: читает уже зафиксированный
+## build/character_balance_dps.csv и пересобирает по нему только
+## build/character_balance_band.md. Сам CSV в этом режиме не перезаписывается —
+## полоса является функцией CSV и comfort-весов, поэтому её можно привести в
+## соответствие с эталоном, не трогая эталон.
 
 const ProgressionData := preload("res://scripts/progression_data.gd")
 const StatFormulas := preload("res://scripts/stat_formulas.gd")
@@ -49,6 +55,19 @@ const LIVE_FIXED_DELTA := 1.0 / float(DETERMINISTIC_MAX_FPS)
 const LIVE_DELTA_TOLERANCE := 0.00001
 # SCRUM-544: срезы, по которым гейтится comfort-нормированная полоса (lvl20-оптимум).
 const BAND_SLICES := ["ideal_1", "ideal_5", "ideal_20"]
+# FAN-1785: колонки CSV → ключи строки, которыми оперируют _validate_rows/_validate_band.
+const CSV_IDENTITY_COLUMNS := ["class", "weapon", "archetype"]
+const CSV_METRIC_COLUMNS := {
+	"lvl1_1t": "lvl1_1",
+	"lvl1_5t": "lvl1_5",
+	"lvl1_20t": "lvl1_20",
+	"lvl20_ideal_1t": "ideal_1",
+	"lvl20_ideal_5t": "ideal_5",
+	"lvl20_ideal_20t": "ideal_20",
+	"lvl20_random_1t": "random_1",
+	"lvl20_random_5t": "random_5",
+	"lvl20_random_20t": "random_20",
+}
 
 var _holder: Node2D
 var _fatal_errors: Array = []
@@ -70,8 +89,8 @@ func _parse_cli_args() -> void:
 				or text.begins_with("--mode=") \
 				or text.begins_with("--offset=") or text.begins_with("--limit=") or text == "--allow-zero-output":
 			_parse_cli_arg(text)
-	if not ["fast", "live"].has(_mode):
-		_fatal_errors.append("unsupported CSV mode '%s' (expected fast or live)" % _mode)
+	if not ["fast", "live", "band"].has(_mode):
+		_fatal_errors.append("unsupported CSV mode '%s' (expected fast, live or band)" % _mode)
 	if not _filter_classes.is_empty() or not _filter_weapons.is_empty() or not _filter_pairs.is_empty() \
 			or _row_offset > 0 or _row_limit >= 0 or _mode != "fast":
 		print("CSV mode=%s subset: classes=%s weapons=%s pairs=%s offset=%d limit=%d" % [
@@ -156,6 +175,22 @@ func _initialize() -> void:
 		_write_csv(rows)
 		_write_readme(rows)
 		_validate_band(rows)
+		quit(0)
+		return
+	if _mode == "band":
+		# Полоса — функция уже зафиксированного CSV и comfort-весов, поэтому
+		# пересобираем её чтением эталона: ни _write_csv, ни _write_readme.
+		var loaded := _read_csv_rows()
+		var csv_rows: Array = loaded["rows"]
+		_validate_rows(csv_rows, int(loaded["selected_count"]))
+		if not _fatal_errors.is_empty():
+			for error in _fatal_errors:
+				push_error("Character balance CSV: %s" % error)
+			push_error("Character balance CSV FAILED before writing reports (%d errors)." % _fatal_errors.size())
+			quit(1)
+			return
+		print("Band source: %s (строк %d, CSV только читается)" % [CSV_PATH, csv_rows.size()])
+		_validate_band(csv_rows)
 		quit(0)
 		return
 	# The live probe advances production _process callbacks. The launcher also
@@ -683,6 +718,61 @@ func _spawn_dummies(player_pos: Vector2, target_count: int) -> Array:
 
 # --- SCRUM-544: детерминированная валидация comfort-нормированной полосы -------
 
+# FAN-1785: читает git-tracked CSV и собирает те же строки, что отдают замеры
+# fast/live. Только чтение — режим band пересобирает полосу под зафиксированный
+# эталон, а не пересобирает эталон. Subset-флаги действуют так же, как в замерах.
+func _read_csv_rows() -> Dictionary:
+	var result := {"rows": [], "selected_count": 0}
+	var file := FileAccess.open(CSV_PATH, FileAccess.READ)
+	if file == null:
+		_fatal_errors.append("не удалось прочитать %s (ошибка %d)" % [CSV_PATH, FileAccess.get_open_error()])
+		return result
+	var lines: PackedStringArray = file.get_as_text().split("\n", false)
+	file.close()
+	if lines.size() < 2:
+		_fatal_errors.append("%s: нет строк данных" % CSV_PATH)
+		return result
+	var header: Array = []
+	for column in str(lines[0]).split(","):
+		header.append(str(column).strip_edges())
+	for column in CSV_IDENTITY_COLUMNS + CSV_METRIC_COLUMNS.keys():
+		if not header.has(str(column)):
+			_fatal_errors.append("%s: нет колонки '%s'" % [CSV_PATH, column])
+	if not _fatal_errors.is_empty():
+		return result
+	var rows: Array = []
+	var pair_index := 0
+	var selected_count := 0
+	for line_index in range(1, lines.size()):
+		var fields: PackedStringArray = str(lines[line_index]).split(",")
+		if fields.size() != header.size():
+			_fatal_errors.append("%s строка %d: колонок %d, ожидалось %d" % [
+				CSV_PATH, line_index + 1, fields.size(), header.size()])
+			continue
+		var values := {}
+		for index in range(header.size()):
+			values[str(header[index])] = str(fields[index]).strip_edges()
+		var cid := str(values["class"])
+		var wid := str(values["weapon"])
+		if not _pair_selected(cid, wid, pair_index):
+			pair_index += 1
+			continue
+		selected_count += 1
+		var row := {"class": cid, "weapon": wid, "archetype": str(values["archetype"])}
+		for column in CSV_METRIC_COLUMNS.keys():
+			var text := str(values[column])
+			if not text.is_valid_float():
+				_fatal_errors.append("%s строка %d: '%s' в колонке %s — не число" % [
+					CSV_PATH, line_index + 1, text, column])
+				continue
+			row[str(CSV_METRIC_COLUMNS[column])] = float(text)
+		rows.append(row)
+		pair_index += 1
+	result["rows"] = rows
+	result["selected_count"] = selected_count
+	return result
+
+
 # Для каждого среза (1t/5t/20t на lvl20_ideal) считает comfort-нормированный DPS
 # каждого оружия (= measured / comfort_weight), медиану по всем оружиям и проверяет,
 # что max/min лежат в [1-tol, 1+tol] от медианы (acceptance ±20%). Печатает сводку
@@ -836,4 +926,5 @@ func _readme_output_path() -> String:
 
 
 func _band_report_path() -> String:
-	return BAND_REPORT_PATH if _mode == "fast" else "%s/character_balance_band.md" % LIVE_OUTPUT_DIR
+	# fast и band пишут tracked-полосу; изолированный вывод есть только у live.
+	return "%s/character_balance_band.md" % LIVE_OUTPUT_DIR if _mode == "live" else BAND_REPORT_PATH
