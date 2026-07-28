@@ -1,0 +1,7 @@
+[gd_scene load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://scenes/vfx/ultimates/doctor/doctor_ultimate_timeline_scene.gd" id="1_script"]
+
+[node name="DoctorRestorePotionElixir" type="Node2D"]
+script = ExtResource("1_script")
+weapon_id = "restore_potion"
