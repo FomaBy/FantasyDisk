@@ -1,45 +1,14 @@
 extends SceneTree
 
-const OUTPUT_DIR := "res://docs/design/references/weapon_ultimates/berserk"
-const PACKS := [
-
-	{
-		"scene": preload("res://scenes/vfx/ultimates/berserk/BerserkSwordScarletWhirlwind.tscn"),
-		"time": 7.48,
-		"title": "SWORD — SCARLET WHIRLWIND / inward cross-slash",
-		"position": Vector2(0.18, 0.54),
-		"color": Color(1.0, 0.32, 0.34),
-	},
-	{
-		"scene": preload("res://scenes/vfx/ultimates/berserk/BerserkAxeExecutionLoop.tscn"),
-		"time": 3.18,
-		"title": "AXE — EXECUTION LOOP / boundary turn",
-		"position": Vector2(0.5, 0.54),
-		"color": Color(1.0, 0.56, 0.20),
-	},
-	{
-		"scene": preload("res://scenes/vfx/ultimates/berserk/BerserkHammerFourfoldRift.tscn"),
-		"time": 2.76,
-		"title": "HAMMER — FOURFOLD RIFT / central quake",
-		"position": Vector2(0.82, 0.54),
-		"color": Color(1.0, 0.82, 0.40),
-	},
-]
-
-const CAPTURES := [
-	{"name": "648p", "size": Vector2i(1152, 648)},
-	{"name": "720p", "size": Vector2i(1280, 720)},
-	{"name": "1080p", "size": Vector2i(1920, 1080)},
-	{"name": "2k", "size": Vector2i(2560, 1440)},
-]
+const CAPTURE_SPEC := preload("res://tests/ultimates/presentation/berserk_ultimate_timelines.gd")
 
 
 func _initialize() -> void:
 	if DisplayServer.get_name() == "headless":
-		push_error("Berserk ultimate contact capture requires a rendering display server.")
-		quit(1)
+		print("FAN-1809 Berserk ultimate contact capture skipped (headless); run windowed for PNGs.")
+		quit(0)
 		return
-	for capture in CAPTURES:
+	for capture in CAPTURE_SPEC.CAPTURES:
 		var spec := capture as Dictionary
 		var viewport := SubViewport.new()
 		viewport.size = spec["size"]
@@ -51,7 +20,7 @@ func _initialize() -> void:
 		viewport.add_child(host)
 		await process_frame
 		await RenderingServer.frame_post_draw
-		var output := "%s/berserk_ultimate_timelines_%s.png" % [OUTPUT_DIR, str(spec["name"])]
+		var output := str(spec["path"])
 		var error := viewport.get_texture().get_image().save_png(ProjectSettings.globalize_path(output))
 		viewport.queue_free()
 		await process_frame
@@ -76,31 +45,28 @@ func _make_sheet(size: Vector2i) -> Node2D:
 	title.add_theme_font_size_override("font_size", maxi(18, int(size.y * 0.036)))
 	title.add_theme_color_override("font_color", Color(0.97, 0.86, 0.68))
 	host.add_child(title)
-	for raw_pack in PACKS:
+	for raw_pack in CAPTURE_SPEC.PACKS:
 		var pack := raw_pack as Dictionary
-		var center := Vector2(size) * (pack["position"] as Vector2)
+		var center := CAPTURE_SPEC.panel_center(size, pack)
+		var panel_rect := CAPTURE_SPEC.panel_rect(size, pack)
 		var panel := Polygon2D.new()
 		panel.polygon = PackedVector2Array([
-			center + Vector2(-size.x * 0.145, -size.y * 0.30),
-			center + Vector2(size.x * 0.145, -size.y * 0.30),
-			center + Vector2(size.x * 0.145, size.y * 0.30),
-			center + Vector2(-size.x * 0.145, size.y * 0.30),
+			panel_rect.position,
+			Vector2(panel_rect.end.x, panel_rect.position.y),
+			panel_rect.end,
+			Vector2(panel_rect.position.x, panel_rect.end.y),
 		])
 		panel.color = Color(0.09, 0.06, 0.11, 0.96)
 		panel.z_index = -10
 		host.add_child(panel)
 		var label := Label.new()
 		label.text = str(pack["title"])
-		label.position = center + Vector2(-size.x * 0.14, size.y * 0.25)
+		label.position = center + Vector2(-size.x * 0.14, size.y * CAPTURE_SPEC.PANEL_LABEL_Y_RATIO)
 		label.add_theme_font_size_override("font_size", maxi(12, int(size.y * 0.021)))
 		label.add_theme_color_override("font_color", pack["color"] as Color)
 		host.add_child(label)
 		var scene := (pack["scene"] as PackedScene).instantiate() as Node2D
-		scene.position = center
-		scene.scale = Vector2.ONE * clampf(float(size.y) / 1040.0, 0.54, 1.28)
 		host.add_child(scene)
-		var timeline := scene.get_node("Timeline") as AnimationPlayer
-		timeline.stop()
-		timeline.play(&"ultimate")
-		timeline.seek(float(pack["time"]), true)
+		CAPTURE_SPEC.seek_capture_frame(scene, pack)
+		CAPTURE_SPEC.layout_capture_scene(scene, size, pack)
 	return host

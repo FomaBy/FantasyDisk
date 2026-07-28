@@ -66,6 +66,7 @@
       "performance": {
         "max_visual_nodes": 6,
         "crowd_cap": 24,
+        "crowd_budget_enforcement_owner": "runtime enforcement FAN-1541",
         "per_blade_hit_cooldown_owner": "mechanics FAN-1462"
       }
     },
@@ -93,6 +94,7 @@
       "performance": {
         "max_visual_nodes": 5,
         "crowd_cap": 18,
+        "crowd_budget_enforcement_owner": "runtime enforcement FAN-1541",
         "boss_double_pass_cap_owner": "mechanics FAN-1462"
       }
     },
@@ -120,6 +122,7 @@
       "performance": {
         "max_visual_nodes": 6,
         "crowd_cap": 20,
+        "crowd_budget_enforcement_owner": "runtime enforcement FAN-1541",
         "stagger_launch_displacement_owner": "mechanics FAN-1462"
       }
     }

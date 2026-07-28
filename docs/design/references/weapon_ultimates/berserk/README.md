@@ -28,6 +28,9 @@ must call `WeaponUltimatePresentationTimeline.set_paused()` plus
 `finish("cancel"|"death"|"node_end")` for lifecycle cleanup.
 
 The four contact sheets are rendered from the actual local scenes at 648p,
-720p, 1080p, and 2K. The focused test validates their existence, phase bindings,
-timing, distinction, scene animation length, asset provenance, and per-effect
-crowd budgets.
+720p, 1080p, and 2K. Action-following framing fits every visible silhouette and
+impact mark inside its own labeled panel. The focused headless test shares the
+capture timestamps and panel geometry, and validates composition in addition to
+existence, phase bindings, timing, distinction, scene animation length, asset
+provenance, and per-effect crowd budgets. Runtime enforcement of those budgets
+is owned by FAN-1541.

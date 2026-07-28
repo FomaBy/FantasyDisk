@@ -8,12 +8,46 @@ const SCENES := {
 	"axe": preload("res://scenes/vfx/ultimates/berserk/BerserkAxeExecutionLoop.tscn"),
 	"hammer": preload("res://scenes/vfx/ultimates/berserk/BerserkHammerFourfoldRift.tscn"),
 }
-const CAPTURES := [
-	{"path": "res://docs/design/references/weapon_ultimates/berserk/berserk_ultimate_timelines_648p.png", "size": Vector2i(1152, 648)},
-	{"path": "res://docs/design/references/weapon_ultimates/berserk/berserk_ultimate_timelines_720p.png", "size": Vector2i(1280, 720)},
-	{"path": "res://docs/design/references/weapon_ultimates/berserk/berserk_ultimate_timelines_1080p.png", "size": Vector2i(1920, 1080)},
-	{"path": "res://docs/design/references/weapon_ultimates/berserk/berserk_ultimate_timelines_2k.png", "size": Vector2i(2560, 1440)},
+const PACKS := [
+	{
+		"weapon_id": "sword",
+		"scene": preload("res://scenes/vfx/ultimates/berserk/BerserkSwordScarletWhirlwind.tscn"),
+		"time": 7.48,
+		"title": "SWORD — SCARLET WHIRLWIND / inward cross-slash",
+		"position": Vector2(0.18, 0.54),
+		"color": Color(1.0, 0.32, 0.34),
+		"required_nodes": ["BladeGhostOne", "BladeGhostTwo", "BladeGhostThree", "CrossSlash"],
+	},
+	{
+		"weapon_id": "axe",
+		"scene": preload("res://scenes/vfx/ultimates/berserk/BerserkAxeExecutionLoop.tscn"),
+		"time": 3.18,
+		"title": "AXE — EXECUTION LOOP / boundary turn",
+		"position": Vector2(0.5, 0.54),
+		"color": Color(1.0, 0.56, 0.20),
+		"required_nodes": ["AxeGhost", "ExecutionMark"],
+	},
+	{
+		"weapon_id": "hammer",
+		"scene": preload("res://scenes/vfx/ultimates/berserk/BerserkHammerFourfoldRift.tscn"),
+		"time": 2.76,
+		"title": "HAMMER — FOURFOLD RIFT / central quake",
+		"position": Vector2(0.82, 0.54),
+		"color": Color(1.0, 0.82, 0.40),
+		"required_nodes": ["HammerGhost", "CentralQuake"],
+	},
 ]
+const CAPTURES := [
+	{"name": "648p", "path": "res://docs/design/references/weapon_ultimates/berserk/berserk_ultimate_timelines_648p.png", "size": Vector2i(1152, 648)},
+	{"name": "720p", "path": "res://docs/design/references/weapon_ultimates/berserk/berserk_ultimate_timelines_720p.png", "size": Vector2i(1280, 720)},
+	{"name": "1080p", "path": "res://docs/design/references/weapon_ultimates/berserk/berserk_ultimate_timelines_1080p.png", "size": Vector2i(1920, 1080)},
+	{"name": "2k", "path": "res://docs/design/references/weapon_ultimates/berserk/berserk_ultimate_timelines_2k.png", "size": Vector2i(2560, 1440)},
+]
+const PANEL_HALF_WIDTH_RATIO := 0.145
+const PANEL_HALF_HEIGHT_RATIO := 0.30
+const PANEL_LABEL_Y_RATIO := 0.25
+const PANEL_CONTENT_MARGIN_RATIO := 0.03
+const CAPTURE_ALPHA_EPSILON := 0.01
 const REQUIRED_PHASES := ["windup", "release", "active", "recovery", "cancel"]
 const MAX_TIMELINE_SECONDS := 10.0
 
@@ -42,6 +76,7 @@ func _initialize() -> void:
 	for weapon_id in ["sword", "axe", "hammer"]:
 		_check_package(weapon_id, profiles.get(weapon_id, {}) as Dictionary, packages.get(weapon_id, {}) as Dictionary, errors)
 	_check_distinction(packages, errors)
+	_check_capture_composition(errors)
 	_check_capture_evidence(errors)
 	if not errors.is_empty():
 		_finish(errors)
@@ -141,6 +176,34 @@ func _check_distinction(packages: Dictionary, errors: Array[String]) -> void:
 		_expect(values.size() == 3 and not values.has(""), "all three weapons must have different %s values" % field, errors)
 
 
+func _check_capture_composition(errors: Array[String]) -> void:
+	for raw_capture in CAPTURES:
+		var capture := raw_capture as Dictionary
+		var size := capture.get("size", Vector2i.ZERO) as Vector2i
+		for raw_pack in PACKS:
+			var pack := raw_pack as Dictionary
+			var scene := (pack["scene"] as PackedScene).instantiate() as Node2D
+			root.add_child(scene)
+			seek_capture_frame(scene, pack)
+			var bounds := layout_capture_scene(scene, size, pack)
+			var content_zone := panel_content_rect(size, pack)
+			var context := "%s %s" % [str(capture.get("name", "")), str(pack.get("weapon_id", ""))]
+			_expect(bounds.has_area(), "%s capture must expose visible content bounds" % context, errors)
+			_expect(content_zone.grow(0.5).encloses(bounds), "%s capture content %s must stay inside panel content zone %s" % [context, bounds, content_zone], errors)
+			for raw_node_path in pack.get("required_nodes", []) as Array:
+				var node_path := str(raw_node_path)
+				var item := scene.get_node_or_null(node_path) as CanvasItem
+				_expect(item != null, "%s required capture node missing: %s" % [context, node_path], errors)
+				if item == null:
+					continue
+				_expect(is_capture_item_visible(item, scene), "%s required capture node must be visible: %s" % [context, node_path], errors)
+				var item_bounds := capture_item_bounds(scene, item)
+				var placed_item_bounds := transformed_capture_bounds(item_bounds, scene)
+				_expect(placed_item_bounds.has_area(), "%s required capture node must have bounds: %s" % [context, node_path], errors)
+				_expect(content_zone.grow(0.5).encloses(placed_item_bounds), "%s %s bounds %s must stay inside panel content zone %s" % [context, node_path, placed_item_bounds, content_zone], errors)
+			scene.queue_free()
+
+
 func _check_capture_evidence(errors: Array[String]) -> void:
 	for raw_capture in CAPTURES:
 		var capture := raw_capture as Dictionary
@@ -152,6 +215,143 @@ func _check_capture_evidence(errors: Array[String]) -> void:
 		_expect(image != null and not image.is_empty(), "contact evidence must decode: %s" % path, errors)
 		if image != null:
 			_expect(image.get_size() == capture.get("size", Vector2i.ZERO), "contact evidence resolution mismatch: %s" % path, errors)
+
+
+static func panel_center(size: Vector2i, pack: Dictionary) -> Vector2:
+	return Vector2(size) * (pack["position"] as Vector2)
+
+
+static func panel_rect(size: Vector2i, pack: Dictionary) -> Rect2:
+	var center := panel_center(size, pack)
+	var half_size := Vector2(float(size.x) * PANEL_HALF_WIDTH_RATIO, float(size.y) * PANEL_HALF_HEIGHT_RATIO)
+	return Rect2(center - half_size, half_size * 2.0)
+
+
+static func panel_content_rect(size: Vector2i, pack: Dictionary) -> Rect2:
+	var panel := panel_rect(size, pack)
+	var center := panel_center(size, pack)
+	var margin := float(size.y) * PANEL_CONTENT_MARGIN_RATIO
+	var content_position := panel.position + Vector2.ONE * margin
+	var label_y := center.y + float(size.y) * PANEL_LABEL_Y_RATIO
+	return Rect2(content_position, Vector2(panel.size.x - margin * 2.0, label_y - margin - content_position.y))
+
+
+static func seek_capture_frame(scene: Node2D, pack: Dictionary) -> void:
+	var timeline := scene.get_node("Timeline") as AnimationPlayer
+	timeline.stop()
+	timeline.play(&"ultimate")
+	timeline.seek(float(pack["time"]), true)
+
+
+static func layout_capture_scene(scene: Node2D, size: Vector2i, pack: Dictionary) -> Rect2:
+	scene.position = Vector2.ZERO
+	scene.scale = Vector2.ONE
+	var bounds := capture_content_bounds(scene)
+	if not bounds.has_area():
+		return Rect2()
+	var content_zone := panel_content_rect(size, pack)
+	var base_scale := clampf(float(size.y) / 1040.0, 0.54, 1.28)
+	var fit_scale := minf(content_zone.size.x / bounds.size.x, content_zone.size.y / bounds.size.y)
+	var scale := minf(base_scale, fit_scale)
+	scene.scale = Vector2.ONE * scale
+	scene.position = content_zone.get_center() - bounds.get_center() * scale
+	return transformed_capture_bounds(bounds, scene)
+
+
+static func capture_content_bounds(scene: Node2D) -> Rect2:
+	var bounds := Rect2()
+	var found := false
+	var pending: Array[Node] = [scene]
+	while not pending.is_empty():
+		var node: Node = pending.pop_back()
+		for child in node.get_children():
+			pending.append(child)
+			if not child is CanvasItem:
+				continue
+			var item := child as CanvasItem
+			if not is_capture_item_visible(item, scene):
+				continue
+			var item_bounds := capture_item_bounds(scene, item)
+			if not item_bounds.has_area():
+				continue
+			bounds = item_bounds if not found else bounds.merge(item_bounds)
+			found = true
+	return bounds
+
+
+static func capture_item_bounds(scene: Node2D, item: CanvasItem) -> Rect2:
+	var local_rect := _capture_item_local_rect(item)
+	if not local_rect.has_area():
+		return Rect2()
+	var transform := _transform_to_scene(scene, item)
+	var corners := PackedVector2Array([
+		transform * local_rect.position,
+		transform * Vector2(local_rect.end.x, local_rect.position.y),
+		transform * local_rect.end,
+		transform * Vector2(local_rect.position.x, local_rect.end.y),
+	])
+	return _rect_from_points(corners)
+
+
+static func transformed_capture_bounds(bounds: Rect2, scene: Node2D) -> Rect2:
+	if not bounds.has_area():
+		return Rect2()
+	return Rect2(scene.position + bounds.position * scene.scale, bounds.size * scene.scale)
+
+
+static func is_capture_item_visible(item: CanvasItem, scene: Node2D) -> bool:
+	var cursor: Node = item
+	while cursor != null and cursor != scene:
+		if cursor is CanvasItem:
+			var canvas_item := cursor as CanvasItem
+			if not canvas_item.visible or canvas_item.modulate.a * canvas_item.self_modulate.a <= CAPTURE_ALPHA_EPSILON:
+				return false
+		cursor = cursor.get_parent()
+	if item is Polygon2D and (item as Polygon2D).color.a <= CAPTURE_ALPHA_EPSILON:
+		return false
+	if item is Line2D and (item as Line2D).default_color.a <= CAPTURE_ALPHA_EPSILON:
+		return false
+	return true
+
+
+static func _capture_item_local_rect(item: CanvasItem) -> Rect2:
+	if item is Sprite2D:
+		return (item as Sprite2D).get_rect()
+	if item is AnimatedSprite2D:
+		var sprite := item as AnimatedSprite2D
+		var texture := sprite.sprite_frames.get_frame_texture(sprite.animation, sprite.frame)
+		if texture == null:
+			return Rect2()
+		var size := texture.get_size()
+		var position := sprite.offset - size * 0.5 if sprite.centered else sprite.offset
+		return Rect2(position, size)
+	if item is Line2D:
+		var line := item as Line2D
+		return _rect_from_points(line.points).grow(line.width * 0.5)
+	if item is Polygon2D:
+		return _rect_from_points((item as Polygon2D).polygon)
+	return Rect2()
+
+
+static func _transform_to_scene(scene: Node2D, item: CanvasItem) -> Transform2D:
+	var transform := Transform2D.IDENTITY
+	var cursor: Node = item
+	while cursor != null and cursor != scene:
+		if cursor is Node2D:
+			transform = (cursor as Node2D).transform * transform
+		cursor = cursor.get_parent()
+	return transform
+
+
+static func _rect_from_points(points: PackedVector2Array) -> Rect2:
+	if points.is_empty():
+		return Rect2()
+	var min_point := points[0]
+	var max_point := points[0]
+	for point in points:
+		min_point = min_point.min(point)
+		max_point = max_point.max(point)
+	return Rect2(min_point, max_point - min_point)
 
 
 func _profiles_by_weapon(root_data: Dictionary) -> Dictionary:
