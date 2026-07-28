@@ -57,6 +57,7 @@ const SHEET_TEXT_MARGIN := 8.0
 const CAPTURE_ALPHA_EPSILON := 0.01
 const REQUIRED_PHASES := ["windup", "release", "active", "recovery", "cancel"]
 const MAX_TIMELINE_SECONDS := 10.0
+const MIN_RHYTHM_DELTA_SECONDS := 0.1
 
 
 class HandleProbe extends RefCounted:
@@ -178,6 +179,18 @@ func _check_distinction(packages: Dictionary, errors: Array[String]) -> void:
 		for weapon_id in WEAPON_IDS:
 			values[str((packages.get(weapon_id, {}) as Dictionary).get(field, ""))] = true
 		_expect(values.size() == 3 and not values.has(""), "all three weapons must have different %s values" % field, errors)
+	for first_index in range(WEAPON_IDS.size() - 1):
+		var first_weapon_id := str(WEAPON_IDS[first_index])
+		var first_timing := ((packages.get(first_weapon_id, {}) as Dictionary).get("timing_seconds", {}) as Dictionary)
+		var first_total := float(first_timing.get("cancel", -1.0))
+		var first_active_window := float(first_timing.get("recovery", -1.0)) - float(first_timing.get("active", -1.0))
+		for second_index in range(first_index + 1, WEAPON_IDS.size()):
+			var second_weapon_id := str(WEAPON_IDS[second_index])
+			var second_timing := ((packages.get(second_weapon_id, {}) as Dictionary).get("timing_seconds", {}) as Dictionary)
+			var second_total := float(second_timing.get("cancel", -1.0))
+			var second_active_window := float(second_timing.get("recovery", -1.0)) - float(second_timing.get("active", -1.0))
+			_expect(absf(first_total - second_total) >= MIN_RHYTHM_DELTA_SECONDS, "%s / %s total length must differ by at least %.2fs (%.2fs vs %.2fs)" % [first_weapon_id, second_weapon_id, MIN_RHYTHM_DELTA_SECONDS, first_total, second_total], errors)
+			_expect(absf(first_active_window - second_active_window) >= MIN_RHYTHM_DELTA_SECONDS, "%s / %s active window (recovery - active) must differ by at least %.2fs (%.2fs vs %.2fs)" % [first_weapon_id, second_weapon_id, MIN_RHYTHM_DELTA_SECONDS, first_active_window, second_active_window], errors)
 
 
 func _check_capture_composition(errors: Array[String]) -> void:

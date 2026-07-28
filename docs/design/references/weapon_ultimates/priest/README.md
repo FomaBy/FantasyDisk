@@ -40,6 +40,8 @@ impact mark inside its own labeled panel, and the sheet title is centered from
 its measured text width. The focused headless test shares the capture
 timestamps and panel geometry, and validates composition — including
 `sheet_zone.encloses(sheet_title_rect(size))` per resolution — in addition to
-existence, phase bindings, timing, distinction, scene animation length, asset
-provenance, and per-effect crowd budgets. Runtime enforcement of those budgets
-is owned by FAN-1541.
+existence, phase bindings, timing, visual distinction (silhouette, motion path,
+and impact language), and pairwise distinct timing rhythm (total length and
+active window, each separated by an explicit minimum threshold), scene animation
+length, asset provenance, and per-effect crowd budgets. Runtime enforcement of
+those budgets is owned by FAN-1541.
