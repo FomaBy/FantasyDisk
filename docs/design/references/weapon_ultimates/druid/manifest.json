@@ -1,0 +1,147 @@
+{
+  "schema_version": 1,
+  "issue": "FAN-1494",
+  "class_id": "druid",
+  "contract": {
+    "schema": "data/ultimates/presentation_schema/v1/weapon_ultimate_presentation_manifest.schema.json",
+    "phase_groups": [
+      "windup",
+      "release",
+      "active",
+      "recovery",
+      "cancel"
+    ],
+    "max_timeline_seconds": 10.0,
+    "headless_fallback": "no_op",
+    "runtime_adapter_status": "unbound_shared_adapter_owned_by_FAN-1541"
+  },
+  "generator_provenance": {
+    "route": "reused_approved_assets_no_new_raster_generation",
+    "new_pixellab_assets": [],
+    "reused_sources": {
+      "summon_amulet": {
+        "source_path": "assets/sprites/effects/vfx_weapon_summon_amulet.png",
+        "runtime_scene": "scenes/vfx/ultimates/druid/DruidSummonAmuletWildHunt.tscn",
+        "note": "Approved weapon ultimate VFX sprite; no new isolated source frame was created."
+      },
+      "briar_staff": {
+        "source_path": "assets/sprites/effects/vfx_weapon_briar_staff.png",
+        "runtime_scene": "scenes/vfx/ultimates/druid/DruidBriarStaffForestInOneBreath.tscn",
+        "note": "Approved weapon ultimate VFX sprite; no new isolated source frame was created."
+      },
+      "raven_totem": {
+        "source_path": "assets/sprites/effects/vfx_weapon_raven_totem.png",
+        "runtime_scene": "scenes/vfx/ultimates/druid/DruidRavenTotemNightOfThousandWings.tscn",
+        "note": "Approved weapon ultimate VFX sprite; no new isolated source frame was created."
+      }
+    }
+  },
+  "weapons": [
+    {
+      "weapon_id": "summon_amulet",
+      "title": "Дикая Охота",
+      "scene_path": "scenes/vfx/ultimates/druid/DruidSummonAmuletWildHunt.tscn",
+      "silhouette": "eight spectral beasts on an amulet hunt sigil",
+      "motion_path": "radial eight-direction burst, curved hunting sweep around the sigil, then a leap back into it",
+      "impact_language": "staggered pack bites on priority targets ending in one sigil swallow",
+      "timing_seconds": {
+        "windup": 0.0,
+        "release": 0.85,
+        "active": 1.15,
+        "recovery": 6.6,
+        "cancel": 7.4
+      },
+      "phase_ids": {
+        "windup": "weapon_ultimate.phase.druid.summon_amulet.windup",
+        "release": "weapon_ultimate.phase.druid.summon_amulet.execute",
+        "active": "weapon_ultimate.phase.druid.summon_amulet.active",
+        "recovery": "weapon_ultimate.phase.druid.summon_amulet.recover",
+        "cancel": "weapon_ultimate.phase.druid.summon_amulet.cleanup"
+      },
+      "pivot": {
+        "x": 0.5,
+        "y": 0.5
+      },
+      "performance": {
+        "max_visual_nodes": 11,
+        "crowd_cap": 24,
+        "crowd_budget_enforcement_owner": "runtime enforcement FAN-1541",
+        "summon_cap_and_persistence_owner": "mechanics FAN-1495"
+      }
+    },
+    {
+      "weapon_id": "briar_staff",
+      "title": "Лес за Одно Дыхание",
+      "scene_path": "scenes/vfx/ultimates/druid/DruidBriarStaffForestInOneBreath.tscn",
+      "silhouette": "five ground roots carrying a connected bramble lattice with open safe paths",
+      "motion_path": "staff slam, then a sequential outward root race and wall growth between the tips",
+      "impact_language": "root impale hold followed by thorn crowns that burst and wither",
+      "timing_seconds": {
+        "windup": 0.0,
+        "release": 1.1,
+        "active": 1.55,
+        "recovery": 7.9,
+        "cancel": 8.6
+      },
+      "phase_ids": {
+        "windup": "weapon_ultimate.phase.druid.briar_staff.windup",
+        "release": "weapon_ultimate.phase.druid.briar_staff.execute",
+        "active": "weapon_ultimate.phase.druid.briar_staff.active",
+        "recovery": "weapon_ultimate.phase.druid.briar_staff.recover",
+        "cancel": "weapon_ultimate.phase.druid.briar_staff.cleanup"
+      },
+      "pivot": {
+        "x": 0.5,
+        "y": 0.5
+      },
+      "performance": {
+        "max_visual_nodes": 12,
+        "crowd_cap": 20,
+        "crowd_budget_enforcement_owner": "runtime enforcement FAN-1541",
+        "boss_control_cap_owner": "mechanics FAN-1495"
+      }
+    },
+    {
+      "weapon_id": "raven_totem",
+      "title": "Ночь Тысячи Крыльев",
+      "scene_path": "scenes/vfx/ultimates/druid/DruidRavenTotemNightOfThousandWings.tscn",
+      "silhouette": "opened totem wings under three layered raven arcs and marked prey",
+      "motion_path": "wings open, counter-rotating flock layers gather, then staggered dives run at marked prey",
+      "impact_language": "per-mark dive streaks, returning wisps, and one final collapse pulse",
+      "timing_seconds": {
+        "windup": 0.0,
+        "release": 0.6,
+        "active": 0.95,
+        "recovery": 8.4,
+        "cancel": 9.2
+      },
+      "phase_ids": {
+        "windup": "weapon_ultimate.phase.druid.raven_totem.windup",
+        "release": "weapon_ultimate.phase.druid.raven_totem.execute",
+        "active": "weapon_ultimate.phase.druid.raven_totem.active",
+        "recovery": "weapon_ultimate.phase.druid.raven_totem.recover",
+        "cancel": "weapon_ultimate.phase.druid.raven_totem.cleanup"
+      },
+      "pivot": {
+        "x": 0.5,
+        "y": 0.5
+      },
+      "performance": {
+        "max_visual_nodes": 11,
+        "crowd_cap": 22,
+        "crowd_budget_enforcement_owner": "runtime enforcement FAN-1541",
+        "accuracy_slow_and_wisp_return_owner": "mechanics FAN-1495"
+      }
+    }
+  ],
+  "evidence": {
+    "contact_sheets": [
+      "docs/design/references/weapon_ultimates/druid/druid_ultimate_timelines_648p.png",
+      "docs/design/references/weapon_ultimates/druid/druid_ultimate_timelines_720p.png",
+      "docs/design/references/weapon_ultimates/druid/druid_ultimate_timelines_1080p.png",
+      "docs/design/references/weapon_ultimates/druid/druid_ultimate_timelines_2k.png"
+    ],
+    "capture_script": "tests/ultimates/presentation/druid_ultimate_contact_capture.gd",
+    "focused_test": "tests/ultimates/presentation/druid_ultimate_timelines.gd"
+  }
+}
