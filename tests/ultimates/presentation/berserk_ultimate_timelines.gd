@@ -3,6 +3,7 @@ extends SceneTree
 const PROFILE_PATH := "res://data/ultimates/schema/v1/classes/berserk.json"
 const MANIFEST_PATH := "res://docs/design/references/weapon_ultimates/berserk/manifest.json"
 const TIMELINE := preload("res://scripts/ultimates/presentation/weapon_ultimate_presentation_timeline.gd")
+const TEXT_FIT := preload("res://tests/ultimates/presentation/contact_sheet_text_fit.gd")
 const SCENES := {
 	"sword": preload("res://scenes/vfx/ultimates/berserk/BerserkSwordScarletWhirlwind.tscn"),
 	"axe": preload("res://scenes/vfx/ultimates/berserk/BerserkAxeExecutionLoop.tscn"),
@@ -46,7 +47,12 @@ const CAPTURES := [
 const PANEL_HALF_WIDTH_RATIO := 0.145
 const PANEL_HALF_HEIGHT_RATIO := 0.30
 const PANEL_LABEL_Y_RATIO := 0.25
+const PANEL_LABEL_FONT_RATIO := 0.021
 const PANEL_CONTENT_MARGIN_RATIO := 0.03
+const SHEET_TITLE := "BERSERK WEAPON ULTIMATES — DISTINCT PRESENTATION TIMELINES"
+const SHEET_TITLE_Y_RATIO := 0.075
+const SHEET_TITLE_FONT_RATIO := 0.036
+const SHEET_TEXT_MARGIN := 8.0
 const CAPTURE_ALPHA_EPSILON := 0.01
 const REQUIRED_PHASES := ["windup", "release", "active", "recovery", "cancel"]
 const MAX_TIMELINE_SECONDS := 10.0
@@ -77,6 +83,7 @@ func _initialize() -> void:
 		_check_package(weapon_id, profiles.get(weapon_id, {}) as Dictionary, packages.get(weapon_id, {}) as Dictionary, errors)
 	_check_distinction(packages, errors)
 	_check_capture_composition(errors)
+	_check_capture_text(errors)
 	_check_capture_evidence(errors)
 	if not errors.is_empty():
 		_finish(errors)
@@ -204,6 +211,18 @@ func _check_capture_composition(errors: Array[String]) -> void:
 			scene.queue_free()
 
 
+func _check_capture_text(errors: Array[String]) -> void:
+	for raw_capture in CAPTURES:
+		var capture := raw_capture as Dictionary
+		var size := capture.get("size", Vector2i.ZERO) as Vector2i
+		var resolution := str(capture.get("name", ""))
+		var sheet_zone := Rect2(Vector2.ZERO, Vector2(size)).grow(-SHEET_TEXT_MARGIN)
+		TEXT_FIT.check_fits(errors, resolution, SHEET_TITLE, sheet_title_rect(size), sheet_zone, "sheet")
+		for raw_pack in PACKS:
+			var pack := raw_pack as Dictionary
+			TEXT_FIT.check_fits(errors, resolution, str(pack["title"]), panel_label_rect(size, pack), panel_rect(size, pack).grow(0.5), "panel")
+
+
 func _check_capture_evidence(errors: Array[String]) -> void:
 	for raw_capture in CAPTURES:
 		var capture := raw_capture as Dictionary
@@ -225,6 +244,25 @@ static func panel_rect(size: Vector2i, pack: Dictionary) -> Rect2:
 	var center := panel_center(size, pack)
 	var half_size := Vector2(float(size.x) * PANEL_HALF_WIDTH_RATIO, float(size.y) * PANEL_HALF_HEIGHT_RATIO)
 	return Rect2(center - half_size, half_size * 2.0)
+
+
+static func sheet_title_font_size(size: Vector2i) -> int:
+	return TEXT_FIT.scaled_font_size(size, SHEET_TITLE_FONT_RATIO, 18)
+
+
+static func sheet_title_rect(size: Vector2i) -> Rect2:
+	return TEXT_FIT.centered_rect(SHEET_TITLE, size, float(size.y) * SHEET_TITLE_Y_RATIO, sheet_title_font_size(size))
+
+
+static func panel_label_font_size(size: Vector2i, pack: Dictionary) -> int:
+	var preferred := TEXT_FIT.scaled_font_size(size, PANEL_LABEL_FONT_RATIO, 12)
+	return TEXT_FIT.fitted_font_size(str(pack["title"]), preferred, 12, panel_rect(size, pack).size.x - SHEET_TEXT_MARGIN * 2.0)
+
+
+static func panel_label_rect(size: Vector2i, pack: Dictionary) -> Rect2:
+	var panel := panel_rect(size, pack)
+	var y := panel_center(size, pack).y + float(size.y) * PANEL_LABEL_Y_RATIO
+	return TEXT_FIT.centered_in_rect(str(pack["title"]), panel, y, panel_label_font_size(size, pack))
 
 
 static func panel_content_rect(size: Vector2i, pack: Dictionary) -> Rect2:

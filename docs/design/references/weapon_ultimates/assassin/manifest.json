@@ -1,0 +1,136 @@
+{
+  "schema_version": 1,
+  "issue": "FAN-1472",
+  "class_id": "assassin",
+  "contract": {
+    "schema": "data/ultimates/presentation_schema/v1/weapon_ultimate_presentation_manifest.schema.json",
+    "phase_groups": [
+      "windup",
+      "release",
+      "active",
+      "recovery",
+      "cancel"
+    ],
+    "max_timeline_seconds": 10.0,
+    "headless_fallback": "no_op",
+    "runtime_adapter_status": "unbound_shared_adapter_owned_by_FAN-1541"
+  },
+  "generator_provenance": {
+    "route": "reused_approved_assets_no_new_raster_generation",
+    "pixellab_mcp": "not_invoked_no_new_isolated_raster_asset",
+    "new_pixellab_assets": [],
+    "reused_sources": {
+      "chakrams": {
+        "source_path": "assets/sprites/weapons/chakrams.png",
+        "runtime_scene": "scenes/vfx/ultimates/assassin/AssassinChakramsEightMoons.tscn",
+        "note": "Approved project weapon sprite; the eight-disc formation is composed at runtime."
+      },
+      "shadow_daggers": {
+        "source_path": "assets/sprites/weapons/shadow_daggers.png",
+        "runtime_scene": "scenes/vfx/ultimates/assassin/AssassinShadowDaggersMomentBeforeDeath.tscn",
+        "note": "Approved project weapon sprite; afterimages and slash reveal are composed at runtime."
+      },
+      "venom_wire": {
+        "source_path": "assets/sprites/weapons/venom_wire.png",
+        "runtime_scene": "scenes/vfx/ultimates/assassin/AssassinVenomWireBlackWeb.tscn",
+        "note": "Approved project weapon sprite; anchor web and collapse are composed at runtime."
+      }
+    }
+  },
+  "weapons": [
+    {
+      "weapon_id": "chakrams",
+      "title": "Восемь Лун",
+      "scene_path": "scenes/vfx/ultimates/assassin/AssassinChakramsEightMoons.tscn",
+      "silhouette": "eight silver moon-discs in a compass orbit",
+      "motion_path": "tight orbit expands to eight radial arcs then crescent return stack",
+      "impact_language": "eight-way disc launch and returning crescent cut",
+      "timing_seconds": {
+        "windup": 0.0,
+        "release": 0.5,
+        "active": 1.0,
+        "recovery": 6.9,
+        "cancel": 7.6
+      },
+      "phase_ids": {
+        "windup": "weapon_ultimate.phase.assassin.chakrams.windup",
+        "release": "weapon_ultimate.phase.assassin.chakrams.execute",
+        "active": "weapon_ultimate.phase.assassin.chakrams.active",
+        "recovery": "weapon_ultimate.phase.assassin.chakrams.recover",
+        "cancel": "weapon_ultimate.phase.assassin.chakrams.cleanup"
+      },
+      "performance": {
+        "max_visual_nodes": 12,
+        "crowd_cap": 24,
+        "crowd_budget_enforcement_owner": "runtime enforcement FAN-1541",
+        "return_pass_damage_owner": "mechanics FAN-1473"
+      }
+    },
+    {
+      "weapon_id": "shadow_daggers",
+      "title": "Мгновение до Смерти",
+      "scene_path": "scenes/vfx/ultimates/assassin/AssassinShadowDaggersMomentBeforeDeath.tscn",
+      "silhouette": "four black-violet dagger afterimages around frozen marks",
+      "motion_path": "local freeze marks then sequential backstab passes across the target",
+      "impact_language": "simultaneous crimson slash reveal",
+      "timing_seconds": {
+        "windup": 0.0,
+        "release": 0.45,
+        "active": 1.1,
+        "recovery": 4.9,
+        "cancel": 5.8
+      },
+      "phase_ids": {
+        "windup": "weapon_ultimate.phase.assassin.shadow_daggers.windup",
+        "release": "weapon_ultimate.phase.assassin.shadow_daggers.execute",
+        "active": "weapon_ultimate.phase.assassin.shadow_daggers.active",
+        "recovery": "weapon_ultimate.phase.assassin.shadow_daggers.recover",
+        "cancel": "weapon_ultimate.phase.assassin.shadow_daggers.cleanup"
+      },
+      "performance": {
+        "max_visual_nodes": 9,
+        "crowd_cap": 20,
+        "crowd_budget_enforcement_owner": "runtime enforcement FAN-1541",
+        "marked_damage_owner": "mechanics FAN-1473"
+      }
+    },
+    {
+      "weapon_id": "venom_wire",
+      "title": "Чёрная Паутина",
+      "scene_path": "scenes/vfx/ultimates/assassin/AssassinVenomWireBlackWeb.tscn",
+      "silhouette": "six needle anchors holding a neon green hexagonal web",
+      "motion_path": "six anchors shoot outward then a hex web contracts toward the center",
+      "impact_language": "crossing poison sparks and a hexagonal snap-collapse",
+      "timing_seconds": {
+        "windup": 0.0,
+        "release": 0.65,
+        "active": 1.2,
+        "recovery": 5.35,
+        "cancel": 6.2
+      },
+      "phase_ids": {
+        "windup": "weapon_ultimate.phase.assassin.venom_wire.windup",
+        "release": "weapon_ultimate.phase.assassin.venom_wire.execute",
+        "active": "weapon_ultimate.phase.assassin.venom_wire.active",
+        "recovery": "weapon_ultimate.phase.assassin.venom_wire.recover",
+        "cancel": "weapon_ultimate.phase.assassin.venom_wire.cleanup"
+      },
+      "performance": {
+        "max_visual_nodes": 11,
+        "crowd_cap": 24,
+        "crowd_budget_enforcement_owner": "runtime enforcement FAN-1541",
+        "toxin_burst_owner": "mechanics FAN-1473"
+      }
+    }
+  ],
+  "evidence": {
+    "contact_sheets": [
+      "docs/design/references/weapon_ultimates/assassin/assassin_ultimate_timelines_648p.png",
+      "docs/design/references/weapon_ultimates/assassin/assassin_ultimate_timelines_720p.png",
+      "docs/design/references/weapon_ultimates/assassin/assassin_ultimate_timelines_1080p.png",
+      "docs/design/references/weapon_ultimates/assassin/assassin_ultimate_timelines_2k.png"
+    ],
+    "capture_script": "tests/ultimates/presentation/assassin_ultimate_contact_capture.gd",
+    "focused_test": "tests/ultimates/presentation/assassin_ultimate_timelines.gd"
+  }
+}
