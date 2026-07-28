@@ -382,12 +382,14 @@ class QualityGateTests(unittest.TestCase):
         self.assertIsNotNone(match)
         assert match is not None
         command = match.group(0).split(" >", 1)[0]
-        self.assertEqual(self._captured_shell_exclusive_flag("zsh", command), "")
+        # The extracted call-site is plain POSIX, so it runs under bash rather
+        # than the script's own zsh shebang, which CI runners do not carry.
+        self.assertEqual(self._captured_shell_exclusive_flag("bash", command), "")
 
         # Mutation proof: removing this call-site scrub exposes the parent's flag.
         unsanitized = command.replace("env FSD_GODOT_EXCLUSIVE= ", "", 1)
         with self.assertRaises(AssertionError):
-            self.assertEqual(self._captured_shell_exclusive_flag("zsh", unsanitized), "")
+            self.assertEqual(self._captured_shell_exclusive_flag("bash", unsanitized), "")
 
     def test_release_godot_helper_scrubs_inherited_exclusive_flag(self) -> None:
         source = (ROOT / "tools" / "build_release.sh").read_text(encoding="utf-8")
