@@ -9,6 +9,10 @@ const PACKS := [
 
 
 func _initialize() -> void:
+	if DisplayServer.get_name() == "headless":
+		print("FAN-1838 Assassin ultimate contact capture skipped (headless); run windowed for PNGs.")
+		quit(0)
+		return
 	for raw_capture in SPEC.CAPTURES:
 		var capture := raw_capture as Dictionary
 		var viewport := SubViewport.new()

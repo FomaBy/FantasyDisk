@@ -25,7 +25,13 @@ Consumers bind by exact weapon ID and must forward pause to
 `finish("cancel"|"death"|"node_end")`. The shared runtime adapter remains the
 responsibility of FAN-1541.
 
-The contact sheets are captured from the three actual local scenes at 648p,
-720p, 1080p, and 2K. The focused headless test validates phase bindings,
-timings, distinction, scene budgets, evidence dimensions, pause, headless
-fallback, and all cleanup reasons.
+The four contact sheets are rendered from the three actual local scenes at 648p,
+720p, 1080p, and 2K by a windowed run of
+`tests/ultimates/presentation/assassin_ultimate_contact_capture.gd`. That capture
+script is a deterministic no-op under `--headless`, where the dummy driver has no
+render target, so sheet production stays on the windowed run.
+
+The focused headless test
+`tests/ultimates/presentation/assassin_ultimate_timelines.gd` validates phase
+bindings, timings, distinction, scene budgets, the committed sheet dimensions,
+pause, headless fallback, and all cleanup reasons.
