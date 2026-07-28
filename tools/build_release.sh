@@ -80,8 +80,10 @@ run_godot() {
   # Fresh macOS headless imports in Godot 4.7 can otherwise dispatch an audio
   # reimport notification from a worker thread and crash in
   # Node::propagate_notification. Release inputs are immutable and do not need
-  # sub-thread scene groups, so make the build path deterministic.
-  GODOT_BIN="${GODOT_PATH}" python3 "${WORKTREE_DIR}/tools/godot_gate.py" \
+  # sub-thread scene groups, so make the build path deterministic.  Clear an
+  # inherited timing-run flag too: import/export must use the ordinary gate and
+  # never reserve the machine-wide exclusive admission.
+  GODOT_BIN="${GODOT_PATH}" env FSD_GODOT_EXCLUSIVE= python3 "${WORKTREE_DIR}/tools/godot_gate.py" \
     --single-threaded-scene "$@"
 }
 

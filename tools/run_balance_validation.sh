@@ -5,7 +5,9 @@
 #
 # Таймингозависимые live/DPS/runaway-замеры берут машинную эксклюзивность на
 # уровне каждого отдельного run_gate. Импорт и остальные гейты остаются
-# обычными; оборачивать весь скрипт нельзя из-за вложенных вызовов godot_gate.py.
+# обычными: import-prepass явно очищает FSD_GODOT_EXCLUSIVE, чтобы настройка
+# родительской оболочки не захватила машинный допуск. Оборачивать весь скрипт
+# нельзя из-за вложенных вызовов godot_gate.py.
 #
 # Использование:
 #   zsh tools/run_balance_validation.sh [ref]        # ref по умолчанию origin/dev
@@ -45,7 +47,9 @@ echo "| --- | --- | --- |" >> "$SUMMARY"
 
 rsync -a --delete "$MAIN_REPO/.godot/" "$WT/.godot/"
 cd "$WT" || exit 2
-python3 tools/godot_gate.py --headless --path . --import > "$OUT_DIR/import.log" 2>&1
+# Import warms the cache only.  Keep it ordinary even when the parent shell
+# launched a timing-sensitive run with FSD_GODOT_EXCLUSIVE=1.
+env FSD_GODOT_EXCLUSIVE= python3 tools/godot_gate.py --headless --path . --import > "$OUT_DIR/import.log" 2>&1
 if [ $? -ne 0 ]; then
 	echo "| --import | ❌ FAIL | import.log |" >> "$SUMMARY"
 	echo "FATAL: import failed"; exit 1

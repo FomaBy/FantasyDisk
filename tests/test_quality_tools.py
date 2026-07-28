@@ -116,6 +116,39 @@ class QualityGateTests(unittest.TestCase):
     def setUpClass(cls) -> None:
         cls.quality = _load_module("quality_gate_tested", "tools/quality_gate.py")
 
+    def _captured_shell_exclusive_flag(self, shell: str, command: str) -> str:
+        """Run one shell call with a fake Godot launcher and capture its env."""
+        with tempfile.TemporaryDirectory(prefix="quality-shell-gate-") as scratch:
+            scratch_path = Path(scratch)
+            fake_bin = scratch_path / "bin"
+            fake_bin.mkdir()
+            captured = scratch_path / "exclusive.txt"
+            fake_python = fake_bin / "python3"
+            fake_python.write_text(
+                "#!/bin/sh\nprintf '%s' \"${FSD_GODOT_EXCLUSIVE-__unset__}\" "
+                '> "$FSD_CAPTURE"\n',
+                encoding="utf-8",
+            )
+            fake_python.chmod(0o755)
+            environment = os.environ | {
+                "FSD_GODOT_EXCLUSIVE": "1",
+                "FSD_CAPTURE": str(captured),
+                "GODOT_PATH": "/mock/Godot",
+                "PATH": f"{fake_bin}{os.pathsep}{os.environ['PATH']}",
+                "WORKTREE_DIR": str(scratch_path),
+            }
+            completed = subprocess.run(
+                [shell, "-c", command],
+                cwd=ROOT,
+                env=environment,
+                text=True,
+                capture_output=True,
+                check=False,
+            )
+            self.assertEqual(completed.returncode, 0, completed.stderr)
+            self.assertTrue(captured.exists(), completed.stderr)
+            return captured.read_text(encoding="utf-8")
+
     def _use_synthetic_tree(self, stack: contextlib.ExitStack, files: dict[str, str]) -> Path:
         root = Path(stack.enter_context(tempfile.TemporaryDirectory(prefix="quality-tree-")))
         for relative, content in files.items():
@@ -247,6 +280,14 @@ class QualityGateTests(unittest.TestCase):
             self.quality.TIMING_SENSITIVE_GODOT_SCRIPTS,
             expected_exclusive,
         )
+        discovered = {
+            self.quality.script_resource_path(path)
+            for path in self.quality.discover_godot_tests()
+        }
+        self.assertTrue(
+            expected_exclusive <= discovered,
+            "each timing-sensitive resource must exist at its classified path",
+        )
         cases = {
             ROOT / script.removeprefix("res://"): "1"
             for script in expected_exclusive
@@ -326,11 +367,42 @@ class QualityGateTests(unittest.TestCase):
         self.assertEqual(
             source.count('"${gate_env[@]}" python3 tools/godot_gate.py'),
             2,
+            "only run_gate uses gate_env; the import pre-pass owns its scrub inline",
         )
-        self.assertNotIn(
-            "FSD_GODOT_EXCLUSIVE",
-            (ROOT / "tools" / "build_release.sh").read_text(encoding="utf-8"),
+
+    def test_balance_import_prepass_scrubs_inherited_exclusive_flag(self) -> None:
+        source = (ROOT / "tools" / "run_balance_validation.sh").read_text(
+            encoding="utf-8"
         )
+        match = re.search(
+            r"^.*python3 tools/godot_gate\.py --headless --path \. --import.*$",
+            source,
+            re.MULTILINE,
+        )
+        self.assertIsNotNone(match)
+        assert match is not None
+        command = match.group(0).split(" >", 1)[0]
+        self.assertEqual(self._captured_shell_exclusive_flag("zsh", command), "")
+
+        # Mutation proof: removing this call-site scrub exposes the parent's flag.
+        unsanitized = command.replace("env FSD_GODOT_EXCLUSIVE= ", "", 1)
+        with self.assertRaises(AssertionError):
+            self.assertEqual(self._captured_shell_exclusive_flag("zsh", unsanitized), "")
+
+    def test_release_godot_helper_scrubs_inherited_exclusive_flag(self) -> None:
+        source = (ROOT / "tools" / "build_release.sh").read_text(encoding="utf-8")
+        match = re.search(
+            r"^run_godot\(\) \{\n.*?^\}", source, re.MULTILINE | re.DOTALL
+        )
+        self.assertIsNotNone(match)
+        assert match is not None
+        command = f"{match.group(0)}\nrun_godot --headless --import --path ."
+        self.assertEqual(self._captured_shell_exclusive_flag("bash", command), "")
+
+        # Mutation proof: removing this helper scrub exposes the parent's flag.
+        unsanitized = command.replace("env FSD_GODOT_EXCLUSIVE= ", "", 1)
+        with self.assertRaises(AssertionError):
+            self.assertEqual(self._captured_shell_exclusive_flag("bash", unsanitized), "")
 
     def test_ambiguous_test_names_across_directories_are_rejected(self) -> None:
         with contextlib.ExitStack() as stack:
