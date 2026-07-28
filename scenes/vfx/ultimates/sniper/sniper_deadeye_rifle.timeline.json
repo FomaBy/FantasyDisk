@@ -1,0 +1,45 @@
+{
+  "timeline_id": "sniper_deadeye_rifle.one_shot",
+  "scene_path": "res://scenes/vfx/ultimates/sniper/sniper_deadeye_rifle_ultimate.tscn",
+  "manifest": {
+    "schema_version": 1,
+    "class_id": "sniper",
+    "key": {"weapon_id": "sniper_deadeye_rifle", "action": "ultimate"},
+    "presentation_id": "weapon_ultimate.presentation.sniper.sniper_deadeye_rifle",
+    "animation": {
+      "id": "weapon_ultimate.animation.sniper.sniper_deadeye_rifle",
+      "source_path": "res://docs/design/references/weapon_ultimates/sniper/source/sniper_deadeye_rifle_pixellab_source.png",
+      "runtime_path": "res://assets/sprites/effects/ultimates/sniper/sniper_deadeye_rifle_ultimate.png"
+    },
+    "vfx": {
+      "id": "weapon_ultimate.vfx.sniper.sniper_deadeye_rifle",
+      "source_path": "res://docs/design/references/weapon_ultimates/sniper/source/sniper_deadeye_rifle_pixellab_source.png",
+      "runtime_path": "res://assets/sprites/effects/ultimates/sniper/sniper_deadeye_rifle_ultimate.png"
+    },
+    "sfx": {
+      "id": "weapon_ultimate.sfx.sniper.sniper_deadeye_rifle",
+      "source_path": "res://assets/audio/sfx/sfx_hit_magic.ogg",
+      "runtime_path": "res://assets/audio/sfx/sfx_hit_magic.ogg"
+    },
+    "phases": [
+      {"name": "windup", "phase_id": "weapon_ultimate.phase.sniper.sniper_deadeye_rifle.windup"},
+      {"name": "release", "phase_id": "weapon_ultimate.phase.sniper.sniper_deadeye_rifle.execute"},
+      {"name": "active", "phase_id": "weapon_ultimate.phase.sniper.sniper_deadeye_rifle.active"},
+      {"name": "recovery", "phase_id": "weapon_ultimate.phase.sniper.sniper_deadeye_rifle.recover"},
+      {"name": "cancel", "phase_id": "weapon_ultimate.phase.sniper.sniper_deadeye_rifle.cleanup"}
+    ],
+    "pivot": {"x": 0.5, "y": 0.5},
+    "timing": {"windup": 0.0, "release": 0.65, "active": 0.78, "recovery": 1.4, "cancel": 1.85},
+    "headless_fallback": "no_op"
+  },
+  "visual_contract": {
+    "ultimate_name": "Один Выстрел",
+    "silhouette": "narrow horizontal scope window ending in a single arena-wide tracer",
+    "motion_path": "aim lock holds, then one linear full-arena release with a delayed endpoint crack",
+    "timing_rhythm": "0.65s breath hold, 0.13s snap release, 0.62s delayed crack and casing drop",
+    "impact_language": "one white-blue endpoint flare; no radial burst or persistent ring",
+    "required_nodes": ["PhaseNodes/Windup/ScopeVignette", "PhaseNodes/Release/ArenaTracer", "PhaseNodes/Active/EndpointFlash", "PhaseNodes/Recovery/CasingDrop"],
+    "scene_node_budget": {"sprites": 4, "line_segments": 4, "simultaneous_emitters": 1},
+    "readability": {"viewport_heights": [648, 720, 1080, 1440], "hud_occlusion": "none", "minimum_visible_extent_px": 80}
+  }
+}

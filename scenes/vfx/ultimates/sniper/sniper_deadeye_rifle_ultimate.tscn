@@ -1,0 +1,70 @@
+[gd_scene load_steps=4 format=3]
+
+[ext_resource type="Script" path="res://scenes/vfx/ultimates/sniper/sniper_ultimate_presentation.gd" id="1_script"]
+[ext_resource type="Texture2D" path="res://assets/sprites/effects/ultimates/sniper/sniper_deadeye_rifle_ultimate.png" id="2_texture"]
+
+[sub_resource type="CanvasItemMaterial" id="CanvasItemMaterial_add"]
+blend_mode = 1
+light_mode = 1
+
+[node name="SniperDeadeyeRifleUltimate" type="Node2D"]
+script = ExtResource("1_script")
+definition_path = "res://scenes/vfx/ultimates/sniper/sniper_deadeye_rifle.timeline.json"
+
+[node name="PhaseNodes" type="Node2D" parent="."]
+
+[node name="Windup" type="Node2D" parent="PhaseNodes"]
+[node name="ScopeVignette" type="Sprite2D" parent="PhaseNodes/Windup"]
+material = SubResource("CanvasItemMaterial_add")
+texture = ExtResource("2_texture")
+position = Vector2(-96, 0)
+scale = Vector2(0.46, 0.46)
+modulate = Color(0.3, 0.66, 0.98, 0.62)
+[node name="BreathHoldLine" type="Line2D" parent="PhaseNodes/Windup"]
+material = SubResource("CanvasItemMaterial_add")
+points = PackedVector2Array(-210, 0, 210, 0)
+width = 3.0
+default_color = Color(0.36, 0.82, 1, 0.72)
+antialiased = true
+
+[node name="Release" type="Node2D" parent="PhaseNodes"]
+[node name="ArenaTracer" type="Line2D" parent="PhaseNodes/Release"]
+material = SubResource("CanvasItemMaterial_add")
+points = PackedVector2Array(-520, -8, 520, -8)
+width = 9.0
+default_color = Color(0.86, 0.96, 1, 0.92)
+antialiased = true
+[node name="MuzzleTracer" type="Sprite2D" parent="PhaseNodes/Release"]
+material = SubResource("CanvasItemMaterial_add")
+texture = ExtResource("2_texture")
+position = Vector2(-280, -8)
+scale = Vector2(0.28, 0.28)
+modulate = Color(0.88, 0.96, 1, 0.72)
+
+[node name="Active" type="Node2D" parent="PhaseNodes"]
+[node name="EndpointFlash" type="Sprite2D" parent="PhaseNodes/Active"]
+material = SubResource("CanvasItemMaterial_add")
+texture = ExtResource("2_texture")
+position = Vector2(330, -8)
+scale = Vector2(0.34, 0.34)
+modulate = Color(1, 1, 1, 0.9)
+[node name="SonicCrack" type="Line2D" parent="PhaseNodes/Active"]
+material = SubResource("CanvasItemMaterial_add")
+points = PackedVector2Array(300, -42, 362, 28)
+width = 5.0
+default_color = Color(0.8, 0.94, 1, 0.85)
+antialiased = true
+
+[node name="Recovery" type="Node2D" parent="PhaseNodes"]
+[node name="CasingDrop" type="Sprite2D" parent="PhaseNodes/Recovery"]
+texture = ExtResource("2_texture")
+position = Vector2(-126, 56)
+scale = Vector2(0.14, 0.14)
+modulate = Color(0.72, 0.62, 0.34, 0.42)
+
+[node name="Cancel" type="Node2D" parent="PhaseNodes"]
+[node name="LockRelease" type="Line2D" parent="PhaseNodes/Cancel"]
+points = PackedVector2Array(-116, 0, 116, 0)
+width = 2.0
+default_color = Color(0.36, 0.62, 0.82, 0.34)
+antialiased = true

@@ -1,0 +1,46 @@
+{
+  "timeline_id": "sniper_spotter_scope.sky_grid",
+  "scene_path": "res://scenes/vfx/ultimates/sniper/sniper_spotter_scope_ultimate.tscn",
+  "manifest": {
+    "schema_version": 1,
+    "class_id": "sniper",
+    "key": {"weapon_id": "sniper_spotter_scope", "action": "ultimate"},
+    "presentation_id": "weapon_ultimate.presentation.sniper.sniper_spotter_scope",
+    "animation": {
+      "id": "weapon_ultimate.animation.sniper.sniper_spotter_scope",
+      "source_path": "res://docs/design/references/weapon_ultimates/sniper/source/sniper_spotter_scope_pixellab_source.png",
+      "runtime_path": "res://assets/sprites/effects/ultimates/sniper/sniper_spotter_scope_ultimate.png"
+    },
+    "vfx": {
+      "id": "weapon_ultimate.vfx.sniper.sniper_spotter_scope",
+      "source_path": "res://docs/design/references/weapon_ultimates/sniper/source/sniper_spotter_scope_pixellab_source.png",
+      "runtime_path": "res://assets/sprites/effects/ultimates/sniper/sniper_spotter_scope_ultimate.png"
+    },
+    "sfx": {
+      "id": "weapon_ultimate.sfx.sniper.sniper_spotter_scope",
+      "source_path": "res://assets/audio/sfx/sfx_hit_magic.ogg",
+      "runtime_path": "res://assets/audio/sfx/sfx_hit_magic.ogg"
+    },
+    "phases": [
+      {"name": "windup", "phase_id": "weapon_ultimate.phase.sniper.sniper_spotter_scope.windup"},
+      {"name": "release", "phase_id": "weapon_ultimate.phase.sniper.sniper_spotter_scope.execute"},
+      {"name": "active", "phase_id": "weapon_ultimate.phase.sniper.sniper_spotter_scope.active"},
+      {"name": "recovery", "phase_id": "weapon_ultimate.phase.sniper.sniper_spotter_scope.recover"},
+      {"name": "cancel", "phase_id": "weapon_ultimate.phase.sniper.sniper_spotter_scope.cleanup"}
+    ],
+    "pivot": {"x": 0.5, "y": 0.5},
+    "timing": {"windup": 0.0, "release": 0.4, "active": 1.0, "recovery": 2.8, "cancel": 3.2},
+    "headless_fallback": "no_op"
+  },
+  "visual_contract": {
+    "ultimate_name": "Небесная Сетка",
+    "silhouette": "wide nine-pip crosshair grid with descending vertical sky locks",
+    "motion_path": "nine lock pips resolve through the aimed zone, then beams descend in order and fold to one point",
+    "timing_rhythm": "0.40s grid acquire, 0.60s lock settle, nine 0.18s sequential beams, 1.18s collapse",
+    "impact_language": "nine narrow red-white sky columns terminating in one collapsed focal point",
+    "lock_count": 9,
+    "required_nodes": ["PhaseNodes/Windup/GridNode1", "PhaseNodes/Windup/GridNode9", "PhaseNodes/Release/LockPip9", "PhaseNodes/Active/SkyBeam9", "PhaseNodes/Recovery/CollapsePoint"],
+    "scene_node_budget": {"sprites": 12, "line_segments": 12, "simultaneous_emitters": 9},
+    "readability": {"viewport_heights": [648, 720, 1080, 1440], "hud_occlusion": "none", "minimum_visible_extent_px": 112}
+  }
+}
