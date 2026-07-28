@@ -15,6 +15,7 @@ const BERSERK_ANIMATED_SPRITE := preload("res://assets/sprites/characters/berser
 const ProgressionData := preload("res://scripts/progression_data.gd")
 const TARGET_QUERY := preload("res://scripts/combat_target_query.gd")
 const StatusEffects := preload("res://scripts/status_effects.gd")
+const TAKE_DAMAGE_CONTRACT := preload("res://scripts/take_damage_contract.gd")
 const ConstellationFinalRuntime := preload("res://scripts/constellation_final_runtime.gd")
 const SCHEMA6_DATA := preload("res://scripts/constellation_schema6_data.gd")
 const DARK_MAGE_SKELETON_RIG_SCENE := preload("res://scenes/characters/DarkMageSkeletonRig.tscn")
@@ -3478,9 +3479,7 @@ func _apply_player_damage(target: Node, amount: float, feedback := {}) -> void:
 		target.call("take_damage", amount, feedback if feedback is Dictionary else {})
 	else: target.call("take_damage", amount)
 func _take_damage_accepts_feedback(target: Node) -> bool:
-	for method in target.get_method_list():
-		if str(method.get("name", "")) == "take_damage": return int((method.get("args", []) as Array).size()) >= 2
-	return false
+	return TAKE_DAMAGE_CONTRACT.accepts_feedback(target)
 
 
 func gain_xp(amount: int) -> void:
