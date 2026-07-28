@@ -47,7 +47,13 @@ const CAPTURES := [
 const PANEL_HALF_WIDTH_RATIO := 0.145
 const PANEL_HALF_HEIGHT_RATIO := 0.30
 const PANEL_LABEL_Y_RATIO := 0.25
+const PANEL_LABEL_X_OFFSET_RATIO := 0.14
+const PANEL_LABEL_FONT_RATIO := 0.021
 const PANEL_CONTENT_MARGIN_RATIO := 0.03
+const SHEET_TITLE := "ELEMENTALIST WEAPON ULTIMATES — DISTINCT PRESENTATION TIMELINES"
+const SHEET_TITLE_Y_RATIO := 0.075
+const SHEET_TITLE_FONT_RATIO := 0.036
+const SHEET_TEXT_MARGIN := 8.0
 const CAPTURE_ALPHA_EPSILON := 0.01
 const REQUIRED_PHASES := ["windup", "release", "active", "recovery", "cancel"]
 const MAX_TIMELINE_SECONDS := 10.0
@@ -78,6 +84,7 @@ func _initialize() -> void:
 		_check_package(weapon_id, profiles.get(weapon_id, {}) as Dictionary, packages.get(weapon_id, {}) as Dictionary, errors)
 	_check_distinction(packages, errors)
 	_check_capture_composition(errors)
+	_check_capture_text(errors)
 	_check_capture_evidence(errors)
 	if not errors.is_empty():
 		_finish(errors)
@@ -201,6 +208,20 @@ func _check_capture_composition(errors: Array[String]) -> void:
 			scene.queue_free()
 
 
+func _check_capture_text(errors: Array[String]) -> void:
+	for raw_capture in CAPTURES:
+		var capture := raw_capture as Dictionary
+		var size := capture.get("size", Vector2i.ZERO) as Vector2i
+		var sheet_zone := Rect2(Vector2.ZERO, Vector2(size)).grow(-SHEET_TEXT_MARGIN)
+		var title_rect := sheet_title_rect(size)
+		_expect(sheet_zone.encloses(title_rect), "%s sheet title \"%s\" bounds %s must stay inside sheet %s" % [str(capture.get("name", "")), SHEET_TITLE, title_rect, sheet_zone], errors)
+		for raw_pack in PACKS:
+			var pack := raw_pack as Dictionary
+			var label_rect := panel_label_rect(size, pack)
+			var panel := panel_rect(size, pack)
+			_expect(panel.grow(0.5).encloses(label_rect), "%s panel label \"%s\" bounds %s must stay inside panel %s" % [str(capture.get("name", "")), str(pack["title"]), label_rect, panel], errors)
+
+
 func _check_capture_evidence(errors: Array[String]) -> void:
 	for raw_capture in CAPTURES:
 		var capture := raw_capture as Dictionary
@@ -222,6 +243,25 @@ static func panel_rect(size: Vector2i, pack: Dictionary) -> Rect2:
 	var center := panel_center(size, pack)
 	var half_size := Vector2(float(size.x) * PANEL_HALF_WIDTH_RATIO, float(size.y) * PANEL_HALF_HEIGHT_RATIO)
 	return Rect2(center - half_size, half_size * 2.0)
+
+
+static func sheet_title_font_size(size: Vector2i) -> int:
+	return maxi(18, int(size.y * SHEET_TITLE_FONT_RATIO))
+
+
+static func sheet_title_rect(size: Vector2i) -> Rect2:
+	var text_size := ThemeDB.fallback_font.get_string_size(SHEET_TITLE, HORIZONTAL_ALIGNMENT_LEFT, -1, sheet_title_font_size(size))
+	return Rect2(Vector2((float(size.x) - text_size.x) * 0.5, float(size.y) * SHEET_TITLE_Y_RATIO), text_size)
+
+
+static func panel_label_font_size(size: Vector2i) -> int:
+	return maxi(12, int(size.y * PANEL_LABEL_FONT_RATIO))
+
+
+static func panel_label_rect(size: Vector2i, pack: Dictionary) -> Rect2:
+	var text_size := ThemeDB.fallback_font.get_string_size(str(pack["title"]), HORIZONTAL_ALIGNMENT_LEFT, -1, panel_label_font_size(size))
+	var position := panel_center(size, pack) + Vector2(-float(size.x) * PANEL_LABEL_X_OFFSET_RATIO, float(size.y) * PANEL_LABEL_Y_RATIO)
+	return Rect2(position, text_size)
 
 
 static func panel_content_rect(size: Vector2i, pack: Dictionary) -> Rect2:

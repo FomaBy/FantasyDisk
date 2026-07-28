@@ -40,14 +40,13 @@ func _make_sheet(size: Vector2i) -> Node2D:
 	background.z_index = -20
 	host.add_child(background)
 	var title := Label.new()
-	title.text = "ELEMENTALIST WEAPON ULTIMATES — DISTINCT PRESENTATION TIMELINES"
-	title.position = Vector2(size.x * 0.5 - minf(size.x * 0.38, 470.0), size.y * 0.075)
-	title.add_theme_font_size_override("font_size", maxi(18, int(size.y * 0.036)))
+	title.text = CAPTURE_SPEC.SHEET_TITLE
+	title.position = CAPTURE_SPEC.sheet_title_rect(size).position
+	title.add_theme_font_size_override("font_size", CAPTURE_SPEC.sheet_title_font_size(size))
 	title.add_theme_color_override("font_color", Color(0.97, 0.86, 0.68))
 	host.add_child(title)
 	for raw_pack in CAPTURE_SPEC.PACKS:
 		var pack := raw_pack as Dictionary
-		var center := CAPTURE_SPEC.panel_center(size, pack)
 		var panel_rect := CAPTURE_SPEC.panel_rect(size, pack)
 		var panel := Polygon2D.new()
 		panel.polygon = PackedVector2Array([
@@ -61,8 +60,8 @@ func _make_sheet(size: Vector2i) -> Node2D:
 		host.add_child(panel)
 		var label := Label.new()
 		label.text = str(pack["title"])
-		label.position = center + Vector2(-size.x * 0.14, size.y * CAPTURE_SPEC.PANEL_LABEL_Y_RATIO)
-		label.add_theme_font_size_override("font_size", maxi(12, int(size.y * 0.021)))
+		label.position = CAPTURE_SPEC.panel_label_rect(size, pack).position
+		label.add_theme_font_size_override("font_size", CAPTURE_SPEC.panel_label_font_size(size))
 		label.add_theme_color_override("font_color", pack["color"] as Color)
 		host.add_child(label)
 		var scene := (pack["scene"] as PackedScene).instantiate() as Node2D
