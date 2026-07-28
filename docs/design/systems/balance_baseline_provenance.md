@@ -1,6 +1,10 @@
 # Провенанс git-tracked эталона баланса
 
 Дата расследования: 2026-07-27. Карточка: FAN-1778.
+Пересборка band по итогам расследования: 2026-07-28, карточка FAN-1785
+(раздел «Пересборка band из tracked CSV»). Разделы ниже до этого раздела
+описывают состояние на момент расследования; band с тех пор приведён в
+соответствие со своими входами, CSV — нет и не должен.
 
 ## Вывод и рекомендация
 
@@ -9,8 +13,9 @@
 обоих эталонных файлов этой обёртки ещё не существовало. Текущий CSV — намеренно
 собранный live-эталон: основа является средним четырёх live-прогонов v9, а шесть
 строк Soldier/Priest затем заменены средними точечных двойных live-прогонов.
-Текущий band — более старый полный live-снимок v3 и не соответствует ни
-финальному CSV v9, ни более поздней перекалибровке comfort-весов.
+Band на момент расследования — более старый полный live-снимок v3, не
+соответствовавший ни финальному CSV v9, ни более поздней перекалибровке
+comfort-весов; FAN-1785 пересобрала его из этих двух входов.
 
 Рекомендация PM: **(а) оставить git-tracked эталон без изменений и не
 пересобирать его в `--mode=fast`.** Fast-режим — другой, формульный инструмент:
@@ -19,6 +24,13 @@
 актуальный нормативный band, это отдельное балансно-видимое решение: следует
 сначала определить live/multi-run протокол его пересборки вместе с CSV v9 или
 новее. Текущая карточка такую пересборку не выполняет.
+
+Развязка (FAN-1785): актуальный band оказалось возможно получить **без** новых
+замеров и без `--mode=fast`. Полоса — чистая функция уже зафиксированных входов
+(tracked CSV v9 + comfort-веса), поэтому генератор получил режим `--mode=band`,
+который читает эталонный CSV и пересобирает по нему только
+`build/character_balance_band.md`. Рекомендация (а) в силе: CSV остался
+байтово неизменным.
 
 ## Свежий `--mode=fast` на актуальном tip
 
@@ -44,6 +56,10 @@ gated Godot-прогон был невозможен. Использован God
 | --- | --- | --- | --- |
 | `build/character_balance_dps.csv` | `0c9fe45267330d8a79d47a9eae2402869137c1169755f89953d006c3412e2735` | `29a9387df01b074272f1e27bd47da8d1a876f9e3e43b9417bb2d8b8311d1d37c` | 51 вставка / 51 удаление; изменены все 51 строки данных |
 | `build/character_balance_band.md` | `21aca90910404a7ea9d52f28bd6bf8f9f5febab4d4d4db36117940fe80541f75` | `a300985a6289f9db01e3b4abbe94205a3fb51dcc34a1c3bc1b4aa7e59245fad4` | 128 вставок / 125 удалений |
+
+Колонка «git-tracked SHA-256» для band — состояние **до** FAN-1785; текущий
+tracked band имеет SHA-256 `4da3a7299332a6eccb769a3dd05dd3300655d2fda61abb2b065a288a88b12c75`.
+SHA-256 CSV в этой таблице остаётся актуальным.
 
 Это **в точности та же картина**, что на `e4bbc13139ed871e68a44665b561de27c359cb39`
 в FAN-1732: совпали обе пары SHA-256 и обе сводки diff. Изменения `dev` между
@@ -220,7 +236,129 @@ git-tracked band. Поэтому различие band объясняется с
 - Вне полосы → в полосе: `assassin/venom_wire`, `doctor/bone_saw`,
   `guitarist/sound_amp`, `sniper/sniper_spotter_scope`.
 
+## Пересборка band из tracked CSV (FAN-1785)
+
+Дата: 2026-07-28. База: `origin/dev`
+`a3810ea0929f790c8aeea511e4792dba490ff41e`.
+
+Расследование выше показало, что band рассинхронизирован сразу по двум входам,
+но пути «прочитать зафиксированный CSV → посчитать полосу» в генераторе не
+существовало: `_validate_band(rows)` был достижим только после
+`_write_csv(rows)`. FAN-1785 добавила такой путь — `--mode=band`. Он читает
+`build/character_balance_dps.csv`, не пишет ни CSV, ни README и перезаписывает
+только `build/character_balance_band.md`. Ни новых замеров, ни `--mode=live`,
+ни ветки `FSD_FULL_CSV=1` для этого не нужно.
+
+Команда (прогнана дважды подряд; обычный не-эксклюзивный слот — режим ничего не
+меряет и от таймингов не зависит):
+
+```text
+python3 tools/godot_gate.py --headless --path . \
+  --script res://tools/character_balance_csv.gd -- --mode=band
+```
+
+Godot `4.7.stable.official.5b4e0cb0f`, exit code `0` в обоих прогонах. Оба
+прогона дали побайтово одинаковый band, SHA-256
+`4da3a7299332a6eccb769a3dd05dd3300655d2fda61abb2b065a288a88b12c75`. CSV после
+обоих прогонов сохранил SHA-256
+`0c9fe45267330d8a79d47a9eae2402869137c1169755f89953d006c3412e2735` — значение
+из таблицы провенанса выше.
+
+### Дельта вердиктов
+
+| Срез | Было — band v3: медиана / полоса / нарушений | Стало — CSV v9 + текущие веса | Пар со сменой вердикта |
+| --- | --- | --- | ---: |
+| `ideal_1` | FAIL: `318.2`, `[254.6 .. 381.9]`, `38/51` | PASS: `741.7`, `[593.4 .. 890.0]`, `0/51` | 38 |
+| `ideal_5` | FAIL: `1100.1`, `[880.1 .. 1320.1]`, `37/51` | PASS: `2364.7`, `[1891.7 .. 2837.6]`, `0/51` | 37 |
+| `ideal_20` | FAIL: `5006.1`, `[4004.9 .. 6007.4]`, `41/51` | PASS: `7533.4`, `[6026.8 .. 9040.1]`, `0/51` | 41 |
+
+Итог артефакта: «ПОЛОСА НЕ ВЫДЕРЖАНА — требуется тюнинг» → «ПОЛОСА ВЫДЕРЖАНА
+(±20%)». Фактический разброс упал с `3185791.1x` / `10719330.8x` / `935.5x` до
+`1.2x` / `1.4x` / `1.4x` при цели ≤ `1.50x`. Все 116 смен вердикта — в одну
+сторону, «вне полосы → в полосе»; ни одна пара из полосы не вышла. Это
+ожидаемо: `COMFORT_BAND_SLICE_WEIGHTS` в `90352a6c` калибровались именно по CSV
+v9, а старый band считался по данным v3, для которых эти веса не предназначены.
+
+### Поимённо: `ideal_1`
+
+- Вне полосы → в полосе (38):
+  `assassin/chakrams`, `assassin/shadow_daggers`, `assassin/venom_wire`,
+  `berserk/axe`, `biologist/biologist_sample_injector`,
+  `biologist/biologist_spore_lens`, `biologist/biologist_symbiote_seed`,
+  `chemist/acid_flask`, `chemist/blast_powder`, `dark_mage/dark_book`,
+  `dark_mage/dark_wand`, `doctor/bone_saw`, `doctor/plague_syringe`,
+  `doctor/restore_potion`, `druid/briar_staff`, `druid/raven_totem`,
+  `druid/summon_amulet`, `elementalist/elementalist_prism_focus`,
+  `engineer/engineer_pressure_mines`, `engineer/engineer_sentry_wrench`,
+  `guitarist/bass_guitar`, `guitarist/electric_guitar`,
+  `guitarist/sound_amp`, `knight/holy_flail`, `knight/long_spear`,
+  `priest/priest_censer`, `priest/priest_chime`,
+  `priest/priest_reliquary`, `ranger/hunter_trap`, `ranger/storm_longbow`,
+  `robot/robot_magnetic_anchor`, `sniper/sniper_shatter_rounds`,
+  `sniper/sniper_spotter_scope`, `soldier/soldier_bayonet`,
+  `soldier/soldier_grenade`, `soldier/soldier_rifle`,
+  `thief/thief_coin_pouch`, `thief/thief_shadow_cloak`.
+- В полосе → вне полосы: нет.
+
+### Поимённо: `ideal_5`
+
+- Вне полосы → в полосе (37):
+  `assassin/chakrams`, `assassin/venom_wire`, `berserk/axe`,
+  `berserk/hammer`, `berserk/sword`,
+  `biologist/biologist_sample_injector`, `biologist/biologist_spore_lens`,
+  `biologist/biologist_symbiote_seed`, `chemist/acid_flask`,
+  `chemist/blast_powder`, `dark_mage/dark_book`, `dark_mage/dark_wand`,
+  `doctor/bone_saw`, `doctor/plague_syringe`, `doctor/restore_potion`,
+  `druid/briar_staff`, `druid/raven_totem`, `druid/summon_amulet`,
+  `elementalist/elementalist_meteor_core`,
+  `elementalist/elementalist_orb_ring`,
+  `elementalist/elementalist_prism_focus`,
+  `engineer/engineer_pressure_mines`, `engineer/engineer_sentry_wrench`,
+  `guitarist/bass_guitar`, `guitarist/electric_guitar`,
+  `guitarist/sound_amp`, `knight/long_spear`, `knight/tower_shield`,
+  `priest/priest_censer`, `priest/priest_reliquary`,
+  `ranger/moon_crossbow`, `ranger/storm_longbow`,
+  `robot/robot_reactor_core`, `sniper/sniper_spotter_scope`,
+  `soldier/soldier_grenade`, `thief/thief_shadow_cloak`,
+  `thief/thief_smoke_bomb`.
+- В полосе → вне полосы: нет.
+
+### Поимённо: `ideal_20`
+
+- Вне полосы → в полосе (41):
+  `assassin/chakrams`, `assassin/shadow_daggers`, `assassin/venom_wire`,
+  `berserk/axe`, `berserk/hammer`, `berserk/sword`,
+  `biologist/biologist_sample_injector`, `biologist/biologist_spore_lens`,
+  `biologist/biologist_symbiote_seed`, `chemist/acid_flask`,
+  `chemist/blast_powder`, `dark_mage/cursed_skull`, `dark_mage/dark_book`,
+  `doctor/bone_saw`, `doctor/plague_syringe`, `doctor/restore_potion`,
+  `druid/raven_totem`, `druid/summon_amulet`,
+  `elementalist/elementalist_meteor_core`,
+  `elementalist/elementalist_orb_ring`,
+  `elementalist/elementalist_prism_focus`,
+  `engineer/engineer_pressure_mines`, `engineer/engineer_repair_drone`,
+  `engineer/engineer_sentry_wrench`, `guitarist/bass_guitar`,
+  `guitarist/electric_guitar`, `guitarist/sound_amp`, `knight/holy_flail`,
+  `knight/long_spear`, `knight/tower_shield`, `priest/priest_reliquary`,
+  `ranger/hunter_trap`, `ranger/moon_crossbow`, `ranger/storm_longbow`,
+  `sniper/sniper_deadeye_rifle`, `sniper/sniper_shatter_rounds`,
+  `sniper/sniper_spotter_scope`, `soldier/soldier_grenade`,
+  `thief/thief_coin_pouch`, `thief/thief_shadow_cloak`,
+  `thief/thief_smoke_bomb`.
+- В полосе → вне полосы: нет.
+
+### Что этот PASS НЕ значит
+
+Пересобран только отчёт. `build/character_balance_dps.csv`,
+`COMFORT_BAND_SLICE_WEIGHTS`, `COMFORT_BAND_SLICE_OVERRIDES` и `scripts/**` в
+этой правке не изменялись, поэтому PASS не является подгонкой входов под
+полосу — это первое измерение полосы на её собственных входах. Живой баланс не
+менялся; ни один тест и ни один гейт band не читает (`comfort_band_cross_class_gate.gd`
+судит по своей плоской модели на `base_stats`, а не по этому артефакту).
+
 ## Ограничения безопасности
+
+FAN-1778 (расследование):
 
 - Ветка `FSD_FULL_CSV=1` **не запускалась**.
 - Рабочие `build/character_balance_dps.csv` и
@@ -228,3 +366,11 @@ git-tracked band. Поэтому различие band объясняется с
   писал только во временном detached worktree.
 - Их контрольные SHA-256 до и после расследования совпадают со значениями в
   таблице выше.
+
+FAN-1785 (пересборка band):
+
+- Ветка `FSD_FULL_CSV=1` и `--mode=live` **не запускались**; `--mode=band`
+  живых замеров не делает.
+- Единственный перезаписанный файл — `build/character_balance_band.md`.
+- `build/character_balance_dps.csv` остался байтово неизменным: `git diff` и
+  `git status` по этому пути чисты после обоих прогонов.
