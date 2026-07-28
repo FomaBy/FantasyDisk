@@ -72,7 +72,7 @@ class QualityStaticGuardTest(unittest.TestCase):
     def test_ignores_script_below_tracked_gdignore(self):
         with tempfile.TemporaryDirectory() as tmp:
             root = Path(tmp)
-            ignored = root / "build"
+            ignored = root / "vendor_ignored"
             ignored.mkdir()
             (ignored / ".gdignore").write_text("", encoding="utf-8")
             fixture = ignored / "qa" / "probe.gd"
@@ -81,7 +81,7 @@ class QualityStaticGuardTest(unittest.TestCase):
             self.assertEqual(
                 self.module.script_uid_errors(
                     root,
-                    ["build/.gdignore", "build/qa/probe.gd"],
+                    ["vendor_ignored/.gdignore", "vendor_ignored/qa/probe.gd"],
                 ),
                 [],
             )
