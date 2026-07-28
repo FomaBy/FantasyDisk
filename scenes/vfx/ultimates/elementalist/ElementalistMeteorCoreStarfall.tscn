@@ -1,0 +1,183 @@
+[gd_scene load_steps=5 format=3]
+
+[ext_resource type="Texture2D" path="res://assets/sprites/effects/vfx_weapon_elementalist_meteor_core.png" id="1_meteor"]
+
+[sub_resource type="CanvasItemMaterial" id="CanvasItemMaterial_add"]
+blend_mode = 1
+light_mode = 1
+
+[sub_resource type="Animation" id="Animation_starfall"]
+resource_name = "ultimate"
+length = 8.9
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("SkyVeil:modulate:a")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 0.4, 2.45, 4.4, 8.1, 8.9),
+"transitions": PackedFloat32Array(1, 1, 1, 1, 1, 1),
+"update": 0,
+"values": [0.0, 0.25, 0.95, 0.6, 0.35, 0.0]
+}
+tracks/1/type = "value"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath("RuneShadow:scale")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0, 2.45, 8.9),
+"transitions": PackedFloat32Array(1, 1, 1),
+"update": 0,
+"values": [Vector2(0.15, 0.15), Vector2(1, 1), Vector2(1, 1)]
+}
+tracks/2/type = "value"
+tracks/2/imported = false
+tracks/2/enabled = true
+tracks/2/path = NodePath("RuneShadow:modulate:a")
+tracks/2/interp = 1
+tracks/2/loop_wrap = true
+tracks/2/keys = {
+"times": PackedFloat32Array(0, 0.3, 2.45, 3.1, 8.9),
+"transitions": PackedFloat32Array(1, 1, 1, 1, 1),
+"update": 0,
+"values": [0.0, 0.5, 1.0, 0.0, 0.0]
+}
+tracks/3/type = "value"
+tracks/3/imported = false
+tracks/3/enabled = true
+tracks/3/path = NodePath("RuneGlyphs:modulate:a")
+tracks/3/interp = 1
+tracks/3/loop_wrap = true
+tracks/3/keys = {
+"times": PackedFloat32Array(0, 1.2, 2.45, 3.0, 8.9),
+"transitions": PackedFloat32Array(1, 1, 1, 1, 1),
+"update": 0,
+"values": [0.0, 0.4, 1.0, 0.0, 0.0]
+}
+tracks/4/type = "value"
+tracks/4/imported = false
+tracks/4/enabled = true
+tracks/4/path = NodePath("Meteor:position")
+tracks/4/interp = 1
+tracks/4/loop_wrap = true
+tracks/4/keys = {
+"times": PackedFloat32Array(0, 2.45, 2.75, 5.6, 8.9),
+"transitions": PackedFloat32Array(1, 1, 1, 1, 1),
+"update": 0,
+"values": [Vector2(26, -258), Vector2(26, -258), Vector2(0, 0), Vector2(0, 4), Vector2(0, 6)]
+}
+tracks/5/type = "value"
+tracks/5/imported = false
+tracks/5/enabled = true
+tracks/5/path = NodePath("Meteor:modulate:a")
+tracks/5/interp = 1
+tracks/5/loop_wrap = true
+tracks/5/keys = {
+"times": PackedFloat32Array(0, 2.45, 2.55, 5.6, 6.4, 8.9),
+"transitions": PackedFloat32Array(1, 1, 1, 1, 1, 1),
+"update": 0,
+"values": [0.0, 0.0, 1.0, 1.0, 0.5, 0.0]
+}
+tracks/6/type = "value"
+tracks/6/imported = false
+tracks/6/enabled = true
+tracks/6/path = NodePath("CraterRing:modulate:a")
+tracks/6/interp = 1
+tracks/6/loop_wrap = true
+tracks/6/keys = {
+"times": PackedFloat32Array(0, 2.7, 2.85, 7.4, 8.1, 8.9),
+"transitions": PackedFloat32Array(1, 1, 1, 1, 1, 1),
+"update": 0,
+"values": [0.0, 0.0, 1.0, 0.85, 0.5, 0.0]
+}
+tracks/7/type = "value"
+tracks/7/imported = false
+tracks/7/enabled = true
+tracks/7/path = NodePath("CraterRing:scale")
+tracks/7/interp = 1
+tracks/7/loop_wrap = true
+tracks/7/keys = {
+"times": PackedFloat32Array(0, 2.75, 3.1, 4.2, 5.0, 5.9, 6.7, 8.1, 8.9),
+"transitions": PackedFloat32Array(1, 1, 1, 1, 1, 1, 1, 1, 1),
+"update": 0,
+"values": [Vector2(0.4, 0.4), Vector2(0.4, 0.4), Vector2(1, 1), Vector2(0.88, 0.88), Vector2(1.08, 1.08), Vector2(0.92, 0.92), Vector2(1.05, 1.05), Vector2(0.95, 0.95), Vector2(1, 1)]
+}
+tracks/8/type = "value"
+tracks/8/imported = false
+tracks/8/enabled = true
+tracks/8/path = NodePath("EmberField:modulate:a")
+tracks/8/interp = 1
+tracks/8/loop_wrap = true
+tracks/8/keys = {
+"times": PackedFloat32Array(0, 2.85, 3.4, 8.1, 8.9),
+"transitions": PackedFloat32Array(1, 1, 1, 1, 1),
+"update": 0,
+"values": [0.0, 0.0, 0.9, 0.4, 0.0]
+}
+
+[sub_resource type="AnimationLibrary" id="AnimationLibrary_starfall"]
+_data = {"ultimate": SubResource("Animation_starfall")}
+
+[node name="ElementalistMeteorCoreStarfall" type="Node2D"]
+metadata/ultimate_id = "elementalist/elementalist_meteor_core"
+metadata/silhouette = "sky_veil_rune_shadow_and_single_giant_meteor"
+metadata/motion_path = "long_ground_telegraph_then_vertical_meteor_drop"
+metadata/impact_language = "massive_single_impact_with_pulsing_fire_gravity_crater"
+metadata/max_visual_nodes = 6
+metadata/crowd_cap = 20
+
+[node name="SkyVeil" type="Polygon2D" parent="."]
+z_index = -15
+color = Color(0.06, 0.03, 0.12, 0.8)
+polygon = PackedVector2Array(-250, -170, 250, -170, 250, 170, -250, 170)
+modulate = Color(1, 1, 1, 0)
+
+[node name="RuneShadow" type="Line2D" parent="."]
+material = SubResource("CanvasItemMaterial_add")
+points = PackedVector2Array(118, 0, 109, 45, 83, 83, 45, 109, 0, 118, -45, 109, -83, 83, -109, 45, -118, 0, -109, -45, -83, -83, -45, -109, 0, -118, 45, -109, 83, -83, 109, -45)
+width = 9.0
+default_color = Color(1, 0.5, 0.2, 0.8)
+closed = true
+antialiased = true
+scale = Vector2(0.15, 0.15)
+modulate = Color(1, 1, 1, 0)
+
+[node name="RuneGlyphs" type="Line2D" parent="."]
+material = SubResource("CanvasItemMaterial_add")
+points = PackedVector2Array(0, -70, 70, 0, 0, 70, -70, 0)
+width = 6.0
+default_color = Color(1, 0.72, 0.3, 0.85)
+closed = true
+antialiased = true
+modulate = Color(1, 1, 1, 0)
+
+[node name="Meteor" type="Sprite2D" parent="."]
+material = SubResource("CanvasItemMaterial_add")
+texture = ExtResource("1_meteor")
+position = Vector2(26, -258)
+scale = Vector2(0.85, 0.85)
+modulate = Color(1, 0.85, 0.6, 0)
+
+[node name="CraterRing" type="Line2D" parent="."]
+material = SubResource("CanvasItemMaterial_add")
+points = PackedVector2Array(105, 0, 97, 40, 74, 74, 40, 97, 0, 105, -40, 97, -74, 74, -97, 40, -105, 0, -97, -40, -74, -74, -40, -97, 0, -105, 40, -97, 74, -74, 97, -40)
+width = 13.0
+default_color = Color(1, 0.55, 0.25, 0.95)
+closed = true
+antialiased = true
+scale = Vector2(0.4, 0.4)
+modulate = Color(1, 1, 1, 0)
+
+[node name="EmberField" type="Line2D" parent="."]
+points = PackedVector2Array(-120, 58, -78, 40, -30, 52, 18, 36, 66, 50, 118, 34)
+width = 8.0
+default_color = Color(1, 0.45, 0.15, 0.6)
+antialiased = true
+modulate = Color(1, 1, 1, 0)
+
+[node name="Timeline" type="AnimationPlayer" parent="."]
+libraries = {"": SubResource("AnimationLibrary_starfall")}
+autoplay = "ultimate"

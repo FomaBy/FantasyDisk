@@ -1,0 +1,207 @@
+[gd_scene load_steps=5 format=3]
+
+[ext_resource type="Texture2D" path="res://assets/sprites/effects/vfx_weapon_elementalist_orb_ring.png" id="1_orb"]
+
+[sub_resource type="CanvasItemMaterial" id="CanvasItemMaterial_add"]
+blend_mode = 1
+light_mode = 1
+
+[sub_resource type="Animation" id="Animation_grand_conclave"]
+resource_name = "ultimate"
+length = 8.4
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("Conclave:modulate:a")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 0.7, 7.6, 8.4),
+"transitions": PackedFloat32Array(1, 1, 1, 1),
+"update": 0,
+"values": [0.0, 1.0, 1.0, 0.0]
+}
+tracks/1/type = "value"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath("Conclave:rotation")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0, 0.7, 2.6, 4.2, 5.8, 7.0, 8.4),
+"transitions": PackedFloat32Array(1, 1, 1, 1, 1, 1, 1),
+"update": 0,
+"values": [0.0, 0.2, 1.0, 2.3, 4.2, 6.4, 7.2]
+}
+tracks/2/type = "value"
+tracks/2/imported = false
+tracks/2/enabled = true
+tracks/2/path = NodePath("BurnBeat:modulate:a")
+tracks/2/interp = 1
+tracks/2/loop_wrap = true
+tracks/2/keys = {
+"times": PackedFloat32Array(0, 0.85, 1.0, 1.45, 8.4),
+"transitions": PackedFloat32Array(1, 1, 1, 1, 1),
+"update": 0,
+"values": [0.0, 0.0, 1.0, 0.0, 0.0]
+}
+tracks/3/type = "value"
+tracks/3/imported = false
+tracks/3/enabled = true
+tracks/3/path = NodePath("FrostBeat:modulate:a")
+tracks/3/interp = 1
+tracks/3/loop_wrap = true
+tracks/3/keys = {
+"times": PackedFloat32Array(0, 2.45, 2.6, 3.05, 8.4),
+"transitions": PackedFloat32Array(1, 1, 1, 1, 1),
+"update": 0,
+"values": [0.0, 0.0, 1.0, 0.0, 0.0]
+}
+tracks/4/type = "value"
+tracks/4/imported = false
+tracks/4/enabled = true
+tracks/4/path = NodePath("GaleBeat:modulate:a")
+tracks/4/interp = 1
+tracks/4/loop_wrap = true
+tracks/4/keys = {
+"times": PackedFloat32Array(0, 4.05, 4.2, 4.65, 8.4),
+"transitions": PackedFloat32Array(1, 1, 1, 1, 1),
+"update": 0,
+"values": [0.0, 0.0, 1.0, 0.0, 0.0]
+}
+tracks/5/type = "value"
+tracks/5/imported = false
+tracks/5/enabled = true
+tracks/5/path = NodePath("ShockBeat:modulate:a")
+tracks/5/interp = 1
+tracks/5/loop_wrap = true
+tracks/5/keys = {
+"times": PackedFloat32Array(0, 5.65, 5.8, 6.25, 8.4),
+"transitions": PackedFloat32Array(1, 1, 1, 1, 1),
+"update": 0,
+"values": [0.0, 0.0, 1.0, 0.0, 0.0]
+}
+tracks/6/type = "value"
+tracks/6/imported = false
+tracks/6/enabled = true
+tracks/6/path = NodePath("Supernova:modulate:a")
+tracks/6/interp = 1
+tracks/6/loop_wrap = true
+tracks/6/keys = {
+"times": PackedFloat32Array(0, 6.9, 7.15, 7.6, 8.4),
+"transitions": PackedFloat32Array(1, 1, 1, 1, 1),
+"update": 0,
+"values": [0.0, 0.0, 1.0, 0.35, 0.0]
+}
+tracks/7/type = "value"
+tracks/7/imported = false
+tracks/7/enabled = true
+tracks/7/path = NodePath("Supernova:scale")
+tracks/7/interp = 1
+tracks/7/loop_wrap = true
+tracks/7/keys = {
+"times": PackedFloat32Array(0, 6.9, 7.3, 8.4),
+"transitions": PackedFloat32Array(1, 1, 1, 1),
+"update": 0,
+"values": [Vector2(0.1, 0.1), Vector2(0.1, 0.1), Vector2(1.1, 1.1), Vector2(1.35, 1.35)]
+}
+
+[sub_resource type="AnimationLibrary" id="AnimationLibrary_grand_conclave"]
+_data = {"ultimate": SubResource("Animation_grand_conclave")}
+
+[node name="ElementalistOrbRingGrandConclave" type="Node2D"]
+metadata/ultimate_id = "elementalist/elementalist_orb_ring"
+metadata/silhouette = "four_elemental_avatar_orbs_on_square_orbit"
+metadata/motion_path = "accelerating_square_orbit_with_sequential_cast_beats"
+metadata/impact_language = "four_element_beats_then_combined_white_supernova"
+metadata/max_visual_nodes = 10
+metadata/crowd_cap = 24
+
+[node name="Conclave" type="Node2D" parent="."]
+modulate = Color(1, 1, 1, 0)
+
+[node name="SquareOrbit" type="Line2D" parent="Conclave"]
+material = SubResource("CanvasItemMaterial_add")
+points = PackedVector2Array(110, 110, 110, -110, -110, -110, -110, 110)
+width = 5.0
+default_color = Color(1, 0.8, 0.45, 0.55)
+closed = true
+antialiased = true
+
+[node name="OrbFlame" type="Sprite2D" parent="Conclave"]
+material = SubResource("CanvasItemMaterial_add")
+texture = ExtResource("1_orb")
+position = Vector2(110, -110)
+scale = Vector2(0.3, 0.3)
+modulate = Color(1, 0.36, 0.22, 0.95)
+
+[node name="OrbFrost" type="Sprite2D" parent="Conclave"]
+material = SubResource("CanvasItemMaterial_add")
+texture = ExtResource("1_orb")
+position = Vector2(-110, -110)
+scale = Vector2(0.3, 0.3)
+modulate = Color(0.45, 0.75, 1, 0.95)
+
+[node name="OrbGale" type="Sprite2D" parent="Conclave"]
+material = SubResource("CanvasItemMaterial_add")
+texture = ExtResource("1_orb")
+position = Vector2(-110, 110)
+scale = Vector2(0.3, 0.3)
+modulate = Color(0.7, 1, 0.6, 0.95)
+
+[node name="OrbStorm" type="Sprite2D" parent="Conclave"]
+material = SubResource("CanvasItemMaterial_add")
+texture = ExtResource("1_orb")
+position = Vector2(110, 110)
+scale = Vector2(0.3, 0.3)
+modulate = Color(0.75, 0.5, 1, 0.95)
+
+[node name="BurnBeat" type="Line2D" parent="."]
+material = SubResource("CanvasItemMaterial_add")
+points = PackedVector2Array(70, 0, 65, 27, 49, 49, 27, 65, 0, 70, -27, 65, -49, 49, -65, 27, -70, 0, -65, -27, -49, -49, -27, -65, 0, -70, 27, -65, 49, -49, 65, -27)
+width = 10.0
+default_color = Color(1, 0.45, 0.2, 0.9)
+closed = true
+antialiased = true
+modulate = Color(1, 1, 1, 0)
+
+[node name="FrostBeat" type="Line2D" parent="."]
+material = SubResource("CanvasItemMaterial_add")
+points = PackedVector2Array(95, 0, 88, 36, 67, 67, 36, 88, 0, 95, -36, 88, -67, 67, -88, 36, -95, 0, -88, -36, -67, -67, -36, -88, 0, -95, 36, -88, 67, -67, 88, -36)
+width = 10.0
+default_color = Color(0.5, 0.8, 1, 0.9)
+closed = true
+antialiased = true
+modulate = Color(1, 1, 1, 0)
+
+[node name="GaleBeat" type="Line2D" parent="."]
+material = SubResource("CanvasItemMaterial_add")
+points = PackedVector2Array(120, 0, 111, 46, 85, 85, 46, 111, 0, 120, -46, 111, -85, 85, -111, 46, -120, 0, -111, -46, -85, -85, -46, -111, 0, -120, 46, -111, 85, -85, 111, -46)
+width = 10.0
+default_color = Color(0.7, 1, 0.6, 0.9)
+closed = true
+antialiased = true
+modulate = Color(1, 1, 1, 0)
+
+[node name="ShockBeat" type="Line2D" parent="."]
+material = SubResource("CanvasItemMaterial_add")
+points = PackedVector2Array(145, 0, 134, 55, 103, 103, 55, 134, 0, 145, -55, 134, -103, 103, -134, 55, -145, 0, -134, -55, -103, -103, -55, -134, 0, -145, 55, -134, 103, -103, 134, -55)
+width = 10.0
+default_color = Color(0.8, 0.55, 1, 0.9)
+closed = true
+antialiased = true
+modulate = Color(1, 1, 1, 0)
+
+[node name="Supernova" type="Line2D" parent="."]
+material = SubResource("CanvasItemMaterial_add")
+points = PackedVector2Array(150, 0, 139, 57, 106, 106, 57, 139, 0, 150, -57, 139, -106, 106, -139, 57, -150, 0, -139, -57, -106, -106, -57, -139, 0, -150, 57, -139, 106, -106, 139, -57)
+width = 16.0
+default_color = Color(1, 0.97, 0.9, 0.95)
+closed = true
+antialiased = true
+scale = Vector2(0.1, 0.1)
+modulate = Color(1, 1, 1, 0)
+
+[node name="Timeline" type="AnimationPlayer" parent="."]
+libraries = {"": SubResource("AnimationLibrary_grand_conclave")}
+autoplay = "ultimate"
