@@ -1,0 +1,179 @@
+[gd_scene load_steps=5 format=3]
+
+[ext_resource type="Texture2D" path="res://assets/sprites/effects/vfx_weapon_long_spear.png" id="1_spear"]
+
+[sub_resource type="CanvasItemMaterial" id="CanvasItemMaterial_add"]
+blend_mode = 1
+light_mode = 1
+
+[sub_resource type="Animation" id="Animation_spear_wall"]
+resource_name = "ultimate"
+length = 6.2
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("SpearPlant:modulate:a")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 0.15, 0.6, 1.1, 6.2),
+"transitions": PackedFloat32Array(1, 1, 1, 1, 1),
+"update": 0,
+"values": [0.0, 0.9, 0.9, 0.0, 0.0]
+}
+tracks/1/type = "value"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath("CorridorGuide:modulate:a")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0, 0.6, 5.2, 6.2),
+"transitions": PackedFloat32Array(1, 1, 1, 1),
+"update": 0,
+"values": [0.0, 0.5, 0.5, 0.0]
+}
+tracks/2/type = "value"
+tracks/2/imported = false
+tracks/2/enabled = true
+tracks/2/path = NodePath("Phalanx:modulate:a")
+tracks/2/interp = 1
+tracks/2/loop_wrap = true
+tracks/2/keys = {
+"times": PackedFloat32Array(0, 0.35, 0.9, 4.8, 5.4, 6.2),
+"transitions": PackedFloat32Array(1, 1, 1, 1, 1, 1),
+"update": 0,
+"values": [0.0, 0.15, 1.0, 1.0, 0.35, 0.0]
+}
+tracks/3/type = "value"
+tracks/3/imported = false
+tracks/3/enabled = true
+tracks/3/path = NodePath("Phalanx/RankOne:position")
+tracks/3/interp = 1
+tracks/3/loop_wrap = true
+tracks/3/keys = {
+"times": PackedFloat32Array(0, 1.0, 1.7, 6.2),
+"transitions": PackedFloat32Array(1, 1, 1, 1),
+"update": 0,
+"values": [Vector2(-170, -38), Vector2(-170, -38), Vector2(150, -38), Vector2(150, -38)]
+}
+tracks/4/type = "value"
+tracks/4/imported = false
+tracks/4/enabled = true
+tracks/4/path = NodePath("Phalanx/RankTwo:position")
+tracks/4/interp = 1
+tracks/4/loop_wrap = true
+tracks/4/keys = {
+"times": PackedFloat32Array(0, 1.6, 2.3, 6.2),
+"transitions": PackedFloat32Array(1, 1, 1, 1),
+"update": 0,
+"values": [Vector2(-170, 0), Vector2(-170, 0), Vector2(150, 0), Vector2(150, 0)]
+}
+tracks/5/type = "value"
+tracks/5/imported = false
+tracks/5/enabled = true
+tracks/5/path = NodePath("Phalanx/RankThree:position")
+tracks/5/interp = 1
+tracks/5/loop_wrap = true
+tracks/5/keys = {
+"times": PackedFloat32Array(0, 2.2, 2.9, 6.2),
+"transitions": PackedFloat32Array(1, 1, 1, 1),
+"update": 0,
+"values": [Vector2(-170, 38), Vector2(-170, 38), Vector2(150, 38), Vector2(150, 38)]
+}
+tracks/6/type = "value"
+tracks/6/imported = false
+tracks/6/enabled = true
+tracks/6/path = NodePath("PinChevrons:modulate:a")
+tracks/6/interp = 1
+tracks/6/loop_wrap = true
+tracks/6/keys = {
+"times": PackedFloat32Array(0, 1.6, 1.7, 2.0, 2.2, 2.3, 2.6, 2.8, 2.9, 3.3, 6.2),
+"transitions": PackedFloat32Array(1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1),
+"update": 0,
+"values": [0.0, 0.0, 0.95, 0.1, 0.1, 0.95, 0.1, 0.1, 0.95, 0.0, 0.0]
+}
+tracks/7/type = "value"
+tracks/7/imported = false
+tracks/7/enabled = true
+tracks/7/path = NodePath("BannerLine:modulate:a")
+tracks/7/interp = 1
+tracks/7/loop_wrap = true
+tracks/7/keys = {
+"times": PackedFloat32Array(0, 5.0, 5.3, 6.0, 6.2),
+"transitions": PackedFloat32Array(1, 1, 1, 1, 1),
+"update": 0,
+"values": [0.0, 0.0, 0.9, 0.6, 0.0]
+}
+
+[sub_resource type="AnimationLibrary" id="AnimationLibrary_spear_wall"]
+_data = {"ultimate": SubResource("Animation_spear_wall")}
+
+[node name="KnightLongSpearSpearWall" type="Node2D"]
+metadata/ultimate_id = "knight/long_spear"
+metadata/silhouette = "three_ghost_phalanx_ranks_in_aimed_corridor"
+metadata/motion_path = "offset_linear_rank_charges_through_corridor"
+metadata/impact_language = "sequential_pierce_pin_beats_then_banner_line"
+metadata/max_visual_nodes = 7
+metadata/crowd_cap = 18
+
+[node name="CorridorGuide" type="Polygon2D" parent="."]
+z_index = -15
+color = Color(0.5, 0.64, 0.88, 0.45)
+polygon = PackedVector2Array(-190, -60, 190, -60, 190, 60, -190, 60)
+modulate = Color(1, 1, 1, 0)
+
+[node name="SpearPlant" type="Line2D" parent="."]
+material = SubResource("CanvasItemMaterial_add")
+points = PackedVector2Array(0, -46, 0, 26)
+width = 5.0
+default_color = Color(0.88, 0.93, 1, 0.9)
+antialiased = true
+modulate = Color(1, 1, 1, 0)
+
+[node name="Phalanx" type="Node2D" parent="."]
+modulate = Color(1, 1, 1, 0)
+
+[node name="RankOne" type="Sprite2D" parent="Phalanx"]
+material = SubResource("CanvasItemMaterial_add")
+texture = ExtResource("1_spear")
+position = Vector2(-170, -38)
+rotation = 1.5708
+scale = Vector2(0.42, 0.42)
+modulate = Color(0.75, 0.85, 1, 0.8)
+
+[node name="RankTwo" type="Sprite2D" parent="Phalanx"]
+material = SubResource("CanvasItemMaterial_add")
+texture = ExtResource("1_spear")
+position = Vector2(-170, 0)
+rotation = 1.5708
+scale = Vector2(0.42, 0.42)
+modulate = Color(0.75, 0.85, 1, 0.8)
+
+[node name="RankThree" type="Sprite2D" parent="Phalanx"]
+material = SubResource("CanvasItemMaterial_add")
+texture = ExtResource("1_spear")
+position = Vector2(-170, 38)
+rotation = 1.5708
+scale = Vector2(0.42, 0.42)
+modulate = Color(0.75, 0.85, 1, 0.8)
+
+[node name="PinChevrons" type="Line2D" parent="."]
+material = SubResource("CanvasItemMaterial_add")
+points = PackedVector2Array(112, -34, 148, 0, 112, 34)
+width = 8.0
+default_color = Color(0.85, 0.92, 1, 0.9)
+antialiased = true
+modulate = Color(1, 1, 1, 0)
+
+[node name="BannerLine" type="Line2D" parent="."]
+material = SubResource("CanvasItemMaterial_add")
+points = PackedVector2Array(150, -88, 150, 88)
+width = 6.0
+default_color = Color(0.78, 0.86, 1, 0.9)
+antialiased = true
+modulate = Color(1, 1, 1, 0)
+
+[node name="Timeline" type="AnimationPlayer" parent="."]
+libraries = {"": SubResource("AnimationLibrary_spear_wall")}
+autoplay = "ultimate"
