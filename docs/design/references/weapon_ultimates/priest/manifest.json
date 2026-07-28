@@ -1,0 +1,135 @@
+{
+  "schema_version": 1,
+  "issue": "FAN-1484",
+  "class_id": "priest",
+  "contract": {
+    "schema": "data/ultimates/presentation_schema/v1/weapon_ultimate_presentation_manifest.schema.json",
+    "phase_groups": [
+      "windup",
+      "release",
+      "active",
+      "recovery",
+      "cancel"
+    ],
+    "max_timeline_seconds": 10.0,
+    "headless_fallback": "no_op",
+    "runtime_adapter_status": "unbound_shared_adapter_owned_by_FAN-1541"
+  },
+  "generator_provenance": {
+    "route": "reused_approved_assets_no_new_raster_generation",
+    "new_pixellab_assets": [],
+    "reused_sources": {
+      "priest_reliquary": {
+        "source_path": "assets/sprites/effects/vfx_weapon_priest_reliquary.png",
+        "runtime_scene": "scenes/vfx/ultimates/priest/PriestReliquarySanctumJudgment.tscn",
+        "note": "Approved weapon ultimate VFX sprite; no new isolated source frame was created."
+      },
+      "priest_censer": {
+        "source_path": "assets/sprites/effects/vfx_weapon_priest_censer.png",
+        "runtime_scene": "scenes/vfx/ultimates/priest/PriestCenserUnbreakableVow.tscn",
+        "note": "Approved weapon ultimate VFX sprite; no new isolated source frame was created."
+      },
+      "priest_chime": {
+        "source_path": "assets/sprites/effects/vfx_weapon_priest_chime.png",
+        "runtime_scene": "scenes/vfx/ultimates/priest/PriestChimeThreeBellsOfDawn.tscn",
+        "note": "Approved weapon ultimate VFX sprite; no new isolated source frame was created."
+      }
+    }
+  },
+  "weapons": [
+    {
+      "weapon_id": "priest_reliquary",
+      "title": "Суд Светлой Святыни",
+      "scene_path": "scenes/vfx/ultimates/priest/PriestReliquarySanctumJudgment.tscn",
+      "silhouette": "opened reliquary shrine with three growing consecration rings and a light pillar",
+      "motion_path": "stationary shrine opens its doors, rings consecrate outward in three beats, then a vertical pillar and soft shield halo",
+      "impact_language": "three sanctify ring beats, one vertical judgment pillar, then a soft heal-shield halo",
+      "timing_seconds": {
+        "windup": 0.0,
+        "release": 0.9,
+        "active": 1.25,
+        "recovery": 7.8,
+        "cancel": 8.6
+      },
+      "phase_ids": {
+        "windup": "weapon_ultimate.phase.priest.priest_reliquary.windup",
+        "release": "weapon_ultimate.phase.priest.priest_reliquary.execute",
+        "active": "weapon_ultimate.phase.priest.priest_reliquary.active",
+        "recovery": "weapon_ultimate.phase.priest.priest_reliquary.recover",
+        "cancel": "weapon_ultimate.phase.priest.priest_reliquary.cleanup"
+      },
+      "performance": {
+        "max_visual_nodes": 12,
+        "crowd_cap": 22,
+        "crowd_budget_enforcement_owner": "runtime enforcement FAN-1541",
+        "heal_overheal_shield_owner": "mechanics FAN-1485"
+      }
+    },
+    {
+      "weapon_id": "priest_censer",
+      "title": "Обет Непоколебимости",
+      "scene_path": "scenes/vfx/ultimates/priest/PriestCenserUnbreakableVow.tscn",
+      "silhouette": "giant censer swinging on a chain orbit inside a thick smoke ward",
+      "motion_path": "chain unwinds and the censer orbit accelerates around the hero while the ward thickens and stored-light beads grow",
+      "impact_language": "sustained capped-mitigation smoke ward ends in a censer slam and one holy counter wave",
+      "timing_seconds": {
+        "windup": 0.0,
+        "release": 0.6,
+        "active": 0.95,
+        "recovery": 6.9,
+        "cancel": 7.6
+      },
+      "phase_ids": {
+        "windup": "weapon_ultimate.phase.priest.priest_censer.windup",
+        "release": "weapon_ultimate.phase.priest.priest_censer.execute",
+        "active": "weapon_ultimate.phase.priest.priest_censer.active",
+        "recovery": "weapon_ultimate.phase.priest.priest_censer.recover",
+        "cancel": "weapon_ultimate.phase.priest.priest_censer.cleanup"
+      },
+      "performance": {
+        "max_visual_nodes": 10,
+        "crowd_cap": 20,
+        "crowd_budget_enforcement_owner": "runtime enforcement FAN-1541",
+        "mitigation_cap_and_counter_owner": "mechanics FAN-1485"
+      }
+    },
+    {
+      "weapon_id": "priest_chime",
+      "title": "Три Колокола Рассвета",
+      "scene_path": "scenes/vfx/ultimates/priest/PriestChimeThreeBellsOfDawn.tscn",
+      "silhouette": "hand chime over three layered dawn bell arcs with a cross guard sigil",
+      "motion_path": "bell swings three sequential toll arcs outward — silver, gold, then white dawn — before a celestial mote dissolve",
+      "impact_language": "staccato triple toll — silver interrupt, gold chain smite, white dawn lethal guard — then chime motes",
+      "timing_seconds": {
+        "windup": 0.0,
+        "release": 0.5,
+        "active": 0.8,
+        "recovery": 5.6,
+        "cancel": 6.4
+      },
+      "phase_ids": {
+        "windup": "weapon_ultimate.phase.priest.priest_chime.windup",
+        "release": "weapon_ultimate.phase.priest.priest_chime.execute",
+        "active": "weapon_ultimate.phase.priest.priest_chime.active",
+        "recovery": "weapon_ultimate.phase.priest.priest_chime.recover",
+        "cancel": "weapon_ultimate.phase.priest.priest_chime.cleanup"
+      },
+      "performance": {
+        "max_visual_nodes": 9,
+        "crowd_cap": 18,
+        "crowd_budget_enforcement_owner": "runtime enforcement FAN-1541",
+        "lethal_prevention_window_owner": "mechanics FAN-1485"
+      }
+    }
+  ],
+  "evidence": {
+    "contact_sheets": [
+      "docs/design/references/weapon_ultimates/priest/priest_ultimate_timelines_648p.png",
+      "docs/design/references/weapon_ultimates/priest/priest_ultimate_timelines_720p.png",
+      "docs/design/references/weapon_ultimates/priest/priest_ultimate_timelines_1080p.png",
+      "docs/design/references/weapon_ultimates/priest/priest_ultimate_timelines_2k.png"
+    ],
+    "capture_script": "tests/ultimates/presentation/priest_ultimate_contact_capture.gd",
+    "focused_test": "tests/ultimates/presentation/priest_ultimate_timelines.gd"
+  }
+}
