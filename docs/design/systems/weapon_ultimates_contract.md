@@ -1,8 +1,9 @@
 # Weapon-keyed ultimate contract
 
-Status: schema v1 is implemented as a declaration and migration foundation.
-Gameplay still executes the existing class ultimate until an individual weapon
-profile is explicitly marked `ready`.
+Status: schema v1 is implemented as a declaration and migration foundation, and
+the generic runtime that executes a ready declaration now exists. Gameplay still
+executes the existing class ultimate until an individual weapon profile is
+explicitly marked `ready`; no shipped profile is, so behaviour is unchanged.
 
 ## Scope and source of truth
 
@@ -91,6 +92,57 @@ No save migration is part of schema v1. The persisted contract remains
 `character_id`, `weapon_id`, and `ultimate_charge`; no profile ID or weapon
 ultimate state is written.
 
+## Runtime: controller, activation, executor families
+
+`scripts/ultimates/controller/ultimate_controller.gd` is the single activation
+path. It reads `resolution_source(...)`, and only a `weapon_profile` result is
+taken over; a `legacy_class_fallback` result makes `activate()` return false so
+the caller keeps running its unchanged class ultimate. That is the migration
+bridge, and it is why every profile can stay `declared` without any gameplay
+change.
+
+`scripts/ultimates/controller/ultimate_activation.gd` is one live cast. Executors
+never touch the Player: they ask the activation for targets, damage, modifiers,
+spawns and presentation. The host side is the eight `ultimate_host_*` methods
+listed in `UltimateActivation.HOST_METHODS`, implemented as a narrow adapter in
+`scripts/player.gd`. Nothing below the adapter may branch on a class or a weapon.
+
+Executor families live in `scripts/ultimates/executors/` and are selected purely
+by `executor.strategy_id`:
+
+| `strategy_id` | Shape |
+| --- | --- |
+| `burst` | One instant hit on everything the declaration selects |
+| `aimed_sequence` | N aimed shots over time, re-acquiring dead targets |
+| `timed_modifier` | Hold declared run modifiers for the cast duration |
+| `status_zone` | Lingering area that ticks damage and refreshes a status |
+| `control` | Displacement plus a lockdown status in a radius |
+| `deploy_summon` | Place declared scenes the activation owns |
+| `chained_projectile` | Hops between distinct targets with damage falloff |
+
+A family that schedules its own tween expresses the whole cast length in that
+tween; the controller chains completion onto it rather than racing it with a
+parallel timer. A family that schedules nothing returns its lifetime instead.
+
+`UltimateDamageResult.applied` is the HP the target actually lost, mirroring the
+overkill-clamped delta `enemy.gd` publishes. Attribution, ledgers and charge read
+`applied`, never the attempted amount, so overkill and damage-taken reductions
+cannot inflate them.
+
+`total_boss_cap` is a budget for the whole activation, opened once per boss at
+`max_health * total_boss_cap` and drawn down by applied HP. Multi-hit, DoT-style
+zone ticks and deferred summon damage all spend the same budget: a spawn that
+exposes an `ultimate_damage_sink` property is bound to the activation ledger, and
+zone ticks deliberately do not use a StatusEffects `dot_damage`, which would tick
+on the target and bypass the budget. Normal enemies are never capped.
+
+The activation owns every resource it created. Player death, leaving the tree and
+a new run all call `cancel()`, which kills tracked tweens, frees summons, deploys
+and presentation nodes, and unwinds modifiers in reverse order. A cast that simply
+ran to completion unwinds the same way but lets its last VFX fade. On a new run,
+cancellation must happen before `run_modifiers` is reset, otherwise the revert
+would land on freshly created defaults.
+
 ## Codex and downstream consumers
 
 For current player-visible behavior and balance, the authoritative executable
@@ -118,7 +170,22 @@ python3 tools/godot_gate.py --headless --path . \
   --script res://tests/ultimates/registry_contract_test.gd
 python3 tools/godot_gate.py --headless --path . \
   --script res://tests/ultimates/registry_validator_test.gd
+python3 tools/godot_gate.py --headless --path . \
+  --script res://tests/ultimates/controller_runtime_test.gd
+python3 tools/godot_gate.py --headless --path . \
+  --script res://tests/ultimates/controller_player_integration_test.gd
 ```
+
+`controller_runtime_test` drives every executor family through the same
+`activate(class_id, weapon_id)` call from fixture declarations, and asserts that
+no source file under `scripts/ultimates/controller/` or
+`scripts/ultimates/executors/` mentions any canonical class or weapon id. It also
+covers refused re-entry, a paused tree, cancellation, applied-versus-attempted
+HP, and the whole-activation boss budget including deferred summon damage.
+`controller_player_integration_test` holds the other half: every shipped profile
+still resolves to the legacy class ultimate, all 17 class ultimates still fire and
+spend their charge exactly once, and — with a ready declaration injected — the
+narrow `player.gd` adapter drives a real cast that a new run or a node end drops.
 
 The tests cover all 51 selections, both sibling negative controls for every
 selection, exact legacy fallback preservation, fail-closed unknown pairs,
