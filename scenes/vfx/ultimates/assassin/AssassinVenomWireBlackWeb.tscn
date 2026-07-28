@@ -1,0 +1,130 @@
+[gd_scene load_steps=4 format=3]
+
+[ext_resource type="Texture2D" path="res://assets/sprites/weapons/venom_wire.png" id="1_wire"]
+
+[sub_resource type="CanvasItemMaterial" id="CanvasItemMaterial_add"]
+blend_mode = 1
+light_mode = 1
+
+[sub_resource type="Animation" id="Animation_black_web"]
+resource_name = "ultimate"
+length = 6.2
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("Anchors:scale")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 0.65, 1.2, 4.7, 5.35, 6.2),
+"transitions": PackedFloat32Array(1, 1, 1, 1, 1, 1),
+"update": 0,
+"values": [Vector2(0.16, 0.16), Vector2(0.56, 0.56), Vector2(0.8, 0.8), Vector2(1, 1), Vector2(0.42, 0.42), Vector2(0.08, 0.08)]
+}
+tracks/1/type = "value"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath("HexWeb:scale")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0, 0.65, 1.2, 4.7, 5.35, 6.2),
+"transitions": PackedFloat32Array(1, 1, 1, 1, 1, 1),
+"update": 0,
+"values": [Vector2(0.12, 0.12), Vector2(0.65, 0.65), Vector2(1, 1), Vector2(1.14, 1.14), Vector2(0.36, 0.36), Vector2(0.05, 0.05)]
+}
+tracks/2/type = "value"
+tracks/2/imported = false
+tracks/2/enabled = true
+tracks/2/path = NodePath("SnapCollapse:modulate:a")
+tracks/2/interp = 1
+tracks/2/loop_wrap = true
+tracks/2/keys = {
+"times": PackedFloat32Array(0, 4.7, 5.1, 5.6, 6.2),
+"transitions": PackedFloat32Array(1, 1, 1, 1, 1),
+"update": 0,
+"values": [0.0, 0.0, 1.0, 0.35, 0.0]
+}
+
+[sub_resource type="AnimationLibrary" id="AnimationLibrary_black_web"]
+_data = {"ultimate": SubResource("Animation_black_web")}
+
+[node name="AssassinVenomWireBlackWeb" type="Node2D"]
+metadata/ultimate_id = "assassin/venom_wire"
+metadata/silhouette = "six needle anchors holding a neon green hexagonal web"
+metadata/motion_path = "six anchors shoot outward then a hex web contracts toward the center"
+metadata/impact_language = "crossing poison sparks and a hexagonal snap-collapse"
+metadata/max_visual_nodes = 11
+metadata/crowd_cap = 24
+
+[node name="ToxinTelegraph" type="Polygon2D" parent="."]
+color = Color(0.08, 0.36, 0.04, 0.28)
+polygon = PackedVector2Array(0, -142, 124, -72, 124, 72, 0, 142, -124, 72, -124, -72)
+
+[node name="Anchors" type="Node2D" parent="."]
+
+[node name="NeedleOne" type="Sprite2D" parent="Anchors"]
+material = SubResource("CanvasItemMaterial_add")
+texture = ExtResource("1_wire")
+position = Vector2(0, -142)
+scale = Vector2(0.24, 0.24)
+modulate = Color(0.5, 1, 0.2, 0.88)
+
+[node name="NeedleTwo" type="Sprite2D" parent="Anchors"]
+material = SubResource("CanvasItemMaterial_add")
+texture = ExtResource("1_wire")
+position = Vector2(124, -72)
+rotation = 1.04
+scale = Vector2(0.24, 0.24)
+modulate = Color(0.5, 1, 0.2, 0.88)
+
+[node name="NeedleThree" type="Sprite2D" parent="Anchors"]
+material = SubResource("CanvasItemMaterial_add")
+texture = ExtResource("1_wire")
+position = Vector2(124, 72)
+rotation = 2.1
+scale = Vector2(0.24, 0.24)
+modulate = Color(0.5, 1, 0.2, 0.88)
+
+[node name="NeedleFour" type="Sprite2D" parent="Anchors"]
+material = SubResource("CanvasItemMaterial_add")
+texture = ExtResource("1_wire")
+position = Vector2(0, 142)
+rotation = 3.14
+scale = Vector2(0.24, 0.24)
+modulate = Color(0.5, 1, 0.2, 0.88)
+
+[node name="NeedleFive" type="Sprite2D" parent="Anchors"]
+material = SubResource("CanvasItemMaterial_add")
+texture = ExtResource("1_wire")
+position = Vector2(-124, 72)
+rotation = 4.19
+scale = Vector2(0.24, 0.24)
+modulate = Color(0.5, 1, 0.2, 0.88)
+
+[node name="NeedleSix" type="Sprite2D" parent="Anchors"]
+material = SubResource("CanvasItemMaterial_add")
+texture = ExtResource("1_wire")
+position = Vector2(-124, -72)
+rotation = 5.24
+scale = Vector2(0.24, 0.24)
+modulate = Color(0.5, 1, 0.2, 0.88)
+
+[node name="HexWeb" type="Line2D" parent="."]
+material = SubResource("CanvasItemMaterial_add")
+points = PackedVector2Array(0, -142, 124, -72, 124, 72, 0, 142, -124, 72, -124, -72, 0, -142, 0, 142, -124, -72, 124, 72, -124, 72, 124, -72)
+width = 7.0
+default_color = Color(0.28, 1, 0.12, 0.84)
+antialiased = true
+
+[node name="SnapCollapse" type="Line2D" parent="."]
+material = SubResource("CanvasItemMaterial_add")
+points = PackedVector2Array(-156, 0, 0, 0, 156, 0, 0, -142, 0, 0, 0, 142)
+width = 19.0
+default_color = Color(0.72, 1, 0.28, 0.96)
+antialiased = true
+modulate = Color(1, 1, 1, 0)
+
+[node name="Timeline" type="AnimationPlayer" parent="."]
+libraries = {"": SubResource("AnimationLibrary_black_web")}
+autoplay = "ultimate"
