@@ -1,0 +1,145 @@
+{
+  "schema_version": 1,
+  "class_id": "knight",
+  "class_order": 15,
+  "profiles": [
+    {
+      "weapon_id": "long_spear",
+      "implementation_state": "declared",
+      "fallback_policy_id": "legacy_class_ultimate",
+      "identity": {
+        "profile_id": "weapon_ultimate.profile.knight.long_spear",
+        "title_id": "weapon_ultimate.title.knight.long_spear",
+        "mechanic_id": "weapon_ultimate.mechanic.knight.long_spear"
+      },
+      "targeting": {
+        "aim_id": "weapon_ultimate.aim.knight.long_spear",
+        "strategy_id": "unbound",
+        "params": {}
+      },
+      "charge": {
+        "policy_id": "weapon_ultimate.charge.knight.long_spear",
+        "strategy_id": "unbound",
+        "params": {}
+      },
+      "cast_phases": {
+        "acquire": "weapon_ultimate.phase.knight.long_spear.acquire",
+        "windup": "weapon_ultimate.phase.knight.long_spear.windup",
+        "execute": "weapon_ultimate.phase.knight.long_spear.execute",
+        "active": "weapon_ultimate.phase.knight.long_spear.active",
+        "recover": "weapon_ultimate.phase.knight.long_spear.recover",
+        "cleanup": "weapon_ultimate.phase.knight.long_spear.cleanup"
+      },
+      "executor": {
+        "executor_id": "weapon_ultimate.executor.knight.long_spear",
+        "strategy_id": "unbound",
+        "params": {}
+      },
+      "total_boss_cap": null,
+      "presentation": {
+        "presentation_id": "weapon_ultimate.presentation.knight.long_spear",
+        "animation_id": "weapon_ultimate.animation.knight.long_spear",
+        "vfx_id": "weapon_ultimate.vfx.knight.long_spear",
+        "sfx_id": "weapon_ultimate.sfx.knight.long_spear",
+        "params": {}
+      },
+      "cleanup_policy": {
+        "policy_id": "weapon_ultimate.cleanup.knight.long_spear",
+        "strategy_id": "unbound",
+        "params": {}
+      }
+    },
+    {
+      "weapon_id": "tower_shield",
+      "implementation_state": "declared",
+      "fallback_policy_id": "legacy_class_ultimate",
+      "identity": {
+        "profile_id": "weapon_ultimate.profile.knight.tower_shield",
+        "title_id": "weapon_ultimate.title.knight.tower_shield",
+        "mechanic_id": "weapon_ultimate.mechanic.knight.tower_shield"
+      },
+      "targeting": {
+        "aim_id": "weapon_ultimate.aim.knight.tower_shield",
+        "strategy_id": "unbound",
+        "params": {}
+      },
+      "charge": {
+        "policy_id": "weapon_ultimate.charge.knight.tower_shield",
+        "strategy_id": "unbound",
+        "params": {}
+      },
+      "cast_phases": {
+        "acquire": "weapon_ultimate.phase.knight.tower_shield.acquire",
+        "windup": "weapon_ultimate.phase.knight.tower_shield.windup",
+        "execute": "weapon_ultimate.phase.knight.tower_shield.execute",
+        "active": "weapon_ultimate.phase.knight.tower_shield.active",
+        "recover": "weapon_ultimate.phase.knight.tower_shield.recover",
+        "cleanup": "weapon_ultimate.phase.knight.tower_shield.cleanup"
+      },
+      "executor": {
+        "executor_id": "weapon_ultimate.executor.knight.tower_shield",
+        "strategy_id": "unbound",
+        "params": {}
+      },
+      "total_boss_cap": null,
+      "presentation": {
+        "presentation_id": "weapon_ultimate.presentation.knight.tower_shield",
+        "animation_id": "weapon_ultimate.animation.knight.tower_shield",
+        "vfx_id": "weapon_ultimate.vfx.knight.tower_shield",
+        "sfx_id": "weapon_ultimate.sfx.knight.tower_shield",
+        "params": {}
+      },
+      "cleanup_policy": {
+        "policy_id": "weapon_ultimate.cleanup.knight.tower_shield",
+        "strategy_id": "unbound",
+        "params": {}
+      }
+    },
+    {
+      "weapon_id": "holy_flail",
+      "implementation_state": "declared",
+      "fallback_policy_id": "legacy_class_ultimate",
+      "identity": {
+        "profile_id": "weapon_ultimate.profile.knight.holy_flail",
+        "title_id": "weapon_ultimate.title.knight.holy_flail",
+        "mechanic_id": "weapon_ultimate.mechanic.knight.holy_flail"
+      },
+      "targeting": {
+        "aim_id": "weapon_ultimate.aim.knight.holy_flail",
+        "strategy_id": "unbound",
+        "params": {}
+      },
+      "charge": {
+        "policy_id": "weapon_ultimate.charge.knight.holy_flail",
+        "strategy_id": "unbound",
+        "params": {}
+      },
+      "cast_phases": {
+        "acquire": "weapon_ultimate.phase.knight.holy_flail.acquire",
+        "windup": "weapon_ultimate.phase.knight.holy_flail.windup",
+        "execute": "weapon_ultimate.phase.knight.holy_flail.execute",
+        "active": "weapon_ultimate.phase.knight.holy_flail.active",
+        "recover": "weapon_ultimate.phase.knight.holy_flail.recover",
+        "cleanup": "weapon_ultimate.phase.knight.holy_flail.cleanup"
+      },
+      "executor": {
+        "executor_id": "weapon_ultimate.executor.knight.holy_flail",
+        "strategy_id": "unbound",
+        "params": {}
+      },
+      "total_boss_cap": null,
+      "presentation": {
+        "presentation_id": "weapon_ultimate.presentation.knight.holy_flail",
+        "animation_id": "weapon_ultimate.animation.knight.holy_flail",
+        "vfx_id": "weapon_ultimate.vfx.knight.holy_flail",
+        "sfx_id": "weapon_ultimate.sfx.knight.holy_flail",
+        "params": {}
+      },
+      "cleanup_policy": {
+        "policy_id": "weapon_ultimate.cleanup.knight.holy_flail",
+        "strategy_id": "unbound",
+        "params": {}
+      }
+    }
+  ]
+}

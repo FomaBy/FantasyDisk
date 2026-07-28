@@ -1,0 +1,145 @@
+{
+  "schema_version": 1,
+  "class_id": "assassin",
+  "class_order": 11,
+  "profiles": [
+    {
+      "weapon_id": "chakrams",
+      "implementation_state": "declared",
+      "fallback_policy_id": "legacy_class_ultimate",
+      "identity": {
+        "profile_id": "weapon_ultimate.profile.assassin.chakrams",
+        "title_id": "weapon_ultimate.title.assassin.chakrams",
+        "mechanic_id": "weapon_ultimate.mechanic.assassin.chakrams"
+      },
+      "targeting": {
+        "aim_id": "weapon_ultimate.aim.assassin.chakrams",
+        "strategy_id": "unbound",
+        "params": {}
+      },
+      "charge": {
+        "policy_id": "weapon_ultimate.charge.assassin.chakrams",
+        "strategy_id": "unbound",
+        "params": {}
+      },
+      "cast_phases": {
+        "acquire": "weapon_ultimate.phase.assassin.chakrams.acquire",
+        "windup": "weapon_ultimate.phase.assassin.chakrams.windup",
+        "execute": "weapon_ultimate.phase.assassin.chakrams.execute",
+        "active": "weapon_ultimate.phase.assassin.chakrams.active",
+        "recover": "weapon_ultimate.phase.assassin.chakrams.recover",
+        "cleanup": "weapon_ultimate.phase.assassin.chakrams.cleanup"
+      },
+      "executor": {
+        "executor_id": "weapon_ultimate.executor.assassin.chakrams",
+        "strategy_id": "unbound",
+        "params": {}
+      },
+      "total_boss_cap": null,
+      "presentation": {
+        "presentation_id": "weapon_ultimate.presentation.assassin.chakrams",
+        "animation_id": "weapon_ultimate.animation.assassin.chakrams",
+        "vfx_id": "weapon_ultimate.vfx.assassin.chakrams",
+        "sfx_id": "weapon_ultimate.sfx.assassin.chakrams",
+        "params": {}
+      },
+      "cleanup_policy": {
+        "policy_id": "weapon_ultimate.cleanup.assassin.chakrams",
+        "strategy_id": "unbound",
+        "params": {}
+      }
+    },
+    {
+      "weapon_id": "shadow_daggers",
+      "implementation_state": "declared",
+      "fallback_policy_id": "legacy_class_ultimate",
+      "identity": {
+        "profile_id": "weapon_ultimate.profile.assassin.shadow_daggers",
+        "title_id": "weapon_ultimate.title.assassin.shadow_daggers",
+        "mechanic_id": "weapon_ultimate.mechanic.assassin.shadow_daggers"
+      },
+      "targeting": {
+        "aim_id": "weapon_ultimate.aim.assassin.shadow_daggers",
+        "strategy_id": "unbound",
+        "params": {}
+      },
+      "charge": {
+        "policy_id": "weapon_ultimate.charge.assassin.shadow_daggers",
+        "strategy_id": "unbound",
+        "params": {}
+      },
+      "cast_phases": {
+        "acquire": "weapon_ultimate.phase.assassin.shadow_daggers.acquire",
+        "windup": "weapon_ultimate.phase.assassin.shadow_daggers.windup",
+        "execute": "weapon_ultimate.phase.assassin.shadow_daggers.execute",
+        "active": "weapon_ultimate.phase.assassin.shadow_daggers.active",
+        "recover": "weapon_ultimate.phase.assassin.shadow_daggers.recover",
+        "cleanup": "weapon_ultimate.phase.assassin.shadow_daggers.cleanup"
+      },
+      "executor": {
+        "executor_id": "weapon_ultimate.executor.assassin.shadow_daggers",
+        "strategy_id": "unbound",
+        "params": {}
+      },
+      "total_boss_cap": null,
+      "presentation": {
+        "presentation_id": "weapon_ultimate.presentation.assassin.shadow_daggers",
+        "animation_id": "weapon_ultimate.animation.assassin.shadow_daggers",
+        "vfx_id": "weapon_ultimate.vfx.assassin.shadow_daggers",
+        "sfx_id": "weapon_ultimate.sfx.assassin.shadow_daggers",
+        "params": {}
+      },
+      "cleanup_policy": {
+        "policy_id": "weapon_ultimate.cleanup.assassin.shadow_daggers",
+        "strategy_id": "unbound",
+        "params": {}
+      }
+    },
+    {
+      "weapon_id": "venom_wire",
+      "implementation_state": "declared",
+      "fallback_policy_id": "legacy_class_ultimate",
+      "identity": {
+        "profile_id": "weapon_ultimate.profile.assassin.venom_wire",
+        "title_id": "weapon_ultimate.title.assassin.venom_wire",
+        "mechanic_id": "weapon_ultimate.mechanic.assassin.venom_wire"
+      },
+      "targeting": {
+        "aim_id": "weapon_ultimate.aim.assassin.venom_wire",
+        "strategy_id": "unbound",
+        "params": {}
+      },
+      "charge": {
+        "policy_id": "weapon_ultimate.charge.assassin.venom_wire",
+        "strategy_id": "unbound",
+        "params": {}
+      },
+      "cast_phases": {
+        "acquire": "weapon_ultimate.phase.assassin.venom_wire.acquire",
+        "windup": "weapon_ultimate.phase.assassin.venom_wire.windup",
+        "execute": "weapon_ultimate.phase.assassin.venom_wire.execute",
+        "active": "weapon_ultimate.phase.assassin.venom_wire.active",
+        "recover": "weapon_ultimate.phase.assassin.venom_wire.recover",
+        "cleanup": "weapon_ultimate.phase.assassin.venom_wire.cleanup"
+      },
+      "executor": {
+        "executor_id": "weapon_ultimate.executor.assassin.venom_wire",
+        "strategy_id": "unbound",
+        "params": {}
+      },
+      "total_boss_cap": null,
+      "presentation": {
+        "presentation_id": "weapon_ultimate.presentation.assassin.venom_wire",
+        "animation_id": "weapon_ultimate.animation.assassin.venom_wire",
+        "vfx_id": "weapon_ultimate.vfx.assassin.venom_wire",
+        "sfx_id": "weapon_ultimate.sfx.assassin.venom_wire",
+        "params": {}
+      },
+      "cleanup_policy": {
+        "policy_id": "weapon_ultimate.cleanup.assassin.venom_wire",
+        "strategy_id": "unbound",
+        "params": {}
+      }
+    }
+  ]
+}

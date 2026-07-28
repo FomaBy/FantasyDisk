@@ -30,6 +30,8 @@ const ROBOT_SPRITE := preload("res://assets/sprites/characters/robot.png")
 const DRUID_SPRITE := preload("res://assets/sprites/characters/druid.png")
 const PROGRESSION_DATA := preload("res://scripts/progression_data.gd")
 const PLAYER_MOVEMENT_INPUT := preload("res://scripts/player_movement_input.gd")
+# FAN-1449: вся геометрия наводки живёт в провайдере; player — тонкий адаптер.
+const AIM_CONTROLLER := preload("res://scripts/input/aim_controller.gd")
 const CUTOUT_RIG_SCRIPT := preload("res://scripts/cutout_rig_2d.gd")
 const PLAYER_SPRITE_GROUNDING := preload("res://scripts/player_sprite_grounding.gd")
 # Combat Feel Rework (этап A): per-class foot_y для legacy feet-origin fallback.
@@ -131,6 +133,7 @@ var character_id := "berserk"
 var weapon_id := ""
 var weapon_config := {}
 var aim_mode := "nearest"
+var _aim := AIM_CONTROLLER.new()  # FAN-1449: наводка мышью / правым стиком
 var last_weapon_animation_event: Dictionary = {}
 var equipped_weapon: Node = null
 var stats := {}
@@ -407,6 +410,7 @@ func rage_damage_multiplier() -> float:
 func _ready() -> void:
 	process_mode = Node.PROCESS_MODE_PAUSABLE
 	_ensure_default_input_actions()
+	_aim.attach(self)
 	if stats.is_empty():
 		configure_character(character_id)
 
@@ -752,6 +756,7 @@ func _physics_process(_delta: float) -> void:
 	_triage_cooldown_left = max(_triage_cooldown_left - _delta, 0.0)
 	_update_rage_hit_stacks(_delta)
 	_update_flurry_tempo(_delta)
+	_aim.sync(self, _gamepad_deadzone(), attack_aim_mode())
 	var direction := _movement_input_direction()
 	var manual_direction := direction
 	if InputMap.has_action("ultimate") and Input.is_action_just_pressed("ultimate"):
@@ -814,7 +819,8 @@ func _clear_debug_move_target() -> void:
 
 
 func set_aim_mode(mode: String) -> void:
-	aim_mode = "cursor" if mode == "cursor" else "nearest"
+	aim_mode = AIM_CONTROLLER.normalize_mode(mode)
+	_aim.set_mode(aim_mode)
 
 
 func attack_aim_mode() -> String:
@@ -824,26 +830,16 @@ func attack_aim_mode() -> String:
 
 
 func attack_aim_position(range_limit := 999999.0) -> Vector2:
-	var cursor_position := get_global_mouse_position()
-	var offset := cursor_position - global_position
-	if range_limit >= 999998.0 or offset.length() <= range_limit:
-		return cursor_position
-	if offset.length_squared() <= 0.001:
-		return global_position + _facing_direction * range_limit
-	return global_position + offset.normalized() * range_limit
+	return _aim.player_aim_point(self, range_limit)
 
 
 func attack_aim_direction(default_direction := Vector2.RIGHT, range_limit := 999999.0) -> Vector2:
-	if attack_aim_mode() == "cursor":
-		var offset := attack_aim_position(range_limit) - global_position
-		if offset.length_squared() > 0.001:
-			return offset.normalized()
-	var fallback := default_direction
-	if fallback.length_squared() <= 0.001:
-		fallback = _facing_direction
-	if fallback.length_squared() <= 0.001:
-		fallback = Vector2.RIGHT
-	return fallback.normalized()
+	attack_aim_mode()
+	return _aim.player_aim_direction(self, default_direction, range_limit)
+
+
+func _on_aim_joy_connection_changed(_device: int, connected: bool) -> void:
+	_aim.on_joy_connection_changed(connected, self)
 
 
 func play_action_animation(action_id: String, direction := Vector2.ZERO, phase := "", duration := 0.0, metadata := {}) -> void:

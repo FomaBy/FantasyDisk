@@ -14,7 +14,6 @@ CANONICAL_DOCUMENTS = (
     Path("docs/process/multica_story_points_instruction.md"),
     Path("docs/process/pm_workflow.md"),
     Path("docs/process/multica_workflow.md"),
-    Path("skills/codex/fantasydisk-agent-dispatcher/SKILL.md"),
 )
 REQUIRED_MARKERS = (
     "1, 2, 3, 5, 8, 13",

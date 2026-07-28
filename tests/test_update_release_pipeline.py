@@ -3318,10 +3318,9 @@ class ReleaseDocumentationConsistencyTests(unittest.TestCase):
             "FAN-1128/FAN-1210 завершён публикацией `0.2.4`",
         ),
         AGENTS: (
-            "`main` contains the current published stable release `0.2.4`.",
-            "byte-changing technical fixes use `X.Y.Z.R`.",
-            "Every `v<version>` tag and its published bytes are immutable.",
-            "historical release freeze FAN-1128/FAN-1210 завершён.",
+            "`dev` is the integration branch",
+            "`main` and published tags are immutable release history.",
+            "Follow `docs/process/versioning_and_branching.md`",
         ),
     }
 
@@ -5344,8 +5343,8 @@ class ReleaseDocumentationConsistencyTests(unittest.TestCase):
 
         mutated = dict(documents)
         mutated[self.AGENTS] = mutated[self.AGENTS].replace(
-            "`main` contains the current published stable release `0.2.4`.",
-            "`main` is the stable `0.1` line.",
+            "published tags are immutable",
+            "published tags may be rewritten",
             1,
         )
         errors = self.entry_point_versioning_errors(mutated)

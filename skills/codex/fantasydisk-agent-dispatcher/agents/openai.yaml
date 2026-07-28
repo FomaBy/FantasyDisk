@@ -1,4 +1,4 @@
 interface:
-  display_name: "FantasyDisk Agent Dispatcher"
-  short_description: "Dispatch race-safe Multica FantasyDisk agents"
-  default_prompt: "Use $fantasydisk-agent-dispatcher to discover FantasyDisk FAN issues, assign one owner per issue, verify delivery, and keep the queue moving."
+  display_name: "FantasyDisk Qwen Dispatcher"
+  short_description: "Run the PM-gated, Qwen-only FantasyDisk allocation contract"
+  default_prompt: "Use $fantasydisk-agent-dispatcher to execute one fail-closed FantasyDisk dispatch cycle from PM-prepared metadata."

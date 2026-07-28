@@ -17,7 +17,8 @@
                × подтип(armored 1.35) × asc.elite_hp_mult (combat_director.gd::_scale_elite_enemy)
   требуемый DPS = hp / 300 c (kill-or-lose таймер элиток/боссов, main.gd)
   hazard     = scene.projectile_damage × EB.boss.dmg(1.46) × (1+(stage_scale−1)×0.70)
-               × (1.35 + 0.25×(фаза−1))   (boss.gd phase hazard; НЕ капится долей HP)
+               × (1.35 + 0.25×(фаза−1))   (boss.gd phase hazard: сырое значение в
+               таблице «Худший hazard»; эффективный тик капится на 0.80 × max HP игрока)
   slam       = scene.contact_damage × EB.boss.dmg × (1+(stage_scale−1)×0.70)
                × (1.5 + 0.22×(фаза−1))    (boss.gd _spawn_disk_slam)
 

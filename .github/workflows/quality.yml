@@ -70,6 +70,20 @@ jobs:
           echo "godot cache-hit: ${{ steps.godot-cache.outputs.cache-hit }}"
           test "$("$GODOT_DIR/godot" --version | tail -n 1)" = "$GODOT_BUILD_ID"
           echo "GODOT_BIN=$GODOT_DIR/godot" >> "$GITHUB_ENV"
+      # Use exact-key restores only.  The gate treats a populated `.godot/` as
+      # warm, so a broad restore key could reuse stale imported data after an
+      # asset change without executing the full import pre-pass.
+      - name: Restore Godot import cache
+        id: godot-import-cache
+        if: github.event_name != 'push'
+        uses: actions/cache@v6
+        with:
+          path: .godot
+          key: fsd-godot-import-${{ runner.os }}-${{ runner.arch }}-${{ env.GODOT_BUILD_ID }}-${{ hashFiles('project.godot', 'export_presets.cfg', '**/*.import', '**/*.png', '**/*.jpg', '**/*.jpeg', '**/*.webp', '**/*.gif', '**/*.svg', '**/*.svgz', '**/*.bmp', '**/*.tga', '**/*.hdr', '**/*.exr', '**/*.dds', '**/*.ktx', '**/*.wav', '**/*.ogg', '**/*.mp3', '**/*.flac', '**/*.ogv', '**/*.ttf', '**/*.otf', '**/*.woff', '**/*.woff2', '**/*.dae', '**/*.gltf', '**/*.glb', '**/*.fbx', '**/*.blend', '**/*.obj') }}
+      - name: Report Godot import cache
+        if: github.event_name != 'push'
+        run: |
+          echo "godot import cache-hit: ${{ steps.godot-import-cache.outputs.cache-hit }}"
       - name: Repository and Python gates (push range)
         if: github.event_name == 'push'
         run: python3 tools/quality_gate.py --static-only --changed-ref "${{ github.event.before }}"

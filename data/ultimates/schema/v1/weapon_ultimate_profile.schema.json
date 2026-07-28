@@ -1,0 +1,49 @@
+{
+  "schema_id": "fantasydisk.weapon_ultimate_profile",
+  "schema_version": 1,
+  "catalog_contract": {
+    "class_count": 17,
+    "profiles_per_class": 3,
+    "profile_count": 51,
+    "composition": "directory_per_class",
+    "runtime_manifest": false
+  },
+  "implementation_states": [
+    "declared",
+    "ready"
+  ],
+  "required_profile_fields": [
+    "weapon_id",
+    "implementation_state",
+    "fallback_policy_id",
+    "identity",
+    "targeting",
+    "charge",
+    "cast_phases",
+    "executor",
+    "total_boss_cap",
+    "presentation",
+    "cleanup_policy"
+  ],
+  "required_phase_kinds": [
+    "acquire",
+    "windup",
+    "execute",
+    "active",
+    "recover",
+    "cleanup"
+  ],
+  "migration_contract": {
+    "declared_profiles_are_executable": false,
+    "declared_profile_resolution": "legacy_class_ultimate",
+    "unknown_pair_resolution": "fail_closed",
+    "legacy_fallback_bypasses_weapon_contract": true,
+    "save_schema_changes": false
+  },
+  "boss_cap_semantics": {
+    "field": "total_boss_cap",
+    "scope": "whole_activation",
+    "legacy_per_hit_boss_cap_reused": false,
+    "declared_value": null
+  }
+}

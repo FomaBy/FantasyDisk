@@ -1,0 +1,145 @@
+{
+  "schema_version": 1,
+  "class_id": "doctor",
+  "class_order": 13,
+  "profiles": [
+    {
+      "weapon_id": "restore_potion",
+      "implementation_state": "declared",
+      "fallback_policy_id": "legacy_class_ultimate",
+      "identity": {
+        "profile_id": "weapon_ultimate.profile.doctor.restore_potion",
+        "title_id": "weapon_ultimate.title.doctor.restore_potion",
+        "mechanic_id": "weapon_ultimate.mechanic.doctor.restore_potion"
+      },
+      "targeting": {
+        "aim_id": "weapon_ultimate.aim.doctor.restore_potion",
+        "strategy_id": "unbound",
+        "params": {}
+      },
+      "charge": {
+        "policy_id": "weapon_ultimate.charge.doctor.restore_potion",
+        "strategy_id": "unbound",
+        "params": {}
+      },
+      "cast_phases": {
+        "acquire": "weapon_ultimate.phase.doctor.restore_potion.acquire",
+        "windup": "weapon_ultimate.phase.doctor.restore_potion.windup",
+        "execute": "weapon_ultimate.phase.doctor.restore_potion.execute",
+        "active": "weapon_ultimate.phase.doctor.restore_potion.active",
+        "recover": "weapon_ultimate.phase.doctor.restore_potion.recover",
+        "cleanup": "weapon_ultimate.phase.doctor.restore_potion.cleanup"
+      },
+      "executor": {
+        "executor_id": "weapon_ultimate.executor.doctor.restore_potion",
+        "strategy_id": "unbound",
+        "params": {}
+      },
+      "total_boss_cap": null,
+      "presentation": {
+        "presentation_id": "weapon_ultimate.presentation.doctor.restore_potion",
+        "animation_id": "weapon_ultimate.animation.doctor.restore_potion",
+        "vfx_id": "weapon_ultimate.vfx.doctor.restore_potion",
+        "sfx_id": "weapon_ultimate.sfx.doctor.restore_potion",
+        "params": {}
+      },
+      "cleanup_policy": {
+        "policy_id": "weapon_ultimate.cleanup.doctor.restore_potion",
+        "strategy_id": "unbound",
+        "params": {}
+      }
+    },
+    {
+      "weapon_id": "plague_syringe",
+      "implementation_state": "declared",
+      "fallback_policy_id": "legacy_class_ultimate",
+      "identity": {
+        "profile_id": "weapon_ultimate.profile.doctor.plague_syringe",
+        "title_id": "weapon_ultimate.title.doctor.plague_syringe",
+        "mechanic_id": "weapon_ultimate.mechanic.doctor.plague_syringe"
+      },
+      "targeting": {
+        "aim_id": "weapon_ultimate.aim.doctor.plague_syringe",
+        "strategy_id": "unbound",
+        "params": {}
+      },
+      "charge": {
+        "policy_id": "weapon_ultimate.charge.doctor.plague_syringe",
+        "strategy_id": "unbound",
+        "params": {}
+      },
+      "cast_phases": {
+        "acquire": "weapon_ultimate.phase.doctor.plague_syringe.acquire",
+        "windup": "weapon_ultimate.phase.doctor.plague_syringe.windup",
+        "execute": "weapon_ultimate.phase.doctor.plague_syringe.execute",
+        "active": "weapon_ultimate.phase.doctor.plague_syringe.active",
+        "recover": "weapon_ultimate.phase.doctor.plague_syringe.recover",
+        "cleanup": "weapon_ultimate.phase.doctor.plague_syringe.cleanup"
+      },
+      "executor": {
+        "executor_id": "weapon_ultimate.executor.doctor.plague_syringe",
+        "strategy_id": "unbound",
+        "params": {}
+      },
+      "total_boss_cap": null,
+      "presentation": {
+        "presentation_id": "weapon_ultimate.presentation.doctor.plague_syringe",
+        "animation_id": "weapon_ultimate.animation.doctor.plague_syringe",
+        "vfx_id": "weapon_ultimate.vfx.doctor.plague_syringe",
+        "sfx_id": "weapon_ultimate.sfx.doctor.plague_syringe",
+        "params": {}
+      },
+      "cleanup_policy": {
+        "policy_id": "weapon_ultimate.cleanup.doctor.plague_syringe",
+        "strategy_id": "unbound",
+        "params": {}
+      }
+    },
+    {
+      "weapon_id": "bone_saw",
+      "implementation_state": "declared",
+      "fallback_policy_id": "legacy_class_ultimate",
+      "identity": {
+        "profile_id": "weapon_ultimate.profile.doctor.bone_saw",
+        "title_id": "weapon_ultimate.title.doctor.bone_saw",
+        "mechanic_id": "weapon_ultimate.mechanic.doctor.bone_saw"
+      },
+      "targeting": {
+        "aim_id": "weapon_ultimate.aim.doctor.bone_saw",
+        "strategy_id": "unbound",
+        "params": {}
+      },
+      "charge": {
+        "policy_id": "weapon_ultimate.charge.doctor.bone_saw",
+        "strategy_id": "unbound",
+        "params": {}
+      },
+      "cast_phases": {
+        "acquire": "weapon_ultimate.phase.doctor.bone_saw.acquire",
+        "windup": "weapon_ultimate.phase.doctor.bone_saw.windup",
+        "execute": "weapon_ultimate.phase.doctor.bone_saw.execute",
+        "active": "weapon_ultimate.phase.doctor.bone_saw.active",
+        "recover": "weapon_ultimate.phase.doctor.bone_saw.recover",
+        "cleanup": "weapon_ultimate.phase.doctor.bone_saw.cleanup"
+      },
+      "executor": {
+        "executor_id": "weapon_ultimate.executor.doctor.bone_saw",
+        "strategy_id": "unbound",
+        "params": {}
+      },
+      "total_boss_cap": null,
+      "presentation": {
+        "presentation_id": "weapon_ultimate.presentation.doctor.bone_saw",
+        "animation_id": "weapon_ultimate.animation.doctor.bone_saw",
+        "vfx_id": "weapon_ultimate.vfx.doctor.bone_saw",
+        "sfx_id": "weapon_ultimate.sfx.doctor.bone_saw",
+        "params": {}
+      },
+      "cleanup_policy": {
+        "policy_id": "weapon_ultimate.cleanup.doctor.bone_saw",
+        "strategy_id": "unbound",
+        "params": {}
+      }
+    }
+  ]
+}

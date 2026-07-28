@@ -6,6 +6,11 @@ suites, isolates ``user://`` per process, and routes every Godot invocation
 through ``tools/godot_gate.py``.  It intentionally runs synchronously so a
 Multica task cannot finish before validation has completed.
 
+Timing-sensitive live-balance and runaway suites request machine-wide
+exclusivity for their individual Godot process.  The import pre-pass and every
+ordinary suite explicitly remain non-exclusive, so the quality gate as a whole
+is never serialized behind one nested lease.
+
 Discovery is recursive over ``tests/``: Godot suites and Python suites in nested
 directories (``tests/ultimates/**``) are part of every profile.  An empty test
 set is a gate failure, never a pass — a silently skipped suite must never read
@@ -31,10 +36,20 @@ import time
 from pathlib import Path
 from typing import Iterable, Sequence
 
+try:
+    from tools.godot_gate import FATAL_OUTPUT_RE, IMPORT_CACHE_MISSING_MESSAGE
+except ModuleNotFoundError:
+    from godot_gate import FATAL_OUTPUT_RE, IMPORT_CACHE_MISSING_MESSAGE
+
 ROOT = Path(__file__).resolve().parents[1]
 TEST_DIR = ROOT / "tests"
 GODOT_GATE = ROOT / "tools" / "godot_gate.py"
 RUNTIME_SMOKE = "runtime_smoke_test"
+TIMING_SENSITIVE_GODOT_SCRIPTS = frozenset({
+    "res://tests/berserk_dps_runaway_gate.gd",
+    "res://tests/live_balance_simulation_test.gd",
+    "res://tests/pool_dot_runaway_gate.gd",
+})
 EXTENDS_RE = re.compile(
     r'^\s*extends\s+(?:SceneTree|["\']res://tests/[^"\']+\.gd["\'])\s*(?:#.*)?$',
     re.MULTILINE,
@@ -43,7 +58,6 @@ REAL_DISCORD_WEBHOOK_RE = re.compile(
     r"https://(?:discord(?:app)?\.com)/api/webhooks/[0-9]{15,}/[A-Za-z0-9_-]{20,}"
 )
 BASE64_LITERAL_RE = re.compile(r'["\']([A-Za-z0-9+/]{20,}={0,2})["\']')
-FATAL_OUTPUT_RE = re.compile(r"\bSCRIPT ERROR\b|\bFATAL\b", re.IGNORECASE)
 # FAN-1700: a GDScript suite reports its own failure through ``push_error()``,
 # which Godot prints as ``ERROR: <message>`` plus an ``at: push_error (...)``
 # frame.  The bare ``ERROR:`` line is indistinguishable from benign engine
@@ -78,6 +92,7 @@ PATH_TEST_RULES = {
 }
 DEFAULT_STATIC_TEST_TIMEOUT = 1200.0
 DEFAULT_PYTHON_UNIT_IDLE_TIMEOUT = 60.0
+DEFAULT_GODOT_IMPORT_TIMEOUT = 1200.0
 
 
 def discover_godot_tests() -> list[Path]:
@@ -431,7 +446,11 @@ def run_static_checks(
     return results
 
 
-def _godot_environment(user_data: Path) -> dict[str, str]:
+def _godot_environment(
+    user_data: Path,
+    *,
+    exclusive: bool = False,
+) -> dict[str, str]:
     env = os.environ.copy()
     # Resolve before overriding HOME: the conventional macOS binary lives under
     # the real user's Downloads directory, while each test gets a scratch HOME.
@@ -447,6 +466,10 @@ def _godot_environment(user_data: Path) -> dict[str, str]:
     env["XDG_DATA_HOME"] = str(user_data)
     env["APPDATA"] = str(user_data)
     env["LOCALAPPDATA"] = str(user_data)
+    # Callers own the timing classification.  Setting an explicit empty value
+    # keeps imports and ordinary suites non-exclusive even if the parent shell
+    # happens to export FSD_GODOT_EXCLUSIVE=1.
+    env["FSD_GODOT_EXCLUSIVE"] = "1" if exclusive else ""
     return env
 
 
@@ -554,10 +577,49 @@ def fatal_output_signal(output: str) -> str:
     return ""
 
 
+def run_godot_import(timeout: float) -> dict:
+    """Warm the shared project import cache without spending a suite's budget."""
+    started = time.monotonic()
+    with tempfile.TemporaryDirectory(prefix="fsd-import-") as scratch:
+        user_data = Path(scratch).resolve()
+        command = [
+            sys.executable,
+            str(GODOT_GATE),
+            "--headless",
+            "--path",
+            str(ROOT),
+            "--ensure-import-cache",
+        ]
+        exit_code, output, timed_out = _run_captured(
+            command,
+            _godot_environment(user_data, exclusive=False),
+            timeout,
+        )
+    if IMPORT_CACHE_MISSING_MESSAGE in output:
+        print(IMPORT_CACHE_MISSING_MESSAGE, flush=True)
+    passed = exit_code == 0 and not timed_out
+    if passed:
+        print("PASS  Godot import cache pre-pass", flush=True)
+    else:
+        reason = f"exit {exit_code}"
+        if timed_out:
+            reason += f", timeout after {timeout:.0f}s"
+        print(f"FAIL  Godot import cache pre-pass ({reason})", file=sys.stderr, flush=True)
+        print(output[-12000:], file=sys.stderr)
+    return {
+        "name": "godot-import-cache",
+        "status": "passed" if passed else "failed",
+        "exit_code": exit_code,
+        "timed_out": timed_out,
+        "duration_seconds": round(time.monotonic() - started, 3),
+    }
+
+
 def run_godot_test(path: Path, timeout: float) -> dict:
     started = time.monotonic()
     name = path.stem
     script = script_resource_path(path)
+    exclusive = script in TIMING_SENSITIVE_GODOT_SCRIPTS
     with tempfile.TemporaryDirectory(prefix=f"fsd-{name}-") as scratch:
         user_data = Path(scratch).resolve()
         command = [
@@ -572,7 +634,9 @@ def run_godot_test(path: Path, timeout: float) -> dict:
             f"--user-data-dir={user_data}",
         ]
         exit_code, output, timed_out = _run_captured(
-            command, _godot_environment(user_data), timeout
+            command,
+            _godot_environment(user_data, exclusive=exclusive),
+            timeout,
         )
     diagnostic = fatal_output_signal(output)
     passed = exit_code == 0 and not diagnostic and not timed_out
@@ -623,6 +687,12 @@ def _parse_args(argv: Sequence[str] | None) -> argparse.Namespace:
         help="per-test timeout in seconds (default: 900)",
     )
     parser.add_argument(
+        "--import-timeout",
+        type=float,
+        default=float(os.getenv("FSD_GODOT_IMPORT_TIMEOUT", str(DEFAULT_GODOT_IMPORT_TIMEOUT))),
+        help="import-cache pre-pass timeout in seconds (default: 1200)",
+    )
+    parser.add_argument(
         "--static-timeout",
         type=float,
         default=float(os.getenv("FSD_STATIC_TEST_TIMEOUT", str(DEFAULT_STATIC_TEST_TIMEOUT))),
@@ -645,8 +715,13 @@ def main(argv: Sequence[str] | None = None) -> int:
     args = _parse_args(argv)
     if args.static_only:
         args.profile = "static"
-    if args.test_timeout <= 0 or args.static_timeout <= 0 or args.python_unit_idle_timeout <= 0:
-        print("quality_gate: test/static/idle timeouts must be positive", file=sys.stderr)
+    if (
+        args.test_timeout <= 0
+        or args.import_timeout <= 0
+        or args.static_timeout <= 0
+        or args.python_unit_idle_timeout <= 0
+    ):
+        print("quality_gate: test/import/static/idle timeouts must be positive", file=sys.stderr)
         return 2
     if args.skip_static and (args.skip_godot or args.profile == "static"):
         print("quality_gate: refusing an empty run (--skip-static + --skip-godot)", file=sys.stderr)
@@ -720,14 +795,21 @@ def main(argv: Sequence[str] | None = None) -> int:
         and not discovery_errors
         and not (failed and args.fail_fast)
     ):
-        print(f"GODOT running {len(selected)} test(s) via semaphore gate", flush=True)
-        for path in selected:
-            outcome = run_godot_test(path, args.test_timeout)
-            godot_results.append(outcome)
-            if outcome["status"] == "failed":
-                failed = True
-                if args.fail_fast:
-                    break
+        print("GODOT warming import cache via semaphore gate", flush=True)
+        import_result = run_godot_import(args.import_timeout)
+        if import_result["status"] == "failed":
+            failed = True
+        else:
+            print(f"GODOT running {len(selected)} test(s) via semaphore gate", flush=True)
+            for path in selected:
+                outcome = run_godot_test(path, args.test_timeout)
+                godot_results.append(outcome)
+                if outcome["status"] == "failed":
+                    failed = True
+                    if args.fail_fast:
+                        break
+    else:
+        import_result = None
 
     try:
         final_worktree_status = _worktree_status()
@@ -748,6 +830,8 @@ def main(argv: Sequence[str] | None = None) -> int:
         "skip_static": args.skip_static,
         "skip_godot": args.skip_godot,
         "skip_umbrella": args.skip_umbrella,
+        "godot_test_timeout_seconds": args.test_timeout,
+        "godot_import_timeout_seconds": args.import_timeout,
         "static_timeout_seconds": args.static_timeout,
         "python_unit_idle_timeout_seconds": args.python_unit_idle_timeout,
         "worktree_clean": not worktree_status,
@@ -763,6 +847,7 @@ def main(argv: Sequence[str] | None = None) -> int:
         "status": status,
         "duration_seconds": round(time.monotonic() - started, 3),
         "static_checks": static_results,
+        "godot_import_prepass": import_result,
         "godot_tests": godot_results,
     }
     _write_report((ROOT / args.report).resolve(), payload)

@@ -1,0 +1,145 @@
+{
+  "schema_version": 1,
+  "class_order": 1,
+  "class_id": "soldier",
+  "profiles": [
+    {
+      "weapon_id": "soldier_rifle",
+      "implementation_state": "declared",
+      "fallback_policy_id": "legacy_class_ultimate",
+      "identity": {
+        "profile_id": "weapon_ultimate.profile.soldier.soldier_rifle",
+        "title_id": "weapon_ultimate.title.soldier.soldier_rifle",
+        "mechanic_id": "weapon_ultimate.mechanic.soldier.soldier_rifle"
+      },
+      "targeting": {
+        "aim_id": "weapon_ultimate.aim.soldier.soldier_rifle",
+        "strategy_id": "unbound",
+        "params": {}
+      },
+      "charge": {
+        "policy_id": "weapon_ultimate.charge.soldier.soldier_rifle",
+        "strategy_id": "unbound",
+        "params": {}
+      },
+      "cast_phases": {
+        "acquire": "weapon_ultimate.phase.soldier.soldier_rifle.acquire",
+        "windup": "weapon_ultimate.phase.soldier.soldier_rifle.windup",
+        "execute": "weapon_ultimate.phase.soldier.soldier_rifle.execute",
+        "active": "weapon_ultimate.phase.soldier.soldier_rifle.active",
+        "recover": "weapon_ultimate.phase.soldier.soldier_rifle.recover",
+        "cleanup": "weapon_ultimate.phase.soldier.soldier_rifle.cleanup"
+      },
+      "executor": {
+        "executor_id": "weapon_ultimate.executor.soldier.soldier_rifle",
+        "strategy_id": "unbound",
+        "params": {}
+      },
+      "total_boss_cap": null,
+      "presentation": {
+        "presentation_id": "weapon_ultimate.presentation.soldier.soldier_rifle",
+        "animation_id": "weapon_ultimate.animation.soldier.soldier_rifle",
+        "vfx_id": "weapon_ultimate.vfx.soldier.soldier_rifle",
+        "sfx_id": "weapon_ultimate.sfx.soldier.soldier_rifle",
+        "params": {}
+      },
+      "cleanup_policy": {
+        "policy_id": "weapon_ultimate.cleanup.soldier.soldier_rifle",
+        "strategy_id": "unbound",
+        "params": {}
+      }
+    },
+    {
+      "weapon_id": "soldier_grenade",
+      "implementation_state": "declared",
+      "fallback_policy_id": "legacy_class_ultimate",
+      "identity": {
+        "profile_id": "weapon_ultimate.profile.soldier.soldier_grenade",
+        "title_id": "weapon_ultimate.title.soldier.soldier_grenade",
+        "mechanic_id": "weapon_ultimate.mechanic.soldier.soldier_grenade"
+      },
+      "targeting": {
+        "aim_id": "weapon_ultimate.aim.soldier.soldier_grenade",
+        "strategy_id": "unbound",
+        "params": {}
+      },
+      "charge": {
+        "policy_id": "weapon_ultimate.charge.soldier.soldier_grenade",
+        "strategy_id": "unbound",
+        "params": {}
+      },
+      "cast_phases": {
+        "acquire": "weapon_ultimate.phase.soldier.soldier_grenade.acquire",
+        "windup": "weapon_ultimate.phase.soldier.soldier_grenade.windup",
+        "execute": "weapon_ultimate.phase.soldier.soldier_grenade.execute",
+        "active": "weapon_ultimate.phase.soldier.soldier_grenade.active",
+        "recover": "weapon_ultimate.phase.soldier.soldier_grenade.recover",
+        "cleanup": "weapon_ultimate.phase.soldier.soldier_grenade.cleanup"
+      },
+      "executor": {
+        "executor_id": "weapon_ultimate.executor.soldier.soldier_grenade",
+        "strategy_id": "unbound",
+        "params": {}
+      },
+      "total_boss_cap": null,
+      "presentation": {
+        "presentation_id": "weapon_ultimate.presentation.soldier.soldier_grenade",
+        "animation_id": "weapon_ultimate.animation.soldier.soldier_grenade",
+        "vfx_id": "weapon_ultimate.vfx.soldier.soldier_grenade",
+        "sfx_id": "weapon_ultimate.sfx.soldier.soldier_grenade",
+        "params": {}
+      },
+      "cleanup_policy": {
+        "policy_id": "weapon_ultimate.cleanup.soldier.soldier_grenade",
+        "strategy_id": "unbound",
+        "params": {}
+      }
+    },
+    {
+      "weapon_id": "soldier_bayonet",
+      "implementation_state": "declared",
+      "fallback_policy_id": "legacy_class_ultimate",
+      "identity": {
+        "profile_id": "weapon_ultimate.profile.soldier.soldier_bayonet",
+        "title_id": "weapon_ultimate.title.soldier.soldier_bayonet",
+        "mechanic_id": "weapon_ultimate.mechanic.soldier.soldier_bayonet"
+      },
+      "targeting": {
+        "aim_id": "weapon_ultimate.aim.soldier.soldier_bayonet",
+        "strategy_id": "unbound",
+        "params": {}
+      },
+      "charge": {
+        "policy_id": "weapon_ultimate.charge.soldier.soldier_bayonet",
+        "strategy_id": "unbound",
+        "params": {}
+      },
+      "cast_phases": {
+        "acquire": "weapon_ultimate.phase.soldier.soldier_bayonet.acquire",
+        "windup": "weapon_ultimate.phase.soldier.soldier_bayonet.windup",
+        "execute": "weapon_ultimate.phase.soldier.soldier_bayonet.execute",
+        "active": "weapon_ultimate.phase.soldier.soldier_bayonet.active",
+        "recover": "weapon_ultimate.phase.soldier.soldier_bayonet.recover",
+        "cleanup": "weapon_ultimate.phase.soldier.soldier_bayonet.cleanup"
+      },
+      "executor": {
+        "executor_id": "weapon_ultimate.executor.soldier.soldier_bayonet",
+        "strategy_id": "unbound",
+        "params": {}
+      },
+      "total_boss_cap": null,
+      "presentation": {
+        "presentation_id": "weapon_ultimate.presentation.soldier.soldier_bayonet",
+        "animation_id": "weapon_ultimate.animation.soldier.soldier_bayonet",
+        "vfx_id": "weapon_ultimate.vfx.soldier.soldier_bayonet",
+        "sfx_id": "weapon_ultimate.sfx.soldier.soldier_bayonet",
+        "params": {}
+      },
+      "cleanup_policy": {
+        "policy_id": "weapon_ultimate.cleanup.soldier.soldier_bayonet",
+        "strategy_id": "unbound",
+        "params": {}
+      }
+    }
+  ]
+}

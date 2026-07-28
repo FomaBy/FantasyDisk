@@ -1,0 +1,145 @@
+{
+  "schema_version": 1,
+  "class_order": 2,
+  "class_id": "thief",
+  "profiles": [
+    {
+      "weapon_id": "thief_coin_pouch",
+      "implementation_state": "declared",
+      "fallback_policy_id": "legacy_class_ultimate",
+      "identity": {
+        "profile_id": "weapon_ultimate.profile.thief.thief_coin_pouch",
+        "title_id": "weapon_ultimate.title.thief.thief_coin_pouch",
+        "mechanic_id": "weapon_ultimate.mechanic.thief.thief_coin_pouch"
+      },
+      "targeting": {
+        "aim_id": "weapon_ultimate.aim.thief.thief_coin_pouch",
+        "strategy_id": "unbound",
+        "params": {}
+      },
+      "charge": {
+        "policy_id": "weapon_ultimate.charge.thief.thief_coin_pouch",
+        "strategy_id": "unbound",
+        "params": {}
+      },
+      "cast_phases": {
+        "acquire": "weapon_ultimate.phase.thief.thief_coin_pouch.acquire",
+        "windup": "weapon_ultimate.phase.thief.thief_coin_pouch.windup",
+        "execute": "weapon_ultimate.phase.thief.thief_coin_pouch.execute",
+        "active": "weapon_ultimate.phase.thief.thief_coin_pouch.active",
+        "recover": "weapon_ultimate.phase.thief.thief_coin_pouch.recover",
+        "cleanup": "weapon_ultimate.phase.thief.thief_coin_pouch.cleanup"
+      },
+      "executor": {
+        "executor_id": "weapon_ultimate.executor.thief.thief_coin_pouch",
+        "strategy_id": "unbound",
+        "params": {}
+      },
+      "total_boss_cap": null,
+      "presentation": {
+        "presentation_id": "weapon_ultimate.presentation.thief.thief_coin_pouch",
+        "animation_id": "weapon_ultimate.animation.thief.thief_coin_pouch",
+        "vfx_id": "weapon_ultimate.vfx.thief.thief_coin_pouch",
+        "sfx_id": "weapon_ultimate.sfx.thief.thief_coin_pouch",
+        "params": {}
+      },
+      "cleanup_policy": {
+        "policy_id": "weapon_ultimate.cleanup.thief.thief_coin_pouch",
+        "strategy_id": "unbound",
+        "params": {}
+      }
+    },
+    {
+      "weapon_id": "thief_shadow_cloak",
+      "implementation_state": "declared",
+      "fallback_policy_id": "legacy_class_ultimate",
+      "identity": {
+        "profile_id": "weapon_ultimate.profile.thief.thief_shadow_cloak",
+        "title_id": "weapon_ultimate.title.thief.thief_shadow_cloak",
+        "mechanic_id": "weapon_ultimate.mechanic.thief.thief_shadow_cloak"
+      },
+      "targeting": {
+        "aim_id": "weapon_ultimate.aim.thief.thief_shadow_cloak",
+        "strategy_id": "unbound",
+        "params": {}
+      },
+      "charge": {
+        "policy_id": "weapon_ultimate.charge.thief.thief_shadow_cloak",
+        "strategy_id": "unbound",
+        "params": {}
+      },
+      "cast_phases": {
+        "acquire": "weapon_ultimate.phase.thief.thief_shadow_cloak.acquire",
+        "windup": "weapon_ultimate.phase.thief.thief_shadow_cloak.windup",
+        "execute": "weapon_ultimate.phase.thief.thief_shadow_cloak.execute",
+        "active": "weapon_ultimate.phase.thief.thief_shadow_cloak.active",
+        "recover": "weapon_ultimate.phase.thief.thief_shadow_cloak.recover",
+        "cleanup": "weapon_ultimate.phase.thief.thief_shadow_cloak.cleanup"
+      },
+      "executor": {
+        "executor_id": "weapon_ultimate.executor.thief.thief_shadow_cloak",
+        "strategy_id": "unbound",
+        "params": {}
+      },
+      "total_boss_cap": null,
+      "presentation": {
+        "presentation_id": "weapon_ultimate.presentation.thief.thief_shadow_cloak",
+        "animation_id": "weapon_ultimate.animation.thief.thief_shadow_cloak",
+        "vfx_id": "weapon_ultimate.vfx.thief.thief_shadow_cloak",
+        "sfx_id": "weapon_ultimate.sfx.thief.thief_shadow_cloak",
+        "params": {}
+      },
+      "cleanup_policy": {
+        "policy_id": "weapon_ultimate.cleanup.thief.thief_shadow_cloak",
+        "strategy_id": "unbound",
+        "params": {}
+      }
+    },
+    {
+      "weapon_id": "thief_smoke_bomb",
+      "implementation_state": "declared",
+      "fallback_policy_id": "legacy_class_ultimate",
+      "identity": {
+        "profile_id": "weapon_ultimate.profile.thief.thief_smoke_bomb",
+        "title_id": "weapon_ultimate.title.thief.thief_smoke_bomb",
+        "mechanic_id": "weapon_ultimate.mechanic.thief.thief_smoke_bomb"
+      },
+      "targeting": {
+        "aim_id": "weapon_ultimate.aim.thief.thief_smoke_bomb",
+        "strategy_id": "unbound",
+        "params": {}
+      },
+      "charge": {
+        "policy_id": "weapon_ultimate.charge.thief.thief_smoke_bomb",
+        "strategy_id": "unbound",
+        "params": {}
+      },
+      "cast_phases": {
+        "acquire": "weapon_ultimate.phase.thief.thief_smoke_bomb.acquire",
+        "windup": "weapon_ultimate.phase.thief.thief_smoke_bomb.windup",
+        "execute": "weapon_ultimate.phase.thief.thief_smoke_bomb.execute",
+        "active": "weapon_ultimate.phase.thief.thief_smoke_bomb.active",
+        "recover": "weapon_ultimate.phase.thief.thief_smoke_bomb.recover",
+        "cleanup": "weapon_ultimate.phase.thief.thief_smoke_bomb.cleanup"
+      },
+      "executor": {
+        "executor_id": "weapon_ultimate.executor.thief.thief_smoke_bomb",
+        "strategy_id": "unbound",
+        "params": {}
+      },
+      "total_boss_cap": null,
+      "presentation": {
+        "presentation_id": "weapon_ultimate.presentation.thief.thief_smoke_bomb",
+        "animation_id": "weapon_ultimate.animation.thief.thief_smoke_bomb",
+        "vfx_id": "weapon_ultimate.vfx.thief.thief_smoke_bomb",
+        "sfx_id": "weapon_ultimate.sfx.thief.thief_smoke_bomb",
+        "params": {}
+      },
+      "cleanup_policy": {
+        "policy_id": "weapon_ultimate.cleanup.thief.thief_smoke_bomb",
+        "strategy_id": "unbound",
+        "params": {}
+      }
+    }
+  ]
+}

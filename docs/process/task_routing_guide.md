@@ -1,191 +1,59 @@
-# Гид Диспетчера: Как Формировать Задачи И Куда Их Направлять (Claude vs Codex)
+# FantasyDisk routing guide
 
-Обновлено: 2026-07-13
+Routing begins in Multica, not in local task files. PM decides the lane from
+CUE, scope, risk, acceptance criteria, dependencies, and capability. Qwen
+Operations Dispatcher then selects an eligible live worker inside that approved
+lane.
 
-Для кого: PM, Codex Documentation dispatcher, Claude Code/Claude-чаты,
-фоновые воркеры и будущие диспетчеры. Источники процесса:
-`docs/process/ai_agent_memorandum.md`, `docs/process/pm_workflow.md`,
-`docs/process/agent_role_boundaries_and_handoffs.md`,
-`docs/process/jira_to_multica_cutover.md`.
+## Canonical lanes
 
-## Главная Модель
+| Story Points | Complexity | Developer lane | QA lane |
+| --- | --- | --- | --- |
+| `1/2/3` | low | Codex Dev Luna | QA Codex Terra |
+| `5` | medium | Codex Dev Terra or routed Claude | QA Codex Terra |
+| `8` | medium | Codex Dev Terra or routed Claude | QA Codex Sol |
+| `13` | high | Fable or Codex Dev Sol | QA Codex Sol |
 
-FantasyDisk работает в одной ветке `dev`, но задачи делятся на два независимых
-execution lane:
+Current availability, agent IDs, quota, and fallback eligibility are resolved
+from live Multica state. Do not hardcode them here. Upward borrowing is allowed
+only by workspace policy when native higher-band work is absent; downward
+borrowing is forbidden.
 
-| Контур | Когда использовать | Как не конфликтует |
-| --- | --- | --- |
-| `Codex` | автономные задачи с точным ТЗ, bounded scope, известными файлами, проверяемыми acceptance criteria, генерацией ассетов, механическими batch-правками, scoped bug/test fixes | получает явный dispatch в Codex role thread и locked paths; Claude пропускает эту задачу |
-| `Claude` | архитектура, баланс с продуктовыми решениями, неочевидная отладка, широкий refactor, конфликт-резолюция, release decisions, review | получает `Контур: Claude`; Codex dispatcher/role threads пропускают эту задачу |
-| `QA` | приемка после результата owner, регрессии, создание bug/follow-up задач | не чинит код/арт/анимацию в исходной задаче |
+## Readiness gate
 
-С cutover 2026-07-13 маршрутизация начинается из Multica: все задачи создаются и
-берутся из Multica проекта `FantasyDisk` (issues `FAN-*`) через `multica` CLI.
-Legacy Jira (`SCRUM-*`) — read-only исторический архив, не источник задач (см.
-`docs/process/jira_to_multica_cutover.md`). Локальные `docs/tasks/*.md` и
-`docs/process/task_board.md` служат spec/evidence mirror и dashboard/cache, но не
-являются очередью задач.
+Before Qwen can see a candidate, PM leaves it unassigned in `backlog` and makes
+these agree after re-read:
 
-Codex должен быть автономным внутри своих задач: после Multica dispatch он сам берёт
-задачу, меняет Multica status/comment и локальный mirror, реализует scope, запускает проверки,
-обновляет docs/CHANGELOG/task report и завершает или блокирует задачу. Его
-автономия ограничена owner/locked-path правилами, а не ожиданием ручного
-подтверждения.
+- description with Story Points, CUE rationale, complexity rationale, routing,
+  and acceptance criteria;
+- one `SP:N` label and numeric `story_points=N`;
+- `estimation_model=CUE/Fibonacci`;
+- one `Complexity:<tier>` label and `complexity_tier`;
+- resolved dependencies and no conflicting hold;
+- `dispatch_ready=true`, `pipeline_status=ready_for_dispatch`,
+  `dispatch_kind`, and `dispatch_lane`;
+- matching candidate SHA fields for QA.
 
-## Обязательная Метадата Задачи
+Use `docs/process/story_points.md` and `docs/process/pm_workflow.md`.
 
-Каждый active Multica issue и его локальный mirror должны иметь:
+## Discipline routing
 
-```text
-Статус: new | in_progress | review | done | blocked
-Контур: Codex | Claude | OtherAI
-Owner: <роль>/<thread или worker> | unassigned
-Thread: <Codex thread id> | <Claude chat/worker id> | n/a
-Locked paths: <основные файлы/папки/ассеты/экраны>
-Multica: FAN-<номер>
-```
+- Gameplay/runtime/data/balance/tests: backend developer plus the relevant
+  balance or code-quality skill.
+- UI/layout/frames: developer with `fantasydisk-ui-director`; backgrounds and
+  non-background art follow the generator split in repo `AGENTS.md`.
+- Character/monster motion: animation worker with the PixelLab integration
+  skill.
+- Releases: release-capable developer with `fantasydisk-release-director`.
+- Acceptance: independent QA child pinned to the exact pushed candidate SHA.
 
-Если `Контур`, `Owner/Thread` или `Locked paths` отсутствуют в Multica, dispatcher
-не маршрутизирует задачу до заполнения. Local mirror/board note должны отражать
-ту же информацию кратко.
+Locked paths and reviewer independence outrank convenience. Split overlapping
+discipline work into independently acceptable children with explicit handoffs.
 
-## Правило Маршрутизации
+## Dispatch boundary
 
-Задача идёт в `Codex`, если выполняются все условия:
-
-1. ТЗ можно выполнить без продуктовой развилки: точные файлы, expected behavior,
-   acceptance criteria и проверки.
-2. Scope ограничен и locked paths не пересекаются с активной Claude-задачей.
-3. Ошибка результата обнаруживается тестом, валидатором, screenshot/manifest
-   проверкой или чёткой визуальной QA.
-4. Нужен Codex skill/pipeline: UI mockup, asset generation, animation director,
-   class-balance harness, batch integration, scoped test update.
-
-Задача идёт в `Claude`, если выполняется хотя бы одно условие:
-
-1. Нужны архитектурные, балансные, UX или продуктовые решения.
-2. Нужно исследовать неизвестную причину бага или широкий runtime/regression
-   конфликт.
-3. Задача затрагивает много подсистем и не делится на безопасные handoffs.
-4. Нужно review/acceptance Codex-результата с возможной правкой.
-5. Нужно разрешить конфликт dirty worktree, locked paths, Multica ownership или
-   противоречие в требованиях.
-
-## Dispatch Protocol
-
-1. Dispatcher читает Multica issue/status/comments/assignee/labels/links first,
-   затем local task mirror, board row, dirty worktree, recent role-thread
-   status и active owners по той же роли.
-2. Dispatcher выбирает `Контур` и locked paths. Нельзя оставлять active task без
-   lane.
-3. Для `Контур: Codex` dispatcher добавляет/обновляет в Multica и local mirror
-   `Dispatch`, `Owner`, `Thread`, `Locked paths`, board note/Multica comment, затем отправляет ровно
-   один handoff в нужный Codex role thread.
-4. Для `Контур: Claude` task остаётся доступной Claude Code/Claude worker only;
-   Codex Documentation dispatcher не отправляет её в Codex.
-5. Исполнитель перед первой правкой переводит Multica issue/comment в `in_progress`,
-   сохраняет owner metadata в Multica/local mirror, запускает sync и только потом работает.
-6. По завершении owner пишет результат, проверки, docs changes и переводит
-   задачу в `done` или `review`. Если scope не может быть завершён, ставит
-   `blocked` с точной причиной и handoff/follow-up.
-7. Dispatcher keeps Multica truthful. If a task in `in_progress` has no fresh
-   heartbeat/result, no active reachable worker, missing locked paths, or the
-   same worker is holding multiple unrelated issues, dispatcher returns it to
-   `todo` with a cleanup comment. Combined multi-issue work is allowed
-   only when one dispatcher comment explicitly lists the combined scope and
-   shared locked paths.
-8. One-off Codex worker threads archive themselves after truthful completion,
-   no-task, or blocker handling. The worker calls `codex_app.set_thread_archived`
-   with `archived: true` and no `threadId` as the last tool action before the
-   final response. Permanent dispatcher/watch chats and active workers stay
-   visible.
-
-## Active Claim Health
-
-Every active claim must be readable from Multica without opening the worker chat.
-The latest active-owner comment must include owner/thread, lane, locked paths,
-branch/worktree, and next verification step.
-
-Heartbeat policy:
-
-- heartbeat at least every 60 minutes for long-running work;
-- heartbeat before switching context or ending the agent run;
-- final comment must include result, branch/commit or PR, tests/evidence, docs
-  changes, and next status/owner;
-- no heartbeat/result means the issue is eligible for dispatcher release back to
-  `todo`.
-
-## Disk Cleanup Handoff
-
-Dispatcher must include cleanup expectations in every worker/QA handoff that
-creates a separate checkout. Worker final status is incomplete unless it says
-what happened to the disposable worktree/cache.
-
-Required final line:
-
-```text
-Disk cleanup: removed <paths> | none created | blocked by lock <path> <size>
-```
-
-If a worker leaves a disposable checkout behind without this note, dispatcher
-may treat the task as process-incomplete and either ask the same worker to clean
-it or perform cleanup after confirming the branch/commit/evidence is pushed.
-
-## Interlock Между Codex И Claude
-
-- Один task = один owner = один контур. Нельзя, чтобы Codex и Claude одновременно
-  выполняли одну задачу или одну проблему.
-- Locked paths сильнее роли. Если `scripts/ui_screens.gd` уже locked Claude task,
-  Codex не берёт UI integration task по этому файлу, даже если задача подходит
-  Back-end.
-- Dirty worktree считается сигналом активной работы. Если dirty files
-  пересекаются с locked paths другого owner, новый исполнитель не стартует.
-- Review не является разрешением на параллельную правку. Review создаётся после
-  owner-result и оформляется отдельной review/bug/follow-up задачей.
-- Если Codex во время работы обнаружил, что нужен Claude-level decision, он
-  фиксирует результат своей части, создаёт Claude handoff и ставит исходную
-  задачу `blocked` или `review`.
-- Если Claude нужен asset/image/animation batch от Codex, Claude создаёт Codex
-  handoff с точным ТЗ, locked paths и acceptance criteria.
-
-## Как Доставить Задачу
-
-- `Codex`: PM отправляет в Codex Documentation dispatcher Multica key (`FAN-*`) и
-  краткий scope. Documentation dispatcher делает audit и сам отправляет задачу в
-  существующий role thread. Прямой dispatch в role thread допустим только если
-  PM сразу заполняет в Multica/local mirror `Контур: Codex`, `Owner`, `Thread`,
-  `Locked paths` и Multica comment.
-- `Claude`: PM/другая LLM создаёт Multica issue с `Контур: Claude` и local mirror
-  при необходимости. Единственный dispatcher резервирует её exact Claude agent
-  UUID, перепроверяет ownership и переводит в `todo`; worker не self-claim'ит
-  свободные issues.
-- `QA`: dispatcher создаёт отдельную QA child issue для implementation parent в
-  `in_review`, назначает exact QA agent и enqueue'ит её по
-  `docs/process/qa_protocol.md`. QA не выбирает parent самостоятельно и не
-  редактирует реализацию; при RED создаёт/линкует bug/follow-up.
-
-## Review Policy
-
-Codex-работа не требует параллельного Claude вмешательства во время исполнения.
-После результата:
-
-- high-risk code/runtime/balance/release changes получают отдельный Claude review
-  или QA gate;
-- isolated asset/source-pack/mechanical changes могут идти сразу в QA, если
-  acceptance и валидаторы зелёные;
-- любые найденные проблемы оформляются отдельной bug/follow-up task с новым
-  owner и locked paths.
-
-## Чего Диспетчеру Делать Нельзя
-
-- Отправлять одну и ту же задачу в Codex и Claude.
-- Оставлять active Multica issue/local `new` row без `Контур` и locked paths.
-- Давать Codex задачу, где уже есть Claude owner, worker note, `in_progress`,
-  Multica ownership или dirty overlap.
-- Давать Claude worker задачу с `Контур: Codex` или dispatch на Codex thread.
-- Закрывать задачу за исполнителя без результата owner или QA-вердикта.
-- Оставлять зависшие `in_progress` claims без heartbeat/result; такие задачи нужно
-  вернуть в `todo` или явно заблокировать/передать.
-- Смешивать Design main и Designer 2 в одной Design-задаче без явной PM-разбивки.
-- Игнорировать USER HOLD, blocked reason, PM/QA acceptance gate или superseded
-  note, даже если зависимость формально выглядит готовой.
+Only Qwen performs assignment and `backlog → todo`, using the canonical
+workspace dispatcher skill. PM never substitutes a manual launch; workers never
+self-claim; QA never selects its own parent. If capacity, quota, dependency,
+overlap, or gate evidence is missing, leave the issue unassigned in `backlog`
+with the exact waiting condition.

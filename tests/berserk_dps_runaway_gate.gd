@@ -8,9 +8,27 @@ extends SceneTree
 # целям) там невидим. Этот гейт инстанцирует РЕАЛЬНОГО Player + молот, прокачивает
 # «идеальным» билдом до lvl20 (как tools/character_balance_csv.gd: лучшая по DPS
 # карта из 3 предложенных × 19 уровней + топ-артефакты) и меряет фактический DPS
-# по 20 и 1 цели. Падаем, если пик вышел из коридора лидеров — ловит откат
-# soft-cap'а забеговых множителей (progression_data._soft_capped_run_multiplier) или
-# повторное раздувание upgrade_*_exponent молота.
+# по 20 и 1 цели.
+#
+# FAN-1729: в гейте ДВЕ независимые проверки, вердикты у них раздельные и в
+# выводе помечены своим тегом.
+#
+# [ceiling] — живой DPS lvl20-билда против MAX_IDEAL_20T / MAX_IDEAL_1T. Покрывает
+#   геометрический и экспоненциальный runaway молота (radius scaling,
+#   upgrade_*_exponent, circle_full_targets / circle_target_diminish): такие
+#   регрессии дают ×2+ и пробивают потолок с запасом.
+#   НЕ покрывает откат soft-cap'а: полное отключение soft-cap'а даёт лишь +14% к
+#   20t, а запас потолка над эталоном больше (p50 8267 → 10000, +21%; max 8596 →
+#   10000, +16%), поэтому все прогоны с отключённым soft-cap'ом были зелёными
+#   (FAN-1713, воспроизведено FAN-1729: 20t 9822/9449/9833 ≤ 10000). Опускать
+#   потолок под этот эффект нельзя: он съел бы тот запас на шум, который FAN-1712
+#   только что отвоевал у ложных красных.
+#
+# [soft-cap] — прямая проверка diminishing returns забеговых множителей
+#   (progression_data._soft_capped_run_multiplier) через публичную точку
+#   агрегации ProgressionData.derived_parameters. Красная и когда сам soft-cap
+#   стал тождественным, и когда его перестали вызывать. Не зависит ни от уровня
+#   DPS, ни от дрейфа контента: пробы фиксированные, функция чистая, шума нет.
 #
 # Запуск: Godot --headless --path . --script res://tests/berserk_dps_runaway_gate.gd
 # Отдельный изолированный файл (анти-коллизия с занятыми runtime_smoke/harness).
@@ -52,6 +70,29 @@ const MAX_IDEAL_20T := 10000.0
 const MAX_IDEAL_1T := 1300.0
 const ZERO_EPS := 0.01
 
+# FAN-1729: пробы проверки [soft-cap]. Эффективный забеговый множитель снимается
+# как отношение выхода ProgressionData.derived_parameters с множителем к выходу
+# без него: при ПУСТОМ weapon_config в отношение не входят ни upgrade_*_exponent,
+# ни passive_mods, поэтому оно равно ровно тому, что вернул soft-cap. Атрибуты
+# пробы нужны лишь чтобы знаменатель был ненулевым (damage=30.0, attack_speed=5.4).
+const SOFTCAP_PROBE_STATS := {"strength": 20.0, "agility": 20.0}
+# Масштаб забеговых множителей «идеального» lvl20 билда (замер FAN-1729 на dev
+# 82343091: damage_multiplier=6.4766, attack_speed_multiplier=2.0321).
+const SOFTCAP_RUNAWAY_DAMAGE_MULT := 6.5
+const SOFTCAP_RUNAWAY_ATTACK_SPEED_MULT := 2.0
+# На этих точках soft-cap обязан срезать минимум 5% множителя. Действующая кривая
+# срезает 12.0% (6.500→5.721) и 16.7% (2.000→1.667) — запас больше двукратного,
+# а откат soft-cap'а в no-op срезает ровно 0% и краснеет.
+const SOFTCAP_MIN_COMPRESSION := 0.05
+# Заведомо runaway-множитель: обязан прийти к объявленному жёсткому потолку
+# (BalanceData.RUN_*_SOFTCAP), а не пройти насквозь.
+const SOFTCAP_EXTREME_MULT := 100.0
+# Множитель <= 1.0 (база забега и штрафы вроде медленного оружия) обязан проходить
+# soft-cap тождественно — инвариант из шапки _soft_capped_run_multiplier. Держит
+# проверку честной: «починить» сжатие тотальным клампом всего подряд нельзя.
+const SOFTCAP_IDENTITY_MULTS := [1.0, 0.8]
+const SOFTCAP_EPS := 1.0e-4
+
 var _holder: Node2D
 
 
@@ -82,13 +123,17 @@ func _initialize() -> void:
 	# тиры становятся частью эталона, потолки и чувствительность не меняются.
 	seed(BASE_SEED)
 
-	# Тот же сид, что у tools/character_balance_csv.gd для пары berserk/hammer:
-	# генератор раздаёт seed_counter инкрементом (+2 на пару: ideal+random) в порядке
-	# обхода реестра. Совпадение сидов → число гейта тождественно строке CSV (QA
-	# может кросс-сверить lvl20_ideal_20t/1t берсерка с этим гейтом).
+	# CSV теперь выводит свои seeds из строковой идентичности пары, чтобы --pair
+	# не зависел от порядка обхода реестра. Этот gate сохраняет исторический
+	# positional seed для своей калиброванной границы: он больше не является
+	# row-for-row seed cross-check для CSV.
 	var rng := RandomNumberGenerator.new()
 	rng.seed = _ideal_seed_for_pair(CHARACTER_ID, WEAPON_ID)
 	var ideal_build: Array = _build_levelups(CHARACTER_ID, archetype, rng) + _build_artifacts(CHARACTER_ID, archetype, rng)
+
+	# FAN-1729: [soft-cap] чистый и от живого замера не зависит — считаем его до
+	# окна DPS, чтобы вердикт попал в вывод даже если симуляция упрётся в hang-guard.
+	var failures: Array = _check_run_multiplier_softcap()
 
 	var dps_20t: float = await _measure_dps(CHARACTER_ID, WEAPON_ID, 20, ideal_build)
 	var dps_1t: float = await _measure_dps(CHARACTER_ID, WEAPON_ID, 1, ideal_build)
@@ -96,17 +141,16 @@ func _initialize() -> void:
 	_holder.queue_free()
 	await process_frame
 
-	var failures: Array = []
 	if not (is_finite(dps_20t) and is_finite(dps_1t)):
-		failures.append("нечисловой живой DPS (20t=%s 1t=%s)" % [dps_20t, dps_1t])
+		failures.append("[ceiling] нечисловой живой DPS (20t=%s 1t=%s)" % [dps_20t, dps_1t])
 	if maxf(dps_20t, dps_1t) <= ZERO_EPS:
-		failures.append("0 живого урона за %.0fс (20t=%.3f 1t=%.3f) — режим оружия сломан" % [WINDOW_SECONDS, dps_20t, dps_1t])
+		failures.append("[ceiling] 0 живого урона за %.0fс (20t=%.3f 1t=%.3f) — режим оружия сломан" % [WINDOW_SECONDS, dps_20t, dps_1t])
 	if dps_20t > MAX_IDEAL_20T:
-		failures.append("berserk/hammer lvl20_ideal 20t = %.0f > потолка %.0f — runaway множителей вернулся (проверь soft-cap забеговых множителей и upgrade_*_exponent молота)" % [dps_20t, MAX_IDEAL_20T])
+		failures.append("[ceiling] berserk/hammer lvl20_ideal 20t = %.0f > потолка %.0f — геометрический runaway вернулся (проверь upgrade_*_exponent молота и circle_full_targets/circle_target_diminish)" % [dps_20t, MAX_IDEAL_20T])
 	if dps_1t > MAX_IDEAL_1T:
-		failures.append("berserk/hammer lvl20_ideal 1t = %.0f > потолка %.0f — solo-пик вне коридора" % [dps_1t, MAX_IDEAL_1T])
+		failures.append("[ceiling] berserk/hammer lvl20_ideal 1t = %.0f > потолка %.0f — solo-пик вне коридора" % [dps_1t, MAX_IDEAL_1T])
 
-	print("[runaway-gate] berserk/hammer lvl20_ideal: 20t=%.0f (≤%.0f) 1t=%.0f (≤%.0f)" % [dps_20t, MAX_IDEAL_20T, dps_1t, MAX_IDEAL_1T])
+	print("[runaway-gate][ceiling] berserk/hammer lvl20_ideal: 20t=%.0f (≤%.0f) 1t=%.0f (≤%.0f)" % [dps_20t, MAX_IDEAL_20T, dps_1t, MAX_IDEAL_1T])
 
 	if not failures.is_empty():
 		for f in failures:
@@ -115,6 +159,61 @@ func _initialize() -> void:
 		return
 	print("Berserk DPS runaway gate passed.")
 	quit(0)
+
+
+# --- [soft-cap]: прямая проверка diminishing returns забеговых множителей --------
+
+# Эффективный забеговый множитель ПОСЛЕ soft-cap'а — отношение выхода
+# derived_parameters с множителем к выходу без него. Точка съёма публичная и
+# боевая, поэтому проверка красная не только на тождественном soft-cap'е, но и
+# если множитель перестали через него пропускать.
+func _effective_run_multiplier(mod_key: String, output_key: String, raw: float) -> float:
+	var base_value: float = float(ProgressionData.derived_parameters(SOFTCAP_PROBE_STATS, {}, {}).get(output_key, 0.0))
+	if absf(base_value) <= SOFTCAP_EPS:
+		return NAN
+	var value: float = float(ProgressionData.derived_parameters(SOFTCAP_PROBE_STATS, {mod_key: raw}, {}).get(output_key, 0.0))
+	return value / base_value
+
+
+func _check_run_multiplier_softcap() -> Array:
+	var channels: Array = [
+		{
+			"mod": "damage_multiplier",
+			"out": "damage",
+			"runaway": SOFTCAP_RUNAWAY_DAMAGE_MULT,
+			"hard_cap": ProgressionData.RUN_DAMAGE_MULT_SOFTCAP,
+		},
+		{
+			"mod": "attack_speed_multiplier",
+			"out": "attack_speed",
+			"runaway": SOFTCAP_RUNAWAY_ATTACK_SPEED_MULT,
+			"hard_cap": ProgressionData.RUN_ATTACK_SPEED_MULT_SOFTCAP,
+		},
+	]
+	var failures: Array = []
+	for channel in channels:
+		var mod_key: String = str(channel["mod"])
+		var output_key: String = str(channel["out"])
+		var runaway: float = float(channel["runaway"])
+		var hard_cap: float = float(channel["hard_cap"])
+
+		for identity_any in SOFTCAP_IDENTITY_MULTS:
+			var identity := float(identity_any)
+			var passed := _effective_run_multiplier(mod_key, output_key, identity)
+			if not is_finite(passed) or absf(passed - identity) > SOFTCAP_EPS:
+				failures.append("[soft-cap] %s: множитель %.3f (≤1.0) вышел как %.4f — soft-cap перестал быть тождественным на базе и штрафах" % [mod_key, identity, passed])
+
+		var compression_limit := runaway * (1.0 - SOFTCAP_MIN_COMPRESSION)
+		var compressed := _effective_run_multiplier(mod_key, output_key, runaway)
+		if not is_finite(compressed) or compressed > compression_limit:
+			failures.append("[soft-cap] %s: забеговый %.3f прошёл как %.4f > %.4f — diminishing returns больше не сжимают стак идеального билда (progression_data._soft_capped_run_multiplier)" % [mod_key, runaway, compressed, compression_limit])
+
+		var extreme := _effective_run_multiplier(mod_key, output_key, SOFTCAP_EXTREME_MULT)
+		if not is_finite(extreme) or extreme > hard_cap + SOFTCAP_EPS:
+			failures.append("[soft-cap] %s: забеговый %.0f прошёл как %.4f > жёсткого потолка %.3f" % [mod_key, SOFTCAP_EXTREME_MULT, extreme, hard_cap])
+
+		print("[runaway-gate][soft-cap] %s: %.3f→%.4f (≤%.4f) %.0f→%.4f (≤%.3f)" % [mod_key, runaway, compressed, compression_limit, SOFTCAP_EXTREME_MULT, extreme, hard_cap])
+	return failures
 
 
 # --- Прогрессия: «идеальный» билд (зеркало tools/character_balance_csv.gd) -------

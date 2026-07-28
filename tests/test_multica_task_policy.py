@@ -54,13 +54,14 @@ class MulticaTaskPolicyTest(unittest.TestCase):
                 for phrase in BANNED_LIVE_JIRA_PHRASES:
                     self.assertNotIn(phrase, content)
 
-    def test_canonical_ids_and_lifecycle_are_pinned(self) -> None:
+    def test_canonical_project_and_lifecycle_are_pinned(self) -> None:
         workflow = (ROOT / "docs/process/multica_workflow.md").read_text(
             encoding="utf-8"
         )
         self.assertIn("2ac963eb-b644-4540-8042-a1a4508f1a65", workflow)
-        self.assertIn("4eccbced-60b5-4e7a-87fd-d9f3699d3bed", workflow)
-        self.assertIn("e2e1c89f-587d-4a2d-bbaa-ce9b5dea908d", workflow)
+        self.assertIn("Qwen Operations Dispatcher", workflow)
+        self.assertIn("dispatch_ready", workflow)
+        self.assertIn("unassigned", workflow)
         for status in (
             "backlog",
             "todo",
@@ -70,15 +71,15 @@ class MulticaTaskPolicyTest(unittest.TestCase):
             "done",
         ):
             self.assertIn(f"`{status}`", workflow)
-        self.assertIn("`backlog` с точным hold/dependency", workflow)
-        self.assertIn("`blocked` с точным blocker", workflow)
-        self.assertNotIn("отложенной, blocked или зависимой", workflow)
+        self.assertIn("waiting_on", workflow)
+        self.assertIn("Blockers and recovery", workflow)
+        self.assertNotIn("qa_claim_mode=autonomous_unassigned", workflow)
 
         memo = (ROOT / "docs/process/ai_agent_memorandum.md").read_text(
             encoding="utf-8"
         )
-        self.assertIn("direct user control chat", memo)
-        self.assertIn("Mode: direct control chat", memo)
+        self.assertIn("Direct user-control work", memo)
+        self.assertIn("manual-ownership", memo)
 
     def test_legacy_jira_doc_cannot_look_current(self) -> None:
         opening = "\n".join(

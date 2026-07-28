@@ -116,6 +116,39 @@ class QualityGateTests(unittest.TestCase):
     def setUpClass(cls) -> None:
         cls.quality = _load_module("quality_gate_tested", "tools/quality_gate.py")
 
+    def _captured_shell_exclusive_flag(self, shell: str, command: str) -> str:
+        """Run one shell call with a fake Godot launcher and capture its env."""
+        with tempfile.TemporaryDirectory(prefix="quality-shell-gate-") as scratch:
+            scratch_path = Path(scratch)
+            fake_bin = scratch_path / "bin"
+            fake_bin.mkdir()
+            captured = scratch_path / "exclusive.txt"
+            fake_python = fake_bin / "python3"
+            fake_python.write_text(
+                "#!/bin/sh\nprintf '%s' \"${FSD_GODOT_EXCLUSIVE-__unset__}\" "
+                '> "$FSD_CAPTURE"\n',
+                encoding="utf-8",
+            )
+            fake_python.chmod(0o755)
+            environment = os.environ | {
+                "FSD_GODOT_EXCLUSIVE": "1",
+                "FSD_CAPTURE": str(captured),
+                "GODOT_PATH": "/mock/Godot",
+                "PATH": f"{fake_bin}{os.pathsep}{os.environ['PATH']}",
+                "WORKTREE_DIR": str(scratch_path),
+            }
+            completed = subprocess.run(
+                [shell, "-c", command],
+                cwd=ROOT,
+                env=environment,
+                text=True,
+                capture_output=True,
+                check=False,
+            )
+            self.assertEqual(completed.returncode, 0, completed.stderr)
+            self.assertTrue(captured.exists(), completed.stderr)
+            return captured.read_text(encoding="utf-8")
+
     def _use_synthetic_tree(self, stack: contextlib.ExitStack, files: dict[str, str]) -> Path:
         root = Path(stack.enter_context(tempfile.TemporaryDirectory(prefix="quality-tree-")))
         for relative, content in files.items():
@@ -162,6 +195,216 @@ class QualityGateTests(unittest.TestCase):
         self.assertIn(
             "res://tests/ultimates/registry_contract_test.gd", run_captured.call_args.args[0]
         )
+
+    def test_import_prepass_runs_once_before_equal_per_suite_budgets(self) -> None:
+        selected = [
+            ROOT / "tests" / "a5_balance_report_integrity_test.gd",
+            ROOT / "tests" / "runtime_smoke_test.gd",
+        ]
+        events: list[tuple[str, float]] = []
+
+        def import_prepass(timeout: float) -> dict:
+            events.append(("import", timeout))
+            return {"name": "godot-import-cache", "status": "passed", "duration_seconds": 1.0}
+
+        def godot_test(path: Path, timeout: float) -> dict:
+            events.append((path.stem, timeout))
+            return {"name": path.stem, "status": "passed", "duration_seconds": 1.0}
+
+        with tempfile.TemporaryDirectory(prefix="quality-import-report-") as scratch:
+            report = Path(scratch) / "report.json"
+            with mock.patch.object(self.quality, "select_godot_tests", return_value=selected):
+                with mock.patch.object(self.quality, "_worktree_status", return_value=[]):
+                    with mock.patch.object(
+                        self.quality, "run_godot_import", side_effect=import_prepass
+                    ) as run_import:
+                        with mock.patch.object(
+                            self.quality, "run_godot_test", side_effect=godot_test
+                        ):
+                            code = self.quality.main([
+                                "--profile",
+                                "changed",
+                                "--skip-static",
+                                "--test-timeout",
+                                "17",
+                                "--import-timeout",
+                                "23",
+                                "--report",
+                                str(report),
+                            ])
+            payload = json.loads(report.read_text(encoding="utf-8"))
+
+        self.assertEqual(code, 0)
+        run_import.assert_called_once_with(23.0)
+        self.assertEqual(
+            events,
+            [
+                ("import", 23.0),
+                ("a5_balance_report_integrity_test", 17.0),
+                ("runtime_smoke_test", 17.0),
+            ],
+        )
+        self.assertEqual(payload["godot_test_timeout_seconds"], 17.0)
+        self.assertEqual(payload["godot_import_timeout_seconds"], 23.0)
+        self.assertEqual(payload["godot_import_prepass"]["status"], "passed")
+
+    def test_import_timeout_reads_its_environment_override(self) -> None:
+        with mock.patch.dict(os.environ, {"FSD_GODOT_IMPORT_TIMEOUT": "321"}, clear=False):
+            args = self.quality._parse_args([])
+        self.assertEqual(args.import_timeout, 321.0)
+
+    def test_import_prepass_routes_through_godot_gate(self) -> None:
+        with mock.patch.dict(
+            os.environ, {"FSD_GODOT_EXCLUSIVE": "1"}, clear=False
+        ):
+            with mock.patch.object(
+                self.quality, "_run_captured", return_value=(0, "", False)
+            ) as run_captured:
+                result = self.quality.run_godot_import(12.0)
+        self.assertEqual(result["status"], "passed")
+        command = run_captured.call_args.args[0]
+        self.assertEqual(command[:2], [sys.executable, str(self.quality.GODOT_GATE)])
+        self.assertIn("--ensure-import-cache", command)
+        self.assertEqual(
+            run_captured.call_args.args[1]["FSD_GODOT_EXCLUSIVE"],
+            "",
+        )
+
+    def test_only_timing_sensitive_suites_request_machine_exclusive(self) -> None:
+        expected_exclusive = {
+            "res://tests/berserk_dps_runaway_gate.gd",
+            "res://tests/live_balance_simulation_test.gd",
+            "res://tests/pool_dot_runaway_gate.gd",
+        }
+        self.assertEqual(
+            self.quality.TIMING_SENSITIVE_GODOT_SCRIPTS,
+            expected_exclusive,
+        )
+        discovered = {
+            self.quality.script_resource_path(path)
+            for path in self.quality.discover_godot_tests()
+        }
+        self.assertTrue(
+            expected_exclusive <= discovered,
+            "each timing-sensitive resource must exist at its classified path",
+        )
+        cases = {
+            ROOT / script.removeprefix("res://"): "1"
+            for script in expected_exclusive
+        }
+        cases[ROOT / "tests" / "runtime_smoke_test.gd"] = ""
+        with mock.patch.dict(
+            os.environ, {"FSD_GODOT_EXCLUSIVE": "1"}, clear=False
+        ):
+            for path, expected in cases.items():
+                with self.subTest(path=path.name):
+                    with mock.patch.object(
+                        self.quality, "_run_captured", return_value=(0, "", False)
+                    ) as run_captured:
+                        result = self.quality.run_godot_test(path, 1.0)
+                    self.assertEqual(result["status"], "passed")
+                    self.assertEqual(
+                        run_captured.call_args.args[1]["FSD_GODOT_EXCLUSIVE"],
+                        expected,
+                    )
+
+    def test_balance_runner_marks_only_live_timing_measurements_exclusive(self) -> None:
+        source = (ROOT / "tools" / "run_balance_validation.sh").read_text(
+            encoding="utf-8"
+        )
+        calls = [
+            line.strip()
+            for line in source.splitlines()
+            if line.lstrip().startswith("run_gate ")
+        ]
+        timing_calls = [
+            line for line in calls if line.startswith("run_gate --timing-sensitive ")
+        ]
+        self.assertEqual(len(timing_calls), 4)
+        required_scripts = {
+            "res://tests/live_balance_simulation_test.gd",
+            "res://tests/berserk_dps_runaway_gate.gd",
+            "res://tests/pool_dot_runaway_gate.gd",
+            "res://tools/character_balance_csv.gd",
+        }
+        self.assertEqual(
+            {
+                script
+                for script in required_scripts
+                if any(script in line for line in timing_calls)
+            },
+            required_scripts,
+        )
+        sensitive_calls = [
+            line
+            for line in calls
+            if any(script in line for script in required_scripts)
+        ]
+        self.assertEqual(sensitive_calls, timing_calls)
+        live_csv_call = next(
+            line
+            for line in timing_calls
+            if "res://tools/character_balance_csv.gd" in line
+        )
+        self.assertIn("--mode=live", live_csv_call)
+        ordinary_calls = [line for line in calls if line not in timing_calls]
+        self.assertTrue(ordinary_calls)
+        self.assertFalse(
+            any("--timing-sensitive" in line for line in ordinary_calls)
+        )
+        self.assertIn(
+            'if [ "${1:-}" = "--timing-sensitive" ]; then\n'
+            "\t\ttiming_sensitive=1",
+            source,
+        )
+        self.assertIn(
+            "if [ $timing_sensitive -eq 1 ]; then\n"
+            "\t\tgate_env=(env FSD_GODOT_EXCLUSIVE=1)",
+            source,
+        )
+        self.assertIn("gate_env=(env FSD_GODOT_EXCLUSIVE=1)", source)
+        self.assertIn("gate_env=(env FSD_GODOT_EXCLUSIVE=)", source)
+        self.assertEqual(
+            source.count('"${gate_env[@]}" python3 tools/godot_gate.py'),
+            2,
+            "only run_gate uses gate_env; the import pre-pass owns its scrub inline",
+        )
+
+    def test_balance_import_prepass_scrubs_inherited_exclusive_flag(self) -> None:
+        source = (ROOT / "tools" / "run_balance_validation.sh").read_text(
+            encoding="utf-8"
+        )
+        match = re.search(
+            r"^.*python3 tools/godot_gate\.py --headless --path \. --import.*$",
+            source,
+            re.MULTILINE,
+        )
+        self.assertIsNotNone(match)
+        assert match is not None
+        command = match.group(0).split(" >", 1)[0]
+        # The extracted call-site is plain POSIX, so it runs under bash rather
+        # than the script's own zsh shebang, which CI runners do not carry.
+        self.assertEqual(self._captured_shell_exclusive_flag("bash", command), "")
+
+        # Mutation proof: removing this call-site scrub exposes the parent's flag.
+        unsanitized = command.replace("env FSD_GODOT_EXCLUSIVE= ", "", 1)
+        with self.assertRaises(AssertionError):
+            self.assertEqual(self._captured_shell_exclusive_flag("bash", unsanitized), "")
+
+    def test_release_godot_helper_scrubs_inherited_exclusive_flag(self) -> None:
+        source = (ROOT / "tools" / "build_release.sh").read_text(encoding="utf-8")
+        match = re.search(
+            r"^run_godot\(\) \{\n.*?^\}", source, re.MULTILINE | re.DOTALL
+        )
+        self.assertIsNotNone(match)
+        assert match is not None
+        command = f"{match.group(0)}\nrun_godot --headless --import --path ."
+        self.assertEqual(self._captured_shell_exclusive_flag("bash", command), "")
+
+        # Mutation proof: removing this helper scrub exposes the parent's flag.
+        unsanitized = command.replace("env FSD_GODOT_EXCLUSIVE= ", "", 1)
+        with self.assertRaises(AssertionError):
+            self.assertEqual(self._captured_shell_exclusive_flag("bash", unsanitized), "")
 
     def test_ambiguous_test_names_across_directories_are_rejected(self) -> None:
         with contextlib.ExitStack() as stack:
@@ -289,26 +532,67 @@ class QualityGateTests(unittest.TestCase):
         self.assertEqual(populated["executed_tests"], 4)
         self.assertEqual(populated["status"], "passed")
 
-    def test_every_python_unit_command_is_guarded_by_executed_count(self) -> None:
-        # The guard has to cover every name the gate actually emits —
-        # `python-unit` for tests/ plus `python-unit:<path>` for each nested
-        # discovery root — otherwise a nested suite could collect nothing and
-        # still report green.
-        with mock.patch.object(
-            self.quality,
-            "_run_command",
-            return_value={"name": "stub", "status": "passed"},
-        ) as run_command:
-            self.quality.run_static_checks(False, 1.0, "origin/dev", 1.0)
+    def _assert_python_unit_commands_are_guarded(
+        self,
+        files: dict[str, str],
+        expected_names: set[str],
+    ) -> None:
+        with contextlib.ExitStack() as stack:
+            self._use_synthetic_tree(stack, files)
+            stack.enter_context(mock.patch.object(
+                self.quality, "_scan_client_secrets", return_value=[]
+            ))
+            stack.enter_context(mock.patch.object(
+                self.quality, "_windows_export_config_errors", return_value=[]
+            ))
+            with mock.patch.object(
+                self.quality,
+                "_run_command",
+                return_value={"name": "stub", "status": "passed"},
+            ) as run_command:
+                self.quality.run_static_checks(False, 1.0, "origin/dev", 1.0)
+            expected_commands = dict(self.quality.python_unit_commands())
+
         guarded = {
-            call.args[0]: call.kwargs.get("expect_tests")
+            call.args[0]: (call.args[1], call.kwargs.get("expect_tests"))
             for call in run_command.call_args_list
             if call.args[0].startswith("python-unit")
         }
-        expected = set(dict(self.quality.python_unit_commands()))
-        self.assertEqual(set(guarded), expected)
-        self.assertTrue(any(name.startswith("python-unit:") for name in expected))
-        self.assertTrue(all(guarded.values()), guarded)
+        self.assertEqual(set(expected_commands), expected_names)
+        self.assertEqual(set(guarded), set(expected_commands))
+        self.assertEqual(
+            {name: command for name, (command, _) in guarded.items()},
+            expected_commands,
+        )
+        self.assertEqual(
+            {name: expect_tests for name, (_, expect_tests) in guarded.items()},
+            {name: True for name in expected_commands},
+        )
+
+    def test_every_python_unit_command_is_guarded_by_executed_count(self) -> None:
+        # A fully package-backed tree needs only the root discovery command;
+        # a non-package child needs its own command.  Both contracts must keep
+        # every emitted command behind the executed-test count guard.
+        topologies = {
+            "root_only": (
+                {
+                    "tests/test_root.py": "",
+                    "tests/tools/__init__.py": "",
+                    "tests/tools/test_nested.py": "",
+                },
+                {"python-unit"},
+            ),
+            "root_and_nested": (
+                {
+                    "tests/test_root.py": "",
+                    "tests/tools/test_nested.py": "",
+                },
+                {"python-unit", "python-unit:tests/tools"},
+            ),
+        }
+        for topology, (files, expected_names) in topologies.items():
+            with self.subTest(topology=topology):
+                self._assert_python_unit_commands_are_guarded(files, expected_names)
 
     def test_empty_godot_selection_is_reported_as_failure(self) -> None:
         with tempfile.TemporaryDirectory(prefix="quality-empty-selection-") as scratch:
@@ -416,21 +700,39 @@ class QualityGateTests(unittest.TestCase):
         self.assertEqual(code, 124)
 
     def test_python_discovery_watchdog_allows_progress_and_kills_hang(self) -> None:
-        with tempfile.TemporaryDirectory(prefix="quality-python-cache-") as cache:
+        with contextlib.ExitStack() as stack:
+            cache = stack.enter_context(
+                tempfile.TemporaryDirectory(prefix="quality-python-cache-")
+            )
+            tree = Path(stack.enter_context(
+                tempfile.TemporaryDirectory(prefix="quality-python-discovery-")
+            ))
+            test_dir = tree / "tests"
+            test_dir.mkdir()
+            (test_dir / "test_progress.py").write_text(
+                "import unittest\n\n\n"
+                "class ProgressTests(unittest.TestCase):\n"
+                "    def test_reports_progress(self) -> None:\n"
+                "        print('discovery progress', flush=True)\n"
+                "        self.assertTrue(True)\n",
+                encoding="utf-8",
+            )
             env = os.environ.copy()
             env["PYTHONPYCACHEPREFIX"] = cache
+            env["QUALITY_WATCHDOG_TREE"] = str(tree)
+            runner = (
+                "import os, unittest; "
+                "os.chdir(os.environ['QUALITY_WATCHDOG_TREE']); "
+                "unittest.main(module=None, argv=["
+                "'unittest', 'discover', '-v', '-s', 'tests', "
+                "'-p', 'test_progress.py'])"
+            )
             bounded_code, bounded_output, bounded_timeout = self.quality._run_captured(
                 [
                     sys.executable,
                     "-u",
-                    "-m",
-                    "unittest",
-                    "discover",
-                    "-v",
-                    "-s",
-                    "tests",
-                    "-p",
-                    "test_godot_gate.py",
+                    "-c",
+                    runner,
                 ],
                 env,
                 10.0,

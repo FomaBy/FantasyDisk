@@ -1,0 +1,145 @@
+{
+  "schema_version": 1,
+  "class_id": "dark_mage",
+  "class_order": 9,
+  "profiles": [
+    {
+      "weapon_id": "dark_book",
+      "implementation_state": "declared",
+      "fallback_policy_id": "legacy_class_ultimate",
+      "identity": {
+        "profile_id": "weapon_ultimate.profile.dark_mage.dark_book",
+        "title_id": "weapon_ultimate.title.dark_mage.dark_book",
+        "mechanic_id": "weapon_ultimate.mechanic.dark_mage.dark_book"
+      },
+      "targeting": {
+        "aim_id": "weapon_ultimate.aim.dark_mage.dark_book",
+        "strategy_id": "unbound",
+        "params": {}
+      },
+      "charge": {
+        "policy_id": "weapon_ultimate.charge.dark_mage.dark_book",
+        "strategy_id": "unbound",
+        "params": {}
+      },
+      "cast_phases": {
+        "acquire": "weapon_ultimate.phase.dark_mage.dark_book.acquire",
+        "windup": "weapon_ultimate.phase.dark_mage.dark_book.windup",
+        "execute": "weapon_ultimate.phase.dark_mage.dark_book.execute",
+        "active": "weapon_ultimate.phase.dark_mage.dark_book.active",
+        "recover": "weapon_ultimate.phase.dark_mage.dark_book.recover",
+        "cleanup": "weapon_ultimate.phase.dark_mage.dark_book.cleanup"
+      },
+      "executor": {
+        "executor_id": "weapon_ultimate.executor.dark_mage.dark_book",
+        "strategy_id": "unbound",
+        "params": {}
+      },
+      "total_boss_cap": null,
+      "presentation": {
+        "presentation_id": "weapon_ultimate.presentation.dark_mage.dark_book",
+        "animation_id": "weapon_ultimate.animation.dark_mage.dark_book",
+        "vfx_id": "weapon_ultimate.vfx.dark_mage.dark_book",
+        "sfx_id": "weapon_ultimate.sfx.dark_mage.dark_book",
+        "params": {}
+      },
+      "cleanup_policy": {
+        "policy_id": "weapon_ultimate.cleanup.dark_mage.dark_book",
+        "strategy_id": "unbound",
+        "params": {}
+      }
+    },
+    {
+      "weapon_id": "cursed_skull",
+      "implementation_state": "declared",
+      "fallback_policy_id": "legacy_class_ultimate",
+      "identity": {
+        "profile_id": "weapon_ultimate.profile.dark_mage.cursed_skull",
+        "title_id": "weapon_ultimate.title.dark_mage.cursed_skull",
+        "mechanic_id": "weapon_ultimate.mechanic.dark_mage.cursed_skull"
+      },
+      "targeting": {
+        "aim_id": "weapon_ultimate.aim.dark_mage.cursed_skull",
+        "strategy_id": "unbound",
+        "params": {}
+      },
+      "charge": {
+        "policy_id": "weapon_ultimate.charge.dark_mage.cursed_skull",
+        "strategy_id": "unbound",
+        "params": {}
+      },
+      "cast_phases": {
+        "acquire": "weapon_ultimate.phase.dark_mage.cursed_skull.acquire",
+        "windup": "weapon_ultimate.phase.dark_mage.cursed_skull.windup",
+        "execute": "weapon_ultimate.phase.dark_mage.cursed_skull.execute",
+        "active": "weapon_ultimate.phase.dark_mage.cursed_skull.active",
+        "recover": "weapon_ultimate.phase.dark_mage.cursed_skull.recover",
+        "cleanup": "weapon_ultimate.phase.dark_mage.cursed_skull.cleanup"
+      },
+      "executor": {
+        "executor_id": "weapon_ultimate.executor.dark_mage.cursed_skull",
+        "strategy_id": "unbound",
+        "params": {}
+      },
+      "total_boss_cap": null,
+      "presentation": {
+        "presentation_id": "weapon_ultimate.presentation.dark_mage.cursed_skull",
+        "animation_id": "weapon_ultimate.animation.dark_mage.cursed_skull",
+        "vfx_id": "weapon_ultimate.vfx.dark_mage.cursed_skull",
+        "sfx_id": "weapon_ultimate.sfx.dark_mage.cursed_skull",
+        "params": {}
+      },
+      "cleanup_policy": {
+        "policy_id": "weapon_ultimate.cleanup.dark_mage.cursed_skull",
+        "strategy_id": "unbound",
+        "params": {}
+      }
+    },
+    {
+      "weapon_id": "dark_wand",
+      "implementation_state": "declared",
+      "fallback_policy_id": "legacy_class_ultimate",
+      "identity": {
+        "profile_id": "weapon_ultimate.profile.dark_mage.dark_wand",
+        "title_id": "weapon_ultimate.title.dark_mage.dark_wand",
+        "mechanic_id": "weapon_ultimate.mechanic.dark_mage.dark_wand"
+      },
+      "targeting": {
+        "aim_id": "weapon_ultimate.aim.dark_mage.dark_wand",
+        "strategy_id": "unbound",
+        "params": {}
+      },
+      "charge": {
+        "policy_id": "weapon_ultimate.charge.dark_mage.dark_wand",
+        "strategy_id": "unbound",
+        "params": {}
+      },
+      "cast_phases": {
+        "acquire": "weapon_ultimate.phase.dark_mage.dark_wand.acquire",
+        "windup": "weapon_ultimate.phase.dark_mage.dark_wand.windup",
+        "execute": "weapon_ultimate.phase.dark_mage.dark_wand.execute",
+        "active": "weapon_ultimate.phase.dark_mage.dark_wand.active",
+        "recover": "weapon_ultimate.phase.dark_mage.dark_wand.recover",
+        "cleanup": "weapon_ultimate.phase.dark_mage.dark_wand.cleanup"
+      },
+      "executor": {
+        "executor_id": "weapon_ultimate.executor.dark_mage.dark_wand",
+        "strategy_id": "unbound",
+        "params": {}
+      },
+      "total_boss_cap": null,
+      "presentation": {
+        "presentation_id": "weapon_ultimate.presentation.dark_mage.dark_wand",
+        "animation_id": "weapon_ultimate.animation.dark_mage.dark_wand",
+        "vfx_id": "weapon_ultimate.vfx.dark_mage.dark_wand",
+        "sfx_id": "weapon_ultimate.sfx.dark_mage.dark_wand",
+        "params": {}
+      },
+      "cleanup_policy": {
+        "policy_id": "weapon_ultimate.cleanup.dark_mage.dark_wand",
+        "strategy_id": "unbound",
+        "params": {}
+      }
+    }
+  ]
+}
