@@ -1,0 +1,96 @@
+{
+  "schema_version": 1,
+  "issue": "FAN-1474",
+  "class_id": "ranger",
+  "contract": {
+    "schema": "data/ultimates/presentation_schema/v1/weapon_ultimate_presentation_manifest.schema.json",
+    "phase_groups": ["windup", "release", "active", "recovery", "cancel"],
+    "max_timeline_seconds": 10.0,
+    "headless_fallback": "no_op",
+    "runtime_adapter_status": "unbound_shared_adapter_owned_by_FAN-1541"
+  },
+  "generator_provenance": {
+    "route": "reused_accepted_weapon_vfx_no_new_raster_generation",
+    "pixellab_mcp_config_smoke": "PASS get_balance (2026-07-28)",
+    "new_pixellab_assets": [],
+    "reused_sources": {
+      "moon_crossbow": {
+        "source_path": "docs/design/references/weapon_attack_animations/moon_crossbow/vfx_source_1024.png",
+        "runtime_path": "assets/sprites/effects/vfx_weapon_moon_crossbow.png",
+        "note": "Accepted project moon-bolt VFX; this package creates no new raster asset."
+      },
+      "storm_longbow": {
+        "source_path": "docs/design/references/weapon_attack_animations/storm_longbow_pixellab_scrum912/storm_longbow_pixellab_source.png",
+        "runtime_path": "assets/sprites/effects/vfx_weapon_storm_longbow.png",
+        "pixellab_source_object_id": "5499b202-53d7-4e82-a175-07983f464776",
+        "pixellab_source_project_id": "7a9fb7cd-0060-48a4-a4dc-50f7b1124b0c",
+        "pixellab_animation_group_id": "bfaa69ca-1792-471a-bc98-7bd1e13651eb",
+        "pixellab_animation_export_id": "bd9e5428-c100-49c8-a263-ae4e2f45a054",
+        "source_manifest": "docs/design/references/weapon_attack_animations/storm_longbow_pixellab_scrum912/manifest.json"
+      },
+      "hunter_trap": {
+        "source_path": "docs/design/references/weapon_attack_animations/hunter_trap/vfx_weapon_hunter_trap_source.png",
+        "runtime_path": "assets/sprites/effects/vfx_weapon_hunter_trap.png",
+        "note": "Accepted project trap-jaw VFX; this package creates no new raster asset."
+      }
+    }
+  },
+  "weapons": [
+    {
+      "weapon_id": "moon_crossbow",
+      "title": "Лунная Охота",
+      "scene_path": "scenes/vfx/ultimates/ranger/RangerMoonCrossbowMoonHunt.tscn",
+      "silhouette": "silver crescent mark, focused bolt, and four split bolts",
+      "motion_path": "mark bloom, aimed bolt, then four diagonal split bolts",
+      "impact_language": "moon-mark flash followed by a four-way silver split",
+      "timing_seconds": {"windup": 0.0, "release": 0.6, "active": 1.15, "recovery": 4.15, "cancel": 4.8},
+      "phase_ids": {
+        "windup": "weapon_ultimate.phase.ranger.moon_crossbow.windup",
+        "release": "weapon_ultimate.phase.ranger.moon_crossbow.execute",
+        "active": "weapon_ultimate.phase.ranger.moon_crossbow.active",
+        "recovery": "weapon_ultimate.phase.ranger.moon_crossbow.recover",
+        "cancel": "weapon_ultimate.phase.ranger.moon_crossbow.cleanup"
+      },
+      "performance": {"max_visual_nodes": 5, "crowd_cap": 8, "runtime_enforcement_owner": "FAN-1541"}
+    },
+    {
+      "weapon_id": "storm_longbow",
+      "title": "Глаз Бури",
+      "scene_path": "scenes/vfx/ultimates/ranger/RangerStormLongbowStormEye.tscn",
+      "silhouette": "one long storm arrow corridor with tail-to-tip lightning beats",
+      "motion_path": "charged arrow corridor followed by seven sequential lightning beats",
+      "impact_language": "sequential electric corridor strikes that push away from the axis",
+      "timing_seconds": {"windup": 0.0, "release": 0.38, "active": 0.72, "recovery": 3.9, "cancel": 4.45},
+      "phase_ids": {
+        "windup": "weapon_ultimate.phase.ranger.storm_longbow.windup",
+        "release": "weapon_ultimate.phase.ranger.storm_longbow.execute",
+        "active": "weapon_ultimate.phase.ranger.storm_longbow.active",
+        "recovery": "weapon_ultimate.phase.ranger.storm_longbow.recover",
+        "cancel": "weapon_ultimate.phase.ranger.storm_longbow.cleanup"
+      },
+      "performance": {"max_visual_nodes": 7, "crowd_cap": 8, "runtime_enforcement_owner": "FAN-1541"}
+    },
+    {
+      "weapon_id": "hunter_trap",
+      "title": "Великая Западня",
+      "scene_path": "scenes/vfx/ultimates/ranger/RangerHunterTrapGrandTrap.tscn",
+      "silhouette": "three heavy spectral trap rings with inward-facing jaws",
+      "motion_path": "three edge sigils close toward the center in staggered jaw-lock rings",
+      "impact_language": "green-blue jaw snap, chain net closure, and a fading bleed rune",
+      "timing_seconds": {"windup": 0.0, "release": 0.92, "active": 1.45, "recovery": 4.85, "cancel": 5.35},
+      "phase_ids": {
+        "windup": "weapon_ultimate.phase.ranger.hunter_trap.windup",
+        "release": "weapon_ultimate.phase.ranger.hunter_trap.execute",
+        "active": "weapon_ultimate.phase.ranger.hunter_trap.active",
+        "recovery": "weapon_ultimate.phase.ranger.hunter_trap.recover",
+        "cancel": "weapon_ultimate.phase.ranger.hunter_trap.cleanup"
+      },
+      "performance": {"max_visual_nodes": 3, "crowd_cap": 8, "runtime_enforcement_owner": "FAN-1541"}
+    }
+  ],
+  "evidence": {
+    "contact_sheet": "docs/design/references/weapon_ultimates/ranger/ranger_ultimate_timelines_contact_sheet.png",
+    "capture_script": "scenes/vfx/ultimates/ranger/ranger_ultimate_contact_sheet.gd",
+    "focused_test": "tests/ultimates/presentation/ranger_ultimate_presentation_test.gd"
+  }
+}
