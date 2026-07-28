@@ -104,8 +104,17 @@ change.
 `scripts/ultimates/controller/ultimate_activation.gd` is one live cast. Executors
 never touch the Player: they ask the activation for targets, damage, modifiers,
 spawns and presentation. The host side is the eight `ultimate_host_*` methods
-listed in `UltimateActivation.HOST_METHODS`, implemented as a narrow adapter in
-`scripts/player.gd`. Nothing below the adapter may branch on a class or a weapon.
+listed in `UltimateActivation.HOST_METHODS`, implemented by
+`scripts/ultimates/controller/ultimate_player_host.gd`, a Node the Player owns as
+a child. Nothing below the adapter may branch on a class or a weapon.
+
+`scripts/player.gd` therefore keeps only a four-line boundary: the host preload,
+`ULTIMATE_HOST.reset(self)` at the top of `configure_character`, and the
+`ULTIMATE_HOST.activate(self)` delegation in `activate_ultimate`. Death,
+scene change and node end need no hook at all — the host is a Player child, so
+its own `_exit_tree` cancels the cast. Only the new run needs the explicit call,
+and it must stay before `run_modifiers` is reset, otherwise the modifier revert
+would land on freshly created defaults.
 
 Executor families live in `scripts/ultimates/executors/` and are selected purely
 by `executor.strategy_id`:
@@ -139,9 +148,7 @@ on the target and bypass the budget. Normal enemies are never capped.
 The activation owns every resource it created. Player death, leaving the tree and
 a new run all call `cancel()`, which kills tracked tweens, frees summons, deploys
 and presentation nodes, and unwinds modifiers in reverse order. A cast that simply
-ran to completion unwinds the same way but lets its last VFX fade. On a new run,
-cancellation must happen before `run_modifiers` is reset, otherwise the revert
-would land on freshly created defaults.
+ran to completion unwinds the same way but lets its last VFX fade.
 
 ## Codex and downstream consumers
 
@@ -185,7 +192,7 @@ HP, and the whole-activation boss budget including deferred summon damage.
 `controller_player_integration_test` holds the other half: every shipped profile
 still resolves to the legacy class ultimate, all 17 class ultimates still fire and
 spend their charge exactly once, and — with a ready declaration injected — the
-narrow `player.gd` adapter drives a real cast that a new run or a node end drops.
+host adapter drives a real cast that a new run or a node end drops.
 
 The tests cover all 51 selections, both sibling negative controls for every
 selection, exact legacy fallback preservation, fail-closed unknown pairs,

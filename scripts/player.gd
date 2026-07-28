@@ -30,8 +30,7 @@ const KNIGHT_SPRITE := preload("res://assets/sprites/characters/knight.png")
 const ROBOT_SPRITE := preload("res://assets/sprites/characters/robot.png")
 const DRUID_SPRITE := preload("res://assets/sprites/characters/druid.png")
 const PROGRESSION_DATA := preload("res://scripts/progression_data.gd")
-const ULTIMATE_CONTROLLER := preload("res://scripts/ultimates/controller/ultimate_controller.gd")
-const ULTIMATE_REGISTRY := preload("res://scripts/ultimates/registry/weapon_ultimate_registry.gd")
+const ULTIMATE_HOST := preload("res://scripts/ultimates/controller/ultimate_player_host.gd")
 const PLAYER_MOVEMENT_INPUT := preload("res://scripts/player_movement_input.gd")
 # FAN-1449: вся геометрия наводки живёт в провайдере; player — тонкий адаптер.
 const AIM_CONTROLLER := preload("res://scripts/input/aim_controller.gd")
@@ -271,9 +270,6 @@ var ultimate_charge := 0.0
 var ultimate_max_charge := 100.0
 var _ultimate_active := false
 var _ultimate_tween: Tween = null
-# FAN-1457: generic weapon-ultimate runtime. Built on first use so a Player that
-# never casts does not pay for the catalog read.
-var _ultimates: UltimateController = null
 var _debug_move_target_active := false
 var _debug_move_target := Vector2.ZERO
 var _movement_input_armed := false # FAN-1096/FAN-1107: all-action neutral rearm blocks held UI direction.
@@ -415,9 +411,6 @@ func rage_damage_multiplier() -> float:
 
 func _ready() -> void:
 	process_mode = Node.PROCESS_MODE_PAUSABLE
-	# FAN-1457: читаем каталог ульт на спавне, а не на первом касте — иначе
-	# разбор 17 JSON пришёлся бы ровно на момент активации ульты.
-	_shared_ultimate_registry()
 	_ensure_default_input_actions()
 	_aim.attach(self)
 	if stats.is_empty():
@@ -425,9 +418,7 @@ func _ready() -> void:
 
 
 func configure_character(new_character_id: String, new_weapon_id := "") -> void:
-	# FAN-1457: активная ульта не переживает новый забег. Снимаем ДО сброса
-	# run_modifiers — иначе откат модификаторов лёг бы на свежие дефолты.
-	_cancel_ultimate_runtime()
+	ULTIMATE_HOST.reset(self)  # FAN-1457: до сброса run_modifiers — см. ultimate_player_host.gd
 	character_id = new_character_id
 	_movement_input_armed = false
 	weapon_id = ""
@@ -1172,7 +1163,6 @@ func take_damage(amount: float, _source := "", attacker: Node2D = null) -> bool:
 		if rig != null and rig.has_method("spawn_death_ghost"):
 			rig.spawn_death_ghost()
 		_trigger_gamepad_vibration(0.0, 0.8, 0.5)
-		_cancel_ultimate_runtime()  # FAN-1457: смерть снимает активную ульту целиком
 		died.emit()
 		queue_free()
 	return true
@@ -2577,11 +2567,7 @@ func activate_ultimate() -> bool:
 	ultimate_charge = 0.0
 	_play_sfx("level_up")
 	_trigger_gamepad_vibration(0.4, 0.0, 0.15)
-	# FAN-1457: the generic runtime takes the cast whenever the equipped weapon
-	# declares a ready profile. While a profile is still `declared` it resolves to
-	# the legacy class fallback, activate() declines, and the class match below
-	# runs exactly as before — that is the migration bridge, not a fallback bug.
-	if ultimate_runtime().activate(character_id, weapon_id):
+	if ULTIMATE_HOST.activate(self):
 		return true
 	match character_id:
 		"berserk":
@@ -2940,98 +2926,6 @@ func _apply_ultimate_damage(enemy: Node2D, amount: float) -> void:
 	# урона — канал класса (маг. классы красят цифру магией).
 	var ult_type := "magic" if ProgressionData.damage_parameter_for(character_id) == "magic_damage" else "physical"
 	_apply_player_damage(enemy, final_amount, {"damage_type": ult_type, "player_owned": true})
-
-
-# FAN-1457: narrow host adapter for UltimateController and the executor families.
-# Everything the generic runtime needs from the Player goes through these eight
-# calls, which is what keeps the controller and the executors free of class and
-# weapon branches. The catalog is read once per process, warmed from _ready.
-static var _ultimate_registry_shared = null
-
-
-static func _shared_ultimate_registry():
-	if _ultimate_registry_shared == null:
-		_ultimate_registry_shared = ULTIMATE_REGISTRY.new(PROGRESSION_DATA.WEAPONS_BY_CLASS)
-	return _ultimate_registry_shared
-
-
-func ultimate_runtime() -> UltimateController:
-	if _ultimates == null:
-		_ultimates = ULTIMATE_CONTROLLER.new(self, _shared_ultimate_registry())
-	return _ultimates
-
-
-# Death, node end and a new run all drop an in-flight cast: tweens, summons,
-# deploys, VFX and transient modifiers go with it, so nothing carries over.
-func _cancel_ultimate_runtime() -> void:
-	if _ultimates != null:
-		_ultimates.cancel()
-
-
-func ultimate_host_context() -> Dictionary:
-	var damage_parameter := ProgressionData.damage_parameter_for(character_id)
-	return {
-		"damage": float(
-			derived_parameters.get(damage_parameter, derived_parameters.get("damage", 10.0))
-		),
-		"multiplier": float(derived_parameters.get("ultimate_multiplier", 1.0)),
-		"damage_type": "magic" if damage_parameter == "magic_damage" else "physical",
-	}
-
-
-func ultimate_host_position() -> Vector2:
-	return global_position
-
-
-func ultimate_host_targets(center: Vector2, radius: float, limit: int) -> Array:
-	if limit > 0:
-		return TARGET_QUERY.nearest_many(self, center, radius, limit)
-	return TARGET_QUERY.in_radius(self, center, radius)
-
-
-func ultimate_host_apply_damage(target: Node, amount: float, feedback: Dictionary) -> void:
-	_apply_player_damage(target, amount, feedback)
-
-
-func ultimate_host_modifier(key: String, value: float, op: String) -> void:
-	var multiplicative := op == "mul"
-	var current := float(run_modifiers.get(key, 1.0 if multiplicative else 0.0))
-	run_modifiers[key] = current * value if multiplicative else current + value
-	_apply_stat_scaling(false, max_health)
-
-
-func ultimate_host_effect_parent() -> Node:
-	return _vfx_parent()
-
-
-func ultimate_host_set_active(active: bool) -> void:
-	_ultimate_active = active
-
-
-# Presentation stays primitive on purpose: the weapon-ultimate presentation
-# contract is a separate package, so this adapter only maps the three geometric
-# shapes the executors describe onto the existing AttackVfx primitives.
-func ultimate_host_present(_event_id: String, payload: Dictionary) -> Node:
-	var parent := _vfx_parent()
-	if parent == null:
-		return null
-	var position: Vector2 = payload.get("position", global_position)
-	var radius := float(payload.get("radius", 240.0))
-	match str(payload.get("shape", "ring_pulse")):
-		"beam":
-			return AttackVfx.beam(
-				parent,
-				payload.get("from", global_position),
-				payload.get("to", position),
-				34.0,
-				Color(0.86, 0.92, 1.0, 0.42)
-			)
-		"orb_burst":
-			return AttackVfx.orb_burst(parent, position, radius, Color(0.62, 0.76, 1.0, 0.44))
-		_:
-			return AttackVfx.ring_pulse(
-				parent, position, radius, Color(0.86, 0.92, 1.0, 0.40), false
-			)
 
 
 func show_combat_feedback_number(amount: float, kind := "heal") -> void:
@@ -4165,8 +4059,6 @@ func _set_low_hp_audio_loop(active: bool) -> void:
 
 
 func _exit_tree() -> void:
-	# FAN-1457: узел покинул дерево — активная ульта не должна пережить сцену.
-	_cancel_ultimate_runtime()
 	# Смерть/конец боя/смена экрана убирают игрока из дерева — пульс гаснет
 	# (страховка-дубль к combat_director._play_combat_result_audio).
 	if _low_hp_audio_active:

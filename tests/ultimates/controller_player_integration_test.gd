@@ -6,7 +6,7 @@ extends SceneTree
 ##  1. Compatibility — while every catalog profile is still `declared`, the
 ##     generic runtime declines and each class ultimate runs exactly as before,
 ##     spending its charge once.
-##  2. Integration — with a ready declaration injected, the narrow `player.gd`
+##  2. Integration — with a ready declaration injected, the UltimatePlayerHost
 ##     adapter drives the generic runtime end to end, and a new run or a node
 ##     end drops the live cast instead of carrying it over.
 ##
@@ -16,7 +16,7 @@ extends SceneTree
 
 const PlayerScene := preload("res://scenes/Player.tscn")
 const EnemyScene := preload("res://scenes/Enemy.tscn")
-const Controller := preload("res://scripts/ultimates/controller/ultimate_controller.gd")
+const PlayerHost := preload("res://scripts/ultimates/controller/ultimate_player_host.gd")
 const Activation := preload("res://scripts/ultimates/controller/ultimate_activation.gd")
 const Registry := preload("res://scripts/ultimates/registry/weapon_ultimate_registry.gd")
 const Resolver := preload("res://scripts/ultimates/registry/weapon_ultimate_resolver.gd")
@@ -75,7 +75,10 @@ func _test_catalog_is_still_declared() -> void:
 func _test_legacy_class_ultimates_unchanged() -> void:
 	var player := await _spawn_player()
 	var enemy := await _spawn_enemy(Vector2(90.0, 0.0))
-	_check(Activation.host_supports(player), "player.gd must implement the whole host contract")
+	_check(
+		Activation.host_supports(PlayerHost.for_player(player)),
+		"the player host adapter must implement the whole host contract"
+	)
 
 	for raw_class_id in PD.WEAPONS_BY_CLASS.keys():
 		var class_id := str(raw_class_id)
@@ -88,7 +91,7 @@ func _test_legacy_class_ultimates_unchanged() -> void:
 
 		_check(bool(player.call("activate_ultimate")), "%s ultimate must still fire" % class_id)
 		_check(
-			not player.call("ultimate_runtime").is_active(),
+			not PlayerHost.for_player(player).controller().is_active(),
 			"%s must still run its legacy ultimate, not the generic runtime" % class_id
 		)
 		_check(
@@ -151,7 +154,7 @@ func _test_new_run_drops_a_live_cast() -> void:
 	player.set("ultimate_charge", float(player.get("ultimate_max_charge")))
 	_check(bool(player.call("activate_ultimate")), "the timed cast must start")
 	_check(
-		player.call("ultimate_runtime").is_active(),
+		PlayerHost.for_player(player).controller().is_active(),
 		"a long timed cast must still be live before the new run"
 	)
 	_check(
@@ -162,7 +165,7 @@ func _test_new_run_drops_a_live_cast() -> void:
 	player.call("configure_character", READY_CLASS, READY_WEAPON)
 	await process_frame
 	_check(
-		not player.call("ultimate_runtime").is_active(),
+		not PlayerHost.for_player(player).controller().is_active(),
 		"a new run must not carry an active effect over"
 	)
 	_check(
@@ -187,7 +190,7 @@ func _test_node_end_drops_a_live_cast() -> void:
 	}, 0.1)
 	player.set("ultimate_charge", float(player.get("ultimate_max_charge")))
 	_check(bool(player.call("activate_ultimate")), "the timed cast must start")
-	var controller = player.call("ultimate_runtime")
+	var controller = PlayerHost.for_player(player).controller()
 	_check(controller.is_active(), "the cast must be live before the node ends")
 
 	_holder.remove_child(player)
@@ -240,7 +243,7 @@ func _inject_ready_profile(player: Node2D, executor: Dictionary, total_boss_cap:
 		"total_boss_cap": total_boss_cap,
 		"executor": executor,
 	}
-	player.set("_ultimates", Controller.new(player, registry))
+	PlayerHost.for_player(player).use_registry(registry)
 
 
 func _check(condition: bool, message: String) -> void:
