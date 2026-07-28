@@ -1,0 +1,138 @@
+{
+  "schema_version": 1,
+  "issue": "FAN-1468",
+  "class_id": "soldier",
+  "contract": {
+    "schema": "data/ultimates/presentation_schema/v1/weapon_ultimate_presentation_manifest.schema.json",
+    "profile_source": "data/ultimates/schema/v1/classes/soldier.json",
+    "phase_groups": [
+      "windup",
+      "release",
+      "active",
+      "recovery",
+      "cancel"
+    ],
+    "max_timeline_seconds": 10.0,
+    "headless_fallback": "no_op",
+    "runtime_adapter_status": "unbound_shared_adapter_owned_by_FAN-1541",
+    "mechanics_status": "numeric telegraph/damage windows are unbound on this base; mechanics FAN-1469 introduces them and binds by phase_id, not by number"
+  },
+  "generator_provenance": {
+    "route": "reused_approved_assets_no_new_raster_generation",
+    "pixellab_usage": "not_required_no_new_source_frames",
+    "new_pixellab_assets": [],
+    "reused_sources": {
+      "soldier_rifle": {
+        "source_path": "assets/sprites/weapons/soldier_rifle.png",
+        "runtime_scene": "scenes/vfx/ultimates/soldier/SoldierRifleSuppressiveOrder.tscn",
+        "note": "Accepted project weapon sprite reused as the spectral rank silhouette; no new isolated source frame was created."
+      },
+      "soldier_grenade": {
+        "source_path": "assets/sprites/weapons/soldier_grenade.png",
+        "runtime_scene": "scenes/vfx/ultimates/soldier/SoldierGrenadeSevenSeconds.tscn",
+        "note": "Accepted project weapon sprite reused for the seven seeded grenades; no new isolated source frame was created."
+      },
+      "soldier_bayonet": {
+        "source_path": "assets/sprites/weapons/soldier_bayonet.png",
+        "runtime_scene": "scenes/vfx/ultimates/soldier/SoldierBayonetLastCharge.tscn",
+        "note": "Accepted project weapon sprite reused for the three ghost infantry ranks; no new isolated source frame was created."
+      }
+    }
+  },
+  "weapons": [
+    {
+      "weapon_id": "soldier_rifle",
+      "title": "Приказ: Сплошной Огонь",
+      "scene_path": "scenes/vfx/ultimates/soldier/SoldierRifleSuppressiveOrder.tscn",
+      "silhouette": "spectral rifle rank behind a raised war banner",
+      "motion_path": "three aimed volleys sweeping one straight arena-crossing lane",
+      "impact_language": "three muzzle-flash waves that break on the first dense group, then a smoke recall",
+      "timing_seconds": {
+        "windup": 0.0,
+        "release": 0.55,
+        "active": 0.8,
+        "recovery": 4.9,
+        "cancel": 5.6
+      },
+      "phase_ids": {
+        "windup": "weapon_ultimate.phase.soldier.soldier_rifle.windup",
+        "release": "weapon_ultimate.phase.soldier.soldier_rifle.execute",
+        "active": "weapon_ultimate.phase.soldier.soldier_rifle.active",
+        "recovery": "weapon_ultimate.phase.soldier.soldier_rifle.recover",
+        "cancel": "weapon_ultimate.phase.soldier.soldier_rifle.cleanup"
+      },
+      "performance": {
+        "max_visual_nodes": 8,
+        "crowd_cap": 22,
+        "crowd_budget_enforcement_owner": "runtime enforcement FAN-1541",
+        "total_boss_cap_split_owner": "mechanics FAN-1469"
+      }
+    },
+    {
+      "weapon_id": "soldier_grenade",
+      "title": "Семь Секунд до Ада",
+      "scene_path": "scenes/vfx/ultimates/soldier/SoldierGrenadeSevenSeconds.tscn",
+      "silhouette": "seven oversized grenades seeded around one aim point",
+      "motion_path": "high lob, then a shared shrinking fuse countdown over the static seeded formation",
+      "impact_language": "outside-in chain detonation closing on a central fire column and a short burning crater",
+      "timing_seconds": {
+        "windup": 0.0,
+        "release": 0.62,
+        "active": 0.95,
+        "recovery": 8.4,
+        "cancel": 9.1
+      },
+      "phase_ids": {
+        "windup": "weapon_ultimate.phase.soldier.soldier_grenade.windup",
+        "release": "weapon_ultimate.phase.soldier.soldier_grenade.execute",
+        "active": "weapon_ultimate.phase.soldier.soldier_grenade.active",
+        "recovery": "weapon_ultimate.phase.soldier.soldier_grenade.recover",
+        "cancel": "weapon_ultimate.phase.soldier.soldier_grenade.cleanup"
+      },
+      "performance": {
+        "max_visual_nodes": 11,
+        "crowd_cap": 26,
+        "crowd_budget_enforcement_owner": "runtime enforcement FAN-1541",
+        "chain_detonation_damage_owner": "mechanics FAN-1469"
+      }
+    },
+    {
+      "weapon_id": "soldier_bayonet",
+      "title": "Последняя Атака",
+      "scene_path": "scenes/vfx/ultimates/soldier/SoldierBayonetLastCharge.tscn",
+      "silhouette": "three offset ranks of ghost infantry holding levelled bayonets",
+      "motion_path": "three time-offset phalanx charges down one aimed corridor, hero never displaced",
+      "impact_language": "crossed-bayonet pin, then a short frontal guard and a rally salute",
+      "timing_seconds": {
+        "windup": 0.0,
+        "release": 0.48,
+        "active": 0.72,
+        "recovery": 3.6,
+        "cancel": 4.25
+      },
+      "phase_ids": {
+        "windup": "weapon_ultimate.phase.soldier.soldier_bayonet.windup",
+        "release": "weapon_ultimate.phase.soldier.soldier_bayonet.execute",
+        "active": "weapon_ultimate.phase.soldier.soldier_bayonet.active",
+        "recovery": "weapon_ultimate.phase.soldier.soldier_bayonet.recover",
+        "cancel": "weapon_ultimate.phase.soldier.soldier_bayonet.cleanup"
+      },
+      "performance": {
+        "max_visual_nodes": 8,
+        "crowd_cap": 18,
+        "crowd_budget_enforcement_owner": "runtime enforcement FAN-1541",
+        "pin_stagger_and_frontal_guard_owner": "mechanics FAN-1469"
+      }
+    }
+  ],
+  "evidence": {
+    "contact_sheets": [
+      "docs/design/references/weapon_ultimates/soldier/soldier_ultimate_timelines_648p.png",
+      "docs/design/references/weapon_ultimates/soldier/soldier_ultimate_timelines_720p.png",
+      "docs/design/references/weapon_ultimates/soldier/soldier_ultimate_timelines_1080p.png",
+      "docs/design/references/weapon_ultimates/soldier/soldier_ultimate_timelines_2k.png"
+    ],
+    "capture_script": "tests/ultimates/presentation/soldier_ultimate_contact_capture.gd",
+    "focused_test": "tests/ultimates/presentation/soldier_ultimate_timelines.gd"
+  }
+}

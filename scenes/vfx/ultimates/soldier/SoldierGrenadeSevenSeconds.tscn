@@ -1,0 +1,275 @@
+[gd_scene load_steps=4 format=3]
+
+[ext_resource type="Texture2D" path="res://assets/sprites/weapons/soldier_grenade.png" id="1_grenade"]
+
+[sub_resource type="CanvasItemMaterial" id="CanvasItemMaterial_add"]
+blend_mode = 1
+light_mode = 1
+
+[sub_resource type="Animation" id="Animation_seven_seconds"]
+resource_name = "ultimate"
+length = 9.1
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("LobArc:modulate:a")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 0.3, 0.62, 0.95, 9.1),
+"transitions": PackedFloat32Array(1, 1, 1, 1, 1),
+"update": 0,
+"values": [0.0, 0.9, 0.9, 0.0, 0.0]
+}
+tracks/1/type = "value"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath("FuseRing:scale")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0, 0.95, 6, 9.1),
+"transitions": PackedFloat32Array(1, 1, 1, 1),
+"update": 0,
+"values": [Vector2(1, 1), Vector2(1, 1), Vector2(0.22, 0.22), Vector2(0.22, 0.22)]
+}
+tracks/2/type = "value"
+tracks/2/imported = false
+tracks/2/enabled = true
+tracks/2/path = NodePath("FuseRing:modulate:a")
+tracks/2/interp = 1
+tracks/2/loop_wrap = true
+tracks/2/keys = {
+"times": PackedFloat32Array(0, 0.94, 0.95, 1.35, 1.75, 2.15, 2.55, 2.95, 3.35, 3.75, 4.15, 4.55, 4.95, 5.35, 5.75, 6.05, 7.9, 8.4),
+"transitions": PackedFloat32Array(1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1),
+"update": 0,
+"values": [0.0, 0.0, 1.0, 0.4, 1.0, 0.4, 1.0, 0.4, 1.0, 0.4, 1.0, 0.4, 1.0, 0.4, 1.0, 0.5, 0.5, 0.0]
+}
+tracks/3/type = "value"
+tracks/3/imported = false
+tracks/3/enabled = true
+tracks/3/path = NodePath("GrenadeOne:modulate:a")
+tracks/3/interp = 1
+tracks/3/loop_wrap = true
+tracks/3/keys = {
+"times": PackedFloat32Array(0, 0.61, 0.95, 6, 6.05, 9.1),
+"transitions": PackedFloat32Array(1, 1, 1, 1, 1, 1),
+"update": 0,
+"values": [0.0, 0.0, 1.0, 1.0, 0.0, 0.0]
+}
+tracks/4/type = "value"
+tracks/4/imported = false
+tracks/4/enabled = true
+tracks/4/path = NodePath("GrenadeTwo:modulate:a")
+tracks/4/interp = 1
+tracks/4/loop_wrap = true
+tracks/4/keys = {
+"times": PackedFloat32Array(0, 0.61, 0.95, 6.3, 6.35, 9.1),
+"transitions": PackedFloat32Array(1, 1, 1, 1, 1, 1),
+"update": 0,
+"values": [0.0, 0.0, 1.0, 1.0, 0.0, 0.0]
+}
+tracks/5/type = "value"
+tracks/5/imported = false
+tracks/5/enabled = true
+tracks/5/path = NodePath("GrenadeThree:modulate:a")
+tracks/5/interp = 1
+tracks/5/loop_wrap = true
+tracks/5/keys = {
+"times": PackedFloat32Array(0, 0.61, 0.95, 6.6, 6.65, 9.1),
+"transitions": PackedFloat32Array(1, 1, 1, 1, 1, 1),
+"update": 0,
+"values": [0.0, 0.0, 1.0, 1.0, 0.0, 0.0]
+}
+tracks/6/type = "value"
+tracks/6/imported = false
+tracks/6/enabled = true
+tracks/6/path = NodePath("GrenadeFour:modulate:a")
+tracks/6/interp = 1
+tracks/6/loop_wrap = true
+tracks/6/keys = {
+"times": PackedFloat32Array(0, 0.61, 0.95, 6.9, 6.95, 9.1),
+"transitions": PackedFloat32Array(1, 1, 1, 1, 1, 1),
+"update": 0,
+"values": [0.0, 0.0, 1.0, 1.0, 0.0, 0.0]
+}
+tracks/7/type = "value"
+tracks/7/imported = false
+tracks/7/enabled = true
+tracks/7/path = NodePath("GrenadeFive:modulate:a")
+tracks/7/interp = 1
+tracks/7/loop_wrap = true
+tracks/7/keys = {
+"times": PackedFloat32Array(0, 0.61, 0.95, 7.2, 7.25, 9.1),
+"transitions": PackedFloat32Array(1, 1, 1, 1, 1, 1),
+"update": 0,
+"values": [0.0, 0.0, 1.0, 1.0, 0.0, 0.0]
+}
+tracks/8/type = "value"
+tracks/8/imported = false
+tracks/8/enabled = true
+tracks/8/path = NodePath("GrenadeSix:modulate:a")
+tracks/8/interp = 1
+tracks/8/loop_wrap = true
+tracks/8/keys = {
+"times": PackedFloat32Array(0, 0.61, 0.95, 7.5, 7.55, 9.1),
+"transitions": PackedFloat32Array(1, 1, 1, 1, 1, 1),
+"update": 0,
+"values": [0.0, 0.0, 1.0, 1.0, 0.0, 0.0]
+}
+tracks/9/type = "value"
+tracks/9/imported = false
+tracks/9/enabled = true
+tracks/9/path = NodePath("GrenadeSeven:modulate:a")
+tracks/9/interp = 1
+tracks/9/loop_wrap = true
+tracks/9/keys = {
+"times": PackedFloat32Array(0, 0.61, 0.95, 7.8, 7.85, 9.1),
+"transitions": PackedFloat32Array(1, 1, 1, 1, 1, 1),
+"update": 0,
+"values": [0.0, 0.0, 1.0, 1.0, 0.0, 0.0]
+}
+tracks/10/type = "value"
+tracks/10/imported = false
+tracks/10/enabled = true
+tracks/10/path = NodePath("ChainBlast:scale")
+tracks/10/interp = 1
+tracks/10/loop_wrap = true
+tracks/10/keys = {
+"times": PackedFloat32Array(0, 6, 7.85, 9.1),
+"transitions": PackedFloat32Array(1, 1, 1, 1),
+"update": 0,
+"values": [Vector2(1, 1), Vector2(1, 1), Vector2(0.16, 0.16), Vector2(0.16, 0.16)]
+}
+tracks/11/type = "value"
+tracks/11/imported = false
+tracks/11/enabled = true
+tracks/11/path = NodePath("ChainBlast:modulate:a")
+tracks/11/interp = 1
+tracks/11/loop_wrap = true
+tracks/11/keys = {
+"times": PackedFloat32Array(0, 5.95, 6.05, 7.85, 8.4, 9.1),
+"transitions": PackedFloat32Array(1, 1, 1, 1, 1, 1),
+"update": 0,
+"values": [0.0, 0.0, 1.0, 0.9, 0.0, 0.0]
+}
+tracks/12/type = "value"
+tracks/12/imported = false
+tracks/12/enabled = true
+tracks/12/path = NodePath("FireColumn:scale")
+tracks/12/interp = 1
+tracks/12/loop_wrap = true
+tracks/12/keys = {
+"times": PackedFloat32Array(0, 7.85, 8.1, 8.4, 9.1),
+"transitions": PackedFloat32Array(1, 1, 1, 1, 1),
+"update": 0,
+"values": [Vector2(0.1, 0.1), Vector2(0.1, 0.1), Vector2(1, 1), Vector2(1.15, 1.15), Vector2(1.3, 1.3)]
+}
+tracks/13/type = "value"
+tracks/13/imported = false
+tracks/13/enabled = true
+tracks/13/path = NodePath("FireColumn:modulate:a")
+tracks/13/interp = 1
+tracks/13/loop_wrap = true
+tracks/13/keys = {
+"times": PackedFloat32Array(0, 7.8, 8.1, 8.4, 9.1),
+"transitions": PackedFloat32Array(1, 1, 1, 1, 1),
+"update": 0,
+"values": [0.0, 0.0, 1.0, 0.7, 0.0]
+}
+
+[sub_resource type="AnimationLibrary" id="AnimationLibrary_seven_seconds"]
+_data = {"ultimate": SubResource("Animation_seven_seconds")}
+
+[node name="SoldierGrenadeSevenSeconds" type="Node2D"]
+metadata/ultimate_id = "soldier/soldier_grenade"
+metadata/silhouette = "seven_oversized_grenades_seeded_around_one_aim_point"
+metadata/motion_path = "high_lob_then_shared_shrinking_fuse_countdown_over_a_static_seeded_formation"
+metadata/impact_language = "outside_in_chain_detonation_closing_on_a_central_fire_column"
+metadata/max_visual_nodes = 11
+metadata/crowd_cap = 26
+
+[node name="LobArc" type="Line2D" parent="."]
+points = PackedVector2Array(-206, 150, -164, 42, -108, -22, -48, -34, 0, -30)
+width = 9.0
+default_color = Color(0.86, 0.72, 0.4, 0.55)
+antialiased = true
+modulate = Color(1, 1, 1, 0)
+
+[node name="FuseRing" type="Line2D" parent="."]
+material = SubResource("CanvasItemMaterial_add")
+points = PackedVector2Array(218, 0, 201, 84, 154, 154, 84, 201, 0, 218, -84, 201, -154, 154, -201, 84, -218, 0, -201, -84, -154, -154, -84, -201, 0, -218, 84, -201, 154, -154, 201, -84, 218, 0)
+width = 7.0
+default_color = Color(1, 0.66, 0.22, 0.7)
+closed = true
+antialiased = true
+modulate = Color(1, 1, 1, 0)
+
+[node name="GrenadeOne" type="Sprite2D" parent="."]
+texture = ExtResource("1_grenade")
+position = Vector2(-160, -128)
+rotation = 0.42
+scale = Vector2(0.3, 0.3)
+modulate = Color(1, 0.9, 0.74, 0)
+
+[node name="GrenadeTwo" type="Sprite2D" parent="."]
+texture = ExtResource("1_grenade")
+position = Vector2(176, -84)
+rotation = -0.36
+scale = Vector2(0.3, 0.3)
+modulate = Color(1, 0.9, 0.74, 0)
+
+[node name="GrenadeThree" type="Sprite2D" parent="."]
+texture = ExtResource("1_grenade")
+position = Vector2(-52, 172)
+rotation = 0.88
+scale = Vector2(0.3, 0.3)
+modulate = Color(1, 0.9, 0.74, 0)
+
+[node name="GrenadeFour" type="Sprite2D" parent="."]
+texture = ExtResource("1_grenade")
+position = Vector2(150, 68)
+rotation = -0.74
+scale = Vector2(0.3, 0.3)
+modulate = Color(1, 0.9, 0.74, 0)
+
+[node name="GrenadeFive" type="Sprite2D" parent="."]
+texture = ExtResource("1_grenade")
+position = Vector2(-138, 58)
+rotation = 0.16
+scale = Vector2(0.3, 0.3)
+modulate = Color(1, 0.9, 0.74, 0)
+
+[node name="GrenadeSix" type="Sprite2D" parent="."]
+texture = ExtResource("1_grenade")
+position = Vector2(36, -114)
+rotation = -0.62
+scale = Vector2(0.3, 0.3)
+modulate = Color(1, 0.9, 0.74, 0)
+
+[node name="GrenadeSeven" type="Sprite2D" parent="."]
+texture = ExtResource("1_grenade")
+position = Vector2(0, 0)
+rotation = 0.06
+scale = Vector2(0.34, 0.34)
+modulate = Color(1, 0.86, 0.66, 0)
+
+[node name="ChainBlast" type="Line2D" parent="."]
+material = SubResource("CanvasItemMaterial_add")
+points = PackedVector2Array(218, 0, 201, 84, 154, 154, 84, 201, 0, 218, -84, 201, -154, 154, -201, 84, -218, 0, -201, -84, -154, -154, -84, -201, 0, -218, 84, -201, 154, -154, 201, -84, 218, 0)
+width = 20.0
+default_color = Color(1, 0.42, 0.12, 0.92)
+closed = true
+antialiased = true
+modulate = Color(1, 1, 1, 0)
+
+[node name="FireColumn" type="Polygon2D" parent="."]
+material = SubResource("CanvasItemMaterial_add")
+color = Color(1, 0.72, 0.3, 0.9)
+polygon = PackedVector2Array(-34, 46, -12, -74, 0, -158, 12, -74, 34, 46)
+scale = Vector2(0.1, 0.1)
+modulate = Color(1, 1, 1, 0)
+
+[node name="Timeline" type="AnimationPlayer" parent="."]
+libraries = {"": SubResource("AnimationLibrary_seven_seconds")}
+autoplay = "ultimate"
