@@ -63,8 +63,28 @@ func _make_sheet(size: Vector2i) -> Node2D:
 		label.add_theme_font_size_override("font_size", SPEC.panel_label_font_size(size))
 		label.add_theme_color_override("font_color", pack["color"] as Color)
 		host.add_child(label)
-		var scene := (pack["scene"] as PackedScene).instantiate() as Node2D
-		host.add_child(scene)
-		SPEC.seek_capture_frame(scene, pack)
-		SPEC.layout_capture_scene(scene, size, pack)
+		var frames := pack.get("frames", []) as Array
+		for frame_index in frames.size():
+			var frame := frames[frame_index] as Dictionary
+			var frame_rect := SPEC.frame_rect(size, pack, frame_index)
+			var frame_background := Polygon2D.new()
+			frame_background.polygon = PackedVector2Array([
+				frame_rect.position,
+				Vector2(frame_rect.end.x, frame_rect.position.y),
+				frame_rect.end,
+				Vector2(frame_rect.position.x, frame_rect.end.y),
+			])
+			frame_background.color = Color(0.035, 0.055, 0.043, 0.98)
+			frame_background.z_index = -9
+			host.add_child(frame_background)
+			var frame_label := Label.new()
+			frame_label.text = SPEC.frame_label_text(frame)
+			frame_label.position = SPEC.frame_label_rect(size, pack, frame_index).position
+			frame_label.add_theme_font_size_override("font_size", SPEC.frame_label_font_size(size))
+			frame_label.add_theme_color_override("font_color", pack["color"] as Color)
+			host.add_child(frame_label)
+			var scene := (pack["scene"] as PackedScene).instantiate() as Node2D
+			host.add_child(scene)
+			SPEC.seek_capture_frame(scene, frame)
+			SPEC.layout_capture_scene(scene, size, pack, frame_index)
 	return host

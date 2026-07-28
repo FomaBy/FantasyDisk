@@ -17,10 +17,20 @@ All timelines bind the frozen Doctor Cast IDs as `windup`,
 `WeaponUltimatePresentationTimeline`.
 
 No raster asset was created. `manifest.json` records the accepted source,
-runtime VFX, and weapon-sprite paths. The four contact sheets are rendered from
-the same scene driver used by the package at 648p, 720p, 1080p, and 2K. Their
-sheet title is centered from `ThemeDB.fallback_font.get_string_size(...)`; the
-focused test verifies the measured title rectangle stays inside every sheet.
+runtime VFX, and weapon-sprite paths. The procedural scenes directly sample the
+three `assets/sprites/weapons/*.png` files. The recorded
+`vfx_weapon_<weapon_id>.png` files remain manifest/bridge inputs until FAN-1541
+and are not sampled by the current procedural renderer.
+
+Each of the four 648p, 720p, 1080p, and 2K contact sheets now shows release,
+active, and recovery frames for every weapon, with measured phase/time labels.
+The frames expose flask `GlassImpact` before the counter-rotating zones, the
+syringe's late active arena wave before `MaskVaporBurst`, and the saw orbit/drain
+before `ShieldStitches`. The focused test shares those frame timestamps and
+asserts each beat inside its own sub-zone at every resolution. The sheet title,
+panel labels, and frame labels are centered from
+`ThemeDB.fallback_font.get_string_size(...)` and checked against their measured
+rectangles.
 
 ```bash
 python3 tools/godot_gate.py --headless --path . \

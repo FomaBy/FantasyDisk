@@ -24,7 +24,11 @@ const PACKS := [
 		"title": "RESTORE POTION — LIFE & DEATH",
 		"position": Vector2(0.18, 0.54),
 		"color": Color(0.72, 1.0, 0.68),
-		"required_nodes": ["GiantFlask", "OuterPoisonPool", "InnerHealingSpiral", "ShieldCrystal"],
+		"frames": [
+			{"phase": "release", "time": 1.35, "required_nodes": ["GiantFlask", "GlassImpact"]},
+			{"phase": "active", "time": 3.10, "required_nodes": ["GiantFlask", "OuterPoisonPool", "InnerHealingSpiral", "ShieldCrystal"]},
+			{"phase": "recovery", "time": 5.45, "required_nodes": ["OuterPoisonPool", "InnerHealingSpiral", "ShieldCrystal"]},
+		],
 	},
 	{
 		"weapon_id": Pack.PLAGUE_SYRINGE,
@@ -32,7 +36,11 @@ const PACKS := [
 		"title": "PLAGUE SYRINGE — BLACK EPIDEMIC",
 		"position": Vector2(0.50, 0.54),
 		"color": Color(0.38, 0.86, 0.32),
-		"required_nodes": ["OversizedSyringe", "PatientZero", "PlagueVeinsA", "PlagueWaveThree"],
+		"frames": [
+			{"phase": "release", "time": 0.62, "required_nodes": ["OversizedSyringe", "PatientZero"]},
+			{"phase": "active", "time": 4.35, "required_nodes": ["OversizedSyringe", "PatientZero", "PlagueVeinsA", "PlagueWaveThree"]},
+			{"phase": "recovery", "time": 6.50, "required_nodes": ["MaskVaporBurst", "PlagueVeinsA"]},
+		],
 	},
 	{
 		"weapon_id": Pack.BONE_SAW,
@@ -40,7 +48,11 @@ const PACKS := [
 		"title": "BONE SAW — EMERGENCY SURGERY",
 		"position": Vector2(0.82, 0.54),
 		"color": Color(1.0, 0.72, 0.42),
-		"required_nodes": ["OrbitSaw1", "OrbitSaw2", "SurgicalOrbitArc", "MetalSparks", "DrainRibbonGreen"],
+		"frames": [
+			{"phase": "release", "time": 0.37, "required_nodes": ["OrbitSaw1", "OrbitSaw2", "OrbitSaw3", "SurgicalOrbitArc"]},
+			{"phase": "active", "time": 1.95, "required_nodes": ["OrbitSaw1", "OrbitSaw2", "SurgicalOrbitArc", "MetalSparks", "DrainRibbonGreen"]},
+			{"phase": "recovery", "time": 3.40, "required_nodes": ["OrbitSaw1", "OrbitSaw2", "OrbitSaw3", "ShieldStitches"]},
+		],
 	},
 ]
 const CAPTURES := [
@@ -55,6 +67,9 @@ const PANEL_HALF_HEIGHT_RATIO := 0.30
 const PANEL_LABEL_Y_RATIO := 0.25
 const PANEL_LABEL_FONT_RATIO := 0.019
 const PANEL_CONTENT_MARGIN_RATIO := 0.03
+const FRAME_GAP_WIDTH_RATIO := 0.004
+const FRAME_LABEL_FONT_RATIO := 0.012
+const FRAME_CONTENT_MARGIN_RATIO := 0.006
 const SHEET_TITLE := "DOCTOR WEAPON ULTIMATES — DISTINCT PRESENTATION TIMELINES"
 const SHEET_TITLE_Y_RATIO := 0.075
 const SHEET_TITLE_FONT_RATIO := 0.036
@@ -82,6 +97,7 @@ func _initialize() -> void:
 	_check_manifest_document(manifests, errors)
 	_check_distinction(manifests, errors)
 	_check_phase_visuals(errors)
+	_check_capture_frames(errors)
 	_check_capture_composition(errors)
 	_check_capture_text(errors)
 	_check_capture_evidence(errors)
@@ -215,24 +231,50 @@ func _check_capture_composition(errors: Array[String]) -> void:
 		var size := capture.get("size", Vector2i.ZERO) as Vector2i
 		for raw_pack in PACKS:
 			var pack := raw_pack as Dictionary
-			var scene := (pack["scene"] as PackedScene).instantiate() as Node2D
-			root.add_child(scene)
-			seek_capture_frame(scene, pack)
-			var bounds := layout_capture_scene(scene, size, pack)
-			var content_zone := panel_content_rect(size, pack)
-			var context := "%s %s" % [str(capture.get("name", "")), str(pack.get("weapon_id", ""))]
-			_expect(bounds.has_area(), "%s capture must expose visible content bounds" % context, errors)
-			_expect(content_zone.grow(0.5).encloses(bounds), "%s content %s must stay inside %s" % [context, bounds, content_zone], errors)
-			for raw_node_path in pack.get("required_nodes", []) as Array:
-				var node_path := str(raw_node_path)
-				var item := scene.get_node_or_null(node_path) as CanvasItem
-				_expect(item != null, "%s required node missing: %s" % [context, node_path], errors)
-				if item == null:
-					continue
-				_expect(is_capture_item_visible(item, scene), "%s required node must be visible: %s" % [context, node_path], errors)
-				var placed := transformed_capture_bounds(capture_item_bounds(scene, item), scene)
-				_expect(placed.has_area() and content_zone.grow(0.5).encloses(placed), "%s required node must fit: %s" % [context, node_path], errors)
-			scene.free()
+			var frames := pack.get("frames", []) as Array
+			for frame_index in frames.size():
+				var frame := frames[frame_index] as Dictionary
+				var scene := (pack["scene"] as PackedScene).instantiate() as Node2D
+				root.add_child(scene)
+				seek_capture_frame(scene, frame)
+				var bounds := layout_capture_scene(scene, size, pack, frame_index)
+				var content_zone := frame_content_rect(size, pack, frame_index)
+				var context := "%s %s %s" % [str(capture.get("name", "")), str(pack.get("weapon_id", "")), str(frame.get("phase", ""))]
+				_expect(bounds.has_area(), "%s frame must expose visible content bounds" % context, errors)
+				_expect(content_zone.grow(0.5).encloses(bounds), "%s content %s must stay inside %s" % [context, bounds, content_zone], errors)
+				for raw_node_path in frame.get("required_nodes", []) as Array:
+					var node_path := str(raw_node_path)
+					var item := scene.get_node_or_null(node_path) as CanvasItem
+					_expect(item != null, "%s required node missing: %s" % [context, node_path], errors)
+					if item == null:
+						continue
+					_expect(is_capture_item_visible(item, scene), "%s required node must be visible: %s" % [context, node_path], errors)
+					var placed := transformed_capture_bounds(capture_item_bounds(scene, item), scene)
+					_expect(placed.has_area(), "%s required node must have non-zero bounds: %s" % [context, node_path], errors)
+					_expect(content_zone.grow(0.5).encloses(placed), "%s required node must fit: %s" % [context, node_path], errors)
+				scene.free()
+
+
+func _check_capture_frames(errors: Array[String]) -> void:
+	for raw_pack in PACKS:
+		var pack := raw_pack as Dictionary
+		var weapon_id := str(pack.get("weapon_id", ""))
+		var frames := pack.get("frames", []) as Array
+		_expect(frames.size() >= 3, "%s must capture at least three frames" % weapon_id, errors)
+		var phases := {}
+		var timing: Dictionary = Pack.weapon_config(weapon_id).get("timing", {})
+		for raw_frame in frames:
+			var frame := raw_frame as Dictionary
+			var phase := str(frame.get("phase", ""))
+			var time := float(frame.get("time", -1.0))
+			var phase_index := PHASE_ORDER.find(phase)
+			var end := float(timing.get(PHASE_ORDER[phase_index + 1], time)) if phase_index >= 0 and phase_index + 1 < PHASE_ORDER.size() else time
+			phases[phase] = true
+			_expect(phase_index >= 0, "%s capture phase is invalid: %s" % [weapon_id, phase], errors)
+			_expect(time > float(timing.get(phase, time)) and time < end, "%s %s frame %.2fs must be strictly inside its phase" % [weapon_id, phase, time], errors)
+			_expect(str(Pack.phase_at(weapon_id, time).get("name", "")) == phase, "%s %s frame %.2fs resolves to another phase" % [weapon_id, phase, time], errors)
+		for required_phase in ["release", "active", "recovery"]:
+			_expect(phases.has(required_phase), "%s must capture a %s frame" % [weapon_id, required_phase], errors)
 
 
 func _check_capture_text(errors: Array[String]) -> void:
@@ -247,6 +289,11 @@ func _check_capture_text(errors: Array[String]) -> void:
 			var label_rect := panel_label_rect(size, pack)
 			var panel := panel_rect(size, pack)
 			_expect(panel.grow(0.5).encloses(label_rect), "%s panel label \"%s\" must fit its panel" % [str(capture.get("name", "")), str(pack["title"])], errors)
+			var frames := pack.get("frames", []) as Array
+			for frame_index in frames.size():
+				var frame := frames[frame_index] as Dictionary
+				var frame_label := frame_label_rect(size, pack, frame_index)
+				_expect(frame_rect(size, pack, frame_index).grow(0.5).encloses(frame_label), "%s %s %s frame label \"%s\" must fit its frame" % [str(capture.get("name", "")), str(pack["weapon_id"]), str(frame["phase"]), frame_label_text(frame)], errors)
 
 
 func _check_capture_evidence(errors: Array[String]) -> void:
@@ -346,18 +393,49 @@ static func panel_content_rect(size: Vector2i, pack: Dictionary) -> Rect2:
 	return Rect2(panel.position + Vector2.ONE * margin, Vector2(panel.size.x - margin * 2.0, label.position.y - margin - panel.position.y))
 
 
-static func seek_capture_frame(scene: Node2D, pack: Dictionary) -> void:
-	var config := Pack.weapon_config(str(pack["weapon_id"]))
-	scene.preview_at(float(config.get("capture_time", 0.0)))
+static func frame_rect(size: Vector2i, pack: Dictionary, frame_index: int) -> Rect2:
+	var content := panel_content_rect(size, pack)
+	var count := maxi(1, (pack.get("frames", []) as Array).size())
+	var gap := float(size.x) * FRAME_GAP_WIDTH_RATIO
+	var width := (content.size.x - gap * float(count - 1)) / float(count)
+	return Rect2(content.position + Vector2(float(frame_index) * (width + gap), 0.0), Vector2(width, content.size.y))
 
 
-static func layout_capture_scene(scene: Node2D, size: Vector2i, pack: Dictionary) -> Rect2:
+static func frame_label_font_size(size: Vector2i) -> int:
+	return maxi(8, int(size.y * FRAME_LABEL_FONT_RATIO))
+
+
+static func frame_label_text(frame: Dictionary) -> String:
+	return "%s %.2fs" % [str(frame.get("phase", "")).to_upper(), float(frame.get("time", 0.0))]
+
+
+static func frame_label_rect(size: Vector2i, pack: Dictionary, frame_index: int) -> Rect2:
+	var frame := frame_rect(size, pack, frame_index)
+	var spec := (pack.get("frames", []) as Array)[frame_index] as Dictionary
+	var text_size := ThemeDB.fallback_font.get_string_size(frame_label_text(spec), HORIZONTAL_ALIGNMENT_LEFT, -1, frame_label_font_size(size))
+	var margin := maxf(2.0, float(size.y) * FRAME_CONTENT_MARGIN_RATIO)
+	return Rect2(Vector2(frame.get_center().x - text_size.x * 0.5, frame.position.y + margin), text_size)
+
+
+static func frame_content_rect(size: Vector2i, pack: Dictionary, frame_index: int) -> Rect2:
+	var frame := frame_rect(size, pack, frame_index)
+	var label := frame_label_rect(size, pack, frame_index)
+	var margin := maxf(2.0, float(size.y) * FRAME_CONTENT_MARGIN_RATIO)
+	var position := Vector2(frame.position.x + margin, label.end.y + margin)
+	return Rect2(position, frame.end - Vector2(margin, margin) - position)
+
+
+static func seek_capture_frame(scene: Node2D, frame: Dictionary) -> void:
+	scene.preview_at(float(frame.get("time", 0.0)))
+
+
+static func layout_capture_scene(scene: Node2D, size: Vector2i, pack: Dictionary, frame_index: int) -> Rect2:
 	scene.position = Vector2.ZERO
 	scene.scale = Vector2.ONE
 	var bounds := capture_content_bounds(scene)
 	if not bounds.has_area():
 		return Rect2()
-	var content_zone := panel_content_rect(size, pack)
+	var content_zone := frame_content_rect(size, pack, frame_index)
 	var base_scale := clampf(float(size.y) / 1040.0, 0.54, 1.28)
 	var fit_scale := minf(content_zone.size.x / bounds.size.x, content_zone.size.y / bounds.size.y)
 	var applied_scale := minf(base_scale, fit_scale)
