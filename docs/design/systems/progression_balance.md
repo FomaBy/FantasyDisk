@@ -174,22 +174,42 @@ summon-награды и чисто лидерские stat-награды confi
   consumability-фильтр (`is_base_stat_consumable`): Лидерство не предлагается
   без настоящего summon/deploy-потребителя — ни в level-up rare-слоте, ни в
   Attribute Shop, ни в stat-пулах наград.
+- FAN-1927: выдача weapon-aware. Класс-релевантная ось дополнительно
+  проверяется live-consumer правилами ТЕКУЩЕГО оружия
+  (`AttributeContract.weapon_consumes`, зеркало runtime-чтений player.gd):
+  curse-only кит (Проклятый череп) не получает `damage_flat` и крит-оси;
+  SummonerWeapon-киты (Амулет призыва, Склянка гомункула) не получают
+  `attack_speed`; «Сила призыва» выдаётся только китам, где `summon_bonus`
+  реально двигает парк (`max_summons` без pair-mode и без устройств Инженера:
+  Звуковой усилитель, Амулет призыва, Тотем ворона) и показывает фактический
+  runtime-счёт, а не сырой `+2`.
 - Карточка строит view-model `attribute_presentation` (спека
-  `fan1883_attribute_clarity`): фактический канал урона класса
-  (`damage_parameter_for`), before→after и `delta_effective` после действующих
-  diminishing/капов, `current`/`cap` у шанса крита (55% базовый профиль,
-  Ассасин 100%), отдельные `proc_chance_current/cap` (20%) у вампиризма.
-  Тексты карт не обещают сырые проценты там, где effective gain меньше.
+  `fan1883_attribute_clarity`): фактический канал урона ТЕКУЩЕГО ОРУЖИЯ
+  (`weapon_config.damage_parameter`; bone_saw/blast_powder/briar_staff —
+  физический канал у magic-классов, curse-only — dot-канал), before→after и
+  `delta_effective` после действующих diminishing/капов (у `attack_speed` —
+  фактическая каденция оружия с полом 0.18с), `current`/`cap` у шанса крита
+  (55% базовый профиль, Ассасин 100%), отдельные `proc_chance_current/cap`
+  (20%) у вампиризма. Тот же источник (`axis_snapshot`/`canonical_axes`)
+  кормит Attribute Shop, Pause-досье, Codex и Hero Select — второго
+  player-facing oracle порядка/названий не существует.
 - Legacy-сейвы: `sanitize_level_up_offer` сбрасывает показы с удалёнными/
-  недоступными картами (UI пересобирает свежий), а старые run-ключи
-  (`magic_damage_multiplier`, `range_multiplier`, `buff_power_flat`,
-  `absorb_flat`, …) остаются рабочим внутренним compatibility-входом —
-  загрузка не падает и удалённые карточки не возвращаются.
+  недоступными картами, а при live-контексте (stats/mods/weapon из снапшота)
+  перепроверяет ИЗВЕСТНЫЕ карты по текущим effective-значениям, капам и
+  weapon-потребителям — capped/no-op/ineligible показ безопасно
+  регенерируется (FAN-1927). Старые run-ключи (`magic_damage_multiplier`,
+  `range_multiplier`, `buff_power_flat`, `absorb_flat`, …) остаются рабочим
+  внутренним compatibility-входом — загрузка не падает и удалённые карточки
+  не возвращаются.
 - Гейты: `tests/attribute_relevance_test.gd` (инварианты матрицы, sync
   реестр↔матрица↔награды↔титулы, строгий optional-фильтр, capability),
-  `tests/attribute_consumability_fan1887_test.gd` (17 классов × каждая награда
-  exhaustive-consumability, 1000 сидированных показов на класс без
-  optional/no-op, контракт представления, legacy-сейвы),
+  `tests/attribute_consumability_fan1887_test.gd` (FAN-1927: 51 живой путь
+  класс×оружие с НЕЗАВИСИМЫМ live-consumer oracle — живой Player + реальные
+  сцены оружия, канал доказывается probe'ом; 17×1000 сидированных показов с
+  ротацией оружия без optional/no-op/ineligible; контракт представления;
+  context-aware сейвы), `tests/attribute_ui_matrix_fan1927_test.gd`
+  (48 runtime-состояний: 4 поверхности × 3 вьюпорта ×
+  normal/ineligible/capped/long-copy c PNG-evidence),
   `tests/level_up_damage_floor_gate.gd` (random-floor гарантия урона).
 
 ## XP, Money And Pickups

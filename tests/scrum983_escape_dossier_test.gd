@@ -17,46 +17,50 @@ const BASE_IDS := [
 	"strength", "agility", "intelligence", "perception",
 	"energy", "knowledge", "endurance", "leadership",
 ]
-# FAN-1887: досье показывает только канонические player-facing оси. Внутренние
-# derived-параметры (knockback/projectile_speed/attack_range/range_multiplier/
-# aura_radius/buff_power/dot_speed) из досье убраны; вампиризм — одна строка.
+# FAN-1887/FAN-1927: досье показывает только канонические оси реестра
+# (axis id, канонический порядок/названия). DERIVED_IDS — оси berserk/sword
+# базовой fixture (dot_damage и summon_amount этому киту ineligible и
+# отсутствуют — проверяется отдельно). Derived-алиасы старого досье
+# (damage/magic_damage/crit_damage_multiplier/vampiric_amount/...) запрещены.
 const DERIVED_IDS := [
-	"damage", "attack_speed", "crit_chance", "crit_damage_multiplier",
-	"magic_damage", "aoe_radius", "ultimate_multiplier",
-	"move_speed", "pickup_radius", "dot_damage", "vampiric_amount",
+	"damage_flat", "damage", "attack_speed", "move_speed", "aoe_radius",
+	"pickup_radius", "crit_chance", "crit_damage", "vampiric", "ultimate_power",
 ]
+const BERSERK_INELIGIBLE_AXES := ["dot_damage", "summon_amount"]
 const REMOVED_DERIVED_IDS := [
 	"knockback_power", "projectile_speed", "attack_range", "range_multiplier",
 	"aura_radius", "buff_power", "knockback_distance", "dot_speed", "vampiric_chance", "absorb",
+	"magic_damage", "crit_damage_multiplier", "vampiric_amount", "ultimate_multiplier",
 ]
 const DERIVED_COMPACT_LABELS := {
-	"damage": "Урон",
+	"damage_flat": "Доб. урона",
+	"damage": "Ув. урона",
 	"attack_speed": "Скор. атаки",
-	"crit_chance": "Шанс крит.",
-	"crit_damage_multiplier": "Сила крита",
-	"magic_damage": "Маг. урон",
-	"aoe_radius": "Область",
-	"ultimate_multiplier": "Ультимейт",
 	"move_speed": "Скор. движ.",
+	"aoe_radius": "Область",
 	"pickup_radius": "Подбор",
-	"dot_damage": "Период. ур.",
-	"vampiric_amount": "Вампиризм",
+	"crit_chance": "Шанс крита",
+	"crit_damage": "Сила крита",
+	"dot_damage": "Период. урон",
+	"summon_amount": "Сила призыва",
+	"vampiric": "Вампиризм",
+	"ultimate_power": "Ультимейт",
 }
 const DERIVED_TIGHT_LABELS := {
-	"damage": "Урон", "attack_speed": "Скор.", "crit_chance": "Крит",
-	"crit_damage_multiplier": "К×",
-	"magic_damage": "Маг.", "aoe_radius": "Обл.",
-	"ultimate_multiplier": "Ульт", "move_speed": "Движ.",
-	"pickup_radius": "Подб.", "dot_damage": "Пер.",
-	"vampiric_amount": "Вамп.",
+	"damage_flat": "Д. ур.", "damage": "У. ур.", "attack_speed": "Скор.",
+	"crit_chance": "Крит", "crit_damage": "К×",
+	"aoe_radius": "Обл.", "ultimate_power": "Ульт",
+	"move_speed": "Движ.", "pickup_radius": "Подб.",
+	"dot_damage": "Пер.", "summon_amount": "Приз.",
+	"vampiric": "Вамп.",
 }
 const DERIVED_ULTRA_TIGHT_LABELS := {
-	"damage": "Ур.", "attack_speed": "Ск.", "crit_chance": "Кр.",
-	"crit_damage_multiplier": "К×",
-	"magic_damage": "М", "aoe_radius": "О",
-	"ultimate_multiplier": "У", "move_speed": "Дв.",
-	"pickup_radius": "Пд.", "dot_damage": "П",
-	"vampiric_amount": "В",
+	"damage_flat": "Д+", "damage": "Д%", "attack_speed": "Ск.",
+	"crit_chance": "Кр.", "crit_damage": "К×",
+	"aoe_radius": "О", "ultimate_power": "У",
+	"move_speed": "Дв.", "pickup_radius": "Пд.",
+	"dot_damage": "П", "summon_amount": "Пр.",
+	"vampiric": "В",
 }
 const SURVIVAL_IDS := ["health_point", "defense", "dodge", "regeneration"]
 const ACTION_NAMES := [
@@ -130,15 +134,23 @@ func _validate_summoner_target() -> void:
 	var main := fixture["main"] as Node
 	var pause := fixture["pause"] as Control
 	var context := "1920x1080 summoner"
-	var summon_row := pause.find_child("SurvivalStatRow_summon_amount", true, false) as Control
-	var summon_name := pause.find_child("SurvivalStatName_summon_amount", true, false) as Label
-	var summon_value := pause.find_child("SurvivalStatValue_summon_amount", true, false) as Label
-	if summon_row == null or summon_name == null or summon_value == null:
-		_errors.append("%s: summon kit must expose semantic summon_amount row." % context)
+	# FAN-1927: «Сила призыва» живёт каноническим чипом секции призыва и
+	# показывает ФАКТИЧЕСКИЙ runtime-парк (max_summons с Лидерством/бонусом).
+	var summon_chip := pause.find_child("DerivedStatChip_summon_amount", true, false) as Control
+	var summon_name := pause.find_child("DerivedStatName_summon_amount", true, false) as Label
+	var summon_value := pause.find_child("DerivedStatValue_summon_amount", true, false) as Label
+	if summon_chip == null or summon_name == null or summon_value == null:
+		_errors.append("%s: summon kit must expose canonical summon_amount chip." % context)
 	else:
 		var targets: Array[Control] = []
-		_validate_stat_target(pause, summon_row.name, summon_name.name, summon_value.name, _expected_contract(Vector2(1920, 1080))["inner"], context, targets)
-		await _assert_single_tooltip_target(pause, summon_row, _expected_contract(Vector2(1920, 1080))["inner"], context)
+		_validate_stat_target(pause, summon_chip.name, summon_name.name, summon_value.name, _expected_contract(Vector2(1920, 1080))["inner"], context, targets)
+		await _assert_single_tooltip_target(pause, summon_chip, _expected_contract(Vector2(1920, 1080))["inner"], context)
+		if summon_value.text.strip_edges() == "" or not summon_value.text.strip_edges().is_valid_int():
+			_errors.append("%s: summon chip must show the integer runtime pack, got '%s'." % [context, summon_value.text])
+	# FAN-1927: generic attack_speed не потребляется SummonerWeapon-каденсом —
+	# ось отсутствует у druid/summon_amulet.
+	if pause.find_child("DerivedStatChip_attack_speed", true, false) != null:
+		_errors.append("%s: attack_speed axis is dead for summon_amulet but rendered." % context)
 	await _cleanup_fixture(viewport, main, context)
 
 
@@ -351,17 +363,27 @@ func _assert_semantic_stats(pause: Control, viewport_size: Vector2i, contract: D
 			_errors.append("%s: %s value reserve %.1fpx steals the readable alias lane." % [context, stat_id, compact_value.custom_minimum_size.x])
 	var attack_speed := pause.find_child("DerivedStatValue_attack_speed", true, false) as Label
 	var crit_chance := pause.find_child("DerivedStatValue_crit_chance", true, false) as Label
-	var crit_power := pause.find_child("DerivedStatValue_crit_damage_multiplier", true, false) as Label
+	var crit_power := pause.find_child("DerivedStatValue_crit_damage", true, false) as Label
+	var damage_percent := pause.find_child("DerivedStatValue_damage", true, false) as Label
 	if attack_speed == null or not attack_speed.text.ends_with("/с"):
 		_errors.append("%s: attack speed must use localized /с units." % context)
 	if crit_chance == null or not crit_chance.text.ends_with("%"):
 		_errors.append("%s: crit chance must use percent units." % context)
 	if crit_power == null or not crit_power.text.begins_with("×"):
 		_errors.append("%s: crit multiplier must use × prefix." % context)
-	# FAN-1887: снятые с player-facing реестра оси не должны рисоваться в досье.
+	# FAN-1927: ось «Увеличение урона» показывает набранный процент в СВОЕЙ
+	# единице, а не дублирует значение канала.
+	if damage_percent == null or not damage_percent.text.ends_with("%"):
+		_errors.append("%s: damage axis must use its own percent unit." % context)
+	# FAN-1887/FAN-1927: снятые оси и derived-алиасы не рисуются в досье.
 	for removed_id in REMOVED_DERIVED_IDS:
 		if pause.find_child("DerivedStatChip_%s" % removed_id, true, false) != null:
 			_errors.append("%s: removed internal axis %s is still rendered in the dossier." % [context, removed_id])
+	# FAN-1927: ineligible оси базовой fixture (berserk/sword) отсутствуют —
+	# class/weapon-недоступная ось не показывается «этому герою».
+	for absent_id in BERSERK_INELIGIBLE_AXES:
+		if pause.find_child("DerivedStatChip_%s" % absent_id, true, false) != null:
+			_errors.append("%s: axis %s is ineligible for berserk/sword but rendered." % [context, absent_id])
 
 
 func _validate_stat_target(pause: Control, row_name: String, label_name: String, value_name: String, inner: Rect2, context: String, out: Array[Control]) -> void:

@@ -23,21 +23,16 @@ const ATTRIBUTE_PRESENTATION_QUANTUMS := {
 	"regeneration": 0.05, "vampiric": 0.05,
 }
 
-# SCRUM-525/FAN-1887: производные, на которые влияет базовая характеристика
-# (для блока «Влияет на: …» в тултипах докачки) — только канонические
-# player-facing оси; внутренние параметры в превью не попадают.
-const STAT_DERIVED_PREVIEW := {
-	"strength": ["damage"],
-	"intelligence": ["magic_damage"],
-	"perception": ["aoe_radius", "pickup_radius"],
-	"energy": ["ultimate_multiplier", "attack_speed"],
-	"knowledge": ["dot_damage", "regeneration"],
-	"agility": ["attack_speed", "crit_chance", "move_speed", "dodge"],
-	"endurance": ["health_point", "defense"],
-	"leadership": ["summon_amount"],
-}
+# FAN-1927: статический список «производных для превью» удалён — блок
+# «Влияет на: …» и предпросмотр докачки считаются динамически из canonical
+# axis_snapshot (единый effective-value source, weapon-aware).
 
 const DAMAGE_TYPE_PARAMETERS := ["damage", "magic_damage"]
+
+# FAN-1927: attack_mode устройств Инженера, где player.gd возвращает max_summons
+# к базе (парк считает сам кит от derived summon_amount) — run_modifiers.summon_bonus
+# там не потребляется.
+const ENGINEER_DEVICE_MODES := ["engineer_sentry_link", "engineer_orbit_drone"]
 
 
 static func attribute_registry_entry(attr_id: String) -> Dictionary:
@@ -47,13 +42,69 @@ static func attribute_registry_entry(attr_id: String) -> Dictionary:
 	return {}
 
 
+# FAN-1927: live-consumer правила текущего оружия. Признаки — те же, какими
+# пользуется runtime (read-only oracle: player.gd/_apply_weapon_scaling,
+# class_weapon.gd, summoner_weapon.gd): SummonerWeapon определяется по
+# summon_roster/summon_pair_mode (его каденс живёт в summon_interval и generic
+# attack_speed не читает), curse_only-кит не читает прямой damage-канал и крит,
+# summon_bonus двигает парк только у «обычных» max_summons-китов.
+static func weapon_is_summoner_script(weapon_config: Dictionary) -> bool:
+	return weapon_config.get("summon_roster") != null or bool(weapon_config.get("summon_pair_mode", false))
+
+
+static func weapon_consumes_summon_bonus(weapon_config: Dictionary) -> bool:
+	if weapon_config.get("max_summons") == null:
+		return false
+	if bool(weapon_config.get("summon_pair_mode", false)):
+		# Пара «танк + кастер» ведёт популяцию сама (summoner_weapon.gd) — +N не
+		# меняет фактический счёт.
+		return false
+	if str(weapon_config.get("attack_mode", "")) in ENGINEER_DEVICE_MODES:
+		return false
+	return true
+
+
+# Фактический runtime-канал урона текущего оружия (player.gd:3585-3591 читает
+# weapon_config.damage_parameter с дефолтом "damage"); без weapon-контекста —
+# классовый канал (legacy-вызовы без оружия).
+static func weapon_damage_parameter(weapon_config: Dictionary, character_id: String) -> String:
+	if weapon_config.is_empty():
+		return ProgressionData.damage_parameter_for(character_id)
+	if weapon_config.get("damage_parameter") == null:
+		return "damage"
+	return str(weapon_config.get("damage_parameter"))
+
+
+# Потребляет ли ТЕКУЩЕЕ оружие ось вообще. Пустой weapon_config означает
+# «нет weapon-контекста» — тогда решает только class-relevance.
+static func weapon_consumes(attr_id: String, weapon_config: Dictionary) -> bool:
+	if weapon_config.is_empty():
+		return true
+	match attr_id:
+		"damage_flat":
+			# curse-only кит (Проклятый череп) не вызывает _rolled_damage: плоская
+			# добавка к каналам damage/magic_damage — реальный no-op.
+			return not bool(weapon_config.get("curse_only", false))
+		"attack_speed":
+			return not weapon_is_summoner_script(weapon_config)
+		"crit_chance", "crit_damage":
+			return not bool(weapon_config.get("curse_only", false)) and not weapon_is_summoner_script(weapon_config)
+		"summon_amount":
+			return weapon_consumes_summon_bonus(weapon_config)
+		_:
+			return true
+
+
 # Derived-параметр, чьим фактическим значением ось показывает before→after.
-# Урон-оси идут по фактическому каналу класса (damage_parameter_for), а не по
-# грубому class-only хардкоду карточки.
-static func presentation_parameter_for(attr_id: String, character_id: String) -> String:
+# Урон-оси идут по фактическому каналу ТЕКУЩЕГО ОРУЖИЯ (weapon_config.
+# damage_parameter), а не по class-only хардкоду; curse-only кит потребляет
+# процентный урон только через dot-пайплайн.
+static func presentation_parameter_for(attr_id: String, character_id: String, weapon_config := {}) -> String:
 	match attr_id:
 		"damage_flat", "damage":
-			return ProgressionData.damage_parameter_for(character_id)
+			if bool(weapon_config.get("curse_only", false)):
+				return "dot_damage"
+			return weapon_damage_parameter(weapon_config, character_id)
 		"max_health":
 			return "health_point"
 		"crit_damage":
@@ -66,8 +117,39 @@ static func presentation_parameter_for(attr_id: String, character_id: String) ->
 			return attr_id
 
 
+# Фактическая каденция текущего оружия в атак/с — то, что runtime реально
+# потребляет из derived attack_speed (player.gd:3593-3597): интервал
+# max(0.18, base_fire_interval / attack_speed). Возвращает -1.0, когда каденс
+# оружия generic attack_speed не читает (SummonerWeapon / нет fire_interval).
+static func weapon_attacks_per_second(weapon_config: Dictionary, attack_speed_value: float) -> float:
+	if weapon_config.get("fire_interval") == null or weapon_is_summoner_script(weapon_config):
+		return -1.0
+	var base_interval := float(weapon_config.get("fire_interval"))
+	return 1.0 / maxf(0.18, base_interval / maxf(attack_speed_value, 0.1))
+
+
+# Фактический runtime-парк призывов/деплоя (player.gd:3668-3681): база +
+# Лидерство/4 + summon_bonus, кап max_summons_cap (+amp_cap_bonus у amp-китов).
+static func summon_runtime_count(weapon_config: Dictionary, stats: Dictionary, run_modifiers: Dictionary) -> float:
+	var base := float(weapon_config.get("max_summons", 0.0))
+	var count := base + floorf(float(stats.get("leadership", 0.0)) / 4.0) + floorf(float(run_modifiers.get("summon_bonus", 0.0)))
+	var cap := summon_runtime_cap(weapon_config, run_modifiers)
+	if cap >= 0.0:
+		count = minf(count, cap)
+	return count
+
+
+static func summon_runtime_cap(weapon_config: Dictionary, run_modifiers: Dictionary) -> float:
+	if weapon_config.get("max_summons_cap") == null or int(weapon_config.get("max_summons_cap")) <= 0:
+		return -1.0
+	var cap := float(int(weapon_config.get("max_summons_cap")))
+	if str(weapon_config.get("attack_mode", "")) == "amp":
+		cap += floorf(float(run_modifiers.get("amp_cap_bonus", 0.0)))
+	return cap
+
+
 # Жёсткий кап значения оси (или -1.0, если капа нет) — для availability=cap_reached.
-static func _presentation_axis_cap(attr_id: String, character_id: String) -> float:
+static func _presentation_axis_cap(attr_id: String, character_id: String, weapon_config := {}, run_modifiers := {}) -> float:
 	match attr_id:
 		"crit_chance":
 			return float(ProgressionData.class_crit_profile(character_id).get("cap", ProgressionData.CRIT_CHANCE_CAP))
@@ -77,6 +159,8 @@ static func _presentation_axis_cap(attr_id: String, character_id: String) -> flo
 			return ProgressionData.SURVIVABILITY_DEFENSE_CAP
 		"crit_damage":
 			return ProgressionData.CRIT_DAMAGE_CAP
+		"summon_amount":
+			return summon_runtime_cap(weapon_config, run_modifiers)
 		_:
 			return -1.0
 
@@ -116,21 +200,39 @@ static func attribute_presentation(reward: Dictionary, character_id: String, sta
 	if ProgressionData.attribute_relevance(attr_id, character_id) == "optional":
 		presentation["availability"] = "no_capability" if attr_id == "summon_amount" else "class_ineligible"
 		return presentation
+	if not weapon_consumes(attr_id, weapon_config):
+		# FAN-1927: класс релевантен, но ТЕКУЩЕЕ оружие ось не потребляет
+		# (curse-only канал, SummonerWeapon-каденс, pair/device-парк).
+		presentation["availability"] = "no_capability"
+		return presentation
 	var mods: Dictionary = reward.get("mods", {}) as Dictionary
 	var merged := _presentation_apply_mods(run_modifiers, mods)
 	var before := 0.0
 	var after := 0.0
 	if attr_id == "summon_amount":
-		# Ось «Сила призыва» живёт в run_modifiers.summon_bonus (потребители —
-		# лимиты/темп призывов и deploy-устройств), derived-слой её не отражает.
-		before = float(run_modifiers.get("summon_bonus", 0.0))
-		after = float(merged.get("summon_bonus", 0.0))
+		if weapon_config.get("max_summons") != null:
+			# FAN-1927: показываем и меняем фактический runtime-парк, а не сырой
+			# summon_bonus — карта не обещает «+2» там, где кап уже достигнут.
+			before = summon_runtime_count(weapon_config, stats, run_modifiers)
+			after = summon_runtime_count(weapon_config, stats, merged)
+		else:
+			# Legacy-вызов без weapon-контекста: сырой модификатор.
+			before = float(run_modifiers.get("summon_bonus", 0.0))
+			after = float(merged.get("summon_bonus", 0.0))
 	else:
-		var parameter := presentation_parameter_for(attr_id, character_id)
+		var parameter := presentation_parameter_for(attr_id, character_id, weapon_config)
 		var before_params: Dictionary = ProgressionData.derived_parameters(stats, run_modifiers, weapon_config)
 		var after_params: Dictionary = ProgressionData.derived_parameters(stats, merged, weapon_config)
 		before = float(before_params.get(parameter, 0.0))
 		after = float(after_params.get(parameter, 0.0))
+		if attr_id == "attack_speed":
+			# FAN-1927: показываем фактическую каденцию ТЕКУЩЕГО оружия; у
+			# каденс-пола (0.18с) дельта честно нулевая и карта отсеивается.
+			var before_aps := weapon_attacks_per_second(weapon_config, before)
+			var after_aps := weapon_attacks_per_second(weapon_config, after)
+			if before_aps >= 0.0:
+				before = before_aps
+				after = after_aps
 		if attr_id == "vampiric":
 			presentation["proc_chance_current"] = float(before_params.get("vampiric_chance", 0.0))
 			presentation["proc_chance_cap"] = ProgressionData.VAMPIRIC_CHANCE_CAP
@@ -138,8 +240,10 @@ static func attribute_presentation(reward: Dictionary, character_id: String, sta
 	presentation["after"] = after
 	presentation["delta_effective"] = after - before
 	if attr_id == "damage_flat" or attr_id == "damage":
-		presentation["channel_label"] = "Магический урон" if ProgressionData.damage_parameter_for(character_id) == "magic_damage" else "Физический урон"
-	var cap := _presentation_axis_cap(attr_id, character_id)
+		var channel := presentation_parameter_for(attr_id, character_id, weapon_config)
+		if channel in DAMAGE_TYPE_PARAMETERS:
+			presentation["channel_label"] = "Магический урон" if channel == "magic_damage" else "Физический урон"
+	var cap := _presentation_axis_cap(attr_id, character_id, weapon_config, run_modifiers)
 	if cap >= 0.0:
 		presentation["current"] = before
 		presentation["cap"] = cap
@@ -176,7 +280,11 @@ static func eligible_level_up_rewards(character_id: String, stats: Dictionary, r
 # выдаваемые классу. Любая такая запись сбрасывает показ целиком — UI пересоберёт
 # свежий по новым правилам; уже применённые legacy-ключи run_modifiers остаются
 # внутренним compatibility-входом (id-agnostic Player._apply_reward_mods).
-static func sanitize_level_up_offer(offer: Array, character_id: String) -> Array:
+# FAN-1927: при переданном live-контексте (stats/mods/weapon) ИЗВЕСТНАЯ карта
+# дополнительно перепроверяется по текущим effective-значениям, капам и
+# weapon-потребителям: capped/no-op/ineligible показ сбрасывается и безопасно
+# регенерируется, удалённые id не воскресают.
+static func sanitize_level_up_offer(offer: Array, character_id: String, stats := {}, run_modifiers := {}, weapon_config := {}) -> Array:
 	var known_by_id := {}
 	for reward in ProgressionData.LEVEL_UP_REWARDS:
 		known_by_id[str(reward.get("id", ""))] = reward
@@ -194,7 +302,12 @@ static func sanitize_level_up_offer(offer: Array, character_id: String) -> Array
 				return []
 			# Освежаем карту до актуального определения — старый сейв не может
 			# показать устаревший титул/описание/моды под текущим id.
-			sanitized.append((known_by_id[reward_id] as Dictionary).duplicate(true))
+			var fresh := (known_by_id[reward_id] as Dictionary).duplicate(true)
+			if not (stats as Dictionary).is_empty():
+				var availability := str(attribute_presentation(fresh, character_id, stats, run_modifiers, weapon_config).get("availability", ""))
+				if availability != "eligible":
+					return []
+			sanitized.append(fresh)
 			continue
 		var reward_stats: Dictionary = reward.get("stats", {}) as Dictionary
 		if reward_stats.size() == 1 and not ProgressionData.is_base_stat_consumable(str(reward_stats.keys()[0]), character_id):
@@ -252,6 +365,145 @@ static func weighted_level_up_selection(regular_pool: Array, stat_pool: Array, c
 		if ProgressionData.reward_is_damage_relevant(picked, character_id):
 			damage_count += 1
 	return rewards
+
+
+# FAN-1927: единственный canonical источник player-facing осей для ВСЕХ
+# поверхностей (Level Up, Attribute Shop, Pause, Codex, Hero Select):
+# id/порядок/название/единица — из ProgressionData.ATTRIBUTE_REGISTRY, без
+# второго player-facing oracle (StatFormulas.PLAYER_FACING_ATTRIBUTE_ORDER
+# удалён). parameters — derived-ключи, которыми ось живёт в runtime.
+static func canonical_axes() -> Array:
+	var axes: Array = []
+	for entry_value in ProgressionData.ATTRIBUTE_REGISTRY:
+		var entry := entry_value as Dictionary
+		var axis_id := str(entry.get("id", ""))
+		var parameters: Array = []
+		if axis_id == "damage_flat" or axis_id == "damage":
+			parameters = DAMAGE_TYPE_PARAMETERS.duplicate()
+		else:
+			parameters = [presentation_parameter_for(axis_id, "")]
+		axes.append({
+			"id": axis_id,
+			"name": str(entry.get("name", axis_id)),
+			"unit": str(ATTRIBUTE_PRESENTATION_UNITS.get(axis_id, "")),
+			"value_type": str(entry.get("value_type", "flat")),
+			"icon": str(entry.get("icon", axis_id)),
+			"parameters": parameters,
+		})
+	return axes
+
+
+# FAN-1927: текущее effective-значение оси для дословных поверхностей (Pause,
+# Codex, Hero Select) — тот же контракт, что у карточек, но без награды.
+# Урон-оси идут по фактическому каналу текущего оружия; «Увеличение урона»
+# показывает набранный процент ПОСЛЕ действующих diminishing/soft-cap;
+# «Сила призыва» — фактический runtime-парк.
+static func axis_snapshot(axis_id: String, character_id: String, stats: Dictionary, run_modifiers: Dictionary, weapon_config := {}) -> Dictionary:
+	var entry := attribute_registry_entry(axis_id)
+	var parameter := presentation_parameter_for(axis_id, character_id, weapon_config)
+	var snapshot := {
+		"axis_id": axis_id,
+		"axis_name": str(entry.get("name", axis_id)),
+		"unit": str(ATTRIBUTE_PRESENTATION_UNITS.get(axis_id, "")),
+		"parameter": parameter,
+		"value": 0.0,
+		"cap_reached": false,
+		"eligible": ProgressionData.ATTRIBUTE_RELEVANCE.has(axis_id)
+			and ProgressionData.attribute_relevance(axis_id, character_id) != "optional"
+			and weapon_consumes(axis_id, weapon_config),
+	}
+	var params: Dictionary = ProgressionData.derived_parameters(stats, run_modifiers, weapon_config)
+	if axis_id == "summon_amount" and weapon_config.get("max_summons") != null:
+		snapshot["value"] = summon_runtime_count(weapon_config, stats, run_modifiers)
+		snapshot["value_text"] = "%.0f" % float(snapshot["value"])
+	elif axis_id == "damage":
+		# Отношение фактического канала к каналу без забегового множителя оси.
+		var neutral := run_modifiers.duplicate(true)
+		neutral["damage_multiplier"] = 1.0
+		var base_params: Dictionary = ProgressionData.derived_parameters(stats, neutral, weapon_config)
+		var channel_now := float(params.get(parameter, 0.0))
+		var channel_base := float(base_params.get(parameter, 0.0))
+		snapshot["value"] = (channel_now / channel_base - 1.0) * 100.0 if channel_base > 0.0 else 0.0
+		snapshot["value_text"] = "+%.0f%%" % float(snapshot["value"])
+	else:
+		snapshot["value"] = float(params.get(parameter, 0.0))
+		if axis_id == "attack_speed":
+			var aps := weapon_attacks_per_second(weapon_config, float(snapshot["value"]))
+			if aps >= 0.0:
+				snapshot["value"] = aps
+		# Approved-обозначения досье: темповые оси с "/с", множители с "×".
+		match axis_id:
+			"attack_speed", "regeneration":
+				snapshot["value_text"] = "%.2f/с" % float(snapshot["value"])
+			"crit_damage", "ultimate_power":
+				snapshot["value_text"] = "×%.2f" % float(snapshot["value"])
+			_:
+				snapshot["value_text"] = format_value(parameter, float(snapshot["value"]))
+	if (axis_id == "damage_flat" or axis_id == "damage") and parameter in DAMAGE_TYPE_PARAMETERS:
+		snapshot["channel_label"] = "Магический урон" if parameter == "magic_damage" else "Физический урон"
+	if axis_id == "vampiric":
+		snapshot["proc_chance_current"] = float(params.get("vampiric_chance", 0.0))
+		snapshot["proc_chance_cap"] = ProgressionData.VAMPIRIC_CHANCE_CAP
+	var cap := _presentation_axis_cap(axis_id, character_id, weapon_config, run_modifiers)
+	if cap >= 0.0:
+		snapshot["cap"] = cap
+		var quantum := float(ATTRIBUTE_PRESENTATION_QUANTUMS.get(axis_id, 0.5))
+		var current_for_cap := float(snapshot["value"]) if axis_id == "summon_amount" else float(params.get(parameter, 0.0))
+		snapshot["cap_reached"] = current_for_cap >= cap - quantum
+	return snapshot
+
+
+# FAN-1927: снапшоты всех осей класса в canonical-порядке реестра; ineligible
+# оси (optional класс / нет weapon-потребителя) отфильтрованы — они не
+# показываются «этому герою» как доступные.
+static func class_axes_snapshot(character_id: String, stats: Dictionary, run_modifiers: Dictionary, weapon_config := {}) -> Array:
+	var snapshots: Array = []
+	for axis in canonical_axes():
+		var snapshot := axis_snapshot(str((axis as Dictionary).get("id", "")), character_id, stats, run_modifiers, weapon_config)
+		if bool(snapshot.get("eligible", false)):
+			snapshots.append(snapshot)
+	return snapshots
+
+
+# FAN-1927: канонические оси как chip-entries досье паузы — id/название/
+# единица/значение из axis_snapshot (weapon-aware канал урона, фактический
+# runtime-парк призывов, кап-состояние без CTA). Ineligible оси (optional
+# класс / нет weapon-потребителя) не показываются «этому герою».
+static func axis_chip_entries(character_id: String, stats: Dictionary, run_modifiers: Dictionary, weapon_config: Dictionary) -> Dictionary:
+	var result := {}
+	var axes_by_id := {}
+	for axis_value in canonical_axes():
+		axes_by_id[str((axis_value as Dictionary).get("id", ""))] = axis_value
+	for snapshot_value in class_axes_snapshot(character_id, stats, run_modifiers, weapon_config):
+		var snapshot := snapshot_value as Dictionary
+		var axis_id := str(snapshot.get("axis_id", ""))
+		var axis: Dictionary = axes_by_id.get(axis_id, {})
+		var value_text := str(snapshot.get("value_text", ""))
+		if bool(snapshot.get("cap_reached", false)):
+			value_text += " (макс.)"
+		var description_lines := PackedStringArray()
+		if snapshot.has("channel_label"):
+			description_lines.append("Канал: %s." % str(snapshot.get("channel_label", "")))
+		if snapshot.has("cap"):
+			description_lines.append("Максимум: %s." % format_value(str(snapshot.get("parameter", axis_id)), float(snapshot.get("cap", 0.0))))
+		if snapshot.has("proc_chance_current"):
+			description_lines.append("Шанс срабатывания: сейчас %s · максимум %s." % [
+				format_value("vampiric_chance", float(snapshot.get("proc_chance_current", 0.0))),
+				format_value("vampiric_chance", float(snapshot.get("proc_chance_cap", 0.0))),
+			])
+		result[axis_id] = {
+			"id": axis_id,
+			"name_ru": str(snapshot.get("axis_name", axis_id)),
+			"type": "derived",
+			"value": snapshot.get("value", 0.0),
+			"value_text": value_text,
+			"unit": str(snapshot.get("unit", "")),
+			"icon_id": str(axis.get("icon", axis_id)),
+			"description": " ".join(description_lines),
+			"formula": "",
+			"influences": "",
+		}
+	return result
 
 
 # RU-подпись производного параметра для карточек/превью (артефактные превью

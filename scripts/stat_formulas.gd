@@ -84,29 +84,10 @@ const DERIVED_BASE_DEPENDENCIES := {
 	"pickup_radius": [PERCEPTION],
 }
 
-# FAN-1887: канонический player-facing порядок для Codex «Атрибуты» и других
-# справочных проекций — только оси реестра CharacterData.ATTRIBUTE_REGISTRY в его
-# порядке (оба урон-канала представляют оси «Добавление/Увеличение урона»;
-# вампиризм — одна строка vampiric_amount, шанс срабатывания описан в её тексте).
+# FAN-1927: второго player-facing oracle здесь больше нет. Канонический порядок,
+# названия и единицы осей живут ТОЛЬКО в ProgressionData.ATTRIBUTE_REGISTRY и
+# отдаются поверхностям через AttributeContract.canonical_axes()/axis_snapshot().
 # Полный DERIVED_STAT_ORDER остаётся внутренним контрактом формул/зависимостей.
-const PLAYER_FACING_ATTRIBUTE_ORDER := [
-	"damage",
-	"magic_damage",
-	"attack_speed",
-	"health_point",
-	"move_speed",
-	"aoe_radius",
-	"pickup_radius",
-	"defense",
-	"crit_chance",
-	"crit_damage_multiplier",
-	"dodge",
-	"dot_damage",
-	"summon_amount",
-	"regeneration",
-	"vampiric_amount",
-	"ultimate_multiplier",
-]
 
 const STAT_DEFINITIONS := {
 	STRENGTH: {

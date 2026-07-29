@@ -273,25 +273,71 @@ func _check_stat_projection(entries: Array, expected_ids: Array, expected_type: 
 				errors.append("%s: '%s' показывает негодный related title для '%s'" % [expected_type, sid, related_id])
 
 
+# FAN-1927: ручная (независимая от AttributeContract) карта «ось реестра →
+# runtime-параметры»; ожидаемые базовые зависимости оси = объединение строк
+# audited-матрицы SCRUM-1021 её параметров в порядке BASE_STAT_ORDER.
+const FAN1927_AXIS_PARAMETERS := {
+	"damage_flat": ["damage", "magic_damage"],
+	"damage": ["damage", "magic_damage"],
+	"max_health": ["health_point"],
+	"crit_damage": ["crit_damage_multiplier"],
+	"vampiric": ["vampiric_amount"],
+	"ultimate_power": ["ultimate_multiplier"],
+}
+
+
+func _axis_expected_dependencies(axis_id: String) -> Array:
+	var parameters: Array = FAN1927_AXIS_PARAMETERS.get(axis_id, [axis_id])
+	var dependency_set := {}
+	for parameter_value in parameters:
+		for base_id_value in SCRUM_1021_EXPECTED_DEPENDENCIES.get(str(parameter_value), []):
+			dependency_set[str(base_id_value)] = true
+	var expected := []
+	for base_id_value in StatFormulas.BASE_STAT_ORDER:
+		if dependency_set.has(str(base_id_value)):
+			expected.append(str(base_id_value))
+	return expected
+
+
 func _check_stat_split(errors: Array) -> void:
 	var characteristics := CodexData.characteristics()
 	var attributes := CodexData.attributes()
 	var base_ids: Array = Array(StatFormulas.BASE_STAT_ORDER)
 	var derived_ids: Array = Array(StatFormulas.DERIVED_STAT_ORDER)
-	# FAN-1887: player-facing «Атрибуты» кодекса — канонические 16 осей; полный
-	# DERIVED_STAT_ORDER остаётся внутренним контрактом формул/зависимостей.
-	var player_facing_ids: Array = Array(StatFormulas.PLAYER_FACING_ATTRIBUTE_ORDER)
+	# FAN-1887/FAN-1927: единственный oracle player-facing осей — реестр
+	# ProgressionData.ATTRIBUTE_REGISTRY (id/порядок/названия); derived-алиасы
+	# ("Урон"/"Магический урон" как отдельные записи) запрещены.
+	var registry_ids: Array = []
+	var registry_names := {}
+	for entry_value in ProgressionData.ATTRIBUTE_REGISTRY:
+		var registry_entry := entry_value as Dictionary
+		registry_ids.append(str(registry_entry.get("id", "")))
+		registry_names[str(registry_entry.get("id", ""))] = str(registry_entry.get("name", ""))
 	if characteristics.is_empty():
 		errors.append("characteristics() пуст")
 	if attributes.is_empty():
 		errors.append("attributes() пуст")
-	_check_stat_projection(characteristics, base_ids, "base", derived_ids, errors)
-	_check_stat_projection(attributes, player_facing_ids, "derived", base_ids, errors)
-	if player_facing_ids.size() != 16:
-		errors.append("FAN-1887: player-facing атрибутов %d != 16" % player_facing_ids.size())
-	for removed_id in ["attack_range", "range_multiplier", "projectile_speed", "dot_speed", "aura_radius", "buff_power", "absorb", "knockback_power", "knockback_distance", "vampiric_chance"]:
-		if player_facing_ids.has(removed_id):
-			errors.append("FAN-1887: внутренний параметр '%s' попал в player-facing атрибуты кодекса" % removed_id)
+	_check_stat_projection(characteristics, base_ids, "base", registry_ids, errors)
+	_check_stat_projection(attributes, registry_ids, "derived", base_ids, errors)
+	if registry_ids.size() != 16:
+		errors.append("FAN-1887: player-facing атрибутов %d != 16" % registry_ids.size())
+	for removed_id in ["attack_range", "range_multiplier", "projectile_speed", "dot_speed", "aura_radius", "buff_power", "absorb", "knockback_power", "knockback_distance", "vampiric_chance", "magic_damage", "health_point", "crit_damage_multiplier", "vampiric_amount", "ultimate_multiplier"]:
+		if registry_ids.has(removed_id):
+			errors.append("FAN-1887/FAN-1927: derived-алиас/внутренний параметр '%s' попал в player-facing атрибуты кодекса" % removed_id)
+	# FAN-1927: канонические названия реестра на записях кодекса; alias-титулы
+	# «Урон»/«Магический урон» не существуют как самостоятельные оси.
+	var attribute_titles := {}
+	for attribute in attributes:
+		attribute_titles[str((attribute as Dictionary).get("title", ""))] = true
+		var axis_id := str((attribute as Dictionary).get("id", ""))
+		if str((attribute as Dictionary).get("title", "")) != str(registry_names.get(axis_id, "")):
+			errors.append("FAN-1927: титул кодекса '%s' != каноническому имени реестра '%s'" % [(attribute as Dictionary).get("title", ""), registry_names.get(axis_id, "")])
+	for forbidden_title in ["Урон", "Магический урон"]:
+		if attribute_titles.has(forbidden_title):
+			errors.append("FAN-1927: alias-титул '%s' остался самостоятельной осью кодекса" % forbidden_title)
+	for required_title in ["Добавление урона", "Увеличение урона"]:
+		if not attribute_titles.has(required_title):
+			errors.append("FAN-1927: каноническая ось '%s' отсутствует в кодексе" % required_title)
 	# SCRUM-1021: assert the full runtime dependency matrix, not merely that
 	# related ids have the opposite type. This catches generic prose omissions
 	# (ultimate_multiplier must expose all eight) and lexical false positives.
@@ -306,21 +352,21 @@ func _check_stat_split(errors: Array) -> void:
 	for attribute in attributes:
 		var attribute_dict := attribute as Dictionary
 		var attribute_id := str(attribute_dict.get("id", ""))
-		var expected_dependencies: Array = SCRUM_1021_EXPECTED_DEPENDENCIES.get(attribute_id, [])
+		var expected_dependencies := _axis_expected_dependencies(attribute_id)
 		var actual_dependencies := _related_ids(attribute_dict)
 		if actual_dependencies != expected_dependencies:
-			errors.append("SCRUM-1021 derived '%s' related %s != exact runtime matrix %s" % [attribute_id, str(actual_dependencies), str(expected_dependencies)])
+			errors.append("SCRUM-1021/FAN-1927 ось '%s' related %s != exact runtime matrix %s" % [attribute_id, str(actual_dependencies), str(expected_dependencies)])
 	for characteristic in characteristics:
 		var characteristic_dict := characteristic as Dictionary
 		var characteristic_id := str(characteristic_dict.get("id", ""))
 		var expected_attributes := []
-		for derived_id in player_facing_ids:
-			var dependencies: Array = SCRUM_1021_EXPECTED_DEPENDENCIES.get(str(derived_id), [])
-			if dependencies.has(characteristic_id):
-				expected_attributes.append(str(derived_id))
+		for axis_id_value in registry_ids:
+			var axis_id := str(axis_id_value)
+			if _axis_expected_dependencies(axis_id).has(characteristic_id):
+				expected_attributes.append(axis_id)
 		var actual_attributes := _related_ids(characteristic_dict)
 		if actual_attributes != expected_attributes:
-			errors.append("SCRUM-1021 base '%s' inverse related %s != %s" % [characteristic_id, str(actual_attributes), str(expected_attributes)])
+			errors.append("SCRUM-1021/FAN-1927 base '%s' inverse related %s != %s" % [characteristic_id, str(actual_attributes), str(expected_attributes)])
 	for characteristic in characteristics:
 		if (characteristic as Dictionary).get("related", []).is_empty():
 			errors.append("base: '%s' не имеет ни одного связанного атрибута из канонических формул" % str((characteristic as Dictionary).get("id", "")))

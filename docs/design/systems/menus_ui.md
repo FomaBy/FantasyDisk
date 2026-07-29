@@ -1310,12 +1310,19 @@ active rail has six fixed Russian tabs: `Персонажи`, `Монстры`, 
 `Характеристики`, `Атрибуты`, `Возвышение`. The rail width and button content
 margins scale so the longest label plus icon fits without ellipsis at
 1280x720, 1920x1080 and 2560x1440. `Характеристики` is the exact ordered
-`BASE_STAT_ORDER` projection (8 rows); `Атрибуты` (FAN-1887) is the exact ordered
-`StatFormulas.PLAYER_FACING_ATTRIBUTE_ORDER` projection — the canonical 16
-player-facing axes (removed internal parameters such as attack range, projectile
-speed, DoT tick rate, aura radius, buff power, absorb and the split vampiric
-chance are no longer separate Codex attribute rows; vampiric is a single row
-whose text covers the 20% proc-chance condition). Both lists remain lazy/cached.
+`BASE_STAT_ORDER` projection (8 rows); `Атрибуты` (FAN-1887/FAN-1927) is the
+exact ordered `ProgressionData.ATTRIBUTE_REGISTRY` projection via
+`AttributeContract.canonical_axes()` — the canonical 16 player-facing axes with
+registry ids/names/units (`damage_flat` «Добавление урона» + `damage`
+«Увеличение урона» instead of the removed derived aliases `Урон`/`Магический
+урон`; removed internal parameters such as attack range, projectile speed, DoT
+tick rate, aura radius, buff power, absorb and the split vampiric chance are no
+longer separate Codex attribute rows; vampiric is a single row whose text
+covers the 20% proc-chance condition). Each derived row additionally carries a
+live «Этот герой» section from `AttributeContract.axis_snapshot` (current
+effective value, damage channel of the CURRENT weapon, cap state, run history);
+a class/weapon-ineligible axis is explicitly marked as not issued to this hero.
+Both lists remain lazy/cached.
 
 The dossier follows the accepted split content zones: `CodexDetailLeftRail`
 contains the centered, aspect-preserving icon and
@@ -1324,9 +1331,10 @@ Russian chip, and `CodexDetailParchmentInset`. SCRUM-1021 makes the related list
 an exact projection of `StatFormulas.DERIVED_BASE_DEPENDENCIES`, a canonical
 26-row matrix mirroring `ProgressionData.derived_parameters`; localized
 formula/influence prose is never parsed as data. Derived rows preserve
-`BASE_STAT_ORDER`, base rows are the exact inverse filtered to
-`PLAYER_FACING_ATTRIBUTE_ORDER` (FAN-1887: removed axes are not presented as
-available attributes), and
+`BASE_STAT_ORDER`, base rows are the exact inverse filtered to the canonical
+registry axes (FAN-1887/FAN-1927: `AttributeContract.canonical_axes()` unions
+the dependencies of each axis's runtime parameters; removed axes are not
+presented as available attributes), and
 Russian display titles remain presentation-only. `ultimate_multiplier` lists
 all eight base characteristics; derived attributes with no direct base input
 (range/vampiric run modifiers) correctly expose an empty relation set.

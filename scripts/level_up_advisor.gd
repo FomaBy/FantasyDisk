@@ -83,9 +83,13 @@ static func preview_reward_state(reward: Dictionary, stats: Dictionary, run_modi
 # атаки в секунду × ожидание крита + DoT-трек. Абсолют не равен боевому DPS
 # (геометрия/попадания за скобками), но для сравнения «до/после» одного и того
 # же билда монотонен по всем боевым наградам.
-static func dps_score(derived: Dictionary, character_id: String) -> float:
-	var damage_parameter := ProgressionDataRef.damage_parameter_for(character_id)
+static func dps_score(derived: Dictionary, character_id: String, weapon_config := {}) -> float:
+	# FAN-1927: канал — фактический канал ТЕКУЩЕГО оружия (weapon-aware), а не
+	# class-only хардкод; curse-only кит не читает прямой канал вовсе.
+	var damage_parameter := AttributeContract.weapon_damage_parameter(weapon_config, character_id)
 	var hit := float(derived.get(damage_parameter, derived.get("damage", 0.0)))
+	if bool(weapon_config.get("curse_only", false)):
+		hit = 0.0
 	var attack_speed := maxf(float(derived.get("attack_speed", 0.0)), 0.0)
 	var crit_chance := clampf(float(derived.get("crit_chance", 0.0)), 0.0, 1.0)
 	var crit_mult := maxf(float(derived.get("crit_damage_multiplier", 1.0)), 1.0)
@@ -122,9 +126,9 @@ static func forecast_reward(reward: Dictionary, stats: Dictionary, run_modifiers
 	return {
 		"before": before,
 		"after": after,
-		"deltas": _collect_deltas(before, after, character_id),
-		"dps_before": dps_score(before, character_id),
-		"dps_after": dps_score(after, character_id),
+		"deltas": _collect_deltas(before, after, character_id, weapon_config),
+		"dps_before": dps_score(before, character_id, weapon_config),
+		"dps_after": dps_score(after, character_id, weapon_config),
 		"surv_before": survivability_score(before),
 		"surv_after": survivability_score(after),
 	}
@@ -207,8 +211,10 @@ static func _relative_gain(before: float, after: float) -> float:
 	return (after - before) / maxf(absf(before), 0.001)
 
 
-static func _collect_deltas(before: Dictionary, after: Dictionary, character_id := "") -> Array:
-	var class_damage := ProgressionDataRef.damage_parameter_for(character_id) if character_id != "" else "damage"
+static func _collect_deltas(before: Dictionary, after: Dictionary, character_id := "", weapon_config := {}) -> Array:
+	# FAN-1927: показываем канал ТЕКУЩЕГО оружия (bone_saw/blast_powder/
+	# briar_staff — физический канал у magic-классов).
+	var class_damage := AttributeContract.weapon_damage_parameter(weapon_config, character_id) if character_id != "" or not weapon_config.is_empty() else "damage"
 	var deltas: Array = []
 	for definition in DELTA_DEFINITIONS:
 		var parameter_id: String = definition["id"]

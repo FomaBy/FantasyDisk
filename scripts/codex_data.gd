@@ -388,28 +388,55 @@ static func _related_stats(stat_id: String, stat_type: String) -> Array:
 	# produced lexical false positives such as base Strength inside the derived
 	# phrase "Сила отталкивания".
 	var result := []
-	var related_ids := []
 	if stat_type == "base":
-		# FAN-1887: обратная связь базовой характеристики показывает только
-		# канонические player-facing оси — снятые с реестра derived-параметры
-		# не подаются в кодексе как доступные атрибуты.
-		for derived_id_value in STAT_FORMULAS.PLAYER_FACING_ATTRIBUTE_ORDER:
-			var derived_id := str(derived_id_value)
-			var dependencies: Array = STAT_FORMULAS.DERIVED_BASE_DEPENDENCIES.get(derived_id, [])
-			if dependencies.has(stat_id):
-				related_ids.append(derived_id)
-	else:
-		var dependency_ids: Array = STAT_FORMULAS.DERIVED_BASE_DEPENDENCIES.get(stat_id, [])
-		for base_id_value in STAT_FORMULAS.BASE_STAT_ORDER:
-			var base_id := str(base_id_value)
-			if dependency_ids.has(base_id):
-				related_ids.append(base_id)
+		# FAN-1887/FAN-1927: обратная связь базовой характеристики показывает
+		# только канонические player-facing оси реестра (canonical_axes) — под
+		# каноническими названиями, без derived-алиасов.
+		for axis_value in AttributeContract.canonical_axes():
+			var axis := axis_value as Dictionary
+			var axis_parameters: Array = axis.get("parameters", [])
+			for parameter_value in axis_parameters:
+				var dependencies: Array = STAT_FORMULAS.DERIVED_BASE_DEPENDENCIES.get(str(parameter_value), [])
+				if dependencies.has(stat_id):
+					result.append({
+						"id": str(axis.get("id", "")),
+						"title": str(axis.get("name", "")),
+					})
+					break
+		return result
+	var related_ids := []
+	var dependency_ids: Array = STAT_FORMULAS.DERIVED_BASE_DEPENDENCIES.get(stat_id, [])
+	for base_id_value in STAT_FORMULAS.BASE_STAT_ORDER:
+		var base_id := str(base_id_value)
+		if dependency_ids.has(base_id):
+			related_ids.append(base_id)
 	for candidate_id_value in related_ids:
 		var candidate_id := str(candidate_id_value)
 		var candidate: Dictionary = STAT_FORMULAS.STAT_DEFINITIONS.get(candidate_id, {})
 		result.append({
 			"id": candidate_id,
 			"title": str(candidate.get("name_ru", candidate_id)),
+		})
+	return result
+
+
+# FAN-1927: обратная связь оси (axis id) — базовые характеристики всех её
+# runtime-параметров в каноническом порядке BASE_STAT_ORDER.
+static func _axis_related_stats(axis: Dictionary) -> Array:
+	var dependency_ids := []
+	for parameter_value in (axis.get("parameters", []) as Array):
+		for base_id_value in STAT_FORMULAS.DERIVED_BASE_DEPENDENCIES.get(str(parameter_value), []):
+			if not dependency_ids.has(str(base_id_value)):
+				dependency_ids.append(str(base_id_value))
+	var result := []
+	for base_id_value in STAT_FORMULAS.BASE_STAT_ORDER:
+		var base_id := str(base_id_value)
+		if not dependency_ids.has(base_id):
+			continue
+		var candidate: Dictionary = STAT_FORMULAS.STAT_DEFINITIONS.get(base_id, {})
+		result.append({
+			"id": base_id,
+			"title": str(candidate.get("name_ru", base_id)),
 		})
 	return result
 
@@ -438,17 +465,45 @@ static func characteristics() -> Array:
 	return result
 
 
-# FAN-1887: «Атрибуты» кодекса — канонический player-facing набор (16 строк,
-# StatFormulas.PLAYER_FACING_ATTRIBUTE_ORDER). Внутренние derived-параметры
-# (дальность/скорость снарядов/темп тиков/ауры/сектор/отталкивание/поддержка/
-# поглощение и раздельный шанс вампиризма) больше не подаются как отдельные
-# доступные оси; их runtime-ключи живут в формулах и артефактах.
+# FAN-1887/FAN-1927: «Атрибуты» кодекса — канонические player-facing оси
+# реестра (AttributeContract.canonical_axes: id/порядок/название/единица из
+# ProgressionData.ATTRIBUTE_REGISTRY). Derived-алиасы («Урон»/«Магический урон»
+# как отдельные строки) и внутренние параметры (дальность/скорость снарядов/
+# темп тиков/ауры/сектор/отталкивание/поддержка/поглощение и раздельный шанс
+# вампиризма) не подаются как самостоятельные оси; их runtime-ключи живут в
+# формулах и артефактах.
 static func attributes() -> Array:
 	var result := []
-	for stat_id_value in STAT_FORMULAS.PLAYER_FACING_ATTRIBUTE_ORDER:
-		var entry := _stat_projection(str(stat_id_value), "derived")
-		if not entry.is_empty():
-			result.append(entry)
+	var reward_descriptions := {}
+	for reward_value in PROGRESSION_DATA.LEVEL_UP_REWARDS:
+		var reward := reward_value as Dictionary
+		var attr := str(reward.get("attr", ""))
+		if attr != "" and not reward_descriptions.has(attr):
+			reward_descriptions[attr] = str(reward.get("description", ""))
+	for axis_value in AttributeContract.canonical_axes():
+		var axis := axis_value as Dictionary
+		var axis_id := str(axis.get("id", ""))
+		var parameters: Array = axis.get("parameters", [])
+		var primary := str(parameters[0]) if not parameters.is_empty() else axis_id
+		var definition: Dictionary = STAT_FORMULAS.STAT_DEFINITIONS.get(primary, {})
+		var formula_parts := []
+		for parameter_value in parameters:
+			var parameter_definition: Dictionary = STAT_FORMULAS.STAT_DEFINITIONS.get(str(parameter_value), {})
+			var formula := str(parameter_definition.get("formula", ""))
+			if formula != "" and not formula_parts.has(formula):
+				formula_parts.append(formula)
+		var description := str(reward_descriptions.get(axis_id, definition.get("description", "")))
+		result.append({
+			"id": axis_id,
+			"title": str(axis.get("name", axis_id)),
+			"type": "derived",
+			"unit": str(axis.get("unit", "")),
+			"icon_id": str(axis.get("icon", axis_id)),
+			"description": description,
+			"formula": " · ".join(formula_parts),
+			"influences": str(definition.get("influences", "")),
+			"related": _axis_related_stats(axis),
+		})
 	return result
 
 

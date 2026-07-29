@@ -50,48 +50,53 @@ const VALUE_EFFECTIVE := Color(1.0, 0.863, 0.361, 1.0)
 
 # SCRUM-890 вариант Б: «Боевые параметры» = ровно 4 секции в сетке 2×2.
 # Ключевые цифры выживания — в блоке «Выживание»; полные — в кодексе.
-# FAN-1887: секции показывают только канонические player-facing оси. Внутренние
-# derived-параметры (knockback/projectile_speed/attack_range/range_multiplier/
-# aura_radius/buff_power/dot_speed) из досье убраны; вампиризм — одна строка
-# (значение лечения, шанс срабатывания — в тултипе кодекса).
+# FAN-1887/FAN-1927: секции показывают ТОЛЬКО канонические оси реестра
+# (ProgressionData.ATTRIBUTE_REGISTRY через AttributeContract.class_axes_snapshot)
+# под каноническими id/названиями и в каноническом порядке; derived-алиасы
+# (damage/magic_damage/crit_damage_multiplier/vampiric_amount/...) больше не
+# являются player-facing id досье. Оси блока «Выживание» (max_health, defense,
+# dodge, regeneration) живут в своём блоке; остальные 12 идут порядком реестра.
 const DERIVED_GROUPS := [
 	{
-		"id": "physical_damage",
+		"id": "damage_axes",
 		"title": "Урон",
-		"stats": ["damage", "attack_speed", "crit_chance", "crit_damage_multiplier"],
+		"stats": ["damage_flat", "damage", "attack_speed"],
 		"accent": Color(0.95, 0.38, 0.22, 1.0),
 	},
 	{
-		"id": "magic_damage",
-		"title": "Магия / область",
-		"stats": ["magic_damage", "aoe_radius", "ultimate_multiplier"],
-		"accent": Color(0.55, 0.42, 1.0, 1.0),
-	},
-	{
-		"id": "mobility_utility",
-		"title": "Мобильность / подбор",
-		"stats": ["move_speed", "pickup_radius"],
+		"id": "mobility_area",
+		"title": "Область / мобильность",
+		"stats": ["move_speed", "aoe_radius", "pickup_radius"],
 		"accent": Color(0.30, 0.86, 1.0, 1.0),
 	},
 	{
-		"id": "dot_poison",
-		"title": "Периодический урон / вампиризм",
-		"stats": ["dot_damage", "vampiric_amount"],
+		"id": "crit_dot",
+		"title": "Крит / периодический урон",
+		"stats": ["crit_chance", "crit_damage", "dot_damage"],
+		"accent": Color(0.55, 0.42, 1.0, 1.0),
+	},
+	{
+		"id": "summon_sustain",
+		"title": "Призыв / вампиризм / ультимейт",
+		"stats": ["summon_amount", "vampiric", "ultimate_power"],
 		"accent": Color(0.45, 0.95, 0.44, 1.0),
 	},
 ]
+# Механические сокращения канонических названий для узких чипов; полное
+# каноническое название — в тултипе чипа.
 const DERIVED_COMPACT_LABELS := {
-	"damage": "Урон",
+	"damage_flat": "Доб. урона",
+	"damage": "Ув. урона",
 	"attack_speed": "Скор. атаки",
-	"crit_chance": "Шанс крит.",
-	"crit_damage_multiplier": "Сила крита",
-	"magic_damage": "Маг. урон",
-	"aoe_radius": "Область",
-	"ultimate_multiplier": "Ультимейт",
 	"move_speed": "Скор. движ.",
+	"aoe_radius": "Область",
 	"pickup_radius": "Подбор",
-	"dot_damage": "Период. ур.",
-	"vampiric_amount": "Вампиризм",
+	"crit_chance": "Шанс крита",
+	"crit_damage": "Сила крита",
+	"dot_damage": "Период. урон",
+	"summon_amount": "Сила призыва",
+	"vampiric": "Вампиризм",
+	"ultimate_power": "Ультимейт",
 }
 const BASE_TIGHT_LABELS := {
 	"strength": "Сила", "agility": "Ловк.", "intelligence": "Инт.",
@@ -102,21 +107,22 @@ const SURVIVAL_TIGHT_LABELS := {
 	"health_point": "ОЗ", "defense": "Защ.", "dodge": "Увор.",
 	"regeneration": "Реген.", "summon_amount": "Приз.",
 }
+# FAN-1927: те же механические сокращения, но канонических axis id реестра.
 const DERIVED_TIGHT_LABELS := {
-	"damage": "Урон", "attack_speed": "Скор.", "crit_chance": "Крит",
-	"crit_damage_multiplier": "К×",
-	"magic_damage": "Маг.", "aoe_radius": "Обл.",
-	"ultimate_multiplier": "Ульт", "move_speed": "Движ.",
-	"pickup_radius": "Подб.", "dot_damage": "Пер.",
-	"vampiric_amount": "Вамп.",
+	"damage_flat": "Д. ур.", "damage": "У. ур.", "attack_speed": "Скор.",
+	"crit_chance": "Крит", "crit_damage": "К×",
+	"aoe_radius": "Обл.", "ultimate_power": "Ульт",
+	"move_speed": "Движ.", "pickup_radius": "Подб.",
+	"dot_damage": "Пер.", "summon_amount": "Приз.",
+	"vampiric": "Вамп.",
 }
 const DERIVED_ULTRA_TIGHT_LABELS := {
-	"damage": "Ур.", "attack_speed": "Ск.", "crit_chance": "Кр.",
-	"crit_damage_multiplier": "К×",
-	"magic_damage": "М", "aoe_radius": "О",
-	"ultimate_multiplier": "У", "move_speed": "Дв.",
-	"pickup_radius": "Пд.", "dot_damage": "П",
-	"vampiric_amount": "В",
+	"damage_flat": "Д+", "damage": "Д%", "attack_speed": "Ск.",
+	"crit_chance": "Кр.", "crit_damage": "К×",
+	"aoe_radius": "О", "ultimate_power": "У",
+	"move_speed": "Дв.", "pickup_radius": "Пд.",
+	"dot_damage": "П", "summon_amount": "Пр.",
+	"vampiric": "В",
 }
 const DOSSIER_TOOLTIP_META := "dossier_tooltip_text"
 const TOOLTIP_SCROLL_STEP := 88
@@ -1519,9 +1525,12 @@ func _refresh_stats() -> void:
 	for entry in base_entries:
 		_base_stats_grid.add_child(_make_basic_stat_row(entry))
 
+	# FAN-1927: чипы боевых секций — канонические оси реестра (единый view-model
+	# AttributeContract), а не сырые derived-параметры.
+	var axis_entries_by_id := _canonical_axis_entries()
 	var derived_entries_by_id := _entries_by_id(sections.get("derived", []))
 	for group in DERIVED_GROUPS:
-		_derived_groups_container.add_child(_make_derived_group(group, derived_entries_by_id))
+		_derived_groups_container.add_child(_make_derived_group(group, axis_entries_by_id))
 	_refresh_survival_rows(derived_entries_by_id)
 	_refresh_arsenal()
 	_refresh_equipment()
@@ -1744,9 +1753,8 @@ func _refresh_survival_rows(entries_by_id: Dictionary) -> void:
 			if current_hp != null and max_hp != null:
 				value_override = "%d/%d" % [int(round(clampf(float(current_hp), 0.0, float(max_hp)))), int(round(float(max_hp)))]
 		_survival_stats_container.add_child(_make_survival_stat_row(entry, display_name, value_override))
-	var weapon: Dictionary = ProgressionData.weapon(str(_player.get("character_id")), str(_player.get("weapon_id")))
-	if ProgressionData.weapon_archetype(weapon) == "summon" and entries_by_id.has("summon_amount"):
-		_survival_stats_container.add_child(_make_survival_stat_row(entries_by_id["summon_amount"], "Призывы"))
+	# FAN-1927: отдельный ряд «Призывы» убран — каноническая ось «Сила призыва»
+	# живёт в секции «Призыв / вампиризм / ультимейт» с фактическим runtime-парком.
 
 
 # Мини-ряд выживания: иконка 24 (реестр → 35) + имя + значение, высота ~40;
@@ -1824,6 +1832,19 @@ func _entries_by_id(entries: Array) -> Dictionary:
 		var stat_entry: Dictionary = entry
 		result[str(stat_entry.get("id", ""))] = stat_entry
 	return result
+
+
+# FAN-1927: канонические chip-entries досье — единый view-model
+# (AttributeContract.axis_chip_entries), weapon-aware канал/парк/капы.
+func _canonical_axis_entries() -> Dictionary:
+	if _player == null or not is_instance_valid(_player):
+		return {}
+	var character_id := str(_player.get("character_id"))
+	return AttributeContract.axis_chip_entries(
+		character_id,
+		_player.get("stats") if _player.get("stats") is Dictionary else {},
+		_player.get("run_modifiers") if _player.get("run_modifiers") is Dictionary else {},
+		ProgressionData.weapon(character_id, str(_player.get("weapon_id"))))
 
 
 # Плотный chip-ряд базового стата: иконка + имя + ★ (main-атрибут) + значение.
@@ -1997,7 +2018,7 @@ func _make_stat_chip(entry: Dictionary) -> Control:
 	line.add_theme_constant_override("separation", 2 if compact else 4)
 	chip.add_child(line)
 
-	var icon := UIIconRegistry.make_icon(stat_id, Vector2(18, 18) if compact else Vector2(28, 28))
+	var icon := UIIconRegistry.make_icon(str(entry.get("icon_id", stat_id)), Vector2(18, 18) if compact else Vector2(28, 28))
 	icon.name = "DerivedStatIcon_%s" % stat_id
 	icon.size_flags_vertical = Control.SIZE_SHRINK_CENTER
 	line.add_child(icon)
@@ -2075,6 +2096,10 @@ func _derived_stat_row_style(is_hovered: bool) -> StyleBoxFlat:
 
 
 func _compact_value_text(entry: Dictionary) -> String:
+	# FAN-1927: канонические оси несут готовый value_text единого view-model —
+	# локальное форматирование остаётся только для legacy derived-entries.
+	if str(entry.get("value_text", "")) != "":
+		return str(entry.get("value_text", ""))
 	var raw_value: Variant = entry.get("value", null)
 	if raw_value == null:
 		return "N/A"
@@ -2149,8 +2174,12 @@ func _value_color(entry: Dictionary) -> Color:
 
 	var stat_id := str(entry.get("id", ""))
 	match stat_id:
-		"damage", "magic_damage":
+		# FAN-1927: канонические axis id (damage_flat — фактический канал урона,
+		# damage — набранный процент оси) + legacy derived id блока «Выживание».
+		"damage_flat", "magic_damage":
 			return VALUE_HIGH if value >= 15.0 else VALUE_EFFECTIVE
+		"damage":
+			return VALUE_HIGH if value >= 50.0 else VALUE_EFFECTIVE
 		"attack_speed":
 			return VALUE_HIGH if value >= 1.2 else VALUE_EFFECTIVE
 		"health_point":

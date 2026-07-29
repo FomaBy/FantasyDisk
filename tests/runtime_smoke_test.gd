@@ -1271,7 +1271,8 @@ func _initialize() -> void:
 		return
 	var escape_panel := pause_menu.find_child("EscapeStatsPanelFrame", true, false) as PanelContainer
 	var resume_button := pause_menu.find_child("PauseResumeButton", true, false) as Button
-	var physical_group := pause_menu.find_child("DerivedStatGroup_physical_damage", true, false) as PanelContainer
+	# FAN-1927: секции боевых параметров канонические (damage_axes = урон-оси реестра).
+	var physical_group := pause_menu.find_child("DerivedStatGroup_damage_axes", true, false) as PanelContainer
 	if escape_panel == null or resume_button == null or physical_group == null:
 		_fail("Expected pause stats menu to expose Design kit hook nodes.")
 		return
@@ -1328,7 +1329,7 @@ func _initialize() -> void:
 	if strength_row_style.bg_color.a < 0.55 or damage_chip_style.bg_color.a < 0.55 or physical_group_style.bg_color.a < 0.8:
 		_fail("Expected readable chip alphas (rows >=0.55, sections >=0.8).")
 		return
-	if physical_group.find_child("DerivedGroupMarker_physical_damage", true, false) == null:
+	if physical_group.find_child("DerivedGroupMarker_damage_axes", true, false) == null:
 		_fail("Expected the section header to keep its colored accent marker (SCRUM-890).")
 		return
 	var stats_hint := pause_menu.find_child("DerivedStatsHint", true, false) as Label
@@ -1374,13 +1375,13 @@ func _initialize() -> void:
 	if damage_chip.custom_minimum_size.y < 54.0 or damage_chip.custom_minimum_size.x < 236.0 or damage_name.get_theme_font_size("font_size") < 15 or damage_value.get_theme_font_size("font_size") < 17 or damage_icon.custom_minimum_size.x < 46.0:
 		_fail("Expected derived stat chips to use SCRUM-839 readable chip/icon/text sizing.")
 		return
-	# SCRUM-890 вариант Б + FAN-1887: 8 базовых + 11 канонических производных в
-	# 4 секциях + 4 ряда «Выживания» в карточке героя (без призывов у berserk+sword);
-	# внутренние оси (knockback/projectile/aura/buff/absorb/dot_speed) не рисуются.
+	# SCRUM-890 вариант Б + FAN-1887/FAN-1927: 8 базовых + 10 канонических осей
+	# реестра в 4 секциях (dot_damage и summon_amount ineligible для berserk+sword)
+	# + 4 ряда «Выживания»; derived-алиасы и внутренние оси не рисуются.
 	var stat_icons := pause_menu.find_children("BaseStatIcon_*", "Control", true, false)
 	stat_icons.append_array(pause_menu.find_children("SurvivalStatIcon_*", "Control", true, false))
 	stat_icons.append_array(pause_menu.find_children("DerivedStatIcon_*", "Control", true, false))
-	if stat_icons.size() < UIIconRegistry.BASE_STAT_IDS.size() + 15:
+	if stat_icons.size() < UIIconRegistry.BASE_STAT_IDS.size() + 14:
 		_fail("Expected pause stats menu to show icons for base stats, combat sections, and survival rows.")
 		return
 	main.call("_input", escape_event)
@@ -8019,10 +8020,11 @@ func _test_codex_screen(main_scene: PackedScene) -> void:
 	if codex_data.characters().size() != ProgressionData.character_ids().size():
 		_fail("Expected codex to cover all playable characters.")
 		return
-	# FAN-1887: «Атрибуты» кодекса — канонический player-facing набор (16 осей),
-	# а не полный внутренний DERIVED_STAT_ORDER.
-	if characteristics.size() != StatFormulas.BASE_STAT_ORDER.size() or attributes.size() != StatFormulas.PLAYER_FACING_ATTRIBUTE_ORDER.size():
-		_fail("Expected separate Codex projections for all %d characteristics and %d attributes, got %d/%d." % [StatFormulas.BASE_STAT_ORDER.size(), StatFormulas.PLAYER_FACING_ATTRIBUTE_ORDER.size(), characteristics.size(), attributes.size()])
+	# FAN-1887/FAN-1927: «Атрибуты» кодекса — канонические оси реестра
+	# ProgressionData.ATTRIBUTE_REGISTRY (16), а не derived-алиасы и не полный
+	# внутренний DERIVED_STAT_ORDER.
+	if characteristics.size() != StatFormulas.BASE_STAT_ORDER.size() or attributes.size() != ProgressionData.ATTRIBUTE_REGISTRY.size():
+		_fail("Expected separate Codex projections for all %d characteristics and %d attributes, got %d/%d." % [StatFormulas.BASE_STAT_ORDER.size(), ProgressionData.ATTRIBUTE_REGISTRY.size(), characteristics.size(), attributes.size()])
 		return
 	if codex_data.stats() != characteristics + attributes:
 		_fail("Expected compatibility stats projection to preserve characteristics + attributes order.")

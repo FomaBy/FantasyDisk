@@ -926,7 +926,7 @@ func _apply_run_autosave_state(state: Dictionary) -> void:
 	current_node_seed = int(normalized_state.get("current_node_seed", 0))
 	run_player_snapshot = _autosave_dictionary(normalized_state.get("run_player_snapshot", {}))
 	pending_level_ups = maxi(0, int(normalized_state.get("pending_level_ups", 0)))
-	level_up_offer = AttributeContract.sanitize_level_up_offer(_autosave_array(normalized_state.get("level_up_offer", [])), selected_character_id)  # FAN-1887: legacy-показ с удалёнными картами сбрасывается
+	level_up_offer = AttributeContract.sanitize_level_up_offer(_autosave_array(normalized_state.get("level_up_offer", [])), selected_character_id, _autosave_dictionary(run_player_snapshot.get("stats", {})), _autosave_dictionary(run_player_snapshot.get("run_modifiers", {})), PROGRESSION_DATA.weapon(selected_character_id, selected_weapon_id))  # FAN-1887/FAN-1927: legacy/capped/no-op/ineligible показы сбрасываются context-aware санитайзером и регенерируются
 	attribute_offer = _autosave_array(normalized_state.get("attribute_offer", []))
 	attribute_rerolls_left = maxi(0, int(normalized_state.get("attribute_rerolls_left", 0)))
 	used_event_ids = _autosave_array(normalized_state.get("used_event_ids", []))
