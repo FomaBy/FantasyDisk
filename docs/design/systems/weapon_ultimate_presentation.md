@@ -45,8 +45,13 @@ catalog against the registry rather than accepting a class fallback.
 Pairwise timing distinctness within a class is part of this presentation
 contract: every weapon pair must differ by at least `0.1` seconds in both total
 length (`cancel`) and active window (`recovery - active`). The shared
-`weapon_ultimate_timing_distinctness_test.gd` discovers and checks all class
-manifests; class-local packages may keep additional, stricter checks.
+`weapon_ultimate_timing_distinctness_test.gd` puts every class directory in one
+named bucket: `checked` when it reads `weapons[].timing_seconds` or an existing
+`scenes/vfx/ultimates/<class>/*.timeline.json` `manifest.timing`; `skipped` only
+when neither source declares timing; or `uncovered` when a declared source
+cannot be read. `uncovered` is fail-closed and fails the test with the class and
+reason, so no presentation package can disappear silently from this invariant.
+Class-local packages may keep additional, stricter checks.
 
 ## Timeline lifecycle and integration boundary
 
