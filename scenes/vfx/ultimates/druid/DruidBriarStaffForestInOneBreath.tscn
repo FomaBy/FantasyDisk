@@ -1,0 +1,292 @@
+[gd_scene load_steps=5 format=3]
+
+[ext_resource type="Texture2D" path="res://assets/sprites/effects/vfx_weapon_briar_staff.png" id="1_briar"]
+
+[sub_resource type="CanvasItemMaterial" id="CanvasItemMaterial_add"]
+blend_mode = 1
+light_mode = 1
+
+[sub_resource type="Animation" id="Animation_one_breath_forest"]
+resource_name = "ultimate"
+length = 8.6
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("StaffSlam:modulate:a")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 0.5, 1.1, 1.9, 8.6),
+"transitions": PackedFloat32Array(1, 1, 1, 1, 1),
+"update": 0,
+"values": [0.0, 0.7, 1.0, 0.0, 0.0]
+}
+tracks/1/type = "value"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath("StaffSlam:scale")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0, 1.1, 1.9, 8.6),
+"transitions": PackedFloat32Array(1, 1, 1, 1),
+"update": 0,
+"values": [Vector2(0.3, 0.3), Vector2(1, 1), Vector2(1.3, 1.3), Vector2(1.3, 1.3)]
+}
+tracks/2/type = "value"
+tracks/2/imported = false
+tracks/2/enabled = true
+tracks/2/path = NodePath("Roots:modulate:a")
+tracks/2/interp = 1
+tracks/2/loop_wrap = true
+tracks/2/keys = {
+"times": PackedFloat32Array(0, 1.1, 1.55, 7.9, 8.35, 8.6),
+"transitions": PackedFloat32Array(1, 1, 1, 1, 1, 1),
+"update": 0,
+"values": [0.0, 0.25, 1.0, 0.95, 0.3, 0.0]
+}
+tracks/3/type = "value"
+tracks/3/imported = false
+tracks/3/enabled = true
+tracks/3/path = NodePath("Roots/RootNorth:scale")
+tracks/3/interp = 1
+tracks/3/loop_wrap = true
+tracks/3/keys = {
+"times": PackedFloat32Array(0, 1.1, 1.4, 8.6),
+"transitions": PackedFloat32Array(1, 1, 1, 1),
+"update": 0,
+"values": [Vector2(0.05, 0.05), Vector2(0.05, 0.05), Vector2(1, 1), Vector2(1, 1)]
+}
+tracks/4/type = "value"
+tracks/4/imported = false
+tracks/4/enabled = true
+tracks/4/path = NodePath("Roots/RootNorthEast:scale")
+tracks/4/interp = 1
+tracks/4/loop_wrap = true
+tracks/4/keys = {
+"times": PackedFloat32Array(0, 1.18, 1.48, 8.6),
+"transitions": PackedFloat32Array(1, 1, 1, 1),
+"update": 0,
+"values": [Vector2(0.05, 0.05), Vector2(0.05, 0.05), Vector2(1, 1), Vector2(1, 1)]
+}
+tracks/5/type = "value"
+tracks/5/imported = false
+tracks/5/enabled = true
+tracks/5/path = NodePath("Roots/RootEast:scale")
+tracks/5/interp = 1
+tracks/5/loop_wrap = true
+tracks/5/keys = {
+"times": PackedFloat32Array(0, 1.26, 1.56, 8.6),
+"transitions": PackedFloat32Array(1, 1, 1, 1),
+"update": 0,
+"values": [Vector2(0.05, 0.05), Vector2(0.05, 0.05), Vector2(1, 1), Vector2(1, 1)]
+}
+tracks/6/type = "value"
+tracks/6/imported = false
+tracks/6/enabled = true
+tracks/6/path = NodePath("Roots/RootSouth:scale")
+tracks/6/interp = 1
+tracks/6/loop_wrap = true
+tracks/6/keys = {
+"times": PackedFloat32Array(0, 1.34, 1.64, 8.6),
+"transitions": PackedFloat32Array(1, 1, 1, 1),
+"update": 0,
+"values": [Vector2(0.05, 0.05), Vector2(0.05, 0.05), Vector2(1, 1), Vector2(1, 1)]
+}
+tracks/7/type = "value"
+tracks/7/imported = false
+tracks/7/enabled = true
+tracks/7/path = NodePath("Roots/RootWest:scale")
+tracks/7/interp = 1
+tracks/7/loop_wrap = true
+tracks/7/keys = {
+"times": PackedFloat32Array(0, 1.42, 1.72, 8.6),
+"transitions": PackedFloat32Array(1, 1, 1, 1),
+"update": 0,
+"values": [Vector2(0.05, 0.05), Vector2(0.05, 0.05), Vector2(1, 1), Vector2(1, 1)]
+}
+tracks/8/type = "value"
+tracks/8/imported = false
+tracks/8/enabled = true
+tracks/8/path = NodePath("BrambleWalls:modulate:a")
+tracks/8/interp = 1
+tracks/8/loop_wrap = true
+tracks/8/keys = {
+"times": PackedFloat32Array(0, 1.55, 2.1, 7.9, 8.6),
+"transitions": PackedFloat32Array(1, 1, 1, 1, 1),
+"update": 0,
+"values": [0.0, 0.0, 0.9, 0.85, 0.0]
+}
+tracks/9/type = "value"
+tracks/9/imported = false
+tracks/9/enabled = true
+tracks/9/path = NodePath("BrambleWalls/WallNorth:scale")
+tracks/9/interp = 1
+tracks/9/loop_wrap = true
+tracks/9/keys = {
+"times": PackedFloat32Array(0, 1.7, 2.15, 8.6),
+"transitions": PackedFloat32Array(1, 1, 1, 1),
+"update": 0,
+"values": [Vector2(0.15, 0.15), Vector2(0.15, 0.15), Vector2(1, 1), Vector2(1, 1)]
+}
+tracks/10/type = "value"
+tracks/10/imported = false
+tracks/10/enabled = true
+tracks/10/path = NodePath("BrambleWalls/WallEast:scale")
+tracks/10/interp = 1
+tracks/10/loop_wrap = true
+tracks/10/keys = {
+"times": PackedFloat32Array(0, 1.95, 2.4, 8.6),
+"transitions": PackedFloat32Array(1, 1, 1, 1),
+"update": 0,
+"values": [Vector2(0.15, 0.15), Vector2(0.15, 0.15), Vector2(1, 1), Vector2(1, 1)]
+}
+tracks/11/type = "value"
+tracks/11/imported = false
+tracks/11/enabled = true
+tracks/11/path = NodePath("BrambleWalls/WallWest:scale")
+tracks/11/interp = 1
+tracks/11/loop_wrap = true
+tracks/11/keys = {
+"times": PackedFloat32Array(0, 2.2, 2.65, 8.6),
+"transitions": PackedFloat32Array(1, 1, 1, 1),
+"update": 0,
+"values": [Vector2(0.15, 0.15), Vector2(0.15, 0.15), Vector2(1, 1), Vector2(1, 1)]
+}
+tracks/12/type = "value"
+tracks/12/imported = false
+tracks/12/enabled = true
+tracks/12/path = NodePath("ThornCrowns:modulate:a")
+tracks/12/interp = 1
+tracks/12/loop_wrap = true
+tracks/12/keys = {
+"times": PackedFloat32Array(0, 2.6, 3.1, 6.9, 7.9, 8.6),
+"transitions": PackedFloat32Array(1, 1, 1, 1, 1, 1),
+"update": 0,
+"values": [0.0, 0.0, 1.0, 0.85, 0.35, 0.0]
+}
+tracks/13/type = "value"
+tracks/13/imported = false
+tracks/13/enabled = true
+tracks/13/path = NodePath("ThornCrowns:scale")
+tracks/13/interp = 1
+tracks/13/loop_wrap = true
+tracks/13/keys = {
+"times": PackedFloat32Array(0, 2.6, 3.3, 4.2, 6.9, 7.9, 8.6),
+"transitions": PackedFloat32Array(1, 1, 1, 1, 1, 1, 1),
+"update": 0,
+"values": [Vector2(0.2, 0.2), Vector2(0.2, 0.2), Vector2(1.12, 1.12), Vector2(0.96, 0.96), Vector2(1.04, 1.04), Vector2(0.7, 0.7), Vector2(0.5, 0.5)]
+}
+
+[sub_resource type="AnimationLibrary" id="AnimationLibrary_one_breath_forest"]
+_data = {"ultimate": SubResource("Animation_one_breath_forest")}
+
+[node name="DruidBriarStaffForestInOneBreath" type="Node2D"]
+metadata/ultimate_id = "druid/briar_staff"
+metadata/silhouette = "five_ground_roots_carrying_a_connected_bramble_lattice_with_open_safe_paths"
+metadata/motion_path = "staff_slam_then_sequential_outward_root_race_and_wall_growth_between_the_tips"
+metadata/impact_language = "root_impale_hold_followed_by_thorn_crowns_that_burst_and_wither"
+metadata/max_visual_nodes = 12
+metadata/crowd_cap = 20
+
+[node name="StaffSlam" type="Line2D" parent="."]
+material = SubResource("CanvasItemMaterial_add")
+points = PackedVector2Array(0, 0, -20.8, -83.4, 0, 0, 53.7, -34.9, 0, 0, 82.7, 40.3, 0, 0, -16.9, 67.9, 0, 0, -77.2, -10.9)
+width = 8.0
+default_color = Color(0.83, 0.7, 0.42, 0.85)
+antialiased = true
+scale = Vector2(0.3, 0.3)
+modulate = Color(1, 1, 1, 0)
+
+[node name="Roots" type="Node2D" parent="."]
+modulate = Color(1, 1, 1, 0)
+
+[node name="RootNorth" type="Line2D" parent="Roots"]
+points = PackedVector2Array(-1, -18.3, 0.6, -42.9, -7.4, -65.1, -26.1, -84.7, -43.6, -104.5, -46.1, -128.1, -33.4, -155.5, -22.1, -182.6, -30.8, -204.6)
+width = 11.0
+default_color = Color(0.29, 0.45, 0.23, 0.95)
+antialiased = true
+scale = Vector2(0.05, 0.05)
+
+[node name="RootNorthEast" type="Line2D" parent="Roots"]
+points = PackedVector2Array(20, -2.3, 37.3, -18.8, 50.4, -41.7, 65.9, -61.1, 89.4, -68, 119, -65.6, 145.2, -68.4, 160.2, -88.5, 166.7, -121.5)
+width = 10.0
+default_color = Color(0.33, 0.5, 0.26, 0.95)
+antialiased = true
+scale = Vector2(0.05, 0.05)
+
+[node name="RootEast" type="Line2D" parent="Roots"]
+points = PackedVector2Array(15.2, 9.8, 40.7, 11.2, 64.1, 16.9, 81.7, 34.4, 95.7, 59.2, 113.3, 76.8, 139.2, 77.3, 170.1, 67.5, 196.5, 67)
+width = 11.0
+default_color = Color(0.29, 0.45, 0.23, 0.95)
+antialiased = true
+scale = Vector2(0.05, 0.05)
+
+[node name="RootSouth" type="Line2D" parent="Roots"]
+points = PackedVector2Array(-11.2, 15.8, -20.2, 37.7, -18.3, 62.4, -10.5, 88.6, -10.7, 112.8, -27.6, 132.8, -52.7, 150.7, -66.9, 171.4, -58.6, 197.7)
+width = 10.0
+default_color = Color(0.33, 0.5, 0.26, 0.95)
+antialiased = true
+scale = Vector2(0.05, 0.05)
+
+[node name="RootWest" type="Line2D" parent="Roots"]
+points = PackedVector2Array(-16.7, -10.2, -41.1, -6, -65.9, 2, -89.6, 1.4, -111.2, -13.9, -132, -34.3, -154.6, -42.2, -180.1, -29.6, -206.7, -9.4)
+width = 11.0
+default_color = Color(0.29, 0.45, 0.23, 0.95)
+antialiased = true
+scale = Vector2(0.05, 0.05)
+
+[node name="BrambleWalls" type="Node2D" parent="."]
+modulate = Color(1, 1, 1, 0)
+
+[node name="WallNorth" type="Line2D" parent="BrambleWalls"]
+points = PackedVector2Array(-37.5, -150.4, -21.7, -179.7, 0.5, -155, 23, -179.5, 38.5, -150.1, 66.3, -168.4, 74.2, -136.1, 105.6, -147, 105.3, -113.7, 138.5, -116.6, 130, -84.4)
+width = 9.0
+default_color = Color(0.4, 0.56, 0.3, 0.9)
+antialiased = true
+scale = Vector2(0.15, 0.15)
+
+[node name="WallEast" type="Line2D" parent="BrambleWalls"]
+points = PackedVector2Array(139.3, 67.9, 150.4, 100.7, 115.9, 102.9, 117.8, 137.4, 84, 130.3, 76.5, 164, 45.8, 148.1, 29.6, 178.6, 4.3, 154.9, -19.5, 179.9, -37.5, 150.4)
+width = 9.0
+default_color = Color(0.4, 0.56, 0.3, 0.9)
+antialiased = true
+scale = Vector2(0.15, 0.15)
+
+[node name="WallWest" type="Line2D" parent="BrambleWalls"]
+points = PackedVector2Array(-153.5, -21.6, -175, -46.2, -144.1, -57.1, -159.2, -86.1, -126.7, -89.3, -134.5, -121.1, -102.1, -116.6, -102.3, -149.3, -71.8, -137.4, -64.3, -169.2, -37.5, -150.4)
+width = 9.0
+default_color = Color(0.4, 0.56, 0.3, 0.9)
+antialiased = true
+scale = Vector2(0.15, 0.15)
+
+[node name="ThornCrowns" type="Node2D" parent="."]
+scale = Vector2(0.2, 0.2)
+modulate = Color(1, 1, 1, 0)
+
+[node name="CrownNorth" type="Sprite2D" parent="ThornCrowns"]
+material = SubResource("CanvasItemMaterial_add")
+texture = ExtResource("1_briar")
+position = Vector2(-47.4, -190.2)
+scale = Vector2(0.26, 0.26)
+modulate = Color(0.85, 1, 0.66, 1)
+
+[node name="CrownEast" type="Sprite2D" parent="ThornCrowns"]
+material = SubResource("CanvasItemMaterial_add")
+texture = ExtResource("1_briar")
+position = Vector2(176.2, 85.9)
+rotation = 0.7854
+scale = Vector2(0.26, 0.26)
+modulate = Color(0.78, 0.96, 0.6, 1)
+
+[node name="CrownWest" type="Sprite2D" parent="ThornCrowns"]
+material = SubResource("CanvasItemMaterial_add")
+texture = ExtResource("1_briar")
+position = Vector2(-194.1, -27.3)
+rotation = -0.7854
+scale = Vector2(0.26, 0.26)
+modulate = Color(0.85, 1, 0.66, 1)
+
+[node name="Timeline" type="AnimationPlayer" parent="."]
+libraries = {"": SubResource("AnimationLibrary_one_breath_forest")}
+autoplay = "ultimate"

@@ -126,6 +126,8 @@ func _test_on_low_hp_guard() -> void:
 	var maxhp := float(player.get("max_health"))
 	player.set("health", maxhp * 0.25)
 	player.call("_update_low_hp_state")
+	var derived := player.get("derived_parameters") as Dictionary
+	derived["dodge"] = 0.0  # детерминизм: dodge early-return не должен маскировать on_low_hp.
 	player.call("take_damage", 1.0)
 	if float(player.get("_damage_invulnerability_left")) < 1.0:
 		_fail("on_low_hp guard (guardian_bulwark) should grant brief invulnerability on first low-HP hit.")
