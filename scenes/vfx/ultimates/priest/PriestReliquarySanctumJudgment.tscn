@@ -1,0 +1,281 @@
+[gd_scene load_steps=5 format=3]
+
+[ext_resource type="Texture2D" path="res://assets/sprites/effects/vfx_weapon_priest_reliquary.png" id="1_shrine"]
+
+[sub_resource type="CanvasItemMaterial" id="CanvasItemMaterial_add"]
+blend_mode = 1
+light_mode = 1
+
+[sub_resource type="Animation" id="Animation_sanctum_judgment"]
+resource_name = "ultimate"
+length = 8.6
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("Shrine:modulate:a")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 0.25, 7.8, 8.6),
+"transitions": PackedFloat32Array(1, 1, 1, 1),
+"update": 0,
+"values": [0.0, 1.0, 1.0, 0.0]
+}
+tracks/1/type = "value"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath("Shrine:scale")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0, 0.9),
+"transitions": PackedFloat32Array(1, 1),
+"update": 0,
+"values": [Vector2(0.3, 0.3), Vector2(0.36, 0.36)]
+}
+tracks/2/type = "value"
+tracks/2/imported = false
+tracks/2/enabled = true
+tracks/2/path = NodePath("ShrineRays:modulate:a")
+tracks/2/interp = 1
+tracks/2/loop_wrap = true
+tracks/2/keys = {
+"times": PackedFloat32Array(0, 0.5, 1.0, 1.6, 7.9, 8.5),
+"transitions": PackedFloat32Array(1, 1, 1, 1, 1, 1),
+"update": 0,
+"values": [0.0, 0.0, 0.9, 0.35, 0.35, 0.0]
+}
+tracks/3/type = "value"
+tracks/3/imported = false
+tracks/3/enabled = true
+tracks/3/path = NodePath("RingJudgment:modulate:a")
+tracks/3/interp = 1
+tracks/3/loop_wrap = true
+tracks/3/keys = {
+"times": PackedFloat32Array(0, 1.1, 1.45, 2.3, 7.6, 8.3),
+"transitions": PackedFloat32Array(1, 1, 1, 1, 1, 1),
+"update": 0,
+"values": [0.0, 0.0, 1.0, 0.75, 0.75, 0.0]
+}
+tracks/4/type = "value"
+tracks/4/imported = false
+tracks/4/enabled = true
+tracks/4/path = NodePath("RingJudgment:scale")
+tracks/4/interp = 1
+tracks/4/loop_wrap = true
+tracks/4/keys = {
+"times": PackedFloat32Array(0, 1.25, 2.2),
+"transitions": PackedFloat32Array(1, 1, 1),
+"update": 0,
+"values": [Vector2(0.2, 0.2), Vector2(0.2, 0.2), Vector2(1, 1)]
+}
+tracks/5/type = "value"
+tracks/5/imported = false
+tracks/5/enabled = true
+tracks/5/path = NodePath("RingSanctify:modulate:a")
+tracks/5/interp = 1
+tracks/5/loop_wrap = true
+tracks/5/keys = {
+"times": PackedFloat32Array(0, 2.45, 2.9, 3.7, 7.7, 8.35),
+"transitions": PackedFloat32Array(1, 1, 1, 1, 1, 1),
+"update": 0,
+"values": [0.0, 0.0, 1.0, 0.7, 0.7, 0.0]
+}
+tracks/6/type = "value"
+tracks/6/imported = false
+tracks/6/enabled = true
+tracks/6/path = NodePath("RingSanctify:scale")
+tracks/6/interp = 1
+tracks/6/loop_wrap = true
+tracks/6/keys = {
+"times": PackedFloat32Array(0, 2.6, 3.6),
+"transitions": PackedFloat32Array(1, 1, 1),
+"update": 0,
+"values": [Vector2(0.2, 0.2), Vector2(0.2, 0.2), Vector2(1, 1)]
+}
+tracks/7/type = "value"
+tracks/7/imported = false
+tracks/7/enabled = true
+tracks/7/path = NodePath("RingWard:modulate:a")
+tracks/7/interp = 1
+tracks/7/loop_wrap = true
+tracks/7/keys = {
+"times": PackedFloat32Array(0, 3.8, 4.25, 5.1, 7.9, 8.45),
+"transitions": PackedFloat32Array(1, 1, 1, 1, 1, 1),
+"update": 0,
+"values": [0.0, 0.0, 1.0, 0.65, 0.65, 0.0]
+}
+tracks/8/type = "value"
+tracks/8/imported = false
+tracks/8/enabled = true
+tracks/8/path = NodePath("RingWard:scale")
+tracks/8/interp = 1
+tracks/8/loop_wrap = true
+tracks/8/keys = {
+"times": PackedFloat32Array(0, 3.95, 5.0),
+"transitions": PackedFloat32Array(1, 1, 1),
+"update": 0,
+"values": [Vector2(0.2, 0.2), Vector2(0.2, 0.2), Vector2(1, 1)]
+}
+tracks/9/type = "value"
+tracks/9/imported = false
+tracks/9/enabled = true
+tracks/9/path = NodePath("RuneOrbit:modulate:a")
+tracks/9/interp = 1
+tracks/9/loop_wrap = true
+tracks/9/keys = {
+"times": PackedFloat32Array(0, 2.6, 3.1, 7.9, 8.3),
+"transitions": PackedFloat32Array(1, 1, 1, 1, 1),
+"update": 0,
+"values": [0.0, 0.0, 0.9, 0.9, 0.0]
+}
+tracks/10/type = "value"
+tracks/10/imported = false
+tracks/10/enabled = true
+tracks/10/path = NodePath("RuneOrbit:rotation")
+tracks/10/interp = 1
+tracks/10/loop_wrap = true
+tracks/10/keys = {
+"times": PackedFloat32Array(0, 2.6, 8.6),
+"transitions": PackedFloat32Array(1, 1, 1),
+"update": 0,
+"values": [0.0, 0.0, 0.9]
+}
+tracks/11/type = "value"
+tracks/11/imported = false
+tracks/11/enabled = true
+tracks/11/path = NodePath("Pillar:modulate:a")
+tracks/11/interp = 1
+tracks/11/loop_wrap = true
+tracks/11/keys = {
+"times": PackedFloat32Array(0, 5.3, 5.6, 6.9, 7.8, 8.5),
+"transitions": PackedFloat32Array(1, 1, 1, 1, 1, 1),
+"update": 0,
+"values": [0.0, 0.0, 0.95, 0.55, 0.25, 0.0]
+}
+tracks/12/type = "value"
+tracks/12/imported = false
+tracks/12/enabled = true
+tracks/12/path = NodePath("Pillar:scale")
+tracks/12/interp = 1
+tracks/12/loop_wrap = true
+tracks/12/keys = {
+"times": PackedFloat32Array(0, 5.3, 5.75, 6.6),
+"transitions": PackedFloat32Array(1, 1, 1, 1),
+"update": 0,
+"values": [Vector2(1, 0.05), Vector2(1, 0.05), Vector2(1, 1), Vector2(1, 1.05)]
+}
+tracks/13/type = "value"
+tracks/13/imported = false
+tracks/13/enabled = true
+tracks/13/path = NodePath("Halo:modulate:a")
+tracks/13/interp = 1
+tracks/13/loop_wrap = true
+tracks/13/keys = {
+"times": PackedFloat32Array(0, 6.6, 7.1, 7.8, 8.55),
+"transitions": PackedFloat32Array(1, 1, 1, 1, 1),
+"update": 0,
+"values": [0.0, 0.0, 0.8, 0.5, 0.0]
+}
+
+[sub_resource type="AnimationLibrary" id="AnimationLibrary_sanctum_judgment"]
+_data = {"ultimate": SubResource("Animation_sanctum_judgment")}
+
+[node name="PriestReliquarySanctumJudgment" type="Node2D"]
+metadata/ultimate_id = "priest/priest_reliquary"
+metadata/silhouette = "opened_reliquary_shrine_with_three_growing_rings"
+metadata/motion_path = "stationary_shrine_rings_grow_then_vertical_pillar"
+metadata/impact_language = "three_sanctify_beats_pillar_then_heal_shield_halo"
+metadata/max_visual_nodes = 12
+metadata/crowd_cap = 22
+
+[node name="Shrine" type="Sprite2D" parent="."]
+material = SubResource("CanvasItemMaterial_add")
+texture = ExtResource("1_shrine")
+scale = Vector2(0.3, 0.3)
+modulate = Color(1, 0.9, 0.62, 1)
+
+[node name="ShrineRays" type="Polygon2D" parent="."]
+material = SubResource("CanvasItemMaterial_add")
+polygon = PackedVector2Array(64, 0, 24, 10, 45, 45, 10, 24, 0, 64, -10, 24, -45, 45, -24, 10, -64, 0, -24, -10, -45, -45, -10, -24, 0, -64, 10, -24, 45, -45, 24, -10)
+color = Color(1, 0.93, 0.68, 0.85)
+modulate = Color(1, 1, 1, 0)
+
+[node name="RingJudgment" type="Line2D" parent="."]
+material = SubResource("CanvasItemMaterial_add")
+points = PackedVector2Array(60, 0, 56, 23, 42, 42, 23, 56, 0, 60, -23, 56, -42, 42, -56, 23, -60, 0, -56, -23, -42, -42, -23, -56, 0, -60, 23, -56, 42, -42, 56, -23)
+width = 9.0
+default_color = Color(1, 0.78, 0.35, 0.9)
+closed = true
+antialiased = true
+scale = Vector2(0.2, 0.2)
+modulate = Color(1, 1, 1, 0)
+
+[node name="RingSanctify" type="Line2D" parent="."]
+material = SubResource("CanvasItemMaterial_add")
+points = PackedVector2Array(95, 0, 88, 36, 67, 67, 36, 88, 0, 95, -36, 88, -67, 67, -88, 36, -95, 0, -88, -36, -67, -67, -36, -88, 0, -95, 36, -88, 67, -67, 88, -36)
+width = 7.0
+default_color = Color(1, 0.92, 0.6, 0.85)
+closed = true
+antialiased = true
+scale = Vector2(0.2, 0.2)
+modulate = Color(1, 1, 1, 0)
+
+[node name="RingWard" type="Line2D" parent="."]
+material = SubResource("CanvasItemMaterial_add")
+points = PackedVector2Array(130, 0, 120, 50, 92, 92, 50, 120, 0, 130, -50, 120, -92, 92, -120, 50, -130, 0, -120, -50, -92, -92, -50, -120, 0, -130, 50, -120, 92, -92, 120, -50)
+width = 6.0
+default_color = Color(1, 0.97, 0.8, 0.8)
+closed = true
+antialiased = true
+scale = Vector2(0.2, 0.2)
+modulate = Color(1, 1, 1, 0)
+
+[node name="RuneOrbit" type="Node2D" parent="."]
+modulate = Color(1, 1, 1, 0)
+
+[node name="RuneEast" type="Polygon2D" parent="RuneOrbit"]
+material = SubResource("CanvasItemMaterial_add")
+polygon = PackedVector2Array(0, -11, 8, 0, 0, 11, -8, 0)
+color = Color(1, 0.9, 0.55, 0.95)
+position = Vector2(95, 0)
+
+[node name="RuneSouth" type="Polygon2D" parent="RuneOrbit"]
+material = SubResource("CanvasItemMaterial_add")
+polygon = PackedVector2Array(0, -11, 8, 0, 0, 11, -8, 0)
+color = Color(1, 0.9, 0.55, 0.95)
+position = Vector2(0, 95)
+
+[node name="RuneWest" type="Polygon2D" parent="RuneOrbit"]
+material = SubResource("CanvasItemMaterial_add")
+polygon = PackedVector2Array(0, -11, 8, 0, 0, 11, -8, 0)
+color = Color(1, 0.9, 0.55, 0.95)
+position = Vector2(-95, 0)
+
+[node name="RuneNorth" type="Polygon2D" parent="RuneOrbit"]
+material = SubResource("CanvasItemMaterial_add")
+polygon = PackedVector2Array(0, -11, 8, 0, 0, 11, -8, 0)
+color = Color(1, 0.9, 0.55, 0.95)
+position = Vector2(0, -95)
+
+[node name="Pillar" type="Polygon2D" parent="."]
+material = SubResource("CanvasItemMaterial_add")
+polygon = PackedVector2Array(-14, -250, 14, -250, 23, 12, -23, 12)
+color = Color(1, 0.96, 0.82, 0.9)
+scale = Vector2(1, 0.05)
+modulate = Color(1, 1, 1, 0)
+
+[node name="Halo" type="Line2D" parent="."]
+material = SubResource("CanvasItemMaterial_add")
+points = PackedVector2Array(78, 0, 72, 30, 55, 55, 30, 72, 0, 78, -30, 72, -55, 55, -72, 30, -78, 0, -72, -30, -55, -55, -30, -72, 0, -78, 30, -72, 55, -55, 72, -30)
+width = 8.0
+default_color = Color(1, 1, 0.9, 0.7)
+closed = true
+antialiased = true
+position = Vector2(0, -150)
+scale = Vector2(1, 0.38)
+modulate = Color(1, 1, 1, 0)
+
+[node name="Timeline" type="AnimationPlayer" parent="."]
+libraries = {"": SubResource("AnimationLibrary_sanctum_judgment")}
+autoplay = "ultimate"
