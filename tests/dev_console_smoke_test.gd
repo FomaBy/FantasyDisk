@@ -123,14 +123,17 @@ func _initialize() -> void:
 		_fail("SCRUM-831(f): в годмоде take_damage обязан вернуть false и не менять HP.")
 		return
 
-	# (g) spawn: трое базовых врагов появляются в группе enemies.
+	# (g) spawn: трое базовых врагов появляются в группе enemies. Спавн синхронный
+	# (add_child → _ready → add_to_group до возврата execute_command), поэтому
+	# замер — сразу после команды: дельта через кадр вычитала врагов, погибших
+	# за этот кадр живого боя (FAN-1900).
 	var enemies_before := get_nodes_in_group("enemies").size()
 	console.execute_command("spawn basic 3")
-	await process_frame
 	var spawned := get_nodes_in_group("enemies").size() - enemies_before
 	if spawned < 3:
 		_fail("SCRUM-831(g): spawn basic 3 добавил %d врагов, ожидалось >=3." % spawned)
 		return
+	await process_frame
 
 	# (h) kill all: группа врагов пустеет после кадра очистки.
 	console.execute_command("kill all")
