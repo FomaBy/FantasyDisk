@@ -1,0 +1,103 @@
+{
+  "schema_version": 1,
+  "issue": "FAN-1492",
+  "class_id": "guitarist",
+  "contract": {
+    "schema": "data/ultimates/presentation_schema/v1/weapon_ultimate_presentation_manifest.schema.json",
+    "phase_groups": ["windup", "release", "active", "recovery", "cancel"],
+    "max_timeline_seconds": 10.0,
+    "headless_fallback": "no_op",
+    "runtime_adapter_status": "unbound_shared_adapter_owned_by_FAN-1541"
+  },
+  "generator_provenance": {
+    "route": "reused_approved_assets_no_new_raster_generation",
+    "pixellab_mcp": "not_invoked_no_new_isolated_raster_asset",
+    "new_pixellab_assets": [],
+    "reused_sources": {
+      "electric_guitar": {
+        "source_path": "docs/design/references/weapon_attack_animations/electric_guitar/vfx_weapon_electric_guitar_source.png",
+        "runtime_path": "assets/sprites/effects/vfx_weapon_electric_guitar.png",
+        "runtime_scene": "scenes/vfx/ultimates/guitarist/GuitaristElectricGuitarLastChord.tscn",
+        "note": "Accepted guitar VFX is composed into five colored strips and a final chord; no raster asset was generated."
+      },
+      "bass_guitar": {
+        "source_path": "docs/design/references/weapon_attack_animations/bass_guitar/vfx_weapon_bass_guitar_source.png",
+        "runtime_path": "assets/sprites/effects/vfx_weapon_bass_guitar.png",
+        "runtime_scene": "scenes/vfx/ultimates/guitarist/GuitaristBassGuitarHellSubwoofer.tscn",
+        "note": "Accepted bass VFX is composed with vector compression rings; no raster asset was generated."
+      },
+      "sound_amp": {
+        "source_path": "docs/design/references/weapon_attack_animations/sound_amp/vfx_source_1024.png",
+        "runtime_path": "assets/sprites/effects/vfx_weapon_sound_amp.png",
+        "runtime_scene": "scenes/vfx/ultimates/guitarist/GuitaristSoundAmpWallOfSound.tscn",
+        "note": "Accepted amplifier VFX is composed into a cardinal stage wall; no raster asset was generated."
+      }
+    }
+  },
+  "weapons": [
+    {
+      "weapon_id": "electric_guitar",
+      "title": "Последний Аккорд",
+      "scene_path": "scenes/vfx/ultimates/guitarist/GuitaristElectricGuitarLastChord.tscn",
+      "silhouette": "five neon angled riff strips crossed by a single lightning chord",
+      "motion_path": "five alternating diagonal strips sweep the arena before a perpendicular chord crosses them",
+      "impact_language": "bright chord intersections mark normal-enemy stun beats without changing gameplay",
+      "timing_seconds": {"windup": 0.0, "release": 0.52, "active": 1.3, "recovery": 4.7, "cancel": 5.4},
+      "phase_ids": {
+        "windup": "weapon_ultimate.phase.guitarist.electric_guitar.windup",
+        "release": "weapon_ultimate.phase.guitarist.electric_guitar.execute",
+        "active": "weapon_ultimate.phase.guitarist.electric_guitar.active",
+        "recovery": "weapon_ultimate.phase.guitarist.electric_guitar.recover",
+        "cancel": "weapon_ultimate.phase.guitarist.electric_guitar.cleanup"
+      },
+      "pivot": {"x": 0.5, "y": 0.5},
+      "performance": {"max_visual_nodes": 12, "crowd_cap": 14, "runtime_enforcement_owner": "FAN-1541", "mechanics_owner": "backend ultimate task"}
+    },
+    {
+      "weapon_id": "bass_guitar",
+      "title": "Сабвуфер Преисподней",
+      "scene_path": "scenes/vfx/ultimates/guitarist/GuitaristBassGuitarHellSubwoofer.tscn",
+      "silhouette": "a dark central bass core driving four concentric compression waves",
+      "motion_path": "blue pull ring tightens, purple weight compresses, red lift expands, then black-gold shock ejects",
+      "impact_language": "sequential pull, heavy compression, launch ripple, and broad subwoofer knockback shock",
+      "timing_seconds": {"windup": 0.0, "release": 0.7, "active": 2.3, "recovery": 5.0, "cancel": 5.8},
+      "phase_ids": {
+        "windup": "weapon_ultimate.phase.guitarist.bass_guitar.windup",
+        "release": "weapon_ultimate.phase.guitarist.bass_guitar.execute",
+        "active": "weapon_ultimate.phase.guitarist.bass_guitar.active",
+        "recovery": "weapon_ultimate.phase.guitarist.bass_guitar.recover",
+        "cancel": "weapon_ultimate.phase.guitarist.bass_guitar.cleanup"
+      },
+      "pivot": {"x": 0.5, "y": 0.5},
+      "performance": {"max_visual_nodes": 6, "crowd_cap": 12, "runtime_enforcement_owner": "FAN-1541", "mechanics_owner": "backend ultimate task"}
+    },
+    {
+      "weapon_id": "sound_amp",
+      "title": "Стена Звука",
+      "scene_path": "scenes/vfx/ultimates/guitarist/GuitaristSoundAmpWallOfSound.tscn",
+      "silhouette": "four cardinal speaker pylons joined by a glowing square cable wall",
+      "motion_path": "amps rise at cardinal points, cables lock a square, cones pulse inward, then feedback explodes four ways",
+      "impact_language": "contained feedback field resolves as a symmetric four-direction overload",
+      "timing_seconds": {"windup": 0.0, "release": 0.68, "active": 1.6, "recovery": 5.25, "cancel": 6.0},
+      "phase_ids": {
+        "windup": "weapon_ultimate.phase.guitarist.sound_amp.windup",
+        "release": "weapon_ultimate.phase.guitarist.sound_amp.execute",
+        "active": "weapon_ultimate.phase.guitarist.sound_amp.active",
+        "recovery": "weapon_ultimate.phase.guitarist.sound_amp.recover",
+        "cancel": "weapon_ultimate.phase.guitarist.sound_amp.cleanup"
+      },
+      "pivot": {"x": 0.5, "y": 0.5},
+      "performance": {"max_visual_nodes": 12, "crowd_cap": 14, "runtime_enforcement_owner": "FAN-1541", "mechanics_owner": "backend ultimate task"}
+    }
+  ],
+  "evidence": {
+    "contact_sheets": [
+      "docs/design/references/weapon_ultimates/guitarist/guitarist_ultimate_timelines_648p.png",
+      "docs/design/references/weapon_ultimates/guitarist/guitarist_ultimate_timelines_720p.png",
+      "docs/design/references/weapon_ultimates/guitarist/guitarist_ultimate_timelines_1080p.png",
+      "docs/design/references/weapon_ultimates/guitarist/guitarist_ultimate_timelines_2k.png"
+    ],
+    "capture_script": "tests/ultimates/presentation/guitarist_ultimate_contact_capture.gd",
+    "focused_test": "tests/ultimates/presentation/guitarist_ultimate_timelines.gd"
+  }
+}

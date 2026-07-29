@@ -1,0 +1,119 @@
+{
+  "issue": "FAN-1465",
+  "name": "Engineer weapon ultimate presentation pack",
+  "class_id": "engineer",
+  "schema_version": 1,
+  "consumed_contract": {
+    "presentation_schema": "data/ultimates/presentation_schema/v1/weapon_ultimate_presentation_manifest.schema.json",
+    "frozen_profiles": "data/ultimates/schema/v1/classes/engineer.json",
+    "bridge_document": "docs/design/systems/weapon_ultimate_presentation.md",
+    "timeline_lifecycle": "scripts/ultimates/presentation/weapon_ultimate_presentation_timeline.gd"
+  },
+  "source_pipeline": {
+    "tool": "res://scenes/vfx/ultimates/engineer/engineer_ultimate_source_forge.gd",
+    "kind": "deterministic in-repo geometry forge",
+    "pixel_lab": "not used; no PixelLab asset was created for this pack, so there are no PixelLab object IDs to record",
+    "rationale": "The three formation elements exist to be told apart at a glance, and their silhouettes are the acceptance criterion. Generating them from committed geometry makes every frame reproducible byte-for-byte by re-running the forge, which a reviewer can verify directly. The accepted 256x256 weapon bursts stay the VFX channel and were not modified.",
+    "reproduce": "python3 tools/godot_gate.py --headless --path . --script res://scenes/vfx/ultimates/engineer/engineer_ultimate_source_forge.gd"
+  },
+  "godot_import": {
+    "type": "CompressedTexture2D",
+    "compression": "lossless",
+    "mipmaps": false,
+    "filtering": "nearest; the scene driver sets TEXTURE_FILTER_NEAREST so the forged pixel edges stay crisp"
+  },
+  "source_runtime_separation": {
+    "source": "128x128 padded frame, the lossless master the forge writes",
+    "runtime": "alpha-trimmed crop of the same frame with 2px padding, no rescale, so no source pixel is lost"
+  },
+  "assets": [
+    {
+      "asset_id": "engineer_sentry_pylon",
+      "weapon_id": "engineer_sentry_wrench",
+      "role": "formation element for the hex crossfire; tall narrow pylon with a hexagonal turret head",
+      "palette": "pale mint and teal, matched to the accepted sentry wrench burst",
+      "source_path": "assets/sprites/effects/ultimates/engineer/engineer_sentry_pylon_source.png",
+      "source_canvas": [128, 128],
+      "source_sha256": "f70e97a193a9387599d49cac7386a9ba67943bde98004991ed371491d92c3045",
+      "runtime_path": "assets/sprites/effects/ultimates/engineer/engineer_sentry_pylon.png",
+      "runtime_canvas": [49, 112],
+      "runtime_sha256": "700aee6ea5c3249a778b37caeea233f1a0a1bb32dcf8356cfacce85e6ae54e55"
+    },
+    {
+      "asset_id": "engineer_repair_microdrone",
+      "weapon_id": "engineer_repair_drone",
+      "role": "formation element for the double helix swarm; wide flat rotor bar over a small orb body",
+      "palette": "brass and gold with a magenta core, matched to the accepted repair drone burst",
+      "source_path": "assets/sprites/effects/ultimates/engineer/engineer_repair_microdrone_source.png",
+      "source_canvas": [128, 128],
+      "source_sha256": "a45417aae9c894d79cd89b271f95ad95b412a7cb6ce20330c66d3ab5a6c321c8",
+      "runtime_path": "assets/sprites/effects/ultimates/engineer/engineer_repair_microdrone.png",
+      "runtime_canvas": [113, 58],
+      "runtime_sha256": "0e5081d6ac812003f2e2bc4f0c442d3bc409e0277fd907f603685068d28b5f39"
+    },
+    {
+      "asset_id": "engineer_smart_mine",
+      "weapon_id": "engineer_pressure_mines",
+      "role": "formation element for the lattice mine field; squat prong-topped dome on a wide base plate",
+      "palette": "copper with a cyan proximity lens, matched to the accepted pressure mines burst",
+      "source_path": "assets/sprites/effects/ultimates/engineer/engineer_smart_mine_source.png",
+      "source_canvas": [128, 128],
+      "source_sha256": "b457ef45e7577a59efd32c3e6d95e23a7e6a3c124d5923a144cb93c353f3c76e",
+      "runtime_path": "assets/sprites/effects/ultimates/engineer/engineer_smart_mine.png",
+      "runtime_canvas": [80, 61],
+      "runtime_sha256": "5abbfed61cc7fba00617b5ec1b69d5e112c945ea311e034a4c29680acf82e82f"
+    }
+  ],
+  "reused_accepted_assets": [
+    {
+      "path": "assets/sprites/effects/vfx_weapon_engineer_sentry_wrench.png",
+      "sha256": "e8dbb90b67032b7d8f450866091c9dc0a00bcced3a7508d901889000340751d8",
+      "channel": "vfx",
+      "modified": false
+    },
+    {
+      "path": "assets/sprites/effects/vfx_weapon_engineer_repair_drone.png",
+      "sha256": "5af3bc239baa787d26e4ea98d3a520919f19a1809e0f1ef5b5fc1ad0b4658d6a",
+      "channel": "vfx",
+      "modified": false
+    },
+    {
+      "path": "assets/sprites/effects/vfx_weapon_engineer_pressure_mines.png",
+      "sha256": "53da50d5d5c978c50458847fe1a8ac0199bdbaaeb93c3741c4ddc9749250255f",
+      "channel": "vfx",
+      "modified": false
+    },
+    {
+      "path": "assets/audio/sfx/sfx_hit.ogg",
+      "channel": "sfx",
+      "weapon_id": "engineer_sentry_wrench",
+      "modified": false
+    },
+    {
+      "path": "assets/audio/sfx/sfx_artifact_reveal.ogg",
+      "channel": "sfx",
+      "weapon_id": "engineer_repair_drone",
+      "modified": false
+    },
+    {
+      "path": "assets/audio/sfx/sfx_boss_phase.ogg",
+      "channel": "sfx",
+      "weapon_id": "engineer_pressure_mines",
+      "modified": false
+    }
+  ],
+  "evidence": [
+    {
+      "kind": "contact_sheet",
+      "path": "docs/design/references/weapon_ultimates/engineer/contact_sheet_engineer_ultimates.png",
+      "sha256": "5c3bea6c328f3494f183db967c8c01fe8095d2583c8d25a9cb3a1d87ca987e3f",
+      "layout": "15 columns x 3 rows. Columns are windup, release, active, recovery, cancel with 3 progress samples each; rows are engineer_sentry_wrench, engineer_repair_drone, engineer_pressure_mines.",
+      "rendered_by": "res://scenes/vfx/ultimates/engineer/engineer_ultimate_contact_sheet.gd",
+      "note": "Composited from the same formation_points() the shipped scene driver calls, so the sheet is the motion the scene plays."
+    }
+  ],
+  "runtime_boundary": {
+    "shared_manifest_untouched": "scripts/ultimates/presentation/weapon_ultimate_presentation_manifest.gd",
+    "statement": "The shared bridge still hardcodes VFX_SOURCE_PREFIX=res://assets/sprites/effects/vfx_weapon_ for both source_path and runtime_path, and this pack is forbidden to edit it. The class-local paths above are therefore declared and validated but not yet wired into live combat. Redirecting the shared runtime paths is unowned follow-up work recorded on FAN-1465; FAN-1541 owns the shared runtime adapter."
+  }
+}

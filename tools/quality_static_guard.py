@@ -164,6 +164,23 @@ def architecture_errors(root: Path, tracked: list[str]) -> list[str]:
     return errors
 
 
+def script_uid_errors(root: Path, tracked: list[str]) -> list[str]:
+    errors: list[str] = []
+    tracked_paths = {Path(relative) for relative in tracked}
+    ignored_directories = {
+        path.parent for path in tracked_paths if path.name == ".gdignore"
+    }
+    for relative in tracked:
+        path = Path(relative)
+        is_ignored = any(parent in ignored_directories for parent in path.parents)
+        if path.suffix != ".gd" or is_ignored:
+            continue
+        sidecar = Path(f"{path}.uid")
+        if sidecar not in tracked_paths:
+            errors.append(f"{path}: missing committed .uid sidecar")
+    return errors
+
+
 def credential_errors(root: Path, tracked: list[str]) -> list[str]:
     errors: list[str] = []
     forbidden_marker = "BUILTIN_WEBHOOK_" + "B64"
@@ -182,6 +199,7 @@ def collect_errors(root: Path) -> list[str]:
         case_and_resource_errors(root, tracked)
         + version_and_windows_errors(root)
         + architecture_errors(root, tracked)
+        + script_uid_errors(root, tracked)
         + credential_errors(root, tracked)
     )
 
@@ -197,7 +215,7 @@ def main() -> int:
             print(f"FAIL: {error}", file=sys.stderr)
         print(f"Static quality guard failed: {len(errors)} error(s).", file=sys.stderr)
         return 1
-    print("Static quality guard passed (case/version/Windows/architecture/credentials).")
+    print("Static quality guard passed (case/version/Windows/architecture/sidecars/credentials).")
     return 0
 
 

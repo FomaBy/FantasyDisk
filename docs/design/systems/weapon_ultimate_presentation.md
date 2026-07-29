@@ -75,3 +75,12 @@ The first test verifies all 51 immutable presentation IDs and the fixture
 cleanup, pause, and headless obligations. The mutation suite separately proves
 missing/duplicate phases, missing assets, duplicate IDs, placeholder reuse,
 invalid paths, pivots, and timing fail closed.
+
+Every class-local presentation package must machine-check the measured title
+and panel-label rectangles against their sheet or panel bounds at 648p, 720p,
+1080p, and 2K before its contact-sheet evidence is accepted. The shared
+`tests/ultimates/presentation/contact_sheet_text_fit.gd` helper keeps capture
+layout and the focused-test oracle on the same fallback-font measurements.
+This geometric check cannot detect renderer-only divergence such as a
+capture-side `Label` offset or a different fallback font, so a windowed pixel
+review remains mandatory after any theme, font, or renderer change.

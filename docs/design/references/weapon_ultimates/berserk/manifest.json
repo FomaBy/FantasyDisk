@@ -1,0 +1,140 @@
+{
+  "schema_version": 1,
+  "issue": "FAN-1461",
+  "class_id": "berserk",
+  "contract": {
+    "schema": "data/ultimates/presentation_schema/v1/weapon_ultimate_presentation_manifest.schema.json",
+    "phase_groups": [
+      "windup",
+      "release",
+      "active",
+      "recovery",
+      "cancel"
+    ],
+    "max_timeline_seconds": 10.0,
+    "headless_fallback": "no_op",
+    "runtime_adapter_status": "unbound_shared_adapter_owned_by_FAN-1541"
+  },
+  "generator_provenance": {
+    "route": "reused_approved_assets_no_new_raster_generation",
+    "pixellab_mcp_config_smoke": "PASS get_balance",
+    "new_pixellab_assets": [],
+    "reused_sources": {
+      "sword": {
+        "source_path": "assets/sprites/weapons/two_handed_sword.png",
+        "runtime_scene": "scenes/vfx/ultimates/berserk/BerserkSwordScarletWhirlwind.tscn",
+        "note": "Approved project weapon sprite; no new isolated source frame was created."
+      },
+      "axe": {
+        "source_path": "assets/sprites/effects/scrum895_berserk/axe_cleave_00.png .. _07.png",
+        "runtime_scene": "scenes/vfx/ultimates/berserk/BerserkAxeExecutionLoop.tscn",
+        "pixellab_object_id": "d5452069-7d6e-4646-8b9d-379f0c332f17",
+        "pixellab_animation_group_id": "7e9c7287-d8f0-4461-844e-c1e0bfc5e817",
+        "source_manifest": "docs/design/references/scrum895_berserk_axe_hammer_vfx/manifest.json"
+      },
+      "hammer": {
+        "source_path": "assets/sprites/effects/scrum895_berserk/hammer_slam_00.png .. _07.png",
+        "runtime_scene": "scenes/vfx/ultimates/berserk/BerserkHammerFourfoldRift.tscn",
+        "pixellab_object_id": "b1fed1f3-71b6-47d5-a1eb-e3e4b8db65b5",
+        "pixellab_animation_group_id": "4515832c-5217-444d-a1a4-b25f1090d435",
+        "source_manifest": "docs/design/references/scrum895_berserk_axe_hammer_vfx/manifest.json"
+      }
+    }
+  },
+  "weapons": [
+    {
+      "weapon_id": "sword",
+      "title": "Алый Вихрь",
+      "scene_path": "scenes/vfx/ultimates/berserk/BerserkSwordScarletWhirlwind.tscn",
+      "silhouette": "three spectral two-handed swords",
+      "motion_path": "three expanding orbit spirals around the moving hero, accelerating into an inward cross-slash",
+      "impact_language": "synchronized inward cross-slash",
+      "timing_seconds": {
+        "windup": 0.0,
+        "release": 0.6,
+        "active": 0.85,
+        "recovery": 7.45,
+        "cancel": 8.15
+      },
+      "phase_ids": {
+        "windup": "weapon_ultimate.phase.berserk.sword.windup",
+        "release": "weapon_ultimate.phase.berserk.sword.execute",
+        "active": "weapon_ultimate.phase.berserk.sword.active",
+        "recovery": "weapon_ultimate.phase.berserk.sword.recover",
+        "cancel": "weapon_ultimate.phase.berserk.sword.cleanup"
+      },
+      "performance": {
+        "max_visual_nodes": 6,
+        "crowd_cap": 24,
+        "crowd_budget_enforcement_owner": "runtime enforcement FAN-1541",
+        "per_blade_hit_cooldown_owner": "mechanics FAN-1462"
+      }
+    },
+    {
+      "weapon_id": "axe",
+      "title": "Петля Палача",
+      "scene_path": "scenes/vfx/ultimates/berserk/BerserkAxeExecutionLoop.tscn",
+      "silhouette": "single giant spinning execution axe with rune chain",
+      "motion_path": "aimed outward arc to arena edge, turn, then heavy return catch",
+      "impact_language": "outbound execution mark and return detonation",
+      "timing_seconds": {
+        "windup": 0.0,
+        "release": 0.45,
+        "active": 0.75,
+        "recovery": 5.85,
+        "cancel": 6.45
+      },
+      "phase_ids": {
+        "windup": "weapon_ultimate.phase.berserk.axe.windup",
+        "release": "weapon_ultimate.phase.berserk.axe.execute",
+        "active": "weapon_ultimate.phase.berserk.axe.active",
+        "recovery": "weapon_ultimate.phase.berserk.axe.recover",
+        "cancel": "weapon_ultimate.phase.berserk.axe.cleanup"
+      },
+      "performance": {
+        "max_visual_nodes": 5,
+        "crowd_cap": 18,
+        "crowd_budget_enforcement_owner": "runtime enforcement FAN-1541",
+        "boss_double_pass_cap_owner": "mechanics FAN-1462"
+      }
+    },
+    {
+      "weapon_id": "hammer",
+      "title": "Раскол Четырёх Сторон",
+      "scene_path": "scenes/vfx/ultimates/berserk/BerserkHammerFourfoldRift.tscn",
+      "silhouette": "overhead hammer and four ground-rift lanes",
+      "motion_path": "three impact beats: cardinal lanes, diagonal lanes, central quake",
+      "impact_language": "cross, diagonals, then expanding central quake",
+      "timing_seconds": {
+        "windup": 0.0,
+        "release": 0.7,
+        "active": 0.96,
+        "recovery": 3.4,
+        "cancel": 4.1
+      },
+      "phase_ids": {
+        "windup": "weapon_ultimate.phase.berserk.hammer.windup",
+        "release": "weapon_ultimate.phase.berserk.hammer.execute",
+        "active": "weapon_ultimate.phase.berserk.hammer.active",
+        "recovery": "weapon_ultimate.phase.berserk.hammer.recover",
+        "cancel": "weapon_ultimate.phase.berserk.hammer.cleanup"
+      },
+      "performance": {
+        "max_visual_nodes": 6,
+        "crowd_cap": 20,
+        "crowd_budget_enforcement_owner": "runtime enforcement FAN-1541",
+        "stagger_launch_displacement_owner": "mechanics FAN-1462"
+      }
+    }
+  ],
+  "evidence": {
+    "contact_sheets": [
+      "docs/design/references/weapon_ultimates/berserk/berserk_ultimate_timelines_648p.png",
+      "docs/design/references/weapon_ultimates/berserk/berserk_ultimate_timelines_720p.png",
+      "docs/design/references/weapon_ultimates/berserk/berserk_ultimate_timelines_1080p.png",
+      "docs/design/references/weapon_ultimates/berserk/berserk_ultimate_timelines_2k.png"
+    ],
+    "capture_script": "tests/ultimates/presentation/berserk_ultimate_contact_capture.gd",
+    "focused_test": "tests/ultimates/presentation/berserk_ultimate_timelines.gd"
+  }
+}

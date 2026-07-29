@@ -1,0 +1,152 @@
+[gd_scene load_steps=4 format=3]
+
+[ext_resource type="Texture2D" path="res://assets/sprites/effects/vfx_weapon_sound_amp.png" id="1_amp"]
+
+[sub_resource type="CanvasItemMaterial" id="CanvasItemMaterial_add"]
+blend_mode = 1
+light_mode = 1
+
+[sub_resource type="Animation" id="Animation_wall_of_sound"]
+resource_name = "ultimate"
+length = 6.0
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("AmpStage:scale")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 0.68, 1.6, 5.25, 6.0),
+"transitions": PackedFloat32Array(1, 1, 1, 1, 1),
+"update": 0,
+"values": [Vector2(0.12, 0.12), Vector2(0.68, 0.68), Vector2(1, 1), Vector2(0.86, 0.86), Vector2(0.06, 0.06)]
+}
+tracks/1/type = "value"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath("CableSquare:modulate:a")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0, 0.68, 1.6, 5.25, 6.0),
+"transitions": PackedFloat32Array(1, 1, 1, 1, 1),
+"update": 0,
+"values": [0.0, 0.66, 1.0, 0.5, 0.0]
+}
+tracks/2/type = "value"
+tracks/2/imported = false
+tracks/2/enabled = true
+tracks/2/path = NodePath("SpeakerCones:scale")
+tracks/2/interp = 1
+tracks/2/loop_wrap = true
+tracks/2/keys = {
+"times": PackedFloat32Array(0, 1.6, 2.4, 3.2, 5.25, 6.0),
+"transitions": PackedFloat32Array(1, 1, 1, 1, 1, 1),
+"update": 0,
+"values": [Vector2(0.12, 0.12), Vector2(0.54, 0.54), Vector2(1.06, 1.06), Vector2(0.82, 0.82), Vector2(0.5, 0.5), Vector2(0.04, 0.04)]
+}
+tracks/3/type = "value"
+tracks/3/imported = false
+tracks/3/enabled = true
+tracks/3/path = NodePath("FeedbackExplosion:modulate:a")
+tracks/3/interp = 1
+tracks/3/loop_wrap = true
+tracks/3/keys = {
+"times": PackedFloat32Array(0, 1.6, 3.2, 3.64, 5.25, 6.0),
+"transitions": PackedFloat32Array(1, 1, 1, 1, 1, 1),
+"update": 0,
+"values": [0.0, 0.0, 0.36, 1.0, 0.34, 0.0]
+}
+
+[sub_resource type="AnimationLibrary" id="AnimationLibrary_wall_of_sound"]
+_data = {"ultimate": SubResource("Animation_wall_of_sound")}
+
+[node name="GuitaristSoundAmpWallOfSound" type="Node2D"]
+metadata/ultimate_id = "guitarist/sound_amp"
+metadata/silhouette = "four cardinal speaker pylons joined by a glowing square cable wall"
+metadata/motion_path = "amps rise at cardinal points, cables lock a square, cones pulse inward, then feedback explodes four ways"
+metadata/impact_language = "contained feedback field resolves as a symmetric four-direction overload"
+metadata/max_visual_nodes = 12
+metadata/crowd_cap = 14
+
+[node name="AmpStage" type="Node2D" parent="."]
+
+[node name="NorthAmp" type="Sprite2D" parent="AmpStage"]
+material = SubResource("CanvasItemMaterial_add")
+texture = ExtResource("1_amp")
+position = Vector2(0, -152)
+scale = Vector2(0.42, 0.42)
+modulate = Color(0.56, 0.84, 1, 0.94)
+
+[node name="EastAmp" type="Sprite2D" parent="AmpStage"]
+material = SubResource("CanvasItemMaterial_add")
+texture = ExtResource("1_amp")
+position = Vector2(152, 0)
+rotation = 1.57
+scale = Vector2(0.42, 0.42)
+modulate = Color(0.76, 0.4, 1, 0.94)
+
+[node name="SouthAmp" type="Sprite2D" parent="AmpStage"]
+material = SubResource("CanvasItemMaterial_add")
+texture = ExtResource("1_amp")
+position = Vector2(0, 152)
+rotation = 3.14
+scale = Vector2(0.42, 0.42)
+modulate = Color(1, 0.48, 0.24, 0.94)
+
+[node name="WestAmp" type="Sprite2D" parent="AmpStage"]
+material = SubResource("CanvasItemMaterial_add")
+texture = ExtResource("1_amp")
+position = Vector2(-152, 0)
+rotation = -1.57
+scale = Vector2(0.42, 0.42)
+modulate = Color(0.42, 1, 0.76, 0.94)
+
+[node name="CableSquare" type="Line2D" parent="."]
+material = SubResource("CanvasItemMaterial_add")
+points = PackedVector2Array(-142, -142, 142, -142, 142, 142, -142, 142, -142, -142)
+width = 9.0
+default_color = Color(0.5, 0.9, 1, 0.94)
+antialiased = true
+modulate = Color(1, 1, 1, 0)
+
+[node name="SpeakerCones" type="Node2D" parent="."]
+
+[node name="NorthCone" type="Polygon2D" parent="SpeakerCones"]
+material = SubResource("CanvasItemMaterial_add")
+position = Vector2(0, -92)
+polygon = PackedVector2Array(0, -40, 32, 20, -32, 20)
+color = Color(0.46, 0.88, 1, 0.72)
+
+[node name="EastCone" type="Polygon2D" parent="SpeakerCones"]
+material = SubResource("CanvasItemMaterial_add")
+position = Vector2(92, 0)
+rotation = 1.57
+polygon = PackedVector2Array(0, -40, 32, 20, -32, 20)
+color = Color(0.72, 0.46, 1, 0.72)
+
+[node name="SouthCone" type="Polygon2D" parent="SpeakerCones"]
+material = SubResource("CanvasItemMaterial_add")
+position = Vector2(0, 92)
+rotation = 3.14
+polygon = PackedVector2Array(0, -40, 32, 20, -32, 20)
+color = Color(1, 0.48, 0.3, 0.72)
+
+[node name="WestCone" type="Polygon2D" parent="SpeakerCones"]
+material = SubResource("CanvasItemMaterial_add")
+position = Vector2(-92, 0)
+rotation = -1.57
+polygon = PackedVector2Array(0, -40, 32, 20, -32, 20)
+color = Color(0.4, 1, 0.76, 0.72)
+
+[node name="FeedbackExplosion" type="Line2D" parent="."]
+material = SubResource("CanvasItemMaterial_add")
+points = PackedVector2Array(-238, 0, 0, 0, 238, 0, 0, -238, 0, 0, 0, 238, -168, -168, 0, 0, 168, 168, 0, 0, -168, 168)
+width = 22.0
+default_color = Color(1, 0.86, 0.38, 0.98)
+antialiased = true
+modulate = Color(1, 1, 1, 0)
+
+[node name="Timeline" type="AnimationPlayer" parent="."]
+libraries = {"": SubResource("AnimationLibrary_wall_of_sound")}
+autoplay = "ultimate"

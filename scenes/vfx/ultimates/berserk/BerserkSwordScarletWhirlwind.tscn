@@ -1,0 +1,131 @@
+[gd_scene load_steps=4 format=3]
+
+[ext_resource type="Texture2D" path="res://assets/sprites/weapons/two_handed_sword.png" id="1_sword"]
+
+[sub_resource type="CanvasItemMaterial" id="CanvasItemMaterial_add"]
+blend_mode = 1
+light_mode = 1
+
+[sub_resource type="Animation" id="Animation_scarlet_whirlwind"]
+resource_name = "ultimate"
+length = 8.15
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("BladeGhostOne:position")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 0.6, 3.8, 7.45, 8.15),
+"transitions": PackedFloat32Array(1, 1, 1, 1, 1),
+"update": 0,
+"values": [Vector2(28, -10), Vector2(72, 0), Vector2(190, 0), Vector2(48, 0), Vector2(0, 0)]
+}
+tracks/1/type = "value"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath("BladeGhostTwo:position")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0, 0.6, 3.8, 7.45, 8.15),
+"transitions": PackedFloat32Array(1, 1, 1, 1, 1),
+"update": 0,
+"values": [Vector2(-18, 22), Vector2(-36, 62), Vector2(-95, 165), Vector2(-24, 42), Vector2(0, 0)]
+}
+tracks/2/type = "value"
+tracks/2/imported = false
+tracks/2/enabled = true
+tracks/2/path = NodePath("BladeGhostThree:position")
+tracks/2/interp = 1
+tracks/2/loop_wrap = true
+tracks/2/keys = {
+"times": PackedFloat32Array(0, 0.6, 3.8, 7.45, 8.15),
+"transitions": PackedFloat32Array(1, 1, 1, 1, 1),
+"update": 0,
+"values": [Vector2(-12, -24), Vector2(-38, -58), Vector2(-95, -165), Vector2(-24, -42), Vector2(0, 0)]
+}
+tracks/3/type = "value"
+tracks/3/imported = false
+tracks/3/enabled = true
+tracks/3/path = NodePath("OrbitGuide:scale")
+tracks/3/interp = 1
+tracks/3/loop_wrap = true
+tracks/3/keys = {
+"times": PackedFloat32Array(0, 0.6, 3.8, 7.45, 8.15),
+"transitions": PackedFloat32Array(1, 1, 1, 1, 1),
+"update": 0,
+"values": [Vector2(0.28, 0.28), Vector2(0.45, 0.45), Vector2(1.2, 1.2), Vector2(0.36, 0.36), Vector2(0.05, 0.05)]
+}
+tracks/4/type = "value"
+tracks/4/imported = false
+tracks/4/enabled = true
+tracks/4/path = NodePath("CrossSlash:modulate:a")
+tracks/4/interp = 1
+tracks/4/loop_wrap = true
+tracks/4/keys = {
+"times": PackedFloat32Array(0, 7.2, 7.45, 7.8, 8.15),
+"transitions": PackedFloat32Array(1, 1, 1, 1, 1),
+"update": 0,
+"values": [0.0, 0.0, 1.0, 0.35, 0.0]
+}
+
+[sub_resource type="AnimationLibrary" id="AnimationLibrary_scarlet_whirlwind"]
+_data = {"ultimate": SubResource("Animation_scarlet_whirlwind")}
+
+[node name="BerserkSwordScarletWhirlwind" type="Node2D"]
+metadata/ultimate_id = "berserk/sword"
+metadata/silhouette = "three_spectral_two_handed_swords"
+metadata/motion_path = "expanding_three_orbit_spiral_then_inward_cross_slash"
+metadata/impact_language = "synchronized_inward_cross_slash"
+metadata/max_visual_nodes = 6
+metadata/crowd_cap = 24
+
+[node name="WindupTelegraph" type="Polygon2D" parent="."]
+material = SubResource("CanvasItemMaterial_add")
+color = Color(0.9, 0.04, 0.09, 0.3)
+polygon = PackedVector2Array(-28, 26, 0, -78, 28, 26)
+
+[node name="OrbitGuide" type="Line2D" parent="."]
+material = SubResource("CanvasItemMaterial_add")
+points = PackedVector2Array(112, 0, 103, 46, 79, 85, 42, 104, 0, 112, -42, 104, -79, 85, -103, 46, -112, 0, -103, -46, -79, -85, -42, -104, 0, -112, 42, -104, 79, -85, 103, -46, 112, 0)
+width = 5.0
+default_color = Color(1, 0.08, 0.14, 0.62)
+closed = true
+antialiased = true
+
+[node name="BladeGhostOne" type="Sprite2D" parent="."]
+material = SubResource("CanvasItemMaterial_add")
+texture = ExtResource("1_sword")
+position = Vector2(28, -10)
+rotation = 0.88
+scale = Vector2(0.44, 0.44)
+modulate = Color(1, 0.25, 0.32, 0.86)
+
+[node name="BladeGhostTwo" type="Sprite2D" parent="."]
+material = SubResource("CanvasItemMaterial_add")
+texture = ExtResource("1_sword")
+position = Vector2(-18, 22)
+rotation = 2.96
+scale = Vector2(0.44, 0.44)
+modulate = Color(1, 0.34, 0.38, 0.78)
+
+[node name="BladeGhostThree" type="Sprite2D" parent="."]
+material = SubResource("CanvasItemMaterial_add")
+texture = ExtResource("1_sword")
+position = Vector2(-12, -24)
+rotation = -1.18
+scale = Vector2(0.44, 0.44)
+modulate = Color(1, 0.18, 0.24, 0.72)
+
+[node name="CrossSlash" type="Line2D" parent="."]
+material = SubResource("CanvasItemMaterial_add")
+points = PackedVector2Array(-112, -96, 0, 0, 112, 96, 112, -96, 0, 0, -112, 96)
+width = 14.0
+default_color = Color(1, 0.84, 0.71, 0.92)
+antialiased = true
+modulate = Color(1, 1, 1, 0)
+
+[node name="Timeline" type="AnimationPlayer" parent="."]
+libraries = {"": SubResource("AnimationLibrary_scarlet_whirlwind")}
+autoplay = "ultimate"

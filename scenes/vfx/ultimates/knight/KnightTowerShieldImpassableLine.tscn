@@ -1,0 +1,164 @@
+[gd_scene load_steps=5 format=3]
+
+[ext_resource type="Texture2D" path="res://assets/sprites/effects/vfx_weapon_tower_shield.png" id="1_shield"]
+
+[sub_resource type="CanvasItemMaterial" id="CanvasItemMaterial_add"]
+blend_mode = 1
+light_mode = 1
+
+[sub_resource type="Animation" id="Animation_impassable_line"]
+resource_name = "ultimate"
+length = 8.6
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("GuardStance:modulate:a")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 0.5, 7.6, 8.6),
+"transitions": PackedFloat32Array(1, 1, 1, 1),
+"update": 0,
+"values": [0.0, 0.45, 0.45, 0.0]
+}
+tracks/1/type = "value"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath("ShieldWall:position")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0, 1.3, 7.6, 8.6),
+"transitions": PackedFloat32Array(1, 1, 1, 1),
+"update": 0,
+"values": [Vector2(-20, 0), Vector2(-16, 0), Vector2(70, 0), Vector2(70, 0)]
+}
+tracks/2/type = "value"
+tracks/2/imported = false
+tracks/2/enabled = true
+tracks/2/path = NodePath("ShieldWall/WallCore:scale")
+tracks/2/interp = 1
+tracks/2/loop_wrap = true
+tracks/2/keys = {
+"times": PackedFloat32Array(0, 0.9, 8.6),
+"transitions": PackedFloat32Array(1, 1, 1),
+"update": 0,
+"values": [Vector2(0.42, 0.18), Vector2(0.42, 0.95), Vector2(0.42, 0.95)]
+}
+tracks/3/type = "value"
+tracks/3/imported = false
+tracks/3/enabled = true
+tracks/3/path = NodePath("ShieldWall/WallCore:modulate:a")
+tracks/3/interp = 1
+tracks/3/loop_wrap = true
+tracks/3/keys = {
+"times": PackedFloat32Array(0, 0.25, 0.9, 7.6, 8.6),
+"transitions": PackedFloat32Array(1, 1, 1, 1, 1),
+"update": 0,
+"values": [0.0, 0.6, 1.0, 1.0, 0.0]
+}
+tracks/4/type = "value"
+tracks/4/imported = false
+tracks/4/enabled = true
+tracks/4/path = NodePath("ShieldWall/Rampart:modulate:a")
+tracks/4/interp = 1
+tracks/4/loop_wrap = true
+tracks/4/keys = {
+"times": PackedFloat32Array(0, 0.6, 0.9, 7.6, 8.6),
+"transitions": PackedFloat32Array(1, 1, 1, 1, 1),
+"update": 0,
+"values": [0.0, 0.35, 1.0, 1.0, 0.0]
+}
+tracks/5/type = "value"
+tracks/5/imported = false
+tracks/5/enabled = true
+tracks/5/path = NodePath("ShieldWall/SparkField:modulate:a")
+tracks/5/interp = 1
+tracks/5/loop_wrap = true
+tracks/5/keys = {
+"times": PackedFloat32Array(0, 1.6, 4.5, 7.0, 7.7, 8.6),
+"transitions": PackedFloat32Array(1, 1, 1, 1, 1, 1),
+"update": 0,
+"values": [0.0, 0.15, 0.55, 0.95, 0.2, 0.0]
+}
+tracks/6/type = "value"
+tracks/6/imported = false
+tracks/6/enabled = true
+tracks/6/path = NodePath("CounterCrescent:modulate:a")
+tracks/6/interp = 1
+tracks/6/loop_wrap = true
+tracks/6/keys = {
+"times": PackedFloat32Array(0, 7.5, 7.7, 8.2, 8.6),
+"transitions": PackedFloat32Array(1, 1, 1, 1, 1),
+"update": 0,
+"values": [0.0, 0.0, 1.0, 0.8, 0.0]
+}
+tracks/7/type = "value"
+tracks/7/imported = false
+tracks/7/enabled = true
+tracks/7/path = NodePath("CounterCrescent:scale")
+tracks/7/interp = 1
+tracks/7/loop_wrap = true
+tracks/7/keys = {
+"times": PackedFloat32Array(0, 7.6, 8.1, 8.6),
+"transitions": PackedFloat32Array(1, 1, 1, 1),
+"update": 0,
+"values": [Vector2(0.5, 0.5), Vector2(0.5, 0.5), Vector2(1.3, 1.3), Vector2(1.35, 1.35)]
+}
+
+[sub_resource type="AnimationLibrary" id="AnimationLibrary_impassable_line"]
+_data = {"ultimate": SubResource("Animation_impassable_line")}
+
+[node name="KnightTowerShieldImpassableLine" type="Node2D"]
+metadata/ultimate_id = "knight/tower_shield"
+metadata/silhouette = "giant_frontal_shield_wall_with_rampart"
+metadata/motion_path = "slow_forward_wall_push_with_accumulating_guard"
+metadata/impact_language = "stored_spark_accumulation_released_as_counter_crescent"
+metadata/max_visual_nodes = 6
+metadata/crowd_cap = 16
+
+[node name="GuardStance" type="Polygon2D" parent="."]
+z_index = -15
+color = Color(0.65, 0.58, 0.35, 0.7)
+polygon = PackedVector2Array(-100, 64, 150, 64, 170, 104, -120, 104)
+modulate = Color(1, 1, 1, 0)
+
+[node name="ShieldWall" type="Node2D" parent="."]
+position = Vector2(-20, 0)
+
+[node name="WallCore" type="Sprite2D" parent="ShieldWall"]
+material = SubResource("CanvasItemMaterial_add")
+texture = ExtResource("1_shield")
+position = Vector2(30, -12)
+scale = Vector2(0.42, 0.18)
+modulate = Color(1, 0.98, 0.9, 0)
+
+[node name="Rampart" type="Line2D" parent="ShieldWall"]
+material = SubResource("CanvasItemMaterial_add")
+points = PackedVector2Array(72, -104, 84, -92, 72, -78, 84, -64, 72, -50, 84, -36, 72, -22, 84, -8, 72, 6, 84, 20, 72, 34, 84, 48, 72, 62, 84, 76, 72, 90)
+width = 7.0
+default_color = Color(1, 0.85, 0.45, 0.9)
+antialiased = true
+modulate = Color(1, 1, 1, 0)
+
+[node name="SparkField" type="Line2D" parent="ShieldWall"]
+material = SubResource("CanvasItemMaterial_add")
+points = PackedVector2Array(100, -84, 118, -62, 102, -40, 122, -18, 104, 4, 120, 26, 102, 48, 118, 70)
+width = 8.0
+default_color = Color(1, 0.9, 0.5, 0.85)
+antialiased = true
+modulate = Color(1, 1, 1, 0)
+
+[node name="CounterCrescent" type="Line2D" parent="."]
+material = SubResource("CanvasItemMaterial_add")
+position = Vector2(40, 0)
+points = PackedVector2Array(31, -116, 60, -104, 85, -85, 104, -60, 116, -31, 120, 0, 116, 31, 104, 60, 85, 85, 60, 104, 31, 116)
+width = 14.0
+default_color = Color(1, 0.88, 0.5, 0.95)
+antialiased = true
+scale = Vector2(0.5, 0.5)
+modulate = Color(1, 1, 1, 0)
+
+[node name="Timeline" type="AnimationPlayer" parent="."]
+libraries = {"": SubResource("AnimationLibrary_impassable_line")}
+autoplay = "ultimate"

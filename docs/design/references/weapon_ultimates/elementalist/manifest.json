@@ -1,0 +1,135 @@
+{
+  "schema_version": 1,
+  "issue": "FAN-1476",
+  "class_id": "elementalist",
+  "contract": {
+    "schema": "data/ultimates/presentation_schema/v1/weapon_ultimate_presentation_manifest.schema.json",
+    "phase_groups": [
+      "windup",
+      "release",
+      "active",
+      "recovery",
+      "cancel"
+    ],
+    "max_timeline_seconds": 10.0,
+    "headless_fallback": "no_op",
+    "runtime_adapter_status": "unbound_shared_adapter_owned_by_FAN-1541"
+  },
+  "generator_provenance": {
+    "route": "reused_approved_assets_no_new_raster_generation",
+    "new_pixellab_assets": [],
+    "reused_sources": {
+      "elementalist_orb_ring": {
+        "source_path": "assets/sprites/effects/vfx_weapon_elementalist_orb_ring.png",
+        "runtime_scene": "scenes/vfx/ultimates/elementalist/ElementalistOrbRingGrandConclave.tscn",
+        "note": "Approved weapon ultimate VFX sprite; no new isolated source frame was created."
+      },
+      "elementalist_prism_focus": {
+        "source_path": "assets/sprites/effects/vfx_weapon_elementalist_prism_focus.png",
+        "runtime_scene": "scenes/vfx/ultimates/elementalist/ElementalistPrismFocusPrismaticVerdict.tscn",
+        "note": "Approved weapon ultimate VFX sprite; no new isolated source frame was created."
+      },
+      "elementalist_meteor_core": {
+        "source_path": "assets/sprites/effects/vfx_weapon_elementalist_meteor_core.png",
+        "runtime_scene": "scenes/vfx/ultimates/elementalist/ElementalistMeteorCoreStarfall.tscn",
+        "note": "Approved weapon ultimate VFX sprite; no new isolated source frame was created."
+      }
+    }
+  },
+  "weapons": [
+    {
+      "weapon_id": "elementalist_orb_ring",
+      "title": "Великий Конклав",
+      "scene_path": "scenes/vfx/ultimates/elementalist/ElementalistOrbRingGrandConclave.tscn",
+      "silhouette": "four tinted elemental avatar orbs on a square orbit guide",
+      "motion_path": "square orbit accelerates around the moving hero through four sequential element cast beats",
+      "impact_language": "burn, freeze, gale, and shock beats merge into a white combined supernova",
+      "timing_seconds": {
+        "windup": 0.0,
+        "release": 0.7,
+        "active": 1.0,
+        "recovery": 7.6,
+        "cancel": 8.4
+      },
+      "phase_ids": {
+        "windup": "weapon_ultimate.phase.elementalist.elementalist_orb_ring.windup",
+        "release": "weapon_ultimate.phase.elementalist.elementalist_orb_ring.execute",
+        "active": "weapon_ultimate.phase.elementalist.elementalist_orb_ring.active",
+        "recovery": "weapon_ultimate.phase.elementalist.elementalist_orb_ring.recover",
+        "cancel": "weapon_ultimate.phase.elementalist.elementalist_orb_ring.cleanup"
+      },
+      "performance": {
+        "max_visual_nodes": 10,
+        "crowd_cap": 24,
+        "crowd_budget_enforcement_owner": "runtime enforcement FAN-1541",
+        "sequential_status_nova_owner": "mechanics FAN-1477"
+      }
+    },
+    {
+      "weapon_id": "elementalist_prism_focus",
+      "title": "Призматический Суд",
+      "scene_path": "scenes/vfx/ultimates/elementalist/ElementalistPrismFocusPrismaticVerdict.tscn",
+      "silhouette": "single aimed prism with an arena-crossing beam lattice",
+      "motion_path": "prism unfolds, refracted X-beams form a lattice that slowly rotates across the arena",
+      "impact_language": "staggered triple focus hits end in a rainbow fracture shatter",
+      "timing_seconds": {
+        "windup": 0.0,
+        "release": 0.55,
+        "active": 0.85,
+        "recovery": 6.4,
+        "cancel": 7.2
+      },
+      "phase_ids": {
+        "windup": "weapon_ultimate.phase.elementalist.elementalist_prism_focus.windup",
+        "release": "weapon_ultimate.phase.elementalist.elementalist_prism_focus.execute",
+        "active": "weapon_ultimate.phase.elementalist.elementalist_prism_focus.active",
+        "recovery": "weapon_ultimate.phase.elementalist.elementalist_prism_focus.recover",
+        "cancel": "weapon_ultimate.phase.elementalist.elementalist_prism_focus.cleanup"
+      },
+      "performance": {
+        "max_visual_nodes": 9,
+        "crowd_cap": 18,
+        "crowd_budget_enforcement_owner": "runtime enforcement FAN-1541",
+        "triple_hit_cap_owner": "mechanics FAN-1477"
+      }
+    },
+    {
+      "weapon_id": "elementalist_meteor_core",
+      "title": "Падение Звезды",
+      "scene_path": "scenes/vfx/ultimates/elementalist/ElementalistMeteorCoreStarfall.tscn",
+      "silhouette": "local sky veil, growing rune shadow, and one giant meteor",
+      "motion_path": "long fair ground telegraph, then a vertical meteor drop onto the aim point",
+      "impact_language": "one massive impact leaves a pulsing gravity-fire crater with cooling embers",
+      "timing_seconds": {
+        "windup": 0.0,
+        "release": 2.45,
+        "active": 2.75,
+        "recovery": 8.1,
+        "cancel": 8.9
+      },
+      "phase_ids": {
+        "windup": "weapon_ultimate.phase.elementalist.elementalist_meteor_core.windup",
+        "release": "weapon_ultimate.phase.elementalist.elementalist_meteor_core.execute",
+        "active": "weapon_ultimate.phase.elementalist.elementalist_meteor_core.active",
+        "recovery": "weapon_ultimate.phase.elementalist.elementalist_meteor_core.recover",
+        "cancel": "weapon_ultimate.phase.elementalist.elementalist_meteor_core.cleanup"
+      },
+      "performance": {
+        "max_visual_nodes": 6,
+        "crowd_cap": 20,
+        "crowd_budget_enforcement_owner": "runtime enforcement FAN-1541",
+        "boss_damage_cap_owner": "mechanics FAN-1477"
+      }
+    }
+  ],
+  "evidence": {
+    "contact_sheets": [
+      "docs/design/references/weapon_ultimates/elementalist/elementalist_ultimate_timelines_648p.png",
+      "docs/design/references/weapon_ultimates/elementalist/elementalist_ultimate_timelines_720p.png",
+      "docs/design/references/weapon_ultimates/elementalist/elementalist_ultimate_timelines_1080p.png",
+      "docs/design/references/weapon_ultimates/elementalist/elementalist_ultimate_timelines_2k.png"
+    ],
+    "capture_script": "tests/ultimates/presentation/elementalist_ultimate_contact_capture.gd",
+    "focused_test": "tests/ultimates/presentation/elementalist_ultimate_timelines.gd"
+  }
+}

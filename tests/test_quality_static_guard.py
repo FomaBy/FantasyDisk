@@ -49,6 +49,43 @@ class QualityStaticGuardTest(unittest.TestCase):
             self.assertEqual(len(errors), 1)
             self.assertIn("resource case mismatch", errors[0])
 
+    def test_reports_missing_uid_sidecar_in_imported_tree(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            path = "tests/ultimates/presentation/sniper_visual_distinction.gd"
+            fixture = root / path
+            fixture.parent.mkdir(parents=True)
+            fixture.write_text("extends SceneTree\n", encoding="utf-8")
+            errors = self.module.script_uid_errors(root, [path])
+            self.assertEqual(errors, [f"{path}: missing committed .uid sidecar"])
+
+    def test_accepts_script_with_committed_uid_sidecar(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            path = "scripts/probe.gd"
+            fixture = root / path
+            fixture.parent.mkdir()
+            fixture.write_text("extends SceneTree\n", encoding="utf-8")
+            (root / f"{path}.uid").write_text("uid://probe\n", encoding="utf-8")
+            self.assertEqual(self.module.script_uid_errors(root, [path, f"{path}.uid"]), [])
+
+    def test_ignores_script_below_tracked_gdignore(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            ignored = root / "vendor_ignored"
+            ignored.mkdir()
+            (ignored / ".gdignore").write_text("", encoding="utf-8")
+            fixture = ignored / "qa" / "probe.gd"
+            fixture.parent.mkdir()
+            fixture.write_text("extends SceneTree\n", encoding="utf-8")
+            self.assertEqual(
+                self.module.script_uid_errors(
+                    root,
+                    ["vendor_ignored/.gdignore", "vendor_ignored/qa/probe.gd"],
+                ),
+                [],
+            )
+
     def test_maps_four_component_hotfix_to_three_component_macos_metadata(self):
         with tempfile.TemporaryDirectory() as tmp:
             root = Path(tmp)

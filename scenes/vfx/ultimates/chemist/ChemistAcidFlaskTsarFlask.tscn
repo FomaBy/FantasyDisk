@@ -1,0 +1,160 @@
+[gd_scene load_steps=5 format=3]
+
+[ext_resource type="Texture2D" path="res://assets/sprites/effects/vfx_weapon_acid_flask.png" id="1_flask"]
+
+[sub_resource type="CanvasItemMaterial" id="CanvasItemMaterial_add"]
+blend_mode = 1
+light_mode = 1
+
+[sub_resource type="Animation" id="Animation_tsar_flask"]
+resource_name = "ultimate"
+length = 4.8
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("GiantFlask:modulate:a")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 0.35, 0.75, 1.6, 4.8),
+"transitions": PackedFloat32Array(1, 1, 1, 1, 1),
+"update": 0,
+"values": [0.0, 0.72, 1.0, 0.0, 0.0]
+}
+tracks/1/type = "value"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath("AcidWave:modulate:a")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0, 0.55, 0.95, 3.65, 4.8),
+"transitions": PackedFloat32Array(1, 1, 1, 1, 1),
+"update": 0,
+"values": [0.0, 0.0, 0.88, 0.46, 0.0]
+}
+tracks/2/type = "value"
+tracks/2/imported = false
+tracks/2/enabled = true
+tracks/2/path = NodePath("AcidWave:scale")
+tracks/2/interp = 1
+tracks/2/loop_wrap = true
+tracks/2/keys = {
+"times": PackedFloat32Array(0, 0.55, 1.6, 3.65, 4.8),
+"transitions": PackedFloat32Array(1, 1, 1, 1, 1),
+"update": 0,
+"values": [Vector2(0.12, 0.12), Vector2(0.12, 0.12), Vector2(1.2, 1.2), Vector2(1.52, 1.52), Vector2(1.72, 1.72)]
+}
+tracks/3/type = "value"
+tracks/3/imported = false
+tracks/3/enabled = true
+tracks/3/path = NodePath("AcidLake:modulate:a")
+tracks/3/interp = 1
+tracks/3/loop_wrap = true
+tracks/3/keys = {
+"times": PackedFloat32Array(0, 0.85, 1.35, 3.9, 4.8),
+"transitions": PackedFloat32Array(1, 1, 1, 1, 1),
+"update": 0,
+"values": [0.0, 0.0, 0.94, 0.68, 0.0]
+}
+tracks/4/type = "value"
+tracks/4/imported = false
+tracks/4/enabled = true
+tracks/4/path = NodePath("ChargePillars:modulate:a")
+tracks/4/interp = 1
+tracks/4/loop_wrap = true
+tracks/4/keys = {
+"times": PackedFloat32Array(0, 1.45, 1.7, 3.65, 4.8),
+"transitions": PackedFloat32Array(1, 1, 1, 1, 1),
+"update": 0,
+"values": [0.0, 0.0, 1.0, 0.55, 0.0]
+}
+tracks/5/type = "value"
+tracks/5/imported = false
+tracks/5/enabled = true
+tracks/5/path = NodePath("EvaporationSmoke:modulate:a")
+tracks/5/interp = 1
+tracks/5/loop_wrap = true
+tracks/5/keys = {
+"times": PackedFloat32Array(0, 1.7, 2.15, 4.0, 4.8),
+"transitions": PackedFloat32Array(1, 1, 1, 1, 1),
+"update": 0,
+"values": [0.0, 0.0, 0.75, 0.86, 0.0]
+}
+
+[sub_resource type="AnimationLibrary" id="AnimationLibrary_tsar_flask"]
+_data = {"ultimate": SubResource("Animation_tsar_flask")}
+
+[node name="ChemistAcidFlaskTsarFlask" type="Node2D"]
+metadata/ultimate_id = "chemist/acid_flask"
+metadata/silhouette = "one colossal cracked flask flooding an irregular green acid lake"
+metadata/motion_path = "flask tip pours forward, a wave expands outward, then pillars bubble from the lake"
+metadata/impact_language = "corrosive flood, capped charge pillars, and evaporation smoke"
+metadata/max_visual_nodes = 9
+metadata/crowd_cap = 16
+
+[node name="GiantFlask" type="Sprite2D" parent="."]
+material = SubResource("CanvasItemMaterial_add")
+texture = ExtResource("1_flask")
+position = Vector2(-98, -98)
+rotation = -0.45
+scale = Vector2(1.25, 1.25)
+modulate = Color(0.78, 1, 0.42, 0)
+
+[node name="PourArc" type="Line2D" parent="."]
+material = SubResource("CanvasItemMaterial_add")
+points = PackedVector2Array(-74, -40, -40, 8, -6, 48, 34, 77)
+width = 14.0
+default_color = Color(0.48, 1, 0.18, 0.88)
+antialiased = true
+
+[node name="AcidWave" type="Line2D" parent="."]
+material = SubResource("CanvasItemMaterial_add")
+points = PackedVector2Array(0, -124, 96, -78, 142, 0, 96, 78, 0, 124, -96, 78, -142, 0, -96, -78, 0, -124)
+width = 18.0
+default_color = Color(0.42, 1, 0.16, 0.92)
+closed = true
+antialiased = true
+scale = Vector2(0.12, 0.12)
+modulate = Color(1, 1, 1, 0)
+
+[node name="AcidLake" type="Polygon2D" parent="."]
+material = SubResource("CanvasItemMaterial_add")
+polygon = PackedVector2Array(-218, -28, -150, -92, -42, -76, 48, -112, 190, -54, 222, 26, 126, 92, 12, 122, -128, 92, -230, 34)
+color = Color(0.2, 0.72, 0.18, 0.78)
+modulate = Color(1, 1, 1, 0)
+
+[node name="ChargePillars" type="Node2D" parent="."]
+modulate = Color(1, 1, 1, 0)
+
+[node name="PillarOne" type="Line2D" parent="ChargePillars"]
+material = SubResource("CanvasItemMaterial_add")
+points = PackedVector2Array(-108, 52, -108, -112)
+width = 22.0
+default_color = Color(0.68, 1, 0.36, 0.92)
+antialiased = true
+
+[node name="PillarTwo" type="Line2D" parent="ChargePillars"]
+material = SubResource("CanvasItemMaterial_add")
+points = PackedVector2Array(0, 76, 0, -150)
+width = 25.0
+default_color = Color(0.76, 1, 0.42, 0.95)
+antialiased = true
+
+[node name="PillarThree" type="Line2D" parent="ChargePillars"]
+material = SubResource("CanvasItemMaterial_add")
+points = PackedVector2Array(116, 52, 116, -94)
+width = 20.0
+default_color = Color(0.64, 0.96, 0.3, 0.9)
+antialiased = true
+
+[node name="EvaporationSmoke" type="Line2D" parent="."]
+points = PackedVector2Array(-152, -26, -112, -94, -64, -52, -20, -136, 30, -72, 82, -160, 142, -90)
+width = 18.0
+default_color = Color(0.72, 0.92, 0.52, 0.68)
+antialiased = true
+modulate = Color(1, 1, 1, 0)
+
+[node name="Timeline" type="AnimationPlayer" parent="."]
+libraries = {"": SubResource("AnimationLibrary_tsar_flask")}
+autoplay = "ultimate"

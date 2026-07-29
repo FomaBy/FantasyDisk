@@ -1,0 +1,58 @@
+{
+  "issue": "FAN-1470",
+  "name": "Thief weapon ultimate presentation pack",
+  "class_id": "thief",
+  "schema_version": 1,
+  "consumed_contract": {
+    "presentation_schema": "data/ultimates/presentation_schema/v1/weapon_ultimate_presentation_manifest.schema.json",
+    "frozen_profiles": "data/ultimates/schema/v1/classes/thief.json",
+    "timeline_lifecycle": "scripts/ultimates/presentation/weapon_ultimate_presentation_timeline.gd"
+  },
+  "source_runtime_policy": {
+    "kind": "accepted existing PixelLab weapon-signature assets",
+    "new_pixellab_assets": "none; no source or runtime PNG was created or modified by FAN-1470",
+    "rationale": "The three accepted plates already provide distinct coin, cloak, and smoke silhouettes. This pack adds only class-local timelines, scenes, tests, and evidence; reusing them avoids redundant art generation."
+  },
+  "assets": [
+    {
+      "weapon_id": "thief_coin_pouch",
+      "source_path": "assets/sprites/effects/vfx_weapon_thief_coin_pouch.png",
+      "runtime_path": "assets/sprites/effects/vfx_weapon_thief_coin_pouch.png",
+      "canvas": [256, 256],
+      "sha256": "7aaffe24ea62115f55c12267d113621d26505681e36bb235c2ae8fee6fea11be",
+      "pixellab": {"object_id": "cb77b5fe-3669-4fdf-a269-42f2d999f9d5", "source_manifest": "docs/design/references/attack_vfx/thief_coin_pouch/manifest.json"}
+    },
+    {
+      "weapon_id": "thief_shadow_cloak",
+      "source_path": "assets/sprites/effects/vfx_weapon_thief_shadow_cloak.png",
+      "runtime_path": "assets/sprites/effects/vfx_weapon_thief_shadow_cloak.png",
+      "canvas": [256, 256],
+      "sha256": "41bc98ce172dce7d90d70eb329156213cd355319e9656a0009d8fe1b887c74ed",
+      "pixellab": {"object_id": "35360c9c-d67b-4f84-8fc5-6041c87db9e9", "source_manifest": "docs/design/references/attack_vfx/thief_shadow_cloak/manifest.json"}
+    },
+    {
+      "weapon_id": "thief_smoke_bomb",
+      "source_path": "assets/sprites/effects/vfx_weapon_thief_smoke_bomb.png",
+      "runtime_path": "assets/sprites/effects/vfx_weapon_thief_smoke_bomb.png",
+      "canvas": [256, 256],
+      "sha256": "e43fa540e85364ef421fd3082343cba1d6ac66c16e460466692c8ee525646f8d",
+      "pixellab": {"object_id": "08edb666-7ad1-4675-a39a-d2190b042900", "source_manifest": "docs/design/references/attack_vfx/thief_smoke_bomb/manifest.json"}
+    }
+  ],
+  "evidence": {
+    "contact_sheet": {
+      "path": "docs/design/references/weapon_ultimates/thief/contact_sheet_thief_ultimates.png",
+      "sha256": "775b158817e5197311dfe7d48a8a592ceac97500ea3716b9bb50370474319512",
+      "layout": "15 columns x 3 rows; windup, release, active, recovery, cancel with 3 samples each; rows coin pouch, shadow cloak, smoke bomb",
+      "rendered_by": "res://scenes/vfx/ultimates/thief/thief_ultimate_contact_sheet.gd"
+    },
+    "focused_gate": {
+      "command": "python3 tools/godot_gate.py --headless --path . --script res://tests/ultimates/presentation/thief_ultimate_presentation_test.gd",
+      "exit_code": 0
+    }
+  },
+  "runtime_boundary": {
+    "shared_manifest_untouched": "scripts/ultimates/presentation/weapon_ultimate_presentation_manifest.gd",
+    "statement": "FAN-1470 is class-local presentation only. FAN-1541 owns shared runtime adapter/pooling integration; mechanics remain owned by FAN-1471."
+  }
+}

@@ -1,0 +1,120 @@
+[gd_scene load_steps=4 format=3]
+
+[ext_resource type="SpriteFrames" path="res://assets/sprites/effects/scrum895_berserk/hammer_slam_spriteframes.tres" id="1_hammer"]
+
+[sub_resource type="CanvasItemMaterial" id="CanvasItemMaterial_add"]
+blend_mode = 1
+light_mode = 1
+
+[sub_resource type="Animation" id="Animation_fourfold_rift"]
+resource_name = "ultimate"
+length = 4.1
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("HammerGhost:position")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 0.7, 0.96, 1.2, 1.95, 2.75, 3.4, 4.1),
+"transitions": PackedFloat32Array(1, 1, 1, 1, 1, 1, 1, 1),
+"update": 0,
+"values": [Vector2(0, -18), Vector2(0, -164), Vector2(0, -196), Vector2(0, -18), Vector2(0, -16), Vector2(0, -16), Vector2(0, 0), Vector2(0, 12)]
+}
+tracks/1/type = "value"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath("CardinalLanes:modulate:a")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0, 0.96, 1.2, 1.48, 4.1),
+"transitions": PackedFloat32Array(1, 1, 1, 1, 1),
+"update": 0,
+"values": [0.0, 0.0, 1.0, 0.0, 0.0]
+}
+tracks/2/type = "value"
+tracks/2/imported = false
+tracks/2/enabled = true
+tracks/2/path = NodePath("DiagonalLanes:modulate:a")
+tracks/2/interp = 1
+tracks/2/loop_wrap = true
+tracks/2/keys = {
+"times": PackedFloat32Array(0, 1.72, 1.95, 2.28, 4.1),
+"transitions": PackedFloat32Array(1, 1, 1, 1, 1),
+"update": 0,
+"values": [0.0, 0.0, 1.0, 0.0, 0.0]
+}
+tracks/3/type = "value"
+tracks/3/imported = false
+tracks/3/enabled = true
+tracks/3/path = NodePath("CentralQuake:scale")
+tracks/3/interp = 1
+tracks/3/loop_wrap = true
+tracks/3/keys = {
+"times": PackedFloat32Array(0, 2.52, 2.75, 3.2, 4.1),
+"transitions": PackedFloat32Array(1, 1, 1, 1, 1),
+"update": 0,
+"values": [Vector2(0.1, 0.1), Vector2(0.1, 0.1), Vector2(0.55, 0.55), Vector2(1.15, 1.15), Vector2(1.35, 1.35)]
+}
+
+[sub_resource type="AnimationLibrary" id="AnimationLibrary_fourfold_rift"]
+_data = {"ultimate": SubResource("Animation_fourfold_rift")}
+
+[node name="BerserkHammerFourfoldRift" type="Node2D"]
+metadata/ultimate_id = "berserk/hammer"
+metadata/silhouette = "overhead_hammer_and_four_ground_rift_lanes"
+metadata/motion_path = "three_ground_slam_beats_cardinal_diagonal_center"
+metadata/impact_language = "cross_then_diagonals_then_central_quake"
+metadata/max_visual_nodes = 6
+metadata/crowd_cap = 20
+
+[node name="WindupGlyph" type="Polygon2D" parent="."]
+material = SubResource("CanvasItemMaterial_add")
+color = Color(0.84, 0.58, 0.16, 0.3)
+polygon = PackedVector2Array(0, -94, 26, -58, 0, -22, -26, -58)
+
+[node name="HammerGhost" type="AnimatedSprite2D" parent="."]
+material = SubResource("CanvasItemMaterial_add")
+sprite_frames = ExtResource("1_hammer")
+animation = &"slam"
+frame = 5
+position = Vector2(0, -18)
+rotation = 0.14
+scale = Vector2(0.72, 0.72)
+modulate = Color(1, 0.84, 0.55, 0.96)
+
+[node name="CardinalLanes" type="Line2D" parent="."]
+material = SubResource("CanvasItemMaterial_add")
+points = PackedVector2Array(-220, 0, 0, 0, 220, 0, 0, -150, 0, 0, 0, 150)
+width = 22.0
+default_color = Color(1, 0.44, 0.08, 0.88)
+antialiased = true
+modulate = Color(1, 1, 1, 0)
+
+[node name="DiagonalLanes" type="Line2D" parent="."]
+material = SubResource("CanvasItemMaterial_add")
+points = PackedVector2Array(-168, -112, 0, 0, 168, 112, -168, 112, 0, 0, 168, -112)
+width = 18.0
+default_color = Color(0.94, 0.74, 0.24, 0.9)
+antialiased = true
+modulate = Color(1, 1, 1, 0)
+
+[node name="CentralQuake" type="Line2D" parent="."]
+material = SubResource("CanvasItemMaterial_add")
+points = PackedVector2Array(92, 0, 85, 35, 64, 64, 35, 85, 0, 92, -35, 85, -64, 64, -85, 35, -92, 0, -85, -35, -64, -64, -35, -85, 0, -92, 35, -85, 64, -64, 85, -35, 92, 0)
+width = 14.0
+default_color = Color(1, 0.86, 0.52, 0.96)
+closed = true
+antialiased = true
+scale = Vector2(0.1, 0.1)
+
+[node name="DustWave" type="Line2D" parent="."]
+points = PackedVector2Array(-150, 34, -92, 16, -32, 28, 32, 10, 90, 26, 150, 8)
+width = 12.0
+default_color = Color(0.4, 0.29, 0.2, 0.45)
+antialiased = true
+
+[node name="Timeline" type="AnimationPlayer" parent="."]
+libraries = {"": SubResource("AnimationLibrary_fourfold_rift")}
+autoplay = "ultimate"
