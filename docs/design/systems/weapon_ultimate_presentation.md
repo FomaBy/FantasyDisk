@@ -42,6 +42,12 @@ duplicate presentation/animation/VFX/SFX ID, placeholder reuse, invalid source
 or runtime path, and invalid pivot or timing. It validates the full 51-entry
 catalog against the registry rather than accepting a class fallback.
 
+Pairwise timing distinctness within a class is part of this presentation
+contract: every weapon pair must differ by at least `0.1` seconds in both total
+length (`cancel`) and active window (`recovery - active`). The shared
+`weapon_ultimate_timing_distinctness_test.gd` discovers and checks all class
+manifests; class-local packages may keep additional, stricter checks.
+
 ## Timeline lifecycle and integration boundary
 
 `WeaponUltimatePresentationTimeline` gives adapters a small testable lifecycle:

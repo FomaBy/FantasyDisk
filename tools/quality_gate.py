@@ -73,6 +73,7 @@ CORE_CHANGED_TESTS = {
     "combat_target_query_cache_test",
     "runtime_smoke_combat_test",
     "runtime_smoke_ui_test",
+    "weapon_ultimate_timing_distinctness_test",
 }
 TYPOGRAPHY_INVENTORY_TEST = "semantic_typography_scrum1061_test"
 TYPOGRAPHY_INVENTORY_SKIP = {
