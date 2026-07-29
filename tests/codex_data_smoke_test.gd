@@ -278,17 +278,31 @@ func _check_stat_split(errors: Array) -> void:
 	var attributes := CodexData.attributes()
 	var base_ids: Array = Array(StatFormulas.BASE_STAT_ORDER)
 	var derived_ids: Array = Array(StatFormulas.DERIVED_STAT_ORDER)
+	# FAN-1887: player-facing «Атрибуты» кодекса — канонические 16 осей; полный
+	# DERIVED_STAT_ORDER остаётся внутренним контрактом формул/зависимостей.
+	var player_facing_ids: Array = Array(StatFormulas.PLAYER_FACING_ATTRIBUTE_ORDER)
 	if characteristics.is_empty():
 		errors.append("characteristics() пуст")
 	if attributes.is_empty():
 		errors.append("attributes() пуст")
 	_check_stat_projection(characteristics, base_ids, "base", derived_ids, errors)
-	_check_stat_projection(attributes, derived_ids, "derived", base_ids, errors)
+	_check_stat_projection(attributes, player_facing_ids, "derived", base_ids, errors)
+	if player_facing_ids.size() != 16:
+		errors.append("FAN-1887: player-facing атрибутов %d != 16" % player_facing_ids.size())
+	for removed_id in ["attack_range", "range_multiplier", "projectile_speed", "dot_speed", "aura_radius", "buff_power", "absorb", "knockback_power", "knockback_distance", "vampiric_chance"]:
+		if player_facing_ids.has(removed_id):
+			errors.append("FAN-1887: внутренний параметр '%s' попал в player-facing атрибуты кодекса" % removed_id)
 	# SCRUM-1021: assert the full runtime dependency matrix, not merely that
 	# related ids have the opposite type. This catches generic prose omissions
 	# (ultimate_multiplier must expose all eight) and lexical false positives.
 	if SCRUM_1021_EXPECTED_DEPENDENCIES.size() != derived_ids.size():
 		errors.append("SCRUM-1021 expected matrix has %d rows, canonical derived order has %d" % [SCRUM_1021_EXPECTED_DEPENDENCIES.size(), derived_ids.size()])
+	for derived_id_value in derived_ids:
+		var derived_id := str(derived_id_value)
+		var expected_row: Array = SCRUM_1021_EXPECTED_DEPENDENCIES.get(derived_id, [])
+		var canonical_dependencies: Array = StatFormulas.DERIVED_BASE_DEPENDENCIES.get(derived_id, [])
+		if canonical_dependencies != expected_row:
+			errors.append("SCRUM-1021 canonical matrix '%s' %s != audited runtime matrix %s" % [derived_id, str(canonical_dependencies), str(expected_row)])
 	for attribute in attributes:
 		var attribute_dict := attribute as Dictionary
 		var attribute_id := str(attribute_dict.get("id", ""))
@@ -296,14 +310,11 @@ func _check_stat_split(errors: Array) -> void:
 		var actual_dependencies := _related_ids(attribute_dict)
 		if actual_dependencies != expected_dependencies:
 			errors.append("SCRUM-1021 derived '%s' related %s != exact runtime matrix %s" % [attribute_id, str(actual_dependencies), str(expected_dependencies)])
-		var canonical_dependencies: Array = StatFormulas.DERIVED_BASE_DEPENDENCIES.get(attribute_id, [])
-		if canonical_dependencies != expected_dependencies:
-			errors.append("SCRUM-1021 canonical matrix '%s' %s != audited runtime matrix %s" % [attribute_id, str(canonical_dependencies), str(expected_dependencies)])
 	for characteristic in characteristics:
 		var characteristic_dict := characteristic as Dictionary
 		var characteristic_id := str(characteristic_dict.get("id", ""))
 		var expected_attributes := []
-		for derived_id in derived_ids:
+		for derived_id in player_facing_ids:
 			var dependencies: Array = SCRUM_1021_EXPECTED_DEPENDENCIES.get(str(derived_id), [])
 			if dependencies.has(characteristic_id):
 				expected_attributes.append(str(derived_id))

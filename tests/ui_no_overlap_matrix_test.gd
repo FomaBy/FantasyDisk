@@ -357,7 +357,8 @@ func _append_codex_split_errors(main: Node, context: String, errors: Array, dump
 
 	var section_specs := {
 		"characteristics": {"count": 8, "related_title": "Связанные атрибуты"},
-		"attributes": {"count": 26, "related_title": "Связанные характеристики"},
+		# FAN-1887: «Атрибуты» кодекса — канонические 16 player-facing осей.
+		"attributes": {"count": 16, "related_title": "Связанные характеристики"},
 	}
 	for section_id in section_specs:
 		main.ui.call("_show_codex_section", content, str(section_id))

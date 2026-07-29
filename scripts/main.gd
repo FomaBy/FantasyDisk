@@ -296,7 +296,7 @@ const LEVEL_UP_TOAST_SCENE := preload("res://scenes/LevelUpToast.tscn")
 const LEVEL_UP_EFFECT_SCENE := preload("res://scenes/LevelUpEffect.tscn")
 const UIIconRegistry := preload("res://scripts/ui_icon_registry.gd")
 const LEVEL_UP_MOD_DISPLAY := {
-	"damage_multiplier": "damage",
+	"damage_flat": "damage", "damage_multiplier": "damage",
 	"magic_damage_multiplier": "magic_damage",
 	"attack_speed_multiplier": "attack_speed",
 	"max_health_flat": "health_point",
@@ -926,7 +926,7 @@ func _apply_run_autosave_state(state: Dictionary) -> void:
 	current_node_seed = int(normalized_state.get("current_node_seed", 0))
 	run_player_snapshot = _autosave_dictionary(normalized_state.get("run_player_snapshot", {}))
 	pending_level_ups = maxi(0, int(normalized_state.get("pending_level_ups", 0)))
-	level_up_offer = _autosave_array(normalized_state.get("level_up_offer", []))
+	level_up_offer = AttributeContract.sanitize_level_up_offer(_autosave_array(normalized_state.get("level_up_offer", [])), selected_character_id)  # FAN-1887: legacy-показ с удалёнными картами сбрасывается
 	attribute_offer = _autosave_array(normalized_state.get("attribute_offer", []))
 	attribute_rerolls_left = maxi(0, int(normalized_state.get("attribute_rerolls_left", 0)))
 	used_event_ids = _autosave_array(normalized_state.get("used_event_ids", []))

@@ -125,49 +125,72 @@ global_damage_balance_smoke, runtime_smoke_test.
 
 Формулы могут быть упрощены относительно исходной таблицы, но направление влияния должно совпадать с `mechanics_extract.md`.
 
-## Universal Attribute Usefulness
+## Canonical Attribute Contract (FAN-1887)
 
-С 2026-06-12 старая модель скрытия «нерелевантных» атрибутов отключена. `ProgressionData.is_stat_relevant()` и `is_reward_relevant()` возвращают `true`, поэтому level-up, докачка за золото, артефакты, магазин, кодекс и Escape stats могут показывать любой stat/derived parameter любому классу.
+FAN-1887 заменяет прежнюю модель «все атрибуты полезны каждому классу через
+интерпретацию» строгим class-capability контрактом: игрок видит только реально
+работающие для его класса/оружия варианты и честные фактические дельты.
+Искусственная текстовая интерпретация (эхо-оружие, «малое кровотечение»)
+потребителем НЕ считается. `is_stat_relevant()` остаётся `true` (базовые
+характеристики универсальны), но `is_reward_relevant()` дополнительно гейтит
+summon-награды и чисто лидерские stat-награды config-derived capability.
 
-Если эффект тематически «чужой», он применяется через class interpretation:
-- Intelligence / Magic Damage: зачарование оружия, магический splash или резонанс;
-- Leadership / Summon Amount: эхо-оружие, фантом, сокол, знаменосец, фамильяр или прямые pet-команды;
-- Sound Wave Damage / Aura Radius: боевой клич и ближний контроль пространства;
-- Knowledge / DoT Damage / DoT Speed: малый bleed/burn/poison след на ударах;
-- Energy / Ultimate Power: ускорение уникального class mechanic cooldown/charge;
-- Strength / Damage: физическая весомость, knockback и прямой урон.
+### Attribute Relevance Matrix (SCRUM-695 → FAN-1887)
 
-UI обязан показывать эти интерпретации текстом в level-up cards, attribute-upgrade tooltips, artifact notes, shop/HUD/pause tooltips и кодексе. Старые пометки «Не работает на текущем классе» и «Работает вполсилы» больше не используются.
+Для прокачиваемых боевых атрибутов level-up действует ПРЯМОЙ источник правды:
 
-### Attribute Relevance Matrix (SCRUM-695)
-
-Для прокачиваемых боевых атрибутов level-up введён ПРЯМОЙ источник правды
-вместо косвенного расчёта через 8 базовых характеристик:
-
-- `CharacterData.ATTRIBUTE_REGISTRY` — каноничный реестр 24 атрибутов
-  (`id`, `name`, `icon`-папка, `value_type`). На него ссылается каждый
-  `LEVEL_UP_REWARDS` через поле `attr`; иконки атрибутов лежат в
-  `docs/design/references/icons/attributes/<icon>/`.
-- `CharacterData.ATTRIBUTE_RELEVANCE` — матрица (атрибут × 17 классов) со
-  значениями `primary`/`secondary`/`optional`. **Жёсткий инвариант по каждому
-  атрибуту: ровно 2 primary, 8 secondary, 7 optional** (2+8+7=17), проверяется
-  `tests/attribute_relevance_test.gd` — любое нарушение валит data-гейт.
-  `optional` выводится как «все остальные классы». При 24 атрибутах per-class
-  выходит ~2-3 primary / 10-12 secondary / 9-12 optional (идеально ровный
-  per-class расклад достижим только при N, кратном 17; здесь сознательно
-  сохранён полный набор атрибутов вместо консолидации до 17, чтобы не убирать
-  игровые варианты прокачки — per-attribute правило 2/8/7 выполнено при любом N).
-- `attribute_relevance(attr, class)` и `attribute_relevance_weight(attr, class)`
-  читают матрицу напрямую; `level_up_reward_weight` весит награды от
-  релевантности (primary 2.4 > secondary 1.0 >> optional 0.4, optional держится
-  выше 0.3, чтобы атрибут не выпадал из пула). `ATTRIBUTE_PRIORITIES` (8 базовых
-  характеристик) остаётся для редкого main-stat слота и pause-stats tooltips.
-- Правило показа набора (`ProgressionData.weighted_level_up_selection`,
-  делегируется из `ui_screens._random_level_up_rewards`): в одном показе из 3
-  вариантов **не более 1** `optional`-атрибута и **всегда минимум 1**
-  primary/secondary; набор никогда не состоит только из необязательных. Редкий
-  main-stat слот (`MAIN_STAT_SLOT_CHANCE`) и capstone «Озарение» считаются
-  не-optional и правилу не противоречат.
+- `CharacterData.ATTRIBUTE_REGISTRY` — каноничный player-facing реестр
+  **16 осей** (`id`, `name`, `icon`-папка, `value_type`): Добавление урона
+  (`damage_flat`), Увеличение урона (`damage`), Скорость атаки, Максимальное
+  здоровье, Скорость движения, Увеличение области атаки, Радиус подбора,
+  Защита, Шанс крита, Сила крита, Уклонение, Периодический урон, Сила призыва,
+  Регенерация, Вампиризм (одна ось; шанс срабатывания — условие с капом 20%),
+  Сила ультимейта. `magic_focus`, `range`, `buff_power`, `absorb`,
+  `projectile_speed`, `dot_speed`, `aura_radius`, `sector_multiplier`,
+  `knockback_*` и раздельные vamp chance/amount — НЕ самостоятельные выборы;
+  их runtime-ключи живут в derived-слое, артефактах и мета-древе.
+  На реестр ссылается каждый `LEVEL_UP_REWARDS` через `attr`; титул карты =
+  имя оси реестра (проверяется тестом).
+- `CharacterData.ATTRIBUTE_RELEVANCE` — матрица (ось × 17 классов) со
+  значениями `primary`/`secondary`/`optional`. **Семантика optional изменена:
+  optional = «у класса нет настоящего потребителя оси», и такая ось НИКОГДА не
+  попадает в выдачу.** Инвариант: ровно 2 primary на ось, полное разбиение
+  17 классов, optional допустимо пустое (универсальные оси работают всем);
+  на класс 1..3 primary. Optional-состав capability-осей: криты — классы без
+  критующего прямого канала; DoT — классы без периодического weapon-канала;
+  вампиризм — киты без on_weapon_hit проков (+Доктор из-за Plague Oath);
+  регенерация — только Доктор; «Сила призыва» — строго дополнение
+  config-derived `class_summon_capable` (гитарист/химик/друид/инженер по
+  `max_summons`/`summon_role`/`summon_damage_multiplier`/`deploy_role`).
+- `level_up_reward_weight` весит только выдаваемые категории
+  (primary 1.4 > secondary 0.7); optional-вес не существует, потому что
+  optional исключён из пула уже в `level_up_rewards()`.
+- Правило показа (`ProgressionData.weighted_level_up_selection` +
+  `eligible_level_up_rewards`, вызывается из
+  `ui_screens._random_level_up_rewards`): показ из 3 карт содержит **ноль**
+  optional-карт; карты с нулевой фактической дельтой по живым статам/модам
+  (`cap_reached`/`zero_effective_delta` из `attribute_presentation`)
+  отсеиваются ДО построения ряда. Редкие базовые характеристики проходят
+  consumability-фильтр (`is_base_stat_consumable`): Лидерство не предлагается
+  без настоящего summon/deploy-потребителя — ни в level-up rare-слоте, ни в
+  Attribute Shop, ни в stat-пулах наград.
+- Карточка строит view-model `attribute_presentation` (спека
+  `fan1883_attribute_clarity`): фактический канал урона класса
+  (`damage_parameter_for`), before→after и `delta_effective` после действующих
+  diminishing/капов, `current`/`cap` у шанса крита (55% базовый профиль,
+  Ассасин 100%), отдельные `proc_chance_current/cap` (20%) у вампиризма.
+  Тексты карт не обещают сырые проценты там, где effective gain меньше.
+- Legacy-сейвы: `sanitize_level_up_offer` сбрасывает показы с удалёнными/
+  недоступными картами (UI пересобирает свежий), а старые run-ключи
+  (`magic_damage_multiplier`, `range_multiplier`, `buff_power_flat`,
+  `absorb_flat`, …) остаются рабочим внутренним compatibility-входом —
+  загрузка не падает и удалённые карточки не возвращаются.
+- Гейты: `tests/attribute_relevance_test.gd` (инварианты матрицы, sync
+  реестр↔матрица↔награды↔титулы, строгий optional-фильтр, capability),
+  `tests/attribute_consumability_fan1887_test.gd` (17 классов × каждая награда
+  exhaustive-consumability, 1000 сидированных показов на класс без
+  optional/no-op, контракт представления, legacy-сейвы),
+  `tests/level_up_damage_floor_gate.gd` (random-floor гарантия урона).
 
 ## XP, Money And Pickups
 
@@ -1130,7 +1153,9 @@ SCRUM-1091 добавляет только presentation contract, не нову�
     `reward_is_damage_relevant` (урон-ось И relevance ≠ optional по ATTRIBUTE_RELEVANCE — физ-«damage»
     у мага мёртв, matrix это кодирует). Форс на последнем слоте, только если в regular-пуле есть damage-карта.
     Гарантия damage-релевантна ⟹ non-optional по построению → УСИЛИВАЕТ старый инвариант «≥1 non-optional»,
-    не нарушая «≤1 optional». LEVEL_UP_REWARDS не трогали (уже вычищен FAN-1034) — введена только офер-гарантия.
+    не нарушая действовавший тогда «≤1 optional» (историческая запись; FAN-1887 позднее ужесточил правило до
+    «ноль optional в показе» — см. Canonical Attribute Contract выше). LEVEL_UP_REWARDS не трогали (уже вычищен
+    FAN-1034) — введена только офер-гарантия.
     Гейт: `tests/level_up_damage_floor_gate.gd` (17 классов × 200 seed'ов + prefill capstone + helper A/B +
     satisfiability); `attribute_relevance_test` (старые инварианты) остаётся зелёным.
   - **Гейты (32 зелёных, гейтов НЕ ослаблял — только УСИЛЕНы priest_kit/coverage_cap + новый

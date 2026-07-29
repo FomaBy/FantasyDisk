@@ -2108,8 +2108,10 @@ func _build_character_select_v4() -> void:
 		stat_fill_nodes[sid] = bar_fill
 		stat_value_labels[sid] = stat_value
 
+	# FAN-1887: досье перечисляет только то, что герой реально может получить —
+	# рейл «Слабые атрибуты» удалён, исключения не отображаются как выбор.
 	var guidance_labels := {}
-	for relevance in ["primary", "secondary", "weak"]:
+	for relevance in ["primary", "secondary"]:
 		var guide_label := Label.new()
 		guide_label.name = "HS4BuildGuidance_%s" % relevance
 		guide_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
@@ -2513,9 +2515,8 @@ func _build_character_select_v4() -> void:
 		var relevance_titles := {
 			"primary": "Основные атрибуты",
 			"secondary": "Второстепенные атрибуты",
-			"weak": "Слабые атрибуты",
 		}
-		for relevance in ["primary", "secondary", "weak"]:
+		for relevance in ["primary", "secondary"]:
 			var guide_label := guidance_labels[relevance] as Label
 			var title := str(relevance_titles.get(relevance, relevance))
 			var entries: Array = guidance_groups.get(relevance, []) as Array
@@ -2811,8 +2812,19 @@ func _show_victory_banner(on_continue: Callable) -> void:
 	game._play_sfx("artifact_reveal")
 
 
+# FAN-1887: пул базовых характеристик Докачки с consumability-фильтром — Лидерство
+# предлагается только фактически summon/deploy-способным классам (data-driven,
+# ProgressionData.is_base_stat_consumable); ряд перецентровывается после фильтра.
+func _attribute_shop_stat_pool() -> Array:
+	var pool: Array = []
+	for stat_id in ["strength", "agility", "intelligence", "perception", "energy", "knowledge", "endurance", "leadership"]:
+		if game.PROGRESSION_DATA.is_base_stat_consumable(stat_id, game.selected_character_id):
+			pool.append(stat_id)
+	return pool
+
+
 func _random_attribute_pair() -> Array:
-	var pool := ["strength", "agility", "intelligence", "perception", "energy", "knowledge", "endurance", "leadership"]
+	var pool := _attribute_shop_stat_pool()
 	# Ветвь Знаний мета-древа (SCRUM-150): attr_extra_options добавляет варианты
 	# в окне докачки (по умолчанию 2 — обратная совместимость).
 	var skill_mods: Dictionary = game.META_PROGRESSION.skill_modifiers(game.meta_state)
@@ -2829,7 +2841,7 @@ func _normalize_attribute_offer(saved_offer: Array) -> Array:
 	# Old saves and automation fixtures may contain duplicate, removed or 4+
 	# entries. Preserve canonical entries in order, then fill to the live 2/3
 	# contract without ever overflowing the authored three-card row.
-	var pool := ["strength", "agility", "intelligence", "perception", "energy", "knowledge", "endurance", "leadership"]
+	var pool := _attribute_shop_stat_pool()
 	var skill_mods: Dictionary = game.META_PROGRESSION.skill_modifiers(game.meta_state)
 	var option_count: int = clampi(2 + int(skill_mods.get("attr_extra_options", 0.0)), 2, 3)
 	var normalized: Array = []
@@ -9805,16 +9817,22 @@ func _make_level_up_reward_button(reward: Dictionary, layout := {}, advice := {}
 	return button
 
 
-# SCRUM-871: контекст прогноза — живые статы/моды игрока (бой или меню-снапшот,
-# fallback на базу класса) + актуальный weapon_config (боевой или собранный по
-# выбранному классу/оружию тем же ProgressionData.weapon путём).
-func _level_up_offer_advice(rewards: Array) -> Dictionary:
+# SCRUM-871/FAN-1887: актуальный weapon_config — боевой или собранный по
+# выбранному классу/оружию тем же ProgressionData.weapon путём. Общая точка для
+# прогноза советника и presentation-фильтра карточек.
+func _active_weapon_config() -> Dictionary:
 	var weapon_config = {}
 	if game.current_player != null and is_instance_valid(game.current_player):
 		weapon_config = game.current_player.get("weapon_config")
 	if not (weapon_config is Dictionary) or (weapon_config as Dictionary).is_empty():
 		weapon_config = game.PROGRESSION_DATA.weapon(game.selected_character_id, game.selected_weapon_id)
-	return LevelUpAdvisor.recommend(rewards, _active_stats_snapshot(), _active_modifiers_snapshot(), weapon_config)
+	return weapon_config
+
+
+# SCRUM-871: контекст прогноза — живые статы/моды игрока (бой или меню-снапшот,
+# fallback на базу класса) + актуальный weapon_config.
+func _level_up_offer_advice(rewards: Array) -> Dictionary:
+	return LevelUpAdvisor.recommend(rewards, _active_stats_snapshot(), _active_modifiers_snapshot(), _active_weapon_config())
 
 
 # SCRUM-871: понижает размер шрифта, пока строка не влезает в ширину зоны —
@@ -9839,18 +9857,61 @@ func _shrink_label_font_to_width(label: Label, role: StringName, base_font_size:
 	))
 
 
-# Строки блока изменений карточки: топ-3 дельты прогноза; без измеримых дельт —
-# прежнее SCRUM-525 превью (спец-эффекты вроде призывов), затем краткий фолбэк.
+# FAN-1887 (спека fan1883_attribute_clarity): фактическая строка результата оси —
+# «было → стало · реально: +…» по действующим формулам/капам, канал урона подписан,
+# у шанса крита строка «сейчас · максимум», у вампиризма — отдельный шанс срабатывания.
+func _level_up_axis_lines(reward: Dictionary) -> Array:
+	var attr_id := str(reward.get("attr", ""))
+	if attr_id == "":
+		return []
+	var presentation: Dictionary = AttributeContract.attribute_presentation(
+		reward, game.selected_character_id, _active_stats_snapshot(), _active_modifiers_snapshot(), _active_weapon_config())
+	if not game.PROGRESSION_DATA.ATTRIBUTE_RELEVANCE.has(attr_id):
+		return []
+	var parameter: String = "summon_amount" if attr_id == "summon_amount" else AttributeContract.presentation_parameter_for(attr_id, game.selected_character_id)
+	var before_text := _format_level_up_value(parameter, float(presentation.get("before", 0.0)))
+	var after_text := _format_level_up_value(parameter, float(presentation.get("after", 0.0)))
+	var delta := float(presentation.get("delta_effective", 0.0))
+	var delta_text := _format_level_up_value(parameter, absf(delta))
+	if before_text == after_text and absf(delta) > 0.0:
+		# Малый канал (например magic-канал pure-summon кита): целые значения
+		# схлопываются — показываем честную дельту с одним знаком после запятой.
+		before_text = "%.1f" % float(presentation.get("before", 0.0))
+		after_text = "%.1f" % float(presentation.get("after", 0.0))
+		delta_text = "%.1f" % absf(delta)
+	var channel := str(presentation.get("channel_label", ""))
+	var axis_label := channel if channel != "" else str(presentation.get("axis_name", attr_id))
+	var lines: Array = []
+	lines.append("%s: %s -> %s · реально: %s%s" % [axis_label, before_text, after_text, "+" if delta >= 0.0 else "-", delta_text])
+	if presentation.has("cap") and attr_id == "crit_chance":
+		lines.append("сейчас %s · максимум %s" % [before_text, _format_level_up_value(parameter, float(presentation.get("cap", 0.0)))])
+	if presentation.has("proc_chance_current"):
+		lines.append("шанс срабатывания: сейчас %s · максимум %s" % [
+			_format_level_up_value("vampiric_chance", float(presentation.get("proc_chance_current", 0.0))),
+			_format_level_up_value("vampiric_chance", float(presentation.get("proc_chance_cap", 0.0)))])
+	return lines
+
+
+# Строки блока изменений карточки: фактическая строка оси (FAN-1887), затем
+# дельты прогноза; без измеримых дельт — прежнее SCRUM-525 превью (спец-эффекты
+# вроде призывов), затем краткий фолбэк.
 func _level_up_delta_lines(reward: Dictionary, forecast: Dictionary) -> Array:
 	var lines: Array = []
 	var explicit_summary := str(reward.get("effect_summary", "")).strip_edges()
 	if explicit_summary != "":
 		lines.append(explicit_summary)
 		return lines
+	lines = _level_up_axis_lines(reward)
+	var axis_parameter := ""
+	if not lines.is_empty():
+		var attr_id := str(reward.get("attr", ""))
+		axis_parameter = "summon_amount" if attr_id == "summon_amount" else AttributeContract.presentation_parameter_for(attr_id, game.selected_character_id)
 	for delta in (forecast.get("deltas", []) as Array):
-		lines.append(LevelUpAdvisor.delta_line(delta))
 		if lines.size() >= 3:
 			break
+		if str((delta as Dictionary).get("id", "")) == axis_parameter:
+			continue
+		lines.append(LevelUpAdvisor.delta_line(delta))
 	if lines.is_empty():
 		lines = _level_up_effect_preview_lines(reward, 2)
 	if lines.is_empty():
@@ -12197,11 +12258,12 @@ const MAIN_STAT_SLOT_CHANCE := 0.05
 func _random_level_up_rewards(count: int) -> Array:
 	# Микс: улучшения оружия/класса/вторичных атрибутов + РЕДКО (~5% на слот)
 	# основная характеристика. Набор уникален и фиксируется на уровень.
-	# SCRUM-695: правило релевантности — в одном показе НЕ БОЛЕЕ 1 атрибута,
-	# который для текущего класса `optional`, и ВСЕГДА минимум 1 primary/secondary
-	# (никогда набор только из необязательных). Основные характеристики (rare-слот)
-	# и capstone «Озарение» считаются не-optional и правилу не противоречат.
-	var regular_pool: Array = game.PROGRESSION_DATA.level_up_rewards(game.selected_character_id)
+	# FAN-1887: строгий фильтр — optional/weak оси, оси без capability-потребителя
+	# и карты с нулевой фактической дельтой (cap_reached/zero_effective_delta по
+	# живым статам/модам) отсеяны ДО выборки; редкие базовые характеристики идут
+	# через consumability-фильтр (Лидерство — только summon-способным классам).
+	var regular_pool: Array = AttributeContract.eligible_level_up_rewards(
+		game.selected_character_id, _active_stats_snapshot(), _active_modifiers_snapshot(), _active_weapon_config())
 	var stat_pool: Array = game.PROGRESSION_DATA.main_stat_level_up_rewards(game.selected_character_id)
 	var prefill: Array = []
 	# Capstone «Озарение» (ветвь Знаний мета-древа, SCRUM-150): ПЕРВОЕ повышение
@@ -12216,7 +12278,7 @@ func _random_level_up_rewards(count: int) -> Array:
 		stat_pool.remove_at(forced_index)
 	# SCRUM-695: правило релевантности (≤1 optional, ≥1 primary/secondary) и взвешивание
 	# по матрице вынесены в тестируемую ProgressionData.weighted_level_up_selection.
-	return game.PROGRESSION_DATA.weighted_level_up_selection(
+	return AttributeContract.weighted_level_up_selection(
 		regular_pool, stat_pool, count, game.selected_character_id, game.rng, MAIN_STAT_SLOT_CHANCE, prefill)
 
 
@@ -12606,31 +12668,19 @@ func _make_reward_card_icon(reward: Dictionary, size: Vector2) -> Control:
 # докачки не разрастался и не давал overflow на 720p. Damage-типы тут приводятся к
 # «своему» типу класса в _attribute_upgrade_preview_lines/_attribute_influence_text
 # (изоляция типов урона SCRUM-524): чужой тип урона в превью не показываем.
-const STAT_DERIVED_PREVIEW := {
-	"strength": ["damage"],
-	"intelligence": ["magic_damage"],
-	"perception": ["attack_range", "aoe_radius", "pickup_radius"],
-	"energy": ["ultimate_multiplier", "projectile_speed"],
-	"knowledge": ["dot_damage", "regeneration", "dot_speed", "summon_amount"],
-	"agility": ["attack_speed", "crit_chance", "move_speed", "dodge"],
-	"endurance": ["health_point", "defense", "absorb", "knockback_power"],
-	"leadership": ["summon_amount", "aura_radius", "buff_power"],
-}
-
-const _DAMAGE_TYPE_PARAMETERS := ["damage", "magic_damage"]
 
 
 # SCRUM-525: RU-список производных, на которые влияет атрибут (для блока «Влияет на: …»
 # в тултипе докачки). Damage-типы фильтруем по «своему» типу класса (SCRUM-524).
 # Для небазовых id (например форс ["damage","attack_speed"] из теста) — пустая строка.
 func _attribute_influence_text(stat_id: String) -> String:
-	var parameters: Array = STAT_DERIVED_PREVIEW.get(stat_id, [])
+	var parameters: Array = AttributeContract.STAT_DERIVED_PREVIEW.get(stat_id, [])
 	if parameters.is_empty():
 		return ""
 	var class_damage: String = game.PROGRESSION_DATA.damage_parameter_for(game.selected_character_id)
 	var labels: Array = []
 	for parameter_id in parameters:
-		if parameter_id in _DAMAGE_TYPE_PARAMETERS and parameter_id != class_damage:
+		if parameter_id in AttributeContract.DAMAGE_TYPE_PARAMETERS and parameter_id != class_damage:
 			continue
 		var label := _level_up_parameter_label(parameter_id)
 		if not labels.has(label):
@@ -12643,7 +12693,7 @@ func _attribute_influence_text(stat_id: String) -> String:
 # что и боевые формулы), безопасно и вне боя (через снапшоты). Возвращаем только строки,
 # где отображаемое значение реально меняется; список ограничен 4 строками (overflow на 720p).
 func _attribute_upgrade_preview_lines(stat_id: String, delta := 1.0) -> Array:
-	var parameters: Array = STAT_DERIVED_PREVIEW.get(stat_id, [])
+	var parameters: Array = AttributeContract.STAT_DERIVED_PREVIEW.get(stat_id, [])
 	if parameters.is_empty():
 		return []
 	var before_stats := _active_stats_snapshot()
@@ -12657,7 +12707,7 @@ func _attribute_upgrade_preview_lines(stat_id: String, delta := 1.0) -> Array:
 	var lines: Array = []
 	for parameter_id in parameters:
 		# Изоляция типов урона: показываем только «свой» damage-тип класса.
-		if parameter_id in _DAMAGE_TYPE_PARAMETERS and parameter_id != class_damage:
+		if parameter_id in AttributeContract.DAMAGE_TYPE_PARAMETERS and parameter_id != class_damage:
 			continue
 		var before_text := _format_level_up_value(parameter_id, float(before_parameters.get(parameter_id, 0.0)))
 		var after_text := _format_level_up_value(parameter_id, float(after_parameters.get(parameter_id, 0.0)))
@@ -12825,65 +12875,11 @@ func _active_modifiers_snapshot() -> Dictionary:
 
 
 func _level_up_parameter_label(parameter_id: String) -> String:
-	match parameter_id:
-		"damage":
-			return "Урон"
-		"magic_damage":
-			return "Маг. урон"
-		"attack_speed":
-			return "Скорость атаки"
-		"health_point":
-			return "Макс. здоровье"
-		"move_speed":
-			return "Скорость"
-		"dodge":
-			return "Уклонение"
-		"aoe_radius":
-			return "Радиус области"
-		"pickup_radius":
-			return "Радиус подбора"
-		"defense":
-			return "Защита"
-		"attack_range":
-			return "Дальность"
-		"crit_chance":
-			return "Шанс крита"
-		"crit_damage_multiplier":
-			return "Крит. урон"
-		"knockback_power":
-			return "Отталкивание"
-		"dot_damage":
-			return "Периодический урон"
-		"dot_speed":
-			return "Скорость тиков"
-		"projectile_speed":
-			return "Скорость снарядов"
-		"aura_radius":
-			return "Радиус ауры"
-		"buff_power":
-			return "Сила баффов"
-		"summon_amount":
-			return "Призывы"
-		"absorb":
-			return "Поглощение"
-		"regeneration":
-			return "Регенерация"
-		"vampiric_amount":
-			return "Вампиризм"
-		"vampiric_chance":
-			return "Шанс вампиризма"
-		"ultimate_multiplier":
-			return "Сила уник. механики"
-		_:
-			return parameter_id
+	return AttributeContract.parameter_label(parameter_id)
 
 
 func _format_level_up_value(parameter_id: String, value: float) -> String:
-	if parameter_id in ["crit_chance", "defense", "dodge", "vampiric_chance"]:
-		return "%.0f%%" % (value * 100.0)
-	if parameter_id in ["attack_speed", "crit_damage_multiplier", "dot_speed", "buff_power", "ultimate_multiplier"]:
-		return "%.2f" % value
-	return "%.0f" % value
+	return AttributeContract.format_value(parameter_id, value)
 
 
 func _buy_shop_item_at(index: int) -> bool:

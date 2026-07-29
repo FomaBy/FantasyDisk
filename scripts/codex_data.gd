@@ -390,7 +390,10 @@ static func _related_stats(stat_id: String, stat_type: String) -> Array:
 	var result := []
 	var related_ids := []
 	if stat_type == "base":
-		for derived_id_value in STAT_FORMULAS.DERIVED_STAT_ORDER:
+		# FAN-1887: обратная связь базовой характеристики показывает только
+		# канонические player-facing оси — снятые с реестра derived-параметры
+		# не подаются в кодексе как доступные атрибуты.
+		for derived_id_value in STAT_FORMULAS.PLAYER_FACING_ATTRIBUTE_ORDER:
 			var derived_id := str(derived_id_value)
 			var dependencies: Array = STAT_FORMULAS.DERIVED_BASE_DEPENDENCIES.get(derived_id, [])
 			if dependencies.has(stat_id):
@@ -435,9 +438,14 @@ static func characteristics() -> Array:
 	return result
 
 
+# FAN-1887: «Атрибуты» кодекса — канонический player-facing набор (16 строк,
+# StatFormulas.PLAYER_FACING_ATTRIBUTE_ORDER). Внутренние derived-параметры
+# (дальность/скорость снарядов/темп тиков/ауры/сектор/отталкивание/поддержка/
+# поглощение и раздельный шанс вампиризма) больше не подаются как отдельные
+# доступные оси; их runtime-ключи живут в формулах и артефактах.
 static func attributes() -> Array:
 	var result := []
-	for stat_id_value in STAT_FORMULAS.DERIVED_STAT_ORDER:
+	for stat_id_value in STAT_FORMULAS.PLAYER_FACING_ATTRIBUTE_ORDER:
 		var entry := _stat_projection(str(stat_id_value), "derived")
 		if not entry.is_empty():
 			result.append(entry)

@@ -386,11 +386,15 @@ func _initialize() -> void:
 		if stat_button == null or stat_bar == null or not stat_button.tooltip_text.contains(" — ") or stat_button.tooltip_text.contains("Формула:"):
 			_fail("Expected SCRUM-851 line bar + concise tooltip for stat %s." % stat_id)
 			return
-	for relevance in ["primary", "secondary", "weak"]:
+	for relevance in ["primary", "secondary"]:
 		var guidance := main.find_child("HS4BuildGuidance_%s" % relevance, true, false) as Label
 		if guidance == null or guidance.text.strip_edges() == "" or not guidance.text.contains(":"):
 			_fail("Expected SCRUM-798 build guidance section %s." % relevance)
 			return
+	# FAN-1887: рейл «Слабые атрибуты» удалён из Hero Select.
+	if main.find_child("HS4BuildGuidance_weak", true, false) != null:
+		_fail("Expected the removed weak-attributes rail to be absent (FAN-1887).")
+		return
 	var v4_choose := main.find_child("HS4ChooseButton", true, false) as Button
 	if v4_choose == null:
 		_fail("Expected hero select v4 to expose a choose button.")
@@ -1370,13 +1374,13 @@ func _initialize() -> void:
 	if damage_chip.custom_minimum_size.y < 54.0 or damage_chip.custom_minimum_size.x < 236.0 or damage_name.get_theme_font_size("font_size") < 15 or damage_value.get_theme_font_size("font_size") < 17 or damage_icon.custom_minimum_size.x < 46.0:
 		_fail("Expected derived stat chips to use SCRUM-839 readable chip/icon/text sizing.")
 		return
-	# SCRUM-890 вариант Б + доработка: 8 базовых + 15 производных в 4 секциях
-	# + 4 ряда «Выживания» в карточке героя (без призывов у berserk+sword).
-	# SCRUM-898: секция «Поддержка / Контроль» потеряла sound_wave_damage (16 → 15).
+	# SCRUM-890 вариант Б + FAN-1887: 8 базовых + 11 канонических производных в
+	# 4 секциях + 4 ряда «Выживания» в карточке героя (без призывов у berserk+sword);
+	# внутренние оси (knockback/projectile/aura/buff/absorb/dot_speed) не рисуются.
 	var stat_icons := pause_menu.find_children("BaseStatIcon_*", "Control", true, false)
 	stat_icons.append_array(pause_menu.find_children("SurvivalStatIcon_*", "Control", true, false))
 	stat_icons.append_array(pause_menu.find_children("DerivedStatIcon_*", "Control", true, false))
-	if stat_icons.size() < UIIconRegistry.BASE_STAT_IDS.size() + 19:
+	if stat_icons.size() < UIIconRegistry.BASE_STAT_IDS.size() + 15:
 		_fail("Expected pause stats menu to show icons for base stats, combat sections, and survival rows.")
 		return
 	main.call("_input", escape_event)
@@ -4743,17 +4747,16 @@ func _test_universal_attribute_interpretations() -> void:
 		_fail("Expected leadership interpretation to trigger echo weapon damage.")
 		return
 
-	# FAN-1034: пул берсерка после ревизии атрибутов — мёртвые оси
-	# (projectile_speed/knockback/сектор) удалены, buff_power/magic_focus гейтнуты
-	# affinity, дот-темп и вампиризм-пара приезжают внутри объединённых карт.
+	# FAN-1034/FAN-1887: пул берсерка после канонизации реестра — мёртвые оси
+	# (projectile_speed/knockback/сектор) и снятые с реестра выборы
+	# (magic_focus/range/buff_power/absorb) отсутствуют; optional-оси класса
+	# (dot_damage/summon_amount у берсерка) отфильтрованы строго; вампиризм-пара
+	# приезжает внутри объединённой карты, плоский урон — отдельной осью.
 	var rewards := ProgressionData.level_up_rewards("berserk")
 	var derived_icons_seen := {}
 	var mod_display := {
-		"dot_damage_flat": "dot_damage",
-		"dot_speed_flat": "dot_speed",
+		"damage_flat": "damage",
 		"aoe_radius_multiplier": "aura_radius",
-		"summon_bonus": "summon_amount",
-		"absorb_flat": "absorb",
 		"regeneration_flat": "regeneration",
 		"vampiric_amount_flat": "vampiric_amount",
 		"vampiric_chance_flat": "vampiric_chance",
@@ -4765,16 +4768,21 @@ func _test_universal_attribute_interpretations() -> void:
 			var icon_id := str(mod_display.get(str(modifier_id), ""))
 			if icon_id != "":
 				derived_icons_seen[icon_id] = true
-	for icon_id in ["dot_damage", "dot_speed", "aura_radius", "summon_amount", "absorb", "regeneration", "vampiric_amount", "vampiric_chance", "ultimate_multiplier"]:
+	for icon_id in ["damage", "aura_radius", "regeneration", "vampiric_amount", "vampiric_chance", "ultimate_multiplier"]:
 		if not derived_icons_seen.has(icon_id):
 			_fail("Expected level-up pool to expose derived attribute reward %s." % icon_id)
 			return
 		if not UIIconRegistry.has_texture(icon_id):
 			_fail("Expected derived attribute %s to resolve to an icon texture." % icon_id)
 			return
-	for gated_reward in rewards:
-		if str(gated_reward.get("id", "")) in ["buff_power_up", "magic_focus_up"]:
-			_fail("Expected %s to be affinity-gated away from berserk (FAN-1034)." % str(gated_reward.get("id", "")))
+	for removed_id in ["buff_power_up", "magic_focus_up", "range_up", "absorb_up"]:
+		for gated_reward in rewards:
+			if str(gated_reward.get("id", "")) == removed_id:
+				_fail("Expected removed axis card %s to be absent (FAN-1887)." % removed_id)
+				return
+	for reward in rewards:
+		if ProgressionData.reward_is_optional(reward, "berserk"):
+			_fail("Expected optional axis %s to be excluded from berserk pool offers (FAN-1887)." % str(reward.get("attr", "")))
 			return
 
 	holder.queue_free()
@@ -6790,33 +6798,23 @@ func _test_class_relevance_and_offer_fixation(main_scene: PackedScene) -> void:
 		_fail("Expected +10 strength NOT to change dark mage magic damage (SCRUM-524 damage-type isolation).")
 		return
 
-	# 2. FAN-1034: magic focus гейтнут class_affinity на маг-классы — у Берсерка
-	# ось magic_damage мертва (ни одно его оружие не читает magic-канал), карта-
-	# пустышка исключена из его пула. Маг-классам карта остаётся, канал изолирован
-	# (проверяем изоляцию на статах берсерка как и раньше).
-	for reward in ProgressionData.level_up_rewards("berserk"):
-		if str(reward.get("id")) == "magic_focus_up":
-			_fail("Expected magic focus upgrade to be affinity-gated away from berserk (dead axis, FAN-1034).")
-			return
-	var mage_magic_focus_reward: Dictionary = {}
-	for reward in ProgressionData.level_up_rewards("dark_mage"):
-		if str(reward.get("id")) == "magic_focus_up":
-			mage_magic_focus_reward = reward
-	if mage_magic_focus_reward.is_empty():
-		_fail("Expected magic focus upgrade to stay in the dark mage level-up pool.")
-		return
-	var magic_focus_mods: Dictionary = mage_magic_focus_reward.get("mods", {}) as Dictionary
-	if float(magic_focus_mods.get("magic_damage_multiplier", 1.0)) <= 1.0:
-		_fail("Expected magic focus to map to the isolated magic damage multiplier.")
-		return
+	# 2. FAN-1887: ось «Магический фокус» снята с player-facing реестра — карты
+	# magic_focus_up нет ни у одного класса. Внутренний канал magic_damage_multiplier
+	# живёт (артефакты/мета) и остаётся изолированным от физического канала.
+	for probe_class in ["berserk", "dark_mage"]:
+		for reward in ProgressionData.level_up_rewards(probe_class):
+			if str(reward.get("id")) == "magic_focus_up":
+				_fail("Expected removed magic_focus_up card to be absent from %s pool (FAN-1887)." % probe_class)
+				return
+	var magic_focus_mods := {"magic_damage_multiplier": 1.14}
 	var berserk_weapon: Dictionary = ProgressionData.weapon("berserk", "hammer")
 	var berserk_base_damage: Dictionary = ProgressionData.derived_parameters(ProgressionData.base_stats("berserk"), {}, berserk_weapon)
 	var berserk_magic_focus_damage: Dictionary = ProgressionData.derived_parameters(ProgressionData.base_stats("berserk"), magic_focus_mods, berserk_weapon)
 	if absf(float(berserk_magic_focus_damage.get("damage", 0.0)) - float(berserk_base_damage.get("damage", 0.0))) > 0.0001:
-		_fail("Expected magic focus not to increase Berserk physical hammer damage.")
+		_fail("Expected magic damage multiplier not to increase Berserk physical hammer damage.")
 		return
 	if float(berserk_magic_focus_damage.get("magic_damage", 0.0)) <= float(berserk_base_damage.get("magic_damage", 0.0)):
-		_fail("Expected magic focus to increase only the magic damage channel.")
+		_fail("Expected magic damage multiplier to increase only the magic damage channel.")
 		return
 	var mage_has_strength := false
 	for reward in ProgressionData.reward_pool("dark_mage"):
@@ -8021,8 +8019,10 @@ func _test_codex_screen(main_scene: PackedScene) -> void:
 	if codex_data.characters().size() != ProgressionData.character_ids().size():
 		_fail("Expected codex to cover all playable characters.")
 		return
-	if characteristics.size() != StatFormulas.BASE_STAT_ORDER.size() or attributes.size() != StatFormulas.DERIVED_STAT_ORDER.size():
-		_fail("Expected separate Codex projections for all %d characteristics and %d attributes, got %d/%d." % [StatFormulas.BASE_STAT_ORDER.size(), StatFormulas.DERIVED_STAT_ORDER.size(), characteristics.size(), attributes.size()])
+	# FAN-1887: «Атрибуты» кодекса — канонический player-facing набор (16 осей),
+	# а не полный внутренний DERIVED_STAT_ORDER.
+	if characteristics.size() != StatFormulas.BASE_STAT_ORDER.size() or attributes.size() != StatFormulas.PLAYER_FACING_ATTRIBUTE_ORDER.size():
+		_fail("Expected separate Codex projections for all %d characteristics and %d attributes, got %d/%d." % [StatFormulas.BASE_STAT_ORDER.size(), StatFormulas.PLAYER_FACING_ATTRIBUTE_ORDER.size(), characteristics.size(), attributes.size()])
 		return
 	if codex_data.stats() != characteristics + attributes:
 		_fail("Expected compatibility stats projection to preserve characteristics + attributes order.")
@@ -8830,7 +8830,7 @@ func _assert_hero_select_radar_layout_at_size(main_scene: PackedScene, viewport_
 	if first_thumb_rect.size.x < hero_slot_floor or first_thumb_rect.size.y < hero_slot_floor:
 		_fail("Expected enlarged hero carousel slots at %s, got %s." % [context, first_thumb_rect])
 		return
-	for relevance in ["primary", "secondary", "weak"]:
+	for relevance in ["primary", "secondary"]:
 		var guidance := hero_main.find_child("HS4BuildGuidance_%s" % relevance, true, false) as Label
 		if guidance == null or guidance.text.strip_edges() == "":
 			_fail("Expected data-driven Hero Select build guidance %s at %s." % [relevance, context])

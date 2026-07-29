@@ -27,6 +27,10 @@ const MIN_VISIBLE_DELTA := 0.002
 # Изоляция типов урона (SCRUM-524): из damage/magic_damage
 # наружу отдаётся только «свой» тип класса (см. _collect_deltas).
 const DAMAGE_TYPE_PARAMETERS := ["damage", "magic_damage"]
+# FAN-1887: наружу показываются только канонические player-facing оси реестра —
+# внутренние derived-параметры (sector/aura/knockback/projectile/dot_speed/
+# buff_power/absorb/attack_range) в строки карточек не попадают; в скоринге
+# dps/выживаемости они по-прежнему участвуют через derived-словарь.
 const DELTA_DEFINITIONS := [
 	{"id": "damage", "label": "Урон", "kind": "number"},
 	{"id": "magic_damage", "label": "Маг. урон", "kind": "number"},
@@ -36,22 +40,14 @@ const DELTA_DEFINITIONS := [
 	{"id": "health_point", "label": "Макс. HP", "kind": "number"},
 	{"id": "defense", "label": "Защита", "kind": "percent"},
 	{"id": "dodge", "label": "Уклонение", "kind": "percent"},
-	{"id": "absorb", "label": "Поглощение", "kind": "number"},
 	{"id": "regeneration", "label": "Реген/с", "kind": "per_second"},
-	{"id": "vampiric_chance", "label": "Шанс вампиризма", "kind": "percent"},
-	{"id": "vampiric_amount", "label": "Вампиризм-лечение", "kind": "number"},
+	{"id": "vampiric_amount", "label": "Вампиризм", "kind": "number"},
+	{"id": "vampiric_chance", "label": "Шанс срабатывания", "kind": "percent"},
 	{"id": "dot_damage", "label": "DoT/тик", "kind": "number"},
-	{"id": "dot_speed", "label": "DoT тиков/с", "kind": "per_second"},
 	{"id": "move_speed", "label": "Скорость", "kind": "number"},
-	{"id": "attack_range", "label": "Дальность", "kind": "number"},
-	{"id": "aoe_radius", "label": "Радиус удара", "kind": "number"},
-	{"id": "aura_radius", "label": "Радиус ауры", "kind": "number"},
-	{"id": "sector_multiplier", "label": "Ширина сектора", "kind": "mult"},
-	{"id": "knockback_power", "label": "Отталкивание", "kind": "number"},
-	{"id": "projectile_speed", "label": "Снаряды", "kind": "number"},
+	{"id": "aoe_radius", "label": "Область атаки", "kind": "number"},
 	{"id": "pickup_radius", "label": "Подбор", "kind": "number"},
-	{"id": "buff_power", "label": "Сила поддержки", "kind": "mult"},
-	{"id": "summon_amount", "label": "Призывы", "kind": "number"},
+	{"id": "summon_amount", "label": "Сила призыва", "kind": "number"},
 	{"id": "ultimate_multiplier", "label": "Сила ульты", "kind": "mult"},
 ]
 
