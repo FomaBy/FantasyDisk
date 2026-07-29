@@ -9,6 +9,7 @@ const Schema := preload("res://scripts/ultimates/presentation/weapon_ultimate_pr
 const Timeline := preload("res://scripts/ultimates/presentation/weapon_ultimate_presentation_timeline.gd")
 const Pack := preload("res://scenes/vfx/ultimates/doctor/doctor_ultimate_presentation_pack.gd")
 const TimelineScene := preload("res://scenes/vfx/ultimates/doctor/doctor_ultimate_timeline_scene.gd")
+const TEXT_FIT := preload("res://tests/ultimates/presentation/contact_sheet_text_fit.gd")
 
 const PROFILE_PATH := "res://data/ultimates/schema/v1/classes/doctor.json"
 const MANIFEST_PATH := "res://docs/design/references/weapon_ultimates/doctor/manifest.json"
@@ -368,22 +369,20 @@ static func panel_rect(size: Vector2i, pack: Dictionary) -> Rect2:
 
 
 static func sheet_title_font_size(size: Vector2i) -> int:
-	return maxi(18, int(size.y * SHEET_TITLE_FONT_RATIO))
+	return TEXT_FIT.scaled_font_size(size, SHEET_TITLE_FONT_RATIO, 18)
 
 
 static func sheet_title_rect(size: Vector2i) -> Rect2:
-	var text_size := ThemeDB.fallback_font.get_string_size(SHEET_TITLE, HORIZONTAL_ALIGNMENT_LEFT, -1, sheet_title_font_size(size))
-	return Rect2(Vector2((float(size.x) - text_size.x) * 0.5, float(size.y) * SHEET_TITLE_Y_RATIO), text_size)
+	return TEXT_FIT.centered_rect(SHEET_TITLE, size, float(size.y) * SHEET_TITLE_Y_RATIO, sheet_title_font_size(size))
 
 
 static func panel_label_font_size(size: Vector2i) -> int:
-	return maxi(11, int(size.y * PANEL_LABEL_FONT_RATIO))
+	return TEXT_FIT.scaled_font_size(size, PANEL_LABEL_FONT_RATIO, 11)
 
 
 static func panel_label_rect(size: Vector2i, pack: Dictionary) -> Rect2:
-	var text_size := ThemeDB.fallback_font.get_string_size(str(pack["title"]), HORIZONTAL_ALIGNMENT_LEFT, -1, panel_label_font_size(size))
 	var panel := panel_rect(size, pack)
-	return Rect2(Vector2(panel.get_center().x - text_size.x * 0.5, panel.position.y + panel.size.y * 0.90), text_size)
+	return TEXT_FIT.centered_in_rect(str(pack["title"]), panel, panel.position.y + panel.size.y * 0.90, panel_label_font_size(size))
 
 
 static func panel_content_rect(size: Vector2i, pack: Dictionary) -> Rect2:
@@ -402,7 +401,7 @@ static func frame_rect(size: Vector2i, pack: Dictionary, frame_index: int) -> Re
 
 
 static func frame_label_font_size(size: Vector2i) -> int:
-	return maxi(8, int(size.y * FRAME_LABEL_FONT_RATIO))
+	return TEXT_FIT.scaled_font_size(size, FRAME_LABEL_FONT_RATIO, 8)
 
 
 static func frame_label_text(frame: Dictionary) -> String:
@@ -412,9 +411,8 @@ static func frame_label_text(frame: Dictionary) -> String:
 static func frame_label_rect(size: Vector2i, pack: Dictionary, frame_index: int) -> Rect2:
 	var frame := frame_rect(size, pack, frame_index)
 	var spec := (pack.get("frames", []) as Array)[frame_index] as Dictionary
-	var text_size := ThemeDB.fallback_font.get_string_size(frame_label_text(spec), HORIZONTAL_ALIGNMENT_LEFT, -1, frame_label_font_size(size))
 	var margin := maxf(2.0, float(size.y) * FRAME_CONTENT_MARGIN_RATIO)
-	return Rect2(Vector2(frame.get_center().x - text_size.x * 0.5, frame.position.y + margin), text_size)
+	return TEXT_FIT.centered_in_rect(frame_label_text(spec), frame, frame.position.y + margin, frame_label_font_size(size))
 
 
 static func frame_content_rect(size: Vector2i, pack: Dictionary, frame_index: int) -> Rect2:
