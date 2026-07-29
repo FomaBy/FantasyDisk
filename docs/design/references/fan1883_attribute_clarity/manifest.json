@@ -1,0 +1,49 @@
+{
+  "task": "FAN-1885",
+  "package": "fan1883_attribute_clarity",
+  "decision": "reuse_existing_generator_routed_assets_only",
+  "new_runtime_assets": [],
+  "new_runtime_baked_text": false,
+  "preview": "docs/design/previews/fan1883_attribute_clarity/attribute_clarity_1920x1080.png",
+  "spec": "docs/design/references/fan1883_attribute_clarity/attribute_clarity_spec.md",
+  "layers": [
+    {
+      "surface": "level_up",
+      "background": "assets/backgrounds/ui/ui_backdrop_arcane_lab.png",
+      "background_route": "existing built-in OpenAI provenance; no regeneration",
+      "ui_family": "existing Atlas cards and global later-button family",
+      "ui_route": "existing PixelLab-derived runtime assets; no new export"
+    },
+    {
+      "surface": "attribute_shop",
+      "background": "existing meta-progression screen backdrop",
+      "background_route": "existing; no regeneration",
+      "ui_family": "existing unified Gold shell and Atlas choice cards",
+      "ui_route": "existing PixelLab-derived runtime assets; no new export"
+    },
+    {
+      "surface": "pause_codex",
+      "background": "assets/sprites/ui/atlas_style/codex/bg_codex_sanctum.png",
+      "background_route": "existing built-in OpenAI output documented by FAN-1098",
+      "ui_family": "assets/sprites/ui/atlas_style/codex/{panel_9slice,entry_card_516x154,dossier_frame,chip_bar}.png",
+      "ui_route": "existing PixelLab MCP source package documented by FAN-1065"
+    },
+    {
+      "surface": "hero_select",
+      "background": "assets/sprites/ui/hero_select_v4/background.png",
+      "background_route": "existing generator-routed Hero Select family; no regeneration",
+      "ui_family": "existing Hero Select shell, portrait, dossier and main-menu button family",
+      "ui_route": "existing PixelLab MCP provenance from Hero Select packages; no new export"
+    }
+  ],
+  "verification": {
+    "viewports": ["1280x720", "1920x1080", "2560x1440"],
+    "states": ["normal", "class_ineligible_filtered", "capped_filtered", "long_russian_copy"],
+    "required_before_runtime_promotion": [
+      "inspect all 4x3 surface/viewport combinations",
+      "verify content remains inside the existing frame-safe zones",
+      "verify no runtime string is baked into a PNG",
+      "verify cap/effective-delta fixtures against final runtime formulas"
+    ]
+  }
+}
