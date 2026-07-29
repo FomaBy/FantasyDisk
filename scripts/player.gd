@@ -30,6 +30,7 @@ const KNIGHT_SPRITE := preload("res://assets/sprites/characters/knight.png")
 const ROBOT_SPRITE := preload("res://assets/sprites/characters/robot.png")
 const DRUID_SPRITE := preload("res://assets/sprites/characters/druid.png")
 const PROGRESSION_DATA := preload("res://scripts/progression_data.gd")
+const ULTIMATE_HOST := preload("res://scripts/ultimates/controller/ultimate_player_host.gd")
 const PLAYER_MOVEMENT_INPUT := preload("res://scripts/player_movement_input.gd")
 # FAN-1449: вся геометрия наводки живёт в провайдере; player — тонкий адаптер.
 const AIM_CONTROLLER := preload("res://scripts/input/aim_controller.gd")
@@ -417,6 +418,7 @@ func _ready() -> void:
 
 
 func configure_character(new_character_id: String, new_weapon_id := "") -> void:
+	ULTIMATE_HOST.reset(self)  # FAN-1457: до сброса run_modifiers — см. ultimate_player_host.gd
 	character_id = new_character_id
 	_movement_input_armed = false
 	weapon_id = ""
@@ -2565,6 +2567,8 @@ func activate_ultimate() -> bool:
 	ultimate_charge = 0.0
 	_play_sfx("level_up")
 	_trigger_gamepad_vibration(0.4, 0.0, 0.15)
+	if ULTIMATE_HOST.activate(self):
+		return true
 	match character_id:
 		"berserk":
 			_activate_berserk_ultimate(config, multiplier)
