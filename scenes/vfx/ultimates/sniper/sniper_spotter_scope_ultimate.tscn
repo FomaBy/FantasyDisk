@@ -1,0 +1,98 @@
+[gd_scene load_steps=4 format=3]
+
+[ext_resource type="Script" path="res://scenes/vfx/ultimates/sniper/sniper_ultimate_presentation.gd" id="1_script"]
+[ext_resource type="Texture2D" path="res://assets/sprites/effects/ultimates/sniper/sniper_spotter_scope_ultimate.png" id="2_texture"]
+
+[sub_resource type="CanvasItemMaterial" id="CanvasItemMaterial_add"]
+blend_mode = 1
+light_mode = 1
+
+[node name="SniperSpotterScopeUltimate" type="Node2D"]
+script = ExtResource("1_script")
+definition_path = "res://scenes/vfx/ultimates/sniper/sniper_spotter_scope.timeline.json"
+
+[node name="PhaseNodes" type="Node2D" parent="."]
+
+[node name="Windup" type="Node2D" parent="PhaseNodes"]
+[node name="GridNode1" type="Sprite2D" parent="PhaseNodes/Windup"]
+material = SubResource("CanvasItemMaterial_add")
+texture = ExtResource("2_texture")
+position = Vector2(-160, -80)
+scale = Vector2(0.16, 0.16)
+modulate = Color(1, 0.26, 0.2, 0.74)
+[node name="GridNode5" type="Sprite2D" parent="PhaseNodes/Windup"]
+material = SubResource("CanvasItemMaterial_add")
+texture = ExtResource("2_texture")
+scale = Vector2(0.16, 0.16)
+modulate = Color(1, 0.26, 0.2, 0.74)
+[node name="GridNode9" type="Sprite2D" parent="PhaseNodes/Windup"]
+material = SubResource("CanvasItemMaterial_add")
+texture = ExtResource("2_texture")
+position = Vector2(160, 80)
+scale = Vector2(0.16, 0.16)
+modulate = Color(1, 0.26, 0.2, 0.74)
+[node name="GridAxisX" type="Line2D" parent="PhaseNodes/Windup"]
+material = SubResource("CanvasItemMaterial_add")
+points = PackedVector2Array(-220, 0, 220, 0)
+width = 3.0
+default_color = Color(1, 0.2, 0.15, 0.58)
+antialiased = true
+[node name="GridAxisY" type="Line2D" parent="PhaseNodes/Windup"]
+material = SubResource("CanvasItemMaterial_add")
+points = PackedVector2Array(0, -150, 0, 150)
+width = 3.0
+default_color = Color(1, 0.2, 0.15, 0.58)
+antialiased = true
+
+[node name="Release" type="Node2D" parent="PhaseNodes"]
+[node name="LockPip9" type="Sprite2D" parent="PhaseNodes/Release"]
+material = SubResource("CanvasItemMaterial_add")
+texture = ExtResource("2_texture")
+scale = Vector2(0.48, 0.48)
+modulate = Color(1, 0.38, 0.28, 0.84)
+[node name="LockSweep" type="Line2D" parent="PhaseNodes/Release"]
+material = SubResource("CanvasItemMaterial_add")
+points = PackedVector2Array(-210, -124, 210, 124)
+width = 5.0
+default_color = Color(1, 0.34, 0.24, 0.86)
+antialiased = true
+
+[node name="Active" type="Node2D" parent="PhaseNodes"]
+[node name="SkyBeam1" type="Line2D" parent="PhaseNodes/Active"]
+material = SubResource("CanvasItemMaterial_add")
+points = PackedVector2Array(-168, -340, -168, 132)
+width = 8.0
+default_color = Color(1, 0.44, 0.3, 0.74)
+antialiased = true
+[node name="SkyBeam5" type="Line2D" parent="PhaseNodes/Active"]
+material = SubResource("CanvasItemMaterial_add")
+points = PackedVector2Array(0, -340, 0, 132)
+width = 9.0
+default_color = Color(1, 0.74, 0.62, 0.9)
+antialiased = true
+[node name="SkyBeam9" type="Line2D" parent="PhaseNodes/Active"]
+material = SubResource("CanvasItemMaterial_add")
+points = PackedVector2Array(168, -340, 168, 132)
+width = 8.0
+default_color = Color(1, 0.44, 0.3, 0.74)
+antialiased = true
+[node name="GroundLock" type="Sprite2D" parent="PhaseNodes/Active"]
+material = SubResource("CanvasItemMaterial_add")
+texture = ExtResource("2_texture")
+position = Vector2(0, 132)
+scale = Vector2(0.3, 0.3)
+modulate = Color(1, 0.48, 0.36, 0.72)
+
+[node name="Recovery" type="Node2D" parent="PhaseNodes"]
+[node name="CollapsePoint" type="Sprite2D" parent="PhaseNodes/Recovery"]
+material = SubResource("CanvasItemMaterial_add")
+texture = ExtResource("2_texture")
+scale = Vector2(0.24, 0.24)
+modulate = Color(1, 0.86, 0.72, 0.56)
+
+[node name="Cancel" type="Node2D" parent="PhaseNodes"]
+[node name="GridFade" type="Line2D" parent="PhaseNodes/Cancel"]
+points = PackedVector2Array(-120, 0, 120, 0)
+width = 2.0
+default_color = Color(1, 0.24, 0.18, 0.32)
+antialiased = true
