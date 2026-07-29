@@ -14,7 +14,7 @@ Gate требует Godot 4.7 и последовательно проверяе
 синхронность версии и Windows export preset, архитектурные line-count ratchet’ы,
 отсутствие raw/Base64 webhook credential, Python-тесты/синтаксис и direct +
 inherited Godot suites. `changed` автоматически включает изменённые/новые тесты
-и umbrella fallback для runtime/scene diff; `full` обнаруживает весь текущий
+и `semantic_typography_scrum1061_test` для области inventory, а также umbrella fallback для runtime/scene diff; `full` обнаруживает весь текущий
 набор. Discovery рекурсивна: Godot suites берутся из всего `tests/**`, а
 Python-тесты запускаются отдельной `unittest discover` на каждый каталог с
 `test_*.py`, потому что `unittest` не заходит в non-package подкаталоги.

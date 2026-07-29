@@ -662,6 +662,29 @@ class QualityGateTests(unittest.TestCase):
         self.assertIn("enemy_separation_behavior_test", names)
         self.assertIn(self.quality.RUNTIME_SMOKE, names)
 
+    def test_changed_profile_selects_typography_inventory_suite_for_scanned_paths(self) -> None:
+        cases = {
+            "scripts/ui/ultimate_hud/ultimate_hud_widget.gd": True,
+            "scenes/hud.tscn": True,
+            "resources/ui.tres": True,
+            "resources/ui.theme": True,
+            "scripts/dev_console.gd": False,
+            "scripts/ui/semantic_typography.gd": False,
+            "docs/process/code_quality_and_performance.md": False,
+        }
+        for changed_path, expected in cases.items():
+            with self.subTest(changed_path=changed_path), mock.patch.object(
+                self.quality, "_git_changed_paths", return_value={changed_path}
+            ):
+                names = {
+                    path.stem
+                    for path in self.quality.select_godot_tests("changed", [], "base", False)
+                }
+            self.assertEqual(
+                self.quality.TYPOGRAPHY_INVENTORY_TEST in names,
+                expected,
+            )
+
     def test_full_filter_and_skip_umbrella(self) -> None:
         selected = self.quality.select_godot_tests(
             "full", ["runtime_smoke"], "origin/dev", True
