@@ -49,31 +49,34 @@ const VALUE_NEUTRAL := Color(0.914, 0.863, 0.655, 1.0)
 const VALUE_EFFECTIVE := Color(1.0, 0.863, 0.361, 1.0)
 
 # SCRUM-890 вариант Б: «Боевые параметры» = ровно 4 секции в сетке 2×2.
-# Выживаемость/саммоны-производные ушли из досье (плотность по мокапу Б);
-# ключевые цифры выживания видны в HUD, полные — в кодексе.
+# Ключевые цифры выживания — в блоке «Выживание»; полные — в кодексе.
+# FAN-1887: секции показывают только канонические player-facing оси. Внутренние
+# derived-параметры (knockback/projectile_speed/attack_range/range_multiplier/
+# aura_radius/buff_power/dot_speed) из досье убраны; вампиризм — одна строка
+# (значение лечения, шанс срабатывания — в тултипе кодекса).
 const DERIVED_GROUPS := [
 	{
 		"id": "physical_damage",
-		"title": "Физический урон",
-		"stats": ["damage", "attack_speed", "crit_chance", "crit_damage_multiplier", "knockback_power"],
+		"title": "Урон",
+		"stats": ["damage", "attack_speed", "crit_chance", "crit_damage_multiplier"],
 		"accent": Color(0.95, 0.38, 0.22, 1.0),
 	},
 	{
 		"id": "magic_damage",
-		"title": "Магия",
-		"stats": ["magic_damage", "aoe_radius", "projectile_speed", "attack_range", "range_multiplier"],
+		"title": "Магия / область",
+		"stats": ["magic_damage", "aoe_radius", "ultimate_multiplier"],
 		"accent": Color(0.55, 0.42, 1.0, 1.0),
 	},
 	{
-		"id": "support_control",
-		"title": "Поддержка / Контроль",
-		"stats": ["aura_radius", "buff_power", "knockback_distance"],
+		"id": "mobility_utility",
+		"title": "Мобильность / подбор",
+		"stats": ["move_speed", "pickup_radius"],
 		"accent": Color(0.30, 0.86, 1.0, 1.0),
 	},
 	{
 		"id": "dot_poison",
-		"title": "Яд / периодический урон",
-		"stats": ["dot_damage", "dot_speed"],
+		"title": "Периодический урон / вампиризм",
+		"stats": ["dot_damage", "vampiric_amount"],
 		"accent": Color(0.45, 0.95, 0.44, 1.0),
 	},
 ]
@@ -82,17 +85,13 @@ const DERIVED_COMPACT_LABELS := {
 	"attack_speed": "Скор. атаки",
 	"crit_chance": "Шанс крит.",
 	"crit_damage_multiplier": "Сила крита",
-	"knockback_power": "Сила отт.",
 	"magic_damage": "Маг. урон",
-	"aoe_radius": "Ширина",
-	"projectile_speed": "Скор. снар.",
-	"attack_range": "Дальность",
-	"range_multiplier": "Дальн. ×",
-	"aura_radius": "Радиус а.",
-	"buff_power": "Сила бафа",
-	"knockback_distance": "Отталк.",
+	"aoe_radius": "Область",
+	"ultimate_multiplier": "Ультимейт",
+	"move_speed": "Скор. движ.",
+	"pickup_radius": "Подбор",
 	"dot_damage": "Период. ур.",
-	"dot_speed": "Частота",
+	"vampiric_amount": "Вампиризм",
 }
 const BASE_TIGHT_LABELS := {
 	"strength": "Сила", "agility": "Ловк.", "intelligence": "Инт.",
@@ -105,19 +104,19 @@ const SURVIVAL_TIGHT_LABELS := {
 }
 const DERIVED_TIGHT_LABELS := {
 	"damage": "Урон", "attack_speed": "Скор.", "crit_chance": "Крит",
-	"crit_damage_multiplier": "К×", "knockback_power": "Отт.",
-	"magic_damage": "Маг.", "aoe_radius": "Шир.", "projectile_speed": "Снар.",
-	"attack_range": "Дал.", "range_multiplier": "Д×", "aura_radius": "Аура",
-	"buff_power": "Баф", "knockback_distance": "Отт.", "dot_damage": "Пер.",
-	"dot_speed": "Част.",
+	"crit_damage_multiplier": "К×",
+	"magic_damage": "Маг.", "aoe_radius": "Обл.",
+	"ultimate_multiplier": "Ульт", "move_speed": "Движ.",
+	"pickup_radius": "Подб.", "dot_damage": "Пер.",
+	"vampiric_amount": "Вамп.",
 }
 const DERIVED_ULTRA_TIGHT_LABELS := {
 	"damage": "Ур.", "attack_speed": "Ск.", "crit_chance": "Кр.",
-	"crit_damage_multiplier": "К×", "knockback_power": "От.",
-	"magic_damage": "М", "aoe_radius": "Ш", "projectile_speed": "Сн.",
-	"attack_range": "Д", "range_multiplier": "Д×", "aura_radius": "А",
-	"buff_power": "Б", "knockback_distance": "От.", "dot_damage": "П",
-	"dot_speed": "Ч",
+	"crit_damage_multiplier": "К×",
+	"magic_damage": "М", "aoe_radius": "О",
+	"ultimate_multiplier": "У", "move_speed": "Дв.",
+	"pickup_radius": "Пд.", "dot_damage": "П",
+	"vampiric_amount": "В",
 }
 const DOSSIER_TOOLTIP_META := "dossier_tooltip_text"
 const TOOLTIP_SCROLL_STEP := 88
