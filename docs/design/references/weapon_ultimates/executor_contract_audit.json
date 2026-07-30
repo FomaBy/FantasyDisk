@@ -1,0 +1,218 @@
+{
+  "schema_version": 1,
+  "catalog": {
+    "directory": "res://data/ultimates/schema/v1/classes",
+    "expected_classes": 17,
+    "expected_profiles": 51,
+    "audited_dev_sha": "c0a0e9568361af90f2b15b0d88d5c5b897f1f4b2"
+  },
+  "classification_values": [
+    "expressible_now",
+    "needs_param_generalization",
+    "needs_new_generic_primitive"
+  ],
+  "executor_families": {
+    "aimed_sequence": ["radius", "damage", "shot_count", "interval"],
+    "burst": ["radius", "damage", "target_limit"],
+    "chained_projectile": ["radius", "damage", "jumps", "hop_delay", "falloff"],
+    "control": ["radius", "damage", "target_limit", "knockback", "status_id", "status"],
+    "deploy_summon": ["scene", "count", "spawn_radius", "lifetime", "damage", "properties"],
+    "status_zone": ["radius", "damage", "duration", "interval", "follow_host", "status_id", "status"],
+    "timed_modifier": ["duration", "radius", "modifiers"]
+  },
+  "parameter_generalizations": [
+    {
+      "id": "status_zone.radius_damage_steps",
+      "family": "status_zone",
+      "missing_parameters": {
+        "radius_steps": "Array[float], one radius per tick",
+        "damage_steps": "Array[float], one damage coefficient per tick",
+        "finale_damage": "float, optional final coefficient after the last tick"
+      }
+    },
+    {
+      "id": "deploy_summon.spawn_setup",
+      "family": "deploy_summon",
+      "missing_parameters": {
+        "spawn_setup": "Dictionary describing a generic setup method and activation-owned arguments"
+      }
+    },
+    {
+      "id": "control.collapsing_pulses",
+      "family": "control",
+      "missing_parameters": {
+        "pulse_sequence": "Array[Dictionary] of radius, delay, damage, status and force",
+        "force_mode": "away_from_origin|toward_origin",
+        "target_tier_overrides": "Dictionary of class-agnostic normal, elite and boss status/force multipliers"
+      }
+    },
+    {
+      "id": "status_zone.element_steps",
+      "family": "status_zone",
+      "missing_parameters": {
+        "pulse_sequence": "Array[Dictionary] of damage, status and optional knockback per tick",
+        "finale": "Dictionary describing the last radius, damage and status pulse"
+      }
+    },
+    {
+      "id": "control.pull_launch_spiral",
+      "family": "control",
+      "missing_parameters": {
+        "pulse_sequence": "Array[Dictionary] of radius, delay, damage and force",
+        "force_mode": "away_from_origin|toward_origin",
+        "radius_curve": "Array[float], the ordered radii for the spiral"
+      }
+    }
+  ],
+  "missing_generic_primitives": [
+    {
+      "id": "aim_context",
+      "gap": "The host contract exposes only the player origin; aimed casts cannot obtain a stable aim point or direction.",
+      "proposed_api": "UltimateActivation.aim_point(max_range: float) -> Vector2 and aim_direction(max_range: float) -> Vector2, backed by a class-agnostic ultimate_host_aim(max_range) method."
+    },
+    {
+      "id": "priority_target_selector",
+      "gap": "Activation.targets() always returns nearest targets and cannot select aimed, highest-HP, marked or densest-cluster targets.",
+      "proposed_api": "UltimateActivation.select_targets(center: Vector2, radius: float, limit: int, priority: String, hint: Dictionary = {}) -> Array, with priority limited to generic policies."
+    },
+    {
+      "id": "line_pierce_geometry",
+      "gap": "Activation can query only a circle, so corridors, arena lines and ordered pierce hits cannot be resolved.",
+      "proposed_api": "UltimateActivation.targets_in_corridor(start: Vector2, direction: Vector2, length: float, half_width: float, limit: int = 0) -> Array, sorted by projected distance."
+    },
+    {
+      "id": "arena_bounds_query",
+      "gap": "No executor can read the playable arena boundary for edge placement, reflection or ricochet.",
+      "proposed_api": "UltimateActivation.arena_bounds() -> Rect2, backed by ultimate_host_arena_bounds()."
+    },
+    {
+      "id": "directed_fan_split",
+      "gap": "No family represents a directed fan, split rays or per-branch pierce.",
+      "proposed_api": "Generic trajectory params {fan_count, fan_arc_degrees, split_count, split_arc_degrees, pierce_limit, direction_source} consumed without class or weapon branches."
+    },
+    {
+      "id": "per_target_damage_cap",
+      "gap": "The activation ledger caps bosses only; it cannot cap total damage to every target across ricochets, shards or repeated pulses.",
+      "proposed_api": "UltimateActivation.set_per_target_damage_cap(cap_fraction: float, cap_flat: float = 0.0) and have deal_damage() spend that target-local activation budget."
+    },
+    {
+      "id": "trajectory_motion",
+      "gap": "Current executors have no orbit, outbound-return, reflection, bounce or curved-return motion contract.",
+      "proposed_api": "Generic trajectory params {mode, speed, duration, orbit_radius, return_to_origin, bounce_count, curve_degrees} plus activation-owned cleanup."
+    },
+    {
+      "id": "ordered_step_composition",
+      "gap": "A profile selects exactly one family, so a modifier, zone, control pulse, deploy and finale cannot form one activation.",
+      "proposed_api": "A generic sequence contract with steps: Array[{at, family, params}], where every family is still resolved by UltimateExecutorLibrary and shares one UltimateActivation ledger."
+    },
+    {
+      "id": "pattern_geometry",
+      "gap": "There is no deterministic class-agnostic formation for rings, lanes, pentagrams, lattices, seeded fields or safe-path layouts.",
+      "proposed_api": "UltimateActivation.pattern_points(center: Vector2, pattern: String, params: Dictionary) -> PackedVector2Array for generic patterns such as ring, grid, radial, polygon and seeded_annulus."
+    },
+    {
+      "id": "stateful_target_ledger",
+      "gap": "Executors cannot store, consume or transfer per-target marks, delayed damage, status stacks, kill-chain state or non-recursion guards.",
+      "proposed_api": "Activation-owned record_target_value(), target_value(), consume_target_value() and transfer_target_value() methods plus generic on_hit, on_kill and on_finish triggers."
+    },
+    {
+      "id": "owner_resource_conversion",
+      "gap": "Applied damage and prevented damage cannot be converted generically into healing, shields, charge, gold or another capped owner resource.",
+      "proposed_api": "UltimateActivation.apply_owner_resource(resource_id: String, amount: float, cap: float, source: String) -> float, backed by a host adapter and fed only measured outcomes."
+    },
+    {
+      "id": "control_resistance_policy",
+      "gap": "Control and status executors apply one configuration to every target and cannot reduce pin, pull, root, stun or execute effects for elites and bosses.",
+      "proposed_api": "UltimateActivation.apply_control(target: Node, status_id: String, config: Dictionary, tier_policy: Dictionary) -> Dictionary."
+    },
+    {
+      "id": "summon_interaction_contract",
+      "gap": "Deploys can only set existing properties; they cannot safely configure temporary cap exemptions, intercept/ram roles, priority hunting, fusion/split or restoration of persistent summons.",
+      "proposed_api": "A generic ultimate_spawn_setup(config: Dictionary, owner: Node, damage_sink: Callable) scene contract plus activation-owned snapshot/restore for explicitly supplied summon groups."
+    },
+    {
+      "id": "projectile_interaction_query",
+      "gap": "No activation API can query, intercept, pull, hide locks from or otherwise affect hostile projectiles.",
+      "proposed_api": "UltimateActivation.projectiles(center: Vector2, radius: float, limit: int = 0) -> Array and apply_projectile_effect(projectile: Node, effect: Dictionary) -> bool."
+    },
+    {
+      "id": "guard_prevention_ledger",
+      "gap": "Timed modifiers cannot express a facing cone, one lethal-prevention window, projectile lock suppression or measured prevented-damage storage.",
+      "proposed_api": "Activation-owned guard params {arc_degrees, mitigation, lethal_prevention_count, ranged_lock_suppression} with prevented_total() measured by the host."
+    },
+    {
+      "id": "execute_threshold",
+      "gap": "No family can execute eligible low-health normal targets while degrading safely to capped damage on stronger tiers.",
+      "proposed_api": "UltimateActivation.apply_execute(target: Node, normal_threshold: float, tier_policy: Dictionary, fallback_damage: float) -> UltimateDamageResult."
+    }
+  ],
+  "class_package_delivery_contract": {
+    "allowed_write_set": [
+      "data/ultimates/schema/v1/classes/<class>.json: params objects only",
+      "docs/design/references/weapon_ultimates/<class>/**",
+      "tests/ultimates/<class>_**"
+    ],
+    "forbidden_write_set": [
+      "scripts/ultimates/executors/**",
+      "scripts/ultimates/registry/**",
+      "scripts/ultimates/controller/**",
+      "tests/ultimates/registry_contract_test.gd"
+    ],
+    "activation_owner": "FAN-1541",
+    "persisted_state_rule": "implementation_state remains declared and targeting/charge/executor/cleanup strategy_id remains unbound until FAN-1541",
+    "proof_rule": "A class test may inject ready bindings in memory through tests/ultimates/weapon_ultimate_distinctness_helper.gd; it must not activate persisted catalog data."
+  },
+  "profiles": [
+    {"class_id":"assassin","weapon_id":"chakrams","classification":"needs_new_generic_primitive","executor_family":"status_zone","missing_primitives":["trajectory_motion","directed_fan_split","stateful_target_ledger","execute_threshold"],"evidence":"Eight orbiting discs launch radially, return on curves and execute marked low-HP normals."},
+    {"class_id":"assassin","weapon_id":"shadow_daggers","classification":"needs_new_generic_primitive","executor_family":"aimed_sequence","missing_primitives":["ordered_step_composition","stateful_target_ledger","guard_prevention_ledger"],"evidence":"Targets are marked, the owner becomes briefly untargetable, backstabs run sequentially and stored damage resolves together."},
+    {"class_id":"assassin","weapon_id":"venom_wire","classification":"needs_new_generic_primitive","executor_family":"control","missing_primitives":["pattern_geometry","stateful_target_ledger","control_resistance_policy"],"evidence":"Six anchors form crossing hex edges, apply poison cuts, pull normals and finish with a toxin burst."},
+    {"class_id":"berserk","weapon_id":"sword","classification":"needs_param_generalization","executor_family":"status_zone","missing_parameters":["radius_steps","damage_steps","finale_damage"],"generalization_id":"status_zone.radius_damage_steps","evidence":"A host-following damage zone is sufficient, but its three expanding beats and stronger inward finale are not parameterized."},
+    {"class_id":"berserk","weapon_id":"axe","classification":"needs_new_generic_primitive","executor_family":"aimed_sequence","missing_primitives":["aim_context","arena_bounds_query","trajectory_motion","stateful_target_ledger","execute_threshold"],"evidence":"The axe travels to the aimed arena edge, returns on the same path and consumes an execution mark on catch."},
+    {"class_id":"berserk","weapon_id":"hammer","classification":"needs_new_generic_primitive","executor_family":"burst","missing_primitives":["line_pierce_geometry","pattern_geometry","ordered_step_composition"],"evidence":"Cardinal lanes, diagonal lanes and the central quake are three ordered geometries rather than one circular burst."},
+    {"class_id":"biologist","weapon_id":"biologist_spore_lens","classification":"needs_new_generic_primitive","executor_family":"status_zone","missing_primitives":["pattern_geometry","stateful_target_ledger","control_resistance_policy"],"evidence":"Mycelium propagates through clusters, roots and infects, then deaths create capped non-recursive blooms."},
+    {"class_id":"biologist","weapon_id":"biologist_sample_injector","classification":"needs_new_generic_primitive","executor_family":"aimed_sequence","missing_primitives":["aim_context","priority_target_selector","line_pierce_geometry","stateful_target_ledger","per_target_damage_cap"],"evidence":"A priority target is sampled on a rail, grants a timed archetype-adaptive bonus and receives capped analysis pulses."},
+    {"class_id":"biologist","weapon_id":"biologist_symbiote_seed","classification":"needs_new_generic_primitive","executor_family":"deploy_summon","missing_primitives":["aim_context","summon_interaction_contract","control_resistance_policy","ordered_step_composition"],"evidence":"An aimed pod deploy pulls and roots, owns larval projectiles and ends in a hatch burst."},
+    {"class_id":"chemist","weapon_id":"blast_powder","classification":"needs_new_generic_primitive","executor_family":"control","missing_primitives":["pattern_geometry","ordered_step_composition","stateful_target_ledger","control_resistance_policy"],"evidence":"Five charges form a pentagram, crystallize and pull, then explode without recursive kill chains."},
+    {"class_id":"chemist","weapon_id":"acid_flask","classification":"needs_new_generic_primitive","executor_family":"status_zone","missing_primitives":["aim_context","ordered_step_composition","owner_resource_conversion","stateful_target_ledger"],"evidence":"An aimed expanding lake dissolves armor and converts measured outcomes into capped permanent charge."},
+    {"class_id":"chemist","weapon_id":"homunculus_vial","classification":"needs_new_generic_primitive","executor_family":"deploy_summon","missing_primitives":["summon_interaction_contract","ordered_step_composition","stateful_target_ledger"],"evidence":"Persistent allies fuse into a temporary tank/caster, then split back without loss or duplication."},
+    {"class_id":"dark_mage","weapon_id":"dark_book","classification":"needs_new_generic_primitive","executor_family":"burst","missing_primitives":["pattern_geometry","stateful_target_ledger","ordered_step_composition"],"evidence":"Each nearby target gains a mirrored position; paired delayed blasts and one non-recursive reflection kill burst follow."},
+    {"class_id":"dark_mage","weapon_id":"cursed_skull","classification":"needs_new_generic_primitive","executor_family":"status_zone","missing_primitives":["stateful_target_ledger","control_resistance_policy","ordered_step_composition"],"evidence":"A screen curse transfers once on death, reduces output and harvests remaining stacks at the finale."},
+    {"class_id":"dark_mage","weapon_id":"dark_wand","classification":"needs_new_generic_primitive","executor_family":"chained_projectile","missing_primitives":["aim_context","priority_target_selector","stateful_target_ledger"],"evidence":"An aimed chain ramps per distinct marked target and collapses every stored node simultaneously."},
+    {"class_id":"doctor","weapon_id":"restore_potion","classification":"needs_new_generic_primitive","executor_family":"status_zone","missing_primitives":["aim_context","ordered_step_composition","owner_resource_conversion"],"evidence":"An aimed dual zone damages outside, restores inside and converts measured damage into capped heal/absorb."},
+    {"class_id":"doctor","weapon_id":"plague_syringe","classification":"needs_new_generic_primitive","executor_family":"chained_projectile","missing_primitives":["priority_target_selector","stateful_target_ledger","per_target_damage_cap","control_resistance_policy"],"evidence":"Patient zero spreads timed infection waves and one death transfer under recursion and total-target caps."},
+    {"class_id":"doctor","weapon_id":"bone_saw","classification":"needs_new_generic_primitive","executor_family":"status_zone","missing_primitives":["owner_resource_conversion","stateful_target_ledger"],"evidence":"A close orbit repeatedly drains measured HP, shreds armor and converts vitality into a temporary shield."},
+    {"class_id":"druid","weapon_id":"summon_amulet","classification":"needs_new_generic_primitive","executor_family":"deploy_summon","missing_primitives":["directed_fan_split","priority_target_selector","summon_interaction_contract"],"evidence":"Eight radial beasts then hunt priority targets above the normal summon cap and disappear."},
+    {"class_id":"druid","weapon_id":"briar_staff","classification":"needs_new_generic_primitive","executor_family":"deploy_summon","missing_primitives":["pattern_geometry","summon_interaction_contract","control_resistance_policy"],"evidence":"Five seeds grow a connected lattice with safe paths, roots and impales normals, and caps boss control."},
+    {"class_id":"druid","weapon_id":"raven_totem","classification":"needs_new_generic_primitive","executor_family":"deploy_summon","missing_primitives":["priority_target_selector","stateful_target_ledger","summon_interaction_contract","ordered_step_composition"],"evidence":"A flock marks targets, debuffs them, returns damage wisps to the totem and finishes with a synchronized pulse."},
+    {"class_id":"elementalist","weapon_id":"elementalist_orb_ring","classification":"needs_param_generalization","executor_family":"status_zone","missing_parameters":["pulse_sequence","finale"],"generalization_id":"status_zone.element_steps","evidence":"A host-following zone can query every affected target, but four distinct status/control beats and their finale need data-driven steps."},
+    {"class_id":"elementalist","weapon_id":"elementalist_prism_focus","classification":"needs_new_generic_primitive","executor_family":"aimed_sequence","missing_primitives":["aim_context","line_pierce_geometry","arena_bounds_query","trajectory_motion","per_target_damage_cap"],"evidence":"Arena-edge reflected beams rotate through moving intersections with a capped triple hit."},
+    {"class_id":"elementalist","weapon_id":"elementalist_meteor_core","classification":"needs_new_generic_primitive","executor_family":"burst","missing_primitives":["aim_context","ordered_step_composition","control_resistance_policy"],"evidence":"A fair aimed meteor burst executes weak normals and leaves a gravity/fire status zone."},
+    {"class_id":"engineer","weapon_id":"engineer_sentry_wrench","classification":"needs_param_generalization","executor_family":"deploy_summon","missing_parameters":["spawn_setup"],"generalization_id":"deploy_summon.spawn_setup","evidence":"Count, hex placement, lifetime and activation ownership exist; spawned sentries still need a generic setup contract for owner, damage sink and overclock properties."},
+    {"class_id":"engineer","weapon_id":"engineer_repair_drone","classification":"needs_new_generic_primitive","executor_family":"deploy_summon","missing_primitives":["summon_interaction_contract","projectile_interaction_query","owner_resource_conversion","ordered_step_composition"],"evidence":"Twelve drones intercept, ram and repair, then convert measured repair into a final shield pulse."},
+    {"class_id":"engineer","weapon_id":"engineer_pressure_mines","classification":"needs_new_generic_primitive","executor_family":"deploy_summon","missing_primitives":["pattern_geometry","stateful_target_ledger","ordered_step_composition"],"evidence":"Seeded smart mines require local chain ownership and an ordered outer-to-inner finale."},
+    {"class_id":"guitarist","weapon_id":"electric_guitar","classification":"needs_new_generic_primitive","executor_family":"control","missing_primitives":["aim_context","line_pierce_geometry","pattern_geometry","control_resistance_policy"],"evidence":"Five alternating aimed strips and a crossing final chord apply intersection-only normal stuns."},
+    {"class_id":"guitarist","weapon_id":"bass_guitar","classification":"needs_new_generic_primitive","executor_family":"control","missing_primitives":["ordered_step_composition","per_target_damage_cap","control_resistance_policy"],"evidence":"Four concentric beats pull, slow, launch and knock back with a separate capped center damage budget."},
+    {"class_id":"guitarist","weapon_id":"sound_amp","classification":"needs_new_generic_primitive","executor_family":"deploy_summon","missing_primitives":["pattern_geometry","summon_interaction_contract","ordered_step_composition"],"evidence":"Four cardinal amps link a square feedback field and then overload together."},
+    {"class_id":"knight","weapon_id":"long_spear","classification":"needs_new_generic_primitive","executor_family":"control","missing_primitives":["aim_context","line_pierce_geometry","control_resistance_policy","ordered_step_composition"],"evidence":"Three offset ranks charge one aimed corridor with ordered pierce and normal-only pin."},
+    {"class_id":"knight","weapon_id":"tower_shield","classification":"needs_new_generic_primitive","executor_family":"timed_modifier","missing_primitives":["aim_context","guard_prevention_ledger","owner_resource_conversion","control_resistance_policy"],"evidence":"A planted directional wall guards frontally, pushes normals and returns measured prevented damage."},
+    {"class_id":"knight","weapon_id":"holy_flail","classification":"needs_param_generalization","executor_family":"control","missing_parameters":["pulse_sequence","force_mode","radius_curve"],"generalization_id":"control.pull_launch_spiral","evidence":"Circular target queries and force application exist, but the growing pull spiral and final outward launch need ordered force parameters."},
+    {"class_id":"priest","weapon_id":"priest_reliquary","classification":"needs_new_generic_primitive","executor_family":"status_zone","missing_primitives":["ordered_step_composition","owner_resource_conversion","pattern_geometry"],"evidence":"Three consecration rings culminate in a judgment hit and measured-damage heal/overheal shield."},
+    {"class_id":"priest","weapon_id":"priest_censer","classification":"needs_new_generic_primitive","executor_family":"timed_modifier","missing_primitives":["guard_prevention_ledger","owner_resource_conversion","ordered_step_composition"],"evidence":"A mitigation ward stores prevented damage and returns it in one counter burst."},
+    {"class_id":"priest","weapon_id":"priest_chime","classification":"needs_new_generic_primitive","executor_family":"control","missing_primitives":["ordered_step_composition","control_resistance_policy","owner_resource_conversion","guard_prevention_ledger"],"evidence":"Three different tolls interrupt, chain-smite, heal and grant one lethal-prevention window."},
+    {"class_id":"ranger","weapon_id":"moon_crossbow","classification":"needs_new_generic_primitive","executor_family":"aimed_sequence","missing_primitives":["aim_context","priority_target_selector","directed_fan_split","stateful_target_ledger"],"evidence":"Aimed/highest-HP prey receives bolt waves, four-way neighbour splits and a kill-transferred mark."},
+    {"class_id":"ranger","weapon_id":"storm_longbow","classification":"needs_new_generic_primitive","executor_family":"status_zone","missing_primitives":["aim_context","line_pierce_geometry","ordered_step_composition","control_resistance_policy"],"evidence":"An aimed storm corridor receives repeated longitudinal beats that push away from its safe axis."},
+    {"class_id":"ranger","weapon_id":"hunter_trap","classification":"needs_param_generalization","executor_family":"control","missing_parameters":["pulse_sequence","force_mode","target_tier_overrides"],"generalization_id":"control.collapsing_pulses","evidence":"Current control can damage, displace and apply status; three collapsing rings and tier-scaled immobilize/slow need generic pulse parameters."},
+    {"class_id":"robot","weapon_id":"robot_magnetic_anchor","classification":"needs_new_generic_primitive","executor_family":"control","missing_primitives":["aim_context","projectile_interaction_query","ordered_step_composition","control_resistance_policy"],"evidence":"An aimed gravity well pulls normals and projectiles, then implodes and emits EMP while bosses resist displacement."},
+    {"class_id":"robot","weapon_id":"robot_hydraulic_press","classification":"needs_new_generic_primitive","executor_family":"control","missing_primitives":["aim_context","line_pierce_geometry","ordered_step_composition"],"evidence":"Two opposing walls repeatedly crush targets in an aimed corridor before a release shock."},
+    {"class_id":"robot","weapon_id":"robot_reactor_core","classification":"needs_new_generic_primitive","executor_family":"status_zone","missing_primitives":["ordered_step_composition","guard_prevention_ledger"],"evidence":"A host-following accelerating damage field and temporary absorb end in one clearing vent wave."},
+    {"class_id":"sniper","weapon_id":"sniper_deadeye_rifle","classification":"needs_new_generic_primitive","executor_family":"aimed_sequence","missing_primitives":["aim_context","priority_target_selector","line_pierce_geometry","per_target_damage_cap"],"evidence":"One aimed/highest-HP shot crosses the arena, pierces in order and spends a strict target budget."},
+    {"class_id":"sniper","weapon_id":"sniper_spotter_scope","classification":"expressible_now","executor_family":"aimed_sequence","params":{"radius":620.0,"damage":1.0,"shot_count":9,"interval":0.28},"evidence":"The family already plans nine distinct targets, sequences shots and re-acquires a dead planned target."},
+    {"class_id":"sniper","weapon_id":"sniper_shatter_rounds","classification":"needs_new_generic_primitive","executor_family":"aimed_sequence","missing_primitives":["aim_context","arena_bounds_query","directed_fan_split","trajectory_motion","per_target_damage_cap"],"evidence":"Five directed paths bounce once at the arena edge, split into three shards and share a cap per target."},
+    {"class_id":"soldier","weapon_id":"soldier_rifle","classification":"needs_new_generic_primitive","executor_family":"aimed_sequence","missing_primitives":["aim_context","line_pierce_geometry","priority_target_selector","ordered_step_composition"],"evidence":"Three arena-crossing aimed volleys stop and explode on the first dense groups."},
+    {"class_id":"soldier","weapon_id":"soldier_grenade","classification":"needs_new_generic_primitive","executor_family":"deploy_summon","missing_primitives":["aim_context","pattern_geometry","ordered_step_composition","stateful_target_ledger"],"evidence":"Seven grenades use a seeded aimed formation, shared countdown, outside-in chain and a final burning crater."},
+    {"class_id":"soldier","weapon_id":"soldier_bayonet","classification":"needs_new_generic_primitive","executor_family":"control","missing_primitives":["aim_context","line_pierce_geometry","control_resistance_policy","guard_prevention_ledger"],"evidence":"Three offset aimed corridor charges pin normals while the stationary owner gains a short frontal guard."},
+    {"class_id":"thief","weapon_id":"thief_coin_pouch","classification":"needs_new_generic_primitive","executor_family":"chained_projectile","missing_primitives":["priority_target_selector","stateful_target_ledger","owner_resource_conversion","trajectory_motion"],"evidence":"Thirteen unique-target ricochets pay capped gold every third hit and return a jackpot burst to the owner."},
+    {"class_id":"thief","weapon_id":"thief_shadow_cloak","classification":"needs_new_generic_primitive","executor_family":"aimed_sequence","missing_primitives":["priority_target_selector","stateful_target_ledger","ordered_step_composition","per_target_damage_cap"],"evidence":"Up to eight priority targets receive marks and sequential backstabs; boss wounds escalate under one cap."},
+    {"class_id":"thief","weapon_id":"thief_smoke_bomb","classification":"needs_new_generic_primitive","executor_family":"timed_modifier","missing_primitives":["guard_prevention_ledger","projectile_interaction_query","stateful_target_ledger","ordered_step_composition"],"evidence":"A dome grants evasion, taunts through a decoy, suppresses new ranged locks and bursts marked pressure at finish."}
+  ]
+}
