@@ -19,14 +19,47 @@ extends SceneTree
 # Запуск: Godot --headless --path . --script res://tests/attribute_ui_matrix_fan1927_test.gd
 
 const ProgressionData := preload("res://scripts/progression_data.gd")
-const AttributeContract := preload("res://scripts/attribute_contract.gd")
-const GlobalTooltip := preload("res://scripts/ui/global_tooltip.gd")
 const QACaptureTeardown := preload("res://tools/qa_capture_teardown.gd")
 const MAIN_SCENE := preload("res://scenes/Main.tscn")
 
 const VIEWPORTS := [Vector2i(1280, 720), Vector2i(1920, 1080), Vector2i(2560, 1440)]
 const STATES := ["normal", "ineligible", "capped", "long_copy"]
 const EVIDENCE_DIR := "res://build/qa/fan1927"
+# Test-owned fail-closed oracle. Reward IDs, eligibility profiles and every
+# expected before/after/delta line are literals: this fixture deliberately does
+# not call the production AttributeContract that renders the cards.
+const LEVEL_UP_ORACLE := {
+	"normal": {
+		"character": "berserk",
+		"weapon": "sword",
+		"mods": {},
+		"rewards": [
+			{"id": "crit_chance_up", "attr": "crit_chance", "mods": {"crit_chance_flat": 0.07}, "rows": ["Шанс крита: 7% -> 12% · реально: +5%", "сейчас 7% · максимум 55%"]},
+			{"id": "vampiric_up", "attr": "vampiric", "mods": {"vampiric_amount_flat": 0.8, "vampiric_chance_flat": 0.05, "vampiric_heal_per_second_cap": 0.8}, "rows": ["Вампиризм: 0.00 -> 0.38 · реально: +0.38", "шанс срабатывания: сейчас 0% · максимум 20%", "Шанс срабатывания: 0% -> 5% (+5 пп)"]},
+			{"id": "regeneration_up", "attr": "regeneration", "mods": {"regeneration_flat": 1.3}, "rows": ["Регенерация: 0.13 -> 0.48 · реально: +0.36"]},
+		],
+	},
+	"ineligible": {
+		"character": "dark_mage",
+		"weapon": "cursed_skull",
+		"mods": {},
+		"rewards": [
+			{"id": "damage_up", "attr": "damage", "mods": {"damage_multiplier": 1.15}, "rows": ["Увеличение урона: 8 -> 9 · реально: +1", "DoT/тик: 7.9 -> 9.1 (+15%)"]},
+			{"id": "max_hp_up", "attr": "max_health", "mods": {"max_health_flat": 18.0}, "rows": ["Максимальное здоровье: 38 -> 56 · реально: +18"]},
+			{"id": "regeneration_up", "attr": "regeneration", "mods": {"regeneration_flat": 1.3}, "rows": ["Регенерация: 0.15 -> 0.58 · реально: +0.43"]},
+		],
+	},
+	"capped": {
+		"character": "sniper",
+		"weapon": "sniper_deadeye_rifle",
+		"mods": {"crit_chance_flat": 5.0},
+		"rewards": [
+			{"id": "damage_up", "attr": "damage", "mods": {"damage_multiplier": 1.15}, "rows": ["Физический урон: 14 -> 16 · реально: +2", "DoT/тик: 6.0 -> 6.8 (+15%)"]},
+			{"id": "max_hp_up", "attr": "max_health", "mods": {"max_health_flat": 18.0}, "rows": ["Максимальное здоровье: 88 -> 106 · реально: +18"]},
+			{"id": "regeneration_up", "attr": "regeneration", "mods": {"regeneration_flat": 1.3}, "rows": ["Регенерация: 0.11 -> 0.43 · реально: +0.32"]},
+		],
+	},
+}
 
 var _errors := PackedStringArray()
 var _validated := 0
@@ -184,14 +217,31 @@ func _assert_scroll_reaches_sentinel(scroll: ScrollContainer, label: Label, sent
 	if max_scroll <= 1.0:
 		_fail("%s: long copy has no positive scroll range (max %.1f, page %.1f)." % [context, scrollbar.max_value, scrollbar.page])
 		return
+	var sentinel_offset := label.text.find(sentinel)
+	if sentinel_offset < 0:
+		_fail("%s: unique sentinel is absent from the preconstructed disclosure." % context)
+		return
+	var sentinel_tail := sentinel_offset + sentinel.length()
+	if not label.text.ends_with(sentinel):
+		var character_bounds := label.get_character_bounds(sentinel_tail - 1)
+		if not character_bounds.has_area():
+			_fail("%s: rendered sentinel has no character bounds." % context)
+		else:
+			scroll.scroll_vertical = int(clampf(
+				character_bounds.end.y - scroll.size.y * 0.5,
+				0.0,
+				max_scroll
+			))
+			await _settle(2)
+			var sentinel_y := label.get_global_rect().position.y + character_bounds.end.y
+			var sentinel_view := scroll.get_global_rect()
+			if sentinel_y < sentinel_view.position.y - 2.0 or sentinel_y > sentinel_view.end.y + 2.0:
+				_fail("%s: preconstructed sentinel at %.1f is not reachable in scroll viewport %s." % [context, sentinel_y, sentinel_view])
 	scroll.scroll_vertical = int(ceilf(max_scroll))
 	await _settle(2)
 	var settled_max := maxf(0.0, scrollbar.max_value - scrollbar.page)
 	if absf(float(scroll.scroll_vertical) - settled_max) > 2.0:
 		_fail("%s: scroll stopped at %d instead of the end %.1f." % [context, scroll.scroll_vertical, settled_max])
-	if not label.text.ends_with(sentinel):
-		_fail("%s: final sentinel is absent from the rendered disclosure." % context)
-		return
 	var scroll_rect := scroll.get_global_rect()
 	var tail_y := label.get_global_rect().end.y
 	if tail_y < scroll_rect.position.y - 2.0 or tail_y > scroll_rect.end.y + 2.0:
@@ -279,6 +329,13 @@ func _reward_for_attr(attr_id: String) -> Dictionary:
 	return {}
 
 
+func _reward_for_id(reward_id: String) -> Dictionary:
+	for reward in ProgressionData.LEVEL_UP_REWARDS:
+		if str(reward.get("id", "")) == reward_id:
+			return reward.duplicate(true)
+	return {}
+
+
 func _offer_attrs(offer: Array) -> Array:
 	var attrs: Array = []
 	for reward in offer:
@@ -286,29 +343,21 @@ func _offer_attrs(offer: Array) -> Array:
 	return attrs
 
 
-func _contextual_level_up_offer(character_id: String, weapon_id: String, fixture_text := "") -> Array:
-	var stats: Dictionary = ProgressionData.base_stats(character_id)
-	var weapon: Dictionary = ProgressionData.weapon(character_id, weapon_id)
-	var pool: Array = AttributeContract.eligible_level_up_rewards(character_id, stats, {}, weapon)
-	pool.sort_custom(func(a, b):
-		var a_description := str((a as Dictionary).get("description", ""))
-		var b_description := str((b as Dictionary).get("description", ""))
-		if a_description.length() == b_description.length():
-			return str((a as Dictionary).get("id", "")) < str((b as Dictionary).get("id", ""))
-		return a_description.length() > b_description.length()
-	)
-	if pool.size() < 3:
-		_fail("%s/%s: contextual eligible pool has %d rewards, expected at least 3." % [character_id, weapon_id, pool.size()])
-		return []
+func _level_up_oracle_for_state(state: String) -> Dictionary:
+	return LEVEL_UP_ORACLE["normal" if state == "long_copy" else state]
+
+
+func _oracle_level_up_offer(state: String, fixture_text := "") -> Array:
+	var oracle := _level_up_oracle_for_state(state)
 	var offer: Array = []
-	for index in range(3):
-		var reward := (pool[index] as Dictionary).duplicate(true)
-		var presentation: Dictionary = AttributeContract.attribute_presentation(reward, character_id, stats, {}, weapon)
-		if str(presentation.get("availability", "")) != "eligible":
-			_fail("%s/%s: fixture reward '%s' is not eligible." % [character_id, weapon_id, reward.get("id", "")])
-		if is_zero_approx(float(presentation.get("delta_effective", 0.0))) \
-				or is_equal_approx(float(presentation.get("before", 0.0)), float(presentation.get("after", 0.0))):
-			_fail("%s/%s: fixture reward '%s' is a no-op." % [character_id, weapon_id, reward.get("id", "")])
+	for index in range((oracle["rewards"] as Array).size()):
+		var expected: Dictionary = oracle["rewards"][index]
+		var reward := _reward_for_id(str(expected["id"]))
+		if reward.is_empty():
+			_fail("level_up %s: oracle reward '%s' is missing from the registry." % [state, expected["id"]])
+			continue
+		if str(reward.get("attr", "")) != str(expected["attr"]) or reward.get("mods", {}) != expected["mods"]:
+			_fail("level_up %s: oracle reward '%s' contract drifted (attr/mods)." % [state, expected["id"]])
 		if index == 0 and fixture_text != "":
 			reward["description"] = "%s\n%s" % [str(reward.get("description", "")).strip_edges(), fixture_text]
 		offer.append(reward)
@@ -323,79 +372,71 @@ func _no_trim(label: Label, context: String) -> void:
 		_fail("%s: presentation label uses forbidden ellipsis trimming." % context)
 
 
+func _content_safe_rect(control: Control, style_name: String) -> Rect2:
+	var style := control.get_theme_stylebox(style_name)
+	var rect := control.get_global_rect()
+	return Rect2(
+		rect.position + Vector2(style.get_content_margin(SIDE_LEFT), style.get_content_margin(SIDE_TOP)),
+		rect.size - Vector2(
+			style.get_content_margin(SIDE_LEFT) + style.get_content_margin(SIDE_RIGHT),
+			style.get_content_margin(SIDE_TOP) + style.get_content_margin(SIDE_BOTTOM)
+		)
+	).grow(1.0)
+
+
+func _level_up_geometry_errors(
+		row_rect: Rect2,
+		viewport_rect: Rect2,
+		panel_safe: Rect2,
+		card_safe: Rect2,
+		drawer_rect: Rect2
+) -> PackedStringArray:
+	var errors := PackedStringArray()
+	if not viewport_rect.encloses(row_rect):
+		errors.append("row leaves viewport")
+	if not panel_safe.encloses(row_rect):
+		errors.append("row leaves LevelUpPanel safe area")
+	if not card_safe.encloses(row_rect):
+		errors.append("row leaves reward-card safe area")
+	if drawer_rect.has_area() and drawer_rect.intersects(row_rect):
+		errors.append("LU.DetailDrawer intersects mandatory effect row")
+	return errors
+
+
 # ---------------------------------------------------------------- Level Up ---
 
 func _run_level_up(viewport_size: Vector2i, state: String) -> void:
 	var fixture := await _new_fixture(viewport_size)
 	var main: Node = fixture["main"]
 	var context := "level_up %s %s" % [viewport_size, state]
-	var character_id := "berserk"
-	var weapon_id := "sword"
+	var oracle := _level_up_oracle_for_state(state)
+	var character_id := str(oracle["character"])
+	var weapon_id := str(oracle["weapon"])
 	var sentinel := ""
 	var long_fixture_text := ""
 	if state == "long_copy":
 		var long_fixture := _long_copy_fixture("level_up", viewport_size)
 		sentinel = str(long_fixture["sentinel"])
 		long_fixture_text = str(long_fixture["text"])
-	match state:
-		"ineligible":
-			character_id = "dark_mage"
-			weapon_id = "cursed_skull"
-		"capped":
-			character_id = "sniper"
-			weapon_id = "sniper_deadeye_rifle"
-			main.set("run_player_snapshot", {
-				"stats": ProgressionData.base_stats("sniper"),
-				"run_modifiers": {"crit_chance_flat": 5.0},
-			})
 	main.set("selected_character_id", character_id)
 	main.set("selected_weapon_id", weapon_id)
+	main.set("run_player_snapshot", {
+		"stats": ProgressionData.base_stats(character_id),
+		"run_modifiers": (oracle["mods"] as Dictionary).duplicate(true),
+	})
 	main.set("pending_level_ups", 1)
-	if state == "normal" or state == "long_copy":
-		main.set("level_up_offer", _contextual_level_up_offer(character_id, weapon_id, long_fixture_text))
-	else:
-		main.set("level_up_offer", [])
+	main.set("level_up_offer", _oracle_level_up_offer(state, long_fixture_text))
 	main.ui._show_level_up_screen(false)
 	await _settle()
 
 	var offer: Array = main.get("level_up_offer")
 	if offer.size() != 3:
 		_fail("%s: offer has %d cards, expected 3." % [context, offer.size()])
-	var attrs := _offer_attrs(offer)
-	match state:
-		"ineligible":
-			for forbidden in ["damage_flat", "crit_chance", "crit_damage"]:
-				if attrs.has(forbidden):
-					_fail("%s: cursed_skull offer contains dead axis '%s'." % [context, forbidden])
-		"capped":
-			if attrs.has("crit_chance"):
-				_fail("%s: crit-capped sniper offer still contains crit_chance." % context)
-	# Каждая карточка держит фактическую строку before→after (row 0).
-	for card_index in range(3):
-		var effect := main.find_child("LevelUpRewardButton%d" % card_index, true, false)
-		if effect == null:
-			_fail("%s: card %d missing." % [context, card_index])
-			continue
-		var row := (effect as Control).find_child("LevelUpRewardEffectText", true, false) as Label
-		if row == null or not row.text.contains("->"):
-			_fail("%s: card %d lacks the before->after row." % [context, card_index])
-			continue
-		_no_trim(row, "%s card %d mandatory values" % [context, card_index])
-		if row.clip_text or row.max_lines_visible != -1:
-			_fail("%s: card %d mandatory values still use clipping/line truncation." % [context, card_index])
-		var reward: Dictionary = offer[card_index] if card_index < offer.size() else {}
-		if str(reward.get("attr", "")) != "" and not row.text.contains("реально:"):
-			_fail("%s: card %d lacks the complete effective delta." % [context, card_index])
-		var row_font := row.get_theme_font("font")
-		if row_font == null:
-			row_font = ThemeDB.fallback_font
-		var required_height := row_font.get_multiline_string_size(
-			row.text, HORIZONTAL_ALIGNMENT_CENTER, row.size.x, row.get_theme_font_size("font_size")).y
-		if required_height > row.size.y + 2.0:
-			_fail("%s: card %d mandatory values need %.1fpx but have %.1fpx." % [context, card_index, required_height, row.size.y])
-		if row.get_visible_line_count() < row.get_line_count():
-			_fail("%s: card %d mandatory values are not fully visible." % [context, card_index])
-	# LU.DetailDrawer: scroll-зона полной копии без ellipsis.
+	var actual_ids: Array = offer.map(func(reward: Dictionary) -> String: return str(reward.get("id", "")))
+	var expected_ids: Array = (oracle["rewards"] as Array).map(func(reward: Dictionary) -> String: return str(reward["id"]))
+	if actual_ids != expected_ids:
+		_fail("%s: fail-closed oracle expected rewards %s, got %s." % [context, expected_ids, actual_ids])
+
 	var drawer := main.find_child("LevelUpDetailDrawer", true, false) as PanelContainer
 	var drawer_scroll := main.find_child("LevelUpDetailScroll", true, false) as ScrollContainer
 	var drawer_label := main.find_child("LevelUpDetailLabel", true, false) as Label
@@ -404,8 +445,6 @@ func _run_level_up(viewport_size: Vector2i, state: String) -> void:
 	else:
 		_no_trim(drawer_label, "%s drawer" % context)
 		if not drawer.visible and bool(drawer.get_meta("lu_drawer_overlay", false)):
-			# Compact focus drawer (спека: «focus drawer — scroll») — появляется
-			# при фокусе карточки.
 			var first_card := main.find_child("LevelUpRewardButton0", true, false) as Button
 			if first_card != null:
 				first_card.grab_focus()
@@ -414,13 +453,74 @@ func _run_level_up(viewport_size: Vector2i, state: String) -> void:
 			_fail("%s: LU.DetailDrawer is hidden at an approved viewport." % context)
 		elif str(drawer_label.text).strip_edges() == "":
 			_fail("%s: LU.DetailDrawer has no focused-card copy." % context)
-		elif state == "long_copy":
-			var first_description := str((offer[0] as Dictionary).get("description", ""))
-			if not drawer_label.text.contains(first_description):
-				_fail("%s: drawer lacks the full long description of the focused card." % context)
-			if not drawer_label.text.ends_with(sentinel):
-				drawer_label.text += "\n%s" % sentinel
-			await _assert_scroll_reaches_sentinel(drawer_scroll, drawer_label, sentinel, context)
+
+	var viewport_rect := Rect2(Vector2.ZERO, Vector2(viewport_size))
+	var level_panel := main.find_child("LevelUpPanel", true, false) as Control
+	var panel_safe := _content_safe_rect(level_panel, "panel") if level_panel != null else Rect2()
+	var drawer_rect := drawer.get_global_rect() if drawer != null and drawer.visible else Rect2()
+	var overlap_probe_run := false
+	# Enumerate every mandatory row, including LevelUpRewardEffectText2/3.
+	for card_index in range(3):
+		var card := main.find_child("LevelUpRewardButton%d" % card_index, true, false) as Button
+		if card == null:
+			_fail("%s: card %d missing." % [context, card_index])
+			continue
+		var title := card.find_child("LevelUpRewardTitle", true, false) as Label
+		if title == null or title.text.strip_edges() == "" or not title.is_visible_in_tree() \
+				or not title.get_global_rect().has_area() or title.get_visible_line_count() < 1:
+			_fail("%s: card %d mandatory title is not visibly rendered (rect %s, font %d, lines %d/%d)." % [
+				context,
+				card_index,
+				str(title.get_global_rect()) if title != null else "<missing>",
+				title.get_theme_font_size("font_size") if title != null else 0,
+				title.get_visible_line_count() if title != null else 0,
+				title.get_line_count() if title != null else 0,
+			])
+		var expected_rows: Array = oracle["rewards"][card_index]["rows"]
+		var rows := card.find_children("LevelUpRewardEffectText*", "Label", true, false)
+		if rows.size() != expected_rows.size():
+			_fail("%s: card %d rendered %d/%d mandatory effect rows." % [context, card_index, rows.size(), expected_rows.size()])
+		var card_safe := _content_safe_rect(card, "normal")
+		var effect_panel := card.find_child("LevelUpRewardEffectPreview", true, false) as PanelContainer
+		if effect_panel == null or (drawer_rect.has_area() and drawer_rect.intersects(effect_panel.get_global_rect())):
+			_fail("%s: card %d effect block %s is missing or intersects LU.DetailDrawer %s." % [
+				context,
+				card_index,
+				str(effect_panel.get_global_rect()) if effect_panel != null else "<missing>",
+				str(drawer_rect),
+			])
+		for row_index in range(rows.size()):
+			var row := rows[row_index] as Label
+			if row_index >= expected_rows.size():
+				_fail("%s: card %d has unexpected effect row '%s'." % [context, card_index, row.text])
+				continue
+			if row.text != str(expected_rows[row_index]):
+				_fail("%s: card %d row %d oracle mismatch: expected '%s', got '%s'." % [context, card_index, row_index, expected_rows[row_index], row.text])
+			if not row.is_visible_in_tree() or not row.get_global_rect().has_area():
+				_fail("%s: card %d row %d is not visibly rendered." % [context, card_index, row_index])
+			_no_trim(row, "%s card %d row %d" % [context, card_index, row_index])
+			if row.clip_text or row.max_lines_visible != -1:
+				_fail("%s: card %d row %d uses clipping/line truncation." % [context, card_index, row_index])
+			var row_font := row.get_theme_font("font")
+			if row_font == null:
+				row_font = ThemeDB.fallback_font
+			var required_height := row_font.get_multiline_string_size(
+				row.text, HORIZONTAL_ALIGNMENT_CENTER, row.size.x, row.get_theme_font_size("font_size")).y
+			if required_height > row.size.y + 2.0 or row.get_visible_line_count() < row.get_line_count():
+				_fail("%s: card %d row %d is not fully visible (needs %.1fpx, has %.1fpx)." % [context, card_index, row_index, required_height, row.size.y])
+			for geometry_error in _level_up_geometry_errors(
+					row.get_global_rect(), viewport_rect, panel_safe, card_safe, drawer_rect):
+				_fail("%s: card %d row %d %s." % [context, card_index, row_index, geometry_error])
+			if not overlap_probe_run:
+				overlap_probe_run = true
+				if _level_up_geometry_errors(
+						row.get_global_rect(), viewport_rect, panel_safe, card_safe, row.get_global_rect()).is_empty():
+					_fail("%s: known-overlap negative probe did not reject a drawer covering an effect row." % context)
+	if state == "long_copy" and drawer_label != null:
+		var first_description := str((offer[0] as Dictionary).get("description", ""))
+		if not drawer_label.text.contains(first_description):
+			_fail("%s: drawer lacks the full preconstructed long description." % context)
+		await _assert_scroll_reaches_sentinel(drawer_scroll, drawer_label, sentinel, context)
 	var semantic_text := drawer_label.text if drawer_label != null else "\n".join(_offer_attrs(offer))
 	await _capture(fixture, "level_up", viewport_size, state, semantic_text, sentinel)
 	await _teardown(fixture)
@@ -457,7 +557,8 @@ func _run_attribute_shop(viewport_size: Vector2i, state: String) -> void:
 			main.set("attribute_offer", ["agility", "strength"])
 		_:
 			main.set("attribute_offer", ["strength", "agility"])
-	main.ui._show_attribute_shop(Callable())
+	var copy_overrides := {"interpretation_strength": long_fixture_text} if state == "long_copy" else {}
+	main.ui._show_attribute_shop(Callable(), copy_overrides)
 	await _settle(6)
 
 	var offers_box := main.find_child("AttributeOffers", true, false) as Container
@@ -495,34 +596,22 @@ func _run_attribute_shop(viewport_size: Vector2i, state: String) -> void:
 			_no_trim(drawer_label, "%s drawer" % context)
 	if state == "long_copy" and offers_box.get_child_count() > 0:
 		var first_offer := offers_box.get_child(0) as Button
-		first_offer.tooltip_text = "%s\n%s" % [first_offer.tooltip_text, long_fixture_text]
 		if viewport_size.y >= 1000:
-			drawer_label.text = first_offer.tooltip_text
 			semantic_text = drawer_label.text
 			await _assert_scroll_reaches_sentinel(drawer_scroll, drawer_label, sentinel, context)
 		else:
+			# Build the installed production tooltip from the real preconstruction
+			# input. No rendered controls or synthetic evidence nodes are mutated.
 			var tooltip_content := first_offer.call("_make_custom_tooltip", first_offer.tooltip_text) as Control
 			if tooltip_content == null:
 				_fail("%s: compact installed tooltip did not build content." % context)
 			else:
-				var tooltip_panel := PanelContainer.new()
-				tooltip_panel.name = "AttributeShopLongCopyTooltip"
-				tooltip_panel.add_theme_stylebox_override("panel", GlobalTooltip.make_atlas_chip_panel_style())
-				tooltip_panel.position = Vector2(roundf((viewport_size.x - 680.0) * 0.5), 170.0)
-				tooltip_panel.custom_minimum_size = Vector2(680.0, 360.0)
-				tooltip_panel.size = tooltip_panel.custom_minimum_size
-				tooltip_panel.add_child(tooltip_content)
-				var screen := main.find_child("AttributeShopScreen", true, false) as Control
-				if screen == null:
-					_fail("%s: AttributeShopScreen missing for compact tooltip fixture." % context)
-					tooltip_panel.free()
-				else:
-					screen.add_child(tooltip_panel)
-					await _settle(3)
-					var body_scroll := tooltip_content.find_child("GlobalTooltipBodyScroll", true, false) as ScrollContainer
-					var body_label := tooltip_content.find_child("GlobalTooltipBodyLabel", true, false) as Label
-					semantic_text = body_label.text if body_label != null else ""
-					await _assert_scroll_reaches_sentinel(body_scroll, body_label, sentinel, context)
+				var body_scroll := tooltip_content.find_child("GlobalTooltipBodyScroll", true, false) as ScrollContainer
+				var body_label := tooltip_content.find_child("GlobalTooltipBodyLabel", true, false) as Label
+				semantic_text = body_label.text if body_label != null else ""
+				if body_scroll == null or body_label == null or not body_label.text.contains(sentinel):
+					_fail("%s: production compact tooltip lacks bounded scroll or preconstructed sentinel." % context)
+				tooltip_content.free()
 	await _capture(fixture, "attribute_shop", viewport_size, state, semantic_text, sentinel)
 	await _teardown(fixture)
 
@@ -559,6 +648,10 @@ func _run_pause_codex(viewport_size: Vector2i, state: String) -> void:
 			var mods: Dictionary = player.get("run_modifiers")
 			mods["crit_chance_flat"] = float(mods.get("crit_chance_flat", 0.0)) + 5.0
 			player._apply_stat_scaling()
+	if state == "long_copy":
+		var player: Node = main.get("current_player")
+		if player != null and is_instance_valid(player):
+			player.set("artifacts", [{"id": "", "title": "QA\n%s" % long_fixture_text, "tier": 1}])
 	main.ui._show_pause_menu(true)
 	await _settle(6)
 
@@ -590,19 +683,18 @@ func _run_pause_codex(viewport_size: Vector2i, state: String) -> void:
 			if crit_value == null or not crit_value.text.contains("макс"):
 				_fail("%s: capped crit chip lacks the readable 'макс.' state (text '%s')." % [context, crit_value.text if crit_value != null else "<none>"])
 		"long_copy":
-			if semantic_chip == null or semantic_text.strip_edges() == "":
-				_fail("%s: axis chip lacks the complete bounded tooltip copy." % context)
+			var artifact_chip := pause.find_child("RunEquipmentChip_*", true, false) as Control
+			if artifact_chip == null:
+				_fail("%s: production equipment chip is missing." % context)
 			else:
-				semantic_chip.set_meta("dossier_tooltip_text", "%s\n%s" % [semantic_text, long_fixture_text])
-				semantic_chip.grab_focus()
-				await _settle(4)
-				var tooltip := pause.find_child("DossierFocusTooltip", true, false) as PanelContainer
-				var tooltip_scroll := pause.find_child("DossierFocusTooltipScroll", true, false) as ScrollContainer
-				var tooltip_label := pause.find_child("DossierFocusTooltipLabel", true, false) as Label
-				if tooltip == null or not tooltip.visible:
-					_fail("%s: focused dossier tooltip did not render." % context)
+				var tooltip_content := artifact_chip.call("_make_custom_tooltip", artifact_chip.tooltip_text) as Control
+				var tooltip_scroll := tooltip_content.find_child("GlobalTooltipBodyScroll", true, false) as ScrollContainer if tooltip_content != null else null
+				var tooltip_label := tooltip_content.find_child("GlobalTooltipBodyLabel", true, false) as Label if tooltip_content != null else null
 				semantic_text = tooltip_label.text if tooltip_label != null else ""
-				await _assert_scroll_reaches_sentinel(tooltip_scroll, tooltip_label, sentinel, context)
+				if tooltip_scroll == null or tooltip_label == null or not tooltip_label.text.contains(sentinel):
+					_fail("%s: production equipment tooltip lacks bounded scroll or preconstructed sentinel." % context)
+				if tooltip_content != null:
+					tooltip_content.free()
 	await _capture(fixture, "pause_codex", viewport_size, state, semantic_text, sentinel)
 	await _teardown(fixture)
 
@@ -626,7 +718,7 @@ func _run_hero_select(viewport_size: Vector2i, state: String) -> void:
 		"capped":
 			character_id = "assassin"
 	main.set("selected_character_id", character_id)
-	main.call("_show_character_select")
+	main.ui._show_character_select({"capability": long_fixture_text} if state == "long_copy" else {})
 	await _settle(6)
 
 	var cap_label := main.find_child("HS4BuildGuidance_cap_potential", true, false) as Label
@@ -661,19 +753,10 @@ func _run_hero_select(viewport_size: Vector2i, state: String) -> void:
 			if cap_label.text.containsn("повы") or cap_label.text.containsn("купить"):
 				_fail("%s: cap potential must not carry a CTA." % context)
 		"long_copy":
-			var content := main.find_child("HS4DossierContent", true, false) as Control
-			if content != null and dossier_scroll != null:
-				var fixture_label := Label.new()
-				fixture_label.name = "HS4LongCopyFixture"
-				fixture_label.text = long_fixture_text
-				fixture_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
-				fixture_label.max_lines_visible = -1
-				fixture_label.text_overrun_behavior = TextServer.OVERRUN_NO_TRIMMING
-				fixture_label.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-				content.add_child(fixture_label)
-				semantic_text = fixture_label.text
-				await _assert_scroll_reaches_sentinel(dossier_scroll, fixture_label, sentinel, context)
+			if dossier_scroll != null and capability_label.text.contains(sentinel):
+				semantic_text = capability_label.text
+				await _assert_scroll_reaches_sentinel(dossier_scroll, capability_label, sentinel, context)
 			else:
-				_fail("%s: dossier long-copy content zone is missing." % context)
+				_fail("%s: production capability line lacks the preconstructed long-copy sentinel." % context)
 	await _capture(fixture, "hero_select", viewport_size, state, semantic_text, sentinel)
 	await _teardown(fixture)

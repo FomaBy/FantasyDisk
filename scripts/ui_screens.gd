@@ -1577,7 +1577,7 @@ func _hs4_stat_text_color(stat_id: String) -> Color:
 	return HeroSelectConstants.stat_text_color(stat_id)
 
 
-func _build_character_select_v4() -> void:
+func _build_character_select_v4(copy_overrides := {}) -> void:
 	game.ui_layer = CanvasLayer.new()
 	game.ui_layer.process_mode = Node.PROCESS_MODE_ALWAYS
 	game.add_child(game.ui_layer)
@@ -2535,6 +2535,7 @@ func _build_character_select_v4() -> void:
 		cap_label.tooltip_text = cap_label.text
 		var capability_label := guidance_labels["capability"] as Label
 		capability_label.text = str(hero_lines.get("capability", ""))
+		capability_label.text = str(copy_overrides.get("capability", capability_label.text))
 		capability_label.visible = capability_label.text != ""
 		capability_label.tooltip_text = capability_label.text
 		var maxl: int = game.ascension_selectable_max(cid)
@@ -2681,7 +2682,7 @@ func _rebuild_character_select_after_resize(previous_root: Control) -> void:
 	game._clear_ui()
 	_build_character_select_v4()
 
-func _show_character_select() -> void:
+func _show_character_select(copy_overrides := {}) -> void:
 	game.clear_run_autosave()
 	game.clear_run_sandbox_snapshot()
 	game.run_player_snapshot.clear()
@@ -2701,7 +2702,7 @@ func _show_character_select() -> void:
 	game._clear_ui()
 
 	# Экран выбора героя строит v4-билдер (SCRUM-470). Мёртвая v3-вёрстка удалена (SCRUM-492).
-	_build_character_select_v4()
+	_build_character_select_v4(copy_overrides)
 
 
 const CODEX_DATA := preload("res://scripts/codex_data.gd")
@@ -2974,7 +2975,7 @@ func _layout_attribute_shop(root: Control) -> void:
 		root.move_child(frame, root.get_child_count() - 1)
 
 
-func _show_attribute_shop(on_done: Callable) -> void:
+func _show_attribute_shop(on_done: Callable, copy_overrides := {}) -> void:
 	# SCRUM-982/987/988: mandatory post-combat gold shop. Manual Route/Rest entry
 	# is removed; this screen remains the victory continuation for 2 default or
 	# 3 Atlas offers in one row inside the shared hollow gold shell.
@@ -3061,7 +3062,7 @@ func _show_attribute_shop(on_done: Callable) -> void:
 		game._play_sfx("purchase")
 		game.attribute_rerolls_left -= 1
 		game.attribute_offer = _random_attribute_pair()
-		_refresh_attribute_shop(root, on_done)
+		_refresh_attribute_shop(root, on_done, copy_overrides)
 	)
 	game.ui_escape_action = skip_button.pressed.emit
 	_unified_add_frame(root, "AttributeShop")
@@ -3070,7 +3071,7 @@ func _show_attribute_shop(on_done: Callable) -> void:
 		_layout_attribute_shop(root)
 		_layout_attribute_shop.call_deferred(root)
 	)
-	_refresh_attribute_shop(root, on_done)
+	_refresh_attribute_shop(root, on_done, copy_overrides)
 
 
 func _make_attribute_offer_card(stat_id: String, stat_title: String, interpretation: String, influence_text: String, preview_lines: Array, buy_cost: int, display_size: Vector2) -> Button:
@@ -3273,7 +3274,7 @@ func _layout_attribute_offer_card(button: Button) -> void:
 	AttributeSurfaces.fit_list_label(preview, "", "\n")
 
 
-func _refresh_attribute_shop(root: Control, on_done: Callable) -> void:
+func _refresh_attribute_shop(root: Control, on_done: Callable, copy_overrides := {}) -> void:
 	if root == null or not is_instance_valid(root):
 		return
 	var offers_box := root.find_child("AttributeOffers", true, false) as Container
@@ -3296,6 +3297,7 @@ func _refresh_attribute_shop(root: Control, on_done: Callable) -> void:
 	for stat_id in game.attribute_offer:
 		var stat_title: String = str(game.PROGRESSION_DATA.STAT_NAMES.get(stat_id, stat_id))
 		var interpretation: String = str(game.PROGRESSION_DATA.class_interpretation_text(game.selected_character_id, stat_id))
+		interpretation = str(copy_overrides.get("interpretation_%s" % stat_id, interpretation))
 		var influence_text := _attribute_influence_text(stat_id)
 		var preview_lines := _attribute_upgrade_preview_lines(stat_id)
 		var attr_offer_size: Vector2 = _attribute_shop_layout_for_size(root.size)["offer_size"]
@@ -9497,14 +9499,21 @@ func _level_up_card_plan(rewards: Array, advice: Dictionary, layout: Dictionary)
 	var scale := float(layout.get("scale", 0.5))
 	var compact := bool(layout.get("compact", scale <= 0.52))
 	var zone_height := float((layout.get("rewards_row_size", Vector2(760.0, 4096.0)) as Vector2).y)
+	# Reserve the same real, non-overlay 720p drawer lane used by placement.
+	if compact:
+		zone_height = maxf(zone_height - 84.0, 64.0)
 	var card_width := float(layout.get("card_width", roundf(LU_CARD_2K.size.x * scale)))
-	var pad := maxf(6.0, roundf(LU_CARD_CHIP_PAD_2K * scale))
+	# Mirror widened compact card padding so planned and rendered safe rects agree.
+	var pad := maxf(6.0, roundf(LU_CARD_CHIP_PAD_2K * card_width / LU_CARD_2K.size.x))
 	var content_width := maxf(card_width - pad * 2.8, 48.0)
 	var gap := maxf(6.0, roundf(LU_CARD_STACK_GAP_2K * scale))
 	var small_gap := maxf(4.0, roundf(8.0 * scale))
 	# Шрифты стека (пол кегля 12 — фидбек читаемости SCRUM-883).
 	var badge_font := _readable_font_size(SemanticTypography.ROLE_HUD, maxi(12, int(roundf(13.0 * scale))), 0, 16)
-	var title_font := _readable_font_size(SemanticTypography.ROLE_TITLE, maxi(12, int(roundf(18.0 * scale))), 0, 26)
+	var title_font := maxi(
+		SemanticTypography.role_min(SemanticTypography.ROLE_TITLE),
+		_readable_font_size(SemanticTypography.ROLE_TITLE, maxi(12, int(roundf(18.0 * scale))), 0, 26)
+	)
 	var desc_font := _readable_font_size(SemanticTypography.ROLE_DESCRIPTION, maxi(12, int(roundf(13.0 * scale))), 0, 18)
 	var effect_font := _readable_font_size(SemanticTypography.ROLE_BODY, maxi(12, int(roundf(15.0 * scale))), 0, 20)
 	# Высоты строк меряем probe-Label'ом — та же метрика, какой Godot считает
@@ -9553,7 +9562,8 @@ func _level_up_card_plan(rewards: Array, advice: Dictionary, layout: Dictionary)
 		effect_rows = maxi(effect_rows, lines.size())
 	var socket_box := roundf(clampf(LU_CARD_SOCKET_BOX_2K * scale, 44.0, LU_CARD_SOCKET_BOX_2K))
 	var badge_h := badge_line_h + 8.0
-	var title_h := title_line_h + 4.0
+	# Keep baseline room for the title face at its semantic floor.
+	var title_h := maxf(title_line_h + 4.0, float(title_font + 8))
 	var effect_pad := maxf(5.0, roundf(10.0 * scale))
 	var effect_inset := 2.0 if compact else maxf(6.0, roundf(16.0 * scale))
 	var effect_text_width := maxf(content_width - effect_inset * 2.0 - effect_pad * 2.8, 8.0)
@@ -9564,7 +9574,7 @@ func _level_up_card_plan(rewards: Array, advice: Dictionary, layout: Dictionary)
 			var measured_height := measure_font.get_multiline_string_size(str(line), HORIZONTAL_ALIGNMENT_CENTER, effect_text_width, effect_font).y
 			line_heights.append(maxf(effect_row_h, ceilf(measured_height) + 2.0))
 		delta_line_heights_per_card.append(line_heights)
-	# Бюджет между шапкой и «Позже»: описание до 2 строк → дельта-блок до 1 строки, затем кап.
+	# Ужимаем только описание; обязательные строки эффекта не удаляем.
 	var desc_h := 0.0
 	var effect_chip_h := 0.0
 	var content_height := 0.0
@@ -9582,19 +9592,15 @@ func _level_up_card_plan(rewards: Array, advice: Dictionary, layout: Dictionary)
 			content_height = badge_h + gap + content_height
 		if content_height + pad * 2.0 <= zone_height:
 			break
-		if desc_lines > 2:
-			desc_lines = 2
-			continue
-		if effect_rows > 1:
-			effect_rows -= 1
-			continue
 		if desc_lines > 1:
-			# FAN-1927: последняя ступень на сверхкомпактной зоне (drawer забрал
-			# полосу) — описание в одну строку; полная копия живёт в LU.DetailDrawer.
-			desc_lines = 1
+			desc_lines -= 1
+			continue
+		if socket_box > 44.0:
+			socket_box = maxf(44.0, socket_box - ceilf(content_height + pad * 2.0 - zone_height))
 			continue
 		break
-	var card_height := minf(roundf(content_height + pad * 2.0), floorf(zone_height))
+	# Keep the real required height so mandatory-row clipping cannot false-green.
+	var card_height := roundf(content_height + pad * 2.0)
 	return {
 		"pad": pad,
 		"content_width": content_width,
@@ -9828,11 +9834,6 @@ func _make_level_up_reward_button(reward: Dictionary, layout := {}, advice := {}
 	)
 	var delta_lines_cache: Array = plan.get("delta_lines_per_card", [])
 	var delta_lines: Array = delta_lines_cache[reward_index] if (reward_index >= 0 and reward_index < delta_lines_cache.size()) else _level_up_delta_lines(reward, forecast)
-	# Бюджетная деградация плана могла срезать глубину блока — лишние строки
-	# отбрасываем сразу (полный список всегда в тултипе карточки).
-	var plan_rows := maxi(int(plan.get("effect_rows", 3)), 1)
-	if delta_lines.size() > plan_rows:
-		delta_lines = delta_lines.slice(0, plan_rows)
 	var row_height := float(plan.get("effect_row_h", 18.0))
 	var effect_font := int(plan.get("effect_font", 12))
 	var line_heights_cache: Array = plan.get("delta_line_heights_per_card", [])
@@ -14424,19 +14425,14 @@ func _level_up_layout_metrics() -> Dictionary:
 	var viewport_size := Vector2(1280.0, 720.0)
 	if game != null and game.get_viewport() != null:
 		viewport_size = game.get_viewport().get_visible_rect().size
-	# SCRUM-985: внешняя рама больше не рисуется, но её консервативный safe-inset
-	# остаётся геометрическим viewport reserve — карточки и «Позже» не липнут к
-	# краям экрана на компактной матрице.
-	var safe_margins := _unified_safe_margins()
-	var safe_size := Vector2(
-		maxf(viewport_size.x - safe_margins.x - safe_margins.z, 96.0),
-		maxf(viewport_size.y - safe_margins.y - safe_margins.w, 96.0)
-	)
+	# SCRUM-985 убрал внешнюю раму: frameless stage масштабируется от реального
+	# viewport. Повторное вычитание старого safe-inset уменьшало Level Up почти
+	# вдвое и превращало LU.DetailDrawer в перекрывающий карточки overlay.
 	var scale := clampf(
-		minf((safe_size.x - 8.0) / LU_PANEL_2K.size.x, (safe_size.y - 8.0) / LU_PANEL_2K.size.y),
+		minf((viewport_size.x - 8.0) / LU_PANEL_2K.size.x, (viewport_size.y - 8.0) / LU_PANEL_2K.size.y),
 		0.30, 1.0
 	)
-	var compact := scale <= 0.52
+	var compact := viewport_size.y < 900.0
 	var xy := Vector2(scale, scale)
 	var panel_size := Vector2(roundf(LU_PANEL_2K.size.x * scale), roundf(LU_PANEL_2K.size.y * scale))
 	# Контент-зона = фактические content margins чипа панели (_atlas_chip_style:
@@ -14444,8 +14440,13 @@ func _level_up_layout_metrics() -> Dictionary:
 	var panel_pad := roundf(LU_PANEL_CHIP_PAD_2K * scale)
 	var content_position := Vector2(panel_pad * 1.4, panel_pad)
 	var content_size := panel_size - Vector2(panel_pad * 2.8, panel_pad * 2.0)
-	var card_width := roundf(LU_CARD_2K.size.x * scale)
 	var card_gap := roundf(LU_CARD_GAP_2K * scale)
+	# Frameless compact stage has useful horizontal slack. Give it to the three
+	# cards (up to the authored 2K width) so complete multi-row deltas wrap less
+	# and leave a real vertical lane for LU.DetailDrawer.
+	var authored_card_width := roundf(LU_CARD_2K.size.x * scale)
+	var available_card_width := floorf((content_size.x - card_gap * 2.0 - 16.0) / 3.0)
+	var card_width := minf(LU_CARD_2K.size.x, maxf(authored_card_width, available_card_width))
 	# «Позже» — фикс-размер глобального кита (высота от вьюпорта, не от scale):
 	# прижата к низу контент-зоны, по центру.
 	var later_size := Vector2(LU_LATER_BUTTON_WIDTH, _atlas_action_button_height())

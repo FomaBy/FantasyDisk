@@ -1208,6 +1208,9 @@ func _screen_specific_assertions(main: Node, screen_id: String, context: String)
 			var advisor_badge_count := 0
 			var reward_socket_tops := PackedFloat32Array()
 			var reward_title_tops := PackedFloat32Array()
+			var level_viewport_rect := Rect2(Vector2.ZERO, main.get_viewport().get_visible_rect().size)
+			var detail_drawer := main.find_child("LevelUpDetailDrawer", true, false) as Control
+			var detail_drawer_rect := detail_drawer.get_global_rect() if detail_drawer != null and detail_drawer.visible else Rect2()
 			for node in main.find_children("LevelUpRewardButton*", "Button", true, false):
 				var reward_button := node as Button
 				if reward_button == null:
@@ -1280,18 +1283,34 @@ func _screen_specific_assertions(main: Node, screen_id: String, context: String)
 					).x
 					if badge_text_width > badge_label.size.x + 1.0:
 						return "%s: %s advisor label needs %.1fpx but has %.1fpx; ellipsis is forbidden." % [context, reward_button.name, badge_text_width, badge_label.size.x]
-				for child_name in ["LevelUpRewardDescription", "LevelUpRewardEffectPreview", "LevelUpRewardEffectText"]:
+				for child_name in ["LevelUpRewardDescription", "LevelUpRewardEffectPreview"]:
 					var child := reward_button.find_child(child_name, true, false) as Control
 					if child == null or not child.visible or not child.get_global_rect().has_area():
 						return "%s: expected visible %s inside %s." % [context, child_name, reward_button.name]
 					if not scaled_card_safe.encloses(child.get_global_rect()):
-						return "%s: expected %s to stay inside card chip safe rect %s." % [context, child_name, str(scaled_card_safe)]
+						return "%s: expected %s %s to stay inside card chip safe rect %s." % [context, child_name, str(child.get_global_rect()), str(scaled_card_safe)]
 				var effect_panel := reward_button.find_child("LevelUpRewardEffectPreview", true, false) as PanelContainer
 				if effect_panel == null or not (effect_panel.get_theme_stylebox("panel") is StyleBoxFlat):
 					return "%s: expected %s effect preview field to use an atlas chip StyleBoxFlat." % [context, reward_button.name]
-				var effect_text := reward_button.find_child("LevelUpRewardEffectText", true, false) as Label
-				if effect_text == null or not effect_text.text.contains("->"):
-					return "%s: expected %s visible effect preview to contain before/after delta, got %s." % [context, reward_button.name, effect_text.text if effect_text != null else ""]
+				if detail_drawer_rect.has_area() and detail_drawer_rect.intersects(effect_panel.get_global_rect()):
+					return "%s: %s effect preview %s intersects LU.DetailDrawer %s." % [context, reward_button.name, str(effect_panel.get_global_rect()), str(detail_drawer_rect)]
+				var effect_rows := reward_button.find_children("LevelUpRewardEffectText*", "Label", true, false)
+				if effect_rows.is_empty():
+					return "%s: %s exposes no mandatory effect rows." % [context, reward_button.name]
+				for row_index in range(effect_rows.size()):
+					var effect_text := effect_rows[row_index] as Label
+					var effect_rect := effect_text.get_global_rect()
+					if not effect_text.is_visible_in_tree() or not effect_rect.has_area():
+						return "%s: %s effect row %d is not visible." % [context, reward_button.name, row_index]
+					if not level_viewport_rect.encloses(effect_rect) or not scaled_level_safe.encloses(effect_rect) or not scaled_card_safe.encloses(effect_rect):
+						return "%s: %s effect row %d escapes viewport/panel/card safe areas (%s)." % [context, reward_button.name, row_index, str(effect_rect)]
+					if detail_drawer_rect.has_area() and detail_drawer_rect.intersects(effect_rect):
+						return "%s: %s effect row %d %s intersects LU.DetailDrawer %s." % [context, reward_button.name, row_index, str(effect_rect), str(detail_drawer_rect)]
+					if effect_text.clip_text or effect_text.max_lines_visible != -1 or effect_text.get_visible_line_count() < effect_text.get_line_count():
+						return "%s: %s effect row %d is clipped or truncated." % [context, reward_button.name, row_index]
+				var primary_effect := effect_rows[0] as Label
+				if not primary_effect.text.contains("->"):
+					return "%s: expected %s primary effect row to contain before/after delta, got %s." % [context, reward_button.name, primary_effect.text]
 			if advisor_badge_count < 1:
 				return "%s: deterministic Level Up fixture must expose at least one advisor badge (SCRUM-1032 oracle)." % context
 			if reward_socket_tops.size() != 3 or reward_title_tops.size() != 3:
