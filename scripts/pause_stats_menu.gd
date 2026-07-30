@@ -1652,7 +1652,7 @@ func _equipment_artifact_tooltip(artifact: Dictionary) -> String:
 		lines.append("%s (%s)" % [title, EQUIPMENT_TIER_LABELS[tier]])
 	else:
 		lines.append(title)
-	var description := str(definition.get("description", ""))
+	var description := str(artifact.get("description", definition.get("description", "")))
 	if description != "":
 		lines.append(description)
 	return "\n".join(lines)

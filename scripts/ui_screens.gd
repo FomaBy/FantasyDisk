@@ -1577,7 +1577,7 @@ func _hs4_stat_text_color(stat_id: String) -> Color:
 	return HeroSelectConstants.stat_text_color(stat_id)
 
 
-func _build_character_select_v4(copy_overrides := {}) -> void:
+func _build_character_select_v4() -> void:
 	game.ui_layer = CanvasLayer.new()
 	game.ui_layer.process_mode = Node.PROCESS_MODE_ALWAYS
 	game.add_child(game.ui_layer)
@@ -2534,8 +2534,8 @@ func _build_character_select_v4(copy_overrides := {}) -> void:
 		cap_label.visible = cap_label.text != ""
 		cap_label.tooltip_text = cap_label.text
 		var capability_label := guidance_labels["capability"] as Label
-		capability_label.text = str(hero_lines.get("capability", ""))
-		capability_label.text = str(copy_overrides.get("capability", capability_label.text))
+		var capability_format := tr("hero_select_capability_format")
+		capability_label.text = capability_format % str(hero_lines.get("capability", "")) if capability_format != "hero_select_capability_format" else str(hero_lines.get("capability", ""))
 		capability_label.visible = capability_label.text != ""
 		capability_label.tooltip_text = capability_label.text
 		var maxl: int = game.ascension_selectable_max(cid)
@@ -2682,7 +2682,7 @@ func _rebuild_character_select_after_resize(previous_root: Control) -> void:
 	game._clear_ui()
 	_build_character_select_v4()
 
-func _show_character_select(copy_overrides := {}) -> void:
+func _show_character_select() -> void:
 	game.clear_run_autosave()
 	game.clear_run_sandbox_snapshot()
 	game.run_player_snapshot.clear()
@@ -2702,7 +2702,7 @@ func _show_character_select(copy_overrides := {}) -> void:
 	game._clear_ui()
 
 	# Экран выбора героя строит v4-билдер (SCRUM-470). Мёртвая v3-вёрстка удалена (SCRUM-492).
-	_build_character_select_v4(copy_overrides)
+	_build_character_select_v4()
 
 
 const CODEX_DATA := preload("res://scripts/codex_data.gd")
@@ -2863,7 +2863,6 @@ func _random_attribute_pair() -> Array:
 		pool.remove_at(index)
 	return pair
 
-
 func _normalize_attribute_offer(saved_offer: Array) -> Array:
 	# Old saves and automation fixtures may contain duplicate, removed or 4+
 	# entries. Preserve canonical entries in order, then fill to the live 2/3
@@ -2872,11 +2871,11 @@ func _normalize_attribute_offer(saved_offer: Array) -> Array:
 	var skill_mods: Dictionary = game.META_PROGRESSION.skill_modifiers(game.meta_state)
 	var option_count: int = clampi(2 + int(skill_mods.get("attr_extra_options", 0.0)), 2, 3)
 	var normalized: Array = []
-	for raw_stat in saved_offer:
-		var stat_id := str(raw_stat)
-		if not pool.has(stat_id) or normalized.has(stat_id):
+	for raw_offer in saved_offer:
+		var stat_id := str((raw_offer as Dictionary).get("id", "")) if raw_offer is Dictionary else str(raw_offer)
+		if not pool.has(stat_id):
 			continue
-		normalized.append(stat_id)
+		normalized.append((raw_offer as Dictionary).duplicate(true) if raw_offer is Dictionary else stat_id)
 		pool.erase(stat_id)
 		if normalized.size() >= option_count:
 			return normalized
@@ -2886,7 +2885,6 @@ func _normalize_attribute_offer(saved_offer: Array) -> Array:
 		pool.remove_at(index)
 	return normalized
 
-
 func _attribute_shop_layout_for_size(viewport_size: Vector2) -> Dictionary:
 	# FAN-1927: раскладка (включая AS.DetailDrawer) извлечена в AttributeSurfaces
 	# по monolith-ратчету; rect-провайдеры экрана остаются здесь.
@@ -2895,7 +2893,6 @@ func _attribute_shop_layout_for_size(viewport_size: Vector2) -> Dictionary:
 		_unified_safe_rect_for_size(viewport_size),
 		_gold_shell_inner_rect_for_size(viewport_size)
 	)
-
 
 func _apply_attribute_shop_rect(control: Control, rect: Rect2) -> void:
 	if control == null:
@@ -2975,7 +2972,7 @@ func _layout_attribute_shop(root: Control) -> void:
 		root.move_child(frame, root.get_child_count() - 1)
 
 
-func _show_attribute_shop(on_done: Callable, copy_overrides := {}) -> void:
+func _show_attribute_shop(on_done: Callable) -> void:
 	# SCRUM-982/987/988: mandatory post-combat gold shop. Manual Route/Rest entry
 	# is removed; this screen remains the victory continuation for 2 default or
 	# 3 Atlas offers in one row inside the shared hollow gold shell.
@@ -3062,7 +3059,7 @@ func _show_attribute_shop(on_done: Callable, copy_overrides := {}) -> void:
 		game._play_sfx("purchase")
 		game.attribute_rerolls_left -= 1
 		game.attribute_offer = _random_attribute_pair()
-		_refresh_attribute_shop(root, on_done, copy_overrides)
+		_refresh_attribute_shop(root, on_done)
 	)
 	game.ui_escape_action = skip_button.pressed.emit
 	_unified_add_frame(root, "AttributeShop")
@@ -3071,7 +3068,7 @@ func _show_attribute_shop(on_done: Callable, copy_overrides := {}) -> void:
 		_layout_attribute_shop(root)
 		_layout_attribute_shop.call_deferred(root)
 	)
-	_refresh_attribute_shop(root, on_done, copy_overrides)
+	_refresh_attribute_shop(root, on_done)
 
 
 func _make_attribute_offer_card(stat_id: String, stat_title: String, interpretation: String, influence_text: String, preview_lines: Array, buy_cost: int, display_size: Vector2) -> Button:
@@ -3274,7 +3271,7 @@ func _layout_attribute_offer_card(button: Button) -> void:
 	AttributeSurfaces.fit_list_label(preview, "", "\n")
 
 
-func _refresh_attribute_shop(root: Control, on_done: Callable, copy_overrides := {}) -> void:
+func _refresh_attribute_shop(root: Control, on_done: Callable) -> void:
 	if root == null or not is_instance_valid(root):
 		return
 	var offers_box := root.find_child("AttributeOffers", true, false) as Container
@@ -3294,16 +3291,15 @@ func _refresh_attribute_shop(root: Control, on_done: Callable, copy_overrides :=
 
 	var detail_label := root.find_child("AttributeShopDetailLabel", true, false) as Label
 	var first_detail_text := ""
-	for stat_id in game.attribute_offer:
+	for offer_value in game.attribute_offer:
+		var stat_id := str((offer_value as Dictionary).get("id", "")) if offer_value is Dictionary else str(offer_value)
 		var stat_title: String = str(game.PROGRESSION_DATA.STAT_NAMES.get(stat_id, stat_id))
-		var interpretation: String = str(game.PROGRESSION_DATA.class_interpretation_text(game.selected_character_id, stat_id))
-		interpretation = str(copy_overrides.get("interpretation_%s" % stat_id, interpretation))
+		var interpretation: String = str((offer_value as Dictionary).get("interpretation", game.PROGRESSION_DATA.class_interpretation_text(game.selected_character_id, stat_id))) if offer_value is Dictionary else str(game.PROGRESSION_DATA.class_interpretation_text(game.selected_character_id, stat_id))
 		var influence_text := _attribute_influence_text(stat_id)
 		var preview_lines := _attribute_upgrade_preview_lines(stat_id)
 		var attr_offer_size: Vector2 = _attribute_shop_layout_for_size(root.size)["offer_size"]
 		var offer_button := _make_attribute_offer_card(stat_id, stat_title, interpretation, influence_text, preview_lines, buy_cost, attr_offer_size)
-		var detail_text := AttributeSurfaces.shop_card_detail_text(
-			stat_title, buy_cost, interpretation, influence_text, _attribute_upgrade_preview_lines(str(stat_id), 1.0, 99))
+		var detail_text := AttributeSurfaces.shop_card_detail_text(stat_title, buy_cost, "", influence_text, _attribute_upgrade_preview_lines(str(stat_id), 1.0, 99)) + ("\n%s" % interpretation if interpretation != "" else "")
 		if first_detail_text == "":
 			first_detail_text = detail_text
 		if detail_label != null:
@@ -3315,8 +3311,6 @@ func _refresh_attribute_shop(root: Control, on_done: Callable, copy_overrides :=
 		# SCRUM-525/SCRUM-851: тултип краткий и по делу — на что влияет атрибут и живой
 		# предпросмотр производных при +1; интерпретация класса уже написана на карточке.
 		offer_button.tooltip_text = "%s +1" % stat_title
-		if interpretation != "":
-			offer_button.tooltip_text += "\n%s" % interpretation
 		# Compact display copy may be abbreviated, but focus disclosure keeps the
 		# exact source strings stored on the labels.
 		var influence_label := offer_button.find_child("%sInfluence" % offer_button.name, false, false) as Label
@@ -3329,6 +3323,7 @@ func _refresh_attribute_shop(root: Control, on_done: Callable, copy_overrides :=
 			offer_button.tooltip_text += "\nПредпросмотр при +1:\n• %s" % "\n• ".join(full_preview.split("\n", false))
 		if offer_button.disabled:
 			offer_button.tooltip_text += "\nНедостаточно золота: нужно %d, есть %d." % [buy_cost, money]
+		offer_button.tooltip_text += "\n%s" % interpretation if interpretation != "" else ""
 		offer_button.pressed.connect(func() -> void:
 			if not _spend_run_money(buy_cost):
 				# SCRUM-968: не хватает золота на +1 к характеристике — отказ.
@@ -9145,7 +9140,12 @@ func _show_level_up_screen(return_to_map := false) -> void:
 	rewards_row.add_theme_constant_override("separation", int(layout.get("card_gap", 0)))
 	box.add_child(rewards_row)
 
-	# Набор фиксируется на полученный уровень: переоткрытие окна показывает то же.
+	var saved_offer: Array = game.level_up_offer
+	game.level_up_offer = AttributeContract.sanitize_level_up_offer(game.level_up_offer, game.selected_character_id, _active_stats_snapshot(), _active_modifiers_snapshot(), _active_weapon_config())
+	if not game.level_up_offer.is_empty() and saved_offer.size() == game.level_up_offer.size():
+		for reward_index in range(game.level_up_offer.size()):
+			var saved_reward := saved_offer[reward_index] as Dictionary
+			if saved_reward.has("description"): (game.level_up_offer[reward_index] as Dictionary)["description"] = str(saved_reward["description"])
 	if game.level_up_offer.is_empty():
 		game.level_up_offer = _random_level_up_rewards(3)
 	# SCRUM-871: прогноз «до -> после» и бейджи «Лучший урон»/«Выживание» на весь
@@ -9957,9 +9957,6 @@ func _level_up_detail_drawer_text(reward: Dictionary, forecast: Dictionary, badg
 
 func _level_up_card_tooltip(reward: Dictionary, forecast: Dictionary, badge_kind: String, advice := {}) -> String:
 	var parts: Array = [str(reward.get("title", "Upgrade"))]
-	var description := str(reward.get("description", "")).strip_edges()
-	if description != "":
-		parts.append(description)
 	var deltas: Array = forecast.get("deltas", [])
 	if not deltas.is_empty():
 		var delta_lines: Array = []
@@ -9978,6 +9975,9 @@ func _level_up_card_tooltip(reward: Dictionary, forecast: Dictionary, badge_kind
 			parts.append("Метка «Выживание»: наибольший прирост живучести (+%s) — здоровье, защита, уклонение, поглощение и лечение." % _format_level_up_gain_percent(float(advice.get("surv_gain", 0.0))))
 		"both":
 			parts.append("Метка «Лучший выбор»: сильнейший рост и урона (+%s), и живучести (+%s)." % [_format_level_up_gain_percent(float(advice.get("dps_gain", 0.0))), _format_level_up_gain_percent(float(advice.get("surv_gain", 0.0)))])
+	var description := str(reward.get("description", "")).strip_edges()
+	if description != "":
+		parts.append(description)
 	return "\n".join(parts)
 
 

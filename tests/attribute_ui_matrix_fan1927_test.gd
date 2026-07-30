@@ -61,6 +61,44 @@ const LEVEL_UP_ORACLE := {
 	},
 }
 
+const FORBIDDEN_LEVEL_UP_SELECTION := [
+	{
+		"name": "capped",
+		"character": "sniper",
+		"weapon": "sniper_deadeye_rifle",
+		"mods": {"crit_chance_flat": 5.0},
+		"candidate": {"id": "crit_chance_up", "attr": "crit_chance", "mods": {"crit_chance_flat": 0.07}},
+	},
+	{
+		"name": "ineligible",
+		"character": "dark_mage",
+		"weapon": "cursed_skull",
+		"mods": {},
+		"candidate": {"id": "summon_amount_up", "attr": "summon_amount", "mods": {"summon_bonus": 2.0}},
+	},
+	{
+		"name": "no_op",
+		"character": "dark_mage",
+		"weapon": "cursed_skull",
+		"mods": {},
+		"candidate": {"id": "damage_flat_up", "attr": "damage_flat", "mods": {"damage_flat": 4.0}},
+	},
+	{
+		"name": "before_equals_after",
+		"character": "assassin",
+		"weapon": "shadow_daggers",
+		"mods": {},
+		"candidate": {"id": "attack_speed_up", "attr": "attack_speed", "mods": {"attack_speed_multiplier": 1.12}},
+	},
+	{
+		"name": "zero_effective_delta",
+		"character": "assassin",
+		"weapon": "shadow_daggers",
+		"mods": {},
+		"candidate": {"id": "attack_speed_up", "attr": "attack_speed", "mods": {"attack_speed_multiplier": 1.12}},
+	},
+]
+
 var _errors := PackedStringArray()
 var _validated := 0
 var _captured := 0
@@ -79,6 +117,7 @@ func _initialize() -> void:
 	DirAccess.make_dir_recursive_absolute(ProjectSettings.globalize_path(EVIDENCE_DIR))
 	if DisplayServer.get_name() != "headless":
 		_clean_capture_evidence()
+	await _run_forbidden_level_up_selection()
 	for viewport_size in VIEWPORTS:
 		for state in STATES:
 			await _run_level_up(viewport_size, str(state))
@@ -172,7 +211,7 @@ func _write_capture_manifest() -> void:
 
 
 func _long_copy_fixture(surface: String, viewport_size: Vector2i) -> Dictionary:
-	var sentinel := "FAN1945_%s_%dx%d_LONG_COPY_END" % [surface.to_upper(), viewport_size.x, viewport_size.y]
+	var sentinel := "FAN1945_%s_%dx%d_LONG_COPY_END." % [surface.to_upper(), viewport_size.x, viewport_size.y]
 	if _long_copy_sentinels.has(sentinel):
 		_fail("%s %s: duplicate long-copy sentinel." % [surface, viewport_size])
 	_long_copy_sentinels[sentinel] = true
@@ -217,26 +256,9 @@ func _assert_scroll_reaches_sentinel(scroll: ScrollContainer, label: Label, sent
 	if max_scroll <= 1.0:
 		_fail("%s: long copy has no positive scroll range (max %.1f, page %.1f)." % [context, scrollbar.max_value, scrollbar.page])
 		return
-	var sentinel_offset := label.text.find(sentinel)
-	if sentinel_offset < 0:
+	if not label.text.ends_with(sentinel):
 		_fail("%s: unique sentinel is absent from the preconstructed disclosure." % context)
 		return
-	var sentinel_tail := sentinel_offset + sentinel.length()
-	if not label.text.ends_with(sentinel):
-		var character_bounds := label.get_character_bounds(sentinel_tail - 1)
-		if not character_bounds.has_area():
-			_fail("%s: rendered sentinel has no character bounds." % context)
-		else:
-			scroll.scroll_vertical = int(clampf(
-				character_bounds.end.y - scroll.size.y * 0.5,
-				0.0,
-				max_scroll
-			))
-			await _settle(2)
-			var sentinel_y := label.get_global_rect().position.y + character_bounds.end.y
-			var sentinel_view := scroll.get_global_rect()
-			if sentinel_y < sentinel_view.position.y - 2.0 or sentinel_y > sentinel_view.end.y + 2.0:
-				_fail("%s: preconstructed sentinel at %.1f is not reachable in scroll viewport %s." % [context, sentinel_y, sentinel_view])
 	scroll.scroll_vertical = int(ceilf(max_scroll))
 	await _settle(2)
 	var settled_max := maxf(0.0, scrollbar.max_value - scrollbar.page)
@@ -347,19 +369,20 @@ func _level_up_oracle_for_state(state: String) -> Dictionary:
 	return LEVEL_UP_ORACLE["normal" if state == "long_copy" else state]
 
 
-func _oracle_level_up_offer(state: String, fixture_text := "") -> Array:
+func _oracle_level_up_offer(state: String, first_description := "") -> Array:
 	var oracle := _level_up_oracle_for_state(state)
 	var offer: Array = []
 	for index in range((oracle["rewards"] as Array).size()):
-		var expected: Dictionary = oracle["rewards"][index]
+		var expected_value = (oracle["rewards"] as Array)[index]
+		var expected := expected_value as Dictionary
 		var reward := _reward_for_id(str(expected["id"]))
 		if reward.is_empty():
 			_fail("level_up %s: oracle reward '%s' is missing from the registry." % [state, expected["id"]])
 			continue
 		if str(reward.get("attr", "")) != str(expected["attr"]) or reward.get("mods", {}) != expected["mods"]:
 			_fail("level_up %s: oracle reward '%s' contract drifted (attr/mods)." % [state, expected["id"]])
-		if index == 0 and fixture_text != "":
-			reward["description"] = "%s\n%s" % [str(reward.get("description", "")).strip_edges(), fixture_text]
+		if index == 0 and first_description != "":
+			reward["description"] = first_description
 		offer.append(reward)
 	return offer
 
@@ -368,8 +391,71 @@ func _no_trim(label: Label, context: String) -> void:
 	if label == null:
 		_fail("%s: label missing." % context)
 		return
-	if label.text_overrun_behavior == TextServer.OVERRUN_TRIM_ELLIPSIS:
-		_fail("%s: presentation label uses forbidden ellipsis trimming." % context)
+	if label.text_overrun_behavior != TextServer.OVERRUN_NO_TRIMMING:
+		_fail("%s: presentation label must use OVERRUN_NO_TRIMMING." % context)
+
+
+func _run_forbidden_level_up_selection() -> void:
+	for scenario_value in FORBIDDEN_LEVEL_UP_SELECTION:
+		var scenario := scenario_value as Dictionary
+		var fixture := await _new_fixture(Vector2i(1280, 720))
+		var main: Node = fixture["main"]
+		var character_id := str(scenario["character"])
+		var candidate := (scenario["candidate"] as Dictionary).duplicate(true)
+		main.set("selected_character_id", character_id)
+		main.set("selected_weapon_id", str(scenario["weapon"]))
+		main.set("run_player_snapshot", {
+			"stats": ProgressionData.base_stats(character_id),
+			"run_modifiers": (scenario["mods"] as Dictionary).duplicate(true),
+		})
+		main.set("pending_level_ups", 1)
+		main.set("level_up_offer", [candidate])
+		main.ui._show_level_up_screen(false)
+		await _settle()
+		var selected: Array = main.get("level_up_offer")
+		var candidate_id := str(candidate["id"])
+		if selected.any(func(reward: Dictionary) -> bool: return str(reward.get("id", "")) == candidate_id):
+			_fail("level_up %s: forbidden candidate '%s' reached the production selection path." % [scenario["name"], candidate_id])
+		if selected.size() != 3:
+			_fail("level_up %s: rejected candidate did not regenerate a complete three-card offer." % scenario["name"])
+		await _teardown(fixture)
+
+
+func _mount_tooltip(root_control: Control, anchor: Control, context: String) -> Dictionary:
+	if root_control == null or anchor == null:
+		_fail("%s: tooltip root/anchor is missing." % context)
+		return {}
+	var content := anchor.call("_make_custom_tooltip", anchor.tooltip_text) as Control
+	if content == null:
+		_fail("%s: installed production tooltip did not build content." % context)
+		return {}
+	var mounted := PanelContainer.new()
+	mounted.name = "FAN1927MountedTooltip"
+	mounted.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	mounted.clip_contents = true
+	var viewport_size := root_control.get_viewport_rect().size
+	mounted.position = Vector2(
+		maxf(12.0, viewport_size.x - minf(560.0, viewport_size.x * 0.46) - 20.0),
+		maxf(12.0, viewport_size.y - minf(310.0, viewport_size.y * 0.42) - 20.0)
+	)
+	mounted.size = Vector2(minf(560.0, viewport_size.x * 0.46), minf(310.0, viewport_size.y * 0.42))
+	mounted.custom_minimum_size = mounted.size
+	root_control.add_child(mounted)
+	mounted.add_child(content)
+	await _settle(3)
+	return {
+		"panel": mounted,
+		"scroll": mounted.find_child("GlobalTooltipBodyScroll", true, false) as ScrollContainer,
+		"label": mounted.find_child("GlobalTooltipBodyLabel", true, false) as Label,
+	}
+
+
+func _install_translation(message: String) -> Translation:
+	var translation := Translation.new()
+	translation.locale = TranslationServer.get_locale()
+	translation.add_message("hero_select_capability_format", "%%s\n%s" % message)
+	TranslationServer.add_translation(translation)
+	return translation
 
 
 func _content_safe_rect(control: Control, style_name: String) -> Rect2:
@@ -555,10 +641,11 @@ func _run_attribute_shop(viewport_size: Vector2i, state: String) -> void:
 			main.set("attribute_offer", ["strength", "leadership"])
 		"capped":
 			main.set("attribute_offer", ["agility", "strength"])
+		"long_copy":
+			main.set("attribute_offer", [{"id": "strength", "interpretation": long_fixture_text}, "agility"])
 		_:
 			main.set("attribute_offer", ["strength", "agility"])
-	var copy_overrides := {"interpretation_strength": long_fixture_text} if state == "long_copy" else {}
-	main.ui._show_attribute_shop(Callable(), copy_overrides)
+	main.ui._show_attribute_shop(Callable())
 	await _settle(6)
 
 	var offers_box := main.find_child("AttributeOffers", true, false) as Container
@@ -600,18 +687,13 @@ func _run_attribute_shop(viewport_size: Vector2i, state: String) -> void:
 			semantic_text = drawer_label.text
 			await _assert_scroll_reaches_sentinel(drawer_scroll, drawer_label, sentinel, context)
 		else:
-			# Build the installed production tooltip from the real preconstruction
-			# input. No rendered controls or synthetic evidence nodes are mutated.
-			var tooltip_content := first_offer.call("_make_custom_tooltip", first_offer.tooltip_text) as Control
-			if tooltip_content == null:
-				_fail("%s: compact installed tooltip did not build content." % context)
-			else:
-				var body_scroll := tooltip_content.find_child("GlobalTooltipBodyScroll", true, false) as ScrollContainer
-				var body_label := tooltip_content.find_child("GlobalTooltipBodyLabel", true, false) as Label
-				semantic_text = body_label.text if body_label != null else ""
-				if body_scroll == null or body_label == null or not body_label.text.contains(sentinel):
-					_fail("%s: production compact tooltip lacks bounded scroll or preconstructed sentinel." % context)
-				tooltip_content.free()
+			var tooltip_root := main.find_child("AttributeShopScreen", true, false) as Control
+			var mounted_tooltip := await _mount_tooltip(tooltip_root, first_offer, context)
+			var body_scroll := mounted_tooltip.get("scroll") as ScrollContainer
+			var body_label := mounted_tooltip.get("label") as Label
+			semantic_text = body_label.text if body_label != null else ""
+			_no_trim(body_label, "%s tooltip" % context)
+			await _assert_scroll_reaches_sentinel(body_scroll, body_label, sentinel, context)
 	await _capture(fixture, "attribute_shop", viewport_size, state, semantic_text, sentinel)
 	await _teardown(fixture)
 
@@ -651,7 +733,7 @@ func _run_pause_codex(viewport_size: Vector2i, state: String) -> void:
 	if state == "long_copy":
 		var player: Node = main.get("current_player")
 		if player != null and is_instance_valid(player):
-			player.set("artifacts", [{"id": "", "title": "QA\n%s" % long_fixture_text, "tier": 1}])
+			player.set("artifacts", [{"id": "", "title": "QA", "description": long_fixture_text, "tier": 1}])
 	main.ui._show_pause_menu(true)
 	await _settle(6)
 
@@ -664,6 +746,7 @@ func _run_pause_codex(viewport_size: Vector2i, state: String) -> void:
 		return
 	var semantic_chip := pause.find_child("DerivedStatChip_damage_flat", true, false) as Control
 	var semantic_text := str(semantic_chip.get_meta("dossier_tooltip_text", "")) if semantic_chip != null else ""
+	var artifact_chip: Control = null
 	match state:
 		"normal":
 			for axis_id in ["damage_flat", "damage", "attack_speed", "crit_chance", "vampiric", "ultimate_power"]:
@@ -683,18 +766,17 @@ func _run_pause_codex(viewport_size: Vector2i, state: String) -> void:
 			if crit_value == null or not crit_value.text.contains("макс"):
 				_fail("%s: capped crit chip lacks the readable 'макс.' state (text '%s')." % [context, crit_value.text if crit_value != null else "<none>"])
 		"long_copy":
-			var artifact_chip := pause.find_child("RunEquipmentChip_*", true, false) as Control
-			if artifact_chip == null:
-				_fail("%s: production equipment chip is missing." % context)
-			else:
-				var tooltip_content := artifact_chip.call("_make_custom_tooltip", artifact_chip.tooltip_text) as Control
-				var tooltip_scroll := tooltip_content.find_child("GlobalTooltipBodyScroll", true, false) as ScrollContainer if tooltip_content != null else null
-				var tooltip_label := tooltip_content.find_child("GlobalTooltipBodyLabel", true, false) as Label if tooltip_content != null else null
-				semantic_text = tooltip_label.text if tooltip_label != null else ""
-				if tooltip_scroll == null or tooltip_label == null or not tooltip_label.text.contains(sentinel):
-					_fail("%s: production equipment tooltip lacks bounded scroll or preconstructed sentinel." % context)
-				if tooltip_content != null:
-					tooltip_content.free()
+			artifact_chip = pause.find_child("RunEquipmentChip_*", true, false) as Control
+	if state == "long_copy":
+		if artifact_chip == null:
+			_fail("%s: production equipment chip is missing." % context)
+		else:
+			var mounted_tooltip := await _mount_tooltip(pause, artifact_chip, context)
+			var tooltip_scroll := mounted_tooltip.get("scroll") as ScrollContainer
+			var tooltip_label := mounted_tooltip.get("label") as Label
+			semantic_text = tooltip_label.text if tooltip_label != null else ""
+			_no_trim(tooltip_label, "%s tooltip" % context)
+			await _assert_scroll_reaches_sentinel(tooltip_scroll, tooltip_label, sentinel, context)
 	await _capture(fixture, "pause_codex", viewport_size, state, semantic_text, sentinel)
 	await _teardown(fixture)
 
@@ -707,18 +789,18 @@ func _run_hero_select(viewport_size: Vector2i, state: String) -> void:
 	var context := "hero_select %s %s" % [viewport_size, state]
 	var character_id := "guitarist"
 	var sentinel := ""
-	var long_fixture_text := ""
+	var content_translation: Translation = null
 	if state == "long_copy":
 		var long_fixture := _long_copy_fixture("hero_select", viewport_size)
 		sentinel = str(long_fixture["sentinel"])
-		long_fixture_text = str(long_fixture["text"])
+		content_translation = _install_translation(str(long_fixture["text"]))
 	match state:
 		"ineligible":
 			character_id = "chemist"
 		"capped":
 			character_id = "assassin"
 	main.set("selected_character_id", character_id)
-	main.ui._show_character_select({"capability": long_fixture_text} if state == "long_copy" else {})
+	main.ui._show_character_select()
 	await _settle(6)
 
 	var cap_label := main.find_child("HS4BuildGuidance_cap_potential", true, false) as Label
@@ -732,6 +814,8 @@ func _run_hero_select(viewport_size: Vector2i, state: String) -> void:
 		_fail("%s: HS.CapPotential/HS.CapabilityLine labels missing." % context)
 		await _capture(fixture, "hero_select", viewport_size, state, semantic_text, sentinel)
 		await _teardown(fixture)
+		if content_translation != null:
+			TranslationServer.remove_translation(content_translation)
 		return
 	_no_trim(cap_label, "%s cap potential" % context)
 	_no_trim(capability_label, "%s capability" % context)
@@ -760,3 +844,5 @@ func _run_hero_select(viewport_size: Vector2i, state: String) -> void:
 				_fail("%s: production capability line lacks the preconstructed long-copy sentinel." % context)
 	await _capture(fixture, "hero_select", viewport_size, state, semantic_text, sentinel)
 	await _teardown(fixture)
+	if content_translation != null:
+		TranslationServer.remove_translation(content_translation)
