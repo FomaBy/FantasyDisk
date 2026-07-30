@@ -9555,14 +9555,28 @@ func _level_up_card_plan(rewards: Array, advice: Dictionary, layout: Dictionary)
 	var badge_h := badge_line_h + 8.0
 	var title_h := title_line_h + 4.0
 	var effect_pad := maxf(5.0, roundf(10.0 * scale))
-	# Бюджет вертикали = зона между шапкой и «Позже»: не влезаем — ступенчатая
-	# деградация (описание до 2 строк → дельта-блок до 1 строки), затем кап.
+	var effect_inset := 2.0 if compact else maxf(6.0, roundf(16.0 * scale))
+	var effect_text_width := maxf(content_width - effect_inset * 2.0 - effect_pad * 2.8, 8.0)
+	var delta_line_heights_per_card: Array = []
+	for card_lines in delta_lines_per_card:
+		var line_heights: Array = []
+		for line in card_lines:
+			var measured_height := measure_font.get_multiline_string_size(str(line), HORIZONTAL_ALIGNMENT_CENTER, effect_text_width, effect_font).y
+			line_heights.append(maxf(effect_row_h, ceilf(measured_height) + 2.0))
+		delta_line_heights_per_card.append(line_heights)
+	# Бюджет между шапкой и «Позже»: описание до 2 строк → дельта-блок до 1 строки, затем кап.
 	var desc_h := 0.0
 	var effect_chip_h := 0.0
 	var content_height := 0.0
 	while true:
 		desc_h = desc_line_h * float(desc_lines) + 4.0
-		effect_chip_h = effect_row_h * float(effect_rows) + effect_pad * 2.0
+		var effect_content_h := 0.0
+		for line_heights in delta_line_heights_per_card:
+			var card_effect_h := 0.0
+			for line_index in range(mini(effect_rows, (line_heights as Array).size())):
+				card_effect_h += float((line_heights as Array)[line_index])
+			effect_content_h = maxf(effect_content_h, card_effect_h)
+		effect_chip_h = effect_content_h + effect_pad * 2.0
 		content_height = socket_box + gap + title_h + small_gap + desc_h + gap + effect_chip_h
 		if badge_slot:
 			content_height = badge_h + gap + content_height
@@ -9603,9 +9617,10 @@ func _level_up_card_plan(rewards: Array, advice: Dictionary, layout: Dictionary)
 		"effect_row_h": effect_row_h,
 		"effect_font": effect_font,
 		"effect_pad": effect_pad,
-		"effect_inset": 2.0 if compact else maxf(6.0, roundf(16.0 * scale)),
+		"effect_inset": effect_inset,
 		"effect_chip_h": effect_chip_h,
 		"delta_lines_per_card": delta_lines_per_card,
+		"delta_line_heights_per_card": delta_line_heights_per_card,
 	}
 
 
@@ -9801,13 +9816,10 @@ func _make_level_up_reward_button(reward: Dictionary, layout := {}, advice := {}
 	effect_panel.add_theme_stylebox_override("panel", effect_style)
 	content.add_child(effect_panel)
 
-	# Хост строк — обычный Control с нулевым minimum size: PanelContainer не
-	# растёт от текста, дельта-блок гарантированно остаётся в контент-зоне
-	# карточки (гейт ui_no_overlap_matrix).
+	# Нулевой minimum size хоста не даёт PanelContainer вырасти из контент-зоны карточки.
 	var effect_rows := Control.new()
 	effect_rows.name = "LevelUpRewardEffectRows"
 	effect_rows.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	effect_rows.clip_contents = true
 	effect_panel.add_child(effect_rows)
 
 	var rows_size := Vector2(
@@ -9823,10 +9835,13 @@ func _make_level_up_reward_button(reward: Dictionary, layout := {}, advice := {}
 		delta_lines = delta_lines.slice(0, plan_rows)
 	var row_height := float(plan.get("effect_row_h", 18.0))
 	var effect_font := int(plan.get("effect_font", 12))
+	var line_heights_cache: Array = plan.get("delta_line_heights_per_card", [])
+	var line_heights: Array = line_heights_cache[reward_index] if (reward_index >= 0 and reward_index < line_heights_cache.size()) else []
 	var has_forecast_deltas: bool = not (forecast.get("deltas", []) as Array).is_empty()
-	# Строки центрируются в зоне блока; не влезающие по высоте отбрасываем
-	# (кроме первой: контракт смоук/матрицы «LevelUpRewardEffectText с '->'»).
-	var used_height := roundf(maxf(rows_size.y - row_height * float(delta_lines.size()), 0.0) * 0.5)
+	var planned_height := 0.0
+	for line_index in range(delta_lines.size()):
+		planned_height += float(line_heights[line_index]) if line_index < line_heights.size() else row_height
+	var used_height := roundf(maxf(rows_size.y - planned_height, 0.0) * 0.5)
 	for line_index in range(delta_lines.size()):
 		var line_label := Label.new()
 		line_label.name = "LevelUpRewardEffectText" if line_index == 0 else "LevelUpRewardEffectText%d" % (line_index + 1)
@@ -9834,16 +9849,10 @@ func _make_level_up_reward_button(reward: Dictionary, layout := {}, advice := {}
 		line_label.text = str(delta_lines[line_index])
 		line_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 		line_label.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
-		line_label.autowrap_mode = TextServer.AUTOWRAP_OFF
-		line_label.clip_text = true
-		line_label.max_lines_visible = 1
-		line_label.text_overrun_behavior = TextServer.OVERRUN_TRIM_ELLIPSIS
+		line_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 		_shrink_label_font_to_width(line_label, SemanticTypography.ROLE_BODY, effect_font, rows_size.x - 4.0, SemanticTypography.role_min(SemanticTypography.ROLE_BODY))
 		line_label.add_theme_color_override("font_color", Color(0.76, 0.96, 0.80, 1.0) if has_forecast_deltas else Color(0.84, 0.97, 1.0, 1.0))
-		var line_height := maxf(row_height, line_label.get_minimum_size().y)
-		if line_index > 0 and used_height + line_height > rows_size.y + 0.5:
-			line_label.free()
-			continue
+		var line_height := float(line_heights[line_index]) if line_index < line_heights.size() else row_height
 		line_label.position = Vector2(0.0, used_height)
 		line_label.size = Vector2(rows_size.x, line_height)
 		effect_rows.add_child(line_label)
