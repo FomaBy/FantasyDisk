@@ -52,6 +52,23 @@ The legacy class field `boss_cap` is a per-hit cap. It must not be copied into
 Declared v1 profiles therefore use `null`; a profile cannot become `ready`
 until it supplies a numeric value in `(0, 1]`.
 
+## Executor parameter admission
+
+`UltimateExecutorLibrary` is the production owner of every live executor
+family's parameter contract. Before a ready profile creates an
+`UltimateActivation`, `UltimateController` asks the library to validate and
+normalize the executor parameters. Unknown families or keys, missing keys,
+wrong types, non-finite numbers, fractional integer fields, and values outside
+the live executor domains fail closed with no activation or host side effect.
+
+The library returns deterministic normalized dictionaries and canonical
+signatures. Nested `status`, `properties`, and `modifiers` dictionaries are
+ordered recursively; non-finite numeric leaves are rejected. `status.dot_damage`
+is excluded from the normalized semantic signature because the live
+`status_zone` and `control` executors deliberately discard it so DoT cannot
+bypass the activation-wide damage ledger. `properties` remain deliberately
+scene-specific until FAN-1541 owns a generic property contract.
+
 ## Declaration and execution states
 
 `declared` means the data identity and lifecycle shape exist, but gameplay
@@ -174,6 +191,8 @@ python3 tools/godot_gate.py --headless --path . \
   --script res://tests/ultimates/registry_contract_test.gd
 python3 tools/godot_gate.py --headless --path . \
   --script res://tests/ultimates/registry_validator_test.gd
+python3 tools/godot_gate.py --headless --path . \
+  --script res://tests/ultimates/executor_contract_audit_test.gd
 python3 tools/godot_gate.py --headless --path . \
   --script res://tests/ultimates/controller_runtime_test.gd
 python3 tools/godot_gate.py --headless --path . \

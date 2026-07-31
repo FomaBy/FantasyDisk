@@ -39,6 +39,21 @@ executor and activation contracts lack those capabilities.
 | `status_zone` | `radius`, `damage`, `duration`, `interval`, `follow_host`, `status_id`, `status` | One circular tick pattern and one status. |
 | `timed_modifier` | `duration`, `radius`, `modifiers` | Owner modifiers only; cleanup is supported, outcome storage is not. |
 
+## Live parameter admission
+
+`UltimateExecutorLibrary` owns the authoritative contract for the seven rows
+above. It requires each listed top-level key exactly once, rejects unknown or
+missing keys, wrong types, non-finite numbers, fractional count/limit fields,
+and values that an executor would otherwise clamp or default. Its normalized
+result is the only parameter map that may enter a ready `UltimateActivation`.
+
+Normalization sorts nested `status`, `properties`, and `modifiers`
+dictionaries before signature comparison and rejects non-finite numeric leaves.
+`status.dot_damage` is validated then removed, matching the status/control
+executors that discard it to preserve the whole-activation damage ledger.
+`properties` remain scene-specific: the contract preserves their values but
+does not invent a cross-scene property schema.
+
 `sniper/sniper_spotter_scope` is not an exact fit. Its marked target-centered
 kill-zone needs an `aimed_sequence.marked_target_zone` generalization with a
 marked-target anchor, zone radius and membership, retained-anchor policy, and
@@ -184,11 +199,12 @@ class-local package is never independently activatable.
 
 Class tests prove weapon-local distinction in memory through
 `tests/ultimates/weapon_ultimate_distinctness_helper.gd`. The helper deep-copies
-the registry maps, validates the family through the live executor library and
-the typed live parameter contract, injects ready/bound contracts only into those
-copies, resolves all three exact weapon IDs, rejects aliases, and verifies that
-the shipped registry still selects the legacy fallback. The audit test
-demonstrates this once, on Sniper, without changing catalog data.
+the registry maps, delegates family/key/parameter validation and normalization
+to `UltimateExecutorLibrary`, injects only its normalized ready/bound contracts,
+and compares the library's canonical semantic signatures. It resolves all three
+exact weapon IDs, rejects aliases, and verifies that the shipped registry still
+selects the legacy fallback. The audit test demonstrates this once, on Sniper,
+without changing catalog data.
 
 ## Runtime invariants
 

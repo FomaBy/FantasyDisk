@@ -45,10 +45,14 @@ func activate(class_id: String, weapon_id: String) -> bool:
 	var strategy_id := str((executor as Dictionary).get("strategy_id", ""))
 	if not Library.has_strategy(strategy_id):
 		return false
-	var params = (executor as Dictionary).get("params", {})
+	var normalized := Library.normalize_params(
+		strategy_id, (executor as Dictionary).get("params", {})
+	)
+	if not (normalized["errors"] as Array).is_empty():
+		return false
 	_activation = Activation.new(
 		_host,
-		params if params is Dictionary else {},
+		normalized["params"] as Dictionary,
 		float(profile.get("total_boss_cap", 0.0))
 	)
 	_host.call("ultimate_host_set_active", true)

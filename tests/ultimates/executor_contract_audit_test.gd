@@ -80,6 +80,7 @@ func _initialize() -> void:
 		"an unknown executor family must fail closed", errors
 	)
 
+	_test_live_parameter_contract(errors)
 	_demo_sniper_in_memory_distinctness(registry, audit, errors)
 	_report(errors)
 
@@ -112,7 +113,7 @@ func _validate_audit(
 			for raw_param in (declared_families as Dictionary).get(family, []):
 				declared_keys.append(str(raw_param))
 			declared_keys.sort()
-			var live_keys := Distinctness.parameter_keys(family)
+			var live_keys := Library.parameter_keys(family)
 			if declared_keys != live_keys:
 				errors.append(
 					"audit.executor_params.mismatch: %s expected %s, got %s"
@@ -172,7 +173,7 @@ func _validate_audit(
 							"audit.params.incomplete: %s expected %s, got %s"
 							% [key, expected_keys, actual_keys]
 						)
-					for contract_error in Distinctness.validate_executor_contract(family, params as Dictionary):
+					for contract_error in Library.validate_params(family, params as Dictionary):
 						errors.append("audit.%s: %s" % [key, contract_error])
 			"needs_param_generalization":
 				var missing_parameters = entry.get("missing_parameters")
@@ -236,6 +237,168 @@ func _validate_spotter(spotter: Dictionary, errors: Array[String]) -> void:
 		errors.append("audit.spotter.missing_parameters: expected %s, got %s" % [expected, actual])
 
 
+func _test_live_parameter_contract(errors: Array[String]) -> void:
+	for family in Library.strategy_ids():
+		var params := _example_params(family)
+		var normalized := Library.normalize_params(family, params)
+		_expect(
+			(normalized["errors"] as Array).is_empty(),
+			"%s positive contract must normalize: %s" % [family, normalized["errors"]],
+			errors
+		)
+		_expect(
+			not Library.canonical_parameter_signature(family, params).is_empty(),
+			"%s positive contract must have a canonical signature" % family,
+			errors
+		)
+
+	_expect_param_error(
+		"__missing_family__", _example_params("burst"), "executor_family.unknown",
+		"unknown executor family must reject with its stable code", errors
+	)
+	var unknown_key := _example_params("burst")
+	unknown_key["__unknown__"] = 1
+	_expect_param_error(
+		"burst", unknown_key, "executor_params.unknown",
+		"unknown executor key must reject with its stable code", errors
+	)
+	var missing_key := _example_params("burst")
+	missing_key.erase("radius")
+	_expect_param_error(
+		"burst", missing_key, "executor_params.missing",
+		"missing executor key must reject with its stable code", errors
+	)
+	var wrong_type := _example_params("burst")
+	wrong_type["radius"] = "not-a-number"
+	_expect_param_error(
+		"burst", wrong_type, "executor_params.type",
+		"wrong executor type must reject with its stable code", errors
+	)
+	for non_finite in [NAN, INF, -INF]:
+		var invalid_number := _example_params("burst")
+		invalid_number["radius"] = non_finite
+		_expect_param_error(
+			"burst", invalid_number, "executor_params.non_finite",
+			"non-finite executor number must reject with its stable code", errors
+		)
+	var negative_radius := _example_params("burst")
+	negative_radius["radius"] = -1.0
+	_expect_param_error(
+		"burst", negative_radius, "executor_params.range",
+		"negative radius must reject instead of clamping", errors
+	)
+	var fractional_count := _example_params("aimed_sequence")
+	fractional_count["shot_count"] = 1.5
+	_expect_param_error(
+		"aimed_sequence", fractional_count, "executor_params.integer",
+		"fractional count must reject instead of truncating", errors
+	)
+	var clamped_interval := _example_params("aimed_sequence")
+	clamped_interval["interval"] = 0.0
+	_expect_param_error(
+		"aimed_sequence", clamped_interval, "executor_params.range",
+		"clamped timing alias must reject", errors
+	)
+	var non_finite_nested := _example_params("status_zone")
+	non_finite_nested["status"] = {"duration": {"nested": NAN}}
+	_expect_param_error(
+		"status_zone", non_finite_nested, "executor_params.non_finite",
+		"non-finite nested status leaf must reject", errors
+	)
+	var missing_modifier_field := _example_params("timed_modifier")
+	missing_modifier_field["modifiers"] = {"speed": {"value": 1.2}}
+	_expect_param_error(
+		"timed_modifier", missing_modifier_field, "executor_params.missing",
+		"discarded modifier defaults must reject", errors
+	)
+
+	var status_left := _example_params("status_zone")
+	status_left["status"] = {"duration": 2.0, "speed_multiplier": 0.5}
+	var status_right := _example_params("status_zone")
+	status_right["status"] = {"speed_multiplier": 0.5, "duration": 2.0}
+	_expect(
+		Library.canonical_parameter_signature("status_zone", status_left)
+			== Library.canonical_parameter_signature("status_zone", status_right),
+		"nested dictionary order must not change a signature",
+		errors
+	)
+	var status_with_dot := status_left.duplicate(true)
+	status_with_dot["status"]["dot_damage"] = 99.0
+	_expect(
+		Library.canonical_parameter_signature("status_zone", status_left)
+			== Library.canonical_parameter_signature("status_zone", status_with_dot),
+		"executor-discarded dot damage must not create a distinct signature",
+		errors
+	)
+	var properties_left := _example_params("deploy_summon")
+	properties_left["properties"] = {"first": {"value": 1}, "second": true}
+	var properties_right := _example_params("deploy_summon")
+	properties_right["properties"] = {"second": true, "first": {"value": 1}}
+	_expect(
+		Library.canonical_parameter_signature("deploy_summon", properties_left)
+			== Library.canonical_parameter_signature("deploy_summon", properties_right),
+		"nested property order must not change a signature",
+		errors
+	)
+	var modifiers_left := _example_params("timed_modifier")
+	modifiers_left["modifiers"] = {
+		"attack_speed": {"value": 1.2, "op": "mul"},
+		"armor": {"value": 5.0, "op": "add"},
+	}
+	var modifiers_right := _example_params("timed_modifier")
+	modifiers_right["modifiers"] = {
+		"armor": {"op": "add", "value": 5.0},
+		"attack_speed": {"op": "mul", "value": 1.2},
+	}
+	_expect(
+		Library.canonical_parameter_signature("timed_modifier", modifiers_left)
+			== Library.canonical_parameter_signature("timed_modifier", modifiers_right),
+		"nested modifier order must not change a signature",
+		errors
+	)
+
+
+func _example_params(family: String) -> Dictionary:
+	match family:
+		"aimed_sequence":
+			return {"radius": 620.0, "damage": 1.0, "shot_count": 1, "interval": 0.05}
+		"burst":
+			return {"radius": 320.0, "damage": 1.0, "target_limit": 0}
+		"chained_projectile":
+			return {"radius": 260.0, "damage": 1.0, "jumps": 1, "hop_delay": 0.05, "falloff": 0.5}
+		"control":
+			return {
+				"radius": 340.0, "damage": 0.0, "target_limit": 0, "knockback": 0.0,
+				"status_id": "", "status": {},
+			}
+		"deploy_summon":
+			return {
+				"scene": "res://scenes/AllyMinion.tscn", "count": 1, "spawn_radius": 0.0,
+				"lifetime": 0.2, "damage": 1.0, "properties": {},
+			}
+		"status_zone":
+			return {
+				"radius": 260.0, "damage": 1.0, "duration": 0.2, "interval": 0.05,
+				"follow_host": false, "status_id": "", "status": {},
+			}
+		"timed_modifier":
+			return {"duration": 0.2, "radius": 200.0, "modifiers": {}}
+	return {}
+
+
+func _expect_param_error(
+	family: String,
+	params: Dictionary,
+	code: String,
+	message: String,
+	errors: Array[String]
+) -> void:
+	for validation_error in Library.validate_params(family, params):
+		if str(validation_error).begins_with("%s:" % code):
+			return
+	errors.append("%s; got %s" % [message, Library.validate_params(family, params)])
+
+
 ## Exactly one class demonstrates the reusable in-memory contract technique.
 func _demo_sniper_in_memory_distinctness(registry, audit: Dictionary, errors: Array[String]) -> void:
 	var result := Distinctness.resolve_class_contracts(registry, audit, "sniper", _sniper_contracts())
@@ -277,7 +440,7 @@ func _demo_sniper_in_memory_distinctness(registry, audit: Dictionary, errors: Ar
 	invalid_parameter["sniper_deadeye_rifle"]["params"]["radius"] = "not-a-number"
 	_expect_distinctness_error(
 		registry, audit, invalid_parameter,
-		"sniper/sniper_deadeye_rifle executor_params.invalid:",
+		"sniper/sniper_deadeye_rifle executor_params.type:",
 		"invalid executor parameter must fail closed", errors
 	)
 
