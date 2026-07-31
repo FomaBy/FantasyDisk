@@ -28,6 +28,9 @@ const STATES := ["normal", "ineligible", "capped", "long_copy"]
 const EVIDENCE_DIR := "res://build/qa/fan1927"
 const GLOBAL_TOOLTIP_CONTROL_PATH := "res://scripts/ui/global_tooltip_control.gd"
 const NATIVE_TOOLTIP_MUTATION_ARG := "--fan1973-native-tooltip-mutation"
+const NATIVE_TOOLTIP_ITERATIONS := 3
+const NATIVE_WINDOW_READY_FRAMES := 180
+const NATIVE_POPUP_SETTLE_FRAMES := 12
 # Test-owned fail-closed oracle. Reward IDs, eligibility profiles and every
 # expected before/after/delta line are literals: this fixture deliberately does
 # not call the production AttributeContract that renders the cards.
@@ -111,6 +114,7 @@ var _semantic_hashes := {}
 var _long_copy_sentinels := {}
 var _capture_teardown := QACaptureTeardown.new()
 var _native_popup_observations := 0
+var _native_popup_instance_ids := {}
 
 
 func _fail(message: String) -> void:
@@ -165,47 +169,247 @@ func _initialize() -> void:
 
 
 func _configured_tooltip_delay() -> float:
-	# Window activation can arrive after the synthetic root input on macOS, so
-	# native lifecycle evidence waits beyond the project's nominal tooltip delay.
-	return maxf(2.0, float(ProjectSettings.get_setting("gui/timers/tooltip_delay_sec", 0.7)))
+	return maxf(0.0, float(ProjectSettings.get_setting("gui/timers/tooltip_delay_sec", 0.7)))
 
 
-func _await_tooltip_delay() -> void:
-	await create_timer(_configured_tooltip_delay() + 0.1).timeout
-	await _settle(2)
+func _node_script_path(node: Node) -> String:
+	var script := node.get_script() as Script if node != null else null
+	return script.resource_path if script != null else "<native>"
+
+
+func _node_ancestry(node: Node) -> String:
+	var parts := PackedStringArray()
+	var current := node
+	while current != null:
+		parts.insert(0, "%s<%s>" % [current.name, current.get_class()])
+		current = current.get_parent()
+	return "/".join(parts)
+
+
+func _is_descendant_of(node: Node, ancestor: Node) -> bool:
+	var current := node
+	while current != null:
+		if current == ancestor:
+			return true
+		current = current.get_parent()
+	return false
 
 
 func _move_native_cursor(window: Window, position: Vector2) -> void:
-	DisplayServer.window_move_to_foreground(window.get_window_id())
-	await _settle(2)
-	window.notify_mouse_exited()
 	window.warp_mouse(position)
-	window.notify_mouse_entered()
-	window.update_mouse_cursor_state()
 	await _settle(2)
-	await _push_mouse_motion(window, position)
+	var motion := InputEventMouseMotion.new()
+	motion.window_id = window.get_window_id()
+	motion.position = position
+	motion.global_position = position
+	window.push_input(motion, true)
+	await _settle(3)
 
 
-func _engine_tooltip_observations(window: Window) -> Array:
-	var observations: Array = []
+func _popup_candidates(window: Window) -> Array:
+	var candidates: Array = []
 	if window == null:
-		return observations
-	for node in window.find_children("GlobalTooltipContent", "Control", true, false):
+		return candidates
+	for node in window.find_children("*", "Window", true, false):
+		var popup := node as Window
+		if popup != null and popup != window:
+			candidates.append(popup)
+	return candidates
+
+
+func _expected_tooltip_labels(expected_text: String) -> PackedStringArray:
+	var stripped := expected_text.strip_edges()
+	var newline := stripped.find("\n")
+	var labels := PackedStringArray([stripped if newline == -1 else stripped.substr(0, newline)])
+	if newline != -1:
+		var body := stripped.substr(newline + 1).strip_edges()
+		if not body.is_empty():
+			labels.append(body)
+	return labels
+
+
+func _popup_label_texts(parent: Node) -> PackedStringArray:
+	var texts := PackedStringArray()
+	for node in parent.find_children("*", "Label", true, false):
+		var label := node as Label
+		if label != null and label.is_visible_in_tree() and not label.text.strip_edges().is_empty():
+			texts.append(label.text)
+	return texts
+
+
+func _matching_global_tooltip_content(popup: Window, expected_text: String) -> Control:
+	var expected_labels := _expected_tooltip_labels(expected_text)
+	for node in popup.find_children("*", "Control", true, false):
 		var content := node as Control
-		var popup := content.get_window()
-		if content != null and content.is_visible_in_tree() and popup != null and popup != window and popup.visible:
-			observations.append({"content": content, "popup": popup})
+		if content == null or content.name != "GlobalTooltipContent" or not content.is_visible_in_tree():
+			continue
+		var actual_labels := _popup_label_texts(content)
+		var matches := true
+		for expected_label in expected_labels:
+			if not actual_labels.has(expected_label):
+				matches = false
+				break
+		if matches:
+			return content
+	return null
+
+
+func _engine_tooltip_observations(window: Window, anchor: Control, expected_text: String) -> Array:
+	var observations: Array = []
+	for popup_value in _popup_candidates(window):
+		var popup := popup_value as Window
+		if not _is_descendant_of(popup, anchor):
+			continue
+		var labels := _popup_label_texts(popup)
+		if popup == null or not popup.visible or labels.is_empty():
+			continue
+		observations.append({
+			"content": _matching_global_tooltip_content(popup, expected_text),
+			"labels": labels,
+			"popup": popup,
+		})
 	return observations
 
 
-func _run_native_engine_popup_probe() -> void:
-	var window := root as Window
-	if window == null:
-		_fail("native popup probe requires SceneTree.root to be a Window.")
-		return
-	var original_size := window.size
+func _native_popup_diagnostics(
+	window: Window,
+	anchor: Control,
+	target_rect: Rect2,
+	input_position: Vector2,
+	elapsed_frames: int,
+	phase: String
+) -> String:
+	var focused_window := Window.get_focused_window()
+	var hovered := window.gui_get_hovered_control() if window != null else null
+	var lines := PackedStringArray([
+		"phase=%s focus(window=%s display=%s focused_window=%s)" % [
+			phase,
+			str(window.has_focus()) if window != null else "<none>",
+			str(DisplayServer.window_is_focused(window.get_window_id())) if window != null else "<none>",
+			"%s#%d" % [focused_window.name, focused_window.get_instance_id()] if focused_window != null else "<none>",
+		],
+		"window(instance=%d id=%d embedded=%s visible=%s size=%s path=%s) viewport(rid=%s instance=%d)" % [
+			window.get_instance_id() if window != null else -1,
+			window.get_window_id() if window != null else -1,
+			str(window.is_embedded()) if window != null else "<none>",
+			str(window.visible) if window != null else "<none>",
+			str(window.size) if window != null else "<none>",
+			str(window.get_path()) if window != null and window.is_inside_tree() else "<none>",
+			str(window.get_viewport_rid()) if window != null else "<none>",
+			window.get_instance_id() if window != null else -1,
+		],
+		"target_rect=%s input=%s configured_delay=%.3fs elapsed_frames=%d hovered=%s" % [
+			target_rect,
+			input_position,
+			_configured_tooltip_delay(),
+			elapsed_frames,
+			_node_ancestry(hovered) if hovered != null else "<none>",
+		],
+	])
+	var candidates := _popup_candidates(window)
+	lines.append("popup_candidates=%d" % candidates.size())
+	for popup_value in candidates:
+		var popup := popup_value as Window
+		lines.append("candidate instance=%d window_id=%d class=%s visible=%s path=%s ancestry=%s script=%s labels=%s" % [
+			popup.get_instance_id(),
+			popup.get_window_id(),
+			popup.get_class(),
+			str(popup.visible),
+			str(popup.get_path()),
+			_node_ancestry(popup),
+			_node_script_path(popup),
+			_popup_label_texts(popup),
+		])
+		for node in popup.find_children("*", "Control", true, false):
+			var control := node as Control
+			lines.append("  control class=%s path=%s ancestry=%s script=%s" % [
+				control.get_class(),
+				str(control.get_path()),
+				_node_ancestry(control),
+				_node_script_path(control),
+			])
+	return "\n".join(lines)
+
+
+func _await_native_popup_state(
+	window: Window,
+	anchor: Control,
+	expected_text: String,
+	expect_exact: bool,
+	input_position: Vector2,
+	phase: String
+) -> Dictionary:
+	var start_frame := Engine.get_process_frames()
+	await create_timer(_configured_tooltip_delay()).timeout
+	var observed_by_id := {}
+	for _frame in range(NATIVE_POPUP_SETTLE_FRAMES):
+		var current := _engine_tooltip_observations(window, anchor, expected_text)
+		for observation_value in current:
+			var observation := observation_value as Dictionary
+			var popup := observation["popup"] as Window
+			observed_by_id[popup.get_instance_id()] = observation
+			if expect_exact and observation["content"] != null:
+				return {
+					"elapsed_frames": Engine.get_process_frames() - start_frame,
+					"observations": [observation],
+				}
+		if not expect_exact and not current.is_empty():
+			break
+		await process_frame
+	var result: Array = []
+	result.assign(observed_by_id.values())
+	var elapsed_frames := Engine.get_process_frames() - start_frame
+	if (expect_exact and result.all(func(observation: Dictionary) -> bool: return observation["content"] == null)) \
+			or (not expect_exact and not result.is_empty()):
+		print("NATIVE_POPUP_DIAGNOSTICS:\n%s" % _native_popup_diagnostics(
+			window, anchor, anchor.get_global_rect(), input_position, elapsed_frames, phase))
+	return {"elapsed_frames": elapsed_frames, "observations": result}
+
+
+func _await_native_window_ready(window: Window) -> bool:
+	window.show()
+	window.grab_focus()
+	for frame in range(NATIVE_WINDOW_READY_FRAMES):
+		if frame % 15 == 0:
+			window.grab_focus()
+		if window.visible and window.can_draw() and not window.is_embedded() \
+				and window.size.x > 0 and window.size.y > 0 \
+				and window.has_focus() and DisplayServer.window_is_focused(window.get_window_id()):
+			await _settle(3)
+			return true
+		await process_frame
+	return false
+
+
+func _teardown_native_popup_window(window: Window, popup_ids: Array, iteration: int) -> void:
+	var window_instance_id := window.get_instance_id()
+	window.hide()
+	window.queue_free()
+	await _settle(4)
+	if instance_from_id(window_instance_id) != null:
+		_fail("native popup iteration %d did not free its root Window." % iteration)
+	for popup_id in popup_ids:
+		if instance_from_id(int(popup_id)) != null:
+			_fail("native popup iteration %d leaked popup instance %d." % [iteration, popup_id])
+
+
+func _run_native_engine_popup_iteration(iteration: int) -> void:
+	var window := Window.new()
+	window.name = "FAN1975NativeTooltipWindow%d" % iteration
+	window.title = "FantasyDisk FAN-1975 native tooltip probe %d" % iteration
+	window.visible = false
+	window.force_native = true
+	window.unresizable = true
 	window.size = Vector2i(1280, 720)
-	await _settle(3)
+	root.add_child(window)
+	if not await _await_native_window_ready(window):
+		_fail("native popup iteration %d did not reach a visible focused native Window.\n%s" % [
+			iteration,
+			_native_popup_diagnostics(window, null, Rect2(), Vector2.ZERO, NATIVE_WINDOW_READY_FRAMES, "window_ready"),
+		])
+		await _teardown_native_popup_window(window, [], iteration)
+		return
+
 	var main := MAIN_SCENE.instantiate()
 	window.add_child(main)
 	await _settle(6)
@@ -217,55 +421,81 @@ func _run_native_engine_popup_probe() -> void:
 	var offers := main.find_child("AttributeOffers", true, false) as Container
 	var anchor := offers.get_child(0) as Control if offers != null and offers.get_child_count() > 0 else null
 	if anchor == null:
-		_fail("native popup probe is missing the production Attribute Shop offer.")
+		_fail("native popup iteration %d is missing the production Attribute Shop offer." % iteration)
+		await _teardown_native_popup_window(window, [], iteration)
+		return
+	var tooltip_script := anchor.get_script() as Script
+	if not bool(anchor.get_meta("global_tooltip_skin", false)) or tooltip_script == null \
+			or tooltip_script.resource_path != GLOBAL_TOOLTIP_CONTROL_PATH:
+		_fail("native popup iteration %d did not install GlobalTooltipControl on the production offer." % iteration)
+
+	var target_position := anchor.get_global_rect().get_center()
+	var outside_position := Vector2(8.0, 8.0)
+	var original_has_host_route := anchor.has_meta("production_tooltip_host")
+	var original_host_route = anchor.get_meta("production_tooltip_host", false)
+	var original_tooltip_text := anchor.tooltip_text
+	var popup_ids: Array = []
+
+	await _move_native_cursor(window, outside_position)
+	await _move_native_cursor(window, target_position)
+	var baseline := await _await_native_popup_state(
+		window, anchor, original_tooltip_text, false, target_position, "iteration_%d_baseline" % iteration)
+	if not (baseline["observations"] as Array).is_empty():
+		_fail("native baseline suppression observed an engine-created popup/window/content in iteration %d." % iteration)
+
+	await _move_native_cursor(window, outside_position)
+	anchor.set_meta("production_tooltip_host", false)
+	var expected_tooltip_text := "%s\nFAN1975_NATIVE_ENGINE_POPUP_%d" % [original_tooltip_text, iteration]
+	anchor.tooltip_text = expected_tooltip_text
+	await _move_native_cursor(window, target_position)
+	var positive := await _await_native_popup_state(
+		window, anchor, expected_tooltip_text, true, target_position, "iteration_%d_positive" % iteration)
+	var positive_observations := positive["observations"] as Array
+	var exact_observations := positive_observations.filter(
+		func(observation: Dictionary) -> bool: return observation["content"] != null)
+	if exact_observations.is_empty():
+		_fail("native popup positive control did not observe exact non-empty GlobalTooltipContent in iteration %d.\n%s" % [
+			iteration,
+			_native_popup_diagnostics(window, anchor, anchor.get_global_rect(), target_position,
+				int(positive["elapsed_frames"]), "iteration_%d_positive" % iteration),
+		])
 	else:
-		var tooltip_script: Script = anchor.get_script()
-		if not bool(anchor.get_meta("global_tooltip_skin", false)) or tooltip_script == null \
-				or tooltip_script.resource_path != GLOBAL_TOOLTIP_CONTROL_PATH:
-			_fail("native popup probe did not install GlobalTooltipControl on the production offer.")
-		var baseline_observed: Array = []
-		for _attempt in range(3):
-			await _move_native_cursor(window, Vector2(1.0, 1.0))
-			await _move_native_cursor(window, anchor.get_global_rect().get_center())
-			await _await_tooltip_delay()
-			baseline_observed = _engine_tooltip_observations(window)
-			if not baseline_observed.is_empty():
-				break
-		if not baseline_observed.is_empty():
-			_fail("native baseline suppression observed an engine-created popup/window/content.")
-		var original_host_route := bool(anchor.get_meta("production_tooltip_host", false))
-		var original_tooltip_text := anchor.tooltip_text
-		anchor.set_meta("production_tooltip_host", false)
-		anchor.tooltip_text = "%s\nFAN1973_NATIVE_ENGINE_POPUP" % original_tooltip_text
-		var observed: Array = []
-		for _attempt in range(3):
-			await _move_native_cursor(window, Vector2(1.0, 1.0))
-			await _move_native_cursor(window, anchor.get_global_rect().get_center())
-			await _await_tooltip_delay()
-			observed = _engine_tooltip_observations(window)
-			if not observed.is_empty():
-				break
-		if observed.is_empty():
-			_fail("native popup positive control did not observe GlobalTooltipContent in an engine-created popup/window.")
-		else:
-			for observation_value in observed:
-				var observation := observation_value as Dictionary
-				var content := observation["content"] as Control
-				if content.find_child("GlobalTooltipTitleLabel", true, false) == null:
-					_fail("native popup positive control observed empty tooltip content.")
-			_native_popup_observations += observed.size()
-			print("NATIVE_ENGINE_POPUP_OBSERVED: %d" % observed.size())
+		for observation_value in exact_observations:
+			var observation := observation_value as Dictionary
+			var popup := observation["popup"] as Window
+			var popup_id := popup.get_instance_id()
+			if _native_popup_instance_ids.has(popup_id):
+				_fail("native popup iteration %d reused stale popup instance %d." % [iteration, popup_id])
+			_native_popup_instance_ids[popup_id] = true
+			popup_ids.append(popup_id)
+		_native_popup_observations += 1
+		print("NATIVE_ENGINE_POPUP_OBSERVED: iteration=%d popup=%d elapsed_frames=%d" % [
+			iteration,
+			popup_ids[0],
+			int(positive["elapsed_frames"]),
+		])
+
+	if original_has_host_route:
 		anchor.set_meta("production_tooltip_host", original_host_route)
-		anchor.tooltip_text = original_tooltip_text
-		await _move_native_cursor(window, Vector2(1.0, 1.0))
-		await _move_native_cursor(window, anchor.get_global_rect().get_center())
-		await _await_tooltip_delay()
-		if not _engine_tooltip_observations(window).is_empty():
-			_fail("native popup remained after production_tooltip_host was restored.")
-		await _move_native_cursor(window, Vector2(1.0, 1.0))
-	main.queue_free()
-	await _settle(3)
-	window.size = original_size
+	else:
+		anchor.remove_meta("production_tooltip_host")
+	anchor.tooltip_text = original_tooltip_text
+	await _move_native_cursor(window, outside_position)
+	await _move_native_cursor(window, target_position)
+	var restored := await _await_native_popup_state(
+		window, anchor, original_tooltip_text, false, target_position, "iteration_%d_restored" % iteration)
+	if not (restored["observations"] as Array).is_empty():
+		_fail("native popup remained after production_tooltip_host was restored in iteration %d." % iteration)
+	await _move_native_cursor(window, outside_position)
+	await _teardown_native_popup_window(window, popup_ids, iteration)
+
+
+func _run_native_engine_popup_probe() -> void:
+	if root as Window == null:
+		_fail("native popup probe requires SceneTree.root to be a Window.")
+		return
+	for iteration in range(1, NATIVE_TOOLTIP_ITERATIONS + 1):
+		await _run_native_engine_popup_iteration(iteration)
 
 
 func _assert_native_popup_source_mutation() -> void:
@@ -297,6 +527,8 @@ func _assert_native_popup_source_mutation() -> void:
 	var mutation_output := "\n".join(output)
 	if exit_code == 0 or not mutation_output.contains("native baseline suppression observed an engine-created popup/window/content"):
 		_fail("native popup source mutation did not make the matrix fail on the observed engine popup (exit %d)." % exit_code)
+	else:
+		print("NATIVE_POPUP_SOURCE_MUTATION_REJECTED: observed engine popup, child exit=%d" % exit_code)
 
 
 func _clean_capture_evidence() -> void:
