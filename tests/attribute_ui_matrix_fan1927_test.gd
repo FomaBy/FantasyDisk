@@ -19,12 +19,15 @@ extends SceneTree
 # Запуск: Godot --headless --path . --script res://tests/attribute_ui_matrix_fan1927_test.gd
 
 const ProgressionData := preload("res://scripts/progression_data.gd")
+const AttributeSurfaces := preload("res://scripts/ui/attribute_surfaces.gd")
 const QACaptureTeardown := preload("res://tools/qa_capture_teardown.gd")
 const MAIN_SCENE := preload("res://scenes/Main.tscn")
 
 const VIEWPORTS := [Vector2i(1280, 720), Vector2i(1920, 1080), Vector2i(2560, 1440)]
 const STATES := ["normal", "ineligible", "capped", "long_copy"]
 const EVIDENCE_DIR := "res://build/qa/fan1927"
+const GLOBAL_TOOLTIP_CONTROL_PATH := "res://scripts/ui/global_tooltip_control.gd"
+const NATIVE_TOOLTIP_MUTATION_ARG := "--fan1973-native-tooltip-mutation"
 # Test-owned fail-closed oracle. Reward IDs, eligibility profiles and every
 # expected before/after/delta line are literals: this fixture deliberately does
 # not call the production AttributeContract that renders the cards.
@@ -107,6 +110,7 @@ var _capture_names := {}
 var _semantic_hashes := {}
 var _long_copy_sentinels := {}
 var _capture_teardown := QACaptureTeardown.new()
+var _native_popup_observations := 0
 
 
 func _fail(message: String) -> void:
@@ -114,32 +118,185 @@ func _fail(message: String) -> void:
 
 
 func _initialize() -> void:
+	var mutation_only := OS.get_cmdline_user_args().has(NATIVE_TOOLTIP_MUTATION_ARG)
 	DirAccess.make_dir_recursive_absolute(ProjectSettings.globalize_path(EVIDENCE_DIR))
-	if DisplayServer.get_name() != "headless":
-		_clean_capture_evidence()
-	await _run_forbidden_level_up_selection()
-	for viewport_size in VIEWPORTS:
-		for state in STATES:
-			await _run_level_up(viewport_size, str(state))
-			await _run_attribute_shop(viewport_size, str(state))
-			await _run_pause_codex(viewport_size, str(state))
-			await _run_hero_select(viewport_size, str(state))
-	await _capture_teardown.release_windowed_audio(self)
-	if _validated != 48:
-		_fail("Validated %d runtime states instead of 48." % _validated)
-	if _long_copy_sentinels.size() != 12:
-		_fail("Injected %d unique long-copy sentinels instead of 12." % _long_copy_sentinels.size())
-	if DisplayServer.get_name() != "headless":
-		_validate_capture_inventory()
-		_write_capture_manifest()
+	if mutation_only:
+		if DisplayServer.get_name() == "headless":
+			_fail("native popup mutation probe was started headless.")
+		else:
+			await _run_native_engine_popup_probe()
+	else:
+		if DisplayServer.get_name() == "headless":
+			print("SKIPPED_HEADLESS_NATIVE_ONLY: engine-popup lifecycle requires a real root Window.")
+		else:
+			_clean_capture_evidence()
+			await _run_native_engine_popup_probe()
+			if _native_popup_observations <= 0:
+				_fail("native popup probe never observed the positive-control engine popup.")
+			await _assert_native_popup_source_mutation()
+		await _run_forbidden_level_up_selection()
+		for viewport_size in VIEWPORTS:
+			for state in STATES:
+				await _run_level_up(viewport_size, str(state))
+				await _run_attribute_shop(viewport_size, str(state))
+				await _run_pause_codex(viewport_size, str(state))
+				await _run_hero_select(viewport_size, str(state))
+		await _capture_teardown.release_windowed_audio(self)
+		if _validated != 48:
+			_fail("Validated %d runtime states instead of 48." % _validated)
+		if _long_copy_sentinels.size() != 12:
+			_fail("Injected %d unique long-copy sentinels instead of 12." % _long_copy_sentinels.size())
+		if DisplayServer.get_name() != "headless":
+			_validate_capture_inventory()
+			_write_capture_manifest()
 	if not _errors.is_empty():
 		for error in _errors:
 			push_error("[fan1927-matrix] %s" % error)
 		push_error("FAN-1927 48-state UI matrix FAILED (%d/48 states, %d captures)." % [_validated, _captured])
 		quit(1)
 		return
+	if mutation_only:
+		_fail("native tooltip source mutation unexpectedly passed.")
+		push_error("FAN-1927 native tooltip mutation unexpectedly passed.")
+		quit(1)
+		return
 	print("FAN-1927 48-state UI matrix passed: %d/48 runtime states validated, %d PNG captures in %s (4 surfaces × 3 viewports × 4 states)." % [_validated, _captured, EVIDENCE_DIR])
 	quit(0)
+
+
+func _configured_tooltip_delay() -> float:
+	# Window activation can arrive after the synthetic root input on macOS, so
+	# native lifecycle evidence waits beyond the project's nominal tooltip delay.
+	return maxf(2.0, float(ProjectSettings.get_setting("gui/timers/tooltip_delay_sec", 0.7)))
+
+
+func _await_tooltip_delay() -> void:
+	await create_timer(_configured_tooltip_delay() + 0.1).timeout
+	await _settle(2)
+
+
+func _move_native_cursor(window: Window, position: Vector2) -> void:
+	DisplayServer.window_move_to_foreground(window.get_window_id())
+	await _settle(2)
+	window.notify_mouse_exited()
+	window.warp_mouse(position)
+	window.notify_mouse_entered()
+	window.update_mouse_cursor_state()
+	await _settle(2)
+	await _push_mouse_motion(window, position)
+
+
+func _engine_tooltip_observations(window: Window) -> Array:
+	var observations: Array = []
+	if window == null:
+		return observations
+	for node in window.find_children("GlobalTooltipContent", "Control", true, false):
+		var content := node as Control
+		var popup := content.get_window()
+		if content != null and content.is_visible_in_tree() and popup != null and popup != window and popup.visible:
+			observations.append({"content": content, "popup": popup})
+	return observations
+
+
+func _run_native_engine_popup_probe() -> void:
+	var window := root as Window
+	if window == null:
+		_fail("native popup probe requires SceneTree.root to be a Window.")
+		return
+	var original_size := window.size
+	window.size = Vector2i(1280, 720)
+	await _settle(3)
+	var main := MAIN_SCENE.instantiate()
+	window.add_child(main)
+	await _settle(6)
+	main.set("selected_character_id", "berserk")
+	main.set("selected_weapon_id", str(ProgressionData.weapon_ids("berserk")[0]))
+	main.set("attribute_offer", ["strength", "agility"])
+	main.ui._show_attribute_shop(Callable())
+	await _settle(8)
+	var offers := main.find_child("AttributeOffers", true, false) as Container
+	var anchor := offers.get_child(0) as Control if offers != null and offers.get_child_count() > 0 else null
+	if anchor == null:
+		_fail("native popup probe is missing the production Attribute Shop offer.")
+	else:
+		var tooltip_script: Script = anchor.get_script()
+		if not bool(anchor.get_meta("global_tooltip_skin", false)) or tooltip_script == null \
+				or tooltip_script.resource_path != GLOBAL_TOOLTIP_CONTROL_PATH:
+			_fail("native popup probe did not install GlobalTooltipControl on the production offer.")
+		var baseline_observed: Array = []
+		for _attempt in range(3):
+			await _move_native_cursor(window, Vector2(1.0, 1.0))
+			await _move_native_cursor(window, anchor.get_global_rect().get_center())
+			await _await_tooltip_delay()
+			baseline_observed = _engine_tooltip_observations(window)
+			if not baseline_observed.is_empty():
+				break
+		if not baseline_observed.is_empty():
+			_fail("native baseline suppression observed an engine-created popup/window/content.")
+		var original_host_route := bool(anchor.get_meta("production_tooltip_host", false))
+		var original_tooltip_text := anchor.tooltip_text
+		anchor.set_meta("production_tooltip_host", false)
+		anchor.tooltip_text = "%s\nFAN1973_NATIVE_ENGINE_POPUP" % original_tooltip_text
+		var observed: Array = []
+		for _attempt in range(3):
+			await _move_native_cursor(window, Vector2(1.0, 1.0))
+			await _move_native_cursor(window, anchor.get_global_rect().get_center())
+			await _await_tooltip_delay()
+			observed = _engine_tooltip_observations(window)
+			if not observed.is_empty():
+				break
+		if observed.is_empty():
+			_fail("native popup positive control did not observe GlobalTooltipContent in an engine-created popup/window.")
+		else:
+			for observation_value in observed:
+				var observation := observation_value as Dictionary
+				var content := observation["content"] as Control
+				if content.find_child("GlobalTooltipTitleLabel", true, false) == null:
+					_fail("native popup positive control observed empty tooltip content.")
+			_native_popup_observations += observed.size()
+			print("NATIVE_ENGINE_POPUP_OBSERVED: %d" % observed.size())
+		anchor.set_meta("production_tooltip_host", original_host_route)
+		anchor.tooltip_text = original_tooltip_text
+		await _move_native_cursor(window, Vector2(1.0, 1.0))
+		await _move_native_cursor(window, anchor.get_global_rect().get_center())
+		await _await_tooltip_delay()
+		if not _engine_tooltip_observations(window).is_empty():
+			_fail("native popup remained after production_tooltip_host was restored.")
+		await _move_native_cursor(window, Vector2(1.0, 1.0))
+	main.queue_free()
+	await _settle(3)
+	window.size = original_size
+
+
+func _assert_native_popup_source_mutation() -> void:
+	var path := ProjectSettings.globalize_path(GLOBAL_TOOLTIP_CONTROL_PATH)
+	var source := FileAccess.get_file_as_string(path)
+	var suppressed := "if bool(get_meta(\"production_tooltip_host\", false)):\n\t\treturn Control.new()"
+	var escaped := "if bool(get_meta(\"production_tooltip_host\", false)):\n\t\treturn GlobalTooltip.make_tooltip_content(for_text, self)"
+	if source.count(suppressed) != 1:
+		_fail("native popup source mutation could not locate the single suppression branch.")
+		return
+	var mutation_file := FileAccess.open(path, FileAccess.WRITE)
+	if mutation_file == null:
+		_fail("native popup source mutation could not open GlobalTooltipControl for a disposable write.")
+		return
+	mutation_file.store_string(source.replace(suppressed, escaped))
+	mutation_file.close()
+	var output: Array = []
+	var exit_code := OS.execute(OS.get_executable_path(), [
+		"--path", ProjectSettings.globalize_path("res://"),
+		"--script", ProjectSettings.globalize_path("res://tests/attribute_ui_matrix_fan1927_test.gd"),
+		"--", NATIVE_TOOLTIP_MUTATION_ARG,
+	], output, true)
+	var restore_file := FileAccess.open(path, FileAccess.WRITE)
+	if restore_file == null:
+		_fail("native popup source mutation could not restore GlobalTooltipControl.")
+		return
+	restore_file.store_string(source)
+	restore_file.close()
+	var mutation_output := "\n".join(output)
+	if exit_code == 0 or not mutation_output.contains("native baseline suppression observed an engine-created popup/window/content"):
+		_fail("native popup source mutation did not make the matrix fail on the observed engine popup (exit %d)." % exit_code)
 
 
 func _clean_capture_evidence() -> void:
@@ -246,6 +403,14 @@ func _settle(frames := 4) -> void:
 		await process_frame
 
 
+func _terminal_scroll_errors(scroll: ScrollContainer, label: Label, sentinel: String, maximum: float) -> Array:
+	var errors: Array = []
+	if absf(float(scroll.scroll_vertical) - maximum) > 0.01:
+		errors.append("scroll stopped at %d instead of the exact end %.1f" % [scroll.scroll_vertical, maximum])
+	errors.append_array(_sentinel_readability_errors(label, sentinel, _effective_scroll_rect(scroll)))
+	return errors
+
+
 func _assert_scroll_reaches_sentinel(scroll: ScrollContainer, label: Label, sentinel: String, context: String) -> void:
 	if scroll == null or label == null:
 		_fail("%s: long-copy scroll/label is missing." % context)
@@ -261,13 +426,17 @@ func _assert_scroll_reaches_sentinel(scroll: ScrollContainer, label: Label, sent
 		return
 	scroll.scroll_vertical = int(ceilf(max_scroll))
 	await _settle(2)
-	var settled_max := maxf(0.0, scrollbar.max_value - scrollbar.page)
-	if absf(float(scroll.scroll_vertical) - settled_max) > 2.0:
-		_fail("%s: scroll stopped at %d instead of the end %.1f." % [context, scroll.scroll_vertical, settled_max])
-	var scroll_rect := scroll.get_global_rect()
-	var tail_y := label.get_global_rect().end.y
-	if tail_y < scroll_rect.position.y - 2.0 or tail_y > scroll_rect.end.y + 2.0:
-		_fail("%s: final sentinel tail at %.1f is outside scroll viewport %s after scrolling." % [context, tail_y, scroll_rect])
+	var settled_max := int(ceilf(maxf(0.0, scrollbar.max_value - scrollbar.page)))
+	for error in _terminal_scroll_errors(scroll, label, sentinel, float(settled_max)):
+		_fail("%s: %s." % [context, error])
+	var one_pixel_short := settled_max - 1
+	if one_pixel_short >= 0:
+		scroll.scroll_vertical = one_pixel_short
+		await _settle(2)
+		if _terminal_scroll_errors(scroll, label, sentinel, float(settled_max)).is_empty():
+			_fail("%s: one-pixel maximum-scroll shortfall did not fail the exact terminal oracle." % context)
+		scroll.scroll_vertical = settled_max
+		await _settle(2)
 
 
 func _image_has_variance(image: Image) -> bool:
@@ -433,6 +602,21 @@ func _sentinel_glyph_rect(label: Label, sentinel: String) -> Rect2:
 	return Rect2(label.get_global_rect().position + glyph_rect.position, glyph_rect.size).grow(1.0)
 
 
+func _sentinel_readability_errors(label: Label, sentinel: String, effective_rect: Rect2) -> Array:
+	var errors: Array = []
+	if label == null or sentinel == "":
+		return ["terminal sentinel label is missing"]
+	var start := label.text.find(sentinel)
+	if start < 0:
+		return ["terminal sentinel is absent"]
+	for index in range(start, start + sentinel.length()):
+		var local_rect := label.get_character_bounds(index)
+		var glyph_rect := Rect2(label.get_global_rect().position + local_rect.position, local_rect.size)
+		if not glyph_rect.has_area() or not effective_rect.encloses(glyph_rect):
+			errors.append("terminal sentinel glyph %d %s is not fully readable in %s" % [index - start, glyph_rect, effective_rect])
+	return errors
+
+
 func _effective_scroll_rect(scroll: ScrollContainer) -> Rect2:
 	if scroll == null:
 		return Rect2()
@@ -450,8 +634,9 @@ func _visible_glyph_errors(label: Label, clip_rect: Rect2, effective_rect: Rect2
 	for index in range(label.text.length()):
 		var local_rect := label.get_character_bounds(index)
 		var glyph_rect := Rect2(label.get_global_rect().position + local_rect.position, local_rect.size)
-		if glyph_rect.has_area() and clip_rect.encloses(glyph_rect) and not effective_rect.encloses(glyph_rect):
-			errors.append("visible glyph %d %s leaves effective clip %s" % [index, glyph_rect, effective_rect])
+		var visible_part := glyph_rect.intersection(clip_rect)
+		if visible_part.has_area() and not effective_rect.encloses(visible_part):
+			errors.append("visible glyph %d %s leaves effective clip %s" % [index, visible_part, effective_rect])
 	return errors
 
 
@@ -464,12 +649,14 @@ func _reserve_contract_errors(texture_safe: Rect2, strict_inner: Rect2, viewport
 
 
 func _engine_tooltip_errors(anchor: Control) -> Array:
-	if anchor != null and (anchor.tooltip_text.is_empty() or (
-			bool(anchor.get_meta("production_tooltip_host", false))
-			and bool(anchor.get_meta("global_tooltip_skin", false))
-	)):
+	if anchor != null and anchor.tooltip_text.is_empty():
 		return []
-	return ["engine tooltip popup is enabled"]
+	if anchor != null and bool(anchor.get_meta("production_tooltip_host", false)) \
+			and bool(anchor.get_meta("global_tooltip_skin", false)) \
+			and anchor.get_script() != null \
+			and anchor.get_script().resource_path == GLOBAL_TOOLTIP_CONTROL_PATH:
+		return []
+	return ["engine tooltip popup route is not suppressed by the installed production control"]
 
 
 func _control_is_within(candidate: Control, ancestor: Control) -> bool:
@@ -579,8 +766,19 @@ func _assert_production_tooltip_host(host: Control, scroll: ScrollContainer, lab
 		_fail("%s: duplicate sentinel did not fail the oracle." % context)
 	label.text = original_text
 	await _settle(2)
-	if _effective_scroll_rect(scroll).encloses(scroll.get_v_scroll_bar().get_global_rect()):
-		_fail("%s: scrollbar-lane clipping mutation did not fail the oracle." % context)
+	var scrollbar_lane := scroll.get_v_scroll_bar()
+	if scrollbar_lane == null or not scrollbar_lane.visible or not scrollbar_lane.get_global_rect().has_area():
+		_fail("%s: long-copy scrollbar lane is not visible for the glyph mutation." % context)
+	else:
+		var original_label_position := label.global_position
+		var terminal_glyph := _sentinel_glyph_rect(label, sentinel)
+		label.global_position = original_label_position + Vector2(
+			scrollbar_lane.get_global_rect().get_center().x - terminal_glyph.get_center().x, 0.0)
+		await _settle(2)
+		if _tooltip_host_errors(host, scroll, label, sentinel, strict_inner, safe_parent, protected_rects).is_empty():
+			_fail("%s: visible glyph in the scrollbar lane did not fail the production oracle." % context)
+		label.global_position = original_label_position
+		await _settle(2)
 	for error in _tooltip_host_errors(host, scroll, label, sentinel, strict_inner, safe_parent, protected_rects):
 		_fail("%s: restored production host failed: %s." % [context, error])
 
@@ -607,14 +805,25 @@ func _assert_real_hover_and_input(viewport: Viewport, anchor: Control, host: Con
 		_fail("%s: %s." % [context, error])
 	var original_tooltip := anchor.tooltip_text
 	var original_host_route := bool(anchor.get_meta("production_tooltip_host", false))
+	var original_skin := bool(anchor.get_meta("global_tooltip_skin", false))
+	var original_script: Script = anchor.get_script()
 	if original_tooltip.is_empty():
-		anchor.tooltip_text = "FAN1969_ENGINE_POPUP_MUTATION"
+		anchor.tooltip_text = "FAN1973_ENGINE_POPUP_MUTATION"
 	else:
 		anchor.set_meta("production_tooltip_host", false)
 	if _engine_tooltip_errors(anchor).is_empty():
-		_fail("%s: restored engine tooltip route did not fail the oracle." % context)
+		_fail("%s: restored engine-tooltip route did not fail the oracle." % context)
 	anchor.tooltip_text = original_tooltip
 	anchor.set_meta("production_tooltip_host", original_host_route)
+	if not original_tooltip.is_empty():
+		anchor.set_meta("global_tooltip_skin", false)
+		if _engine_tooltip_errors(anchor).is_empty():
+			_fail("%s: manual-host mutation did not fail the oracle." % context)
+		anchor.set_meta("global_tooltip_skin", original_skin)
+		anchor.set_script(null)
+		if _engine_tooltip_errors(anchor).is_empty():
+			_fail("%s: preload-bypass mutation did not fail the oracle." % context)
+		anchor.set_script(original_script)
 	var before_scroll := scroll.scroll_vertical
 	var wheel_position := anchor.get_global_rect().get_center() if wheel_at_anchor else scroll.get_global_rect().get_center()
 	if not wheel_at_anchor:
@@ -632,6 +841,52 @@ func _assert_real_hover_and_input(viewport: Viewport, anchor: Control, host: Con
 			hovered_action.name if hovered_action != null else "<none>",
 		])
 	await _push_mouse_motion(viewport, anchor.get_global_rect().get_center())
+
+
+func _attribute_shop_detail_copy(main: Node, offer: Button) -> String:
+	var stat_id := offer.name.trim_prefix("AttributeOffer_")
+	var interpretation := ProgressionData.class_interpretation_text(str(main.get("selected_character_id")), stat_id)
+	var active_offers: Array = main.get("attribute_offer")
+	for offer_value in active_offers:
+		if offer_value is Dictionary and str((offer_value as Dictionary).get("id", "")) == stat_id:
+			interpretation = str((offer_value as Dictionary).get("interpretation", interpretation))
+	var detail := AttributeSurfaces.shop_card_detail_text(
+		str(ProgressionData.STAT_NAMES.get(stat_id, stat_id)),
+		int(main.ui._attribute_buy_cost()),
+		"",
+		str(main.ui._attribute_influence_text(stat_id)),
+		main.ui._attribute_upgrade_preview_lines(stat_id, 1.0, 99)
+	)
+	return "%s\n%s" % [detail, interpretation] if interpretation != "" else detail
+
+
+func _assert_attribute_shop_hover_transition(viewport: Viewport, anchor: Button, drawer: Control, label: Label, baseline_copy: String, expected_copy: String, compact: bool, context: String) -> void:
+	if viewport == null or anchor == null or drawer == null or label == null:
+		_fail("%s: Attribute Shop causal hover nodes are missing." % context)
+		return
+	if baseline_copy.strip_edges() == "" or expected_copy.strip_edges() == "" or baseline_copy == expected_copy:
+		_fail("%s: Attribute Shop baseline/hovered exact copies are not distinct." % context)
+		return
+	await _push_mouse_motion(viewport, Vector2(1.0, 1.0))
+	if compact:
+		drawer.set_meta("detail_drawer_open", false)
+		drawer.visible = false
+	elif not drawer.visible:
+		_fail("%s: persistent Attribute Shop drawer was closed before the hover probe." % context)
+	var original_filter := anchor.mouse_filter
+	anchor.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	await _push_mouse_motion(viewport, anchor.get_global_rect().get_center())
+	if compact:
+		if drawer.visible or label.text != baseline_copy:
+			_fail("%s: broken hover wiring changed the compact closed baseline." % context)
+	elif not drawer.visible or label.text != baseline_copy:
+		_fail("%s: broken hover wiring changed the persistent drawer baseline." % context)
+	anchor.mouse_filter = original_filter
+	await _push_mouse_motion(viewport, anchor.get_global_rect().get_center())
+	if not _control_is_within(viewport.gui_get_hovered_control(), anchor):
+		_fail("%s: coordinate hit-testing did not reach the alternate Attribute Shop offer." % context)
+	if not drawer.visible or label.text != expected_copy:
+		_fail("%s: real hover did not cause the exact expected Attribute Shop disclosure transition." % context)
 
 
 func _install_translation(message: String) -> Translation:
@@ -865,6 +1120,17 @@ func _run_attribute_shop(viewport_size: Vector2i, state: String) -> void:
 		var shop_root := main.find_child("AttributeShopScreen", true, false) as Control
 		var actions := main.find_child("AttributeShopActions", true, false) as Control
 		var first_offer := offers_box.get_child(0) as Button
+		var alternate_offer := offers_box.get_child(1) as Button if offers_box.get_child_count() > 1 else null
+		var baseline_copy := drawer_label.text if drawer_label != null else ""
+		if alternate_offer == null:
+			_fail("%s: Attribute Shop needs a second real offer for the causal hover probe." % context)
+		else:
+			await _assert_attribute_shop_hover_transition(
+				fixture["viewport"] as Viewport, alternate_offer, drawer, drawer_label,
+				baseline_copy, _attribute_shop_detail_copy(main, alternate_offer), viewport_size.y < 1000, context)
+			await _push_mouse_motion(fixture["viewport"] as Viewport, first_offer.get_global_rect().get_center())
+			if drawer_label.text != baseline_copy:
+				_fail("%s: returning to the baseline offer did not restore its exact disclosure copy." % context)
 		await _assert_real_hover_and_input(
 			fixture["viewport"] as Viewport, first_offer, drawer, drawer_scroll,
 			_first_button(actions),
