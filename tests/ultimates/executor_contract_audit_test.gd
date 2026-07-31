@@ -18,6 +18,11 @@ const CLASSIFICATIONS := [
 	"needs_param_generalization",
 	"needs_new_generic_primitive",
 ]
+const EXPECTED_CLASSIFICATION_COUNTS := {
+	"expressible_now": 0,
+	"needs_param_generalization": 6,
+	"needs_new_generic_primitive": 45,
+}
 
 
 func _initialize() -> void:
@@ -75,7 +80,7 @@ func _initialize() -> void:
 		"an unknown executor family must fail closed", errors
 	)
 
-	_demo_sniper_in_memory_distinctness(registry, errors)
+	_demo_sniper_in_memory_distinctness(registry, audit, errors)
 	_report(errors)
 
 
@@ -102,10 +107,27 @@ func _validate_audit(
 				"audit.executor_families.mismatch: expected %s, got %s"
 				% [strategy_ids, declared_ids]
 			)
+		for family in strategy_ids:
+			var declared_keys: Array[String] = []
+			for raw_param in (declared_families as Dictionary).get(family, []):
+				declared_keys.append(str(raw_param))
+			declared_keys.sort()
+			var live_keys := Distinctness.parameter_keys(family)
+			if declared_keys != live_keys:
+				errors.append(
+					"audit.executor_params.mismatch: %s expected %s, got %s"
+					% [family, live_keys, declared_keys]
+				)
 
 	var primitive_ids := _ids_from(audit.get("missing_generic_primitives", []))
 	var generalization_ids := _ids_from(audit.get("parameter_generalizations", []))
 	var seen := {}
+	var classification_counts: Dictionary = {
+		"expressible_now": 0,
+		"needs_param_generalization": 0,
+		"needs_new_generic_primitive": 0,
+	}
+	var spotter: Dictionary = {}
 	for raw_entry in profiles:
 		if not raw_entry is Dictionary:
 			errors.append("audit.profile.type: every profile must be a Dictionary")
@@ -122,9 +144,12 @@ func _validate_audit(
 			errors.append("audit.pair.extra: %s" % key)
 
 		var classification := str(entry.get("classification", ""))
+		classification_counts[classification] = int(classification_counts.get(classification, 0)) + 1
 		if not CLASSIFICATIONS.has(classification):
 			errors.append("audit.classification.invalid: %s" % classification)
 		var family := str(entry.get("executor_family", ""))
+		if key == "sniper/sniper_spotter_scope":
+			spotter = entry
 		if not strategy_ids.has(family):
 			errors.append("audit.executor_family.unknown: %s" % family)
 
@@ -147,6 +172,8 @@ func _validate_audit(
 							"audit.params.incomplete: %s expected %s, got %s"
 							% [key, expected_keys, actual_keys]
 						)
+					for contract_error in Distinctness.validate_executor_contract(family, params as Dictionary):
+						errors.append("audit.%s: %s" % [key, contract_error])
 			"needs_param_generalization":
 				var missing_parameters = entry.get("missing_parameters")
 				if not missing_parameters is Array or (missing_parameters as Array).is_empty():
@@ -170,6 +197,12 @@ func _validate_audit(
 		var key := str(raw_key)
 		if not seen.has(key):
 			errors.append("audit.pair.missing: %s" % key)
+	if classification_counts != EXPECTED_CLASSIFICATION_COUNTS:
+		errors.append(
+			"audit.classification.counts: expected %s, got %s"
+			% [EXPECTED_CLASSIFICATION_COUNTS, classification_counts]
+		)
+	_validate_spotter(spotter, errors)
 	return errors
 
 
@@ -183,22 +216,29 @@ func _ids_from(raw_entries) -> Array[String]:
 	return ids
 
 
+func _validate_spotter(spotter: Dictionary, errors: Array[String]) -> void:
+	if str(spotter.get("classification", "")) != "needs_param_generalization":
+		errors.append("audit.spotter.classification: must need parameter generalization")
+	if str(spotter.get("executor_family", "")) != "aimed_sequence":
+		errors.append("audit.spotter.family: must retain aimed_sequence as closest family")
+	var expected := [
+		"anchor_retention",
+		"marked_target_anchor",
+		"zone_membership",
+		"zone_radius",
+		"zone_scoped_reacquisition",
+	]
+	var actual: Array[String] = []
+	for raw_parameter in spotter.get("missing_parameters", []):
+		actual.append(str(raw_parameter))
+	actual.sort()
+	if actual != expected:
+		errors.append("audit.spotter.missing_parameters: expected %s, got %s" % [expected, actual])
+
+
 ## Exactly one class demonstrates the reusable in-memory contract technique.
-func _demo_sniper_in_memory_distinctness(registry, errors: Array[String]) -> void:
-	var result := Distinctness.resolve_class_contracts(registry, "sniper", {
-		"sniper_deadeye_rifle": {
-			"executor_family": "aimed_sequence",
-			"params": {"radius": 900.0, "damage": 3.0, "shot_count": 1, "interval": 0.05},
-		},
-		"sniper_spotter_scope": {
-			"executor_family": "aimed_sequence",
-			"params": {"radius": 620.0, "damage": 1.0, "shot_count": 9, "interval": 0.28},
-		},
-		"sniper_shatter_rounds": {
-			"executor_family": "chained_projectile",
-			"params": {"radius": 260.0, "damage": 0.6, "jumps": 15, "hop_delay": 0.04, "falloff": 0.92},
-		},
-	})
+func _demo_sniper_in_memory_distinctness(registry, audit: Dictionary, errors: Array[String]) -> void:
+	var result := Distinctness.resolve_class_contracts(registry, audit, "sniper", _sniper_contracts())
 	_expect(
 		(result["errors"] as Array).is_empty(),
 		"sniper in-memory contracts must resolve distinctly: %s" % str(result["errors"]),
@@ -216,6 +256,73 @@ func _demo_sniper_in_memory_distinctness(registry, errors: Array[String]) -> voi
 			"helper must not change persisted %s resolution" % weapon_id,
 			errors
 		)
+
+	var unknown_family := _sniper_contracts()
+	unknown_family["sniper_deadeye_rifle"]["executor_family"] = "__missing_family__"
+	_expect_distinctness_error(
+		registry, audit, unknown_family,
+		"sniper/sniper_deadeye_rifle executor_family.unknown:",
+		"unknown executor family must fail closed", errors
+	)
+
+	var unknown_parameter := _sniper_contracts()
+	unknown_parameter["sniper_deadeye_rifle"]["params"]["__unknown_param__"] = 1.0
+	_expect_distinctness_error(
+		registry, audit, unknown_parameter,
+		"sniper/sniper_deadeye_rifle executor_params.unknown:",
+		"unknown executor parameter must fail closed", errors
+	)
+
+	var invalid_parameter := _sniper_contracts()
+	invalid_parameter["sniper_deadeye_rifle"]["params"]["radius"] = "not-a-number"
+	_expect_distinctness_error(
+		registry, audit, invalid_parameter,
+		"sniper/sniper_deadeye_rifle executor_params.invalid:",
+		"invalid executor parameter must fail closed", errors
+	)
+
+	var audit_family_mismatch := _sniper_contracts()
+	audit_family_mismatch["sniper_deadeye_rifle"] = {
+		"executor_family": "burst",
+		"params": {"radius": 900.0, "damage": 3.0, "target_limit": 1},
+	}
+	_expect_distinctness_error(
+		registry, audit, audit_family_mismatch,
+		"sniper/sniper_deadeye_rifle executor_family.audit_mismatch:",
+		"audit/helper executor family mismatch must fail closed", errors
+	)
+
+
+func _sniper_contracts() -> Dictionary:
+	return {
+		"sniper_deadeye_rifle": {
+			"executor_family": "aimed_sequence",
+			"params": {"radius": 900.0, "damage": 3.0, "shot_count": 1, "interval": 0.05},
+		},
+		"sniper_spotter_scope": {
+			"executor_family": "aimed_sequence",
+			"params": {"radius": 620.0, "damage": 1.0, "shot_count": 9, "interval": 0.28},
+		},
+		"sniper_shatter_rounds": {
+			"executor_family": "aimed_sequence",
+			"params": {"radius": 760.0, "damage": 1.4, "shot_count": 5, "interval": 0.08},
+		},
+	}
+
+
+func _expect_distinctness_error(
+	registry,
+	audit: Dictionary,
+	contracts: Dictionary,
+	expected_prefix: String,
+	message: String,
+	errors: Array[String]
+) -> void:
+	var result := Distinctness.resolve_class_contracts(registry, audit, "sniper", contracts)
+	for validation_error in result["errors"]:
+		if str(validation_error).begins_with(expected_prefix):
+			return
+	errors.append("%s; got %s" % [message, result["errors"]])
 
 
 func _expect_error_code(

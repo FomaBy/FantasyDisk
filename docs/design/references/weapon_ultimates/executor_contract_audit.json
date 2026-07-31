@@ -31,6 +31,17 @@
       }
     },
     {
+      "id": "aimed_sequence.marked_target_zone",
+      "family": "aimed_sequence",
+      "missing_parameters": {
+        "marked_target_anchor": "target reference selected at cast time and used as the zone center",
+        "zone_radius": "float radius around the retained marked-target anchor",
+        "zone_membership": "target filter requiring every shot target to be inside the anchored zone",
+        "anchor_retention": "validity and retention policy for the marked-target anchor",
+        "zone_scoped_reacquisition": "reacquisition policy constrained to the anchored zone"
+      }
+    },
+    {
       "id": "deploy_summon.spawn_setup",
       "family": "deploy_summon",
       "missing_parameters": {
@@ -159,7 +170,7 @@
       "tests/ultimates/registry_contract_test.gd"
     ],
     "activation_owner": "FAN-1541",
-    "persisted_state_rule": "implementation_state remains declared and targeting/charge/executor/cleanup strategy_id remains unbound until FAN-1541",
+    "persisted_state_rule": "Class packages may declare profiles before FAN-1541, but implementation_state remains declared and targeting/charge/executor/cleanup strategy_id remains unbound; FAN-1541 alone may bind or activate a profile.",
     "proof_rule": "A class test may inject ready bindings in memory through tests/ultimates/weapon_ultimate_distinctness_helper.gd; it must not activate persisted catalog data."
   },
   "profiles": [
@@ -206,7 +217,7 @@
     {"class_id":"robot","weapon_id":"robot_hydraulic_press","classification":"needs_new_generic_primitive","executor_family":"control","missing_primitives":["aim_context","line_pierce_geometry","ordered_step_composition"],"evidence":"Two opposing walls repeatedly crush targets in an aimed corridor before a release shock."},
     {"class_id":"robot","weapon_id":"robot_reactor_core","classification":"needs_new_generic_primitive","executor_family":"status_zone","missing_primitives":["ordered_step_composition","guard_prevention_ledger"],"evidence":"A host-following accelerating damage field and temporary absorb end in one clearing vent wave."},
     {"class_id":"sniper","weapon_id":"sniper_deadeye_rifle","classification":"needs_new_generic_primitive","executor_family":"aimed_sequence","missing_primitives":["aim_context","priority_target_selector","line_pierce_geometry","per_target_damage_cap"],"evidence":"One aimed/highest-HP shot crosses the arena, pierces in order and spends a strict target budget."},
-    {"class_id":"sniper","weapon_id":"sniper_spotter_scope","classification":"expressible_now","executor_family":"aimed_sequence","params":{"radius":620.0,"damage":1.0,"shot_count":9,"interval":0.28},"evidence":"The family already plans nine distinct targets, sequences shots and re-acquires a dead planned target."},
+    {"class_id":"sniper","weapon_id":"sniper_spotter_scope","classification":"needs_param_generalization","executor_family":"aimed_sequence","generalization_id":"aimed_sequence.marked_target_zone","missing_parameters":["marked_target_anchor","zone_radius","zone_membership","anchor_retention","zone_scoped_reacquisition"],"evidence":"Spotter Scope marks a target-centered kill-zone and must retain that anchor while every planned and re-acquired beam target remains inside the zone; current aimed_sequence searches from the player origin instead."},
     {"class_id":"sniper","weapon_id":"sniper_shatter_rounds","classification":"needs_new_generic_primitive","executor_family":"aimed_sequence","missing_primitives":["aim_context","arena_bounds_query","directed_fan_split","trajectory_motion","per_target_damage_cap"],"evidence":"Five directed paths bounce once at the arena edge, split into three shards and share a cap per target."},
     {"class_id":"soldier","weapon_id":"soldier_rifle","classification":"needs_new_generic_primitive","executor_family":"aimed_sequence","missing_primitives":["aim_context","line_pierce_geometry","priority_target_selector","ordered_step_composition"],"evidence":"Three arena-crossing aimed volleys stop and explode on the first dense groups."},
     {"class_id":"soldier","weapon_id":"soldier_grenade","classification":"needs_new_generic_primitive","executor_family":"deploy_summon","missing_primitives":["aim_context","pattern_geometry","ordered_step_composition","stateful_target_ledger"],"evidence":"Seven grenades use a seeded aimed formation, shared countdown, outside-in chain and a final burning crater."},

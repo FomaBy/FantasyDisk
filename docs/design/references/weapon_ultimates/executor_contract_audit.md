@@ -13,14 +13,19 @@ Audited `origin/dev`: `c0a0e9568361af90f2b15b0d88d5c5b897f1f4b2`.
 
 All 17 classes and all 51 weapon IDs are present exactly once:
 
-- `expressible_now`: 1 profile;
-- `needs_param_generalization`: 5 profiles;
+- `expressible_now`: 0 profiles;
+- `needs_param_generalization`: 6 profiles;
 - `needs_new_generic_primitive`: 45 profiles;
 - missing, duplicate or extra pairs: 0.
 
 This is a capability audit, not balance approval. A concrete parameter set
 below states what the current family can execute; it does not replace the
 class-package balance evidence.
+
+The stricter `0 / 6 / 45` result is intentional. The proposed `0 / 46 / 5`
+split would claim that forty current world-query and stateful gaps are merely
+parameters; the complete 51-pair audit cannot make that claim while the live
+executor and activation contracts lack those capabilities.
 
 ## Current executor space
 
@@ -34,22 +39,12 @@ class-package balance evidence.
 | `status_zone` | `radius`, `damage`, `duration`, `interval`, `follow_host`, `status_id`, `status` | One circular tick pattern and one status. |
 | `timed_modifier` | `duration`, `radius`, `modifiers` | Owner modifiers only; cleanup is supported, outcome storage is not. |
 
-The one exact fit is `sniper/sniper_spotter_scope`:
-
-```json
-{
-  "executor_family": "aimed_sequence",
-  "params": {
-    "radius": 620.0,
-    "damage": 1.0,
-    "shot_count": 9,
-    "interval": 0.28
-  }
-}
-```
-
-Nine targets are planned, shots run sequentially, and the existing dead-target
-re-acquire preserves the remaining locks.
+`sniper/sniper_spotter_scope` is not an exact fit. Its marked target-centered
+kill-zone needs an `aimed_sequence.marked_target_zone` generalization with a
+marked-target anchor, zone radius and membership, retained-anchor policy, and
+zone-scoped reacquisition. Current `aimed_sequence` plans and re-acquires from
+the player origin, so it cannot preserve that zone without class or weapon
+branching.
 
 ## Required minimum capability rulings
 
@@ -73,6 +68,7 @@ the required target access and cleanup, but lacks exact data-driven parameters:
 | Pair | Family | Exact missing params |
 | --- | --- | --- |
 | `berserk/sword` | `status_zone` | `radius_steps`, `damage_steps`, `finale_damage` |
+| `sniper/sniper_spotter_scope` | `aimed_sequence` | `marked_target_anchor`, `zone_radius`, `zone_membership`, `anchor_retention`, `zone_scoped_reacquisition` |
 | `engineer/engineer_sentry_wrench` | `deploy_summon` | `spawn_setup` |
 | `elementalist/elementalist_orb_ring` | `status_zone` | `pulse_sequence`, `finale` |
 | `knight/holy_flail` | `control` | `pulse_sequence`, `force_mode`, `radius_curve` |
@@ -155,7 +151,7 @@ generalization or primitive IDs.
 | `robot/robot_hydraulic_press` | primitive | `control` | `aim_context`, `line_pierce_geometry`, `ordered_step_composition` |
 | `robot/robot_reactor_core` | primitive | `status_zone` | `ordered_step_composition`, `guard_prevention_ledger` |
 | `sniper/sniper_deadeye_rifle` | primitive | `aimed_sequence` | `aim_context`, `priority_target_selector`, `line_pierce_geometry`, `per_target_damage_cap` |
-| `sniper/sniper_spotter_scope` | `expressible_now` | `aimed_sequence` | Full params shown above. |
+| `sniper/sniper_spotter_scope` | param | `aimed_sequence` | `aimed_sequence.marked_target_zone` — marked-target anchor, zone radius/membership, retained anchor, zone-scoped reacquisition |
 | `sniper/sniper_shatter_rounds` | primitive | `aimed_sequence` | `aim_context`, `arena_bounds_query`, `directed_fan_split`, `trajectory_motion`, `per_target_damage_cap` |
 | `soldier/soldier_rifle` | primitive | `aimed_sequence` | `aim_context`, `line_pierce_geometry`, `priority_target_selector`, `ordered_step_composition` |
 | `soldier/soldier_grenade` | primitive | `deploy_summon` | `aim_context`, `pattern_geometry`, `ordered_step_composition`, `stateful_target_ledger` |
@@ -180,16 +176,19 @@ It must not write:
 - `scripts/ultimates/controller/**`;
 - `tests/ultimates/registry_contract_test.gd`.
 
-Every persisted profile remains `implementation_state: "declared"`. The
+Class packages may declare their profile data before FAN-1541. Every persisted
+profile nevertheless remains `implementation_state: "declared"`, and the
 `targeting`, `charge`, `executor` and `cleanup_policy` strategy IDs remain
-`"unbound"`. FAN-1541 alone owns activation of the 51 profiles.
+`"unbound"`. Only FAN-1541 may bind or activate any of the 51 profiles; a
+class-local package is never independently activatable.
 
 Class tests prove weapon-local distinction in memory through
 `tests/ultimates/weapon_ultimate_distinctness_helper.gd`. The helper deep-copies
-the registry maps, injects ready/bound contracts only into those copies, resolves
-all three exact weapon IDs, rejects aliases, and verifies that the shipped
-registry still selects the legacy fallback. The audit test demonstrates this
-once, on Sniper, without changing catalog data.
+the registry maps, validates the family through the live executor library and
+the typed live parameter contract, injects ready/bound contracts only into those
+copies, resolves all three exact weapon IDs, rejects aliases, and verifies that
+the shipped registry still selects the legacy fallback. The audit test
+demonstrates this once, on Sniper, without changing catalog data.
 
 ## Runtime invariants
 

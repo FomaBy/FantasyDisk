@@ -158,15 +158,12 @@ The new catalog is authoritative only for weapon-profile identity and future
 bindings. Codex may inspect the exact selected declaration, but must not
 describe an unbound `declared` profile as implemented gameplay.
 
-Future per-weapon implementations should:
-
-1. Keep the immutable profile and presentation IDs.
-2. Add class-local strategy bindings without adding selection branches to
-   `Player` or `ClassWeapon`.
-3. Supply a whole-activation boss cap.
-4. Change only that profile to `ready`.
-5. Prove the selected weapon resolves the profile while both siblings remain
-   negative controls.
+Before FAN-1541, class packages may add only declaration data, class-local
+evidence, and in-memory proof. They must not bind strategies, mark a profile
+`ready`, or activate a profile independently. FAN-1541 owns the later binding
+and activation stage; when it runs, it must keep immutable IDs, avoid selection
+branches in `Player` or `ClassWeapon`, supply a whole-activation boss cap, and
+prove the selected weapon resolves while both siblings remain negative controls.
 
 ## Verification
 
