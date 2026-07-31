@@ -40,7 +40,10 @@ const ZERO_EPS := 0.01
 # FAN-1062: потолок перекалиброван под честную времябазу (см. _measure_dps):
 # старый 80000 калибровался на раздутом фикс-окне (замер 67549); честные
 # значения 6993..7803 (±6%, N=2). Потолок = среднее ×~1.35 (шум + малый рост).
-const MAX_POOL_IDEAL_20T := 10000.0
+# FAN-1985: после exact-once cadence пять чистых замеров дали 14595..14739;
+# потолок 16000 оставляет 8.6% над максимумом. Контроль без pool diminish/cap
+# даёт 31059..31190 и обязан тем же пределом упасть.
+const MAX_POOL_IDEAL_20T := 16000.0
 
 # Оружие-лужи (leaves_pool), которые давали выброс на плотном паке.
 # SCRUM-943: blast_powder больше не оставляет лужу (редизайн — быстрый прямой
@@ -64,6 +67,7 @@ func _initialize() -> void:
 
 	var seed_of := _seed_map()
 	var failures: Array = []
+	await _assert_pool_cadence_once(failures)
 	for pair in POOL_PAIRS:
 		var cid: String = pair[0]
 		var wid: String = pair[1]
@@ -87,6 +91,10 @@ func _initialize() -> void:
 			failures.append("%s/%s: 0 живого урона за %.0fс — режим оружия сломан" % [cid, wid, WINDOW_SECONDS])
 		elif dps_20t > MAX_POOL_IDEAL_20T:
 			failures.append("%s/%s lvl20_ideal 20t = %.0f > потолка %.0f — runaway лужи вернулся (проверь ClassWeapon._damage_enemies_in_pool / диминишинг pool-целей)" % [cid, wid, dps_20t, MAX_POOL_IDEAL_20T])
+		var no_diminishing_dps: float = await _measure_dps(cid, wid, 20, build, true)
+		print("[pool-gate] %s/%s no-diminishing 20t=%.0f (должен провалить ≤%.0f)" % [cid, wid, no_diminishing_dps, MAX_POOL_IDEAL_20T])
+		if not is_finite(no_diminishing_dps) or no_diminishing_dps <= MAX_POOL_IDEAL_20T or no_diminishing_dps < dps_20t * 2.0:
+			failures.append("%s/%s negative control не доказал чувствительность гейта: %.0f против normal %.0f (нужен провал потолка и ≥2x)" % [cid, wid, no_diminishing_dps, dps_20t])
 
 	_holder.queue_free()
 	await process_frame
@@ -215,7 +223,7 @@ func _weighted_index(source: Array, character_id: String, rng: RandomNumberGener
 	return weights.size() - 1
 
 
-func _measure_dps(character_id: String, weapon_id: String, target_count: int, rewards: Array) -> float:
+func _measure_dps(character_id: String, weapon_id: String, target_count: int, rewards: Array, without_pool_diminishing := false) -> float:
 	seed(BASE_SEED + target_count)
 	for child in _holder.get_children():
 		child.queue_free()
@@ -227,6 +235,12 @@ func _measure_dps(character_id: String, weapon_id: String, target_count: int, re
 	player.global_position = Vector2(1280, 720)
 	if player.has_method("configure_character"):
 		player.configure_character(character_id, weapon_id)
+	if without_pool_diminishing:
+		var weapon := player.get("equipped_weapon") as Node
+		if weapon == null:
+			return NAN
+		weapon.set("pool_target_diminish", 0.0)
+		weapon.set("pool_max_targets", -1)
 	player.set("max_health", 1.0e9)
 	player.set("health", 1.0e9)
 	for reward in rewards:
@@ -267,6 +281,34 @@ func _measure_dps(character_id: String, weapon_id: String, target_count: int, re
 		if is_instance_valid(enemy):
 			hp_after += float(enemy.get("health"))
 	return maxf(hp_before - hp_after, 0.0) / maxf(elapsed_game_time, 0.001)
+
+
+func _assert_pool_cadence_once(failures: Array) -> void:
+	var player := PLAYER_SCENE.instantiate() as Node2D
+	_holder.add_child(player)
+	player.global_position = Vector2(1280, 720)
+	player.call("configure_character", "chemist", "acid_flask")
+	var weapon := player.get("equipped_weapon") as Node
+	if weapon == null:
+		failures.append("cadence contract: acid_flask не экипировался")
+		player.queue_free()
+		return
+	var base_pool := float(weapon.get("pool_tick_interval"))
+	var base_charge := float(weapon.get("pool_charge_tick_interval"))
+	var modifiers: Dictionary = player.get("run_modifiers")
+	modifiers["attack_speed_multiplier"] = 1.5
+	player.call("_apply_stat_scaling")
+	player.call("_apply_weapon_scaling", weapon)
+	var cadence := float((player.get("derived_parameters") as Dictionary).get("attack_cadence_multiplier", 0.0))
+	var fast_pool := float(weapon.get("pool_tick_interval"))
+	var fast_charge := float(weapon.get("pool_charge_tick_interval"))
+	if cadence <= 1.0 or absf(fast_pool - base_pool / cadence) > 0.001 or absf(fast_charge - base_charge / cadence) > 0.001:
+		failures.append("cadence contract: pool/acid intervals не применили единую каденцию ровно один раз (base %.3f/%.3f, fast %.3f/%.3f, cadence %.3f)" % [base_pool, base_charge, fast_pool, fast_charge, cadence])
+	player.call("_apply_weapon_scaling", weapon)
+	if absf(float(weapon.get("pool_tick_interval")) - fast_pool) > 0.001 or absf(float(weapon.get("pool_charge_tick_interval")) - fast_charge) > 0.001:
+		failures.append("cadence contract: повторный scaling умножил pool/acid cadence повторно")
+	player.queue_free()
+	await process_frame
 
 
 func _spawn_dummies(player_pos: Vector2, target_count: int) -> Array:

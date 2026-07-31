@@ -128,6 +128,23 @@ static func weapon_attacks_per_second(weapon_config: Dictionary, attack_speed_va
 	return 1.0 / maxf(0.18, base_interval / maxf(attack_speed_value, 0.1))
 
 
+# Единый exact-once слой общей каденции для периодических каналов оружия.
+static func apply_weapon_cadence(weapon: Node, cadence_multiplier: float, meta_interval_multiplier := 1.0) -> void:
+	var cadence := maxf(cadence_multiplier, 0.1)
+	for property_id in ["pool_tick_interval", "pool_charge_tick_interval", "trap_bleed_tick_interval", "burst_interval", "amp_pulse_interval"]:
+		if weapon.get(property_id) == null:
+			continue
+		var base_key := "base_%s" % property_id
+		if not weapon.has_meta(base_key):
+			weapon.set_meta(base_key, weapon.get(property_id))
+		var interval := float(weapon.get_meta(base_key)) / cadence
+		var floor := 0.1
+		if property_id in ["pool_tick_interval", "amp_pulse_interval"]:
+			interval *= meta_interval_multiplier
+			floor = 0.08
+		weapon.set(property_id, maxf(interval, floor))
+
+
 # Фактический runtime-парк призывов/деплоя (player.gd:3668-3681): база +
 # Лидерство/4 + summon_bonus, кап max_summons_cap (+amp_cap_bonus у amp-китов).
 static func summon_runtime_count(weapon_config: Dictionary, stats: Dictionary, run_modifiers: Dictionary) -> float:
