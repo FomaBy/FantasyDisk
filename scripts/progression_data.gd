@@ -49,6 +49,8 @@ const VAMPIRIC_HEAL_CAP_DEFAULT := BalanceData.VAMPIRIC_HEAL_CAP_DEFAULT
 const VAMPIRIC_HEAL_CAP_HARD := BalanceData.VAMPIRIC_HEAL_CAP_HARD
 const WEAPON_DRAIN_HEAL_MULTIPLIER := BalanceData.WEAPON_DRAIN_HEAL_MULTIPLIER
 const CRIT_CHANCE_CAP := BalanceData.CRIT_CHANCE_CAP
+const CRIT_CHANCE_CAP_MAX := BalanceData.CRIT_CHANCE_CAP_MAX
+const CRIT_CHANCE_CAP_AGILITY_SCALE := BalanceData.CRIT_CHANCE_CAP_AGILITY_SCALE
 const CRIT_CHANCE_DIMINISH := BalanceData.CRIT_CHANCE_DIMINISH
 const CRIT_FLAT_EFFECTIVENESS := BalanceData.CRIT_FLAT_EFFECTIVENESS
 const CRIT_DAMAGE_BASE_MULTIPLIER := BalanceData.CRIT_DAMAGE_BASE_MULTIPLIER
@@ -558,7 +560,7 @@ static func reward_attribute_dependency(reward: Dictionary) -> String:
 			# больше не level-up атрибуты: их источники (артефакты) взвешиваются
 			# нейтрально через пустую зависимость. FAN-1887: то же для снятых с
 			# player-facing реестра magic_damage/range/buff_power/absorb ключей.
-			"dot_damage_flat", "dot_speed_flat":
+			"dot_damage_flat":
 				return "dot_damage"
 			"summon_bonus":
 				return "summon_amount"
@@ -734,11 +736,17 @@ static func effective_crit_chance(raw_chance: float, cap := CRIT_CHANCE_CAP, dim
 	return clampf(softened, 0.0, clampf(cap, 0.0, 1.0))
 
 
+static func ordinary_crit_chance_cap(agility: float) -> float:
+	return clampf(CRIT_CHANCE_CAP + maxf(agility, 0.0) * CRIT_CHANCE_CAP_AGILITY_SCALE, CRIT_CHANCE_CAP, CRIT_CHANCE_CAP_MAX)
+
+
 static func effective_crit_damage_multiplier(agility: float, flat_bonus: float) -> float:
 	var positive_flat := maxf(flat_bonus, 0.0) * CRIT_DAMAGE_FLAT_EFFECTIVENESS
 	var negative_flat := minf(flat_bonus, 0.0)
-	var multiplier := CRIT_DAMAGE_BASE_MULTIPLIER + maxf(agility, 0.0) * CRIT_DAMAGE_AGILITY_SCALE + positive_flat + negative_flat
-	return clampf(multiplier, 1.0, CRIT_DAMAGE_CAP)
+	var raw := CRIT_DAMAGE_BASE_MULTIPLIER + maxf(agility, 0.0) * CRIT_DAMAGE_AGILITY_SCALE + positive_flat + negative_flat
+	if raw <= CRIT_DAMAGE_CAP:
+		return maxf(raw, 1.0)
+	return CRIT_DAMAGE_CAP + sqrt(raw - CRIT_DAMAGE_CAP)
 
 
 # SCRUM-524: архетип-множитель урона удалён. Он зависел от ВСЕХ атрибутов и
@@ -890,10 +898,10 @@ static func class_battle_prayers(character_id: String) -> Array:
 # diminish 0.0 (крит-вложения окупаются полностью), overflow 0.5 — избыток
 # raw-шанса сверх капа переливается в crit_damage_flat (итог по-прежнему зажат
 # CRIT_DAMAGE_CAP в effective_crit_damage_multiplier — runaway невозможен).
-static func class_crit_profile(character_id: String) -> Dictionary:
+static func class_crit_profile(character_id: String, ordinary_cap := CRIT_CHANCE_CAP) -> Dictionary:
 	var trait_config: Dictionary = CLASS_TRAITS.get(character_id, {})
 	return {
-		"cap": clampf(float(trait_config.get("crit_chance_cap", CRIT_CHANCE_CAP)), 0.0, 1.0),
+		"cap": clampf(float(trait_config.get("crit_chance_cap", ordinary_cap)), 0.0, 1.0),
 		"diminish": maxf(float(trait_config.get("crit_chance_diminish", CRIT_CHANCE_DIMINISH)), 0.0),
 		"overflow": clampf(float(trait_config.get("crit_overflow_to_crit_damage", 0.0)), 0.0, 1.0),
 	}
@@ -2138,10 +2146,8 @@ static func derived_parameters(stats: Dictionary, run_modifiers: Dictionary, wea
 	var projectile_speed_flat := float(run_modifiers.get("projectile_speed_flat", 0.0)) + float(passive_mods.get("projectile_speed_flat", 0.0))
 	var aura_radius_flat := float(run_modifiers.get("aura_radius_flat", 0.0)) + float(passive_mods.get("aura_radius_flat", 0.0))
 	var buff_power_flat := float(run_modifiers.get("buff_power_flat", 0.0)) + float(passive_mods.get("buff_power_flat", 0.0))
-	var run_dot_damage_flat := minf(maxf(float(run_modifiers.get("dot_damage_flat", 0.0)), 0.0), 12.0) + minf(float(run_modifiers.get("dot_damage_flat", 0.0)), 0.0)
-	var run_dot_speed_flat := minf(maxf(float(run_modifiers.get("dot_speed_flat", 0.0)), 0.0), 1.0) + minf(float(run_modifiers.get("dot_speed_flat", 0.0)), 0.0)
+	var run_dot_damage_flat := float(run_modifiers.get("dot_damage_flat", 0.0))
 	var dot_damage_flat := run_dot_damage_flat + float(passive_mods.get("dot_damage_flat", 0.0))
-	var dot_speed_flat := run_dot_speed_flat + float(passive_mods.get("dot_speed_flat", 0.0))
 	# SCRUM-834a: условный keystone «рывок → крит-шанс» (thief «Из тени»). Гейт
 	# rush_window_active ставит player._trigger_rush_window; 0 вне окна. Проходит
 	# ту же CRIT_FLAT_EFFECTIVENESS, что и базовый крит-шанс (тождество весов).
@@ -2153,7 +2159,7 @@ static func derived_parameters(stats: Dictionary, run_modifiers: Dictionary, wea
 	# CLASS_TRAITS; дефолт — глобальные константы). Избыток raw-шанса СВЕРХ капа
 	# конвертируется в crit_damage_flat с коэффициентом overflow (только у классов
 	# с trait-ключом; итоговый крит-урон всё равно зажат CRIT_DAMAGE_CAP).
-	var crit_profile := class_crit_profile(character_id)
+	var crit_profile := class_crit_profile(character_id, ordinary_crit_chance_cap(agility))
 	var crit_chance_raw := 0.04 + agility * 0.0075 + crit_chance_flat
 	var crit_overflow_ratio := float(crit_profile.get("overflow", 0.0))
 	if crit_overflow_ratio > 0.0:
@@ -2177,7 +2183,14 @@ static func derived_parameters(stats: Dictionary, run_modifiers: Dictionary, wea
 			magic_intelligence = base_intelligence + intelligence_delta * magic_bonus_effectiveness
 	var magic_base := 14.0 * magic_intelligence / 10.0
 	var universal_attack_stat := agility + energy * 0.18 + perception * 0.10 + endurance * 0.04
+	var attack_speed := maxf(0.1, (9.0 * 3.0 * universal_attack_stat / 100.0) * attack_speed_multiplier)
+	var base_attack_stat := universal_attack_stat
+	if not base_for_growth.is_empty():
+		base_attack_stat = float(base_for_growth.get("agility", agility)) + float(base_for_growth.get("energy", energy)) * 0.18 + float(base_for_growth.get("perception", perception)) * 0.10 + float(base_for_growth.get("endurance", endurance)) * 0.04
+	var base_attack_speed := maxf(9.0 * 3.0 * base_attack_stat / 100.0, 0.1)
+	var attack_cadence_multiplier := maxf(attack_speed / base_attack_speed, 0.1)
 	var dot_attribute_base := 4.0 + knowledge * 0.65 + dot_damage_flat
+	var base_dot_speed := maxf(0.45, 0.65 + knowledge * 0.08 + energy * 0.015 + agility * 0.010)
 	var range_perception := perception
 	var range_intelligence := intelligence
 	var range_endurance := endurance
@@ -2204,7 +2217,8 @@ static func derived_parameters(stats: Dictionary, run_modifiers: Dictionary, wea
 	return {
 		"damage": (physical_base * weapon_damage_multiplier * damage_multiplier + universal_damage_flat) * sandbox_damage_multiplier,
 		"magic_damage": (magic_base * weapon_damage_multiplier * damage_multiplier * magic_damage_multiplier + universal_damage_flat) * sandbox_damage_multiplier,
-		"attack_speed": max(0.1, (9.0 * 3.0 * universal_attack_stat / 100.0) * attack_speed_multiplier),
+		"attack_speed": attack_speed,
+		"attack_cadence_multiplier": attack_cadence_multiplier,
 		"crit_chance": effective_crit_chance(crit_chance_raw, float(crit_profile.get("cap", CRIT_CHANCE_CAP)), float(crit_profile.get("diminish", CRIT_CHANCE_DIMINISH))),
 		"crit_damage_multiplier": effective_crit_damage_multiplier(agility, crit_damage_flat),
 		"move_speed": (282.0 + agility * 6.2) * move_speed_multiplier,
@@ -2217,7 +2231,7 @@ static func derived_parameters(stats: Dictionary, run_modifiers: Dictionary, wea
 		# trait-множителем (у Вора ×1.85); flat-добавки — поверх без усиления.
 		"pickup_radius": (105.0 + perception * 7.0) * _pickup_radius_trait_multiplier(character_id) + pickup_radius_flat,
 		"dot_damage": max(1.0, dot_attribute_base * damage_multiplier) * sandbox_damage_multiplier,
-		"dot_speed": max(0.45, 0.65 + knowledge * 0.08 + energy * 0.015 + agility * 0.010 + dot_speed_flat),
+		"dot_speed": base_dot_speed * attack_cadence_multiplier,
 		"projectile_speed": float(weapon_config.get("projectile_speed", 460.0)) + perception * 18.0 + agility * 9.0 + energy * 4.0 + knowledge * 2.0 + projectile_speed_flat,
 		"aura_radius": (float(weapon_config.get("aoe_radius", 180.0)) + leadership * 5.0 + perception * 0.80 + energy * 0.65 + knowledge * 0.45 + aura_radius_flat) * aoe_radius_multiplier,
 		"buff_power": 1.0 + leadership * 0.025 + knowledge * 0.006 + energy * 0.004 + buff_power_flat,

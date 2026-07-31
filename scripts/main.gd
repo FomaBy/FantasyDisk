@@ -311,7 +311,6 @@ const LEVEL_UP_MOD_DISPLAY := {
 	"knockback_multiplier": "knockback_power",
 	"dodge_flat": "dodge",
 	"dot_damage_flat": "dot_damage",
-	"dot_speed_flat": "dot_speed",
 	"projectile_speed_flat": "projectile_speed",
 	"aura_radius_flat": "aura_radius",
 	"buff_power_flat": "buff_power",

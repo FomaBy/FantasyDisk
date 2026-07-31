@@ -37,7 +37,6 @@ const STAR_ATTRS := {
 	"dodge": {"key": "dodge_flat", "value": 0.003, "short": "Уклонение", "ru": "к уклонению", "pct": true},
 	"range": {"key": "range_mult", "value": 0.01, "short": "Дальность", "ru": "к дальности атаки", "pct": true},
 	"dot_damage": {"key": "dot_damage_flat", "value": 0.21, "short": "Периодический урон", "ru": "периодического урона", "pct": false},
-	"dot_speed": {"key": "dot_speed_flat", "value": 0.013, "short": "Скорость тиков", "ru": "к скорости тиков", "pct": false},
 	"projectile_speed": {"key": "projectile_speed_flat", "value": 7.0, "short": "Снаряды", "ru": "к скорости снарядов", "pct": false},
 	"aura_radius": {"key": "aura_radius_flat", "value": 2.0, "short": "Аура", "ru": "к радиусу ауры", "pct": false},
 	"buff_power": {"key": "buff_power_flat", "value": 0.006, "short": "Поддержка", "ru": "к силе поддержки", "pct": true},
@@ -58,7 +57,7 @@ const POWER_WEIGHTS := {
 	"move_speed_mult": 0.8, "aoe_radius_mult": 0.6, "pickup_radius_flat": 0.0015,
 	"defense_flat": 2.0, "knockback_mult": 0.4, "crit_chance_flat": 2.0,
 	"crit_damage_flat": 0.375, "dodge_flat": 3.0, "range_mult": 0.8,
-	"dot_damage_flat": 0.0375, "dot_speed_flat": 0.6, "projectile_speed_flat": 0.0011,
+	"dot_damage_flat": 0.0375, "projectile_speed_flat": 0.0011,
 	"aura_radius_flat": 0.004, "aura_radius_mult": 0.6, "buff_power_flat": 1.25,
 	"summon_bonus": 0.06, "absorb_flat": 0.015, "regeneration_flat": 0.35,
 	"vampiric_amount_flat": 0.08, "vampiric_chance_flat": 1.4, "ultimate_flat": 0.75,
@@ -214,7 +213,6 @@ const EFFECT_LABELS := {
 	"projectile_speed_flat": {"ru": "к скорости снарядов", "pct": false},
 	"absorb_flat": {"ru": "к поглощению", "pct": false},
 	"dot_damage_flat": {"ru": "периодического урона", "pct": false},
-	"dot_speed_flat": {"ru": "к скорости тиков", "pct": false},
 	"aura_radius_flat": {"ru": "к радиусу ауры", "pct": false},
 	"summon_bonus": {"ru": "к силе призыва", "pct": false},
 	"regeneration_flat": {"ru": "к регенерации", "pct": false},
@@ -382,16 +380,16 @@ const CONSTELLATION_SPECS := {
 	},
 	"biologist": {
 		"core_title": "Живая гипотеза",
-		"attrs": ["dot_damage", "dot_speed", "summon_amount", "vampiric_amount", "regeneration", "dodge"],
+		"attrs": ["dot_damage", "attack_speed", "summon_amount", "vampiric_amount", "regeneration", "dodge"],
 		"techniques": [
-			{"title": "Споровый посев", "effects": {"dot_damage_flat": 0.21, "dot_speed_flat": 0.013}},
+			{"title": "Споровый посев", "effects": {"dot_damage_flat": 0.21}},
 			{"title": "Симбиоз", "effects": {"summon_bonus": 0.13, "vampiric_amount_flat": 0.1}},
 			{"title": "Культура штамма", "effects": {"regeneration_flat": 0.023, "dot_damage_flat": 0.21}},
 			{"title": "Защитная реакция", "effects": {"dodge_flat": 0.003, "thorn_reflect_multiplier": 0.04}},
 		],
 		"keystones": [
 			{"title": "Пандемия", "effects": {"swarm_damage_bonus": 0.177, "damage_mult": -0.04}},
-			{"title": "Симбионт", "effects": {"stance_damage_bonus": 0.204, "dot_speed_flat": -0.07}},
+			{"title": "Симбионт", "effects": {"stance_damage_bonus": 0.204}},
 			{"title": "Регенеративный цикл", "effects": {"regeneration_flat": 0.15, "max_health_mult": 0.04, "move_speed_mult": -0.06}},
 		],
 		"hidden": [
@@ -439,10 +437,10 @@ const CONSTELLATION_SPECS := {
 	},
 	"dark_mage": {
 		"core_title": "Серп заката",
-		"attrs": ["dot_damage", "damage", "aoe_radius", "dot_speed", "crit_damage", "summon_amount"],
+		"attrs": ["dot_damage", "damage", "aoe_radius", "attack_speed", "crit_damage", "summon_amount"],
 		"techniques": [
 			{"title": "Тонкая завеса", "effects": {"damage_mult": 0.008, "dot_damage_flat": 0.21}},
-			{"title": "Распад", "effects": {"aoe_radius_mult": 0.013, "dot_speed_flat": 0.013}},
+			{"title": "Распад", "effects": {"aoe_radius_mult": 0.013}},
 			{"title": "Жатва теней", "effects": {"crit_damage_flat": 0.021, "dot_damage_flat": 0.21}},
 			{"title": "Тёмный пакт", "effects": {"low_hp_damage_bonus": 0.03, "summon_bonus": 0.13}},
 		],
@@ -518,9 +516,9 @@ const CONSTELLATION_SPECS := {
 		# SCRUM-1064: Plague Oath blocks every generic regen/vampirism modifier.
 		# Keep the constellation on live weapon/utility axes so no purchased star
 		# is silently discarded by Player.apply_meta_skill_modifiers().
-		"attrs": ["dot_damage", "dot_speed", "max_health", "buff_power", "attack_speed", "ultimate_power"],
+		"attrs": ["dot_damage", "damage", "max_health", "buff_power", "attack_speed", "ultimate_power"],
 		"techniques": [
-			{"title": "Чумная смесь", "effects": {"dot_damage_flat": 0.21, "dot_speed_flat": 0.013}},
+			{"title": "Чумная смесь", "effects": {"dot_damage_flat": 0.21}},
 			{"title": "Полевой резерв", "effects": {"max_health_mult": 0.008, "buff_power_flat": 0.006}},
 			{"title": "Стимулятор", "effects": {"attack_speed_mult": 0.008, "buff_power_flat": 0.006}},
 			{"title": "Реанимация", "effects": {"ultimate_flat": 0.011, "max_health_mult": 0.008}},
@@ -537,9 +535,9 @@ const CONSTELLATION_SPECS := {
 	},
 	"chemist": {
 		"core_title": "Реторта истины",
-		"attrs": ["aoe_radius", "dot_speed", "dot_damage", "damage", "range", "move_speed"],
+		"attrs": ["aoe_radius", "attack_speed", "dot_damage", "damage", "range", "move_speed"],
 		"techniques": [
-			{"title": "Едкий ускоритель", "effects": {"dot_speed_flat": 0.013, "dot_damage_flat": 0.21}},
+			{"title": "Едкий ускоритель", "effects": {"dot_damage_flat": 0.21}},
 			{"title": "Цепная реакция", "effects": {"aoe_radius_mult": 0.013, "damage_mult": 0.008}},
 			{"title": "Летучая фракция", "effects": {"move_speed_mult": 0.01, "range_mult": 0.01}},
 			{"title": "Нестабильная смесь", "effects": {"kill_explosion_chance": 0.016, "dot_damage_flat": 0.21}},

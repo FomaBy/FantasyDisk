@@ -152,13 +152,14 @@ static func summon_runtime_cap(weapon_config: Dictionary, run_modifiers: Diction
 static func _presentation_axis_cap(attr_id: String, character_id: String, weapon_config := {}, run_modifiers := {}) -> float:
 	match attr_id:
 		"crit_chance":
-			return float(ProgressionData.class_crit_profile(character_id).get("cap", ProgressionData.CRIT_CHANCE_CAP))
+			var agility := float(ProgressionData.base_stats(character_id).get("agility", 0.0))
+			return float(ProgressionData.class_crit_profile(character_id, ProgressionData.ordinary_crit_chance_cap(agility)).get("cap", ProgressionData.CRIT_CHANCE_CAP))
 		"dodge":
 			return ProgressionData.SURVIVABILITY_DODGE_CAP
 		"defense":
 			return ProgressionData.SURVIVABILITY_DEFENSE_CAP
 		"crit_damage":
-			return ProgressionData.CRIT_DAMAGE_CAP
+			return -1.0
 		"summon_amount":
 			return summon_runtime_cap(weapon_config, run_modifiers)
 		_:

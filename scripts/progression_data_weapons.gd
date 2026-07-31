@@ -144,7 +144,6 @@ const DARK_MAGE_WEAPONS := {
 		"status_full_targets": 4, "status_target_diminish": 1.0,
 		"projectile_speed": 680.0,
 		"visual_color": Color(0.78, 0.16, 1.0, 0.42),
-		"passive_mods": {"dot_speed_flat": 0.25},
 	},
 	"dark_wand": {
 		"id": "dark_wand",

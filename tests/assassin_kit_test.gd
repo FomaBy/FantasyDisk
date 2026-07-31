@@ -116,8 +116,9 @@ func _test_trait_crit_cap_100(errors: Array) -> void:
 	var thief_crit := float(_derived("thief", str(PD.weapon_ids("thief")[0]), big_mods).get("crit_chance", 0.0))
 	if absf(assassin_crit - 1.0) > EPS:
 		errors.append("кап: Ассасин с большими вложениями crit=%.4f, ожидалось 1.0" % assassin_crit)
-	if absf(thief_crit - PD.CRIT_CHANCE_CAP) > EPS:
-		errors.append("кап контроля: не-Ассасин crit=%.4f, ожидался глобальный кап %.2f" % [thief_crit, PD.CRIT_CHANCE_CAP])
+	var thief_cap := PD.ordinary_crit_chance_cap(float(PD.base_stats("thief").get("agility", 0.0)))
+	if absf(thief_crit - thief_cap) > EPS:
+		errors.append("кап контроля: не-Ассасин crit=%.4f, ожидался Agility-кап %.2f" % [thief_crit, thief_cap])
 	# Реестр: trait-запись существует и заявляет кап 1.0.
 	var trait_config: Dictionary = PD.class_trait("assassin")
 	if absf(float(trait_config.get("crit_chance_cap", 0.0)) - 1.0) > EPS:
@@ -156,12 +157,13 @@ func _test_trait_overflow_to_crit_damage(errors: Array) -> void:
 
 
 func _test_trait_anti_runaway(errors: Array) -> void:
-	# Абсурдные вложения: шанс зажат 1.0, крит-урон зажат CRIT_DAMAGE_CAP.
+	# Абсурдные вложения: шанс Ассасина зажат 1.0, сила крита продолжает
+	# непрерывный diminishing tail выше raw 2.75x.
 	var params := _derived("assassin", "shadow_daggers", {"crit_chance_flat": 20.0, "crit_damage_flat": 20.0})
 	if float(params.get("crit_chance", 0.0)) > 1.0 + EPS:
 		errors.append("anti-runaway: crit_chance %.4f > 1.0" % float(params.get("crit_chance", 0.0)))
-	if float(params.get("crit_damage_multiplier", 0.0)) > PD.CRIT_DAMAGE_CAP + EPS:
-		errors.append("anti-runaway: crit_damage %.4f > CRIT_DAMAGE_CAP %.2f" % [float(params.get("crit_damage_multiplier", 0.0)), PD.CRIT_DAMAGE_CAP])
+	if float(params.get("crit_damage_multiplier", 0.0)) <= PD.CRIT_DAMAGE_CAP:
+		errors.append("anti-runaway: crit_damage %.4f не вошёл в diminishing tail" % float(params.get("crit_damage_multiplier", 0.0)))
 
 
 # --- Данные кита ---
