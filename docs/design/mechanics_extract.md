@@ -745,7 +745,7 @@ SCRUM-469 добавил class/stat-specific скалирование роста
 | damage | `15*Str/10 * weapon_mult * damage_mult + flat` | derived_parameters -> физическое оружие; Magic modifiers не протекают в physical | работает |
 | magic_damage | `14*Int/10 * weapon_mult * damage_mult * magic_damage_multiplier + flat` | derived -> магия/зачарование (включая экс-sound оружия Гитариста/Друида); не повышает physical | работает |
 | attack_speed | `27*(Agi + Energy*0.18 + Per*0.10 + End*0.04)/100 * mult`; интервал = base_fire_interval / AS | derived -> все оружия | работает |
-| crit_chance / crit_damage_multiplier | chance = effective_crit_chance(0.04+Agi*0.0075+flat*0.75), cap 0.55; mult = clamp(1.30+Agi*0.055+flat*0.75, 1.0, 2.75) | derived -> _rolled_damage всех оружий | работает |
+| crit_chance / crit_damage_multiplier | chance = effective_crit_chance(0.04+Agi*0.0075+flat*0.75), ordinary cap от Agi 0: 55→75% при Agi 100 (Assassin 100%); raw = 1.30+Agi*0.055+flat*0.75, mult = raw до 2.75, затем непрерывный unbounded diminishing tail `2.75 + sqrt(raw - 2.75)` | derived -> _rolled_damage всех оружий | работает |
 | move_speed | (282 + Agi*6.2) * mult (+ dodge_rush) | derived -> player.speed | работает |
 | dodge | effective_dodge(0.02 + Agi*0.010 + flat), diminishing returns, cap 0.55 | Player.take_damage | работает |
 | defense | effective_defense(0.04 + End*0.018 + flat), diminishing returns, cap 0.62 | Player.take_damage | работает |
@@ -768,7 +768,7 @@ SCRUM-469 добавил class/stat-specific скалирование роста
 
 SCRUM-255 survivability rebalance: регенерация и вампиризм намеренно ослаблены, а defense/dodge/absorb получили diminishing returns. В синтетическом harness `tank/contact_swarm` упал с 321.0с до 38.5с TTD, regen у tank — с 1.57/с до 0.30/с. Расхождения с балансовой таблицей: knockback_distance в таблице задумывался боевым — оставлен отображаемым (бой использует knockback_power), vampiric_amount «Default + Current Damage / 2» сознательно заменен на малую долю урона с heal-per-second cap, чтобы вампиризм был поддержкой, а не бессмертием.
 
-SCRUM-247 crit rebalance: крит остается значимым burst-слоем, но не заменяет стабильный урон. Flat-награды на шанс крита учитываются с эффективностью 75% и проходят через diminishing returns; шанс крита ограничен 55%, сила крита — 2.75x. Пример: Agility 20 + 50% crit chance + 80% crit damage раньше давал ~3.10x средний crit-factor, теперь ~1.92x. Подробный before/after: `build/crit_rebalance_scrum247_report.md`.
+SCRUM-247 crit rebalance: крит остается значимым burst-слоем, но не заменяет стабильный урон. Flat-награды на шанс крита учитываются с эффективностью 75% и проходят через diminishing returns; обычный cap от Ловкости растёт 55→75%, у Ассасина остаётся 100%. Крит-множитель после raw 2.75 следует непрерывному unbounded diminishing tail `2.75 + sqrt(raw - 2.75)`, а не жёсткому cap. Подробный before/after: `build/crit_rebalance_scrum247_report.md`.
 
 SCRUM-243 universal synergy: все восемь базовых атрибутов больше не имеют
 «мертвых» сочетаний с архетипами оружия. `tests/runtime_smoke_test.gd`
