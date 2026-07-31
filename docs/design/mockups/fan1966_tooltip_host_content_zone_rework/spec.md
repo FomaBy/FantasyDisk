@@ -52,10 +52,11 @@ not merely inside the outer panel chrome.
 `AttributeShopDetailContentMargin` and `DossierFocusTooltipContentMargin` are
 passive `IGNORE` wrappers; both labels are `IGNORE`. `AttributeShopFrame` and
 `EscapeStatsPanelFrame` are final visual `IGNORE` layers. `DossierContentRoot`
-is the input-passing production content wrapper. An empty engine-tooltip route
-is intentional: Shop disclosure text is kept in `attribute_tooltip_text` and
-shown by `AS.TooltipHost`; Pause disclosure is kept in `dossier_tooltip_text`
-and shown by `Pause.TooltipHost`.
+is the input-passing production content wrapper. Engine popup content is
+suppressed: Shop keeps its semantic `tooltip_text`, but the installed
+`GlobalTooltipControl` returns empty content for `production_tooltip_host` and
+the full disclosure is shown by `AS.TooltipHost`; Pause keeps an empty
+`tooltip_text` and renders `dossier_tooltip_text` only in `Pause.TooltipHost`.
 
 The three `AS.TooltipScroll` rectangles above are the authored effective
 `ScrollContainer` viewports. When long copy makes the native 8 px scrollbar
@@ -74,9 +75,10 @@ excluded from every readable-glyph and terminal-sentinel assertion.
   `mouse_entered` wiring opens the production host; wheel input changes the
   production scroll range. The passive host and wrappers cannot intercept
   action/control input.
-- Engine tooltip popups are suppressed: participating production controls have
-  empty `tooltip_text`; their semantic disclosure is held in the documented
-  metadata and rendered only by the production host.
+- Engine tooltip popups are suppressed: Shop's `production_tooltip_host` route
+  has the installed `GlobalTooltipControl` return empty content, while Pause
+  controls have empty `tooltip_text`; full disclosure is rendered only by the
+  documented production host.
 - At true maximum scroll, the terminal sentinel occurs exactly once, ends the
   disclosure, and every currently visible glyph — including the sentinel — is
   wholly inside the effective clipped viewport and outside the scrollbar lane.

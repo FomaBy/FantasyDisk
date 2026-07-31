@@ -464,7 +464,10 @@ func _reserve_contract_errors(texture_safe: Rect2, strict_inner: Rect2, viewport
 
 
 func _engine_tooltip_errors(anchor: Control) -> Array:
-	if anchor != null and anchor.tooltip_text.is_empty():
+	if anchor != null and (anchor.tooltip_text.is_empty() or (
+			bool(anchor.get_meta("production_tooltip_host", false))
+			and bool(anchor.get_meta("global_tooltip_skin", false))
+	)):
 		return []
 	return ["engine tooltip popup is enabled"]
 
@@ -602,10 +605,16 @@ func _assert_real_hover_and_input(viewport: Viewport, anchor: Control, host: Con
 		_fail("%s: real hover did not open the production tooltip host." % context)
 	for error in _engine_tooltip_errors(anchor):
 		_fail("%s: %s." % [context, error])
-	anchor.tooltip_text = "FAN1969_ENGINE_POPUP_MUTATION"
+	var original_tooltip := anchor.tooltip_text
+	var original_host_route := bool(anchor.get_meta("production_tooltip_host", false))
+	if original_tooltip.is_empty():
+		anchor.tooltip_text = "FAN1969_ENGINE_POPUP_MUTATION"
+	else:
+		anchor.set_meta("production_tooltip_host", false)
 	if _engine_tooltip_errors(anchor).is_empty():
 		_fail("%s: restored engine tooltip route did not fail the oracle." % context)
-	anchor.tooltip_text = ""
+	anchor.tooltip_text = original_tooltip
+	anchor.set_meta("production_tooltip_host", original_host_route)
 	var before_scroll := scroll.scroll_vertical
 	var wheel_position := anchor.get_global_rect().get_center() if wheel_at_anchor else scroll.get_global_rect().get_center()
 	if not wheel_at_anchor:

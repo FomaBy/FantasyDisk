@@ -3323,7 +3323,6 @@ func _refresh_attribute_shop(root: Control, on_done: Callable) -> void:
 		offer_button.tooltip_text += "\n%s" % interpretation if interpretation != "" else ""
 		offer_button.set_meta("attribute_tooltip_text", offer_button.tooltip_text)
 		offer_button.set_meta("production_tooltip_host", true)
-		offer_button.tooltip_text = ""
 		offer_button.pressed.connect(func() -> void:
 			if not _spend_run_money(buy_cost):
 				# SCRUM-968: не хватает золота на +1 к характеристике — отказ.
