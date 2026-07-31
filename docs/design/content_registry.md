@@ -950,20 +950,28 @@ CLASS_ORIGIN, строки исхода забега). Лор объясняет
 
 ### Производные Атрибуты
 
+FAN-1887: канонический player-facing реестр прокачки — 16 осей
+(`CharacterData.ATTRIBUTE_REGISTRY`); плоская ось «Добавление урона»
+(`damage_flat`) использует иконку `attr_damage.png`. Иконки внутренних
+параметров (absorb, knockback, attack_range, range_multiplier, dot_speed,
+aura_radius, buff_power, projectile_speed, vampiric_chance) сохранены как
+ассеты для артефактных превью и legacy-редов, но эти параметры больше не
+являются самостоятельными выборами level-up/Shop/Codex/Hero Select.
+
 | ID | Игровое имя | Ассет |
 | --- | --- | --- |
 | `damage` | Урон | `assets/sprites/ui/icons/derived/attr_damage.png` |
 | `magic_damage` | Магический урон | `assets/sprites/ui/icons/derived/attr_magic_damage.png` |
 | `attack_speed` | Скорость атаки | `assets/sprites/ui/icons/derived/attr_attack_speed.png` |
 | `crit_chance` | Шанс крита | `assets/sprites/ui/icons/derived/attr_crit_chance.png` |
-| `crit_damage_multiplier` | Множитель крита | `assets/sprites/ui/icons/derived/attr_crit_damage_multiplier.png` |
+| `crit_damage_multiplier` | Сила крита | `assets/sprites/ui/icons/derived/attr_crit_damage_multiplier.png` |
 | `move_speed` | Скорость движения | `assets/sprites/ui/icons/derived/attr_move_speed.png` |
-| `dodge` | Уворот | `assets/sprites/ui/icons/derived/attr_dodge.png` |
+| `dodge` | Уклонение | `assets/sprites/ui/icons/derived/attr_dodge.png` |
 | `defense` | Защита | `assets/sprites/ui/icons/derived/attr_defense.png` |
 | `absorb` | Поглощение | `assets/sprites/ui/icons/derived/attr_absorb.png` |
 | `health_point` | Максимальное здоровье | `assets/sprites/ui/icons/derived/attr_health_point.png` |
 | `knockback_distance` | Дистанция отталкивания | `assets/sprites/ui/icons/derived/attr_knockback_distance.png` |
-| `summon_amount` | Количество призывов | `assets/sprites/ui/icons/derived/attr_summon_amount.png` |
+| `summon_amount` | Сила призыва | `assets/sprites/ui/icons/derived/attr_summon_amount.png` |
 | `attack_range` | Дальность атаки | `assets/sprites/ui/icons/derived/attr_attack_range.png` |
 | `range_multiplier` | Множитель дальности | `assets/sprites/ui/icons/derived/attr_range_multiplier.png` |
 | `regeneration` | Регенерация | `assets/sprites/ui/icons/derived/attr_regeneration.png` |
@@ -971,12 +979,12 @@ CLASS_ORIGIN, строки исхода забега). Лор объясняет
 | `vampiric_chance` | Шанс вампиризма | `assets/sprites/ui/icons/derived/attr_vampiric_chance.png` |
 | `dot_damage` | Периодический урон | `assets/sprites/ui/icons/derived/attr_dot_damage.png` |
 | `dot_speed` | Частота периодического урона | `assets/sprites/ui/icons/derived/attr_dot_speed.png` |
-| `aoe_radius` | Радиус AoE | `assets/sprites/ui/icons/derived/attr_aoe_radius.png` |
+| `aoe_radius` | Увеличение области атаки | `assets/sprites/ui/icons/derived/attr_aoe_radius.png` |
 | `aura_radius` | Радиус ауры | `assets/sprites/ui/icons/derived/attr_aura_radius.png` |
 | `buff_power` | Сила баффов | `assets/sprites/ui/icons/derived/attr_buff_power.png` |
 | `knockback_power` | Сила отталкивания | `assets/sprites/ui/icons/derived/attr_knockback_power.png` |
 | `projectile_speed` | Скорость снарядов | `assets/sprites/ui/icons/derived/attr_projectile_speed.png` |
-| `ultimate_multiplier` | Ультимейт | `assets/sprites/ui/icons/derived/attr_ultimate_multiplier.png` |
+| `ultimate_multiplier` | Сила ультимейта | `assets/sprites/ui/icons/derived/attr_ultimate_multiplier.png` |
 | `pickup_radius` | Радиус подбора | `assets/sprites/ui/icons/derived/attr_pickup_radius.png` |
 
 ### HUD Ресурсы
@@ -986,7 +994,7 @@ CLASS_ORIGIN, строки исхода забега). Лор объясняет
 | `hp` | HP | `assets/sprites/ui/hud/hud_hp.png` |
 | `xp` | Опыт | `assets/sprites/ui/hud/hud_xp.png` |
 | `money` | Деньги | `assets/sprites/ui/hud/hud_money.png` |
-| `ultimate_multiplier` | Ультимейт | `assets/sprites/ui/icons/derived/attr_ultimate_multiplier.png` via `UIIconRegistry` |
+| `ultimate_multiplier` | Сила ультимейта | `assets/sprites/ui/icons/derived/attr_ultimate_multiplier.png` via `UIIconRegistry` |
 
 `scripts/ui_icon_registry.gd` кэширует загруженные Texture2D по пути; новые UI места должны брать иконки через registry, а не делать отдельный `load()`.
 

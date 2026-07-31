@@ -239,8 +239,9 @@ func _expected_entries(section_id: String) -> Array:
 				var texture := UIIconRegistry.texture_for(str(entry["id"]))
 				result.append({"title": str(entry["title"]), "texture": texture.resource_path if texture != null else ""})
 		"attributes":
+			# FAN-1927: канонические оси несут icon_id реестра (axis id != derived id).
 			for entry in CodexData.attributes():
-				var texture := UIIconRegistry.texture_for(str(entry["id"]))
+				var texture := UIIconRegistry.texture_for(str(entry.get("icon_id", entry["id"])))
 				result.append({"title": str(entry["title"]), "texture": texture.resource_path if texture != null else ""})
 		"ascension":
 			for entry in CodexData.ascensions():

@@ -1856,7 +1856,7 @@ func apply_reward(reward: Dictionary) -> void:
 		# SCRUM-960: + опциональный tier материализованного оффера (редкость для UI).
 		# Старые записи {id, title} без tier остаются валидными — читатели берут
 		# tier через .get("tier", 0), 0 = не показывать.
-		var artifact_entry := {"id": str(reward.get("id", "")), "title": str(reward.get("title", ""))}
+		var artifact_entry := {"id": str(reward.get("id", "")), "title": str(reward.get("title", "")), "description": str(reward.get("description", ""))}
 		var reward_tier := int(reward.get("tier", 0))
 		if reward_tier > 0:
 			artifact_entry["tier"] = reward_tier
