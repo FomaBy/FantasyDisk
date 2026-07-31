@@ -716,11 +716,19 @@ func _build_focus_tooltip(parent: Control) -> void:
 	_focus_tooltip_scroll.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	_focus_tooltip_scroll.size_flags_vertical = Control.SIZE_EXPAND_FILL
 	_focus_tooltip.add_child(_focus_tooltip_scroll)
-
+	var content_margin := MarginContainer.new()
+	content_margin.name = "DossierFocusTooltipContentMargin"
+	content_margin.add_theme_constant_override("margin_left", 3)
+	content_margin.add_theme_constant_override("margin_right", 3)
+	content_margin.add_theme_constant_override("margin_top", 2)
+	content_margin.add_theme_constant_override("margin_bottom", 2)
+	content_margin.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	_focus_tooltip_scroll.add_child(content_margin)
 	_focus_tooltip_label = Label.new()
 	_focus_tooltip_label.name = "DossierFocusTooltipLabel"
 	_focus_tooltip_label.custom_minimum_size = Vector2(380.0, 0.0)
 	_focus_tooltip_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	_focus_tooltip_label.text_overrun_behavior = TextServer.OVERRUN_NO_TRIMMING
 	_focus_tooltip_label.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	_focus_tooltip_label.add_theme_font_size_override("font_size", SemanticTypography.resolve_fixed(
 		SemanticTypography.ROLE_TOOLTIP,
@@ -729,9 +737,7 @@ func _build_focus_tooltip(parent: Control) -> void:
 		SemanticTypography.role_max(SemanticTypography.ROLE_TOOLTIP)
 	))
 	_focus_tooltip_label.add_theme_color_override("font_color", COLOR_BODY)
-	_focus_tooltip_scroll.add_child(_focus_tooltip_label)
-
-
+	content_margin.add_child(_focus_tooltip_label)
 func _safe_rect_for_size(viewport_size: Vector2) -> Rect2:
 	var margin_x := roundf(ATLAS_FRAME_SOURCE_MARGIN * viewport_size.x / ATLAS_FRAME_SOURCE_SIZE.x)
 	var margin_y := roundf(ATLAS_FRAME_SOURCE_MARGIN * viewport_size.y / ATLAS_FRAME_SOURCE_SIZE.y)
@@ -1031,16 +1037,11 @@ func _position_focus_tooltip() -> void:
 		_focus_tooltip.visible = false
 		return
 	var viewport_size := get_viewport_rect().size
-	var inner_rect: Rect2 = _responsive_contract(viewport_size)["inner_rect"]
-	var tooltip_size := Vector2(minf(430.0, inner_rect.size.x), minf(288.0, inner_rect.size.y))
+	var body_rect: Rect2 = _responsive_contract(viewport_size)["body_rect"]
+	var tooltip_size := Vector2(minf(430.0, body_rect.size.x), minf(288.0, body_rect.size.y))
 	_focus_tooltip.size = tooltip_size
-	var anchor_rect := _focus_tooltip_anchor.get_global_rect()
-	var candidate := Vector2(anchor_rect.end.x + 12.0, anchor_rect.position.y)
-	if candidate.x + tooltip_size.x > inner_rect.end.x:
-		candidate.x = anchor_rect.position.x - tooltip_size.x - 12.0
-	candidate.x = clampf(candidate.x, inner_rect.position.x, inner_rect.end.x - tooltip_size.x)
-	candidate.y = clampf(candidate.y, inner_rect.position.y, inner_rect.end.y - tooltip_size.y)
-	_focus_tooltip.position = candidate
+	# Declared body disclosure zone, above the action band and inside the frame.
+	_focus_tooltip.position = body_rect.end - tooltip_size
 
 
 func _show_focus_tooltip(anchor: Control) -> void:
@@ -1690,7 +1691,9 @@ func _refresh_equipment() -> void:
 		chip.custom_minimum_size = Vector2(0, 40.0)
 		chip.add_theme_stylebox_override("panel", _stat_row_style(false))
 		chip.mouse_filter = Control.MOUSE_FILTER_STOP
-		chip.tooltip_text = _equipment_artifact_tooltip(artifact)
+		chip.set_meta(DOSSIER_TOOLTIP_META, _equipment_artifact_tooltip(artifact))
+		chip.tooltip_text = ""
+		_wire_stat_focus(chip, _derived_focus_targets)
 		_equipment_flow.add_child(chip)
 
 		var line := HBoxContainer.new()

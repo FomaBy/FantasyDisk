@@ -2914,6 +2914,7 @@ func _layout_attribute_shop(root: Control) -> void:
 	var layout := _attribute_shop_layout_for_size(root.size)
 	root.set_meta("gold_shell_content_rect", layout["safe_rect"])
 	root.set_meta("gold_shell_inner_rect", layout["inner_rect"])
+	root.set_meta("attribute_shop_tooltip_host_rect", layout["tooltip_host_rect"])
 	var title := root.find_child("AttributeShopTitle", true, false) as Label
 	var money := root.find_child("AttributeShopMoney", true, false) as Label
 	var offers := root.find_child("AttributeOffers", true, false) as HBoxContainer
@@ -2922,13 +2923,13 @@ func _layout_attribute_shop(root: Control) -> void:
 	_apply_attribute_shop_rect(money, layout["money_rect"])
 	_apply_attribute_shop_rect(offers, layout["offers_rect"])
 	_apply_attribute_shop_rect(actions, layout["actions_rect"])
-	# FAN-1927 (AS.DetailDrawer): scroll-зона длинной копии под рядом; на
-	# compact-вьюпортах rect пуст и drawer скрыт (длинная копия — в tooltip).
 	var drawer := root.find_child("AttributeShopDetailDrawer", true, false) as PanelContainer
 	if drawer != null:
 		var drawer_rect: Rect2 = layout.get("drawer_rect", Rect2())
-		drawer.visible = drawer_rect.size.y > 0.0
-		if drawer.visible:
+		var compact_drawer := root.size.y < 1000.0
+		drawer.visible = drawer_rect.size.y > 0.0 and (not compact_drawer or bool(drawer.get_meta("detail_drawer_open", false)))
+		drawer.set_meta("production_tooltip_host", true)
+		if drawer_rect.size.y > 0.0:
 			_apply_attribute_shop_rect(drawer, drawer_rect)
 	if title != null:
 		title.add_theme_font_size_override("font_size", SemanticTypography.resolve_fixed(
@@ -3028,18 +3029,14 @@ func _show_attribute_shop(on_done: Callable) -> void:
 	reroll_button.name = "AttributeRerollButton"
 	_apply_slim_action_button_theme(reroll_button)
 	actions.add_child(reroll_button)
-
 	var skip_button := _make_button("Пропустить")
 	skip_button.name = "AttributeSkipButton"
 	_apply_slim_action_button_theme(skip_button)
 	actions.add_child(skip_button)
 
-	# FAN-1927 (спека AS.DetailDrawer): scroll-зона длинной русской копии
-	# сфокусированной карточки под рядом предложений — полный текст без ellipsis;
-	# на compact-вьюпортах скрыта (длинная копия — скроллируемый tooltip).
+	# FAN-1966: placement of the full-copy production disclosure host.
 	var detail_drawer_nodes := AttributeSurfaces.make_detail_drawer("AttributeShop", _atlas_chip_style(0.88, 10.0))
 	root.add_child(detail_drawer_nodes["panel"] as Control)
-
 	# Набор и счетчик rerolls живут в game-state: повторный runtime вызов не дает
 	# бесплатного реролла; сброс — только в победном флоу нового боя. Legacy and
 	# malformed saved arrays are canonicalized to the same strict 2/3 contract.
@@ -3290,6 +3287,7 @@ func _refresh_attribute_shop(root: Control, on_done: Callable) -> void:
 	reroll_button.disabled = game.attribute_rerolls_left <= 0 or money < _attribute_reroll_cost()
 
 	var detail_label := root.find_child("AttributeShopDetailLabel", true, false) as Label
+	var detail_drawer := root.find_child("AttributeShopDetailDrawer", true, false) as PanelContainer
 	var first_detail_text := ""
 	for offer_value in game.attribute_offer:
 		var stat_id := str((offer_value as Dictionary).get("id", "")) if offer_value is Dictionary else str(offer_value)
@@ -3303,7 +3301,7 @@ func _refresh_attribute_shop(root: Control, on_done: Callable) -> void:
 		if first_detail_text == "":
 			first_detail_text = detail_text
 		if detail_label != null:
-			AttributeSurfaces.wire_detail_focus(offer_button, detail_label, null, false, detail_text)
+			AttributeSurfaces.wire_detail_focus(offer_button, detail_label, detail_drawer, false, detail_text)
 		offer_button.disabled = money < buy_cost
 		# SCRUM-413: недоступные (не хватает золота) карточки визуально затемнены —
 		# явно видно, что купить нельзя, а не «активная, но не реагирует».
@@ -3324,6 +3322,8 @@ func _refresh_attribute_shop(root: Control, on_done: Callable) -> void:
 		if offer_button.disabled:
 			offer_button.tooltip_text += "\nНедостаточно золота: нужно %d, есть %d." % [buy_cost, money]
 		offer_button.tooltip_text += "\n%s" % interpretation if interpretation != "" else ""
+		offer_button.set_meta("attribute_tooltip_text", offer_button.tooltip_text)
+		offer_button.set_meta("production_tooltip_host", true)
 		offer_button.pressed.connect(func() -> void:
 			if not _spend_run_money(buy_cost):
 				# SCRUM-968: не хватает золота на +1 к характеристике — отказ.

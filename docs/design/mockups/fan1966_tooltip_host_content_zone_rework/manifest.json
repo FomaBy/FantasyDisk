@@ -1,0 +1,14 @@
+{
+  "task": "FAN-1967",
+  "status": "ready_for_integration",
+  "generator_provenance": {
+    "background": "existing",
+    "non_background_ui": "existing"
+  },
+  "new_assets": [],
+  "spec": "spec.md",
+  "runtime_hosts": [
+    "AttributeShopDetailDrawer",
+    "DossierFocusTooltip"
+  ]
+}

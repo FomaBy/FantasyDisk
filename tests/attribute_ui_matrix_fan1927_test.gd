@@ -421,33 +421,61 @@ func _run_forbidden_level_up_selection() -> void:
 		await _teardown(fixture)
 
 
-func _mount_tooltip(root_control: Control, anchor: Control, context: String) -> Dictionary:
-	if root_control == null or anchor == null:
-		_fail("%s: tooltip root/anchor is missing." % context)
-		return {}
-	var content := anchor.call("_make_custom_tooltip", anchor.tooltip_text) as Control
-	if content == null:
-		_fail("%s: installed production tooltip did not build content." % context)
-		return {}
-	var mounted := PanelContainer.new()
-	mounted.name = "FAN1927MountedTooltip"
-	mounted.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	mounted.clip_contents = true
-	var viewport_size := root_control.get_viewport_rect().size
-	mounted.position = Vector2(
-		maxf(12.0, viewport_size.x - minf(560.0, viewport_size.x * 0.46) - 20.0),
-		maxf(12.0, viewport_size.y - minf(310.0, viewport_size.y * 0.42) - 20.0)
-	)
-	mounted.size = Vector2(minf(560.0, viewport_size.x * 0.46), minf(310.0, viewport_size.y * 0.42))
-	mounted.custom_minimum_size = mounted.size
-	root_control.add_child(mounted)
-	mounted.add_child(content)
-	await _settle(3)
-	return {
-		"panel": mounted,
-		"scroll": mounted.find_child("GlobalTooltipBodyScroll", true, false) as ScrollContainer,
-		"label": mounted.find_child("GlobalTooltipBodyLabel", true, false) as Label,
-	}
+func _sentinel_glyph_rect(label: Label, sentinel: String) -> Rect2:
+	if label == null or sentinel == "":
+		return Rect2()
+	var start := label.text.rfind(sentinel)
+	if start < 0:
+		return Rect2()
+	var glyph_rect := label.get_character_bounds(start)
+	for index in range(start + 1, start + sentinel.length()):
+		glyph_rect = glyph_rect.merge(label.get_character_bounds(index))
+	return Rect2(label.get_global_rect().position + glyph_rect.position, glyph_rect.size).grow(1.0)
+
+
+func _tooltip_host_errors(host: Control, scroll: ScrollContainer, label: Label, sentinel: String, safe_rect: Rect2, protected_rects: Array[Rect2]) -> Array:
+	var errors: Array = []
+	if host == null or scroll == null or label == null:
+		errors.append("production tooltip host/scroll/label is missing")
+		return errors
+	var host_rect := host.get_global_rect()
+	var scroll_rect := scroll.get_global_rect()
+	if not safe_rect.encloses(host_rect):
+		errors.append("host %s leaves safe content zone %s" % [host_rect, safe_rect])
+	if not safe_rect.encloses(scroll_rect):
+		errors.append("scroll lane %s leaves safe content zone %s" % [scroll_rect, safe_rect])
+	var glyph_rect := _sentinel_glyph_rect(label, sentinel)
+	if not glyph_rect.has_area() or not scroll_rect.encloses(glyph_rect):
+		errors.append("terminal sentinel glyphs %s are not fully visible in %s" % [glyph_rect, scroll_rect])
+	for protected_rect in protected_rects:
+		for rect in [host_rect, scroll_rect, glyph_rect]:
+			if rect.has_area() and rect.intersects(protected_rect):
+				errors.append("tooltip rect %s intersects protected rect %s" % [rect, protected_rect])
+	return errors
+
+
+func _assert_production_tooltip_host(host: Control, scroll: ScrollContainer, label: Label, sentinel: String, safe_rect: Rect2, protected_rects: Array[Rect2], context: String) -> void:
+	for error in _tooltip_host_errors(host, scroll, label, sentinel, safe_rect, protected_rects):
+		_fail("%s: %s." % [context, error])
+	if host == null or scroll == null:
+		return
+	var original_position := host.position
+	host.position = Vector2.ZERO
+	await _settle(2)
+	if _tooltip_host_errors(host, scroll, label, sentinel, safe_rect, protected_rects).is_empty():
+		_fail("%s: moving the production host into a forbidden zone did not fail the oracle." % context)
+	host.position = original_position
+	await _settle(2)
+	var scrollbar := scroll.get_v_scroll_bar()
+	var end_scroll := int(ceilf(maxf(0.0, scrollbar.max_value - scrollbar.page)))
+	scroll.scroll_vertical = 0
+	await _settle(2)
+	if _tooltip_host_errors(host, scroll, label, sentinel, safe_rect, protected_rects).is_empty():
+		_fail("%s: clipping the terminal sentinel glyphs did not fail the oracle." % context)
+	scroll.scroll_vertical = end_scroll
+	await _settle(2)
+	for error in _tooltip_host_errors(host, scroll, label, sentinel, safe_rect, protected_rects):
+		_fail("%s: restored production host failed: %s." % [context, error])
 
 
 func _install_translation(message: String) -> Translation:
@@ -669,31 +697,34 @@ func _run_attribute_shop(viewport_size: Vector2i, state: String) -> void:
 			var full_preview := str(agility_preview.get_meta("full_text", agility_preview.text))
 			if full_preview.contains("Шанс крита"):
 				_fail("%s: crit-capped context still promises 'Шанс крита' growth in the +1 preview." % context)
-	# AS.DetailDrawer на 1080p+; на compact длинная копия — скроллируемый tooltip.
+	# AS.DetailDrawer is the real tooltip host at every tier; compact mode reserves
+	# its own left content zone instead of constructing a test-owned replacement.
 	var drawer := main.find_child("AttributeShopDetailDrawer", true, false) as PanelContainer
 	var drawer_scroll := main.find_child("AttributeShopDetailScroll", true, false) as ScrollContainer
 	var drawer_label := main.find_child("AttributeShopDetailLabel", true, false) as Label
 	var semantic_text := drawer_label.text if drawer_label != null else ""
 	if drawer == null or drawer_label == null:
 		_fail("%s: AS.DetailDrawer missing." % context)
-	elif viewport_size.y >= 1000:
-		if not drawer.visible or str(drawer_label.text).strip_edges() == "":
-			_fail("%s: AS.DetailDrawer hidden/empty at %s." % [context, viewport_size])
-		else:
-			_no_trim(drawer_label, "%s drawer" % context)
 	if state == "long_copy" and offers_box.get_child_count() > 0:
-		var first_offer := offers_box.get_child(0) as Button
-		if viewport_size.y >= 1000:
-			semantic_text = drawer_label.text
-			await _assert_scroll_reaches_sentinel(drawer_scroll, drawer_label, sentinel, context)
-		else:
-			var tooltip_root := main.find_child("AttributeShopScreen", true, false) as Control
-			var mounted_tooltip := await _mount_tooltip(tooltip_root, first_offer, context)
-			var body_scroll := mounted_tooltip.get("scroll") as ScrollContainer
-			var body_label := mounted_tooltip.get("label") as Label
-			semantic_text = body_label.text if body_label != null else ""
-			_no_trim(body_label, "%s tooltip" % context)
-			await _assert_scroll_reaches_sentinel(body_scroll, body_label, sentinel, context)
+		(offers_box.get_child(0) as Button).mouse_entered.emit()
+		await _settle(2)
+		if not drawer.visible or str(drawer_label.text).strip_edges() == "":
+			_fail("%s: production Attribute Shop tooltip host is hidden/empty at %s." % [context, viewport_size])
+		semantic_text = drawer_label.text
+		_no_trim(drawer_label, "%s production tooltip" % context)
+		await _assert_scroll_reaches_sentinel(drawer_scroll, drawer_label, sentinel, context)
+		var protected_rects: Array[Rect2] = []
+		for offer_node in offers_box.get_children():
+			if offer_node is Control:
+				protected_rects.append((offer_node as Control).get_global_rect())
+		var actions := main.find_child("AttributeShopActions", true, false) as Control
+		if actions != null:
+			for action_node in actions.get_children():
+				if action_node is Control:
+					protected_rects.append((action_node as Control).get_global_rect())
+		var shop_root := main.find_child("AttributeShopScreen", true, false) as Control
+		var safe_rect: Rect2 = shop_root.get_meta("gold_shell_content_rect", Rect2()) if shop_root != null else Rect2()
+		await _assert_production_tooltip_host(drawer, drawer_scroll, drawer_label, sentinel, safe_rect, protected_rects, context)
 	await _capture(fixture, "attribute_shop", viewport_size, state, semantic_text, sentinel)
 	await _teardown(fixture)
 
@@ -771,12 +802,19 @@ func _run_pause_codex(viewport_size: Vector2i, state: String) -> void:
 		if artifact_chip == null:
 			_fail("%s: production equipment chip is missing." % context)
 		else:
-			var mounted_tooltip := await _mount_tooltip(pause, artifact_chip, context)
-			var tooltip_scroll := mounted_tooltip.get("scroll") as ScrollContainer
-			var tooltip_label := mounted_tooltip.get("label") as Label
+			pause.call("_show_hover_tooltip", artifact_chip)
+			await _settle(3)
+			var tooltip_host := pause.find_child("DossierFocusTooltip", true, false) as PanelContainer
+			var tooltip_scroll := pause.find_child("DossierFocusTooltipScroll", true, false) as ScrollContainer
+			var tooltip_label := pause.find_child("DossierFocusTooltipLabel", true, false) as Label
 			semantic_text = tooltip_label.text if tooltip_label != null else ""
-			_no_trim(tooltip_label, "%s tooltip" % context)
+			_no_trim(tooltip_label, "%s production tooltip" % context)
 			await _assert_scroll_reaches_sentinel(tooltip_scroll, tooltip_label, sentinel, context)
+			var contract: Dictionary = pause.call("_responsive_contract", Vector2(viewport_size))
+			var protected_rects: Array[Rect2] = []
+			for action in pause.find_children("*", "Button", true, false):
+				protected_rects.append((action as Control).get_global_rect())
+			await _assert_production_tooltip_host(tooltip_host, tooltip_scroll, tooltip_label, sentinel, contract["body_rect"], protected_rects, context)
 	await _capture(fixture, "pause_codex", viewport_size, state, semantic_text, sentinel)
 	await _teardown(fixture)
 

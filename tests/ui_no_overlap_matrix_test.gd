@@ -54,6 +54,9 @@ func _initialize() -> void:
 	dump_lines.append("Checks: viewport fit, peer overlap, text allocation overflow, parent content containment, and exact-frame TextureRect stretch mode.")
 	dump_lines.append("")
 	var errors := []
+	var tooltip_host_source_error := _tooltip_host_source_error()
+	if tooltip_host_source_error != "":
+		errors.append(tooltip_host_source_error)
 	for viewport_size in VIEWPORT_SIZES:
 		await _check_screen(viewport_size, "main_menu", Callable(self, "_open_main_menu"), [
 			"MainMenuStartButton", "MainMenuSettingsButton", "MainMenuSkillTreeButton",
@@ -258,6 +261,15 @@ func _initialize() -> void:
 		return
 	print("UI no-overlap matrix test passed.")
 	quit(0)
+
+
+func _tooltip_host_source_error() -> String:
+	var source := FileAccess.get_file_as_string("res://tests/attribute_ui_matrix_fan1927_test.gd")
+	if source.is_empty():
+		return "FAN-1966: could not read the attribute UI matrix source."
+	if source.contains("FAN1927MountedTooltip") or source.contains("func _mount_tooltip"):
+		return "FAN-1966: attribute UI matrix restored a test-owned tooltip host instead of production hosts."
+	return ""
 
 
 func _check_screen(viewport_size: Vector2i, screen_id: String, open_callable: Callable, control_names: Array, dump_lines: PackedStringArray, errors: Array, require_two_controls := true) -> void:
@@ -1092,8 +1104,11 @@ func _screen_specific_assertions(main: Node, screen_id: String, context: String)
 					return offer_error
 				if not offer.disabled:
 					return "%s: expected zero-money attribute offers to be disabled." % context
-				if not offer.tooltip_text.contains("Недостаточно золота"):
-					return "%s: expected disabled attribute offer tooltip to explain insufficient gold." % context
+				var disclosure := str(offer.get_meta("attribute_tooltip_text", ""))
+				if not disclosure.contains("Недостаточно золота"):
+					return "%s: expected disabled attribute disclosure to explain insufficient gold." % context
+				if not bool(offer.get_meta("production_tooltip_host", false)):
+					return "%s: Attribute Shop must route tooltip rendering to AS.DetailDrawer." % context
 				for suffix in ["Influence", "Preview"]:
 					var visible_label := offer.find_child("%s%s" % [offer.name, suffix], false, false) as Label
 					if visible_label == null or visible_label.text.strip_edges() == "":
@@ -1561,8 +1576,11 @@ func _economy_choice_card_contract_error(card: Button, context: String) -> Strin
 		and (context.contains("rest_economy") or context.contains("upgrade_economy"))
 	if attribute_card:
 		var expected_attribute_size := Vector2(250.0, 185.0)
-		if context.contains("(1280, 720)"):
-			expected_attribute_size = Vector2(276.0, 232.0)
+		if context.contains("(1152, 648)"):
+			expected_attribute_size = Vector2(190.0, 208.0)
+		elif context.contains("(1280, 720)"):
+			# FAN-1966 reserves the left safe lane for AS.DetailDrawer at 720p.
+			expected_attribute_size = Vector2(220.0, 256.0)
 		elif context.contains("(1920, 1080)"):
 			expected_attribute_size = Vector2(360.0, 360.0)
 		elif context.contains("(2560, 1440)"):

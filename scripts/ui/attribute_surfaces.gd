@@ -9,16 +9,17 @@ extends RefCounted
 # явные аргументы (game-состояние сюда не проникает).
 
 
-# Раскладка Attribute Shop (спека fan1883_attribute_clarity, AS.*): карточки
-# держат исторический responsive-минимум (контракт no_overlap), AS.DetailDrawer
-# на 1080p+ живёт в остатке между рядом и действиями; compact-вьюпорты
-# сохраняют authored-карточки, длинная копия там — скроллируемый tooltip.
+# Раскладка Attribute Shop (спека fan1883_attribute_clarity, AS.*): AS.DetailDrawer
+# живёт в реальной свободной зоне: между рядом и действиями на 1080p+, слева от
+# ряда на compact-вьюпортах. Это исключает viewport-clamped engine tooltip.
 static func shop_layout(viewport_size: Vector2, safe_rect: Rect2, inner_rect: Rect2) -> Dictionary:
 	var tier_t := clampf((viewport_size.y - 720.0) / 360.0, 0.0, 1.0)
 	var large_t := clampf((viewport_size.y - 1080.0) / 360.0, 0.0, 1.0)
 	var card_size := Vector2.ZERO
 	var offer_gap := 0.0
 	var offer_top_offset := 0.0
+	var compact_tooltip_width := 0.0
+	var compact_tooltip_gap := 0.0
 	var action_size := Vector2.ZERO
 	var action_gap := 0.0
 	var action_bottom_inset := 0.0
@@ -43,12 +44,21 @@ static func shop_layout(viewport_size: Vector2, safe_rect: Rect2, inner_rect: Re
 		title_size = Vector2(500.0, 60.0).lerp(Vector2(700.0, 64.0), large_t)
 		money_size = Vector2(380.0, 50.0).lerp(Vector2(480.0, 64.0), large_t)
 
+	# 720p reserves a real left content zone for the production disclosure host.
+	# The offer lane starts after it, so even the Atlas three-offer row stays clear.
+	var offer_lane := inner_rect
+	if viewport_size.y < 1000.0:
+		compact_tooltip_width = minf(210.0, maxf(180.0, inner_rect.size.x * 0.22))
+		compact_tooltip_gap = 18.0
+		offer_lane.position.x += 12.0 + compact_tooltip_width + compact_tooltip_gap
+		offer_lane.size.x = maxf(180.0, inner_rect.end.x - 12.0 - offer_lane.position.x)
 	# Width-constrained windows still keep exactly three cards in one row.
-	var max_offer_width := maxf(180.0, (inner_rect.size.x - 48.0 - offer_gap * 2.0) / 3.0)
+	var offer_available_width := offer_lane.size.x if compact_tooltip_width > 0.0 else inner_rect.size.x - 48.0
+	var max_offer_width := maxf(180.0, (offer_available_width - offer_gap * 2.0) / 3.0)
 	card_size.x = minf(card_size.x, max_offer_width)
 	var offer_row_size := Vector2(card_size.x * 3.0 + offer_gap * 2.0, card_size.y)
 	var offer_rect := Rect2(
-		Vector2(roundf(inner_rect.position.x + (inner_rect.size.x - offer_row_size.x) * 0.5), roundf(inner_rect.position.y + offer_top_offset)),
+		Vector2(roundf(offer_lane.position.x + (offer_lane.size.x - offer_row_size.x) * 0.5), roundf(inner_rect.position.y + offer_top_offset)),
 		offer_row_size
 	)
 
@@ -64,16 +74,23 @@ static func shop_layout(viewport_size: Vector2, safe_rect: Rect2, inner_rect: Re
 	)
 	# Never let the offer row collide with the bottom action band on unusual aspect ratios.
 	var drawer_height := 0.0
-	if viewport_size.y >= 1000.0:
+	if compact_tooltip_width > 0.0:
+		drawer_height = maxf(160.0, action_rect.position.y - offer_rect.position.y - 20.0)
+	elif viewport_size.y >= 1000.0:
 		drawer_height = lerpf(112.0, 132.0, tier_t) if viewport_size.y <= 1080.0 else lerpf(132.0, 176.0, large_t)
 	var card_floor := lerpf(232.0, 360.0, tier_t) if viewport_size.y <= 1080.0 else lerpf(360.0, 500.0, large_t)
 	var available := maxf(160.0, action_rect.position.y - offer_rect.position.y - 24.0)
 	card_size.y = minf(card_size.y, available)
-	if drawer_height > 0.0:
+	if drawer_height > 0.0 and compact_tooltip_width <= 0.0:
 		card_size.y = clampf(available - drawer_height - 16.0, minf(card_floor, card_size.y), card_size.y)
 	offer_rect.size.y = card_size.y
 	var drawer_rect := Rect2()
-	if drawer_height > 0.0:
+	if compact_tooltip_width > 0.0:
+		drawer_rect = Rect2(
+			Vector2(inner_rect.position.x + 12.0, offer_rect.position.y),
+			Vector2(compact_tooltip_width, drawer_height)
+		)
+	elif drawer_height > 0.0:
 		var drawer_top := offer_rect.end.y + 8.0
 		drawer_height = minf(drawer_height, action_rect.position.y - drawer_top - 8.0)
 		if drawer_height >= 40.0:
@@ -106,6 +123,7 @@ static func shop_layout(viewport_size: Vector2, safe_rect: Rect2, inner_rect: Re
 		"action_size": action_size,
 		"action_gap": action_gap,
 		"drawer_rect": drawer_rect,
+		"tooltip_host_rect": drawer_rect,
 	}
 
 
@@ -158,6 +176,14 @@ static func make_detail_drawer(prefix: String, style: StyleBox) -> Dictionary:
 	scroll.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	scroll.size_flags_vertical = Control.SIZE_EXPAND_FILL
 	panel.add_child(scroll)
+	var content_margin := MarginContainer.new()
+	content_margin.name = "%sDetailContentMargin" % prefix
+	content_margin.add_theme_constant_override("margin_left", 3)
+	content_margin.add_theme_constant_override("margin_right", 3)
+	content_margin.add_theme_constant_override("margin_top", 2)
+	content_margin.add_theme_constant_override("margin_bottom", 2)
+	content_margin.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	scroll.add_child(content_margin)
 	var label := Label.new()
 	label.name = "%sDetailLabel" % prefix
 	label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
@@ -165,7 +191,7 @@ static func make_detail_drawer(prefix: String, style: StyleBox) -> Dictionary:
 	label.text_overrun_behavior = TextServer.OVERRUN_NO_TRIMMING
 	label.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	label.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	scroll.add_child(label)
+	content_margin.add_child(label)
 	return {"panel": panel, "scroll": scroll, "label": label}
 
 
@@ -343,25 +369,32 @@ static func hero_dossier_lines(character_id: String, stats: Dictionary, weapon_c
 # Подписка карточки на drawer: фокус/наведение показывают полную копию; в
 # overlay-режиме drawer появляется на фокусе и прячется при его потере.
 static func wire_detail_focus(button: BaseButton, label: Label, panel: Control, overlay: bool, text: String) -> void:
+	var panel_overlay_active := func() -> bool:
+		return overlay or (is_instance_valid(panel) and panel.is_inside_tree() and bool(panel.get_meta("production_tooltip_host", false)) \
+			and panel.get_viewport_rect().size.y < 1000.0)
 	button.mouse_entered.connect(func() -> void:
 		if is_instance_valid(label):
 			label.text = text
-		if overlay and is_instance_valid(panel):
+		if panel_overlay_active.call() and is_instance_valid(panel):
+			panel.set_meta("detail_drawer_open", true)
 			panel.visible = true
 	)
 	button.focus_entered.connect(func() -> void:
 		if is_instance_valid(label):
 			label.text = text
 		if overlay and is_instance_valid(panel):
+			panel.set_meta("detail_drawer_open", true)
 			panel.visible = true
 	)
-	if overlay:
+	if overlay or panel != null:
 		button.mouse_exited.connect(func() -> void:
-			if is_instance_valid(panel) and is_instance_valid(button) and not button.has_focus():
+			if panel_overlay_active.call() and is_instance_valid(panel) and is_instance_valid(button) and not button.has_focus():
+				panel.set_meta("detail_drawer_open", false)
 				panel.visible = false
 		)
 		button.focus_exited.connect(func() -> void:
-			if is_instance_valid(panel):
+			if panel_overlay_active.call() and is_instance_valid(panel):
+				panel.set_meta("detail_drawer_open", false)
 				panel.visible = false
 		)
 
