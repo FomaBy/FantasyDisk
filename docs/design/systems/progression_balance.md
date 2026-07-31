@@ -4,6 +4,8 @@
 
 Source of truth для чисел: `scripts/progression_data.gd` (фасад) + доменные файлы данных `scripts/progression_data_characters.gd`, `progression_data_weapons.gd`, `progression_data_content.gd`, `progression_data_shop.gd`, `progression_data_ascension.gd`, `progression_data_enemies.gd` (доменный сплит SCRUM-198 — фасад реэкспортит их как const, публичный API сохранён), `scripts/stat_formulas.gd`, `docs/design/mechanics_extract.md`. Балансовый аудит: `docs/design/reviews/mechanics_balance_audit_2026_06.md`.
 
+Обычный крит имеет Agility-зависимый cap 55%→75%, Assassin сохраняет 100%. Сила крита выше raw 2.75x растёт непрерывным хвостом `2.75 + sqrt(raw - 2.75)` без верхнего потолка. DoT получает `Knowledge base + dot flat`, затем общий damage multiplier; отдельные источники `dot_speed_flat` удалены. Attack Speed выдаёт нормализованный общий cadence multiplier для атак и периодических интервалов с их прежними базовыми значениями и safety floors.
+
 ## SCRUM-504 / SCRUM-506 Balance Batch (2026-06-28)
 
 Combined backend balance pass `backend-codex-balance-504-506` tuned class solo ceilings and summon floor stability in `scripts/progression_data_balance.gd` and balance tests.

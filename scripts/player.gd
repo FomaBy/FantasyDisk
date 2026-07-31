@@ -1947,7 +1947,6 @@ const META_SKILL_FLAT_MAP := {
 	"crit_chance_flat": "crit_chance_flat",
 	"crit_damage_flat": "crit_damage_flat",
 	"dot_damage_flat": "dot_damage_flat",
-	"dot_speed_flat": "dot_speed_flat",
 	"aura_radius_flat": "aura_radius_flat",
 	"buff_power_flat": "buff_power_flat",
 	"vampiric_chance_flat": "vampiric_chance_flat",
@@ -3595,6 +3594,15 @@ func _apply_weapon_scaling(weapon: Node) -> void:
 		var attack_speed := float(derived_parameters.get("attack_speed", 1.0))
 		var base_fire_interval := float(weapon.get_meta("base_fire_interval", 1.0))
 		weapon.set("fire_interval", max(0.18, (base_fire_interval / max(attack_speed * constellation_attack_speed, 0.1)) * meta_interval_multiplier(meta_context)))
+
+	var cadence := maxf(float(derived_parameters.get("attack_cadence_multiplier", 1.0)), 0.1)
+	for property_id in ["pool_tick_interval", "pool_charge_tick_interval", "trap_bleed_tick_interval", "burst_interval", "amp_pulse_interval"]:
+		if weapon.get(property_id) == null:
+			continue
+		var base_key := "base_%s" % property_id
+		if not weapon.has_meta(base_key):
+			weapon.set_meta(base_key, weapon.get(property_id))
+		weapon.set(property_id, maxf(float(weapon.get_meta(base_key)) / cadence, 0.1))
 
 	# SummonerWeapon historically ignores canonical derived attack speed. Preserve
 	# that neutral release behaviour and apply only SCRUM-976's explicit factor.
