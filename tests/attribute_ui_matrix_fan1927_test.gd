@@ -424,7 +424,7 @@ func _run_forbidden_level_up_selection() -> void:
 func _sentinel_glyph_rect(label: Label, sentinel: String) -> Rect2:
 	if label == null or sentinel == "":
 		return Rect2()
-	var start := label.text.rfind(sentinel)
+	var start := label.text.find(sentinel)
 	if start < 0:
 		return Rect2()
 	var glyph_rect := label.get_character_bounds(start)
@@ -433,49 +433,196 @@ func _sentinel_glyph_rect(label: Label, sentinel: String) -> Rect2:
 	return Rect2(label.get_global_rect().position + glyph_rect.position, glyph_rect.size).grow(1.0)
 
 
-func _tooltip_host_errors(host: Control, scroll: ScrollContainer, label: Label, sentinel: String, safe_rect: Rect2, protected_rects: Array[Rect2]) -> Array:
+func _effective_scroll_rect(scroll: ScrollContainer) -> Rect2:
+	if scroll == null:
+		return Rect2()
+	var effective := scroll.get_global_rect()
+	var scrollbar := scroll.get_v_scroll_bar()
+	if scrollbar != null and scrollbar.visible and scrollbar.get_global_rect().has_area():
+		effective.size.x = maxf(0.0, scrollbar.get_global_rect().position.x - effective.position.x)
+	return effective
+
+
+func _visible_glyph_errors(label: Label, clip_rect: Rect2, effective_rect: Rect2) -> Array:
+	var errors: Array = []
+	if label == null:
+		return ["tooltip label is missing"]
+	for index in range(label.text.length()):
+		var local_rect := label.get_character_bounds(index)
+		var glyph_rect := Rect2(label.get_global_rect().position + local_rect.position, local_rect.size)
+		if glyph_rect.has_area() and clip_rect.encloses(glyph_rect) and not effective_rect.encloses(glyph_rect):
+			errors.append("visible glyph %d %s leaves effective clip %s" % [index, glyph_rect, effective_rect])
+	return errors
+
+
+func _reserve_contract_errors(texture_safe: Rect2, strict_inner: Rect2, viewport_size: Vector2) -> Array:
+	var reserve := 32.0 if viewport_size.y >= 1200.0 else 24.0
+	var expected := texture_safe.grow(-reserve)
+	if expected.is_equal_approx(strict_inner):
+		return []
+	return ["strict inner %s does not match %dpx reserve inside %s" % [strict_inner, reserve, texture_safe]]
+
+
+func _engine_tooltip_errors(anchor: Control) -> Array:
+	if anchor != null and anchor.tooltip_text.is_empty():
+		return []
+	return ["engine tooltip popup is enabled"]
+
+
+func _control_is_within(candidate: Control, ancestor: Control) -> bool:
+	var current: Node = candidate
+	while current != null:
+		if current == ancestor:
+			return true
+		current = current.get_parent()
+	return false
+
+
+func _first_button(control: Control) -> Control:
+	if control == null:
+		return null
+	for child in control.find_children("*", "Button", true, false):
+		var button := child as Button
+		if button != null and button.visible and not button.disabled:
+			return button
+	return null
+
+
+func _push_mouse_motion(viewport: Viewport, position: Vector2) -> void:
+	var motion := InputEventMouseMotion.new()
+	motion.position = position
+	motion.global_position = position
+	viewport.push_input(motion, true)
+	await _settle(3)
+
+
+func _push_mouse_wheel(viewport: Viewport, position: Vector2) -> void:
+	var wheel := InputEventMouseButton.new()
+	wheel.button_index = MOUSE_BUTTON_WHEEL_DOWN
+	wheel.pressed = true
+	wheel.factor = 1.0
+	wheel.position = position
+	wheel.global_position = position
+	viewport.push_input(wheel, true)
+	await _settle(3)
+
+
+func _tooltip_host_errors(host: Control, scroll: ScrollContainer, label: Label, sentinel: String, strict_inner: Rect2, safe_parent: Rect2, protected_rects: Array[Rect2]) -> Array:
 	var errors: Array = []
 	if host == null or scroll == null or label == null:
 		errors.append("production tooltip host/scroll/label is missing")
 		return errors
 	var host_rect := host.get_global_rect()
 	var scroll_rect := scroll.get_global_rect()
-	if not safe_rect.encloses(host_rect):
-		errors.append("host %s leaves safe content zone %s" % [host_rect, safe_rect])
-	if not safe_rect.encloses(scroll_rect):
-		errors.append("scroll lane %s leaves safe content zone %s" % [scroll_rect, safe_rect])
+	var effective_rect := _effective_scroll_rect(scroll)
+	if not strict_inner.encloses(host_rect) or not safe_parent.encloses(host_rect):
+		errors.append("host %s leaves strict content zone %s" % [host_rect, strict_inner])
+	if not strict_inner.encloses(effective_rect) or not safe_parent.encloses(effective_rect):
+		errors.append("effective scroll %s leaves strict content zone %s" % [effective_rect, strict_inner])
+	if host.mouse_filter != Control.MOUSE_FILTER_IGNORE:
+		errors.append("passive tooltip host must ignore mouse input")
+	if scroll.mouse_filter != Control.MOUSE_FILTER_STOP:
+		errors.append("interactive tooltip scroll must stop mouse input")
+	if label.mouse_filter != Control.MOUSE_FILTER_IGNORE:
+		errors.append("tooltip label must ignore mouse input")
+	if label.text.count(sentinel) != 1 or not label.text.ends_with(sentinel):
+		errors.append("terminal sentinel must occur exactly once at the disclosure tail")
 	var glyph_rect := _sentinel_glyph_rect(label, sentinel)
-	if not glyph_rect.has_area() or not scroll_rect.encloses(glyph_rect):
-		errors.append("terminal sentinel glyphs %s are not fully visible in %s" % [glyph_rect, scroll_rect])
+	if not glyph_rect.has_area() or not effective_rect.encloses(glyph_rect):
+		errors.append("terminal sentinel glyphs %s are not fully visible in %s" % [glyph_rect, effective_rect])
+	errors.append_array(_visible_glyph_errors(label, scroll_rect, effective_rect))
 	for protected_rect in protected_rects:
-		for rect in [host_rect, scroll_rect, glyph_rect]:
+		for rect in [host_rect, effective_rect, glyph_rect]:
 			if rect.has_area() and rect.intersects(protected_rect):
 				errors.append("tooltip rect %s intersects protected rect %s" % [rect, protected_rect])
 	return errors
 
 
-func _assert_production_tooltip_host(host: Control, scroll: ScrollContainer, label: Label, sentinel: String, safe_rect: Rect2, protected_rects: Array[Rect2], context: String) -> void:
-	for error in _tooltip_host_errors(host, scroll, label, sentinel, safe_rect, protected_rects):
+func _assert_production_tooltip_host(host: Control, scroll: ScrollContainer, label: Label, sentinel: String, texture_safe: Rect2, strict_inner: Rect2, safe_parent: Rect2, protected_rects: Array[Rect2], context: String) -> void:
+	for error in _reserve_contract_errors(texture_safe, strict_inner, host.get_viewport_rect().size):
+		_fail("%s: %s." % [context, error])
+	for error in _tooltip_host_errors(host, scroll, label, sentinel, strict_inner, safe_parent, protected_rects):
 		_fail("%s: %s." % [context, error])
 	if host == null or scroll == null:
 		return
-	var original_position := host.position
-	host.position = Vector2.ZERO
+	if _reserve_contract_errors(texture_safe, strict_inner.grow(1.0), host.get_viewport_rect().size).is_empty():
+		_fail("%s: incorrect ornament reserve did not fail the oracle." % context)
+	var original_position := host.global_position
+	host.global_position = Vector2.ZERO
 	await _settle(2)
-	if _tooltip_host_errors(host, scroll, label, sentinel, safe_rect, protected_rects).is_empty():
+	if _tooltip_host_errors(host, scroll, label, sentinel, strict_inner, safe_parent, protected_rects).is_empty():
 		_fail("%s: moving the production host into a forbidden zone did not fail the oracle." % context)
-	host.position = original_position
+	host.global_position = original_position
 	await _settle(2)
+	if not protected_rects.is_empty():
+		host.global_position = protected_rects[0].get_center() - host.size * 0.5
+		await _settle(2)
+		if _tooltip_host_errors(host, scroll, label, sentinel, strict_inner, safe_parent, protected_rects).is_empty():
+			_fail("%s: full protected-band overlap did not fail the oracle." % context)
+		host.global_position = original_position
+		await _settle(2)
 	var scrollbar := scroll.get_v_scroll_bar()
 	var end_scroll := int(ceilf(maxf(0.0, scrollbar.max_value - scrollbar.page)))
 	scroll.scroll_vertical = 0
 	await _settle(2)
-	if _tooltip_host_errors(host, scroll, label, sentinel, safe_rect, protected_rects).is_empty():
+	if _tooltip_host_errors(host, scroll, label, sentinel, strict_inner, safe_parent, protected_rects).is_empty():
 		_fail("%s: clipping the terminal sentinel glyphs did not fail the oracle." % context)
 	scroll.scroll_vertical = end_scroll
 	await _settle(2)
-	for error in _tooltip_host_errors(host, scroll, label, sentinel, safe_rect, protected_rects):
+	var original_text := label.text
+	label.text += sentinel
+	await _settle(2)
+	if _tooltip_host_errors(host, scroll, label, sentinel, strict_inner, safe_parent, protected_rects).is_empty():
+		_fail("%s: duplicate sentinel did not fail the oracle." % context)
+	label.text = original_text
+	await _settle(2)
+	if _effective_scroll_rect(scroll).encloses(scroll.get_v_scroll_bar().get_global_rect()):
+		_fail("%s: scrollbar-lane clipping mutation did not fail the oracle." % context)
+	for error in _tooltip_host_errors(host, scroll, label, sentinel, strict_inner, safe_parent, protected_rects):
 		_fail("%s: restored production host failed: %s." % [context, error])
+
+
+func _assert_real_hover_and_input(viewport: Viewport, anchor: Control, host: Control, scroll: ScrollContainer, action: Control, require_host_open: bool, wheel_at_anchor: bool, context: String) -> void:
+	if viewport == null or anchor == null or host == null or scroll == null or action == null:
+		_fail("%s: production input nodes are missing." % context)
+		return
+	await _push_mouse_motion(viewport, Vector2(1.0, 1.0))
+	var original_filter := anchor.mouse_filter
+	if require_host_open:
+		host.visible = false
+	anchor.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	await _push_mouse_motion(viewport, anchor.get_global_rect().get_center())
+	if require_host_open and host.visible:
+		_fail("%s: broken hover wiring did not fail the oracle." % context)
+	anchor.mouse_filter = original_filter
+	await _push_mouse_motion(viewport, anchor.get_global_rect().get_center())
+	if not _control_is_within(viewport.gui_get_hovered_control(), anchor):
+		_fail("%s: coordinate hit-testing did not reach the production hover control." % context)
+	if not host.visible:
+		_fail("%s: real hover did not open the production tooltip host." % context)
+	for error in _engine_tooltip_errors(anchor):
+		_fail("%s: %s." % [context, error])
+	anchor.tooltip_text = "FAN1969_ENGINE_POPUP_MUTATION"
+	if _engine_tooltip_errors(anchor).is_empty():
+		_fail("%s: restored engine tooltip route did not fail the oracle." % context)
+	anchor.tooltip_text = ""
+	var before_scroll := scroll.scroll_vertical
+	var wheel_position := anchor.get_global_rect().get_center() if wheel_at_anchor else scroll.get_global_rect().get_center()
+	if not wheel_at_anchor:
+		await _push_mouse_motion(viewport, wheel_position)
+	await _push_mouse_wheel(viewport, wheel_position)
+	if scroll.get_v_scroll_bar().max_value > scroll.get_v_scroll_bar().page + 1.0 and scroll.scroll_vertical <= before_scroll:
+		_fail("%s: real wheel input did not scroll the production host." % context)
+	await _push_mouse_motion(viewport, action.get_global_rect().get_center())
+	var hovered_action := viewport.gui_get_hovered_control()
+	if not _control_is_within(hovered_action, action):
+		_fail("%s: action/control coordinate input was intercepted (action=%s rect=%s hovered=%s)." % [
+			context,
+			action.name,
+			action.get_global_rect(),
+			hovered_action.name if hovered_action != null else "<none>",
+		])
+	await _push_mouse_motion(viewport, anchor.get_global_rect().get_center())
 
 
 func _install_translation(message: String) -> Translation:
@@ -706,25 +853,25 @@ func _run_attribute_shop(viewport_size: Vector2i, state: String) -> void:
 	if drawer == null or drawer_label == null:
 		_fail("%s: AS.DetailDrawer missing." % context)
 	if state == "long_copy" and offers_box.get_child_count() > 0:
-		(offers_box.get_child(0) as Button).mouse_entered.emit()
-		await _settle(2)
+		var shop_root := main.find_child("AttributeShopScreen", true, false) as Control
+		var actions := main.find_child("AttributeShopActions", true, false) as Control
+		var first_offer := offers_box.get_child(0) as Button
+		await _assert_real_hover_and_input(
+			fixture["viewport"] as Viewport, first_offer, drawer, drawer_scroll,
+			_first_button(actions),
+			viewport_size.y < 1000, false, context)
 		if not drawer.visible or str(drawer_label.text).strip_edges() == "":
 			_fail("%s: production Attribute Shop tooltip host is hidden/empty at %s." % [context, viewport_size])
 		semantic_text = drawer_label.text
 		_no_trim(drawer_label, "%s production tooltip" % context)
 		await _assert_scroll_reaches_sentinel(drawer_scroll, drawer_label, sentinel, context)
 		var protected_rects: Array[Rect2] = []
-		for offer_node in offers_box.get_children():
-			if offer_node is Control:
-				protected_rects.append((offer_node as Control).get_global_rect())
-		var actions := main.find_child("AttributeShopActions", true, false) as Control
+		protected_rects.append(offers_box.get_global_rect())
 		if actions != null:
-			for action_node in actions.get_children():
-				if action_node is Control:
-					protected_rects.append((action_node as Control).get_global_rect())
-		var shop_root := main.find_child("AttributeShopScreen", true, false) as Control
-		var safe_rect: Rect2 = shop_root.get_meta("gold_shell_content_rect", Rect2()) if shop_root != null else Rect2()
-		await _assert_production_tooltip_host(drawer, drawer_scroll, drawer_label, sentinel, safe_rect, protected_rects, context)
+			protected_rects.append(actions.get_global_rect())
+		var texture_safe: Rect2 = shop_root.get_meta("gold_shell_content_rect", Rect2()) if shop_root != null else Rect2()
+		var strict_inner: Rect2 = shop_root.get_meta("gold_shell_inner_rect", Rect2()) if shop_root != null else Rect2()
+		await _assert_production_tooltip_host(drawer, drawer_scroll, drawer_label, sentinel, texture_safe, strict_inner, strict_inner, protected_rects, context)
 	await _capture(fixture, "attribute_shop", viewport_size, state, semantic_text, sentinel)
 	await _teardown(fixture)
 
@@ -761,10 +908,6 @@ func _run_pause_codex(viewport_size: Vector2i, state: String) -> void:
 			var mods: Dictionary = player.get("run_modifiers")
 			mods["crit_chance_flat"] = float(mods.get("crit_chance_flat", 0.0)) + 5.0
 			player._apply_stat_scaling()
-	if state == "long_copy":
-		var player: Node = main.get("current_player")
-		if player != null and is_instance_valid(player):
-			player.set("artifacts", [{"id": "", "title": "QA", "description": long_fixture_text, "tier": 1}])
 	main.ui._show_pause_menu(true)
 	await _settle(6)
 
@@ -797,24 +940,30 @@ func _run_pause_codex(viewport_size: Vector2i, state: String) -> void:
 			if crit_value == null or not crit_value.text.contains("макс"):
 				_fail("%s: capped crit chip lacks the readable 'макс.' state (text '%s')." % [context, crit_value.text if crit_value != null else "<none>"])
 		"long_copy":
-			artifact_chip = pause.find_child("RunEquipmentChip_*", true, false) as Control
+			artifact_chip = pause.find_child("DerivedStatChip_damage_flat", true, false) as Control
+			if artifact_chip != null:
+				artifact_chip.set_meta("dossier_tooltip_text", long_fixture_text)
 	if state == "long_copy":
 		if artifact_chip == null:
-			_fail("%s: production equipment chip is missing." % context)
+			_fail("%s: production disclosure chip is missing." % context)
 		else:
-			pause.call("_show_hover_tooltip", artifact_chip)
-			await _settle(3)
 			var tooltip_host := pause.find_child("DossierFocusTooltip", true, false) as PanelContainer
 			var tooltip_scroll := pause.find_child("DossierFocusTooltipScroll", true, false) as ScrollContainer
 			var tooltip_label := pause.find_child("DossierFocusTooltipLabel", true, false) as Label
+			var pause_actions := pause.find_child("PauseControlButtons", true, false) as Control
+			await _assert_real_hover_and_input(
+				fixture["viewport"] as Viewport, artifact_chip, tooltip_host, tooltip_scroll,
+				_first_button(pause_actions),
+				true, true, context)
 			semantic_text = tooltip_label.text if tooltip_label != null else ""
 			_no_trim(tooltip_label, "%s production tooltip" % context)
 			await _assert_scroll_reaches_sentinel(tooltip_scroll, tooltip_label, sentinel, context)
 			var contract: Dictionary = pause.call("_responsive_contract", Vector2(viewport_size))
 			var protected_rects: Array[Rect2] = []
-			for action in pause.find_children("*", "Button", true, false):
-				protected_rects.append((action as Control).get_global_rect())
-			await _assert_production_tooltip_host(tooltip_host, tooltip_scroll, tooltip_label, sentinel, contract["body_rect"], protected_rects, context)
+			if pause_actions != null:
+				protected_rects.append(pause_actions.get_global_rect())
+			await _assert_production_tooltip_host(tooltip_host, tooltip_scroll, tooltip_label, sentinel,
+				contract["safe_rect"], contract["inner_rect"], contract["body_rect"], protected_rects, context)
 	await _capture(fixture, "pause_codex", viewport_size, state, semantic_text, sentinel)
 	await _teardown(fixture)
 

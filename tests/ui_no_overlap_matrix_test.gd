@@ -269,6 +269,10 @@ func _tooltip_host_source_error() -> String:
 		return "FAN-1966: could not read the attribute UI matrix source."
 	if source.contains("FAN1927MountedTooltip") or source.contains("func _mount_tooltip"):
 		return "FAN-1966: attribute UI matrix restored a test-owned tooltip host instead of production hosts."
+	if source.contains("mouse_entered.emit()") or source.contains("call(\"_show_hover_tooltip\""):
+		return "FAN-1969: attribute UI matrix bypasses production coordinate hover wiring."
+	if not source.contains("push_input") or not source.contains("_effective_scroll_rect"):
+		return "FAN-1969: attribute UI matrix lost its real-input or scrollbar-lane oracle."
 	return ""
 
 

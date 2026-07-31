@@ -438,11 +438,11 @@ func _build_header(parent: Control, s: float) -> void:
 	summary_inset.add_child(_header_summary)
 	_dossier_header.add_child(summary_inset)
 
-
 func _build_action_footer(parent: Control) -> void:
 	_button_box = GridContainer.new()
 	_button_box.name = "PauseControlButtons"
 	_button_box.columns = 4
+	_button_box.mouse_filter = Control.MOUSE_FILTER_PASS
 	_button_box.size_flags_horizontal = Control.SIZE_SHRINK_CENTER
 	_button_box.size_flags_vertical = Control.SIZE_SHRINK_CENTER
 	parent.add_child(_button_box)
@@ -712,12 +712,13 @@ func _build_focus_tooltip(parent: Control) -> void:
 	_focus_tooltip_scroll.horizontal_scroll_mode = ScrollContainer.SCROLL_MODE_DISABLED
 	_focus_tooltip_scroll.vertical_scroll_mode = ScrollContainer.SCROLL_MODE_AUTO
 	_focus_tooltip_scroll.focus_mode = Control.FOCUS_NONE
-	_focus_tooltip_scroll.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	_focus_tooltip_scroll.mouse_filter = Control.MOUSE_FILTER_STOP
 	_focus_tooltip_scroll.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	_focus_tooltip_scroll.size_flags_vertical = Control.SIZE_EXPAND_FILL
 	_focus_tooltip.add_child(_focus_tooltip_scroll)
 	var content_margin := MarginContainer.new()
 	content_margin.name = "DossierFocusTooltipContentMargin"
+	content_margin.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	content_margin.add_theme_constant_override("margin_left", 3)
 	content_margin.add_theme_constant_override("margin_right", 3)
 	content_margin.add_theme_constant_override("margin_top", 2)

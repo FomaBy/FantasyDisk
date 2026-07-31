@@ -167,17 +167,19 @@ static func make_detail_drawer(prefix: String, style: StyleBox) -> Dictionary:
 	var panel := PanelContainer.new()
 	panel.name = "%sDetailDrawer" % prefix
 	panel.add_theme_stylebox_override("panel", style)
-	panel.mouse_filter = Control.MOUSE_FILTER_PASS
+	panel.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	panel.visible = false
 	var scroll := ScrollContainer.new()
 	scroll.name = "%sDetailScroll" % prefix
 	scroll.horizontal_scroll_mode = ScrollContainer.SCROLL_MODE_DISABLED
 	scroll.vertical_scroll_mode = ScrollContainer.SCROLL_MODE_AUTO
+	scroll.mouse_filter = Control.MOUSE_FILTER_STOP
 	scroll.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	scroll.size_flags_vertical = Control.SIZE_EXPAND_FILL
 	panel.add_child(scroll)
 	var content_margin := MarginContainer.new()
 	content_margin.name = "%sDetailContentMargin" % prefix
+	content_margin.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	content_margin.add_theme_constant_override("margin_left", 3)
 	content_margin.add_theme_constant_override("margin_right", 3)
 	content_margin.add_theme_constant_override("margin_top", 2)
@@ -386,14 +388,14 @@ static func wire_detail_focus(button: BaseButton, label: Label, panel: Control, 
 			panel.set_meta("detail_drawer_open", true)
 			panel.visible = true
 	)
-	if overlay or panel != null:
+	if overlay:
 		button.mouse_exited.connect(func() -> void:
-			if panel_overlay_active.call() and is_instance_valid(panel) and is_instance_valid(button) and not button.has_focus():
+			if is_instance_valid(panel) and is_instance_valid(button) and not button.has_focus():
 				panel.set_meta("detail_drawer_open", false)
 				panel.visible = false
 		)
 		button.focus_exited.connect(func() -> void:
-			if panel_overlay_active.call() and is_instance_valid(panel):
+			if is_instance_valid(panel):
 				panel.set_meta("detail_drawer_open", false)
 				panel.visible = false
 		)

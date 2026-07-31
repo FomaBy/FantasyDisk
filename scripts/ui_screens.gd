@@ -3019,10 +3019,10 @@ func _show_attribute_shop(on_done: Callable) -> void:
 	offers_box.alignment = BoxContainer.ALIGNMENT_CENTER
 	offers_box.mouse_filter = Control.MOUSE_FILTER_PASS
 	root.add_child(offers_box)
-
 	var actions := HBoxContainer.new()
 	actions.name = "AttributeShopActions"
 	actions.alignment = BoxContainer.ALIGNMENT_CENTER
+	actions.mouse_filter = Control.MOUSE_FILTER_PASS
 	root.add_child(actions)
 
 	var reroll_button := _make_button("")
@@ -3033,7 +3033,6 @@ func _show_attribute_shop(on_done: Callable) -> void:
 	skip_button.name = "AttributeSkipButton"
 	_apply_slim_action_button_theme(skip_button)
 	actions.add_child(skip_button)
-
 	# FAN-1966: placement of the full-copy production disclosure host.
 	var detail_drawer_nodes := AttributeSurfaces.make_detail_drawer("AttributeShop", _atlas_chip_style(0.88, 10.0))
 	root.add_child(detail_drawer_nodes["panel"] as Control)
@@ -3324,6 +3323,7 @@ func _refresh_attribute_shop(root: Control, on_done: Callable) -> void:
 		offer_button.tooltip_text += "\n%s" % interpretation if interpretation != "" else ""
 		offer_button.set_meta("attribute_tooltip_text", offer_button.tooltip_text)
 		offer_button.set_meta("production_tooltip_host", true)
+		offer_button.tooltip_text = ""
 		offer_button.pressed.connect(func() -> void:
 			if not _spend_run_money(buy_cost):
 				# SCRUM-968: не хватает золота на +1 к характеристике — отказ.
