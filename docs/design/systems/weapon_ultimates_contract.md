@@ -207,8 +207,10 @@ covers refused re-entry, a paused tree, cancellation, applied-versus-attempted
 HP, and the whole-activation boss budget including deferred summon damage.
 `controller_player_integration_test` holds the other half: every shipped profile
 still resolves to the legacy class ultimate, all 17 class ultimates still fire and
-spend their charge exactly once, and — with a ready declaration injected — the
-host adapter drives a real cast that a new run or a node end drops.
+spend their charge exactly once, and — with a library-normalized ready declaration
+injected — the host adapter drives a real cast that a new run or a node end drops.
+Its fixture rejects incomplete parameters before replacing the player registry, so
+the rejected declaration cannot spend charge, activate the player, or create a host.
 
 The tests cover all 51 selections, both sibling negative controls for every
 selection, exact legacy fallback preservation, fail-closed unknown pairs,
@@ -220,6 +222,7 @@ unbound.
 
 Run them explicitly, as shown above, for focused local evidence.
 `tools/quality_gate.py` also discovers Godot tests recursively and maps nested
-paths such as `tests/ultimates/` to their `res://tests/...` script paths. The
-certifying changed or full profile therefore includes both registry tests when
-this package changes; `--static-only` deliberately runs no Godot tests.
+paths such as `tests/ultimates/` to their `res://tests/...` script paths. A
+changed `ultimate_controller.gd` or `ultimate_executor_library.gd` explicitly
+selects the controller runtime, player integration, and executor contract audit
+suites; `--static-only` deliberately runs no Godot tests.
