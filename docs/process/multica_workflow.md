@@ -1,6 +1,6 @@
 # FantasyDisk Multica workflow
 
-Updated: 2026-07-26
+Updated: 2026-08-01
 
 Multica project `FantasyDisk` (`FAN-*`, project ID
 `2ac963eb-b644-4540-8042-a1a4508f1a65`) is the authoritative queue. Jira
@@ -21,6 +21,8 @@ lifecycle and repository evidence.
 - Developer: one explicitly assigned implementation issue.
 - QA: one explicitly assigned child pinned to the pushed candidate SHA; no
   production fixes in review scope.
+- DevOps: one explicitly assigned post-QA integration issue; merges only the
+  exact QA-approved SHA into the explicit target.
 
 One daemon agent owns at most one live issue. No worker self-claims unassigned
 work, and no second dispatcher or competing QA may exist.
@@ -61,8 +63,8 @@ Ready handoff fields:
 ```text
 pipeline_status=ready_for_dispatch
 dispatch_ready=true
-dispatch_kind=implementation|qa
-dispatch_lane=dev_low|dev_medium|dev_high|qa_low|qa_high
+dispatch_kind=implementation|qa|devops
+dispatch_lane=dev_low|dev_medium|dev_high|qa_low|qa_high|devops_integration
 dispatch_target_agent_id=<optional policy exception>
 dispatch_candidate_sha=<required for QA>
 ```
@@ -98,11 +100,11 @@ The assigned worker:
 2. Reads repo `AGENTS.md` and the narrow domain skill/reference.
 3. Claims the assigned task, records owner/run/workdir/branch/locks, and changes
    only the task-owned scope.
-4. Runs focused checks plus the risk-appropriate repository gate.
+4. For a normal small change, runs one focused check; adds a second only for a
+   distinct failure mode. Broad gates are reserved for the risk cases below.
 5. Inspects the full diff, commits and pushes the candidate.
-6. Posts a Russian summary followed by exact SHA, ancestry/push state,
-   commands/results, evidence/docs, residual risk, operator mirror state, and
-   `Disk cleanup`.
+6. Posts a Russian summary followed by exact SHA, relevant commands/results,
+   untested checks, and residual risk.
 7. Triggers PM once. It does not create/assign QA or take another issue.
 
 The implementation parent remains owned/active until PM prepares and Qwen
@@ -112,7 +114,8 @@ live QA state all agree.
 
 ## QA execution
 
-QA verifies only its assigned child:
+QA verifies only its assigned child. For a normal small change it inspects the
+final diff and independently runs one or two focused checks. It also verifies:
 
 - exact pushed candidate and ancestry;
 - reviewer is not the implementer;
@@ -122,14 +125,33 @@ QA verifies only its assigned child:
 - focused functional, negative, edge, integration, regression, platform,
   performance, and visual checks selected by risk.
 
-The report contains `QA verdict: PASSED|FAILED|INCONCLUSIVE`, exact
-SHA/environment, commands/results, evidence, findings by status, linked defects
-or `none`, residual risk, documentation consistency, cleanup, and one
-recommendation.
+The report contains `QA verdict: PASSED|FAILED|INCONCLUSIVE`, exact SHA,
+focused commands/results, findings, residual risk, and one recommendation.
 
 QA finishes its child and triggers PM once. It does not repair production code,
 reassign the parent, or allocate rework. PM prepares any bounded
 defect/rework/lifecycle gate; Qwen executes the mechanical transition.
+
+Broad `changed/full` profiles, repeat matrices, mutation probes, screenshots,
+and extra documentation are not default. Require a full gate only for a release,
+saves/migrations, networking, payments/secrets/security, or an already-red CI
+whose scope cannot be isolated by focused checks.
+
+## DevOps integration
+
+After terminal exact-SHA QA `PASSED`, PM pins equal candidate/dispatch/QA SHAs
+and Qwen launches the dedicated DevOps issue. DevOps:
+
+1. Confirms the PR head is still the QA-approved SHA and is mergeable.
+2. Requires one green PR CI for that unchanged current head. An existing green
+   current-head run is sufficient; QA completion alone does not trigger a rerun.
+3. Merges without content edits.
+4. Fetches `origin/dev` and verifies the approved SHA is reachable.
+
+Do not require post-merge CI, merge-tree, tree/blob/patch equivalence, or a
+separate merge-ref artifact dossier for ordinary gameplay integration. A clean
+operator mirror may be fast-forwarded best-effort; WIP means skip it without a
+blocker.
 
 ## Blockers and recovery
 
@@ -147,17 +169,17 @@ quota/capacity from stale prompt text.
 
 ## Completion evidence
 
-Every task-ending report includes:
+Every task-ending report includes only what is relevant:
 
 - human-readable Russian summary;
 - issue and role;
 - exact pushed SHA and upstream state;
-- commands and results;
-- evidence and docs changed;
+- required commands and results;
+- evidence or docs only when required or changed;
 - failed, blocked, skipped, and untested checks;
 - residual risk and next lifecycle state;
-- operator mirror result when applicable;
-- `Disk cleanup: ...`.
+- operator mirror result only when it was safely updated; WIP is a non-blocking
+  skip.
 
 All run-owned tests, builds, tools, and subagents finish synchronously before
 the top-level turn ends.

@@ -1,6 +1,6 @@
 # Versioning And Branching Policy
 
-Обновлено: 2026-07-16
+Обновлено: 2026-08-01
 
 ## Текущее Правило
 
@@ -40,7 +40,7 @@ worktree. Директива пользователя 2026-07-03: все зад�
 | Branch | Назначение | Правило |
 | --- | --- | --- |
 | `main` | Стабильная выпущенная линия | Не вести обычную разработку напрямую |
-| `dev` | Активная рабочая ветка `0.2.x` | Работать по Multica (task board — зеркало); параллельные Codex/Claude задачи разводить через owner и locked paths |
+| `dev` | Интеграционная ветка `0.2.x` | Работать по Multica; task branches разводить через owner/locked paths, интегрировать только после exact-SHA QA |
 
 ## Правила Для Агентов
 
@@ -50,19 +50,19 @@ worktree. Директива пользователя 2026-07-03: все зад�
 git branch --show-current
 git status --short --branch
 git fetch origin --prune
-git pull --ff-only origin dev
+git rev-parse origin/dev
 ```
 
-Ожидаемая ветка для разработки:
+Ожидаемая база для task branch:
 
 ```text
-dev
+origin/dev
 ```
 
-Если агент находится на `main`:
+Если агент находится на `main` или напрямую на operator `dev`:
 
 - не начинать разработку в `main`;
-- переключиться на `dev`, если это безопасно;
+- создать/использовать отдельную task branch от свежего `origin/dev`;
 - если есть незакоммиченные изменения и переключение рискованно, остановиться и явно описать ситуацию.
 
 Если ветки `dev` нет:
@@ -81,9 +81,9 @@ dev
 - Если pull невозможен из-за dirty WIP, diverged history, locked-path overlap или
   конфликта, агент не начинает новую задачу. Он фиксирует blocker/owner note в
   Multica и ждёт routing/sync решения.
-- После завершения задачи агент обязан обновить Multica/local mirrors, выполнить
-  проверки, затем сделать intentional commit и `git push` сразу в рамках того же
-  прогона.
+- После завершения задачи агент выполняет требуемую focused-проверку, делает
+  intentional commit и push task candidate в том же прогоне. Local mirrors
+  обновляются только когда задача действительно меняет их содержимое.
 - Задача не считается завершённой, если изменения остались только локально в
   dirty tree. Multica `done`/`in_review` разрешены только после успешного push или
   после явного blocker-комментария о failed push.
@@ -95,7 +95,8 @@ dev
 Текущий ожидаемый flow:
 
 1. `main` хранит последнюю проверенную стабильную версию.
-2. `dev` используется для активной разработки текущего live Multica board/release.
+2. Task branches создаются от свежего `origin/dev`; после независимой exact-SHA
+   QA отдельный DevOps issue интегрирует одобренный SHA в `dev`.
 3. Активные задачи, баги, QA defects и release blockers закрываются в текущем
    release-цикле; Codex и Claude могут работать параллельно только при разных
    owner/locked paths.

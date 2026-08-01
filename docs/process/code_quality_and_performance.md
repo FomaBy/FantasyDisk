@@ -1,9 +1,18 @@
 # Code Quality & Windows Performance Gate
 
-Обновлено: 2026-07-13. Аудит FAN-1040 выполнен на исходном
+Обновлено: 2026-08-01. Аудит FAN-1040 выполнен на исходном
 `1190db1d1de10ab90e21d2cdea32be908efbeada`; исправления проверяются единым gate.
 
-## Обязательные профили
+## Lean default и risk-профили
+
+Обычное небольшое gameplay/scene/test изменение запускает один непосредственно
+затронутый suite через `tools/godot_gate.py`; второй нужен только для отдельного
+failure mode. `changed`/`full` не являются локальной матрицей по умолчанию.
+Полный gate требуется только для release/publish, saves/migrations, network,
+payments/secrets/security или уже красного CI, когда focused checks не изолируют
+причину. Не дублировать один full gate на developer, QA, PR и post-merge стадиях.
+
+Доступные broad-профили для этих случаев:
 
 ```bash
 python3 tools/quality_gate.py --profile changed --changed-ref origin/dev
@@ -42,8 +51,9 @@ Filtered/skip-прогон имеет non-certifying статус `partial_pass`
 отдельно. `--static-only` — engine-free профиль: `select_godot_tests` возвращает
 для него пустой список, поэтому он допустим только там, где Godot не установлен
 (push в `dev`). Required-проверка на pull request и merge queue запускает
-`changed` на закреплённом Godot `4.7.stable.official.5b4e0cb0f` и не заменяет
-полный локальный/release gate.
+`changed` на закреплённом Godot `4.7.stable.official.5b4e0cb0f`. Для обычного
+малого PR это единственный broad CI; `full` остаётся release/risk gate для
+случаев выше.
 
 ## Реестр находок
 

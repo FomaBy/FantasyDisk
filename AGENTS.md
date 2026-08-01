@@ -55,8 +55,10 @@ Read detailed design references only when the assigned scope needs them:
 
 ## Project gotchas
 
-- Automated Godot runs go through `tools/godot_gate.py`; use the repository
-  quality gate required by the changed scope. Current project features target
+- Automated Godot runs go through `tools/godot_gate.py`. A normal small gameplay
+  change runs only the directly affected suite; use broad quality profiles only
+  for release, saves/migrations, networking, payments/secrets/security, or an
+  already-red CI whose scope cannot be isolated. Current project features target
   Godot 4.7. Never commit `.godot/`.
 - UI content must remain inside the real empty content zone of decorative
   frames. Content margins must include frame thickness plus safety space.
@@ -70,9 +72,9 @@ Read detailed design references only when the assigned scope needs them:
 - `dev` is the integration branch; `main` and published tags are immutable
   release history. Follow `docs/process/versioning_and_branching.md` for any
   branch/version operation.
-- After a successful push to `origin/dev`, safely fast-forward the operator
-  mirror at `/Users/sergeyfomin/Documents/AI Agent` when it exists. Never erase
-  operator WIP; report the mirror SHA or blocker.
+- After a successful push to `origin/dev`, fast-forward the operator mirror at
+  `/Users/sergeyfomin/Documents/AI Agent` only when it exists and is clean. If it
+  has WIP, do not touch it and do not treat it as a delivery blocker.
 
 ## Completion
 
@@ -80,7 +82,8 @@ Match surrounding code, naming, comments, scenes, and tests. Prefer the smallest
 complete change and avoid unrelated cleanup. Update the relevant design/process
 reference when behavior or contracts change.
 
-Run focused checks first, then the smallest certifying regression/security
-checks required by risk. Inspect the complete task-owned diff, push the exact
-candidate, and report SHA, commands/results, evidence, docs, residual risk, and
-cleanup. Independent QA—not a developer report or CI alone—decides acceptance.
+For a normal small change, run one focused check, then let independent exact-SHA
+QA run one or two focused checks. Broad gates and screenshots are exceptional,
+not default evidence. Inspect the complete task-owned diff, push the exact
+candidate, and report SHA, relevant commands/results, and residual risk.
+Independent QA—not a developer report or CI alone—decides acceptance.

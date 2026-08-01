@@ -1,6 +1,6 @@
 # FantasyDisk role boundaries and handoffs
 
-Updated: 2026-07-26
+Updated: 2026-08-01
 
 One issue has one live owner and one non-overlapping locked scope. Roles may
 collaborate through independently acceptable child issues, not by editing the
@@ -90,10 +90,10 @@ Developer evidence:
 - exact pushed SHA and ancestry;
 - changed systems/files;
 - commands/results and untested checks;
-- docs/evidence;
+- docs/evidence only when required or changed;
 - residual risk;
-- operator mirror state when applicable;
-- disk cleanup;
+- operator mirror result only when safely updated; WIP is skipped and
+  non-blocking;
 - one PM completion trigger.
 
 QA evidence follows `docs/process/qa_protocol.md`. PM then prepares the next
