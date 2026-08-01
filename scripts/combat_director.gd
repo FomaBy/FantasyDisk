@@ -3,11 +3,14 @@ extends RefCounted
 const SCENE_CONTRACTS := preload("res://scripts/scene_contracts.gd")
 const LORE_DATA := preload("res://scripts/lore_data.gd")
 const CODEX_DATA := preload("res://scripts/codex_data.gd")
+# FAN-1447: Encounter Beat Director — вся логика в scripts/encounters/**.
+const ENCOUNTER_ADAPTER := preload("res://scripts/encounters/encounter_adapter.gd")
 
 # Боевой цикл: старт/конец боя, спавн волн, баланс врагов/элиток/боссов,
 # арена, pickups и снапшот игрока между узлами.
 
 var game
+var _encounters := ENCOUNTER_ADAPTER.new()
 
 const TRANSIENT_RUN_MODIFIER_KEYS := [
 	"dodge_rush_active",
@@ -283,6 +286,7 @@ func _finalize_combat_start() -> void:
 		_spawn_boss()
 	elif game.current_combat_type == "elite":
 		_spawn_elite_enemy()
+	_encounters.begin(game, self)
 
 
 func _configure_player_camera(player: Node2D) -> void:
@@ -337,6 +341,9 @@ func _end_combat(victory: bool) -> void:
 	if not game.combat_active:
 		return
 	_combat_start_in_progress = false
+
+	# FAN-1447: терминальная остановка бита ДО очистки мира/HUD.
+	_encounters.shutdown(victory)
 
 	# SCRUM-1000: канонический конец боя снимает ВСЕ внутрибоевые pause-причины.
 	# Штатные пути (win/lose из main._process, died-сигнал игрока) недостижимы при
