@@ -188,7 +188,7 @@ func _build_hud(context) -> void:
 	label.position = Vector2(-140.0, 92.0)
 	label.custom_minimum_size = Vector2(280.0, 28.0)
 	label.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	label.add_theme_font_size_override("font_size", 22)
+	label.add_theme_font_size_override("font_size", SemanticTypography.resolve_fixed(SemanticTypography.ROLE_HUD, 22))
 	label.add_theme_color_override("font_color", Color(1.0, 0.5, 0.42, 1.0))
 	label.add_theme_color_override("font_outline_color", Color(0.06, 0.05, 0.03, 1.0))
 	label.add_theme_constant_override("outline_size", 4)

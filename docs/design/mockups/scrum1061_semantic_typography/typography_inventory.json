@@ -47,6 +47,20 @@
       "mapping_source": "reviewed_manifest"
     },
     {
+      "fingerprint": "3676dc33605de76d",
+      "path": "scripts/encounters/features/marked_target_feature.gd",
+      "function": "_build_hud",
+      "line": 191,
+      "kind": "theme_override",
+      "source": "label.add_theme_font_size_override(\"font_size\", SemanticTypography.resolve_fixed(SemanticTypography.ROLE_HUD, 22))",
+      "role": "hud",
+      "status": "mapped",
+      "mapping_mode": "semantic_native",
+      "effective_min": 22,
+      "effective_max": 22,
+      "mapping_source": "reviewed_manifest"
+    },
+    {
       "fingerprint": "e86b4c08e7577e86",
       "path": "scripts/enemy.gd",
       "function": "_show_combat_feedback",
@@ -4324,15 +4338,15 @@
     }
   ],
   "counts": {
-    "total": 270,
-    "mapped": 268,
+    "total": 271,
+    "mapped": 269,
     "allowlist": 2,
     "unreviewed": 0,
     "draw_string": 2,
     "font_constant": 4,
     "semantic_binding": 11,
     "resource_override": 0,
-    "semantic_native": 163,
+    "semantic_native": 164,
     "legacy_compat": 107,
     "routed_scrum_1068": 2,
     "routed_scrum_1073": 0
