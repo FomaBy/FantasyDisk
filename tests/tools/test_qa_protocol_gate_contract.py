@@ -171,7 +171,7 @@ class QaProtocolGateContractTests(unittest.TestCase):
             _between(
                 section,
                 "Confirm execution in\n`build/quality_gate_report.json`:\n",
-                "\nTreat a run as certifying evidence",
+                "\n\n",
             )
         )
         missing = documented - _report_keys(_quality_gate_tree())
