@@ -226,11 +226,14 @@ func _assert_layout_at_size(viewport_size: Vector2i) -> void:
 	if listed_stat_names != 3:
 		_fail("Expected exactly 3 top BASE_STATS in the dossier line at %s, got '%s'." % [str(viewport_size), leading_stats.text])
 		return
-	for relevance in ["primary", "secondary", "weak"]:
+	for relevance in ["primary", "secondary"]:
 		var guidance := main.find_child("HS4BuildGuidance_%s" % relevance, true, false) as Label
 		if guidance == null or guidance.text.strip_edges() == "":
 			_fail("Expected data-driven build guidance section %s at %s." % [relevance, str(viewport_size)])
 			return
+	if main.find_child("HS4BuildGuidance_weak", true, false) != null:
+		_fail("Expected the removed weak-attributes rail to be absent at %s." % str(viewport_size))
+		return
 
 	var carousel := main.find_child("HS4Carousel", true, false) as Control
 	if carousel == null:
