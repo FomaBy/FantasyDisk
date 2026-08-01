@@ -1,0 +1,14 @@
+{
+	"schema_version": 1,
+	"id": "normal_early_clear",
+	"minimum_elapsed_seconds": 30.0,
+	"quota_kills": 12,
+	"captain_required": true,
+	"reward_carrier_required": false,
+	"performance_bonus": {
+		"xp_per_kill": 1,
+		"gold_per_kill": 1,
+		"xp_cap": 12,
+		"gold_cap": 8
+	}
+}
