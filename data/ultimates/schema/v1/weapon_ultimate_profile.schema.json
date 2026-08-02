@@ -12,6 +12,45 @@
     "declared",
     "ready"
   ],
+  "executor_primitives": {
+    "registered_ids": [
+      "aim_context",
+      "priority_target_selector",
+      "line_pierce_geometry",
+      "pattern_geometry",
+      "ordered_step_composition"
+    ],
+    "parameter_contracts": {
+      "aim_context": {
+        "max_range": "finite number > 0",
+        "target_mode": "host_aim|nearest_target"
+      },
+      "priority_target_selector": {
+        "center": "source|target",
+        "radius": "finite number >= 0",
+        "limit": "integer >= 0",
+        "priority": "nearest|aimed|highest_hp|marked|densest_cluster",
+        "hint": "policy-specific exact dictionary"
+      },
+      "line_pierce_geometry": {
+        "start": "source|target",
+        "direction": "aim|source_to_target",
+        "length": "finite number >= 0",
+        "half_width": "finite number >= 0",
+        "limit": "integer >= 0"
+      },
+      "pattern_geometry": {
+        "center": "source|target",
+        "pattern": "ring|grid|radial|polygon|seeded_annulus",
+        "params": "pattern-specific exact dictionary",
+        "hit_radius": "finite number >= 0",
+        "target_limit": "integer >= 0"
+      },
+      "ordered_step_composition": {
+        "steps": "non-empty ordered Array[{at, primitive_id|family, params}]"
+      }
+    }
+  },
   "required_profile_fields": [
     "weapon_id",
     "implementation_state",

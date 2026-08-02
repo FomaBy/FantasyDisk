@@ -120,7 +120,7 @@ change.
 
 `scripts/ultimates/controller/ultimate_activation.gd` is one live cast. Executors
 never touch the Player: they ask the activation for targets, damage, modifiers,
-spawns and presentation. The host side is the eight `ultimate_host_*` methods
+spawns and presentation. The host side is the nine `ultimate_host_*` methods
 listed in `UltimateActivation.HOST_METHODS`, implemented by
 `scripts/ultimates/controller/ultimate_player_host.gd`, a Node the Player owns as
 a child. Nothing below the adapter may branch on a class or a weapon.
@@ -149,6 +149,35 @@ by `executor.strategy_id`:
 A family that schedules its own tween expresses the whole cast length in that
 tween; the controller chains completion onto it rather than racing it with a
 parallel timer. A family that schedules nothing returns its lifetime instead.
+
+### Targeting, geometry and composition primitives
+
+The seven executor families remain unchanged. `UltimateExecutorLibrary` also
+registers exactly five reusable primitive IDs with strict parameter admission:
+
+| `primitive_id` | Deterministic contract |
+| --- | --- |
+| `aim_context` | Captures one source/target/direction snapshot from exact `host_aim` or `nearest_target` mode; a missing requested mode result never falls through to the other mode |
+| `priority_target_selector` | Orders a bounded candidate set by `nearest`, `aimed`, `highest_hp`, `marked`, or `densest_cluster`, with positional/instance tie-breaks and exact policy-specific hints |
+| `line_pierce_geometry` | Selects a forward corridor by length and half-width, ordered by projection/lateral distance and deduplicated by target instance |
+| `pattern_geometry` | Produces `ring`, `grid`, `radial`, `polygon`, or deterministic `seeded_annulus` points, then walks those points in order to build one deduplicated target set |
+| `ordered_step_composition` | Runs a non-empty, non-decreasing `steps` array; each step names exactly one primitive or existing family and shares the same activation ledger |
+
+Composition is admitted through the normal controller `executor.strategy_id`
+path. Every nested family/primitive parameter dictionary is normalized before
+the activation exists. Unknown steps, missing fields, decreasing offsets and a
+nested `ordered_step_composition` fail closed. At runtime each declared step is
+recorded and invoked once in declaration order; a primitive that cannot satisfy
+its exact world mode aborts later steps instead of selecting a fallback mode.
+Existing families consume the activation's current primitive-selected target
+set, so geometry and selectors compose without class or weapon branches.
+
+`UltimateActivation.aim_context()` caches the first host sample per range.
+Corridor order is projection → lateral distance → position/instance ID. Pattern
+target order is pattern-point order → nearest-within-point, with the first
+occurrence winning deduplication. `seeded_annulus` uses an activation-independent
+integer sequence, so identical center/params/seed produces the same ordered
+points and target set.
 
 `UltimateDamageResult.applied` is the HP the target actually lost, mirroring the
 overkill-clamped delta `enemy.gd` publishes. Attribution, ledgers and charge read
@@ -193,6 +222,8 @@ python3 tools/godot_gate.py --headless --path . \
   --script res://tests/ultimates/registry_validator_test.gd
 python3 tools/godot_gate.py --headless --path . \
   --script res://tests/ultimates/executor_contract_audit_test.gd
+python3 tools/godot_gate.py --headless --path . \
+  --script res://tests/ultimates/executor_primitives_test.gd
 python3 tools/godot_gate.py --headless --path . \
   --script res://tests/ultimates/controller_runtime_test.gd
 python3 tools/godot_gate.py --headless --path . \
