@@ -3,6 +3,7 @@ extends "res://scripts/encounters/encounter_feature.gd"
 ## The pack never changes elite groups, reward fields, or shared composition.
 
 const CATALOG := preload("res://scripts/encounters/features/captains/captain_catalog.gd")
+const SemanticTypography := preload("res://scripts/ui/semantic_typography.gd")
 const CAPTAIN_GROUP := "captain_enemies"
 const OWNER_META := "captain_aura_owner"
 const ROUND_TAIL_MARGIN := 2.0
@@ -304,7 +305,7 @@ func _build_presentation(context) -> void:
 		_hud_label.custom_minimum_size = Vector2(440.0, 30.0)
 		_hud_label.mouse_filter = Control.MOUSE_FILTER_IGNORE
 		_hud_label.process_mode = Node.PROCESS_MODE_PAUSABLE
-		_hud_label.add_theme_font_size_override("font_size", 20)
+		_hud_label.add_theme_font_size_override("font_size", SemanticTypography.resolve_fixed(SemanticTypography.ROLE_HUD, 20))
 		_hud_label.add_theme_color_override("font_color", color)
 		_hud_label.add_theme_color_override("font_outline_color", Color(0.04, 0.03, 0.02, 1.0))
 		_hud_label.add_theme_constant_override("outline_size", 4)
