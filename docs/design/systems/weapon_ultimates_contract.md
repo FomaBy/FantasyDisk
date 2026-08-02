@@ -156,7 +156,11 @@ never touch the Player: they ask the activation for targets, damage, modifiers,
 spawns and presentation. The host side is the ten `ultimate_host_*` methods
 listed in `UltimateActivation.HOST_METHODS`, implemented by
 `scripts/ultimates/controller/ultimate_player_host.gd`, a Node the Player owns as
-a child. Nothing below the adapter may branch on a class or a weapon.
+a child. Repair is an optional eleventh channel: a host that exposes
+`UltimateActivation.HOST_REPAIR_METHOD` (`ultimate_host_repair`) opts in, and
+`host_supports()` deliberately does not require it, so every pre-existing host
+keeps passing while `repair()` fails closed against it. Nothing below the
+adapter may branch on a class or a weapon.
 
 `scripts/player.gd` therefore keeps only a four-line boundary: the host preload,
 `ULTIMATE_HOST.reset(self)` at the top of `configure_character`, and the
@@ -240,6 +244,42 @@ the tenth host method to return only player-owned nodes from a declared group;
 duplicates are snapshotted once, setup is fail-closed, and shutdown restores
 original visibility, process mode and declared properties.
 
+### Repair and safe temporary deploy host primitives
+
+Two bounded host primitives extend the activation for class executors that
+heal or place hardware; both are default-off and class-agnostic.
+
+`configure_repair(total_cap)` opens the activation's whole repair budget once —
+a repeat only agrees with the identical value — and without it every `repair()`
+fails closed. `repair(target, amount, event_id)` returns
+`{"requested", "applied"}`; the host decides ownership (the hero itself, a
+device whose `owner_node` is the Player, or one owned by the adapter for the
+activation's own deploys), refuses foreign, freed and dead targets, never
+resurrects and never exceeds `max_health`. `applied` is the HP the target
+actually regained — the same clamped-delta attribution the damage path uses —
+and only that actual HP draws the budget, so overheal and refused targets spend
+nothing. The optional `event_id` shares the activation's idempotency ledger with
+damage events. Shutdown clears the cap and budget with the rest of the cast.
+
+`deploy_temporary(scene, init, count)` places `count` instances of a declared
+`PackedScene` as one atomic batch. Each instance is fully initialized off-tree
+first: ownership attribution into an `owner_node` property when the scene
+declares one, the generic init contract — `properties` (every key must exist),
+optional `setup_method` called with `setup_args` (only an explicit `false`
+return rejects, so a plain void `setup(...)` such as the existing SentryTurret
+lifecycle qualifies without any hard-coded class, weapon or scene path) — and
+because a typed property silently ignores a mismatched `set()`, every write is
+read back and a value that did not land rejects the deploy. Any failure frees
+everything the call created before a single node entered the tree; on success
+every node parents into the host effect parent, registers with the activation
+like any other spawn and binds the damage sink, so deferred deploy damage
+spends the same whole-activation boss budget and `cancel()`, carrier death and
+a new run remove the entire deploy. A declared summon-interaction contract's
+`temporary_cap` counts these deploys together with `spawn()` instances.
+Temporary deploys attribute to the host adapter, never to the Player — that
+distinction is what keeps `ultimate_host_summons` (and with it the permanent
+summon/device park) blind to the activation's own hardware.
+
 The activation owns every resource it created. Player death, leaving the tree and
 a new run all call `cancel()`, which kills tracked tweens, frees summons, deploys
 and presentation nodes, and unwinds modifiers in reverse order. A cast that simply
@@ -278,6 +318,8 @@ python3 tools/godot_gate.py --headless --path . \
   --script res://tests/ultimates/controller_runtime_test.gd
 python3 tools/godot_gate.py --headless --path . \
   --script res://tests/ultimates/controller_player_integration_test.gd
+python3 tools/godot_gate.py --headless --path . \
+  --script res://tests/ultimates/controller_host_primitives_test.gd
 ```
 
 `controller_runtime_test` drives every executor family through the same
@@ -296,7 +338,16 @@ the rejected declaration cannot spend charge, activate the player, or create a h
 `executor_primitives_test` covers the exact nine-ID registry, strict admission,
 idempotent target state, actual-HP target caps and overkill, non-creditable
 secondary hits, exact normal/epic/boss control, and lossless duplicate-free
-summon snapshot/restore. `registry_package_discovery_test` proves a real paired
+summon snapshot/restore. `controller_host_primitives_test` covers the repair
+and temporary-deploy primitives against the real Player adapter: actual-HP and
+overheal attribution, the per-activation repair cap, foreign/dead/null target
+rejection, hero and both device ownership forms, fail-closed behaviour against
+a host without the repair channel, the SentryTurret lifecycle through the
+generic init contract, invalid-init rejection, mid-batch partial-failure
+rollback with no orphan nodes, the summon-contract temporary cap, and
+idempotent cleanup that leaves permanent player-owned devices untouched; the
+player integration suite additionally proves a new run drops live deploys and
+repair state through the real charge path. `registry_package_discovery_test` proves a real paired
 fixture executes through the controller and that declared, mismatched,
 incomplete, missing, orphaned and duplicated packages remain fail-closed.
 
