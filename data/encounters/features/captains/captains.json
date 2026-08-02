@@ -1,0 +1,69 @@
+{
+	"schema_version": 1,
+	"contract": "captain-wave-roles-v1",
+	"enabled": false,
+	"roles": [
+		{
+			"id": "captain_commander",
+			"role": "commander",
+			"primary": true,
+			"script": "res://scripts/encounters/features/captains/captain_feature.gd",
+			"trigger_window": {"min_seconds": 12.0, "max_seconds": 24.0},
+			"seed_salt": 1128354381,
+			"compatibility_tags": [
+				"normal_battle",
+				"deck:balanced",
+				"deck:durable",
+				"deck:ranged",
+				"deck:summoner",
+				"deck:swarm"
+			],
+			"incompatible_tags": ["boss", "major_elite", "route_elite", "captain_active"],
+			"reward_contract": "normal_enemy_unchanged",
+			"priority_contract": "kill_commander_to_break_bound_retinue_aura",
+			"counterplay_tags": ["target_priority", "aura_break"],
+			"payload": {
+				"retinue_radius": 300.0,
+				"retinue_max": 4,
+				"move_speed_multiplier": 1.18,
+				"attack_damage_multiplier": 1.12,
+				"marker_radius": 54.0,
+				"marker_color": [1.0, 0.78, 0.24]
+			}
+		},
+		{
+			"id": "captain_hunter",
+			"role": "hunter",
+			"primary": true,
+			"script": "res://scripts/encounters/features/captains/captain_feature.gd",
+			"trigger_window": {"min_seconds": 12.0, "max_seconds": 24.0},
+			"seed_salt": 1264936217,
+			"compatibility_tags": [
+				"normal_battle",
+				"deck:balanced",
+				"deck:durable",
+				"deck:ranged",
+				"deck:summoner",
+				"deck:swarm"
+			],
+			"incompatible_tags": ["boss", "major_elite", "route_elite", "captain_active"],
+			"reward_contract": "normal_enemy_unchanged",
+			"priority_contract": "leave_locked_route_before_pursuit",
+			"counterplay_tags": ["route_change", "pursuit_resist"],
+			"payload": {
+				"lock_seconds": 0.65,
+				"windup_seconds": 0.8,
+				"pursuit_seconds": 1.25,
+				"recovery_seconds": 0.9,
+				"pursuit_speed": 420.0,
+				"hit_radius": 42.0,
+				"hit_damage": 1.0,
+				"disengage_distance": 720.0,
+				"max_target_resist": 0.75,
+				"target_resist_meta": "captain_pursuit_resist",
+				"marker_radius": 50.0,
+				"marker_color": [0.95, 0.28, 0.22]
+			}
+		}
+	]
+}
