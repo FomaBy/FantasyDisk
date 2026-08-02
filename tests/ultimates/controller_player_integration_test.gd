@@ -18,6 +18,7 @@ const PlayerScene := preload("res://scenes/Player.tscn")
 const EnemyScene := preload("res://scenes/Enemy.tscn")
 const PlayerHost := preload("res://scripts/ultimates/controller/ultimate_player_host.gd")
 const Activation := preload("res://scripts/ultimates/controller/ultimate_activation.gd")
+const Library := preload("res://scripts/ultimates/executors/ultimate_executor_library.gd")
 const Registry := preload("res://scripts/ultimates/registry/weapon_ultimate_registry.gd")
 const Resolver := preload("res://scripts/ultimates/registry/weapon_ultimate_resolver.gd")
 const PD := preload("res://scripts/progression_data.gd")
@@ -49,6 +50,7 @@ func _initialize() -> void:
 
 	await _test_catalog_is_still_declared()
 	await _test_legacy_class_ultimates_unchanged()
+	await _test_incomplete_ready_profile_refuses_before_player_side_effects()
 	await _test_ready_declaration_runs_through_the_adapter()
 	await _test_new_run_drops_a_live_cast()
 	await _test_node_end_drops_a_live_cast()
@@ -112,10 +114,10 @@ func _test_legacy_class_ultimates_unchanged() -> void:
 func _test_ready_declaration_runs_through_the_adapter() -> void:
 	var player := await _spawn_player()
 	var enemy := await _spawn_enemy(Vector2(120.0, 0.0))
-	_inject_ready_profile(player, {
+	_check(_inject_ready_profile(player, {
 		"strategy_id": "burst",
-		"params": {"radius": 400.0, "damage": 1.0},
-	}, 0.1)
+		"params": {"radius": 400.0, "damage": 1.0, "target_limit": 0},
+	}, 0.1), "the ready burst fixture must satisfy the live contract")
 
 	var health_before := float(enemy.get("health"))
 	player.set("ultimate_charge", float(player.get("ultimate_max_charge")))
@@ -141,13 +143,14 @@ func _test_ready_declaration_runs_through_the_adapter() -> void:
 
 func _test_new_run_drops_a_live_cast() -> void:
 	var player := await _spawn_player()
-	_inject_ready_profile(player, {
+	_check(_inject_ready_profile(player, {
 		"strategy_id": "timed_modifier",
 		"params": {
 			"duration": 30.0,
+			"radius": 200.0,
 			"modifiers": {"move_speed_multiplier": {"value": 1.5, "op": "mul"}},
 		},
-	}, 0.1)
+	}, 0.1), "the ready timed-modifier fixture must satisfy the live contract")
 
 	var run_modifiers: Dictionary = player.get("run_modifiers")
 	var before := float(run_modifiers.get("move_speed_multiplier", 1.0))
@@ -181,13 +184,14 @@ func _test_new_run_drops_a_live_cast() -> void:
 
 func _test_node_end_drops_a_live_cast() -> void:
 	var player := await _spawn_player()
-	_inject_ready_profile(player, {
+	_check(_inject_ready_profile(player, {
 		"strategy_id": "timed_modifier",
 		"params": {
 			"duration": 30.0,
+			"radius": 200.0,
 			"modifiers": {"absorb_flat": {"value": 12.0, "op": "add"}},
 		},
-	}, 0.1)
+	}, 0.1), "the ready timed-modifier fixture must satisfy the live contract")
 	player.set("ultimate_charge", float(player.get("ultimate_max_charge")))
 	_check(bool(player.call("activate_ultimate")), "the timed cast must start")
 	var controller = PlayerHost.for_player(player).controller()
@@ -208,6 +212,32 @@ func _test_node_end_drops_a_live_cast() -> void:
 
 
 # --- fixture plumbing --------------------------------------------------------
+
+func _test_incomplete_ready_profile_refuses_before_player_side_effects() -> void:
+	var player := await _spawn_player()
+	var charge := float(player.get("ultimate_max_charge"))
+	player.set("ultimate_charge", charge)
+	_check(
+		not _inject_ready_profile(player, {
+			"strategy_id": "burst",
+			"params": {"radius": 400.0, "damage": 1.0},
+		}, 0.1),
+		"an incomplete ready profile must be rejected before fixture injection"
+	)
+	_check(
+		is_equal_approx(float(player.get("ultimate_charge")), charge),
+		"a rejected ready profile must not spend player charge"
+	)
+	_check(
+		not bool(player.get("_ultimate_active")),
+		"a rejected ready profile must not mark the player active"
+	)
+	_check(
+		player.get_node_or_null(PlayerHost.NODE_NAME) == null,
+		"a rejected ready profile must not create a host side effect"
+	)
+	player.queue_free()
+	await process_frame
 
 func _spawn_player() -> Node2D:
 	var player := PlayerScene.instantiate() as Node2D
@@ -232,18 +262,23 @@ func _spawn_enemy(offset: Vector2) -> Node2D:
 	return enemy
 
 
-## Swap the shared catalog for a single ready declaration so the real adapter
-## can be exercised before any profile has been migrated.
-func _inject_ready_profile(player: Node2D, executor: Dictionary, total_boss_cap: float) -> void:
+## Swap the shared catalog for one normalized ready declaration. Fixtures must
+## pass the live contract before they may touch the real player adapter.
+func _inject_ready_profile(player: Node2D, executor: Dictionary, total_boss_cap: float) -> bool:
+	var strategy_id := str(executor.get("strategy_id", ""))
+	var normalized := Library.normalize_params(strategy_id, executor.get("params", {}))
+	if not (normalized["errors"] as Array).is_empty():
+		return false
 	var registry := ReadyRegistry.new()
 	registry.profile = {
 		"class_id": READY_CLASS,
 		"weapon_id": READY_WEAPON,
 		"implementation_state": "ready",
 		"total_boss_cap": total_boss_cap,
-		"executor": executor,
+		"executor": {"strategy_id": strategy_id, "params": normalized["params"]},
 	}
 	PlayerHost.for_player(player).use_registry(registry)
+	return true
 
 
 func _check(condition: bool, message: String) -> void:

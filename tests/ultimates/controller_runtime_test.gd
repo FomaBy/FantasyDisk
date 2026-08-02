@@ -35,6 +35,26 @@ const EXPECTED_STRATEGIES := [
 	"status_zone",
 	"timed_modifier",
 ]
+const BASE_PARAMS := {
+	"aimed_sequence": {"radius": 620.0, "damage": 1.0, "shot_count": 1, "interval": 0.05},
+	"burst": {"radius": 320.0, "damage": 1.0, "target_limit": 0},
+	"chained_projectile": {
+		"radius": 260.0, "damage": 1.0, "jumps": 1, "hop_delay": 0.05, "falloff": 0.5,
+	},
+	"control": {
+		"radius": 340.0, "damage": 0.0, "target_limit": 0, "knockback": 0.0,
+		"status_id": "", "status": {},
+	},
+	"deploy_summon": {
+		"scene": ALLY_MINION_SCENE_PATH, "count": 1, "spawn_radius": 0.0,
+		"lifetime": 0.2, "damage": 1.0, "properties": {},
+	},
+	"status_zone": {
+		"radius": 260.0, "damage": 1.0, "duration": 0.2, "interval": 0.05,
+		"follow_host": false, "status_id": "", "status": {},
+	},
+	"timed_modifier": {"duration": 0.2, "radius": 200.0, "modifiers": {}},
+}
 
 const STEP := 0.01
 
@@ -135,6 +155,7 @@ func _initialize() -> void:
 
 	_test_strategy_coverage()
 	_test_no_class_or_weapon_branches()
+	await _test_invalid_ready_profile_refuses_before_activation()
 	await _test_burst()
 	await _test_aimed_sequence()
 	await _test_timed_modifier()
@@ -384,6 +405,22 @@ func _test_declared_profile_defers_to_legacy() -> void:
 	await _drop(fixture)
 
 
+func _test_invalid_ready_profile_refuses_before_activation() -> void:
+	var fixture := await _make_fixture("burst", {}, 0)
+	var host: FixtureHost = fixture["host"]
+	var controller: Controller = fixture["controller"]
+	var registry: FixtureRegistry = fixture["registry"]
+	registry.profile["executor"]["params"]["radius"] = NAN
+	_check(
+		not controller.activate(FIXTURE_CLASS, FIXTURE_WEAPON),
+		"an invalid ready profile must be refused before executor admission"
+	)
+	_check(not controller.is_active(), "a refused profile must not create an activation")
+	_check(controller.active_activation() == null, "a refused profile must leave no active state")
+	_check(not host.active and host.damage_calls == 0, "a refused profile must not touch the host")
+	await _drop(fixture)
+
+
 func _test_single_activation_and_reentry() -> void:
 	var fixture := await _make_fixture(
 		"status_zone", {"radius": 400.0, "damage": 0.5, "duration": 0.2, "interval": 0.05}, 1
@@ -417,7 +454,7 @@ func _test_single_activation_and_reentry() -> void:
 
 func _test_pause_does_not_tick() -> void:
 	var fixture := await _make_fixture(
-		"status_zone", {"radius": 400.0, "damage": 0.5, "duration": 4.0, "interval": 0.02}, 1
+		"status_zone", {"radius": 400.0, "damage": 0.5, "duration": 4.0, "interval": 0.05}, 1
 	)
 	var host: FixtureHost = fixture["host"]
 	var controller: Controller = fixture["controller"]
@@ -589,9 +626,15 @@ func _make_fixture(
 		"weapon_id": FIXTURE_WEAPON,
 		"implementation_state": "ready",
 		"total_boss_cap": total_boss_cap,
-		"executor": {"strategy_id": strategy_id, "params": params},
+		"executor": {"strategy_id": strategy_id, "params": _params(strategy_id, params)},
 	}
 	return {"host": host, "registry": registry, "controller": Controller.new(host, registry)}
+
+
+func _params(strategy_id: String, overrides: Dictionary) -> Dictionary:
+	var params: Dictionary = (BASE_PARAMS.get(strategy_id, {}) as Dictionary).duplicate(true)
+	params.merge(overrides, true)
+	return params
 
 
 func _add_target(host: FixtureHost, offset: Vector2, is_boss: bool) -> FixtureTarget:

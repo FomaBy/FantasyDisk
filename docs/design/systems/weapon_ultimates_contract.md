@@ -52,6 +52,23 @@ The legacy class field `boss_cap` is a per-hit cap. It must not be copied into
 Declared v1 profiles therefore use `null`; a profile cannot become `ready`
 until it supplies a numeric value in `(0, 1]`.
 
+## Executor parameter admission
+
+`UltimateExecutorLibrary` is the production owner of every live executor
+family's parameter contract. Before a ready profile creates an
+`UltimateActivation`, `UltimateController` asks the library to validate and
+normalize the executor parameters. Unknown families or keys, missing keys,
+wrong types, non-finite numbers, fractional integer fields, and values outside
+the live executor domains fail closed with no activation or host side effect.
+
+The library returns deterministic normalized dictionaries and canonical
+signatures. Nested `status`, `properties`, and `modifiers` dictionaries are
+ordered recursively; non-finite numeric leaves are rejected. `status.dot_damage`
+is excluded from the normalized semantic signature because the live
+`status_zone` and `control` executors deliberately discard it so DoT cannot
+bypass the activation-wide damage ledger. `properties` remain deliberately
+scene-specific until FAN-1541 owns a generic property contract.
+
 ## Declaration and execution states
 
 `declared` means the data identity and lifecycle shape exist, but gameplay
@@ -158,15 +175,12 @@ The new catalog is authoritative only for weapon-profile identity and future
 bindings. Codex may inspect the exact selected declaration, but must not
 describe an unbound `declared` profile as implemented gameplay.
 
-Future per-weapon implementations should:
-
-1. Keep the immutable profile and presentation IDs.
-2. Add class-local strategy bindings without adding selection branches to
-   `Player` or `ClassWeapon`.
-3. Supply a whole-activation boss cap.
-4. Change only that profile to `ready`.
-5. Prove the selected weapon resolves the profile while both siblings remain
-   negative controls.
+Before FAN-1541, class packages may add only declaration data, class-local
+evidence, and in-memory proof. They must not bind strategies, mark a profile
+`ready`, or activate a profile independently. FAN-1541 owns the later binding
+and activation stage; when it runs, it must keep immutable IDs, avoid selection
+branches in `Player` or `ClassWeapon`, supply a whole-activation boss cap, and
+prove the selected weapon resolves while both siblings remain negative controls.
 
 ## Verification
 
@@ -177,6 +191,8 @@ python3 tools/godot_gate.py --headless --path . \
   --script res://tests/ultimates/registry_contract_test.gd
 python3 tools/godot_gate.py --headless --path . \
   --script res://tests/ultimates/registry_validator_test.gd
+python3 tools/godot_gate.py --headless --path . \
+  --script res://tests/ultimates/executor_contract_audit_test.gd
 python3 tools/godot_gate.py --headless --path . \
   --script res://tests/ultimates/controller_runtime_test.gd
 python3 tools/godot_gate.py --headless --path . \
@@ -191,8 +207,10 @@ covers refused re-entry, a paused tree, cancellation, applied-versus-attempted
 HP, and the whole-activation boss budget including deferred summon damage.
 `controller_player_integration_test` holds the other half: every shipped profile
 still resolves to the legacy class ultimate, all 17 class ultimates still fire and
-spend their charge exactly once, and — with a ready declaration injected — the
-host adapter drives a real cast that a new run or a node end drops.
+spend their charge exactly once, and — with a library-normalized ready declaration
+injected — the host adapter drives a real cast that a new run or a node end drops.
+Its fixture rejects incomplete parameters before replacing the player registry, so
+the rejected declaration cannot spend charge, activate the player, or create a host.
 
 The tests cover all 51 selections, both sibling negative controls for every
 selection, exact legacy fallback preservation, fail-closed unknown pairs,
@@ -204,6 +222,7 @@ unbound.
 
 Run them explicitly, as shown above, for focused local evidence.
 `tools/quality_gate.py` also discovers Godot tests recursively and maps nested
-paths such as `tests/ultimates/` to their `res://tests/...` script paths. The
-certifying changed or full profile therefore includes both registry tests when
-this package changes; `--static-only` deliberately runs no Godot tests.
+paths such as `tests/ultimates/` to their `res://tests/...` script paths. A
+changed `ultimate_controller.gd` or `ultimate_executor_library.gd` explicitly
+selects the controller runtime, player integration, and executor contract audit
+suites; `--static-only` deliberately runs no Godot tests.
