@@ -73,6 +73,28 @@ const PRIMITIVE_PARAMETER_CONTRACTS := {
 		"hit_radius": {"type": "number", "minimum": 0.0},
 		"target_limit": {"type": "integer", "minimum": 0},
 	},
+	"stateful_target_ledger": {
+		"operation": {"type": "string", "values": ["record", "add", "consume"]},
+		"target_source": {"type": "string", "values": ["targets", "primary_target"]},
+		"key": {"type": "string"},
+		"value": {"type": "number"},
+		"event_id": {"type": "string"},
+	},
+	"per_target_damage_cap": {
+		"cap_fraction": {"type": "number", "minimum": 0.0, "maximum": 1.0},
+		"cap_flat": {"type": "number", "minimum": 0.0},
+	},
+	"control_resistance_policy": {
+		"normal": {"type": "dictionary"},
+		"epic": {"type": "dictionary"},
+		"boss": {"type": "dictionary"},
+	},
+	"summon_interaction_contract": {
+		"group_id": {"type": "string"},
+		"temporary_cap": {"type": "integer", "minimum": 0},
+		"snapshot_properties": {"type": "array"},
+		"setup": {"type": "dictionary"},
+	},
 	COMPOSITION_ID: {"steps": {"type": "array"}},
 }
 
@@ -202,9 +224,84 @@ static func normalize_primitive_params(primitive_id: String, raw_params) -> Dict
 		(result["params"] as Dictionary)["params"] = _normalize_pattern_params(
 			result["params"] as Dictionary, errors
 		)
+	elif errors.is_empty() and primitive_id == "stateful_target_ledger":
+		_validate_ledger_params(result["params"] as Dictionary, errors)
+	elif errors.is_empty() and primitive_id == "per_target_damage_cap":
+		var params := result["params"] as Dictionary
+		if is_zero_approx(float(params["cap_fraction"])) \
+				and is_zero_approx(float(params["cap_flat"])):
+			errors.append("executor_params.range: cap")
+	elif errors.is_empty() and primitive_id == "control_resistance_policy":
+		(result["params"] as Dictionary).merge(
+			_normalize_control_policy(result["params"] as Dictionary, errors), true
+		)
+	elif errors.is_empty() and primitive_id == "summon_interaction_contract":
+		_normalize_summon_contract(result["params"] as Dictionary, errors)
 	if not errors.is_empty():
 		return {"params": {}, "errors": errors}
 	return result
+
+
+## Class-local executors declare a plain parameter contract and are admitted by
+## the same normalizer as central families before an activation can exist.
+static func normalize_custom_params(raw_params, contract) -> Dictionary:
+	if not contract is Dictionary or (contract as Dictionary).is_empty():
+		return {"params": {}, "errors": ["executor_package.contract: parameter_contract"]}
+	var contract_errors := _custom_contract_errors(contract as Dictionary)
+	if not contract_errors.is_empty():
+		return {"params": {}, "errors": contract_errors}
+	return _normalize_contract(raw_params, contract as Dictionary)
+
+
+static func _custom_contract_errors(contract: Dictionary) -> Array[String]:
+	var errors: Array[String] = []
+	var allowed_fields := ["type", "minimum", "maximum", "values"]
+	var allowed_types := ["number", "integer", "string", "bool", "dictionary", "array"]
+	for raw_key in contract.keys():
+		if not raw_key is String or str(raw_key).strip_edges().is_empty():
+			errors.append("executor_package.contract_key: %s" % str(raw_key))
+			continue
+		var key := str(raw_key)
+		var specification = contract[raw_key]
+		if not specification is Dictionary:
+			errors.append("executor_package.contract_spec: %s" % key)
+			continue
+		for raw_field in (specification as Dictionary).keys():
+			if not allowed_fields.has(str(raw_field)):
+				errors.append("executor_package.contract_unknown: %s.%s" % [key, raw_field])
+		var value_type = (specification as Dictionary).get("type")
+		if not value_type is String or not allowed_types.has(str(value_type)):
+			errors.append("executor_package.contract_type: %s" % key)
+			continue
+		if str(value_type) not in ["number", "integer"] \
+				and ((specification as Dictionary).has("minimum") \
+				or (specification as Dictionary).has("maximum")):
+			errors.append("executor_package.contract_bound_type: %s" % key)
+		if str(value_type) != "string" and (specification as Dictionary).has("values"):
+			errors.append("executor_package.contract_values_type: %s" % key)
+		for bound in ["minimum", "maximum"]:
+			if (specification as Dictionary).has(bound) \
+					and (not _is_number((specification as Dictionary)[bound]) \
+					or not is_finite(float((specification as Dictionary)[bound]))):
+				errors.append("executor_package.contract_bound: %s.%s" % [key, bound])
+		if (specification as Dictionary).has("minimum") \
+				and (specification as Dictionary).has("maximum") \
+				and _is_number((specification as Dictionary)["minimum"]) \
+				and _is_number((specification as Dictionary)["maximum"]) \
+				and float((specification as Dictionary)["minimum"]) \
+					> float((specification as Dictionary)["maximum"]):
+			errors.append("executor_package.contract_range: %s" % key)
+		if (specification as Dictionary).has("values") \
+				and not (specification as Dictionary)["values"] is Array:
+			errors.append("executor_package.contract_values: %s" % key)
+		elif (specification as Dictionary).has("values"):
+			var seen_values := {}
+			for raw_value in (specification as Dictionary)["values"] as Array:
+				if not raw_value is String or seen_values.has(raw_value):
+					errors.append("executor_package.contract_values: %s" % key)
+					break
+				seen_values[raw_value] = true
+	return errors
 
 
 static func _normalize_contract(raw_params, contract: Dictionary) -> Dictionary:
@@ -297,13 +394,21 @@ static func _normalize_value(value, key: String, specification: Dictionary, erro
 				return null
 			return number
 		"integer":
-			if not (value is int) or value is bool:
+			if not _is_number(value):
 				errors.append("executor_params.integer: %s" % key)
 				return null
-			if _outside_range(float(value), specification):
+			var integer_value := float(value)
+			# Godot's JSON parser represents every number as float. Admit only an
+			# exactly integral, finite value, then canonicalize it back to int.
+			if not is_finite(integer_value) or floor(integer_value) != integer_value \
+					or integer_value < -9.223372036854776e18 \
+					or integer_value >= 9.223372036854776e18:
+				errors.append("executor_params.integer: %s" % key)
+				return null
+			if _outside_range(integer_value, specification):
 				errors.append("executor_params.range: %s" % key)
 				return null
-			return value
+			return int(integer_value)
 		"string":
 			if not value is String:
 				errors.append("executor_params.type: %s" % key)
@@ -489,6 +594,51 @@ static func _normalize_pattern_params(params: Dictionary, errors: Array[String])
 			and float(normalized.get("outer_radius", 0.0)) < float(normalized.get("inner_radius", 0.0)):
 		errors.append("executor_params.range: params.outer_radius")
 	return normalized
+
+
+static func _validate_ledger_params(params: Dictionary, errors: Array[String]) -> void:
+	for key in ["key", "event_id"]:
+		if str(params[key]).strip_edges().is_empty():
+			errors.append("executor_params.range: %s" % key)
+
+
+static func _normalize_control_policy(
+	params: Dictionary, errors: Array[String]
+) -> Dictionary:
+	var contract := {
+		"displacement_multiplier": {"type": "number", "minimum": 0.0, "maximum": 1.0},
+		"duration_multiplier": {"type": "number", "minimum": 0.0, "maximum": 1.0},
+		"allow_movement_lock": {"type": "bool"},
+		"allow_execute": {"type": "bool"},
+	}
+	var normalized := {}
+	for tier in ["normal", "epic", "boss"]:
+		normalized[tier] = _normalize_exact_dictionary(
+			params[tier] as Dictionary, contract, tier, errors
+		)
+	return normalized
+
+
+static func _normalize_summon_contract(
+	params: Dictionary, errors: Array[String]
+) -> void:
+	if str(params["group_id"]).strip_edges().is_empty():
+		errors.append("executor_params.range: group_id")
+	var normalized: Array[String] = []
+	var seen := {}
+	for index in (params["snapshot_properties"] as Array).size():
+		var value = (params["snapshot_properties"] as Array)[index]
+		if not value is String or str(value).strip_edges().is_empty():
+			errors.append("executor_params.type: snapshot_properties[%d]" % index)
+			continue
+		var property_name := str(value)
+		if seen.has(property_name):
+			errors.append("executor_params.duplicate: snapshot_properties.%s" % property_name)
+			continue
+		seen[property_name] = true
+		normalized.append(property_name)
+	normalized.sort()
+	params["snapshot_properties"] = normalized
 
 
 static func _normalize_exact_dictionary(

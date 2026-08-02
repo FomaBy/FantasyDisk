@@ -43,11 +43,24 @@ func activate(class_id: String, weapon_id: String) -> bool:
 	if not executor is Dictionary:
 		return false
 	var strategy_id := str((executor as Dictionary).get("strategy_id", ""))
-	if not Library.has_strategy(strategy_id):
-		return false
-	var normalized := Library.normalize_params(
-		strategy_id, (executor as Dictionary).get("params", {})
-	)
+	var package_executor = null
+	if _registry.has_method("executor_for"):
+		package_executor = _registry.executor_for(class_id, weapon_id)
+	var normalized := {}
+	if package_executor != null:
+		if not package_executor.has_method("parameter_contract") \
+				or not package_executor.has_method("execute"):
+			return false
+		normalized = Library.normalize_custom_params(
+			(executor as Dictionary).get("params", {}),
+			package_executor.call("parameter_contract")
+		)
+	else:
+		if not Library.has_strategy(strategy_id):
+			return false
+		normalized = Library.normalize_params(
+			strategy_id, (executor as Dictionary).get("params", {})
+		)
 	if not (normalized["errors"] as Array).is_empty():
 		return false
 	_activation = Activation.new(
@@ -56,7 +69,8 @@ func activate(class_id: String, weapon_id: String) -> bool:
 		float(profile.get("total_boss_cap", 0.0))
 	)
 	_host.call("ultimate_host_set_active", true)
-	var duration := Library.execute(strategy_id, _activation)
+	var duration := float(package_executor.call("execute", _activation)) \
+		if package_executor != null else Library.execute(strategy_id, _activation)
 	# A family that scheduled its own tween owns the cast length: chaining the
 	# completion onto that tween keeps teardown strictly after its last step,
 	# instead of racing it with a parallel timer of nominally equal length.

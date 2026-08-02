@@ -107,6 +107,9 @@ class FixtureHost extends Node2D:
 		)
 		return found.slice(0, limit) if limit > 0 else found
 
+	func ultimate_host_summons(_group_id: String) -> Array:
+		return []
+
 	func ultimate_host_apply_damage(target: Node, amount: float, feedback: Dictionary) -> void:
 		damage_calls += 1
 		if target != null and is_instance_valid(target) and target.has_method("take_damage"):

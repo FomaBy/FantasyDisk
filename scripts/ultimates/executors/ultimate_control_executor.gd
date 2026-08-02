@@ -6,8 +6,6 @@ extends RefCounted
 ## status.
 
 const Activation := preload("res://scripts/ultimates/controller/ultimate_activation.gd")
-const StatusEffects := preload("res://scripts/status_effects.gd")
-
 const STRATEGY_ID := "control"
 
 
@@ -25,10 +23,9 @@ static func execute(activation: Activation) -> float:
 		if target == null or not is_instance_valid(target):
 			continue
 		var away := target.global_position - origin
-		if knockback > 0.0 and target.has_method("apply_knockback") and away.length_squared() > 0.001:
-			target.call("apply_knockback", away.normalized() * knockback)
-		if not status_id.is_empty():
-			StatusEffects.apply_status(target, status_id, status_config)
+		var impulse := away.normalized() * knockback \
+			if knockback > 0.0 and away.length_squared() > 0.001 else Vector2.ZERO
+		activation.apply_control(target, impulse, status_id, status_config)
 		if damage > 0.0:
 			activation.deal_damage(target, damage)
 	return 0.0

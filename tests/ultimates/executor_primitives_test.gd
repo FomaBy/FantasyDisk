@@ -1,37 +1,55 @@
 extends SceneTree
 
-## Focused admission, determinism and production-composition coverage for the
-## five shared weapon-ultimate primitives.
+## Focused admission, determinism and lifecycle coverage for every shared
+## weapon-ultimate primitive.
 
 const Activation := preload("res://scripts/ultimates/controller/ultimate_activation.gd")
 const Controller := preload("res://scripts/ultimates/controller/ultimate_controller.gd")
 const Library := preload("res://scripts/ultimates/executors/ultimate_executor_library.gd")
 const Resolver := preload("res://scripts/ultimates/registry/weapon_ultimate_resolver.gd")
+const StatusEffects := preload("res://scripts/status_effects.gd")
 
 const CLASS_ID := "fixture_class"
 const WEAPON_ID := "fixture_weapon"
 const STEP := 0.01
+const CONFIGURED_SUMMON_SCENE_PATH := (
+	"res://tests/ultimates/fixtures/ConfiguredUltimateSummon.tscn"
+)
 const EXPECTED_PRIMITIVES := [
 	"aim_context",
+	"control_resistance_policy",
 	"line_pierce_geometry",
 	"ordered_step_composition",
 	"pattern_geometry",
+	"per_target_damage_cap",
 	"priority_target_selector",
+	"stateful_target_ledger",
+	"summon_interaction_contract",
 ]
 
 
 class FixtureTarget extends Node2D:
 	var health := 100.0
 	var max_health := 100.0
+	var damage_taken_multiplier := 1.0
 	var hits := 0
+	var knockbacks: Array[Vector2] = []
 
 	func take_damage(amount: float, _feedback := {}) -> void:
 		hits += 1
-		health = maxf(health - amount, 0.0)
+		health = maxf(health - amount * damage_taken_multiplier, 0.0)
+
+	func apply_knockback(impulse: Vector2) -> void:
+		knockbacks.append(impulse)
+
+
+class FixtureSummon extends Node2D:
+	var energy := 7.0
 
 
 class FixtureHost extends Node2D:
 	var fixture_targets: Array = []
+	var fixture_summons: Array = []
 	var aim_point := Vector2(300.0, 0.0)
 	var aim_direction := Vector2.RIGHT
 	var modifiers := {}
@@ -62,6 +80,9 @@ class FixtureHost extends Node2D:
 	func ultimate_host_apply_damage(target: Node, amount: float, feedback: Dictionary) -> void:
 		damage_calls += 1
 		target.call("take_damage", amount, feedback)
+
+	func ultimate_host_summons(_group_id: String) -> Array:
+		return fixture_summons.duplicate()
 
 	func ultimate_host_modifier(key: String, value: float, op: String) -> void:
 		var multiplicative := op == Activation.OP_MULTIPLY
@@ -104,6 +125,10 @@ func _initialize() -> void:
 	await _test_aim_and_priority_are_fixed()
 	await _test_line_order_bounds_and_dedup()
 	await _test_pattern_seed_order_bounds_and_dedup()
+	await _test_stateful_target_ledger_is_idempotent_and_activation_local()
+	await _test_per_target_damage_cap_uses_actual_hp_and_secondary_is_nonrecursive()
+	await _test_control_resistance_policy_is_tier_exact()
+	await _test_summon_interaction_is_lossless_and_duplicate_free()
 	await _test_ordered_composition_production_path()
 	await _test_invalid_composition_has_no_side_effects()
 
@@ -114,13 +139,15 @@ func _initialize() -> void:
 
 func _test_admission_contracts() -> void:
 	_check(Library.primitive_ids() == EXPECTED_PRIMITIVES,
-		"library must register exactly five primitive IDs, got %s" % [Library.primitive_ids()])
+		"library must register the exact shared primitive IDs, got %s" % [Library.primitive_ids()])
 	var schema = JSON.parse_string(FileAccess.get_file_as_string(
 		"res://data/ultimates/schema/v1/weapon_ultimate_profile.schema.json"
 	))
 	_check(schema is Dictionary and schema["executor_primitives"]["registered_ids"] == [
 		"aim_context", "priority_target_selector", "line_pierce_geometry",
-		"pattern_geometry", "ordered_step_composition",
+		"pattern_geometry", "stateful_target_ledger", "per_target_damage_cap",
+		"control_resistance_policy", "summon_interaction_contract",
+		"ordered_step_composition",
 	], "schema primitive declarations must match the production registry")
 
 	for primitive_id in EXPECTED_PRIMITIVES:
@@ -148,6 +175,21 @@ func _test_admission_contracts() -> void:
 		"count": 3, "inner_radius": 50.0, "outer_radius": 20.0, "seed": 7,
 	}
 	_expect_error("pattern_geometry", inverted_annulus, "executor_params.range")
+	var empty_event := _params_for("stateful_target_ledger")
+	empty_event["event_id"] = ""
+	_expect_error("stateful_target_ledger", empty_event, "executor_params.range")
+	_expect_error("per_target_damage_cap", {
+		"cap_fraction": 0.0, "cap_flat": 0.0,
+	}, "executor_params.range")
+	var incomplete_control := _params_for("control_resistance_policy")
+	incomplete_control.erase("boss")
+	_expect_error("control_resistance_policy", incomplete_control, "executor_params.missing")
+	var duplicate_snapshot := _params_for("summon_interaction_contract")
+	duplicate_snapshot["snapshot_properties"] = ["energy", "energy"]
+	_expect_error("summon_interaction_contract", duplicate_snapshot, "executor_params.duplicate")
+	_check(not (Library.normalize_custom_params(
+		{"value": 1.0}, {"value": {"minimum": 0.0}}
+	)["errors"] as Array).is_empty(), "malformed class-package contracts must fail closed")
 
 	var unknown_step := _params_for("ordered_step_composition")
 	unknown_step["steps"][0]["family"] = "missing"
@@ -249,6 +291,141 @@ func _test_pattern_seed_order_bounds_and_dedup() -> void:
 	await _drop_host(host)
 
 
+func _test_stateful_target_ledger_is_idempotent_and_activation_local() -> void:
+	var host := _host()
+	var source := _target(host, Vector2.RIGHT * 10.0, 100.0)
+	var destination := _target(host, Vector2.RIGHT * 20.0, 100.0)
+	var activation := Activation.new(host, {}, 0.0)
+	activation.set_primitive_state({"primary_target": source})
+	var params := _params_for("stateful_target_ledger")
+	_check(Library.execute_primitive("stateful_target_ledger", activation, params),
+		"ledger primitive must record its first target event")
+	_check(not Library.execute_primitive("stateful_target_ledger", activation, params),
+		"the same target/event pair must be idempotent")
+	_check(is_equal_approx(float(activation.target_value(source, "samples", 0.0)), 10.0),
+		"duplicate record must not mutate the stored value")
+	_check(activation.add_target_value(source, "samples", 5.0, "sample-add"),
+		"a distinct event must mutate the same ledger entry")
+	_check(activation.transfer_target_value(source, destination, "samples", "sample-transfer"),
+		"ledger ownership must transfer without duplicating the entry")
+	_check(activation.target_value(source, "samples") == null \
+			and is_equal_approx(float(activation.target_value(destination, "samples", 0.0)), 15.0),
+		"transfer must remove the source and preserve the exact value")
+	_check(is_equal_approx(float(activation.consume_target_value(
+		destination, "samples", "sample-consume", -1.0
+	)), 15.0), "consume must return the stored value once")
+	_check(activation.target_ledger_size_for_tests() == 0,
+		"consuming the last value must release the target ledger entry")
+	activation.record_target_value(source, "samples", 2.0, "cleanup-record")
+	activation.shutdown(true)
+	_check(activation.target_ledger_size_for_tests() == 0,
+		"shutdown must clear activation-local target state")
+	await _drop_host(host)
+
+
+func _test_per_target_damage_cap_uses_actual_hp_and_secondary_is_nonrecursive() -> void:
+	var host := _host()
+	var target := _target(host, Vector2.RIGHT * 10.0, 1000.0)
+	target.damage_taken_multiplier = 0.5
+	var activation := Activation.new(host, {}, 0.0)
+	_check(Library.execute_primitive(
+		"per_target_damage_cap", activation, _params_for("per_target_damage_cap")
+	), "per-target cap primitive must configure the activation")
+	var first = activation.deal_damage(target, 100.0, {}, "primary-hit")
+	_check(is_equal_approx(first.applied, 50.0) \
+			and is_equal_approx(activation.remaining_target_damage_budget(target), 50.0),
+		"cap budget must decrement by actual HP loss after target mitigation")
+	var duplicate = activation.deal_damage(target, 100.0, {}, "primary-hit")
+	_check(is_zero_approx(duplicate.applied) and target.hits == 1,
+		"duplicate damage event must not reach the host twice")
+	target.damage_taken_multiplier = 1.0
+	var secondary = activation.deal_damage(target, 100.0, {}, "secondary-hit", true)
+	_check(is_equal_approx(secondary.applied, 50.0) and secondary.target_capped,
+		"remaining per-target budget must cap later damage")
+	_check(secondary.secondary and not secondary.creditable,
+		"secondary damage must be explicitly non-creditable to prevent recursive triggers")
+	var lethal := _target(host, Vector2.RIGHT * 30.0, 5.0)
+	var lethal_result = activation.deal_damage(lethal, 100.0, {}, "lethal")
+	_check(lethal_result.killed and is_equal_approx(lethal_result.applied, 5.0) \
+			and is_equal_approx(activation.remaining_target_damage_budget(lethal), 95.0),
+		"overkill must spend only existing HP from the per-target budget")
+	activation.shutdown(true)
+	await _drop_host(host)
+
+
+func _test_control_resistance_policy_is_tier_exact() -> void:
+	var host := _host()
+	var normal := _target(host, Vector2.RIGHT * 10.0, 100.0)
+	var epic := _target(host, Vector2.RIGHT * 20.0, 100.0)
+	var boss := _target(host, Vector2.RIGHT * 30.0, 100.0)
+	epic.add_to_group(Activation.EPIC_GROUP)
+	boss.add_to_group(Activation.BOSS_GROUP)
+	var activation := Activation.new(host, {}, 0.0)
+	_check(Library.execute_primitive(
+		"control_resistance_policy", activation, _params_for("control_resistance_policy")
+	), "control policy primitive must configure all target tiers")
+	var config := {"duration": 4.0, "movement_locked": true}
+	var normal_result := activation.apply_control(normal, Vector2.RIGHT * 100.0, "root", config)
+	var epic_result := activation.apply_control(epic, Vector2.RIGHT * 100.0, "root", config)
+	var boss_result := activation.apply_control(boss, Vector2.RIGHT * 100.0, "root", config)
+	_check(normal.knockbacks == [Vector2.RIGHT * 100.0] and bool(normal_result["execute_allowed"]),
+		"normal targets must receive the full declared control policy")
+	_check(epic.knockbacks == [Vector2.RIGHT * 25.0] and not bool(epic_result["execute_allowed"]),
+		"epic targets must receive their exact displacement and execute policy")
+	_check(boss.knockbacks.is_empty() and not bool(boss_result["execute_allowed"]),
+		"boss targets must reject displacement and execute when declared")
+	_check(is_equal_approx(float(StatusEffects.status_value(epic, "root", "duration", 0.0)), 2.0) \
+			and not StatusEffects.is_movement_locked(epic),
+		"epic control duration and movement lock must follow the tier policy")
+	_check(is_equal_approx(float(StatusEffects.status_value(boss, "root", "duration", 0.0)), 0.8) \
+			and not StatusEffects.is_movement_locked(boss),
+		"boss control duration and movement lock must follow the tier policy")
+	activation.shutdown(true)
+	await _drop_host(host)
+
+
+func _test_summon_interaction_is_lossless_and_duplicate_free() -> void:
+	var host := _host()
+	var persistent := FixtureSummon.new()
+	host.add_child(persistent)
+	persistent.visible = true
+	persistent.process_mode = Node.PROCESS_MODE_INHERIT
+	host.fixture_summons = [persistent, persistent]
+	var activation := Activation.new(host, {}, 0.0)
+	_check(Library.execute_primitive(
+		"summon_interaction_contract", activation, _params_for("summon_interaction_contract")
+	), "summon contract must admit a valid player-owned snapshot")
+	_check(activation.summon_snapshot_count_for_tests() == 1 \
+			and not persistent.visible and persistent.process_mode == Node.PROCESS_MODE_DISABLED,
+		"persistent summons must be deduplicated and suspended once")
+	var temporary := activation.spawn(CONFIGURED_SUMMON_SCENE_PATH)
+	_check(temporary != null and activation.spawn(CONFIGURED_SUMMON_SCENE_PATH) == null,
+		"temporary summon count must stop at the declared cap")
+	_check(temporary != null and str(temporary.get("role")) == "ram" \
+			and temporary.get("setup_owner") == host \
+			and (temporary.get("ultimate_damage_sink") as Callable).is_valid(),
+		"temporary summon setup must receive exact config, owner boundary and damage sink")
+	persistent.energy = 99.0
+	activation.shutdown(true)
+	_check(persistent.visible and persistent.process_mode == Node.PROCESS_MODE_INHERIT \
+			and is_equal_approx(persistent.energy, 7.0),
+		"shutdown must restore every snapshotted summon property exactly")
+	_check(activation.summon_snapshot_count_for_tests() == 0,
+		"shutdown must release every persistent summon snapshot")
+	await process_frame
+	_check(not is_instance_valid(temporary),
+		"shutdown must free activation-owned temporary summons")
+	var rejected := Activation.new(host, {}, 0.0)
+	_check(rejected.configure_summon_interaction(
+		"fixture_summons", 1, [], {"unknown": true}
+	), "syntactically valid setup data must configure before scene admission")
+	_check(rejected.spawn(CONFIGURED_SUMMON_SCENE_PATH) == null \
+			and rejected.spawned_for_tests().is_empty(),
+		"a scene that rejects setup must be removed from activation ownership fail-closed")
+	rejected.shutdown(true)
+	await _drop_host(host)
+
+
 func _test_ordered_composition_production_path() -> void:
 	var host := _host()
 	var first := _target(host, Vector2(60.0, 0.0), 100.0)
@@ -334,6 +511,33 @@ func _params_for(primitive_id: String) -> Dictionary:
 					"arc_degrees": 360.0,
 				},
 				"hit_radius": 0.0, "target_limit": 0,
+			}
+		"stateful_target_ledger":
+			return {
+				"operation": "record", "target_source": "primary_target",
+				"key": "samples", "value": 10.0, "event_id": "sample-record",
+			}
+		"per_target_damage_cap":
+			return {"cap_fraction": 0.0, "cap_flat": 100.0}
+		"control_resistance_policy":
+			return {
+				"normal": {
+					"displacement_multiplier": 1.0, "duration_multiplier": 1.0,
+					"allow_movement_lock": true, "allow_execute": true,
+				},
+				"epic": {
+					"displacement_multiplier": 0.25, "duration_multiplier": 0.5,
+					"allow_movement_lock": false, "allow_execute": false,
+				},
+				"boss": {
+					"displacement_multiplier": 0.0, "duration_multiplier": 0.2,
+					"allow_movement_lock": false, "allow_execute": false,
+				},
+			}
+		"summon_interaction_contract":
+			return {
+				"group_id": "fixture_summons", "temporary_cap": 1,
+				"snapshot_properties": ["energy"], "setup": {"role": "ram"},
 			}
 		"ordered_step_composition":
 			return {"steps": [{

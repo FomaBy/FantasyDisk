@@ -84,8 +84,13 @@ static func resolve_class_contracts(
 		return {"contracts": resolved, "errors": errors}
 
 	var signatures := {}
+	var executable_pairs := {}
 	for weapon_id in weapon_ids:
-		var profile := Resolver.resolve_executable(profiles, pairs, class_id, weapon_id, {})
+		executable_pairs[Resolver.profile_key(class_id, weapon_id)] = true
+	for weapon_id in weapon_ids:
+		var profile := Resolver.resolve_executable(
+			profiles, pairs, class_id, weapon_id, {}, true, executable_pairs
+		)
 		if profile.is_empty() or str(profile.get("weapon_id", "")) != weapon_id:
 			errors.append("%s/%s did not resolve its injected ready profile" % [class_id, weapon_id])
 			continue

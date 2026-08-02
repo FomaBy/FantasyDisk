@@ -32,13 +32,16 @@ static func resolution_source(
 	canonical_pairs: Dictionary,
 	class_id: String,
 	weapon_id: String,
-	allow_legacy_fallback := true
+	allow_legacy_fallback := true,
+	executable_pairs: Dictionary = {}
 ) -> String:
 	var key := profile_key(class_id, weapon_id)
 	if not canonical_pairs.has(key):
 		return SOURCE_INVALID_PAIR
 	var profile := select_catalog_profile(profiles_by_key, class_id, weapon_id)
-	if str(profile.get("implementation_state", "")) == "ready":
+	var pair_is_executable := executable_pairs.has(key)
+	if str(profile.get("implementation_state", "")) == "ready" \
+			and pair_is_executable:
 		return SOURCE_WEAPON_PROFILE
 	if allow_legacy_fallback:
 		return SOURCE_LEGACY_CLASS_FALLBACK
@@ -51,14 +54,16 @@ static func resolve_executable(
 	class_id: String,
 	weapon_id: String,
 	legacy_class_fallback: Dictionary,
-	allow_legacy_fallback := true
+	allow_legacy_fallback := true,
+	executable_pairs: Dictionary = {}
 ) -> Dictionary:
 	var source := resolution_source(
 		profiles_by_key,
 		canonical_pairs,
 		class_id,
 		weapon_id,
-		allow_legacy_fallback
+		allow_legacy_fallback,
+		executable_pairs
 	)
 	if source == SOURCE_WEAPON_PROFILE:
 		return select_catalog_profile(profiles_by_key, class_id, weapon_id)

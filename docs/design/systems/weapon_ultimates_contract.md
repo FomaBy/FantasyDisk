@@ -1,9 +1,10 @@
 # Weapon-keyed ultimate contract
 
 Status: schema v1 is implemented as a declaration and migration foundation, and
-the generic runtime that executes a ready declaration now exists. Gameplay still
-executes the existing class ultimate until an individual weapon profile is
-explicitly marked `ready`; no shipped profile is, so behaviour is unchanged.
+the generic runtime plus class-package discovery seam can execute a ready exact
+JSON/GDScript pair. Gameplay still executes the existing class ultimate until an
+individual package is admitted; no shipped package exists, so behaviour is
+unchanged.
 
 ## Scope and source of truth
 
@@ -21,6 +22,11 @@ entire catalog passes validation.
 `scripts/ultimates/registry/weapon_ultimate_registry.gd` loads and indexes it.
 `scripts/ultimates/registry/weapon_ultimate_resolver.gd` owns the pure
 selection and migration policy.
+
+Class mechanics are additive overlays, discovered recursively from matching
+relative paths below `data/ultimates/classes/<class>/**` and
+`scripts/ultimates/classes/<class>/**`. They never edit or duplicate the
+immutable catalog declaration.
 
 The registry should be constructed once at an integration boundary with
 `ProgressionData.WEAPONS_BY_CLASS` and cached. Do not parse the directory on
@@ -60,14 +66,17 @@ family's parameter contract. Before a ready profile creates an
 normalize the executor parameters. Unknown families or keys, missing keys,
 wrong types, non-finite numbers, fractional integer fields, and values outside
 the live executor domains fail closed with no activation or host side effect.
+Integral JSON numbers are canonicalized to `int`; no fractional value is
+truncated.
 
 The library returns deterministic normalized dictionaries and canonical
 signatures. Nested `status`, `properties`, and `modifiers` dictionaries are
 ordered recursively; non-finite numeric leaves are rejected. `status.dot_damage`
 is excluded from the normalized semantic signature because the live
 `status_zone` and `control` executors deliberately discard it so DoT cannot
-bypass the activation-wide damage ledger. `properties` remain deliberately
-scene-specific until FAN-1541 owns a generic property contract.
+bypass the activation-wide damage ledger. Central-family `properties` remain
+scene-specific; summon interaction snapshots only explicitly declared property
+names.
 
 ## Declaration and execution states
 
@@ -76,8 +85,10 @@ strategies are intentionally unbound. Targeting, charge, executor, and cleanup
 strategies must all be `unbound`, and the profile is not executable.
 
 `ready` means those strategies are bound and `total_boss_cap` is valid. Only
-the exact selected weapon's ready profile may resolve as an executable weapon
-ultimate. A ready profile never activates either sibling weapon declaration.
+the exact selected weapon's ready profile with an admitted executor pair may
+resolve as an executable weapon ultimate. Ready data without its exact script
+remains on legacy fallback. A ready profile never activates either sibling
+weapon declaration.
 
 Catalog lookup and executable resolution are separate APIs:
 
@@ -90,6 +101,28 @@ Catalog lookup and executable resolution are separate APIs:
 
 Unknown class/weapon pairs fail closed and never inherit an unrelated class
 ultimate.
+
+## Class-package convention and admission
+
+A package data file is a ready binding overlay, not another full profile. It
+identifies the immutable `profile_id` and `executor_id`, binds targeting,
+charge, executor and cleanup strategies, supplies executor parameters and a
+whole-activation boss cap. Its executor script must occupy the identical
+relative path with `.gd` replacing `.json`, declare matching `PROFILE_ID` and
+`EXECUTOR_ID` constants, and expose typed static
+`parameter_contract() -> Dictionary` and `execute(activation) -> float` methods.
+
+Discovery is recursive and manifest-free. A package is admitted only when its
+path class/file identity, exact fields, immutable IDs, ready bindings, executor
+constants/methods and normalized parameter contract all agree. Missing,
+orphaned, duplicated, mismatched or incomplete pairs are recorded by
+`package_validation_errors()` and omitted; they do not invalidate the 51-row
+base registry and cannot make a ready data file executable by itself.
+
+The controller asks the registry for the executor belonging to the exact
+`(class_id, weapon_id)` pair and runs it through the same `UltimateActivation`
+ledger and cleanup path as central families. A class-local executor should
+compose shared families and primitives rather than duplicate them.
 
 ## Migration fallback
 
@@ -120,7 +153,7 @@ change.
 
 `scripts/ultimates/controller/ultimate_activation.gd` is one live cast. Executors
 never touch the Player: they ask the activation for targets, damage, modifiers,
-spawns and presentation. The host side is the nine `ultimate_host_*` methods
+spawns and presentation. The host side is the ten `ultimate_host_*` methods
 listed in `UltimateActivation.HOST_METHODS`, implemented by
 `scripts/ultimates/controller/ultimate_player_host.gd`, a Node the Player owns as
 a child. Nothing below the adapter may branch on a class or a weapon.
@@ -153,7 +186,7 @@ parallel timer. A family that schedules nothing returns its lifetime instead.
 ### Targeting, geometry and composition primitives
 
 The seven executor families remain unchanged. `UltimateExecutorLibrary` also
-registers exactly five reusable primitive IDs with strict parameter admission:
+registers exactly nine reusable primitive IDs with strict parameter admission:
 
 | `primitive_id` | Deterministic contract |
 | --- | --- |
@@ -161,6 +194,10 @@ registers exactly five reusable primitive IDs with strict parameter admission:
 | `priority_target_selector` | Orders a bounded candidate set by `nearest`, `aimed`, `highest_hp`, `marked`, or `densest_cluster`, with positional/instance tie-breaks and exact policy-specific hints |
 | `line_pierce_geometry` | Selects a forward corridor by length and half-width, ordered by projection/lateral distance and deduplicated by target instance |
 | `pattern_geometry` | Produces `ring`, `grid`, `radial`, `polygon`, or deterministic `seeded_annulus` points, then walks those points in order to build one deduplicated target set |
+| `stateful_target_ledger` | Records, adds or consumes an activation-local value per target through an explicit idempotency event; the activation also exposes lossless transfer for class-local executors |
+| `per_target_damage_cap` | Opens one fraction-plus-flat applied-HP budget per target for the activation; mitigation and overkill spend only the HP actually lost |
+| `control_resistance_policy` | Requires exact `normal`, `epic` and `boss` displacement, duration, movement-lock and execute policy dictionaries |
+| `summon_interaction_contract` | Queries player-owned summons, deduplicates and snapshots declared properties, suspends them, caps temporary spawns, and restores or frees everything on shutdown |
 | `ordered_step_composition` | Runs a non-empty, non-decreasing `steps` array; each step names exactly one primitive or existing family and shares the same activation ledger |
 
 Composition is admitted through the normal controller `executor.strategy_id`
@@ -184,12 +221,24 @@ overkill-clamped delta `enemy.gd` publishes. Attribution, ledgers and charge rea
 `applied`, never the attempted amount, so overkill and damage-taken reductions
 cannot inflate them.
 
+Damage calls may carry a target-qualified event ID. Repeating the same event is
+idempotent and never reaches the host twice. A secondary result is marked
+`secondary` and `creditable == false`, so a class executor has an explicit
+non-recursive trigger gate even when the secondary hit deals damage or kills.
+
 `total_boss_cap` is a budget for the whole activation, opened once per boss at
 `max_health * total_boss_cap` and drawn down by applied HP. Multi-hit, DoT-style
 zone ticks and deferred summon damage all spend the same budget: a spawn that
 exposes an `ultimate_damage_sink` property is bound to the activation ledger, and
 zone ticks deliberately do not use a StatusEffects `dot_damage`, which would tick
 on the target and bypass the budget. Normal enemies are never capped.
+
+Tiered control flows through `apply_control()`: normal, elite/epic and boss
+targets never inherit each other's policy, status DoT is stripped, and movement
+lock or execute permission must be explicitly allowed. Summon interaction uses
+the tenth host method to return only player-owned nodes from a declared group;
+duplicates are snapshotted once, setup is fail-closed, and shutdown restores
+original visibility, process mode and declared properties.
 
 The activation owns every resource it created. Player death, leaving the tree and
 a new run all call `cancel()`, which kills tracked tweens, frees summons, deploys
@@ -204,12 +253,11 @@ The new catalog is authoritative only for weapon-profile identity and future
 bindings. Codex may inspect the exact selected declaration, but must not
 describe an unbound `declared` profile as implemented gameplay.
 
-Before FAN-1541, class packages may add only declaration data, class-local
-evidence, and in-memory proof. They must not bind strategies, mark a profile
-`ready`, or activate a profile independently. FAN-1541 owns the later binding
-and activation stage; when it runs, it must keep immutable IDs, avoid selection
-branches in `Player` or `ClassWeapon`, supply a whole-activation boss cap, and
-prove the selected weapon resolves while both siblings remain negative controls.
+Class packages may now add one ready overlay/script pair below their class-local
+roots plus their own evidence. They must keep immutable IDs, avoid selection
+branches in `Player` or `ClassWeapon`, supply a whole-activation boss cap, reuse
+the shared activation seam, and prove the selected exact pair resolves while
+siblings and malformed packages remain negative controls.
 
 ## Verification
 
@@ -224,6 +272,8 @@ python3 tools/godot_gate.py --headless --path . \
   --script res://tests/ultimates/executor_contract_audit_test.gd
 python3 tools/godot_gate.py --headless --path . \
   --script res://tests/ultimates/executor_primitives_test.gd
+python3 tools/godot_gate.py --headless --path . \
+  --script res://tests/ultimates/registry_package_discovery_test.gd
 python3 tools/godot_gate.py --headless --path . \
   --script res://tests/ultimates/controller_runtime_test.gd
 python3 tools/godot_gate.py --headless --path . \
@@ -243,6 +293,13 @@ injected — the host adapter drives a real cast that a new run or a node end dr
 Its fixture rejects incomplete parameters before replacing the player registry, so
 the rejected declaration cannot spend charge, activate the player, or create a host.
 
+`executor_primitives_test` covers the exact nine-ID registry, strict admission,
+idempotent target state, actual-HP target caps and overkill, non-creditable
+secondary hits, exact normal/epic/boss control, and lossless duplicate-free
+summon snapshot/restore. `registry_package_discovery_test` proves a real paired
+fixture executes through the controller and that declared, mismatched,
+incomplete, missing, orphaned and duplicated packages remain fail-closed.
+
 The tests cover all 51 selections, both sibling negative controls for every
 selection, exact legacy fallback preservation, fail-closed unknown pairs,
 missing and duplicate pairs, unknown classes and weapons, unique profile,
@@ -253,7 +310,8 @@ unbound.
 
 Run them explicitly, as shown above, for focused local evidence.
 `tools/quality_gate.py` also discovers Godot tests recursively and maps nested
-paths such as `tests/ultimates/` to their `res://tests/...` script paths. A
-changed `ultimate_controller.gd` or `ultimate_executor_library.gd` explicitly
-selects the controller runtime, player integration, and executor contract audit
-suites; `--static-only` deliberately runs no Godot tests.
+paths such as `tests/ultimates/` to their `res://tests/...` script paths.
+Controller/executor changes select the runtime, player integration, audit,
+primitive and package-discovery suites. Registry, schema and any
+`data/ultimates/classes/**` or `scripts/ultimates/classes/**` change select the
+exact-pair package matrix. `--static-only` deliberately runs no Godot tests.

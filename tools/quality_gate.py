@@ -86,6 +86,12 @@ ULTIMATE_EXECUTOR_CONTRACT_TESTS = {
     "controller_player_integration_test",
     "executor_contract_audit_test",
     "executor_primitives_test",
+    "registry_package_discovery_test",
+}
+ULTIMATE_PACKAGE_CONTRACT_TESTS = {
+    "executor_primitives_test",
+    "registry_contract_test",
+    "registry_package_discovery_test",
 }
 PATH_TEST_RULES = {
     "scripts/class_weapon.gd": {"engineer_kit_test", "persistent_hazard_contract_test"},
@@ -103,9 +109,16 @@ PATH_TEST_RULES = {
     "scripts/ui/feedback_overlay.gd": {"feedback_privacy_ui_test"},
     "scripts/ultimates/controller/ultimate_controller.gd": ULTIMATE_EXECUTOR_CONTRACT_TESTS,
     "scripts/ultimates/controller/ultimate_activation.gd": ULTIMATE_EXECUTOR_CONTRACT_TESTS,
+    "scripts/ultimates/controller/ultimate_damage_result.gd": ULTIMATE_EXECUTOR_CONTRACT_TESTS,
     "scripts/ultimates/controller/ultimate_player_host.gd": ULTIMATE_EXECUTOR_CONTRACT_TESTS,
+    "scripts/ultimates/executors/ultimate_control_executor.gd": ULTIMATE_EXECUTOR_CONTRACT_TESTS,
     "scripts/ultimates/executors/ultimate_executor_library.gd": ULTIMATE_EXECUTOR_CONTRACT_TESTS,
     "scripts/ultimates/executors/ultimate_targeting_primitives.gd": ULTIMATE_EXECUTOR_CONTRACT_TESTS,
+    "scripts/ultimates/registry/weapon_ultimate_package_discovery.gd": ULTIMATE_PACKAGE_CONTRACT_TESTS,
+    "scripts/ultimates/registry/weapon_ultimate_registry.gd": ULTIMATE_PACKAGE_CONTRACT_TESTS,
+    "scripts/ultimates/registry/weapon_ultimate_resolver.gd": ULTIMATE_PACKAGE_CONTRACT_TESTS,
+    "scripts/ultimates/schema/weapon_ultimate_schema.gd": ULTIMATE_PACKAGE_CONTRACT_TESTS,
+    "data/ultimates/schema/v1/weapon_ultimate_profile.schema.json": ULTIMATE_PACKAGE_CONTRACT_TESTS,
     "tests/feedback_webhook_config_test.gd": {"feedback_webhook_config_test"},
 }
 DEFAULT_STATIC_TEST_TIMEOUT = 1200.0
@@ -267,6 +280,11 @@ def select_godot_tests(
         selected_names = set(CORE_CHANGED_TESTS)
         for changed_path in _git_changed_paths(changed_ref):
             selected_names.update(PATH_TEST_RULES.get(changed_path, set()))
+            if changed_path.startswith((
+                "data/ultimates/classes/",
+                "scripts/ultimates/classes/",
+            )):
+                selected_names.update(ULTIMATE_PACKAGE_CONTRACT_TESTS)
             if _affects_typography_inventory(changed_path):
                 selected_names.add(TYPOGRAPHY_INVENTORY_TEST)
             if changed_path.startswith("tests/") and changed_path.endswith(".gd"):

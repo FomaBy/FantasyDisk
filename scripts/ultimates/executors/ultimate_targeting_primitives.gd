@@ -1,6 +1,6 @@
 extends RefCounted
 
-## The four zero-duration targeting/geometry steps used by ordered composition.
+## Zero-duration targeting, state and interaction steps used by composition.
 ## Admission lives in UltimateExecutorLibrary; this file only applies already
 ## normalized parameters to one activation-owned context.
 
@@ -10,6 +10,10 @@ const AIM_CONTEXT := "aim_context"
 const PRIORITY_TARGET_SELECTOR := "priority_target_selector"
 const LINE_PIERCE_GEOMETRY := "line_pierce_geometry"
 const PATTERN_GEOMETRY := "pattern_geometry"
+const STATEFUL_TARGET_LEDGER := "stateful_target_ledger"
+const PER_TARGET_DAMAGE_CAP := "per_target_damage_cap"
+const CONTROL_RESISTANCE_POLICY := "control_resistance_policy"
+const SUMMON_INTERACTION_CONTRACT := "summon_interaction_contract"
 
 
 static func execute(primitive_id: String, activation: Activation, params: Dictionary) -> bool:
@@ -22,6 +26,21 @@ static func execute(primitive_id: String, activation: Activation, params: Dictio
 			return _line_targets(activation, params)
 		PATTERN_GEOMETRY:
 			return _pattern_targets(activation, params)
+		STATEFUL_TARGET_LEDGER:
+			return _target_ledger(activation, params)
+		PER_TARGET_DAMAGE_CAP:
+			return activation.set_per_target_damage_cap(
+				float(params["cap_fraction"]), float(params["cap_flat"])
+			)
+		CONTROL_RESISTANCE_POLICY:
+			return activation.set_control_resistance_policy(params)
+		SUMMON_INTERACTION_CONTRACT:
+			return activation.configure_summon_interaction(
+				str(params["group_id"]),
+				int(params["temporary_cap"]),
+				params["snapshot_properties"] as Array,
+				params["setup"] as Dictionary
+			)
 	return false
 
 
@@ -126,3 +145,39 @@ static func _pattern_targets(activation: Activation, params: Dictionary) -> bool
 	activation.set_primitive_state({"points": points})
 	activation.set_primitive_targets(selected)
 	return true
+
+
+static func _target_ledger(activation: Activation, params: Dictionary) -> bool:
+	var selected: Array = []
+	match str(params["target_source"]):
+		"targets":
+			var raw_targets = activation.primitive_value("targets", [])
+			if raw_targets is Array:
+				selected = raw_targets as Array
+		"primary_target":
+			var primary = activation.primitive_value("primary_target")
+			if primary is Node:
+				selected = [primary]
+	if selected.is_empty():
+		return false
+	var applied := false
+	for raw_target in selected:
+		var target := raw_target as Node
+		if target == null or not is_instance_valid(target):
+			continue
+		match str(params["operation"]):
+			"record":
+				applied = activation.record_target_value(
+					target, str(params["key"]), float(params["value"]), str(params["event_id"])
+				) or applied
+			"add":
+				applied = activation.add_target_value(
+					target, str(params["key"]), float(params["value"]), str(params["event_id"])
+				) or applied
+			"consume":
+				if activation.target_value(target, str(params["key"])) != null:
+					activation.consume_target_value(
+						target, str(params["key"]), str(params["event_id"])
+					)
+					applied = true
+	return applied
