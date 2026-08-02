@@ -23,18 +23,39 @@ const Registry := preload("res://scripts/ultimates/registry/weapon_ultimate_regi
 const Resolver := preload("res://scripts/ultimates/registry/weapon_ultimate_resolver.gd")
 const PD := preload("res://scripts/progression_data.gd")
 
-const READY_CLASS := "berserk"
-const READY_WEAPON := "sword"
+const READY_CLASS := "sniper"
+const READY_WEAPON := "sniper_deadeye_rifle"
+const READY_WEAPONS := [
+	"sniper_deadeye_rifle",
+	"sniper_spotter_scope",
+	"sniper_shatter_rounds",
+]
 
 
 class ReadyRegistry extends RefCounted:
-	var profile: Dictionary = {}
+	var canonical_pairs: Dictionary = {}
+	var profiles: Dictionary = {}
+	var executable_pairs: Dictionary = {}
 
-	func resolution_source(_class_id: String, _weapon_id: String, _allow_legacy := true) -> String:
-		return Resolver.SOURCE_WEAPON_PROFILE
+	func _init(pairs: Dictionary) -> void:
+		canonical_pairs = pairs.duplicate(true)
 
-	func catalog_profile_for(_class_id: String, _weapon_id: String) -> Dictionary:
-		return profile.duplicate(true)
+	func resolution_source(class_id: String, weapon_id: String, _allow_legacy := true) -> String:
+		var key := Resolver.profile_key(class_id, weapon_id)
+		if not canonical_pairs.has(key):
+			return Resolver.SOURCE_INVALID_PAIR
+		var profile := profiles.get(key, {}) as Dictionary
+		return Resolver.SOURCE_WEAPON_PROFILE \
+			if executable_pairs.has(key) and str(profile.get("implementation_state", "")) == "ready" \
+			else Resolver.SOURCE_LEGACY_CLASS_FALLBACK
+
+	func catalog_profile_for(class_id: String, weapon_id: String) -> Dictionary:
+		return (profiles.get(Resolver.profile_key(class_id, weapon_id), {}) as Dictionary).duplicate(true)
+
+	func admit_ready_profile(profile: Dictionary) -> void:
+		var key := Resolver.profile_key(str(profile.get("class_id", "")), str(profile.get("weapon_id", "")))
+		profiles[key] = profile.duplicate(true)
+		executable_pairs[key] = true
 
 
 var _errors: Array[String] = []
@@ -50,6 +71,7 @@ func _initialize() -> void:
 
 	await _test_catalog_is_still_declared()
 	await _test_legacy_class_ultimates_unchanged()
+	await _test_exact_ready_pair_routing()
 	await _test_incomplete_ready_profile_refuses_before_player_side_effects()
 	await _test_ready_declaration_runs_through_the_adapter()
 	await _test_new_run_drops_a_live_cast()
@@ -111,29 +133,65 @@ func _test_legacy_class_ultimates_unchanged() -> void:
 	await process_frame
 
 
+func _test_exact_ready_pair_routing() -> void:
+	var registry := ReadyRegistry.new(_canonical_pairs())
+	for weapon_id in READY_WEAPONS:
+		var profile := _ready_profile(weapon_id, {
+			"strategy_id": "burst",
+			"params": {"radius": 400.0, "damage": 1.0, "target_limit": 0},
+		}, 0.1)
+		_check(not profile.is_empty(), "%s fixture must satisfy the live executor contract" % weapon_id)
+		registry.admit_ready_profile(profile)
+
+	var legacy_pairs := 0
+	for raw_class_id in PD.WEAPONS_BY_CLASS.keys():
+		var class_id := str(raw_class_id)
+		for raw_weapon_id in (PD.WEAPONS_BY_CLASS[class_id] as Dictionary).keys():
+			var weapon_id := str(raw_weapon_id)
+			var source := registry.resolution_source(class_id, weapon_id)
+			if class_id == READY_CLASS and READY_WEAPONS.has(weapon_id):
+				_check(source == Resolver.SOURCE_WEAPON_PROFILE,
+					"%s/%s exact ready pair must select weapon_profile" % [class_id, weapon_id])
+				_check(str(registry.catalog_profile_for(class_id, weapon_id).get("weapon_id", "")) == weapon_id,
+					"%s/%s exact ready pair must retain weapon identity" % [class_id, weapon_id])
+			else:
+				legacy_pairs += 1
+				_check(source == Resolver.SOURCE_LEGACY_CLASS_FALLBACK,
+					"%s/%s declared or unbound pair must keep legacy fallback" % [class_id, weapon_id])
+	_check(legacy_pairs == 48, "all 48 remaining declared or unbound pairs must keep legacy fallback")
+	_check(
+		registry.resolution_source(READY_CLASS, "__unknown_weapon__") == Resolver.SOURCE_INVALID_PAIR,
+		"unknown package pairs must stay invalid"
+	)
+	await process_frame
+
+
 func _test_ready_declaration_runs_through_the_adapter() -> void:
 	var player := await _spawn_player()
 	var enemy := await _spawn_enemy(Vector2(120.0, 0.0))
-	_check(_inject_ready_profile(player, {
-		"strategy_id": "burst",
-		"params": {"radius": 400.0, "damage": 1.0, "target_limit": 0},
-	}, 0.1), "the ready burst fixture must satisfy the live contract")
+	for weapon_id in READY_WEAPONS:
+		player.call("configure_character", READY_CLASS, weapon_id)
+		await process_frame
+		_check(_inject_ready_profile(player, weapon_id, {
+			"strategy_id": "burst",
+			"params": {"radius": 400.0, "damage": 1.0, "target_limit": 0},
+		}, 0.1), "%s ready burst fixture must satisfy the live contract" % weapon_id)
 
-	var health_before := float(enemy.get("health"))
-	player.set("ultimate_charge", float(player.get("ultimate_max_charge")))
-	_check(bool(player.call("activate_ultimate")), "a ready declaration must still report a cast")
-	_check(
-		float(enemy.get("health")) < health_before,
-		"the adapter must route generic ultimate damage into the real enemy contract"
-	)
-	_check(
-		is_zero_approx(float(player.get("ultimate_charge"))),
-		"a generic cast must spend the charge exactly once"
-	)
-	_check(
-		not bool(player.call("activate_ultimate")),
-		"a spent charge must refuse the next input"
-	)
+		var health_before := float(enemy.get("health"))
+		player.set("ultimate_charge", float(player.get("ultimate_max_charge")))
+		_check(bool(player.call("activate_ultimate")), "%s ready declaration must report a cast" % weapon_id)
+		_check(
+			float(enemy.get("health")) < health_before,
+			"%s adapter must route generic damage into the real enemy contract" % weapon_id
+		)
+		_check(
+			is_zero_approx(float(player.get("ultimate_charge"))),
+			"%s generic cast must spend the charge exactly once" % weapon_id
+		)
+		_check(
+			not bool(player.call("activate_ultimate")),
+			"%s spent charge must refuse the next input" % weapon_id
+		)
 
 	if is_instance_valid(enemy):
 		enemy.queue_free()
@@ -143,7 +201,7 @@ func _test_ready_declaration_runs_through_the_adapter() -> void:
 
 func _test_new_run_drops_a_live_cast() -> void:
 	var player := await _spawn_player()
-	_check(_inject_ready_profile(player, {
+	_check(_inject_ready_profile(player, READY_WEAPON, {
 		"strategy_id": "timed_modifier",
 		"params": {
 			"duration": 30.0,
@@ -184,7 +242,7 @@ func _test_new_run_drops_a_live_cast() -> void:
 
 func _test_node_end_drops_a_live_cast() -> void:
 	var player := await _spawn_player()
-	_check(_inject_ready_profile(player, {
+	_check(_inject_ready_profile(player, READY_WEAPON, {
 		"strategy_id": "timed_modifier",
 		"params": {
 			"duration": 30.0,
@@ -218,7 +276,7 @@ func _test_incomplete_ready_profile_refuses_before_player_side_effects() -> void
 	var charge := float(player.get("ultimate_max_charge"))
 	player.set("ultimate_charge", charge)
 	_check(
-		not _inject_ready_profile(player, {
+		not _inject_ready_profile(player, READY_WEAPON, {
 			"strategy_id": "burst",
 			"params": {"radius": 400.0, "damage": 1.0},
 		}, 0.1),
@@ -262,23 +320,40 @@ func _spawn_enemy(offset: Vector2) -> Node2D:
 	return enemy
 
 
-## Swap the shared catalog for one normalized ready declaration. Fixtures must
-## pass the live contract before they may touch the real player adapter.
-func _inject_ready_profile(player: Node2D, executor: Dictionary, total_boss_cap: float) -> bool:
+## Swap the shared catalog for one normalized, exact ready package pair.
+func _inject_ready_profile(
+	player: Node2D,
+	weapon_id: String,
+	executor: Dictionary,
+	total_boss_cap: float
+) -> bool:
+	var profile := _ready_profile(weapon_id, executor, total_boss_cap)
+	if profile.is_empty():
+		return false
+	var registry := ReadyRegistry.new(_canonical_pairs())
+	registry.admit_ready_profile(profile)
+	if registry.resolution_source(READY_CLASS, weapon_id) != Resolver.SOURCE_WEAPON_PROFILE:
+		return false
+	PlayerHost.for_player(player).use_registry(registry)
+	return true
+
+
+func _ready_profile(weapon_id: String, executor: Dictionary, total_boss_cap: float) -> Dictionary:
 	var strategy_id := str(executor.get("strategy_id", ""))
 	var normalized := Library.normalize_params(strategy_id, executor.get("params", {}))
 	if not (normalized["errors"] as Array).is_empty():
-		return false
-	var registry := ReadyRegistry.new()
-	registry.profile = {
+		return {}
+	return {
 		"class_id": READY_CLASS,
-		"weapon_id": READY_WEAPON,
+		"weapon_id": weapon_id,
 		"implementation_state": "ready",
 		"total_boss_cap": total_boss_cap,
 		"executor": {"strategy_id": strategy_id, "params": normalized["params"]},
 	}
-	PlayerHost.for_player(player).use_registry(registry)
-	return true
+
+
+func _canonical_pairs() -> Dictionary:
+	return Registry.new(PD.WEAPONS_BY_CLASS).canonical_pairs_for_tests()
 
 
 func _check(condition: bool, message: String) -> void:

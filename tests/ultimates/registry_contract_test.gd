@@ -10,10 +10,20 @@ const PD := preload("res://scripts/progression_data.gd")
 const Registry := preload("res://scripts/ultimates/registry/weapon_ultimate_registry.gd")
 const Resolver := preload("res://scripts/ultimates/registry/weapon_ultimate_resolver.gd")
 
+const READY_CLASS := "sniper"
+const READY_WEAPONS := [
+	"sniper_deadeye_rifle",
+	"sniper_spotter_scope",
+	"sniper_shatter_rounds",
+]
+
 
 func _initialize() -> void:
 	var errors: Array[String] = []
 	var registry = Registry.new(PD.WEAPONS_BY_CLASS)
+	var package_pairs := {}
+	for key in registry.package_pair_keys():
+		package_pairs[str(key)] = true
 
 	_expect(
 		registry.is_valid(),
@@ -24,9 +34,8 @@ func _initialize() -> void:
 	_expect(registry.class_ids() == _expected_class_ids(), "class order must match canonical inventory", errors)
 	_expect(registry.profile_count() == 51, "catalog must contain exactly 51 profiles", errors)
 	_expect(registry.package_validation_errors().is_empty(),
-		"empty production package roots must not report errors", errors)
-	_expect(registry.package_pair_keys().is_empty(),
-		"no production package may become executable in the foundation change", errors)
+		"discovered packages must satisfy the exact data/executor contract: %s"
+		% str(registry.package_validation_errors()), errors)
 
 	var selected_checks := 0
 	var sibling_negative_controls := 0
@@ -43,10 +52,22 @@ func _initialize() -> void:
 		)
 		for weapon_id in weapon_ids:
 			var selected: Dictionary = registry.catalog_profile_for(class_id, weapon_id)
+			var profile_key := Resolver.profile_key(class_id, weapon_id)
+			var has_exact_package := package_pairs.has(profile_key)
+			var is_ready := str(selected.get("implementation_state", "")) == "ready"
+			var expected_source := (
+				Resolver.SOURCE_WEAPON_PROFILE
+				if is_ready and has_exact_package
+				else Resolver.SOURCE_LEGACY_CLASS_FALLBACK
+			)
 			_expect(not selected.is_empty(), "%s/%s profile must resolve" % [class_id, weapon_id], errors)
 			_expect(str(selected.get("class_id", "")) == class_id, "selected class must match", errors)
 			_expect(str(selected.get("weapon_id", "")) == weapon_id, "selected weapon must match", errors)
-			_expect(str(selected.get("implementation_state", "")) == "declared", "v1 profile must be declared", errors)
+			_expect(
+				not has_exact_package or is_ready,
+				"%s exact package pair must be explicitly ready" % profile_key,
+				errors
+			)
 			selected_checks += 1
 
 			var selected_identity: Dictionary = selected.get("identity", {})
@@ -82,21 +103,17 @@ func _initialize() -> void:
 
 			var legacy: Dictionary = PD.ultimate_config(class_id)
 			_expect(
-				registry.resolution_source(class_id, weapon_id)
-				== Resolver.SOURCE_LEGACY_CLASS_FALLBACK,
-				"%s/%s declared profile must select legacy fallback" % [class_id, weapon_id],
+				registry.resolution_source(class_id, weapon_id) == expected_source,
+				"%s/%s must resolve from its exact ready package state" % [class_id, weapon_id],
 				errors
 			)
 			var executable: Dictionary = registry.resolve_executable(class_id, weapon_id, legacy)
-			_expect(
-				executable == legacy,
-				"%s/%s fallback must preserve exact current class ultimate" % [class_id, weapon_id],
-				errors
-			)
+			_expect(executable == (selected if is_ready and has_exact_package else legacy),
+				"%s/%s must return the selected executable contract or legacy fallback" % [class_id, weapon_id], errors)
 			executable["__mutation_probe"] = true
 			_expect(
 				not registry.resolve_executable(class_id, weapon_id, legacy).has("__mutation_probe"),
-				"fallback result must be a deep copy",
+				"resolved contract must be a deep copy",
 				errors
 			)
 
@@ -132,7 +149,7 @@ func _initialize() -> void:
 		errors
 	)
 
-	_test_ready_profile_is_weapon_local(registry, errors)
+	_test_ready_package_matrix(registry, errors)
 
 	if not errors.is_empty():
 		for error in errors:
@@ -142,61 +159,68 @@ func _initialize() -> void:
 		return
 	print(
 		"Weapon ultimate registry contract passed "
-		+ "(17 classes, 51 selections, 102 sibling negative controls, legacy fallback preserved)."
+		+ "(17 classes, 51 selections, 102 sibling negative controls, exact ready pairs admitted)."
 	)
 	quit(0)
 
 
-func _test_ready_profile_is_weapon_local(registry, errors: Array[String]) -> void:
+func _test_ready_package_matrix(registry, errors: Array[String]) -> void:
 	var profiles: Dictionary = registry.profiles_for_tests()
 	var pairs: Dictionary = registry.canonical_pairs_for_tests()
-	var ready_key := Resolver.profile_key("berserk", "sword")
-	var ready_profile: Dictionary = profiles[ready_key]
-	ready_profile["implementation_state"] = "ready"
-	ready_profile["total_boss_cap"] = 0.25
-	for binding_field in ["targeting", "charge", "executor", "cleanup_policy"]:
-		var binding: Dictionary = ready_profile[binding_field]
-		binding["strategy_id"] = "test_bound_%s" % binding_field
-	profiles[ready_key] = ready_profile
-	var executable_pairs := {ready_key: true}
+	var executable_pairs := {}
+	for weapon_id in READY_WEAPONS:
+		var key := Resolver.profile_key(READY_CLASS, weapon_id)
+		var ready_profile: Dictionary = profiles[key]
+		ready_profile["implementation_state"] = "ready"
+		ready_profile["total_boss_cap"] = 0.25
+		for binding_field in ["targeting", "charge", "executor", "cleanup_policy"]:
+			var binding: Dictionary = ready_profile[binding_field]
+			binding["strategy_id"] = "test_bound_%s" % binding_field
+		profiles[key] = ready_profile
+		executable_pairs[key] = true
 
+	var legacy_pairs := 0
+	for raw_class_id in PD.WEAPONS_BY_CLASS.keys():
+		var class_id := str(raw_class_id)
+		for raw_weapon_id in (PD.WEAPONS_BY_CLASS[class_id] as Dictionary).keys():
+			var weapon_id := str(raw_weapon_id)
+			var key := Resolver.profile_key(class_id, weapon_id)
+			var source := Resolver.resolution_source(
+				profiles, pairs, class_id, weapon_id, true, executable_pairs
+			)
+			if executable_pairs.has(key):
+				_expect(source == Resolver.SOURCE_WEAPON_PROFILE,
+					"%s exact ready pair must resolve to its weapon profile" % key, errors)
+				var resolved: Dictionary = Resolver.resolve_executable(
+					profiles, pairs, class_id, weapon_id, PD.ultimate_config(class_id), true, executable_pairs
+				)
+				_expect(str(resolved.get("weapon_id", "")) == weapon_id,
+					"%s exact ready pair must retain weapon identity" % key, errors)
+			else:
+				legacy_pairs += 1
+				_expect(source == Resolver.SOURCE_LEGACY_CLASS_FALLBACK,
+					"%s declared or unbound pair must keep legacy fallback" % key, errors)
+	_expect(legacy_pairs == 48, "all 48 non-ready pairs must keep legacy fallback", errors)
+
+	var partial_pairs := {}
 	_expect(
-		Resolver.resolution_source(profiles, pairs, "berserk", "sword")
+		Resolver.resolution_source(profiles, pairs, READY_CLASS, READY_WEAPONS[0], true, partial_pairs)
 			== Resolver.SOURCE_LEGACY_CLASS_FALLBACK,
-		"ready data without its exact executor pair must stay legacy-safe",
-		errors
-	)
-
+		"ready data without its exact executor pair must fail closed to legacy fallback", errors)
+	var declared_profiles := profiles.duplicate(true)
+	var declared_key := Resolver.profile_key(READY_CLASS, READY_WEAPONS[0])
+	(declared_profiles[declared_key] as Dictionary)["implementation_state"] = "declared"
 	_expect(
 		Resolver.resolution_source(
-			profiles, pairs, "berserk", "sword", true, executable_pairs
-		)
-			== Resolver.SOURCE_WEAPON_PROFILE,
-		"ready selected profile with its exact executor pair must be executable",
-		errors
-	)
-	var resolved: Dictionary = Resolver.resolve_executable(
-		profiles,
-		pairs,
-		"berserk",
-		"sword",
-		PD.ultimate_config("berserk"),
-		true,
-		executable_pairs
-	)
-	_expect(
-		str(resolved.get("weapon_id", "")) == "sword",
-		"ready selected profile must resolve by weapon ID",
-		errors
-	)
+			declared_profiles, pairs, READY_CLASS, READY_WEAPONS[0], true, executable_pairs
+		) == Resolver.SOURCE_LEGACY_CLASS_FALLBACK,
+		"a malformed non-ready pair must fail closed to legacy fallback", errors)
+	var orphan_pairs := {Resolver.profile_key("__orphan__", "__orphan__"): true}
 	_expect(
 		Resolver.resolution_source(
-			profiles, pairs, "berserk", "axe", true, executable_pairs
-		)
-			== Resolver.SOURCE_LEGACY_CLASS_FALLBACK,
-		"ready selected profile must not activate a sibling declaration",
-		errors
-	)
+			profiles, pairs, "__orphan__", "__orphan__", true, orphan_pairs
+		) == Resolver.SOURCE_INVALID_PAIR,
+		"orphan package pairs must stay invalid", errors)
 
 
 func _expected_class_ids() -> Array[String]:
