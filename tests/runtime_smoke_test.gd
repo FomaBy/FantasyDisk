@@ -17,6 +17,7 @@ const RunAutosave := preload("res://scripts/run_autosave.gd")
 const FeedbackReporter := preload("res://scripts/feedback_reporter.gd")
 const HeroStatRadarScript := preload("res://scripts/ui/hero_stat_radar.gd")
 const GlobalTooltip := preload("res://scripts/ui/global_tooltip.gd")
+const UltimateHostScript := preload("res://scripts/ultimates/controller/ultimate_player_host.gd")
 const STANDARD_ACTION_BUTTON_HEIGHT := 104.0
 const HERO_SELECT_V4_BG := "res://assets/sprites/ui/hero_select_v4/background.png"
 const HERO_SELECT_V4_SOURCE_SIZE := Vector2(1536.0, 1024.0)
@@ -73,6 +74,8 @@ const EXPECTED_CODEX_CHARACTER_PORTRAIT_SIZE := Vector2(216.0, 216.0)
 const DUPLICATE_ARTIFACT_SKIP_DIRS := [".godot", ".git", "tmp", "node_modules"]
 const DUPLICATE_ARTIFACT_SKIP_PATH_PREFIXES := ["res://build/dmg"]
 const DUPLICATE_ARTIFACT_PATTERN := " 2(\\.|$)"
+const ULTIMATE_TIMING_GRACE_SECONDS := 0.5
+const ULTIMATE_MAX_DECLARED_LIFETIME_SECONDS := 30.0
 
 # FAN-1700: липкий флаг провала. quit() в Godot отложенный (выполняется в конце
 # кадра), поэтому после _fail() код продолжает работать и успешный quit() затирает
@@ -4945,7 +4948,9 @@ func _test_ultimate_framework() -> void:
 		player.global_position = Vector2(900, 700)
 		await process_frame
 		var weapon_ids := ProgressionData.weapon_ids(character_id)
-		player.call("configure_character", character_id, str(weapon_ids[0]))
+		var weapon_id := str(weapon_ids[0])
+		player.call("configure_character", character_id, weapon_id)
+		var ultimate_probe := _ultimate_runtime_probe(character_id, weapon_id)
 		var parameters: Dictionary = player.get("derived_parameters")
 		parameters["ultimate_multiplier"] = 1.5
 		player.set("derived_parameters", parameters)
@@ -4962,6 +4967,9 @@ func _test_ultimate_framework() -> void:
 		var hp_before := 0.0
 		for enemy in enemies:
 			hp_before += float(enemy.get("health"))
+		var enemy_hp_before := _ultimate_enemy_health(enemies)
+		var allies_before := get_nodes_in_group("allies").size()
+		var modifiers_before: Dictionary = (player.get("run_modifiers") as Dictionary).duplicate(true)
 		player.set("ultimate_charge", 100.0)
 		if not bool(player.call("ultimate_ready")):
 			_fail("Expected %s ultimate to be ready at full charge." % character_id)
@@ -4972,21 +4980,39 @@ func _test_ultimate_framework() -> void:
 		if float(player.get("ultimate_charge")) > 0.01:
 			_fail("Expected %s ultimate to reset charge after activation." % character_id)
 			return
+		var generic_activation = _ultimate_active_activation(player)
+		var same_frame_effect := _ultimate_has_observable_effect(
+			player, enemies, enemy_hp_before, allies_before, modifiers_before, generic_activation
+		)
 		await process_frame
 		if character_id == "berserk":
 			player.call("on_weapon_hit", enemies[0], 20.0)
 			await process_frame
-		var hp_after := 0.0
-		for enemy in enemies:
-			if is_instance_valid(enemy):
-				hp_after += float(enemy.get("health"))
-		if character_id == "druid":
-			if get_nodes_in_group("allies").is_empty():
-				_fail("Expected Druid ultimate to summon temporary allies.")
+		if str(ultimate_probe.get("source", "")) == "weapon_profile":
+			# The same profile-driven branch covers the positive Chemist blast_powder
+			# matrix (declared detonation at 1.3s) without a class/weapon bypass.
+			await _assert_ready_ultimate_runtime(
+				player,
+				enemies,
+				enemy_hp_before,
+				allies_before,
+				modifiers_before,
+				generic_activation,
+				same_frame_effect,
+				ultimate_probe.get("profile", {}) as Dictionary
+			)
+		else:
+			var hp_after := 0.0
+			for enemy in enemies:
+				if is_instance_valid(enemy):
+					hp_after += float(enemy.get("health"))
+			if character_id == "druid":
+				if get_nodes_in_group("allies").size() <= allies_before:
+					_fail("Expected Druid ultimate to summon temporary allies.")
+					return
+			elif hp_after >= hp_before:
+				_fail("Expected %s ultimate to have a measurable combat effect." % character_id)
 				return
-		elif hp_after >= hp_before:
-			_fail("Expected %s ultimate to have a measurable combat effect." % character_id)
-			return
 		player.queue_free()
 		for enemy in enemies:
 			if is_instance_valid(enemy):
@@ -4995,6 +5021,158 @@ func _test_ultimate_framework() -> void:
 	holder.queue_free()
 	current_scene = null
 	await process_frame
+
+
+func _ultimate_runtime_probe(character_id: String, weapon_id: String) -> Dictionary:
+	var registry = UltimateHostScript.shared_registry()
+	if registry == null or not registry.has_method("resolution_source"):
+		return {"source": "invalid", "profile": {}}
+	return {
+		"source": str(registry.resolution_source(character_id, weapon_id)),
+		"profile": registry.catalog_profile_for(character_id, weapon_id),
+	}
+
+
+func _ultimate_active_activation(player: Node2D):
+	var host := player.get_node_or_null("UltimateHost")
+	if host == null or not host.has_method("controller"):
+		return null
+	var controller = host.controller()
+	return controller.active_activation() if controller != null else null
+
+
+func _ultimate_enemy_health(enemies: Array) -> Dictionary:
+	var result := {}
+	for enemy in enemies:
+		if enemy is Node and is_instance_valid(enemy):
+			result[(enemy as Node).get_instance_id()] = float((enemy as Node).get("health"))
+	return result
+
+
+func _ultimate_has_observable_effect(
+	player: Node2D,
+	enemies: Array,
+	enemy_hp_before: Dictionary,
+	allies_before: int,
+	modifiers_before: Dictionary,
+	activation
+) -> bool:
+	if activation != null and float(activation.get("applied_total")) > 0.01:
+		return true
+	for enemy in enemies:
+		if enemy == null or not is_instance_valid(enemy):
+			continue
+		var before := float(enemy_hp_before.get(enemy.get_instance_id(), INF))
+		if float(enemy.get("health")) < before - 0.01:
+			return true
+	if get_nodes_in_group("allies").size() > allies_before:
+		return true
+	var modifiers: Dictionary = player.get("run_modifiers")
+	return modifiers != modifiers_before
+
+
+func _ultimate_timing_window(profile: Dictionary) -> Dictionary:
+	var executor = profile.get("executor")
+	if not executor is Dictionary:
+		return {"valid": false, "reason": "missing executor binding"}
+	var params = (executor as Dictionary).get("params")
+	if not params is Dictionary:
+		return {"valid": false, "reason": "missing executor params"}
+	var lifecycle_window := 0.0
+	var impact_window := 0.0
+	var timing_fields := 0
+	for raw_key in (params as Dictionary).keys():
+		var key := str(raw_key).to_lower()
+		if not _is_ultimate_timing_key(key):
+			continue
+		timing_fields += 1
+		var value = (params as Dictionary)[raw_key]
+		if value is bool or not (value is int or value is float) or not is_finite(float(value)):
+			return {"valid": false, "reason": "malformed timing field %s" % key}
+		var seconds := float(value)
+		if seconds < 0.0 or seconds > ULTIMATE_MAX_DECLARED_LIFETIME_SECONDS:
+			return {"valid": false, "reason": "out-of-bounds timing field %s" % key}
+		lifecycle_window = maxf(lifecycle_window, seconds)
+		if (key.ends_with("_at") and not key.contains("recover") and not key.contains("cleanup")) \
+				or key.contains("impact") or key.contains("detonat"):
+			impact_window = maxf(impact_window, seconds)
+	if timing_fields == 0:
+		return {"valid": true, "has_timing": false, "impact_window": 0.0, "lifecycle_window": 0.0}
+	return {
+		"valid": true,
+		"has_timing": true,
+		"impact_window": impact_window,
+		"lifecycle_window": lifecycle_window,
+	}
+
+
+func _is_ultimate_timing_key(key: String) -> bool:
+	return key.ends_with("_at") or key.ends_with("_delay") or key.ends_with("_duration") \
+		or key.ends_with("_interval") or key in ["delay", "duration", "lifetime", "impact"]
+
+
+func _assert_ready_ultimate_runtime(
+	player: Node2D,
+	enemies: Array,
+	enemy_hp_before: Dictionary,
+	allies_before: int,
+	modifiers_before: Dictionary,
+	activation,
+	same_frame_effect: bool,
+	profile: Dictionary
+) -> void:
+	if str(profile.get("implementation_state", "")) != "ready":
+		_fail("Expected executable ultimate profile to declare ready state.")
+		return
+	var timing := _ultimate_timing_window(profile)
+	if not bool(timing.get("valid", false)):
+		_fail("Expected ready weapon ultimate to expose valid timing: %s" % str(timing.get("reason", "malformed timing")))
+		return
+	var host := player.get_node_or_null("UltimateHost")
+	var controller = host.controller() if host != null and host.has_method("controller") else null
+	if activation == null:
+		if not same_frame_effect and not _ultimate_has_observable_effect(
+				player, enemies, enemy_hp_before, allies_before, modifiers_before, null):
+			_fail("Expected immediate weapon ultimate to have observable effect evidence.")
+			return
+		if controller != null and controller.is_active():
+			_fail("Immediate weapon ultimate left an active controller state.")
+			return
+		if bool(player.get("_ultimate_active")):
+			_fail("Immediate weapon ultimate left orphan active state.")
+		return
+	if not bool(timing.get("valid", false)) or not bool(timing.get("has_timing", false)):
+		_fail("Expected delayed weapon ultimate to expose valid declared timing: %s" % str(timing.get("reason", "missing timing")))
+		return
+	var impact_window := float(timing.get("impact_window", -1.0))
+	var lifecycle_window := float(timing.get("lifecycle_window", -1.0))
+	if impact_window < 0.0 or lifecycle_window < impact_window:
+		_fail("Expected delayed weapon ultimate timing to bound impact before cleanup.")
+		return
+	var lifecycle_budget := lifecycle_window + ULTIMATE_TIMING_GRACE_SECONDS
+	var impact_budget := impact_window + ULTIMATE_TIMING_GRACE_SECONDS
+	var elapsed := 0.0
+	var wait_frames := 0
+	# Headless runs can advance frames faster than wall-clock time; keep the
+	# deadline in simulation seconds and cap zero-delta loops independently.
+	var max_wait_frames := maxi(1, int(ceil(lifecycle_budget * 2000.0)))
+	var effect_seen := same_frame_effect
+	while not effect_seen and elapsed <= impact_budget and wait_frames < max_wait_frames:
+		await process_frame
+		elapsed += maxf(root.get_process_delta_time(), 0.0)
+		wait_frames += 1
+		effect_seen = _ultimate_has_observable_effect(
+			player, enemies, enemy_hp_before, allies_before, modifiers_before, activation
+		)
+	if not effect_seen:
+		_fail("Expected delayed weapon ultimate to produce observable effect by its declared impact window.")
+		return
+	while controller != null and controller.is_active() and elapsed <= lifecycle_budget and wait_frames < max_wait_frames:
+		await process_frame
+		elapsed += maxf(root.get_process_delta_time(), 0.0)
+		wait_frames += 1
+	if controller == null or controller.is_active() or bool(player.get("_ultimate_active")):
+		_fail("Expected delayed weapon ultimate to clean up within its declared lifecycle window.")
 
 
 func _test_run_damage_dealt_metric(main_scene: PackedScene) -> void:
