@@ -10,11 +10,17 @@ extends RefCounted
 const CATALOG_DIRECTORY := "res://data/ultimates/schema/v1/classes"
 const Schema := preload("res://scripts/ultimates/schema/weapon_ultimate_schema.gd")
 const Resolver := preload("res://scripts/ultimates/registry/weapon_ultimate_resolver.gd")
+const PackageDiscovery := preload(
+	"res://scripts/ultimates/registry/weapon_ultimate_package_discovery.gd"
+)
 
 var _documents: Array = []
 var _profiles_by_key: Dictionary = {}
 var _canonical_pairs: Dictionary = {}
 var _errors: Array[String] = []
+var _package_errors: Array[String] = []
+var _package_executors: Dictionary = {}
+var _package_pairs: Dictionary = {}
 
 
 func _init(weapons_by_class: Dictionary = {}) -> void:
@@ -25,12 +31,23 @@ func _init(weapons_by_class: Dictionary = {}) -> void:
 func load_catalog(weapons_by_class: Dictionary) -> void:
 	_documents.clear()
 	_profiles_by_key.clear()
+	_package_errors.clear()
+	_package_executors.clear()
+	_package_pairs.clear()
 	_canonical_pairs = Schema.canonical_pairs(weapons_by_class)
 	_errors.clear()
 	_read_documents()
 	_errors.append_array(Schema.validate_documents(_documents, weapons_by_class))
 	if _errors.is_empty():
 		_profiles_by_key = Schema.index_documents(_documents)
+		var discovery := PackageDiscovery.new()
+		discovery.discover(_profiles_by_key)
+		_package_errors = discovery.validation_errors()
+		_package_pairs = discovery.pair_keys()
+		for raw_key in _package_pairs.keys():
+			var key := str(raw_key)
+			_profiles_by_key[key] = discovery.profile_for(key)
+			_package_executors[key] = discovery.executor_for(key)
 
 
 func is_valid() -> bool:
@@ -39,6 +56,10 @@ func is_valid() -> bool:
 
 func validation_errors() -> Array[String]:
 	return _errors.duplicate()
+
+
+func package_validation_errors() -> Array[String]:
+	return _package_errors.duplicate()
 
 
 func profile_count() -> int:
@@ -59,7 +80,8 @@ func resolution_source(
 		_canonical_pairs,
 		class_id,
 		weapon_id,
-		allow_legacy_fallback
+		allow_legacy_fallback,
+		_package_pairs
 	)
 
 
@@ -75,8 +97,25 @@ func resolve_executable(
 		class_id,
 		weapon_id,
 		legacy_class_fallback,
-		allow_legacy_fallback
+		allow_legacy_fallback,
+		_package_pairs
 	)
+
+
+func executor_for(class_id: String, weapon_id: String):
+	return _package_executors.get(Schema.profile_key(class_id, weapon_id))
+
+
+func has_exact_executor_pair(class_id: String, weapon_id: String) -> bool:
+	return _package_pairs.has(Schema.profile_key(class_id, weapon_id))
+
+
+func package_pair_keys() -> Array[String]:
+	var keys: Array[String] = []
+	for raw_key in _package_pairs.keys():
+		keys.append(str(raw_key))
+	keys.sort()
+	return keys
 
 
 func profile_keys() -> Array[String]:

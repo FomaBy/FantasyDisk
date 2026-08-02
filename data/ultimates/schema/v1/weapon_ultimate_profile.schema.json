@@ -18,6 +18,10 @@
       "priority_target_selector",
       "line_pierce_geometry",
       "pattern_geometry",
+      "stateful_target_ledger",
+      "per_target_damage_cap",
+      "control_resistance_policy",
+      "summon_interaction_contract",
       "ordered_step_composition"
     ],
     "parameter_contracts": {
@@ -46,10 +50,47 @@
         "hit_radius": "finite number >= 0",
         "target_limit": "integer >= 0"
       },
+      "stateful_target_ledger": {
+        "operation": "record|add|consume",
+        "target_source": "targets|primary_target",
+        "key": "non-empty string",
+        "value": "finite number",
+        "event_id": "non-empty idempotency key"
+      },
+      "per_target_damage_cap": {
+        "cap_fraction": "finite number in [0, 1]",
+        "cap_flat": "finite number >= 0; fraction and flat may not both be zero"
+      },
+      "control_resistance_policy": {
+        "normal": "exact displacement/duration/movement-lock/execute policy",
+        "epic": "exact displacement/duration/movement-lock/execute policy",
+        "boss": "exact displacement/duration/movement-lock/execute policy"
+      },
+      "summon_interaction_contract": {
+        "group_id": "non-empty player-owned summon group",
+        "temporary_cap": "integer >= 0",
+        "snapshot_properties": "unique string array",
+        "setup": "deterministic scene setup dictionary"
+      },
       "ordered_step_composition": {
         "steps": "non-empty ordered Array[{at, primitive_id|family, params}]"
       }
     }
+  },
+  "class_package_contract": {
+    "data_root": "res://data/ultimates/classes",
+    "executor_root": "res://scripts/ultimates/classes",
+    "pairing": "identical relative <class>/** path with .json/.gd extensions",
+    "data_shape": "ready binding overlay for one immutable catalog profile",
+    "executor_constants": [
+      "PROFILE_ID",
+      "EXECUTOR_ID"
+    ],
+    "executor_methods": [
+      "static parameter_contract() -> Dictionary",
+      "static execute(activation) -> float"
+    ],
+    "missing_or_invalid_pair": "legacy_safe"
   },
   "required_profile_fields": [
     "weapon_id",

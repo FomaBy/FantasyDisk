@@ -7,12 +7,14 @@ extends RefCounted
 ## damage, modifiers, spawns and presentation, so a single shutdown() undoes the
 ## whole cast and a single budget caps the whole activation on one boss.
 ##
-## The host contract is the eight `ultimate_host_*` methods listed in
+## The host contract is the ten `ultimate_host_*` methods listed in
 ## HOST_METHODS; `scripts/player.gd` implements them as a narrow adapter.
 
 const DamageResult := preload("res://scripts/ultimates/controller/ultimate_damage_result.gd")
+const StatusEffects := preload("res://scripts/status_effects.gd")
 
 const BOSS_GROUP := "bosses"
+const EPIC_GROUP := "elite_enemies"
 const OP_ADD := "add"
 const OP_MULTIPLY := "mul"
 const DAMAGE_SINK_PROPERTY := "ultimate_damage_sink"
@@ -21,6 +23,7 @@ const HOST_METHODS := [
 	"ultimate_host_position",
 	"ultimate_host_aim",
 	"ultimate_host_targets",
+	"ultimate_host_summons",
 	"ultimate_host_apply_damage",
 	"ultimate_host_modifier",
 	"ultimate_host_effect_parent",
@@ -35,6 +38,13 @@ var total_boss_cap: float = 0.0
 var applied_total: float = 0.0
 
 var _boss_budget: Dictionary = {}
+var _target_damage_cap: Dictionary = {}
+var _target_damage_budget: Dictionary = {}
+var _target_ledger: Dictionary = {}
+var _claimed_events: Dictionary = {}
+var _control_policy: Dictionary = {}
+var _summon_contract: Dictionary = {}
+var _summon_snapshots: Array = []
 var _tweens: Array[Tween] = []
 var _spawned: Array[Node] = []
 var _presentation: Array[Node] = []
@@ -375,33 +385,275 @@ func composition_aborted() -> bool:
 	return _composition_aborted
 
 
+# --- activation-local interaction state --------------------------------------
+
+func record_target_value(
+	target: Node, key: String, value, event_id: String
+) -> bool:
+	if not _valid_target_event(target, key, event_id) \
+			or not _claim_event("ledger:%d:%s" % [target.get_instance_id(), event_id]):
+		return false
+	var target_id := target.get_instance_id()
+	var values: Dictionary = _target_ledger.get(target_id, {})
+	values[key] = _duplicate_value(value)
+	_target_ledger[target_id] = values
+	return true
+
+
+func add_target_value(
+	target: Node, key: String, amount: float, event_id: String
+) -> bool:
+	if not is_finite(amount) or not _valid_target_event(target, key, event_id):
+		return false
+	var target_id := target.get_instance_id()
+	var values: Dictionary = _target_ledger.get(target_id, {})
+	var current = values.get(key, 0.0)
+	if not (current is int or current is float) or current is bool:
+		return false
+	if not _claim_event("ledger:%d:%s" % [target_id, event_id]):
+		return false
+	values[key] = float(current) + amount
+	_target_ledger[target_id] = values
+	return true
+
+
+func target_value(target: Node, key: String, fallback = null):
+	if target == null or not is_instance_valid(target) or key.is_empty():
+		return fallback
+	var values = _target_ledger.get(target.get_instance_id())
+	if not values is Dictionary:
+		return fallback
+	return _duplicate_value((values as Dictionary).get(key, fallback))
+
+
+func consume_target_value(target: Node, key: String, event_id: String, fallback = null):
+	if not _valid_target_event(target, key, event_id):
+		return fallback
+	var target_id := target.get_instance_id()
+	var values = _target_ledger.get(target_id)
+	if not values is Dictionary or not (values as Dictionary).has(key):
+		return fallback
+	if not _claim_event("ledger:%d:%s" % [target_id, event_id]):
+		return fallback
+	var consumed = _duplicate_value((values as Dictionary)[key])
+	(values as Dictionary).erase(key)
+	if (values as Dictionary).is_empty():
+		_target_ledger.erase(target_id)
+	return consumed
+
+
+func transfer_target_value(
+	source: Node, destination: Node, key: String, event_id: String
+) -> bool:
+	if not _valid_target_event(source, key, event_id) or destination == null \
+			or not is_instance_valid(destination):
+		return false
+	var source_id := source.get_instance_id()
+	var destination_id := destination.get_instance_id()
+	var source_values = _target_ledger.get(source_id)
+	if not source_values is Dictionary or not (source_values as Dictionary).has(key):
+		return false
+	if not _claim_event("ledger:%d:%d:%s" % [source_id, destination_id, event_id]):
+		return false
+	var destination_values: Dictionary = _target_ledger.get(destination_id, {})
+	destination_values[key] = _duplicate_value((source_values as Dictionary)[key])
+	_target_ledger[destination_id] = destination_values
+	(source_values as Dictionary).erase(key)
+	if (source_values as Dictionary).is_empty():
+		_target_ledger.erase(source_id)
+	return true
+
+
+func set_per_target_damage_cap(cap_fraction: float, cap_flat := 0.0) -> bool:
+	if _finished or not is_finite(cap_fraction) or not is_finite(cap_flat) \
+			or cap_fraction < 0.0 or cap_fraction > 1.0 or cap_flat < 0.0 \
+			or (is_zero_approx(cap_fraction) and is_zero_approx(cap_flat)):
+		return false
+	var requested := {"fraction": cap_fraction, "flat": cap_flat}
+	if not _target_damage_cap.is_empty():
+		return _target_damage_cap == requested
+	_target_damage_cap = requested
+	return true
+
+
+func remaining_target_damage_budget(target: Node) -> float:
+	if _target_damage_cap.is_empty():
+		return INF
+	if target == null or not is_instance_valid(target):
+		return 0.0
+	return _target_budget_for(target, target.get_instance_id())
+
+
+func set_control_resistance_policy(policy: Dictionary) -> bool:
+	if _finished or policy.is_empty():
+		return false
+	if not _control_policy.is_empty():
+		return _control_policy == policy
+	_control_policy = policy.duplicate(true)
+	return true
+
+
+func apply_control(
+	target: Node,
+	impulse: Vector2,
+	status_id: String,
+	status_config: Dictionary
+) -> Dictionary:
+	if _finished or target == null or not is_instance_valid(target):
+		return {"applied": false}
+	var tier := _target_tier(target)
+	var policy := {
+		"displacement_multiplier": 1.0,
+		"duration_multiplier": 1.0,
+		"allow_movement_lock": true,
+		"allow_execute": true,
+	}
+	if not _control_policy.is_empty():
+		var declared = _control_policy.get(tier)
+		if not declared is Dictionary:
+			return {"applied": false, "tier": tier}
+		policy = declared as Dictionary
+	var scaled_impulse := impulse * float(policy["displacement_multiplier"])
+	var displaced := false
+	if scaled_impulse.length_squared() > 0.001 and target.has_method("apply_knockback"):
+		target.call("apply_knockback", scaled_impulse)
+		displaced = true
+	var admitted_status := status_config.duplicate(true)
+	admitted_status.erase("dot_damage")
+	if not bool(policy["allow_movement_lock"]):
+		admitted_status.erase("movement_locked")
+		admitted_status.erase("movement_lock")
+	if admitted_status.has("duration"):
+		admitted_status["duration"] = maxf(
+			float(admitted_status["duration"]) * float(policy["duration_multiplier"]), 0.0
+		)
+	var status_applied := not status_id.is_empty() \
+		and (not admitted_status.has("duration") or float(admitted_status["duration"]) > 0.0)
+	if status_applied:
+		StatusEffects.apply_status(target, status_id, admitted_status)
+	return {
+		"applied": displaced or status_applied,
+		"tier": tier,
+		"displaced": displaced,
+		"status_applied": status_applied,
+		"execute_allowed": bool(policy["allow_execute"]),
+	}
+
+
+func configure_summon_interaction(
+	group_id: String,
+	temporary_cap: int,
+	snapshot_properties: Array,
+	setup: Dictionary
+) -> bool:
+	if _finished or group_id.is_empty() or temporary_cap < 0 or host == null \
+			or not is_instance_valid(host):
+		return false
+	var requested := {
+		"group_id": group_id,
+		"temporary_cap": temporary_cap,
+		"snapshot_properties": snapshot_properties.duplicate(),
+		"setup": setup.duplicate(true),
+	}
+	if not _summon_contract.is_empty():
+		return _summon_contract == requested
+	var found = host.call("ultimate_host_summons", group_id)
+	if not found is Array:
+		return false
+	var snapshots: Array = []
+	var seen := {}
+	for raw_node in found as Array:
+		var node := raw_node as Node
+		if node == null or not is_instance_valid(node):
+			continue
+		var node_id := node.get_instance_id()
+		if seen.has(node_id):
+			continue
+		seen[node_id] = true
+		var properties := {}
+		for raw_property in snapshot_properties:
+			var property_name := str(raw_property)
+			if not property_name in node:
+				return false
+			properties[property_name] = _duplicate_value(node.get(property_name))
+		snapshots.append({
+			"node": node,
+			"visible": node.visible if node is CanvasItem else null,
+			"process_mode": node.process_mode,
+			"properties": properties,
+		})
+	_summon_contract = requested
+	_summon_snapshots = snapshots
+	for snapshot in _summon_snapshots:
+		var node: Node = snapshot["node"]
+		if node is CanvasItem:
+			(node as CanvasItem).hide()
+		node.process_mode = Node.PROCESS_MODE_DISABLED
+	return true
+
+
+func target_ledger_size_for_tests() -> int:
+	return _target_ledger.size()
+
+
+func summon_snapshot_count_for_tests() -> int:
+	return _summon_snapshots.size()
+
+
 func _host_targets(center: Vector2, radius: float, limit: int) -> Array:
 	var found = host.call("ultimate_host_targets", center, maxf(radius, 0.0), limit)
 	return found if found is Array else []
 
 
-func deal_damage(target: Node, amount: float, extra_feedback: Dictionary = {}) -> DamageResult:
+func deal_damage(
+	target: Node,
+	amount: float,
+	extra_feedback: Dictionary = {},
+	event_id := "",
+	secondary := false
+) -> DamageResult:
 	if _finished or target == null or not is_instance_valid(target):
 		return DamageResult.new()
 	var target_id := target.get_instance_id()
 	var attempted := maxf(amount, 0.0)
+	if not event_id.is_empty() and not _claim_event("damage:%d:%s" % [target_id, event_id]):
+		return DamageResult.new(target_id, attempted, 0.0, false, false, false, event_id, secondary)
 	var requested := attempted
-	var capped := false
+	var boss_capped := false
+	var target_capped := false
 	var budgeted := _has_boss_budget(target)
 	if budgeted:
 		var remaining := _boss_budget_for(target, target_id)
-		if requested > remaining:
-			requested = maxf(remaining, 0.0)
-			capped = true
+		boss_capped = attempted > remaining
+		requested = minf(requested, maxf(remaining, 0.0))
+	if not _target_damage_cap.is_empty():
+		var target_remaining := _target_budget_for(target, target_id)
+		target_capped = requested > target_remaining
+		requested = minf(requested, maxf(target_remaining, 0.0))
 	if requested <= 0.0:
-		return DamageResult.new(target_id, attempted, 0.0, capped, false)
+		return DamageResult.new(
+			target_id, attempted, 0.0, boss_capped, false, target_capped, event_id, secondary
+		)
 	var applied := _apply_and_measure(target, requested, extra_feedback)
 	if budgeted:
 		_boss_budget[target_id] = maxf(float(_boss_budget.get(target_id, 0.0)) - applied, 0.0)
+	if not _target_damage_cap.is_empty():
+		_target_damage_budget[target_id] = maxf(
+			float(_target_damage_budget.get(target_id, 0.0)) - applied, 0.0
+		)
 	applied_total += applied
 	var killed := is_instance_valid(target) and target.get("health") != null \
 		and float(target.get("health")) <= 0.0
-	return DamageResult.new(target_id, attempted, applied, capped, killed)
+	return DamageResult.new(
+		target_id,
+		attempted,
+		applied,
+		boss_capped,
+		killed,
+		target_capped,
+		event_id,
+		secondary
+	)
 
 
 func remaining_boss_budget(target: Node) -> float:
@@ -434,6 +686,9 @@ func apply_modifier(key: String, value: float, op := OP_ADD) -> void:
 func spawn(scene_path: String) -> Node:
 	if _finished or scene_path.is_empty() or host == null or not is_instance_valid(host):
 		return null
+	if not _summon_contract.is_empty() \
+			and _spawned.size() >= int(_summon_contract["temporary_cap"]):
+		return null
 	var parent = host.call("ultimate_host_effect_parent")
 	if not parent is Node or not is_instance_valid(parent):
 		return null
@@ -446,6 +701,15 @@ func spawn(scene_path: String) -> Node:
 	(parent as Node).add_child(node)
 	_spawned.append(node)
 	bind_damage_sink(node)
+	var setup: Dictionary = _summon_contract.get("setup", {})
+	if not setup.is_empty():
+		if not node.has_method("ultimate_spawn_setup") \
+				or node.call(
+					"ultimate_spawn_setup", setup.duplicate(true), host, Callable(self, "deal_damage")
+				) != true:
+			_spawned.erase(node)
+			node.queue_free()
+			return null
 	return node
 
 
@@ -482,6 +746,7 @@ func shutdown(free_presentation: bool) -> void:
 		if node != null and is_instance_valid(node):
 			node.queue_free()
 	_spawned.clear()
+	_restore_summons()
 	if free_presentation:
 		for node in _presentation:
 			if node != null and is_instance_valid(node):
@@ -490,6 +755,13 @@ func shutdown(free_presentation: bool) -> void:
 	_aim_cache.clear()
 	_primitive_state.clear()
 	_composition_trace.clear()
+	_boss_budget.clear()
+	_target_damage_cap.clear()
+	_target_damage_budget.clear()
+	_target_ledger.clear()
+	_claimed_events.clear()
+	_control_policy.clear()
+	_summon_contract.clear()
 	# Reverse order so stacked multiplicative modifiers unwind to the exact
 	# value they had before the cast.
 	for index in range(_modifiers.size() - 1, -1, -1):
@@ -542,6 +814,64 @@ func _boss_budget_for(target: Node, target_id: int) -> float:
 	if not _boss_budget.has(target_id):
 		_boss_budget[target_id] = maxf(float(target.get("max_health")) * total_boss_cap, 0.0)
 	return float(_boss_budget[target_id])
+
+
+func _target_budget_for(target: Node, target_id: int) -> float:
+	if not _target_damage_budget.has(target_id):
+		if target.get("max_health") == null:
+			_target_damage_budget[target_id] = 0.0
+		else:
+			_target_damage_budget[target_id] = maxf(
+				float(target.get("max_health")) * float(_target_damage_cap["fraction"])
+					+ float(_target_damage_cap["flat"]),
+				0.0
+			)
+	return float(_target_damage_budget[target_id])
+
+
+func _claim_event(event_id: String) -> bool:
+	if _finished or event_id.is_empty() or _claimed_events.has(event_id):
+		return false
+	_claimed_events[event_id] = true
+	return true
+
+
+func _valid_target_event(target: Node, key: String, event_id: String) -> bool:
+	return not _finished and target != null and is_instance_valid(target) \
+		and not key.is_empty() and not event_id.is_empty()
+
+
+func _target_tier(target: Node) -> String:
+	if target.is_in_group(BOSS_GROUP):
+		return "boss"
+	if target.is_in_group(EPIC_GROUP):
+		return "epic"
+	return "normal"
+
+
+func _restore_summons() -> void:
+	for snapshot in _summon_snapshots:
+		var node = snapshot.get("node")
+		if not node is Node or not is_instance_valid(node):
+			continue
+		var summon := node as Node
+		for raw_property in (snapshot.get("properties", {}) as Dictionary).keys():
+			summon.set(str(raw_property), _duplicate_value(snapshot["properties"][raw_property]))
+		if summon is CanvasItem and snapshot.get("visible") is bool:
+			(summon as CanvasItem).visible = bool(snapshot["visible"])
+		summon.process_mode = int(snapshot["process_mode"])
+	_summon_snapshots.clear()
+
+
+static func _duplicate_value(value):
+	if value is Dictionary or value is Array:
+		return value.duplicate(true)
+	if value is PackedByteArray or value is PackedInt32Array or value is PackedInt64Array \
+			or value is PackedFloat32Array or value is PackedFloat64Array \
+			or value is PackedStringArray or value is PackedVector2Array \
+			or value is PackedVector3Array or value is PackedColorArray:
+		return value.duplicate()
+	return value
 
 
 ## Mirrors enemy.gd: the authoritative delta is the overkill-clamped HP loss, so

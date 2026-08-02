@@ -23,6 +23,10 @@ func _initialize() -> void:
 	_expect(registry.validation_errors().is_empty(), "validation errors must be empty", errors)
 	_expect(registry.class_ids() == _expected_class_ids(), "class order must match canonical inventory", errors)
 	_expect(registry.profile_count() == 51, "catalog must contain exactly 51 profiles", errors)
+	_expect(registry.package_validation_errors().is_empty(),
+		"empty production package roots must not report errors", errors)
+	_expect(registry.package_pair_keys().is_empty(),
+		"no production package may become executable in the foundation change", errors)
 
 	var selected_checks := 0
 	var sibling_negative_controls := 0
@@ -154,11 +158,21 @@ func _test_ready_profile_is_weapon_local(registry, errors: Array[String]) -> voi
 		var binding: Dictionary = ready_profile[binding_field]
 		binding["strategy_id"] = "test_bound_%s" % binding_field
 	profiles[ready_key] = ready_profile
+	var executable_pairs := {ready_key: true}
 
 	_expect(
 		Resolver.resolution_source(profiles, pairs, "berserk", "sword")
+			== Resolver.SOURCE_LEGACY_CLASS_FALLBACK,
+		"ready data without its exact executor pair must stay legacy-safe",
+		errors
+	)
+
+	_expect(
+		Resolver.resolution_source(
+			profiles, pairs, "berserk", "sword", true, executable_pairs
+		)
 			== Resolver.SOURCE_WEAPON_PROFILE,
-		"ready selected profile must be executable",
+		"ready selected profile with its exact executor pair must be executable",
 		errors
 	)
 	var resolved: Dictionary = Resolver.resolve_executable(
@@ -166,7 +180,9 @@ func _test_ready_profile_is_weapon_local(registry, errors: Array[String]) -> voi
 		pairs,
 		"berserk",
 		"sword",
-		PD.ultimate_config("berserk")
+		PD.ultimate_config("berserk"),
+		true,
+		executable_pairs
 	)
 	_expect(
 		str(resolved.get("weapon_id", "")) == "sword",
@@ -174,7 +190,9 @@ func _test_ready_profile_is_weapon_local(registry, errors: Array[String]) -> voi
 		errors
 	)
 	_expect(
-		Resolver.resolution_source(profiles, pairs, "berserk", "axe")
+		Resolver.resolution_source(
+			profiles, pairs, "berserk", "axe", true, executable_pairs
+		)
 			== Resolver.SOURCE_LEGACY_CLASS_FALLBACK,
 		"ready selected profile must not activate a sibling declaration",
 		errors

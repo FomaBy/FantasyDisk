@@ -3,7 +3,7 @@ extends Node
 ## Narrow Player-side adapter for the generic ultimate runtime.
 ##
 ## Everything the controller and the executor families need from the Player goes
-## through the nine `ultimate_host_*` methods below, which is what keeps them
+## through the ten `ultimate_host_*` methods below, which is what keeps them
 ## free of class and weapon branches.
 ##
 ## It lives as a child of the Player rather than as methods on `player.gd`:
@@ -119,6 +119,20 @@ func ultimate_host_targets(center: Vector2, radius: float, limit: int) -> Array:
 	if limit > 0:
 		return TargetQuery.nearest_many(player, center, radius, limit)
 	return TargetQuery.in_radius(player, center, radius)
+
+
+## Only explicitly player-owned members of the declared group may be borrowed
+## by a summon interaction. Duplicate group entries are removed by activation.
+func ultimate_host_summons(group_id: String) -> Array:
+	if group_id.is_empty() or player == null or not is_instance_valid(player) \
+			or player.get_tree() == null:
+		return []
+	var result: Array = []
+	for raw_node in player.get_tree().get_nodes_in_group(group_id):
+		var node := raw_node as Node
+		if node != null and is_instance_valid(node) and node.get("owner_node") == player:
+			result.append(node)
+	return result
 
 
 ## Routed through the Player so generic ultimate damage keeps the same

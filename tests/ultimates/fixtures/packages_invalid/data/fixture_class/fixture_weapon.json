@@ -1,0 +1,16 @@
+{
+  "schema_version": 1,
+  "class_id": "fixture_class",
+  "weapon_id": "fixture_weapon",
+  "profile_id": "weapon_ultimate.profile.fixture_class.fixture_weapon",
+  "executor_id": "weapon_ultimate.executor.fixture_class.fixture_weapon",
+  "implementation_state": "ready",
+  "targeting": {"strategy_id": "host_aim", "params": {}},
+  "charge": {"strategy_id": "legacy_charge", "params": {}},
+  "executor": {
+    "strategy_id": "weapon_ultimate.executor.fixture_class.fixture_weapon",
+    "params": {"radius": 300, "damage": 1, "target_limit": 0}
+  },
+  "total_boss_cap": 0.1,
+  "cleanup_policy": {"strategy_id": "activation_owned", "params": {}}
+}

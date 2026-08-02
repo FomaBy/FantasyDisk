@@ -211,6 +211,34 @@ static func index_documents(documents: Array) -> Dictionary:
 	return profiles_by_key
 
 
+## Validate one class-local ready overlay after it has been merged onto its
+## immutable catalog declaration. Package admission deliberately avoids the
+## 17 x 3 inventory checks: the base catalog already owns that completeness.
+static func validate_package_profile(profile: Dictionary, base_profile: Dictionary) -> Array[String]:
+	var errors: Array[String] = []
+	var schema := schema_document()
+	if schema.is_empty():
+		_add_error(errors, "schema.missing", SCHEMA_PATH)
+		return errors
+	var key := profile_key(str(profile.get("class_id", "")), str(profile.get("weapon_id", "")))
+	if base_profile.is_empty():
+		_add_error(errors, "package.base.missing", key)
+		return errors
+	for field in ["class_id", "weapon_id", "class_order", "profile_order", "schema_version"]:
+		if profile.get(field) != base_profile.get(field):
+			_add_error(errors, "package.base.%s" % field, key)
+	if profile.get("identity") != base_profile.get("identity"):
+		_add_error(errors, "package.base.identity", key)
+	if profile.get("cast_phases") != base_profile.get("cast_phases"):
+		_add_error(errors, "package.base.cast_phases", key)
+	if profile.get("presentation") != base_profile.get("presentation"):
+		_add_error(errors, "package.base.presentation", key)
+	if str(profile.get("implementation_state", "")) != "ready":
+		_add_error(errors, "package.implementation_state", key)
+	_validate_profile(profile, key, schema, {}, {}, errors)
+	return errors
+
+
 static func normalized_profile(
 	raw_profile: Dictionary,
 	class_id: String,
