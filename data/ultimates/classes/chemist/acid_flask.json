@@ -1,0 +1,42 @@
+{
+  "schema_version": 1,
+  "class_id": "chemist",
+  "weapon_id": "acid_flask",
+  "profile_id": "weapon_ultimate.profile.chemist.acid_flask",
+  "executor_id": "weapon_ultimate.executor.chemist.acid_flask",
+  "implementation_state": "ready",
+  "targeting": {
+    "strategy_id": "host_aim",
+    "params": {}
+  },
+  "charge": {
+    "strategy_id": "legacy_charge",
+    "params": {}
+  },
+  "executor": {
+    "strategy_id": "weapon_ultimate.executor.chemist.acid_flask",
+    "params": {
+      "aim_range": 520.0,
+      "lake_radius": 380.0,
+      "start_ratio": 0.35,
+      "target_limit": 16,
+      "pour_at": 0.75,
+      "tick_count": 10,
+      "tick_interval": 0.25,
+      "recover_at": 3.7,
+      "damage": 0.62,
+      "charge_cap": 5,
+      "charge_dot_damage": 3.4,
+      "charge_dot_interval": 1.0,
+      "dissolve_status": {
+        "duration": 6.0,
+        "damage_taken_multiplier": 1.22
+      }
+    }
+  },
+  "total_boss_cap": 0.1,
+  "cleanup_policy": {
+    "strategy_id": "activation_owned",
+    "params": {}
+  }
+}
