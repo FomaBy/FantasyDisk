@@ -4,9 +4,13 @@
 	"enabled": false,
 	"roles": [
 		{
+			"schema_version": 1,
 			"id": "captain_commander",
+			"type": "encounter_feature",
+			"enabled": true,
 			"role": "commander",
 			"primary": true,
+			"capabilities": ["primary_beat"],
 			"script": "res://scripts/encounters/features/captains/captain_feature.gd",
 			"trigger_window": {"min_seconds": 12.0, "max_seconds": 24.0},
 			"seed_salt": 1128354381,
@@ -32,9 +36,13 @@
 			}
 		},
 		{
+			"schema_version": 1,
 			"id": "captain_hunter",
+			"type": "encounter_feature",
+			"enabled": true,
 			"role": "hunter",
 			"primary": true,
+			"capabilities": ["primary_beat"],
 			"script": "res://scripts/encounters/features/captains/captain_feature.gd",
 			"trigger_window": {"min_seconds": 12.0, "max_seconds": 24.0},
 			"seed_salt": 1264936217,

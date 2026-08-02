@@ -2,10 +2,15 @@
 	"schema_version": 1,
 	"contract": "encounter-beats-v1",
 	"enabled": false,
+	"feature_roots": ["res://data/encounters/features"],
 	"beats": [
 		{
+			"schema_version": 1,
 			"id": "marked_target",
+			"type": "encounter_feature",
+			"enabled": true,
 			"primary": true,
+			"capabilities": ["primary_beat"],
 			"script": "res://scripts/encounters/features/marked_target_feature.gd",
 			"eligibility": {
 				"combat_types": ["battle"],

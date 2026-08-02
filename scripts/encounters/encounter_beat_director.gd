@@ -29,6 +29,7 @@ var _metrics
 var _feature            # активный EncounterFeature (единственный primary-бит)
 var _beat_def: Dictionary = {}
 var _plan: Dictionary = {}
+var _spawn_plan: Dictionary = {}
 var _elapsed := 0.0
 # idle -> planned -> active -> done
 var _state := "idle"
@@ -51,13 +52,24 @@ func begin() -> void:
 	_context.combat_type = str(game.current_combat_type)
 	_context.event_active = not game.pending_event_combat.is_empty()
 	_context.boss_active = bool(game.boss_combat_active)
+	_context.route_scaling_stage = int(game.route_scaling_stage()) if game.has_method("route_scaling_stage") else 0
 	_context.round_duration = maxf(float(game.round_time_left), 0.0)
 	_context.elapsed = 0.0
 	_context.presentation_parent = self
+	var executor := Callable(combat, "spawn_encounter_plan") \
+		if combat != null and combat.has_method("spawn_encounter_plan") else Callable()
+	var spawn_weights = _game_value("ENEMY_SPAWN_WEIGHTS", {})
+	var wave_settings = _game_value("WAVE_SETTINGS", {})
+	var allowed_scenes: Array = spawn_weights.keys() if spawn_weights is Dictionary else []
+	var maximum_active := int(wave_settings.get("max_active_cap", 1)) \
+		if wave_settings is Dictionary else 1
+	_context.configure_spawn_capability(allowed_scenes, maximum_active, executor)
 
 	if not _context.is_normal_battle():
 		_state = "done"
 		return
+	_spawn_plan = _build_spawn_plan(_context)
+	_context.set_spawn_plan(_spawn_plan)
 	_plan_primary_beat()
 
 
@@ -105,7 +117,64 @@ func _instantiate_feature(beat_def: Dictionary):
 	if feature.api_version() != FEATURE_BASE.API_VERSION:
 		push_error("EncounterBeatDirector: %s несовместимой API v%d" % [script_path, feature.api_version()])
 		return null
+	# Тип — единственная runtime-идентичность, общая для всех фич. Id принадлежит
+	# записи каталога: один pack-скрипт может обслуживать несколько определений
+	# (captain-роли биндят свою роль из beat_def), поэтому id везде берётся из
+	# registry, а не из рантайма.
+	if feature.definition_type() != str(beat_def.get("type", "")):
+		push_error("EncounterBeatDirector: runtime type не совпадает с registry %s" % script_path)
+		return null
 	return feature
+
+
+func _build_spawn_plan(context) -> Dictionary:
+	var result: Dictionary = {}
+	for feature_def in CONFIG.features_with_capability("spawn_plan"):
+		var feature = _instantiate_feature(feature_def)
+		if feature == null or not feature.is_eligible(context):
+			continue
+		var request: Dictionary = feature.build_spawn_plan(context, feature_def)
+		var candidate: Dictionary = context.canonical_spawn_plan(request, str(feature_def.get("id", "")))
+		if candidate.is_empty():
+			continue
+		if not result.is_empty():
+			return {}  # multiple live planners fail closed instead of stacking
+		result = candidate
+	return result
+
+
+static func project_spawn_plan(game_ref, node_seed: int, scaling_stage: int,
+		combat_type: String) -> Dictionary:
+	var probe := new()
+	probe.game = game_ref
+	var context = CONTEXT.new()
+	context.game = game_ref
+	context.node_seed = node_seed
+	context.combat_type = combat_type
+	context.event_active = combat_type in ["event", "hazard"]
+	context.boss_active = combat_type == "boss"
+	context.route_scaling_stage = scaling_stage
+	var spawn_weights = probe._game_value("ENEMY_SPAWN_WEIGHTS", {})
+	var wave_settings = probe._game_value("WAVE_SETTINGS", {})
+	var allowed_scenes: Array = spawn_weights.keys() if spawn_weights is Dictionary else []
+	var maximum_active := int(wave_settings.get("max_active_cap", 1)) \
+		if wave_settings is Dictionary else 1
+	context.configure_spawn_capability(allowed_scenes, maximum_active)
+	var result: Dictionary = probe._build_spawn_plan(context)
+	probe.free()
+	return result
+
+
+func _game_value(name: String, fallback):
+	for property in game.get_property_list():
+		if str(property.get("name", "")) == name:
+			return game.get(name)
+	var script: Script = game.get_script()
+	if script != null:
+		var constants := script.get_script_constant_map()
+		if constants.has(name):
+			return constants[name]
+	return fallback
 
 
 func _process(delta: float) -> void:
@@ -179,6 +248,14 @@ func planned_beat_id() -> String:
 
 func planned_trigger_at() -> float:
 	return float(_plan.get("trigger_at", -1.0))
+
+
+func spawn_plan_projection() -> Dictionary:
+	return _spawn_plan.duplicate(true)
+
+
+func route_threat_projection() -> Dictionary:
+	return _context.route_threat_projection() if _context != null else {}
 
 
 func elapsed_seconds() -> float:

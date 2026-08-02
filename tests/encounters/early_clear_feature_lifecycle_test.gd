@@ -7,6 +7,9 @@ const CONFIG := preload("res://scripts/encounters/encounter_config.gd")
 const METRICS := preload("res://scripts/encounters/encounter_metrics.gd")
 
 var errors: Array = []
+# Скрипт-ошибка внутри проверки обрывает её функцию молча, поэтому сюита считает
+# дошедшие до конца проверки: пропущенная проверка не может прочитаться как pass.
+var completed := 0
 
 
 class FakePlayer extends Node2D:
@@ -59,6 +62,8 @@ func _initialize() -> void:
 	await _check_timer_survival_fallback()
 	await _check_director_metrics()
 	_check_non_normal_contract()
+	if completed != 4:
+		errors.append("all four lifecycle checks must run to completion (%d/4)" % completed)
 	if not errors.is_empty():
 		for error in errors:
 			push_error("early-clear-feature: %s" % str(error))
@@ -82,6 +87,7 @@ func _new_context() -> Dictionary:
 	await process_frame
 	var context = CONTEXT.new()
 	context.game = game
+	# Consumer contract: фича читает боевой терминал только через context.combat.
 	context.combat = combat
 	context.combat_type = "battle"
 	context.round_duration = 60.0
@@ -110,6 +116,7 @@ func _check_early_clear_once() -> void:
 	fixture["game"].queue_free()
 	fixture["combat"].queue_free()
 	await process_frame
+	completed += 1
 
 
 func _check_timer_survival_fallback() -> void:
@@ -130,15 +137,22 @@ func _check_timer_survival_fallback() -> void:
 	fixture["game"].queue_free()
 	fixture["combat"].queue_free()
 	await process_frame
+	completed += 1
 
 
 func _check_director_metrics() -> void:
 	CONFIG._set_catalog_for_tests({
 		"schema_version": CONFIG.CONTRACT_VERSION,
+		"contract": CONFIG.CONTRACT,
 		"enabled": false,
+		"feature_roots": [],
 		"beats": [{
+			"schema_version": CONFIG.CONTRACT_VERSION,
 			"id": "normal_early_clear",
+			"type": CONFIG.FEATURE_TYPE,
+			"enabled": true,
 			"primary": true,
+			"capabilities": ["primary_beat"],
 			"script": "res://scripts/encounters/features/early_clear/early_clear_feature.gd",
 		}],
 	})
@@ -157,6 +171,9 @@ func _check_director_metrics() -> void:
 	director._process(0.1)
 	await process_frame
 	_expect(fixture["combat"].end_calls == 1, "director must forward exactly one deferred combat end")
+	# Регрессия FAN-2040: директор обязан прокинуть боевой узел в context.combat,
+	# иначе early-clear никогда не доходит до нативного _end_combat(true).
+	_expect(fixture["combat"].victory, "director-wired context.combat must reach the native victory path")
 	var records: Array = METRICS.last_summary.get("records", [])
 	_expect(records.size() == 1 and str(records[0].get("reason", "")) == "early_clear",
 		"director shutdown must record the early-clear outcome exactly once")
@@ -165,6 +182,7 @@ func _check_director_metrics() -> void:
 	CONFIG._reset_cache_for_tests()
 	_expect(not CONFIG.is_enabled(), "production encounter catalog must remain default-off")
 	await process_frame
+	completed += 1
 
 
 func _check_non_normal_contract() -> void:
@@ -175,6 +193,7 @@ func _check_non_normal_contract() -> void:
 	context.combat_type = "battle"
 	context.boss_active = true
 	_expect(not feature.is_eligible(context), "boss contract must remain outside early clear")
+	completed += 1
 
 
 func _expect(condition: bool, message: String) -> void:
