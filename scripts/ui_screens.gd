@@ -2108,8 +2108,13 @@ func _build_character_select_v4() -> void:
 		stat_fill_nodes[sid] = bar_fill
 		stat_value_labels[sid] = stat_value
 
+	# FAN-1887: досье перечисляет только то, что герой реально может получить —
+	# рейл «Слабые атрибуты» удалён, исключения не отображаются как выбор.
+	# FAN-1927 (HS.CapPotential/HS.CapabilityLine): те же label-строки в scroll-
+	# досье несут потенциал капов (крит/вампиризм) и capability реальных
+	# потребителей призыва.
 	var guidance_labels := {}
-	for relevance in ["primary", "secondary", "weak"]:
+	for relevance in ["primary", "secondary", "cap_potential", "capability"]:
 		var guide_label := Label.new()
 		guide_label.name = "HS4BuildGuidance_%s" % relevance
 		guide_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
@@ -2513,14 +2518,26 @@ func _build_character_select_v4() -> void:
 		var relevance_titles := {
 			"primary": "Основные атрибуты",
 			"secondary": "Второстепенные атрибуты",
-			"weak": "Слабые атрибуты",
 		}
-		for relevance in ["primary", "secondary", "weak"]:
+		for relevance in ["primary", "secondary"]:
 			var guide_label := guidance_labels[relevance] as Label
 			var title := str(relevance_titles.get(relevance, relevance))
 			var entries: Array = guidance_groups.get(relevance, []) as Array
 			guide_label.text = "%s: %s" % [title, _hs4_join_dossier_names(entries)]
 			guide_label.tooltip_text = guide_label.text
+		# FAN-1927 (HS.CapPotential/HS.CapabilityLine): тексты — из единого
+		# view-model (AttributeSurfaces.hero_dossier_lines), без CTA.
+		var hero_lines: Dictionary = AttributeSurfaces.hero_dossier_lines(
+			cid, stats, game.PROGRESSION_DATA.weapon(cid, game.selected_weapon_id))
+		var cap_label := guidance_labels["cap_potential"] as Label
+		cap_label.text = str(hero_lines.get("cap_potential", ""))
+		cap_label.visible = cap_label.text != ""
+		cap_label.tooltip_text = cap_label.text
+		var capability_label := guidance_labels["capability"] as Label
+		var capability_format := tr("hero_select_capability_format")
+		capability_label.text = capability_format % str(hero_lines.get("capability", "")) if capability_format != "hero_select_capability_format" else str(hero_lines.get("capability", ""))
+		capability_label.visible = capability_label.text != ""
+		capability_label.tooltip_text = capability_label.text
 		var maxl: int = game.ascension_selectable_max(cid)
 		game.selected_ascension_level = clampi(game.selected_ascension_level, 0, maxl)
 		asc_label.text = "Возвышение"
@@ -2811,8 +2828,30 @@ func _show_victory_banner(on_continue: Callable) -> void:
 	game._play_sfx("artifact_reveal")
 
 
+# FAN-1887: пул базовых характеристик Докачки с consumability-фильтром — Лидерство
+# предлагается только фактически summon/deploy-способным классам (data-driven,
+# ProgressionData.is_base_stat_consumable); ряд перецентровывается после фильтра.
+# FAN-1927 (спека AS, eligible_stat_ids): характеристика с нулевым итогом —
+# +1 не меняет НИ ОДНУ player-facing ось текущего класса/оружия (cap/no-op) —
+# отсеивается ДО построения AttributeOffers и не резервирует ряд.
+func _attribute_shop_stat_pool() -> Array:
+	var pool: Array = []
+	for stat_id in ["strength", "agility", "intelligence", "perception", "energy", "knowledge", "endurance", "leadership"]:
+		if not game.PROGRESSION_DATA.is_base_stat_consumable(stat_id, game.selected_character_id):
+			continue
+		if not _attribute_shop_stat_eligible(str(stat_id)):
+			continue
+		pool.append(stat_id)
+	return pool
+
+
+func _attribute_shop_stat_eligible(stat_id: String) -> bool:
+	return AttributeSurfaces.shop_stat_eligible(
+		game.selected_character_id, _active_stats_snapshot(), _active_modifiers_snapshot(), _active_weapon_config(), stat_id)
+
+
 func _random_attribute_pair() -> Array:
-	var pool := ["strength", "agility", "intelligence", "perception", "energy", "knowledge", "endurance", "leadership"]
+	var pool := _attribute_shop_stat_pool()
 	# Ветвь Знаний мета-древа (SCRUM-150): attr_extra_options добавляет варианты
 	# в окне докачки (по умолчанию 2 — обратная совместимость).
 	var skill_mods: Dictionary = game.META_PROGRESSION.skill_modifiers(game.meta_state)
@@ -2824,20 +2863,19 @@ func _random_attribute_pair() -> Array:
 		pool.remove_at(index)
 	return pair
 
-
 func _normalize_attribute_offer(saved_offer: Array) -> Array:
 	# Old saves and automation fixtures may contain duplicate, removed or 4+
 	# entries. Preserve canonical entries in order, then fill to the live 2/3
 	# contract without ever overflowing the authored three-card row.
-	var pool := ["strength", "agility", "intelligence", "perception", "energy", "knowledge", "endurance", "leadership"]
+	var pool := _attribute_shop_stat_pool()
 	var skill_mods: Dictionary = game.META_PROGRESSION.skill_modifiers(game.meta_state)
 	var option_count: int = clampi(2 + int(skill_mods.get("attr_extra_options", 0.0)), 2, 3)
 	var normalized: Array = []
-	for raw_stat in saved_offer:
-		var stat_id := str(raw_stat)
-		if not pool.has(stat_id) or normalized.has(stat_id):
+	for raw_offer in saved_offer:
+		var stat_id := str((raw_offer as Dictionary).get("id", "")) if raw_offer is Dictionary else str(raw_offer)
+		if not pool.has(stat_id):
 			continue
-		normalized.append(stat_id)
+		normalized.append((raw_offer as Dictionary).duplicate(true) if raw_offer is Dictionary else stat_id)
 		pool.erase(stat_id)
 		if normalized.size() >= option_count:
 			return normalized
@@ -2847,85 +2885,14 @@ func _normalize_attribute_offer(saved_offer: Array) -> Array:
 		pool.remove_at(index)
 	return normalized
 
-
 func _attribute_shop_layout_for_size(viewport_size: Vector2) -> Dictionary:
-	var inner_rect := _gold_shell_inner_rect_for_size(viewport_size)
-	var tier_t := clampf((viewport_size.y - 720.0) / 360.0, 0.0, 1.0)
-	var large_t := clampf((viewport_size.y - 1080.0) / 360.0, 0.0, 1.0)
-	var card_size := Vector2.ZERO
-	var offer_gap := 0.0
-	var offer_top_offset := 0.0
-	var action_size := Vector2.ZERO
-	var action_gap := 0.0
-	var action_bottom_inset := 0.0
-	var title_size := Vector2.ZERO
-	var money_size := Vector2.ZERO
-	if viewport_size.y <= 1080.0:
-		card_size = Vector2(276.0, 258.0).lerp(Vector2(360.0, 410.0), tier_t)
-		offer_gap = lerpf(22.0, 70.0, tier_t)
-		offer_top_offset = lerpf(81.0, 137.0, tier_t)
-		action_size = Vector2(300.0, 64.0).lerp(Vector2(380.0, 72.0), tier_t)
-		action_gap = lerpf(80.0, 160.0, tier_t)
-		action_bottom_inset = lerpf(19.0, 30.0, tier_t)
-		title_size = Vector2(378.0, 50.0).lerp(Vector2(500.0, 60.0), tier_t)
-		money_size = Vector2(240.0, 42.0).lerp(Vector2(380.0, 50.0), tier_t)
-	else:
-		card_size = Vector2(360.0, 410.0).lerp(Vector2(460.0, 540.0), large_t)
-		offer_gap = lerpf(70.0, 120.0, large_t)
-		offer_top_offset = lerpf(137.0, 173.0, large_t)
-		action_size = Vector2(380.0, 72.0).lerp(Vector2(460.0, 88.0), large_t)
-		action_gap = lerpf(160.0, 340.0, large_t)
-		action_bottom_inset = lerpf(30.0, 35.0, large_t)
-		title_size = Vector2(500.0, 60.0).lerp(Vector2(700.0, 64.0), large_t)
-		money_size = Vector2(380.0, 50.0).lerp(Vector2(480.0, 64.0), large_t)
-
-	# Width-constrained windows still keep exactly three cards in one row.
-	var max_offer_width := maxf(180.0, (inner_rect.size.x - 48.0 - offer_gap * 2.0) / 3.0)
-	card_size.x = minf(card_size.x, max_offer_width)
-	var offer_row_size := Vector2(card_size.x * 3.0 + offer_gap * 2.0, card_size.y)
-	var offer_rect := Rect2(
-		Vector2(roundf(inner_rect.position.x + (inner_rect.size.x - offer_row_size.x) * 0.5), roundf(inner_rect.position.y + offer_top_offset)),
-		offer_row_size
+	# FAN-1927: раскладка (включая AS.DetailDrawer) извлечена в AttributeSurfaces
+	# по monolith-ратчету; rect-провайдеры экрана остаются здесь.
+	return AttributeSurfaces.shop_layout(
+		viewport_size,
+		_unified_safe_rect_for_size(viewport_size),
+		_gold_shell_inner_rect_for_size(viewport_size)
 	)
-
-	var max_action_width := maxf(180.0, (inner_rect.size.x - 48.0 - action_gap) * 0.5)
-	action_size.x = minf(action_size.x, max_action_width)
-	var action_row_size := Vector2(action_size.x * 2.0 + action_gap, action_size.y)
-	var action_rect := Rect2(
-		Vector2(
-			roundf(inner_rect.position.x + (inner_rect.size.x - action_row_size.x) * 0.5),
-			roundf(inner_rect.end.y - action_bottom_inset - action_size.y)
-		),
-		action_row_size
-	)
-	# Never let the offer row collide with the bottom action band on unusual aspect ratios.
-	card_size.y = minf(card_size.y, maxf(160.0, action_rect.position.y - offer_rect.position.y - 24.0))
-	offer_rect.size.y = card_size.y
-
-	var title_rect := Rect2(
-		Vector2(roundf(inner_rect.position.x + (inner_rect.size.x - title_size.x) * 0.5), roundf(inner_rect.position.y + lerpf(6.0, 10.0, clampf((viewport_size.y - 720.0) / 720.0, 0.0, 1.0)))),
-		title_size
-	)
-	var money_rect := Rect2(
-		Vector2(inner_rect.position.x + 24.0, inner_rect.position.y + (20.0 if viewport_size.y >= 1000.0 else 10.0)),
-		money_size
-	)
-	# Compact 1152×648 legacy verification: keep the left money status and the
-	# centered title as separate peers instead of allowing their labels to touch.
-	money_rect.size.x = minf(money_rect.size.x, maxf(120.0, title_rect.position.x - money_rect.position.x - 12.0))
-	return {
-		"safe_rect": _unified_safe_rect_for_size(viewport_size),
-		"inner_rect": inner_rect,
-		"title_rect": title_rect,
-		"money_rect": money_rect,
-		"offers_rect": offer_rect,
-		"offer_size": card_size,
-		"offer_gap": offer_gap,
-		"actions_rect": action_rect,
-		"action_size": action_size,
-		"action_gap": action_gap,
-	}
-
 
 func _apply_attribute_shop_rect(control: Control, rect: Rect2) -> void:
 	if control == null:
@@ -2947,6 +2914,7 @@ func _layout_attribute_shop(root: Control) -> void:
 	var layout := _attribute_shop_layout_for_size(root.size)
 	root.set_meta("gold_shell_content_rect", layout["safe_rect"])
 	root.set_meta("gold_shell_inner_rect", layout["inner_rect"])
+	root.set_meta("attribute_shop_tooltip_host_rect", layout["tooltip_host_rect"])
 	var title := root.find_child("AttributeShopTitle", true, false) as Label
 	var money := root.find_child("AttributeShopMoney", true, false) as Label
 	var offers := root.find_child("AttributeOffers", true, false) as HBoxContainer
@@ -2955,6 +2923,14 @@ func _layout_attribute_shop(root: Control) -> void:
 	_apply_attribute_shop_rect(money, layout["money_rect"])
 	_apply_attribute_shop_rect(offers, layout["offers_rect"])
 	_apply_attribute_shop_rect(actions, layout["actions_rect"])
+	var drawer := root.find_child("AttributeShopDetailDrawer", true, false) as PanelContainer
+	if drawer != null:
+		var drawer_rect: Rect2 = layout.get("drawer_rect", Rect2())
+		var compact_drawer := root.size.y < 1000.0
+		drawer.visible = drawer_rect.size.y > 0.0 and (not compact_drawer or bool(drawer.get_meta("detail_drawer_open", false)))
+		drawer.set_meta("production_tooltip_host", true)
+		if drawer_rect.size.y > 0.0:
+			_apply_attribute_shop_rect(drawer, drawer_rect)
 	if title != null:
 		title.add_theme_font_size_override("font_size", SemanticTypography.resolve_fixed(
 			SemanticTypography.ROLE_TITLE, int(clampf(roundf((layout["title_rect"] as Rect2).size.y * 0.58), 24.0, 42.0))
@@ -3043,22 +3019,23 @@ func _show_attribute_shop(on_done: Callable) -> void:
 	offers_box.alignment = BoxContainer.ALIGNMENT_CENTER
 	offers_box.mouse_filter = Control.MOUSE_FILTER_PASS
 	root.add_child(offers_box)
-
 	var actions := HBoxContainer.new()
 	actions.name = "AttributeShopActions"
 	actions.alignment = BoxContainer.ALIGNMENT_CENTER
+	actions.mouse_filter = Control.MOUSE_FILTER_PASS
 	root.add_child(actions)
 
 	var reroll_button := _make_button("")
 	reroll_button.name = "AttributeRerollButton"
 	_apply_slim_action_button_theme(reroll_button)
 	actions.add_child(reroll_button)
-
 	var skip_button := _make_button("Пропустить")
 	skip_button.name = "AttributeSkipButton"
 	_apply_slim_action_button_theme(skip_button)
 	actions.add_child(skip_button)
-
+	# FAN-1966: placement of the full-copy production disclosure host.
+	var detail_drawer_nodes := AttributeSurfaces.make_detail_drawer("AttributeShop", _atlas_chip_style(0.88, 10.0))
+	root.add_child(detail_drawer_nodes["panel"] as Control)
 	# Набор и счетчик rerolls живут в game-state: повторный runtime вызов не дает
 	# бесплатного реролла; сброс — только в победном флоу нового боя. Legacy and
 	# malformed saved arrays are canonicalized to the same strict 2/3 contract.
@@ -3234,7 +3211,7 @@ func _layout_attribute_offer_card(button: Button) -> void:
 		var preview_lines := full_preview.split("\n", false)
 		var compact_lines := PackedStringArray()
 		for line_index in range(mini(2, preview_lines.size())):
-			compact_lines.append(_compact_attribute_preview_line(str(preview_lines[line_index])))
+			compact_lines.append(AttributeSurfaces.compact_preview_line(str(preview_lines[line_index])))
 		preview.text = "\n".join(compact_lines) if compact_semantic else full_preview
 		preview.max_lines_visible = 2 if compact_semantic else -1
 	_apply_attribute_shop_rect(title, Rect2(Vector2(content_rect.position.x, y), Vector2(content_rect.size.x, title_h)))
@@ -3283,14 +3260,11 @@ func _layout_attribute_offer_card(button: Button) -> void:
 			SemanticTypography.role_min(SemanticTypography.ROLE_VALUE),
 			SemanticTypography.role_max(SemanticTypography.ROLE_VALUE)
 		))
-
-
-func _compact_attribute_preview_line(line: String) -> String:
-	var parts := line.split(":", true, 1)
-	if parts.size() < 2:
-		return line.left(22)
-	var label := str(parts[0]).strip_edges()
-	return label.left(22)
+	# FAN-1927: карточка — компактная проекция; полные списки осей живут в
+	# drawer/тултипе (full_text meta). Не вмещающиеся wrapped-строки не
+	# обрезаются ellipsis'ом, а убираются ЦЕЛЫМИ пунктами с конца.
+	AttributeSurfaces.fit_list_label(influence, "Влияет на: ", ", ")
+	AttributeSurfaces.fit_list_label(preview, "", "\n")
 
 
 func _refresh_attribute_shop(root: Control, on_done: Callable) -> void:
@@ -3311,13 +3285,22 @@ func _refresh_attribute_shop(root: Control, on_done: Callable) -> void:
 	reroll_button.text = "Обновить · %d зол. · %d" % [_attribute_reroll_cost(), game.attribute_rerolls_left]
 	reroll_button.disabled = game.attribute_rerolls_left <= 0 or money < _attribute_reroll_cost()
 
-	for stat_id in game.attribute_offer:
+	var detail_label := root.find_child("AttributeShopDetailLabel", true, false) as Label
+	var detail_drawer := root.find_child("AttributeShopDetailDrawer", true, false) as PanelContainer
+	var first_detail_text := ""
+	for offer_value in game.attribute_offer:
+		var stat_id := str((offer_value as Dictionary).get("id", "")) if offer_value is Dictionary else str(offer_value)
 		var stat_title: String = str(game.PROGRESSION_DATA.STAT_NAMES.get(stat_id, stat_id))
-		var interpretation: String = str(game.PROGRESSION_DATA.class_interpretation_text(game.selected_character_id, stat_id))
+		var interpretation: String = str((offer_value as Dictionary).get("interpretation", game.PROGRESSION_DATA.class_interpretation_text(game.selected_character_id, stat_id))) if offer_value is Dictionary else str(game.PROGRESSION_DATA.class_interpretation_text(game.selected_character_id, stat_id))
 		var influence_text := _attribute_influence_text(stat_id)
 		var preview_lines := _attribute_upgrade_preview_lines(stat_id)
 		var attr_offer_size: Vector2 = _attribute_shop_layout_for_size(root.size)["offer_size"]
 		var offer_button := _make_attribute_offer_card(stat_id, stat_title, interpretation, influence_text, preview_lines, buy_cost, attr_offer_size)
+		var detail_text := AttributeSurfaces.shop_card_detail_text(stat_title, buy_cost, "", influence_text, _attribute_upgrade_preview_lines(str(stat_id), 1.0, 99)) + ("\n%s" % interpretation if interpretation != "" else "")
+		if first_detail_text == "":
+			first_detail_text = detail_text
+		if detail_label != null:
+			AttributeSurfaces.wire_detail_focus(offer_button, detail_label, detail_drawer, false, detail_text)
 		offer_button.disabled = money < buy_cost
 		# SCRUM-413: недоступные (не хватает золота) карточки визуально затемнены —
 		# явно видно, что купить нельзя, а не «активная, но не реагирует».
@@ -3325,8 +3308,6 @@ func _refresh_attribute_shop(root: Control, on_done: Callable) -> void:
 		# SCRUM-525/SCRUM-851: тултип краткий и по делу — на что влияет атрибут и живой
 		# предпросмотр производных при +1; интерпретация класса уже написана на карточке.
 		offer_button.tooltip_text = "%s +1" % stat_title
-		if interpretation != "":
-			offer_button.tooltip_text += "\n%s" % interpretation
 		# Compact display copy may be abbreviated, but focus disclosure keeps the
 		# exact source strings stored on the labels.
 		var influence_label := offer_button.find_child("%sInfluence" % offer_button.name, false, false) as Label
@@ -3339,6 +3320,9 @@ func _refresh_attribute_shop(root: Control, on_done: Callable) -> void:
 			offer_button.tooltip_text += "\nПредпросмотр при +1:\n• %s" % "\n• ".join(full_preview.split("\n", false))
 		if offer_button.disabled:
 			offer_button.tooltip_text += "\nНедостаточно золота: нужно %d, есть %d." % [buy_cost, money]
+		offer_button.tooltip_text += "\n%s" % interpretation if interpretation != "" else ""
+		offer_button.set_meta("attribute_tooltip_text", offer_button.tooltip_text)
+		offer_button.set_meta("production_tooltip_host", true)
 		offer_button.pressed.connect(func() -> void:
 			if not _spend_run_money(buy_cost):
 				# SCRUM-968: не хватает золота на +1 к характеристике — отказ.
@@ -3352,6 +3336,8 @@ func _refresh_attribute_shop(root: Control, on_done: Callable) -> void:
 				on_done.call()
 		)
 		offers_box.add_child(offer_button)
+	if detail_label != null and first_detail_text != "":
+		detail_label.text = first_detail_text
 	_layout_attribute_shop(root)
 	_layout_attribute_shop.call_deferred(root)
 
@@ -6345,11 +6331,22 @@ func _codex_stat_sections(stat: Dictionary) -> Array:
 	var description_lines := []
 	if str(stat.get("description", "")) != "":
 		description_lines.append(str(stat["description"]))
-	var stat_definition: Dictionary = StatFormulas.STAT_DEFINITIONS.get(stat_id, {})
-	if str(stat_definition.get("formula", "")) != "":
-		description_lines.append("Формула: %s" % str(stat_definition["formula"]))
+	# FAN-1927: канонические оси несут формулу в самой записи (у урон-осей — оба
+	# канала); базовые характеристики по-прежнему берут её из STAT_DEFINITIONS.
+	var formula := str(stat.get("formula", ""))
+	if formula == "":
+		formula = str((StatFormulas.STAT_DEFINITIONS.get(stat_id, {}) as Dictionary).get("formula", ""))
+	if formula != "":
+		description_lines.append("Формула: %s" % formula)
 	if not description_lines.is_empty():
 		sections.append({"heading": "Описание", "lines": description_lines})
+	# FAN-1927: живые значения выбранного героя — тот же axis_snapshot, что у
+	# Pause/Hero Select: сейчас/максимум/канал; ineligible ось не подаётся как
+	# доступная этому герою.
+	if str(stat.get("type", "")) == "derived" and game.selected_character_id != "":
+		var live_lines := _codex_axis_live_lines(stat_id)
+		if not live_lines.is_empty():
+			sections.append({"heading": "Этот герой", "lines": live_lines})
 	if str(stat.get("influences", "")) != "":
 		sections.append({"heading": "Влияние", "lines": ["Влияет на: %s" % str(stat["influences"])]})
 	# Связанные записи: классы, у которых этот стат — главный (identity-данные).
@@ -6362,6 +6359,14 @@ func _codex_stat_sections(stat: Dictionary) -> Array:
 		if not main_class_names.is_empty():
 			sections.append({"heading": "Связанные классы", "lines": ["Главный стат для: %s." % ", ".join(main_class_names)]})
 	return sections
+
+
+# FAN-1927: живые строки «Этот герой» оси кодекса — единый view-model
+# (AttributeSurfaces.codex_axis_live_lines).
+func _codex_axis_live_lines(axis_id: String) -> Array:
+	return AttributeSurfaces.codex_axis_live_lines(
+		axis_id, game.selected_character_id, _active_stats_snapshot(), _active_modifiers_snapshot(),
+		_active_weapon_config(), game.PROGRESSION_DATA.base_stats(game.selected_character_id))
 
 
 func _codex_ascension_sections(entry: Dictionary) -> Array:
@@ -6534,10 +6539,12 @@ func _build_codex_stats(list: VBoxContainer, stat_type: String) -> void:
 	var entries: Array = CODEX_DATA.characteristics() if stat_type == "base" else CODEX_DATA.attributes()
 	for stat in entries:
 		var stat_id := str(stat["id"])
+		# FAN-1927: канонические оси несут icon_id реестра (axis id != derived id).
+		var icon_id := str(stat.get("icon_id", stat_id))
 		var row := _codex_entry_panel(list, {
 			"title": str(stat["title"]),
 			"summary": str(stat["description"]),
-			"texture": game.UIIconRegistry.texture_for(stat_id),
+			"texture": game.UIIconRegistry.texture_for(icon_id),
 			"covered_portrait": false,
 			"chips": [str(type_titles.get(stat_type, "Параметр"))],
 			"related_title": str(related_titles.get(stat_type, "Связанные параметры")),
@@ -6548,7 +6555,7 @@ func _build_codex_stats(list: VBoxContainer, stat_type: String) -> void:
 			],
 			"sections": _codex_stat_sections(stat),
 		})
-		_codex_icon_slot(row, game.UIIconRegistry.texture_for(stat_id), _codex_entry_portrait_size(), "CodexStatIconSlot")
+		_codex_icon_slot(row, game.UIIconRegistry.texture_for(icon_id), _codex_entry_portrait_size(), "CodexStatIconSlot")
 		_codex_add_entry_name(row, str(stat["title"]))
 
 
@@ -9132,7 +9139,12 @@ func _show_level_up_screen(return_to_map := false) -> void:
 	rewards_row.add_theme_constant_override("separation", int(layout.get("card_gap", 0)))
 	box.add_child(rewards_row)
 
-	# Набор фиксируется на полученный уровень: переоткрытие окна показывает то же.
+	var saved_offer: Array = game.level_up_offer
+	game.level_up_offer = AttributeContract.sanitize_level_up_offer(game.level_up_offer, game.selected_character_id, _active_stats_snapshot(), _active_modifiers_snapshot(), _active_weapon_config())
+	if not game.level_up_offer.is_empty() and saved_offer.size() == game.level_up_offer.size():
+		for reward_index in range(game.level_up_offer.size()):
+			var saved_reward := saved_offer[reward_index] as Dictionary
+			if saved_reward.has("description"): (game.level_up_offer[reward_index] as Dictionary)["description"] = str(saved_reward["description"])
 	if game.level_up_offer.is_empty():
 		game.level_up_offer = _random_level_up_rewards(3)
 	# SCRUM-871: прогноз «до -> после» и бейджи «Лучший урон»/«Выживание» на весь
@@ -9171,6 +9183,36 @@ func _show_level_up_screen(return_to_map := false) -> void:
 		)
 		rewards_row.add_child(button)
 		reward_buttons.append(button)
+
+	# FAN-1927 (спека LU.DetailDrawer): полная русская копия сфокусированной
+	# карточки — placement из остатка зоны под контентной высотой карточек
+	# (AttributeSurfaces; compact-вьюпорты получают focus-overlay).
+	var drawer_placement := AttributeSurfaces.level_up_drawer_placement(layout, rewards_row.position, rewards_row.size)
+	var drawer_overlay := bool(drawer_placement.get("overlay", false))
+	var drawer_rect: Rect2 = drawer_placement.get("rect", Rect2())
+	if not drawer_overlay:
+		var reduced_row_size: Vector2 = drawer_placement.get("reduced_row_size", rewards_row.size)
+		rewards_row.custom_minimum_size = reduced_row_size
+		rewards_row.size = reduced_row_size
+	var lu_drawer_nodes := AttributeSurfaces.make_detail_drawer("LevelUp", _atlas_chip_style(0.94 if drawer_overlay else 0.88, 10.0))
+	var drawer_panel := lu_drawer_nodes["panel"] as PanelContainer
+	var drawer_label := lu_drawer_nodes["label"] as Label
+	drawer_panel.position = drawer_rect.position
+	drawer_panel.size = drawer_rect.size
+	drawer_panel.custom_minimum_size = drawer_rect.size
+	drawer_panel.visible = not drawer_overlay
+	drawer_panel.set_meta("lu_drawer_overlay", drawer_overlay)
+	box.add_child(drawer_panel)
+	var drawer_forecasts: Array = advice.get("forecasts", [])
+	var drawer_badges: Array = advice.get("badges", [])
+	for reward_index in range(reward_buttons.size()):
+		var focus_reward: Dictionary = game.level_up_offer[reward_index]
+		var focus_forecast: Dictionary = drawer_forecasts[reward_index] if reward_index < drawer_forecasts.size() else {}
+		var focus_badge := str(drawer_badges[reward_index]) if reward_index < drawer_badges.size() else ""
+		var drawer_text := _level_up_detail_drawer_text(focus_reward, focus_forecast, focus_badge, advice)
+		if reward_index == 0:
+			drawer_label.text = drawer_text
+		AttributeSurfaces.wire_detail_focus(reward_buttons[reward_index], drawer_label, drawer_panel, drawer_overlay, drawer_text)
 
 	# Типографика: авто-подбор мог дать титулам разный размер — выравниваем ряд
 	# по минимальному, чтобы карточки читались как одна линейка.
@@ -9456,14 +9498,21 @@ func _level_up_card_plan(rewards: Array, advice: Dictionary, layout: Dictionary)
 	var scale := float(layout.get("scale", 0.5))
 	var compact := bool(layout.get("compact", scale <= 0.52))
 	var zone_height := float((layout.get("rewards_row_size", Vector2(760.0, 4096.0)) as Vector2).y)
+	# Reserve the same real, non-overlay 720p drawer lane used by placement.
+	if compact:
+		zone_height = maxf(zone_height - 84.0, 64.0)
 	var card_width := float(layout.get("card_width", roundf(LU_CARD_2K.size.x * scale)))
-	var pad := maxf(6.0, roundf(LU_CARD_CHIP_PAD_2K * scale))
+	# Mirror widened compact card padding so planned and rendered safe rects agree.
+	var pad := maxf(6.0, roundf(LU_CARD_CHIP_PAD_2K * card_width / LU_CARD_2K.size.x))
 	var content_width := maxf(card_width - pad * 2.8, 48.0)
 	var gap := maxf(6.0, roundf(LU_CARD_STACK_GAP_2K * scale))
 	var small_gap := maxf(4.0, roundf(8.0 * scale))
 	# Шрифты стека (пол кегля 12 — фидбек читаемости SCRUM-883).
 	var badge_font := _readable_font_size(SemanticTypography.ROLE_HUD, maxi(12, int(roundf(13.0 * scale))), 0, 16)
-	var title_font := _readable_font_size(SemanticTypography.ROLE_TITLE, maxi(12, int(roundf(18.0 * scale))), 0, 26)
+	var title_font := maxi(
+		SemanticTypography.role_min(SemanticTypography.ROLE_TITLE),
+		_readable_font_size(SemanticTypography.ROLE_TITLE, maxi(12, int(roundf(18.0 * scale))), 0, 26)
+	)
 	var desc_font := _readable_font_size(SemanticTypography.ROLE_DESCRIPTION, maxi(12, int(roundf(13.0 * scale))), 0, 18)
 	var effect_font := _readable_font_size(SemanticTypography.ROLE_BODY, maxi(12, int(roundf(15.0 * scale))), 0, 20)
 	# Высоты строк меряем probe-Label'ом — та же метрика, какой Godot считает
@@ -9512,29 +9561,45 @@ func _level_up_card_plan(rewards: Array, advice: Dictionary, layout: Dictionary)
 		effect_rows = maxi(effect_rows, lines.size())
 	var socket_box := roundf(clampf(LU_CARD_SOCKET_BOX_2K * scale, 44.0, LU_CARD_SOCKET_BOX_2K))
 	var badge_h := badge_line_h + 8.0
-	var title_h := title_line_h + 4.0
+	# Keep baseline room for the title face at its semantic floor.
+	var title_h := maxf(title_line_h + 4.0, float(title_font + 8))
 	var effect_pad := maxf(5.0, roundf(10.0 * scale))
-	# Бюджет вертикали = зона между шапкой и «Позже»: не влезаем — ступенчатая
-	# деградация (описание до 2 строк → дельта-блок до 1 строки), затем кап.
+	var effect_inset := 2.0 if compact else maxf(6.0, roundf(16.0 * scale))
+	var effect_text_width := maxf(content_width - effect_inset * 2.0 - effect_pad * 2.8, 8.0)
+	var delta_line_heights_per_card: Array = []
+	for card_lines in delta_lines_per_card:
+		var line_heights: Array = []
+		for line in card_lines:
+			var measured_height := measure_font.get_multiline_string_size(str(line), HORIZONTAL_ALIGNMENT_CENTER, effect_text_width, effect_font).y
+			line_heights.append(maxf(effect_row_h, ceilf(measured_height) + 2.0))
+		delta_line_heights_per_card.append(line_heights)
+	# Ужимаем только описание; обязательные строки эффекта не удаляем.
 	var desc_h := 0.0
 	var effect_chip_h := 0.0
 	var content_height := 0.0
 	while true:
 		desc_h = desc_line_h * float(desc_lines) + 4.0
-		effect_chip_h = effect_row_h * float(effect_rows) + effect_pad * 2.0
+		var effect_content_h := 0.0
+		for line_heights in delta_line_heights_per_card:
+			var card_effect_h := 0.0
+			for line_index in range(mini(effect_rows, (line_heights as Array).size())):
+				card_effect_h += float((line_heights as Array)[line_index])
+			effect_content_h = maxf(effect_content_h, card_effect_h)
+		effect_chip_h = effect_content_h + effect_pad * 2.0
 		content_height = socket_box + gap + title_h + small_gap + desc_h + gap + effect_chip_h
 		if badge_slot:
 			content_height = badge_h + gap + content_height
 		if content_height + pad * 2.0 <= zone_height:
 			break
-		if desc_lines > 2:
-			desc_lines = 2
+		if desc_lines > 1:
+			desc_lines -= 1
 			continue
-		if effect_rows > 1:
-			effect_rows -= 1
+		if socket_box > 44.0:
+			socket_box = maxf(44.0, socket_box - ceilf(content_height + pad * 2.0 - zone_height))
 			continue
 		break
-	var card_height := minf(roundf(content_height + pad * 2.0), floorf(zone_height))
+	# Keep the real required height so mandatory-row clipping cannot false-green.
+	var card_height := roundf(content_height + pad * 2.0)
 	return {
 		"pad": pad,
 		"content_width": content_width,
@@ -9557,9 +9622,10 @@ func _level_up_card_plan(rewards: Array, advice: Dictionary, layout: Dictionary)
 		"effect_row_h": effect_row_h,
 		"effect_font": effect_font,
 		"effect_pad": effect_pad,
-		"effect_inset": 2.0 if compact else maxf(6.0, roundf(16.0 * scale)),
+		"effect_inset": effect_inset,
 		"effect_chip_h": effect_chip_h,
 		"delta_lines_per_card": delta_lines_per_card,
+		"delta_line_heights_per_card": delta_line_heights_per_card,
 	}
 
 
@@ -9755,13 +9821,10 @@ func _make_level_up_reward_button(reward: Dictionary, layout := {}, advice := {}
 	effect_panel.add_theme_stylebox_override("panel", effect_style)
 	content.add_child(effect_panel)
 
-	# Хост строк — обычный Control с нулевым minimum size: PanelContainer не
-	# растёт от текста, дельта-блок гарантированно остаётся в контент-зоне
-	# карточки (гейт ui_no_overlap_matrix).
+	# Нулевой minimum size хоста не даёт PanelContainer вырасти из контент-зоны карточки.
 	var effect_rows := Control.new()
 	effect_rows.name = "LevelUpRewardEffectRows"
 	effect_rows.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	effect_rows.clip_contents = true
 	effect_panel.add_child(effect_rows)
 
 	var rows_size := Vector2(
@@ -9770,17 +9833,15 @@ func _make_level_up_reward_button(reward: Dictionary, layout := {}, advice := {}
 	)
 	var delta_lines_cache: Array = plan.get("delta_lines_per_card", [])
 	var delta_lines: Array = delta_lines_cache[reward_index] if (reward_index >= 0 and reward_index < delta_lines_cache.size()) else _level_up_delta_lines(reward, forecast)
-	# Бюджетная деградация плана могла срезать глубину блока — лишние строки
-	# отбрасываем сразу (полный список всегда в тултипе карточки).
-	var plan_rows := maxi(int(plan.get("effect_rows", 3)), 1)
-	if delta_lines.size() > plan_rows:
-		delta_lines = delta_lines.slice(0, plan_rows)
 	var row_height := float(plan.get("effect_row_h", 18.0))
 	var effect_font := int(plan.get("effect_font", 12))
+	var line_heights_cache: Array = plan.get("delta_line_heights_per_card", [])
+	var line_heights: Array = line_heights_cache[reward_index] if (reward_index >= 0 and reward_index < line_heights_cache.size()) else []
 	var has_forecast_deltas: bool = not (forecast.get("deltas", []) as Array).is_empty()
-	# Строки центрируются в зоне блока; не влезающие по высоте отбрасываем
-	# (кроме первой: контракт смоук/матрицы «LevelUpRewardEffectText с '->'»).
-	var used_height := roundf(maxf(rows_size.y - row_height * float(delta_lines.size()), 0.0) * 0.5)
+	var planned_height := 0.0
+	for line_index in range(delta_lines.size()):
+		planned_height += float(line_heights[line_index]) if line_index < line_heights.size() else row_height
+	var used_height := roundf(maxf(rows_size.y - planned_height, 0.0) * 0.5)
 	for line_index in range(delta_lines.size()):
 		var line_label := Label.new()
 		line_label.name = "LevelUpRewardEffectText" if line_index == 0 else "LevelUpRewardEffectText%d" % (line_index + 1)
@@ -9788,16 +9849,10 @@ func _make_level_up_reward_button(reward: Dictionary, layout := {}, advice := {}
 		line_label.text = str(delta_lines[line_index])
 		line_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 		line_label.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
-		line_label.autowrap_mode = TextServer.AUTOWRAP_OFF
-		line_label.clip_text = true
-		line_label.max_lines_visible = 1
-		line_label.text_overrun_behavior = TextServer.OVERRUN_TRIM_ELLIPSIS
+		line_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 		_shrink_label_font_to_width(line_label, SemanticTypography.ROLE_BODY, effect_font, rows_size.x - 4.0, SemanticTypography.role_min(SemanticTypography.ROLE_BODY))
 		line_label.add_theme_color_override("font_color", Color(0.76, 0.96, 0.80, 1.0) if has_forecast_deltas else Color(0.84, 0.97, 1.0, 1.0))
-		var line_height := maxf(row_height, line_label.get_minimum_size().y)
-		if line_index > 0 and used_height + line_height > rows_size.y + 0.5:
-			line_label.free()
-			continue
+		var line_height := float(line_heights[line_index]) if line_index < line_heights.size() else row_height
 		line_label.position = Vector2(0.0, used_height)
 		line_label.size = Vector2(rows_size.x, line_height)
 		effect_rows.add_child(line_label)
@@ -9805,16 +9860,22 @@ func _make_level_up_reward_button(reward: Dictionary, layout := {}, advice := {}
 	return button
 
 
-# SCRUM-871: контекст прогноза — живые статы/моды игрока (бой или меню-снапшот,
-# fallback на базу класса) + актуальный weapon_config (боевой или собранный по
-# выбранному классу/оружию тем же ProgressionData.weapon путём).
-func _level_up_offer_advice(rewards: Array) -> Dictionary:
+# SCRUM-871/FAN-1887: актуальный weapon_config — боевой или собранный по
+# выбранному классу/оружию тем же ProgressionData.weapon путём. Общая точка для
+# прогноза советника и presentation-фильтра карточек.
+func _active_weapon_config() -> Dictionary:
 	var weapon_config = {}
 	if game.current_player != null and is_instance_valid(game.current_player):
 		weapon_config = game.current_player.get("weapon_config")
 	if not (weapon_config is Dictionary) or (weapon_config as Dictionary).is_empty():
 		weapon_config = game.PROGRESSION_DATA.weapon(game.selected_character_id, game.selected_weapon_id)
-	return LevelUpAdvisor.recommend(rewards, _active_stats_snapshot(), _active_modifiers_snapshot(), weapon_config)
+	return weapon_config
+
+
+# SCRUM-871: контекст прогноза — живые статы/моды игрока (бой или меню-снапшот,
+# fallback на базу класса) + актуальный weapon_config.
+func _level_up_offer_advice(rewards: Array) -> Dictionary:
+	return LevelUpAdvisor.recommend(rewards, _active_stats_snapshot(), _active_modifiers_snapshot(), _active_weapon_config())
 
 
 # SCRUM-871: понижает размер шрифта, пока строка не влезает в ширину зоны —
@@ -9839,18 +9900,34 @@ func _shrink_label_font_to_width(label: Label, role: StringName, base_font_size:
 	))
 
 
-# Строки блока изменений карточки: топ-3 дельты прогноза; без измеримых дельт —
-# прежнее SCRUM-525 превью (спец-эффекты вроде призывов), затем краткий фолбэк.
+# FAN-1887 (спека fan1883_attribute_clarity): фактическая строка результата оси —
+# «было → стало · реально: +…» по действующим формулам/капам, канал урона подписан,
+# у шанса крита строка «сейчас · максимум», у вампиризма — отдельный шанс срабатывания.
+func _level_up_axis_lines(reward: Dictionary) -> Array:
+	return AttributeSurfaces.axis_presentation_lines(
+		reward, game.selected_character_id, _active_stats_snapshot(), _active_modifiers_snapshot(), _active_weapon_config())
+
+
+# Строки блока изменений карточки: фактическая строка оси (FAN-1887), затем
+# дельты прогноза; без измеримых дельт — прежнее SCRUM-525 превью (спец-эффекты
+# вроде призывов), затем краткий фолбэк.
 func _level_up_delta_lines(reward: Dictionary, forecast: Dictionary) -> Array:
 	var lines: Array = []
 	var explicit_summary := str(reward.get("effect_summary", "")).strip_edges()
 	if explicit_summary != "":
 		lines.append(explicit_summary)
 		return lines
+	lines = _level_up_axis_lines(reward)
+	var axis_parameter := ""
+	if not lines.is_empty():
+		var attr_id := str(reward.get("attr", ""))
+		axis_parameter = "summon_amount" if attr_id == "summon_amount" else AttributeContract.presentation_parameter_for(attr_id, game.selected_character_id)
 	for delta in (forecast.get("deltas", []) as Array):
-		lines.append(LevelUpAdvisor.delta_line(delta))
 		if lines.size() >= 3:
 			break
+		if str((delta as Dictionary).get("id", "")) == axis_parameter:
+			continue
+		lines.append(LevelUpAdvisor.delta_line(delta))
 	if lines.is_empty():
 		lines = _level_up_effect_preview_lines(reward, 2)
 	if lines.is_empty():
@@ -9865,11 +9942,20 @@ func _format_level_up_gain_percent(gain: float) -> String:
 
 # Тултип карточки: название, описание, полный список изменений, классовая
 # интерпретация и объяснение бейджа рекомендации.
+# FAN-1927 (LU.DetailDrawer): полная копия сфокусированной карточки — фактические
+# оси (before→after, кап, шанс срабатывания) + полный текст карточки/советника.
+func _level_up_detail_drawer_text(reward: Dictionary, forecast: Dictionary, badge_kind: String, advice := {}) -> String:
+	var parts: Array = []
+	for axis_line in _level_up_axis_lines(reward):
+		parts.append(str(axis_line))
+	var tooltip := _level_up_card_tooltip(reward, forecast, badge_kind, advice)
+	if tooltip != "":
+		parts.append(tooltip)
+	return "\n".join(parts)
+
+
 func _level_up_card_tooltip(reward: Dictionary, forecast: Dictionary, badge_kind: String, advice := {}) -> String:
 	var parts: Array = [str(reward.get("title", "Upgrade"))]
-	var description := str(reward.get("description", "")).strip_edges()
-	if description != "":
-		parts.append(description)
 	var deltas: Array = forecast.get("deltas", [])
 	if not deltas.is_empty():
 		var delta_lines: Array = []
@@ -9888,6 +9974,9 @@ func _level_up_card_tooltip(reward: Dictionary, forecast: Dictionary, badge_kind
 			parts.append("Метка «Выживание»: наибольший прирост живучести (+%s) — здоровье, защита, уклонение, поглощение и лечение." % _format_level_up_gain_percent(float(advice.get("surv_gain", 0.0))))
 		"both":
 			parts.append("Метка «Лучший выбор»: сильнейший рост и урона (+%s), и живучести (+%s)." % [_format_level_up_gain_percent(float(advice.get("dps_gain", 0.0))), _format_level_up_gain_percent(float(advice.get("surv_gain", 0.0)))])
+	var description := str(reward.get("description", "")).strip_edges()
+	if description != "":
+		parts.append(description)
 	return "\n".join(parts)
 
 
@@ -12197,11 +12286,12 @@ const MAIN_STAT_SLOT_CHANCE := 0.05
 func _random_level_up_rewards(count: int) -> Array:
 	# Микс: улучшения оружия/класса/вторичных атрибутов + РЕДКО (~5% на слот)
 	# основная характеристика. Набор уникален и фиксируется на уровень.
-	# SCRUM-695: правило релевантности — в одном показе НЕ БОЛЕЕ 1 атрибута,
-	# который для текущего класса `optional`, и ВСЕГДА минимум 1 primary/secondary
-	# (никогда набор только из необязательных). Основные характеристики (rare-слот)
-	# и capstone «Озарение» считаются не-optional и правилу не противоречат.
-	var regular_pool: Array = game.PROGRESSION_DATA.level_up_rewards(game.selected_character_id)
+	# FAN-1887: строгий фильтр — optional/weak оси, оси без capability-потребителя
+	# и карты с нулевой фактической дельтой (cap_reached/zero_effective_delta по
+	# живым статам/модам) отсеяны ДО выборки; редкие базовые характеристики идут
+	# через consumability-фильтр (Лидерство — только summon-способным классам).
+	var regular_pool: Array = AttributeContract.eligible_level_up_rewards(
+		game.selected_character_id, _active_stats_snapshot(), _active_modifiers_snapshot(), _active_weapon_config())
 	var stat_pool: Array = game.PROGRESSION_DATA.main_stat_level_up_rewards(game.selected_character_id)
 	var prefill: Array = []
 	# Capstone «Озарение» (ветвь Знаний мета-древа, SCRUM-150): ПЕРВОЕ повышение
@@ -12216,7 +12306,7 @@ func _random_level_up_rewards(count: int) -> Array:
 		stat_pool.remove_at(forced_index)
 	# SCRUM-695: правило релевантности (≤1 optional, ≥1 primary/secondary) и взвешивание
 	# по матрице вынесены в тестируемую ProgressionData.weighted_level_up_selection.
-	return game.PROGRESSION_DATA.weighted_level_up_selection(
+	return AttributeContract.weighted_level_up_selection(
 		regular_pool, stat_pool, count, game.selected_character_id, game.rng, MAIN_STAT_SLOT_CHANCE, prefill)
 
 
@@ -12606,67 +12696,21 @@ func _make_reward_card_icon(reward: Dictionary, size: Vector2) -> Control:
 # докачки не разрастался и не давал overflow на 720p. Damage-типы тут приводятся к
 # «своему» типу класса в _attribute_upgrade_preview_lines/_attribute_influence_text
 # (изоляция типов урона SCRUM-524): чужой тип урона в превью не показываем.
-const STAT_DERIVED_PREVIEW := {
-	"strength": ["damage"],
-	"intelligence": ["magic_damage"],
-	"perception": ["attack_range", "aoe_radius", "pickup_radius"],
-	"energy": ["ultimate_multiplier", "projectile_speed"],
-	"knowledge": ["dot_damage", "regeneration", "dot_speed", "summon_amount"],
-	"agility": ["attack_speed", "crit_chance", "move_speed", "dodge"],
-	"endurance": ["health_point", "defense", "absorb", "knockback_power"],
-	"leadership": ["summon_amount", "aura_radius", "buff_power"],
-}
-
-const _DAMAGE_TYPE_PARAMETERS := ["damage", "magic_damage"]
 
 
-# SCRUM-525: RU-список производных, на которые влияет атрибут (для блока «Влияет на: …»
-# в тултипе докачки). Damage-типы фильтруем по «своему» типу класса (SCRUM-524).
-# Для небазовых id (например форс ["damage","attack_speed"] из теста) — пустая строка.
+# SCRUM-525/FAN-1927: «Влияет на: …» и предпросмотр «было -> станет» — дельты
+# канонических осей единого view-model (AttributeSurfaces.axis_diffs).
+func _attribute_axis_diffs(stat_id: String, delta := 1.0) -> Array:
+	return AttributeSurfaces.axis_diffs(
+		game.selected_character_id, _active_stats_snapshot(), _active_modifiers_snapshot(), _active_weapon_config(), stat_id, delta)
+
+
 func _attribute_influence_text(stat_id: String) -> String:
-	var parameters: Array = STAT_DERIVED_PREVIEW.get(stat_id, [])
-	if parameters.is_empty():
-		return ""
-	var class_damage: String = game.PROGRESSION_DATA.damage_parameter_for(game.selected_character_id)
-	var labels: Array = []
-	for parameter_id in parameters:
-		if parameter_id in _DAMAGE_TYPE_PARAMETERS and parameter_id != class_damage:
-			continue
-		var label := _level_up_parameter_label(parameter_id)
-		if not labels.has(label):
-			labels.append(label)
-	return ", ".join(labels)
+	return AttributeSurfaces.influence_text(_attribute_axis_diffs(stat_id, 1.0))
 
 
-# SCRUM-525: честный предпросмотр «было -> станет» для производных при +1 к базовому
-# атрибуту. Считаем через derived_parameters от ЖИВОГО состояния игрока (тот же путь,
-# что и боевые формулы), безопасно и вне боя (через снапшоты). Возвращаем только строки,
-# где отображаемое значение реально меняется; список ограничен 4 строками (overflow на 720p).
-func _attribute_upgrade_preview_lines(stat_id: String, delta := 1.0) -> Array:
-	var parameters: Array = STAT_DERIVED_PREVIEW.get(stat_id, [])
-	if parameters.is_empty():
-		return []
-	var before_stats := _active_stats_snapshot()
-	var before_mods := _active_modifiers_snapshot()
-	var after_stats := before_stats.duplicate(true)
-	after_stats[stat_id] = float(after_stats.get(stat_id, 0.0)) + delta
-	var weapon_config = game.PROGRESSION_DATA.weapon(game.selected_character_id, game.selected_weapon_id)
-	var before_parameters: Dictionary = game.PROGRESSION_DATA.derived_parameters(before_stats, before_mods, weapon_config)
-	var after_parameters: Dictionary = game.PROGRESSION_DATA.derived_parameters(after_stats, before_mods, weapon_config)
-	var class_damage: String = game.PROGRESSION_DATA.damage_parameter_for(game.selected_character_id)
-	var lines: Array = []
-	for parameter_id in parameters:
-		# Изоляция типов урона: показываем только «свой» damage-тип класса.
-		if parameter_id in _DAMAGE_TYPE_PARAMETERS and parameter_id != class_damage:
-			continue
-		var before_text := _format_level_up_value(parameter_id, float(before_parameters.get(parameter_id, 0.0)))
-		var after_text := _format_level_up_value(parameter_id, float(after_parameters.get(parameter_id, 0.0)))
-		if before_text == after_text:
-			continue
-		lines.append("%s: %s -> %s" % [_level_up_parameter_label(parameter_id), before_text, after_text])
-		if lines.size() >= 4:
-			break
-	return lines
+func _attribute_upgrade_preview_lines(stat_id: String, delta := 1.0, max_lines := 4) -> Array:
+	return AttributeSurfaces.preview_lines(_attribute_axis_diffs(stat_id, delta), max_lines)
 
 
 func _level_up_effect_preview_lines(reward: Dictionary, max_lines := 2) -> Array:
@@ -12701,7 +12745,7 @@ func _level_up_effect_preview_lines(reward: Dictionary, max_lines := 2) -> Array
 				var modifier_id := str(modifier_id_raw)
 				var parameter_id := str(game.LEVEL_UP_MOD_DISPLAY.get(modifier_id, modifier_id))
 				if parameter_id == "damage":
-					parameter_id = game.PROGRESSION_DATA.damage_parameter_for(game.selected_character_id)
+					parameter_id = AttributeContract.weapon_damage_parameter(_active_weapon_config(), game.selected_character_id)
 				if seen_parameters.has(parameter_id):
 					continue
 				seen_parameters[parameter_id] = true
@@ -12771,7 +12815,7 @@ func _level_up_reward_preview(reward: Dictionary) -> String:
 		var parameter_id = str(game.LEVEL_UP_MOD_DISPLAY.get(modifier_id, modifier_id))
 		# Превью урона честное: показываем «свой» damage-параметр класса.
 		if parameter_id == "damage":
-			parameter_id = game.PROGRESSION_DATA.damage_parameter_for(game.selected_character_id)
+			parameter_id = AttributeContract.weapon_damage_parameter(_active_weapon_config(), game.selected_character_id)
 		var weapon_config = game.PROGRESSION_DATA.weapon(game.selected_character_id, game.selected_weapon_id)
 		var before_parameters: Dictionary = game.PROGRESSION_DATA.derived_parameters(before_stats, before_mods, weapon_config)
 		var after_parameters: Dictionary = game.PROGRESSION_DATA.derived_parameters(after_stats, after_mods, weapon_config)
@@ -12798,7 +12842,7 @@ func _reward_interpretation_text(reward: Dictionary) -> String:
 	if not modifier_keys.is_empty():
 		var parameter_id = str(game.LEVEL_UP_MOD_DISPLAY.get(str(modifier_keys[0]), modifier_keys[0]))
 		if parameter_id == "damage":
-			parameter_id = game.PROGRESSION_DATA.damage_parameter_for(game.selected_character_id)
+			parameter_id = AttributeContract.weapon_damage_parameter(_active_weapon_config(), game.selected_character_id)
 		return "Интерпретация: %s" % game.PROGRESSION_DATA.class_interpretation_text(game.selected_character_id, parameter_id)
 	if reward.has("affinity_mods"):
 		var affinity_keys := (reward.get("affinity_mods", {}) as Dictionary).keys()
@@ -12825,65 +12869,11 @@ func _active_modifiers_snapshot() -> Dictionary:
 
 
 func _level_up_parameter_label(parameter_id: String) -> String:
-	match parameter_id:
-		"damage":
-			return "Урон"
-		"magic_damage":
-			return "Маг. урон"
-		"attack_speed":
-			return "Скорость атаки"
-		"health_point":
-			return "Макс. здоровье"
-		"move_speed":
-			return "Скорость"
-		"dodge":
-			return "Уклонение"
-		"aoe_radius":
-			return "Радиус области"
-		"pickup_radius":
-			return "Радиус подбора"
-		"defense":
-			return "Защита"
-		"attack_range":
-			return "Дальность"
-		"crit_chance":
-			return "Шанс крита"
-		"crit_damage_multiplier":
-			return "Крит. урон"
-		"knockback_power":
-			return "Отталкивание"
-		"dot_damage":
-			return "Периодический урон"
-		"dot_speed":
-			return "Скорость тиков"
-		"projectile_speed":
-			return "Скорость снарядов"
-		"aura_radius":
-			return "Радиус ауры"
-		"buff_power":
-			return "Сила баффов"
-		"summon_amount":
-			return "Призывы"
-		"absorb":
-			return "Поглощение"
-		"regeneration":
-			return "Регенерация"
-		"vampiric_amount":
-			return "Вампиризм"
-		"vampiric_chance":
-			return "Шанс вампиризма"
-		"ultimate_multiplier":
-			return "Сила уник. механики"
-		_:
-			return parameter_id
+	return AttributeContract.parameter_label(parameter_id)
 
 
 func _format_level_up_value(parameter_id: String, value: float) -> String:
-	if parameter_id in ["crit_chance", "defense", "dodge", "vampiric_chance"]:
-		return "%.0f%%" % (value * 100.0)
-	if parameter_id in ["attack_speed", "crit_damage_multiplier", "dot_speed", "buff_power", "ultimate_multiplier"]:
-		return "%.2f" % value
-	return "%.0f" % value
+	return AttributeContract.format_value(parameter_id, value)
 
 
 func _buy_shop_item_at(index: int) -> bool:
@@ -14434,19 +14424,14 @@ func _level_up_layout_metrics() -> Dictionary:
 	var viewport_size := Vector2(1280.0, 720.0)
 	if game != null and game.get_viewport() != null:
 		viewport_size = game.get_viewport().get_visible_rect().size
-	# SCRUM-985: внешняя рама больше не рисуется, но её консервативный safe-inset
-	# остаётся геометрическим viewport reserve — карточки и «Позже» не липнут к
-	# краям экрана на компактной матрице.
-	var safe_margins := _unified_safe_margins()
-	var safe_size := Vector2(
-		maxf(viewport_size.x - safe_margins.x - safe_margins.z, 96.0),
-		maxf(viewport_size.y - safe_margins.y - safe_margins.w, 96.0)
-	)
+	# SCRUM-985 убрал внешнюю раму: frameless stage масштабируется от реального
+	# viewport. Повторное вычитание старого safe-inset уменьшало Level Up почти
+	# вдвое и превращало LU.DetailDrawer в перекрывающий карточки overlay.
 	var scale := clampf(
-		minf((safe_size.x - 8.0) / LU_PANEL_2K.size.x, (safe_size.y - 8.0) / LU_PANEL_2K.size.y),
+		minf((viewport_size.x - 8.0) / LU_PANEL_2K.size.x, (viewport_size.y - 8.0) / LU_PANEL_2K.size.y),
 		0.30, 1.0
 	)
-	var compact := scale <= 0.52
+	var compact := viewport_size.y < 900.0
 	var xy := Vector2(scale, scale)
 	var panel_size := Vector2(roundf(LU_PANEL_2K.size.x * scale), roundf(LU_PANEL_2K.size.y * scale))
 	# Контент-зона = фактические content margins чипа панели (_atlas_chip_style:
@@ -14454,14 +14439,27 @@ func _level_up_layout_metrics() -> Dictionary:
 	var panel_pad := roundf(LU_PANEL_CHIP_PAD_2K * scale)
 	var content_position := Vector2(panel_pad * 1.4, panel_pad)
 	var content_size := panel_size - Vector2(panel_pad * 2.8, panel_pad * 2.0)
-	var card_width := roundf(LU_CARD_2K.size.x * scale)
 	var card_gap := roundf(LU_CARD_GAP_2K * scale)
+	# Frameless compact stage has useful horizontal slack. Give it to the three
+	# cards (up to the authored 2K width) so complete multi-row deltas wrap less
+	# and leave a real vertical lane for LU.DetailDrawer.
+	var authored_card_width := roundf(LU_CARD_2K.size.x * scale)
+	var available_card_width := floorf((content_size.x - card_gap * 2.0 - 16.0) / 3.0)
+	var card_width := minf(LU_CARD_2K.size.x, maxf(authored_card_width, available_card_width))
 	# «Позже» — фикс-размер глобального кита (высота от вьюпорта, не от scale):
 	# прижата к низу контент-зоны, по центру.
 	var later_size := Vector2(LU_LATER_BUTTON_WIDTH, _atlas_action_button_height())
 	var later_position := Vector2(
 		roundf((content_size.x - later_size.x) * 0.5),
 		content_size.y - later_size.y - maxf(8.0, roundf(12.0 * scale))
+	)
+	# FAN-1927 (спека LU.DetailDrawer): ЖЕЛАЕМЫЙ размер scroll-зоны длинной
+	# русской копии (@1920 ≈ 900×190, uniform scale). Фактический rect считает
+	# _show_level_up_screen из остатка зоны ПОД контентной высотой карточек —
+	# карточный план никогда не ужимается ради drawer.
+	var drawer_size := Vector2(
+		minf(roundf(1200.0 * scale), content_size.x - 16.0),
+		clampf(roundf(210.0 * scale), 64.0, 210.0)
 	)
 	# Ряд карточек занимает всю зону между шапкой и «Позже»; карточки контентной
 	# высоты (SIZE_SHRINK_CENTER) центрируются в ней по вертикали.
@@ -14500,6 +14498,7 @@ func _level_up_layout_metrics() -> Dictionary:
 		"rewards_row_size": rewards_row_size,
 		"card_width": card_width,
 		"card_gap": card_gap,
+		"drawer_size": drawer_size,
 		"later_button_position": later_position,
 		"later_button_size": later_size,
 		"title_font": maxi(16, int(roundf(38.0 * scale))),

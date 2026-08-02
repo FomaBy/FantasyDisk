@@ -6,6 +6,11 @@ on:
   pull_request:
     branches: [dev]
   merge_group:
+  # Scheduled/manual full-profile health run for dev (FAN-1869).  GitHub reads
+  # these two triggers from the default branch, which is dev.
+  schedule:
+    - cron: "43 3 * * *"
+  workflow_dispatch:
 
 permissions:
   contents: read
@@ -22,6 +27,10 @@ jobs:
   # detach the required gate, so it stays `static-quality` even though the
   # candidate events now execute Godot suites too.
   static-quality:
+    # schedule/workflow_dispatch belong to dev-runtime-health below.  This
+    # guard is identically true for the gate's own events (push, pull_request,
+    # merge_group), so the required check's behavior on them is unchanged.
+    if: github.event_name != 'schedule' && github.event_name != 'workflow_dispatch'
     runs-on: ubuntu-latest
     timeout-minutes: 30
     steps:
@@ -121,7 +130,95 @@ jobs:
           if-no-files-found: error
           retention-days: 30
 
+  # Nightly/manual full-profile run on dev (FAN-1869).  The changed profile on
+  # candidate events selects suites by diff, so a repository-wide runtime
+  # regression already on dev can stay invisible to every CI event above.
+  # This job runs every discovered suite and fails loudly.  It is NOT a
+  # branch-protection required check; deleting the job and its two triggers
+  # restores the previous behavior exactly.
+  dev-runtime-health:
+    if: github.event_name == 'schedule' || github.event_name == 'workflow_dispatch'
+    runs-on: ubuntu-latest
+    timeout-minutes: 90
+    steps:
+      - uses: actions/checkout@v6
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-python@v6
+        with:
+          python-version: "3.12"
+      - name: Install CI Python dependencies
+        run: python -m pip install --requirement requirements-ci.txt
+      - name: Assert exact audited SHA
+        run: |
+          test "$(git rev-parse HEAD)" = "$GITHUB_SHA"
+          mkdir -p build
+          printf '%s\n' "$GITHUB_SHA" > build/quality_gate_candidate_sha.txt
+      - name: Resolve pinned Godot location
+        run: echo "GODOT_DIR=$RUNNER_TOOL_CACHE/fsd-godot/$GODOT_BUILD_ID" >> "$GITHUB_ENV"
+      - name: Restore pinned Godot
+        id: godot-cache
+        uses: actions/cache@v6
+        with:
+          path: ${{ env.GODOT_DIR }}
+          key: fsd-godot-${{ runner.os }}-${{ runner.arch }}-${{ env.GODOT_BUILD_ID }}
+      - name: Install pinned Godot
+        if: steps.godot-cache.outputs.cache-hit != 'true'
+        run: |
+          set -euo pipefail
+          archive="$RUNNER_TEMP/godot.zip"
+          curl -fsSL --retry 3 -o "$archive" \
+            "https://github.com/godotengine/godot/releases/download/${GODOT_RELEASE}/Godot_v${GODOT_RELEASE}_linux.x86_64.zip"
+          printf '%s  %s\n' "$GODOT_ZIP_SHA512" "$archive" | sha512sum -c -
+          mkdir -p "$GODOT_DIR"
+          unzip -q -o "$archive" -d "$RUNNER_TEMP/godot"
+          mv "$RUNNER_TEMP/godot/Godot_v${GODOT_RELEASE}_linux.x86_64" "$GODOT_DIR/godot"
+          chmod +x "$GODOT_DIR/godot"
+      - name: Assert the pinned Godot build
+        run: |
+          set -euo pipefail
+          echo "godot cache-hit: ${{ steps.godot-cache.outputs.cache-hit }}"
+          test "$("$GODOT_DIR/godot" --version | tail -n 1)" = "$GODOT_BUILD_ID"
+          echo "GODOT_BIN=$GODOT_DIR/godot" >> "$GITHUB_ENV"
+      # Exact-key restore only, same as static-quality: a broad restore key
+      # could reuse stale imported data without the full import pre-pass.
+      - name: Restore Godot import cache
+        id: godot-import-cache
+        uses: actions/cache@v6
+        with:
+          path: .godot
+          key: fsd-godot-import-${{ runner.os }}-${{ runner.arch }}-${{ env.GODOT_BUILD_ID }}-${{ hashFiles('project.godot', 'export_presets.cfg', '**/*.import', '**/*.png', '**/*.jpg', '**/*.jpeg', '**/*.webp', '**/*.gif', '**/*.svg', '**/*.svgz', '**/*.bmp', '**/*.tga', '**/*.hdr', '**/*.exr', '**/*.dds', '**/*.ktx', '**/*.wav', '**/*.ogg', '**/*.mp3', '**/*.flac', '**/*.ogv', '**/*.ttf', '**/*.otf', '**/*.woff', '**/*.woff2', '**/*.dae', '**/*.gltf', '**/*.glb', '**/*.fbx', '**/*.blend', '**/*.obj') }}
+      - name: Report Godot import cache
+        run: |
+          echo "godot import cache-hit: ${{ steps.godot-import-cache.outputs.cache-hit }}"
+      - name: Repository, Python and Godot gates (full profile)
+        run: python3 tools/quality_gate.py --profile full
+      - name: Assert the run executed Godot suites
+        run: |
+          set -euo pipefail
+          executed=$(python3 -c "import json; print(len(json.load(open('build/quality_gate_report.json'))['godot_tests']))")
+          echo "executed Godot suites: $executed"
+          test "$executed" -gt 0
+      - name: Hash quality evidence
+        if: always()
+        run: |
+          test -f build/quality_gate_report.json
+          (cd build && sha256sum quality_gate_report.json > quality_gate_report.sha256)
+          (cd build && sha256sum -c quality_gate_report.sha256)
+      - name: Upload exact-SHA quality evidence
+        if: always()
+        uses: actions/upload-artifact@v7
+        with:
+          name: quality-${{ github.event_name }}-${{ github.sha }}
+          path: |
+            build/quality_gate_candidate_sha.txt
+            build/quality_gate_report.json
+            build/quality_gate_report.sha256
+          if-no-files-found: error
+          retention-days: 30
+
 # The candidate events run the changed profile: static checks plus the Godot
-# suites selected for the diff.  The exhaustive set stays a local/release check
-# because it costs the full 4.7 toolchain and every discovered suite:
+# suites selected for the diff.  The exhaustive set runs on dev through the
+# scheduled/manual dev-runtime-health job above and stays a local/release
+# check as well:
 # python3 tools/quality_gate.py --profile full

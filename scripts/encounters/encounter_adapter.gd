@@ -1,0 +1,54 @@
+extends RefCounted
+## EncounterAdapter — единственная точка сцепления боевого цикла с пакетом битов
+## (FAN-1447). Держит ссылку на живого EncounterBeatDirector текущего боя, чтобы
+## `scripts/combat_director.gd` оставался тонким: там только два вызова,
+## `begin()` и `shutdown()`, без знания о внутренностях пакета.
+##
+## Вынесено из CombatDirector осознанно: файл боевого цикла держит ratchet 1500
+## строк (tools/quality_static_guard.py), и «растить монолит» ради адаптера
+## запрещено — вся логика живёт в изолированном scripts/encounters/**.
+
+const CONFIG := preload("res://scripts/encounters/encounter_config.gd")
+const BEAT_DIRECTOR := preload("res://scripts/encounters/encounter_beat_director.gd")
+
+# Живой директор текущего боя (узел-ребёнок Main, process_mode PAUSABLE).
+var _director: Node = null
+
+
+# Поднять директора на финализации боя. При выключенной системе — no-op, поэтому
+# бой остаётся байт-идентичен baseline (default-off parity). Eligibility
+# (нормальный бой, ровно один primary-бит) проверяет сам директор.
+func begin(game, combat) -> void:
+	_free_stale()
+	if not CONFIG.is_enabled():
+		return
+	var director: Node = BEAT_DIRECTOR.new()
+	director.name = "EncounterBeatDirector"
+	game.add_child(director)
+	director.setup(game, combat)
+	director.begin()
+	_director = director
+
+
+# Терминальная остановка бита: фича снимает маркеры/твины/колбэки и фиксирует
+# метрики исхода (включая death-флаг), пока боевые узлы ещё живы. Идемпотентно.
+func shutdown(victory: bool) -> void:
+	if _director == null or not is_instance_valid(_director):
+		_director = null
+		return
+	_director.shutdown(victory)
+	_director = null
+
+
+# Снять протёкшего директора прошлого боя (без записи метрик исхода).
+func _free_stale() -> void:
+	if _director != null and is_instance_valid(_director) \
+			and not _director.is_queued_for_deletion():
+		_director.queue_free()
+	_director = null
+
+
+# --- Доступ для тестов/QA ---
+
+func debug_director() -> Node:
+	return _director

@@ -1,0 +1,71 @@
+{
+  "schema_version": 1,
+  "package": "weapon_ultimates/sniper",
+  "issue": "FAN-1463",
+  "generator_route": {
+    "required_for_new_raster_assets": "PixelLab MCP",
+    "config_smoke": "PASS: python3 tools/pixellab_auth_smoke.py returned a JSON-RPC get_balance result without exposing credentials",
+    "new_raster_assets": false,
+    "reuse_policy": "Each timeline re-exports an accepted PixelLab weapon VFX into an isolated ultimate source/runtime pair; no alternative image generator or manual raster art was used."
+  },
+  "runtime_binding": {
+    "status": "staged_not_activated",
+    "reason": "The shared WeaponUltimatePresentationManifest is outside FAN-1463 locked paths. FAN-1541/shared-runtime follow-up owns the future redirect to these class-local runtime paths."
+  },
+  "contact_sheet": "docs/design/references/weapon_ultimates/sniper/sniper_ultimates_contact_sheet.png",
+  "weapons": [
+    {
+      "weapon_id": "sniper_deadeye_rifle",
+      "timeline": "scenes/vfx/ultimates/sniper/sniper_deadeye_rifle.timeline.json",
+      "scene": "scenes/vfx/ultimates/sniper/sniper_deadeye_rifle_ultimate.tscn",
+      "source_path": "docs/design/references/weapon_ultimates/sniper/source/sniper_deadeye_rifle_pixellab_source.png",
+      "runtime_path": "assets/sprites/effects/ultimates/sniper/sniper_deadeye_rifle_ultimate.png",
+      "source_provenance": {
+        "reused_from": "docs/design/references/weapon_attack_animations/sniper_deadeye_rifle",
+        "tool": "create_map_object",
+        "pixel_lab_object_id": "574b078d-d81f-4ccd-aa7c-c7edda19d5ba",
+        "accepted_source": "sniper_deadeye_rifle_pixellab_source.png"
+      }
+    },
+    {
+      "weapon_id": "sniper_spotter_scope",
+      "timeline": "scenes/vfx/ultimates/sniper/sniper_spotter_scope.timeline.json",
+      "scene": "scenes/vfx/ultimates/sniper/sniper_spotter_scope_ultimate.tscn",
+      "source_path": "docs/design/references/weapon_ultimates/sniper/source/sniper_spotter_scope_pixellab_source.png",
+      "runtime_path": "assets/sprites/effects/ultimates/sniper/sniper_spotter_scope_ultimate.png",
+      "source_provenance": {
+        "reused_from": "docs/design/references/weapon_attack_animations/sniper_spotter_scope",
+        "tool": "create_map_object",
+        "pixel_lab_object_ids": ["dce7e36f-bea9-4aee-b8f1-0cffd1c828f4", "ce0de7cf-9a50-47ec-b19b-e46e63d3add2"],
+        "accepted_source": "sniper_spotter_scope_pixellab_source.png"
+      }
+    },
+    {
+      "weapon_id": "sniper_shatter_rounds",
+      "timeline": "scenes/vfx/ultimates/sniper/sniper_shatter_rounds.timeline.json",
+      "scene": "scenes/vfx/ultimates/sniper/sniper_shatter_rounds_ultimate.tscn",
+      "source_path": "docs/design/references/weapon_ultimates/sniper/source/sniper_shatter_rounds_pixellab_source.png",
+      "runtime_path": "assets/sprites/effects/ultimates/sniper/sniper_shatter_rounds_ultimate.png",
+      "source_provenance": {
+        "reused_from": "docs/design/references/weapon_attack_animations/sniper_shatter_rounds",
+        "tool": "create_map_object",
+        "pixel_lab_object_id": "cfd56c4b-35e0-4dfd-88ef-de0e1f7fc462",
+        "accepted_source": "sniper_shatter_rounds_pixellab_source.png"
+      }
+    }
+  ],
+  "verification": {
+    "status": "passed",
+    "commands": [
+      {"command": "python3 tools/pixellab_auth_smoke.py", "exit_code": 0},
+      {"command": "python3 tools/godot_gate.py --headless --path . --script res://tests/ultimates/presentation/sniper_deadeye_rifle.gd", "exit_code": 0},
+      {"command": "python3 tools/godot_gate.py --headless --path . --script res://tests/ultimates/presentation/sniper_spotter_scope.gd", "exit_code": 0},
+      {"command": "python3 tools/godot_gate.py --headless --path . --script res://tests/ultimates/presentation/sniper_shatter_rounds.gd", "exit_code": 0},
+      {"command": "python3 tools/godot_gate.py --headless --path . --script res://tests/ultimates/presentation/sniper_visual_distinction.gd", "exit_code": 0},
+      {"command": "python3 tools/godot_gate.py --headless --path . --script res://tests/ultimates/presentation/sniper_contact_sheet.gd", "exit_code": 0},
+      {"command": "python3 tools/godot_gate.py --headless --path . --script res://tests/ultimates/presentation_contract_test.gd", "exit_code": 0},
+      {"command": "python3 tools/godot_gate.py --headless --path . --script res://tests/ultimates/presentation_contract_validator_test.gd", "exit_code": 0}
+    ],
+    "visual_review": "Contact sheet inspected after export: rifle lockshot, nine-lock scope grid, and crystalline split trail are distinguishable silhouettes."
+  }
+}

@@ -1,0 +1,167 @@
+{
+  "task": "FAN-1903",
+  "rework_of": "FAN-1885",
+  "package": "fan1883_attribute_clarity",
+  "decision": "reuse_existing_generator_routed_assets_only",
+  "new_runtime_assets": [],
+  "new_runtime_baked_text": false,
+  "builder": "docs/design/references/fan1883_attribute_clarity/build_previews.py",
+  "geometry_report": "docs/design/references/fan1883_attribute_clarity/geometry_report.md",
+  "spec": "docs/design/references/fan1883_attribute_clarity/attribute_clarity_spec.md",
+  "previews": [
+    {
+      "surface": "level_up",
+      "viewport": "1280x720",
+      "width": 1280,
+      "height": 720,
+      "policy": "uniform_0.667",
+      "svg": "docs/design/references/fan1883_attribute_clarity/level_up_1280x720.svg",
+      "png": "docs/design/previews/fan1883_attribute_clarity/level_up_1280x720.png"
+    },
+    {
+      "surface": "level_up",
+      "viewport": "1920x1080",
+      "width": 1920,
+      "height": 1080,
+      "policy": "authored_1.0",
+      "svg": "docs/design/references/fan1883_attribute_clarity/level_up_1920x1080.svg",
+      "png": "docs/design/previews/fan1883_attribute_clarity/level_up_1920x1080.png"
+    },
+    {
+      "surface": "level_up",
+      "viewport": "2560x1440",
+      "width": 2560,
+      "height": 1440,
+      "policy": "uniform_1.333",
+      "svg": "docs/design/references/fan1883_attribute_clarity/level_up_2560x1440.svg",
+      "png": "docs/design/previews/fan1883_attribute_clarity/level_up_2560x1440.png"
+    },
+    {
+      "surface": "attribute_shop",
+      "viewport": "1280x720",
+      "width": 1280,
+      "height": 720,
+      "policy": "live_compact",
+      "svg": "docs/design/references/fan1883_attribute_clarity/attribute_shop_1280x720.svg",
+      "png": "docs/design/previews/fan1883_attribute_clarity/attribute_shop_1280x720.png"
+    },
+    {
+      "surface": "attribute_shop",
+      "viewport": "1920x1080",
+      "width": 1920,
+      "height": 1080,
+      "policy": "authored_1.0",
+      "svg": "docs/design/references/fan1883_attribute_clarity/attribute_shop_1920x1080.svg",
+      "png": "docs/design/previews/fan1883_attribute_clarity/attribute_shop_1920x1080.png"
+    },
+    {
+      "surface": "attribute_shop",
+      "viewport": "2560x1440",
+      "width": 2560,
+      "height": 1440,
+      "policy": "live_large",
+      "svg": "docs/design/references/fan1883_attribute_clarity/attribute_shop_2560x1440.svg",
+      "png": "docs/design/previews/fan1883_attribute_clarity/attribute_shop_2560x1440.png"
+    },
+    {
+      "surface": "pause_codex",
+      "viewport": "1280x720",
+      "width": 1280,
+      "height": 720,
+      "policy": "uniform_0.667",
+      "svg": "docs/design/references/fan1883_attribute_clarity/pause_codex_1280x720.svg",
+      "png": "docs/design/previews/fan1883_attribute_clarity/pause_codex_1280x720.png"
+    },
+    {
+      "surface": "pause_codex",
+      "viewport": "1920x1080",
+      "width": 1920,
+      "height": 1080,
+      "policy": "authored_1.0",
+      "svg": "docs/design/references/fan1883_attribute_clarity/pause_codex_1920x1080.svg",
+      "png": "docs/design/previews/fan1883_attribute_clarity/pause_codex_1920x1080.png"
+    },
+    {
+      "surface": "pause_codex",
+      "viewport": "2560x1440",
+      "width": 2560,
+      "height": 1440,
+      "policy": "uniform_1.333",
+      "svg": "docs/design/references/fan1883_attribute_clarity/pause_codex_2560x1440.svg",
+      "png": "docs/design/previews/fan1883_attribute_clarity/pause_codex_2560x1440.png"
+    },
+    {
+      "surface": "hero_select",
+      "viewport": "1280x720",
+      "width": 1280,
+      "height": 720,
+      "policy": "live_compact_2x4_stats",
+      "svg": "docs/design/references/fan1883_attribute_clarity/hero_select_1280x720.svg",
+      "png": "docs/design/previews/fan1883_attribute_clarity/hero_select_1280x720.png"
+    },
+    {
+      "surface": "hero_select",
+      "viewport": "1920x1080",
+      "width": 1920,
+      "height": 1080,
+      "policy": "authored_1x8_stats",
+      "svg": "docs/design/references/fan1883_attribute_clarity/hero_select_1920x1080.svg",
+      "png": "docs/design/previews/fan1883_attribute_clarity/hero_select_1920x1080.png"
+    },
+    {
+      "surface": "hero_select",
+      "viewport": "2560x1440",
+      "width": 2560,
+      "height": 1440,
+      "policy": "live_large_1x8_stats",
+      "svg": "docs/design/references/fan1883_attribute_clarity/hero_select_2560x1440.svg",
+      "png": "docs/design/previews/fan1883_attribute_clarity/hero_select_2560x1440.png"
+    }
+  ],
+  "semantic_text_colors": {
+    "s": "#c6d5df",
+    "note": "#87cdf3",
+    "warn": "#f0b270"
+  },
+  "layers": [
+    {
+      "surface": "level_up",
+      "background": "assets/backgrounds/ui/ui_backdrop_arcane_lab.png",
+      "background_route": "existing built-in OpenAI provenance; no regeneration",
+      "ui_family": "existing Atlas cards and global later-button family",
+      "ui_route": "existing PixelLab-derived runtime assets; no new export"
+    },
+    {
+      "surface": "attribute_shop",
+      "background": "existing meta-progression screen backdrop",
+      "background_route": "existing; no regeneration",
+      "ui_family": "existing unified Gold shell and Atlas choice cards",
+      "ui_route": "existing PixelLab-derived runtime assets; no new export"
+    },
+    {
+      "surface": "pause_codex",
+      "background": "assets/sprites/ui/atlas_style/codex/bg_codex_sanctum.png",
+      "background_route": "existing built-in OpenAI output documented by FAN-1098",
+      "ui_family": "assets/sprites/ui/atlas_style/codex/{panel_9slice,entry_card_516x154,dossier_frame,chip_bar}.png",
+      "ui_route": "existing PixelLab MCP source package documented by FAN-1065"
+    },
+    {
+      "surface": "hero_select",
+      "background": "assets/sprites/ui/hero_select_v4/background.png",
+      "background_route": "existing generator-routed Hero Select family; no regeneration",
+      "ui_family": "existing Hero Select shell, portrait, dossier and main-menu button family",
+      "ui_route": "existing PixelLab MCP provenance from Hero Select packages; no new export"
+    }
+  ],
+  "verification": {
+    "viewports": ["1280x720", "1920x1080", "2560x1440"],
+    "states": ["normal", "class_ineligible_filtered", "capped_filtered", "long_russian_copy"],
+    "delivered_evidence": "12 combined-state renders: 4 surfaces x 3 true viewport layouts",
+    "required_before_runtime_promotion": [
+      "inspect all 4x3 surface/viewport combinations",
+      "verify content remains inside the existing frame-safe zones",
+      "verify no runtime string is baked into a PNG",
+      "verify cap/effective-delta fixtures against final runtime formulas"
+    ]
+  }
+}

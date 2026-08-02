@@ -36,25 +36,14 @@ func _initialize() -> void:
 		return
 
 	var cell: Vector2i = layout.get("cell", Vector2i.ZERO)
-	var view_scale := float(layout.get("view_scale", 0.0))
 	var columns := PHASE_ORDER.size() * SAMPLES_PER_PHASE
 	var rows := Pack.WEAPON_IDS.size()
 	var sheet := Image.create_empty(cell.x * columns, cell.y * rows, false, Image.FORMAT_RGBA8)
 	sheet.fill(BACKGROUND)
 	for row in rows:
-		var weapon_id := str(Pack.WEAPON_IDS[row])
-		var texture: Texture2D = load(Pack.element_runtime_path(weapon_id))
-		if texture == null:
-			errors.append("missing runtime frame for %s" % weapon_id)
-			continue
-		var element := texture.get_image()
-		element.convert(Image.FORMAT_RGBA8)
-		var pivot: Dictionary = Pack.weapon_config(weapon_id).get("pivot", {})
 		for column in columns:
-			var phase_name := PHASE_ORDER[column / SAMPLES_PER_PHASE]
-			var progress := float(column % SAMPLES_PER_PHASE) / float(maxi(SAMPLES_PER_PHASE - 1, 1))
 			_draw_cell(sheet, Vector2i(column, row), cell, column % SAMPLES_PER_PHASE == 0)
-			_draw_formation(sheet, Vector2i(column, row), cell, element, pivot, weapon_id, phase_name, progress, view_scale)
+	errors.append_array(render_formations(sheet, layout))
 	if errors.is_empty():
 		errors.append_array(_save(sheet, OUTPUT_PATH))
 	if not errors.is_empty():
@@ -82,17 +71,46 @@ func _draw_cell(sheet: Image, cell_index: Vector2i, cell: Vector2i, phase_start:
 		sheet.set_pixel(center.x, center.y + offset, ORIGIN_MARK)
 
 
-func _draw_formation(sheet: Image, cell_index: Vector2i, cell: Vector2i, element: Image, pivot: Dictionary, weapon_id: String, phase_name: String, progress: float, view_scale: float) -> void:
+static func render_formations(sheet: Image, layout: Dictionary) -> Array[String]:
+	var errors: Array[String] = []
+	var cell: Vector2i = layout.get("cell", Vector2i.ZERO)
+	var view_scale := float(layout.get("view_scale", 0.0))
+	var columns := PHASE_ORDER.size() * SAMPLES_PER_PHASE
+	for row in Pack.WEAPON_IDS.size():
+		var weapon_id := str(Pack.WEAPON_IDS[row])
+		var texture: Texture2D = load(Pack.element_runtime_path(weapon_id))
+		if texture == null:
+			errors.append("missing runtime frame for %s" % weapon_id)
+			continue
+		var element := texture.get_image()
+		element.convert(Image.FORMAT_RGBA8)
+		var pivot: Dictionary = Pack.weapon_config(weapon_id).get("pivot", {})
+		for column in columns:
+			var phase_name := PHASE_ORDER[column / SAMPLES_PER_PHASE]
+			var sample := column % SAMPLES_PER_PHASE
+			var progress := float(sample) / float(maxi(SAMPLES_PER_PHASE - 1, 1))
+			_draw_formation(sheet, Vector2i(column, row), cell, element, pivot, weapon_id, phase_name, sample, progress, view_scale, errors)
+	return errors
+
+
+static func _draw_formation(sheet: Image, cell_index: Vector2i, cell: Vector2i, element: Image, pivot: Dictionary, weapon_id: String, phase_name: String, sample: int, progress: float, view_scale: float, errors: Array[String]) -> void:
 	var center := Vector2(cell_index * cell) + Vector2(cell) * 0.5
+	var content_rect := content_rect_for(cell_index, cell)
+	var element_index := 0
 	for point in Pack.formation_points(weapon_id, phase_name, progress):
 		var alpha := float(point.get("alpha", 0.0))
 		var scale := float(point.get("scale", 0.0)) * view_scale
 		if alpha <= ALPHA_EPSILON or scale <= ALPHA_EPSILON:
+			element_index += 1
 			continue
-		_blit_element(sheet, element, center + (point.get("position", Vector2.ZERO) as Vector2) * view_scale, scale, alpha, float(point.get("rotation", 0.0)), pivot)
+		var violation := _blit_element(sheet, element, center + (point.get("position", Vector2.ZERO) as Vector2) * view_scale, scale, alpha, float(point.get("rotation", 0.0)), pivot, content_rect)
+		if not violation.is_empty():
+			errors.append("%s/%s sample %d element %d: %s" % [weapon_id, phase_name, sample, element_index, violation])
+			return
+		element_index += 1
 
 
-func _blit_element(sheet: Image, element: Image, center: Vector2, scale: float, alpha: float, rotation: float, pivot: Dictionary) -> void:
+static func _blit_element(sheet: Image, element: Image, center: Vector2, scale: float, alpha: float, rotation: float, pivot: Dictionary, content_rect: Rect2i) -> String:
 	var size := Vector2(element.get_size())
 	var anchor := Vector2(size.x * float(pivot.get("x", 0.5)), size.y * float(pivot.get("y", 0.5)))
 	var reach := size.length() * scale * 0.5 + 2.0
@@ -114,7 +132,21 @@ func _blit_element(sheet: Image, element: Image, center: Vector2, scale: float, 
 			if pixel.a <= 0.0:
 				continue
 			pixel.a *= alpha
+			var violation := pixel_content_violation(content_rect, Vector2i(x, y))
+			if not violation.is_empty():
+				return violation
 			_blend(sheet, x, y, pixel)
+	return ""
+
+
+static func content_rect_for(cell_index: Vector2i, cell: Vector2i) -> Rect2i:
+	return Rect2i(cell_index * cell + Vector2i.ONE * CONTENT_INSET, cell - Vector2i.ONE * CONTENT_INSET * 2)
+
+
+static func pixel_content_violation(content_rect: Rect2i, destination: Vector2i) -> String:
+	if content_rect.has_point(destination):
+		return ""
+	return "drawn pixel %s escapes content rect %s" % [destination, content_rect]
 
 
 static func layout_for_current_assets() -> Dictionary:
@@ -225,7 +257,7 @@ static func layout_violations(layout: Dictionary) -> Array[String]:
 	return violations
 
 
-func _blend(image: Image, x: int, y: int, color: Color) -> void:
+static func _blend(image: Image, x: int, y: int, color: Color) -> void:
 	var dst := image.get_pixel(x, y)
 	var out_a := color.a + dst.a * (1.0 - color.a)
 	if out_a <= 0.0:

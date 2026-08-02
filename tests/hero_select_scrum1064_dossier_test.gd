@@ -9,11 +9,12 @@ const VIEWPORTS := [
 	Vector2i(1920, 1080),
 	Vector2i(2560, 1440),
 ]
-const RELEVANCE_ORDER := ["primary", "secondary", "weak"]
+# FAN-1887: досье перечисляет только реально доступные герою оси —
+# рейл «Слабые атрибуты» удалён, optional-оси не отображаются вовсе.
+const RELEVANCE_ORDER := ["primary", "secondary"]
 const RELEVANCE_TITLES := {
 	"primary": "Основные атрибуты",
 	"secondary": "Второстепенные атрибуты",
-	"weak": "Слабые атрибуты",
 }
 
 var _errors := PackedStringArray()
@@ -31,7 +32,7 @@ func _initialize() -> void:
 			push_error("[SCRUM-1064] %s" % message)
 		quit(1)
 		return
-	print("SCRUM-1064 structured Hero Select dossier passed: 17 heroes, schema/relevance/weapons/traits, 1152/720/1080/2K + live resize.")
+	print("SCRUM-1064/FAN-1887 structured Hero Select dossier passed: 17 heroes, schema/relevance/weapons/traits, no weak rail, 1152/720/1080/2K + live resize.")
 	quit(0)
 
 
@@ -85,7 +86,13 @@ func _check_all_character_data() -> void:
 				previous_value = value
 				previous_index = canonical_index
 		var groups: Dictionary = dossier.get("attribute_relevance", {}) as Dictionary
+		if groups.has("weak"):
+			_errors.append("%s dossier still exposes a weak relevance group." % cid)
 		var seen := {}
+		var expected_available := 0
+		for attr_id in registry_ids:
+			if PD.attribute_relevance(attr_id, cid) != "optional":
+				expected_available += 1
 		for category in RELEVANCE_ORDER:
 			for entry_value in groups.get(category, []) as Array:
 				var entry := entry_value as Dictionary
@@ -94,25 +101,26 @@ func _check_all_character_data() -> void:
 					_errors.append("%s relevance categories overlap on %s." % [cid, attr_id])
 				seen[attr_id] = category
 				var matrix_category := PD.attribute_relevance(attr_id, cid)
-				var expected_category := "weak" if matrix_category == "optional" else matrix_category
-				if category != expected_category:
+				if matrix_category == "optional":
+					_errors.append("%s dossier lists unavailable optional attribute %s." % [cid, attr_id])
+				elif category != matrix_category:
 					_errors.append("%s relevance category drift for %s." % [cid, attr_id])
-		if seen.size() != registry_ids.size():
-			_errors.append("%s relevance union covers %d/%d registry entries." % [cid, seen.size(), registry_ids.size()])
-		for attr_id in registry_ids:
-			if not seen.has(attr_id):
-				_errors.append("%s relevance misses registry attribute %s." % [cid, attr_id])
+		if seen.size() != expected_available:
+			_errors.append("%s relevance union covers %d available axes, expected %d." % [cid, seen.size(), expected_available])
 
 	# Subject-matter regression anchors from the 17-kit audit. These are
-	# mechanics, not balance-number changes. FAN-1034: реестр 24→19 —
-	# вампиризм слит в `vampiric`, dot_speed поглощён dot_damage, «Радиус»
-	# переехал в aoe_radius; якоря переставлены на новые id.
+	# mechanics, not balance-number changes. FAN-1034: вампиризм слит в
+	# `vampiric`, dot_speed поглощён dot_damage. FAN-1887: buff_power снят с
+	# реестра; optional = «нет настоящего потребителя», summon-ось строго
+	# config-derived (гитарист/химик/друид/инженер).
 	_expect_relevance("doctor", ["regeneration", "vampiric"], "optional")
 	_expect_relevance("assassin", ["crit_chance", "crit_damage"], "primary")
 	_expect_relevance("chemist", ["dot_damage", "aoe_radius"], "primary")
-	_expect_relevance("druid", ["buff_power", "summon_amount", "regeneration"], "primary")
+	_expect_relevance("druid", ["summon_amount", "regeneration"], "primary")
 	_expect_relevance("robot", ["defense"], "secondary")
 	_expect_relevance("berserk", ["vampiric"], "primary")
+	_expect_relevance("berserk", ["summon_amount", "dot_damage"], "optional")
+	_expect_relevance("guitarist", ["summon_amount"], "secondary")
 
 
 func _expect_relevance(cid: String, attr_ids: Array, expected: String) -> void:
@@ -164,10 +172,11 @@ func _check_hero_ui(main: Node, cid: String, viewport_size: Vector2i) -> void:
 	var leading_label := main.find_child("HS4LeadingBaseStats", true, false) as Label
 	var primary := main.find_child("HS4BuildGuidance_primary", true, false) as Label
 	var secondary := main.find_child("HS4BuildGuidance_secondary", true, false) as Label
-	var weak := main.find_child("HS4BuildGuidance_weak", true, false) as Label
-	if content == null or scroll == null or frame == null or stats == null or trait_label == null or name_label == null or weapon_label == null or leading_label == null or primary == null or secondary == null or weak == null:
+	if content == null or scroll == null or frame == null or stats == null or trait_label == null or name_label == null or weapon_label == null or leading_label == null or primary == null or secondary == null:
 		_errors.append("%s missing structured dossier nodes at %s." % [cid, str(viewport_size)])
 		return
+	if main.find_child("HS4BuildGuidance_weak", true, false) != null:
+		_errors.append("%s still exposes the removed weak-attributes rail at %s." % [cid, str(viewport_size)])
 	if main.find_child("HS4Description", true, false) != null or main.find_child("HS4Strengths", true, false) != null or main.find_child("HS4Weaknesses", true, false) != null or main.find_child("HS4MainAttributes", true, false) != null:
 		_errors.append("%s still exposes obsolete prose/priority nodes at %s." % [cid, str(viewport_size)])
 	var trait_record: Dictionary = dossier.get("trait", {}) as Dictionary
@@ -194,7 +203,7 @@ func _check_hero_ui(main: Node, cid: String, viewport_size: Vector2i) -> void:
 		var expected := "%s: %s" % [RELEVANCE_TITLES[category], _join_names(groups.get(category, []) as Array)]
 		if label.text != expected or label.text.contains("+") or label.text.contains("Дополнительные атрибуты"):
 			_errors.append("%s complete %s list drift/truncation at %s." % [cid, category, str(viewport_size)])
-	var ordered := [trait_label, name_label, weapon_label, leading_label, primary, secondary, weak]
+	var ordered := [trait_label, name_label, weapon_label, leading_label, primary, secondary]
 	for i in range(ordered.size() - 1):
 		if (ordered[i] as Control).get_index() >= (ordered[i + 1] as Control).get_index():
 			_errors.append("%s dossier block order failed at %s." % [cid, str(viewport_size)])
@@ -212,9 +221,9 @@ func _check_hero_ui(main: Node, cid: String, viewport_size: Vector2i) -> void:
 		_errors.append("%s dossier scroll input contract drift at %s." % [cid, str(viewport_size)])
 	var bar := scroll.get_v_scroll_bar()
 	var max_scroll := maxi(0, int(ceil(bar.max_value - bar.page)))
-	var required_scroll := maxi(0, int(ceil(weak.get_global_rect().end.y - scroll.get_global_rect().end.y)))
+	var required_scroll := maxi(0, int(ceil(secondary.get_global_rect().end.y - scroll.get_global_rect().end.y)))
 	if max_scroll < required_scroll:
-		_errors.append("%s weak list is not scroll-reachable at %s." % [cid, str(viewport_size)])
+		_errors.append("%s secondary list is not scroll-reachable at %s." % [cid, str(viewport_size)])
 
 
 func _check_live_resize() -> void:
@@ -236,12 +245,12 @@ func _check_live_resize() -> void:
 		await process_frame
 	var new_root := main.find_child("HeroSelectScreen", true, false) as Control
 	var frame := main.find_child("HS4DossierFrame", true, false) as Control
-	var weak := main.find_child("HS4BuildGuidance_weak", true, false) as Label
-	if new_root == null or new_root == old_root or frame == null or weak == null:
+	var secondary := main.find_child("HS4BuildGuidance_secondary", true, false) as Label
+	if new_root == null or new_root == old_root or frame == null or secondary == null:
 		_errors.append("Hero Select did not rebuild its structured dossier on live resize.")
 	else:
 		var viewport_rect := Rect2(Vector2.ZERO, Vector2(viewport.size)).grow(1.0)
-		if not viewport_rect.encloses(frame.get_global_rect()) or weak.text.strip_edges().is_empty():
+		if not viewport_rect.encloses(frame.get_global_rect()) or secondary.text.strip_edges().is_empty():
 			_errors.append("Live-resized dossier left viewport or lost data.")
 	var teardown_errors := await _capture_teardown.release_viewport(self, viewport)
 	if not teardown_errors.is_empty():

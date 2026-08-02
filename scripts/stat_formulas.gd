@@ -84,6 +84,11 @@ const DERIVED_BASE_DEPENDENCIES := {
 	"pickup_radius": [PERCEPTION],
 }
 
+# FAN-1927: второго player-facing oracle здесь больше нет. Канонический порядок,
+# названия и единицы осей живут ТОЛЬКО в ProgressionData.ATTRIBUTE_REGISTRY и
+# отдаются поверхностям через AttributeContract.canonical_axes()/axis_snapshot().
+# Полный DERIVED_STAT_ORDER остаётся внутренним контрактом формул/зависимостей.
+
 const STAT_DEFINITIONS := {
 	STRENGTH: {
 		"name_ru": "Сила",
@@ -204,7 +209,7 @@ const STAT_DEFINITIONS := {
 		"format": "per_second",
 	},
 	"dodge": {
-		"name_ru": "Уворот",
+		"name_ru": "Уклонение",
 		"name_en": "Dodge",
 		"type": "derived",
 		"description": "Шанс избежать входящего урона. Имеет убывающую отдачу и не может стать полной неуязвимостью.",
@@ -260,7 +265,7 @@ const STAT_DEFINITIONS := {
 		"default_value": 0.0,
 	},
 	"summon_amount": {
-		"name_ru": "Количество призывов",
+		"name_ru": "Сила призыва",
 		"name_en": "Summon Amount",
 		"type": "derived",
 		"description": "Потенциал количества призванных существ.",
@@ -301,7 +306,7 @@ const STAT_DEFINITIONS := {
 		"name_ru": "Вампиризм",
 		"name_en": "Vampiric Amount",
 		"type": "derived",
-		"description": "Малое лечение от вампирического эффекта.",
+		"description": "Лечение при срабатывании вампиризма. Шанс срабатывания — отдельное условие с пределом 20%; отдельной осью прокачки он не является.",
 		"formula": "55% от наград + 3,5% нанесённого урона при срабатывании; лечение ограничено секундным бюджетом.",
 		"influences": "Награды, текущий урон и предметы; базовые характеристики не входят в прямую формулу.",
 		"format": "decimal",
@@ -338,8 +343,8 @@ const STAT_DEFINITIONS := {
 		"default_value": 0.0,
 	},
 	"aoe_radius": {
-		"name_ru": "Ширина сектора",
-		"name_en": "Sector Width",
+		"name_ru": "Увеличение области атаки",
+		"name_en": "Attack Area",
 		"type": "derived",
 		"description": "Отображаемый размер области оружия; для направленных атак участвует в ширине их коридора или сектора.",
 		"formula": "(Радиус оружия + Восприятие × 3,5 + Интеллект × вес оружия + Знание × 0,35 + Лидерство × 0,30) × множитель радиуса.",
@@ -387,7 +392,7 @@ const STAT_DEFINITIONS := {
 		"default_value": 0.0,
 	},
 	"ultimate_multiplier": {
-		"name_ru": "Сила ульты",
+		"name_ru": "Сила ультимейта",
 		"name_en": "Ultimate Multiplier",
 		"type": "derived",
 		"description": "Множитель силы ультимативного умения класса.",

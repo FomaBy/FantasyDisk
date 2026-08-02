@@ -27,6 +27,10 @@ const MIN_VISIBLE_DELTA := 0.002
 # Изоляция типов урона (SCRUM-524): из damage/magic_damage
 # наружу отдаётся только «свой» тип класса (см. _collect_deltas).
 const DAMAGE_TYPE_PARAMETERS := ["damage", "magic_damage"]
+# FAN-1887: наружу показываются только канонические player-facing оси реестра —
+# внутренние derived-параметры (sector/aura/knockback/projectile/dot_speed/
+# buff_power/absorb/attack_range) в строки карточек не попадают; в скоринге
+# dps/выживаемости они по-прежнему участвуют через derived-словарь.
 const DELTA_DEFINITIONS := [
 	{"id": "damage", "label": "Урон", "kind": "number"},
 	{"id": "magic_damage", "label": "Маг. урон", "kind": "number"},
@@ -36,22 +40,14 @@ const DELTA_DEFINITIONS := [
 	{"id": "health_point", "label": "Макс. HP", "kind": "number"},
 	{"id": "defense", "label": "Защита", "kind": "percent"},
 	{"id": "dodge", "label": "Уклонение", "kind": "percent"},
-	{"id": "absorb", "label": "Поглощение", "kind": "number"},
 	{"id": "regeneration", "label": "Реген/с", "kind": "per_second"},
-	{"id": "vampiric_chance", "label": "Шанс вампиризма", "kind": "percent"},
-	{"id": "vampiric_amount", "label": "Вампиризм-лечение", "kind": "number"},
+	{"id": "vampiric_amount", "label": "Вампиризм", "kind": "number"},
+	{"id": "vampiric_chance", "label": "Шанс срабатывания", "kind": "percent"},
 	{"id": "dot_damage", "label": "DoT/тик", "kind": "number"},
-	{"id": "dot_speed", "label": "DoT тиков/с", "kind": "per_second"},
 	{"id": "move_speed", "label": "Скорость", "kind": "number"},
-	{"id": "attack_range", "label": "Дальность", "kind": "number"},
-	{"id": "aoe_radius", "label": "Радиус удара", "kind": "number"},
-	{"id": "aura_radius", "label": "Радиус ауры", "kind": "number"},
-	{"id": "sector_multiplier", "label": "Ширина сектора", "kind": "mult"},
-	{"id": "knockback_power", "label": "Отталкивание", "kind": "number"},
-	{"id": "projectile_speed", "label": "Снаряды", "kind": "number"},
+	{"id": "aoe_radius", "label": "Область атаки", "kind": "number"},
 	{"id": "pickup_radius", "label": "Подбор", "kind": "number"},
-	{"id": "buff_power", "label": "Сила поддержки", "kind": "mult"},
-	{"id": "summon_amount", "label": "Призывы", "kind": "number"},
+	{"id": "summon_amount", "label": "Сила призыва", "kind": "number"},
 	{"id": "ultimate_multiplier", "label": "Сила ульты", "kind": "mult"},
 ]
 
@@ -87,9 +83,13 @@ static func preview_reward_state(reward: Dictionary, stats: Dictionary, run_modi
 # атаки в секунду × ожидание крита + DoT-трек. Абсолют не равен боевому DPS
 # (геометрия/попадания за скобками), но для сравнения «до/после» одного и того
 # же билда монотонен по всем боевым наградам.
-static func dps_score(derived: Dictionary, character_id: String) -> float:
-	var damage_parameter := ProgressionDataRef.damage_parameter_for(character_id)
+static func dps_score(derived: Dictionary, character_id: String, weapon_config := {}) -> float:
+	# FAN-1927: канал — фактический канал ТЕКУЩЕГО оружия (weapon-aware), а не
+	# class-only хардкод; curse-only кит не читает прямой канал вовсе.
+	var damage_parameter := AttributeContract.weapon_damage_parameter(weapon_config, character_id)
 	var hit := float(derived.get(damage_parameter, derived.get("damage", 0.0)))
+	if bool(weapon_config.get("curse_only", false)):
+		hit = 0.0
 	var attack_speed := maxf(float(derived.get("attack_speed", 0.0)), 0.0)
 	var crit_chance := clampf(float(derived.get("crit_chance", 0.0)), 0.0, 1.0)
 	var crit_mult := maxf(float(derived.get("crit_damage_multiplier", 1.0)), 1.0)
@@ -126,9 +126,9 @@ static func forecast_reward(reward: Dictionary, stats: Dictionary, run_modifiers
 	return {
 		"before": before,
 		"after": after,
-		"deltas": _collect_deltas(before, after, character_id),
-		"dps_before": dps_score(before, character_id),
-		"dps_after": dps_score(after, character_id),
+		"deltas": _collect_deltas(before, after, character_id, weapon_config),
+		"dps_before": dps_score(before, character_id, weapon_config),
+		"dps_after": dps_score(after, character_id, weapon_config),
 		"surv_before": survivability_score(before),
 		"surv_after": survivability_score(after),
 	}
@@ -211,8 +211,10 @@ static func _relative_gain(before: float, after: float) -> float:
 	return (after - before) / maxf(absf(before), 0.001)
 
 
-static func _collect_deltas(before: Dictionary, after: Dictionary, character_id := "") -> Array:
-	var class_damage := ProgressionDataRef.damage_parameter_for(character_id) if character_id != "" else "damage"
+static func _collect_deltas(before: Dictionary, after: Dictionary, character_id := "", weapon_config := {}) -> Array:
+	# FAN-1927: показываем канал ТЕКУЩЕГО оружия (bone_saw/blast_powder/
+	# briar_staff — физический канал у magic-классов).
+	var class_damage := AttributeContract.weapon_damage_parameter(weapon_config, character_id) if character_id != "" or not weapon_config.is_empty() else "damage"
 	var deltas: Array = []
 	for definition in DELTA_DEFINITIONS:
 		var parameter_id: String = definition["id"]

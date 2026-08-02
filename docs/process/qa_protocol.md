@@ -1,6 +1,6 @@
 # FantasyDisk independent QA protocol
 
-Updated: 2026-07-27
+Updated: 2026-08-01
 
 QA verifies one explicitly assigned child pinned to one pushed candidate SHA.
 QA does not self-select a parent, create competing review, repair production
@@ -39,7 +39,14 @@ report, code review, or green CI status is context—not independent QA evidence
 Reject false-green tests that only reproduce their own expected output or avoid
 the affected runtime path.
 
-Choose checks in proportion to risk:
+For a normal small gameplay, scene, or test change, independently run one or two
+checks that directly exercise its acceptance path. Do not repeat the developer's
+entire matrix. Escalate to a full gate only for release, saves/migrations,
+networking, payments/secrets/security, or an already-red CI whose scope cannot
+be isolated.
+
+Choose any additional checks only when the assigned acceptance criteria need
+them:
 
 - focused functional behavior;
 - negative and edge cases;
@@ -50,8 +57,9 @@ Choose checks in proportion to risk:
 - performance/runtime stability;
 - visual geometry, readability, and frame content zones.
 
-Use `tools/godot_gate.py` for automated Godot execution and the appropriate
-`tools/quality_gate.py` profile for certifying coverage. Never substitute a
+Use `tools/godot_gate.py` for focused automated Godot execution. Use a
+`tools/quality_gate.py` certifying profile only when one of the broad-risk cases
+above or an explicit acceptance criterion requires it. Never substitute a
 different platform for a platform-specific acceptance criterion.
 
 ## Gate evidence contract
@@ -80,8 +88,10 @@ The gate emits no other names for these failures.
 - `selected_godot_tests` — Godot tests the scope selected; the `godot_tests`
   array stays empty when they were not executed.
 
-Treat a run as certifying evidence only when the report also has
-`certifying: true`.
+Treat a run as certifying profile evidence only when the report also has
+`certifying: true`. A named focused suite may still be sufficient lean evidence
+when the issue does not require a certifying quality profile; record exactly
+what ran and never describe a filtered profile as certifying.
 
 ## Runtime safety
 
@@ -95,8 +105,9 @@ QA.
 
 ## Visual evidence
 
-For UI/visual/runtime acceptance, capture the evidence that materially proves
-the criterion:
+Only for an explicit UI/visual/manual acceptance criterion, capture the evidence
+that materially proves it. Screenshots and video are not default evidence for a
+non-visual gameplay fix:
 
 - screenshots/video with viewport, platform, and candidate SHA;
 - rect/content-zone dumps;

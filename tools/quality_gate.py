@@ -73,6 +73,18 @@ CORE_CHANGED_TESTS = {
     "combat_target_query_cache_test",
     "runtime_smoke_combat_test",
     "runtime_smoke_ui_test",
+    "weapon_ultimate_timing_distinctness_test",
+}
+TYPOGRAPHY_INVENTORY_TEST = "semantic_typography_scrum1061_test"
+TYPOGRAPHY_INVENTORY_SKIP = {
+    "scripts/dev_console.gd",
+    "scripts/ui/semantic_typography.gd",
+}
+TYPOGRAPHY_INVENTORY_RESOURCE_SUFFIXES = {".tscn", ".tres", ".theme"}
+ULTIMATE_EXECUTOR_CONTRACT_TESTS = {
+    "controller_runtime_test",
+    "controller_player_integration_test",
+    "executor_contract_audit_test",
 }
 PATH_TEST_RULES = {
     "scripts/class_weapon.gd": {"engineer_kit_test", "persistent_hazard_contract_test"},
@@ -88,6 +100,8 @@ PATH_TEST_RULES = {
     },
     "scripts/ui_screens.gd": {"feedback_privacy_ui_test"},
     "scripts/ui/feedback_overlay.gd": {"feedback_privacy_ui_test"},
+    "scripts/ultimates/controller/ultimate_controller.gd": ULTIMATE_EXECUTOR_CONTRACT_TESTS,
+    "scripts/ultimates/executors/ultimate_executor_library.gd": ULTIMATE_EXECUTOR_CONTRACT_TESTS,
     "tests/feedback_webhook_config_test.gd": {"feedback_webhook_config_test"},
 }
 DEFAULT_STATIC_TEST_TIMEOUT = 1200.0
@@ -218,6 +232,21 @@ def _git_changed_paths(ref: str) -> set[str]:
     return changed
 
 
+def _affects_typography_inventory(path: str) -> bool:
+    path_parts = Path(path).parts
+    if path.startswith("scripts/"):
+        return (
+            path.endswith(".gd")
+            and path not in TYPOGRAPHY_INVENTORY_SKIP
+            and "/dev/" not in path
+        )
+    return (
+        Path(path).suffix in TYPOGRAPHY_INVENTORY_RESOURCE_SUFFIXES
+        and ".godot" not in path_parts
+        and "build" not in path_parts
+    )
+
+
 def select_godot_tests(
     profile: str,
     filters: Sequence[str],
@@ -234,6 +263,8 @@ def select_godot_tests(
         selected_names = set(CORE_CHANGED_TESTS)
         for changed_path in _git_changed_paths(changed_ref):
             selected_names.update(PATH_TEST_RULES.get(changed_path, set()))
+            if _affects_typography_inventory(changed_path):
+                selected_names.add(TYPOGRAPHY_INVENTORY_TEST)
             if changed_path.startswith("tests/") and changed_path.endswith(".gd"):
                 selected_names.add(Path(changed_path).stem)
             if changed_path.startswith(("scripts/", "scenes/")) or changed_path in {
