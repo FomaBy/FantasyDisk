@@ -1,0 +1,41 @@
+{
+  "schema_version": 1,
+  "class_id": "biologist",
+  "weapon_id": "biologist_spore_lens",
+  "profile_id": "weapon_ultimate.profile.biologist.biologist_spore_lens",
+  "executor_id": "weapon_ultimate.executor.biologist.biologist_spore_lens",
+  "implementation_state": "ready",
+  "targeting": {
+    "strategy_id": "self_propagation",
+    "params": {}
+  },
+  "charge": {
+    "strategy_id": "ultimate_charge_ledger",
+    "params": {}
+  },
+  "executor": {
+    "strategy_id": "weapon_ultimate.executor.biologist.biologist_spore_lens",
+    "params": {
+      "lifetime": 8.6,
+      "release_delay": 0.9,
+      "propagation_interval": 1.45,
+      "propagation_waves": 3,
+      "radius_start": 250.0,
+      "radius_step": 185.0,
+      "crowd_cap": 18,
+      "infection_damage": 55.0,
+      "infection_duration": 8.6,
+      "root_duration": 5.0,
+      "slow_multiplier": 0.45,
+      "secondary_bloom_cap": 3,
+      "secondary_bloom_radius": 150.0,
+      "secondary_bloom_targets": 3,
+      "secondary_bloom_damage": 18.0
+    }
+  },
+  "total_boss_cap": 0.09,
+  "cleanup_policy": {
+    "strategy_id": "activation_owned",
+    "params": {}
+  }
+}
