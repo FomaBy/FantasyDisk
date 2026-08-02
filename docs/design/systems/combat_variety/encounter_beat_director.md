@@ -23,7 +23,7 @@ lifecycle: он детерминированно планируется от see
 | `data/encounters/beats.json` | Корневой registry `encounter-beats-v1`: default-off gate, built-in definitions и allowlisted `feature_roots`. |
 | `scripts/encounters/encounter_config.gd` | Строгая schema/type/path/resource validation, duplicate quarantine, recursive `*.feature.json` discovery и sorted immutable reads. |
 | `scripts/encounters/encounter_feature.gd` | Versioned `EncounterFeature` API v1, optional spawn-plan builder, outcome и act-state normalization. |
-| `scripts/encounters/encounter_context.gd` | Узкий context: read API боя, `aspect_rng`, canonical spawn-plan executor, quota marker и atomic act-state checkpoint. |
+| `scripts/encounters/encounter_context.gd` | Узкий context: read API боя, `combat` для нативных терминалов, `aspect_rng`, canonical spawn-plan executor, quota marker и atomic act-state checkpoint. |
 | `scripts/encounters/encounter_metrics.gd` | Локальные in-memory метрики + детерминированный JSON-экспорт. |
 | `scripts/encounters/encounter_beat_director.gd` | Узел-двигатель: discovery → план одного primary-бита → trigger/tick/resolve → очистка. |
 | `scripts/encounters/encounter_adapter.gd` | Адаптер: lifecycle директора и read-only live/route spawn-plan projections. |
@@ -61,6 +61,39 @@ capability, schema/тип поля повреждены, script вышел за 
 Array — deep copies. Общий `enabled=false` остаётся production default-off gate;
 внутренний `enabled=true` лишь делает корректную запись доступной после включения
 общего gate.
+
+### Runtime identity: type проверяется, id принадлежит registry
+
+При инстанцировании директор сверяет только `definition_type()` — единственную
+runtime-идентичность, общую для всех features. `id` берётся из записи каталога,
+потому что один pack-скрипт легально обслуживает несколько definitions и биндит
+свою роль из переданного `beat_def` (см. captain-роли ниже). По этому же id
+ключуются метрики, act-state и canonical spawn plan.
+
+### Совместимость `captain-wave-roles-v1` (FAN-2040)
+
+Пакет `data/encounters/features/captains/captains.json` мигрирован под
+EncounterFeature API v1: каждая роль несёт `schema_version=1`,
+`type=encounter_feature`, boolean `enabled` и `capabilities=["primary_beat"]`
+рядом с прежними `role`, `primary`, `script`, `trigger_window`, `seed_salt`,
+тегами и `payload`. Контракт `captain-wave-roles-v1` и семантика ролей не
+менялись — добавлены только registry-поля, которых требует строгая validation.
+
+Per-role `enabled=true` — это registry availability, а НЕ активация: боевой gate
+пакета остаётся pack-level `enabled=false`, который читает
+`CaptainCatalog.is_enabled()` и проверяет `captain_feature.is_eligible()`.
+Валидная роль обязана оставаться в `all_features()`, `enabled_features()` и
+`primary_beats()`; malformed или unknown definition по-прежнему fail closed и
+отбрасывается целиком.
+
+### Consumer contract `context.combat`
+
+`EncounterContext.combat` — живой `CombatDirector` боя, который директор
+проставляет в `begin()`. Feature использует его только для нативных терминалов
+(`normal_early_clear` зовёт `context.combat.call_deferred("_end_combat", true)`),
+а не для чтения боевого состояния — для чтения существует остальной context.
+Снятие этого поля ломает early-clear на рантайме: victory-путь становится
+недостижим. Поле обязано существовать и быть проводимым.
 
 ## Canonical spawn plan и route/combat parity
 

@@ -19,6 +19,9 @@ const MAX_QUOTA_EXCLUDED := 1
 const CONFIG := preload("res://scripts/encounters/encounter_config.gd")
 
 var game
+# Живой CombatDirector боя. Фичи используют его только для нативных терминалов
+# (early-clear зовёт `_end_combat(true)`), не для чтения боевого состояния.
+var combat
 var node_seed := 0
 var combat_type := "battle"
 var event_active := false

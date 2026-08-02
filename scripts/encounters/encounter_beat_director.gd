@@ -47,6 +47,7 @@ func setup(game_ref, combat_ref) -> void:
 func begin() -> void:
 	_context = CONTEXT.new()
 	_context.game = game
+	_context.combat = combat
 	_context.node_seed = int(game.current_node_seed)
 	_context.combat_type = str(game.current_combat_type)
 	_context.event_active = not game.pending_event_combat.is_empty()
@@ -116,9 +117,12 @@ func _instantiate_feature(beat_def: Dictionary):
 	if feature.api_version() != FEATURE_BASE.API_VERSION:
 		push_error("EncounterBeatDirector: %s несовместимой API v%d" % [script_path, feature.api_version()])
 		return null
-	if feature.definition_type() != str(beat_def.get("type", "")) \
-			or feature.id() != str(beat_def.get("id", "")):
-		push_error("EncounterBeatDirector: runtime identity не совпадает с registry %s" % script_path)
+	# Тип — единственная runtime-идентичность, общая для всех фич. Id принадлежит
+	# записи каталога: один pack-скрипт может обслуживать несколько определений
+	# (captain-роли биндят свою роль из beat_def), поэтому id везде берётся из
+	# registry, а не из рантайма.
+	if feature.definition_type() != str(beat_def.get("type", "")):
+		push_error("EncounterBeatDirector: runtime type не совпадает с registry %s" % script_path)
 		return null
 	return feature
 
@@ -130,7 +134,7 @@ func _build_spawn_plan(context) -> Dictionary:
 		if feature == null or not feature.is_eligible(context):
 			continue
 		var request: Dictionary = feature.build_spawn_plan(context, feature_def)
-		var candidate: Dictionary = context.canonical_spawn_plan(request, feature.id())
+		var candidate: Dictionary = context.canonical_spawn_plan(request, str(feature_def.get("id", "")))
 		if candidate.is_empty():
 			continue
 		if not result.is_empty():
