@@ -85,6 +85,7 @@ ULTIMATE_EXECUTOR_CONTRACT_TESTS = {
     "controller_runtime_test",
     "controller_player_integration_test",
     "executor_contract_audit_test",
+    "executor_primitives_test",
 }
 PATH_TEST_RULES = {
     "scripts/class_weapon.gd": {"engineer_kit_test", "persistent_hazard_contract_test"},
@@ -101,7 +102,10 @@ PATH_TEST_RULES = {
     "scripts/ui_screens.gd": {"feedback_privacy_ui_test"},
     "scripts/ui/feedback_overlay.gd": {"feedback_privacy_ui_test"},
     "scripts/ultimates/controller/ultimate_controller.gd": ULTIMATE_EXECUTOR_CONTRACT_TESTS,
+    "scripts/ultimates/controller/ultimate_activation.gd": ULTIMATE_EXECUTOR_CONTRACT_TESTS,
+    "scripts/ultimates/controller/ultimate_player_host.gd": ULTIMATE_EXECUTOR_CONTRACT_TESTS,
     "scripts/ultimates/executors/ultimate_executor_library.gd": ULTIMATE_EXECUTOR_CONTRACT_TESTS,
+    "scripts/ultimates/executors/ultimate_targeting_primitives.gd": ULTIMATE_EXECUTOR_CONTRACT_TESTS,
     "tests/feedback_webhook_config_test.gd": {"feedback_webhook_config_test"},
 }
 DEFAULT_STATIC_TEST_TIMEOUT = 1200.0

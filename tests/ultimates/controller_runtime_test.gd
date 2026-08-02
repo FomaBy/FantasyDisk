@@ -93,6 +93,9 @@ class FixtureHost extends Node2D:
 	func ultimate_host_position() -> Vector2:
 		return global_position
 
+	func ultimate_host_aim(max_range: float) -> Dictionary:
+		return {"point": global_position + Vector2.RIGHT * max_range, "direction": Vector2.RIGHT}
+
 	func ultimate_host_targets(center: Vector2, radius: float, limit: int) -> Array:
 		var found: Array = []
 		for target in fixture_targets:

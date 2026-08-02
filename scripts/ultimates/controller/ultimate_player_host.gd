@@ -3,7 +3,7 @@ extends Node
 ## Narrow Player-side adapter for the generic ultimate runtime.
 ##
 ## Everything the controller and the executor families need from the Player goes
-## through the eight `ultimate_host_*` methods below, which is what keeps them
+## through the nine `ultimate_host_*` methods below, which is what keeps them
 ## free of class and weapon branches.
 ##
 ## It lives as a child of the Player rather than as methods on `player.gd`:
@@ -103,6 +103,16 @@ func ultimate_host_context() -> Dictionary:
 
 func ultimate_host_position() -> Vector2:
 	return player.global_position
+
+
+func ultimate_host_aim(max_range: float) -> Dictionary:
+	if not player.has_method("attack_aim_position") or not player.has_method("attack_aim_direction"):
+		return {}
+	var direction = player.call("attack_aim_direction", Vector2.RIGHT, max_range)
+	var point = player.call("attack_aim_position", max_range)
+	if not point is Vector2 or not direction is Vector2:
+		return {}
+	return {"point": point, "direction": direction}
 
 
 func ultimate_host_targets(center: Vector2, radius: float, limit: int) -> Array:
