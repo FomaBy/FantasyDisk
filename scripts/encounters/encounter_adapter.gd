@@ -40,6 +40,19 @@ func shutdown(victory: bool) -> void:
 	_director = null
 
 
+func spawn_plan_projection() -> Dictionary:
+	if _director == null or not is_instance_valid(_director):
+		return {}
+	return _director.spawn_plan_projection()
+
+
+static func project_spawn_plan(game, node_seed: int, scaling_stage: int,
+		combat_type: String) -> Dictionary:
+	if not CONFIG.is_enabled():
+		return {}
+	return BEAT_DIRECTOR.project_spawn_plan(game, node_seed, scaling_stage, combat_type)
+
+
 # Снять протёкшего директора прошлого боя (без записи метрик исхода).
 func _free_stale() -> void:
 	if _director != null and is_instance_valid(_director) \

@@ -98,11 +98,12 @@ func _check_sorted_discovery() -> void:
 func _check_sorted_discovery_is_discriminating() -> void:
 	CONFIG._set_catalog_for_tests({
 		"schema_version": CONFIG.CONTRACT_VERSION,
+		"contract": CONFIG.CONTRACT,
 		"enabled": false,
 		"beats": [
-			{"id": "zulu_probe", "primary": true},
-			{"id": "alpha_probe", "primary": false},
-			{"id": "mike_probe", "primary": true},
+			_fixture_definition("zulu_probe", true),
+			_fixture_definition("alpha_probe", false),
+			_fixture_definition("mike_probe", true),
 		],
 	})
 
@@ -120,6 +121,18 @@ func _check_sorted_discovery_is_discriminating() -> void:
 
 	CONFIG._reset_cache_for_tests()
 	_expect(CONFIG.all_beats().size() >= 1, "real catalog must be restored after the fixture check")
+
+
+func _fixture_definition(feature_id: String, primary: bool) -> Dictionary:
+	return {
+		"schema_version": CONFIG.CONTRACT_VERSION,
+		"id": feature_id,
+		"type": CONFIG.FEATURE_TYPE,
+		"enabled": true,
+		"primary": primary,
+		"capabilities": ["primary_beat"] if primary else [],
+		"script": "res://scripts/encounters/features/marked_target_feature.gd",
+	}
 
 
 func _marked_target_def() -> Dictionary:

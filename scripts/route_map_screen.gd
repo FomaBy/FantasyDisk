@@ -2,6 +2,7 @@ extends RefCounted
 
 const UIButtonFamily := preload("res://scripts/ui/ui_button_family.gd")
 const SemanticTypography := preload("res://scripts/ui/semantic_typography.gd")
+const EncounterAdapter := preload("res://scripts/encounters/encounter_adapter.gd")
 
 # Генерация маршрута и full-screen экран маршрутной карты:
 # узлы, связи, скролл/пан, активация encounter-ов.
@@ -1110,6 +1111,12 @@ func _node_predicted_stage(route_node: Dictionary) -> int:
 
 func _wave_threat_hint(route_node: Dictionary, node_seed: int) -> String:
 	var pred_stage := _node_predicted_stage(route_node)
+	var node_type := str(route_node.get("type", "battle"))
+	var projection := EncounterAdapter.project_spawn_plan(game, node_seed, pred_stage,
+		"battle" if node_type == "battle" else node_type)
+	if not projection.is_empty():
+		var prefix := "лёгкая волна, " if pred_stage <= 0 else ""
+		return prefix + "в составе — " + _enemy_archetype_name(str(projection["threat_scene"]))
 	# Спец-архетипы с весом как в бою (стрелки/маги/плевалы растут с глубиной); рядовые/бегуны/кусачи — фон.
 	var background_kinds := ["res://scenes/Enemy.tscn", "res://scenes/EnemyRunner.tscn", "res://scenes/EnemyBiter.tscn"]
 	var ranged_kinds := ["res://scenes/EnemyShooter.tscn", "res://scenes/EnemyMage.tscn", "res://scenes/EnemySpitter.tscn"]

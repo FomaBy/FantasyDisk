@@ -404,6 +404,7 @@ var selected_start_boon_id := ""
 # (реальный флаг живет в settings.cfg: lore_intro_seen и зависит от профиля).
 var force_skip_lore_intro := false
 var current_act := 1
+var encounter_feature_state := {}
 var route_stage := 0
 var combat_active := false
 var boss_combat_active := false
@@ -493,6 +494,7 @@ const ACHIEVEMENTS_DATA := preload("res://scripts/achievements_data.gd")
 const GAME_SETTINGS := preload("res://scripts/game_settings.gd")
 const GAMEPLAY_SANDBOX := preload("res://scripts/gameplay_sandbox.gd")
 const RUN_AUTOSAVE := preload("res://scripts/run_autosave.gd")
+const ENCOUNTER_CONFIG := preload("res://scripts/encounters/encounter_config.gd")
 const FEEDBACK_REPORTER_SCRIPT := preload("res://scripts/feedback_reporter.gd")
 const DEV_CONSOLE_SCRIPT := preload("res://scripts/dev_console.gd")
 const UPDATE_MANAGER_SCRIPT := preload("res://scripts/update_manager.gd")
@@ -748,10 +750,9 @@ func run_sandbox_multiplier(key: String) -> float:
 
 
 func begin_new_run_session() -> void:
+	encounter_feature_state = ENCOUNTER_CONFIG.empty_act_state(current_act)
 	capture_run_sandbox_snapshot()
 	reset_run_metrics()
-
-
 # SCRUM-502 · Метрики забега (run summary). Аккумулируются по ходу прогона, обнуляются
 # на старте нового забега. НЕ входят в _run_autosave_state — не персистятся и не текут
 # из загруженного autosave (после «Продолжить» метрики считаются с нуля за новый прогон).
@@ -855,6 +856,7 @@ func _run_autosave_state() -> Dictionary:
 		"selected_ascension_level": selected_ascension_level,
 		"run_act_count": ACT_COUNT,
 		"current_act": current_act,
+		"encounter_feature_state": ENCOUNTER_CONFIG.normalize_act_state(encounter_feature_state, current_act),
 		"route_stage": route_stage,
 		"route_nodes": route_nodes.duplicate(true),
 		"route_selected_indices": route_selected_indices.duplicate(true),
@@ -881,8 +883,6 @@ func _run_autosave_state() -> Dictionary:
 		"shop_reentry_route_stage": shop_reentry_route_stage,
 		"shop_reentry_branch_index": shop_reentry_branch_index,
 	}
-
-
 func migrate_run_autosave_state(state: Dictionary) -> Dictionary:
 	var migrated := state.duplicate(true)
 	var saved_act := maxi(1, int(migrated.get("current_act", 1)))
@@ -894,10 +894,10 @@ func migrate_run_autosave_state(state: Dictionary) -> Dictionary:
 		migrated["current_act"] = ACT_COUNT
 	else:
 		migrated["current_act"] = clampi(saved_act, 1, ACT_COUNT)
+	migrated["encounter_feature_state"] = ENCOUNTER_CONFIG.normalize_act_state(
+		migrated.get("encounter_feature_state", null), int(migrated["current_act"]))
 	migrated["run_act_count"] = ACT_COUNT
 	return migrated
-
-
 func _apply_run_autosave_state(state: Dictionary) -> void:
 	var normalized_state := migrate_run_autosave_state(state)
 	combat_active = false
@@ -912,6 +912,8 @@ func _apply_run_autosave_state(state: Dictionary) -> void:
 	selected_start_boon_id = PROGRESSION_DATA.canonical_start_boon_id(str(normalized_state.get("selected_start_boon_id", "")))
 	selected_ascension_level = int(normalized_state.get("selected_ascension_level", 0))
 	current_act = int(normalized_state.get("current_act", 1))
+	encounter_feature_state = ENCOUNTER_CONFIG.normalize_act_state(
+		normalized_state.get("encounter_feature_state", null), current_act)
 	route_stage = maxi(0, int(normalized_state.get("route_stage", 0)))
 	route_nodes = _autosave_array(normalized_state.get("route_nodes", []))
 	if route_nodes.is_empty():
@@ -943,14 +945,10 @@ func _apply_run_autosave_state(state: Dictionary) -> void:
 	shop_reentry_pending = bool(normalized_state.get("shop_reentry_pending", false))
 	shop_reentry_route_stage = int(normalized_state.get("shop_reentry_route_stage", -1))
 	shop_reentry_branch_index = int(normalized_state.get("shop_reentry_branch_index", -1))
-
-
 func _autosave_array(value: Variant) -> Array:
 	if value is Array:
 		return (value as Array).duplicate(true)
 	return []
-
-
 func _autosave_dictionary(value: Variant) -> Dictionary:
 	if value is Dictionary:
 		return (value as Dictionary).duplicate(true)
@@ -1012,6 +1010,7 @@ func advance_to_next_act() -> bool:
 	if current_act >= ACT_COUNT:
 		return false
 	current_act += 1
+	encounter_feature_state = ENCOUNTER_CONFIG.empty_act_state(current_act)
 	# SCRUM-873: отхил на переходе акта. Игрок между узлами живёт в
 	# run_player_snapshot (снят в _end_combat ДО этого вызова) — лечим снапшот,
 	# HP «переезжает» в первый бой нового акта через _restore_player_snapshot.
