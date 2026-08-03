@@ -315,6 +315,9 @@ static func sanitize_level_up_offer(offer: Array, character_id: String, stats :=
 		if not (reward_value is Dictionary):
 			return []
 		var reward := reward_value as Dictionary
+		for modifier_id in (reward.get("mods", {}) as Dictionary).keys():
+			if ProgressionData.is_removed_progression_modifier(str(modifier_id)):
+				return []
 		var attr := str(reward.get("attr", ""))
 		if attr != "":
 			var reward_id := str(reward.get("id", ""))
@@ -550,8 +553,6 @@ static func parameter_label(parameter_id: String) -> String:
 			return "Радиус подбора"
 		"defense":
 			return "Защита"
-		"attack_range":
-			return "Дальность"
 		"crit_chance":
 			return "Шанс крита"
 		"crit_damage_multiplier":
@@ -562,12 +563,6 @@ static func parameter_label(parameter_id: String) -> String:
 			return "Периодический урон"
 		"dot_speed":
 			return "Скорость тиков"
-		"projectile_speed":
-			return "Скорость снарядов"
-		"aura_radius":
-			return "Радиус ауры"
-		"buff_power":
-			return "Сила баффов"
 		"summon_amount":
 			return "Сила призыва"
 		"absorb":
@@ -587,6 +582,6 @@ static func parameter_label(parameter_id: String) -> String:
 static func format_value(parameter_id: String, value: float) -> String:
 	if parameter_id in ["crit_chance", "defense", "dodge", "vampiric_chance"]:
 		return "%.0f%%" % (value * 100.0)
-	if parameter_id in ["attack_speed", "crit_damage_multiplier", "dot_speed", "buff_power", "ultimate_multiplier", "regeneration", "vampiric_amount"]:
+	if parameter_id in ["attack_speed", "crit_damage_multiplier", "dot_speed", "ultimate_multiplier", "regeneration", "vampiric_amount"]:
 		return "%.2f" % value
 	return "%.0f" % value

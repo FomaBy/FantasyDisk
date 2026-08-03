@@ -15,7 +15,7 @@ const CURSE_EXPECTED := {
 	"sacrifice_seal": {"crit_chance_flat": 0.30, "max_health_multiplier": 0.78},
 	"hungry_amulet": {"money_gain_multiplier": 1.85, "healing_multiplier": 0.65},
 	"berserk_totem": {"damage_multiplier": 1.60, "move_speed_multiplier": 0.80},
-	"focus_lens": {"range_multiplier": 1.70, "aoe_radius_multiplier": 0.75},
+	"focus_lens": {"damage_multiplier": 1.20, "aoe_radius_multiplier": 0.75},
 	"stone_hide": {"defense_flat": 0.40, "attack_speed_multiplier": 0.75},
 }
 
@@ -29,7 +29,6 @@ const SUPPORTED_CURSE_MOD_KEYS := [
 	"max_health_multiplier",
 	"money_gain_multiplier",
 	"move_speed_multiplier",
-	"range_multiplier",
 ]
 
 const PLUS_KEYS := [
@@ -37,7 +36,6 @@ const PLUS_KEYS := [
 	"damage_multiplier",
 	"defense_flat",
 	"money_gain_multiplier",
-	"range_multiplier",
 ]
 
 const MINUS_KEYS := [

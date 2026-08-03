@@ -1,5 +1,11 @@
 # Артефакты 0.2.1 — финальная матрица (SCRUM-959)
 
+> **Current override (FAN-1891, 2026-08-03):** historical rows below that name
+> `range_multiplier`, `sector_multiplier`, `projectile_speed_flat`,
+> `aura_radius_flat`, or `buff_power_flat` are superseded. Live artifacts use
+> only the unified attack-area and shared `% damage` sources described in
+> `combat.md`; obsolete keys are removed during save restoration.
+
 Контракт для реализации: SCRUM-960 (универсальный пул), SCRUM-961 (классовые), SCRUM-962 (иконки), SCRUM-963 (UI/локализация), SCRUM-964 (QA). Источник данных: `scripts/progression_data_content.gd` (`ARTIFACTS`). Итог изначальной поставки: **32 семьи + 37 сохранённых + 85 классовых = 154 артефакта**; удалялось 17 легаси-id. **FAN-1038** убрал 3 семьи мёртвых осей (`battle_fan` / `ram_horn` / `falcon_feather`), затем общий cadence-контракт убрал отдельную dot-speed семью `plague_metronome` → **28 семей, 150 артефактов** в `ARTIFACTS`; 154 icon-PNG остаются на диске (4 осиротели, см. §2/§5).
 
 ---
@@ -150,10 +156,10 @@ Call sites (SCRUM-961, все в `ui_screens.gd`) передают `game.ascensi
 | `sharp_talisman` | Острый талисман | crit_chance | `crit_chance_flat` | +0.10 / +0.18 / +0.30 | sharp_talisman | REUSE |
 | `executioner_edge` | Грань палача | crit_damage | `crit_damage_flat` | +0.10 / +0.18 / +0.30 | — | NEW: broad executioner axe blade fragment, notched edge |
 | `ghost_ribbon` | Лента призрака | dodge | `dodge_flat` | +0.10 / +0.18 / +0.30 | — | NEW: translucent spectral silk ribbon, drifting curl |
-| `wide_sigil` | Дальняя печать | range | `range_multiplier` | 1.10 / 1.18 / 1.30 | wide_sigil | REUSE |
+| `wide_sigil` | Печать области | aoe_radius | `aoe_radius_multiplier` | 1.10 / 1.18 / 1.30 | wide_sigil | REUSE |
 | `venom_vial` | Флакон отравы | dot_damage | `dot_damage_flat` | +2 / +4 / +6 | — | NEW: cracked vial dripping thick green venom |
 | `wide_halo` | Широкий нимб | aura_radius | `aoe_radius_multiplier` | 1.10 / 1.18 / 1.30 | — | NEW: golden ring halo, expanding concentric glow |
-| `war_banner` | Боевое знамя | buff_power | `buff_power_flat` | +0.10 / +0.18 / +0.30 | — | NEW: tattered crimson war banner on broken pole |
+| `war_banner` | Боевое знамя | damage | `damage_multiplier` | 1.10 / 1.18 / 1.30 | — | NEW: tattered crimson war banner on broken pole |
 | `summoners_bell` | Колокольчик призывателя | summon_amount | `summon_bonus` | +1.5 / +2.5 / +4 | summoners_bell | REUSE |
 | `aegis_shard` | Осколок эгиды | absorb | `absorb_flat` | +3 / +5 / +8 | — | NEW: glowing shield shard, faceted protective crystal |
 | `troll_blood` | Кровь тролля | regeneration | `regeneration_flat` | +1.0 / +1.6 / +2.6 | — | NEW: thick flask of regenerating troll blood, bubbling |
@@ -161,7 +167,7 @@ Call sites (SCRUM-961, все в `ui_screens.gd`) передают `game.ascensi
 | `thirsty_ruby` | Жаждущий рубин | vampiric_chance | `vampiric_chance_flat` | +0.10 / +0.18 / +0.30 | — | NEW: deep red ruby with blood drop core |
 | `overcharge_rune` | Руна перегрузки | ultimate_power | `ultimate_flat` | +0.10 / +0.18 / +0.30 | — | NEW: crackling runestone, overloaded energy fissures |
 
-Верификация ключей: `damage/magic_damage/attack_speed/move_speed/max_health/sector/aoe_radius/range/knockback_multiplier`, `defense/crit_chance/crit_damage/dodge/pickup_radius/max_health_flat` — дефолты `player.gd`; `dot_damage_flat`, `buff_power_flat`, `summon_bonus`, `absorb_flat`, `regeneration_flat`, `vampiric_*`, `ultimate_flat` — в canonical runtime. Отдельного selectable `dot_speed_flat` нет: периодика использует общий нормализованный cadence.
+Верификация ключей: `damage/magic_damage/attack_speed/move_speed/max_health/aoe_radius/knockback_multiplier`, `defense/crit_chance/crit_damage/dodge/pickup_radius/max_health_flat` — дефолты `player.gd`; `dot_damage_flat`, `summon_bonus`, `absorb_flat`, `regeneration_flat`, `vampiric_*`, `ultimate_flat` — в canonical runtime. Отдельного selectable `dot_speed_flat` нет: периодика использует общий нормализованный cadence.
 
 ---
 
@@ -249,11 +255,11 @@ Call sites (SCRUM-961, все в `ui_screens.gd`) передают `game.ascensi
 
 | id | Название | T | Механика | Реализация | Balance note | Icon (style notes) |
 | --- | --- | --- | --- | --- | --- | --- |
-| `spirit_pack_banner` | Знамя духовной стаи | 2 | Аура урона сильнее кормит и духов, и самого Друида. | mods `buff_power_flat: 0.20` EXISTS, `pet_damage_mult: 0.15` EXISTS (`summoner_weapon.gd:176`) | Двухканальный (стая+ауры), но оба канала мягкие. | carved spirit banner totem, wolf pack markings |
+| `spirit_pack_banner` | Знамя духовной стаи | 2 | Общий урон сильнее кормит и духов, и самого Друида. | mods `damage_multiplier: 1.20`, `pet_damage_mult: 0.15` EXISTS (`summoner_weapon.gd:176`) | Двухканальный (стая+ауры), но оба канала мягкие. | carved spirit banner totem, wolf pack markings |
 | `wolf_call` | Зов волков | 3 | Зов приводит лишних физических волков; ближние духи рвут сильнее. | mods `summon_bonus: 2.0` EXISTS, `pack_wolf_bias: 1.0` NEW — хук `summoner_weapon.gd` (состав стаи: приоритет melee-зверей, melee-духи +20% урона) | Кап стаи растёт от summon_amount как сейчас (floor/4) — bias не ломает лимит. | howling wolf head carving, moon backdrop |
 | `blue_totem` | Голубой тотем | 2 | Тотем воронов пульсирует злее — ставка на магических духов и вороньи снаряды. | mods `raven_pulse_bonus: 0.25` NEW — хук `class_weapon.gd`/`summoner_weapon.gd` (raven_totem: урон пульса +25%, `amp_pulse_interval` −15%); `sound_damage_multiplier: 1.10` EXISTS | Зеркало wolf_call для второй ветки билда (тотем/дальний). | blue painted raven totem, glowing feathers |
 | `briar_seal` | Печать терновника | 2 | Терновые зоны сильнее замедляют, оставаясь прозрачными. | mods `briar_slow_power: 0.20` — хук `class_weapon.gd` (briar pool tick: slow 20%, 1.2с). Виз. контракт: альфа зоны не выше текущей | Контроль-зона; slow не стакается (refresh), cadence не меняет. | thorned bramble seal ring, green wax stamp |
-| `pack_alpha` | Альфа стаи | 3 | Радиус и сила аур растут — игра строится вокруг стаи. | mods `aura_radius_flat: 40.0` EXISTS (`progression_data.gd:1187`), `buff_power_flat: 0.15` EXISTS, `summon_bonus: 1.5` EXISTS | Капстоун-агрегатор трёх summon-осей; каждая добавка умеренная. | alpha wolf pelt mantle, dominant stance emblem |
+| `pack_alpha` | Альфа стаи | 3 | Область атак и аур, общий урон и сила призыва растут вместе. | mods `aoe_radius_multiplier: 1.20`, `damage_multiplier: 1.15`, `summon_bonus: 1.5` | Капстоун-агрегатор трёх summon-осей; каждая добавка умеренная. | alpha wolf pelt mantle, dominant stance emblem |
 
 ### 4.8 Engineer — Мастерская приказов (sentry_wrench / repair_drone / pressure_mines)
 
@@ -271,7 +277,7 @@ Call sites (SCRUM-961, все в `ui_screens.gd`) передают `game.ascensi
 | --- | --- | --- | --- | --- | --- | --- |
 | `impact_string` | Ударная тетива | 2 | Попадания лука отбрасывают врагов от Рейнджера заметно сильнее. | mods `knockback_multiplier: 1.35` EXISTS | Дистанц-контроль в русле stance-идентичности; элитки/боссы имеют свои сопротивления. | taut reinforced bowstring, impact shockwave |
 | `moon_splitter` | Лунный расщепитель | 3 | Болт Лунного арбалета ветвится с первой цели в четыре соседних. | mods `moon_split_targets: 4.0` NEW — хук `class_weapon.gd` (beam/moon_crossbow: при первом пробитии — 4 под-луча в ближайшие цели, 45% урона) | Превращает снайперский болт в crowd-ответ; под-лучи не ветвятся дальше. | crescent moon crossbow bolt, splitting light shards |
-| `storm_piercer` | Грозовой пробойник | 2 | Грозовой лук бьёт дальше и пробивает строй глубже — линия-коридор. | mods `charged_shot_extra_pierce: 2.0` EXISTS (`player.gd:1024`, is_charged), `range_multiplier: 1.15` EXISTS | Оба ключа уже в контракте заряжаемых выстрелов Рейнджера. | storm-charged arrowhead, piercing lightning line |
+| `storm_piercer` | Грозовой пробойник | 2 | Грозовой лук шире бьёт и пробивает строй глубже — линия-коридор. | mods `charged_shot_extra_pierce: 2.0`, `aoe_radius_multiplier: 1.15` | Оба ключа уже в контракте заряжаемых выстрелов Рейнджера. | storm-charged arrowhead, piercing lightning line |
 | `root_snare` | Корневой капкан | 3 | Капканы вечны до срабатывания: жертву укореняет, затем она истекает кровью. | mods `trap_root_mode: 1.0` NEW — хук `class_weapon.gd` (trap/hunter_trap: жизнь → до срабатывания (кап 4 живых); при срабатывании root 1.1с (`StatusEffects` speed 0.25) + bleed 3 тика по `dot_damage`) | Совместим с `trap_extra_count` (instant-arm, `player.gd:1031`). | gnarled root snare trap, thorned jaws |
 | `hunters_mark` | Метка охотника | 2 | Отброшенные и обездвиженные враги получают дополнительный физический урон. | mods `hunter_mark_bonus: 0.25` NEW — хук `player.gd meta_damage_multiplier` (ranger-атаки: если у цели статус root/staggered или активный нокбэк — +25% урона) | Синергия с impact_string/root_snare — комбо-ось класса. | glowing hunter rune mark, antler sigil |
 
@@ -291,7 +297,7 @@ Call sites (SCRUM-961, все в `ui_screens.gd`) передают `game.ascensi
 | --- | --- | --- | --- | --- | --- | --- |
 | `rebound_plate` | Отбойная пластина | 2 | Отбрасывание ударов по обычным и мини-элитным врагам заметно сильнее. | mods `knockback_multiplier: 1.40` EXISTS | Элитки/боссы имеют собственные сопротивления нокбэку — эффект по рядовым, как в драфте. | dented rebound shield plate, kinetic ripple |
 | `triple_thrust` | Тройной укол | 3 | Копьё колет трижды: левый, центральный и правый быстрые уколы. | mods `spear_triple_thrust: 1.0` NEW — хук `berserk_weapon.gd` (strip/long_spear: выпад = 3 полосы — центр 100%, боковые 55% под ±14°) | Закрывает слабость узкой полосы 90px против веера врагов. | three spearheads fanned, quick thrust lines |
-| `tower_slam` | Башенный удар | 2 | Конус Башенного щита шире, отталкивание масштабируется. | mods `sector_multiplier: 1.20` EXISTS, `knockback_multiplier: 1.20` EXISTS | sector_multiplier честно расширяет sweep-конус 95° щита. | tower shield slamming ground, stone shockwave |
+| `tower_slam` | Башенный удар | 2 | Область Башенного щита шире, отталкивание масштабируется. | mods `aoe_radius_multiplier: 1.20`, `knockback_multiplier: 1.20` | Общая область честно расширяет sweep-конус 95° щита. | tower shield slamming ground, stone shockwave |
 | `holy_chain` | Святая цепь | 3 | Спираль Кистеня с каждым кастом раскручивается наружу от Рыцаря. | mods `flail_spiral_growth: 1.0` NEW — хук `berserk_weapon.gd` (circle/holy_flail: последовательные касты +12% радиуса за каст, кап +36%, сброс после 3с простоя) | Ramp-механика: пик требует непрерывного боя. | blessed flail chain spiral, radiant links |
 | `vanguard_oath` | Авангардная клятва | 2 | Оборонная идентичность крепче: в стойке Рыцарь держит удар ещё лучше. | mods `bastion_defense_bonus: 0.10` EXISTS (`player.gd:647`, действует при `_stance_active` — неподвижность ≥0.8с), `defense_flat: 0.05` EXISTS | Боссы/элитки не затрагиваются некорректно: чистая самозащита, без taunt-части. | vanguard oath gauntlet, raised fist seal |
 
@@ -313,7 +319,7 @@ Call sites (SCRUM-961, все в `ui_screens.gd`) передают `game.ascensi
 | `deadeye_round` | Патрон мертвого глаза | 3 | Винтовка предпочитает дальнюю цель, а в конце линии гремит терминальный взрыв. | mods `deadeye_terminal_blast: 0.45` NEW — хук `class_weapon.gd` (sniper_lockshot: приоритет самой дальней цели в радиусе; взрыв 45% урона в конце линии) | Синергия с longshot_scope — задумана как пара т3. | engraved deadeye bullet, skull eye casing |
 | `spotter_mark` | Метка наводчика | 2 | Отложенная зона наводчика ложится быстрее и бьёт плотнее. | mods `spotter_fast_mark: 1.0` NEW — хук `class_weapon.gd` (sniper_kill_zone: телеграф −35%, +1 удар серии (4→5)) | Меньше «промахов зоной» по бегущим — комфорт-ось. | spotter binoculars, marked target zone glow |
 | `shatter_drum` | Барабан осколков | 2 | Осколочные патроны дают больше осколков по ближайшим траекториям. | mods `shatter_extra_splits: 2.0` NEW — хук `class_weapon.gd` (sniper_split_round: `split_count` 3→5) | Осколки наследуют falloff 0.55 — прирост контролируем. | revolver drum of shattered rounds, splintered tips |
-| `clean_line` | Чистая линия | 2 | Снаряды быстрее, линия длиннее — класс ощущается хирургически точным. | mods `projectile_speed_flat: 120.0` EXISTS, `range_multiplier: 1.12` EXISTS | Комфорт/точность, без прямого DPS. | perfectly straight tracer line, polished barrel |
+| `clean_line` | Чистая линия | 2 | Скорость атаки и область линии растут вместе. | mods `attack_speed_multiplier: 1.12`, `aoe_radius_multiplier: 1.12` | Больше темпа и контролируемой площади. | perfectly straight tracer line, polished barrel |
 
 ### 4.14 Soldier — Тактическая линия огня (rifle / grenade / bayonet)
 

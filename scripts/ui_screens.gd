@@ -11067,8 +11067,6 @@ func _shop_item_fallback_icon_id(item: Dictionary) -> String:
 		return "move_speed"
 	if modifiers.has("pickup_radius_flat"):
 		return "pickup_radius"
-	if modifiers.has("range_multiplier"):
-		return "attack_range"
 	if modifiers.has("aoe_radius_multiplier"):
 		return "aoe_radius"
 	if modifiers.has("crit_chance_flat") or modifiers.has("crit_damage_flat"):
@@ -11702,8 +11700,6 @@ func _modifier_summary_text(mods_value) -> String:
 				parts.append("скорость движения +%d%%" % int(round((value - 1.0) * 100.0)))
 			"aoe_radius_multiplier":
 				parts.append("радиус атак +%d%%" % int(round((value - 1.0) * 100.0)))
-			"range_multiplier":
-				parts.append("дальность атак +%d%%" % int(round((value - 1.0) * 100.0)))
 			"knockback_multiplier":
 				parts.append("отталкивание +%d%%" % int(round((value - 1.0) * 100.0)))
 			"max_health_flat":
@@ -12672,7 +12668,7 @@ func _reward_icon_id(reward: Dictionary) -> String:
 		return str(game.LEVEL_UP_MOD_DISPLAY.get(modifier_id, "artifact"))
 	if str(reward.get("kind", "")) == "artifact":
 		return "artifact"
-	return "buff_power"
+	return "artifact"
 
 
 # SCRUM-963: иконка карточки награды. Артефакт получает СВОЮ artifact_<id>.png
@@ -15763,7 +15759,7 @@ func show_battle_prayer_choice(player: Node, on_selected: Callable) -> bool:
 	for choice_raw in choices.slice(0, 3):
 		var choice := (choice_raw as Dictionary).duplicate(true)
 		var prayer_id := str(choice.get("id", ""))
-		choice["icon_id"] = str(BATTLE_PRAYER_ICON_IDS.get(prayer_id, "buff_power"))
+		choice["icon_id"] = str(BATTLE_PRAYER_ICON_IDS.get(prayer_id, "artifact"))
 		# Display-only compact copy for the fixed one-line Level Up effect field.
 		# Canonical prayer descriptions/effects remain unchanged in progression data.
 		choice["effect_summary"] = str(BATTLE_PRAYER_EFFECT_SUMMARIES.get(prayer_id, choice.get("description", "")))
@@ -16327,7 +16323,7 @@ func _artifact_icon_texture(artifact_id: String) -> Texture2D:
 	var path := _artifact_icon_path(artifact_id)
 	if not path.is_empty():
 		return game._cached_texture(path)
-	return game.UIIconRegistry.texture_for("buff_power")
+	return game.UIIconRegistry.texture_for("artifact")
 
 
 # SCRUM-963: канон редкости (artifact_system_matrix §1.1) — tier и есть редкость,

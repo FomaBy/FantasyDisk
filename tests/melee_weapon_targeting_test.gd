@@ -126,14 +126,9 @@ func _initialize() -> void:
 		quit(1)
 		return
 
-	player.apply_reward({"mods": {"sector_multiplier": 1.20}})
-	if absf(float(weapon.get("sweep_degrees")) - 120.0) > 0.01 or absf(float(weapon.get("attack_range")) - 350.0) > 0.01:
-		push_error("Expected sector upgrade to widen sword sector without changing radius.")
-		quit(1)
-		return
 	player.apply_reward({"mods": {"aoe_radius_multiplier": 1.20}})
-	if absf(float(weapon.get("attack_range")) - 420.0) > 0.01:
-		push_error("Expected radius upgrade to increase sword sector radius.")
+	if absf(float(weapon.get("sweep_degrees")) - 120.0) > 0.01 or absf(float(weapon.get("attack_range")) - 350.0) > 0.01:
+		push_error("Expected attack-area upgrade to widen sword sector without changing target reach.")
 		quit(1)
 		return
 
@@ -200,7 +195,7 @@ func _initialize() -> void:
 
 	hammer_player.apply_reward({"mods": {"sector_multiplier": 1.50}})
 	if absf(float(hammer.get("aoe_radius")) - 150.0) > 0.01:
-		push_error("Expected sector upgrade not to change hammer circle radius.")
+		push_error("Expected removed sector modifier not to change hammer circle radius.")
 		quit(1)
 		return
 	hammer_player.apply_reward({"mods": {"aoe_radius_multiplier": 1.20}})
