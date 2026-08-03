@@ -704,6 +704,27 @@ class QualityGateTests(unittest.TestCase):
                 }
             self.assertLessEqual(expected, names)
 
+    def test_class_package_paths_select_player_integration_regression(self) -> None:
+        # A ready-package rollout under the class data/executor trees changes
+        # Player-visible routing, so the certifying changed profile must select
+        # the Player integration regression alongside the package contracts.
+        expected = self.quality.ULTIMATE_PACKAGE_CONTRACT_TESTS | {
+            "controller_player_integration_test",
+        }
+        self.assertEqual(self.quality.ULTIMATE_CLASS_PACKAGE_TESTS, expected)
+        for changed_path in (
+            "data/ultimates/classes/biologist/biologist_spore_lens.json",
+            "scripts/ultimates/classes/biologist/biologist_symbiote_seed.gd",
+        ):
+            with self.subTest(changed_path=changed_path), mock.patch.object(
+                self.quality, "_git_changed_paths", return_value={changed_path}
+            ):
+                names = {
+                    path.stem
+                    for path in self.quality.select_godot_tests("changed", [], "base", False)
+                }
+            self.assertLessEqual(expected, names)
+
     def test_full_filter_and_skip_umbrella(self) -> None:
         selected = self.quality.select_godot_tests(
             "full", ["runtime_smoke"], "origin/dev", True

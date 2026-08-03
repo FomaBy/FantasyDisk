@@ -93,6 +93,11 @@ ULTIMATE_PACKAGE_CONTRACT_TESTS = {
     "registry_contract_test",
     "registry_package_discovery_test",
 }
+# A class-package rollout changes Player-visible routing, so it must also
+# re-prove the Player integration regression, not just the package contracts.
+ULTIMATE_CLASS_PACKAGE_TESTS = ULTIMATE_PACKAGE_CONTRACT_TESTS | {
+    "controller_player_integration_test",
+}
 PATH_TEST_RULES = {
     "scripts/class_weapon.gd": {"engineer_kit_test", "persistent_hazard_contract_test"},
     "scripts/enemy.gd": {"enemy_separation_behavior_test"},
@@ -284,7 +289,7 @@ def select_godot_tests(
                 "data/ultimates/classes/",
                 "scripts/ultimates/classes/",
             )):
-                selected_names.update(ULTIMATE_PACKAGE_CONTRACT_TESTS)
+                selected_names.update(ULTIMATE_CLASS_PACKAGE_TESTS)
             if _affects_typography_inventory(changed_path):
                 selected_names.add(TYPOGRAPHY_INVENTORY_TEST)
             if changed_path.startswith("tests/") and changed_path.endswith(".gd"):
