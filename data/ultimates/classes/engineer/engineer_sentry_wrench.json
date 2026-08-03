@@ -1,0 +1,24 @@
+{
+  "schema_version": 1,
+  "class_id": "engineer",
+  "weapon_id": "engineer_sentry_wrench",
+  "profile_id": "weapon_ultimate.profile.engineer.engineer_sentry_wrench",
+  "executor_id": "weapon_ultimate.executor.engineer.engineer_sentry_wrench",
+  "implementation_state": "ready",
+  "targeting": {"strategy_id": "host_aim", "params": {}},
+  "charge": {"strategy_id": "rare_charge_ledger", "params": {}},
+  "executor": {
+    "strategy_id": "weapon_ultimate.executor.engineer.engineer_sentry_wrench",
+    "params": {
+      "formation_radius": 210,
+      "duration": 4.6,
+      "volley_count": 8,
+      "volley_interval": 0.55,
+      "corridor_half_width": 76,
+      "damage": 0.55,
+      "target_limit": 0
+    }
+  },
+  "total_boss_cap": 0.08,
+  "cleanup_policy": {"strategy_id": "activation_owned", "params": {}}
+}
