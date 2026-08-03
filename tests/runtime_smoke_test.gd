@@ -5044,6 +5044,20 @@ func _test_ultimate_framework() -> void:
 		var parameters: Dictionary = player.get("derived_parameters")
 		parameters["ultimate_multiplier"] = 1.5
 		player.set("derived_parameters", parameters)
+		var ready_profile := {}
+		if str(UltimateHostScript.shared_registry().resolution_source(character_id, weapon_id)) \
+				== UltimateResolver.SOURCE_WEAPON_PROFILE:
+			ready_profile = UltimateHostScript.shared_registry().catalog_profile_for(character_id, weapon_id)
+		var target_origin: Vector2 = player.global_position
+		var target_direction := Vector2.RIGHT
+		var has_aim_contract := false
+		var executor = ready_profile.get("executor")
+		var executor_params = (executor as Dictionary).get("params") if executor is Dictionary else null
+		if executor_params is Dictionary and (executor_params as Dictionary).has("max_range"):
+			var max_range := float((executor_params as Dictionary)["max_range"])
+			target_origin = player.call("attack_aim_position", max_range)
+			target_direction = player.call("attack_aim_direction", Vector2.RIGHT, max_range)
+			has_aim_contract = true
 		var enemies := []
 		for index in range(3):
 			var enemy := enemy_scene.instantiate()
@@ -5051,7 +5065,14 @@ func _test_ultimate_framework() -> void:
 			enemy.add_to_group("enemies")
 			enemy.set("max_health", 100000.0)
 			enemy.set("health", 100000.0)
-			enemy.global_position = player.global_position + Vector2(110 + index * 45, 0)
+			if has_aim_contract and index == 0:
+				enemy.global_position = target_origin
+			else:
+				enemy.global_position = player.global_position \
+					+ target_direction * float(110 + index * 45)
+			if has_aim_contract:
+				enemy.set_process(false)
+				enemy.set_physics_process(false)
 			enemies.append(enemy)
 		await process_frame
 		var hp_before := 0.0
@@ -5078,15 +5099,14 @@ func _test_ultimate_framework() -> void:
 		# уходит в legacy-ветку с прежним оракулом. Как только пакет оружия
 		# станет исполнимым, его берёт тот же generic-контракт, который ниже
 		# исполняется на инъецированной ready-паре, — без class/weapon-развилок.
-		if str(UltimateHostScript.shared_registry().resolution_source(character_id, weapon_id)) \
-				== UltimateResolver.SOURCE_WEAPON_PROFILE:
+		if not ready_profile.is_empty():
 			await _assert_ready_ultimate_runtime(
 				player,
 				enemies,
 				baseline,
 				activation,
 				same_frame_effect,
-				UltimateHostScript.shared_registry().catalog_profile_for(character_id, weapon_id)
+				ready_profile
 			)
 			if _failure_reported:
 				return
@@ -5122,10 +5142,52 @@ func _test_ready_weapon_ultimate_fixtures(
 	player_scene: PackedScene,
 	enemy_scene: PackedScene
 ) -> void:
+	for timing_case in [
+		{
+			"params": {
+				"windup_delay": 0.52,
+				"strip_count": 5,
+				"strip_interval": 0.16,
+				"final_delay": 0.24,
+				"recovery_tail": 4.0,
+				"stun_duration": 1.4,
+			},
+			"expected": 0.52,
+			"expected_lifecycle": 4.0,
+		},
+		{
+			"params": {
+				"deploy_delay": 0.68,
+				"pulse_count": 4,
+				"pulse_interval": 0.27,
+				"overload_delay": 0.45,
+				"recovery_tail": 4.06,
+				"feedback_duration": 2.0,
+			},
+			"expected": 0.68,
+			"expected_lifecycle": 4.06,
+		},
+		{
+			"params": {"impact_at": 0.70, "interval": 0.10, "duration": 0.30},
+			"expected": 0.70,
+			"expected_lifecycle": 0.70,
+		},
+	]:
+		var declared := _ultimate_declared_timing({
+			"executor": {"strategy_id": "fixture", "params": timing_case["params"]},
+		})
+		if not bool(declared.get("valid", false)) \
+				or not is_equal_approx(float(declared.get("impact_window", 0.0)), float(timing_case["expected"])) \
+				or not is_equal_approx(float(declared.get("lifecycle_window", 0.0)), float(timing_case["expected_lifecycle"])):
+			_fail("Expected semantic first-impact timing to ignore smaller cadence/final/recovery fields: %s" % str(timing_case))
+			return
+
 	for malformed in [
+		{},
 		{"executor": {"strategy_id": "status_zone", "params": {"interval": "soon"}}},
 		{"executor": {"strategy_id": "status_zone", "params": {"interval": -0.2}}},
 		{"executor": {"strategy_id": "status_zone", "params": {"duration": INF}}},
+		{"executor": {"strategy_id": "status_zone", "params": {"duration": 31.0}}},
 		{"executor": {"strategy_id": "status_zone"}},
 	]:
 		if bool(_ultimate_declared_timing(malformed).get("valid", true)):
@@ -5316,9 +5378,10 @@ func _ultimate_has_observable_effect(
 	return (player.get("run_modifiers") as Dictionary) != (baseline.get("modifiers", {}) as Dictionary)
 
 
-## Окно, которое профиль объявил сам: самый ранний назначенный шаг — крайний
-## срок эффекта, самый поздний — крайний срок уборки. Всё, что не число, не
-## конечно, не положительно или длиннее потолка каста, считается битым.
+## Окно, которое профиль объявил сам: явный impact или начальная фаза
+## задаёт первый эффект, а самый долгий timing — крайний срок уборки после
+## первого эффекта. Всё, что не число, не конечно, не положительно или длиннее
+## потолка каста, считается битым.
 func _ultimate_declared_timing(profile: Dictionary) -> Dictionary:
 	var executor = profile.get("executor")
 	if not executor is Dictionary:
@@ -5326,7 +5389,9 @@ func _ultimate_declared_timing(profile: Dictionary) -> Dictionary:
 	var params = (executor as Dictionary).get("params")
 	if not params is Dictionary:
 		return {"valid": false, "reason": "missing executor params"}
-	var impact := INF
+	var fallback_impact := INF
+	var phase_impact := INF
+	var explicit_impact := INF
 	var lifecycle := 0.0
 	for raw_key in (params as Dictionary).keys():
 		var key := str(raw_key).to_lower()
@@ -5338,10 +5403,17 @@ func _ultimate_declared_timing(profile: Dictionary) -> Dictionary:
 		var seconds := float(value)
 		if seconds <= 0.0 or seconds > ULTIMATE_MAX_DECLARED_LIFETIME_SECONDS:
 			return {"valid": false, "reason": "out-of-bounds timing field %s" % key}
-		impact = minf(impact, seconds)
+		fallback_impact = minf(fallback_impact, seconds)
+		if _is_ultimate_first_impact_key(key):
+			phase_impact = minf(phase_impact, seconds)
+		elif key in ["first_impact_at", "first_impact_delay", "impact_at", "impact_delay"]:
+			explicit_impact = minf(explicit_impact, seconds)
 		lifecycle = maxf(lifecycle, seconds)
-	if not is_finite(impact):
+	if not is_finite(fallback_impact):
 		return {"valid": true, "has_timing": false, "impact_window": 0.0, "lifecycle_window": 0.0}
+	var impact := explicit_impact if is_finite(explicit_impact) else phase_impact
+	if not is_finite(impact):
+		impact = fallback_impact
 	return {
 		"valid": true,
 		"has_timing": true,
@@ -5350,10 +5422,23 @@ func _ultimate_declared_timing(profile: Dictionary) -> Dictionary:
 	}
 
 
+func _is_ultimate_first_impact_key(key: String) -> bool:
+	return key in [
+		"windup_delay",
+		"deploy_delay",
+		"arm_delay",
+		"release_delay",
+		"lock_delay",
+		"active_delay",
+		"hatch_delay",
+		"analysis_first_delay",
+	]
+
+
 func _is_ultimate_timing_key(key: String) -> bool:
 	return key in ["delay", "duration", "interval", "lifetime"] \
 		or key.ends_with("_at") or key.ends_with("_delay") or key.ends_with("_duration") \
-		or key.ends_with("_interval") or key.ends_with("_lifetime")
+		or key.ends_with("_interval") or key.ends_with("_lifetime") or key.ends_with("_tail")
 
 
 ## Generic-оракул исполнимого ультимейта оружия: immediate-семейство обязано

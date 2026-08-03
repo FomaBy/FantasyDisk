@@ -1,0 +1,39 @@
+{
+  "schema_version": 1,
+  "class_id": "guitarist",
+  "weapon_id": "bass_guitar",
+  "profile_id": "weapon_ultimate.profile.guitarist.bass_guitar",
+  "executor_id": "weapon_ultimate.executor.guitarist.bass_guitar",
+  "implementation_state": "ready",
+  "targeting": {"strategy_id": "concentric_bass_waves", "params": {}},
+  "charge": {"strategy_id": "rare_charge_ledger", "params": {}},
+  "executor": {
+    "strategy_id": "weapon_ultimate.executor.guitarist.bass_guitar",
+    "params": {
+      "windup_delay": 0.70,
+      "wave_interval": 0.53,
+      "recovery_tail": 3.51,
+      "crowd_cap": 12,
+      "pull_radius": 170.0,
+      "weight_radius": 250.0,
+      "launch_radius": 330.0,
+      "shock_radius": 430.0,
+      "pull_damage": 30.0,
+      "weight_damage": 40.0,
+      "launch_damage": 55.0,
+      "shock_damage": 90.0,
+      "pull_force": 480.0,
+      "launch_force": 620.0,
+      "shock_force": 920.0,
+      "pull_duration": 0.7,
+      "weight_duration": 1.8,
+      "launch_duration": 0.6,
+      "shock_duration": 0.5,
+      "weight_slow": 0.42,
+      "per_target_cap_fraction": 0.30,
+      "per_target_cap_flat": 0.0
+    }
+  },
+  "total_boss_cap": 0.09,
+  "cleanup_policy": {"strategy_id": "activation_owned", "params": {}}
+}
