@@ -1,9 +1,10 @@
 # Soldier weapon ultimate presentation pack
 
-This class-local package supplies authored presentation timelines for the frozen
-`soldier/soldier_rifle`, `soldier/soldier_grenade` and `soldier/soldier_bayonet`
-ultimate profiles. It does not change gameplay, balancing, profile data, the
-shared presentation manifest, or runtime adapter ownership.
+This reference pack covers the class-local mechanics and the separately authored
+presentation timelines for `soldier/soldier_rifle`, `soldier/soldier_grenade`
+and `soldier/soldier_bayonet`. FAN-1469 adds only exact Soldier overlay/script
+pairs and focused tests; it does not change the shared presentation manifest,
+presentation scenes, runtime adapter, registry, controller, or executor library.
 
 `manifest.json` is the provenance and timing source for this package. Every
 timeline covers the five required presentation groups of
@@ -14,10 +15,32 @@ and points at the immutable Cast phase IDs of
 `cancel→cleanup`). The longest timeline ends at 9.1 seconds, below the contract
 limit of 10.0 seconds.
 
-Numeric telegraph and damage windows are deliberately absent: all three Soldier
-profiles on this base carry `implementation_state="declared"`,
-`strategy_id="unbound"` and `params={}`. Mechanics card FAN-1469 introduces the
-numbers and joins them to this package by `phase_id`, not by timestamp.
+The immutable base catalog still carries `implementation_state="declared"`,
+`strategy_id="unbound"`, `params={}` and `legacy_class_ultimate` fallback for
+all three profiles. Package discovery overlays the exact Soldier pairs as
+`ready`; live catalog binding remains owned by FAN-1541. Mechanics consume the
+authored phase rhythm without changing the presentation timestamps.
+
+## Mechanics package
+
+- Rifle captures one aim, selects the first dense formation and cuts a
+  three-seat corridor through it. Three `aimed_sequence` volleys resolve over
+  the authored active window, followed by activation-owned recovery to 5.6 s.
+- Grenade lays seven deterministic annulus points with seed `1469`, deploys
+  seven temporary nodes, then detonates them outside-in. A three-tick central
+  crater closes the chain; the complete activation lasts 8.4 s.
+- Bayonet selects an 18-seat aimed corridor and sends three time-offset ranks.
+  Normal targets receive full displacement and pin, epic targets receive 25%
+  displacement and half duration without lock, and bosses receive no
+  displacement and quarter duration without lock. The activation also owns a
+  25% frontal guard until cleanup at 4.25 s.
+
+All damage flows through `UltimateActivation`, so attempted damage is clamped by
+the inherited 9% whole-activation boss budget and attribution records only HP
+actually removed. Per-target ledgers make grenade detonation and bayonet ranks
+idempotent. Charge spending, the one-activation-per-encounter gate, persistence,
+active-window earning lockout, temporary nodes, statuses, tweens, and modifiers
+remain owned by the existing shared primitives.
 
 The three assets use intentionally different visual language and rhythm:
 
@@ -58,6 +81,12 @@ FAN-1541.
 ## Focused verification
 
 ```bash
+python3 tools/godot_gate.py --headless --path . \
+  --script res://tests/ultimates/soldier_package_test.gd
+python3 tools/godot_gate.py --headless --path . \
+  --script res://tests/ultimates/soldier_runtime_test.gd
+python3 tools/godot_gate.py --headless --path . \
+  --script res://tests/ultimates/soldier_balance_test.gd
 python3 tools/godot_gate.py --headless --path . \
   --script res://tests/ultimates/presentation/soldier_ultimate_timelines.gd
 ```
