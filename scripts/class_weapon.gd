@@ -2158,11 +2158,9 @@ func _end_plague_infection(enemy_id: int) -> void:
 func _fire_saw_sector(owner_node: Node2D, direction: Vector2) -> void:
 	var slash := AttackVfx.slash(owner_node, direction, attack_range, visual_color)
 	_register_effect(slash)
-	var params_raw = owner_node.get("derived_parameters")
-	var params: Dictionary = params_raw if params_raw is Dictionary else {}
-	# Ширина дуги растёт от секторных улучшений (+«Зубья костяной пилы»).
+	# cone_degrees уже масштабирован Player единым множителем области атаки.
 	var cone_effective := clampf(
-		cone_degrees * maxf(float(params.get("sector_multiplier", 1.0)), 0.1) * (1.0 + _owner_mod("saw_arc_width_mult")),
+		cone_degrees * (1.0 + _owner_mod("saw_arc_width_mult")),
 		20.0, 360.0)
 	var half_angle := deg_to_rad(cone_effective * 0.5)
 	var candidates := []

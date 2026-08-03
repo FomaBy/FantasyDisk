@@ -34,20 +34,14 @@ const DERIVED_STAT_ORDER := [
 	"defense",
 	"absorb",
 	"health_point",
-	"knockback_distance",
 	"summon_amount",
-	"attack_range",
-	"range_multiplier",
 	"regeneration",
 	"vampiric_amount",
 	"vampiric_chance",
 	"dot_damage",
 	"dot_speed",
 	"aoe_radius",
-	"aura_radius",
-	"buff_power",
 	"knockback_power",
-	"projectile_speed",
 	"ultimate_multiplier",
 	"pickup_radius",
 ]
@@ -68,20 +62,14 @@ const DERIVED_BASE_DEPENDENCIES := {
 	"defense": [ENDURANCE],
 	"absorb": [ENDURANCE],
 	"health_point": [ENDURANCE],
-	"knockback_distance": [ENDURANCE, LEADERSHIP],
 	"summon_amount": [INTELLIGENCE, ENERGY, KNOWLEDGE, LEADERSHIP],
-	"attack_range": [INTELLIGENCE, PERCEPTION, ENDURANCE, LEADERSHIP],
-	"range_multiplier": [],
 	"regeneration": [KNOWLEDGE],
 	"vampiric_amount": [],
 	"vampiric_chance": [],
 	"dot_damage": [KNOWLEDGE],
 	"dot_speed": [AGILITY, ENERGY, KNOWLEDGE],
 	"aoe_radius": [INTELLIGENCE, PERCEPTION, KNOWLEDGE, LEADERSHIP],
-	"aura_radius": [PERCEPTION, ENERGY, KNOWLEDGE, LEADERSHIP],
-	"buff_power": [ENERGY, KNOWLEDGE, LEADERSHIP],
-	"knockback_power": [ENDURANCE, LEADERSHIP],
-	"projectile_speed": [AGILITY, PERCEPTION, ENERGY, KNOWLEDGE],
+	"knockback_power": [STRENGTH],
 	"ultimate_multiplier": [STRENGTH, AGILITY, INTELLIGENCE, PERCEPTION, ENERGY, KNOWLEDGE, ENDURANCE, LEADERSHIP],
 	"pickup_radius": [PERCEPTION],
 }
@@ -256,16 +244,6 @@ const STAT_DEFINITIONS := {
 		"influences": "Выносливость и награды на максимальное здоровье.",
 		"format": "integer",
 	},
-	"knockback_distance": {
-		"name_ru": "Отталкивание",
-		"name_en": "Knockback Distance",
-		"type": "derived",
-		"description": "Отображаемая дистанция отталкивания врагов.",
-		"formula": "(Отталкивание оружия + Выносливость × 4 + Лидерство × 3) × множитель отталкивания × Выносливость / 20.",
-		"influences": "Выносливость, Лидерство и оружейные эффекты.",
-		"format": "decimal",
-		"default_value": 0.0,
-	},
 	"summon_amount": {
 		"name_ru": "Сила призыва",
 		"name_en": "Summon Amount",
@@ -274,25 +252,6 @@ const STAT_DEFINITIONS := {
 		"formula": "Лидерство + Знание × 0,18 + Интеллект × 0,12 + Энергия × 0,10 + бонус призывов.",
 		"influences": "Лидерство, Знание, Интеллект, Энергия и награды на призывы.",
 		"format": "integer",
-	},
-	"attack_range": {
-		"name_ru": "Дальность атаки",
-		"name_en": "Attack Range",
-		"type": "derived",
-		"description": "Дальность текущей атаки/оружия.",
-		"formula": "(Дальность оружия + Восприятие × 2,5 + Интеллект × вес оружия + Выносливость × 0,25 + Лидерство × 0,35) × множитель дальности.",
-		"influences": "Интеллект, Восприятие, Выносливость, Лидерство, оружие и множитель дальности.",
-		"format": "units",
-	},
-	"range_multiplier": {
-		"name_ru": "Множитель дальности",
-		"name_en": "Range Multiplier",
-		"type": "derived",
-		"description": "Множитель дальности атак. Изменяется наградами текущего забега.",
-		"formula": "Множитель дальности текущего забега; без наград значение равно 100%.",
-		"influences": "Награды и артефакты на дальность.",
-		"format": "percent_from_one",
-		"default_value": 1.0,
 	},
 	"regeneration": {
 		"name_ru": "Регенерация",
@@ -353,43 +312,13 @@ const STAT_DEFINITIONS := {
 		"influences": "Интеллект, Восприятие, Знание, Лидерство, профиль оружия и награды на радиус области.",
 		"format": "units",
 	},
-	"aura_radius": {
-		"name_ru": "Радиус",
-		"name_en": "Radius",
-		"type": "derived",
-		"description": "Радиус атак, зон, аур, усилителей и пульсовых эффектов.",
-		"formula": "(Радиус оружия + вклад Лидерства, Восприятия, Энергии и Знания + плоская прибавка) × множитель радиуса.",
-		"influences": "Лидерство, Восприятие, Энергия, Знание, оружие и награды на радиус.",
-		"format": "units",
-		"default_value": 0.0,
-	},
-	"buff_power": {
-		"name_ru": "Сила бафа",
-		"name_en": "Buff Power",
-		"type": "derived",
-		"description": "Сила будущих бафов, аур и командных эффектов.",
-		"formula": "1 + Лидерство × 0,025 + Знание × 0,006 + Энергия × 0,004 + плоская прибавка.",
-		"influences": "Лидерство, Знание, Энергия, предметы и ауры.",
-		"format": "multiplier",
-		"default_value": 1.0,
-	},
 	"knockback_power": {
 		"name_ru": "Сила отталкивания",
 		"name_en": "Knockback Power",
 		"type": "derived",
 		"description": "Сила отталкивания от баса, волн и тяжелых ударов.",
-		"formula": "(Отталкивание оружия + Выносливость × 4 + Лидерство × 3) × множитель отталкивания.",
-		"influences": "Выносливость, Лидерство, оружие и награды на отталкивание.",
-		"format": "units",
-		"default_value": 0.0,
-	},
-	"projectile_speed": {
-		"name_ru": "Скорость снарядов",
-		"name_en": "Projectile Speed",
-		"type": "derived",
-		"description": "Скорость снарядов и стабильность дальнего оружия.",
-		"formula": "Скорость оружия + Восприятие × 18 + Ловкость × 9 + Энергия × 4 + Знание × 2 + плоская прибавка.",
-		"influences": "Восприятие, Ловкость, Энергия, Знание и дальнобойное оружие.",
+		"formula": "(Отталкивание оружия + Сила × 4) × множитель отталкивания.",
+		"influences": "Сила, оружие и награды на отталкивание.",
 		"format": "units",
 		"default_value": 0.0,
 	},
@@ -523,10 +452,6 @@ static func health_points(stats: Dictionary, default_health: float, addition := 
 	return default_health * float(stats.get(ENDURANCE, 1.0)) / 4.0 + addition
 
 
-static func attack_range(default_range: float, addition := 0.0) -> float:
-	return default_range + addition
-
-
 static func stat_sections_for_player(player: Node) -> Dictionary:
 	var stats_raw: Variant = player.get("stats")
 	var parameters_raw: Variant = player.get("derived_parameters")
@@ -544,8 +469,6 @@ static func stat_sections_for_player(player: Node) -> Dictionary:
 		var raw_value: Variant = null
 		if parameters.has(stat_id):
 			raw_value = parameters[stat_id]
-		elif stat_id == "range_multiplier":
-			raw_value = modifiers.get("range_multiplier", STAT_DEFINITIONS[stat_id].get("default_value", null))
 		else:
 			raw_value = STAT_DEFINITIONS[stat_id].get("default_value", null)
 		derived_entries.append(_entry_for_stat(str(stat_id), raw_value))

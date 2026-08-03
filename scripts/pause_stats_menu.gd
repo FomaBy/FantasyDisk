@@ -2109,15 +2109,15 @@ func _compact_value_text(entry: Dictionary) -> String:
 		return "N/A"
 	var value := float(raw_value)
 	var stat_id := str(entry.get("id", ""))
-	if stat_id in ["crit_chance", "dodge", "defense", "vampiric_chance", "range_multiplier"]:
+	if stat_id in ["crit_chance", "dodge", "defense", "vampiric_chance"]:
 		return "%d%%" % int(round(value * 100.0))
-	if stat_id in ["crit_damage_multiplier", "ultimate_multiplier", "buff_power"]:
+	if stat_id in ["crit_damage_multiplier", "ultimate_multiplier"]:
 		return ("×%.2f" % value).replace(".", ",")
 	if stat_id in ["attack_speed", "dot_speed", "regeneration"]:
 		return ("%.2f/с" % value).replace(".", ",")
 	if str(entry.get("type", "derived")) == "base" and is_equal_approx(value, roundf(value)):
 		return str(int(round(value)))
-	if stat_id in ["attack_range", "aoe_radius", "aura_radius", "projectile_speed", "knockback_distance", "knockback_power", "move_speed", "pickup_radius"]:
+	if stat_id in ["aoe_radius", "knockback_power", "move_speed", "pickup_radius"]:
 		return str(int(round(value)))
 	return ("%.1f" % value).replace(".", ",")
 
@@ -2193,7 +2193,7 @@ func _value_color(entry: Dictionary) -> Color:
 				return VALUE_HIGH
 			if value <= 0.06:
 				return VALUE_LOW
-		"attack_range", "aoe_radius", "pickup_radius":
+		"aoe_radius", "pickup_radius":
 			return VALUE_HIGH if value >= 250.0 else VALUE_EFFECTIVE
 
 	return VALUE_NEUTRAL

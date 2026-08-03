@@ -76,7 +76,7 @@ func _test_player_aura_applies_in_radius(errors: Array) -> void:
 		weapon.set_process(false)
 	player.set("derived_parameters", {
 		"aura_radius": 240.0,
-		"buff_power": 1.4,
+		"support_multiplier": 1.4,
 		"move_speed": player.get("speed"),
 		"health_point": player.get("max_health"),
 	})

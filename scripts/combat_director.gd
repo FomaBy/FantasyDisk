@@ -1454,7 +1454,7 @@ func _restore_player_snapshot(player: Node) -> void:
 	game.selected_weapon_id = str(game.run_player_snapshot.get("weapon_id", game.selected_weapon_id))
 	player.configure_character(game.selected_character_id)
 	player.set("stats", (game.run_player_snapshot.get("stats", {}) as Dictionary).duplicate(true))
-	player.set("run_modifiers", (game.run_player_snapshot.get("run_modifiers", {}) as Dictionary).duplicate(true))
+	player.set("run_modifiers", ProgressionData.sanitize_run_modifiers((game.run_player_snapshot.get("run_modifiers", {}) as Dictionary)))
 	player.set("artifacts", (game.run_player_snapshot.get("artifacts", []) as Array).duplicate(true))
 	player.set("xp", int(game.run_player_snapshot.get("xp", 0)))
 	player.set("xp_to_next", int(game.run_player_snapshot.get("xp_to_next", 5)))

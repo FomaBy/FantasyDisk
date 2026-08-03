@@ -296,9 +296,7 @@ static func _default_run_modifiers() -> Dictionary:
 		# SCRUM-976: отдельный final-layer вне softcap release-баланса.
 		"sandbox_player_damage_multiplier": 1.0,
 		"sandbox_player_attack_speed_multiplier": 1.0,
-		"range_multiplier": 1.0,
 		"aoe_radius_multiplier": 1.0,
-		"sector_multiplier": 1.0,
 		"move_speed_multiplier": 1.0,
 		"max_health_multiplier": 1.0,
 		"summon_bonus": 0.0,
@@ -1181,8 +1179,8 @@ func take_damage(amount: float, _source := "", attacker: Node2D = null) -> bool:
 
 # SCRUM-894 «Теневая завеса»: самоцентричная аура уворота Ассасина (не саппорт
 # союзников). Бонус действует ТОЛЬКО под ближним прессингом — когда враг внутри
-# derived aura_radius (радиус растёт от aura_radius-статов, величина — от
-# buff_power через ProgressionData.class_veil_dodge_bonus с жёстким капом).
+# derived aura_radius (радиус растёт от единой области атаки, величина — от
+# support_multiplier через ProgressionData.class_veil_dodge_bonus с жёстким капом).
 # Итоговый шанс уворота всё равно зажат SURVIVABILITY_DODGE_CAP — бессмертия
 # на высоком доджe нет, дальние выстрелы без прессинга бонуса не получают.
 func current_dodge_chance() -> float:
@@ -1190,7 +1188,7 @@ func current_dodge_chance() -> float:
 
 
 func assassin_veil_dodge_bonus() -> float:
-	return ProgressionData.class_veil_dodge_bonus(character_id, float(derived_parameters.get("buff_power", 1.0)))
+	return ProgressionData.class_veil_dodge_bonus(character_id, float(derived_parameters.get("support_multiplier", 1.0)))
 
 
 func assassin_veil_radius() -> float:
@@ -1677,8 +1675,6 @@ func meta_radius_multiplier(context := {}) -> float:
 		multiplier *= maxf(0.1, 1.0 + float(run_modifiers.get("prism_rift_radius_mult", 0.0)))
 	if mode in ["beam", "dot_beam"] or wid in ["dark_beam", "void_ray"]:
 		multiplier *= maxf(0.1, 1.0 + float(run_modifiers.get("explosion_radius_mult", 0.0)))
-	if bool(ctx.get("is_sound", false)):
-		multiplier *= 1.0 + float(run_modifiers.get("guitar_aura_radius_mult", 0.0))
 	if bool(ctx.get("is_cloud", false)):
 		multiplier *= 1.0 + float(run_modifiers.get("cloud_detonation_radius_mult", 0.0))
 	if bool(ctx.get("is_briar", false)):
@@ -1894,6 +1890,8 @@ func apply_reward(reward: Dictionary) -> void:
 func _apply_reward_mods(mods: Dictionary, allow_generic_sustain := false) -> void:
 	var sustain_blocked := blocks_generic_sustain() and not allow_generic_sustain
 	for modifier_id in mods.keys():
+		if ProgressionData.is_removed_progression_modifier(str(modifier_id)):
+			continue
 		if sustain_blocked and ProgressionData.is_blocked_sustain_mod_key(str(modifier_id)):
 			continue
 		if modifier_id.ends_with("_multiplier"):
@@ -1933,9 +1931,7 @@ const META_SKILL_MULT_MAP := {
 	"attack_speed_mult": "attack_speed_multiplier",
 	"move_speed_mult": "move_speed_multiplier",
 	"max_health_mult": "max_health_multiplier",
-	"range_mult": "range_multiplier",
 	"aoe_radius_mult": "aoe_radius_multiplier",
-	"aura_radius_mult": "aoe_radius_multiplier",
 	"knockback_mult": "knockback_multiplier",
 	"xp_gain_mult": "xp_gain_multiplier",
 	"money_gain_mult": "money_gain_multiplier",
@@ -1958,8 +1954,6 @@ const META_SKILL_FLAT_MAP := {
 	"crit_chance_flat": "crit_chance_flat",
 	"crit_damage_flat": "crit_damage_flat",
 	"dot_damage_flat": "dot_damage_flat",
-	"aura_radius_flat": "aura_radius_flat",
-	"buff_power_flat": "buff_power_flat",
 	"vampiric_chance_flat": "vampiric_chance_flat",
 	"vampiric_amount_flat": "vampiric_amount_flat",
 	"summon_bonus": "summon_bonus",
@@ -1969,7 +1963,6 @@ const META_SKILL_FLAT_MAP := {
 	# SCRUM-807: разведены под классовые ветви Skill Tree 3.0 (те же run-ключи,
 	# что использует докачка уровней — progression_data.derived_parameters).
 	"pickup_radius_flat": "pickup_radius_flat",
-	"projectile_speed_flat": "projectile_speed_flat",
 	"absorb_flat": "absorb_flat",
 	# SCRUM-828 (Мета 4.0): механики звёзд-техник и скрытых звёзд созвездий.
 	# Все ключи уже консумятся артефакт-триггерами player.gd (SCRUM-500):
@@ -2013,7 +2006,6 @@ const META_SKILL_FLAT_MAP := {
 	"direct_damage_mult": "direct_damage_mult",
 	"beam_duration_mult": "beam_duration_mult",
 	"explosion_radius_mult": "explosion_radius_mult",
-	"guitar_aura_radius_mult": "guitar_aura_radius_mult",
 	"riff_streak_damage_bonus": "riff_streak_damage_bonus",
 	"crit_execute_threshold": "crit_execute_threshold",
 	"shadow_burst_invisibility_time": "shadow_burst_invisibility_time",
@@ -3016,14 +3008,14 @@ func _apply_dot_tick(enemy_id: int, tick_damage: float) -> void:
 func _trigger_class_status_effects(enemy: Node2D) -> void:
 	if enemy == null or not is_instance_valid(enemy):
 		return
-	var buff_power := float(derived_parameters.get("buff_power", 1.0))
+	var support_multiplier := float(derived_parameters.get("support_multiplier", 1.0))
 	match character_id:
 		"dark_mage", "elementalist":
 			StatusEffects.apply_status(enemy, "arcane_vulnerability", {
 				"duration": 2.6,
 				"max_stacks": 2,
 				"stack_mode": "add",
-				"damage_taken_multiplier": 1.0 + minf(0.045 * buff_power, 0.075),
+				"damage_taken_multiplier": 1.0 + minf(0.045 * support_multiplier, 0.075),
 				"marker_color": Color(0.72, 0.42, 1.0, 1.0),
 			})
 		"chemist", "doctor", "assassin", "biologist":
@@ -3055,11 +3047,11 @@ func _update_class_status_auras() -> void:
 	if character_id not in ["guitarist", "druid", "engineer", "priest"]:
 		return
 	var aura_radius := clampf(float(derived_parameters.get("aura_radius", 160.0)) * 0.62, 120.0, 280.0)
-	var buff_power := float(derived_parameters.get("buff_power", 1.0))
+	var support_multiplier := float(derived_parameters.get("support_multiplier", 1.0))
 	var applied := false
 	StatusEffects.apply_status(self, "class_aura_focus", {
 		"duration": 0.85,
-		"speed_multiplier": 1.0 + minf(0.018 * buff_power, 0.035),
+		"speed_multiplier": 1.0 + minf(0.018 * support_multiplier, 0.035),
 	})
 	for ally in get_tree().get_nodes_in_group("allies"):
 		var ally_node := ally as Node2D
@@ -3071,8 +3063,8 @@ func _update_class_status_auras() -> void:
 			continue
 		StatusEffects.apply_status(ally_node, "command_aura", {
 			"duration": 0.85,
-			"damage_multiplier": 1.0 + minf(0.055 * buff_power, 0.12),
-			"speed_multiplier": 1.0 + minf(0.025 * buff_power, 0.05),
+			"damage_multiplier": 1.0 + minf(0.055 * support_multiplier, 0.12),
+			"speed_multiplier": 1.0 + minf(0.025 * support_multiplier, 0.05),
 			"marker_color": Color(0.50, 0.88, 1.0, 1.0),
 		})
 		applied = true
@@ -3081,12 +3073,12 @@ func _update_class_status_auras() -> void:
 			StatusEffects.apply_status(enemy_node, "command_pressure", {
 				"duration": 0.85,
 				"speed_multiplier": 0.93,
-				"damage_taken_multiplier": 1.0 + minf(0.018 * buff_power, 0.035),
+				"damage_taken_multiplier": 1.0 + minf(0.018 * support_multiplier, 0.035),
 				"marker_color": Color(0.42, 0.78, 1.0, 1.0),
 			})
 			applied = true
 	if character_id == "priest":
-		heal_percent(minf(0.0015 * buff_power, 0.004))
+		heal_percent(minf(0.0015 * support_multiplier, 0.004))
 		applied = true
 	if applied:
 		AttackVfx.ring_pulse(_vfx_parent(), global_position, aura_radius, Color(0.44, 0.82, 1.0, 0.20), false)
@@ -3098,7 +3090,7 @@ func _update_class_status_auras() -> void:
 # хардкода класса): полупрозрачное кольцо показывает фактический радиус,
 # внутри баффаются ТОЛЬКО сам Друид и ЕГО призывы (группа "allies" с
 # owner_node == self). Враги и чужие сущности статус не получают.
-#   - величина баффа = wild_aura_damage_bonus × buff_power, кап wild_aura_damage_cap
+#   - величина баффа = wild_aura_damage_bonus × support_multiplier, кап wild_aura_damage_cap
 #     (ProgressionData.class_wild_aura_damage_bonus — то же значение видит бюджет);
 #   - радиус = derived aura_radius × wild_aura_radius_ratio;
 #   - призывы: статус "wild_force_aura" → StatusEffects.damage_multiplier в
@@ -3125,7 +3117,7 @@ class WildForceAuraRing extends Node2D:
 
 
 func wild_aura_damage_bonus() -> float:
-	return ProgressionData.class_wild_aura_damage_bonus(character_id, float(derived_parameters.get("buff_power", 1.0)))
+	return ProgressionData.class_wild_aura_damage_bonus(character_id, float(derived_parameters.get("support_multiplier", 1.0)))
 
 
 # Множитель исходящего урона владельца ауры (Друид всегда внутри своего кольца).
@@ -3580,6 +3572,8 @@ func _apply_weapon_scaling(weapon: Node) -> void:
 	var weapon_id_value := str(meta_context.get("weapon_id", ""))
 	var constellation_attack_speed := constellation_weapon_multiplier(weapon_id_value, "weapon_attack_speed_mult")
 	var constellation_geometry := constellation_weapon_geometry_multiplier(weapon_id_value)
+	var geometry_capabilities: Array = weapon_config.get("geometry_capabilities", [])
+	var attack_area_multiplier := float(derived_parameters.get("attack_area_multiplier", 1.0)) * constellation_geometry
 
 	if weapon.get("damage") != null:
 		var damage_parameter := "damage"
@@ -3612,24 +3606,23 @@ func _apply_weapon_scaling(weapon: Node) -> void:
 
 	if weapon.get("attack_range") != null:
 		var base_attack_range := float(weapon.get_meta("base_attack_range"))
-		var scaled_attack_range := float(derived_parameters.get("attack_range", base_attack_range)) * constellation_geometry
-		weapon.set("attack_range", scaled_attack_range)
-		var width_scale: float = scaled_attack_range / max(base_attack_range, 1.0)
-		if weapon.get("inner_width") != null:
-			weapon.set("inner_width", float(weapon.get_meta("base_inner_width")) * min(width_scale, 1.35))
-		if weapon.get("outer_width") != null:
-			weapon.set("outer_width", float(weapon.get_meta("base_outer_width")) * width_scale)
+		weapon.set("attack_range", base_attack_range)
 
-	if weapon.get("aoe_radius") != null:
-		weapon.set("aoe_radius", float(derived_parameters.get("aoe_radius", weapon.get_meta("base_aoe_radius", 200.0))) * meta_radius_multiplier(meta_context) * constellation_geometry)
+	if geometry_capabilities.has("aoe_radius") and weapon.get("aoe_radius") != null:
+		weapon.set("aoe_radius", float(weapon.get_meta("base_aoe_radius", 200.0)) * attack_area_multiplier * meta_radius_multiplier(meta_context))
+	if geometry_capabilities.has("inner_width") and weapon.get("inner_width") != null:
+		weapon.set("inner_width", float(weapon.get_meta("base_inner_width")) * attack_area_multiplier)
+	if geometry_capabilities.has("outer_width") and weapon.get("outer_width") != null:
+		weapon.set("outer_width", float(weapon.get_meta("base_outer_width")) * attack_area_multiplier)
 
-	if weapon.get("sweep_degrees") != null and (weapon.get("attack_shape") == null or str(weapon.get("attack_shape")) != "circle"):
+	if geometry_capabilities.has("sweep_degrees") and weapon.get("sweep_degrees") != null:
 		var base_sweep_degrees := float(weapon.get_meta("base_sweep_degrees", weapon.get("sweep_degrees")))
-		var sector_multiplier := float(derived_parameters.get("sector_multiplier", 1.0))
-		weapon.set("sweep_degrees", clampf(base_sweep_degrees * sector_multiplier * constellation_geometry, 1.0, 360.0))
+		weapon.set("sweep_degrees", clampf(base_sweep_degrees * attack_area_multiplier, 1.0, 360.0))
+	if geometry_capabilities.has("cone_degrees") and weapon.get("cone_degrees") != null:
+		weapon.set("cone_degrees", clampf(float(weapon.get_meta("base_cone_degrees")) * attack_area_multiplier, 1.0, 360.0))
 
 	if weapon.get("projectile_speed") != null:
-		weapon.set("projectile_speed", float(derived_parameters.get("projectile_speed", weapon.get_meta("base_projectile_speed", 520.0))))
+		weapon.set("projectile_speed", float(weapon.get_meta("base_projectile_speed", 520.0)))
 
 	if weapon.get("knockback") != null:
 		var control_multiplier := constellation_weapon_multiplier(weapon_id_value, "control_sustain_value_mult") * constellation_weapon_multiplier(weapon_id_value, "hidden_defense_mastery_mult")
@@ -3647,14 +3640,14 @@ func _apply_weapon_scaling(weapon: Node) -> void:
 		charge_context["is_charged"] = float(weapon.get_meta("base_charge_seconds")) > 0.0
 		weapon.set("charge_seconds", maxf(0.0, float(weapon.get_meta("base_charge_seconds")) * meta_charge_time_multiplier(charge_context)))
 
-	if weapon.get("beam_width") != null and weapon.has_meta("base_beam_width"):
-		weapon.set("beam_width", float(weapon.get_meta("base_beam_width")) * max(float(derived_parameters.get("aoe_radius", 1.0)) / max(float(weapon.get_meta("base_aoe_radius", 1.0)), 1.0), 0.75))
+	if geometry_capabilities.has("beam_width") and weapon.get("beam_width") != null and weapon.has_meta("base_beam_width"):
+		weapon.set("beam_width", float(weapon.get_meta("base_beam_width")) * attack_area_multiplier)
 
-	if weapon.get("wave_width") != null and weapon.has_meta("base_wave_width"):
-		weapon.set("wave_width", float(weapon.get_meta("base_wave_width")) * max(float(derived_parameters.get("aoe_radius", 1.0)) / max(float(weapon.get_meta("base_aoe_radius", 1.0)), 1.0), 0.75))
+	if geometry_capabilities.has("wave_width") and weapon.get("wave_width") != null and weapon.has_meta("base_wave_width"):
+		weapon.set("wave_width", float(weapon.get_meta("base_wave_width")) * attack_area_multiplier)
 
-	if weapon.get("suppression_width") != null and weapon.has_meta("base_suppression_width"):
-		weapon.set("suppression_width", float(weapon.get_meta("base_suppression_width")) * max(float(derived_parameters.get("aoe_radius", 1.0)) / max(float(weapon.get_meta("base_aoe_radius", 1.0)), 1.0), 0.75))
+	if geometry_capabilities.has("suppression_width") and weapon.get("suppression_width") != null and weapon.has_meta("base_suppression_width"):
+		weapon.set("suppression_width", float(weapon.get_meta("base_suppression_width")) * attack_area_multiplier)
 
 	if weapon.get("max_summons") != null and str(weapon.get("attack_mode")) in ["engineer_sentry_link", "engineer_orbit_drone"]:
 		# SCRUM-905/906: у устройств Инженера предел парка считает сам кит от
@@ -3707,6 +3700,8 @@ func _capture_weapon_base_values(weapon: Node) -> void:
 		weapon.set_meta("base_aoe_radius", weapon.get("aoe_radius"))
 	if weapon.get("sweep_degrees") != null and not weapon.has_meta("base_sweep_degrees"):
 		weapon.set_meta("base_sweep_degrees", weapon.get("sweep_degrees"))
+	if weapon.get("cone_degrees") != null and not weapon.has_meta("base_cone_degrees"):
+		weapon.set_meta("base_cone_degrees", weapon.get("cone_degrees"))
 	if weapon.get("inner_width") != null and not weapon.has_meta("base_inner_width"):
 		weapon.set_meta("base_inner_width", weapon.get("inner_width"))
 	if weapon.get("outer_width") != null and not weapon.has_meta("base_outer_width"):
