@@ -186,6 +186,10 @@ by `executor.strategy_id`:
 A family that schedules its own tween expresses the whole cast length in that
 tween; the controller chains completion onto it rather than racing it with a
 parallel timer. A family that schedules nothing returns its lifetime instead.
+Activation-owned tweens measure that declared lifecycle in wall time: gameplay
+`Engine.time_scale` changes do not stretch their callbacks or natural cleanup.
+They remain bound to the pausable host, so a true `SceneTree.paused` freezes the
+cast and its callbacks until the tree resumes.
 
 ### Targeting, geometry and composition primitives
 

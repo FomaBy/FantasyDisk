@@ -719,6 +719,7 @@ func track_tween() -> Tween:
 	if _finished or host == null or not is_instance_valid(host) or not host.is_inside_tree():
 		return null
 	var tween := host.create_tween()
+	tween.set_ignore_time_scale(true)
 	_tweens.append(tween)
 	return tween
 
