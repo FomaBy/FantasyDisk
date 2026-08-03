@@ -16,8 +16,18 @@ limit of 10.0 seconds.
 
 Numeric telegraph and damage windows are deliberately absent: all three Soldier
 profiles on this base carry `implementation_state="declared"`,
-`strategy_id="unbound"` and `params={}`. Mechanics card FAN-1469 introduces the
-numbers and joins them to this package by `phase_id`, not by timestamp.
+`strategy_id="unbound"` and `params={}`. FAN-2067 keeps the ready numbers in
+the isolated staged package and joins them to this reference by `phase_id`, not
+by timestamp.
+
+FAN-2067 keeps the independently ready Soldier overlay/script pairs under the
+non-shipped `data/ultimates/staged/classes/soldier` and
+`scripts/ultimates/staged/classes/soldier` roots. The default shipped registry
+does not discover those roots, so all three profiles continue to resolve through
+`legacy_class_fallback` until FAN-1541. Focused tests may explicitly discover
+the staged exact pairs and inject one into the real `UltimatePlayerHost`; that
+isolated test seam does not alter shared routing or activate a package merely
+because its declaration exists.
 
 The three assets use intentionally different visual language and rhythm:
 
@@ -58,6 +68,14 @@ FAN-1541.
 ## Focused verification
 
 ```bash
+python3 tools/godot_gate.py --headless --path . \
+  --script res://tests/ultimates/soldier_package_test.gd
+python3 tools/godot_gate.py --headless --path . \
+  --script res://tests/ultimates/soldier_runtime_test.gd
+python3 tools/godot_gate.py --headless --path . \
+  --script res://tests/ultimates/soldier_balance_test.gd
+python3 tools/godot_gate.py --headless --path . \
+  --script res://tests/ultimates/soldier_player_integration_test.gd
 python3 tools/godot_gate.py --headless --path . \
   --script res://tests/ultimates/presentation/soldier_ultimate_timelines.gd
 ```
