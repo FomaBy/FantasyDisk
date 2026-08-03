@@ -1,6 +1,6 @@
 extends SceneTree
 
-## Fail-closed contract for the 51-profile executor audit.
+## Fail-closed contract for the registry-derived executor audit.
 ##
 ## Run:
 ## python3 tools/godot_gate.py --headless --path . \
@@ -10,19 +10,17 @@ const AUDIT_PATH := "res://docs/design/references/weapon_ultimates/executor_cont
 const PD := preload("res://scripts/progression_data.gd")
 const Registry := preload("res://scripts/ultimates/registry/weapon_ultimate_registry.gd")
 const Resolver := preload("res://scripts/ultimates/registry/weapon_ultimate_resolver.gd")
+const Schema := preload("res://scripts/ultimates/schema/weapon_ultimate_schema.gd")
+const Discovery := preload(
+	"res://scripts/ultimates/registry/weapon_ultimate_package_discovery.gd"
+)
 const Library := preload("res://scripts/ultimates/executors/ultimate_executor_library.gd")
-const Distinctness := preload("res://tests/ultimates/weapon_ultimate_distinctness_helper.gd")
 
 const CLASSIFICATIONS := [
 	"expressible_now",
 	"needs_param_generalization",
 	"needs_new_generic_primitive",
 ]
-const EXPECTED_CLASSIFICATION_COUNTS := {
-	"expressible_now": 0,
-	"needs_param_generalization": 6,
-	"needs_new_generic_primitive": 45,
-}
 
 
 func _initialize() -> void:
@@ -39,6 +37,8 @@ func _initialize() -> void:
 	var strategy_ids := Library.strategy_ids()
 	var audit_errors := _validate_audit(audit, canonical_pairs, strategy_ids)
 	_expect(audit_errors.is_empty(), "canonical audit must validate: %s" % str(audit_errors), errors)
+	_test_persisted_packages(registry, audit, canonical_pairs, errors)
+	_test_resolution_negative_matrix(registry, errors)
 
 	var missing_pair: Dictionary = audit.duplicate(true)
 	(missing_pair["profiles"] as Array).remove_at(0)
@@ -81,7 +81,6 @@ func _initialize() -> void:
 	)
 
 	_test_live_parameter_contract(errors)
-	_demo_sniper_in_memory_distinctness(registry, audit, errors)
 	_report(errors)
 
 
@@ -123,11 +122,7 @@ func _validate_audit(
 	var primitive_ids := _ids_from(audit.get("missing_generic_primitives", []))
 	var generalization_ids := _ids_from(audit.get("parameter_generalizations", []))
 	var seen := {}
-	var classification_counts: Dictionary = {
-		"expressible_now": 0,
-		"needs_param_generalization": 0,
-		"needs_new_generic_primitive": 0,
-	}
+	var classified_pairs := 0
 	var spotter: Dictionary = {}
 	for raw_entry in profiles:
 		if not raw_entry is Dictionary:
@@ -145,11 +140,12 @@ func _validate_audit(
 			errors.append("audit.pair.extra: %s" % key)
 
 		var classification := str(entry.get("classification", ""))
-		classification_counts[classification] = int(classification_counts.get(classification, 0)) + 1
 		if not CLASSIFICATIONS.has(classification):
 			errors.append("audit.classification.invalid: %s" % classification)
+		else:
+			classified_pairs += 1
 		var family := str(entry.get("executor_family", ""))
-		if key == "sniper/sniper_spotter_scope":
+		if str(entry.get("generalization_id", "")) == "aimed_sequence.marked_target_zone":
 			spotter = entry
 		if not strategy_ids.has(family):
 			errors.append("audit.executor_family.unknown: %s" % family)
@@ -198,10 +194,10 @@ func _validate_audit(
 		var key := str(raw_key)
 		if not seen.has(key):
 			errors.append("audit.pair.missing: %s" % key)
-	if classification_counts != EXPECTED_CLASSIFICATION_COUNTS:
+	if classified_pairs != canonical_pairs.size():
 		errors.append(
-			"audit.classification.counts: expected %s, got %s"
-			% [EXPECTED_CLASSIFICATION_COUNTS, classification_counts]
+			"audit.classification.counts: expected one valid classification per canonical pair, got %d"
+			% classified_pairs
 		)
 	_validate_spotter(spotter, errors)
 	return errors
@@ -235,6 +231,344 @@ func _validate_spotter(spotter: Dictionary, errors: Array[String]) -> void:
 	actual.sort()
 	if actual != expected:
 		errors.append("audit.spotter.missing_parameters: expected %s, got %s" % [expected, actual])
+
+
+func _test_persisted_packages(
+	registry,
+	audit: Dictionary,
+	canonical_pairs: Dictionary,
+	errors: Array[String]
+) -> void:
+	var package_keys: Array[String] = registry.package_pair_keys()
+	_expect(
+		registry.package_validation_errors().is_empty(),
+		"shipped package discovery must be valid: %s" % [registry.package_validation_errors()],
+		errors
+	)
+	_expect(
+		not package_keys.is_empty(),
+		"shipped package discovery must expose at least one exact-ready pair",
+		errors
+	)
+	var audited_pairs := _audit_pair_keys(audit)
+	var package_pairs := {}
+	var executor_paths := {}
+	for key in package_keys:
+		package_pairs[key] = true
+		var parts: Array = key.split("/", false)
+		_expect(parts.size() == 2, "package pair must have class/weapon identity: %s" % key, errors)
+		if parts.size() != 2:
+			continue
+		var class_id := str(parts[0])
+		var weapon_id := str(parts[1])
+		_expect(audited_pairs.has(key), "exact-ready pair is missing from the audit: %s" % key, errors)
+		var profile: Dictionary = registry.catalog_profile_for(class_id, weapon_id)
+		_expect(
+			str(profile.get("implementation_state", "")) == "ready",
+			"exact-ready pair must resolve a ready profile: %s" % key,
+			errors
+		)
+		var executor = registry.executor_for(class_id, weapon_id)
+		_expect(executor is GDScript, "exact-ready pair must load its executor: %s" % key, errors)
+		if not executor is GDScript:
+			continue
+		var executor_path := (executor as GDScript).resource_path
+		_expect(
+			executor_path == "res://scripts/ultimates/classes/%s/%s.gd" % [class_id, weapon_id],
+			"exact-ready pair must use its class-local executor: %s" % key,
+			errors
+		)
+		_expect(
+			not executor_paths.has(executor_path),
+			"exact-ready pair must not alias another executor: %s and %s"
+			% [key, executor_paths.get(executor_path, "")],
+			errors
+		)
+		executor_paths[executor_path] = key
+		var constants := (executor as GDScript).get_script_constant_map()
+		var expected_profile_id := "weapon_ultimate.profile.%s.%s" % [class_id, weapon_id]
+		var expected_executor_id := "weapon_ultimate.executor.%s.%s" % [class_id, weapon_id]
+		_expect(
+			str(constants.get("PROFILE_ID", "")) == expected_profile_id,
+			"executor PROFILE_ID must retain its own pair identity: %s" % key,
+			errors
+		)
+		_expect(
+			str(constants.get("EXECUTOR_ID", "")) == expected_executor_id,
+			"executor EXECUTOR_ID must retain its own pair identity: %s" % key,
+			errors
+		)
+		var executor_binding = profile.get("executor", {})
+		_expect(executor_binding is Dictionary, "ready profile must declare executor binding: %s" % key, errors)
+		if not executor_binding is Dictionary:
+			continue
+		_expect(
+			str((executor_binding as Dictionary).get("strategy_id", "")) == expected_executor_id,
+			"ready profile must bind its own executor identity: %s" % key,
+			errors
+		)
+		var normalized := Library.normalize_custom_params(
+			(executor_binding as Dictionary).get("params", {}),
+			(executor as GDScript).call("parameter_contract")
+		)
+		_expect(
+			(normalized["errors"] as Array).is_empty(),
+			"persisted exact-ready params must satisfy the executor contract: %s" % key,
+			errors
+		)
+		_expect(
+			registry.resolution_source(class_id, weapon_id) == Resolver.SOURCE_WEAPON_PROFILE,
+			"exact-ready pair must resolve through the weapon profile: %s" % key,
+			errors
+		)
+		var resolved: Dictionary = registry.resolve_executable(
+			class_id, weapon_id, PD.ultimate_config(class_id)
+		)
+		_expect(
+			str(resolved.get("class_id", "")) == class_id
+				and str(resolved.get("weapon_id", "")) == weapon_id,
+			"resolved executable must retain its exact pair identity: %s" % key,
+			errors
+		)
+
+	var non_ready_pairs := 0
+	for raw_key in canonical_pairs.keys():
+		var key := str(raw_key)
+		if package_pairs.has(key):
+			continue
+		var parts: Array = key.split("/", false)
+		if parts.size() != 2:
+			continue
+		var class_id := str(parts[0])
+		var weapon_id := str(parts[1])
+		var profile: Dictionary = registry.catalog_profile_for(class_id, weapon_id)
+		if str(profile.get("implementation_state", "")) == "ready":
+			_expect(
+				registry.resolution_source(class_id, weapon_id, false) == Resolver.SOURCE_UNAVAILABLE,
+				"ready data without an exact package must not resolve executable: %s" % key,
+				errors
+			)
+			continue
+		non_ready_pairs += 1
+		var legacy := PD.ultimate_config(class_id)
+		_expect(
+			registry.resolution_source(class_id, weapon_id) == Resolver.SOURCE_LEGACY_CLASS_FALLBACK,
+			"only a non-ready pair may use legacy fallback: %s" % key,
+			errors
+		)
+		_expect(
+			registry.resolve_executable(class_id, weapon_id, legacy) == legacy,
+			"non-ready pair must preserve its class fallback: %s" % key,
+			errors
+		)
+	_expect(
+		non_ready_pairs == canonical_pairs.size() - package_keys.size(),
+		"every canonical pair must be either discovered exact-ready or non-ready",
+		errors
+	)
+
+
+func _test_resolution_negative_matrix(registry, errors: Array[String]) -> void:
+	var package_keys: Array[String] = registry.package_pair_keys()
+	if package_keys.is_empty():
+		return
+	var selected_key: String = package_keys[0]
+	var selected_parts: Array = selected_key.split("/", false)
+	if selected_parts.size() != 2:
+		return
+	var selected_class := str(selected_parts[0])
+	var selected_weapon := str(selected_parts[1])
+	var profiles: Dictionary = registry.profiles_for_tests()
+	var executable_pairs := {selected_key: true}
+	var pairs: Dictionary = registry.canonical_pairs_for_tests()
+	_expect_unavailable(
+		profiles, pairs, selected_class, selected_weapon, {}, {},
+		"ready profile without its discovered executor must fail closed", errors
+	)
+	var declared_profiles := profiles.duplicate(true)
+	(declared_profiles[selected_key] as Dictionary)["implementation_state"] = "declared"
+	_expect_unavailable(
+		declared_profiles, pairs, selected_class, selected_weapon, {}, executable_pairs,
+		"non-ready profile must not use a false executor pair", errors
+	)
+
+	var same_class_weapons: Array[String] = registry.weapon_ids(selected_class)
+	var sibling_weapon := ""
+	for weapon_id in same_class_weapons:
+		if weapon_id != selected_weapon:
+			sibling_weapon = weapon_id
+			break
+	if not sibling_weapon.is_empty():
+		_expect_unavailable(
+			profiles, pairs, selected_class, sibling_weapon, {}, executable_pairs,
+			"sibling pair must not inherit another weapon executor", errors
+		)
+
+	var cross_class := ""
+	var cross_weapon := ""
+	for class_id in registry.class_ids():
+		if class_id == selected_class:
+			continue
+		var weapons: Array[String] = registry.weapon_ids(class_id)
+		if weapons.is_empty():
+			continue
+		cross_class = class_id
+		cross_weapon = weapons[0]
+		break
+	if not cross_class.is_empty():
+		_expect_unavailable(
+			profiles, pairs, cross_class, cross_weapon, {}, executable_pairs,
+			"cross-class pair must not inherit another class executor", errors
+		)
+
+	for invalid_pair in [
+		["__unknown_class__", "__unknown_weapon__"],
+		["__orphan_class__", "__orphan_weapon__"],
+	]:
+		var class_id := str(invalid_pair[0])
+		var weapon_id := str(invalid_pair[1])
+		var invalid_key := Resolver.profile_key(class_id, weapon_id)
+		var source := Resolver.resolution_source(
+			profiles, pairs, class_id, weapon_id, false, {invalid_key: true}
+		)
+		_expect(source == Resolver.SOURCE_INVALID_PAIR,
+			"unknown/orphan pair must fail closed: %s" % invalid_key, errors)
+		_expect(
+			Resolver.resolve_executable(profiles, pairs, class_id, weapon_id, {}, false, {invalid_key: true}).is_empty(),
+			"unknown/orphan pair must not resolve an executable: %s" % invalid_key,
+			errors
+		)
+
+	_test_discovery_mutations(registry, selected_key, selected_class, selected_weapon, errors)
+
+
+func _expect_unavailable(
+	profiles: Dictionary,
+	pairs: Dictionary,
+	class_id: String,
+	weapon_id: String,
+	legacy: Dictionary,
+	executable_pairs: Dictionary,
+	message: String,
+	errors: Array[String]
+) -> void:
+	_expect(
+		Resolver.resolution_source(
+			profiles, pairs, class_id, weapon_id, false, executable_pairs
+		) == Resolver.SOURCE_UNAVAILABLE,
+		"%s: %s/%s" % [message, class_id, weapon_id],
+		errors
+	)
+	_expect(
+		Resolver.resolve_executable(
+			profiles, pairs, class_id, weapon_id, legacy, false, executable_pairs
+		).is_empty(),
+		"%s must not return a profile: %s/%s" % [message, class_id, weapon_id],
+		errors
+	)
+
+
+func _test_discovery_mutations(
+	registry,
+	selected_key: String,
+	selected_class: String,
+	selected_weapon: String,
+	errors: Array[String]
+) -> void:
+	var base_profiles := Schema.index_documents(registry.documents_for_tests())
+	var relative_path := "%s/%s.json" % [selected_class, selected_weapon]
+	var document = JSON.parse_string(
+		FileAccess.get_file_as_string("res://data/ultimates/classes/%s" % relative_path)
+	)
+	var executor = load("res://scripts/ultimates/classes/%s/%s.gd" % [selected_class, selected_weapon])
+	_expect(document is Dictionary and executor is GDScript,
+		"selected package mutation fixture must load: %s" % selected_key, errors)
+	if not document is Dictionary or not executor is GDScript:
+		return
+	var base_profile: Dictionary = base_profiles.get(selected_key, {})
+	var discovery := Discovery.new()
+
+	var malformed := (document as Dictionary).duplicate(true)
+	malformed["implementation_state"] = "declared"
+	_expect_discovery_error(
+		discovery, malformed, relative_path, executor, base_profile, "package.implementation_state",
+		"malformed ready declaration must fail closed", errors
+	)
+
+	var incomplete := (document as Dictionary).duplicate(true)
+	var incomplete_params := incomplete["executor"]["params"] as Dictionary
+	if not incomplete_params.is_empty():
+		incomplete_params.erase(incomplete_params.keys()[0])
+	_expect_discovery_error(
+		discovery, incomplete, relative_path, executor, base_profile, "executor_params.missing",
+		"incomplete executor params must fail closed", errors
+	)
+
+	var sibling_weapon := ""
+	for weapon_id in registry.weapon_ids(selected_class):
+		if weapon_id != selected_weapon:
+			sibling_weapon = weapon_id
+			break
+	if not sibling_weapon.is_empty():
+		var alias := (document as Dictionary).duplicate(true)
+		var sibling_profile: Dictionary = registry.catalog_profile_for(selected_class, sibling_weapon)
+		var sibling_executor_id := str((sibling_profile["executor"] as Dictionary).get("executor_id", ""))
+		alias["executor_id"] = sibling_executor_id
+		(alias["executor"] as Dictionary)["strategy_id"] = sibling_executor_id
+		_expect_discovery_error(
+			discovery, alias, relative_path, executor, base_profile, "package.executor",
+			"aliased executor identity must fail closed", errors
+		)
+
+		var sibling := (document as Dictionary).duplicate(true)
+		sibling["weapon_id"] = sibling_weapon
+		_expect_discovery_error(
+			discovery, sibling, relative_path, executor, base_profile, "package.path_identity",
+			"sibling pair must fail closed", errors
+		)
+
+	var cross_class := ""
+	for class_id in registry.class_ids():
+		if class_id != selected_class:
+			cross_class = class_id
+			break
+	if not cross_class.is_empty():
+		var cross_class_document := (document as Dictionary).duplicate(true)
+		cross_class_document["class_id"] = cross_class
+		_expect_discovery_error(
+			discovery, cross_class_document, relative_path, executor, base_profile, "package.path_identity",
+			"cross-class pair must fail closed", errors
+		)
+
+
+func _expect_discovery_error(
+	discovery,
+	document: Dictionary,
+	relative_path: String,
+	executor,
+	base_profile: Dictionary,
+	prefix: String,
+	message: String,
+	errors: Array[String]
+) -> void:
+	var result: Dictionary = discovery.validate_pair(document, relative_path, executor, base_profile)
+	for validation_error in result["errors"]:
+		if str(validation_error).contains(prefix):
+			return
+	errors.append("%s: %s" % [message, result["errors"]])
+
+
+func _audit_pair_keys(audit: Dictionary) -> Dictionary:
+	var result := {}
+	var profiles = audit.get("profiles", [])
+	if not profiles is Array:
+		return result
+	for raw_entry in profiles:
+		if not raw_entry is Dictionary:
+			continue
+		var entry := raw_entry as Dictionary
+		result[Resolver.profile_key(str(entry.get("class_id", "")), str(entry.get("weapon_id", "")))] = true
+	return result
 
 
 func _test_live_parameter_contract(errors: Array[String]) -> void:
@@ -399,95 +733,6 @@ func _expect_param_error(
 	errors.append("%s; got %s" % [message, Library.validate_params(family, params)])
 
 
-## Exactly one class demonstrates the reusable in-memory contract technique.
-func _demo_sniper_in_memory_distinctness(registry, audit: Dictionary, errors: Array[String]) -> void:
-	var result := Distinctness.resolve_class_contracts(registry, audit, "sniper", _sniper_contracts())
-	_expect(
-		(result["errors"] as Array).is_empty(),
-		"sniper in-memory contracts must resolve distinctly: %s" % str(result["errors"]),
-		errors
-	)
-	_expect(
-		(result["contracts"] as Dictionary).size() == 3,
-		"sniper demonstration must resolve exactly three contracts",
-		errors
-	)
-	for weapon_id in registry.weapon_ids("sniper"):
-		_expect(
-			str(registry.resolution_source("sniper", weapon_id))
-				== Resolver.SOURCE_LEGACY_CLASS_FALLBACK,
-			"helper must not change persisted %s resolution" % weapon_id,
-			errors
-		)
-
-	var unknown_family := _sniper_contracts()
-	unknown_family["sniper_deadeye_rifle"]["executor_family"] = "__missing_family__"
-	_expect_distinctness_error(
-		registry, audit, unknown_family,
-		"sniper/sniper_deadeye_rifle executor_family.unknown:",
-		"unknown executor family must fail closed", errors
-	)
-
-	var unknown_parameter := _sniper_contracts()
-	unknown_parameter["sniper_deadeye_rifle"]["params"]["__unknown_param__"] = 1.0
-	_expect_distinctness_error(
-		registry, audit, unknown_parameter,
-		"sniper/sniper_deadeye_rifle executor_params.unknown:",
-		"unknown executor parameter must fail closed", errors
-	)
-
-	var invalid_parameter := _sniper_contracts()
-	invalid_parameter["sniper_deadeye_rifle"]["params"]["radius"] = "not-a-number"
-	_expect_distinctness_error(
-		registry, audit, invalid_parameter,
-		"sniper/sniper_deadeye_rifle executor_params.type:",
-		"invalid executor parameter must fail closed", errors
-	)
-
-	var audit_family_mismatch := _sniper_contracts()
-	audit_family_mismatch["sniper_deadeye_rifle"] = {
-		"executor_family": "burst",
-		"params": {"radius": 900.0, "damage": 3.0, "target_limit": 1},
-	}
-	_expect_distinctness_error(
-		registry, audit, audit_family_mismatch,
-		"sniper/sniper_deadeye_rifle executor_family.audit_mismatch:",
-		"audit/helper executor family mismatch must fail closed", errors
-	)
-
-
-func _sniper_contracts() -> Dictionary:
-	return {
-		"sniper_deadeye_rifle": {
-			"executor_family": "aimed_sequence",
-			"params": {"radius": 900.0, "damage": 3.0, "shot_count": 1, "interval": 0.05},
-		},
-		"sniper_spotter_scope": {
-			"executor_family": "aimed_sequence",
-			"params": {"radius": 620.0, "damage": 1.0, "shot_count": 9, "interval": 0.28},
-		},
-		"sniper_shatter_rounds": {
-			"executor_family": "aimed_sequence",
-			"params": {"radius": 760.0, "damage": 1.4, "shot_count": 5, "interval": 0.08},
-		},
-	}
-
-
-func _expect_distinctness_error(
-	registry,
-	audit: Dictionary,
-	contracts: Dictionary,
-	expected_prefix: String,
-	message: String,
-	errors: Array[String]
-) -> void:
-	var result := Distinctness.resolve_class_contracts(registry, audit, "sniper", contracts)
-	for validation_error in result["errors"]:
-		if str(validation_error).begins_with(expected_prefix):
-			return
-	errors.append("%s; got %s" % [message, result["errors"]])
-
-
 func _expect_error_code(
 	audit: Dictionary,
 	canonical_pairs: Dictionary,
@@ -511,8 +756,8 @@ func _report(errors: Array[String]) -> void:
 	if errors.is_empty():
 		print(
 			"executor_contract_audit_test: PASS "
-			+ "(51 exact pairs, three classifications, seven live families, "
-			+ "missing/extra/duplicate mutations rejected)."
+			+ "(registry-derived exact-ready pairs, non-ready fallback, "
+			+ "executor/discovery mutations rejected)."
 		)
 		quit(0)
 		return
