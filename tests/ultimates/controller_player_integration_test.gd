@@ -42,6 +42,12 @@ const SHIPPED_READY_WEAPONS := [
 const SHIPPED_LEGACY_PAIRS := 48
 
 
+## FAN-2044 deploy fixture: its untyped-compatible `owner_node` can hold the
+## real host adapter, which is what the primitive's ownership check verifies.
+class TemporaryDeployFixture extends Node2D:
+	var owner_node: Node = null
+
+
 class ReadyRegistry extends RefCounted:
 	var canonical_pairs: Dictionary = {}
 	var profiles: Dictionary = {}
@@ -86,6 +92,7 @@ func _initialize() -> void:
 	await _test_ready_declaration_runs_through_the_adapter()
 	await _test_new_run_drops_a_live_cast()
 	await _test_node_end_drops_a_live_cast()
+	await _test_new_run_drops_deploys_and_repair_state()
 
 	_holder.queue_free()
 	await process_frame
@@ -346,6 +353,51 @@ func _test_node_end_drops_a_live_cast() -> void:
 	_check(
 		is_equal_approx(float((player.get("run_modifiers") as Dictionary).get("absorb_flat", 0.0)), 0.0),
 		"leaving the tree must revert the transient modifier"
+	)
+
+	player.queue_free()
+	await process_frame
+
+
+## FAN-2044: a class executor that used the repair and temporary-deploy host
+## primitives inside a live cast must lose all of that state on a new run.
+func _test_new_run_drops_deploys_and_repair_state() -> void:
+	var player := await _spawn_player()
+	_check(_inject_ready_profile(player, FIXTURE_WEAPON, {
+		"strategy_id": "timed_modifier",
+		"params": {"duration": 30.0, "radius": 200.0, "modifiers": {}},
+	}, 0.1), "the ready holder fixture must satisfy the live contract")
+	player.set("ultimate_charge", float(player.get("ultimate_max_charge")))
+	_check(bool(player.call("activate_ultimate")), "the holder cast must start")
+	var controller = PlayerHost.for_player(player).controller()
+	var activation = controller.active_activation()
+	_check(activation != null, "the live cast must expose its activation")
+
+	var template := Node2D.new()
+	template.set_script(TemporaryDeployFixture)
+	var deploy_scene := PackedScene.new()
+	deploy_scene.pack(template)
+	template.free()
+	var deployed: Array[Node] = activation.deploy_temporary(deploy_scene, {}, 2)
+	_check(deployed.size() == 2, "a live cast must accept a temporary deploy")
+	for node in deployed:
+		_check(node.get("owner_node") == PlayerHost.for_player(player),
+			"a live deploy must attribute back to the real adapter")
+	_check(activation.configure_repair(12.0), "a live cast must accept a repair cap")
+	player.set("health", float(player.get("max_health")) - 6.0)
+	_check(
+		is_equal_approx(float(activation.repair(player, 20.0)["applied"]), 6.0),
+		"hero repair through the adapter must restore only the missing HP"
+	)
+
+	player.call("configure_character", FIXTURE_CLASS, FIXTURE_WEAPON)
+	await process_frame
+	_check(not controller.is_active(), "a new run must drop the holding cast")
+	for node in deployed:
+		_check(not is_instance_valid(node), "a new run must remove every temporary deploy")
+	_check(
+		activation.repair(player, 5.0)["applied"] == 0.0,
+		"repair state must not survive the new run"
 	)
 
 	player.queue_free()

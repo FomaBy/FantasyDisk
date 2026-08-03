@@ -3,8 +3,9 @@ extends Node
 ## Narrow Player-side adapter for the generic ultimate runtime.
 ##
 ## Everything the controller and the executor families need from the Player goes
-## through the ten `ultimate_host_*` methods below, which is what keeps them
-## free of class and weapon branches.
+## through the ten `ultimate_host_*` methods below — plus the optional repair
+## channel this adapter opts into — which is what keeps them free of class and
+## weapon branches.
 ##
 ## It lives as a child of the Player rather than as methods on `player.gd`:
 ## the repository's monolith ratchet asks for an integration boundary to be its
@@ -133,6 +134,32 @@ func ultimate_host_summons(group_id: String) -> Array:
 		if node != null and is_instance_valid(node) and node.get("owner_node") == player:
 			result.append(node)
 	return result
+
+
+## Optional repair channel (`UltimateActivation.HOST_REPAIR_METHOD`): only the
+## hero itself or a player-owned device — `owner_node` pointing at the Player,
+## or at this host for the activation's own temporary deploys — may be
+## repaired. Repair never resurrects and never exceeds max_health; the return
+## value is the HP actually restored, the same clamped-delta attribution the
+## damage path uses. The direct health write mirrors `_apply_regeneration`.
+func ultimate_host_repair(target: Node, amount: float) -> float:
+	if target == null or not is_instance_valid(target) \
+			or not is_finite(amount) or amount <= 0.0 \
+			or player == null or not is_instance_valid(player):
+		return 0.0
+	if target != player:
+		var device_owner = target.get("owner_node")
+		if device_owner != player and device_owner != self:
+			return 0.0
+	if target.get("health") == null or target.get("max_health") == null:
+		return 0.0
+	var before := float(target.get("health"))
+	var maximum := float(target.get("max_health"))
+	if before <= 0.0 or maximum <= 0.0:
+		return 0.0
+	var after := minf(before + amount, maximum)
+	target.set("health", after)
+	return maxf(after - before, 0.0)
 
 
 ## Routed through the Player so generic ultimate damage keeps the same

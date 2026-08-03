@@ -9,6 +9,8 @@ extends RefCounted
 ##
 ## The host contract is the ten `ultimate_host_*` methods listed in
 ## HOST_METHODS; `scripts/player.gd` implements them as a narrow adapter.
+## Repair is an optional extra channel: a host that exposes
+## HOST_REPAIR_METHOD opts in, every other host keeps repair failing closed.
 
 const DamageResult := preload("res://scripts/ultimates/controller/ultimate_damage_result.gd")
 const StatusEffects := preload("res://scripts/status_effects.gd")
@@ -18,6 +20,12 @@ const EPIC_GROUP := "elite_enemies"
 const OP_ADD := "add"
 const OP_MULTIPLY := "mul"
 const DAMAGE_SINK_PROPERTY := "ultimate_damage_sink"
+# Optional host channel: deliberately not part of HOST_METHODS, so existing
+# hosts keep passing host_supports() and repair stays default-off for them.
+const HOST_REPAIR_METHOD := "ultimate_host_repair"
+# The whole generic init contract of deploy_temporary(); unknown keys fail
+# the deploy closed before any node is created.
+const DEPLOY_INIT_KEYS := ["properties", "setup_method", "setup_args"]
 const HOST_METHODS := [
 	"ultimate_host_context",
 	"ultimate_host_position",
@@ -43,6 +51,8 @@ var _target_damage_budget: Dictionary = {}
 var _target_ledger: Dictionary = {}
 var _claimed_events: Dictionary = {}
 var _control_policy: Dictionary = {}
+var _repair_cap := 0.0
+var _repair_budget := 0.0
 var _summon_contract: Dictionary = {}
 var _summon_snapshots: Array = []
 var _tweens: Array[Tween] = []
@@ -540,6 +550,47 @@ func apply_control(
 	}
 
 
+## Opens the bounded repair budget for this activation. Declared once, like
+## the per-target damage cap: a repeat only agrees with the same value, and
+## without a configured cap every repair() fails closed.
+func configure_repair(total_cap: float) -> bool:
+	if _finished or not is_finite(total_cap) or total_cap <= 0.0:
+		return false
+	if _repair_cap > 0.0:
+		return is_equal_approx(_repair_cap, total_cap)
+	_repair_cap = total_cap
+	_repair_budget = total_cap
+	return true
+
+
+## Capped repair through the optional host channel. The host decides whether
+## the target is the hero or one of its own devices; the activation only
+## meters the budget. `applied` is the HP the target actually regained —
+## mirroring the applied-damage attribution — so overheal and a refused
+## foreign target spend nothing.
+func repair(target: Node, amount: float, event_id := "") -> Dictionary:
+	var requested := maxf(amount, 0.0) if is_finite(amount) else 0.0
+	var result := {"requested": requested, "applied": 0.0}
+	if _finished or requested <= 0.0 or _repair_budget <= 0.0 \
+			or target == null or not is_instance_valid(target) \
+			or host == null or not is_instance_valid(host) \
+			or not host.has_method(HOST_REPAIR_METHOD) \
+			or target.get("health") == null:
+		return result
+	if not event_id.is_empty() \
+			and not _claim_event("repair:%d:%s" % [target.get_instance_id(), event_id]):
+		return result
+	var granted := minf(requested, _repair_budget)
+	var before := maxf(float(target.get("health")), 0.0)
+	host.call(HOST_REPAIR_METHOD, target, granted)
+	if not is_instance_valid(target):
+		return result
+	var applied := clampf(float(target.get("health")) - before, 0.0, granted)
+	_repair_budget = maxf(_repair_budget - applied, 0.0)
+	result["applied"] = applied
+	return result
+
+
 func configure_summon_interaction(
 	group_id: String,
 	temporary_cap: int,
@@ -713,6 +764,77 @@ func spawn(scene_path: String) -> Node:
 	return node
 
 
+## Fail-closed temporary deploy: `count` instances of a declared scene, each
+## fully initialized off-tree through the generic init contract — ownership
+## attribution, declared `properties`, then the optional `setup_method` called
+## with `setup_args` (only an explicit `false` return rejects, so plain void
+## setup methods qualify). Any failure frees everything this call created and
+## nothing reaches the world; on success every node enters the host effect
+## parent, is registered like any other spawn and binds the damage sink, so
+## shutdown() removes the whole deploy with the rest of the cast.
+func deploy_temporary(scene: PackedScene, init: Dictionary = {}, count := 1) -> Array[Node]:
+	var created: Array[Node] = []
+	if _finished or count < 1 or scene == null \
+			or host == null or not is_instance_valid(host):
+		return created
+	for raw_key in init.keys():
+		if not DEPLOY_INIT_KEYS.has(str(raw_key)):
+			return created
+	var properties = init.get("properties", {})
+	var setup_method = init.get("setup_method", "")
+	var setup_args = init.get("setup_args", [])
+	if not properties is Dictionary or not setup_method is String or not setup_args is Array:
+		return created
+	if not _summon_contract.is_empty() \
+			and _spawned.size() + count > int(_summon_contract["temporary_cap"]):
+		return created
+	var parent = host.call("ultimate_host_effect_parent")
+	if not parent is Node or not is_instance_valid(parent):
+		return created
+	for _index in count:
+		var node := scene.instantiate()
+		if node != null:
+			created.append(node)
+		if node == null or not _initialize_deploy(
+			node, properties as Dictionary, str(setup_method), setup_args as Array
+		):
+			# Nothing entered the tree yet, so partial failure leaves no orphan.
+			for partial in created:
+				partial.free()
+			created.clear()
+			return created
+	for node in created:
+		(parent as Node).add_child(node)
+		_spawned.append(node)
+		bind_damage_sink(node)
+	return created
+
+
+# A typed property silently ignores a mismatched set(), so every write is
+# read back: a deploy whose ownership or declared setup did not actually land
+# is rejected instead of entering the world half-initialized.
+func _initialize_deploy(
+	node: Node, properties: Dictionary, setup_method: String, setup_args: Array
+) -> bool:
+	if "owner_node" in node:
+		node.set("owner_node", host)
+		if node.get("owner_node") != host:
+			return false
+	for raw_key in properties.keys():
+		var key := str(raw_key)
+		if not key in node:
+			return false
+		node.set(key, properties[raw_key])
+		if node.get(key) != properties[raw_key]:
+			return false
+	if setup_method.is_empty():
+		return true
+	if not node.has_method(setup_method):
+		return false
+	var outcome = node.callv(setup_method, setup_args)
+	return not (outcome is bool and outcome == false)
+
+
 ## Deferred damage sources (summons, deploys) opt into the activation budget by
 ## exposing an `ultimate_damage_sink` property; anything else is left untouched.
 func bind_damage_sink(node: Node) -> void:
@@ -761,6 +883,8 @@ func shutdown(free_presentation: bool) -> void:
 	_target_ledger.clear()
 	_claimed_events.clear()
 	_control_policy.clear()
+	_repair_cap = 0.0
+	_repair_budget = 0.0
 	_summon_contract.clear()
 	# Reverse order so stacked multiplicative modifiers unwind to the exact
 	# value they had before the cast.
