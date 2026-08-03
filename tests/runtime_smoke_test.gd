@@ -17,6 +17,9 @@ const RunAutosave := preload("res://scripts/run_autosave.gd")
 const FeedbackReporter := preload("res://scripts/feedback_reporter.gd")
 const HeroStatRadarScript := preload("res://scripts/ui/hero_stat_radar.gd")
 const GlobalTooltip := preload("res://scripts/ui/global_tooltip.gd")
+const UltimateHostScript := preload("res://scripts/ultimates/controller/ultimate_player_host.gd")
+const UltimateRegistryScript := preload("res://scripts/ultimates/registry/weapon_ultimate_registry.gd")
+const UltimateResolver := preload("res://scripts/ultimates/registry/weapon_ultimate_resolver.gd")
 const STANDARD_ACTION_BUTTON_HEIGHT := 104.0
 const HERO_SELECT_V4_BG := "res://assets/sprites/ui/hero_select_v4/background.png"
 const HERO_SELECT_V4_SOURCE_SIZE := Vector2(1536.0, 1024.0)
@@ -73,6 +76,48 @@ const EXPECTED_CODEX_CHARACTER_PORTRAIT_SIZE := Vector2(216.0, 216.0)
 const DUPLICATE_ARTIFACT_SKIP_DIRS := [".godot", ".git", "tmp", "node_modules"]
 const DUPLICATE_ARTIFACT_SKIP_PATH_PREFIXES := ["res://build/dmg"]
 const DUPLICATE_ARTIFACT_PATTERN := " 2(\\.|$)"
+# FAN-2054: телеграфируемый ультимейт бьёт не в кадре активации, а к объявленному
+# им сроку. Запас покрывает джиттер headless-кадра, потолок отсекает декларацию,
+# которая «объявила» задержку длиннее любого разумного каста.
+const ULTIMATE_TIMING_GRACE_SECONDS := 1.0
+const ULTIMATE_MAX_DECLARED_LIFETIME_SECONDS := 30.0
+const ULTIMATE_FIXTURE_CLASS := "chemist"
+const ULTIMATE_FIXTURE_WEAPON := "blast_powder"
+# Отложенная детонация: первый тик только на 0.2s, весь каст живёт 0.6s.
+const ULTIMATE_DELAYED_FIXTURE := {
+	"strategy_id": "status_zone",
+	"params": {
+		"radius": 600.0,
+		"damage": 1.0,
+		"duration": 0.6,
+		"interval": 0.2,
+		"follow_host": false,
+		"status_id": "",
+		"status": {},
+	},
+}
+const ULTIMATE_IMMEDIATE_FIXTURE := {
+	"strategy_id": "burst",
+	"params": {"radius": 600.0, "damage": 1.0, "target_limit": 0},
+}
+const ULTIMATE_MALFORMED_FIXTURES := [
+	{
+		"strategy_id": "status_zone",
+		"params": {
+			"radius": 600.0,
+			"damage": 1.0,
+			"duration": 0.6,
+			"interval": -1.0,
+			"follow_host": false,
+			"status_id": "",
+			"status": {},
+		},
+	},
+	{
+		"strategy_id": "__missing_executor_family__",
+		"params": {"radius": 600.0, "damage": 1.0, "target_limit": 0},
+	},
+]
 
 # FAN-1700: липкий флаг провала. quit() в Godot отложенный (выполняется в конце
 # кадра), поэтому после _fail() код продолжает работать и успешный quit() затирает
@@ -4932,6 +4977,37 @@ func _test_enemy_stage_scaling_and_elite_rewards(main_scene: PackedScene) -> voi
 		await _assert_elite_reward_panel_centered(main_scene, viewport_size)
 
 
+## FAN-2054: одна точная ready-пара поверх замороженного канонического каталога.
+## Повторяет ровно тот контракт реестра, который читает рантайм, поэтому generic
+## ready-путь исполняется без правок production-данных.
+class ReadyUltimateRegistry extends RefCounted:
+	const Resolver := preload("res://scripts/ultimates/registry/weapon_ultimate_resolver.gd")
+
+	var _canonical_pairs: Dictionary = {}
+	var _profiles: Dictionary = {}
+
+	func _init(canonical_pairs: Dictionary) -> void:
+		_canonical_pairs = canonical_pairs
+
+	func admit(profile: Dictionary) -> void:
+		var key := Resolver.profile_key(
+			str(profile.get("class_id", "")), str(profile.get("weapon_id", ""))
+		)
+		_profiles[key] = profile.duplicate(true)
+
+	func resolution_source(class_id: String, weapon_id: String, _allow_legacy := true) -> String:
+		var key := Resolver.profile_key(class_id, weapon_id)
+		if not _canonical_pairs.has(key):
+			return Resolver.SOURCE_INVALID_PAIR
+		var profile: Dictionary = _profiles.get(key, {})
+		return Resolver.SOURCE_WEAPON_PROFILE \
+			if str(profile.get("implementation_state", "")) == "ready" \
+			else Resolver.SOURCE_LEGACY_CLASS_FALLBACK
+
+	func catalog_profile_for(class_id: String, weapon_id: String) -> Dictionary:
+		return (_profiles.get(Resolver.profile_key(class_id, weapon_id), {}) as Dictionary).duplicate(true)
+
+
 func _test_ultimate_framework() -> void:
 	var holder := Node2D.new()
 	holder.name = "UltimateFrameworkScene"
@@ -4945,7 +5021,8 @@ func _test_ultimate_framework() -> void:
 		player.global_position = Vector2(900, 700)
 		await process_frame
 		var weapon_ids := ProgressionData.weapon_ids(character_id)
-		player.call("configure_character", character_id, str(weapon_ids[0]))
+		var weapon_id := str(weapon_ids[0])
+		player.call("configure_character", character_id, weapon_id)
 		var parameters: Dictionary = player.get("derived_parameters")
 		parameters["ultimate_multiplier"] = 1.5
 		player.set("derived_parameters", parameters)
@@ -4962,6 +5039,7 @@ func _test_ultimate_framework() -> void:
 		var hp_before := 0.0
 		for enemy in enemies:
 			hp_before += float(enemy.get("health"))
+		var baseline := _ultimate_baseline(player, enemies)
 		player.set("ultimate_charge", 100.0)
 		if not bool(player.call("ultimate_ready")):
 			_fail("Expected %s ultimate to be ready at full charge." % character_id)
@@ -4972,29 +5050,346 @@ func _test_ultimate_framework() -> void:
 		if float(player.get("ultimate_charge")) > 0.01:
 			_fail("Expected %s ultimate to reset charge after activation." % character_id)
 			return
+		var activation = _ultimate_active_activation(player)
+		var same_frame_effect := _ultimate_has_observable_effect(player, enemies, baseline, activation)
 		await process_frame
 		if character_id == "berserk":
 			player.call("on_weapon_hit", enemies[0], 20.0)
 			await process_frame
-		var hp_after := 0.0
-		for enemy in enemies:
-			if is_instance_valid(enemy):
-				hp_after += float(enemy.get("health"))
-		if character_id == "druid":
-			if get_nodes_in_group("allies").is_empty():
-				_fail("Expected Druid ultimate to summon temporary allies.")
+		# FAN-2054: пока ни один поставляемый профиль не `ready`, каждая пара
+		# уходит в legacy-ветку с прежним оракулом. Как только пакет оружия
+		# станет исполнимым, его берёт тот же generic-контракт, который ниже
+		# исполняется на инъецированной ready-паре, — без class/weapon-развилок.
+		if str(UltimateHostScript.shared_registry().resolution_source(character_id, weapon_id)) \
+				== UltimateResolver.SOURCE_WEAPON_PROFILE:
+			await _assert_ready_ultimate_runtime(
+				player,
+				enemies,
+				baseline,
+				activation,
+				same_frame_effect,
+				UltimateHostScript.shared_registry().catalog_profile_for(character_id, weapon_id)
+			)
+			if _failure_reported:
 				return
-		elif hp_after >= hp_before:
-			_fail("Expected %s ultimate to have a measurable combat effect." % character_id)
-			return
+		else:
+			var hp_after := 0.0
+			for enemy in enemies:
+				if is_instance_valid(enemy):
+					hp_after += float(enemy.get("health"))
+			if character_id == "druid":
+				if get_nodes_in_group("allies").is_empty():
+					_fail("Expected Druid ultimate to summon temporary allies.")
+					return
+			elif hp_after >= hp_before:
+				_fail("Expected %s ultimate to have a measurable combat effect." % character_id)
+				return
 		player.queue_free()
 		for enemy in enemies:
 			if is_instance_valid(enemy):
 				enemy.queue_free()
 		await process_frame
+	await _test_ready_weapon_ultimate_fixtures(holder, player_scene, enemy_scene)
 	holder.queue_free()
 	current_scene = null
 	await process_frame
+
+
+## FAN-2054: поставляемый каталог ещё не содержит ни одного исполнимого пакета,
+## поэтому generic-контракт телеграфа доказывается здесь — на инъецированной
+## точной ready-паре Chemist `blast_powder`. Смоук обязан принять объявленную
+## задержку удара и остаться fail-closed на immediate, malformed и legacy путях.
+func _test_ready_weapon_ultimate_fixtures(
+	holder: Node2D,
+	player_scene: PackedScene,
+	enemy_scene: PackedScene
+) -> void:
+	for malformed in [
+		{"executor": {"strategy_id": "status_zone", "params": {"interval": "soon"}}},
+		{"executor": {"strategy_id": "status_zone", "params": {"interval": -0.2}}},
+		{"executor": {"strategy_id": "status_zone", "params": {"duration": INF}}},
+		{"executor": {"strategy_id": "status_zone"}},
+	]:
+		if bool(_ultimate_declared_timing(malformed).get("valid", true)):
+			_fail("Expected runtime smoke to reject malformed declared ultimate timing: %s" % str(malformed))
+			return
+
+	var player := player_scene.instantiate()
+	holder.add_child(player)
+	player.global_position = Vector2(900, 700)
+	await process_frame
+	player.call("configure_character", ULTIMATE_FIXTURE_CLASS, ULTIMATE_FIXTURE_WEAPON)
+	var parameters: Dictionary = player.get("derived_parameters")
+	parameters["ultimate_multiplier"] = 1.5
+	player.set("derived_parameters", parameters)
+	# Пока смоук ждёт объявленный impact, проходит много кадров, и обычная
+	# автоатака оружия успела бы сойти за «эффект ультимейта». Бой замораживается,
+	# а живой каст отчитывается собственным ledger — см. _ultimate_has_observable_effect.
+	player.set_process(false)
+	player.set_physics_process(false)
+	var enemies := []
+	for index in range(3):
+		var enemy := enemy_scene.instantiate()
+		holder.add_child(enemy)
+		enemy.add_to_group("enemies")
+		enemy.set("max_health", 100000.0)
+		enemy.set("health", 100000.0)
+		enemy.global_position = player.global_position + Vector2(110 + index * 45, 0)
+		enemy.set_process(false)
+		enemy.set_physics_process(false)
+		enemies.append(enemy)
+	await process_frame
+
+	var pairs: Dictionary = UltimateRegistryScript.new(
+		ProgressionData.WEAPONS_BY_CLASS
+	).canonical_pairs_for_tests()
+
+	# 1. Отложенный ready-пакет: в кадре активации эффекта ещё нет, он приходит
+	#    к объявленному impact и после этого каст полностью убирает за собой.
+	var delayed := _inject_ready_ultimate_profile(player, pairs, ULTIMATE_DELAYED_FIXTURE)
+	if str(delayed.get("source", "")) != UltimateResolver.SOURCE_WEAPON_PROFILE:
+		_fail("Expected the injected delayed %s package to resolve from its weapon profile." % ULTIMATE_FIXTURE_WEAPON)
+		return
+	var baseline := _ultimate_baseline(player, enemies)
+	player.set("ultimate_charge", 100.0)
+	if not bool(player.call("activate_ultimate")):
+		_fail("Expected the delayed ready ultimate to be taken by the generic runtime.")
+		return
+	var activation = _ultimate_active_activation(player)
+	if activation == null:
+		_fail("Expected the delayed ready ultimate to stay live until its declared impact.")
+		return
+	if _ultimate_has_observable_effect(player, enemies, baseline, activation):
+		_fail("Expected the delayed ready ultimate to telegraph instead of hitting on the activation frame.")
+		return
+	await _assert_ready_ultimate_runtime(
+		player, enemies, baseline, activation, false, delayed.get("profile", {}) as Dictionary
+	)
+	if _failure_reported:
+		return
+
+	# 2. Immediate-семейство остаётся прежним: эффект в кадре активации и ни
+	#    одного живого каста после него.
+	var immediate := _inject_ready_ultimate_profile(player, pairs, ULTIMATE_IMMEDIATE_FIXTURE)
+	baseline = _ultimate_baseline(player, enemies)
+	player.set("ultimate_charge", 100.0)
+	if not bool(player.call("activate_ultimate")):
+		_fail("Expected the immediate ready ultimate to be taken by the generic runtime.")
+		return
+	var immediate_activation = _ultimate_active_activation(player)
+	await _assert_ready_ultimate_runtime(
+		player,
+		enemies,
+		baseline,
+		immediate_activation,
+		_ultimate_has_observable_effect(player, enemies, baseline, immediate_activation),
+		immediate.get("profile", {}) as Dictionary
+	)
+	if _failure_reported:
+		return
+
+	# 3. Ready-декларация, которую рантайм не может исполнить (битый тайминг или
+	#    несуществующее семейство эффекта), обязана отдать каст legacy-ультимейту
+	#    класса целиком, а не полукастом.
+	for fixture in ULTIMATE_MALFORMED_FIXTURES:
+		var malformed := _inject_ready_ultimate_profile(player, pairs, fixture as Dictionary)
+		if str(malformed.get("source", "")) != UltimateResolver.SOURCE_WEAPON_PROFILE:
+			_fail("Expected the malformed ready fixture to be admitted as data before the runtime refuses it.")
+			return
+		if UltimateHostScript.for_player(player).controller().activate(
+				ULTIMATE_FIXTURE_CLASS, ULTIMATE_FIXTURE_WEAPON):
+			_fail("Expected the generic runtime to refuse a malformed ready declaration: %s" % str(fixture))
+			return
+		baseline = _ultimate_baseline(player, enemies)
+		player.set("ultimate_charge", 100.0)
+		if not bool(player.call("activate_ultimate")):
+			_fail("Expected a malformed ready declaration to keep the legacy %s ultimate available." % ULTIMATE_FIXTURE_CLASS)
+			return
+		if _ultimate_active_activation(player) != null or bool(player.get("_ultimate_active")):
+			_fail("Expected a malformed ready declaration to refuse the generic cast: %s" % str(fixture))
+			return
+		await process_frame
+		if not _ultimate_has_observable_effect(player, enemies, baseline, null):
+			_fail("Expected a malformed ready declaration to fall back to the legacy %s ultimate." % ULTIMATE_FIXTURE_CLASS)
+			return
+
+	var declared := _ultimate_declared_timing(delayed.get("profile", {}) as Dictionary)
+	print(
+		"Ready weapon ultimate fixtures passed (%s/%s weapon_profile: delayed impact %.2fs, lifecycle %.2fs, immediate same-frame, %d malformed refusals)."
+		% [
+			ULTIMATE_FIXTURE_CLASS,
+			ULTIMATE_FIXTURE_WEAPON,
+			float(declared.get("impact_window", 0.0)),
+			float(declared.get("lifecycle_window", 0.0)),
+			ULTIMATE_MALFORMED_FIXTURES.size(),
+		]
+	)
+
+	player.queue_free()
+	for enemy in enemies:
+		if is_instance_valid(enemy):
+			enemy.queue_free()
+	await process_frame
+
+
+## Подменяет каталог хоста одной точной ready-парой. Возвращает объявленный
+## профиль и источник, который рантайм увидит для этой пары.
+func _inject_ready_ultimate_profile(
+	player: Node,
+	canonical_pairs: Dictionary,
+	executor: Dictionary
+) -> Dictionary:
+	var profile := {
+		"class_id": ULTIMATE_FIXTURE_CLASS,
+		"weapon_id": ULTIMATE_FIXTURE_WEAPON,
+		"implementation_state": "ready",
+		"total_boss_cap": 0.25,
+		"executor": executor.duplicate(true),
+	}
+	var registry := ReadyUltimateRegistry.new(canonical_pairs)
+	registry.admit(profile)
+	UltimateHostScript.for_player(player).use_registry(registry)
+	return {
+		"profile": profile,
+		"source": registry.resolution_source(ULTIMATE_FIXTURE_CLASS, ULTIMATE_FIXTURE_WEAPON),
+	}
+
+
+func _ultimate_baseline(player: Node, enemies: Array) -> Dictionary:
+	var health := {}
+	for enemy in enemies:
+		if enemy is Node and is_instance_valid(enemy):
+			health[(enemy as Node).get_instance_id()] = float((enemy as Node).get("health"))
+	return {
+		"health": health,
+		"allies": get_nodes_in_group("allies").size(),
+		"modifiers": (player.get("run_modifiers") as Dictionary).duplicate(true),
+	}
+
+
+func _ultimate_active_activation(player: Node):
+	var host := player.get_node_or_null(UltimateHostScript.NODE_NAME)
+	if host == null or not host.has_method("controller"):
+		return null
+	var controller = host.controller()
+	return controller.active_activation() if controller != null else null
+
+
+func _ultimate_has_observable_effect(
+	player: Node,
+	enemies: Array,
+	baseline: Dictionary,
+	activation
+) -> bool:
+	# Живой каст отчитывается собственным ledger: за время ожидания объявленного
+	# impact мировая дельта HP уже не доказывает, что ударил именно ультимейт.
+	if activation != null:
+		if float(activation.get("applied_total")) > 0.01:
+			return true
+	else:
+		var health: Dictionary = baseline.get("health", {})
+		for enemy in enemies:
+			if enemy == null or not is_instance_valid(enemy):
+				continue
+			if float(enemy.get("health")) < float(health.get(enemy.get_instance_id(), INF)) - 0.01:
+				return true
+	if get_nodes_in_group("allies").size() > int(baseline.get("allies", 0)):
+		return true
+	return (player.get("run_modifiers") as Dictionary) != (baseline.get("modifiers", {}) as Dictionary)
+
+
+## Окно, которое профиль объявил сам: самый ранний назначенный шаг — крайний
+## срок эффекта, самый поздний — крайний срок уборки. Всё, что не число, не
+## конечно, не положительно или длиннее потолка каста, считается битым.
+func _ultimate_declared_timing(profile: Dictionary) -> Dictionary:
+	var executor = profile.get("executor")
+	if not executor is Dictionary:
+		return {"valid": false, "reason": "missing executor binding"}
+	var params = (executor as Dictionary).get("params")
+	if not params is Dictionary:
+		return {"valid": false, "reason": "missing executor params"}
+	var impact := INF
+	var lifecycle := 0.0
+	for raw_key in (params as Dictionary).keys():
+		var key := str(raw_key).to_lower()
+		if not _is_ultimate_timing_key(key):
+			continue
+		var value = (params as Dictionary)[raw_key]
+		if value is bool or not (value is int or value is float) or not is_finite(float(value)):
+			return {"valid": false, "reason": "malformed timing field %s" % key}
+		var seconds := float(value)
+		if seconds <= 0.0 or seconds > ULTIMATE_MAX_DECLARED_LIFETIME_SECONDS:
+			return {"valid": false, "reason": "out-of-bounds timing field %s" % key}
+		impact = minf(impact, seconds)
+		lifecycle = maxf(lifecycle, seconds)
+	if not is_finite(impact):
+		return {"valid": true, "has_timing": false, "impact_window": 0.0, "lifecycle_window": 0.0}
+	return {
+		"valid": true,
+		"has_timing": true,
+		"impact_window": impact,
+		"lifecycle_window": lifecycle,
+	}
+
+
+func _is_ultimate_timing_key(key: String) -> bool:
+	return key in ["delay", "duration", "interval", "lifetime"] \
+		or key.ends_with("_at") or key.ends_with("_delay") or key.ends_with("_duration") \
+		or key.ends_with("_interval") or key.ends_with("_lifetime")
+
+
+## Generic-оракул исполнимого ультимейта оружия: immediate-семейство обязано
+## показать эффект в кадре активации, телеграфируемое — к объявленному impact,
+## и оба обязаны не оставить после себя ни живого каста, ни active-флага.
+func _assert_ready_ultimate_runtime(
+	player: Node,
+	enemies: Array,
+	baseline: Dictionary,
+	activation,
+	same_frame_effect: bool,
+	profile: Dictionary
+) -> void:
+	var pair := "%s/%s" % [str(profile.get("class_id", "")), str(profile.get("weapon_id", ""))]
+	if str(profile.get("implementation_state", "")) != "ready":
+		_fail("Expected executable %s ultimate profile to declare a ready state." % pair)
+		return
+	var timing := _ultimate_declared_timing(profile)
+	if not bool(timing.get("valid", false)):
+		_fail("Expected %s ultimate to declare valid timing: %s" % [pair, str(timing.get("reason", ""))])
+		return
+	var host := player.get_node_or_null(UltimateHostScript.NODE_NAME)
+	var controller = host.controller() if host != null and host.has_method("controller") else null
+	if activation == null:
+		if not same_frame_effect \
+				and not _ultimate_has_observable_effect(player, enemies, baseline, null):
+			_fail("Expected immediate %s ultimate to have an observable effect." % pair)
+			return
+		if controller != null and controller.is_active():
+			_fail("Immediate %s ultimate left an active generic cast." % pair)
+			return
+		if bool(player.get("_ultimate_active")):
+			_fail("Immediate %s ultimate left orphan active state on the player." % pair)
+		return
+	if not bool(timing.get("has_timing", false)):
+		_fail("Expected delayed %s ultimate to declare its impact timing." % pair)
+		return
+	var impact_window := float(timing.get("impact_window", 0.0))
+	var lifecycle_window := float(timing.get("lifecycle_window", 0.0))
+	var effect_seen := same_frame_effect
+	var impact_deadline := Time.get_ticks_msec() \
+		+ int(ceil((impact_window + ULTIMATE_TIMING_GRACE_SECONDS) * 1000.0))
+	while not effect_seen and Time.get_ticks_msec() < impact_deadline:
+		await process_frame
+		effect_seen = _ultimate_has_observable_effect(player, enemies, baseline, activation)
+	if not effect_seen:
+		_fail("Expected delayed %s ultimate to reach its declared %.2fs impact." % [pair, impact_window])
+		return
+	var cleanup_deadline := Time.get_ticks_msec() \
+		+ int(ceil((lifecycle_window + ULTIMATE_TIMING_GRACE_SECONDS) * 1000.0))
+	while controller != null and controller.is_active() and Time.get_ticks_msec() < cleanup_deadline:
+		await process_frame
+	if controller == null or controller.is_active() or bool(player.get("_ultimate_active")):
+		_fail("Expected delayed %s ultimate to clean up within its declared %.2fs lifecycle." % [pair, lifecycle_window])
 
 
 func _test_run_damage_dealt_metric(main_scene: PackedScene) -> void:
