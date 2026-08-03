@@ -56,9 +56,9 @@ Note: the current roster contains 17 classes, while the original task text menti
 | knight | Base lvl1 | strength 8.00; agility 3.00; intelligence 2.00; perception 4.00; energy 3.00; knowledge 4.00; endurance 10.00; leadership 6.00 | 42.83 | 127.50 | 112.76 | 0.961 | 0.993 | ok |
 | knight | Lvl20 optimum | strength 13.00; agility 17.00; intelligence 2.00; perception 4.00; energy 3.00; knowledge 4.00; endurance 10.00; leadership 6.00 | 218.78 | 650.84 | 575.57 | 4.909 | 1.038 | ok |
 | knight | Lvl20 random avg | strength 10.42; agility 5.19; intelligence 4.56; perception 6.36; energy 5.64; knowledge 6.31; endurance 12.33; leadership 8.19 | 77.45 | 230.50 | 203.85 | 1.738 | 0.972 | ok |
-| druid | Base lvl1 | strength 3.00; agility 4.00; intelligence 4.00; perception 7.00; energy 6.00; knowledge 5.00; endurance 5.00; leadership 9.00 | 47.99 | 150.01 | 133.56 | 0.956 | 0.988 | ok |
-| druid | Lvl20 optimum | strength 13.00; agility 13.00; intelligence 4.00; perception 7.00; energy 6.00; knowledge 5.00; endurance 5.00; leadership 9.00 | 251.41 | 784.66 | 717.00 | 5.063 | 1.071 | ok |
-| druid | Lvl20 random avg | strength 5.22; agility 6.05; intelligence 6.42; perception 9.56; energy 8.77; knowledge 7.33; endurance 7.33; leadership 11.33 | 100.53 | 314.11 | 280.88 | 2.006 | 1.122 | ok |
+| druid | Base lvl1 | strength 3.00; agility 4.00; intelligence 4.00; perception 7.00; energy 6.00; knowledge 5.00; endurance 5.00; leadership 9.00 | 48.00 | 150.00 | 133.56 | 0.956 | 0.988 | ok |
+| druid | Lvl20 optimum | strength 13.00; agility 13.00; intelligence 4.00; perception 7.00; energy 6.00; knowledge 5.00; endurance 5.00; leadership 9.00 | 251.48 | 784.71 | 717.05 | 5.064 | 1.071 | ok |
+| druid | Lvl20 random avg | strength 5.22; agility 6.05; intelligence 6.42; perception 9.56; energy 8.77; knowledge 7.33; endurance 7.33; leadership 11.33 | 100.09 | 312.63 | 279.57 | 1.997 | 1.117 | ok |
 
 ## Outlier Summary
 
@@ -218,14 +218,14 @@ Note: the current roster contains 17 classes, while the original task text menti
 | knight | long_spear | Lvl20 random avg | 77.46 | 230.23 | 203.60 | 1.737 |
 | knight | tower_shield | Lvl20 random avg | 77.48 | 230.57 | 203.91 | 1.739 |
 | knight | holy_flail | Lvl20 random avg | 77.41 | 230.71 | 204.03 | 1.739 |
-| druid | summon_amulet | Base lvl1 | 47.99 | 150.02 | 129.96 | 0.944 |
-| druid | briar_staff | Base lvl1 | 47.99 | 149.98 | 140.76 | 0.979 |
-| druid | raven_totem | Base lvl1 | 47.98 | 150.03 | 129.97 | 0.944 |
-| druid | summon_amulet | Lvl20 optimum | 131.05 | 409.71 | 354.93 | 2.579 |
-| druid | briar_staff | Lvl20 optimum | 496.44 | 1547.80 | 1452.60 | 10.115 |
-| druid | raven_totem | Lvl20 optimum | 126.75 | 396.48 | 343.47 | 2.495 |
-| druid | summon_amulet | Lvl20 random avg | 93.67 | 292.83 | 253.68 | 1.843 |
-| druid | briar_staff | Lvl20 random avg | 116.72 | 364.41 | 342.00 | 2.380 |
-| druid | raven_totem | Lvl20 random avg | 91.19 | 285.09 | 246.97 | 1.795 |
+| druid | summon_amulet | Base lvl1 | 48.02 | 149.91 | 129.87 | 0.944 |
+| druid | briar_staff | Base lvl1 | 48.00 | 150.02 | 140.79 | 0.980 |
+| druid | raven_totem | Base lvl1 | 47.99 | 150.07 | 130.01 | 0.945 |
+| druid | summon_amulet | Lvl20 optimum | 131.15 | 409.41 | 354.67 | 2.578 |
+| druid | briar_staff | Lvl20 optimum | 496.50 | 1548.13 | 1452.91 | 10.117 |
+| druid | raven_totem | Lvl20 optimum | 126.78 | 396.59 | 343.57 | 2.496 |
+| druid | summon_amulet | Lvl20 random avg | 93.28 | 291.20 | 252.26 | 1.834 |
+| druid | briar_staff | Lvl20 random avg | 116.21 | 362.86 | 340.54 | 2.370 |
+| druid | raven_totem | Lvl20 random avg | 90.79 | 283.85 | 245.90 | 1.787 |
 
 CSV evidence: `build/qa/scrum453/class_damage_table_3variants.csv`.

@@ -1,10 +1,24 @@
 # Progression And Balance
 
-Обновлено: 2026-07-04 (0.2.1 rebalance wave)
+Обновлено: 2026-08-03 (FAN-1891 area/control contract)
 
 Source of truth для чисел: `scripts/progression_data.gd` (фасад) + доменные файлы данных `scripts/progression_data_characters.gd`, `progression_data_weapons.gd`, `progression_data_content.gd`, `progression_data_shop.gd`, `progression_data_ascension.gd`, `progression_data_enemies.gd` (доменный сплит SCRUM-198 — фасад реэкспортит их как const, публичный API сохранён), `scripts/stat_formulas.gd`, `docs/design/mechanics_extract.md`. Балансовый аудит: `docs/design/reviews/mechanics_balance_audit_2026_06.md`.
 
 Обычный крит имеет Agility-зависимый cap 55%→75%, Assassin сохраняет 100%. Сила крита выше raw 2.75x растёт непрерывным хвостом `2.75 + sqrt(raw - 2.75)` без верхнего потолка. DoT получает `Knowledge base + dot flat`, затем общий damage multiplier; отдельные источники `dot_speed_flat` удалены. Attack Speed выдаёт нормализованный общий cadence multiplier для атак и периодических интервалов с их прежними базовыми значениями и safety floors.
+
+## FAN-1891: area, support, and knockback
+
+The 51 weapon configurations expose `geometry_capabilities`. The generic area
+multiplier changes every declared geometry field and never changes target reach
+or projectile travel speed. `attack_range` and `projectile_speed` remain fixed
+per-weapon configuration.
+
+`support_multiplier` is derived once from the shared general `% damage` run
+multiplier, so support effects and the budget mirror use the same source. The
+removed range/sector/projectile/aura-flat/buff-flat modifier keys are stripped
+when saves load and cannot be offered again. Knockback is `(weapon base +
+Strength × 4) × knockback multiplier`; Endurance and Leadership are inert for
+this calculation while existing elite/boss control resistance remains in force.
 
 ## SCRUM-504 / SCRUM-506 Balance Batch (2026-06-28)
 
@@ -147,10 +161,10 @@ summon-награды и чисто лидерские stat-награды confi
   здоровье, Скорость движения, Увеличение области атаки, Радиус подбора,
   Защита, Шанс крита, Сила крита, Уклонение, Периодический урон, Сила призыва,
   Регенерация, Вампиризм (одна ось; шанс срабатывания — условие с капом 20%),
-  Сила ультимейта. `magic_focus`, `range`, `buff_power`, `absorb`,
-  `projectile_speed`, `dot_speed`, `aura_radius`, `sector_multiplier`,
-  `knockback_*` и раздельные vamp chance/amount — НЕ самостоятельные выборы;
-  их runtime-ключи живут в derived-слое, артефактах и мета-древе.
+  Сила ультимейта. Дальность и скорость снаряда — config-only; поддержка
+  выводится из общего `% damage`, а область атаки охватывает сектор, радиус и
+  ауры. Снятые legacy-ключи и раздельные vamp chance/amount — НЕ
+  самостоятельные выборы.
   На реестр ссылается каждый `LEVEL_UP_REWARDS` через `attr`; титул карты =
   имя оси реестра (проверяется тестом).
 - `CharacterData.ATTRIBUTE_RELEVANCE` — матрица (ось × 17 классов) со
@@ -199,10 +213,8 @@ summon-награды и чисто лидерские stat-награды confi
   недоступными картами, а при live-контексте (stats/mods/weapon из снапшота)
   перепроверяет ИЗВЕСТНЫЕ карты по текущим effective-значениям, капам и
   weapon-потребителям — capped/no-op/ineligible показ безопасно
-  регенерируется (FAN-1927). Старые run-ключи (`magic_damage_multiplier`,
-  `range_multiplier`, `buff_power_flat`, `absorb_flat`, …) остаются рабочим
-  внутренним compatibility-входом — загрузка не падает и удалённые карточки
-  не возвращаются.
+  регенерируется (FAN-1927). FAN-1891 additionally strips obsolete geometry
+  and support keys on load, so removed cards never return.
 - Гейты: `tests/attribute_relevance_test.gd` (инварианты матрицы, sync
   реестр↔матрица↔награды↔титулы, строгий optional-фильтр, capability),
   `tests/attribute_consumability_fan1887_test.gd` (FAN-1927: 51 живой путь
@@ -281,10 +293,10 @@ weapon-числа), а не здесь, чтобы не пересекать dam
 - Бой ставится на паузу до выбора.
 - Rewards меняют производные параметры сразу.
 - Level-up UI использует icon mapping через `UIIconRegistry`.
-- Level-up pool включает прямые карточки для основных derived parameters: crit, dodge, range, DoT, projectile speed, aura, buff, summon, absorb, regeneration, vampirism и ultimate scaling.
+- Level-up pool включает прямые карточки для основных derived parameters: crit, dodge, area, DoT, summon, absorb, regeneration, vampirism и ultimate scaling; дальность и скорость снаряда остаются config-only.
 - SCRUM-854/SCRUM-862: Doctor is the explicit exception to the universal sustain pool: `ProgressionData.is_reward_relevant()` and boss-completion artifact selection filter Doctor out of external regeneration/vampirism/lifesteal rewards in level-up, artifact reward pool, shop, elite artifact choices, boss completion rewards, and start boons. Doctor sustain remains only on his own weapons (`restore_potion`, `plague_syringe`, `bone_saw`) and their drain caps.
 - SCRUM-894 (заменяет kill-growth SCRUM-860): Shadow Momentum удалён из данных — kill-стаки Ассасину больше не положены (гейт `tests/kill_scaling_identity_test.gd`). Темп-наградой стал «Рывок темпа» Теневых кинжалов: `flurry_tempo_*` в конфиге оружия, триггер — серия, задевшая врага; короткий бафф скорости и уворота с внутренним кулдауном (аптайм ≤ duration/cooldown), без лечения, чистится при смене оружия. Sustain-ленты Doctor/Priest/Knight не тронуты.
-- SCRUM-894 крит-профиль per-class: `ProgressionData.class_crit_profile` читает `CLASS_TRAITS` — обычный cap шанса крита растёт от 0.55 при живой Agility 0 до первых 0.75 при Agility 100; Ассасин («Хладнокровие») имеет cap 1.0, diminishing 0.0 и overflow 0.5 (избыток raw-шанса сверх cap → `crit_damage_flat`). Сила крита выше raw 2.75 продолжает расти через непрерывный `2.75 + sqrt(raw - 2.75)` без верхнего потолка. Уворот: «Теневая завеса» добавляет ситуативный dodge-бонус (`buff_power`-скейл, cap `veil_dodge_cap`) только под ближним прессингом, суммарный уворот ≤ `SURVIVABILITY_DODGE_CAP` 0.55 — гейт бессмертия (`global_survivability_balance_smoke`) не ослаблен.
+- SCRUM-894 крит-профиль per-class: `ProgressionData.class_crit_profile` читает `CLASS_TRAITS` — обычный cap шанса крита растёт от 0.55 при живой Agility 0 до первых 0.75 при Agility 100; Ассасин («Хладнокровие») имеет cap 1.0, diminishing 0.0 и overflow 0.5 (избыток raw-шанса сверх cap → `crit_damage_flat`). Сила крита выше raw 2.75 продолжает расти через непрерывный `2.75 + sqrt(raw - 2.75)` без верхнего потолка. Уворот: «Теневая завеса» добавляет ситуативный dodge-бонус от общего множителя поддержки (`support_multiplier`, cap `veil_dodge_cap`) только под ближним прессингом, суммарный уворот ≤ `SURVIVABILITY_DODGE_CAP` 0.55 — гейт бессмертия (`global_survivability_balance_smoke`) не ослаблен.
 - SCRUM-900 закрепляет это как data-driven trait «Клятва чумного доктора» (`CLASS_TRAITS.doctor.generic_sustain_blocked`) с ЧЕТЫРЬМЯ точками отсечки: (1) пул-фильтр выше; (2) применение — `Player._apply_reward_mods` и `apply_meta_skill_modifiers` молча гасят запрещённые sustain-ключи (`ProgressionData.is_blocked_sustain_mod_key`: `regeneration_flat`, `vampiric_*`, `kill_heal_percent`, `room_clear_heal_percent`, `kill_streak_heal_every`, `lowhp_regen_bonus`, `heal_percent`) — даже принудительно применённая награда/мета-звезда остаётся no-op; (3) формула — `derived_parameters` отрезает БАЗОВЫЙ пассивный реген (константа + knowledge-скейл) через `_class_gated_regeneration`; (4) рантайм-страховка — `_apply_regeneration` не добавляет `lowhp_regen_bonus`. Явная пометка `doctor_friendly: true` на предмете пропускает его и в пул, и в применение (моды ложатся в обычные run-ключи и работают штатными формулами). Route/rest/shop-лечение вне `apply_reward` (аптечки-пикапы, отдых на маршруте) сознательно НЕ блокируется — отсекается именно комбат/билд-сустейн. Гейт: `tests/doctor_kit_test.gd`.
 - SCRUM-860: kill-growth is a tempo hook, not generic sustain. `assassin/shadow_daggers` and `assassin/venom_wire` define `kill_growth_role = "shadow_momentum"`; normal non-boss/non-elite kills add/refresh up to 6 stacks for 6 seconds, capped at +12% attack speed and +9% crit damage through `kill_momentum_*` run modifiers. The hook never heals and clears on expiry or weapon swap, while Doctor/Priest/Knight sustain stays on their own drain, prayer/ward, and block/counter lanes.
 - SCRUM-683 выводит видимый effect-preview прямо на reward card, а не только в

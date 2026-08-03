@@ -74,10 +74,10 @@ func _check_trait_registry_and_budget_mirror() -> void:
 		if PD.class_wild_aura_damage_bonus(other_class, 2.0) != 0.0:
 			_errors.append("trait: аура протекла классу %s" % other_class)
 	# Budget-фактор един с рантаймом: 1 + бонус.
-	var factor := PD.class_wild_aura_damage_factor("druid", {"buff_power": 1.279})
+	var factor := PD.class_wild_aura_damage_factor("druid", {"support_multiplier": 1.279})
 	if not is_equal_approx(factor, 1.0 + bonus):
 		_errors.append("trait: budget-фактор %.3f != 1+бонус %.3f" % [factor, 1.0 + bonus])
-	if not is_equal_approx(PD.class_wild_aura_damage_factor("berserk", {"buff_power": 2.0}), 1.0):
+	if not is_equal_approx(PD.class_wild_aura_damage_factor("berserk", {"support_multiplier": 2.0}), 1.0):
 		_errors.append("trait: budget-фактор протёк Берсерку")
 
 

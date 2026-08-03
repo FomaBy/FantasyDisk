@@ -71,7 +71,7 @@ const ASCENSION_LEVELS := {
 		{"id": "sniper_asc_1", "title": "Холодная Мушка", "mods": {"damage_multiplier": 1.05}},
 		{"id": "sniper_asc_2", "title": "Запасной Плащ", "mods": {"max_health_flat": 8.0}},
 		{"id": "sniper_asc_3", "title": "Сухой Спуск", "mods": {"attack_speed_multiplier": 1.04}},
-		{"id": "sniper_asc_4", "title": "Дальний Глаз", "mods": {"range_multiplier": 1.05}},
+		{"id": "sniper_asc_4", "title": "Широкий Глаз", "mods": {"aoe_radius_multiplier": 1.05}},
 		{"id": "sniper_asc_5", "title": "Бронебойный Заряд", "mods": {"damage_multiplier": 1.07}},
 	],
 	"priest": [
@@ -99,7 +99,7 @@ const ASCENSION_LEVELS := {
 		{"id": "engineer_asc_1", "title": "Быстрая Сборка", "mods": {"attack_speed_multiplier": 1.04}},
 		{"id": "engineer_asc_2", "title": "Запасные Пластины", "mods": {"max_health_flat": 8.0}},
 		{"id": "engineer_asc_3", "title": "Дополнительный Модуль", "mods": {"summon_bonus": 1.0}},
-		{"id": "engineer_asc_4", "title": "Точная Разметка", "mods": {"range_multiplier": 1.05}},
+		{"id": "engineer_asc_4", "title": "Широкая Разметка", "mods": {"aoe_radius_multiplier": 1.05}},
 		{"id": "engineer_asc_5", "title": "Усиленный Привод", "mods": {"damage_multiplier": 1.06}},
 	],
 	"dark_mage": [

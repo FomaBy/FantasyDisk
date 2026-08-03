@@ -19,8 +19,6 @@ const BERSERK_WEAPONS := {
 		"aoe_radius": 350.0,
 		"sweep_degrees": 100.0,
 		"geometry_stat_growth_from_delta": true,
-		"range_scales_with_aoe_radius": true,
-		"attack_range_intelligence_weight": 0.0,
 		"aoe_radius_intelligence_weight": 0.0,
 		"damage_multiplier": 1.15,
 		"melee_execute_threshold": 0.28,
@@ -44,8 +42,6 @@ const BERSERK_WEAPONS := {
 		"aoe_radius": 250.0,
 		"sweep_degrees": 180.0,
 		"geometry_stat_growth_from_delta": true,
-		"range_scales_with_aoe_radius": true,
-		"attack_range_intelligence_weight": 0.0,
 		"aoe_radius_intelligence_weight": 0.0,
 		"damage_multiplier": 0.85,
 		"melee_close_bonus_radius": 210.0,
@@ -73,8 +69,6 @@ const BERSERK_WEAPONS := {
 		"circle_full_targets": 4,
 		"circle_target_diminish": 0.62,
 		"geometry_stat_growth_from_delta": true,
-		"range_scales_with_aoe_radius": true,
-		"attack_range_intelligence_weight": 0.0,
 		"aoe_radius_intelligence_weight": 0.0,
 		"damage_multiplier": 0.55,
 		"melee_close_bonus_radius": 150.0,
@@ -167,7 +161,7 @@ const DARK_MAGE_WEAPONS := {
 		"aoe_radius": 90.0,
 		"projectile_speed": 1050.0,
 		"visual_color": Color(0.28, 0.95, 1.0, 0.45),
-		"passive_mods": {"range_multiplier": 1.08},
+		"passive_mods": {"aoe_radius_multiplier": 1.08},
 	},
 }
 
@@ -349,7 +343,7 @@ const RANGER_WEAPONS := {
 		"split_count": 4, "knockback": 175.0, "bow_knockback_trait": true,
 		"charge_seconds": 1.25, "charge_max_multiplier": 1.70,
 		"visual_color": Color(0.75, 0.85, 1.0, 0.50),
-		"passive_mods": {"range_multiplier": 1.10},
+		"passive_mods": {"aoe_radius_multiplier": 1.10},
 	},
 	"storm_longbow": {
 		# SCRUM-911: дальнобойный КОНУС пробивающих стрел — beam_count стрел
@@ -363,7 +357,7 @@ const RANGER_WEAPONS := {
 		"knockback": 150.0, "bow_knockback_trait": true,
 		"charge_seconds": 1.45, "charge_max_multiplier": 1.55,
 		"visual_color": Color(0.28, 0.72, 1.0, 0.48),
-		"passive_mods": {"range_multiplier": 1.06, "attack_speed_multiplier": 0.96},
+		"passive_mods": {"aoe_radius_multiplier": 1.06, "attack_speed_multiplier": 0.96},
 	},
 	"hunter_trap": {
 		# SCRUM-913: ПЕРМАНЕНТНЫЙ капкан — не истекает по таймеру, живёт до
@@ -662,7 +656,6 @@ const DRUID_WEAPONS := {
 		"summon_ranged_range": 240.0,
 		"summon_ranged_projectile_speed": 620.0,
 		"visual_color": Color(0.45, 0.80, 0.35, 0.42),
-		"passive_mods": {"buff_power_note": 0.0},
 	},
 	"briar_staff": {
 		"id": "briar_staff", "title": "Посох терний",
@@ -731,7 +724,7 @@ const SOLDIER_WEAPONS := {
 		"projectile_speed": 1150.0, "beam_width": 26.0,
 		"damage_falloff": 0.45, "knockback": 42.0,
 		"visual_color": Color(0.84, 0.78, 0.58, 0.42),
-		"passive_mods": {"range_multiplier": 1.06},
+		"passive_mods": {"aoe_radius_multiplier": 1.06},
 	},
 	"soldier_grenade": {
 		"id": "soldier_grenade", "title": "Граната с фитилем",
@@ -880,7 +873,7 @@ const ELEMENTALIST_WEAPONS := {
 		"attack_range": 560.0, "aoe_radius": 150.0,
 		"beam_width": 58.0, "grenade_delay": 0.42,
 		"visual_color": Color(0.76, 0.42, 1.0, 0.44),
-		"passive_mods": {"range_multiplier": 1.05},
+		"passive_mods": {"aoe_radius_multiplier": 1.05},
 	},
 	"elementalist_meteor_core": {
 		# SCRUM-950: самое медленное оружие игрока — максимальный fire_interval,
@@ -939,7 +932,7 @@ const SNIPER_WEAPONS := {
 		"beam_width": 30.0,
 		"grenade_delay": 1.0, "damage_falloff": 0.62,
 		"visual_color": Color(1.0, 0.62, 0.18, 0.42),
-		"passive_mods": {"range_multiplier": 1.04},
+		"passive_mods": {"aoe_radius_multiplier": 1.04},
 	},
 	"sniper_shatter_rounds": {
 		# SCRUM-933: скорострельный круговой веер пуль — projectile_count пуль
@@ -947,7 +940,7 @@ const SNIPER_WEAPONS := {
 		# (round-robin, не больше SHATTER_VOLLEY_HIT_LIMIT хитов по одному
 		# врагу за залп); пустые направления уходят ровным радиальным веером
 		# без урона. Ключевые оси — скорость атаки (каденция залпов) и
-		# скорость снаряда (полет пуль, база projectile_speed + статы).
+		# скорость снаряда (полет пуль, фиксированная конфигурация projectile_speed).
 		"id": "sniper_shatter_rounds", "title": "Осколочные Патроны",
 		"description": "Split-round: очередь мелких пуль веером во все стороны — каждая сама находит ближнего монстра. Очень быстрый темп; скорость атаки и полета пуль превращают Снайпера в упор в турель.",
 		"scene_path": "res://scenes/SniperShatterRounds.tscn",

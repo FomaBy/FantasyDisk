@@ -28,8 +28,8 @@ const MIN_VISIBLE_DELTA := 0.002
 # наружу отдаётся только «свой» тип класса (см. _collect_deltas).
 const DAMAGE_TYPE_PARAMETERS := ["damage", "magic_damage"]
 # FAN-1887: наружу показываются только канонические player-facing оси реестра —
-# внутренние derived-параметры (sector/aura/knockback/projectile/dot_speed/
-# buff_power/absorb/attack_range) в строки карточек не попадают; в скоринге
+# внутренние derived-параметры (control, projectile timing, dot cadence и
+# survival internals) в строки карточек не попадают; в скоринге
 # dps/выживаемости они по-прежнему участвуют через derived-словарь.
 const DELTA_DEFINITIONS := [
 	{"id": "damage", "label": "Урон", "kind": "number"},

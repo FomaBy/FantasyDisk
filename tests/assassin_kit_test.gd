@@ -590,20 +590,20 @@ func _test_dodge_veil(errors: Array) -> void:
 	if absf(float(player.call("current_dodge_chance")) - base_dodge) > EPS:
 		errors.append("завеса: враг за радиусом всё ещё даёт бонус")
 
-	# Масштаб от buff_power: рост → бонус растёт, гигантский buff_power упирается в кап.
+	# Масштаб от общего % урона: рост → бонус растёт, большой бонус упирается в кап.
 	var mods: Dictionary = player.get("run_modifiers")
-	mods["buff_power_flat"] = 0.5
+	mods["damage_multiplier"] = 1.5
 	player.call("_apply_stat_scaling", false, float(player.get("max_health")))
 	var boosted_bonus := float(player.call("assassin_veil_dodge_bonus"))
 	if boosted_bonus <= veil_bonus + EPS:
-		errors.append("завеса: бонус не растёт от buff_power (%.4f -> %.4f)" % [veil_bonus, boosted_bonus])
-	mods["buff_power_flat"] = 50.0
+		errors.append("завеса: бонус не растёт от общего урона (%.4f -> %.4f)" % [veil_bonus, boosted_bonus])
+	mods["damage_multiplier"] = 50.0
 	player.call("_apply_stat_scaling", false, float(player.get("max_health")))
 	var capped_bonus := float(player.call("assassin_veil_dodge_bonus"))
 	var trait_cap := float(PD.class_trait("assassin").get("veil_dodge_cap", 0.0))
 	if absf(capped_bonus - trait_cap) > EPS:
 		errors.append("завеса: бонус %.4f не упёрся в veil_dodge_cap %.2f" % [capped_bonus, trait_cap])
-	mods["buff_power_flat"] = 0.0
+	mods["damage_multiplier"] = 1.0
 
 	# Никакого бессмертия: с огромным dodge_flat итог ровно на SURVIVABILITY_DODGE_CAP.
 	mods["dodge_flat"] = 10.0
