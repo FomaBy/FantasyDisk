@@ -38,8 +38,10 @@ by a six-link chain and a short lethal-prevention window.
   reversal removes Reliquary shield, Censer absorb and Chime `death_save`.
 - Censer temporarily occupies the Player's existing owner-event adapter seam,
   forwards every event to the real equipped weapon and restores that weapon on
-  teardown. It adds no Player or ClassWeapon branch and never estimates
-  prevented damage from a requested incoming hit.
+  teardown. Its activation-local host proxy forwards the generic runtime
+  contract unchanged and synchronously removes the zero-valued absorb key when
+  the modifier unwinds. It adds no Player or ClassWeapon branch and never
+  estimates prevented damage from a requested incoming hit.
 - Chime's resistance policy permits full normal interruption, removes movement
   lock on elites/bosses and shortens their stagger duration to 45%/25%.
 

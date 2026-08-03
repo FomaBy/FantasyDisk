@@ -202,11 +202,11 @@ func _test_censer_real_hit_and_cancel() -> void:
 		"repeated Censer counter resolution must remain idempotent")
 
 	controller.cancel()
-	await process_frame
 	_check(not modifiers.has("absorb_flat"),
-		"Censer cancellation must remove its transient mitigation key")
+		"Censer cancellation must synchronously remove its transient mitigation key")
 	_check(player.get("equipped_weapon") == original_weapon,
-		"Censer cancellation must restore the real equipped weapon")
+		"Censer cancellation must synchronously restore the real equipped weapon")
+	await process_frame
 	await _drop_real(player, targets)
 
 

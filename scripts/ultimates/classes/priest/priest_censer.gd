@@ -9,6 +9,7 @@ var stored_prevented_for_tests := 0.0
 var counter_burst_for_tests := 0.0
 
 var _activation = null
+var _ultimate_host: Node = null
 var _player: Node = null
 var _equipped_weapon: Node = null
 var _last_direction := Vector2.RIGHT
@@ -53,11 +54,57 @@ func configure(activation) -> void:
 	_player = _player_from_host()
 	if _player == null:
 		return
+	_ultimate_host = activation.host
 	var active_weapon = _player.get("equipped_weapon")
 	if active_weapon is Node and is_instance_valid(active_weapon) and active_weapon != self:
 		_equipped_weapon = active_weapon
 		_sync_weapon_direction()
 		_player.set("equipped_weapon", self)
+	# The activation unwinds modifiers before this queued node leaves the tree.
+	# Proxying its host lets Censer remove its zero-valued key synchronously.
+	activation.host = self
+
+
+func ultimate_host_context() -> Dictionary:
+	return _ultimate_host.call("ultimate_host_context")
+
+
+func ultimate_host_position() -> Vector2:
+	return _ultimate_host.call("ultimate_host_position")
+
+
+func ultimate_host_aim(max_range: float) -> Dictionary:
+	return _ultimate_host.call("ultimate_host_aim", max_range)
+
+
+func ultimate_host_targets(center: Vector2, radius: float, limit: int) -> Array:
+	return _ultimate_host.call("ultimate_host_targets", center, radius, limit)
+
+
+func ultimate_host_summons(group_id: String) -> Array:
+	return _ultimate_host.call("ultimate_host_summons", group_id)
+
+
+func ultimate_host_apply_damage(target: Node, amount: float, feedback: Dictionary) -> void:
+	_ultimate_host.call("ultimate_host_apply_damage", target, amount, feedback)
+
+
+func ultimate_host_modifier(key: String, value: float, op: String) -> void:
+	_ultimate_host.call("ultimate_host_modifier", key, value, op)
+	if key == "absorb_flat" and _erase_zero_absorb_key():
+		_restore_equipped_weapon()
+
+
+func ultimate_host_effect_parent() -> Node:
+	return _ultimate_host.call("ultimate_host_effect_parent")
+
+
+func ultimate_host_present(event_id: String, payload: Dictionary) -> Node:
+	return _ultimate_host.call("ultimate_host_present", event_id, payload)
+
+
+func ultimate_host_set_active(active: bool) -> void:
+	_ultimate_host.call("ultimate_host_set_active", active)
 
 
 ## Player routes every measured prevention through the equipped weapon's generic
@@ -144,18 +191,23 @@ func _player_from_host() -> Node:
 
 
 func _exit_tree() -> void:
-	if _player != null and is_instance_valid(_player) and _player.get("equipped_weapon") == self:
-		_player.set(
-			"equipped_weapon",
-			_equipped_weapon if _equipped_weapon != null and is_instance_valid(_equipped_weapon) else null
-		)
+	_restore_equipped_weapon()
 	_erase_zero_absorb_key()
+	_ultimate_host = null
 	_equipped_weapon = null
 	_player = null
 	_activation = null
 
 
-func _erase_zero_absorb_key() -> void:
+func _restore_equipped_weapon() -> void:
+	if _player != null and is_instance_valid(_player) and _player.get("equipped_weapon") == self:
+		_player.set(
+			"equipped_weapon",
+			_equipped_weapon if _equipped_weapon != null and is_instance_valid(_equipped_weapon) else null
+		)
+
+
+func _erase_zero_absorb_key() -> bool:
 	var modifiers = _player.get("run_modifiers") if _player != null and is_instance_valid(_player) else null
 	if not modifiers is Dictionary and _activation != null \
 			and _activation.host != null and is_instance_valid(_activation.host):
@@ -163,3 +215,5 @@ func _erase_zero_absorb_key() -> void:
 	if modifiers is Dictionary and modifiers.has("absorb_flat") \
 			and is_zero_approx(float(modifiers.get("absorb_flat", 0.0))):
 		modifiers.erase("absorb_flat")
+		return true
+	return false
