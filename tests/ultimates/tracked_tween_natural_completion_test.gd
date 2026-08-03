@@ -18,16 +18,16 @@ const PD := preload("res://scripts/progression_data.gd")
 const GAMEPLAY_TIME_SCALE := 0.5
 const COMPLETION_GRACE_SECONDS := 1.0
 const PLAYER_SPACING := 2500.0
-const CASES := [
-	{"class_id": "biologist", "weapon_id": "biologist_sample_injector", "lifecycle": 10.65},
-	{"class_id": "biologist", "weapon_id": "biologist_symbiote_seed", "lifecycle": 9.0},
-	{"class_id": "biologist", "weapon_id": "biologist_spore_lens", "lifecycle": 8.6},
-	{"class_id": "engineer", "weapon_id": "engineer_repair_drone", "lifecycle": 5.5},
-	{"class_id": "engineer", "weapon_id": "engineer_sentry_wrench", "lifecycle": 4.6},
-	{"class_id": "sniper", "weapon_id": "sniper_spotter_scope", "lifecycle": 4.4},
-	{"class_id": "engineer", "weapon_id": "engineer_pressure_mines", "lifecycle": 4.0},
-	{"class_id": "sniper", "weapon_id": "sniper_shatter_rounds", "lifecycle": 2.82},
-	{"class_id": "sniper", "weapon_id": "sniper_deadeye_rifle", "lifecycle": 0.25},
+const LIFECYCLE_SPECS := [
+	{"class_id": "biologist", "weapon_id": "biologist_sample_injector", "lifecycle": 10.65, "deadline": 11.65},
+	{"class_id": "biologist", "weapon_id": "biologist_symbiote_seed", "lifecycle": 9.0, "deadline": 10.0},
+	{"class_id": "biologist", "weapon_id": "biologist_spore_lens", "lifecycle": 8.6, "deadline": 9.6},
+	{"class_id": "engineer", "weapon_id": "engineer_repair_drone", "lifecycle": 5.5, "deadline": 6.5},
+	{"class_id": "engineer", "weapon_id": "engineer_sentry_wrench", "lifecycle": 4.6, "deadline": 5.6},
+	{"class_id": "sniper", "weapon_id": "sniper_spotter_scope", "lifecycle": 4.4, "deadline": 5.4},
+	{"class_id": "engineer", "weapon_id": "engineer_pressure_mines", "lifecycle": 4.0, "deadline": 5.0},
+	{"class_id": "sniper", "weapon_id": "sniper_shatter_rounds", "lifecycle": 2.82, "deadline": 3.82},
+	{"class_id": "sniper", "weapon_id": "sniper_deadeye_rifle", "lifecycle": 0.25, "deadline": 1.25},
 ]
 
 var _errors: Array[String] = []
@@ -43,12 +43,25 @@ func _initialize() -> void:
 
 	var registry := Registry.new(PD.WEAPONS_BY_CLASS)
 	_check(
+		registry.is_valid() and registry.validation_errors().is_empty(),
+		"catalog must admit cleanly: %s" % [registry.validation_errors()]
+	)
+	_check(
 		registry.package_validation_errors().is_empty(),
 		"ready packages must admit cleanly: %s" % [registry.package_validation_errors()]
 	)
+	var ready_pairs := _discover_ready_pairs(registry)
+	var inventory_errors := _inventory_errors(ready_pairs, LIFECYCLE_SPECS)
+	for error in inventory_errors:
+		_check(false, error)
+	_assert_inventory_falsifications(ready_pairs)
+	if not _errors.is_empty() or not inventory_errors.is_empty():
+		_report()
+		return
 	var states: Array[Dictionary] = []
-	for index in CASES.size():
-		states.append(await _build_state(CASES[index], index, registry))
+	for index in ready_pairs.size():
+		var pair: Dictionary = ready_pairs[index]
+		states.append(await _build_state(_spec_for_pair(pair), index, registry))
 	await process_frame
 
 	var original_time_scale := Engine.time_scale
@@ -68,6 +81,142 @@ func _initialize() -> void:
 	_holder.queue_free()
 	await process_frame
 	_report()
+
+
+func _discover_ready_pairs(registry) -> Array[Dictionary]:
+	var pairs: Array[Dictionary] = []
+	for raw_class_id in registry.class_ids():
+		var class_id := str(raw_class_id)
+		for raw_weapon_id in registry.weapon_ids(class_id):
+			var weapon_id := str(raw_weapon_id)
+			var label := _pair_key(class_id, weapon_id)
+			var profile: Dictionary = registry.catalog_profile_for(class_id, weapon_id)
+			if str(profile.get("implementation_state", "")) != "ready":
+				continue
+			if not registry.has_exact_executor_pair(class_id, weapon_id):
+				_check(false, "%s ready pair must expose an exact executor" % label)
+				continue
+			if registry.resolution_source(class_id, weapon_id) != Resolver.SOURCE_WEAPON_PROFILE:
+				_check(false, "%s ready pair must resolve through its exact package" % label)
+				continue
+			pairs.append({"class_id": class_id, "weapon_id": weapon_id})
+	return pairs
+
+
+func _inventory_errors(ready_pairs: Array, specs: Array) -> Array[String]:
+	var errors: Array[String] = []
+	var discovered: Dictionary = {}
+	for raw_pair in ready_pairs:
+		if not raw_pair is Dictionary:
+			errors.append("ready inventory entry must be a pair identity")
+			continue
+		var pair := raw_pair as Dictionary
+		var key := _pair_key(str(pair.get("class_id", "")), str(pair.get("weapon_id", "")))
+		if key == "/":
+			errors.append("ready inventory pair identity must name class_id/weapon_id")
+			continue
+		if discovered.has(key):
+			errors.append("duplicate discovered ready pair: %s" % key)
+			continue
+		discovered[key] = true
+
+	var documented: Dictionary = {}
+	for raw_spec in specs:
+		if not raw_spec is Dictionary:
+			errors.append("lifecycle/deadline spec must be a pair identity")
+			continue
+		var spec := raw_spec as Dictionary
+		var key := _pair_key(str(spec.get("class_id", "")), str(spec.get("weapon_id", "")))
+		if key == "/":
+			errors.append("lifecycle/deadline spec must name class_id/weapon_id")
+			continue
+		if documented.has(key):
+			errors.append("duplicate lifecycle/deadline spec: %s" % key)
+		else:
+			documented[key] = true
+		var lifecycle = spec.get("lifecycle")
+		var deadline = spec.get("deadline")
+		if not _positive_finite(lifecycle) or not _positive_finite(deadline):
+			errors.append("%s lifecycle/deadline spec must be positive and finite" % key)
+		elif not is_equal_approx(float(deadline), float(lifecycle) + COMPLETION_GRACE_SECONDS):
+			errors.append("%s lifecycle/deadline spec must include %.1fs grace" % [key, COMPLETION_GRACE_SECONDS])
+
+	for key in discovered:
+		if not documented.has(key):
+			errors.append("ready pair has no lifecycle/deadline spec: %s" % key)
+	for key in documented:
+		if not discovered.has(key):
+			errors.append("stale lifecycle/deadline spec for missing ready pair: %s" % key)
+	return errors
+
+
+func _assert_inventory_falsifications(ready_pairs: Array) -> void:
+	if ready_pairs.is_empty():
+		return
+	var original: Dictionary = ready_pairs[0]
+	var original_key := _pair_key(str(original["class_id"]), str(original["weapon_id"]))
+	var added_key := "%s/%s_added_ready_pair" % [str(original["class_id"]), str(original["weapon_id"])]
+	var added := ready_pairs.duplicate(true)
+	added.append({"class_id": str(original["class_id"]), "weapon_id": "%s_added_ready_pair" % str(original["weapon_id"])})
+	_expect_inventory_failure(
+		_inventory_errors(added, LIFECYCLE_SPECS),
+		[added_key],
+		"added ready pair"
+	)
+
+	var replaced := []
+	for index in ready_pairs.size():
+		if index != 0:
+			replaced.append((ready_pairs[index] as Dictionary).duplicate(true))
+	var replacement_key := "%s/%s_replaced_ready_pair" % [str(original["class_id"]), str(original["weapon_id"])]
+	replaced.append({"class_id": str(original["class_id"]), "weapon_id": "%s_replaced_ready_pair" % str(original["weapon_id"])})
+	var replacement_errors := _inventory_errors(replaced, LIFECYCLE_SPECS)
+	_expect_inventory_failure(replacement_errors, [original_key, replacement_key], "replaced ready pair")
+
+	var removed := []
+	for index in ready_pairs.size():
+		if index != 0:
+			removed.append((ready_pairs[index] as Dictionary).duplicate(true))
+	_expect_inventory_failure(
+		_inventory_errors(removed, LIFECYCLE_SPECS),
+		[original_key],
+		"removed ready pair"
+	)
+
+	var duplicate_specs := LIFECYCLE_SPECS.duplicate(true)
+	duplicate_specs.append((LIFECYCLE_SPECS[0] as Dictionary).duplicate(true))
+	_expect_inventory_failure(
+		_inventory_errors(ready_pairs, duplicate_specs),
+		[_pair_key(str(LIFECYCLE_SPECS[0]["class_id"]), str(LIFECYCLE_SPECS[0]["weapon_id"]))],
+		"duplicate lifecycle/deadline spec"
+	)
+
+
+func _expect_inventory_failure(errors: Array[String], required_keys: Array, scenario: String) -> void:
+	_check(not errors.is_empty(), "%s must fail closed" % scenario)
+	var joined := ""
+	for error in errors:
+		joined += str(error) + "\n"
+	for raw_key in required_keys:
+		_check(joined.contains(str(raw_key)), "%s failure must name %s" % [scenario, str(raw_key)])
+
+
+func _spec_for_pair(pair: Dictionary) -> Dictionary:
+	var key := _pair_key(str(pair.get("class_id", "")), str(pair.get("weapon_id", "")))
+	for raw_spec in LIFECYCLE_SPECS:
+		var spec := raw_spec as Dictionary
+		if _pair_key(str(spec.get("class_id", "")), str(spec.get("weapon_id", ""))) == key:
+			return spec.duplicate(true)
+	return {}
+
+
+func _pair_key(class_id: String, weapon_id: String) -> String:
+	return "%s/%s" % [class_id, weapon_id]
+
+
+func _positive_finite(value) -> bool:
+	return (value is int or value is float) and not value is bool \
+			and is_finite(float(value)) and float(value) > 0.0
 
 
 func _build_state(spec: Dictionary, index: int, registry) -> Dictionary:
@@ -98,6 +247,7 @@ func _build_state(spec: Dictionary, index: int, registry) -> Dictionary:
 		"weapon_id": weapon_id,
 		"label": label,
 		"lifecycle": float(spec["lifecycle"]),
+		"deadline": float(spec["deadline"]),
 		"player": player,
 		"enemies": enemies,
 		"baseline_statuses": baseline_statuses,
@@ -179,7 +329,7 @@ func _wait_for_natural_completion(states: Array[Dictionary]) -> void:
 	for state in states:
 		global_deadline = maxi(
 			global_deadline,
-			int(state["started_ms"]) + int((float(state["lifecycle"]) + COMPLETION_GRACE_SECONDS) * 1000.0)
+			int(state["started_ms"]) + int(float(state["deadline"]) * 1000.0)
 		)
 	while Time.get_ticks_msec() <= global_deadline:
 		var all_finished := true
@@ -227,7 +377,7 @@ func _assert_natural_cleanup(states: Array[Dictionary]) -> void:
 		if int(state["finished_ms"]) >= 0:
 			var elapsed := float(int(state["finished_ms"]) - int(state["started_ms"])) / 1000.0
 			_check(
-				elapsed <= float(state["lifecycle"]) + COMPLETION_GRACE_SECONDS,
+				elapsed <= float(state["deadline"]),
 				"%s finished after %.2fs, beyond lifecycle + 1s" % [label, elapsed]
 			)
 		_check(activation.applied_total > 0.0, "%s must execute a real gameplay damage step" % label)
