@@ -1,0 +1,101 @@
+{
+  "schema_version": 1,
+  "id": "normal_decks",
+  "type": "encounter_feature",
+  "enabled": true,
+  "primary": false,
+  "capabilities": ["spawn_plan"],
+  "script": "res://scripts/encounters/features/decks/deck_feature.gd",
+  "seed_salt": 1577846301,
+  "supported_class_ids": ["berserk", "soldier", "thief", "elementalist", "sniper", "priest", "biologist", "robot", "engineer", "dark_mage", "guitarist", "assassin", "ranger", "doctor", "chemist", "knight", "druid"],
+  "spawn_plans": [
+    {
+      "deck_id": "swarm",
+      "mandatory_role": "biter",
+      "mandatory_scene": "res://scenes/EnemyBiter.tscn",
+      "role_weight": 3,
+      "counterplay": ["clear space", "keep moving"],
+      "class_profiles": ["melee", "ranged", "summon"],
+      "schema_version": 1,
+      "min_stage": 0,
+      "max_stage": 64,
+      "active_cap": 7,
+      "safe_radius": 480.0,
+      "entries": [
+        {"scene": "res://scenes/Enemy.tscn", "count": 3},
+        {"scene": "res://scenes/EnemyBiter.tscn", "count": 4}
+      ]
+    },
+    {
+      "deck_id": "shield_wall",
+      "mandatory_role": "shield",
+      "mandatory_scene": "res://scenes/EnemyShield.tscn",
+      "role_weight": 2,
+      "counterplay": ["focus shield", "circle flank"],
+      "class_profiles": ["melee", "ranged", "summon"],
+      "schema_version": 1,
+      "min_stage": 0,
+      "max_stage": 64,
+      "active_cap": 6,
+      "safe_radius": 520.0,
+      "entries": [
+        {"scene": "res://scenes/Enemy.tscn", "count": 3},
+        {"scene": "res://scenes/EnemyShield.tscn", "count": 3}
+      ]
+    },
+    {
+      "deck_id": "shooter_crossfire",
+      "mandatory_role": "shooter",
+      "mandatory_scene": "res://scenes/EnemyShooter.tscn",
+      "role_weight": 2,
+      "counterplay": ["break sightlines", "focus shooters"],
+      "class_profiles": ["melee", "ranged", "summon"],
+      "schema_version": 1,
+      "min_stage": 1,
+      "max_stage": 64,
+      "active_cap": 6,
+      "safe_radius": 620.0,
+      "entries": [
+        {"scene": "res://scenes/Enemy.tscn", "count": 3},
+        {"scene": "res://scenes/EnemyShooter.tscn", "count": 2},
+        {"scene": "res://scenes/EnemyMage.tscn", "count": 1}
+      ]
+    },
+    {
+      "deck_id": "summoner_siege",
+      "mandatory_role": "summoner",
+      "mandatory_scene": "res://scenes/EnemySummoner.tscn",
+      "role_weight": 1,
+      "counterplay": ["focus summoner", "hold a perimeter"],
+      "class_profiles": ["melee", "ranged", "summon"],
+      "schema_version": 1,
+      "min_stage": 2,
+      "max_stage": 64,
+      "active_cap": 5,
+      "safe_radius": 680.0,
+      "entries": [
+        {"scene": "res://scenes/Enemy.tscn", "count": 2},
+        {"scene": "res://scenes/EnemyShield.tscn", "count": 2},
+        {"scene": "res://scenes/EnemySummoner.tscn", "count": 1}
+      ]
+    },
+    {
+      "deck_id": "runner_hunt",
+      "mandatory_role": "runner",
+      "mandatory_scene": "res://scenes/EnemyRunner.tscn",
+      "role_weight": 3,
+      "counterplay": ["track runners", "use short area attacks"],
+      "class_profiles": ["melee", "ranged", "summon"],
+      "schema_version": 1,
+      "min_stage": 0,
+      "max_stage": 64,
+      "active_cap": 7,
+      "safe_radius": 540.0,
+      "entries": [
+        {"scene": "res://scenes/Enemy.tscn", "count": 2},
+        {"scene": "res://scenes/EnemyRunner.tscn", "count": 3},
+        {"scene": "res://scenes/EnemyFlyingRunner.tscn", "count": 2}
+      ]
+    }
+  ]
+}
