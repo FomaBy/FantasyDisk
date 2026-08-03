@@ -171,6 +171,7 @@ func _initialize() -> void:
 	await _test_chained_projectile()
 	await _test_declared_profile_defers_to_legacy()
 	await _test_single_activation_and_reentry()
+	await _test_gameplay_slow_time_uses_wall_time()
 	await _test_pause_does_not_tick()
 	await _test_cancel_clears_everything()
 	await _test_applied_hp_not_attempted()
@@ -464,14 +465,46 @@ func _test_pause_does_not_tick() -> void:
 	)
 	var host: FixtureHost = fixture["host"]
 	var controller: Controller = fixture["controller"]
+	var original_time_scale := Engine.time_scale
+	Engine.time_scale = 0.1
 	host.process_mode = Node.PROCESS_MODE_PAUSABLE
 	paused = true
 	_start(controller)
-	for _frame in 8:
+	var deadline := Time.get_ticks_msec() + 250
+	while Time.get_ticks_msec() < deadline:
 		await process_frame
-	_check(host.damage_calls == 0, "a paused tree must not advance a live cast, got %d ticks" % host.damage_calls)
+	_check(controller.is_active(), "a paused tree must keep the slow-time cast live")
+	_check(
+		host.damage_calls == 0,
+		"a paused tree must not advance a live cast, got %d ticks" % host.damage_calls
+	)
 	paused = false
-	host.process_mode = Node.PROCESS_MODE_DISABLED
+	controller.cancel()
+	Engine.time_scale = original_time_scale
+	await _drop(fixture)
+
+
+func _test_gameplay_slow_time_uses_wall_time() -> void:
+	var fixture := await _make_fixture(
+		"status_zone", {"radius": 400.0, "damage": 0.5, "duration": 0.2, "interval": 0.05}, 1
+	)
+	var host: FixtureHost = fixture["host"]
+	var controller: Controller = fixture["controller"]
+	var original_time_scale := Engine.time_scale
+	Engine.time_scale = 0.1
+	host.process_mode = Node.PROCESS_MODE_PAUSABLE
+	_start(controller)
+	var deadline := Time.get_ticks_msec() + 800
+	while controller.is_active() and Time.get_ticks_msec() < deadline:
+		await process_frame
+	_check(
+		not controller.is_active(),
+		"gameplay slow-time must not stretch an activation-owned tween in wall time"
+	)
+	_check(host.damage_calls == 4, "the slow-time cast must still execute every declared tick")
+	if controller.is_active():
+		controller.cancel()
+	Engine.time_scale = original_time_scale
 	await _drop(fixture)
 
 
