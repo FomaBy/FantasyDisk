@@ -1,0 +1,38 @@
+{
+  "schema_version": 1,
+  "class_id": "assassin",
+  "weapon_id": "chakrams",
+  "profile_id": "weapon_ultimate.profile.assassin.chakrams",
+  "executor_id": "weapon_ultimate.executor.assassin.chakrams",
+  "implementation_state": "ready",
+  "targeting": {
+    "strategy_id": "compass_return",
+    "params": {}
+  },
+  "charge": {
+    "strategy_id": "ultimate_charge_ledger",
+    "params": {}
+  },
+  "executor": {
+    "strategy_id": "weapon_ultimate.executor.assassin.chakrams",
+    "params": {
+      "orbit_radius": 72.0,
+      "trajectory_length": 520.0,
+      "lane_half_width": 48.0,
+      "targets_per_lane": 4,
+      "orbit_duration": 0.5,
+      "outbound_duration": 0.5,
+      "return_steps": 6,
+      "return_step_interval": 0.12,
+      "return_curve_offset": 132.0,
+      "pass_damage": 120.0,
+      "secondary_damage_ratio": 0.12,
+      "execute_threshold": 0.25
+    }
+  },
+  "total_boss_cap": 0.08,
+  "cleanup_policy": {
+    "strategy_id": "activation_owned",
+    "params": {}
+  }
+}

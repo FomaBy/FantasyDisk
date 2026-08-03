@@ -1,0 +1,38 @@
+{
+  "schema_version": 1,
+  "class_id": "assassin",
+  "weapon_id": "venom_wire",
+  "profile_id": "weapon_ultimate.profile.assassin.venom_wire",
+  "executor_id": "weapon_ultimate.executor.assassin.venom_wire",
+  "implementation_state": "ready",
+  "targeting": {
+    "strategy_id": "hex_web",
+    "params": {}
+  },
+  "charge": {
+    "strategy_id": "ultimate_charge_ledger",
+    "params": {}
+  },
+  "executor": {
+    "strategy_id": "weapon_ultimate.executor.assassin.venom_wire",
+    "params": {
+      "web_radius": 300.0,
+      "wire_half_width": 32.0,
+      "target_limit": 24,
+      "cut_pulses": 3,
+      "cut_interval": 0.35,
+      "max_cuts_per_pulse": 3,
+      "cut_damage": 42.0,
+      "burst_damage": 210.0,
+      "stack_bonus": 0.08,
+      "pull_strength": 360.0,
+      "poison_duration": 3.0,
+      "poison_slow": 0.72
+    }
+  },
+  "total_boss_cap": 0.08,
+  "cleanup_policy": {
+    "strategy_id": "activation_owned",
+    "params": {}
+  }
+}
