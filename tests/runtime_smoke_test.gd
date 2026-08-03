@@ -4808,7 +4808,8 @@ func _test_universal_attribute_interpretations() -> void:
 	var derived_icons_seen := {}
 	var mod_display := {
 		"damage_flat": "damage",
-		"aoe_radius_multiplier": "aura_radius",
+		# FAN-1891: единая область атаки — иконка оси радиуса теперь aoe_radius.
+		"aoe_radius_multiplier": "aoe_radius",
 		"regeneration_flat": "regeneration",
 		"vampiric_amount_flat": "vampiric_amount",
 		"vampiric_chance_flat": "vampiric_chance",
@@ -4820,7 +4821,7 @@ func _test_universal_attribute_interpretations() -> void:
 			var icon_id := str(mod_display.get(str(modifier_id), ""))
 			if icon_id != "":
 				derived_icons_seen[icon_id] = true
-	for icon_id in ["damage", "aura_radius", "regeneration", "vampiric_amount", "vampiric_chance", "ultimate_multiplier"]:
+	for icon_id in ["damage", "aoe_radius", "regeneration", "vampiric_amount", "vampiric_chance", "ultimate_multiplier"]:
 		if not derived_icons_seen.has(icon_id):
 			_fail("Expected level-up pool to expose derived attribute reward %s." % icon_id)
 			return
@@ -6272,7 +6273,7 @@ func _test_full_attribute_wiring() -> void:
 	var stats: Dictionary = ProgressionData.base_stats("berserk")
 	var weapon: Dictionary = ProgressionData.weapon("berserk", "sword")
 	var base: Dictionary = ProgressionData.derived_parameters(stats, {}, weapon)
-	for parameter_id in ["absorb", "regeneration", "vampiric_chance", "vampiric_amount", "knockback_distance", "range_multiplier", "ultimate_multiplier"]:
+	for parameter_id in ["absorb", "regeneration", "vampiric_chance", "vampiric_amount", "knockback_power", "attack_range", "ultimate_multiplier"]:
 		if not base.has(parameter_id):
 			_fail("Expected derived parameters to include %s." % parameter_id)
 			return
@@ -6284,8 +6285,24 @@ func _test_full_attribute_wiring() -> void:
 	if boosted["absorb"] <= base["absorb"] or boosted["regeneration"] <= base["regeneration"]:
 		_fail("Expected endurance/knowledge to raise absorb and regeneration.")
 		return
-	if boosted["knockback_distance"] <= base["knockback_distance"] or boosted["ultimate_multiplier"] <= base["ultimate_multiplier"]:
-		_fail("Expected endurance/energy to raise knockback distance and ultimate multiplier.")
+	if boosted["ultimate_multiplier"] <= base["ultimate_multiplier"]:
+		_fail("Expected endurance/energy to raise the ultimate multiplier.")
+		return
+	# FAN-1891: knockback_distance снят — отталкивание считается как
+	# (отталкивание оружия + Сила × 4) и растёт ТОЛЬКО от Силы.
+	if absf(float(boosted["knockback_power"]) - float(base["knockback_power"])) > 0.001:
+		_fail("Expected knockback power to ignore endurance/knowledge/energy (FAN-1891).")
+		return
+	var strong_stats: Dictionary = stats.duplicate(true)
+	strong_stats["strength"] = strong_stats["strength"] + 4.0
+	var strong: Dictionary = ProgressionData.derived_parameters(strong_stats, {}, weapon)
+	if strong["knockback_power"] <= base["knockback_power"]:
+		_fail("Expected strength to raise knockback power (weapon base + Strength).")
+		return
+	# FAN-1891: дальность цели config-only — рост статов её не двигает.
+	if absf(float(boosted["attack_range"]) - float(weapon.get("attack_range", 240.0))) > 0.001 \
+			or absf(float(strong["attack_range"]) - float(base["attack_range"])) > 0.001:
+		_fail("Expected attack range to stay config-only under stat growth.")
 		return
 	var vamp_mods := {"vampiric_chance_flat": 0.25, "vampiric_amount_flat": 2.0}
 	var vamp: Dictionary = ProgressionData.derived_parameters(stats, vamp_mods, weapon)
@@ -6378,8 +6395,8 @@ func _test_attribute_weapon_synergy_matrix() -> void:
 		"crit_chance", "crit_damage_multiplier", "move_speed", "dodge",
 		"defense", "health_point", "attack_range", "aoe_radius",
 		"pickup_radius", "dot_damage", "dot_speed", "projectile_speed",
-		"aura_radius", "buff_power", "knockback_power", "summon_amount",
-		"absorb", "regeneration", "knockback_distance", "ultimate_multiplier",
+		"aura_radius", "knockback_power", "summon_amount",
+		"absorb", "regeneration", "ultimate_multiplier",
 	]
 	for archetype in required_archetypes:
 		var rep: Dictionary = representatives[archetype]
@@ -9533,7 +9550,7 @@ func _assert_hud_no_overlap_at_size(main_scene: PackedScene, viewport_size: Vect
 	var player: Node = hud_main.get("current_player")
 	if player != null:
 		player.call("apply_reward", {"kind": "artifact", "id": "cracked_shield", "title": "Треснувший щит", "mods": {"defense_flat": 0.12}})
-		player.call("apply_reward", {"kind": "artifact", "id": "hawk_eye", "title": "Ястребиный глаз", "mods": {"range_multiplier": 1.12}})
+		player.call("apply_reward", {"kind": "artifact", "id": "hawk_eye", "title": "Ястребиный глаз", "mods": {"aoe_radius_multiplier": 1.12}})
 	hud_main.set("_last_hud_snapshot", {})
 	hud_main.ui._update_hud()
 	await process_frame

@@ -123,11 +123,8 @@ const ARTIFACTS := [
 		3: {"description": "+7 Лидерство.", "stats": {"leadership": 7.0}},
 	}},
 	# 21 семья производных атрибутов (ключ эффекта = ключ level-up карточки, §2.2):
-	# FAN-1038: убраны семьи мёртвых осей — battle_fan (sector_multiplier, no-op
-	# для 46/51 оружий), ram_horn (knockback_multiplier, боссы/элитки displacement-
-	# immune), falcon_feather (projectile_speed_flat, только косметика задержки
-	# импакта). Derived-механики живут дальше (их кормят статы/мета), удалены только
-	# предметы-ловушки. Follow-up FAN-1034 (уровневые карты этих осей — 9ca18b9f8).
+	# FAN-1891: removed progression axes are not represented by artifact families;
+	# projectile timing and target reach remain internal weapon configuration.
 	{"id": "splinter_gloves", "title": "Перчатки осколков", "rarity_scaling": true, "tier": 1, "cost": 30, "class_affinity": [],
 	 "description": "+10% урона.", "mods": {"damage_multiplier": 1.10},
 	 "tiers": {
@@ -199,11 +196,11 @@ const ARTIFACTS := [
 		3: {"description": "+30% уклонения.", "mods": {"dodge_flat": 0.30}},
 	}},
 	{"id": "wide_sigil", "title": "Дальняя печать", "rarity_scaling": true, "tier": 1, "cost": 30, "class_affinity": [],
-	 "description": "+10% дальности атаки.", "mods": {"range_multiplier": 1.10},
+	 "description": "+10% области атаки.", "mods": {"aoe_radius_multiplier": 1.10},
 	 "tiers": {
-		1: {"description": "+10% дальности атаки.", "mods": {"range_multiplier": 1.10}},
-		2: {"description": "+18% дальности атаки.", "mods": {"range_multiplier": 1.18}},
-		3: {"description": "+30% дальности атаки.", "mods": {"range_multiplier": 1.30}},
+		1: {"description": "+10% области атаки.", "mods": {"aoe_radius_multiplier": 1.10}},
+		2: {"description": "+18% области атаки.", "mods": {"aoe_radius_multiplier": 1.18}},
+		3: {"description": "+30% области атаки.", "mods": {"aoe_radius_multiplier": 1.30}},
 	}},
 	{"id": "venom_vial", "title": "Флакон отравы", "rarity_scaling": true, "tier": 1, "cost": 30, "class_affinity": [],
 	 "description": "+2 периодического урона за тик.", "mods": {"dot_damage_flat": 2.0},
@@ -220,11 +217,11 @@ const ARTIFACTS := [
 		3: {"description": "+30% радиуса атак и зон.", "mods": {"aoe_radius_multiplier": 1.30}},
 	}},
 	{"id": "war_banner", "title": "Боевое знамя", "rarity_scaling": true, "tier": 1, "cost": 30, "class_affinity": [],
-	 "description": "+10% силы поддержки.", "mods": {"buff_power_flat": 0.10},
+	 "description": "+10% общего урона.", "mods": {"damage_multiplier": 1.10},
 	 "tiers": {
-		1: {"description": "+10% силы поддержки.", "mods": {"buff_power_flat": 0.10}},
-		2: {"description": "+18% силы поддержки.", "mods": {"buff_power_flat": 0.18}},
-		3: {"description": "+30% силы поддержки.", "mods": {"buff_power_flat": 0.30}},
+		1: {"description": "+10% общего урона.", "mods": {"damage_multiplier": 1.10}},
+		2: {"description": "+18% общего урона.", "mods": {"damage_multiplier": 1.18}},
+		3: {"description": "+30% общего урона.", "mods": {"damage_multiplier": 1.30}},
 	}},
 	{"id": "summoners_bell", "title": "Колокольчик призывателя", "rarity_scaling": true, "tier": 1, "cost": 30, "class_affinity": [],
 	 "description": "+1.5 к силе призывов.", "mods": {"summon_bonus": 1.5},
@@ -287,7 +284,7 @@ const ARTIFACTS := [
 	{"id": "sacrifice_seal", "title": "Печать жертвы", "tier": 2, "cost": 55, "class_affinity": [], "description": "+30% шанса крита, -22% максимального HP.", "mods": {"crit_chance_flat": 0.30, "max_health_multiplier": 0.78}},
 	{"id": "hungry_amulet", "title": "Голодный амулет", "tier": 2, "cost": 55, "class_affinity": [], "description": "+85% золота, -35% лечения.", "mods": {"money_gain_multiplier": 1.85, "healing_multiplier": 0.65}},
 	{"id": "berserk_totem", "title": "Тотем берсерка", "tier": 2, "cost": 55, "class_affinity": [], "description": "+60% урона, -20% скорости движения.", "mods": {"damage_multiplier": 1.60, "move_speed_multiplier": 0.80}},
-	{"id": "focus_lens", "title": "Линза фокуса", "tier": 2, "cost": 55, "class_affinity": [], "description": "+70% дальности атаки, -25% радиуса атак и зон.", "mods": {"range_multiplier": 1.70, "aoe_radius_multiplier": 0.75}},
+	{"id": "focus_lens", "title": "Линза фокуса", "tier": 2, "cost": 55, "class_affinity": [], "description": "+20% общего урона, -25% области атак и зон.", "mods": {"damage_multiplier": 1.20, "aoe_radius_multiplier": 0.75}},
 	{"id": "stone_hide", "title": "Каменная шкура", "tier": 2, "cost": 55, "class_affinity": [], "description": "+40% защиты, -25% скорости атаки.", "mods": {"defense_flat": 0.40, "attack_speed_multiplier": 0.75}},
 	{"id": "echo_core", "title": "Эхо Разлома", "tier": 3, "cost": 95, "class_affinity": [], "description": "Каждый 5-й удар по врагу вызывает взрыв эха: 80% урона по области вокруг цели.", "mods": {"echo_blast_every": 5.0}},
 	{"id": "blood_pact", "title": "Кровавый Рубеж", "tier": 3, "cost": 95, "class_affinity": [], "description": "Пока здоровье ниже 30% — +50% урона. Риск, достойный награды.", "mods": {"low_hp_damage_bonus": 0.5}},
@@ -346,7 +343,7 @@ const ARTIFACTS := [
 	{"id": "stolen_crest", "title": "Украденный герб", "tier": 3, "cost": 95, "class_affinity": ["thief"], "requires_ascension": 5, "description": "До конца забега в пул наград попадают 2 случайных артефакта чужих классов.", "mods": {"cross_class_artifact_slots": 2.0}},
 	# Guitarist — Сценический контроль:
 	{"id": "overdrive_pick", "title": "Медиатор овердрайва", "tier": 3, "cost": 95, "class_affinity": ["guitarist"], "requires_ascension": 5, "description": "Пока рифф-серия активна: +10% урона и +12% скорости атаки.", "mods": {"riff_streak_damage_bonus": 0.10, "riff_streak_attack_speed_bonus": 0.12}},
-	{"id": "bass_resonator", "title": "Басовый резонатор", "tier": 2, "cost": 55, "class_affinity": ["guitarist"], "requires_ascension": 5, "description": "Бас-аура шире (+30%); +8% скорости атаки.", "mods": {"guitar_aura_radius_mult": 0.30, "attack_speed_multiplier": 1.08}},
+	{"id": "bass_resonator", "title": "Басовый резонатор", "tier": 2, "cost": 55, "class_affinity": ["guitarist"], "requires_ascension": 5, "description": "Область атак и аур шире (+30%); +8% скорости атаки.", "mods": {"aoe_radius_multiplier": 1.30, "attack_speed_multiplier": 1.08}},
 	{"id": "stage_amplifier", "title": "Сценический усилитель", "tier": 2, "cost": 55, "class_affinity": ["guitarist"], "requires_ascension": 5, "description": "Усилители живут на 2.5с дольше, предел деплоя выше (до 4).", "mods": {"amp_lifetime_bonus": 2.5, "amp_cap_bonus": 1.0}},
 	{"id": "feedback_loop", "title": "Петля фидбэка", "tier": 3, "cost": 95, "class_affinity": ["guitarist"], "requires_ascension": 5, "description": "Пульсы усилителей стакают резонанс: +5% входящего урона за стак, до 3.", "mods": {"amp_resonance_vuln": 0.05}},
 	{"id": "rhythm_counter", "title": "Счетчик ритма", "tier": 2, "cost": 55, "class_affinity": ["guitarist"], "requires_ascension": 5, "description": "Каждый 4-й гитарный каст срабатывает дважды (повтор на 55% урона).", "mods": {"rhythm_echo_every": 4.0}},
@@ -357,11 +354,11 @@ const ARTIFACTS := [
 	{"id": "restorative_vapor", "title": "Восстановительный пар", "tier": 3, "cost": 95, "class_affinity": ["doctor"], "requires_ascension": 5, "description": "Зелье оставляет паровую зону: жжёт врагов и подлечивает Доктора.", "mods": {"restore_vapor_power": 1.0}},
 	{"id": "triage_protocol", "title": "Протокол триажа", "tier": 2, "cost": 55, "class_affinity": ["doctor"], "requires_ascension": 5, "active": true, "trigger": "on_low_hp", "description": "⚡ Активный — ниже 30% HP: следующий лечащий импульс оружия усилен ×2.5. Перезаряд 12с.", "mods": {"triage_heal_burst": 1.5}},
 	# Druid — Командование стаей:
-	{"id": "spirit_pack_banner", "title": "Знамя духовной стаи", "tier": 2, "cost": 55, "class_affinity": ["druid"], "requires_ascension": 5, "description": "+20% силы поддержки; духи бьют на 15% сильнее.", "mods": {"buff_power_flat": 0.20, "pet_damage_mult": 0.15}},
+	{"id": "spirit_pack_banner", "title": "Знамя духовной стаи", "tier": 2, "cost": 55, "class_affinity": ["druid"], "requires_ascension": 5, "description": "+20% общего урона; духи бьют на 15% сильнее.", "mods": {"damage_multiplier": 1.20, "pet_damage_mult": 0.15}},
 	{"id": "wolf_call", "title": "Зов волков", "tier": 3, "cost": 95, "class_affinity": ["druid"], "requires_ascension": 5, "description": "+2 к силе призывов; стая склоняется к волкам, ближние духи рвут на 20% сильнее.", "mods": {"summon_bonus": 2.0, "pack_wolf_bias": 1.0}},
 	{"id": "blue_totem", "title": "Голубой тотем", "tier": 2, "cost": 55, "class_affinity": ["druid"], "requires_ascension": 5, "description": "Вороний тотем пульсирует злее (+25%) и чаще; +10% магического урона.", "mods": {"raven_pulse_bonus": 0.25, "magic_damage_multiplier": 1.10}},
 	{"id": "briar_seal", "title": "Печать терновника", "tier": 2, "cost": 55, "class_affinity": ["druid"], "requires_ascension": 5, "description": "Терновые зоны замедляют на 20%.", "mods": {"briar_slow_power": 0.20}},
-	{"id": "pack_alpha", "title": "Альфа стаи", "tier": 3, "cost": 95, "class_affinity": ["druid"], "requires_ascension": 5, "description": "+40 радиуса аур, +15% силы поддержки, +1.5 к силе призывов.", "mods": {"aura_radius_flat": 40.0, "buff_power_flat": 0.15, "summon_bonus": 1.5}},
+	{"id": "pack_alpha", "title": "Альфа стаи", "tier": 3, "cost": 95, "class_affinity": ["druid"], "requires_ascension": 5, "description": "+20% области атак и аур, +15% общего урона, +1.5 к силе призывов.", "mods": {"aoe_radius_multiplier": 1.20, "damage_multiplier": 1.15, "summon_bonus": 1.5}},
 	# Engineer — Мастерская приказов:
 	{"id": "turret_magazine", "title": "Магазин турели", "tier": 2, "cost": 55, "class_affinity": ["engineer"], "requires_ascension": 5, "description": "+6 выстрелов к боезапасу каждой турели (базовые 15).", "mods": {"sentry_magazine_bonus": 6.0}},
 	{"id": "drone_gyroscope", "title": "Гироскоп дрона", "tier": 2, "cost": 55, "class_affinity": ["engineer"], "requires_ascension": 5, "description": "+20% скорости орбиты дронов; устройства работают на 12% чаще.", "mods": {"drone_orbit_speed_bonus": 0.20, "device_attack_speed_bonus": 0.12}},
@@ -372,7 +369,7 @@ const ARTIFACTS := [
 	# пирсинг-конус, перманентный капкан с параличом; артефакты дополняют базу):
 	{"id": "impact_string", "title": "Ударная тетива", "tier": 2, "cost": 55, "class_affinity": ["ranger"], "requires_ascension": 5, "description": "+35% отталкивания: попадания лука отбрасывают врагов от Рейнджера ещё дальше.", "mods": {"knockback_multiplier": 1.35}},
 	{"id": "moon_splitter", "title": "Лунный расщепитель", "tier": 3, "cost": 95, "class_affinity": ["ranger"], "requires_ascension": 5, "description": "Болт Лунного арбалета расщепляется в +2 дополнительные цели (всего 6) с тем же уроном.", "mods": {"moon_split_targets": 2.0}},
-	{"id": "storm_piercer", "title": "Грозовой пробойник", "tier": 2, "cost": 55, "class_affinity": ["ranger"], "requires_ascension": 5, "description": "+2 пробития заряженным выстрелам, +15% дальности.", "mods": {"charged_shot_extra_pierce": 2.0, "range_multiplier": 1.15}},
+	{"id": "storm_piercer", "title": "Грозовой пробойник", "tier": 2, "cost": 55, "class_affinity": ["ranger"], "requires_ascension": 5, "description": "+2 пробития заряженным выстрелам, +15% области.", "mods": {"charged_shot_extra_pierce": 2.0, "aoe_radius_multiplier": 1.15}},
 	{"id": "root_snare", "title": "Корневой капкан", "tier": 3, "cost": 95, "class_affinity": ["ranger"], "requires_ascension": 5, "description": "+2 к пределу живых капканов (всего 8), паралич захлопнутых дольше на 0.6с.", "mods": {"trap_cap_bonus": 2.0, "trap_paralysis_bonus": 0.6}},
 	{"id": "hunters_mark", "title": "Метка охотника", "tier": 2, "cost": 55, "class_affinity": ["ranger"], "requires_ascension": 5, "description": "Отброшенные и обездвиженные враги получают +25% урона.", "mods": {"hunter_mark_bonus": 0.25}},
 	# Robot — Бронеконтур:
@@ -386,7 +383,7 @@ const ARTIFACTS := [
 	# SCRUM-921: база копья теперь сама колет трижды (лево-центр-право) — артефакт
 	# переосмыслен в «Веер уколов»: два ДОПОЛНИТЕЛЬНЫХ крайних укола ±32° (55%).
 	{"id": "triple_thrust", "title": "Веер уколов", "tier": 3, "cost": 95, "class_affinity": ["knight"], "requires_ascension": 5, "description": "Веер копья шире: два дополнительных крайних укола (55%) под ±32°.", "mods": {"spear_triple_thrust": 1.0}},
-	{"id": "tower_slam", "title": "Башенный удар", "tier": 2, "cost": 55, "class_affinity": ["knight"], "requires_ascension": 5, "description": "Конус Башенного щита на 20% шире; +20% отталкивания.", "mods": {"sector_multiplier": 1.20, "knockback_multiplier": 1.20}},
+	{"id": "tower_slam", "title": "Башенный удар", "tier": 2, "cost": 55, "class_affinity": ["knight"], "requires_ascension": 5, "description": "Область Башенного щита на 20% шире; +20% отталкивания.", "mods": {"aoe_radius_multiplier": 1.20, "knockback_multiplier": 1.20}},
 	{"id": "holy_chain", "title": "Святая цепь", "tier": 3, "cost": 95, "class_affinity": ["knight"], "requires_ascension": 5, "description": "Спираль Кистеня раскручивается: +12% радиуса за каст подряд, до +36%.", "mods": {"flail_spiral_growth": 1.0}},
 	{"id": "vanguard_oath", "title": "Авангардная клятва", "tier": 2, "cost": 55, "class_affinity": ["knight"], "requires_ascension": 5, "description": "+5% защиты; в стойке (неподвижность) — ещё +10%.", "mods": {"bastion_defense_bonus": 0.10, "defense_flat": 0.05}},
 	# Priest — Священная формула:
@@ -400,7 +397,7 @@ const ARTIFACTS := [
 	{"id": "deadeye_round", "title": "Патрон мертвого глаза", "tier": 3, "cost": 95, "class_affinity": ["sniper"], "requires_ascension": 5, "description": "Винтовка предпочитает дальнюю цель; в конце линии терминальный взрыв (45%).", "mods": {"deadeye_terminal_blast": 0.45}},
 	{"id": "spotter_mark", "title": "Метка наводчика", "tier": 2, "cost": 55, "class_affinity": ["sniper"], "requires_ascension": 5, "description": "Зона наводчика ложится на 35% быстрее и бьёт дополнительным ударом.", "mods": {"spotter_fast_mark": 1.0}},
 	{"id": "shatter_drum", "title": "Барабан осколков", "tier": 2, "cost": 55, "class_affinity": ["sniper"], "requires_ascension": 5, "description": "+2 осколка Осколочным патронам по ближайшим траекториям.", "mods": {"shatter_extra_splits": 2.0}},
-	{"id": "clean_line", "title": "Чистая линия", "tier": 2, "cost": 55, "class_affinity": ["sniper"], "requires_ascension": 5, "description": "+120 к скорости снарядов, +12% дальности атаки.", "mods": {"projectile_speed_flat": 120.0, "range_multiplier": 1.12}},
+	{"id": "clean_line", "title": "Чистая линия", "tier": 2, "cost": 55, "class_affinity": ["sniper"], "requires_ascension": 5, "description": "+12% скорости атаки и +12% области атаки.", "mods": {"attack_speed_multiplier": 1.12, "aoe_radius_multiplier": 1.12}},
 	# Soldier — Двойное действие (описания под редизайн SCRUM-936/937/938):
 	{"id": "second_volley", "title": "Второй залп", "tier": 3, "cost": 95, "class_affinity": ["soldier"], "requires_ascension": 5, "description": "12% шанс повторить попадание аркебузы ослабленным залпом (50% урона).", "mods": {"duplicate_hit_chance": 0.12}},
 	{"id": "arquebus_shrapnel", "title": "Шрапнель аркебузы", "tier": 2, "cost": 55, "class_affinity": ["soldier"], "requires_ascension": 5, "description": "Осколочная зона взрывной пули шире (+25%), соседям основной цели прилетает больше.", "mods": {"arquebus_shrapnel_bonus": 1.0}},
@@ -463,7 +460,7 @@ const START_BOONS := [
 # там, где действуют diminishing/капы (спека fan1883_attribute_clarity): честные
 # численные before→after/дельту показывает карточка через attribute_presentation.
 # FAN-1034: 24 → 19 карт (удалены мёртвые оси, слиты пары вампиризма и dot).
-# FAN-1887: 19 → 16 карт. magic_focus/range/buff_power/absorb больше не самостоятельные
+# FAN-1887/FAN-1891: removed presentation axes are not самостоятельные
 # выборы (их runtime-ключи живут в derived-слое, артефактах и мета-древе); добавлена
 # плоская ось «Добавление урона» (damage_flat, канал по damage_parameter_for); титулы
 # карт = канонические имена реестра; optional-оси отфильтровываются до показа.

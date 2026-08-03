@@ -123,7 +123,10 @@ func _check_formulas(errors: Array) -> void:
 	if move_speed_formula.contains("245") or move_speed_formula.contains("5.5"):
 		errors.append("move_speed: отображаемая формула '%s' содержит легаси-константы 245/5.5" % move_speed_formula)
 	_expect(errors, "health_points", SF.health_points(stats, 100.0, 0.0), 200.0)         # 100*8/4
-	_expect(errors, "attack_range", SF.attack_range(240.0, 10.0), 250.0)                  # 240+10
+	# FAN-1891: дальность цели config-only (weapon config -> derived passthrough);
+	# формульного attack_range больше нет, и кодекс статов не должен его вернуть.
+	if SF.STAT_DEFINITIONS.has("attack_range") or SF.DERIVED_STAT_ORDER.has("attack_range") or SF.DERIVED_BASE_DEPENDENCIES.has("attack_range"):
+		errors.append("attack_range вернулся в кодекс статов: дальность цели остаётся config-only (FAN-1891)")
 
 	# Монотонность по характеристике.
 	var strong := {SF.STRENGTH: 20.0}

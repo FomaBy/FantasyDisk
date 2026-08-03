@@ -301,19 +301,14 @@ const LEVEL_UP_MOD_DISPLAY := {
 	"attack_speed_multiplier": "attack_speed",
 	"max_health_flat": "health_point",
 	"move_speed_multiplier": "move_speed",
-	"sector_multiplier": "aoe_radius",
-	"aoe_radius_multiplier": "aura_radius",
+	"aoe_radius_multiplier": "aoe_radius",
 	"pickup_radius_flat": "pickup_radius",
 	"defense_flat": "defense",
-	"range_multiplier": "attack_range",
 	"crit_chance_flat": "crit_chance",
 	"crit_damage_flat": "crit_damage_multiplier",
 	"knockback_multiplier": "knockback_power",
 	"dodge_flat": "dodge",
 	"dot_damage_flat": "dot_damage",
-	"projectile_speed_flat": "projectile_speed",
-	"aura_radius_flat": "aura_radius",
-	"buff_power_flat": "buff_power",
 	"summon_bonus": "summon_amount",
 	"extra_projectile": "summon_amount",
 	"absorb_flat": "absorb",
@@ -884,6 +879,10 @@ func _run_autosave_state() -> Dictionary:
 	}
 func migrate_run_autosave_state(state: Dictionary) -> Dictionary:
 	var migrated := state.duplicate(true)
+	var snapshot := _autosave_dictionary(migrated.get("run_player_snapshot", {}))
+	if not snapshot.is_empty():
+		snapshot["run_modifiers"] = PROGRESSION_DATA.sanitize_run_modifiers(_autosave_dictionary(snapshot.get("run_modifiers", {})))
+		migrated["run_player_snapshot"] = snapshot
 	var saved_act := maxi(1, int(migrated.get("current_act", 1)))
 	if saved_act > ACT_COUNT:
 		# Legacy three-act saves resume at the equivalent final Act 2 checkpoint.

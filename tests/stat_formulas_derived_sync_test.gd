@@ -10,9 +10,7 @@ extends SceneTree
 const SF := preload("res://scripts/stat_formulas.gd")
 const PD := preload("res://scripts/progression_data.gd")
 
-# range_multiplier is intentionally sourced from run_modifiers, not derived_parameters
-# (see StatFormulas.stat_sections_for_player) — exempt from the produced-value contract.
-const RUN_MODIFIER_SOURCED := ["range_multiplier"]
+const RUN_MODIFIER_SOURCED := []
 
 
 func _initialize() -> void:

@@ -428,8 +428,8 @@ const CLASS_TRAITS := {
 		# ProgressionData.class_crit_profile → derived_parameters (crit_chance /
 		# crit_damage_multiplier). veil_* — «Теневая завеса»: самоцентричная
 		# аура уворота против ближнего прессинга (Player.current_dodge_chance:
-		# бонус только когда враг внутри derived aura_radius; величина =
-		# veil_dodge_bonus × buff_power, кап veil_dodge_cap; суммарный уворот
+		# бонус только когда враг внутри объявленной области ауры; величина =
+		# veil_dodge_bonus × support_multiplier, кап veil_dodge_cap; суммарный уворот
 		# по-прежнему ≤ SURVIVABILITY_DODGE_CAP — бессмертия нет).
 		# Покрыто tests/assassin_kit_test.gd.
 		"id": "cold_blood",
@@ -527,8 +527,8 @@ const CLASS_TRAITS := {
 		# SCRUM-902 «Аура дикой силы»: ПОСТОЯННАЯ классовая аура урона с видимым
 		# полупрозрачным радиусом (Player.WildForceAuraRing). Баффает ТОЛЬКО
 		# Друида и его призывы (группа "allies" с owner_node == друид) внутри
-		# derived aura_radius × wild_aura_radius_ratio; враги/чужие сущности не
-		# затрагиваются. Величина = wild_aura_damage_bonus × buff_power, кап
+		# derived area × wild_aura_radius_ratio; враги/чужие сущности не
+		# затрагиваются. Величина = wild_aura_damage_bonus × support_multiplier, кап
 		# wild_aura_damage_cap. Потребители:
 		#   - призывы: статус "wild_force_aura" (damage_multiplier) в
 		#     Player._update_class_status_auras → StatusEffects.damage_multiplier
@@ -539,11 +539,11 @@ const CLASS_TRAITS := {
 		# Матожидание аура-баффа учтено budget-моделью
 		# (ProgressionData.class_wild_aura_damage_factor в
 		# estimate_weapon_budget_for_stats) — budget_tuning_for компенсирует урон
-		# кита, инвестиции в buff_power/aura_radius сверх базы остаются наградой.
+		# кита, инвестиции в общий урон и область сверх базы остаются наградой.
 		# Покрыт tests/druid_kit_test.gd.
 		"id": "wild_force_aura",
 		"title": "Аура дикой силы",
-		"description": "Постоянная аура с видимым радиусом усиливает урон Друида и его призывов; сила растёт от мощи баффов, радиус — от радиуса ауры.",
+		"description": "Постоянная аура с видимым радиусом усиливает урон Друида и его призывов; сила следует общему урону, радиус — области атаки.",
 		"short_description": "Постоянная аура усиливает урон Друида и его призывов.",
 		"wild_aura_damage_bonus": 0.10,
 		"wild_aura_damage_cap": 0.30,
@@ -1115,8 +1115,8 @@ const ATTRIBUTE_PRIORITY_REASONS := {
 #   value_type: "percent" — множитель/доля, "flat" — плоская добавка.
 #   icon — имя папки в docs/design/references/icons/attributes/ (трассируемость арта).
 # FAN-1887: канонический player-facing контракт (спека fan1883_attribute_clarity) —
-# 16 осей. Убраны как самостоятельные выборы: magic_focus, range, buff_power,
-# absorb (их runtime-ключи живут в derived-слое и артефактах). Добавлена плоская
+# 16 осей. Убраны как самостоятельные выборы устаревшие presentation-оси;
+# добавлена плоская
 # ось «Добавление урона» (run_modifiers.damage_flat, канал по damage_parameter_for).
 const ATTRIBUTE_REGISTRY := [
 	{"id": "damage_flat", "name": "Добавление урона", "icon": "damage", "value_type": "flat"},
@@ -1124,9 +1124,8 @@ const ATTRIBUTE_REGISTRY := [
 	{"id": "attack_speed", "name": "Скорость атаки", "icon": "attack_speed", "value_type": "percent"},
 	{"id": "max_health", "name": "Максимальное здоровье", "icon": "health_point", "value_type": "flat"},
 	{"id": "move_speed", "name": "Скорость движения", "icon": "move_speed", "value_type": "percent"},
-	# FAN-1034: единственная ось геометрии поражения — растит aoe_radius, aura_radius
-	# и melee-дальность (range_scales_with_aoe). Прежние отдельные оси «Ширина
-	# сектора» (sector_multiplier, no-op для 46/51 оружий) и «Радиус» слиты сюда.
+	# FAN-1891: единственная ось геометрии поражения — растит только явно
+	# объявленные размеры области, не дальность захвата цели.
 	{"id": "aoe_radius", "name": "Увеличение области атаки", "icon": "aoe_radius", "value_type": "percent"},
 	{"id": "pickup_radius", "name": "Радиус подбора", "icon": "pickup_radius", "value_type": "flat"},
 	{"id": "defense", "name": "Защита", "icon": "defense", "value_type": "percent"},
@@ -1166,8 +1165,8 @@ const ATTRIBUTE_RELEVANCE := {
 	"attack_speed": {"primary": ["guitarist", "soldier"], "secondary": ["berserk", "thief", "elementalist", "sniper", "priest", "biologist", "robot", "engineer", "dark_mage", "assassin", "ranger", "doctor", "chemist", "knight", "druid"]},
 	"max_health": {"primary": ["knight", "robot"], "secondary": ["berserk", "soldier", "thief", "elementalist", "sniper", "priest", "biologist", "engineer", "dark_mage", "guitarist", "assassin", "ranger", "doctor", "chemist", "druid"]},
 	"move_speed": {"primary": ["thief", "ranger"], "secondary": ["berserk", "soldier", "elementalist", "sniper", "priest", "biologist", "robot", "engineer", "dark_mage", "guitarist", "assassin", "doctor", "chemist", "knight", "druid"]},
-	# FAN-1034: единая ось геометрии (радиусы, ауры, лучи, сектора, melee-охват
-	# через range_scales_with_aoe) — потребитель есть у каждого кита.
+	# FAN-1891: единая ось геометрии масштабирует только явно объявленные размеры
+	# (радиусы, ауры, лучи, сектора); target reach остаётся конфигурацией оружия.
 	"aoe_radius": {"primary": ["elementalist", "chemist"], "secondary": ["berserk", "soldier", "thief", "sniper", "priest", "biologist", "robot", "engineer", "dark_mage", "guitarist", "assassin", "ranger", "doctor", "knight", "druid"]},
 	"pickup_radius": {"primary": ["thief", "engineer"], "secondary": ["berserk", "soldier", "elementalist", "sniper", "priest", "biologist", "robot", "dark_mage", "guitarist", "assassin", "ranger", "doctor", "chemist", "knight", "druid"]},
 	"defense": {"primary": ["knight", "priest"], "secondary": ["berserk", "soldier", "thief", "elementalist", "sniper", "biologist", "robot", "engineer", "dark_mage", "guitarist", "assassin", "ranger", "doctor", "chemist", "druid"]},
