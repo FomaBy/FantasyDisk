@@ -1,0 +1,32 @@
+{
+  "schema_version": 1,
+  "class_id": "guitarist",
+  "weapon_id": "electric_guitar",
+  "profile_id": "weapon_ultimate.profile.guitarist.electric_guitar",
+  "executor_id": "weapon_ultimate.executor.guitarist.electric_guitar",
+  "implementation_state": "ready",
+  "targeting": {"strategy_id": "alternating_riff_strips", "params": {}},
+  "charge": {"strategy_id": "rare_charge_ledger", "params": {}},
+  "executor": {
+    "strategy_id": "weapon_ultimate.executor.guitarist.electric_guitar",
+    "params": {
+      "max_range": 720.0,
+      "strip_count": 5,
+      "strip_length": 1400.0,
+      "strip_half_width": 46.0,
+      "angle_degrees": 24.0,
+      "windup_delay": 0.52,
+      "strip_interval": 0.16,
+      "final_delay": 0.24,
+      "recovery_tail": 4.0,
+      "crowd_cap": 14,
+      "strip_damage": 10.0,
+      "final_damage": 35.0,
+      "stun_duration": 1.4,
+      "per_target_cap_fraction": 0.30,
+      "per_target_cap_flat": 0.0
+    }
+  },
+  "total_boss_cap": 0.09,
+  "cleanup_policy": {"strategy_id": "activation_owned", "params": {}}
+}
