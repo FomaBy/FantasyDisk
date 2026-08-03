@@ -1,0 +1,19 @@
+{
+	"schema_version": 1,
+	"id": "reward_carrier",
+	"type": "encounter_feature",
+	"enabled": false,
+	"primary": true,
+	"capabilities": ["primary_beat", "quota_exclusion"],
+	"script": "res://scripts/encounters/features/reward_carrier/reward_carrier_feature.gd",
+	"trigger_window": {"min_seconds": 18.0, "max_seconds": 32.0},
+	"duration_seconds": 10.0,
+	"seed_salt": 982451653,
+	"spawn_chance": 0.12,
+	"payload": {
+		"safe_radius": 680.0,
+		"flee_speed": 240.0,
+		"reward_xp": 8,
+		"reward_money": 6
+	}
+}
