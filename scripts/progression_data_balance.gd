@@ -174,7 +174,7 @@ const COMFORT_BAND_SLICE_OVERRIDES := {
 }
 
 const CLASS_LEVEL_STAT_GROWTH_SCALARS := {
-	"biologist": 1.30,
+	"biologist": 1.00,
 	"soldier": {"strength": 0.95, "agility": 0.95},
 	"elementalist": {"agility": 0.92, "intelligence": 0.92},
 	"priest": {"agility": 0.85, "intelligence": 0.85},
@@ -260,6 +260,8 @@ const WEAPON_DRAIN_HEAL_MULTIPLIER := 0.35
 const DRAIN_HEAL_PER_SECOND_CAP_DEFAULT := 7.0
 const DRAIN_HEAL_PER_SECOND_CAP_HARD := 11.0
 const CRIT_CHANCE_CAP := 0.55
+const CRIT_CHANCE_CAP_MAX := 0.75
+const CRIT_CHANCE_CAP_AGILITY_SCALE := 0.002
 const CRIT_CHANCE_DIMINISH := 0.45
 const CRIT_FLAT_EFFECTIVENESS := 0.75
 const CRIT_DAMAGE_BASE_MULTIPLIER := 1.30

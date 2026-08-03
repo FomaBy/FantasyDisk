@@ -85,7 +85,11 @@
   лишь пока враг находится внутри derived `aura_radius` (величина =
   `veil_dodge_bonus × buff_power`, кап `veil_dodge_cap`; сумма всё равно ≤ 55%,
   бессмертия нет). Крит-шанс игрока капится per-class
-  (`ProgressionData.class_crit_profile`): Ассасин — 100%, остальные — 55%.
+  (`ProgressionData.class_crit_profile`): у обычных классов cap от живой Ловкости
+  растёт с 55% при Agility 0 до первых 75% при Agility 100, Ассасин остаётся на
+  100%. Крит-множитель не имеет hard cap:
+  после raw 2.75 работает непрерывный diminishing tail
+  `2.75 + sqrt(raw - 2.75)`.
 - Враги наносят contact damage по `contact_range`, который подгоняется под видимый размер спрайта.
 - При любом уроне по игроку HUD показывает `DamageFlashOverlay`: alpha peak ~0.20, fade ~0.32с, без стакания до непрозрачности, пауза-aware.
 - SCRUM-497 добавляет visual-only боевой feedback над целями: каждый hit по `Enemy`

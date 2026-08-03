@@ -4151,7 +4151,13 @@ func _test_elite_flow(main_scene: PackedScene) -> void:
 		_fail("Expected elite combat restart to spawn an elite enemy.")
 		return
 	killed_elite.call("take_damage", 1.0e9)  # достоверный сигнал died -> _elite_defeated=true
-	await process_frame
+	# The elite death owns a 0.3s ignore-time-scale hit-stop. Let its restore
+	# callback complete before this fixture tears down and starts another fight;
+	# otherwise Engine.time_scale=0.34 leaks into later timed runtime oracles.
+	await create_timer(0.31, true, false, true).timeout
+	if absf(Engine.time_scale - 1.0) > 0.001:
+		_fail("Expected elite flow hit-stop to restore time_scale before the next fight.")
+		return
 	if not bool(elite_main.combat.get("_elite_defeated")):
 		_fail("Expected killing the elite to mark _elite_defeated on the combat director.")
 		return
@@ -4956,7 +4962,13 @@ func _test_enemy_stage_scaling_and_elite_rewards(main_scene: PackedScene) -> voi
 		return
 	var elite_xp := int(elite_enemy.get("reward_xp"))
 	elite_enemy.take_damage(999999.0)
-	await process_frame
+	# This reward fixture also produces a real elite death hit-stop. Its owner
+	# must survive through restoration before the following timed test begins.
+	await create_timer(0.31, true, false, true).timeout
+	if absf(Engine.time_scale - 1.0) > 0.001:
+		_fail("Expected elite reward hit-stop to restore time_scale before teardown.")
+		drop_main.queue_free()
+		return
 	var found_elite_xp_pickup := false
 	var found_elite_money_pickup := false
 	for pickup in get_nodes_in_group("pickups"):
@@ -5009,6 +5021,12 @@ class ReadyUltimateRegistry extends RefCounted:
 
 
 func _test_ultimate_framework() -> void:
+	if paused or absf(Engine.time_scale - 1.0) > 0.001:
+		_fail(
+			"Expected nominal global timing before ultimate framework (paused=%s, time_scale=%.3f)."
+			% [str(paused), Engine.time_scale]
+		)
+		return
 	var holder := Node2D.new()
 	holder.name = "UltimateFrameworkScene"
 	root.add_child(holder)

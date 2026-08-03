@@ -745,14 +745,14 @@ SCRUM-469 добавил class/stat-specific скалирование роста
 | damage | `15*Str/10 * weapon_mult * damage_mult + flat` | derived_parameters -> физическое оружие; Magic modifiers не протекают в physical | работает |
 | magic_damage | `14*Int/10 * weapon_mult * damage_mult * magic_damage_multiplier + flat` | derived -> магия/зачарование (включая экс-sound оружия Гитариста/Друида); не повышает physical | работает |
 | attack_speed | `27*(Agi + Energy*0.18 + Per*0.10 + End*0.04)/100 * mult`; интервал = base_fire_interval / AS | derived -> все оружия | работает |
-| crit_chance / crit_damage_multiplier | chance = effective_crit_chance(0.04+Agi*0.0075+flat*0.75), cap 0.55; mult = clamp(1.30+Agi*0.055+flat*0.75, 1.0, 2.75) | derived -> _rolled_damage всех оружий | работает |
+| crit_chance / crit_damage_multiplier | chance = effective_crit_chance(0.04+Agi*0.0075+flat*0.75), ordinary cap от Agi 0: 55→75% при Agi 100 (Assassin 100%); raw = 1.30+Agi*0.055+flat*0.75, mult = raw до 2.75, затем непрерывный unbounded diminishing tail `2.75 + sqrt(raw - 2.75)` | derived -> _rolled_damage всех оружий | работает |
 | move_speed | (282 + Agi*6.2) * mult (+ dodge_rush) | derived -> player.speed | работает |
 | dodge | effective_dodge(0.02 + Agi*0.010 + flat), diminishing returns, cap 0.55 | Player.take_damage | работает |
 | defense | effective_defense(0.04 + End*0.018 + flat), diminishing returns, cap 0.62 | Player.take_damage | работает |
 | health_point | 50*End/4 + flat) * mult | derived -> max_health | работает |
 | attack_range / aoe_radius | `(weapon + профильные добавки) * range/radius mult`; для Берсерка геометрический рост считается от delta статов, а Radius может расширять melee-секторы/круг | derived -> оружия | работает |
 | pickup_radius | 105 + Per*7 + flat | derived -> магнит pickups | работает |
-| dot_damage / dot_speed | `(4+Know*0.65 + Int/Str/Per/Energy/Lead small cross)*mult`; speed = `0.65+Know*0.08+Energy/Agi small` | cursed_skull + universal DoT hook | работает |
+| dot_damage / dot_speed | damage = `(4+Know*0.65+dot_flat)*common_damage`; speed = `(0.65+Know*0.08+Energy*0.015+Agi*0.010) * normalized attack cadence` | cursed_skull + universal DoT hook; чужие характеристики не протекают в damage-канал | работает |
 | projectile_speed | `weapon + Per*18 + Agi*9 + Energy*4 + Know*2` | derived -> снаряды | работает |
 | aura_radius | `(weapon_aoe + Lead*5 + Per/Energy/Know small) * Radius mult` | derived (атаки/зоны/ампы/боевой клич) | работает |
 | buff_power | `1 + Lead*0.025 + Know*0.006 + Energy*0.004` | derived; потребители — события/бафф-эффекты | работает |
@@ -768,12 +768,13 @@ SCRUM-469 добавил class/stat-specific скалирование роста
 
 SCRUM-255 survivability rebalance: регенерация и вампиризм намеренно ослаблены, а defense/dodge/absorb получили diminishing returns. В синтетическом harness `tank/contact_swarm` упал с 321.0с до 38.5с TTD, regen у tank — с 1.57/с до 0.30/с. Расхождения с балансовой таблицей: knockback_distance в таблице задумывался боевым — оставлен отображаемым (бой использует knockback_power), vampiric_amount «Default + Current Damage / 2» сознательно заменен на малую долю урона с heal-per-second cap, чтобы вампиризм был поддержкой, а не бессмертием.
 
-SCRUM-247 crit rebalance: крит остается значимым burst-слоем, но не заменяет стабильный урон. Flat-награды на шанс крита учитываются с эффективностью 75% и проходят через diminishing returns; шанс крита ограничен 55%, сила крита — 2.75x. Пример: Agility 20 + 50% crit chance + 80% crit damage раньше давал ~3.10x средний crit-factor, теперь ~1.92x. Подробный before/after: `build/crit_rebalance_scrum247_report.md`.
+SCRUM-247 crit rebalance: крит остается значимым burst-слоем, но не заменяет стабильный урон. Flat-награды на шанс крита учитываются с эффективностью 75% и проходят через diminishing returns; обычный cap от Ловкости растёт 55→75%, у Ассасина остаётся 100%. Крит-множитель после raw 2.75 следует непрерывному unbounded diminishing tail `2.75 + sqrt(raw - 2.75)`, а не жёсткому cap. Подробный before/after: `build/crit_rebalance_scrum247_report.md`.
 
-SCRUM-243 universal synergy: все восемь базовых атрибутов больше не имеют
-«мертвых» сочетаний с архетипами оружия. `tests/runtime_smoke_test.gd`
-проверяет матрицу 8×6: +4 к любому стату меняет хотя бы один effective parameter
-для representative melee/projectile/beam/aoe/summon/aura оружия. Подробности:
+SCRUM-243 universal synergy: все восемь базовых атрибутов меняют хотя бы одну
+допустимую ось подходящего архетипа, но не протекают в чужой damage-канал.
+`tests/runtime_smoke_test.gd` проверяет матрицу 8×6: +4 к любому стату меняет
+хотя бы один eligible effective parameter для representative
+melee/projectile/beam/aoe/summon/aura оружия. Подробности:
 `build/attribute_weapon_synergy_scrum243_report.md`.
 
 SCRUM-251 melee identities: ближние оружия получили runtime hooks в

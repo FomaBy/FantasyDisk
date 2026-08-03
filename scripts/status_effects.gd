@@ -145,6 +145,34 @@ static func status_value(target: Node, status_id: String, key: String, default_v
 	return (status_raw as Dictionary).get(key, default_value)
 
 
+# Retimes already-live persistent DoTs without re-applying their status. Damage,
+# stacks, duration, remaining time and identity stay intact; the fractional tick
+# phase is preserved across both faster and slower cadence changes.
+static func retime_dot_statuses(target: Node, prefix: String, source_id: int, dot_interval: float) -> int:
+	if source_id == 0 or not _has_statuses(target):
+		return 0
+	var statuses := _statuses(target)
+	var interval := maxf(dot_interval, 0.1)
+	var changed := 0
+	for status_id in statuses.keys():
+		if not str(status_id).begins_with(prefix):
+			continue
+		var status: Dictionary = statuses[status_id]
+		if int(status.get("source_id", 0)) != source_id:
+			continue
+		var previous_interval := maxf(float(status.get("dot_interval", interval)), 0.1)
+		if is_equal_approx(previous_interval, interval):
+			continue
+		var tick_left := clampf(float(status.get("tick_left", previous_interval)), 0.0, previous_interval)
+		status["dot_interval"] = interval
+		status["tick_left"] = clampf(tick_left * interval / previous_interval, 0.0, interval)
+		statuses[status_id] = status
+		changed += 1
+	if changed > 0:
+		_set_statuses(target, statuses)
+	return changed
+
+
 # SCRUM-1005 «Разбор образцов»: есть ли на цели ЖИВОЙ периодический эффект с
 # атрибуцией конкретного владельца. Владелец тегируется в конфиге статуса ключом
 # source_id (instance id узла-автора, см. ClassWeapon._apply_bio_infection).

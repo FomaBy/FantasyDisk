@@ -177,6 +177,35 @@ func _check_acid_charges() -> void:
 	if StatusEffects.count_status_prefix(enemy, "acid_charge") != 2:
 		_errors.append("acid: две лужи дали %d зарядов вместо 2" % StatusEffects.count_status_prefix(enemy, "acid_charge"))
 
+	# Уже живой статус ретаймится через реальный reward→Player→weapon flow.
+	var before_retime := StatusEffects.snapshot(enemy)
+	var status_ids := before_retime.keys().filter(func(status_id) -> bool: return str(status_id).begins_with("acid_charge"))
+	if status_ids.is_empty():
+		_errors.append("acid cadence: нет живого статуса для ретайма")
+	else:
+		var watched_id := str(status_ids[0])
+		var watched_before: Dictionary = before_retime[watched_id]
+		var base_interval := float(watched_before.get("dot_interval", 0.0))
+		var base_weapon_interval := float(weapon.get("pool_charge_tick_interval"))
+		if absf(base_interval - base_weapon_interval) > 0.001:
+			_errors.append("acid cadence: новый статус %.3f != base weapon %.3f" % [base_interval, base_weapon_interval])
+		chemist.call("apply_reward", {"stats": {"agility": 5.0}})
+		var after_retime := StatusEffects.snapshot(enemy)
+		var watched_after: Dictionary = after_retime.get(watched_id, {})
+		var fast_interval := float(watched_after.get("dot_interval", 0.0))
+		var expected_interval := float(weapon.get("pool_charge_tick_interval"))
+		if fast_interval >= base_interval - 0.001 or absf(fast_interval - expected_interval) > 0.001:
+			_errors.append("acid cadence: existing %.3f did not retime exact-once to %.3f (base %.3f)" % [fast_interval, expected_interval, base_interval])
+		for key in ["dot_damage", "stacks", "duration", "remaining", "source_id"]:
+			if watched_after.get(key) != watched_before.get(key):
+				_errors.append("acid cadence: retime changed preserved field %s" % key)
+		if after_retime.size() != before_retime.size():
+			_errors.append("acid cadence: retime duplicated/deleted statuses (%d -> %d)" % [before_retime.size(), after_retime.size()])
+		chemist.call("_apply_weapon_scaling", weapon)
+		var repeated := StatusEffects.snapshot(enemy)
+		if repeated != after_retime:
+			_errors.append("acid cadence: repeated scaling was not idempotent")
+
 	# Тик заряда — по dot-оси с trait-бонусом: dot_damage x 0.30 x 1.5.
 	var derived: Dictionary = chemist.get("derived_parameters")
 	var expected_tick := maxf(float(derived.get("dot_damage", 2.0)) * float(weapon.get("pool_charge_tick_multiplier")), 0.30) * 1.5
@@ -203,6 +232,18 @@ func _check_acid_charges() -> void:
 	var expected_two_charges := expected_tick * 2.0
 	if absf((taken_after - taken_before) - expected_two_charges) > 0.05:
 		_errors.append("acid: суммарный тик двух зарядов %.3f вместо %.3f" % [taken_after - taken_before, expected_two_charges])
+
+	# Новый статус после reward сразу получает текущий темп, существующие остаются.
+	var pool_after_reward := Node2D.new()
+	root.add_child(pool_after_reward)
+	weapon.call("_apply_pool_contact_statuses", [enemy], pool_after_reward)
+	var after_new_status := StatusEffects.snapshot(enemy)
+	var new_id := "acid_charge_p%d" % pool_after_reward.get_instance_id()
+	if not after_new_status.has(new_id):
+		_errors.append("acid cadence: новая лужа не создала отдельный статус")
+	elif absf(float((after_new_status[new_id] as Dictionary).get("dot_interval", 0.0)) - float(weapon.get("pool_charge_tick_interval"))) > 0.001:
+		_errors.append("acid cadence: новый статус не получил текущий interval")
+	pool_after_reward.free()
 
 	# Кап: базово 5 зарядов с разных луж.
 	var extra_pools: Array = []

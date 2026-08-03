@@ -28,6 +28,7 @@ const RARE_SLOT_CHANCE := 0.05
 const OFFER_SIZE := 3
 const BASE_SEED := 20260620
 const ZERO_EPS := 0.01
+const ISOLATED_POOL_TICK_DAMAGE := 100.0
 
 # Потолок lvl20_ideal 20t для оружия-лужи после SCRUM-533. До фикса было
 # chemist/acid_flask ≈ 112k, blast_powder ≈ 65k; после диминишинга ≈ 44k / 29k.
@@ -40,7 +41,10 @@ const ZERO_EPS := 0.01
 # FAN-1062: потолок перекалиброван под честную времябазу (см. _measure_dps):
 # старый 80000 калибровался на раздутом фикс-окне (замер 67549); честные
 # значения 6993..7803 (±6%, N=2). Потолок = среднее ×~1.35 (шум + малый рост).
-const MAX_POOL_IDEAL_20T := 10000.0
+# FAN-1985: после exact-once cadence пять чистых замеров дали 14595..14739;
+# потолок 16000 оставляет 8.6% над максимумом. Контроль без pool diminish/cap
+# даёт 31059..31190 и обязан тем же пределом упасть.
+const MAX_POOL_IDEAL_20T := 16000.0
 
 # Оружие-лужи (leaves_pool), которые давали выброс на плотном паке.
 # SCRUM-943: blast_powder больше не оставляет лужу (редизайн — быстрый прямой
@@ -64,6 +68,7 @@ func _initialize() -> void:
 
 	var seed_of := _seed_map()
 	var failures: Array = []
+	await _assert_pool_cadence_once(failures)
 	for pair in POOL_PAIRS:
 		var cid: String = pair[0]
 		var wid: String = pair[1]
@@ -73,6 +78,9 @@ func _initialize() -> void:
 			continue
 		if not bool(config.get("leaves_pool", false)):
 			failures.append("%s/%s больше не leaves_pool — гейт устарел, обновить POOL_PAIRS" % [cid, wid])
+			continue
+		if int(config.get("pool_max_targets", -1)) != 4 or absf(float(config.get("pool_target_diminish", -1.0)) - 3.0) > 0.001:
+			failures.append("%s/%s pool config drift: max=%d diminish=%.2f (ждали 4/3.0)" % [cid, wid, int(config.get("pool_max_targets", -1)), float(config.get("pool_target_diminish", -1.0))])
 			continue
 		var arche: String = ProgressionData.weapon_archetype(config)
 		seed(BASE_SEED)
@@ -87,6 +95,16 @@ func _initialize() -> void:
 			failures.append("%s/%s: 0 живого урона за %.0fс — режим оружия сломан" % [cid, wid, WINDOW_SECONDS])
 		elif dps_20t > MAX_POOL_IDEAL_20T:
 			failures.append("%s/%s lvl20_ideal 20t = %.0f > потолка %.0f — runaway лужи вернулся (проверь ClassWeapon._damage_enemies_in_pool / диминишинг pool-целей)" % [cid, wid, dps_20t, MAX_POOL_IDEAL_20T])
+		var no_diminishing_dps: float = await _measure_dps(cid, wid, 20, build, "diminishing")
+		print("[pool-gate] %s/%s no-diminishing-only 20t=%.0f (должен провалить ≤%.0f)" % [cid, wid, no_diminishing_dps, MAX_POOL_IDEAL_20T])
+		if not is_finite(no_diminishing_dps) or no_diminishing_dps <= MAX_POOL_IDEAL_20T or no_diminishing_dps < dps_20t * 1.10:
+			failures.append("%s/%s no-diminishing-only control не доказал чувствительность: %.0f против normal %.0f (нужен провал потолка и ≥1.10x)" % [cid, wid, no_diminishing_dps, dps_20t])
+		var capped_tick: float = await _measure_isolated_pool_tick(cid, wid, 20, 4)
+		var no_max_tick: float = await _measure_isolated_pool_tick(cid, wid, 20, -1)
+		print("[pool-gate] %s/%s isolated capped pool tick=%.2f" % [cid, wid, capped_tick])
+		print("[pool-gate] %s/%s no-max-only isolated pool tick=%.2f (должен быть >capped на ≥2%%)" % [cid, wid, no_max_tick])
+		if not is_finite(capped_tick) or capped_tick <= ZERO_EPS or not is_finite(no_max_tick) or no_max_tick < capped_tick * 1.02:
+			failures.append("%s/%s no-max-only control не доказал чувствительность: %.2f против capped %.2f (нужно ≥1.02x)" % [cid, wid, no_max_tick, capped_tick])
 
 	_holder.queue_free()
 	await process_frame
@@ -215,7 +233,7 @@ func _weighted_index(source: Array, character_id: String, rng: RandomNumberGener
 	return weights.size() - 1
 
 
-func _measure_dps(character_id: String, weapon_id: String, target_count: int, rewards: Array) -> float:
+func _measure_dps(character_id: String, weapon_id: String, target_count: int, rewards: Array, removed_guard := "") -> float:
 	seed(BASE_SEED + target_count)
 	for child in _holder.get_children():
 		child.queue_free()
@@ -227,6 +245,17 @@ func _measure_dps(character_id: String, weapon_id: String, target_count: int, re
 	player.global_position = Vector2(1280, 720)
 	if player.has_method("configure_character"):
 		player.configure_character(character_id, weapon_id)
+	if removed_guard != "":
+		var weapon := player.get("equipped_weapon") as Node
+		if weapon == null:
+			return NAN
+		match removed_guard:
+			"diminishing":
+				weapon.set("pool_target_diminish", 0.0)
+			"max_targets":
+				weapon.set("pool_max_targets", -1)
+			_:
+				return NAN
 	player.set("max_health", 1.0e9)
 	player.set("health", 1.0e9)
 	for reward in rewards:
@@ -269,6 +298,73 @@ func _measure_dps(character_id: String, weapon_id: String, target_count: int, re
 	return maxf(hp_before - hp_after, 0.0) / maxf(elapsed_game_time, 0.001)
 
 
+func _measure_isolated_pool_tick(character_id: String, weapon_id: String, target_count: int, pool_max_targets: int) -> float:
+	for child in _holder.get_children():
+		child.queue_free()
+	await process_frame
+
+	var player := PLAYER_SCENE.instantiate() as Node2D
+	_holder.add_child(player)
+	player.add_to_group("player")
+	player.global_position = Vector2(1280, 720)
+	player.call("configure_character", character_id, weapon_id)
+	var weapon := player.get("equipped_weapon") as Node
+	if weapon == null or int(weapon.get("pool_max_targets")) != 4 or absf(float(weapon.get("pool_target_diminish")) - 3.0) > 0.001:
+		return NAN
+	# One real pool tick only: no player/weapon scheduler, direct projectile, or acid charge.
+	player.set_process(false)
+	player.set_physics_process(false)
+	weapon.set_process(false)
+	weapon.set_physics_process(false)
+	if pool_max_targets == -1:
+		weapon.set("pool_max_targets", -1)
+	elif int(weapon.get("pool_max_targets")) != pool_max_targets:
+		return NAN
+	var tick_radius := float(weapon.get("aoe_radius")) * 0.7
+	var dummies := _spawn_pool_tick_dummies(player.global_position, target_count, tick_radius)
+	await process_frame
+
+	var hp_before := 0.0
+	for enemy in dummies:
+		hp_before += float(enemy.get("health"))
+	weapon.call("_damage_enemies_in_pool", player.global_position, tick_radius, ISOLATED_POOL_TICK_DAMAGE)
+	await process_frame
+
+	var hp_after := 0.0
+	for enemy in dummies:
+		if is_instance_valid(enemy):
+			hp_after += float(enemy.get("health"))
+	return maxf(hp_before - hp_after, 0.0)
+
+
+func _assert_pool_cadence_once(failures: Array) -> void:
+	var player := PLAYER_SCENE.instantiate() as Node2D
+	_holder.add_child(player)
+	player.global_position = Vector2(1280, 720)
+	player.call("configure_character", "chemist", "acid_flask")
+	var weapon := player.get("equipped_weapon") as Node
+	if weapon == null:
+		failures.append("cadence contract: acid_flask не экипировался")
+		player.queue_free()
+		return
+	var base_pool := float(weapon.get("pool_tick_interval"))
+	var base_charge := float(weapon.get("pool_charge_tick_interval"))
+	var modifiers: Dictionary = player.get("run_modifiers")
+	modifiers["attack_speed_multiplier"] = 1.5
+	player.call("_apply_stat_scaling")
+	player.call("_apply_weapon_scaling", weapon)
+	var cadence := float((player.get("derived_parameters") as Dictionary).get("attack_cadence_multiplier", 0.0))
+	var fast_pool := float(weapon.get("pool_tick_interval"))
+	var fast_charge := float(weapon.get("pool_charge_tick_interval"))
+	if cadence <= 1.0 or absf(fast_pool - base_pool / cadence) > 0.001 or absf(fast_charge - base_charge / cadence) > 0.001:
+		failures.append("cadence contract: pool/acid intervals не применили единую каденцию ровно один раз (base %.3f/%.3f, fast %.3f/%.3f, cadence %.3f)" % [base_pool, base_charge, fast_pool, fast_charge, cadence])
+	player.call("_apply_weapon_scaling", weapon)
+	if absf(float(weapon.get("pool_tick_interval")) - fast_pool) > 0.001 or absf(float(weapon.get("pool_charge_tick_interval")) - fast_charge) > 0.001:
+		failures.append("cadence contract: повторный scaling умножил pool/acid cadence повторно")
+	player.queue_free()
+	await process_frame
+
+
 func _spawn_dummies(player_pos: Vector2, target_count: int) -> Array:
 	var dummies: Array = []
 	for i in range(target_count):
@@ -282,6 +378,21 @@ func _spawn_dummies(player_pos: Vector2, target_count: int) -> Array:
 			var angle := float(i) * 2.3999632
 			pos = player_pos + Vector2.RIGHT.rotated(angle) * radius
 		enemy.global_position = pos
+		enemy.set("max_health", DUMMY_HP)
+		enemy.set("health", DUMMY_HP)
+		enemy.set("move_speed", 0.0)
+		enemy.set("contact_damage", 0.0)
+		dummies.append(enemy)
+	return dummies
+
+
+func _spawn_pool_tick_dummies(pool_center: Vector2, target_count: int, pool_radius: float) -> Array:
+	var dummies: Array = []
+	for i in range(target_count):
+		var enemy := ENEMY_SCENE.instantiate() as Node2D
+		_holder.add_child(enemy)
+		var distance := pool_radius * (0.12 + 0.58 * sqrt(float(i + 1) / float(target_count)))
+		enemy.global_position = pool_center + Vector2.RIGHT.rotated(float(i) * 2.3999632) * distance
 		enemy.set("max_health", DUMMY_HP)
 		enemy.set("health", DUMMY_HP)
 		enemy.set("move_speed", 0.0)

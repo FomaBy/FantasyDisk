@@ -1947,7 +1947,6 @@ const META_SKILL_FLAT_MAP := {
 	"crit_chance_flat": "crit_chance_flat",
 	"crit_damage_flat": "crit_damage_flat",
 	"dot_damage_flat": "dot_damage_flat",
-	"dot_speed_flat": "dot_speed_flat",
 	"aura_radius_flat": "aura_radius_flat",
 	"buff_power_flat": "buff_power_flat",
 	"vampiric_chance_flat": "vampiric_chance_flat",
@@ -3596,6 +3595,11 @@ func _apply_weapon_scaling(weapon: Node) -> void:
 		var base_fire_interval := float(weapon.get_meta("base_fire_interval", 1.0))
 		weapon.set("fire_interval", max(0.18, (base_fire_interval / max(attack_speed * constellation_attack_speed, 0.1)) * meta_interval_multiplier(meta_context)))
 
+	var cadence := maxf(float(derived_parameters.get("attack_cadence_multiplier", 1.0)), 0.1)
+	AttributeContract.apply_weapon_cadence(weapon, cadence, meta_interval_multiplier(meta_context))
+	if weapon.has_method("refresh_persistent_status_cadence"):
+		weapon.call("refresh_persistent_status_cadence")
+
 	# SummonerWeapon historically ignores canonical derived attack speed. Preserve
 	# that neutral release behaviour and apply only SCRUM-976's explicit factor.
 	if weapon.get("summon_interval") != null:
@@ -3631,12 +3635,6 @@ func _apply_weapon_scaling(weapon: Node) -> void:
 	if weapon.get("knockback") != null:
 		var control_multiplier := constellation_weapon_multiplier(weapon_id_value, "control_sustain_value_mult") * constellation_weapon_multiplier(weapon_id_value, "hidden_defense_mastery_mult")
 		weapon.set("knockback", float(derived_parameters.get("knockback_power", weapon.get_meta("base_knockback", 80.0))) * meta_knockback_multiplier(meta_context) * control_multiplier)
-
-	if weapon.get("amp_pulse_interval") != null and weapon.has_meta("base_amp_pulse_interval"):
-		weapon.set("amp_pulse_interval", maxf(0.08, float(weapon.get_meta("base_amp_pulse_interval")) * meta_interval_multiplier(meta_context)))
-
-	if weapon.get("pool_tick_interval") != null and weapon.has_meta("base_pool_tick_interval"):
-		weapon.set("pool_tick_interval", maxf(0.08, float(weapon.get_meta("base_pool_tick_interval")) * meta_interval_multiplier(meta_context)))
 
 	if weapon.get("pool_duration") != null and weapon.has_meta("base_pool_duration"):
 		weapon.set("pool_duration", maxf(0.2, float(weapon.get_meta("base_pool_duration")) * meta_duration_multiplier(meta_context)))

@@ -1349,7 +1349,7 @@ SCRUM-956 закрепляет player-facing naming без смены id: `red_w
 «Масло темпа» — магазинный `shop_weapon_cooldown`, «Пыльный артефакт» —
 магазинный `shop_artifact`. Отдельного `dusty_artifact` не существует.
 
-### Универсальные семьи (29, rarity_scaling)
+### Универсальные семьи (28, rarity_scaling)
 
 8 семей базовых статов (+2/+4/+7):
 
@@ -1364,8 +1364,9 @@ SCRUM-956 закрепляет player-facing naming без смены id: `red_w
 | `stone_heart` | Каменное сердце | Выносливость |
 | `banner_seed` | Семя знамени | Лидерство |
 
-21 семья производных атрибутов (ключ эффекта = ключ level-up карточки). FAN-1038
-убрал семьи мёртвых осей `battle_fan` / `ram_horn` / `falcon_feather`
+20 семей производных атрибутов (ключ эффекта = ключ level-up карточки). FAN-1038
+убрал семьи мёртвых осей `battle_fan` / `ram_horn` / `falcon_feather`, а общий
+cadence-контракт удалил отдельную selectable dot-speed семью `plague_metronome`
 (follow-up FAN-1034):
 
 | ID | Имя | Ключ эффекта | т1 / т2 / т3 |
@@ -1382,7 +1383,6 @@ SCRUM-956 закрепляет player-facing naming без смены id: `red_w
 | `ghost_ribbon` | Лента призрака | `dodge_flat` | +0.10 / +0.18 / +0.30 |
 | `wide_sigil` | Дальняя печать | `range_multiplier` | ×1.10 / ×1.18 / ×1.30 |
 | `venom_vial` | Флакон отравы | `dot_damage_flat` | +2 / +4 / +6 |
-| `plague_metronome` | Чумной метроном | `dot_speed_flat` | +0.2 / +0.3 / +0.5 |
 | `wide_halo` | Широкий нимб | `aoe_radius_multiplier` | ×1.10 / ×1.18 / ×1.30 |
 | `war_banner` | Боевое знамя | `buff_power_flat` | +0.10 / +0.18 / +0.30 |
 | `summoners_bell` | Колокольчик призывателя | `summon_bonus` | +1.5 / +2.5 / +4 |

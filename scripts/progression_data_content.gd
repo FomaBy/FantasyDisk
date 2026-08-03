@@ -212,13 +212,6 @@ const ARTIFACTS := [
 		2: {"description": "+4 периодического урона за тик.", "mods": {"dot_damage_flat": 4.0}},
 		3: {"description": "+6 периодического урона за тик.", "mods": {"dot_damage_flat": 6.0}},
 	}},
-	{"id": "plague_metronome", "title": "Чумной метроном", "rarity_scaling": true, "tier": 1, "cost": 30, "class_affinity": [],
-	 "description": "+0.2 тика периодического урона в секунду.", "mods": {"dot_speed_flat": 0.2},
-	 "tiers": {
-		1: {"description": "+0.2 тика периодического урона в секунду.", "mods": {"dot_speed_flat": 0.2}},
-		2: {"description": "+0.3 тика периодического урона в секунду.", "mods": {"dot_speed_flat": 0.3}},
-		3: {"description": "+0.5 тика периодического урона в секунду.", "mods": {"dot_speed_flat": 0.5}},
-	}},
 	{"id": "wide_halo", "title": "Широкий нимб", "rarity_scaling": true, "tier": 1, "cost": 30, "class_affinity": [],
 	 "description": "+10% радиуса атак и зон.", "mods": {"aoe_radius_multiplier": 1.10},
 	 "tiers": {
@@ -360,14 +353,14 @@ const ARTIFACTS := [
 	# Doctor — Клинический drain:
 	{"id": "surgical_oath", "title": "Хирургическая клятва", "tier": 2, "cost": 55, "class_affinity": ["doctor"], "requires_ascension": 5, "description": "+20% лечения от оружия, +2 к пределу drain-лечения в секунду.", "mods": {"healing_multiplier": 1.20, "drain_heal_per_second_cap": 2.0}},
 	{"id": "bonesaw_teeth", "title": "Зубья костяной пилы", "tier": 2, "cost": 55, "class_affinity": ["doctor"], "requires_ascension": 5, "description": "Костяная пила режет на 30% шире и возвращает +8% урона здоровьем.", "mods": {"saw_arc_width_mult": 0.30, "saw_heal_ratio_bonus": 0.08}},
-	{"id": "plague_carrier", "title": "Чумной носитель", "tier": 3, "cost": 95, "class_affinity": ["doctor"], "requires_ascension": 5, "description": "Смерть заражённого передаёт чуму соседям (2.2с); +0.25 тика в секунду.", "mods": {"dot_death_spread_duration": 2.2, "dot_speed_flat": 0.25}},
+	{"id": "plague_carrier", "title": "Чумной носитель", "tier": 3, "cost": 95, "class_affinity": ["doctor"], "requires_ascension": 5, "description": "Смерть заражённого передаёт чуму соседям (2.2с).", "mods": {"dot_death_spread_duration": 2.2}},
 	{"id": "restorative_vapor", "title": "Восстановительный пар", "tier": 3, "cost": 95, "class_affinity": ["doctor"], "requires_ascension": 5, "description": "Зелье оставляет паровую зону: жжёт врагов и подлечивает Доктора.", "mods": {"restore_vapor_power": 1.0}},
 	{"id": "triage_protocol", "title": "Протокол триажа", "tier": 2, "cost": 55, "class_affinity": ["doctor"], "requires_ascension": 5, "active": true, "trigger": "on_low_hp", "description": "⚡ Активный — ниже 30% HP: следующий лечащий импульс оружия усилен ×2.5. Перезаряд 12с.", "mods": {"triage_heal_burst": 1.5}},
 	# Druid — Командование стаей:
 	{"id": "spirit_pack_banner", "title": "Знамя духовной стаи", "tier": 2, "cost": 55, "class_affinity": ["druid"], "requires_ascension": 5, "description": "+20% силы поддержки; духи бьют на 15% сильнее.", "mods": {"buff_power_flat": 0.20, "pet_damage_mult": 0.15}},
 	{"id": "wolf_call", "title": "Зов волков", "tier": 3, "cost": 95, "class_affinity": ["druid"], "requires_ascension": 5, "description": "+2 к силе призывов; стая склоняется к волкам, ближние духи рвут на 20% сильнее.", "mods": {"summon_bonus": 2.0, "pack_wolf_bias": 1.0}},
 	{"id": "blue_totem", "title": "Голубой тотем", "tier": 2, "cost": 55, "class_affinity": ["druid"], "requires_ascension": 5, "description": "Вороний тотем пульсирует злее (+25%) и чаще; +10% магического урона.", "mods": {"raven_pulse_bonus": 0.25, "magic_damage_multiplier": 1.10}},
-	{"id": "briar_seal", "title": "Печать терновника", "tier": 2, "cost": 55, "class_affinity": ["druid"], "requires_ascension": 5, "description": "Терновые зоны замедляют на 20%; +0.25 тика периодического урона в секунду.", "mods": {"briar_slow_power": 0.20, "dot_speed_flat": 0.25}},
+	{"id": "briar_seal", "title": "Печать терновника", "tier": 2, "cost": 55, "class_affinity": ["druid"], "requires_ascension": 5, "description": "Терновые зоны замедляют на 20%.", "mods": {"briar_slow_power": 0.20}},
 	{"id": "pack_alpha", "title": "Альфа стаи", "tier": 3, "cost": 95, "class_affinity": ["druid"], "requires_ascension": 5, "description": "+40 радиуса аур, +15% силы поддержки, +1.5 к силе призывов.", "mods": {"aura_radius_flat": 40.0, "buff_power_flat": 0.15, "summon_bonus": 1.5}},
 	# Engineer — Мастерская приказов:
 	{"id": "turret_magazine", "title": "Магазин турели", "tier": 2, "cost": 55, "class_affinity": ["engineer"], "requires_ascension": 5, "description": "+6 выстрелов к боезапасу каждой турели (базовые 15).", "mods": {"sentry_magazine_bonus": 6.0}},
@@ -417,10 +410,10 @@ const ARTIFACTS := [
 	# Dark Mage — Темная формула (SCRUM-939/941: chain_wand и mirror_page
 	# репозиционированы — цепь и зеркало теперь БАЗА оружий нового кита):
 	{"id": "chain_wand", "title": "Цепная палочка", "tier": 2, "cost": 55, "class_affinity": ["dark_mage"], "requires_ascension": 5, "description": "Цепь палочки прыгает на одну цель дальше, а бурсты попаданий бьют на 15% сильнее.", "mods": {"wand_extra_chain": 1.0, "wand_burst_bonus": 0.15}},
-	{"id": "curse_font", "title": "Купель проклятий", "tier": 2, "cost": 55, "class_affinity": ["dark_mage"], "requires_ascension": 5, "description": "+3 урона проклятия за тик, +0.35 тика в секунду.", "mods": {"dot_damage_flat": 3.0, "dot_speed_flat": 0.35}},
+	{"id": "curse_font", "title": "Купель проклятий", "tier": 2, "cost": 55, "class_affinity": ["dark_mage"], "requires_ascension": 5, "description": "+3 урона проклятия за тик.", "mods": {"dot_damage_flat": 3.0}},
 	{"id": "mirror_page", "title": "Зеркальная страница", "tier": 3, "cost": 95, "class_affinity": ["dark_mage"], "requires_ascension": 5, "description": "Оба взрыва Книги тьмы отдаются эхом (45% урона) через мгновение.", "mods": {"book_mirror_echo": 0.45}},
 	{"id": "void_hunger", "title": "Голод пустоты", "tier": 3, "cost": 95, "class_affinity": ["dark_mage"], "requires_ascension": 5, "description": "Проклятые смерти голодны: DoT перекидывается на соседей погибшего (2.5с).", "mods": {"dot_death_spread_duration": 2.5}},
-	{"id": "black_bargain", "title": "Черная сделка", "tier": 2, "cost": 55, "class_affinity": ["dark_mage"], "requires_ascension": 5, "description": "+4 урона DoT за тик, +0.25 тика в секунду; −15% максимального HP.", "mods": {"dot_damage_flat": 4.0, "dot_speed_flat": 0.25, "max_health_multiplier": 0.85}},
+	{"id": "black_bargain", "title": "Черная сделка", "tier": 2, "cost": 55, "class_affinity": ["dark_mage"], "requires_ascension": 5, "description": "+4 урона DoT за тик; −15% максимального HP.", "mods": {"dot_damage_flat": 4.0, "max_health_multiplier": 0.85}},
 	# Chemist — Алхимическая цепь:
 	{"id": "volatile_dust", "title": "Летучая пыль", "tier": 2, "cost": 55, "class_affinity": ["chemist"], "requires_ascension": 5, "description": "Пыль ещё летучее: касты на 22% быстрее, прямой взрыв +25%.", "mods": {"volatile_powder_mode": 1.0}},
 	{"id": "acid_catalyst", "title": "Кислотный катализатор", "tier": 3, "cost": 95, "class_affinity": ["chemist"], "requires_ascension": 5, "description": "Кислота цепляется глубже: кап вечных кислотных зарядов на цель +3 (до 8 луж).", "mods": {"acid_charge_stacks": 1.0}},
@@ -486,7 +479,7 @@ const LEVEL_UP_REWARDS := [
 	{"id": "crit_chance_up", "attr": "crit_chance", "title": "Шанс крита", "description": "Чаще наносите критический удар.", "kind": "upgrade", "mods": {"crit_chance_flat": 0.07}},
 	{"id": "crit_damage_up", "attr": "crit_damage", "title": "Сила крита", "description": "Критический удар бьёт сильнее.", "kind": "upgrade", "mods": {"crit_damage_flat": 0.35}},
 	{"id": "dodge_up", "attr": "dodge", "title": "Уклонение", "description": "Часть вражеских ударов не попадает.", "kind": "upgrade", "mods": {"dodge_flat": 0.08}},
-	{"id": "dot_damage_up", "attr": "dot_damage", "title": "Периодический урон", "description": "Яд, горение и кровотечение тикают больнее и чаще.", "kind": "upgrade", "mods": {"dot_damage_flat": 3.0, "dot_speed_flat": 0.15}},
+	{"id": "dot_damage_up", "attr": "dot_damage", "title": "Периодический урон", "description": "Яд, горение и кровотечение тикают больнее.", "kind": "upgrade", "mods": {"dot_damage_flat": 3.0}},
 	{"id": "summon_amount_up", "attr": "summon_amount", "title": "Сила призыва", "description": "+2 к силе призывов: призванные существа и устройства многочисленнее.", "kind": "upgrade", "mods": {"summon_bonus": 2.0}},
 	{"id": "regeneration_up", "attr": "regeneration", "title": "Регенерация", "description": "Быстрее восстанавливаете здоровье со временем.", "kind": "upgrade", "mods": {"regeneration_flat": 1.3}},
 	{"id": "vampiric_up", "attr": "vampiric", "title": "Вампиризм", "description": "При срабатывании восстанавливаете больше здоровья.", "kind": "upgrade", "mods": {"vampiric_amount_flat": 0.8, "vampiric_chance_flat": 0.05, "vampiric_heal_per_second_cap": 0.8}},
