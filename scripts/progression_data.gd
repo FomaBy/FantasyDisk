@@ -894,10 +894,10 @@ static func class_battle_prayers(character_id: String) -> Array:
 
 
 # SCRUM-894 «Хладнокровие»: крит-профиль класса из CLASS_TRAITS. Без trait-записи —
-# глобальные константы (кап 55%, diminish 0.45, без overflow). Ассасин: кап 1.0,
+# обычный Agility-cap 55→75%, diminish 0.45, без overflow. Ассасин: кап 1.0,
 # diminish 0.0 (крит-вложения окупаются полностью), overflow 0.5 — избыток
-# raw-шанса сверх капа переливается в crit_damage_flat (итог по-прежнему зажат
-# CRIT_DAMAGE_CAP в effective_crit_damage_multiplier — runaway невозможен).
+# raw-шанса сверх капа переливается в crit_damage_flat. Выше raw 2.75 сила крита
+# продолжает расти через убывающий sqrt-tail без верхнего потолка.
 static func class_crit_profile(character_id: String, ordinary_cap := CRIT_CHANCE_CAP) -> Dictionary:
 	var trait_config: Dictionary = CLASS_TRAITS.get(character_id, {})
 	return {
@@ -2158,7 +2158,7 @@ static func derived_parameters(stats: Dictionary, run_modifiers: Dictionary, wea
 	# SCRUM-894 «Хладнокровие»: per-class крит-профиль (кап/diminish из
 	# CLASS_TRAITS; дефолт — глобальные константы). Избыток raw-шанса СВЕРХ капа
 	# конвертируется в crit_damage_flat с коэффициентом overflow (только у классов
-	# с trait-ключом; итоговый крит-урон всё равно зажат CRIT_DAMAGE_CAP).
+	# с trait-ключом; выше raw 2.75 итог идёт в убывающий sqrt-tail без потолка).
 	var crit_profile := class_crit_profile(character_id, ordinary_crit_chance_cap(agility))
 	var crit_chance_raw := 0.04 + agility * 0.0075 + crit_chance_flat
 	var crit_overflow_ratio := float(crit_profile.get("overflow", 0.0))

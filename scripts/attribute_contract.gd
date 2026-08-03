@@ -137,7 +137,11 @@ static func apply_weapon_cadence(weapon: Node, cadence_multiplier: float, meta_i
 		var base_key := "base_%s" % property_id
 		if not weapon.has_meta(base_key):
 			weapon.set_meta(base_key, weapon.get(property_id))
-		var interval := float(weapon.get_meta(base_key)) / cadence
+		# The sentry consumes the owner's absolute attack speed in
+		# SentryTurret.effective_pulse_interval(). Dividing its stored pulse here
+		# as well would apply only the growth component twice.
+		var property_cadence := 1.0 if property_id == "amp_pulse_interval" and str(weapon.get("attack_mode")) == "engineer_sentry_link" else cadence
+		var interval := float(weapon.get_meta(base_key)) / property_cadence
 		var floor := 0.1
 		if property_id in ["pool_tick_interval", "amp_pulse_interval"]:
 			interval *= meta_interval_multiplier
@@ -166,10 +170,10 @@ static func summon_runtime_cap(weapon_config: Dictionary, run_modifiers: Diction
 
 
 # Жёсткий кап значения оси (или -1.0, если капа нет) — для availability=cap_reached.
-static func _presentation_axis_cap(attr_id: String, character_id: String, weapon_config := {}, run_modifiers := {}) -> float:
+static func _presentation_axis_cap(attr_id: String, character_id: String, stats := {}, weapon_config := {}, run_modifiers := {}) -> float:
 	match attr_id:
 		"crit_chance":
-			var agility := float(ProgressionData.base_stats(character_id).get("agility", 0.0))
+			var agility := float(stats.get("agility", ProgressionData.base_stats(character_id).get("agility", 0.0)))
 			return float(ProgressionData.class_crit_profile(character_id, ProgressionData.ordinary_crit_chance_cap(agility)).get("cap", ProgressionData.CRIT_CHANCE_CAP))
 		"dodge":
 			return ProgressionData.SURVIVABILITY_DODGE_CAP
@@ -261,7 +265,7 @@ static func attribute_presentation(reward: Dictionary, character_id: String, sta
 		var channel := presentation_parameter_for(attr_id, character_id, weapon_config)
 		if channel in DAMAGE_TYPE_PARAMETERS:
 			presentation["channel_label"] = "Магический урон" if channel == "magic_damage" else "Физический урон"
-	var cap := _presentation_axis_cap(attr_id, character_id, weapon_config, run_modifiers)
+	var cap := _presentation_axis_cap(attr_id, character_id, stats, weapon_config, run_modifiers)
 	if cap >= 0.0:
 		presentation["current"] = before
 		presentation["cap"] = cap
@@ -462,7 +466,7 @@ static func axis_snapshot(axis_id: String, character_id: String, stats: Dictiona
 	if axis_id == "vampiric":
 		snapshot["proc_chance_current"] = float(params.get("vampiric_chance", 0.0))
 		snapshot["proc_chance_cap"] = ProgressionData.VAMPIRIC_CHANCE_CAP
-	var cap := _presentation_axis_cap(axis_id, character_id, weapon_config, run_modifiers)
+	var cap := _presentation_axis_cap(axis_id, character_id, stats, weapon_config, run_modifiers)
 	if cap >= 0.0:
 		snapshot["cap"] = cap
 		var quantum := float(ATTRIBUTE_PRESENTATION_QUANTUMS.get(axis_id, 0.5))

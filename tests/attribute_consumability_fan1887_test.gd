@@ -383,13 +383,14 @@ func _initialize() -> void:
 	if str(dark_flat.get("channel_label", "")) != "Магический урон":
 		_fail("dark_mage/dark_book damage_flat: канал '%s' != 'Магический урон'." % dark_flat.get("channel_label", ""))
 	var sniper_stats: Dictionary = ProgressionData.base_stats("sniper")
+	sniper_stats["agility"] = 50.0
 	var sniper_weapon: Dictionary = ProgressionData.weapon("sniper", "sniper_deadeye_rifle")
 	var sniper_crit: Dictionary = AttributeContract.attribute_presentation(
 		crit_reward, "sniper", sniper_stats, {}, sniper_weapon)
 	if not sniper_crit.has("cap") or not sniper_crit.has("current"):
 		_fail("crit_chance presentation без current/cap.")
-	elif absf(float(sniper_crit.get("cap", 0.0)) - 0.55) > 0.0001:
-		_fail("sniper crit cap %.3f != 0.55." % float(sniper_crit.get("cap", 0.0)))
+	elif absf(float(sniper_crit.get("cap", 0.0)) - 0.65) > 0.0001:
+		_fail("sniper live-Agility crit cap %.3f != 0.65." % float(sniper_crit.get("cap", 0.0)))
 	var assassin_crit: Dictionary = AttributeContract.attribute_presentation(
 		crit_reward, "assassin", ProgressionData.base_stats("assassin"), {}, ProgressionData.weapon("assassin", "chakrams"))
 	if absf(float(assassin_crit.get("cap", 0.0)) - 1.0) > 0.0001:

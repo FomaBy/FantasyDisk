@@ -1600,7 +1600,7 @@ Runtime hooks уже подключены в `scripts/player.gd` и `scripts/cla
 
 Status hooks SCRUM-245: weapon hit дополнительно может наложить `arcane_vulnerability`, `toxic_debuff` или `staggered` по классу. Leadership/support классы обновляют ауру примерно раз в 0.55с: союзники внутри радиуса получают `command_aura`, враги — `command_pressure`. Визуально используется существующий мягкий `AttackVfx.ring_pulse` плюс marker metadata; новый Design asset не требуется.
 
-Криты после SCRUM-247 используют сглаженные формулы: `crit_chance = effective_crit_chance(0.04 + Agility*0.0075 + flat*0.75)`, cap 55%; `crit_damage_multiplier = clamp(1.30 + Agility*0.055 + flat*0.75, 1.0, 2.75)`. Это сохраняет crit-builds полезными, но не дает flat-стаку шанса/силы крита доминировать над стабильным уроном; средний DPS удерживается через `ProgressionData.weapon()` budget tuning.
+Криты после SCRUM-247 используют сглаженные формулы: `crit_chance = effective_crit_chance(0.04 + Agility*0.0075 + flat*0.75)` с обычным cap от живой Ловкости — 55% при 0 до первых 75% при 100 (у Ассасина 100%); `crit_damage_multiplier` растёт линейно до raw 2.75, затем через непрерывный неограниченный хвост `2.75 + sqrt(raw - 2.75)`. Это сохраняет crit-builds полезными, но не дает flat-стаку шанса/силы крита доминировать над стабильным уроном; средний DPS удерживается через `ProgressionData.weapon()` budget tuning.
 
 ## Награды И Артефакты
 
@@ -2455,10 +2455,11 @@ names and canonical paths at 1280×720, 1920×1080 and 2560×1440.
 
 ## SCRUM-894 Assassin Crit-Cap Kit State
 
-Assassin — единственный класс со снятым крит-потолком: trait «Хладнокровие»
-(`ProgressionData.CLASS_TRAITS.assassin`) даёт кап шанса крита 100% (у остальных
-глобальные 55%), убирает diminishing крит-вложений и переливает избыток raw-шанса
-сверх капа в крит-урон (кап `CRIT_DAMAGE_CAP` сохраняется). Кит: Чакрамы летят
+Assassin — единственный класс с cap шанса крита 100%: trait «Хладнокровие»
+(`ProgressionData.CLASS_TRAITS.assassin`) заменяет обычную live-Agility кривую
+55%→75%, убирает diminishing крит-вложений и переливает избыток raw-шанса
+сверх cap в крит-урон. Неограниченный убывающий хвост силы крита выше raw 2.75
+доступен всем классам. Кит: Чакрамы летят
 прямым коридором и возвращаются левой дугой (double-pass за позиционирование,
 жёсткий гейт 1+1 хит на цель за каст); Теневые кинжалы кроют сектор и врагов
 вплотную вокруг героя, серия по врагам даёт «Рывок темпа» (короткий бафф

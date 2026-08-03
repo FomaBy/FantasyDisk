@@ -5213,8 +5213,8 @@ func _damage_enemy_with_dot(enemy: Node, direct_damage: float, owner_node: Node2
 	var tick_damage := float(parameters.get("dot_damage", max(1.0, direct_damage * 0.22)))
 	# SCRUM-894: крит-снапшот яда (dot_crit_snapshot_ratio > 0, Ядовитая струна) —
 	# критовый прямой удар усиливает тики долей крит-множителя, зафиксированного
-	# на момент каста (_last_attack_crit из _rolled_damage). Множитель уже зажат
-	# CRIT_DAMAGE_CAP в derived_parameters — runaway исключён.
+	# на момент каста (_last_attack_crit из _rolled_damage). Выше raw 2.75
+	# множитель использует убывающий sqrt-tail без верхнего потолка.
 	if dot_crit_snapshot_ratio > 0.0 and _last_attack_crit:
 		tick_damage *= 1.0 + maxf(float(parameters.get("crit_damage_multiplier", 1.0)) - 1.0, 0.0) * clampf(dot_crit_snapshot_ratio, 0.0, 1.0)
 	var tick_speed: float = max(float(parameters.get("dot_speed", 1.0)), 0.2)
@@ -5388,6 +5388,20 @@ const ACID_CHARGE_PERSIST_SECONDS := 999999.0
 # SCRUM-961 «Кислотный катализатор»: артефакт поднимает кап зарядов на цель.
 const ACID_CHARGE_ARTIFACT_CAP_BONUS := 3
 
+
+# Existing acid charges outlive their pools, so weapon cadence changes must
+# retime their stored intervals in place instead of re-applying/resetting them.
+func refresh_persistent_status_cadence() -> void:
+	if not pool_contact_charges or not is_inside_tree():
+		return
+	var owner_node := _owner_node()
+	if owner_node == null or not is_instance_valid(owner_node):
+		return
+	var owner_id := owner_node.get_instance_id()
+	for enemy in get_tree().get_nodes_in_group("enemies"):
+		if enemy is Node and is_instance_valid(enemy):
+			StatusEffects.retime_dot_statuses(enemy as Node, ACID_CHARGE_STATUS_PREFIX, owner_id, pool_charge_tick_interval)
+
 # SCRUM-944: контактные статусы луж. Кислотная колба (pool_contact_charges):
 func _apply_pool_contact_statuses(enemies: Array, source_pool: Node2D = null) -> void:
 	var acid_charges := pool_contact_charges and source_pool != null and is_instance_valid(source_pool)
@@ -5423,6 +5437,7 @@ func _apply_pool_contact_statuses(enemies: Array, source_pool: Node2D = null) ->
 		if not StatusEffects.has_status(enemy_node, charge_status_id) \
 				and previous_stack_count < charge_cap:
 			StatusEffects.apply_status_from(owner_node, enemy_node, charge_status_id, {
+				"source_id": owner_id,
 				"duration": ACID_CHARGE_PERSIST_SECONDS,
 				"dot_damage": per_target_tick,
 				"dot_interval": pool_charge_tick_interval,

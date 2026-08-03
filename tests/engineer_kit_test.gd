@@ -70,6 +70,7 @@ func _initialize() -> void:
 	_test_trait_registry_and_configs(errors)
 	_test_budget_models(errors)
 	await _test_trait_runtime_on_player(errors)
+	await _test_sentry_cadence_exact_once(errors)
 	await _test_turret_shot_limit_and_persistence(errors)
 	await _test_turret_capacity_scaling(errors)
 	await _test_orbit_drone_orbit_and_contact(errors)
@@ -223,6 +224,52 @@ func _test_trait_runtime_on_player(errors: Array) -> void:
 	if float(player.call("class_trait_value", "network_stack_cap_base", 0.0)) <= 0.0:
 		errors.append("реальный Player не читает network_stack_cap_base")
 	await _cleanup(holder)
+
+
+func _test_sentry_cadence_exact_once(errors: Array) -> void:
+	var holder := _new_scene("SentryCadencePlayerScene")
+	var player := PLAYER_SCENE.instantiate()
+	holder.add_child(player)
+	await process_frame
+	player.call("configure_character", "engineer", "engineer_sentry_wrench")
+	await process_frame
+	var weapon := player.get("equipped_weapon") as Node
+	if weapon == null:
+		errors.append("real Player не экипировал sentry для cadence regression")
+		await _cleanup(holder)
+		return
+	weapon.call("_fire_engineer_sentry_link", player, Vector2.RIGHT)
+	await process_frame
+	var devices := _engineer_devices(holder)
+	if devices.is_empty():
+		errors.append("real Player не развернул sentry для cadence regression")
+		await _cleanup(holder)
+		return
+	var turret: Node2D = devices[0]
+	var config := PD.weapon("engineer", "engineer_sentry_wrench")
+	var baseline_pulse := float(turret.call("effective_pulse_interval", weapon))
+	var baseline_expected := _sentry_budget_pulse(config, player)
+	if absf(baseline_pulse - baseline_expected) > EPS:
+		errors.append("real Player baseline sentry pulse %.3f != budget %.3f" % [baseline_pulse, baseline_expected])
+	player.call("apply_reward", {"stats": {"agility": 5.0}})
+	var fast_pulse := float(turret.call("effective_pulse_interval", weapon))
+	var fast_expected := _sentry_budget_pulse(config, player)
+	if fast_pulse >= baseline_pulse - EPS or absf(fast_pulse - fast_expected) > EPS:
+		errors.append("real Player sentry cadence not exact-once (base %.3f, fast %.3f, budget %.3f)" % [baseline_pulse, fast_pulse, fast_expected])
+	var stored_pulse := float(weapon.get("amp_pulse_interval"))
+	if absf(stored_pulse - float(config.get("amp_pulse_interval", 0.0))) > EPS:
+		errors.append("Player pre-scaled sentry pulse before turret consumed attack_speed (%.3f != raw %.3f)" % [stored_pulse, config.get("amp_pulse_interval", 0.0)])
+	player.call("_apply_weapon_scaling", weapon)
+	if absf(float(turret.call("effective_pulse_interval", weapon)) - fast_pulse) > EPS:
+		errors.append("repeated real Player scaling changed sentry cadence")
+	await _cleanup(holder)
+
+
+func _sentry_budget_pulse(config: Dictionary, player: Node) -> float:
+	var stats: Dictionary = player.get("stats")
+	var params: Dictionary = player.get("derived_parameters")
+	var tempo := 1.0 + minf(float(params.get("summon_amount", 0.0)) * 0.014 + float(stats.get("leadership", 0.0)) * 0.006, 0.30)
+	return maxf(maxf(float(config.get("amp_pulse_interval", 0.55)), 0.18) / tempo / maxf(float(params.get("attack_speed", 1.0)), 0.1), 0.10)
 
 
 func _test_turret_shot_limit_and_persistence(errors: Array) -> void:

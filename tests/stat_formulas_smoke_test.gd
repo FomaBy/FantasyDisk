@@ -109,7 +109,7 @@ func _check_formulas(errors: Array) -> void:
 		SF.KNOWLEDGE: 4.0, SF.LEADERSHIP: 3.0,
 	}
 	# Точные значения формул.
-	_expect(errors, "physical_damage", SF.physical_damage(stats, 20.0, 0.0), 24.0)        # Strength + SCRUM-243 small cross-scaling
+	_expect(errors, "physical_damage", SF.physical_damage(stats, 20.0, 0.0), 20.0)        # Strength only: damage-channel isolation
 	_expect(errors, "crit_chance", SF.crit_chance(stats, 0.05, 0.0), 0.0842)              # 0.05+5*0.0075 with diminishing returns
 	_expect(errors, "crit_damage", SF.crit_damage_multiplier(stats, 2.0, 0.0), 1.575)     # 1.30+5*0.055
 	_expect(errors, "attack_speed", SF.attack_speed(stats, 1.0, 0.0), 0.1962)             # 1*3*(Agi+Energy/Per/End support)/100
@@ -129,6 +129,11 @@ func _check_formulas(errors: Array) -> void:
 	var strong := {SF.STRENGTH: 20.0}
 	if not (SF.physical_damage(strong, 20.0, 0.0) > SF.physical_damage(stats, 20.0, 0.0)):
 		errors.append("physical_damage не растёт с силой")
+	var foreign_stats := stats.duplicate(true)
+	foreign_stats[SF.INTELLIGENCE] = 1000.0
+	foreign_stats[SF.PERCEPTION] = 1000.0
+	if absf(SF.physical_damage(foreign_stats, 20.0) - SF.physical_damage(stats, 20.0)) > EPS:
+		errors.append("physical_damage зависит от чужих характеристик")
 	var nimble := {SF.AGILITY: 50.0}
 	if not (SF.crit_chance(nimble, 0.05, 0.0) > SF.crit_chance(stats, 0.05, 0.0)):
 		errors.append("crit_chance не растёт с ловкостью")
@@ -138,8 +143,11 @@ func _check_formulas(errors: Array) -> void:
 
 	# Границы/клэмпы.
 	var huge := {SF.AGILITY: 100000.0}
-	if SF.crit_chance(huge, 0.05, 0.0) > 0.55 + EPS:
-		errors.append("crit_chance не зажат в <= 0.55")
+	if SF.crit_chance(huge, 0.05, 0.0) > 0.75 + EPS:
+		errors.append("crit_chance не зажат в <= 0.75")
+	var tail := SF.crit_damage_multiplier({SF.AGILITY: 100.0}, 2.0, 4.0)
+	if tail <= 2.75 or not is_finite(tail):
+		errors.append("crit_damage не сохранил конечный неограниченный sqrt-tail выше 2.75")
 	if SF.dodge(huge, 0.1, 0.0) > 0.55 + EPS:
 		errors.append("dodge не зажат в <= 0.55")
 	# attack_speed имеет пол 0.1 при нулевой ловкости.

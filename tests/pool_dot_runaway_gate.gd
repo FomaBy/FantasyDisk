@@ -91,10 +91,14 @@ func _initialize() -> void:
 			failures.append("%s/%s: 0 живого урона за %.0fс — режим оружия сломан" % [cid, wid, WINDOW_SECONDS])
 		elif dps_20t > MAX_POOL_IDEAL_20T:
 			failures.append("%s/%s lvl20_ideal 20t = %.0f > потолка %.0f — runaway лужи вернулся (проверь ClassWeapon._damage_enemies_in_pool / диминишинг pool-целей)" % [cid, wid, dps_20t, MAX_POOL_IDEAL_20T])
-		var no_diminishing_dps: float = await _measure_dps(cid, wid, 20, build, true)
-		print("[pool-gate] %s/%s no-diminishing 20t=%.0f (должен провалить ≤%.0f)" % [cid, wid, no_diminishing_dps, MAX_POOL_IDEAL_20T])
-		if not is_finite(no_diminishing_dps) or no_diminishing_dps <= MAX_POOL_IDEAL_20T or no_diminishing_dps < dps_20t * 2.0:
-			failures.append("%s/%s negative control не доказал чувствительность гейта: %.0f против normal %.0f (нужен провал потолка и ≥2x)" % [cid, wid, no_diminishing_dps, dps_20t])
+		var no_diminishing_dps: float = await _measure_dps(cid, wid, 20, build, "diminishing")
+		print("[pool-gate] %s/%s no-diminishing-only 20t=%.0f (должен провалить ≤%.0f)" % [cid, wid, no_diminishing_dps, MAX_POOL_IDEAL_20T])
+		if not is_finite(no_diminishing_dps) or no_diminishing_dps <= MAX_POOL_IDEAL_20T or no_diminishing_dps < dps_20t * 1.10:
+			failures.append("%s/%s no-diminishing-only control не доказал чувствительность: %.0f против normal %.0f (нужен провал потолка и ≥1.10x)" % [cid, wid, no_diminishing_dps, dps_20t])
+		var no_max_dps: float = await _measure_dps(cid, wid, 20, build, "max_targets")
+		print("[pool-gate] %s/%s no-max-only 20t=%.0f (должен быть >normal на ≥2%%)" % [cid, wid, no_max_dps])
+		if not is_finite(no_max_dps) or no_max_dps < dps_20t * 1.02:
+			failures.append("%s/%s no-max-only control не доказал чувствительность: %.0f против normal %.0f (нужно ≥1.02x)" % [cid, wid, no_max_dps, dps_20t])
 
 	_holder.queue_free()
 	await process_frame
@@ -223,7 +227,7 @@ func _weighted_index(source: Array, character_id: String, rng: RandomNumberGener
 	return weights.size() - 1
 
 
-func _measure_dps(character_id: String, weapon_id: String, target_count: int, rewards: Array, without_pool_diminishing := false) -> float:
+func _measure_dps(character_id: String, weapon_id: String, target_count: int, rewards: Array, removed_guard := "") -> float:
 	seed(BASE_SEED + target_count)
 	for child in _holder.get_children():
 		child.queue_free()
@@ -235,12 +239,17 @@ func _measure_dps(character_id: String, weapon_id: String, target_count: int, re
 	player.global_position = Vector2(1280, 720)
 	if player.has_method("configure_character"):
 		player.configure_character(character_id, weapon_id)
-	if without_pool_diminishing:
+	if removed_guard != "":
 		var weapon := player.get("equipped_weapon") as Node
 		if weapon == null:
 			return NAN
-		weapon.set("pool_target_diminish", 0.0)
-		weapon.set("pool_max_targets", -1)
+		match removed_guard:
+			"diminishing":
+				weapon.set("pool_target_diminish", 0.0)
+			"max_targets":
+				weapon.set("pool_max_targets", -1)
+			_:
+				return NAN
 	player.set("max_health", 1.0e9)
 	player.set("health", 1.0e9)
 	for reward in rewards:

@@ -40,7 +40,7 @@ const LEVEL_UP_ORACLE := {
 		"weapon": "sword",
 		"mods": {},
 		"rewards": [
-			{"id": "crit_chance_up", "attr": "crit_chance", "mods": {"crit_chance_flat": 0.07}, "rows": ["Шанс крита: 7% -> 12% · реально: +5%", "сейчас 7% · максимум 55%"]},
+			{"id": "crit_chance_up", "attr": "crit_chance", "mods": {"crit_chance_flat": 0.07}, "rows": ["Шанс крита: 7% -> 12% · реально: +5%", "сейчас 7% · максимум 56%"]},
 			{"id": "vampiric_up", "attr": "vampiric", "mods": {"vampiric_amount_flat": 0.8, "vampiric_chance_flat": 0.05, "vampiric_heal_per_second_cap": 0.8}, "rows": ["Вампиризм: 0.00 -> 0.38 · реально: +0.38", "шанс срабатывания: сейчас 0% · максимум 20%", "Шанс срабатывания: 0% -> 5% (+5 пп)"]},
 			{"id": "regeneration_up", "attr": "regeneration", "mods": {"regeneration_flat": 1.3}, "rows": ["Регенерация: 0.13 -> 0.48 · реально: +0.36"]},
 		],

@@ -704,6 +704,68 @@ class QualityGateTests(unittest.TestCase):
                 }
             self.assertLessEqual(expected, names)
 
+    def test_offensive_cadence_and_balance_paths_select_focused_regressions(self) -> None:
+        cases = {
+            "scripts/attribute_contract.gd": {
+                "attribute_ui_matrix_fan1927_test",
+                "offensive_scaling_contract_test",
+                "engineer_kit_test",
+                "chemist_kit_test",
+            },
+            "scripts/stat_formulas.gd": {
+                "stat_formulas_smoke_test",
+                "damage_type_isolation_test",
+                "offensive_scaling_contract_test",
+            },
+            "scripts/player.gd": {
+                "attribute_consumability_fan1887_test",
+                "engineer_kit_test",
+                "chemist_kit_test",
+                "pool_dot_runaway_gate",
+            },
+            "scripts/class_weapon.gd": {
+                "engineer_kit_test",
+                "chemist_kit_test",
+                "persistent_hazard_contract_test",
+                "pool_dot_runaway_gate",
+            },
+            "scripts/sentry_turret.gd": {"engineer_kit_test"},
+            "scripts/status_effects.gd": {
+                "chemist_kit_test",
+                "persistent_hazard_contract_test",
+                "pool_dot_runaway_gate",
+            },
+            "scripts/progression_data.gd": {
+                "attribute_consumability_fan1887_test",
+                "offensive_scaling_contract_test",
+                "class_damage_table_3variants_test",
+                "pool_dot_runaway_gate",
+            },
+            "scripts/progression_data_balance.gd": {
+                "offensive_scaling_contract_test",
+                "class_damage_table_3variants_test",
+                "global_damage_balance_smoke_test",
+            },
+            "scripts/progression_data_weapons.gd": {
+                "offensive_scaling_contract_test",
+                "engineer_kit_test",
+                "chemist_kit_test",
+                "class_damage_table_3variants_test",
+            },
+            "scripts/meta_progression_tree_data.gd": {
+                "offensive_scaling_contract_test"
+            },
+        }
+        for changed_path, expected in cases.items():
+            with self.subTest(changed_path=changed_path), mock.patch.object(
+                self.quality, "_git_changed_paths", return_value={changed_path}
+            ):
+                names = {
+                    path.stem
+                    for path in self.quality.select_godot_tests("changed", [], "base", False)
+                }
+            self.assertLessEqual(expected, names)
+
     def test_class_package_paths_select_player_integration_regression(self) -> None:
         # A ready-package rollout under the class data/executor trees changes
         # Player-visible routing, so the certifying changed profile must select

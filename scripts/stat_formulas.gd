@@ -1,6 +1,8 @@
 class_name StatFormulas
 extends RefCounted
 
+const ProgressionData := preload("res://scripts/progression_data.gd")
+
 const STRENGTH := "strength"
 const AGILITY := "agility"
 const INTELLIGENCE := "intelligence"
@@ -94,7 +96,7 @@ const STAT_DEFINITIONS := {
 		"name_ru": "Сила",
 		"name_en": "Strength",
 		"type": "base",
-		"description": "Влияет на физический урон, силу попадания, отталкивание и малый вклад в любой архетип оружия.",
+		"description": "Влияет на физический урон, силу попадания и отталкивание.",
 		"formula": "Базовая характеристика персонажа + награды характеристик.",
 		"influences": "Физический урон и силовые эффекты ближнего боя.",
 		"format": "plain",
@@ -112,7 +114,7 @@ const STAT_DEFINITIONS := {
 		"name_ru": "Интеллект",
 		"name_en": "Intelligence",
 		"type": "base",
-		"description": "Влияет на магический урон, зачарования и малый дополнительный рост любого оружия.",
+		"description": "Влияет на магический урон и зачарования.",
 		"formula": "Базовая характеристика персонажа + награды характеристик.",
 		"influences": "Магический урон, магические взрывы по площади и зачарования.",
 		"format": "plain",
@@ -186,8 +188,8 @@ const STAT_DEFINITIONS := {
 		"name_en": "Crit Chance",
 		"type": "derived",
 		"description": "Вероятность нанести критический удар. С 0.1.5 использует убывающую отдачу, чтобы крит не заменял стабильный урон.",
-		"formula": "Эффективное значение от 4% + Ловкость × 0,75% + плоская прибавка; предел 55%.",
-		"influences": "Ловкость и награды на шанс критического удара.",
+		"formula": "Эффективное значение от 4% + Ловкость × 0,75% + плоская прибавка; обычный предел растёт с живой Ловкостью от 55% при 0 до 75% при 100. У Ассасина предел 100%.",
+		"influences": "Живая Ловкость, награды на шанс критического удара и классовый профиль Ассасина.",
 		"format": "percent",
 	},
 	"crit_damage_multiplier": {
@@ -195,7 +197,7 @@ const STAT_DEFINITIONS := {
 		"name_en": "Crit Damage Multiplier",
 		"type": "derived",
 		"description": "Множитель урона при критическом ударе.",
-		"formula": "Ограничение от 1,30 + Ловкость × 0,055 + плоская прибавка в диапазоне 1,0–2,75.",
+		"formula": "1,30 + Ловкость × 0,055 + плоская прибавка; выше 2,75 действует неограниченный убывающий хвост 2,75 + √(сырое − 2,75).",
 		"influences": "Ловкость и награды на силу критического удара.",
 		"format": "multiplier",
 	},
@@ -488,27 +490,18 @@ static func enemy_stats(enemy_id: String) -> Dictionary:
 
 
 static func physical_damage(stats: Dictionary, default_damage: float, addition := 0.0) -> float:
-	var universal_strength := (
-		float(stats.get(STRENGTH, 1.0))
-		+ float(stats.get(INTELLIGENCE, 0.0)) * 0.12
-		+ float(stats.get(PERCEPTION, 0.0)) * 0.067
-		+ float(stats.get(ENERGY, 0.0)) * 0.08
-		+ float(stats.get(KNOWLEDGE, 0.0)) * 0.06
-		+ float(stats.get(ENDURANCE, 0.0)) * 0.053
-		+ float(stats.get(LEADERSHIP, 0.0)) * 0.067
-	)
-	return (default_damage + addition) * universal_strength / 10.0
+	return (default_damage + addition) * float(stats.get(STRENGTH, 1.0)) / 10.0
 
 
 static func crit_chance(stats: Dictionary, default_chance: float, addition := 0.0) -> float:
-	var raw := default_chance + addition * 0.75 + float(stats.get(AGILITY, 0.0)) * 0.0075
-	return clamp(raw / (1.0 + maxf(raw, 0.0) * 0.45), 0.0, 0.55)
-
-
-static func crit_damage_multiplier(stats: Dictionary, default_multiplier: float, addition := 0.0) -> float:
 	var agility := float(stats.get(AGILITY, 0.0))
-	var flat := maxf(addition, 0.0) * 0.75 + minf(addition, 0.0)
-	return clamp(1.30 + agility * 0.055 + flat, 1.0, 2.75)
+	var raw := default_chance + addition * ProgressionData.CRIT_FLAT_EFFECTIVENESS + agility * 0.0075
+	return ProgressionData.effective_crit_chance(raw, ProgressionData.ordinary_crit_chance_cap(agility))
+
+
+static func crit_damage_multiplier(stats: Dictionary, _default_multiplier: float, addition := 0.0) -> float:
+	var agility := float(stats.get(AGILITY, 0.0))
+	return ProgressionData.effective_crit_damage_multiplier(agility, addition)
 
 
 static func attack_speed(stats: Dictionary, default_hits_per_second: float, addition := 0.0) -> float:

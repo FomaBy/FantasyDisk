@@ -3597,6 +3597,8 @@ func _apply_weapon_scaling(weapon: Node) -> void:
 
 	var cadence := maxf(float(derived_parameters.get("attack_cadence_multiplier", 1.0)), 0.1)
 	AttributeContract.apply_weapon_cadence(weapon, cadence, meta_interval_multiplier(meta_context))
+	if weapon.has_method("refresh_persistent_status_cadence"):
+		weapon.call("refresh_persistent_status_cadence")
 
 	# SummonerWeapon historically ignores canonical derived attack speed. Preserve
 	# that neutral release behaviour and apply only SCRUM-976's explicit factor.

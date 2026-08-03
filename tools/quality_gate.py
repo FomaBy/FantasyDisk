@@ -98,8 +98,36 @@ ULTIMATE_PACKAGE_CONTRACT_TESTS = {
 ULTIMATE_CLASS_PACKAGE_TESTS = ULTIMATE_PACKAGE_CONTRACT_TESTS | {
     "controller_player_integration_test",
 }
+OFFENSIVE_CONTRACT_TESTS = {
+    "attribute_consumability_fan1887_test",
+    "attribute_ui_matrix_fan1927_test",
+    "damage_type_isolation_test",
+    "offensive_scaling_contract_test",
+    "stat_formulas_smoke_test",
+}
+CADENCE_STATUS_CONTRACT_TESTS = {
+    "chemist_kit_test",
+    "engineer_kit_test",
+    "persistent_hazard_contract_test",
+    "pool_dot_runaway_gate",
+}
+BALANCE_CONTRACT_TESTS = {
+    "balance_harness_test",
+    "class_damage_table_3variants_test",
+    "global_damage_balance_smoke_test",
+}
 PATH_TEST_RULES = {
-    "scripts/class_weapon.gd": {"engineer_kit_test", "persistent_hazard_contract_test"},
+    "scripts/attribute_contract.gd": OFFENSIVE_CONTRACT_TESTS | CADENCE_STATUS_CONTRACT_TESTS,
+    "scripts/class_weapon.gd": CADENCE_STATUS_CONTRACT_TESTS | {"coverage_cap_gate"},
+    "scripts/meta_progression_tree_data.gd": {"offensive_scaling_contract_test"},
+    "scripts/player.gd": OFFENSIVE_CONTRACT_TESTS | CADENCE_STATUS_CONTRACT_TESTS,
+    "scripts/progression_data.gd": OFFENSIVE_CONTRACT_TESTS | CADENCE_STATUS_CONTRACT_TESTS | BALANCE_CONTRACT_TESTS,
+    "scripts/progression_data_balance.gd": OFFENSIVE_CONTRACT_TESTS | BALANCE_CONTRACT_TESTS,
+    "scripts/progression_data_content.gd": {"offensive_scaling_contract_test"},
+    "scripts/progression_data_weapons.gd": {"offensive_scaling_contract_test"} | CADENCE_STATUS_CONTRACT_TESTS | BALANCE_CONTRACT_TESTS,
+    "scripts/sentry_turret.gd": {"engineer_kit_test"},
+    "scripts/stat_formulas.gd": OFFENSIVE_CONTRACT_TESTS,
+    "scripts/status_effects.gd": {"chemist_kit_test", "persistent_hazard_contract_test", "pool_dot_runaway_gate"},
     "scripts/enemy.gd": {"enemy_separation_behavior_test"},
     "scripts/threat_indicators.gd": {"hot_path_cache_test"},
     "scripts/feedback_reporter.gd": {
