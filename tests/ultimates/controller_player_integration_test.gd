@@ -1,10 +1,10 @@
 extends SceneTree
 
-## Player-side evidence for FAN-1457; shipped ready-package contract per FAN-2057.
+## Player-side evidence for FAN-1457; shipped ready-package contract.
 ##
 ## Two halves:
 ##  1. Shipped contract — the real registry routes exactly the three ready
-##     Biologist packages through `weapon_profile`, every other declared pair
+##     Biologist, Engineer, Ranger, and Sniper packages through `weapon_profile`, every other declared pair
 ##     keeps the legacy class fallback, and the real adapter follows that
 ##     routing pair by pair: legacy ultimates run unchanged, ready packages
 ##     cast through the generic runtime, and each live generic cast the loop
@@ -33,13 +33,30 @@ const FIXTURE_WEAPONS := [
 	"sniper_spotter_scope",
 	"sniper_shatter_rounds",
 ]
-const SHIPPED_READY_CLASS := "biologist"
-const SHIPPED_READY_WEAPONS := [
-	"biologist_spore_lens",
-	"biologist_sample_injector",
-	"biologist_symbiote_seed",
-]
-const SHIPPED_LEGACY_PAIRS := 48
+const SHIPPED_READY_PACKAGES := {
+	"biologist": [
+		"biologist_spore_lens",
+		"biologist_sample_injector",
+		"biologist_symbiote_seed",
+	],
+	"engineer": [
+		"engineer_sentry_wrench",
+		"engineer_repair_drone",
+		"engineer_pressure_mines",
+	],
+	"ranger": [
+		"moon_crossbow",
+		"storm_longbow",
+		"hunter_trap",
+	],
+	"sniper": [
+		"sniper_deadeye_rifle",
+		"sniper_spotter_scope",
+		"sniper_shatter_rounds",
+	],
+}
+const SHIPPED_READY_PACKAGE_COUNT := 12
+const SHIPPED_LEGACY_PAIRS := 39
 
 
 ## FAN-2044 deploy fixture: its untyped-compatible `owner_node` can hold the
@@ -100,7 +117,8 @@ func _initialize() -> void:
 
 
 ## The shipped registry is the routing contract: exactly the three ready
-## Biologist packages may leave the legacy bridge, nothing else.
+## Biologist, Engineer, Ranger, and Sniper packages may leave the legacy bridge,
+## nothing else.
 func _test_catalog_routes_exact_ready_packages() -> void:
 	var registry = Registry.new(PD.WEAPONS_BY_CLASS)
 	_check(registry.is_valid(), "shipped catalog must stay valid: %s" % str(registry.validation_errors()))
@@ -113,7 +131,8 @@ func _test_catalog_routes_exact_ready_packages() -> void:
 	for class_id in registry.class_ids():
 		for weapon_id in registry.weapon_ids(class_id):
 			var source := str(registry.resolution_source(class_id, weapon_id))
-			if class_id == SHIPPED_READY_CLASS and SHIPPED_READY_WEAPONS.has(weapon_id):
+			var ready_weapons: Array = SHIPPED_READY_PACKAGES.get(class_id, [])
+			if ready_weapons.has(weapon_id):
 				ready_pairs += 1
 				_check(
 					source == Resolver.SOURCE_WEAPON_PROFILE,
@@ -136,15 +155,15 @@ func _test_catalog_routes_exact_ready_packages() -> void:
 					"%s/%s must keep the legacy class fallback" % [class_id, weapon_id]
 				)
 	_check(
-		ready_pairs == SHIPPED_READY_WEAPONS.size(),
-		"the catalog must carry all three ready Biologist packages"
+		ready_pairs == SHIPPED_READY_PACKAGE_COUNT,
+		"the catalog must carry every declared ready package"
 	)
 	_check(
 		legacy_pairs == SHIPPED_LEGACY_PAIRS,
 		"all %d remaining catalog pairs must keep legacy fallback" % SHIPPED_LEGACY_PAIRS
 	)
 	_check(
-		registry.resolution_source(SHIPPED_READY_CLASS, "__unknown_weapon__")
+		registry.resolution_source("ranger", "__unknown_weapon__")
 			== Resolver.SOURCE_INVALID_PAIR,
 		"unknown package pairs must stay invalid"
 	)
@@ -152,7 +171,7 @@ func _test_catalog_routes_exact_ready_packages() -> void:
 
 
 ## The real adapter on the real registry, pair by pair: legacy pairs run their
-## class ultimate off the generic runtime, ready Biologist pairs cast through
+## class ultimate off the generic runtime, ready packages cast through
 ## it, charge is spent once either way, and every live generic cast is
 ## cancelled without leaking state.
 func _test_player_adapter_follows_shipped_routing() -> void:
@@ -213,8 +232,8 @@ func _test_player_adapter_follows_shipped_routing() -> void:
 					"%s/%s cancelled generic cast must not leak run modifiers" % [class_id, weapon_id]
 				)
 	_check(
-		generic_casts == SHIPPED_READY_WEAPONS.size(),
-		"exactly the three ready Biologist pairs must reach the generic runtime"
+		generic_casts == SHIPPED_READY_PACKAGE_COUNT,
+		"every declared ready package must reach the generic runtime"
 	)
 
 	if is_instance_valid(enemy):

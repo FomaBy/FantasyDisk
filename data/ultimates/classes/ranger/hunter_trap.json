@@ -1,0 +1,34 @@
+{
+  "schema_version": 1,
+  "class_id": "ranger",
+  "weapon_id": "hunter_trap",
+  "profile_id": "weapon_ultimate.profile.ranger.hunter_trap",
+  "executor_id": "weapon_ultimate.executor.ranger.hunter_trap",
+  "implementation_state": "ready",
+  "targeting": {
+    "strategy_id": "aimed_trap_rings",
+    "params": {}
+  },
+  "charge": {
+    "strategy_id": "ultimate_charge_ledger",
+    "params": {}
+  },
+  "executor": {
+    "strategy_id": "weapon_ultimate.executor.ranger.hunter_trap",
+    "params": {
+      "max_range": 620.0,
+      "trap_radius": 190.0,
+      "target_limit": 3,
+      "ring_count": 3,
+      "ring_interval": 0.60,
+      "snap_damage": 61.0,
+      "snare_duration": 4.2,
+      "snare_multiplier": 0.55
+    }
+  },
+  "total_boss_cap": 0.09,
+  "cleanup_policy": {
+    "strategy_id": "activation_owned",
+    "params": {}
+  }
+}

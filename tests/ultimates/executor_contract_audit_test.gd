@@ -415,8 +415,8 @@ func _demo_sniper_in_memory_distinctness(registry, audit: Dictionary, errors: Ar
 	for weapon_id in registry.weapon_ids("sniper"):
 		_expect(
 			str(registry.resolution_source("sniper", weapon_id))
-				== Resolver.SOURCE_LEGACY_CLASS_FALLBACK,
-			"helper must not change persisted %s resolution" % weapon_id,
+				== Resolver.SOURCE_WEAPON_PROFILE,
+			"helper must preserve persisted ready %s resolution" % weapon_id,
 			errors
 		)
 
