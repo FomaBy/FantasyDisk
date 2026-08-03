@@ -1,0 +1,33 @@
+{
+  "schema_version": 1,
+  "class_id": "engineer",
+  "weapon_id": "engineer_pressure_mines",
+  "profile_id": "weapon_ultimate.profile.engineer.engineer_pressure_mines",
+  "executor_id": "weapon_ultimate.executor.engineer.engineer_pressure_mines",
+  "implementation_state": "ready",
+  "targeting": {"strategy_id": "seeded_annulus", "params": {}},
+  "charge": {"strategy_id": "rare_charge_ledger", "params": {}},
+  "executor": {
+    "strategy_id": "weapon_ultimate.executor.engineer.engineer_pressure_mines",
+    "params": {
+      "mine_count": 16,
+      "inner_radius": 80,
+      "outer_radius": 260,
+      "seed": 1466,
+      "arm_delay": 0.7,
+      "finale_delay": 1.7,
+      "finale_interval": 0.1,
+      "finale_tail": 0.8,
+      "trigger_radius": 90,
+      "chain_radius": 155,
+      "chain_count": 2,
+      "blast_radius": 135,
+      "damage": 1.2,
+      "chain_falloff": 0.65,
+      "target_cap_fraction": 0.65,
+      "target_cap_flat": 0
+    }
+  },
+  "total_boss_cap": 0.08,
+  "cleanup_policy": {"strategy_id": "activation_owned", "params": {}}
+}
