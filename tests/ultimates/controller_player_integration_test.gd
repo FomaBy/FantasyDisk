@@ -3,12 +3,12 @@ extends SceneTree
 ## Player-side evidence for FAN-1457; shipped ready-package contract per FAN-2057.
 ##
 ## Two halves:
-##  1. Shipped contract — the real registry routes exactly the three ready
-##     Biologist packages through `weapon_profile`, every other declared pair
-##     keeps the legacy class fallback, and the real adapter follows that
-##     routing pair by pair: legacy ultimates run unchanged, ready packages
-##     cast through the generic runtime, and each live generic cast the loop
-##     starts is cancelled without leaking state.
+##  1. Shipped contract — the real registry derives ready exact package pairs
+##     from its discovered executors, while every other declared pair keeps the
+##     legacy class fallback. The real adapter follows that routing pair by
+##     pair: legacy ultimates run unchanged, ready packages cast through the
+##     generic runtime, and each live generic cast the loop starts is cancelled
+##     without leaking state.
 ##  2. Fixture integration — with a synthetic ready declaration injected, the
 ##     UltimatePlayerHost adapter drives the generic runtime end to end, and a
 ##     new run or a node end drops the live cast instead of carrying it over.
@@ -33,15 +33,6 @@ const FIXTURE_WEAPONS := [
 	"sniper_spotter_scope",
 	"sniper_shatter_rounds",
 ]
-const SHIPPED_READY_CLASS := "biologist"
-const SHIPPED_READY_WEAPONS := [
-	"biologist_spore_lens",
-	"biologist_sample_injector",
-	"biologist_symbiote_seed",
-]
-const SHIPPED_LEGACY_PAIRS := 48
-
-
 ## FAN-2044 deploy fixture: its untyped-compatible `owner_node` can hold the
 ## real host adapter, which is what the primitive's ownership check verifies.
 class TemporaryDeployFixture extends Node2D:
@@ -52,12 +43,15 @@ class ReadyRegistry extends RefCounted:
 	var canonical_pairs: Dictionary = {}
 	var profiles: Dictionary = {}
 	var executable_pairs: Dictionary = {}
+	var source_overrides: Dictionary = {}
 
 	func _init(pairs: Dictionary) -> void:
 		canonical_pairs = pairs.duplicate(true)
 
 	func resolution_source(class_id: String, weapon_id: String, _allow_legacy := true) -> String:
 		var key := Resolver.profile_key(class_id, weapon_id)
+		if source_overrides.has(key):
+			return str(source_overrides[key])
 		if not canonical_pairs.has(key):
 			return Resolver.SOURCE_INVALID_PAIR
 		var profile := profiles.get(key, {}) as Dictionary
@@ -73,6 +67,15 @@ class ReadyRegistry extends RefCounted:
 		profiles[key] = profile.duplicate(true)
 		executable_pairs[key] = true
 
+	func has_exact_executor_pair(class_id: String, weapon_id: String) -> bool:
+		return executable_pairs.has(Resolver.profile_key(class_id, weapon_id))
+
+	func remove_exact_executor_pair(class_id: String, weapon_id: String) -> void:
+		executable_pairs.erase(Resolver.profile_key(class_id, weapon_id))
+
+	func force_resolution_source(class_id: String, weapon_id: String, source: String) -> void:
+		source_overrides[Resolver.profile_key(class_id, weapon_id)] = source
+
 
 var _errors: Array[String] = []
 var _holder: Node2D = null
@@ -86,6 +89,7 @@ func _initialize() -> void:
 	await process_frame
 
 	await _test_catalog_routes_exact_ready_packages()
+	_test_discovery_truth_rejects_false_resolution()
 	await _test_player_adapter_follows_shipped_routing()
 	await _test_exact_ready_pair_routing()
 	await _test_incomplete_ready_profile_refuses_before_player_side_effects()
@@ -99,8 +103,8 @@ func _initialize() -> void:
 	_report()
 
 
-## The shipped registry is the routing contract: exactly the three ready
-## Biologist packages may leave the legacy bridge, nothing else.
+## The shipped registry is the routing contract: every discovered ready package
+## may leave the legacy bridge, and every other declared pair must stay legacy.
 func _test_catalog_routes_exact_ready_packages() -> void:
 	var registry = Registry.new(PD.WEAPONS_BY_CLASS)
 	_check(registry.is_valid(), "shipped catalog must stay valid: %s" % str(registry.validation_errors()))
@@ -108,17 +112,15 @@ func _test_catalog_routes_exact_ready_packages() -> void:
 		(registry.package_validation_errors() as Array).is_empty(),
 		"shipped packages must stay valid: %s" % str(registry.package_validation_errors())
 	)
-	var ready_pairs := 0
-	var legacy_pairs := 0
+	var ready_pairs := {}
 	for class_id in registry.class_ids():
 		for weapon_id in registry.weapon_ids(class_id):
-			var source := str(registry.resolution_source(class_id, weapon_id))
-			if class_id == SHIPPED_READY_CLASS and SHIPPED_READY_WEAPONS.has(weapon_id):
-				ready_pairs += 1
-				_check(
-					source == Resolver.SOURCE_WEAPON_PROFILE,
-					"%s/%s ready package must resolve through weapon_profile" % [class_id, weapon_id]
-				)
+			var key := Resolver.profile_key(class_id, weapon_id)
+			var expects_ready := _is_discovered_ready_pair(registry, class_id, weapon_id)
+			var contract_error := _pair_contract_error(registry, class_id, weapon_id)
+			_check(contract_error.is_empty(), contract_error)
+			if expects_ready:
+				ready_pairs[key] = true
 				var profile: Dictionary = registry.catalog_profile_for(class_id, weapon_id)
 				_check(
 					str(profile.get("class_id", "")) == class_id
@@ -129,30 +131,42 @@ func _test_catalog_routes_exact_ready_packages() -> void:
 					str(profile.get("implementation_state", "")) == "ready",
 					"%s/%s package must stay declared ready" % [class_id, weapon_id]
 				)
-			else:
-				legacy_pairs += 1
-				_check(
-					source == Resolver.SOURCE_LEGACY_CLASS_FALLBACK,
-					"%s/%s must keep the legacy class fallback" % [class_id, weapon_id]
-				)
 	_check(
-		ready_pairs == SHIPPED_READY_WEAPONS.size(),
-		"the catalog must carry all three ready Biologist packages"
+		not ready_pairs.is_empty(),
+		"the catalog must expose at least one discovered ready package"
 	)
 	_check(
-		legacy_pairs == SHIPPED_LEGACY_PAIRS,
-		"all %d remaining catalog pairs must keep legacy fallback" % SHIPPED_LEGACY_PAIRS
-	)
-	_check(
-		registry.resolution_source(SHIPPED_READY_CLASS, "__unknown_weapon__")
+		registry.resolution_source("__unknown_class__", "__unknown_weapon__")
 			== Resolver.SOURCE_INVALID_PAIR,
 		"unknown package pairs must stay invalid"
 	)
 	await process_frame
 
 
+## A resolver response alone cannot define the expected ready set: discovery
+## must have admitted the exact executor pair first.
+func _test_discovery_truth_rejects_false_resolution() -> void:
+	var registry := ReadyRegistry.new(_canonical_pairs())
+	var profile := _ready_profile(FIXTURE_WEAPON, {
+		"strategy_id": "burst",
+		"params": {"radius": 400.0, "damage": 1.0, "target_limit": 0},
+	}, 0.1)
+	_check(not profile.is_empty(), "the false-resolution fixture must be valid")
+	if profile.is_empty():
+		return
+	registry.admit_ready_profile(profile)
+	registry.remove_exact_executor_pair(FIXTURE_CLASS, FIXTURE_WEAPON)
+	registry.force_resolution_source(
+		FIXTURE_CLASS, FIXTURE_WEAPON, Resolver.SOURCE_WEAPON_PROFILE
+	)
+	_check(
+		not _pair_contract_error(registry, FIXTURE_CLASS, FIXTURE_WEAPON).is_empty(),
+		"a false weapon_profile result without a discovered package must fail the contract"
+	)
+
+
 ## The real adapter on the real registry, pair by pair: legacy pairs run their
-## class ultimate off the generic runtime, ready Biologist pairs cast through
+## class ultimate off the generic runtime, discovered ready pairs cast through
 ## it, charge is spent once either way, and every live generic cast is
 ## cancelled without leaking state.
 func _test_player_adapter_follows_shipped_routing() -> void:
@@ -169,8 +183,9 @@ func _test_player_adapter_follows_shipped_routing() -> void:
 		for weapon_id in registry.weapon_ids(class_id):
 			player.call("configure_character", class_id, weapon_id)
 			await process_frame
-			var expects_generic := str(registry.resolution_source(class_id, weapon_id)) \
-				== Resolver.SOURCE_WEAPON_PROFILE
+			var expects_generic := _is_discovered_ready_pair(registry, class_id, weapon_id)
+			var contract_error := _pair_contract_error(registry, class_id, weapon_id)
+			_check(contract_error.is_empty(), contract_error)
 			var modifiers_before: Dictionary = (player.get("run_modifiers") as Dictionary).duplicate(true)
 			player.set("ultimate_charge", float(player.get("ultimate_max_charge")))
 			_check(
@@ -213,8 +228,8 @@ func _test_player_adapter_follows_shipped_routing() -> void:
 					"%s/%s cancelled generic cast must not leak run modifiers" % [class_id, weapon_id]
 				)
 	_check(
-		generic_casts == SHIPPED_READY_WEAPONS.size(),
-		"exactly the three ready Biologist pairs must reach the generic runtime"
+		generic_casts == _discovered_ready_pair_count(registry),
+		"every discovered ready pair must reach the generic runtime"
 	)
 
 	if is_instance_valid(enemy):
@@ -233,13 +248,17 @@ func _test_exact_ready_pair_routing() -> void:
 		_check(not profile.is_empty(), "%s fixture must satisfy the live executor contract" % weapon_id)
 		registry.admit_ready_profile(profile)
 
+	var ready_pairs := 0
 	var legacy_pairs := 0
+	var declared_pairs := 0
 	for raw_class_id in PD.WEAPONS_BY_CLASS.keys():
 		var class_id := str(raw_class_id)
 		for raw_weapon_id in (PD.WEAPONS_BY_CLASS[class_id] as Dictionary).keys():
 			var weapon_id := str(raw_weapon_id)
+			declared_pairs += 1
 			var source := registry.resolution_source(class_id, weapon_id)
 			if class_id == FIXTURE_CLASS and FIXTURE_WEAPONS.has(weapon_id):
+				ready_pairs += 1
 				_check(source == Resolver.SOURCE_WEAPON_PROFILE,
 					"%s/%s exact ready pair must select weapon_profile" % [class_id, weapon_id])
 				_check(str(registry.catalog_profile_for(class_id, weapon_id).get("weapon_id", "")) == weapon_id,
@@ -248,10 +267,36 @@ func _test_exact_ready_pair_routing() -> void:
 				legacy_pairs += 1
 				_check(source == Resolver.SOURCE_LEGACY_CLASS_FALLBACK,
 					"%s/%s declared or unbound pair must keep legacy fallback" % [class_id, weapon_id])
-	_check(legacy_pairs == 48, "all 48 remaining declared or unbound pairs must keep legacy fallback")
+	_check(
+		ready_pairs == FIXTURE_WEAPONS.size(),
+		"all fixture ready pairs must select weapon_profile"
+	)
+	_check(
+		legacy_pairs + ready_pairs == declared_pairs,
+		"every non-ready declared pair must keep legacy fallback"
+	)
 	_check(
 		registry.resolution_source(FIXTURE_CLASS, "__unknown_weapon__") == Resolver.SOURCE_INVALID_PAIR,
 		"unknown package pairs must stay invalid"
+	)
+	_check(
+		registry.resolution_source(FIXTURE_CLASS, "%s_alias" % FIXTURE_WEAPON)
+			== Resolver.SOURCE_INVALID_PAIR,
+		"aliases must stay invalid"
+	)
+	_check(
+		registry.resolution_source("biologist", FIXTURE_WEAPON) == Resolver.SOURCE_INVALID_PAIR,
+		"cross-class pairs must stay invalid"
+	)
+	var sibling_registry := ReadyRegistry.new(_canonical_pairs())
+	sibling_registry.admit_ready_profile(_ready_profile(FIXTURE_WEAPON, {
+		"strategy_id": "burst",
+		"params": {"radius": 400.0, "damage": 1.0, "target_limit": 0},
+	}, 0.1))
+	_check(
+		sibling_registry.resolution_source(FIXTURE_CLASS, FIXTURE_WEAPONS[1])
+			== Resolver.SOURCE_LEGACY_CLASS_FALLBACK,
+		"ready exact pairs must not promote a sibling"
 	)
 	await process_frame
 
@@ -489,6 +534,32 @@ func _ready_profile(weapon_id: String, executor: Dictionary, total_boss_cap: flo
 
 func _canonical_pairs() -> Dictionary:
 	return Registry.new(PD.WEAPONS_BY_CLASS).canonical_pairs_for_tests()
+
+
+func _is_discovered_ready_pair(registry, class_id: String, weapon_id: String) -> bool:
+	var profile: Dictionary = registry.catalog_profile_for(class_id, weapon_id)
+	return str(profile.get("class_id", "")) == class_id \
+		and str(profile.get("weapon_id", "")) == weapon_id \
+		and str(profile.get("implementation_state", "")) == "ready" \
+		and bool(registry.has_exact_executor_pair(class_id, weapon_id))
+
+
+func _pair_contract_error(registry, class_id: String, weapon_id: String) -> String:
+	var expected_source := Resolver.SOURCE_WEAPON_PROFILE \
+		if _is_discovered_ready_pair(registry, class_id, weapon_id) \
+		else Resolver.SOURCE_LEGACY_CLASS_FALLBACK
+	var source := str(registry.resolution_source(class_id, weapon_id))
+	return "" if source == expected_source \
+		else "%s/%s must resolve through %s" % [class_id, weapon_id, expected_source]
+
+
+func _discovered_ready_pair_count(registry) -> int:
+	var count := 0
+	for class_id in registry.class_ids():
+		for weapon_id in registry.weapon_ids(class_id):
+			if _is_discovered_ready_pair(registry, class_id, weapon_id):
+				count += 1
+	return count
 
 
 func _check(condition: bool, message: String) -> void:
