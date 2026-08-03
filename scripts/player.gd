@@ -7,6 +7,7 @@ signal damaged(amount: float)
 signal weapon_animation_event(event: Dictionary)
 signal weapon_cast_observed(event: Dictionary)
 signal constellation_final_resolved(weapon_id: String, event: String, target: Node2D, context: Dictionary, resolution: Dictionary)
+signal guard_prevention_measured(event: Dictionary)
 @export var max_health := 10.0
 @export var speed := 260.0
 @export var damage_invulnerability_time := 0.32
@@ -31,6 +32,7 @@ const ROBOT_SPRITE := preload("res://assets/sprites/characters/robot.png")
 const DRUID_SPRITE := preload("res://assets/sprites/characters/druid.png")
 const PROGRESSION_DATA := preload("res://scripts/progression_data.gd")
 const ULTIMATE_HOST := preload("res://scripts/ultimates/controller/ultimate_player_host.gd")
+const GUARD_PREVENTION_INGRESS := preload("res://scripts/ultimates/controller/ultimate_guard_prevention_ingress.gd")
 const PLAYER_MOVEMENT_INPUT := preload("res://scripts/player_movement_input.gd")
 # FAN-1449: вся геометрия наводки живёт в провайдере; player — тонкий адаптер.
 const AIM_CONTROLLER := preload("res://scripts/input/aim_controller.gd")
@@ -1127,6 +1129,7 @@ func take_damage(amount: float, _source := "", attacker: Node2D = null) -> bool:
 	# уворот → контр → reactor-heat → absorb → defense → финальные классовые скидки.
 	if _battle_prayer_protection > 0.0:
 		final_damage *= 1.0 - clampf(_battle_prayer_protection, 0.0, 0.9)
+	GUARD_PREVENTION_INGRESS.emit_measured(self, amount, final_damage, _source, attacker)
 	health = max(health - final_damage, 0.0)
 	_damage_invulnerability_left = damage_invulnerability_time
 	_play_hit_feedback()

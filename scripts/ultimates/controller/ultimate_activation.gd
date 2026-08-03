@@ -1,6 +1,8 @@
 class_name UltimateActivation
 extends RefCounted
 
+signal owner_resource_emitted(event: Dictionary)
+
 ## One live ultimate cast — the ledger every executor writes through.
 ##
 ## Executors never touch the host directly. They ask the activation for targets,
@@ -13,6 +15,7 @@ extends RefCounted
 ## HOST_REPAIR_METHOD opts in, every other host keeps repair failing closed.
 
 const DamageResult := preload("res://scripts/ultimates/controller/ultimate_damage_result.gd")
+const GuardPreventionLedger := preload("res://scripts/ultimates/controller/ultimate_guard_prevention_ledger.gd")
 const StatusEffects := preload("res://scripts/status_effects.gd")
 
 const BOSS_GROUP := "bosses"
@@ -50,6 +53,7 @@ var _target_damage_cap: Dictionary = {}
 var _target_damage_budget: Dictionary = {}
 var _target_ledger: Dictionary = {}
 var _claimed_events: Dictionary = {}
+var _guard_prevention_ledger := GuardPreventionLedger.new()
 var _control_policy: Dictionary = {}
 var _repair_cap := 0.0
 var _repair_budget := 0.0
@@ -82,6 +86,7 @@ func _init(host_node: Node, executor_params: Dictionary, boss_cap: float) -> voi
 	context = host.call("ultimate_host_context") if host != null else {}
 	if not context is Dictionary:
 		context = {}
+	_guard_prevention_ledger.owner_resource_emitted.connect(_on_owner_resource_emitted)
 
 
 func is_finished() -> bool:
@@ -393,6 +398,41 @@ func abort_composition() -> void:
 
 func composition_aborted() -> bool:
 	return _composition_aborted
+
+
+# --- measured guard prevention and owner resources --------------------------
+
+## The activation stays a lifecycle adapter; its focused ledger owns strict
+## attribution, cap and one-shot counter semantics without class branches.
+func configure_guard_prevention(owner_id: String, resource_id: String, cap: float, facing: Vector2, arc_degrees: float, sources: Array[String]) -> bool:
+	return not _finished and _guard_prevention_ledger.configure(owner_id, resource_id, cap, facing, arc_degrees, sources)
+
+
+func guard_prevention_owner_id() -> String:
+	return _guard_prevention_ledger.owner_id() if not _finished else ""
+
+
+func record_guard_prevention(event: Dictionary) -> float:
+	return _guard_prevention_ledger.record(event) if not _finished else 0.0
+
+
+func apply_owner_resource(owner_id: String, resource_id: String, amount: float, cap: float, event_id: String) -> float:
+	return _guard_prevention_ledger.apply(owner_id, resource_id, amount, cap, event_id) if not _finished else 0.0
+
+
+func owner_resource_amount(owner_id: String, resource_id: String) -> float:
+	return _guard_prevention_ledger.amount(owner_id, resource_id) if not _finished else 0.0
+
+
+func consume_owner_resource(owner_id: String, resource_id: String, event_id: String) -> Dictionary:
+	return _guard_prevention_ledger.consume(owner_id, resource_id, event_id) if not _finished else {
+		"owner_id": owner_id.strip_edges(), "resource_id": resource_id.strip_edges(),
+		"event_id": event_id.strip_edges(), "amount": 0.0,
+	}
+
+
+func _on_owner_resource_emitted(event: Dictionary) -> void:
+	owner_resource_emitted.emit(event)
 
 
 # --- activation-local interaction state --------------------------------------
@@ -883,6 +923,7 @@ func shutdown(free_presentation: bool) -> void:
 	_target_damage_budget.clear()
 	_target_ledger.clear()
 	_claimed_events.clear()
+	_guard_prevention_ledger.clear()
 	_control_policy.clear()
 	_repair_cap = 0.0
 	_repair_budget = 0.0

@@ -162,13 +162,13 @@ a child. Repair is an optional eleventh channel: a host that exposes
 keeps passing while `repair()` fails closed against it. Nothing below the
 adapter may branch on a class or a weapon.
 
-`scripts/player.gd` therefore keeps only a four-line boundary: the host preload,
-`ULTIMATE_HOST.reset(self)` at the top of `configure_character`, and the
-`ULTIMATE_HOST.activate(self)` delegation in `activate_ultimate`. Death,
-scene change and node end need no hook at all — the host is a Player child, so
-its own `_exit_tree` cancels the cast. Only the new run needs the explicit call,
-and it must stay before `run_modifiers` is reset, otherwise the modifier revert
-would land on freshly created defaults.
+`scripts/player.gd` keeps the host preload, `ULTIMATE_HOST.reset(self)` at the
+top of `configure_character`, `ULTIMATE_HOST.activate(self)` delegation in
+`activate_ultimate`, and one generic measured-prevention emission after its
+existing mitigation arithmetic. Death, scene change and node end need no hook at
+all — the host is a Player child, so its own `_exit_tree` cancels the cast. Only
+the new run needs the explicit call, and it must stay before `run_modifiers` is
+reset, otherwise the modifier revert would land on freshly created defaults.
 
 Executor families live in `scripts/ultimates/executors/` and are selected purely
 by `executor.strategy_id`:
@@ -284,6 +284,31 @@ Temporary deploys attribute to the host adapter, never to the Player — that
 distinction is what keeps `ultimate_host_summons` (and with it the permanent
 summon/device park) blind to the activation's own hardware.
 
+### Measured guard prevention and owner-resource counters
+
+`Player.take_damage()` leaves its mitigation arithmetic unchanged. Once that
+pipeline has calculated final damage, it emits `guard_prevention_measured` only
+when all of these are present: a non-empty source, a valid incoming direction
+from the attacker, an active guard owner, and a positive measured difference
+between incoming and final mitigated damage. The emitted value is
+`incoming_amount - applied_amount`; it is not a requested counter number and is
+not derived from the overkill-clamped HP delta.
+
+An executor opens one activation-local guard with
+`configure_guard_prevention(owner_id, resource_id, cap, facing, arc_degrees,
+sources)`. The Player host routes the event to the current activation. It rejects
+wrong owner, source, facing, malformed or zero prevention, and replayed event
+IDs; it then calls `apply_owner_resource(...)`. Resources are keyed by owner and
+resource ID, fix their cap on first accepted measurement, and cannot refill after
+`consume_owner_resource(owner_id, resource_id, event_id)` spends them. That
+consume returns and emits one `owner_resource_emitted` dictionary containing the
+exact measured amount, which a class-local executor can use for its counter
+without a shared class/weapon branch.
+
+Both the guard and owner-resource ledger are activation-local. Completion,
+cancel, death, node end and new-run reset clear them through the existing
+`shutdown()` path, so stale events cannot credit a later cast.
+
 The activation owns every resource it created. Player death, leaving the tree and
 a new run all call `cancel()`, which kills tracked tweens, frees summons, deploys
 and presentation nodes, and unwinds modifiers in reverse order. A cast that simply
@@ -324,6 +349,8 @@ python3 tools/godot_gate.py --headless --path . \
   --script res://tests/ultimates/controller_player_integration_test.gd
 python3 tools/godot_gate.py --headless --path . \
   --script res://tests/ultimates/controller_host_primitives_test.gd
+python3 tools/godot_gate.py --headless --path . \
+  --script res://tests/ultimates/guard_prevention_resource_test.gd
 ```
 
 `controller_runtime_test` drives every executor family through the same
@@ -354,6 +381,11 @@ player integration suite additionally proves a new run drops live deploys and
 repair state through the real charge path. `registry_package_discovery_test` proves a real paired
 fixture executes through the controller and that declared, mismatched,
 incomplete, missing, orphaned and duplicated packages remain fail-closed.
+
+`guard_prevention_resource_test` runs the ingress through the real Player adapter
+and proves final-mitigation measurement, source/direction/owner rejection,
+capped accumulation, one-shot counter emission, replay refusal, and cleanup on
+new run and node end.
 
 The tests cover all 51 selections, both sibling negative controls for every
 selection, exact legacy fallback preservation, fail-closed unknown pairs,

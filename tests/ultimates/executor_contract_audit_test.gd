@@ -21,6 +21,18 @@ const CLASSIFICATIONS := [
 	"needs_param_generalization",
 	"needs_new_generic_primitive",
 ]
+const DELIVERED_RUNTIME_CAPABILITIES := {
+	"guard_prevention_ledger": [
+		"configure_guard_prevention",
+		"guard_prevention_owner_id",
+		"record_guard_prevention",
+	],
+	"owner_resource_conversion": [
+		"apply_owner_resource",
+		"consume_owner_resource",
+		"owner_resource_amount",
+	],
+}
 
 
 func _initialize() -> void:
@@ -39,6 +51,7 @@ func _initialize() -> void:
 	_expect(audit_errors.is_empty(), "canonical audit must validate: %s" % str(audit_errors), errors)
 	_test_persisted_packages(registry, audit, canonical_pairs, errors)
 	_test_resolution_negative_matrix(registry, errors)
+	_test_delivered_runtime_capabilities(audit, errors)
 
 	var missing_pair: Dictionary = audit.duplicate(true)
 	(missing_pair["profiles"] as Array).remove_at(0)
@@ -211,6 +224,69 @@ func _ids_from(raw_entries) -> Array[String]:
 		if raw_entry is Dictionary:
 			ids.append(str((raw_entry as Dictionary).get("id", "")))
 	return ids
+
+
+func _test_delivered_runtime_capabilities(audit: Dictionary, errors: Array[String]) -> void:
+	var delivered = audit.get("delivered_runtime_capabilities")
+	_expect(delivered is Dictionary, "delivered runtime capabilities must be declared", errors)
+	if not delivered is Dictionary:
+		return
+	for capability_id in DELIVERED_RUNTIME_CAPABILITIES:
+		var entry = (delivered as Dictionary).get(capability_id)
+		_expect(entry is Dictionary, "delivered capability must be a Dictionary: %s" % capability_id, errors)
+		if not entry is Dictionary:
+			continue
+		_expect(bool((entry as Dictionary).get("available", false)),
+			"delivered capability must be available: %s" % capability_id, errors)
+		var actual: Array[String] = []
+		for raw_method in (entry as Dictionary).get("activation_api", []):
+			actual.append(str(raw_method))
+		actual.sort()
+		var expected: Array[String] = []
+		for raw_method in DELIVERED_RUNTIME_CAPABILITIES[capability_id]:
+			expected.append(str(raw_method))
+		expected.sort()
+		_expect(actual == expected,
+			"delivered capability API mismatch: %s expected %s, got %s"
+			% [capability_id, expected, actual], errors)
+
+	var missing_ids := _ids_from(audit.get("missing_generic_primitives", []))
+	for capability_id in DELIVERED_RUNTIME_CAPABILITIES:
+		_expect(not missing_ids.has(capability_id),
+			"delivered capability must not remain globally missing: %s" % capability_id, errors)
+	for raw_profile in audit.get("profiles", []):
+		if not raw_profile is Dictionary:
+			continue
+		for raw_id in (raw_profile as Dictionary).get("missing_primitives", []):
+			_expect(not DELIVERED_RUNTIME_CAPABILITIES.has(str(raw_id)),
+				"delivered capability must not remain missing for %s/%s: %s" % [
+					str((raw_profile as Dictionary).get("class_id", "")),
+					str((raw_profile as Dictionary).get("weapon_id", "")),
+					str(raw_id),
+				], errors)
+
+	var activation_source := FileAccess.get_file_as_string(
+		"res://scripts/ultimates/controller/ultimate_activation.gd"
+	)
+	for capability_id in DELIVERED_RUNTIME_CAPABILITIES:
+		for method_name in DELIVERED_RUNTIME_CAPABILITIES[capability_id]:
+			_expect(activation_source.contains("func %s" % method_name),
+				"activation must implement delivered API: %s.%s" % [capability_id, method_name], errors)
+	_expect(activation_source.contains("signal owner_resource_emitted"),
+		"owner-resource conversion must expose the generic counter event", errors)
+	var host_source := FileAccess.get_file_as_string(
+		"res://scripts/ultimates/controller/ultimate_player_host.gd"
+	)
+	_expect(host_source.contains("_on_guard_prevention_measured"),
+		"player host must consume the generic prevention event", errors)
+	var player_source := FileAccess.get_file_as_string("res://scripts/player.gd")
+	_expect(player_source.contains("GUARD_PREVENTION_INGRESS.emit_measured"),
+		"Player must route its generic measured prevention ingress", errors)
+	var ingress_source := FileAccess.get_file_as_string(
+		"res://scripts/ultimates/controller/ultimate_guard_prevention_ingress.gd"
+	)
+	_expect(ingress_source.contains("emit_signal(\"guard_prevention_measured\""),
+		"the focused ingress must emit the measured prevention event", errors)
 
 
 func _validate_spotter(spotter: Dictionary, errors: Array[String]) -> void:

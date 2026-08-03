@@ -94,6 +94,14 @@ func active_activation() -> Activation:
 	return _activation
 
 
+func guard_prevention_owner_id() -> String:
+	return _activation.guard_prevention_owner_id() if _activation != null else ""
+
+
+func record_guard_prevention(event: Dictionary) -> float:
+	return _activation.record_guard_prevention(event) if _activation != null else 0.0
+
+
 ## Death, node end or a new run: drop the cast and everything it is still
 ## holding, presentation included.
 func cancel() -> void:
