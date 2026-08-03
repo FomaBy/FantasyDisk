@@ -1,0 +1,26 @@
+{
+  "schema_version": 1,
+  "class_id": "robot",
+  "weapon_id": "robot_reactor_core",
+  "profile_id": "weapon_ultimate.profile.robot.robot_reactor_core",
+  "executor_id": "weapon_ultimate.executor.robot.robot_reactor_core",
+  "implementation_state": "ready",
+  "targeting": {"strategy_id": "source_centered", "params": {}},
+  "charge": {"strategy_id": "rare_charge_ledger", "params": {}},
+  "executor": {
+    "strategy_id": "weapon_ultimate.executor.robot.robot_reactor_core",
+    "params": {
+      "vent_count": 8,
+      "wave_count": 4,
+      "wave_interval": 0.38,
+      "range": 300.0,
+      "half_width": 90.0,
+      "vent_damage": 6.5,
+      "final_damage": 10.0,
+      "absorb_flat": 5.0,
+      "recovery": 4.50
+    }
+  },
+  "total_boss_cap": 0.08,
+  "cleanup_policy": {"strategy_id": "activation_owned", "params": {}}
+}
