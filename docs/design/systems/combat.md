@@ -1,6 +1,6 @@
 # Combat
 
-Обновлено: 2026-07-14 (0.2.0 refactor-wave reconcile; ядро системы — 0.1.5+)
+Обновлено: 2026-08-03 (FAN-1891 area/control contract)
 
 Этот файл описывает активную боевую систему `dev`. Snapshot полного состояния: `docs/design/current_game_state.md`. Канонические ID: `docs/design/content_registry.md`. Балансовый аудит: `docs/design/reviews/mechanics_balance_audit_2026_06.md`.
 
@@ -76,14 +76,22 @@
 - Held-weapon visual placement (SCRUM-455): `Player/VisualRoot/WeaponSocket` is a runtime orbit anchor, not a body-center/hand overlap point. It sits on a 104px orbit toward the active aim/attack direction and renders behind the hero body (`z_index=-8`, attached weapon/root visual normalized to relative `z_index=0`) so weapon art reads as circling/held around the character without covering the playable sprite. Damage, cooldowns, hit shapes and targeting stay data-driven and unchanged.
 - Attack VFX calmness (SCRUM-457/SCRUM-854/FAN-1079): shared `AttackVfx` helpers apply `_calmed_color()` to additive flashes/beams/slashes, cap alpha, slightly narrow beam visuals, slow projectile/skull trail ghosting, and reduce dust/note particle counts. Every weapon signature is now a compact `64..100px` release cue that travels `54px` from the character instead of scaling or positioning itself like a painted damage-zone plate. The dedicated non-additive `WeaponSignatureBody` stays at alpha `0.60`; glow/rim layers remain restrained. Berserk axe and Knight long-spear/holy-flail attacks expose only their weapon/projectile/slash/spiral effects and no exact `Polygon2D` damage overlay. This is visual-only: damage radii, hit corridors, cooldowns, timings and targeting remain authoritative in weapon logic.
 
+### Attack area and control contract (FAN-1891)
+
+- `aoe_radius_multiplier` is the sole generic attack-area upgrade. Each weapon declares its supported dimensions in `geometry_capabilities`; the same multiplier scales each declared radius, width, sweep, or cone exactly once.
+- `attack_range` (target reach) and `projectile_speed` are internal weapon configuration. Character stats, level-up rewards, artifacts, shop items, meta nodes, and legacy modifier keys cannot change them.
+- Support effects use the one `support_multiplier` derived from the shared general `% damage` multiplier. There is no separate buff-power reward source.
+- Knockback starts from weapon configuration and is monotonic in Strength only. Endurance and Leadership do not add knockback; elite/boss resistance and control caps are unchanged.
+- Save migration removes obsolete `range_multiplier`, `sector_multiplier`, `projectile_speed_flat`, `aura_radius_flat`, and `buff_power_flat` before restoring a run or an old level-up offer.
+
 ## Damage And Feedback
 
 - У игрока есть HP, defense и dodge.
 - SCRUM-894: итоговый шанс уворота считает `Player.current_dodge_chance()`:
   derived dodge (кап `SURVIVABILITY_DODGE_CAP` 55%) плюс, только для Ассасина,
   ситуативный бонус «Теневой завесы» — самоцентричной ауры уворота, активной
-  лишь пока враг находится внутри derived `aura_radius` (величина =
-  `veil_dodge_bonus × buff_power`, кап `veil_dodge_cap`; сумма всё равно ≤ 55%,
+  лишь пока враг находится внутри объявленной области ауры (величина =
+  `veil_dodge_bonus × support_multiplier`, кап `veil_dodge_cap`; сумма всё равно ≤ 55%,
   бессмертия нет). Крит-шанс игрока капится per-class
   (`ProgressionData.class_crit_profile`): у обычных классов cap от живой Ловкости
   растёт с 55% при Agility 0 до первых 75% при Agility 100, Ассасин остаётся на
