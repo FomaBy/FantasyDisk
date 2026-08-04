@@ -65,10 +65,17 @@ static func activate(player_node: Node2D) -> bool:
 	)
 
 
+static func guard_prevention_owner(player_node: Node2D) -> String:
+	var existing := player_node.get_node_or_null(NODE_NAME)
+	return existing.guard_prevention_owner_id() if existing != null else ""
+
+
 func _init(player_node: Node2D = null) -> void:
 	player = player_node
 	name = NODE_NAME
 	process_mode = Node.PROCESS_MODE_PAUSABLE
+	if player != null and player.has_signal("guard_prevention_measured"):
+		player.connect("guard_prevention_measured", Callable(self, "_on_guard_prevention_measured"))
 
 
 func controller() -> Controller:
@@ -88,6 +95,15 @@ func use_registry(registry) -> void:
 	if _controller != null:
 		_controller.cancel()
 	_controller = Controller.new(self, registry)
+
+
+func guard_prevention_owner_id() -> String:
+	return _controller.guard_prevention_owner_id() if _controller != null else ""
+
+
+func _on_guard_prevention_measured(event: Dictionary) -> void:
+	if _controller != null:
+		_controller.record_guard_prevention(event)
 
 
 # --- host contract -----------------------------------------------------------

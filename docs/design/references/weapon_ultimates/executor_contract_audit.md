@@ -91,6 +91,13 @@ the required target access and cleanup, but lacks exact data-driven parameters:
 
 The JSON map defines the type and meaning of every missing parameter.
 
+## Delivered shared primitives
+
+| Primitive ID | Shared contract |
+| --- | --- |
+| `guard_prevention_ledger` | Player emits final-mitigation prevention only with source, direction and active owner; activation validates facing and replay before crediting an owner-scoped ledger. |
+| `owner_resource_conversion` | Activation caps a measured owner resource, consumes it once, and emits the exact counter value through `owner_resource_emitted`. |
+
 ## Shared primitive backlog
 
 The 45 remaining mechanics require at least one of these class-agnostic
@@ -108,11 +115,9 @@ primitives. Exact proposed signatures live in the JSON map.
 | `ordered_step_composition` | Several current families sharing one activation ledger. |
 | `pattern_geometry` | Deterministic rings, grids, radial sets, polygons and seeded annuli. |
 | `stateful_target_ledger` | Marks, delayed values, transfers, stack consumption and recursion guards. |
-| `owner_resource_conversion` | Measured outcome to capped heal, shield, charge, gold or another resource. |
 | `control_resistance_policy` | Target-tier-safe pin, pull, root, stun and execute policy. |
 | `summon_interaction_contract` | Generic temporary summon setup, cap rules and snapshot/restore. |
 | `projectile_interaction_query` | Query and affect hostile projectiles. |
-| `guard_prevention_ledger` | Directional guard, lethal prevention, lock suppression and prevented totals. |
 | `execute_threshold` | Normal-only execute with safe stronger-tier fallback. |
 
 ## Pair map
@@ -124,7 +129,7 @@ generalization or primitive IDs.
 | Class / weapon | Classification | Closest live family | Gap |
 | --- | --- | --- | --- |
 | `assassin/chakrams` | primitive | `status_zone` | `trajectory_motion`, `directed_fan_split`, `stateful_target_ledger`, `execute_threshold` |
-| `assassin/shadow_daggers` | primitive | `aimed_sequence` | `ordered_step_composition`, `stateful_target_ledger`, `guard_prevention_ledger` |
+| `assassin/shadow_daggers` | primitive | `aimed_sequence` | `ordered_step_composition`, `stateful_target_ledger` |
 | `assassin/venom_wire` | primitive | `control` | `pattern_geometry`, `stateful_target_ledger`, `control_resistance_policy` |
 | `berserk/sword` | param | `status_zone` | `status_zone.radius_damage_steps` |
 | `berserk/axe` | primitive | `aimed_sequence` | `aim_context`, `arena_bounds_query`, `trajectory_motion`, `stateful_target_ledger`, `execute_threshold` |
@@ -133,14 +138,14 @@ generalization or primitive IDs.
 | `biologist/biologist_sample_injector` | primitive | `aimed_sequence` | `aim_context`, `priority_target_selector`, `line_pierce_geometry`, `stateful_target_ledger`, `per_target_damage_cap` |
 | `biologist/biologist_symbiote_seed` | primitive | `deploy_summon` | `aim_context`, `summon_interaction_contract`, `control_resistance_policy`, `ordered_step_composition` |
 | `chemist/blast_powder` | primitive | `control` | `pattern_geometry`, `ordered_step_composition`, `stateful_target_ledger`, `control_resistance_policy` |
-| `chemist/acid_flask` | primitive | `status_zone` | `aim_context`, `ordered_step_composition`, `owner_resource_conversion`, `stateful_target_ledger` |
+| `chemist/acid_flask` | primitive | `status_zone` | `aim_context`, `ordered_step_composition`, `stateful_target_ledger` |
 | `chemist/homunculus_vial` | primitive | `deploy_summon` | `summon_interaction_contract`, `ordered_step_composition`, `stateful_target_ledger` |
 | `dark_mage/dark_book` | primitive | `burst` | `pattern_geometry`, `stateful_target_ledger`, `ordered_step_composition` |
 | `dark_mage/cursed_skull` | primitive | `status_zone` | `stateful_target_ledger`, `control_resistance_policy`, `ordered_step_composition` |
 | `dark_mage/dark_wand` | primitive | `chained_projectile` | `aim_context`, `priority_target_selector`, `stateful_target_ledger` |
-| `doctor/restore_potion` | primitive | `status_zone` | `aim_context`, `ordered_step_composition`, `owner_resource_conversion` |
+| `doctor/restore_potion` | primitive | `status_zone` | `aim_context`, `ordered_step_composition` |
 | `doctor/plague_syringe` | primitive | `chained_projectile` | `priority_target_selector`, `stateful_target_ledger`, `per_target_damage_cap`, `control_resistance_policy` |
-| `doctor/bone_saw` | primitive | `status_zone` | `owner_resource_conversion`, `stateful_target_ledger` |
+| `doctor/bone_saw` | primitive | `status_zone` | `stateful_target_ledger` |
 | `druid/summon_amulet` | primitive | `deploy_summon` | `directed_fan_split`, `priority_target_selector`, `summon_interaction_contract` |
 | `druid/briar_staff` | primitive | `deploy_summon` | `pattern_geometry`, `summon_interaction_contract`, `control_resistance_policy` |
 | `druid/raven_totem` | primitive | `deploy_summon` | `priority_target_selector`, `stateful_target_ledger`, `summon_interaction_contract`, `ordered_step_composition` |
@@ -148,32 +153,32 @@ generalization or primitive IDs.
 | `elementalist/elementalist_prism_focus` | primitive | `aimed_sequence` | `aim_context`, `line_pierce_geometry`, `arena_bounds_query`, `trajectory_motion`, `per_target_damage_cap` |
 | `elementalist/elementalist_meteor_core` | primitive | `burst` | `aim_context`, `ordered_step_composition`, `control_resistance_policy` |
 | `engineer/engineer_sentry_wrench` | param | `deploy_summon` | `deploy_summon.spawn_setup` |
-| `engineer/engineer_repair_drone` | primitive | `deploy_summon` | `summon_interaction_contract`, `projectile_interaction_query`, `owner_resource_conversion`, `ordered_step_composition` |
+| `engineer/engineer_repair_drone` | primitive | `deploy_summon` | `summon_interaction_contract`, `projectile_interaction_query`, `ordered_step_composition` |
 | `engineer/engineer_pressure_mines` | primitive | `deploy_summon` | `pattern_geometry`, `stateful_target_ledger`, `ordered_step_composition` |
 | `guitarist/electric_guitar` | primitive | `control` | `aim_context`, `line_pierce_geometry`, `pattern_geometry`, `control_resistance_policy` |
 | `guitarist/bass_guitar` | primitive | `control` | `ordered_step_composition`, `per_target_damage_cap`, `control_resistance_policy` |
 | `guitarist/sound_amp` | primitive | `deploy_summon` | `pattern_geometry`, `summon_interaction_contract`, `ordered_step_composition` |
 | `knight/long_spear` | primitive | `control` | `aim_context`, `line_pierce_geometry`, `control_resistance_policy`, `ordered_step_composition` |
-| `knight/tower_shield` | primitive | `timed_modifier` | `aim_context`, `guard_prevention_ledger`, `owner_resource_conversion`, `control_resistance_policy` |
+| `knight/tower_shield` | primitive | `timed_modifier` | `aim_context`, `control_resistance_policy` |
 | `knight/holy_flail` | param | `control` | `control.pull_launch_spiral` |
-| `priest/priest_reliquary` | primitive | `status_zone` | `ordered_step_composition`, `owner_resource_conversion`, `pattern_geometry` |
-| `priest/priest_censer` | primitive | `timed_modifier` | `guard_prevention_ledger`, `owner_resource_conversion`, `ordered_step_composition` |
-| `priest/priest_chime` | primitive | `control` | `ordered_step_composition`, `control_resistance_policy`, `owner_resource_conversion`, `guard_prevention_ledger` |
+| `priest/priest_reliquary` | primitive | `status_zone` | `ordered_step_composition`, `pattern_geometry` |
+| `priest/priest_censer` | primitive | `timed_modifier` | `ordered_step_composition` |
+| `priest/priest_chime` | primitive | `control` | `ordered_step_composition`, `control_resistance_policy` |
 | `ranger/moon_crossbow` | primitive | `aimed_sequence` | `aim_context`, `priority_target_selector`, `directed_fan_split`, `stateful_target_ledger` |
 | `ranger/storm_longbow` | primitive | `status_zone` | `aim_context`, `line_pierce_geometry`, `ordered_step_composition`, `control_resistance_policy` |
 | `ranger/hunter_trap` | param | `control` | `control.collapsing_pulses` |
 | `robot/robot_magnetic_anchor` | primitive | `control` | `aim_context`, `projectile_interaction_query`, `ordered_step_composition`, `control_resistance_policy` |
 | `robot/robot_hydraulic_press` | primitive | `control` | `aim_context`, `line_pierce_geometry`, `ordered_step_composition` |
-| `robot/robot_reactor_core` | primitive | `status_zone` | `ordered_step_composition`, `guard_prevention_ledger` |
+| `robot/robot_reactor_core` | primitive | `status_zone` | `ordered_step_composition` |
 | `sniper/sniper_deadeye_rifle` | primitive | `aimed_sequence` | `aim_context`, `priority_target_selector`, `line_pierce_geometry`, `per_target_damage_cap` |
 | `sniper/sniper_spotter_scope` | param | `aimed_sequence` | `aimed_sequence.marked_target_zone` — marked-target anchor, zone radius/membership, retained anchor, zone-scoped reacquisition |
 | `sniper/sniper_shatter_rounds` | primitive | `aimed_sequence` | `aim_context`, `arena_bounds_query`, `directed_fan_split`, `trajectory_motion`, `per_target_damage_cap` |
 | `soldier/soldier_rifle` | primitive | `aimed_sequence` | `aim_context`, `line_pierce_geometry`, `priority_target_selector`, `ordered_step_composition` |
 | `soldier/soldier_grenade` | primitive | `deploy_summon` | `aim_context`, `pattern_geometry`, `ordered_step_composition`, `stateful_target_ledger` |
-| `soldier/soldier_bayonet` | primitive | `control` | `aim_context`, `line_pierce_geometry`, `control_resistance_policy`, `guard_prevention_ledger` |
-| `thief/thief_coin_pouch` | primitive | `chained_projectile` | `priority_target_selector`, `stateful_target_ledger`, `owner_resource_conversion`, `trajectory_motion` |
+| `soldier/soldier_bayonet` | primitive | `control` | `aim_context`, `line_pierce_geometry`, `control_resistance_policy` |
+| `thief/thief_coin_pouch` | primitive | `chained_projectile` | `priority_target_selector`, `stateful_target_ledger`, `trajectory_motion` |
 | `thief/thief_shadow_cloak` | primitive | `aimed_sequence` | `priority_target_selector`, `stateful_target_ledger`, `ordered_step_composition`, `per_target_damage_cap` |
-| `thief/thief_smoke_bomb` | primitive | `timed_modifier` | `guard_prevention_ledger`, `projectile_interaction_query`, `stateful_target_ledger`, `ordered_step_composition` |
+| `thief/thief_smoke_bomb` | primitive | `timed_modifier` | `projectile_interaction_query`, `stateful_target_ledger`, `ordered_step_composition` |
 
 ## Class-package delivery contract
 
