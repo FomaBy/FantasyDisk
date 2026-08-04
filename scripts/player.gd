@@ -32,6 +32,7 @@ const ROBOT_SPRITE := preload("res://assets/sprites/characters/robot.png")
 const DRUID_SPRITE := preload("res://assets/sprites/characters/druid.png")
 const PROGRESSION_DATA := preload("res://scripts/progression_data.gd")
 const ULTIMATE_HOST := preload("res://scripts/ultimates/controller/ultimate_player_host.gd")
+const ULTIMATE_CHARGE_LEDGER := preload("res://scripts/ultimates/balance/ultimate_charge_ledger.gd")
 const GUARD_PREVENTION_INGRESS := preload("res://scripts/ultimates/controller/ultimate_guard_prevention_ingress.gd")
 const PLAYER_MOVEMENT_INPUT := preload("res://scripts/player_movement_input.gd")
 # FAN-1449: вся геометрия наводки живёт в провайдере; player — тонкий адаптер.
@@ -268,9 +269,17 @@ var _vampiric_heal_budget := 0.0
 # apply_drain_heal(), который списывает из этого бюджета (пополняется в
 # _apply_regeneration по тому же принципу, что вампирный).
 var _drain_heal_budget := 0.0
-var ultimate_charge := 0.0
+# FAN-2090: заряд и активность ульты живут в UltimateChargeLedger — он же держит
+# per-encounter гейт активаций. Свежий узел Player (новый бой) и
+# configure_character (новый забег) — единственные точки сброса гейта.
+var _ultimate_charge_ledger := ULTIMATE_CHARGE_LEDGER.new()
 var ultimate_max_charge := 100.0
-var _ultimate_active := false
+var ultimate_charge: float:
+	get: return _ultimate_charge_ledger.charge
+	set(value): _ultimate_charge_ledger.charge = clampf(value, 0.0, ultimate_max_charge)
+var _ultimate_active: bool:
+	get: return _ultimate_charge_ledger.is_ultimate_active()
+	set(value): _ultimate_charge_ledger.set_ultimate_active(value)
 var _ultimate_tween: Tween = null
 var _debug_move_target_active := false
 var _debug_move_target := Vector2.ZERO
@@ -437,8 +446,7 @@ func configure_character(new_character_id: String, new_weapon_id := "") -> void:
 	xp_to_next = 5
 	level = 1
 	money = 0
-	ultimate_charge = 0.0
-	_ultimate_active = false
+	_ultimate_charge_ledger.reset_for_new_run()
 	# SCRUM-500: сброс триггер-латчей при смене персонажа/старте забега (run_modifiers
 	# уже пересоздан выше, флаги артефактов исчезли; здесь добиваем non-run_modifiers латчи).
 	_low_hp_active = false
@@ -2561,51 +2569,39 @@ func ultimate_ready() -> bool:
 	return ultimate_charge >= ultimate_max_charge
 
 
+# FAN-2090: data-driven гейт «одна активация за encounter» — без class-веток;
+# действует, только когда ready-пакет пары декларирует rare_charge_ledger.
+func _ultimate_rare_charge_gated() -> bool:
+	var profile: Dictionary = ULTIMATE_HOST.shared_registry().catalog_profile_for(character_id, weapon_id)
+	if str(profile.get("implementation_state", "")) != "ready":
+		return false
+	var charge_binding = profile.get("charge")
+	return charge_binding is Dictionary \
+		and str((charge_binding as Dictionary).get("strategy_id", "")) == "rare_charge_ledger"
+
+
 func activate_ultimate() -> bool:
 	if not ultimate_ready() or _ultimate_active or not is_inside_tree():
 		return false
+	# try_activate — единственный ledger-путь списания; отказ по per-encounter
+	# лимиту обязателен только для rare_charge_ledger-пар. Остальные пары и
+	# legacy-классы сохраняют прежнюю экономику: refill активируется снова.
+	if not _ultimate_charge_ledger.try_activate():
+		if _ultimate_rare_charge_gated():
+			return false
+		ultimate_charge = 0.0
 	var config := _ultimate_config()
 	var multiplier := float(derived_parameters.get("ultimate_multiplier", 1.0))
-	ultimate_charge = 0.0
 	_play_sfx("level_up")
 	_trigger_gamepad_vibration(0.4, 0.0, 0.15)
 	if ULTIMATE_HOST.activate(self):
 		return true
-	match character_id:
-		"berserk":
-			_activate_berserk_ultimate(config, multiplier)
-		"dark_mage":
-			_activate_dark_mage_ultimate(config, multiplier)
-		"guitarist":
-			_activate_guitarist_ultimate(config, multiplier)
-		"assassin":
-			_activate_assassin_ultimate(config, multiplier)
-		"thief":
-			_activate_thief_ultimate(config, multiplier)
-		"elementalist":
-			_activate_elementalist_ultimate(config, multiplier)
-		"sniper":
-			_activate_sniper_ultimate(config, multiplier)
-		"priest":
-			_activate_priest_ultimate(config, multiplier)
-		"biologist":
-			_activate_biologist_ultimate(config, multiplier)
-		"robot":
-			_activate_robot_ultimate(config, multiplier)
-		"engineer":
-			_activate_engineer_ultimate(config, multiplier)
-		"ranger":
-			_activate_ranger_ultimate(config, multiplier)
-		"doctor":
-			_activate_doctor_ultimate(config, multiplier)
-		"chemist":
-			_activate_chemist_ultimate(config, multiplier)
-		"knight":
-			_activate_knight_ultimate(config, multiplier)
-		"druid":
-			_activate_druid_ultimate(config, multiplier)
-		_:
-			_activate_dark_mage_ultimate(config, multiplier)
+	# Каждый класс объявляет _activate_<character_id>_ultimate; незнакомый id
+	# уходит в dark_mage — тот же default, что был у прежнего match-диспатча.
+	var handler := "_activate_%s_ultimate" % character_id
+	if not has_method(handler):
+		handler = "_activate_dark_mage_ultimate"
+	call(handler, config, multiplier)
 	return true
 
 
