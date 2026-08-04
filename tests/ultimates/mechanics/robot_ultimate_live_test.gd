@@ -17,6 +17,8 @@ func _initialize() -> void:
 	root.set_meta("combat_feedback", false)
 	await process_frame
 	var registry := Registry.new(PD.WEAPONS_BY_CLASS)
+	_check(registry.package_validation_errors().is_empty(),
+		"Robot packages must admit cleanly: %s" % [registry.package_validation_errors()])
 	for weapon_id in WEAPONS:
 		await _cast(weapon_id, registry)
 	_holder.queue_free()
@@ -39,6 +41,7 @@ func _cast(weapon_id: String, registry) -> void:
 	_check(is_zero_approx(float(player.get("ultimate_charge"))), "%s must spend charge once" % weapon_id)
 	player.call("_gain_ultimate_charge", float(player.get("ultimate_max_charge")))
 	_check(is_zero_approx(float(player.get("ultimate_charge"))), "%s must block active-window charge gain" % weapon_id)
+	_check(not bool(player.call("activate_ultimate")), "%s must refuse active re-entry" % weapon_id)
 	player.call("configure_character", "robot", weapon_id)
 	await process_frame
 	_check(not host.controller().is_active() and not bool(player.get("_ultimate_active")),

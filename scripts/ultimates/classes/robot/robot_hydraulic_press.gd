@@ -7,7 +7,7 @@ const SELF_PATH := "res://scripts/ultimates/classes/robot/robot_hydraulic_press.
 
 static func parameter_contract() -> Dictionary:
 	return {
-		"aim_range": {"type": "number", "minimum": 1.0},
+		"max_range": {"type": "number", "minimum": 1.0},
 		"length": {"type": "number", "minimum": 1.0},
 		"half_width": {"type": "number", "minimum": 1.0},
 		"target_limit": {"type": "integer", "minimum": 1, "maximum": 8},
@@ -17,12 +17,12 @@ static func parameter_contract() -> Dictionary:
 		"compression_strength": {"type": "number", "minimum": 0.0},
 		"crush_damage": {"type": "number", "minimum": 0.0},
 		"release_damage": {"type": "number", "minimum": 0.0},
-		"recovery": {"type": "number", "minimum": 0.0},
+		"recovery_tail": {"type": "number", "minimum": 0.0},
 	}
 
 
 static func execute(activation) -> float:
-	var direction: Vector2 = activation.aim_direction(activation.param_float("aim_range", 430.0))
+	var direction: Vector2 = activation.aim_direction(activation.param_float("max_range", 430.0))
 	if direction.length_squared() <= 0.001 or not activation.set_control_resistance_policy(_control_policy()):
 		return 0.0
 	activation.set_primitive_state({"robot_press_direction": direction.normalized()})
@@ -42,10 +42,10 @@ static func execute(activation) -> float:
 		tween.tween_callback(Callable(script, "crush").bind(activation, index))
 	tween.tween_interval(interval)
 	tween.tween_callback(Callable(script, "release").bind(activation))
-	tween.tween_interval(activation.param_float("recovery", 2.43))
+	tween.tween_interval(activation.param_float("recovery_tail", 2.43))
 	return activation.param_float("windup_delay", 0.72) \
 		+ interval * float(activation.param_int("crush_count", 3)) \
-		+ activation.param_float("recovery", 2.43)
+		+ activation.param_float("recovery_tail", 2.43)
 
 
 static func crush(activation, index: int) -> void:

@@ -18,7 +18,7 @@
       "vent_damage": 6.5,
       "final_damage": 10.0,
       "absorb_flat": 5.0,
-      "recovery": 4.50
+      "recovery_tail": 4.50
     }
   },
   "total_boss_cap": 0.08,

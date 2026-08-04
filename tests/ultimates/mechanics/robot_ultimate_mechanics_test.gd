@@ -4,6 +4,7 @@ const Controller := preload("res://scripts/ultimates/controller/ultimate_control
 const PD := preload("res://scripts/progression_data.gd")
 const Registry := preload("res://scripts/ultimates/registry/weapon_ultimate_registry.gd")
 const Resolver := preload("res://scripts/ultimates/registry/weapon_ultimate_resolver.gd")
+const StatusEffects := preload("res://scripts/status_effects.gd")
 
 const CLASS_ID := "robot"
 const WEAPONS := ["robot_magnetic_anchor", "robot_hydraulic_press", "robot_reactor_core"]
@@ -98,15 +99,26 @@ func _initialize() -> void:
 func _test_anchor() -> void:
 	var host := _host()
 	var normal := _target(host, Vector2(260.0, 0.0))
+	var epic := _target(host, Vector2(240.0, -40.0))
+	epic.add_to_group("elite_enemies")
 	var boss := _target(host, Vector2(200.0, 50.0))
 	boss.add_to_group("bosses")
 	var controller := Controller.new(host, _registry)
 	_check(controller.activate(CLASS_ID, "robot_magnetic_anchor"), "anchor must activate")
 	var activation = controller.active_activation()
-	_advance(activation, 1.10)
+	_advance(activation, 0.50)
 	_check(not normal.knockbacks.is_empty() and normal.knockbacks[0].x < 0.0,
-		"anchor must pull normal targets into the aimed well")
-	_check(boss.knockbacks.is_empty(), "anchor must not displace bosses")
+		"anchor well must pull normal targets toward the aimed anchor")
+	_check(StatusEffects.is_movement_locked(normal),
+		"the well must hold a gripped normal so it neither walks nor fires")
+	_check(not epic.knockbacks.is_empty()
+		and is_equal_approx(epic.knockbacks[0].length(), normal.knockbacks[0].length() * 0.25),
+		"anchor must apply epic control resistance to the pull")
+	_check(not StatusEffects.is_movement_locked(epic), "the well must never movement-lock an epic")
+	_check(boss.knockbacks.is_empty() and not StatusEffects.is_movement_locked(boss),
+		"anchor must neither displace nor lock bosses")
+	_check(is_zero_approx(activation.applied_total), "the well itself must hold, not damage")
+	_advance(activation, 0.60)
 	_check(boss.max_health - boss.health <= boss.max_health * 0.08 + 0.001,
 		"anchor damage must share the whole-activation boss cap")
 	_check(_has_event(host, "robot_magnetic_anchor.implosion") and _has_event(host, "robot_magnetic_anchor.emp"),
@@ -147,9 +159,12 @@ func _test_reactor() -> void:
 	var controller := Controller.new(host, _registry)
 	_check(controller.activate(CLASS_ID, "robot_reactor_core"), "reactor must activate")
 	var activation = controller.active_activation()
+	_check(is_zero_approx(float(host.modifiers.get("absorb_flat", 0.0))),
+		"reactor absorb must never touch modifiers on the activation frame")
+	_advance(activation, 0.05)
 	_check(float(host.modifiers.get("absorb_flat", 0.0)) > 0.0,
 		"reactor overdrive must own a temporary absorb window")
-	_advance(activation, 1.60)
+	_advance(activation, 1.55)
 	_check(boss.max_health - boss.health <= boss.max_health * 0.08 + 0.001,
 		"all eight rotating vents must share the boss cap")
 	_check(_has_event(host, "robot_reactor_core.vent_wave") and _has_event(host, "robot_reactor_core.final_vent"),
