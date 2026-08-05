@@ -18,15 +18,31 @@ const PD := preload("res://scripts/progression_data.gd")
 const GAMEPLAY_TIME_SCALE := 0.5
 const COMPLETION_GRACE_SECONDS := 1.0
 const PLAYER_SPACING := 2500.0
+const WARD_PREVENTION_PROBE := 40.0
 const LIFECYCLE_SPECS := [
 	{"class_id": "biologist", "weapon_id": "biologist_sample_injector", "lifecycle": 10.65, "deadline": 11.65},
 	{"class_id": "biologist", "weapon_id": "biologist_symbiote_seed", "lifecycle": 9.0, "deadline": 10.0},
+	{"class_id": "elementalist", "weapon_id": "elementalist_meteor_core", "lifecycle": 8.89, "deadline": 9.89},
 	{"class_id": "biologist", "weapon_id": "biologist_spore_lens", "lifecycle": 8.6, "deadline": 9.6},
+	{"class_id": "priest", "weapon_id": "priest_reliquary", "lifecycle": 8.6, "deadline": 9.6},
+	{"class_id": "elementalist", "weapon_id": "elementalist_orb_ring", "lifecycle": 8.4, "deadline": 9.4},
+	{"class_id": "priest", "weapon_id": "priest_censer", "lifecycle": 7.6, "deadline": 8.6},
+	{"class_id": "elementalist", "weapon_id": "elementalist_prism_focus", "lifecycle": 7.2, "deadline": 8.2},
+	{"class_id": "priest", "weapon_id": "priest_chime", "lifecycle": 6.4, "deadline": 7.4},
+	{"class_id": "robot", "weapon_id": "robot_reactor_core", "lifecycle": 6.01, "deadline": 7.01},
+	{"class_id": "guitarist", "weapon_id": "sound_amp", "lifecycle": 6.0, "deadline": 7.0},
+	{"class_id": "guitarist", "weapon_id": "bass_guitar", "lifecycle": 5.8, "deadline": 6.8},
 	{"class_id": "engineer", "weapon_id": "engineer_repair_drone", "lifecycle": 5.5, "deadline": 6.5},
+	{"class_id": "guitarist", "weapon_id": "electric_guitar", "lifecycle": 5.4, "deadline": 6.4},
+	{"class_id": "robot", "weapon_id": "robot_magnetic_anchor", "lifecycle": 4.75, "deadline": 5.75},
 	{"class_id": "engineer", "weapon_id": "engineer_sentry_wrench", "lifecycle": 4.6, "deadline": 5.6},
 	{"class_id": "sniper", "weapon_id": "sniper_spotter_scope", "lifecycle": 4.4, "deadline": 5.4},
+	{"class_id": "robot", "weapon_id": "robot_hydraulic_press", "lifecycle": 4.05, "deadline": 5.05},
 	{"class_id": "engineer", "weapon_id": "engineer_pressure_mines", "lifecycle": 4.0, "deadline": 5.0},
+	{"class_id": "thief", "weapon_id": "thief_smoke_bomb", "lifecycle": 4.0, "deadline": 5.0},
 	{"class_id": "sniper", "weapon_id": "sniper_shatter_rounds", "lifecycle": 2.82, "deadline": 3.82},
+	{"class_id": "thief", "weapon_id": "thief_shadow_cloak", "lifecycle": 1.26, "deadline": 2.26},
+	{"class_id": "thief", "weapon_id": "thief_coin_pouch", "lifecycle": 1.0, "deadline": 2.0},
 	{"class_id": "sniper", "weapon_id": "sniper_deadeye_rifle", "lifecycle": 0.25, "deadline": 1.25},
 ]
 
@@ -55,6 +71,7 @@ func _initialize() -> void:
 	for error in inventory_errors:
 		_check(false, error)
 	_assert_inventory_falsifications(ready_pairs)
+	_assert_contract_falsifications()
 	if not _errors.is_empty() or not inventory_errors.is_empty():
 		_report()
 		return
@@ -201,6 +218,61 @@ func _expect_inventory_failure(errors: Array[String], required_keys: Array, scen
 		_check(joined.contains(str(raw_key)), "%s failure must name %s" % [scenario, str(raw_key)])
 
 
+## Ownership channels are package-specific: deploy packages spawn nodes,
+## choreography packages (guitarist) own presentation handles instead. The
+## tracked tween is deliberately not a channel here — every pair is already
+## asserted to own exactly one, so counting it would satisfy the disjunction
+## unconditionally and constrain nothing.
+func _live_ownership_errors(
+	label: String,
+	spawned_count: int,
+	presentation_count: int
+) -> Array[String]:
+	var errors: Array[String] = []
+	if spawned_count <= 0 and presentation_count <= 0:
+		errors.append(
+			"%s must own a live non-tween effect channel (spawn or presentation)" % label
+		)
+	return errors
+
+
+func _status_leak_errors(label: String, actual: Dictionary, baseline: Dictionary) -> Array[String]:
+	var errors: Array[String] = []
+	if actual != baseline:
+		errors.append(
+			"%s must leave enemies at baseline statuses after completion, got %s" % [label, actual]
+		)
+	return errors
+
+
+func _assert_contract_falsifications() -> void:
+	_check(
+		not _live_ownership_errors("falsification/ownerless", 0, 0).is_empty(),
+		"activation owning no non-tween channel must fail closed"
+	)
+	_check(
+		_live_ownership_errors("falsification/spawn", 1, 0).is_empty(),
+		"spawn ownership must satisfy the live-effect contract"
+	)
+	_check(
+		_live_ownership_errors("falsification/presentation", 0, 1).is_empty(),
+		"presentation ownership must satisfy the live-effect contract"
+	)
+	var leaked := {"leaked_status": {"duration": 9.9, "remaining": 9.9}}
+	_check(
+		not _status_leak_errors("falsification/leak", leaked, {}).is_empty(),
+		"leaked residual status must fail closed"
+	)
+	_check(
+		not _status_leak_errors("falsification/removal", {}, leaked).is_empty(),
+		"unrestored baseline status must fail closed"
+	)
+	_check(
+		_status_leak_errors("falsification/clean", {}, {}).is_empty(),
+		"baseline statuses must pass the leak check"
+	)
+
+
 func _spec_for_pair(pair: Dictionary) -> Dictionary:
 	var key := _pair_key(str(pair.get("class_id", "")), str(pair.get("weapon_id", "")))
 	for raw_spec in LIFECYCLE_SPECS:
@@ -232,9 +304,14 @@ func _build_state(spec: Dictionary, index: int, registry) -> Dictionary:
 	await process_frame
 	player.global_position = Vector2(float(index) * PLAYER_SPACING, 0.0)
 	player.call("configure_character", class_id, weapon_id)
-	await process_frame
+	# Silence before the settle frame: the freshly equipped weapon node would
+	# otherwise get exactly one _process tick, enough for the thief dagger to
+	# land an unlimited-range backstab on an earlier pair's enemies and pollute
+	# their status baselines. The post-frame sweep catches deferred additions.
 	player.set_process(false)
 	player.set_physics_process(false)
+	_silence_equipped_weapon(player)
+	await process_frame
 	_silence_equipped_weapon(player)
 	_check(str(player.get("weapon_id")) == weapon_id, "%s must equip on the real Player" % label)
 
@@ -318,10 +395,32 @@ func _start_case(state: Dictionary) -> void:
 		(state["tweens"] as Array).size() == 1,
 		"%s must own exactly one lifecycle tween" % label
 	)
-	_check(not (state["spawned"] as Array).is_empty(), "%s must own its live effect/deploy" % label)
+	# Live-effect ownership is asserted at the pre-completion checkpoint instead
+	# of here: a guitarist package owns no spawn and has not raised any
+	# presentation handle yet on its admission frame.
 	_check(is_zero_approx(float(player.get("ultimate_charge"))), "%s must spend charge once" % label)
 	_check(bool(player.get("_ultimate_active")), "%s must set the Player active latch" % label)
 	_check(not bool(player.call("activate_ultimate")), "%s must refuse live re-entry" % label)
+	_feed_ward_prevention(state)
+
+
+## A ward package reaches its damage step only after it actually absorbed
+## something: Censer's counter burst is gated on stored prevention. Nothing ever
+## hits the player here, so drive the same owner-event seam Player.take_damage
+## uses. Only an activation-owned node that observes prevention reacts, and the
+## payload carries no constellation ward source, so the forwarded event cannot
+## trigger weapon-side retaliation.
+func _feed_ward_prevention(state: Dictionary) -> void:
+	for node in state["spawned"]:
+		if node == null or not is_instance_valid(node):
+			continue
+		if not (node as Node).has_method("constellation_owner_event"):
+			continue
+		(node as Node).call(
+			"constellation_owner_event",
+			"damage_absorbed",
+			{"absorbed_amount": WARD_PREVENTION_PROBE, "incoming_amount": WARD_PREVENTION_PROBE}
+		)
 
 
 func _wait_for_natural_completion(states: Array[Dictionary]) -> void:
@@ -331,9 +430,23 @@ func _wait_for_natural_completion(states: Array[Dictionary]) -> void:
 			global_deadline,
 			int(state["started_ms"]) + int(float(state["deadline"]) * 1000.0)
 		)
+	var last_tick_ms := Time.get_ticks_msec()
 	while Time.get_ticks_msec() <= global_deadline:
 		var all_finished := true
 		var now := Time.get_ticks_msec()
+		# Enemies are physics-frozen here, but in the live game their statuses
+		# tick every physics frame (Enemy._physics_process -> StatusEffects.tick),
+		# where delta is scaled by Engine.time_scale. Activation timing is not:
+		# track_tween sets ignore_time_scale, so it stays wall-clock. Feeding raw
+		# wall delta here would expire statuses at twice the modelled rate and let
+		# a genuine leak read as clean; without any tick no declared-duration
+		# status could expire at all and a self-expiring control would read as a
+		# leak.
+		var wall_delta := float(now - last_tick_ms) / 1000.0
+		last_tick_ms = now
+		for state in states:
+			for enemy in state["enemies"]:
+				StatusEffects.tick(enemy, wall_delta * Engine.time_scale)
 		for state in states:
 			var controller = state.get("controller")
 			if controller == null:
@@ -352,6 +465,22 @@ func _wait_for_natural_completion(states: Array[Dictionary]) -> void:
 					activation != null and not activation.is_finished(),
 					"%s activation must remain live before completion" % state["label"]
 				)
+				if activation != null:
+					# Both contracts below are only falsifiable while the
+					# activation is still live. After natural completion every
+					# channel is empty and every tween invalid by construction,
+					# so asserting there constrains nothing.
+					for error in _live_ownership_errors(
+						str(state["label"]),
+						(activation.spawned_for_tests() as Array).size(),
+						(activation.presentation_for_tests() as Array).size()
+					):
+						_check(false, error)
+					for tween in state["tweens"]:
+						_check(
+							tween != null and tween.is_valid(),
+							"%s lifecycle tween must still be live before completion" % state["label"]
+						)
 				state["prechecked"] = true
 			if controller.is_active():
 				all_finished = false
@@ -402,10 +531,8 @@ func _assert_natural_cleanup(states: Array[Dictionary]) -> void:
 			var baseline_statuses: Dictionary = state["baseline_statuses"].get(
 				enemy.get_instance_id(), {}
 			)
-			_check(
-				actual_statuses == baseline_statuses,
-				"%s must remove activation-owned statuses, got %s" % [label, actual_statuses]
-			)
+			for error in _status_leak_errors(label, actual_statuses, baseline_statuses):
+				_check(false, error)
 
 
 func _assert_recast_and_cancel(states: Array[Dictionary]) -> void:
