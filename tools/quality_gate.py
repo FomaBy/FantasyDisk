@@ -94,9 +94,11 @@ ULTIMATE_PACKAGE_CONTRACT_TESTS = {
     "registry_package_discovery_test",
 }
 # A class-package rollout changes Player-visible routing, so it must also
-# re-prove the Player integration regression, not just the package contracts.
+# re-prove the Player integration regression and the tracked-tween wall-time
+# completion/recast/cancel regression, not just the package contracts.
 ULTIMATE_CLASS_PACKAGE_TESTS = ULTIMATE_PACKAGE_CONTRACT_TESTS | {
     "controller_player_integration_test",
+    "tracked_tween_natural_completion_test",
 }
 OFFENSIVE_CONTRACT_TESTS = {
     "attribute_consumability_fan1887_test",
