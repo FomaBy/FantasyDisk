@@ -268,9 +268,14 @@ var _vampiric_heal_budget := 0.0
 # apply_drain_heal(), который списывает из этого бюджета (пополняется в
 # _apply_regeneration по тому же принципу, что вампирный).
 var _drain_heal_budget := 0.0
-var ultimate_charge := 0.0
+var _ultimate_ledger := UltimateChargeLedger.new()  # FAN-2074: заряд/латч/гейт 1-за-encounter
+var ultimate_charge: float:
+	get: return _ultimate_ledger.charge
+	set(value): _ultimate_ledger.charge = clampf(value, 0.0, ultimate_max_charge)
 var ultimate_max_charge := 100.0
-var _ultimate_active := false
+var _ultimate_active: bool:
+	get: return _ultimate_ledger.is_ultimate_active()
+	set(value): _ultimate_ledger.set_ultimate_active(value)
 var _ultimate_tween: Tween = null
 var _debug_move_target_active := false
 var _debug_move_target := Vector2.ZERO
@@ -437,8 +442,7 @@ func configure_character(new_character_id: String, new_weapon_id := "") -> void:
 	xp_to_next = 5
 	level = 1
 	money = 0
-	ultimate_charge = 0.0
-	_ultimate_active = false
+	_ultimate_ledger.reset_for_new_run()  # FAN-2074: заряд/латч/гейт; restore боя вернёт charge
 	# SCRUM-500: сброс триггер-латчей при смене персонажа/старте забега (run_modifiers
 	# уже пересоздан выше, флаги артефактов исчезли; здесь добиваем non-run_modifiers латчи).
 	_low_hp_active = false
@@ -1051,7 +1055,6 @@ func take_damage(amount: float, _source := "", attacker: Node2D = null) -> bool:
 		_play_sfx("dodge")
 		return false
 	if _ultimate_active and character_id == "knight":
-		_gain_ultimate_charge(amount * float(_ultimate_config().get("taken_charge_rate", 1.0)) * 0.25)
 		_play_sfx("dodge")
 		AttackVfx.ring_pulse(_vfx_parent(), global_position, 170.0, Color(0.90, 0.95, 1.0, 0.40), false)
 		return true
@@ -2064,10 +2067,9 @@ func apply_meta_skill_modifiers(mods: Dictionary) -> void:
 	_apply_stat_scaling(false, old_max_health)
 	for weapon in _equipped_weapons():
 		_apply_weapon_scaling(weapon)
-	# Capstone «Боевой раж»: ульта стартует частично заряженной.
-	var start_charge := float(mods.get("ult_start_charge", 0.0))
-	if start_charge > 0.0:
-		ultimate_charge = clampf(ultimate_max_charge * start_charge, 0.0, ultimate_max_charge)
+	# Capstone «Боевой раж»: ульта стартует частично заряженной (API ledger'а).
+	if float(mods.get("ult_start_charge", 0.0)) > 0.0:
+		_ultimate_ledger.apply_start_charge(float(mods.get("ult_start_charge", 0.0)))
 	# Capstone «Вторая жизнь»: флаг спасения от смерти (логика — в take_damage).
 	if float(mods.get("death_save", 0.0)) > 0.0:
 		run_modifiers["death_save"] = 1.0
@@ -2562,11 +2564,11 @@ func ultimate_ready() -> bool:
 
 
 func activate_ultimate() -> bool:
-	if not ultimate_ready() or _ultimate_active or not is_inside_tree():
+	# FAN-2074: try_activate() — единственное списание, максимум 1/encounter; отказ не тратит.
+	if not is_inside_tree() or not _ultimate_ledger.try_activate():
 		return false
 	var config := _ultimate_config()
 	var multiplier := float(derived_parameters.get("ultimate_multiplier", 1.0))
-	ultimate_charge = 0.0
 	_play_sfx("level_up")
 	_trigger_gamepad_vibration(0.4, 0.0, 0.15)
 	if ULTIMATE_HOST.activate(self):
@@ -2574,8 +2576,6 @@ func activate_ultimate() -> bool:
 	match character_id:
 		"berserk":
 			_activate_berserk_ultimate(config, multiplier)
-		"dark_mage":
-			_activate_dark_mage_ultimate(config, multiplier)
 		"guitarist":
 			_activate_guitarist_ultimate(config, multiplier)
 		"assassin":

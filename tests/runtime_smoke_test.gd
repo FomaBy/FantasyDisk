@@ -5250,6 +5250,15 @@ func _test_ready_weapon_ultimate_fixtures(
 
 	# 2. Immediate-семейство остаётся прежним: эффект в кадре активации и ни
 	#    одного живого каста после него.
+	# FAN-2074: encounter-use ledger даёт одну активацию за бой — каждая
+	#    следующая fixture-стадия открывает новый encounter тем же путём, что
+	#    и рантайм между боями: configure_character.
+	player.call("configure_character", ULTIMATE_FIXTURE_CLASS, ULTIMATE_FIXTURE_WEAPON)
+	parameters = player.get("derived_parameters")
+	parameters["ultimate_multiplier"] = 1.5
+	player.set("derived_parameters", parameters)
+	player.set_process(false)
+	player.set_physics_process(false)
 	var immediate := _inject_ready_ultimate_profile(player, pairs, ULTIMATE_IMMEDIATE_FIXTURE)
 	baseline = _ultimate_baseline(player, enemies)
 	player.set("ultimate_charge", 100.0)
@@ -5272,6 +5281,13 @@ func _test_ready_weapon_ultimate_fixtures(
 	#    несуществующее семейство эффекта), обязана отдать каст legacy-ультимейту
 	#    класса целиком, а не полукастом.
 	for fixture in ULTIMATE_MALFORMED_FIXTURES:
+		# FAN-2074: каждая malformed-проба — свой encounter (см. стадию 2).
+		player.call("configure_character", ULTIMATE_FIXTURE_CLASS, ULTIMATE_FIXTURE_WEAPON)
+		parameters = player.get("derived_parameters")
+		parameters["ultimate_multiplier"] = 1.5
+		player.set("derived_parameters", parameters)
+		player.set_process(false)
+		player.set_physics_process(false)
 		var malformed := _inject_ready_ultimate_profile(player, pairs, fixture as Dictionary)
 		if str(malformed.get("source", "")) != UltimateResolver.SOURCE_WEAPON_PROFILE:
 			_fail("Expected the malformed ready fixture to be admitted as data before the runtime refuses it.")

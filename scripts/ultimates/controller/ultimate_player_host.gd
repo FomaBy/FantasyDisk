@@ -202,16 +202,20 @@ func ultimate_host_set_active(active: bool) -> void:
 
 ## Presentation stays primitive on purpose: the weapon-ultimate presentation
 ## contract is a separate package, so this only maps the geometric shapes the
-## executors describe onto the existing AttackVfx primitives.
-func ultimate_host_present(_event_id: String, payload: Dictionary) -> Node:
+## executors describe onto the existing AttackVfx primitives. The event identity
+## is not rendering data, but it is required contract data: every spawned
+## primitive carries its exact event id, so the frozen phase chronology stays
+## observable on the real host without class or weapon branches.
+func ultimate_host_present(event_id: String, payload: Dictionary) -> Node:
 	var parent := ultimate_host_effect_parent()
 	if parent == null:
 		return null
 	var position: Vector2 = payload.get("position", player.global_position)
 	var radius := float(payload.get("radius", 240.0))
+	var node: Node = null
 	match str(payload.get("shape", "ring_pulse")):
 		"beam":
-			return AttackVfx.beam(
+			node = AttackVfx.beam(
 				parent,
 				payload.get("from", player.global_position),
 				payload.get("to", position),
@@ -219,6 +223,9 @@ func ultimate_host_present(_event_id: String, payload: Dictionary) -> Node:
 				Color(0.86, 0.92, 1.0, 0.42)
 			)
 		"orb_burst":
-			return AttackVfx.orb_burst(parent, position, radius, Color(0.62, 0.76, 1.0, 0.44))
+			node = AttackVfx.orb_burst(parent, position, radius, Color(0.62, 0.76, 1.0, 0.44))
 		_:
-			return AttackVfx.ring_pulse(parent, position, radius, Color(0.86, 0.92, 1.0, 0.40), false)
+			node = AttackVfx.ring_pulse(parent, position, radius, Color(0.86, 0.92, 1.0, 0.40), false)
+	if node != null and is_instance_valid(node) and not event_id.is_empty():
+		node.set_meta("ultimate_event_id", event_id)
+	return node

@@ -19,6 +19,9 @@ const GAMEPLAY_TIME_SCALE := 0.5
 const COMPLETION_GRACE_SECONDS := 1.0
 const PLAYER_SPACING := 2500.0
 const WARD_PREVENTION_PROBE := 40.0
+# Wall-clock lifecycle of every ready pair, measured on the real
+# configure_character -> activate_ultimate -> controller.is_active() path;
+# `deadline` is that measurement plus COMPLETION_GRACE_SECONDS of slack.
 const LIFECYCLE_SPECS := [
 	{"class_id": "biologist", "weapon_id": "biologist_sample_injector", "lifecycle": 10.65, "deadline": 11.65},
 	{"class_id": "biologist", "weapon_id": "biologist_symbiote_seed", "lifecycle": 9.0, "deadline": 10.0},
@@ -29,17 +32,20 @@ const LIFECYCLE_SPECS := [
 	{"class_id": "priest", "weapon_id": "priest_censer", "lifecycle": 7.6, "deadline": 8.6},
 	{"class_id": "elementalist", "weapon_id": "elementalist_prism_focus", "lifecycle": 7.2, "deadline": 8.2},
 	{"class_id": "priest", "weapon_id": "priest_chime", "lifecycle": 6.4, "deadline": 7.4},
+	{"class_id": "dark_mage", "weapon_id": "cursed_skull", "lifecycle": 6.37, "deadline": 7.37},
 	{"class_id": "robot", "weapon_id": "robot_reactor_core", "lifecycle": 6.01, "deadline": 7.01},
 	{"class_id": "guitarist", "weapon_id": "sound_amp", "lifecycle": 6.0, "deadline": 7.0},
 	{"class_id": "guitarist", "weapon_id": "bass_guitar", "lifecycle": 5.8, "deadline": 6.8},
 	{"class_id": "engineer", "weapon_id": "engineer_repair_drone", "lifecycle": 5.5, "deadline": 6.5},
 	{"class_id": "guitarist", "weapon_id": "electric_guitar", "lifecycle": 5.4, "deadline": 6.4},
+	{"class_id": "dark_mage", "weapon_id": "dark_book", "lifecycle": 5.21, "deadline": 6.21},
 	{"class_id": "robot", "weapon_id": "robot_magnetic_anchor", "lifecycle": 4.75, "deadline": 5.75},
 	{"class_id": "engineer", "weapon_id": "engineer_sentry_wrench", "lifecycle": 4.6, "deadline": 5.6},
 	{"class_id": "sniper", "weapon_id": "sniper_spotter_scope", "lifecycle": 4.4, "deadline": 5.4},
 	{"class_id": "robot", "weapon_id": "robot_hydraulic_press", "lifecycle": 4.05, "deadline": 5.05},
 	{"class_id": "engineer", "weapon_id": "engineer_pressure_mines", "lifecycle": 4.0, "deadline": 5.0},
 	{"class_id": "thief", "weapon_id": "thief_smoke_bomb", "lifecycle": 4.0, "deadline": 5.0},
+	{"class_id": "dark_mage", "weapon_id": "dark_wand", "lifecycle": 3.87, "deadline": 4.87},
 	{"class_id": "sniper", "weapon_id": "sniper_shatter_rounds", "lifecycle": 2.82, "deadline": 3.82},
 	{"class_id": "thief", "weapon_id": "thief_shadow_cloak", "lifecycle": 1.26, "deadline": 2.26},
 	{"class_id": "thief", "weapon_id": "thief_coin_pouch", "lifecycle": 1.0, "deadline": 2.0},
@@ -245,6 +251,34 @@ func _status_leak_errors(label: String, actual: Dictionary, baseline: Dictionary
 	return errors
 
 
+## Player-layer encounter budget (FAN-1460,
+## docs/design/systems/weapon_ultimate_balance.md): a finished cast does not
+## give the bar back, the refusal spends nothing, and only a new encounter buys
+## exactly one more cast. The controller carries no such budget, which is why
+## the recast-after-completion property is asserted on it instead.
+func _encounter_gate_errors(
+	label: String,
+	same_encounter_accepted: bool,
+	charge_before: float,
+	charge_after: float,
+	new_encounter_accepted: bool,
+	new_encounter_second_accepted: bool
+) -> Array[String]:
+	var errors: Array[String] = []
+	if same_encounter_accepted:
+		errors.append("%s must refuse a same-encounter recast through Player" % label)
+	if not is_equal_approx(charge_after, charge_before):
+		errors.append(
+			"%s refused same-encounter recast must spend nothing, got %.2f after %.2f"
+			% [label, charge_after, charge_before]
+		)
+	if not new_encounter_accepted:
+		errors.append("%s must cast again once the next encounter opens" % label)
+	if new_encounter_second_accepted:
+		errors.append("%s next encounter must buy exactly one cast" % label)
+	return errors
+
+
 func _assert_contract_falsifications() -> void:
 	_check(
 		not _live_ownership_errors("falsification/ownerless", 0, 0).is_empty(),
@@ -270,6 +304,26 @@ func _assert_contract_falsifications() -> void:
 	_check(
 		_status_leak_errors("falsification/clean", {}, {}).is_empty(),
 		"baseline statuses must pass the leak check"
+	)
+	_check(
+		_encounter_gate_errors("falsification/gate", false, 100.0, 100.0, true, false).is_empty(),
+		"an honest encounter gate must pass the ledger contract"
+	)
+	_check(
+		not _encounter_gate_errors("falsification/ungated", true, 100.0, 100.0, true, false).is_empty(),
+		"a removed activation gate must fail closed"
+	)
+	_check(
+		not _encounter_gate_errors("falsification/spent", false, 100.0, 0.0, true, false).is_empty(),
+		"a refusal that still spends the bar must fail closed"
+	)
+	_check(
+		not _encounter_gate_errors("falsification/locked", false, 100.0, 100.0, false, false).is_empty(),
+		"a next encounter that never reopens must fail closed"
+	)
+	_check(
+		not _encounter_gate_errors("falsification/unlimited", false, 100.0, 100.0, true, true).is_empty(),
+		"a next encounter that buys more than one cast must fail closed"
 	)
 
 
@@ -535,18 +589,56 @@ func _assert_natural_cleanup(states: Array[Dictionary]) -> void:
 				_check(false, error)
 
 
+## Two different contracts on two different layers. The controller owns the
+## effect and nothing else, so a naturally finished cast must be immediately
+## recastable there — that is the release this suite is about. The Player owns
+## the encounter budget, so the same probe through `activate_ultimate` must be
+## refused, must not touch the bar, and must pass again only after the next
+## encounter opens, exactly once.
 func _assert_recast_and_cancel(states: Array[Dictionary]) -> void:
 	for state in states:
 		var player: Node2D = state["player"]
 		var controller = state.get("controller")
+		var label := str(state["label"])
+		var class_id := str(state["class_id"])
+		var weapon_id := str(state["weapon_id"])
 		if controller == null or controller.is_active():
 			if controller != null:
 				controller.cancel()
 			continue
-		player.set("ultimate_charge", float(player.get("ultimate_max_charge")))
-		_check(bool(player.call("activate_ultimate")), "%s must be recastable after completion" % state["label"])
+		_check(
+			controller.activate(class_id, weapon_id),
+			"%s must be recastable on the controller after completion" % label
+		)
 		controller.cancel()
-		_check(not controller.is_active(), "%s recast cancel must finish synchronously" % state["label"])
+		_check(not controller.is_active(), "%s recast cancel must finish synchronously" % label)
+
+		player.set("ultimate_charge", float(player.get("ultimate_max_charge")))
+		var charge_before := float(player.get("ultimate_charge"))
+		var same_encounter_accepted := bool(player.call("activate_ultimate"))
+		var charge_after := float(player.get("ultimate_charge"))
+
+		# `configure_character` is the Player-side seam that opens the next
+		# encounter, and it clears the bar with everything else, so refill after
+		# it rather than before.
+		player.call("configure_character", class_id, weapon_id)
+		_silence_equipped_weapon(player)
+		player.set("ultimate_charge", float(player.get("ultimate_max_charge")))
+		var new_encounter_accepted := bool(player.call("activate_ultimate"))
+		controller.cancel()
+		player.set("ultimate_charge", float(player.get("ultimate_max_charge")))
+		var new_encounter_second_accepted := bool(player.call("activate_ultimate"))
+		controller.cancel()
+
+		for error in _encounter_gate_errors(
+			label,
+			same_encounter_accepted,
+			charge_before,
+			charge_after,
+			new_encounter_accepted,
+			new_encounter_second_accepted
+		):
+			_check(false, error)
 	await process_frame
 
 

@@ -135,6 +135,15 @@ func _test_cancel_and_new_run_cleanup() -> void:
 		and activation != null and activation.is_finished(),
 		"cancel must leave no active rifle controller or activation")
 
+	# FAN-2074: отменённый каст уже потратил единственную активацию encounter'а —
+	# ledger обязан отказать в повторе и ничего не списать; новый бой открывает гейт.
+	player.set("ultimate_charge", float(player.get("ultimate_max_charge")))
+	_check(not bool(player.call("activate_ultimate")),
+		"the encounter-use ledger must refuse a same-encounter recast after cancel")
+	_check(is_equal_approx(float(player.get("ultimate_charge")), float(player.get("ultimate_max_charge"))),
+		"a refused same-encounter recast must spend nothing")
+	player.call("configure_character", CLASS_ID, WEAPON_ID)
+	await process_frame
 	player.set("ultimate_charge", float(player.get("ultimate_max_charge")))
 	_check(bool(player.call("activate_ultimate")), "a staged rifle cast must start before a new run")
 	var new_run_activation = controller.active_activation()
