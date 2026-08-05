@@ -322,10 +322,16 @@ func _build_state(spec: Dictionary, index: int, registry) -> Dictionary:
 	var baseline_statuses := {}
 	for enemy in enemies:
 		baseline_statuses[enemy.get_instance_id()] = StatusEffects.snapshot(enemy)
+	# FAN-2090: the same self-declaration Player reads, never a class list — a
+	# package that binds the rare ledger gets one activation per encounter.
+	var charge_binding = registry.catalog_profile_for(class_id, weapon_id).get("charge")
+	var encounter_gated: bool = charge_binding is Dictionary \
+			and str((charge_binding as Dictionary).get("strategy_id", "")) == "rare_charge_ledger"
 	return {
 		"class_id": class_id,
 		"weapon_id": weapon_id,
 		"label": label,
+		"encounter_gated": encounter_gated,
 		"lifecycle": float(spec["lifecycle"]),
 		"deadline": float(spec["deadline"]),
 		"player": player,
@@ -538,18 +544,39 @@ func _assert_natural_cleanup(states: Array[Dictionary]) -> void:
 				_check(false, error)
 
 
+## FAN-2090: a pair whose ready package binds the rare charge ledger spends its
+## single per-encounter activation on the first cast, so a refilled bar must be
+## refused until the canonical boundary; every other pair keeps the established
+## refill economy. Both branches assert, so a gate that fails open and a gate
+## that reaches past its own declaration each redden here. The gated branch also
+## asserts the release, or a permanently dead ultimate would read as a working
+## gate.
 func _assert_recast_and_cancel(states: Array[Dictionary]) -> void:
 	for state in states:
 		var player: Node2D = state["player"]
 		var controller = state.get("controller")
+		var label := str(state["label"])
 		if controller == null or controller.is_active():
 			if controller != null:
 				controller.cancel()
 			continue
 		player.set("ultimate_charge", float(player.get("ultimate_max_charge")))
-		_check(bool(player.call("activate_ultimate")), "%s must be recastable after completion" % state["label"])
+		if bool(state["encounter_gated"]):
+			_check(
+				not bool(player.call("activate_ultimate")),
+				"%s must refuse a refilled recast inside the same encounter" % label
+			)
+			player.call("configure_character", str(state["class_id"]), str(state["weapon_id"]))
+			await process_frame
+			player.set("ultimate_charge", float(player.get("ultimate_max_charge")))
+			_check(
+				bool(player.call("activate_ultimate")),
+				"%s must activate again past the encounter boundary" % label
+			)
+		else:
+			_check(bool(player.call("activate_ultimate")), "%s must be recastable after completion" % label)
 		controller.cancel()
-		_check(not controller.is_active(), "%s recast cancel must finish synchronously" % state["label"])
+		_check(not controller.is_active(), "%s recast cancel must finish synchronously" % label)
 	await process_frame
 
 
