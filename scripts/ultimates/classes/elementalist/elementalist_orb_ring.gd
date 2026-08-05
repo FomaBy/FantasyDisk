@@ -21,6 +21,7 @@ static func parameter_contract() -> Dictionary:
 	return {
 		"orbit_radius": {"type": "number", "minimum": 1.0},
 		"beat_radius": {"type": "number", "minimum": 1.0},
+		"nova_radius": {"type": "number", "minimum": 1.0},
 		"crowd_cap": {"type": "integer", "minimum": 1},
 		"beat_start": {"type": "number", "minimum": 0.0},
 		"beat_interval": {"type": "number", "minimum": 0.01},
@@ -101,7 +102,7 @@ func begin() -> void:
 		return
 	_activation.present(EXECUTOR_ID + ".sigils", {
 		"position": _activation.origin(),
-		"radius": _square_half_width(),
+		"radius": _activation.param_float("orbit_radius", 212.13203435596427),
 		"shape": "ring_pulse",
 	})
 
@@ -177,8 +178,7 @@ func combined_nova() -> void:
 	_nova_done = true
 	nova_count_for_tests += 1
 	var center: Vector2 = _activation.origin()
-	var radius: float = _activation.param_float("beat_radius", 290.0) \
-		+ _square_half_width()
+	var radius: float = _activation.param_float("nova_radius", 440.0)
 	_activation.present(EXECUTOR_ID + ".supernova", {
 		"position": center, "radius": radius, "shape": "orb_burst",
 	})
@@ -231,12 +231,6 @@ func _deal(target: Node, amount: float, event_id: String, mechanic: String) -> v
 
 func _live() -> bool:
 	return _activation != null and not _activation.is_finished()
-
-
-func _square_half_width() -> float:
-	# The sigils stand on the square's corners, so the ring pulse and the nova
-	# reach are measured across its half-width, not along the orbit diagonal.
-	return _activation.param_float("orbit_radius", 212.13203435596427) / sqrt(2.0)
 
 
 static func square_points(center: Vector2, radius: float, rotation: float) -> PackedVector2Array:

@@ -154,6 +154,7 @@ func _test_package_routing() -> void:
 func _test_conclave_orbit_geometry() -> void:
 	var profile := _registry.catalog_profile_for(CLASS_ID, "elementalist_orb_ring")
 	var params := (profile["executor"] as Dictionary)["params"] as Dictionary
+	var contract := OrbRing.parameter_contract()
 	var orbit_radius := float(params["orbit_radius"])
 	var half_width := orbit_radius / sqrt(2.0)
 	var center := Vector2(120.0, -40.0)
@@ -168,8 +169,12 @@ func _test_conclave_orbit_geometry() -> void:
 			"corner %d must keep its accepted orbit position" % corner)
 	_check(is_equal_approx(half_width, 150.0),
 		"the accepted sigil square must keep its 150px half-width")
-	_check(is_equal_approx(float(params["beat_radius"]) + half_width, 440.0),
-		"the combined nova must keep its accepted 440px reach")
+	var nova_contract := contract.get("nova_radius", {}) as Dictionary
+	_check(str(nova_contract.get("type", "")) == "number" \
+			and is_equal_approx(float(nova_contract.get("minimum", 0.0)), 1.0),
+		"the nova radius must be an explicit positive number parameter")
+	_check(is_equal_approx(float(params["nova_radius"]), 440.0),
+		"the combined nova must declare its accepted 440px reach")
 
 
 func _test_grand_conclave() -> void:
@@ -179,6 +184,8 @@ func _test_grand_conclave() -> void:
 	epic.add_to_group(Activation.EPIC_GROUP)
 	var boss := _target(host, Vector2(-30.0, 0.0), 1000.0, 1000.0)
 	boss.add_to_group(Activation.BOSS_GROUP)
+	var nova_edge := _target(host, Vector2(439.9, 0.0), 5000.0, 5000.0)
+	var nova_outside := _target(host, Vector2(440.1, 0.0), 5000.0, 5000.0)
 	for index in 5:
 		_target(host, Vector2(70.0 + index * 20.0, 20.0), 5000.0, 5000.0)
 	var controller := Controller.new(host, _registry)
@@ -194,6 +201,13 @@ func _test_grand_conclave() -> void:
 		"Conclave must resolve four distinct elemental beats in order")
 	_check(effect != null and int(effect.get("nova_count_for_tests")) == 1,
 		"Conclave must finish with exactly one combined nova")
+	_check(is_equal_approx(_presentation_radius(host, ".sigils"), 212.13203435596427),
+		"sigil ring pulse must pass through the declared orbit radius")
+	_check(is_equal_approx(_presentation_radius(host, ".supernova"), 440.0),
+		"supernova presentation must keep its declared 440px radius")
+	_check(nova_edge.health < nova_edge.max_health and is_equal_approx(
+		nova_outside.health, nova_outside.max_health),
+		"supernova target selection must stop at its declared 440px radius")
 	_check(bool(_status(normal, "elementalist_conclave_frost_").get("movement_locked", false)),
 		"normal targets must receive the full frost lock")
 	var epic_frost := _status(epic, "elementalist_conclave_frost_")
@@ -372,6 +386,13 @@ func _event_count(host: FixtureHost, suffix: String) -> int:
 		if str(event.get("event_id", "")).ends_with(suffix):
 			count += 1
 	return count
+
+
+func _presentation_radius(host: FixtureHost, suffix: String) -> float:
+	for event in host.presentations:
+		if str(event.get("event_id", "")).ends_with(suffix):
+			return float((event.get("payload", {}) as Dictionary).get("radius", -1.0))
+	return -1.0
 
 
 func _removed_health(targets: Array) -> float:
