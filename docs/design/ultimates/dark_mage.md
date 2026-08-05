@@ -18,7 +18,7 @@ The Crown uses the shared control policy: normal targets receive the full 5.5s d
 
 - The real `Player` routes all ultimate charge state through the FAN-1460 `UltimateChargeLedger`: the accumulated bar, the active-cast latch, and the encounter activation gate have one authoritative owner and no class branches.
 - A full bar is spent once for one activation via `try_activate()`; active casts reject both new charge and re-entry.
-- The encounter gate permits one activation per encounter and a refused cast spends nothing; the next battle's `configure_character` reopens exactly one.
+- The encounter gate permits one activation per encounter and a refused cast spends nothing; the next battle's `configure_character` reopens exactly one. This is the shared FAN-1460 rule in `docs/design/systems/weapon_ultimate_balance.md` — identical for Sniper, Biologist, Engineer, Priest and Thief — not a Dark Mage exception.
 - Only charge survives battle, act, and Continue snapshots (`run_player_snapshot` uses the ledger's own snapshot key). Active state, encounter-use state, tweens, effects, target marks, and status leases do not.
 - Reconfiguring the real `Player` cancels the active generic controller and frees each activation-owned scene.
 
