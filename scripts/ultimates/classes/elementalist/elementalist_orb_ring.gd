@@ -101,7 +101,7 @@ func begin() -> void:
 		return
 	_activation.present(EXECUTOR_ID + ".sigils", {
 		"position": _activation.origin(),
-		"radius": _activation.param_float("orbit_radius", 150.0),
+		"radius": _square_half_width(),
 		"shape": "ring_pulse",
 	})
 
@@ -115,7 +115,7 @@ func cast_beat(beat: int) -> void:
 	var center: Vector2 = _activation.origin()
 	var points := square_points(
 		center,
-		_activation.param_float("orbit_radius", 150.0),
+		_activation.param_float("orbit_radius", 212.13203435596427),
 		float(beat) * 0.16
 	)
 	var avatar_position := points[beat]
@@ -178,7 +178,7 @@ func combined_nova() -> void:
 	nova_count_for_tests += 1
 	var center: Vector2 = _activation.origin()
 	var radius: float = _activation.param_float("beat_radius", 290.0) \
-		+ _activation.param_float("orbit_radius", 150.0)
+		+ _square_half_width()
 	_activation.present(EXECUTOR_ID + ".supernova", {
 		"position": center, "radius": radius, "shape": "orb_burst",
 	})
@@ -233,10 +233,20 @@ func _live() -> bool:
 	return _activation != null and not _activation.is_finished()
 
 
+func _square_half_width() -> float:
+	# The sigils stand on the square's corners, so the ring pulse and the nova
+	# reach are measured across its half-width, not along the orbit diagonal.
+	return _activation.param_float("orbit_radius", 212.13203435596427) / sqrt(2.0)
+
+
 static func square_points(center: Vector2, radius: float, rotation: float) -> PackedVector2Array:
 	var points := PackedVector2Array()
 	for corner in 4:
-		points.append(center + Vector2(radius, radius).rotated(rotation + corner * PI * 0.5))
+		# Corners sit exactly `radius` from the centre; the 45° offset keeps the
+		# square's accepted orientation, its first sigil on the down-right diagonal.
+		points.append(center + Vector2(radius, 0.0).rotated(
+			rotation + PI * 0.25 + corner * PI * 0.5
+		))
 	return points
 
 

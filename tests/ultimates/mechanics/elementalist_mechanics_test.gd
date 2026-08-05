@@ -5,6 +5,7 @@ const Controller := preload("res://scripts/ultimates/controller/ultimate_control
 const Registry := preload("res://scripts/ultimates/registry/weapon_ultimate_registry.gd")
 const Resolver := preload("res://scripts/ultimates/registry/weapon_ultimate_resolver.gd")
 const StatusEffects := preload("res://scripts/status_effects.gd")
+const OrbRing := preload("res://scripts/ultimates/classes/elementalist/elementalist_orb_ring.gd")
 const PD := preload("res://scripts/progression_data.gd")
 
 const CLASS_ID := "elementalist"
@@ -95,6 +96,7 @@ func _initialize() -> void:
 	_registry = Registry.new(PD.WEAPONS_BY_CLASS)
 	await process_frame
 	_test_package_routing()
+	_test_conclave_orbit_geometry()
 	await _test_grand_conclave()
 	await _test_prismatic_verdict()
 	await _test_starfall()
@@ -147,6 +149,27 @@ func _test_package_routing() -> void:
 				else Resolver.SOURCE_LEGACY_CLASS_FALLBACK
 			_check(_registry.resolution_source(class_id, weapon_id) == expected,
 				"%s/%s routing must not change with Elementalist packages" % [class_id, weapon_id])
+
+
+func _test_conclave_orbit_geometry() -> void:
+	var profile := _registry.catalog_profile_for(CLASS_ID, "elementalist_orb_ring")
+	var params := (profile["executor"] as Dictionary)["params"] as Dictionary
+	var orbit_radius := float(params["orbit_radius"])
+	var half_width := orbit_radius / sqrt(2.0)
+	var center := Vector2(120.0, -40.0)
+	var rotation := 0.16
+	var points := OrbRing.square_points(center, orbit_radius, rotation)
+	_check(points.size() == 4, "the sigil square must keep exactly four corners")
+	for corner in points.size():
+		_check(is_equal_approx(center.distance_to(points[corner]), orbit_radius),
+			"corner %d must stand exactly orbit_radius from the centre" % corner)
+		_check(points[corner].is_equal_approx(
+				center + Vector2(half_width, half_width).rotated(rotation + corner * PI * 0.5)),
+			"corner %d must keep its accepted orbit position" % corner)
+	_check(is_equal_approx(half_width, 150.0),
+		"the accepted sigil square must keep its 150px half-width")
+	_check(is_equal_approx(float(params["beat_radius"]) + half_width, 440.0),
+		"the combined nova must keep its accepted 440px reach")
 
 
 func _test_grand_conclave() -> void:

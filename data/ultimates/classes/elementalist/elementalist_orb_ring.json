@@ -10,7 +10,7 @@
   "executor": {
     "strategy_id": "weapon_ultimate.executor.elementalist.elementalist_orb_ring",
     "params": {
-      "orbit_radius": 150.0,
+      "orbit_radius": 212.13203435596427,
       "beat_radius": 290.0,
       "crowd_cap": 24,
       "beat_start": 1.0,
