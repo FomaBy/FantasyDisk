@@ -20,6 +20,9 @@ static func parameter_contract() -> Dictionary:
 		"heal_ratio": {"type": "number", "minimum": 0.0, "maximum": 1.0},
 		"repair_total": {"type": "number", "minimum": 0.0},
 		"finale_tail": {"type": "number", "minimum": 0.0},
+		# FAN-2090: declared end of the whole cast chain (release + waves +
+		# finale tail) for the smoke lifecycle oracle; the executor does not read it.
+		"mask_fade_at": {"type": "number", "minimum": 0.1},
 	}
 
 

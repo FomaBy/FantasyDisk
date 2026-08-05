@@ -17,6 +17,9 @@ static func parameter_contract() -> Dictionary:
 		"vitality_ratio": {"type": "number", "minimum": 0.0, "maximum": 1.0},
 		"shield_cap": {"type": "number", "minimum": 0.0},
 		"shield_duration": {"type": "number", "minimum": 0.1},
+		# FAN-2090: declared end of the whole cast chain (orbit ticks + stitch
+		# shield) for the smoke lifecycle oracle; the executor does not read it.
+		"shield_fade_at": {"type": "number", "minimum": 0.1},
 		"armor_shred": {"type": "number", "minimum": 0.0, "maximum": 1.0},
 	}
 

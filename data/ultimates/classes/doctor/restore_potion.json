@@ -22,7 +22,8 @@
       "repair_total": 10.0,
       "shield_ratio": 0.4,
       "shield_cap": 8.0,
-      "shield_duration": 1.2
+      "shield_duration": 1.2,
+      "shield_fade_at": 4.05
     }
   },
   "total_boss_cap": 0.08,

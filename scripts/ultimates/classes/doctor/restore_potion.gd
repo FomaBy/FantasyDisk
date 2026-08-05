@@ -20,6 +20,9 @@ static func parameter_contract() -> Dictionary:
 		"shield_ratio": {"type": "number", "minimum": 0.0, "maximum": 1.0},
 		"shield_cap": {"type": "number", "minimum": 0.0},
 		"shield_duration": {"type": "number", "minimum": 0.1},
+		# FAN-2090: declared end of the whole cast chain (release + pulses +
+		# shield) for the smoke lifecycle oracle; the executor does not read it.
+		"shield_fade_at": {"type": "number", "minimum": 0.1},
 	}
 
 

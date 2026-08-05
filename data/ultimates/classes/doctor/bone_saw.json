@@ -20,6 +20,7 @@
       "vitality_ratio": 0.4,
       "shield_cap": 9.0,
       "shield_duration": 1.35,
+      "shield_fade_at": 3.85,
       "armor_shred": 0.18
     }
   },

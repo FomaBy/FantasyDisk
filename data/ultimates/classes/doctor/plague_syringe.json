@@ -22,7 +22,8 @@
       "wave_damage": 4.3,
       "heal_ratio": 0.15,
       "repair_total": 9.0,
-      "finale_tail": 0.43
+      "finale_tail": 0.43,
+      "mask_fade_at": 5.85
     }
   },
   "total_boss_cap": 0.08,
