@@ -10,9 +10,12 @@ const NODE_KEY := "dark_mage_vanishing_thread_ramp"
 var ultimate_damage_sink: Callable = Callable()
 var marked_count_for_tests := 0
 var collapse_count_for_tests := 0
+var beam_target := Vector2.ZERO
 
 var _activation = null
 var _nodes: Array = []
+var _released := false
+var _collapsed := false
 
 
 static func parameter_contract() -> Dictionary:
@@ -56,17 +59,15 @@ static func execute(activation) -> float:
 		return 0.0
 	effect.call("configure", activation, targets as Array)
 	var aim = activation.aim_context(max_range)
-	activation.present("weapon_ultimate.phase.dark_mage.dark_wand.execute", {
-		"from": activation.origin(),
-		"to": aim.get("target", activation.origin()),
-		"position": aim.get("target", activation.origin()),
-		"shape": "beam",
-	})
+	effect.set("beam_target", aim.get("target", activation.origin()))
 	var tween: Tween = activation.track_tween()
 	if tween == null:
 		return 0.0
+	# Frozen chronology: the rail `execute` beam at release (0.28), the joint
+	# collapse — the frozen `active` beat — collapse_delay later (0.62).
 	var release_delay: float = activation.param_float("release_delay", 0.28)
 	tween.tween_interval(release_delay)
+	tween.tween_callback(Callable(effect, "release"))
 	for index in (targets as Array).size():
 		tween.tween_callback(Callable(effect, "mark_node").bind(index))
 	tween.tween_interval(activation.param_float("collapse_delay", 0.34))
@@ -84,6 +85,19 @@ func configure(activation, targets: Array) -> void:
 	global_position = activation.origin()
 
 
+## Frozen `execute` beat: the aimed rail beam at release time.
+func release() -> void:
+	if _activation == null or _activation.is_finished() or _released:
+		return
+	_released = true
+	_activation.present("weapon_ultimate.phase.dark_mage.dark_wand.execute", {
+		"from": global_position,
+		"to": beam_target,
+		"position": beam_target,
+		"shape": "beam",
+	})
+
+
 func mark_node(index: int) -> void:
 	if _activation == null or _activation.is_finished() or index < 0 or index >= _nodes.size():
 		return
@@ -93,7 +107,9 @@ func mark_node(index: int) -> void:
 	var ramp: float = 1.0 + _activation.param_float("distinct_target_ramp", 0.14) * float(index)
 	if _activation.record_target_value(target, NODE_KEY, ramp, "vanishing_mark:%d" % index):
 		marked_count_for_tests += 1
-		_activation.present("weapon_ultimate.phase.dark_mage.dark_wand.active", {
+		# Per-node runtime beat: executor-local id; the frozen `active` phase
+		# belongs to the joint collapse.
+		_activation.present(EXECUTOR_ID + ".mark", {
 			"position": target.global_position,
 			"radius": 38.0,
 			"shape": "orb_burst",
@@ -101,8 +117,14 @@ func mark_node(index: int) -> void:
 
 
 func collapse() -> void:
-	if _activation == null or _activation.is_finished():
+	if _activation == null or _activation.is_finished() or _collapsed:
 		return
+	_collapsed = true
+	_activation.present("weapon_ultimate.phase.dark_mage.dark_wand.active", {
+		"position": beam_target,
+		"radius": 96.0,
+		"shape": "orb_burst",
+	})
 	for index in _nodes.size():
 		var target := _nodes[index] as Node
 		if target == null or not is_instance_valid(target):

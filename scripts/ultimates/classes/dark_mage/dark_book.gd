@@ -12,6 +12,12 @@ var _activation = null
 var _targets: Array = []
 var _origin := Vector2.ZERO
 var _kill_reflections := {}
+var _released := false
+var _active_presented := false
+var _detonated := {}
+var _reflected := {}
+var _mirror_points := {}
+var _pending_original_kills := {}
 
 
 static func parameter_contract() -> Dictionary:
@@ -20,6 +26,7 @@ static func parameter_contract() -> Dictionary:
 		"crowd_cap": {"type": "integer", "minimum": 1},
 		"release_delay": {"type": "number", "minimum": 0.0},
 		"pair_interval": {"type": "number", "minimum": 0.01},
+		"reflection_delay": {"type": "number", "minimum": 0.0},
 		"original_damage": {"type": "number", "minimum": 0.0},
 		"reflection_damage": {"type": "number", "minimum": 0.0},
 		"reflection_radius": {"type": "number", "minimum": 0.0},
@@ -42,16 +49,15 @@ static func execute(activation) -> float:
 	if effect == null or not effect.has_method("configure"):
 		return 0.0
 	effect.call("configure", activation, targets)
-	activation.present("weapon_ultimate.phase.dark_mage.dark_book.execute", {
-		"position": activation.origin(),
-		"radius": activation.param_float("radius", 620.0) * 0.32,
-		"shape": "orb_burst",
-	})
 	var tween: Tween = activation.track_tween()
 	if tween == null:
 		return 0.0
+	# Frozen chronology: `execute` at release (0.60), original blasts follow the
+	# pair cadence, each mirror blast lands reflection_delay later, so the first
+	# reflection is the frozen `active` beat (0.60 + 0.45 = 1.05).
 	var release_delay: float = activation.param_float("release_delay", 0.6)
 	tween.tween_interval(release_delay)
+	tween.tween_callback(Callable(effect, "release"))
 	for index in targets.size():
 		if index > 0:
 			tween.tween_interval(activation.param_float("pair_interval", 0.24))
@@ -71,16 +77,33 @@ func configure(activation, targets: Array) -> void:
 	global_position = _origin
 
 
-## One original and one mirrored point are resolved as one pair. A lethal
-## original may burst at its reflection once; the burst never enters this path.
-func detonate_pair(index: int) -> void:
-	if _activation == null or _activation.is_finished() or index < 0 or index >= _targets.size():
+## Frozen `execute` beat: the book opens at release time, before the first pair.
+func release() -> void:
+	if _activation == null or _activation.is_finished() or _released:
 		return
+	_released = true
+	_activation.present("weapon_ultimate.phase.dark_mage.dark_book.execute", {
+		"position": _origin,
+		"radius": _activation.param_float("radius", 620.0) * 0.32,
+		"shape": "orb_burst",
+	})
+
+
+## One original and one mirrored point are resolved as one pair: the original
+## blast lands now, the reflected blast lands reflection_delay later at the
+## point captured here. A lethal original may burst at its reflection once; the
+## burst never enters this path. Repeated events are idempotent.
+func detonate_pair(index: int) -> void:
+	if _activation == null or _activation.is_finished() or index < 0 \
+			or index >= _targets.size() or _detonated.has(index):
+		return
+	_detonated[index] = true
 	var original := _targets[index] as Node2D
 	if not _alive(original):
 		return
 	var mirror_point := _origin * 2.0 - original.global_position
 	pair_count_for_tests += 1
+	_mirror_points[index] = mirror_point
 	var original_result = _deal(
 		original,
 		_activation.scaled_damage("original_damage", 0.0),
@@ -88,6 +111,23 @@ func detonate_pair(index: int) -> void:
 		false,
 		{"ultimate_mechanic": "abyss_original", "pair": index}
 	)
+	if original_result != null and bool(original_result.killed):
+		_queue_original_kill_reflection(original, index)
+	var reflect_tween: Tween = _activation.track_tween()
+	if reflect_tween == null:
+		return
+	reflect_tween.tween_interval(_activation.param_float("reflection_delay", 0.45))
+	reflect_tween.tween_callback(Callable(self, "reflect_pair").bind(index))
+
+
+## The documented delayed reflected blast of one pair, plus the queued kill
+## burst of a lethal original. The first reflection is the frozen `active` beat.
+func reflect_pair(index: int) -> void:
+	if _activation == null or _activation.is_finished() or not _mirror_points.has(index) \
+			or _reflected.has(index):
+		return
+	_reflected[index] = true
+	var mirror_point: Vector2 = _mirror_points[index]
 	for raw_target in _activation.select_targets(
 		mirror_point,
 		_activation.param_float("reflection_radius", 150.0),
@@ -107,13 +147,31 @@ func detonate_pair(index: int) -> void:
 		if reflected_result != null and float(reflected_result.applied) > 0.0 \
 			and bool(reflected_result.killed):
 			_trigger_kill_reflection(reflected, index)
-	_activation.present("weapon_ultimate.phase.dark_mage.dark_book.active", {
+	var payload := {
 		"position": mirror_point,
 		"radius": _activation.param_float("reflection_radius", 150.0),
 		"shape": "orb_burst",
-	})
-	if original_result != null and bool(original_result.killed):
-		_trigger_kill_reflection(original, index)
+	}
+	if _active_presented:
+		_activation.present(EXECUTOR_ID + ".mirror", payload)
+	else:
+		_active_presented = true
+		_activation.present("weapon_ultimate.phase.dark_mage.dark_book.active", payload)
+	if _pending_original_kills.has(index):
+		_kill_reflection(_pending_original_kills[index], index)
+		_pending_original_kills.erase(index)
+
+
+## A lethal ORIGINAL bursts at its own mirror point when the delayed reflection
+## arrives; the burst center is captured now because the corpse may be gone.
+func _queue_original_kill_reflection(killed: Node2D, pair_index: int) -> void:
+	if killed == null or not is_instance_valid(killed):
+		return
+	var killed_id := killed.get_instance_id()
+	if _kill_reflections.has(killed_id):
+		return
+	_kill_reflections[killed_id] = true
+	_pending_original_kills[pair_index] = _origin * 2.0 - killed.global_position
 
 
 func _trigger_kill_reflection(killed: Node2D, pair_index: int) -> void:
@@ -160,4 +218,8 @@ func _alive(target: Node2D) -> bool:
 func _exit_tree() -> void:
 	_targets.clear()
 	_kill_reflections.clear()
+	_detonated.clear()
+	_reflected.clear()
+	_mirror_points.clear()
+	_pending_original_kills.clear()
 	_activation = null

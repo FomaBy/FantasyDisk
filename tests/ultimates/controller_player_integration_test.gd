@@ -227,6 +227,22 @@ func _test_player_adapter_follows_shipped_routing() -> void:
 					(player.get("run_modifiers") as Dictionary) == modifiers_before,
 					"%s/%s cancelled generic cast must not leak run modifiers" % [class_id, weapon_id]
 				)
+				# FAN-2074: encounter-use ledger — активация уже израсходована в
+				# этом encounter'е, повторный полный бар обязан быть отвергнут без
+				# списания; границу открывает только configure_character следующей
+				# пары (новый encounter).
+				player.set("ultimate_charge", float(player.get("ultimate_max_charge")))
+				_check(
+					not bool(player.call("activate_ultimate")),
+					"%s/%s must refuse a same-encounter recast after the cast ended" % [class_id, weapon_id]
+				)
+				_check(
+					is_equal_approx(
+						float(player.get("ultimate_charge")),
+						float(player.get("ultimate_max_charge"))
+					),
+					"%s/%s refused same-encounter recast must spend nothing" % [class_id, weapon_id]
+				)
 	_check(
 		generic_casts == _discovered_ready_pair_count(registry),
 		"every discovered ready pair must reach the generic runtime"

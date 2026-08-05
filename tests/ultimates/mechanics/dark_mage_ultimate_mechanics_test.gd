@@ -8,6 +8,7 @@ const StatusEffects := preload("res://scripts/status_effects.gd")
 
 const CLASS_ID := "dark_mage"
 const STEP := 0.01
+const CROWN_MARKER := Color(0.72, 0.28, 0.95, 0.85)
 
 
 class Target extends Node2D:
@@ -85,6 +86,7 @@ func _initialize() -> void:
 		"Dark Mage packages must admit cleanly: %s" % [_registry.package_validation_errors()])
 	await _test_abyss_mirror()
 	await _test_cursed_crown()
+	await _test_cursed_crown_cancel_cleanup()
 	await _test_vanishing_thread()
 	_holder.queue_free()
 	await process_frame
@@ -95,14 +97,31 @@ func _test_abyss_mirror() -> void:
 	var host := await _host()
 	host.base_damage = 100.0
 	var original := _target(host, Vector2(120.0, 0.0), 80.0, 80.0)
-	var reflection := _target(host, Vector2(-120.0, 0.0), 10000.0, 10000.0)
+	var reflection := _target(host, Vector2(-121.0, 0.0), 10000.0, 10000.0)
 	var boss := _target(host, Vector2(260.0, 0.0), 1200.0, 1200.0)
 	boss.add_to_group(Activation.BOSS_GROUP)
 	var controller := Controller.new(host, _registry)
 	_check(controller.activate(CLASS_ID, "dark_book"), "Abyss Mirror must activate")
 	var activation = controller.active_activation()
 	var effect := _effect(activation)
-	_advance(activation, 1.2)
+	# Frozen chronology oracle: nothing lands and no phase event fires before
+	# release (0.60); the first mirror blast — the `active` beat — lands only at
+	# release + reflection_delay (1.05).
+	_advance(activation, 0.55)
+	_check(_removed_health(host.fixture_targets) <= 0.0,
+		"the book must stay silent before its 0.60s release")
+	_check(not _has_presentation(host, "weapon_ultimate.phase.dark_mage.dark_book.execute"),
+		"the frozen execute beat must not fire before 0.60s")
+	_advance(activation, 0.1)
+	_check(_has_presentation(host, "weapon_ultimate.phase.dark_mage.dark_book.execute"),
+		"the frozen execute beat must fire at the 0.60s release")
+	_check(_feedback_count(host.fixture_targets, "abyss_original") > 0,
+		"original blasts must land at release")
+	_check(_feedback_count(host.fixture_targets, "abyss_reflection") == 0,
+		"the reflected blast must be delayed, not synchronous with the original")
+	_check(not _has_presentation(host, "weapon_ultimate.phase.dark_mage.dark_book.active"),
+		"the frozen active beat must wait for the first delayed reflection (1.05s)")
+	_advance(activation, 1.35)
 	_check(effect != null and int(effect.get("pair_count_for_tests")) >= 2,
 		"every nearby silhouette must receive an original/mirror pair")
 	_check(effect != null and int(effect.get("kill_reflection_count_for_tests")) == 1,
@@ -111,36 +130,64 @@ func _test_abyss_mirror() -> void:
 	_check(_feedback_count([reflection], "abyss_reflection") > 0
 		and _feedback_count([reflection], "abyss_kill_reflection") > 0,
 		"the reflected silhouette must receive the paired hit and one kill burst")
+	_check(_presentation_count(host, "weapon_ultimate.phase.dark_mage.dark_book.active") == 1,
+		"the frozen active beat must fire exactly once")
+	# Repeated-event idempotency: replaying the same pair beats must change
+	# nothing — no double damage, no double counters, no duplicate phase beats.
+	var removed_before := _removed_health(host.fixture_targets)
+	var pairs_before := int(effect.get("pair_count_for_tests"))
+	var bursts_before := int(effect.get("kill_reflection_count_for_tests"))
+	effect.call("release")
+	effect.call("detonate_pair", 0)
+	effect.call("reflect_pair", 0)
+	_check(is_equal_approx(_removed_health(host.fixture_targets), removed_before)
+		and int(effect.get("pair_count_for_tests")) == pairs_before
+		and int(effect.get("kill_reflection_count_for_tests")) == bursts_before
+		and _presentation_count(host, "weapon_ultimate.phase.dark_mage.dark_book.execute") == 1
+		and _presentation_count(host, "weapon_ultimate.phase.dark_mage.dark_book.active") == 1,
+		"replayed pair events must be idempotent")
 	_check(is_equal_approx(boss.max_health - boss.health, boss.max_health * 0.11),
 		"all Book hits must share the 11% boss cap")
-	_check(_has_presentation(host, "weapon_ultimate.phase.dark_mage.dark_book.execute")
-		and _has_presentation(host, "weapon_ultimate.phase.dark_mage.dark_book.active"),
-		"Book mechanics must emit the accepted execute/active event IDs")
 	_check(is_equal_approx(activation.applied_total, _removed_health(host.fixture_targets)),
 		"Book attribution must equal actual HP removed after all caps")
-	controller.cancel()
+	# Natural completion: the lifecycle tween ends the cast at 5.20s by itself.
+	_advance(activation, 3.5)
 	await process_frame
-	_check(not is_instance_valid(effect) and not host.active,
-		"Book cancel must drop the activation-owned effect and active latch")
+	_check(not controller.is_active() and not host.active and activation.is_finished(),
+		"the book must complete naturally at its 5.20s lifetime")
+	_check(not is_instance_valid(effect),
+		"natural completion must free the activation-owned effect")
 	await _drop(host)
 
 
 func _test_cursed_crown() -> void:
 	var host := await _host()
 	host.base_damage = 100.0
+	# Two dead silhouettes nearest to the caster: they must not spend the cap.
+	var dead_one := _target(host, Vector2(30.0, 0.0), 0.0, 4000.0)
+	var dead_two := _target(host, Vector2(-40.0, 0.0), 0.0, 4000.0)
 	var doomed := _target(host, Vector2(850.0, 0.0), 80.0, 80.0)
 	var replacement := _target(host, Vector2(1040.0, 0.0), 4000.0, 4000.0)
 	var epic := _target(host, Vector2(180.0, 0.0), 4000.0, 4000.0)
 	epic.add_to_group(Activation.EPIC_GROUP)
+	# A live foreign lease already owns epic's marker slot before the crown.
+	StatusEffects.apply_status(epic, "foreign_probe", {"duration": 60.0, "marker_color": Color.RED})
 	var boss := _target(host, Vector2(240.0, 0.0), 10000.0, 10000.0)
 	boss.add_to_group(Activation.BOSS_GROUP)
+	var fillers: Array[Target] = []
 	for index in 11:
-		_target(host, Vector2(50.0 + float(index) * 20.0, 120.0), 4000.0, 4000.0)
+		fillers.append(_target(host, Vector2(50.0 + float(index) * 20.0, 120.0), 4000.0, 4000.0))
 	var controller := Controller.new(host, _registry)
 	_check(controller.activate(CLASS_ID, "cursed_skull"), "Cursed Crown must activate")
 	var activation = controller.active_activation()
 	var effect := _effect(activation)
-	_advance(activation, 5.7)
+	_advance_with_status_tick(activation, host, 1.0)
+	_check(_status_with_prefix(dead_one, "dark_mage_ultimate_crown_").is_empty()
+		and _status_with_prefix(dead_two, "dark_mage_ultimate_crown_").is_empty()
+		and dead_one.received.is_empty() and dead_two.received.is_empty(),
+		"dead silhouettes must be excluded before the 14-target cap is spent")
+	_check(not _status_with_prefix(doomed, "dark_mage_ultimate_crown_").is_empty(),
+		"the cap must reach the farthest live silhouette the dead ones would have displaced")
 	var epic_status := _status_with_prefix(epic, "dark_mage_ultimate_crown_")
 	var boss_status := _status_with_prefix(boss, "dark_mage_ultimate_crown_")
 	_check(is_equal_approx(StatusEffects.damage_multiplier(epic), 0.65),
@@ -148,6 +195,17 @@ func _test_cursed_crown() -> void:
 	_check(is_equal_approx(float(epic_status.get("duration", 0.0)), 2.75)
 		and is_equal_approx(float(boss_status.get("duration", 0.0)), 1.375),
 		"epic and boss curse duration must obey the shared resistance policy")
+	_check(epic.get_meta(StatusEffects.MARKER_META_KEY) == CROWN_MARKER,
+		"the crown lease must own the marker slot while cursed")
+	_check(not _has_presentation(host, "weapon_ultimate.phase.dark_mage.cursed_skull.active"),
+		"the frozen active beat must not fire before 1.35s")
+	_advance_with_status_tick(activation, host, 0.45)
+	_check(_presentation_count(host, "weapon_ultimate.phase.dark_mage.cursed_skull.active") == 1,
+		"the frozen active beat must fire exactly once at 1.35s")
+	_advance_with_status_tick(activation, host, 0.6)
+	# A later foreign effect takes one marker slot mid-curse; it must survive.
+	StatusEffects.apply_status(fillers[0], "foreign_late", {"duration": 60.0, "marker_color": Color.GREEN})
+	_advance_with_status_tick(activation, host, 3.65)
 	_check(effect != null and int(effect.get("transfer_count_for_tests")) == 1,
 		"one killed cursed target must transfer its curse once to the nearby unmarked target")
 	_check(not _status_with_prefix(replacement, "dark_mage_ultimate_crown_").is_empty(),
@@ -159,11 +217,55 @@ func _test_cursed_crown() -> void:
 	_check(_has_presentation(host, "weapon_ultimate.phase.dark_mage.cursed_skull.execute")
 		and _has_presentation(host, "weapon_ultimate.phase.dark_mage.cursed_skull.recover"),
 		"Crown mechanics must emit the accepted execute/recover event IDs")
-	controller.cancel()
+	# Natural completion at 6.35s with REAL status ticking: epic/boss curses
+	# already expired through tick(), normal curses expire at the boundary, the
+	# transfer lease is still live — every ending path must leave clean marker
+	# metadata behind.
+	_advance_with_status_tick(activation, host, 0.9)
 	await process_frame
+	_check(not controller.is_active() and not host.active and not is_instance_valid(effect),
+		"the crown must complete naturally at its 6.35s lifetime")
 	for target in host.fixture_targets:
 		_check(_status_with_prefix(target, "dark_mage_ultimate_crown_").is_empty(),
 			"crown cleanup must remove only its own curse leases")
+		var marker = target.get_meta(StatusEffects.MARKER_META_KEY) \
+			if target.has_meta(StatusEffects.MARKER_META_KEY) else null
+		_check(marker == null or not (marker is Color and (marker as Color) == CROWN_MARKER),
+			"no crown marker metadata may survive completion")
+	_check(epic.get_meta(StatusEffects.MARKER_META_KEY, null) == Color.RED,
+		"the prior foreign marker must be restored on the crown's way out")
+	_check(fillers[0].get_meta(StatusEffects.MARKER_META_KEY, null) == Color.GREEN,
+		"a foreign marker applied after the crown must be preserved")
+	_check(not boss.has_meta(StatusEffects.MARKER_META_KEY),
+		"a silhouette without a prior marker must end with an empty slot")
+	await _drop(host)
+
+
+## Cancellation is the second lease-ending path: markers reconcile immediately.
+func _test_cursed_crown_cancel_cleanup() -> void:
+	var host := await _host()
+	host.base_damage = 100.0
+	var marked := _target(host, Vector2(120.0, 0.0), 4000.0, 4000.0)
+	var foreign := _target(host, Vector2(200.0, 0.0), 4000.0, 4000.0)
+	StatusEffects.apply_status(foreign, "foreign_probe", {"duration": 60.0, "marker_color": Color.RED})
+	var controller := Controller.new(host, _registry)
+	_check(controller.activate(CLASS_ID, "cursed_skull"), "Cursed Crown must activate before cancel")
+	var activation = controller.active_activation()
+	var effect := _effect(activation)
+	_advance_with_status_tick(activation, host, 1.0)
+	_check(marked.get_meta(StatusEffects.MARKER_META_KEY, null) == CROWN_MARKER,
+		"the crown must own both marker slots before cancellation")
+	controller.cancel()
+	await process_frame
+	_check(not is_instance_valid(effect) and not host.active,
+		"Crown cancel must drop the activation-owned effect and active latch")
+	for target in host.fixture_targets:
+		_check(_status_with_prefix(target, "dark_mage_ultimate_crown_").is_empty(),
+			"Crown cancel must remove its curse leases")
+	_check(not marked.has_meta(StatusEffects.MARKER_META_KEY),
+		"Crown cancel must release a marker slot it took empty")
+	_check(foreign.get_meta(StatusEffects.MARKER_META_KEY, null) == Color.RED,
+		"Crown cancel must restore the prior foreign marker")
 	await _drop(host)
 
 
@@ -172,33 +274,55 @@ func _test_vanishing_thread() -> void:
 	host.base_damage = 100.0
 	host.aim_point = Vector2(760.0, 0.0)
 	var first := _target(host, Vector2(150.0, 0.0), 10000.0, 10000.0)
+	# The soft silhouette makes the 65% per-target activation cap bind: base
+	# collapse (18 x 100) far exceeds 0.65 x 2000.
+	var soft := _target(host, Vector2(250.0, -15.0), 2000.0, 2000.0)
 	var second := _target(host, Vector2(350.0, 20.0), 10000.0, 10000.0)
 	var boss := _target(host, Vector2(550.0, -10.0), 10000.0, 10000.0)
 	boss.add_to_group(Activation.BOSS_GROUP)
 	var off_rail := _target(host, Vector2(350.0, 300.0), 10000.0, 10000.0)
+	# The host hands the rail a duplicate entry: chain nodes must stay unique.
+	host.fixture_targets.append(first)
 	var controller := Controller.new(host, _registry)
 	_check(controller.activate(CLASS_ID, "dark_wand"), "Vanishing Thread must activate")
 	var activation = controller.active_activation()
 	var effect := _effect(activation)
-	_advance(activation, 0.7)
-	_check(effect != null and int(effect.get("marked_count_for_tests")) == 3
-		and int(effect.get("collapse_count_for_tests")) == 3,
-		"the aimed rail must mark and collapse exactly its three distinct nodes")
+	# Frozen chronology oracle: rail beam only at release (0.28), joint
+	# collapse — the frozen `active` beat — only at 0.62.
+	_advance(activation, 0.25)
+	_check(not _has_presentation(host, "weapon_ultimate.phase.dark_mage.dark_wand.execute"),
+		"the frozen execute beat must not fire before 0.28s")
+	_advance(activation, 0.1)
+	_check(_has_presentation(host, "weapon_ultimate.phase.dark_mage.dark_wand.execute"),
+		"the frozen execute beat must fire at the 0.28s release")
+	_check(effect != null and int(effect.get("marked_count_for_tests")) == 4,
+		"a duplicate host entry must not add a chain node")
+	_check(not _has_presentation(host, "weapon_ultimate.phase.dark_mage.dark_wand.active"),
+		"the frozen active beat must wait for the 0.62s collapse")
+	_check(_removed_health(host.fixture_targets) <= 0.0,
+		"marks must stay damage-free until the joint collapse")
+	_advance(activation, 0.35)
+	_check(effect != null and int(effect.get("collapse_count_for_tests")) == 4,
+		"the aimed rail must collapse exactly its distinct nodes")
+	_check(_presentation_count(host, "weapon_ultimate.phase.dark_mage.dark_wand.active") == 1,
+		"the frozen active beat must fire exactly once at the collapse")
 	_check(off_rail.received.is_empty(), "the thread must not leak outside its aimed corridor")
 	_check(first.received.size() == 1 and second.received.size() == 1
 		and float(second.received[0]["amount"]) > float(first.received[0]["amount"]),
 		"each distinct chain node must raise the final collapse ramp")
+	_check(is_equal_approx(soft.max_health - soft.health, soft.max_health * 0.65),
+		"the 65% per-target activation cap must bind on a soft normal target")
 	_check(is_equal_approx(boss.max_health - boss.health, boss.max_health * 0.11),
 		"all simultaneous collapse nodes must share the 11% boss cap")
-	_check(_has_presentation(host, "weapon_ultimate.phase.dark_mage.dark_wand.execute")
-		and _has_presentation(host, "weapon_ultimate.phase.dark_mage.dark_wand.active"),
-		"Thread mechanics must emit the accepted execute/active event IDs")
 	_check(is_equal_approx(activation.applied_total, _removed_health(host.fixture_targets)),
 		"Thread attribution must equal actual HP removed after caps")
-	controller.cancel()
+	# Ordinary completion: the lifecycle tween closes the cast at 3.85s.
+	_advance(activation, 3.2)
 	await process_frame
-	_check(not is_instance_valid(effect) and not host.active,
-		"Thread cancel must drop the activation-owned effect and active latch")
+	_check(not controller.is_active() and not host.active and activation.is_finished(),
+		"the thread must complete naturally at its 3.85s lifetime")
+	_check(not is_instance_valid(effect),
+		"ordinary completion must free the activation-owned effect")
 	await _drop(host)
 
 
@@ -236,6 +360,19 @@ func _advance(activation, seconds: float) -> void:
 		elapsed += STEP
 
 
+## Same clock, but statuses expire through the REAL StatusEffects.tick path.
+func _advance_with_status_tick(activation, host: Host, seconds: float) -> void:
+	var elapsed := 0.0
+	while elapsed < seconds:
+		for tween in activation.tweens_for_tests():
+			if tween != null and tween.is_valid():
+				tween.custom_step(STEP)
+		for target in host.fixture_targets:
+			if is_instance_valid(target):
+				StatusEffects.tick(target, STEP)
+		elapsed += STEP
+
+
 func _status_with_prefix(target: Node, prefix: String) -> Dictionary:
 	for status_id in StatusEffects.snapshot(target):
 		if str(status_id).begins_with(prefix):
@@ -253,16 +390,25 @@ func _feedback_count(targets: Array, mechanic: String) -> int:
 
 
 func _has_presentation(host: Host, event_id: String) -> bool:
+	return _presentation_count(host, event_id) > 0
+
+
+func _presentation_count(host: Host, event_id: String) -> int:
+	var count := 0
 	for raw_event in host.presentations:
 		if str((raw_event as Dictionary).get("event_id", "")) == event_id:
-			return true
-	return false
+			count += 1
+	return count
 
 
 func _removed_health(targets: Array) -> float:
 	var total := 0.0
+	var seen := {}
 	for raw_target in targets:
 		var target := raw_target as Target
+		if target == null or seen.has(target.get_instance_id()):
+			continue
+		seen[target.get_instance_id()] = true
 		total += target.max_health - target.health
 	return total
 

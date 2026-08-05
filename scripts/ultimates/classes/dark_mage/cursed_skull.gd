@@ -6,6 +6,8 @@ const PROFILE_ID := "weapon_ultimate.profile.dark_mage.cursed_skull"
 const EXECUTOR_ID := "weapon_ultimate.executor.dark_mage.cursed_skull"
 const EFFECT_SCENE := "res://scripts/ultimates/classes/dark_mage/cursed_skull.tscn"
 
+const CROWN_MARKER := Color(0.72, 0.28, 0.95, 0.85)
+
 var ultimate_damage_sink: Callable = Callable()
 var transfer_count_for_tests := 0
 var harvest_count_for_tests := 0
@@ -15,6 +17,7 @@ var _marked: Array = []
 var _marked_ids := {}
 var _transferred_from := {}
 var _leased_statuses: Array[Dictionary] = []
+var _settled := false
 
 
 static func parameter_contract() -> Dictionary:
@@ -22,6 +25,7 @@ static func parameter_contract() -> Dictionary:
 		"screen_radius": {"type": "number", "minimum": 0.0},
 		"crowd_cap": {"type": "integer", "minimum": 1},
 		"release_delay": {"type": "number", "minimum": 0.0},
+		"active_delay": {"type": "number", "minimum": 0.0},
 		"curse_duration": {"type": "number", "minimum": 0.1},
 		"outgoing_damage_multiplier": {"type": "number", "minimum": 0.0, "maximum": 1.0},
 		"pulse_count": {"type": "integer", "minimum": 1},
@@ -38,12 +42,22 @@ static func parameter_contract() -> Dictionary:
 static func execute(activation) -> float:
 	if not activation.set_control_resistance_policy(_control_policy()):
 		return 0.0
-	var targets: Array = activation.select_targets(
+	# Dead silhouettes may still be inside the screen radius; they must not
+	# spend the 14-mark cap, so the cap is applied after the alive filter.
+	var targets: Array = []
+	for raw_target in activation.select_targets(
 		activation.origin(),
 		activation.param_float("screen_radius", 900.0),
-		activation.param_int("crowd_cap", 14),
+		0,
 		"nearest"
-	)
+	):
+		var candidate := raw_target as Node2D
+		if candidate == null or not is_instance_valid(candidate) \
+				or (candidate.get("health") != null and float(candidate.get("health")) <= 0.0):
+			continue
+		targets.append(candidate)
+		if targets.size() >= activation.param_int("crowd_cap", 14):
+			break
 	var effect = activation.spawn(EFFECT_SCENE)
 	if effect == null or not effect.has_method("configure"):
 		return 0.0
@@ -51,19 +65,28 @@ static func execute(activation) -> float:
 	var tween: Tween = activation.track_tween()
 	if tween == null:
 		return 0.0
+	# One lifecycle tween carries every beat; the cursor keeps the frozen
+	# chronology exact: execute at release (0.85), the settled-crown `active`
+	# beat at active_delay (1.35) between the pulse cadence points, harvest at
+	# 5.55, natural end at 6.35.
 	var release_delay: float = activation.param_float("release_delay", 0.85)
+	var cursor := release_delay
 	tween.tween_interval(release_delay)
 	tween.tween_callback(Callable(effect, "crown_targets"))
+	tween.tween_callback(Callable(effect, "curse_pulse").bind(0))
+	var active_delay: float = maxf(activation.param_float("active_delay", 1.35), cursor)
+	tween.tween_interval(active_delay - cursor)
+	tween.tween_callback(Callable(effect, "settle"))
+	cursor = active_delay
 	var pulses: int = activation.param_int("pulse_count", 4)
-	for pulse in pulses:
-		if pulse > 0:
-			tween.tween_interval(activation.param_float("pulse_interval", 0.85))
+	var pulse_interval: float = activation.param_float("pulse_interval", 0.85)
+	for pulse in range(1, pulses):
+		var pulse_at := maxf(release_delay + pulse_interval * float(pulse), cursor)
+		tween.tween_interval(pulse_at - cursor)
 		tween.tween_callback(Callable(effect, "curse_pulse").bind(pulse))
-	var pulse_end: float = release_delay + activation.param_float("pulse_interval", 0.85) \
-		* float(maxi(pulses - 1, 0))
-	var harvest_delay: float = activation.param_float("harvest_delay", 5.55)
-	if harvest_delay > pulse_end:
-		tween.tween_interval(harvest_delay - pulse_end)
+		cursor = pulse_at
+	var harvest_delay: float = maxf(activation.param_float("harvest_delay", 5.55), cursor)
+	tween.tween_interval(harvest_delay - cursor)
 	tween.tween_callback(Callable(effect, "harvest"))
 	var lifetime: float = activation.param_float("lifetime", 6.35)
 	if lifetime > harvest_delay:
@@ -72,12 +95,13 @@ static func execute(activation) -> float:
 
 
 static func _control_policy() -> Dictionary:
+	# Doc contract: no tier receives a movement lock or an execute.
 	return {
 		"normal": {
 			"displacement_multiplier": 0.0,
 			"duration_multiplier": 1.0,
 			"allow_movement_lock": false,
-			"allow_execute": true,
+			"allow_execute": false,
 		},
 		"epic": {
 			"displacement_multiplier": 0.0,
@@ -110,6 +134,18 @@ func crown_targets() -> void:
 	_activation.present("weapon_ultimate.phase.dark_mage.cursed_skull.execute", {
 		"position": global_position,
 		"radius": _activation.param_float("screen_radius", 900.0) * 0.26,
+		"shape": "ring_pulse",
+	})
+
+
+## Frozen `active` beat: the settled crown aura, once per cast.
+func settle() -> void:
+	if _activation == null or _activation.is_finished() or _settled:
+		return
+	_settled = true
+	_activation.present("weapon_ultimate.phase.dark_mage.cursed_skull.active", {
+		"position": global_position,
+		"radius": _activation.param_float("screen_radius", 900.0) * 0.3,
 		"shape": "ring_pulse",
 	})
 
@@ -160,18 +196,27 @@ func harvest() -> void:
 func _mark(target: Node2D) -> void:
 	if target == null or not is_instance_valid(target) or _marked_ids.has(target.get_instance_id()):
 		return
+	# The marker slot is last-writer-wins shared metadata: remember what was
+	# there before this lease so removal can hand the exact prior value back.
+	var lease := {
+		"target": target,
+		"had_marker": target.has_meta(StatusEffects.MARKER_META_KEY),
+		"prior_marker": target.get_meta(StatusEffects.MARKER_META_KEY) \
+			if target.has_meta(StatusEffects.MARKER_META_KEY) else null,
+	}
 	var status_id := "dark_mage_ultimate_crown_%d_%d" % [get_instance_id(), target.get_instance_id()]
 	var result: Dictionary = _activation.apply_control(target, Vector2.ZERO, status_id, {
 		"duration": _activation.param_float("curse_duration", 5.5),
 		"damage_multiplier": _activation.param_float("outgoing_damage_multiplier", 0.65),
 		"crown_curse": true,
-		"marker_color": Color(0.72, 0.28, 0.95, 0.85),
+		"marker_color": CROWN_MARKER,
 	})
 	if not bool(result.get("status_applied", false)):
 		return
 	_marked_ids[target.get_instance_id()] = true
 	_marked.append(target)
-	_leased_statuses.append({"target": target, "status_id": status_id})
+	lease["status_id"] = status_id
+	_leased_statuses.append(lease)
 
 
 func _transfer_curse(source: Node2D, pulse: int) -> void:
@@ -191,7 +236,9 @@ func _transfer_curse(source: Node2D, pulse: int) -> void:
 			continue
 		_mark(target)
 		transfer_count_for_tests += 1
-		_activation.present("weapon_ultimate.phase.dark_mage.cursed_skull.active", {
+		# Conditional runtime beat: executor-local id, not a frozen phase id —
+		# the frozen `active` chronology belongs to the scheduled settle() beat.
+		_activation.present(EXECUTOR_ID + ".transfer", {
 			"position": target.global_position,
 			"radius": _activation.param_float("transfer_radius", 260.0) * 0.3,
 			"shape": "ring_pulse",
@@ -222,14 +269,32 @@ func _exit_tree() -> void:
 
 func _remove_leased_status(lease: Dictionary) -> void:
 	var target := lease.get("target") as Node
-	if target == null or not is_instance_valid(target) or not target.has_meta(StatusEffects.META_KEY):
+	if target == null or not is_instance_valid(target):
 		return
-	var statuses = target.get_meta(StatusEffects.META_KEY)
-	if not statuses is Dictionary:
+	if target.has_meta(StatusEffects.META_KEY):
+		var statuses = target.get_meta(StatusEffects.META_KEY)
+		if statuses is Dictionary:
+			var owned := (statuses as Dictionary).duplicate(true)
+			owned.erase(str(lease.get("status_id", "")))
+			if owned.is_empty():
+				target.remove_meta(StatusEffects.META_KEY)
+			else:
+				target.set_meta(StatusEffects.META_KEY, owned)
+	_reconcile_marker(target, lease)
+
+
+## The lease owns the marker slot only while the crown color is still the one
+## on the target. Ours -> restore the exact prior value (or clear when there
+## was none). A different color means a later foreign effect took the slot and
+## must be preserved. Runs even after natural status expiry, because tick()
+## drops the status entry without releasing the shared marker slot.
+func _reconcile_marker(target: Node, lease: Dictionary) -> void:
+	if not target.has_meta(StatusEffects.MARKER_META_KEY):
 		return
-	var owned := (statuses as Dictionary).duplicate(true)
-	owned.erase(str(lease.get("status_id", "")))
-	if owned.is_empty():
-		target.remove_meta(StatusEffects.META_KEY)
+	var current = target.get_meta(StatusEffects.MARKER_META_KEY)
+	if not (current is Color and (current as Color) == CROWN_MARKER):
+		return
+	if bool(lease.get("had_marker", false)):
+		target.set_meta(StatusEffects.MARKER_META_KEY, lease.get("prior_marker"))
 	else:
-		target.set_meta(StatusEffects.META_KEY, owned)
+		target.remove_meta(StatusEffects.MARKER_META_KEY)

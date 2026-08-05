@@ -13,6 +13,7 @@
       "screen_radius": 900.0,
       "crowd_cap": 14,
       "release_delay": 0.85,
+      "active_delay": 1.35,
       "curse_duration": 5.5,
       "outgoing_damage_multiplier": 0.65,
       "pulse_count": 4,

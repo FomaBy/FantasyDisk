@@ -14,6 +14,7 @@
       "crowd_cap": 12,
       "release_delay": 0.6,
       "pair_interval": 0.24,
+      "reflection_delay": 0.45,
       "original_damage": 17.0,
       "reflection_damage": 14.0,
       "reflection_radius": 150.0,
