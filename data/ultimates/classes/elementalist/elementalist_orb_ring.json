@@ -12,6 +12,7 @@
     "params": {
       "orbit_radius": 212.13203435596427,
       "beat_radius": 290.0,
+      "nova_radius": 440.0,
       "crowd_cap": 24,
       "beat_start": 1.0,
       "beat_interval": 1.2,
