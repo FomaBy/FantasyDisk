@@ -38,6 +38,14 @@ from typing import BinaryIO, Sequence
 
 FATAL_OUTPUT_RE = re.compile(r"\bSCRIPT ERROR\b|\bFATAL\b", re.IGNORECASE)
 SCRIPT_LOAD_FAILURE = "Failed to load script"
+# Godot 4.7 phrases a script/resource load failure differently depending on
+# the code path that rejects it; a requested suite that never ran must fail
+# closed under any of them.
+SCRIPT_LOAD_FAILURE_PATTERNS = (
+    SCRIPT_LOAD_FAILURE,
+    "Can't load script",
+    "Failed loading resource",
+)
 IMPORT_CACHE_MISSING_MESSAGE = "godot_gate: import cache missing, running headless import first"
 MACHINE_RUN_TOKENS = 64
 
@@ -134,8 +142,9 @@ def _fatal_output_signal(output: str) -> str:
     match = FATAL_OUTPUT_RE.search(output)
     if match is not None:
         return match.group(0)
-    if SCRIPT_LOAD_FAILURE in output:
-        return SCRIPT_LOAD_FAILURE
+    for pattern in SCRIPT_LOAD_FAILURE_PATTERNS:
+        if pattern in output:
+            return pattern
     return ""
 
 
