@@ -1,0 +1,9 @@
+[gd_scene load_steps=3 format=3]
+
+[ext_resource type="Script" path="res://scripts/ultimates/classes/berserk/hammer.gd" id="1_executor"]
+[ext_resource type="PackedScene" path="res://scenes/vfx/ultimates/berserk/BerserkHammerFourfoldRift.tscn" id="2_presentation"]
+
+[node name="BerserkHammerUltimate" type="Node2D"]
+script = ExtResource("1_executor")
+
+[node name="Presentation" parent="." instance=ExtResource("2_presentation")]
