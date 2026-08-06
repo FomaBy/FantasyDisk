@@ -298,6 +298,16 @@ func _make_player(character_id: String, weapon_id := "") -> Node2D:
 	_holder.add_child(player)
 	player.global_position = Vector2(600, 400)
 	player.call("configure_character", character_id, weapon_id)
+	# FAN-2179: глушим автономный цикл атаки оружия ДО первого кадра — экипировка
+	# синхронна, а BerserkWeapon._process стартует с _cooldown=0.0 и сам начинает
+	# замах. При большом реальном delta кадра (нагрузка CPU/import) окно урона
+	# замаха успевало накрыть тестового dummy во время await process_frame:
+	# лишний хит (ровно ×2 в hit-path) плюс лишнее эхо через on_weapon_hit
+	# (ульта-эхо). Контракты теста зовут _rolled_damage/_damage_target/эхо
+	# напрямую — авто-замах для них не нужен и только гоняется с замерами.
+	var weapon: Node = player.get("equipped_weapon")
+	if weapon != null and is_instance_valid(weapon):
+		weapon.set_process(false)
 	return player
 
 
