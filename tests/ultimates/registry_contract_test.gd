@@ -138,13 +138,38 @@ func _initialize() -> void:
 		"unknown weapon pair must not fall back",
 		errors
 	)
+	# The migration-gate probe is derived, not hardcoded: a literal pair goes
+	# red by construction the moment its class package ships (FAN-2131).
+	var probe_class_id := ""
+	var probe_weapon_id := ""
+	for raw_class_id in PD.WEAPONS_BY_CLASS.keys():
+		if not probe_class_id.is_empty():
+			break
+		for raw_weapon_id in (PD.WEAPONS_BY_CLASS[raw_class_id] as Dictionary).keys():
+			var probe_key := Resolver.profile_key(str(raw_class_id), str(raw_weapon_id))
+			var probe_profile: Dictionary = registry.catalog_profile_for(
+				str(raw_class_id), str(raw_weapon_id)
+			)
+			if str(probe_profile.get("implementation_state", "")) != "ready" \
+					or not package_pairs.has(probe_key):
+				probe_class_id = str(raw_class_id)
+				probe_weapon_id = str(raw_weapon_id)
+				break
+	if probe_class_id.is_empty():
+		errors.append(
+			"migration gate has no non-exact-ready pair left to probe; "
+			+ "activate the derived migration contract instead (owner: FAN-1541)"
+		)
 	_expect(
-		registry.resolution_source("berserk", "sword", false) == Resolver.SOURCE_UNAVAILABLE,
+		registry.resolution_source(probe_class_id, probe_weapon_id, false)
+			== Resolver.SOURCE_UNAVAILABLE,
 		"migration gate must be able to disable legacy fallback",
 		errors
 	)
 	_expect(
-		registry.resolve_executable("berserk", "sword", PD.ultimate_config("berserk"), false).is_empty(),
+		registry.resolve_executable(
+			probe_class_id, probe_weapon_id, PD.ultimate_config(probe_class_id), false
+		).is_empty(),
 		"disabled fallback must return no executable contract",
 		errors
 	)
