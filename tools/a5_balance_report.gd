@@ -19,6 +19,10 @@ const REPORT_DIR := "res://docs/design/reports/fan1438_a5_balance"
 const REPORT_PATH := REPORT_DIR + "/report.md"
 const CSV_PATH := REPORT_DIR + "/per_weapon.csv"
 const RAW_PATH := REPORT_DIR + "/raw.json.gz"
+# FAN-1682: the historical f09 dataset must never share the path that --mode=full
+# rewrites. read_raw_artifact() defaults to this immutable fixture; callers that
+# validate the generated report pass RAW_PATH explicitly.
+const F09_ORACLE_RAW_PATH := "res://tests/fixtures/a5_f09_oracle.json.gz"
 const LEGACY_RAW_PATH := REPORT_DIR + "/raw.json"
 const GZIP_ARTIFACT_SCRIPT := "res://tools/a5_gzip_artifact.py"
 const LEVELS := [1, 20]
@@ -51,19 +55,20 @@ const ORACLE_LINEAGE_PATH := "res://tests/fixtures/a5_oracle_lineage.json"
 const ORACLE_LINEAGE_SCHEMA := "fan1641.a5-oracle-lineage.v1"
 const PROJECTION_FIELDS := ["live_solo_dpm_mean", "live_crowd_dpm_mean", "solo_variance_dpm2", "crowd_variance_dpm2"]
 # FAN-1658: immutable runtime trust root for the A5 full-telemetry candidate gate.
-# These are the exact current integration base (b8909e30) identity, live-telemetry
-# sample count, and the aggregate over the 309 canonical per-sample telemetry digests.
-# The value is reproduced by two clean b8909e30 --mode=full runs through
-# canonical_full_telemetry (verified again on FAN-1658). Keeping the trust root in the
+# These are the exact current integration base (fda9971b, FAN-1575 atomic landing)
+# identity, live-telemetry sample count, and the aggregate over the 309 canonical
+# per-sample telemetry digests. The value is reproduced by byte-identical clean
+# --mode=full runs through canonical_full_telemetry on both the 3f3788fd and the
+# fda9971b gameplay trees (verified on FAN-1575). Keeping the trust root in the
 # executable tool - rather than only in the caller/candidate-owned lineage manifest -
 # is what closes the FAN-1650 fail-open: a payload edit that self-repins every
 # candidate-controlled digest/aggregate AND the pinned manifest map still diverges
 # from these constants and fails closed. The lineage manifest may only MATERIALIZE the
 # per-sample map; it can never override this identity, count, or aggregate.
-const TELEMETRY_ANCHOR_BASE_COMMIT := "b8909e30b779afe8f99aad554b909cfa44e4f1a1"
-const TELEMETRY_ANCHOR_BASE_TREE := "73caf39a6004be0fa9c2054e4e4ae0d41d272484"
+const TELEMETRY_ANCHOR_BASE_COMMIT := "fda9971bbe39b39088926c99d929cd147f3a5e65"
+const TELEMETRY_ANCHOR_BASE_TREE := "7795fa80e1094b183954d36218f60bfc1b9a93eb"
 const TELEMETRY_ANCHOR_SAMPLE_COUNT := 309
-const TELEMETRY_ANCHOR_FULL_SHA256 := "ad1d9a7ae1a36b087370b33582601a51b880d8cf102d3adc461fdb3e1c5d307f"
+const TELEMETRY_ANCHOR_FULL_SHA256 := "c269edb122252e4ac35a46e24b531c26affcb071b69e1e20fe428b17c943b72a"
 # FAN-1672: immutable runtime trust root for the 51x4 PROJECTION dimension.
 # RAW_PATH used to be both the historical f09 oracle the candidate gate read and
 # the artifact a successful --mode=full run rewrites, so the gate consumed its own
@@ -79,7 +84,7 @@ const TELEMETRY_ANCHOR_FULL_SHA256 := "ad1d9a7ae1a36b087370b33582601a51b880d8cf1
 # manifest can substitute an alternative projection baseline. No tolerance,
 # wildcard, or excluded field is introduced: the comparison stays exact.
 const PROJECTION_ANCHOR_HISTORICAL_SHA256 := "d81092333cdf6e3f4196b8c5ee9198e83ccef8bfe7530a8ef20f911a54d5efd1"
-const PROJECTION_ANCHOR_CURRENT_SHA256 := "ac7710a043848eb4fe895237092c3aa2458ab4c1092258a6ba03d5f02b635494"
+const PROJECTION_ANCHOR_CURRENT_SHA256 := "a85a35d0430d5d520c2b0643870b762dff9285f00ae0b2b214b3ff96d01ef7cb"
 const PROJECTION_ANCHOR_PAIR_COUNT := 51
 const REPRESENTATIVE_CLASS_ID := "berserk"
 const REPRESENTATIVE_WEAPON_ID := "sword"
@@ -1809,7 +1814,8 @@ static func telemetry_sample_keys_digest(dataset: Dictionary) -> Dictionary:
 # JSON.stringify(value, "", true, true) sorts dictionary keys recursively and keeps
 # array order at full float precision, so an event reorder, an added/removed event
 # or any numeric edit changes the canonical text; two independent clean runs of the
-# same base commit reproduce byte-identical output (verified on b8909e30). The
+# same base commit reproduce byte-identical output (verified on b8909e30 and
+# re-verified on the 3f3788fd/fda9971b bases, FAN-1575). The
 # stored trace_digest_sha256 is a DERIVED field: it is recomputed from the event
 # array and independently verified, so a lone trace-digest edit cannot pass.
 static func canonical_telemetry_sample(sample: Dictionary) -> Dictionary:
@@ -1901,7 +1907,7 @@ static func _compare_candidate_full_telemetry(candidate: Dictionary, pinned_dige
 
 
 # FAN-1658: fail-closed comparison of a candidate's canonical full telemetry against
-# the IMMUTABLE runtime trust root (b8909e30 identity, 309 samples, aggregate
+# the IMMUTABLE runtime trust root (TELEMETRY_ANCHOR_BASE_COMMIT identity, 309 samples, aggregate
 # TELEMETRY_ANCHOR_FULL_SHA256). The materialized per-sample map `pinned` is ACCEPTED
 # only as convenience input for locating per-sample mismatches: its schema, count and
 # aggregate must reproduce the runtime constants BEFORE it is used, and the candidate
@@ -1934,11 +1940,11 @@ static func verify_full_telemetry_against_anchor(candidate: Dictionary, pinned: 
 # because the manifest is caller/candidate-owned - re-pinning the map + its own
 # aggregate kept the internal self-consistency check green. FAN-1658 anchors the gate
 # on the immutable runtime trust root above: the manifest base identity must equal
-# b8909e30, and its materialized telemetry_full map is only used after its
+# the runtime anchor base, and its materialized telemetry_full map is only used after its
 # count/aggregate reproduce TELEMETRY_ANCHOR_FULL_SHA256. The historical f09 oracle is
-# NOT a valid baseline: the six measurement-contract commits between f09 and b8909e30
+# NOT a valid baseline: the measurement-contract commits between f09 and b8909e30
 # changed the event contract for every sample, so full-payload parity is anchored
-# directly on b8909e30.
+# directly on the current anchor base (fda9971b since FAN-1575).
 static func verify_candidate_full_telemetry_against_pinned(candidate_dataset: Dictionary, manifest: Dictionary) -> Dictionary:
 	var errors := PackedStringArray()
 	var base: Dictionary = manifest.get("current_integration_base", {})
@@ -1962,7 +1968,7 @@ static func verify_candidate_full_telemetry_against_pinned(candidate_dataset: Di
 # EXPLICITLY injected root (the pinned map + its own count + its own aggregate) instead
 # of the immutable runtime constants. It exists solely so the small synthetic mutation
 # matrix in tests/a5_balance_report_parity_test.gd can exercise the per-field fail-
-# closed comparison without the full 309-sample b8909e30 anchor. It is never reachable
+# closed comparison without the full 309-sample current-base anchor. It is never reachable
 # from any production or --mode=full path: generate_dataset()/verify_candidate_against_
 # current_base() only call verify_candidate_full_telemetry_against_pinned(), which pins
 # the runtime constants and ignores any caller-supplied root.
@@ -2182,7 +2188,7 @@ static func verify_oracle_lineage(manifest: Dictionary, historical_dataset: Dict
 # the 309 telemetry sample-KEY set; FAN-1649 adds exact equality of the full
 # canonical telemetry PAYLOAD (events, damage, target/order, frame/timing, HP
 # ledger, counters/DPM, RNG/observer state, feedback, on-kill/final links) against
-# the b8909e30 payload pinned in the manifest, so a payload edit that preserves the
+# the current-base payload pinned in the manifest, so a payload edit that preserves the
 # 309 keys (e.g. a +0.01 damage mutation, FAN-1642) can no longer self-confirm.
 static func verify_candidate_against_current_base(candidate_dataset: Dictionary, manifest: Dictionary) -> Dictionary:
 	var errors := PackedStringArray()
@@ -3053,7 +3059,7 @@ func _write_raw_artifact(content: String) -> void:
 			_errors.append("cannot remove replaced legacy raw artifact %s" % LEGACY_RAW_PATH)
 
 
-static func read_raw_artifact(path := RAW_PATH) -> Dictionary:
+static func read_raw_artifact(path := F09_ORACLE_RAW_PATH) -> Dictionary:
 	if not FileAccess.file_exists(path):
 		return {"ok": false, "error": "raw gzip artifact is missing"}
 	var staging_path := "user://fan1438_a5_raw_integrity.json"

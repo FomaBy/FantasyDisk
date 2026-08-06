@@ -10,19 +10,19 @@ extends SceneTree
 # immediate current integration base.
 const Generator := preload("res://tools/a5_balance_report.gd")
 const F09_ORACLE_PROJECTION_SHA256 := "d81092333cdf6e3f4196b8c5ee9198e83ccef8bfe7530a8ef20f911a54d5efd1"
-# FAN-1641: the current integration base (b8909e30) 51x4 digest is pinned here as
+# FAN-1641: the current integration base (3f3788fd, FAN-1575) 51x4 digest is pinned here as
 # an EXTERNAL constant, exactly like the f09 oracle above. This anchors the whole
 # accepted-delta set: a self-consistent manifest tamper (drop/add/alter a delta and
 # recompute its own counts + current sha) still changes the reconstructed digest,
 # which then diverges from this committed constant and fails closed.
-const CURRENT_BASE_PROJECTION_SHA256 := "ac7710a043848eb4fe895237092c3aa2458ab4c1092258a6ba03d5f02b635494"
-# FAN-1649: external pin of the current integration-base (b8909e30) FULL canonical
+const CURRENT_BASE_PROJECTION_SHA256 := "a85a35d0430d5d520c2b0643870b762dff9285f00ae0b2b214b3ff96d01ef7cb"
+# FAN-1649: external pin of the current integration-base (3f3788fd, FAN-1575) FULL canonical
 # telemetry payload aggregate over the 309 per-sample digests. Like the projection
 # constant above, it anchors the whole pinned map: a self-consistent manifest tamper
 # (rewrite one sample digest AND recompute its own aggregate) still diverges from
 # this committed constant and fails closed. The value is reproduced by two clean
-# b8909e30 runs through Generator.canonical_full_telemetry (see docs).
-const CURRENT_BASE_TELEMETRY_FULL_SHA256 := "ad1d9a7ae1a36b087370b33582601a51b880d8cf102d3adc461fdb3e1c5d307f"
+# byte-identical current-base runs through Generator.canonical_full_telemetry (see docs).
+const CURRENT_BASE_TELEMETRY_FULL_SHA256 := "c269edb122252e4ac35a46e24b531c26affcb071b69e1e20fe428b17c943b72a"
 const LIVE_TELEMETRY_SCHEMA := "fan1511.runtime-telemetry.v2"
 
 var _errors := PackedStringArray()
@@ -30,10 +30,10 @@ var _errors := PackedStringArray()
 
 func _initialize() -> void:
 	var raw_artifact := Generator.read_raw_artifact()
-	_check(bool(raw_artifact.get("ok", false)), "raw A5 artifact must decode before parity verification")
+	_check(bool(raw_artifact.get("ok", false)), "immutable f09 A5 oracle must decode before parity verification")
 	var raw_text := str(raw_artifact.get("text", ""))
 	var dataset = JSON.parse_string(raw_text)
-	_check(dataset is Dictionary, "raw A5 artifact must parse before parity verification")
+	_check(dataset is Dictionary, "immutable f09 A5 oracle must parse before parity verification")
 	if dataset is Dictionary:
 		_verify_historical_oracle(dataset as Dictionary)
 		_verify_lineage_contract(dataset as Dictionary, raw_text)
@@ -267,7 +267,7 @@ func _expect_projection_failure(candidate: Dictionary, manifest: Dictionary, mes
 
 
 # FAN-1649/FAN-1658: the full canonical telemetry PAYLOAD contract. The current base
-# is anchored by the IMMUTABLE runtime trust root inside the tool (b8909e30 identity,
+# is anchored by the IMMUTABLE runtime trust root inside the tool (anchor-base identity,
 # 309 samples, aggregate constant). A faithful materialized map passes; a candidate +
 # manifest pair that self-repins every controlled digest/aggregate still fails closed
 # (FAN-1650); and every per-field payload mutation is detected.
@@ -290,7 +290,7 @@ func _verify_full_telemetry_contract(historical: Dictionary) -> void:
 	var recomputed_aggregate := _aggregate_of(pinned_digests)
 	_check(recomputed_aggregate == str(pinned.get("full_sha256", "")), "pinned full telemetry aggregate is internally inconsistent")
 	_check(str(pinned.get("full_sha256", "")) == CURRENT_BASE_TELEMETRY_FULL_SHA256, "manifest full-telemetry digest differs from the externally pinned current base")
-	# key set must equal the historical roster sample-key set (invariant f09<->b8909e30).
+	# key set must equal the historical roster sample-key set (invariant f09<->current base).
 	var historical_keys := {}
 	for sample_value in (historical.get("live_telemetry", {}) as Dictionary).get("samples", []):
 		historical_keys[str((sample_value as Dictionary).get("sample_key", ""))] = true
@@ -312,12 +312,12 @@ func _verify_full_telemetry_contract(historical: Dictionary) -> void:
 	_check(_aggregate_of(tampered_digests) != CURRENT_BASE_TELEMETRY_FULL_SHA256, "self-consistent full-telemetry tamper must diverge from the external constant")
 
 	# 2b. FAN-1658: the runtime gate anchors on immutable constants inside the tool, not
-	#     on the caller/candidate-owned manifest. The real materialized b8909e30 per-
+	#     on the caller/candidate-owned manifest. The real materialized current-base per-
 	#     sample map (proven above: aggregate == the external committed constant) is a
 	#     byte-identical materialization of the current base and passes the runtime
 	#     anchor directly.
 	var faithful_candidate := {"ok": true, "count": pinned_digests.size(), "sample_digests": pinned_digests.duplicate(true), "digest": _aggregate_of(pinned_digests)}
-	_check(bool(Generator.verify_full_telemetry_against_anchor(faithful_candidate, pinned).get("ok", false)), "faithful materialized b8909e30 telemetry map must pass the runtime anchor")
+	_check(bool(Generator.verify_full_telemetry_against_anchor(faithful_candidate, pinned).get("ok", false)), "faithful materialized current-base telemetry map must pass the runtime anchor")
 
 	# FAN-1650 self-repin reproduced on the REAL 309-sample materialized map: change one
 	# per-sample digest (as an event-damage edit would) and self-repin EVERY candidate-
@@ -346,7 +346,7 @@ func _verify_full_telemetry_contract(historical: Dictionary) -> void:
 
 	# 3. Per-field payload sensitivity: a faithful synthetic candidate passes and every
 	#    payload mutation type fails closed. These small samples cannot carry the full
-	#    309-sample b8909e30 anchor (covered by 2b), so they exercise the per-field
+	#    309-sample current-base anchor (covered by 2b), so they exercise the per-field
 	#    comparison against a TEST-ONLY injected root. That seam is never reachable from
 	#    any production/--mode=full path (see test_only_verify_full_telemetry_with_root).
 	var samples := _synthetic_samples()

@@ -1399,25 +1399,32 @@ tuning.
 
 ### FAN-1641 — lineage-aware A5 parity contract
 
-Исторический численный оракул `f09f21ec` и его закоммиченные артефакты
-(`raw.json.gz`, `per_weapon.csv`, `report.md`) остаются read-only и неизменными.
-После принятых и независимо QA-проверенных summon-фиксов FAN-1585 (`e0c6c8c5`,
-druid summon formations) и FAN-1596 (`8376f5c7`, homunculus pair guard) свежая
-регенерация из текущего `origin/dev` детерминированно отличается от f09 ровно в
-трёх из 204 ячеек 51×4 — только у `druid/summon_amulet`: crowd mean
+Исторический численный оракул `f09f21ec` неизменен и read-only. Его полный
+DATASET лежит в immutable fixture `tests/fixtures/a5_f09_oracle.json.gz`, а его
+51×4 матрица и хэши — в `tests/fixtures/a5_oracle_lineage.json`; только эти два
+файла являются источником lineage (FAN-1682/FAN-1730). Артефакты
+`docs/design/reports/fan1438_a5_balance/{report.md,per_weapon.csv,raw.json.gz}`
+к f09 не относятся: это ТЕКУЩИЕ регенерируемые артефакты, которые каждый
+успешный `--mode=full` перезаписывает, и они никогда не служат baseline'ом f09.
+На момент FAN-1641, после принятых и независимо QA-проверенных summon-фиксов
+FAN-1585 (`e0c6c8c5`, druid summon formations) и FAN-1596 (`8376f5c7`, homunculus
+pair guard), свежая регенерация детерминированно отличалась от f09 ровно в трёх
+из 204 ячеек 51×4 — только у `druid/summon_amulet`: crowd mean
 `361323.76→394715.33`, solo variance `45635023.84→51498851.11`, crowd variance
-`36494237500.62→36324029697.05`; solo mean остаётся `68101.14`. Поэтому буквальный
-all-zero diff к f09/`ec15444e` больше недостижим без отката принятой геометрии
-или подмены baseline.
+`36494237500.62→36324029697.05`; solo mean остаётся `68101.14`. Буквальный
+all-zero diff к f09/`ec15444e` уже тогда был недостижим без отката принятой
+геометрии или подмены baseline; с FAN-1575 расхождение к f09 системное — см.
+секцию FAN-1575 ниже, механизм контракта не изменился.
 
 `tests/fixtures/a5_oracle_lineage.json` (schema `fan1641.a5-oracle-lineage.v1`)
 кодирует это lineage fail-closed: неизменные f09 raw/dataset/projection/telemetry
-хэши и опубликованную 51×4 матрицу; ровно три принятые дельты
-`druid/summon_amulet` с `from/to` и причинными issue FAN-1585/FAN-1596;
-инвариантные 201/204 равные ячейки и solo-mean инвариант; выведенный projection
-digest непосредственной current integration base `b8909e30`; и точный
-сегментированный инвентарь `ec15444e..b8909e30` (8 commits: 6 measurement-contract
-+ 2 gameplay), где gameplay-коммиты трогают `scripts/summoner_weapon.gd`.
+хэши и опубликованную 51×4 матрицу; точный список принятых дельт с `from/to` и
+причинными gameplay-issue; инвариантные ячейки и equal/changed счётчики;
+выведенный projection digest непосредственной current integration base; и точный
+сегментированный инвентарь `ec15444e..current`. На момент FAN-1641 это были ровно
+три дельты `druid/summon_amulet` (FAN-1585/FAN-1596), 201/204 равные ячейки, база
+`b8909e30` и инвентарь из 8 коммитов; с FAN-1575 — 180 дельт, 24 равные ячейки,
+база `fda9971b` и инвентарь `ec15444e..fda9971b` из 246 коммитов (75 gameplay).
 
 Верификатор в `tools/a5_balance_report.gd` состоит из трёх слоёв и не допускает
 wildcard, tolerance relaxation, snapshot substitution или ручную перезапись
@@ -1425,11 +1432,12 @@ baseline:
 
 - `verify_oracle_lineage` — self-consistency манифеста против живого закоммиченного
   оракула: f09 хэши воспроизводятся, опубликованная матрица равна live-оракулу,
-  принятые дельты реконструируют current base ровно с 201 равной и 3 изменёнными
-  ячейками, а выведенный digest совпадает с pinned значением и отличается от f09.
+  принятые дельты реконструируют current base ровно с манифестными
+  `equal_cell_count`/`changed_cell_count`, а выведенный digest совпадает с pinned
+  значением и отличается от f09.
 - `verify_oracle_lineage_ancestry` — commit-level causality через настоящий Git
   (`git show`/`merge-base`/`rev-list`), без зависимости от runtime ObjectID или
-  порядка аллокаций: pinned trees, линейная цепочка `f09 → ec15444e → b8909e30`,
+  порядка аллокаций: pinned trees, линейная цепочка `f09 → ec15444e → current base`,
   точный упорядоченный инвентарь и summon-файлы у gameplay-коммитов.
 - `verify_candidate_against_current_base` — замена невозможного
   `candidate vs ec15444e all-zero`. Слой A (`verify_candidate_projection_against_current_base`)
@@ -1441,8 +1449,11 @@ baseline:
 пропущенная lineage-запись, подменённый оракул/коммит/tree, ложный current-base
 zero, дрейф current digest, подменённый decoded raw) обязаны fail closed;
 покрытие — в `tests/a5_balance_report_parity_test.gd` (полный контракт + Git
-causality + full-payload matrix) и `tests/a5_balance_report_integrity_test.gd`
-(committed oracle ↔ manifest tie + full-telemetry anchor).
+causality + full-payload matrix) и `tests/a5_balance_report_lineage_test.gd`
+(committed oracle ↔ manifest tie + full-telemetry anchor). Оба набора читают
+только immutable fixture. `tests/a5_balance_report_integrity_test.gd` в lineage
+не участвует: с FAN-1730 он отвечает исключительно за текущие регенерируемые
+артефакты.
 
 #### FAN-1649 — full telemetry payload parity
 
@@ -1470,12 +1481,13 @@ payload.
   payload: шесть measurement-contract коммитов между `f09` и `b8909e30` изменили
   событийный контракт КАЖДОГО из 309 sample'ов (напр. `berserk/sword` solo: 119
   событий у f09 против 69 у b8909e30 при неизменной projection). Поэтому payload
-  закреплён напрямую на `b8909e30`: `current_integration_base.telemetry_full`
-  хранит `sample_count=309`, per-sample digest map и агрегат `full_sha256`. Два
-  независимых clean-прогона `--mode=full` на detached `b8909e30` дают побайтово
-  идентичные 309 sample'ов и один и тот же агрегат
-  `ad1d9a7ae1a36b087370b33582601a51b880d8cf102d3adc461fdb3e1c5d307f`
-  (перепроверено на FAN-1658). Начиная с FAN-1658 этот агрегат вместе с идентичностью
+  закреплён напрямую на текущей интеграционной базе:
+  `current_integration_base.telemetry_full` хранит `sample_count=309`, per-sample
+  digest map и агрегат `full_sha256`. Два независимых clean-прогона `--mode=full`
+  дают побайтово идентичные 309 sample'ов и один и тот же агрегат — на `b8909e30`
+  это `ad1d9a7a…` (перепроверено на FAN-1658), с FAN-1575 база — `fda9971b`, агрегат
+  `c269edb122252e4ac35a46e24b531c26affcb071b69e1e20fe428b17c943b72a` (два
+  byte-identical прогона). Начиная с FAN-1658 этот агрегат вместе с идентичностью
   базы и `sample_count` закреплён **runtime-константами в исполняемом инструменте**
   (`TELEMETRY_ANCHOR_*`), а не только внешней константой в тестах. Поэтому
   self-consistent подмена (переписать pinned digest и пересчитать собственный агрегат
@@ -1486,14 +1498,14 @@ payload.
   анкорит проверку на **неизменяемый runtime trust root в самом инструменте**, а не
   на caller/candidate-owned манифесте. Константы `TELEMETRY_ANCHOR_BASE_COMMIT`/
   `_BASE_TREE`/`_SAMPLE_COUNT`/`_FULL_SHA256` в `tools/a5_balance_report.gd` держат
-  точную идентичность базы `b8909e30`, `309` и агрегат
-  `ad1d9a7ae1a36b087370b33582601a51b880d8cf102d3adc461fdb3e1c5d307f`. Порядок:
+  точную идентичность anchor-базы (с FAN-1575 — `fda9971b`), `309` и агрегат
+  (`c269edb1…`). Порядок:
   (1) `current_integration_base.commit`/`tree` манифеста обязаны совпасть с anchor;
   (2) materialized `telemetry_full` map допускается лишь как вход — его
   `sample_count`, `full_sha256` и независимо пересчитанный из map агрегат обязаны
   воспроизвести runtime-константы **до** любого использования; (3) кандидат обязан
   независимо воспроизвести тот же агрегат и per-sample map. Верный кандидат
-  `b8909e30` проходит; любое extra/missing/duplicate sample, add/remove/reorder
+  текущей anchor-базы проходит; любое extra/missing/duplicate sample, add/remove/reorder
   event, изменение `damage`/target/frame-timing/HP ledger/RNG-observer/counters-DPM/
   feedback/on-kill-final link, подмена base identity, а также self-consistent
   manifest/digest tamper — fail closed. Ключевое отличие от FAN-1649: перепривязка
@@ -1501,7 +1513,8 @@ payload.
   pinned map манифеста больше не даёт `ok=true`, потому что trust root неизменяем и
   не берётся из данных (закрытый fail-open FAN-1650). Матрица мутаций,
   материализованный faithful кандидат и self-repin негатив — в
-  `tests/a5_balance_report_parity_test.gd` и `_integrity_test.gd`. Тестовый seam
+  `tests/a5_balance_report_parity_test.gd` и `_lineage_test.gd` (FAN-1730;
+  до разделения вторая половина жила в `_integrity_test.gd`). Тестовый seam
   `test_only_verify_full_telemetry_with_root` (инъекция root для малой синтетической
   матрицы) не достижим ни из production, ни из `--mode=full` пути.
 - **Предикат projection-дубликата.** `_projection_rows` уже отвергает дубликат
@@ -1604,8 +1617,9 @@ anchored assertion (FAN-1681): оба прохода агрегируются р
 FAN-1672 распространяет FAN-1658 trust root на projection-измерение:
 
 - **Константы projection-анкера.** `PROJECTION_ANCHOR_HISTORICAL_SHA256`
-  (`d8109233…`, f09 51×4) и `PROJECTION_ANCHOR_CURRENT_SHA256` (`ac7710a0…`,
-  `b8909e30` 51×4) живут в `tools/a5_balance_report.gd` рядом с telemetry-анкером.
+  (`d8109233…`, f09 51×4) и `PROJECTION_ANCHOR_CURRENT_SHA256` (с FAN-1575 —
+  `a85a35d0…`, `fda9971b` 51×4) живут в `tools/a5_balance_report.gd` рядом с
+  telemetry-анкером.
 - **Исторический baseline из закоммиченного манифеста.**
   `historical_oracle_cells(manifest)` строит 51×4 карту из
   `historical_oracle.published_matrix` и fail closed, если набор неполон,
@@ -1635,12 +1649,35 @@ FAN-1672 распространяет FAN-1658 trust root на projection-изм
   остаётся неизменным f09-оракулом, а гейт принимает такой артефакт и на первом, и
   на повторном вызове.
 
-Остаточное ограничение (вне scope FAN-1672): `verify_oracle_lineage` и A5
-parity/integrity тесты по-прежнему читают исторический DATASET из
-`raw.json.gz`, потому что другого закоммиченного экземпляра f09-датасета в репо
-нет. После локальной регенерации отчёта их нужно запускать на восстановленном
-артефакте (`git restore docs/design/reports/fan1438_a5_balance`). Перенос
-f09-оракула в отдельный immutable fixture — отдельная PM-задача.
+FAN-1682 устраняет это остаточное ограничение: полный f09 DATASET хранится в
+закоммиченной immutable fixture
+`tests/fixtures/a5_f09_oracle.json.gz`. `read_raw_artifact()` по умолчанию
+читает именно её, поэтому parity и lineage-проверка больше не получают
+исторический baseline из перезаписываемого отчёта.
+
+FAN-1730 доводит разделение до конца. FAN-1682 перенёс только источник lineage:
+сам lineage-контракт оставался последней секцией integrity-набора, который
+безусловно открывал `RAW_PATH` и выходил раньше при ошибке, поэтому удаление или
+повреждение регенерируемого `raw.json.gz` роняло lineage вместе с ним. Теперь
+два контракта живут в двух наборах, и ни один из них не пропускает проверку
+молча — каждый fail closed на СВОЁМ входе:
+
+- `tests/a5_balance_report_lineage_test.gd` — immutable f09 oracle/lineage.
+  Читает только `tests/fixtures/a5_f09_oracle.json.gz` и
+  `tests/fixtures/a5_oracle_lineage.json`, к `RAW_PATH` не обращается ни при
+  каких условиях. Владеет связкой committed oracle ↔ manifest, внешними анкерами
+  51×4 и 309-sample telemetry (с FAN-1575 — `a85a35d0…` и `c269edb1…`), а также
+  негативами drifted-manifest и self-repin.
+- `tests/a5_balance_report_integrity_test.gd` — ТЕКУЩИЕ регенерируемые
+  `report.md` / `per_weapon.csv` / `raw.json.gz`. Читает `RAW_PATH` явно и
+  безусловно и обязан fail closed при его отсутствии или повреждении;
+  lineage-проверок не содержит и f09 fixture не открывает.
+- `tests/a5_balance_report_parity_test.gd` — 51×4 executable-oracle parity и Git
+  causality; тоже питается только от immutable fixture.
+
+Поэтому после локального `--mode=full` A5 parity/integrity/lineage запускаются в
+том же checkout без `git restore`; decoded-content SHA-256, dataset SHA-256,
+51×4 projection anchor и все fail-closed негативы остаются обязательными.
 
 #### FAN-1681 — покрытие регрессий вокруг projection trust root
 
@@ -1737,3 +1774,46 @@ attack modes/final mechanics в live evidence и согласованность 
 telemetry gate отдельно реконструирует counters из trace и отвергает missing или
 duplicated events, неверную cardinality цели, подмену source/phase, а также
 рассинхронизацию count/damage final-event.
+
+### FAN-1575 — атомарная посадка: relocation + перепин + регенерация
+
+FAN-1575 садит одним кандидатом три изменения, которые не могли приземлиться по
+отдельности (перенос эталона ждал зелёного dev, зелёный dev ждал регенерации,
+регенерация ждала переноса):
+
+- **Relocation (переиспользован diff PR #13, FAN-1682/FAN-1730).** Immutable f09
+  DATASET живёт в `tests/fixtures/a5_f09_oracle.json.gz` (decoded sha256
+  `cd02e0cc…`, 298 956 816 байт); `read_raw_artifact()` по умолчанию читает
+  fixture; lineage-контракт выделен в `tests/a5_balance_report_lineage_test.gd`;
+  integrity-набор отвечает только за текущие регенерируемые артефакты.
+- **Перепин на новую интеграционную базу `fda9971b` (tree `7795fa80`).**
+  Runtime trust root в `tools/a5_balance_report.gd`: `TELEMETRY_ANCHOR_BASE_COMMIT`/
+  `_BASE_TREE` = `fda9971b`/`7795fa80`, `TELEMETRY_ANCHOR_FULL_SHA256` =
+  `c269edb122252e4ac35a46e24b531c26affcb071b69e1e20fe428b17c943b72a`,
+  `PROJECTION_ANCHOR_CURRENT_SHA256` =
+  `a85a35d0430d5d520c2b0643870b762dff9285f00ae0b2b214b3ff96d01ef7cb`; те же
+  значения продублированы внешними константами в parity/lineage тестах и pinned
+  значениями манифеста. Значения воспроизведены byte-identical clean
+  `--mode=full` прогонами на двух gameplay-деревьях (`3f3788fd` и `fda9971b`):
+  детерминизм подтверждён побайтовым сравнением projection cells, всех 309
+  per-sample digest и агрегатов; DPM/telemetry-нейтральность изменений
+  `3f3788fd..fda9971b` (doctor ultimates, player charge routing) доказана
+  прохождением fail-closed гейта без смены цифровых анкеров.
+- **Системный инвентарь вместо трёхклеточного контракта (ruling PM 2026-08-04 по
+  измерению FAN-2126).** Расхождение к f09 системное: 180/204 изменённых ячеек,
+  48/51 пар, все 17 классов. Манифест перечисляет все 180 принятых дельт с
+  `from/to`; причинная атрибуция механическая — gameplay-issue инвентаря, чьи
+  коммиты меняют общие формульные файлы урона/каденции/крита/атрибутов
+  (FAN-1887, FAN-1889, FAN-1985, FAN-1995); `druid/summon_amulet` сохраняет
+  историческую атрибуцию FAN-1585/FAN-1596 и ровно свои принятые значения.
+  Четыре пары полностью стабильны против current base:
+  `dark_mage/cursed_skull`, `ranger/storm_longbow`, `chemist/homunculus_vial`
+  (равны f09 во всех четырёх полях, закреплены `invariant_projection_cells`) и
+  `druid/summon_amulet` (равна f09+принятые дельты). Набор из 309 telemetry
+  sample-key неизменен (digest `715745eb…` равен f09-пину). Никакой tolerance,
+  wildcard или исключённых полей не введено: сравнение остаётся exact `%.2f` по
+  всем 204 ячейкам и exact по полному canonical telemetry payload.
+- **Регенерация под fail-closed гейтом.** Три артефакта
+  `docs/design/reports/fan1438_a5_balance/{report.md,per_weapon.csv,raw.json.gz}`
+  регенерированы `--mode=full` на exact SHA кандидата; FAN-1658/FAN-1672 гейт
+  прошёл до записи, что и доказывает совпадение кандидата с runtime trust root.
