@@ -236,6 +236,33 @@ func _verify_lineage_contract(historical: Dictionary, raw_text: String) -> void:
 	for error_value in sc_gate_errors:
 		_check(str(error_value).contains("immutable current anchor"), "reduced-lineage rejection must come only from PROJECTION_ANCHOR_CURRENT_SHA256, got: %s" % str(error_value))
 
+	# FAN-1709: isolate TELEMETRY_ANCHOR_SAMPLE_KEYS_SHA256 itself (the FAN-1681
+	# deferred item). One telemetry sample of the faithful candidate is renamed —
+	# the key COUNT stays 309, the projection cells are untouched — and the manifest
+	# re-pins historical_oracle.telemetry_sample_key_count and
+	# telemetry_sample_keys_sha256 consistently with that mutated key set, so every
+	# caller-owned comparison agrees with itself. The only check left that can
+	# reject the pair is the immutable sample-keys runtime anchor.
+	var rekeyed := candidate.duplicate(true)
+	var rekeyed_samples: Array = (rekeyed.get("live_telemetry", {}) as Dictionary).get("samples", [])
+	_check(not rekeyed_samples.is_empty(), "sample-keys tamper must find live telemetry samples")
+	if not rekeyed_samples.is_empty():
+		var rekeyed_sample: Dictionary = rekeyed_samples[0]
+		rekeyed_sample["sample_key"] = str(rekeyed_sample.get("sample_key", "")) + ":forged"
+		var rekeyed_keys := Generator.telemetry_sample_keys_digest(rekeyed)
+		_check(bool(rekeyed_keys.get("ok", false)), "mutated sample-key set must still digest cleanly")
+		_check(int(rekeyed_keys.get("count", -1)) == 309, "sample-keys tamper must preserve the 309-key cardinality so only the digest anchor can discriminate")
+		var rekeyed_manifest := manifest.duplicate(true)
+		var rekeyed_oracle: Dictionary = rekeyed_manifest.get("historical_oracle", {})
+		rekeyed_oracle["telemetry_sample_key_count"] = int(rekeyed_keys.get("count", -1))
+		rekeyed_oracle["telemetry_sample_keys_sha256"] = str(rekeyed_keys.get("digest", ""))
+		var rekeyed_gate := Generator.verify_candidate_projection_against_current_base(rekeyed, rekeyed_manifest)
+		_check(not bool(rekeyed_gate.get("ok", true)), "self-consistent sample-keys re-pin + matching candidate must fail the candidate projection gate")
+		var rekeyed_errors: Array = rekeyed_gate.get("errors", [])
+		_check(not rekeyed_errors.is_empty(), "sample-keys re-pin rejection must report a reason")
+		for error_value in rekeyed_errors:
+			_check(str(error_value).contains("immutable sample-keys anchor"), "sample-keys re-pin rejection must come only from TELEMETRY_ANCHOR_SAMPLE_KEYS_SHA256, got: %s" % str(error_value))
+
 
 func _candidate_with_accepted_deltas(historical: Dictionary, manifest: Dictionary) -> Dictionary:
 	var candidate := historical.duplicate(true)

@@ -69,6 +69,19 @@ const TELEMETRY_ANCHOR_BASE_COMMIT := "fda9971bbe39b39088926c99d929cd147f3a5e65"
 const TELEMETRY_ANCHOR_BASE_TREE := "7795fa80e1094b183954d36218f60bfc1b9a93eb"
 const TELEMETRY_ANCHOR_SAMPLE_COUNT := 309
 const TELEMETRY_ANCHOR_FULL_SHA256 := "c269edb122252e4ac35a46e24b531c26affcb071b69e1e20fe428b17c943b72a"
+# FAN-1709: immutable runtime trust root for the 309 telemetry sample-KEY set
+# (telemetry_sample_keys_digest canonical form: sorted keys, one per "\n"-terminated
+# line, sha256). Until now historical_oracle.telemetry_sample_key_count and
+# telemetry_sample_keys_sha256 were the only projection-gate comparators whose
+# expected side was entirely caller/manifest-owned (FAN-1681 deferred item), so a
+# candidate that mutated the 309-key set AND re-pinned both manifest values
+# consistently passed every projection-only gate call. --mode=full stayed closed
+# through TELEMETRY_ANCHOR_FULL_SHA256 (aggregated over "sample_key|digest" lines);
+# this constant closes the projection-only exposure. The value is recomputed from
+# the committed f09 oracle dataset payload and independently from the key set of
+# current_integration_base.telemetry_full.sample_digests (identical roster,
+# invariant f09 <-> fda9971b), not copied from the manifest.
+const TELEMETRY_ANCHOR_SAMPLE_KEYS_SHA256 := "715745ebc13721811d8b354476af58300423ab21b6ede059210a23e8df990525"
 # FAN-1672: immutable runtime trust root for the 51x4 PROJECTION dimension.
 # RAW_PATH used to be both the historical f09 oracle the candidate gate read and
 # the artifact a successful --mode=full run rewrites, so the gate consumed its own
@@ -2258,6 +2271,14 @@ static func verify_candidate_projection_against_current_base(candidate_dataset: 
 		if str(candidate_digest.get("digest", "")) != PROJECTION_ANCHOR_CURRENT_SHA256:
 			errors.append("candidate projection digest differs from the immutable current anchor")
 	var oracle: Dictionary = manifest.get("historical_oracle", {})
+	# FAN-1709: the expected side of the sample-key comparison below is entirely
+	# caller/manifest-owned, so it must itself reproduce the immutable runtime
+	# anchor first. A manifest that re-pins count + digest consistently with a
+	# mutated 309-key set then still fails closed on projection-only gate calls.
+	if int(oracle.get("telemetry_sample_key_count", -1)) != TELEMETRY_ANCHOR_SAMPLE_COUNT:
+		errors.append("manifest telemetry sample-key count differs from the immutable sample-keys anchor")
+	if str(oracle.get("telemetry_sample_keys_sha256", "")) != TELEMETRY_ANCHOR_SAMPLE_KEYS_SHA256:
+		errors.append("manifest telemetry sample-key digest differs from the immutable sample-keys anchor")
 	var candidate_keys := telemetry_sample_keys_digest(candidate_dataset)
 	if not bool(candidate_keys.get("ok", false)):
 		errors.append("candidate telemetry keys are invalid: %s" % candidate_keys.get("error", "unknown"))
