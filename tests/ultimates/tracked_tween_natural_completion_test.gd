@@ -26,11 +26,15 @@ const LIFECYCLE_SPECS := [
 	{"class_id": "biologist", "weapon_id": "biologist_spore_lens", "lifecycle": 8.6, "deadline": 9.6},
 	{"class_id": "priest", "weapon_id": "priest_reliquary", "lifecycle": 8.6, "deadline": 9.6},
 	{"class_id": "elementalist", "weapon_id": "elementalist_orb_ring", "lifecycle": 8.4, "deadline": 9.4},
+	{"class_id": "druid", "weapon_id": "raven_totem", "lifecycle": 8.4, "deadline": 9.4},
+	{"class_id": "druid", "weapon_id": "briar_staff", "lifecycle": 7.9, "deadline": 8.9},
 	{"class_id": "priest", "weapon_id": "priest_censer", "lifecycle": 7.6, "deadline": 8.6},
 	{"class_id": "elementalist", "weapon_id": "elementalist_prism_focus", "lifecycle": 7.2, "deadline": 8.2},
+	{"class_id": "druid", "weapon_id": "summon_amulet", "lifecycle": 6.6, "deadline": 7.6},
 	{"class_id": "priest", "weapon_id": "priest_chime", "lifecycle": 6.4, "deadline": 7.4},
 	{"class_id": "robot", "weapon_id": "robot_reactor_core", "lifecycle": 6.01, "deadline": 7.01},
 	{"class_id": "guitarist", "weapon_id": "sound_amp", "lifecycle": 6.0, "deadline": 7.0},
+	{"class_id": "doctor", "weapon_id": "plague_syringe", "lifecycle": 5.85, "deadline": 6.85},
 	{"class_id": "guitarist", "weapon_id": "bass_guitar", "lifecycle": 5.8, "deadline": 6.8},
 	{"class_id": "engineer", "weapon_id": "engineer_repair_drone", "lifecycle": 5.5, "deadline": 6.5},
 	{"class_id": "guitarist", "weapon_id": "electric_guitar", "lifecycle": 5.4, "deadline": 6.4},
@@ -38,8 +42,10 @@ const LIFECYCLE_SPECS := [
 	{"class_id": "engineer", "weapon_id": "engineer_sentry_wrench", "lifecycle": 4.6, "deadline": 5.6},
 	{"class_id": "sniper", "weapon_id": "sniper_spotter_scope", "lifecycle": 4.4, "deadline": 5.4},
 	{"class_id": "robot", "weapon_id": "robot_hydraulic_press", "lifecycle": 4.05, "deadline": 5.05},
+	{"class_id": "doctor", "weapon_id": "restore_potion", "lifecycle": 4.05, "deadline": 5.05},
 	{"class_id": "engineer", "weapon_id": "engineer_pressure_mines", "lifecycle": 4.0, "deadline": 5.0},
 	{"class_id": "thief", "weapon_id": "thief_smoke_bomb", "lifecycle": 4.0, "deadline": 5.0},
+	{"class_id": "doctor", "weapon_id": "bone_saw", "lifecycle": 3.85, "deadline": 4.85},
 	{"class_id": "sniper", "weapon_id": "sniper_shatter_rounds", "lifecycle": 2.82, "deadline": 3.82},
 	{"class_id": "thief", "weapon_id": "thief_shadow_cloak", "lifecycle": 1.26, "deadline": 2.26},
 	{"class_id": "thief", "weapon_id": "thief_coin_pouch", "lifecycle": 1.0, "deadline": 2.0},
@@ -319,10 +325,16 @@ func _build_state(spec: Dictionary, index: int, registry) -> Dictionary:
 	var baseline_statuses := {}
 	for enemy in enemies:
 		baseline_statuses[enemy.get_instance_id()] = StatusEffects.snapshot(enemy)
+	# FAN-2090: the same self-declaration Player reads, never a class list — a
+	# package that binds the rare ledger gets one activation per encounter.
+	var charge_binding = registry.catalog_profile_for(class_id, weapon_id).get("charge")
+	var encounter_gated: bool = charge_binding is Dictionary \
+			and str((charge_binding as Dictionary).get("strategy_id", "")) == "rare_charge_ledger"
 	return {
 		"class_id": class_id,
 		"weapon_id": weapon_id,
 		"label": label,
+		"encounter_gated": encounter_gated,
 		"lifecycle": float(spec["lifecycle"]),
 		"deadline": float(spec["deadline"]),
 		"player": player,
@@ -535,18 +547,39 @@ func _assert_natural_cleanup(states: Array[Dictionary]) -> void:
 				_check(false, error)
 
 
+## FAN-2090: a pair whose ready package binds the rare charge ledger spends its
+## single per-encounter activation on the first cast, so a refilled bar must be
+## refused until the canonical boundary; every other pair keeps the established
+## refill economy. Both branches assert, so a gate that fails open and a gate
+## that reaches past its own declaration each redden here. The gated branch also
+## asserts the release, or a permanently dead ultimate would read as a working
+## gate.
 func _assert_recast_and_cancel(states: Array[Dictionary]) -> void:
 	for state in states:
 		var player: Node2D = state["player"]
 		var controller = state.get("controller")
+		var label := str(state["label"])
 		if controller == null or controller.is_active():
 			if controller != null:
 				controller.cancel()
 			continue
 		player.set("ultimate_charge", float(player.get("ultimate_max_charge")))
-		_check(bool(player.call("activate_ultimate")), "%s must be recastable after completion" % state["label"])
+		if bool(state["encounter_gated"]):
+			_check(
+				not bool(player.call("activate_ultimate")),
+				"%s must refuse a refilled recast inside the same encounter" % label
+			)
+			player.call("configure_character", str(state["class_id"]), str(state["weapon_id"]))
+			await process_frame
+			player.set("ultimate_charge", float(player.get("ultimate_max_charge")))
+			_check(
+				bool(player.call("activate_ultimate")),
+				"%s must activate again past the encounter boundary" % label
+			)
+		else:
+			_check(bool(player.call("activate_ultimate")), "%s must be recastable after completion" % label)
 		controller.cancel()
-		_check(not controller.is_active(), "%s recast cancel must finish synchronously" % state["label"])
+		_check(not controller.is_active(), "%s recast cancel must finish synchronously" % label)
 	await process_frame
 
 
