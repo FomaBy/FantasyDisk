@@ -1388,17 +1388,17 @@ SCRUM-241 добавил переключатель прицеливания: `n
 
 | Оружие | ID | Форма | Основной стиль | Сцена |
 | --- | --- | --- | --- | --- |
-| Двуручный меч | `sword` | Сектор (`sweep`) | Узкий дальний сектор 100 градусов радиуса 350; секторные бонусы расширяют угол, Radius расширяет дальность | `scenes/TwoHandedSword.tscn` |
+| Двуручный меч | `sword` | Сектор (`sweep`) | Узкий сектор 100 градусов радиуса 350; единая область атаки масштабирует живую геометрию, но не target reach | `scenes/TwoHandedSword.tscn` |
 | Двуручный топор | `axe` | Сектор (`sweep`) | Широкий сектор 180 градусов радиуса 250 по ближайшему монстру | `scenes/TwoHandedAxe.tscn` |
-| Двуручный молот | `hammer` | Круг | Круговой slam радиуса 150; Radius увеличивает круг, секторные бонусы не влияют, плотные паки получают target diminishing | `scenes/TwoHandedHammer.tscn` |
+| Двуручный молот | `hammer` | Круг | Круговой slam радиуса 150; единая область атаки увеличивает круг, плотные паки получают target diminishing | `scenes/TwoHandedHammer.tscn` |
 
 Параметры (идентичность оружия, 2026-06-11):
 
 | Оружие | Зона | Темп / Урон | Модификаторы |
 | --- | --- | --- | --- |
-| Меч | Сектор 100 градусов, радиус 350 | interval 0.58, damage x1.15 | +10% урон (пассив); `sector_multiplier` расширяет угол, Radius расширяет дальность |
-| Топор | Сектор 180 градусов, радиус 250 | interval 1.06, damage x0.85 | -10% урон (пассив); `sector_multiplier` расширяет угол, Radius расширяет дальность |
-| Молот | Круг радиуса 150 | interval 1.25, damage x0.55 | Radius scaling без fixed cap; `circle_full_targets=4`, `circle_target_diminish=0.62`; `upgrade_aoe_exponent=1.08`, `upgrade_damage_exponent=1.05` |
+| Меч | Сектор 100 градусов, радиус 350 | interval 0.58, damage x1.15 | +10% урон (пассив); область атаки масштабирует `aoe_radius`, ширины и `sweep_degrees` один раз; `attack_range` неизменен |
+| Топор | Сектор 180 градусов, радиус 250 | interval 1.06, damage x0.85 | -10% урон (пассив); область атаки масштабирует `aoe_radius`, ширины и `sweep_degrees` один раз; `attack_range` неизменен |
+| Молот | Круг радиуса 150 | interval 1.25, damage x0.55 | Область атаки масштабирует круг без fixed cap; `circle_full_targets=4`, `circle_target_diminish=0.62`; `upgrade_aoe_exponent=1.08`, `upgrade_damage_exponent=1.05` |
 
 Для большинства melee/debug VFX художественный слой `AttackVfx` может дополняться полупрозрачным оверлеем точной геометрии зоны (`_show_exact_zone_overlay`). SCRUM-854/864 сделал `sweep`-геометрию Берсерка outward wedge-зоной для урона, а SCRUM-875 убрал видимый секторный overlay с меча/топора во время атаки: игрок видит weapon signature и перевернутый на 180 градусов crescent slash, при этом фактический сектор урона, targeting, cooldowns и баланс не меняются.
 
@@ -1570,10 +1570,7 @@ SCRUM-756 (2026-07-01) заменил только `assets/sprites/effects/vfx_w
 - `defense`
 - `absorb`
 - `health_point`
-- `knockback_distance`
 - `summon_amount`
-- `attack_range`
-- `range_multiplier`
 - `regeneration`
 - `vampiric_amount`
 - `vampiric_chance`
@@ -1581,9 +1578,6 @@ SCRUM-756 (2026-07-01) заменил только `assets/sprites/effects/vfx_w
 - `pickup_radius`
 - `dot_damage`
 - `dot_speed`
-- `projectile_speed`
-- `aura_radius`
-- `buff_power`
 - `knockback_power`
 - `ultimate_multiplier`
 
@@ -1950,7 +1944,7 @@ Game cursor asset-ready:
 - hotspot: `(2, 2)`.
 - style: dark steel dragon/clawed pointer with a sharp upper-left tip, orange fire glow and red gem/eye; hover/attack reuse the same silhouette with stronger warm glow.
 
-Централизованный mapping UI-иконок находится в `scripts/ui_icon_registry.gd`. Он покрывает 8 базовых характеристик, все активные производные параметры из Escape stats menu и HUD-ресурсы `hp`, `xp`, `money`, `ultimate_multiplier`. Финальные polished stylized fantasy cartoon PNG лежат в `assets/sprites/ui/icons/stats/`, `assets/sprites/ui/icons/derived/` и `assets/sprites/ui/hud/`; registry автоматически подхватывает реальные текстуры для боевого HUD, level-up reward cards, Escape stats menu, Кодекса и stat/reward/tooltips. Для производных параметров, у которых пока нет отдельного Design PNG (`absorb`, `regeneration`, `vampiric_*`, `range_multiplier`, `knockback_distance`, `ultimate_multiplier`), registry использует ближайшую существующую derived-иконку как backend fallback, без emoji/default placeholders. Shop item icons дополнительно разрешаются через реальные `artifact_<artifact_id>.png` / `shop_<shop_item_id>.png`; fallback в этот registry остается только fail-safe, если asset временно отсутствует.
+Централизованный mapping UI-иконок находится в `scripts/ui_icon_registry.gd`. Он покрывает 8 базовых характеристик, все активные производные параметры из Escape stats menu и HUD-ресурсы `hp`, `xp`, `money`, `ultimate_multiplier`. Финальные polished stylized fantasy cartoon PNG лежат в `assets/sprites/ui/icons/stats/`, `assets/sprites/ui/icons/derived/` и `assets/sprites/ui/hud/`; registry автоматически подхватывает реальные текстуры для боевого HUD, level-up reward cards, Escape stats menu, Кодекса и stat/reward/tooltips. Для производных параметров, у которых пока нет отдельного Design PNG (`absorb`, `regeneration`, `vampiric_*`, `ultimate_multiplier`), registry использует ближайшую существующую derived-иконку как backend fallback, без emoji/default placeholders. Shop item icons дополнительно разрешаются через реальные `artifact_<artifact_id>.png` / `shop_<shop_item_id>.png`; fallback в этот registry остается только fail-safe, если asset временно отсутствует.
 
 Локализация и глоссарий (SCRUM-210/SCRUM-889): пользовательские строки ключевых экранов ведутся на русском; магазин, level-up rewards, HUD-ресурсы, кодексные описания и артефактные тиры больше не используют видимые `damage/HP/Tier/DoT/AoE` формулировки. Data-driven глоссарий живет в `scripts/glossary.gd` и покрывает базовые характеристики, производные параметры и основные механики (`Возвышение`, `Артефакт`, `Телеграф`, `Периодический урон`, `Ультимейт`, `Призыв` и т.д.), но больше не отображается отдельной вкладкой в live Codex. Старые term-button/tooltip UI пути удалены из `scripts/ui_screens.gd`.
 
@@ -2277,7 +2271,7 @@ sustained-модель dot-оси и infected-фактор; тюнеры кит�
 `bow_knockback_trait` у арбалета/лука; капкан не входит) отбрасывает жертву
 строго ОТ ИГРОКА — вектор игрок→монстр на момент хита, сплит/пирс/удар в
 спину всё равно толкают прочь; сила = derived `knockback_power`
-(конфиг 175/150 + endurance×4 + leadership×3, ×«Ударная тетива»), уроном не
+(конфиг 175/150 + Strength×4, ×«Ударная тетива»), уроном не
 скейлится, боссы/элиты ×0.25. Лунный арбалет (SCRUM-910) — с заряжаемого
 пирс-луча на `moon_split_shot`: физический болт в цель, после попадания
 расщепление в 4 РАЗНЫХ соседей (радиус 260) с ТЕМ ЖЕ уроном, без рекурсии;
@@ -2467,7 +2461,7 @@ Assassin — единственный класс с cap шанса крита 10
 струна стартует от самого героя, душит целей в упор в `close_contact_radius`
 и усиливает DoT-тики крит-снапшотом. Защита класса — «Теневая завеса»:
 самоцентричная аура уворота, работающая только под ближним прессингом
-(масштаб от `aura_radius`/`buff_power`, суммарный уворот ≤ 55% — бессмертия
+(радиус от единой области атаки, величина от `support_multiplier`, суммарный уворот ≤ 55% — бессмертия
 нет). Hero Select описание заявляет 100%-кап; копирайт-пасс — SCRUM-952.
 Гейты: `tests/assassin_kit_test.gd`, `tests/kill_scaling_identity_test.gd`,
 tuning 51/51, weapon integrity, global damage/survivability smokes — зелёные.

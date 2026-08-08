@@ -8,10 +8,12 @@ const BERSERK_WEAPONS := {
 	"sword": {
 		"id": "sword",
 		"title": "Двуручный меч",
-		"description": "Длинный узкий сектор 100 градусов радиуса 350: точный дальний melee-замах вперед. Ширина сектора растет от секторных улучшений, радиус — от улучшений радиуса. Пассивно: +10% к урону.",
+		"description": (
+			"Узкий сектор 100° радиуса 350. Область атаки расширяет сектор, "
+			+ "не меняя дальность выбора цели. Пассивно: +10% к урону."
+		),
 		"scene_path": "res://scenes/TwoHandedSword.tscn",
 		"attack_shape": "sweep",
-		"cone_degrees": 100.0,
 		"attack_range": 350.0,
 		"start_distance": 0.0,
 		"inner_width": 150.0,
@@ -31,10 +33,12 @@ const BERSERK_WEAPONS := {
 	"axe": {
 		"id": "axe",
 		"title": "Двуручный топор",
-		"description": "Широкий сектор 180 градусов радиуса 250: половина круга по направлению к ближайшему монстру для контроля толпы вблизи. Секторные улучшения расширяют дугу, радиусные — дальность удара. Пассивно: -10% к урону.",
+		"description": (
+			"Широкий сектор 180° радиуса 250. Область атаки расширяет сектор, "
+			+ "не меняя дальность выбора цели. Пассивно: -10% к урону."
+		),
 		"scene_path": "res://scenes/TwoHandedAxe.tscn",
 		"attack_shape": "sweep",
-		"cone_degrees": 180.0,
 		"attack_range": 250.0,
 		"start_distance": 0.0,
 		"inner_width": 190.0,
@@ -555,7 +559,7 @@ const KNIGHT_WEAPONS := {
 		"id": "long_spear", "title": "Копье",
 		"description": "Тройной укол: три быстрых выпада лево-центр-право веером полос 110 x 540. Одна цель ловит один укол за цикл. Пассив: +5% защиты и легкий single-target block/counter.",
 		"scene_path": "res://scenes/LongSpear.tscn",
-		"attack_shape": "strip", "cone_degrees": 24.0,
+		"attack_shape": "strip",
 		"attack_range": 540.0, "start_distance": 0.0,
 		"inner_width": 110.0, "outer_width": 110.0, "aoe_radius": 540.0,
 		"sweep_degrees": 24.0, "damage_multiplier": 3.0, "fire_interval": 1.0,
@@ -570,7 +574,7 @@ const KNIGHT_WEAPONS := {
 		"id": "tower_shield", "title": "Башенный щит",
 		"description": "Конусный баш в сторону ближайшего врага: вся стая в конусе 95° отлетает прочь, сила отброса растет от вложений в отброс. Меньше урона, сильная защита и мощная block/counter ответка.",
 		"scene_path": "res://scenes/TowerShield.tscn",
-		"attack_shape": "sweep", "cone_degrees": 95.0,
+		"attack_shape": "sweep",
 		"attack_range": 215.0, "start_distance": 0.0,
 		"inner_width": 150.0, "outer_width": 290.0, "aoe_radius": 215.0,
 		"sweep_degrees": 95.0, "damage_multiplier": 0.72, "fire_interval": 0.82,

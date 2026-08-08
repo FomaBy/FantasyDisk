@@ -1283,7 +1283,7 @@ SCRUM-269 read-only asset/image cleanup audit 2026-06-14: отчет `docs/desig
 | Группа | ID | Каноническая папка | Статус |
 | --- | --- | --- | --- |
 | Базовые характеристики | `strength`, `agility`, `intelligence`, `perception`, `energy`, `knowledge`, `endurance`, `leadership` | `assets/sprites/ui/icons/stats/` | Реализовано |
-| Производные параметры | `damage`, `magic_damage`, `crit_chance`, `crit_damage_multiplier`, `attack_speed`, `dodge`, `move_speed`, `defense`, `absorb`, `health_point`, `knockback_distance`, `summon_amount`, `attack_range`, `range_multiplier`, `regeneration`, `vampiric_amount`, `vampiric_chance`, `dot_damage`, `dot_speed`, `aoe_radius`, `aura_radius`, `buff_power`, `knockback_power`, `projectile_speed`, `ultimate_multiplier`, `pickup_radius` | `assets/sprites/ui/icons/derived/` | Реализовано |
+| Производные параметры | `damage`, `magic_damage`, `crit_chance`, `crit_damage_multiplier`, `attack_speed`, `dodge`, `move_speed`, `defense`, `absorb`, `health_point`, `summon_amount`, `regeneration`, `vampiric_amount`, `vampiric_chance`, `dot_damage`, `dot_speed`, `aoe_radius`, `knockback_power`, `ultimate_multiplier`, `pickup_radius` | `assets/sprites/ui/icons/derived/` | Реализовано; retired range/projectile-speed/buff axes остаются только legacy assets |
 | HUD ресурсы | `hp`, `xp`, `money` | `assets/sprites/ui/hud/` | Реализовано |
 | Кодекс: непрочитанное | `ui_badge_codex_unread` | `assets/sprites/ui/icons/codex/ui_badge_codex_unread.png` | Реализовано (FAN-1077) |
 
@@ -1381,10 +1381,10 @@ cadence-контракт удалил отдельную selectable dot-speed с
 | `sharp_talisman` | Острый талисман | `crit_chance_flat` | +0.10 / +0.18 / +0.30 |
 | `executioner_edge` | Грань палача | `crit_damage_flat` | +0.10 / +0.18 / +0.30 |
 | `ghost_ribbon` | Лента призрака | `dodge_flat` | +0.10 / +0.18 / +0.30 |
-| `wide_sigil` | Дальняя печать | `range_multiplier` | ×1.10 / ×1.18 / ×1.30 |
+| `wide_sigil` | Дальняя печать | `aoe_radius_multiplier` | ×1.10 / ×1.18 / ×1.30 |
 | `venom_vial` | Флакон отравы | `dot_damage_flat` | +2 / +4 / +6 |
 | `wide_halo` | Широкий нимб | `aoe_radius_multiplier` | ×1.10 / ×1.18 / ×1.30 |
-| `war_banner` | Боевое знамя | `buff_power_flat` | +0.10 / +0.18 / +0.30 |
+| `war_banner` | Боевое знамя | `damage_multiplier` | ×1.10 / ×1.18 / ×1.30 |
 | `summoners_bell` | Колокольчик призывателя | `summon_bonus` | +1.5 / +2.5 / +4 |
 | `aegis_shard` | Осколок эгиды | `absorb_flat` | +3 / +5 / +8 |
 | `troll_blood` | Кровь тролля | `regeneration_flat` | +1.0 / +1.6 / +2.6 |

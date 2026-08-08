@@ -823,7 +823,7 @@
       "fingerprint": "869f20d3a6805779",
       "path": "scripts/player.gd",
       "function": "_show_dodge_popup",
-      "line": 4001,
+      "line": 4006,
       "kind": "theme_override",
       "source": "popup.add_theme_font_size_override(\"font_size\", SemanticTypography.resolve_fixed(SemanticTypography.ROLE_HUD, 22))",
       "role": "hud",
