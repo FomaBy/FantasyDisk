@@ -33,6 +33,13 @@ const FIXTURE_WEAPONS := [
 	"sniper_spotter_scope",
 	"sniper_shatter_rounds",
 ]
+## FAN-2189: the routing loop casts every declared ultimate at one shared target,
+## and the damage-over-time left behind between casts advances on wall-clock
+## delta — under machine load the target died mid-loop, after which an executor
+## that fail-closes on an empty target set (doctor/plague_syringe) reported no
+## cast. Ultimate damage is absolute, not a share of the pool (~4.2k over the
+## whole loop), so an unreachable pool keeps the outcome off the wall clock.
+const FIXTURE_ENEMY_HEALTH := 1_000_000.0
 ## FAN-2044 deploy fixture: its untyped-compatible `owner_node` can hold the
 ## real host adapter, which is what the primitive's ownership check verifies.
 class TemporaryDeployFixture extends Node2D:
@@ -492,8 +499,8 @@ func _spawn_enemy(offset: Vector2) -> Node2D:
 	var enemy := EnemyScene.instantiate() as Node2D
 	_holder.add_child(enemy)
 	enemy.global_position = offset
-	enemy.set("max_health", 4000.0)
-	enemy.set("health", 4000.0)
+	enemy.set("max_health", FIXTURE_ENEMY_HEALTH)
+	enemy.set("health", FIXTURE_ENEMY_HEALTH)
 	enemy.set_process(false)
 	enemy.set_physics_process(false)
 	await process_frame
