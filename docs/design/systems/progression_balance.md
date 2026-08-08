@@ -1711,17 +1711,32 @@ tolerance, wildcards, immutable trust root, re-pin семантика и при�
   фальсифицируемы: снятие duplicate-guard в `_projection_rows` роняет ветвь
   дубликата, ослабление 51-парной кардинальности роняет ветвь лишней пары, и в
   обоих прогонах не-projection контроль остаётся зелёным.
-- **Осознанно отложено (hardening, не fail-open).**
-  `historical_oracle.telemetry_sample_key_count` и
-  `telemetry_sample_keys_sha256` остаются единственными компараторами, чья
-  ожидаемая сторона целиком принадлежит манифесту. Ниже по потоку это ловится
-  immutable telemetry-анкером: `TELEMETRY_ANCHOR_FULL_SHA256` считается по
-  строкам `sample_key|digest`, поэтому изменение 309-ключевого набора расходится
-  с runtime-константой в `verify_candidate_full_telemetry_against_pinned`,
-  который production-путь `--mode=full` вызывает через
-  `verify_candidate_against_current_base`. Отдельная runtime-константа для
-  sample-key set добавила бы вторую независимую линию только для
-  projection-only вызовов гейта.
+- **Sample-key set подпёрт runtime-константой (отложенный пункт закрыт
+  FAN-1709).** До FAN-1709 `historical_oracle.telemetry_sample_key_count` и
+  `telemetry_sample_keys_sha256` были единственными компараторами
+  projection-гейта, чья ожидаемая сторона целиком принадлежала манифесту:
+  production-путь `--mode=full` оставался закрыт через
+  `TELEMETRY_ANCHOR_FULL_SHA256` (агрегат по строкам `sample_key|digest`), но
+  projection-only вызов гейта принимал кандидата, который мутировал 309-ключевой
+  набор и согласованно перепривязывал оба значения манифеста. Теперь в
+  `tools/a5_balance_report.gd` живёт `TELEMETRY_ANCHOR_SAMPLE_KEYS_SHA256`
+  (`715745eb…`, sha256 канонической формы `telemetry_sample_keys_digest`:
+  отсортированные ключи по одному на `\n`-терминированную строку; значение
+  пересчитано независимо из payload f09-fixture и из набора ключей
+  `current_integration_base.telemetry_full.sample_digests`, а не скопировано из
+  манифеста), и `verify_candidate_projection_against_current_base` fail closed
+  требует от манифестных `telemetry_sample_key_count` /
+  `telemetry_sample_keys_sha256` совпадения с `TELEMETRY_ANCHOR_SAMPLE_COUNT`
+  (309) и этой константой до сравнения с кандидатом. Дискриминирующий негатив
+  (`tests/a5_balance_report_parity_test.gd`) повторяет форму изоляции
+  `PROJECTION_ANCHOR_CURRENT_SHA256`: один telemetry sample переименован
+  (кардинальность 309 сохранена, projection-ячейки не тронуты), манифест
+  перепривязывает оба значения согласованно, все caller-owned сравнения сходятся
+  сами с собой — и каждый error отказа обязан цитировать именно
+  `immutable sample-keys anchor`. Доказано прогоном в disposable worktree: с
+  временно удалёнными сравнениями новой константы негатив красный, с ними —
+  зелёный, остальной набор в обоих прогонах зелёный. Tolerance, wildcards,
+  исключённые поля, re-pin семантика и before-write порядок не изменены.
 
 FAN-1574 заменяет synthetic no-op на production-equivalent observer A/B:
 `--mode=observer_neutrality` запускает 51 оружие × 3 seed × solo/pack, плюс
