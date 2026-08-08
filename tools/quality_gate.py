@@ -120,10 +120,16 @@ BALANCE_CONTRACT_TESTS = {
 }
 PATH_TEST_RULES = {
     "scripts/attribute_contract.gd": OFFENSIVE_CONTRACT_TESTS | CADENCE_STATUS_CONTRACT_TESTS,
+    # FAN-2179: berserk_rage_trait_test охраняет rage-слой Берсерка — формулу
+    # (progression_data.gd), данные CLASS_TRAITS (progression_data_characters.gd),
+    # runtime-множитель и ульта-эхо (player.gd), точку применения _rolled_damage
+    # (berserk_weapon.gd). До этого тест исполнялся только full-профилем.
+    "scripts/berserk_weapon.gd": {"berserk_rage_trait_test"},
     "scripts/class_weapon.gd": CADENCE_STATUS_CONTRACT_TESTS | {"coverage_cap_gate"},
     "scripts/meta_progression_tree_data.gd": {"offensive_scaling_contract_test"},
-    "scripts/player.gd": OFFENSIVE_CONTRACT_TESTS | CADENCE_STATUS_CONTRACT_TESTS,
-    "scripts/progression_data.gd": OFFENSIVE_CONTRACT_TESTS | CADENCE_STATUS_CONTRACT_TESTS | BALANCE_CONTRACT_TESTS,
+    "scripts/player.gd": OFFENSIVE_CONTRACT_TESTS | CADENCE_STATUS_CONTRACT_TESTS | {"berserk_rage_trait_test"},
+    "scripts/progression_data.gd": OFFENSIVE_CONTRACT_TESTS | CADENCE_STATUS_CONTRACT_TESTS | BALANCE_CONTRACT_TESTS | {"berserk_rage_trait_test"},
+    "scripts/progression_data_characters.gd": {"berserk_rage_trait_test"},
     "scripts/progression_data_balance.gd": OFFENSIVE_CONTRACT_TESTS | BALANCE_CONTRACT_TESTS,
     "scripts/progression_data_content.gd": {"offensive_scaling_contract_test"},
     "scripts/progression_data_weapons.gd": {"offensive_scaling_contract_test"} | CADENCE_STATUS_CONTRACT_TESTS | BALANCE_CONTRACT_TESTS,
