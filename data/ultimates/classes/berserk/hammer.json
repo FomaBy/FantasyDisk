@@ -1,0 +1,33 @@
+{
+  "schema_version": 1,
+  "class_id": "berserk",
+  "weapon_id": "hammer",
+  "profile_id": "weapon_ultimate.profile.berserk.hammer",
+  "executor_id": "weapon_ultimate.executor.berserk.hammer",
+  "implementation_state": "ready",
+  "targeting": {"strategy_id": "ordered_fourfold_rift", "params": {}},
+  "charge": {"strategy_id": "rare_charge_ledger", "params": {}},
+  "executor": {
+    "strategy_id": "weapon_ultimate.executor.berserk.hammer",
+    "params": {
+      "lifetime": 3.4,
+      "release_delay": 0.7,
+      "beat_interval": 0.85,
+      "lane_length": 460.0,
+      "lane_half_width": 96.0,
+      "quake_radius": 330.0,
+      "crowd_cap": 20,
+      "cardinal_damage": 12.0,
+      "diagonal_damage": 13.0,
+      "quake_damage": 18.0,
+      "stagger_impulse": 460.0,
+      "stagger_duration": 1.4,
+      "epic_displacement": 0.35,
+      "epic_duration": 0.45,
+      "boss_displacement": 0.1,
+      "boss_duration": 0.2
+    }
+  },
+  "total_boss_cap": 0.1,
+  "cleanup_policy": {"strategy_id": "activation_owned", "params": {}}
+}
