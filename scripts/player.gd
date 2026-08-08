@@ -3608,8 +3608,11 @@ func _apply_weapon_scaling(weapon: Node) -> void:
 		var base_attack_range := float(weapon.get_meta("base_attack_range"))
 		weapon.set("attack_range", base_attack_range)
 
-	if geometry_capabilities.has("aoe_radius") and weapon.get("aoe_radius") != null:
-		weapon.set("aoe_radius", float(weapon.get_meta("base_aoe_radius", 200.0)) * attack_area_multiplier * meta_radius_multiplier(meta_context))
+	if geometry_capabilities.has("aoe_radius"):
+		var radius_property := "aoe_radius" if weapon.get("aoe_radius") != null else "summon_aoe_radius"
+		if weapon.get(radius_property) != null:
+			var base_radius := float(weapon.get_meta("base_%s" % radius_property, 200.0))
+			weapon.set(radius_property, base_radius * attack_area_multiplier * meta_radius_multiplier(meta_context))
 	if geometry_capabilities.has("inner_width") and weapon.get("inner_width") != null:
 		weapon.set("inner_width", float(weapon.get_meta("base_inner_width")) * attack_area_multiplier)
 	if geometry_capabilities.has("outer_width") and weapon.get("outer_width") != null:
@@ -3698,6 +3701,8 @@ func _capture_weapon_base_values(weapon: Node) -> void:
 		weapon.set_meta("base_attack_range", weapon.get("attack_range"))
 	if weapon.get("aoe_radius") != null and not weapon.has_meta("base_aoe_radius"):
 		weapon.set_meta("base_aoe_radius", weapon.get("aoe_radius"))
+	if weapon.get("summon_aoe_radius") != null and not weapon.has_meta("base_summon_aoe_radius"):
+		weapon.set_meta("base_summon_aoe_radius", weapon.get("summon_aoe_radius"))
 	if weapon.get("sweep_degrees") != null and not weapon.has_meta("base_sweep_degrees"):
 		weapon.set_meta("base_sweep_degrees", weapon.get("sweep_degrees"))
 	if weapon.get("cone_degrees") != null and not weapon.has_meta("base_cone_degrees"):

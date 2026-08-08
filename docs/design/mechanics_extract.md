@@ -196,24 +196,20 @@ solo/AoE-оси Солдата остаются на бюджет-целях 48/
 | Уворот | `dodge` | Шанс избежать входящий урон; проверяется в `Player.take_damage`, при успехе урон и invuln-window не применяются, показывается «Промах!». С 0.1.5 использует diminishing returns и cap 55%. |
 | Защита | `defense` | Снижает получаемый урон; с 0.1.5 использует diminishing returns и cap 62%. |
 | Максимальное здоровье | `health_point` | Max HP игрока |
-| Дальность атаки | `attack_range` | Дистанция поиска и поражения целей |
-| Ширина сектора | `aoe_radius` | Ширина/угол направленных area-атак; не расширяет круговые удары |
+| Область атаки | `aoe_radius` | Единый множитель declared live-геометрии: радиусы, ширины, углы, summon splash и ауры; target reach не меняет |
 | Радиус подбора | `pickup_radius` | Магнит опыта и денег |
 | Урон DoT | `dot_damage` | Урон тиков |
 | Скорость DoT | `dot_speed` | Частота / темп тиков |
-| Скорость снарядов | `projectile_speed` | Скорость projectile-оружия |
-| Радиус | `aura_radius` | Радиус атак, зон, аур и поддержки |
-| Сила баффов | `buff_power` | Мощность эффектов поддержки |
-| Сила отталкивания | `knockback_power` | Knockback от звуковых и силовых атак |
+| Сила отталкивания | `knockback_power` | Knockback от силовых атак; stat-source — только Сила |
 | Количество призывов | `summon_amount` | Сила призывов/устройств: урон, живучесть, темп, lifetime и splash summon-role оружия; count-cap идет от Leadership |
 
 ### Оружие
 
 | Класс | Оружие | ID | Тип атаки | Ключевая механика |
 | --- | --- | --- | --- | --- |
-| Берсерк | Двуручный меч | `sword` | `sweep` | Сектор 100°, радиус 350, interval 0.58, damage x1.15; `sector_multiplier` расширяет угол, Radius расширяет дальность |
-| Берсерк | Двуручный топор | `axe` | `sweep` | Сектор 180° радиуса 250 по ближайшему монстру, damage x0.85; `sector_multiplier` расширяет угол, Radius расширяет дальность |
-| Берсерк | Двуручный молот | `hammer` | `circle` | Круг 150px, damage x0.55; Radius увеличивает круг, `sector_multiplier` не влияет; плотные паки получают circle target diminishing |
+| Берсерк | Двуручный меч | `sword` | `sweep` | Сектор 100°, радиус 350, interval 0.58, damage x1.15; единая область атаки масштабирует live radius/width/`sweep_degrees`, но не target reach |
+| Берсерк | Двуручный топор | `axe` | `sweep` | Сектор 180° радиуса 250 по ближайшему монстру, damage x0.85; тот же единый area-контракт, без отдельной sector/range оси |
+| Берсерк | Двуручный молот | `hammer` | `circle` | Круг 150px, damage x0.55; единая область атаки увеличивает круг; плотные паки получают circle target diminishing |
 | Солдат | Аркебуза строя | `soldier_rifle` | `arquebus_shot` | Частая одиночная взрывная пуля: видимый снаряд летит в цель и взрывается малым AoE (полный урон в центре, falloff к краю) |
 | Солдат | Граната с фитилем | `soldier_grenade` | `grenade_fuse` | Медленный нюк: долгий полёт (скорость полёта капится ~460) + видимый фитиль после посадки; тяжёлый взрыв с falloff, урон только на взрыве |
 | Солдат | Штык-стойка | `soldier_bayonet` | `bayonet_cone` | Ближний сектор 105° без мёртвой зоны у ног: укол+knockback каждому в конусе; редкий авто-выстрел (25% + артефакт) по цели за конусом на 70% урона |
@@ -326,12 +322,10 @@ SCRUM-245 добавил `scripts/status_effects.gd` как общий runtime-�
 
 | Группа | ID | Параметры |
 | --- | --- | --- |
-| Физический урон | `physical_damage` | `damage`, `attack_speed`, `crit_chance`, `crit_damage_multiplier`, `knockback_power` |
-| Магия | `magic_damage` | `magic_damage`, `aoe_radius`, `projectile_speed`, `attack_range`, `range_multiplier` |
-| Поддержка / Контроль | `support_control` | `aura_radius`, `buff_power`, `knockback_distance` |
-| Яд / DoT | `dot_poison` | `dot_damage`, `dot_speed` |
-| Выживаемость | `survival` | `health_point`, `defense`, `dodge`, `move_speed`, `absorb`, `regeneration`, `vampiric_amount`, `vampiric_chance` |
-| Приспешники / Поддержка | `summons_support` | `summon_amount`, `pickup_radius`, `ultimate_multiplier` |
+| Урон | `damage_axes` | `damage_flat`, `damage`, `attack_speed` |
+| Область / мобильность | `mobility_area` | `move_speed`, `aoe_radius`, `pickup_radius` |
+| Крит / DoT | `crit_dot` | `crit_chance`, `crit_damage`, `dot_damage` |
+| Призыв / поддержка | `summon_sustain` | `summon_amount`, `vampiric`, `ultimate_power` |
 
 Базовые характеристики (`strength`, `agility`, `intelligence`, `perception`, `energy`, `knowledge`, `endurance`, `leadership`) остаются отдельным compact block под кнопками Escape menu. Tooltip каждой строки/плитки берется из `STAT_DEFINITIONS`: описание, формула и `influences`.
 
@@ -750,23 +744,21 @@ SCRUM-469 добавил class/stat-specific скалирование роста
 | dodge | effective_dodge(0.02 + Agi*0.010 + flat), diminishing returns, cap 0.55 | Player.take_damage | работает |
 | defense | effective_defense(0.04 + End*0.018 + flat), diminishing returns, cap 0.62 | Player.take_damage | работает |
 | health_point | 50*End/4 + flat) * mult | derived -> max_health | работает |
-| attack_range / aoe_radius | `(weapon + профильные добавки) * range/radius mult`; для Берсерка геометрический рост считается от delta статов, а Radius может расширять melee-секторы/круг | derived -> оружия | работает |
+| attack_area_multiplier / aoe_radius | единый stat-driven множитель масштабирует только declared live dimensions; `attack_range` остаётся config-defined target reach | Player -> weapon geometry, summon splash и derived aura | работает |
 | pickup_radius | 105 + Per*7 + flat | derived -> магнит pickups | работает |
 | dot_damage / dot_speed | damage = `(4+Know*0.65+dot_flat)*common_damage`; speed = `(0.65+Know*0.08+Energy*0.015+Agi*0.010) * normalized attack cadence` | cursed_skull + universal DoT hook; чужие характеристики не протекают в damage-канал | работает |
-| projectile_speed | `weapon + Per*18 + Agi*9 + Energy*4 + Know*2` | derived -> снаряды | работает |
-| aura_radius | `(weapon_aoe + Lead*5 + Per/Energy/Know small) * Radius mult` | derived (атаки/зоны/ампы/боевой клич) | работает |
-| buff_power | `1 + Lead*0.025 + Know*0.006 + Energy*0.004` | derived; потребители — события/бафф-эффекты | работает |
-| knockback_power | (weapon + End*4 + Lead*3) * mult | derived -> apply_knockback врагов | работает |
+| projectile_speed / attack_range | строго config-defined runtime values; area/stat upgrades их не меняют | target acquisition и projectile scenes | внутренний контракт, не ось прокачки |
+| aura_radius | `base_area * attack_area_multiplier`; тот же area-контракт без отдельного источника | support/aura consumers | работает |
+| support_multiplier | общий `% damage` агрегируется один раз; standalone `buff_power` источника нет | семь support consumers | работает |
+| knockback_power | `(weapon + Strength*4) * knockback_multiplier` | derived -> apply_knockback врагов | работает |
 | summon_amount | `Leadership + Know*0.18 + Int*0.12 + Energy*0.10` | summon profile/echo weapons/support; `max_summons` count-cap идет от Leadership | работает |
 | **absorb** | End*0.16 + softened flat; срез удара до защиты (мин. 35% проходит) | Player.take_damage | работает |
 | **regeneration** | (0.22 + positive_flat*0.45) * (0.45 + Know/12) HP/с | Player._apply_regeneration | работает |
 | **vampiric_chance** | награды, cap 0.22; источник — артефакт «Клык Пиявки» (tier 2) | Player.on_weapon_hit | работает |
 | **vampiric_amount** | награды*0.55 + 3.5% нанесенного урона при проке, итоговое лечение ограничено `vampiric_heal_per_second_cap` 1.4/с (hard cap 2.6/с) | Player.on_weapon_hit | работает |
-| **knockback_distance** | Knockback Power * End / 20 (отображаемая дальность) | НОВОЕ: derived; в бою действует knockback_power (реализованный баланс приоритетнее формулы таблицы) | работает (display) |
-| **range_multiplier** | run-множитель дальности | НОВОЕ: выведен в derived для UI | работает |
 | **ultimate_multiplier** | `1 + Energy*0.02 + all_other_stats*0.002 + награды` | НОВОЕ: усиливает class ultimate: урон, радиус, длительность или число целей | работает |
 
-SCRUM-255 survivability rebalance: регенерация и вампиризм намеренно ослаблены, а defense/dodge/absorb получили diminishing returns. В синтетическом harness `tank/contact_swarm` упал с 321.0с до 38.5с TTD, regen у tank — с 1.57/с до 0.30/с. Расхождения с балансовой таблицей: knockback_distance в таблице задумывался боевым — оставлен отображаемым (бой использует knockback_power), vampiric_amount «Default + Current Damage / 2» сознательно заменен на малую долю урона с heal-per-second cap, чтобы вампиризм был поддержкой, а не бессмертием.
+SCRUM-255 survivability rebalance: регенерация и вампиризм намеренно ослаблены, а defense/dodge/absorb получили diminishing returns. В синтетическом harness `tank/contact_swarm` упал с 321.0с до 38.5с TTD, regen у tank — с 1.57/с до 0.30/с. Исторический `knockback_distance` больше не является отображаемой осью: бой использует единый `knockback_power`. `vampiric_amount` «Default + Current Damage / 2» сознательно заменен на малую долю урона с heal-per-second cap, чтобы вампиризм был поддержкой, а не бессмертием.
 
 SCRUM-247 crit rebalance: крит остается значимым burst-слоем, но не заменяет стабильный урон. Flat-награды на шанс крита учитываются с эффективностью 75% и проходят через diminishing returns; обычный cap от Ловкости растёт 55→75%, у Ассасина остаётся 100%. Крит-множитель после raw 2.75 следует непрерывному unbounded diminishing tail `2.75 + sqrt(raw - 2.75)`, а не жёсткому cap. Подробный before/after: `build/crit_rebalance_scrum247_report.md`.
 

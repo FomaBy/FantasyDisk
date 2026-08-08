@@ -46,8 +46,8 @@ const CONSTELLATION_AFTERSHOCK_DELAY := 0.12
 @export var melee_arc_followup_multiplier := 0.0
 @export var visual_color := Color(0.62, 0.82, 1.0, 0.30)
 # SCRUM-922: база отброса для derived knockback_power; свойство скейлится
-# пайплайном Player._apply_weapon_scaling (эндуранс/лидерство/knockback_multiplier
-# × meta-множитель), потребитель — формула stagger-импульса ниже.
+# пайплайном Player._apply_weapon_scaling (Strength/knockback_multiplier ×
+# meta-множитель), потребитель — формула stagger-импульса ниже.
 @export var knockback := 60.0
 # SCRUM-922: доля knockback-стата в stagger-импульсе (0 = прежний фикс 260) и
 # кап отброса для боссов/главных элит (1.0 = прежнее поведение без капа).
