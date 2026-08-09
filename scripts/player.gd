@@ -188,7 +188,6 @@ var _smoke_cloud_token := 0
 var _web_slow_until := 0.0
 var _web_slow_factor := 1.0
 var _echo_hit_counter := 0
-var _leadership_echo_hit_counter := 0
 var _dodge_rush_tween: Tween = null
 var _low_hp_active := false
 # SCRUM-834 (Мета 4.1): гейты условных keystone (не часть run_modifiers-дефолтов,
@@ -2429,7 +2428,6 @@ func on_weapon_hit(enemy: Node2D, dealt_damage := 0.0, was_crit := false, hit_co
 				weapon.call("on_owner_vampiric_heal", effective_vampiric_heal)
 	_trigger_magic_enchant(enemy)
 	_trigger_universal_dot(enemy)
-	_trigger_leadership_echo(enemy)
 	_trigger_class_status_effects(enemy)
 	_trigger_berserk_ultimate_echo(enemy)
 	_on_weapon_hit_echo(enemy)
@@ -3163,21 +3161,9 @@ func _update_wild_force_aura() -> void:
 		})
 
 
-func _trigger_leadership_echo(enemy: Node2D) -> void:
-	if enemy == null or not is_instance_valid(enemy) or not enemy.has_method("take_damage"):
-		return
-	var summon_amount := float(derived_parameters.get("summon_amount", 0.0))
-	if summon_amount < 4.0:
-		return
-	var every := maxi(3, 10 - int(floor(summon_amount * 0.55)))
-	_leadership_echo_hit_counter += 1
-	if _leadership_echo_hit_counter < every:
-		return
-	_leadership_echo_hit_counter = 0
-	var echo_damage := float(derived_parameters.get(PROGRESSION_DATA.damage_parameter_for(character_id), derived_parameters.get("damage", 8.0))) * 0.34
-	var parent := _vfx_parent() as Node2D
-	AttackVfx.slash(parent, (enemy.global_position - global_position).normalized(), 110.0, Color(0.78, 0.90, 1.0, 0.34)).global_position = enemy.global_position
-	_apply_player_damage(enemy, echo_damage)
+# FAN-1893: универсальный «Leadership echo» удалён — summon_amount/Лидерство
+# больше не конвертируются в synthetic-урон для классов без реальных призывов;
+# ось потребляют только настоящие summon/deploy-киты (summon_semantics конфига).
 
 
 func _on_weapon_hit_echo(enemy: Node2D) -> void:

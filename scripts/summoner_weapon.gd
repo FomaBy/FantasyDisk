@@ -663,8 +663,6 @@ func _selected_ally_visual_id() -> String:
 			return pair_tank_visual_id
 		"summon_amulet":
 			return "druid_beast" if randf() < 0.5 else "druid_pack_spirit"
-		"leadership_echo":
-			return "leadership_echo"
 	return "druid_beast"
 
 

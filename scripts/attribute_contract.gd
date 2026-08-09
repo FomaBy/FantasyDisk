@@ -29,10 +29,13 @@ const ATTRIBUTE_PRESENTATION_QUANTUMS := {
 
 const DAMAGE_TYPE_PARAMETERS := ["damage", "magic_damage"]
 
-# FAN-1927: attack_mode устройств Инженера, где player.gd возвращает max_summons
-# к базе (парк считает сам кит от derived summon_amount) — run_modifiers.summon_bonus
-# там не потребляется.
-const ENGINEER_DEVICE_MODES := ["engineer_sentry_link", "engineer_orbit_drone"]
+# FAN-1893: канонические значения явной capability-оси summon_semantics конфига
+# оружия (контракт ключей — progression_data_weapons.gd). summon_bonus потребляют
+# ТОЛЬКО count-киты ("pack"/"deploy"): парк = база + Лидерство/4 + summon_bonus,
+# кап max_summons_cap (player.gd). "pair" ведёт популяцию сам, "device" считает
+# парк от derived summon_amount (только статы), "mine_field" к оси не подключён.
+const SUMMON_COUNT_SEMANTICS := ["pack", "deploy"]
+const SUMMON_SEMANTICS_VALUES := ["none", "pack", "pair", "deploy", "device", "mine_field"]
 
 
 static func attribute_registry_entry(attr_id: String) -> Dictionary:
@@ -52,16 +55,28 @@ static func weapon_is_summoner_script(weapon_config: Dictionary) -> bool:
 	return weapon_config.get("summon_roster") != null or bool(weapon_config.get("summon_pair_mode", false))
 
 
+# FAN-1893: явная семантика призыва/деплоя конфига; отсутствующий или
+# неизвестный ключ = fail-closed "none" (legacy/ad-hoc конфиг не получает
+# summon-наград и не падает).
+static func weapon_summon_semantics(weapon_config: Dictionary) -> String:
+	var semantics := str(weapon_config.get("summon_semantics", "none"))
+	if semantics in SUMMON_SEMANTICS_VALUES:
+		return semantics
+	return "none"
+
+
+# FAN-1893: явное число реальных снарядов, которым управляет generic-ось
+# «+1 снаряд» (run_modifiers.extra_projectile); 0/отсутствие = ось инертна.
+static func weapon_real_projectile_count(weapon_config: Dictionary) -> int:
+	return maxi(int(weapon_config.get("real_projectile_count", 0)), 0)
+
+
 static func weapon_consumes_summon_bonus(weapon_config: Dictionary) -> bool:
-	if weapon_config.get("max_summons") == null:
-		return false
-	if bool(weapon_config.get("summon_pair_mode", false)):
-		# Пара «танк + кастер» ведёт популяцию сама (summoner_weapon.gd) — +N не
-		# меняет фактический счёт.
-		return false
-	if str(weapon_config.get("attack_mode", "")) in ENGINEER_DEVICE_MODES:
-		return false
-	return true
+	# FAN-1893: только явные count-киты ("pack"/"deploy") двигают фактический
+	# парк от summon_bonus; "pair" ведёт популяцию сам, "device"/"mine_field"
+	# summon_bonus не читают. max_summons — рантайм-опора player.gd:3663-3675.
+	return weapon_summon_semantics(weapon_config) in SUMMON_COUNT_SEMANTICS \
+		and weapon_config.get("max_summons") != null
 
 
 # Фактический runtime-канал урона текущего оружия (player.gd:3585-3591 читает

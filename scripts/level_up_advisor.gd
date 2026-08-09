@@ -123,6 +123,17 @@ static func forecast_reward(reward: Dictionary, stats: Dictionary, run_modifiers
 	var before: Dictionary = ProgressionDataRef.derived_parameters(stats, run_modifiers, weapon_config)
 	var preview := preview_reward_state(reward, stats, run_modifiers)
 	var after: Dictionary = ProgressionDataRef.derived_parameters(preview["stats"], preview["run_modifiers"], weapon_config)
+	# FAN-1893 (AC4): «Сила призыва» в прогнозе — фактический capped runtime-парк
+	# (AttributeContract.summon_runtime_count), а не сырой derived: карта не
+	# обещает «+N» за капом. У оружия без count-потребителя строка подавляется;
+	# legacy-вызов без weapon-контекста сохраняет сырой derived (совместимость).
+	if not weapon_config.is_empty():
+		if AttributeContract.weapon_consumes_summon_bonus(weapon_config):
+			before["summon_amount"] = AttributeContract.summon_runtime_count(weapon_config, stats, run_modifiers)
+			after["summon_amount"] = AttributeContract.summon_runtime_count(weapon_config, preview["stats"], preview["run_modifiers"])
+		else:
+			before.erase("summon_amount")
+			after.erase("summon_amount")
 	return {
 		"before": before,
 		"after": after,

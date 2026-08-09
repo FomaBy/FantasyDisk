@@ -136,6 +136,11 @@ const ATTACK_MODE_EXECUTORS := {
 @export var beam_count := 1
 @export var beam_fan_degrees := 12.0
 @export var projectile_count := 1
+# FAN-1893: явная capability оружия — числом реальных снарядов управляет
+# generic-ось run_modifiers.extra_projectile ТОЛЬКО при real_projectile_count > 0
+# (см. _extra_projectiles). 0 (fail-closed дефолт) = ловушки/тики/звенья/ширина/
+# рикошеты снарядами не считаются и «+1 снаряд» не потребляют.
+@export var real_projectile_count := 0
 @export var burst_interval := 0.08
 @export var grenade_delay := 0.42
 @export var brace_duration := 0.34
@@ -382,7 +387,6 @@ const PRESS_ELITE_BOSS_COMPRESSION_FACTOR := 0.25
 const REACTOR_VENT_COUNT := 4
 const REACTOR_ROTATION_STEP_DEG := 6.0
 const REACTOR_VENT_DAMAGE_RATIO := 0.42
-const REACTOR_EXTRA_PROJECTILE_WIDTH_BONUS := 0.14
 # SCRUM-900 plague_dart: реестр живых зараз этого оружия (enemy_id → Tween).
 # Дедуп повторного заражения (рефреш), spread-исключение и кап plague_max_infected.
 var _plague_tweens := {}
@@ -462,6 +466,7 @@ func configure_weapon(config: Dictionary) -> void:
 	beam_count = int(config.get("beam_count", beam_count))
 	beam_fan_degrees = float(config.get("beam_fan_degrees", beam_fan_degrees))
 	projectile_count = int(config.get("projectile_count", projectile_count))
+	real_projectile_count = maxi(int(config.get("real_projectile_count", 0)), 0)
 	burst_interval = float(config.get("burst_interval", burst_interval))
 	grenade_delay = float(config.get("grenade_delay", grenade_delay))
 	brace_duration = float(config.get("brace_duration", brace_duration))
@@ -1358,7 +1363,9 @@ func _fire_dark_chain_burst(owner_node: Node2D, target: Node2D, direction: Vecto
 	var chain: Array = [first_target]
 	var used := {first_target.get_instance_id(): true}
 	var hop_origin: Vector2 = first_target.global_position
-	var chain_limit := maxi(chain_targets + _extra_projectiles() + int(_owner_mod("wand_extra_chain")), 1)
+	# FAN-1893: прыжки цепи — не снаряды; generic «+1 снаряд» цепь не удлиняет
+	# (длину растит только классовый артефакт wand_extra_chain).
+	var chain_limit := maxi(chain_targets + int(_owner_mod("wand_extra_chain")), 1)
 	for hop_index in range(chain_limit - 1):
 		var next_target := _find_nearest_enemy_from(hop_origin, chain_hop_range, used)
 		if next_target == null:
@@ -1514,7 +1521,10 @@ func _apply_skull_curse_zone(center: Vector2) -> void:
 func _fire_dark_mirror_blast(owner_node: Node2D, target: Node2D, direction: Vector2) -> void:
 	var primary_targets: Array = []
 	if target != null:
-		primary_targets = _find_closest_enemies(owner_node, maxi(1 + _extra_projectiles(), 1))
+		# FAN-1893: единица атаки книги — зеркальная ПАРА (2 сферы); «+1 снаряд»
+		# дал бы сразу две, поэтому generic-ось книгой не потребляется
+		# (real_projectile_count 0) и пара всегда одна.
+		primary_targets = _find_closest_enemies(owner_node, 1)
 	var target_positions: Array[Vector2] = []
 	if primary_targets.is_empty():
 		var aim_position: Vector2 = owner_node.global_position + direction * minf(attack_range, 360.0)
@@ -1648,8 +1658,8 @@ func _resolve_dark_mirror_echo(blast_position: Vector2, echo_damage: float) -> v
 
 func _fire_beam(owner_node: Node2D, direction: Vector2) -> void:
 	# Веер из beam_count лучей с шагом beam_fan_degrees, центрированный на цели.
-	# «Ядро Расщепления» (tier 3): extra_projectile добавляет луч/снаряд.
-	var count := maxi(beam_count + _extra_projectiles(), 1)
+	# FAN-1893: луч — не снаряд; generic «+1 снаряд» веер лучей не расширяет.
+	var count := maxi(beam_count, 1)
 	_emit_weapon_animation_event(owner_node, "channel", 0.16, direction, {"beam_count": count})
 	for beam_index in range(count):
 		var fan_offset := 0.0
@@ -1659,7 +1669,8 @@ func _fire_beam(owner_node: Node2D, direction: Vector2) -> void:
 
 
 func _fire_dot_beam(owner_node: Node2D, direction: Vector2) -> void:
-	var count := maxi(beam_count + _extra_projectiles(), 1)
+	# FAN-1893: луч — не снаряд; generic «+1 снаряд» веер лучей не расширяет.
+	var count := maxi(beam_count, 1)
 	_emit_weapon_animation_event(owner_node, "channel", maxf(0.16, float(maxi(dot_ticks, 1)) * 0.04), direction, {"beam_count": count, "dot_ticks": dot_ticks})
 	for beam_index in range(count):
 		var fan_offset := 0.0
@@ -2934,7 +2945,9 @@ func _fire_coin_ricochet(owner_node: Node2D, target: Node2D, direction: Vector2)
 	var search_origin := current_target.global_position
 	# SCRUM-961 «Счастливая монета» / extra_projectile: цепь скачет дольше, но
 	# SCRUM-897 капит длину COIN_CHAIN_HARD_CAP — рикошет конечен по AC.
-	var chain_count := clampi(projectile_count + _extra_projectiles() + int(_owner_mod("coin_extra_bounces")), 1, COIN_CHAIN_HARD_CAP)
+	# FAN-1893: прыжки рикошета — не снаряды; цепь удлиняет только классовый
+	# артефакт coin_extra_bounces (кап COIN_CHAIN_HARD_CAP прежний).
+	var chain_count := clampi(projectile_count + int(_owner_mod("coin_extra_bounces")), 1, COIN_CHAIN_HARD_CAP)
 	for chain_index in range(chain_count - 1):
 		var next_target := _find_nearest_enemy_from(search_origin, attack_range * 0.65, used)
 		if next_target == null:
@@ -4343,7 +4356,10 @@ func _fire_robot_reactor_vent(owner_node: Node2D, _direction: Vector2) -> void:
 			_call_take_damage(pulse_enemy, damage_value * pulse_ratio, {"damage_type": _weapon_damage_type(), "constellation_final": "reactor_vent_cycle_pulse"})
 			var away := pulse_enemy.global_position - owner_node.global_position
 			_push_enemy_scaled(pulse_enemy, away.normalized() if away.length_squared() > 0.001 else Vector2.RIGHT, pulse_knockback / maxf(knockback, 1.0))
-	var vent_width := beam_width * (1.0 + REACTOR_EXTRA_PROJECTILE_WIDTH_BONUS * float(maxi(_extra_projectiles(), 0)))
+	# FAN-1893: ширина лопасти — не число снарядов; generic «+1 снаряд» вентили
+	# не расширяет (перегруженная width-интерпретация удалена), направлений
+	# всегда ровно REACTOR_VENT_COUNT.
+	var vent_width := beam_width
 	var base_phase := _reactor_vent_phase
 	_reactor_vent_phase = fmod(_reactor_vent_phase + deg_to_rad(REACTOR_ROTATION_STEP_DEG), TAU)
 	AttackVfx.ring_pulse(_projectile_parent(), owner_node.global_position, aoe_radius * 0.62, visual_color, true)
@@ -4735,10 +4751,16 @@ func _extra_projectiles() -> int:
 	var owner_node := _owner_node()
 	if owner_node == null:
 		return 0
-	var mods = owner_node.get("run_modifiers")
+	# FAN-1893: generic-ось «+1 снаряд» потребляется ТОЛЬКО оружием с явной
+	# capability real_projectile_count > 0 — тогда каждый пункт добавляет ровно
+	# один реальный снаряд боевого пути. Для остальных оружий generic-ключ
+	# инертен (перегруженные интерпретации «лишняя ловушка/тик/звено/ширина»
+	# удалены); семантические мета-ключи (trap_extra_count и т.п.) остаются.
 	var generic_extra := 0
-	if mods is Dictionary:
-		generic_extra = int((mods as Dictionary).get("extra_projectile", 0.0))
+	if real_projectile_count > 0:
+		var mods = owner_node.get("run_modifiers")
+		if mods is Dictionary:
+			generic_extra = maxi(int((mods as Dictionary).get("extra_projectile", 0.0)), 0)
 	var semantic_extra := 0
 	if owner_node.has_method("meta_extra_projectiles"):
 		semantic_extra = int(owner_node.call("meta_extra_projectiles", _meta_context()))

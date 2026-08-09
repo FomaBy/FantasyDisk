@@ -41,6 +41,18 @@ func _initialize() -> void:
 			if not derived.has(stat_id) and not has_default:
 				errors.append("%s: derived stat '%s' is listed (no default_value) but NOT produced by derived_parameters -> would render N/A" % [cid, stat_id])
 
+	# FAN-1893: summon_bonus применяется к парку РОВНО ОДИН РАЗ — внутри
+	# player._apply_weapon_scaling (base + Лидерство/4 + summon_bonus, кап).
+	# Derived summon_amount обязан оставаться stats-only: если он начнёт читать
+	# run_modifiers.summon_bonus, бонус применится дважды (derived + scaling).
+	for character_id_raw in ids:
+		var cid := str(character_id_raw)
+		var stats: Dictionary = PD.base_stats(cid)
+		var plain := float(PD.derived_parameters(stats, {}, {}).get("summon_amount", 0.0))
+		var bonused := float(PD.derived_parameters(stats, {"summon_bonus": 99.0}, {}).get("summon_amount", 0.0))
+		if absf(plain - bonused) > 0.0001:
+			errors.append("%s: derived summon_amount consumes summon_bonus (%.2f -> %.2f) — double application with _apply_weapon_scaling" % [cid, plain, bonused])
+
 	# Every produced derived value that the codex also describes must carry the metadata
 	# the stat screen renders (name/format), so live values never fall back to placeholders.
 	var probe_stats: Dictionary = PD.base_stats(str(ids[0]))
