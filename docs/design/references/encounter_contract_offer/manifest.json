@@ -1,0 +1,59 @@
+{
+  "issue": "FAN-2235",
+  "source_issue": "FAN-1452",
+  "generator_route": {
+    "background": "existing gameplay underlay; no new background generated",
+    "non_background_ui": "PixelLab MCP create_ui_asset"
+  },
+  "pixellab": {
+    "ui_asset_id": "3f29a8f8-1c59-4cfa-aa3a-02d40e5ebb2a",
+    "project_id": null,
+    "projects_listed": 0,
+    "canonical_tag": "encounter_contract_offer",
+    "name": "FantasyDisk Encounter Contract Offer Modal",
+    "seed": 20932235,
+    "status": "completed",
+    "size": [688, 384],
+    "no_background": true,
+    "raw_source_file": "docs/design/references/encounter_contract_offer/pixellab_encounter_contract_offer_688x384_raw.png",
+    "accepted_source_file": "docs/design/references/encounter_contract_offer/pixellab_encounter_contract_offer_688x384_alpha_clean.png",
+    "raw_sha256": "86ee3d4591faa719e33e7649f3539e3e6f218607ccf0018bb726393e4dde2a32",
+    "accepted_sha256": "c9abfaaf9d136e8060e95c8ee97e864112121b8f2d71e3fa2e9685aa9d82fd6d",
+    "download_url": "https://api.pixellab.ai/mcp/ui-assets/3f29a8f8-1c59-4cfa-aa3a-02d40e5ebb2a/download",
+    "preview_url": "https://backblaze.pixellab.ai/file/pixellab-characters/ui/7a9fb7cd-0060-48a4-a4dc-50f7b1124b0c/3f29a8f8-1c59-4cfa-aa3a-02d40e5ebb2a/full.png?t=1786308952971",
+    "prompt_file": "docs/design/references/encounter_contract_offer/pixellab_create_request.json",
+    "auto_label_cleanup": "postprocess_pixellab_source.py removed only PixelLab scaffold labels from two declared button interiors"
+  },
+  "alpha_audit": "docs/design/references/encounter_contract_offer/alpha_audit.json",
+  "planned_godot_nodes": {
+    "modal_frame": "NinePatchRect or StyleBoxTexture",
+    "central_empty_frame": "logical content columns inside frame",
+    "risk_panel": "Control/PanelContainer content column",
+    "reward_panel": "Control/PanelContainer content column",
+    "buttons": "Button",
+    "icons": "TextureRect"
+  },
+  "existing_verify_only_assets": [
+    "assets/backgrounds/field_ruined_courtyard.png",
+    "assets/sprites/ui/frames/combat_hud/ui_frame_combat_hud_resource_panel.png",
+    "assets/sprites/ui/frames/combat_hud/ui_frame_combat_hud_timer.png",
+    "assets/sprites/ui/hud/combat_hud_v2/ui_hud_v2_cluster_bg.png",
+    "assets/sprites/ui/frames/combat_hud/ui_btn_combat_level_up_plus.png",
+    "assets/sprites/ui/icons/artifacts/artifact_battle_doctrine.png",
+    "assets/sprites/ui/icons/artifacts/artifact_battle_fan.png"
+  ],
+  "outputs": {
+    "plan": "docs/design/mockups/encounter_contract_offer/ui_plan.json",
+    "plan_report": "docs/design/mockups/encounter_contract_offer/ui_plan.report.json",
+    "layout": "docs/design/mockups/encounter_contract_offer/layout.json",
+    "base": "docs/design/mockups/encounter_contract_offer/encounter_contract_offer_base.png",
+    "mockup": "docs/design/mockups/encounter_contract_offer/encounter_contract_offer_mockup.png",
+    "preview": "docs/design/mockups/encounter_contract_offer/encounter_contract_offer_preview.png",
+    "safe_zone_overlay": "docs/design/mockups/encounter_contract_offer/encounter_contract_offer_safe_zones.png",
+    "render_report": "docs/design/mockups/encounter_contract_offer/encounter_contract_offer_render.report.json",
+    "responsive_report": "docs/design/mockups/encounter_contract_offer/responsive_preview.report.json"
+  },
+  "runtime_promotion": "none",
+  "runtime_changes": [],
+  "background_generation": "none"
+}

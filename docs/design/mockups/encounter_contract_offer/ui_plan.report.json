@@ -1,0 +1,261 @@
+{
+  "ok": true,
+  "decision": "ready_for_image",
+  "errors": [],
+  "warnings": [],
+  "elements": [
+    {
+      "id": "modal_frame",
+      "kind": "panel",
+      "rect": [
+        280,
+        160,
+        1360,
+        760
+      ],
+      "ok": true,
+      "warnings": []
+    },
+    {
+      "id": "title_zone",
+      "kind": "text",
+      "rect": [
+        700,
+        180,
+        520,
+        52
+      ],
+      "ok": true,
+      "warnings": [],
+      "fit_font_size": 38
+    },
+    {
+      "id": "subtitle_zone",
+      "kind": "text",
+      "rect": [
+        748,
+        312,
+        424,
+        34
+      ],
+      "ok": true,
+      "warnings": [],
+      "fit_font_size": 15
+    },
+    {
+      "id": "risk_panel",
+      "kind": "panel",
+      "rect": [
+        740,
+        350,
+        210,
+        210
+      ],
+      "ok": true,
+      "warnings": []
+    },
+    {
+      "id": "risk_icon_zone",
+      "kind": "icon",
+      "rect": [
+        518,
+        314,
+        92,
+        92
+      ],
+      "ok": true,
+      "warnings": []
+    },
+    {
+      "id": "risk_label_zone",
+      "kind": "text",
+      "rect": [
+        742,
+        350,
+        204,
+        28
+      ],
+      "ok": true,
+      "warnings": [],
+      "fit_font_size": 19
+    },
+    {
+      "id": "risk_value_zone",
+      "kind": "text",
+      "rect": [
+        742,
+        383,
+        204,
+        62
+      ],
+      "ok": true,
+      "warnings": [],
+      "fit_font_size": 20
+    },
+    {
+      "id": "risk_body_zone",
+      "kind": "text",
+      "rect": [
+        742,
+        449,
+        204,
+        96
+      ],
+      "ok": true,
+      "warnings": [],
+      "fit_font_size": 14
+    },
+    {
+      "id": "reward_panel",
+      "kind": "panel",
+      "rect": [
+        974,
+        350,
+        210,
+        210
+      ],
+      "ok": true,
+      "warnings": []
+    },
+    {
+      "id": "reward_icon_zone",
+      "kind": "icon",
+      "rect": [
+        1256,
+        314,
+        92,
+        92
+      ],
+      "ok": true,
+      "warnings": []
+    },
+    {
+      "id": "reward_label_zone",
+      "kind": "text",
+      "rect": [
+        978,
+        350,
+        202,
+        28
+      ],
+      "ok": true,
+      "warnings": [],
+      "fit_font_size": 19
+    },
+    {
+      "id": "reward_value_zone",
+      "kind": "text",
+      "rect": [
+        978,
+        383,
+        202,
+        42
+      ],
+      "ok": true,
+      "warnings": [],
+      "fit_font_size": 22
+    },
+    {
+      "id": "reward_cap_zone",
+      "kind": "text",
+      "rect": [
+        978,
+        429,
+        202,
+        28
+      ],
+      "ok": true,
+      "warnings": [],
+      "fit_font_size": 14
+    },
+    {
+      "id": "reward_body_zone",
+      "kind": "text",
+      "rect": [
+        978,
+        462,
+        202,
+        82
+      ],
+      "ok": true,
+      "warnings": [],
+      "fit_font_size": 13
+    },
+    {
+      "id": "accept_button",
+      "kind": "button",
+      "rect": [
+        672,
+        838,
+        258,
+        56
+      ],
+      "ok": true,
+      "warnings": [],
+      "fit_font_size": 18
+    },
+    {
+      "id": "decline_button",
+      "kind": "button",
+      "rect": [
+        990,
+        838,
+        258,
+        56
+      ],
+      "ok": true,
+      "warnings": [],
+      "fit_font_size": 18
+    },
+    {
+      "id": "timeout_zone",
+      "kind": "text",
+      "rect": [
+        744,
+        715,
+        430,
+        48
+      ],
+      "ok": true,
+      "warnings": [],
+      "fit_font_size": 15
+    },
+    {
+      "id": "input_hint_zone",
+      "kind": "text",
+      "rect": [
+        760,
+        254,
+        400,
+        26
+      ],
+      "ok": true,
+      "warnings": [],
+      "fit_font_size": 11
+    },
+    {
+      "id": "combat_hud_reserved_top",
+      "kind": "decor",
+      "rect": [
+        0,
+        0,
+        1920,
+        112
+      ],
+      "ok": true,
+      "warnings": []
+    },
+    {
+      "id": "combat_hud_reserved_fab",
+      "kind": "decor",
+      "rect": [
+        1827,
+        987,
+        93,
+        93
+      ],
+      "ok": true,
+      "warnings": []
+    }
+  ]
+}

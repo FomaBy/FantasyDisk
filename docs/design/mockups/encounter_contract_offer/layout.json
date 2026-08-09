@@ -1,0 +1,44 @@
+{
+  "canvas": {"width": 1920, "height": 1080},
+  "defaults": {
+    "font": "/System/Library/Fonts/Supplemental/Arial Unicode.ttf",
+    "color": "#F4E7C4",
+    "stroke_fill": "#110D12",
+    "stroke_width": 2,
+    "line_spacing": 1.08,
+    "align": "center",
+    "valign": "middle"
+  },
+  "content": {
+    "title": "Контракт следующей фазы",
+    "subtitle": "Прими риск сейчас — получи заранее известную награду.",
+    "risk_label": "Риск",
+    "risk_value": "+35% врагов в следующей фазе",
+    "risk_body": "Сложность повышена только для следующего обычного боя.",
+    "reward_label": "Награда",
+    "reward_value": "+18 золота",
+    "reward_cap": "Потолок: 18 золота",
+    "reward_body": "Награда начисляется только после успешного завершения фазы.",
+    "accept": "Принять контракт",
+    "decline": "Отказаться",
+    "timeout": "По таймауту: отказ — безопасный вариант",
+    "input_hint": "Tab / стрелки — выбрать   Enter / A — подтвердить   Esc / B — отказаться"
+  },
+  "zones": [
+    {"id": "title_zone", "content_key": "title", "x": 700, "y": 180, "w": 520, "h": 52, "max_font": 38, "min_font": 26, "color": "#F6D58D"},
+    {"id": "subtitle_zone", "content_key": "subtitle", "x": 748, "y": 312, "w": 424, "h": 34, "max_font": 16, "min_font": 12, "color": "#D8CBB0", "stroke_width": 1},
+    {"id": "risk_icon_zone", "image_path": "assets/sprites/ui/icons/artifacts/artifact_battle_doctrine.png", "x": 518, "y": 314, "w": 92, "h": 92, "required": true, "debug_color": "#D86868"},
+    {"id": "risk_label_zone", "content_key": "risk_label", "x": 742, "y": 350, "w": 204, "h": 28, "max_font": 19, "min_font": 14, "color": "#E4B7A0"},
+    {"id": "risk_value_zone", "content_key": "risk_value", "x": 742, "y": 383, "w": 204, "h": 62, "max_font": 20, "min_font": 14, "color": "#F0D4B2"},
+    {"id": "risk_body_zone", "content_key": "risk_body", "x": 742, "y": 449, "w": 204, "h": 96, "max_font": 14, "min_font": 10, "color": "#C9BCA6", "stroke_width": 1},
+    {"id": "reward_icon_zone", "image_path": "assets/sprites/ui/icons/artifacts/artifact_battle_fan.png", "x": 1256, "y": 314, "w": 92, "h": 92, "required": true, "debug_color": "#D6AD55"},
+    {"id": "reward_label_zone", "content_key": "reward_label", "x": 978, "y": 350, "w": 202, "h": 28, "max_font": 19, "min_font": 14, "color": "#DCC777"},
+    {"id": "reward_value_zone", "content_key": "reward_value", "x": 978, "y": 383, "w": 202, "h": 42, "max_font": 22, "min_font": 14, "color": "#F7E7BD"},
+    {"id": "reward_cap_zone", "content_key": "reward_cap", "x": 978, "y": 429, "w": 202, "h": 28, "max_font": 14, "min_font": 10, "color": "#E1BD62", "stroke_width": 1},
+    {"id": "reward_body_zone", "content_key": "reward_body", "x": 978, "y": 462, "w": 202, "h": 82, "max_font": 13, "min_font": 10, "color": "#C9BCA6", "stroke_width": 1},
+    {"id": "accept_button_zone", "content_key": "accept", "x": 672, "y": 838, "w": 258, "h": 56, "max_font": 18, "min_font": 13, "color": "#F6D58D"},
+    {"id": "decline_button_zone", "content_key": "decline", "x": 990, "y": 838, "w": 258, "h": 56, "max_font": 18, "min_font": 13, "color": "#E7DCC2"},
+    {"id": "timeout_zone", "content_key": "timeout", "x": 744, "y": 715, "w": 430, "h": 48, "max_font": 15, "min_font": 11, "color": "#D9C9A4", "stroke_width": 1},
+    {"id": "input_hint_zone", "content_key": "input_hint", "x": 760, "y": 254, "w": 400, "h": 26, "max_font": 11, "min_font": 9, "color": "#AFA58F", "stroke_width": 1}
+  ]
+}
