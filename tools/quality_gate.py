@@ -466,6 +466,7 @@ def _is_certifying(args: argparse.Namespace, worktree_status: Sequence[str]) -> 
         or args.skip_static
         or args.skip_godot
         or args.skip_umbrella
+        or args.shard_count != 1
         or worktree_status
     )
 
@@ -760,6 +761,146 @@ def _write_report(path: Path, payload: dict) -> None:
     path.write_text(json.dumps(payload, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
 
 
+def _combine_reports(source: Path, output: Path, expected_shard_count: int | None) -> int:
+    """Fail closed while joining static and full-profile shard reports."""
+    report_paths = sorted(source.rglob("quality_gate_report.json"))
+    reports: list[tuple[Path, dict]] = []
+    errors: list[str] = []
+    for path in report_paths:
+        try:
+            payload = json.loads(path.read_text(encoding="utf-8"))
+        except (OSError, json.JSONDecodeError) as exc:
+            errors.append(f"cannot read shard report {path}: {exc}")
+            continue
+        if not isinstance(payload, dict):
+            errors.append(f"shard report {path} is not a JSON object")
+            continue
+        reports.append((path, payload))
+
+    expected_sha = subprocess.check_output(
+        ["git", "rev-parse", "HEAD"], cwd=ROOT, text=True
+    ).strip()
+    expected_scripts = [
+        script_resource_path(path)
+        for path in select_godot_tests("full", [], "origin/dev", False)
+    ]
+    expected_script_set = set(expected_scripts)
+    static_reports = [item for item in reports if item[1].get("profile") == "static"]
+    shard_reports = [
+        item
+        for item in reports
+        if item[1].get("profile") == "full" and isinstance(item[1].get("shard"), dict)
+    ]
+    if len(static_reports) != 1:
+        errors.append(f"expected exactly one static report, found {len(static_reports)}")
+    if not shard_reports:
+        errors.append("no full-profile shard reports were downloaded")
+
+    static_checks: list[dict] = []
+    if len(static_reports) == 1:
+        static = static_reports[0][1]
+        static_checks = static.get("static_checks", [])
+        if static.get("git_sha") != expected_sha:
+            errors.append(f"static report SHA is {static.get('git_sha')}, expected {expected_sha}")
+        if static.get("status") != "passed":
+            errors.append(f"static report status is {static.get('status', 'missing')}")
+
+    seen_scripts: set[str] = set()
+    seen_shards: set[int] = set()
+    godot_tests: list[dict] = []
+    shard_summaries: list[dict] = []
+    for path, report in shard_reports:
+        shard = report["shard"]
+        index = shard.get("index")
+        count = shard.get("count")
+        selected = report.get("selected_godot_test_scripts", [])
+        executed = report.get("godot_tests", [])
+        label = f"shard {index}/{count}"
+        if not isinstance(index, int) or not isinstance(count, int):
+            errors.append(f"{label} has invalid shard metadata")
+        else:
+            if expected_shard_count is not None and count != expected_shard_count:
+                errors.append(f"{label} has unexpected shard count")
+            if index in seen_shards:
+                errors.append(f"duplicate shard index: {index}")
+            seen_shards.add(index)
+        shard_summaries.append({
+            "path": str(path.relative_to(source)),
+            "index": index,
+            "count": count,
+            "status": report.get("status"),
+            "selected_godot_tests": len(selected),
+            "executed_godot_tests": len(executed),
+        })
+        if report.get("git_sha") != expected_sha:
+            errors.append(f"{label} SHA is {report.get('git_sha')}, expected {expected_sha}")
+        if report.get("status") == "failed":
+            errors.append(f"{label} reported failure")
+        if len(selected) != len(executed):
+            errors.append(f"{label} executed {len(executed)} of {len(selected)} selected suites")
+        for result in executed:
+            script = result.get("script")
+            if not isinstance(script, str):
+                errors.append(f"{label} has a suite without a script path")
+                continue
+            if script in seen_scripts:
+                errors.append(f"duplicate Godot suite across shards: {script}")
+            seen_scripts.add(script)
+            godot_tests.append(result)
+            if result.get("status") != "passed":
+                errors.append(f"{label} failed {script}")
+
+    missing_scripts = sorted(expected_script_set - seen_scripts)
+    unexpected_scripts = sorted(seen_scripts - expected_script_set)
+    if missing_scripts:
+        preview = ", ".join(missing_scripts[:10])
+        suffix = " …" if len(missing_scripts) > 10 else ""
+        errors.append(f"missing {len(missing_scripts)} Godot suites: {preview}{suffix}")
+    if unexpected_scripts:
+        preview = ", ".join(unexpected_scripts[:10])
+        suffix = " …" if len(unexpected_scripts) > 10 else ""
+        errors.append(f"unexpected {len(unexpected_scripts)} Godot suites: {preview}{suffix}")
+    if expected_shard_count is not None:
+        missing_shards = sorted(set(range(expected_shard_count)) - seen_shards)
+        unexpected_shards = sorted(seen_shards - set(range(expected_shard_count)))
+        if missing_shards:
+            errors.append(f"missing shard indexes: {', '.join(map(str, missing_shards))}")
+        if unexpected_shards:
+            errors.append(f"unexpected shard indexes: {', '.join(map(str, unexpected_shards))}")
+
+    payload = {
+        "profile": "full",
+        "certifying": not errors,
+        "filters": [],
+        "skip_static": False,
+        "skip_godot": False,
+        "worktree_clean": True,
+        "worktree_status": [],
+        "discovered_godot_tests": len(expected_scripts),
+        "selected_godot_tests": len(expected_scripts),
+        "selected_godot_test_scripts": expected_scripts,
+        "executed_python_tests": sum(
+            item.get("executed_tests", 0) for item in static_checks
+        ),
+        "git_sha": expected_sha,
+        "platform": sys.platform,
+        "status": "failed" if errors else "passed",
+        "static_checks": static_checks,
+        "godot_tests": sorted(godot_tests, key=lambda item: item.get("script", "")),
+        "shards": sorted(shard_summaries, key=lambda item: (str(item["count"]), str(item["index"]))),
+        "errors": errors,
+    }
+    _write_report(output, payload)
+    for error in errors:
+        print(f"QUALITY MERGE FAIL: {error}", file=sys.stderr, flush=True)
+    print(
+        f"QUALITY {payload['status'].upper()}: "
+        f"{len(static_checks)} static, {len(godot_tests)} Godot; report={output}",
+        flush=True,
+    )
+    return 1 if errors else 0
+
+
 def _parse_args(argv: Sequence[str] | None) -> argparse.Namespace:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("filters", nargs="*", help="test-name substring filters")
@@ -774,6 +915,18 @@ def _parse_args(argv: Sequence[str] | None) -> argparse.Namespace:
     parser.add_argument("--skip-godot", action="store_true")
     parser.add_argument("--skip-umbrella", action="store_true")
     parser.add_argument("--fail-fast", action="store_true")
+    parser.add_argument(
+        "--shard-count",
+        type=int,
+        default=1,
+        help="deterministically split selected Godot suites across this many runners",
+    )
+    parser.add_argument(
+        "--shard-index",
+        type=int,
+        default=0,
+        help="zero-based shard index for --shard-count",
+    )
     parser.add_argument(
         "--test-timeout",
         type=float,
@@ -802,13 +955,35 @@ def _parse_args(argv: Sequence[str] | None) -> argparse.Namespace:
     )
     parser.add_argument("--list", action="store_true", help="list selected Godot tests and exit")
     parser.add_argument("--report", default="build/quality_gate_report.json")
+    parser.add_argument(
+        "--combine-reports",
+        type=Path,
+        help="merge downloaded static and full-profile shard reports",
+    )
+    parser.add_argument(
+        "--expected-shard-count",
+        type=int,
+        help="require this many full-profile shards while combining reports",
+    )
     return parser.parse_args(argv)
 
 
 def main(argv: Sequence[str] | None = None) -> int:
     args = _parse_args(argv)
+    if args.combine_reports:
+        if args.expected_shard_count is not None and args.expected_shard_count < 1:
+            print("quality_gate: expected shard count must be positive", file=sys.stderr)
+            return 2
+        return _combine_reports(
+            (ROOT / args.combine_reports).resolve(),
+            (ROOT / args.report).resolve(),
+            args.expected_shard_count,
+        )
     if args.static_only:
         args.profile = "static"
+    if args.shard_count < 1 or not 0 <= args.shard_index < args.shard_count:
+        print("quality_gate: shard index must be within a positive shard count", file=sys.stderr)
+        return 2
     if (
         args.test_timeout <= 0
         or args.import_timeout <= 0
@@ -827,6 +1002,7 @@ def main(argv: Sequence[str] | None = None) -> int:
         selected = select_godot_tests(
             args.profile, args.filters, args.changed_ref, args.skip_umbrella
         )
+        selected = selected[args.shard_index::args.shard_count]
         initial_worktree_status = _worktree_status()
     except RuntimeError as exc:
         print(f"quality_gate: {exc}", file=sys.stderr)
@@ -879,6 +1055,7 @@ def main(argv: Sequence[str] | None = None) -> int:
         "errors": discovery_errors,
         "discovered_godot_tests": len(discovered),
         "selected_godot_tests": len(selected),
+        "selected_godot_test_scripts": [script_resource_path(path) for path in selected],
         "discovered_python_tests": len(python_tests),
     })
     failed = any(item["status"] == "failed" for item in static_results)
@@ -895,7 +1072,11 @@ def main(argv: Sequence[str] | None = None) -> int:
             failed = True
         else:
             print(f"GODOT running {len(selected)} test(s) via semaphore gate", flush=True)
-            for path in selected:
+            for index, path in enumerate(selected, start=1):
+                print(
+                    f"GODOT {index}/{len(selected)} {path.relative_to(ROOT).as_posix()}",
+                    flush=True,
+                )
                 outcome = run_godot_test(path, args.test_timeout)
                 godot_results.append(outcome)
                 if outcome["status"] == "failed":
@@ -943,6 +1124,7 @@ def main(argv: Sequence[str] | None = None) -> int:
         "static_checks": static_results,
         "godot_import_prepass": import_result,
         "godot_tests": godot_results,
+        "shard": {"index": args.shard_index, "count": args.shard_count},
     }
     _write_report((ROOT / args.report).resolve(), payload)
     print(
