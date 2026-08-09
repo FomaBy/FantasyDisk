@@ -53,6 +53,22 @@ cannot be read. `uncovered` is fail-closed and fails the test with the class and
 reason, so no presentation package can disappear silently from this invariant.
 Class-local packages may keep additional, stricter checks.
 
+## Contact-sheet beat evidence
+
+A contact sheet is evidence of the stated impact language, not an illustration.
+Every weapon that has left the migration allowlist declares at least one
+frame-local beat for each of `release`, `active`, and `recovery`; each frame
+records its numeric capture time and its own non-empty `required_nodes` list.
+Nodes therefore belong to the specific visible frame, never to one flat package
+list. Capture labels must use measured text width and fit their frame bounds.
+
+`ContactSheetBeatsContract` is the one shared declaration surface and
+`weapon_ultimate_contact_sheet_beats_test.gd` auto-discovers every class/weapon
+from the immutable profile registry. `MIGRATION_ALLOWLIST` contains the
+unconverted classes; it only shrinks and its target state is empty. A class
+outside it fails closed on a missing phase or frame-local node requirement, and
+a complete declaration left inside it fails as a stale ratchet entry.
+
 ## Timeline lifecycle and integration boundary
 
 `WeaponUltimatePresentationTimeline` gives adapters a small testable lifecycle:
