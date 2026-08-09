@@ -1,0 +1,13 @@
+[gd_scene load_steps=2 format=3]
+
+[ext_resource type="PackedScene" path="res://scenes/Enemy.tscn" id="1_enemy"]
+
+[node name="RewardCarrier" instance=ExtResource("1_enemy")]
+enemy_type_name = "Reward Carrier"
+move_speed = 240.0
+contact_damage = 0.0
+reward_xp = 0
+reward_money = 0
+
+[node name="Body" parent="." index="0"]
+modulate = Color(1, 0.82, 0.3, 1)
