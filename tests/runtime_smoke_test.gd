@@ -4791,12 +4791,30 @@ func _test_universal_attribute_interpretations() -> void:
 		_fail("Expected universal magic/DoT interpretations to damage the hit target.")
 		return
 
-	var leadership_hp_before := float(enemy.get("health"))
+	# FAN-1893: универсальный Leadership-echo УДАЛЁН — высокий summon_amount у
+	# класса без реальных призывов больше не конвертируется в synthetic-урон.
+	# Исполняемая проверка инертности: глушим универсальные magic/DoT-каналы и
+	# бьём серию хитов — здоровье цели не меняется (старый echo сработал бы
+	# минимум раз на 6 хитов при summon_amount 18).
+	var echoless: Dictionary = universal_player.get("derived_parameters")
+	echoless["magic_damage"] = 0.0
+	echoless["dot_damage"] = 0.0
+	echoless["summon_amount"] = 18.0
+	universal_player.set("derived_parameters", echoless)
+	# Свежая цель: на первой ещё тикает универсальный DoT из фазы выше.
+	var echo_probe_enemy := enemy_scene.instantiate()
+	holder.add_child(echo_probe_enemy)
+	echo_probe_enemy.set("max_health", 100000.0)
+	echo_probe_enemy.set("health", 100000.0)
+	echo_probe_enemy.global_position = universal_player.global_position + Vector2(-90, 0)
+	await process_frame
+	var leadership_hp_before := float(echo_probe_enemy.get("health"))
 	for hit_index in range(6):
-		universal_player.call("on_weapon_hit", enemy, 12.0)
+		universal_player.call("on_weapon_hit", echo_probe_enemy, 12.0)
 		await process_frame
-	if float(enemy.get("health")) >= leadership_hp_before:
-		_fail("Expected leadership interpretation to trigger echo weapon damage.")
+	await create_timer(0.4).timeout
+	if float(echo_probe_enemy.get("health")) < leadership_hp_before:
+		_fail("Removed universal leadership echo must not deal damage for non-summon classes.")
 		return
 
 	# FAN-1034/FAN-1887: пул берсерка после канонизации реестра — мёртвые оси

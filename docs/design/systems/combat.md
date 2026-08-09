@@ -166,6 +166,21 @@
 - Временные эффекты оружия добавляются в cleanup groups (`player_weapon_effects`, `deployed_sound_amps`, projectiles/hazards).
 - Gameplay effects не должны использовать `SceneTreeTimer`; текущие длительные эффекты привязаны к node-bound tweens и уважают паузу.
 
+### FAN-1893: ось «+1 снаряд» (extra_projectile) — правила потребления
+
+Generic-ключ `run_modifiers.extra_projectile` потребляется единственным швом `ClassWeapon._extra_projectiles()` и ТОЛЬКО оружием с явной capability `real_projectile_count > 0` в конфиге; каждый пункт добавляет ровно один дополнительный реальный снаряд боевого пути. Документированные правила target/damage/falloff по режимам:
+
+| Режим (capability-оружия) | Цель доп. снаряда | Урон/falloff |
+| --- | --- | --- |
+| `aoe_projectile` (`restore_potion`, `blast_powder`, `acid_flask`, `briar_staff`) | следующая ближайшая ОТДЕЛЬНАЯ цель (`_find_closest_enemies`) | полный ролл на каждый снаряд; спад только радиальный внутри взрыва |
+| `arquebus_shot` (`soldier_rifle`) | следующая ближайшая отдельная цель | полный ролл; спад радиальный в осколочной зоне (`damage_falloff`) |
+| `plague_dart` (`plague_syringe`) | сосед первичной цели в `plague_spread_radius`, без повторов | полный ролл каждого дротика + штатная зараза |
+| `sniper_split_round` (`sniper_shatter_rounds`) | round-robin по ближним, не более 2 пуль на одну цель за залп | единый ролл залпа, без per-index спада; лишние пули уходят веером без урона |
+| `storm_pierce_cone` (`storm_longbow`) | +1 стрела в веере `cone_degrees`; общий дедуп по телам | спад только по глубине пирса `pierce_damage_falloff^depth` |
+| `engineer_sentry_link` (`engineer_sentry_wrench`, залп турели) | следующая ближайшая отдельная цель залпа | `damage_falloff^index` на доп. снаряды; каждый тратит заряд магазина |
+
+Перегруженные интерпретации generic-ключа УДАЛЕНЫ и доказаны инертными исполняемыми negative-probes (`tests/fan1893_capability_contract_test.gd`): прыжки цепи палочки (`wand_extra_chain` — отдельный артефакт), прыжки рикошета монеты (`coin_extra_bounces`), капканы (`trap_extra_count` — семантический мета-ключ, работает), мины (`mine_extra_count`), тики квадрата стихий (`elemental_orb_extra_count`), ширина вентилей реактора, веер лучей (`beam`/`dot_beam`), зеркальная пара `dark_book` (единица атаки — пара из двух сфер) и melee-удары. Универсальный Leadership-echo (`player._trigger_leadership_echo`) удалён — см. `characters_weapons.md`.
+
 ## Status Effects / Auras
 
 - Общий runtime-модуль: `scripts/status_effects.gd`.

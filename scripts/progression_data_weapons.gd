@@ -3,10 +3,21 @@ extends RefCounted
 # SCRUM-198: данные оружия классов, вынесены из progression_data.gd при
 # доменном сплите. ProgressionData реэкспортит WEAPONS_BY_CLASS и
 # BERSERK_WEAPONS как const (внешние ссылки ProgressionData.* сохранены).
+#
+# FAN-1893: каждый конфиг ЯВНО объявляет две capability-оси на строке "id":
+#   real_projectile_count — число реальных снарядов, которым управляет generic-ось
+#     run_modifiers.extra_projectile («+1 снаряд» = ровно один дополнительный
+#     реальный снаряд); 0 = ловушки/тики/звенья/ширина/рикошеты и зеркальная
+#     пара dark_book снарядами не считаются, ось инертна;
+#   summon_semantics — none/pack/pair/deploy/device/mine_field; summon_bonus
+#     потребляют только count-киты "pack"/"deploy" (парк = база + Лидерство/4 +
+#     summon_bonus, кап max_summons_cap). Отсутствие ключей = fail-closed 0/none.
+# Полный контракт: AttributeContract, docs/design/systems/combat.md и
+# сертифицирующий гейт tests/fan1893_capability_contract_test.gd.
 
 const BERSERK_WEAPONS := {
 	"sword": {
-		"id": "sword",
+		"id": "sword", "real_projectile_count": 0, "summon_semantics": "none",
 		"title": "Двуручный меч",
 		"description": (
 			"Узкий сектор 100° радиуса 350. Область атаки расширяет сектор, "
@@ -31,7 +42,7 @@ const BERSERK_WEAPONS := {
 		"visual_color": Color(0.62, 0.82, 1.0, 0.34),
 	},
 	"axe": {
-		"id": "axe",
+		"id": "axe", "real_projectile_count": 0, "summon_semantics": "none",
 		"title": "Двуручный топор",
 		"description": (
 			"Широкий сектор 180° радиуса 250. Область атаки расширяет сектор, "
@@ -57,7 +68,7 @@ const BERSERK_WEAPONS := {
 		"visual_color": Color(1.0, 0.58, 0.24, 0.34),
 	},
 	"hammer": {
-		"id": "hammer",
+		"id": "hammer", "real_projectile_count": 0, "summon_semantics": "none",
 		"title": "Двуручный молот",
 		"description": "Круговой slam радиуса 150 вокруг Берсерка: слабее по урону на старте, но радиус растет от улучшений радиуса без секторного бонуса.",
 		"scene_path": "res://scenes/TwoHandedHammer.tscn",
@@ -94,7 +105,7 @@ const DARK_MAGE_WEAPONS := {
 	#   cursed_skull — стационарный curse-прожиг ЯДРА толпы (только dot-ось);
 	#   dark_book    — зеркальные парные взрывы при ОКРУЖЕНИИ (два фронта разом).
 	"dark_book": {
-		"id": "dark_book",
+		"id": "dark_book", "real_projectile_count": 0, "summon_semantics": "none",
 		"title": "Книга тьмы",
 		# SCRUM-941: каждый каст = ПАРА взрывов, симметричных относительно мага.
 		"description": "Парные страницы: взрыв по цели и зеркальный взрыв в симметричной точке с другой стороны мага.",
@@ -113,7 +124,7 @@ const DARK_MAGE_WEAPONS := {
 		"passive_mods": {"aoe_radius_multiplier": 1.10},
 	},
 	"cursed_skull": {
-		"id": "cursed_skull",
+		"id": "cursed_skull", "real_projectile_count": 0, "summon_semantics": "none",
 		"title": "Проклятый череп",
 		# SCRUM-940: ЧИСТОЕ проклятие — прямого урона нет вовсе. Череп накрывает
 		# область, все проклятые быстро прогорают частыми тиками dot-оси.
@@ -144,7 +155,7 @@ const DARK_MAGE_WEAPONS := {
 		"visual_color": Color(0.78, 0.16, 1.0, 0.42),
 	},
 	"dark_wand": {
-		"id": "dark_wand",
+		"id": "dark_wand", "real_projectile_count": 0, "summon_semantics": "none",
 		"title": "Темная палочка",
 		# SCRUM-939: видимый цепной/рикошет-снаряд: до 3 монстров суммарно
 		# (первая цель + 2 рикошета в ближайших ещё не поражённых), на КАЖДОМ
@@ -172,7 +183,7 @@ const DARK_MAGE_WEAPONS := {
 # SCRUM-899: Гитарист = магический кастер с барбар-формами атак и деплой-геймплеем.
 const GUITARIST_WEAPONS := {
 	"electric_guitar": {
-		"id": "electric_guitar",
+		"id": "electric_guitar", "real_projectile_count": 0, "summon_semantics": "none",
 		"title": "Электрогитара",
 		"description": "Узкий магический рифф вперед: частые удары в короткой полосе, важно вести корпус на цель.",
 		"scene_path": "res://scenes/ElectricGuitar.tscn",
@@ -189,7 +200,7 @@ const GUITARIST_WEAPONS := {
 		"passive_mods": {"attack_speed_multiplier": 1.15},
 	},
 	"bass_guitar": {
-		"id": "bass_guitar",
+		"id": "bass_guitar", "real_projectile_count": 0, "summon_semantics": "none",
 		"title": "Бас-гитара",
 		"description": "Большое кольцо баса с первого уровня: частые слабые магические тики и жесткое отталкивание — веди толпу сквозь ауру.",
 		"scene_path": "res://scenes/BassGuitar.tscn",
@@ -208,7 +219,7 @@ const GUITARIST_WEAPONS := {
 		"passive_mods": {"attack_speed_multiplier": 1.10},
 	},
 	"sound_amp": {
-		"id": "sound_amp",
+		"id": "sound_amp", "real_projectile_count": 0, "summon_semantics": "deploy",
 		"title": "Звуковой усилитель",
 		"description": "Деплой: усилитель гремит на месте ~7с магическими пульсами; Лидерство добавляет ампы и продлевает им жизнь.",
 		"scene_path": "res://scenes/SoundAmp.tscn",
@@ -244,7 +255,7 @@ const GUITARIST_WEAPONS := {
 # tests/assassin_kit_test.gd + tests/kill_scaling_identity_test.gd.
 const ASSASSIN_WEAPONS := {
 	"chakrams": {
-		"id": "chakrams", "title": "Чакрамы",
+		"id": "chakrams", "title": "Чакрамы", "real_projectile_count": 0, "summon_semantics": "none",
 		"description": "Возвращающиеся клинки: режут коридор до цели, а назад летят левой дугой. Правильная позиция — и враг получает оба прохода.",
 		"scene_path": "res://scenes/Chakrams.tscn",
 		"attack_mode": "boomerang", "damage_parameter": "damage",
@@ -266,7 +277,7 @@ const ASSASSIN_WEAPONS := {
 		"passive_mods": {"crit_chance_flat": 0.06},
 	},
 	"shadow_daggers": {
-		"id": "shadow_daggers", "title": "Теневые кинжалы",
+		"id": "shadow_daggers", "title": "Теневые кинжалы", "real_projectile_count": 0, "summon_semantics": "none",
 		"description": "Веер коротких выпадов: сектор перед собой плюс всё вплотную вокруг героя. После серии по врагам — рывок темпа: короткий бонус скорости и уворота.",
 		"scene_path": "res://scenes/ShadowDaggers.tscn",
 		"attack_mode": "stab_flurry", "damage_parameter": "damage",
@@ -291,7 +302,7 @@ const ASSASSIN_WEAPONS := {
 		"passive_mods": {"crit_chance_flat": 0.10, "attack_speed_multiplier": 1.08},
 	},
 	"venom_wire": {
-		"id": "venom_wire", "title": "Ядовитая струна",
+		"id": "venom_wire", "title": "Ядовитая струна", "real_projectile_count": 0, "summon_semantics": "none",
 		"description": "Ядовитая гаррота от самой руки: пробивает ряд врагов по линии и душит тех, кто вцепился вплотную. Яд брызгает на ближнюю толпу за линией. Крит-удар делает яд злее.",
 		"scene_path": "res://scenes/VenomWire.tscn",
 		"attack_mode": "dot_beam", "damage_parameter": "damage",
@@ -338,7 +349,7 @@ const RANGER_WEAPONS := {
 		# Артефакт «Лунный расщепитель» (moon_split_targets) добавляет цели
 		# сверх базы. knockback 175 — «высокий против обычного дальнобоя»
 		# (дефолт поля 80); каждый хит (и первичный, и сплит) толкает от героя.
-		"id": "moon_crossbow", "title": "Лунный арбалет",
+		"id": "moon_crossbow", "title": "Лунный арбалет", "real_projectile_count": 0, "summon_semantics": "none",
 		"description": "Заряжаемый болт по ближней цели: после попадания расщепляется в 4 соседних врагов с тем же уроном. Каждое попадание отбрасывает от Рейнджера.",
 		"scene_path": "res://scenes/MoonCrossbow.tscn",
 		"attack_mode": "moon_split_shot", "damage_parameter": "damage",
@@ -351,7 +362,7 @@ const RANGER_WEAPONS := {
 	},
 	"storm_longbow": {
 		# SCRUM-911: дальнобойный КОНУС пробивающих стрел — beam_count стрел
-		"id": "storm_longbow", "title": "Грозовой длинный лук",
+		"id": "storm_longbow", "title": "Грозовой длинный лук", "real_projectile_count": 5, "summon_semantics": "none",
 		"description": "Дальний конус из 5 пробивающих стрел: каждая проходит врагов насквозь, каждое попадание отбрасывает от Рейнджера. Стойка заряжает залп.",
 		"scene_path": "res://scenes/StormLongbow.tscn",
 		"attack_mode": "storm_pierce_cone", "damage_parameter": "damage",
@@ -365,7 +376,7 @@ const RANGER_WEAPONS := {
 	},
 	"hunter_trap": {
 		# SCRUM-913: ПЕРМАНЕНТНЫЙ капкан — не истекает по таймеру, живёт до
-		"id": "hunter_trap", "title": "Охотничий капкан",
+		"id": "hunter_trap", "title": "Охотничий капкан", "real_projectile_count": 0, "summon_semantics": "none",
 		"description": "Ставит вечный капкан перед Рейнджером: игроку безопасен, а первого врага захлопывает — урон по области, паралич и зелёное кровотечение.",
 		"scene_path": "res://scenes/HunterTrap.tscn",
 		"attack_mode": "trap", "damage_parameter": "damage",
@@ -388,7 +399,7 @@ const RANGER_WEAPONS := {
 # недостижимо даже при полном заражении карты).
 const DOCTOR_WEAPONS := {
 	"restore_potion": {
-		"id": "restore_potion", "title": "Зелье восстановления",
+		"id": "restore_potion", "title": "Зелье восстановления", "real_projectile_count": 1, "summon_semantics": "none",
 		"description": "Бросок зелья: магический взрыв по цели с быстро спадающим сплэшем; Доктор лечится на долю фактически нанесённого урона.",
 		"scene_path": "res://scenes/RestorePotion.tscn",
 		"attack_mode": "aoe_projectile", "damage_parameter": "magic_damage",
@@ -409,7 +420,7 @@ const DOCTOR_WEAPONS := {
 		"passive_mods": {"max_health_multiplier": 1.10},
 	},
 	"plague_syringe": {
-		"id": "plague_syringe", "title": "Чумной шприц",
+		"id": "plague_syringe", "title": "Чумной шприц", "real_projectile_count": 1, "summon_semantics": "none",
 		"description": "Чумной дротик: долгая зараза (24с) с медленно растущими тиками, перескакивающая на соседей; часть чумного урона лечит Доктора.",
 		"scene_path": "res://scenes/PlagueSyringe.tscn",
 		"attack_mode": "plague_dart", "damage_parameter": "magic_damage",
@@ -428,7 +439,7 @@ const DOCTOR_WEAPONS := {
 		"passive_mods": {"max_health_multiplier": 1.04},
 	},
 	"bone_saw": {
-		"id": "bone_saw", "title": "Костяная пила",
+		"id": "bone_saw", "title": "Костяная пила", "real_projectile_count": 0, "summon_semantics": "none",
 		"description": "Широкий сектор 135° перед Доктором: пила рвет несколько целей и возвращает больше всего здоровья — пока враги перед зубьями, а не за спиной.",
 		"scene_path": "res://scenes/BoneSaw.tscn",
 		"attack_mode": "saw_sector", "damage_parameter": "damage",
@@ -450,7 +461,7 @@ const CHEMIST_WEAPONS := {
 	# этот прямой взрыв НЕ усиливает. Скейл от физического урона (damage_parameter
 	# "damage") — вложения в физику ощутимо разгоняют именно пыль.
 	"blast_powder": {
-		"id": "blast_powder", "title": "Взрывная пыль",
+		"id": "blast_powder", "title": "Взрывная пыль", "real_projectile_count": 2, "summon_semantics": "none",
 		"description": "Быстрая пара прямых взрывов по ближайшим целям на ближне-средней дистанции. Скейлится от физического урона; без облаков и DoT.",
 		"scene_path": "res://scenes/BlastPowder.tscn",
 		"attack_mode": "aoe_projectile", "damage_parameter": "damage",
@@ -471,7 +482,7 @@ const CHEMIST_WEAPONS := {
 	# (кап pool_charge_cap, артефакт «Кислотный катализатор» поднимает кап на +3).
 	# Trait «Катализатор» множит и тики лужи, и заряды (+50%).
 	"acid_flask": {
-		"id": "acid_flask", "title": "Кислотная колба",
+		"id": "acid_flask", "title": "Кислотная колба", "real_projectile_count": 1, "summon_semantics": "none",
 		"description": "Долгая полупрозрачная кислотная лужа: враги в её ядре получают тики (ближайшие к центру), а каждый контакт с новой лужей вешает вечный кислотный заряд (до 5).",
 		"scene_path": "res://scenes/AcidFlask.tscn",
 		"attack_mode": "aoe_projectile", "damage_parameter": "magic_damage",
@@ -509,7 +520,7 @@ const CHEMIST_WEAPONS := {
 	# max_summons=2 — бюджетное покрытие пары (боевой лимит рантайма пара не
 	# использует: популяцию ведёт _update_homunculus_pair).
 	"homunculus_vial": {
-		"id": "homunculus_vial", "title": "Склянка гомункула",
+		"id": "homunculus_vial", "title": "Склянка гомункула", "real_projectile_count": 0, "summon_semantics": "pair",
 		"description": "Постоянная крупная пара: танк (4x HP, глобальное аггро, 50% регена и вампиризма Химика) и неуязвимый кастер с широкой волной вечного периодического урона.",
 		"scene_path": "res://scenes/HomunculusVial.tscn",
 		"damage_parameter": "magic_damage",
@@ -556,7 +567,7 @@ const KNIGHT_WEAPONS := {
 		# цикл получает не больше ОДНОГО укола (дедуп _hit_targets на весь цикл —
 		# документированное решение против triple-dip; бюджет: solo_hits=1.0,
 		# покрытие веера — в five_hits «strip»-ветки budget-модели).
-		"id": "long_spear", "title": "Копье",
+		"id": "long_spear", "title": "Копье", "real_projectile_count": 0, "summon_semantics": "none",
 		"description": "Тройной укол: три быстрых выпада лево-центр-право веером полос 110 x 540. Одна цель ловит один укол за цикл. Пассив: +5% защиты и легкий single-target block/counter.",
 		"scene_path": "res://scenes/LongSpear.tscn",
 		"attack_shape": "strip",
@@ -571,7 +582,7 @@ const KNIGHT_WEAPONS := {
 	},
 	"tower_shield": {
 		# SCRUM-922 «Конусный баш»: конус целится в НАПРАВЛЕНИЕ ближайшего
-		"id": "tower_shield", "title": "Башенный щит",
+		"id": "tower_shield", "title": "Башенный щит", "real_projectile_count": 0, "summon_semantics": "none",
 		"description": "Конусный баш в сторону ближайшего врага: вся стая в конусе 95° отлетает прочь, сила отброса растет от вложений в отброс. Меньше урона, сильная защита и мощная block/counter ответка.",
 		"scene_path": "res://scenes/TowerShield.tscn",
 		"attack_shape": "sweep",
@@ -587,7 +598,7 @@ const KNIGHT_WEAPONS := {
 	},
 	"holy_flail": {
 		# SCRUM-923 «Расширяющаяся спираль»: каст = spiral_steps шагов через
-		"id": "holy_flail", "title": "Освященный кистень",
+		"id": "holy_flail", "title": "Освященный кистень", "real_projectile_count": 0, "summon_semantics": "none",
 		"description": "Спираль от центра наружу: цепь кистеня раскручивается за 7 шагов до полного радиуса, накрывая врагов на разных дистанциях по мере роста. Одна цель — один удар за оборот.",
 		"scene_path": "res://scenes/HolyFlail.tscn",
 		"attack_shape": "circle", "cone_degrees": 360.0,
@@ -610,7 +621,7 @@ const KNIGHT_WEAPONS := {
 # Вороний тотем — деплой-тотемы, пускающие самонаводящихся воронов с AoE-взрывом.
 const DRUID_WEAPONS := {
 	"summon_amulet": {
-		"id": "summon_amulet", "title": "Амулет призыва",
+		"id": "summon_amulet", "title": "Амулет призыва", "real_projectile_count": 0, "summon_semantics": "pack",
 		"description": "Зовет призрачный ростер: ближние духи рвут физически по площади, дальние бьют магическими снарядами; состав случаен, стая растет от Лидерства.",
 		"scene_path": "res://scenes/SummonAmulet.tscn",
 		"damage_parameter": "magic_damage",
@@ -662,7 +673,7 @@ const DRUID_WEAPONS := {
 		"visual_color": Color(0.45, 0.80, 0.35, 0.42),
 	},
 	"briar_staff": {
-		"id": "briar_staff", "title": "Посох терний",
+		"id": "briar_staff", "title": "Посох терний", "real_projectile_count": 1, "summon_semantics": "none",
 		"description": "Бросок семени-терновника: полупрозрачная зона шипов замедляет и наносит повторные физические удары идущим сквозь нее.",
 		"scene_path": "res://scenes/BriarStaff.tscn",
 		# SCRUM-903: шипы — ФИЗИЧЕСКИЕ повторные хиты (damage ← Сила), не DoT-ось.
@@ -686,7 +697,7 @@ const DRUID_WEAPONS := {
 		"passive_mods": {"aoe_radius_multiplier": 1.08},
 	},
 	"raven_totem": {
-		"id": "raven_totem", "title": "Вороний тотем",
+		"id": "raven_totem", "title": "Вороний тотем", "real_projectile_count": 0, "summon_semantics": "deploy",
 		"description": "Ставит наземные тотемы: каждый пускает самонаводящихся воронов, взрывающихся по области; лимит и сила растут от Лидерства.",
 		"scene_path": "res://scenes/RavenTotem.tscn",
 		"attack_mode": "amp", "damage_parameter": "magic_damage",
@@ -719,7 +730,7 @@ const DRUID_WEAPONS := {
 # зашита в estimate_weapon_budget_for_stats, урон авто-тюнится budget_tuning_for.
 const SOLDIER_WEAPONS := {
 	"soldier_rifle": {
-		"id": "soldier_rifle", "title": "Аркебуза строя",
+		"id": "soldier_rifle", "title": "Аркебуза строя", "real_projectile_count": 1, "summon_semantics": "none",
 		"description": "Быстрая взрывная пуля: выстрел летит далеко в цель и взрывается малой зоной осколков, задевая соседей.",
 		"scene_path": "res://scenes/SoldierRifle.tscn",
 		"attack_mode": "arquebus_shot", "damage_parameter": "damage",
@@ -731,7 +742,7 @@ const SOLDIER_WEAPONS := {
 		"passive_mods": {"aoe_radius_multiplier": 1.06},
 	},
 	"soldier_grenade": {
-		"id": "soldier_grenade", "title": "Граната с фитилем",
+		"id": "soldier_grenade", "title": "Граната с фитилем", "real_projectile_count": 0, "summon_semantics": "none",
 		"description": "Тяжелая граната летит медленно, ложится и горит на видимом фитиле, затем мощный взрыв накрывает зону с падением урона к краю.",
 		"scene_path": "res://scenes/SoldierGrenade.tscn",
 		"attack_mode": "grenade_fuse", "damage_parameter": "damage",
@@ -743,7 +754,7 @@ const SOLDIER_WEAPONS := {
 		"passive_mods": {"aoe_radius_multiplier": 1.08},
 	},
 	"soldier_bayonet": {
-		"id": "soldier_bayonet", "title": "Штык-стойка",
+		"id": "soldier_bayonet", "title": "Штык-стойка", "real_projectile_count": 0, "summon_semantics": "none",
 		"description": "Штыковой выпад конусом перед собой: каждый враг в секторе получает укол и отброс, а винтовка иногда добивает выстрелом цель за конусом.",
 		"scene_path": "res://scenes/SoldierBayonet.tscn",
 		"attack_mode": "bayonet_cone", "damage_parameter": "damage",
@@ -778,7 +789,7 @@ const THIEF_WEAPONS := {
 		# урон убывает монотонно tail^(i/(n-1)) до ровно 50% к финальному звену.
 		# Золото начисляется МГНОВЕННО (gain_money) с первых steal_hits целей
 		# цепи — без спавна и сбора пикапа.
-		"id": "thief_coin_pouch", "title": "Кошель Рикошета",
+		"id": "thief_coin_pouch", "title": "Кошель Рикошета", "real_projectile_count": 0, "summon_semantics": "none",
 		"description": "Монета скачет цепью до 6 целей: урон плавно убывает до половины к последнему прыжку, а золото с первых трех попаданий сразу падает в кошель.",
 		"scene_path": "res://scenes/ThiefCoinPouch.tscn",
 		"attack_mode": "coin_ricochet", "damage_parameter": "damage",
@@ -795,7 +806,7 @@ const THIEF_WEAPONS := {
 		# паралич-яд poison_paralysis_duration (кламп POISON_PARALYSIS_CAP, у
 		# боссов/элит срез POISON_PARALYSIS_BOSS_FACTOR). Позиционный пейофф:
 		# удар в спину (цель смотрит прочь от фантома) ×BACKSTAB_POSITIONAL_MULTIPLIER.
-		"id": "thief_shadow_cloak", "title": "Отравленный Кинжал",
+		"id": "thief_shadow_cloak", "title": "Отравленный Кинжал", "real_projectile_count": 0, "summon_semantics": "none",
 		"description": "Кинжал бьет из тени за ближайшей целью, не смещая героя: паралич-яд сковывает задетых, а удар в спину наносит повышенный урон.",
 		"scene_path": "res://scenes/ThiefShadowCloak.tscn",
 		"attack_mode": "shadow_backstab", "damage_parameter": "damage",
@@ -811,7 +822,7 @@ const THIEF_WEAPONS := {
 		# затем НЕдамажащее облако smoke_duration. Уклонение (+dodge_bonus)
 		# действует ТОЛЬКО пока герой внутри облака; суммарный шанс в дыму капится
 		# SMOKE_CLOUD_DODGE_CAP=0.90 (progression_data_balance.gd).
-		"id": "thief_smoke_bomb", "title": "Дымовая Бомба",
+		"id": "thief_smoke_bomb", "title": "Дымовая Бомба", "real_projectile_count": 0, "summon_semantics": "none",
 		"description": "Бросок шашки: после задержки взрыв бьет по области, а осевшее облако укрывает Вора — внутри дыма уклонение резко растет.",
 		"scene_path": "res://scenes/ThiefSmokeBomb.tscn",
 		"attack_mode": "smoke_bomb", "damage_parameter": "damage",
@@ -838,7 +849,7 @@ const ELEMENTALIST_WEAPONS := {
 		# квадратная AoE в точке каста, три канала урона сразу (физика+магия+
 		# периодика, потому тяжело масштабируется оптимально) + отброс от центра
 		# на каждом тике. Геометрия/доли — константы SQUARE_* в class_weapon.gd.
-		"id": "elementalist_orb_ring", "title": "Кольцо Четырёх Стихий",
+		"id": "elementalist_orb_ring", "title": "Кольцо Четырёх Стихий", "real_projectile_count": 0, "summon_semantics": "none",
 		"description": "Квадрат четырёх стихий вспыхивает в точке каста: тики бьют физикой, магией и ожогом ближайших к центру и отбрасывают их прочь.",
 		"scene_path": "res://scenes/ElementalistOrbRing.tscn",
 		"attack_mode": "elemental_orbit", "damage_parameter": "magic_damage",
@@ -869,7 +880,7 @@ const ELEMENTALIST_WEAPONS := {
 		# class_weapon.gd покрывает диагональ арены 4096×2304 из любой точки)
 		# + малый AoE в центре пересечения. Урон детерминирован: линия — не более
 		# одного попадания на врага за каст, центр — один бонус-хит.
-		"id": "elementalist_prism_focus", "title": "Призматический Фокус",
+		"id": "elementalist_prism_focus", "title": "Призматический Фокус", "real_projectile_count": 0, "summon_semantics": "none",
 		"description": "X-разлом во всю карту: две диагональные линии стихий пронзают арену через точку фокуса, а их пересечение взрывается малым AoE.",
 		"scene_path": "res://scenes/ElementalistPrismFocus.tscn",
 		"attack_mode": "prism_rift", "damage_parameter": "magic_damage",
@@ -885,7 +896,7 @@ const ELEMENTALIST_WEAPONS := {
 		# внутри делится на телеграф/полёт: METEOR_TELEGRAPH_RATIO), огромный
 		# магический взрыв и догорающая DoT-зона (dot_ticks тиков каждые
 		# pool_tick_interval по dot-оси владельца).
-		"id": "elementalist_meteor_core", "title": "Ядро Метеора",
+		"id": "elementalist_meteor_core", "title": "Ядро Метеора", "real_projectile_count": 0, "summon_semantics": "none",
 		"description": "Высшая ставка мага: долгий телеграф, тяжёлое падение метеора, огромный взрыв и догорающая зона ожога. Самое медленное оружие в игре.",
 		"scene_path": "res://scenes/ElementalistMeteorCore.tscn",
 		"attack_mode": "meteor_shards", "damage_parameter": "magic_damage",
@@ -910,7 +921,7 @@ const SNIPER_WEAPONS := {
 		# в радиусе + ближний самоподрыв close_burst_ratio (80% от хита
 		# винтовки) по врагам в close_burst_radius у ног + читаемый терминальный
 		# взрыв на конце линии (DEADEYE_ENDPOINT_BLAST_RATIO в class_weapon.gd).
-		"id": "sniper_deadeye_rifle", "title": "Винтовка Мертвого Глаза",
+		"id": "sniper_deadeye_rifle", "title": "Винтовка Мертвого Глаза", "real_projectile_count": 0, "summon_semantics": "none",
 		"description": "Lockshot: короткая фиксация, затем тяжелый выстрел в самую дальнюю цель — пробивает линию насквозь и взрывается на конце. Подошедших вплотную встречает ближний самоподрыв (80% урона выстрела).",
 		"scene_path": "res://scenes/SniperDeadeyeRifle.tscn",
 		"attack_mode": "sniper_lockshot", "damage_parameter": "damage",
@@ -927,7 +938,7 @@ const SNIPER_WEAPONS := {
 		# телеграф на месте цели, через grenade_delay (~1с) туда падает тяжёлый
 		# снаряд и накрывает ВСЕХ внутри финальной зоны (falloff к краю).
 		# Неудобство задержки оплачено тяжёлым уроном и большой зоной.
-		"id": "sniper_spotter_scope", "title": "Прицел Наводчика",
+		"id": "sniper_spotter_scope", "title": "Прицел Наводчика", "real_projectile_count": 0, "summon_semantics": "none",
 		"description": "Kill-zone: помечает область красным кругом, через секунду туда прилетает тяжелый артиллерийский снаряд. Врагов надо ловить меткой на упреждение — зато накрывает всю зону разом.",
 		"scene_path": "res://scenes/SniperSpotterScope.tscn",
 		"attack_mode": "sniper_kill_zone", "damage_parameter": "damage",
@@ -945,7 +956,7 @@ const SNIPER_WEAPONS := {
 		# врагу за залп); пустые направления уходят ровным радиальным веером
 		# без урона. Ключевые оси — скорость атаки (каденция залпов) и
 		# скорость снаряда (полет пуль, фиксированная конфигурация projectile_speed).
-		"id": "sniper_shatter_rounds", "title": "Осколочные Патроны",
+		"id": "sniper_shatter_rounds", "title": "Осколочные Патроны", "real_projectile_count": 6, "summon_semantics": "none",
 		"description": "Split-round: очередь мелких пуль веером во все стороны — каждая сама находит ближнего монстра. Очень быстрый темп; скорость атаки и полета пуль превращают Снайпера в упор в турель.",
 		"scene_path": "res://scenes/SniperShatterRounds.tscn",
 		"attack_mode": "sniper_split_round", "damage_parameter": "damage",
@@ -961,7 +972,7 @@ const SNIPER_WEAPONS := {
 # SCRUM-927/928/929: редизайн кита Священника — оружейный сустейн выпилен
 const PRIEST_WEAPONS := {
 	"priest_reliquary": {
-		"id": "priest_reliquary", "title": "Светлый Реликварий",
+		"id": "priest_reliquary", "title": "Светлый Реликварий", "real_projectile_count": 0, "summon_semantics": "none",
 		"description": "Бурст: отмечает ближайшую цель святым знаком и бьет по ней серией из трех быстрых вспышек малого радиуса. Не лечит — сустейн Священника в молитвах.",
 		"scene_path": "res://scenes/PriestReliquary.tscn",
 		"attack_mode": "priest_sanctify", "damage_parameter": "magic_damage",
@@ -983,7 +994,7 @@ const PRIEST_WEAPONS := {
 		"passive_mods": {"attack_speed_multiplier": 1.04},
 	},
 	"priest_censer": {
-		"id": "priest_censer", "title": "Кадило Обета",
+		"id": "priest_censer", "title": "Кадило Обета", "real_projectile_count": 0, "summon_semantics": "none",
 		"description": "Тяжелый обет: редкие широкие волны выжигают всё вокруг Священника — большой радиус, короткая дальность, долгий кулдаун.",
 		"scene_path": "res://scenes/PriestCenser.tscn",
 		"attack_mode": "priest_ward", "damage_parameter": "magic_damage",
@@ -1003,7 +1014,7 @@ const PRIEST_WEAPONS := {
 		"passive_mods": {"defense_flat": 0.02},
 	},
 	"priest_chime": {
-		"id": "priest_chime", "title": "Колокол Молитвы",
+		"id": "priest_chime", "title": "Колокол Молитвы", "real_projectile_count": 0, "summon_semantics": "none",
 		"description": "Двойной звон: удар колокола гремит сразу дважды — взрыв вокруг дальней цели и одновременно вокруг самого Священника; один враг не ловит оба взрыва разом.",
 		"scene_path": "res://scenes/PriestChime.tscn",
 		"attack_mode": "priest_dual_toll", "damage_parameter": "magic_damage",
@@ -1018,7 +1029,7 @@ const PRIEST_WEAPONS := {
 # SCRUM-896: редизайн кита Биолога — хрупкий био-реактивный класс с гибридным
 const BIOLOGIST_WEAPONS := {
 	"biologist_spore_lens": {
-		"id": "biologist_spore_lens", "title": "Споровая Линза",
+		"id": "biologist_spore_lens", "title": "Споровая Линза", "real_projectile_count": 0, "summon_semantics": "none",
 		"description": "Spore bloom: три расширяющихся споровых кольца у самого Биолога — ранят и замедляют задетых, заражая ближайших из них (замедление растёт с прогрессией).",
 		"scene_path": "res://scenes/BiologistSporeLens.tscn",
 		"attack_mode": "bio_spore_bloom", "damage_parameter": "magic_damage",
@@ -1043,7 +1054,7 @@ const BIOLOGIST_WEAPONS := {
 		"passive_mods": {"dot_damage_flat": 1.0},
 	},
 	"biologist_sample_injector": {
-		"id": "biologist_sample_injector", "title": "Инъектор Образцов",
+		"id": "biologist_sample_injector", "title": "Инъектор Образцов", "real_projectile_count": 0, "summon_semantics": "none",
 		"description": "Sample beam: пирсинг-луч ранит всех на своей длине (магия + доля физики), на конце — малый бурст анализа; ближайший враг получает пробу-инфекцию.",
 		"scene_path": "res://scenes/BiologistSampleInjector.tscn",
 		"attack_mode": "bio_sample_dart", "damage_parameter": "magic_damage",
@@ -1056,7 +1067,7 @@ const BIOLOGIST_WEAPONS := {
 		"passive_mods": {"crit_chance_flat": 0.025},
 	},
 	"biologist_symbiote_seed": {
-		"id": "biologist_symbiote_seed", "title": "Семя Симбионта",
+		"id": "biologist_symbiote_seed", "title": "Семя Симбионта", "real_projectile_count": 0, "summon_semantics": "none",
 		"description": "Symbiote seed: дальнее семя прорастает с задержкой — стартовый магический удар и долгие пульсы заражения; главный урон приходит со временем.",
 		"scene_path": "res://scenes/BiologistSymbioteSeed.tscn",
 		"attack_mode": "bio_symbiote_web", "damage_parameter": "magic_damage",
@@ -1084,7 +1095,7 @@ const ROBOT_WEAPONS := {
 	# см. CLASS_TRAITS.robot). Механики — ClassWeapon._fire_robot_*; зеркала
 	# бюджета — ProgressionData._budget_hit_model.
 	"robot_magnetic_anchor": {
-		"id": "robot_magnetic_anchor", "title": "Магнитный Якорь",
+		"id": "robot_magnetic_anchor", "title": "Магнитный Якорь", "real_projectile_count": 0, "summon_semantics": "none",
 		# SCRUM-915: редкий тяжёлый AoE-пулл. knockback = базовая мощь пулла
 		# (конвергенция 0.85 пути к центру за каст, элитки/боссы не смещаются);
 		# медленный базовый темп (fire_interval 2.05) разгоняется скоростью
@@ -1103,7 +1114,7 @@ const ROBOT_WEAPONS := {
 		"passive_mods": {"absorb_flat": 2.0},
 	},
 	"robot_hydraulic_press": {
-		"id": "robot_hydraulic_press", "title": "Гидравлический Пресс",
+		"id": "robot_hydraulic_press", "title": "Гидравлический Пресс", "real_projectile_count": 0, "summon_semantics": "none",
 		# SCRUM-916: широкий коридор компрессии. Урон по ВСЕЙ ширине
 		# suppression_width (300; ×1.30 с «Калибратором пресса»), рядовых
 		# прижимает к осевой линии (конвергенция 0.80), элитки/боссы — резист
@@ -1123,7 +1134,7 @@ const ROBOT_WEAPONS := {
 		"passive_mods": {"defense_flat": 0.018},
 	},
 	"robot_reactor_core": {
-		"id": "robot_reactor_core", "title": "Реакторное Ядро",
+		"id": "robot_reactor_core", "title": "Реакторное Ядро", "real_projectile_count": 0, "summon_semantics": "none",
 		# SCRUM-918: вращающийся 4-направленный веер. Ровно 4 вентиля 90°,
 		# паттерн +6° по часовой после каждой атаки, БЕЗ самонаведения; урон
 		# вентиля = ролл × 0.42 (REACTOR_VENT_DAMAGE_RATIO), extra_projectile
@@ -1145,7 +1156,7 @@ const ENGINEER_WEAPONS := {
 	"engineer_sentry_wrench": {
 		# SCRUM-904/905: title «Ключ Часового» → «Часовая турель» (иконка и
 		# геймплей — турель); внутренний id сохранён для save-совместимости.
-		"id": "engineer_sentry_wrench", "title": "Часовая турель",
+		"id": "engineer_sentry_wrench", "title": "Часовая турель", "real_projectile_count": 2, "summon_semantics": "device",
 		"description": "Sentry turret: разворачивает турели с боезапасом 15 выстрелов — расстрелявшая магазин турель сворачивается; Лидерство поднимает предел активных турелей.",
 		"scene_path": "res://scenes/EngineerSentryWrench.tscn",
 		"attack_mode": "engineer_sentry_link", "damage_parameter": "damage",
@@ -1175,7 +1186,7 @@ const ENGINEER_WEAPONS := {
 		# SCRUM-906: редизайн — ОРБИТАЛЬНЫЙ БОЕВОЙ ДРОН (id сохранён для
 		# save-совместимости). Ремонт/цепь удалены: дроны кружат вокруг
 		# Инженера по спирали и наносят физический контактный урон.
-		"id": "engineer_repair_drone", "title": "Орбитальный Дрон",
+		"id": "engineer_repair_drone", "title": "Орбитальный Дрон", "real_projectile_count": 0, "summon_semantics": "device",
 		"description": "Orbit drone: боевые дроны кружат вокруг инженера по спирали и таранят всех врагов на пути; Лидерство добавляет дроны, скорость атаки раскручивает орбиту.",
 		"scene_path": "res://scenes/EngineerRepairDrone.tscn",
 		"attack_mode": "engineer_orbit_drone", "damage_parameter": "damage",
@@ -1203,7 +1214,7 @@ const ENGINEER_WEAPONS := {
 		"passive_mods": {"summon_bonus": 1.0},
 	},
 	"engineer_pressure_mines": {
-		"id": "engineer_pressure_mines", "title": "Минная Сетка",
+		"id": "engineer_pressure_mines", "title": "Минная Сетка", "real_projectile_count": 0, "summon_semantics": "mine_field",
 		"description": "Pressure mines: раскладывает по две усиленные мины в случайных точках рядом; мины лежат до срабатывания — враг подрывает сразу, свою можно толкнуть через 3 секунды.",
 		"scene_path": "res://scenes/EngineerPressureMines.tscn",
 		"attack_mode": "engineer_pressure_mines", "damage_parameter": "damage",

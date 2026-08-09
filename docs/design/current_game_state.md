@@ -2674,3 +2674,29 @@ SCRUM-1085 makes the legacy scene setup order-independent: changing
 `visual_weapon_id` after the projectile enters the tree immediately reapplies
 texture, scale, rotation, metadata and trail palette. Empty IDs keep the active
 profile; invalid IDs fail closed and cannot retain stale canonical visual state.
+
+FAN-1893 вводит явный capability-контракт оружий: каждый из 51 конфига
+`progression_data_weapons.gd` объявляет `real_projectile_count` (число реальных
+снарядов, которым управляет ось `run_modifiers.extra_projectile`; capability у
+9 оружий — soldier_rifle 1, sniper_shatter_rounds 6, storm_longbow 5,
+plague_syringe 1, engineer_sentry_wrench 2, restore_potion 1, blast_powder 2,
+acid_flask 1, briar_staff 1) и `summon_semantics`
+(pack/pair/deploy/device/mine_field/none). Generic «+1 снаряд» потребляется
+единственным швом `ClassWeapon._extra_projectiles()` только при
+`real_projectile_count > 0`; перегруженные интерпретации (прыжки цепи палочки и
+монеты, лишние капканы/мины, тики квадрата, ширина вентилей реактора, веер
+лучей, вторая зеркальная пара книги) удалены — семантические мета-ключи
+(`trap_extra_count`, `mine_extra_count`, `elemental_orb_extra_count`,
+`drain_extra_targets`) работают как раньше. Универсальный
+`player._trigger_leadership_echo` удалён: capability-derived summon/Leadership
+набор классов равен Guitarist/Chemist/Druid/Engineer (совпадает с
+`class_summon_capable`), остальные 13 классов не получают Лидерство и «Силу
+призыва» ни в наградах, ни как скрытый echo-урон, а их
+`CLASS_INTERPRETATIONS`-тексты честно объявляют отсутствие потребителя.
+`summon_bonus` применяется к capped-парку ровно один раз
+(`player._apply_weapon_scaling`; derived `summon_amount` его не читает — гейт
+`tests/stat_formulas_derived_sync_test.gd`), advisor показывает фактический
+capped-парк до/после (`LevelUpAdvisor.forecast_reward`). Отсутствие
+capability-ключей — fail-closed 0/none. Сертифицирующий гейт —
+`tests/fan1893_capability_contract_test.gd` (51-row матрица + исполняемые
+positive/negative probes всех семейств режимов).
