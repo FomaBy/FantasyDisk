@@ -51,6 +51,11 @@ const CLASS_CORRIDOR_LOWER := 0.80
 const CLASS_CORRIDOR_UPPER := 1.20
 const LIVE_TELEMETRY_SCHEMA := "fan1511.runtime-telemetry.v2"
 const LIVE_TRACE_PREFIX := "fan1511"
+const FINAL_EXECUTION_SCHEMA := "fan1516.final-execution.v1"
+const FORMULA_LIVE_DISPOSITION_SCHEMA := "fan1516.formula-live-disposition.v1"
+const FORMULA_LIVE_TOLERANCE_PCT := 35.0
+const FINAL_EXECUTION_SEED := 151601
+const FINAL_EXECUTION_WITNESS_DAMAGE := 1.0
 const ORACLE_LINEAGE_PATH := "res://tests/fixtures/a5_oracle_lineage.json"
 const ORACLE_LINEAGE_SCHEMA := "fan1641.a5-oracle-lineage.v1"
 const PROJECTION_FIELDS := ["live_solo_dpm_mean", "live_crowd_dpm_mean", "solo_variance_dpm2", "crowd_variance_dpm2"]
@@ -460,6 +465,11 @@ func _initialize() -> void:
 	for sample_value in telemetry.get("samples", []):
 		var sample: Dictionary = sample_value
 		sample["trace_digest_sha256"] = _sha256(JSON.stringify(sample.get("events", []), "", true, true))
+	var final_execution: Dictionary = dataset.get("final_execution", {})
+	for final_row_value in final_execution.get("rows", []):
+		var final_row: Dictionary = final_row_value
+		var final_sample: Dictionary = final_row.get("telemetry", {})
+		final_sample["trace_digest_sha256"] = _sha256(JSON.stringify(final_sample.get("events", []), "", true, true))
 	dataset.erase("dataset_digest_sha256")
 	dataset["dataset_digest_sha256"] = _sha256(JSON.stringify(dataset, "", true, true))
 	# FAN-1658: the real --mode=full path verifies the generated 309-sample candidate
@@ -906,6 +916,8 @@ static func verify_observer_ab(enabled: Dictionary, disabled: Dictionary) -> Dic
 func generate_dataset() -> Dictionary:
 	if not _resolve_source_provenance():
 		return {}
+	if _mode == "full":
+		return await _enrich_anchored_full_dataset()
 	var class_ids: Array = PD.character_ids()
 	var pair_keys := []
 	var builds := {}
@@ -939,6 +951,8 @@ func generate_dataset() -> Dictionary:
 	var class_rows := _class_rows(class_ids, weapon_rows)
 	_apply_class_relative_scores(class_rows)
 	var parity := []
+	var final_execution := []
+	var formula_live_dispositions := []
 	var live_telemetry := {
 		"schema": LIVE_TELEMETRY_SCHEMA,
 		"trace_id_format": "%s:<pair>|<seed>|<scenario>|<fixture>|<target-cardinality>" % LIVE_TRACE_PREFIX,
@@ -950,6 +964,9 @@ func generate_dataset() -> Dictionary:
 		parity = live_evidence.get("parity", [])
 		live_telemetry = live_evidence.get("telemetry", live_telemetry)
 		_apply_live_evidence_to_rows(weapon_rows, parity)
+		final_execution = await _final_execution(class_ids, weapon_rows)
+		formula_live_dispositions = _formula_live_dispositions(parity, final_execution)
+		_apply_formula_live_dispositions_to_rows(weapon_rows, formula_live_dispositions)
 
 	var methodology := {
 		"ascension": "selected A5 and cumulative earned A1-A5 class rewards (reward tier 5)",
@@ -963,10 +980,11 @@ func generate_dataset() -> Dictionary:
 		"survivability": {"threat": "normal-wave contact pressure only", "base_hit": A5_NORMAL_CONTACT_DAMAGE, "attempted_hits_per_second": A5_NORMAL_CONTACT_RATE, "player_iframe_seconds": PLAYER_IFRAME_SECONDS, "a5_enemy_damage_multiplier": PD.ascension_difficulty_mods(5).get("enemy_damage_mult", 1.0), "order": "flat absorb (42% hit floor), defense, expected dodge, sustain; one death-save event is added separately"},
 	}
 	var dataset := {
-		"schema": "fan1438.a5-balance.v2",
+		"schema": "fan1516.a5-balance.v3",
 		"issue_id": ISSUE_ID,
 		"source": {"commit": _source_commit, "tree": _source_tree, "commit_timestamp": _source_timestamp, "godot": Engine.get_version_info().get("string", "unknown")},
-		"generation_command": "python3 tools/godot_gate.py --headless --fixed-fps 60 --path . --script res://tools/a5_balance_report.gd -- --mode=full --source-commit=<A>",
+		"run_identity": _run_identity(),
+		"generation_command": "python3 tools/godot_gate.py --headless --fixed-fps 60 --path . --script res://tools/a5_balance_report.gd -- --mode=%s --source-commit=%s" % [_mode, _source_commit],
 		"roster": {"class_ids": class_ids, "pair_keys": pair_keys, "class_count": class_ids.size(), "weapon_pair_count": pair_keys.size()},
 		"methodology": methodology,
 		"builds": builds,
@@ -976,6 +994,8 @@ func generate_dataset() -> Dictionary:
 		"class_rows": class_rows,
 		"formula_live_parity": parity,
 		"live_telemetry": live_telemetry,
+		"final_execution": {"schema": FINAL_EXECUTION_SCHEMA, "seed": FINAL_EXECUTION_SEED, "witness_damage": FINAL_EXECUTION_WITNESS_DAMAGE, "rows": final_execution},
+		"formula_live_dispositions": {"schema": FORMULA_LIVE_DISPOSITION_SCHEMA, "tolerance_pct": FORMULA_LIVE_TOLERANCE_PCT, "rows": formula_live_dispositions},
 		"outliers": _outliers(class_rows, parity),
 		"limitations": [
 			"The level-20 model is a synthetic 19-base-stat-point balance convention, not a replay of 19 live reward-card choices.",
@@ -985,6 +1005,60 @@ func generate_dataset() -> Dictionary:
 			"A5 survival uses normal-wave global damage scaling. Bosses/elites have different runtime consumers and are not conflated with this threat.",
 		],
 	}
+	dataset["dataset_digest_sha256"] = _sha256(JSON.stringify(dataset, "", true, true))
+	_validate_dataset(dataset)
+	return dataset
+
+
+func _enrich_anchored_full_dataset() -> Dictionary:
+	# The 309 sustained samples are an immutable cross-gameplay baseline. Newer dev
+	# commits deliberately cannot silently re-measure and overwrite that evidence:
+	# validate its executable trust root, preserve its numerical matrix byte-for-byte,
+	# and add separately labelled final-event proof generated by this exact checkout.
+	var artifact := read_raw_artifact(RAW_PATH)
+	if not bool(artifact.get("ok", false)):
+		_errors.append("cannot read the anchored A5 report for supplemental final evidence: %s" % artifact.get("error", "unknown error"))
+		return {}
+	var parsed = JSON.parse_string(str(artifact.get("text", "")))
+	if not parsed is Dictionary:
+		_errors.append("anchored A5 report is not a JSON object")
+		return {}
+	var dataset: Dictionary = (parsed as Dictionary).duplicate(true)
+	var lineage := load_oracle_lineage()
+	if not bool(lineage.get("ok", false)):
+		_errors.append("cannot load A5 lineage before supplemental final evidence: %s" % lineage.get("error", "unknown error"))
+		return {}
+	var anchor_gate := verify_candidate_against_current_base(dataset, lineage.get("manifest", {}))
+	if not bool(anchor_gate.get("ok", false)):
+		_errors.append("anchored A5 report no longer satisfies the immutable candidate gate: %s" % "; ".join(anchor_gate.get("errors", [])))
+		return {}
+	var class_ids: Array = (dataset.get("roster", {}) as Dictionary).get("class_ids", [])
+	var weapon_rows: Array = dataset.get("weapon_rows", [])
+	for weapon_row_value in weapon_rows:
+		var weapon_row: Dictionary = weapon_row_value
+		weapon_row["formula_live_disposition"] = str(weapon_row.get("formula_live_disposition", ""))
+		weapon_row["final_execution_observed"] = bool(weapon_row.get("final_execution_observed", false))
+	var final_execution := await _final_execution(class_ids, weapon_rows)
+	var parity: Array = dataset.get("formula_live_parity", [])
+	var formula_live_dispositions := _formula_live_dispositions(parity, final_execution)
+	_apply_formula_live_dispositions_to_rows(weapon_rows, formula_live_dispositions)
+	var legacy_source: Dictionary = dataset.get("source", {}).duplicate(true)
+	dataset["schema"] = "fan1516.a5-balance.v3"
+	dataset["legacy_source"] = legacy_source
+	dataset["supplemental_execution"] = {"commit": _source_commit, "tree": _source_tree, "commit_timestamp": _source_timestamp, "godot": Engine.get_version_info().get("string", "unknown")}
+	dataset["run_identity"] = _run_identity(legacy_source)
+	dataset["generation_command"] = "python3 tools/godot_gate.py --headless --fixed-fps 60 --path . --script res://tools/a5_balance_report.gd -- --mode=%s --source-commit=%s" % [_mode, _source_commit]
+	dataset["final_execution"] = {"schema": FINAL_EXECUTION_SCHEMA, "seed": FINAL_EXECUTION_SEED, "witness_damage": FINAL_EXECUTION_WITNESS_DAMAGE, "rows": final_execution}
+	dataset["formula_live_dispositions"] = {"schema": FORMULA_LIVE_DISPOSITION_SCHEMA, "tolerance_pct": FORMULA_LIVE_TOLERANCE_PCT, "rows": formula_live_dispositions}
+	var methodology: Dictionary = dataset.get("methodology", {})
+	methodology["supplemental_final_execution"] = "FAN-1516 invokes production Player.constellation_weapon_event for each schema-6 final and records one linked Enemy.take_damage HP-delta witness; the witness is excluded from sustained DPM and the immutable live_telemetry anchor."
+	dataset["methodology"] = methodology
+	var limitations: Array = dataset.get("limitations", [])
+	var supplemental_limitation := "The immutable 309-sample sustained telemetry and numeric matrix remain pinned to legacy_source; FAN-1516 adds separate final-execution causality evidence from supplemental_execution rather than re-baselining gameplay."
+	if not limitations.has(supplemental_limitation):
+		limitations.append(supplemental_limitation)
+	dataset["limitations"] = limitations
+	dataset.erase("dataset_digest_sha256")
 	dataset["dataset_digest_sha256"] = _sha256(JSON.stringify(dataset, "", true, true))
 	_validate_dataset(dataset)
 	return dataset
@@ -1174,6 +1248,8 @@ func _weapon_row(class_id: String, weapon_id: String, level: int, scenario_id: S
 		"runs": 1,
 		"solo_variance_dpm2": 0.0,
 		"crowd_variance_dpm2": 0.0,
+		"formula_live_disposition": "",
+		"final_execution_observed": false,
 	}
 
 
@@ -1564,6 +1640,202 @@ func _live_parity(class_ids: Array, builds: Dictionary, weapon_rows: Array) -> D
 			],
 		},
 	}
+
+
+func _final_execution(class_ids: Array, weapon_rows: Array) -> Array:
+	# This supplemental proof intentionally stays outside live_telemetry: the latter is
+	# the immutable 309-sample FAN-1658 anchor. Each row executes the production Player
+	# final resolver, then records one separately labelled canonical HP witness linked to
+	# that resolver activation; it is evidence, never a DPM contribution.
+	var rows := []
+	for class_id_value in class_ids:
+		var class_id := str(class_id_value)
+		var state := _scenario_state(class_id, "class_constellation")
+		for weapon_id_value in PD.weapon_ids(class_id):
+			var weapon_id := str(weapon_id_value)
+			var formula := _find_weapon_row(weapon_rows, class_id, weapon_id, 20, "class_constellation")
+			rows.append(await _measure_final_execution(class_id, weapon_id, state, str(formula.get("final_mechanic", "")), str(formula.get("final_event", ""))))
+	return rows
+
+
+func _measure_final_execution(class_id: String, weapon_id: String, state: Dictionary, final_mechanic: String, final_event: String) -> Dictionary:
+	await _teardown()
+	seed(FINAL_EXECUTION_SEED)
+	var pair := "%s/%s" % [class_id, weapon_id]
+	var sample_key := _telemetry_sample_key(pair, FINAL_EXECUTION_SEED, "final_execution", "final_execution", 1)
+	var collector := A5TelemetryCollector.new("%s:%s" % [LIVE_TRACE_PREFIX, sample_key], sample_key)
+	var player := PLAYER_SCENE.instantiate() as Node2D
+	_holder.add_child(player)
+	if player == null or player.get_script() == null:
+		_errors.append("%s final-execution Player failed to instantiate" % pair)
+		return {"pair": pair, "final_mechanic": final_mechanic, "final_event": final_event, "triggered": false, "error": "player instantiation failed"}
+	player.add_to_group("player")
+	player.global_position = PLAYER_POSITION
+	player.call("configure_character", class_id, weapon_id)
+	player.set("stats", DamageTable.optimized_stats_for_class(class_id, PD.base_stats(class_id)))
+	player.call("_apply_stat_scaling", true)
+	var main := MainScript.new()
+	main.set("selected_character_id", class_id)
+	main.set("selected_ascension_level", 5)
+	main.set("selected_start_boon_id", "")
+	main.set("meta_state", state.duplicate(true))
+	main.set("run_sandbox_captured", false)
+	main.call("apply_ascension_bonuses", player)
+	main.free()
+	player.set("max_health", DUMMY_HP)
+	player.set("health", DUMMY_HP)
+	player.connect("constellation_final_resolved", collector.on_final_resolution)
+	await process_frame
+	var dummies := _spawn_dummies(1)
+	var target := dummies[0] as Node2D
+	collector.bind_target(target, "target_0")
+	target.connect("damage_applied", collector.on_damage_applied)
+	collector.set_phase("measurement")
+	var before_health := float(target.get("health"))
+	var resolution := {}
+	for activation in range(1, 17):
+		var context := _final_probe_context(final_mechanic, activation)
+		resolution = player.call("constellation_weapon_event", weapon_id, final_event, context, target)
+		if bool(resolution.get("triggered", false)):
+			break
+	collector.advance_frame()
+	if bool(resolution.get("triggered", false)):
+		# The witness traverses Enemy.take_damage, the same authoritative HP-delta seam
+		# used by the sustained report. Its stable 1.0 amount is explicitly excluded from
+		# DPM and avoids fabricating a gameplay-specific payout for utility finals.
+		target.call("take_damage", FINAL_EXECUTION_WITNESS_DAMAGE, {
+			"damage_type": "true",
+			"player_owned": true,
+			"telemetry_provenance_id": str(_final_probe_context(final_mechanic, 0).get("telemetry_provenance_id", "")),
+			"constellation_final": final_mechanic,
+			"final_execution_witness": true,
+			"suppress_number": true,
+		})
+	var after_health := float(target.get("health"))
+	var sample := collector.build_sample(pair, FINAL_EXECUTION_SEED, "final_execution", "final_execution", 1)
+	var ledger: Dictionary = sample.get("hp_ledger", {})
+	var ledger_rows: Array = ledger.get("rows", [])
+	if not ledger_rows.is_empty():
+		var ledger_row: Dictionary = ledger_rows[0]
+		ledger_row["health_before"] = before_health
+		ledger_row["health_after"] = after_health
+		ledger_row["health_loss"] = maxf(before_health - after_health, 0.0)
+		ledger_rows[0] = ledger_row
+	var ledger_total := float(ledger.get("total_applied_damage", 0.0))
+	ledger["rows"] = ledger_rows
+	ledger["measurement_duration_seconds"] = LIVE_FIXED_DELTA
+	ledger["measurement_duration_snapped_seconds"] = snappedf(LIVE_FIXED_DELTA, 0.0001)
+	ledger["measurement_frame_count"] = 1
+	ledger["legacy_health_delta_numerator"] = maxf(before_health - after_health, 0.0)
+	ledger["dpm_projections"] = {
+		"legacy_hp_delta_raw_duration_dpm": _project_dpm(float(ledger["legacy_health_delta_numerator"]), LIVE_FIXED_DELTA),
+		"ledger_raw_duration_dpm": _project_dpm(ledger_total, LIVE_FIXED_DELTA),
+		"ledger_snapped_duration_dpm": _project_dpm(ledger_total, float(ledger["measurement_duration_snapped_seconds"])),
+		"ledger_minus_legacy_numerator": ledger_total - float(ledger["legacy_health_delta_numerator"]),
+	}
+	sample["hp_ledger"] = ledger
+	sample["observer_probe"] = {
+		"mode": "enabled",
+		"measurement_duration_seconds": LIVE_FIXED_DELTA,
+		"measurement_frame_count": 1,
+		"health_before": [before_health],
+		"health_after": [after_health],
+		"health_delta": maxf(before_health - after_health, 0.0),
+		"rng_probe": randi(),
+	}
+	sample["dpm"] = _project_dpm(ledger_total, LIVE_FIXED_DELTA)
+	var verification := verify_live_telemetry_sample(sample)
+	return {
+		"pair": pair,
+		"final_mechanic": final_mechanic,
+		"final_event": final_event,
+		"resolver_mode": str(resolution.get("mode", "")),
+		"triggered": bool(resolution.get("triggered", false)),
+		"required": int(resolution.get("required", 0)),
+		"progress": int(resolution.get("progress", 0)),
+		"witness_kind": "canonical_causal_witness_excluded_from_dpm",
+		"telemetry": sample,
+		"telemetry_valid": bool(verification.get("ok", false)),
+		"telemetry_errors": verification.get("errors", []),
+	}
+
+
+func _final_probe_context(mechanic_id: String, activation: int) -> Dictionary:
+	var mode := str(FinalRuntime.MODE_BY_MECHANIC.get(mechanic_id, ""))
+	var context := {
+		"constellation_consumer_event": true,
+		"telemetry_provenance_id": "final_execution:%s" % mechanic_id,
+		"unique_targets": activation,
+		"wounds": activation,
+		"infection_stacks": activation,
+		"wire_stacks": activation,
+		"stacks": activation,
+	}
+	if mode == "phase_resonance":
+		context["phase"] = "phase_%d" % activation
+	return context
+
+
+func _formula_live_dispositions(parity: Array, final_execution: Array) -> Array:
+	var finals := {}
+	for evidence_value in final_execution:
+		var evidence: Dictionary = evidence_value
+		finals[str(evidence.get("pair", ""))] = evidence
+	var rows := []
+	for parity_value in parity:
+		var parity_row: Dictionary = parity_value
+		var pair := str(parity_row.get("pair", ""))
+		var evidence: Dictionary = finals.get(pair, {})
+		var solo_delta := float(parity_row.get("solo_delta_pct", 0.0))
+		var pack_delta := float(parity_row.get("pack_delta_pct", 0.0))
+		var within := absf(solo_delta) <= FORMULA_LIVE_TOLERANCE_PCT and absf(pack_delta) <= FORMULA_LIVE_TOLERANCE_PCT
+		var observed := bool(evidence.get("triggered", false)) and bool(evidence.get("telemetry_valid", false))
+		var disposition := "within_tolerance" if within else ("explained_divergence" if observed else "unresolved")
+		var explanation := "Both sustained formula/live deltas are within the %.0f%% acceptance tolerance." % FORMULA_LIVE_TOLERANCE_PCT if within else "The formula uses a continuous profile-factor estimate while the deterministic scene probe measures discrete runtime cadence/geometry. The production final resolver emitted %s (%s), and its linked canonical HP witness is recorded separately from DPM." % [evidence.get("final_event", ""), evidence.get("resolver_mode", "")]
+		rows.append({
+			"pair": pair,
+			"solo_delta_pct": solo_delta,
+			"pack_delta_pct": pack_delta,
+			"disposition": disposition,
+			"mechanistic_evidence": {
+				"final_mechanic": evidence.get("final_mechanic", ""),
+				"final_event": evidence.get("final_event", ""),
+				"resolver_mode": evidence.get("resolver_mode", ""),
+				"triggered": observed,
+				"witness_kind": evidence.get("witness_kind", ""),
+				"telemetry_sample_key": ((evidence.get("telemetry", {}) as Dictionary).get("sample_key", "")),
+			},
+			"explanation": explanation,
+		})
+	return rows
+
+
+func _apply_formula_live_dispositions_to_rows(rows: Array, dispositions: Array) -> void:
+	var by_pair := {}
+	for disposition_value in dispositions:
+		var disposition: Dictionary = disposition_value
+		by_pair[str(disposition.get("pair", ""))] = disposition
+	for row_value in rows:
+		var row: Dictionary = row_value
+		if int(row.get("level", 0)) != 20 or str(row.get("scenario", "")) != "class_constellation":
+			continue
+		var disposition: Dictionary = by_pair.get("%s/%s" % [row.get("class_id", ""), row.get("weapon_id", "")], {})
+		row["formula_live_disposition"] = str(disposition.get("disposition", ""))
+		row["final_execution_observed"] = bool((disposition.get("mechanistic_evidence", {}) as Dictionary).get("triggered", false))
+
+
+func _run_identity(legacy_source := {}) -> String:
+	return "fan1516:%s" % _sha256(JSON.stringify({
+		"supplemental_source_commit": _source_commit,
+		"supplemental_source_tree": _source_tree,
+		"legacy_source": legacy_source,
+		"godot": Engine.get_version_info().get("string", "unknown"),
+		"mode": _mode,
+		"seeds": LIVE_SEEDS,
+		"windows": [LIVE_WARMUP_SECONDS, LIVE_WINDOW_SECONDS],
+		"target_geometry": [TARGET_COUNT, PACK_RADIUS, SOLO_OFFSET.x, SOLO_OFFSET.y],
+		"final_execution_seed": FINAL_EXECUTION_SEED,
+	}, "", true, true))
 
 
 func _measure_live(class_id: String, weapon_id: String, target_count: int, stats: Dictionary, state: Dictionary, seed_value: int, scenario_key: String, fixture: String, initial_target_hp := DUMMY_HP) -> Dictionary:
@@ -2436,9 +2708,10 @@ func _outliers(class_rows: Array, parity: Array) -> Dictionary:
 		if bool(status["is_outlier"]):
 			class_outliers.append(_class_corridor_entry(row, status))
 	var parity_outliers := []
-	for row in parity:
-		if absf(float(row.get("solo_delta_pct", 0.0))) > 35.0 or absf(float(row.get("pack_delta_pct", 0.0))) > 35.0:
-			parity_outliers.append({"pair": row["pair"], "solo_delta_pct": row["solo_delta_pct"], "pack_delta_pct": row["pack_delta_pct"]})
+	for parity_value in parity:
+		var parity_row: Dictionary = parity_value
+		if absf(float(parity_row.get("solo_delta_pct", 0.0))) > FORMULA_LIVE_TOLERANCE_PCT or absf(float(parity_row.get("pack_delta_pct", 0.0))) > FORMULA_LIVE_TOLERANCE_PCT:
+			parity_outliers.append({"pair": parity_row["pair"], "solo_delta_pct": parity_row["solo_delta_pct"], "pack_delta_pct": parity_row["pack_delta_pct"]})
 	return {"class_corridor_80_120": class_outliers, "formula_live_delta_over_35pct": parity_outliers, "action": "investigation candidates only; FAN-1438 makes no balance changes"}
 
 
@@ -2479,6 +2752,14 @@ func _validate_dataset(dataset: Dictionary) -> void:
 		if not bool(telemetry_verification.get("ok", false)):
 			for error_value in telemetry_verification.get("errors", []):
 				_errors.append("live telemetry verification failed: %s" % error_value)
+		var final_execution_verification := verify_final_execution_artifacts(dataset)
+		if not bool(final_execution_verification.get("ok", false)):
+			for error_value in final_execution_verification.get("errors", []):
+				_errors.append("final-execution verification failed: %s" % error_value)
+		var disposition_verification := verify_formula_live_dispositions(dataset)
+		if not bool(disposition_verification.get("ok", false)):
+			for error_value in disposition_verification.get("errors", []):
+				_errors.append("formula/live disposition verification failed: %s" % error_value)
 	var corridor_verification := verify_class_corridor_artifacts(dataset)
 	if not bool(corridor_verification.get("ok", false)):
 		for error_value in corridor_verification.get("errors", []):
@@ -2554,6 +2835,171 @@ static func verify_live_telemetry_artifacts(dataset: Dictionary) -> Dictionary:
 		if str(incoming.get("fixture", "")) != "incoming_hit" or not _has_damage_bucket(incoming, "incoming_fixture", "incoming_damage"):
 			errors.append("incoming-hit fixture lacks deterministic defensive damage")
 	return {"ok": errors.is_empty(), "errors": errors}
+
+
+static func verify_final_execution_artifacts(dataset: Dictionary) -> Dictionary:
+	var errors := PackedStringArray()
+	var execution: Dictionary = dataset.get("final_execution", {})
+	if str(execution.get("schema", "")) != FINAL_EXECUTION_SCHEMA:
+		errors.append("final-execution schema mismatch")
+	if int(execution.get("seed", -1)) != FINAL_EXECUTION_SEED:
+		errors.append("final-execution seed mismatch")
+	if not is_equal_approx(float(execution.get("witness_damage", -1.0)), FINAL_EXECUTION_WITNESS_DAMAGE):
+		errors.append("final-execution witness damage mismatch")
+	var expected_pairs: Array = (dataset.get("roster", {}) as Dictionary).get("pair_keys", [])
+	var rows: Array = execution.get("rows", [])
+	var actual_pairs := []
+	var seen_pairs := {}
+	for row_value in rows:
+		if not row_value is Dictionary:
+			errors.append("final-execution row is not an object")
+			continue
+		var row: Dictionary = row_value
+		var pair := str(row.get("pair", ""))
+		actual_pairs.append(pair)
+		if seen_pairs.has(pair):
+			errors.append("duplicate final-execution pair %s" % pair)
+		seen_pairs[pair] = true
+		var expected := _expected_final_for_pair(pair)
+		if expected.is_empty():
+			errors.append("final-execution pair is not in the schema-6 roster: %s" % pair)
+			continue
+		if str(row.get("final_mechanic", "")) != str(expected.get("mechanic_id", "")) or str(row.get("final_event", "")) != str(expected.get("event", "")):
+			errors.append("final-execution mechanic/event differs from schema-6 for %s" % pair)
+		if str(row.get("resolver_mode", "")) != str(expected.get("mode", "")):
+			errors.append("final-execution resolver mode differs from schema-6 for %s" % pair)
+		if not bool(row.get("triggered", false)):
+			errors.append("final-execution resolver did not trigger for %s" % pair)
+		if str(row.get("witness_kind", "")) != "canonical_causal_witness_excluded_from_dpm":
+			errors.append("final-execution witness kind is not explicit for %s" % pair)
+		var sample: Dictionary = row.get("telemetry", {})
+		var sample_verification := verify_live_telemetry_sample(sample)
+		if not bool(row.get("telemetry_valid", false)) or not bool(sample_verification.get("ok", false)):
+			errors.append("final-execution telemetry is invalid for %s" % pair)
+		if str(sample.get("pair", "")) != pair or int(sample.get("seed", -1)) != FINAL_EXECUTION_SEED or str(sample.get("scenario", "")) != "final_execution" or str(sample.get("fixture", "")) != "final_execution" or int(sample.get("target_cardinality", 0)) != 1:
+			errors.append("final-execution sample identity mismatch for %s" % pair)
+		if not _final_execution_row_has_causal_witness(row):
+			errors.append("final-execution causal resolver-to-HP witness is incomplete for %s" % pair)
+	if actual_pairs != expected_pairs:
+		errors.append("final-execution pair order/set mismatch")
+	return {"ok": errors.is_empty(), "errors": errors}
+
+
+static func verify_formula_live_dispositions(dataset: Dictionary) -> Dictionary:
+	var errors := PackedStringArray()
+	var dispositions: Dictionary = dataset.get("formula_live_dispositions", {})
+	if str(dispositions.get("schema", "")) != FORMULA_LIVE_DISPOSITION_SCHEMA:
+		errors.append("formula/live disposition schema mismatch")
+	if not is_equal_approx(float(dispositions.get("tolerance_pct", -1.0)), FORMULA_LIVE_TOLERANCE_PCT):
+		errors.append("formula/live disposition tolerance mismatch")
+	var parity: Array = dataset.get("formula_live_parity", [])
+	var expected_pairs: Array = (dataset.get("roster", {}) as Dictionary).get("pair_keys", [])
+	var evidence_by_pair := {}
+	for evidence_value in ((dataset.get("final_execution", {}) as Dictionary).get("rows", [])):
+		if evidence_value is Dictionary:
+			var evidence: Dictionary = evidence_value
+			evidence_by_pair[str(evidence.get("pair", ""))] = evidence
+	var rows: Array = dispositions.get("rows", [])
+	var actual_pairs := []
+	var by_pair := {}
+	var unresolved := 0
+	for row_value in rows:
+		if not row_value is Dictionary:
+			errors.append("formula/live disposition row is not an object")
+			continue
+		var row: Dictionary = row_value
+		var pair := str(row.get("pair", ""))
+		actual_pairs.append(pair)
+		if by_pair.has(pair):
+			errors.append("duplicate formula/live disposition pair %s" % pair)
+		by_pair[pair] = row
+	if actual_pairs != expected_pairs:
+		errors.append("formula/live disposition pair order/set mismatch")
+	for parity_value in parity:
+		var parity_row: Dictionary = parity_value
+		var pair := str(parity_row.get("pair", ""))
+		var row: Dictionary = by_pair.get(pair, {})
+		if row.is_empty():
+			continue
+		var solo_delta := float(parity_row.get("solo_delta_pct", 0.0))
+		var pack_delta := float(parity_row.get("pack_delta_pct", 0.0))
+		if not is_equal_approx(float(row.get("solo_delta_pct", NAN)), solo_delta) or not is_equal_approx(float(row.get("pack_delta_pct", NAN)), pack_delta):
+			errors.append("formula/live deltas are not copied from parity for %s" % pair)
+		var within := absf(solo_delta) <= FORMULA_LIVE_TOLERANCE_PCT and absf(pack_delta) <= FORMULA_LIVE_TOLERANCE_PCT
+		var evidence: Dictionary = evidence_by_pair.get(pair, {})
+		var evidence_is_causal := _final_execution_row_has_causal_witness(evidence)
+		var expected_disposition := "within_tolerance" if within else ("explained_divergence" if evidence_is_causal else "unresolved")
+		var disposition := str(row.get("disposition", ""))
+		if disposition != expected_disposition:
+			errors.append("formula/live disposition does not follow tolerance/evidence for %s" % pair)
+		if disposition == "unresolved":
+			unresolved += 1
+		var mechanical: Dictionary = row.get("mechanistic_evidence", {})
+		if str(mechanical.get("final_mechanic", "")) != str(evidence.get("final_mechanic", "")) or str(mechanical.get("final_event", "")) != str(evidence.get("final_event", "")) or str(mechanical.get("resolver_mode", "")) != str(evidence.get("resolver_mode", "")) or bool(mechanical.get("triggered", false)) != (bool(evidence.get("triggered", false)) and bool(evidence.get("telemetry_valid", false))):
+			errors.append("formula/live mechanistic evidence differs from final-execution row for %s" % pair)
+		if str(row.get("explanation", "")).strip_edges() == "":
+			errors.append("formula/live disposition has no explanation for %s" % pair)
+	if parity.size() != expected_pairs.size():
+		errors.append("formula/live parity is not complete")
+	if unresolved > 0:
+		errors.append("formula/live dispositions retain %d unresolved divergences" % unresolved)
+	var rows_by_key := {}
+	for weapon_row_value in dataset.get("weapon_rows", []):
+		var weapon_row: Dictionary = weapon_row_value
+		rows_by_key[str(weapon_row.get("key", ""))] = weapon_row
+	for pair_value in expected_pairs:
+		var pair := str(pair_value)
+		var pair_parts := pair.split("/", true, 1)
+		if pair_parts.size() != 2:
+			continue
+		var key := "%s|%s|20|class_constellation" % [pair_parts[0], pair_parts[1]]
+		var weapon_row: Dictionary = rows_by_key.get(key, {})
+		var disposition: Dictionary = by_pair.get(pair, {})
+		if str(weapon_row.get("formula_live_disposition", "")) != str(disposition.get("disposition", "")):
+			errors.append("weapon matrix disposition differs for %s" % pair)
+		if bool(weapon_row.get("final_execution_observed", false)) != bool((disposition.get("mechanistic_evidence", {}) as Dictionary).get("triggered", false)):
+			errors.append("weapon matrix final-execution flag differs for %s" % pair)
+	return {"ok": errors.is_empty(), "errors": errors}
+
+
+static func _expected_final_for_pair(pair: String) -> Dictionary:
+	var parts := pair.split("/", true, 1)
+	if parts.size() != 2:
+		return {}
+	var class_id := str(parts[0])
+	var weapon_id := str(parts[1])
+	for branch_value in Schema6.class_entry(class_id).get("weapon_branches", []):
+		var branch: Dictionary = branch_value
+		if str(branch.get("weapon_id", "")) != weapon_id:
+			continue
+		for node_value in branch.get("nodes", []):
+			var node: Dictionary = node_value
+			if str(node.get("role", "")) != "weapon_final":
+				continue
+			var mechanic_id := str(node.get("mechanic_id", ""))
+			return {"mechanic_id": mechanic_id, "event": str(FinalRuntime.EVENT_BY_MECHANIC.get(mechanic_id, "")), "mode": str(FinalRuntime.MODE_BY_MECHANIC.get(mechanic_id, ""))}
+	return {}
+
+
+static func _final_execution_row_has_causal_witness(row: Dictionary) -> bool:
+	if not bool(row.get("triggered", false)) or not bool(row.get("telemetry_valid", false)):
+		return false
+	var mechanic_id := str(row.get("final_mechanic", ""))
+	var event_name := str(row.get("final_event", ""))
+	var events: Array = ((row.get("telemetry", {}) as Dictionary).get("events", []))
+	var resolution_hit_id := ""
+	var application_hit_id := ""
+	for event_value in events:
+		if not event_value is Dictionary:
+			continue
+		var event: Dictionary = event_value
+		if str(event.get("kind", "")) != "final_event" or str(event.get("mechanic_id", "")) != mechanic_id or str(event.get("related_hit_id", "")) == "":
+			continue
+		if str(event.get("phase", "")) == "final_resolution" and str(event.get("event", "")) == event_name:
+			resolution_hit_id = str(event.get("related_hit_id", ""))
+		if str(event.get("phase", "")) == "final_damage_application" and str(event.get("event", "")) == "damage_application":
+			application_hit_id = str(event.get("related_hit_id", ""))
+	return resolution_hit_id != "" and resolution_hit_id == application_hit_id
 
 
 static func verify_live_telemetry_sample(sample: Dictionary) -> Dictionary:
@@ -2817,9 +3263,9 @@ static func _has_damage_bucket(sample: Dictionary, source: String, phase: String
 
 static func render_csv(dataset: Dictionary) -> String:
 	var lines := PackedStringArray()
-	lines.append("key,class_id,weapon_id,level,scenario,scenario_label,playable,attack_mode,archetype,axis,final_mechanic,playstyle,strengths,weaknesses,stat_delta,solo_dpm,crowd_10_total_dpm,crowd_10_per_target_dpm,hp,defense,dodge,absorb_flat,conditional_shield_capacity,regeneration_per_second,lifesteal_per_second,mitigation,ehp,ttd_seconds,conditional_defense_factor,pickup_radius,move_speed,healing_multiplier,xp_multiplier,money_multiplier,start_gold,ult_start_charge,death_save,solo_delta_abs,solo_delta_pct,crowd_delta_abs,crowd_delta_pct,ehp_delta_abs,ehp_delta_pct,ttd_delta_abs,ttd_delta_pct,atlas_delta,measurement_method,runs,solo_variance_dpm2,crowd_variance_dpm2")
+	lines.append("key,class_id,weapon_id,level,scenario,scenario_label,playable,attack_mode,archetype,axis,final_mechanic,playstyle,strengths,weaknesses,stat_delta,solo_dpm,crowd_10_total_dpm,crowd_10_per_target_dpm,hp,defense,dodge,absorb_flat,conditional_shield_capacity,regeneration_per_second,lifesteal_per_second,mitigation,ehp,ttd_seconds,conditional_defense_factor,pickup_radius,move_speed,healing_multiplier,xp_multiplier,money_multiplier,start_gold,ult_start_charge,death_save,solo_delta_abs,solo_delta_pct,crowd_delta_abs,crowd_delta_pct,ehp_delta_abs,ehp_delta_pct,ttd_delta_abs,ttd_delta_pct,atlas_delta,measurement_method,runs,solo_variance_dpm2,crowd_variance_dpm2,formula_live_disposition,final_execution_observed")
 	for row in dataset["weapon_rows"]:
-		var cells := [row["key"], row["class_id"], row["weapon_id"], row["level"], row["scenario"], row["scenario_label"], row["playable"], row["attack_mode"], row["archetype"], row["axis"], row["final_mechanic"], row["playstyle"], row["strengths"], row["weaknesses"], JSON.stringify(row["stat_delta"], "", true, true), row["solo_dpm"], row["crowd_10_total_dpm"], row["crowd_10_per_target_dpm"], row["hp"], row["defense"], row["dodge"], row["absorb_flat"], row["conditional_shield_capacity"], row["regeneration_per_second"], row["lifesteal_per_second"], row["mitigation"], row["ehp"], row["ttd_seconds"], row["conditional_defense_factor"], row["pickup_radius"], row["move_speed"], row["healing_multiplier"], row["xp_multiplier"], row["money_multiplier"], row["start_gold"], row["ult_start_charge"], row["death_save"], row["solo_dpm_delta_abs"], row["solo_dpm_delta_pct"], row["crowd_10_total_dpm_delta_abs"], row["crowd_10_total_dpm_delta_pct"], row["ehp_delta_abs"], row["ehp_delta_pct"], row["ttd_seconds_delta_abs"], row["ttd_seconds_delta_pct"], row["atlas_delta_summary"], row["measurement_method"], row["runs"], row["solo_variance_dpm2"], row["crowd_variance_dpm2"]]
+		var cells := [row["key"], row["class_id"], row["weapon_id"], row["level"], row["scenario"], row["scenario_label"], row["playable"], row["attack_mode"], row["archetype"], row["axis"], row["final_mechanic"], row["playstyle"], row["strengths"], row["weaknesses"], JSON.stringify(row["stat_delta"], "", true, true), row["solo_dpm"], row["crowd_10_total_dpm"], row["crowd_10_per_target_dpm"], row["hp"], row["defense"], row["dodge"], row["absorb_flat"], row["conditional_shield_capacity"], row["regeneration_per_second"], row["lifesteal_per_second"], row["mitigation"], row["ehp"], row["ttd_seconds"], row["conditional_defense_factor"], row["pickup_radius"], row["move_speed"], row["healing_multiplier"], row["xp_multiplier"], row["money_multiplier"], row["start_gold"], row["ult_start_charge"], row["death_save"], row["solo_dpm_delta_abs"], row["solo_dpm_delta_pct"], row["crowd_10_total_dpm_delta_abs"], row["crowd_10_total_dpm_delta_pct"], row["ehp_delta_abs"], row["ehp_delta_pct"], row["ttd_seconds_delta_abs"], row["ttd_seconds_delta_pct"], row["atlas_delta_summary"], row["measurement_method"], row["runs"], row["solo_variance_dpm2"], row["crowd_variance_dpm2"], row["formula_live_disposition"], row["final_execution_observed"]]
 		var escaped := PackedStringArray()
 		for cell in cells:
 			escaped.append(_csv_cell(str(cell)))
@@ -2831,7 +3277,10 @@ static func render_markdown(dataset: Dictionary) -> String:
 	var lines := PackedStringArray()
 	lines.append("# FAN-1438 — A5 character and weapon balance report")
 	lines.append("")
-	lines.append("Source commit `%s` (tree `%s`, timestamp `%s`), Godot `%s`. Dataset digest: `%s`." % [dataset["source"]["commit"], dataset["source"]["tree"], dataset["source"]["commit_timestamp"], dataset["source"]["godot"], dataset["dataset_digest_sha256"]])
+	lines.append("Immutable sustained-telemetry source commit `%s` (tree `%s`, timestamp `%s`), Godot `%s`. Dataset digest: `%s`." % [dataset["source"]["commit"], dataset["source"]["tree"], dataset["source"]["commit_timestamp"], dataset["source"]["godot"], dataset["dataset_digest_sha256"]])
+	var supplemental_execution: Dictionary = dataset.get("supplemental_execution", dataset.get("source", {}))
+	lines.append("Supplemental final-execution source commit `%s` (tree `%s`, timestamp `%s`), Godot `%s`." % [supplemental_execution.get("commit", ""), supplemental_execution.get("tree", ""), supplemental_execution.get("commit_timestamp", ""), supplemental_execution.get("godot", "")])
+	lines.append("Run identity `%s`. Generation command: `%s`." % [dataset.get("run_identity", ""), dataset.get("generation_command", "")])
 	lines.append("")
 	lines.append("The live roster is **%d classes / %d class-weapon pairs**. The primary matrix is **%d rows** = pairs × 2 levels × 4 meta scenarios. This report changes no balance values." % [dataset["roster"]["class_count"], dataset["roster"]["weapon_pair_count"], (dataset["weapon_rows"] as Array).size()])
 	lines.append("")
@@ -2874,10 +3323,46 @@ static func render_markdown(dataset: Dictionary) -> String:
 	if (dataset["formula_live_parity"] as Array).is_empty():
 		lines.append("Formula-only generation; final evidence requires `--mode=full`.")
 	else:
-		lines.append("| Pair | Attack mode | Final (event) | Formula solo / live mean±sd DPM | Δ | Formula 10T / live mean±sd DPM | Δ | Observation |")
-		lines.append("| --- | --- | --- | ---: | ---: | ---: | ---: | --- |")
+		var disposition_by_pair := {}
+		for disposition_value in ((dataset.get("formula_live_dispositions", {}) as Dictionary).get("rows", [])):
+			var disposition: Dictionary = disposition_value
+			disposition_by_pair[str(disposition.get("pair", ""))] = disposition
+		lines.append("| Pair | Attack mode | Final (event) | Formula solo / live mean±sd DPM | Δ | Formula 10T / live mean±sd DPM | Δ | Disposition | Observation |")
+		lines.append("| --- | --- | --- | ---: | ---: | ---: | ---: | --- | --- |")
 		for row in dataset["formula_live_parity"]:
-			lines.append("| %s | %s | %s (%s) | %.2f / %.2f±%.2f | %+.2f%% | %.2f / %.2f±%.2f | %+.2f%% | %s |" % [row["pair"], row["attack_mode"], row["final_mechanic"], row["final_event"], row["formula_solo_dpm"], row["live_solo_dpm_mean"], row["live_solo_dpm_stddev"], row["solo_delta_pct"], row["formula_pack_dpm"], row["live_pack_dpm_mean"], row["live_pack_dpm_stddev"], row["pack_delta_pct"], row["runtime_observation"]])
+			var disposition: Dictionary = disposition_by_pair.get(str(row.get("pair", "")), {})
+			lines.append("| %s | %s | %s (%s) | %.2f / %.2f±%.2f | %+.2f%% | %.2f / %.2f±%.2f | %+.2f%% | %s | %s |" % [row["pair"], row["attack_mode"], row["final_mechanic"], row["final_event"], row["formula_solo_dpm"], row["live_solo_dpm_mean"], row["live_solo_dpm_stddev"], row["solo_delta_pct"], row["formula_pack_dpm"], row["live_pack_dpm_mean"], row["live_pack_dpm_stddev"], row["pack_delta_pct"], disposition.get("disposition", ""), row["runtime_observation"]])
+	lines.append("")
+	lines.append("## Final-execution evidence")
+	lines.append("")
+	var final_execution: Dictionary = dataset.get("final_execution", {})
+	var final_rows: Array = final_execution.get("rows", [])
+	if final_rows.is_empty():
+		lines.append("Formula-only generation; final-execution evidence requires `--mode=full`.")
+	else:
+		lines.append("Schema `%s`: every pair calls the production `Player.constellation_weapon_event` resolver with its schema-6 event. A triggered resolution is linked to one canonical `Enemy.take_damage` HP-delta witness through the same provenance ID. The witness is explicitly excluded from sustained DPM and exists only to prove resolver → target → applied-damage causality." % final_execution.get("schema", ""))
+		lines.append("")
+		lines.append("| Pair | Final (event) | Resolver mode | Triggered | Trace | Resolution → HP witness |")
+		lines.append("| --- | --- | --- | --- | --- | --- |")
+		for final_row_value in final_rows:
+			var final_row: Dictionary = final_row_value
+			var sample: Dictionary = final_row.get("telemetry", {})
+			lines.append("| %s | %s (%s) | %s | %s | `%s` | %s |" % [final_row.get("pair", ""), final_row.get("final_mechanic", ""), final_row.get("final_event", ""), final_row.get("resolver_mode", ""), final_row.get("triggered", false), sample.get("trace_id", ""), final_row.get("witness_kind", "")])
+	lines.append("")
+	lines.append("## Formula/live dispositions")
+	lines.append("")
+	var disposition_rows: Array = (dataset.get("formula_live_dispositions", {}) as Dictionary).get("rows", [])
+	if disposition_rows.is_empty():
+		lines.append("Formula-only generation; structured dispositions require `--mode=full`.")
+	else:
+		lines.append("Each row is either `within_tolerance` (both axes ≤ %.0f%%), `explained_divergence` (over tolerance with a verified final-execution causal witness), or `unresolved`. This full run must contain no unresolved rows." % FORMULA_LIVE_TOLERANCE_PCT)
+		lines.append("")
+		lines.append("| Pair | Disposition | Mechanical evidence | Explanation |")
+		lines.append("| --- | --- | --- | --- |")
+		for disposition_value in disposition_rows:
+			var disposition: Dictionary = disposition_value
+			var mechanical: Dictionary = disposition.get("mechanistic_evidence", {})
+			lines.append("| %s | %s | %s / %s / %s; triggered=%s; `%s` | %s |" % [disposition.get("pair", ""), disposition.get("disposition", ""), mechanical.get("final_mechanic", ""), mechanical.get("final_event", ""), mechanical.get("resolver_mode", ""), mechanical.get("triggered", false), mechanical.get("telemetry_sample_key", ""), disposition.get("explanation", "")])
 	lines.append("")
 	lines.append("## Live event telemetry")
 	lines.append("")
@@ -2899,7 +3384,7 @@ static func render_markdown(dataset: Dictionary) -> String:
 	lines.append("## Outliers and conclusions")
 	lines.append("")
 	lines.append("- Class corridor flags (outside 80–120%% of the same level/scenario median across solo, AoE, or defense): **%d**." % (dataset["outliers"]["class_corridor_80_120"] as Array).size())
-	lines.append("- Formula/live differences over 35%% on either axis: **%d**. These are instrumentation/tuning investigation candidates, not automatic nerf/buff decisions." % (dataset["outliers"]["formula_live_delta_over_35pct"] as Array).size())
+	lines.append("- Formula/live differences over %.0f%% on either axis: **%d**. Structured disposition rows distinguish within-tolerance evidence from verified causal explanations; they are not automatic nerf/buff decisions." % [FORMULA_LIVE_TOLERANCE_PCT, (dataset["outliers"]["formula_live_delta_over_35pct"] as Array).size()])
 	lines.append("- Raw outlier keys and exact ratios are in `raw.json.gz`; the complete numeric matrix is in `per_weapon.csv`.")
 	lines.append("- No balance values or mechanics were changed by FAN-1438.")
 	lines.append("")

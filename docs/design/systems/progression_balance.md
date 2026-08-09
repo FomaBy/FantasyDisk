@@ -1374,7 +1374,7 @@ Schema-6 flat/cadence/geometry/axis/final профиль берётся из к�
 реальными headless Player/Enemy-пробами всех runtime-пар с фиксированными
 сидами, warm-up и фиксированным игровым окном.
 
-Начиная с raw schema `fan1438.a5-balance.v2`, каждая такая проба также содержит
+Начиная с raw schema `fan1516.a5-balance.v3`, каждая такая проба также содержит
 `fan1511.runtime-telemetry.v2`: стабильный ключ
 `pair|seed|scenario|fixture|target-cardinality`, trace ID, counters реальных
 casts/hits, уникальные target IDs и взаимоисключающие buckets `source×phase`.
@@ -1408,6 +1408,28 @@ projection (`legacy HP-delta/raw duration`, `ledger/raw duration`,
 упорядоченный manifest 51 оружий и четыре live/variance поля against exact
 fresh executable oracle `f09f21ec`; это measurement repair, а не balance/config
 tuning.
+
+FAN-1516 добавляет к этому неизменному 309-sample telemetry anchor отдельный
+supplemental контракт `fan1516.final-execution.v1`. Он содержит ровно 51 строку
+в порядке roster: для каждой пары вызывается production
+`Player.constellation_weapon_event` с schema-6 final event, а triggered resolver
+связывается тем же `telemetry_provenance_id` с одним каноническим
+`Enemy.take_damage` HP-delta witness. Это не искусственная прибавка к sustained
+DPM: witness явно помечен как `canonical_causal_witness_excluded_from_dpm` и
+нужен только как проверяемая связь resolver → target → applied damage для
+utility, kill и damage final-веток. Верификатор требует настоящий
+`final_resolution`, последующий `final_damage_application`, взаимные
+`related_hit_id`/`final_event_ids`, совпадение цели и HP ledger; удалённая,
+подменённая или label-only строка fail-closed.
+
+Рядом `fan1516.formula-live-disposition.v1` даёт структурированное решение для
+каждой из 51 formula/live пар при неизменном пороге `35%`: только
+`within_tolerance`, `explained_divergence` (обязательно с валидным причинным
+final-execution witness) или `unresolved`. Полный отчёт не принимает ни одной
+`unresolved` строки; текущие 48 превышений должны иметь 48 таких проверенных
+объяснений, а три оставшиеся пары — `within_tolerance`. `run_identity` и
+полностью раскрытая `generation_command` сохраняются в raw и Markdown, поэтому
+проверяемы источник, конфигурация и повторяемость запуска без placeholder'ов.
 
 ### FAN-1641 — lineage-aware A5 parity contract
 

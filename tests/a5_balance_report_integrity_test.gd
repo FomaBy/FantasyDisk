@@ -32,7 +32,7 @@ func _initialize() -> void:
 		_finish()
 		return
 	var dataset := raw as Dictionary
-	_check(str(dataset.get("schema", "")) == "fan1438.a5-balance.v2", "raw schema mismatch")
+	_check(str(dataset.get("schema", "")) == "fan1516.a5-balance.v3", "raw schema mismatch")
 	_check(str(dataset.get("issue_id", "")) == "FAN-1438", "issue id mismatch")
 	_check(str((dataset.get("source", {}) as Dictionary).get("commit", "")) not in ["", "UNSPECIFIED", "TEST"], "source commit is not pinned")
 	_check(str((dataset.get("source", {}) as Dictionary).get("tree", "")) not in ["", "UNSPECIFIED", "TEST"], "source tree is not pinned")
@@ -47,6 +47,8 @@ func _initialize() -> void:
 	_validate_class_corridor(dataset, report_text)
 	_validate_class_ultimate_oracle(dataset)
 	_validate_live_coverage(dataset)
+	_validate_final_execution(dataset)
+	_validate_formula_live_dispositions(dataset)
 	_validate_csv(dataset)
 	_validate_markdown(dataset, report_text)
 	_finish()
@@ -66,6 +68,12 @@ func _validate_source_provenance(dataset: Dictionary) -> void:
 		mismatched["commit_timestamp"] = "1970-01-01T00:00:01Z"
 	var mismatch_verification := Generator.verify_source_provenance(mismatched)
 	_check(not bool(mismatch_verification.get("ok", false)), "source provenance accepts a deliberately mismatched commit_timestamp")
+	_check(str(dataset.get("run_identity", "")).begins_with("fan1516:"), "run identity is not present or versioned")
+	var supplemental: Dictionary = dataset.get("supplemental_execution", {})
+	var supplemental_verification := Generator.verify_source_provenance(supplemental)
+	_check(bool(supplemental_verification.get("ok", false)), "supplemental final-execution source is not pinned to an exact Git commit/tree/timestamp: %s" % supplemental_verification.get("error", "unknown error"))
+	var command := str(dataset.get("generation_command", ""))
+	_check(command.contains("--mode=full") and command.contains("--source-commit=%s" % supplemental.get("commit", "")) and not command.contains("<"), "generation command is not a fully expanded reproducible full command")
 
 
 func _validate_raw_artifact(dataset: Dictionary, raw_text: String) -> void:
@@ -571,6 +579,82 @@ func _validate_live_telemetry(dataset: Dictionary) -> void:
 		_expect_telemetry_rejection(missing_applied, "measurement hit damage does not reconcile to hp ledger", "missing applied damage must fail the HP ledger")
 
 
+func _validate_final_execution(dataset: Dictionary) -> void:
+	var verification := Generator.verify_final_execution_artifacts(dataset)
+	_check(bool(verification.get("ok", false)), "final-execution contract failed: %s" % "; ".join(verification.get("errors", [])))
+	var execution: Dictionary = dataset.get("final_execution", {})
+	var rows: Array = execution.get("rows", [])
+	_check(rows.size() == (dataset.get("roster", {}) as Dictionary).get("pair_keys", []).size(), "final-execution evidence must cover all runtime pairs")
+	if rows.is_empty():
+		return
+	var missing_pair := dataset.duplicate(true)
+	var missing_rows: Array = (missing_pair.get("final_execution", {}) as Dictionary).get("rows", [])
+	missing_rows.pop_back()
+	_check(not bool(Generator.verify_final_execution_artifacts(missing_pair).get("ok", true)), "missing final-execution pair must fail closed")
+	var causal_location := _find_final_execution_resolution(dataset)
+	_check(not causal_location.is_empty(), "final-execution evidence must contain a production resolver event linked to HP")
+	if causal_location.is_empty():
+		return
+	var relation_mutation := dataset.duplicate(true)
+	var relation_rows: Array = (relation_mutation.get("final_execution", {}) as Dictionary).get("rows", [])
+	var relation_events: Array = ((relation_rows[int(causal_location["row_index"])] as Dictionary).get("telemetry", {}) as Dictionary).get("events", [])
+	var resolution: Dictionary = relation_events[int(causal_location["event_index"])]
+	resolution["related_hit_id"] = "forged-hit"
+	_check(not bool(Generator.verify_final_execution_artifacts(relation_mutation).get("ok", true)), "fabricated resolver-to-hit link must fail closed")
+	var hp_mutation := dataset.duplicate(true)
+	var hp_rows: Array = (hp_mutation.get("final_execution", {}) as Dictionary).get("rows", [])
+	var hp_ledger_rows: Array = (((hp_rows[int(causal_location["row_index"])] as Dictionary).get("telemetry", {}) as Dictionary).get("hp_ledger", {}) as Dictionary).get("rows", [])
+	var hp_ledger_row: Dictionary = hp_ledger_rows[0]
+	hp_ledger_row["applied_damage"] = 0.0
+	_check(not bool(Generator.verify_final_execution_artifacts(hp_mutation).get("ok", true)), "final-execution HP witness mutation must fail closed")
+
+
+func _validate_formula_live_dispositions(dataset: Dictionary) -> void:
+	var verification := Generator.verify_formula_live_dispositions(dataset)
+	_check(bool(verification.get("ok", false)), "formula/live disposition contract failed: %s" % "; ".join(verification.get("errors", [])))
+	var dispositions: Dictionary = dataset.get("formula_live_dispositions", {})
+	var rows: Array = dispositions.get("rows", [])
+	var explained := 0
+	var within := 0
+	for row_value in rows:
+		var row: Dictionary = row_value
+		if str(row.get("disposition", "")) == "explained_divergence":
+			explained += 1
+		elif str(row.get("disposition", "")) == "within_tolerance":
+			within += 1
+	_check(explained == 48 and within == 3, "expected all 48 over-tolerance formula/live pairs to have structured causal dispositions")
+	if rows.is_empty():
+		return
+	var tolerance_mutation := dataset.duplicate(true)
+	var tolerance: Dictionary = tolerance_mutation.get("formula_live_dispositions", {})
+	tolerance["tolerance_pct"] = Generator.FORMULA_LIVE_TOLERANCE_PCT + 1.0
+	_check(not bool(Generator.verify_formula_live_dispositions(tolerance_mutation).get("ok", true)), "formula/live tolerance mutation must fail closed")
+	var unresolved_mutation := dataset.duplicate(true)
+	var unresolved_rows: Array = (unresolved_mutation.get("formula_live_dispositions", {}) as Dictionary).get("rows", [])
+	var unresolved_row: Dictionary = unresolved_rows[0]
+	unresolved_row["disposition"] = "unresolved"
+	_check(not bool(Generator.verify_formula_live_dispositions(unresolved_mutation).get("ok", true)), "unresolved formula/live disposition must fail closed")
+	var outlier_mutation := dataset.duplicate(true)
+	var outlier_rows: Array = (outlier_mutation.get("formula_live_dispositions", {}) as Dictionary).get("rows", [])
+	for row_value in outlier_rows:
+		var row: Dictionary = row_value
+		if str(row.get("disposition", "")) == "explained_divergence":
+			row["disposition"] = "within_tolerance"
+			break
+	_check(not bool(Generator.verify_formula_live_dispositions(outlier_mutation).get("ok", true)), "over-tolerance pair without an explained disposition must fail closed")
+
+
+func _find_final_execution_resolution(dataset: Dictionary) -> Dictionary:
+	var rows: Array = ((dataset.get("final_execution", {}) as Dictionary).get("rows", []))
+	for row_index in range(rows.size()):
+		var events: Array = (((rows[row_index] as Dictionary).get("telemetry", {}) as Dictionary).get("events", []))
+		for event_index in range(events.size()):
+			var event: Dictionary = events[event_index]
+			if str(event.get("kind", "")) == "final_event" and str(event.get("phase", "")) == "final_resolution" and str(event.get("related_hit_id", "")) != "":
+				return {"row_index": row_index, "event_index": event_index}
+	return {}
+
+
 func _find_final_event(dataset: Dictionary) -> Dictionary:
 	var samples: Array = (dataset.get("live_telemetry", {}) as Dictionary).get("samples", [])
 	for sample_index in range(samples.size()):
@@ -640,7 +724,7 @@ func _validate_csv(dataset: Dictionary) -> void:
 	var header := file.get_csv_line()
 	var indices := {}
 	var valid_header := true
-	for column in ["key", "class_id", "weapon_id", "level", "scenario", "solo_dpm", "crowd_10_total_dpm", "hp", "ehp", "ttd_seconds", "ult_start_charge"]:
+	for column in ["key", "class_id", "weapon_id", "level", "scenario", "solo_dpm", "crowd_10_total_dpm", "hp", "ehp", "ttd_seconds", "ult_start_charge", "formula_live_disposition", "final_execution_observed"]:
 		var index := Array(header).find(column)
 		_check(index >= 0, "CSV lacks %s column" % column)
 		indices[column] = index
@@ -671,18 +755,26 @@ func _validate_csv(dataset: Dictionary) -> void:
 		_check(str(cells[int(indices["scenario"])]) == str(row.get("scenario", "")), "CSV scenario differs for %s" % key)
 		for metric in ["solo_dpm", "crowd_10_total_dpm", "hp", "ehp", "ttd_seconds", "ult_start_charge"]:
 			_check(is_equal_approx(float(cells[int(indices[metric])]), float(row.get(metric, INF))), "CSV %s differs for %s" % [metric, key])
+		_check(str(cells[int(indices["formula_live_disposition"])]) == str(row.get("formula_live_disposition", "")), "CSV formula/live disposition differs for %s" % key)
+		_check(str(cells[int(indices["final_execution_observed"])]) == str(row.get("final_execution_observed", false)), "CSV final-execution observation differs for %s" % key)
 	_check(_read_text(Generator.CSV_PATH) == Generator.render_csv(dataset), "CSV is not the exact canonical render of raw.json.gz")
 
 
 func _validate_markdown(dataset: Dictionary, report_text: String) -> void:
 	_check(report_text.contains("## Per-weapon matrix"), "Markdown lacks per-weapon matrix")
 	_check(report_text.contains("## Formula / live parity"), "Markdown lacks formula/live section")
+	_check(report_text.contains("## Final-execution evidence"), "Markdown lacks final-execution evidence")
+	_check(report_text.contains("## Formula/live dispositions"), "Markdown lacks structured formula/live dispositions")
 	_check(report_text.contains(Generator.NON_PLAYABLE_LABEL), "Markdown lacks mandatory non-playable label")
 	_check(report_text.contains("changes no balance values") or report_text.contains("No balance values"), "Markdown does not state the no-balance-change scope")
 	_check(report_text.contains("applies class/Atlas attribute and run modifiers exactly once"), "Markdown does not state the single-application ultimate rule")
 	var source: Dictionary = dataset.get("source", {})
-	_check(report_text.contains("Source commit `%s` (tree `%s`, timestamp `%s`)" % [source.get("commit", ""), source.get("tree", ""), source.get("commit_timestamp", "")]), "Markdown source provenance differs from raw.json.gz")
+	_check(report_text.contains("Immutable sustained-telemetry source commit `%s` (tree `%s`, timestamp `%s`)" % [source.get("commit", ""), source.get("tree", ""), source.get("commit_timestamp", "")]), "Markdown immutable telemetry source provenance differs from raw.json.gz")
+	var supplemental: Dictionary = dataset.get("supplemental_execution", {})
+	_check(report_text.contains("Supplemental final-execution source commit `%s` (tree `%s`, timestamp `%s`)" % [supplemental.get("commit", ""), supplemental.get("tree", ""), supplemental.get("commit_timestamp", "")]), "Markdown supplemental source provenance differs from raw.json.gz")
 	_check(report_text.contains("Dataset digest: `%s`" % dataset.get("dataset_digest_sha256", "")), "Markdown dataset digest differs from raw.json.gz")
+	_check(report_text.contains("Run identity `%s`" % dataset.get("run_identity", "")), "Markdown run identity differs from raw.json.gz")
+	_check(report_text.contains("Generation command: `%s`" % dataset.get("generation_command", "")), "Markdown generation command differs from raw.json.gz")
 	for row_value in dataset.get("class_rows", []):
 		var row: Dictionary = row_value
 		var prefix := "| %s | %d | %s | %s | %.3f | %.3f | %.3f | %.3f | %.2f |" % [row["class_id"], row["level"], row["scenario"], "; ".join(row["roles"]), row["solo_score"], row["aoe_score"], row["defense_score"], row["convenience_relative"], row["first_minute_ultimate_damage"]]
