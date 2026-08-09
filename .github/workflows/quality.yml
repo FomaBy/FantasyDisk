@@ -208,12 +208,13 @@ jobs:
       - uses: actions/checkout@v6
         with:
           fetch-depth: 2
-      # `a5_balance_report_integrity_test` validates the source commit pinned
-      # in raw.json.gz. Fetch it directly instead of widening checkout history.
+      # The A5 integrity/parity suites validate the pinned source plus its
+      # 248-commit f09..fda lineage. Depth 300 keeps that ancestry available
+      # without restoring the 58-62 minute unbounded checkout from FAN-2132.
       - name: Fetch pinned A5 provenance commit
         run: |
           set -euo pipefail
-          git fetch --no-tags --depth=1 origin \
+          git fetch --no-tags --depth=300 origin \
             be90b38df38788fc53190c862a873f4aab80ea28
       - name: Assert exact audited SHA
         run: |

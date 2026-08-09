@@ -1133,6 +1133,7 @@ def main(argv: Sequence[str] | None = None) -> int:
         worktree_status=worktree_status,
         discovered_godot_tests=len(discovered),
         selected_godot_tests=len(selected),
+        selected_godot_test_scripts=[script_resource_path(path) for path in selected],
         discovered_python_tests=len(python_tests),
         executed_python_tests=sum(
             item.get("executed_tests", 0) for item in static_results
