@@ -130,34 +130,32 @@ jobs:
           if-no-files-found: error
           retention-days: 30
 
-  # Nightly/manual full-profile run on dev (FAN-1869).  The changed profile on
-  # candidate events selects suites by diff, so a repository-wide runtime
-  # regression already on dev can stay invisible to every CI event above.
-  # This job runs every discovered suite and fails loudly.  It is NOT a
-  # branch-protection required check; deleting the job and its two triggers
-  # restores the previous behavior exactly.
-  dev-runtime-health:
+  # Nightly/manual full-profile run on dev (FAN-1869). The full gate is split
+  # into independent runners because one OOM-killed runner otherwise loses all
+  # of its own evidence before an `always()` upload can start (FAN-2133).
+  dev-runtime-health-static:
     if: github.event_name == 'schedule' || github.event_name == 'workflow_dispatch'
     runs-on: ubuntu-latest
-    timeout-minutes: 90
+    timeout-minutes: 30
     steps:
       # fetch-depth: 0 (full history) intermittently cost 58-62 minutes of the
       # 90-minute budget (FAN-2132). dev's tip is normally a merge commit;
       # depth 1 leaves both parents as shallow grafts, which breaks the
       # git-head-check static command (`git show --check` treats a parentless
-      # graft as a root commit and flags every line as new). Depth 2 keeps
-      # both merge parents as real objects without requesting full history.
+      # graft as a root commit and flags every line as new). Depth 8 keeps
+      # merge parents plus this task branch's bounded path back to dev.
       - uses: actions/checkout@v6
         with:
-          fetch-depth: 2
+          fetch-depth: 8
       # tests/test_release_skill_onboarding.py (run via the static profile's
       # python-unit command) archives two exact historical commits with
       # `git archive`/`git show <sha>:path` as fixed regression fixtures.
       # They sit far outside any bounded checkout depth, so fetch them by SHA
       # explicitly instead of widening fetch-depth back toward full history.
-      - name: Fetch pinned legacy commits for release-skill regression tests
+      - name: Fetch static gate history and pinned legacy commits
         run: |
           set -euo pipefail
+          git fetch --no-tags --depth=8 origin dev:refs/remotes/origin/dev
           git fetch --no-tags --depth=1 origin \
             2cba1b7050cb168bca70b6354cc7b654334dd53e \
             5d23555117c11620ee0f0834e6c30877fd1dafb8
@@ -166,6 +164,60 @@ jobs:
           python-version: "3.12"
       - name: Install CI Python dependencies
         run: python -m pip install --requirement requirements-ci.txt
+      - name: Assert exact audited SHA
+        run: |
+          test "$(git rev-parse HEAD)" = "$GITHUB_SHA"
+          mkdir -p build
+          printf '%s\n' "$GITHUB_SHA" > build/quality_gate_candidate_sha.txt
+      - name: Repository and Python gates (full profile)
+        id: quality-gate
+        continue-on-error: true
+        run: python3 tools/quality_gate.py --static-only
+      - name: Hash static quality evidence
+        if: always()
+        run: |
+          set -euo pipefail
+          test -f build/quality_gate_report.json
+          (cd build && sha256sum quality_gate_report.json > quality_gate_report.sha256)
+          (cd build && sha256sum -c quality_gate_report.sha256)
+      - name: Upload static quality evidence
+        if: always()
+        uses: actions/upload-artifact@v7
+        with:
+          name: quality-static-${{ github.sha }}
+          path: |
+            build/quality_gate_candidate_sha.txt
+            build/quality_gate_report.json
+            build/quality_gate_report.sha256
+          if-no-files-found: error
+          retention-days: 30
+      - name: Fail static quality gate
+        if: steps.quality-gate.outcome == 'failure'
+        run: exit 1
+
+  dev-runtime-health-godot:
+    if: github.event_name == 'schedule' || github.event_name == 'workflow_dispatch'
+    runs-on: ubuntu-latest
+    # FAN-2216 measured 9m28s max across six shards (run 31312962641).
+    # 25 minutes leaves 15m32s / 164% headroom, and 8m57s / 56% over the
+    # 16m03s cache-miss partial-failure maximum from run 31311148709.
+    timeout-minutes: 25
+    strategy:
+      fail-fast: false
+      matrix:
+        shard: [0, 1, 2, 3, 4, 5]
+    steps:
+      - uses: actions/checkout@v6
+        with:
+          fetch-depth: 2
+      # The A5 integrity/parity suites validate the pinned source plus its
+      # 248-commit f09..fda lineage. Depth 300 keeps that ancestry available
+      # without restoring the 58-62 minute unbounded checkout from FAN-2132.
+      - name: Fetch pinned A5 provenance commit
+        run: |
+          set -euo pipefail
+          git fetch --no-tags --depth=300 origin \
+            be90b38df38788fc53190c862a873f4aab80ea28
       - name: Assert exact audited SHA
         run: |
           test "$(git rev-parse HEAD)" = "$GITHUB_SHA"
@@ -197,8 +249,8 @@ jobs:
           echo "godot cache-hit: ${{ steps.godot-cache.outputs.cache-hit }}"
           test "$("$GODOT_DIR/godot" --version | tail -n 1)" = "$GODOT_BUILD_ID"
           echo "GODOT_BIN=$GODOT_DIR/godot" >> "$GITHUB_ENV"
-      # Exact-key restore only, same as static-quality: a broad restore key
-      # could reuse stale imported data without the full import pre-pass.
+      # Exact-key restore only: a partial import cache can make the gate skip a
+      # required import. Each shard uses its own runner-local cache restore.
       - name: Restore Godot import cache
         id: godot-import-cache
         uses: actions/cache@v6
@@ -208,9 +260,89 @@ jobs:
       - name: Report Godot import cache
         run: |
           echo "godot import cache-hit: ${{ steps.godot-import-cache.outputs.cache-hit }}"
-      - name: Repository, Python and Godot gates (full profile)
-        run: python3 tools/quality_gate.py --profile full
+      - name: Configure extra swap for the measured Godot peak
+        run: |
+          set -euo pipefail
+          df -h "$RUNNER_TEMP"
+          free -m
+          swap_file="$RUNNER_TEMP/fantasydisk-quality.swap"
+          sudo fallocate -l 8G "$swap_file"
+          sudo chmod 600 "$swap_file"
+          sudo mkswap "$swap_file"
+          sudo swapon "$swap_file"
+          echo "FSD_SWAP_FILE=$swap_file" >> "$GITHUB_ENV"
+          free -m
+      - name: Repository, Python and Godot gates (full profile shard)
+        id: quality-gate
+        continue-on-error: true
+        run: >-
+          python3 tools/quality_gate.py --profile full --skip-static
+          --shard-count 6 --shard-index ${{ matrix.shard }}
+      - name: Capture post-shard resource diagnostics
+        if: always()
+        run: |
+          free -m
+          df -h "$RUNNER_TEMP"
+          sudo dmesg | tail -n 80 || true
+      - name: Hash shard quality evidence
+        if: always()
+        run: |
+          test -f build/quality_gate_report.json
+          (cd build && sha256sum quality_gate_report.json > quality_gate_report.sha256)
+          (cd build && sha256sum -c quality_gate_report.sha256)
+      - name: Upload shard quality evidence
+        if: always()
+        uses: actions/upload-artifact@v7
+        with:
+          name: quality-godot-${{ matrix.shard }}-${{ github.sha }}
+          path: |
+            build/quality_gate_report.json
+            build/quality_gate_report.sha256
+          if-no-files-found: error
+          retention-days: 30
+      - name: Release extra swap
+        if: always()
+        run: |
+          if [ -n "${FSD_SWAP_FILE:-}" ]; then
+            sudo swapoff "$FSD_SWAP_FILE" || true
+            rm -f "$FSD_SWAP_FILE"
+          fi
+      - name: Fail full-profile shard
+        if: steps.quality-gate.outcome == 'failure'
+        run: exit 1
+
+  # This job survives a failed matrix worker and produces the canonical report
+  # from all completed shards. It retains the original job id for monitoring.
+  dev-runtime-health:
+    if: always() && (github.event_name == 'schedule' || github.event_name == 'workflow_dispatch')
+    needs: [dev-runtime-health-static, dev-runtime-health-godot]
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v6
+        with:
+          fetch-depth: 1
+      - name: Assert exact audited SHA
+        run: |
+          test "$(git rev-parse HEAD)" = "$GITHUB_SHA"
+          mkdir -p build
+          printf '%s\n' "$GITHUB_SHA" > build/quality_gate_candidate_sha.txt
+      - name: Download completed quality evidence
+        continue-on-error: true
+        uses: actions/download-artifact@v7
+        with:
+          pattern: quality-*-${{ github.sha }}
+          path: build/quality-evidence
+      - name: Combine static and Godot shard reports
+        id: quality-gate
+        continue-on-error: true
+        run: >-
+          python3 tools/quality_gate.py --combine-reports build/quality-evidence
+          --expected-shard-count 6 --report build/quality_gate_report.json
       - name: Assert the run executed Godot suites
+        id: assert-suites
+        if: always()
+        continue-on-error: true
         run: |
           set -euo pipefail
           executed=$(python3 -c "import json; print(len(json.load(open('build/quality_gate_report.json'))['godot_tests']))")
@@ -233,6 +365,9 @@ jobs:
             build/quality_gate_report.sha256
           if-no-files-found: error
           retention-days: 30
+      - name: Fail dev runtime health when any component failed
+        if: always() && (steps.quality-gate.outcome == 'failure' || steps.assert-suites.outcome == 'failure' || needs.dev-runtime-health-static.result != 'success' || needs.dev-runtime-health-godot.result != 'success')
+        run: exit 1
 
 # The candidate events run the changed profile: static checks plus the Godot
 # suites selected for the diff.  The exhaustive set runs on dev through the
