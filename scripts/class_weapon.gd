@@ -3547,8 +3547,7 @@ func _fire_sniper_lockshot(owner_node: Node2D, target: Node2D, direction: Vector
 	var target_id := locked_target.get_instance_id() if (locked_target != null and is_instance_valid(locked_target)) else 0
 	var lock_tween := create_tween()
 	lock_tween.tween_interval(maxf(grenade_delay, 0.08))
-	var fully_charged := charge_seconds > 0.0 and _current_charge_multiplier >= maxf(charge_max_multiplier - 0.01, 1.0)
-	lock_tween.tween_callback(Callable(self, "_resolve_sniper_lockshot").bind(owner_node.get_instance_id(), target_id, aim, telegraph.get_instance_id(), fully_charged))
+	lock_tween.tween_callback(Callable(self, "_resolve_sniper_lockshot").bind(owner_node.get_instance_id(), target_id, aim, telegraph.get_instance_id()))
 
 
 # SCRUM-931: разрешение выстрела винтовки — тяжёлый хит по дальней цели +
@@ -3556,7 +3555,7 @@ func _fire_sniper_lockshot(owner_node: Node2D, target: Node2D, direction: Vector
 # совпадал с budget-моделью 1.34 + endpoint) + терминальный взрыв на конце линии
 # + ближний самоподрыв. Trait «Дальний расчёт» скейлит каждый _damage_enemy по
 # дистанции владелец→жертва в этот момент (AC: отложенная атака честна).
-func _resolve_sniper_lockshot(owner_id: int, target_id: int, aim: Vector2, telegraph_id: int, fully_charged := false) -> void:
+func _resolve_sniper_lockshot(owner_id: int, target_id: int, aim: Vector2, telegraph_id: int) -> void:
 	var current_owner := instance_from_id(owner_id) as Node2D
 	if _effects_shutdown or current_owner == null or not is_instance_valid(current_owner):
 		_release_effect_by_id(telegraph_id)
@@ -3580,10 +3579,9 @@ func _resolve_sniper_lockshot(owner_id: int, target_id: int, aim: Vector2, teleg
 		pierced[locked.get_instance_id()] = true
 		rifle_hit *= _consume_constellation_target_mark(locked, "weakpoint", 1.0)
 		_damage_enemy(locked, rifle_hit)
-		if fully_charged and is_instance_valid(locked):
-			var weakpoint := _constellation_event("hit", locked, 0.0, {"constellation_consumer_event": true})
-			if bool(weakpoint.get("triggered", false)):
-				_arm_constellation_target_mark(locked, "weakpoint", _constellation_result_param(weakpoint, "weakpoint_seconds", 4.0), _constellation_result_param(weakpoint, "bonus_damage_cap", 0.30))
+		var weakpoint := _constellation_event("hit", locked, 0.0, {"constellation_consumer_event": true})
+		if bool(weakpoint.get("triggered", false)):
+			_arm_constellation_target_mark(locked, "weakpoint", _constellation_result_param(weakpoint, "weakpoint_seconds", 4.0), _constellation_result_param(weakpoint, "bonus_damage_cap", 0.30))
 	# Overpenetration: попутчики на линии (не первичная цель) ловят falloff-долю.
 	for hit in _enemies_in_corridor(start, shot_aim, beam_width * 0.72, start.distance_to(endpoint)):
 		var pierce_node := hit["node"] as Node2D

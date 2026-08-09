@@ -34,6 +34,7 @@ func _initialize() -> void:
 	await _test_timed_absorb_configure_epoch()
 	_test_rifle_three_hit_suppression()
 	_test_crossbow_arms_then_consumes()
+	await _test_deadeye_lockshot_arms_and_cycles_weakpoint()
 	await _test_grenade_delayed_shrapnel()
 	await _test_prism_three_delayed_ticks()
 	await _test_meteor_single_recall()
@@ -141,6 +142,63 @@ func _test_crossbow_arms_then_consumes() -> void:
 	_check(_approx(marked_followup / maxf(consumed_followup, 0.001), 1.28, 0.015), "moon mark did not grant exactly one +28% next-shot payoff")
 	_check(enemy.damage_log.size() == 3, "moon mark produced recursive or split bonus damage in a single-target fixture")
 	_cleanup_nodes([enemy, player])
+
+
+func _test_deadeye_lockshot_arms_and_cycles_weakpoint() -> void:
+	var player := _player_with_final("sniper", "sniper_deadeye_rifle")
+	var weapon: Variant = _class_weapon(player, "sniper", "sniper_deadeye_rifle")
+	var primary := _enemy(Vector2(540.0, 0.0), 10000.0, 10000.0)
+	var overpenetrated := _enemy(Vector2(300.0, 0.0), 10000.0, 10000.0)
+	var endpoint := _enemy(Vector2(490.0, 50.0), 10000.0, 10000.0)
+	var close := _enemy(Vector2(0.0, 80.0), 10000.0, 10000.0)
+	var mark_key := "constellation_weakpoint_%d" % player.get_instance_id()
+	await process_frame
+
+	var initial_hit_index := primary.damage_log.size()
+	weapon._attack()
+	await create_timer(weapon.grenade_delay + 0.08).timeout
+	var base_primary_hit := float(primary.damage_log[initial_hit_index]) if primary.damage_log.size() > initial_hit_index else 0.0
+	_check(base_primary_hit > 0.0, "deadeye lockshot did not apply its primary hit through the production attack/timer path")
+	_check(primary.has_meta(mark_key), "completed deadeye lockshot did not arm its final weakpoint after the primary hit")
+	_check(not overpenetrated.has_meta(mark_key), "deadeye overpenetration incorrectly armed a weakpoint")
+	_check(not endpoint.has_meta(mark_key), "deadeye endpoint blast incorrectly armed a weakpoint")
+	_check(not close.has_meta(mark_key), "deadeye close burst incorrectly armed a weakpoint")
+
+	var other := _enemy(Vector2(650.0, 0.0), 10000.0, 10000.0)
+	primary.global_position = Vector2(300.0, 0.0)
+	weapon._attack()
+	await create_timer(weapon.grenade_delay + 0.08).timeout
+	_check(primary.has_meta(mark_key), "deadeye overpenetration consumed another target's weakpoint")
+	primary.global_position = Vector2(620.0, 50.0)
+	weapon._attack()
+	await create_timer(weapon.grenade_delay + 0.08).timeout
+	_check(primary.has_meta(mark_key), "deadeye endpoint blast consumed another target's weakpoint")
+	primary.global_position = Vector2(0.0, 80.0)
+	weapon._attack()
+	await create_timer(weapon.grenade_delay + 0.08).timeout
+	_check(primary.has_meta(mark_key), "deadeye close burst consumed another target's weakpoint")
+
+	other.remove_from_group("enemies")
+	primary.global_position = Vector2(540.0, 0.0)
+	var marked_hit_index := primary.damage_log.size()
+	weapon._attack()
+	await create_timer(weapon.grenade_delay + 0.08).timeout
+	var marked_primary_hit := float(primary.damage_log[marked_hit_index]) if primary.damage_log.size() > marked_hit_index else 0.0
+	_check(_approx(marked_primary_hit / maxf(base_primary_hit, 0.001), 1.30, 0.015), "deadeye weakpoint did not apply exactly one capped +30% primary-hit bonus")
+
+	var recycled_hit_index := primary.damage_log.size()
+	weapon._attack()
+	await create_timer(weapon.grenade_delay + 0.08).timeout
+	var recycled_primary_hit := float(primary.damage_log[recycled_hit_index]) if primary.damage_log.size() > recycled_hit_index else 0.0
+	_check(_approx(recycled_primary_hit / maxf(base_primary_hit, 0.001), 1.30, 0.015), "deadeye weakpoint stacked instead of consuming exactly one mark per primary lockshot")
+
+	await create_timer(4.08).timeout
+	var expired_hit_index := primary.damage_log.size()
+	weapon._attack()
+	await create_timer(weapon.grenade_delay + 0.08).timeout
+	var expired_primary_hit := float(primary.damage_log[expired_hit_index]) if primary.damage_log.size() > expired_hit_index else 0.0
+	_check(_approx(expired_primary_hit / maxf(base_primary_hit, 0.001), 1.0, 0.015), "deadeye weakpoint did not expire after four seconds")
+	_cleanup_nodes([primary, overpenetrated, endpoint, close, other, player])
 
 
 func _test_grenade_delayed_shrapnel() -> void:
