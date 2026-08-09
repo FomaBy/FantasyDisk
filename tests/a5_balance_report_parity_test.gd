@@ -40,7 +40,41 @@ func _initialize() -> void:
 		_verify_full_telemetry_contract(dataset as Dictionary)
 		_verify_projection_duplicate_predicate(dataset as Dictionary)
 		_verify_repeat_run_regression(dataset as Dictionary)
+		_verify_divergence_accounting(dataset as Dictionary)
 	_finish()
+
+
+# FAN-2224: an over-tolerance divergence is only explained when observed consumer
+# terms reproduce it exactly. The identity below is what makes a disposition an
+# accounting rather than a label, so it is asserted against the anchored telemetry
+# and then falsified by perturbing a single observed term.
+func _verify_divergence_accounting(dataset: Dictionary) -> void:
+	var live_telemetry: Dictionary = dataset.get("live_telemetry", {})
+	var parity: Array = dataset.get("formula_live_parity", [])
+	if parity.is_empty():
+		return
+	var pair := str((parity[0] as Dictionary).get("pair", ""))
+	var basis := {"fire_interval_seconds": 0.2, "cast_rate_per_second": 5.0, "hit_damage": 10.0, "direct_dpm": 3000.0}
+	for axis_key in ["sustain_solo", "sustain_pack"]:
+		var observed := Generator.observed_axis_terms(live_telemetry, pair, axis_key)
+		_check(not observed.is_empty(), "anchored telemetry must expose %s consumer terms for %s" % [axis_key, pair])
+		if observed.is_empty():
+			continue
+		# live = 60 x applied-hit rate x per-hit applied HP, by construction.
+		_check(is_equal_approx(float(observed["observed_dpm"]), snappedf(60.0 * float(observed["hit_rate_per_second"]) * float(observed["damage_per_hit"]), 0.01)), "%s observed DPM is not the product of its own consumer terms for %s" % [axis_key, pair])
+		var formula_dpm := 4200.0
+		var decomposition := Generator.decompose_axis(basis, observed, formula_dpm)
+		_check(not decomposition.is_empty(), "%s axis must decompose for %s" % [axis_key, pair])
+		if decomposition.is_empty():
+			continue
+		var factors: Dictionary = decomposition["factors"]
+		var reproduced := float(factors["cadence"]) * float(factors["magnitude"]) * float(factors["formula_model"])
+		_check(absf((reproduced - 1.0) * 100.0 - float(decomposition["recomputed_delta_pct"])) <= 0.02, "%s consumer factors do not reproduce the reported divergence for %s" % [axis_key, pair])
+		_check(absf(float(observed["observed_dpm"]) / formula_dpm - reproduced) <= 0.001, "%s consumer factors do not reproduce observed/formula for %s" % [axis_key, pair])
+		var perturbed := observed.duplicate(true)
+		perturbed["damage_per_hit"] = float(perturbed["damage_per_hit"]) * 2.0
+		var perturbed_decomposition := Generator.decompose_axis(basis, perturbed, formula_dpm)
+		_check(not is_equal_approx(float(perturbed_decomposition.get("recomputed_delta_pct", 0.0)), float(decomposition["recomputed_delta_pct"])), "%s decomposition ignores a perturbed observed term for %s" % [axis_key, pair])
 
 
 # FAN-1681: automatic regression on the original FAN-1672 symptom — a second

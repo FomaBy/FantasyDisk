@@ -51,6 +51,34 @@ const CLASS_CORRIDOR_LOWER := 0.80
 const CLASS_CORRIDOR_UPPER := 1.20
 const LIVE_TELEMETRY_SCHEMA := "fan1511.runtime-telemetry.v2"
 const LIVE_TRACE_PREFIX := "fan1511"
+const FINAL_EXECUTION_SCHEMA := "fan2224.final-execution.v2"
+const FORMULA_LIVE_DISPOSITION_SCHEMA := "fan2224.formula-live-disposition.v2"
+const FORMULA_LIVE_TOLERANCE_PCT := 35.0
+const FINAL_EXECUTION_SEEDS := [222401, 222402, 222403]
+const FINAL_EXECUTION_WARMUP_SECONDS := 2.0
+const FINAL_EXECUTION_WINDOW_SECONDS := 8.0
+const FINAL_EXECUTION_TARGET_COUNT := 10
+const FINAL_EXECUTION_MORTAL_HP := 24.0
+const FINAL_EXECUTION_RING_RADIUS := 190.0
+const FINAL_EXECUTION_MAX_FRAMES := 1800
+const FINAL_EXECUTION_INCOMING_INTERVAL_FRAMES := 24
+const FINAL_EXECUTION_SUMMON_LETHAL_INTERVAL_FRAMES := 60
+# Every final is reached through the production consumer that owns its event. A
+# plain auto-attack covers the offensive families; the rest need the same
+# executable stimulus the game itself produces - a target that can die, a summon
+# that dies, or incoming damage the owner has to dodge, block or absorb.
+const FINAL_EXECUTION_STIMULUS_BY_EVENT := {
+	"kill": "mortal_targets",
+	"execute": "mortal_targets",
+	"summon_death": "summon_lethal",
+	"dodge": "incoming_pressure",
+	"block": "incoming_pressure",
+	"damage_absorbed": "incoming_pressure",
+}
+# A deployable that places itself at a fixed distance from its owner never meets
+# the compact A5 huddle, so its family measures on the ring it actually lands on.
+const FINAL_EXECUTION_RING_MODES := ["adjacency_chain"]
+const FINAL_EXECUTION_PAYOFF_KINDS := ["typed_damage", "target_death", "target_status_transition", "owner_state_transition"]
 const ORACLE_LINEAGE_PATH := "res://tests/fixtures/a5_oracle_lineage.json"
 const ORACLE_LINEAGE_SCHEMA := "fan1641.a5-oracle-lineage.v1"
 const PROJECTION_FIELDS := ["live_solo_dpm_mean", "live_crowd_dpm_mean", "solo_variance_dpm2", "crowd_variance_dpm2"]
@@ -109,6 +137,7 @@ var _source_commit := "UNSPECIFIED"
 var _source_tree := ""
 var _source_timestamp := ""
 var _observer_mode := "enabled"
+var _pair_filter := ""
 var _holder: Node2D
 var _errors := PackedStringArray()
 
@@ -422,10 +451,85 @@ class A5TelemetryCollector extends RefCounted:
 		return context.finish().hex_encode()
 
 
+# FAN-2224: the canonical collector only books a resolver observation that already
+# carries a target and a hit provenance, so targetless and not-yet-triggered
+# resolutions stay invisible to it. This witness subscribes to the same production
+# signal and records the whole state machine instead: every dispatch of the pair's
+# own mechanic with the progress/required pair the production resolver computed.
+# The ladder up to the first activation is what binds an observed payoff to the
+# mechanic's own trigger contract - a trace lifted from another mechanic climbs a
+# different ladder and cannot satisfy it.
+class A5FinalExecutionWitness extends RefCounted:
+	var mechanic_id := ""
+	var expected_event := ""
+	var ladder: Array = []
+	var activations: Array = []
+	var dispatch_count := 0
+	var event_dispatch_count := 0
+	var resolved_dispatch_count := 0
+	var frame := 0
+	var phase := "warmup"
+	var _target_labels := {}
+
+	func _init(mechanic_id_value: String, expected_event_value: String) -> void:
+		mechanic_id = mechanic_id_value
+		expected_event = expected_event_value
+
+	func bind_target(target: Node2D, label: String) -> void:
+		if target != null:
+			_target_labels[target.get_instance_id()] = label
+
+	func set_phase(value: String) -> void:
+		phase = value
+
+	func advance_frame() -> void:
+		frame += 1
+
+	func on_final_resolution(_weapon_id: String, event_name: String, target: Node2D, context: Dictionary, resolution: Dictionary) -> void:
+		if not bool(resolution.get("valid", false)) or str(resolution.get("mechanic_id", "")) != mechanic_id:
+			return
+		dispatch_count += 1
+		# Only the mechanic's own event advances the production state machine. A hit
+		# dispatch on a mechanic keyed to another event is a no-op the resolver
+		# rejects, and it must not enter the causal ladder.
+		if event_name != expected_event:
+			return
+		event_dispatch_count += 1
+		# The resolver rejects a dispatch whose consumer gate never opened before it
+		# reaches the state machine, and such a rejection carries no progress at all.
+		# Counting it is the evidence that names an unreachable consumer.
+		if not resolution.has("required"):
+			return
+		resolved_dispatch_count += 1
+		var entry := {
+			"index": ladder.size() if activations.is_empty() else resolved_dispatch_count - 1,
+			"event": event_name,
+			"mode": str(resolution.get("mode", "")),
+			"phase": phase,
+			"frame": frame,
+			"target_id": _target_label(target),
+			"progress": int(resolution.get("progress", 0)),
+			"required": int(resolution.get("required", 0)),
+			"triggered": bool(resolution.get("triggered", false)),
+			"activation_id": str(resolution.get("telemetry_final_activation_id", "")),
+			"consumer_event": bool(context.get("constellation_consumer_event", false)),
+		}
+		# The ladder is bounded to the first activation: it is causal proof, not a log.
+		if activations.is_empty():
+			ladder.append(entry)
+		if bool(entry["triggered"]):
+			activations.append(entry)
+
+	func _target_label(target: Node2D) -> String:
+		if target == null:
+			return "targetless"
+		return str(_target_labels.get(target.get_instance_id(), "target_unknown"))
+
+
 func _initialize() -> void:
 	_parse_args()
 	await process_frame
-	if _mode in ["full", "telemetry_probe", "observer_neutrality"]:
+	if _mode in ["full", "telemetry_probe", "observer_neutrality", "final_execution_probe"]:
 		# The live probe advances production _process callbacks. Cap that clock so
 		# telemetry callback cost cannot change the number or duration of frames.
 		Engine.max_fps = DETERMINISTIC_MAX_FPS
@@ -440,6 +544,9 @@ func _initialize() -> void:
 		return
 	if _mode == "observer_neutrality":
 		await _run_observer_neutrality()
+		return
+	if _mode == "final_execution_probe":
+		await _run_final_execution_probe()
 		return
 	var dataset := await generate_dataset()
 	if not _errors.is_empty():
@@ -460,6 +567,9 @@ func _initialize() -> void:
 	for sample_value in telemetry.get("samples", []):
 		var sample: Dictionary = sample_value
 		sample["trace_digest_sha256"] = _sha256(JSON.stringify(sample.get("events", []), "", true, true))
+	for final_row_value in (dataset.get("final_execution", {}) as Dictionary).get("rows", []):
+		var final_sample: Dictionary = (final_row_value as Dictionary).get("telemetry", {})
+		final_sample["trace_digest_sha256"] = canonical_trace_digest(final_sample.get("events", []))
 	dataset.erase("dataset_digest_sha256")
 	dataset["dataset_digest_sha256"] = _sha256(JSON.stringify(dataset, "", true, true))
 	# FAN-1658: the real --mode=full path verifies the generated 309-sample candidate
@@ -509,8 +619,14 @@ func _parse_args() -> void:
 			_source_commit = arg.trim_prefix("--source-commit=")
 		elif arg.begins_with("--source-tree=") or arg.begins_with("--source-timestamp="):
 			_errors.append("%s is derived from --source-commit and cannot be overridden" % arg.get_slice("=", 0))
-	if not ["formula", "full", "telemetry_probe", "observer_neutrality"].has(_mode):
-		_errors.append("unsupported mode %s (expected formula, full, telemetry_probe, or observer_neutrality)" % _mode)
+		elif arg.begins_with("--pair="):
+			# Diagnostic filter for --mode=final_execution_probe only; an accepted
+			# artifact is never generated from a filtered roster.
+			_pair_filter = arg.trim_prefix("--pair=")
+	if not ["formula", "full", "telemetry_probe", "observer_neutrality", "final_execution_probe"].has(_mode):
+		_errors.append("unsupported mode %s (expected formula, full, telemetry_probe, observer_neutrality, or final_execution_probe)" % _mode)
+	if _pair_filter != "" and _mode != "final_execution_probe":
+		_errors.append("--pair is a final_execution_probe diagnostic and cannot filter an accepted artifact")
 
 
 func _run_representative_telemetry_probe() -> void:
@@ -530,6 +646,39 @@ func _run_representative_telemetry_probe() -> void:
 		"mortal": {"dpm": mortal.get("dpm", -1.0), "counters": mortal.get("counters", {})},
 		"incoming": {"dpm": incoming.get("dpm", -1.0), "counters": incoming.get("counters", {})},
 	}, "", false, true))
+	if not _errors.is_empty():
+		for error in _errors:
+			push_error(error)
+		quit(1)
+		return
+	quit(0)
+
+
+# Diagnostic entry point for the FAN-2224 evidence model: it runs the same
+# production probe the full report embeds and prints one line per pair, so a
+# reviewer can re-observe the production payoff of every pair without
+# regenerating artifacts.
+func _run_final_execution_probe() -> void:
+	var rows := await _final_execution(PD.character_ids())
+	var observed := 0
+	for row_value in rows:
+		var row: Dictionary = row_value
+		var payoff: Dictionary = row.get("payoff", {})
+		if bool(row.get("observed", false)):
+			observed += 1
+		print("FAN-2224 %-45s %-36s %-16s %-24s %-18s activations=%d events=%d dispatches=%d hp=%.2f deaths=%d markers=%d owner=%s weapon=%s" % [
+			row.get("pair", "?"), row.get("final_mechanic", "?"), row.get("final_event", "?"),
+			str(payoff.get("kind", "UNOBSERVED")), str((row.get("stimulus", {}) as Dictionary).get("kind", "?")),
+			int(payoff.get("activation_count", 0)), int(row.get("event_dispatch_count", 0)), int(row.get("dispatch_count", 0)),
+			float(payoff.get("applied_hp_total", 0.0)), int(payoff.get("target_deaths", 0)),
+			(payoff.get("target_status_markers", []) as Array).size(),
+			JSON.stringify(payoff.get("owner_state_delta", {}), "", true, true),
+			JSON.stringify(row.get("weapon_runtime", {}), "", true, true),
+		])
+	print("FAN-2224 final-execution probe: %d/%d pairs with an observed production payoff." % [observed, rows.size()])
+	if observed != rows.size():
+		quit(1)
+		return
 	if not _errors.is_empty():
 		for error in _errors:
 			push_error(error)
@@ -906,6 +1055,8 @@ static func verify_observer_ab(enabled: Dictionary, disabled: Dictionary) -> Dic
 func generate_dataset() -> Dictionary:
 	if not _resolve_source_provenance():
 		return {}
+	if _mode == "full":
+		return await _enrich_anchored_full_dataset()
 	var class_ids: Array = PD.character_ids()
 	var pair_keys := []
 	var builds := {}
@@ -988,6 +1139,78 @@ func generate_dataset() -> Dictionary:
 	dataset["dataset_digest_sha256"] = _sha256(JSON.stringify(dataset, "", true, true))
 	_validate_dataset(dataset)
 	return dataset
+
+
+# The 309 sustained samples are an immutable cross-gameplay baseline. Newer dev
+# commits deliberately cannot silently re-measure and overwrite that evidence:
+# validate its executable trust root, preserve its numerical matrix byte-for-byte,
+# and add separately labelled final-execution proof generated by this exact
+# checkout.
+func _enrich_anchored_full_dataset() -> Dictionary:
+	var artifact := read_raw_artifact(RAW_PATH)
+	if not bool(artifact.get("ok", false)):
+		_errors.append("cannot read the anchored A5 report for supplemental final evidence: %s" % artifact.get("error", "unknown error"))
+		return {}
+	var parsed = JSON.parse_string(str(artifact.get("text", "")))
+	if not parsed is Dictionary:
+		_errors.append("anchored A5 report is not a JSON object")
+		return {}
+	var dataset: Dictionary = (parsed as Dictionary).duplicate(true)
+	var lineage := load_oracle_lineage()
+	if not bool(lineage.get("ok", false)):
+		_errors.append("cannot load A5 lineage before supplemental final evidence: %s" % lineage.get("error", "unknown error"))
+		return {}
+	var anchor_gate := verify_candidate_against_current_base(dataset, lineage.get("manifest", {}))
+	if not bool(anchor_gate.get("ok", false)):
+		_errors.append("anchored A5 report no longer satisfies the immutable candidate gate: %s" % "; ".join(anchor_gate.get("errors", [])))
+		return {}
+	var class_ids: Array = (dataset.get("roster", {}) as Dictionary).get("class_ids", [])
+	var weapon_rows: Array = dataset.get("weapon_rows", [])
+	var final_execution := await _final_execution(class_ids)
+	var parity: Array = dataset.get("formula_live_parity", [])
+	var dispositions := _formula_live_dispositions(parity, final_execution, dataset.get("live_telemetry", {}))
+	_apply_formula_live_dispositions_to_rows(weapon_rows, dispositions, final_execution)
+	var legacy_source: Dictionary = (dataset.get("source", {}) as Dictionary).duplicate(true)
+	dataset["schema"] = "fan2224.a5-balance.v4"
+	dataset["legacy_source"] = legacy_source
+	dataset["supplemental_execution"] = {"commit": _source_commit, "tree": _source_tree, "commit_timestamp": _source_timestamp, "godot": Engine.get_version_info().get("string", "unknown")}
+	dataset["run_identity"] = _run_identity(legacy_source)
+	dataset["generation_command"] = "python3 tools/godot_gate.py --headless --fixed-fps 60 --path . --script res://tools/a5_balance_report.gd -- --mode=%s --source-commit=%s" % [_mode, _source_commit]
+	dataset["final_execution"] = {
+		"schema": FINAL_EXECUTION_SCHEMA,
+		"seeds": FINAL_EXECUTION_SEEDS,
+		"warmup_seconds": FINAL_EXECUTION_WARMUP_SECONDS,
+		"window_seconds": FINAL_EXECUTION_WINDOW_SECONDS,
+		"payoff_kinds": FINAL_EXECUTION_PAYOFF_KINDS,
+		"rows": final_execution,
+	}
+	dataset["formula_live_dispositions"] = {"schema": FORMULA_LIVE_DISPOSITION_SCHEMA, "tolerance_pct": FORMULA_LIVE_TOLERANCE_PCT, "rows": dispositions}
+	var methodology: Dictionary = dataset.get("methodology", {})
+	methodology["supplemental_final_execution"] = "FAN-2224 drives each schema-6 final through the production consumer that owns its event (auto-attack, a target that can die, a dying summon, or incoming damage the owner dodges/blocks/absorbs) and records only what the production runtime then applied: the resolver progress ladder, the canonical applied-HP ledger, target deaths, production status markers and owner state transitions. The harness authors no damage and no final labels."
+	dataset["methodology"] = methodology
+	var limitations: Array = dataset.get("limitations", [])
+	var supplemental_limitation := "The immutable 309-sample sustained telemetry and numeric matrix remain pinned to legacy_source; FAN-2224 adds separate final-execution causality evidence from supplemental_execution rather than re-baselining gameplay."
+	if not limitations.has(supplemental_limitation):
+		limitations.append(supplemental_limitation)
+	dataset["limitations"] = limitations
+	dataset.erase("dataset_digest_sha256")
+	dataset["dataset_digest_sha256"] = _sha256(JSON.stringify(dataset, "", true, true))
+	_validate_dataset(dataset)
+	return dataset
+
+
+func _run_identity(legacy_source := {}) -> String:
+	return "fan2224:%s" % _sha256(JSON.stringify({
+		"supplemental_source_commit": _source_commit,
+		"supplemental_source_tree": _source_tree,
+		"legacy_source": legacy_source,
+		"godot": Engine.get_version_info().get("string", "unknown"),
+		"mode": _mode,
+		"seeds": LIVE_SEEDS,
+		"windows": [LIVE_WARMUP_SECONDS, LIVE_WINDOW_SECONDS],
+		"target_geometry": [TARGET_COUNT, PACK_RADIUS, SOLO_OFFSET.x, SOLO_OFFSET.y],
+		"final_execution": [FINAL_EXECUTION_SEEDS, FINAL_EXECUTION_WARMUP_SECONDS, FINAL_EXECUTION_WINDOW_SECONDS, FINAL_EXECUTION_TARGET_COUNT, FINAL_EXECUTION_MORTAL_HP, FINAL_EXECUTION_RING_RADIUS],
+	}, "", true, true))
 
 
 func _resolve_source_provenance() -> bool:
@@ -1174,6 +1397,8 @@ func _weapon_row(class_id: String, weapon_id: String, level: int, scenario_id: S
 		"runs": 1,
 		"solo_variance_dpm2": 0.0,
 		"crowd_variance_dpm2": 0.0,
+		"formula_live_disposition": "",
+		"final_execution_payoff_kind": "",
 	}
 
 
@@ -1564,6 +1789,630 @@ func _live_parity(class_ids: Array, builds: Dictionary, weapon_rows: Array) -> D
 			],
 		},
 	}
+
+
+# FAN-2224 final-execution evidence.
+#
+# Every pair is driven through the production consumer that owns its schema-6
+# event and the probe records only what the production runtime then did. There is
+# no harness-authored damage and no harness-authored final label anywhere below:
+# the resolver ladder comes from Player.constellation_final_resolved, the applied
+# HP comes from Enemy.damage_applied, deaths come from Enemy.died, target markers
+# come from Player._apply_constellation_final_side_effect and owner transitions
+# come from the player's own production state.
+func _final_execution(class_ids: Array) -> Array:
+	var rows := []
+	for class_id_value in class_ids:
+		var class_id := str(class_id_value)
+		var state := _scenario_state(class_id, "class_constellation")
+		var stats := DamageTable.optimized_stats_for_class(class_id, PD.base_stats(class_id))
+		for weapon_id_value in PD.weapon_ids(class_id):
+			var weapon_id := str(weapon_id_value)
+			if _pair_filter != "" and "%s/%s" % [class_id, weapon_id] != _pair_filter:
+				continue
+			rows.append(await _observe_final_execution(class_id, weapon_id, stats, state))
+	return rows
+
+
+func _observe_final_execution(class_id: String, weapon_id: String, stats: Dictionary, state: Dictionary) -> Dictionary:
+	var pair := "%s/%s" % [class_id, weapon_id]
+	var expected := _expected_final_for_pair(pair)
+	if expected.is_empty():
+		_errors.append("%s has no schema-6 weapon final to execute" % pair)
+		return {"pair": pair, "observed": false, "error": "no schema-6 weapon final"}
+	var profile := final_execution_profile(expected)
+	var row := {}
+	# A conditional final is a discrete event, so a single seed proves nothing when
+	# it stays silent. The first seed that produces an observed production payoff is
+	# the accepted evidence; the seed order is fixed, so the choice is deterministic
+	# and reproduces byte-for-byte on a rerun.
+	for seed_value in FINAL_EXECUTION_SEEDS:
+		row = await _measure_final_execution(class_id, weapon_id, stats, state, expected, profile, int(seed_value))
+		if bool(row.get("observed", false)):
+			return row
+	return row
+
+
+func _measure_final_execution(class_id: String, weapon_id: String, stats: Dictionary, state: Dictionary, expected: Dictionary, profile: Dictionary, seed_value: int) -> Dictionary:
+	await _teardown()
+	seed(seed_value)
+	var pair := "%s/%s" % [class_id, weapon_id]
+	var mechanic_id := str(expected.get("mechanic_id", ""))
+	var stimulus := str(profile.get("stimulus", "autofire"))
+	var target_count := int(profile.get("target_count", FINAL_EXECUTION_TARGET_COUNT))
+	var sample_key := _telemetry_sample_key(pair, seed_value, "final_execution", stimulus, target_count)
+	var collector := A5TelemetryCollector.new("%s:%s" % [LIVE_TRACE_PREFIX, sample_key], sample_key)
+	var witness := A5FinalExecutionWitness.new(mechanic_id, str(expected.get("event", "")))
+	var player := PLAYER_SCENE.instantiate() as Node2D
+	_holder.add_child(player)
+	if player == null or player.get_script() == null:
+		_errors.append("%s final-execution Player failed to instantiate" % pair)
+		return {"pair": pair, "observed": false, "error": "player instantiation failed"}
+	player.add_to_group("player")
+	player.global_position = PLAYER_POSITION
+	player.call("configure_character", class_id, weapon_id)
+	player.set("stats", stats.duplicate(true))
+	player.call("_apply_stat_scaling", true)
+	# Exercise the exact production composition order instead of recreating it.
+	var main := MainScript.new()
+	main.set("selected_character_id", class_id)
+	main.set("selected_ascension_level", 5)
+	main.set("selected_start_boon_id", "")
+	main.set("meta_state", state.duplicate(true))
+	main.set("run_sandbox_captured", false)
+	main.call("apply_ascension_bonuses", player)
+	main.free()
+	player.set("max_health", DUMMY_HP)
+	player.set("health", DUMMY_HP)
+	player.connect("weapon_cast_observed", collector.on_weapon_cast)
+	player.connect("constellation_final_resolved", collector.on_final_resolution)
+	player.connect("constellation_final_resolved", witness.on_final_resolution)
+	if stimulus == "incoming_pressure":
+		collector.enable_incoming_fixture()
+		player.connect("damaged", collector.on_player_damaged)
+	await process_frame
+	var dummies := _spawn_final_execution_targets(profile, collector, witness, player)
+	var anchors := []
+	for dummy_value in dummies:
+		anchors.append((dummy_value as Node2D).global_position)
+	await _advance_final_execution(FINAL_EXECUTION_WARMUP_SECONDS, dummies, anchors, collector, witness, "warmup", profile, player)
+	var owner_before := _owner_state_snapshot(player)
+	var before_health := _health_snapshot(dummies)
+	var measurement: Dictionary = await _advance_final_execution(FINAL_EXECUTION_WINDOW_SECONDS, dummies, anchors, collector, witness, "measurement", profile, player)
+	var after_health := _health_snapshot(dummies)
+	var owner_after := _owner_state_snapshot(player)
+	var sample := collector.build_sample(pair, seed_value, "final_execution", stimulus, target_count)
+	var ledger: Dictionary = sample.get("hp_ledger", {})
+	var measured := float(measurement.get("duration_seconds", 0.0))
+	ledger["measurement_duration_seconds"] = measured
+	ledger["measurement_frame_count"] = int(measurement.get("frame_count", 0))
+	# A mortal fixture consumes and replaces its targets, so a start/end health
+	# snapshot is not the applied-HP authority there. The per-target applied-damage
+	# ledger from Enemy.damage_applied is authoritative for both fixtures.
+	if str(profile.get("fixture", "sustain")) == "sustain":
+		var ledger_rows: Array = ledger.get("rows", [])
+		var snapshot_count := mini(ledger_rows.size(), mini(before_health.size(), after_health.size()))
+		for index in range(snapshot_count):
+			var ledger_row: Dictionary = ledger_rows[index]
+			ledger_row["health_before"] = float(before_health[index])
+			ledger_row["health_after"] = float(after_health[index])
+			ledger_row["health_loss"] = maxf(float(before_health[index]) - float(after_health[index]), 0.0)
+			ledger_rows[index] = ledger_row
+		ledger["rows"] = ledger_rows
+		ledger["health_snapshot_authority"] = "target_health_before_after"
+	else:
+		ledger["health_snapshot_authority"] = "applied_damage_only_targets_are_consumed"
+	sample["hp_ledger"] = ledger
+	sample["dpm"] = _project_dpm(float(ledger.get("total_applied_damage", 0.0)), measured)
+	var payoff := _final_execution_payoff(sample, witness, expected, owner_before, owner_after, dummies, player)
+	var params: Dictionary = expected.get("params", {})
+	return {
+		"pair": pair,
+		"class_id": class_id,
+		"weapon_id": weapon_id,
+		"final_mechanic": mechanic_id,
+		"final_mode": str(expected.get("mode", "")),
+		"final_event": str(expected.get("event", "")),
+		"required_progress": FinalRuntime._trigger_count(params),
+		"consumer": {
+			"executor_script": "res://scripts/player.gd",
+			"executor_method": "constellation_weapon_event",
+			"resolver_script": "res://scripts/constellation_final_runtime.gd",
+			"resolver_method": "resolve_event",
+			"runtime_consumer": str(expected.get("runtime_consumer", "")),
+			"observation_signals": ["constellation_final_resolved", "damage_applied", "died", "damaged"],
+			"payoff_owner": "consumer_weapon" if FinalRuntime.CONSUMER_OWNED_PAYOFF_MODES.has(str(expected.get("mode", ""))) else "resolver_side_effect",
+		},
+		"stimulus": {
+			"kind": stimulus,
+			"fixture": str(profile.get("fixture", "sustain")),
+			"layout": str(profile.get("layout", "pack")),
+			"target_count": target_count,
+			"initial_target_hp": float(profile.get("initial_target_hp", DUMMY_HP)),
+			"stats_build": "level20_optimized",
+			"seed": seed_value,
+			"warmup_seconds": FINAL_EXECUTION_WARMUP_SECONDS,
+			"window_seconds": FINAL_EXECUTION_WINDOW_SECONDS,
+		},
+		"resolution_ladder": witness.ladder,
+		"dispatch_count": witness.dispatch_count,
+		"event_dispatch_count": witness.event_dispatch_count,
+		"resolved_dispatch_count": witness.resolved_dispatch_count,
+		"consumer_gated_dispatch_count": witness.event_dispatch_count - witness.resolved_dispatch_count,
+		"weapon_runtime": _weapon_runtime_snapshot(player),
+		"activations": witness.activations,
+		"owner_state_before": owner_before,
+		"owner_state_after": owner_after,
+		"payoff": payoff,
+		"observed": str(payoff.get("kind", "")) != "",
+		"telemetry": sample,
+	}
+
+
+func _spawn_final_execution_targets(profile: Dictionary, collector: A5TelemetryCollector, witness: A5FinalExecutionWitness, player: Node2D) -> Array:
+	var result := []
+	for index in range(int(profile.get("target_count", FINAL_EXECUTION_TARGET_COUNT))):
+		result.append(_spawn_final_execution_target(profile, index, collector, witness, player))
+	return result
+
+
+func _spawn_final_execution_target(profile: Dictionary, index: int, collector: A5TelemetryCollector, witness: A5FinalExecutionWitness, player: Node2D) -> Node2D:
+	var target_count := maxi(int(profile.get("target_count", FINAL_EXECUTION_TARGET_COUNT)), 1)
+	var position := PLAYER_POSITION + SOLO_OFFSET
+	if str(profile.get("layout", "pack")) == "ring":
+		position = PLAYER_POSITION + Vector2.RIGHT.rotated(TAU * float(index) / float(target_count)) * FINAL_EXECUTION_RING_RADIUS
+	elif index > 0:
+		var radius := PACK_RADIUS * (0.55 + 0.45 * sqrt(float(index) / float(target_count - 1)))
+		position += Vector2.RIGHT.rotated(float(index - 1) * 2.3999632) * radius
+	var target_hp := float(profile.get("initial_target_hp", DUMMY_HP))
+	var enemy := ENEMY_SCENE.instantiate() as Node2D
+	_holder.add_child(enemy)
+	enemy.global_position = position
+	enemy.set("max_health", target_hp)
+	enemy.set("health", target_hp)
+	enemy.set("move_speed", 0.0)
+	enemy.set("contact_damage", 0.0)
+	collector.bind_target(enemy, "target_%d" % index)
+	witness.bind_target(enemy, "target_%d" % index)
+	enemy.connect("damage_applied", collector.on_damage_applied)
+	enemy.connect("died", collector.on_target_died)
+	# Production routes kill attribution through the combat director, which calls
+	# player.on_enemy_killed for every death. Weapons without direct damage never
+	# reach the on_weapon_hit dispatch, so the kill family would otherwise be
+	# untestable. The player-side guard keeps the double wiring idempotent.
+	enemy.connect("died", player.on_enemy_killed)
+	return enemy
+
+
+func _advance_final_execution(seconds: float, dummies: Array, anchors: Array, collector: A5TelemetryCollector, witness: A5FinalExecutionWitness, probe_phase: String, profile: Dictionary, player: Node2D) -> Dictionary:
+	collector.set_phase(probe_phase)
+	witness.set_phase(probe_phase)
+	var stimulus := str(profile.get("stimulus", "autofire"))
+	var elapsed := 0.0
+	var frames := 0
+	while elapsed < seconds and frames < FINAL_EXECUTION_MAX_FRAMES:
+		await process_frame
+		frames += 1
+		elapsed += maxf(_holder.get_process_delta_time(), 0.0)
+		collector.advance_frame()
+		witness.advance_frame()
+		if stimulus == "summon_lethal" and frames % FINAL_EXECUTION_SUMMON_LETHAL_INTERVAL_FRAMES == 0:
+			_kill_one_summon(player)
+		elif stimulus == "incoming_pressure" and frames % FINAL_EXECUTION_INCOMING_INTERVAL_FRAMES == 0:
+			# The canonical A5 normal-wave contact hit, applied through the same
+			# production Player.take_damage seam an enemy contact uses.
+			player.call("take_damage", A5_NORMAL_CONTACT_DAMAGE, "fan2224_final_execution_pressure")
+		elif stimulus == "mortal_targets":
+			_refill_mortal_targets(dummies, anchors, collector, witness, profile, player)
+		for index in range(dummies.size()):
+			if is_instance_valid(dummies[index]):
+				(dummies[index] as Node2D).global_position = anchors[index]
+	if elapsed < seconds:
+		_errors.append("final-execution probe advanced %.2f/%.2fs" % [elapsed, seconds])
+	return {"duration_seconds": elapsed, "frame_count": frames}
+
+
+# A kill/execute final only resolves while something is still dying, so an empty
+# slot is refilled at the anchor it was spawned on.
+func _refill_mortal_targets(dummies: Array, anchors: Array, collector: A5TelemetryCollector, witness: A5FinalExecutionWitness, profile: Dictionary, player: Node2D) -> void:
+	for index in range(dummies.size()):
+		var enemy := dummies[index] as Node2D
+		if enemy != null and is_instance_valid(enemy) and float(enemy.get("health")) > 0.0:
+			continue
+		if enemy != null and is_instance_valid(enemy):
+			enemy.process_mode = Node.PROCESS_MODE_DISABLED
+			enemy.queue_free()
+		dummies[index] = _spawn_final_execution_target(profile, index, collector, witness, player)
+		(dummies[index] as Node2D).global_position = anchors[index]
+
+
+# The summon-death family needs a summon that actually dies; the fixture's dummies
+# never fight back, so the lethal blow goes through the ally's own production
+# take_damage seam that emits the death burst.
+func _kill_one_summon(player: Node2D) -> void:
+	for member in get_nodes_in_group("allies"):
+		var ally := member as Node2D
+		if ally == null or not is_instance_valid(ally) or not ally.has_method("take_damage"):
+			continue
+		if int(ally.get("constellation_owner_instance_id")) != player.get_instance_id():
+			continue
+		if float(ally.get("health")) <= 0.0:
+			continue
+		ally.call("take_damage", maxf(float(ally.get("max_health")), 1.0) * 4.0, "fan2224_final_execution_summon_lethal")
+		return
+
+
+# The production-visible state of the equipped weapon. For an observed row it is
+# provenance; for a row whose consumer gate never opened it is the evidence that
+# names the gate (an absent charge window, a weapon that no longer leaves clouds).
+func _weapon_runtime_snapshot(player: Node2D) -> Dictionary:
+	var weapon = player.get("equipped_weapon")
+	if weapon == null or not is_instance_valid(weapon):
+		return {}
+	var script_path := ""
+	if weapon.get_script() != null:
+		script_path = str(weapon.get_script().resource_path)
+	var snapshot := {"weapon_script": script_path}
+	for key in ["attack_mode", "pool_element"]:
+		snapshot[key] = str(weapon.get(key)) if weapon.get(key) != null else ""
+	for key in ["fire_interval", "charge_seconds", "charge_max_multiplier", "attack_range", "aoe_radius"]:
+		snapshot[key] = snappedf(float(weapon.get(key)), 0.000001) if weapon.get(key) != null else -1.0
+	for key in ["leaves_pool", "combo_clouds"]:
+		snapshot[key] = bool(weapon.get(key)) if weapon.get(key) != null else false
+	return snapshot
+
+
+func _owner_state_snapshot(player: Node2D) -> Dictionary:
+	var run_mods: Dictionary = player.get("run_modifiers")
+	var derived: Dictionary = player.get("derived_parameters")
+	var last_action = run_mods.get("constellation_last_final_action", {})
+	return {
+		"health": snappedf(float(player.get("health")), 0.0001),
+		"absorb_flat": snappedf(float(run_mods.get("absorb_flat", 0.0)), 0.0001),
+		"dodge_flat": snappedf(float(run_mods.get("dodge_flat", 0.0)), 0.0001),
+		"absorb": snappedf(float(derived.get("absorb", 0.0)), 0.0001),
+		"dodge": snappedf(float(derived.get("dodge", 0.0)), 0.0001),
+		"last_final_mechanic": str((last_action as Dictionary).get("mechanic_id", "")) if last_action is Dictionary else "",
+	}
+
+
+# Classification is derived, never declared: the kind is whatever production
+# actually applied after the observed activation, in a fixed precedence.
+func _final_execution_payoff(sample: Dictionary, witness: A5FinalExecutionWitness, expected: Dictionary, owner_before: Dictionary, owner_after: Dictionary, targets: Array, player: Node2D) -> Dictionary:
+	var mechanic_id := str(expected.get("mechanic_id", ""))
+	var activations: Array = witness.activations
+	var first_activation_frame := int((activations[0] as Dictionary).get("frame", 0)) if not activations.is_empty() else -1
+	var events: Array = sample.get("events", [])
+	var event_by_id := {}
+	for event_value in events:
+		event_by_id[str((event_value as Dictionary).get("event_id", ""))] = event_value
+	var bound_hit_ids := {}
+	var target_deaths := 0
+	for event_value in events:
+		var event: Dictionary = event_value
+		if str(event.get("kind", "")) != "final_event":
+			continue
+		if str(event.get("phase", "")) == "target_death":
+			target_deaths += 1
+			continue
+		if str(event.get("mechanic_id", "")) != mechanic_id:
+			continue
+		var related_hit_id := str(event.get("related_hit_id", ""))
+		if related_hit_id != "" and event_by_id.has(related_hit_id):
+			bound_hit_ids[related_hit_id] = true
+	var provenance_damage := 0.0
+	var provenance_hits := 0
+	var post_activation_damage := 0.0
+	var post_activation_hits := 0
+	var baseline_damage := 0.0
+	var baseline_hits := 0
+	for event_value in events:
+		var event: Dictionary = event_value
+		if str(event.get("kind", "")) != "hit" or str(event.get("source", "")) != "player_weapon":
+			continue
+		var damage := float(event.get("damage", 0.0))
+		if bound_hit_ids.has(str(event.get("event_id", ""))):
+			provenance_damage += damage
+			provenance_hits += 1
+			continue
+		if str(event.get("probe_phase", "")) != "measurement":
+			continue
+		if first_activation_frame >= 0 and int(event.get("frame", 0)) >= first_activation_frame:
+			post_activation_damage += damage
+			post_activation_hits += 1
+		else:
+			baseline_damage += damage
+			baseline_hits += 1
+	var status_markers := []
+	var marker_key := "constellation_%s_owner" % mechanic_id
+	for target_value in targets:
+		var target := target_value as Node2D
+		if target == null or not is_instance_valid(target):
+			continue
+		if int(target.get_meta(marker_key, 0)) == player.get_instance_id():
+			status_markers.append(marker_key)
+	var owner_delta := {}
+	for key in ["health", "absorb_flat", "dodge_flat", "absorb", "dodge"]:
+		var delta := snappedf(float(owner_after.get(key, 0.0)) - float(owner_before.get(key, 0.0)), 0.0001)
+		if not is_zero_approx(delta):
+			owner_delta[key] = delta
+	var owner_marker := str(owner_after.get("last_final_mechanic", "")) == mechanic_id
+	var kind := ""
+	if not activations.is_empty():
+		if provenance_hits > 0 and provenance_damage > 0.0:
+			kind = "typed_damage"
+		elif target_deaths > 0 and str(expected.get("event", "")) in ["kill", "execute", "summon_death"]:
+			kind = "target_death"
+		elif not status_markers.is_empty():
+			kind = "target_status_transition"
+		elif not owner_delta.is_empty() and owner_marker:
+			kind = "owner_state_transition"
+		elif post_activation_hits > 0 and post_activation_damage > 0.0:
+			kind = "typed_damage"
+	var expected_ratio := 1.0 + FinalRuntime._damage_ratio(expected.get("params", {})) if not FinalRuntime.CONSUMER_OWNED_PAYOFF_MODES.has(str(expected.get("mode", ""))) else 0.0
+	var mean_bound := provenance_damage / maxf(float(provenance_hits), 1.0)
+	var mean_baseline := baseline_damage / maxf(float(baseline_hits), 1.0)
+	return {
+		"kind": kind,
+		"binding": "resolver_provenance" if provenance_hits > 0 else ("frame_ordered" if first_activation_frame >= 0 else "none"),
+		"activation_count": activations.size(),
+		"first_activation_frame": first_activation_frame,
+		"provenance_bound_hits": provenance_hits,
+		"provenance_bound_damage": snappedf(provenance_damage, 0.0001),
+		"post_activation_hits": post_activation_hits,
+		"post_activation_damage": snappedf(post_activation_damage, 0.0001),
+		"pre_activation_hits": baseline_hits,
+		"pre_activation_damage": snappedf(baseline_damage, 0.0001),
+		"target_deaths": target_deaths,
+		"target_status_markers": status_markers,
+		"owner_state_delta": owner_delta,
+		"owner_final_marker": owner_marker,
+		"applied_hp_total": snappedf(float((sample.get("hp_ledger", {}) as Dictionary).get("total_applied_damage", 0.0)), 0.0001),
+		"amplified_hit_mean": snappedf(mean_bound, 0.0001),
+		"unamplified_hit_mean": snappedf(mean_baseline, 0.0001),
+		"observed_damage_ratio": snappedf(mean_bound / maxf(mean_baseline, 0.0001), 0.0001) if provenance_hits > 0 and baseline_hits > 0 else 0.0,
+		"resolver_damage_ratio": snappedf(expected_ratio, 0.0001),
+	}
+
+
+# FAN-2224 divergence accounting.
+#
+# A disposition is not a label: each over-tolerance axis is decomposed into the
+# consumer terms the production traces actually recorded - cadence, per-cast reach
+# and per-hit applied HP - against the formula's own cast rate and hit damage. The
+# four factors reproduce the observed delta exactly, so both its magnitude and its
+# sign are carried by named, re-derivable observations rather than by prose.
+func _formula_basis(class_id: String, weapon_id: String, stats: Dictionary, state: Dictionary) -> Dictionary:
+	var run_mods := _a5_run_modifiers(class_id)
+	var local_stats := stats.duplicate(true)
+	_apply_meta_formula_mods(local_stats, run_mods, Meta.skill_modifiers_for_class(state, class_id))
+	var config := PD.weapon(class_id, weapon_id)
+	var params := PD.derived_parameters(local_stats, run_mods, _config_with_class(config, class_id))
+	var damage_parameter := str(config.get("damage_parameter", PD.damage_parameter_for(class_id)))
+	var base_damage := float(params.get(damage_parameter, params.get("damage", 1.0)))
+	var crit_factor := 1.0 + float(params.get("crit_chance", 0.0)) * maxf(float(params.get("crit_damage_multiplier", 1.0)) - 1.0, 0.0)
+	var interval := maxf(float(config.get("fire_interval", 1.0)) / maxf(float(params.get("attack_speed", 1.0)), 0.1), 0.18)
+	return {
+		"damage_parameter": damage_parameter,
+		"fire_interval_seconds": snappedf(interval, 0.000001),
+		"cast_rate_per_second": snappedf(1.0 / interval, 0.000001),
+		"hit_damage": snappedf(base_damage * crit_factor, 0.000001),
+		"direct_dpm": snappedf(60.0 * base_damage * crit_factor / interval, 0.000001),
+	}
+
+
+static func observed_axis_terms(live_telemetry: Dictionary, pair: String, scenario: String) -> Dictionary:
+	var casts := 0.0
+	var hits := 0.0
+	var applied := 0.0
+	var duration := 0.0
+	var targets := 0.0
+	var samples := 0
+	for sample_value in live_telemetry.get("samples", []):
+		var sample: Dictionary = sample_value
+		if str(sample.get("pair", "")) != pair or str(sample.get("scenario", "")) != scenario:
+			continue
+		var counters: Dictionary = sample.get("counters", {})
+		var ledger: Dictionary = sample.get("hp_ledger", {})
+		casts += float(counters.get("casts", 0.0))
+		hits += float(counters.get("hits", 0.0))
+		targets += float(counters.get("unique_target_count", 0.0))
+		applied += float(ledger.get("total_applied_damage", 0.0))
+		duration += float(ledger.get("measurement_duration_seconds", 0.0))
+		samples += 1
+	if samples == 0 or duration <= 0.0:
+		return {}
+	return {
+		"samples": samples,
+		"casts": casts,
+		"hits": hits,
+		"applied_hp": snappedf(applied, 0.0001),
+		"duration_seconds": snappedf(duration, 0.000001),
+		"cast_rate_per_second": snappedf(casts / duration, 0.000001),
+		# The applied-hit rate is the consumer term that always exists: a pure summon
+		# or deployable kit lands production hits without ever booking a weapon cast.
+		"hit_rate_per_second": snappedf(hits / duration, 0.000001),
+		"hits_per_cast": snappedf(hits / casts, 0.000001) if casts > 0.0 else 0.0,
+		"damage_per_hit": snappedf(applied / maxf(hits, 1.0), 0.000001),
+		"unique_targets_mean": snappedf(targets / float(samples), 0.0001),
+		"observed_dpm": _project_dpm(applied, duration),
+	}
+
+
+static func decompose_axis(basis: Dictionary, observed: Dictionary, formula_axis_dpm: float) -> Dictionary:
+	if observed.is_empty() or formula_axis_dpm <= 0.0 or float(basis.get("direct_dpm", 0.0)) <= 0.0:
+		return {}
+	# live = 60 x hit_rate x damage_per_hit and formula = 60 x cast_rate x hit_damage
+	# x model_gap, so the three factors below reproduce live/formula exactly. Nothing
+	# is fitted: each one is an observed production term over the formula's own basis.
+	var model_gap := formula_axis_dpm / float(basis["direct_dpm"])
+	var cadence := float(observed["hit_rate_per_second"]) / maxf(float(basis["cast_rate_per_second"]), 0.000001)
+	var magnitude := float(observed["damage_per_hit"]) / maxf(float(basis["hit_damage"]), 0.000001)
+	var ratio := cadence * magnitude / maxf(model_gap, 0.000001)
+	var factors := {
+		"cadence": cadence,
+		"magnitude": magnitude,
+		"formula_model": 1.0 / maxf(model_gap, 0.000001),
+	}
+	var dominant := ""
+	var dominant_weight := -1.0
+	for key in ["cadence", "magnitude", "formula_model"]:
+		var weight := absf(log(maxf(float(factors[key]), 0.000001)))
+		if weight > dominant_weight:
+			dominant_weight = weight
+			dominant = key
+	return {
+		"formula_axis_dpm": snappedf(formula_axis_dpm, 0.01),
+		"formula_direct_dpm": float(basis["direct_dpm"]),
+		"formula_model_gap": snappedf(model_gap, 0.000001),
+		"observed": observed,
+		"factors": {
+			"cadence": snappedf(cadence, 0.000001),
+			"magnitude": snappedf(magnitude, 0.000001),
+			"formula_model": snappedf(1.0 / maxf(model_gap, 0.000001), 0.000001),
+		},
+		"recomputed_delta_pct": snappedf((ratio - 1.0) * 100.0, 0.01),
+		"dominant_factor": dominant,
+		"dominant_factor_deviation_pct": snappedf((float(factors[dominant]) - 1.0) * 100.0, 0.01),
+		"sign": "positive" if ratio >= 1.0 else "negative",
+	}
+
+
+func _formula_live_dispositions(parity: Array, final_execution: Array, live_telemetry: Dictionary) -> Array:
+	var evidence_by_pair := {}
+	for evidence_value in final_execution:
+		var evidence: Dictionary = evidence_value
+		evidence_by_pair[str(evidence.get("pair", ""))] = evidence
+	var rows := []
+	for parity_value in parity:
+		var parity_row: Dictionary = parity_value
+		var pair := str(parity_row.get("pair", ""))
+		var parts := pair.split("/", true, 1)
+		var class_id := str(parts[0]) if parts.size() == 2 else ""
+		var weapon_id := str(parts[1]) if parts.size() == 2 else ""
+		var evidence: Dictionary = evidence_by_pair.get(pair, {})
+		var payoff: Dictionary = evidence.get("payoff", {})
+		var solo_delta := float(parity_row.get("solo_delta_pct", 0.0))
+		var pack_delta := float(parity_row.get("pack_delta_pct", 0.0))
+		var within := absf(solo_delta) <= FORMULA_LIVE_TOLERANCE_PCT and absf(pack_delta) <= FORMULA_LIVE_TOLERANCE_PCT
+		var supported := bool(evidence.get("observed", false)) and str(payoff.get("kind", "")) != ""
+		var basis := _formula_basis(class_id, weapon_id, DamageTable.optimized_stats_for_class(class_id, PD.base_stats(class_id)), _scenario_state(class_id, "class_constellation"))
+		var axes := {
+			"solo": decompose_axis(basis, observed_axis_terms(live_telemetry, pair, "sustain_solo"), float(parity_row.get("formula_solo_dpm", 0.0))),
+			"pack": decompose_axis(basis, observed_axis_terms(live_telemetry, pair, "sustain_pack"), float(parity_row.get("formula_pack_dpm", 0.0))),
+		}
+		var accounted := not (axes["solo"] as Dictionary).is_empty() and not (axes["pack"] as Dictionary).is_empty()
+		var disposition := "within_tolerance" if within else ("explained_divergence" if supported and accounted else "unresolved")
+		var applied_total := maxf(float(payoff.get("applied_hp_total", 0.0)), 0.0)
+		var payoff_share := 100.0 * float(payoff.get("provenance_bound_damage", 0.0)) / maxf(applied_total, 0.0001)
+		rows.append({
+			"pair": pair,
+			"solo_delta_pct": solo_delta,
+			"pack_delta_pct": pack_delta,
+			"disposition": disposition,
+			"final_execution": {
+				"final_mechanic": str(evidence.get("final_mechanic", "")),
+				"final_mode": str(evidence.get("final_mode", "")),
+				"final_event": str(evidence.get("final_event", "")),
+				"runtime_consumer": str((evidence.get("consumer", {}) as Dictionary).get("runtime_consumer", "")),
+				"payoff_kind": str(payoff.get("kind", "")),
+				"payoff_binding": str(payoff.get("binding", "")),
+				"activation_count": int(payoff.get("activation_count", 0)),
+				"applied_hp_total": snappedf(applied_total, 0.0001),
+				"resolver_bound_payoff_share_pct": snappedf(payoff_share, 0.01),
+				"telemetry_sample_key": str((evidence.get("telemetry", {}) as Dictionary).get("sample_key", "")),
+			},
+			"formula_basis": basis,
+			"axes": axes,
+			"explanation": _disposition_explanation(disposition, parity_row, evidence, axes),
+		})
+	return rows
+
+
+func _disposition_explanation(disposition: String, parity_row: Dictionary, evidence: Dictionary, axes: Dictionary) -> String:
+	if disposition == "within_tolerance":
+		return "Both sustained formula/live deltas are inside the %.0f%% acceptance tolerance." % FORMULA_LIVE_TOLERANCE_PCT
+	if disposition == "unresolved":
+		return "No production consumer payoff or no complete consumer-term decomposition was observed for this pair, so the divergence stays unresolved."
+	var payoff: Dictionary = evidence.get("payoff", {})
+	var solo: Dictionary = axes.get("solo", {})
+	var pack: Dictionary = axes.get("pack", {})
+	return "%s executed through %s and applied a %s payoff (%d activations, %s binding, %.2f HP applied in the probe). Solo %+.2f%% is reproduced exactly by observed applied-hit cadence x%.3f and per-hit magnitude x%.3f over the formula basis x%.3f, dominated by %s at %+.2f%%; the 10-target axis %+.2f%% by cadence x%.3f and magnitude x%.3f over formula basis x%.3f, dominated by %s at %+.2f%%." % [
+		str(evidence.get("final_mechanic", "")),
+		str((evidence.get("consumer", {}) as Dictionary).get("runtime_consumer", "")),
+		str(payoff.get("kind", "")),
+		int(payoff.get("activation_count", 0)),
+		str(payoff.get("binding", "")),
+		float(payoff.get("applied_hp_total", 0.0)),
+		float(solo.get("recomputed_delta_pct", 0.0)),
+		float((solo.get("factors", {}) as Dictionary).get("cadence", 0.0)),
+		float((solo.get("factors", {}) as Dictionary).get("magnitude", 0.0)),
+		float((solo.get("factors", {}) as Dictionary).get("formula_model", 0.0)),
+		str(solo.get("dominant_factor", "")),
+		float(solo.get("dominant_factor_deviation_pct", 0.0)),
+		float(pack.get("recomputed_delta_pct", 0.0)),
+		float((pack.get("factors", {}) as Dictionary).get("cadence", 0.0)),
+		float((pack.get("factors", {}) as Dictionary).get("magnitude", 0.0)),
+		float((pack.get("factors", {}) as Dictionary).get("formula_model", 0.0)),
+		str(pack.get("dominant_factor", "")),
+		float(pack.get("dominant_factor_deviation_pct", 0.0)),
+	]
+
+
+func _apply_formula_live_dispositions_to_rows(rows: Array, dispositions: Array, final_execution: Array) -> void:
+	var by_pair := {}
+	for disposition_value in dispositions:
+		var disposition: Dictionary = disposition_value
+		by_pair[str(disposition.get("pair", ""))] = disposition
+	var payoff_by_pair := {}
+	for evidence_value in final_execution:
+		var evidence: Dictionary = evidence_value
+		payoff_by_pair[str(evidence.get("pair", ""))] = str((evidence.get("payoff", {}) as Dictionary).get("kind", ""))
+	for row_value in rows:
+		var row: Dictionary = row_value
+		var pair := "%s/%s" % [row.get("class_id", ""), row.get("weapon_id", "")]
+		if int(row.get("level", 0)) != 20 or str(row.get("scenario", "")) != "class_constellation":
+			row["formula_live_disposition"] = ""
+			row["final_execution_payoff_kind"] = ""
+			continue
+		row["formula_live_disposition"] = str((by_pair.get(pair, {}) as Dictionary).get("disposition", ""))
+		row["final_execution_payoff_kind"] = str(payoff_by_pair.get(pair, ""))
+
+
+static func final_execution_profile(expected: Dictionary) -> Dictionary:
+	var event := str(expected.get("event", ""))
+	var stimulus := str(FINAL_EXECUTION_STIMULUS_BY_EVENT.get(event, "autofire"))
+	return {
+		"stimulus": stimulus,
+		"fixture": "mortal" if stimulus == "mortal_targets" else "sustain",
+		"layout": "ring" if FINAL_EXECUTION_RING_MODES.has(str(expected.get("mode", ""))) else "pack",
+		"target_count": FINAL_EXECUTION_TARGET_COUNT,
+		"initial_target_hp": FINAL_EXECUTION_MORTAL_HP if stimulus == "mortal_targets" else DUMMY_HP,
+	}
+
+
+static func _expected_final_for_pair(pair: String) -> Dictionary:
+	var parts := pair.split("/", true, 1)
+	if parts.size() != 2:
+		return {}
+	for branch_value in Schema6.class_entry(str(parts[0])).get("weapon_branches", []):
+		var branch: Dictionary = branch_value
+		if str(branch.get("weapon_id", "")) != str(parts[1]):
+			continue
+		for node_value in branch.get("nodes", []):
+			var node: Dictionary = node_value
+			if str(node.get("role", "")) != "weapon_final":
+				continue
+			var mechanic_id := str(node.get("mechanic_id", ""))
+			var effect_profile: Dictionary = node.get("effect_profile", {})
+			return {
+				"mechanic_id": mechanic_id,
+				"event": str(FinalRuntime.EVENT_BY_MECHANIC.get(mechanic_id, "")),
+				"mode": str(FinalRuntime.MODE_BY_MECHANIC.get(mechanic_id, "")),
+				"params": (effect_profile.get("params", {}) as Dictionary).duplicate(true),
+				"runtime_consumer": str(node.get("runtime_consumer", "")),
+			}
+	return {}
 
 
 func _measure_live(class_id: String, weapon_id: String, target_count: int, stats: Dictionary, state: Dictionary, seed_value: int, scenario_key: String, fixture: String, initial_target_hp := DUMMY_HP) -> Dictionary:
@@ -2479,6 +3328,14 @@ func _validate_dataset(dataset: Dictionary) -> void:
 		if not bool(telemetry_verification.get("ok", false)):
 			for error_value in telemetry_verification.get("errors", []):
 				_errors.append("live telemetry verification failed: %s" % error_value)
+		var final_execution_verification := verify_final_execution_artifacts(dataset)
+		if not bool(final_execution_verification.get("ok", false)):
+			for error_value in final_execution_verification.get("errors", []):
+				_errors.append("final-execution verification failed: %s" % error_value)
+		var disposition_verification := verify_formula_live_dispositions(dataset)
+		if not bool(disposition_verification.get("ok", false)):
+			for error_value in disposition_verification.get("errors", []):
+				_errors.append("formula/live disposition verification failed: %s" % error_value)
 	var corridor_verification := verify_class_corridor_artifacts(dataset)
 	if not bool(corridor_verification.get("ok", false)):
 		for error_value in corridor_verification.get("errors", []):
@@ -2554,6 +3411,450 @@ static func verify_live_telemetry_artifacts(dataset: Dictionary) -> Dictionary:
 		if str(incoming.get("fixture", "")) != "incoming_hit" or not _has_damage_bucket(incoming, "incoming_fixture", "incoming_damage"):
 			errors.append("incoming-hit fixture lacks deterministic defensive damage")
 	return {"ok": errors.is_empty(), "errors": errors}
+
+
+# FAN-2224: the fail-closed contract for final-execution evidence.
+#
+# Nothing here trusts a stored label. Identity, trigger contract, causal ladder and
+# every aggregate are re-derived from the production manifest, the production
+# resolver and the row's own trace, so a trace copied from another pair, a
+# relabelled field, a substituted event or a tampered aggregate is rejected even
+# after the digests are recomputed.
+static func verify_final_execution_artifacts(dataset: Dictionary) -> Dictionary:
+	var errors := PackedStringArray()
+	var execution: Dictionary = dataset.get("final_execution", {})
+	if str(execution.get("schema", "")) != FINAL_EXECUTION_SCHEMA:
+		errors.append("final-execution schema mismatch")
+	if execution.get("seeds", []) != FINAL_EXECUTION_SEEDS:
+		errors.append("final-execution seed ladder mismatch")
+	if not is_equal_approx(float(execution.get("warmup_seconds", -1.0)), FINAL_EXECUTION_WARMUP_SECONDS) or not is_equal_approx(float(execution.get("window_seconds", -1.0)), FINAL_EXECUTION_WINDOW_SECONDS):
+		errors.append("final-execution measurement window mismatch")
+	if execution.get("payoff_kinds", []) != FINAL_EXECUTION_PAYOFF_KINDS:
+		errors.append("final-execution payoff vocabulary mismatch")
+	var expected_pairs: Array = (dataset.get("roster", {}) as Dictionary).get("pair_keys", [])
+	var rows: Array = execution.get("rows", [])
+	var actual_pairs := []
+	for row_value in rows:
+		if not row_value is Dictionary:
+			errors.append("final-execution row is not an object")
+			continue
+		var row: Dictionary = row_value
+		var pair := str(row.get("pair", ""))
+		actual_pairs.append(pair)
+		for error_value in verify_final_execution_row(row):
+			errors.append(str(error_value))
+	if actual_pairs != expected_pairs:
+		errors.append("final-execution pair order/set mismatch")
+	return {"ok": errors.is_empty(), "errors": errors}
+
+
+# Public so the falsification suite can drive one row at a time.
+static func verify_final_execution_row(row: Dictionary) -> PackedStringArray:
+	var errors := PackedStringArray()
+	var pair := str(row.get("pair", ""))
+	var expected := _expected_final_for_pair(pair)
+	if expected.is_empty():
+		errors.append("final-execution pair is not in the schema-6 roster: %s" % pair)
+		return errors
+	if pair != "%s/%s" % [row.get("class_id", ""), row.get("weapon_id", "")]:
+		errors.append("final-execution row identity does not reconstruct its pair: %s" % pair)
+	var mechanic_id := str(expected.get("mechanic_id", ""))
+	var mode := str(expected.get("mode", ""))
+	var event := str(expected.get("event", ""))
+	var required := FinalRuntime._trigger_count(expected.get("params", {}))
+	if str(row.get("final_mechanic", "")) != mechanic_id or str(row.get("final_mode", "")) != mode or str(row.get("final_event", "")) != event:
+		errors.append("final-execution mechanic/mode/event differs from the production manifest for %s" % pair)
+	if int(row.get("required_progress", -1)) != required:
+		errors.append("final-execution trigger contract differs from the production resolver for %s" % pair)
+	var consumer: Dictionary = row.get("consumer", {})
+	if str(consumer.get("runtime_consumer", "")) != str(expected.get("runtime_consumer", "")) or str(consumer.get("executor_method", "")) != "constellation_weapon_event" or str(consumer.get("resolver_method", "")) != "resolve_event":
+		errors.append("final-execution executor identity differs from the production manifest for %s" % pair)
+	var expected_profile := final_execution_profile(expected)
+	var stimulus: Dictionary = row.get("stimulus", {})
+	for key in ["stimulus", "fixture", "layout"]:
+		var actual_key: String = "kind" if key == "stimulus" else str(key)
+		if str(stimulus.get(actual_key, "")) != str(expected_profile.get(key, "")):
+			errors.append("final-execution %s is not the production-derived profile for %s" % [key, pair])
+	if int(stimulus.get("target_count", -1)) != int(expected_profile.get("target_count", 0)) or not is_equal_approx(float(stimulus.get("initial_target_hp", -1.0)), float(expected_profile.get("initial_target_hp", 0.0))):
+		errors.append("final-execution fixture geometry is not the production-derived profile for %s" % pair)
+	if not FINAL_EXECUTION_SEEDS.has(int(stimulus.get("seed", -1))):
+		errors.append("final-execution seed is outside the pinned ladder for %s" % pair)
+	if int(row.get("consumer_gated_dispatch_count", -1)) != int(row.get("event_dispatch_count", 0)) - int(row.get("resolved_dispatch_count", 0)):
+		errors.append("final-execution consumer-gate counters do not reconstruct for %s" % pair)
+	if not bool(row.get("observed", false)):
+		errors.append("final-execution observed no production consumer payoff for %s (%d dispatches, %d carrying event %s, %d reaching the resolver, %d rejected at the consumer gate)" % [
+			pair, int(row.get("dispatch_count", 0)), int(row.get("event_dispatch_count", 0)), event,
+			int(row.get("resolved_dispatch_count", 0)), int(row.get("consumer_gated_dispatch_count", 0)),
+		])
+	for error_value in _verify_final_execution_ladder(row, mechanic_id, mode, event, required):
+		errors.append(str(error_value))
+	for error_value in _verify_final_execution_payoff(row, expected):
+		errors.append(str(error_value))
+	for error_value in _verify_final_execution_trace(row):
+		errors.append(str(error_value))
+	return errors
+
+
+# The ladder is the mechanic's own trigger contract played out by the production
+# resolver: N-1 dispatches short of the threshold, then the activation exactly at
+# it. A trace lifted from a mechanic with a different threshold cannot satisfy it.
+static func _verify_final_execution_ladder(row: Dictionary, mechanic_id: String, mode: String, event: String, required: int) -> PackedStringArray:
+	var errors := PackedStringArray()
+	var pair := str(row.get("pair", ""))
+	var ladder: Array = row.get("resolution_ladder", [])
+	var activations: Array = row.get("activations", [])
+	if ladder.is_empty():
+		errors.append("final-execution resolution ladder is empty for %s" % pair)
+		return errors
+	if int(row.get("resolved_dispatch_count", -1)) < ladder.size():
+		errors.append("final-execution ladder is longer than the observed resolver dispatches for %s" % pair)
+	for index in range(ladder.size()):
+		var entry: Dictionary = ladder[index]
+		if int(entry.get("index", -1)) != index:
+			errors.append("final-execution ladder index is not monotonic for %s" % pair)
+		if str(entry.get("event", "")) != event or str(entry.get("mode", "")) != mode:
+			errors.append("final-execution ladder step %d is not the mechanic's own production event for %s" % [index, pair])
+		if int(entry.get("required", -1)) != required:
+			errors.append("final-execution ladder step %d reports a foreign trigger threshold for %s" % [index, pair])
+		var triggered := bool(entry.get("triggered", false))
+		var progress := int(entry.get("progress", -1))
+		if index < ladder.size() - 1:
+			if triggered or progress >= required:
+				errors.append("final-execution ladder activates before its production threshold for %s" % pair)
+		elif not triggered or progress < required:
+			errors.append("final-execution ladder does not close on an activation at its production threshold for %s" % pair)
+	if activations.is_empty():
+		errors.append("final-execution recorded no production activation for %s" % pair)
+	elif activations[0] != ladder[ladder.size() - 1]:
+		errors.append("final-execution first activation is not the ladder's closing step for %s" % pair)
+	for activation_value in activations:
+		var activation: Dictionary = activation_value
+		if not bool(activation.get("triggered", false)) or str(activation.get("event", "")) != event:
+			errors.append("final-execution activation is not a triggered production resolution for %s" % pair)
+	return errors
+
+
+static func _verify_final_execution_payoff(row: Dictionary, expected: Dictionary) -> PackedStringArray:
+	var errors := PackedStringArray()
+	var pair := str(row.get("pair", ""))
+	var payoff: Dictionary = row.get("payoff", {})
+	var kind := str(payoff.get("kind", ""))
+	if kind != "" and not FINAL_EXECUTION_PAYOFF_KINDS.has(kind):
+		errors.append("final-execution payoff kind is outside the declared vocabulary for %s" % pair)
+	if bool(row.get("observed", false)) != (kind != ""):
+		errors.append("final-execution observation flag does not follow the derived payoff for %s" % pair)
+	match kind:
+		"typed_damage":
+			if float(payoff.get("provenance_bound_damage", 0.0)) <= 0.0 and float(payoff.get("post_activation_damage", 0.0)) <= 0.0:
+				errors.append("final-execution typed damage payoff carries no applied HP for %s" % pair)
+		"target_death":
+			if int(payoff.get("target_deaths", 0)) <= 0 or not str(expected.get("event", "")) in ["kill", "execute", "summon_death"]:
+				errors.append("final-execution death payoff is not a lifecycle final for %s" % pair)
+		"target_status_transition":
+			if (payoff.get("target_status_markers", []) as Array).is_empty():
+				errors.append("final-execution status payoff carries no production target marker for %s" % pair)
+		"owner_state_transition":
+			if (payoff.get("owner_state_delta", {}) as Dictionary).is_empty() or not bool(payoff.get("owner_final_marker", false)):
+				errors.append("final-execution owner payoff carries no authoritative owner transition for %s" % pair)
+	for marker_value in payoff.get("target_status_markers", []):
+		if str(marker_value) != "constellation_%s_owner" % str(expected.get("mechanic_id", "")):
+			errors.append("final-execution target marker is not the mechanic's own production marker for %s" % pair)
+	if int(payoff.get("activation_count", -1)) != (row.get("activations", []) as Array).size():
+		errors.append("final-execution activation count does not reconstruct from the ladder for %s" % pair)
+	# The payoff relation: an amplifying final must show its own production damage
+	# ratio on the hits its resolver bound, not an arbitrary one.
+	var resolver_ratio := float(payoff.get("resolver_damage_ratio", 0.0))
+	var expected_ratio := 0.0
+	if not FinalRuntime.CONSUMER_OWNED_PAYOFF_MODES.has(str(expected.get("mode", ""))):
+		expected_ratio = snappedf(1.0 + FinalRuntime._damage_ratio(expected.get("params", {})), 0.0001)
+	if not is_equal_approx(resolver_ratio, expected_ratio):
+		errors.append("final-execution resolver payoff ratio differs from the production mechanic for %s" % pair)
+	var observed_ratio := float(payoff.get("observed_damage_ratio", 0.0))
+	if expected_ratio > 1.0 and observed_ratio > 0.0 and observed_ratio < 1.0:
+		errors.append("final-execution amplified hits are weaker than the unamplified baseline for %s" % pair)
+	return errors
+
+
+# Every aggregate the row reports is recomputed from its own trace. A relabelled
+# or substituted trace no longer reproduces them, and a recomputed digest cannot
+# repair that.
+static func _verify_final_execution_trace(row: Dictionary) -> PackedStringArray:
+	var errors := PackedStringArray()
+	var pair := str(row.get("pair", ""))
+	var sample: Dictionary = row.get("telemetry", {})
+	var stimulus: Dictionary = row.get("stimulus", {})
+	var seed_value := int(stimulus.get("seed", -1))
+	var target_count := int(stimulus.get("target_count", 0))
+	var sample_key := _telemetry_key(pair, seed_value, "final_execution", str(stimulus.get("kind", "")), target_count)
+	if str(sample.get("telemetry_schema", "")) != LIVE_TELEMETRY_SCHEMA:
+		errors.append("final-execution trace schema mismatch for %s" % pair)
+	if str(sample.get("sample_key", "")) != sample_key or str(sample.get("trace_id", "")) != "%s:%s" % [LIVE_TRACE_PREFIX, sample_key]:
+		errors.append("final-execution trace identity does not reconstruct from the row for %s" % pair)
+	if str(sample.get("pair", "")) != pair or int(sample.get("seed", -1)) != seed_value or str(sample.get("scenario", "")) != "final_execution" or str(sample.get("fixture", "")) != str(stimulus.get("kind", "")) or int(sample.get("target_cardinality", -1)) != target_count:
+		errors.append("final-execution trace does not carry the row's fixture identity for %s" % pair)
+	var trace_id := str(sample.get("trace_id", ""))
+	var events: Array = sample.get("events", [])
+	var event_by_id := {}
+	var casts := 0
+	var hits := 0
+	var final_events := 0
+	var total_damage := 0.0
+	var measurement_by_target := {}
+	var provenance_ids := {}
+	for index in range(events.size()):
+		if not events[index] is Dictionary:
+			errors.append("final-execution trace event %d is not an object for %s" % [index, pair])
+			continue
+		var event: Dictionary = events[index]
+		var event_id := str(event.get("event_id", ""))
+		if event_id != "%s#%04d" % [trace_id, index] or str(event.get("trace_id", "")) != trace_id:
+			errors.append("final-execution trace event identity mismatch at %d for %s" % [index, pair])
+		event_by_id[event_id] = event
+		match str(event.get("kind", "")):
+			"cast":
+				casts += 1
+			"hit":
+				hits += 1
+				total_damage += float(event.get("damage", 0.0))
+				if str(event.get("source", "")) == "player_weapon":
+					var provenance_id := str(event.get("provenance_id", ""))
+					if provenance_id == "" or provenance_ids.has(provenance_id):
+						errors.append("final-execution canonical hit provenance is missing or duplicated for %s" % pair)
+					provenance_ids[provenance_id] = true
+					if str(event.get("probe_phase", "")) == "measurement":
+						var target_id := str(event.get("target_id", ""))
+						measurement_by_target[target_id] = float(measurement_by_target.get(target_id, 0.0)) + float(event.get("damage", 0.0))
+			"final_event":
+				final_events += 1
+				if not bool(event.get("observed", false)):
+					errors.append("final-execution trace carries an unobserved final event for %s" % pair)
+			_:
+				errors.append("final-execution trace carries an unknown event kind for %s" % pair)
+	var counters: Dictionary = sample.get("counters", {})
+	if int(counters.get("casts", -1)) != casts or int(counters.get("hits", -1)) != hits or int(counters.get("final_event_count", -1)) != final_events:
+		errors.append("final-execution counters do not reconstruct from the trace for %s" % pair)
+	if not is_equal_approx(float(counters.get("damage_total", -1.0)), snappedf(total_damage, 0.0001)):
+		errors.append("final-execution damage total does not reconstruct from the trace for %s" % pair)
+	var ledger: Dictionary = sample.get("hp_ledger", {})
+	if str(ledger.get("authority", "")) != "enemy_damage_applied_health_delta" or str(ledger.get("probe_phase", "")) != "measurement":
+		errors.append("final-execution ledger authority or phase is invalid for %s" % pair)
+	var tolerance := float(ledger.get("tolerance", -1.0))
+	if tolerance < 0.0 or tolerance > 0.001:
+		errors.append("final-execution ledger tolerance is invalid for %s" % pair)
+	var ledger_total := 0.0
+	for ledger_row_value in ledger.get("rows", []):
+		var ledger_row: Dictionary = ledger_row_value
+		var target_id := str(ledger_row.get("target_id", ""))
+		var applied := float(ledger_row.get("applied_damage", -1.0))
+		ledger_total += applied
+		if applied < 0.0 or absf(applied - float(measurement_by_target.get(target_id, 0.0))) > tolerance:
+			errors.append("final-execution measurement damage does not reconcile to the ledger for %s" % pair)
+	if absf(ledger_total - float(ledger.get("total_applied_damage", -1.0))) > tolerance:
+		errors.append("final-execution ledger total does not reconstruct from its rows for %s" % pair)
+	if str(sample.get("trace_digest_sha256", "")) != canonical_trace_digest(events):
+		errors.append("final-execution trace digest does not reconstruct from its events for %s" % pair)
+	for error_value in _verify_final_execution_payoff_aggregates(row, sample, event_by_id):
+		errors.append(str(error_value))
+	return errors
+
+
+static func _verify_final_execution_payoff_aggregates(row: Dictionary, sample: Dictionary, event_by_id: Dictionary) -> PackedStringArray:
+	var errors := PackedStringArray()
+	var pair := str(row.get("pair", ""))
+	var payoff: Dictionary = row.get("payoff", {})
+	var mechanic_id := str(row.get("final_mechanic", ""))
+	var activations: Array = row.get("activations", [])
+	var first_activation_frame := int((activations[0] as Dictionary).get("frame", 0)) if not activations.is_empty() else -1
+	var events: Array = sample.get("events", [])
+	var bound_hit_ids := {}
+	var deaths := 0
+	for event_value in events:
+		var event: Dictionary = event_value
+		if str(event.get("kind", "")) != "final_event":
+			continue
+		if str(event.get("phase", "")) == "target_death":
+			deaths += 1
+			continue
+		if str(event.get("mechanic_id", "")) != mechanic_id:
+			continue
+		var related_hit_id := str(event.get("related_hit_id", ""))
+		if related_hit_id != "" and event_by_id.has(related_hit_id):
+			bound_hit_ids[related_hit_id] = true
+	var provenance_damage := 0.0
+	var provenance_hits := 0
+	var post_damage := 0.0
+	var post_hits := 0
+	var pre_damage := 0.0
+	var pre_hits := 0
+	for event_value in events:
+		var event: Dictionary = event_value
+		if str(event.get("kind", "")) != "hit" or str(event.get("source", "")) != "player_weapon":
+			continue
+		var damage := float(event.get("damage", 0.0))
+		if bound_hit_ids.has(str(event.get("event_id", ""))):
+			provenance_damage += damage
+			provenance_hits += 1
+			continue
+		if str(event.get("probe_phase", "")) != "measurement":
+			continue
+		if first_activation_frame >= 0 and int(event.get("frame", 0)) >= first_activation_frame:
+			post_damage += damage
+			post_hits += 1
+		else:
+			pre_damage += damage
+			pre_hits += 1
+	if int(payoff.get("provenance_bound_hits", -1)) != provenance_hits or not is_equal_approx(float(payoff.get("provenance_bound_damage", -1.0)), snappedf(provenance_damage, 0.0001)):
+		errors.append("final-execution resolver-bound payoff does not reconstruct from the trace for %s" % pair)
+	if int(payoff.get("post_activation_hits", -1)) != post_hits or not is_equal_approx(float(payoff.get("post_activation_damage", -1.0)), snappedf(post_damage, 0.0001)):
+		errors.append("final-execution post-activation payoff does not reconstruct from the trace for %s" % pair)
+	if int(payoff.get("pre_activation_hits", -1)) != pre_hits or not is_equal_approx(float(payoff.get("pre_activation_damage", -1.0)), snappedf(pre_damage, 0.0001)):
+		errors.append("final-execution pre-activation baseline does not reconstruct from the trace for %s" % pair)
+	if int(payoff.get("target_deaths", -1)) != deaths:
+		errors.append("final-execution target deaths do not reconstruct from the trace for %s" % pair)
+	if int(payoff.get("first_activation_frame", -2)) != first_activation_frame:
+		errors.append("final-execution activation frame does not reconstruct from the ladder for %s" % pair)
+	var expected_binding := "resolver_provenance" if provenance_hits > 0 else ("frame_ordered" if first_activation_frame >= 0 else "none")
+	if str(payoff.get("binding", "")) != expected_binding:
+		errors.append("final-execution causal binding does not follow the trace for %s" % pair)
+	if not is_equal_approx(float(payoff.get("applied_hp_total", -1.0)), snappedf(float((sample.get("hp_ledger", {}) as Dictionary).get("total_applied_damage", 0.0)), 0.0001)):
+		errors.append("final-execution applied HP does not reconstruct from the ledger for %s" % pair)
+	return errors
+
+
+static func verify_formula_live_dispositions(dataset: Dictionary) -> Dictionary:
+	var errors := PackedStringArray()
+	var dispositions: Dictionary = dataset.get("formula_live_dispositions", {})
+	if str(dispositions.get("schema", "")) != FORMULA_LIVE_DISPOSITION_SCHEMA:
+		errors.append("formula/live disposition schema mismatch")
+	if not is_equal_approx(float(dispositions.get("tolerance_pct", -1.0)), FORMULA_LIVE_TOLERANCE_PCT):
+		errors.append("formula/live disposition tolerance mismatch")
+	var expected_pairs: Array = (dataset.get("roster", {}) as Dictionary).get("pair_keys", [])
+	var parity_by_pair := {}
+	for parity_value in dataset.get("formula_live_parity", []):
+		var parity_row: Dictionary = parity_value
+		parity_by_pair[str(parity_row.get("pair", ""))] = parity_row
+	if parity_by_pair.size() != expected_pairs.size():
+		errors.append("formula/live parity is not complete")
+	var evidence_by_pair := {}
+	for evidence_value in ((dataset.get("final_execution", {}) as Dictionary).get("rows", [])):
+		var evidence: Dictionary = evidence_value
+		evidence_by_pair[str(evidence.get("pair", ""))] = evidence
+	var live_telemetry: Dictionary = dataset.get("live_telemetry", {})
+	var rows: Array = dispositions.get("rows", [])
+	var actual_pairs := []
+	var by_pair := {}
+	var unresolved := PackedStringArray()
+	for row_value in rows:
+		if not row_value is Dictionary:
+			errors.append("formula/live disposition row is not an object")
+			continue
+		var row: Dictionary = row_value
+		var pair := str(row.get("pair", ""))
+		actual_pairs.append(pair)
+		if by_pair.has(pair):
+			errors.append("duplicate formula/live disposition pair %s" % pair)
+		by_pair[pair] = row
+		if str(row.get("disposition", "")) == "unresolved":
+			unresolved.append(pair)
+		for error_value in _verify_disposition_row(row, parity_by_pair.get(pair, {}), evidence_by_pair.get(pair, {}), live_telemetry):
+			errors.append(str(error_value))
+	if actual_pairs != expected_pairs:
+		errors.append("formula/live disposition pair order/set mismatch")
+	if unresolved.size() > 0:
+		errors.append("formula/live dispositions retain %d unresolved divergences: %s" % [unresolved.size(), ", ".join(unresolved)])
+	var rows_by_key := {}
+	for weapon_row_value in dataset.get("weapon_rows", []):
+		var weapon_row: Dictionary = weapon_row_value
+		rows_by_key[str(weapon_row.get("key", ""))] = weapon_row
+	for pair_value in expected_pairs:
+		var pair := str(pair_value)
+		var pair_parts := pair.split("/", true, 1)
+		if pair_parts.size() != 2:
+			continue
+		var weapon_row: Dictionary = rows_by_key.get("%s|%s|20|class_constellation" % [pair_parts[0], pair_parts[1]], {})
+		var row: Dictionary = by_pair.get(pair, {})
+		if str(weapon_row.get("formula_live_disposition", "")) != str(row.get("disposition", "")):
+			errors.append("weapon matrix disposition differs for %s" % pair)
+		var evidence: Dictionary = evidence_by_pair.get(pair, {})
+		if str(weapon_row.get("final_execution_payoff_kind", "")) != str((evidence.get("payoff", {}) as Dictionary).get("kind", "")):
+			errors.append("weapon matrix final-execution payoff kind differs for %s" % pair)
+	return {"ok": errors.is_empty(), "errors": errors}
+
+
+static func _verify_disposition_row(row: Dictionary, parity_row: Dictionary, evidence: Dictionary, live_telemetry: Dictionary) -> PackedStringArray:
+	var errors := PackedStringArray()
+	var pair := str(row.get("pair", ""))
+	if parity_row.is_empty():
+		errors.append("formula/live disposition has no parity row for %s" % pair)
+		return errors
+	var solo_delta := float(parity_row.get("solo_delta_pct", 0.0))
+	var pack_delta := float(parity_row.get("pack_delta_pct", 0.0))
+	if not is_equal_approx(float(row.get("solo_delta_pct", NAN)), solo_delta) or not is_equal_approx(float(row.get("pack_delta_pct", NAN)), pack_delta):
+		errors.append("formula/live deltas are not copied from parity for %s" % pair)
+	var within := absf(solo_delta) <= FORMULA_LIVE_TOLERANCE_PCT and absf(pack_delta) <= FORMULA_LIVE_TOLERANCE_PCT
+	var payoff: Dictionary = evidence.get("payoff", {})
+	var supported := bool(evidence.get("observed", false)) and str(payoff.get("kind", "")) != ""
+	var axes: Dictionary = row.get("axes", {})
+	var basis: Dictionary = row.get("formula_basis", {})
+	var accounted := true
+	for axis_key in ["solo", "pack"]:
+		var scenario := "sustain_solo" if axis_key == "solo" else "sustain_pack"
+		var formula_key := "formula_solo_dpm" if axis_key == "solo" else "formula_pack_dpm"
+		var axis: Dictionary = axes.get(axis_key, {})
+		if axis.is_empty():
+			accounted = false
+			continue
+		for error_value in _verify_axis_decomposition(pair, axis_key, axis, basis, live_telemetry, scenario, float(parity_row.get(formula_key, 0.0)), solo_delta if axis_key == "solo" else pack_delta):
+			errors.append(str(error_value))
+	var expected_disposition := "within_tolerance" if within else ("explained_divergence" if supported and accounted else "unresolved")
+	if str(row.get("disposition", "")) != expected_disposition:
+		errors.append("formula/live disposition does not follow tolerance/evidence for %s" % pair)
+	var final_execution: Dictionary = row.get("final_execution", {})
+	if str(final_execution.get("final_mechanic", "")) != str(evidence.get("final_mechanic", "")) \
+			or str(final_execution.get("payoff_kind", "")) != str(payoff.get("kind", "")) \
+			or int(final_execution.get("activation_count", -1)) != int(payoff.get("activation_count", -2)) \
+			or str(final_execution.get("payoff_binding", "")) != str(payoff.get("binding", "")) \
+			or str(final_execution.get("telemetry_sample_key", "")) != str((evidence.get("telemetry", {}) as Dictionary).get("sample_key", "")):
+		errors.append("formula/live evidence differs from the final-execution row for %s" % pair)
+	var applied_total := maxf(float(payoff.get("applied_hp_total", 0.0)), 0.0)
+	var expected_share := snappedf(100.0 * float(payoff.get("provenance_bound_damage", 0.0)) / maxf(applied_total, 0.0001), 0.01)
+	if not is_equal_approx(float(final_execution.get("resolver_bound_payoff_share_pct", NAN)), expected_share):
+		errors.append("formula/live payoff share does not reconstruct from the final-execution row for %s" % pair)
+	if str(row.get("explanation", "")).strip_edges() == "":
+		errors.append("formula/live disposition has no explanation for %s" % pair)
+	if not is_equal_approx(float(basis.get("direct_dpm", -1.0)), snappedf(60.0 * float(basis.get("hit_damage", 0.0)) * float(basis.get("cast_rate_per_second", 0.0)), 0.000001)):
+		errors.append("formula basis direct DPM is not the product of its own cadence and hit damage for %s" % pair)
+	if not is_equal_approx(float(basis.get("cast_rate_per_second", -1.0)), snappedf(1.0 / maxf(float(basis.get("fire_interval_seconds", 1.0)), 0.000001), 0.000001)):
+		errors.append("formula basis cadence is not the inverse of its own fire interval for %s" % pair)
+	return errors
+
+
+static func _verify_axis_decomposition(pair: String, axis_key: String, axis: Dictionary, basis: Dictionary, live_telemetry: Dictionary, scenario: String, formula_axis_dpm: float, parity_delta_pct: float) -> PackedStringArray:
+	var errors := PackedStringArray()
+	var observed := observed_axis_terms(live_telemetry, pair, scenario)
+	if observed.is_empty():
+		errors.append("formula/live %s axis has no anchored production observation for %s" % [axis_key, pair])
+		return errors
+	if axis.get("observed", {}) != observed:
+		errors.append("formula/live %s axis observation does not reconstruct from the anchored telemetry for %s" % [axis_key, pair])
+	var expected_axis := decompose_axis(basis, observed, formula_axis_dpm)
+	if expected_axis.is_empty():
+		errors.append("formula/live %s axis cannot be decomposed for %s" % [axis_key, pair])
+		return errors
+	for key in ["formula_model_gap", "recomputed_delta_pct", "dominant_factor_deviation_pct"]:
+		if not is_equal_approx(float(axis.get(key, NAN)), float(expected_axis.get(key, NAN))):
+			errors.append("formula/live %s axis %s does not recompute for %s" % [axis_key, key, pair])
+	if axis.get("factors", {}) != expected_axis.get("factors", {}):
+		errors.append("formula/live %s axis consumer factors do not recompute for %s" % [axis_key, pair])
+	if str(axis.get("dominant_factor", "")) != str(expected_axis.get("dominant_factor", "")) or str(axis.get("sign", "")) != str(expected_axis.get("sign", "")):
+		errors.append("formula/live %s axis dominant factor or sign does not recompute for %s" % [axis_key, pair])
+	# The decomposition must land on the same divergence the parity row reports:
+	# magnitude and sign both, not a plausible story next to the number.
+	if absf(float(axis.get("recomputed_delta_pct", 0.0)) - parity_delta_pct) > 1.0:
+		errors.append("formula/live %s axis decomposition does not reproduce the reported %+.2f%% divergence for %s" % [axis_key, parity_delta_pct, pair])
+	if (float(axis.get("recomputed_delta_pct", 0.0)) >= 0.0) != (parity_delta_pct >= 0.0):
+		errors.append("formula/live %s axis decomposition disagrees with the divergence sign for %s" % [axis_key, pair])
+	return errors
 
 
 static func verify_live_telemetry_sample(sample: Dictionary) -> Dictionary:
@@ -2817,9 +4118,15 @@ static func _has_damage_bucket(sample: Dictionary, source: String, phase: String
 
 static func render_csv(dataset: Dictionary) -> String:
 	var lines := PackedStringArray()
-	lines.append("key,class_id,weapon_id,level,scenario,scenario_label,playable,attack_mode,archetype,axis,final_mechanic,playstyle,strengths,weaknesses,stat_delta,solo_dpm,crowd_10_total_dpm,crowd_10_per_target_dpm,hp,defense,dodge,absorb_flat,conditional_shield_capacity,regeneration_per_second,lifesteal_per_second,mitigation,ehp,ttd_seconds,conditional_defense_factor,pickup_radius,move_speed,healing_multiplier,xp_multiplier,money_multiplier,start_gold,ult_start_charge,death_save,solo_delta_abs,solo_delta_pct,crowd_delta_abs,crowd_delta_pct,ehp_delta_abs,ehp_delta_pct,ttd_delta_abs,ttd_delta_pct,atlas_delta,measurement_method,runs,solo_variance_dpm2,crowd_variance_dpm2")
+	# A dataset that carries final-execution evidence adds the two disposition
+	# columns; a legacy dataset without them renders exactly as before.
+	var weapon_rows: Array = dataset.get("weapon_rows", [])
+	var with_dispositions := not weapon_rows.is_empty() and (weapon_rows[0] as Dictionary).has("formula_live_disposition")
+	lines.append("key,class_id,weapon_id,level,scenario,scenario_label,playable,attack_mode,archetype,axis,final_mechanic,playstyle,strengths,weaknesses,stat_delta,solo_dpm,crowd_10_total_dpm,crowd_10_per_target_dpm,hp,defense,dodge,absorb_flat,conditional_shield_capacity,regeneration_per_second,lifesteal_per_second,mitigation,ehp,ttd_seconds,conditional_defense_factor,pickup_radius,move_speed,healing_multiplier,xp_multiplier,money_multiplier,start_gold,ult_start_charge,death_save,solo_delta_abs,solo_delta_pct,crowd_delta_abs,crowd_delta_pct,ehp_delta_abs,ehp_delta_pct,ttd_delta_abs,ttd_delta_pct,atlas_delta,measurement_method,runs,solo_variance_dpm2,crowd_variance_dpm2" + (",formula_live_disposition,final_execution_payoff_kind" if with_dispositions else ""))
 	for row in dataset["weapon_rows"]:
 		var cells := [row["key"], row["class_id"], row["weapon_id"], row["level"], row["scenario"], row["scenario_label"], row["playable"], row["attack_mode"], row["archetype"], row["axis"], row["final_mechanic"], row["playstyle"], row["strengths"], row["weaknesses"], JSON.stringify(row["stat_delta"], "", true, true), row["solo_dpm"], row["crowd_10_total_dpm"], row["crowd_10_per_target_dpm"], row["hp"], row["defense"], row["dodge"], row["absorb_flat"], row["conditional_shield_capacity"], row["regeneration_per_second"], row["lifesteal_per_second"], row["mitigation"], row["ehp"], row["ttd_seconds"], row["conditional_defense_factor"], row["pickup_radius"], row["move_speed"], row["healing_multiplier"], row["xp_multiplier"], row["money_multiplier"], row["start_gold"], row["ult_start_charge"], row["death_save"], row["solo_dpm_delta_abs"], row["solo_dpm_delta_pct"], row["crowd_10_total_dpm_delta_abs"], row["crowd_10_total_dpm_delta_pct"], row["ehp_delta_abs"], row["ehp_delta_pct"], row["ttd_seconds_delta_abs"], row["ttd_seconds_delta_pct"], row["atlas_delta_summary"], row["measurement_method"], row["runs"], row["solo_variance_dpm2"], row["crowd_variance_dpm2"]]
+		if with_dispositions:
+			cells.append_array([row["formula_live_disposition"], row["final_execution_payoff_kind"]])
 		var escaped := PackedStringArray()
 		for cell in cells:
 			escaped.append(_csv_cell(str(cell)))
@@ -2832,6 +4139,12 @@ static func render_markdown(dataset: Dictionary) -> String:
 	lines.append("# FAN-1438 — A5 character and weapon balance report")
 	lines.append("")
 	lines.append("Source commit `%s` (tree `%s`, timestamp `%s`), Godot `%s`. Dataset digest: `%s`." % [dataset["source"]["commit"], dataset["source"]["tree"], dataset["source"]["commit_timestamp"], dataset["source"]["godot"], dataset["dataset_digest_sha256"]])
+	# A dataset that carries supplemental final-execution evidence pins two separate
+	# provenances; a legacy dataset without it renders exactly as before.
+	if dataset.has("supplemental_execution"):
+		var supplemental_execution: Dictionary = dataset.get("supplemental_execution", {})
+		lines.append("Supplemental final-execution source commit `%s` (tree `%s`, timestamp `%s`), Godot `%s`." % [supplemental_execution.get("commit", ""), supplemental_execution.get("tree", ""), supplemental_execution.get("commit_timestamp", ""), supplemental_execution.get("godot", "")])
+		lines.append("Run identity `%s`. Generation command: `%s`." % [dataset.get("run_identity", ""), dataset.get("generation_command", "")])
 	lines.append("")
 	lines.append("The live roster is **%d classes / %d class-weapon pairs**. The primary matrix is **%d rows** = pairs × 2 levels × 4 meta scenarios. This report changes no balance values." % [dataset["roster"]["class_count"], dataset["roster"]["weapon_pair_count"], (dataset["weapon_rows"] as Array).size()])
 	lines.append("")
@@ -2874,10 +4187,64 @@ static func render_markdown(dataset: Dictionary) -> String:
 	if (dataset["formula_live_parity"] as Array).is_empty():
 		lines.append("Formula-only generation; final evidence requires `--mode=full`.")
 	else:
-		lines.append("| Pair | Attack mode | Final (event) | Formula solo / live mean±sd DPM | Δ | Formula 10T / live mean±sd DPM | Δ | Observation |")
-		lines.append("| --- | --- | --- | ---: | ---: | ---: | ---: | --- |")
-		for row in dataset["formula_live_parity"]:
-			lines.append("| %s | %s | %s (%s) | %.2f / %.2f±%.2f | %+.2f%% | %.2f / %.2f±%.2f | %+.2f%% | %s |" % [row["pair"], row["attack_mode"], row["final_mechanic"], row["final_event"], row["formula_solo_dpm"], row["live_solo_dpm_mean"], row["live_solo_dpm_stddev"], row["solo_delta_pct"], row["formula_pack_dpm"], row["live_pack_dpm_mean"], row["live_pack_dpm_stddev"], row["pack_delta_pct"], row["runtime_observation"]])
+		var disposition_by_pair := {}
+		for disposition_value in ((dataset.get("formula_live_dispositions", {}) as Dictionary).get("rows", [])):
+			var disposition_row: Dictionary = disposition_value
+			disposition_by_pair[str(disposition_row.get("pair", ""))] = disposition_row
+		if disposition_by_pair.is_empty():
+			lines.append("| Pair | Attack mode | Final (event) | Formula solo / live mean±sd DPM | Δ | Formula 10T / live mean±sd DPM | Δ | Observation |")
+			lines.append("| --- | --- | --- | ---: | ---: | ---: | ---: | --- |")
+			for row in dataset["formula_live_parity"]:
+				lines.append("| %s | %s | %s (%s) | %.2f / %.2f±%.2f | %+.2f%% | %.2f / %.2f±%.2f | %+.2f%% | %s |" % [row["pair"], row["attack_mode"], row["final_mechanic"], row["final_event"], row["formula_solo_dpm"], row["live_solo_dpm_mean"], row["live_solo_dpm_stddev"], row["solo_delta_pct"], row["formula_pack_dpm"], row["live_pack_dpm_mean"], row["live_pack_dpm_stddev"], row["pack_delta_pct"], row["runtime_observation"]])
+		else:
+			lines.append("| Pair | Attack mode | Final (event) | Formula solo / live mean±sd DPM | Δ | Formula 10T / live mean±sd DPM | Δ | Disposition | Observation |")
+			lines.append("| --- | --- | --- | ---: | ---: | ---: | ---: | --- | --- |")
+			for row in dataset["formula_live_parity"]:
+				var parity_disposition: Dictionary = disposition_by_pair.get(str(row.get("pair", "")), {})
+				lines.append("| %s | %s | %s (%s) | %.2f / %.2f±%.2f | %+.2f%% | %.2f / %.2f±%.2f | %+.2f%% | %s | %s |" % [row["pair"], row["attack_mode"], row["final_mechanic"], row["final_event"], row["formula_solo_dpm"], row["live_solo_dpm_mean"], row["live_solo_dpm_stddev"], row["solo_delta_pct"], row["formula_pack_dpm"], row["live_pack_dpm_mean"], row["live_pack_dpm_stddev"], row["pack_delta_pct"], parity_disposition.get("disposition", ""), row["runtime_observation"]])
+	var final_execution: Dictionary = dataset.get("final_execution", {})
+	var final_rows: Array = final_execution.get("rows", [])
+	if not final_rows.is_empty():
+		lines.append("")
+		lines.append("## Final-execution evidence")
+		lines.append("")
+		lines.append("Schema `%s`: every pair is driven through the production consumer that owns its schema-6 event, and only what the production runtime then applied is recorded — the resolver progress ladder, the canonical applied-HP ledger, target deaths, production target markers and owner state transitions. The harness authors no damage and no final label." % final_execution.get("schema", ""))
+		lines.append("")
+		lines.append("| Pair | Final (event) | Runtime consumer | Stimulus | Ladder steps → activations | Threshold | Payoff | Binding | Applied HP | Trace |")
+		lines.append("| --- | --- | --- | --- | ---: | ---: | --- | --- | ---: | --- |")
+		for final_row_value in final_rows:
+			var final_row: Dictionary = final_row_value
+			var payoff: Dictionary = final_row.get("payoff", {})
+			var sample: Dictionary = final_row.get("telemetry", {})
+			lines.append("| %s | %s (%s) | `%s` | %s | %d → %d | %d | %s | %s | %.2f | `%s` |" % [
+				final_row.get("pair", ""), final_row.get("final_mechanic", ""), final_row.get("final_event", ""),
+				(final_row.get("consumer", {}) as Dictionary).get("runtime_consumer", ""),
+				(final_row.get("stimulus", {}) as Dictionary).get("kind", ""),
+				(final_row.get("resolution_ladder", []) as Array).size(), int(payoff.get("activation_count", 0)),
+				int(final_row.get("required_progress", 0)),
+				payoff.get("kind", "unobserved"), payoff.get("binding", ""),
+				float(payoff.get("applied_hp_total", 0.0)), sample.get("trace_id", ""),
+			])
+	var disposition_rows: Array = (dataset.get("formula_live_dispositions", {}) as Dictionary).get("rows", [])
+	if not disposition_rows.is_empty():
+		lines.append("")
+		lines.append("## Formula/live dispositions")
+		lines.append("")
+		lines.append("Each row is either `within_tolerance` (both axes within %.0f%%), `explained_divergence` (over tolerance with an observed production payoff and a complete consumer-term decomposition), or `unresolved`. A certifying run must contain no unresolved row." % FORMULA_LIVE_TOLERANCE_PCT)
+		lines.append("")
+		lines.append("| Pair | Disposition | Payoff | Solo Δ (dominant term) | 10T Δ (dominant term) | Accounting |")
+		lines.append("| --- | --- | --- | ---: | ---: | --- |")
+		for disposition_value in disposition_rows:
+			var disposition_row: Dictionary = disposition_value
+			var solo_axis: Dictionary = (disposition_row.get("axes", {}) as Dictionary).get("solo", {})
+			var pack_axis: Dictionary = (disposition_row.get("axes", {}) as Dictionary).get("pack", {})
+			lines.append("| %s | %s | %s | %+.2f%% (%s %+.2f%%) | %+.2f%% (%s %+.2f%%) | %s |" % [
+				disposition_row.get("pair", ""), disposition_row.get("disposition", ""),
+				(disposition_row.get("final_execution", {}) as Dictionary).get("payoff_kind", ""),
+				float(solo_axis.get("recomputed_delta_pct", 0.0)), solo_axis.get("dominant_factor", ""), float(solo_axis.get("dominant_factor_deviation_pct", 0.0)),
+				float(pack_axis.get("recomputed_delta_pct", 0.0)), pack_axis.get("dominant_factor", ""), float(pack_axis.get("dominant_factor_deviation_pct", 0.0)),
+				disposition_row.get("explanation", ""),
+			])
 	lines.append("")
 	lines.append("## Live event telemetry")
 	lines.append("")
@@ -2899,7 +4266,10 @@ static func render_markdown(dataset: Dictionary) -> String:
 	lines.append("## Outliers and conclusions")
 	lines.append("")
 	lines.append("- Class corridor flags (outside 80–120%% of the same level/scenario median across solo, AoE, or defense): **%d**." % (dataset["outliers"]["class_corridor_80_120"] as Array).size())
-	lines.append("- Formula/live differences over 35%% on either axis: **%d**. These are instrumentation/tuning investigation candidates, not automatic nerf/buff decisions." % (dataset["outliers"]["formula_live_delta_over_35pct"] as Array).size())
+	if disposition_rows.is_empty():
+		lines.append("- Formula/live differences over 35%% on either axis: **%d**. These are instrumentation/tuning investigation candidates, not automatic nerf/buff decisions." % (dataset["outliers"]["formula_live_delta_over_35pct"] as Array).size())
+	else:
+		lines.append("- Formula/live differences over %.0f%% on either axis: **%d**. Structured disposition rows account for each one through observed consumer terms; they are not automatic nerf/buff decisions." % [FORMULA_LIVE_TOLERANCE_PCT, (dataset["outliers"]["formula_live_delta_over_35pct"] as Array).size()])
 	lines.append("- Raw outlier keys and exact ratios are in `raw.json.gz`; the complete numeric matrix is in `per_weapon.csv`.")
 	lines.append("- No balance values or mechanics were changed by FAN-1438.")
 	lines.append("")
@@ -3045,6 +4415,10 @@ func _class_weaknesses(solo: float, crowd: float, ehp: float, utility: float) ->
 
 static func _csv_cell(value: String) -> String:
 	return "\"%s\"" % value.replace("\"", "\"\"")
+
+
+static func canonical_trace_digest(events: Array) -> String:
+	return _sha256(JSON.stringify(events, "", true, true))
 
 
 static func _sha256(value: String) -> String:
