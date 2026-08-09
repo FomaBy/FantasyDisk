@@ -880,7 +880,10 @@ func _run_autosave_state() -> Dictionary:
 func migrate_run_autosave_state(state: Dictionary) -> Dictionary:
 	var migrated := state.duplicate(true)
 	var snapshot := _autosave_dictionary(migrated.get("run_player_snapshot", {}))
-	if not snapshot.is_empty():
+	if snapshot.has("run_modifiers"):
+		# FAN-2232: санитизируем только присутствующий optional-ключ (битый тип
+		# падает в {}); отсутствующий run_modifiers не создаётся, иначе legacy
+		# build identity перестаёт быть byte-equivalent исходному снапшоту.
 		snapshot["run_modifiers"] = PROGRESSION_DATA.sanitize_run_modifiers(_autosave_dictionary(snapshot.get("run_modifiers", {})))
 		migrated["run_player_snapshot"] = snapshot
 	var saved_act := maxi(1, int(migrated.get("current_act", 1)))
