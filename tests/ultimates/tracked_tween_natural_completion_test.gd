@@ -53,7 +53,10 @@ const LIFECYCLE_SPECS := [
 	{"class_id": "doctor", "weapon_id": "bone_saw", "lifecycle": 3.85, "deadline": 4.85},
 	{"class_id": "berserk", "weapon_id": "hammer", "lifecycle": 3.4, "deadline": 4.4},
 	{"class_id": "sniper", "weapon_id": "sniper_shatter_rounds", "lifecycle": 2.82, "deadline": 3.82},
+	{"class_id": "assassin", "weapon_id": "chakrams", "lifecycle": 1.72, "deadline": 2.72},
+	{"class_id": "assassin", "weapon_id": "shadow_daggers", "lifecycle": 1.72, "deadline": 2.72},
 	{"class_id": "thief", "weapon_id": "thief_shadow_cloak", "lifecycle": 1.26, "deadline": 2.26},
+	{"class_id": "assassin", "weapon_id": "venom_wire", "lifecycle": 1.05, "deadline": 2.05},
 	{"class_id": "thief", "weapon_id": "thief_coin_pouch", "lifecycle": 1.0, "deadline": 2.0},
 	{"class_id": "sniper", "weapon_id": "sniper_deadeye_rifle", "lifecycle": 0.25, "deadline": 1.25},
 ]
