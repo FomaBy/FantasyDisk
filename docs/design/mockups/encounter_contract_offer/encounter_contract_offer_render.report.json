@@ -1,0 +1,317 @@
+{
+  "ok": true,
+  "zones": [
+    {
+      "id": "title_zone",
+      "rect": [
+        700,
+        180,
+        520,
+        52
+      ],
+      "ok": true,
+      "kind": "text",
+      "font_size": 38,
+      "lines": [
+        "Контракт следующей фазы"
+      ],
+      "text_bbox": [
+        718,
+        186,
+        483,
+        40
+      ]
+    },
+    {
+      "id": "subtitle_zone",
+      "rect": [
+        748,
+        312,
+        424,
+        34
+      ],
+      "ok": true,
+      "kind": "text",
+      "font_size": 15,
+      "lines": [
+        "Прими риск сейчас — получи заранее известную награду."
+      ],
+      "text_bbox": [
+        758,
+        321,
+        405,
+        16
+      ]
+    },
+    {
+      "id": "risk_icon_zone",
+      "rect": [
+        518,
+        314,
+        92,
+        92
+      ],
+      "ok": true,
+      "kind": "image",
+      "placed": [
+        518,
+        314,
+        92,
+        92
+      ]
+    },
+    {
+      "id": "risk_label_zone",
+      "rect": [
+        742,
+        350,
+        204,
+        28
+      ],
+      "ok": true,
+      "kind": "text",
+      "font_size": 19,
+      "lines": [
+        "Риск"
+      ],
+      "text_bbox": [
+        820,
+        355,
+        47,
+        18
+      ]
+    },
+    {
+      "id": "risk_value_zone",
+      "rect": [
+        742,
+        383,
+        204,
+        62
+      ],
+      "ok": true,
+      "kind": "text",
+      "font_size": 20,
+      "lines": [
+        "+35% врагов в",
+        "следующей фазе"
+      ],
+      "text_bbox": [
+        762,
+        388,
+        164,
+        51
+      ]
+    },
+    {
+      "id": "risk_body_zone",
+      "rect": [
+        742,
+        449,
+        204,
+        96
+      ],
+      "ok": true,
+      "kind": "text",
+      "font_size": 14,
+      "lines": [
+        "Сложность повышена только",
+        "для следующего обычного",
+        "боя."
+      ],
+      "text_bbox": [
+        748,
+        471,
+        192,
+        52
+      ]
+    },
+    {
+      "id": "reward_icon_zone",
+      "rect": [
+        1256,
+        314,
+        92,
+        92
+      ],
+      "ok": true,
+      "kind": "image",
+      "placed": [
+        1256,
+        314,
+        92,
+        92
+      ]
+    },
+    {
+      "id": "reward_label_zone",
+      "rect": [
+        978,
+        350,
+        202,
+        28
+      ],
+      "ok": true,
+      "kind": "text",
+      "font_size": 19,
+      "lines": [
+        "Награда"
+      ],
+      "text_bbox": [
+        1039,
+        353,
+        80,
+        22
+      ]
+    },
+    {
+      "id": "reward_value_zone",
+      "rect": [
+        978,
+        383,
+        202,
+        42
+      ],
+      "ok": true,
+      "kind": "text",
+      "font_size": 22,
+      "lines": [
+        "+18 золота"
+      ],
+      "text_bbox": [
+        1021,
+        394,
+        116,
+        21
+      ]
+    },
+    {
+      "id": "reward_cap_zone",
+      "rect": [
+        978,
+        429,
+        202,
+        28
+      ],
+      "ok": true,
+      "kind": "text",
+      "font_size": 14,
+      "lines": [
+        "Потолок: 18 золота"
+      ],
+      "text_bbox": [
+        1015,
+        437,
+        128,
+        12
+      ]
+    },
+    {
+      "id": "reward_body_zone",
+      "rect": [
+        978,
+        462,
+        202,
+        82
+      ],
+      "ok": true,
+      "kind": "text",
+      "font_size": 13,
+      "lines": [
+        "Награда начисляется только",
+        "после успешного завершения",
+        "фазы."
+      ],
+      "text_bbox": [
+        988,
+        477,
+        181,
+        52
+      ]
+    },
+    {
+      "id": "accept_button_zone",
+      "rect": [
+        672,
+        838,
+        258,
+        56
+      ],
+      "ok": true,
+      "kind": "text",
+      "font_size": 18,
+      "lines": [
+        "Принять контракт"
+      ],
+      "text_bbox": [
+        726,
+        856,
+        151,
+        21
+      ]
+    },
+    {
+      "id": "decline_button_zone",
+      "rect": [
+        990,
+        838,
+        258,
+        56
+      ],
+      "ok": true,
+      "kind": "text",
+      "font_size": 18,
+      "lines": [
+        "Отказаться"
+      ],
+      "text_bbox": [
+        1070,
+        858,
+        98,
+        17
+      ]
+    },
+    {
+      "id": "timeout_zone",
+      "rect": [
+        744,
+        715,
+        430,
+        48
+      ],
+      "ok": true,
+      "kind": "text",
+      "font_size": 15,
+      "lines": [
+        "По таймауту: отказ — безопасный вариант"
+      ],
+      "text_bbox": [
+        810,
+        730,
+        299,
+        17
+      ]
+    },
+    {
+      "id": "input_hint_zone",
+      "rect": [
+        760,
+        254,
+        400,
+        26
+      ],
+      "ok": true,
+      "kind": "text",
+      "font_size": 11,
+      "lines": [
+        "Tab / стрелки — выбрать Enter / A — подтвердить Esc / B — отказаться"
+      ],
+      "text_bbox": [
+        776,
+        261,
+        367,
+        12
+      ]
+    }
+  ]
+}

@@ -1,0 +1,25 @@
+{
+  "source": "design/mockups/encounter_contract_offer/encounter_contract_offer_mockup.png",
+  "targets": {
+    "1280x720": {
+      "output": "design/mockups/encounter_contract_offer/encounter_contract_offer_1280x720.png",
+      "size": [
+        1280,
+        720
+      ],
+      "resize": "uniform 16:9 scale from 1920x1080",
+      "modal_safe": true,
+      "critical_hud_reserved": true
+    },
+    "2560x1440": {
+      "output": "design/mockups/encounter_contract_offer/encounter_contract_offer_2560x1440.png",
+      "size": [
+        2560,
+        1440
+      ],
+      "resize": "uniform 16:9 scale from 1920x1080",
+      "modal_safe": true,
+      "critical_hud_reserved": true
+    }
+  }
+}

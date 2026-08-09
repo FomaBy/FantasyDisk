@@ -1,0 +1,32 @@
+{
+  "base": {"width": 1920, "height": 1080, "scale": 1.0},
+  "targets": {
+    "1280x720": {
+      "scale": 0.666667,
+      "modal": [187, 107, 907, 507],
+      "top_hud_reserved": [0, 0, 1280, 75],
+      "bottom_right_fab_reserved": [1218, 658, 62, 62],
+      "notes": "Uniformly scale declared base rects, preserve 24px base content reserve as 16px, keep button min practical size 261x59. Modal bottom 614 leaves 44px before the FAB reserve."
+    },
+    "1920x1080": {
+      "scale": 1.0,
+      "modal": [280, 160, 1360, 760],
+      "top_hud_reserved": [0, 0, 1920, 112],
+      "bottom_right_fab_reserved": [1827, 987, 93, 93],
+      "notes": "Base design. Top combat HUD remains visible above y=112; modal starts y=160. Bottom-right level-up FAB remains visible below y=987."
+    },
+    "2560x1440": {
+      "scale": 1.333333,
+      "modal": [373, 213, 1813, 1013],
+      "top_hud_reserved": [0, 0, 2560, 149],
+      "bottom_right_fab_reserved": [2436, 1316, 124, 124],
+      "notes": "Uniform scale preserves the 16:9 composition; modal bottom 1226 leaves 90px before the bottom-right FAB reserve. Artifact HUD row remains above the modal."
+    }
+  },
+  "layout_policy": {
+    "modal_anchor": "center",
+    "content_anchor": "center within modal; panel row and action row are symmetric",
+    "underlay": "existing gameplay field only; no new scenic background",
+    "critical_hud": "top resource/timer/artifact HUD and bottom-right level-up FAB remain outside modal rect and are drawn above dim layer"
+  }
+}
