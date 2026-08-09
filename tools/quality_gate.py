@@ -761,6 +761,26 @@ def _write_report(path: Path, payload: dict) -> None:
     path.write_text(json.dumps(payload, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
 
 
+def _report_payload(
+    *,
+    selected_godot_tests: int,
+    executed_python_tests: int,
+    git_sha: str,
+    static_checks: list[dict],
+    godot_tests: list[dict],
+    **metadata: object,
+) -> dict:
+    """Keep the documented quality-report contract in one schema source."""
+    return {
+        "selected_godot_tests": selected_godot_tests,
+        "executed_python_tests": executed_python_tests,
+        "git_sha": git_sha,
+        "static_checks": static_checks,
+        "godot_tests": godot_tests,
+        **metadata,
+    }
+
+
 def _combine_reports(source: Path, output: Path, expected_shard_count: int | None) -> int:
     """Fail closed while joining static and full-profile shard reports."""
     report_paths = sorted(source.rglob("quality_gate_report.json"))
@@ -868,28 +888,28 @@ def _combine_reports(source: Path, output: Path, expected_shard_count: int | Non
         if unexpected_shards:
             errors.append(f"unexpected shard indexes: {', '.join(map(str, unexpected_shards))}")
 
-    payload = {
-        "profile": "full",
-        "certifying": not errors,
-        "filters": [],
-        "skip_static": False,
-        "skip_godot": False,
-        "worktree_clean": True,
-        "worktree_status": [],
-        "discovered_godot_tests": len(expected_scripts),
-        "selected_godot_tests": len(expected_scripts),
-        "selected_godot_test_scripts": expected_scripts,
-        "executed_python_tests": sum(
+    payload = _report_payload(
+        profile="full",
+        certifying=not errors,
+        filters=[],
+        skip_static=False,
+        skip_godot=False,
+        worktree_clean=True,
+        worktree_status=[],
+        discovered_godot_tests=len(expected_scripts),
+        selected_godot_tests=len(expected_scripts),
+        selected_godot_test_scripts=expected_scripts,
+        executed_python_tests=sum(
             item.get("executed_tests", 0) for item in static_checks
         ),
-        "git_sha": expected_sha,
-        "platform": sys.platform,
-        "status": "failed" if errors else "passed",
-        "static_checks": static_checks,
-        "godot_tests": sorted(godot_tests, key=lambda item: item.get("script", "")),
-        "shards": sorted(shard_summaries, key=lambda item: (str(item["count"]), str(item["index"]))),
-        "errors": errors,
-    }
+        git_sha=expected_sha,
+        platform=sys.platform,
+        status="failed" if errors else "passed",
+        static_checks=static_checks,
+        godot_tests=sorted(godot_tests, key=lambda item: item.get("script", "")),
+        shards=sorted(shard_summaries, key=lambda item: (str(item["count"]), str(item["index"]))),
+        errors=errors,
+    )
     _write_report(output, payload)
     for error in errors:
         print(f"QUALITY MERGE FAIL: {error}", file=sys.stderr, flush=True)
@@ -1098,34 +1118,34 @@ def main(argv: Sequence[str] | None = None) -> int:
         for line in worktree_status:
             print(f"  {line}", file=sys.stderr)
     status = "failed" if failed else ("passed" if certifying else "partial_pass")
-    payload = {
-        "profile": args.profile,
-        "certifying": certifying,
-        "filters": list(args.filters),
-        "skip_static": args.skip_static,
-        "skip_godot": args.skip_godot,
-        "skip_umbrella": args.skip_umbrella,
-        "godot_test_timeout_seconds": args.test_timeout,
-        "godot_import_timeout_seconds": args.import_timeout,
-        "static_timeout_seconds": args.static_timeout,
-        "python_unit_idle_timeout_seconds": args.python_unit_idle_timeout,
-        "worktree_clean": not worktree_status,
-        "worktree_status": worktree_status,
-        "discovered_godot_tests": len(discovered),
-        "selected_godot_tests": len(selected),
-        "discovered_python_tests": len(python_tests),
-        "executed_python_tests": sum(
+    payload = _report_payload(
+        profile=args.profile,
+        certifying=certifying,
+        filters=list(args.filters),
+        skip_static=args.skip_static,
+        skip_godot=args.skip_godot,
+        skip_umbrella=args.skip_umbrella,
+        godot_test_timeout_seconds=args.test_timeout,
+        godot_import_timeout_seconds=args.import_timeout,
+        static_timeout_seconds=args.static_timeout,
+        python_unit_idle_timeout_seconds=args.python_unit_idle_timeout,
+        worktree_clean=not worktree_status,
+        worktree_status=worktree_status,
+        discovered_godot_tests=len(discovered),
+        selected_godot_tests=len(selected),
+        discovered_python_tests=len(python_tests),
+        executed_python_tests=sum(
             item.get("executed_tests", 0) for item in static_results
         ),
-        "git_sha": subprocess.check_output(["git", "rev-parse", "HEAD"], cwd=ROOT, text=True).strip(),
-        "platform": sys.platform,
-        "status": status,
-        "duration_seconds": round(time.monotonic() - started, 3),
-        "static_checks": static_results,
-        "godot_import_prepass": import_result,
-        "godot_tests": godot_results,
-        "shard": {"index": args.shard_index, "count": args.shard_count},
-    }
+        git_sha=subprocess.check_output(["git", "rev-parse", "HEAD"], cwd=ROOT, text=True).strip(),
+        platform=sys.platform,
+        status=status,
+        duration_seconds=round(time.monotonic() - started, 3),
+        static_checks=static_results,
+        godot_import_prepass=import_result,
+        godot_tests=godot_results,
+        shard={"index": args.shard_index, "count": args.shard_count},
+    )
     _write_report((ROOT / args.report).resolve(), payload)
     print(
         f"QUALITY {payload['status'].upper()}: "
