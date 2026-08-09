@@ -78,9 +78,9 @@ delayed-AoE family: grenade не наносит урон до окончания
 
 | Class | Weapon ID | Name | Scene | Backend Mode | Gameplay Identity |
 | --- | --- | --- | --- | --- | --- |
-| `berserk` | `sword` | Двуручный меч | `TwoHandedSword.tscn` | `sweep` | Узкий дальний сектор 100 градусов радиуса 350; секторные бонусы расширяют угол, Radius расширяет дальность |
+| `berserk` | `sword` | Двуручный меч | `TwoHandedSword.tscn` | `sweep` | Узкий сектор 100 градусов радиуса 350; единая область атаки масштабирует живую геометрию, но не target reach |
 | `berserk` | `axe` | Двуручный топор | `TwoHandedAxe.tscn` | `sweep` | Широкий сектор 180 градусов радиуса 250 по ближайшему монстру |
-| `berserk` | `hammer` | Двуручный молот | `TwoHandedHammer.tscn` | `circle` | Круговой slam радиуса 150; Radius увеличивает круг, секторные бонусы не влияют, плотные паки получают target diminishing |
+| `berserk` | `hammer` | Двуручный молот | `TwoHandedHammer.tscn` | `circle` | Круговой slam радиуса 150; единая область атаки увеличивает круг, плотные паки получают target diminishing |
 
 SCRUM-1043 выравнивает hammer slam относительно ног full-frame Берсерка без
 числового ребаланса оружия. Hammer-only hit/VFX center смещён на `16px` вниз,

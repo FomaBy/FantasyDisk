@@ -2,12 +2,27 @@ extends SceneTree
 
 const ProgressionData := preload("res://scripts/progression_data.gd")
 const AttributeContract := preload("res://scripts/attribute_contract.gd")
+const Meta := preload("res://scripts/meta_progression.gd")
 const PLAYER_SCENE := preload("res://scenes/Player.tscn")
 const REMOVED_KEYS := ["range_multiplier", "sector_multiplier", "projectile_speed_flat", "aura_radius_flat", "buff_power_flat"]
 const RETIRED_CONE_CONFIGS := ["berserk/sword", "berserk/axe", "knight/long_spear", "knight/tower_shield"]
 const LIVE_GEOMETRY_PROPERTIES := [
 	"aoe_radius", "summon_aoe_radius", "beam_width", "wave_width",
 	"suppression_width", "inner_width", "outer_width", "sweep_degrees", "cone_degrees",
+]
+const CANONICAL_DOC_FACTS := {
+	"res://docs/design/content_registry.md": "retired range/projectile-speed/buff axes остаются только legacy assets",
+	"res://docs/design/systems/characters_weapons.md": "единая область атаки масштабирует живую геометрию, но не target reach",
+	"res://docs/design/current_game_state.md": "reach/projectile-speed остаются config-defined",
+	"res://docs/design/mechanics_extract.md": "standalone `buff_power` источника нет",
+}
+const RETIRED_CURRENT_PROMISES := [
+	"radius расширяет дальность",
+	"radius расширяет reach",
+	"sector_multiplier расширяет",
+	"stat cross-scaling range/projectile speed",
+	"range_multiplier scales attack_range",
+	"buff_power scales support",
 ]
 
 
@@ -47,6 +62,8 @@ func _initialize() -> void:
 			player.free()
 	if weapon_count != 51:
 		errors.append("expected 51 weapon configurations, got %d" % weapon_count)
+	_check_live_summon_geometry(holder, "druid", "summon_amulet", 1.12, "druid_h0", errors)
+	_check_live_summon_geometry(holder, "chemist", "homunculus_vial", 1.232, "chemist_homunculus_vial_final", errors)
 	holder.free()
 
 	var control_config: Dictionary = ProgressionData.weapon("berserk", "sword")
@@ -69,7 +86,10 @@ func _initialize() -> void:
 	var support_without_legacy := ProgressionData.derived_parameters(base_stats, {"damage_multiplier": 1.20}, control_config)
 	if not is_equal_approx(float(support.get("support_multiplier", 0.0)), float(support_without_legacy.get("support_multiplier", 0.0))) or float(support.get("support_multiplier", 0.0)) <= 1.0:
 		errors.append("support multiplier is not derived exactly from shared % damage")
-	var sanitized := ProgressionData.sanitize_run_modifiers({"damage_multiplier": 1.10, "range_multiplier": 2.0, "buff_power_flat": 1.0})
+	var legacy_modifiers := {"damage_multiplier": 1.10}
+	for key in REMOVED_KEYS:
+		legacy_modifiers[key] = 1.0
+	var sanitized := ProgressionData.sanitize_run_modifiers(legacy_modifiers)
 	for key in REMOVED_KEYS:
 		if sanitized.has(key):
 			errors.append("legacy save modifier '%s' survived sanitization" % key)
@@ -85,6 +105,7 @@ func _initialize() -> void:
 	for character_id_value in ProgressionData.character_ids():
 		for ascension in ProgressionData.ascension_levels(str(character_id_value)):
 			_check_source("ascension %s" % str(ascension.get("id", "")), ascension.get("mods", {}), errors)
+	_check_canonical_docs(errors)
 
 	if not errors.is_empty():
 		for error in errors:
@@ -145,6 +166,78 @@ func _check_live_geometry(label: String, player: Node, weapon: Node, dimensions:
 	for dimension in after_declared:
 		if not is_equal_approx(float(repeated.get(dimension, INF)), float(after_declared[dimension])):
 			errors.append("%s declared %s applied the shared multiplier more than once" % [label, dimension])
+
+
+func _check_live_summon_geometry(holder: Node, character_id: String, weapon_id: String, multiplier: float, final_node: String, errors: Array[String]) -> void:
+	var label := "%s/%s" % [character_id, weapon_id]
+	var player := PLAYER_SCENE.instantiate() as Node2D
+	holder.add_child(player)
+	player.call("configure_character", character_id, weapon_id)
+	var weapon = player.get("equipped_weapon")
+	if weapon == null or not is_instance_valid(weapon):
+		errors.append("%s did not equip its real summon weapon scene" % label)
+		player.free()
+		return
+	var neutral_profile: Dictionary = weapon.call("_summon_profile", player)
+	var neutral_splash := float(neutral_profile.get("aoe_radius", 0.0))
+	var neutral_stored := float(weapon.get("summon_aoe_radius"))
+	var state := Meta.default_state()
+	var nodes: Array[String] = []
+	for order in range(1, 6):
+		nodes.append("%s_%s_b%d" % [character_id, weapon_id, order])
+	nodes.append(final_node)
+	state["skill_nodes"] = nodes
+	player.call("apply_constellation_weapon_profiles", Meta.skill_profiles_for_class(state, character_id))
+	player.call("_apply_weapon_scaling", weapon)
+	var actual_multiplier := float(player.call("constellation_weapon_geometry_multiplier", weapon_id))
+	var boosted_profile: Dictionary = weapon.call("_summon_profile", player)
+	var stored_ratio := float(weapon.get("summon_aoe_radius")) / maxf(neutral_stored, 0.0001)
+	var final_ratio := float(boosted_profile.get("aoe_radius", 0.0)) / maxf(neutral_splash, 0.0001)
+	if not is_equal_approx(actual_multiplier, multiplier):
+		errors.append("%s constellation geometry multiplier %.6f, expected %.6f" % [label, actual_multiplier, multiplier])
+	if not _matches_summon_ratio(stored_ratio, multiplier):
+		errors.append("%s stored summon splash ratio %.6f, expected %.6f" % [label, stored_ratio, multiplier])
+	if not _matches_summon_ratio(final_ratio, multiplier):
+		errors.append("%s final summon splash ratio %.6f, expected %.6f (squared %.6f)" % [label, final_ratio, multiplier, multiplier * multiplier])
+	if _matches_summon_ratio(multiplier * multiplier, multiplier):
+		errors.append("%s mutation oracle accepted repeated constellation geometry" % label)
+	if _matches_summon_ratio(1.0, multiplier):
+		errors.append("%s mutation oracle accepted missing constellation geometry" % label)
+	player.call("_apply_weapon_scaling", weapon)
+	var repeated_profile: Dictionary = weapon.call("_summon_profile", player)
+	var repeated_ratio := float(repeated_profile.get("aoe_radius", 0.0)) / maxf(neutral_splash, 0.0001)
+	if not _matches_summon_ratio(repeated_ratio, multiplier):
+		errors.append("%s repeated setter changed final summon splash ratio %.6f" % [label, repeated_ratio])
+	player.free()
+
+
+func _matches_summon_ratio(actual: float, expected: float) -> bool:
+	return is_equal_approx(actual, expected)
+
+
+func _check_canonical_docs(errors: Array[String]) -> void:
+	for path_value in CANONICAL_DOC_FACTS:
+		var path := str(path_value)
+		var text := FileAccess.get_file_as_string(path)
+		var required_fact := str(CANONICAL_DOC_FACTS[path])
+		if text.is_empty() or not text.contains(required_fact):
+			errors.append("%s is missing its current attack-area contract" % path)
+		if _has_current_retired_promise(text):
+			errors.append("%s retains a current-facing retired range/sector/speed/buff promise" % path)
+		for promise_value in RETIRED_CURRENT_PROMISES:
+			if not _has_current_retired_promise("Current gameplay: %s." % str(promise_value)):
+				errors.append("%s mutation oracle missed '%s'" % [path, promise_value])
+
+
+func _has_current_retired_promise(text: String) -> bool:
+	for line_value in text.split("\n"):
+		var line := str(line_value).to_lower()
+		if line.contains("legacy") or line.contains("internal"):
+			continue
+		for promise_value in RETIRED_CURRENT_PROMISES:
+			if line.contains(str(promise_value)):
+				return true
+	return false
 
 
 func _declared_values(weapon: Node, parameters: Dictionary, dimensions: Array, label: String, errors: Array[String]) -> Dictionary:

@@ -310,11 +310,8 @@ func _summon_profile(owner_node: Node, roster_entry: Dictionary = {}) -> Diction
 			family_parameter = "magic_damage"
 	var base_damage := float(parameters.get(family_parameter, parameters.get("damage", damage)))
 	var constellation_flat := 0.0
-	var constellation_geometry := 1.0
 	if owner_node.has_method("constellation_weapon_amount"):
 		constellation_flat = float(owner_node.call("constellation_weapon_amount", weapon_id, "weapon_damage_flat"))
-	if owner_node.has_method("constellation_weapon_geometry_multiplier"):
-		constellation_geometry = float(owner_node.call("constellation_weapon_geometry_multiplier", weapon_id))
 	base_damage += constellation_flat
 	# SCRUM-546: Лидерство — главный драйвер урона саммонов (см.
 	# progression_data._budget_summon_role_damage_factor — тот же коэффициент/потолок).
@@ -331,7 +328,7 @@ func _summon_profile(owner_node: Node, roster_entry: Dictionary = {}) -> Diction
 	# не моделирует (per-summon DPS-формула/haste остаются зеркалом budget, инвариант цел).
 	var level_progress := maxf(float(owner_node.get("level")) - 1.0, 0.0) if owner_node.get("level") != null else 0.0
 	var summon_crowd_scale := 1.0 + minf(level_progress * 0.275, 5.20)
-	var summon_radius := summon_aoe_radius * constellation_geometry * (1.0 + minf(summon_amount * 0.006 + leadership * 0.004, 0.18)) * sqrt(summon_crowd_scale)
+	var summon_radius := summon_aoe_radius * (1.0 + minf(summon_amount * 0.006 + leadership * 0.004, 0.18)) * sqrt(summon_crowd_scale)
 	var summon_splash_damage := summon_aoe_damage_multiplier * summon_crowd_scale
 	var owner_max_hp := float(owner_node.get("max_health")) if owner_node.get("max_health") != null else 80.0
 	var run_modifiers_raw = owner_node.get("run_modifiers")
@@ -353,14 +350,14 @@ func _summon_profile(owner_node: Node, roster_entry: Dictionary = {}) -> Diction
 	# оружия относительно базы 420) и бьют одиночным магическим снарядом — их
 	# splash-покрытие выключено (melee-звери остаются AoE-осью стаи).
 	var attack_kind := str(roster_entry.get("attack_kind", "melee"))
-	var profile_attack_range := maxf(float(parameters.get("attack_range", attack_range)) * constellation_geometry * 0.18, 24.0)
+	var profile_attack_range := maxf(float(parameters.get("attack_range", attack_range)) * 0.18, 24.0)
 	# SCRUM-902: дальние духи бьют РЕЖЕ, но ТЯЖЕЛЕЕ (×RANGED_CADENCE_SCALE к
 	# интервалу И к урону хита) — per-body DPS семьи равен melee-темпу, поэтому
 	# budget-зеркало (_budget_summon_dps) остаётся композиционно-взвешенным по
 	# семьям без отдельной модели темпа.
 	var cadence_scale := 1.0
 	if attack_kind == "ranged":
-		profile_attack_range = maxf(summon_ranged_range * constellation_geometry * (float(parameters.get("attack_range", attack_range)) / maxf(attack_range, 1.0)), 120.0)
+		profile_attack_range = maxf(summon_ranged_range * (float(parameters.get("attack_range", attack_range)) / maxf(attack_range, 1.0)), 120.0)
 		cadence_scale = RANGED_CADENCE_SCALE
 	var profile := {
 		"damage": maxf(base_damage * damage_multiplier * role_damage * meta_damage_mult * cadence_scale, 1.0),
