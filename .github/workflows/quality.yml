@@ -142,19 +142,20 @@ jobs:
       # 90-minute budget (FAN-2132). dev's tip is normally a merge commit;
       # depth 1 leaves both parents as shallow grafts, which breaks the
       # git-head-check static command (`git show --check` treats a parentless
-      # graft as a root commit and flags every line as new). Depth 2 keeps
-      # both merge parents as real objects without requesting full history.
+      # graft as a root commit and flags every line as new). Depth 8 keeps
+      # merge parents plus this task branch's bounded path back to dev.
       - uses: actions/checkout@v6
         with:
-          fetch-depth: 2
+          fetch-depth: 8
       # tests/test_release_skill_onboarding.py (run via the static profile's
       # python-unit command) archives two exact historical commits with
       # `git archive`/`git show <sha>:path` as fixed regression fixtures.
       # They sit far outside any bounded checkout depth, so fetch them by SHA
       # explicitly instead of widening fetch-depth back toward full history.
-      - name: Fetch pinned legacy commits for release-skill regression tests
+      - name: Fetch static gate history and pinned legacy commits
         run: |
           set -euo pipefail
+          git fetch --no-tags --depth=8 origin dev:refs/remotes/origin/dev
           git fetch --no-tags --depth=1 origin \
             2cba1b7050cb168bca70b6354cc7b654334dd53e \
             5d23555117c11620ee0f0834e6c30877fd1dafb8
