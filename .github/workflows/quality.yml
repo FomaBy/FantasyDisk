@@ -198,9 +198,10 @@ jobs:
   dev-runtime-health-godot:
     if: github.event_name == 'schedule' || github.event_name == 'workflow_dispatch'
     runs-on: ubuntu-latest
-    # Keep the existing measured-safety budget until a completed sharded run
-    # supplies the replacement measurement required by FAN-2133.
-    timeout-minutes: 90
+    # FAN-2216 measured 9m28s max across six shards (run 31312962641).
+    # 25 minutes leaves 15m32s / 164% headroom, and 8m57s / 56% over the
+    # 16m03s cache-miss partial-failure maximum from run 31311148709.
+    timeout-minutes: 25
     strategy:
       fail-fast: false
       matrix:
