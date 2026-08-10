@@ -56,6 +56,7 @@ const LIFECYCLE_SPECS := [
 	{"class_id": "sniper", "weapon_id": "sniper_shatter_rounds", "lifecycle": 2.82, "deadline": 3.82},
 	{"class_id": "assassin", "weapon_id": "chakrams", "lifecycle": 1.72, "deadline": 2.72},
 	{"class_id": "assassin", "weapon_id": "shadow_daggers", "lifecycle": 1.72, "deadline": 2.72},
+	{"class_id": "knight", "weapon_id": "long_spear", "lifecycle": 1.4, "deadline": 2.4},
 	{"class_id": "thief", "weapon_id": "thief_shadow_cloak", "lifecycle": 1.26, "deadline": 2.26},
 	{"class_id": "assassin", "weapon_id": "venom_wire", "lifecycle": 1.05, "deadline": 2.05},
 	{"class_id": "thief", "weapon_id": "thief_coin_pouch", "lifecycle": 1.0, "deadline": 2.0},
