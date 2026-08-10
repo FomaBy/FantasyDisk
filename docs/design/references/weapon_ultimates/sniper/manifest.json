@@ -21,7 +21,7 @@
       "weapon_id": "sniper_spotter_scope",
       "scene_path": "scenes/vfx/ultimates/sniper/sniper_spotter_scope_ultimate.tscn",
       "timeline_path": "scenes/vfx/ultimates/sniper/sniper_spotter_scope.timeline.json",
-      "timing_seconds": {"windup": 0.0, "release": 0.55, "active": 1.1, "recovery": 2.4, "cancel": 3.2},
+      "timing_seconds": {"windup": 0.0, "release": 0.4, "active": 1.0, "recovery": 2.8, "cancel": 3.2},
       "pivot": [0.5, 0.5],
       "performance": {"max_visual_nodes": 24, "crowd_cap": 24}
     },
@@ -29,7 +29,7 @@
       "weapon_id": "sniper_shatter_rounds",
       "scene_path": "scenes/vfx/ultimates/sniper/sniper_shatter_rounds_ultimate.tscn",
       "timeline_path": "scenes/vfx/ultimates/sniper/sniper_shatter_rounds.timeline.json",
-      "timing_seconds": {"windup": 0.0, "release": 0.42, "active": 0.86, "recovery": 1.55, "cancel": 2.1},
+      "timing_seconds": {"windup": 0.0, "release": 0.36, "active": 0.74, "recovery": 1.65, "cancel": 2.1},
       "pivot": [0.5, 0.5],
       "performance": {"max_visual_nodes": 26, "crowd_cap": 26}
     }
