@@ -2489,12 +2489,47 @@ static func verify_dataset_digest(dataset: Dictionary) -> Dictionary:
 	var digest := str(dataset.get("dataset_digest_sha256", ""))
 	if not digest.is_valid_hex_number() or digest.length() != 64 or digest != digest.to_lower():
 		return {"ok": false, "error": "digest is not a lowercase SHA-256 hex string"}
-	var payload := dataset.duplicate(true)
-	payload.erase("dataset_digest_sha256")
-	var expected := _sha256(JSON.stringify(payload, "", true, true))
+	var expected := canonical_dataset_digest(dataset)
 	if digest != expected:
 		return {"ok": false, "error": "digest differs from canonical payload"}
 	return {"ok": true}
+
+
+static func canonical_dataset_digest(dataset: Dictionary) -> String:
+	var context := HashingContext.new()
+	context.start(HashingContext.HASH_SHA256)
+	_append_canonical_dataset_value(context, dataset, "dataset_digest_sha256")
+	return context.finish().hex_encode()
+
+
+static func _append_canonical_dataset_value(context: HashingContext, value: Variant, excluded_key := "") -> void:
+	if value is Dictionary:
+		var dictionary: Dictionary = value
+		var keys := dictionary.keys()
+		keys.sort()
+		context.update("{".to_utf8_buffer())
+		var first := true
+		for key_value in keys:
+			if str(key_value) == excluded_key:
+				continue
+			if not first:
+				context.update(",".to_utf8_buffer())
+			first = false
+			context.update(JSON.stringify(str(key_value)).to_utf8_buffer())
+			context.update(":".to_utf8_buffer())
+			_append_canonical_dataset_value(context, dictionary[key_value])
+		context.update("}".to_utf8_buffer())
+		return
+	if value is Array:
+		var array: Array = value
+		context.update("[".to_utf8_buffer())
+		for index in range(array.size()):
+			if index > 0:
+				context.update(",".to_utf8_buffer())
+			_append_canonical_dataset_value(context, array[index])
+		context.update("]".to_utf8_buffer())
+		return
+	context.update(JSON.stringify(value, "", true, true).to_utf8_buffer())
 
 
 static func verify_live_telemetry_artifacts(dataset: Dictionary) -> Dictionary:

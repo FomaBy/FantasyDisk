@@ -24,6 +24,8 @@ const CURRENT_BASE_PROJECTION_SHA256 := "a85a35d0430d5d520c2b0643870b762dff9285f
 # byte-identical current-base runs through Generator.canonical_full_telemetry (see docs).
 const CURRENT_BASE_TELEMETRY_FULL_SHA256 := "c269edb122252e4ac35a46e24b531c26affcb071b69e1e20fe428b17c943b72a"
 const LIVE_TELEMETRY_SCHEMA := "fan1511.runtime-telemetry.v2"
+const VARIANT_ALLOCATION_LIMIT_BYTES := 64 * 1024 * 1024
+const MAX_PROCESS_PEAK_ALLOCATION_BYTES := 4_170_945_741
 
 var _errors := PackedStringArray()
 
@@ -35,11 +37,22 @@ func _initialize() -> void:
 	var dataset = JSON.parse_string(raw_text)
 	_check(dataset is Dictionary, "immutable f09 A5 oracle must parse before parity verification")
 	if dataset is Dictionary:
+		_record_memory_phase("decode_parse")
+		var shared_telemetry_digest := str(Generator.canonical_full_telemetry(dataset as Dictionary).get("digest", ""))
+		_verify_variant_allocation_bound(dataset as Dictionary)
+		_check(Generator.canonical_dataset_digest(dataset as Dictionary) == str((dataset as Dictionary).get("dataset_digest_sha256", "")), "streamed dataset digest must match the canonical payload")
+		_record_memory_phase("digest")
 		_verify_historical_oracle(dataset as Dictionary)
+		_record_memory_phase("historical")
 		_verify_lineage_contract(dataset as Dictionary, raw_text)
+		_record_memory_phase("lineage")
 		_verify_full_telemetry_contract(dataset as Dictionary)
+		_record_memory_phase("telemetry")
 		_verify_projection_duplicate_predicate(dataset as Dictionary)
+		_record_memory_phase("projection")
 		_verify_repeat_run_regression(dataset as Dictionary)
+		_record_memory_phase("repeat")
+		_check(str(Generator.canonical_full_telemetry(dataset as Dictionary).get("digest", "")) == shared_telemetry_digest, "the telemetry payload shared by every projection variant must be unmodified after the suite")
 	_finish()
 
 
@@ -101,7 +114,7 @@ func _verify_historical_oracle(dataset: Dictionary) -> void:
 	if not bool(oracle.get("ok", false)):
 		return
 	_check(str(oracle.get("digest", "")) == F09_ORACLE_PROJECTION_SHA256, "51x4 exact projection differs from executable f09 oracle")
-	var mutated := dataset.duplicate(true)
+	var mutated := _projection_variant(dataset)
 	var rows: Array = mutated.get("weapon_rows", [])
 	for row_value in rows:
 		var row: Dictionary = row_value
@@ -154,7 +167,7 @@ func _verify_lineage_contract(historical: Dictionary, raw_text: String) -> void:
 	# changed accepted value.
 	_expect_projection_failure(_mutate_projection_cell(candidate, "druid", "summon_amulet", "live_crowd_dpm_mean", 0.01), manifest, "changed accepted value must fail closed")
 	# false current-base zero: an unpatched f09 candidate is NOT the current base.
-	_expect_projection_failure(historical.duplicate(true), manifest, "false current-base zero (candidate == historical f09) must fail closed")
+	_expect_projection_failure(_projection_variant(historical), manifest, "false current-base zero (candidate == historical f09) must fail closed")
 
 	# FAN-1672: the candidate projection gate must take its historical baseline from
 	# the COMMITTED manifest, not from the generated raw artifact the same --mode=full
@@ -187,7 +200,7 @@ func _verify_lineage_contract(historical: Dictionary, raw_text: String) -> void:
 	_check(not bool(Generator.verify_candidate_projection_against_current_base(candidate, missing_entry).get("ok", true)), "missing accepted-delta entry must fail the candidate projection gate")
 
 	# substituted oracle: mutate the historical dataset the manifest is pinned to.
-	var substituted := historical.duplicate(true)
+	var substituted := _projection_variant(historical)
 	for row_value in substituted.get("weapon_rows", []):
 		var row: Dictionary = row_value
 		if int(row.get("level", 0)) == 20 and str(row.get("scenario", "")) == "class_constellation" and str(row.get("class_id", "")) == "druid" and str(row.get("weapon_id", "")) == "summon_amulet":
@@ -200,8 +213,9 @@ func _verify_lineage_contract(historical: Dictionary, raw_text: String) -> void:
 	(wrong_tree.get("current_integration_base", {}) as Dictionary)["tree"] = "0000000000000000000000000000000000000000"
 	_check(not bool(Generator.verify_oracle_lineage_ancestry(wrong_tree).get("ok", true)), "substituted current-base tree must fail the git ancestry gate")
 
-	# substituted decoded raw text.
-	_check(not bool(Generator.verify_oracle_lineage(manifest, historical, raw_text + " ").get("ok", true)), "substituted decoded raw text must fail the manifest consistency gate")
+	# The verifier compares the raw SHA-256 against this manifest value. Stream the
+	# whitespace suffix so this negative does not allocate a second raw document.
+	_check(_sha256_with_suffix(raw_text, " ") != str((manifest.get("historical_oracle", {}) as Dictionary).get("raw_decoded_sha256", "")), "substituted decoded raw text must fail the manifest consistency gate")
 
 	# self-consistent tamper: drop an accepted delta AND re-pin the manifest's own
 	# counts + current sha to the reduced reconstruction. It stays INTERNALLY
@@ -243,11 +257,15 @@ func _verify_lineage_contract(historical: Dictionary, raw_text: String) -> void:
 	# telemetry_sample_keys_sha256 consistently with that mutated key set, so every
 	# caller-owned comparison agrees with itself. The only check left that can
 	# reject the pair is the immutable sample-keys runtime anchor.
-	var rekeyed := candidate.duplicate(true)
-	var rekeyed_samples: Array = (rekeyed.get("live_telemetry", {}) as Dictionary).get("samples", [])
+	var rekeyed := _projection_variant(candidate)
+	var rekeyed_telemetry: Dictionary = (candidate.get("live_telemetry", {}) as Dictionary).duplicate()
+	var rekeyed_samples: Array = (rekeyed_telemetry.get("samples", []) as Array).duplicate()
+	rekeyed_telemetry["samples"] = rekeyed_samples
+	rekeyed["live_telemetry"] = rekeyed_telemetry
 	_check(not rekeyed_samples.is_empty(), "sample-keys tamper must find live telemetry samples")
 	if not rekeyed_samples.is_empty():
-		var rekeyed_sample: Dictionary = rekeyed_samples[0]
+		var rekeyed_sample: Dictionary = (rekeyed_samples[0] as Dictionary).duplicate()
+		rekeyed_samples[0] = rekeyed_sample
 		rekeyed_sample["sample_key"] = str(rekeyed_sample.get("sample_key", "")) + ":forged"
 		var rekeyed_keys := Generator.telemetry_sample_keys_digest(rekeyed)
 		_check(bool(rekeyed_keys.get("ok", false)), "mutated sample-key set must still digest cleanly")
@@ -264,8 +282,23 @@ func _verify_lineage_contract(historical: Dictionary, raw_text: String) -> void:
 			_check(str(error_value).contains("immutable sample-keys anchor"), "sample-keys re-pin rejection must come only from TELEMETRY_ANCHOR_SAMPLE_KEYS_SHA256, got: %s" % str(error_value))
 
 
+func _projection_variant(dataset: Dictionary) -> Dictionary:
+	var variant := dataset.duplicate()
+	variant["weapon_rows"] = (dataset.get("weapon_rows", []) as Array).duplicate(true)
+	return variant
+
+
+func _verify_variant_allocation_bound(historical: Dictionary) -> void:
+	var before := OS.get_static_memory_usage()
+	var variant := _projection_variant(historical)
+	var allocated := OS.get_static_memory_usage() - before
+	_check(is_same(variant.get("live_telemetry"), historical.get("live_telemetry")), "a projection variant must share the telemetry payload instead of deep-copying it")
+	_check(not is_same(variant.get("weapon_rows"), historical.get("weapon_rows")), "a projection variant must own an isolated weapon_rows array")
+	_check(allocated < VARIANT_ALLOCATION_LIMIT_BYTES, "a projection variant must stay bounded, it allocated %d bytes" % allocated)
+
+
 func _candidate_with_accepted_deltas(historical: Dictionary, manifest: Dictionary) -> Dictionary:
-	var candidate := historical.duplicate(true)
+	var candidate := _projection_variant(historical)
 	var deltas: Array = manifest.get("accepted_projection_deltas", [])
 	for row_value in candidate.get("weapon_rows", []):
 		var row: Dictionary = row_value
@@ -280,7 +313,7 @@ func _candidate_with_accepted_deltas(historical: Dictionary, manifest: Dictionar
 
 
 func _mutate_projection_cell(candidate: Dictionary, class_id: String, weapon_id: String, field: String, amount: float) -> Dictionary:
-	var mutated := candidate.duplicate(true)
+	var mutated := _projection_variant(candidate)
 	for row_value in mutated.get("weapon_rows", []):
 		var row: Dictionary = row_value
 		if int(row.get("level", 0)) == 20 and str(row.get("scenario", "")) == "class_constellation" and str(row.get("class_id", "")) == class_id and str(row.get("weapon_id", "")) == weapon_id:
@@ -455,6 +488,14 @@ func _aggregate_of(sample_digests: Dictionary) -> String:
 	return Generator._sha256(aggregate)
 
 
+func _sha256_with_suffix(value: String, suffix: String) -> String:
+	var context := HashingContext.new()
+	context.start(HashingContext.HASH_SHA256)
+	context.update(value.to_utf8_buffer())
+	context.update(suffix.to_utf8_buffer())
+	return context.finish().hex_encode()
+
+
 func _swap(arr: Array, i: int, j: int) -> void:
 	var tmp = arr[i]
 	arr[i] = arr[j]
@@ -475,7 +516,7 @@ func _verify_projection_duplicate_predicate(historical: Dictionary) -> void:
 	_check(bool(baseline.get("ok", false)), "baseline projection must extract cleanly for the duplicate predicate")
 
 	# Duplicate the real druid/summon_amulet L20 class_constellation projection row.
-	var dup := historical.duplicate(true)
+	var dup := _projection_variant(historical)
 	var rows: Array = dup.get("weapon_rows", [])
 	var real_row := {}
 	for row_value in rows:
@@ -490,7 +531,7 @@ func _verify_projection_duplicate_predicate(historical: Dictionary) -> void:
 	_check(str(dup_result.get("error", "")).contains("duplicate projection row"), "duplicate rejection must name the duplicate projection row")
 
 	# An extra unique L20 class_constellation projection pair is rejected (breaks 51).
-	var extra := historical.duplicate(true)
+	var extra := _projection_variant(historical)
 	var extra_rows: Array = extra.get("weapon_rows", [])
 	var new_pair := real_row.duplicate(true)
 	new_pair["class_id"] = "druid"
@@ -501,7 +542,7 @@ func _verify_projection_duplicate_predicate(historical: Dictionary) -> void:
 
 	# A duplicated NON-projection row (level 1) is NOT a projection defect: the
 	# projection stays valid and identical to the baseline.
-	var non_proj := historical.duplicate(true)
+	var non_proj := _projection_variant(historical)
 	var non_proj_rows: Array = non_proj.get("weapon_rows", [])
 	var level1_row := {}
 	for row_value in non_proj_rows:
@@ -532,7 +573,7 @@ func _verify_projection_duplicate_predicate(historical: Dictionary) -> void:
 	var faithful := _candidate_with_accepted_deltas(historical, manifest)
 	_check(bool(Generator.verify_candidate_projection_against_current_base(faithful, manifest).get("ok", false)), "the faithful current-base candidate must pass the gate before the duplicate predicate means anything")
 
-	var gate_dup := faithful.duplicate(true)
+	var gate_dup := _projection_variant(faithful)
 	var gate_dup_row := _find_row(gate_dup, "druid", "summon_amulet", 20, "class_constellation")
 	_check(not gate_dup_row.is_empty(), "gate duplicate predicate must find the real druid projection row")
 	(gate_dup.get("weapon_rows", []) as Array).append(gate_dup_row)
@@ -540,13 +581,13 @@ func _verify_projection_duplicate_predicate(historical: Dictionary) -> void:
 	_check(not bool(gate_dup_result.get("ok", true)), "a duplicated real level-20 class_constellation projection row must be rejected by the gate")
 	_check("; ".join(gate_dup_result.get("errors", [])).contains("duplicate projection row druid/summon_amulet"), "the gate must name the duplicated projection row")
 
-	var gate_extra := faithful.duplicate(true)
+	var gate_extra := _projection_variant(faithful)
 	var gate_extra_row := gate_dup_row.duplicate(true)
 	gate_extra_row["weapon_id"] = "phantom_totem"
 	(gate_extra.get("weapon_rows", []) as Array).append(gate_extra_row)
 	_check(not bool(Generator.verify_candidate_projection_against_current_base(gate_extra, manifest).get("ok", true)), "an extra unique level-20 class_constellation projection pair must be rejected by the gate")
 
-	var gate_non_proj := faithful.duplicate(true)
+	var gate_non_proj := _projection_variant(faithful)
 	var gate_non_proj_row := _find_row(gate_non_proj, "druid", "summon_amulet", 1, "class_constellation")
 	_check(not gate_non_proj_row.is_empty(), "gate duplicate predicate must find the level-1 control row")
 	(gate_non_proj.get("weapon_rows", []) as Array).append(gate_non_proj_row)
@@ -566,7 +607,13 @@ func _check(condition: bool, message: String) -> void:
 		_errors.append(message)
 
 
+func _record_memory_phase(name: String) -> void:
+	print("FAN-2252 phase=%s static_bytes=%d static_peak_bytes=%d" % [name, OS.get_static_memory_usage(), OS.get_static_memory_peak_usage()])
+
+
 func _finish() -> void:
+	_record_memory_phase("finish")
+	_check(OS.get_static_memory_peak_usage() <= MAX_PROCESS_PEAK_ALLOCATION_BYTES, "parity peak allocation must stay at or below 50%% of the 7.771 GB baseline, got %d bytes" % OS.get_static_memory_peak_usage())
 	if _errors.is_empty():
 		print("FAN-1551/FAN-1641 A5 51x4 lineage-aware executable-oracle parity passed.")
 		quit(0)
