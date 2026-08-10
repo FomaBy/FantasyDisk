@@ -84,6 +84,7 @@ func _initialize() -> void:
 	await _test_trait_dot_exception(errors)
 	await _test_trait_no_class_leak(errors)
 	await _test_deadeye_far_target_and_bursts(errors)
+	await _test_deadeye_without_final_does_not_mark(errors)
 	await _test_spotter_delay_zone_and_scaling(errors)
 	await _test_spotter_cleanup_on_shutdown(errors)
 	await _test_shatter_solo_hit_cap(errors)
@@ -157,6 +158,9 @@ func _test_kit_data_contracts(errors: Array) -> void:
 	# Attack-mode маркеры.
 	if str(rifle.get("attack_mode", "")) != "sniper_lockshot":
 		errors.append("винтовка: attack_mode '%s' != 'sniper_lockshot'" % str(rifle.get("attack_mode", "")))
+	for charge_key in ["charge_seconds", "charge_max_multiplier"]:
+		if rifle.has(charge_key):
+			errors.append("винтовка: %s не должен задаваться — weakpoint открывает завершённый lockshot, не Ranger-style charge" % charge_key)
 	if str(scope.get("attack_mode", "")) != "sniper_kill_zone":
 		errors.append("наводчик: attack_mode '%s' != 'sniper_kill_zone'" % str(scope.get("attack_mode", "")))
 	if str(shatter.get("attack_mode", "")) != "sniper_split_round":
@@ -296,7 +300,7 @@ func _test_deadeye_far_target_and_bursts(errors: Array) -> void:
 	var near_off := _new_enemy(holder, owner.global_position + Vector2(0.0, 80.0)) # вплотную, вне линии — самоподрыв
 	var outside := _new_enemy(holder, owner.global_position + Vector2(0.0, 400.0)) # вне всех зон — изоляция
 	await process_frame
-	weapon.call("_fire_sniper_lockshot", owner, null, Vector2.RIGHT)
+	weapon._attack()
 	# До конца фиксации (grenade_delay) урона быть не должно — выстрел отложен.
 	if far.total_damage > EPS:
 		errors.append("винтовка: урон нанесён до конца фиксации (выстрел не отложен)")
@@ -318,6 +322,22 @@ func _test_deadeye_far_target_and_bursts(errors: Array) -> void:
 	# Изоляция: враг вне линии, вне close_burst и вне endpoint — цел.
 	if outside.total_damage > EPS:
 		errors.append("винтовка: враг вне всех зон получил урон %.2f (нет изоляции)" % outside.total_damage)
+	await _cleanup(holder)
+
+
+func _test_deadeye_without_final_does_not_mark(errors: Array) -> void:
+	var holder := _new_scene("DeadeyeNoFinalScene")
+	var owner := _new_owner(holder)
+	var weapon := _new_weapon(owner, "sniper_deadeye_rifle")
+	var target := _new_enemy(holder, owner.global_position + Vector2(500.0, 0.0))
+	await process_frame
+	weapon._attack()
+	await create_timer(weapon.grenade_delay + 0.08).timeout
+	if target.total_damage <= EPS:
+		errors.append("винтовка без финала: production lockshot не нанёс основной урон")
+	var mark_key := "constellation_weakpoint_%d" % owner.get_instance_id()
+	if target.has_meta(mark_key):
+		errors.append("винтовка без финала: lockshot открыл weakpoint без active final")
 	await _cleanup(holder)
 
 
