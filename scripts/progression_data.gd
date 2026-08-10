@@ -740,6 +740,17 @@ static func effective_vampiric_chance(raw_chance: float) -> float:
 	return clampf(raw_chance, 0.0, VAMPIRIC_CHANCE_CAP)
 
 
+# FAN-2286: вампиризм-лечение масштабируется Знанием, как и регенерация
+# (см. effective_regeneration). Berserk's стартовое Knowledge=4 сохраняет
+# прежний 0.48x baseline; выше 1,5 работает неограниченный убывающий хвост.
+static func effective_vampiric_amount(knowledge: float, flat_amount: float) -> float:
+	var raw := maxf(flat_amount, 0.0) * (0.40 + maxf(knowledge, 0.0) / 50.0)
+	var negative_flat := minf(flat_amount, 0.0)
+	if raw <= 1.5:
+		return maxf(raw + negative_flat, 0.0)
+	return maxf(1.5 + sqrt(raw - 1.5) + negative_flat, 0.0)
+
+
 static func effective_vampiric_cap(raw_cap: float) -> float:
 	return clampf(raw_cap, 0.0, VAMPIRIC_HEAL_CAP_HARD)
 
@@ -2274,7 +2285,7 @@ static func derived_parameters(stats: Dictionary, run_modifiers: Dictionary, wea
 		# гейт Player._apply_reward_mods), с тем же knowledge-скейлом формулы.
 		"regeneration": _class_gated_regeneration(character_id, knowledge, regeneration_flat),
 		"vampiric_chance": effective_vampiric_chance(float(run_modifiers.get("vampiric_chance_flat", 0.0))),
-		"vampiric_amount": float(run_modifiers.get("vampiric_amount_flat", 0.0)) * VAMPIRIC_BASE_HEAL_MULTIPLIER,
+		"vampiric_amount": effective_vampiric_amount(knowledge, float(run_modifiers.get("vampiric_amount_flat", 0.0))),
 		# Усиливает классовую ульту: урон, радиус, длительность или число целей.
 		"ultimate_multiplier": 1.0 + energy * 0.02 + (strength + agility + intelligence + perception + knowledge + endurance + leadership) * 0.002 + float(run_modifiers.get("ultimate_flat", 0.0)),
 	}
