@@ -3638,27 +3638,21 @@ func _apply_weapon_scaling(weapon: Node) -> void:
 	if geometry_capabilities.has("suppression_width") and weapon.get("suppression_width") != null and weapon.has_meta("base_suppression_width"):
 		weapon.set("suppression_width", float(weapon.get_meta("base_suppression_width")) * attack_area_multiplier)
 
-	if weapon.get("max_summons") != null and str(weapon.get("attack_mode")) in ["engineer_sentry_link", "engineer_orbit_drone"]:
-		# SCRUM-905/906: у устройств Инженера предел парка считает сам кит от
-		# summon_amount (ClassWeapon._engineer_turret_limit /
-		# _engineer_drone_target_count — зеркала бюджета; «Полевой чертеж»
-		# добавляется там же поверх рельса). Generic-скейл Лидерства здесь дал
-		# бы ДВОЙНОЙ счёт парка (Лидерство уже входит в summon_amount) и ломал
-		# документированные пороги (база: 2 турели, РОВНО 1 дрон — AC SCRUM-906).
-		weapon.set("max_summons", int(weapon.get_meta("base_max_summons")))
-	elif weapon.get("max_summons") != null:
-		var base_max_summons := int(weapon.get_meta("base_max_summons"))
-		var scaled_max_summons := base_max_summons + int(floor(float(stats.get("leadership", 0.0)) / 4.0)) + int(run_modifiers.get("summon_bonus", 0.0))
-		if weapon.get("max_summons_cap") != null and int(weapon.get("max_summons_cap")) > 0:
-			var summons_cap := int(weapon.get("max_summons_cap"))
-			# SCRUM-961 «Сценический усилитель»: потолок amp-деплоя выше (3→4);
-			# «Полевой чертеж»: +1 к капу deploy-устройств за каждые 6 Лидерства.
-			if str(weapon.get("attack_mode")) == "amp":
-				summons_cap += int(run_modifiers.get("amp_cap_bonus", 0.0))
-			if float(run_modifiers.get("blueprint_leadership_scaling", 0.0)) > 0.0 and bool(meta_context.get("is_device", false)):
-				summons_cap += int(floor(float(stats.get("leadership", 0.0)) / 6.0))
-			scaled_max_summons = mini(scaled_max_summons, summons_cap)
-		weapon.set("max_summons", scaled_max_summons)
+	if weapon.get("max_summons") != null:
+		# FAN-2249: ветку парка решает объявленная summon_semantics конфига, а не
+		# второй список attack_mode; счёт «обычной» ветки живёт единственной
+		# формулой AttributeContract.summon_runtime_count — рантайм и
+		# предъявление (карточки/досье/advisor) не могут разойтись.
+		if AttributeContract.weapon_summon_semantics(weapon_config) == "device":
+			# SCRUM-905/906: у устройств Инженера предел парка считает сам кит от
+			# summon_amount (ClassWeapon._engineer_turret_limit /
+			# _engineer_drone_target_count — зеркала бюджета; «Полевой чертеж»
+			# добавляется там же поверх рельса). Generic-скейл Лидерства здесь дал
+			# бы ДВОЙНОЙ счёт парка (Лидерство уже входит в summon_amount) и ломал
+			# документированные пороги (база: 2 турели, РОВНО 1 дрон — AC SCRUM-906).
+			weapon.set("max_summons", int(weapon.get_meta("base_max_summons")))
+		else:
+			weapon.set("max_summons", int(AttributeContract.summon_runtime_count(weapon_config, stats, run_modifiers)))
 
 
 func _equipped_weapons() -> Array:
