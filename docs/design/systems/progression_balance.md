@@ -1409,6 +1409,78 @@ projection (`legacy HP-delta/raw duration`, `ledger/raw duration`,
 fresh executable oracle `f09f21ec`; это measurement repair, а не balance/config
 tuning.
 
+### FAN-2224 — final-execution evidence через production consumer
+
+FAN-2224 добавляет к неизменному 309-sample anchor отдельный supplemental
+контракт `fan2224.final-execution.v2`: ровно 51 строка в порядке roster, каждая
+получена реальным прогоном production-потребителя, который владеет событием
+своего schema-6 final. Harness ничего не «дорисовывает»: он только подаёт тот же
+стимул, что и игра (авто-атака, цель, которая может умереть, умирающий призыв
+или входящий урон, который владелец уворачивает/блокирует/поглощает), и
+записывает то, что после этого сделал production runtime.
+
+Записывается четыре вида доказательств, и вид выводится из наблюдения, а не
+объявляется: `typed_damage` (реальный applied-HP хит, связанный с активацией),
+`target_death` (lifecycle-финалы kill/execute/summon_death),
+`target_status_transition` (production-маркер `constellation_<mechanic>_owner`,
+который ставит сам `Player._apply_constellation_final_side_effect`) и
+`owner_state_transition` (absorb/dodge/health владельца плюс его собственный
+`constellation_last_final_action`). Причинность держит `resolution_ladder` —
+последовательность dispatch'ей самого механика с парой `progress/required`,
+которую посчитал production resolver: N−1 шагов ниже порога и активация ровно на
+пороге. Отдельно считаются `event_dispatch_count`, `resolved_dispatch_count` и
+`consumer_gated_dispatch_count`, поэтому «потребитель ни разу не открыл гейт»
+отличимо от «механика не сработала».
+
+`verify_final_execution_artifacts` ничему в строке не верит на слово: mechanic,
+mode, event, `runtime_consumer` и порог берутся заново из
+`data/meta/constellation_schema6.json` и `ConstellationFinalRuntime`, профиль
+стимула — из `final_execution_profile`, а все counters, ledger, payoff-агрегаты
+и digest пересчитываются из собственного trace строки. Скопированный с другой
+пары или переименованный trace, удалённое/подменённое событие, чужой
+executor/target/фаза, harness-овый fallback-хит без production provenance и
+подделанный агрегат падают fail-closed даже после пересчёта digest'ов; набор
+мутаций зафиксирован в `tests/a5_balance_report_integrity_test.gd`.
+
+`fan2224.formula-live-disposition.v2` превращает решение по каждой из 51 пары в
+арифметику вместо ярлыка. При неизменном пороге `35%` строка получает
+`within_tolerance`, `explained_divergence` или `unresolved`, а расхождение
+раскладывается точно: `live = 60 × observed hit-rate × observed applied-HP на
+хит`, `formula = 60 × formula cast-rate × formula hit-damage × model_gap`,
+поэтому `live/formula = cadence × magnitude × formula_model`. Все три множителя —
+наблюдаемые production-величины из anchored telemetry над собственным базисом
+формулы, dominant factor выбирается по `|ln|`, и верификатор требует, чтобы
+пересчёт воспроизвёл и величину (±1 п.п.), и знак заявленного расхождения.
+Сертифицирующий прогон не принимает ни одной `unresolved` строки.
+
+Диагностика без перегенерации артефактов: `--mode=final_execution_probe`
+(опционально `--pair=<class>/<weapon>`) печатает по строке на пару.
+
+**Разрешённый блокер (историческое).** На более раннем commit три финала были
+недостижимы через production ни при каком стимуле, и сертифицирующий прогон
+падал fail-closed: `sniper/sniper_deadeye_rifle` (`deadeye_weakpoint_cycle`) —
+`_resolve_sniper_lockshot` армировал weakpoint-метку только за `fully_charged`
+(`charge_seconds > 0.0`), а у винтовки этого стата нет; `ranger/moon_crossbow`
+(`crossbow_full_charge_mark`) — `_charge_time` сбрасывался каждым выстрелом
+вместо только полного разряда, поэтому заряд никогда не успевал накопиться;
+`chemist/blast_powder` (`powder_cross_reagent_combo`) — оружие после SCRUM-943
+летит прямым AoE без луж, а комбо требовало облако другого реагента, которого
+неоткуда было взять. Все три — production-фиксы вне write-set FAN-2224:
+FAN-2240 (`b1aeea0b`) снимает charge-гейт и армирует weakpoint по самому факту
+primary lockshot-хита; FAN-2237 (`a1cb4c5e`) сбрасывает `_charge_time` только
+на настоящем full-charge release; FAN-2238 (`54ecbb08`) поднимает реакцию
+через production каст → полёт → прилёт с инертным следом `PowderReagentTrace`
+вместо pool-канала.
+
+После этих фиксов все 51 пар исполняются через production consumer, и
+сертифицирующий прогон не содержит ни одной `unresolved` строки. Счётчики
+`event_dispatch_count`/`resolved_dispatch_count` совпадают с pinned артефактом:
+`sniper/sniper_deadeye_rifle` — `986/36` (950 dispatch'ей события `hit` —
+overpenetration/endpoint/close-burst хиты, которые по дизайну не армируют
+weakpoint), `ranger/moon_crossbow` — `7/7`, `chemist/blast_powder` — `52/52`
+(оба без единого gated dispatch). Актуальный прогон и его артефакты —
+`docs/design/reports/fan1438_a5_balance/{report.md,per_weapon.csv,raw.json.gz}`.
+
 ### FAN-1641 — lineage-aware A5 parity contract
 
 Исторический численный оракул `f09f21ec` неизменен и read-only. Его полный
