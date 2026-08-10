@@ -143,6 +143,18 @@ func _check_blast_powder_direct() -> void:
 		_errors.append("blast: прямой взрыв усилен (%.2f > 10) — trait протёк в прямой хит" % taken)
 	if get_nodes_in_group("chemist_clouds").size() > 0:
 		_errors.append("blast: взрыв оставил лужу")
+
+	# FAN-2238: натуральный каст базовой пыли (финал созвездия не куплен) идёт
+	# полный путь каст → полёт → прилёт и не оставляет ни лужи, ни реагентного
+	# следа — скрытого пул/DoT-состояния у базового оружия нет.
+	weapon.call("_attack")
+	await create_timer(0.6).timeout
+	if get_nodes_in_group("chemist_clouds").size() > 0:
+		_errors.append("blast: натуральный каст оставил лужу")
+	for effect in get_nodes_in_group("player_weapon_effects"):
+		if (effect as Node).name == "PowderReagentTrace":
+			_errors.append("blast: базовая пыль оставила реагентный след без купленного финала")
+			break
 	chemist.free()
 	enemy.free()
 	await process_frame

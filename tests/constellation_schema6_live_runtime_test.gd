@@ -27,6 +27,10 @@ class RecordingEnemy extends Node2D:
 
 var errors := PackedStringArray()
 
+# FAN-2238: запас на реальный полёт снаряда пыли (clamp 0.08..0.45 с) — короче
+# окна реагентного следа (0.9 с), поэтому соседние броски успевают встретиться.
+const POWDER_IMPACT_WAIT := 0.50
+
 
 func _initialize() -> void:
 	await process_frame
@@ -43,6 +47,9 @@ func _initialize() -> void:
 	await _test_reactor_fourth_cast_knockback()
 	await _test_dark_book_one_collapse_per_cast()
 	await _test_acid_detonation_rearms_after_stack_reset()
+	await _test_powder_reagent_pair_reacts_once()
+	await _test_powder_reagent_same_cast_and_expiry_controls()
+	await _test_powder_reagent_final_only_and_weapon_scoped()
 	await process_frame
 	_test_shatter_one_extra_pierce()
 	await _test_shatter_volley_hit_cap()
@@ -450,6 +457,120 @@ func _test_acid_detonation_rearms_after_stack_reset() -> void:
 	_cleanup_nodes(pools)
 
 
+# FAN-2238: пыль давно летит прямым AoE без луж, поэтому облачный вход финала
+# «Несовместимые реагенты» в проде мёртв. Реакцию обязан поднимать натуральный
+# путь каст → полёт → прилёт: ни один тест ниже не зовёт резолвер, не ставит
+# метки руками и не наносит урон вручную.
+func _test_powder_reagent_pair_reacts_once() -> void:
+	var player := _player_with_final("chemist", "blast_powder")
+	var weapon: Variant = _class_weapon(player, "chemist", "blast_powder")
+	weapon.damage = 100.0
+	var enemy := _enemy(Vector2(200.0, 0.0), 100000.0, 100000.0)
+	await process_frame
+
+	weapon._process(weapon.fire_interval)
+	await create_timer(POWDER_IMPACT_WAIT).timeout
+	_check(enemy.damage_log.size() == 1, "one powder impact alone reacted: %d damage events" % enemy.damage_log.size())
+
+	weapon._process(weapon.fire_interval)
+	await create_timer(POWDER_IMPACT_WAIT).timeout
+	_check(enemy.damage_log.size() == 3, "the incompatible second blast did not add exactly one reaction: %d events" % enemy.damage_log.size())
+	_check(_approx(float(enemy.damage_log[2]), 48.0, 0.05), "cross-reagent reaction is not the declared 48%% payoff: %.3f" % float(enemy.damage_log[2]))
+
+	weapon._process(weapon.fire_interval)
+	await create_timer(POWDER_IMPACT_WAIT).timeout
+	_check(enemy.damage_log.size() == 4, "the consumed reagent pair paid a repeat reaction: %d events" % enemy.damage_log.size())
+
+	weapon._process(weapon.fire_interval)
+	await create_timer(POWDER_IMPACT_WAIT).timeout
+	_check(enemy.damage_log.size() == 6, "a fresh reagent pair did not re-arm exactly one reaction: %d events" % enemy.damage_log.size())
+	_check(_approx(float(enemy.damage_log[5]), 48.0, 0.05), "re-armed reaction is not the declared 48%% payoff: %.3f" % float(enemy.damage_log[5]))
+	_cleanup_nodes([enemy, player])
+
+
+func _test_powder_reagent_same_cast_and_expiry_controls() -> void:
+	var player := _player_with_final("chemist", "blast_powder")
+	var weapon: Variant = _class_weapon(player, "chemist", "blast_powder")
+	weapon.damage = 100.0
+	var left := _enemy(Vector2(200.0, -40.0), 100000.0, 100000.0)
+	var right := _enemy(Vector2(200.0, 40.0), 100000.0, 100000.0)
+	await process_frame
+
+	# Один бросок заряжен ОДНИМ реагентом: два его взрыва рядом не реагируют.
+	weapon._process(weapon.fire_interval)
+	await create_timer(POWDER_IMPACT_WAIT).timeout
+	_check(
+		left.damage_log.size() == 2 and right.damage_log.size() == 2,
+		"two same-reagent impacts of one cast reacted: %d/%d events" % [left.damage_log.size(), right.damage_log.size()]
+	)
+
+	# Пауза длиннее окна следа: следующий несовместимый бросок реагировать не с чем.
+	await create_timer(1.05).timeout
+	weapon._process(weapon.fire_interval)
+	await create_timer(POWDER_IMPACT_WAIT).timeout
+	_check(
+		left.damage_log.size() == 4 and right.damage_log.size() == 4,
+		"an expired reagent trace still paid a reaction: %d/%d events" % [left.damage_log.size(), right.damage_log.size()]
+	)
+	_cleanup_nodes([left, right, player])
+
+
+func _test_powder_reagent_final_only_and_weapon_scoped() -> void:
+	# Без купленного финала пыль остаётся чистым прямым AoE и не копит состояния.
+	var base_player := _player_with_final("chemist", "blast_powder", false)
+	var base_weapon: Variant = _class_weapon(base_player, "chemist", "blast_powder")
+	base_weapon.damage = 100.0
+	var enemy := _enemy(Vector2(200.0, 0.0), 100000.0, 100000.0)
+	await process_frame
+	base_weapon._process(base_weapon.fire_interval)
+	await create_timer(POWDER_IMPACT_WAIT).timeout
+	base_weapon._process(base_weapon.fire_interval)
+	await create_timer(POWDER_IMPACT_WAIT).timeout
+	_check(enemy.damage_log.size() == 2, "pool-free blast powder reacted without its purchased final: %d events" % enemy.damage_log.size())
+	_check(_powder_reagent_traces() == 0, "base blast powder left hidden reagent state behind")
+	_check(get_nodes_in_group("chemist_clouds").is_empty(), "base blast powder spawned a pool")
+
+	# Второе оружие того же класса несёт свой финал и реакцию пыли не поднимает.
+	var acid_player := _player_with_final("chemist", "acid_flask")
+	var acid_weapon: Variant = _class_weapon(acid_player, "chemist", "acid_flask")
+	acid_weapon.damage = 100.0
+	await process_frame
+	acid_weapon._process(acid_weapon.fire_interval)
+	await create_timer(POWDER_IMPACT_WAIT).timeout
+	_check(_powder_reagent_traces() == 0, "acid flask impacts armed the powder final of another weapon")
+	var after_acid := enemy.damage_log.size()
+	_cleanup_nodes([acid_player])
+
+	# Чужой владелец с тем же финалом: его след не кормит реакцию этого оружия.
+	var owner_a := _player_with_final("chemist", "blast_powder")
+	var weapon_a: Variant = _class_weapon(owner_a, "chemist", "blast_powder")
+	weapon_a.damage = 100.0
+	var owner_b := _player_with_final("chemist", "blast_powder")
+	var weapon_b: Variant = _class_weapon(owner_b, "chemist", "blast_powder")
+	weapon_b.damage = 100.0
+	# Следующий бросок B несёт реагент, несовместимый со следом A: реакции всё
+	# равно нет, потому что след принадлежит другому оружию.
+	weapon_b.set("_powder_reagent_cast", 1)
+	await process_frame
+	weapon_a._process(weapon_a.fire_interval)
+	await create_timer(POWDER_IMPACT_WAIT).timeout
+	weapon_b._process(weapon_b.fire_interval)
+	await create_timer(POWDER_IMPACT_WAIT).timeout
+	_check(
+		enemy.damage_log.size() == after_acid + 2,
+		"a foreign owner's reagent trace paid this weapon's reaction: %d events" % (enemy.damage_log.size() - after_acid)
+	)
+	_cleanup_nodes([enemy, base_player, owner_a, owner_b])
+
+
+func _powder_reagent_traces() -> int:
+	var traces := 0
+	for effect in get_nodes_in_group("player_weapon_effects"):
+		if (effect as Node).name == "PowderReagentTrace":
+			traces += 1
+	return traces
+
+
 func _test_shatter_volley_hit_cap() -> void:
 	var player := _player_with_final("sniper", "sniper_shatter_rounds")
 	var weapon: Variant = _class_weapon(player, "sniper", "sniper_shatter_rounds")
@@ -473,7 +594,7 @@ func _test_shatter_volley_hit_cap() -> void:
 	_cleanup_nodes(all_nodes)
 
 
-func _player_with_final(class_id: String, weapon_id: String) -> CharacterBody2D:
+func _player_with_final(class_id: String, weapon_id: String, with_final := true) -> CharacterBody2D:
 	var player = PlayerScript.new()
 	root.add_child(player)
 	player.set_process(false)
@@ -483,7 +604,8 @@ func _player_with_final(class_id: String, weapon_id: String) -> CharacterBody2D:
 	# The live-final fixture intentionally excludes the five ordinary branch boons:
 	# their independent on-hit echoes/axis multipliers would obscure exact final
 	# timings and caps. Meta accepts the canonical final node as a profile fixture.
-	state["skill_nodes"] = ["%s_%s_final" % [class_id, weapon_id]]
+	# `with_final == false` is the unbought-final control: same weapon, no profile.
+	state["skill_nodes"] = ["%s_%s_final" % [class_id, weapon_id]] if with_final else []
 	player.apply_constellation_weapon_profiles(Meta.skill_profiles_for_class(state, class_id))
 	player.derived_parameters["damage"] = 100.0
 	# Disable unrelated generic enchant/DoT/leadership echoes. Every weapon fixture

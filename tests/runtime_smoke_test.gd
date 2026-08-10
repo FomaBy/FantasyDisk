@@ -4555,6 +4555,21 @@ func _test_unique_class_identity_patterns() -> void:
 	if get_nodes_in_group("chemist_clouds").size() > 0:
 		_fail("Expected Chemist blast powder explosion to leave no pools.")
 		return
+	# FAN-2238: продакшен-путь каста пыли (полёт + прилёт) остаётся pool-free и
+	# без реагентного следа, пока финал созвездия не куплен.
+	var chemist_natural_hp_before := float(chemist_enemy.get("health"))
+	chemist_weapon.call("_attack")
+	await create_timer(0.6).timeout
+	if float(chemist_enemy.get("health")) >= chemist_natural_hp_before:
+		_fail("Expected Chemist blast powder natural cast/travel/impact to damage enemies.")
+		return
+	if get_nodes_in_group("chemist_clouds").size() > 0:
+		_fail("Expected Chemist blast powder natural cast to leave no pools.")
+		return
+	for chemist_effect in get_nodes_in_group("player_weapon_effects"):
+		if (chemist_effect as Node).name == "PowderReagentTrace":
+			_fail("Expected base Chemist blast powder to leave no reagent trace without its constellation final.")
+			return
 	var chemist_acid := player_scene.instantiate()
 	holder.add_child(chemist_acid)
 	chemist_acid.global_position = Vector2(1150, 700)
