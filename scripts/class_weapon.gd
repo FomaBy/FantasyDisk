@@ -359,6 +359,11 @@ var _constellation_mirror_casts: Dictionary = {}
 var _constellation_local_state: Dictionary = {}
 var _constellation_shatter_volley_token := 0
 var _constellation_shatter_volleys: Dictionary = {}
+# FAN-2238: пыль без облака заряжает КАЖДЫЙ бросок одним реагентом и чередует их
+# между бросками; след последнего взрыва живёт короткое окно, чтобы соседний
+# взрыв несовместимого реагента дал ровно одну финальную реакцию.
+var _powder_reagent_cast := 0
+var _powder_reagent_trace: Node2D = null
 
 # SCRUM-915/916/918: константы редизайна кита Робота.
 # Импульс knockback гасится врагом с постоянным замедлением 2400 px/s^2
@@ -963,14 +968,18 @@ func _exec_engineer_pressure_mines(owner_node: Node2D, _target: Node2D, directio
 
 
 func _fire_aoe_projectile(owner_node: Node2D, target: Node2D, direction: Vector2) -> void:
+	# FAN-2238: один бросок несёт ОДИН реагент, соседние броски — разные. Пара
+	# снарядов одного каста поэтому не реагирует сама с собой (same-reagent), а
+	# несовместимый соседний взрыв даёт реакцию (см. _mark_powder_reagent_impact).
+	_powder_reagent_cast = (_powder_reagent_cast + 1) % 2
 	var targets := _find_closest_enemies(owner_node, maxi(projectile_count + _extra_projectiles(), 1))
 	if targets.is_empty():
-		_launch_aoe_projectile(owner_node, null, direction)
+		_launch_aoe_projectile(owner_node, null, direction, _powder_reagent_cast)
 		return
 	for target_node in targets:
 		var to_target: Vector2 = target_node.global_position - owner_node.global_position
 		var aim := direction if to_target.length_squared() <= 0.001 else to_target.normalized()
-		_launch_aoe_projectile(owner_node, target_node, aim)
+		_launch_aoe_projectile(owner_node, target_node, aim, _powder_reagent_cast)
 
 
 func _fire_boomerang(owner_node: Node2D, direction: Vector2) -> void:
@@ -1250,7 +1259,12 @@ func _find_combo_cloud(pool_position: Vector2) -> Node2D:
 	return null
 
 
-func _trigger_chemist_combo(new_cloud: Node2D, old_cloud: Node2D, tick_damage: float) -> void:
+## `direct_share` — доля БАЗОВОЙ смешанной вспышки. Пул-канал (встреча двух луж)
+## существует и без созвездия, поэтому платит полную долю; реагентная пара пыли
+## (FAN-2238) базового аналога не имеет и приходит с 0.0 — там весь урон реакции
+## равен объявленному в манифесте `combo_damage_ratio` финала, и без финала
+## оружие не получает ничего.
+func _trigger_chemist_combo(new_cloud: Node2D, old_cloud: Node2D, tick_damage: float, direct_share := 1.0) -> void:
 	if bool(new_cloud.get_meta("constellation_powder_reacted", false)) or bool(old_cloud.get_meta("constellation_powder_reacted", false)):
 		return
 	new_cloud.set_meta("constellation_powder_reacted", true)
@@ -1259,18 +1273,71 @@ func _trigger_chemist_combo(new_cloud: Node2D, old_cloud: Node2D, tick_damage: f
 	var combo_radius := aoe_radius * 1.05
 	var combo_damage := maxf(damage, tick_damage * 5.5) * pool_direct_damage_multiplier
 	AttackVfx.orb_burst(_projectile_parent(), combo_position, combo_radius, Color(1.0, 0.75, 0.16, 0.50))
-	_damage_enemies_in_circle_capped(combo_position, combo_radius, combo_damage, POOL_PROJECTILE_FULL_TARGETS, POOL_PROJECTILE_TARGET_DIMINISH)
+	if direct_share > 0.0:
+		_damage_enemies_in_circle_capped(combo_position, combo_radius, combo_damage * direct_share, POOL_PROJECTILE_FULL_TARGETS, POOL_PROJECTILE_TARGET_DIMINISH)
 	var combo_target := TARGET_QUERY.nearest(self, combo_position, combo_radius)
 	var reaction := _constellation_event("cross_reagent", combo_target, 0.0)
 	if bool(reaction.get("triggered", false)):
 		_damage_enemies_in_circle_capped(combo_position, combo_radius, combo_damage * _constellation_result_param(reaction, "combo_damage_ratio", 0.48), POOL_PROJECTILE_FULL_TARGETS, POOL_PROJECTILE_TARGET_DIMINISH)
 
 
+# FAN-2238: окно жизни реагентного следа взрыва. Больше базового fire_interval
+# пыли (0.62) — соседние броски успевают встретиться, но пауза в стрельбе след
+# гасит. Это темп продакшен-оружия, а не балансный кап финала: манифестные капы
+# (reactions_per_cloud / combo_damage_ratio / same_reagent_reaction) живут в
+# schema-6 и читаются из профиля.
+const POWDER_REAGENT_TRACE_SECONDS := 0.9
+
+
+## FAN-2238: продакшен-вход финала «Несовместимые реагенты». Взрывная пыль давно
+## идёт прямым AoE без луж, поэтому облачный вход `_spawn_damage_pool` для неё
+## мёртв — реакцию поднимает РЕАЛЬНЫЙ прилёт снаряда. Каждый взрыв оставляет
+## короткий инертный след своего реагента (не `chemist_clouds`, без тиков, DoT и
+## статусов), и соседний взрыв другого реагента внутри следа расходует пару на
+## одну реакцию (`reactions_per_cloud` = 1 через латч `_trigger_chemist_combo`).
+## Без купленного финала след не создаётся вовсе.
+func _mark_powder_reagent_impact(impact_position: Vector2, reagent: int) -> void:
+	var profile := _constellation_profile("powder_cross_reagent_combo")
+	if profile.is_empty():
+		return
+	var params: Dictionary = profile.get("params", {})
+	var previous := _powder_reagent_trace
+	var trace := _spawn_powder_reagent_trace(impact_position, reagent)
+	_powder_reagent_trace = trace
+	if previous == null or not is_instance_valid(previous):
+		return
+	if Time.get_ticks_msec() > int(previous.get_meta("powder_reagent_until_msec", 0)):
+		return
+	var cross_reagent := int(previous.get_meta("powder_reagent", reagent)) != reagent
+	if not cross_reagent and not bool(params.get("same_reagent_reaction", false)):
+		return
+	if previous.global_position.distance_squared_to(impact_position) > pow(aoe_radius, 2.0):
+		return
+	_trigger_chemist_combo(trace, previous, 0.0, 0.0)
+	_release_effect(previous)
+	_release_effect(trace)
+	_powder_reagent_trace = null
+
+
+func _spawn_powder_reagent_trace(trace_position: Vector2, reagent: int) -> Node2D:
+	var trace := Node2D.new()
+	trace.name = "PowderReagentTrace"
+	trace.set_meta("powder_reagent", reagent)
+	trace.set_meta("powder_reagent_until_msec", Time.get_ticks_msec() + int(POWDER_REAGENT_TRACE_SECONDS * 1000.0))
+	_register_effect(trace)
+	_projectile_parent().add_child(trace)
+	trace.global_position = trace_position
+	var expiry := trace.create_tween()
+	expiry.tween_interval(POWDER_REAGENT_TRACE_SECONDS)
+	expiry.tween_callback(Callable(self, "_release_effect").bind(trace))
+	return trace
+
+
 func _find_closest_enemies(owner_node: Node2D, count: int) -> Array:
 	return TARGET_QUERY.nearest_many(self, owner_node.global_position, attack_range, count)
 
 
-func _launch_aoe_projectile(owner_node: Node2D, target: Node2D, direction: Vector2) -> void:
+func _launch_aoe_projectile(owner_node: Node2D, target: Node2D, direction: Vector2, reagent := 0) -> void:
 	var target_position: Vector2 = owner_node.global_position + direction * min(attack_range, 360.0)
 	if target != null:
 		target_position = target.global_position
@@ -1293,6 +1360,9 @@ func _launch_aoe_projectile(owner_node: Node2D, target: Node2D, direction: Vecto
 			var explosion_damage := damage if current_owner == null else float(current_weapon.call("_rolled_damage", current_owner))
 			current_weapon.call("_damage_aoe_projectile_explosion", target_position, aoe_radius, explosion_damage)
 			AttackVfx.orb_burst(current_weapon.call("_projectile_parent"), target_position, aoe_radius, current_weapon.call("_projectile_impact_color"))
+			# FAN-2238: реагентный след ставит РЕАЛЬНЫЙ прилёт снаряда; без финала
+			# созвездия вызов сразу выходит и базовое оружие не меняется.
+			current_weapon.call("_mark_powder_reagent_impact", target_position, reagent)
 			# SCRUM-941: старый хук «Зеркальной страницы» удалён — dark_book ушёл
 			# с aoe_projectile на dark_mirror_blast (зеркало теперь база оружия,
 			# артефакт репозиционирован в book_mirror_echo).
