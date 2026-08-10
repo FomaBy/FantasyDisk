@@ -32,7 +32,7 @@ func _initialize() -> void:
 		_finish()
 		return
 	var dataset := raw as Dictionary
-	_check(str(dataset.get("schema", "")) == "fan1438.a5-balance.v2", "raw schema mismatch")
+	_check(str(dataset.get("schema", "")) in ["fan1438.a5-balance.v2", "fan2224.a5-balance.v4"], "raw schema mismatch")
 	_check(str(dataset.get("issue_id", "")) == "FAN-1438", "issue id mismatch")
 	_check(str((dataset.get("source", {}) as Dictionary).get("commit", "")) not in ["", "UNSPECIFIED", "TEST"], "source commit is not pinned")
 	_check(str((dataset.get("source", {}) as Dictionary).get("tree", "")) not in ["", "UNSPECIFIED", "TEST"], "source tree is not pinned")
@@ -49,7 +49,378 @@ func _initialize() -> void:
 	_validate_live_coverage(dataset)
 	_validate_csv(dataset)
 	_validate_markdown(dataset, report_text)
+	_validate_final_execution_falsification()
+	_validate_shipped_final_execution(dataset)
 	_finish()
+
+
+# FAN-2224: the anti-false-green suite. A structurally valid production-shaped row
+# is built once, asserted admissible, and then mutated the way a forged candidate
+# would be: a trace lifted from another pair, a relabelled ladder, a substituted or
+# missing event, a harness-authored fallback hit, a foreign executor, a tampered
+# aggregate. Every mutation recomputes the digests that the previous evidence model
+# relied on, so passing this suite means the digests are no longer the guard.
+func _validate_final_execution_falsification() -> void:
+	var baseline := _final_execution_fixture()
+	var baseline_errors := Generator.verify_final_execution_row(baseline)
+	_check(baseline_errors.is_empty(), "the production-shaped final-execution fixture must be admissible: %s" % "; ".join(baseline_errors))
+	if not baseline_errors.is_empty():
+		return
+	for mutation_value in _final_execution_mutations(baseline):
+		var mutation: Dictionary = mutation_value
+		var mutated: Dictionary = mutation.get("row", {})
+		_check(not Generator.verify_final_execution_row(mutated).is_empty(), "final-execution verification accepts a forged row: %s" % mutation.get("name", "?"))
+	var dataset := _disposition_dataset(baseline)
+	_check(bool(Generator.verify_formula_live_dispositions(dataset).get("ok", false)), "the production-shaped disposition fixture must be admissible: %s" % "; ".join(Generator.verify_formula_live_dispositions(dataset).get("errors", [])))
+	for mutation_value in _disposition_mutations(dataset):
+		var mutation: Dictionary = mutation_value
+		_check(not bool(Generator.verify_formula_live_dispositions(mutation.get("dataset", {})).get("ok", false)), "formula/live disposition verification accepts a forged dataset: %s" % mutation.get("name", "?"))
+
+
+# When the shipped artifact already carries final-execution evidence its own rows
+# must satisfy the same contract; a legacy artifact simply has nothing to check.
+func _validate_shipped_final_execution(dataset: Dictionary) -> void:
+	if not dataset.has("final_execution"):
+		return
+	var verification := Generator.verify_final_execution_artifacts(dataset)
+	_check(bool(verification.get("ok", false)), "shipped final-execution evidence is not admissible: %s" % "; ".join(verification.get("errors", [])))
+	var dispositions := Generator.verify_formula_live_dispositions(dataset)
+	_check(bool(dispositions.get("ok", false)), "shipped formula/live dispositions are not admissible: %s" % "; ".join(dispositions.get("errors", [])))
+
+
+func _final_execution_fixture() -> Dictionary:
+	var pair := "berserk/sword"
+	var mechanic_id := "sword_repeat_execute"
+	var seed_value := int(Generator.FINAL_EXECUTION_SEEDS[0])
+	var sample_key := "%s|%d|final_execution|autofire|%d" % [pair, seed_value, Generator.FINAL_EXECUTION_TARGET_COUNT]
+	var trace_id := "fan1511:%s" % sample_key
+	var events := [
+		_trace_event(trace_id, 0, {"kind": "cast", "source": "player_weapon", "phase": "windup", "cast_id": "cast_000001", "attack_mode": "sweep", "damage": 0.0}, 1, "measurement"),
+		_trace_event(trace_id, 1, {"kind": "hit", "source": "player_weapon", "phase": "damage_application", "target_id": "target_0", "provenance_id": "hit_000001", "cast_id": "cast_000001", "damage": 10.0}, 2, "measurement"),
+		_trace_event(trace_id, 2, {"kind": "hit", "source": "player_weapon", "phase": "damage_application", "target_id": "target_0", "provenance_id": "hit_000002", "cast_id": "cast_000001", "damage": 10.0}, 3, "measurement"),
+		_trace_event(trace_id, 3, {"kind": "final_event", "source": "player_weapon", "phase": "final_resolution", "target_id": "target_0", "event": "hit", "mechanic_id": mechanic_id, "final_activation_id": "final_000001", "observed": true, "related_hit_id": "%s#0004" % trace_id, "damage": 0.0}, 4, "measurement"),
+		_trace_event(trace_id, 4, {"kind": "hit", "source": "player_weapon", "phase": "damage_application", "target_id": "target_0", "provenance_id": "hit_000003", "cast_id": "cast_000001", "damage": 14.0, "final_event_ids": ["%s#0003" % trace_id]}, 4, "measurement"),
+	]
+	var ladder := []
+	for index in range(3):
+		ladder.append({
+			"index": index,
+			"event": "hit",
+			"mode": "repeat_execute",
+			"phase": "measurement",
+			"frame": index + 2,
+			"target_id": "target_0",
+			"progress": index + 1,
+			"required": 3,
+			"triggered": index == 2,
+			"activation_id": "final_000001" if index == 2 else "",
+			"consumer_event": false,
+		})
+	var sample := {
+		"telemetry_schema": "fan1511.runtime-telemetry.v2",
+		"sample_key": sample_key,
+		"trace_id": trace_id,
+		"pair": pair,
+		"seed": seed_value,
+		"scenario": "final_execution",
+		"fixture": "autofire",
+		"target_cardinality": Generator.FINAL_EXECUTION_TARGET_COUNT,
+		"events": events,
+		"hp_ledger": {
+			"authority": "enemy_damage_applied_health_delta",
+			"probe_phase": "measurement",
+			"tolerance": 0.0001,
+			"rows": [{"target_id": "target_0", "applied_damage": 34.0, "entries": 3}],
+			"total_applied_damage": 34.0,
+		},
+		"counters": {"casts": 1, "hits": 3, "final_event_count": 1, "damage_total": 34.0},
+		"trace_digest_sha256": Generator.canonical_trace_digest(events),
+	}
+	return {
+		"pair": pair,
+		"class_id": "berserk",
+		"weapon_id": "sword",
+		"final_mechanic": mechanic_id,
+		"final_mode": "repeat_execute",
+		"final_event": "hit",
+		"required_progress": 3,
+		"consumer": {
+			"executor_script": "res://scripts/player.gd",
+			"executor_method": "constellation_weapon_event",
+			"resolver_script": "res://scripts/constellation_final_runtime.gd",
+			"resolver_method": "resolve_event",
+			"runtime_consumer": "scripts/berserk_weapon.gd",
+			"observation_signals": ["constellation_final_resolved", "damage_applied", "died", "damaged"],
+			"payoff_owner": "consumer_weapon",
+		},
+		"stimulus": {
+			"kind": "autofire",
+			"fixture": "sustain",
+			"layout": "pack",
+			"target_count": Generator.FINAL_EXECUTION_TARGET_COUNT,
+			"initial_target_hp": Generator.DUMMY_HP,
+			"stats_build": "level20_optimized",
+			"seed": seed_value,
+			"warmup_seconds": Generator.FINAL_EXECUTION_WARMUP_SECONDS,
+			"window_seconds": Generator.FINAL_EXECUTION_WINDOW_SECONDS,
+		},
+		"resolution_ladder": ladder,
+		"dispatch_count": 3,
+		"event_dispatch_count": 3,
+		"resolved_dispatch_count": 3,
+		"consumer_gated_dispatch_count": 0,
+		"weapon_runtime": {"weapon_script": "res://scripts/berserk_weapon.gd"},
+		"activations": [ladder[2]],
+		"owner_state_before": {},
+		"owner_state_after": {},
+		"payoff": {
+			"kind": "typed_damage",
+			"binding": "resolver_provenance",
+			"activation_count": 1,
+			"first_activation_frame": 4,
+			"provenance_bound_hits": 1,
+			"provenance_bound_damage": 14.0,
+			"post_activation_hits": 0,
+			"post_activation_damage": 0.0,
+			"pre_activation_hits": 2,
+			"pre_activation_damage": 20.0,
+			"target_deaths": 0,
+			"target_status_markers": [],
+			"owner_state_delta": {},
+			"owner_final_marker": false,
+			"applied_hp_total": 34.0,
+			"amplified_hit_mean": 14.0,
+			"unamplified_hit_mean": 10.0,
+			"observed_damage_ratio": 1.4,
+			"resolver_damage_ratio": 0.0,
+		},
+		"observed": true,
+		"telemetry": sample,
+	}
+
+
+func _trace_event(trace_id: String, index: int, payload: Dictionary, frame: int, probe_phase: String) -> Dictionary:
+	var event := payload.duplicate(true)
+	event["event_id"] = "%s#%04d" % [trace_id, index]
+	event["trace_id"] = trace_id
+	event["frame"] = frame
+	event["probe_phase"] = probe_phase
+	return event
+
+
+func _final_execution_mutations(baseline: Dictionary) -> Array:
+	var mutations := []
+	# A whole trace lifted from another pair and relabelled onto this row, with the
+	# trace digest recomputed exactly as the previous evidence model allowed.
+	var copied := baseline.duplicate(true)
+	var copied_sample: Dictionary = copied["telemetry"]
+	var foreign_key := "berserk/axe|%d|final_execution|autofire|%d" % [int(Generator.FINAL_EXECUTION_SEEDS[0]), Generator.FINAL_EXECUTION_TARGET_COUNT]
+	copied_sample["sample_key"] = foreign_key
+	copied_sample["trace_id"] = "fan1511:%s" % foreign_key
+	copied_sample["pair"] = "berserk/axe"
+	copied_sample["events"] = _relabel_events(copied_sample.get("events", []), "fan1511:%s" % foreign_key, "axe_outer_followthrough")
+	copied_sample["trace_digest_sha256"] = Generator.canonical_trace_digest(copied_sample["events"])
+	mutations.append({"name": "trace copied from another pair with recomputed digest", "row": copied})
+
+	var relabelled := baseline.duplicate(true)
+	(relabelled["resolution_ladder"] as Array)[2]["event"] = "kill"
+	relabelled["activations"] = [(relabelled["resolution_ladder"] as Array)[2]]
+	mutations.append({"name": "ladder step relabelled to a foreign event", "row": relabelled})
+
+	var threshold := baseline.duplicate(true)
+	threshold["required_progress"] = 5
+	mutations.append({"name": "foreign trigger threshold", "row": threshold})
+
+	var early := baseline.duplicate(true)
+	(early["resolution_ladder"] as Array)[0]["triggered"] = true
+	mutations.append({"name": "ladder activates before its production threshold", "row": early})
+
+	var missing := baseline.duplicate(true)
+	var missing_sample: Dictionary = missing["telemetry"]
+	var missing_events: Array = missing_sample["events"]
+	missing_events.remove_at(2)
+	missing_sample["events"] = missing_events
+	missing_sample["trace_digest_sha256"] = Generator.canonical_trace_digest(missing_events)
+	mutations.append({"name": "missing trace event with recomputed digest", "row": missing})
+
+	var substituted := baseline.duplicate(true)
+	var substituted_sample: Dictionary = substituted["telemetry"]
+	(substituted_sample["events"] as Array)[4]["damage"] = 99.0
+	substituted_sample["trace_digest_sha256"] = Generator.canonical_trace_digest(substituted_sample["events"])
+	mutations.append({"name": "substituted hit damage with recomputed digest", "row": substituted})
+
+	var stale_digest := baseline.duplicate(true)
+	var stale_sample: Dictionary = stale_digest["telemetry"]
+	(stale_sample["events"] as Array)[1]["damage"] = 11.0
+	mutations.append({"name": "tampered event with a stale digest", "row": stale_digest})
+
+	# The exact FAN-2119 defect: a harness-authored 1.0 witness hit appended to the
+	# trace instead of a production payoff.
+	var synthetic := baseline.duplicate(true)
+	var synthetic_sample: Dictionary = synthetic["telemetry"]
+	var synthetic_events: Array = synthetic_sample["events"]
+	synthetic_events.append(_trace_event(str(synthetic_sample["trace_id"]), synthetic_events.size(), {"kind": "hit", "source": "player_weapon", "phase": "damage_application", "target_id": "target_0", "provenance_id": "", "damage": 1.0}, 5, "measurement"))
+	synthetic_sample["events"] = synthetic_events
+	synthetic_sample["counters"]["hits"] = 4
+	synthetic_sample["counters"]["damage_total"] = 35.0
+	synthetic_sample["trace_digest_sha256"] = Generator.canonical_trace_digest(synthetic_events)
+	mutations.append({"name": "harness-authored 1.0 witness hit without production provenance", "row": synthetic})
+
+	var executor := baseline.duplicate(true)
+	(executor["consumer"] as Dictionary)["runtime_consumer"] = "scripts/class_weapon.gd"
+	mutations.append({"name": "foreign runtime consumer", "row": executor})
+
+	var target := baseline.duplicate(true)
+	var target_sample: Dictionary = target["telemetry"]
+	(target_sample["hp_ledger"] as Dictionary)["rows"] = [{"target_id": "target_3", "applied_damage": 34.0, "entries": 3}]
+	mutations.append({"name": "ledger attributed to a foreign target", "row": target})
+
+	var aggregate := baseline.duplicate(true)
+	(aggregate["payoff"] as Dictionary)["provenance_bound_damage"] = 140.0
+	mutations.append({"name": "tampered payoff aggregate", "row": aggregate})
+
+	var ratio := baseline.duplicate(true)
+	(ratio["payoff"] as Dictionary)["resolver_damage_ratio"] = 1.5
+	mutations.append({"name": "payoff relation that is not the production mechanic's", "row": ratio})
+
+	var unobserved := baseline.duplicate(true)
+	unobserved["observed"] = false
+	mutations.append({"name": "observation flag out of step with the derived payoff", "row": unobserved})
+
+	var stimulus := baseline.duplicate(true)
+	(stimulus["stimulus"] as Dictionary)["kind"] = "mortal_targets"
+	mutations.append({"name": "stimulus that is not the production-derived profile", "row": stimulus})
+
+	return mutations
+
+
+func _relabel_events(events: Array, trace_id: String, mechanic_id: String) -> Array:
+	var relabelled := []
+	for index in range(events.size()):
+		var event: Dictionary = (events[index] as Dictionary).duplicate(true)
+		event["event_id"] = "%s#%04d" % [trace_id, index]
+		event["trace_id"] = trace_id
+		if event.has("mechanic_id"):
+			event["mechanic_id"] = mechanic_id
+		if event.has("related_hit_id"):
+			event["related_hit_id"] = "%s#0004" % trace_id
+		if event.has("final_event_ids"):
+			event["final_event_ids"] = ["%s#0003" % trace_id]
+		relabelled.append(event)
+	return relabelled
+
+
+func _disposition_dataset(row: Dictionary) -> Dictionary:
+	var pair := str(row.get("pair", ""))
+	var duration := 6.0
+	var sample := {
+		"pair": pair,
+		"scenario": "sustain_solo",
+		"counters": {"casts": 30.0, "hits": 30.0, "unique_target_count": 1.0},
+		"hp_ledger": {"total_applied_damage": 300.0, "measurement_duration_seconds": duration},
+	}
+	var pack_sample := {
+		"pair": pair,
+		"scenario": "sustain_pack",
+		"counters": {"casts": 30.0, "hits": 300.0, "unique_target_count": 10.0},
+		"hp_ledger": {"total_applied_damage": 3000.0, "measurement_duration_seconds": duration},
+	}
+	var live_telemetry := {"samples": [sample, pack_sample]}
+	var basis := {
+		"damage_parameter": "damage",
+		"fire_interval_seconds": 0.2,
+		"cast_rate_per_second": 5.0,
+		"hit_damage": 10.0,
+		"direct_dpm": 3000.0,
+	}
+	var solo_observed := Generator.observed_axis_terms(live_telemetry, pair, "sustain_solo")
+	var pack_observed := Generator.observed_axis_terms(live_telemetry, pair, "sustain_pack")
+	var formula_solo := 6000.0
+	var formula_pack := 12000.0
+	var axes := {
+		"solo": Generator.decompose_axis(basis, solo_observed, formula_solo),
+		"pack": Generator.decompose_axis(basis, pack_observed, formula_pack),
+	}
+	var parity_row := {
+		"pair": pair,
+		"formula_solo_dpm": formula_solo,
+		"formula_pack_dpm": formula_pack,
+		"solo_delta_pct": float((axes["solo"] as Dictionary).get("recomputed_delta_pct", 0.0)),
+		"pack_delta_pct": float((axes["pack"] as Dictionary).get("recomputed_delta_pct", 0.0)),
+	}
+	var payoff: Dictionary = row.get("payoff", {})
+	var disposition_row := {
+		"pair": pair,
+		"solo_delta_pct": parity_row["solo_delta_pct"],
+		"pack_delta_pct": parity_row["pack_delta_pct"],
+		"disposition": "explained_divergence",
+		"final_execution": {
+			"final_mechanic": str(row.get("final_mechanic", "")),
+			"final_mode": str(row.get("final_mode", "")),
+			"final_event": str(row.get("final_event", "")),
+			"runtime_consumer": str((row.get("consumer", {}) as Dictionary).get("runtime_consumer", "")),
+			"payoff_kind": str(payoff.get("kind", "")),
+			"payoff_binding": str(payoff.get("binding", "")),
+			"activation_count": int(payoff.get("activation_count", 0)),
+			"applied_hp_total": float(payoff.get("applied_hp_total", 0.0)),
+			"resolver_bound_payoff_share_pct": snappedf(100.0 * float(payoff.get("provenance_bound_damage", 0.0)) / maxf(float(payoff.get("applied_hp_total", 0.0)), 0.0001), 0.01),
+			"telemetry_sample_key": str((row.get("telemetry", {}) as Dictionary).get("sample_key", "")),
+		},
+		"formula_basis": basis,
+		"axes": axes,
+		"explanation": "fixture accounting",
+	}
+	return {
+		"roster": {"pair_keys": [pair]},
+		"formula_live_parity": [parity_row],
+		"live_telemetry": live_telemetry,
+		"final_execution": {"rows": [row]},
+		"formula_live_dispositions": {
+			"schema": "fan2224.formula-live-disposition.v2",
+			"tolerance_pct": Generator.FORMULA_LIVE_TOLERANCE_PCT,
+			"rows": [disposition_row],
+		},
+		"weapon_rows": [{
+			"key": "berserk|sword|20|class_constellation",
+			"formula_live_disposition": "explained_divergence",
+			"final_execution_payoff_kind": str(payoff.get("kind", "")),
+		}],
+	}
+
+
+func _disposition_mutations(dataset: Dictionary) -> Array:
+	var mutations := []
+	var tolerance := dataset.duplicate(true)
+	(tolerance["formula_live_dispositions"] as Dictionary)["tolerance_pct"] = 500.0
+	mutations.append({"name": "tampered acceptance tolerance", "dataset": tolerance})
+
+	var disposition := dataset.duplicate(true)
+	((disposition["formula_live_dispositions"] as Dictionary)["rows"] as Array)[0]["disposition"] = "within_tolerance"
+	mutations.append({"name": "disposition relabelled against its own deltas", "dataset": disposition})
+
+	var unresolved := dataset.duplicate(true)
+	((unresolved["formula_live_dispositions"] as Dictionary)["rows"] as Array)[0]["disposition"] = "unresolved"
+	mutations.append({"name": "unresolved row in a certifying dataset", "dataset": unresolved})
+
+	var factors := dataset.duplicate(true)
+	var factor_axes: Dictionary = ((factors["formula_live_dispositions"] as Dictionary)["rows"] as Array)[0]["axes"]
+	((factor_axes["solo"] as Dictionary)["factors"] as Dictionary)["cadence"] = 42.0
+	mutations.append({"name": "tampered consumer factor", "dataset": factors})
+
+	var observation := dataset.duplicate(true)
+	var observation_axes: Dictionary = ((observation["formula_live_dispositions"] as Dictionary)["rows"] as Array)[0]["axes"]
+	((observation_axes["pack"] as Dictionary)["observed"] as Dictionary)["damage_per_hit"] = 1.0
+	mutations.append({"name": "observation that does not reconstruct from the anchored telemetry", "dataset": observation})
+
+	var evidence := dataset.duplicate(true)
+	((evidence["formula_live_dispositions"] as Dictionary)["rows"] as Array)[0]["final_execution"]["payoff_kind"] = "target_death"
+	mutations.append({"name": "evidence relabelled away from the final-execution row", "dataset": evidence})
+
+	var matrix := dataset.duplicate(true)
+	(matrix["weapon_rows"] as Array)[0]["formula_live_disposition"] = "within_tolerance"
+	mutations.append({"name": "weapon matrix drifted from the disposition rows", "dataset": matrix})
+
+	return mutations
 
 
 func _validate_source_provenance(dataset: Dictionary) -> void:
