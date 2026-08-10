@@ -1,0 +1,22 @@
+{
+  "schema_version": 1,
+  "id": "next_phase_contract",
+  "type": "encounter_feature",
+  "enabled": false,
+  "primary": true,
+  "capabilities": ["primary_beat", "act_state"],
+  "script": "res://scripts/encounters/features/contracts/next_phase_contract_feature.gd",
+  "payload": {
+    "timeout_seconds": 12.0,
+    "risk_multiplier": 1.35,
+    "risk_base_enemies": 2,
+    "risk_max_enemies": 5,
+    "reward": {
+      "base_xp": 4,
+      "base_gold": 5,
+      "per_stage": 2,
+      "xp_cap": 12,
+      "gold_cap": 12
+    }
+  }
+}
