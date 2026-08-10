@@ -139,7 +139,9 @@ const ATTACK_MODE_EXECUTORS := {
 # FAN-1893: явная capability оружия — числом реальных снарядов управляет
 # generic-ось run_modifiers.extra_projectile ТОЛЬКО при real_projectile_count > 0
 # (см. _extra_projectiles). 0 (fail-closed дефолт) = ловушки/тики/звенья/ширина/
-# рикошеты снарядами не считаются и «+1 снаряд» не потребляют.
+# рикошеты снарядами не считаются и «+1 снаряд» не потребляют. FAN-2247:
+# player-facing source отсутствует — active reward/config/source не выдаёт
+# run_modifiers.extra_projectile; прямой probe/injected value не является наградой.
 @export var real_projectile_count := 0
 @export var burst_interval := 0.08
 @export var grenade_delay := 0.42
@@ -2691,9 +2693,11 @@ func _retire_excess_hunter_traps(new_trap: Node2D) -> void:
 
 # SCRUM-936 «Аркебуза»: одна быстрая взрывная пуля — видимый снаряд летит далеко
 # в цель и взрывается малым AoE (полный урон в центре, falloff к краю зоны).
-# extra_projectile (артефакты «Ядро Расщепления» и т.п.) добавляет пули по
-# следующим ближайшим целям. Trait «Двойное действие» даёт второй независимый
-# выстрел через _maybe_fire_action_echo (без рекурсии).
+# Внутренний capability seam extra_projectile при injected value добавляет пули
+# по следующим ближайшим целям. FAN-2247: player-facing source отсутствует —
+# ни один active artifact/reward/config сейчас не выдаёт этот ключ. Trait
+# «Двойное действие» даёт второй независимый выстрел через _maybe_fire_action_echo
+# (без рекурсии).
 func _fire_arquebus_shot(owner_node: Node2D, target: Node2D, direction: Vector2) -> void:
 	var count := maxi(1 + _extra_projectiles(), 1)
 	var targets := _find_closest_enemies(owner_node, count)
@@ -4828,6 +4832,8 @@ func _extra_projectiles() -> int:
 	# один реальный снаряд боевого пути. Для остальных оружий generic-ключ
 	# инертен (перегруженные интерпретации «лишняя ловушка/тик/звено/ширина»
 	# удалены); семантические мета-ключи (trap_extra_count и т.п.) остаются.
+	# FAN-2247: player-facing source отсутствует; direct probes и injected/future
+	# values проверяют runtime seam, но не означают доступную игроку награду.
 	var generic_extra := 0
 	if real_projectile_count > 0:
 		var mods = owner_node.get("run_modifiers")
