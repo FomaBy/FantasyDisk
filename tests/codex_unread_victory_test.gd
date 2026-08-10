@@ -2,10 +2,13 @@ extends SceneTree
 
 const MAIN_SCENE := preload("res://scenes/Main.tscn")
 const MainCompileGuard := preload("res://tests/main_compile_guard.gd")
+const CodexData := preload("res://scripts/codex_data.gd")
 const Meta := preload("res://scripts/meta_progression.gd")
 const TEST_PATH := "user://test_codex_unread_victory.cfg"
 const BADGE_PATH := "res://assets/sprites/ui/icons/codex/ui_badge_codex_unread.png"
 const VIEWPORT_SIZES := [Vector2i(1280, 720), Vector2i(1920, 1080), Vector2i(2560, 1440)]
+const UNREAD_MONSTER_ID := "ash_marksman"
+const UNREAD_ARTIFACT_ID := "rift_key"
 
 var errors := PackedStringArray()
 
@@ -44,13 +47,14 @@ func _check_viewport(viewport_size: Vector2i) -> void:
 	main.meta_save_path = TEST_PATH
 	main.meta_state = Meta.default_state()
 	main.reset_run_metrics()
+	main.meta_state = Meta.record_codex_discovery(main.meta_state, "monsters", UNREAD_MONSTER_ID)
 	if not main.record_future_codex_unlock("characters", "druid", "Друид"):
 		errors.append("%s: future character unlock API rejected canonical content." % context)
 	if not main.record_future_codex_unlock("weapons", "summon_amulet", "Амулет призыва", "druid"):
 		errors.append("%s: future weapon unlock API rejected canonical content." % context)
 	if main.record_future_codex_unlock("weapons", "summon_amulet", "Амулет призыва", "druid"):
 		errors.append("%s: future weapon unlock API accepted a duplicate." % context)
-	main.record_codex_artifact_discovery({"kind": "artifact", "id": "rift_key", "title": "Ключ Разлома"})
+	main.record_codex_artifact_discovery({"kind": "artifact", "id": UNREAD_ARTIFACT_ID, "title": "Ключ Разлома"})
 
 	main.ui._show_main_menu()
 	await _frames(3)
@@ -72,29 +76,59 @@ func _check_viewport(viewport_size: Vector2i) -> void:
 	var character_tab_badge := main.find_child("CodexTabUnreadBadge_characters", true, false) as TextureRect
 	_expect_badge(character_tab_badge, "%s character tab" % context)
 
+	var monster_tab := main.find_child("CodexTab_monsters", true, false) as Button
+	if monster_tab != null:
+		monster_tab.pressed.emit()
+	await _frames(3)
+	var monster_list := main.find_child("CodexSectionList_monsters", true, false) as VBoxContainer
+	var first_monster := monster_list.get_child(0) as Button if monster_list != null and monster_list.get_child_count() > 0 else null
+	var canonical_monster_id := str((CodexData.monsters()[0] as Dictionary).get("id", ""))
+	if first_monster == null or str(first_monster.get_meta("codex_entry_id", "")) != canonical_monster_id:
+		errors.append("%s: unread monster moved the first canonical row." % context)
+	var unread_monster := _codex_entry(monster_list, UNREAD_MONSTER_ID)
+	if unread_monster == null:
+		errors.append("%s: unread monster row is missing." % context)
+	else:
+		_expect_badge(unread_monster.get_node_or_null("CodexUnreadBadge") as TextureRect, "%s monster row" % context)
+		unread_monster.pressed.emit()
+		await _frames(2)
+		if Meta.is_codex_unread(main.meta_state, "monsters", UNREAD_MONSTER_ID):
+			errors.append("%s: explicit monster open did not clear unread state." % context)
+		if str((monster_list.get_child(0) as Button).get_meta("codex_entry_id", "")) != canonical_monster_id:
+			errors.append("%s: clearing monster unread changed the first row index." % context)
+	var monster_tab_badge := main.find_child("CodexTabUnreadBadge_monsters", true, false) as TextureRect
+	if monster_tab_badge != null and monster_tab_badge.visible:
+		errors.append("%s: monster tab badge remained after its last unread entry was opened." % context)
+
 	var artifact_tab := main.find_child("CodexTab_artifacts", true, false) as Button
 	if artifact_tab != null:
 		artifact_tab.pressed.emit()
 	await _frames(3)
 	var artifact_list := main.find_child("CodexSectionList_artifacts", true, false) as VBoxContainer
 	var first_artifact := artifact_list.get_child(0) as Button if artifact_list != null and artifact_list.get_child_count() > 0 else null
-	if first_artifact == null or str(first_artifact.get_meta("codex_entry_id", "")) != "rift_key":
-		errors.append("%s: unread artifact did not sort first." % context)
+	var canonical_artifact_id := str((CodexData.artifacts()[0] as Dictionary).get("id", ""))
+	if first_artifact == null or str(first_artifact.get_meta("codex_entry_id", "")) != canonical_artifact_id:
+		errors.append("%s: unread artifact moved the first canonical row." % context)
+	var unread_artifact := _codex_entry(artifact_list, UNREAD_ARTIFACT_ID)
+	if unread_artifact == null:
+		errors.append("%s: unread artifact row is missing." % context)
 	else:
-		var entry_badge := first_artifact.get_node_or_null("CodexUnreadBadge") as TextureRect
+		var entry_badge := unread_artifact.get_node_or_null("CodexUnreadBadge") as TextureRect
 		_expect_badge(entry_badge, "%s artifact row" % context)
 		if entry_badge != null:
-			_expect_inside(entry_badge.get_global_rect(), first_artifact.get_global_rect(), "%s entry badge" % context)
+			_expect_inside(entry_badge.get_global_rect(), unread_artifact.get_global_rect(), "%s entry badge" % context)
 		_save_screenshot(viewport, "codex_unread", viewport_size)
-		first_artifact.pressed.emit()
+		unread_artifact.pressed.emit()
 		await _frames(2)
-		if Meta.is_codex_unread(main.meta_state, "artifacts", "rift_key"):
+		if Meta.is_codex_unread(main.meta_state, "artifacts", UNREAD_ARTIFACT_ID):
 			errors.append("%s: explicit artifact open did not clear unread state." % context)
 		var persisted := Meta.load_state(TEST_PATH)
-		if Meta.is_codex_unread(persisted, "artifacts", "rift_key"):
+		if Meta.is_codex_unread(persisted, "artifacts", UNREAD_ARTIFACT_ID):
 			errors.append("%s: cleared artifact unread state was not persisted." % context)
 		if entry_badge != null and entry_badge.visible:
 			errors.append("%s: read artifact badge remained visible." % context)
+		if str((artifact_list.get_child(0) as Button).get_meta("codex_entry_id", "")) != canonical_artifact_id:
+			errors.append("%s: clearing artifact unread changed the first row index." % context)
 	var artifact_tab_badge := main.find_child("CodexTabUnreadBadge_artifacts", true, false) as TextureRect
 	if artifact_tab_badge != null and artifact_tab_badge.visible:
 		errors.append("%s: artifact tab badge remained after its last unread entry was opened." % context)
@@ -149,6 +183,16 @@ func _contains_text(values: PackedStringArray, expected: String) -> bool:
 		if value.contains(expected):
 			return true
 	return false
+
+
+func _codex_entry(list: VBoxContainer, entry_id: String) -> Button:
+	if list == null:
+		return null
+	for child in list.get_children():
+		var entry := child as Button
+		if entry != null and str(entry.get_meta("codex_entry_id", "")) == entry_id:
+			return entry
+	return null
 
 
 func _save_screenshot(viewport: SubViewport, screen_id: String, viewport_size: Vector2i) -> void:
