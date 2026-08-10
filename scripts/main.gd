@@ -309,8 +309,8 @@ const LEVEL_UP_MOD_DISPLAY := {
 	"knockback_multiplier": "knockback_power",
 	"dodge_flat": "dodge",
 	"dot_damage_flat": "dot_damage",
+	# FAN-2249: extra_projectile («+1 снаряд») сюда НЕ маппится — это не ось призыва.
 	"summon_bonus": "summon_amount",
-	"extra_projectile": "summon_amount",
 	"absorb_flat": "absorb",
 	"regeneration_flat": "regeneration",
 	"vampiric_amount_flat": "vampiric_amount",

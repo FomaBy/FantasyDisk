@@ -24,6 +24,12 @@ extends SceneTree
 # 5) Legacy-входы мигрируют fail-closed: конфиг без ключей → 0/"none" без
 #    крэша; неизвестная семантика → "none"; сейв-показ с summon-картой у
 #    класса без потребителя сбрасывается.
+# 6) FAN-2249: ВЕСЬ реестр прогоняется живым Player'ом — фактическая ветка
+#    player._apply_weapon_scaling обязана совпасть с объявленной
+#    summon_semantics ("device" игнорирует summon_bonus, остальные считают
+#    ровно AttributeContract.summon_runtime_count вместе с amp_cap_bonus и
+#    «Полевым чертежом»), а «Сила призыва» появляется строкой досье только у
+#    настоящих потребителей (намеренные pair/device/mine_field — нет).
 #
 # Запуск: python3 tools/godot_gate.py --headless --path . --script res://tests/fan1893_capability_contract_test.gd
 
@@ -133,13 +139,14 @@ func _initialize() -> void:
 	await _test_positive_projectile_probes()
 	await _test_negative_projectile_probes()
 	await _test_summon_bonus_single_capped_application()
+	await _test_runtime_branch_matches_declared_semantics()
 	_test_fail_closed_migration()
 
 	if _failed:
 		push_error("FAN-1893 capability contract test FAILED.")
 		quit(1)
 		return
-	print("FAN-1893 capability contract test passed: 51/51 explicit matrix, capability-derived summon set %s, executed +1-projectile positive/negative probes, single capped summon_bonus application, fail-closed legacy migration." % str(EXPECTED_SUMMON_CLASSES))
+	print("FAN-1893 capability contract test passed: 51/51 explicit matrix, capability-derived summon set %s, executed +1-projectile positive/negative probes, single capped summon_bonus application, 51/51 runtime summon branch == declared semantics (FAN-2249), fail-closed legacy migration." % str(EXPECTED_SUMMON_CLASSES))
 	quit(0)
 
 
@@ -503,7 +510,89 @@ func _test_summon_bonus_single_capped_application() -> void:
 		_fail("advisor: non-consumer weapon must not surface a phantom summon_amount delta")
 
 
-# --- 6) Fail-closed миграция legacy-входов ----------------------------------------
+# --- 6) FAN-2249: рантайм-ветка парка == объявленная summon_semantics --------------
+
+
+# Моды, двигающие ОБЕ ветки: summon_bonus (парк), amp_cap_bonus и «Полевой
+# чертеж» (кап deploy). Лидерство поднято так, чтобы чертеж давал +2 к капу.
+const RUNTIME_BRANCH_MODS := {"summon_bonus": 3.0, "amp_cap_bonus": 1.0, "blueprint_leadership_scaling": 1.0}
+const RUNTIME_BRANCH_LEADERSHIP := 12.0
+
+
+func _test_runtime_branch_matches_declared_semantics() -> void:
+	# Весь реестр против ФАКТИЧЕСКОЙ ветки player._apply_weapon_scaling: конфиг
+	# не может молча разойтись с рантаймом. Один живой Player переэкипируется на
+	# каждое оружие (production-путь configure_character → equip_weapon).
+	var holder := _new_scene("Fan2249RuntimeBranch")
+	var player := PLAYER_SCENE.instantiate()
+	holder.add_child(player)
+	player.global_position = Vector2(900, 700)
+	await process_frame
+	for row in _all_weapon_rows():
+		var context := "%s/%s" % [row["cid"], row["wid"]]
+		var config: Dictionary = row["config"]
+		var semantics := AttributeContract.weapon_summon_semantics(config)
+		# Чистый прогон и прогон под модами: «device» обязан игнорировать оба.
+		var plain := await _runtime_park(player, str(row["cid"]), str(row["wid"]), false)
+		var boosted := await _runtime_park(player, str(row["cid"]), str(row["wid"]), true)
+		if plain.is_empty() or boosted.is_empty():
+			# Скрипт оружия вовсе не держит парк — объявлять призыв ему нечем.
+			if semantics != "none":
+				_fail("%s: semantics '%s' declared, but the runtime weapon has no max_summons" % [context, semantics])
+			continue
+		for probe in [plain, boosted]:
+			var expected := float(config.get("max_summons", 0.0)) if semantics == "device" \
+				else AttributeContract.summon_runtime_count(config, probe["stats"], probe["mods"])
+			if float(probe["park"]) != expected:
+				_fail("%s: runtime max_summons %.0f != %.0f for semantics '%s' (summon_bonus %.0f)" % [
+					context, float(probe["park"]), expected, semantics, float(probe["mods"].get("summon_bonus", 0.0))])
+		if semantics == "device" and float(plain["park"]) != float(boosted["park"]):
+			_fail("%s: 'device' park must ignore summon_bonus/cap mods (%.0f -> %.0f)" % [context, float(plain["park"]), float(boosted["park"])])
+		# Кап предъявления == кап рантайма. Оракул теста — литеральная формула
+		# (amp_cap_bonus + «Полевой чертеж» поверх max_summons_cap), а не вызов
+		# того же production-кода, который она проверяет.
+		if semantics == "deploy":
+			var cap := AttributeContract.summon_runtime_cap(config, boosted["mods"], boosted["stats"])
+			var expected_cap := float(int(config.get("max_summons_cap", 0))) + float(RUNTIME_BRANCH_MODS["amp_cap_bonus"]) + floorf(RUNTIME_BRANCH_LEADERSHIP / 6.0)
+			var uncapped := float(config.get("max_summons", 0.0)) + floorf(RUNTIME_BRANCH_LEADERSHIP / 4.0) + float(RUNTIME_BRANCH_MODS["summon_bonus"])
+			if cap != expected_cap:
+				_fail("%s: summon_runtime_cap %.0f != %.0f (amp_cap_bonus + blueprint scaling)" % [context, cap, expected_cap])
+			if float(boosted["park"]) != minf(uncapped, expected_cap):
+				_fail("%s: production park %.0f != capped %.0f" % [context, float(boosted["park"]), minf(uncapped, expected_cap)])
+		# Намеренные pair/device/mine_field не создают строку «Силы призыва».
+		var has_axis_row := false
+		for snapshot in AttributeContract.class_axes_snapshot(str(row["cid"]), boosted["stats"], boosted["mods"], config):
+			if str((snapshot as Dictionary).get("axis_id", "")) == "summon_amount":
+				has_axis_row = true
+		if has_axis_row != AttributeContract.weapon_consumes_summon_bonus(config):
+			_fail("%s: summon axis row=%s but consumer=%s (semantics '%s')" % [
+				context, str(has_axis_row), str(AttributeContract.weapon_consumes_summon_bonus(config)), semantics])
+	await _cleanup(holder)
+
+
+# Один production-прогон: экипирует оружие, применяет моды и полный rescale;
+# возвращает фактический парк вместе со статами/модами этого прогона.
+func _runtime_park(player: Node, cid: String, wid: String, boosted: bool) -> Dictionary:
+	player.call("configure_character", cid, wid)
+	await process_frame
+	var stats: Dictionary = player.get("stats")
+	var mods: Dictionary = player.get("run_modifiers")
+	if boosted:
+		stats["leadership"] = RUNTIME_BRANCH_LEADERSHIP
+		for mod_key in RUNTIME_BRANCH_MODS.keys():
+			mods[str(mod_key)] = RUNTIME_BRANCH_MODS[mod_key]
+		player.set("stats", stats)
+		player.set("run_modifiers", mods)
+	player.call("_apply_stat_scaling")
+	for weapon in (player.call("_equipped_weapons") as Array):
+		player.call("_apply_weapon_scaling", weapon)
+		if weapon.get("max_summons") == null:
+			continue
+		return {"park": float(weapon.get("max_summons")), "stats": stats.duplicate(true), "mods": mods.duplicate(true)}
+	return {}
+
+
+# --- 7) Fail-closed миграция legacy-входов ----------------------------------------
 
 
 func _test_fail_closed_migration() -> void:

@@ -74,7 +74,8 @@ static func weapon_real_projectile_count(weapon_config: Dictionary) -> int:
 static func weapon_consumes_summon_bonus(weapon_config: Dictionary) -> bool:
 	# FAN-1893: только явные count-киты ("pack"/"deploy") двигают фактический
 	# парк от summon_bonus; "pair" ведёт популяцию сам, "device"/"mine_field"
-	# summon_bonus не читают. max_summons — рантайм-опора player.gd:3663-3675.
+	# summon_bonus не читают. Рантайм-ветку по той же семантике выбирает
+	# player._apply_weapon_scaling (FAN-2249).
 	return weapon_summon_semantics(weapon_config) in SUMMON_COUNT_SEMANTICS \
 		and weapon_config.get("max_summons") != null
 
@@ -164,23 +165,29 @@ static func apply_weapon_cadence(weapon: Node, cadence_multiplier: float, meta_i
 		weapon.set(property_id, maxf(interval, floor))
 
 
-# Фактический runtime-парк призывов/деплоя (player.gd:3668-3681): база +
-# Лидерство/4 + summon_bonus, кап max_summons_cap (+amp_cap_bonus у amp-китов).
+# FAN-2249: ЕДИНСТВЕННАЯ формула парка призывов/деплоя — её же исполняет
+# player._apply_weapon_scaling: база + Лидерство/4 + summon_bonus, кап
+# summon_runtime_cap. "device" сюда не заходит: парк устройств ведёт сам кит.
 static func summon_runtime_count(weapon_config: Dictionary, stats: Dictionary, run_modifiers: Dictionary) -> float:
 	var base := float(weapon_config.get("max_summons", 0.0))
 	var count := base + floorf(float(stats.get("leadership", 0.0)) / 4.0) + floorf(float(run_modifiers.get("summon_bonus", 0.0)))
-	var cap := summon_runtime_cap(weapon_config, run_modifiers)
+	var cap := summon_runtime_cap(weapon_config, run_modifiers, stats)
 	if cap >= 0.0:
 		count = minf(count, cap)
 	return count
 
 
-static func summon_runtime_cap(weapon_config: Dictionary, run_modifiers: Dictionary) -> float:
+# Кап парка: max_summons_cap, а у "deploy"-китов сверх него «Сценический
+# усилитель» (amp_cap_bonus) и «Полевой чертеж» (blueprint_leadership_scaling —
+# +1 за каждые 6 Лидерства). Ветку решает summon_semantics, а не attack_mode.
+static func summon_runtime_cap(weapon_config: Dictionary, run_modifiers: Dictionary, stats := {}) -> float:
 	if weapon_config.get("max_summons_cap") == null or int(weapon_config.get("max_summons_cap")) <= 0:
 		return -1.0
 	var cap := float(int(weapon_config.get("max_summons_cap")))
-	if str(weapon_config.get("attack_mode", "")) == "amp":
+	if weapon_summon_semantics(weapon_config) == "deploy":
 		cap += floorf(float(run_modifiers.get("amp_cap_bonus", 0.0)))
+		if float(run_modifiers.get("blueprint_leadership_scaling", 0.0)) > 0.0:
+			cap += floorf(float(stats.get("leadership", 0.0)) / 6.0)
 	return cap
 
 
@@ -197,7 +204,7 @@ static func _presentation_axis_cap(attr_id: String, character_id: String, stats 
 		"crit_damage":
 			return -1.0
 		"summon_amount":
-			return summon_runtime_cap(weapon_config, run_modifiers)
+			return summon_runtime_cap(weapon_config, run_modifiers, stats)
 		_:
 			return -1.0
 

@@ -1180,7 +1180,8 @@ const ENGINEER_WEAPONS := {
 		"sentry_splash_damage_multiplier": 0.24,
 		"sentry_splash_target_cap": 3,  # SCRUM-905: +1 цель сплэша — толпу под ammo-bound добирает качество снаряда
 		"visual_color": Color(0.88, 0.70, 0.32, 0.42),
-		"passive_mods": {"summon_bonus": 1.0},
+		# FAN-2249: passive_mods.summon_bonus снят — "device" парк считает от
+		# derived summon_amount (только статы) и summon_bonus не читает.
 	},
 	"engineer_repair_drone": {
 		# SCRUM-906: редизайн — ОРБИТАЛЬНЫЙ БОЕВОЙ ДРОН (id сохранён для
@@ -1211,7 +1212,7 @@ const ENGINEER_WEAPONS := {
 		"summon_role": "orbit_drone",
 		"summon_role_damage_multiplier": 1.10,
 		"visual_color": Color(0.48, 0.90, 1.0, 0.40),
-		"passive_mods": {"summon_bonus": 1.0},
+		# FAN-2249: см. engineer_sentry_wrench — у "device" summon_bonus мёртв.
 	},
 	"engineer_pressure_mines": {
 		"id": "engineer_pressure_mines", "title": "Минная Сетка", "real_projectile_count": 0, "summon_semantics": "mine_field",
