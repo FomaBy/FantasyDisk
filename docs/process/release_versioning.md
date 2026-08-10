@@ -253,7 +253,12 @@ Apple credentials снова доступны. Полный клиентский
   Developer ID и не делает artifact доверенным для Gatekeeper. Developer ID
   signing, notarization, `stapler` и `spctl` в этом канале не выполняются;
   клиент явно помечает сборку unsigned и даёт ручную инструкцию «Всё равно
-  открыть». Никаких заявлений о доверии Apple в этом канале.
+  открыть». Никаких заявлений о доверии Apple в этом канале. Известное
+  ограничение (FAN-2199/FAN-2297): на macOS 26 (Tahoe) карантиненная
+  unsigned-установка запускается через App Translocation и может быть асинхронно
+  удалена системой из `/Applications` после выхода; устойчивость установки без
+  Developer ID + notarization не доказана и не обещается в user-facing
+  материалах.
 - Для ОБОИХ каналов сохраняются exact-tag inputs, headless import/export, layout
   DMG, secret scan, `SHA256SUMS.txt` и `update-manifest.json`. DMG содержит
   только `FantasyDisk.app`, ярлык `Applications` и одну фоновую стрелку; стрелка

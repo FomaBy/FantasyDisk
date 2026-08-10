@@ -62,6 +62,14 @@ collaborators и pending invitations нет, deploy keys только read-only,
   доверенным манифестом + точным именем/размером/SHA-256, а не подписью Apple.
   Клиент явно сообщает об этом и даёт ручной путь Gatekeeper: Системные настройки
   → Конфиденциальность и безопасность → «Всё равно открыть» (Open Anyway).
+- Известное ограничение на macOS 26 (Tahoe), native evidence FAN-2199/FAN-2297:
+  карантиненное unsigned-приложение стартует из read-only App Translocation, а
+  после выхода асинхронная системная проверка может удалить
+  `/Applications/FantasyDisk.app` (наблюдалось в 2 из 5 циклов
+  install→launch→quit без ручного одобрения Gatekeeper). Устойчивость установки
+  после «Всё равно открыть» на Tahoe не доказана; детерминированную устойчивость
+  даёт только Developer ID + notarization. Не обещать пользователю durable
+  unsigned-установку на macOS 26 без нового native-доказательства.
 - Метка канала в клиенте — `MACOS_UPDATE_CHANNEL` в `scripts/update_manager.gd`.
   `tools/build_release.sh` сверяет её с каналом сборки и падает при расхождении.
 
