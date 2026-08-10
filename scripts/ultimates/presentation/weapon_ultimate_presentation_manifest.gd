@@ -107,10 +107,10 @@ static func class_weapon_record(class_id: String, weapon_id: String) -> Dictiona
 	if scene_path.is_empty() or not ResourceLoader.exists(scene_path):
 		return {}
 	var performance: Dictionary = weapon.get("performance", {}) as Dictionary
-	var timing: Dictionary = weapon.get("timing_seconds", _default_timing()) as Dictionary
-	if timing.is_empty():
-		timing = _default_timing()
-	var normalized_timing: Dictionary = _timing(timing)
+	var timing = weapon.get("timing_seconds")
+	if not timing is Dictionary:
+		return {}
+	var normalized_timing: Dictionary = _timing(timing as Dictionary)
 	if normalized_timing.is_empty():
 		return {}
 	var max_visual_nodes := int((performance as Dictionary).get("max_visual_nodes", 0))
@@ -184,10 +184,6 @@ static func _pivot(raw: Variant) -> Dictionary:
 	if raw is Array and (raw as Array).size() == 2:
 		return {"x": float((raw as Array)[0]), "y": float((raw as Array)[1])}
 	return {"x": 0.5, "y": 0.5}
-
-
-static func _default_timing() -> Dictionary:
-	return {"windup": 0.0, "release": 0.2, "active": 0.4, "recovery": 0.7, "cancel": 1.0}
 
 
 static func _timing(raw: Dictionary) -> Dictionary:

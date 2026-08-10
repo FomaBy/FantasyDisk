@@ -52,13 +52,16 @@ func _check_selected_weapon_identity(fixtures) -> void:
 	var legacy_title := str(PD.ultimate_config(CLASS_ID).get("title", ""))
 	var expected_profile_id := "weapon_ultimate.profile.%s.%s" % [CLASS_ID, WEAPON_ID]
 
-	# Случай A: настоящий v1-профиль -> резолюция в legacy class fallback.
+	# Случай A: синтетический legacy source поверх настоящего профиля. После
+	# активации 51/51 реестр больше не содержит реального fallback-профиля, но
+	# view-model по-прежнему обязан безопасно отрисовать старый snapshot.
 	var fallback_snapshot: Dictionary = fixtures.fallback_snapshot(CLASS_ID, WEAPON_ID)
+	fallback_snapshot["resolution_source"] = Resolver.SOURCE_LEGACY_CLASS_FALLBACK
 	_expect(
 		str(fallback_snapshot["resolution_source"]) == Resolver.SOURCE_LEGACY_CLASS_FALLBACK,
-		"v1 declared profile must resolve to legacy_class_fallback"
+		"legacy snapshot fixture must use legacy_class_fallback"
 	)
-	# Случай B: синтетический ready-профиль -> источник weapon_profile.
+	# Случай B: настоящий ready-профиль -> источник weapon_profile.
 	var profile_snapshot: Dictionary = fixtures.weapon_profile_snapshot(CLASS_ID, WEAPON_ID)
 	_expect(
 		str(profile_snapshot["resolution_source"]) == Resolver.SOURCE_WEAPON_PROFILE,

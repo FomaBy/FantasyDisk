@@ -26,6 +26,23 @@
     "source": "128x128 padded frame, the lossless master the forge writes",
     "runtime": "alpha-trimmed crop of the same frame with 2px padding, no rescale, so no source pixel is lost"
   },
+  "weapons": [
+    {
+      "weapon_id": "engineer_sentry_wrench",
+      "scene_path": "scenes/vfx/ultimates/engineer/EngineerSentryWrenchUltimate.tscn",
+      "timing_seconds": {"windup": 0.0, "release": 0.35, "active": 0.70, "recovery": 4.60, "cancel": 5.10}
+    },
+    {
+      "weapon_id": "engineer_repair_drone",
+      "scene_path": "scenes/vfx/ultimates/engineer/EngineerRepairDroneUltimate.tscn",
+      "timing_seconds": {"windup": 0.0, "release": 0.55, "active": 1.05, "recovery": 5.40, "cancel": 6.10}
+    },
+    {
+      "weapon_id": "engineer_pressure_mines",
+      "scene_path": "scenes/vfx/ultimates/engineer/EngineerPressureMinesUltimate.tscn",
+      "timing_seconds": {"windup": 0.0, "release": 0.90, "active": 1.70, "recovery": 3.10, "cancel": 3.60}
+    }
+  ],
   "assets": [
     {
       "asset_id": "engineer_sentry_pylon",

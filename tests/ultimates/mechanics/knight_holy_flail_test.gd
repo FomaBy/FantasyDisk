@@ -106,10 +106,15 @@ func _test_discovery() -> void:
 	for key in _registry.package_pair_keys():
 		if str(key).begins_with(CLASS_ID + "/"):
 			knight_pairs.append(str(key))
-	_check(knight_pairs == [PAIR_KEY], "only Holy Flail may become ready inside Knight")
-	_check(_registry.resolution_source(CLASS_ID, "long_spear") != Resolver.SOURCE_WEAPON_PROFILE
-		and _registry.resolution_source(CLASS_ID, "tower_shield") != Resolver.SOURCE_WEAPON_PROFILE,
-		"the package must not promote either sibling Knight weapon")
+	knight_pairs.sort()
+	_check(knight_pairs == [PAIR_KEY, "knight/long_spear", "knight/tower_shield"],
+		"the shipped Knight package set must contain its exact three weapons")
+	_check(_registry.resolution_source(CLASS_ID, "long_spear") == Resolver.SOURCE_WEAPON_PROFILE
+		and _registry.resolution_source(CLASS_ID, "tower_shield") == Resolver.SOURCE_WEAPON_PROFILE,
+		"both shipped sibling Knight weapons must keep their exact package routes")
+	_check(_registry.executor_for(CLASS_ID, "long_spear") != _registry.executor_for(CLASS_ID, WEAPON_ID)
+		and _registry.executor_for(CLASS_ID, "tower_shield") != _registry.executor_for(CLASS_ID, WEAPON_ID),
+		"each Knight weapon must retain its own executor")
 	_check(_registry.executor_for("robot", "robot_magnetic_anchor")
 		!= _registry.executor_for(CLASS_ID, WEAPON_ID),
 		"the Holy Flail executor must not leak across classes")
@@ -218,8 +223,8 @@ func _test_wrong_pair_fails_closed() -> void:
 	var controller := Controller.new(host, _registry)
 	_check(not controller.activate("robot", WEAPON_ID),
 		"a cross-class owner pair must fail closed")
-	_check(not controller.activate(CLASS_ID, "tower_shield"),
-		"a sibling weapon without its own package must fail closed")
+	_check(not controller.activate(CLASS_ID, "tower_shield_alias"),
+		"an unknown Knight pair must fail closed")
 	_check(not controller.is_active() and host.get_child_count() == 0,
 		"a refused owner pair must allocate no transient node")
 	await _drop(host)

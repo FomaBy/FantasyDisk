@@ -8,8 +8,10 @@ const PD := preload("res://scripts/progression_data.gd")
 
 const CLASS_ID := "soldier"
 const WEAPONS := ["soldier_rifle", "soldier_grenade", "soldier_bayonet"]
-const DATA_ROOT := "res://data/ultimates/staged/classes"
-const SCRIPT_ROOT := "res://scripts/ultimates/staged/classes"
+const DATA_ROOT := "res://data/ultimates/classes"
+const SCRIPT_ROOT := "res://scripts/ultimates/classes"
+const STAGED_DATA_ROOT := "res://data/ultimates/staged/classes/soldier"
+const STAGED_SCRIPT_ROOT := "res://scripts/ultimates/staged/classes/soldier"
 const INVALID_DATA_ROOT := "res://tests/ultimates/fixtures/packages_invalid/data"
 const INVALID_SCRIPT_ROOT := "res://tests/ultimates/fixtures/packages_invalid/scripts"
 const EXPECTED := {
@@ -27,48 +29,29 @@ func _initialize() -> void:
 	_check(shipped.package_validation_errors().is_empty(),
 		"shipped discovery must stay clean: %s" % [shipped.package_validation_errors()])
 	var base_profiles := Schema.index_documents(shipped.documents_for_tests())
-	var staged := Discovery.new(DATA_ROOT, SCRIPT_ROOT)
-	staged.discover(base_profiles)
-	_check(staged.validation_errors().is_empty(),
-		"staged Soldier discovery must stay clean: %s" % [staged.validation_errors()])
-	_check(staged.pair_keys() == {
-		"soldier/soldier_bayonet": true,
-		"soldier/soldier_grenade": true,
-		"soldier/soldier_rifle": true,
-	}, "staged discovery must admit only the three exact Soldier pairs")
+	var active := Discovery.new(DATA_ROOT, SCRIPT_ROOT)
+	active.discover(base_profiles)
+	_check(active.validation_errors().is_empty(),
+		"active Soldier discovery must stay clean: %s" % [active.validation_errors()])
+	_check(active.pair_keys().size() == 51,
+		"active discovery must admit the complete 51-pair executable roster")
+	_check(DirAccess.get_files_at(STAGED_DATA_ROOT).is_empty()
+		and DirAccess.get_files_at(STAGED_SCRIPT_ROOT).is_empty(),
+		"Soldier must have no duplicate staged data or executor source")
 
-	var staged_profiles := base_profiles.duplicate(true)
 	var executor_paths := {}
 	var parameter_signatures := {}
 	for weapon_id in WEAPONS:
-		var key := "%s/%s" % [CLASS_ID, weapon_id]
+		_check(active.pair_keys().has("%s/%s" % [CLASS_ID, weapon_id]),
+			"%s must be present in active discovery" % weapon_id)
 		_check(shipped.resolution_source(CLASS_ID, weapon_id)
-			== Resolver.SOURCE_LEGACY_CLASS_FALLBACK,
-			"%s must remain on the shipped legacy fallback" % weapon_id)
-		_check(not shipped.has_exact_executor_pair(CLASS_ID, weapon_id),
-			"%s must not enter the shipped executable package set" % weapon_id)
-		_test_base_contract(base_profiles[key], weapon_id)
-		_test_ready_pair(staged, weapon_id, executor_paths, parameter_signatures)
-		staged_profiles[key] = staged.profile_for(key)
-		_check(Resolver.resolution_source(
-			staged_profiles, shipped.canonical_pairs_for_tests(), CLASS_ID, weapon_id, true,
-			staged.pair_keys()
-		) == Resolver.SOURCE_WEAPON_PROFILE,
-			"%s must become executable only through the staged injection seam" % weapon_id)
-	_test_negative_controls(staged, staged_profiles, base_profiles, shipped.canonical_pairs_for_tests())
+			== Resolver.SOURCE_WEAPON_PROFILE,
+			"%s must use the shipped weapon-profile route" % weapon_id)
+		_check(shipped.has_exact_executor_pair(CLASS_ID, weapon_id),
+			"%s must belong to the shipped executable package set" % weapon_id)
+		_test_ready_pair(active, weapon_id, executor_paths, parameter_signatures)
+	_test_negative_controls(active, base_profiles, shipped.canonical_pairs_for_tests())
 	_report()
-
-
-func _test_base_contract(base: Dictionary, weapon_id: String) -> void:
-	_check(str(base.get("implementation_state", "")) == "declared",
-		"%s base profile must remain declared" % weapon_id)
-	_check(str(base.get("fallback_policy_id", "")) == "legacy_class_ultimate",
-		"%s must retain legacy fallback semantics" % weapon_id)
-	for binding_name in ["targeting", "charge", "executor", "cleanup_policy"]:
-		var binding := base.get(binding_name, {}) as Dictionary
-		_check(str(binding.get("strategy_id", "")) == "unbound"
-			and (binding.get("params", {}) as Dictionary).is_empty(),
-			"%s base %s binding must remain frozen" % [weapon_id, binding_name])
 
 
 func _test_ready_pair(
@@ -80,15 +63,15 @@ func _test_ready_pair(
 	var profile := discovery.profile_for("%s/%s" % [CLASS_ID, weapon_id])
 	var executor = discovery.executor_for("%s/%s" % [CLASS_ID, weapon_id])
 	_check(str(profile.get("implementation_state", "")) == "ready",
-		"%s staged overlay must be ready" % weapon_id)
+		"%s active overlay must be ready" % weapon_id)
 	_check(is_equal_approx(float(profile.get("total_boss_cap", 0.0)), 0.09),
 		"%s must use Soldier's immutable 9%% boss cap" % weapon_id)
-	_check(executor is GDScript, "%s staged executor must load" % weapon_id)
+	_check(executor is GDScript, "%s active executor must load" % weapon_id)
 	if not executor is GDScript:
 		return
 	var path := (executor as GDScript).resource_path
 	_check(path.begins_with(SCRIPT_ROOT + "/soldier/"),
-		"%s executor must stay in the non-shipped staged root" % weapon_id)
+		"%s executor must stay in the shipped active root" % weapon_id)
 	_check(not executor_paths.has(path), "%s must not alias another executor" % weapon_id)
 	executor_paths[path] = true
 	var constants := (executor as GDScript).get_script_constant_map()
@@ -110,7 +93,6 @@ func _test_ready_pair(
 
 func _test_negative_controls(
 	discovery: Discovery,
-	staged_profiles: Dictionary,
 	base_profiles: Dictionary,
 	canonical_pairs: Dictionary
 ) -> void:
@@ -119,7 +101,7 @@ func _test_negative_controls(
 		["sniper", "soldier_grenade"],
 	]:
 		_check(Resolver.resolution_source(
-			staged_profiles, canonical_pairs, str(pair[0]), str(pair[1]), true, discovery.pair_keys()
+			base_profiles, canonical_pairs, str(pair[0]), str(pair[1]), true, discovery.pair_keys()
 		) == Resolver.SOURCE_INVALID_PAIR,
 			"%s/%s must fail closed" % [pair[0], pair[1]])
 
@@ -129,7 +111,7 @@ func _test_negative_controls(
 		DATA_ROOT + "/" + relative_path
 	))
 	var executor = load(SCRIPT_ROOT + "/soldier/%s.gd" % weapon_id)
-	_check(document is Dictionary and executor is GDScript, "staged negative fixture must load")
+	_check(document is Dictionary and executor is GDScript, "active negative fixture must load")
 	if not document is Dictionary or not executor is GDScript:
 		return
 	var malformed := (document as Dictionary).duplicate(true)
@@ -168,7 +150,7 @@ func _expect_pair_error(
 ) -> void:
 	var result := discovery.validate_pair(document, relative_path, executor, base_profile)
 	_check(_has_error(result["errors"] as Array, prefix),
-		"invalid staged pair must reject with %s: %s" % [prefix, result["errors"]])
+		"invalid active pair must reject with %s: %s" % [prefix, result["errors"]])
 
 
 func _has_error(errors: Array, prefix: String) -> bool:

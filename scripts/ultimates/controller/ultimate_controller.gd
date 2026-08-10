@@ -111,21 +111,21 @@ func record_guard_prevention(event: Dictionary) -> float:
 
 ## Death, node end or a new run: drop the cast and everything it is still
 ## holding, presentation included.
-func cancel() -> void:
-	_shutdown(true)
+func cancel(reason := "cancel") -> void:
+	_shutdown(true, reason)
 
 
 func _complete() -> void:
-	_shutdown(false)
+	_shutdown(false, "node_end")
 
 
-func _shutdown(free_presentation: bool) -> void:
+func _shutdown(free_presentation: bool, reason: String) -> void:
 	if _activation == null:
 		return
 	var activation := _activation
 	_activation = null
 	if _host != null and is_instance_valid(_host) and _host.has_method("ultimate_host_finish_presentation"):
-		_host.call("ultimate_host_finish_presentation", "cancel" if free_presentation else "node_end")
+		_host.call("ultimate_host_finish_presentation", reason)
 	activation.shutdown(free_presentation)
 	if _host != null and is_instance_valid(_host) and _host.has_method("ultimate_host_set_active"):
 		_host.call("ultimate_host_set_active", false)

@@ -92,9 +92,8 @@ func controller() -> Controller:
 ## Death, scene change and node end all remove the Player, and this child with
 ## it, so one hook covers every case a new run does not.
 func _exit_tree() -> void:
-	ultimate_host_finish_presentation("node_end")
 	if _controller != null:
-		_controller.cancel()
+		_controller.cancel("node_end")
 
 
 func use_registry(registry) -> void:
@@ -114,9 +113,8 @@ func _on_guard_prevention_measured(event: Dictionary) -> void:
 
 
 func _on_player_died() -> void:
-	ultimate_host_finish_presentation("death")
 	if _controller != null:
-		_controller.cancel()
+		_controller.cancel("death")
 
 
 func _process(delta: float) -> void:

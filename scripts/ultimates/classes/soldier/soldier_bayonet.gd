@@ -37,7 +37,7 @@ var _leased_statuses: Array[Dictionary] = []
 
 static func parameter_contract() -> Dictionary:
 	return {
-		"aim_range": {"type": "number", "minimum": 0.01},
+		"max_range": {"type": "number", "minimum": 0.01},
 		"corridor_half_width": {"type": "number", "minimum": 0.0},
 		"target_limit": {"type": "integer", "minimum": 1},
 		"rank_count": {"type": "integer", "minimum": 1},
@@ -47,12 +47,12 @@ static func parameter_contract() -> Dictionary:
 		"pin_duration": {"type": "number", "minimum": 0.0},
 		"pin_slow": {"type": "number", "minimum": 0.0, "maximum": 1.0},
 		"guard_defense": {"type": "number", "minimum": 0.0, "maximum": 1.0},
-		"recover_time": {"type": "number", "minimum": 0.01},
+		"lifetime": {"type": "number", "minimum": 0.01},
 	}
 
 
 static func execute(activation) -> float:
-	var aim_range: float = activation.param_float("aim_range", 780.0)
+	var aim_range: float = activation.param_float("max_range", 780.0)
 	if not Library.execute_primitive("aim_context", activation, {
 		"max_range": aim_range,
 		"target_mode": "host_aim",
@@ -93,10 +93,10 @@ static func execute(activation) -> float:
 		tween.tween_interval(interval)
 		tween.tween_callback(Callable(effect, "charge_rank").bind(rank))
 	var elapsed := interval * float(ranks)
-	var recover_time: float = activation.param_float("recover_time", 4.25)
-	if recover_time > elapsed:
-		tween.tween_interval(recover_time - elapsed)
-	return maxf(recover_time, elapsed)
+	var lifetime: float = activation.param_float("lifetime", 4.25)
+	if lifetime > elapsed:
+		tween.tween_interval(lifetime - elapsed)
+	return maxf(lifetime, elapsed)
 
 
 func configure(activation, targets: Array, direction: Vector2) -> void:
@@ -147,7 +147,7 @@ func charge_rank(rank: int) -> void:
 	_activation.present(EXECUTOR_ID + ".rank", {
 		"shape": "beam",
 		"from": global_position,
-		"to": global_position + _direction * _activation.param_float("aim_range", 780.0),
+		"to": global_position + _direction * _activation.param_float("max_range", 780.0),
 	})
 
 
