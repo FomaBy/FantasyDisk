@@ -13,6 +13,7 @@ extends SceneTree
 # 3) «+1 снаряд» — ИСПОЛНЯЕМЫЕ probes, не labels: у каждого capability-оружия
 #    (production seam _extra_projectiles + полные выстрелы по mock-врагам)
 #    +1 extra_projectile создаёт ровно один дополнительный реальный снаряд;
+#    у Часовой турели это один снаряд на каждый залп каждой активной сущности;
 #    у каждого не-capability оружия generic-ключ доказуемо инертен
 #    (цепи/рикошеты/ловушки/тики/ширина/зеркальная пара/лучи/melee).
 #    Семантические мета-ключи (trap_extra_count/mine_extra_count/
@@ -38,7 +39,6 @@ extends SceneTree
 const PD := preload("res://scripts/progression_data.gd")
 const ClassWeaponScript := preload("res://scripts/class_weapon.gd")
 const BerserkWeaponScript := preload("res://scripts/berserk_weapon.gd")
-const SentryTurretScript := preload("res://scripts/sentry_turret.gd")
 const PLAYER_SCENE := preload("res://scenes/Player.tscn")
 
 # Ожидаемая 51-row матрица: не перечисленное оружие обязано объявлять 0/"none".
@@ -359,11 +359,15 @@ func _test_positive_projectile_probes() -> void:
 	if arrows_extra - arrows_base != 2:
 		_fail("storm_pierce_cone: effect delta %d -> %d, expected exactly +2 (one more real arrow)" % [arrows_base, arrows_extra])
 	await _cleanup(holder)
-	# f) Турель (sentry_turret.try_fire): залп 2 -> 3 снаряда по РАЗНЫМ целям.
-	var sentry0 := await _sentry_volley_distinct(0)
-	var sentry1 := await _sentry_volley_distinct(1)
-	if sentry0 != 2 or sentry1 != 3:
-		_fail("sentry volley: distinct targets %d -> %d, expected 2 -> 3 (+1 real shot)" % [sentry0, sentry1])
+	# f) Две активные турели: production deploy -> try_fire у КАЖДОЙ. Один
+	# modifier point добавляет по снаряду в каждый entity volley, не в парк.
+	var sentry0 := await _sentry_park_volley_hits(0)
+	var sentry1 := await _sentry_park_volley_hits(1)
+	var firing_entities := int(sentry0.get("entities", 0))
+	if firing_entities < 2 or int(sentry1.get("entities", 0)) != firing_entities:
+		_fail("sentry park: expected the same >=2 active firing entities, got %s -> %s" % [str(sentry0), str(sentry1)])
+	elif int(sentry0.get("hits", 0)) != firing_entities * 2 or int(sentry1.get("hits", 0)) - int(sentry0.get("hits", 0)) != firing_entities:
+		_fail("sentry park: aggregate hits %s -> %s, expected base %d and +%d (one shot per firing entity)" % [str(sentry0), str(sentry1), firing_entities * 2, firing_entities])
 
 
 func _test_negative_projectile_probes() -> void:
@@ -818,31 +822,31 @@ func _berserk_swing_hits(extra: int) -> int:
 	return total
 
 
-func _sentry_volley_distinct(extra: int) -> int:
+func _sentry_park_volley_hits(extra: int) -> Dictionary:
 	var holder := _new_scene("Fan1893Sentry_%d" % extra)
 	var owner := _new_owner(holder, "engineer")
 	owner.run_modifiers = {"extra_projectile": float(extra)}
 	var weapon := _new_class_weapon(owner, PD.weapon("engineer", "engineer_sentry_wrench"))
-	var turret := Node2D.new()
-	turret.set_script(SentryTurretScript)
-	holder.add_child(turret)
-	turret.global_position = owner.global_position
-	turret.call("setup", weapon, owner)
-	turret.set_physics_process(false)
 	var enemies := [
 		_new_enemy(holder, owner.global_position + Vector2(260, 0)),
 		_new_enemy(holder, owner.global_position + Vector2(0, 300)),
 		_new_enemy(holder, owner.global_position + Vector2(-340, 0)),
 	]
-	await process_frame
-	turret.call("try_fire", weapon)
+	# Реальный deploy-path запускает try_fire сразу; два deployment-а создают
+	# две независимо стреляющие сущности без ручной подмены volley formula.
+	weapon.call("_fire_engineer_sentry_link", owner, Vector2.RIGHT)
+	weapon.call("_fire_engineer_sentry_link", owner, Vector2.RIGHT)
+	var firing_entities := 0
+	for turret in (weapon.get("_deployed_amps") as Array):
+		if turret != null and is_instance_valid(turret):
+			turret.set_physics_process(false)
+			firing_entities += 1
 	await create_timer(1.0).timeout
-	var distinct := 0
+	var hits := 0
 	for enemy in enemies:
-		if (enemy as MockEnemy).hit_count > 0:
-			distinct += 1
+		hits += (enemy as MockEnemy).hit_count
 	await _cleanup(holder)
-	return distinct
+	return {"entities": firing_entities, "hits": hits}
 
 
 # Реальный Player + реальная сцена оружия: применяет run_modifiers и полный

@@ -138,8 +138,10 @@ const ATTACK_MODE_EXECUTORS := {
 @export var projectile_count := 1
 # FAN-1893: явная capability оружия — числом реальных снарядов управляет
 # generic-ось run_modifiers.extra_projectile ТОЛЬКО при real_projectile_count > 0
-# (см. _extra_projectiles). 0 (fail-closed дефолт) = ловушки/тики/звенья/ширина/
-# рикошеты снарядами не считаются и «+1 снаряд» не потребляют. FAN-2247:
+# (см. _extra_projectiles). Обычное оружие добавляет снаряд к своему выстрелу,
+# а каждая активная «Часовая турель» — к собственному залпу, без роста парка.
+# 0 (fail-closed дефолт) = ловушки/тики/звенья/ширина/рикошеты снарядами не
+# считаются и «+1 снаряд» не потребляют. FAN-2247:
 # player-facing source отсутствует — active reward/config/source не выдаёт
 # run_modifiers.extra_projectile; прямой probe/injected value не является наградой.
 @export var real_projectile_count := 0
@@ -4829,7 +4831,10 @@ func _extra_projectiles() -> int:
 		return 0
 	# FAN-1893: generic-ось «+1 снаряд» потребляется ТОЛЬКО оружием с явной
 	# capability real_projectile_count > 0 — тогда каждый пункт добавляет ровно
-	# один реальный снаряд боевого пути. Для остальных оружий generic-ключ
+	# один реальный снаряд боевого пути. У обычного оружия это его выстрел;
+	# engineer_sentry_link читает шов из try_fire каждой активной турели, поэтому
+	# один пункт добавляет по снаряду к каждому её залпу, но не меняет парк,
+	# cadence, damage или summon scaling. Для остальных оружий generic-ключ
 	# инертен (перегруженные интерпретации «лишняя ловушка/тик/звено/ширина»
 	# удалены); семантические мета-ключи (trap_extra_count и т.п.) остаются.
 	# FAN-2247: player-facing source отсутствует; direct probes и injected/future
