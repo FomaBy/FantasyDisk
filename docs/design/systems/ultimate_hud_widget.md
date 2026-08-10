@@ -1,10 +1,9 @@
 # Ultimate HUD widget (FAN-1458)
 
-Status: isolated fixture-driven widget, contract v1. The widget is NOT mounted
-into the live combat HUD by this package: the single writer of the live
-`scripts/ui_screens.gd` / `scenes/Main.tscn` binding is FAN-1541, and the
-runtime state adapter is FAN-1457. Until the adapter exists, the widget is
-driven entirely by versioned contract fixtures.
+Status: contract v1 is mounted in the live combat HUD by the narrow
+`UltimateHudRuntimeAdapter`. It translates Player charge, the selected exact
+registry profile, input-device binding and aim state into the unchanged widget
+contract, and routes an accepted request back through `Player.activate_ultimate()`.
 
 ## Package
 
@@ -96,6 +95,7 @@ python3 tools/godot_gate.py --headless --path . \
 ```
 
 All three are ordinary (non-exclusive) headless suites; `tools/quality_gate.py`
-discovers them recursively under `tests/ultimates/`. Live-HUD mounting,
-in-battle charge persistence and live layout regression belong to FAN-1541
-and its QA, not to this package.
+discovers them recursively under `tests/ultimates/`. The live adapter keeps the
+widget mounted across combat HUD refreshes; charge remains Player-owned and is
+therefore preserved by the existing Player snapshot lifecycle while the active
+overlay is reset with the HUD node.
