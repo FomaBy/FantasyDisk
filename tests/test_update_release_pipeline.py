@@ -2637,6 +2637,8 @@ class UnsignedChannelLabelingTests(unittest.TestCase):
         self.assertIn("без подписи Apple Developer ID", manager)
         self.assertIn("Конфиденциальность и безопасность", manager)
         self.assertIn("«Всё равно открыть» (Open Anyway)", manager)
+        self.assertIn("Если Gatekeeper заблокирует первый запуск", manager)
+        self.assertNotIn("с ручным подтверждением Gatekeeper при первом запуске", manager)
         self.assertNotIn("подписанный установщик", manager)
 
         dialog = (ROOT / "scripts" / "ui" / "update_dialog.gd").read_text(encoding="utf-8")
@@ -2648,6 +2650,9 @@ class UnsignedChannelLabelingTests(unittest.TestCase):
         self.assertNotIn("signed/notarized", docs)
         self.assertIn("FANTASYDISK_MACOS_CHANNEL=unsigned", docs)
         self.assertIn("Всё равно открыть", docs)
+        self.assertIn("--quarantine-dmg", docs)
+        self.assertIn("0083;…;Safari", docs)
+        self.assertIn("0383;00000000", docs)
         skill = (
             ROOT / "skills" / "codex" / "fantasydisk-release-director" / "SKILL.md"
         ).read_text(encoding="utf-8")

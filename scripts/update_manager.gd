@@ -11,7 +11,8 @@ const MANIFEST_SCHEMA_VERSION := 1
 # пайплайна: tools/build_release.sh сверяет эту метку с FANTASYDISK_MACOS_CHANNEL
 # и отказывается собирать релиз, если клиентские подсказки стали бы ложью.
 # "unsigned" — принятое владельцем решение (FAN-1121): без Developer ID и
-# нотаризации, с ручным подтверждением Gatekeeper при первом запуске.
+# нотаризации; системный путь одобрения показывается только если Gatekeeper
+# заблокирует первый запуск.
 const MACOS_UPDATE_CHANNEL := "unsigned"
 const MACOS_UNSIGNED_NOTICE := "Сборка для macOS распространяется без подписи Apple Developer ID и без нотаризации. Если Gatekeeper заблокирует первый запуск, откройте Системные настройки → Конфиденциальность и безопасность и нажмите «Всё равно открыть» (Open Anyway)."
 const DEFAULT_MANIFEST_URL := "https://github.com/FomaBy/FantasyDisk-Releases/releases/latest/download/update-manifest.json"

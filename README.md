@@ -116,8 +116,8 @@ FANTASYDISK_MACOS_CHANNEL=signed tools/build_release.sh <version>
 Apple notarization/stapling и успешный `spctl`; `unsigned` отказывается работать
 при заданных Apple credentials, ставит только локальную ad-hoc подпись для
 проверки целостности bundle и пропускает Apple trust-проверки. Она не является
-подписью Developer ID: игрок по-прежнему получает честную инструкцию Gatekeeper
-«Всё равно открыть».
+подписью Developer ID: если Gatekeeper заблокирует первый запуск, игрок получает
+честную системную инструкцию «Всё равно открыть».
 Проверенный пакет публикуется только в public binary-only repository
 `FomaBy/FantasyDisk-Releases` через bundled `github_release_publish.py`; клиент
 0.2.2+ читает `update-manifest.json` из `releases/latest` этого repository.

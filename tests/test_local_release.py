@@ -297,6 +297,55 @@ class LocalReleaseTests(unittest.TestCase):
         with self.assertRaisesRegex(local_release.LocalReleaseError, "build=10.8.71"):
             local_release.verify_macos_app(app, "9.8.7.1", launch_smoke=False, signed=False)
 
+    def test_safari_finder_quarantine_proof_rejects_synthetic_or_missing_evidence(self) -> None:
+        dmg = self.root / "FantasyDisk.dmg"
+        dmg.write_bytes(b"fixture")
+        app = self.root / "Applications" / "FantasyDisk.app"
+        app.mkdir(parents=True)
+        event_id = "4D4C9786-7697-4A26-85CD-C37002707232"
+
+        with mock.patch.object(
+            local_release,
+            "_quarantine_record",
+            side_effect=(
+                local_release.MacOSQuarantineRecord("0083", "6a79c59f", "Safari", event_id),
+                local_release.MacOSQuarantineRecord("0383", "00000000", "", event_id),
+            ),
+        ):
+            local_release.verify_safari_finder_quarantine_evidence(dmg, app)
+
+        with mock.patch.object(
+            local_release,
+            "_quarantine_record",
+            side_effect=(
+                local_release.MacOSQuarantineRecord("0081", "6a79c59f", "FAN-1439", event_id),
+                local_release.MacOSQuarantineRecord("0383", "00000000", "", event_id),
+            ),
+        ):
+            with self.assertRaisesRegex(local_release.LocalReleaseError, "Safari download"):
+                local_release.verify_safari_finder_quarantine_evidence(dmg, app)
+
+        with mock.patch.object(
+            local_release,
+            "_quarantine_record",
+            side_effect=(
+                local_release.MacOSQuarantineRecord("0083", "6a79c59f", "Safari", event_id),
+                local_release.MacOSQuarantineRecord(
+                    "0383", "00000000", "", "00000000-0000-0000-0000-000000000000"
+                ),
+            ),
+        ):
+            with self.assertRaisesRegex(local_release.LocalReleaseError, "IDs differ"):
+                local_release.verify_safari_finder_quarantine_evidence(dmg, app)
+
+        with mock.patch.object(
+            local_release,
+            "_quarantine_record",
+            side_effect=local_release.LocalReleaseError("required quarantine evidence is missing"),
+        ):
+            with self.assertRaisesRegex(local_release.LocalReleaseError, "quarantine evidence is missing"):
+                local_release.verify_safari_finder_quarantine_evidence(dmg, app)
+
     def test_macos_verifier_can_use_immutable_tag_export_metadata(self) -> None:
         project = self.root / "tag-project"
         project.mkdir()
@@ -313,6 +362,8 @@ class LocalReleaseTests(unittest.TestCase):
         self.assertIn('MACOS_CHANNEL="${FANTASYDISK_MACOS_CHANNEL:-signed}"', script)
         self.assertIn('--macos-channel "${MACOS_CHANNEL}"', script)
         self.assertIn("MACOS_UPDATE_CHANNEL", script)
+        self.assertIn("если Gatekeeper заблокирует запуск", script)
+        self.assertNotIn("Gatekeeper потребует ручного", script)
 
         base_env = {
             key: value

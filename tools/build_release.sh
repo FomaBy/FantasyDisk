@@ -232,8 +232,7 @@ else
   # Godot export templates can carry an embedded vendor signature.  Adding the
   # DMG background invalidates its resource seal, which Tahoe treats as a
   # damaged app instead of a normal unsigned app.  Replace it with a local
-  # ad-hoc seal: it verifies bundle integrity but does not identify a publisher
-  # or change the manual Gatekeeper/Open Anyway requirement.
+  # ad-hoc seal: it verifies bundle integrity but does not identify a publisher.
   codesign --force --sign - "${APP_PATH}"
   codesign --verify --deep --strict --verbose=4 "${APP_PATH}"
   APP_SIGNATURE_DETAILS="$(codesign -dv --verbose=4 "${APP_PATH}" 2>&1)"
@@ -241,7 +240,7 @@ else
     echo "    ERROR: unsigned app was not sealed with an ad-hoc signature"
     exit 2
   fi
-  echo "    Developer ID и Apple notarization не выполняются; Gatekeeper потребует ручного «Всё равно открыть»"
+  echo "    Developer ID и Apple notarization не выполняются; если Gatekeeper заблокирует запуск, используйте системный путь «Всё равно открыть»"
 fi
 
 echo "==> Создание DMG с ярлыком Applications и стрелкой"

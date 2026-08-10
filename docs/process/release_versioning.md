@@ -252,8 +252,9 @@ Apple credentials снова доступны. Полный клиентский
   заменяет унаследованную подпись export template, но не является подписью
   Developer ID и не делает artifact доверенным для Gatekeeper. Developer ID
   signing, notarization, `stapler` и `spctl` в этом канале не выполняются;
-  клиент явно помечает сборку unsigned и даёт ручную инструкцию «Всё равно
-  открыть». Никаких заявлений о доверии Apple в этом канале.
+  клиент явно помечает сборку unsigned и при фактической блокировке Gatekeeper
+  даёт системную инструкцию «Всё равно открыть». Никаких заявлений о доверии
+  Apple в этом канале.
 - Для ОБОИХ каналов сохраняются exact-tag inputs, headless import/export, layout
   DMG, secret scan, `SHA256SUMS.txt` и `update-manifest.json`. DMG содержит
   только `FantasyDisk.app`, ярлык `Applications` и одну фоновую стрелку; стрелка

@@ -60,8 +60,9 @@ collaborators и pending invitations нет, deploy keys только read-only,
 - Текущий macOS-канал — **unsigned** (решение владельца, FAN-1121): DMG и .app
   не имеют подписи Developer ID и нотаризации. Целостность гарантируется HTTPS +
   доверенным манифестом + точным именем/размером/SHA-256, а не подписью Apple.
-  Клиент явно сообщает об этом и даёт ручной путь Gatekeeper: Системные настройки
-  → Конфиденциальность и безопасность → «Всё равно открыть» (Open Anyway).
+  Клиент явно сообщает об этом: если Gatekeeper заблокирует первый запуск, macOS
+  предлагает системный путь Системные настройки → Конфиденциальность и
+  безопасность → «Всё равно открыть» (Open Anyway).
 - Метка канала в клиенте — `MACOS_UPDATE_CHANNEL` в `scripts/update_manager.gd`.
   `tools/build_release.sh` сверяет её с каналом сборки и падает при расхождении.
 
@@ -132,10 +133,20 @@ version, URL, имена, размеры и хэши до любой внешн�
 - `unsigned` — одобренный владельцем канал без Apple credentials (FAN-1121).
   Он запускается только с `FANTASYDISK_MACOS_CHANNEL=unsigned`, отказывается
   работать при заданных Apple credentials и после изменения bundle ставит только
-  локальную ad-hoc подпись для проверки целостности. Это не подпись Developer ID
-  и не отменяет ручное подтверждение Gatekeeper; Apple trust checks пропускаются.
+  локальную ad-hoc подпись для проверки целостности. Это не подпись Developer ID;
+  при фактической блокировке Gatekeeper пользователь использует системное
+  подтверждение, а Apple trust checks в build не выполняются.
   Exact-tag inputs, DMG layout, NSIS + CRC, secret scan, `SHA256SUMS.txt` и
   update manifest остаются обязательными.
+
+Для Tahoe release QA нельзя объявлять approval-path пройденным по
+quarantine-free или direct-Mach-O smoke. После реальной загрузки Safari и копии
+Finder в `/Applications` передайте этот скачанный DMG как `--quarantine-dmg` в
+`local_release.py verify --macos-channel unsigned --launch-smoke`. Проверка
+требует `0083;…;Safari;<UUID>` на DMG и `0383;00000000;;<тот же UUID>` на
+установленном app; она ничего не добавляет и не удаляет из xattr и откажет без
+такого доказательства. Ручная «Всё равно открыть» остаётся условным путём, а не
+обещанием, что диалог появится на каждом macOS-хосте.
 
 `local_release.py` записывает канал в `LOCAL_RELEASE.json` и требует явного
 совпадения при `verify`. Публикаторы используют только возвращённый verified

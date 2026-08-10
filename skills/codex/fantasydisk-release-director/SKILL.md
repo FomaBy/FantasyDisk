@@ -105,9 +105,13 @@ fail-closed and there is never a silent downgrade:
   secret scan, SHA-256 sums, and the update manifest remain mandatory, and asset
   names do not change. The build cross-checks `MACOS_UPDATE_CHANNEL` in the
   tag's `scripts/update_manager.gd` so the client truthfully labels the artifact
-  unsigned and shows the manual Gatekeeper «Всё равно открыть» (Open Anyway)
-  instruction. Never claim Developer ID, notarization, stapling, or a positive
-  `spctl` result for an unsigned build.
+  unsigned and, if Gatekeeper blocks the first launch, shows the system
+  «Всё равно открыть» (Open Anyway) instruction. For Tahoe proof, use an actual
+  Safari download plus Finder copy and pass that DMG as `--quarantine-dmg` to
+  `local_release.py verify --macos-channel unsigned --launch-smoke`; it rejects
+  missing or mismatched native quarantine evidence and never fabricates or clears
+  xattrs. Never claim Developer ID, notarization, stapling, or a positive `spctl`
+  result for an unsigned build.
 
 ### macOS signing order (signed channel)
 

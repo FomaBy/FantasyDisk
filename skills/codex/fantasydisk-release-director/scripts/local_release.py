@@ -41,6 +41,8 @@ APP_ENV = "FANTASYDISK_LOCAL_APP"
 CHANNEL_ENV = "FANTASYDISK_MACOS_CHANNEL"
 MACOS_CHANNELS = ("signed", "unsigned")
 MACOS_BUNDLE_VERSION_RE = re.compile(r"^[0-9]+\.[0-9]+\.[0-9]+$")
+QUARANTINE_ATTRIBUTE = "com.apple.quarantine"
+QUARANTINE_EVENT_ID_RE = re.compile(r"^[0-9A-Fa-f-]{36}$")
 
 
 class LocalReleaseError(RuntimeError):
@@ -51,6 +53,14 @@ class LocalReleaseError(RuntimeError):
 class MacOSBundleVersions:
     short_version: str
     build_version: str
+
+
+@dataclass(frozen=True)
+class MacOSQuarantineRecord:
+    flags: str
+    timestamp: str
+    agent: str
+    event_id: str
 
 
 def _version_key(version: str) -> tuple[int, int, int, int]:
@@ -579,6 +589,37 @@ def _bundle_executable(app: Path) -> Path:
     return executable
 
 
+def _quarantine_record(path: Path) -> MacOSQuarantineRecord:
+    try:
+        raw = _run(["xattr", "-p", QUARANTINE_ATTRIBUTE, path]).stdout.strip()
+    except LocalReleaseError as error:
+        raise LocalReleaseError(f"required quarantine evidence is missing: {path}") from error
+    fields = raw.split(";")
+    if len(fields) != 4 or not QUARANTINE_EVENT_ID_RE.fullmatch(fields[3]):
+        raise LocalReleaseError(f"invalid quarantine evidence: {path}")
+    return MacOSQuarantineRecord(*fields)
+
+
+def verify_safari_finder_quarantine_evidence(dmg: Path, app: Path) -> None:
+    """Reject a claimed unsigned Tahoe test unless Safari and Finder left real Q evidence.
+
+    The proof intentionally accepts only the native Safari-download and Finder-copy
+    shape.  It does not manufacture, clear, or otherwise alter extended attributes.
+    """
+    if not dmg.is_file():
+        raise LocalReleaseError(f"quarantined DMG is missing: {dmg}")
+    if not app.is_dir():
+        raise LocalReleaseError(f"quarantined installed app is missing: {app}")
+    downloaded = _quarantine_record(dmg)
+    installed = _quarantine_record(app)
+    if downloaded.flags != "0083" or downloaded.agent != "Safari":
+        raise LocalReleaseError("quarantine evidence is not a Safari download")
+    if installed.flags != "0383" or installed.timestamp != "00000000" or installed.agent:
+        raise LocalReleaseError("quarantine evidence is not a Finder-installed app")
+    if downloaded.event_id.lower() != installed.event_id.lower():
+        raise LocalReleaseError("Safari download and Finder-installed app quarantine IDs differ")
+
+
 def verify_macos_app(
     app: Path,
     version: str,
@@ -804,6 +845,7 @@ def verify_local_release(
     require_app: bool,
     launch_smoke: bool = False,
     macos_channel: str = "signed",
+    quarantine_dmg: Path | None = None,
 ) -> dict:
     _version_key(version)
     tag = f"v{version}"
@@ -865,6 +907,10 @@ def verify_local_release(
     end = len(projects_content) if next_section < 0 else next_section + 1
     if not re.search(r"(?m)^favorite=true$", projects_content[start:end]):
         raise LocalReleaseError("current-project is not a Godot favorite")
+    if quarantine_dmg is not None and macos_channel != "unsigned":
+        raise LocalReleaseError("quarantine evidence is only valid for the unsigned channel")
+    if quarantine_dmg is not None and not require_app:
+        raise LocalReleaseError("quarantine evidence requires a macOS installed app")
     if require_app:
         signed = recorded_channel == "signed"
         expected_versions = _macos_bundle_versions_from_project(project)
@@ -874,10 +920,12 @@ def verify_local_release(
             signed=signed,
             expected_versions=expected_versions,
         )
+        if quarantine_dmg is not None:
+            verify_safari_finder_quarantine_evidence(quarantine_dmg, config.macos_app)
         verify_macos_app(
             config.macos_app,
             version,
-            launch_smoke=launch_smoke,
+            launch_smoke=launch_smoke or quarantine_dmg is not None,
             signed=signed,
             expected_versions=expected_versions,
         )
@@ -896,6 +944,14 @@ def _parser() -> argparse.ArgumentParser:
     parser.add_argument("--godot-projects-file", type=Path)
     parser.add_argument("--dry-run", action="store_true")
     parser.add_argument("--launch-smoke", action="store_true")
+    parser.add_argument(
+        "--quarantine-dmg",
+        type=Path,
+        help=(
+            "Safari-downloaded unsigned DMG whose matching Finder-installed app must "
+            "retain native quarantine evidence"
+        ),
+    )
     parser.add_argument(
         "--macos-channel",
         choices=MACOS_CHANNELS,
@@ -952,6 +1008,7 @@ def main(argv: Sequence[str] | None = None) -> int:
             require_app=require_app,
             launch_smoke=args.launch_smoke,
             macos_channel=macos_channel,
+            quarantine_dmg=args.quarantine_dmg,
         )
     except LocalReleaseError as exc:
         print(f"local release ERROR: {exc}", file=sys.stderr)
