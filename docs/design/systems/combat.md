@@ -221,6 +221,14 @@ Generic-ключ `run_modifiers.extra_projectile` потребляется ед�
   × 0.5с = 5с: течёт во время паралича и продолжается после его конца.
   Отброса на триггере капкана нет — паралич держит жертву; trait-отброс
   «Сторожевого лука» распространяется только на лучные хиты (SCRUM-909).
+- FAN-2237: общий цикл заряда Рейнджера накапливается только стоя, частичный
+  auto-fire его не сбрасывает, а единственный истинный full release сбрасывает
+  ровно один цикл; движение декрементирует накопление. У `moon_crossbow`
+  constellation-final помечает на 4с только primary-цель полного release:
+  следующий primary-hit этой же цели получает +28% ровно раз. Другая цель,
+  отсутствие цели и истечение метку не расходуют и не превращают в постоянный
+  бонус; `storm_longbow` и `hunter_trap` используют тот же контракт
+  snapshot/full-release.
 - Knight block/counter uses weapon passive data on `Player.take_damage()`:
   incoming damage reduction, incoming-scaled retaliation, `counter_radius`,
   `counter_arc_degrees`, target caps/diminish and optional knockback/stagger.

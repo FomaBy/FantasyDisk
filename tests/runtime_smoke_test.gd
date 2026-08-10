@@ -4481,15 +4481,31 @@ func _test_unique_class_identity_patterns() -> void:
 	var ranger_params: Dictionary = ranger.get("derived_parameters")
 	ranger_params["crit_chance"] = 0.0
 	ranger.set("derived_parameters", ranger_params)
-	ranger_weapon.set("_charge_time", 0.0)
-	ranger_weapon.set("_current_charge_multiplier", 1.0)
-	var base_shot := float(ranger_weapon.call("_rolled_damage", ranger))
-	ranger_weapon.set("_charge_time", float(ranger_weapon.get("charge_seconds")))
-	ranger_weapon.set("_current_charge_multiplier", float(ranger_weapon.call("_charge_multiplier")))
-	var charged_shot := float(ranger_weapon.call("_rolled_damage", ranger))
-	if charged_shot <= base_shot * 1.2:
-		_fail("Expected Ranger charged stance shot to deal meaningfully more damage.")
+	var ranger_enemy := enemy_scene.instantiate()
+	holder.add_child(ranger_enemy)
+	ranger_enemy.set("max_health", 100000.0)
+	ranger_enemy.set("health", 100000.0)
+	ranger_enemy.global_position = ranger.global_position + Vector2(140, 0)
+	await process_frame
+	var partial_damage := 0.0
+	var full_charge_damage := 0.0
+	for cast_index in range(12):
+		var health_before := float(ranger_enemy.get("health"))
+		ranger_weapon.call("_process", float(ranger_weapon.get("fire_interval")))
+		var dealt := health_before - float(ranger_enemy.get("health"))
+		if float(ranger_weapon.get("_charge_time")) > 0.001 and partial_damage <= 0.0:
+			partial_damage = dealt
+		elif float(ranger_weapon.get("_charge_time")) <= 0.001 and partial_damage > 0.0:
+			full_charge_damage = dealt
+			break
+	if full_charge_damage <= partial_damage * 1.2:
+		_fail("Expected Ranger production auto-fire to preserve partial stance charge through one stronger full release.")
 		return
+	ranger_weapon.call("_process", float(ranger_weapon.get("fire_interval")))
+	if float(ranger_weapon.get("_charge_time")) <= 0.001:
+		_fail("Expected Ranger full release to restart, not retain, the stance cycle.")
+		return
+	ranger_enemy.remove_from_group("enemies")
 
 	var doctor := player_scene.instantiate()
 	holder.add_child(doctor)

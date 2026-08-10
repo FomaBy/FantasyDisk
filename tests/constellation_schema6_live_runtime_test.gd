@@ -33,7 +33,7 @@ func _initialize() -> void:
 	await _test_timed_absorb_live_mitigation_and_refresh()
 	await _test_timed_absorb_configure_epoch()
 	_test_rifle_three_hit_suppression()
-	_test_crossbow_arms_then_consumes()
+	await _test_crossbow_arms_then_consumes()
 	await _test_deadeye_lockshot_arms_and_cycles_weakpoint()
 	await _test_grenade_delayed_shrapnel()
 	await _test_prism_three_delayed_ticks()
@@ -125,23 +125,54 @@ func _test_crossbow_arms_then_consumes() -> void:
 	var weapon: Variant = _class_weapon(player, "ranger", "moon_crossbow")
 	weapon.split_count = 0
 	weapon.aoe_radius = 80.0
-	weapon.charge_seconds = 1.0
+	weapon.charge_seconds = weapon.fire_interval * 2.0
 	weapon.charge_max_multiplier = 2.0
-	var enemy := _enemy(Vector2(140.0, 0.0), 10000.0, 10000.0)
+	var marked := _enemy(Vector2(140.0, 0.0), 10000.0, 10000.0)
+	var other := _enemy(Vector2(220.0, 0.0), 10000.0, 10000.0)
+	other.remove_from_group("enemies")
+	var mark_key := "constellation_moon_%d" % player.get_instance_id()
+	await process_frame
 
-	weapon.set("_current_charge_multiplier", 2.0)
-	weapon._fire_moon_split_shot(player, enemy, Vector2.RIGHT)
-	var full_charge_damage: float = float(enemy.damage_log.back()) if not enemy.damage_log.is_empty() else 0.0
-	weapon.set("_current_charge_multiplier", 1.0)
-	weapon._fire_moon_split_shot(player, enemy, Vector2.RIGHT)
-	var marked_followup: float = float(enemy.damage_log.back()) if not enemy.damage_log.is_empty() else 0.0
-	weapon._fire_moon_split_shot(player, enemy, Vector2.RIGHT)
-	var consumed_followup: float = float(enemy.damage_log.back()) if not enemy.damage_log.is_empty() else 0.0
+	weapon._process(weapon.fire_interval)
+	var partial_damage: float = float(marked.damage_log.back()) if not marked.damage_log.is_empty() else 0.0
+	weapon._process(weapon.fire_interval)
+	var full_charge_damage: float = float(marked.damage_log.back()) if not marked.damage_log.is_empty() else 0.0
+	_check(float(weapon.get("_charge_time")) <= 0.001, "full crossbow release did not reset its charge cycle")
+	_check(marked.has_meta(mark_key), "production full-charge release did not arm a moon mark")
 
-	_check(full_charge_damage > consumed_followup * 1.8, "full-charge setup shot lost its charge identity")
-	_check(_approx(marked_followup / maxf(consumed_followup, 0.001), 1.28, 0.015), "moon mark did not grant exactly one +28% next-shot payoff")
-	_check(enemy.damage_log.size() == 3, "moon mark produced recursive or split bonus damage in a single-target fixture")
-	_cleanup_nodes([enemy, player])
+	weapon._process(weapon.fire_interval)
+	var marked_followup: float = float(marked.damage_log.back()) if not marked.damage_log.is_empty() else 0.0
+	_check(full_charge_damage > partial_damage * 1.2, "full-charge setup shot lost its charge identity")
+	_check(_approx(marked_followup / maxf(partial_damage, 0.001), 1.28, 0.015), "moon mark did not grant exactly one +28% next-shot payoff")
+	_check(not marked.has_meta(mark_key), "moon mark was not consumed by its next primary hit")
+
+	weapon._process(weapon.fire_interval)
+	_check(marked.has_meta(mark_key), "second full-charge release did not re-arm its own target")
+	marked.remove_from_group("enemies")
+	other.add_to_group("enemies")
+	await process_frame
+	weapon._process(weapon.fire_interval)
+	var other_partial: float = float(other.damage_log.back()) if not other.damage_log.is_empty() else 0.0
+	_check(_approx(other_partial / maxf(partial_damage, 0.001), 1.0, 0.015), "another target consumed a moon mark it did not own")
+	_check(marked.has_meta(mark_key), "other-target hit consumed the original moon mark")
+	await create_timer(4.08).timeout
+	other.remove_from_group("enemies")
+	marked.add_to_group("enemies")
+	await process_frame
+	weapon._process(weapon.fire_interval)
+	var expired_marked: float = float(marked.damage_log.back()) if not marked.damage_log.is_empty() else 0.0
+	_check(_approx(expired_marked / maxf(full_charge_damage, 0.001), 1.0, 0.015), "expired moon mark still amplified its primary hit")
+
+	var targetless_player := _player_with_final("ranger", "moon_crossbow")
+	var targetless_weapon: Variant = _class_weapon(targetless_player, "ranger", "moon_crossbow")
+	targetless_weapon.charge_seconds = targetless_weapon.fire_interval * 2.0
+	targetless_weapon.charge_max_multiplier = 2.0
+	marked.remove_from_group("enemies")
+	await process_frame
+	targetless_weapon._process(targetless_weapon.fire_interval)
+	targetless_weapon._process(targetless_weapon.fire_interval)
+	_check(not targetless_player.run_modifiers.has("constellation_last_final_action"), "targetless full charge armed a constellation mark")
+	_cleanup_nodes([marked, other, player, targetless_player])
 
 
 func _test_deadeye_lockshot_arms_and_cycles_weakpoint() -> void:

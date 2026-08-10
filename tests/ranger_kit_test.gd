@@ -87,6 +87,7 @@ func _initialize() -> void:
 	await _test_bow_knockback_direction_and_magnitude(errors)
 	await _test_bow_knockback_boss_resist(errors)
 	await _test_bow_knockback_no_class_leak(errors)
+	await _test_charge_cycle_production_cadence(errors)
 	await _test_moon_split_counts(errors)
 	await _test_moon_split_artifact_extra_targets(errors)
 	await _test_storm_cone_geometry(errors)
@@ -299,6 +300,51 @@ func _test_bow_knockback_no_class_leak(errors: Array) -> void:
 	if not enemy.impulses.is_empty():
 		errors.append("утечка: trait-отброс сработал у класса без bow_hit_knockback")
 	await _cleanup(holder)
+
+
+# --- FAN-2237: partial auto-fire keeps the standing charge until one full release ---
+
+
+func _test_charge_cycle_production_cadence(errors: Array) -> void:
+	var l1_stats: Dictionary = PD.base_stats("ranger")
+	var l20_stats := l1_stats.duplicate(true)
+	l20_stats["agility"] = float(l20_stats.get("agility", 0.0)) + 19.0
+	for scenario in [{"label": "L1", "stats": l1_stats}, {"label": "L20", "stats": l20_stats}]:
+		var holder := _new_scene("RangerCharge%sScene" % str(scenario["label"]))
+		var owner := _new_owner(holder)
+		owner.stats = (scenario["stats"] as Dictionary).duplicate(true)
+		var config: Dictionary = PD.weapon("ranger", "moon_crossbow")
+		owner.derived_parameters = PD.derived_parameters(owner.stats, {}, config)
+		var weapon := ClassWeapon.new()
+		owner.add_child(weapon)
+		weapon.configure_weapon(config)
+		weapon.set_process(false)
+		weapon.fire_interval = maxf(float(config.get("fire_interval", 1.0)) / maxf(float(owner.derived_parameters.get("attack_speed", 1.0)), 0.1), 0.18)
+		var target := _new_enemy(holder, owner.global_position + Vector2(140.0, 0.0))
+		var partial_charge_seen := false
+		var full_release_seen := false
+		for cast_index in range(12):
+			weapon._process(weapon.fire_interval)
+			var charge_after_cast := float(weapon.get("_charge_time"))
+			if charge_after_cast > EPS:
+				partial_charge_seen = true
+			if partial_charge_seen and charge_after_cast <= EPS:
+				full_release_seen = true
+				break
+		if not partial_charge_seen:
+			errors.append("%s cadence: partial auto-fire reset stance accumulation before the threshold" % str(scenario["label"]))
+		if not full_release_seen or target.hits.size() < 2:
+			errors.append("%s cadence: production auto-fire never reached one real full-charge release" % str(scenario["label"]))
+		weapon._process(weapon.fire_interval)
+		var restarted_charge := float(weapon.get("_charge_time"))
+		if restarted_charge <= EPS:
+			errors.append("%s cadence: full release left a permanent full-charge state" % str(scenario["label"]))
+		owner.velocity = Vector2(8.0, 0.0)
+		weapon._process(weapon.fire_interval)
+		if float(weapon.get("_charge_time")) >= restarted_charge - EPS:
+			errors.append("%s cadence: movement did not decay the restarted charge" % str(scenario["label"]))
+		owner.velocity = Vector2.ZERO
+		await _cleanup(holder)
 
 
 # --- SCRUM-910: «Лунный арбалет» 1→4 ---
