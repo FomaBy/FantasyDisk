@@ -29,6 +29,7 @@ const LIFECYCLE_SPECS := [
 	{"class_id": "druid", "weapon_id": "raven_totem", "lifecycle": 8.4, "deadline": 9.4},
 	{"class_id": "druid", "weapon_id": "briar_staff", "lifecycle": 7.9, "deadline": 8.9},
 	{"class_id": "priest", "weapon_id": "priest_censer", "lifecycle": 7.6, "deadline": 8.6},
+	{"class_id": "knight", "weapon_id": "holy_flail", "lifecycle": 7.6, "deadline": 8.6},
 	{"class_id": "berserk", "weapon_id": "sword", "lifecycle": 7.45, "deadline": 8.45},
 	{"class_id": "elementalist", "weapon_id": "elementalist_prism_focus", "lifecycle": 7.2, "deadline": 8.2},
 	{"class_id": "druid", "weapon_id": "summon_amulet", "lifecycle": 6.6, "deadline": 7.6},
