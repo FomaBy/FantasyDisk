@@ -1,6 +1,6 @@
 # FantasyDisk Current Game State
 
-Обновлено: 2026-07-16 (опубликован stable release 0.2.4)
+Обновлено: 2026-08-10 (опубликован stable release 0.2.4; current macOS channel signed)
 
 Этот документ описывает то, что уже есть в текущей версии игры. Он нужен агентам и разработчикам как быстрый фактический снимок проекта перед изменениями в геймплее, балансе, UI, персонажах, врагах, прогрессии и ассетах.
 
@@ -35,12 +35,13 @@ Domain docs для подробностей по областям:
 - macOS-канал сборки выбирается ЯВНО через `FANTASYDISK_MACOS_CHANNEL`; тихий
   downgrade запрещён в обе стороны. Полный контракт — `docs/process/game_updates.md`
   и `docs/process/release_versioning.md`:
-  - `signed` — строгий default, включается автоматически при наличии credentials:
+  - `signed` — текущий выбранный production-канал и строгий default:
     `MACOS_SIGN_IDENTITY` (Developer ID Application) и `MACOS_NOTARY_PROFILE`
     обязательны; codesign, notarytool, `stapler` и `spctl` выполняются отдельно
     для приложения и итогового DMG.
-  - `unsigned` — текущий выбранный канал (решение владельца, FAN-1121, после
-    отмены FAN-1094): DMG и .app без подписи Developer ID и нотаризации.
+  - `unsigned` — явно выбираемый исторический fallback (FAN-1121, после отмены
+    FAN-1094), а не текущий product channel: DMG и .app без подписи Developer ID
+    и нотаризации.
     После всех изменений bundle получает только локальную ad-hoc подпись, чтобы
     заменить унаследованную подпись export template и проверить целостность;
     она не удостоверяет издателя и не отменяет Gatekeeper. Notarization, stapler
@@ -53,10 +54,13 @@ Domain docs для подробностей по областям:
   `.background`, `.fseventsd` и прочие root-служебные элементы запрещены и
   проверяются при sealing вместе с exact-tag inputs, layout, secret scan,
   `SHA256SUMS.txt` и `update-manifest.json`.
-- Исторически FAN-1094 требовал fail-closed signed-only поставку
-  (ad-hoc/unnotarized релиз запрещён), но задача отменена и заменена
-  unsigned-каналом FAN-1121, поэтому signed-only больше не является текущим
-  универсальным правилом.
+- Исторически FAN-1094 требовал fail-closed signed-only поставку, а FAN-1121
+  затем выбрал unsigned как текущий канал. После активации Apple Developer
+  Program это текущее решение superseded: production снова использует `signed`,
+  а FAN-1121 сохранён как контракт только явно выбираемого unsigned fallback.
+- Tahoe non-durability из FAN-2199/FAN-2297 относится только к quarantined
+  unsigned artifacts. Устойчивость нового signed exact-tag кандидата ещё не
+  доказана: её отдельно квалифицирует FAN-2207; до этого FAN-1231 не закрывается.
 - Версионирование: продуктовые версии используют SemVer `X.Y.Z`; техническое
   исправление изменённых байтов без нового игрового поведения использует
   `X.Y.Z.R`. Источник истины — `project.godot::config/version`; immutable

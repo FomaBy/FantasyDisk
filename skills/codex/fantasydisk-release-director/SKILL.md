@@ -19,6 +19,12 @@ read-only history. Run from the repository root; do not hardcode a checkout path
    `tools/godot_gate.py` / `tools/quality_gate.py`. Do not release a red SHA.
 4. Compare `git log v<previous>..origin/dev` with the notes so every visible
    player change is represented and internal-only work is omitted.
+5. For a signed macOS release, read the Apple Developer Program and Developer ID
+   certificate actual expiry date from Apple/Keychain, keep a renewal reminder
+   well ahead of it, and repeat the identity/notary authentication check. Never
+   guess or hardcode an expiry date, identity, profile, or secret. An expired or
+   unverifiable state blocks the release; renewal/purchase is a separate financial
+   action requiring the owner's explicit approval.
 
 ## 2. Version and player notes
 
@@ -73,7 +79,7 @@ Use `content-zone-image-compositor` before any image generation:
 Run:
 
 ```bash
-tools/build_release.sh <version>
+FANTASYDISK_MACOS_CHANNEL=signed tools/build_release.sh <version>
 ```
 
 Require `releases/v<version>/` to contain:
@@ -92,9 +98,12 @@ Do not create or publish a raw Windows exe or Windows zip.
 `FANTASYDISK_MACOS_CHANNEL` selects the channel explicitly; both directions are
 fail-closed and there is never a silent downgrade:
 
+The current production channel is `signed`. FAN-1121 remains the explicit
+historical unsigned fallback, not the current product selection.
+
 - `signed` (default) — the strict production channel below. Missing Developer ID
   or notary credentials aborts the build (exit 2); ad-hoc signing is forbidden.
-- `unsigned` — the owner-approved credential-free channel (FAN-1121, after
+- `unsigned` — the owner-approved historical credential-free fallback (FAN-1121, after
   FAN-1094 was cancelled). It must be requested explicitly and refuses to run
   while `MACOS_SIGN_IDENTITY`/`MACOS_NOTARY_PROFILE` are set. After every bundle
   mutation, apply an ad-hoc seal and run
@@ -127,6 +136,14 @@ fail-closed and there is never a silent downgrade:
    app; verify the Applications link and `hdiutil verify`.
 7. Require `MACOS_NOTARY_PROFILE`, run `notarytool submit --wait`, then
    `stapler staple`, `stapler validate`, and `spctl` for both app and DMG.
+
+The first signed stable release additionally requires independent exact-tag
+native evidence in FAN-2207: DMG SHA/provenance; `Accepted` notarization for the
+app and DMG; `codesign`, `stapler`, and `spctl` results; Safari download
+source/event lineage; Finder copy into `/Applications`; launch outside App
+Translocation; first launch → quit → relaunch ×2; and app survival after every
+quit and remediation observation window. Until that review is terminal
+`PASSED`, signed durability is not proven and FAN-1231 remains open.
 
 ### Windows verification
 

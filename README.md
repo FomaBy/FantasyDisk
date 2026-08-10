@@ -98,26 +98,27 @@ python tools/quality_gate.py --profile windows
 
 ## Сборка релиза (macOS)
 
-Текущий одобренный канал — явный `unsigned`:
+Текущий production-канал — строгий `signed`:
+
+```bash
+export MACOS_SIGN_IDENTITY="Developer ID Application: <owner> (<TEAMID>)"
+export MACOS_NOTARY_PROFILE="<keychain-profile>" # credentials stored in Keychain
+FANTASYDISK_MACOS_CHANNEL=signed tools/build_release.sh <version>
+```
+
+Исторический fallback FAN-1121 остаётся только явно выбираемым при отсутствии
+Apple credentials:
 
 ```bash
 FANTASYDISK_MACOS_CHANNEL=unsigned tools/build_release.sh <version>
 ```
 
-Строгий подписанный канал включается отдельно, когда доступны Apple credentials:
-
-```bash
-export MACOS_SIGN_IDENTITY="Developer ID Application: <owner> (<TEAMID>)"
-export MACOS_NOTARY_PROFILE="fantasydisk-notary" # credentials stored in Keychain
-FANTASYDISK_MACOS_CHANNEL=signed tools/build_release.sh <version>
-```
-
-Оба канала fail-closed и не переключаются молча. `signed` требует Developer ID,
-Apple notarization/stapling и успешный `spctl`; `unsigned` отказывается работать
-при заданных Apple credentials, ставит только локальную ad-hoc подпись для
-проверки целостности bundle и пропускает Apple trust-проверки. Она не является
-подписью Developer ID: игрок по-прежнему получает честную инструкцию Gatekeeper
-«Всё равно открыть».
+Оба канала fail-closed и не переключаются молча. Текущий `signed` требует
+Developer ID, Apple notarization/stapling и успешный `spctl`; `unsigned`
+отказывается работать при заданных Apple credentials, ставит только локальную
+ad-hoc подпись для проверки целостности bundle и пропускает Apple trust-проверки.
+Она не является подписью Developer ID: явно relabelled unsigned-клиент сохраняет
+честную инструкцию Gatekeeper «Всё равно открыть».
 Проверенный пакет публикуется только в public binary-only repository
 `FomaBy/FantasyDisk-Releases` через bundled `github_release_publish.py`; клиент
 0.2.2+ читает `update-manifest.json` из `releases/latest` этого repository.

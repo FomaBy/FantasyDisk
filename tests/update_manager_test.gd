@@ -16,30 +16,32 @@ func _initialize() -> void:
 	if not _check_manifest_response_state():
 		quit(1)
 		return
-	if not _check_unsigned_channel_trust_labeling():
+	if not _check_macos_channel_trust_labeling():
 		quit(1)
 		return
-	print("FAN-1112/FAN-1121 update manager manifest/SemVer/trust-labeling tests passed.")
+	print("FAN-1112/FAN-1121/FAN-2307 update manager manifest/SemVer/trust-labeling tests passed.")
 	quit(0)
 
 
-func _check_unsigned_channel_trust_labeling() -> bool:
-	# FAN-1121: до возвращения Developer ID клиент обязан честно помечать
-	# macOS-канал как unsigned и давать ручную Gatekeeper-инструкцию.
-	if UPDATE_MANAGER.MACOS_UPDATE_CHANNEL != "unsigned":
-		return _fail("macOS update channel label must be 'unsigned' (FAN-1121), got '%s'." % UPDATE_MANAGER.MACOS_UPDATE_CHANNEL)
-	if not UPDATE_MANAGER.macos_update_is_unsigned():
-		return _fail("macos_update_is_unsigned() must reflect the unsigned channel.")
+func _check_macos_channel_trust_labeling() -> bool:
+	if UPDATE_MANAGER.MACOS_UPDATE_CHANNEL != "signed":
+		return _fail("Current macOS update channel label must be 'signed' (FAN-2307), got '%s'." % UPDATE_MANAGER.MACOS_UPDATE_CHANNEL)
+	if UPDATE_MANAGER.macos_update_is_unsigned():
+		return _fail("macos_update_is_unsigned() must be false for the signed current channel.")
+	# FAN-1121 remains the truthful contract for an explicitly relabelled
+	# unsigned tag even though it is no longer the current product channel.
+	if not UPDATE_MANAGER.MACOS_UNSIGNED_NOTICE.contains("без подписи Apple Developer ID") \
+			or not UPDATE_MANAGER.MACOS_UNSIGNED_NOTICE.contains("Конфиденциальность и безопасность") \
+			or not UPDATE_MANAGER.MACOS_UNSIGNED_NOTICE.contains("Всё равно открыть"):
+		return _fail("Explicit unsigned fallback notice lost its Gatekeeper disclosure.")
 	var opened: String = UPDATE_MANAGER._installer_opened_message("macOS")
-	if not opened.contains("без подписи Apple Developer ID"):
-		return _fail("macOS installer-opened message must disclose the unsigned build: %s" % opened)
-	if not opened.contains("Конфиденциальность и безопасность") or not opened.contains("Всё равно открыть"):
-		return _fail("macOS installer-opened message must give the manual Gatekeeper Open Anyway path: %s" % opened)
-	if opened.contains("нотаризован") or opened.contains("notarized"):
-		return _fail("macOS installer-opened message must not claim notarization: %s" % opened)
+	if opened.contains("без подписи Apple Developer ID") \
+			or opened.contains("Конфиденциальность и безопасность") \
+			or opened.contains("Всё равно открыть"):
+		return _fail("Signed macOS installer-opened message must not carry unsigned/Open Anyway disclosure: %s" % opened)
 	var windows_opened: String = UPDATE_MANAGER._installer_opened_message("Windows")
-	if windows_opened.contains("Gatekeeper") or windows_opened.contains("Всё равно открыть"):
-		return _fail("Windows installer-opened message must not carry macOS Gatekeeper guidance: %s" % windows_opened)
+	if windows_opened != "Установщик открыт. Следуйте его шагам; при запросе закройте игру.":
+		return _fail("Windows installer-opened copy changed: %s" % windows_opened)
 	return true
 
 
