@@ -107,7 +107,10 @@ fail-closed and there is never a silent downgrade:
   tag's `scripts/update_manager.gd` so the client truthfully labels the artifact
   unsigned and shows the manual Gatekeeper «Всё равно открыть» (Open Anyway)
   instruction. Never claim Developer ID, notarization, stapling, or a positive
-  `spctl` result for an unsigned build.
+  `spctl` result for an unsigned build. Known macOS 26 (Tahoe) limitation
+  (FAN-2199/FAN-2297): a quarantined unsigned install may launch translocated
+  and be asynchronously removed from `/Applications` after quit; never claim a
+  durable unsigned install on Tahoe without fresh native evidence.
 
 ### macOS signing order (signed channel)
 
