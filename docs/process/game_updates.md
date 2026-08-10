@@ -1,6 +1,6 @@
 # Game Updates (0.2.2+)
 
-Обновлено: 2026-07-16 (FAN-1213: immutable republish and technical hotfixes)
+Обновлено: 2026-08-10 (FAN-2307: signed/notarized current macOS channel)
 
 ## Публичный источник
 
@@ -57,19 +57,19 @@ collaborators и pending invitations нет, deploy keys только read-only,
 - Игра не перезаписывает собственный bundle/process. После проверки она открывает
   штатный DMG на macOS либо NSIS Setup на Windows. Это сохраняет
   Gatekeeper/SmartScreen и rollback-поведение системного установщика.
-- Текущий macOS-канал — **unsigned** (решение владельца, FAN-1121): DMG и .app
-  не имеют подписи Developer ID и нотаризации. Целостность гарантируется HTTPS +
-  доверенным манифестом + точным именем/размером/SHA-256, а не подписью Apple.
-  Клиент явно сообщает об этом и даёт ручной путь Gatekeeper: Системные настройки
-  → Конфиденциальность и безопасность → «Всё равно открыть» (Open Anyway).
-- Известное ограничение на macOS 26 (Tahoe), native evidence FAN-2199/FAN-2297:
-  карантиненное unsigned-приложение стартует из read-only App Translocation, а
-  после выхода асинхронная системная проверка может удалить
-  `/Applications/FantasyDisk.app` (наблюдалось в 2 из 5 циклов
-  install→launch→quit без ручного одобрения Gatekeeper). Устойчивость установки
-  после «Всё равно открыть» на Tahoe не доказана; детерминированную устойчивость
-  даёт только Developer ID + notarization. Не обещать пользователю durable
-  unsigned-установку на macOS 26 без нового native-доказательства.
+- Текущий macOS-канал — **signed**: DMG и .app обязаны иметь Developer ID
+  Application signature, Apple notarization tickets и положительные trust checks.
+  Поэтому current-channel prompt и сообщение после открытия DMG не показывают
+  unsigned/«без Developer ID»/«Всё равно открыть» disclosure.
+- FAN-1121 сохранён как контракт явно выбираемого historical `unsigned` fallback,
+  но больше не является текущим product channel. Только relabelled unsigned tag
+  показывает ручной путь Gatekeeper: Системные настройки → Конфиденциальность и
+  безопасность → «Всё равно открыть» (Open Anyway).
+- Известное ограничение macOS 26 (Tahoe) из FAN-2199/FAN-2297 относится только к
+  quarantined unsigned artifacts: такое приложение может стартовать из read-only
+  App Translocation, а после выхода быть асинхронно удалено из
+  `/Applications/FantasyDisk.app`. Это не доказательство устойчивости нового
+  signed-кандидата и не разрешает обещать её до отдельной native qualification.
 - Метка канала в клиенте — `MACOS_UPDATE_CHANNEL` в `scripts/update_manager.gd`.
   `tools/build_release.sh` сверяет её с каналом сборки и падает при расхождении.
 
@@ -135,9 +135,11 @@ version, URL, имена, размеры и хэши до любой внешн�
 
 `FANTASYDISK_MACOS_CHANNEL` выбирается явно; тихий downgrade запрещён:
 
-- `signed` (default) требует `MACOS_SIGN_IDENTITY`, `MACOS_NOTARY_PROFILE` и
-  проходит codesign/notary/stapler/spctl для app и DMG.
-- `unsigned` — одобренный владельцем канал без Apple credentials (FAN-1121).
+- `signed` — текущий production-канал и строгий default; требует
+  `MACOS_SIGN_IDENTITY`, `MACOS_NOTARY_PROFILE` и проходит
+  codesign/notary/stapler/spctl для app и DMG.
+- `unsigned` — явно выбираемый historical fallback без Apple credentials
+  (FAN-1121), а не текущий product channel.
   Он запускается только с `FANTASYDISK_MACOS_CHANNEL=unsigned`, отказывается
   работать при заданных Apple credentials и после изменения bundle ставит только
   локальную ad-hoc подпись для проверки целостности. Это не подпись Developer ID
@@ -149,10 +151,21 @@ version, URL, имена, размеры и хэши до любой внешн�
 совпадения при `verify`. Публикаторы используют только возвращённый verified
 durable path.
 
+### Первая signed stable qualification
+
+Первый signed stable release допускается дальше только после независимого
+exact-tag native evidence в FAN-2207. Отчёт обязан связать exact tag с DMG
+SHA/provenance; показать `Accepted` notarization для app и DMG; результаты
+`codesign`, `stapler` и `spctl`; Safari download source/event lineage; Finder
+copy в `/Applications`; запуск вне App Translocation; затем first launch → quit
+→ relaunch ×2 и сохранность приложения после каждого quit и каждого remediation
+observation window. До terminal `PASSED` этой проверки signed durability is not
+proven, а FAN-1231 не закрывается.
+
 ## Публикация
 
 1. Собрать и materialize exact tag через
-   `FANTASYDISK_MACOS_CHANNEL=unsigned tools/build_release.sh <version>`, где
+   `FANTASYDISK_MACOS_CHANNEL=signed tools/build_release.sh <version>`, где
    `<version>` — `X.Y.Z` либо явно обоснованный технический `X.Y.Z.R`.
 2. До upload публичный repo должен быть создан как `FomaBy/FantasyDisk-Releases`,
    быть public и содержать только минимальный `README.md`. Publisher проверяет

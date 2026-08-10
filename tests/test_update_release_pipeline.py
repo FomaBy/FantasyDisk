@@ -2619,8 +2619,8 @@ class PublicVerifierAssetContractTests(unittest.TestCase):
         download.assert_called()
 
 
-class UnsignedChannelLabelingTests(unittest.TestCase):
-    """FAN-1121: the unsigned macOS channel must be labeled truthfully everywhere."""
+class MacosChannelLabelingTests(unittest.TestCase):
+    """FAN-1121/FAN-2307: current and fallback channels stay truthful."""
 
     # Every canonical release document a release agent may follow. FAN-1123
     # extended coverage beyond game_updates.md after current_game_state.md and
@@ -2631,60 +2631,99 @@ class UnsignedChannelLabelingTests(unittest.TestCase):
         Path("docs") / "process" / "release_versioning.md",
     )
 
-    def test_client_labels_unsigned_macos_channel_truthfully(self) -> None:
+    def test_client_labels_signed_macos_channel_truthfully(self) -> None:
         manager = (ROOT / "scripts" / "update_manager.gd").read_text(encoding="utf-8")
-        self.assertIn('const MACOS_UPDATE_CHANNEL := "unsigned"', manager)
+        self.assertIn('const MACOS_UPDATE_CHANNEL := "signed"', manager)
+        # The inactive FAN-1121 fallback remains available to an explicitly
+        # relabelled unsigned tag and must retain its truthful notice.
         self.assertIn("без подписи Apple Developer ID", manager)
         self.assertIn("Конфиденциальность и безопасность", manager)
         self.assertIn("«Всё равно открыть» (Open Anyway)", manager)
-        self.assertNotIn("подписанный установщик", manager)
 
         dialog = (ROOT / "scripts" / "ui" / "update_dialog.gd").read_text(encoding="utf-8")
         self.assertIn("MACOS_UNSIGNED_NOTICE", dialog)
         self.assertIn("macos_update_is_unsigned", dialog)
 
-    def test_release_docs_do_not_claim_apple_trust_for_unsigned_channel(self) -> None:
+    def test_release_docs_name_signed_as_current_and_preserve_unsigned_fallback(self) -> None:
         docs = (ROOT / "docs" / "process" / "game_updates.md").read_text(encoding="utf-8")
-        self.assertNotIn("signed/notarized", docs)
+        self.assertIn("Текущий macOS-канал — **signed**", docs)
+        self.assertIn("FANTASYDISK_MACOS_CHANNEL=signed", docs)
         self.assertIn("FANTASYDISK_MACOS_CHANNEL=unsigned", docs)
         self.assertIn("Всё равно открыть", docs)
         skill = (
             ROOT / "skills" / "codex" / "fantasydisk-release-director" / "SKILL.md"
         ).read_text(encoding="utf-8")
-        self.assertIn("FANTASYDISK_MACOS_CHANNEL", skill)
-        self.assertIn("unsigned", skill)
+        self.assertIn("The current production channel is `signed`", skill)
+        self.assertIn("FAN-1121", skill)
 
     def test_every_active_release_doc_describes_both_channels(self) -> None:
-        # FAN-1123: all canonical release documents must present the explicit
-        # signed/unsigned channels and name unsigned as the current selection, so
-        # a release agent cannot follow one document into a signed-only block.
+        # Every canonical release document must present the explicit channels,
+        # name signed as current, and retain FAN-1121 as non-current fallback.
         for relative in self.ACTIVE_RELEASE_DOCS:
             with self.subTest(doc=str(relative)):
                 doc = (ROOT / relative).read_text(encoding="utf-8")
                 self.assertIn("FANTASYDISK_MACOS_CHANNEL", doc)
+                self.assertIn("signed", doc)
                 self.assertIn("unsigned", doc)
                 self.assertIn("FAN-1121", doc)
-                self.assertNotIn("signed/notarized", doc)
+                self.assertNotIn("Текущий macOS-канал — **unsigned**", doc)
+                self.assertNotIn("Текущий выбранный канал — `unsigned`", doc)
 
-    def test_snapshot_and_versioning_docs_supersede_fan1094_signed_only(self) -> None:
-        # FAN-1123 regression: these two documents previously mandated signed-only
-        # macOS delivery and presented cancelled FAN-1094 as the current rule.
+    def test_snapshot_and_versioning_docs_supersede_fan1121_current_selection(self) -> None:
         state = (ROOT / "docs" / "design" / "current_game_state.md").read_text(
             encoding="utf-8"
         )
         self.assertNotIn("FAN-1094 делает macOS installer fail-closed", state)
-        self.assertIn("текущий выбранный канал", state)
+        self.assertIn("`signed` — текущий выбранный production-канал", state)
+        self.assertIn("FAN-1121", state)
 
         versioning = (ROOT / "docs" / "process" / "release_versioning.md").read_text(
             encoding="utf-8"
         )
-        # codesign/notarytool/stapler/spctl must be scoped to the signed channel,
-        # not asserted as a universal release blocker.
-        self.assertNotIn(
-            "отсутствие Developer ID/notary profile является release blocker",
-            versioning,
-        )
+        self.assertIn("Текущий выбранный канал — `signed`", versioning)
         self.assertIn("Канал `unsigned`", versioning)
+
+    def test_first_signed_release_requires_independent_exact_tag_native_evidence(self) -> None:
+        documents = "\n".join(
+            (ROOT / relative).read_text(encoding="utf-8")
+            for relative in (
+                *self.ACTIVE_RELEASE_DOCS,
+                Path("skills")
+                / "codex"
+                / "fantasydisk-release-director"
+                / "SKILL.md",
+            )
+        )
+        for required in (
+            "FAN-2207",
+            "DMG SHA",
+            "Accepted",
+            "codesign",
+            "stapler",
+            "spctl",
+            "Safari",
+            "/Applications",
+            "App Translocation",
+            "first launch",
+            "relaunch ×2",
+            "remediation observation window",
+            "FAN-1231",
+        ):
+            with self.subTest(requirement=required):
+                self.assertIn(required, documents)
+        self.assertIn("signed durability is not proven", documents)
+
+    def test_signed_release_preflight_covers_apple_expiry_without_hardcoding(self) -> None:
+        for relative in (
+            Path("docs") / "process" / "release_versioning.md",
+            Path("skills") / "codex" / "fantasydisk-release-director" / "SKILL.md",
+        ):
+            with self.subTest(doc=str(relative)):
+                document = (ROOT / relative).read_text(encoding="utf-8")
+                normalized = " ".join(document.split())
+                self.assertIn("actual expiry date", normalized)
+                self.assertIn("renewal reminder", normalized)
+                self.assertIn("identity/notary authentication", normalized)
 
     def test_unsigned_channel_requires_codesign_integrity_but_not_apple_trust(self) -> None:
         # FAN-1283 regression: unsigned still receives an ad-hoc seal and must

@@ -1,6 +1,6 @@
 # Release & Versioning — FantasyDisk
 
-Обновлено: 2026-07-16 (FAN-1213)
+Обновлено: 2026-08-10 (FAN-2307)
 Ведет: PM. Исполняет сборки: Back-end.
 
 ## Версионирование
@@ -119,6 +119,12 @@ dev  — основная ветка разработки. Все чаты (Back
 
 1. Все задачи версии на доске `done`; документация в `docs/design/` обновлена.
 2. Code freeze: новые задачи в dev не выдаются до конца релиза.
+2a. Для signed macOS release оператор сверяет в Apple/Keychain actual expiry
+   date членства Apple Developer Program и Developer ID certificate, держит
+   renewal reminder заранее и повторяет identity/notary authentication check.
+   Дату, identity, profile и secret не угадывать и не hardcode в Git/Multica;
+   истёкшее или неподтверждаемое состояние блокирует release. Покупка/продление
+   остаётся отдельным финансовым действием с явным подтверждением владельца.
 3. Backend прогоняет `python3 tools/quality_gate.py --profile full` + ручной чек-лист (меню, забег, бой, элитка,
    босс, магазин, пауза) на macOS и Windows-сборке.
 3a. **Гейт «чистый HEAD зелёный»** (урок SCRUM-171, 2026-06-13): smoke на рабочем
@@ -227,9 +233,10 @@ Feature block 0.1.5 снят релизом v0.1.5 (2026-06-15). Релиз `0.2
 ### macOS
 `tools/build_release.sh` поддерживает два взаимоисключающих канала, выбираемых
 ЯВНО через `FANTASYDISK_MACOS_CHANNEL`; тихий downgrade запрещён в обе стороны.
-Текущий выбранный канал — `unsigned` (решение владельца, FAN-1121, после отмены
-FAN-1094); `signed` остаётся строгим default и включается автоматически, когда
-Apple credentials снова доступны. Полный клиентский контракт:
+Текущий выбранный канал — `signed`; это строгий default и production contract.
+FAN-1121 сохранён как явно выбираемый historical `unsigned` fallback после
+отмены FAN-1094, но больше не является текущим product channel. Полный
+клиентский контракт:
 `docs/process/game_updates.md`.
 
 - Пресет `macOS` экспортирует `.app` в zip; `tools/build_release.sh` распаковывает
@@ -244,7 +251,7 @@ Apple credentials снова доступны. Полный клиентский
   их через `stapler validate` + `spctl`. Любое отсутствие credentials, отказ
   Apple, ошибка staple или Gatekeeper assessment останавливает сборку до
   публикации (exit 2), а не переходит на unsigned.
-- Канал `unsigned` (текущий, FAN-1121): запускается только явным
+- Канал `unsigned` (historical fallback, FAN-1121): запускается только явным
   `FANTASYDISK_MACOS_CHANNEL=unsigned` и отказывается работать, если
   `MACOS_SIGN_IDENTITY`/`MACOS_NOTARY_PROFILE` установлены. После всех изменений
   bundle получает локальную ad-hoc seal и проходит
@@ -266,6 +273,13 @@ Apple credentials снова доступны. Полный клиентский
   root-служебные элементы запрещены allowlist-гейтом. Имена артефактов не
   меняются (клиентский контракт требует точные имена).
 - Выход: `releases/v<version>/FantasyDisk-<version>-macos.dmg`.
+- Первый signed stable release требует независимого exact-tag native evidence в
+  FAN-2207: DMG SHA/provenance, `Accepted` notarization для app и DMG,
+  `codesign`/`stapler`/`spctl`, Safari download source/event lineage, Finder copy
+  в `/Applications`, запуск вне App Translocation, first launch → quit →
+  relaunch ×2 и сохранность приложения после каждого quit/remediation observation
+  window. До terminal `PASSED` signed durability is not proven и FAN-1231 не
+  закрывается.
 
 ### Windows (собирается с этого же Mac)
 - Добавить пресет `Windows Desktop` (x86_64): exe + embedded pck (`binary_format/embed_pck=true`),
@@ -309,10 +323,10 @@ Apple credentials снова доступны. Полный клиентский
   `std::bad_alloc` (ломается даже бандловый пример). `tools/build_release.sh`
   выставляет `LC_ALL=en_US.UTF-8` сам; при ручном запуске makensis — не забывать.
 - `assets/icon.ico` (16-256) сгенерирован из `icon.svg`: `qlmanage -t -s 256` -> PNG -> Pillow.
-- В канале `signed` macOS `.app` подписывается Developer ID последним шагом перед
-  app notarization и DMG; в этом канале отсутствие Developer ID/notary profile —
-  release blocker. В текущем канале `unsigned` (FAN-1121) пропускается только
-  Developer ID/notarization этап, а локальная ad-hoc seal и
+- В текущем канале `signed` macOS `.app` подписывается Developer ID последним
+  шагом перед app notarization и DMG; отсутствие Developer ID/notary profile —
+  release blocker. В явно выбранном historical `unsigned` fallback (FAN-1121)
+  пропускается только Developer ID/notarization этап, а локальная ad-hoc seal и
   `codesign --verify --deep --strict` для проверки целостности обязательны;
   наличие credentials, наоборот, отклоняется.
   GL-ошибки "Texture leaked" при выходе релизной
