@@ -3,10 +3,9 @@
 ## Scope
 
 This bridge supplies a versioned, weapon-keyed presentation manifest for all
-51 declared weapon ultimate profiles. It is a contract layer only: it neither
-changes combat mechanics nor instantiates a live VFX scene. In particular, it
-does not enable generic player-body attack animations; weapon-owned effects
-remain separate from normal attacks.
+51 ready weapon ultimate profiles. It does not change combat mechanics or
+enable generic player-body attack animations; the live adapter instantiates the
+selected weapon-owned scene separately from normal attacks.
 
 `docs/design/systems/weapon_ultimates_contract.md` remains the immutable source
 for the existing profile, presentation, animation, VFX, SFX, and Cast lifecycle
@@ -31,11 +30,10 @@ presentation naming introduces no parallel or renamed cast lifecycle.
 
 The manifest also carries per-channel animation/VFX/SFX IDs, source and runtime
 paths, normalized pivot, monotonic phase timing, and `headless_fallback = no_op`.
-The current reviewed bootstrap source for a weapon is its existing
-`assets/sprites/effects/vfx_weapon_<weapon_id>.png`; it is a preflight resource
-identity, not a request to play that texture as a body animation. Class-local
-animation work replaces those data paths when an individual weapon becomes
-ready.
+Its source and runtime path is the accepted class-local scene for the exact
+class/weapon pair; a generic `vfx_weapon_<weapon_id>.png` bootstrap is not a
+valid substitute. Class-local animation work provides those data paths for the
+ready profile.
 
 `WeaponUltimatePresentationSchema` fails closed for a missing resource,
 duplicate presentation/animation/VFX/SFX ID, placeholder reuse, invalid source
@@ -82,9 +80,10 @@ The class deliberately does not create nodes or modify shared pools. In a
 headless run, the adapter constructs it with headless mode and receives the
 deterministic `headless_no_op` result without attaching a handle.
 
-FAN-1541 is the live-runtime enforcement owner. Its shared adapter must create
-this timeline for a ready selected weapon, forward pause, and invoke `finish`
-on cancel, owner death, and node teardown. That task owns the actual pooled
+The live-runtime adapter creates this timeline for a ready selected weapon,
+forwards pause, and invokes `finish` on cancel, owner death, and node teardown.
+It rejects a missing exact scene or a visual-node count beyond the declared
+per-effect cap before gameplay activation. That adapter owns the actual
 animation/VFX/audio handles and live-combat orphan-handle verification; this
 contract proves the obligation on fixture handles without changing shared VFX
 pooling.

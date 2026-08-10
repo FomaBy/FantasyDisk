@@ -17,6 +17,7 @@ extends Node
 
 const Controller := preload("res://scripts/ultimates/controller/ultimate_controller.gd")
 const Registry := preload("res://scripts/ultimates/registry/weapon_ultimate_registry.gd")
+const PresentationRuntime := preload("res://scripts/ultimates/presentation/weapon_ultimate_presentation_runtime.gd")
 const ProgressionData := preload("res://scripts/progression_data.gd")
 const TargetQuery := preload("res://scripts/combat_target_query.gd")
 
@@ -29,6 +30,8 @@ static var _shared_registry = null
 
 var player: Node2D = null
 var _controller: Controller = null
+var _runtime_registry = null
+var _presentation: PresentationRuntime = null
 
 
 ## Read once per process. The catalog is immutable, so every Player shares it.
@@ -76,17 +79,20 @@ func _init(player_node: Node2D = null) -> void:
 	process_mode = Node.PROCESS_MODE_PAUSABLE
 	if player != null and player.has_signal("guard_prevention_measured"):
 		player.connect("guard_prevention_measured", Callable(self, "_on_guard_prevention_measured"))
+	if player != null and player.has_signal("died"):
+		player.connect("died", Callable(self, "_on_player_died"))
 
 
 func controller() -> Controller:
 	if _controller == null:
-		_controller = Controller.new(self, shared_registry())
+		_controller = Controller.new(self, _registry())
 	return _controller
 
 
 ## Death, scene change and node end all remove the Player, and this child with
 ## it, so one hook covers every case a new run does not.
 func _exit_tree() -> void:
+	ultimate_host_finish_presentation("node_end")
 	if _controller != null:
 		_controller.cancel()
 
@@ -94,7 +100,8 @@ func _exit_tree() -> void:
 func use_registry(registry) -> void:
 	if _controller != null:
 		_controller.cancel()
-	_controller = Controller.new(self, registry)
+	_runtime_registry = registry
+	_controller = Controller.new(self, _registry())
 
 
 func guard_prevention_owner_id() -> String:
@@ -104,6 +111,28 @@ func guard_prevention_owner_id() -> String:
 func _on_guard_prevention_measured(event: Dictionary) -> void:
 	if _controller != null:
 		_controller.record_guard_prevention(event)
+
+
+func _on_player_died() -> void:
+	ultimate_host_finish_presentation("death")
+	if _controller != null:
+		_controller.cancel()
+
+
+func _process(delta: float) -> void:
+	if _presentation != null:
+		_presentation.advance(delta)
+
+
+func _notification(what: int) -> void:
+	if what == NOTIFICATION_PAUSED:
+		ultimate_host_set_presentation_paused(true)
+	elif what == NOTIFICATION_UNPAUSED:
+		ultimate_host_set_presentation_paused(false)
+
+
+func _registry():
+	return _runtime_registry if _runtime_registry != null else shared_registry()
 
 
 # --- host contract -----------------------------------------------------------
@@ -194,6 +223,23 @@ func ultimate_host_modifier(key: String, value: float, op: String) -> void:
 
 func ultimate_host_effect_parent() -> Node:
 	return player.call("_vfx_parent")
+
+
+func ultimate_host_begin_presentation(profile: Dictionary) -> bool:
+	if _presentation == null:
+		_presentation = PresentationRuntime.new()
+	return _presentation.begin(self, _registry(), profile)
+
+
+func ultimate_host_set_presentation_paused(value: bool) -> void:
+	if _presentation != null:
+		_presentation.set_paused(value)
+
+
+func ultimate_host_finish_presentation(reason: String) -> void:
+	if _presentation != null:
+		_presentation.finish(reason)
+		_presentation = null
 
 
 func ultimate_host_set_active(active: bool) -> void:

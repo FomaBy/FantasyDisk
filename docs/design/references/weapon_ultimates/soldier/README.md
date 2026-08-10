@@ -3,7 +3,8 @@
 This class-local package supplies authored presentation timelines for the frozen
 `soldier/soldier_rifle`, `soldier/soldier_grenade` and `soldier/soldier_bayonet`
 ultimate profiles. It does not change gameplay, balancing, profile data, the
-shared presentation manifest, or runtime adapter ownership.
+shared presentation manifest, or runtime adapter ownership outside the live
+exact-pair binding described below.
 
 `manifest.json` is the provenance and timing source for this package. Every
 timeline covers the five required presentation groups of
@@ -14,20 +15,12 @@ and points at the immutable Cast phase IDs of
 `cancel→cleanup`). The longest timeline ends at 9.1 seconds, below the contract
 limit of 10.0 seconds.
 
-Numeric telegraph and damage windows are deliberately absent: all three Soldier
-profiles on this base carry `implementation_state="declared"`,
-`strategy_id="unbound"` and `params={}`. FAN-2067 keeps the ready numbers in
-the isolated staged package and joins them to this reference by `phase_id`, not
-by timestamp.
-
-FAN-2067 keeps the independently ready Soldier overlay/script pairs under the
-non-shipped `data/ultimates/staged/classes/soldier` and
-`scripts/ultimates/staged/classes/soldier` roots. The default shipped registry
-does not discover those roots, so all three profiles continue to resolve through
-`legacy_class_fallback` until FAN-1541. Focused tests may explicitly discover
-the staged exact pairs and inject one into the real `UltimatePlayerHost`; that
-isolated test seam does not alter shared routing or activate a package merely
-because its declaration exists.
+The ready Soldier overlay/script pairs are now active at
+`data/ultimates/classes/soldier` and `scripts/ultimates/classes/soldier`.
+Discovery admits each pair only when its profile, class/weapon identity and
+executor agree, so the three live Soldier selections resolve through their
+exact weapon profiles. The staged roots remain isolated reference fixtures;
+they are not a runtime fallback path.
 
 The three assets use intentionally different visual language and rhythm:
 
@@ -50,11 +43,10 @@ weapon sprites `assets/sprites/weapons/soldier_{rifle,grenade,bayonet}.png`;
 `manifest.json` records each source and runtime path, and the focused gate
 asserts that every recorded path resolves to a real file.
 
-The shared runtime path redirect is deliberately not included: the shared
-presentation manifest and adapter are read-only to this card, with the adapter
-owned by FAN-1541. Consumers attach this package by exact weapon ID and must
-call `WeaponUltimatePresentationTimeline.set_paused()` plus
-`finish("cancel"|"death"|"node_end")` for lifecycle cleanup.
+The shared runtime now resolves the class-local scene by exact weapon ID,
+forwards pause, and finishes it on cancel, death or node teardown. It rejects a
+missing scene or a declared visual budget that cannot be honoured rather than
+substituting a generic weapon texture.
 
 The four contact sheets are rendered from the actual local scenes at 648p, 720p,
 1080p and 2K. Action-following framing fits every visible silhouette and impact

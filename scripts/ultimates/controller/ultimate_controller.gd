@@ -68,6 +68,13 @@ func activate(class_id: String, weapon_id: String) -> bool:
 		normalized["params"] as Dictionary,
 		float(profile.get("total_boss_cap", 0.0))
 	)
+	var presentation: Variant = profile.get("presentation")
+	if presentation is Dictionary and not (presentation as Dictionary).is_empty() \
+			and _host.has_method("ultimate_host_begin_presentation") \
+			and not bool(_host.call("ultimate_host_begin_presentation", profile)):
+		_activation.shutdown(true)
+		_activation = null
+		return false
 	_host.call("ultimate_host_set_active", true)
 	var duration := float(package_executor.call("execute", _activation)) \
 		if package_executor != null else Library.execute(strategy_id, _activation)
@@ -117,6 +124,8 @@ func _shutdown(free_presentation: bool) -> void:
 		return
 	var activation := _activation
 	_activation = null
+	if _host != null and is_instance_valid(_host) and _host.has_method("ultimate_host_finish_presentation"):
+		_host.call("ultimate_host_finish_presentation", "cancel" if free_presentation else "node_end")
 	activation.shutdown(free_presentation)
 	if _host != null and is_instance_valid(_host) and _host.has_method("ultimate_host_set_active"):
 		_host.call("ultimate_host_set_active", false)

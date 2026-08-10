@@ -4,6 +4,7 @@ extends RefCounted
 # level-up, победа/смерть, HUD и общие UI-стили.
 
 const AimController := preload("res://scripts/input/aim_controller.gd")
+const UltimateHudRuntimeAdapter := preload("res://scripts/ui/ultimate_hud/ultimate_hud_runtime_adapter.gd")
 
 var game
 var settings_return_origin := "main_menu"
@@ -15871,6 +15872,7 @@ func _create_hud() -> void:
 	)
 	_layout_combat_hud(root)
 	call_deferred("_layout_combat_hud", root)
+	UltimateHudRuntimeAdapter.attach(root, game)
 	_update_level_up_button()
 	_update_hud()
 
