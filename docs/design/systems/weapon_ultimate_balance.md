@@ -1,11 +1,10 @@
 # Weapon ultimate balance: charge economy and power corridor
 
-Status: the numeric contract is implemented, measured and frozen. It is a
-declaration layer, exactly like the schema and registry foundations it sits next
-to: nothing in shipped gameplay reads it yet. The 17 class mechanics packs
-(FAN-1462…FAN-1495) adopt it, and the runtime adoption of the ledger inside
-`scripts/player.gd` is a separate, explicitly locked change — see
-"Runtime adoption" below.
+Status: the numeric contract is implemented, measured and frozen. The 17 class
+mechanics packs (FAN-1462…FAN-1495) adopt it, and FAN-2074 wired the ledger into
+`scripts/player.gd`: the bar, the active-cast latch and the activation gate are
+shipped runtime, while the charge *income* channels still run the pre-FAN-1460
+code — see "Runtime adoption" below.
 
 The goal this contract encodes: an ultimate is **rare and very strong**. A
 neutral build prepares it across 3–4 normal encounters, charge survives the
@@ -182,21 +181,26 @@ scenario a real control rather than a restatement of the neutral one.
 ## Runtime adoption
 
 The ledger is a drop-in for the shipped `Player._gain_ultimate_charge` /
-`activate_ultimate` pair, but `scripts/player.gd` and
-`scripts/combat_director.gd` are outside this contract's write set. Adoption is
-a separate change and needs, in one place each:
+`activate_ultimate` pair. Adoption needs one place each; step 4 has landed:
 
 1. `Player.on_weapon_hit` → credit `UltimateDamageResult.applied` (HP removed)
-   instead of the attempted `dealt_damage`.
+   instead of the attempted `dealt_damage`. **Pending.**
 2. `Player.take_damage` → route the taken channel through
-   `Ledger.add_taken_health`.
+   `Ledger.add_taken_health`. **Pending.**
 3. `CombatDirector._start_combat` → `Ledger.begin_encounter(kind)` with the
-   node's combat type.
-4. `Player.activate_ultimate` → gate on `Ledger.try_activate()`.
+   node's combat type. **Pending**, so `Player.configure_character` — a new run
+   or a character change — is currently the only seam that opens the next
+   encounter.
+4. `Player.activate_ultimate` → gate on `Ledger.try_activate()`. **Adopted
+   (FAN-2074).** The ledger owns the bar, the active-cast latch and the run
+   snapshot, and "at most one activation per encounter" plus "a refused
+   activation spends nothing" are shipped behaviour, asserted per ready pair by
+   `tests/ultimates/controller_player_integration_test.gd` and
+   `tests/ultimates/tracked_tween_natural_completion_test.gd`.
 
-Until that lands, the shipped economy keeps the pre-FAN-1460 behaviour
-(attempted damage, no per-encounter cap, no activation gate) and this document
-describes the contract, not the current runtime.
+Until steps 1–3 land, the income channels keep the pre-FAN-1460 behaviour
+(attempted damage, no per-encounter income cap). The activation gate no longer
+waits on them: for that rule this document describes the current runtime.
 
 ## Validation
 
