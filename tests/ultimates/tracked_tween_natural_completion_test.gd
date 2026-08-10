@@ -19,6 +19,8 @@ const GAMEPLAY_TIME_SCALE := 0.5
 const COMPLETION_GRACE_SECONDS := 1.0
 const PLAYER_SPACING := 2500.0
 const WARD_PREVENTION_PROBE := 40.0
+const TOWER_SHIELD_GUARD_PROBE := 40.0
+const TOWER_SHIELD_GUARD_RESOURCE := "knight_tower_shield.counter"
 # Wall-clock lifecycle of every ready pair, measured on the real
 # configure_character -> activate_ultimate -> controller.is_active() path;
 # `deadline` is that measurement plus COMPLETION_GRACE_SECONDS of slack.
@@ -27,6 +29,7 @@ const LIFECYCLE_SPECS := [
 	{"class_id": "biologist", "weapon_id": "biologist_symbiote_seed", "lifecycle": 9.0, "deadline": 10.0},
 	{"class_id": "elementalist", "weapon_id": "elementalist_meteor_core", "lifecycle": 8.89, "deadline": 9.89},
 	{"class_id": "biologist", "weapon_id": "biologist_spore_lens", "lifecycle": 8.6, "deadline": 9.6},
+	{"class_id": "knight", "weapon_id": "tower_shield", "lifecycle": 8.6, "deadline": 9.6},
 	{"class_id": "priest", "weapon_id": "priest_reliquary", "lifecycle": 8.6, "deadline": 9.6},
 	{"class_id": "elementalist", "weapon_id": "elementalist_orb_ring", "lifecycle": 8.4, "deadline": 9.4},
 	{"class_id": "druid", "weapon_id": "raven_totem", "lifecycle": 8.4, "deadline": 9.4},
@@ -479,6 +482,7 @@ func _start_case(state: Dictionary) -> void:
 	_check(bool(player.get("_ultimate_active")), "%s must set the Player active latch" % label)
 	_check(not bool(player.call("activate_ultimate")), "%s must refuse live re-entry" % label)
 	_feed_ward_prevention(state)
+	_feed_tower_shield_guard_prevention(state)
 
 
 ## A ward package reaches its damage step only after it actually absorbed
@@ -498,6 +502,58 @@ func _feed_ward_prevention(state: Dictionary) -> void:
 			"damage_absorbed",
 			{"absorbed_amount": WARD_PREVENTION_PROBE, "incoming_amount": WARD_PREVENTION_PROBE}
 		)
+
+
+## Tower Shield must receive a real eligible contact hit through Player, so its
+## counter is proven by the generic measured-prevention ingress rather than a
+## fixture call into the activation ledger.
+func _feed_tower_shield_guard_prevention(state: Dictionary) -> void:
+	if str(state["label"]) != "knight/tower_shield":
+		return
+	var player: Node2D = state["player"]
+	var enemies: Array = state["enemies"]
+	var attacker: Node2D = enemies[0] if not enemies.is_empty() else null
+	_check(attacker != null and is_instance_valid(attacker), "Tower Shield must have a live contact attacker")
+	if attacker == null or not is_instance_valid(attacker):
+		return
+	attacker.global_position = player.global_position + Vector2.RIGHT * 120.0
+	var events: Array[Dictionary] = []
+	player.guard_prevention_measured.connect(func(event: Dictionary) -> void:
+		events.append(event.duplicate(true))
+	)
+	var health_before := float(player.get("health"))
+	_check(
+		bool(player.call("take_damage", TOWER_SHIELD_GUARD_PROBE, "contact", attacker)),
+		"Tower Shield must prevent an eligible front/contact hit through Player.take_damage"
+	)
+	_check(is_equal_approx(float(player.get("health")), health_before),
+		"Tower Shield's prevented contact hit must leave Player health unchanged")
+	_check(events.size() == 1, "Tower Shield must emit exactly one measured prevention event")
+	if events.size() != 1:
+		return
+	var event: Dictionary = events[0]
+	var direction = event.get("direction", Vector2.ZERO)
+	_check(
+		str(event.get("source", "")) == "contact" and direction is Vector2 \
+				and (direction as Vector2).dot(Vector2.RIGHT) > 0.99 \
+				and is_equal_approx(float(event.get("incoming_amount", 0.0)), TOWER_SHIELD_GUARD_PROBE) \
+				and is_zero_approx(float(event.get("applied_amount", -1.0))) \
+				and is_equal_approx(float(event.get("prevented_amount", 0.0)), TOWER_SHIELD_GUARD_PROBE),
+		"Tower Shield ingress event must retain actual contact source, direction, and measured amounts"
+	)
+	var activation = state.get("activation")
+	var owner_id := str(event.get("owner_id", ""))
+	_check(
+		activation != null and not owner_id.is_empty() \
+				and is_equal_approx(
+					activation.owner_resource_amount(owner_id, TOWER_SHIELD_GUARD_RESOURCE),
+					TOWER_SHIELD_GUARD_PROBE
+				),
+		"Tower Shield must receive the Player ingress event through its guard resource"
+	)
+	state["tower_shield_guard_owner_id"] = owner_id
+	state["tower_shield_probe_target"] = attacker
+	state["tower_shield_probe_target_health"] = float(attacker.get("health"))
 
 
 func _wait_for_natural_completion(states: Array[Dictionary]) -> void:
@@ -557,6 +613,13 @@ func _wait_for_natural_completion(states: Array[Dictionary]) -> void:
 						_check(
 							tween != null and tween.is_valid(),
 							"%s lifecycle tween must still be live before completion" % state["label"]
+							)
+					var probe_target = state.get("tower_shield_probe_target") as Node2D
+					if probe_target != null:
+						_check(
+							activation.applied_total > 0.0 \
+									and float(probe_target.get("health")) < float(state["tower_shield_probe_target_health"]),
+							"%s must convert the real measured prevention into counter damage" % state["label"]
 						)
 				state["prechecked"] = true
 			if controller.is_active():
@@ -592,6 +655,14 @@ func _assert_natural_cleanup(states: Array[Dictionary]) -> void:
 		_check(activation.presentation_for_tests().is_empty(), "%s must drop presentation handles" % label)
 		_check(activation.summon_snapshot_count_for_tests() == 0, "%s must drop summon handles" % label)
 		_check(activation.target_ledger_size_for_tests() == 0, "%s must clear target state" % label)
+		if state.has("tower_shield_guard_owner_id"):
+			_check(
+				activation.guard_prevention_owner_id().is_empty() \
+						and is_zero_approx(activation.owner_resource_amount(
+							str(state["tower_shield_guard_owner_id"]), TOWER_SHIELD_GUARD_RESOURCE
+						)),
+				"%s must clear its guard owner and resource state" % label
+			)
 		for tween in state["tweens"]:
 			_check(tween == null or not tween.is_valid(), "%s must invalidate its lifecycle tween" % label)
 		for node in state["spawned"]:

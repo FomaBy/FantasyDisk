@@ -1056,6 +1056,7 @@ func take_damage(amount: float, _source := "", attacker: Node2D = null) -> bool:
 		_play_sfx("dodge")
 		return false
 	if _ultimate_active and character_id == "knight":
+		GUARD_PREVENTION_INGRESS.emit_measured(self, amount, 0.0, _source, attacker)
 		_gain_ultimate_charge(amount * float(_ultimate_config().get("taken_charge_rate", 1.0)) * 0.25)
 		_play_sfx("dodge")
 		AttackVfx.ring_pulse(_vfx_parent(), global_position, 170.0, Color(0.90, 0.95, 1.0, 0.40), false)
