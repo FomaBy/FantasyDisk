@@ -31,7 +31,9 @@ extends SceneTree
 #     - после КАЖДОЙ атаки паттерн +6° по часовой (fire_interval шаг не меняет —
 #       скорость атаки ускоряет только частоту шагов); 15 атак = 90° = период;
 #     - пер-вентильный урон = ролл x REACTOR_VENT_DAMAGE_RATIO (0.42);
-#     - extra_projectile расширяет лопасти, но направлений остаётся 4;
+#     - FAN-1893: generic extra_projectile для реактора полностью инертен
+#       (real_projectile_count 0; прежний width-бонус +14%/снаряд удалён) —
+#       ширина лопасти всегда beam_width, направлений ровно 4;
 #     - свежий инстанс оружия стартует с фазы 0 (нет застарелого состояния).
 #
 # Запуск: Godot --headless --path . --script res://tests/robot_kit_test.gd
@@ -510,12 +512,17 @@ func _test_reactor_rotating_fan(errors: Array) -> void:
 func _test_reactor_blade_width_and_reset(errors: Array) -> void:
 	var holder := _new_scene("Scrum918ReactorBlades")
 	var owner := _new_owner(holder)
-	# extra_projectile расширяет лопасти, но направлений остаётся ровно 4.
+	# FAN-1893: generic extra_projectile для реактора полностью инертен
+	# (real_projectile_count 0; прежний width-бонус +14%/снаряд удалён).
 	owner.run_modifiers = {"extra_projectile": 2.0}
 	var weapon := _new_weapon(owner, "robot", "robot_reactor_core")
 	if absf(float(weapon.get("_reactor_vent_phase"))) > 0.0001:
 		errors.append("re-attached reactor must reset rotation state to 0")
 	var axis := _reactor_axis_enemies(holder, owner, 250.0)
+	# Дискриминирующая проба удалённого бонуса: side 55 лежит ВНЕ базовой
+	# полулопасти (beam_width 96 / 2 = 48), но ВНУТРИ удалённой расширенной
+	# (96 x (1 + 0.14 x 2) / 2 = 61.4) — вернись бонус, этот враг получил бы хит.
+	var removed_bonus_probe := _new_enemy(holder, owner.global_position + Vector2(250, 55))
 	var diagonal := _new_enemy(holder, owner.global_position + Vector2(85, 85))
 	await process_frame
 
@@ -526,14 +533,16 @@ func _test_reactor_blade_width_and_reset(errors: Array) -> void:
 		var axis_enemy := axis[key] as MockEnemy
 		total_hits += axis_enemy.hit_count
 		if axis_enemy.hit_count != 1:
-			errors.append("with extra projectiles the %s vent must still hit exactly once (got %d)" % [str(key), axis_enemy.hit_count])
+			errors.append("under extra_projectile the %s vent must still hit exactly once (got %d)" % [str(key), axis_enemy.hit_count])
 		elif absf(axis_enemy.total_damage - 100.0 * ClassWeapon.REACTOR_VENT_DAMAGE_RATIO) > 0.5:
-			errors.append("extra projectiles must not inflate per-vent damage (got %.2f)" % axis_enemy.total_damage)
+			errors.append("extra_projectile must not inflate per-vent damage (got %.2f)" % axis_enemy.total_damage)
 	if total_hits != 4:
-		errors.append("exactly four vents per attack, extra projectiles only widen blades (hits %d)" % total_hits)
-	# Ширина: бонус +14%/снаряд НЕ дотягивается до диагонали (85 > 96*1.28/2).
+		errors.append("exactly four base-width vents per attack, extra_projectile is fully inert (hits %d)" % total_hits)
+	if removed_bonus_probe.hit_count != 0:
+		errors.append("reactor blade width must ignore extra_projectile: the side-55 enemy sits outside the base 48px half-blade and only the REMOVED +14%%/projectile bonus would reach it (hits %d)" % removed_bonus_probe.hit_count)
+	# Лопасти остаются лопастями: диагональ 85/85 вне любой ширины — веер не круг.
 	if diagonal.hit_count != 0:
-		errors.append("widened blades must still be blades, not a circle (diagonal hits %d)" % diagonal.hit_count)
+		errors.append("blades must stay blades, not a circle (diagonal hits %d)" % diagonal.hit_count)
 	await _cleanup(holder)
 
 

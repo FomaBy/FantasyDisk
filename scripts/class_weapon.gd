@@ -2492,8 +2492,10 @@ const HUNTER_TRAP_ACTIVE_CAP := 6
 
 func _fire_trap(owner_node: Node2D, direction: Vector2) -> void:
 	_emit_weapon_animation_event(owner_node, "deploy", 0.6, direction, {"check_interval": pool_tick_interval})
-	# «Капканщик» (trap_extra_count) и «Ядро Расщепления» (extra_projectile):
-	# дополнительные капканы одним броском, веером поперёк направления.
+	# FAN-1893: дополнительные капканы одним броском (веером поперёк направления)
+	# даёт только семантический мета-ключ trap_extra_count («Капканщик»);
+	# generic extra_projectile здесь инертен (real_projectile_count 0), поэтому
+	# _extra_projectiles() возвращает лишь семантическую добавку.
 	var extra_traps := maxi(_extra_projectiles(), 0)
 	var center := owner_node.global_position + direction * minf(attack_range, 180.0)
 	var side := direction.orthogonal().normalized()
@@ -2907,8 +2909,9 @@ func _find_bayonet_shot_target(owner_node: Node2D) -> Node2D:
 # зеркалит эти же числа в комментариях.
 
 # «Кошель Рикошета»: жёсткий кап длины цепи. База 6 прыжков (projectile_count),
-# прогрессия (extra_projectile / артефакт «Счастливая монета») добирает до 8 —
-# цепь конечна и не становится лучшим полнокартным клиром (полоса AC 5..8).
+# артефакт «Счастливая монета» (coin_extra_bounces) добирает до 8; FAN-1893:
+# generic extra_projectile цепь не удлиняет. Цепь конечна и не становится
+# лучшим полнокартным клиром (полоса AC 5..8).
 const COIN_CHAIN_HARD_CAP := 8
 
 # «Отравленный Кинжал»: базовый удар фантома в долях ролла и позиционный пейофф.
@@ -2944,10 +2947,10 @@ func _fire_coin_ricochet(owner_node: Node2D, target: Node2D, direction: Vector2)
 	var chain_targets := [current_target]
 	var used := {current_target.get_instance_id(): true}
 	var search_origin := current_target.global_position
-	# SCRUM-961 «Счастливая монета» / extra_projectile: цепь скачет дольше, но
-	# SCRUM-897 капит длину COIN_CHAIN_HARD_CAP — рикошет конечен по AC.
 	# FAN-1893: прыжки рикошета — не снаряды; цепь удлиняет только классовый
-	# артефакт coin_extra_bounces (кап COIN_CHAIN_HARD_CAP прежний).
+	# артефакт coin_extra_bounces (SCRUM-961 «Счастливая монета»), generic
+	# extra_projectile инертен. SCRUM-897 капит длину COIN_CHAIN_HARD_CAP —
+	# рикошет конечен по AC.
 	var chain_count := clampi(projectile_count + int(_owner_mod("coin_extra_bounces")), 1, COIN_CHAIN_HARD_CAP)
 	for chain_index in range(chain_count - 1):
 		var next_target := _find_nearest_enemy_from(search_origin, attack_range * 0.65, used)

@@ -20,7 +20,9 @@ extends SceneTree
 # 4) summon_bonus входит в единый capped-парк ровно один раз
 #    (player._apply_weapon_scaling), «pair»/«device» его не читают
 #    (исполняемая популяция пары, reset устройств), derived summon_amount
-#    его НЕ содержит (анти-двойное-применение).
+#    его НЕ содержит (анти-двойное-применение). FAN-2250: advisor-прогноз
+#    «Силы призыва» сверяется с фактическим парком живого Player, а bounded
+#    мутация конфига доказывает, что сравнение способно падать.
 # 5) Legacy-входы мигрируют fail-closed: конфиг без ключей → 0/"none" без
 #    крэша; неизвестная семантика → "none"; сейв-показ с summon-картой у
 #    класса без потребителя сбрасывается.
@@ -146,7 +148,7 @@ func _initialize() -> void:
 		push_error("FAN-1893 capability contract test FAILED.")
 		quit(1)
 		return
-	print("FAN-1893 capability contract test passed: 51/51 explicit matrix, capability-derived summon set %s, executed +1-projectile positive/negative probes, single capped summon_bonus application, 51/51 runtime summon branch == declared semantics (FAN-2249), fail-closed legacy migration." % str(EXPECTED_SUMMON_CLASSES))
+	print("FAN-1893 capability contract test passed: 51/51 explicit matrix, capability-derived summon set %s, executed +1-projectile positive/negative probes, single capped summon_bonus application, advisor forecast == live Player park with mutation control (FAN-2250), 51/51 runtime summon branch == declared semantics (FAN-2249), fail-closed legacy migration." % str(EXPECTED_SUMMON_CLASSES))
 	quit(0)
 
 
@@ -432,7 +434,10 @@ func _test_negative_projectile_probes() -> void:
 	if melee_base <= 0 or melee_inert != melee_base:
 		_fail("berserk melee: extra_projectile must be inert (%d != %d)" % [melee_inert, melee_base])
 	# Ширина вентилей реактора: инертность extra_projectile для robot_reactor_core
-	# закреплена отдельным гейтом tests/robot_kit_test.gd (_test_reactor_blade_width_and_reset).
+	# закреплена дискриминирующей пробой tests/robot_kit_test.gd
+	# (_test_reactor_blade_width_and_reset): враг на side 55 — вне базовой
+	# полулопасти 48, но внутри удалённой расширенной 61.4 — обязан получить
+	# ноль хитов, поэтому возврат width-бонуса роняет тот гейт.
 
 
 # --- 5) summon_bonus: единый capped-парк, ровно одно применение --------------------
@@ -493,19 +498,37 @@ func _test_summon_bonus_single_capped_application() -> void:
 		_fail("homunculus pair: exactly one tank regardless of summon_bonus (got %d)" % tanks)
 	await _cleanup(pair["holder"])
 
-	# Advisor (AC4): дельта «Силы призыва» — фактический capped-парк.
+	# Advisor (AC4, FAN-2250): прогноз «Силы призыва» сверяется с ФАКТИЧЕСКИМ
+	# runtime-парком живого Player (configure_character → _apply_weapon_scaling
+	# → weapon.max_summons), а не с helper'ом summon_runtime_count, который
+	# advisor вызывает сам — самосравнение не ловило бы расхождение с рантаймом.
 	var summon_card := {}
 	for reward in PD.LEVEL_UP_REWARDS:
 		if str((reward as Dictionary).get("attr", "")) == "summon_amount":
 			summon_card = reward
 	var amp_config := PD.weapon("guitarist", "sound_amp")
-	var forecast: Dictionary = LevelUpAdvisor.forecast_reward(summon_card, PD.base_stats("guitarist"), {}, amp_config)
-	var expected_before := AttributeContract.summon_runtime_count(amp_config, PD.base_stats("guitarist"), {})
-	var expected_after := AttributeContract.summon_runtime_count(amp_config, PD.base_stats("guitarist"), {"summon_bonus": 2.0})
-	if absf(float((forecast["before"] as Dictionary).get("summon_amount", -1.0)) - expected_before) > 0.0001 \
-			or absf(float((forecast["after"] as Dictionary).get("summon_amount", -1.0)) - expected_after) > 0.0001:
-		_fail("advisor: summon_amount forecast must show the capped runtime park (before %.1f after %.1f)" % [expected_before, expected_after])
-	var electric_forecast: Dictionary = LevelUpAdvisor.forecast_reward(summon_card, PD.base_stats("guitarist"), {}, PD.weapon("guitarist", "electric_guitar"))
+	var card_mods: Dictionary = summon_card.get("mods", {}) as Dictionary
+	var advisor_before := await _player_with("guitarist", "sound_amp", {})
+	var park_before := float((advisor_before["weapon"] as Node).get("max_summons"))
+	var live_stats: Dictionary = ((advisor_before["player"] as Node).get("stats") as Dictionary).duplicate(true)
+	var live_mods: Dictionary = ((advisor_before["player"] as Node).get("run_modifiers") as Dictionary).duplicate(true)
+	await _cleanup(advisor_before["holder"])
+	var advisor_after := await _player_with("guitarist", "sound_amp", card_mods.duplicate(true))
+	var park_after := float((advisor_after["weapon"] as Node).get("max_summons"))
+	await _cleanup(advisor_after["holder"])
+	var forecast: Dictionary = LevelUpAdvisor.forecast_reward(summon_card, live_stats, live_mods, amp_config)
+	if absf(float((forecast["before"] as Dictionary).get("summon_amount", -1.0)) - park_before) > 0.0001 \
+			or absf(float((forecast["after"] as Dictionary).get("summon_amount", -1.0)) - park_after) > 0.0001:
+		_fail("advisor: summon_amount forecast must match the live production park (park %.1f -> %.1f)" % [park_before, park_after])
+	# Bounded mutation (анти-vacuous): конфиг со сдвинутыми парком и капом (+1)
+	# обязан развести forecast с фактическим парком — равенство выше способно падать.
+	var mutated_config: Dictionary = amp_config.duplicate(true)
+	mutated_config["max_summons"] = int(amp_config.get("max_summons", 0)) + 1
+	mutated_config["max_summons_cap"] = int(amp_config.get("max_summons_cap", 0)) + 1
+	var mutated: Dictionary = LevelUpAdvisor.forecast_reward(summon_card, live_stats, live_mods, mutated_config)
+	if absf(float((mutated["after"] as Dictionary).get("summon_amount", -1.0)) - park_after) <= 0.0001:
+		_fail("advisor probe is vacuous: a +1 park/cap config mutation must diverge from the live runtime park")
+	var electric_forecast: Dictionary = LevelUpAdvisor.forecast_reward(summon_card, live_stats, live_mods, PD.weapon("guitarist", "electric_guitar"))
 	if (electric_forecast["before"] as Dictionary).has("summon_amount"):
 		_fail("advisor: non-consumer weapon must not surface a phantom summon_amount delta")
 

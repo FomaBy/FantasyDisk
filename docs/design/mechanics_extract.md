@@ -751,7 +751,7 @@ SCRUM-469 добавил class/stat-specific скалирование роста
 | aura_radius | `base_area * attack_area_multiplier`; тот же area-контракт без отдельного источника | support/aura consumers | работает |
 | support_multiplier | общий `% damage` агрегируется один раз; standalone `buff_power` источника нет | семь support consumers | работает |
 | knockback_power | `(weapon + Strength*4) * knockback_multiplier` | derived -> apply_knockback врагов | работает |
-| summon_amount | `Leadership + Know*0.18 + Int*0.12 + Energy*0.10` | summon profile/echo weapons/support; `max_summons` count-cap идет от Leadership | работает |
+| summon_amount | `Leadership + Know*0.18 + Int*0.12 + Energy*0.10` | только summon/deploy-киты Guitarist/Chemist/Druid/Engineer (FAN-1893: echo weapons удалены); `max_summons` count-cap идет от Leadership | работает |
 | **absorb** | End*0.16 + softened flat; срез удара до защиты (мин. 35% проходит) | Player.take_damage | работает |
 | **regeneration** | (0.22 + positive_flat*0.45) * (0.45 + Know/12) HP/с | Player._apply_regeneration | работает |
 | **vampiric_chance** | награды, cap 0.22; источник — артефакт «Клык Пиявки» (tier 2) | Player.on_weapon_hit | работает |

@@ -1137,9 +1137,9 @@ const ROBOT_WEAPONS := {
 		"id": "robot_reactor_core", "title": "Реакторное Ядро", "real_projectile_count": 0, "summon_semantics": "none",
 		# SCRUM-918: вращающийся 4-направленный веер. Ровно 4 вентиля 90°,
 		# паттерн +6° по часовой после каждой атаки, БЕЗ самонаведения; урон
-		# вентиля = ролл × 0.42 (REACTOR_VENT_DAMAGE_RATIO), extra_projectile
-		# расширяет лопасти. projectile_count фиксирует 4 направления для
-		# бюджет-модели/доков.
+		# вентиля = ролл × 0.42 (REACTOR_VENT_DAMAGE_RATIO); FAN-1893: generic
+		# extra_projectile инертен (real_projectile_count 0, width-бонус удалён).
+		# projectile_count фиксирует 4 направления для бюджет-модели/доков.
 		"description": "Reactor vent: четыре фиксированных выброса крестом вокруг корпуса; после каждой атаки крест доворачивается на 6 градусов по часовой — веер обходит весь круг.",
 		"scene_path": "res://scenes/RobotReactorCore.tscn",
 		"attack_mode": "robot_reactor_vent", "damage_parameter": "damage",
