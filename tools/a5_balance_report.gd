@@ -3460,7 +3460,7 @@ static func verify_final_execution_artifacts(dataset: Dictionary) -> Dictionary:
 	var execution: Dictionary = dataset.get("final_execution", {})
 	if str(execution.get("schema", "")) != FINAL_EXECUTION_SCHEMA:
 		errors.append("final-execution schema mismatch")
-	if execution.get("seeds", []) != FINAL_EXECUTION_SEEDS:
+	if not _same_integer_ladder(execution.get("seeds", []), FINAL_EXECUTION_SEEDS):
 		errors.append("final-execution seed ladder mismatch")
 	if not is_equal_approx(float(execution.get("warmup_seconds", -1.0)), FINAL_EXECUTION_WARMUP_SECONDS) or not is_equal_approx(float(execution.get("window_seconds", -1.0)), FINAL_EXECUTION_WINDOW_SECONDS):
 		errors.append("final-execution measurement window mismatch")
@@ -3870,7 +3870,7 @@ static func _verify_axis_decomposition(pair: String, axis_key: String, axis: Dic
 	if observed.is_empty():
 		errors.append("formula/live %s axis has no anchored production observation for %s" % [axis_key, pair])
 		return errors
-	if axis.get("observed", {}) != observed:
+	if not _same_snapped_metrics(axis.get("observed", {}), observed):
 		errors.append("formula/live %s axis observation does not reconstruct from the anchored telemetry for %s" % [axis_key, pair])
 	var expected_axis := decompose_axis(basis, observed, formula_axis_dpm)
 	if expected_axis.is_empty():
@@ -3879,7 +3879,7 @@ static func _verify_axis_decomposition(pair: String, axis_key: String, axis: Dic
 	for key in ["formula_model_gap", "recomputed_delta_pct", "dominant_factor_deviation_pct"]:
 		if not is_equal_approx(float(axis.get(key, NAN)), float(expected_axis.get(key, NAN))):
 			errors.append("formula/live %s axis %s does not recompute for %s" % [axis_key, key, pair])
-	if axis.get("factors", {}) != expected_axis.get("factors", {}):
+	if not _same_snapped_metrics(axis.get("factors", {}), expected_axis.get("factors", {})):
 		errors.append("formula/live %s axis consumer factors do not recompute for %s" % [axis_key, pair])
 	if str(axis.get("dominant_factor", "")) != str(expected_axis.get("dominant_factor", "")) or str(axis.get("sign", "")) != str(expected_axis.get("sign", "")):
 		errors.append("formula/live %s axis dominant factor or sign does not recompute for %s" % [axis_key, pair])
@@ -3890,6 +3890,36 @@ static func _verify_axis_decomposition(pair: String, axis_key: String, axis: Dic
 	if (float(axis.get("recomputed_delta_pct", 0.0)) >= 0.0) != (parity_delta_pct >= 0.0):
 		errors.append("formula/live %s axis decomposition disagrees with the divergence sign for %s" % [axis_key, pair])
 	return errors
+
+
+static func _same_integer_ladder(actual_value, expected: Array) -> bool:
+	if not actual_value is Array:
+		return false
+	var actual: Array = actual_value
+	if actual.size() != expected.size():
+		return false
+	for index in range(expected.size()):
+		if not _is_number(actual[index]) or float(actual[index]) != float(expected[index]):
+			return false
+	return true
+
+
+static func _same_snapped_metrics(actual_value, expected_value) -> bool:
+	if not actual_value is Dictionary or not expected_value is Dictionary:
+		return false
+	var actual: Dictionary = actual_value
+	var expected: Dictionary = expected_value
+	if actual.size() != expected.size():
+		return false
+	for key in expected:
+		if not actual.has(key) or not _is_number(actual[key]) or not _is_number(expected[key]) \
+				or snappedf(float(actual[key]), 0.000001) != snappedf(float(expected[key]), 0.000001):
+			return false
+	return true
+
+
+static func _is_number(value) -> bool:
+	return typeof(value) in [TYPE_INT, TYPE_FLOAT]
 
 
 static func verify_live_telemetry_sample(sample: Dictionary) -> Dictionary:

@@ -72,6 +72,30 @@ func _validate_final_execution_falsification() -> void:
 		_check(not Generator.verify_final_execution_row(mutated).is_empty(), "final-execution verification accepts a forged row: %s" % mutation.get("name", "?"))
 	var dataset := _disposition_dataset(baseline)
 	_check(bool(Generator.verify_formula_live_dispositions(dataset).get("ok", false)), "the production-shaped disposition fixture must be admissible: %s" % "; ".join(Generator.verify_formula_live_dispositions(dataset).get("errors", [])))
+	var json_round_trip: Variant = JSON.parse_string(JSON.stringify(dataset, "", true, true))
+	_check(json_round_trip is Dictionary and bool(Generator.verify_formula_live_dispositions(json_round_trip as Dictionary).get("ok", false)), "formula/live disposition verification must admit its JSON round trip")
+	var execution_artifact := {
+		"roster": {"pair_keys": [baseline["pair"]]},
+		"final_execution": {
+			"schema": Generator.FINAL_EXECUTION_SCHEMA,
+			"seeds": Generator.FINAL_EXECUTION_SEEDS,
+			"warmup_seconds": Generator.FINAL_EXECUTION_WARMUP_SECONDS,
+			"window_seconds": Generator.FINAL_EXECUTION_WINDOW_SECONDS,
+			"payoff_kinds": Generator.FINAL_EXECUTION_PAYOFF_KINDS,
+			"rows": [baseline],
+		},
+	}
+	var execution_round_trip: Variant = JSON.parse_string(JSON.stringify(execution_artifact, "", true, true))
+	if execution_round_trip is Dictionary:
+		var round_rows: Array = ((execution_round_trip as Dictionary).get("final_execution", {}) as Dictionary).get("rows", [])
+		if not round_rows.is_empty():
+			var round_sample: Dictionary = (round_rows[0] as Dictionary).get("telemetry", {})
+			round_sample["trace_digest_sha256"] = Generator.canonical_trace_digest(round_sample.get("events", []))
+	var execution_round_trip_verification: Dictionary = Generator.verify_final_execution_artifacts(execution_round_trip as Dictionary) if execution_round_trip is Dictionary else {"ok": false, "errors": ["JSON round trip is not an object"]}
+	_check(bool(execution_round_trip_verification.get("ok", false)), "final-execution verification must admit its JSON round trip: %s" % "; ".join(execution_round_trip_verification.get("errors", [])))
+	var forged_seed_ladder: Dictionary = execution_artifact.duplicate(true)
+	((forged_seed_ladder["final_execution"] as Dictionary)["seeds"] as Array)[0] = int(Generator.FINAL_EXECUTION_SEEDS[0]) + 1
+	_check(not bool(Generator.verify_final_execution_artifacts(forged_seed_ladder).get("ok", true)), "final-execution verification accepts a substituted seed ladder")
 	for mutation_value in _disposition_mutations(dataset):
 		var mutation: Dictionary = mutation_value
 		_check(not bool(Generator.verify_formula_live_dispositions(mutation.get("dataset", {})).get("ok", false)), "formula/live disposition verification accepts a forged dataset: %s" % mutation.get("name", "?"))
