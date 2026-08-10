@@ -5967,11 +5967,12 @@ func _codex_mark_entry_read(list: VBoxContainer, button: Button) -> void:
 		row = button.get_child(0) as HBoxContainer
 	if row != null:
 		row.offset_right = -30.0
-	var unread_count := 0
-	for sibling in list.get_children():
-		if sibling != button and bool(sibling.get_meta("codex_is_unread", false)):
-			unread_count += 1
-	list.move_child(button, unread_count)
+	if str(button.get_meta("codex_entry_category", "")) == "characters":
+		var unread_count := 0
+		for sibling in list.get_children():
+			if sibling != button and bool(sibling.get_meta("codex_is_unread", false)):
+				unread_count += 1
+		list.move_child(button, unread_count)
 	var content := list.get_meta("codex_content_panel", null) as PanelContainer
 	codex_unlock_presenter.refresh_tab_badges(content)
 
@@ -6421,7 +6422,7 @@ func _build_codex_monsters(list: VBoxContainer) -> void:
 		for monster in CODEX_DATA.monsters():
 			if str(monster["kind"]) == kind:
 				monsters.append(monster)
-	for monster in codex_unlock_presenter.unread_first(monsters, Callable(codex_unlock_presenter, "monster_unread_refs")):
+	for monster in monsters:
 		var kind := str(monster["kind"])
 		var unread_refs: Array = codex_unlock_presenter.monster_unread_refs(monster)
 		var body_lines := [str(monster["behavior"])]
@@ -6455,7 +6456,7 @@ const CODEX_LOCKED_ROW_TINT := Color(0.70, 0.72, 0.78, 0.82)
 
 func _build_codex_artifacts(list: VBoxContainer) -> void:
 	var artifacts: Array = CODEX_DATA.artifacts()
-	for artifact in codex_unlock_presenter.unread_first(artifacts, Callable(codex_unlock_presenter, "artifact_unread_refs")):
+	for artifact in artifacts:
 		var unread_refs: Array = codex_unlock_presenter.artifact_unread_refs(artifact)
 		var artifact_definition: Dictionary = game.PROGRESSION_DATA.artifact_definition(str(artifact["id"]))
 		var locked := _codex_artifact_locked(artifact_definition)

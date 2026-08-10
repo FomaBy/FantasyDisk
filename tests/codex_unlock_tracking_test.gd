@@ -60,6 +60,9 @@ func _initialize() -> void:
 	loaded = Meta.record_codex_discovery(loaded, "weapons", "berserk/axe")
 	if Meta.has_codex_unread(loaded, ["characters", "weapons"]):
 		errors.append("read character/weapon entries became unread again")
+	loaded = Meta.mark_codex_read(loaded, "monsters", "rift_cutter")
+	_expect_ids(errors, loaded, "monsters", ["rift_cutter", "bone_caller"])
+	_expect_unread_ids(errors, loaded, "monsters", ["bone_caller"])
 
 	var config := ConfigFile.new()
 	config.set_value("meta", "discovered_monsters", ["rift_cutter", "rift_cutter", "", "  bone_caller  ", "fake_monster"])
