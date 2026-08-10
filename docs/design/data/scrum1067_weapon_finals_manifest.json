@@ -10120,7 +10120,7 @@
               "mechanic_id": "powder_cross_reagent_combo",
               "effect_profile": {
                 "effect_key": "powder_cross_reagent_combo",
-                "hook": "the next different reagent touching the powder cloud triggers one combo reaction",
+                "hook": "the next neighboring Blast Powder impact or blast with a different reagent triggers one combo reaction",
                 "params": {
                   "reactions_per_cloud": 1,
                   "combo_damage_ratio": 0.48,
