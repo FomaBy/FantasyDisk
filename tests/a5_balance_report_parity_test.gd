@@ -138,6 +138,12 @@ func _verify_lineage_contract(historical: Dictionary, raw_text: String) -> void:
 	#    201/204 equal cells plus the three enumerated accepted druid deltas.
 	var lineage := Generator.verify_oracle_lineage(manifest, historical, raw_text)
 	_check(bool(lineage.get("ok", false)), "oracle lineage manifest is inconsistent: %s" % "; ".join(lineage.get("errors", [])))
+	# Pass a compact altered raw text through the real verifier so this negative
+	# remains fail-closed without allocating another full raw document.
+	var altered_raw_text := " "
+	var raw_negative := Generator.verify_oracle_lineage(manifest, historical, altered_raw_text)
+	_check(not bool(raw_negative.get("ok", true)), "substituted decoded raw text must fail the manifest consistency gate")
+	_check("; ".join(raw_negative.get("errors", [])).contains("historical decoded raw digest differs"), "raw-text lineage failure must remain observable through the verifier")
 	# The reconstructed current digest (f09 oracle + accepted deltas) AND the
 	# manifest's own pinned value must both equal the external committed constant.
 	_check(str(lineage.get("current_digest", "")) == CURRENT_BASE_PROJECTION_SHA256, "reconstructed current digest differs from the externally pinned current base")
@@ -213,10 +219,6 @@ func _verify_lineage_contract(historical: Dictionary, raw_text: String) -> void:
 	(wrong_tree.get("current_integration_base", {}) as Dictionary)["tree"] = "0000000000000000000000000000000000000000"
 	_check(not bool(Generator.verify_oracle_lineage_ancestry(wrong_tree).get("ok", true)), "substituted current-base tree must fail the git ancestry gate")
 
-	# The verifier compares the raw SHA-256 against this manifest value. Stream the
-	# whitespace suffix so this negative does not allocate a second raw document.
-	_check(_sha256_with_suffix(raw_text, " ") != str((manifest.get("historical_oracle", {}) as Dictionary).get("raw_decoded_sha256", "")), "substituted decoded raw text must fail the manifest consistency gate")
-
 	# self-consistent tamper: drop an accepted delta AND re-pin the manifest's own
 	# counts + current sha to the reduced reconstruction. It stays INTERNALLY
 	# consistent, but its reconstructed digest must diverge from the external
@@ -227,7 +229,8 @@ func _verify_lineage_contract(historical: Dictionary, raw_text: String) -> void:
 		sc_deltas.remove_at(sc_deltas.size() - 1)
 	self_consistent["changed_cell_count"] = int(self_consistent.get("changed_cell_count", 3)) - 1
 	self_consistent["equal_cell_count"] = int(self_consistent.get("equal_cell_count", 201)) + 1
-	var sc_digest := str(Generator.verify_oracle_lineage(self_consistent, historical, raw_text).get("current_digest", ""))
+	var sc_current := Generator._lineage_current_cells(self_consistent, historical)
+	var sc_digest := Generator._sha256(Generator._projection_canonical_from_cells(sc_current.get("pair_keys", []), sc_current.get("cells", {})))
 	(self_consistent.get("current_integration_base", {}) as Dictionary)["projection_sha256"] = sc_digest
 	var sc_final := Generator.verify_oracle_lineage(self_consistent, historical, raw_text)
 	_check(bool(sc_final.get("ok", false)), "reduced manifest should be internally self-consistent")
@@ -486,14 +489,6 @@ func _aggregate_of(sample_digests: Dictionary) -> String:
 	for key in keys:
 		aggregate += "%s|%s\n" % [str(key), str(sample_digests[key])]
 	return Generator._sha256(aggregate)
-
-
-func _sha256_with_suffix(value: String, suffix: String) -> String:
-	var context := HashingContext.new()
-	context.start(HashingContext.HASH_SHA256)
-	context.update(value.to_utf8_buffer())
-	context.update(suffix.to_utf8_buffer())
-	return context.finish().hex_encode()
 
 
 func _swap(arr: Array, i: int, j: int) -> void:
