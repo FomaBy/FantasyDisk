@@ -652,8 +652,9 @@ func _attack() -> void:
 		owner_node.heal_percent(heal_percent_on_attack * ProgressionData.WEAPON_DRAIN_HEAL_MULTIPLIER)
 
 	_current_charge_multiplier = _charge_multiplier()
+	var full_charge_release := charge_seconds > 0.0 and _current_charge_multiplier >= maxf(charge_max_multiplier - 0.01, 1.0)
 	_execute_attack_mode(owner_node, target, direction)
-	if charge_seconds > 0.0:
+	if full_charge_release:
 		_charge_time = 0.0
 	_current_charge_multiplier = 1.0
 	_maybe_fire_rhythm_echo(owner_node, target, direction)
