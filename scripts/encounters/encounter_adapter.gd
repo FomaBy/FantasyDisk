@@ -20,12 +20,13 @@ var _director: Node = null
 # (нормальный бой, ровно один primary-бит) проверяет сам директор.
 func begin(game, combat) -> void:
 	_free_stale()
-	if not CONFIG.is_enabled():
+	var slice_def := CONFIG.slice_for_game(game)
+	if slice_def.is_empty() and not CONFIG.is_enabled():
 		return
 	var director: Node = BEAT_DIRECTOR.new()
 	director.name = "EncounterBeatDirector"
 	game.add_child(director)
-	director.setup(game, combat)
+	director.setup(game, combat, slice_def)
 	director.begin()
 	_director = director
 
@@ -47,10 +48,11 @@ func spawn_plan_projection() -> Dictionary:
 
 
 static func project_spawn_plan(game, node_seed: int, scaling_stage: int,
-		combat_type: String) -> Dictionary:
-	if not CONFIG.is_enabled():
+		combat_type: String, slice_id := "") -> Dictionary:
+	var slice_def := CONFIG.slice(slice_id)
+	if slice_def.is_empty() and not CONFIG.is_enabled():
 		return {}
-	return BEAT_DIRECTOR.project_spawn_plan(game, node_seed, scaling_stage, combat_type)
+	return BEAT_DIRECTOR.project_spawn_plan(game, node_seed, scaling_stage, combat_type, slice_def)
 
 
 # Снять протёкшего директора прошлого боя (без записи метрик исхода).

@@ -1,0 +1,46 @@
+{
+	"schema_version": 1,
+	"contract": "combat-variety-slice-v1",
+	"id": "combat_variety_slice",
+	"enabled": true,
+	"route_selector": {
+		"min_row": 1,
+		"max_row": 6,
+		"seed_salt": 1164572157
+	},
+	"spawn_plan_feature_id": "normal_decks",
+	"primary_sequence": [
+		{"feature_id": "marked_target"},
+		{
+			"choices": ["captain_commander", "captain_hunter"],
+			"seed_salt": 1511452929,
+			"slice_activates_pack": true
+		},
+		{"feature_id": "next_phase_contract"},
+		{"feature_id": "reward_carrier"},
+		{"feature_id": "normal_early_clear"}
+	],
+	"feature_overrides": {
+		"reward_carrier": {"spawn_chance": 1.0}
+	},
+	"inline_features": [
+		{
+			"schema_version": 1,
+			"id": "normal_early_clear",
+			"type": "encounter_feature",
+			"enabled": true,
+			"primary": true,
+			"capabilities": ["primary_beat"],
+			"script": "res://scripts/encounters/features/early_clear/early_clear_feature.gd"
+		}
+	],
+	"aim_contract": {
+		"preserve_player_setting": true,
+		"manual_mode": "cursor",
+		"providers": ["mouse", "right_stick"]
+	},
+	"telemetry_contract": {
+		"decision_axes": ["route_choice", "target_priority"],
+		"combat_metrics": ["completion", "damage", "deaths", "class_spread"]
+	}
+}

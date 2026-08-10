@@ -1,0 +1,539 @@
+{
+	"class_spread": {
+		"baseline": 0.000671,
+		"limit": 0.08,
+		"slice": 0.000671
+	},
+	"classes": [
+		{
+			"baseline": {
+				"completion": 1.0,
+				"damage_ratio": 0.999772,
+				"deaths": 0
+			},
+			"class_id": "assassin",
+			"objective_contracts": 5,
+			"seed_count": 17,
+			"slice": {
+				"completion": 1.0,
+				"damage_ratio": 0.999772,
+				"deaths": 0
+			},
+			"weapon_count": 3
+		},
+		{
+			"baseline": {
+				"completion": 1.0,
+				"damage_ratio": 1.000167,
+				"deaths": 0
+			},
+			"class_id": "berserk",
+			"objective_contracts": 5,
+			"seed_count": 17,
+			"slice": {
+				"completion": 1.0,
+				"damage_ratio": 1.000167,
+				"deaths": 0
+			},
+			"weapon_count": 3
+		},
+		{
+			"baseline": {
+				"completion": 1.0,
+				"damage_ratio": 1.000123,
+				"deaths": 0
+			},
+			"class_id": "biologist",
+			"objective_contracts": 5,
+			"seed_count": 17,
+			"slice": {
+				"completion": 1.0,
+				"damage_ratio": 1.000123,
+				"deaths": 0
+			},
+			"weapon_count": 3
+		},
+		{
+			"baseline": {
+				"completion": 1.0,
+				"damage_ratio": 0.999984,
+				"deaths": 0
+			},
+			"class_id": "chemist",
+			"objective_contracts": 5,
+			"seed_count": 17,
+			"slice": {
+				"completion": 1.0,
+				"damage_ratio": 0.999984,
+				"deaths": 0
+			},
+			"weapon_count": 3
+		},
+		{
+			"baseline": {
+				"completion": 1.0,
+				"damage_ratio": 0.999855,
+				"deaths": 0
+			},
+			"class_id": "dark_mage",
+			"objective_contracts": 5,
+			"seed_count": 17,
+			"slice": {
+				"completion": 1.0,
+				"damage_ratio": 0.999855,
+				"deaths": 0
+			},
+			"weapon_count": 3
+		},
+		{
+			"baseline": {
+				"completion": 1.0,
+				"damage_ratio": 1.000015,
+				"deaths": 0
+			},
+			"class_id": "doctor",
+			"objective_contracts": 5,
+			"seed_count": 17,
+			"slice": {
+				"completion": 1.0,
+				"damage_ratio": 1.000015,
+				"deaths": 0
+			},
+			"weapon_count": 3
+		},
+		{
+			"baseline": {
+				"completion": 1.0,
+				"damage_ratio": 1.000034,
+				"deaths": 0
+			},
+			"class_id": "druid",
+			"objective_contracts": 5,
+			"seed_count": 17,
+			"slice": {
+				"completion": 1.0,
+				"damage_ratio": 1.000034,
+				"deaths": 0
+			},
+			"weapon_count": 3
+		},
+		{
+			"baseline": {
+				"completion": 1.0,
+				"damage_ratio": 1.000124,
+				"deaths": 0
+			},
+			"class_id": "elementalist",
+			"objective_contracts": 5,
+			"seed_count": 17,
+			"slice": {
+				"completion": 1.0,
+				"damage_ratio": 1.000124,
+				"deaths": 0
+			},
+			"weapon_count": 3
+		},
+		{
+			"baseline": {
+				"completion": 1.0,
+				"damage_ratio": 1.000443,
+				"deaths": 0
+			},
+			"class_id": "engineer",
+			"objective_contracts": 5,
+			"seed_count": 17,
+			"slice": {
+				"completion": 1.0,
+				"damage_ratio": 1.000443,
+				"deaths": 0
+			},
+			"weapon_count": 3
+		},
+		{
+			"baseline": {
+				"completion": 1.0,
+				"damage_ratio": 0.999936,
+				"deaths": 0
+			},
+			"class_id": "guitarist",
+			"objective_contracts": 5,
+			"seed_count": 17,
+			"slice": {
+				"completion": 1.0,
+				"damage_ratio": 0.999936,
+				"deaths": 0
+			},
+			"weapon_count": 3
+		},
+		{
+			"baseline": {
+				"completion": 1.0,
+				"damage_ratio": 0.999858,
+				"deaths": 0
+			},
+			"class_id": "knight",
+			"objective_contracts": 5,
+			"seed_count": 17,
+			"slice": {
+				"completion": 1.0,
+				"damage_ratio": 0.999858,
+				"deaths": 0
+			},
+			"weapon_count": 3
+		},
+		{
+			"baseline": {
+				"completion": 1.0,
+				"damage_ratio": 1.000013,
+				"deaths": 0
+			},
+			"class_id": "priest",
+			"objective_contracts": 5,
+			"seed_count": 17,
+			"slice": {
+				"completion": 1.0,
+				"damage_ratio": 1.000013,
+				"deaths": 0
+			},
+			"weapon_count": 3
+		},
+		{
+			"baseline": {
+				"completion": 1.0,
+				"damage_ratio": 1.000301,
+				"deaths": 0
+			},
+			"class_id": "ranger",
+			"objective_contracts": 5,
+			"seed_count": 17,
+			"slice": {
+				"completion": 1.0,
+				"damage_ratio": 1.000301,
+				"deaths": 0
+			},
+			"weapon_count": 3
+		},
+		{
+			"baseline": {
+				"completion": 1.0,
+				"damage_ratio": 1.000059,
+				"deaths": 0
+			},
+			"class_id": "robot",
+			"objective_contracts": 5,
+			"seed_count": 17,
+			"slice": {
+				"completion": 1.0,
+				"damage_ratio": 1.000059,
+				"deaths": 0
+			},
+			"weapon_count": 3
+		},
+		{
+			"baseline": {
+				"completion": 1.0,
+				"damage_ratio": 1.000043,
+				"deaths": 0
+			},
+			"class_id": "sniper",
+			"objective_contracts": 5,
+			"seed_count": 17,
+			"slice": {
+				"completion": 1.0,
+				"damage_ratio": 1.000043,
+				"deaths": 0
+			},
+			"weapon_count": 3
+		},
+		{
+			"baseline": {
+				"completion": 1.0,
+				"damage_ratio": 0.999898,
+				"deaths": 0
+			},
+			"class_id": "soldier",
+			"objective_contracts": 5,
+			"seed_count": 17,
+			"slice": {
+				"completion": 1.0,
+				"damage_ratio": 0.999898,
+				"deaths": 0
+			},
+			"weapon_count": 3
+		},
+		{
+			"baseline": {
+				"completion": 1.0,
+				"damage_ratio": 1.000161,
+				"deaths": 0
+			},
+			"class_id": "thief",
+			"objective_contracts": 5,
+			"seed_count": 17,
+			"slice": {
+				"completion": 1.0,
+				"damage_ratio": 1.000161,
+				"deaths": 0
+			},
+			"weapon_count": 3
+		}
+	],
+	"decision_rows": [
+		{
+			"captain_id": "captain_commander",
+			"deck_id": "runner_hunt",
+			"marked_target_rank_from_nearest": 4,
+			"route_marker": {
+				"branch": 1,
+				"row": 1
+			},
+			"seed": 1455001,
+			"target_priority_changed": true
+		},
+		{
+			"captain_id": "captain_hunter",
+			"deck_id": "swarm",
+			"marked_target_rank_from_nearest": 3,
+			"route_marker": {
+				"branch": 1,
+				"row": 1
+			},
+			"seed": 1455002,
+			"target_priority_changed": true
+		},
+		{
+			"captain_id": "captain_hunter",
+			"deck_id": "swarm",
+			"marked_target_rank_from_nearest": 0,
+			"route_marker": {
+				"branch": 1,
+				"row": 1
+			},
+			"seed": 1455003,
+			"target_priority_changed": false
+		},
+		{
+			"captain_id": "captain_hunter",
+			"deck_id": "summoner_siege",
+			"marked_target_rank_from_nearest": 0,
+			"route_marker": {
+				"branch": 1,
+				"row": 1
+			},
+			"seed": 1455004,
+			"target_priority_changed": false
+		},
+		{
+			"captain_id": "captain_commander",
+			"deck_id": "shooter_crossfire",
+			"marked_target_rank_from_nearest": 1,
+			"route_marker": {
+				"branch": 1,
+				"row": 1
+			},
+			"seed": 1455005,
+			"target_priority_changed": true
+		},
+		{
+			"captain_id": "captain_commander",
+			"deck_id": "swarm",
+			"marked_target_rank_from_nearest": 2,
+			"route_marker": {
+				"branch": 1,
+				"row": 1
+			},
+			"seed": 1455006,
+			"target_priority_changed": true
+		},
+		{
+			"captain_id": "captain_hunter",
+			"deck_id": "shield_wall",
+			"marked_target_rank_from_nearest": 1,
+			"route_marker": {
+				"branch": 1,
+				"row": 1
+			},
+			"seed": 1455007,
+			"target_priority_changed": true
+		},
+		{
+			"captain_id": "captain_hunter",
+			"deck_id": "swarm",
+			"marked_target_rank_from_nearest": 3,
+			"route_marker": {
+				"branch": 1,
+				"row": 1
+			},
+			"seed": 1455008,
+			"target_priority_changed": true
+		},
+		{
+			"captain_id": "captain_commander",
+			"deck_id": "shooter_crossfire",
+			"marked_target_rank_from_nearest": 2,
+			"route_marker": {
+				"branch": 0,
+				"row": 1
+			},
+			"seed": 1455009,
+			"target_priority_changed": true
+		},
+		{
+			"captain_id": "captain_commander",
+			"deck_id": "shield_wall",
+			"marked_target_rank_from_nearest": 4,
+			"route_marker": {
+				"branch": 0,
+				"row": 1
+			},
+			"seed": 1455010,
+			"target_priority_changed": true
+		},
+		{
+			"captain_id": "captain_commander",
+			"deck_id": "shield_wall",
+			"marked_target_rank_from_nearest": 4,
+			"route_marker": {
+				"branch": 0,
+				"row": 1
+			},
+			"seed": 1455011,
+			"target_priority_changed": true
+		},
+		{
+			"captain_id": "captain_commander",
+			"deck_id": "shield_wall",
+			"marked_target_rank_from_nearest": 1,
+			"route_marker": {
+				"branch": 0,
+				"row": 1
+			},
+			"seed": 1455012,
+			"target_priority_changed": true
+		},
+		{
+			"captain_id": "captain_commander",
+			"deck_id": "shooter_crossfire",
+			"marked_target_rank_from_nearest": 3,
+			"route_marker": {
+				"branch": 0,
+				"row": 1
+			},
+			"seed": 1455013,
+			"target_priority_changed": true
+		},
+		{
+			"captain_id": "captain_commander",
+			"deck_id": "shooter_crossfire",
+			"marked_target_rank_from_nearest": 1,
+			"route_marker": {
+				"branch": 0,
+				"row": 1
+			},
+			"seed": 1455014,
+			"target_priority_changed": true
+		},
+		{
+			"captain_id": "captain_hunter",
+			"deck_id": "swarm",
+			"marked_target_rank_from_nearest": 0,
+			"route_marker": {
+				"branch": 0,
+				"row": 1
+			},
+			"seed": 1455015,
+			"target_priority_changed": false
+		},
+		{
+			"captain_id": "captain_commander",
+			"deck_id": "shield_wall",
+			"marked_target_rank_from_nearest": 3,
+			"route_marker": {
+				"branch": 0,
+				"row": 1
+			},
+			"seed": 1455016,
+			"target_priority_changed": true
+		},
+		{
+			"captain_id": "captain_hunter",
+			"deck_id": "shield_wall",
+			"marked_target_rank_from_nearest": 4,
+			"route_marker": {
+				"branch": 0,
+				"row": 1
+			},
+			"seed": 1455017,
+			"target_priority_changed": true
+		}
+	],
+	"decision_telemetry": {
+		"route_marker_changes_from_control": 8,
+		"sample_count": 17,
+		"target_priority_changes": 14,
+		"target_priority_prompts": 51
+	},
+	"measurement_kind": "budget_projection_plus_lifecycle_contract",
+	"profiles": [
+		{
+			"baseline": {
+				"completion": 1.0,
+				"damage_ratio": 1.0,
+				"deaths": 0
+			},
+			"profile": "melee",
+			"slice": {
+				"completion": 1.0,
+				"damage_ratio": 1.0,
+				"deaths": 0
+			}
+		},
+		{
+			"baseline": {
+				"completion": 1.0,
+				"damage_ratio": 1.0,
+				"deaths": 0
+			},
+			"profile": "ranged",
+			"slice": {
+				"completion": 1.0,
+				"damage_ratio": 1.0,
+				"deaths": 0
+			}
+		},
+		{
+			"baseline": {
+				"completion": 1.0,
+				"damage_ratio": 1.0,
+				"deaths": 0
+			},
+			"profile": "summon",
+			"slice": {
+				"completion": 1.0,
+				"damage_ratio": 1.0,
+				"deaths": 0
+			}
+		}
+	],
+	"schema_version": 1,
+	"seeds": [
+		1455001,
+		1455002,
+		1455003,
+		1455004,
+		1455005,
+		1455006,
+		1455007,
+		1455008,
+		1455009,
+		1455010,
+		1455011,
+		1455012,
+		1455013,
+		1455014,
+		1455015,
+		1455016,
+		1455017
+	],
+	"slice_id": "combat_variety_slice"
+}

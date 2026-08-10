@@ -9,11 +9,11 @@ extends Node
 ##
 ## Ответственность директора:
 ##   - детерминированная sorted discovery eligible primary-битов из каталога;
-##   - планирование РОВНО ОДНОГО primary-бита из node seed + соли (без game.rng);
+##   - один primary-бит в обычном default-off режиме либо сериализованный
+##     slice с максимум одним активным primary в каждый момент;
 ##   - lifecycle: trigger → tick → resolve; терминальная очистка на конце боя;
 ##   - агрегирование локальных метрик.
-## Новые пакеты-фичи подключаются данными каталога (id + script), НЕ правя ни
-## этот директор, ни адаптер CombatDirector.
+## Новые пакеты-фичи подключаются данными каталога (id + script).
 
 const API_VERSION := 1
 const CONFIG := preload("res://scripts/encounters/encounter_config.gd")
@@ -30,20 +30,25 @@ var _feature            # активный EncounterFeature (единствен�
 var _beat_def: Dictionary = {}
 var _plan: Dictionary = {}
 var _spawn_plan: Dictionary = {}
+var _slice_def: Dictionary = {}
+var _primary_sequence: Array = []
+var _sequence_index := 0
+var _completed_sequence_ids: Array = []
 var _elapsed := 0.0
 # idle -> planned -> active -> done
 var _state := "idle"
 
 
-func setup(game_ref, combat_ref) -> void:
+func setup(game_ref, combat_ref, slice_def: Dictionary = {}) -> void:
 	game = game_ref
 	combat = combat_ref
+	_slice_def = slice_def.duplicate(true)
 	process_mode = Node.PROCESS_MODE_PAUSABLE
 	_metrics = METRICS.new()
 
 
-# Старт директора для текущего боя. Планирует единственный primary-бит, если бой
-# нормальный и система включена. Иначе остаётся инертным (baseline parity).
+# Старт директора для текущего боя. Планирует обычный primary или объявленную
+# последовательность slice; вне них остаётся инертным (baseline parity).
 func begin() -> void:
 	_context = CONTEXT.new()
 	_context.game = game
@@ -74,6 +79,11 @@ func begin() -> void:
 
 
 func _plan_primary_beat() -> void:
+	if not _slice_def.is_empty():
+		_primary_sequence = CONFIG.slice_primary_sequence(_slice_def, _context)
+		_sequence_index = 0
+		_plan_next_slice_phase()
+		return
 	var candidates: Array = []
 	for beat_def in CONFIG.primary_beats():
 		var feature = _instantiate_feature(beat_def)
@@ -99,6 +109,27 @@ func _plan_primary_beat() -> void:
 	_plan = chosen["plan"]
 	_state = "planned"
 	_metrics.note_offered(str(_beat_def.get("id", "")))
+
+
+func _plan_next_slice_phase() -> void:
+	while _sequence_index < _primary_sequence.size():
+		var phase: Dictionary = _primary_sequence[_sequence_index]
+		var beat_def: Dictionary = phase["beat"]
+		var feature = _instantiate_feature(beat_def)
+		if feature != null and (feature.is_eligible(_context) or bool(phase["slice_activates_pack"])):
+			var next_plan: Dictionary = feature.plan(_context, beat_def)
+			if not next_plan.is_empty():
+				_beat_def = beat_def
+				_feature = feature
+				_plan = next_plan
+				_state = "planned"
+				_metrics.note_offered(str(_beat_def.get("id", "")))
+				return
+		_sequence_index += 1
+	_feature = null
+	_beat_def = {}
+	_plan = {}
+	_state = "done"
 
 
 func _instantiate_feature(beat_def: Dictionary):
@@ -129,7 +160,7 @@ func _instantiate_feature(beat_def: Dictionary):
 
 func _build_spawn_plan(context) -> Dictionary:
 	var result: Dictionary = {}
-	for feature_def in CONFIG.features_with_capability("spawn_plan"):
+	for feature_def in CONFIG.features_with_capability("spawn_plan", _slice_def):
 		var feature = _instantiate_feature(feature_def)
 		if feature == null or not feature.is_eligible(context):
 			continue
@@ -144,9 +175,10 @@ func _build_spawn_plan(context) -> Dictionary:
 
 
 static func project_spawn_plan(game_ref, node_seed: int, scaling_stage: int,
-		combat_type: String) -> Dictionary:
+		combat_type: String, slice_def: Dictionary = {}) -> Dictionary:
 	var probe := new()
 	probe.game = game_ref
+	probe._slice_def = slice_def.duplicate(true)
 	var context = CONTEXT.new()
 	context.game = game_ref
 	context.node_seed = node_seed
@@ -197,9 +229,7 @@ func _trigger() -> void:
 	if not started:
 		# Нет валидной цели в момент триггера — offer аборчен.
 		var outcome: Dictionary = _feature.resolve(_context, "no_target")
-		_metrics.record_outcome(outcome)
-		_feature = null
-		_state = "done"
+		_finish_phase(outcome)
 		return
 	_metrics.note_triggered(str(_beat_def.get("id", "")))
 	_state = "active"
@@ -207,9 +237,18 @@ func _trigger() -> void:
 
 func _resolve_active(reason: String) -> void:
 	var outcome: Dictionary = _feature.resolve(_context, reason)
+	_finish_phase(outcome)
+
+
+func _finish_phase(outcome: Dictionary) -> void:
 	_metrics.record_outcome(outcome)
+	_completed_sequence_ids.append(str(_beat_def.get("id", "")))
 	_feature = null
-	_state = "done"
+	if _slice_def.is_empty():
+		_state = "done"
+		return
+	_sequence_index += 1
+	_plan_next_slice_phase()
 
 
 # Терминальная остановка на конце боя/смерти. Резолвит активный бит (метрики +
@@ -225,6 +264,7 @@ func shutdown(victory: bool) -> void:
 		# Бит ещё не стартовал (planned) — просто отпускаем ссылку.
 		_feature = null
 	_feature = null
+	_primary_sequence.clear()
 	_state = "done"
 	if _metrics != null:
 		METRICS.last_summary = _metrics.export_summary()
@@ -264,3 +304,15 @@ func elapsed_seconds() -> float:
 
 func debug_feature():
 	return _feature
+
+
+func active_primary_count() -> int:
+	return 1 if _state == "active" and _feature != null else 0
+
+
+func planned_sequence_ids() -> Array:
+	return _primary_sequence.map(func(phase): return str((phase["beat"] as Dictionary).get("id", "")))
+
+
+func completed_sequence_ids() -> Array:
+	return _completed_sequence_ids.duplicate()
