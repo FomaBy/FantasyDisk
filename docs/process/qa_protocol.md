@@ -79,7 +79,8 @@ different platform for a platform-specific acceptance criterion.
 The gate emits no other names for these failures.
 
 `exit code 0` does not prove tests ran: a non-certifying run (`--filters`,
-`--skip-static`, `--skip-godot`, `--skip-umbrella`, or a dirty worktree) is
+`--skip-static`, `--skip-godot`, `--skip-umbrella`, a dirty worktree, or a
+`--changed-ref` other than the configured `origin/dev` base) is
 `partial_pass` and still exits `0`. Confirm execution in
 `build/quality_gate_report.json`:
 
@@ -87,6 +88,9 @@ The gate emits no other names for these failures.
   checks; `0` means there was no Python coverage.
 - `selected_godot_tests` — Godot tests the scope selected; the `godot_tests`
   array stays empty when they were not executed.
+- `changed_ref` and `changed_base_sha` — the effective diff reference and its
+  resolved commit. `certifying: true` requires `changed_ref` to be the
+  configured `origin/dev` base.
 
 Treat a run as certifying profile evidence only when the report also has
 `certifying: true`. A named focused suite may still be sufficient lean evidence
