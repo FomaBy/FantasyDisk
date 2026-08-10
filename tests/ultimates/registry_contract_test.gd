@@ -43,6 +43,7 @@ func _initialize() -> void:
 		var class_id := str(raw_class_id)
 		var canonical_weapons: Dictionary = PD.WEAPONS_BY_CLASS[class_id]
 		var weapon_ids: Array[String] = []
+		var profile_ids := {}
 		for raw_weapon_id in canonical_weapons.keys():
 			weapon_ids.append(str(raw_weapon_id))
 		_expect(
@@ -50,28 +51,24 @@ func _initialize() -> void:
 			"%s weapon order must match canonical inventory" % class_id,
 			errors
 		)
+		_expect(weapon_ids.size() == 3, "%s must expose exactly three weapons" % class_id, errors)
 		for weapon_id in weapon_ids:
 			var selected: Dictionary = registry.catalog_profile_for(class_id, weapon_id)
 			var profile_key := Resolver.profile_key(class_id, weapon_id)
 			var has_exact_package := package_pairs.has(profile_key)
 			var is_ready := str(selected.get("implementation_state", "")) == "ready"
-			var expected_source := (
-				Resolver.SOURCE_WEAPON_PROFILE
-				if is_ready and has_exact_package
-				else Resolver.SOURCE_LEGACY_CLASS_FALLBACK
-			)
 			_expect(not selected.is_empty(), "%s/%s profile must resolve" % [class_id, weapon_id], errors)
 			_expect(str(selected.get("class_id", "")) == class_id, "selected class must match", errors)
 			_expect(str(selected.get("weapon_id", "")) == weapon_id, "selected weapon must match", errors)
-			_expect(
-				not has_exact_package or is_ready,
-				"%s exact package pair must be explicitly ready" % profile_key,
-				errors
-			)
+			_expect(is_ready, "%s active profile must be explicitly ready" % profile_key, errors)
+			_expect(has_exact_package, "%s active profile must have an exact package pair" % profile_key, errors)
 			selected_checks += 1
 
 			var selected_identity: Dictionary = selected.get("identity", {})
 			var selected_presentation: Dictionary = selected.get("presentation", {})
+			var profile_id := str(selected_identity.get("profile_id", ""))
+			_expect(not profile_ids.has(profile_id), "%s profile IDs must be unique" % class_id, errors)
+			profile_ids[profile_id] = true
 			for sibling_weapon_id in weapon_ids:
 				if sibling_weapon_id == weapon_id:
 					continue
@@ -103,19 +100,20 @@ func _initialize() -> void:
 
 			var legacy: Dictionary = PD.ultimate_config(class_id)
 			_expect(
-				registry.resolution_source(class_id, weapon_id) == expected_source,
-				"%s/%s must resolve from its exact ready package state" % [class_id, weapon_id],
+				registry.resolution_source(class_id, weapon_id, false) == Resolver.SOURCE_WEAPON_PROFILE,
+				"%s/%s must not fall back from its exact ready package state" % [class_id, weapon_id],
 				errors
 			)
-			var executable: Dictionary = registry.resolve_executable(class_id, weapon_id, legacy)
-			_expect(executable == (selected if is_ready and has_exact_package else legacy),
-				"%s/%s must return the selected executable contract or legacy fallback" % [class_id, weapon_id], errors)
+			var executable: Dictionary = registry.resolve_executable(class_id, weapon_id, legacy, false)
+			_expect(executable == selected,
+				"%s/%s must return its selected executable contract" % [class_id, weapon_id], errors)
 			executable["__mutation_probe"] = true
 			_expect(
-				not registry.resolve_executable(class_id, weapon_id, legacy).has("__mutation_probe"),
+				not registry.resolve_executable(class_id, weapon_id, legacy, false).has("__mutation_probe"),
 				"resolved contract must be a deep copy",
 				errors
 			)
+		_expect(profile_ids.size() == 3, "%s must expose three unique weapon profiles" % class_id, errors)
 
 	_expect(selected_checks == 51, "resolver must exercise all 51 selected weapon pairs", errors)
 	_expect(
@@ -138,41 +136,15 @@ func _initialize() -> void:
 		"unknown weapon pair must not fall back",
 		errors
 	)
-	# The migration-gate probe is derived, not hardcoded: a literal pair goes
-	# red by construction the moment its class package ships (FAN-2131).
-	var probe_class_id := ""
-	var probe_weapon_id := ""
-	for raw_class_id in PD.WEAPONS_BY_CLASS.keys():
-		if not probe_class_id.is_empty():
-			break
-		for raw_weapon_id in (PD.WEAPONS_BY_CLASS[raw_class_id] as Dictionary).keys():
-			var probe_key := Resolver.profile_key(str(raw_class_id), str(raw_weapon_id))
-			var probe_profile: Dictionary = registry.catalog_profile_for(
-				str(raw_class_id), str(raw_weapon_id)
-			)
-			if str(probe_profile.get("implementation_state", "")) != "ready" \
-					or not package_pairs.has(probe_key):
-				probe_class_id = str(raw_class_id)
-				probe_weapon_id = str(raw_weapon_id)
-				break
-	if probe_class_id.is_empty():
-		errors.append(
-			"migration gate has no non-exact-ready pair left to probe; "
-			+ "activate the derived migration contract instead (owner: FAN-1541)"
-		)
-	_expect(
-		registry.resolution_source(probe_class_id, probe_weapon_id, false)
-			== Resolver.SOURCE_UNAVAILABLE,
-		"migration gate must be able to disable legacy fallback",
-		errors
-	)
-	_expect(
-		registry.resolve_executable(
-			probe_class_id, probe_weapon_id, PD.ultimate_config(probe_class_id), false
-		).is_empty(),
-		"disabled fallback must return no executable contract",
-		errors
-	)
+	# FAN-1541 ships the complete 17 x 3 active roster: the catalog and exact
+	# package set must contain the same canonical pairs, with no fallback probe.
+	var catalog_pairs := {}
+	for raw_key in registry.profile_keys():
+		catalog_pairs[str(raw_key)] = true
+	_expect(catalog_pairs == registry.canonical_pairs_for_tests(),
+		"catalog must contain exactly the canonical 51 pairs", errors)
+	_expect(package_pairs == registry.canonical_pairs_for_tests(),
+		"active packages must cover exactly the canonical 51 pairs", errors)
 
 	_test_ready_package_matrix(registry, errors)
 
