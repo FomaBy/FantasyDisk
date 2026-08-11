@@ -41,6 +41,14 @@ const BEAM_VISUAL_WIDTH_MULT := 1.15
 const PARTICLE_DENSITY_MULT := 0.7
 
 
+static func _combat_holder(name: String, layer: int) -> Node2D:
+	var holder := Node2D.new()
+	holder.name = name
+	holder.z_index = layer
+	holder.process_mode = Node.PROCESS_MODE_PAUSABLE
+	return holder
+
+
 static func _additive_sprite(texture: Texture2D, color: Color) -> Sprite2D:
 	var sprite := Sprite2D.new()
 	sprite.texture = texture
@@ -87,9 +95,7 @@ static func weapon_signature(
 	if texture == null:
 		return null
 
-	var holder := Node2D.new()
-	holder.name = "WeaponSignatureVfx_%s" % weapon_id
-	holder.z_index = 9
+	var holder := _combat_holder("WeaponSignatureVfx_%s" % weapon_id, 9)
 	scene.add_child(holder)
 	var direction := Vector2.RIGHT.rotated(rotation)
 	holder.global_position = global_pos
@@ -153,9 +159,7 @@ static func weapon_signature(
 
 
 static func slash(owner_node: Node2D, direction: Vector2, reach: float, color: Color, sprite_rotation := 0.0, lateral_scale := 1.0, visual_sweep_degrees := 0.0) -> Node2D:
-	var holder := Node2D.new()
-	holder.name = "SlashVfx"
-	holder.z_index = 11
+	var holder := _combat_holder("SlashVfx", 11)
 	holder.set_meta("visual_lateral_scale", lateral_scale)
 	holder.set_meta("visual_sweep_degrees", visual_sweep_degrees)
 	owner_node.add_child(holder)
@@ -199,9 +203,7 @@ static func slash(owner_node: Node2D, direction: Vector2, reach: float, color: C
 
 
 static func hammer_slam(scene: Node, global_pos: Vector2, radius: float, color: Color) -> Node2D:
-	var holder := Node2D.new()
-	holder.name = "HammerSlamVfx"
-	holder.z_index = 10
+	var holder := _combat_holder("HammerSlamVfx", 10)
 	scene.add_child(holder)
 	holder.global_position = global_pos
 
@@ -251,10 +253,8 @@ static func hammer_slam(scene: Node, global_pos: Vector2, radius: float, color: 
 
 
 static func orb_projectile(scene: Node, start: Vector2, color: Color, profile := {}, travel_direction := Vector2.RIGHT) -> Node2D:
-	var holder := Node2D.new()
 	var visual_id := str(profile.get("visual_id", "")) if profile is Dictionary else ""
-	holder.name = "PlayerProjectile_%s" % (visual_id if not visual_id.is_empty() else "DevFallback")
-	holder.z_index = 11
+	var holder := _combat_holder("PlayerProjectile_%s" % (visual_id if not visual_id.is_empty() else "DevFallback"), 11)
 	scene.add_child(holder)
 	holder.global_position = start
 	holder.set_meta("projectile_visual_id", visual_id)
@@ -298,6 +298,7 @@ static func orb_projectile(scene: Node, start: Vector2, color: Color, profile :=
 		if current_holder == null or not current_holder.is_inside_tree() or current_holder.get_parent() == null:
 			return
 		var ghost := Sprite2D.new()
+		ghost.process_mode = Node.PROCESS_MODE_PAUSABLE
 		ghost.texture = orb.texture
 		ghost.modulate = _calmed_color(Color(trail_color.r, trail_color.g, trail_color.b, 0.34))
 		ghost.scale = base_scale * 0.72
@@ -324,9 +325,7 @@ static func projectile_trace(scene: Node, start: Vector2, finish: Vector2, color
 
 
 static func orb_burst(scene: Node, global_pos: Vector2, radius: float, color: Color) -> Node2D:
-	var holder := Node2D.new()
-	holder.name = "VoidBurstVfx"
-	holder.z_index = 11
+	var holder := _combat_holder("VoidBurstVfx", 11)
 	scene.add_child(holder)
 	holder.global_position = global_pos
 
@@ -364,9 +363,7 @@ static func orb_burst(scene: Node, global_pos: Vector2, radius: float, color: Co
 
 
 static func beam(scene: Node, start: Vector2, finish: Vector2, width: float, color: Color) -> Node2D:
-	var holder := Node2D.new()
-	holder.name = "BeamVfx"
-	holder.z_index = 12
+	var holder := _combat_holder("BeamVfx", 12)
 	scene.add_child(holder)
 	holder.global_position = start
 	var delta := finish - start
@@ -396,9 +393,7 @@ static func beam(scene: Node, start: Vector2, finish: Vector2, width: float, col
 
 
 static func sound_wave_blast(scene: Node, start: Vector2, direction: Vector2, reach: float, color: Color) -> Node2D:
-	var holder := Node2D.new()
-	holder.name = "SoundWaveVfx"
-	holder.z_index = 10
+	var holder := _combat_holder("SoundWaveVfx", 10)
 	scene.add_child(holder)
 	holder.global_position = start
 	holder.rotation = direction.angle()
@@ -434,9 +429,7 @@ static func sound_wave_blast(scene: Node, start: Vector2, direction: Vector2, re
 
 
 static func ring_pulse(scene: Node, global_pos: Vector2, radius: float, color: Color, with_notes := false) -> Node2D:
-	var holder := Node2D.new()
-	holder.name = "RingPulseVfx"
-	holder.z_index = 10
+	var holder := _combat_holder("RingPulseVfx", 10)
 	scene.add_child(holder)
 	holder.global_position = global_pos
 
@@ -476,9 +469,7 @@ static func ring_pulse(scene: Node, global_pos: Vector2, radius: float, color: C
 
 
 static func curse_skull(scene: Node, start: Vector2, target: Vector2, color: Color, travel_time: float, on_hit: Callable, profile := {}) -> Node2D:
-	var holder := Node2D.new()
-	holder.name = "CurseSkullVfx"
-	holder.z_index = 11
+	var holder := _combat_holder("CurseSkullVfx", 11)
 	scene.add_child(holder)
 	holder.global_position = start
 	var visual_id := str(profile.get("visual_id", "")) if profile is Dictionary else ""
@@ -516,6 +507,7 @@ static func curse_skull(scene: Node, start: Vector2, target: Vector2, color: Col
 		if current_holder == null or not current_holder.is_inside_tree() or current_holder.get_parent() == null:
 			return
 		var ghost := Sprite2D.new()
+		ghost.process_mode = Node.PROCESS_MODE_PAUSABLE
 		ghost.texture = skull.texture
 		ghost.scale = skull_scale * 0.85
 		ghost.modulate = _calmed_color(Color(trail_color.r, trail_color.g, trail_color.b, 0.30))

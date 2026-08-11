@@ -1,0 +1,32 @@
+{
+	"measurement": {
+		"disabled": {
+			"casts": 44,
+			"damage_sources": [
+				"player_weapon|damage_application"
+			],
+			"dpm": 270603.275,
+			"final_event_count": 0,
+			"final_event_damage": 0.0,
+			"hits": 269,
+			"ledger_damage": 27060.327500000003,
+			"trigger_resolutions": 0,
+			"unique_target_count": 10
+		},
+		"enabled": {
+			"casts": 44,
+			"damage_sources": [
+				"player_weapon|damage_application"
+			],
+			"dpm": 357597.271,
+			"final_event_count": 0,
+			"final_event_damage": 0.0,
+			"hits": 392,
+			"ledger_damage": 35759.727100000004,
+			"trigger_resolutions": 41,
+			"unique_target_count": 10
+		},
+		"formula_expected_dpm": 21442.2
+	},
+	"pair": "chemist/blast_powder"
+}

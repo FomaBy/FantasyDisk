@@ -1453,6 +1453,17 @@ executor/target/фаза, harness-овый fallback-хит без production pro
 пересчёт воспроизвёл и величину (±1 п.п.), и знак заявленного расхождения.
 Сертифицирующий прогон не принимает ни одной `unresolved` строки.
 
+FAN-2316 усиливает этот контракт без изменения balance-конфигов. `formula_basis`
+независимо выводится из текущих `ProgressionData`, schema-6 constellation и
+детерминированного L20 build, поэтому самосогласованная подмена cadence/damage
+basis отвергается. Финальный ledger также сохраняет pre-activation baseline для
+`berserk/sword`; любые ослабление или усиление его reconstructed hit means
+отклоняются. `target_death` учитывается только на/после первой activation, а
+один лишь `constellation_last_final_action` — служебная отметка execution, не
+payoff. Публикация явно различает executed mechanics `51/51`, direct
+resolver-provenance payoffs и ordered post-activation payoffs; это не три
+синонима одного счётчика.
+
 Диагностика без перегенерации артефактов: `--mode=final_execution_probe`
 (опционально `--pair=<class>/<weapon>`) печатает по строке на пару.
 

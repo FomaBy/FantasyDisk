@@ -29,6 +29,14 @@ const ZONE_RADIUS := 118.0
 const RING_RADIUS := 104.0
 
 
+static func _combat_holder(name: String, layer: int) -> Node2D:
+	var holder := Node2D.new()
+	holder.name = name
+	holder.z_index = layer
+	holder.process_mode = Node.PROCESS_MODE_PAUSABLE
+	return holder
+
+
 static func _texture_radius(texture: Texture2D) -> float:
 	return maxf(float(maxi(texture.get_width(), texture.get_height())) * 0.5, 1.0)
 
@@ -102,9 +110,7 @@ static func telegraph(parent: Node2D, radius: float, color: Color, windup: float
 	# Передавать ТОЛЬКО радиальные/симметричные PNG (ring/rupture): zone — круговая
 	# (radius + distance_to), так что направленные формы (cone/beam) исказили бы
 	# геометрию урона. Текстура центрируется и масштабируется по radius как круг.
-	var holder := Node2D.new()
-	holder.name = "HazardTelegraph"
-	holder.z_index = -1
+	var holder := _combat_holder("HazardTelegraph", -1)
 	parent.add_child(holder)
 
 	var zone := Sprite2D.new()
@@ -158,9 +164,7 @@ static func telegraph(parent: Node2D, radius: float, color: Color, windup: float
 ## for the damage test — orientation of the PNG then equals the geometry of the
 ## damage zone. Added as a child of `parent`; freed when the hazard frees itself.
 static func directional_telegraph(parent: Node2D, texture: Texture2D, anchor: Vector2, scale_factor: float, angle: float, color: Color, windup: float) -> Node2D:
-	var holder := Node2D.new()
-	holder.name = "HazardDirTelegraph"
-	holder.z_index = -1
+	var holder := _combat_holder("HazardDirTelegraph", -1)
 	holder.rotation = angle
 	parent.add_child(holder)
 
@@ -206,8 +210,7 @@ static func detonate(parent: Node2D, radius: float, color: Color, kind := "") ->
 	if tele != null:
 		tele.queue_free()
 
-	var burst := Node2D.new()
-	burst.name = "HazardBurst"
+	var burst := _combat_holder("HazardBurst", 0)
 	parent.add_child(burst)
 
 	var residue_texture := _residue_texture(parent, kind)
@@ -262,9 +265,7 @@ static func dot_tick(target: Node2D, color: Color) -> void:
 static func aura_pulse(parent: Node2D, radius: float, color: Color) -> void:
 	if not is_instance_valid(parent) or not parent.is_inside_tree():
 		return
-	var holder := Node2D.new()
-	holder.name = "AuraPulseVfx"
-	holder.z_index = -1
+	var holder := _combat_holder("AuraPulseVfx", -1)
 	parent.add_child(holder)
 
 	var aura_texture := _aura_texture(parent)
@@ -298,9 +299,7 @@ static func aura_pulse(parent: Node2D, radius: float, color: Color) -> void:
 static func thorns_aura(parent: Node2D, radius: float, color: Color) -> Node2D:
 	if not is_instance_valid(parent) or not parent.is_inside_tree():
 		return null
-	var holder := Node2D.new()
-	holder.name = "ReflectThornsAura"
-	holder.z_index = -1
+	var holder := _combat_holder("ReflectThornsAura", -1)
 	parent.add_child(holder)
 
 	var glow := _additive(REFLECT_THORNS_TEXTURE, Color(color.r, color.g, color.b, 0.0))
@@ -320,9 +319,7 @@ static func thorns_aura(parent: Node2D, radius: float, color: Color) -> Node2D:
 static func shield_block(parent: Node2D, color: Color) -> void:
 	if not is_instance_valid(parent) or not parent.is_inside_tree():
 		return
-	var holder := Node2D.new()
-	holder.name = "ShieldBlockVfx"
-	holder.z_index = 13
+	var holder := _combat_holder("ShieldBlockVfx", 13)
 	parent.add_child(holder)
 
 	var shield := _additive(SHIELD_BLOCK_TEXTURE, Color(color.r, color.g, color.b, 0.78))
@@ -342,6 +339,7 @@ static func summon_portal(parent: Node2D, radius: float, color: Color) -> void:
 		return
 	var portal := _additive(SUMMON_PORTAL_TEXTURE, Color(color.r, color.g, color.b, 0.82))
 	portal.name = "SummonPortalVfx"
+	portal.process_mode = Node.PROCESS_MODE_PAUSABLE
 	portal.z_index = 8
 	portal.scale = Vector2.ONE * (radius / _texture_radius(SUMMON_PORTAL_TEXTURE))
 	parent.add_child(portal)

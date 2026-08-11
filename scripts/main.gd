@@ -496,6 +496,7 @@ const UPDATE_MANAGER_SCRIPT := preload("res://scripts/update_manager.gd")
 var ui
 var route
 var combat
+var combat_world_pause := preload("res://scripts/combat_world_pause.gd").new()
 var dev_console: CanvasLayer = null
 var update_manager = null
 var meta_state := {}
@@ -547,6 +548,7 @@ func _init() -> void:
 
 func _ready() -> void:
 	process_mode = Node.PROCESS_MODE_ALWAYS
+	combat_world_pause.attach(self, get_tree(), Callable(self, "_is_gameplay_paused"))
 	rng.randomize()
 	_load_meta_progression()
 	_load_game_settings()
@@ -1413,6 +1415,7 @@ func _clamp_arena_point(world_position: Vector2, margin := 32.0) -> Vector2:
 
 func _process(delta: float) -> void:
 	if get_tree().paused:
+		combat_world_pause.enforce()
 		return
 
 	if not combat_active:
@@ -1492,23 +1495,12 @@ func _clear_all_game_pauses() -> void:
 
 
 func _freeze_gameplay_state() -> void:
-	_zero_velocity(current_player)
-	for group_name in ["enemies", "bosses", "summoned_enemies", "projectiles", "enemy_projectiles", "allies", "pickups", "player_weapons", "player_weapon_effects"]:
-		for node in get_tree().get_nodes_in_group(group_name):
-			_zero_velocity(node)
+	combat_world_pause.enforce()
 
 	if current_player != null and is_instance_valid(current_player):
 		var camera := current_player.get_node_or_null("Camera2D")
 		if camera != null and camera.has_method("reset_smoothing"):
 			camera.call("reset_smoothing")
-
-
-func _zero_velocity(node: Node) -> void:
-	if node == null or not is_instance_valid(node):
-		return
-	if node.get("velocity") != null:
-		node.set("velocity", Vector2.ZERO)
-
 
 func _play_sfx(sfx_id: String) -> void:
 	var audio := get_node_or_null("/root/AudioManager")

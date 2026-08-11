@@ -313,9 +313,7 @@ func _spawn_secret_sector_ring(center: Vector2) -> void:
 	var rift_skill := _boss_rift_zone_skill_state()
 	if rift_skill != "":
 		_play_boss_skill_visual(rift_skill, "cast", center - global_position)
-	var marker := Node2D.new()
-	marker.name = "SecretBossSectorRing"
-	marker.add_to_group("enemy_hazards")
+	var marker := _new_combat_hazard("SecretBossSectorRing")
 	marker.set_meta("boss_behavior", boss_behavior)
 	marker.global_position = _clamp_to_arena(center, 180.0)
 	marker.z_index = 10
@@ -418,9 +416,7 @@ func _spawn_secret_directional_zone(kind: String, dir: Vector2, texture: Texture
 	var rift_skill := _boss_rift_zone_skill_state()
 	if rift_skill != "":
 		_play_boss_skill_visual(rift_skill, "cast", dir)
-	var marker := Node2D.new()
-	marker.name = "SecretBossDirectional"
-	marker.add_to_group("enemy_hazards")
+	var marker := _new_combat_hazard("SecretBossDirectional")
 	marker.set_meta("boss_behavior", boss_behavior)
 	marker.global_position = global_position
 	marker.z_index = 10
@@ -463,9 +459,7 @@ func _spawn_gravity_well(target_position: Vector2) -> void:
 	if parent == null:
 		parent = get_tree().root
 	_play_boss_skill_visual("skill_gravity_well", "cast", target_position - global_position)
-	var well := Node2D.new()
-	well.name = "BossGravityWell"
-	well.add_to_group("enemy_hazards")
+	var well := _new_combat_hazard("BossGravityWell")
 	well.set_meta("boss_behavior", boss_behavior)
 	well.global_position = _clamp_to_arena(target_position, 120.0)
 	well.z_index = 10
@@ -503,9 +497,7 @@ func _spawn_vampiric_bite(player: Node2D) -> void:
 	if parent == null:
 		parent = get_tree().root
 	_play_boss_skill_visual("skill_vampiric_bite", "attack", player.global_position - global_position)
-	var bite := Node2D.new()
-	bite.name = "BossVampiricBite"
-	bite.add_to_group("enemy_hazards")
+	var bite := _new_combat_hazard("BossVampiricBite")
 	bite.set_meta("boss_behavior", boss_behavior)
 	bite.global_position = _clamp_to_arena(global_position, 110.0)
 	bite.z_index = 10
@@ -554,9 +546,7 @@ func _spawn_molten_armor_pulse() -> void:
 	if parent == null:
 		parent = get_tree().root
 	_play_boss_skill_visual("skill_armor_pulse", "cast", Vector2.UP)
-	var pulse := Node2D.new()
-	pulse.name = "BossMoltenArmorPulse"
-	pulse.add_to_group("enemy_hazards")
+	var pulse := _new_combat_hazard("BossMoltenArmorPulse")
 	pulse.set_meta("boss_behavior", boss_behavior)
 	pulse.global_position = global_position
 	pulse.z_index = 10
@@ -590,9 +580,7 @@ func _spawn_bloodthorn_spike_ring(center: Vector2) -> void:
 	if parent == null:
 		parent = get_tree().root
 	_play_boss_skill_visual("skill_spike_ring", "cast", center - global_position)
-	var ring := Node2D.new()
-	ring.name = "BloodthornSpikeRing"
-	ring.add_to_group("enemy_hazards")
+	var ring := _new_combat_hazard("BloodthornSpikeRing")
 	ring.set_meta("boss_behavior", boss_behavior)
 	ring.global_position = _clamp_to_arena(center, 120.0)
 	ring.z_index = 9
@@ -729,9 +717,7 @@ func _spawn_rift_zone(target_position: Vector2, play_visual := true) -> void:
 		else:
 			_play_rig_action("cast", target_position - global_position)
 	var zone_damage := projectile_damage * (1.25 + float(boss_phase - 1) * 0.18)
-	var zone := Node2D.new()
-	zone.name = "BossRiftZone"
-	zone.add_to_group("enemy_hazards")
+	var zone := _new_combat_hazard("BossRiftZone")
 	zone.set_meta("boss_behavior", boss_behavior)
 	zone.global_position = _clamp_to_arena(target_position, 92.0)
 	zone.z_index = 9
@@ -771,9 +757,7 @@ func _spawn_disk_slam() -> void:
 	else:
 		_play_rig_action("attack", Vector2.DOWN)
 	var slam_damage := contact_damage * (1.5 + float(boss_phase - 1) * 0.22)
-	var slam := Node2D.new()
-	slam.name = "DiskSlamZone"
-	slam.add_to_group("enemy_hazards")
+	var slam := _new_combat_hazard("DiskSlamZone")
 	slam.set_meta("boss_behavior", boss_behavior)
 	slam.global_position = _clamp_to_arena(global_position, 132.0)
 	slam.z_index = 9
@@ -811,9 +795,7 @@ func _spawn_web_zone(target_position: Vector2) -> void:
 	if parent == null:
 		parent = get_tree().root
 	_play_boss_skill_visual("skill_web_zone", "cast", target_position - global_position)
-	var zone := Node2D.new()
-	zone.name = "BroodWebZone"
-	zone.add_to_group("enemy_hazards")
+	var zone := _new_combat_hazard("BroodWebZone")
 	zone.set_meta("boss_behavior", boss_behavior)
 	zone.global_position = _clamp_to_arena(target_position, 92.0)
 	zone.z_index = 9
@@ -848,9 +830,7 @@ func _spawn_ember_zone(origin: Vector2, radius: float) -> void:
 	var parent := get_tree().current_scene
 	if parent == null:
 		parent = get_tree().root
-	var zone := Node2D.new()
-	zone.name = "AshEmberZone"
-	zone.add_to_group("enemy_hazards")
+	var zone := _new_combat_hazard("AshEmberZone")
 	zone.set_meta("boss_behavior", boss_behavior)
 	zone.global_position = origin
 	zone.z_index = 8
@@ -1022,9 +1002,7 @@ func _spawn_phase_transition_hazard() -> void:
 	var parent := get_tree().current_scene
 	if parent == null:
 		parent = get_tree().root
-	var zone := Node2D.new()
-	zone.name = "BossPhaseHazard"
-	zone.add_to_group("enemy_hazards")
+	var zone := _new_combat_hazard("BossPhaseHazard")
 	zone.global_position = _clamp_to_arena(global_position, 180.0)
 	zone.z_index = 10
 	parent.add_child(zone)
