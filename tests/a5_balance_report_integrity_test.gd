@@ -377,8 +377,8 @@ func _final_execution_fixture() -> Dictionary:
 	var trace_id := "fan1511:%s" % sample_key
 	var events := [
 		_trace_event(trace_id, 0, {"kind": "cast", "source": "player_weapon", "phase": "windup", "cast_id": "cast_000001", "attack_mode": "sweep", "damage": 0.0}, 1, "measurement"),
-		_trace_event(trace_id, 1, {"kind": "hit", "source": "player_weapon", "phase": "damage_application", "target_id": "target_0", "provenance_id": "hit_000001", "cast_id": "cast_000001", "damage": 10.0}, 2, "measurement"),
-		_trace_event(trace_id, 2, {"kind": "hit", "source": "player_weapon", "phase": "damage_application", "target_id": "target_0", "provenance_id": "hit_000002", "cast_id": "cast_000001", "damage": 10.0}, 3, "measurement"),
+		_trace_event(trace_id, 1, {"kind": "hit", "source": "player_weapon", "phase": "damage_application", "target_id": "target_0", "provenance_id": "hit_000001", "cast_id": "cast_000001", "damage": 10.0}, 2, "warmup"),
+		_trace_event(trace_id, 2, {"kind": "hit", "source": "player_weapon", "phase": "damage_application", "target_id": "target_0", "provenance_id": "hit_000002", "cast_id": "cast_000001", "damage": 10.0}, 3, "warmup"),
 		_trace_event(trace_id, 3, {"kind": "final_event", "source": "player_weapon", "phase": "final_resolution", "target_id": "target_0", "event": "hit", "mechanic_id": mechanic_id, "final_activation_id": "final_000001", "observed": true, "related_hit_id": "%s#0004" % trace_id, "damage": 0.0}, 4, "measurement"),
 		_trace_event(trace_id, 4, {"kind": "hit", "source": "player_weapon", "phase": "damage_application", "target_id": "target_0", "provenance_id": "hit_000003", "cast_id": "cast_000001", "damage": 14.0, "final_event_ids": ["%s#0003" % trace_id]}, 4, "measurement"),
 	]
@@ -411,8 +411,8 @@ func _final_execution_fixture() -> Dictionary:
 			"authority": "enemy_damage_applied_health_delta",
 			"probe_phase": "measurement",
 			"tolerance": 0.0001,
-			"rows": [{"target_id": "target_0", "applied_damage": 34.0, "entries": 3}],
-			"total_applied_damage": 34.0,
+			"rows": [{"target_id": "target_0", "applied_damage": 14.0, "entries": 1}],
+			"total_applied_damage": 14.0,
 		},
 		"counters": {"casts": 1, "hits": 3, "final_event_count": 1, "damage_total": 34.0},
 		"trace_digest_sha256": Generator.canonical_trace_digest(events),
@@ -469,7 +469,7 @@ func _final_execution_fixture() -> Dictionary:
 			"target_status_markers": [],
 			"owner_state_delta": {},
 			"owner_final_marker": false,
-			"applied_hp_total": 34.0,
+			"applied_hp_total": 14.0,
 			"amplified_hit_mean": 14.0,
 			"unamplified_hit_mean": 10.0,
 			"observed_damage_ratio": 1.4,
