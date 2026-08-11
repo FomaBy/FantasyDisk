@@ -15,6 +15,7 @@ func _initialize() -> void:
 	_verify_contract()
 	_verify_provenance_contract()
 	_verify_single_application_formula()
+	_verify_class_constellation_excludes_atlas_only_modifiers()
 	_verify_fail_closed_oracles()
 	_verify_committed_fragment()
 	_finish()
@@ -27,8 +28,32 @@ func _verify_contract() -> void:
 	var manifest := Pack.scenario_manifest()
 	_check(not bool((manifest.get(Pack.NON_PLAYABLE_SCENARIO, {}) as Dictionary).get("playable", true)), "Atlas 59 must remain non-playable")
 	_check(int((manifest.get(Pack.NON_PLAYABLE_SCENARIO, {}) as Dictionary).get("atlas_spend", 0)) == 59, "Atlas 59 upper bound must remain explicit")
+	_check(int((manifest.get("class_atlas50", {}) as Dictionary).get("atlas_spend", -1)) == 50, "Atlas 50 cap must remain exactly the canonical legal maximum")
 	_check(Pack.class_ids().size() == 17, "runtime roster must retain all 17 class kits")
 	_check(Pack.per_weapon_sustain_rows().size() == 51, "sustain roster must retain all 51 runtime weapons")
+
+
+# FAN-2413: discovered_monsters/secret_boss_defeated must only unlock the
+# account-wide Guild Atlas hidden nodes in explicitly Atlas-enabled arcs, so
+# the class_constellation control arm cannot silently inherit Atlas boons
+# (e.g. atlas_h0 money_gain_mult, atlas_h1 start_gold_flat).
+func _verify_class_constellation_excludes_atlas_only_modifiers() -> void:
+	var atlas_hidden_keys := {}
+	for node_value in Meta.atlas_nodes():
+		var node: Dictionary = node_value
+		if str(node.get("role", "")) != "hidden":
+			continue
+		for key in (node.get("effects", {}) as Dictionary).keys():
+			atlas_hidden_keys[str(key)] = true
+	_check(atlas_hidden_keys.has("start_gold_flat") and atlas_hidden_keys.has("money_gain_mult"), "Guild Atlas hidden boons must still include the known start_gold/money-multiplier effects")
+	for class_value in Pack.class_ids():
+		var class_id := str(class_value)
+		var state := Pack.scenario_state(class_id, "class_constellation")
+		_check(not bool(state.get("secret_boss_defeated", false)), "%s class_constellation must not carry secret_boss_defeated" % class_id)
+		_check((state.get("discovered_monsters", []) as Array).is_empty(), "%s class_constellation must not carry discovered_monsters" % class_id)
+		var mods := Meta.skill_modifiers_for_class(state, class_id)
+		for key in atlas_hidden_keys.keys():
+			_check(is_zero_approx(float(mods.get(key, 0.0))), "%s class_constellation leaked Guild Atlas hidden modifier %s" % [class_id, key])
 
 
 func _verify_provenance_contract() -> void:
@@ -150,6 +175,24 @@ func _verify_fail_closed_oracles() -> void:
 	var untrusted_runtime := fragment.duplicate(true)
 	(untrusted_runtime["measurements"] as Dictionary)[atlas_key]["runtime_evidence"]["process_delta_seconds"] = 1.0 / 30.0
 	_check(not bool(Pack.evaluate_fragment(untrusted_runtime).get("ok", true)), "a non-fixed runtime measurement must fail closed")
+	# FAN-2413: a recorded run_modifiers/stats value that no longer matches the
+	# scenario_manifest-derived formula (e.g. a substituted hidden-unlock state)
+	# must fail closed, not merely be type-checked.
+	var tampered_modifiers := fragment.duplicate(true)
+	var tampered_measurement: Dictionary = (tampered_modifiers["measurements"] as Dictionary)[atlas_key]
+	var tampered_formula: Dictionary = (tampered_measurement["formula"] as Dictionary).duplicate(true)
+	var tampered_run_mods: Dictionary = (tampered_formula["run_modifiers"] as Dictionary).duplicate(true)
+	tampered_run_mods["money_gain_multiplier"] = float(tampered_run_mods.get("money_gain_multiplier", 1.0)) + 1.0
+	tampered_formula["run_modifiers"] = tampered_run_mods
+	tampered_measurement["formula"] = tampered_formula
+	_check(not bool(Pack.evaluate_fragment(tampered_modifiers).get("ok", true)), "run_modifiers that disagree with the scenario_manifest-derived formula must fail closed")
+	var tampered_manifest := fragment.duplicate(true)
+	var mutated_manifest: Dictionary = (tampered_manifest["scenario_manifest"] as Dictionary).duplicate(true)
+	var mutated_atlas50: Dictionary = (mutated_manifest["class_atlas50"] as Dictionary).duplicate(true)
+	mutated_atlas50["atlas_spend"] = 55
+	mutated_manifest["class_atlas50"] = mutated_atlas50
+	tampered_manifest["scenario_manifest"] = mutated_manifest
+	_check(not bool(Pack.evaluate_fragment(tampered_manifest).get("ok", true)), "a substituted scenario manifest must fail closed")
 
 
 func _fixture_fragment() -> Dictionary:
