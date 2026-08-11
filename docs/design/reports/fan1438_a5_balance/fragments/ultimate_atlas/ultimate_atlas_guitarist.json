@@ -1,0 +1,247 @@
+{
+	"class_id": "guitarist",
+	"measurements": {
+		"class_atlas50": {
+			"activation_count": 1,
+			"activation_timing_seconds": [
+				0.0
+			],
+			"attribution": {
+				"duplicate_ultimate_event_id_count": 0,
+				"invalid_source_count": 0,
+				"missing_ultimate_event_id_count": 0,
+				"ultimate_event_count": 40
+			},
+			"class_id": "guitarist",
+			"duration_seconds": 60.0,
+			"formula": {
+				"canonical_weapon_id": "bass_guitar",
+				"class_id": "guitarist",
+				"expected_activation_damage": 49.573800000000006,
+				"expected_initial_activations": 1,
+				"formula_schema": "fan1515.class-ultimate-formula.v1",
+				"meta_application_count": 1,
+				"run_modifiers": {
+					"aoe_radius_multiplier": 1.05,
+					"attack_speed_multiplier": 1.04,
+					"damage_multiplier": 1.1235000000000002,
+					"death_save_health_fraction": 0.3,
+					"healing_multiplier": 0.8160000000000001,
+					"max_health_flat": 7.0,
+					"max_health_multiplier": 0.8,
+					"money_gain_multiplier": 1.04,
+					"pickup_radius_flat": 60.0,
+					"xp_gain_multiplier": 0.9199999999999999
+				},
+				"scenario": "class_atlas50",
+				"start_charge": 100.0,
+				"start_charge_ratio": 1.0,
+				"stats": {
+					"agility": 9.0,
+					"endurance": 4.0,
+					"energy": 6.0,
+					"intelligence": 20.0,
+					"knowledge": 5.0,
+					"leadership": 8.0,
+					"perception": 7.0,
+					"strength": 4.0
+				}
+			},
+			"frame_count": 3600,
+			"initial_activation_count": 1,
+			"initial_charge": 100.0,
+			"scenario": "class_atlas50",
+			"seed": 151501,
+			"sustain_source": {
+				"damage": 216568.4081,
+				"hits": 33330
+			},
+			"ultimate_source": {
+				"by_mechanic": {
+					"bass_launch": {
+						"damage": 24188.481,
+						"first_frame": 105,
+						"hits": 10
+					},
+					"bass_pull": {
+						"damage": 13193.717,
+						"first_frame": 41,
+						"hits": 10
+					},
+					"bass_shock": {
+						"damage": 39581.151000000005,
+						"first_frame": 137,
+						"hits": 10
+					},
+					"bass_weight": {
+						"damage": 17591.623,
+						"first_frame": 73,
+						"hits": 10
+					}
+				},
+				"damage": 94554.97140000001,
+				"hits": 40
+			}
+		},
+		"class_constellation": {
+			"activation_count": 1,
+			"activation_timing_seconds": [
+				1.4000000000000001
+			],
+			"attribution": {
+				"duplicate_ultimate_event_id_count": 0,
+				"invalid_source_count": 0,
+				"missing_ultimate_event_id_count": 0,
+				"ultimate_event_count": 40
+			},
+			"class_id": "guitarist",
+			"duration_seconds": 60.0,
+			"formula": {
+				"canonical_weapon_id": "bass_guitar",
+				"class_id": "guitarist",
+				"expected_activation_damage": 49.573800000000006,
+				"expected_initial_activations": 0,
+				"formula_schema": "fan1515.class-ultimate-formula.v1",
+				"meta_application_count": 1,
+				"run_modifiers": {
+					"aoe_radius_multiplier": 1.05,
+					"attack_speed_multiplier": 1.04,
+					"damage_multiplier": 1.1235000000000002,
+					"healing_multiplier": 0.68,
+					"max_health_flat": 7.0,
+					"max_health_multiplier": 0.8,
+					"money_gain_multiplier": 0.8800000000000001,
+					"xp_gain_multiplier": 0.8
+				},
+				"scenario": "class_constellation",
+				"start_charge": 0.0,
+				"start_charge_ratio": 0.0,
+				"stats": {
+					"agility": 9.0,
+					"endurance": 4.0,
+					"energy": 6.0,
+					"intelligence": 20.0,
+					"knowledge": 5.0,
+					"leadership": 8.0,
+					"perception": 7.0,
+					"strength": 4.0
+				}
+			},
+			"frame_count": 3600,
+			"initial_activation_count": 0,
+			"initial_charge": 0.0,
+			"scenario": "class_constellation",
+			"seed": 151501,
+			"sustain_source": {
+				"damage": 216568.4081,
+				"hits": 33330
+			},
+			"ultimate_source": {
+				"by_mechanic": {
+					"bass_launch": {
+						"damage": 24188.481,
+						"first_frame": 189,
+						"hits": 10
+					},
+					"bass_pull": {
+						"damage": 13193.717,
+						"first_frame": 125,
+						"hits": 10
+					},
+					"bass_shock": {
+						"damage": 39581.151000000005,
+						"first_frame": 221,
+						"hits": 10
+					},
+					"bass_weight": {
+						"damage": 17591.623,
+						"first_frame": 157,
+						"hits": 10
+					}
+				},
+				"damage": 94554.97140000001,
+				"hits": 40
+			}
+		},
+		"no_meta": {
+			"activation_count": 1,
+			"activation_timing_seconds": [
+				1.75
+			],
+			"attribution": {
+				"duplicate_ultimate_event_id_count": 0,
+				"invalid_source_count": 0,
+				"missing_ultimate_event_id_count": 0,
+				"ultimate_event_count": 40
+			},
+			"class_id": "guitarist",
+			"duration_seconds": 60.0,
+			"formula": {
+				"canonical_weapon_id": "bass_guitar",
+				"class_id": "guitarist",
+				"expected_activation_damage": 49.513000000000005,
+				"expected_initial_activations": 0,
+				"formula_schema": "fan1515.class-ultimate-formula.v1",
+				"meta_application_count": 0,
+				"run_modifiers": {
+					"aoe_radius_multiplier": 1.05,
+					"attack_speed_multiplier": 1.04,
+					"damage_multiplier": 1.1235000000000002,
+					"healing_multiplier": 0.68,
+					"max_health_flat": 7.0,
+					"max_health_multiplier": 0.8,
+					"money_gain_multiplier": 0.8,
+					"xp_gain_multiplier": 0.8
+				},
+				"scenario": "no_meta",
+				"start_charge": 0.0,
+				"start_charge_ratio": 0.0,
+				"stats": {
+					"agility": 9.0,
+					"endurance": 4.0,
+					"energy": 6.0,
+					"intelligence": 20.0,
+					"knowledge": 5.0,
+					"leadership": 7.0,
+					"perception": 7.0,
+					"strength": 4.0
+				}
+			},
+			"frame_count": 3600,
+			"initial_activation_count": 0,
+			"initial_charge": 0.0,
+			"scenario": "no_meta",
+			"seed": 151501,
+			"sustain_source": {
+				"damage": 183553.27310000002,
+				"hits": 31120
+			},
+			"ultimate_source": {
+				"by_mechanic": {
+					"bass_launch": {
+						"damage": 24188.481,
+						"first_frame": 210,
+						"hits": 10
+					},
+					"bass_pull": {
+						"damage": 13193.717,
+						"first_frame": 146,
+						"hits": 10
+					},
+					"bass_shock": {
+						"damage": 39581.151000000005,
+						"first_frame": 242,
+						"hits": 10
+					},
+					"bass_weight": {
+						"damage": 17591.623,
+						"first_frame": 178,
+						"hits": 10
+					}
+				},
+				"damage": 94554.97140000001,
+				"hits": 40
+			}
+		}
+	}
+}

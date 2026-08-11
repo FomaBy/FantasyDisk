@@ -1,0 +1,207 @@
+{
+	"class_id": "druid",
+	"measurements": {
+		"class_atlas50": {
+			"activation_count": 3,
+			"activation_timing_seconds": [
+				0.0,
+				21.3167,
+				42.283300000000004
+			],
+			"attribution": {
+				"duplicate_ultimate_event_id_count": 0,
+				"invalid_source_count": 0,
+				"missing_ultimate_event_id_count": 0,
+				"ultimate_event_count": 27
+			},
+			"class_id": "druid",
+			"duration_seconds": 60.0,
+			"formula": {
+				"canonical_weapon_id": "briar_staff",
+				"class_id": "druid",
+				"expected_activation_damage": 40.661,
+				"expected_initial_activations": 1,
+				"formula_schema": "fan1515.class-ultimate-formula.v1",
+				"meta_application_count": 1,
+				"run_modifiers": {
+					"attack_speed_multiplier": 1.04,
+					"damage_multiplier": 1.1235000000000002,
+					"death_save_health_fraction": 0.3,
+					"defense_flat": 0.02,
+					"healing_multiplier": 0.8160000000000001,
+					"max_health_flat": 8.0,
+					"max_health_multiplier": 0.8,
+					"money_gain_multiplier": 1.04,
+					"pickup_radius_flat": 60.0,
+					"xp_gain_multiplier": 0.9199999999999999
+				},
+				"scenario": "class_atlas50",
+				"start_charge": 100.0,
+				"start_charge_ratio": 1.0,
+				"stats": {
+					"agility": 13.0,
+					"endurance": 5.0,
+					"energy": 6.0,
+					"intelligence": 4.0,
+					"knowledge": 5.0,
+					"leadership": 10.0,
+					"perception": 7.0,
+					"strength": 13.0
+				}
+			},
+			"frame_count": 3600,
+			"initial_activation_count": 1,
+			"initial_charge": 100.0,
+			"scenario": "class_atlas50",
+			"seed": 151501,
+			"sustain_source": {
+				"damage": 421390.6373,
+				"hits": 39981
+			},
+			"ultimate_source": {
+				"by_mechanic": {
+					"briar_lattice_impale": {
+						"damage": 13938.2883,
+						"first_frame": 65,
+						"hits": 27
+					}
+				},
+				"damage": 13938.2888,
+				"hits": 27
+			}
+		},
+		"class_constellation": {
+			"activation_count": 3,
+			"activation_timing_seconds": [
+				13.3833,
+				35.4833,
+				56.7333
+			],
+			"attribution": {
+				"duplicate_ultimate_event_id_count": 0,
+				"invalid_source_count": 0,
+				"missing_ultimate_event_id_count": 0,
+				"ultimate_event_count": 24
+			},
+			"class_id": "druid",
+			"duration_seconds": 60.0,
+			"formula": {
+				"canonical_weapon_id": "briar_staff",
+				"class_id": "druid",
+				"expected_activation_damage": 40.661,
+				"expected_initial_activations": 0,
+				"formula_schema": "fan1515.class-ultimate-formula.v1",
+				"meta_application_count": 1,
+				"run_modifiers": {
+					"attack_speed_multiplier": 1.04,
+					"damage_multiplier": 1.1235000000000002,
+					"defense_flat": 0.02,
+					"healing_multiplier": 0.68,
+					"max_health_flat": 8.0,
+					"max_health_multiplier": 0.8,
+					"money_gain_multiplier": 0.8800000000000001,
+					"xp_gain_multiplier": 0.8
+				},
+				"scenario": "class_constellation",
+				"start_charge": 0.0,
+				"start_charge_ratio": 0.0,
+				"stats": {
+					"agility": 13.0,
+					"endurance": 5.0,
+					"energy": 6.0,
+					"intelligence": 4.0,
+					"knowledge": 5.0,
+					"leadership": 10.0,
+					"perception": 7.0,
+					"strength": 13.0
+				}
+			},
+			"frame_count": 3600,
+			"initial_activation_count": 0,
+			"initial_charge": 0.0,
+			"scenario": "class_constellation",
+			"seed": 151501,
+			"sustain_source": {
+				"damage": 421184.2456,
+				"hits": 39981
+			},
+			"ultimate_source": {
+				"by_mechanic": {
+					"briar_lattice_impale": {
+						"damage": 13473.678600000001,
+						"first_frame": 868,
+						"hits": 24
+					}
+				},
+				"damage": 13473.6792,
+				"hits": 24
+			}
+		},
+		"no_meta": {
+			"activation_count": 2,
+			"activation_timing_seconds": [
+				15.366700000000002,
+				39.9667
+			],
+			"attribution": {
+				"duplicate_ultimate_event_id_count": 0,
+				"invalid_source_count": 0,
+				"missing_ultimate_event_id_count": 0,
+				"ultimate_event_count": 18
+			},
+			"class_id": "druid",
+			"duration_seconds": 60.0,
+			"formula": {
+				"canonical_weapon_id": "briar_staff",
+				"class_id": "druid",
+				"expected_activation_damage": 40.6148,
+				"expected_initial_activations": 0,
+				"formula_schema": "fan1515.class-ultimate-formula.v1",
+				"meta_application_count": 0,
+				"run_modifiers": {
+					"attack_speed_multiplier": 1.04,
+					"damage_multiplier": 1.1235000000000002,
+					"defense_flat": 0.02,
+					"healing_multiplier": 0.68,
+					"max_health_flat": 8.0,
+					"max_health_multiplier": 0.8,
+					"money_gain_multiplier": 0.8,
+					"xp_gain_multiplier": 0.8
+				},
+				"scenario": "no_meta",
+				"start_charge": 0.0,
+				"start_charge_ratio": 0.0,
+				"stats": {
+					"agility": 13.0,
+					"endurance": 5.0,
+					"energy": 6.0,
+					"intelligence": 4.0,
+					"knowledge": 5.0,
+					"leadership": 9.0,
+					"perception": 7.0,
+					"strength": 13.0
+				}
+			},
+			"frame_count": 3600,
+			"initial_activation_count": 0,
+			"initial_charge": 0.0,
+			"scenario": "no_meta",
+			"seed": 151501,
+			"sustain_source": {
+				"damage": 297602.01790000004,
+				"hits": 37702
+			},
+			"ultimate_source": {
+				"by_mechanic": {
+					"briar_lattice_impale": {
+						"damage": 9292.192200000001,
+						"first_frame": 987,
+						"hits": 18
+					}
+				},
+				"damage": 9292.1926,
+				"hits": 18
+			}
+		}
+	}
+}

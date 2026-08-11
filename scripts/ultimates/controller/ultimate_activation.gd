@@ -23,6 +23,9 @@ const EPIC_GROUP := "elite_enemies"
 const OP_ADD := "add"
 const OP_MULTIPLY := "mul"
 const DAMAGE_SINK_PROPERTY := "ultimate_damage_sink"
+const DAMAGE_PROVENANCE_KEY := "ultimate_provenance"
+const DAMAGE_PROVENANCE_VALUE := "activation"
+const DAMAGE_PROVENANCE_EVENT_KEY := "ultimate_provenance_event_id"
 # Optional host channel: deliberately not part of HOST_METHODS, so existing
 # hosts keep passing host_supports() and repair stays default-off for them.
 const HOST_REPAIR_METHOD := "ultimate_host_repair"
@@ -68,6 +71,7 @@ var _primitive_state: Dictionary = {}
 var _composition_trace: Array[String] = []
 var _composition_aborted := false
 var _finished := false
+var _damage_provenance_sequence := 0
 
 
 static func host_supports(candidate: Node) -> bool:
@@ -127,12 +131,21 @@ func scaled_damage(coefficient_key := "damage", fallback_coefficient := 1.0) -> 
 	return maxf(base * param_float(coefficient_key, fallback_coefficient), 0.0)
 
 
+static func is_ultimate_damage_feedback(feedback: Dictionary) -> bool:
+	return str(feedback.get(DAMAGE_PROVENANCE_KEY, "")) == DAMAGE_PROVENANCE_VALUE
+
+
 func damage_feedback(extra: Dictionary = {}) -> Dictionary:
 	var feedback := {
 		"damage_type": str(context.get("damage_type", "physical")),
 		"player_owned": true,
 	}
 	feedback.merge(extra, true)
+	_damage_provenance_sequence += 1
+	# This is set after executor feedback so no executor can accidentally erase
+	# the lifecycle provenance used by runtime attribution.
+	feedback[DAMAGE_PROVENANCE_KEY] = DAMAGE_PROVENANCE_VALUE
+	feedback[DAMAGE_PROVENANCE_EVENT_KEY] = "%d:%d" % [get_instance_id(), _damage_provenance_sequence]
 	return feedback
 
 

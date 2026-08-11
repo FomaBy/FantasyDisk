@@ -1,0 +1,246 @@
+{
+	"class_id": "biologist",
+	"measurements": {
+		"class_atlas50": {
+			"activation_count": 6,
+			"activation_timing_seconds": [
+				0.0,
+				11.55,
+				23.1,
+				34.4667,
+				46.0167,
+				57.566700000000004
+			],
+			"attribution": {
+				"duplicate_ultimate_event_id_count": 0,
+				"invalid_source_count": 0,
+				"missing_ultimate_event_id_count": 0,
+				"ultimate_event_count": 70
+			},
+			"class_id": "biologist",
+			"duration_seconds": 60.0,
+			"formula": {
+				"canonical_weapon_id": "biologist_sample_injector",
+				"class_id": "biologist",
+				"expected_activation_damage": 38.097100000000005,
+				"expected_initial_activations": 1,
+				"formula_schema": "fan1515.class-ultimate-formula.v1",
+				"meta_application_count": 1,
+				"run_modifiers": {
+					"aoe_radius_multiplier": 1.05,
+					"attack_speed_multiplier": 1.04,
+					"damage_multiplier": 1.1128,
+					"death_save_health_fraction": 0.3,
+					"healing_multiplier": 0.8160000000000001,
+					"max_health_flat": 7.0,
+					"max_health_multiplier": 0.8,
+					"money_gain_multiplier": 1.04,
+					"pickup_radius_flat": 60.0,
+					"xp_gain_multiplier": 0.9199999999999999
+				},
+				"scenario": "class_atlas50",
+				"start_charge": 100.0,
+				"start_charge_ratio": 1.0,
+				"stats": {
+					"agility": 19.0,
+					"endurance": 4.0,
+					"energy": 6.0,
+					"intelligence": 13.0,
+					"knowledge": 11.0,
+					"leadership": 4.0,
+					"perception": 7.0,
+					"strength": 2.0
+				}
+			},
+			"frame_count": 3600,
+			"initial_activation_count": 1,
+			"initial_charge": 100.0,
+			"scenario": "class_atlas50",
+			"seed": 151501,
+			"sustain_source": {
+				"damage": 365398.48500000004,
+				"hits": 61311
+			},
+			"ultimate_source": {
+				"by_mechanic": {
+					"analysis_pulse": {
+						"damage": 5098.0832,
+						"first_frame": 132,
+						"hits": 16
+					},
+					"analysis_tissue": {
+						"damage": 4654.7712,
+						"first_frame": 132,
+						"hits": 48
+					},
+					"sample_extraction": {
+						"damage": 6691.2348,
+						"first_frame": 38,
+						"hits": 6
+					}
+				},
+				"damage": 16444.090200000002,
+				"hits": 70
+			}
+		},
+		"class_constellation": {
+			"activation_count": 6,
+			"activation_timing_seconds": [
+				0.55,
+				12.100000000000001,
+				23.650000000000002,
+				35.0167,
+				46.566700000000004,
+				57.9333
+			],
+			"attribution": {
+				"duplicate_ultimate_event_id_count": 0,
+				"invalid_source_count": 0,
+				"missing_ultimate_event_id_count": 0,
+				"ultimate_event_count": 66
+			},
+			"class_id": "biologist",
+			"duration_seconds": 60.0,
+			"formula": {
+				"canonical_weapon_id": "biologist_sample_injector",
+				"class_id": "biologist",
+				"expected_activation_damage": 38.097100000000005,
+				"expected_initial_activations": 0,
+				"formula_schema": "fan1515.class-ultimate-formula.v1",
+				"meta_application_count": 1,
+				"run_modifiers": {
+					"aoe_radius_multiplier": 1.05,
+					"attack_speed_multiplier": 1.04,
+					"damage_multiplier": 1.1128,
+					"healing_multiplier": 0.68,
+					"max_health_flat": 7.0,
+					"max_health_multiplier": 0.8,
+					"money_gain_multiplier": 0.8800000000000001,
+					"xp_gain_multiplier": 0.8
+				},
+				"scenario": "class_constellation",
+				"start_charge": 0.0,
+				"start_charge_ratio": 0.0,
+				"stats": {
+					"agility": 19.0,
+					"endurance": 4.0,
+					"energy": 6.0,
+					"intelligence": 13.0,
+					"knowledge": 11.0,
+					"leadership": 4.0,
+					"perception": 7.0,
+					"strength": 2.0
+				}
+			},
+			"frame_count": 3600,
+			"initial_activation_count": 0,
+			"initial_charge": 0.0,
+			"scenario": "class_constellation",
+			"seed": 151501,
+			"sustain_source": {
+				"damage": 358960.5198,
+				"hits": 61311
+			},
+			"ultimate_source": {
+				"by_mechanic": {
+					"analysis_pulse": {
+						"damage": 4779.453,
+						"first_frame": 165,
+						"hits": 15
+					},
+					"analysis_tissue": {
+						"damage": 4363.848,
+						"first_frame": 165,
+						"hits": 45
+					},
+					"sample_extraction": {
+						"damage": 6691.2348,
+						"first_frame": 71,
+						"hits": 6
+					}
+				},
+				"damage": 15834.5367,
+				"hits": 66
+			}
+		},
+		"no_meta": {
+			"activation_count": 5,
+			"activation_timing_seconds": [
+				1.1,
+				13.0167,
+				25.1167,
+				37.033300000000004,
+				49.133300000000006
+			],
+			"attribution": {
+				"duplicate_ultimate_event_id_count": 0,
+				"invalid_source_count": 0,
+				"missing_ultimate_event_id_count": 0,
+				"ultimate_event_count": 65
+			},
+			"class_id": "biologist",
+			"duration_seconds": 60.0,
+			"formula": {
+				"canonical_weapon_id": "biologist_sample_injector",
+				"class_id": "biologist",
+				"expected_activation_damage": 38.0356,
+				"expected_initial_activations": 0,
+				"formula_schema": "fan1515.class-ultimate-formula.v1",
+				"meta_application_count": 0,
+				"run_modifiers": {
+					"aoe_radius_multiplier": 1.05,
+					"attack_speed_multiplier": 1.04,
+					"damage_multiplier": 1.1128,
+					"healing_multiplier": 0.68,
+					"max_health_flat": 7.0,
+					"max_health_multiplier": 0.8,
+					"money_gain_multiplier": 0.8,
+					"xp_gain_multiplier": 0.8
+				},
+				"scenario": "no_meta",
+				"start_charge": 0.0,
+				"start_charge_ratio": 0.0,
+				"stats": {
+					"agility": 19.0,
+					"endurance": 4.0,
+					"energy": 6.0,
+					"intelligence": 13.0,
+					"knowledge": 10.0,
+					"leadership": 4.0,
+					"perception": 7.0,
+					"strength": 2.0
+				}
+			},
+			"frame_count": 3600,
+			"initial_activation_count": 0,
+			"initial_charge": 0.0,
+			"scenario": "no_meta",
+			"seed": 151501,
+			"sustain_source": {
+				"damage": 269032.6385,
+				"hits": 57717
+			},
+			"ultimate_source": {
+				"by_mechanic": {
+					"analysis_pulse": {
+						"damage": 4779.453,
+						"first_frame": 198,
+						"hits": 15
+					},
+					"analysis_tissue": {
+						"damage": 4363.848,
+						"first_frame": 198,
+						"hits": 45
+					},
+					"sample_extraction": {
+						"damage": 5576.029,
+						"first_frame": 104,
+						"hits": 5
+					}
+				},
+				"damage": 14719.3309,
+				"hits": 65
+			}
+		}
+	}
+}
