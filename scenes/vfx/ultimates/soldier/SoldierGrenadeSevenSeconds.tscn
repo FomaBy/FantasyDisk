@@ -8,7 +8,7 @@ light_mode = 1
 
 [sub_resource type="Animation" id="Animation_seven_seconds"]
 resource_name = "ultimate"
-length = 9.1
+length = 8.4
 tracks/0/type = "value"
 tracks/0/imported = false
 tracks/0/enabled = true
@@ -16,7 +16,7 @@ tracks/0/path = NodePath("LobArc:modulate:a")
 tracks/0/interp = 1
 tracks/0/loop_wrap = true
 tracks/0/keys = {
-"times": PackedFloat32Array(0, 0.3, 0.62, 0.95, 9.1),
+"times": PackedFloat32Array(0, 0.3, 0.62, 0.95, 8.4),
 "transitions": PackedFloat32Array(1, 1, 1, 1, 1),
 "update": 0,
 "values": [0.0, 0.9, 0.9, 0.0, 0.0]
@@ -28,7 +28,7 @@ tracks/1/path = NodePath("FuseRing:scale")
 tracks/1/interp = 1
 tracks/1/loop_wrap = true
 tracks/1/keys = {
-"times": PackedFloat32Array(0, 0.95, 6, 9.1),
+"times": PackedFloat32Array(0, 0.95, 6, 8.4),
 "transitions": PackedFloat32Array(1, 1, 1, 1),
 "update": 0,
 "values": [Vector2(1, 1), Vector2(1, 1), Vector2(0.22, 0.22), Vector2(0.22, 0.22)]
@@ -52,7 +52,7 @@ tracks/3/path = NodePath("GrenadeOne:modulate:a")
 tracks/3/interp = 1
 tracks/3/loop_wrap = true
 tracks/3/keys = {
-"times": PackedFloat32Array(0, 0.61, 0.95, 6, 6.05, 9.1),
+"times": PackedFloat32Array(0, 0.61, 0.95, 6, 6.05, 8.4),
 "transitions": PackedFloat32Array(1, 1, 1, 1, 1, 1),
 "update": 0,
 "values": [0.0, 0.0, 1.0, 1.0, 0.0, 0.0]
@@ -64,7 +64,7 @@ tracks/4/path = NodePath("GrenadeTwo:modulate:a")
 tracks/4/interp = 1
 tracks/4/loop_wrap = true
 tracks/4/keys = {
-"times": PackedFloat32Array(0, 0.61, 0.95, 6.3, 6.35, 9.1),
+"times": PackedFloat32Array(0, 0.61, 0.95, 6.3, 6.35, 8.4),
 "transitions": PackedFloat32Array(1, 1, 1, 1, 1, 1),
 "update": 0,
 "values": [0.0, 0.0, 1.0, 1.0, 0.0, 0.0]
@@ -76,7 +76,7 @@ tracks/5/path = NodePath("GrenadeThree:modulate:a")
 tracks/5/interp = 1
 tracks/5/loop_wrap = true
 tracks/5/keys = {
-"times": PackedFloat32Array(0, 0.61, 0.95, 6.6, 6.65, 9.1),
+"times": PackedFloat32Array(0, 0.61, 0.95, 6.6, 6.65, 8.4),
 "transitions": PackedFloat32Array(1, 1, 1, 1, 1, 1),
 "update": 0,
 "values": [0.0, 0.0, 1.0, 1.0, 0.0, 0.0]
@@ -88,7 +88,7 @@ tracks/6/path = NodePath("GrenadeFour:modulate:a")
 tracks/6/interp = 1
 tracks/6/loop_wrap = true
 tracks/6/keys = {
-"times": PackedFloat32Array(0, 0.61, 0.95, 6.9, 6.95, 9.1),
+"times": PackedFloat32Array(0, 0.61, 0.95, 6.9, 6.95, 8.4),
 "transitions": PackedFloat32Array(1, 1, 1, 1, 1, 1),
 "update": 0,
 "values": [0.0, 0.0, 1.0, 1.0, 0.0, 0.0]
@@ -100,7 +100,7 @@ tracks/7/path = NodePath("GrenadeFive:modulate:a")
 tracks/7/interp = 1
 tracks/7/loop_wrap = true
 tracks/7/keys = {
-"times": PackedFloat32Array(0, 0.61, 0.95, 7.2, 7.25, 9.1),
+"times": PackedFloat32Array(0, 0.61, 0.95, 7.2, 7.25, 8.4),
 "transitions": PackedFloat32Array(1, 1, 1, 1, 1, 1),
 "update": 0,
 "values": [0.0, 0.0, 1.0, 1.0, 0.0, 0.0]
@@ -112,7 +112,7 @@ tracks/8/path = NodePath("GrenadeSix:modulate:a")
 tracks/8/interp = 1
 tracks/8/loop_wrap = true
 tracks/8/keys = {
-"times": PackedFloat32Array(0, 0.61, 0.95, 7.5, 7.55, 9.1),
+"times": PackedFloat32Array(0, 0.61, 0.95, 7.5, 7.55, 8.4),
 "transitions": PackedFloat32Array(1, 1, 1, 1, 1, 1),
 "update": 0,
 "values": [0.0, 0.0, 1.0, 1.0, 0.0, 0.0]
@@ -124,7 +124,7 @@ tracks/9/path = NodePath("GrenadeSeven:modulate:a")
 tracks/9/interp = 1
 tracks/9/loop_wrap = true
 tracks/9/keys = {
-"times": PackedFloat32Array(0, 0.61, 0.95, 7.8, 7.85, 9.1),
+"times": PackedFloat32Array(0, 0.61, 0.95, 7.8, 7.85, 8.4),
 "transitions": PackedFloat32Array(1, 1, 1, 1, 1, 1),
 "update": 0,
 "values": [0.0, 0.0, 1.0, 1.0, 0.0, 0.0]
@@ -136,7 +136,7 @@ tracks/10/path = NodePath("ChainBlast:scale")
 tracks/10/interp = 1
 tracks/10/loop_wrap = true
 tracks/10/keys = {
-"times": PackedFloat32Array(0, 6, 7.85, 9.1),
+"times": PackedFloat32Array(0, 6, 7.85, 8.4),
 "transitions": PackedFloat32Array(1, 1, 1, 1),
 "update": 0,
 "values": [Vector2(1, 1), Vector2(1, 1), Vector2(0.16, 0.16), Vector2(0.16, 0.16)]
@@ -148,10 +148,10 @@ tracks/11/path = NodePath("ChainBlast:modulate:a")
 tracks/11/interp = 1
 tracks/11/loop_wrap = true
 tracks/11/keys = {
-"times": PackedFloat32Array(0, 5.95, 6.05, 7.85, 8.4, 9.1),
-"transitions": PackedFloat32Array(1, 1, 1, 1, 1, 1),
+"times": PackedFloat32Array(0, 5.95, 6.05, 7.85, 8.4),
+"transitions": PackedFloat32Array(1, 1, 1, 1, 1),
 "update": 0,
-"values": [0.0, 0.0, 1.0, 0.9, 0.0, 0.0]
+"values": [0.0, 0.0, 1.0, 0.9, 0.0]
 }
 tracks/12/type = "value"
 tracks/12/imported = false
@@ -160,10 +160,10 @@ tracks/12/path = NodePath("FireColumn:scale")
 tracks/12/interp = 1
 tracks/12/loop_wrap = true
 tracks/12/keys = {
-"times": PackedFloat32Array(0, 7.85, 8.1, 8.4, 9.1),
-"transitions": PackedFloat32Array(1, 1, 1, 1, 1),
+"times": PackedFloat32Array(0, 7.85, 8.1, 8.4),
+"transitions": PackedFloat32Array(1, 1, 1, 1),
 "update": 0,
-"values": [Vector2(0.1, 0.1), Vector2(0.1, 0.1), Vector2(1, 1), Vector2(1.15, 1.15), Vector2(1.3, 1.3)]
+"values": [Vector2(0.1, 0.1), Vector2(0.1, 0.1), Vector2(1, 1), Vector2(1.15, 1.15)]
 }
 tracks/13/type = "value"
 tracks/13/imported = false
@@ -172,10 +172,10 @@ tracks/13/path = NodePath("FireColumn:modulate:a")
 tracks/13/interp = 1
 tracks/13/loop_wrap = true
 tracks/13/keys = {
-"times": PackedFloat32Array(0, 7.8, 8.1, 8.4, 9.1),
-"transitions": PackedFloat32Array(1, 1, 1, 1, 1),
+"times": PackedFloat32Array(0, 7.8, 8.1, 8.4),
+"transitions": PackedFloat32Array(1, 1, 1, 1),
 "update": 0,
-"values": [0.0, 0.0, 1.0, 0.7, 0.0]
+"values": [0.0, 0.0, 1.0, 0.0]
 }
 
 [sub_resource type="AnimationLibrary" id="AnimationLibrary_seven_seconds"]

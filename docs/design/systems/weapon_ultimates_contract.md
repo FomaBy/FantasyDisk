@@ -147,9 +147,11 @@ ultimate state is written.
 
 `scripts/ultimates/controller/ultimate_controller.gd` is the single activation
 path. It reads `resolution_source(...)`, and only a `weapon_profile` result is
-taken over; a `legacy_class_fallback` result makes `activate()` return false so
-the caller keeps running its unchanged class ultimate. A ready activation also
-requires its exact presentation package to validate before gameplay begins.
+taken over. `UltimatePlayerHost` reports legacy, started and failed outcomes
+separately, so only an explicit `legacy_class_fallback` result may run the old
+class ultimate. A ready activation validates and owns its exact presentation,
+then commits Player charge before gameplay or active state begins; presentation
+failure therefore leaves charge and the encounter activation budget untouched.
 
 `scripts/ultimates/controller/ultimate_activation.gd` is one live cast. Executors
 never touch the Player: they ask the activation for targets, damage, modifiers,
@@ -163,12 +165,13 @@ keeps passing while `repair()` fails closed against it. Nothing below the
 adapter may branch on a class or a weapon.
 
 `scripts/player.gd` keeps the host preload, `ULTIMATE_HOST.reset(self)` at the
-top of `configure_character`, `ULTIMATE_HOST.activate(self)` delegation in
-`activate_ultimate`, and one generic measured-prevention emission after its
-existing mitigation arithmetic. Death, scene change and node end need no hook at
-all — the host is a Player child, so its own `_exit_tree` cancels the cast. Only
-the new run needs the explicit call, and it must stay before `run_modifiers` is
-reset, otherwise the modifier revert would land on freshly created defaults.
+top of `configure_character`, and `ULTIMATE_HOST.activate(self, commit)`
+delegation in `activate_ultimate`. A ready runtime failure returns `false` with a
+diagnostic and never enters legacy code or emits success feedback. Death, scene
+change and node end need no hook at all — the host is a Player child, so its own
+`_exit_tree` cancels the cast. Only the new run needs the explicit call, and it
+must stay before `run_modifiers` is reset, otherwise the modifier revert would
+land on freshly created defaults.
 
 Executor families live in `scripts/ultimates/executors/` and are selected purely
 by `executor.strategy_id`:

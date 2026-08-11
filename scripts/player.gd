@@ -2571,21 +2571,32 @@ func _ultimate_rare_charge_gated() -> bool:
 		and str((charge_binding as Dictionary).get("strategy_id", "")) == "rare_charge_ledger"
 
 
-func activate_ultimate() -> bool:
-	if not ultimate_ready() or _ultimate_active or not is_inside_tree():
-		return false
-	# try_activate — единственный ledger-путь списания; отказ по per-encounter
-	# лимиту обязателен только для rare_charge_ledger-пар. Остальные пары и
-	# legacy-классы сохраняют прежнюю экономику: refill активируется снова.
+func _commit_ultimate_charge() -> bool:
 	if not _ultimate_charge_ledger.try_activate():
 		if _ultimate_rare_charge_gated():
 			return false
 		ultimate_charge = 0.0
+	return true
+
+
+func activate_ultimate() -> bool:
+	if not ultimate_ready() or _ultimate_active or not is_inside_tree():
+		return false
+	# Ready packages commit charge only after their presentation is admitted.
+	# Legacy classes keep the same ledger/refill behavior through the same helper.
+	var result := ULTIMATE_HOST.activate(self, Callable(self, "_commit_ultimate_charge"))
+	if result == ULTIMATE_HOST.ACTIVATION_FAILED:
+		var failure := ULTIMATE_HOST.activation_failure(self)
+		if failure == "presentation_failed":
+			push_warning("Weapon ultimate activation failed: %s" % failure)
+		return false
+	if result == ULTIMATE_HOST.ACTIVATION_LEGACY_FALLBACK and not _commit_ultimate_charge():
+		return false
 	var config := _ultimate_config()
 	var multiplier := float(derived_parameters.get("ultimate_multiplier", 1.0))
 	_play_sfx("level_up")
 	_trigger_gamepad_vibration(0.4, 0.0, 0.15)
-	if ULTIMATE_HOST.activate(self):
+	if result == ULTIMATE_HOST.ACTIVATION_STARTED:
 		return true
 	# Каждый класс объявляет _activate_<character_id>_ultimate; незнакомый id
 	# уходит в dark_mage — тот же default, что был у прежнего match-диспатча.

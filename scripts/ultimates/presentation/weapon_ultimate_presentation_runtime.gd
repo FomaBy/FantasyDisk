@@ -24,6 +24,11 @@ class SceneHandle extends RefCounted:
 
 var _scene: Node = null
 var _timeline: Timeline = null
+var _headless_mode := -1
+
+
+func _init(headless_mode := -1) -> void:
+	_headless_mode = headless_mode
 
 
 func begin(host: Node, registry, profile: Dictionary) -> bool:
@@ -37,8 +42,8 @@ func begin(host: Node, registry, profile: Dictionary) -> bool:
 	var scene_path := str((runtime as Dictionary).get("scene_path", ""))
 	if scene_path.is_empty() or not ResourceLoader.exists(scene_path):
 		return false
-	_timeline = Timeline.new(manifest)
-	if DisplayServer.get_name() == "headless":
+	if _uses_headless_fallback():
+		_timeline = Timeline.new(manifest, _headless_mode)
 		_timeline.begin({})
 		return true
 	if host == null or not is_instance_valid(host) or not host.has_method("ultimate_host_effect_parent"):
@@ -51,15 +56,16 @@ func begin(host: Node, registry, profile: Dictionary) -> bool:
 	if not _scene is Node:
 		_scene = null
 		return false
+	_timeline = Timeline.new(manifest, _headless_mode)
 	if _scene is Node2D and host.has_method("ultimate_host_position"):
 		(_scene as Node2D).global_position = host.call("ultimate_host_position")
 	parent.add_child(_scene)
+	_timeline.begin({"scene": SceneHandle.new(_scene)})
 	if _scene.has_method("begin"):
 		_begin_scene(registry)
 	if not _within_declared_budget(runtime as Dictionary):
 		finish("cancel")
 		return false
-	_timeline.begin({"scene": SceneHandle.new(_scene)})
 	return true
 
 
@@ -88,6 +94,10 @@ func is_active() -> bool:
 	return _timeline != null
 
 
+func _uses_headless_fallback() -> bool:
+	return DisplayServer.get_name() == "headless" if _headless_mode < 0 else _headless_mode == 1
+
+
 func _begin_scene(registry) -> void:
 	for raw_method in _scene.get_method_list():
 		var method := raw_method as Dictionary
@@ -96,7 +106,10 @@ func _begin_scene(registry) -> void:
 		var args = method.get("args", [])
 		if args is Array and not (args as Array).is_empty() \
 				and str(((args as Array)[0] as Dictionary).get("name", "")) == "registry":
-			_scene.call("begin", registry, {})
+			if (args as Array).size() >= 3:
+				_scene.call("begin", registry, {}, _headless_mode)
+			else:
+				_scene.call("begin", registry, {})
 		else:
 			_scene.call("begin", {})
 		return

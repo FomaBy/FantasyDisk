@@ -18,6 +18,7 @@ const Resolver := preload("res://scripts/ultimates/registry/weapon_ultimate_reso
 var _host: Node = null
 var _registry = null
 var _activation: Activation = null
+var _last_failure := ""
 
 
 func _init(host: Node, registry) -> void:
@@ -29,9 +30,10 @@ func is_active() -> bool:
 	return _activation != null
 
 
-## True when the cast was taken over by the generic runtime. False means the
-## declaration is not executable yet and the caller owns the activation.
-func activate(class_id: String, weapon_id: String) -> bool:
+## True when the generic runtime committed the cast. The optional commit runs
+## only after presentation admission and before gameplay or active state begins.
+func activate(class_id: String, weapon_id: String, commit := Callable()) -> bool:
+	_last_failure = ""
 	if is_active() or not Activation.host_supports(_host) or not _host.is_inside_tree():
 		return false
 	if _registry == null or not _registry.has_method("resolution_source"):
@@ -72,8 +74,12 @@ func activate(class_id: String, weapon_id: String) -> bool:
 	if presentation is Dictionary and not (presentation as Dictionary).is_empty() \
 			and _host.has_method("ultimate_host_begin_presentation") \
 			and not bool(_host.call("ultimate_host_begin_presentation", profile)):
-		_activation.shutdown(true)
-		_activation = null
+		_last_failure = "presentation_failed"
+		_shutdown(true, "cancel")
+		return false
+	if commit.is_valid() and not bool(commit.call()):
+		_last_failure = "charge_commit_failed"
+		_shutdown(true, "cancel")
 		return false
 	_host.call("ultimate_host_set_active", true)
 	var duration := float(package_executor.call("execute", _activation)) \
@@ -99,6 +105,10 @@ func activate(class_id: String, weapon_id: String) -> bool:
 
 func active_activation() -> Activation:
 	return _activation
+
+
+func last_failure() -> String:
+	return _last_failure
 
 
 func guard_prevention_owner_id() -> String:

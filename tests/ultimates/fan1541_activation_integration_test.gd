@@ -39,6 +39,19 @@ class HudGameFixture extends Node:
 	var current_player: Node2D = null
 
 
+class PresentationHost extends Node2D:
+	var effects := Node2D.new()
+
+	func _init() -> void:
+		add_child(effects)
+
+	func ultimate_host_effect_parent() -> Node:
+		return effects
+
+	func ultimate_host_position() -> Vector2:
+		return global_position
+
+
 func _initialize() -> void:
 	var registry := Registry.new(PD.WEAPONS_BY_CLASS)
 	_check(registry.is_valid(), "the 51-profile catalog must validate", registry.validation_errors())
@@ -103,13 +116,16 @@ func _test_presentation(registry, profile: Dictionary, key: String) -> void:
 	var crowd_cap := int(runtime.get("crowd_cap", 0))
 	_check(max_visual_nodes <= 0 or crowd_cap <= 0 or max_visual_nodes <= crowd_cap,
 		"%s documented visual budget must not exceed its crowd cap" % key)
-	var presentation := PresentationRuntime.new()
-	_check(presentation.begin(null, registry, profile),
-		"%s must enter deterministic headless presentation" % key)
+	var host := PresentationHost.new()
+	root.add_child(host)
+	var presentation := PresentationRuntime.new(0)
+	_check(presentation.begin(host, registry, profile),
+		"%s must enter the real presentation branch under the headless gate" % key)
 	presentation.set_paused(true)
 	presentation.advance(1.0)
 	presentation.finish("node_end")
 	_check(not presentation.is_active(), "%s presentation must clean up" % key)
+	host.free()
 
 
 func _test_fail_closed_package_admission(registry) -> void:

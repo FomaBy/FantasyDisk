@@ -12,15 +12,15 @@ timeline covers the five required presentation groups of
 and points at the immutable Cast phase IDs of
 `data/ultimates/schema/v1/classes/soldier.json`
 (`release→execute`, `impact/active→active`, `recovery→recover`,
-`cancel→cleanup`). The longest timeline ends at 9.1 seconds, below the contract
+`cancel→cleanup`). The longest timeline ends at 8.4 seconds, below the contract
 limit of 10.0 seconds.
 
 The ready Soldier overlay/script pairs are now active at
 `data/ultimates/classes/soldier` and `scripts/ultimates/classes/soldier`.
 Discovery admits each pair only when its profile, class/weapon identity and
 executor agree, so the three live Soldier selections resolve through their
-exact weapon profiles. The staged roots remain isolated reference fixtures;
-they are not a runtime fallback path.
+exact weapon profiles. The former staged roots were removed after activation,
+so no staged Soldier runtime fallback remains.
 
 The three assets use intentionally different visual language and rhythm:
 
@@ -31,7 +31,7 @@ The three assets use intentionally different visual language and rhythm:
 - Grenade — «Семь Секунд до Ада»: one high lob seeds seven oversized grenades
   around the aim point, a shared fuse ring counts down in seven beats, and the
   chain detonates outside-in into a central fire column. 7.45 s active window
-  over 9.1 s total — the slow-burn silhouette of the set.
+  over 8.4 s total — the slow-burn silhouette of the set.
 - Bayonet — «Последняя Атака»: three time-offset ghost infantry ranks charge one
   aimed corridor, cross bayonets on the pin, and fall back to a rally salute
   while the hero holds a short frontal guard and never leaves the origin.

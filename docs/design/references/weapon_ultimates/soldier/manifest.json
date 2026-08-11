@@ -14,8 +14,8 @@
     ],
     "max_timeline_seconds": 10.0,
     "headless_fallback": "no_op",
-    "runtime_adapter_status": "unbound_shared_adapter_owned_by_FAN-1541",
-    "mechanics_status": "numeric telegraph/damage windows are unbound on this base; mechanics FAN-1469 introduces them and binds by phase_id, not by number"
+    "runtime_adapter_status": "active_shared_exact_pair_runtime",
+    "mechanics_status": "active class-local executors bind gameplay by phase_id and keep timing data non-balancing"
   },
   "generator_provenance": {
     "route": "reused_approved_assets_no_new_raster_generation",
@@ -80,7 +80,7 @@
         "release": 0.62,
         "active": 0.95,
         "recovery": 8.4,
-        "cancel": 9.1
+        "cancel": 8.4
       },
       "phase_ids": {
         "windup": "weapon_ultimate.phase.soldier.soldier_grenade.windup",

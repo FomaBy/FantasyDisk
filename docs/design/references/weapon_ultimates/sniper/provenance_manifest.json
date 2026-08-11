@@ -9,8 +9,8 @@
     "reuse_policy": "Each timeline re-exports an accepted PixelLab weapon VFX into an isolated ultimate source/runtime pair; no alternative image generator or manual raster art was used."
   },
   "runtime_binding": {
-    "status": "staged_not_activated",
-    "reason": "The shared WeaponUltimatePresentationManifest is outside FAN-1463 locked paths. FAN-1541/shared-runtime follow-up owns the future redirect to these class-local runtime paths."
+    "status": "active_exact_pair",
+    "reason": "The shared WeaponUltimatePresentationManifest resolves these class-local scenes for the active 51-pair runtime."
   },
   "contact_sheet": "docs/design/references/weapon_ultimates/sniper/sniper_ultimates_contact_sheet.png",
   "weapons": [
