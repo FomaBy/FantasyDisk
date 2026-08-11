@@ -168,7 +168,7 @@
 
 ### FAN-1893: ось «+1 снаряд» (extra_projectile) — правила потребления
 
-Generic-ключ `run_modifiers.extra_projectile` потребляется единственным швом `ClassWeapon._extra_projectiles()` и ТОЛЬКО оружием с явной capability `real_projectile_count > 0` в конфиге; каждый пункт добавляет ровно один дополнительный реальный снаряд боевого пути. Документированные правила target/damage/falloff по режимам:
+Generic-ключ `run_modifiers.extra_projectile` потребляется единственным швом `ClassWeapon._extra_projectiles()` и ТОЛЬКО оружием с явной capability `real_projectile_count > 0` в конфиге; каждый пункт добавляет ровно один дополнительный реальный снаряд боевого пути. Для обычного оружия это один снаряд его выстрела; у `engineer_sentry_link` каждый активный Sentry читает шов в собственном `try_fire`, поэтому один пункт добавляет по снаряду к залпу каждой стреляющей турели без изменения числа турелей, капа, cooldown, damage или summon scaling. Документированные правила target/damage/falloff по режимам:
 
 | Режим (capability-оружия) | Цель доп. снаряда | Урон/falloff |
 | --- | --- | --- |
@@ -177,7 +177,7 @@ Generic-ключ `run_modifiers.extra_projectile` потребляется ед�
 | `plague_dart` (`plague_syringe`) | сосед первичной цели в `plague_spread_radius`, без повторов | полный ролл каждого дротика + штатная зараза |
 | `sniper_split_round` (`sniper_shatter_rounds`) | round-robin по ближним, не более 2 пуль на одну цель за залп | единый ролл залпа, без per-index спада; лишние пули уходят веером без урона |
 | `storm_pierce_cone` (`storm_longbow`) | +1 стрела в веере `cone_degrees`; общий дедуп по телам | спад только по глубине пирса `pierce_damage_falloff^depth` |
-| `engineer_sentry_link` (`engineer_sentry_wrench`, залп турели) | следующая ближайшая отдельная цель залпа | `damage_falloff^index` на доп. снаряды; каждый тратит заряд магазина |
+| `engineer_sentry_link` (`engineer_sentry_wrench`, залп каждой активной турели) | следующая ближайшая отдельная цель собственного залпа | `damage_falloff^index` на доп. снаряды; каждый тратит заряд магазина; +1 даёт +1 на каждую стреляющую турель |
 
 Перегруженные интерпретации generic-ключа УДАЛЕНЫ и доказаны инертными исполняемыми negative-probes (`tests/fan1893_capability_contract_test.gd`): прыжки цепи палочки (`wand_extra_chain` — отдельный артефакт), прыжки рикошета монеты (`coin_extra_bounces`), капканы (`trap_extra_count` — семантический мета-ключ, работает), мины (`mine_extra_count`), тики квадрата стихий (`elemental_orb_extra_count`), веер лучей (`beam`/`dot_beam`), зеркальная пара `dark_book` (единица атаки — пара из двух сфер) и melee-удары. Ширина вентилей реактора закрыта дискриминирующей пробой `tests/robot_kit_test.gd::_test_reactor_blade_width_and_reset`: враг на боковом смещении 55 px лежит вне базовой полулопасти (`beam_width` 96 / 2 = 48), но внутри удалённого бонуса +14%/снаряд (96 × 1.28 / 2 ≈ 61.4 при extra=2) и обязан получить ноль хитов — возврат бонуса роняет именно эту проверку. Универсальный Leadership-echo (`player._trigger_leadership_echo`) удалён — см. `characters_weapons.md`.
 
