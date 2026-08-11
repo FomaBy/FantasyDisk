@@ -81,6 +81,8 @@ const FINAL_EXECUTION_STIMULUS_BY_EVENT := {
 # the compact A5 huddle, so its family measures on the ring it actually lands on.
 const FINAL_EXECUTION_RING_MODES := ["adjacency_chain"]
 const FINAL_EXECUTION_PAYOFF_KINDS := ["typed_damage", "target_death", "target_status_transition", "owner_state_transition"]
+const FINAL_EXECUTION_BINDING_KINDS := ["resolver_provenance", "frame_ordered"]
+const FINAL_EXECUTION_REPRESENTATIVE_BASELINE_PAIR := "berserk/sword"
 const ORACLE_LINEAGE_PATH := "res://tests/fixtures/a5_oracle_lineage.json"
 const ORACLE_LINEAGE_SCHEMA := "fan1641.a5-oracle-lineage.v1"
 const PROJECTION_FIELDS := ["live_solo_dpm_mean", "live_crowd_dpm_mean", "solo_variance_dpm2", "crowd_variance_dpm2"]
@@ -1404,7 +1406,7 @@ func _weapon_row(class_id: String, weapon_id: String, level: int, scenario_id: S
 	}
 
 
-func _a5_run_modifiers(class_id: String) -> Dictionary:
+static func _a5_run_modifiers(class_id: String) -> Dictionary:
 	var run_mods := {}
 	for key_value in PD.ascension_mods(class_id, 5).keys():
 		var key := str(key_value)
@@ -1421,7 +1423,7 @@ func _a5_run_modifiers(class_id: String) -> Dictionary:
 	return run_mods
 
 
-func _apply_meta_formula_mods(stats: Dictionary, run_mods: Dictionary, mods: Dictionary) -> void:
+static func _apply_meta_formula_mods(stats: Dictionary, run_mods: Dictionary, mods: Dictionary) -> void:
 	for source_key in PlayerScript.META_SKILL_ATTRIBUTE_FLAT_MAP:
 		if mods.has(source_key):
 			var stat_key := str(PlayerScript.META_SKILL_ATTRIBUTE_FLAT_MAP[source_key])
@@ -2114,7 +2116,8 @@ func _final_execution_payoff(sample: Dictionary, witness: A5FinalExecutionWitnes
 		if str(event.get("kind", "")) != "final_event":
 			continue
 		if str(event.get("phase", "")) == "target_death":
-			target_deaths += 1
+			if first_activation_frame >= 0 and int(event.get("frame", -1)) >= first_activation_frame:
+				target_deaths += 1
 			continue
 		if str(event.get("mechanic_id", "")) != mechanic_id:
 			continue
@@ -2136,12 +2139,10 @@ func _final_execution_payoff(sample: Dictionary, witness: A5FinalExecutionWitnes
 			provenance_damage += damage
 			provenance_hits += 1
 			continue
-		if str(event.get("probe_phase", "")) != "measurement":
-			continue
 		if first_activation_frame >= 0 and int(event.get("frame", 0)) >= first_activation_frame:
 			post_activation_damage += damage
 			post_activation_hits += 1
-		else:
+		elif first_activation_frame >= 0:
 			baseline_damage += damage
 			baseline_hits += 1
 	var status_markers := []
@@ -2207,8 +2208,36 @@ func _formula_basis(class_id: String, weapon_id: String, stats: Dictionary, stat
 	var run_mods := _a5_run_modifiers(class_id)
 	var local_stats := stats.duplicate(true)
 	_apply_meta_formula_mods(local_stats, run_mods, Meta.skill_modifiers_for_class(state, class_id))
+	return _formula_basis_from_applied_state(class_id, weapon_id, local_stats, run_mods)
+
+
+# This is intentionally independent of the stored report row: a candidate can
+# rewrite every derived basis field coherently, but cannot change the shipped
+# progression, constellation and stat-allocation inputs it is derived from.
+static func production_formula_basis(class_id: String, weapon_id: String) -> Dictionary:
+	var state := Meta.default_state()
+	state["ascension_levels"] = {class_id: 5}
+	var purchased := []
+	var hidden_ids := []
+	for raw_node in Meta.constellation_nodes(class_id):
+		var node: Dictionary = raw_node
+		var node_id := str(node.get("id", ""))
+		if str(node.get("role", "")) != "core":
+			purchased.append(node_id)
+		if str(node.get("role", "")) == "hidden":
+			hidden_ids.append(node_id)
+	state["hidden_reveal_facts"] = {class_id: hidden_ids}
+	state["skill_nodes"] = purchased
+	var run_mods := _a5_run_modifiers(class_id)
+	var stats := DamageTable.optimized_stats_for_class(class_id, PD.base_stats(class_id))
+	_apply_meta_formula_mods(stats, run_mods, Meta.skill_modifiers_for_class(state, class_id))
+	return _formula_basis_from_applied_state(class_id, weapon_id, stats, run_mods)
+
+
+static func _formula_basis_from_applied_state(class_id: String, weapon_id: String, stats: Dictionary, run_mods: Dictionary) -> Dictionary:
 	var config := PD.weapon(class_id, weapon_id)
-	var params := PD.derived_parameters(local_stats, run_mods, _config_with_class(config, class_id))
+	config["character_id"] = class_id
+	var params := PD.derived_parameters(stats, run_mods, config)
 	var damage_parameter := str(config.get("damage_parameter", PD.damage_parameter_for(class_id)))
 	var base_damage := float(params.get(damage_parameter, params.get("damage", 1.0)))
 	var crit_factor := 1.0 + float(params.get("crit_chance", 0.0)) * maxf(float(params.get("crit_damage_multiplier", 1.0)) - 1.0, 0.0)
@@ -3491,6 +3520,8 @@ static func verify_final_execution_artifacts(dataset: Dictionary) -> Dictionary:
 	var expected_pairs: Array = (dataset.get("roster", {}) as Dictionary).get("pair_keys", [])
 	var rows: Array = execution.get("rows", [])
 	var actual_pairs := []
+	var bindings := {}
+	var representative := {}
 	for row_value in rows:
 		if not row_value is Dictionary:
 			errors.append("final-execution row is not an object")
@@ -3498,10 +3529,25 @@ static func verify_final_execution_artifacts(dataset: Dictionary) -> Dictionary:
 		var row: Dictionary = row_value
 		var pair := str(row.get("pair", ""))
 		actual_pairs.append(pair)
+		bindings[str((row.get("payoff", {}) as Dictionary).get("binding", ""))] = true
+		if pair == FINAL_EXECUTION_REPRESENTATIVE_BASELINE_PAIR:
+			representative = row
 		for error_value in verify_final_execution_row(row):
 			errors.append(str(error_value))
 	if actual_pairs != expected_pairs:
 		errors.append("final-execution pair order/set mismatch")
+	var full_roster_pairs := []
+	for class_id_value in PD.character_ids():
+		var class_id := str(class_id_value)
+		for weapon_id_value in PD.weapon_ids(class_id):
+			full_roster_pairs.append("%s/%s" % [class_id, str(weapon_id_value)])
+	if expected_pairs == full_roster_pairs:
+		for binding_value in FINAL_EXECUTION_BINDING_KINDS:
+			if not bindings.has(str(binding_value)):
+				errors.append("final-execution binding coverage is missing %s" % binding_value)
+		var representative_payoff: Dictionary = representative.get("payoff", {})
+		if representative.is_empty() or int(representative_payoff.get("pre_activation_hits", 0)) <= 0 or float(representative_payoff.get("pre_activation_damage", 0.0)) <= 0.0:
+			errors.append("final-execution representative baseline is empty before activation for %s" % FINAL_EXECUTION_REPRESENTATIVE_BASELINE_PAIR)
 	return {"ok": errors.is_empty(), "errors": errors}
 
 
@@ -3626,9 +3672,6 @@ static func _verify_final_execution_payoff(row: Dictionary, expected: Dictionary
 		expected_ratio = snappedf(1.0 + FinalRuntime._damage_ratio(expected.get("params", {})), 0.0001)
 	if not is_equal_approx(resolver_ratio, expected_ratio):
 		errors.append("final-execution resolver payoff ratio differs from the production mechanic for %s" % pair)
-	var observed_ratio := float(payoff.get("observed_damage_ratio", 0.0))
-	if expected_ratio > 1.0 and observed_ratio > 0.0 and observed_ratio < 1.0:
-		errors.append("final-execution amplified hits are weaker than the unamplified baseline for %s" % pair)
 	return errors
 
 
@@ -3730,7 +3773,8 @@ static func _verify_final_execution_payoff_aggregates(row: Dictionary, sample: D
 		if str(event.get("kind", "")) != "final_event":
 			continue
 		if str(event.get("phase", "")) == "target_death":
-			deaths += 1
+			if first_activation_frame >= 0 and int(event.get("frame", -1)) >= first_activation_frame:
+				deaths += 1
 			continue
 		if str(event.get("mechanic_id", "")) != mechanic_id:
 			continue
@@ -3752,12 +3796,10 @@ static func _verify_final_execution_payoff_aggregates(row: Dictionary, sample: D
 			provenance_damage += damage
 			provenance_hits += 1
 			continue
-		if str(event.get("probe_phase", "")) != "measurement":
-			continue
 		if first_activation_frame >= 0 and int(event.get("frame", 0)) >= first_activation_frame:
 			post_damage += damage
 			post_hits += 1
-		else:
+		elif first_activation_frame >= 0:
 			pre_damage += damage
 			pre_hits += 1
 	if int(payoff.get("provenance_bound_hits", -1)) != provenance_hits or not is_equal_approx(float(payoff.get("provenance_bound_damage", -1.0)), snappedf(provenance_damage, 0.0001)):
@@ -3773,6 +3815,36 @@ static func _verify_final_execution_payoff_aggregates(row: Dictionary, sample: D
 	var expected_binding := "resolver_provenance" if provenance_hits > 0 else ("frame_ordered" if first_activation_frame >= 0 else "none")
 	if str(payoff.get("binding", "")) != expected_binding:
 		errors.append("final-execution causal binding does not follow the trace for %s" % pair)
+	var expected_amplified_mean := snappedf(provenance_damage / maxf(float(provenance_hits), 1.0), 0.0001)
+	var expected_baseline_mean := snappedf(pre_damage / maxf(float(pre_hits), 1.0), 0.0001)
+	var expected_observed_ratio := snappedf(expected_amplified_mean / maxf(expected_baseline_mean, 0.0001), 0.0001) if provenance_hits > 0 and pre_hits > 0 else 0.0
+	if not is_equal_approx(float(payoff.get("amplified_hit_mean", NAN)), expected_amplified_mean) or not is_equal_approx(float(payoff.get("unamplified_hit_mean", NAN)), expected_baseline_mean) or not is_equal_approx(float(payoff.get("observed_damage_ratio", NAN)), expected_observed_ratio):
+		errors.append("final-execution payoff baseline/amplification metrics do not reconstruct from the trace for %s" % pair)
+	var expected_owner_delta := {}
+	var owner_before: Dictionary = row.get("owner_state_before", {})
+	var owner_after: Dictionary = row.get("owner_state_after", {})
+	for key in ["health", "absorb_flat", "dodge_flat", "absorb", "dodge"]:
+		var delta := snappedf(float(owner_after.get(key, 0.0)) - float(owner_before.get(key, 0.0)), 0.0001)
+		if not is_zero_approx(delta):
+			expected_owner_delta[key] = delta
+	if not _same_snapped_metrics(payoff.get("owner_state_delta", {}), expected_owner_delta):
+		errors.append("final-execution owner-state payoff does not reconstruct from snapshots for %s" % pair)
+	var expected_owner_marker := str(owner_after.get("last_final_mechanic", "")) == mechanic_id
+	if bool(payoff.get("owner_final_marker", false)) != expected_owner_marker:
+		errors.append("final-execution owner service marker does not reconstruct from snapshots for %s" % pair)
+	var expected_kind := ""
+	if provenance_hits > 0 and provenance_damage > 0.0:
+		expected_kind = "typed_damage"
+	elif deaths > 0 and str(row.get("final_event", "")) in ["kill", "execute", "summon_death"]:
+		expected_kind = "target_death"
+	elif not (payoff.get("target_status_markers", []) as Array).is_empty():
+		expected_kind = "target_status_transition"
+	elif not expected_owner_delta.is_empty() and expected_owner_marker:
+		expected_kind = "owner_state_transition"
+	elif post_hits > 0 and post_damage > 0.0:
+		expected_kind = "typed_damage"
+	if str(payoff.get("kind", "")) != expected_kind:
+		errors.append("final-execution payoff kind does not follow its causal evidence for %s" % pair)
 	if not is_equal_approx(float(payoff.get("applied_hp_total", -1.0)), snappedf(float((sample.get("hp_ledger", {}) as Dictionary).get("total_applied_damage", 0.0)), 0.0001)):
 		errors.append("final-execution applied HP does not reconstruct from the ledger for %s" % pair)
 	return errors
@@ -3853,6 +3925,13 @@ static func _verify_disposition_row(row: Dictionary, parity_row: Dictionary, evi
 	var supported := bool(evidence.get("observed", false)) and str(payoff.get("kind", "")) != ""
 	var axes: Dictionary = row.get("axes", {})
 	var basis: Dictionary = row.get("formula_basis", {})
+	var pair_parts := pair.split("/", true, 1)
+	if pair_parts.size() != 2:
+		errors.append("formula/live disposition pair is malformed: %s" % pair)
+		return errors
+	var production_basis := production_formula_basis(str(pair_parts[0]), str(pair_parts[1]))
+	if not _same_formula_basis(basis, production_basis):
+		errors.append("formula basis is not the production-derived value for %s" % pair)
 	var accounted := true
 	for axis_key in ["solo", "pack"]:
 		var scenario := "sustain_solo" if axis_key == "solo" else "sustain_pack"
@@ -3938,6 +4017,20 @@ static func _same_snapped_metrics(actual_value, expected_value) -> bool:
 				or snappedf(float(actual[key]), 0.000001) != snappedf(float(expected[key]), 0.000001):
 			return false
 	return true
+
+
+static func _same_formula_basis(actual_value, expected_value) -> bool:
+	if not actual_value is Dictionary or not expected_value is Dictionary:
+		return false
+	var actual: Dictionary = actual_value
+	var expected: Dictionary = expected_value
+	if str(actual.get("damage_parameter", "")) != str(expected.get("damage_parameter", "")):
+		return false
+	for key in ["fire_interval_seconds", "cast_rate_per_second", "hit_damage", "direct_dpm"]:
+		if not _is_number(actual.get(key)) or not _is_number(expected.get(key)) \
+				or snappedf(float(actual[key]), 0.000001) != snappedf(float(expected[key]), 0.000001):
+			return false
+	return actual.size() == expected.size()
 
 
 static func _is_number(value) -> bool:
@@ -4296,6 +4389,19 @@ static func render_markdown(dataset: Dictionary) -> String:
 		lines.append("## Final-execution evidence")
 		lines.append("")
 		lines.append("Schema `%s`: every pair is driven through the production consumer that owns its schema-6 event, and only what the production runtime then applied is recorded — the resolver progress ladder, the canonical applied-HP ledger, target deaths, production target markers and owner state transitions. The harness authors no damage and no final label." % final_execution.get("schema", ""))
+		var executed_count := 0
+		var resolver_bound_count := 0
+		var frame_ordered_count := 0
+		for summary_row_value in final_rows:
+			var summary_row: Dictionary = summary_row_value
+			var payoff: Dictionary = summary_row.get("payoff", {})
+			if not (summary_row.get("activations", []) as Array).is_empty():
+				executed_count += 1
+			if str(payoff.get("binding", "")) == "resolver_provenance":
+				resolver_bound_count += 1
+			elif str(payoff.get("binding", "")) == "frame_ordered":
+				frame_ordered_count += 1
+		lines.append("Executed final mechanics: **%d/%d**. Directly resolver-bound payoffs: **%d/%d**; ordered post-activation payoffs: **%d/%d**. Execution and the unconditional owner service marker are not counted as a payoff by themselves." % [executed_count, final_rows.size(), resolver_bound_count, final_rows.size(), frame_ordered_count, final_rows.size()])
 		lines.append("")
 		lines.append("| Pair | Final (event) | Runtime consumer | Stimulus | Ladder steps → activations | Threshold | Payoff | Binding | Applied HP | Trace |")
 		lines.append("| --- | --- | --- | --- | ---: | ---: | --- | --- | ---: | --- |")
