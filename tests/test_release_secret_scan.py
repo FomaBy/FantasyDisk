@@ -57,6 +57,64 @@ class ReleaseSecretScanTests(unittest.TestCase):
             self.assertTrue(any("!FantasyDisk.app/Contents/Resources/game.pck" in str(path) for path, _kind in findings))
             self.assertTrue(any(kind == "raw-discord-webhook" for _path, kind in findings))
 
+    def _assert_release_pipeline_order(self, script: str) -> None:
+        source_start = script.index('SOURCE_COMMIT=""\nSOURCE_TREE=""\nSOURCE_LABEL=""')
+        source_end = script.index('WORKTREE_DIR="$(mktemp -d', source_start)
+        source_selection = script[source_start:source_end]
+        candidate_branch = source_selection.index('if [[ "${CANDIDATE_MODE}" -eq 1 ]]; then')
+        tag_branch = source_selection.index(
+            'else\n  if ! SOURCE_COMMIT="$(git -C "${REPO_DIR}" rev-parse "${TAG}^{commit}")"; then',
+            candidate_branch,
+        )
+        candidate_label = 'SOURCE_LABEL="candidate ${CANDIDATE_SHA} from ${CANDIDATE_REF}"'
+        tag_label = 'SOURCE_LABEL="tag ${TAG}"'
+        self.assertEqual(source_selection[candidate_branch:tag_branch].count(candidate_label), 1)
+        self.assertNotIn(tag_label, source_selection[candidate_branch:tag_branch])
+        self.assertEqual(source_selection[tag_branch:].count(tag_label), 1)
+        self.assertNotIn(candidate_label, source_selection[tag_branch:])
+
+        markers = (
+            ("signed credentials", 'if [[ -z "${MACOS_SIGN_IDENTITY}" ]]'),
+            ("source worktree", 'echo "==> Worktree из ${SOURCE_LABEL}"'),
+            ("clear xattr", 'xattr -cr "${APP_PATH}"'),
+            ("Developer ID sign", 'codesign --force --deep --options runtime --timestamp'),
+            ("verify app signature", 'codesign --verify --deep --strict --verbose=4 "${APP_PATH}"'),
+            ("notarize app", 'submit_notary_artifact "${APP_NOTARY_ZIP}"'),
+            ("staple app", 'xcrun stapler staple "${APP_PATH}"'),
+            ("build DMG", 'bash "${WORKTREE_DIR}/tools/create_macos_dmg.sh"'),
+            ("notarize DMG", 'submit_notary_artifact "${MAC_DMG}"'),
+            ("staple DMG", 'xcrun stapler staple "${MAC_DMG}"'),
+            ("staged secret scan", 'echo "==> Secret scan staged player payloads до публикации"'),
+            ("publish", 'echo "==> Публикация проверенных staged artifacts"'),
+        )
+        positions = {}
+        for name, marker in markers:
+            self.assertIn(marker, script, name)
+            positions[name] = script.index(marker)
+        for before, after in zip(markers, markers[1:]):
+            self.assertLess(positions[before[0]], positions[after[0]])
+
+        adhoc_sign_at = script.index('codesign --force --sign - "${APP_PATH}"')
+        self.assertLess(positions["clear xattr"], adhoc_sign_at)
+        self.assertLess(adhoc_sign_at, positions["build DMG"])
+
+    def test_worktree_source_checkpoint_is_required_for_order_oracle(self) -> None:
+        script = (ROOT / "tools" / "build_release.sh").read_text(encoding="utf-8")
+        checkpoint = 'echo "==> Worktree из ${SOURCE_LABEL}"'
+
+        deleted = script.replace(checkpoint + "\n", "", 1)
+        with self.assertRaises(AssertionError):
+            self._assert_release_pipeline_order(deleted)
+
+        moved = script.replace(checkpoint + "\n", "", 1)
+        moved = moved.replace(
+            'xattr -cr "${APP_PATH}"\n',
+            'xattr -cr "${APP_PATH}"\n' + checkpoint + "\n",
+            1,
+        )
+        with self.assertRaises(AssertionError):
+            self._assert_release_pipeline_order(moved)
+
     def test_release_pipeline_scans_staging_before_publish(self) -> None:
         script = (ROOT / "tools" / "build_release.sh").read_text(encoding="utf-8")
         scan_at = script.index('echo "==> Secret scan staged player payloads до публикации"')
@@ -69,33 +127,14 @@ class ReleaseSecretScanTests(unittest.TestCase):
 
     def test_release_pipeline_notarizes_final_app_before_dmg_and_publishes_installer_only(self) -> None:
         script = (ROOT / "tools" / "build_release.sh").read_text(encoding="utf-8")
-        credentials_at = script.index('if [[ -z "${MACOS_SIGN_IDENTITY}" ]]')
-        worktree_at = script.index('echo "==> Worktree из тега ${TAG}"')
-        clear_xattr_at = script.index('xattr -cr "${APP_PATH}"')
-        sign_at = script.index('codesign --force --deep --options runtime --timestamp')
-        verify_at = script.index('codesign --verify --deep --strict --verbose=4 "${APP_PATH}"')
-        app_notary_at = script.index('submit_notary_artifact "${APP_NOTARY_ZIP}"')
-        app_staple_at = script.index('xcrun stapler staple "${APP_PATH}"')
-        dmg_at = script.index('bash "${WORKTREE_DIR}/tools/create_macos_dmg.sh"')
-        dmg_notary_at = script.index('submit_notary_artifact "${MAC_DMG}"')
-        dmg_staple_at = script.index('xcrun stapler staple "${MAC_DMG}"')
-        self.assertLess(credentials_at, worktree_at)
-        self.assertLess(clear_xattr_at, sign_at)
-        self.assertLess(sign_at, verify_at)
-        self.assertLess(verify_at, app_notary_at)
-        self.assertLess(app_notary_at, app_staple_at)
-        self.assertLess(app_staple_at, dmg_at)
-        self.assertLess(dmg_at, dmg_notary_at)
-        self.assertLess(dmg_notary_at, dmg_staple_at)
-        adhoc_sign_at = script.index('codesign --force --sign - "${APP_PATH}"')
-        self.assertLess(clear_xattr_at, adhoc_sign_at)
-        self.assertLess(adhoc_sign_at, dmg_at)
+        self._assert_release_pipeline_order(script)
         self.assertIn('Signature=adhoc', script)
         self.assertNotIn('Notarization пропущена', script)
         self.assertIn('spctl --assess --type execute', script)
         self.assertIn('spctl --assess --type open --context context:primary-signature', script)
 
         publish_at = script.index('echo "==> Публикация проверенных staged artifacts"')
+        dmg_staple_at = script.index('xcrun stapler staple "${MAC_DMG}"')
         self.assertLess(dmg_staple_at, publish_at)
         published = script[publish_at:]
         self.assertIn(
