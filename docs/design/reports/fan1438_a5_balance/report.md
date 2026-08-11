@@ -1,8 +1,8 @@
 # FAN-1438 — A5 character and weapon balance report
 
-Source commit `be90b38df38788fc53190c862a873f4aab80ea28` (tree `ad41b714ee5ac2f92ad80e002704094cc05b4f72`, timestamp `2026-08-06T04:32:13+03:00`), Godot `4.7-stable (official)`. Dataset digest: `c1c6c2787d1898e626d55604755a60af1d10559f85d5e8529a347c634ab508bc`.
-Supplemental final-execution source commit `aafd148c2af9a63c9cc2d56b42ade83df349063c` (tree `e581819ee45e0e588d2fd1946eb0168b04bb947e`, timestamp `2026-08-10T23:14:04+03:00`), Godot `4.7-stable (official)`.
-Run identity `fan2224:a1b6524c2eac584b0e79ad95278371942acd79e83d0bab5f6b290c9dfaebb62e`. Generation command: `python3 tools/godot_gate.py --headless --fixed-fps 60 --path . --script res://tools/a5_balance_report.gd -- --mode=full --source-commit=aafd148c2af9a63c9cc2d56b42ade83df349063c`.
+Source commit `be90b38df38788fc53190c862a873f4aab80ea28` (tree `ad41b714ee5ac2f92ad80e002704094cc05b4f72`, timestamp `2026-08-06T04:32:13+03:00`), Godot `4.7-stable (official)`. Dataset digest: `ad26ca9f3dcf74327c666ad2f83c3059144f1d611788148e4cd55c38e3c719b1`.
+Supplemental final-execution source commit `8ba9b2ecb70fd99b12db47cbbed16fa4bec52247` (tree `2ba9c14a445abf43d717878cd4feb9d929ac7e93`, timestamp `2026-08-11T05:17:56+03:00`), Godot `4.7-stable (official)`.
+Run identity `fan2224:c7412dc6783870a012833a741383204218199c61c04e2141e80f6695909afade`. Generation command: `python3 tools/godot_gate.py --headless --fixed-fps 60 --path . --script res://tools/a5_balance_report.gd -- --mode=full --source-commit=8ba9b2ecb70fd99b12db47cbbed16fa4bec52247`.
 
 The live roster is **17 classes / 51 class-weapon pairs**. The primary matrix is **408 rows** = pairs × 2 levels × 4 meta scenarios. This report changes no balance values.
 
@@ -640,6 +640,7 @@ Absolute and percent deltas are against the same class / weapon / level `no_meta
 ## Final-execution evidence
 
 Schema `fan2224.final-execution.v2`: every pair is driven through the production consumer that owns its schema-6 event, and only what the production runtime then applied is recorded — the resolver progress ladder, the canonical applied-HP ledger, target deaths, production target markers and owner state transitions. The harness authors no damage and no final label.
+Executed final mechanics: **51/51**. Directly resolver-bound payoffs: **21/51**; ordered post-activation payoffs: **30/51**. Execution and the unconditional owner service marker are not counted as a payoff by themselves.
 
 | Pair | Final (event) | Runtime consumer | Stimulus | Ladder steps → activations | Threshold | Payoff | Binding | Applied HP | Trace |
 | --- | --- | --- | --- | ---: | ---: | --- | --- | ---: | --- |

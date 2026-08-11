@@ -17,6 +17,10 @@ const PlayerScript := preload("res://scripts/player.gd")
 const CodexData := preload("res://scripts/codex_data.gd")
 const Schema6 := preload("res://scripts/constellation_schema6_data.gd")
 const Generator := preload("res://tools/a5_balance_report.gd")
+const LEGACY_FINAL_EXECUTION_MUTATION_COUNT := 14
+const LEGACY_DISPOSITION_MUTATION_COUNT := 7
+const REQUIRED_DISPOSITION_MUTATION_COUNT := 8
+const SHIPPED_FINAL_EXECUTION_MUTATION_COUNT := 6
 
 var _errors := PackedStringArray()
 
@@ -50,7 +54,7 @@ func _initialize() -> void:
 	_validate_csv(dataset)
 	_validate_markdown(dataset, report_text)
 	_validate_censer_final_execution_fixture()
-	_validate_final_execution_falsification()
+	_validate_final_execution_falsification(dataset)
 	_validate_shipped_final_execution(dataset)
 	_finish()
 
@@ -61,19 +65,21 @@ func _initialize() -> void:
 # missing event, a harness-authored fallback hit, a foreign executor, a tampered
 # aggregate. Every mutation recomputes the digests that the previous evidence model
 # relied on, so passing this suite means the digests are no longer the guard.
-func _validate_final_execution_falsification() -> void:
+func _validate_final_execution_falsification(dataset: Dictionary) -> void:
 	var baseline := _final_execution_fixture()
 	var baseline_errors := Generator.verify_final_execution_row(baseline)
 	_check(baseline_errors.is_empty(), "the production-shaped final-execution fixture must be admissible: %s" % "; ".join(baseline_errors))
 	if not baseline_errors.is_empty():
 		return
-	for mutation_value in _final_execution_mutations(baseline):
+	var legacy_mutations := _final_execution_mutations(baseline)
+	_check(legacy_mutations.size() == LEGACY_FINAL_EXECUTION_MUTATION_COUNT, "final-execution mutation catalog is unexpectedly short")
+	for mutation_value in legacy_mutations:
 		var mutation: Dictionary = mutation_value
 		var mutated: Dictionary = mutation.get("row", {})
 		_check(not Generator.verify_final_execution_row(mutated).is_empty(), "final-execution verification accepts a forged row: %s" % mutation.get("name", "?"))
-	var dataset := _disposition_dataset(baseline)
-	_check(bool(Generator.verify_formula_live_dispositions(dataset).get("ok", false)), "the production-shaped disposition fixture must be admissible: %s" % "; ".join(Generator.verify_formula_live_dispositions(dataset).get("errors", [])))
-	var json_round_trip: Variant = JSON.parse_string(JSON.stringify(dataset, "", true, true))
+	var disposition_dataset := _disposition_dataset(baseline)
+	_check(bool(Generator.verify_formula_live_dispositions(disposition_dataset).get("ok", false)), "the production-shaped disposition fixture must be admissible: %s" % "; ".join(Generator.verify_formula_live_dispositions(disposition_dataset).get("errors", [])))
+	var json_round_trip: Variant = JSON.parse_string(JSON.stringify(disposition_dataset, "", true, true))
 	_check(json_round_trip is Dictionary and bool(Generator.verify_formula_live_dispositions(json_round_trip as Dictionary).get("ok", false)), "formula/live disposition verification must admit its JSON round trip")
 	var execution_artifact := {
 		"roster": {"pair_keys": [baseline["pair"]]},
@@ -97,20 +103,84 @@ func _validate_final_execution_falsification() -> void:
 	var forged_seed_ladder: Dictionary = execution_artifact.duplicate(true)
 	((forged_seed_ladder["final_execution"] as Dictionary)["seeds"] as Array)[0] = int(Generator.FINAL_EXECUTION_SEEDS[0]) + 1
 	_check(not bool(Generator.verify_final_execution_artifacts(forged_seed_ladder).get("ok", true)), "final-execution verification accepts a substituted seed ladder")
-	for mutation_value in _disposition_mutations(dataset):
+	var disposition_mutations := _disposition_mutations(disposition_dataset)
+	_check(disposition_mutations.size() == REQUIRED_DISPOSITION_MUTATION_COUNT and LEGACY_FINAL_EXECUTION_MUTATION_COUNT + LEGACY_DISPOSITION_MUTATION_COUNT == 21, "formula/live mutation catalog is unexpectedly short or lost a legacy case")
+	for mutation_value in disposition_mutations:
 		var mutation: Dictionary = mutation_value
 		_check(not bool(Generator.verify_formula_live_dispositions(mutation.get("dataset", {})).get("ok", false)), "formula/live disposition verification accepts a forged dataset: %s" % mutation.get("name", "?"))
+	_validate_shipped_final_execution_falsification(dataset)
 
 
-# When the shipped artifact already carries final-execution evidence its own rows
-# must satisfy the same contract; a legacy artifact simply has nothing to check.
 func _validate_shipped_final_execution(dataset: Dictionary) -> void:
-	if not dataset.has("final_execution"):
+	var is_v4 := str(dataset.get("schema", "")) == "fan2224.a5-balance.v4"
+	if is_v4:
+		_check(dataset.has("final_execution"), "v4 raw artifact must carry final-execution evidence")
+		_check(dataset.has("formula_live_dispositions"), "v4 raw artifact must carry formula/live dispositions")
+		var missing_execution := dataset.duplicate(true)
+		missing_execution.erase("final_execution")
+		_check(not bool(Generator.verify_final_execution_artifacts(missing_execution).get("ok", true)), "v4 artifact without final_execution must fail closed")
+		_check(not bool(Generator.verify_formula_live_dispositions(missing_execution).get("ok", true)), "v4 artifact without final_execution dispositions must fail closed")
+	if not dataset.has("final_execution") or not dataset.has("formula_live_dispositions"):
 		return
 	var verification := Generator.verify_final_execution_artifacts(dataset)
 	_check(bool(verification.get("ok", false)), "shipped final-execution evidence is not admissible: %s" % "; ".join(verification.get("errors", [])))
 	var dispositions := Generator.verify_formula_live_dispositions(dataset)
 	_check(bool(dispositions.get("ok", false)), "shipped formula/live dispositions are not admissible: %s" % "; ".join(dispositions.get("errors", [])))
+
+
+func _validate_shipped_final_execution_falsification(dataset: Dictionary) -> void:
+	var rows: Array = (dataset.get("final_execution", {}) as Dictionary).get("rows", [])
+	var by_kind := {}
+	var by_binding := {}
+	var baseline := {}
+	for row_value in rows:
+		var row: Dictionary = row_value
+		var payoff: Dictionary = row.get("payoff", {})
+		by_kind[str(payoff.get("kind", ""))] = row
+		by_binding[str(payoff.get("binding", ""))] = row
+		if str(row.get("pair", "")) == Generator.FINAL_EXECUTION_REPRESENTATIVE_BASELINE_PAIR:
+			baseline = row
+	_check(by_kind.keys().size() == Generator.FINAL_EXECUTION_PAYOFF_KINDS.size(), "shipped final-execution matrix must cover every payoff kind")
+	_check(by_binding.keys().size() == Generator.FINAL_EXECUTION_BINDING_KINDS.size(), "shipped final-execution matrix must cover every binding kind")
+	if baseline.is_empty():
+		_check(false, "shipped final-execution matrix lacks the representative baseline row")
+		return
+	var baseline_payoff: Dictionary = baseline.get("payoff", {})
+	_check(int(baseline_payoff.get("pre_activation_hits", 0)) > 0 and float(baseline_payoff.get("pre_activation_damage", 0.0)) > 0.0, "representative final-execution baseline must precede activation")
+	for multiplier in [0.5, 1.5]:
+		var altered := baseline.duplicate(true)
+		(altered["payoff"] as Dictionary)["amplified_hit_mean"] = float((altered["payoff"] as Dictionary).get("amplified_hit_mean", 0.0)) * multiplier
+		_check(not Generator.verify_final_execution_row(altered).is_empty(), "baseline amplification %0.1fx must fail final-execution verification" % multiplier)
+	var mutations := []
+	for payoff_kind_value in Generator.FINAL_EXECUTION_PAYOFF_KINDS:
+		var payoff_kind := str(payoff_kind_value)
+		_check(by_kind.has(payoff_kind), "shipped final-execution matrix lacks %s" % payoff_kind)
+		if not by_kind.has(payoff_kind):
+			continue
+		var kind_mutation: Dictionary = (by_kind[payoff_kind] as Dictionary).duplicate(true)
+		var payoff: Dictionary = kind_mutation["payoff"]
+		match payoff_kind:
+			"typed_damage":
+				payoff["post_activation_damage"] = float(payoff.get("post_activation_damage", 0.0)) + 1.0
+			"target_death":
+				payoff["target_deaths"] = int(payoff.get("target_deaths", 0)) + 1
+			"target_status_transition":
+				payoff["target_status_markers"] = []
+			"owner_state_transition":
+				payoff["owner_state_delta"] = {}
+		mutations.append({"name": "%s payoff mutation on a shipped row" % payoff_kind, "row": kind_mutation})
+	for binding_value in Generator.FINAL_EXECUTION_BINDING_KINDS:
+		var binding := str(binding_value)
+		_check(by_binding.has(binding), "shipped final-execution matrix lacks %s" % binding)
+		if not by_binding.has(binding):
+			continue
+		var binding_mutation: Dictionary = (by_binding[binding] as Dictionary).duplicate(true)
+		(binding_mutation["payoff"] as Dictionary)["binding"] = "frame_ordered" if binding == "resolver_provenance" else "resolver_provenance"
+		mutations.append({"name": "%s binding mutation on a shipped row" % binding, "row": binding_mutation})
+	_check(mutations.size() == SHIPPED_FINAL_EXECUTION_MUTATION_COUNT, "shipped final-execution mutation catalog is unexpectedly short")
+	for mutation_value in mutations:
+		var mutation: Dictionary = mutation_value
+		_check(not Generator.verify_final_execution_row(mutation.get("row", {})).is_empty(), "final-execution verification accepts a forged shipped row: %s" % mutation.get("name", "?"))
 
 
 func _final_execution_fixture() -> Dictionary:
@@ -351,13 +421,7 @@ func _disposition_dataset(row: Dictionary) -> Dictionary:
 		"hp_ledger": {"total_applied_damage": 3000.0, "measurement_duration_seconds": duration},
 	}
 	var live_telemetry := {"samples": [sample, pack_sample]}
-	var basis := {
-		"damage_parameter": "damage",
-		"fire_interval_seconds": 0.2,
-		"cast_rate_per_second": 5.0,
-		"hit_damage": 10.0,
-		"direct_dpm": 3000.0,
-	}
+	var basis := Generator.production_formula_basis("berserk", "sword")
 	var solo_observed := Generator.observed_axis_terms(live_telemetry, pair, "sustain_solo")
 	var pack_observed := Generator.observed_axis_terms(live_telemetry, pair, "sustain_pack")
 	var formula_solo := 6000.0
@@ -444,6 +508,21 @@ func _disposition_mutations(dataset: Dictionary) -> Array:
 	var matrix := dataset.duplicate(true)
 	(matrix["weapon_rows"] as Array)[0]["formula_live_disposition"] = "within_tolerance"
 	mutations.append({"name": "weapon matrix drifted from the disposition rows", "dataset": matrix})
+
+	var forged_basis := dataset.duplicate(true)
+	var forged_row: Dictionary = ((forged_basis["formula_live_dispositions"] as Dictionary)["rows"] as Array)[0]
+	var forged: Dictionary = (forged_row["formula_basis"] as Dictionary).duplicate(true)
+	forged["fire_interval_seconds"] = float(forged["fire_interval_seconds"]) * 2.0
+	forged["cast_rate_per_second"] = snappedf(1.0 / float(forged["fire_interval_seconds"]), 0.000001)
+	forged["hit_damage"] = float(forged["hit_damage"]) * 2.0
+	forged["direct_dpm"] = snappedf(60.0 * float(forged["hit_damage"]) * float(forged["cast_rate_per_second"]), 0.000001)
+	forged_row["formula_basis"] = forged
+	var forged_live: Dictionary = forged_basis["live_telemetry"]
+	var forged_parity: Dictionary = (forged_basis["formula_live_parity"] as Array)[0]
+	var forged_axes: Dictionary = forged_row["axes"]
+	forged_axes["solo"] = Generator.decompose_axis(forged, Generator.observed_axis_terms(forged_live, "berserk/sword", "sustain_solo"), float(forged_parity["formula_solo_dpm"]))
+	forged_axes["pack"] = Generator.decompose_axis(forged, Generator.observed_axis_terms(forged_live, "berserk/sword", "sustain_pack"), float(forged_parity["formula_pack_dpm"]))
+	mutations.append({"name": "self-consistent but non-production formula basis", "dataset": forged_basis})
 
 	return mutations
 
