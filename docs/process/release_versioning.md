@@ -24,7 +24,9 @@
 - **Источник истины версии** — `project.godot` → `[application] config/version`.
   Код может читать её через `ProjectSettings.get_setting("application/config/version")`
   (показывать в главном меню мелким текстом).
-- Каждый релиз помечается immutable git-тегом `v<version>` на ветке `main`.
+- Каждый опубликованный релиз помечается immutable git-тегом `v<version>` на
+  ветке `main`. До этого тега release candidate фиксируется remote ref + полным
+  commit SHA и проходит exact-SHA QA без `main`, тега или публикации.
 - Export presets отделяют logical release version от macOS bundle metadata.
   Для logical `X.Y.Z.R` (у `X.Y.Z` считать `R=0`) macOS
   `application/short_version` равен `X.Y.Z`, а `application/version` равен
@@ -140,21 +142,43 @@ dev  — основная ветка разработки. Все чаты (Back
    - создать новый пустой раздел Unreleased сверху.
    Релиз без финализированного changelog НЕ выполняется — это блокирующий гейт.
 5. Поднять версию: `config/version` в project.godot.
-6. Коммит в dev → `git checkout main` → `git merge dev --no-ff` → `git tag v<version>`
-   → `git checkout dev`.
-7. Backend собирает релизные билды для Windows и macOS (см. ниже) в `releases/v<version>/`
-   (каталог в .gitignore — артефакты не коммитятся).
-8. Положить копию changelog версии в артефакты релиза:
+6. Подготовительный commit пушится в remote candidate ref. До любого `main`-commit,
+   `v<version>`, GitHub Release или public asset Backend запускает только candidate build:
+
+   ```bash
+   FANTASYDISK_MACOS_CHANNEL=signed tools/build_release.sh <version> \
+     --candidate-repository <repository> \
+     --candidate-ref refs/heads/<candidate-ref> \
+     --candidate-sha <40-hex-commit>
+   ```
+
+   Все три candidate-параметра обязательны. Скрипт fail-closed сверяет remote ref
+   ровно с SHA, получает commit, записывает его tree в pre-build
+   `CANDIDATE_PROVENANCE.json` и создаёт clean detached worktree только из этого
+   commit. Версия проверяется внутри snapshot каноническим
+   `release_version_mapping.py`; fallback к `v<version>` в candidate mode запрещён.
+7. Backend materializes candidate package в `releases/v<version>/` и durable
+   `<local_root>/releases/v<version>/` (каталоги в .gitignore — артефакты не
+   коммитятся), затем независимый QA квалифицирует exact-SHA QA candidate.
+8. Только после terminal exact-SHA QA `PASSED` отдельная release/integration роль
+   создаёт `main` commit и `v<version>` ровно на candidate commit. Она запускает
+   `local_release.py verify`: tag commit/tree обязаны совпасть с candidate
+   provenance. Проверенные package bytes сопоставляются с тегом без перепаковки;
+   mismatch запрещает продвижение и публикацию.
+9. Положить копию changelog версии в артефакты релиза:
    `releases/v<version>/CHANGELOG-<version>.md` (раздел версии из CHANGELOG.md) — чтобы
    получатель билда видел, что нового, без доступа к репозиторию.
-9. Smoke-проверка установленных билдов.
-9a. **Постоянная локальная копия — блокирующий гейт.** До любой внешней публикации
+10. Smoke-проверка установленных билдов.
+10a. **Постоянная локальная копия — блокирующий гейт.** До любой внешней публикации
     `tools/build_release.sh` обязан вызвать bundled
     `skills/codex/fantasydisk-release-director/scripts/local_release.py` и:
     - собирать package в отдельный staging и только затем атомарно создать
       `<local_root>/releases/v<version>/` независимо от временного agent worktree;
-    - извлечь в `project/` неизменяемое evidence exact tag `v<version>`, записать tag
-      SHA и SHA256 всех файлов в `LOCAL_RELEASE.json`;
+    - извлечь в `project/` неизменяемое evidence exact tag `v<version>` либо pinned
+      candidate commit. Candidate `LOCAL_RELEASE.json` хранит `repository`, `ref`,
+      `commit`, `tree`, content `source_tree_sha256`, package inventory с size/SHA-256
+      каждого файла и не содержит ложного `tag_commit`; после QA verify требует, чтобы
+      созданный tag совпал с этими commit/tree без перепаковки bytes;
     - создать отдельную редактируемую `godot-project/`, атомарно направить на неё
       `releases/current-project` и зарегистрировать путь как `favorite=true`, не
       изменяя рабочий `dev` оператора и immutable evidence;
@@ -171,7 +195,7 @@ dev  — основная ветка разработки. Все чаты (Back
     байты только из возвращённого проверенного локального пути и обязательно
     прикладывают PNG release poster. Локальный root задаётся явно/env/config и
     никогда не угадывается по временному worktree.
-9b. **Public GitHub distribution + updater manifest (начиная с 0.2.2).** Private
+10b. **Public GitHub distribution + updater manifest (начиная с 0.2.2).** Private
     source repository `FomaBy/FantasyDisk` не используется как download host.
     Пакет обязан содержать `update-manifest.json` schema 1 с точными именами,
     размерами, SHA-256 и URLs обоих installers в public binary-only repository
@@ -200,7 +224,7 @@ dev  — основная ветка разработки. Все чаты (Back
     в Telegram (poster, DMG, Windows Setup, SHA256SUMS), после чего Discord
     публикует Telegram download link и GitHub release URL. Полный контракт:
     `docs/process/game_updates.md`.
-10. **Релиз в Multica** (правило пользователя 2026-06-12: спринт = релиз;
+11. **Релиз в Multica** (правило пользователя 2026-06-12: спринт = релиз;
     live board — проект FantasyDisk, issues FAN-*):
     - закрыть все issues версии в статус `done` на доске FantasyDisk;
     - пометить Multica release metadata (`release`) `<version>` как released, в описание
@@ -210,7 +234,7 @@ dev  — основная ветка разработки. Все чаты (Back
     - новым issues версии проставлять release metadata (`release`) = активная
       целевая версия (issues следующей версии остаются в backlog без `release`
       до своей стабилизации).
-11. **Патч-ноуты в игре**: обновить игровой файл патч-ноутов (см. задачу
+12. **Патч-ноуты в игре**: обновить игровой файл патч-ноутов (см. задачу
     backend_ingame_patch_notes_task.md / экран «Что нового») — человекочитаемые
     заметки версии для игрока, по-русски, синхронно с CHANGELOG. Это часть
     блокирующего changelog-гейта шага 4. Готово.
@@ -308,13 +332,19 @@ FAN-1121 сохранён как явно выбираемый historical `unsig
 
 ## Фактические Нюансы Сборки (выявлено при v0.1.0)
 
-- Сборка из тега идет через **отдельный git worktree** (`git worktree add --detach /tmp/... v<version>`),
+- Tag build идет через **отдельный git worktree** (`git worktree add --detach /tmp/... v<version>`),
   а не checkout в рабочем каталоге: в каталоге параллельно работают другие агенты,
-  переключение ветки под ними недопустимо. Реализовано в `tools/build_release.sh`.
+  переключение ветки под ними недопустимо. Это сохраняет поддержку published
+  immutable releases с exact tag `v<version>`.
+- Candidate build использует тот же detached worktree, но только после проверки
+  explicit remote `refs/heads/...` against full 40-hex SHA; tree фиксируется до
+  import/export. Candidate source не может тихо fallback к tag, `main` или текущему
+  worktree, а его provenance входит в durable package до независимого exact-SHA QA.
 - Все входы сборки (`export_presets.cfg`, иконки, NSIS source, DMG helper/arrow)
-  берутся из exact tag worktree. Если старый тег их не содержит, сборка блокируется:
-  накладывать свежие файлы поверх тега запрещено, иначе сохранённый Godot snapshot
-  перестаёт соответствовать реально экспортированному проекту.
+  берутся из exact tag или pinned candidate worktree. Если snapshot их не содержит,
+  сборка блокируется: накладывать свежие файлы поверх snapshot запрещено, иначе
+  сохранённый Godot snapshot перестаёт соответствовать реально экспортированному
+  проекту.
 - **Export templates**: проверка `~/Library/Application Support/Godot/export_templates/<версия>/`;
   Windows-шаблоны ставятся из официального tpz (godotengine releases), распаковать
   `windows_release_x86_64.exe` / `windows_debug_x86_64.exe` в каталог шаблонов.

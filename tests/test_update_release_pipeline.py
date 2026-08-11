@@ -2769,6 +2769,51 @@ class MacosChannelLabelingTests(unittest.TestCase):
         self.assertIn('if [[ "${CLIENT_MACOS_CHANNEL}" != "${MACOS_CHANNEL}" ]]', script)
 
 
+class CandidateReleaseBuildContractTests(unittest.TestCase):
+    """FAN-2422: exact-SHA QA must happen before the immutable release tag."""
+
+    def test_candidate_build_is_pinned_and_carries_prebuild_provenance(self) -> None:
+        script = (ROOT / "tools" / "build_release.sh").read_text(encoding="utf-8")
+        for option in (
+            "--candidate-repository",
+            "--candidate-ref",
+            "--candidate-sha",
+        ):
+            with self.subTest(option=option):
+                self.assertIn(option, script)
+        self.assertIn("git ls-remote --refs", script)
+        self.assertIn("candidate remote ref does not resolve to the pinned SHA", script)
+        self.assertIn('worktree add --detach "${WORKTREE_DIR}" "${SOURCE_COMMIT}"', script)
+        self.assertIn("CANDIDATE_PROVENANCE.json", script)
+        self.assertLess(
+            script.index("CANDIDATE_PROVENANCE.json"),
+            script.index('run_godot --headless --import'),
+        )
+        self.assertIn("--candidate-tree \"${SOURCE_TREE}\"", script)
+
+    def test_candidate_manifest_has_no_tag_fallback_and_keeps_complete_inventory(self) -> None:
+        source = (SCRIPTS / "local_release.py").read_text(encoding="utf-8")
+        self.assertIn('manifest["candidate"] = {', source)
+        self.assertIn('"package_inventory": package_inventory', source)
+        self.assertIn("candidate manifest must not contain tag provenance", source)
+        self.assertIn("candidate provenance does not match", source)
+        self.assertIn("require_tag_match=args.action == \"verify\"", source)
+
+    def test_release_docs_describe_candidate_then_tag_without_repacking(self) -> None:
+        documents = {
+            relative: (ROOT / relative).read_text(encoding="utf-8")
+            for relative in (
+                Path("docs") / "process" / "release_versioning.md",
+                Path("skills") / "codex" / "fantasydisk-release-director" / "SKILL.md",
+            )
+        }
+        for relative, document in documents.items():
+            with self.subTest(document=str(relative)):
+                self.assertIn("candidate", document.lower())
+                self.assertIn("exact-SHA QA", document)
+                self.assertIn("без перепаковки", document)
+
+
 class Published024ReleaseDocumentationTests(unittest.TestCase):
     """FAN-1226: operator docs must describe the already published 0.2.4 release."""
 

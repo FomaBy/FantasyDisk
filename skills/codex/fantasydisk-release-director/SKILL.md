@@ -68,19 +68,41 @@ Use `content-zone-image-compositor` before any image generation:
 
 ## 4. Git release state
 
-1. Commit the green release preparation and push it to `origin/dev`.
-2. Integrate current `dev` into `main` with a release merge commit, tag the
-   exact release commit as `v<version>`, and push `main` plus the tag.
-3. Return the task worktree to its agent branch/dev flow. Never switch another
+1. Commit the green release preparation and push an immutable candidate to its
+   remote source ref. Before creating `main`, `v<version>`, a GitHub Release or
+   public assets, build the exact candidate and obtain independent exact-SHA QA.
+2. Candidate build requires repository, remote `refs/heads/...` source ref and
+   full 40-hex commit SHA. The build resolves that ref exactly, records its tree
+   before import/export, and uses a clean detached worktree only from that commit;
+   a candidate never falls back to a tag.
+3. Only after QA `PASSED`, integrate the unchanged candidate commit into `main`,
+   tag that exact commit as `v<version>`, and verify the durable candidate against
+   the tag. Reuse the verified package bytes без перепаковки; any tag/candidate
+   provenance mismatch blocks publication.
+4. Return the task worktree to its agent branch/dev flow. Never switch another
    worker’s checkout.
 
 ## 5. Build macOS and Windows
 
-Run:
+For a published immutable tag, run:
 
 ```bash
 FANTASYDISK_MACOS_CHANNEL=signed tools/build_release.sh <version>
 ```
+
+For a pre-tag candidate, run only:
+
+```bash
+FANTASYDISK_MACOS_CHANNEL=signed tools/build_release.sh <version> \
+  --candidate-repository <repository> \
+  --candidate-ref refs/heads/<candidate-ref> \
+  --candidate-sha <40-hex-commit>
+```
+
+Candidate mode requires all three inputs, resolves the remote ref exactly to the
+pinned SHA, records the commit tree before any build step, verifies the version
+inside that snapshot via canonical mapping, and never creates or requires a tag,
+`main`, public release, or public asset.
 
 Require `releases/v<version>/` to contain:
 
@@ -166,7 +188,8 @@ the operator machine once in `~/.config/fantasydisk/release.json`:
 override that file. There is no repo-root fallback: an ephemeral worktree is
 never inferred as durable merely because it contains ignored config. The build
 must use export presets, icons, installer sources, and DMG layout inputs from the
-exact tag; overlaying current worktree files onto the tag is forbidden.
+exact tag or pinned candidate; overlaying current worktree files onto either
+snapshot is forbidden.
 
 `tools/build_release.sh` must finish by running:
 
@@ -182,9 +205,14 @@ Require all of the following before any external upload:
   may atomically create `<local_root>/releases/v<version>/`;
 - the complete package, including the mandatory versioned poster PNG, is
   retained under `<local_root>/releases/v<version>/`;
-- `project/` is immutable evidence from an exact `git archive` of `v<version>`, with
-  tag SHA, every package hash, and the macOS trust channel (`macos_channel`)
-  recorded in `LOCAL_RELEASE.json`;
+- `project/` is immutable evidence from an exact `git archive` of `v<version>` or
+  the pinned candidate commit. A candidate manifest records repository/ref/commit/tree,
+  content source digest, and an inventory with size/SHA-256 for every package file;
+  it never invents `tag_commit` before promotion. Its pre-build provenance must match
+  the materialization arguments;
+- after exact-SHA QA, `local_release.py verify` requires the created tag commit/tree
+  to match the retained candidate provenance, so the already verified package bytes
+  are reused без перепаковки;
 - existing releases are byte-compared and never overwritten on mismatch, and a
   materialized release is never relabeled into another channel;
 - `godot-project/` is a separate editable copy; `<local_root>/releases/current-project`
