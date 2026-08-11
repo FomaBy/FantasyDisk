@@ -2,7 +2,7 @@
 # Релизная сборка FantasyDisk для macOS (drag-to-Applications DMG) и Windows
 # (только NSIS installer).
 #
-# Использование: tools/build_release.sh <версия>   # пример: tools/build_release.sh 0.1.0
+# Использование: tools/build_release.sh <версия> [candidate options]
 #
 # macOS-канал выбирается ЯВНО через FANTASYDISK_MACOS_CHANNEL:
 #   signed (default) — строгий production-канал: Developer ID + notarization
@@ -14,21 +14,69 @@
 #     остальные гейты (exact tag, layout, secret scan, SHA-256, manifest)
 #     сохраняются, а клиент/док обязаны честно помечать сборку как unsigned.
 #
-# Сборка идет только из git-тега v<версия> через ОТДЕЛЬНЫЙ git worktree, чтобы не
-# трогать рабочую ветку dev. Build inputs поверх тега не накладываются: сохранённый
-# source snapshot должен соответствовать проекту, из которого экспортирован релиз.
+# Сборка идет из immutable тега или явно закреплённого remote candidate через
+# ОТДЕЛЬНЫЙ git worktree, чтобы не трогать рабочую ветку dev. Build inputs поверх
+# выбранного snapshot не накладываются: сохранённый source snapshot должен
+# соответствовать проекту, из которого экспортирован релиз.
+#
+# --candidate-presign-verify — QA-only pre-sign verification (FAN-2426): режим
+#   доступен ТОЛЬКО вместе с полным candidate pin и доказывает, что закреплённый
+#   candidate импортируется и экспортируется без credentials. Он останавливается
+#   на post-export/pre-sign checkpoint, поэтому packaging, подпись, notarization,
+#   tag, GitHub Release и публикация не выполняются, publishable artifact не
+#   создаётся, а disposable output удаляется. Обычные каналы этот режим не
+#   ослабляет: signed по-прежнему требует Developer ID + notary profile, unsigned
+#   остаётся отдельно выбираемым каналом с честной клиентской меткой.
 set -euo pipefail
 
 # КРИТИЧНО для makensis: в C-локали iconv("wchar_t"->...) падает на не-ASCII
 # символах NSIS-констант с фиктивным std::bad_alloc. Нужна UTF-8 локаль.
 export LC_ALL=en_US.UTF-8
 
-VERSION="${1:?Usage: tools/build_release.sh <version>}"
+usage() {
+  echo "Usage: tools/build_release.sh <version> [--candidate-repository <repo> --candidate-ref <refs/heads/...> --candidate-sha <40-hex> [--candidate-presign-verify]]"
+}
+
+if [[ "$#" -lt 1 ]]; then
+  usage
+  exit 2
+fi
+VERSION="$1"
+shift
+CANDIDATE_REPOSITORY=""
+CANDIDATE_REF=""
+CANDIDATE_SHA=""
+PRESIGN_MODE=0
+while [[ "$#" -gt 0 ]]; do
+  case "$1" in
+    --candidate-presign-verify)
+      PRESIGN_MODE=1
+      shift
+      ;;
+    --candidate-repository|--candidate-ref|--candidate-sha)
+      if [[ "$#" -lt 2 ]]; then
+        echo "ERROR: $1 requires a value"
+        exit 2
+      fi
+      case "$1" in
+        --candidate-repository) CANDIDATE_REPOSITORY="$2" ;;
+        --candidate-ref) CANDIDATE_REF="$2" ;;
+        --candidate-sha) CANDIDATE_SHA="$2" ;;
+      esac
+      shift 2
+      ;;
+    *)
+      echo "ERROR: unknown argument: $1"
+      usage
+      exit 2
+      ;;
+  esac
+done
 TAG="v${VERSION}"
 REPO_DIR="$(cd "$(dirname "$0")/.." && pwd)"
 GODOT_PATH="${GODOT_BIN:-${GODOT:-/Users/sergeyfomin/Downloads/Godot.app/Contents/MacOS/Godot}}"
-WORKTREE_DIR="$(mktemp -d /tmp/fantasydisk-build-XXXXXX)/src"
-RELEASE_DIR="${WORKTREE_DIR}/build/release-package"
+WORKTREE_DIR=""
+RELEASE_DIR=""
 DMG_MOUNT_DIR=""
 MACOS_SIGN_IDENTITY="${MACOS_SIGN_IDENTITY:-}"
 MACOS_NOTARY_PROFILE="${MACOS_NOTARY_PROFILE:-}"
@@ -40,12 +88,34 @@ if ! [[ "${VERSION}" =~ ${RELEASE_VERSION_RE} ]]; then
   echo "ERROR: version must have format X.Y.Z or X.Y.Z.R"
   exit 2
 fi
-if ! python3 "${REPO_DIR}/tools/release_version_mapping.py" --version "${VERSION}" >/dev/null 2>&1; then
-  echo "ERROR: version must satisfy the canonical bounded X.Y.Z or X.Y.Z.R contract"
-  exit 2
-fi
 if [[ "${MACOS_CHANNEL}" != "signed" && "${MACOS_CHANNEL}" != "unsigned" ]]; then
   echo "ERROR: FANTASYDISK_MACOS_CHANNEL must be 'signed' or 'unsigned', got '${MACOS_CHANNEL}'"
+  exit 2
+fi
+CANDIDATE_MODE=0
+if [[ -n "${CANDIDATE_REPOSITORY}${CANDIDATE_REF}${CANDIDATE_SHA}" ]]; then
+  CANDIDATE_MODE=1
+  if [[ -z "${CANDIDATE_REPOSITORY}" || -z "${CANDIDATE_REF}" || -z "${CANDIDATE_SHA}" ]]; then
+    echo "ERROR: candidate mode requires --candidate-repository, --candidate-ref, and --candidate-sha together"
+    exit 2
+  fi
+  if [[ "${CANDIDATE_REPOSITORY}" == -* || "${CANDIDATE_REPOSITORY}" == *$'\n'* ]]; then
+    echo "ERROR: candidate repository is unsafe"
+    exit 2
+  fi
+  if [[ ! "${CANDIDATE_REF}" =~ ^refs/heads/[A-Za-z0-9][A-Za-z0-9._/-]*$ ]] \
+      || [[ "${CANDIDATE_REF}" == *..* || "${CANDIDATE_REF}" == *//* || "${CANDIDATE_REF}" == */ ]]; then
+    echo "ERROR: candidate ref must be a safe refs/heads/* remote ref"
+    exit 2
+  fi
+  if [[ ! "${CANDIDATE_SHA}" =~ ^[0-9a-fA-F]{40}$ ]]; then
+    echo "ERROR: candidate SHA must be a full 40-hex commit"
+    exit 2
+  fi
+  CANDIDATE_SHA="$(tr '[:upper:]' '[:lower:]' <<< "${CANDIDATE_SHA}")"
+fi
+if [[ "${PRESIGN_MODE}" -eq 1 && "${CANDIDATE_MODE}" -eq 0 ]]; then
+  echo "ERROR: --candidate-presign-verify is candidate-only and cannot run the tag/final-release path; pin --candidate-repository, --candidate-ref and --candidate-sha"
   exit 2
 fi
 if [[ "${MACOS_CHANNEL}" == "unsigned" ]]; then
@@ -56,6 +126,11 @@ if [[ "${MACOS_CHANNEL}" == "unsigned" ]]; then
     echo "ERROR: unsigned channel refuses to run while MACOS_SIGN_IDENTITY/MACOS_NOTARY_PROFILE are set; use the signed channel or unset them"
     exit 2
   fi
+elif [[ "${PRESIGN_MODE}" -eq 1 ]]; then
+  # Pre-sign verification останавливается до подписи и notarization, поэтому
+  # Developer ID и notary profile ему не нужны. Требование credentials остаётся
+  # обязательным для обычного signed-канала ниже, который действительно подписывает.
+  echo "==> Pre-sign verification: Developer ID/notary credentials не требуются, подпись и notarization не выполняются"
 else
   if [[ -z "${MACOS_SIGN_IDENTITY}" ]]; then
     echo "ERROR: MACOS_SIGN_IDENTITY is required; release builds may not use ad-hoc signing (owner-approved credential-free builds must set FANTASYDISK_MACOS_CHANNEL=unsigned explicitly)"
@@ -108,8 +183,50 @@ submit_notary_artifact() {
   echo "    Apple notarization accepted ${label}"
 }
 
-echo "==> Worktree из тега ${TAG}"
-git -C "${REPO_DIR}" worktree add --detach "${WORKTREE_DIR}" "${TAG}"
+SOURCE_COMMIT=""
+SOURCE_TREE=""
+SOURCE_LABEL=""
+if [[ "${CANDIDATE_MODE}" -eq 1 ]]; then
+  REMOTE_LINE="$(git ls-remote --refs "${CANDIDATE_REPOSITORY}" "${CANDIDATE_REF}" || true)"
+  if [[ ! "${REMOTE_LINE}" =~ ^([0-9a-fA-F]{40})$'\t'(.+)$ ]]; then
+    echo "ERROR: candidate remote ref cannot be resolved exactly"
+    exit 2
+  fi
+  REMOTE_SHA="$(tr '[:upper:]' '[:lower:]' <<< "${BASH_REMATCH[1]}")"
+  REMOTE_REF="${BASH_REMATCH[2]}"
+  if [[ "${REMOTE_REF}" != "${CANDIDATE_REF}" || "${REMOTE_SHA}" != "${CANDIDATE_SHA}" ]]; then
+    echo "ERROR: candidate remote ref does not resolve to the pinned SHA"
+    exit 2
+  fi
+  if ! git -C "${REPO_DIR}" fetch --no-tags "${CANDIDATE_REPOSITORY}" "${CANDIDATE_REF}"; then
+    echo "ERROR: candidate remote ref could not be fetched"
+    exit 2
+  fi
+  if ! SOURCE_COMMIT="$(git -C "${REPO_DIR}" rev-parse "FETCH_HEAD^{commit}")"; then
+    echo "ERROR: fetched candidate remote ref has no commit"
+    exit 2
+  fi
+  SOURCE_COMMIT="$(tr '[:upper:]' '[:lower:]' <<< "${SOURCE_COMMIT}")"
+  if [[ "${SOURCE_COMMIT}" != "${CANDIDATE_SHA}" ]]; then
+    echo "ERROR: fetched candidate remote ref does not match the pinned SHA"
+    exit 2
+  fi
+  SOURCE_TREE="$(git -C "${REPO_DIR}" rev-parse "${SOURCE_COMMIT}^{tree}")"
+  SOURCE_TREE="$(tr '[:upper:]' '[:lower:]' <<< "${SOURCE_TREE}")"
+  SOURCE_LABEL="candidate ${CANDIDATE_SHA} from ${CANDIDATE_REF}"
+else
+  if ! SOURCE_COMMIT="$(git -C "${REPO_DIR}" rev-parse "${TAG}^{commit}")"; then
+    echo "ERROR: immutable tag ${TAG} is unavailable"
+    exit 2
+  fi
+  SOURCE_TREE="$(git -C "${REPO_DIR}" rev-parse "${SOURCE_COMMIT}^{tree}")"
+  SOURCE_LABEL="tag ${TAG}"
+fi
+
+WORKTREE_DIR="$(mktemp -d /tmp/fantasydisk-build-XXXXXX)/src"
+RELEASE_DIR="${WORKTREE_DIR}/build/release-package"
+echo "==> Worktree из ${SOURCE_LABEL}"
+git -C "${REPO_DIR}" worktree add --detach "${WORKTREE_DIR}" "${SOURCE_COMMIT}"
 cleanup() {
   if [[ -n "${DMG_MOUNT_DIR}" ]]; then
     hdiutil detach "${DMG_MOUNT_DIR}" -force >/dev/null 2>&1 || true
@@ -118,7 +235,7 @@ cleanup() {
 }
 trap cleanup EXIT
 
-echo "==> Проверка точных build inputs внутри тега"
+echo "==> Проверка точных build inputs внутри ${SOURCE_LABEL}"
 for required_input in \
   export_presets.cfg \
   assets/icon.ico \
@@ -133,17 +250,39 @@ for required_input in \
   skills/codex/fantasydisk-release-director/scripts/build_update_manifest.py \
   skills/codex/fantasydisk-release-director/scripts/local_release.py; do
   if [[ ! -f "${WORKTREE_DIR}/${required_input}" ]]; then
-    echo "    ERROR: тег ${TAG} не содержит build input ${required_input}"
+    echo "    ERROR: ${SOURCE_LABEL} не содержит build input ${required_input}"
     exit 2
   fi
 done
 if ! cmp -s "${REPO_DIR}/tools/build_release.sh" "${WORKTREE_DIR}/tools/build_release.sh"; then
-  echo "    ERROR: запущенный build_release.sh отличается от exact tag ${TAG}"
+  echo "    ERROR: запущенный build_release.sh отличается от ${SOURCE_LABEL}"
   exit 2
 fi
 MACOS_ARROW_SOURCE="${WORKTREE_DIR}/${MACOS_ARROW_REL}"
 
-echo "==> Проверка версии тега и export presets"
+if [[ "${CANDIDATE_MODE}" -eq 1 ]]; then
+  CANDIDATE_PROVENANCE_PATH="${WORKTREE_DIR}/build/CANDIDATE_PROVENANCE.json"
+  mkdir -p "$(dirname "${CANDIDATE_PROVENANCE_PATH}")"
+  python3 - "${CANDIDATE_PROVENANCE_PATH}" "${CANDIDATE_REPOSITORY}" \
+    "${CANDIDATE_REF}" "${CANDIDATE_SHA}" "${SOURCE_TREE}" <<'PY'
+import json
+import pathlib
+import sys
+
+path, repository, ref, commit, tree = sys.argv[1:]
+pathlib.Path(path).write_text(
+    json.dumps(
+        {"repository": repository, "ref": ref, "commit": commit, "tree": tree},
+        ensure_ascii=False,
+        indent=2,
+        sort_keys=True,
+    ) + "\n",
+    encoding="utf-8",
+)
+PY
+fi
+
+echo "==> Проверка версии ${SOURCE_LABEL} и export presets"
 if ! VERSION_MAPPING="$(python3 "${WORKTREE_DIR}/tools/release_version_mapping.py" \
   --version "${VERSION}" \
   --project "${WORKTREE_DIR}/project.godot" \
@@ -153,7 +292,7 @@ if ! VERSION_MAPPING="$(python3 "${WORKTREE_DIR}/tools/release_version_mapping.p
 fi
 IFS=$'\t' read -r MACOS_SHORT_VERSION MACOS_BUILD_VERSION WINDOWS_PRODUCT_VERSION WINDOWS_FILE_VERSION <<< "${VERSION_MAPPING}"
 
-echo "==> Проверка честной маркировки macOS-канала в клиенте тега"
+echo "==> Проверка честной маркировки macOS-канала в клиенте ${SOURCE_LABEL}"
 CLIENT_MACOS_CHANNEL="$(sed -n 's/^const MACOS_UPDATE_CHANNEL := "\([a-z]*\)".*$/\1/p' \
   "${WORKTREE_DIR}/scripts/update_manager.gd" | head -1)"
 if [[ "${CLIENT_MACOS_CHANNEL}" != "${MACOS_CHANNEL}" ]]; then
@@ -181,11 +320,19 @@ if ! run_godot --headless --import --path "${WORKTREE_DIR}" >"${IMPORT_LOG}" 2>&
   exit 2
 fi
 
-echo "==> Экспорт macOS (.app в zip; подпись будет последним изменением bundle)"
+if [[ "${PRESIGN_MODE}" -eq 1 ]]; then
+  # Pre-sign отчитывается только о том, что действительно делает.
+  EXPORT_LABEL="Экспорт macOS (.app в zip; подпись не выполняется)"
+  MATERIALIZE_LABEL="Материализация .app из экспорта без подписи"
+else
+  EXPORT_LABEL="Экспорт macOS (.app в zip; подпись будет последним изменением bundle)"
+  MATERIALIZE_LABEL="Финализация и подпись готового .app"
+fi
+echo "==> ${EXPORT_LABEL}"
 run_godot --headless --path "${WORKTREE_DIR}" \
   --export-release "macOS" "${WORKTREE_DIR}/build/FantasyDisk-${VERSION}-macos.zip"
 
-echo "==> Финализация и подпись готового .app"
+echo "==> ${MATERIALIZE_LABEL}"
 MAC_STAGE="${WORKTREE_DIR}/build/macos-stage"
 mkdir -p "${MAC_STAGE}"
 ditto -x -k "${WORKTREE_DIR}/build/FantasyDisk-${VERSION}-macos.zip" "${MAC_STAGE}"
@@ -193,6 +340,14 @@ APP_PATH="$(find "${MAC_STAGE}" -maxdepth 2 -type d -name '*.app' -print -quit)"
 if [[ -z "${APP_PATH}" ]]; then
   echo "    ERROR: macOS export не содержит .app"
   exit 2
+fi
+
+if [[ "${PRESIGN_MODE}" -eq 1 ]]; then
+  echo "==> PRE-SIGN CHECKPOINT: ${SOURCE_LABEL} прошёл version mapping, честную метку канала, headless import и macOS export/материализацию $(basename "${APP_PATH}")"
+  echo "    QA-only режим: packaging, подпись, notarization, tag, GitHub Release и публикация не выполняются; publishable artifact не создан"
+  rm -rf "${WORKTREE_DIR}/build"
+  echo "    disposable output удалён"
+  exit 0
 fi
 
 echo "==> Минималистичный Finder layout: две системные иконки и одна стрелка"
@@ -360,6 +515,9 @@ if [[ ! -f "${POSTER_PATH}" ]]; then
   exit 2
 fi
 cp "${POSTER_PATH}" "${RELEASE_DIR}/"
+if [[ "${CANDIDATE_MODE}" -eq 1 ]]; then
+  cp "${CANDIDATE_PROVENANCE_PATH}" "${RELEASE_DIR}/CANDIDATE_PROVENANCE.json"
+fi
 
 echo "==> SHA256SUMS.txt (контроль порчи при передаче файлов)"
 (cd "${RELEASE_DIR}" && shasum -a 256 FantasyDisk-* > SHA256SUMS.txt && cat SHA256SUMS.txt)
@@ -371,12 +529,23 @@ python3 "${WORKTREE_DIR}/skills/codex/fantasydisk-release-director/scripts/build
   --release-dir "${RELEASE_DIR}"
 
 echo "==> Постоянная локальная копия, Godot snapshot и установка macOS"
-python3 "${WORKTREE_DIR}/skills/codex/fantasydisk-release-director/scripts/local_release.py" \
-  materialize \
-  --version "${VERSION}" \
-  --repo-root "${REPO_DIR}" \
-  --release-dir "${RELEASE_DIR}" \
+LOCAL_RELEASE_ARGS=(
+  materialize
+  --version "${VERSION}"
+  --repo-root "${REPO_DIR}"
+  --release-dir "${RELEASE_DIR}"
   --macos-channel "${MACOS_CHANNEL}"
+)
+if [[ "${CANDIDATE_MODE}" -eq 1 ]]; then
+  LOCAL_RELEASE_ARGS+=(
+    --candidate-repository "${CANDIDATE_REPOSITORY}"
+    --candidate-ref "${CANDIDATE_REF}"
+    --candidate-sha "${CANDIDATE_SHA}"
+    --candidate-tree "${SOURCE_TREE}"
+  )
+fi
+python3 "${WORKTREE_DIR}/skills/codex/fantasydisk-release-director/scripts/local_release.py" \
+  "${LOCAL_RELEASE_ARGS[@]}"
 
 echo "==> Готово:"
 ls -lh "${RELEASE_DIR}"

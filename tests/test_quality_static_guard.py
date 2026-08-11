@@ -20,16 +20,43 @@ def load_module():
     return module
 
 
+# FAN-2425 F1: release fixtures follow the canonical checkout instead of a frozen
+# literal. A marker left behind by a version bump would silently no-op every
+# mutation below and turn the negative controls green without testing anything.
+CURRENT_VERSION = re.search(
+    r'(?m)^config/version="([^"]+)"$',
+    (ROOT / "project.godot").read_text(encoding="utf-8"),
+).group(1)
+CURRENT_MAPPING = load_module().platform_version_mapping(CURRENT_VERSION)
+PROJECT_VERSION_LINE = f'config/version="{CURRENT_VERSION}"'
+MACOS_SHORT_LINE = f'application/short_version="{CURRENT_MAPPING.macos_short_version}"'
+MACOS_BUILD_LINE = f'application/version="{CURRENT_MAPPING.macos_build_version}"'
+WINDOWS_PRODUCT_LINE = f'application/product_version="{CURRENT_MAPPING.windows_product_version}"'
+WINDOWS_FILE_LINE = f'application/file_version="{CURRENT_MAPPING.windows_file_version}"'
+
+
 class QualityStaticGuardTest(unittest.TestCase):
     def setUp(self):
         self.module = load_module()
+
+    def release_fixture(self, tmp: str) -> Path:
+        root = Path(tmp)
+        shutil.copy(ROOT / "project.godot", root / "project.godot")
+        shutil.copy(ROOT / "export_presets.cfg", root / "export_presets.cfg")
+        return root
+
+    def mutate(self, path: Path, old: str, new: str, count: int = -1) -> None:
+        """Mutate a release fixture; a stale marker fails closed instead of no-op."""
+        text = path.read_text(encoding="utf-8")
+        self.assertIn(old, text)
+        path.write_text(text.replace(old, new, count), encoding="utf-8")
 
     def release_assignment_errors(self, root: Path) -> list[str]:
         return self.module.release_assignment_errors(
             (root / "project.godot").read_text(encoding="utf-8"),
             (root / "export_presets.cfg").read_text(encoding="utf-8"),
-            "0.2.4",
-            self.module.platform_version_mapping("0.2.4"),
+            CURRENT_VERSION,
+            CURRENT_MAPPING,
         )
 
     def test_current_checkout_passes(self):
@@ -88,61 +115,45 @@ class QualityStaticGuardTest(unittest.TestCase):
 
     def test_maps_four_component_hotfix_to_three_component_macos_metadata(self):
         with tempfile.TemporaryDirectory() as tmp:
-            root = Path(tmp)
-            shutil.copy(ROOT / "project.godot", root / "project.godot")
-            shutil.copy(ROOT / "export_presets.cfg", root / "export_presets.cfg")
+            root = self.release_fixture(tmp)
             project = root / "project.godot"
             exports = root / "export_presets.cfg"
-            project.write_text(
-                project.read_text(encoding="utf-8").replace(
-                    'config/version="0.2.4"', 'config/version="0.2.3.1"'
-                ),
-                encoding="utf-8",
-            )
-            text = exports.read_text(encoding="utf-8")
-            text = text.replace(
-                'application/short_version="0.2.4"',
-                'application/short_version="0.2.3"',
-            ).replace(
-                'application/version="1.2.40"',
-                'application/version="1.2.31"',
-            ).replace(
-                'application/product_version="0.2.4"',
-                'application/product_version="0.2.3.1"',
-            ).replace(
-                'application/file_version="0.2.4.0"',
-                'application/file_version="0.2.3.1"',
-            )
-            exports.write_text(text, encoding="utf-8")
+            self.mutate(project, PROJECT_VERSION_LINE, 'config/version="0.2.3.1"')
+            self.mutate(exports, MACOS_SHORT_LINE, 'application/short_version="0.2.3"')
+            self.mutate(exports, MACOS_BUILD_LINE, 'application/version="1.2.31"')
+            self.mutate(exports, WINDOWS_PRODUCT_LINE, 'application/product_version="0.2.3.1"')
+            self.mutate(exports, WINDOWS_FILE_LINE, 'application/file_version="0.2.3.1"')
             self.assertEqual(self.module.version_and_windows_errors(root), [])
+
+    def test_rejects_stale_release_version_in_the_project_file(self):
+        # The canonical checkout version and the export metadata must move
+        # together: a project file left on the previous release fails closed.
+        with tempfile.TemporaryDirectory() as tmp:
+            root = self.release_fixture(tmp)
+            stale_mapping = self.module.platform_version_mapping("0.2.4")
+            self.mutate(root / "project.godot", PROJECT_VERSION_LINE, 'config/version="0.2.4"')
+            errors = self.module.version_and_windows_errors(root)
+            self.assertIn(
+                "export_presets.cfg macOS preset: application/short_version must equal "
+                f"{stale_mapping.macos_short_version!r}",
+                errors,
+            )
+            self.assertIn(
+                "export_presets.cfg Windows Desktop preset: application/product_version must "
+                f"equal {stale_mapping.windows_product_version!r}",
+                errors,
+            )
 
     def test_rejects_direct_four_component_macos_metadata(self):
         with tempfile.TemporaryDirectory() as tmp:
-            root = Path(tmp)
-            shutil.copy(ROOT / "project.godot", root / "project.godot")
-            shutil.copy(ROOT / "export_presets.cfg", root / "export_presets.cfg")
+            root = self.release_fixture(tmp)
             project = root / "project.godot"
             exports = root / "export_presets.cfg"
-            project.write_text(
-                project.read_text(encoding="utf-8").replace(
-                    'config/version="0.2.4"', 'config/version="0.2.3.1"'
-                ),
-                encoding="utf-8",
-            )
-            text = exports.read_text(encoding="utf-8").replace(
-                'application/short_version="0.2.4"',
-                'application/short_version="0.2.3.1"',
-            ).replace(
-                'application/version="1.2.40"',
-                'application/version="0.2.3.1"',
-            ).replace(
-                'application/product_version="0.2.4"',
-                'application/product_version="0.2.3.1"',
-            ).replace(
-                'application/file_version="0.2.4.0"',
-                'application/file_version="0.2.3.1"',
-            )
-            exports.write_text(text, encoding="utf-8")
+            self.mutate(project, PROJECT_VERSION_LINE, 'config/version="0.2.3.1"')
+            self.mutate(exports, MACOS_SHORT_LINE, 'application/short_version="0.2.3.1"')
+            self.mutate(exports, MACOS_BUILD_LINE, 'application/version="0.2.3.1"')
+            self.mutate(exports, WINDOWS_PRODUCT_LINE, 'application/product_version="0.2.3.1"')
+            self.mutate(exports, WINDOWS_FILE_LINE, 'application/file_version="0.2.3.1"')
             errors = self.module.version_and_windows_errors(root)
             self.assertIn(
                 "export_presets.cfg macOS preset: application/short_version must equal '0.2.3'",
@@ -180,24 +191,16 @@ class QualityStaticGuardTest(unittest.TestCase):
 
     def test_rejects_duplicate_or_suffix_version_assignments(self):
         with tempfile.TemporaryDirectory() as tmp:
-            root = Path(tmp)
-            shutil.copy(ROOT / "project.godot", root / "project.godot")
-            shutil.copy(ROOT / "export_presets.cfg", root / "export_presets.cfg")
-            project = root / "project.godot"
-            exports = root / "export_presets.cfg"
-            project.write_text(
-                project.read_text(encoding="utf-8").replace(
-                    'config/version="0.2.4"',
-                    'config/version="0.2.4"\nconfig/version="0.2.3"',
-                ),
-                encoding="utf-8",
+            root = self.release_fixture(tmp)
+            self.mutate(
+                root / "project.godot",
+                PROJECT_VERSION_LINE,
+                f'{PROJECT_VERSION_LINE}\nconfig/version="0.2.3"',
             )
-            exports.write_text(
-                exports.read_text(encoding="utf-8").replace(
-                    'application/short_version="0.2.4"',
-                    'application/short_version="0.2.4" # stale suffix',
-                ),
-                encoding="utf-8",
+            self.mutate(
+                root / "export_presets.cfg",
+                MACOS_SHORT_LINE,
+                f"{MACOS_SHORT_LINE} # stale suffix",
             )
             errors = self.module.version_and_windows_errors(root)
             self.assertIn(
@@ -205,25 +208,22 @@ class QualityStaticGuardTest(unittest.TestCase):
                 errors,
             )
             self.assertIn(
-                "export_presets.cfg macOS preset: application/short_version must equal '0.2.4'",
+                "export_presets.cfg macOS preset: application/short_version must equal "
+                f"{CURRENT_MAPPING.macos_short_version!r}",
                 errors,
             )
 
     def test_rejects_version_field_in_the_wrong_platform_preset(self):
         with tempfile.TemporaryDirectory() as tmp:
-            root = Path(tmp)
-            shutil.copy(ROOT / "project.godot", root / "project.godot")
-            shutil.copy(ROOT / "export_presets.cfg", root / "export_presets.cfg")
+            root = self.release_fixture(tmp)
             exports = root / "export_presets.cfg"
-            text = exports.read_text(encoding="utf-8")
-            text = text.replace('application/short_version="0.2.4"\n', "", 1)
-            windows_marker = 'application/product_version="0.2.4"'
-            text = text.replace(
-                windows_marker,
-                windows_marker + '\napplication/short_version="0.2.4"',
+            self.mutate(exports, f"{MACOS_SHORT_LINE}\n", "", 1)
+            self.mutate(
+                exports,
+                WINDOWS_PRODUCT_LINE,
+                f"{WINDOWS_PRODUCT_LINE}\n{MACOS_SHORT_LINE}",
                 1,
             )
-            exports.write_text(text, encoding="utf-8")
             self.assertIn(
                 "export_presets.cfg macOS preset: application/short_version must have exactly one assignment",
                 self.module.version_and_windows_errors(root),
@@ -233,28 +233,28 @@ class QualityStaticGuardTest(unittest.TestCase):
         cases = (
             (
                 "macOS short version in Windows options",
-                'application/product_version="0.2.4"',
+                WINDOWS_PRODUCT_LINE,
                 'application/short_version="9.9.99"',
                 "application/short_version",
                 "macOS",
             ),
             (
                 "macOS build version in Windows options",
-                'application/product_version="0.2.4"',
+                WINDOWS_PRODUCT_LINE,
                 'application/version="9.9.99"',
                 "application/version",
                 "macOS",
             ),
             (
                 "Windows product version in macOS options",
-                'application/version="1.2.40"',
+                MACOS_BUILD_LINE,
                 'application/product_version="9.9.99"',
                 "application/product_version",
                 "Windows Desktop",
             ),
             (
                 "Windows file version in macOS options",
-                'application/version="1.2.40"',
+                MACOS_BUILD_LINE,
                 'application/file_version="9.9.99.9"',
                 "application/file_version",
                 "Windows Desktop",
@@ -269,15 +269,12 @@ class QualityStaticGuardTest(unittest.TestCase):
         )
         for name, marker, foreign_assignment, key, owner in cases:
             with self.subTest(name=name), tempfile.TemporaryDirectory() as tmp:
-                root = Path(tmp)
-                shutil.copy(ROOT / "project.godot", root / "project.godot")
-                shutil.copy(ROOT / "export_presets.cfg", root / "export_presets.cfg")
-                exports = root / "export_presets.cfg"
-                exports.write_text(
-                    exports.read_text(encoding="utf-8").replace(
-                        marker, f"{marker}\n{foreign_assignment}", 1
-                    ),
-                    encoding="utf-8",
+                root = self.release_fixture(tmp)
+                self.mutate(
+                    root / "export_presets.cfg",
+                    marker,
+                    f"{marker}\n{foreign_assignment}",
+                    1,
                 )
                 self.assertIn(
                     f"export_presets.cfg: {key} must have exactly one exact assignment "
@@ -289,51 +286,48 @@ class QualityStaticGuardTest(unittest.TestCase):
         cases = (
             (
                 "duplicate macOS build",
-                'application/version="1.2.40"',
-                'application/version="1.2.40"',
+                MACOS_BUILD_LINE,
+                MACOS_BUILD_LINE,
                 "application/version",
                 "macOS",
             ),
             (
                 "nonexact macOS short value suffix",
-                'application/short_version="0.2.4"',
-                'application/short_version="0.2.4" # stale suffix',
+                MACOS_SHORT_LINE,
+                f"{MACOS_SHORT_LINE} # stale suffix",
                 "application/short_version",
                 "macOS",
             ),
             (
                 "nonexact macOS build value junk",
-                'application/version="1.2.40"',
-                'application/version="1.2.40"junk',
+                MACOS_BUILD_LINE,
+                f"{MACOS_BUILD_LINE}junk",
                 "application/version",
                 "macOS",
             ),
             (
                 "macOS build key suffix",
-                'application/version="1.2.40"',
-                'application/version_shadow="1.2.40"',
+                MACOS_BUILD_LINE,
+                MACOS_BUILD_LINE.replace("application/version", "application/version_shadow"),
                 "application/version",
                 "macOS",
             ),
             (
                 "Windows file key prefix",
-                'application/file_version="0.2.4.0"',
-                'shadow_application/file_version="0.2.4.0"',
+                WINDOWS_FILE_LINE,
+                f"shadow_{WINDOWS_FILE_LINE}",
                 "application/file_version",
                 "Windows Desktop",
             ),
         )
         for name, marker, extra_assignment, key, owner in cases:
             with self.subTest(name=name), tempfile.TemporaryDirectory() as tmp:
-                root = Path(tmp)
-                shutil.copy(ROOT / "project.godot", root / "project.godot")
-                shutil.copy(ROOT / "export_presets.cfg", root / "export_presets.cfg")
-                exports = root / "export_presets.cfg"
-                exports.write_text(
-                    exports.read_text(encoding="utf-8").replace(
-                        marker, f"{marker}\n{extra_assignment}", 1
-                    ),
-                    encoding="utf-8",
+                root = self.release_fixture(tmp)
+                self.mutate(
+                    root / "export_presets.cfg",
+                    marker,
+                    f"{marker}\n{extra_assignment}",
+                    1,
                 )
                 self.assertIn(
                     f"export_presets.cfg: {key} must have exactly one exact assignment "
@@ -343,15 +337,12 @@ class QualityStaticGuardTest(unittest.TestCase):
 
     def test_rejects_global_project_version_assignment(self):
         with tempfile.TemporaryDirectory() as tmp:
-            root = Path(tmp)
-            shutil.copy(ROOT / "project.godot", root / "project.godot")
-            shutil.copy(ROOT / "export_presets.cfg", root / "export_presets.cfg")
-            project = root / "project.godot"
-            project.write_text(
-                project.read_text(encoding="utf-8").replace(
-                    "[rendering]", '[rendering]\nconfig/version="9.9.9"', 1
-                ),
-                encoding="utf-8",
+            root = self.release_fixture(tmp)
+            self.mutate(
+                root / "project.godot",
+                "[rendering]",
+                '[rendering]\nconfig/version="9.9.9"',
+                1,
             )
             self.assertIn(
                 "project.godot: config/version must have exactly one exact assignment "
@@ -385,9 +376,7 @@ class QualityStaticGuardTest(unittest.TestCase):
         )
         for name, filename, assignment, expected_error in cases:
             with self.subTest(name=name), tempfile.TemporaryDirectory() as tmp:
-                root = Path(tmp)
-                shutil.copy(ROOT / "project.godot", root / "project.godot")
-                shutil.copy(ROOT / "export_presets.cfg", root / "export_presets.cfg")
+                root = self.release_fixture(tmp)
                 config = root / filename
                 config.write_text(
                     assignment + config.read_text(encoding="utf-8"), encoding="utf-8"
@@ -396,17 +385,13 @@ class QualityStaticGuardTest(unittest.TestCase):
 
     def test_scans_hash_lookalikes_and_ignores_semicolon_comments(self):
         with tempfile.TemporaryDirectory() as tmp:
-            root = Path(tmp)
-            shutil.copy(ROOT / "project.godot", root / "project.godot")
-            shutil.copy(ROOT / "export_presets.cfg", root / "export_presets.cfg")
+            root = self.release_fixture(tmp)
             exports = root / "export_presets.cfg"
-            exports.write_text(
-                exports.read_text(encoding="utf-8").replace(
-                    'application/version="1.2.40"',
-                    'application/version="1.2.40"\n#application/version="9.9.99"',
-                    1,
-                ),
-                encoding="utf-8",
+            self.mutate(
+                exports,
+                MACOS_BUILD_LINE,
+                f'{MACOS_BUILD_LINE}\n#application/version="9.9.99"',
+                1,
             )
             self.assertIn(
                 "export_presets.cfg: application/version must have exactly one exact "
@@ -414,36 +399,30 @@ class QualityStaticGuardTest(unittest.TestCase):
                 self.release_assignment_errors(root),
             )
 
-            exports.write_text(
-                exports.read_text(encoding="utf-8").replace(
-                    '#application/version="9.9.99"',
-                    '  ;application/version="9.9.99"',
-                    1,
-                ),
-                encoding="utf-8",
+            self.mutate(
+                exports,
+                '#application/version="9.9.99"',
+                '  ;application/version="9.9.99"',
+                1,
             )
             self.assertEqual(self.release_assignment_errors(root), [])
 
     def test_mapping_cli_fails_closed_for_foreign_platform_version(self):
         with tempfile.TemporaryDirectory() as tmp:
-            root = Path(tmp)
-            shutil.copy(ROOT / "project.godot", root / "project.godot")
-            shutil.copy(ROOT / "export_presets.cfg", root / "export_presets.cfg")
+            root = self.release_fixture(tmp)
             exports = root / "export_presets.cfg"
-            exports.write_text(
-                exports.read_text(encoding="utf-8").replace(
-                    'application/product_version="0.2.4"',
-                    'application/product_version="0.2.4"\napplication/version="9.9.99"',
-                    1,
-                ),
-                encoding="utf-8",
+            self.mutate(
+                exports,
+                WINDOWS_PRODUCT_LINE,
+                f'{WINDOWS_PRODUCT_LINE}\napplication/version="9.9.99"',
+                1,
             )
             result = subprocess.run(
                 [
                     sys.executable,
                     ROOT / "tools" / "release_version_mapping.py",
                     "--version",
-                    "0.2.4",
+                    CURRENT_VERSION,
                     "--project",
                     root / "project.godot",
                     "--export-presets",
@@ -462,9 +441,7 @@ class QualityStaticGuardTest(unittest.TestCase):
 
     def test_mapping_cli_fails_closed_for_sectionless_platform_version(self):
         with tempfile.TemporaryDirectory() as tmp:
-            root = Path(tmp)
-            shutil.copy(ROOT / "project.godot", root / "project.godot")
-            shutil.copy(ROOT / "export_presets.cfg", root / "export_presets.cfg")
+            root = self.release_fixture(tmp)
             exports = root / "export_presets.cfg"
             exports.write_text(
                 'application/version="9.9.99"\n'
@@ -476,7 +453,7 @@ class QualityStaticGuardTest(unittest.TestCase):
                     sys.executable,
                     ROOT / "tools" / "release_version_mapping.py",
                     "--version",
-                    "0.2.4",
+                    CURRENT_VERSION,
                     "--project",
                     root / "project.godot",
                     "--export-presets",
@@ -495,15 +472,11 @@ class QualityStaticGuardTest(unittest.TestCase):
 
     def test_rejects_five_component_release_version(self):
         with tempfile.TemporaryDirectory() as tmp:
-            root = Path(tmp)
-            shutil.copy(ROOT / "project.godot", root / "project.godot")
-            shutil.copy(ROOT / "export_presets.cfg", root / "export_presets.cfg")
-            project = root / "project.godot"
-            project.write_text(
-                project.read_text(encoding="utf-8").replace(
-                    'config/version="0.2.4"', 'config/version="0.2.3.1.1"'
-                ),
-                encoding="utf-8",
+            root = self.release_fixture(tmp)
+            self.mutate(
+                root / "project.godot",
+                PROJECT_VERSION_LINE,
+                'config/version="0.2.3.1.1"',
             )
             self.assertIn(
                 "project.godot: config/version must use the canonical bounded X.Y.Z or X.Y.Z.R contract",
