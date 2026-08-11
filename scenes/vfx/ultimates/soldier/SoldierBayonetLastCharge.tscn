@@ -152,6 +152,7 @@ metadata/motion_path = "three_time_offset_phalanx_charges_down_one_aimed_corrido
 metadata/impact_language = "crossed_bayonet_pin_then_frontal_guard_and_rally_salute"
 metadata/max_visual_nodes = 8
 metadata/crowd_cap = 18
+metadata/visual_node_budget_decision = "Intentional exact drawn-node budget; crowd_cap retains expansion headroom for approved bayonet art."
 
 [node name="WhistleBrace" type="Polygon2D" parent="."]
 material = SubResource("CanvasItemMaterial_add")

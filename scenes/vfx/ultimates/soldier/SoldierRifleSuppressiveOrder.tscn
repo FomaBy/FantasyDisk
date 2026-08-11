@@ -116,6 +116,7 @@ metadata/motion_path = "three_aimed_volleys_sweeping_one_straight_arena_crossing
 metadata/impact_language = "three_muzzle_flash_waves_then_smoke_recall"
 metadata/max_visual_nodes = 8
 metadata/crowd_cap = 22
+metadata/visual_node_budget_decision = "Intentional exact drawn-node budget; crowd_cap retains expansion headroom for approved volley art."
 
 [node name="WarBanner" type="Polygon2D" parent="."]
 material = SubResource("CanvasItemMaterial_add")

@@ -25,6 +25,7 @@ class SceneHandle extends RefCounted:
 var _scene: Node = null
 var _timeline: Timeline = null
 var _headless_mode := -1
+var _last_budget_diagnostic := ""
 
 
 func _init(headless_mode := -1) -> void:
@@ -33,6 +34,7 @@ func _init(headless_mode := -1) -> void:
 
 func begin(host: Node, registry, profile: Dictionary) -> bool:
 	finish("cancel")
+	_last_budget_diagnostic = ""
 	var manifest := Manifest.manifest_for_profile(profile)
 	if manifest.is_empty() or not Schema.validate_manifest(manifest, profile).is_empty():
 		return false
@@ -94,6 +96,11 @@ func is_active() -> bool:
 	return _timeline != null
 
 
+## Last fail-closed visual-budget decision, suitable for activation diagnostics.
+func last_budget_diagnostic() -> String:
+	return _last_budget_diagnostic
+
+
 func _uses_headless_fallback() -> bool:
 	return DisplayServer.get_name() == "headless" if _headless_mode < 0 else _headless_mode == 1
 
@@ -117,25 +124,60 @@ func _begin_scene(registry) -> void:
 
 func _within_declared_budget(runtime: Dictionary) -> bool:
 	if _scene == null or not is_instance_valid(_scene):
-		return false
+		return _reject_budget("scene is unavailable")
 	var drawn := _drawing_node_count(_scene)
-	var max_visual_nodes := int(runtime.get("max_visual_nodes", 0))
-	var crowd_cap := int(runtime.get("crowd_cap", 0))
-	if max_visual_nodes <= 0:
-		max_visual_nodes = int(_scene.get_meta("max_visual_nodes", 0))
-	if crowd_cap <= 0:
-		crowd_cap = int(_scene.get_meta("crowd_cap", 0))
-	# A small number of older class-local scene packs publish their exact
-	# formation count in the scene, rather than in their reference manifest.
-	# Normalize that already-instantiated count once; a scene with no drawn node
-	# is still rejected and declared caps always take precedence.
-	if max_visual_nodes <= 0:
-		max_visual_nodes = drawn
-	if crowd_cap <= 0:
-		crowd_cap = max_visual_nodes
-	if max_visual_nodes <= 0 or crowd_cap <= 0 or max_visual_nodes > crowd_cap:
+	var max_result := _resolve_declared_cap(runtime, "max_visual_nodes")
+	if str(max_result.get("state", "")) != "valid":
+		return _reject_budget(_cap_diagnostic("max_visual_nodes", max_result))
+	var crowd_result := _resolve_declared_cap(runtime, "crowd_cap")
+	if str(crowd_result.get("state", "")) != "valid":
+		return _reject_budget(_cap_diagnostic("crowd_cap", crowd_result))
+	var max_visual_nodes := int(max_result.get("value", 0))
+	var crowd_cap := int(crowd_result.get("value", 0))
+	if max_visual_nodes > crowd_cap:
+		return _reject_budget("invalid cap relation: max_visual_nodes=%d exceeds crowd_cap=%d" % [max_visual_nodes, crowd_cap])
+	if drawn > max_visual_nodes:
+		return _reject_budget("drawn visual nodes %d exceed max_visual_nodes cap %d" % [drawn, max_visual_nodes])
+	if drawn > crowd_cap:
+		return _reject_budget("drawn visual nodes %d exceed crowd_cap %d" % [drawn, crowd_cap])
+	_last_budget_diagnostic = ""
+	return true
+
+
+func _resolve_declared_cap(runtime: Dictionary, key: String) -> Dictionary:
+	var value: Variant = runtime.get(key, null)
+	var source := "runtime"
+	if not runtime.has(key) or value == null:
+		if _scene.has_meta(key):
+			value = _scene.get_meta(key)
+			source = "scene_meta"
+		else:
+			return {"state": "missing", "value": value, "source": source}
+	if not _is_valid_cap(value):
+		return {"state": "invalid", "value": value, "source": source}
+	return {"state": "valid", "value": int(value), "source": source}
+
+
+func _is_valid_cap(value: Variant) -> bool:
+	if not (value is int or value is float) or value is bool:
 		return false
-	return drawn <= max_visual_nodes and drawn <= crowd_cap
+	var numeric := float(value)
+	return is_finite(numeric) and numeric > 0.0 and is_equal_approx(numeric, floorf(numeric))
+
+
+func _cap_diagnostic(key: String, result: Dictionary) -> String:
+	return "%s cap is %s (source=%s, value=%s)" % [
+		key,
+		str(result.get("state", "invalid")),
+		str(result.get("source", "unknown")),
+		str(result.get("value", null)),
+	]
+
+
+func _reject_budget(reason: String) -> bool:
+	_last_budget_diagnostic = "visual-node budget rejected: %s" % reason
+	print("WeaponUltimatePresentationRuntime: %s" % _last_budget_diagnostic)
+	return false
 
 
 ## One normative budget metric: nodes that directly draw a canvas primitive.
