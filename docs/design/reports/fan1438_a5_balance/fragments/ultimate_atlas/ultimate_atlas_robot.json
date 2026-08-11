@@ -1,0 +1,169 @@
+{
+	"class_id": "robot",
+	"measurements": {
+		"class_atlas50": {
+			"activation_count": 1,
+			"activation_timing_seconds": [
+				0.0
+			],
+			"class_id": "robot",
+			"duration_seconds": 60.0,
+			"formula": {
+				"canonical_weapon_id": "robot_hydraulic_press",
+				"class_id": "robot",
+				"expected_activation_damage": 46.721900000000005,
+				"expected_initial_activations": 1,
+				"formula_schema": "fan1515.class-ultimate-formula.v1",
+				"meta_application_count": 1,
+				"run_modifiers": {
+					"aoe_radius_multiplier": 1.04,
+					"attack_speed_multiplier": 1.04,
+					"damage_multiplier": 1.05,
+					"death_save_health_fraction": 0.3,
+					"defense_flat": 0.025,
+					"healing_multiplier": 0.8160000000000001,
+					"max_health_flat": 10.0,
+					"max_health_multiplier": 0.8,
+					"money_gain_multiplier": 1.04,
+					"pickup_radius_flat": 60.0,
+					"xp_gain_multiplier": 0.9199999999999999
+				},
+				"scenario": "class_atlas50",
+				"start_charge": 100.0,
+				"start_charge_ratio": 1.0,
+				"stats": {
+					"agility": 16.0,
+					"endurance": 11.0,
+					"energy": 7.0,
+					"intelligence": 5.0,
+					"knowledge": 4.0,
+					"leadership": 4.0,
+					"perception": 5.0,
+					"strength": 14.0
+				}
+			},
+			"frame_count": 3600,
+			"initial_activation_count": 1,
+			"initial_charge": 100.0,
+			"scenario": "class_atlas50",
+			"seed": 151501,
+			"sustain_source": {
+				"damage": 264140.3241,
+				"hits": 51972
+			},
+			"ultimate_source": {
+				"by_mechanic": {},
+				"damage": 0.0,
+				"hits": 0
+			}
+		},
+		"class_constellation": {
+			"activation_count": 1,
+			"activation_timing_seconds": [
+				1.1
+			],
+			"class_id": "robot",
+			"duration_seconds": 60.0,
+			"formula": {
+				"canonical_weapon_id": "robot_hydraulic_press",
+				"class_id": "robot",
+				"expected_activation_damage": 46.721900000000005,
+				"expected_initial_activations": 0,
+				"formula_schema": "fan1515.class-ultimate-formula.v1",
+				"meta_application_count": 1,
+				"run_modifiers": {
+					"aoe_radius_multiplier": 1.04,
+					"attack_speed_multiplier": 1.04,
+					"damage_multiplier": 1.05,
+					"defense_flat": 0.025,
+					"healing_multiplier": 0.68,
+					"max_health_flat": 10.0,
+					"max_health_multiplier": 0.8,
+					"money_gain_multiplier": 0.8800000000000001,
+					"xp_gain_multiplier": 0.8
+				},
+				"scenario": "class_constellation",
+				"start_charge": 0.0,
+				"start_charge_ratio": 0.0,
+				"stats": {
+					"agility": 16.0,
+					"endurance": 11.0,
+					"energy": 7.0,
+					"intelligence": 5.0,
+					"knowledge": 4.0,
+					"leadership": 4.0,
+					"perception": 5.0,
+					"strength": 14.0
+				}
+			},
+			"frame_count": 3600,
+			"initial_activation_count": 0,
+			"initial_charge": 0.0,
+			"scenario": "class_constellation",
+			"seed": 151501,
+			"sustain_source": {
+				"damage": 264140.3241,
+				"hits": 51972
+			},
+			"ultimate_source": {
+				"by_mechanic": {},
+				"damage": 0.0,
+				"hits": 0
+			}
+		},
+		"no_meta": {
+			"activation_count": 1,
+			"activation_timing_seconds": [
+				1.5333
+			],
+			"class_id": "robot",
+			"duration_seconds": 60.0,
+			"formula": {
+				"canonical_weapon_id": "robot_hydraulic_press",
+				"class_id": "robot",
+				"expected_activation_damage": 46.6657,
+				"expected_initial_activations": 0,
+				"formula_schema": "fan1515.class-ultimate-formula.v1",
+				"meta_application_count": 0,
+				"run_modifiers": {
+					"aoe_radius_multiplier": 1.04,
+					"attack_speed_multiplier": 1.04,
+					"damage_multiplier": 1.05,
+					"defense_flat": 0.025,
+					"healing_multiplier": 0.68,
+					"max_health_flat": 10.0,
+					"max_health_multiplier": 0.8,
+					"money_gain_multiplier": 0.8,
+					"xp_gain_multiplier": 0.8
+				},
+				"scenario": "no_meta",
+				"start_charge": 0.0,
+				"start_charge_ratio": 0.0,
+				"stats": {
+					"agility": 16.0,
+					"endurance": 10.0,
+					"energy": 7.0,
+					"intelligence": 5.0,
+					"knowledge": 4.0,
+					"leadership": 4.0,
+					"perception": 5.0,
+					"strength": 14.0
+				}
+			},
+			"frame_count": 3600,
+			"initial_activation_count": 0,
+			"initial_charge": 0.0,
+			"scenario": "no_meta",
+			"seed": 151501,
+			"sustain_source": {
+				"damage": 148020.6991,
+				"hits": 23402
+			},
+			"ultimate_source": {
+				"by_mechanic": {},
+				"damage": 0.0,
+				"hits": 0
+			}
+		}
+	}
+}

@@ -1,0 +1,239 @@
+{
+	"class_id": "thief",
+	"measurements": {
+		"class_atlas50": {
+			"activation_count": 20,
+			"activation_timing_seconds": [
+				0.0,
+				3.3000000000000003,
+				6.4167000000000005,
+				9.1667,
+				12.466700000000001,
+				15.4,
+				18.3333,
+				21.0833,
+				23.8333,
+				26.950000000000003,
+				30.25,
+				33.3667,
+				36.4833,
+				39.6,
+				42.7167,
+				45.650000000000006,
+				48.95,
+				52.066700000000004,
+				55.1833,
+				57.75
+			],
+			"class_id": "thief",
+			"duration_seconds": 60.0,
+			"formula": {
+				"canonical_weapon_id": "thief_coin_pouch",
+				"class_id": "thief",
+				"expected_activation_damage": 48.253600000000006,
+				"expected_initial_activations": 1,
+				"formula_schema": "fan1515.class-ultimate-formula.v1",
+				"meta_application_count": 1,
+				"run_modifiers": {
+					"attack_speed_multiplier": 1.04,
+					"damage_multiplier": 1.05,
+					"death_save_health_fraction": 0.3,
+					"dodge_flat": 0.02,
+					"healing_multiplier": 0.8160000000000001,
+					"max_health_flat": 7.0,
+					"max_health_multiplier": 0.8,
+					"money_gain_multiplier": 1.1024,
+					"pickup_radius_flat": 60.0,
+					"xp_gain_multiplier": 0.9199999999999999
+				},
+				"scenario": "class_atlas50",
+				"start_charge": 100.0,
+				"start_charge_ratio": 1.0,
+				"stats": {
+					"agility": 18.0,
+					"endurance": 4.0,
+					"energy": 5.0,
+					"intelligence": 3.0,
+					"knowledge": 4.0,
+					"leadership": 5.0,
+					"perception": 8.0,
+					"strength": 16.0
+				}
+			},
+			"frame_count": 3600,
+			"initial_activation_count": 1,
+			"initial_charge": 100.0,
+			"scenario": "class_atlas50",
+			"seed": 151501,
+			"sustain_source": {
+				"damage": 83131.9549,
+				"hits": 6165
+			},
+			"ultimate_source": {
+				"by_mechanic": {
+					"jackpot_ricochet": {
+						"damage": 540428.162,
+						"first_frame": 0,
+						"hits": 200
+					}
+				},
+				"damage": 540428.1642,
+				"hits": 200
+			}
+		},
+		"class_constellation": {
+			"activation_count": 20,
+			"activation_timing_seconds": [
+				2.2,
+				5.1333,
+				7.8833,
+				10.6333,
+				13.5667,
+				16.6833,
+				19.8,
+				22.7333,
+				25.4833,
+				28.416700000000002,
+				31.35,
+				34.283300000000004,
+				37.5833,
+				40.5167,
+				43.816700000000004,
+				46.75,
+				49.6833,
+				52.6167,
+				55.550000000000004,
+				58.4833
+			],
+			"class_id": "thief",
+			"duration_seconds": 60.0,
+			"formula": {
+				"canonical_weapon_id": "thief_coin_pouch",
+				"class_id": "thief",
+				"expected_activation_damage": 48.253600000000006,
+				"expected_initial_activations": 0,
+				"formula_schema": "fan1515.class-ultimate-formula.v1",
+				"meta_application_count": 1,
+				"run_modifiers": {
+					"attack_speed_multiplier": 1.04,
+					"damage_multiplier": 1.05,
+					"dodge_flat": 0.02,
+					"healing_multiplier": 0.68,
+					"max_health_flat": 7.0,
+					"max_health_multiplier": 0.8,
+					"money_gain_multiplier": 0.9328000000000002,
+					"xp_gain_multiplier": 0.8
+				},
+				"scenario": "class_constellation",
+				"start_charge": 0.0,
+				"start_charge_ratio": 0.0,
+				"stats": {
+					"agility": 18.0,
+					"endurance": 4.0,
+					"energy": 5.0,
+					"intelligence": 3.0,
+					"knowledge": 4.0,
+					"leadership": 5.0,
+					"perception": 8.0,
+					"strength": 16.0
+				}
+			},
+			"frame_count": 3600,
+			"initial_activation_count": 0,
+			"initial_charge": 0.0,
+			"scenario": "class_constellation",
+			"seed": 151501,
+			"sustain_source": {
+				"damage": 86729.4927,
+				"hits": 6165
+			},
+			"ultimate_source": {
+				"by_mechanic": {
+					"jackpot_ricochet": {
+						"damage": 540428.162,
+						"first_frame": 132,
+						"hits": 200
+					}
+				},
+				"damage": 540428.1642,
+				"hits": 200
+			}
+		},
+		"no_meta": {
+			"activation_count": 18,
+			"activation_timing_seconds": [
+				2.75,
+				6.050000000000001,
+				9.35,
+				12.65,
+				16.133300000000002,
+				19.8,
+				23.2833,
+				26.950000000000003,
+				30.25,
+				33.0,
+				35.9333,
+				39.2333,
+				42.533300000000004,
+				46.2,
+				49.6833,
+				53.35,
+				56.283300000000004,
+				59.7667
+			],
+			"class_id": "thief",
+			"duration_seconds": 60.0,
+			"formula": {
+				"canonical_weapon_id": "thief_coin_pouch",
+				"class_id": "thief",
+				"expected_activation_damage": 48.185100000000006,
+				"expected_initial_activations": 0,
+				"formula_schema": "fan1515.class-ultimate-formula.v1",
+				"meta_application_count": 0,
+				"run_modifiers": {
+					"attack_speed_multiplier": 1.04,
+					"damage_multiplier": 1.05,
+					"dodge_flat": 0.02,
+					"healing_multiplier": 0.68,
+					"max_health_flat": 7.0,
+					"max_health_multiplier": 0.8,
+					"money_gain_multiplier": 0.8480000000000001,
+					"xp_gain_multiplier": 0.8
+				},
+				"scenario": "no_meta",
+				"start_charge": 0.0,
+				"start_charge_ratio": 0.0,
+				"stats": {
+					"agility": 17.0,
+					"endurance": 4.0,
+					"energy": 5.0,
+					"intelligence": 3.0,
+					"knowledge": 4.0,
+					"leadership": 5.0,
+					"perception": 8.0,
+					"strength": 16.0
+				}
+			},
+			"frame_count": 3600,
+			"initial_activation_count": 0,
+			"initial_charge": 0.0,
+			"scenario": "no_meta",
+			"seed": 151501,
+			"sustain_source": {
+				"damage": 68673.3921,
+				"hits": 5838
+			},
+			"ultimate_source": {
+				"by_mechanic": {
+					"jackpot_ricochet": {
+						"damage": 471293.3718,
+						"first_frame": 165,
+						"hits": 173
+					}
+				},
+				"damage": 471293.3737,
+				"hits": 173
+			}
+		}
+	}
+}

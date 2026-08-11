@@ -1,0 +1,179 @@
+{
+	"class_id": "priest",
+	"measurements": {
+		"class_atlas50": {
+			"activation_count": 6,
+			"activation_timing_seconds": [
+				0.0,
+				11.1,
+				22.55,
+				34.2,
+				46.2,
+				57.85
+			],
+			"class_id": "priest",
+			"duration_seconds": 60.0,
+			"formula": {
+				"canonical_weapon_id": "priest_censer",
+				"class_id": "priest",
+				"expected_activation_damage": 51.6458,
+				"expected_initial_activations": 1,
+				"formula_schema": "fan1515.class-ultimate-formula.v1",
+				"meta_application_count": 1,
+				"run_modifiers": {
+					"aoe_radius_multiplier": 1.05,
+					"attack_speed_multiplier": 1.04,
+					"damage_multiplier": 1.1024,
+					"death_save_health_fraction": 0.3,
+					"healing_multiplier": 0.8160000000000001,
+					"max_health_flat": 8.0,
+					"max_health_multiplier": 0.8,
+					"money_gain_multiplier": 1.04,
+					"pickup_radius_flat": 60.0,
+					"xp_gain_multiplier": 0.9199999999999999
+				},
+				"scenario": "class_atlas50",
+				"start_charge": 100.0,
+				"start_charge_ratio": 1.0,
+				"stats": {
+					"agility": 14.0,
+					"endurance": 5.0,
+					"energy": 7.0,
+					"intelligence": 17.0,
+					"knowledge": 10.0,
+					"leadership": 6.0,
+					"perception": 6.0,
+					"strength": 2.0
+				}
+			},
+			"frame_count": 3600,
+			"initial_activation_count": 1,
+			"initial_charge": 100.0,
+			"scenario": "class_atlas50",
+			"seed": 151501,
+			"sustain_source": {
+				"damage": 135254.10450000002,
+				"hits": 28320
+			},
+			"ultimate_source": {
+				"by_mechanic": {},
+				"damage": 0.0,
+				"hits": 0
+			}
+		},
+		"class_constellation": {
+			"activation_count": 5,
+			"activation_timing_seconds": [
+				4.4,
+				15.5,
+				26.950000000000003,
+				38.6,
+				50.050000000000004
+			],
+			"class_id": "priest",
+			"duration_seconds": 60.0,
+			"formula": {
+				"canonical_weapon_id": "priest_censer",
+				"class_id": "priest",
+				"expected_activation_damage": 51.6458,
+				"expected_initial_activations": 0,
+				"formula_schema": "fan1515.class-ultimate-formula.v1",
+				"meta_application_count": 1,
+				"run_modifiers": {
+					"aoe_radius_multiplier": 1.05,
+					"attack_speed_multiplier": 1.04,
+					"damage_multiplier": 1.1024,
+					"healing_multiplier": 0.68,
+					"max_health_flat": 8.0,
+					"max_health_multiplier": 0.8,
+					"money_gain_multiplier": 0.8800000000000001,
+					"xp_gain_multiplier": 0.8
+				},
+				"scenario": "class_constellation",
+				"start_charge": 0.0,
+				"start_charge_ratio": 0.0,
+				"stats": {
+					"agility": 14.0,
+					"endurance": 5.0,
+					"energy": 7.0,
+					"intelligence": 17.0,
+					"knowledge": 10.0,
+					"leadership": 6.0,
+					"perception": 6.0,
+					"strength": 2.0
+				}
+			},
+			"frame_count": 3600,
+			"initial_activation_count": 0,
+			"initial_charge": 0.0,
+			"scenario": "class_constellation",
+			"seed": 151501,
+			"sustain_source": {
+				"damage": 135254.10450000002,
+				"hits": 28320
+			},
+			"ultimate_source": {
+				"by_mechanic": {},
+				"damage": 0.0,
+				"hits": 0
+			}
+		},
+		"no_meta": {
+			"activation_count": 5,
+			"activation_timing_seconds": [
+				4.1833,
+				16.3333,
+				27.416700000000002,
+				39.0833,
+				50.85
+			],
+			"class_id": "priest",
+			"duration_seconds": 60.0,
+			"formula": {
+				"canonical_weapon_id": "priest_censer",
+				"class_id": "priest",
+				"expected_activation_damage": 51.5634,
+				"expected_initial_activations": 0,
+				"formula_schema": "fan1515.class-ultimate-formula.v1",
+				"meta_application_count": 0,
+				"run_modifiers": {
+					"aoe_radius_multiplier": 1.05,
+					"attack_speed_multiplier": 1.04,
+					"damage_multiplier": 1.1024,
+					"healing_multiplier": 0.68,
+					"max_health_flat": 8.0,
+					"max_health_multiplier": 0.8,
+					"money_gain_multiplier": 0.8,
+					"xp_gain_multiplier": 0.8
+				},
+				"scenario": "no_meta",
+				"start_charge": 0.0,
+				"start_charge_ratio": 0.0,
+				"stats": {
+					"agility": 14.0,
+					"endurance": 5.0,
+					"energy": 7.0,
+					"intelligence": 17.0,
+					"knowledge": 9.0,
+					"leadership": 6.0,
+					"perception": 6.0,
+					"strength": 2.0
+				}
+			},
+			"frame_count": 3600,
+			"initial_activation_count": 0,
+			"initial_charge": 0.0,
+			"scenario": "no_meta",
+			"seed": 151501,
+			"sustain_source": {
+				"damage": 126918.6667,
+				"hits": 26640
+			},
+			"ultimate_source": {
+				"by_mechanic": {},
+				"damage": 0.0,
+				"hits": 0
+			}
+		}
+	}
+}

@@ -1,0 +1,215 @@
+{
+	"class_id": "soldier",
+	"measurements": {
+		"class_atlas50": {
+			"activation_count": 12,
+			"activation_timing_seconds": [
+				0.0,
+				5.6000000000000005,
+				11.0,
+				16.400000000000002,
+				22.0,
+				27.400000000000002,
+				32.800000000000004,
+				38.1667,
+				43.4,
+				49.0,
+				54.166700000000006,
+				59.7667
+			],
+			"class_id": "soldier",
+			"duration_seconds": 60.0,
+			"formula": {
+				"canonical_weapon_id": "soldier_bayonet",
+				"class_id": "soldier",
+				"expected_activation_damage": 29.3106,
+				"expected_initial_activations": 1,
+				"formula_schema": "fan1515.class-ultimate-formula.v1",
+				"meta_application_count": 1,
+				"run_modifiers": {
+					"attack_speed_multiplier": 1.04,
+					"damage_multiplier": 1.1235000000000002,
+					"death_save_health_fraction": 0.3,
+					"defense_flat": 0.02,
+					"healing_multiplier": 0.8160000000000001,
+					"max_health_flat": 8.0,
+					"max_health_multiplier": 0.8,
+					"money_gain_multiplier": 1.04,
+					"pickup_radius_flat": 60.0,
+					"xp_gain_multiplier": 0.9199999999999999
+				},
+				"scenario": "class_atlas50",
+				"start_charge": 100.0,
+				"start_charge_ratio": 1.0,
+				"stats": {
+					"agility": 14.0,
+					"endurance": 6.0,
+					"energy": 4.0,
+					"intelligence": 2.0,
+					"knowledge": 5.0,
+					"leadership": 5.0,
+					"perception": 9.0,
+					"strength": 18.0
+				}
+			},
+			"frame_count": 3600,
+			"initial_activation_count": 1,
+			"initial_charge": 100.0,
+			"scenario": "class_atlas50",
+			"seed": 151501,
+			"sustain_source": {
+				"damage": 213497.27120000002,
+				"hits": 21164
+			},
+			"ultimate_source": {
+				"by_mechanic": {
+					"last_charge": {
+						"damage": 298533.77400000003,
+						"first_frame": 28,
+						"hits": 110
+					}
+				},
+				"damage": 298533.77520000003,
+				"hits": 110
+			}
+		},
+		"class_constellation": {
+			"activation_count": 11,
+			"activation_timing_seconds": [
+				1.2,
+				6.5667,
+				12.200000000000001,
+				18.0,
+				23.6,
+				28.966700000000003,
+				34.3667,
+				40.0,
+				45.566700000000004,
+				51.166700000000006,
+				56.9667
+			],
+			"class_id": "soldier",
+			"duration_seconds": 60.0,
+			"formula": {
+				"canonical_weapon_id": "soldier_bayonet",
+				"class_id": "soldier",
+				"expected_activation_damage": 29.3106,
+				"expected_initial_activations": 0,
+				"formula_schema": "fan1515.class-ultimate-formula.v1",
+				"meta_application_count": 1,
+				"run_modifiers": {
+					"attack_speed_multiplier": 1.04,
+					"damage_multiplier": 1.1235000000000002,
+					"defense_flat": 0.02,
+					"healing_multiplier": 0.68,
+					"max_health_flat": 8.0,
+					"max_health_multiplier": 0.8,
+					"money_gain_multiplier": 0.8800000000000001,
+					"xp_gain_multiplier": 0.8
+				},
+				"scenario": "class_constellation",
+				"start_charge": 0.0,
+				"start_charge_ratio": 0.0,
+				"stats": {
+					"agility": 14.0,
+					"endurance": 6.0,
+					"energy": 4.0,
+					"intelligence": 2.0,
+					"knowledge": 5.0,
+					"leadership": 5.0,
+					"perception": 9.0,
+					"strength": 18.0
+				}
+			},
+			"frame_count": 3600,
+			"initial_activation_count": 0,
+			"initial_charge": 0.0,
+			"scenario": "class_constellation",
+			"seed": 151501,
+			"sustain_source": {
+				"damage": 213860.74860000002,
+				"hits": 21192
+			},
+			"ultimate_source": {
+				"by_mechanic": {
+					"last_charge": {
+						"damage": 298533.77400000003,
+						"first_frame": 100,
+						"hits": 110
+					}
+				},
+				"damage": 298533.77520000003,
+				"hits": 110
+			}
+		},
+		"no_meta": {
+			"activation_count": 11,
+			"activation_timing_seconds": [
+				1.4667000000000001,
+				7.366700000000001,
+				12.7333,
+				18.85,
+				24.4833,
+				30.55,
+				36.1333,
+				42.033300000000004,
+				48.1,
+				53.7333,
+				59.3667
+			],
+			"class_id": "soldier",
+			"duration_seconds": 60.0,
+			"formula": {
+				"canonical_weapon_id": "soldier_bayonet",
+				"class_id": "soldier",
+				"expected_activation_damage": 29.2616,
+				"expected_initial_activations": 0,
+				"formula_schema": "fan1515.class-ultimate-formula.v1",
+				"meta_application_count": 0,
+				"run_modifiers": {
+					"attack_speed_multiplier": 1.04,
+					"damage_multiplier": 1.1235000000000002,
+					"defense_flat": 0.02,
+					"healing_multiplier": 0.68,
+					"max_health_flat": 8.0,
+					"max_health_multiplier": 0.8,
+					"money_gain_multiplier": 0.8,
+					"xp_gain_multiplier": 0.8
+				},
+				"scenario": "no_meta",
+				"start_charge": 0.0,
+				"start_charge_ratio": 0.0,
+				"stats": {
+					"agility": 14.0,
+					"endurance": 6.0,
+					"energy": 4.0,
+					"intelligence": 2.0,
+					"knowledge": 5.0,
+					"leadership": 5.0,
+					"perception": 8.0,
+					"strength": 18.0
+				}
+			},
+			"frame_count": 3600,
+			"initial_activation_count": 0,
+			"initial_charge": 0.0,
+			"scenario": "no_meta",
+			"seed": 151501,
+			"sustain_source": {
+				"damage": 122305.9596,
+				"hits": 16558
+			},
+			"ultimate_source": {
+				"by_mechanic": {
+					"last_charge": {
+						"damage": 282250.11360000004,
+						"first_frame": 116,
+						"hits": 104
+					}
+				},
+				"damage": 282250.11470000003,
+				"hits": 104
+			}
+		}
+	}
+}

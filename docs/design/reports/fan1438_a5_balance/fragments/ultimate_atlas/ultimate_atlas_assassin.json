@@ -1,0 +1,274 @@
+{
+	"class_id": "assassin",
+	"measurements": {
+		"class_atlas50": {
+			"activation_count": 27,
+			"activation_timing_seconds": [
+				0.0,
+				2.2,
+				4.4667,
+				6.7833000000000006,
+				9.05,
+				11.3667,
+				13.75,
+				16.133300000000002,
+				18.5167,
+				20.900000000000002,
+				23.2833,
+				25.4833,
+				27.8667,
+				30.0667,
+				32.2667,
+				34.65,
+				36.9167,
+				39.2333,
+				41.4333,
+				43.7,
+				46.0167,
+				48.400000000000006,
+				50.6,
+				52.800000000000004,
+				55.1833,
+				57.566700000000004,
+				59.95
+			],
+			"class_id": "assassin",
+			"duration_seconds": 60.0,
+			"formula": {
+				"canonical_weapon_id": "chakrams",
+				"class_id": "assassin",
+				"expected_activation_damage": 61.696600000000004,
+				"expected_initial_activations": 1,
+				"formula_schema": "fan1515.class-ultimate-formula.v1",
+				"meta_application_count": 1,
+				"run_modifiers": {
+					"attack_speed_multiplier": 1.04,
+					"damage_multiplier": 1.1235000000000002,
+					"death_save_health_fraction": 0.3,
+					"defense_flat": 0.02,
+					"healing_multiplier": 0.8160000000000001,
+					"max_health_flat": 8.0,
+					"max_health_multiplier": 0.8,
+					"money_gain_multiplier": 1.04,
+					"pickup_radius_flat": 60.0,
+					"xp_gain_multiplier": 0.9199999999999999
+				},
+				"scenario": "class_atlas50",
+				"start_charge": 100.0,
+				"start_charge_ratio": 1.0,
+				"stats": {
+					"agility": 12.0,
+					"endurance": 5.0,
+					"energy": 3.0,
+					"intelligence": 2.0,
+					"knowledge": 4.0,
+					"leadership": 4.0,
+					"perception": 6.0,
+					"strength": 24.0
+				}
+			},
+			"frame_count": 3600,
+			"initial_activation_count": 1,
+			"initial_charge": 100.0,
+			"scenario": "class_atlas50",
+			"seed": 151501,
+			"sustain_source": {
+				"damage": 286832.95050000004,
+				"hits": 11296
+			},
+			"ultimate_source": {
+				"by_mechanic": {
+					"eight_moons_outbound": {
+						"damage": 293323.5006,
+						"first_frame": 30,
+						"hits": 156
+					},
+					"eight_moons_return": {
+						"damage": 293323.5006,
+						"first_frame": 88,
+						"hits": 156
+					}
+				},
+				"damage": 586646.9917,
+				"hits": 312
+			}
+		},
+		"class_constellation": {
+			"activation_count": 27,
+			"activation_timing_seconds": [
+				0.55,
+				2.75,
+				5.0167,
+				7.3333,
+				9.716700000000001,
+				11.9167,
+				14.1167,
+				16.3167,
+				18.7,
+				21.0833,
+				23.2833,
+				25.666700000000002,
+				27.933300000000003,
+				30.0667,
+				32.45,
+				34.7167,
+				37.033300000000004,
+				39.300000000000004,
+				41.6167,
+				44.0,
+				46.2667,
+				48.4667,
+				50.666700000000006,
+				52.9833,
+				55.3667,
+				57.633300000000006,
+				59.95
+			],
+			"class_id": "assassin",
+			"duration_seconds": 60.0,
+			"formula": {
+				"canonical_weapon_id": "chakrams",
+				"class_id": "assassin",
+				"expected_activation_damage": 61.696600000000004,
+				"expected_initial_activations": 0,
+				"formula_schema": "fan1515.class-ultimate-formula.v1",
+				"meta_application_count": 1,
+				"run_modifiers": {
+					"attack_speed_multiplier": 1.04,
+					"damage_multiplier": 1.1235000000000002,
+					"defense_flat": 0.02,
+					"healing_multiplier": 0.68,
+					"max_health_flat": 8.0,
+					"max_health_multiplier": 0.8,
+					"money_gain_multiplier": 0.8800000000000001,
+					"xp_gain_multiplier": 0.8
+				},
+				"scenario": "class_constellation",
+				"start_charge": 0.0,
+				"start_charge_ratio": 0.0,
+				"stats": {
+					"agility": 12.0,
+					"endurance": 5.0,
+					"energy": 3.0,
+					"intelligence": 2.0,
+					"knowledge": 4.0,
+					"leadership": 4.0,
+					"perception": 6.0,
+					"strength": 24.0
+				}
+			},
+			"frame_count": 3600,
+			"initial_activation_count": 0,
+			"initial_charge": 0.0,
+			"scenario": "class_constellation",
+			"seed": 151501,
+			"sustain_source": {
+				"damage": 291589.923,
+				"hits": 11296
+			},
+			"ultimate_source": {
+				"by_mechanic": {
+					"eight_moons_outbound": {
+						"damage": 293323.5006,
+						"first_frame": 63,
+						"hits": 156
+					},
+					"eight_moons_return": {
+						"damage": 293323.5006,
+						"first_frame": 121,
+						"hits": 156
+					}
+				},
+				"damage": 586646.9917,
+				"hits": 312
+			}
+		},
+		"no_meta": {
+			"activation_count": 24,
+			"activation_timing_seconds": [
+				0.9167000000000001,
+				3.3000000000000003,
+				5.866700000000001,
+				8.433300000000001,
+				11.0,
+				13.5667,
+				16.3167,
+				18.883300000000002,
+				21.3333,
+				24.0167,
+				26.5833,
+				29.150000000000002,
+				31.900000000000002,
+				34.4667,
+				36.85,
+				39.2333,
+				41.800000000000004,
+				44.3667,
+				46.9333,
+				49.5,
+				51.883300000000006,
+				54.3333,
+				57.0167,
+				59.5833
+			],
+			"class_id": "assassin",
+			"duration_seconds": 60.0,
+			"formula": {
+				"canonical_weapon_id": "chakrams",
+				"class_id": "assassin",
+				"expected_activation_damage": 61.525200000000005,
+				"expected_initial_activations": 0,
+				"formula_schema": "fan1515.class-ultimate-formula.v1",
+				"meta_application_count": 0,
+				"run_modifiers": {
+					"attack_speed_multiplier": 1.04,
+					"damage_multiplier": 1.1235000000000002,
+					"defense_flat": 0.02,
+					"healing_multiplier": 0.68,
+					"max_health_flat": 8.0,
+					"max_health_multiplier": 0.8,
+					"money_gain_multiplier": 0.8,
+					"xp_gain_multiplier": 0.8
+				},
+				"scenario": "no_meta",
+				"start_charge": 0.0,
+				"start_charge_ratio": 0.0,
+				"stats": {
+					"agility": 11.0,
+					"endurance": 5.0,
+					"energy": 3.0,
+					"intelligence": 2.0,
+					"knowledge": 4.0,
+					"leadership": 4.0,
+					"perception": 6.0,
+					"strength": 24.0
+				}
+			},
+			"frame_count": 3600,
+			"initial_activation_count": 0,
+			"initial_charge": 0.0,
+			"scenario": "no_meta",
+			"seed": 151501,
+			"sustain_source": {
+				"damage": 201254.3671,
+				"hits": 10247
+			},
+			"ultimate_source": {
+				"by_mechanic": {
+					"eight_moons_outbound": {
+						"damage": 259478.4813,
+						"first_frame": 85,
+						"hits": 138
+					},
+					"eight_moons_return": {
+						"damage": 259478.4813,
+						"first_frame": 143,
+						"hits": 138
+					}
+				},
+				"damage": 518956.95420000004,
+				"hits": 276
+			}
+		}
+	}
+}

@@ -1,0 +1,3984 @@
+{
+	"contract": {
+		"fixed_fps": 60,
+		"formula_schema": "fan1515.class-ultimate-formula.v1",
+		"fragment_schema": "fan1515.a5-ultimate-atlas-fragment.v1",
+		"non_playable_scenario": "class_atlas59_upper",
+		"pack_contract": "a5.scenario-pack.v1",
+		"pack_id": "a5_ultimate_atlas_attribution",
+		"playable_scenarios": [
+			"no_meta",
+			"class_constellation",
+			"class_atlas50"
+		],
+		"probe_frames": 3600,
+		"probe_seconds": 60.0,
+		"seed": 151501
+	},
+	"fragment_schema": "fan1515.a5-ultimate-atlas-fragment.v1",
+	"issue": "FAN-1515",
+	"measurements": {
+		"assassin|class_atlas50": {
+			"activation_count": 27.0,
+			"activation_timing_seconds": [
+				0.0,
+				2.2,
+				4.4667,
+				6.7833000000000006,
+				9.05,
+				11.3667,
+				13.75,
+				16.133300000000002,
+				18.5167,
+				20.9,
+				23.2833,
+				25.4833,
+				27.8667,
+				30.0667,
+				32.2667,
+				34.65,
+				36.9167,
+				39.2333,
+				41.4333,
+				43.7,
+				46.0167,
+				48.400000000000006,
+				50.6,
+				52.8,
+				55.1833,
+				57.5667,
+				59.95
+			],
+			"class_id": "assassin",
+			"duration_seconds": 60.0,
+			"formula": {
+				"canonical_weapon_id": "chakrams",
+				"class_id": "assassin",
+				"expected_activation_damage": 61.6966,
+				"expected_initial_activations": 1.0,
+				"formula_schema": "fan1515.class-ultimate-formula.v1",
+				"meta_application_count": 1.0,
+				"run_modifiers": {
+					"attack_speed_multiplier": 1.04,
+					"damage_multiplier": 1.1235000000000002,
+					"death_save_health_fraction": 0.3,
+					"defense_flat": 0.02,
+					"healing_multiplier": 0.8160000000000001,
+					"max_health_flat": 8.0,
+					"max_health_multiplier": 0.8,
+					"money_gain_multiplier": 1.04,
+					"pickup_radius_flat": 60.0,
+					"xp_gain_multiplier": 0.92
+				},
+				"scenario": "class_atlas50",
+				"start_charge": 100.0,
+				"start_charge_ratio": 1.0,
+				"stats": {
+					"agility": 12.0,
+					"endurance": 5.0,
+					"energy": 3.0,
+					"intelligence": 2.0,
+					"knowledge": 4.0,
+					"leadership": 4.0,
+					"perception": 6.0,
+					"strength": 24.0
+				}
+			},
+			"frame_count": 3600.0,
+			"initial_activation_count": 1.0,
+			"initial_charge": 100.0,
+			"scenario": "class_atlas50",
+			"seed": 151501.0,
+			"sustain_source": {
+				"damage": 286832.95050000004,
+				"hits": 11296.0
+			},
+			"ultimate_source": {
+				"by_mechanic": {
+					"eight_moons_outbound": {
+						"damage": 293323.5006,
+						"first_frame": 30.0,
+						"hits": 156.0
+					},
+					"eight_moons_return": {
+						"damage": 293323.5006,
+						"first_frame": 88.0,
+						"hits": 156.0
+					}
+				},
+				"damage": 586646.9917,
+				"hits": 312.0
+			}
+		},
+		"assassin|class_constellation": {
+			"activation_count": 27.0,
+			"activation_timing_seconds": [
+				0.55,
+				2.75,
+				5.0167,
+				7.3333,
+				9.7167,
+				11.9167,
+				14.1167,
+				16.3167,
+				18.7,
+				21.0833,
+				23.2833,
+				25.6667,
+				27.933300000000003,
+				30.0667,
+				32.45,
+				34.7167,
+				37.0333,
+				39.3,
+				41.6167,
+				44.0,
+				46.2667,
+				48.4667,
+				50.666700000000006,
+				52.9833,
+				55.3667,
+				57.633300000000006,
+				59.95
+			],
+			"class_id": "assassin",
+			"duration_seconds": 60.0,
+			"formula": {
+				"canonical_weapon_id": "chakrams",
+				"class_id": "assassin",
+				"expected_activation_damage": 61.6966,
+				"expected_initial_activations": 0.0,
+				"formula_schema": "fan1515.class-ultimate-formula.v1",
+				"meta_application_count": 1.0,
+				"run_modifiers": {
+					"attack_speed_multiplier": 1.04,
+					"damage_multiplier": 1.1235000000000002,
+					"defense_flat": 0.02,
+					"healing_multiplier": 0.68,
+					"max_health_flat": 8.0,
+					"max_health_multiplier": 0.8,
+					"money_gain_multiplier": 0.8800000000000001,
+					"xp_gain_multiplier": 0.8
+				},
+				"scenario": "class_constellation",
+				"start_charge": 0.0,
+				"start_charge_ratio": 0.0,
+				"stats": {
+					"agility": 12.0,
+					"endurance": 5.0,
+					"energy": 3.0,
+					"intelligence": 2.0,
+					"knowledge": 4.0,
+					"leadership": 4.0,
+					"perception": 6.0,
+					"strength": 24.0
+				}
+			},
+			"frame_count": 3600.0,
+			"initial_activation_count": 0.0,
+			"initial_charge": 0.0,
+			"scenario": "class_constellation",
+			"seed": 151501.0,
+			"sustain_source": {
+				"damage": 291589.923,
+				"hits": 11296.0
+			},
+			"ultimate_source": {
+				"by_mechanic": {
+					"eight_moons_outbound": {
+						"damage": 293323.5006,
+						"first_frame": 63.0,
+						"hits": 156.0
+					},
+					"eight_moons_return": {
+						"damage": 293323.5006,
+						"first_frame": 121.0,
+						"hits": 156.0
+					}
+				},
+				"damage": 586646.9917,
+				"hits": 312.0
+			}
+		},
+		"assassin|no_meta": {
+			"activation_count": 24.0,
+			"activation_timing_seconds": [
+				0.9167,
+				3.3000000000000003,
+				5.866700000000001,
+				8.433300000000001,
+				11.0,
+				13.5667,
+				16.3167,
+				18.8833,
+				21.3333,
+				24.0167,
+				26.5833,
+				29.15,
+				31.9,
+				34.4667,
+				36.85,
+				39.2333,
+				41.8,
+				44.3667,
+				46.9333,
+				49.5,
+				51.883300000000006,
+				54.3333,
+				57.0167,
+				59.5833
+			],
+			"class_id": "assassin",
+			"duration_seconds": 60.0,
+			"formula": {
+				"canonical_weapon_id": "chakrams",
+				"class_id": "assassin",
+				"expected_activation_damage": 61.525200000000005,
+				"expected_initial_activations": 0.0,
+				"formula_schema": "fan1515.class-ultimate-formula.v1",
+				"meta_application_count": 0.0,
+				"run_modifiers": {
+					"attack_speed_multiplier": 1.04,
+					"damage_multiplier": 1.1235000000000002,
+					"defense_flat": 0.02,
+					"healing_multiplier": 0.68,
+					"max_health_flat": 8.0,
+					"max_health_multiplier": 0.8,
+					"money_gain_multiplier": 0.8,
+					"xp_gain_multiplier": 0.8
+				},
+				"scenario": "no_meta",
+				"start_charge": 0.0,
+				"start_charge_ratio": 0.0,
+				"stats": {
+					"agility": 11.0,
+					"endurance": 5.0,
+					"energy": 3.0,
+					"intelligence": 2.0,
+					"knowledge": 4.0,
+					"leadership": 4.0,
+					"perception": 6.0,
+					"strength": 24.0
+				}
+			},
+			"frame_count": 3600.0,
+			"initial_activation_count": 0.0,
+			"initial_charge": 0.0,
+			"scenario": "no_meta",
+			"seed": 151501.0,
+			"sustain_source": {
+				"damage": 201254.3671,
+				"hits": 10247.0
+			},
+			"ultimate_source": {
+				"by_mechanic": {
+					"eight_moons_outbound": {
+						"damage": 259478.4813,
+						"first_frame": 85.0,
+						"hits": 138.0
+					},
+					"eight_moons_return": {
+						"damage": 259478.4813,
+						"first_frame": 143.0,
+						"hits": 138.0
+					}
+				},
+				"damage": 518956.9542,
+				"hits": 276.0
+			}
+		},
+		"berserk|class_atlas50": {
+			"activation_count": 1.0,
+			"activation_timing_seconds": [
+				0.0
+			],
+			"class_id": "berserk",
+			"duration_seconds": 60.0,
+			"formula": {
+				"canonical_weapon_id": "axe",
+				"class_id": "berserk",
+				"expected_activation_damage": 31.0148,
+				"expected_initial_activations": 1.0,
+				"formula_schema": "fan1515.class-ultimate-formula.v1",
+				"meta_application_count": 1.0,
+				"run_modifiers": {
+					"attack_speed_multiplier": 1.04,
+					"damage_multiplier": 1.1235000000000002,
+					"death_save_health_fraction": 0.3,
+					"defense_flat": 0.02,
+					"healing_multiplier": 0.8160000000000001,
+					"max_health_flat": 8.0,
+					"max_health_multiplier": 0.8,
+					"money_gain_multiplier": 1.04,
+					"pickup_radius_flat": 60.0,
+					"xp_gain_multiplier": 0.92
+				},
+				"scenario": "class_atlas50",
+				"start_charge": 100.0,
+				"start_charge_ratio": 1.0,
+				"stats": {
+					"agility": 16.0,
+					"endurance": 7.0,
+					"energy": 4.0,
+					"intelligence": 2.0,
+					"knowledge": 4.0,
+					"leadership": 3.0,
+					"perception": 5.0,
+					"strength": 19.0
+				}
+			},
+			"frame_count": 3600.0,
+			"initial_activation_count": 1.0,
+			"initial_charge": 100.0,
+			"scenario": "class_atlas50",
+			"seed": 151501.0,
+			"sustain_source": {
+				"damage": 341146.5579,
+				"hits": 29630.0
+			},
+			"ultimate_source": {
+				"by_mechanic": {
+					"execution_loop_outbound": {
+						"damage": 7030.0250000000005,
+						"first_frame": 27.0,
+						"hits": 10.0
+					},
+					"execution_loop_return": {
+						"damage": 11165.334,
+						"first_frame": 303.0,
+						"hits": 10.0
+					}
+				},
+				"damage": 18195.3597,
+				"hits": 20.0
+			}
+		},
+		"berserk|class_constellation": {
+			"activation_count": 1.0,
+			"activation_timing_seconds": [
+				1.4667
+			],
+			"class_id": "berserk",
+			"duration_seconds": 60.0,
+			"formula": {
+				"canonical_weapon_id": "axe",
+				"class_id": "berserk",
+				"expected_activation_damage": 31.0148,
+				"expected_initial_activations": 0.0,
+				"formula_schema": "fan1515.class-ultimate-formula.v1",
+				"meta_application_count": 1.0,
+				"run_modifiers": {
+					"attack_speed_multiplier": 1.04,
+					"damage_multiplier": 1.1235000000000002,
+					"defense_flat": 0.02,
+					"healing_multiplier": 0.68,
+					"max_health_flat": 8.0,
+					"max_health_multiplier": 0.8,
+					"money_gain_multiplier": 0.8800000000000001,
+					"xp_gain_multiplier": 0.8
+				},
+				"scenario": "class_constellation",
+				"start_charge": 0.0,
+				"start_charge_ratio": 0.0,
+				"stats": {
+					"agility": 16.0,
+					"endurance": 7.0,
+					"energy": 4.0,
+					"intelligence": 2.0,
+					"knowledge": 4.0,
+					"leadership": 3.0,
+					"perception": 5.0,
+					"strength": 19.0
+				}
+			},
+			"frame_count": 3600.0,
+			"initial_activation_count": 0.0,
+			"initial_charge": 0.0,
+			"scenario": "class_constellation",
+			"seed": 151501.0,
+			"sustain_source": {
+				"damage": 339480.9463,
+				"hits": 29530.0
+			},
+			"ultimate_source": {
+				"by_mechanic": {
+					"execution_loop_outbound": {
+						"damage": 7030.0250000000005,
+						"first_frame": 115.0,
+						"hits": 10.0
+					},
+					"execution_loop_return": {
+						"damage": 11165.334,
+						"first_frame": 391.0,
+						"hits": 10.0
+					}
+				},
+				"damage": 18195.3597,
+				"hits": 20.0
+			}
+		},
+		"berserk|no_meta": {
+			"activation_count": 1.0,
+			"activation_timing_seconds": [
+				2.0333
+			],
+			"class_id": "berserk",
+			"duration_seconds": 60.0,
+			"formula": {
+				"canonical_weapon_id": "axe",
+				"class_id": "berserk",
+				"expected_activation_damage": 29.2465,
+				"expected_initial_activations": 0.0,
+				"formula_schema": "fan1515.class-ultimate-formula.v1",
+				"meta_application_count": 0.0,
+				"run_modifiers": {
+					"attack_speed_multiplier": 1.04,
+					"damage_multiplier": 1.1235000000000002,
+					"defense_flat": 0.02,
+					"healing_multiplier": 0.68,
+					"max_health_flat": 8.0,
+					"max_health_multiplier": 0.8,
+					"money_gain_multiplier": 0.8,
+					"xp_gain_multiplier": 0.8
+				},
+				"scenario": "no_meta",
+				"start_charge": 0.0,
+				"start_charge_ratio": 0.0,
+				"stats": {
+					"agility": 16.0,
+					"endurance": 7.0,
+					"energy": 4.0,
+					"intelligence": 2.0,
+					"knowledge": 4.0,
+					"leadership": 3.0,
+					"perception": 5.0,
+					"strength": 18.0
+				}
+			},
+			"frame_count": 3600.0,
+			"initial_activation_count": 0.0,
+			"initial_charge": 0.0,
+			"scenario": "no_meta",
+			"seed": 151501.0,
+			"sustain_source": {
+				"damage": 253002.7108,
+				"hits": 29530.0
+			},
+			"ultimate_source": {
+				"by_mechanic": {
+					"execution_loop_outbound": {
+						"damage": 7030.0250000000005,
+						"first_frame": 149.0,
+						"hits": 10.0
+					},
+					"execution_loop_return": {
+						"damage": 11165.334,
+						"first_frame": 425.0,
+						"hits": 10.0
+					}
+				},
+				"damage": 18195.3597,
+				"hits": 20.0
+			}
+		},
+		"biologist|class_atlas50": {
+			"activation_count": 6.0,
+			"activation_timing_seconds": [
+				0.0,
+				11.55,
+				23.1,
+				34.4667,
+				46.0167,
+				57.5667
+			],
+			"class_id": "biologist",
+			"duration_seconds": 60.0,
+			"formula": {
+				"canonical_weapon_id": "biologist_sample_injector",
+				"class_id": "biologist",
+				"expected_activation_damage": 38.097100000000005,
+				"expected_initial_activations": 1.0,
+				"formula_schema": "fan1515.class-ultimate-formula.v1",
+				"meta_application_count": 1.0,
+				"run_modifiers": {
+					"aoe_radius_multiplier": 1.05,
+					"attack_speed_multiplier": 1.04,
+					"damage_multiplier": 1.1128,
+					"death_save_health_fraction": 0.3,
+					"healing_multiplier": 0.8160000000000001,
+					"max_health_flat": 7.0,
+					"max_health_multiplier": 0.8,
+					"money_gain_multiplier": 1.04,
+					"pickup_radius_flat": 60.0,
+					"xp_gain_multiplier": 0.92
+				},
+				"scenario": "class_atlas50",
+				"start_charge": 100.0,
+				"start_charge_ratio": 1.0,
+				"stats": {
+					"agility": 19.0,
+					"endurance": 4.0,
+					"energy": 6.0,
+					"intelligence": 13.0,
+					"knowledge": 11.0,
+					"leadership": 4.0,
+					"perception": 7.0,
+					"strength": 2.0
+				}
+			},
+			"frame_count": 3600.0,
+			"initial_activation_count": 1.0,
+			"initial_charge": 100.0,
+			"scenario": "class_atlas50",
+			"seed": 151501.0,
+			"sustain_source": {
+				"damage": 365398.485,
+				"hits": 61311.0
+			},
+			"ultimate_source": {
+				"by_mechanic": {
+					"analysis_pulse": {
+						"damage": 5098.0832,
+						"first_frame": 132.0,
+						"hits": 16.0
+					},
+					"analysis_tissue": {
+						"damage": 4654.7712,
+						"first_frame": 132.0,
+						"hits": 48.0
+					},
+					"sample_extraction": {
+						"damage": 6691.2348,
+						"first_frame": 38.0,
+						"hits": 6.0
+					}
+				},
+				"damage": 16444.090200000002,
+				"hits": 70.0
+			}
+		},
+		"biologist|class_constellation": {
+			"activation_count": 6.0,
+			"activation_timing_seconds": [
+				0.55,
+				12.1,
+				23.65,
+				35.0167,
+				46.5667,
+				57.9333
+			],
+			"class_id": "biologist",
+			"duration_seconds": 60.0,
+			"formula": {
+				"canonical_weapon_id": "biologist_sample_injector",
+				"class_id": "biologist",
+				"expected_activation_damage": 38.097100000000005,
+				"expected_initial_activations": 0.0,
+				"formula_schema": "fan1515.class-ultimate-formula.v1",
+				"meta_application_count": 1.0,
+				"run_modifiers": {
+					"aoe_radius_multiplier": 1.05,
+					"attack_speed_multiplier": 1.04,
+					"damage_multiplier": 1.1128,
+					"healing_multiplier": 0.68,
+					"max_health_flat": 7.0,
+					"max_health_multiplier": 0.8,
+					"money_gain_multiplier": 0.8800000000000001,
+					"xp_gain_multiplier": 0.8
+				},
+				"scenario": "class_constellation",
+				"start_charge": 0.0,
+				"start_charge_ratio": 0.0,
+				"stats": {
+					"agility": 19.0,
+					"endurance": 4.0,
+					"energy": 6.0,
+					"intelligence": 13.0,
+					"knowledge": 11.0,
+					"leadership": 4.0,
+					"perception": 7.0,
+					"strength": 2.0
+				}
+			},
+			"frame_count": 3600.0,
+			"initial_activation_count": 0.0,
+			"initial_charge": 0.0,
+			"scenario": "class_constellation",
+			"seed": 151501.0,
+			"sustain_source": {
+				"damage": 358960.5198,
+				"hits": 61311.0
+			},
+			"ultimate_source": {
+				"by_mechanic": {
+					"analysis_pulse": {
+						"damage": 4779.453,
+						"first_frame": 165.0,
+						"hits": 15.0
+					},
+					"analysis_tissue": {
+						"damage": 4363.848,
+						"first_frame": 165.0,
+						"hits": 45.0
+					},
+					"sample_extraction": {
+						"damage": 6691.2348,
+						"first_frame": 71.0,
+						"hits": 6.0
+					}
+				},
+				"damage": 15834.5367,
+				"hits": 66.0
+			}
+		},
+		"biologist|no_meta": {
+			"activation_count": 5.0,
+			"activation_timing_seconds": [
+				1.1,
+				13.0167,
+				25.1167,
+				37.0333,
+				49.133300000000006
+			],
+			"class_id": "biologist",
+			"duration_seconds": 60.0,
+			"formula": {
+				"canonical_weapon_id": "biologist_sample_injector",
+				"class_id": "biologist",
+				"expected_activation_damage": 38.0356,
+				"expected_initial_activations": 0.0,
+				"formula_schema": "fan1515.class-ultimate-formula.v1",
+				"meta_application_count": 0.0,
+				"run_modifiers": {
+					"aoe_radius_multiplier": 1.05,
+					"attack_speed_multiplier": 1.04,
+					"damage_multiplier": 1.1128,
+					"healing_multiplier": 0.68,
+					"max_health_flat": 7.0,
+					"max_health_multiplier": 0.8,
+					"money_gain_multiplier": 0.8,
+					"xp_gain_multiplier": 0.8
+				},
+				"scenario": "no_meta",
+				"start_charge": 0.0,
+				"start_charge_ratio": 0.0,
+				"stats": {
+					"agility": 19.0,
+					"endurance": 4.0,
+					"energy": 6.0,
+					"intelligence": 13.0,
+					"knowledge": 10.0,
+					"leadership": 4.0,
+					"perception": 7.0,
+					"strength": 2.0
+				}
+			},
+			"frame_count": 3600.0,
+			"initial_activation_count": 0.0,
+			"initial_charge": 0.0,
+			"scenario": "no_meta",
+			"seed": 151501.0,
+			"sustain_source": {
+				"damage": 269032.6385,
+				"hits": 57717.0
+			},
+			"ultimate_source": {
+				"by_mechanic": {
+					"analysis_pulse": {
+						"damage": 4779.453,
+						"first_frame": 198.0,
+						"hits": 15.0
+					},
+					"analysis_tissue": {
+						"damage": 4363.848,
+						"first_frame": 198.0,
+						"hits": 45.0
+					},
+					"sample_extraction": {
+						"damage": 5576.029,
+						"first_frame": 104.0,
+						"hits": 5.0
+					}
+				},
+				"damage": 14719.3309,
+				"hits": 65.0
+			}
+		},
+		"chemist|class_atlas50": {
+			"activation_count": 1.0,
+			"activation_timing_seconds": [
+				0.0
+			],
+			"class_id": "chemist",
+			"duration_seconds": 60.0,
+			"formula": {
+				"canonical_weapon_id": "acid_flask",
+				"class_id": "chemist",
+				"expected_activation_damage": 9.6448,
+				"expected_initial_activations": 1.0,
+				"formula_schema": "fan1515.class-ultimate-formula.v1",
+				"meta_application_count": 1.0,
+				"run_modifiers": {
+					"attack_speed_multiplier": 1.04,
+					"damage_multiplier": 1.1235000000000002,
+					"death_save_health_fraction": 0.3,
+					"defense_flat": 0.02,
+					"healing_multiplier": 0.8160000000000001,
+					"max_health_flat": 8.0,
+					"max_health_multiplier": 0.8,
+					"money_gain_multiplier": 1.04,
+					"pickup_radius_flat": 60.0,
+					"xp_gain_multiplier": 0.92
+				},
+				"scenario": "class_atlas50",
+				"start_charge": 100.0,
+				"start_charge_ratio": 1.0,
+				"stats": {
+					"agility": 12.0,
+					"endurance": 3.0,
+					"energy": 7.0,
+					"intelligence": 9.0,
+					"knowledge": 8.0,
+					"leadership": 2.0,
+					"perception": 6.0,
+					"strength": 13.0
+				}
+			},
+			"frame_count": 3600.0,
+			"initial_activation_count": 1.0,
+			"initial_charge": 100.0,
+			"scenario": "class_atlas50",
+			"seed": 151501.0,
+			"sustain_source": {
+				"damage": 71114.20640000001,
+				"hits": 38884.0
+			},
+			"ultimate_source": {
+				"by_mechanic": {},
+				"damage": 0.0,
+				"hits": 0.0
+			}
+		},
+		"chemist|class_constellation": {
+			"activation_count": 0.0,
+			"activation_timing_seconds": [],
+			"class_id": "chemist",
+			"duration_seconds": 60.0,
+			"formula": {
+				"canonical_weapon_id": "acid_flask",
+				"class_id": "chemist",
+				"expected_activation_damage": 9.6448,
+				"expected_initial_activations": 0.0,
+				"formula_schema": "fan1515.class-ultimate-formula.v1",
+				"meta_application_count": 1.0,
+				"run_modifiers": {
+					"attack_speed_multiplier": 1.04,
+					"damage_multiplier": 1.1235000000000002,
+					"defense_flat": 0.02,
+					"healing_multiplier": 0.68,
+					"max_health_flat": 8.0,
+					"max_health_multiplier": 0.8,
+					"money_gain_multiplier": 0.8800000000000001,
+					"xp_gain_multiplier": 0.8
+				},
+				"scenario": "class_constellation",
+				"start_charge": 0.0,
+				"start_charge_ratio": 0.0,
+				"stats": {
+					"agility": 12.0,
+					"endurance": 3.0,
+					"energy": 7.0,
+					"intelligence": 9.0,
+					"knowledge": 8.0,
+					"leadership": 2.0,
+					"perception": 6.0,
+					"strength": 13.0
+				}
+			},
+			"frame_count": 3600.0,
+			"initial_activation_count": 0.0,
+			"initial_charge": 0.0,
+			"scenario": "class_constellation",
+			"seed": 151501.0,
+			"sustain_source": {
+				"damage": 71114.20640000001,
+				"hits": 38884.0
+			},
+			"ultimate_source": {
+				"by_mechanic": {},
+				"damage": 0.0,
+				"hits": 0.0
+			}
+		},
+		"chemist|no_meta": {
+			"activation_count": 0.0,
+			"activation_timing_seconds": [],
+			"class_id": "chemist",
+			"duration_seconds": 60.0,
+			"formula": {
+				"canonical_weapon_id": "acid_flask",
+				"class_id": "chemist",
+				"expected_activation_damage": 9.6326,
+				"expected_initial_activations": 0.0,
+				"formula_schema": "fan1515.class-ultimate-formula.v1",
+				"meta_application_count": 0.0,
+				"run_modifiers": {
+					"attack_speed_multiplier": 1.04,
+					"damage_multiplier": 1.1235000000000002,
+					"defense_flat": 0.02,
+					"healing_multiplier": 0.68,
+					"max_health_flat": 8.0,
+					"max_health_multiplier": 0.8,
+					"money_gain_multiplier": 0.8,
+					"xp_gain_multiplier": 0.8
+				},
+				"scenario": "no_meta",
+				"start_charge": 0.0,
+				"start_charge_ratio": 0.0,
+				"stats": {
+					"agility": 12.0,
+					"endurance": 3.0,
+					"energy": 7.0,
+					"intelligence": 9.0,
+					"knowledge": 7.0,
+					"leadership": 2.0,
+					"perception": 6.0,
+					"strength": 13.0
+				}
+			},
+			"frame_count": 3600.0,
+			"initial_activation_count": 0.0,
+			"initial_charge": 0.0,
+			"scenario": "no_meta",
+			"seed": 151501.0,
+			"sustain_source": {
+				"damage": 66312.1502,
+				"hits": 35989.0
+			},
+			"ultimate_source": {
+				"by_mechanic": {},
+				"damage": 0.0,
+				"hits": 0.0
+			}
+		},
+		"dark_mage|class_atlas50": {
+			"activation_count": 1.0,
+			"activation_timing_seconds": [
+				0.0
+			],
+			"class_id": "dark_mage",
+			"duration_seconds": 60.0,
+			"formula": {
+				"canonical_weapon_id": "cursed_skull",
+				"class_id": "dark_mage",
+				"expected_activation_damage": 23.576,
+				"expected_initial_activations": 1.0,
+				"formula_schema": "fan1515.class-ultimate-formula.v1",
+				"meta_application_count": 1.0,
+				"run_modifiers": {
+					"aoe_radius_multiplier": 1.05,
+					"attack_speed_multiplier": 1.04,
+					"damage_multiplier": 1.1235000000000002,
+					"death_save_health_fraction": 0.3,
+					"healing_multiplier": 0.8160000000000001,
+					"max_health_flat": 6.0,
+					"max_health_multiplier": 0.8,
+					"money_gain_multiplier": 1.04,
+					"pickup_radius_flat": 60.0,
+					"xp_gain_multiplier": 0.92
+				},
+				"scenario": "class_atlas50",
+				"start_charge": 100.0,
+				"start_charge_ratio": 1.0,
+				"stats": {
+					"agility": 18.0,
+					"endurance": 3.0,
+					"energy": 7.0,
+					"intelligence": 15.0,
+					"knowledge": 6.0,
+					"leadership": 5.0,
+					"perception": 5.0,
+					"strength": 2.0
+				}
+			},
+			"frame_count": 3600.0,
+			"initial_activation_count": 1.0,
+			"initial_charge": 100.0,
+			"scenario": "class_atlas50",
+			"seed": 151501.0,
+			"sustain_source": {
+				"damage": 23446.9353,
+				"hits": 5966.0
+			},
+			"ultimate_source": {
+				"by_mechanic": {
+					"crown_curse": {
+						"damage": 4889.828,
+						"first_frame": 50.0,
+						"hits": 40.0
+					},
+					"crown_harvest": {
+						"damage": 1921.003,
+						"first_frame": 332.0,
+						"hits": 10.0
+					}
+				},
+				"damage": 6810.8303000000005,
+				"hits": 50.0
+			}
+		},
+		"dark_mage|class_constellation": {
+			"activation_count": 1.0,
+			"activation_timing_seconds": [
+				4.7833000000000006
+			],
+			"class_id": "dark_mage",
+			"duration_seconds": 60.0,
+			"formula": {
+				"canonical_weapon_id": "cursed_skull",
+				"class_id": "dark_mage",
+				"expected_activation_damage": 23.576,
+				"expected_initial_activations": 0.0,
+				"formula_schema": "fan1515.class-ultimate-formula.v1",
+				"meta_application_count": 1.0,
+				"run_modifiers": {
+					"aoe_radius_multiplier": 1.05,
+					"attack_speed_multiplier": 1.04,
+					"damage_multiplier": 1.1235000000000002,
+					"healing_multiplier": 0.68,
+					"max_health_flat": 6.0,
+					"max_health_multiplier": 0.8,
+					"money_gain_multiplier": 0.8800000000000001,
+					"xp_gain_multiplier": 0.8
+				},
+				"scenario": "class_constellation",
+				"start_charge": 0.0,
+				"start_charge_ratio": 0.0,
+				"stats": {
+					"agility": 18.0,
+					"endurance": 3.0,
+					"energy": 7.0,
+					"intelligence": 15.0,
+					"knowledge": 6.0,
+					"leadership": 5.0,
+					"perception": 5.0,
+					"strength": 2.0
+				}
+			},
+			"frame_count": 3600.0,
+			"initial_activation_count": 0.0,
+			"initial_charge": 0.0,
+			"scenario": "class_constellation",
+			"seed": 151501.0,
+			"sustain_source": {
+				"damage": 23446.9353,
+				"hits": 5966.0
+			},
+			"ultimate_source": {
+				"by_mechanic": {
+					"crown_curse": {
+						"damage": 4889.828,
+						"first_frame": 337.0,
+						"hits": 40.0
+					},
+					"crown_harvest": {
+						"damage": 1921.003,
+						"first_frame": 619.0,
+						"hits": 10.0
+					}
+				},
+				"damage": 6810.8303000000005,
+				"hits": 50.0
+			}
+		},
+		"dark_mage|no_meta": {
+			"activation_count": 1.0,
+			"activation_timing_seconds": [
+				4.9667
+			],
+			"class_id": "dark_mage",
+			"duration_seconds": 60.0,
+			"formula": {
+				"canonical_weapon_id": "cursed_skull",
+				"class_id": "dark_mage",
+				"expected_activation_damage": 22.151300000000003,
+				"expected_initial_activations": 0.0,
+				"formula_schema": "fan1515.class-ultimate-formula.v1",
+				"meta_application_count": 0.0,
+				"run_modifiers": {
+					"aoe_radius_multiplier": 1.05,
+					"attack_speed_multiplier": 1.04,
+					"damage_multiplier": 1.1235000000000002,
+					"healing_multiplier": 0.68,
+					"max_health_flat": 6.0,
+					"max_health_multiplier": 0.8,
+					"money_gain_multiplier": 0.8,
+					"xp_gain_multiplier": 0.8
+				},
+				"scenario": "no_meta",
+				"start_charge": 0.0,
+				"start_charge_ratio": 0.0,
+				"stats": {
+					"agility": 18.0,
+					"endurance": 3.0,
+					"energy": 7.0,
+					"intelligence": 14.0,
+					"knowledge": 6.0,
+					"leadership": 5.0,
+					"perception": 5.0,
+					"strength": 2.0
+				}
+			},
+			"frame_count": 3600.0,
+			"initial_activation_count": 0.0,
+			"initial_charge": 0.0,
+			"scenario": "no_meta",
+			"seed": 151501.0,
+			"sustain_source": {
+				"damage": 23422.275100000003,
+				"hits": 5960.0
+			},
+			"ultimate_source": {
+				"by_mechanic": {
+					"crown_curse": {
+						"damage": 4889.828,
+						"first_frame": 348.0,
+						"hits": 40.0
+					},
+					"crown_harvest": {
+						"damage": 1921.003,
+						"first_frame": 630.0,
+						"hits": 10.0
+					}
+				},
+				"damage": 6810.8303000000005,
+				"hits": 50.0
+			}
+		},
+		"doctor|class_atlas50": {
+			"activation_count": 1.0,
+			"activation_timing_seconds": [
+				0.0
+			],
+			"class_id": "doctor",
+			"duration_seconds": 60.0,
+			"formula": {
+				"canonical_weapon_id": "bone_saw",
+				"class_id": "doctor",
+				"expected_activation_damage": 80.3169,
+				"expected_initial_activations": 1.0,
+				"formula_schema": "fan1515.class-ultimate-formula.v1",
+				"meta_application_count": 1.0,
+				"run_modifiers": {
+					"attack_speed_multiplier": 1.04,
+					"damage_multiplier": 1.1235000000000002,
+					"death_save_health_fraction": 0.3,
+					"defense_flat": 0.02,
+					"healing_multiplier": 0.8160000000000001,
+					"max_health_flat": 8.0,
+					"max_health_multiplier": 0.8,
+					"money_gain_multiplier": 1.04,
+					"pickup_radius_flat": 60.0,
+					"xp_gain_multiplier": 0.92
+				},
+				"scenario": "class_atlas50",
+				"start_charge": 100.0,
+				"start_charge_ratio": 1.0,
+				"stats": {
+					"agility": 14.0,
+					"endurance": 5.0,
+					"energy": 6.0,
+					"intelligence": 8.0,
+					"knowledge": 9.0,
+					"leadership": 2.0,
+					"perception": 5.0,
+					"strength": 11.0
+				}
+			},
+			"frame_count": 3600.0,
+			"initial_activation_count": 1.0,
+			"initial_charge": 100.0,
+			"scenario": "class_atlas50",
+			"seed": 151501.0,
+			"sustain_source": {
+				"damage": 441123.9508000001,
+				"hits": 44885.0
+			},
+			"ultimate_source": {
+				"by_mechanic": {
+					"emergency_surgery_orbit": {
+						"damage": 44903.304,
+						"first_frame": 0.0,
+						"hits": 48.0
+					}
+				},
+				"damage": 44903.3033,
+				"hits": 48.0
+			}
+		},
+		"doctor|class_constellation": {
+			"activation_count": 1.0,
+			"activation_timing_seconds": [
+				0.7333000000000001
+			],
+			"class_id": "doctor",
+			"duration_seconds": 60.0,
+			"formula": {
+				"canonical_weapon_id": "bone_saw",
+				"class_id": "doctor",
+				"expected_activation_damage": 80.3169,
+				"expected_initial_activations": 0.0,
+				"formula_schema": "fan1515.class-ultimate-formula.v1",
+				"meta_application_count": 1.0,
+				"run_modifiers": {
+					"attack_speed_multiplier": 1.04,
+					"damage_multiplier": 1.1235000000000002,
+					"defense_flat": 0.02,
+					"healing_multiplier": 0.68,
+					"max_health_flat": 8.0,
+					"max_health_multiplier": 0.8,
+					"money_gain_multiplier": 0.8800000000000001,
+					"xp_gain_multiplier": 0.8
+				},
+				"scenario": "class_constellation",
+				"start_charge": 0.0,
+				"start_charge_ratio": 0.0,
+				"stats": {
+					"agility": 14.0,
+					"endurance": 5.0,
+					"energy": 6.0,
+					"intelligence": 8.0,
+					"knowledge": 9.0,
+					"leadership": 2.0,
+					"perception": 5.0,
+					"strength": 11.0
+				}
+			},
+			"frame_count": 3600.0,
+			"initial_activation_count": 0.0,
+			"initial_charge": 0.0,
+			"scenario": "class_constellation",
+			"seed": 151501.0,
+			"sustain_source": {
+				"damage": 445582.1285000001,
+				"hits": 44885.0
+			},
+			"ultimate_source": {
+				"by_mechanic": {
+					"emergency_surgery_orbit": {
+						"damage": 44903.304,
+						"first_frame": 44.0,
+						"hits": 48.0
+					}
+				},
+				"damage": 44903.3033,
+				"hits": 48.0
+			}
+		},
+		"doctor|no_meta": {
+			"activation_count": 1.0,
+			"activation_timing_seconds": [
+				1.1
+			],
+			"class_id": "doctor",
+			"duration_seconds": 60.0,
+			"formula": {
+				"canonical_weapon_id": "bone_saw",
+				"class_id": "doctor",
+				"expected_activation_damage": 80.2244,
+				"expected_initial_activations": 0.0,
+				"formula_schema": "fan1515.class-ultimate-formula.v1",
+				"meta_application_count": 0.0,
+				"run_modifiers": {
+					"attack_speed_multiplier": 1.04,
+					"damage_multiplier": 1.1235000000000002,
+					"defense_flat": 0.02,
+					"healing_multiplier": 0.68,
+					"max_health_flat": 8.0,
+					"max_health_multiplier": 0.8,
+					"money_gain_multiplier": 0.8,
+					"xp_gain_multiplier": 0.8
+				},
+				"scenario": "no_meta",
+				"start_charge": 0.0,
+				"start_charge_ratio": 0.0,
+				"stats": {
+					"agility": 14.0,
+					"endurance": 5.0,
+					"energy": 6.0,
+					"intelligence": 8.0,
+					"knowledge": 8.0,
+					"leadership": 2.0,
+					"perception": 5.0,
+					"strength": 11.0
+				}
+			},
+			"frame_count": 3600.0,
+			"initial_activation_count": 0.0,
+			"initial_charge": 0.0,
+			"scenario": "no_meta",
+			"seed": 151501.0,
+			"sustain_source": {
+				"damage": 393001.7964,
+				"hits": 44885.0
+			},
+			"ultimate_source": {
+				"by_mechanic": {
+					"emergency_surgery_orbit": {
+						"damage": 44903.304,
+						"first_frame": 66.0,
+						"hits": 48.0
+					}
+				},
+				"damage": 44903.3033,
+				"hits": 48.0
+			}
+		},
+		"druid|class_atlas50": {
+			"activation_count": 3.0,
+			"activation_timing_seconds": [
+				0.0,
+				21.3167,
+				42.2833
+			],
+			"class_id": "druid",
+			"duration_seconds": 60.0,
+			"formula": {
+				"canonical_weapon_id": "briar_staff",
+				"class_id": "druid",
+				"expected_activation_damage": 40.661,
+				"expected_initial_activations": 1.0,
+				"formula_schema": "fan1515.class-ultimate-formula.v1",
+				"meta_application_count": 1.0,
+				"run_modifiers": {
+					"attack_speed_multiplier": 1.04,
+					"damage_multiplier": 1.1235000000000002,
+					"death_save_health_fraction": 0.3,
+					"defense_flat": 0.02,
+					"healing_multiplier": 0.8160000000000001,
+					"max_health_flat": 8.0,
+					"max_health_multiplier": 0.8,
+					"money_gain_multiplier": 1.04,
+					"pickup_radius_flat": 60.0,
+					"xp_gain_multiplier": 0.92
+				},
+				"scenario": "class_atlas50",
+				"start_charge": 100.0,
+				"start_charge_ratio": 1.0,
+				"stats": {
+					"agility": 13.0,
+					"endurance": 5.0,
+					"energy": 6.0,
+					"intelligence": 4.0,
+					"knowledge": 5.0,
+					"leadership": 10.0,
+					"perception": 7.0,
+					"strength": 13.0
+				}
+			},
+			"frame_count": 3600.0,
+			"initial_activation_count": 1.0,
+			"initial_charge": 100.0,
+			"scenario": "class_atlas50",
+			"seed": 151501.0,
+			"sustain_source": {
+				"damage": 421390.6373,
+				"hits": 39981.0
+			},
+			"ultimate_source": {
+				"by_mechanic": {
+					"briar_lattice_impale": {
+						"damage": 13938.2883,
+						"first_frame": 65.0,
+						"hits": 27.0
+					}
+				},
+				"damage": 13938.2888,
+				"hits": 27.0
+			}
+		},
+		"druid|class_constellation": {
+			"activation_count": 3.0,
+			"activation_timing_seconds": [
+				13.3833,
+				35.4833,
+				56.7333
+			],
+			"class_id": "druid",
+			"duration_seconds": 60.0,
+			"formula": {
+				"canonical_weapon_id": "briar_staff",
+				"class_id": "druid",
+				"expected_activation_damage": 40.661,
+				"expected_initial_activations": 0.0,
+				"formula_schema": "fan1515.class-ultimate-formula.v1",
+				"meta_application_count": 1.0,
+				"run_modifiers": {
+					"attack_speed_multiplier": 1.04,
+					"damage_multiplier": 1.1235000000000002,
+					"defense_flat": 0.02,
+					"healing_multiplier": 0.68,
+					"max_health_flat": 8.0,
+					"max_health_multiplier": 0.8,
+					"money_gain_multiplier": 0.8800000000000001,
+					"xp_gain_multiplier": 0.8
+				},
+				"scenario": "class_constellation",
+				"start_charge": 0.0,
+				"start_charge_ratio": 0.0,
+				"stats": {
+					"agility": 13.0,
+					"endurance": 5.0,
+					"energy": 6.0,
+					"intelligence": 4.0,
+					"knowledge": 5.0,
+					"leadership": 10.0,
+					"perception": 7.0,
+					"strength": 13.0
+				}
+			},
+			"frame_count": 3600.0,
+			"initial_activation_count": 0.0,
+			"initial_charge": 0.0,
+			"scenario": "class_constellation",
+			"seed": 151501.0,
+			"sustain_source": {
+				"damage": 421184.2456,
+				"hits": 39981.0
+			},
+			"ultimate_source": {
+				"by_mechanic": {
+					"briar_lattice_impale": {
+						"damage": 13473.6786,
+						"first_frame": 868.0,
+						"hits": 24.0
+					}
+				},
+				"damage": 13473.6792,
+				"hits": 24.0
+			}
+		},
+		"druid|no_meta": {
+			"activation_count": 2.0,
+			"activation_timing_seconds": [
+				15.366700000000002,
+				39.9667
+			],
+			"class_id": "druid",
+			"duration_seconds": 60.0,
+			"formula": {
+				"canonical_weapon_id": "briar_staff",
+				"class_id": "druid",
+				"expected_activation_damage": 40.6148,
+				"expected_initial_activations": 0.0,
+				"formula_schema": "fan1515.class-ultimate-formula.v1",
+				"meta_application_count": 0.0,
+				"run_modifiers": {
+					"attack_speed_multiplier": 1.04,
+					"damage_multiplier": 1.1235000000000002,
+					"defense_flat": 0.02,
+					"healing_multiplier": 0.68,
+					"max_health_flat": 8.0,
+					"max_health_multiplier": 0.8,
+					"money_gain_multiplier": 0.8,
+					"xp_gain_multiplier": 0.8
+				},
+				"scenario": "no_meta",
+				"start_charge": 0.0,
+				"start_charge_ratio": 0.0,
+				"stats": {
+					"agility": 13.0,
+					"endurance": 5.0,
+					"energy": 6.0,
+					"intelligence": 4.0,
+					"knowledge": 5.0,
+					"leadership": 9.0,
+					"perception": 7.0,
+					"strength": 13.0
+				}
+			},
+			"frame_count": 3600.0,
+			"initial_activation_count": 0.0,
+			"initial_charge": 0.0,
+			"scenario": "no_meta",
+			"seed": 151501.0,
+			"sustain_source": {
+				"damage": 297602.01790000004,
+				"hits": 37702.0
+			},
+			"ultimate_source": {
+				"by_mechanic": {
+					"briar_lattice_impale": {
+						"damage": 9292.1922,
+						"first_frame": 987.0,
+						"hits": 18.0
+					}
+				},
+				"damage": 9292.1926,
+				"hits": 18.0
+			}
+		},
+		"elementalist|class_atlas50": {
+			"activation_count": 1.0,
+			"activation_timing_seconds": [
+				0.0
+			],
+			"class_id": "elementalist",
+			"duration_seconds": 60.0,
+			"formula": {
+				"canonical_weapon_id": "elementalist_meteor_core",
+				"class_id": "elementalist",
+				"expected_activation_damage": 125.0602,
+				"expected_initial_activations": 1.0,
+				"formula_schema": "fan1515.class-ultimate-formula.v1",
+				"meta_application_count": 1.0,
+				"run_modifiers": {
+					"aoe_radius_multiplier": 1.05,
+					"attack_speed_multiplier": 1.04,
+					"damage_multiplier": 1.1235000000000002,
+					"death_save_health_fraction": 0.3,
+					"healing_multiplier": 0.8160000000000001,
+					"max_health_flat": 6.0,
+					"max_health_multiplier": 0.8,
+					"money_gain_multiplier": 1.04,
+					"pickup_radius_flat": 60.0,
+					"xp_gain_multiplier": 0.92
+				},
+				"scenario": "class_atlas50",
+				"start_charge": 100.0,
+				"start_charge_ratio": 1.0,
+				"stats": {
+					"agility": 17.0,
+					"endurance": 3.0,
+					"energy": 8.0,
+					"intelligence": 16.0,
+					"knowledge": 6.0,
+					"leadership": 5.0,
+					"perception": 7.0,
+					"strength": 2.0
+				}
+			},
+			"frame_count": 3600.0,
+			"initial_activation_count": 1.0,
+			"initial_charge": 100.0,
+			"scenario": "class_atlas50",
+			"seed": 151501.0,
+			"sustain_source": {
+				"damage": 496368.6341,
+				"hits": 36340.0
+			},
+			"ultimate_source": {
+				"by_mechanic": {},
+				"damage": 0.0,
+				"hits": 0.0
+			}
+		},
+		"elementalist|class_constellation": {
+			"activation_count": 1.0,
+			"activation_timing_seconds": [
+				2.2333000000000003
+			],
+			"class_id": "elementalist",
+			"duration_seconds": 60.0,
+			"formula": {
+				"canonical_weapon_id": "elementalist_meteor_core",
+				"class_id": "elementalist",
+				"expected_activation_damage": 125.0602,
+				"expected_initial_activations": 0.0,
+				"formula_schema": "fan1515.class-ultimate-formula.v1",
+				"meta_application_count": 1.0,
+				"run_modifiers": {
+					"aoe_radius_multiplier": 1.05,
+					"attack_speed_multiplier": 1.04,
+					"damage_multiplier": 1.1235000000000002,
+					"healing_multiplier": 0.68,
+					"max_health_flat": 6.0,
+					"max_health_multiplier": 0.8,
+					"money_gain_multiplier": 0.8800000000000001,
+					"xp_gain_multiplier": 0.8
+				},
+				"scenario": "class_constellation",
+				"start_charge": 0.0,
+				"start_charge_ratio": 0.0,
+				"stats": {
+					"agility": 17.0,
+					"endurance": 3.0,
+					"energy": 8.0,
+					"intelligence": 16.0,
+					"knowledge": 6.0,
+					"leadership": 5.0,
+					"perception": 7.0,
+					"strength": 2.0
+				}
+			},
+			"frame_count": 3600.0,
+			"initial_activation_count": 0.0,
+			"initial_charge": 0.0,
+			"scenario": "class_constellation",
+			"seed": 151501.0,
+			"sustain_source": {
+				"damage": 496368.6341,
+				"hits": 36340.0
+			},
+			"ultimate_source": {
+				"by_mechanic": {},
+				"damage": 0.0,
+				"hits": 0.0
+			}
+		},
+		"elementalist|no_meta": {
+			"activation_count": 1.0,
+			"activation_timing_seconds": [
+				2.6167
+			],
+			"class_id": "elementalist",
+			"duration_seconds": 60.0,
+			"formula": {
+				"canonical_weapon_id": "elementalist_meteor_core",
+				"class_id": "elementalist",
+				"expected_activation_damage": 116.2814,
+				"expected_initial_activations": 0.0,
+				"formula_schema": "fan1515.class-ultimate-formula.v1",
+				"meta_application_count": 0.0,
+				"run_modifiers": {
+					"aoe_radius_multiplier": 1.05,
+					"attack_speed_multiplier": 1.04,
+					"damage_multiplier": 1.1235000000000002,
+					"healing_multiplier": 0.68,
+					"max_health_flat": 6.0,
+					"max_health_multiplier": 0.8,
+					"money_gain_multiplier": 0.8,
+					"xp_gain_multiplier": 0.8
+				},
+				"scenario": "no_meta",
+				"start_charge": 0.0,
+				"start_charge_ratio": 0.0,
+				"stats": {
+					"agility": 17.0,
+					"endurance": 3.0,
+					"energy": 8.0,
+					"intelligence": 15.0,
+					"knowledge": 6.0,
+					"leadership": 5.0,
+					"perception": 7.0,
+					"strength": 2.0
+				}
+			},
+			"frame_count": 3600.0,
+			"initial_activation_count": 0.0,
+			"initial_charge": 0.0,
+			"scenario": "no_meta",
+			"seed": 151501.0,
+			"sustain_source": {
+				"damage": 363622.5444,
+				"hits": 31540.0
+			},
+			"ultimate_source": {
+				"by_mechanic": {},
+				"damage": 0.0,
+				"hits": 0.0
+			}
+		},
+		"engineer|class_atlas50": {
+			"activation_count": 1.0,
+			"activation_timing_seconds": [
+				0.0
+			],
+			"class_id": "engineer",
+			"duration_seconds": 60.0,
+			"formula": {
+				"canonical_weapon_id": "engineer_pressure_mines",
+				"class_id": "engineer",
+				"expected_activation_damage": 128.2298,
+				"expected_initial_activations": 1.0,
+				"formula_schema": "fan1515.class-ultimate-formula.v1",
+				"meta_application_count": 1.0,
+				"run_modifiers": {
+					"aoe_radius_multiplier": 1.05,
+					"attack_speed_multiplier": 1.04,
+					"damage_multiplier": 1.06,
+					"death_save_health_fraction": 0.3,
+					"healing_multiplier": 0.8160000000000001,
+					"max_health_flat": 8.0,
+					"max_health_multiplier": 0.8,
+					"money_gain_multiplier": 1.04,
+					"pickup_radius_flat": 60.0,
+					"summon_bonus": 1.0,
+					"xp_gain_multiplier": 0.92
+				},
+				"scenario": "class_atlas50",
+				"start_charge": 100.0,
+				"start_charge_ratio": 1.0,
+				"stats": {
+					"agility": 11.0,
+					"endurance": 5.0,
+					"energy": 6.0,
+					"intelligence": 7.0,
+					"knowledge": 6.0,
+					"leadership": 11.0,
+					"perception": 6.0,
+					"strength": 17.0
+				}
+			},
+			"frame_count": 3600.0,
+			"initial_activation_count": 1.0,
+			"initial_charge": 100.0,
+			"scenario": "class_atlas50",
+			"seed": 151501.0,
+			"sustain_source": {
+				"damage": 22626.6421,
+				"hits": 1320.0
+			},
+			"ultimate_source": {
+				"by_mechanic": {},
+				"damage": 0.0,
+				"hits": 0.0
+			}
+		},
+		"engineer|class_constellation": {
+			"activation_count": 1.0,
+			"activation_timing_seconds": [
+				1.3
+			],
+			"class_id": "engineer",
+			"duration_seconds": 60.0,
+			"formula": {
+				"canonical_weapon_id": "engineer_pressure_mines",
+				"class_id": "engineer",
+				"expected_activation_damage": 128.2298,
+				"expected_initial_activations": 0.0,
+				"formula_schema": "fan1515.class-ultimate-formula.v1",
+				"meta_application_count": 1.0,
+				"run_modifiers": {
+					"aoe_radius_multiplier": 1.05,
+					"attack_speed_multiplier": 1.04,
+					"damage_multiplier": 1.06,
+					"healing_multiplier": 0.68,
+					"max_health_flat": 8.0,
+					"max_health_multiplier": 0.8,
+					"money_gain_multiplier": 0.8800000000000001,
+					"summon_bonus": 1.0,
+					"xp_gain_multiplier": 0.8
+				},
+				"scenario": "class_constellation",
+				"start_charge": 0.0,
+				"start_charge_ratio": 0.0,
+				"stats": {
+					"agility": 11.0,
+					"endurance": 5.0,
+					"energy": 6.0,
+					"intelligence": 7.0,
+					"knowledge": 6.0,
+					"leadership": 11.0,
+					"perception": 6.0,
+					"strength": 17.0
+				}
+			},
+			"frame_count": 3600.0,
+			"initial_activation_count": 0.0,
+			"initial_charge": 0.0,
+			"scenario": "class_constellation",
+			"seed": 151501.0,
+			"sustain_source": {
+				"damage": 10921.4459,
+				"hits": 556.0
+			},
+			"ultimate_source": {
+				"by_mechanic": {},
+				"damage": 0.0,
+				"hits": 0.0
+			}
+		},
+		"engineer|no_meta": {
+			"activation_count": 1.0,
+			"activation_timing_seconds": [
+				1.4
+			],
+			"class_id": "engineer",
+			"duration_seconds": 60.0,
+			"formula": {
+				"canonical_weapon_id": "engineer_pressure_mines",
+				"class_id": "engineer",
+				"expected_activation_damage": 128.0637,
+				"expected_initial_activations": 0.0,
+				"formula_schema": "fan1515.class-ultimate-formula.v1",
+				"meta_application_count": 0.0,
+				"run_modifiers": {
+					"aoe_radius_multiplier": 1.05,
+					"attack_speed_multiplier": 1.04,
+					"damage_multiplier": 1.06,
+					"healing_multiplier": 0.68,
+					"max_health_flat": 8.0,
+					"max_health_multiplier": 0.8,
+					"money_gain_multiplier": 0.8,
+					"summon_bonus": 1.0,
+					"xp_gain_multiplier": 0.8
+				},
+				"scenario": "no_meta",
+				"start_charge": 0.0,
+				"start_charge_ratio": 0.0,
+				"stats": {
+					"agility": 11.0,
+					"endurance": 5.0,
+					"energy": 6.0,
+					"intelligence": 7.0,
+					"knowledge": 6.0,
+					"leadership": 10.0,
+					"perception": 6.0,
+					"strength": 17.0
+				}
+			},
+			"frame_count": 3600.0,
+			"initial_activation_count": 0.0,
+			"initial_charge": 0.0,
+			"scenario": "no_meta",
+			"seed": 151501.0,
+			"sustain_source": {
+				"damage": 6895.912700000001,
+				"hits": 223.0
+			},
+			"ultimate_source": {
+				"by_mechanic": {},
+				"damage": 0.0,
+				"hits": 0.0
+			}
+		},
+		"guitarist|class_atlas50": {
+			"activation_count": 1.0,
+			"activation_timing_seconds": [
+				0.0
+			],
+			"class_id": "guitarist",
+			"duration_seconds": 60.0,
+			"formula": {
+				"canonical_weapon_id": "bass_guitar",
+				"class_id": "guitarist",
+				"expected_activation_damage": 49.573800000000006,
+				"expected_initial_activations": 1.0,
+				"formula_schema": "fan1515.class-ultimate-formula.v1",
+				"meta_application_count": 1.0,
+				"run_modifiers": {
+					"aoe_radius_multiplier": 1.05,
+					"attack_speed_multiplier": 1.04,
+					"damage_multiplier": 1.1235000000000002,
+					"death_save_health_fraction": 0.3,
+					"healing_multiplier": 0.8160000000000001,
+					"max_health_flat": 7.0,
+					"max_health_multiplier": 0.8,
+					"money_gain_multiplier": 1.04,
+					"pickup_radius_flat": 60.0,
+					"xp_gain_multiplier": 0.92
+				},
+				"scenario": "class_atlas50",
+				"start_charge": 100.0,
+				"start_charge_ratio": 1.0,
+				"stats": {
+					"agility": 9.0,
+					"endurance": 4.0,
+					"energy": 6.0,
+					"intelligence": 20.0,
+					"knowledge": 5.0,
+					"leadership": 8.0,
+					"perception": 7.0,
+					"strength": 4.0
+				}
+			},
+			"frame_count": 3600.0,
+			"initial_activation_count": 1.0,
+			"initial_charge": 100.0,
+			"scenario": "class_atlas50",
+			"seed": 151501.0,
+			"sustain_source": {
+				"damage": 216568.4081,
+				"hits": 33330.0
+			},
+			"ultimate_source": {
+				"by_mechanic": {
+					"bass_launch": {
+						"damage": 24188.481,
+						"first_frame": 105.0,
+						"hits": 10.0
+					},
+					"bass_pull": {
+						"damage": 13193.717,
+						"first_frame": 41.0,
+						"hits": 10.0
+					},
+					"bass_shock": {
+						"damage": 39581.151000000005,
+						"first_frame": 137.0,
+						"hits": 10.0
+					},
+					"bass_weight": {
+						"damage": 17591.623,
+						"first_frame": 73.0,
+						"hits": 10.0
+					}
+				},
+				"damage": 94554.9714,
+				"hits": 40.0
+			}
+		},
+		"guitarist|class_constellation": {
+			"activation_count": 1.0,
+			"activation_timing_seconds": [
+				1.4
+			],
+			"class_id": "guitarist",
+			"duration_seconds": 60.0,
+			"formula": {
+				"canonical_weapon_id": "bass_guitar",
+				"class_id": "guitarist",
+				"expected_activation_damage": 49.573800000000006,
+				"expected_initial_activations": 0.0,
+				"formula_schema": "fan1515.class-ultimate-formula.v1",
+				"meta_application_count": 1.0,
+				"run_modifiers": {
+					"aoe_radius_multiplier": 1.05,
+					"attack_speed_multiplier": 1.04,
+					"damage_multiplier": 1.1235000000000002,
+					"healing_multiplier": 0.68,
+					"max_health_flat": 7.0,
+					"max_health_multiplier": 0.8,
+					"money_gain_multiplier": 0.8800000000000001,
+					"xp_gain_multiplier": 0.8
+				},
+				"scenario": "class_constellation",
+				"start_charge": 0.0,
+				"start_charge_ratio": 0.0,
+				"stats": {
+					"agility": 9.0,
+					"endurance": 4.0,
+					"energy": 6.0,
+					"intelligence": 20.0,
+					"knowledge": 5.0,
+					"leadership": 8.0,
+					"perception": 7.0,
+					"strength": 4.0
+				}
+			},
+			"frame_count": 3600.0,
+			"initial_activation_count": 0.0,
+			"initial_charge": 0.0,
+			"scenario": "class_constellation",
+			"seed": 151501.0,
+			"sustain_source": {
+				"damage": 216568.4081,
+				"hits": 33330.0
+			},
+			"ultimate_source": {
+				"by_mechanic": {
+					"bass_launch": {
+						"damage": 24188.481,
+						"first_frame": 189.0,
+						"hits": 10.0
+					},
+					"bass_pull": {
+						"damage": 13193.717,
+						"first_frame": 125.0,
+						"hits": 10.0
+					},
+					"bass_shock": {
+						"damage": 39581.151000000005,
+						"first_frame": 221.0,
+						"hits": 10.0
+					},
+					"bass_weight": {
+						"damage": 17591.623,
+						"first_frame": 157.0,
+						"hits": 10.0
+					}
+				},
+				"damage": 94554.9714,
+				"hits": 40.0
+			}
+		},
+		"guitarist|no_meta": {
+			"activation_count": 1.0,
+			"activation_timing_seconds": [
+				1.75
+			],
+			"class_id": "guitarist",
+			"duration_seconds": 60.0,
+			"formula": {
+				"canonical_weapon_id": "bass_guitar",
+				"class_id": "guitarist",
+				"expected_activation_damage": 49.513000000000005,
+				"expected_initial_activations": 0.0,
+				"formula_schema": "fan1515.class-ultimate-formula.v1",
+				"meta_application_count": 0.0,
+				"run_modifiers": {
+					"aoe_radius_multiplier": 1.05,
+					"attack_speed_multiplier": 1.04,
+					"damage_multiplier": 1.1235000000000002,
+					"healing_multiplier": 0.68,
+					"max_health_flat": 7.0,
+					"max_health_multiplier": 0.8,
+					"money_gain_multiplier": 0.8,
+					"xp_gain_multiplier": 0.8
+				},
+				"scenario": "no_meta",
+				"start_charge": 0.0,
+				"start_charge_ratio": 0.0,
+				"stats": {
+					"agility": 9.0,
+					"endurance": 4.0,
+					"energy": 6.0,
+					"intelligence": 20.0,
+					"knowledge": 5.0,
+					"leadership": 7.0,
+					"perception": 7.0,
+					"strength": 4.0
+				}
+			},
+			"frame_count": 3600.0,
+			"initial_activation_count": 0.0,
+			"initial_charge": 0.0,
+			"scenario": "no_meta",
+			"seed": 151501.0,
+			"sustain_source": {
+				"damage": 183553.2731,
+				"hits": 31120.0
+			},
+			"ultimate_source": {
+				"by_mechanic": {
+					"bass_launch": {
+						"damage": 24188.481,
+						"first_frame": 210.0,
+						"hits": 10.0
+					},
+					"bass_pull": {
+						"damage": 13193.717,
+						"first_frame": 146.0,
+						"hits": 10.0
+					},
+					"bass_shock": {
+						"damage": 39581.151000000005,
+						"first_frame": 242.0,
+						"hits": 10.0
+					},
+					"bass_weight": {
+						"damage": 17591.623,
+						"first_frame": 178.0,
+						"hits": 10.0
+					}
+				},
+				"damage": 94554.9714,
+				"hits": 40.0
+			}
+		},
+		"knight|class_atlas50": {
+			"activation_count": 1.0,
+			"activation_timing_seconds": [
+				0.0
+			],
+			"class_id": "knight",
+			"duration_seconds": 60.0,
+			"formula": {
+				"canonical_weapon_id": "holy_flail",
+				"class_id": "knight",
+				"expected_activation_damage": 37.9443,
+				"expected_initial_activations": 1.0,
+				"formula_schema": "fan1515.class-ultimate-formula.v1",
+				"meta_application_count": 1.0,
+				"run_modifiers": {
+					"attack_speed_multiplier": 1.04,
+					"damage_multiplier": 1.1235000000000002,
+					"death_save_health_fraction": 0.3,
+					"defense_flat": 0.02,
+					"healing_multiplier": 0.8160000000000001,
+					"max_health_flat": 8.0,
+					"max_health_multiplier": 0.8,
+					"money_gain_multiplier": 1.04,
+					"pickup_radius_flat": 60.0,
+					"xp_gain_multiplier": 0.92
+				},
+				"scenario": "class_atlas50",
+				"start_charge": 100.0,
+				"start_charge_ratio": 1.0,
+				"stats": {
+					"agility": 17.0,
+					"endurance": 11.0,
+					"energy": 3.0,
+					"intelligence": 2.0,
+					"knowledge": 4.0,
+					"leadership": 6.0,
+					"perception": 4.0,
+					"strength": 13.0
+				}
+			},
+			"frame_count": 3600.0,
+			"initial_activation_count": 1.0,
+			"initial_charge": 100.0,
+			"scenario": "class_atlas50",
+			"seed": 151501.0,
+			"sustain_source": {
+				"damage": 184879.3782,
+				"hits": 11792.0
+			},
+			"ultimate_source": {
+				"by_mechanic": {
+					"holy_flail_launch": {
+						"damage": 5420.615000000001,
+						"first_frame": 365.0,
+						"hits": 10.0
+					},
+					"holy_flail_pull": {
+						"damage": 11708.5284,
+						"first_frame": 96.0,
+						"hits": 54.0
+					}
+				},
+				"damage": 17129.1421,
+				"hits": 64.0
+			}
+		},
+		"knight|class_constellation": {
+			"activation_count": 1.0,
+			"activation_timing_seconds": [
+				3.1500000000000004
+			],
+			"class_id": "knight",
+			"duration_seconds": 60.0,
+			"formula": {
+				"canonical_weapon_id": "holy_flail",
+				"class_id": "knight",
+				"expected_activation_damage": 37.9443,
+				"expected_initial_activations": 0.0,
+				"formula_schema": "fan1515.class-ultimate-formula.v1",
+				"meta_application_count": 1.0,
+				"run_modifiers": {
+					"attack_speed_multiplier": 1.04,
+					"damage_multiplier": 1.1235000000000002,
+					"defense_flat": 0.02,
+					"healing_multiplier": 0.68,
+					"max_health_flat": 8.0,
+					"max_health_multiplier": 0.8,
+					"money_gain_multiplier": 0.8800000000000001,
+					"xp_gain_multiplier": 0.8
+				},
+				"scenario": "class_constellation",
+				"start_charge": 0.0,
+				"start_charge_ratio": 0.0,
+				"stats": {
+					"agility": 17.0,
+					"endurance": 11.0,
+					"energy": 3.0,
+					"intelligence": 2.0,
+					"knowledge": 4.0,
+					"leadership": 6.0,
+					"perception": 4.0,
+					"strength": 13.0
+				}
+			},
+			"frame_count": 3600.0,
+			"initial_activation_count": 0.0,
+			"initial_charge": 0.0,
+			"scenario": "class_constellation",
+			"seed": 151501.0,
+			"sustain_source": {
+				"damage": 185872.6538,
+				"hits": 11792.0
+			},
+			"ultimate_source": {
+				"by_mechanic": {
+					"holy_flail_launch": {
+						"damage": 5420.615000000001,
+						"first_frame": 554.0,
+						"hits": 10.0
+					},
+					"holy_flail_pull": {
+						"damage": 11708.5284,
+						"first_frame": 285.0,
+						"hits": 54.0
+					}
+				},
+				"damage": 17129.1421,
+				"hits": 64.0
+			}
+		},
+		"knight|no_meta": {
+			"activation_count": 1.0,
+			"activation_timing_seconds": [
+				4.1333
+			],
+			"class_id": "knight",
+			"duration_seconds": 60.0,
+			"formula": {
+				"canonical_weapon_id": "holy_flail",
+				"class_id": "knight",
+				"expected_activation_damage": 37.8986,
+				"expected_initial_activations": 0.0,
+				"formula_schema": "fan1515.class-ultimate-formula.v1",
+				"meta_application_count": 0.0,
+				"run_modifiers": {
+					"attack_speed_multiplier": 1.04,
+					"damage_multiplier": 1.1235000000000002,
+					"defense_flat": 0.02,
+					"healing_multiplier": 0.68,
+					"max_health_flat": 8.0,
+					"max_health_multiplier": 0.8,
+					"money_gain_multiplier": 0.8,
+					"xp_gain_multiplier": 0.8
+				},
+				"scenario": "no_meta",
+				"start_charge": 0.0,
+				"start_charge_ratio": 0.0,
+				"stats": {
+					"agility": 17.0,
+					"endurance": 10.0,
+					"energy": 3.0,
+					"intelligence": 2.0,
+					"knowledge": 4.0,
+					"leadership": 6.0,
+					"perception": 4.0,
+					"strength": 13.0
+				}
+			},
+			"frame_count": 3600.0,
+			"initial_activation_count": 0.0,
+			"initial_charge": 0.0,
+			"scenario": "no_meta",
+			"seed": 151501.0,
+			"sustain_source": {
+				"damage": 119995.5681,
+				"hits": 10890.0
+			},
+			"ultimate_source": {
+				"by_mechanic": {
+					"holy_flail_launch": {
+						"damage": 5420.615000000001,
+						"first_frame": 613.0,
+						"hits": 10.0
+					},
+					"holy_flail_pull": {
+						"damage": 11708.5284,
+						"first_frame": 344.0,
+						"hits": 54.0
+					}
+				},
+				"damage": 17129.1421,
+				"hits": 64.0
+			}
+		},
+		"priest|class_atlas50": {
+			"activation_count": 6.0,
+			"activation_timing_seconds": [
+				0.0,
+				11.1,
+				22.55,
+				34.2,
+				46.2,
+				57.85
+			],
+			"class_id": "priest",
+			"duration_seconds": 60.0,
+			"formula": {
+				"canonical_weapon_id": "priest_censer",
+				"class_id": "priest",
+				"expected_activation_damage": 51.6458,
+				"expected_initial_activations": 1.0,
+				"formula_schema": "fan1515.class-ultimate-formula.v1",
+				"meta_application_count": 1.0,
+				"run_modifiers": {
+					"aoe_radius_multiplier": 1.05,
+					"attack_speed_multiplier": 1.04,
+					"damage_multiplier": 1.1024,
+					"death_save_health_fraction": 0.3,
+					"healing_multiplier": 0.8160000000000001,
+					"max_health_flat": 8.0,
+					"max_health_multiplier": 0.8,
+					"money_gain_multiplier": 1.04,
+					"pickup_radius_flat": 60.0,
+					"xp_gain_multiplier": 0.92
+				},
+				"scenario": "class_atlas50",
+				"start_charge": 100.0,
+				"start_charge_ratio": 1.0,
+				"stats": {
+					"agility": 14.0,
+					"endurance": 5.0,
+					"energy": 7.0,
+					"intelligence": 17.0,
+					"knowledge": 10.0,
+					"leadership": 6.0,
+					"perception": 6.0,
+					"strength": 2.0
+				}
+			},
+			"frame_count": 3600.0,
+			"initial_activation_count": 1.0,
+			"initial_charge": 100.0,
+			"scenario": "class_atlas50",
+			"seed": 151501.0,
+			"sustain_source": {
+				"damage": 135254.10450000002,
+				"hits": 28320.0
+			},
+			"ultimate_source": {
+				"by_mechanic": {},
+				"damage": 0.0,
+				"hits": 0.0
+			}
+		},
+		"priest|class_constellation": {
+			"activation_count": 5.0,
+			"activation_timing_seconds": [
+				4.4,
+				15.5,
+				26.950000000000003,
+				38.6,
+				50.05
+			],
+			"class_id": "priest",
+			"duration_seconds": 60.0,
+			"formula": {
+				"canonical_weapon_id": "priest_censer",
+				"class_id": "priest",
+				"expected_activation_damage": 51.6458,
+				"expected_initial_activations": 0.0,
+				"formula_schema": "fan1515.class-ultimate-formula.v1",
+				"meta_application_count": 1.0,
+				"run_modifiers": {
+					"aoe_radius_multiplier": 1.05,
+					"attack_speed_multiplier": 1.04,
+					"damage_multiplier": 1.1024,
+					"healing_multiplier": 0.68,
+					"max_health_flat": 8.0,
+					"max_health_multiplier": 0.8,
+					"money_gain_multiplier": 0.8800000000000001,
+					"xp_gain_multiplier": 0.8
+				},
+				"scenario": "class_constellation",
+				"start_charge": 0.0,
+				"start_charge_ratio": 0.0,
+				"stats": {
+					"agility": 14.0,
+					"endurance": 5.0,
+					"energy": 7.0,
+					"intelligence": 17.0,
+					"knowledge": 10.0,
+					"leadership": 6.0,
+					"perception": 6.0,
+					"strength": 2.0
+				}
+			},
+			"frame_count": 3600.0,
+			"initial_activation_count": 0.0,
+			"initial_charge": 0.0,
+			"scenario": "class_constellation",
+			"seed": 151501.0,
+			"sustain_source": {
+				"damage": 135254.10450000002,
+				"hits": 28320.0
+			},
+			"ultimate_source": {
+				"by_mechanic": {},
+				"damage": 0.0,
+				"hits": 0.0
+			}
+		},
+		"priest|no_meta": {
+			"activation_count": 5.0,
+			"activation_timing_seconds": [
+				4.1833,
+				16.3333,
+				27.4167,
+				39.0833,
+				50.85
+			],
+			"class_id": "priest",
+			"duration_seconds": 60.0,
+			"formula": {
+				"canonical_weapon_id": "priest_censer",
+				"class_id": "priest",
+				"expected_activation_damage": 51.5634,
+				"expected_initial_activations": 0.0,
+				"formula_schema": "fan1515.class-ultimate-formula.v1",
+				"meta_application_count": 0.0,
+				"run_modifiers": {
+					"aoe_radius_multiplier": 1.05,
+					"attack_speed_multiplier": 1.04,
+					"damage_multiplier": 1.1024,
+					"healing_multiplier": 0.68,
+					"max_health_flat": 8.0,
+					"max_health_multiplier": 0.8,
+					"money_gain_multiplier": 0.8,
+					"xp_gain_multiplier": 0.8
+				},
+				"scenario": "no_meta",
+				"start_charge": 0.0,
+				"start_charge_ratio": 0.0,
+				"stats": {
+					"agility": 14.0,
+					"endurance": 5.0,
+					"energy": 7.0,
+					"intelligence": 17.0,
+					"knowledge": 9.0,
+					"leadership": 6.0,
+					"perception": 6.0,
+					"strength": 2.0
+				}
+			},
+			"frame_count": 3600.0,
+			"initial_activation_count": 0.0,
+			"initial_charge": 0.0,
+			"scenario": "no_meta",
+			"seed": 151501.0,
+			"sustain_source": {
+				"damage": 126918.6667,
+				"hits": 26640.0
+			},
+			"ultimate_source": {
+				"by_mechanic": {},
+				"damage": 0.0,
+				"hits": 0.0
+			}
+		},
+		"ranger|class_atlas50": {
+			"activation_count": 9.0,
+			"activation_timing_seconds": [
+				0.0,
+				7.233300000000001,
+				14.8833,
+				21.9667,
+				29.3333,
+				36.1333,
+				43.7833,
+				50.8667,
+				58.5167
+			],
+			"class_id": "ranger",
+			"duration_seconds": 60.0,
+			"formula": {
+				"canonical_weapon_id": "hunter_trap",
+				"class_id": "ranger",
+				"expected_activation_damage": 32.3372,
+				"expected_initial_activations": 1.0,
+				"formula_schema": "fan1515.class-ultimate-formula.v1",
+				"meta_application_count": 1.0,
+				"run_modifiers": {
+					"attack_speed_multiplier": 1.04,
+					"damage_multiplier": 1.1235000000000002,
+					"death_save_health_fraction": 0.3,
+					"defense_flat": 0.02,
+					"healing_multiplier": 0.8160000000000001,
+					"max_health_flat": 8.0,
+					"max_health_multiplier": 0.8,
+					"money_gain_multiplier": 1.04,
+					"pickup_radius_flat": 60.0,
+					"xp_gain_multiplier": 0.92
+				},
+				"scenario": "class_atlas50",
+				"start_charge": 100.0,
+				"start_charge_ratio": 1.0,
+				"stats": {
+					"agility": 18.0,
+					"endurance": 4.0,
+					"energy": 4.0,
+					"intelligence": 2.0,
+					"knowledge": 4.0,
+					"leadership": 3.0,
+					"perception": 10.0,
+					"strength": 15.0
+				}
+			},
+			"frame_count": 3600.0,
+			"initial_activation_count": 1.0,
+			"initial_charge": 100.0,
+			"scenario": "class_atlas50",
+			"seed": 151501.0,
+			"sustain_source": {
+				"damage": 159835.70320000002,
+				"hits": 15450.0
+			},
+			"ultimate_source": {
+				"by_mechanic": {},
+				"damage": 0.0,
+				"hits": 0.0
+			}
+		},
+		"ranger|class_constellation": {
+			"activation_count": 9.0,
+			"activation_timing_seconds": [
+				1.85,
+				8.3667,
+				16.0167,
+				23.3833,
+				30.183300000000003,
+				37.55,
+				44.9167,
+				52.0,
+				59.650000000000006
+			],
+			"class_id": "ranger",
+			"duration_seconds": 60.0,
+			"formula": {
+				"canonical_weapon_id": "hunter_trap",
+				"class_id": "ranger",
+				"expected_activation_damage": 32.3372,
+				"expected_initial_activations": 0.0,
+				"formula_schema": "fan1515.class-ultimate-formula.v1",
+				"meta_application_count": 1.0,
+				"run_modifiers": {
+					"attack_speed_multiplier": 1.04,
+					"damage_multiplier": 1.1235000000000002,
+					"defense_flat": 0.02,
+					"healing_multiplier": 0.68,
+					"max_health_flat": 8.0,
+					"max_health_multiplier": 0.8,
+					"money_gain_multiplier": 0.8800000000000001,
+					"xp_gain_multiplier": 0.8
+				},
+				"scenario": "class_constellation",
+				"start_charge": 0.0,
+				"start_charge_ratio": 0.0,
+				"stats": {
+					"agility": 18.0,
+					"endurance": 4.0,
+					"energy": 4.0,
+					"intelligence": 2.0,
+					"knowledge": 4.0,
+					"leadership": 3.0,
+					"perception": 10.0,
+					"strength": 15.0
+				}
+			},
+			"frame_count": 3600.0,
+			"initial_activation_count": 0.0,
+			"initial_charge": 0.0,
+			"scenario": "class_constellation",
+			"seed": 151501.0,
+			"sustain_source": {
+				"damage": 159835.70320000002,
+				"hits": 15450.0
+			},
+			"ultimate_source": {
+				"by_mechanic": {},
+				"damage": 0.0,
+				"hits": 0.0
+			}
+		},
+		"ranger|no_meta": {
+			"activation_count": 8.0,
+			"activation_timing_seconds": [
+				1.65,
+				9.45,
+				16.650000000000002,
+				24.450000000000003,
+				32.25,
+				39.75,
+				47.25,
+				54.45
+			],
+			"class_id": "ranger",
+			"duration_seconds": 60.0,
+			"formula": {
+				"canonical_weapon_id": "hunter_trap",
+				"class_id": "ranger",
+				"expected_activation_damage": 32.283,
+				"expected_initial_activations": 0.0,
+				"formula_schema": "fan1515.class-ultimate-formula.v1",
+				"meta_application_count": 0.0,
+				"run_modifiers": {
+					"attack_speed_multiplier": 1.04,
+					"damage_multiplier": 1.1235000000000002,
+					"defense_flat": 0.02,
+					"healing_multiplier": 0.68,
+					"max_health_flat": 8.0,
+					"max_health_multiplier": 0.8,
+					"money_gain_multiplier": 0.8,
+					"xp_gain_multiplier": 0.8
+				},
+				"scenario": "no_meta",
+				"start_charge": 0.0,
+				"start_charge_ratio": 0.0,
+				"stats": {
+					"agility": 18.0,
+					"endurance": 4.0,
+					"energy": 4.0,
+					"intelligence": 2.0,
+					"knowledge": 4.0,
+					"leadership": 3.0,
+					"perception": 9.0,
+					"strength": 15.0
+				}
+			},
+			"frame_count": 3600.0,
+			"initial_activation_count": 0.0,
+			"initial_charge": 0.0,
+			"scenario": "no_meta",
+			"seed": 151501.0,
+			"sustain_source": {
+				"damage": 93823.8704,
+				"hits": 8780.0
+			},
+			"ultimate_source": {
+				"by_mechanic": {},
+				"damage": 0.0,
+				"hits": 0.0
+			}
+		},
+		"robot|class_atlas50": {
+			"activation_count": 1.0,
+			"activation_timing_seconds": [
+				0.0
+			],
+			"class_id": "robot",
+			"duration_seconds": 60.0,
+			"formula": {
+				"canonical_weapon_id": "robot_hydraulic_press",
+				"class_id": "robot",
+				"expected_activation_damage": 46.721900000000005,
+				"expected_initial_activations": 1.0,
+				"formula_schema": "fan1515.class-ultimate-formula.v1",
+				"meta_application_count": 1.0,
+				"run_modifiers": {
+					"aoe_radius_multiplier": 1.04,
+					"attack_speed_multiplier": 1.04,
+					"damage_multiplier": 1.05,
+					"death_save_health_fraction": 0.3,
+					"defense_flat": 0.025,
+					"healing_multiplier": 0.8160000000000001,
+					"max_health_flat": 10.0,
+					"max_health_multiplier": 0.8,
+					"money_gain_multiplier": 1.04,
+					"pickup_radius_flat": 60.0,
+					"xp_gain_multiplier": 0.92
+				},
+				"scenario": "class_atlas50",
+				"start_charge": 100.0,
+				"start_charge_ratio": 1.0,
+				"stats": {
+					"agility": 16.0,
+					"endurance": 11.0,
+					"energy": 7.0,
+					"intelligence": 5.0,
+					"knowledge": 4.0,
+					"leadership": 4.0,
+					"perception": 5.0,
+					"strength": 14.0
+				}
+			},
+			"frame_count": 3600.0,
+			"initial_activation_count": 1.0,
+			"initial_charge": 100.0,
+			"scenario": "class_atlas50",
+			"seed": 151501.0,
+			"sustain_source": {
+				"damage": 264140.3241,
+				"hits": 51972.0
+			},
+			"ultimate_source": {
+				"by_mechanic": {},
+				"damage": 0.0,
+				"hits": 0.0
+			}
+		},
+		"robot|class_constellation": {
+			"activation_count": 1.0,
+			"activation_timing_seconds": [
+				1.1
+			],
+			"class_id": "robot",
+			"duration_seconds": 60.0,
+			"formula": {
+				"canonical_weapon_id": "robot_hydraulic_press",
+				"class_id": "robot",
+				"expected_activation_damage": 46.721900000000005,
+				"expected_initial_activations": 0.0,
+				"formula_schema": "fan1515.class-ultimate-formula.v1",
+				"meta_application_count": 1.0,
+				"run_modifiers": {
+					"aoe_radius_multiplier": 1.04,
+					"attack_speed_multiplier": 1.04,
+					"damage_multiplier": 1.05,
+					"defense_flat": 0.025,
+					"healing_multiplier": 0.68,
+					"max_health_flat": 10.0,
+					"max_health_multiplier": 0.8,
+					"money_gain_multiplier": 0.8800000000000001,
+					"xp_gain_multiplier": 0.8
+				},
+				"scenario": "class_constellation",
+				"start_charge": 0.0,
+				"start_charge_ratio": 0.0,
+				"stats": {
+					"agility": 16.0,
+					"endurance": 11.0,
+					"energy": 7.0,
+					"intelligence": 5.0,
+					"knowledge": 4.0,
+					"leadership": 4.0,
+					"perception": 5.0,
+					"strength": 14.0
+				}
+			},
+			"frame_count": 3600.0,
+			"initial_activation_count": 0.0,
+			"initial_charge": 0.0,
+			"scenario": "class_constellation",
+			"seed": 151501.0,
+			"sustain_source": {
+				"damage": 264140.3241,
+				"hits": 51972.0
+			},
+			"ultimate_source": {
+				"by_mechanic": {},
+				"damage": 0.0,
+				"hits": 0.0
+			}
+		},
+		"robot|no_meta": {
+			"activation_count": 1.0,
+			"activation_timing_seconds": [
+				1.5333
+			],
+			"class_id": "robot",
+			"duration_seconds": 60.0,
+			"formula": {
+				"canonical_weapon_id": "robot_hydraulic_press",
+				"class_id": "robot",
+				"expected_activation_damage": 46.6657,
+				"expected_initial_activations": 0.0,
+				"formula_schema": "fan1515.class-ultimate-formula.v1",
+				"meta_application_count": 0.0,
+				"run_modifiers": {
+					"aoe_radius_multiplier": 1.04,
+					"attack_speed_multiplier": 1.04,
+					"damage_multiplier": 1.05,
+					"defense_flat": 0.025,
+					"healing_multiplier": 0.68,
+					"max_health_flat": 10.0,
+					"max_health_multiplier": 0.8,
+					"money_gain_multiplier": 0.8,
+					"xp_gain_multiplier": 0.8
+				},
+				"scenario": "no_meta",
+				"start_charge": 0.0,
+				"start_charge_ratio": 0.0,
+				"stats": {
+					"agility": 16.0,
+					"endurance": 10.0,
+					"energy": 7.0,
+					"intelligence": 5.0,
+					"knowledge": 4.0,
+					"leadership": 4.0,
+					"perception": 5.0,
+					"strength": 14.0
+				}
+			},
+			"frame_count": 3600.0,
+			"initial_activation_count": 0.0,
+			"initial_charge": 0.0,
+			"scenario": "no_meta",
+			"seed": 151501.0,
+			"sustain_source": {
+				"damage": 148020.6991,
+				"hits": 23402.0
+			},
+			"ultimate_source": {
+				"by_mechanic": {},
+				"damage": 0.0,
+				"hits": 0.0
+			}
+		},
+		"sniper|class_atlas50": {
+			"activation_count": 84.0,
+			"activation_timing_seconds": [
+				0.0,
+				1.0,
+				1.5333,
+				2.0667,
+				2.8667,
+				3.6667,
+				4.4667,
+				5.2667,
+				6.0667,
+				6.866700000000001,
+				7.6667,
+				8.200000000000001,
+				8.7333,
+				9.2667,
+				10.0667,
+				10.8667,
+				11.6667,
+				12.2,
+				13.0,
+				13.8,
+				14.3333,
+				15.1333,
+				15.9333,
+				16.7333,
+				17.5333,
+				18.3333,
+				19.1333,
+				19.6667,
+				20.4667,
+				21.2667,
+				22.0667,
+				22.6,
+				23.4,
+				24.200000000000003,
+				24.7333,
+				25.5333,
+				26.3333,
+				26.8667,
+				27.6667,
+				28.466700000000003,
+				29.2667,
+				30.0667,
+				30.8667,
+				31.6667,
+				32.2,
+				32.7333,
+				33.533300000000004,
+				34.3333,
+				34.8667,
+				35.6667,
+				36.4667,
+				37.2667,
+				38.0667,
+				38.8667,
+				39.4,
+				40.2,
+				40.7333,
+				41.5333,
+				42.0667,
+				42.8667,
+				43.4,
+				43.9333,
+				44.4667,
+				45.2667,
+				46.0667,
+				46.8667,
+				47.6667,
+				48.4667,
+				49.0,
+				49.5333,
+				50.3333,
+				51.133300000000006,
+				51.9333,
+				52.4667,
+				53.2667,
+				53.8,
+				54.6,
+				55.133300000000006,
+				55.9333,
+				56.7333,
+				57.2667,
+				58.0667,
+				58.8667,
+				59.666700000000006
+			],
+			"class_id": "sniper",
+			"duration_seconds": 60.0,
+			"formula": {
+				"canonical_weapon_id": "sniper_deadeye_rifle",
+				"class_id": "sniper",
+				"expected_activation_damage": 71.7081,
+				"expected_initial_activations": 1.0,
+				"formula_schema": "fan1515.class-ultimate-formula.v1",
+				"meta_application_count": 1.0,
+				"run_modifiers": {
+					"aoe_radius_multiplier": 1.05,
+					"attack_speed_multiplier": 1.04,
+					"damage_multiplier": 1.1235000000000002,
+					"death_save_health_fraction": 0.3,
+					"healing_multiplier": 0.8160000000000001,
+					"max_health_flat": 8.0,
+					"max_health_multiplier": 0.8,
+					"money_gain_multiplier": 1.04,
+					"pickup_radius_flat": 60.0,
+					"xp_gain_multiplier": 0.92
+				},
+				"scenario": "class_atlas50",
+				"start_charge": 100.0,
+				"start_charge_ratio": 1.0,
+				"stats": {
+					"agility": 16.0,
+					"endurance": 7.0,
+					"energy": 3.0,
+					"intelligence": 2.0,
+					"knowledge": 3.0,
+					"leadership": 1.0,
+					"perception": 11.0,
+					"strength": 17.0
+				}
+			},
+			"frame_count": 3600.0,
+			"initial_activation_count": 1.0,
+			"initial_charge": 100.0,
+			"scenario": "class_atlas50",
+			"seed": 151501.0,
+			"sustain_source": {
+				"damage": 280525.0937,
+				"hits": 16026.0
+			},
+			"ultimate_source": {
+				"by_mechanic": {
+					"deadeye_headshot": {
+						"damage": 562191.8232,
+						"first_frame": 0.0,
+						"hits": 84.0
+					},
+					"deadeye_penetration": {
+						"damage": 142553.8548,
+						"first_frame": 0.0,
+						"hits": 252.0
+					}
+				},
+				"damage": 704745.6824,
+				"hits": 336.0
+			}
+		},
+		"sniper|class_constellation": {
+			"activation_count": 83.0,
+			"activation_timing_seconds": [
+				0.7333000000000001,
+				1.5333,
+				2.3333,
+				3.1333,
+				3.6667,
+				4.2,
+				4.7333,
+				5.5333000000000006,
+				6.0667,
+				6.6000000000000005,
+				7.4,
+				8.200000000000001,
+				9.0,
+				9.8,
+				10.6,
+				11.4,
+				12.2,
+				13.0,
+				13.5333,
+				14.3333,
+				15.1333,
+				15.9333,
+				16.7333,
+				17.5333,
+				18.0667,
+				18.8667,
+				19.6667,
+				20.4667,
+				21.2667,
+				22.0667,
+				22.8667,
+				23.4,
+				23.933300000000003,
+				24.7333,
+				25.5333,
+				26.3333,
+				27.1333,
+				27.933300000000003,
+				28.7333,
+				29.5333,
+				30.0667,
+				30.8667,
+				31.6667,
+				32.4667,
+				33.2667,
+				34.066700000000004,
+				34.8667,
+				35.6667,
+				36.4667,
+				37.2667,
+				37.8,
+				38.3333,
+				38.8667,
+				39.6667,
+				40.4667,
+				41.2667,
+				42.0667,
+				42.6,
+				43.133300000000006,
+				43.6667,
+				44.2,
+				44.7333,
+				45.2667,
+				45.8,
+				46.6,
+				47.133300000000006,
+				47.6667,
+				48.4667,
+				49.2667,
+				49.8,
+				50.6,
+				51.133300000000006,
+				51.9333,
+				52.7333,
+				53.2667,
+				54.0667,
+				54.8667,
+				55.666700000000006,
+				56.4667,
+				57.2667,
+				58.0667,
+				58.8667,
+				59.666700000000006
+			],
+			"class_id": "sniper",
+			"duration_seconds": 60.0,
+			"formula": {
+				"canonical_weapon_id": "sniper_deadeye_rifle",
+				"class_id": "sniper",
+				"expected_activation_damage": 71.7081,
+				"expected_initial_activations": 0.0,
+				"formula_schema": "fan1515.class-ultimate-formula.v1",
+				"meta_application_count": 1.0,
+				"run_modifiers": {
+					"aoe_radius_multiplier": 1.05,
+					"attack_speed_multiplier": 1.04,
+					"damage_multiplier": 1.1235000000000002,
+					"healing_multiplier": 0.68,
+					"max_health_flat": 8.0,
+					"max_health_multiplier": 0.8,
+					"money_gain_multiplier": 0.8800000000000001,
+					"xp_gain_multiplier": 0.8
+				},
+				"scenario": "class_constellation",
+				"start_charge": 0.0,
+				"start_charge_ratio": 0.0,
+				"stats": {
+					"agility": 16.0,
+					"endurance": 7.0,
+					"energy": 3.0,
+					"intelligence": 2.0,
+					"knowledge": 3.0,
+					"leadership": 1.0,
+					"perception": 11.0,
+					"strength": 17.0
+				}
+			},
+			"frame_count": 3600.0,
+			"initial_activation_count": 0.0,
+			"initial_charge": 0.0,
+			"scenario": "class_constellation",
+			"seed": 151501.0,
+			"sustain_source": {
+				"damage": 269395.6068,
+				"hits": 16026.0
+			},
+			"ultimate_source": {
+				"by_mechanic": {
+					"deadeye_headshot": {
+						"damage": 555499.0634,
+						"first_frame": 44.0,
+						"hits": 83.0
+					},
+					"deadeye_penetration": {
+						"damage": 140856.7851,
+						"first_frame": 44.0,
+						"hits": 249.0
+					}
+				},
+				"damage": 696355.8528,
+				"hits": 332.0
+			}
+		},
+		"sniper|no_meta": {
+			"activation_count": 48.0,
+			"activation_timing_seconds": [
+				1.05,
+				2.1833,
+				3.6,
+				4.7333,
+				5.866700000000001,
+				7.0,
+				8.1333,
+				9.55,
+				10.4,
+				11.25,
+				12.3833,
+				13.5167,
+				14.65,
+				15.7833,
+				17.2,
+				18.3333,
+				19.75,
+				21.1667,
+				22.3,
+				23.433300000000003,
+				24.85,
+				26.2667,
+				27.683300000000003,
+				28.8167,
+				29.950000000000003,
+				31.3667,
+				32.5,
+				33.9167,
+				35.3333,
+				36.75,
+				37.8833,
+				38.7333,
+				39.8667,
+				41.0,
+				41.85,
+				42.7,
+				44.1167,
+				45.25,
+				46.6667,
+				47.8,
+				49.2167,
+				50.633300000000006,
+				52.05,
+				53.4667,
+				54.6,
+				56.0167,
+				57.4333,
+				58.85
+			],
+			"class_id": "sniper",
+			"duration_seconds": 60.0,
+			"formula": {
+				"canonical_weapon_id": "sniper_deadeye_rifle",
+				"class_id": "sniper",
+				"expected_activation_damage": 71.586,
+				"expected_initial_activations": 0.0,
+				"formula_schema": "fan1515.class-ultimate-formula.v1",
+				"meta_application_count": 0.0,
+				"run_modifiers": {
+					"aoe_radius_multiplier": 1.05,
+					"attack_speed_multiplier": 1.04,
+					"damage_multiplier": 1.1235000000000002,
+					"healing_multiplier": 0.68,
+					"max_health_flat": 8.0,
+					"max_health_multiplier": 0.8,
+					"money_gain_multiplier": 0.8,
+					"xp_gain_multiplier": 0.8
+				},
+				"scenario": "no_meta",
+				"start_charge": 0.0,
+				"start_charge_ratio": 0.0,
+				"stats": {
+					"agility": 16.0,
+					"endurance": 7.0,
+					"energy": 3.0,
+					"intelligence": 2.0,
+					"knowledge": 3.0,
+					"leadership": 1.0,
+					"perception": 10.0,
+					"strength": 17.0
+				}
+			},
+			"frame_count": 3600.0,
+			"initial_activation_count": 0.0,
+			"initial_charge": 0.0,
+			"scenario": "no_meta",
+			"seed": 151501.0,
+			"sustain_source": {
+				"damage": 158961.68540000002,
+				"hits": 14460.0
+			},
+			"ultimate_source": {
+				"by_mechanic": {
+					"deadeye_headshot": {
+						"damage": 321252.4704,
+						"first_frame": 63.0,
+						"hits": 48.0
+					},
+					"deadeye_penetration": {
+						"damage": 81459.3456,
+						"first_frame": 63.0,
+						"hits": 144.0
+					}
+				},
+				"damage": 402711.8185,
+				"hits": 192.0
+			}
+		},
+		"soldier|class_atlas50": {
+			"activation_count": 12.0,
+			"activation_timing_seconds": [
+				0.0,
+				5.6000000000000005,
+				11.0,
+				16.400000000000002,
+				22.0,
+				27.4,
+				32.800000000000004,
+				38.1667,
+				43.4,
+				49.0,
+				54.166700000000006,
+				59.7667
+			],
+			"class_id": "soldier",
+			"duration_seconds": 60.0,
+			"formula": {
+				"canonical_weapon_id": "soldier_bayonet",
+				"class_id": "soldier",
+				"expected_activation_damage": 29.3106,
+				"expected_initial_activations": 1.0,
+				"formula_schema": "fan1515.class-ultimate-formula.v1",
+				"meta_application_count": 1.0,
+				"run_modifiers": {
+					"attack_speed_multiplier": 1.04,
+					"damage_multiplier": 1.1235000000000002,
+					"death_save_health_fraction": 0.3,
+					"defense_flat": 0.02,
+					"healing_multiplier": 0.8160000000000001,
+					"max_health_flat": 8.0,
+					"max_health_multiplier": 0.8,
+					"money_gain_multiplier": 1.04,
+					"pickup_radius_flat": 60.0,
+					"xp_gain_multiplier": 0.92
+				},
+				"scenario": "class_atlas50",
+				"start_charge": 100.0,
+				"start_charge_ratio": 1.0,
+				"stats": {
+					"agility": 14.0,
+					"endurance": 6.0,
+					"energy": 4.0,
+					"intelligence": 2.0,
+					"knowledge": 5.0,
+					"leadership": 5.0,
+					"perception": 9.0,
+					"strength": 18.0
+				}
+			},
+			"frame_count": 3600.0,
+			"initial_activation_count": 1.0,
+			"initial_charge": 100.0,
+			"scenario": "class_atlas50",
+			"seed": 151501.0,
+			"sustain_source": {
+				"damage": 213497.2712,
+				"hits": 21164.0
+			},
+			"ultimate_source": {
+				"by_mechanic": {
+					"last_charge": {
+						"damage": 298533.77400000003,
+						"first_frame": 28.0,
+						"hits": 110.0
+					}
+				},
+				"damage": 298533.77520000003,
+				"hits": 110.0
+			}
+		},
+		"soldier|class_constellation": {
+			"activation_count": 11.0,
+			"activation_timing_seconds": [
+				1.2,
+				6.5667,
+				12.2,
+				18.0,
+				23.6,
+				28.966700000000003,
+				34.3667,
+				40.0,
+				45.5667,
+				51.166700000000006,
+				56.9667
+			],
+			"class_id": "soldier",
+			"duration_seconds": 60.0,
+			"formula": {
+				"canonical_weapon_id": "soldier_bayonet",
+				"class_id": "soldier",
+				"expected_activation_damage": 29.3106,
+				"expected_initial_activations": 0.0,
+				"formula_schema": "fan1515.class-ultimate-formula.v1",
+				"meta_application_count": 1.0,
+				"run_modifiers": {
+					"attack_speed_multiplier": 1.04,
+					"damage_multiplier": 1.1235000000000002,
+					"defense_flat": 0.02,
+					"healing_multiplier": 0.68,
+					"max_health_flat": 8.0,
+					"max_health_multiplier": 0.8,
+					"money_gain_multiplier": 0.8800000000000001,
+					"xp_gain_multiplier": 0.8
+				},
+				"scenario": "class_constellation",
+				"start_charge": 0.0,
+				"start_charge_ratio": 0.0,
+				"stats": {
+					"agility": 14.0,
+					"endurance": 6.0,
+					"energy": 4.0,
+					"intelligence": 2.0,
+					"knowledge": 5.0,
+					"leadership": 5.0,
+					"perception": 9.0,
+					"strength": 18.0
+				}
+			},
+			"frame_count": 3600.0,
+			"initial_activation_count": 0.0,
+			"initial_charge": 0.0,
+			"scenario": "class_constellation",
+			"seed": 151501.0,
+			"sustain_source": {
+				"damage": 213860.7486,
+				"hits": 21192.0
+			},
+			"ultimate_source": {
+				"by_mechanic": {
+					"last_charge": {
+						"damage": 298533.77400000003,
+						"first_frame": 100.0,
+						"hits": 110.0
+					}
+				},
+				"damage": 298533.77520000003,
+				"hits": 110.0
+			}
+		},
+		"soldier|no_meta": {
+			"activation_count": 11.0,
+			"activation_timing_seconds": [
+				1.4667,
+				7.366700000000001,
+				12.7333,
+				18.85,
+				24.4833,
+				30.55,
+				36.1333,
+				42.0333,
+				48.1,
+				53.7333,
+				59.3667
+			],
+			"class_id": "soldier",
+			"duration_seconds": 60.0,
+			"formula": {
+				"canonical_weapon_id": "soldier_bayonet",
+				"class_id": "soldier",
+				"expected_activation_damage": 29.2616,
+				"expected_initial_activations": 0.0,
+				"formula_schema": "fan1515.class-ultimate-formula.v1",
+				"meta_application_count": 0.0,
+				"run_modifiers": {
+					"attack_speed_multiplier": 1.04,
+					"damage_multiplier": 1.1235000000000002,
+					"defense_flat": 0.02,
+					"healing_multiplier": 0.68,
+					"max_health_flat": 8.0,
+					"max_health_multiplier": 0.8,
+					"money_gain_multiplier": 0.8,
+					"xp_gain_multiplier": 0.8
+				},
+				"scenario": "no_meta",
+				"start_charge": 0.0,
+				"start_charge_ratio": 0.0,
+				"stats": {
+					"agility": 14.0,
+					"endurance": 6.0,
+					"energy": 4.0,
+					"intelligence": 2.0,
+					"knowledge": 5.0,
+					"leadership": 5.0,
+					"perception": 8.0,
+					"strength": 18.0
+				}
+			},
+			"frame_count": 3600.0,
+			"initial_activation_count": 0.0,
+			"initial_charge": 0.0,
+			"scenario": "no_meta",
+			"seed": 151501.0,
+			"sustain_source": {
+				"damage": 122305.9596,
+				"hits": 16558.0
+			},
+			"ultimate_source": {
+				"by_mechanic": {
+					"last_charge": {
+						"damage": 282250.11360000004,
+						"first_frame": 116.0,
+						"hits": 104.0
+					}
+				},
+				"damage": 282250.11470000003,
+				"hits": 104.0
+			}
+		},
+		"thief|class_atlas50": {
+			"activation_count": 20.0,
+			"activation_timing_seconds": [
+				0.0,
+				3.3000000000000003,
+				6.4167000000000005,
+				9.1667,
+				12.4667,
+				15.4,
+				18.3333,
+				21.0833,
+				23.8333,
+				26.950000000000003,
+				30.25,
+				33.3667,
+				36.4833,
+				39.6,
+				42.7167,
+				45.650000000000006,
+				48.95,
+				52.0667,
+				55.1833,
+				57.75
+			],
+			"class_id": "thief",
+			"duration_seconds": 60.0,
+			"formula": {
+				"canonical_weapon_id": "thief_coin_pouch",
+				"class_id": "thief",
+				"expected_activation_damage": 48.253600000000006,
+				"expected_initial_activations": 1.0,
+				"formula_schema": "fan1515.class-ultimate-formula.v1",
+				"meta_application_count": 1.0,
+				"run_modifiers": {
+					"attack_speed_multiplier": 1.04,
+					"damage_multiplier": 1.05,
+					"death_save_health_fraction": 0.3,
+					"dodge_flat": 0.02,
+					"healing_multiplier": 0.8160000000000001,
+					"max_health_flat": 7.0,
+					"max_health_multiplier": 0.8,
+					"money_gain_multiplier": 1.1024,
+					"pickup_radius_flat": 60.0,
+					"xp_gain_multiplier": 0.92
+				},
+				"scenario": "class_atlas50",
+				"start_charge": 100.0,
+				"start_charge_ratio": 1.0,
+				"stats": {
+					"agility": 18.0,
+					"endurance": 4.0,
+					"energy": 5.0,
+					"intelligence": 3.0,
+					"knowledge": 4.0,
+					"leadership": 5.0,
+					"perception": 8.0,
+					"strength": 16.0
+				}
+			},
+			"frame_count": 3600.0,
+			"initial_activation_count": 1.0,
+			"initial_charge": 100.0,
+			"scenario": "class_atlas50",
+			"seed": 151501.0,
+			"sustain_source": {
+				"damage": 83131.9549,
+				"hits": 6165.0
+			},
+			"ultimate_source": {
+				"by_mechanic": {
+					"jackpot_ricochet": {
+						"damage": 540428.162,
+						"first_frame": 0.0,
+						"hits": 200.0
+					}
+				},
+				"damage": 540428.1642,
+				"hits": 200.0
+			}
+		},
+		"thief|class_constellation": {
+			"activation_count": 20.0,
+			"activation_timing_seconds": [
+				2.2,
+				5.1333,
+				7.8833,
+				10.6333,
+				13.5667,
+				16.6833,
+				19.8,
+				22.7333,
+				25.4833,
+				28.4167,
+				31.35,
+				34.283300000000004,
+				37.5833,
+				40.5167,
+				43.8167,
+				46.75,
+				49.6833,
+				52.6167,
+				55.55,
+				58.4833
+			],
+			"class_id": "thief",
+			"duration_seconds": 60.0,
+			"formula": {
+				"canonical_weapon_id": "thief_coin_pouch",
+				"class_id": "thief",
+				"expected_activation_damage": 48.253600000000006,
+				"expected_initial_activations": 0.0,
+				"formula_schema": "fan1515.class-ultimate-formula.v1",
+				"meta_application_count": 1.0,
+				"run_modifiers": {
+					"attack_speed_multiplier": 1.04,
+					"damage_multiplier": 1.05,
+					"dodge_flat": 0.02,
+					"healing_multiplier": 0.68,
+					"max_health_flat": 7.0,
+					"max_health_multiplier": 0.8,
+					"money_gain_multiplier": 0.9328000000000002,
+					"xp_gain_multiplier": 0.8
+				},
+				"scenario": "class_constellation",
+				"start_charge": 0.0,
+				"start_charge_ratio": 0.0,
+				"stats": {
+					"agility": 18.0,
+					"endurance": 4.0,
+					"energy": 5.0,
+					"intelligence": 3.0,
+					"knowledge": 4.0,
+					"leadership": 5.0,
+					"perception": 8.0,
+					"strength": 16.0
+				}
+			},
+			"frame_count": 3600.0,
+			"initial_activation_count": 0.0,
+			"initial_charge": 0.0,
+			"scenario": "class_constellation",
+			"seed": 151501.0,
+			"sustain_source": {
+				"damage": 86729.4927,
+				"hits": 6165.0
+			},
+			"ultimate_source": {
+				"by_mechanic": {
+					"jackpot_ricochet": {
+						"damage": 540428.162,
+						"first_frame": 132.0,
+						"hits": 200.0
+					}
+				},
+				"damage": 540428.1642,
+				"hits": 200.0
+			}
+		},
+		"thief|no_meta": {
+			"activation_count": 18.0,
+			"activation_timing_seconds": [
+				2.75,
+				6.050000000000001,
+				9.35,
+				12.65,
+				16.133300000000002,
+				19.8,
+				23.2833,
+				26.950000000000003,
+				30.25,
+				33.0,
+				35.9333,
+				39.2333,
+				42.5333,
+				46.2,
+				49.6833,
+				53.35,
+				56.2833,
+				59.7667
+			],
+			"class_id": "thief",
+			"duration_seconds": 60.0,
+			"formula": {
+				"canonical_weapon_id": "thief_coin_pouch",
+				"class_id": "thief",
+				"expected_activation_damage": 48.185100000000006,
+				"expected_initial_activations": 0.0,
+				"formula_schema": "fan1515.class-ultimate-formula.v1",
+				"meta_application_count": 0.0,
+				"run_modifiers": {
+					"attack_speed_multiplier": 1.04,
+					"damage_multiplier": 1.05,
+					"dodge_flat": 0.02,
+					"healing_multiplier": 0.68,
+					"max_health_flat": 7.0,
+					"max_health_multiplier": 0.8,
+					"money_gain_multiplier": 0.8480000000000001,
+					"xp_gain_multiplier": 0.8
+				},
+				"scenario": "no_meta",
+				"start_charge": 0.0,
+				"start_charge_ratio": 0.0,
+				"stats": {
+					"agility": 17.0,
+					"endurance": 4.0,
+					"energy": 5.0,
+					"intelligence": 3.0,
+					"knowledge": 4.0,
+					"leadership": 5.0,
+					"perception": 8.0,
+					"strength": 16.0
+				}
+			},
+			"frame_count": 3600.0,
+			"initial_activation_count": 0.0,
+			"initial_charge": 0.0,
+			"scenario": "no_meta",
+			"seed": 151501.0,
+			"sustain_source": {
+				"damage": 68673.3921,
+				"hits": 5838.0
+			},
+			"ultimate_source": {
+				"by_mechanic": {
+					"jackpot_ricochet": {
+						"damage": 471293.3718,
+						"first_frame": 165.0,
+						"hits": 173.0
+					}
+				},
+				"damage": 471293.3737,
+				"hits": 173.0
+			}
+		}
+	},
+	"pack_contract": "a5.scenario-pack.v1",
+	"pack_id": "a5_ultimate_atlas_attribution",
+	"per_weapon_sustain": [
+		{
+			"class_id": "assassin",
+			"crowd_10_dpm": 0.0,
+			"solo_dpm": 29716.800000000003,
+			"sustain_only": true,
+			"weapon_id": "chakrams"
+		},
+		{
+			"class_id": "assassin",
+			"crowd_10_dpm": 0.0,
+			"solo_dpm": 26441.4,
+			"sustain_only": true,
+			"weapon_id": "shadow_daggers"
+		},
+		{
+			"class_id": "assassin",
+			"crowd_10_dpm": 0.0,
+			"solo_dpm": 7095.0,
+			"sustain_only": true,
+			"weapon_id": "venom_wire"
+		},
+		{
+			"class_id": "berserk",
+			"crowd_10_dpm": 0.0,
+			"solo_dpm": 13720.800000000001,
+			"sustain_only": true,
+			"weapon_id": "axe"
+		},
+		{
+			"class_id": "berserk",
+			"crowd_10_dpm": 0.0,
+			"solo_dpm": 13708.800000000001,
+			"sustain_only": true,
+			"weapon_id": "hammer"
+		},
+		{
+			"class_id": "berserk",
+			"crowd_10_dpm": 0.0,
+			"solo_dpm": 9199.800000000001,
+			"sustain_only": true,
+			"weapon_id": "sword"
+		},
+		{
+			"class_id": "biologist",
+			"crowd_10_dpm": 0.0,
+			"solo_dpm": 15341.400000000001,
+			"sustain_only": true,
+			"weapon_id": "biologist_sample_injector"
+		},
+		{
+			"class_id": "biologist",
+			"crowd_10_dpm": 0.0,
+			"solo_dpm": 11968.2,
+			"sustain_only": true,
+			"weapon_id": "biologist_spore_lens"
+		},
+		{
+			"class_id": "biologist",
+			"crowd_10_dpm": 0.0,
+			"solo_dpm": 12075.0,
+			"sustain_only": true,
+			"weapon_id": "biologist_symbiote_seed"
+		},
+		{
+			"class_id": "chemist",
+			"crowd_10_dpm": 0.0,
+			"solo_dpm": 2343.6,
+			"sustain_only": true,
+			"weapon_id": "acid_flask"
+		},
+		{
+			"class_id": "chemist",
+			"crowd_10_dpm": 0.0,
+			"solo_dpm": 21442.2,
+			"sustain_only": true,
+			"weapon_id": "blast_powder"
+		},
+		{
+			"class_id": "chemist",
+			"crowd_10_dpm": 0.0,
+			"solo_dpm": 1936.2,
+			"sustain_only": true,
+			"weapon_id": "homunculus_vial"
+		},
+		{
+			"class_id": "dark_mage",
+			"crowd_10_dpm": 0.0,
+			"solo_dpm": 3832.2000000000003,
+			"sustain_only": true,
+			"weapon_id": "cursed_skull"
+		},
+		{
+			"class_id": "dark_mage",
+			"crowd_10_dpm": 0.0,
+			"solo_dpm": 4856.4000000000005,
+			"sustain_only": true,
+			"weapon_id": "dark_book"
+		},
+		{
+			"class_id": "dark_mage",
+			"crowd_10_dpm": 0.0,
+			"solo_dpm": 4854.6,
+			"sustain_only": true,
+			"weapon_id": "dark_wand"
+		},
+		{
+			"class_id": "doctor",
+			"crowd_10_dpm": 0.0,
+			"solo_dpm": 23440.2,
+			"sustain_only": true,
+			"weapon_id": "bone_saw"
+		},
+		{
+			"class_id": "doctor",
+			"crowd_10_dpm": 0.0,
+			"solo_dpm": 5753.4000000000005,
+			"sustain_only": true,
+			"weapon_id": "plague_syringe"
+		},
+		{
+			"class_id": "doctor",
+			"crowd_10_dpm": 0.0,
+			"solo_dpm": 5713.8,
+			"sustain_only": true,
+			"weapon_id": "restore_potion"
+		},
+		{
+			"class_id": "druid",
+			"crowd_10_dpm": 0.0,
+			"solo_dpm": 29761.2,
+			"sustain_only": true,
+			"weapon_id": "briar_staff"
+		},
+		{
+			"class_id": "druid",
+			"crowd_10_dpm": 0.0,
+			"solo_dpm": 7595.4000000000005,
+			"sustain_only": true,
+			"weapon_id": "raven_totem"
+		},
+		{
+			"class_id": "druid",
+			"crowd_10_dpm": 0.0,
+			"solo_dpm": 7865.4000000000005,
+			"sustain_only": true,
+			"weapon_id": "summon_amulet"
+		},
+		{
+			"class_id": "elementalist",
+			"crowd_10_dpm": 0.0,
+			"solo_dpm": 7167.0,
+			"sustain_only": true,
+			"weapon_id": "elementalist_meteor_core"
+		},
+		{
+			"class_id": "elementalist",
+			"crowd_10_dpm": 0.0,
+			"solo_dpm": 7113.6,
+			"sustain_only": true,
+			"weapon_id": "elementalist_orb_ring"
+		},
+		{
+			"class_id": "elementalist",
+			"crowd_10_dpm": 0.0,
+			"solo_dpm": 9711.6,
+			"sustain_only": true,
+			"weapon_id": "elementalist_prism_focus"
+		},
+		{
+			"class_id": "engineer",
+			"crowd_10_dpm": 0.0,
+			"solo_dpm": 15060.0,
+			"sustain_only": true,
+			"weapon_id": "engineer_pressure_mines"
+		},
+		{
+			"class_id": "engineer",
+			"crowd_10_dpm": 0.0,
+			"solo_dpm": 9955.800000000001,
+			"sustain_only": true,
+			"weapon_id": "engineer_repair_drone"
+		},
+		{
+			"class_id": "engineer",
+			"crowd_10_dpm": 0.0,
+			"solo_dpm": 14764.800000000001,
+			"sustain_only": true,
+			"weapon_id": "engineer_sentry_wrench"
+		},
+		{
+			"class_id": "guitarist",
+			"crowd_10_dpm": 0.0,
+			"solo_dpm": 22491.600000000002,
+			"sustain_only": true,
+			"weapon_id": "bass_guitar"
+		},
+		{
+			"class_id": "guitarist",
+			"crowd_10_dpm": 0.0,
+			"solo_dpm": 21766.8,
+			"sustain_only": true,
+			"weapon_id": "electric_guitar"
+		},
+		{
+			"class_id": "guitarist",
+			"crowd_10_dpm": 0.0,
+			"solo_dpm": 19396.8,
+			"sustain_only": true,
+			"weapon_id": "sound_amp"
+		},
+		{
+			"class_id": "knight",
+			"crowd_10_dpm": 0.0,
+			"solo_dpm": 13069.2,
+			"sustain_only": true,
+			"weapon_id": "holy_flail"
+		},
+		{
+			"class_id": "knight",
+			"crowd_10_dpm": 0.0,
+			"solo_dpm": 13096.800000000001,
+			"sustain_only": true,
+			"weapon_id": "long_spear"
+		},
+		{
+			"class_id": "knight",
+			"crowd_10_dpm": 0.0,
+			"solo_dpm": 13114.2,
+			"sustain_only": true,
+			"weapon_id": "tower_shield"
+		},
+		{
+			"class_id": "priest",
+			"crowd_10_dpm": 0.0,
+			"solo_dpm": 13736.400000000001,
+			"sustain_only": true,
+			"weapon_id": "priest_censer"
+		},
+		{
+			"class_id": "priest",
+			"crowd_10_dpm": 0.0,
+			"solo_dpm": 13720.2,
+			"sustain_only": true,
+			"weapon_id": "priest_chime"
+		},
+		{
+			"class_id": "priest",
+			"crowd_10_dpm": 0.0,
+			"solo_dpm": 13525.800000000001,
+			"sustain_only": true,
+			"weapon_id": "priest_reliquary"
+		},
+		{
+			"class_id": "ranger",
+			"crowd_10_dpm": 0.0,
+			"solo_dpm": 13853.400000000001,
+			"sustain_only": true,
+			"weapon_id": "hunter_trap"
+		},
+		{
+			"class_id": "ranger",
+			"crowd_10_dpm": 0.0,
+			"solo_dpm": 27910.2,
+			"sustain_only": true,
+			"weapon_id": "moon_crossbow"
+		},
+		{
+			"class_id": "ranger",
+			"crowd_10_dpm": 0.0,
+			"solo_dpm": 28189.800000000003,
+			"sustain_only": true,
+			"weapon_id": "storm_longbow"
+		},
+		{
+			"class_id": "robot",
+			"crowd_10_dpm": 0.0,
+			"solo_dpm": 11311.2,
+			"sustain_only": true,
+			"weapon_id": "robot_hydraulic_press"
+		},
+		{
+			"class_id": "robot",
+			"crowd_10_dpm": 0.0,
+			"solo_dpm": 11236.2,
+			"sustain_only": true,
+			"weapon_id": "robot_magnetic_anchor"
+		},
+		{
+			"class_id": "robot",
+			"crowd_10_dpm": 0.0,
+			"solo_dpm": 11217.6,
+			"sustain_only": true,
+			"weapon_id": "robot_reactor_core"
+		},
+		{
+			"class_id": "sniper",
+			"crowd_10_dpm": 0.0,
+			"solo_dpm": 25332.0,
+			"sustain_only": true,
+			"weapon_id": "sniper_deadeye_rifle"
+		},
+		{
+			"class_id": "sniper",
+			"crowd_10_dpm": 0.0,
+			"solo_dpm": 15097.2,
+			"sustain_only": true,
+			"weapon_id": "sniper_shatter_rounds"
+		},
+		{
+			"class_id": "sniper",
+			"crowd_10_dpm": 0.0,
+			"solo_dpm": 24925.800000000003,
+			"sustain_only": true,
+			"weapon_id": "sniper_spotter_scope"
+		},
+		{
+			"class_id": "soldier",
+			"crowd_10_dpm": 0.0,
+			"solo_dpm": 10431.0,
+			"sustain_only": true,
+			"weapon_id": "soldier_bayonet"
+		},
+		{
+			"class_id": "soldier",
+			"crowd_10_dpm": 0.0,
+			"solo_dpm": 10303.800000000001,
+			"sustain_only": true,
+			"weapon_id": "soldier_grenade"
+		},
+		{
+			"class_id": "soldier",
+			"crowd_10_dpm": 0.0,
+			"solo_dpm": 8670.6,
+			"sustain_only": true,
+			"weapon_id": "soldier_rifle"
+		},
+		{
+			"class_id": "thief",
+			"crowd_10_dpm": 0.0,
+			"solo_dpm": 15888.0,
+			"sustain_only": true,
+			"weapon_id": "thief_coin_pouch"
+		},
+		{
+			"class_id": "thief",
+			"crowd_10_dpm": 0.0,
+			"solo_dpm": 15994.2,
+			"sustain_only": true,
+			"weapon_id": "thief_shadow_cloak"
+		},
+		{
+			"class_id": "thief",
+			"crowd_10_dpm": 0.0,
+			"solo_dpm": 15841.2,
+			"sustain_only": true,
+			"weapon_id": "thief_smoke_bomb"
+		}
+	],
+	"scenario_manifest": {
+		"class_atlas50": {
+			"atlas_ids": [
+				"atlas_h0",
+				"atlas_h1",
+				"atlas_hub",
+				"atlas_k1",
+				"atlas_k2",
+				"atlas_k3",
+				"atlas_m0",
+				"atlas_m1",
+				"atlas_m10",
+				"atlas_m11",
+				"atlas_m12",
+				"atlas_m13",
+				"atlas_m4",
+				"atlas_m5",
+				"atlas_m6",
+				"atlas_m7",
+				"atlas_m8",
+				"atlas_m9",
+				"atlas_n0",
+				"atlas_n1",
+				"atlas_n2",
+				"atlas_n3"
+			],
+			"atlas_spend": 50,
+			"class_spend": 20,
+			"excluded_ids": [
+				"atlas_m2",
+				"atlas_m3",
+				"atlas_k0"
+			],
+			"label": "Full class + legal Guild Atlas 50",
+			"playable": true
+		},
+		"class_atlas59_upper": {
+			"atlas_ids": [
+				"atlas_h0",
+				"atlas_h1",
+				"atlas_hub",
+				"atlas_k0",
+				"atlas_k1",
+				"atlas_k2",
+				"atlas_k3",
+				"atlas_m0",
+				"atlas_m1",
+				"atlas_m10",
+				"atlas_m11",
+				"atlas_m12",
+				"atlas_m13",
+				"atlas_m2",
+				"atlas_m3",
+				"atlas_m4",
+				"atlas_m5",
+				"atlas_m6",
+				"atlas_m7",
+				"atlas_m8",
+				"atlas_m9",
+				"atlas_n0",
+				"atlas_n1",
+				"atlas_n2",
+				"atlas_n3"
+			],
+			"atlas_spend": 59,
+			"class_spend": 20,
+			"excluded_ids": [],
+			"label": "NON-PLAYABLE: cap 50",
+			"playable": false
+		},
+		"class_constellation": {
+			"atlas_ids": [],
+			"atlas_spend": 0,
+			"class_spend": 20,
+			"label": "Full class constellation",
+			"playable": true
+		},
+		"no_meta": {
+			"atlas_ids": [],
+			"atlas_spend": 0,
+			"class_spend": 0,
+			"label": "No meta control",
+			"playable": true
+		}
+	},
+	"verdict": "green"
+}

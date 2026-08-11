@@ -1,0 +1,162 @@
+{
+	"class_id": "chemist",
+	"measurements": {
+		"class_atlas50": {
+			"activation_count": 1,
+			"activation_timing_seconds": [
+				0.0
+			],
+			"class_id": "chemist",
+			"duration_seconds": 60.0,
+			"formula": {
+				"canonical_weapon_id": "acid_flask",
+				"class_id": "chemist",
+				"expected_activation_damage": 9.6448,
+				"expected_initial_activations": 1,
+				"formula_schema": "fan1515.class-ultimate-formula.v1",
+				"meta_application_count": 1,
+				"run_modifiers": {
+					"attack_speed_multiplier": 1.04,
+					"damage_multiplier": 1.1235000000000002,
+					"death_save_health_fraction": 0.3,
+					"defense_flat": 0.02,
+					"healing_multiplier": 0.8160000000000001,
+					"max_health_flat": 8.0,
+					"max_health_multiplier": 0.8,
+					"money_gain_multiplier": 1.04,
+					"pickup_radius_flat": 60.0,
+					"xp_gain_multiplier": 0.9199999999999999
+				},
+				"scenario": "class_atlas50",
+				"start_charge": 100.0,
+				"start_charge_ratio": 1.0,
+				"stats": {
+					"agility": 12.0,
+					"endurance": 3.0,
+					"energy": 7.0,
+					"intelligence": 9.0,
+					"knowledge": 8.0,
+					"leadership": 2.0,
+					"perception": 6.0,
+					"strength": 13.0
+				}
+			},
+			"frame_count": 3600,
+			"initial_activation_count": 1,
+			"initial_charge": 100.0,
+			"scenario": "class_atlas50",
+			"seed": 151501,
+			"sustain_source": {
+				"damage": 71114.20640000001,
+				"hits": 38884
+			},
+			"ultimate_source": {
+				"by_mechanic": {},
+				"damage": 0.0,
+				"hits": 0
+			}
+		},
+		"class_constellation": {
+			"activation_count": 0,
+			"activation_timing_seconds": [],
+			"class_id": "chemist",
+			"duration_seconds": 60.0,
+			"formula": {
+				"canonical_weapon_id": "acid_flask",
+				"class_id": "chemist",
+				"expected_activation_damage": 9.6448,
+				"expected_initial_activations": 0,
+				"formula_schema": "fan1515.class-ultimate-formula.v1",
+				"meta_application_count": 1,
+				"run_modifiers": {
+					"attack_speed_multiplier": 1.04,
+					"damage_multiplier": 1.1235000000000002,
+					"defense_flat": 0.02,
+					"healing_multiplier": 0.68,
+					"max_health_flat": 8.0,
+					"max_health_multiplier": 0.8,
+					"money_gain_multiplier": 0.8800000000000001,
+					"xp_gain_multiplier": 0.8
+				},
+				"scenario": "class_constellation",
+				"start_charge": 0.0,
+				"start_charge_ratio": 0.0,
+				"stats": {
+					"agility": 12.0,
+					"endurance": 3.0,
+					"energy": 7.0,
+					"intelligence": 9.0,
+					"knowledge": 8.0,
+					"leadership": 2.0,
+					"perception": 6.0,
+					"strength": 13.0
+				}
+			},
+			"frame_count": 3600,
+			"initial_activation_count": 0,
+			"initial_charge": 0.0,
+			"scenario": "class_constellation",
+			"seed": 151501,
+			"sustain_source": {
+				"damage": 71114.20640000001,
+				"hits": 38884
+			},
+			"ultimate_source": {
+				"by_mechanic": {},
+				"damage": 0.0,
+				"hits": 0
+			}
+		},
+		"no_meta": {
+			"activation_count": 0,
+			"activation_timing_seconds": [],
+			"class_id": "chemist",
+			"duration_seconds": 60.0,
+			"formula": {
+				"canonical_weapon_id": "acid_flask",
+				"class_id": "chemist",
+				"expected_activation_damage": 9.6326,
+				"expected_initial_activations": 0,
+				"formula_schema": "fan1515.class-ultimate-formula.v1",
+				"meta_application_count": 0,
+				"run_modifiers": {
+					"attack_speed_multiplier": 1.04,
+					"damage_multiplier": 1.1235000000000002,
+					"defense_flat": 0.02,
+					"healing_multiplier": 0.68,
+					"max_health_flat": 8.0,
+					"max_health_multiplier": 0.8,
+					"money_gain_multiplier": 0.8,
+					"xp_gain_multiplier": 0.8
+				},
+				"scenario": "no_meta",
+				"start_charge": 0.0,
+				"start_charge_ratio": 0.0,
+				"stats": {
+					"agility": 12.0,
+					"endurance": 3.0,
+					"energy": 7.0,
+					"intelligence": 9.0,
+					"knowledge": 7.0,
+					"leadership": 2.0,
+					"perception": 6.0,
+					"strength": 13.0
+				}
+			},
+			"frame_count": 3600,
+			"initial_activation_count": 0,
+			"initial_charge": 0.0,
+			"scenario": "no_meta",
+			"seed": 151501,
+			"sustain_source": {
+				"damage": 66312.1502,
+				"hits": 35989
+			},
+			"ultimate_source": {
+				"by_mechanic": {},
+				"damage": 0.0,
+				"hits": 0
+			}
+		}
+	}
+}
