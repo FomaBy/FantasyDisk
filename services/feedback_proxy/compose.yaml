@@ -1,0 +1,39 @@
+services:
+  relay:
+    build: .
+    env_file:
+      - relay.env
+    restart: unless-stopped
+    init: true
+    user: "10001:10001"
+    read_only: true
+    tmpfs:
+      - /tmp:size=16m,mode=1777
+    volumes:
+      - feedback-data:/data
+    ports:
+      - "127.0.0.1:8080:8080"
+    cpus: 1.0
+    mem_limit: 128m
+    pids_limit: 80
+    cap_drop:
+      - ALL
+    security_opt:
+      - no-new-privileges:true
+    healthcheck:
+      test:
+        - CMD
+        - python
+        - -c
+        - >-
+          import urllib.request;
+          urllib.request.urlopen('http://127.0.0.1:8080/healthz', timeout=2).read()
+      interval: 30s
+      timeout: 3s
+      retries: 3
+      start_period: 10s
+    deploy:
+      replicas: 1
+
+volumes:
+  feedback-data:

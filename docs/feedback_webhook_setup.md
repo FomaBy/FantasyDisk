@@ -40,6 +40,41 @@ multipart, запрещает mentions и никогда не логирует �
 at-most-once важнее риска продублировать приватный отчёт.
 Deployment/environment/checklist описаны в `services/feedback_proxy/README.md`.
 
+## Provider-neutral staging bundle
+
+`services/feedback_proxy/compose.yaml` описывает один relay replica без
+provider-specific ресурсов: origin опубликован только на `127.0.0.1`, root
+filesystem read-only, `/tmp` — bounded tmpfs, SQLite хранится на durable named
+volume, а CPU/memory/PID и Linux capabilities ограничены. Публичный HTTPS
+reverse proxy/WAF остаётся обязательным и не входит в Compose bundle.
+
+`services/feedback_proxy/relay.env.example` содержит полный список имён и
+пустые placeholders для server credentials, но не содержит значений. Локальная
+детерминированная проверка запускает настоящий relay и fake Discord upstream:
+
+```bash
+PYTHONDONTWRITEBYTECODE=1 python3 -m unittest \
+  tests.test_feedback_proxy tests.test_feedback_relay_smoke
+```
+
+После отдельного запуска разрешённого staging endpoint redacted smoke принимает
+только публичный `/v1/session` URL и параметры теста; server webhook, signing
+secret и log salt ему не передаются:
+
+```bash
+python3 tools/feedback_relay_smoke.py \
+  https://feedback-staging.example.org/v1/session \
+  > relay-smoke-evidence.json
+python3 tools/scan_release_secrets.py relay-smoke-evidence.json
+```
+
+JSON evidence содержит только имена проверок, HTTP status и redacted failure
+kind. Smoke проверяет health, session, text-only, image, повтор того же key,
+same-key conflict и fail-closed timeout/error. Это no-cost staging preparation,
+а не production activation: `relay_session_url` остаётся пустым до отдельного
+операционного одобрения, privacy/retention gate, production secrets, HTTPS/DNS,
+durable backup и необходимых финансовых подтверждений.
+
 ## Direct Discord — только debug
 
 Raw Discord transport вообще не читается release build. В debug build порядок:
