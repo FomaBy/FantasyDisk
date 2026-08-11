@@ -1484,7 +1484,8 @@ AoE (shrapnel, recall, bloom, chain, midpoint, branch, combo), DoT/stack/decay
 (rift, detonation, root burst, pierce echo), либо deferred/alternate target
 geometry (coin return, link, prey, instrument echo, raven). Для них нет
 один-к-одному сопоставимого hit denominator; контракт требует production-tagged
-applied HP в measurement ledger и не выдаёт их за «увеличенный исходный hit».
+final evidence и measurement HP ledger, но не выдаёт их за «увеличенный исходный
+hit».
 Новая механика с `resolver_damage_ratio > 1.0` без comparison policy или
 именованного исключения роняет generation и verification fail-closed.
 

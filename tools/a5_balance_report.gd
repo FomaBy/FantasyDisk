@@ -3750,8 +3750,12 @@ static func _verify_final_execution_amplification(row: Dictionary, expected: Dic
 		errors.append("final-execution amplification has no measured HP ledger for %s" % pair)
 		return errors
 	if policy_kind == "ledger_only_exception":
-		if str(payoff.get("kind", "")) != "typed_damage" or float(payoff.get("provenance_bound_damage", 0.0)) <= 0.0 and float(payoff.get("post_activation_damage", 0.0)) <= 0.0:
-			errors.append("final-execution %s exception has no measured damage payoff" % pair)
+		# These named effects intentionally have no like-for-like hit denominator:
+		# some resolve through a target transition or deferred target geometry rather
+		# than a direct damage event. Their contract is therefore production final
+		# evidence plus the measurement HP ledger, never a fabricated hit ratio.
+		if int(payoff.get("activation_count", 0)) <= 0 or str(row.get("final_event", "")) == "":
+			errors.append("final-execution %s exception has no production payoff evidence" % pair)
 		return errors
 	if policy_kind != "same_frame_cast_peer_floor":
 		errors.append("final-execution amplification policy is unknown for %s" % pair)
