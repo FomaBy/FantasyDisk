@@ -1,0 +1,32 @@
+{
+	"measurement": {
+		"disabled": {
+			"casts": 44,
+			"damage_sources": [
+				"player_weapon|damage_application"
+			],
+			"dpm": 102141.148,
+			"final_event_count": 0,
+			"final_event_damage": 0.0,
+			"hits": 1002,
+			"ledger_damage": 10214.114800000001,
+			"trigger_resolutions": 0,
+			"unique_target_count": 10
+		},
+		"enabled": {
+			"casts": 44,
+			"damage_sources": [
+				"player_weapon|damage_application"
+			],
+			"dpm": 130230.288,
+			"final_event_count": 156,
+			"final_event_damage": 1527.6623000000002,
+			"hits": 1158,
+			"ledger_damage": 13023.0288,
+			"trigger_resolutions": 156,
+			"unique_target_count": 10
+		},
+		"formula_expected_dpm": 7095.0
+	},
+	"pair": "assassin/venom_wire"
+}

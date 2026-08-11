@@ -1,0 +1,712 @@
+{
+	"ab_verdict": "green",
+	"contract": {
+		"formula_live_tolerance_pct": 35.0,
+		"fragment_schema": "fan1512.a5-offensive-fragment.v1",
+		"geometry_coverage": [
+			"80px",
+			"formula_expected_distance",
+			"practical_range",
+			"forward",
+			"diagonal",
+			"reverse",
+			"solo",
+			"pack"
+		],
+		"matrix_schema": "fan1512.pair-family-event.v1",
+		"pack_contract": "a5.scenario-pack.v1",
+		"pack_id": "a5_offensive_family",
+		"seeds": [
+			151201
+		]
+	},
+	"fragment_schema": "fan1512.a5-offensive-fragment.v1",
+	"issue": "FAN-1512",
+	"matrix": [
+		{
+			"ab_representative": false,
+			"attack_mode": "boomerang",
+			"class_id": "assassin",
+			"expected_event": "return",
+			"family": "beam",
+			"geometry": {},
+			"mechanic_id": "chakram_return_execute_mark",
+			"weapon_id": "chakrams"
+		},
+		{
+			"ab_representative": false,
+			"attack_mode": "stab_flurry",
+			"class_id": "assassin",
+			"expected_event": "execute",
+			"family": "direct",
+			"geometry": {},
+			"mechanic_id": "dagger_execute_shadow_window",
+			"weapon_id": "shadow_daggers"
+		},
+		{
+			"ab_representative": true,
+			"attack_mode": "dot_beam",
+			"class_id": "assassin",
+			"expected_event": "hit",
+			"family": "beam",
+			"geometry": {
+				"distance": 357.0,
+				"layout": "pack",
+				"name": "practical_range",
+				"orientation": "reverse"
+			},
+			"mechanic_id": "wire_poison_ramp_snap",
+			"weapon_id": "venom_wire"
+		},
+		{
+			"ab_representative": false,
+			"attack_mode": "sweep",
+			"class_id": "berserk",
+			"expected_event": "attack_resolved",
+			"family": "direct",
+			"geometry": {},
+			"mechanic_id": "axe_outer_followthrough",
+			"weapon_id": "axe"
+		},
+		{
+			"ab_representative": false,
+			"attack_mode": "circle",
+			"class_id": "berserk",
+			"expected_event": "attack_resolved",
+			"family": "direct",
+			"geometry": {},
+			"mechanic_id": "hammer_stagger_aftershock",
+			"weapon_id": "hammer"
+		},
+		{
+			"ab_representative": true,
+			"attack_mode": "sweep",
+			"class_id": "berserk",
+			"expected_event": "hit",
+			"family": "direct",
+			"geometry": {
+				"distance": 80.0,
+				"layout": "solo",
+				"name": "minimum_80px",
+				"orientation": "forward"
+			},
+			"mechanic_id": "sword_repeat_execute",
+			"weapon_id": "sword"
+		},
+		{
+			"ab_representative": false,
+			"attack_mode": "bio_sample_dart",
+			"class_id": "biologist",
+			"expected_event": "hit",
+			"family": "projectile",
+			"geometry": {},
+			"mechanic_id": "injector_sample_analysis_ramp",
+			"weapon_id": "biologist_sample_injector"
+		},
+		{
+			"ab_representative": false,
+			"attack_mode": "bio_spore_bloom",
+			"class_id": "biologist",
+			"expected_event": "final_ring",
+			"family": "area",
+			"geometry": {},
+			"mechanic_id": "spore_final_ring_blooms",
+			"weapon_id": "biologist_spore_lens"
+		},
+		{
+			"ab_representative": false,
+			"attack_mode": "bio_symbiote_web",
+			"class_id": "biologist",
+			"expected_event": "link",
+			"family": "area",
+			"geometry": {},
+			"mechanic_id": "symbiote_link_transfer",
+			"weapon_id": "biologist_symbiote_seed"
+		},
+		{
+			"ab_representative": false,
+			"attack_mode": "aoe_projectile",
+			"class_id": "chemist",
+			"expected_event": "pool_stack",
+			"family": "area",
+			"geometry": {},
+			"mechanic_id": "acid_stack_detonation",
+			"weapon_id": "acid_flask"
+		},
+		{
+			"ab_representative": true,
+			"attack_mode": "aoe_projectile",
+			"class_id": "chemist",
+			"expected_event": "cross_reagent",
+			"family": "area",
+			"geometry": {
+				"distance": 365.5,
+				"layout": "pack",
+				"name": "practical_range",
+				"orientation": "forward"
+			},
+			"mechanic_id": "powder_cross_reagent_combo",
+			"weapon_id": "blast_powder"
+		},
+		{
+			"ab_representative": false,
+			"attack_mode": "",
+			"class_id": "chemist",
+			"expected_event": "summon_death",
+			"family": "area",
+			"geometry": {},
+			"mechanic_id": "homunculus_intercept_death_burst",
+			"weapon_id": "homunculus_vial"
+		},
+		{
+			"ab_representative": false,
+			"attack_mode": "skull_curse_burn",
+			"class_id": "dark_mage",
+			"expected_event": "kill",
+			"family": "area",
+			"geometry": {},
+			"mechanic_id": "skull_death_curse_transfer",
+			"weapon_id": "cursed_skull"
+		},
+		{
+			"ab_representative": false,
+			"attack_mode": "dark_mirror_blast",
+			"class_id": "dark_mage",
+			"expected_event": "mirror_midpoint",
+			"family": "area",
+			"geometry": {},
+			"mechanic_id": "book_mirror_midpoint_collapse",
+			"weapon_id": "dark_book"
+		},
+		{
+			"ab_representative": true,
+			"attack_mode": "dark_chain_burst",
+			"class_id": "dark_mage",
+			"expected_event": "pierce",
+			"family": "chain",
+			"geometry": {
+				"distance": 350.0,
+				"layout": "pack",
+				"name": "formula_expected_distance",
+				"orientation": "diagonal"
+			},
+			"mechanic_id": "wand_pierce_decay_echo",
+			"weapon_id": "dark_wand"
+		},
+		{
+			"ab_representative": false,
+			"attack_mode": "saw_sector",
+			"class_id": "doctor",
+			"expected_event": "hit",
+			"family": "direct",
+			"geometry": {},
+			"mechanic_id": "saw_wound_execute_heal",
+			"weapon_id": "bone_saw"
+		},
+		{
+			"ab_representative": false,
+			"attack_mode": "plague_dart",
+			"class_id": "doctor",
+			"expected_event": "hit",
+			"family": "projectile",
+			"geometry": {},
+			"mechanic_id": "syringe_infection_threshold_spread",
+			"weapon_id": "plague_syringe"
+		},
+		{
+			"ab_representative": false,
+			"attack_mode": "aoe_projectile",
+			"class_id": "doctor",
+			"expected_event": "overheal",
+			"family": "area",
+			"geometry": {},
+			"mechanic_id": "potion_overheal_absorb_pool",
+			"weapon_id": "restore_potion"
+		},
+		{
+			"ab_representative": false,
+			"attack_mode": "aoe_projectile",
+			"class_id": "druid",
+			"expected_event": "root_matured",
+			"family": "area",
+			"geometry": {},
+			"mechanic_id": "briar_sustained_root_burst",
+			"weapon_id": "briar_staff"
+		},
+		{
+			"ab_representative": false,
+			"attack_mode": "amp",
+			"class_id": "druid",
+			"expected_event": "totem_pulse",
+			"family": "area",
+			"geometry": {},
+			"mechanic_id": "totem_every_nth_raven_strike",
+			"weapon_id": "raven_totem"
+		},
+		{
+			"ab_representative": false,
+			"attack_mode": "",
+			"class_id": "druid",
+			"expected_event": "command",
+			"family": "area",
+			"geometry": {},
+			"mechanic_id": "pack_alpha_pounce_guard",
+			"weapon_id": "summon_amulet"
+		},
+		{
+			"ab_representative": false,
+			"attack_mode": "meteor_shards",
+			"class_id": "elementalist",
+			"expected_event": "return",
+			"family": "area",
+			"geometry": {},
+			"mechanic_id": "meteor_shard_recall",
+			"weapon_id": "elementalist_meteor_core"
+		},
+		{
+			"ab_representative": false,
+			"attack_mode": "elemental_orbit",
+			"class_id": "elementalist",
+			"expected_event": "hit",
+			"family": "area",
+			"geometry": {},
+			"mechanic_id": "orb_four_element_resonance",
+			"weapon_id": "elementalist_orb_ring"
+		},
+		{
+			"ab_representative": false,
+			"attack_mode": "prism_rift",
+			"class_id": "elementalist",
+			"expected_event": "intersection",
+			"family": "beam",
+			"geometry": {},
+			"mechanic_id": "prism_intersection_rift",
+			"weapon_id": "elementalist_prism_focus"
+		},
+		{
+			"ab_representative": false,
+			"attack_mode": "engineer_pressure_mines",
+			"class_id": "engineer",
+			"expected_event": "mine_explosion",
+			"family": "area",
+			"geometry": {},
+			"mechanic_id": "mine_adjacency_chain",
+			"weapon_id": "engineer_pressure_mines"
+		},
+		{
+			"ab_representative": false,
+			"attack_mode": "engineer_orbit_drone",
+			"class_id": "engineer",
+			"expected_event": "repair",
+			"family": "area",
+			"geometry": {},
+			"mechanic_id": "drone_excess_repair_shield",
+			"weapon_id": "engineer_repair_drone"
+		},
+		{
+			"ab_representative": false,
+			"attack_mode": "engineer_sentry_link",
+			"class_id": "engineer",
+			"expected_event": "sentry_hit",
+			"family": "area",
+			"geometry": {},
+			"mechanic_id": "sentry_marked_target_overclock",
+			"weapon_id": "engineer_sentry_wrench"
+		},
+		{
+			"ab_representative": false,
+			"attack_mode": "pulse",
+			"class_id": "guitarist",
+			"expected_event": "pulse",
+			"family": "area",
+			"geometry": {},
+			"mechanic_id": "bass_every_nth_stagger",
+			"weapon_id": "bass_guitar"
+		},
+		{
+			"ab_representative": false,
+			"attack_mode": "riff_strip",
+			"class_id": "guitarist",
+			"expected_event": "hit",
+			"family": "beam",
+			"geometry": {},
+			"mechanic_id": "guitar_riff_harmony_lane",
+			"weapon_id": "electric_guitar"
+		},
+		{
+			"ab_representative": false,
+			"attack_mode": "amp",
+			"class_id": "guitarist",
+			"expected_event": "amp_pulse",
+			"family": "area",
+			"geometry": {},
+			"mechanic_id": "amp_instrument_echo",
+			"weapon_id": "sound_amp"
+		},
+		{
+			"ab_representative": false,
+			"attack_mode": "circle",
+			"class_id": "knight",
+			"expected_event": "return",
+			"family": "direct",
+			"geometry": {},
+			"mechanic_id": "flail_return_control_pulse",
+			"weapon_id": "holy_flail"
+		},
+		{
+			"ab_representative": false,
+			"attack_mode": "strip",
+			"class_id": "knight",
+			"expected_event": "block",
+			"family": "direct",
+			"geometry": {},
+			"mechanic_id": "spear_block_counter_line",
+			"weapon_id": "long_spear"
+		},
+		{
+			"ab_representative": false,
+			"attack_mode": "sweep",
+			"class_id": "knight",
+			"expected_event": "damage_absorbed",
+			"family": "direct",
+			"geometry": {},
+			"mechanic_id": "shield_stored_damage_bash",
+			"weapon_id": "tower_shield"
+		},
+		{
+			"ab_representative": false,
+			"attack_mode": "priest_ward",
+			"class_id": "priest",
+			"expected_event": "damage_absorbed",
+			"family": "area",
+			"geometry": {},
+			"mechanic_id": "censer_absorb_retaliation",
+			"weapon_id": "priest_censer"
+		},
+		{
+			"ab_representative": false,
+			"attack_mode": "priest_dual_toll",
+			"class_id": "priest",
+			"expected_event": "return",
+			"family": "area",
+			"geometry": {},
+			"mechanic_id": "chime_owner_return_shield",
+			"weapon_id": "priest_chime"
+		},
+		{
+			"ab_representative": false,
+			"attack_mode": "priest_sanctify",
+			"class_id": "priest",
+			"expected_event": "expiry",
+			"family": "area",
+			"geometry": {},
+			"mechanic_id": "reliquary_mark_expiry_burst",
+			"weapon_id": "priest_reliquary"
+		},
+		{
+			"ab_representative": false,
+			"attack_mode": "trap",
+			"class_id": "ranger",
+			"expected_event": "trap_trigger",
+			"family": "area",
+			"geometry": {},
+			"mechanic_id": "trap_prey_mark_distribution",
+			"weapon_id": "hunter_trap"
+		},
+		{
+			"ab_representative": false,
+			"attack_mode": "moon_split_shot",
+			"class_id": "ranger",
+			"expected_event": "full_charge",
+			"family": "chain",
+			"geometry": {},
+			"mechanic_id": "crossbow_full_charge_mark",
+			"weapon_id": "moon_crossbow"
+		},
+		{
+			"ab_representative": false,
+			"attack_mode": "storm_pierce_cone",
+			"class_id": "ranger",
+			"expected_event": "outer_hit",
+			"family": "beam",
+			"geometry": {},
+			"mechanic_id": "longbow_outer_storm_branch",
+			"weapon_id": "storm_longbow"
+		},
+		{
+			"ab_representative": false,
+			"attack_mode": "robot_compression_line",
+			"class_id": "robot",
+			"expected_event": "press",
+			"family": "beam",
+			"geometry": {},
+			"mechanic_id": "press_axis_second_jaw",
+			"weapon_id": "robot_hydraulic_press"
+		},
+		{
+			"ab_representative": false,
+			"attack_mode": "robot_magnetic_anchor",
+			"class_id": "robot",
+			"expected_event": "hit",
+			"family": "area",
+			"geometry": {},
+			"mechanic_id": "anchor_next_heavy_hit_setup",
+			"weapon_id": "robot_magnetic_anchor"
+		},
+		{
+			"ab_representative": false,
+			"attack_mode": "robot_reactor_vent",
+			"class_id": "robot",
+			"expected_event": "cast",
+			"family": "beam",
+			"geometry": {},
+			"mechanic_id": "reactor_vent_cycle_pulse",
+			"weapon_id": "robot_reactor_core"
+		},
+		{
+			"ab_representative": true,
+			"attack_mode": "sniper_lockshot",
+			"class_id": "sniper",
+			"expected_event": "hit",
+			"family": "projectile",
+			"geometry": {
+				"distance": 470.0,
+				"layout": "pack",
+				"name": "formula_expected_distance",
+				"orientation": "diagonal"
+			},
+			"mechanic_id": "deadeye_weakpoint_cycle",
+			"weapon_id": "sniper_deadeye_rifle"
+		},
+		{
+			"ab_representative": false,
+			"attack_mode": "sniper_split_round",
+			"class_id": "sniper",
+			"expected_event": "pierce",
+			"family": "chain",
+			"geometry": {},
+			"mechanic_id": "shatter_extra_pierce_falloff",
+			"weapon_id": "sniper_shatter_rounds"
+		},
+		{
+			"ab_representative": false,
+			"attack_mode": "sniper_kill_zone",
+			"class_id": "sniper",
+			"expected_event": "target_acquired",
+			"family": "area",
+			"geometry": {},
+			"mechanic_id": "spotter_highest_hp_priority",
+			"weapon_id": "sniper_spotter_scope"
+		},
+		{
+			"ab_representative": false,
+			"attack_mode": "bayonet_cone",
+			"class_id": "soldier",
+			"expected_event": "brace_hit",
+			"family": "direct",
+			"geometry": {},
+			"mechanic_id": "bayonet_brace_countershot",
+			"weapon_id": "soldier_bayonet"
+		},
+		{
+			"ab_representative": false,
+			"attack_mode": "grenade_fuse",
+			"class_id": "soldier",
+			"expected_event": "explosion",
+			"family": "area",
+			"geometry": {},
+			"mechanic_id": "grenade_shrapnel_second_wave",
+			"weapon_id": "soldier_grenade"
+		},
+		{
+			"ab_representative": false,
+			"attack_mode": "arquebus_shot",
+			"class_id": "soldier",
+			"expected_event": "hit",
+			"family": "direct",
+			"geometry": {},
+			"mechanic_id": "rifle_suppression_mark",
+			"weapon_id": "soldier_rifle"
+		},
+		{
+			"ab_representative": false,
+			"attack_mode": "coin_ricochet",
+			"class_id": "thief",
+			"expected_event": "return",
+			"family": "chain",
+			"geometry": {},
+			"mechanic_id": "coin_unique_target_return",
+			"weapon_id": "thief_coin_pouch"
+		},
+		{
+			"ab_representative": false,
+			"attack_mode": "shadow_backstab",
+			"class_id": "thief",
+			"expected_event": "hit",
+			"family": "direct",
+			"geometry": {},
+			"mechanic_id": "dagger_backstab_execute_mark",
+			"weapon_id": "thief_shadow_cloak"
+		},
+		{
+			"ab_representative": false,
+			"attack_mode": "smoke_bomb",
+			"class_id": "thief",
+			"expected_event": "dodge",
+			"family": "area",
+			"geometry": {},
+			"mechanic_id": "smoke_dodge_triggered_burst",
+			"weapon_id": "thief_smoke_bomb"
+		}
+	],
+	"measurements": {
+		"assassin/venom_wire": {
+			"disabled": {
+				"casts": 44.0,
+				"damage_sources": [
+					"player_weapon|damage_application"
+				],
+				"dpm": 102141.148,
+				"final_event_count": 0.0,
+				"final_event_damage": 0.0,
+				"hits": 1002.0,
+				"ledger_damage": 10214.1148,
+				"trigger_resolutions": 0.0,
+				"unique_target_count": 10.0
+			},
+			"enabled": {
+				"casts": 44.0,
+				"damage_sources": [
+					"player_weapon|damage_application"
+				],
+				"dpm": 130230.288,
+				"final_event_count": 156.0,
+				"final_event_damage": 1527.6623000000002,
+				"hits": 1158.0,
+				"ledger_damage": 13023.0288,
+				"trigger_resolutions": 156.0,
+				"unique_target_count": 10.0
+			},
+			"formula_expected_dpm": 7095.0
+		},
+		"berserk/sword": {
+			"disabled": {
+				"casts": 29.0,
+				"damage_sources": [
+					"player_weapon|damage_application"
+				],
+				"dpm": 12547.843,
+				"final_event_count": 0.0,
+				"final_event_damage": 0.0,
+				"hits": 31.0,
+				"ledger_damage": 1254.7843,
+				"trigger_resolutions": 0.0,
+				"unique_target_count": 1.0
+			},
+			"enabled": {
+				"casts": 29.0,
+				"damage_sources": [
+					"player_weapon|damage_application"
+				],
+				"dpm": 12547.843,
+				"final_event_count": 9.0,
+				"final_event_damage": 541.9923,
+				"hits": 31.0,
+				"ledger_damage": 1254.7843,
+				"trigger_resolutions": 9.0,
+				"unique_target_count": 1.0
+			},
+			"formula_expected_dpm": 9199.8
+		},
+		"chemist/blast_powder": {
+			"disabled": {
+				"casts": 44.0,
+				"damage_sources": [
+					"player_weapon|damage_application"
+				],
+				"dpm": 270603.275,
+				"final_event_count": 0.0,
+				"final_event_damage": 0.0,
+				"hits": 269.0,
+				"ledger_damage": 27060.327500000003,
+				"trigger_resolutions": 0.0,
+				"unique_target_count": 10.0
+			},
+			"enabled": {
+				"casts": 44.0,
+				"damage_sources": [
+					"player_weapon|damage_application"
+				],
+				"dpm": 357597.271,
+				"final_event_count": 0.0,
+				"final_event_damage": 0.0,
+				"hits": 392.0,
+				"ledger_damage": 35759.727100000004,
+				"trigger_resolutions": 41.0,
+				"unique_target_count": 10.0
+			},
+			"formula_expected_dpm": 21442.2
+		},
+		"dark_mage/dark_wand": {
+			"disabled": {
+				"casts": 44.0,
+				"damage_sources": [
+					"player_weapon|damage_application"
+				],
+				"dpm": 191071.967,
+				"final_event_count": 0.0,
+				"final_event_damage": 0.0,
+				"hits": 1258.0,
+				"ledger_damage": 19107.1967,
+				"trigger_resolutions": 0.0,
+				"unique_target_count": 10.0
+			},
+			"enabled": {
+				"casts": 44.0,
+				"damage_sources": [
+					"player_weapon|damage_application"
+				],
+				"dpm": 195134.843,
+				"final_event_count": 0.0,
+				"final_event_damage": 0.0,
+				"hits": 1298.0,
+				"ledger_damage": 19513.4843,
+				"trigger_resolutions": 40.0,
+				"unique_target_count": 10.0
+			},
+			"formula_expected_dpm": 4854.5999999999995
+		},
+		"sniper/sniper_deadeye_rifle": {
+			"disabled": {
+				"casts": 31.0,
+				"damage_sources": [
+					"player_weapon|damage_application"
+				],
+				"dpm": 137286.62900000002,
+				"final_event_count": 0.0,
+				"final_event_damage": 0.0,
+				"hits": 455.0,
+				"ledger_damage": 13728.6629,
+				"trigger_resolutions": 0.0,
+				"unique_target_count": 10.0
+			},
+			"enabled": {
+				"casts": 31.0,
+				"damage_sources": [
+					"player_weapon|damage_application"
+				],
+				"dpm": 146041.937,
+				"final_event_count": 0.0,
+				"final_event_damage": 0.0,
+				"hits": 455.0,
+				"ledger_damage": 14604.1937,
+				"trigger_resolutions": 29.0,
+				"unique_target_count": 10.0
+			},
+			"formula_expected_dpm": 25332.0
+		}
+	},
+	"pack_contract": "a5.scenario-pack.v1",
+	"pack_id": "a5_offensive_family",
+	"verdict": "red"
+}

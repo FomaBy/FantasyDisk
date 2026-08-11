@@ -1,0 +1,32 @@
+{
+	"measurement": {
+		"disabled": {
+			"casts": 29,
+			"damage_sources": [
+				"player_weapon|damage_application"
+			],
+			"dpm": 12547.843,
+			"final_event_count": 0,
+			"final_event_damage": 0.0,
+			"hits": 31,
+			"ledger_damage": 1254.7843,
+			"trigger_resolutions": 0,
+			"unique_target_count": 1
+		},
+		"enabled": {
+			"casts": 29,
+			"damage_sources": [
+				"player_weapon|damage_application"
+			],
+			"dpm": 12547.843,
+			"final_event_count": 9,
+			"final_event_damage": 541.9923,
+			"hits": 31,
+			"ledger_damage": 1254.7843,
+			"trigger_resolutions": 9,
+			"unique_target_count": 1
+		},
+		"formula_expected_dpm": 9199.800000000001
+	},
+	"pair": "berserk/sword"
+}
