@@ -140,7 +140,7 @@
 					"healing_multiplier": 0.68,
 					"max_health_flat": 7.0,
 					"max_health_multiplier": 0.8,
-					"money_gain_multiplier": 0.9328000000000002,
+					"money_gain_multiplier": 0.8480000000000001,
 					"xp_gain_multiplier": 0.8
 				},
 				"scenario": "class_constellation",

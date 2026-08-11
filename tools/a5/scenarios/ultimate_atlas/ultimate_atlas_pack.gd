@@ -120,16 +120,14 @@ static func scenario_state(class_id: String, scenario_id: String) -> Dictionary:
 			purchased.append(node_id)
 		if str(node.get("role", "")) == "hidden":
 			hidden_ids.append(node_id)
-	if scenario_id == "class_atlas50":
-		purchased.append_array(_atlas_ids(false))
-	elif scenario_id == NON_PLAYABLE_SCENARIO:
-		purchased.append_array(_atlas_ids(true))
-	var monster_ids := []
-	for monster_value in CodexData.monsters():
-		monster_ids.append(str((monster_value as Dictionary).get("id", "")))
 	state["hidden_reveal_facts"] = {class_id: hidden_ids}
-	state["discovered_monsters"] = monster_ids
-	state["secret_boss_defeated"] = scenario_id != "no_meta"
+	if scenario_id == "class_atlas50" or scenario_id == NON_PLAYABLE_SCENARIO:
+		purchased.append_array(_atlas_ids(scenario_id == NON_PLAYABLE_SCENARIO))
+		var monster_ids := []
+		for monster_value in CodexData.monsters():
+			monster_ids.append(str((monster_value as Dictionary).get("id", "")))
+		state["discovered_monsters"] = monster_ids
+		state["secret_boss_defeated"] = true
 	state["skill_nodes"] = purchased
 	return state
 
@@ -226,6 +224,8 @@ static func evaluate_fragment(fragment: Dictionary) -> Dictionary:
 		errors.append("scenario manifest mismatch")
 	if int((manifest.get(NON_PLAYABLE_SCENARIO, {}) as Dictionary).get("atlas_spend", -1)) != 59:
 		errors.append("Atlas 59 upper bound is not explicit")
+	if int((manifest.get("class_atlas50", {}) as Dictionary).get("atlas_spend", -1)) != 50:
+		errors.append("Atlas 50 cap is not explicit")
 	var expected_weapons := {}
 	for class_value in class_ids():
 		var class_id := str(class_value)
@@ -418,7 +418,10 @@ static func _formula_matches(raw_value, expected: Dictionary) -> bool:
 	for key in ["start_charge_ratio", "start_charge", "expected_activation_damage"]:
 		if not is_equal_approx(float(actual.get(key, NAN)), float(expected.get(key, NAN))):
 			return false
-	return actual.get("stats", {}) is Dictionary and actual.get("run_modifiers", {}) is Dictionary
+	return (
+		_equivalent(actual.get("stats", {}), expected.get("stats", {}))
+		and _equivalent(actual.get("run_modifiers", {}), expected.get("run_modifiers", {}))
+	)
 
 
 static func _equivalent(left, right) -> bool:

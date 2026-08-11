@@ -176,7 +176,7 @@
 					"healing_multiplier": 0.68,
 					"max_health_flat": 8.0,
 					"max_health_multiplier": 0.8,
-					"money_gain_multiplier": 0.8800000000000001,
+					"money_gain_multiplier": 0.8,
 					"xp_gain_multiplier": 0.8
 				},
 				"scenario": "class_constellation",
@@ -432,7 +432,7 @@
 					"healing_multiplier": 0.68,
 					"max_health_flat": 8.0,
 					"max_health_multiplier": 0.8,
-					"money_gain_multiplier": 0.8800000000000001,
+					"money_gain_multiplier": 0.8,
 					"xp_gain_multiplier": 0.8
 				},
 				"scenario": "class_constellation",
@@ -680,7 +680,7 @@
 					"healing_multiplier": 0.68,
 					"max_health_flat": 7.0,
 					"max_health_multiplier": 0.8,
-					"money_gain_multiplier": 0.8800000000000001,
+					"money_gain_multiplier": 0.8,
 					"xp_gain_multiplier": 0.8
 				},
 				"scenario": "class_constellation",
@@ -924,7 +924,7 @@
 					"healing_multiplier": 0.68,
 					"max_health_flat": 8.0,
 					"max_health_multiplier": 0.8,
-					"money_gain_multiplier": 0.8800000000000001,
+					"money_gain_multiplier": 0.8,
 					"xp_gain_multiplier": 0.8
 				},
 				"scenario": "class_constellation",
@@ -1133,7 +1133,7 @@
 					"healing_multiplier": 0.68,
 					"max_health_flat": 6.0,
 					"max_health_multiplier": 0.8,
-					"money_gain_multiplier": 0.8800000000000001,
+					"money_gain_multiplier": 0.8,
 					"xp_gain_multiplier": 0.8
 				},
 				"scenario": "class_constellation",
@@ -1361,7 +1361,7 @@
 					"healing_multiplier": 0.68,
 					"max_health_flat": 8.0,
 					"max_health_multiplier": 0.8,
-					"money_gain_multiplier": 0.8800000000000001,
+					"money_gain_multiplier": 0.8,
 					"xp_gain_multiplier": 0.8
 				},
 				"scenario": "class_constellation",
@@ -1583,7 +1583,7 @@
 					"healing_multiplier": 0.68,
 					"max_health_flat": 8.0,
 					"max_health_multiplier": 0.8,
-					"money_gain_multiplier": 0.8800000000000001,
+					"money_gain_multiplier": 0.8,
 					"xp_gain_multiplier": 0.8
 				},
 				"scenario": "class_constellation",
@@ -1806,7 +1806,7 @@
 					"healing_multiplier": 0.68,
 					"max_health_flat": 6.0,
 					"max_health_multiplier": 0.8,
-					"money_gain_multiplier": 0.8800000000000001,
+					"money_gain_multiplier": 0.8,
 					"xp_gain_multiplier": 0.8
 				},
 				"scenario": "class_constellation",
@@ -2033,7 +2033,7 @@
 					"healing_multiplier": 0.68,
 					"max_health_flat": 8.0,
 					"max_health_multiplier": 0.8,
-					"money_gain_multiplier": 0.8800000000000001,
+					"money_gain_multiplier": 0.8,
 					"summon_bonus": 1.0,
 					"xp_gain_multiplier": 0.8
 				},
@@ -2268,7 +2268,7 @@
 					"healing_multiplier": 0.68,
 					"max_health_flat": 7.0,
 					"max_health_multiplier": 0.8,
-					"money_gain_multiplier": 0.8800000000000001,
+					"money_gain_multiplier": 0.8,
 					"xp_gain_multiplier": 0.8
 				},
 				"scenario": "class_constellation",
@@ -2521,7 +2521,7 @@
 					"healing_multiplier": 0.68,
 					"max_health_flat": 8.0,
 					"max_health_multiplier": 0.8,
-					"money_gain_multiplier": 0.8800000000000001,
+					"money_gain_multiplier": 0.8,
 					"xp_gain_multiplier": 0.8
 				},
 				"scenario": "class_constellation",
@@ -2762,7 +2762,7 @@
 					"healing_multiplier": 0.68,
 					"max_health_flat": 8.0,
 					"max_health_multiplier": 0.8,
-					"money_gain_multiplier": 0.8800000000000001,
+					"money_gain_multiplier": 0.8,
 					"xp_gain_multiplier": 0.8
 				},
 				"scenario": "class_constellation",
@@ -3012,7 +3012,7 @@
 					"healing_multiplier": 0.68,
 					"max_health_flat": 8.0,
 					"max_health_multiplier": 0.8,
-					"money_gain_multiplier": 0.8800000000000001,
+					"money_gain_multiplier": 0.8,
 					"xp_gain_multiplier": 0.8
 				},
 				"scenario": "class_constellation",
@@ -3247,7 +3247,7 @@
 					"healing_multiplier": 0.68,
 					"max_health_flat": 10.0,
 					"max_health_multiplier": 0.8,
-					"money_gain_multiplier": 0.8800000000000001,
+					"money_gain_multiplier": 0.8,
 					"xp_gain_multiplier": 0.8
 				},
 				"scenario": "class_constellation",
@@ -3636,7 +3636,7 @@
 					"healing_multiplier": 0.68,
 					"max_health_flat": 8.0,
 					"max_health_multiplier": 0.8,
-					"money_gain_multiplier": 0.8800000000000001,
+					"money_gain_multiplier": 0.8,
 					"xp_gain_multiplier": 0.8
 				},
 				"scenario": "class_constellation",
@@ -3932,7 +3932,7 @@
 					"healing_multiplier": 0.68,
 					"max_health_flat": 8.0,
 					"max_health_multiplier": 0.8,
-					"money_gain_multiplier": 0.8800000000000001,
+					"money_gain_multiplier": 0.8,
 					"xp_gain_multiplier": 0.8
 				},
 				"scenario": "class_constellation",
@@ -4198,7 +4198,7 @@
 					"healing_multiplier": 0.68,
 					"max_health_flat": 7.0,
 					"max_health_multiplier": 0.8,
-					"money_gain_multiplier": 0.9328000000000002,
+					"money_gain_multiplier": 0.8480000000000001,
 					"xp_gain_multiplier": 0.8
 				},
 				"scenario": "class_constellation",
