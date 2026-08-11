@@ -141,6 +141,51 @@ global_damage_balance_smoke, runtime_smoke_test.
 
 Формулы могут быть упрощены относительно исходной таблицы, но направление влияния должно совпадать с `mechanics_extract.md`.
 
+## Defense And Dodge Anti-Immunity Contract (FAN-1895 → FAN-2284)
+
+Raw defense/dodge ratings (база + endurance/agility-скейл + class-trait и
+run-модификаторы) остаются **unbounded** — клампа на самом raw-значении нет.
+Diminishing-composition кривая `ProgressionData.effective_defense()` /
+`effective_dodge()` превращает `0.62` defense и `0.55` ordinary dodge в
+**строгие недостижимые асимптоты**: `raw / (1 + raw * curve)` с
+`curve = 1.0 / cap` монотонно растёт с raw, но математически никогда не
+достигает капа ни при каком конечном raw (в отличие от прежней hard-clamp
+формы, где кап был достижим на конечном raw). Это восстановление anti-immunity
+safety, а не новый class rebalance — сами значения `0.62`/`0.55` не менялись,
+изменился характер кривой у капа.
+
+Additive class-бонусы — Bastion (`bastion_defense_bonus`), low-HP «Покров
+мученика» (`lowhp_defense_bonus`), Assassin «Теневая завеса»
+(`assassin_veil_dodge_bonus()`) — суммируются с raw ДО diminishing-кривой, а
+не добавляются к уже эффективному значению с отдельным hard-clamp. Один и тот
+же контракт применяется к combined raw stack целиком, поэтому никакая
+комбинация класс-бонусов не может протолкнуть эффективное значение к капу.
+
+Ordinary dodge отделён от смок-исключения Вора: `SMOKE_CLOUD_DODGE_CAP` `0.90`
+— отдельный, достижимый (не asymptotic) кап, действующий ТОЛЬКО пока герой
+физически стоит в живом дым-облаке (`smoke_cloud_dodge_bonus()`), и
+складывается ПОВЕРХ уже посчитанного ordinary-dodge (после его собственной
+asymptote), а не заменяет общий контракт. Вне дыма Вор ограничен обычной
+`0.55` асимптотой как любой другой класс.
+
+Authoritative helpers: `ProgressionData.effective_defense()` /
+`effective_dodge()` и обратные `raw_defense_for_effective()` /
+`raw_dodge_for_effective()`; кривые — `SURVIVABILITY_DEFENSE_DIMINISH` /
+`SURVIVABILITY_DODGE_DIMINISH` (`progression_data_balance.gd`, оба
+`1.0 / cap`). Regression: `tests/defensive_attribute_contract_fan1895_test.gd`
+(N=0/1/5/10/high strict-asymptote sweep + aggregate `<0.98` mitigation gate,
+Bastion/low-HP/Assassin/Thief runtime composition cases), плюс
+`tests/robot_kit_test.gd`, `tests/assassin_kit_test.gd`,
+`tests/thief_kit_test.gd`, `tests/survivability_scenario_test.gd`,
+`global_survivability_balance_smoke`.
+
+Источник: FAN-1895 (contract defect) → FAN-1896 (failed candidate) → FAN-2288
+(accepted predecessor, `PASSED`) → FAN-2284 (this rework). Component QA
+FAN-2289 `PASSED` on an immutable candidate SHA, но candidate ещё не
+интегрирован в `dev` — интеграция ждёт агрегирующий FAN-2287 и финальный
+exact-SHA QA. До интеграции live-рантайм на `dev` использует предыдущую
+(hard-clamp, достижимую-на-капе) реализацию той же пары значений `0.62`/`0.55`.
+
 ## Canonical Attribute Contract (FAN-1887)
 
 FAN-1887 заменяет прежнюю модель «все атрибуты полезны каждому классу через
