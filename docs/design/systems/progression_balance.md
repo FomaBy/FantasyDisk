@@ -1464,6 +1464,30 @@ payoff. Публикация явно различает executed mechanics `51/
 resolver-provenance payoffs и ordered post-activation payoffs; это не три
 синонима одного счётчика.
 
+FAN-2373 уточняет phase semantics без изменения чисел или артефакта. Legacy-поля
+`pre_activation_*`/`unamplified_hit_mean` — это только **warmup diagnostic** до
+первой activation; они не входят в measurement-only HP ledger. Соответственно,
+`observed_damage_ratio` остаётся воспроизводимым legacy-diagnostic и никогда не
+сравнивается с `resolver_damage_ratio` и не служит доказательством усиления.
+Доказательство для resolver payoffs живёт в отдельном mechanic-aware policy,
+который разделяют generator и verifier: для `robot_reactor_core` tagged pulse
+сверяется только с обычными hit'ами того же measurement frame+cast. Его
+`pulse_damage_ratio=0.40` имеет консервативный floor `0.25`: четыре вентиля,
+геометрический falloff и canonical batching исключают ложное требование точного
+по-таргетного 0.40, но согласованное уполовинивание всех resolver-bound pulse
+hits уже не проходит. `tests/a5_balance_report_integrity_test.gd` содержит
+независимый (не вызывающий policy generator) oracle и подмену, которая заново
+собирает trace aggregates, HP ledger, DPM и digest после такого half-damage.
+
+Остальные resolver bonus формы явно имеют `ledger_only_exception`: delayed/capped
+AoE (shrapnel, recall, bloom, chain, midpoint, branch, combo), DoT/stack/decay
+(rift, detonation, root burst, pierce echo), либо deferred/alternate target
+geometry (coin return, link, prey, instrument echo, raven). Для них нет
+один-к-одному сопоставимого hit denominator; контракт требует production-tagged
+applied HP в measurement ledger и не выдаёт их за «увеличенный исходный hit».
+Новая механика с `resolver_damage_ratio > 1.0` без comparison policy или
+именованного исключения роняет generation и verification fail-closed.
+
 Диагностика без перегенерации артефактов: `--mode=final_execution_probe`
 (опционально `--pair=<class>/<weapon>`) печатает по строке на пару.
 

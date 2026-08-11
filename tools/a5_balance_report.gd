@@ -83,6 +83,36 @@ const FINAL_EXECUTION_RING_MODES := ["adjacency_chain"]
 const FINAL_EXECUTION_PAYOFF_KINDS := ["typed_damage", "target_death", "target_status_transition", "owner_state_transition"]
 const FINAL_EXECUTION_BINDING_KINDS := ["resolver_provenance", "frame_ordered"]
 const FINAL_EXECUTION_REPRESENTATIVE_BASELINE_PAIR := "berserk/sword"
+# The resolver's generic `damage_multiplier` is not itself a promise that every
+# consumer emits a larger version of the triggering hit. Most schema-6 finals
+# use it as the declared bonus ratio for a separate capped AoE, delayed echo or
+# DoT payout. Keep the one directly comparable reactor pulse policy explicit;
+# the remaining ledger-only exceptions are intentionally finite and documented.
+const FINAL_EXECUTION_AMPLIFICATION_POLICIES := {
+	"reactor_vent_cycle_pulse": {
+		"kind": "same_frame_cast_peer_floor",
+		"minimum_bonus_fraction": 0.625,
+	},
+}
+const FINAL_EXECUTION_AMPLIFICATION_EXCEPTIONS := {
+	"grenade_shrapnel_second_wave": "delayed capped shrapnel AoE",
+	"coin_unique_target_return": "return path changes the target set",
+	"prism_intersection_rift": "multi-tick rift DoT",
+	"meteor_shard_recall": "delayed capped shard recall",
+	"shatter_extra_pierce_falloff": "pierce falloff changes each target basis",
+	"spore_final_ring_blooms": "bounded secondary bloom targets",
+	"symbiote_link_transfer": "linked-target transfer has no same-hit peer",
+	"mine_adjacency_chain": "adjacent-mine chain has an independent source hit",
+	"book_mirror_midpoint_collapse": "midpoint AoE changes its target geometry",
+	"wand_pierce_decay_echo": "pierce decay changes each target basis",
+	"amp_instrument_echo": "instrument echo uses an independent pulse source",
+	"longbow_outer_storm_branch": "branch targets differ from the primary hit",
+	"trap_prey_mark_distribution": "marked-target distribution is deferred",
+	"powder_cross_reagent_combo": "cross-reagent AoE has no unreacted peer",
+	"acid_stack_detonation": "stacked pool DoT detonation",
+	"briar_sustained_root_burst": "delayed root burst DoT",
+	"totem_every_nth_raven_strike": "asynchronous summon strike",
+}
 const ORACLE_LINEAGE_PATH := "res://tests/fixtures/a5_oracle_lineage.json"
 const ORACLE_LINEAGE_SCHEMA := "fan1641.a5-oracle-lineage.v1"
 const PROJECTION_FIELDS := ["live_solo_dpm_mean", "live_crowd_dpm_mean", "solo_variance_dpm2", "crowd_variance_dpm2"]
@@ -2128,8 +2158,11 @@ func _final_execution_payoff(sample: Dictionary, witness: A5FinalExecutionWitnes
 	var provenance_hits := 0
 	var post_activation_damage := 0.0
 	var post_activation_hits := 0
-	var baseline_damage := 0.0
-	var baseline_hits := 0
+	# These legacy `pre_activation_*` fields describe the warmup trace before
+	# its first activation. They deliberately stay outside the measurement-only
+	# HP ledger and must never be used as an amplification denominator.
+	var warmup_damage := 0.0
+	var warmup_hits := 0
 	for event_value in events:
 		var event: Dictionary = event_value
 		if str(event.get("kind", "")) != "hit" or str(event.get("source", "")) != "player_weapon":
@@ -2142,9 +2175,9 @@ func _final_execution_payoff(sample: Dictionary, witness: A5FinalExecutionWitnes
 		if first_activation_frame >= 0 and int(event.get("frame", 0)) >= first_activation_frame:
 			post_activation_damage += damage
 			post_activation_hits += 1
-		elif first_activation_frame >= 0:
-			baseline_damage += damage
-			baseline_hits += 1
+		elif first_activation_frame >= 0 and str(event.get("probe_phase", "")) == "warmup":
+			warmup_damage += damage
+			warmup_hits += 1
 	var status_markers := []
 	var marker_key := "constellation_%s_owner" % mechanic_id
 	for target_value in targets:
@@ -2172,8 +2205,10 @@ func _final_execution_payoff(sample: Dictionary, witness: A5FinalExecutionWitnes
 		elif post_activation_hits > 0 and post_activation_damage > 0.0:
 			kind = "typed_damage"
 	var expected_ratio := 1.0 + FinalRuntime._damage_ratio(expected.get("params", {})) if not FinalRuntime.CONSUMER_OWNED_PAYOFF_MODES.has(str(expected.get("mode", ""))) else 0.0
+	if expected_ratio > 1.0 and final_execution_amplification_policy(expected).is_empty():
+		_errors.append("%s has no final-execution amplification policy" % mechanic_id)
 	var mean_bound := provenance_damage / maxf(float(provenance_hits), 1.0)
-	var mean_baseline := baseline_damage / maxf(float(baseline_hits), 1.0)
+	var mean_warmup := warmup_damage / maxf(float(warmup_hits), 1.0)
 	return {
 		"kind": kind,
 		"binding": "resolver_provenance" if provenance_hits > 0 else ("frame_ordered" if first_activation_frame >= 0 else "none"),
@@ -2183,16 +2218,18 @@ func _final_execution_payoff(sample: Dictionary, witness: A5FinalExecutionWitnes
 		"provenance_bound_damage": snappedf(provenance_damage, 0.0001),
 		"post_activation_hits": post_activation_hits,
 		"post_activation_damage": snappedf(post_activation_damage, 0.0001),
-		"pre_activation_hits": baseline_hits,
-		"pre_activation_damage": snappedf(baseline_damage, 0.0001),
+		"pre_activation_hits": warmup_hits,
+		"pre_activation_damage": snappedf(warmup_damage, 0.0001),
 		"target_deaths": target_deaths,
 		"target_status_markers": status_markers,
 		"owner_state_delta": owner_delta,
 		"owner_final_marker": owner_marker,
 		"applied_hp_total": snappedf(float((sample.get("hp_ledger", {}) as Dictionary).get("total_applied_damage", 0.0)), 0.0001),
 		"amplified_hit_mean": snappedf(mean_bound, 0.0001),
-		"unamplified_hit_mean": snappedf(mean_baseline, 0.0001),
-		"observed_damage_ratio": snappedf(mean_bound / maxf(mean_baseline, 0.0001), 0.0001) if provenance_hits > 0 and baseline_hits > 0 else 0.0,
+		"unamplified_hit_mean": snappedf(mean_warmup, 0.0001),
+		# Legacy warmup diagnostic only. The contract-aware oracle below compares
+		# measurement peers instead, so this never crosses the HP-ledger boundary.
+		"observed_damage_ratio": snappedf(mean_bound / maxf(mean_warmup, 0.0001), 0.0001) if provenance_hits > 0 and warmup_hits > 0 else 0.0,
 		"resolver_damage_ratio": snappedf(expected_ratio, 0.0001),
 	}
 
@@ -2463,6 +2500,18 @@ static func _expected_final_for_pair(pair: String) -> Dictionary:
 				"params": (effect_profile.get("params", {}) as Dictionary).duplicate(true),
 				"runtime_consumer": str(node.get("runtime_consumer", "")),
 			}
+	return {}
+
+
+# Shared by generation and verification. A future resolver bonus must either
+# declare a comparison model or be a named effect-shape exception; silently
+# treating a delayed/capped payoff as a larger triggering hit is forbidden.
+static func final_execution_amplification_policy(expected: Dictionary) -> Dictionary:
+	var mechanic_id := str(expected.get("mechanic_id", ""))
+	if FINAL_EXECUTION_AMPLIFICATION_POLICIES.has(mechanic_id):
+		return (FINAL_EXECUTION_AMPLIFICATION_POLICIES[mechanic_id] as Dictionary).duplicate(true)
+	if FINAL_EXECUTION_AMPLIFICATION_EXCEPTIONS.has(mechanic_id):
+		return {"kind": "ledger_only_exception", "reason": str(FINAL_EXECUTION_AMPLIFICATION_EXCEPTIONS[mechanic_id])}
 	return {}
 
 
@@ -3672,6 +3721,95 @@ static func _verify_final_execution_payoff(row: Dictionary, expected: Dictionary
 		expected_ratio = snappedf(1.0 + FinalRuntime._damage_ratio(expected.get("params", {})), 0.0001)
 	if not is_equal_approx(resolver_ratio, expected_ratio):
 		errors.append("final-execution resolver payoff ratio differs from the production mechanic for %s" % pair)
+	for error_value in _verify_final_execution_amplification(row, expected):
+		errors.append(str(error_value))
+	return errors
+
+
+# The resolver ratio is a manifest contract, not a generic hit multiplier. The
+# reactor is the one final whose tagged pulse has a same-frame, same-cast normal
+# hit peer in the measurement ledger. Its generous floor allows the intentional
+# vent geometry/falloff, while still rejecting a coherent reduction of every
+# resolver-bound pulse. Other named shapes remain ledger-only because their
+# capped AoE, delayed payload or DoT has no like-for-like hit denominator.
+static func _verify_final_execution_amplification(row: Dictionary, expected: Dictionary) -> PackedStringArray:
+	var errors := PackedStringArray()
+	var payoff: Dictionary = row.get("payoff", {})
+	var resolver_ratio := float(payoff.get("resolver_damage_ratio", 0.0))
+	if resolver_ratio <= 1.0:
+		return errors
+	var pair := str(row.get("pair", ""))
+	var policy := final_execution_amplification_policy(expected)
+	var policy_kind := str(policy.get("kind", ""))
+	if policy_kind == "":
+		errors.append("final-execution amplification policy is missing for %s" % pair)
+		return errors
+	var sample: Dictionary = row.get("telemetry", {})
+	var ledger: Dictionary = sample.get("hp_ledger", {})
+	if float(ledger.get("total_applied_damage", 0.0)) <= 0.0:
+		errors.append("final-execution amplification has no measured HP ledger for %s" % pair)
+		return errors
+	if policy_kind == "ledger_only_exception":
+		if str(payoff.get("kind", "")) != "typed_damage" or float(payoff.get("provenance_bound_damage", 0.0)) <= 0.0 and float(payoff.get("post_activation_damage", 0.0)) <= 0.0:
+			errors.append("final-execution %s exception has no measured damage payoff" % pair)
+		return errors
+	if policy_kind != "same_frame_cast_peer_floor":
+		errors.append("final-execution amplification policy is unknown for %s" % pair)
+		return errors
+	var events: Array = sample.get("events", [])
+	var event_by_id := {}
+	var bound_ids := {}
+	for event_value in events:
+		var event: Dictionary = event_value
+		event_by_id[str(event.get("event_id", ""))] = event
+	for event_value in events:
+		var event: Dictionary = event_value
+		if str(event.get("kind", "")) == "final_event" and str(event.get("mechanic_id", "")) == str(expected.get("mechanic_id", "")):
+			var related_hit_id := str(event.get("related_hit_id", ""))
+			if related_hit_id != "" and event_by_id.has(related_hit_id):
+				bound_ids[related_hit_id] = true
+	var bound_by_cast := {}
+	var peer_by_cast := {}
+	for event_value in events:
+		var event: Dictionary = event_value
+		if str(event.get("kind", "")) != "hit" or str(event.get("source", "")) != "player_weapon" or str(event.get("probe_phase", "")) != "measurement":
+			continue
+		var cast_id := str(event.get("cast_id", ""))
+		if cast_id == "":
+			continue
+		var key := "%d|%s" % [int(event.get("frame", -1)), cast_id]
+		var damage := float(event.get("damage", 0.0))
+		if bound_ids.has(str(event.get("event_id", ""))):
+			var bound: Dictionary = bound_by_cast.get(key, {"damage": 0.0, "hits": 0})
+			bound["damage"] = float(bound["damage"]) + damage
+			bound["hits"] = int(bound["hits"]) + 1
+			bound_by_cast[key] = bound
+		else:
+			var peer: Dictionary = peer_by_cast.get(key, {"damage": 0.0, "hits": 0})
+			peer["damage"] = float(peer["damage"]) + damage
+			peer["hits"] = int(peer["hits"]) + 1
+			peer_by_cast[key] = peer
+	var bound_damage := 0.0
+	var bound_hits := 0
+	var peer_damage := 0.0
+	var peer_hits := 0
+	for key_value in bound_by_cast:
+		var key := str(key_value)
+		if not peer_by_cast.has(key):
+			continue
+		var bound: Dictionary = bound_by_cast[key]
+		var peer: Dictionary = peer_by_cast[key]
+		bound_damage += float(bound["damage"])
+		bound_hits += int(bound["hits"])
+		peer_damage += float(peer["damage"])
+		peer_hits += int(peer["hits"])
+	if bound_hits <= 0 or peer_hits <= 0:
+		errors.append("final-execution amplification has no comparable measurement peers for %s" % pair)
+		return errors
+	var measured_ratio := (bound_damage / float(bound_hits)) / maxf(peer_damage / float(peer_hits), 0.0001)
+	var minimum_ratio := maxf(resolver_ratio - 1.0, 0.0) * float(policy.get("minimum_bonus_fraction", 1.0))
+	if measured_ratio + 0.0001 < minimum_ratio:
+		errors.append("final-execution measured resolver payoff is below its mechanic-aware floor for %s" % pair)
 	return errors
 
 
@@ -3785,8 +3923,10 @@ static func _verify_final_execution_payoff_aggregates(row: Dictionary, sample: D
 	var provenance_hits := 0
 	var post_damage := 0.0
 	var post_hits := 0
-	var pre_damage := 0.0
-	var pre_hits := 0
+	# Kept under the legacy wire names below; this is warmup-only diagnostic
+	# evidence, not a measurement-ledger baseline.
+	var warmup_damage := 0.0
+	var warmup_hits := 0
 	for event_value in events:
 		var event: Dictionary = event_value
 		if str(event.get("kind", "")) != "hit" or str(event.get("source", "")) != "player_weapon":
@@ -3799,15 +3939,15 @@ static func _verify_final_execution_payoff_aggregates(row: Dictionary, sample: D
 		if first_activation_frame >= 0 and int(event.get("frame", 0)) >= first_activation_frame:
 			post_damage += damage
 			post_hits += 1
-		elif first_activation_frame >= 0:
-			pre_damage += damage
-			pre_hits += 1
+		elif first_activation_frame >= 0 and str(event.get("probe_phase", "")) == "warmup":
+			warmup_damage += damage
+			warmup_hits += 1
 	if int(payoff.get("provenance_bound_hits", -1)) != provenance_hits or not is_equal_approx(float(payoff.get("provenance_bound_damage", -1.0)), snappedf(provenance_damage, 0.0001)):
 		errors.append("final-execution resolver-bound payoff does not reconstruct from the trace for %s" % pair)
 	if int(payoff.get("post_activation_hits", -1)) != post_hits or not is_equal_approx(float(payoff.get("post_activation_damage", -1.0)), snappedf(post_damage, 0.0001)):
 		errors.append("final-execution post-activation payoff does not reconstruct from the trace for %s" % pair)
-	if int(payoff.get("pre_activation_hits", -1)) != pre_hits or not is_equal_approx(float(payoff.get("pre_activation_damage", -1.0)), snappedf(pre_damage, 0.0001)):
-		errors.append("final-execution pre-activation baseline does not reconstruct from the trace for %s" % pair)
+	if int(payoff.get("pre_activation_hits", -1)) != warmup_hits or not is_equal_approx(float(payoff.get("pre_activation_damage", -1.0)), snappedf(warmup_damage, 0.0001)):
+		errors.append("final-execution warmup diagnostic does not reconstruct from the trace for %s" % pair)
 	if int(payoff.get("target_deaths", -1)) != deaths:
 		errors.append("final-execution target deaths do not reconstruct from the trace for %s" % pair)
 	if int(payoff.get("first_activation_frame", -2)) != first_activation_frame:
@@ -3816,10 +3956,10 @@ static func _verify_final_execution_payoff_aggregates(row: Dictionary, sample: D
 	if str(payoff.get("binding", "")) != expected_binding:
 		errors.append("final-execution causal binding does not follow the trace for %s" % pair)
 	var expected_amplified_mean := snappedf(provenance_damage / maxf(float(provenance_hits), 1.0), 0.0001)
-	var expected_baseline_mean := snappedf(pre_damage / maxf(float(pre_hits), 1.0), 0.0001)
-	var expected_observed_ratio := snappedf(expected_amplified_mean / maxf(expected_baseline_mean, 0.0001), 0.0001) if provenance_hits > 0 and pre_hits > 0 else 0.0
-	if not is_equal_approx(float(payoff.get("amplified_hit_mean", NAN)), expected_amplified_mean) or not is_equal_approx(float(payoff.get("unamplified_hit_mean", NAN)), expected_baseline_mean) or not is_equal_approx(float(payoff.get("observed_damage_ratio", NAN)), expected_observed_ratio):
-		errors.append("final-execution payoff baseline/amplification metrics do not reconstruct from the trace for %s" % pair)
+	var expected_warmup_mean := snappedf(warmup_damage / maxf(float(warmup_hits), 1.0), 0.0001)
+	var expected_observed_ratio := snappedf(expected_amplified_mean / maxf(expected_warmup_mean, 0.0001), 0.0001) if provenance_hits > 0 and warmup_hits > 0 else 0.0
+	if not is_equal_approx(float(payoff.get("amplified_hit_mean", NAN)), expected_amplified_mean) or not is_equal_approx(float(payoff.get("unamplified_hit_mean", NAN)), expected_warmup_mean) or not is_equal_approx(float(payoff.get("observed_damage_ratio", NAN)), expected_observed_ratio):
+		errors.append("final-execution warmup/amplification diagnostics do not reconstruct from the trace for %s" % pair)
 	var expected_owner_delta := {}
 	var owner_before: Dictionary = row.get("owner_state_before", {})
 	var owner_after: Dictionary = row.get("owner_state_after", {})

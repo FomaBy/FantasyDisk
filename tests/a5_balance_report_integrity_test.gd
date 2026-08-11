@@ -21,6 +21,10 @@ const LEGACY_FINAL_EXECUTION_MUTATION_COUNT := 14
 const LEGACY_DISPOSITION_MUTATION_COUNT := 7
 const REQUIRED_DISPOSITION_MUTATION_COUNT := 8
 const SHIPPED_FINAL_EXECUTION_MUTATION_COUNT := 6
+const ROBOT_REACTOR_PAIR := "robot/robot_reactor_core"
+const ROBOT_REACTOR_MECHANIC := "reactor_vent_cycle_pulse"
+const ROBOT_REACTOR_PULSE_RATIO := 0.40
+const ROBOT_REACTOR_MINIMUM_MEASURED_RATIO := 0.25
 
 var _errors := PackedStringArray()
 
@@ -56,6 +60,7 @@ func _initialize() -> void:
 	_validate_censer_final_execution_fixture()
 	_validate_final_execution_falsification(dataset)
 	_validate_shipped_final_execution(dataset)
+	_validate_independent_reactor_amplification_oracle(dataset)
 	_finish()
 
 
@@ -181,6 +186,187 @@ func _validate_shipped_final_execution_falsification(dataset: Dictionary) -> voi
 	for mutation_value in mutations:
 		var mutation: Dictionary = mutation_value
 		_check(not Generator.verify_final_execution_row(mutation.get("row", {})).is_empty(), "final-execution verification accepts a forged shipped row: %s" % mutation.get("name", "?"))
+
+
+# This deliberately does not call Generator's amplification policy. It is a
+# small independent oracle for the reactor's production shape: tagged cycle
+# pulses and ordinary vent hits share the same cast/frame, while their geometry
+# permits a conservative 0.25 floor for the manifest's 0.40 pulse ratio.
+func _validate_independent_reactor_amplification_oracle(dataset: Dictionary) -> void:
+	var reactor := _find_final_execution_row(dataset, ROBOT_REACTOR_PAIR)
+	_check(not reactor.is_empty(), "shipped final-execution matrix lacks the reactor amplification row")
+	if reactor.is_empty():
+		return
+	_check(_reactor_amplification_oracle(reactor), "independent reactor amplification oracle rejects the shipped production trace")
+	var halved := reactor.duplicate(true)
+	_halve_reactor_bound_damage_coherently(halved)
+	_check(not _reactor_amplification_oracle(halved), "independent reactor amplification oracle accepts coherently halved resolver-bound damage")
+	var verification := Generator.verify_final_execution_row(halved)
+	_check(not verification.is_empty() and "; ".join(verification).contains("measured resolver payoff"), "generator verifier must reject coherently halved reactor resolver damage through its mechanic-aware oracle")
+
+
+func _find_final_execution_row(dataset: Dictionary, pair: String) -> Dictionary:
+	for row_value in (dataset.get("final_execution", {}) as Dictionary).get("rows", []):
+		var row: Dictionary = row_value
+		if str(row.get("pair", "")) == pair:
+			return row.duplicate(true)
+	return {}
+
+
+func _reactor_amplification_oracle(row: Dictionary) -> bool:
+	var sample: Dictionary = row.get("telemetry", {})
+	var events: Array = sample.get("events", [])
+	var event_by_id := {}
+	var bound_ids := {}
+	for event_value in events:
+		var event: Dictionary = event_value
+		event_by_id[str(event.get("event_id", ""))] = event
+	for event_value in events:
+		var event: Dictionary = event_value
+		if str(event.get("kind", "")) != "final_event" or str(event.get("mechanic_id", "")) != ROBOT_REACTOR_MECHANIC:
+			continue
+		var related_hit_id := str(event.get("related_hit_id", ""))
+		if related_hit_id != "" and event_by_id.has(related_hit_id):
+			bound_ids[related_hit_id] = true
+	var bound_by_cast := {}
+	var peer_by_cast := {}
+	for event_value in events:
+		var event: Dictionary = event_value
+		if str(event.get("kind", "")) != "hit" or str(event.get("source", "")) != "player_weapon" or str(event.get("probe_phase", "")) != "measurement":
+			continue
+		var cast_id := str(event.get("cast_id", ""))
+		if cast_id == "":
+			continue
+		var key := "%d|%s" % [int(event.get("frame", -1)), cast_id]
+		var bucket: Dictionary = bound_by_cast if bound_ids.has(str(event.get("event_id", ""))) else peer_by_cast
+		var aggregate: Dictionary = bucket.get(key, {"damage": 0.0, "hits": 0})
+		aggregate["damage"] = float(aggregate["damage"]) + float(event.get("damage", 0.0))
+		aggregate["hits"] = int(aggregate["hits"]) + 1
+		bucket[key] = aggregate
+	var bound_damage := 0.0
+	var bound_hits := 0
+	var peer_damage := 0.0
+	var peer_hits := 0
+	for key_value in bound_by_cast:
+		var key := str(key_value)
+		if not peer_by_cast.has(key):
+			continue
+		var bound: Dictionary = bound_by_cast[key]
+		var peer: Dictionary = peer_by_cast[key]
+		bound_damage += float(bound["damage"])
+		bound_hits += int(bound["hits"])
+		peer_damage += float(peer["damage"])
+		peer_hits += int(peer["hits"])
+	if bound_hits <= 0 or peer_hits <= 0:
+		return false
+	var measured_ratio := (bound_damage / float(bound_hits)) / maxf(peer_damage / float(peer_hits), 0.0001)
+	return measured_ratio + 0.0001 >= ROBOT_REACTOR_MINIMUM_MEASURED_RATIO and ROBOT_REACTOR_MINIMUM_MEASURED_RATIO == ROBOT_REACTOR_PULSE_RATIO * 0.625
+
+
+func _halve_reactor_bound_damage_coherently(row: Dictionary) -> void:
+	var sample: Dictionary = row.get("telemetry", {})
+	var events: Array = sample.get("events", [])
+	var bound_ids := _reactor_bound_hit_ids(events)
+	for index in range(events.size()):
+		var event: Dictionary = events[index]
+		if bound_ids.has(str(event.get("event_id", ""))):
+			event["damage"] = float(event.get("damage", 0.0)) * 0.5
+			events[index] = event
+	sample["events"] = events
+	var measurement_by_target := {}
+	var total_damage := 0.0
+	var final_damage := 0.0
+	var damage_buckets := {}
+	for event_value in events:
+		var event: Dictionary = event_value
+		if str(event.get("kind", "")) != "hit":
+			continue
+		var damage := float(event.get("damage", 0.0))
+		total_damage += damage
+		var bucket_key := "%s|%s" % [str(event.get("source", "")), str(event.get("phase", ""))]
+		var bucket: Dictionary = damage_buckets.get(bucket_key, {"source": str(event.get("source", "")), "phase": str(event.get("phase", "")), "damage": 0.0, "hits": 0})
+		bucket["damage"] = float(bucket["damage"]) + damage
+		bucket["hits"] = int(bucket["hits"]) + 1
+		damage_buckets[bucket_key] = bucket
+		if bound_ids.has(str(event.get("event_id", ""))):
+			final_damage += damage
+		if str(event.get("source", "")) == "player_weapon" and str(event.get("probe_phase", "")) == "measurement":
+			var target_id := str(event.get("target_id", ""))
+			measurement_by_target[target_id] = float(measurement_by_target.get(target_id, 0.0)) + damage
+	var ledger: Dictionary = sample.get("hp_ledger", {})
+	var ledger_total := 0.0
+	var rows: Array = ledger.get("rows", [])
+	for index in range(rows.size()):
+		var ledger_row: Dictionary = rows[index]
+		var applied := float(measurement_by_target.get(str(ledger_row.get("target_id", "")), 0.0))
+		ledger_row["applied_damage"] = applied
+		if ledger_row.has("health_before"):
+			ledger_row["health_after"] = float(ledger_row["health_before"]) - applied
+			ledger_row["health_loss"] = applied
+		ledger_total += applied
+		rows[index] = ledger_row
+	ledger["rows"] = rows
+	ledger["total_applied_damage"] = ledger_total
+	sample["hp_ledger"] = ledger
+	var counters: Dictionary = sample.get("counters", {})
+	counters["damage_total"] = snappedf(total_damage, 0.0001)
+	counters["final_event_damage"] = snappedf(final_damage, 0.0001)
+	var bucket_rows := damage_buckets.values()
+	bucket_rows.sort_custom(func(a, b): return "%s|%s" % [a["source"], a["phase"]] < "%s|%s" % [b["source"], b["phase"]])
+	counters["damage_by_source_phase"] = bucket_rows
+	sample["counters"] = counters
+	sample["trace_digest_sha256"] = Generator.canonical_trace_digest(events)
+	row["telemetry"] = sample
+	var payoff: Dictionary = row.get("payoff", {})
+	var bound_damage := 0.0
+	var bound_hits := 0
+	var warmup_damage := 0.0
+	var warmup_hits := 0
+	var post_damage := 0.0
+	var post_hits := 0
+	var first_activation := int(((row.get("activations", []) as Array)[0] as Dictionary).get("frame", -1))
+	for event_value in events:
+		var event: Dictionary = event_value
+		if str(event.get("kind", "")) != "hit" or str(event.get("source", "")) != "player_weapon":
+			continue
+		var damage := float(event.get("damage", 0.0))
+		if bound_ids.has(str(event.get("event_id", ""))):
+			bound_damage += damage
+			bound_hits += 1
+		elif first_activation >= 0 and int(event.get("frame", 0)) >= first_activation:
+			post_damage += damage
+			post_hits += 1
+		elif first_activation >= 0 and str(event.get("probe_phase", "")) == "warmup":
+			warmup_damage += damage
+			warmup_hits += 1
+	payoff["provenance_bound_damage"] = snappedf(bound_damage, 0.0001)
+	payoff["provenance_bound_hits"] = bound_hits
+	payoff["post_activation_damage"] = snappedf(post_damage, 0.0001)
+	payoff["post_activation_hits"] = post_hits
+	payoff["pre_activation_damage"] = snappedf(warmup_damage, 0.0001)
+	payoff["pre_activation_hits"] = warmup_hits
+	payoff["amplified_hit_mean"] = snappedf(bound_damage / maxf(float(bound_hits), 1.0), 0.0001)
+	payoff["unamplified_hit_mean"] = snappedf(warmup_damage / maxf(float(warmup_hits), 1.0), 0.0001)
+	payoff["observed_damage_ratio"] = snappedf(float(payoff["amplified_hit_mean"]) / maxf(float(payoff["unamplified_hit_mean"]), 0.0001), 0.0001) if bound_hits > 0 and warmup_hits > 0 else 0.0
+	payoff["applied_hp_total"] = snappedf(ledger_total, 0.0001)
+	row["payoff"] = payoff
+	var duration := float(ledger.get("measurement_duration_seconds", 0.0))
+	sample["dpm"] = snappedf(ledger_total * 60.0 / duration, 0.01) if duration > 0.0 else 0.0
+	row["telemetry"] = sample
+
+
+func _reactor_bound_hit_ids(events: Array) -> Dictionary:
+	var event_ids := {}
+	var bound_ids := {}
+	for event_value in events:
+		event_ids[str((event_value as Dictionary).get("event_id", ""))] = true
+	for event_value in events:
+		var event: Dictionary = event_value
+		if str(event.get("kind", "")) == "final_event" and str(event.get("mechanic_id", "")) == ROBOT_REACTOR_MECHANIC:
+			var related_hit_id := str(event.get("related_hit_id", ""))
+			if related_hit_id != "" and event_ids.has(related_hit_id):
+				bound_ids[related_hit_id] = true
+	return bound_ids
 
 
 func _final_execution_fixture() -> Dictionary:
