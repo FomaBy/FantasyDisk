@@ -58,6 +58,7 @@ REAL_DISCORD_WEBHOOK_RE = re.compile(
     r"https://(?:discord(?:app)?\.com)/api/webhooks/[0-9]{15,}/[A-Za-z0-9_-]{20,}"
 )
 BASE64_LITERAL_RE = re.compile(r'["\']([A-Za-z0-9+/]{20,}={0,2})["\']')
+INTEGRATION_CHANGED_REF = "origin/dev"
 # FAN-1700: a GDScript suite reports its own failure through ``push_error()``,
 # which Godot prints as ``ERROR: <message>`` plus an ``at: push_error (...)``
 # frame.  The bare ``ERROR:`` line is indistinguishable from benign engine
@@ -291,6 +292,20 @@ def _git_changed_paths(ref: str) -> set[str]:
     return changed
 
 
+def _resolved_commit(ref: str) -> str:
+    result = subprocess.run(
+        ["git", "rev-parse", "--verify", f"{ref}^{{commit}}"],
+        cwd=ROOT,
+        text=True,
+        stdout=subprocess.PIPE,
+        stderr=subprocess.PIPE,
+        check=False,
+    )
+    if result.returncode != 0:
+        raise RuntimeError(result.stderr.strip() or f"git rev-parse failed for {ref}")
+    return result.stdout.strip()
+
+
 def _affects_typography_inventory(path: str) -> bool:
     path_parts = Path(path).parts
     if path.startswith("scripts/"):
@@ -461,7 +476,11 @@ def _worktree_status() -> list[str]:
     return [line for line in result.stdout.splitlines() if line]
 
 
-def _is_certifying(args: argparse.Namespace, worktree_status: Sequence[str]) -> bool:
+def _is_certifying(
+    args: argparse.Namespace,
+    worktree_status: Sequence[str],
+    changed_ref_is_integration_base: bool,
+) -> bool:
     return not (
         args.filters
         or args.skip_static
@@ -469,6 +488,7 @@ def _is_certifying(args: argparse.Namespace, worktree_status: Sequence[str]) -> 
         or args.skip_umbrella
         or args.shard_count != 1
         or worktree_status
+        or not changed_ref_is_integration_base
     )
 
 
@@ -767,6 +787,8 @@ def _report_payload(
     selected_godot_tests: int,
     executed_python_tests: int,
     git_sha: str,
+    changed_ref: str,
+    changed_base_sha: str,
     static_checks: list[dict],
     godot_tests: list[dict],
     **metadata: object,
@@ -776,6 +798,8 @@ def _report_payload(
         "selected_godot_tests": selected_godot_tests,
         "executed_python_tests": executed_python_tests,
         "git_sha": git_sha,
+        "changed_ref": changed_ref,
+        "changed_base_sha": changed_base_sha,
         "static_checks": static_checks,
         "godot_tests": godot_tests,
         **metadata,
@@ -801,9 +825,10 @@ def _combine_reports(source: Path, output: Path, expected_shard_count: int | Non
     expected_sha = subprocess.check_output(
         ["git", "rev-parse", "HEAD"], cwd=ROOT, text=True
     ).strip()
+    integration_base_sha = _resolved_commit(INTEGRATION_CHANGED_REF)
     expected_scripts = [
         script_resource_path(path)
-        for path in select_godot_tests("full", [], "origin/dev", False)
+        for path in select_godot_tests("full", [], INTEGRATION_CHANGED_REF, False)
     ]
     expected_script_set = set(expected_scripts)
     static_reports = [item for item in reports if item[1].get("profile") == "static"]
@@ -904,6 +929,8 @@ def _combine_reports(source: Path, output: Path, expected_shard_count: int | Non
             item.get("executed_tests", 0) for item in static_checks
         ),
         git_sha=expected_sha,
+        changed_ref=INTEGRATION_CHANGED_REF,
+        changed_base_sha=integration_base_sha,
         platform=sys.platform,
         status="failed" if errors else "passed",
         static_checks=static_checks,
@@ -931,7 +958,9 @@ def _parse_args(argv: Sequence[str] | None) -> argparse.Namespace:
         action="store_true",
         help="CI compatibility alias for the certifying static profile",
     )
-    parser.add_argument("--changed-ref", default="origin/dev", help="diff base for changed profile")
+    parser.add_argument(
+        "--changed-ref", default=INTEGRATION_CHANGED_REF, help="diff base for changed profile"
+    )
     parser.add_argument("--skip-static", action="store_true")
     parser.add_argument("--skip-godot", action="store_true")
     parser.add_argument("--skip-umbrella", action="store_true")
@@ -1020,6 +1049,7 @@ def main(argv: Sequence[str] | None = None) -> int:
         print("quality_gate: windows profile must run natively on Windows", file=sys.stderr)
         return 2
     try:
+        changed_base_sha = _resolved_commit(args.changed_ref)
         selected = select_godot_tests(
             args.profile, args.filters, args.changed_ref, args.skip_umbrella
         )
@@ -1113,7 +1143,17 @@ def main(argv: Sequence[str] | None = None) -> int:
         print(f"quality_gate: {exc}", file=sys.stderr)
         return 2
     worktree_status = list(dict.fromkeys(initial_worktree_status + final_worktree_status))
-    certifying = _is_certifying(args, worktree_status)
+    changed_ref_is_integration_base = args.changed_ref == INTEGRATION_CHANGED_REF
+    certifying = _is_certifying(
+        args, worktree_status, changed_ref_is_integration_base
+    )
+    if not changed_ref_is_integration_base:
+        print(
+            "QUALITY NON-CERTIFYING: changed ref "
+            f"{args.changed_ref} is not the configured integration ref "
+            f"{INTEGRATION_CHANGED_REF} (resolves to {changed_base_sha})",
+            file=sys.stderr,
+        )
     if worktree_status:
         print("QUALITY NON-CERTIFYING: worktree is not clean", file=sys.stderr)
         for line in worktree_status:
@@ -1140,6 +1180,8 @@ def main(argv: Sequence[str] | None = None) -> int:
             item.get("executed_tests", 0) for item in static_results
         ),
         git_sha=subprocess.check_output(["git", "rev-parse", "HEAD"], cwd=ROOT, text=True).strip(),
+        changed_ref=args.changed_ref,
+        changed_base_sha=changed_base_sha,
         platform=sys.platform,
         status=status,
         duration_seconds=round(time.monotonic() - started, 3),

@@ -1024,9 +1024,51 @@ class QualityGateTests(unittest.TestCase):
 
     def test_dirty_worktree_cannot_be_certifying(self) -> None:
         args = self.quality._parse_args(["--profile", "changed"])
-        self.assertTrue(self.quality._is_certifying(args, []))
-        self.assertFalse(self.quality._is_certifying(args, ["M  scripts/example.gd"]))
-        self.assertFalse(self.quality._is_certifying(args, ["?? tests/new_test.gd"]))
+        self.assertTrue(self.quality._is_certifying(args, [], True))
+        self.assertFalse(self.quality._is_certifying(args, ["M  scripts/example.gd"], True))
+        self.assertFalse(self.quality._is_certifying(args, ["?? tests/new_test.gd"], True))
+
+    def test_nonintegration_changed_ref_is_partial_and_recorded(self) -> None:
+        args = self.quality._parse_args([
+            "--profile", "changed", "--changed-ref", "HEAD^",
+        ])
+        changed_base_sha = self.quality._resolved_commit(args.changed_ref)
+        self.assertFalse(
+            self.quality._is_certifying(
+                args, [], args.changed_ref == self.quality.INTEGRATION_CHANGED_REF
+            )
+        )
+
+        selected = [ROOT / "tests" / "runtime_smoke_test.gd"]
+        static_result = {"name": "mock-static", "status": "passed", "executed_tests": 1}
+        import_result = {"name": "godot-import-cache", "status": "passed"}
+        godot_result = {
+            "name": "runtime_smoke_test",
+            "script": "res://tests/runtime_smoke_test.gd",
+            "status": "passed",
+        }
+        with tempfile.TemporaryDirectory(prefix="quality-changed-ref-report-") as scratch:
+            report = Path(scratch) / "report.json"
+            with mock.patch.object(self.quality, "select_godot_tests", return_value=selected):
+                with mock.patch.object(self.quality, "_worktree_status", return_value=[]):
+                    with mock.patch.object(self.quality, "run_static_checks", return_value=[static_result]):
+                        with mock.patch.object(
+                            self.quality, "run_godot_import", return_value=import_result
+                        ):
+                            with mock.patch.object(
+                                self.quality, "run_godot_test", return_value=godot_result
+                            ):
+                                code = self.quality.main([
+                                    "--profile", "changed", "--changed-ref", "HEAD^",
+                                    "--report", str(report),
+                                ])
+            payload = json.loads(report.read_text(encoding="utf-8"))
+
+        self.assertEqual(code, 0)
+        self.assertEqual(payload["status"], "partial_pass")
+        self.assertFalse(payload["certifying"])
+        self.assertEqual(payload["changed_ref"], "HEAD^")
+        self.assertEqual(payload["changed_base_sha"], changed_base_sha)
 
     def test_reported_failure_is_red_even_when_the_process_exits_zero(self) -> None:
         # FAN-1700: `SceneTree.quit()` is deferred, so a `_fail()` that is not
