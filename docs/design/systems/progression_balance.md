@@ -1524,6 +1524,16 @@ hits уже не проходит. `tests/a5_balance_report_integrity_test.gd` �
 независимый (не вызывающий policy generator) oracle и подмену, которая заново
 собирает trace aggregates, HP ledger, DPM и digest после такого half-damage.
 
+FAN-2387 закрывает соседнюю trace-backed границу без изменения gameplay/balance:
+`target_status_transition` существует только как measurement-phase trace event с
+точным production marker, related hit и тем же target; один named marker в row
+без такого события отклоняется. `owner_state_delta` и `owner_final_marker`
+реконструируются из `owner_state_transition` trace event, а не из соседних полей
+row. Resolver-bound bucket принимает только связанный measurement hit, как и
+`applied_hp_total` в measurement HP ledger; поэтому
+`resolver_bound_payoff_share_pct` — физически согласованная доля `≤100%` для
+каждой пары, включая `chemist/homunculus_vial`.
+
 Остальные resolver bonus формы явно имеют `ledger_only_exception`: delayed/capped
 AoE (shrapnel, recall, bloom, chain, midpoint, branch, combo), DoT/stack/decay
 (rift, detonation, root burst, pierce echo), либо deferred/alternate target

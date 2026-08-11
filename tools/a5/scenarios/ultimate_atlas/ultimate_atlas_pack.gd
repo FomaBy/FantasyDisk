@@ -19,6 +19,9 @@ const FRAGMENT_PATH := FRAGMENT_DIR + "/ultimate_atlas_attribution.json"
 const PROBE_SECONDS := 60.0
 const FIXED_FPS := 60
 const PROBE_FRAMES := 3600
+const FIXED_STEP_SAMPLE_COUNT := 8
+const FIXED_STEP_TOLERANCE := 1.0e-9
+const DAMAGE_EVIDENCE_TOLERANCE := 0.01
 const SEED := 151501
 const ATLAS50_EXCLUSIONS := ["atlas_m2", "atlas_m3", "atlas_k0"]
 const PLAYABLE_SCENARIOS := ["no_meta", "class_constellation", "class_atlas50"]
@@ -117,16 +120,14 @@ static func scenario_state(class_id: String, scenario_id: String) -> Dictionary:
 			purchased.append(node_id)
 		if str(node.get("role", "")) == "hidden":
 			hidden_ids.append(node_id)
-	if scenario_id == "class_atlas50":
-		purchased.append_array(_atlas_ids(false))
-	elif scenario_id == NON_PLAYABLE_SCENARIO:
-		purchased.append_array(_atlas_ids(true))
-	var monster_ids := []
-	for monster_value in CodexData.monsters():
-		monster_ids.append(str((monster_value as Dictionary).get("id", "")))
 	state["hidden_reveal_facts"] = {class_id: hidden_ids}
-	state["discovered_monsters"] = monster_ids
-	state["secret_boss_defeated"] = scenario_id != "no_meta"
+	if scenario_id == "class_atlas50" or scenario_id == NON_PLAYABLE_SCENARIO:
+		purchased.append_array(_atlas_ids(scenario_id == NON_PLAYABLE_SCENARIO))
+		var monster_ids := []
+		for monster_value in CodexData.monsters():
+			monster_ids.append(str((monster_value as Dictionary).get("id", "")))
+		state["discovered_monsters"] = monster_ids
+		state["secret_boss_defeated"] = true
 	state["skill_nodes"] = purchased
 	return state
 
@@ -216,11 +217,15 @@ static func evaluate_fragment(fragment: Dictionary) -> Dictionary:
 		errors.append("pack contract mismatch")
 	if not _equivalent(fragment.get("contract", {}), contract()):
 		errors.append("frozen contract mismatch")
+	if not _runtime_evidence_is_trusted(fragment.get("runtime_evidence", {})):
+		errors.append("fragment was not generated at the required fixed timestep")
 	var manifest: Dictionary = fragment.get("scenario_manifest", {})
 	if not _equivalent(manifest, scenario_manifest()):
 		errors.append("scenario manifest mismatch")
 	if int((manifest.get(NON_PLAYABLE_SCENARIO, {}) as Dictionary).get("atlas_spend", -1)) != 59:
 		errors.append("Atlas 59 upper bound is not explicit")
+	if int((manifest.get("class_atlas50", {}) as Dictionary).get("atlas_spend", -1)) != 50:
+		errors.append("Atlas 50 cap is not explicit")
 	var expected_weapons := {}
 	for class_value in class_ids():
 		var class_id := str(class_value)
@@ -257,9 +262,13 @@ static func evaluate_fragment(fragment: Dictionary) -> Dictionary:
 				errors.append("%s is not a 60-second probe" % key)
 			if int(measurement.get("seed", -1)) != SEED:
 				errors.append("%s seed mismatch" % key)
+			if not _runtime_evidence_is_trusted(measurement.get("runtime_evidence", {})):
+				errors.append("%s was not measured at the required fixed timestep" % key)
 			if not is_equal_approx(float(measurement.get("initial_charge", -1.0)), float(formula.get("start_charge", -2.0))):
 				errors.append("%s runtime initial charge differs from formula" % key)
-			if int(measurement.get("initial_activation_count", -1)) != int(formula.get("expected_initial_activations", -2)):
+			var raw_initial_activations: Variant = measurement.get("initial_activation_count", -1)
+			var initial_activations := int(raw_initial_activations) if _is_nonnegative_count(raw_initial_activations) else -1
+			if initial_activations != int(formula.get("expected_initial_activations", -2)):
 				errors.append("%s start-charge attribution differs from formula" % key)
 			if not (
 				measurement.has("ultimate_source")
@@ -279,17 +288,24 @@ static func evaluate_fragment(fragment: Dictionary) -> Dictionary:
 				errors.append("%s lacks structured source attribution" % key)
 				continue
 			var ultimate := ultimate_source as Dictionary
+			var sustain := sustain_source as Dictionary
 			var source_attribution := attribution as Dictionary
+			var activation_count: Variant = measurement.get("activation_count", -1)
+			var activation_total := int(activation_count) if _is_nonnegative_count(activation_count) else -1
+			if not _activation_timing_is_valid(measurement.get("activation_timing_seconds", []), activation_count, initial_activations):
+				errors.append("%s activation timing is not complete runtime evidence" % key)
+			if not _source_evidence_is_valid(ultimate, sustain):
+				errors.append("%s source values or mechanism totals are invalid" % key)
+			if not _provenance_is_valid(source_attribution, ultimate):
+				errors.append("%s ultimate provenance is missing, duplicated or double-booked" % key)
+			if activation_total > 0 and int(ultimate.get("hits", 0)) == 0 and float(ultimate.get("damage", 0.0)) != 0.0:
+				errors.append("%s has zero ultimate hits with nonzero ultimate damage" % key)
+			if activation_total == 0 and int(ultimate.get("hits", 0)) > 0:
+				errors.append("%s has ultimate damage without an activation" % key)
 			if int(source_attribution.get("ultimate_event_count", -1)) != int(ultimate.get("hits", -2)):
 				errors.append("%s ultimate event count leaks into sustain" % key)
-			if (
-				int(source_attribution.get("missing_ultimate_event_id_count", -1)) != 0
-				or int(source_attribution.get("duplicate_ultimate_event_id_count", -1)) != 0
-				or int(source_attribution.get("invalid_source_count", -1)) != 0
-			):
-				errors.append("%s ultimate provenance is missing, duplicated or double-booked" % key)
 			var expected_zero := zero_direct_declaration(
-				class_id, scenario_id, int(measurement.get("activation_count", 0)), ultimate
+				class_id, scenario_id, activation_total, ultimate
 			)
 			if str(expected_zero.get("reason_code", "")) == "unexplained_zero_direct_damage":
 				errors.append("%s has an unexplained zero-direct-damage activation" % key)
@@ -298,6 +314,95 @@ static func evaluate_fragment(fragment: Dictionary) -> Dictionary:
 	if measurements.size() != class_ids().size() * PLAYABLE_SCENARIOS.size():
 		errors.append("runtime measurement count is not class-only and complete")
 	return {"ok": errors.is_empty(), "errors": errors}
+
+
+static func _runtime_evidence_is_trusted(raw_value) -> bool:
+	if not raw_value is Dictionary:
+		return false
+	var evidence := raw_value as Dictionary
+	var expected_delta := 1.0 / float(FIXED_FPS)
+	var delta: Variant = evidence.get("process_delta_seconds", -1.0)
+	var fps: Variant = evidence.get("process_fps", -1.0)
+	return (
+		bool(evidence.get("trusted", false))
+		and int(evidence.get("fixed_fps", -1)) == FIXED_FPS
+		and int(evidence.get("sample_count", -1)) == FIXED_STEP_SAMPLE_COUNT
+		and _is_nonnegative_number(delta)
+		and _is_nonnegative_number(fps)
+		and absf(float(delta) - expected_delta) <= FIXED_STEP_TOLERANCE
+		and absf(float(fps) - float(FIXED_FPS)) <= 0.01
+	)
+
+
+static func _activation_timing_is_valid(raw_value, raw_count, initial_activation_count: int) -> bool:
+	if not _is_nonnegative_count(raw_count) or not raw_value is Array:
+		return false
+	var timings := raw_value as Array
+	if timings.size() != int(raw_count) or initial_activation_count < 0 or initial_activation_count > int(raw_count):
+		return false
+	var previous := -1.0
+	for value in timings:
+		if not _is_nonnegative_number(value) or float(value) > PROBE_SECONDS or float(value) <= previous:
+			return false
+		previous = float(value)
+	return initial_activation_count == 0 or (not timings.is_empty() and is_zero_approx(float(timings[0])))
+
+
+static func _source_evidence_is_valid(ultimate: Dictionary, sustain: Dictionary) -> bool:
+	for source in [ultimate, sustain]:
+		if not _is_nonnegative_number(source.get("damage", null)) or not _is_nonnegative_count(source.get("hits", null)):
+			return false
+		if (int(source.get("hits", 0)) == 0) != is_zero_approx(float(source.get("damage", 0.0))):
+			return false
+	var mechanisms = ultimate.get("by_mechanic", {})
+	if not mechanisms is Dictionary:
+		return false
+	var total_damage := 0.0
+	var total_hits := 0
+	for mechanic_id_value in (mechanisms as Dictionary).keys():
+		var mechanic_id := str(mechanic_id_value)
+		var row = (mechanisms as Dictionary).get(mechanic_id_value)
+		if mechanic_id.is_empty() or not row is Dictionary:
+			return false
+		var mechanism := row as Dictionary
+		if (
+			not _is_nonnegative_number(mechanism.get("damage", null))
+			or not _is_nonnegative_count(mechanism.get("hits", null))
+			or not _is_nonnegative_count(mechanism.get("first_frame", null))
+			or int(mechanism.get("hits", 0)) <= 0
+			or float(mechanism.get("damage", 0.0)) <= 0.0
+			or int(mechanism.get("first_frame", 0)) >= PROBE_FRAMES
+		):
+			return false
+		total_damage += float(mechanism.get("damage", 0.0))
+		total_hits += int(mechanism.get("hits", 0))
+	if int(ultimate.get("hits", 0)) == 0:
+		return (mechanisms as Dictionary).is_empty()
+	return (
+		not (mechanisms as Dictionary).is_empty()
+		and total_hits == int(ultimate.get("hits", 0))
+		and absf(total_damage - float(ultimate.get("damage", 0.0))) <= DAMAGE_EVIDENCE_TOLERANCE
+	)
+
+
+static func _provenance_is_valid(attribution: Dictionary, ultimate: Dictionary) -> bool:
+	for field in ["ultimate_event_count", "missing_ultimate_event_id_count", "duplicate_ultimate_event_id_count", "invalid_source_count"]:
+		if not _is_nonnegative_count(attribution.get(field, null)):
+			return false
+	return (
+		int(attribution.get("ultimate_event_count", -1)) == int(ultimate.get("hits", -2))
+		and int(attribution.get("missing_ultimate_event_id_count", -1)) == 0
+		and int(attribution.get("duplicate_ultimate_event_id_count", -1)) == 0
+		and int(attribution.get("invalid_source_count", -1)) == 0
+	)
+
+
+static func _is_nonnegative_number(value) -> bool:
+	return (value is int or value is float) and is_finite(float(value)) and float(value) >= 0.0
+
+
+static func _is_nonnegative_count(value) -> bool:
+	return _is_nonnegative_number(value) and is_equal_approx(float(value), float(int(value)))
 
 
 static func _formula_matches(raw_value, expected: Dictionary) -> bool:
@@ -313,7 +418,10 @@ static func _formula_matches(raw_value, expected: Dictionary) -> bool:
 	for key in ["start_charge_ratio", "start_charge", "expected_activation_damage"]:
 		if not is_equal_approx(float(actual.get(key, NAN)), float(expected.get(key, NAN))):
 			return false
-	return actual.get("stats", {}) is Dictionary and actual.get("run_modifiers", {}) is Dictionary
+	return (
+		_equivalent(actual.get("stats", {}), expected.get("stats", {}))
+		and _equivalent(actual.get("run_modifiers", {}), expected.get("run_modifiers", {}))
+	)
 
 
 static func _equivalent(left, right) -> bool:

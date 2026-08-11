@@ -15,6 +15,7 @@ func _initialize() -> void:
 	_verify_contract()
 	_verify_provenance_contract()
 	_verify_single_application_formula()
+	_verify_class_constellation_excludes_atlas_only_modifiers()
 	_verify_fail_closed_oracles()
 	_verify_committed_fragment()
 	_finish()
@@ -27,8 +28,32 @@ func _verify_contract() -> void:
 	var manifest := Pack.scenario_manifest()
 	_check(not bool((manifest.get(Pack.NON_PLAYABLE_SCENARIO, {}) as Dictionary).get("playable", true)), "Atlas 59 must remain non-playable")
 	_check(int((manifest.get(Pack.NON_PLAYABLE_SCENARIO, {}) as Dictionary).get("atlas_spend", 0)) == 59, "Atlas 59 upper bound must remain explicit")
+	_check(int((manifest.get("class_atlas50", {}) as Dictionary).get("atlas_spend", -1)) == 50, "Atlas 50 cap must remain exactly the canonical legal maximum")
 	_check(Pack.class_ids().size() == 17, "runtime roster must retain all 17 class kits")
 	_check(Pack.per_weapon_sustain_rows().size() == 51, "sustain roster must retain all 51 runtime weapons")
+
+
+# FAN-2413: discovered_monsters/secret_boss_defeated must only unlock the
+# account-wide Guild Atlas hidden nodes in explicitly Atlas-enabled arcs, so
+# the class_constellation control arm cannot silently inherit Atlas boons
+# (e.g. atlas_h0 money_gain_mult, atlas_h1 start_gold_flat).
+func _verify_class_constellation_excludes_atlas_only_modifiers() -> void:
+	var atlas_hidden_keys := {}
+	for node_value in Meta.atlas_nodes():
+		var node: Dictionary = node_value
+		if str(node.get("role", "")) != "hidden":
+			continue
+		for key in (node.get("effects", {}) as Dictionary).keys():
+			atlas_hidden_keys[str(key)] = true
+	_check(atlas_hidden_keys.has("start_gold_flat") and atlas_hidden_keys.has("money_gain_mult"), "Guild Atlas hidden boons must still include the known start_gold/money-multiplier effects")
+	for class_value in Pack.class_ids():
+		var class_id := str(class_value)
+		var state := Pack.scenario_state(class_id, "class_constellation")
+		_check(not bool(state.get("secret_boss_defeated", false)), "%s class_constellation must not carry secret_boss_defeated" % class_id)
+		_check((state.get("discovered_monsters", []) as Array).is_empty(), "%s class_constellation must not carry discovered_monsters" % class_id)
+		var mods := Meta.skill_modifiers_for_class(state, class_id)
+		for key in atlas_hidden_keys.keys():
+			_check(is_zero_approx(float(mods.get(key, 0.0))), "%s class_constellation leaked Guild Atlas hidden modifier %s" % [class_id, key])
 
 
 func _verify_provenance_contract() -> void:
@@ -130,32 +155,44 @@ func _verify_fail_closed_oracles() -> void:
 	var atlas_key := "%s|class_atlas50" % str(Pack.class_ids()[0])
 	(wrong_charge["measurements"] as Dictionary)[atlas_key]["initial_activation_count"] = 0
 	_check(not bool(Pack.evaluate_fragment(wrong_charge).get("ok", true)), "wrong Atlas start-charge attribution must fail closed")
-	var leaked_attribution := fragment.duplicate(true)
-	var leaked_measurement: Dictionary = (leaked_attribution["measurements"] as Dictionary)[atlas_key]
-	leaked_measurement["activation_count"] = 1
-	leaked_measurement["ultimate_source"] = {"damage": 0.0, "hits": 0, "by_mechanic": {}}
-	leaked_measurement["sustain_source"] = {"damage": 1.0, "hits": 1}
-	leaked_measurement["attribution"] = {
-		"ultimate_event_count": 1,
-		"missing_ultimate_event_id_count": 0,
-		"duplicate_ultimate_event_id_count": 0,
-		"invalid_source_count": 0,
-	}
-	leaked_measurement.erase("zero_direct_damage")
-	_check(not bool(Pack.evaluate_fragment(leaked_attribution).get("ok", true)), "ultimate damage booked as sustain must fail closed")
-	var double_booked := fragment.duplicate(true)
-	var double_measurement: Dictionary = (double_booked["measurements"] as Dictionary)[atlas_key]
-	double_measurement["activation_count"] = 1
-	double_measurement["ultimate_source"] = {"damage": 1.0, "hits": 1, "by_mechanic": {"activation": {"damage": 1.0, "hits": 1}}}
-	double_measurement["sustain_source"] = {"damage": 1.0, "hits": 1}
-	double_measurement["attribution"] = {
-		"ultimate_event_count": 1,
-		"missing_ultimate_event_id_count": 0,
-		"duplicate_ultimate_event_id_count": 1,
-		"invalid_source_count": 0,
-	}
-	double_measurement.erase("zero_direct_damage")
-	_check(not bool(Pack.evaluate_fragment(double_booked).get("ok", true)), "double-booked ultimate damage must fail closed")
+	var zeroed := fragment.duplicate(true)
+	var zeroed_measurement: Dictionary = (zeroed["measurements"] as Dictionary)[atlas_key]
+	zeroed_measurement["ultimate_source"] = {"damage": 0.0, "hits": 1, "by_mechanic": {"fixture_activation": {"damage": 0.0, "hits": 1, "first_frame": 0}}}
+	_check(not bool(Pack.evaluate_fragment(zeroed).get("ok", true)), "zeroed ultimate damage with an activation must fail closed")
+	var moved_to_sustain := fragment.duplicate(true)
+	var moved_measurement: Dictionary = (moved_to_sustain["measurements"] as Dictionary)[atlas_key]
+	moved_measurement["ultimate_source"] = {"damage": 0.0, "hits": 0, "by_mechanic": {}}
+	moved_measurement["sustain_source"] = {"damage": 11.0, "hits": 2}
+	moved_measurement["attribution"] = {"ultimate_event_count": 0, "missing_ultimate_event_id_count": 0, "duplicate_ultimate_event_id_count": 0, "invalid_source_count": 0}
+	_check(not bool(Pack.evaluate_fragment(moved_to_sustain).get("ok", true)), "ultimate damage moved to sustain must fail closed")
+	var distorted_totals := fragment.duplicate(true)
+	var distorted_measurement: Dictionary = (distorted_totals["measurements"] as Dictionary)[atlas_key]
+	(distorted_measurement["ultimate_source"] as Dictionary)["by_mechanic"] = {"fixture_activation": {"damage": 9.0, "hits": 1, "first_frame": 0}}
+	_check(not bool(Pack.evaluate_fragment(distorted_totals).get("ok", true)), "distorted ultimate mechanism totals must fail closed")
+	var wrong_timing := fragment.duplicate(true)
+	(wrong_timing["measurements"] as Dictionary)[atlas_key]["activation_timing_seconds"] = [Pack.PROBE_SECONDS + 1.0]
+	_check(not bool(Pack.evaluate_fragment(wrong_timing).get("ok", true)), "out-of-window activation timing must fail closed")
+	var untrusted_runtime := fragment.duplicate(true)
+	(untrusted_runtime["measurements"] as Dictionary)[atlas_key]["runtime_evidence"]["process_delta_seconds"] = 1.0 / 30.0
+	_check(not bool(Pack.evaluate_fragment(untrusted_runtime).get("ok", true)), "a non-fixed runtime measurement must fail closed")
+	# FAN-2413: a recorded run_modifiers/stats value that no longer matches the
+	# scenario_manifest-derived formula (e.g. a substituted hidden-unlock state)
+	# must fail closed, not merely be type-checked.
+	var tampered_modifiers := fragment.duplicate(true)
+	var tampered_measurement: Dictionary = (tampered_modifiers["measurements"] as Dictionary)[atlas_key]
+	var tampered_formula: Dictionary = (tampered_measurement["formula"] as Dictionary).duplicate(true)
+	var tampered_run_mods: Dictionary = (tampered_formula["run_modifiers"] as Dictionary).duplicate(true)
+	tampered_run_mods["money_gain_multiplier"] = float(tampered_run_mods.get("money_gain_multiplier", 1.0)) + 1.0
+	tampered_formula["run_modifiers"] = tampered_run_mods
+	tampered_measurement["formula"] = tampered_formula
+	_check(not bool(Pack.evaluate_fragment(tampered_modifiers).get("ok", true)), "run_modifiers that disagree with the scenario_manifest-derived formula must fail closed")
+	var tampered_manifest := fragment.duplicate(true)
+	var mutated_manifest: Dictionary = (tampered_manifest["scenario_manifest"] as Dictionary).duplicate(true)
+	var mutated_atlas50: Dictionary = (mutated_manifest["class_atlas50"] as Dictionary).duplicate(true)
+	mutated_atlas50["atlas_spend"] = 55
+	mutated_manifest["class_atlas50"] = mutated_atlas50
+	tampered_manifest["scenario_manifest"] = mutated_manifest
+	_check(not bool(Pack.evaluate_fragment(tampered_manifest).get("ok", true)), "a substituted scenario manifest must fail closed")
 
 
 func _fixture_fragment() -> Dictionary:
@@ -165,16 +202,10 @@ func _fixture_fragment() -> Dictionary:
 		for scenario_value in Pack.PLAYABLE_SCENARIOS:
 			var scenario_id := str(scenario_value)
 			var formula := Pack.class_formula(class_id, scenario_id)
-			var activation_count := int(formula.get("expected_initial_activations", 0))
-			var ultimate_source := {"damage": 0.0, "hits": 0, "by_mechanic": {}}
-			var zero_direct := Pack.zero_direct_declaration(
-				class_id, scenario_id, activation_count, ultimate_source
-			)
-			# Synthetic positive rows stand in for classes outside the explicit
-			# runtime zero declarations; unexplained activated zeroes must fail.
-			if activation_count > 0 and str(zero_direct.get("reason_code", "")) == "unexplained_zero_direct_damage":
-				ultimate_source = {"damage": 1.0, "hits": 1, "by_mechanic": {"activation": {"damage": 1.0, "hits": 1}}}
-				zero_direct = {}
+			var starts_activated := int(formula.get("expected_initial_activations", 0)) == 1
+			var activation_count := 1
+			var first_frame := 0 if starts_activated else Pack.FIXED_FPS
+			var ultimate_source := {"damage": 10.0, "hits": 1, "by_mechanic": {"fixture_activation": {"damage": 10.0, "hits": 1, "first_frame": first_frame}}}
 			var measurement := {
 				"class_id": class_id,
 				"scenario": scenario_id,
@@ -184,7 +215,8 @@ func _fixture_fragment() -> Dictionary:
 				"initial_charge": formula.get("start_charge", 0.0),
 				"initial_activation_count": formula.get("expected_initial_activations", 0),
 				"activation_count": activation_count,
-				"activation_timing_seconds": [0.0] if activation_count == 1 else [],
+				"activation_timing_seconds": [0.0 if starts_activated else 1.0],
+				"runtime_evidence": _trusted_runtime_evidence(),
 				"ultimate_source": ultimate_source,
 				"sustain_source": {"damage": 1.0, "hits": 1},
 				"attribution": {
@@ -195,10 +227,12 @@ func _fixture_fragment() -> Dictionary:
 				},
 				"formula": formula,
 			}
-			if not zero_direct.is_empty():
-				measurement["zero_direct_damage"] = zero_direct
 			measurements["%s|%s" % [class_id, scenario_id]] = measurement
-	return {"fragment_schema": Pack.FRAGMENT_SCHEMA, "pack_id": Pack.PACK_ID, "pack_contract": Pack.PACK_CONTRACT, "issue": "FAN-2412", "contract": Pack.contract(), "scenario_manifest": Pack.scenario_manifest(), "per_weapon_sustain": Pack.per_weapon_sustain_rows(), "measurements": measurements}
+	return {"fragment_schema": Pack.FRAGMENT_SCHEMA, "pack_id": Pack.PACK_ID, "pack_contract": Pack.PACK_CONTRACT, "issue": "FAN-2412", "contract": Pack.contract(), "runtime_evidence": _trusted_runtime_evidence(), "scenario_manifest": Pack.scenario_manifest(), "per_weapon_sustain": Pack.per_weapon_sustain_rows(), "measurements": measurements}
+
+
+func _trusted_runtime_evidence() -> Dictionary:
+	return {"trusted": true, "fixed_fps": Pack.FIXED_FPS, "process_delta_seconds": 1.0 / float(Pack.FIXED_FPS), "process_fps": float(Pack.FIXED_FPS), "sample_count": Pack.FIXED_STEP_SAMPLE_COUNT}
 
 
 func _verify_committed_fragment() -> void:

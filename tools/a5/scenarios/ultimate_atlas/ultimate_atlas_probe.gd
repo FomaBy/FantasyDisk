@@ -55,11 +55,19 @@ var _holder: Node2D
 var _errors := PackedStringArray()
 var _class_filter := ""
 var _merge_only := false
+var _runtime_evidence := {}
 
 
 func _initialize() -> void:
 	_parse_args()
 	if not _errors.is_empty():
+		_finish()
+		return
+	Engine.max_fps = Pack.FIXED_FPS
+	await process_frame
+	_runtime_evidence = await _fixed_step_evidence()
+	if not bool(_runtime_evidence.get("trusted", false)):
+		_errors.append("ultimate/Atlas probe requires --fixed-fps %d (observed %.9fs / %.3f FPS)" % [Pack.FIXED_FPS, float(_runtime_evidence.get("process_delta_seconds", 0.0)), float(_runtime_evidence.get("process_fps", 0.0))])
 		_finish()
 		return
 	if _merge_only:
@@ -142,6 +150,7 @@ func _fragment_from_class_measurements(by_class: Dictionary) -> Dictionary:
 		"pack_contract": Pack.PACK_CONTRACT,
 		"issue": "FAN-2412",
 		"contract": Pack.contract(),
+		"runtime_evidence": _runtime_evidence.duplicate(true),
 		"scenario_manifest": Pack.scenario_manifest(),
 		"per_weapon_sustain": Pack.per_weapon_sustain_rows(),
 		"measurements": measurements,
@@ -211,6 +220,7 @@ func _measure_arm(class_id: String, scenario_id: String) -> Dictionary:
 		"initial_activation_count": initial_activations,
 		"activation_count": timings.size(),
 		"activation_timing_seconds": timings,
+		"runtime_evidence": _runtime_evidence.duplicate(true),
 		"ultimate_source": ultimate_source,
 		"sustain_source": {"damage": snappedf(collector.sustain_damage, 0.0001), "hits": collector.sustain_hits},
 		"attribution": {
@@ -227,6 +237,26 @@ func _measure_arm(class_id: String, scenario_id: String) -> Dictionary:
 	if not zero_direct.is_empty():
 		measurement["zero_direct_damage"] = zero_direct
 	return measurement
+
+
+func _fixed_step_evidence() -> Dictionary:
+	var expected_delta := 1.0 / float(Pack.FIXED_FPS)
+	var observed_delta := 0.0
+	var trusted := true
+	for sample_index in range(Pack.FIXED_STEP_SAMPLE_COUNT):
+		await process_frame
+		var delta := root.get_process_delta_time()
+		if sample_index == 0:
+			observed_delta = delta
+		if delta <= 0.0 or absf(delta - expected_delta) > Pack.FIXED_STEP_TOLERANCE:
+			trusted = false
+	return {
+		"trusted": trusted,
+		"fixed_fps": Pack.FIXED_FPS,
+		"process_delta_seconds": observed_delta,
+		"process_fps": 0.0 if observed_delta <= 0.0 else 1.0 / observed_delta,
+		"sample_count": Pack.FIXED_STEP_SAMPLE_COUNT,
+	}
 
 
 func _spawn_dummies(collector: RuntimeCollector) -> Array:

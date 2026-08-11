@@ -93,6 +93,13 @@
 			"frame_count": 3600.0,
 			"initial_activation_count": 1.0,
 			"initial_charge": 100.0,
+			"runtime_evidence": {
+				"fixed_fps": 60.0,
+				"process_delta_seconds": 0.01666666666666666,
+				"process_fps": 60.0,
+				"sample_count": 8.0,
+				"trusted": true
+			},
 			"scenario": "class_atlas50",
 			"seed": 151501.0,
 			"sustain_source": {
@@ -169,7 +176,7 @@
 					"healing_multiplier": 0.68,
 					"max_health_flat": 8.0,
 					"max_health_multiplier": 0.8,
-					"money_gain_multiplier": 0.8800000000000001,
+					"money_gain_multiplier": 0.8,
 					"xp_gain_multiplier": 0.8
 				},
 				"scenario": "class_constellation",
@@ -189,6 +196,13 @@
 			"frame_count": 3600.0,
 			"initial_activation_count": 0.0,
 			"initial_charge": 0.0,
+			"runtime_evidence": {
+				"fixed_fps": 60.0,
+				"process_delta_seconds": 0.01666666666666666,
+				"process_fps": 60.0,
+				"sample_count": 8.0,
+				"trusted": true
+			},
 			"scenario": "class_constellation",
 			"seed": 151501.0,
 			"sustain_source": {
@@ -282,6 +296,13 @@
 			"frame_count": 3600.0,
 			"initial_activation_count": 0.0,
 			"initial_charge": 0.0,
+			"runtime_evidence": {
+				"fixed_fps": 60.0,
+				"process_delta_seconds": 0.01666666666666666,
+				"process_fps": 60.0,
+				"sample_count": 8.0,
+				"trusted": true
+			},
 			"scenario": "no_meta",
 			"seed": 151501.0,
 			"sustain_source": {
@@ -354,6 +375,13 @@
 			"frame_count": 3600.0,
 			"initial_activation_count": 1.0,
 			"initial_charge": 100.0,
+			"runtime_evidence": {
+				"fixed_fps": 60.0,
+				"process_delta_seconds": 0.01666666666666666,
+				"process_fps": 60.0,
+				"sample_count": 8.0,
+				"trusted": true
+			},
 			"scenario": "class_atlas50",
 			"seed": 151501.0,
 			"sustain_source": {
@@ -404,7 +432,7 @@
 					"healing_multiplier": 0.68,
 					"max_health_flat": 8.0,
 					"max_health_multiplier": 0.8,
-					"money_gain_multiplier": 0.8800000000000001,
+					"money_gain_multiplier": 0.8,
 					"xp_gain_multiplier": 0.8
 				},
 				"scenario": "class_constellation",
@@ -424,6 +452,13 @@
 			"frame_count": 3600.0,
 			"initial_activation_count": 0.0,
 			"initial_charge": 0.0,
+			"runtime_evidence": {
+				"fixed_fps": 60.0,
+				"process_delta_seconds": 0.01666666666666666,
+				"process_fps": 60.0,
+				"sample_count": 8.0,
+				"trusted": true
+			},
 			"scenario": "class_constellation",
 			"seed": 151501.0,
 			"sustain_source": {
@@ -494,6 +529,13 @@
 			"frame_count": 3600.0,
 			"initial_activation_count": 0.0,
 			"initial_charge": 0.0,
+			"runtime_evidence": {
+				"fixed_fps": 60.0,
+				"process_delta_seconds": 0.01666666666666666,
+				"process_fps": 60.0,
+				"sample_count": 8.0,
+				"trusted": true
+			},
 			"scenario": "no_meta",
 			"seed": 151501.0,
 			"sustain_source": {
@@ -571,6 +613,13 @@
 			"frame_count": 3600.0,
 			"initial_activation_count": 1.0,
 			"initial_charge": 100.0,
+			"runtime_evidence": {
+				"fixed_fps": 60.0,
+				"process_delta_seconds": 0.01666666666666666,
+				"process_fps": 60.0,
+				"sample_count": 8.0,
+				"trusted": true
+			},
 			"scenario": "class_atlas50",
 			"seed": 151501.0,
 			"sustain_source": {
@@ -631,7 +680,7 @@
 					"healing_multiplier": 0.68,
 					"max_health_flat": 7.0,
 					"max_health_multiplier": 0.8,
-					"money_gain_multiplier": 0.8800000000000001,
+					"money_gain_multiplier": 0.8,
 					"xp_gain_multiplier": 0.8
 				},
 				"scenario": "class_constellation",
@@ -651,6 +700,13 @@
 			"frame_count": 3600.0,
 			"initial_activation_count": 0.0,
 			"initial_charge": 0.0,
+			"runtime_evidence": {
+				"fixed_fps": 60.0,
+				"process_delta_seconds": 0.01666666666666666,
+				"process_fps": 60.0,
+				"sample_count": 8.0,
+				"trusted": true
+			},
 			"scenario": "class_constellation",
 			"seed": 151501.0,
 			"sustain_source": {
@@ -730,6 +786,13 @@
 			"frame_count": 3600.0,
 			"initial_activation_count": 0.0,
 			"initial_charge": 0.0,
+			"runtime_evidence": {
+				"fixed_fps": 60.0,
+				"process_delta_seconds": 0.01666666666666666,
+				"process_fps": 60.0,
+				"sample_count": 8.0,
+				"trusted": true
+			},
 			"scenario": "no_meta",
 			"seed": 151501.0,
 			"sustain_source": {
@@ -807,6 +870,13 @@
 			"frame_count": 3600.0,
 			"initial_activation_count": 1.0,
 			"initial_charge": 100.0,
+			"runtime_evidence": {
+				"fixed_fps": 60.0,
+				"process_delta_seconds": 0.01666666666666666,
+				"process_fps": 60.0,
+				"sample_count": 8.0,
+				"trusted": true
+			},
 			"scenario": "class_atlas50",
 			"seed": 151501.0,
 			"sustain_source": {
@@ -854,7 +924,7 @@
 					"healing_multiplier": 0.68,
 					"max_health_flat": 8.0,
 					"max_health_multiplier": 0.8,
-					"money_gain_multiplier": 0.8800000000000001,
+					"money_gain_multiplier": 0.8,
 					"xp_gain_multiplier": 0.8
 				},
 				"scenario": "class_constellation",
@@ -874,6 +944,13 @@
 			"frame_count": 3600.0,
 			"initial_activation_count": 0.0,
 			"initial_charge": 0.0,
+			"runtime_evidence": {
+				"fixed_fps": 60.0,
+				"process_delta_seconds": 0.01666666666666666,
+				"process_fps": 60.0,
+				"sample_count": 8.0,
+				"trusted": true
+			},
 			"scenario": "class_constellation",
 			"seed": 151501.0,
 			"sustain_source": {
@@ -931,6 +1008,13 @@
 			"frame_count": 3600.0,
 			"initial_activation_count": 0.0,
 			"initial_charge": 0.0,
+			"runtime_evidence": {
+				"fixed_fps": 60.0,
+				"process_delta_seconds": 0.01666666666666666,
+				"process_fps": 60.0,
+				"sample_count": 8.0,
+				"trusted": true
+			},
 			"scenario": "no_meta",
 			"seed": 151501.0,
 			"sustain_source": {
@@ -992,6 +1076,13 @@
 			"frame_count": 3600.0,
 			"initial_activation_count": 1.0,
 			"initial_charge": 100.0,
+			"runtime_evidence": {
+				"fixed_fps": 60.0,
+				"process_delta_seconds": 0.01666666666666666,
+				"process_fps": 60.0,
+				"sample_count": 8.0,
+				"trusted": true
+			},
 			"scenario": "class_atlas50",
 			"seed": 151501.0,
 			"sustain_source": {
@@ -1042,7 +1133,7 @@
 					"healing_multiplier": 0.68,
 					"max_health_flat": 6.0,
 					"max_health_multiplier": 0.8,
-					"money_gain_multiplier": 0.8800000000000001,
+					"money_gain_multiplier": 0.8,
 					"xp_gain_multiplier": 0.8
 				},
 				"scenario": "class_constellation",
@@ -1062,6 +1153,13 @@
 			"frame_count": 3600.0,
 			"initial_activation_count": 0.0,
 			"initial_charge": 0.0,
+			"runtime_evidence": {
+				"fixed_fps": 60.0,
+				"process_delta_seconds": 0.01666666666666666,
+				"process_fps": 60.0,
+				"sample_count": 8.0,
+				"trusted": true
+			},
 			"scenario": "class_constellation",
 			"seed": 151501.0,
 			"sustain_source": {
@@ -1132,6 +1230,13 @@
 			"frame_count": 3600.0,
 			"initial_activation_count": 0.0,
 			"initial_charge": 0.0,
+			"runtime_evidence": {
+				"fixed_fps": 60.0,
+				"process_delta_seconds": 0.01666666666666666,
+				"process_fps": 60.0,
+				"sample_count": 8.0,
+				"trusted": true
+			},
 			"scenario": "no_meta",
 			"seed": 151501.0,
 			"sustain_source": {
@@ -1204,6 +1309,13 @@
 			"frame_count": 3600.0,
 			"initial_activation_count": 1.0,
 			"initial_charge": 100.0,
+			"runtime_evidence": {
+				"fixed_fps": 60.0,
+				"process_delta_seconds": 0.01666666666666666,
+				"process_fps": 60.0,
+				"sample_count": 8.0,
+				"trusted": true
+			},
 			"scenario": "class_atlas50",
 			"seed": 151501.0,
 			"sustain_source": {
@@ -1249,7 +1361,7 @@
 					"healing_multiplier": 0.68,
 					"max_health_flat": 8.0,
 					"max_health_multiplier": 0.8,
-					"money_gain_multiplier": 0.8800000000000001,
+					"money_gain_multiplier": 0.8,
 					"xp_gain_multiplier": 0.8
 				},
 				"scenario": "class_constellation",
@@ -1269,6 +1381,13 @@
 			"frame_count": 3600.0,
 			"initial_activation_count": 0.0,
 			"initial_charge": 0.0,
+			"runtime_evidence": {
+				"fixed_fps": 60.0,
+				"process_delta_seconds": 0.01666666666666666,
+				"process_fps": 60.0,
+				"sample_count": 8.0,
+				"trusted": true
+			},
 			"scenario": "class_constellation",
 			"seed": 151501.0,
 			"sustain_source": {
@@ -1334,6 +1453,13 @@
 			"frame_count": 3600.0,
 			"initial_activation_count": 0.0,
 			"initial_charge": 0.0,
+			"runtime_evidence": {
+				"fixed_fps": 60.0,
+				"process_delta_seconds": 0.01666666666666666,
+				"process_fps": 60.0,
+				"sample_count": 8.0,
+				"trusted": true
+			},
 			"scenario": "no_meta",
 			"seed": 151501.0,
 			"sustain_source": {
@@ -1403,6 +1529,13 @@
 			"frame_count": 3600.0,
 			"initial_activation_count": 1.0,
 			"initial_charge": 100.0,
+			"runtime_evidence": {
+				"fixed_fps": 60.0,
+				"process_delta_seconds": 0.01666666666666666,
+				"process_fps": 60.0,
+				"sample_count": 8.0,
+				"trusted": true
+			},
 			"scenario": "class_atlas50",
 			"seed": 151501.0,
 			"sustain_source": {
@@ -1450,7 +1583,7 @@
 					"healing_multiplier": 0.68,
 					"max_health_flat": 8.0,
 					"max_health_multiplier": 0.8,
-					"money_gain_multiplier": 0.8800000000000001,
+					"money_gain_multiplier": 0.8,
 					"xp_gain_multiplier": 0.8
 				},
 				"scenario": "class_constellation",
@@ -1470,6 +1603,13 @@
 			"frame_count": 3600.0,
 			"initial_activation_count": 0.0,
 			"initial_charge": 0.0,
+			"runtime_evidence": {
+				"fixed_fps": 60.0,
+				"process_delta_seconds": 0.01666666666666666,
+				"process_fps": 60.0,
+				"sample_count": 8.0,
+				"trusted": true
+			},
 			"scenario": "class_constellation",
 			"seed": 151501.0,
 			"sustain_source": {
@@ -1536,6 +1676,13 @@
 			"frame_count": 3600.0,
 			"initial_activation_count": 0.0,
 			"initial_charge": 0.0,
+			"runtime_evidence": {
+				"fixed_fps": 60.0,
+				"process_delta_seconds": 0.01666666666666666,
+				"process_fps": 60.0,
+				"sample_count": 8.0,
+				"trusted": true
+			},
 			"scenario": "no_meta",
 			"seed": 151501.0,
 			"sustain_source": {
@@ -1603,6 +1750,13 @@
 			"frame_count": 3600.0,
 			"initial_activation_count": 1.0,
 			"initial_charge": 100.0,
+			"runtime_evidence": {
+				"fixed_fps": 60.0,
+				"process_delta_seconds": 0.01666666666666666,
+				"process_fps": 60.0,
+				"sample_count": 8.0,
+				"trusted": true
+			},
 			"scenario": "class_atlas50",
 			"seed": 151501.0,
 			"sustain_source": {
@@ -1652,7 +1806,7 @@
 					"healing_multiplier": 0.68,
 					"max_health_flat": 6.0,
 					"max_health_multiplier": 0.8,
-					"money_gain_multiplier": 0.8800000000000001,
+					"money_gain_multiplier": 0.8,
 					"xp_gain_multiplier": 0.8
 				},
 				"scenario": "class_constellation",
@@ -1672,6 +1826,13 @@
 			"frame_count": 3600.0,
 			"initial_activation_count": 0.0,
 			"initial_charge": 0.0,
+			"runtime_evidence": {
+				"fixed_fps": 60.0,
+				"process_delta_seconds": 0.01666666666666666,
+				"process_fps": 60.0,
+				"sample_count": 8.0,
+				"trusted": true
+			},
 			"scenario": "class_constellation",
 			"seed": 151501.0,
 			"sustain_source": {
@@ -1741,6 +1902,13 @@
 			"frame_count": 3600.0,
 			"initial_activation_count": 0.0,
 			"initial_charge": 0.0,
+			"runtime_evidence": {
+				"fixed_fps": 60.0,
+				"process_delta_seconds": 0.01666666666666666,
+				"process_fps": 60.0,
+				"sample_count": 8.0,
+				"trusted": true
+			},
 			"scenario": "no_meta",
 			"seed": 151501.0,
 			"sustain_source": {
@@ -1813,6 +1981,13 @@
 			"frame_count": 3600.0,
 			"initial_activation_count": 1.0,
 			"initial_charge": 100.0,
+			"runtime_evidence": {
+				"fixed_fps": 60.0,
+				"process_delta_seconds": 0.01666666666666666,
+				"process_fps": 60.0,
+				"sample_count": 8.0,
+				"trusted": true
+			},
 			"scenario": "class_atlas50",
 			"seed": 151501.0,
 			"sustain_source": {
@@ -1858,7 +2033,7 @@
 					"healing_multiplier": 0.68,
 					"max_health_flat": 8.0,
 					"max_health_multiplier": 0.8,
-					"money_gain_multiplier": 0.8800000000000001,
+					"money_gain_multiplier": 0.8,
 					"summon_bonus": 1.0,
 					"xp_gain_multiplier": 0.8
 				},
@@ -1879,6 +2054,13 @@
 			"frame_count": 3600.0,
 			"initial_activation_count": 0.0,
 			"initial_charge": 0.0,
+			"runtime_evidence": {
+				"fixed_fps": 60.0,
+				"process_delta_seconds": 0.01666666666666666,
+				"process_fps": 60.0,
+				"sample_count": 8.0,
+				"trusted": true
+			},
 			"scenario": "class_constellation",
 			"seed": 151501.0,
 			"sustain_source": {
@@ -1945,6 +2127,13 @@
 			"frame_count": 3600.0,
 			"initial_activation_count": 0.0,
 			"initial_charge": 0.0,
+			"runtime_evidence": {
+				"fixed_fps": 60.0,
+				"process_delta_seconds": 0.01666666666666666,
+				"process_fps": 60.0,
+				"sample_count": 8.0,
+				"trusted": true
+			},
 			"scenario": "no_meta",
 			"seed": 151501.0,
 			"sustain_source": {
@@ -2012,6 +2201,13 @@
 			"frame_count": 3600.0,
 			"initial_activation_count": 1.0,
 			"initial_charge": 100.0,
+			"runtime_evidence": {
+				"fixed_fps": 60.0,
+				"process_delta_seconds": 0.01666666666666666,
+				"process_fps": 60.0,
+				"sample_count": 8.0,
+				"trusted": true
+			},
 			"scenario": "class_atlas50",
 			"seed": 151501.0,
 			"sustain_source": {
@@ -2072,7 +2268,7 @@
 					"healing_multiplier": 0.68,
 					"max_health_flat": 7.0,
 					"max_health_multiplier": 0.8,
-					"money_gain_multiplier": 0.8800000000000001,
+					"money_gain_multiplier": 0.8,
 					"xp_gain_multiplier": 0.8
 				},
 				"scenario": "class_constellation",
@@ -2092,6 +2288,13 @@
 			"frame_count": 3600.0,
 			"initial_activation_count": 0.0,
 			"initial_charge": 0.0,
+			"runtime_evidence": {
+				"fixed_fps": 60.0,
+				"process_delta_seconds": 0.01666666666666666,
+				"process_fps": 60.0,
+				"sample_count": 8.0,
+				"trusted": true
+			},
 			"scenario": "class_constellation",
 			"seed": 151501.0,
 			"sustain_source": {
@@ -2172,6 +2375,13 @@
 			"frame_count": 3600.0,
 			"initial_activation_count": 0.0,
 			"initial_charge": 0.0,
+			"runtime_evidence": {
+				"fixed_fps": 60.0,
+				"process_delta_seconds": 0.01666666666666666,
+				"process_fps": 60.0,
+				"sample_count": 8.0,
+				"trusted": true
+			},
 			"scenario": "no_meta",
 			"seed": 151501.0,
 			"sustain_source": {
@@ -2254,6 +2464,13 @@
 			"frame_count": 3600.0,
 			"initial_activation_count": 1.0,
 			"initial_charge": 100.0,
+			"runtime_evidence": {
+				"fixed_fps": 60.0,
+				"process_delta_seconds": 0.01666666666666666,
+				"process_fps": 60.0,
+				"sample_count": 8.0,
+				"trusted": true
+			},
 			"scenario": "class_atlas50",
 			"seed": 151501.0,
 			"sustain_source": {
@@ -2304,7 +2521,7 @@
 					"healing_multiplier": 0.68,
 					"max_health_flat": 8.0,
 					"max_health_multiplier": 0.8,
-					"money_gain_multiplier": 0.8800000000000001,
+					"money_gain_multiplier": 0.8,
 					"xp_gain_multiplier": 0.8
 				},
 				"scenario": "class_constellation",
@@ -2324,6 +2541,13 @@
 			"frame_count": 3600.0,
 			"initial_activation_count": 0.0,
 			"initial_charge": 0.0,
+			"runtime_evidence": {
+				"fixed_fps": 60.0,
+				"process_delta_seconds": 0.01666666666666666,
+				"process_fps": 60.0,
+				"sample_count": 8.0,
+				"trusted": true
+			},
 			"scenario": "class_constellation",
 			"seed": 151501.0,
 			"sustain_source": {
@@ -2394,6 +2618,13 @@
 			"frame_count": 3600.0,
 			"initial_activation_count": 0.0,
 			"initial_charge": 0.0,
+			"runtime_evidence": {
+				"fixed_fps": 60.0,
+				"process_delta_seconds": 0.01666666666666666,
+				"process_fps": 60.0,
+				"sample_count": 8.0,
+				"trusted": true
+			},
 			"scenario": "no_meta",
 			"seed": 151501.0,
 			"sustain_source": {
@@ -2471,6 +2702,13 @@
 			"frame_count": 3600.0,
 			"initial_activation_count": 1.0,
 			"initial_charge": 100.0,
+			"runtime_evidence": {
+				"fixed_fps": 60.0,
+				"process_delta_seconds": 0.01666666666666666,
+				"process_fps": 60.0,
+				"sample_count": 8.0,
+				"trusted": true
+			},
 			"scenario": "class_atlas50",
 			"seed": 151501.0,
 			"sustain_source": {
@@ -2524,7 +2762,7 @@
 					"healing_multiplier": 0.68,
 					"max_health_flat": 8.0,
 					"max_health_multiplier": 0.8,
-					"money_gain_multiplier": 0.8800000000000001,
+					"money_gain_multiplier": 0.8,
 					"xp_gain_multiplier": 0.8
 				},
 				"scenario": "class_constellation",
@@ -2544,6 +2782,13 @@
 			"frame_count": 3600.0,
 			"initial_activation_count": 0.0,
 			"initial_charge": 0.0,
+			"runtime_evidence": {
+				"fixed_fps": 60.0,
+				"process_delta_seconds": 0.01666666666666666,
+				"process_fps": 60.0,
+				"sample_count": 8.0,
+				"trusted": true
+			},
 			"scenario": "class_constellation",
 			"seed": 151501.0,
 			"sustain_source": {
@@ -2617,6 +2862,13 @@
 			"frame_count": 3600.0,
 			"initial_activation_count": 0.0,
 			"initial_charge": 0.0,
+			"runtime_evidence": {
+				"fixed_fps": 60.0,
+				"process_delta_seconds": 0.01666666666666666,
+				"process_fps": 60.0,
+				"sample_count": 8.0,
+				"trusted": true
+			},
 			"scenario": "no_meta",
 			"seed": 151501.0,
 			"sustain_source": {
@@ -2696,6 +2948,13 @@
 			"frame_count": 3600.0,
 			"initial_activation_count": 1.0,
 			"initial_charge": 100.0,
+			"runtime_evidence": {
+				"fixed_fps": 60.0,
+				"process_delta_seconds": 0.01666666666666666,
+				"process_fps": 60.0,
+				"sample_count": 8.0,
+				"trusted": true
+			},
 			"scenario": "class_atlas50",
 			"seed": 151501.0,
 			"sustain_source": {
@@ -2753,7 +3012,7 @@
 					"healing_multiplier": 0.68,
 					"max_health_flat": 8.0,
 					"max_health_multiplier": 0.8,
-					"money_gain_multiplier": 0.8800000000000001,
+					"money_gain_multiplier": 0.8,
 					"xp_gain_multiplier": 0.8
 				},
 				"scenario": "class_constellation",
@@ -2773,6 +3032,13 @@
 			"frame_count": 3600.0,
 			"initial_activation_count": 0.0,
 			"initial_charge": 0.0,
+			"runtime_evidence": {
+				"fixed_fps": 60.0,
+				"process_delta_seconds": 0.01666666666666666,
+				"process_fps": 60.0,
+				"sample_count": 8.0,
+				"trusted": true
+			},
 			"scenario": "class_constellation",
 			"seed": 151501.0,
 			"sustain_source": {
@@ -2849,6 +3115,13 @@
 			"frame_count": 3600.0,
 			"initial_activation_count": 0.0,
 			"initial_charge": 0.0,
+			"runtime_evidence": {
+				"fixed_fps": 60.0,
+				"process_delta_seconds": 0.01666666666666666,
+				"process_fps": 60.0,
+				"sample_count": 8.0,
+				"trusted": true
+			},
 			"scenario": "no_meta",
 			"seed": 151501.0,
 			"sustain_source": {
@@ -2921,6 +3194,13 @@
 			"frame_count": 3600.0,
 			"initial_activation_count": 1.0,
 			"initial_charge": 100.0,
+			"runtime_evidence": {
+				"fixed_fps": 60.0,
+				"process_delta_seconds": 0.01666666666666666,
+				"process_fps": 60.0,
+				"sample_count": 8.0,
+				"trusted": true
+			},
 			"scenario": "class_atlas50",
 			"seed": 151501.0,
 			"sustain_source": {
@@ -2967,7 +3247,7 @@
 					"healing_multiplier": 0.68,
 					"max_health_flat": 10.0,
 					"max_health_multiplier": 0.8,
-					"money_gain_multiplier": 0.8800000000000001,
+					"money_gain_multiplier": 0.8,
 					"xp_gain_multiplier": 0.8
 				},
 				"scenario": "class_constellation",
@@ -2987,6 +3267,13 @@
 			"frame_count": 3600.0,
 			"initial_activation_count": 0.0,
 			"initial_charge": 0.0,
+			"runtime_evidence": {
+				"fixed_fps": 60.0,
+				"process_delta_seconds": 0.01666666666666666,
+				"process_fps": 60.0,
+				"sample_count": 8.0,
+				"trusted": true
+			},
 			"scenario": "class_constellation",
 			"seed": 151501.0,
 			"sustain_source": {
@@ -3053,6 +3340,13 @@
 			"frame_count": 3600.0,
 			"initial_activation_count": 0.0,
 			"initial_charge": 0.0,
+			"runtime_evidence": {
+				"fixed_fps": 60.0,
+				"process_delta_seconds": 0.01666666666666666,
+				"process_fps": 60.0,
+				"sample_count": 8.0,
+				"trusted": true
+			},
 			"scenario": "no_meta",
 			"seed": 151501.0,
 			"sustain_source": {
@@ -3203,6 +3497,13 @@
 			"frame_count": 3600.0,
 			"initial_activation_count": 1.0,
 			"initial_charge": 100.0,
+			"runtime_evidence": {
+				"fixed_fps": 60.0,
+				"process_delta_seconds": 0.01666666666666666,
+				"process_fps": 60.0,
+				"sample_count": 8.0,
+				"trusted": true
+			},
 			"scenario": "class_atlas50",
 			"seed": 151501.0,
 			"sustain_source": {
@@ -3335,7 +3636,7 @@
 					"healing_multiplier": 0.68,
 					"max_health_flat": 8.0,
 					"max_health_multiplier": 0.8,
-					"money_gain_multiplier": 0.8800000000000001,
+					"money_gain_multiplier": 0.8,
 					"xp_gain_multiplier": 0.8
 				},
 				"scenario": "class_constellation",
@@ -3355,6 +3656,13 @@
 			"frame_count": 3600.0,
 			"initial_activation_count": 0.0,
 			"initial_charge": 0.0,
+			"runtime_evidence": {
+				"fixed_fps": 60.0,
+				"process_delta_seconds": 0.01666666666666666,
+				"process_fps": 60.0,
+				"sample_count": 8.0,
+				"trusted": true
+			},
 			"scenario": "class_constellation",
 			"seed": 151501.0,
 			"sustain_source": {
@@ -3472,6 +3780,13 @@
 			"frame_count": 3600.0,
 			"initial_activation_count": 0.0,
 			"initial_charge": 0.0,
+			"runtime_evidence": {
+				"fixed_fps": 60.0,
+				"process_delta_seconds": 0.01666666666666666,
+				"process_fps": 60.0,
+				"sample_count": 8.0,
+				"trusted": true
+			},
 			"scenario": "no_meta",
 			"seed": 151501.0,
 			"sustain_source": {
@@ -3555,6 +3870,13 @@
 			"frame_count": 3600.0,
 			"initial_activation_count": 1.0,
 			"initial_charge": 100.0,
+			"runtime_evidence": {
+				"fixed_fps": 60.0,
+				"process_delta_seconds": 0.01666666666666666,
+				"process_fps": 60.0,
+				"sample_count": 8.0,
+				"trusted": true
+			},
 			"scenario": "class_atlas50",
 			"seed": 151501.0,
 			"sustain_source": {
@@ -3610,7 +3932,7 @@
 					"healing_multiplier": 0.68,
 					"max_health_flat": 8.0,
 					"max_health_multiplier": 0.8,
-					"money_gain_multiplier": 0.8800000000000001,
+					"money_gain_multiplier": 0.8,
 					"xp_gain_multiplier": 0.8
 				},
 				"scenario": "class_constellation",
@@ -3630,6 +3952,13 @@
 			"frame_count": 3600.0,
 			"initial_activation_count": 0.0,
 			"initial_charge": 0.0,
+			"runtime_evidence": {
+				"fixed_fps": 60.0,
+				"process_delta_seconds": 0.01666666666666666,
+				"process_fps": 60.0,
+				"sample_count": 8.0,
+				"trusted": true
+			},
 			"scenario": "class_constellation",
 			"seed": 151501.0,
 			"sustain_source": {
@@ -3705,6 +4034,13 @@
 			"frame_count": 3600.0,
 			"initial_activation_count": 0.0,
 			"initial_charge": 0.0,
+			"runtime_evidence": {
+				"fixed_fps": 60.0,
+				"process_delta_seconds": 0.01666666666666666,
+				"process_fps": 60.0,
+				"sample_count": 8.0,
+				"trusted": true
+			},
 			"scenario": "no_meta",
 			"seed": 151501.0,
 			"sustain_source": {
@@ -3791,6 +4127,13 @@
 			"frame_count": 3600.0,
 			"initial_activation_count": 1.0,
 			"initial_charge": 100.0,
+			"runtime_evidence": {
+				"fixed_fps": 60.0,
+				"process_delta_seconds": 0.01666666666666666,
+				"process_fps": 60.0,
+				"sample_count": 8.0,
+				"trusted": true
+			},
 			"scenario": "class_atlas50",
 			"seed": 151501.0,
 			"sustain_source": {
@@ -3855,7 +4198,7 @@
 					"healing_multiplier": 0.68,
 					"max_health_flat": 7.0,
 					"max_health_multiplier": 0.8,
-					"money_gain_multiplier": 0.9328000000000002,
+					"money_gain_multiplier": 0.8480000000000001,
 					"xp_gain_multiplier": 0.8
 				},
 				"scenario": "class_constellation",
@@ -3875,6 +4218,13 @@
 			"frame_count": 3600.0,
 			"initial_activation_count": 0.0,
 			"initial_charge": 0.0,
+			"runtime_evidence": {
+				"fixed_fps": 60.0,
+				"process_delta_seconds": 0.01666666666666666,
+				"process_fps": 60.0,
+				"sample_count": 8.0,
+				"trusted": true
+			},
 			"scenario": "class_constellation",
 			"seed": 151501.0,
 			"sustain_source": {
@@ -3957,6 +4307,13 @@
 			"frame_count": 3600.0,
 			"initial_activation_count": 0.0,
 			"initial_charge": 0.0,
+			"runtime_evidence": {
+				"fixed_fps": 60.0,
+				"process_delta_seconds": 0.01666666666666666,
+				"process_fps": 60.0,
+				"sample_count": 8.0,
+				"trusted": true
+			},
 			"scenario": "no_meta",
 			"seed": 151501.0,
 			"sustain_source": {
@@ -4337,6 +4694,13 @@
 			"weapon_id": "thief_smoke_bomb"
 		}
 	],
+	"runtime_evidence": {
+		"fixed_fps": 60,
+		"process_delta_seconds": 0.016666666666666666,
+		"process_fps": 60.0,
+		"sample_count": 8,
+		"trusted": true
+	},
 	"scenario_manifest": {
 		"class_atlas50": {
 			"atlas_ids": [

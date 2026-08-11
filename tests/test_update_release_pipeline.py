@@ -3,7 +3,9 @@ from __future__ import annotations
 import hashlib
 import importlib.util
 import json
+import os
 import re
+import shutil
 import subprocess
 import sys
 import tempfile
@@ -15,6 +17,12 @@ from unittest import mock
 
 ROOT = Path(__file__).resolve().parents[1]
 SCRIPTS = ROOT / "skills" / "codex" / "fantasydisk-release-director" / "scripts"
+BUILD_SCRIPT = ROOT / "tools" / "build_release.sh"
+PRESIGN_CHECKPOINT = "PRE-SIGN CHECKPOINT"
+CANDIDATE_VERSION = re.search(
+    r'(?m)^config/version="([^"]+)"$',
+    (ROOT / "project.godot").read_text(encoding="utf-8"),
+).group(1)
 
 
 def _load(name: str):
@@ -2767,6 +2775,324 @@ class MacosChannelLabelingTests(unittest.TestCase):
         self.assertLess(label_check_at, export_at)
         self.assertIn('CLIENT_MACOS_CHANNEL="$(sed -n', script)
         self.assertIn('if [[ "${CLIENT_MACOS_CHANNEL}" != "${MACOS_CHANNEL}" ]]', script)
+
+
+class CandidateReleaseBuildContractTests(unittest.TestCase):
+    """FAN-2422: exact-SHA QA must happen before the immutable release tag."""
+
+    def test_candidate_build_is_pinned_and_carries_prebuild_provenance(self) -> None:
+        script = (ROOT / "tools" / "build_release.sh").read_text(encoding="utf-8")
+        for option in (
+            "--candidate-repository",
+            "--candidate-ref",
+            "--candidate-sha",
+        ):
+            with self.subTest(option=option):
+                self.assertIn(option, script)
+        self.assertIn("git ls-remote --refs", script)
+        self.assertIn("candidate remote ref does not resolve to the pinned SHA", script)
+        self.assertIn('worktree add --detach "${WORKTREE_DIR}" "${SOURCE_COMMIT}"', script)
+        self.assertIn("CANDIDATE_PROVENANCE.json", script)
+        self.assertLess(
+            script.index("CANDIDATE_PROVENANCE.json"),
+            script.index('run_godot --headless --import'),
+        )
+        self.assertIn("--candidate-tree \"${SOURCE_TREE}\"", script)
+
+    def test_candidate_manifest_has_no_tag_fallback_and_keeps_complete_inventory(self) -> None:
+        source = (SCRIPTS / "local_release.py").read_text(encoding="utf-8")
+        self.assertIn('manifest["candidate"] = {', source)
+        self.assertIn('"package_inventory": package_inventory', source)
+        self.assertIn("candidate manifest must not contain tag provenance", source)
+        self.assertIn("candidate provenance does not match", source)
+        self.assertIn("require_tag_match=args.action == \"verify\"", source)
+
+    def test_release_docs_describe_candidate_then_tag_without_repacking(self) -> None:
+        documents = {
+            relative: (ROOT / relative).read_text(encoding="utf-8")
+            for relative in (
+                Path("docs") / "process" / "release_versioning.md",
+                Path("skills") / "codex" / "fantasydisk-release-director" / "SKILL.md",
+            )
+        }
+        for relative, document in documents.items():
+            with self.subTest(document=str(relative)):
+                self.assertIn("candidate", document.lower())
+                self.assertIn("exact-SHA QA", document)
+                self.assertIn("без перепаковки", document)
+
+
+class CandidatePreSignVerificationTests(unittest.TestCase):
+    """FAN-2426: QA proves a pinned candidate imports and exports without credentials."""
+
+    # Inputs the build reads for real before the checkpoint.
+    COPIED_INPUTS = (
+        "export_presets.cfg",
+        "project.godot",
+        "scripts/update_manager.gd",
+        "tools/build_release.sh",
+        "tools/release_version_contract.py",
+        "tools/release_version_mapping.py",
+    )
+    # Inputs the build only requires to exist; every consumer of them runs after
+    # the pre-sign checkpoint, so an empty file proves the build stops earlier.
+    PLACEHOLDER_INPUTS = (
+        "assets/icon.ico",
+        "docs/design/references/fan1094_macos_installer/pixellab_arrow.png",
+        "tools/create_macos_dmg.sh",
+        "tools/scan_release_secrets.py",
+        "tools/windows_installer.nsi",
+        "skills/codex/fantasydisk-release-director/scripts/build_update_manifest.py",
+        "skills/codex/fantasydisk-release-director/scripts/local_release.py",
+    )
+    # Test double for the build's only Godot entry point: it satisfies the
+    # headless import and produces the exported bundle the checkpoint reports.
+    GODOT_GATE_STUB = '''#!/usr/bin/env python3
+"""Headless Godot stand-in for pre-sign verification tests."""
+import pathlib
+import sys
+import zipfile
+
+argv = sys.argv[1:]
+if "--export-release" in argv:
+    output = pathlib.Path(argv[-1])
+    output.parent.mkdir(parents=True, exist_ok=True)
+    with zipfile.ZipFile(output, "w") as archive:
+        archive.writestr("FantasyDisk.app/Contents/Info.plist", "<plist/>\\n")
+'''
+
+    def candidate_repository(self, tmp: str) -> tuple[Path, str]:
+        repo = Path(tmp) / "candidate"
+        for relative in self.COPIED_INPUTS:
+            target = repo / relative
+            target.parent.mkdir(parents=True, exist_ok=True)
+            shutil.copy(ROOT / relative, target)
+        for relative in self.PLACEHOLDER_INPUTS:
+            target = repo / relative
+            target.parent.mkdir(parents=True, exist_ok=True)
+            target.write_bytes(b"")
+        (repo / "tools" / "godot_gate.py").write_text(self.GODOT_GATE_STUB, encoding="utf-8")
+        subprocess.run(
+            ["git", "init", "-b", "candidate", str(repo)], check=True, capture_output=True
+        )
+        self._git(repo, "add", "-A")
+        self._git(repo, "commit", "-m", "candidate fixture")
+        return repo, self._git(repo, "rev-parse", "HEAD").stdout.strip()
+
+    def _git(self, repo: Path, *args: str) -> subprocess.CompletedProcess:
+        return subprocess.run(
+            [
+                "git",
+                "-C",
+                str(repo),
+                "-c",
+                "user.email=presign@example.invalid",
+                "-c",
+                "user.name=Pre-sign Fixture",
+                *args,
+            ],
+            check=True,
+            capture_output=True,
+            text=True,
+        )
+
+    def build(
+        self, repo: Path, *args: str, channel: str = "", credentials: bool = False
+    ) -> subprocess.CompletedProcess:
+        environment = {
+            key: value
+            for key, value in os.environ.items()
+            if key
+            not in (
+                "FANTASYDISK_MACOS_CHANNEL",
+                "MACOS_SIGN_IDENTITY",
+                "MACOS_NOTARY_PROFILE",
+            )
+        }
+        if channel:
+            environment["FANTASYDISK_MACOS_CHANNEL"] = channel
+        if credentials:
+            environment["MACOS_SIGN_IDENTITY"] = "Developer ID Application: Test (TESTONLY)"
+            environment["MACOS_NOTARY_PROFILE"] = "test-only-profile"
+        return subprocess.run(
+            ["bash", str(repo / "tools" / "build_release.sh"), *args],
+            cwd=repo,
+            check=False,
+            capture_output=True,
+            text=True,
+            env=environment,
+        )
+
+    def presign_args(self, repo: Path, sha: str) -> list[str]:
+        return [
+            CANDIDATE_VERSION,
+            "--candidate-repository",
+            str(repo),
+            "--candidate-ref",
+            "refs/heads/candidate",
+            "--candidate-sha",
+            sha,
+            "--candidate-presign-verify",
+        ]
+
+    @unittest.skipUnless(sys.platform == "darwin", "macOS export materialization needs ditto")
+    def test_presign_reaches_post_export_checkpoint_without_credentials(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            repo, sha = self.candidate_repository(tmp)
+            result = self.build(repo, *self.presign_args(repo, sha))
+            self.assertEqual(result.returncode, 0, result.stdout + result.stderr)
+            self.assertIn("Импорт ресурсов", result.stdout)
+            self.assertIn('--export-release "macOS"', BUILD_SCRIPT.read_text(encoding="utf-8"))
+            self.assertIn("Экспорт macOS", result.stdout)
+            # The run may not announce a signing step it never performs.
+            self.assertNotIn("подпись будет", result.stdout)
+            self.assertIn(PRESIGN_CHECKPOINT, result.stdout)
+            self.assertIn("FantasyDisk.app", result.stdout)
+            self.assertIn("disposable output удалён", result.stdout)
+            # No signing, packaging or publication step may have executed.
+            for forbidden in (
+                "codesign",
+                "notarytool",
+                "stapler",
+                "spctl",
+                "makensis",
+                "hdiutil",
+                "SHA256SUMS.txt",
+                "update-manifest.json",
+            ):
+                with self.subTest(step=forbidden):
+                    self.assertNotIn(forbidden, result.stdout)
+            self.assertEqual(self._git(repo, "tag").stdout, "")
+            self.assertEqual(
+                self._git(repo, "worktree", "list").stdout.strip().count("\n"), 0
+            )
+            for disposable in ("build", "releases"):
+                with self.subTest(path=disposable):
+                    self.assertFalse((repo / disposable).exists())
+
+    def test_presign_is_candidate_only_and_rejects_incomplete_invocations(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            repo, sha = self.candidate_repository(tmp)
+            cases = (
+                (
+                    "tag/final-release path",
+                    [CANDIDATE_VERSION, "--candidate-presign-verify"],
+                    "candidate-only and cannot run the tag/final-release path",
+                ),
+                (
+                    "incomplete candidate pin",
+                    [
+                        CANDIDATE_VERSION,
+                        "--candidate-repository",
+                        str(repo),
+                        "--candidate-presign-verify",
+                    ],
+                    "candidate mode requires --candidate-repository, --candidate-ref, and --candidate-sha together",
+                ),
+                (
+                    "unexpected argument",
+                    [*self.presign_args(repo, sha), "--publish"],
+                    "unknown argument: --publish",
+                ),
+            )
+            for name, args, expected in cases:
+                with self.subTest(case=name):
+                    result = self.build(repo, *args)
+                    self.assertEqual(result.returncode, 2, result.stdout)
+                    self.assertIn(expected, result.stdout)
+                    self.assertNotIn("Worktree из", result.stdout)
+
+    def test_presign_rejects_a_missing_or_moved_candidate(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            repo, sha = self.candidate_repository(tmp)
+            moved = [
+                argument if argument != sha else FOREIGN_COMMIT
+                for argument in self.presign_args(repo, sha)
+            ]
+            absent = [
+                argument if argument != "refs/heads/candidate" else "refs/heads/absent"
+                for argument in self.presign_args(repo, sha)
+            ]
+            cases = (
+                ("moved candidate", moved, "does not resolve to the pinned SHA"),
+                ("missing candidate ref", absent, "cannot be resolved exactly"),
+            )
+            for name, args, expected in cases:
+                with self.subTest(case=name):
+                    result = self.build(repo, *args)
+                    self.assertEqual(result.returncode, 2, result.stdout)
+                    self.assertIn(expected, result.stdout)
+                    self.assertNotIn("Worktree из", result.stdout)
+
+    def test_presign_does_not_weaken_the_normal_channel_gates(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            repo, sha = self.candidate_repository(tmp)
+            pinned = self.presign_args(repo, sha)[:-1]
+            cases = (
+                (
+                    "normal signed build still requires Developer ID",
+                    pinned,
+                    {},
+                    "MACOS_SIGN_IDENTITY is required",
+                ),
+                (
+                    "normal signed build still requires an installed Developer ID",
+                    pinned,
+                    {"credentials": True},
+                    "is not an installed Developer ID Application identity",
+                ),
+                (
+                    "unsigned refuses to run with credentials present",
+                    pinned,
+                    {"channel": "unsigned", "credentials": True},
+                    "unsigned channel refuses to run",
+                ),
+                (
+                    "pre-sign obeys the same unsigned fail-closed rule",
+                    self.presign_args(repo, sha),
+                    {"channel": "unsigned", "credentials": True},
+                    "unsigned channel refuses to run",
+                ),
+                (
+                    "pre-sign cannot mislabel the client channel",
+                    self.presign_args(repo, sha),
+                    {"channel": "unsigned"},
+                    "клиент тега помечает macOS-канал",
+                ),
+            )
+            for name, args, environment, expected in cases:
+                with self.subTest(case=name):
+                    result = self.build(repo, *args, **environment)
+                    self.assertEqual(result.returncode, 2, result.stdout)
+                    self.assertIn(expected, result.stdout)
+                    self.assertNotIn(PRESIGN_CHECKPOINT, result.stdout)
+
+    def test_presign_checkpoint_precedes_every_packaging_and_publication_step(self) -> None:
+        script = BUILD_SCRIPT.read_text(encoding="utf-8")
+        checkpoint_at = script.index(PRESIGN_CHECKPOINT)
+        # Credential-free admission belongs to pre-sign only; the signing path
+        # keeps both mandatory credential gates.
+        presign_branch_at = script.index('elif [[ "${PRESIGN_MODE}" -eq 1 ]]')
+        for credential_gate in (
+            "MACOS_SIGN_IDENTITY is required",
+            "MACOS_NOTARY_PROFILE is required",
+        ):
+            with self.subTest(gate=credential_gate):
+                self.assertLess(presign_branch_at, script.index(credential_gate))
+        self.assertLess(script.index('--export-release "macOS"'), checkpoint_at)
+        self.assertLess(checkpoint_at, script.index('rm -rf "${WORKTREE_DIR}/build"'))
+        self.assertLess(script.index('rm -rf "${WORKTREE_DIR}/build"'), script.index("exit 0"))
+        for step in (
+            "codesign --force",
+            'bash "${WORKTREE_DIR}/tools/create_macos_dmg.sh"',
+            'submit_notary_artifact "${MAC_DMG}"',
+            "makensis -DVERSION=",
+            "shasum -a 256",
+            "build_update_manifest.py",
+            'python3 "${WORKTREE_DIR}/skills/codex/fantasydisk-release-director/scripts/local_release.py"',
+        ):
+            with self.subTest(step=step):
+                self.assertLess(checkpoint_at, script.rindex(step))
 
 
 class Published024ReleaseDocumentationTests(unittest.TestCase):
