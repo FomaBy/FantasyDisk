@@ -381,6 +381,11 @@ func _test_cleanup_removes_deploys_and_state_idempotently() -> void:
 	_check(activation.configure_repair(10.0), "the repair cap must open")
 	var deployed := activation.deploy_temporary(_flaky_scene, {}, 2)
 	_check(deployed.size() == 2, "the cleanup fixture must be holding live deploys")
+	var run_modifiers: Dictionary = _player.get("run_modifiers")
+	var absorb_before := float(run_modifiers.get("absorb_flat", 0.0))
+	activation.apply_modifier("absorb_flat", 7.0)
+	_check(is_equal_approx(float(run_modifiers.get("absorb_flat", 0.0)), absorb_before + 7.0),
+		"the cleanup fixture must register a non-zero real Player modifier")
 
 	activation.shutdown(true)
 	await process_frame
@@ -394,7 +399,14 @@ func _test_cleanup_removes_deploys_and_state_idempotently() -> void:
 		"a finished activation must refuse a new repair cap")
 	_check(activation.deploy_temporary(_flaky_scene).is_empty(),
 		"a finished activation must refuse new deploys")
+	var absorb_after_first_shutdown := float(run_modifiers.get("absorb_flat", 0.0))
+	_check(is_equal_approx(absorb_after_first_shutdown, absorb_before),
+		"cleanup must roll the real Player modifier back to its baseline")
 	activation.shutdown(true)
+	var absorb_after_second_shutdown := float(run_modifiers.get("absorb_flat", 0.0))
+	_check(is_equal_approx(absorb_after_second_shutdown, absorb_after_first_shutdown)
+			and is_equal_approx(absorb_after_second_shutdown, absorb_before),
+		"cleanup negative control: a second teardown must not roll the real modifier back twice")
 	_check(get_nodes_in_group(DEPLOY_GROUP).is_empty(),
 		"repeated cleanup must be idempotent and leave no orphan")
 	permanent.queue_free()
