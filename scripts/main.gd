@@ -470,16 +470,6 @@ var shop_reentry_route_stage := -1
 var shop_reentry_branch_index := -1
 var pending_level_ups := 0
 var pause_reasons := {}
-
-# Main is the always-processing UI/input coordinator. Combat nodes added under
-# it must opt out of that inheritance, otherwise node-bound tweens keep running
-# while a canonical pause is active.
-const COMBAT_WORLD_GROUPS := [
-	&"player", &"enemies", &"bosses", &"summoned_enemies", &"projectiles",
-	&"enemy_projectiles", &"enemy_hazards", &"chemist_clouds", &"allies",
-	&"pickups", &"player_weapons", &"player_weapon_effects", &"engineer_devices",
-	&"deployed_sound_amps",
-]
 var route_map_pan_active := false
 var route_map_pan_last_position := Vector2.ZERO
 var route_map_drag_distance := 0.0
@@ -506,6 +496,7 @@ const UPDATE_MANAGER_SCRIPT := preload("res://scripts/update_manager.gd")
 var ui
 var route
 var combat
+var combat_world_pause := preload("res://scripts/combat_world_pause.gd").new()
 var dev_console: CanvasLayer = null
 var update_manager = null
 var meta_state := {}
@@ -557,7 +548,7 @@ func _init() -> void:
 
 func _ready() -> void:
 	process_mode = Node.PROCESS_MODE_ALWAYS
-	get_tree().node_added.connect(_on_tree_node_added)
+	combat_world_pause.attach(self, get_tree(), Callable(self, "_is_gameplay_paused"))
 	rng.randomize()
 	_load_meta_progression()
 	_load_game_settings()
@@ -1424,7 +1415,7 @@ func _clamp_arena_point(world_position: Vector2, margin := 32.0) -> Vector2:
 
 func _process(delta: float) -> void:
 	if get_tree().paused:
-		_enforce_combat_world_pause()
+		combat_world_pause.enforce()
 		return
 
 	if not combat_active:
@@ -1504,57 +1495,12 @@ func _clear_all_game_pauses() -> void:
 
 
 func _freeze_gameplay_state() -> void:
-	_enforce_combat_world_pause()
+	combat_world_pause.enforce()
 
 	if current_player != null and is_instance_valid(current_player):
 		var camera := current_player.get_node_or_null("Camera2D")
 		if camera != null and camera.has_method("reset_smoothing"):
 			camera.call("reset_smoothing")
-
-
-func _on_tree_node_added(node: Node) -> void:
-	if not _is_gameplay_paused() or not _is_combat_world_node(node):
-		return
-	_pause_combat_world_node(node)
-	if not node.is_node_ready():
-		node.ready.connect(_on_combat_world_node_ready.bind(node), CONNECT_ONE_SHOT)
-
-
-func _on_combat_world_node_ready(node: Node) -> void:
-	if _is_gameplay_paused() and _is_combat_world_node(node):
-		_pause_combat_world_node(node)
-
-
-func _enforce_combat_world_pause() -> void:
-	for group_name in COMBAT_WORLD_GROUPS:
-		for node in get_tree().get_nodes_in_group(group_name):
-			_pause_combat_world_node(node)
-
-
-func _is_combat_world_node(node: Node) -> bool:
-	if node == null or not is_instance_valid(node):
-		return false
-	for group_name in COMBAT_WORLD_GROUPS:
-		if node.is_in_group(group_name):
-			return true
-	return false
-
-
-func _pause_combat_world_node(node: Node) -> void:
-	if node == null or not is_instance_valid(node):
-		return
-	node.process_mode = Node.PROCESS_MODE_PAUSABLE
-	_zero_velocity(node)
-	for child in node.get_children():
-		_pause_combat_world_node(child)
-
-
-func _zero_velocity(node: Node) -> void:
-	if node == null or not is_instance_valid(node):
-		return
-	if node.get("velocity") != null:
-		node.set("velocity", Vector2.ZERO)
-
 
 func _play_sfx(sfx_id: String) -> void:
 	var audio := get_node_or_null("/root/AudioManager")
