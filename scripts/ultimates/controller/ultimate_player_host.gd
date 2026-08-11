@@ -36,6 +36,7 @@ var player: Node2D = null
 var _controller: Controller = null
 var _runtime_registry = null
 var _presentation: PresentationRuntime = null
+var _presentation_headless_mode := -1
 var _last_activation_failure := ""
 
 
@@ -247,7 +248,7 @@ func ultimate_host_effect_parent() -> Node:
 
 func ultimate_host_begin_presentation(profile: Dictionary) -> bool:
 	if _presentation == null:
-		_presentation = PresentationRuntime.new()
+		_presentation = PresentationRuntime.new(_presentation_headless_mode)
 	if _presentation.begin(self, _registry(), profile):
 		return true
 	_presentation.finish("cancel")
