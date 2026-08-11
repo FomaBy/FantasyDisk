@@ -2944,6 +2944,8 @@ if "--export-release" in argv:
             self.assertIn("Импорт ресурсов", result.stdout)
             self.assertIn('--export-release "macOS"', BUILD_SCRIPT.read_text(encoding="utf-8"))
             self.assertIn("Экспорт macOS", result.stdout)
+            # The run may not announce a signing step it never performs.
+            self.assertNotIn("подпись будет", result.stdout)
             self.assertIn(PRESIGN_CHECKPOINT, result.stdout)
             self.assertIn("FantasyDisk.app", result.stdout)
             self.assertIn("disposable output удалён", result.stdout)

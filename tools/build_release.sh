@@ -320,11 +320,19 @@ if ! run_godot --headless --import --path "${WORKTREE_DIR}" >"${IMPORT_LOG}" 2>&
   exit 2
 fi
 
-echo "==> Экспорт macOS (.app в zip; подпись будет последним изменением bundle)"
+if [[ "${PRESIGN_MODE}" -eq 1 ]]; then
+  # Pre-sign отчитывается только о том, что действительно делает.
+  EXPORT_LABEL="Экспорт macOS (.app в zip; подпись не выполняется)"
+  MATERIALIZE_LABEL="Материализация .app из экспорта без подписи"
+else
+  EXPORT_LABEL="Экспорт macOS (.app в zip; подпись будет последним изменением bundle)"
+  MATERIALIZE_LABEL="Финализация и подпись готового .app"
+fi
+echo "==> ${EXPORT_LABEL}"
 run_godot --headless --path "${WORKTREE_DIR}" \
   --export-release "macOS" "${WORKTREE_DIR}/build/FantasyDisk-${VERSION}-macos.zip"
 
-echo "==> Финализация и подпись готового .app"
+echo "==> ${MATERIALIZE_LABEL}"
 MAC_STAGE="${WORKTREE_DIR}/build/macos-stage"
 mkdir -p "${MAC_STAGE}"
 ditto -x -k "${WORKTREE_DIR}/build/FantasyDisk-${VERSION}-macos.zip" "${MAC_STAGE}"
