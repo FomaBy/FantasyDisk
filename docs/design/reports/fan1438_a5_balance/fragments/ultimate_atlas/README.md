@@ -40,7 +40,12 @@ python3 tools/godot_gate.py --headless --fixed-fps 60 --path . --script res://to
 Run that full 17-class sequence twice from a clean checkout and compare the
 two SHA-256 digests of `ultimate_atlas_attribution.json`; identical bytes are
 the reproducibility requirement. `--fixed-fps 60` is part of every replay
-command, not only the merge step.
+command, not only the merge step. The probe samples the effective process
+timestep before it measures an arm and records the observed process FPS and
+delta in every measurement. It refuses to write certifying output unless all
+samples are exactly the required `1/60` step; `Engine.max_fps = 60` alone is
+only a wall-clock cap. Therefore any output produced without `--fixed-fps 60`
+is untrusted and cannot be used as certifying attribution evidence.
 
 Verify the frozen contract and the committed raw fragment without replaying the
 60-second probes:
