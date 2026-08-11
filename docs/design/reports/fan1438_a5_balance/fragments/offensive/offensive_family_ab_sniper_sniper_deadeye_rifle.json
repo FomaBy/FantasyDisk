@@ -1,0 +1,32 @@
+{
+	"measurement": {
+		"disabled": {
+			"casts": 31,
+			"damage_sources": [
+				"player_weapon|damage_application"
+			],
+			"dpm": 137286.62900000002,
+			"final_event_count": 0,
+			"final_event_damage": 0.0,
+			"hits": 455,
+			"ledger_damage": 13728.662900000001,
+			"trigger_resolutions": 0,
+			"unique_target_count": 10
+		},
+		"enabled": {
+			"casts": 31,
+			"damage_sources": [
+				"player_weapon|damage_application"
+			],
+			"dpm": 146041.937,
+			"final_event_count": 0,
+			"final_event_damage": 0.0,
+			"hits": 455,
+			"ledger_damage": 14604.1937,
+			"trigger_resolutions": 29,
+			"unique_target_count": 10
+		},
+		"formula_expected_dpm": 25332.0
+	},
+	"pair": "sniper/sniper_deadeye_rifle"
+}
