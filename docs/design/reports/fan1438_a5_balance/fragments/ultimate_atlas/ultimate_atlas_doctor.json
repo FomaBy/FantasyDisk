@@ -1,0 +1,202 @@
+{
+	"class_id": "doctor",
+	"measurements": {
+		"class_atlas50": {
+			"activation_count": 1,
+			"activation_timing_seconds": [
+				0.0
+			],
+			"attribution": {
+				"duplicate_ultimate_event_id_count": 0,
+				"invalid_source_count": 0,
+				"missing_ultimate_event_id_count": 0,
+				"ultimate_event_count": 48
+			},
+			"class_id": "doctor",
+			"duration_seconds": 60.0,
+			"formula": {
+				"canonical_weapon_id": "bone_saw",
+				"class_id": "doctor",
+				"expected_activation_damage": 80.3169,
+				"expected_initial_activations": 1,
+				"formula_schema": "fan1515.class-ultimate-formula.v1",
+				"meta_application_count": 1,
+				"run_modifiers": {
+					"attack_speed_multiplier": 1.04,
+					"damage_multiplier": 1.1235000000000002,
+					"death_save_health_fraction": 0.3,
+					"defense_flat": 0.02,
+					"healing_multiplier": 0.8160000000000001,
+					"max_health_flat": 8.0,
+					"max_health_multiplier": 0.8,
+					"money_gain_multiplier": 1.04,
+					"pickup_radius_flat": 60.0,
+					"xp_gain_multiplier": 0.9199999999999999
+				},
+				"scenario": "class_atlas50",
+				"start_charge": 100.0,
+				"start_charge_ratio": 1.0,
+				"stats": {
+					"agility": 14.0,
+					"endurance": 5.0,
+					"energy": 6.0,
+					"intelligence": 8.0,
+					"knowledge": 9.0,
+					"leadership": 2.0,
+					"perception": 5.0,
+					"strength": 11.0
+				}
+			},
+			"frame_count": 3600,
+			"initial_activation_count": 1,
+			"initial_charge": 100.0,
+			"scenario": "class_atlas50",
+			"seed": 151501,
+			"sustain_source": {
+				"damage": 441123.95080000005,
+				"hits": 44885
+			},
+			"ultimate_source": {
+				"by_mechanic": {
+					"emergency_surgery_orbit": {
+						"damage": 44903.304000000004,
+						"first_frame": 0,
+						"hits": 48
+					}
+				},
+				"damage": 44903.3033,
+				"hits": 48
+			}
+		},
+		"class_constellation": {
+			"activation_count": 1,
+			"activation_timing_seconds": [
+				0.7333000000000001
+			],
+			"attribution": {
+				"duplicate_ultimate_event_id_count": 0,
+				"invalid_source_count": 0,
+				"missing_ultimate_event_id_count": 0,
+				"ultimate_event_count": 48
+			},
+			"class_id": "doctor",
+			"duration_seconds": 60.0,
+			"formula": {
+				"canonical_weapon_id": "bone_saw",
+				"class_id": "doctor",
+				"expected_activation_damage": 80.3169,
+				"expected_initial_activations": 0,
+				"formula_schema": "fan1515.class-ultimate-formula.v1",
+				"meta_application_count": 1,
+				"run_modifiers": {
+					"attack_speed_multiplier": 1.04,
+					"damage_multiplier": 1.1235000000000002,
+					"defense_flat": 0.02,
+					"healing_multiplier": 0.68,
+					"max_health_flat": 8.0,
+					"max_health_multiplier": 0.8,
+					"money_gain_multiplier": 0.8800000000000001,
+					"xp_gain_multiplier": 0.8
+				},
+				"scenario": "class_constellation",
+				"start_charge": 0.0,
+				"start_charge_ratio": 0.0,
+				"stats": {
+					"agility": 14.0,
+					"endurance": 5.0,
+					"energy": 6.0,
+					"intelligence": 8.0,
+					"knowledge": 9.0,
+					"leadership": 2.0,
+					"perception": 5.0,
+					"strength": 11.0
+				}
+			},
+			"frame_count": 3600,
+			"initial_activation_count": 0,
+			"initial_charge": 0.0,
+			"scenario": "class_constellation",
+			"seed": 151501,
+			"sustain_source": {
+				"damage": 445582.12850000005,
+				"hits": 44885
+			},
+			"ultimate_source": {
+				"by_mechanic": {
+					"emergency_surgery_orbit": {
+						"damage": 44903.304000000004,
+						"first_frame": 44,
+						"hits": 48
+					}
+				},
+				"damage": 44903.3033,
+				"hits": 48
+			}
+		},
+		"no_meta": {
+			"activation_count": 1,
+			"activation_timing_seconds": [
+				1.1
+			],
+			"attribution": {
+				"duplicate_ultimate_event_id_count": 0,
+				"invalid_source_count": 0,
+				"missing_ultimate_event_id_count": 0,
+				"ultimate_event_count": 48
+			},
+			"class_id": "doctor",
+			"duration_seconds": 60.0,
+			"formula": {
+				"canonical_weapon_id": "bone_saw",
+				"class_id": "doctor",
+				"expected_activation_damage": 80.2244,
+				"expected_initial_activations": 0,
+				"formula_schema": "fan1515.class-ultimate-formula.v1",
+				"meta_application_count": 0,
+				"run_modifiers": {
+					"attack_speed_multiplier": 1.04,
+					"damage_multiplier": 1.1235000000000002,
+					"defense_flat": 0.02,
+					"healing_multiplier": 0.68,
+					"max_health_flat": 8.0,
+					"max_health_multiplier": 0.8,
+					"money_gain_multiplier": 0.8,
+					"xp_gain_multiplier": 0.8
+				},
+				"scenario": "no_meta",
+				"start_charge": 0.0,
+				"start_charge_ratio": 0.0,
+				"stats": {
+					"agility": 14.0,
+					"endurance": 5.0,
+					"energy": 6.0,
+					"intelligence": 8.0,
+					"knowledge": 8.0,
+					"leadership": 2.0,
+					"perception": 5.0,
+					"strength": 11.0
+				}
+			},
+			"frame_count": 3600,
+			"initial_activation_count": 0,
+			"initial_charge": 0.0,
+			"scenario": "no_meta",
+			"seed": 151501,
+			"sustain_source": {
+				"damage": 393001.7964,
+				"hits": 44885
+			},
+			"ultimate_source": {
+				"by_mechanic": {
+					"emergency_surgery_orbit": {
+						"damage": 44903.304000000004,
+						"first_frame": 66,
+						"hits": 48
+					}
+				},
+				"damage": 44903.3033,
+				"hits": 48
+			}
+		}
+	}
+}
