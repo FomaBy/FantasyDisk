@@ -295,6 +295,7 @@ func _check(condition: bool, message: String) -> void:
 
 
 func _report() -> void:
+	_cleanup_probe_files()
 	if _errors.is_empty():
 		print("presentation_failure_contract_test: PASS")
 		quit(0)
@@ -303,3 +304,9 @@ func _report() -> void:
 		push_error("presentation_failure_contract_test: %s" % error)
 	print("presentation_failure_contract_test: FAIL (%d)" % _errors.size())
 	quit(1)
+
+
+func _cleanup_probe_files() -> void:
+	for path in [PROBE_MANIFEST_PATH, PROBE_RUNTIME_PATH]:
+		if FileAccess.file_exists(path):
+			DirAccess.remove_absolute(ProjectSettings.globalize_path(path))
