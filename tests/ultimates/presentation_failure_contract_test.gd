@@ -16,14 +16,30 @@ const PD := preload("res://scripts/progression_data.gd")
 const CLASS_ID := "soldier"
 const WEAPON_ID := "soldier_rifle"
 const GRENADE_ID := "soldier_grenade"
+const PAUSE_CLASS_ID := "robot"
+const PAUSE_WEAPON_ID := "robot_magnetic_anchor"
+const RUNTIME_SOURCE_PATH := "res://scripts/ultimates/presentation/weapon_ultimate_presentation_runtime.gd"
+const MANIFEST_ADMISSION_GUARD := "if manifest.is_empty() or not Schema.validate_manifest(manifest, profile).is_empty():"
+const SCENE_PATH_ADMISSION_GUARD := "if scene_path.is_empty() or not ResourceLoader.exists(scene_path):"
 
 
 class OverBudgetRuntime extends PresentationRuntime:
+	var observed_scene: Node = null
+	var observed_parent: Node = null
+
 	func _within_declared_budget(runtime: Dictionary) -> bool:
-		var scene := get("_scene") as Node
-		if scene != null:
-			scene.add_child(Sprite2D.new())
+		observed_scene = get("_scene") as Node
+		if observed_scene != null:
+			observed_parent = observed_scene.get_parent()
+			observed_scene.add_child(Sprite2D.new())
 		return super._within_declared_budget(runtime)
+
+
+class TimelineOnlyPauseRuntime extends PresentationRuntime:
+	func set_paused(value: bool) -> void:
+		var timeline = get("_timeline")
+		if timeline != null:
+			timeline.set_paused(value)
 
 
 var _errors: Array[String] = []
@@ -38,6 +54,7 @@ func _initialize() -> void:
 	await process_frame
 	await _test_ready_failure_is_atomic()
 	await _test_player_host_pause_bridge()
+	await _test_scene_pause_mutation_control()
 	_test_soldier_grenade_timing_truth()
 	_holder.queue_free()
 	await process_frame
@@ -45,10 +62,13 @@ func _initialize() -> void:
 
 
 func _test_ready_failure_is_atomic() -> void:
-	var player := await _spawn_player(WEAPON_ID)
+	_test_presentation_admission_guards()
+	var player := await _spawn_player(CLASS_ID, WEAPON_ID)
 	var host := PlayerHost.for_player(player)
 	var runtime := OverBudgetRuntime.new(0)
 	host.set("_presentation", runtime)
+	var effect_parent := player.call("_vfx_parent") as Node
+	var legacy_effect_count := _legacy_effect_count(effect_parent)
 	var full_charge := float(player.get("ultimate_max_charge"))
 	player.set("ultimate_charge", full_charge)
 	var ledger = player.get("_ultimate_charge_ledger")
@@ -57,6 +77,10 @@ func _test_ready_failure_is_atomic() -> void:
 
 	_check(not bool(player.call("activate_ultimate")),
 		"an over-budget ready presentation must reject the cast")
+	_check(runtime.observed_scene != null,
+		"the budget rejection must observe the instantiated presentation scene")
+	_check(runtime.observed_parent == effect_parent,
+		"the budget rejection must observe the presentation scene after parenting")
 	_check(is_equal_approx(float(player.get("ultimate_charge")), full_charge),
 		"presentation rejection must not spend charge")
 	_check(int(ledger.encounter_activations()) == activation_count,
@@ -73,12 +97,14 @@ func _test_ready_failure_is_atomic() -> void:
 	await process_frame
 	_check(_presentation_count() == presentation_count,
 		"the rejected presentation scene must be freed")
+	_check(_legacy_effect_count(effect_parent) == legacy_effect_count,
+		"a ready-package rejection must not emit the observable legacy fallback effect")
 	player.queue_free()
 	await process_frame
 
 
 func _test_player_host_pause_bridge() -> void:
-	var player := await _spawn_player(WEAPON_ID)
+	var player := await _spawn_player(PAUSE_CLASS_ID, PAUSE_WEAPON_ID)
 	var host := PlayerHost.for_player(player)
 	var runtime := PresentationRuntime.new(0)
 	host.set("_presentation", runtime)
@@ -86,21 +112,54 @@ func _test_player_host_pause_bridge() -> void:
 	_check(bool(player.call("activate_ultimate")),
 		"the valid ready presentation must start through the real Player host")
 	var timeline = runtime.get("_timeline")
+	var scene := runtime.get("_scene") as Node
+	var scene_timeline = scene.get("_timeline") if scene != null else null
 	_check(timeline != null, "the live presentation must own a timeline")
-	if timeline != null:
+	_check(scene_timeline != null, "the live presentation scene must own a timeline")
+	if timeline != null and scene_timeline != null:
 		runtime.advance(0.25)
-		var before_pause := float(timeline.elapsed_seconds())
+		_advance_scene(scene, 0.25)
+		var before_pause := _timeline_elapsed(timeline)
+		var before_scene_pause := _timeline_elapsed(scene_timeline)
 		host.notification(Node.NOTIFICATION_PAUSED)
 		runtime.advance(1.0)
+		_advance_scene(scene, 1.0)
 		_check(is_equal_approx(float(timeline.elapsed_seconds()), before_pause),
 			"Player pause notification must freeze presentation time")
+		_check(is_equal_approx(_timeline_elapsed(scene_timeline), before_scene_pause),
+			"Player pause notification must freeze the presentation scene runner")
 		host.notification(Node.NOTIFICATION_UNPAUSED)
 		runtime.advance(1.0)
+		_advance_scene(scene, 1.0)
 		_check(float(timeline.elapsed_seconds()) > before_pause,
 			"Player unpause notification must resume presentation time")
+		_check(_timeline_elapsed(scene_timeline) > before_scene_pause,
+			"Player unpause notification must resume the presentation scene runner")
 	host.controller().cancel()
 	_check(host.get("_presentation") == null,
 		"controller cancel must release the successful presentation")
+	player.queue_free()
+	await process_frame
+
+
+func _test_scene_pause_mutation_control() -> void:
+	var player := await _spawn_player(PAUSE_CLASS_ID, PAUSE_WEAPON_ID)
+	var host := PlayerHost.for_player(player)
+	var runtime := TimelineOnlyPauseRuntime.new(0)
+	host.set("_presentation", runtime)
+	player.set("ultimate_charge", float(player.get("ultimate_max_charge")))
+	_check(bool(player.call("activate_ultimate")),
+		"the scene-pause mutation control must start a real presentation")
+	var scene := runtime.get("_scene") as Node
+	var scene_timeline = scene.get("_timeline") if scene != null else null
+	if scene_timeline != null:
+		_advance_scene(scene, 0.25)
+		var before_pause := _timeline_elapsed(scene_timeline)
+		host.notification(Node.NOTIFICATION_PAUSED)
+		_advance_scene(scene, 1.0)
+		_check(_timeline_elapsed(scene_timeline) > before_pause,
+			"deleting the scene pause bridge must leave the scene runner advancing")
+	host.controller().cancel()
 	player.queue_free()
 	await process_frame
 
@@ -128,11 +187,28 @@ func _test_soldier_grenade_timing_truth() -> void:
 	scene.free()
 
 
-func _spawn_player(weapon_id: String) -> Node2D:
+func _test_presentation_admission_guards() -> void:
+	var source := FileAccess.get_file_as_string(RUNTIME_SOURCE_PATH)
+	_check(_has_admission_guards(source),
+		"presentation begin must reject invalid manifests and missing scene paths before scene creation")
+	_check(not _has_admission_guards(source.replace(MANIFEST_ADMISSION_GUARD, "return true")),
+		"the invalid-manifest early-success mutation must fail this contract")
+	_check(not _has_admission_guards(source.replace(SCENE_PATH_ADMISSION_GUARD, "return true")),
+		"the missing-scene-path early-success mutation must fail this contract")
+
+
+func _has_admission_guards(source: String) -> bool:
+	var manifest_guard := source.find(MANIFEST_ADMISSION_GUARD)
+	var scene_path_guard := source.find(SCENE_PATH_ADMISSION_GUARD)
+	var scene_creation := source.find("_scene = packed.instantiate()")
+	return manifest_guard >= 0 and scene_path_guard > manifest_guard and scene_creation > scene_path_guard
+
+
+func _spawn_player(class_id: String, weapon_id: String) -> Node2D:
 	var player := PlayerScene.instantiate() as Node2D
 	_holder.add_child(player)
 	await process_frame
-	player.call("configure_character", CLASS_ID, weapon_id)
+	player.call("configure_character", class_id, weapon_id)
 	await process_frame
 	player.set_process(false)
 	player.set_physics_process(false)
@@ -145,6 +221,27 @@ func _presentation_count() -> int:
 		if str((child as Node).get_meta("ultimate_id", "")).begins_with("soldier/"):
 			count += 1
 	return count
+
+
+func _legacy_effect_count(parent: Node) -> int:
+	if parent == null:
+		return 0
+	var count := 0
+	for child in parent.get_children():
+		if child.name == "VoidBurstVfx":
+			count += 1
+	return count
+
+
+func _timeline_elapsed(timeline) -> float:
+	return float(timeline.call("elapsed_seconds"))
+
+
+func _advance_scene(scene: Node, delta: float) -> void:
+	if scene.has_method("advance"):
+		scene.call("advance", delta)
+	elif scene.has_method("step"):
+		scene.call("step", delta)
 
 
 func _check(condition: bool, message: String) -> void:
