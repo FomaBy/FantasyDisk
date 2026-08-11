@@ -766,6 +766,35 @@ class QualityGateTests(unittest.TestCase):
                 }
             self.assertLessEqual(expected, names)
 
+    def test_defensive_paths_select_complete_unique_contract_group(self) -> None:
+        expected = self.quality.DEFENSIVE_CONTRACT_TESTS
+        self.assertEqual(expected, {
+            "assassin_kit_test",
+            "defensive_attribute_contract_fan1895_test",
+            "robot_kit_test",
+            "thief_kit_test",
+        })
+        synthetic_suites = [
+            ROOT / "tests" / f"{name}.gd"
+            for name in expected
+        ]
+        for changed_path in (
+            "scripts/player.gd",
+            "scripts/progression_data.gd",
+            "scripts/progression_data_balance.gd",
+        ):
+            with self.subTest(changed_path=changed_path), mock.patch.object(
+                self.quality, "discover_godot_tests", return_value=synthetic_suites
+            ), mock.patch.object(
+                self.quality, "_git_changed_paths", return_value={changed_path}
+            ):
+                selected_names = [
+                    path.stem
+                    for path in self.quality.select_godot_tests("changed", [], "base", False)
+                ]
+            self.assertEqual(selected_names, sorted(expected))
+            self.assertEqual(len(selected_names), len(set(selected_names)))
+
     def test_class_package_paths_select_player_integration_regression(self) -> None:
         # A ready-package rollout under the class data/executor trees changes
         # Player-visible routing, so the certifying changed profile must select

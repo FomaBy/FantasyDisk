@@ -120,6 +120,12 @@ BALANCE_CONTRACT_TESTS = {
     "class_damage_table_3variants_test",
     "global_damage_balance_smoke_test",
 }
+DEFENSIVE_CONTRACT_TESTS = {
+    "assassin_kit_test",
+    "defensive_attribute_contract_fan1895_test",
+    "robot_kit_test",
+    "thief_kit_test",
+}
 PATH_TEST_RULES = {
     "scripts/attribute_contract.gd": OFFENSIVE_CONTRACT_TESTS | CADENCE_STATUS_CONTRACT_TESTS,
     # FAN-2179: berserk_rage_trait_test охраняет rage-слой Берсерка — формулу
@@ -129,10 +135,10 @@ PATH_TEST_RULES = {
     "scripts/berserk_weapon.gd": {"berserk_rage_trait_test"},
     "scripts/class_weapon.gd": CADENCE_STATUS_CONTRACT_TESTS | {"coverage_cap_gate"},
     "scripts/meta_progression_tree_data.gd": {"offensive_scaling_contract_test"},
-    "scripts/player.gd": OFFENSIVE_CONTRACT_TESTS | CADENCE_STATUS_CONTRACT_TESTS | {"berserk_rage_trait_test"},
-    "scripts/progression_data.gd": OFFENSIVE_CONTRACT_TESTS | CADENCE_STATUS_CONTRACT_TESTS | BALANCE_CONTRACT_TESTS | {"berserk_rage_trait_test"},
+    "scripts/player.gd": OFFENSIVE_CONTRACT_TESTS | CADENCE_STATUS_CONTRACT_TESTS | DEFENSIVE_CONTRACT_TESTS | {"berserk_rage_trait_test"},
+    "scripts/progression_data.gd": OFFENSIVE_CONTRACT_TESTS | CADENCE_STATUS_CONTRACT_TESTS | BALANCE_CONTRACT_TESTS | DEFENSIVE_CONTRACT_TESTS | {"berserk_rage_trait_test"},
     "scripts/progression_data_characters.gd": {"berserk_rage_trait_test"},
-    "scripts/progression_data_balance.gd": OFFENSIVE_CONTRACT_TESTS | BALANCE_CONTRACT_TESTS,
+    "scripts/progression_data_balance.gd": OFFENSIVE_CONTRACT_TESTS | BALANCE_CONTRACT_TESTS | DEFENSIVE_CONTRACT_TESTS,
     "scripts/progression_data_content.gd": {"offensive_scaling_contract_test"},
     "scripts/progression_data_weapons.gd": {"offensive_scaling_contract_test"} | CADENCE_STATUS_CONTRACT_TESTS | BALANCE_CONTRACT_TESTS,
     "scripts/sentry_turret.gd": {"engineer_kit_test"},
