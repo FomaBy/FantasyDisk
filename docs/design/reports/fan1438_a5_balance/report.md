@@ -1,8 +1,8 @@
 # FAN-1438 — A5 character and weapon balance report
 
-Source commit `be90b38df38788fc53190c862a873f4aab80ea28` (tree `ad41b714ee5ac2f92ad80e002704094cc05b4f72`, timestamp `2026-08-06T04:32:13+03:00`), Godot `4.7-stable (official)`. Dataset digest: `024e7c894f5f1aeab3be79b405c34e508eaa6d23084f5b56decf24582bb98ba0`.
-Supplemental final-execution source commit `8042df1c11193b5bb497fa35511028f58871acad` (tree `72a9c75125041dc4787fae0c0374ac5c8296db21`, timestamp `2026-08-11T10:07:15+03:00`), Godot `4.7-stable (official)`.
-Run identity `fan2224:2cd375b76b9a164ac2054d5aed0621bccf5c1cf7970f62b9da603a76d4312163`. Generation command: `python3 tools/godot_gate.py --headless --fixed-fps 60 --path . --script res://tools/a5_balance_report.gd -- --mode=full --source-commit=8042df1c11193b5bb497fa35511028f58871acad`.
+Source commit `be90b38df38788fc53190c862a873f4aab80ea28` (tree `ad41b714ee5ac2f92ad80e002704094cc05b4f72`, timestamp `2026-08-06T04:32:13+03:00`), Godot `4.7-stable (official)`. Dataset digest: `1d77a35ff5040fc5cea05d16724150972e764bea93721c170de8a5f37cfba4f3`.
+Supplemental final-execution source commit `615830f78c66259d0cb3b3b7ff731e64cb2e67c2` (tree `94e19a5028dadcdb007c1264ba20de94f77a0c26`, timestamp `2026-08-11T19:09:15+03:00`), Godot `4.7-stable (official)`.
+Run identity `fan2224:aa84e6d2f8dfa4765a8296cf57333a9ae50cd18dab48d0a49e9146fdda385990`. Generation command: `python3 tools/godot_gate.py --headless --fixed-fps 60 --path . --script res://tools/a5_balance_report.gd -- --mode=full --source-commit=615830f78c66259d0cb3b3b7ff731e64cb2e67c2`.
 
 The live roster is **17 classes / 51 class-weapon pairs**. The primary matrix is **408 rows** = pairs × 2 levels × 4 meta scenarios. This report changes no balance values.
 

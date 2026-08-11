@@ -76,6 +76,56 @@ func _validate_final_execution_falsification(dataset: Dictionary) -> void:
 	_check(baseline_errors.is_empty(), "the production-shaped final-execution fixture must be admissible: %s" % "; ".join(baseline_errors))
 	if not baseline_errors.is_empty():
 		return
+	var status_trace := baseline.duplicate(true)
+	var status_event: Dictionary = ((status_trace["telemetry"] as Dictionary)["events"] as Array)[3]
+	status_event["phase"] = "target_status_transition"
+	status_event["event"] = "status_transition"
+	status_event["status_marker"] = "constellation_sword_repeat_execute_owner"
+	var status_payoff: Dictionary = status_trace["payoff"]
+	status_payoff["kind"] = "target_status_transition"
+	status_payoff["binding"] = "frame_ordered"
+	status_payoff["provenance_bound_hits"] = 0
+	status_payoff["provenance_bound_damage"] = 0.0
+	status_payoff["post_activation_hits"] = 1
+	status_payoff["post_activation_damage"] = 14.0
+	status_payoff["target_status_markers"] = ["constellation_sword_repeat_execute_owner"]
+	status_payoff["amplified_hit_mean"] = 0.0
+	status_payoff["observed_damage_ratio"] = 0.0
+	(status_trace["telemetry"] as Dictionary)["trace_digest_sha256"] = Generator.canonical_trace_digest((status_trace["telemetry"] as Dictionary).get("events", []))
+	_check(Generator.verify_final_execution_row(status_trace).is_empty(), "the phase-bound target-status fixture must be admissible")
+	var named_marker_only := status_trace.duplicate(true)
+	var forged_status_event: Dictionary = ((named_marker_only["telemetry"] as Dictionary)["events"] as Array)[3]
+	forged_status_event["phase"] = "final_resolution"
+	forged_status_event.erase("status_marker")
+	(named_marker_only["telemetry"] as Dictionary)["trace_digest_sha256"] = Generator.canonical_trace_digest((named_marker_only["telemetry"] as Dictionary).get("events", []))
+	_check("; ".join(Generator.verify_final_execution_row(named_marker_only)).contains("status payoff does not reconstruct"), "a named target marker without a phase-bound trace transition must fail")
+	var owner_trace := baseline.duplicate(true)
+	var owner_event: Dictionary = ((owner_trace["telemetry"] as Dictionary)["events"] as Array)[3]
+	owner_event["source"] = "player"
+	owner_event["phase"] = "owner_state_transition"
+	owner_event["target_id"] = "player"
+	owner_event["event"] = "owner_state_transition"
+	owner_event.erase("related_hit_id")
+	owner_event["owner_state_before"] = {"health": 10.0}
+	owner_event["owner_state_after"] = {"health": 11.0}
+	owner_event["owner_state_delta"] = {"health": 1.0}
+	owner_event["owner_final_marker"] = true
+	var owner_payoff: Dictionary = owner_trace["payoff"]
+	owner_payoff["kind"] = "owner_state_transition"
+	owner_payoff["binding"] = "frame_ordered"
+	owner_payoff["provenance_bound_hits"] = 0
+	owner_payoff["provenance_bound_damage"] = 0.0
+	owner_payoff["post_activation_hits"] = 1
+	owner_payoff["post_activation_damage"] = 14.0
+	owner_payoff["owner_state_delta"] = {"health": 1.0}
+	owner_payoff["owner_final_marker"] = true
+	owner_payoff["amplified_hit_mean"] = 0.0
+	owner_payoff["observed_damage_ratio"] = 0.0
+	(owner_trace["telemetry"] as Dictionary)["trace_digest_sha256"] = Generator.canonical_trace_digest((owner_trace["telemetry"] as Dictionary).get("events", []))
+	_check(Generator.verify_final_execution_row(owner_trace).is_empty(), "the trace-backed owner-state fixture must be admissible")
+	var forged_owner := owner_trace.duplicate(true)
+	(forged_owner["payoff"] as Dictionary)["owner_state_delta"] = {}
+	_check("; ".join(Generator.verify_final_execution_row(forged_owner)).contains("owner-state payoff does not reconstruct"), "owner payoff fields must not override the owner trace")
 	var legacy_mutations := _final_execution_mutations(baseline)
 	_check(legacy_mutations.size() == LEGACY_FINAL_EXECUTION_MUTATION_COUNT, "final-execution mutation catalog is unexpectedly short")
 	for mutation_value in legacy_mutations:
