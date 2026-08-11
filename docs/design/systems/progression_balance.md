@@ -1399,6 +1399,18 @@ wall-clock или ручных флагов. Неразрешимый, непо�
 останавливает генерацию до записи артефактов; integrity gate повторно сверяет
 commit/tree/timestamp и содержит отрицательный mismatch-case.
 
+Schema v4 публикует versioned registry `A5_ARTIFACT_SCHEMA_V4`: текущую raw
+schema и полный ordered mapping CSV column → raw field. Это единственная
+декларация формата CSV, поэтому generation и gate получают одинаковый
+явный контракт без неявного списка столбцов. Сам integrity gate не использует
+renderer или verifier генератора как oracle: он заново получает Git
+commit/tree/timestamp и ancestry, пересчитывает canonical SHA-256 payload,
+все CSV cells, Markdown projections, row deltas, class aggregates/medians,
+outlier sets, live means/stddev/deltas и formula/live verdicts из raw/runtime
+registry. Named raw, provenance, CSV, Markdown, aggregate, delta и verdict
+mutations обязаны отклоняться fail-closed; неизменный current dataset остаётся
+зелёным.
+
 Для class-kit ultimate сборщик всегда берёт контролируемые level stats из
 `no_meta` строки и ровно один раз применяет class/Atlas attribute и run
 modifiers. Поэтому мета-бонусы не переносятся повторно из weapon rows, а ultimate
