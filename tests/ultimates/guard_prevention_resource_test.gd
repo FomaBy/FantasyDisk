@@ -123,20 +123,36 @@ func _test_new_run_clears_stale_resource() -> void:
 
 func _test_node_end_clears_stale_resource() -> void:
 	var activation := _install_guard_activation()
+	var controller = PlayerHost.for_player(_player).controller()
+	var lifecycle_tween := activation.track_tween()
+	lifecycle_tween.tween_interval(10.0)
+	var observed := {"event_count": 0, "resource": 0.0}
+	_player.guard_prevention_measured.connect(func(_event: Dictionary) -> void:
+		observed["event_count"] = int(observed["event_count"]) + 1
+		observed["resource"] = activation.owner_resource_amount(OWNER_ID, RESOURCE_ID)
+	, CONNECT_ONE_SHOT)
 	var attacker := Node2D.new()
 	attacker.global_position = _player.global_position + Vector2(100.0, 0.0)
 	_holder.add_child(attacker)
 	_player.set("health", 20.0)
 	_player.set("_damage_invulnerability_left", 0.0)
 	_player.take_damage(100.0, "contact", attacker)
-	_check(is_equal_approx(activation.owner_resource_amount(OWNER_ID, RESOURCE_ID), 50.0),
-		"overkill must not inflate prevention beyond final mitigation")
+	_check(int(observed["event_count"]) == 1 and is_equal_approx(float(observed["resource"]), 50.0),
+		"lethal prevention must be recorded before death cleanup at final mitigation")
+	_check(activation.is_finished() and not controller.is_active(),
+		"death must finish the activation and controller synchronously")
+	_check(activation.owner_resource_amount(OWNER_ID, RESOURCE_ID) == 0.0,
+		"death must clear transient owner resources after recording")
+	_check(not lifecycle_tween.is_valid(), "death must invalidate activation-owned tweens")
 	_holder.remove_child(_player)
 	_check(activation.is_finished(), "node end must finish the live guard activation")
 	_check(activation.owner_resource_amount(OWNER_ID, RESOURCE_ID) == 0.0,
 		"node end must clear transient owner resources")
 	_check(activation.consume_owner_resource(OWNER_ID, RESOURCE_ID, "stale_node_end").get("amount", 0.0) == 0.0,
 		"node-end cleanup must not emit a stale counter")
+	controller.cancel("node_end")
+	_check(activation.is_finished() and not controller.is_active(),
+		"death followed by node end and repeated cancellation must stay idempotent")
 	_player.queue_free()
 
 

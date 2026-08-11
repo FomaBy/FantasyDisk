@@ -1,10 +1,9 @@
 # Weapon-keyed ultimate contract
 
-Status: schema v1 is implemented as a declaration and migration foundation, and
-the generic runtime plus class-package discovery seam can execute a ready exact
-JSON/GDScript pair. Gameplay still executes the existing class ultimate until an
-individual package is admitted; no shipped package exists, so behaviour is
-unchanged.
+Status: schema v1 has live exact-pair discovery. The generic runtime executes
+the admitted JSON/GDScript package for every canonical class/weapon selection;
+the 17-class roster has 51 such pairs. A missing, duplicated or mismatched pair
+invalidates discovery rather than being silently replaced.
 
 ## Scope and source of truth
 
@@ -126,11 +125,13 @@ compose shared families and primitives rather than duplicate them.
 
 ## Migration fallback
 
-During migration, every declared or temporarily missing profile for a known
-canonical pair resolves to the existing class ultimate when
+During a partial migration, a declared or temporarily missing profile for a
+known canonical pair may resolve to the existing class ultimate when
 `allow_legacy_fallback` is enabled. The caller supplies that legacy dictionary;
 the resolver does not import `ProgressionData` and cannot create a preload
-cycle.
+cycle. In the fully admitted 51-pair roster, all canonical selections resolve
+to `weapon_profile`; legacy fallback is neither selected nor used as a ready
+package substitute.
 
 The fallback is returned unchanged as a deep copy. Weapon targeting, charge,
 phase, executor, total-cap, presentation, and cleanup declarations are bypassed
@@ -146,10 +147,11 @@ ultimate state is written.
 
 `scripts/ultimates/controller/ultimate_controller.gd` is the single activation
 path. It reads `resolution_source(...)`, and only a `weapon_profile` result is
-taken over; a `legacy_class_fallback` result makes `activate()` return false so
-the caller keeps running its unchanged class ultimate. That is the migration
-bridge, and it is why every profile can stay `declared` without any gameplay
-change.
+taken over. `UltimatePlayerHost` reports legacy, started and failed outcomes
+separately, so only an explicit `legacy_class_fallback` result may run the old
+class ultimate. A ready activation validates and owns its exact presentation,
+then commits Player charge before gameplay or active state begins; presentation
+failure therefore leaves charge and the encounter activation budget untouched.
 
 `scripts/ultimates/controller/ultimate_activation.gd` is one live cast. Executors
 never touch the Player: they ask the activation for targets, damage, modifiers,
@@ -163,12 +165,13 @@ keeps passing while `repair()` fails closed against it. Nothing below the
 adapter may branch on a class or a weapon.
 
 `scripts/player.gd` keeps the host preload, `ULTIMATE_HOST.reset(self)` at the
-top of `configure_character`, `ULTIMATE_HOST.activate(self)` delegation in
-`activate_ultimate`, and one generic measured-prevention emission after its
-existing mitigation arithmetic. Death, scene change and node end need no hook at
-all — the host is a Player child, so its own `_exit_tree` cancels the cast. Only
-the new run needs the explicit call, and it must stay before `run_modifiers` is
-reset, otherwise the modifier revert would land on freshly created defaults.
+top of `configure_character`, and `ULTIMATE_HOST.activate(self, commit)`
+delegation in `activate_ultimate`. A ready runtime failure returns `false` with a
+diagnostic and never enters legacy code or emits success feedback. Death, scene
+change and node end need no hook at all — the host is a Player child, so its own
+`_exit_tree` cancels the cast. Only the new run needs the explicit call, and it
+must stay before `run_modifiers` is reset, otherwise the modifier revert would
+land on freshly created defaults.
 
 Executor families live in `scripts/ultimates/executors/` and are selected purely
 by `executor.strategy_id`:

@@ -13,6 +13,23 @@
     "new_pixellab_assets": "none; no source or runtime PNG was created or modified by FAN-1470",
     "rationale": "The three accepted plates already provide distinct coin, cloak, and smoke silhouettes. This pack adds only class-local timelines, scenes, tests, and evidence; reusing them avoids redundant art generation."
   },
+  "weapons": [
+    {
+      "weapon_id": "thief_coin_pouch",
+      "scene_path": "scenes/vfx/ultimates/thief/ThiefCoinPouchUltimate.tscn",
+      "timing_seconds": {"windup": 0.0, "release": 0.30, "active": 0.72, "recovery": 4.20, "cancel": 4.85}
+    },
+    {
+      "weapon_id": "thief_shadow_cloak",
+      "scene_path": "scenes/vfx/ultimates/thief/ThiefShadowCloakUltimate.tscn",
+      "timing_seconds": {"windup": 0.0, "release": 0.46, "active": 0.88, "recovery": 3.18, "cancel": 3.74}
+    },
+    {
+      "weapon_id": "thief_smoke_bomb",
+      "scene_path": "scenes/vfx/ultimates/thief/ThiefSmokeBombUltimate.tscn",
+      "timing_seconds": {"windup": 0.0, "release": 0.68, "active": 1.16, "recovery": 5.22, "cancel": 5.82}
+    }
+  ],
   "assets": [
     {
       "weapon_id": "thief_coin_pouch",

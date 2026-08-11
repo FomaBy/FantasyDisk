@@ -4,21 +4,21 @@ const Library := preload("res://scripts/ultimates/executors/ultimate_executor_li
 
 const PROFILE_ID := "weapon_ultimate.profile.soldier.soldier_grenade"
 const EXECUTOR_ID := "weapon_ultimate.executor.soldier.soldier_grenade"
-const SELF_PATH := "res://scripts/ultimates/staged/classes/soldier/soldier_grenade.gd"
-const GRENADE_SCENE := "res://scripts/ultimates/staged/classes/soldier/temporary_soldier_grenade.tscn"
+const SELF_PATH := "res://scripts/ultimates/classes/soldier/soldier_grenade.gd"
+const GRENADE_SCENE := "res://scripts/ultimates/classes/soldier/temporary_soldier_grenade.tscn"
 const TARGET_KEY := "soldier_grenade_armed"
 
 
 static func parameter_contract() -> Dictionary:
 	return {
-		"aim_range": {"type": "number", "minimum": 0.01},
+		"max_range": {"type": "number", "minimum": 0.01},
 		"grenade_count": {"type": "integer", "minimum": 1, "maximum": 16},
 		"inner_radius": {"type": "number", "minimum": 0.0},
 		"outer_radius": {"type": "number", "minimum": 0.0},
 		"seed": {"type": "integer"},
 		"probe_radius": {"type": "number", "minimum": 0.0},
 		"target_limit": {"type": "integer", "minimum": 1},
-		"fuse_time": {"type": "number", "minimum": 0.0},
+		"first_impact_delay": {"type": "number", "minimum": 0.0},
 		"chain_interval": {"type": "number", "minimum": 0.01},
 		"blast_radius": {"type": "number", "minimum": 0.0},
 		"damage": {"type": "number", "minimum": 0.0},
@@ -31,47 +31,48 @@ static func parameter_contract() -> Dictionary:
 	}
 
 
-## The shared composition captures one aim, lays out one deterministic seven-
-## point annulus and atomically deploys seven activation-owned nodes. Class-
-## local callbacks only add the outside-in fuse order and crater cadence.
+## Shared primitives capture one aim, lay out one deterministic seven-point
+## annulus and atomically deploy seven activation-owned nodes. The class-local
+## chain then owns the one lifecycle tween through crater cleanup.
 static func execute(activation) -> float:
 	var package_params: Dictionary = activation.params
 	var count: int = activation.param_int("grenade_count", 7)
 	var lifetime: float = activation.param_float("lifetime", 8.4)
-	var composition := Library.normalize_params(Library.COMPOSITION_ID, {
-		"steps": [
-			{"at": 0.0, "primitive_id": "aim_context", "params": {
-				"max_range": activation.param_float("aim_range", 720.0),
-				"target_mode": "host_aim",
-			}},
-			{"at": 0.0, "primitive_id": "pattern_geometry", "params": {
-				"center": "target",
-				"pattern": "seeded_annulus",
-				"params": {
-					"count": count,
-					"inner_radius": activation.param_float("inner_radius", 90.0),
-					"outer_radius": activation.param_float("outer_radius", 260.0),
-					"seed": activation.param_int("seed", 1469),
-				},
-				"hit_radius": activation.param_float("probe_radius", 170.0),
-				"target_limit": activation.param_int("target_limit", 26),
-			}},
-			{"at": 0.0, "family": "deploy_summon", "params": {
-				"scene": GRENADE_SCENE,
-				"count": count,
-				"spawn_radius": 0.0,
-				"lifetime": lifetime,
-				"damage": 0.0,
-				"properties": {},
-			}},
-		],
-	})
-	if not (composition["errors"] as Array).is_empty():
+	activation.composition_step("aim_context")
+	if not Library.execute_primitive("aim_context", activation, {
+		"max_range": activation.param_float("max_range", 720.0),
+		"target_mode": "host_aim",
+	}):
 		return 0.0
-	activation.params = composition["params"]
-	var composition_duration := Library.execute(Library.COMPOSITION_ID, activation)
+	activation.composition_step("pattern_geometry")
+	if not Library.execute_primitive("pattern_geometry", activation, {
+		"center": "target",
+		"pattern": "seeded_annulus",
+		"params": {
+			"count": count,
+			"inner_radius": activation.param_float("inner_radius", 90.0),
+			"outer_radius": activation.param_float("outer_radius", 260.0),
+			"seed": activation.param_int("seed", 1469),
+		},
+		"hit_radius": activation.param_float("probe_radius", 170.0),
+		"target_limit": activation.param_int("target_limit", 26),
+	}):
+		return 0.0
+	var deploy := Library.normalize_params("deploy_summon", {
+		"scene": GRENADE_SCENE,
+		"count": count,
+		"spawn_radius": 0.0,
+		"lifetime": lifetime,
+		"damage": 0.0,
+		"properties": {},
+	})
+	if not (deploy["errors"] as Array).is_empty():
+		return 0.0
+	activation.composition_step("deploy_summon")
+	activation.params = deploy["params"]
+	var deploy_duration := Library.execute("deploy_summon", activation)
 	activation.params = package_params
-	if composition_duration <= 0.0:
+	if deploy_duration <= 0.0:
 		return 0.0
 	var points = activation.primitive_value("points", PackedVector2Array())
 	if not points is PackedVector2Array or (points as PackedVector2Array).size() != count:
@@ -100,7 +101,7 @@ static func execute(activation) -> float:
 	if tween == null:
 		return 0.0
 	var script := load(SELF_PATH)
-	tween.tween_interval(activation.param_float("fuse_time", 4.7))
+	tween.tween_interval(activation.param_float("first_impact_delay", 4.7))
 	var order := state["order"] as Array
 	for position in order.size():
 		tween.tween_callback(Callable(script, "detonate").bind(activation, state, int(order[position])))
@@ -112,7 +113,7 @@ static func execute(activation) -> float:
 		tween.tween_callback(Callable(script, "crater_tick").bind(activation, tick))
 		if tick + 1 < crater_ticks:
 			tween.tween_interval(activation.param_float("crater_interval", 0.5))
-	var elapsed: float = activation.param_float("fuse_time", 4.7) \
+	var elapsed: float = activation.param_float("first_impact_delay", 4.7) \
 		+ activation.param_float("chain_interval", 0.3) * float(maxi(order.size() - 1, 0)) \
 		+ activation.param_float("crater_delay", 0.4) \
 		+ activation.param_float("crater_interval", 0.5) * float(maxi(crater_ticks - 1, 0))

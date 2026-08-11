@@ -16,14 +16,14 @@
   "executor": {
     "strategy_id": "weapon_ultimate.executor.soldier.soldier_grenade",
     "params": {
-      "aim_range": 720.0,
+      "max_range": 720.0,
       "grenade_count": 7,
       "inner_radius": 90.0,
       "outer_radius": 260.0,
       "seed": 1469,
       "probe_radius": 170.0,
       "target_limit": 26,
-      "fuse_time": 4.7,
+      "first_impact_delay": 4.7,
       "chain_interval": 0.3,
       "blast_radius": 155.0,
       "damage": 24.0,

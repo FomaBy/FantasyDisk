@@ -16,7 +16,7 @@
   "executor": {
     "strategy_id": "weapon_ultimate.executor.soldier.soldier_bayonet",
     "params": {
-      "aim_range": 780.0,
+      "max_range": 780.0,
       "corridor_half_width": 78.0,
       "target_limit": 18,
       "rank_count": 3,
@@ -26,7 +26,7 @@
       "pin_duration": 2.4,
       "pin_slow": 0.35,
       "guard_defense": 0.25,
-      "recover_time": 4.25
+      "lifetime": 4.25
     }
   },
   "total_boss_cap": 0.09,

@@ -9,8 +9,8 @@ const PD := preload("res://scripts/progression_data.gd")
 
 const CLASS_ID := "soldier"
 const WEAPONS := ["soldier_rifle", "soldier_grenade", "soldier_bayonet"]
-const DATA_ROOT := "res://data/ultimates/staged/classes"
-const SCRIPT_ROOT := "res://scripts/ultimates/staged/classes"
+const DATA_ROOT := "res://data/ultimates/classes"
+const SCRIPT_ROOT := "res://scripts/ultimates/classes"
 const TRIO_MIN := 0.90
 const TRIO_MAX := 1.10
 
@@ -22,7 +22,7 @@ func _initialize() -> void:
 	var report := Harness.measure(rows)
 	_check(Harness.violations(report).is_empty(),
 		"the inherited 51-row balance harness must remain clean")
-	var profiles := _staged_profiles()
+	var profiles := _active_profiles()
 	var metrics := {}
 	for weapon_id in WEAPONS:
 		var row := Budget.row_for(rows, CLASS_ID, weapon_id)
@@ -34,13 +34,13 @@ func _initialize() -> void:
 	_report(metrics)
 
 
-func _staged_profiles() -> Dictionary:
+func _active_profiles() -> Dictionary:
 	var shipped := Registry.new(PD.WEAPONS_BY_CLASS)
 	_check(shipped.is_valid(), "the immutable catalog must remain valid")
 	var discovery := Discovery.new(DATA_ROOT, SCRIPT_ROOT)
 	discovery.discover(Schema.index_documents(shipped.documents_for_tests()))
 	_check(discovery.validation_errors().is_empty(),
-		"staged balance discovery must stay valid: %s" % [discovery.validation_errors()])
+		"active balance discovery must stay valid: %s" % [discovery.validation_errors()])
 	var profiles := {}
 	for weapon_id in WEAPONS:
 		profiles[weapon_id] = discovery.profile_for("%s/%s" % [CLASS_ID, weapon_id])

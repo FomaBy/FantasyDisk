@@ -88,7 +88,13 @@ func _test_pause_freezes_timeline(manifest: Dictionary, errors: Array[String]) -
 	_expect(timeline.advance(1.0).is_empty(), "paused timeline must not emit events", errors)
 	_expect(is_equal_approx(timeline.elapsed_seconds(), elapsed_before_pause), "paused timeline must not advance time", errors)
 	timeline.set_paused(false)
-	_expect(not timeline.advance(0.10).is_empty(), "resumed timeline must continue events", errors)
+	var timing := manifest.get("timing", {}) as Dictionary
+	var release_at := float(timing.get("release", INF))
+	var resumed := timeline.advance(maxf(release_at - elapsed_before_pause, 0.0) + 0.01)
+	_expect(resumed.size() == 1 and str((resumed[0] as Dictionary).get("name", "")) == "release",
+		"resumed timeline must continue through its real first manifest beat", errors)
+	_expect(timeline.elapsed_seconds() >= release_at,
+		"resumed timeline must advance beyond the real release time", errors)
 	timeline.finish("cancel")
 
 

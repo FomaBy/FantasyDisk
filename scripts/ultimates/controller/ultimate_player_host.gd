@@ -17,10 +17,15 @@ extends Node
 
 const Controller := preload("res://scripts/ultimates/controller/ultimate_controller.gd")
 const Registry := preload("res://scripts/ultimates/registry/weapon_ultimate_registry.gd")
+const Resolver := preload("res://scripts/ultimates/registry/weapon_ultimate_resolver.gd")
+const PresentationRuntime := preload("res://scripts/ultimates/presentation/weapon_ultimate_presentation_runtime.gd")
 const ProgressionData := preload("res://scripts/progression_data.gd")
 const TargetQuery := preload("res://scripts/combat_target_query.gd")
 
 const NODE_NAME := "UltimateHost"
+const ACTIVATION_LEGACY_FALLBACK := 0
+const ACTIVATION_STARTED := 1
+const ACTIVATION_FAILED := 2
 # A script cannot name itself while it is being compiled as a dependency of
 # `player.gd`, so the factory instantiates through the resource cache instead.
 const SELF_PATH := "res://scripts/ultimates/controller/ultimate_player_host.gd"
@@ -29,6 +34,9 @@ static var _shared_registry = null
 
 var player: Node2D = null
 var _controller: Controller = null
+var _runtime_registry = null
+var _presentation: PresentationRuntime = null
+var _last_activation_failure := ""
 
 
 ## Read once per process. The catalog is immutable, so every Player shares it.
@@ -56,13 +64,30 @@ static func reset(player_node: Node2D) -> void:
 		existing.controller().cancel()
 
 
-## True when the generic runtime took the cast. False means the equipped weapon
-## has no ready declaration yet and the caller keeps its legacy class ultimate.
-static func activate(player_node: Node2D) -> bool:
+## Only an explicit legacy resolution may reach the class fallback. A ready
+## package failure is distinct so the caller can preserve charge and report it.
+static func activate(player_node: Node2D, commit := Callable()) -> int:
 	var host := for_player(player_node)
-	return host.controller().activate(
-		str(player_node.get("character_id")), str(player_node.get("weapon_id"))
-	)
+	var class_id := str(player_node.get("character_id"))
+	var weapon_id := str(player_node.get("weapon_id"))
+	var source := str(host._registry().resolution_source(class_id, weapon_id))
+	host._last_activation_failure = ""
+	if source == Resolver.SOURCE_LEGACY_CLASS_FALLBACK:
+		return ACTIVATION_LEGACY_FALLBACK
+	if source != Resolver.SOURCE_WEAPON_PROFILE:
+		host._last_activation_failure = "resolution_failed:%s" % source
+		return ACTIVATION_FAILED
+	if host.controller().activate(class_id, weapon_id, commit):
+		return ACTIVATION_STARTED
+	host._last_activation_failure = host.controller().last_failure()
+	if host._last_activation_failure.is_empty():
+		host._last_activation_failure = "ready_runtime_rejected"
+	return ACTIVATION_FAILED
+
+
+static func activation_failure(player_node: Node2D) -> String:
+	var existing := player_node.get_node_or_null(NODE_NAME)
+	return str(existing._last_activation_failure) if existing != null else ""
 
 
 static func guard_prevention_owner(player_node: Node2D) -> String:
@@ -76,11 +101,13 @@ func _init(player_node: Node2D = null) -> void:
 	process_mode = Node.PROCESS_MODE_PAUSABLE
 	if player != null and player.has_signal("guard_prevention_measured"):
 		player.connect("guard_prevention_measured", Callable(self, "_on_guard_prevention_measured"))
+	if player != null and player.has_signal("died"):
+		player.connect("died", Callable(self, "_on_player_died"))
 
 
 func controller() -> Controller:
 	if _controller == null:
-		_controller = Controller.new(self, shared_registry())
+		_controller = Controller.new(self, _registry())
 	return _controller
 
 
@@ -88,13 +115,14 @@ func controller() -> Controller:
 ## it, so one hook covers every case a new run does not.
 func _exit_tree() -> void:
 	if _controller != null:
-		_controller.cancel()
+		_controller.cancel("node_end")
 
 
 func use_registry(registry) -> void:
 	if _controller != null:
 		_controller.cancel()
-	_controller = Controller.new(self, registry)
+	_runtime_registry = registry
+	_controller = Controller.new(self, _registry())
 
 
 func guard_prevention_owner_id() -> String:
@@ -104,6 +132,27 @@ func guard_prevention_owner_id() -> String:
 func _on_guard_prevention_measured(event: Dictionary) -> void:
 	if _controller != null:
 		_controller.record_guard_prevention(event)
+
+
+func _on_player_died() -> void:
+	if _controller != null:
+		_controller.cancel("death")
+
+
+func _process(delta: float) -> void:
+	if _presentation != null:
+		_presentation.advance(delta)
+
+
+func _notification(what: int) -> void:
+	if what == NOTIFICATION_PAUSED:
+		ultimate_host_set_presentation_paused(true)
+	elif what == NOTIFICATION_UNPAUSED:
+		ultimate_host_set_presentation_paused(false)
+
+
+func _registry():
+	return _runtime_registry if _runtime_registry != null else shared_registry()
 
 
 # --- host contract -----------------------------------------------------------
@@ -194,6 +243,27 @@ func ultimate_host_modifier(key: String, value: float, op: String) -> void:
 
 func ultimate_host_effect_parent() -> Node:
 	return player.call("_vfx_parent")
+
+
+func ultimate_host_begin_presentation(profile: Dictionary) -> bool:
+	if _presentation == null:
+		_presentation = PresentationRuntime.new()
+	if _presentation.begin(self, _registry(), profile):
+		return true
+	_presentation.finish("cancel")
+	_presentation = null
+	return false
+
+
+func ultimate_host_set_presentation_paused(value: bool) -> void:
+	if _presentation != null:
+		_presentation.set_paused(value)
+
+
+func ultimate_host_finish_presentation(reason: String) -> void:
+	if _presentation != null:
+		_presentation.finish(reason)
+		_presentation = null
 
 
 func ultimate_host_set_active(active: bool) -> void:

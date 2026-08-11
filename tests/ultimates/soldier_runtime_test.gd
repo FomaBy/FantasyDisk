@@ -3,7 +3,7 @@ extends SceneTree
 const Activation := preload("res://scripts/ultimates/controller/ultimate_activation.gd")
 const Budget := preload("res://scripts/ultimates/balance/ultimate_charge_budget.gd")
 const Controller := preload("res://scripts/ultimates/controller/ultimate_controller.gd")
-const Grenade := preload("res://scripts/ultimates/staged/classes/soldier/soldier_grenade.gd")
+const Grenade := preload("res://scripts/ultimates/classes/soldier/soldier_grenade.gd")
 const Ledger := preload("res://scripts/ultimates/balance/ultimate_charge_ledger.gd")
 const Discovery := preload("res://scripts/ultimates/registry/weapon_ultimate_package_discovery.gd")
 const Registry := preload("res://scripts/ultimates/registry/weapon_ultimate_registry.gd")
@@ -14,8 +14,8 @@ const PD := preload("res://scripts/progression_data.gd")
 
 const CLASS_ID := "soldier"
 const WEAPONS := ["soldier_rifle", "soldier_grenade", "soldier_bayonet"]
-const DATA_ROOT := "res://data/ultimates/staged/classes"
-const SCRIPT_ROOT := "res://scripts/ultimates/staged/classes"
+const DATA_ROOT := "res://data/ultimates/classes"
+const SCRIPT_ROOT := "res://scripts/ultimates/classes"
 const STEP := 0.01
 
 
@@ -83,7 +83,7 @@ class FixtureHost extends Node2D:
 		active = value
 
 
-class StagedRegistry extends RefCounted:
+class ActiveRegistry extends RefCounted:
 	var canonical_pairs: Dictionary
 	var profiles: Dictionary = {}
 	var executors: Dictionary = {}
@@ -123,11 +123,11 @@ func _initialize() -> void:
 	current_scene = _holder
 	var shipped := Registry.new(PD.WEAPONS_BY_CLASS)
 	_check(shipped.is_valid(), "the immutable catalog must remain valid")
-	var staged := Discovery.new(DATA_ROOT, SCRIPT_ROOT)
-	staged.discover(Schema.index_documents(shipped.documents_for_tests()))
-	_check(staged.validation_errors().is_empty(),
-		"staged runtime discovery must stay valid: %s" % [staged.validation_errors()])
-	_registry = StagedRegistry.new(staged, shipped.canonical_pairs_for_tests())
+	var active := Discovery.new(DATA_ROOT, SCRIPT_ROOT)
+	active.discover(Schema.index_documents(shipped.documents_for_tests()))
+	_check(active.validation_errors().is_empty(),
+		"active runtime discovery must stay valid: %s" % [active.validation_errors()])
+	_registry = ActiveRegistry.new(active, shipped.canonical_pairs_for_tests())
 	await process_frame
 	await _test_rifle_dense_corridor()
 	await _test_grenade_chain_and_crater()

@@ -1,0 +1,37 @@
+{
+  "schema_version": 1,
+  "issue": "FAN-1463",
+  "class_id": "sniper",
+  "contract": {
+    "schema": "data/ultimates/presentation_schema/v1/weapon_ultimate_presentation_manifest.schema.json",
+    "profile_source": "data/ultimates/schema/v1/classes/sniper.json",
+    "runtime_adapter_status": "bound_by_FAN-1541"
+  },
+  "source_manifest": "docs/design/references/weapon_ultimates/sniper/provenance_manifest.json",
+  "weapons": [
+    {
+      "weapon_id": "sniper_deadeye_rifle",
+      "scene_path": "scenes/vfx/ultimates/sniper/sniper_deadeye_rifle_ultimate.tscn",
+      "timeline_path": "scenes/vfx/ultimates/sniper/sniper_deadeye_rifle.timeline.json",
+      "timing_seconds": {"windup": 0.0, "release": 0.65, "active": 0.78, "recovery": 1.4, "cancel": 1.85},
+      "pivot": [0.5, 0.5],
+      "performance": {"max_visual_nodes": 8, "crowd_cap": 24}
+    },
+    {
+      "weapon_id": "sniper_spotter_scope",
+      "scene_path": "scenes/vfx/ultimates/sniper/sniper_spotter_scope_ultimate.tscn",
+      "timeline_path": "scenes/vfx/ultimates/sniper/sniper_spotter_scope.timeline.json",
+      "timing_seconds": {"windup": 0.0, "release": 0.4, "active": 1.0, "recovery": 2.8, "cancel": 3.2},
+      "pivot": [0.5, 0.5],
+      "performance": {"max_visual_nodes": 24, "crowd_cap": 24}
+    },
+    {
+      "weapon_id": "sniper_shatter_rounds",
+      "scene_path": "scenes/vfx/ultimates/sniper/sniper_shatter_rounds_ultimate.tscn",
+      "timeline_path": "scenes/vfx/ultimates/sniper/sniper_shatter_rounds.timeline.json",
+      "timing_seconds": {"windup": 0.0, "release": 0.36, "active": 0.74, "recovery": 1.65, "cancel": 2.1},
+      "pivot": [0.5, 0.5],
+      "performance": {"max_visual_nodes": 26, "crowd_cap": 26}
+    }
+  ]
+}

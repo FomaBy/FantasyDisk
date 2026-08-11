@@ -5319,8 +5319,8 @@ func _test_ready_weapon_ultimate_fixtures(
 		return
 
 	# 3. Ready-декларация, которую рантайм не может исполнить (битый тайминг или
-	#    несуществующее семейство эффекта), обязана отдать каст legacy-ультимейту
-	#    класса целиком, а не полукастом.
+	#    несуществующее семейство эффекта), обязана завершиться fail-closed без
+	#    списания заряда и без неявного перехода на legacy-ультимейт.
 	for fixture in ULTIMATE_MALFORMED_FIXTURES:
 		var malformed := _inject_ready_ultimate_profile(player, pairs, fixture as Dictionary)
 		if str(malformed.get("source", "")) != UltimateResolver.SOURCE_WEAPON_PROFILE:
@@ -5332,15 +5332,18 @@ func _test_ready_weapon_ultimate_fixtures(
 			return
 		baseline = _ultimate_baseline(player, enemies)
 		player.set("ultimate_charge", 100.0)
-		if not bool(player.call("activate_ultimate")):
-			_fail("Expected a malformed ready declaration to keep the legacy %s ultimate available." % ULTIMATE_FIXTURE_CLASS)
+		if bool(player.call("activate_ultimate")):
+			_fail("Expected a malformed ready declaration to fail closed: %s" % str(fixture))
 			return
 		if _ultimate_active_activation(player) != null or bool(player.get("_ultimate_active")):
 			_fail("Expected a malformed ready declaration to refuse the generic cast: %s" % str(fixture))
 			return
+		if not is_equal_approx(float(player.get("ultimate_charge")), 100.0):
+			_fail("Expected a malformed ready declaration to preserve ultimate charge: %s" % str(fixture))
+			return
 		await process_frame
-		if not _ultimate_has_observable_effect(player, enemies, baseline, null):
-			_fail("Expected a malformed ready declaration to fall back to the legacy %s ultimate." % ULTIMATE_FIXTURE_CLASS)
+		if _ultimate_has_observable_effect(player, enemies, baseline, null):
+			_fail("Expected a malformed ready declaration to avoid legacy side effects: %s" % str(fixture))
 			return
 
 	var declared := _ultimate_declared_timing(delayed.get("profile", {}) as Dictionary)
