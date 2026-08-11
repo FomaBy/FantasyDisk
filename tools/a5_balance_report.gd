@@ -341,6 +341,52 @@ class A5TelemetryCollector extends RefCounted:
 		if _last_hit_by_target.has(target_label):
 			_append_final_id_to_hit(str(_last_hit_by_target[target_label]), event_id)
 
+	func record_target_status_transitions(targets: Array, mechanic_id: String, player: Node2D) -> void:
+		var marker_key := "constellation_%s_owner" % mechanic_id
+		for target_value in targets:
+			var target := target_value as Node2D
+			if target == null or not is_instance_valid(target) or int(target.get_meta(marker_key, 0)) != player.get_instance_id():
+				continue
+			var target_label := _target_label(target)
+			var related_hit_id := str(_last_hit_by_target.get(target_label, ""))
+			if related_hit_id == "":
+				continue
+			var event_id := _append_event({
+				"kind": "final_event",
+				"source": "player_weapon",
+				"phase": "target_status_transition",
+				"target_id": target_label,
+				"event": "status_transition",
+				"mechanic_id": mechanic_id,
+				"status_marker": marker_key,
+				"related_hit_id": related_hit_id,
+				"observed": true,
+				"damage": 0.0,
+			})
+			_append_final_id_to_hit(related_hit_id, event_id)
+
+	func record_owner_state_transition(owner_before: Dictionary, owner_after: Dictionary) -> void:
+		var owner_delta := {}
+		for key in ["health", "absorb_flat", "dodge_flat", "absorb", "dodge"]:
+			var delta := snappedf(float(owner_after.get(key, 0.0)) - float(owner_before.get(key, 0.0)), 0.0001)
+			if not is_zero_approx(delta):
+				owner_delta[key] = delta
+		var mechanic_id := str(owner_after.get("last_final_mechanic", ""))
+		_append_event({
+			"kind": "final_event",
+			"source": "player",
+			"phase": "owner_state_transition",
+			"target_id": "player",
+			"event": "owner_state_transition",
+			"mechanic_id": mechanic_id,
+			"owner_state_before": owner_before,
+			"owner_state_after": owner_after,
+			"owner_state_delta": owner_delta,
+			"owner_final_marker": mechanic_id != "",
+			"observed": true,
+			"damage": 0.0,
+		})
+
 	func _link_final_to_hit(final_event_id: String, hit_event_id: String, target_label: String) -> void:
 		for index in range(events.size()):
 			var event: Dictionary = events[index]
@@ -1220,7 +1266,7 @@ func _enrich_anchored_full_dataset() -> Dictionary:
 	}
 	dataset["formula_live_dispositions"] = {"schema": FORMULA_LIVE_DISPOSITION_SCHEMA, "tolerance_pct": FORMULA_LIVE_TOLERANCE_PCT, "rows": dispositions}
 	var methodology: Dictionary = dataset.get("methodology", {})
-	methodology["supplemental_final_execution"] = "FAN-2224 drives each schema-6 final through the production consumer that owns its event (auto-attack, a target that can die, a dying summon, or incoming damage the owner dodges/blocks/absorbs) and records only what the production runtime then applied: the resolver progress ladder, the canonical applied-HP ledger, target deaths, production status markers and owner state transitions. The harness authors no damage and no final labels."
+	methodology["supplemental_final_execution"] = "FAN-2224 drives each schema-6 final through the production consumer that owns its event (auto-attack, a target that can die, a dying summon, or incoming damage the owner dodges/blocks/absorbs) and records only what the production runtime then applied. Target status requires a measurement-phase target_status_transition trace event with the production marker and a related hit on that target; owner delta/marker come from the owner_state_transition trace event. Resolver-bound damage and its applied-HP denominator both use the measurement ledger window, so the reported share cannot exceed 100%."
 	dataset["methodology"] = methodology
 	var limitations: Array = dataset.get("limitations", [])
 	var supplemental_limitation := "The immutable 309-sample sustained telemetry and numeric matrix remain pinned to legacy_source; FAN-2224 adds separate final-execution causality evidence from supplemental_execution rather than re-baselining gameplay."
@@ -1915,6 +1961,8 @@ func _measure_final_execution(class_id: String, weapon_id: String, stats: Dictio
 	var measurement: Dictionary = await _advance_final_execution(FINAL_EXECUTION_WINDOW_SECONDS, dummies, anchors, collector, witness, "measurement", profile, player)
 	var after_health := _health_snapshot(dummies)
 	var owner_after := _owner_state_snapshot(player)
+	collector.record_target_status_transitions(dummies, mechanic_id, player)
+	collector.record_owner_state_transition(owner_before, owner_after)
 	var sample := collector.build_sample(pair, seed_value, "final_execution", stimulus, target_count)
 	var ledger: Dictionary = sample.get("hp_ledger", {})
 	var measured := float(measurement.get("duration_seconds", 0.0))
@@ -1938,7 +1986,7 @@ func _measure_final_execution(class_id: String, weapon_id: String, stats: Dictio
 		ledger["health_snapshot_authority"] = "applied_damage_only_targets_are_consumed"
 	sample["hp_ledger"] = ledger
 	sample["dpm"] = _project_dpm(float(ledger.get("total_applied_damage", 0.0)), measured)
-	var payoff := _final_execution_payoff(sample, witness, expected, owner_before, owner_after, dummies, player)
+	var payoff := _final_execution_payoff(sample, witness, expected)
 	var params: Dictionary = expected.get("params", {})
 	return {
 		"pair": pair,
@@ -1975,8 +2023,6 @@ func _measure_final_execution(class_id: String, weapon_id: String, stats: Dictio
 		"consumer_gated_dispatch_count": witness.event_dispatch_count - witness.resolved_dispatch_count,
 		"weapon_runtime": _weapon_runtime_snapshot(player),
 		"activations": witness.activations,
-		"owner_state_before": owner_before,
-		"owner_state_after": owner_after,
 		"payoff": payoff,
 		"observed": str(payoff.get("kind", "")) != "",
 		"telemetry": sample,
@@ -2131,29 +2177,17 @@ func _owner_state_snapshot(player: Node2D) -> Dictionary:
 
 # Classification is derived, never declared: the kind is whatever production
 # actually applied after the observed activation, in a fixed precedence.
-func _final_execution_payoff(sample: Dictionary, witness: A5FinalExecutionWitness, expected: Dictionary, owner_before: Dictionary, owner_after: Dictionary, targets: Array, player: Node2D) -> Dictionary:
+func _final_execution_payoff(sample: Dictionary, witness: A5FinalExecutionWitness, expected: Dictionary) -> Dictionary:
 	var mechanic_id := str(expected.get("mechanic_id", ""))
 	var activations: Array = witness.activations
 	var first_activation_frame := int((activations[0] as Dictionary).get("frame", 0)) if not activations.is_empty() else -1
 	var events: Array = sample.get("events", [])
-	var event_by_id := {}
-	for event_value in events:
-		event_by_id[str((event_value as Dictionary).get("event_id", ""))] = event_value
-	var bound_hit_ids := {}
-	var target_deaths := 0
-	for event_value in events:
-		var event: Dictionary = event_value
-		if str(event.get("kind", "")) != "final_event":
-			continue
-		if str(event.get("phase", "")) == "target_death":
-			if first_activation_frame >= 0 and int(event.get("frame", -1)) >= first_activation_frame:
-				target_deaths += 1
-			continue
-		if str(event.get("mechanic_id", "")) != mechanic_id:
-			continue
-		var related_hit_id := str(event.get("related_hit_id", ""))
-		if related_hit_id != "" and event_by_id.has(related_hit_id):
-			bound_hit_ids[related_hit_id] = true
+	var trace_evidence := _final_execution_trace_evidence(events, mechanic_id, first_activation_frame)
+	var bound_hit_ids: Dictionary = trace_evidence.get("bound_hit_ids", {})
+	var target_deaths := int(trace_evidence.get("target_deaths", 0))
+	var status_markers: Array = trace_evidence.get("target_status_markers", [])
+	var owner_delta: Dictionary = trace_evidence.get("owner_state_delta", {})
+	var owner_marker := bool(trace_evidence.get("owner_final_marker", false))
 	var provenance_damage := 0.0
 	var provenance_hits := 0
 	var post_activation_damage := 0.0
@@ -2178,20 +2212,6 @@ func _final_execution_payoff(sample: Dictionary, witness: A5FinalExecutionWitnes
 		elif first_activation_frame >= 0 and str(event.get("probe_phase", "")) == "warmup":
 			warmup_damage += damage
 			warmup_hits += 1
-	var status_markers := []
-	var marker_key := "constellation_%s_owner" % mechanic_id
-	for target_value in targets:
-		var target := target_value as Node2D
-		if target == null or not is_instance_valid(target):
-			continue
-		if int(target.get_meta(marker_key, 0)) == player.get_instance_id():
-			status_markers.append(marker_key)
-	var owner_delta := {}
-	for key in ["health", "absorb_flat", "dodge_flat", "absorb", "dodge"]:
-		var delta := snappedf(float(owner_after.get(key, 0.0)) - float(owner_before.get(key, 0.0)), 0.0001)
-		if not is_zero_approx(delta):
-			owner_delta[key] = delta
-	var owner_marker := str(owner_after.get("last_final_mechanic", "")) == mechanic_id
 	var kind := ""
 	if not activations.is_empty():
 		if provenance_hits > 0 and provenance_damage > 0.0:
@@ -2231,6 +2251,57 @@ func _final_execution_payoff(sample: Dictionary, witness: A5FinalExecutionWitnes
 		# measurement peers instead, so this never crosses the HP-ledger boundary.
 		"observed_damage_ratio": snappedf(mean_bound / maxf(mean_warmup, 0.0001), 0.0001) if provenance_hits > 0 and warmup_hits > 0 else 0.0,
 		"resolver_damage_ratio": snappedf(expected_ratio, 0.0001),
+	}
+
+
+static func _final_execution_trace_evidence(events: Array, mechanic_id: String, first_activation_frame: int) -> Dictionary:
+	var event_by_id := {}
+	for event_value in events:
+		event_by_id[str((event_value as Dictionary).get("event_id", ""))] = event_value
+	var bound_hit_ids := {}
+	var target_deaths := 0
+	var status_markers := []
+	var owner_delta := {}
+	var owner_marker := false
+	var owner_event := {}
+	for event_value in events:
+		var event: Dictionary = event_value
+		if str(event.get("kind", "")) != "final_event":
+			continue
+		var phase := str(event.get("phase", ""))
+		if phase == "target_death":
+			if first_activation_frame >= 0 and int(event.get("frame", -1)) >= first_activation_frame:
+				target_deaths += 1
+			continue
+		if str(event.get("mechanic_id", "")) != mechanic_id:
+			continue
+		if phase in ["final_resolution", "final_damage_application"]:
+			var related_hit_id := str(event.get("related_hit_id", ""))
+			var related_hit: Dictionary = event_by_id.get(related_hit_id, {})
+			if str(related_hit.get("kind", "")) == "hit" and str(related_hit.get("source", "")) == "player_weapon" and str(related_hit.get("probe_phase", "")) == "measurement" and str(related_hit.get("target_id", "")) == str(event.get("target_id", "")):
+				bound_hit_ids[related_hit_id] = true
+		elif phase == "target_status_transition":
+			var status_hit_id := str(event.get("related_hit_id", ""))
+			var status_hit: Dictionary = event_by_id.get(status_hit_id, {})
+			if str(event.get("source", "")) == "player_weapon" and str(event.get("event", "")) == "status_transition" and str(event.get("status_marker", "")) == "constellation_%s_owner" % mechanic_id and str(event.get("probe_phase", "")) == "measurement" and str(status_hit.get("kind", "")) == "hit" and str(status_hit.get("source", "")) == "player_weapon" and str(status_hit.get("probe_phase", "")) == "measurement" and str(status_hit.get("target_id", "")) == str(event.get("target_id", "")):
+				status_markers.append(str(event.get("status_marker", "")))
+		elif phase == "owner_state_transition" and str(event.get("source", "")) == "player" and str(event.get("event", "")) == "owner_state_transition" and str(event.get("target_id", "")) == "player" and str(event.get("probe_phase", "")) == "measurement":
+			owner_event = event
+			var owner_before: Dictionary = event.get("owner_state_before", {})
+			var owner_after: Dictionary = event.get("owner_state_after", {})
+			for key in ["health", "absorb_flat", "dodge_flat", "absorb", "dodge"]:
+				var delta := snappedf(float(owner_after.get(key, 0.0)) - float(owner_before.get(key, 0.0)), 0.0001)
+				if not is_zero_approx(delta):
+					owner_delta[key] = delta
+			owner_marker = bool(event.get("owner_final_marker", false))
+	return {
+		"event_by_id": event_by_id,
+		"bound_hit_ids": bound_hit_ids,
+		"target_deaths": target_deaths,
+		"target_status_markers": status_markers,
+		"owner_state_delta": owner_delta,
+		"owner_final_marker": owner_marker,
+		"owner_event": owner_event,
 	}
 
 
@@ -3908,21 +3979,12 @@ static func _verify_final_execution_payoff_aggregates(row: Dictionary, sample: D
 	var activations: Array = row.get("activations", [])
 	var first_activation_frame := int((activations[0] as Dictionary).get("frame", 0)) if not activations.is_empty() else -1
 	var events: Array = sample.get("events", [])
-	var bound_hit_ids := {}
-	var deaths := 0
-	for event_value in events:
-		var event: Dictionary = event_value
-		if str(event.get("kind", "")) != "final_event":
-			continue
-		if str(event.get("phase", "")) == "target_death":
-			if first_activation_frame >= 0 and int(event.get("frame", -1)) >= first_activation_frame:
-				deaths += 1
-			continue
-		if str(event.get("mechanic_id", "")) != mechanic_id:
-			continue
-		var related_hit_id := str(event.get("related_hit_id", ""))
-		if related_hit_id != "" and event_by_id.has(related_hit_id):
-			bound_hit_ids[related_hit_id] = true
+	var trace_evidence := _final_execution_trace_evidence(events, mechanic_id, first_activation_frame)
+	var bound_hit_ids: Dictionary = trace_evidence.get("bound_hit_ids", {})
+	var deaths := int(trace_evidence.get("target_deaths", 0))
+	var status_markers: Array = trace_evidence.get("target_status_markers", [])
+	var expected_owner_delta: Dictionary = trace_evidence.get("owner_state_delta", {})
+	var expected_owner_marker := bool(trace_evidence.get("owner_final_marker", false))
 	var provenance_damage := 0.0
 	var provenance_hits := 0
 	var post_damage := 0.0
@@ -3954,6 +4016,8 @@ static func _verify_final_execution_payoff_aggregates(row: Dictionary, sample: D
 		errors.append("final-execution warmup diagnostic does not reconstruct from the trace for %s" % pair)
 	if int(payoff.get("target_deaths", -1)) != deaths:
 		errors.append("final-execution target deaths do not reconstruct from the trace for %s" % pair)
+	if payoff.get("target_status_markers", []) != status_markers:
+		errors.append("final-execution status payoff does not reconstruct from a phase-bound target trace for %s" % pair)
 	if int(payoff.get("first_activation_frame", -2)) != first_activation_frame:
 		errors.append("final-execution activation frame does not reconstruct from the ladder for %s" % pair)
 	var expected_binding := "resolver_provenance" if provenance_hits > 0 else ("frame_ordered" if first_activation_frame >= 0 else "none")
@@ -3964,18 +4028,10 @@ static func _verify_final_execution_payoff_aggregates(row: Dictionary, sample: D
 	var expected_observed_ratio := snappedf(expected_amplified_mean / maxf(expected_warmup_mean, 0.0001), 0.0001) if provenance_hits > 0 and warmup_hits > 0 else 0.0
 	if not is_equal_approx(float(payoff.get("amplified_hit_mean", NAN)), expected_amplified_mean) or not is_equal_approx(float(payoff.get("unamplified_hit_mean", NAN)), expected_warmup_mean) or not is_equal_approx(float(payoff.get("observed_damage_ratio", NAN)), expected_observed_ratio):
 		errors.append("final-execution warmup/amplification diagnostics do not reconstruct from the trace for %s" % pair)
-	var expected_owner_delta := {}
-	var owner_before: Dictionary = row.get("owner_state_before", {})
-	var owner_after: Dictionary = row.get("owner_state_after", {})
-	for key in ["health", "absorb_flat", "dodge_flat", "absorb", "dodge"]:
-		var delta := snappedf(float(owner_after.get(key, 0.0)) - float(owner_before.get(key, 0.0)), 0.0001)
-		if not is_zero_approx(delta):
-			expected_owner_delta[key] = delta
 	if not _same_snapped_metrics(payoff.get("owner_state_delta", {}), expected_owner_delta):
-		errors.append("final-execution owner-state payoff does not reconstruct from snapshots for %s" % pair)
-	var expected_owner_marker := str(owner_after.get("last_final_mechanic", "")) == mechanic_id
+		errors.append("final-execution owner-state payoff does not reconstruct from the owner trace for %s" % pair)
 	if bool(payoff.get("owner_final_marker", false)) != expected_owner_marker:
-		errors.append("final-execution owner service marker does not reconstruct from snapshots for %s" % pair)
+		errors.append("final-execution owner service marker does not reconstruct from the owner trace for %s" % pair)
 	var expected_kind := ""
 	if provenance_hits > 0 and provenance_damage > 0.0:
 		expected_kind = "typed_damage"
@@ -3991,6 +4047,8 @@ static func _verify_final_execution_payoff_aggregates(row: Dictionary, sample: D
 		errors.append("final-execution payoff kind does not follow its causal evidence for %s" % pair)
 	if not is_equal_approx(float(payoff.get("applied_hp_total", -1.0)), snappedf(float((sample.get("hp_ledger", {}) as Dictionary).get("total_applied_damage", 0.0)), 0.0001)):
 		errors.append("final-execution applied HP does not reconstruct from the ledger for %s" % pair)
+	if float(payoff.get("provenance_bound_damage", 0.0)) > float(payoff.get("applied_hp_total", 0.0)) + 0.0001:
+		errors.append("final-execution resolver-bound damage escapes the measurement ledger window for %s" % pair)
 	return errors
 
 
@@ -4100,6 +4158,8 @@ static func _verify_disposition_row(row: Dictionary, parity_row: Dictionary, evi
 	var expected_share := snappedf(100.0 * float(payoff.get("provenance_bound_damage", 0.0)) / maxf(applied_total, 0.0001), 0.01)
 	if not is_equal_approx(float(final_execution.get("resolver_bound_payoff_share_pct", NAN)), expected_share):
 		errors.append("formula/live payoff share does not reconstruct from the final-execution row for %s" % pair)
+	if expected_share > 100.0:
+		errors.append("formula/live resolver-bound payoff share exceeds the measurement ledger for %s" % pair)
 	if str(row.get("explanation", "")).strip_edges() == "":
 		errors.append("formula/live disposition has no explanation for %s" % pair)
 	if not is_equal_approx(float(basis.get("direct_dpm", -1.0)), snappedf(60.0 * float(basis.get("hit_damage", 0.0)) * float(basis.get("cast_rate_per_second", 0.0)), 0.000001)):

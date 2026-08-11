@@ -310,8 +310,11 @@ func _summon_profile(owner_node: Node, roster_entry: Dictionary = {}) -> Diction
 			family_parameter = "magic_damage"
 	var base_damage := float(parameters.get(family_parameter, parameters.get("damage", damage)))
 	var constellation_flat := 0.0
+	var constellation_geometry := 1.0
 	if owner_node.has_method("constellation_weapon_amount"):
 		constellation_flat = float(owner_node.call("constellation_weapon_amount", weapon_id, "weapon_damage_flat"))
+	if owner_node.has_method("constellation_weapon_geometry_multiplier"):
+		constellation_geometry = float(owner_node.call("constellation_weapon_geometry_multiplier", weapon_id))
 	base_damage += constellation_flat
 	# SCRUM-546: Лидерство — главный драйвер урона саммонов (см.
 	# progression_data._budget_summon_role_damage_factor — тот же коэффициент/потолок).
@@ -351,6 +354,8 @@ func _summon_profile(owner_node: Node, roster_entry: Dictionary = {}) -> Diction
 	# splash-покрытие выключено (melee-звери остаются AoE-осью стаи).
 	var attack_kind := str(roster_entry.get("attack_kind", "melee"))
 	var profile_attack_range := maxf(float(parameters.get("attack_range", attack_range)) * 0.18, 24.0)
+	if weapon_id == "summon_amulet":
+		profile_attack_range = maxf(_druid_summon_engagement_range(parameters, stats) * constellation_geometry * 0.18, 24.0)
 	# SCRUM-902: дальние духи бьют РЕЖЕ, но ТЯЖЕЛЕЕ (×RANGED_CADENCE_SCALE к
 	# интервалу И к урону хита) — per-body DPS семьи равен melee-темпу, поэтому
 	# budget-зеркало (_budget_summon_dps) остаётся композиционно-взвешенным по
@@ -358,6 +363,8 @@ func _summon_profile(owner_node: Node, roster_entry: Dictionary = {}) -> Diction
 	var cadence_scale := 1.0
 	if attack_kind == "ranged":
 		profile_attack_range = maxf(summon_ranged_range * (float(parameters.get("attack_range", attack_range)) / maxf(attack_range, 1.0)), 120.0)
+		if weapon_id == "summon_amulet":
+			profile_attack_range = maxf(summon_ranged_range * constellation_geometry * (_druid_summon_engagement_range(parameters, stats) / maxf(attack_range, 1.0)), 120.0)
 		cadence_scale = RANGED_CADENCE_SCALE
 	var profile := {
 		"damage": maxf(base_damage * damage_multiplier * role_damage * meta_damage_mult * cadence_scale, 1.0),
@@ -388,6 +395,18 @@ func _summon_profile(owner_node: Node, roster_entry: Dictionary = {}) -> Diction
 			profile["constellation_intercept_ratio"] = clampf(float(final_params.get("intercept_ratio", 0.30)), 0.0, 0.80)
 			profile["constellation_death_burst_ratio"] = clampf(float(final_params.get("death_burst_damage_ratio", 0.42)), 0.0, 1.0)
 	return profile
+
+
+# FAN-2429: FAN-2171 moved shared-area scaling to the live weapon. Summon attack
+# reach is profile-owned, so retain its existing stat contribution here; splash
+# geometry remains on the weapon and is still applied exactly once.
+func _druid_summon_engagement_range(parameters: Dictionary, stats: Dictionary) -> float:
+	var leadership := float(parameters.get("leadership", stats.get("leadership", 0.0)))
+	return float(parameters.get("attack_range", attack_range)) \
+		+ float(stats.get("perception", 0.0)) * 2.5 \
+		+ float(stats.get("intelligence", 0.0)) * 0.35 \
+		+ float(stats.get("endurance", 0.0)) * 0.25 \
+		+ leadership * 0.35
 
 
 # SCRUM-961 «Гомункул-реактор»: второй особый гомункул — неуязвимый реактор.
