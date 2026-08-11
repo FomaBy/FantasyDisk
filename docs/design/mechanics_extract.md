@@ -193,8 +193,8 @@ solo/AoE-оси Солдата остаются на бюджет-целях 48/
 | Шанс крита | `crit_chance` | Вероятность критического удара |
 | Множитель крита | `crit_damage_multiplier` | Сила критического удара |
 | Скорость движения | `move_speed` | Скорость игрока |
-| Уворот | `dodge` | Шанс избежать входящий урон; проверяется в `Player.take_damage`, при успехе урон и invuln-window не применяются, показывается «Промах!». С 0.1.5 использует diminishing returns и cap 55%. |
-| Защита | `defense` | Снижает получаемый урон; с 0.1.5 использует diminishing returns и cap 62%. |
+| Уворот | `dodge` | Шанс избежать входящий урон; проверяется в `Player.take_damage`, при успехе урон и invuln-window не применяются, показывается «Промах!». `raw/(1+raw×(1/0.55))` даёт строгую недостижимую асимптоту 55%. |
+| Защита | `defense` | Снижает получаемый урон; `raw/(1+raw×(1/0.62))` даёт строгую недостижимую асимптоту 62%. |
 | Максимальное здоровье | `health_point` | Max HP игрока |
 | Область атаки | `aoe_radius` | Единый множитель declared live-геометрии: радиусы, ширины, углы, summon splash и ауры; target reach не меняет |
 | Радиус подбора | `pickup_radius` | Магнит опыта и денег |
@@ -741,8 +741,8 @@ SCRUM-469 добавил class/stat-specific скалирование роста
 | attack_speed | `27*(Agi + Energy*0.18 + Per*0.10 + End*0.04)/100 * mult`; интервал = base_fire_interval / AS | derived -> все оружия | работает |
 | crit_chance / crit_damage_multiplier | chance = effective_crit_chance(0.04+Agi*0.0075+flat*0.75), ordinary cap от Agi 0: 55→75% при Agi 100 (Assassin 100%); raw = 1.30+Agi*0.055+flat*0.75, mult = raw до 2.75, затем непрерывный unbounded diminishing tail `2.75 + sqrt(raw - 2.75)` | derived -> _rolled_damage всех оружий | работает |
 | move_speed | (282 + Agi*6.2) * mult (+ dodge_rush) | derived -> player.speed | работает |
-| dodge | effective_dodge(0.02 + Agi*0.010 + flat), diminishing returns, cap 0.55 | Player.take_damage | работает |
-| defense | effective_defense(0.04 + End*0.018 + flat), diminishing returns, cap 0.62 | Player.take_damage | работает |
+| dodge | `raw=0.02+Agi*0.010+flat`; `raw/(1+raw×(1/0.55))`, строгая асимптота <0.55; дым Вора — отдельный достижимый cap 0.90 | Player.take_damage | работает |
+| defense | `raw=0.04+End*0.018+flat`; `raw/(1+raw×(1/0.62))`, строгая асимптота <0.62 | Player.take_damage | работает |
 | health_point | 50*End/4 + flat) * mult | derived -> max_health | работает |
 | attack_area_multiplier / aoe_radius | единый stat-driven множитель масштабирует только declared live dimensions; `attack_range` остаётся config-defined target reach | Player -> weapon geometry, summon splash и derived aura | работает |
 | pickup_radius | 105 + Per*7 + flat | derived -> магнит pickups | работает |
@@ -752,13 +752,18 @@ SCRUM-469 добавил class/stat-specific скалирование роста
 | support_multiplier | общий `% damage` агрегируется один раз; standalone `buff_power` источника нет | семь support consumers | работает |
 | knockback_power | `(weapon + Strength*4) * knockback_multiplier` | derived -> apply_knockback врагов | работает |
 | summon_amount | `Leadership + Know*0.18 + Int*0.12 + Energy*0.10` | только summon/deploy-киты Guitarist/Chemist/Druid/Engineer (FAN-1893: echo weapons удалены); `max_summons` count-cap идет от Leadership | работает |
-| **absorb** | End*0.16 + softened flat; срез удара до защиты (мин. 35% проходит) | Player.take_damage | работает |
-| **regeneration** | (0.22 + positive_flat*0.45) * (0.45 + Know/12) HP/с | Player._apply_regeneration | работает |
-| **vampiric_chance** | награды, cap 0.22; источник — артефакт «Клык Пиявки» (tier 2) | Player.on_weapon_hit | работает |
-| **vampiric_amount** | награды*0.55 + 3.5% нанесенного урона при проке, итоговое лечение ограничено `vampiric_heal_per_second_cap` 1.4/с (hard cap 2.6/с) | Player.on_weapon_hit | работает |
+| **absorb** | `0.145×End + positive_flat/(1+positive_flat×0.11)+negative_flat`; внутренний параметр, не selectable ось; после absorb проходит ≥42% удара | Player.take_damage | работает |
+| **regeneration** | `max(0,0.16+positive_flat×0.35+negative_flat)×(0.45+Know/12)` HP/с | Player._apply_regeneration | работает |
+| **vampiric_chance** | награды, cap 0.20; источник — артефакт «Клык Пиявки» (tier 2) | Player.on_weapon_hit | работает |
+| **vampiric_amount** | `flat×(0.40+Know/50)`, после 1.5 — unbounded `1.5+sqrt(raw-1.5)`; при проке +2.5% нанесённого урона, общий бюджет 1.1/с (hard 2.0/с) | Player.on_weapon_hit | работает |
 | **ultimate_multiplier** | `1 + Energy*0.02 + all_other_stats*0.002 + награды` | НОВОЕ: усиливает class ultimate: урон, радиус, длительность или число целей | работает |
 
-SCRUM-255 survivability rebalance: регенерация и вампиризм намеренно ослаблены, а defense/dodge/absorb получили diminishing returns. В синтетическом harness `tank/contact_swarm` упал с 321.0с до 38.5с TTD, regen у tank — с 1.57/с до 0.30/с. Исторический `knockback_distance` больше не является отображаемой осью: бой использует единый `knockback_power`. `vampiric_amount` «Default + Current Damage / 2» сознательно заменен на малую долю урона с heal-per-second cap, чтобы вампиризм был поддержкой, а не бессмертием.
+FAN-2284/FAN-2286 defensive contract: пять player-facing оборонных выборов —
+`max_health`, `defense`, `dodge`, `regeneration`, `vampiric`; `absorb`
+остаётся только внутренним слоем. Defense/dodge используют raw unbounded
+strict-asymptote curves, а smoke Вора — единственное отдельное достижимое
+исключение 0.90. Регенерация и вампиризм намеренно остаются поддержкой:
+`vampiric_amount` зависит от Knowledge и ограничен heal-per-second budget.
 
 SCRUM-247 crit rebalance: крит остается значимым burst-слоем, но не заменяет стабильный урон. Flat-награды на шанс крита учитываются с эффективностью 75% и проходят через diminishing returns; обычный cap от Ловкости растёт 55→75%, у Ассасина остаётся 100%. Крит-множитель после raw 2.75 следует непрерывному unbounded diminishing tail `2.75 + sqrt(raw - 2.75)`, а не жёсткому cap. Подробный before/after: `build/crit_rebalance_scrum247_report.md`.
 

@@ -6373,11 +6373,18 @@ func _test_full_attribute_wiring() -> void:
 			or absf(float(strong["attack_range"]) - float(base["attack_range"])) > 0.001:
 		_fail("Expected attack range to stay config-only under stat growth.")
 		return
-	var vamp_mods := {"vampiric_chance_flat": 0.25, "vampiric_amount_flat": 2.0}
-	var vamp: Dictionary = ProgressionData.derived_parameters(stats, vamp_mods, weapon)
+	# FAN-2286: do not accidentally preserve the old 0.48x result from Berserk's
+	# base Knowledge=4. A different Knowledge value and the diminishing-tail
+	# branch prove that the live formula, rather than a dead multiplier, is used.
+	var vamp_stats: Dictionary = stats.duplicate(true)
+	vamp_stats["knowledge"] = 11.0
+	var vamp_mods := {"vampiric_chance_flat": 0.25, "vampiric_amount_flat": 5.0}
+	var vamp: Dictionary = ProgressionData.derived_parameters(vamp_stats, vamp_mods, weapon)
+	var expected_vamp_raw := 5.0 * (0.40 + 11.0 / 50.0)
+	var expected_vamp_amount := 1.5 + sqrt(expected_vamp_raw - 1.5)
 	if absf(float(vamp["vampiric_chance"]) - ProgressionData.VAMPIRIC_CHANCE_CAP) > 0.001 \
-			or absf(float(vamp["vampiric_amount"]) - 2.0 * ProgressionData.VAMPIRIC_BASE_HEAL_MULTIPLIER) > 0.001:
-		_fail("Expected vampiric rewards to use SCRUM-255 nerfed chance/amount caps.")
+			or absf(float(vamp["vampiric_amount"]) - expected_vamp_amount) > 0.001:
+		_fail("Expected vampiric rewards to use the Knowledge-scaled diminishing formula.")
 		return
 	var berserk_priorities: Array = ProgressionData.attribute_priorities("berserk")
 	var mage_priorities: Array = ProgressionData.attribute_priorities("dark_mage")

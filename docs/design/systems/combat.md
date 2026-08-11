@@ -86,12 +86,14 @@
 
 ## Damage And Feedback
 
-- У игрока есть HP, defense и dodge.
+- У игрока есть HP, defense и dodge. Пять player-facing defensive choices —
+  max health, defense, dodge, regeneration и vampiric; absorb остаётся внутренним
+  расчётным слоем и не является отдельной картой выбора.
 - SCRUM-894: итоговый шанс уворота считает `Player.current_dodge_chance()`:
-  derived dodge (кап `SURVIVABILITY_DODGE_CAP` 55%) плюс, только для Ассасина,
+  derived dodge следует strict-asymptote `SURVIVABILITY_DODGE_CAP` <55%; только для Ассасина
   ситуативный бонус «Теневой завесы» — самоцентричной ауры уворота, активной
   лишь пока враг находится внутри объявленной области ауры (величина =
-  `veil_dodge_bonus × support_multiplier`, кап `veil_dodge_cap`; сумма всё равно ≤ 55%,
+  `veil_dodge_bonus × support_multiplier`, кап `veil_dodge_cap`; combined raw всё равно даёт <55%,
   бессмертия нет). Крит-шанс игрока капится per-class
   (`ProgressionData.class_crit_profile`): у обычных классов cap от живой Ловкости
   растёт с 55% при Agility 0 до первых 75% при Agility 100, Ассасин остаётся на
@@ -248,10 +250,10 @@ Generic-ключ `run_modifiers.extra_projectile` потребляется ед�
   `Player._smoke_clouds` (`register_smoke_cloud`/`smoke_cloud_dodge_bonus`).
   Бонус уклонения действует ТОЛЬКО пока герой стоит внутри живого облака;
   перекрытия не стакаются (берётся максимум). Ролл уворота
-  `Player._current_dodge_chance()`: базовый dodge капится
-  `SURVIVABILITY_DODGE_CAP` 0.55, бонус облака добавляется поверх с суммарным
-  капом `SMOKE_CLOUD_DODGE_CAP` 0.90 — «почти неуязвим в дыму при тяжёлом
-  dodge-билде», вне облака кап обычный. Облако урона не наносит; единственное
+  `Player._current_dodge_chance()`: базовый dodge следует строгой асимптоте
+  `SURVIVABILITY_DODGE_CAP` <0.55, бонус облака добавляется поверх с суммарным
+  достижимым cap `SMOKE_CLOUD_DODGE_CAP` 0.90 — «почти неуязвим в дыму при тяжёлом
+  dodge-билде», вне облака действует ordinary asymptote. Облако урона не наносит; единственное
   дамажащее событие дыма — AoE-взрыв на детонации.
 - Визуально используется существующий `AttackVfx.ring_pulse` и marker metadata; новых Design/VFX ассетов для SCRUM-245 не потребовалось.
 

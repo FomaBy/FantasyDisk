@@ -34,6 +34,8 @@ const CROWD_CLEAR_ENEMY_HP := BalanceData.CROWD_CLEAR_ENEMY_HP
 const CROWD_CLEAR_CORRIDOR := BalanceData.CROWD_CLEAR_CORRIDOR
 const CROWD_CLEAR_SOLO_CORRIDOR := BalanceData.CROWD_CLEAR_SOLO_CORRIDOR
 const BOSS_HAZARD_MAX_HP_FRACTION := BalanceData.BOSS_HAZARD_MAX_HP_FRACTION  # FAN-1031 S2: кап зон/сламов босса долей max HP
+# Compatibility re-exports; BalanceData is the single live owner of these
+# defensive ceiling and diminishing-curve declarations.
 const SURVIVABILITY_DEFENSE_CAP := BalanceData.SURVIVABILITY_DEFENSE_CAP
 const SURVIVABILITY_DEFENSE_DIMINISH := BalanceData.SURVIVABILITY_DEFENSE_DIMINISH
 const SURVIVABILITY_DODGE_CAP := BalanceData.SURVIVABILITY_DODGE_CAP
@@ -44,7 +46,6 @@ const SURVIVABILITY_ABSORB_FLAT_DIMINISH := BalanceData.SURVIVABILITY_ABSORB_FLA
 const SURVIVABILITY_REGEN_FLAT_MULTIPLIER := BalanceData.SURVIVABILITY_REGEN_FLAT_MULTIPLIER
 const VAMPIRIC_CHANCE_CAP := BalanceData.VAMPIRIC_CHANCE_CAP
 const VAMPIRIC_DAMAGE_HEAL_RATIO := BalanceData.VAMPIRIC_DAMAGE_HEAL_RATIO
-const VAMPIRIC_BASE_HEAL_MULTIPLIER := BalanceData.VAMPIRIC_BASE_HEAL_MULTIPLIER
 const VAMPIRIC_HEAL_CAP_DEFAULT := BalanceData.VAMPIRIC_HEAL_CAP_DEFAULT
 const VAMPIRIC_HEAL_CAP_HARD := BalanceData.VAMPIRIC_HEAL_CAP_HARD
 const WEAPON_DRAIN_HEAL_MULTIPLIER := BalanceData.WEAPON_DRAIN_HEAL_MULTIPLIER
@@ -938,7 +939,8 @@ static func class_crit_profile(character_id: String, ordinary_cap := CRIT_CHANCE
 # SCRUM-894 «Теневая завеса»: величина бонуса уворота самоцентричной ауры класса
 # (у классов без veil-записи — 0). Масштаб от support_multiplier, жёсткий кап
 # veil_dodge_cap; применяется Player.current_dodge_chance ТОЛЬКО при враге внутри
-# derived aura_radius; суммарный уворот всё равно ≤ SURVIVABILITY_DODGE_CAP.
+# derived aura_radius; суммарный уворот остаётся строго ниже
+# SURVIVABILITY_DODGE_CAP.
 static func class_veil_dodge_bonus(character_id: String, support_multiplier: float) -> float:
 	var trait_config: Dictionary = CLASS_TRAITS.get(character_id, {})
 	var base := float(trait_config.get("veil_dodge_bonus", 0.0))

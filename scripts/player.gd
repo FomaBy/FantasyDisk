@@ -1040,7 +1040,7 @@ func _current_dodge_chance() -> float:
 		dodge_chance = minf(dodge_chance + smoke_cloud_bonus, ProgressionData.SMOKE_CLOUD_DODGE_CAP)
 	# SCRUM-894 «Теневая завеса»: самоцентричная аура уворота Ассасина — бонус
 	# только пока враг внутри derived aura_radius; суммарный уворот класса
-	# по-прежнему ≤ SURVIVABILITY_DODGE_CAP (бессмертия нет). Классовые бонусы
+	# по-прежнему строго ниже SURVIVABILITY_DODGE_CAP (бессмертия нет). Классовые бонусы
 	# не пересекаются: дым — оружие Вора, завеса — trait Ассасина.
 	return dodge_chance
 
@@ -1195,8 +1195,9 @@ func take_damage(amount: float, _source := "", attacker: Node2D = null) -> bool:
 # союзников). Бонус действует ТОЛЬКО под ближним прессингом — когда враг внутри
 # derived aura_radius (радиус растёт от единой области атаки, величина — от
 # support_multiplier через ProgressionData.class_veil_dodge_bonus с жёстким капом).
-# Итоговый шанс уворота всё равно зажат SURVIVABILITY_DODGE_CAP — бессмертия
-# на высоком доджe нет, дальние выстрелы без прессинга бонуса не получают.
+# Итоговый шанс уворота всё равно строго ниже asymptote
+# SURVIVABILITY_DODGE_CAP — бессмертия на высоком доджe нет, дальние выстрелы
+# без прессинга бонуса не получают.
 func current_dodge_chance() -> float:
 	return _current_dodge_chance()
 
