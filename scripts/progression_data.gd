@@ -643,10 +643,9 @@ static func ultimate_config(character_id: String) -> Dictionary:
 	return ULTIMATE_CONFIGS.get(character_id, ULTIMATE_CONFIGS["berserk"]).duplicate(true)
 
 
-static func _diminishing_percent(raw_value: float, cap: float, curve: float) -> float:
+static func _diminishing_percent(raw_value: float, curve: float) -> float:
 	var raw := maxf(raw_value, 0.0)
-	var softened := raw / (1.0 + raw * curve)
-	return clampf(softened, 0.0, cap)
+	return raw / (1.0 + raw * maxf(curve, 0.0001))
 
 
 # SCRUM-503: diminishing returns на ЗАБЕГОВЫЙ боевой множитель. Сжимает ТОЛЬКО
@@ -691,11 +690,25 @@ static func _amplified_bonus_multiplier(multiplier: float, effectiveness: float)
 
 
 static func effective_defense(raw_defense: float) -> float:
-	return _diminishing_percent(raw_defense, SURVIVABILITY_DEFENSE_CAP, SURVIVABILITY_DEFENSE_DIMINISH)
+	return _diminishing_percent(raw_defense, SURVIVABILITY_DEFENSE_DIMINISH)
 
 
 static func effective_dodge(raw_dodge: float) -> float:
-	return _diminishing_percent(raw_dodge, SURVIVABILITY_DODGE_CAP, SURVIVABILITY_DODGE_DIMINISH)
+	return _diminishing_percent(raw_dodge, SURVIVABILITY_DODGE_DIMINISH)
+
+
+static func raw_defense_for_effective(effective_defense_value: float) -> float:
+	return _raw_rating_for_effective_percent(effective_defense_value, SURVIVABILITY_DEFENSE_DIMINISH)
+
+
+static func raw_dodge_for_effective(effective_dodge_value: float) -> float:
+	return _raw_rating_for_effective_percent(effective_dodge_value, SURVIVABILITY_DODGE_DIMINISH)
+
+
+static func _raw_rating_for_effective_percent(effective_value: float, curve: float) -> float:
+	var effective := maxf(effective_value, 0.0)
+	var denominator := 1.0 - effective * maxf(curve, 0.0001)
+	return effective / maxf(denominator, 0.000001)
 
 
 static func effective_absorb(endurance: float, flat_absorb: float) -> float:
@@ -2220,6 +2233,8 @@ static func derived_parameters(stats: Dictionary, run_modifiers: Dictionary, wea
 		# Друид считает свой радиус ауры от собственных support-атрибутов, но общий
 		# множитель области применяется ровно один раз — как и у остальной геометрии.
 		aura_radius = (base_area + leadership * 5.0 + float(stats.get("perception", 0.0)) * 0.80 + float(stats.get("energy", 0.0)) * 0.65 + float(stats.get("knowledge", 0.0)) * 0.45) * aoe_radius_multiplier
+	var raw_dodge := 0.02 + agility * 0.010 + float(run_modifiers.get("dodge_flat", 0.0)) + clampf(float(run_modifiers.get("flurry_tempo_dodge_bonus", 0.0)), 0.0, 0.20) * flurry_tempo_active
+	var raw_defense := 0.04 + endurance * 0.018 + defense_flat
 
 	return {
 		"damage": (physical_base * weapon_damage_multiplier * damage_multiplier + universal_damage_flat) * sandbox_damage_multiplier,
@@ -2229,8 +2244,10 @@ static func derived_parameters(stats: Dictionary, run_modifiers: Dictionary, wea
 		"crit_chance": effective_crit_chance(crit_chance_raw, float(crit_profile.get("cap", CRIT_CHANCE_CAP)), float(crit_profile.get("diminish", CRIT_CHANCE_DIMINISH))),
 		"crit_damage_multiplier": effective_crit_damage_multiplier(agility, crit_damage_flat),
 		"move_speed": (282.0 + agility * 6.2) * move_speed_multiplier,
-		"dodge": effective_dodge(0.02 + agility * 0.010 + float(run_modifiers.get("dodge_flat", 0.0)) + clampf(float(run_modifiers.get("flurry_tempo_dodge_bonus", 0.0)), 0.0, 0.20) * flurry_tempo_active),
-		"defense": effective_defense(0.04 + endurance * 0.018 + defense_flat),
+		"raw_dodge": raw_dodge,
+		"dodge": effective_dodge(raw_dodge),
+		"raw_defense": raw_defense,
+		"defense": effective_defense(raw_defense),
 		"health_point": (50.0 * endurance / 4.0 + max_health_flat) * max_health_multiplier,
 		"attack_range": float(weapon_config.get("attack_range", 240.0)),
 		"attack_area_multiplier": attack_area_multiplier,

@@ -573,7 +573,9 @@ func _test_dodge_veil(errors: Array) -> void:
 		errors.append("завеса: радиус ауры не положителен")
 	# Без врагов рядом — чистый базовый уворот.
 	var base_chance := float(player.call("current_dodge_chance"))
-	var base_dodge := clampf(float((player.get("derived_parameters") as Dictionary).get("dodge", 0.0)), 0.0, PD.SURVIVABILITY_DODGE_CAP)
+	var base_params := player.get("derived_parameters") as Dictionary
+	var base_dodge := float(base_params.get("dodge", 0.0))
+	var base_raw_dodge := float(base_params.get("raw_dodge", PD.raw_dodge_for_effective(base_dodge)))
 	if absf(base_chance - base_dodge) > EPS:
 		errors.append("завеса: без прессинга шанс %.4f != базовому %.4f" % [base_chance, base_dodge])
 
@@ -581,8 +583,8 @@ func _test_dodge_veil(errors: Array) -> void:
 	var close_enemy := _new_enemy(holder, player.global_position + Vector2(minf(veil_radius * 0.5, veil_radius - 5.0), 0))
 	await process_frame
 	var pressured_chance := float(player.call("current_dodge_chance"))
-	if absf(pressured_chance - clampf(base_dodge + veil_bonus, 0.0, PD.SURVIVABILITY_DODGE_CAP)) > EPS:
-		errors.append("завеса: под прессингом шанс %.4f != base+bonus (кап %.2f)" % [pressured_chance, PD.SURVIVABILITY_DODGE_CAP])
+	if absf(pressured_chance - PD.effective_dodge(base_raw_dodge + veil_bonus)) > EPS:
+		errors.append("завеса: под прессингом шанс %.4f не прошёл общий diminishing contract" % pressured_chance)
 	# Враг за радиусом — бонуса нет (дальний обстрел не в счёт).
 	close_enemy.global_position = player.global_position + Vector2(veil_radius + 150.0, 0)
 	await process_frame
@@ -605,13 +607,14 @@ func _test_dodge_veil(errors: Array) -> void:
 		errors.append("завеса: бонус %.4f не упёрся в veil_dodge_cap %.2f" % [capped_bonus, trait_cap])
 	mods["damage_multiplier"] = 1.0
 
-	# Никакого бессмертия: с огромным dodge_flat итог ровно на SURVIVABILITY_DODGE_CAP.
+	# Никакого бессмертия: огромный dodge_flat всё ещё остаётся ниже асимптоты.
 	mods["dodge_flat"] = 10.0
 	player.call("_apply_stat_scaling", false, float(player.get("max_health")))
 	close_enemy.global_position = player.global_position + Vector2(60, 0)
 	await process_frame
-	if absf(float(player.call("current_dodge_chance")) - PD.SURVIVABILITY_DODGE_CAP) > EPS:
-		errors.append("завеса: суммарный уворот %.4f превысил SURVIVABILITY_DODGE_CAP" % float(player.call("current_dodge_chance")))
+	var stacked_chance := float(player.call("current_dodge_chance"))
+	if not (stacked_chance > 0.0 and stacked_chance < PD.SURVIVABILITY_DODGE_CAP):
+		errors.append("завеса: суммарный уворот %.4f нарушил strict asymptote %.2f" % [stacked_chance, PD.SURVIVABILITY_DODGE_CAP])
 	await _cleanup(holder)
 
 	# Контроль: у не-Ассасина завесы нет.
