@@ -18,6 +18,15 @@
 # ОТДЕЛЬНЫЙ git worktree, чтобы не трогать рабочую ветку dev. Build inputs поверх
 # выбранного snapshot не накладываются: сохранённый source snapshot должен
 # соответствовать проекту, из которого экспортирован релиз.
+#
+# --candidate-presign-verify — QA-only pre-sign verification (FAN-2426): режим
+#   доступен ТОЛЬКО вместе с полным candidate pin и доказывает, что закреплённый
+#   candidate импортируется и экспортируется без credentials. Он останавливается
+#   на post-export/pre-sign checkpoint, поэтому packaging, подпись, notarization,
+#   tag, GitHub Release и публикация не выполняются, publishable artifact не
+#   создаётся, а disposable output удаляется. Обычные каналы этот режим не
+#   ослабляет: signed по-прежнему требует Developer ID + notary profile, unsigned
+#   остаётся отдельно выбираемым каналом с честной клиентской меткой.
 set -euo pipefail
 
 # КРИТИЧНО для makensis: в C-локали iconv("wchar_t"->...) падает на не-ASCII
@@ -25,7 +34,7 @@ set -euo pipefail
 export LC_ALL=en_US.UTF-8
 
 usage() {
-  echo "Usage: tools/build_release.sh <version> [--candidate-repository <repo> --candidate-ref <refs/heads/...> --candidate-sha <40-hex>]"
+  echo "Usage: tools/build_release.sh <version> [--candidate-repository <repo> --candidate-ref <refs/heads/...> --candidate-sha <40-hex> [--candidate-presign-verify]]"
 }
 
 if [[ "$#" -lt 1 ]]; then
@@ -37,8 +46,13 @@ shift
 CANDIDATE_REPOSITORY=""
 CANDIDATE_REF=""
 CANDIDATE_SHA=""
+PRESIGN_MODE=0
 while [[ "$#" -gt 0 ]]; do
   case "$1" in
+    --candidate-presign-verify)
+      PRESIGN_MODE=1
+      shift
+      ;;
     --candidate-repository|--candidate-ref|--candidate-sha)
       if [[ "$#" -lt 2 ]]; then
         echo "ERROR: $1 requires a value"
@@ -100,6 +114,10 @@ if [[ -n "${CANDIDATE_REPOSITORY}${CANDIDATE_REF}${CANDIDATE_SHA}" ]]; then
   fi
   CANDIDATE_SHA="$(tr '[:upper:]' '[:lower:]' <<< "${CANDIDATE_SHA}")"
 fi
+if [[ "${PRESIGN_MODE}" -eq 1 && "${CANDIDATE_MODE}" -eq 0 ]]; then
+  echo "ERROR: --candidate-presign-verify is candidate-only and cannot run the tag/final-release path; pin --candidate-repository, --candidate-ref and --candidate-sha"
+  exit 2
+fi
 if [[ "${MACOS_CHANNEL}" == "unsigned" ]]; then
   # Fail-closed в обе стороны: unsigned-канал запускается только явным выбором
   # и отказывается работать, когда signing credentials присутствуют, чтобы
@@ -108,6 +126,11 @@ if [[ "${MACOS_CHANNEL}" == "unsigned" ]]; then
     echo "ERROR: unsigned channel refuses to run while MACOS_SIGN_IDENTITY/MACOS_NOTARY_PROFILE are set; use the signed channel or unset them"
     exit 2
   fi
+elif [[ "${PRESIGN_MODE}" -eq 1 ]]; then
+  # Pre-sign verification останавливается до подписи и notarization, поэтому
+  # Developer ID и notary profile ему не нужны. Требование credentials остаётся
+  # обязательным для обычного signed-канала ниже, который действительно подписывает.
+  echo "==> Pre-sign verification: Developer ID/notary credentials не требуются, подпись и notarization не выполняются"
 else
   if [[ -z "${MACOS_SIGN_IDENTITY}" ]]; then
     echo "ERROR: MACOS_SIGN_IDENTITY is required; release builds may not use ad-hoc signing (owner-approved credential-free builds must set FANTASYDISK_MACOS_CHANNEL=unsigned explicitly)"
@@ -309,6 +332,14 @@ APP_PATH="$(find "${MAC_STAGE}" -maxdepth 2 -type d -name '*.app' -print -quit)"
 if [[ -z "${APP_PATH}" ]]; then
   echo "    ERROR: macOS export не содержит .app"
   exit 2
+fi
+
+if [[ "${PRESIGN_MODE}" -eq 1 ]]; then
+  echo "==> PRE-SIGN CHECKPOINT: ${SOURCE_LABEL} прошёл version mapping, честную метку канала, headless import и macOS export/материализацию $(basename "${APP_PATH}")"
+  echo "    QA-only режим: packaging, подпись, notarization, tag, GitHub Release и публикация не выполняются; publishable artifact не создан"
+  rm -rf "${WORKTREE_DIR}/build"
+  echo "    disposable output удалён"
+  exit 0
 fi
 
 echo "==> Минималистичный Finder layout: две системные иконки и одна стрелка"

@@ -76,8 +76,8 @@ Use `content-zone-image-compositor` before any image generation:
    before import/export, and uses a clean detached worktree only from that commit;
    a candidate never falls back to a tag.
 3. Only after QA `PASSED`, integrate the unchanged candidate commit into `main`,
-   tag that exact commit as `v<version>`, and verify the durable candidate against
-   the tag. Reuse the verified package bytes без перепаковки; any tag/candidate
+   tag that exact release commit as `v<version>`, and verify the durable candidate
+   against the tag. Reuse the verified package bytes без перепаковки; any tag/candidate
    provenance mismatch blocks publication.
 4. Return the task worktree to its agent branch/dev flow. Never switch another
    worker’s checkout.
@@ -103,6 +103,27 @@ Candidate mode requires all three inputs, resolves the remote ref exactly to the
 pinned SHA, records the commit tree before any build step, verifies the version
 inside that snapshot via canonical mapping, and never creates or requires a tag,
 `main`, public release, or public asset.
+
+Independent exact-SHA QA may add `--candidate-presign-verify` (FAN-2426) to the
+same pinned invocation:
+
+```bash
+tools/build_release.sh <version> \
+  --candidate-repository <repository> \
+  --candidate-ref refs/heads/<candidate-ref> \
+  --candidate-sha <40-hex-commit> \
+  --candidate-presign-verify
+```
+
+This QA-only mode verifies the version mapping and the truthful client channel
+label, runs the headless import and the macOS export/materialization, prints
+`PRE-SIGN CHECKPOINT` and stops there. It needs no credentials because packaging,
+signing, notarization, `main`, tagging, GitHub Release and publication never run;
+it produces no publishable artifact and removes its disposable output. It is
+rejected on the tag/final-release path, and it weakens nothing: a normal `signed`
+build still requires an installed Developer ID and notary profile, and `unsigned`
+remains the separately selected channel with a truthful client label. Reaching the
+checkpoint is import/export evidence only, never release readiness.
 
 Require `releases/v<version>/` to contain:
 

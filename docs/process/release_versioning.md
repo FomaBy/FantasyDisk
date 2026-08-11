@@ -157,6 +157,20 @@ dev  — основная ветка разработки. Все чаты (Back
    `CANDIDATE_PROVENANCE.json` и создаёт clean detached worktree только из этого
    commit. Версия проверяется внутри snapshot каноническим
    `release_version_mapping.py`; fallback к `v<version>` в candidate mode запрещён.
+
+6a. **QA-only pre-sign verification (FAN-2426).** Независимый exact-SHA QA
+   добавляет к тем же трём candidate-параметрам флаг `--candidate-presign-verify`.
+   Режим доступен ТОЛЬКО вместе с полным candidate pin: он проверяет version
+   mapping и честную клиентскую метку канала, выполняет headless import и macOS
+   export с материализацией `.app`, печатает `PRE-SIGN CHECKPOINT` и
+   останавливается на нём. Credentials не требуются, потому что packaging,
+   подпись, notarization, `main`, tag, GitHub Release и публикация в этом режиме
+   не выполняются; publishable artifact не создаётся, disposable output
+   удаляется. Режим отклоняется на tag/final-release пути и не ослабляет обычные
+   каналы: signed по-прежнему требует установленный Developer ID и notary
+   profile, unsigned остаётся отдельно выбираемым каналом с честной меткой
+   клиента. Pre-sign checkpoint не заменяет release build и не является
+   доказательством готового к публикации артефакта.
 7. Backend materializes candidate package в `releases/v<version>/` и durable
    `<local_root>/releases/v<version>/` (каталоги в .gitignore — артефакты не
    коммитятся), затем независимый QA квалифицирует exact-SHA QA candidate.
