@@ -1,6 +1,6 @@
 # Combat
 
-Обновлено: 2026-08-03 (FAN-1891 area/control contract)
+Обновлено: 2026-08-11 (FAN-2320 pause-world contract)
 
 Этот файл описывает активную боевую систему `dev`. Snapshot полного состояния: `docs/design/current_game_state.md`. Канонические ID: `docs/design/content_registry.md`. Балансовый аудит: `docs/design/reviews/mechanics_balance_audit_2026_06.md`.
 
@@ -309,8 +309,9 @@ Generic-ключ `run_modifiers.extra_projectile` потребляется ед�
 
 ## Pause
 
-- Причины паузы: `escape_menu`, `level_up`.
-- При паузе `get_tree().paused = true`, UI продолжает работать, gameplay objects/tweens заморожены.
+- Причины паузы включают `escape_menu`, `level_up` и `feedback`; это set, поэтому мир продолжает стоять, пока не снята последняя причина.
+- `Main` — control plane с `PROCESS_MODE_ALWAYS`, но combat-world contract fail-closed переводит canonical группы `player`, enemies/bosses/summons, projectiles, hazards/telegraphs, pools, pickups, allies, weapons, persistent effects/devices и их descendants в `PROCESS_MODE_PAUSABLE`. Это замораживает transforms, physics, status/DoT, cooldown/lifetime timers и node-bound tweens без catch-up при resume.
+- Новый gameplay node, уже состоящий в canonical группе при добавлении в дерево во время паузы, нормализуется после `_ready()` до первого process frame. UI/input/audio control plane остаётся active и не входит в allowlist gameplay-групп.
 - Level-up всегда ставит бой на паузу до выбора награды.
 - Dev console (`scripts/dev_console.gd`, SCRUM-845) не является gameplay pause reason: открытая консоль остаётся live overlay, перехватывает командный ввод, но не замораживает бой, таймер, движение игрока или врагов.
 
@@ -327,6 +328,7 @@ Generic-ключ `run_modifiers.extra_projectile` потребляется ед�
 - Weapon integrity gate (SCRUM-277): `tests/weapon_integrity_test.gd` проверяет все 51 оружие 17 классов от `ProgressionData.weapon_ids()` до реальной scene/equipped visual, чтобы сцена не показывала чужой proxy-спрайт или пассивный item вместо выбранного оружия.
 - Status/aura smoke: `tests/status_effects_aura_test.gd`.
 - VFX smoke: `tests/attack_vfx_smoke_test.gd`, `tests/hazard_vfx_smoke_test.gd`.
+- Pause-world regression: `tests/combat_world_pause_test.gd` проверяет player/enemy/boss, оба типа projectile, Chemist pool, elite/boss hazard telegraphs и persistent weapon effect: freeze/resume, stacked reasons, control-plane allowlist и fail-closed ingress oracle.
 - Снаряды: `tests/projectile_smoke_test.gd`, `tests/enemy_projectile_smoke_test.gd`.
 - SCRUM-1066: player projectile art resolves through
   `ProjectileVisualRegistry` from the accepted SCRUM-1065 manifest. All 20

@@ -5945,6 +5945,7 @@ func _deploy_visual_texture() -> Texture2D:
 func _register_effect(effect: Node) -> void:
 	if effect == null:
 		return
+	effect.process_mode = Node.PROCESS_MODE_PAUSABLE
 	_effects_shutdown = false
 	effect.set_meta("weapon_owner_id", get_instance_id())
 	effect.add_to_group("player_weapon_effects")
