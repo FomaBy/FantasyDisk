@@ -141,7 +141,7 @@ func _on_player_died() -> void:
 
 func _process(delta: float) -> void:
 	if _presentation != null:
-		_presentation.advance(delta)
+		_presentation.advance(delta / Engine.time_scale)
 
 
 func _notification(what: int) -> void:
