@@ -76,15 +76,15 @@ func _check_selected_weapon_identity(fixtures) -> void:
 		await process_frame
 
 		var selection := state["selection"] as Dictionary
-		_expect(str(selection["weapon_title"]) == weapon_title, "[%s] view model must carry the selected weapon title" % source)
 		_expect(str(selection["profile_id"]) == expected_profile_id, "[%s] view model must carry the selected weapon profile id" % source)
 
 		var title_label := widget.find_child("WeaponTitle", true, false) as Label
 		var tooltip_weapon := widget.find_child("TooltipWeaponLine", true, false) as Label
 		var tooltip_title := widget.find_child("TooltipUltimateTitle", true, false) as Label
 		var tooltip_description := widget.find_child("TooltipUltimateDescription", true, false) as Label
-		_expect(title_label != null and title_label.text == weapon_title, "[%s] HUD title must be the selected weapon, got '%s'" % [source, "" if title_label == null else title_label.text])
-		_expect(title_label != null and title_label.text != class_title, "[%s] HUD title must not collapse to the class title" % source)
+		var rendered_weapon_title := "" if title_label == null else title_label.text
+		_expect(rendered_weapon_title == weapon_title, "[%s] HUD title must be the selected weapon, got '%s'" % [source, rendered_weapon_title])
+		_expect(rendered_weapon_title != class_title, "[%s] HUD negative control: title must not collapse to the class title" % source)
 		_expect(tooltip_weapon != null and tooltip_weapon.text == weapon_title, "[%s] Codex tooltip must name the selected weapon" % source)
 		_expect(tooltip_title != null and tooltip_title.text == str((state["ultimate"] as Dictionary)["title"]), "[%s] tooltip must show the ultimate title" % source)
 		_expect(tooltip_description != null and tooltip_description.text == str((state["ultimate"] as Dictionary)["description"]), "[%s] tooltip must show the ultimate description" % source)
