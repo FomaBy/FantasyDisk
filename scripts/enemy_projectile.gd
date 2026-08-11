@@ -98,6 +98,7 @@ func _spawn_impact_vfx() -> void:
 		parent = get_tree().root
 	var impact := Node2D.new()
 	impact.name = "EnemyProjectileImpactVfx"
+	impact.process_mode = Node.PROCESS_MODE_PAUSABLE
 	impact.global_position = global_position
 	impact.z_index = 13
 	parent.add_child(impact)
