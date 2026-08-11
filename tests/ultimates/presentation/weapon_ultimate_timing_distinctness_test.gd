@@ -5,6 +5,28 @@ const TIMELINE_ROOT := "res://scenes/vfx/ultimates"
 const MIN_RHYTHM_DELTA_SECONDS := 0.1
 const COMPARISON_EPSILON := 0.000001
 const REQUIRED_TIMING_FIELDS := ["windup", "release", "active", "recovery", "cancel"]
+const PACK_SUFFIX := "_ultimate_presentation_pack.gd"
+const PACK_TIMING_KEY := "timing"
+
+# Manifest timing is only trusted when a second authoritative in-repo source
+# agrees with it. These classes ship scene-only packages that declare no
+# absolute phase seconds anywhere else, so their manifest timing stands alone.
+# The map is a ratchet like ContactSheetBeatsContract.MIGRATION_ALLOWLIST: it
+# only shrinks, an entry whose class gains a timeline or a presentation pack
+# fails as stale, and a class outside it without a second source fails closed.
+const PARITY_EXEMPTIONS := {
+	"assassin": "scene-only package: no timeline and no presentation pack",
+	"berserk": "scene-only package: no timeline and no presentation pack",
+	"biologist": "scene script animates normalized progress, not absolute phase seconds",
+	"chemist": "scene-only package: no timeline and no presentation pack",
+	"dark_mage": "scene-only package: no timeline and no presentation pack",
+	"druid": "scene-only package: no timeline and no presentation pack",
+	"elementalist": "scene-only package: no timeline and no presentation pack",
+	"guitarist": "scene-only package: no timeline and no presentation pack",
+	"knight": "scene-only package: no timeline and no presentation pack",
+	"priest": "scene-only package: no timeline and no presentation pack",
+	"soldier": "scene-only package: no timeline and no presentation pack",
+}
 
 
 func _initialize() -> void:
@@ -12,9 +34,13 @@ func _initialize() -> void:
 	var checked_classes: Array[String] = []
 	var skipped_classes: Array[String] = []
 	var uncovered_classes: Array[String] = []
+	var parity_classes: Array[String] = []
+	var exempt_classes: Array[String] = []
+	var parity_weapons := 0
 	var compared_weapons := {}
 	var class_directories := DirAccess.get_directories_at(MANIFEST_ROOT)
 	class_directories.sort()
+	_check_parity_exemptions(class_directories, errors)
 	for class_directory in class_directories:
 		var coverage := _class_timing_coverage(class_directory)
 		var class_id := str(coverage["class_id"])
@@ -24,6 +50,12 @@ func _initialize() -> void:
 				var reason := _timing_declaration_error(weapons)
 				if reason.is_empty():
 					checked_classes.append(class_id)
+					var parity_source := str(coverage.get("parity_source", ""))
+					if parity_source.is_empty():
+						exempt_classes.append("%s (%s)" % [class_id, PARITY_EXEMPTIONS[class_id]])
+					else:
+						parity_classes.append("%s via %s" % [class_id, parity_source])
+						parity_weapons += weapons.size()
 					for raw_weapon in weapons:
 						var weapon_id := str((raw_weapon as Dictionary).get("weapon_id", ""))
 						var key := "%s/%s" % [class_id, weapon_id]
@@ -51,6 +83,13 @@ func _initialize() -> void:
 		", ".join(uncovered_classes) if not uncovered_classes.is_empty() else "none",
 	])
 	print("Weapon ultimate timing distinctness checked classes: %s." % [", ".join(checked_classes)])
+	print("Weapon ultimate timing parity coverage: %d/%d weapon(s) cross-checked against a second source (%s); %d exempt class(es): %s." % [
+		parity_weapons,
+		compared_weapons.size(),
+		", ".join(parity_classes) if not parity_classes.is_empty() else "none",
+		exempt_classes.size(),
+		", ".join(exempt_classes) if not exempt_classes.is_empty() else "none",
+	])
 	if checked_classes.is_empty():
 		errors.append("zero classes declare weapons[].timing_seconds")
 	if checked_classes.size() != 17 or compared_weapons.size() != 51:
@@ -79,20 +118,46 @@ func _class_timing_coverage(class_directory: String) -> Dictionary:
 			return _uncovered(class_directory, "manifest class_id must not be empty")
 		var weapons = manifest.get("weapons", null)
 		if weapons is Array and not weapons.is_empty():
-			var timeline_coverage := _timeline_timing_coverage(class_id, class_directory)
-			if str(timeline_coverage["kind"]) == "uncovered":
-				return timeline_coverage
-			if str(timeline_coverage["kind"]) == "timings":
+			var second_source := _second_timing_source(class_id, class_directory)
+			if str(second_source["kind"]) == "uncovered":
+				return second_source
+			if str(second_source["kind"]) == "timings":
+				if PARITY_EXEMPTIONS.has(class_id):
+					return _uncovered(class_id, "stale parity exemption: %s timing is now declared by %s" % [
+						class_id, str(second_source["source"]),
+					])
 				var agreement_error := _timing_agreement_error(
-					weapons as Array, timeline_coverage["weapons"] as Array
+					weapons as Array, second_source["weapons"] as Array
 				)
 				if not agreement_error.is_empty():
 					return _uncovered(class_id, agreement_error)
+				return {
+					"kind": "timings",
+					"class_id": class_id,
+					"weapons": weapons,
+					"parity_source": str(second_source["source"]),
+				}
+			if not PARITY_EXEMPTIONS.has(class_id):
+				return _uncovered(class_id, "manifest timing has no second authoritative source: no *.timeline.json and no %s%s" % [
+					class_directory, PACK_SUFFIX,
+				])
 			return {"kind": "timings", "class_id": class_id, "weapons": weapons}
 		if weapons != null and not weapons is Array:
 			return _uncovered(class_id, "manifest weapons must be an array")
 		return _timeline_timing_coverage(class_id, class_directory)
 	return _timeline_timing_coverage(class_directory, class_directory)
+
+
+## Resolves the non-manifest timing declaration a class ships, if any: a
+## `*.timeline.json` set first, otherwise its class-local presentation pack.
+func _second_timing_source(class_id: String, class_directory: String) -> Dictionary:
+	var timeline_coverage := _timeline_timing_coverage(class_id, class_directory)
+	if str(timeline_coverage["kind"]) != "skipped":
+		timeline_coverage["source"] = "timeline"
+		return timeline_coverage
+	var pack_coverage := _pack_timing_coverage(class_id, class_directory)
+	pack_coverage["source"] = "presentation pack"
+	return pack_coverage
 
 
 func _timeline_timing_coverage(class_id: String, class_directory: String) -> Dictionary:
@@ -127,6 +192,41 @@ func _timeline_timing_coverage(class_id: String, class_directory: String) -> Dic
 	return {"kind": "timings", "class_id": class_id, "weapons": weapons}
 
 
+func _pack_timing_coverage(class_id: String, class_directory: String) -> Dictionary:
+	var pack_path := TIMELINE_ROOT.path_join(class_directory).path_join("%s%s" % [class_directory, PACK_SUFFIX])
+	if not FileAccess.file_exists(pack_path):
+		return {"kind": "skipped", "class_id": class_id}
+	var pack := load(pack_path) as GDScript
+	if pack == null:
+		return _uncovered(class_id, "unreadable presentation pack: %s" % pack_path)
+	var constants := pack.get_script_constant_map()
+	if str(constants.get("CLASS_ID", "")) != class_id:
+		return _uncovered(class_id, "presentation pack %s declares a different CLASS_ID" % pack_path)
+	var declared = constants.get("WEAPONS", null)
+	if not declared is Dictionary or (declared as Dictionary).is_empty():
+		return _uncovered(class_id, "presentation pack %s must declare a non-empty WEAPONS map" % pack_path)
+	var weapon_ids := (declared as Dictionary).keys()
+	weapon_ids.sort()
+	var weapons: Array = []
+	for weapon_id in weapon_ids:
+		var config = (declared as Dictionary)[weapon_id]
+		if not config is Dictionary:
+			return _uncovered(class_id, "presentation pack %s has a non-dictionary weapon entry" % pack_path)
+		weapons.append({
+			"weapon_id": str(weapon_id),
+			"timing_seconds": (config as Dictionary).get(PACK_TIMING_KEY, null),
+		})
+	return {"kind": "timings", "class_id": class_id, "weapons": weapons}
+
+
+func _check_parity_exemptions(class_directories: PackedStringArray, errors: Array[String]) -> void:
+	for class_id in PARITY_EXEMPTIONS:
+		if not class_directories.has(class_id):
+			errors.append("parity exemption has no class package: %s" % class_id)
+		elif str(PARITY_EXEMPTIONS[class_id]).is_empty():
+			errors.append("parity exemption %s must state a reason" % class_id)
+
+
 func _uncovered(class_id: String, reason: String) -> Dictionary:
 	return {"kind": "uncovered", "class_id": class_id, "reason": reason}
 
@@ -156,28 +256,28 @@ func _timing_declaration_error(weapons: Array) -> String:
 	return ""
 
 
-func _timing_agreement_error(manifest_weapons: Array, timeline_weapons: Array) -> String:
+func _timing_agreement_error(manifest_weapons: Array, source_weapons: Array) -> String:
 	var manifest_error := _timing_declaration_error(manifest_weapons)
-	var timeline_error := _timing_declaration_error(timeline_weapons)
-	if not manifest_error.is_empty() or not timeline_error.is_empty():
-		return "manifest/timeline declarations must both be complete: %s%s" % [
+	var source_error := _timing_declaration_error(source_weapons)
+	if not manifest_error.is_empty() or not source_error.is_empty():
+		return "manifest/second-source declarations must both be complete: %s%s" % [
 			manifest_error,
-			"; %s" % timeline_error if not timeline_error.is_empty() else "",
+			"; %s" % source_error if not source_error.is_empty() else "",
 		]
 	var manifest_by_id := _timing_by_weapon_id(manifest_weapons)
-	var timeline_by_id := _timing_by_weapon_id(timeline_weapons)
+	var source_by_id := _timing_by_weapon_id(source_weapons)
 	var manifest_ids := manifest_by_id.keys()
-	var timeline_ids := timeline_by_id.keys()
+	var source_ids := source_by_id.keys()
 	manifest_ids.sort()
-	timeline_ids.sort()
-	if manifest_ids != timeline_ids:
-		return "manifest/timeline weapon sets differ: %s vs %s" % [manifest_ids, timeline_ids]
+	source_ids.sort()
+	if manifest_ids != source_ids:
+		return "manifest/second-source weapon sets differ: %s vs %s" % [manifest_ids, source_ids]
 	for weapon_id in manifest_ids:
 		var manifest_timing := manifest_by_id[weapon_id] as Dictionary
-		var timeline_timing := timeline_by_id[weapon_id] as Dictionary
+		var source_timing := source_by_id[weapon_id] as Dictionary
 		for field in REQUIRED_TIMING_FIELDS:
-			if absf(float(manifest_timing[field]) - float(timeline_timing[field])) > COMPARISON_EPSILON:
-				return "manifest/timeline mismatch for %s.%s" % [weapon_id, field]
+			if absf(float(manifest_timing[field]) - float(source_timing[field])) > COMPARISON_EPSILON:
+				return "manifest/second-source mismatch for %s.%s" % [weapon_id, field]
 	return ""
 
 
@@ -202,7 +302,15 @@ func _assert_fail_closed_contract(errors: Array[String]) -> void:
 	var mismatch := complete.duplicate(true)
 	((mismatch[1] as Dictionary)["timing_seconds"] as Dictionary)["active"] = 0.55
 	if _timing_agreement_error(complete, mismatch).is_empty():
-		errors.append("manifest/timeline timing mismatches must fail closed")
+		errors.append("manifest/second-source timing mismatches must fail closed")
+	var absent := complete.duplicate(true)
+	(absent[2] as Dictionary)["timing_seconds"] = null
+	if _timing_agreement_error(complete, absent).is_empty():
+		errors.append("a second source without timing data must fail closed")
+	var renamed := complete.duplicate(true)
+	(renamed[0] as Dictionary)["weapon_id"] = "d"
+	if _timing_agreement_error(complete, renamed).is_empty():
+		errors.append("manifest/second-source weapon-set drift must fail closed")
 
 
 func _check_class(class_id: String, weapons: Array, errors: Array[String]) -> void:

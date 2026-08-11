@@ -51,6 +51,23 @@ cannot be read. `uncovered` is fail-closed and fails the test with the class and
 reason, so no presentation package can disappear silently from this invariant.
 Class-local packages may keep additional, stricter checks.
 
+Manifest timing is only trusted when a second authoritative in-repo source
+agrees with it field by field. The test resolves that source per class in a
+fixed order: the `*.timeline.json` set first, otherwise the class-local
+`scenes/vfx/ultimates/<class>/<class>_ultimate_presentation_pack.gd` `WEAPONS`
+map, whose per-weapon `timing` block carries the same five phase seconds. A
+class that ships neither is not silently accepted; it must hold an explicit
+entry in the test's `PARITY_EXEMPTIONS` map stating why, and every run prints
+the parity-covered weapon count together with the exempt classes and reasons.
+
+`PARITY_EXEMPTIONS` is a ratchet with the same rules as
+`ContactSheetBeatsContract.MIGRATION_ALLOWLIST`: it only shrinks, an entry for a
+class that has since gained a timeline or a presentation pack fails as stale, an
+entry naming no class package or stating no reason fails, and a class outside it
+without a second source fails closed. Adding a timeline or a presentation pack
+to an exempt class is therefore the only way to raise parity coverage, and doing
+so forces its exemption out of the map.
+
 ## Contact-sheet beat evidence
 
 A contact sheet is evidence of the stated impact language, not an illustration.
