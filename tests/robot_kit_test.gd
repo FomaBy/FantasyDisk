@@ -214,7 +214,22 @@ func _take_hit(player: Node, amount: float, source := "") -> float:
 	return before - float(player.get("health"))
 
 
-func _make_real_player(character_id: String, weapon_id: String) -> Node:
+# FAN-2476: делает мутационную порчу пары raw_dodge/dodge (или raw_defense/
+# defense) видимой ИМЕННО этой сюите, а не только aggregate-ратчету в
+# tests/attribute_consumability_fan1887_test.gd. Возвращает "" при консистентной
+# паре, иначе — человеко-читаемую причину.
+func _raw_pair_defect(container: Dictionary, legacy_key: String, raw_key: String) -> String:
+	if not container.has(raw_key):
+		return "FAN-2474: '%s' отсутствует рядом с '%s' — raw/legacy контракт нарушен." % [raw_key, legacy_key]
+	var raw_value := float(container[raw_key])
+	var expected := PD.effective_dodge(raw_value) if legacy_key == "dodge" else PD.effective_defense(raw_value)
+	var actual := float(container.get(legacy_key, 0.0))
+	if absf(actual - expected) > EPS:
+		return "FAN-2474: '%s'=%.4f != effective(%s=%.2f)=%.4f — raw/legacy разошлись." % [legacy_key, actual, raw_key, raw_value, expected]
+	return ""
+
+
+func _make_real_player(character_id: String, weapon_id: String, errors: Array) -> Node:
 	var player := PLAYER_SCENE.instantiate()
 	root.add_child(player)
 	(player as Node2D).global_position = Vector2(2600, 2600)
@@ -232,13 +247,16 @@ func _make_real_player(character_id: String, weapon_id: String) -> Node:
 	derived["raw_defense"] = 0.0
 	derived["absorb"] = 0.0
 	derived["regeneration"] = 0.0
+	for defect in [_raw_pair_defect(derived, "dodge", "raw_dodge"), _raw_pair_defect(derived, "defense", "raw_defense")]:
+		if defect != "":
+			errors.append(defect)
 	player.set("run_modifiers", {})
 	player.set("health", 400.0)
 	return player
 
 
 func _test_armored_hull_trait(errors: Array) -> void:
-	var robot := _make_real_player("robot", "robot_reactor_core")
+	var robot := _make_real_player("robot", "robot_reactor_core", errors)
 	await process_frame
 
 	# AC: 100 post-mitigation → 80; 5 → 4 (большой и малый удар).
@@ -258,6 +276,9 @@ func _test_armored_hull_trait(errors: Array) -> void:
 	var raw_defense := 0.5
 	derived["raw_defense"] = raw_defense
 	derived["defense"] = PD.effective_defense(raw_defense)
+	var armored_raw_defect := _raw_pair_defect(derived, "defense", "raw_defense")
+	if armored_raw_defect != "":
+		errors.append(armored_raw_defect)
 	derived["absorb"] = 20.0
 	var ordered_hit := _take_hit(robot, 100.0)
 	var absorb_pass := maxf(100.0 - 20.0, 100.0 * PD.SURVIVABILITY_ABSORB_MIN_DAMAGE_FRACTION)
@@ -266,6 +287,9 @@ func _test_armored_hull_trait(errors: Array) -> void:
 		errors.append("trait must be the LAST multiplier after absorb+effective_defense(raw) (got %.3f, want %.3f)" % [ordered_hit, expected_ordered_hit])
 	derived["raw_defense"] = 0.0
 	derived["defense"] = 0.0
+	var reset_raw_defect := _raw_pair_defect(derived, "defense", "raw_defense")
+	if reset_raw_defect != "":
+		errors.append(reset_raw_defect)
 	derived["absorb"] = 0.0
 
 	# AC: тиковые/хазардные источники (всё, что идёт через take_damage) тоже x0.8.
@@ -274,7 +298,7 @@ func _test_armored_hull_trait(errors: Array) -> void:
 		errors.append("tick/hazard-style incoming damage must also be reduced (got %.3f, want 8)" % dot_hit)
 
 	# AC: другие классы не затронуты.
-	var soldier := _make_real_player("soldier", "soldier_rifle")
+	var soldier := _make_real_player("soldier", "soldier_rifle", errors)
 	await process_frame
 	var soldier_hit := _take_hit(soldier, 100.0)
 	if absf(soldier_hit - 100.0) > EPS:

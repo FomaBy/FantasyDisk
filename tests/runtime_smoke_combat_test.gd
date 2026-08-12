@@ -56,6 +56,8 @@ func _initialize() -> void:
 	var damage_test_derived: Dictionary = player.get("derived_parameters")
 	damage_test_derived["dodge"] = 0.0
 	damage_test_derived["raw_dodge"] = 0.0
+	if not _assert_raw_pair(damage_test_derived, "dodge", "raw_dodge"):
+		return
 	player.set("derived_parameters", damage_test_derived)
 
 	var contact_enemy := enemy_scene.instantiate()

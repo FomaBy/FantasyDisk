@@ -189,7 +189,22 @@ func _test_budget_mirrors(errors: Array) -> void:
 # --- Trait «Возмездие» ---
 
 
-func _knight_bench(weapon_id := "tower_shield") -> Dictionary:
+# FAN-2476: делает мутационную порчу пары raw_dodge/dodge (или raw_defense/
+# defense) видимой ИМЕННО этой сюите, а не только aggregate-ратчету в
+# tests/attribute_consumability_fan1887_test.gd. Возвращает "" при консистентной
+# паре, иначе — человеко-читаемую причину.
+func _raw_pair_defect(container: Dictionary, legacy_key: String, raw_key: String) -> String:
+	if not container.has(raw_key):
+		return "FAN-2474: '%s' отсутствует рядом с '%s' — raw/legacy контракт нарушен." % [raw_key, legacy_key]
+	var raw_value := float(container[raw_key])
+	var expected := PD.effective_dodge(raw_value) if legacy_key == "dodge" else PD.effective_defense(raw_value)
+	var actual := float(container.get(legacy_key, 0.0))
+	if absf(actual - expected) > EPS:
+		return "FAN-2474: '%s'=%.4f != effective(%s=%.2f)=%.4f — raw/legacy разошлись." % [legacy_key, actual, raw_key, raw_value, expected]
+	return ""
+
+
+func _knight_bench(errors: Array, weapon_id := "tower_shield") -> Dictionary:
 	var holder := Node2D.new()
 	root.add_child(holder)
 	var knight := PLAYER_SCENE.instantiate()
@@ -206,6 +221,9 @@ func _knight_bench(weapon_id := "tower_shield") -> Dictionary:
 	params["defense"] = 0.0
 	params["raw_defense"] = 0.0
 	params["absorb"] = 0.0
+	for defect in [_raw_pair_defect(params, "dodge", "raw_dodge"), _raw_pair_defect(params, "defense", "raw_defense")]:
+		if defect != "":
+			errors.append(defect)
 	knight.set("derived_parameters", params)
 	# Изоляция трейта от block/counter оружия (отдельный слой, свой тест ниже).
 	knight.set("_knight_counter_cooldown_left", 999.0)
@@ -238,7 +256,7 @@ func _knockback_len(enemy: Node2D) -> float:
 
 
 func _test_retaliation_normal_enemy(errors: Array) -> void:
-	var bench := await _knight_bench()
+	var bench := await _knight_bench(errors)
 	var knight: Node2D = bench["knight"]
 	var attacker := _real_enemy(bench["holder"], knight.global_position + Vector2(-52.0, 0.0))
 	await process_frame
@@ -268,7 +286,7 @@ func _test_retaliation_normal_enemy(errors: Array) -> void:
 func _test_retaliation_contact_integration(errors: Array) -> void:
 	# Сквозная проверка проводки: enemy._update_contact_damage сам передаёт
 	# себя атакующим 3-м аргументом take_damage.
-	var bench := await _knight_bench()
+	var bench := await _knight_bench(errors)
 	var knight: Node2D = bench["knight"]
 	var attacker := _real_enemy(bench["holder"], knight.global_position + Vector2(46.0, 0.0))
 	await process_frame
@@ -282,7 +300,7 @@ func _test_retaliation_contact_integration(errors: Array) -> void:
 
 
 func _test_retaliation_taxonomy(errors: Array) -> void:
-	var bench := await _knight_bench()
+	var bench := await _knight_bench(errors)
 	var knight: Node2D = bench["knight"]
 	var cases := [
 		{"kind": "mini_elite", "expect_knock": true, "label": "мини-элита"},
@@ -306,7 +324,7 @@ func _test_retaliation_taxonomy(errors: Array) -> void:
 
 
 func _test_retaliation_cooldown(errors: Array) -> void:
-	var bench := await _knight_bench()
+	var bench := await _knight_bench(errors)
 	var knight: Node2D = bench["knight"]
 	var first := _real_enemy(bench["holder"], knight.global_position + Vector2(48.0, 0.0))
 	var second := _real_enemy(bench["holder"], knight.global_position + Vector2(0.0, 48.0))
@@ -343,6 +361,9 @@ func _test_retaliation_no_class_leak_and_prevented(errors: Array) -> void:
 	var params: Dictionary = soldier.get("derived_parameters")
 	params["dodge"] = 0.0
 	params["raw_dodge"] = 0.0
+	var soldier_raw_defect := _raw_pair_defect(params, "dodge", "raw_dodge")
+	if soldier_raw_defect != "":
+		errors.append(soldier_raw_defect)
 	soldier.set("derived_parameters", params)
 	var attacker := _real_enemy(holder, soldier.global_position + Vector2(50.0, 0.0))
 	await process_frame
@@ -354,7 +375,7 @@ func _test_retaliation_no_class_leak_and_prevented(errors: Array) -> void:
 	await process_frame
 
 	# Полностью предотвращённый удар (i-frames) отброса не даёт.
-	var bench := await _knight_bench()
+	var bench := await _knight_bench(errors)
 	var knight: Node2D = bench["knight"]
 	var blocked_attacker := _real_enemy(bench["holder"], knight.global_position + Vector2(50.0, 0.0))
 	await process_frame

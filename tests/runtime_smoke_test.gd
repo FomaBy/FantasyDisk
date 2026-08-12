@@ -749,6 +749,8 @@ func _initialize() -> void:
 	var damage_test_derived: Dictionary = player.get("derived_parameters")
 	damage_test_derived["dodge"] = 0.0
 	damage_test_derived["raw_dodge"] = 0.0
+	if not _assert_raw_pair(damage_test_derived, "dodge", "raw_dodge"):
+		return
 	player.set("derived_parameters", damage_test_derived)
 
 	var hp_before_contact := float(player.get("health"))
@@ -4620,6 +4622,8 @@ func _test_unique_class_identity_patterns() -> void:
 	knight_parameters["defense"] = 0.0
 	knight_parameters["raw_defense"] = 0.0
 	knight_parameters["absorb"] = 0.0
+	if not _assert_raw_pair(knight_parameters, "dodge", "raw_dodge") or not _assert_raw_pair(knight_parameters, "defense", "raw_defense"):
+		return
 	knight.set("derived_parameters", knight_parameters)
 	var knight_enemy := enemy_scene.instantiate()
 	holder.add_child(knight_enemy)
@@ -5682,12 +5686,15 @@ func _test_no_auto_player_movement_from_crit_or_dodge() -> void:
 
 	# Максимальный уворот через СЫРОЙ рейтинг: 2.0 упирается в кап 0.55 — ровно
 	# тот же шанс, что давал legacy-процент 1.0 после клампа в _current_dodge_chance.
-	assassin.set("derived_parameters", {
+	var max_dodge_parameters := {
 		"raw_dodge": 2.0,
 		"dodge": ProgressionData.effective_dodge(2.0),
 		"raw_defense": 0.0,
 		"defense": 0.0,
-	})
+	}
+	if not _assert_raw_pair(max_dodge_parameters, "dodge", "raw_dodge") or not _assert_raw_pair(max_dodge_parameters, "defense", "raw_defense"):
+		return
+	assassin.set("derived_parameters", max_dodge_parameters)
 	var dodge_position_before: Vector2 = assassin.global_position
 	assassin.call("take_damage", 12.0)
 	await process_frame
@@ -7883,6 +7890,8 @@ func _test_economy_tiers_and_fab(main_scene: PackedScene) -> void:
 	var derived: Dictionary = t3_player.get("derived_parameters")
 	derived["dodge"] = 0.0
 	derived["raw_dodge"] = 0.0
+	if not _assert_raw_pair(derived, "dodge", "raw_dodge"):
+		return
 	t3_player.set("derived_parameters", derived)
 	t3_player.set("_damage_invulnerability_left", 0.0)
 	t3_player.call("take_damage", 10.0)
@@ -9780,6 +9789,24 @@ func _collect_label_text(node: Node) -> String:
 	return "\n".join(parts)
 
 
+# FAN-2476: делает мутационную порчу пары raw_dodge/dodge (или raw_defense/
+# defense) видимой ИМЕННО этой сюите, а не только aggregate-ратчету в
+# tests/attribute_consumability_fan1887_test.gd. Наследники (runtime_smoke_
+# combat_test.gd, runtime_smoke_triggered_artifacts_test.gd) переиспользуют
+# через extends. Возвращает true при консистентной паре (иначе _fail + false).
+func _assert_raw_pair(container: Dictionary, legacy_key: String, raw_key: String) -> bool:
+	if not container.has(raw_key):
+		_fail("FAN-2474: '%s' отсутствует рядом с '%s' — raw/legacy контракт нарушен." % [raw_key, legacy_key])
+		return false
+	var raw_value := float(container[raw_key])
+	var expected := ProgressionData.effective_dodge(raw_value) if legacy_key == "dodge" else ProgressionData.effective_defense(raw_value)
+	var actual := float(container.get(legacy_key, 0.0))
+	if absf(actual - expected) > 0.001:
+		_fail("FAN-2474: '%s'=%.4f != effective(%s=%.2f)=%.4f — raw/legacy разошлись." % [legacy_key, actual, raw_key, raw_value, expected])
+		return false
+	return true
+
+
 func _fail(message: String, evidence_path := "") -> void:
 	# SCRUM-722: единая точка отказа умбрелла-смоука и фокус-сьютов. Каждый провал
 	# называет сломанную систему/экран (message) и оставляет детерминированный артефакт-
@@ -9873,6 +9900,8 @@ func _test_death_flow(main_scene: PackedScene) -> void:
 	var derived: Dictionary = player.get("derived_parameters")
 	derived["dodge"] = 0.0
 	derived["raw_dodge"] = 0.0
+	if not _assert_raw_pair(derived, "dodge", "raw_dodge"):
+		return
 	player.set("derived_parameters", derived)
 	var run_modifiers: Dictionary = player.get("run_modifiers")
 	run_modifiers["death_save"] = 0.0

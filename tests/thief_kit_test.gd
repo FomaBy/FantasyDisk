@@ -487,6 +487,21 @@ func _test_smoke_bomb_detonation_and_cloud(errors: Array) -> void:
 	await _cleanup(holder)
 
 
+# FAN-2476: делает мутационную порчу пары raw_dodge/dodge (или raw_defense/
+# defense) видимой ИМЕННО этой сюите, а не только aggregate-ратчету в
+# tests/attribute_consumability_fan1887_test.gd. Возвращает "" при консистентной
+# паре, иначе — человеко-читаемую причину.
+func _raw_pair_defect(container: Dictionary, legacy_key: String, raw_key: String) -> String:
+	if not container.has(raw_key):
+		return "FAN-2474: '%s' отсутствует рядом с '%s' — raw/legacy контракт нарушен." % [raw_key, legacy_key]
+	var raw_value := float(container[raw_key])
+	var expected := PD.effective_dodge(raw_value) if legacy_key == "dodge" else PD.effective_defense(raw_value)
+	var actual := float(container.get(legacy_key, 0.0))
+	if absf(actual - expected) > EPS:
+		return "FAN-2474: '%s'=%.4f != effective(%s=%.2f)=%.4f — raw/legacy разошлись." % [legacy_key, actual, raw_key, raw_value, expected]
+	return ""
+
+
 func _test_smoke_cloud_player_dodge(errors: Array) -> void:
 	var holder := _new_scene("Scrum897SmokePlayerDodge")
 	var player_scene := load("res://scenes/Player.tscn") as PackedScene
@@ -515,6 +530,9 @@ func _test_smoke_cloud_player_dodge(errors: Array) -> void:
 	var heavy_dodge := PD.effective_dodge(heavy_raw_dodge)
 	params["raw_dodge"] = heavy_raw_dodge
 	params["dodge"] = heavy_dodge
+	var heavy_raw_defect := _raw_pair_defect(params, "dodge", "raw_dodge")
+	if heavy_raw_defect != "":
+		errors.append(heavy_raw_defect)
 	player.set("derived_parameters", params)
 	if absf(float(player.call("_current_dodge_chance")) - heavy_dodge) > EPS:
 		errors.append("дым: базовый шанс вне облака %.3f != effective_dodge(%.2f)=%.3f" % [float(player.call("_current_dodge_chance")), heavy_raw_dodge, heavy_dodge])
@@ -538,6 +556,9 @@ func _test_smoke_cloud_player_dodge(errors: Array) -> void:
 	var modest_dodge := PD.effective_dodge(modest_raw_dodge)
 	params["raw_dodge"] = modest_raw_dodge
 	params["dodge"] = modest_dodge
+	var modest_raw_defect := _raw_pair_defect(params, "dodge", "raw_dodge")
+	if modest_raw_defect != "":
+		errors.append(modest_raw_defect)
 	player.set("derived_parameters", params)
 	player.call("register_smoke_cloud", player_node.global_position, 170.0, 5.0, 0.35)
 	if absf(float(player.call("_current_dodge_chance")) - (modest_dodge + 0.47)) > EPS:

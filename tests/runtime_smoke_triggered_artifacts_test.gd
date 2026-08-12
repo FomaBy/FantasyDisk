@@ -129,6 +129,9 @@ func _test_on_low_hp_guard() -> void:
 	var derived := player.get("derived_parameters") as Dictionary
 	derived["dodge"] = 0.0  # детерминизм: dodge early-return не должен маскировать on_low_hp.
 	derived["raw_dodge"] = 0.0
+	if not _assert_raw_pair(derived, "dodge", "raw_dodge"):
+		player.queue_free()
+		return
 	player.call("take_damage", 1.0)
 	if float(player.get("_damage_invulnerability_left")) < 1.0:
 		_fail("on_low_hp guard (guardian_bulwark) should grant brief invulnerability on first low-HP hit.")
@@ -153,6 +156,10 @@ func _test_on_take_hit_pulse() -> void:
 	var derived := player.get("derived_parameters") as Dictionary
 	derived["dodge"] = 0.0  # детерминизм: dodge early-return не должен маскировать on_take_hit.
 	derived["raw_dodge"] = 0.0
+	if not _assert_raw_pair(derived, "dodge", "raw_dodge"):
+		player.queue_free()
+		enemy.queue_free()
+		return
 	player.call("take_damage", 20.0)
 	if float(enemy.get_meta("damage_taken", 0.0)) <= 0.0:
 		_fail("on_take_hit pulse (counterwave_sigil) should damage nearby enemy.")

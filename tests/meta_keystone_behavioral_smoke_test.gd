@@ -7,6 +7,7 @@ extends SceneTree
 # changes a live weapon cadence/radius/pierce count, changes incoming damage, or
 # applies/ticks a real status effect in a headless SceneTree mini-arena.
 
+const ProgressionData := preload("res://scripts/progression_data.gd")
 const Meta := preload("res://scripts/meta_progression.gd")
 const Schema6 := preload("res://scripts/constellation_schema6_data.gd")
 const TreeData := preload("res://scripts/meta_progression_tree_data.gd")
@@ -306,7 +307,7 @@ func _test_reactor_heat(holder: Node2D, errors: Array) -> void:
 		_cleanup_player(player)
 		return
 	var cold_loss := await _weapon_hit_loss(holder, player, weapon, -1.0, true)
-	_disable_random_damage_avoidance(player)
+	_disable_random_damage_avoidance(player, errors)
 	var hp_before := float(player.get("health"))
 	player.call("take_damage", 10.0, "reactor_cold_test")
 	var cold_taken := hp_before - float(player.get("health"))
@@ -321,7 +322,7 @@ func _test_reactor_heat(holder: Node2D, errors: Array) -> void:
 	if not bool(player.get("_reactor_heat_active")) or float((player.get("run_modifiers") as Dictionary).get("reactor_heat_active", 0.0)) < 0.99:
 		errors.append("Reactor runtime update did not expose the charged hot state (heat %.3f)." % float(player.get("_reactor_heat")))
 	var hot_loss := await _weapon_hit_loss(holder, player, weapon, -1.0, true)
-	_disable_random_damage_avoidance(player)
+	_disable_random_damage_avoidance(player, errors)
 	hp_before = float(player.get("health"))
 	player.call("take_damage", 10.0, "reactor_test")
 	var hot_taken := hp_before - float(player.get("health"))
@@ -577,10 +578,28 @@ func _cleanup_player(player: Node) -> void:
 		player.queue_free()
 
 
-func _disable_random_damage_avoidance(player: Node) -> void:
+# FAN-2476: делает мутационную порчу пары raw_dodge/dodge (или raw_defense/
+# defense) видимой ИМЕННО этой сюите, а не только aggregate-ратчету в
+# tests/attribute_consumability_fan1887_test.gd. Возвращает "" при консистентной
+# паре, иначе — человеко-читаемую причину.
+func _raw_pair_defect(container: Dictionary, legacy_key: String, raw_key: String) -> String:
+	if not container.has(raw_key):
+		return "FAN-2474: '%s' отсутствует рядом с '%s' — raw/legacy контракт нарушен." % [raw_key, legacy_key]
+	var raw_value := float(container[raw_key])
+	var expected := ProgressionData.effective_dodge(raw_value) if legacy_key == "dodge" else ProgressionData.effective_defense(raw_value)
+	var actual := float(container.get(legacy_key, 0.0))
+	if absf(actual - expected) > 0.001:
+		return "FAN-2474: '%s'=%.4f != effective(%s=%.2f)=%.4f — raw/legacy разошлись." % [legacy_key, actual, raw_key, raw_value, expected]
+	return ""
+
+
+func _disable_random_damage_avoidance(player: Node, errors: Array) -> void:
 	var params: Dictionary = player.get("derived_parameters")
 	params["dodge"] = 0.0
 	params["raw_dodge"] = 0.0
+	var defect := _raw_pair_defect(params, "dodge", "raw_dodge")
+	if defect != "":
+		errors.append(defect)
 	player.set("derived_parameters", params)
 	player.set("_damage_invulnerability_left", 0.0)
 

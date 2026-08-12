@@ -179,6 +179,7 @@ func _test_censer_real_hit_and_cancel() -> void:
 	var derived: Dictionary = player.get("derived_parameters")
 	derived["dodge"] = 0.0
 	derived["raw_dodge"] = 0.0
+	_assert_raw_pair(derived, "dodge", "raw_dodge")
 	player.set("debug_godmode", false)
 	player.set("damage_invulnerability_time", 0.0)
 	player.set("_damage_invulnerability_left", 0.0)
@@ -426,6 +427,19 @@ func _drop(host: FixtureHost) -> void:
 func _check(condition: bool, message: String) -> void:
 	if not condition:
 		_errors.append(message)
+
+
+# FAN-2476: делает мутационную порчу пары raw_dodge/dodge (или raw_defense/
+# defense) видимой ИМЕННО этой сюите, а не только aggregate-ратчету в
+# tests/attribute_consumability_fan1887_test.gd.
+func _assert_raw_pair(container: Dictionary, legacy_key: String, raw_key: String) -> void:
+	if not container.has(raw_key):
+		_check(false, "FAN-2474: '%s' отсутствует рядом с '%s' — raw/legacy контракт нарушен." % [raw_key, legacy_key])
+		return
+	var raw_value := float(container[raw_key])
+	var expected := PD.effective_dodge(raw_value) if legacy_key == "dodge" else PD.effective_defense(raw_value)
+	var actual := float(container.get(legacy_key, 0.0))
+	_check(absf(actual - expected) <= 0.001, "FAN-2474: '%s'=%.4f != effective(%s=%.2f)=%.4f — raw/legacy разошлись." % [legacy_key, actual, raw_key, raw_value, expected])
 
 
 func _report() -> void:

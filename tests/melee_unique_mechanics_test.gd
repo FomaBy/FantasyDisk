@@ -56,6 +56,21 @@ func _test_melee_unique_configs(errors: Array) -> void:
 		errors.append("Expected tower_shield counter to stay frontal while holy_flail remains circular.")
 
 
+# FAN-2476: делает мутационную порчу пары raw_dodge/dodge (или raw_defense/
+# defense) видимой ИМЕННО этой сюите, а не только aggregate-ратчету в
+# tests/attribute_consumability_fan1887_test.gd. Возвращает "" при консистентной
+# паре, иначе — человеко-читаемую причину.
+func _raw_pair_defect(container: Dictionary, legacy_key: String, raw_key: String) -> String:
+	if not container.has(raw_key):
+		return "FAN-2474: '%s' отсутствует рядом с '%s' — raw/legacy контракт нарушен." % [raw_key, legacy_key]
+	var raw_value := float(container[raw_key])
+	var expected := ProgressionData.effective_dodge(raw_value) if legacy_key == "dodge" else ProgressionData.effective_defense(raw_value)
+	var actual := float(container.get(legacy_key, 0.0))
+	if absf(actual - expected) > 0.001:
+		return "FAN-2474: '%s'=%.4f != effective(%s=%.2f)=%.4f — raw/legacy разошлись." % [legacy_key, actual, raw_key, raw_value, expected]
+	return ""
+
+
 func _test_knight_tower_shield_counter_pack(errors: Array) -> void:
 	var holder := Node2D.new()
 	root.add_child(holder)
@@ -72,6 +87,9 @@ func _test_knight_tower_shield_counter_pack(errors: Array) -> void:
 	params["defense"] = 0.0
 	params["raw_defense"] = 0.0
 	params["absorb"] = 0.0
+	for defect in [_raw_pair_defect(params, "dodge", "raw_dodge"), _raw_pair_defect(params, "defense", "raw_defense")]:
+		if defect != "":
+			errors.append(defect)
 	knight.set("derived_parameters", params)
 	knight.set("_knight_counter_cooldown_left", 0.0)
 
