@@ -67,8 +67,7 @@ func _test_timed_absorb_live_mitigation_and_refresh() -> void:
 	var player := _player_with_final("elementalist", "elementalist_prism_focus")
 	var base_flat := float(player.run_modifiers.get("absorb_flat", 0.0))
 	var base_derived := float(player.derived_parameters.get("absorb", 0.0))
-	player.derived_parameters["dodge"] = 0.0
-	player.derived_parameters["defense"] = 0.0
+	_neutralize_defense_and_dodge(player)
 	player.health = player.max_health
 	player.set("_damage_invulnerability_left", 0.0)
 	player.take_damage(20.0)
@@ -81,8 +80,7 @@ func _test_timed_absorb_live_mitigation_and_refresh() -> void:
 	_check(_approx(player.constellation_timed_absorb("probe"), 8.0), "timed absorb source lookup is stale")
 	_check(_approx(float(player.run_modifiers.get("absorb_flat", 0.0)), base_flat + 8.0), "timed absorb did not update canonical absorb_flat")
 	_check(float(player.derived_parameters.get("absorb", 0.0)) > base_derived, "timed absorb did not recompute derived absorb")
-	player.derived_parameters["dodge"] = 0.0
-	player.derived_parameters["defense"] = 0.0
+	_neutralize_defense_and_dodge(player)
 	player.take_damage(20.0)
 	var shielded_loss: float = float(player.max_health) - float(player.health)
 	_check(shielded_loss + 0.01 < baseline_loss, "timed absorb did not reduce live Player.take_damage loss")
@@ -370,8 +368,7 @@ func _test_censer_single_cast_ward() -> void:
 	await process_frame
 	var damage_before_retaliation := enemy.damage_taken()
 	player.health = player.max_health
-	player.derived_parameters["dodge"] = 0.0
-	player.derived_parameters["defense"] = 0.0
+	_neutralize_defense_and_dodge(player)
 	player.derived_parameters["absorb"] = 0.0
 	player.set("_damage_invulnerability_left", 0.0)
 	player.take_damage(20.0)
@@ -616,6 +613,17 @@ func _player_with_final(class_id: String, weapon_id: String, with_final := true)
 	player.derived_parameters["crit_chance"] = 0.0
 	player.global_position = Vector2.ZERO
 	return player
+
+
+# Изолирует проверяемый эффект от классовой выживаемости. Принятый контракт считает
+# защиту и уворот из СЫРЫХ рейтингов, поэтому обнуляем и их: effective_defense(0) ==
+# effective_dodge(0) == 0 на любой кривой. Без raw-обнуления живой уворот класса
+# случайно съедал бы удар, а живая защита — сдвигала бы ожидаемую потерю HP.
+func _neutralize_defense_and_dodge(player: CharacterBody2D) -> void:
+	player.derived_parameters["dodge"] = 0.0
+	player.derived_parameters["raw_dodge"] = 0.0
+	player.derived_parameters["defense"] = 0.0
+	player.derived_parameters["raw_defense"] = 0.0
 
 
 func _class_weapon(player: CharacterBody2D, class_id: String, weapon_id: String) -> Variant:
