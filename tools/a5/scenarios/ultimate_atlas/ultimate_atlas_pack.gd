@@ -23,6 +23,8 @@ const FIXED_STEP_SAMPLE_COUNT := 8
 const FIXED_STEP_TOLERANCE := 1.0e-9
 const DAMAGE_EVIDENCE_TOLERANCE := 0.01
 const SEED := 151501
+const CROWD_TARGET_COUNT := 10
+const SUSTAIN_METRIC_FIELDS := ["solo_dpm", "crowd_10_dpm"]
 const ATLAS50_EXCLUSIONS := ["atlas_m2", "atlas_m3", "atlas_k0"]
 const PLAYABLE_SCENARIOS := ["no_meta", "class_constellation", "class_atlas50"]
 const NON_PLAYABLE_SCENARIO := "class_atlas59_upper"
@@ -170,13 +172,18 @@ static func per_weapon_sustain_rows() -> Array:
 		for weapon_value in PD.weapon_ids(class_id):
 			var weapon_id := str(weapon_value)
 			var config := PD.weapon(class_id, weapon_id)
-			var budget := PD.estimate_weapon_budget_for_stats(class_id, config, stats, true, {}, false)
+			var solo_budget := PD.estimate_weapon_budget_for_stats(class_id, config, stats, true, {}, false)
+			# FAN-2414: crowd_10_dpm must come from the canonical crowd-clear budget
+			# (target_count=10), not the solo budget dict, which never carries a
+			# "crowd_dps" key. NAN sentinel keeps a future missing key detectable
+			# instead of silently collapsing to 0.0.
+			var crowd_budget := PD.estimate_crowd_clear_budget_for_stats(class_id, config, CROWD_TARGET_COUNT, stats, true, {}, false)
 			rows.append({
 				"class_id": class_id,
 				"weapon_id": weapon_id,
 				"sustain_only": true,
-				"solo_dpm": snappedf(float(budget.get("solo_dps", 0.0)) * 60.0, 0.0001),
-				"crowd_10_dpm": snappedf(float(budget.get("crowd_dps", 0.0)) * 60.0, 0.0001),
+				"solo_dpm": snappedf(float(solo_budget.get("solo_dps", NAN)) * 60.0, 0.0001),
+				"crowd_10_dpm": snappedf(float(crowd_budget.get("crowd_dps", NAN)) * 60.0, 0.0001),
 			})
 	rows.sort_custom(func(left, right): return "%s/%s" % [left["class_id"], left["weapon_id"]] < "%s/%s" % [right["class_id"], right["weapon_id"]])
 	return rows
@@ -232,6 +239,9 @@ static func evaluate_fragment(fragment: Dictionary) -> Dictionary:
 		for weapon_value in PD.weapon_ids(class_id):
 			expected_weapons["%s/%s" % [class_id, weapon_value]] = true
 	var seen_weapons := {}
+	var metric_totals := {}
+	for field in SUSTAIN_METRIC_FIELDS:
+		metric_totals[field] = 0.0
 	for row_value in fragment.get("per_weapon_sustain", []):
 		var row: Dictionary = row_value
 		var key := "%s/%s" % [row.get("class_id", ""), row.get("weapon_id", "")]
@@ -243,8 +253,21 @@ static func evaluate_fragment(fragment: Dictionary) -> Dictionary:
 		for field in row.keys():
 			if str(field).contains("ultimate"):
 				errors.append("%s leaks ultimate into a per-weapon row" % key)
+		for field in SUSTAIN_METRIC_FIELDS:
+			var value: Variant = row.get(field, null)
+			if not _is_nonnegative_number(value):
+				errors.append("%s has a missing or invalid %s" % [key, field])
+				continue
+			metric_totals[field] = float(metric_totals[field]) + float(value)
 	if seen_weapons.size() != expected_weapons.size():
 		errors.append("sustain rows cover %d/%d runtime weapons" % [seen_weapons.size(), expected_weapons.size()])
+	# FAN-2414: a metric that reads a nonexistent budget key silently defaults to
+	# 0.0 for every row instead of raising. Reject that shape outright unless the
+	# fragment explicitly exempts the field.
+	var zero_exemptions: Array = fragment.get("zero_metric_exemptions", [])
+	for field in SUSTAIN_METRIC_FIELDS:
+		if not seen_weapons.is_empty() and is_zero_approx(float(metric_totals[field])) and not zero_exemptions.has(field):
+			errors.append("%s is a constant zero across all sustain rows without an explicit schema exemption" % field)
 	var measurements: Dictionary = fragment.get("measurements", {})
 	for class_value in class_ids():
 		var class_id := str(class_value)

@@ -151,6 +151,19 @@ func _verify_fail_closed_oracles() -> void:
 	var leaked := fragment.duplicate(true)
 	((leaked["per_weapon_sustain"] as Array)[0] as Dictionary)["ultimate_damage"] = 1.0
 	_check(not bool(Pack.evaluate_fragment(leaked).get("ok", true)), "ultimate data in a weapon row must fail closed")
+	# FAN-2414: a missing/invalid per-weapon metric, or a metric that reads a
+	# nonexistent budget key and silently collapses to 0.0 for every row, must
+	# fail closed instead of certifying as a green fragment.
+	var missing_metric := fragment.duplicate(true)
+	((missing_metric["per_weapon_sustain"] as Array)[0] as Dictionary).erase("crowd_10_dpm")
+	_check(not bool(Pack.evaluate_fragment(missing_metric).get("ok", true)), "a missing crowd_10_dpm must fail closed")
+	var zeroed_metric := fragment.duplicate(true)
+	for row_value in (zeroed_metric["per_weapon_sustain"] as Array):
+		(row_value as Dictionary)["crowd_10_dpm"] = 0.0
+	_check(not bool(Pack.evaluate_fragment(zeroed_metric).get("ok", true)), "a column-wide constant-zero crowd_10_dpm must fail closed without an explicit exemption")
+	var exempted_metric: Dictionary = zeroed_metric.duplicate(true)
+	exempted_metric["zero_metric_exemptions"] = ["crowd_10_dpm"]
+	_check(bool(Pack.evaluate_fragment(exempted_metric).get("ok", false)), "an explicit zero_metric_exemptions entry must allow a column-wide constant-zero metric")
 	var wrong_charge := fragment.duplicate(true)
 	var atlas_key := "%s|class_atlas50" % str(Pack.class_ids()[0])
 	(wrong_charge["measurements"] as Dictionary)[atlas_key]["initial_activation_count"] = 0

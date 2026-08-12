@@ -4,6 +4,23 @@
 class ultimate separate from the 51 sustain-only weapon rows: no per-weapon
 row contains an ultimate field or is allowed to include ultimate damage.
 
+## `per_weapon_sustain` fields (FAN-2414)
+
+Each of the 51 rows (17 classes × 3 weapons) reports two damage-per-minute
+metrics from `Pack.per_weapon_sustain_rows()`, both with `include_ultimate=false`:
+
+- `solo_dpm` — `PD.estimate_weapon_budget_for_stats(...).solo_dps * 60`, single
+  target.
+- `crowd_10_dpm` — `PD.estimate_crowd_clear_budget_for_stats(class_id, config,
+  target_count=10, stats, ...).crowd_dps * 60`, the same 10-target crowd-clear
+  budget model `tools/a5_balance_report.gd` uses for `crowd_10_total_dpm`.
+
+`crowd_10_dpm` reads the crowd-clear budget dict, not the solo budget dict —
+the solo dict never carries a `crowd_dps` key. `evaluate_fragment()` rejects a
+fragment where either metric is missing/non-finite on any row, or is a
+constant zero across all 51 rows, unless the fragment explicitly lists the
+field in a top-level `zero_metric_exemptions` array.
+
 Each of the 17 class kits is probed for 60 fixed seconds (3,600 frames) with
 the same seed under no meta, full class constellation and legal Atlas-50. The
 trace records initial charge, activation count/timing and damage with a
