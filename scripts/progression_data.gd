@@ -2217,7 +2217,9 @@ static func derived_parameters(stats: Dictionary, run_modifiers: Dictionary, wea
 	var support_multiplier := maxf(run_damage_multiplier, 0.0)
 	if character_id == "druid":
 		support_multiplier = 1.0 + leadership * 0.025 + float(stats.get("knowledge", 0.0)) * 0.006 + float(stats.get("energy", 0.0)) * 0.004
-		aura_radius = base_area + leadership * 5.0 + float(stats.get("perception", 0.0)) * 0.80 + float(stats.get("energy", 0.0)) * 0.65 + float(stats.get("knowledge", 0.0)) * 0.45
+		# Друид считает свой радиус ауры от собственных support-атрибутов, но общий
+		# множитель области применяется ровно один раз — как и у остальной геометрии.
+		aura_radius = (base_area + leadership * 5.0 + float(stats.get("perception", 0.0)) * 0.80 + float(stats.get("energy", 0.0)) * 0.65 + float(stats.get("knowledge", 0.0)) * 0.45) * aoe_radius_multiplier
 
 	return {
 		"damage": (physical_base * weapon_damage_multiplier * damage_multiplier + universal_damage_flat) * sandbox_damage_multiplier,
