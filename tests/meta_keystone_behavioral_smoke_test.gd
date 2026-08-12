@@ -421,24 +421,36 @@ func _test_drain_extra_target(holder: Node2D, errors: Array) -> void:
 
 
 func _test_cloud_detonation(holder: Node2D, errors: Array) -> void:
-	var player := await _make_player(holder, "chemist", {"cloud_detonation_radius_mult": 0.45})
-	var weapon := await _make_weapon(player, {"attack_mode": "aoe_projectile", "weapon_id": "acid_flask", "damage": 80.0, "aoe_radius": 100.0, "pool_element": "poison", "leaves_pool": true, "combo_clouds": true})
-	player.call("_apply_weapon_scaling", weapon)
+	if not await _test_cloud_detonation_case(holder, true):
+		errors.append("Cloud detonation radius keystone did not reach a farther real enemy.")
+	if await _test_cloud_detonation_case(holder, false):
+		errors.append("Cloud detonation radius mutation still reached the farther real enemy.")
+
+
+func _test_cloud_detonation_case(holder: Node2D, enabled: bool) -> bool:
+	var player := await _make_player(holder, "chemist", {"cloud_detonation_radius_mult": 0.45 if enabled else 0.0}, true)
+	# The custom weapon below is a real ClassWeapon runtime object. Mirror the
+	# production acid_flask capability so Player._apply_weapon_scaling() owns the
+	# radius mutation instead of the fixture bypassing that path.
+	var fixture_config: Dictionary = player.get("weapon_config")
+	fixture_config["geometry_capabilities"] = ["aoe_radius"]
+	player.set("weapon_config", fixture_config)
+	var weapon := await _make_weapon(player, {"attack_mode": "aoe_projectile", "weapon_id": "acid_flask", "damage": 80.0, "aoe_radius": 100.0, "pool_element": "poison", "leaves_pool": true, "combo_clouds": true}, true)
 	var old_cloud := Node2D.new()
 	var new_cloud := Node2D.new()
 	holder.add_child(old_cloud)
 	holder.add_child(new_cloud)
 	old_cloud.global_position = player.global_position + Vector2(160.0, 0.0)
 	new_cloud.global_position = player.global_position + Vector2(170.0, 0.0)
-	var far_enemy := await _make_enemy(holder, player.global_position + Vector2(305.0, 0.0), 1000.0)
+	var far_enemy := await _make_enemy(holder, player.global_position + Vector2(305.0, 0.0), 1000.0, true)
 	weapon.call("_trigger_chemist_combo", new_cloud, old_cloud, 20.0)
-	if float(far_enemy.get("health")) >= 999.0:
-		errors.append("Cloud detonation radius keystone did not reach a farther real enemy.")
+	var reached := float(far_enemy.get("health")) < 999.0
 	_cleanup_player(player)
 	old_cloud.queue_free()
 	new_cloud.queue_free()
 	far_enemy.queue_free()
 	await process_frame
+	return reached
 
 
 func _test_pet_buff(holder: Node2D, errors: Array) -> void:
