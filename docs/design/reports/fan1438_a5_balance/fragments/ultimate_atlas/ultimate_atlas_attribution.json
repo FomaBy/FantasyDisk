@@ -4338,357 +4338,357 @@
 	"per_weapon_sustain": [
 		{
 			"class_id": "assassin",
-			"crowd_10_dpm": 0.0,
+			"crowd_10_dpm": 46885.8,
 			"solo_dpm": 29716.800000000003,
 			"sustain_only": true,
 			"weapon_id": "chakrams"
 		},
 		{
 			"class_id": "assassin",
-			"crowd_10_dpm": 0.0,
+			"crowd_10_dpm": 41782.200000000004,
 			"solo_dpm": 26441.4,
 			"sustain_only": true,
 			"weapon_id": "shadow_daggers"
 		},
 		{
 			"class_id": "assassin",
-			"crowd_10_dpm": 0.0,
+			"crowd_10_dpm": 11202.0,
 			"solo_dpm": 7095.0,
 			"sustain_only": true,
 			"weapon_id": "venom_wire"
 		},
 		{
 			"class_id": "berserk",
-			"crowd_10_dpm": 0.0,
+			"crowd_10_dpm": 40434.0,
 			"solo_dpm": 13720.800000000001,
 			"sustain_only": true,
 			"weapon_id": "axe"
 		},
 		{
 			"class_id": "berserk",
-			"crowd_10_dpm": 0.0,
+			"crowd_10_dpm": 40327.8,
 			"solo_dpm": 13708.800000000001,
 			"sustain_only": true,
 			"weapon_id": "hammer"
 		},
 		{
 			"class_id": "berserk",
-			"crowd_10_dpm": 0.0,
+			"crowd_10_dpm": 27082.2,
 			"solo_dpm": 9199.800000000001,
 			"sustain_only": true,
 			"weapon_id": "sword"
 		},
 		{
 			"class_id": "biologist",
-			"crowd_10_dpm": 0.0,
+			"crowd_10_dpm": 60092.4,
 			"solo_dpm": 15341.400000000001,
 			"sustain_only": true,
 			"weapon_id": "biologist_sample_injector"
 		},
 		{
 			"class_id": "biologist",
-			"crowd_10_dpm": 0.0,
+			"crowd_10_dpm": 47245.200000000004,
 			"solo_dpm": 11968.2,
 			"sustain_only": true,
 			"weapon_id": "biologist_spore_lens"
 		},
 		{
 			"class_id": "biologist",
-			"crowd_10_dpm": 0.0,
+			"crowd_10_dpm": 47978.4,
 			"solo_dpm": 12075.0,
 			"sustain_only": true,
 			"weapon_id": "biologist_symbiote_seed"
 		},
 		{
 			"class_id": "chemist",
-			"crowd_10_dpm": 0.0,
+			"crowd_10_dpm": 11185.2,
 			"solo_dpm": 2343.6,
 			"sustain_only": true,
 			"weapon_id": "acid_flask"
 		},
 		{
 			"class_id": "chemist",
-			"crowd_10_dpm": 0.0,
+			"crowd_10_dpm": 102937.8,
 			"solo_dpm": 21442.2,
 			"sustain_only": true,
 			"weapon_id": "blast_powder"
 		},
 		{
 			"class_id": "chemist",
-			"crowd_10_dpm": 0.0,
+			"crowd_10_dpm": 8611.2,
 			"solo_dpm": 1936.2,
 			"sustain_only": true,
 			"weapon_id": "homunculus_vial"
 		},
 		{
 			"class_id": "dark_mage",
-			"crowd_10_dpm": 0.0,
+			"crowd_10_dpm": 23664.0,
 			"solo_dpm": 3832.2000000000003,
 			"sustain_only": true,
 			"weapon_id": "cursed_skull"
 		},
 		{
 			"class_id": "dark_mage",
-			"crowd_10_dpm": 0.0,
+			"crowd_10_dpm": 29680.800000000003,
 			"solo_dpm": 4856.4000000000005,
 			"sustain_only": true,
 			"weapon_id": "dark_book"
 		},
 		{
 			"class_id": "dark_mage",
-			"crowd_10_dpm": 0.0,
+			"crowd_10_dpm": 28642.800000000003,
 			"solo_dpm": 4854.6,
 			"sustain_only": true,
 			"weapon_id": "dark_wand"
 		},
 		{
 			"class_id": "doctor",
-			"crowd_10_dpm": 0.0,
+			"crowd_10_dpm": 68269.2,
 			"solo_dpm": 23440.2,
 			"sustain_only": true,
 			"weapon_id": "bone_saw"
 		},
 		{
 			"class_id": "doctor",
-			"crowd_10_dpm": 0.0,
+			"crowd_10_dpm": 17032.2,
 			"solo_dpm": 5753.4000000000005,
 			"sustain_only": true,
 			"weapon_id": "plague_syringe"
 		},
 		{
 			"class_id": "doctor",
-			"crowd_10_dpm": 0.0,
+			"crowd_10_dpm": 17361.0,
 			"solo_dpm": 5713.8,
 			"sustain_only": true,
 			"weapon_id": "restore_potion"
 		},
 		{
 			"class_id": "druid",
-			"crowd_10_dpm": 0.0,
+			"crowd_10_dpm": 92588.40000000001,
 			"solo_dpm": 29761.2,
 			"sustain_only": true,
 			"weapon_id": "briar_staff"
 		},
 		{
 			"class_id": "druid",
-			"crowd_10_dpm": 0.0,
+			"crowd_10_dpm": 21864.600000000002,
 			"solo_dpm": 7595.4000000000005,
 			"sustain_only": true,
 			"weapon_id": "raven_totem"
 		},
 		{
 			"class_id": "druid",
-			"crowd_10_dpm": 0.0,
+			"crowd_10_dpm": 22629.600000000002,
 			"solo_dpm": 7865.4000000000005,
 			"sustain_only": true,
 			"weapon_id": "summon_amulet"
 		},
 		{
 			"class_id": "elementalist",
-			"crowd_10_dpm": 0.0,
+			"crowd_10_dpm": 25849.2,
 			"solo_dpm": 7167.0,
 			"sustain_only": true,
 			"weapon_id": "elementalist_meteor_core"
 		},
 		{
 			"class_id": "elementalist",
-			"crowd_10_dpm": 0.0,
+			"crowd_10_dpm": 27715.2,
 			"solo_dpm": 7113.6,
 			"sustain_only": true,
 			"weapon_id": "elementalist_orb_ring"
 		},
 		{
 			"class_id": "elementalist",
-			"crowd_10_dpm": 0.0,
+			"crowd_10_dpm": 33648.6,
 			"solo_dpm": 9711.6,
 			"sustain_only": true,
 			"weapon_id": "elementalist_prism_focus"
 		},
 		{
 			"class_id": "engineer",
-			"crowd_10_dpm": 0.0,
+			"crowd_10_dpm": 55956.0,
 			"solo_dpm": 15060.0,
 			"sustain_only": true,
 			"weapon_id": "engineer_pressure_mines"
 		},
 		{
 			"class_id": "engineer",
-			"crowd_10_dpm": 0.0,
+			"crowd_10_dpm": 32737.800000000003,
 			"solo_dpm": 9955.800000000001,
 			"sustain_only": true,
 			"weapon_id": "engineer_repair_drone"
 		},
 		{
 			"class_id": "engineer",
-			"crowd_10_dpm": 0.0,
+			"crowd_10_dpm": 48614.4,
 			"solo_dpm": 14764.800000000001,
 			"sustain_only": true,
 			"weapon_id": "engineer_sentry_wrench"
 		},
 		{
 			"class_id": "guitarist",
-			"crowd_10_dpm": 0.0,
+			"crowd_10_dpm": 92146.8,
 			"solo_dpm": 22491.600000000002,
 			"sustain_only": true,
 			"weapon_id": "bass_guitar"
 		},
 		{
 			"class_id": "guitarist",
-			"crowd_10_dpm": 0.0,
+			"crowd_10_dpm": 88721.40000000001,
 			"solo_dpm": 21766.8,
 			"sustain_only": true,
 			"weapon_id": "electric_guitar"
 		},
 		{
 			"class_id": "guitarist",
-			"crowd_10_dpm": 0.0,
+			"crowd_10_dpm": 75232.8,
 			"solo_dpm": 19396.8,
 			"sustain_only": true,
 			"weapon_id": "sound_amp"
 		},
 		{
 			"class_id": "knight",
-			"crowd_10_dpm": 0.0,
+			"crowd_10_dpm": 36729.6,
 			"solo_dpm": 13069.2,
 			"sustain_only": true,
 			"weapon_id": "holy_flail"
 		},
 		{
 			"class_id": "knight",
-			"crowd_10_dpm": 0.0,
+			"crowd_10_dpm": 36522.0,
 			"solo_dpm": 13096.800000000001,
 			"sustain_only": true,
 			"weapon_id": "long_spear"
 		},
 		{
 			"class_id": "knight",
-			"crowd_10_dpm": 0.0,
+			"crowd_10_dpm": 36651.0,
 			"solo_dpm": 13114.2,
 			"sustain_only": true,
 			"weapon_id": "tower_shield"
 		},
 		{
 			"class_id": "priest",
-			"crowd_10_dpm": 0.0,
+			"crowd_10_dpm": 40849.200000000004,
 			"solo_dpm": 13736.400000000001,
 			"sustain_only": true,
 			"weapon_id": "priest_censer"
 		},
 		{
 			"class_id": "priest",
-			"crowd_10_dpm": 0.0,
+			"crowd_10_dpm": 41035.8,
 			"solo_dpm": 13720.2,
 			"sustain_only": true,
 			"weapon_id": "priest_chime"
 		},
 		{
 			"class_id": "priest",
-			"crowd_10_dpm": 0.0,
+			"crowd_10_dpm": 40270.8,
 			"solo_dpm": 13525.800000000001,
 			"sustain_only": true,
 			"weapon_id": "priest_reliquary"
 		},
 		{
 			"class_id": "ranger",
-			"crowd_10_dpm": 0.0,
+			"crowd_10_dpm": 28054.800000000003,
 			"solo_dpm": 13853.400000000001,
 			"sustain_only": true,
 			"weapon_id": "hunter_trap"
 		},
 		{
 			"class_id": "ranger",
-			"crowd_10_dpm": 0.0,
+			"crowd_10_dpm": 45070.200000000004,
 			"solo_dpm": 27910.2,
 			"sustain_only": true,
 			"weapon_id": "moon_crossbow"
 		},
 		{
 			"class_id": "ranger",
-			"crowd_10_dpm": 0.0,
+			"crowd_10_dpm": 45318.6,
 			"solo_dpm": 28189.800000000003,
 			"sustain_only": true,
 			"weapon_id": "storm_longbow"
 		},
 		{
 			"class_id": "robot",
-			"crowd_10_dpm": 0.0,
+			"crowd_10_dpm": 32580.600000000002,
 			"solo_dpm": 11311.2,
 			"sustain_only": true,
 			"weapon_id": "robot_hydraulic_press"
 		},
 		{
 			"class_id": "robot",
-			"crowd_10_dpm": 0.0,
+			"crowd_10_dpm": 34657.200000000004,
 			"solo_dpm": 11236.2,
 			"sustain_only": true,
 			"weapon_id": "robot_magnetic_anchor"
 		},
 		{
 			"class_id": "robot",
-			"crowd_10_dpm": 0.0,
+			"crowd_10_dpm": 33001.8,
 			"solo_dpm": 11217.6,
 			"sustain_only": true,
 			"weapon_id": "robot_reactor_core"
 		},
 		{
 			"class_id": "sniper",
-			"crowd_10_dpm": 0.0,
+			"crowd_10_dpm": 48312.0,
 			"solo_dpm": 25332.0,
 			"sustain_only": true,
 			"weapon_id": "sniper_deadeye_rifle"
 		},
 		{
 			"class_id": "sniper",
-			"crowd_10_dpm": 0.0,
+			"crowd_10_dpm": 31482.600000000002,
 			"solo_dpm": 15097.2,
 			"sustain_only": true,
 			"weapon_id": "sniper_shatter_rounds"
 		},
 		{
 			"class_id": "sniper",
-			"crowd_10_dpm": 0.0,
+			"crowd_10_dpm": 51655.200000000004,
 			"solo_dpm": 24925.800000000003,
 			"sustain_only": true,
 			"weapon_id": "sniper_spotter_scope"
 		},
 		{
 			"class_id": "soldier",
-			"crowd_10_dpm": 0.0,
+			"crowd_10_dpm": 30546.0,
 			"solo_dpm": 10431.0,
 			"sustain_only": true,
 			"weapon_id": "soldier_bayonet"
 		},
 		{
 			"class_id": "soldier",
-			"crowd_10_dpm": 0.0,
+			"crowd_10_dpm": 31967.4,
 			"solo_dpm": 10303.800000000001,
 			"sustain_only": true,
 			"weapon_id": "soldier_grenade"
 		},
 		{
 			"class_id": "soldier",
-			"crowd_10_dpm": 0.0,
+			"crowd_10_dpm": 25837.800000000003,
 			"solo_dpm": 8670.6,
 			"sustain_only": true,
 			"weapon_id": "soldier_rifle"
 		},
 		{
 			"class_id": "thief",
-			"crowd_10_dpm": 0.0,
+			"crowd_10_dpm": 47585.4,
 			"solo_dpm": 15888.0,
 			"sustain_only": true,
 			"weapon_id": "thief_coin_pouch"
 		},
 		{
 			"class_id": "thief",
-			"crowd_10_dpm": 0.0,
+			"crowd_10_dpm": 47604.0,
 			"solo_dpm": 15994.2,
 			"sustain_only": true,
 			"weapon_id": "thief_shadow_cloak"
 		},
 		{
 			"class_id": "thief",
-			"crowd_10_dpm": 0.0,
+			"crowd_10_dpm": 51641.4,
 			"solo_dpm": 15841.2,
 			"sustain_only": true,
 			"weapon_id": "thief_smoke_bomb"
