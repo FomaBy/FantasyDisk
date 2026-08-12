@@ -30,17 +30,20 @@
     {
       "weapon_id": "engineer_sentry_wrench",
       "scene_path": "scenes/vfx/ultimates/engineer/EngineerSentryWrenchUltimate.tscn",
-      "timing_seconds": {"windup": 0.0, "release": 0.35, "active": 0.70, "recovery": 4.60, "cancel": 5.10}
+      "timing_seconds": {"windup": 0.0, "release": 0.35, "active": 0.70, "recovery": 4.60, "cancel": 5.10},
+      "performance": {"max_visual_nodes": 6, "crowd_cap": 16}
     },
     {
       "weapon_id": "engineer_repair_drone",
       "scene_path": "scenes/vfx/ultimates/engineer/EngineerRepairDroneUltimate.tscn",
-      "timing_seconds": {"windup": 0.0, "release": 0.55, "active": 1.05, "recovery": 5.40, "cancel": 6.10}
+      "timing_seconds": {"windup": 0.0, "release": 0.55, "active": 1.05, "recovery": 5.40, "cancel": 6.10},
+      "performance": {"max_visual_nodes": 12, "crowd_cap": 16}
     },
     {
       "weapon_id": "engineer_pressure_mines",
       "scene_path": "scenes/vfx/ultimates/engineer/EngineerPressureMinesUltimate.tscn",
-      "timing_seconds": {"windup": 0.0, "release": 0.90, "active": 1.70, "recovery": 3.10, "cancel": 3.60}
+      "timing_seconds": {"windup": 0.0, "release": 0.90, "active": 1.70, "recovery": 3.10, "cancel": 3.60},
+      "performance": {"max_visual_nodes": 16, "crowd_cap": 16}
     }
   ],
   "assets": [
