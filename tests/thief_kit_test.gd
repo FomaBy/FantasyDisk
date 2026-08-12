@@ -522,12 +522,14 @@ func _test_smoke_cloud_player_dodge(errors: Array) -> void:
 		equipped.set_process(false)
 		equipped.set("_cooldown", 1.0e9)
 
-	# Тяжёлый, но ДОСТИЖИМЫЙ сырой рейтинг уворота: 1.20 ниже колена капа, поэтому
-	# базовый шанс обязан быть ровно effective_dodge(1.20) ≈ 0.504 — оракул проверяет
-	# саму кривую, а не асимптоту 0.55, в которую упирался бы любой рейтинг ≥ 1.50.
+	# Тяжёлый, но ДОСТИЖИМЫЙ сырой рейтинг уворота. Берём его ОТ КРИВОЙ через
+	# обратную функцию, а не константой: базовый шанс 0.46 строго ниже асимптоты
+	# 0.55 (оракул проверяет саму кривую, а не потолок) и при этом вместе с
+	# бонусом дыма 0.47 гарантированно упирается в кап дыма 0.90. Жёсткий raw
+	# ломался бы при любой смене коэффициента diminish.
 	var params: Dictionary = player.get("derived_parameters")
-	var heavy_raw_dodge := 1.20
-	var heavy_dodge := PD.effective_dodge(heavy_raw_dodge)
+	var heavy_dodge := 0.46
+	var heavy_raw_dodge := PD.raw_dodge_for_effective(heavy_dodge)
 	params["raw_dodge"] = heavy_raw_dodge
 	params["dodge"] = heavy_dodge
 	var heavy_raw_defect := _raw_pair_defect(params, "dodge", "raw_dodge")
