@@ -73,6 +73,8 @@ const DROP_CLASS_MULTIPLIERS := BalanceData.DROP_CLASS_MULTIPLIERS
 const COST_BY_TIER := BalanceData.COST_BY_TIER
 const TIER_WEIGHTS := BalanceData.TIER_WEIGHTS
 
+const DefensiveAttributeRuntime := preload("res://scripts/defensive_attribute_runtime.gd")  # FAN-2287: защита/уворот/поглощение/реген/вампиризм вынесены под line-ratchet, точки ниже — делегаторы
+
 # FAN-1891: снятые прогрессионные оси и геометрический контракт вынесены в
 # ModifiersData (FAN-2171, line-ratchet этого файла).
 const ModifiersData := preload("res://scripts/progression_data_modifiers.gd")
@@ -644,11 +646,6 @@ static func ultimate_config(character_id: String) -> Dictionary:
 	return ULTIMATE_CONFIGS.get(character_id, ULTIMATE_CONFIGS["berserk"]).duplicate(true)
 
 
-static func _diminishing_percent(raw_value: float, curve: float) -> float:
-	var raw := maxf(raw_value, 0.0)
-	return raw / (1.0 + raw * maxf(curve, 0.0001))
-
-
 # SCRUM-503: diminishing returns на ЗАБЕГОВЫЙ боевой множитель. Сжимает ТОЛЬКО
 # избыток множителя над 1.0 по кривой excess/(1+excess*knee), клампит избыток к
 # (softcap-1.0) и возвращает 1.0 + сжатый_избыток. Тождественно при multiplier
@@ -691,41 +688,27 @@ static func _amplified_bonus_multiplier(multiplier: float, effectiveness: float)
 
 
 static func effective_defense(raw_defense: float) -> float:
-	return _diminishing_percent(raw_defense, SURVIVABILITY_DEFENSE_DIMINISH)
+	return DefensiveAttributeRuntime.effective_defense(raw_defense)
 
 
 static func effective_dodge(raw_dodge: float) -> float:
-	return _diminishing_percent(raw_dodge, SURVIVABILITY_DODGE_DIMINISH)
+	return DefensiveAttributeRuntime.effective_dodge(raw_dodge)
 
 
 static func raw_defense_for_effective(effective_defense_value: float) -> float:
-	return _raw_rating_for_effective_percent(effective_defense_value, SURVIVABILITY_DEFENSE_DIMINISH)
+	return DefensiveAttributeRuntime.raw_defense_for_effective(effective_defense_value)
 
 
 static func raw_dodge_for_effective(effective_dodge_value: float) -> float:
-	return _raw_rating_for_effective_percent(effective_dodge_value, SURVIVABILITY_DODGE_DIMINISH)
-
-
-static func _raw_rating_for_effective_percent(effective_value: float, curve: float) -> float:
-	var effective := maxf(effective_value, 0.0)
-	var denominator := 1.0 - effective * maxf(curve, 0.0001)
-	return effective / maxf(denominator, 0.000001)
+	return DefensiveAttributeRuntime.raw_dodge_for_effective(effective_dodge_value)
 
 
 static func effective_absorb(endurance: float, flat_absorb: float) -> float:
-	var base_absorb := maxf(endurance, 0.0) * 0.145  # SCRUM-526: 0.16→0.145, поджать базовый absorb стойкости (танк остаётся крепче fragile)
-	var positive_flat := maxf(flat_absorb, 0.0)
-	var negative_flat := minf(flat_absorb, 0.0)
-	var softened_flat := positive_flat / (1.0 + positive_flat * SURVIVABILITY_ABSORB_FLAT_DIMINISH)
-	return maxf(0.0, base_absorb + softened_flat + negative_flat)
+	return DefensiveAttributeRuntime.effective_absorb(endurance, flat_absorb)
 
 
 static func effective_regeneration(knowledge: float, flat_regeneration: float) -> float:
-	var positive_flat := maxf(flat_regeneration, 0.0) * SURVIVABILITY_REGEN_FLAT_MULTIPLIER
-	var negative_flat := minf(flat_regeneration, 0.0)
-	var regen_base := maxf(0.0, 0.16 + positive_flat + negative_flat)  # SCRUM-526: база реген 0.22→0.16
-	var knowledge_scale := 0.45 + maxf(knowledge, 0.0) / 12.0
-	return regen_base * knowledge_scale
+	return DefensiveAttributeRuntime.effective_regeneration(knowledge, flat_regeneration)
 
 
 # SCRUM-900 «Клятва чумного доктора»: реген класса с generic_sustain_blocked =
@@ -738,22 +721,15 @@ static func _class_gated_regeneration(character_id: String, knowledge: float, fl
 
 
 static func effective_vampiric_chance(raw_chance: float) -> float:
-	return clampf(raw_chance, 0.0, VAMPIRIC_CHANCE_CAP)
+	return DefensiveAttributeRuntime.effective_vampiric_chance(raw_chance)
 
 
-# FAN-2286: вампиризм-лечение масштабируется Знанием, как и регенерация
-# (см. effective_regeneration). Berserk's стартовое Knowledge=4 сохраняет
-# прежний 0.48x baseline; выше 1,5 работает неограниченный убывающий хвост.
 static func effective_vampiric_amount(knowledge: float, flat_amount: float) -> float:
-	var raw := maxf(flat_amount, 0.0) * (0.40 + maxf(knowledge, 0.0) / 50.0)
-	var negative_flat := minf(flat_amount, 0.0)
-	if raw <= 1.5:
-		return maxf(raw + negative_flat, 0.0)
-	return maxf(1.5 + sqrt(raw - 1.5) + negative_flat, 0.0)
+	return DefensiveAttributeRuntime.effective_vampiric_amount(knowledge, flat_amount)
 
 
 static func effective_vampiric_cap(raw_cap: float) -> float:
-	return clampf(raw_cap, 0.0, VAMPIRIC_HEAL_CAP_HARD)
+	return DefensiveAttributeRuntime.effective_vampiric_cap(raw_cap)
 
 
 # SCRUM-894: кап/diminish параметризованы под class trait «Хладнокровие»

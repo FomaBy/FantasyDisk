@@ -14,6 +14,7 @@ signal guard_prevention_measured(event: Dictionary)
 const BERSERK_SPRITE := preload("res://assets/sprites/characters/berserk_unarmed.png")
 const BERSERK_ANIMATED_SPRITE := preload("res://assets/sprites/characters/berserk_walk_sheet_v2.png")
 const ProgressionData := preload("res://scripts/progression_data.gd")
+const DefensiveAttributeRuntime := preload("res://scripts/defensive_attribute_runtime.gd")
 const TARGET_QUERY := preload("res://scripts/combat_target_query.gd")
 const StatusEffects := preload("res://scripts/status_effects.gd")
 const TAKE_DAMAGE_CONTRACT := preload("res://scripts/take_damage_contract.gd")
@@ -1031,7 +1032,7 @@ func smoke_cloud_dodge_bonus() -> float:
 # добавляется поверх и суммарно ограничен SMOKE_CLOUD_DODGE_CAP (0.90) — «~90% в дыму
 # при тяжёлом dodge-билде», и только пока герой внутри облака.
 func _current_dodge_chance() -> float:
-	var raw_dodge := _raw_dodge_rating()
+	var raw_dodge := DefensiveAttributeRuntime.raw_dodge_rating(derived_parameters)
 	if _assassin_veil_engaged():
 		raw_dodge += assassin_veil_dodge_bonus()
 	var dodge_chance := ProgressionData.effective_dodge(raw_dodge)
@@ -1043,18 +1044,6 @@ func _current_dodge_chance() -> float:
 	# по-прежнему строго ниже SURVIVABILITY_DODGE_CAP (бессмертия нет). Классовые бонусы
 	# не пересекаются: дым — оружие Вора, завеса — trait Ассасина.
 	return dodge_chance
-
-
-func _raw_dodge_rating() -> float:
-	if derived_parameters.has("raw_dodge"):
-		return float(derived_parameters.get("raw_dodge", 0.0))
-	return ProgressionData.raw_dodge_for_effective(float(derived_parameters.get("dodge", 0.0)))
-
-
-func _raw_defense_rating() -> float:
-	if derived_parameters.has("raw_defense"):
-		return float(derived_parameters.get("raw_defense", 0.0))
-	return ProgressionData.raw_defense_for_effective(float(derived_parameters.get("defense", 0.0)))
 
 
 # SCRUM-920: attacker — узел, нанёсший КОНТАКТНЫЙ удар (enemy._update_contact_damage
@@ -1118,7 +1107,7 @@ func take_damage(amount: float, _source := "", attacker: Node2D = null) -> bool:
 				"incoming_amount": amount,
 				"constellation_ward_source": str(constellation_ward.get("source_id", "")),
 			})
-	var raw_defense := _raw_defense_rating()
+	var raw_defense := DefensiveAttributeRuntime.raw_defense_rating(derived_parameters)
 	if _stance_active and float(run_modifiers.get("bastion_defense_bonus", 0.0)) > 0.0:
 		raw_defense += float(run_modifiers.get("bastion_defense_bonus", 0.0))
 	# SCRUM-961 «Покров мученика»: на низком HP защита временно выше по общей diminishing curve.
