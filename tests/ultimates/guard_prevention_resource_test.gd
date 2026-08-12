@@ -9,10 +9,17 @@ extends SceneTree
 const PlayerScene := preload("res://scenes/Player.tscn")
 const PlayerHost := preload("res://scripts/ultimates/controller/ultimate_player_host.gd")
 const Activation := preload("res://scripts/ultimates/controller/ultimate_activation.gd")
+const ProgressionData := preload("res://scripts/progression_data.gd")
 
 const OWNER_ID := "fixture_guard_owner"
 const RESOURCE_ID := "fixture_counter"
 const CAP := 75.0
+## The fixture stack is a RAW defense rating, and every expected mitigation is read back
+## through the accepted effective_defense() composition instead of a fixed percentage, so
+## the oracle follows the approved contract rather than one point on a superseded curve.
+const RAW_DEFENSE := 0.5
+const INCOMING := 100.0
+const FULL_HEALTH := 1000.0
 
 var _errors: Array[String] = []
 var _holder: Node2D = null
@@ -44,11 +51,17 @@ func _prepare_player() -> void:
 	_player.set_physics_process(false)
 	var derived: Dictionary = _player.get("derived_parameters")
 	derived["dodge"] = 0.0
+	derived["raw_dodge"] = 0.0
 	derived["absorb"] = 0.0
-	derived["defense"] = 0.5
-	_player.set("max_health", 1000.0)
-	_player.set("health", 1000.0)
+	derived["raw_defense"] = RAW_DEFENSE
+	derived["defense"] = _defense_mitigation()
+	_player.set("max_health", FULL_HEALTH)
+	_player.set("health", FULL_HEALTH)
 	_player.set("_damage_invulnerability_left", 0.0)
+
+
+func _defense_mitigation() -> float:
+	return ProgressionData.effective_defense(RAW_DEFENSE)
 
 
 func _test_real_player_measures_final_mitigation() -> void:
@@ -56,10 +69,16 @@ func _test_real_player_measures_final_mitigation() -> void:
 	var attacker := Node2D.new()
 	attacker.global_position = _player.global_position + Vector2(100.0, 0.0)
 	_holder.add_child(attacker)
-	_player.take_damage(100.0, "contact", attacker)
-	_check(is_equal_approx(float(_player.get("health")), 950.0),
-		"the real Player path must preserve the existing 50% final mitigation")
-	_check(is_equal_approx(activation.owner_resource_amount(OWNER_ID, RESOURCE_ID), 50.0),
+	var mitigation := _defense_mitigation()
+	var prevented := INCOMING * mitigation
+	_check(mitigation > 0.0 and mitigation < ProgressionData.SURVIVABILITY_DEFENSE_CAP,
+		"a positive finite defense stack must mitigate strictly between zero and the 0.62 asymptote")
+	_check(ProgressionData.effective_defense(RAW_DEFENSE * 4.0) > mitigation,
+		"a larger finite defense stack must still add mitigation instead of hitting a hard clamp")
+	_player.take_damage(INCOMING, "contact", attacker)
+	_check(is_equal_approx(float(_player.get("health")), FULL_HEALTH - (INCOMING - prevented)),
+		"the real Player path must preserve the contract final mitigation")
+	_check(is_equal_approx(activation.owner_resource_amount(OWNER_ID, RESOURCE_ID), prevented),
 		"the generic guard must record final mitigation, not a nominal counter value")
 	_check(activation.guard_prevention_owner_id() == OWNER_ID,
 		"the active guard owner must be exposed to the Player ingress")
@@ -136,8 +155,8 @@ func _test_node_end_clears_stale_resource() -> void:
 	_holder.add_child(attacker)
 	_player.set("health", 20.0)
 	_player.set("_damage_invulnerability_left", 0.0)
-	_player.take_damage(100.0, "contact", attacker)
-	_check(int(observed["event_count"]) == 1 and is_equal_approx(float(observed["resource"]), 50.0),
+	_player.take_damage(INCOMING, "contact", attacker)
+	_check(int(observed["event_count"]) == 1 and is_equal_approx(float(observed["resource"]), INCOMING * _defense_mitigation()),
 		"lethal prevention must be recorded before death cleanup at final mitigation")
 	_check(activation.is_finished() and not controller.is_active(),
 		"death must finish the activation and controller synchronously")
