@@ -86,7 +86,7 @@ const POWER_WEIGHTS := {
 	"mine_extra_count": 0.06,
 	"dot_death_spread_duration": 0.055, "direct_damage_mult": 0.45,
 	"beam_duration_mult": 0.30, "explosion_radius_mult": 0.25,
-	"riff_streak_damage_bonus": 0.58,
+	"guitar_aura_radius_mult": 0.80, "riff_streak_damage_bonus": 0.58,
 	"crit_execute_threshold": 0.70, "shadow_burst_invisibility_time": 0.095,
 	"charged_shot_extra_pierce": 0.048, "charge_time_mult": -0.25,
 	"trap_extra_count": 0.045, "non_trap_damage_mult": 0.35,
@@ -181,6 +181,7 @@ const EFFECT_LABELS := {
 	"direct_damage_mult": {"ru": "к прямому урону", "pct": true},
 	"beam_duration_mult": {"ru": "к длительности лучей", "pct": true},
 	"explosion_radius_mult": {"ru": "к радиусу взрывов луча", "pct": true},
+	"guitar_aura_radius_mult": {"ru": "к ширине магических аур Гитариста", "pct": true},  # SCRUM-899: магическая идентичность
 	"riff_streak_damage_bonus": {"ru": "к урону при непрерывной рифф-серии", "pct": true},
 	"crit_execute_threshold": {"ru": "порог добивания критом не-элитных целей", "pct": true},
 	"shadow_burst_invisibility_time": {"ru": "сек. невидимости после теневого всплеска", "pct": false},
@@ -453,7 +454,7 @@ const CONSTELLATION_SPECS := {
 			{"title": "Сценический кураж", "effects": {"dodge_flat": 0.003, "move_speed_mult": 0.01}},
 		],
 		"keystones": [
-			{"title": "Хедлайнер", "effects": {"aoe_radius_mult": 0.30, "knockback_mult": -0.50}},
+			{"title": "Хедлайнер", "effects": {"guitar_aura_radius_mult": 0.30, "knockback_mult": -0.50}},
 			{"title": "Рифф", "effects": {"riff_streak_damage_bonus": 0.25, "attack_speed_mult": -0.10}},
 			{"title": "Фронтмен", "effects": {"ultimate_flat": 0.07, "ult_charge_mult": 0.07, "max_health_mult": -0.04}},
 		],

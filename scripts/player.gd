@@ -1675,6 +1675,8 @@ func meta_radius_multiplier(context := {}) -> float:
 		multiplier *= maxf(0.1, 1.0 + float(run_modifiers.get("prism_rift_radius_mult", 0.0)))
 	if mode in ["beam", "dot_beam"] or wid in ["dark_beam", "void_ray"]:
 		multiplier *= maxf(0.1, 1.0 + float(run_modifiers.get("explosion_radius_mult", 0.0)))
+	if bool(ctx.get("is_sound", false)):
+		multiplier *= 1.0 + float(run_modifiers.get("guitar_aura_radius_mult", 0.0))
 	if bool(ctx.get("is_cloud", false)):
 		multiplier *= 1.0 + float(run_modifiers.get("cloud_detonation_radius_mult", 0.0))
 	if bool(ctx.get("is_briar", false)):
@@ -2006,6 +2008,7 @@ const META_SKILL_FLAT_MAP := {
 	"direct_damage_mult": "direct_damage_mult",
 	"beam_duration_mult": "beam_duration_mult",
 	"explosion_radius_mult": "explosion_radius_mult",
+	"guitar_aura_radius_mult": "guitar_aura_radius_mult",
 	"riff_streak_damage_bonus": "riff_streak_damage_bonus",
 	"crit_execute_threshold": "crit_execute_threshold",
 	"shadow_burst_invisibility_time": "shadow_burst_invisibility_time",
