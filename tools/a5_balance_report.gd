@@ -3647,7 +3647,13 @@ static func verify_live_telemetry_artifacts(dataset: Dictionary) -> Dictionary:
 # resolver and the row's own trace, so a trace copied from another pair, a
 # relabelled field, a substituted event or a tampered aggregate is rejected even
 # after the digests are recomputed.
-static func verify_final_execution_artifacts(dataset: Dictionary) -> Dictionary:
+#
+# FAN-2388: a truncated or reordered roster (rows internally consistent with a
+# claimed pair_keys short of or out of order against the production roster)
+# fails closed with an explicit error instead of silently skipping
+# binding-kind/baseline coverage. require_full_roster only exists for isolated
+# single-row round-trip probes that never claim to be a shipped artifact.
+static func verify_final_execution_artifacts(dataset: Dictionary, require_full_roster := true) -> Dictionary:
 	var errors := PackedStringArray()
 	var execution: Dictionary = dataset.get("final_execution", {})
 	if str(execution.get("schema", "")) != FINAL_EXECUTION_SCHEMA:
@@ -3689,6 +3695,13 @@ static func verify_final_execution_artifacts(dataset: Dictionary) -> Dictionary:
 		var representative_payoff: Dictionary = representative.get("payoff", {})
 		if representative.is_empty() or int(representative_payoff.get("pre_activation_hits", 0)) <= 0 or float(representative_payoff.get("pre_activation_damage", 0.0)) <= 0.0:
 			errors.append("final-execution representative baseline is empty before activation for %s" % FINAL_EXECUTION_REPRESENTATIVE_BASELINE_PAIR)
+	elif require_full_roster:
+		# A roster that is internally self-consistent (rows match its own claimed
+		# pair_keys) but short of or reordered against the production roster must
+		# not silently skip binding-kind/baseline coverage: that is exactly the
+		# shape a truncated or reordered forgery would take. Only an explicit,
+		# opted-out caller (single-row round-trip probes) may pass require_full_roster=false.
+		errors.append("final-execution roster is truncated or reordered relative to the production roster (%d/%d pairs) and cannot certify binding-kind/baseline coverage" % [expected_pairs.size(), full_roster_pairs.size()])
 	return {"ok": errors.is_empty(), "errors": errors}
 
 
