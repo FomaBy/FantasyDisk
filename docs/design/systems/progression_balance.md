@@ -1556,6 +1556,33 @@ hit».
 Новая механика с `resolver_damage_ratio > 1.0` без comparison policy или
 именованного исключения роняет generation и verification fail-closed.
 
+FAN-2388 закрывает три harness/contract щели в этом же evidence model, не
+меняя ни generation, ни balance. Раньше `_check(legacy_mutations.size() ==
+LEGACY_FINAL_EXECUTION_MUTATION_COUNT and LEGACY_FINAL_EXECUTION_MUTATION_COUNT
++ LEGACY_DISPOSITION_MUTATION_COUNT == 21, ...)` — вторая половина сравнивала
+два хардкодных литерала друг с другом и не могла упасть ни при каком runtime
+поведении каталога; она удалена, а осиротевший `LEGACY_DISPOSITION_MUTATION_COUNT`
+теперь реально привязан к `disposition_mutations.size()` (легаси-каталог плюс
+ровно один FAN-2316 provenance-кейс по имени). Оба mutation-каталога получили
+negative control, который локально укорачивает список и доказывает, что guard
+действительно падает — а не просто совпадает сам с собой. `_disposition_dataset`
+раньше строил свой `formula_basis` вызовом `Generator.production_formula_basis`
+— тем же вызовом, которым `_verify_disposition_row` потом сверяет строку, поэтому
+регрессия в производной формулы была бы незаметна (обе стороны сверяли сами
+себя). Базис для `berserk/sword` теперь независимо закреплённый литерал
+(`PINNED_BERSERK_SWORD_FORMULA_BASIS` в `tests/a5_balance_report_integrity_test.gd`),
+снятый один раз с текущего production-вывода; admissibility-проверка фикстуры
+(`the production-shaped disposition fixture must be admissible`) — первое место
+в suite, которое ловит дрейф `production_formula_basis`, а не просто подделанный
+мутант. `verify_final_execution_artifacts` раньше молча пропускал
+binding-kind/representative-baseline проверки, если `roster.pair_keys` не
+совпадал буквально с полным production roster — внутренне согласованный, но
+truncated или reordered набор (rows совпадают со своим же урезанным/переставленным
+`pair_keys`) проходил `ok=true` без единой ошибки. Теперь несовпадение с полным
+roster — explicit fail-closed error, если явно не запрошено обратное; opt-out
+`require_full_roster=false` оставлен только для изолированных single-row
+round-trip проб, которые никогда не претендуют на шипуемый артефакт.
+
 Диагностика без перегенерации артефактов: `--mode=final_execution_probe`
 (опционально `--pair=<class>/<weapon>`) печатает по строке на пару.
 

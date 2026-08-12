@@ -26,6 +26,17 @@ const ROBOT_REACTOR_PAIR := "robot/robot_reactor_core"
 const ROBOT_REACTOR_MECHANIC := "reactor_vent_cycle_pulse"
 const ROBOT_REACTOR_PULSE_RATIO := 0.40
 const ROBOT_REACTOR_MINIMUM_MEASURED_RATIO := 0.25
+# FAN-2388: pinned independently of Generator.production_formula_basis so the
+# disposition fixture cannot silently mirror a regression in that function —
+# captured once from the current berserk/sword L20/ascension-5 production
+# build; see docs/design/systems/progression_balance.md.
+const PINNED_BERSERK_SWORD_FORMULA_BASIS := {
+	"damage_parameter": "damage",
+	"fire_interval_seconds": 0.18,
+	"cast_rate_per_second": 5.555556,
+	"hit_damage": 27.103674,
+	"direct_dpm": 9034.558061,
+}
 
 var _errors := PackedStringArray()
 
@@ -129,6 +140,12 @@ func _validate_final_execution_falsification(dataset: Dictionary) -> void:
 	_check("; ".join(Generator.verify_final_execution_row(forged_owner)).contains("owner-state payoff does not reconstruct"), "owner payoff fields must not override the owner trace")
 	var legacy_mutations := _final_execution_mutations(baseline)
 	_check(legacy_mutations.size() == LEGACY_FINAL_EXECUTION_MUTATION_COUNT, "final-execution mutation catalog is unexpectedly short")
+	# FAN-2388 negative control: prove the guard above is reachable, not just an
+	# identity between two literals written together — a catalog one case short
+	# of the pinned count must actually flip the comparison to false.
+	var shrunk_legacy_mutations: Array = legacy_mutations.duplicate()
+	shrunk_legacy_mutations.remove_at(0)
+	_check(shrunk_legacy_mutations.size() != LEGACY_FINAL_EXECUTION_MUTATION_COUNT, "a final-execution mutation catalog short one legacy case must trip the count guard")
 	for mutation_value in legacy_mutations:
 		var mutation: Dictionary = mutation_value
 		var mutated: Dictionary = mutation.get("row", {})
@@ -137,6 +154,10 @@ func _validate_final_execution_falsification(dataset: Dictionary) -> void:
 	_check(bool(Generator.verify_formula_live_dispositions(disposition_dataset).get("ok", false)), "the production-shaped disposition fixture must be admissible: %s" % "; ".join(Generator.verify_formula_live_dispositions(disposition_dataset).get("errors", [])))
 	var json_round_trip: Variant = JSON.parse_string(JSON.stringify(disposition_dataset, "", true, true))
 	_check(json_round_trip is Dictionary and bool(Generator.verify_formula_live_dispositions(json_round_trip as Dictionary).get("ok", false)), "formula/live disposition verification must admit its JSON round trip")
+	# This artifact deliberately claims a single-pair roster: it only probes JSON
+	# round-trip encoding of one row, never a shipped dataset, so it opts out of
+	# the full-roster coverage gate explicitly instead of relying on it being
+	# silently skipped.
 	var execution_artifact := {
 		"roster": {"pair_keys": [baseline["pair"]]},
 		"final_execution": {
@@ -154,17 +175,61 @@ func _validate_final_execution_falsification(dataset: Dictionary) -> void:
 		if not round_rows.is_empty():
 			var round_sample: Dictionary = (round_rows[0] as Dictionary).get("telemetry", {})
 			round_sample["trace_digest_sha256"] = Generator.canonical_trace_digest(round_sample.get("events", []))
-	var execution_round_trip_verification: Dictionary = Generator.verify_final_execution_artifacts(execution_round_trip as Dictionary) if execution_round_trip is Dictionary else {"ok": false, "errors": ["JSON round trip is not an object"]}
+	var execution_round_trip_verification: Dictionary = Generator.verify_final_execution_artifacts(execution_round_trip as Dictionary, false) if execution_round_trip is Dictionary else {"ok": false, "errors": ["JSON round trip is not an object"]}
 	_check(bool(execution_round_trip_verification.get("ok", false)), "final-execution verification must admit its JSON round trip: %s" % "; ".join(execution_round_trip_verification.get("errors", [])))
 	var forged_seed_ladder: Dictionary = execution_artifact.duplicate(true)
 	((forged_seed_ladder["final_execution"] as Dictionary)["seeds"] as Array)[0] = int(Generator.FINAL_EXECUTION_SEEDS[0]) + 1
-	_check(not bool(Generator.verify_final_execution_artifacts(forged_seed_ladder).get("ok", true)), "final-execution verification accepts a substituted seed ladder")
+	_check(not bool(Generator.verify_final_execution_artifacts(forged_seed_ladder, false).get("ok", true)), "final-execution verification accepts a substituted seed ladder")
+	_validate_final_execution_roster_guard(dataset)
 	var disposition_mutations := _disposition_mutations(disposition_dataset)
-	_check(disposition_mutations.size() == REQUIRED_DISPOSITION_MUTATION_COUNT and LEGACY_FINAL_EXECUTION_MUTATION_COUNT + LEGACY_DISPOSITION_MUTATION_COUNT == 21, "formula/live mutation catalog is unexpectedly short or lost a legacy case")
+	_check(disposition_mutations.size() == REQUIRED_DISPOSITION_MUTATION_COUNT, "formula/live mutation catalog is unexpectedly short")
+	# LEGACY_DISPOSITION_MUTATION_COUNT is the pre-FAN-2316 catalog; exactly one
+	# case (the pinned production-basis provenance check) was added on top of it.
+	# Both the count and the added case's identity are checked against the actual
+	# runtime catalog, not against another hardcoded literal.
+	_check(disposition_mutations.size() - LEGACY_DISPOSITION_MUTATION_COUNT == 1, "formula/live mutation catalog gained or lost cases beyond the FAN-2316 basis-provenance addition")
+	_check(str((disposition_mutations[disposition_mutations.size() - 1] as Dictionary).get("name", "")) == "self-consistent but non-production formula basis", "formula/live mutation catalog lost its FAN-2316 production-basis provenance case")
+	var shrunk_disposition_mutations: Array = disposition_mutations.duplicate()
+	shrunk_disposition_mutations.remove_at(0)
+	_check(shrunk_disposition_mutations.size() != REQUIRED_DISPOSITION_MUTATION_COUNT, "a formula/live mutation catalog short one legacy case must trip the count guard")
 	for mutation_value in disposition_mutations:
 		var mutation: Dictionary = mutation_value
 		_check(not bool(Generator.verify_formula_live_dispositions(mutation.get("dataset", {})).get("ok", false)), "formula/live disposition verification accepts a forged dataset: %s" % mutation.get("name", "?"))
 	_validate_shipped_final_execution_falsification(dataset)
+
+
+# FAN-2388 negative control: an internally self-consistent (rows match their
+# own claimed pair_keys) but truncated or reordered roster is exactly the shape
+# a forged shipped artifact would take. verify_final_execution_artifacts must
+# reject both explicitly instead of silently skipping binding-kind/baseline
+# coverage the way it used to for any non-full roster.
+func _validate_final_execution_roster_guard(dataset: Dictionary) -> void:
+	if not dataset.has("final_execution"):
+		return
+	var pairs: Array = (dataset.get("roster", {}) as Dictionary).get("pair_keys", [])
+	var rows: Array = (dataset.get("final_execution", {}) as Dictionary).get("rows", [])
+	if pairs.size() < 2 or rows.size() < 2:
+		return
+	var truncated := dataset.duplicate(true)
+	var truncated_pairs: Array = (truncated["roster"] as Dictionary)["pair_keys"]
+	truncated_pairs.remove_at(truncated_pairs.size() - 1)
+	var truncated_rows: Array = (truncated["final_execution"] as Dictionary)["rows"]
+	truncated_rows.remove_at(truncated_rows.size() - 1)
+	var truncated_verification := Generator.verify_final_execution_artifacts(truncated)
+	_check(not bool(truncated_verification.get("ok", true)), "a final-execution roster truncated by one pair must fail closed")
+	_check("; ".join(truncated_verification.get("errors", [])).contains("truncated or reordered"), "a truncated final-execution roster must report the explicit roster guard")
+	var reordered := dataset.duplicate(true)
+	var reordered_pairs: Array = (reordered["roster"] as Dictionary)["pair_keys"]
+	var reordered_rows: Array = (reordered["final_execution"] as Dictionary)["rows"]
+	var pair_swap = reordered_pairs[0]
+	reordered_pairs[0] = reordered_pairs[1]
+	reordered_pairs[1] = pair_swap
+	var row_swap = reordered_rows[0]
+	reordered_rows[0] = reordered_rows[1]
+	reordered_rows[1] = row_swap
+	var reordered_verification := Generator.verify_final_execution_artifacts(reordered)
+	_check(not bool(reordered_verification.get("ok", true)), "a reordered final-execution roster must fail closed")
+	_check("; ".join(reordered_verification.get("errors", [])).contains("truncated or reordered"), "a reordered final-execution roster must report the explicit roster guard")
 
 
 func _validate_shipped_final_execution(dataset: Dictionary) -> void:
@@ -658,7 +723,12 @@ func _disposition_dataset(row: Dictionary) -> Dictionary:
 		"hp_ledger": {"total_applied_damage": 3000.0, "measurement_duration_seconds": duration},
 	}
 	var live_telemetry := {"samples": [sample, pack_sample]}
-	var basis := Generator.production_formula_basis("berserk", "sword")
+	# FAN-2388: the fixture's basis is the pinned literal, not a fresh call into
+	# Generator.production_formula_basis — _verify_disposition_row makes that same
+	# call independently to check the row, so deriving both sides from the same
+	# function would make admissibility a tautology instead of a real check.
+	_check(pair == "berserk/sword", "the disposition fixture's pinned formula basis only covers berserk/sword")
+	var basis := PINNED_BERSERK_SWORD_FORMULA_BASIS.duplicate(true)
 	var solo_observed := Generator.observed_axis_terms(live_telemetry, pair, "sustain_solo")
 	var pack_observed := Generator.observed_axis_terms(live_telemetry, pair, "sustain_pack")
 	var formula_solo := 6000.0
