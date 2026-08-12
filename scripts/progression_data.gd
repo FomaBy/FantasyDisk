@@ -2211,9 +2211,15 @@ static func derived_parameters(stats: Dictionary, run_modifiers: Dictionary, wea
 	var aoe_intelligence_weight := float(weapon_config.get("aoe_radius_intelligence_weight", 0.45))
 	var base_area := maxf(float(weapon_config.get("aoe_radius", 190.0)), 1.0)
 	var attack_area_multiplier := (base_area + radius_perception * 3.5 + radius_intelligence * aoe_intelligence_weight + radius_knowledge * 0.35 + radius_leadership * 0.30) * aoe_radius_multiplier / base_area
-	# Support effects derive from the same general % damage multiplier at one
-	# aggregation point. Removed legacy support sources cannot influence this value.
+	var aura_radius := base_area * attack_area_multiplier
+	# Support effects derive at one aggregation point. Druid's existing summon
+	# support inputs live here too, so Player and summons cannot scale them twice.
 	var support_multiplier := maxf(run_damage_multiplier, 0.0)
+	if character_id == "druid":
+		support_multiplier = 1.0 + leadership * 0.025 + float(stats.get("knowledge", 0.0)) * 0.006 + float(stats.get("energy", 0.0)) * 0.004
+		# Друид считает свой радиус ауры от собственных support-атрибутов, но общий
+		# множитель области применяется ровно один раз — как и у остальной геометрии.
+		aura_radius = (base_area + leadership * 5.0 + float(stats.get("perception", 0.0)) * 0.80 + float(stats.get("energy", 0.0)) * 0.65 + float(stats.get("knowledge", 0.0)) * 0.45) * aoe_radius_multiplier
 
 	return {
 		"damage": (physical_base * weapon_damage_multiplier * damage_multiplier + universal_damage_flat) * sandbox_damage_multiplier,
@@ -2235,7 +2241,7 @@ static func derived_parameters(stats: Dictionary, run_modifiers: Dictionary, wea
 		"dot_damage": max(1.0, dot_attribute_base * damage_multiplier) * sandbox_damage_multiplier,
 		"dot_speed": base_dot_speed * attack_cadence_multiplier,
 		"projectile_speed": float(weapon_config.get("projectile_speed", 460.0)),
-		"aura_radius": base_area * attack_area_multiplier,
+		"aura_radius": aura_radius,
 		"support_multiplier": support_multiplier,
 		"knockback_power": (float(weapon_config.get("knockback", 60.0)) + strength * 4.0) * knockback_multiplier,
 		"summon_amount": leadership + knowledge * 0.18 + intelligence * 0.12 + energy * 0.10,

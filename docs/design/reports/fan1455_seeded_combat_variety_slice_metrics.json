@@ -104,7 +104,7 @@
 		{
 			"baseline": {
 				"completion": 1.0,
-				"damage_ratio": 1.000034,
+				"damage_ratio": 0.999895,
 				"deaths": 0
 			},
 			"class_id": "druid",
@@ -112,7 +112,7 @@
 			"seed_count": 17,
 			"slice": {
 				"completion": 1.0,
-				"damage_ratio": 1.000034,
+				"damage_ratio": 0.999895,
 				"deaths": 0
 			},
 			"weapon_count": 3

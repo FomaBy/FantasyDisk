@@ -65,16 +65,18 @@ func _check_trait_registry_and_budget_mirror() -> void:
 	var trait_config: Dictionary = PD.class_trait("druid")
 	if str(trait_config.get("id", "")) != "wild_force_aura" or str(trait_config.get("title", "")).is_empty():
 		_errors.append("trait: у Друида нет trait'а wild_force_aura в CLASS_TRAITS")
-	var bonus := PD.class_wild_aura_damage_bonus("druid", 1.279)
+	var parameters := PD.derived_parameters(PD.base_stats("druid"), {"damage_multiplier": 1.20}, PD.weapon("druid", "summon_amulet"))
+	var support_multiplier := float(parameters.get("support_multiplier", 0.0))
+	var bonus := PD.class_wild_aura_damage_bonus("druid", support_multiplier)
 	if bonus <= 0.0 or bonus > float(trait_config.get("wild_aura_damage_cap", 0.30)) + 0.0001:
 		_errors.append("trait: аура-бонус Друида вне контракта (%.3f)" % bonus)
-	if not is_equal_approx(bonus, minf(float(trait_config.get("wild_aura_damage_bonus", 0.0)) * 1.279, float(trait_config.get("wild_aura_damage_cap", 0.30)))):
+	if not is_equal_approx(bonus, minf(float(trait_config.get("wild_aura_damage_bonus", 0.0)) * support_multiplier, float(trait_config.get("wild_aura_damage_cap", 0.30)))):
 		_errors.append("trait: формула аура-бонуса разошлась с CLASS_TRAITS")
 	for other_class in ["berserk", "soldier", "chemist", "priest", "guitarist", "engineer"]:
 		if PD.class_wild_aura_damage_bonus(other_class, 2.0) != 0.0:
 			_errors.append("trait: аура протекла классу %s" % other_class)
 	# Budget-фактор един с рантаймом: 1 + бонус.
-	var factor := PD.class_wild_aura_damage_factor("druid", {"support_multiplier": 1.279})
+	var factor := PD.class_wild_aura_damage_factor("druid", parameters)
 	if not is_equal_approx(factor, 1.0 + bonus):
 		_errors.append("trait: budget-фактор %.3f != 1+бонус %.3f" % [factor, 1.0 + bonus])
 	if not is_equal_approx(PD.class_wild_aura_damage_factor("berserk", {"support_multiplier": 2.0}), 1.0):
@@ -292,6 +294,29 @@ func _check_wild_aura_runtime() -> void:
 	await process_frame
 	druid.set("_status_aura_cooldown_left", 0.0)
 	druid.call("_update_class_status_auras")
+	# Mutation check: attributes that used to feed AllyMinion's private formula
+	# must not let a summon rewrite Player's canonical aura statuses on attack.
+	var mutated_stats: Dictionary = (druid.get("stats") as Dictionary).duplicate(true)
+	mutated_stats["leadership"] = float(mutated_stats.get("leadership", 0.0)) + 100.0
+	mutated_stats["knowledge"] = float(mutated_stats.get("knowledge", 0.0)) + 50.0
+	mutated_stats["energy"] = float(mutated_stats.get("energy", 0.0)) + 50.0
+	druid.set("stats", mutated_stats)
+	druid.call("_apply_stat_scaling", false, druid.get("max_health"))
+	druid.set("_status_aura_cooldown_left", 0.0)
+	druid.call("_update_class_status_auras")
+	var canonical: Dictionary = druid.get("derived_parameters")
+	var support_multiplier := float(canonical.get("support_multiplier", 0.0))
+	var expected_command := 1.0 + minf(0.055 * support_multiplier, 0.12)
+	var expected_wild := 1.0 + PD.class_wild_aura_damage_bonus("druid", support_multiplier)
+	var expected_pressure := 1.0 + minf(0.018 * support_multiplier, 0.035)
+	near_ally.set("_attack_cooldown", 0.0)
+	near_ally.call("_try_attack", enemy)
+	if not is_equal_approx(float(StatusEffects.status_value(near_ally, "command_aura", "damage_multiplier", 0.0)), expected_command):
+		_errors.append("aura: призыв переписал канонический command_aura локальным масштабом")
+	if not is_equal_approx(float(StatusEffects.status_value(near_ally, "wild_force_aura", "damage_multiplier", 0.0)), expected_wild):
+		_errors.append("aura: призыв переписал канонический wild_force_aura локальным масштабом")
+	if not is_equal_approx(float(StatusEffects.status_value(enemy, "command_pressure", "damage_taken_multiplier", 0.0)), expected_pressure):
+		_errors.append("aura: призыв переписал канонический command_pressure локальным масштабом")
 	var ring := druid.get_node_or_null("WildForceAuraRing")
 	if ring == null:
 		_errors.append("aura: нет видимого кольца радиуса WildForceAuraRing")

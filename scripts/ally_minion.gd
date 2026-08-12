@@ -178,7 +178,6 @@ func constellation_alpha_pounce(target: Node2D, damage_ratio: float) -> bool:
 	var pounce_damage := damage * clampf(damage_ratio, 0.0, 1.0)
 	var constellation_owner := instance_from_id(constellation_owner_instance_id) as Node
 	if constellation_owner != null and is_instance_valid(constellation_owner) and constellation_owner.has_method("meta_damage_multiplier"):
-		_refresh_druid_summon_aura(target)
 		pounce_damage *= _owner_damage_multiplier(constellation_owner, {"weapon_id": constellation_weapon_id, "attack_mode": "summon", "damage_type": "physical", "summon_role": summon_role, "constellation_secondary": true}, target)
 	_deal_typed_damage(target, pounce_damage, {"damage_type": "physical", "constellation_final": "pack_alpha_pounce_guard"})
 	_play_attack_animation(to_target)
@@ -264,7 +263,6 @@ func _apply_visual() -> void:
 
 func _physics_process(delta: float) -> void:
 	StatusEffects.tick(self, delta)
-	_refresh_druid_summon_aura()
 	lifetime -= delta
 	_attack_cooldown -= delta
 	_attack_anim_time = maxf(_attack_anim_time - delta, 0.0)
@@ -331,79 +329,14 @@ func _follow_guard_position() -> void:
 		velocity = to_guard.normalized() * move_speed
 
 
-func _refresh_druid_summon_aura(target: Node2D = null) -> void:
-	if constellation_weapon_id != "summon_amulet" or owner_node == null or not is_instance_valid(owner_node):
-		return
-	if not _is_druid_summon_owner(owner_node) or not StatusEffects.has_status(owner_node, "class_aura_focus"):
-		return
-	var parameters_raw = owner_node.get("derived_parameters")
-	var parameters: Dictionary = parameters_raw if parameters_raw is Dictionary else {}
-	var stats_raw = owner_node.get("stats")
-	var stats: Dictionary = stats_raw if stats_raw is Dictionary else {}
-	var support_multiplier := _druid_summon_support_multiplier(parameters, stats)
-	var aura_radius := _druid_summon_aura_radius(parameters, stats)
-	var command_radius := clampf(aura_radius * 0.62, 120.0, 280.0)
-	if global_position.distance_to(owner_node.global_position) <= command_radius:
-		StatusEffects.apply_status(self, "command_aura", {
-			"duration": 0.85,
-			"damage_multiplier": 1.0 + minf(0.055 * support_multiplier, 0.12),
-			"speed_multiplier": 1.0 + minf(0.025 * support_multiplier, 0.05),
-			"marker_color": Color(0.50, 0.88, 1.0, 1.0),
-		})
-	var wild_radius_multiplier := float(owner_node.call("class_trait_value", "wild_aura_radius_ratio", 1.0)) if owner_node.has_method("class_trait_value") else 1.0
-	var wild_bonus := ProgressionData.class_wild_aura_damage_bonus("druid", support_multiplier)
-	if wild_bonus > 0.0 and global_position.distance_to(owner_node.global_position) <= aura_radius * clampf(wild_radius_multiplier, 0.1, 2.0):
-		StatusEffects.apply_status(self, "wild_force_aura", {
-			"duration": 0.85,
-			"damage_multiplier": 1.0 + wild_bonus,
-			"marker_color": Color(0.46, 0.84, 0.34, 1.0),
-		})
-	if target != null and is_instance_valid(target) and target.global_position.distance_to(owner_node.global_position) <= command_radius:
-		StatusEffects.apply_status(target, "command_pressure", {
-			"duration": 0.85,
-			"speed_multiplier": 0.93,
-			"damage_taken_multiplier": 1.0 + minf(0.018 * support_multiplier, 0.035),
-			"marker_color": Color(0.42, 0.78, 1.0, 1.0),
-		})
-
-
 func _owner_damage_multiplier(owner: Node, context: Dictionary, target: Node2D) -> float:
-	var multiplier := float(owner.call("meta_damage_multiplier", context, target))
-	if not _is_druid_summon_owner(owner):
-		return multiplier
-	var current_wild := float(owner.call("wild_aura_damage_multiplier")) if owner.has_method("wild_aura_damage_multiplier") else 1.0
-	return multiplier * _druid_summon_wild_multiplier(owner) / maxf(current_wild, 0.0001)
-
-
-func _is_druid_summon_owner(owner: Node) -> bool:
-	return owner != null and is_instance_valid(owner) and constellation_weapon_id == "summon_amulet" and str(owner.get("character_id")) == "druid"
-
-
-func _druid_summon_wild_multiplier(owner: Node) -> float:
-	var parameters_raw = owner.get("derived_parameters")
-	var parameters: Dictionary = parameters_raw if parameters_raw is Dictionary else {}
-	var stats_raw = owner.get("stats")
-	var stats: Dictionary = stats_raw if stats_raw is Dictionary else {}
-	return 1.0 + ProgressionData.class_wild_aura_damage_bonus("druid", _druid_summon_support_multiplier(parameters, stats))
-
-
-func _druid_summon_support_multiplier(parameters: Dictionary, stats: Dictionary) -> float:
-	var leadership := float(parameters.get("leadership", stats.get("leadership", 0.0)))
-	return 1.0 + leadership * 0.025 + float(stats.get("knowledge", 0.0)) * 0.006 + float(stats.get("energy", 0.0)) * 0.004
-
-
-func _druid_summon_aura_radius(parameters: Dictionary, stats: Dictionary) -> float:
-	var attack_area_multiplier := maxf(float(parameters.get("attack_area_multiplier", 1.0)), 0.0001)
-	var base_radius := float(parameters.get("aura_radius", 0.0)) / attack_area_multiplier
-	var leadership := float(parameters.get("leadership", stats.get("leadership", 0.0)))
-	return base_radius + leadership * 5.0 + float(stats.get("perception", 0.0)) * 0.80 + float(stats.get("energy", 0.0)) * 0.65 + float(stats.get("knowledge", 0.0)) * 0.45
+	return float(owner.call("meta_damage_multiplier", context, target))
 
 
 func _try_attack(target: Node2D) -> void:
 	if _attack_cooldown > 0.0:
 		return
 
-	_refresh_druid_summon_aura(target)
 	var final_damage := damage * StatusEffects.damage_multiplier(self)
 	var constellation_owner := instance_from_id(constellation_owner_instance_id) as Node
 	if constellation_owner != null and is_instance_valid(constellation_owner) and constellation_owner.has_method("meta_damage_multiplier"):
@@ -436,7 +369,6 @@ func _try_attack(target: Node2D) -> void:
 			var enemy_node := enemy as Node2D
 			if enemy_node == null or not is_instance_valid(enemy_node) or hit_ids.has(enemy_node.get_instance_id()):
 				continue
-			_refresh_druid_summon_aura(enemy_node)
 			_deal_typed_damage(enemy_node, final_damage * aoe_damage_multiplier, hit_feedback)
 			if control_knockback > 0.0 and enemy_node.has_method("apply_knockback"):
 				var splash_direction := enemy_node.global_position - target.global_position
