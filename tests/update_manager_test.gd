@@ -173,17 +173,20 @@ func _check_manifest_response_state() -> bool:
 		captured["result"]["manual"] = manual
 	)
 	manager._manual_check = false
-	# The project itself is now 0.2.4; use a strictly newer synthetic manifest
-	# so this state-machine test continues to exercise STATE_AVAILABLE.
+	# Derive a canonical release strictly newer than the manager's own
+	# current_version() (project.godot) instead of a hard-coded synthetic
+	# version, so this state-machine test keeps exercising STATE_AVAILABLE
+	# across future version bumps (FAN-2469).
+	var future_version := _next_canonical_version(manager.current_version())
 	var manifest := _valid_manifest()
-	manifest["version"] = "0.2.5"
-	manifest["release_url"] = "https://github.com/FomaBy/FantasyDisk-Releases/releases/tag/v0.2.5"
+	manifest["version"] = future_version
+	manifest["release_url"] = "https://github.com/FomaBy/FantasyDisk-Releases/releases/tag/v%s" % future_version
 	for platform_key in ["macos", "windows"]:
 		var asset := manifest["assets"][platform_key] as Dictionary
 		var extension := "dmg" if platform_key == "macos" else "exe"
 		var suffix := "macos" if platform_key == "macos" else "windows-setup"
-		asset["name"] = "FantasyDisk-0.2.5-%s.%s" % [suffix, extension]
-		asset["url"] = "https://github.com/FomaBy/FantasyDisk-Releases/releases/download/v0.2.5/%s" % asset["name"]
+		asset["name"] = "FantasyDisk-%s-%s.%s" % [future_version, suffix, extension]
+		asset["url"] = "https://github.com/FomaBy/FantasyDisk-Releases/releases/download/v%s/%s" % [future_version, asset["name"]]
 	var body := JSON.stringify(manifest).to_utf8_buffer()
 	manager._on_manifest_request_completed(
 		HTTPRequest.RESULT_SUCCESS, 200, PackedStringArray(), body)
@@ -191,11 +194,31 @@ func _check_manifest_response_state() -> bool:
 		manager.free()
 		return _fail("New manifest did not enter available state.")
 	var captured_result := captured["result"] as Dictionary
-	if str(captured_result.get("latest_version", "")) != "0.2.5" or bool(captured_result.get("manual", true)):
+	if str(captured_result.get("latest_version", "")) != future_version or bool(captured_result.get("manual", true)):
 		manager.free()
 		return _fail("Available response signal lost version/manual state: %s" % str(captured))
 	manager.free()
 	return true
+
+
+func _next_canonical_version(version: String) -> String:
+	# Bump the lowest canonical component that has headroom under
+	# UPDATE_MANAGER's own limits, carrying over otherwise, so the result
+	# always parses as a strictly newer X.Y.Z release per compare_versions().
+	var parts := version.split(".")
+	var major := int(parts[0]) if parts.size() > 0 else 0
+	var minor := int(parts[1]) if parts.size() > 1 else 0
+	var patch := int(parts[2]) if parts.size() > 2 else 0
+	if patch < UPDATE_MANAGER.MAX_RELEASE_PATCH:
+		patch += 1
+	elif minor < UPDATE_MANAGER.MAX_RELEASE_MINOR:
+		minor += 1
+		patch = 0
+	else:
+		major += 1
+		minor = 0
+		patch = 0
+	return "%d.%d.%d" % [major, minor, patch]
 
 
 func _fail(message: String) -> bool:
