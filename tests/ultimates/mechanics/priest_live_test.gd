@@ -176,7 +176,9 @@ func _test_censer_real_hit_and_cancel() -> void:
 		actual_prevented * activation.param_float("stored_ratio", 0.0),
 		activation.scaled_damage("stored_cap", 0.0)
 	)
-	(player.get("derived_parameters") as Dictionary)["dodge"] = 0.0
+	var derived: Dictionary = player.get("derived_parameters")
+	derived["dodge"] = 0.0
+	derived["raw_dodge"] = 0.0
 	player.set("debug_godmode", false)
 	player.set("damage_invulnerability_time", 0.0)
 	player.set("_damage_invulnerability_left", 0.0)

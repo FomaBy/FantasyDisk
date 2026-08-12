@@ -507,13 +507,18 @@ func _test_smoke_cloud_player_dodge(errors: Array) -> void:
 		equipped.set_process(false)
 		equipped.set("_cooldown", 1.0e9)
 
-	# Тяжёлый dodge-билд: базовый шанс упирается в обычный кап 0.55.
+	# Тяжёлый, но ДОСТИЖИМЫЙ сырой рейтинг уворота: 1.20 ниже колена капа, поэтому
+	# базовый шанс обязан быть ровно effective_dodge(1.20) ≈ 0.504 — оракул проверяет
+	# саму кривую, а не асимптоту 0.55, в которую упирался бы любой рейтинг ≥ 1.50.
 	var params: Dictionary = player.get("derived_parameters")
-	params["dodge"] = 0.80
+	var heavy_raw_dodge := 1.20
+	var heavy_dodge := PD.effective_dodge(heavy_raw_dodge)
+	params["raw_dodge"] = heavy_raw_dodge
+	params["dodge"] = heavy_dodge
 	player.set("derived_parameters", params)
-	if absf(float(player.call("_current_dodge_chance")) - PD.SURVIVABILITY_DODGE_CAP) > EPS:
-		errors.append("дым: базовый шанс вне облака %.2f != капа %.2f" % [float(player.call("_current_dodge_chance")), PD.SURVIVABILITY_DODGE_CAP])
-	# В облаке: 0.55 + 0.35 (+0.12 артефакт) режется капом дыма 0.90 — «почти
+	if absf(float(player.call("_current_dodge_chance")) - heavy_dodge) > EPS:
+		errors.append("дым: базовый шанс вне облака %.3f != effective_dodge(%.2f)=%.3f" % [float(player.call("_current_dodge_chance")), heavy_raw_dodge, heavy_dodge])
+	# В облаке: 0.504 + 0.35 (+0.12 артефакт) режется капом дыма 0.90 — «почти
 	# неуязвим в дыму», но не бессмертен.
 	player.call("register_smoke_cloud", player_node.global_position, 170.0, 5.0, 0.47)
 	if absf(float(player.call("smoke_cloud_dodge_bonus")) - 0.47) > EPS:
@@ -525,21 +530,24 @@ func _test_smoke_cloud_player_dodge(errors: Array) -> void:
 	player_node.global_position = inside_position + Vector2(4000.0, 0.0)
 	if float(player.call("smoke_cloud_dodge_bonus")) > EPS:
 		errors.append("дым: бонус действует вне облака")
-	if absf(float(player.call("_current_dodge_chance")) - PD.SURVIVABILITY_DODGE_CAP) > EPS:
-		errors.append("дым: шанс вне облака %.2f != обычного капа" % float(player.call("_current_dodge_chance")))
+	if absf(float(player.call("_current_dodge_chance")) - heavy_dodge) > EPS:
+		errors.append("дым: шанс вне облака %.3f != effective_dodge(%.2f)" % [float(player.call("_current_dodge_chance")), heavy_raw_dodge])
 	player_node.global_position = inside_position
 	# Перекрывающиеся облака НЕ стакаются: берётся максимальный бонус (0.47).
-	params["dodge"] = 0.20
+	var modest_raw_dodge := 0.20
+	var modest_dodge := PD.effective_dodge(modest_raw_dodge)
+	params["raw_dodge"] = modest_raw_dodge
+	params["dodge"] = modest_dodge
 	player.set("derived_parameters", params)
 	player.call("register_smoke_cloud", player_node.global_position, 170.0, 5.0, 0.35)
-	if absf(float(player.call("_current_dodge_chance")) - 0.67) > EPS:
-		errors.append("дым: перекрытие облаков дало %.2f, ожидалось 0.67 (0.20 + max(0.47, 0.35))" % float(player.call("_current_dodge_chance")))
-	# Скромный билд в одиночном облаке: 0.20 + 0.35 = 0.55 — до капа дыма далеко.
+	if absf(float(player.call("_current_dodge_chance")) - (modest_dodge + 0.47)) > EPS:
+		errors.append("дым: перекрытие облаков дало %.3f, ожидалось %.3f (база + max(0.47, 0.35))" % [float(player.call("_current_dodge_chance")), modest_dodge + 0.47])
+	# Скромный билд в одиночном облаке: база + 0.35 — до капа дыма далеко.
 	var solo_position := inside_position + Vector2(2400.0, 0.0)
 	player_node.global_position = solo_position
 	player.call("register_smoke_cloud", solo_position, 170.0, 5.0, 0.35)
-	if absf(float(player.call("_current_dodge_chance")) - 0.55) > EPS:
-		errors.append("дым: скромный билд в облаке %.2f != 0.55 (0.20 + 0.35)" % float(player.call("_current_dodge_chance")))
+	if absf(float(player.call("_current_dodge_chance")) - (modest_dodge + 0.35)) > EPS:
+		errors.append("дым: скромный билд в облаке %.3f != %.3f (база + 0.35)" % [float(player.call("_current_dodge_chance")), modest_dodge + 0.35])
 	# Истечение: короткое облако умирает — бонус пропадает по таймеру.
 	player_node.global_position = inside_position + Vector2(8000.0, 0.0)
 	player.call("register_smoke_cloud", player_node.global_position, 170.0, 0.25, 0.35)

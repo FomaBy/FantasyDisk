@@ -227,7 +227,9 @@ func _make_real_player(character_id: String, weapon_id: String) -> Node:
 	# post-mitigation вход равен сырому amount.
 	var derived: Dictionary = player.get("derived_parameters")
 	derived["dodge"] = 0.0
+	derived["raw_dodge"] = 0.0
 	derived["defense"] = 0.0
+	derived["raw_defense"] = 0.0
 	derived["absorb"] = 0.0
 	derived["regeneration"] = 0.0
 	player.set("run_modifiers", {})
@@ -247,15 +249,22 @@ func _test_armored_hull_trait(errors: Array) -> void:
 	if absf(small_hit - 4.0) > EPS:
 		errors.append("robot must take exactly 4 of a 5 post-mitigation hit (got %.3f)" % small_hit)
 
-	# AC: множитель — ПОСЛЕ absorb/defense. Субтрактивный absorb различает
-	# порядок: 100 → max(100-20, 42) x (1-0.5) x 0.8 = 32; «x0.8 сначала»
-	# дал бы (80-20) x 0.5 = 30.
+	# AC: множитель — ПОСЛЕ absorb/defense. Митигацию задаём СЫРЫМ рейтингом и
+	# гоним через ту же кривую, что рантайм: effective_defense(0.5) ≈ 0.392.
+	# Субтрактивный absorb различает порядок: 100 → max(100-20, 42) x
+	# (1-0.392) x 0.8 ≈ 38.90; «x0.8 сначала» дал бы max(80-20, 33.6) x
+	# (1-0.392) ≈ 36.47.
 	var derived: Dictionary = robot.get("derived_parameters")
-	derived["defense"] = 0.5
+	var raw_defense := 0.5
+	derived["raw_defense"] = raw_defense
+	derived["defense"] = PD.effective_defense(raw_defense)
 	derived["absorb"] = 20.0
 	var ordered_hit := _take_hit(robot, 100.0)
-	if absf(ordered_hit - 32.0) > EPS:
-		errors.append("trait must be the LAST multiplier after absorb+defense (got %.3f, want 32)" % ordered_hit)
+	var absorb_pass := maxf(100.0 - 20.0, 100.0 * PD.SURVIVABILITY_ABSORB_MIN_DAMAGE_FRACTION)
+	var expected_ordered_hit := absorb_pass * (1.0 - PD.effective_defense(raw_defense)) * 0.8
+	if absf(ordered_hit - expected_ordered_hit) > EPS:
+		errors.append("trait must be the LAST multiplier after absorb+effective_defense(raw) (got %.3f, want %.3f)" % [ordered_hit, expected_ordered_hit])
+	derived["raw_defense"] = 0.0
 	derived["defense"] = 0.0
 	derived["absorb"] = 0.0
 
@@ -281,7 +290,7 @@ func _test_armored_hull_trait(errors: Array) -> void:
 	var dodge_ev_mitigation := 1.0 - (1.0 - PD.SURVIVABILITY_DODGE_CAP) * deterministic_pass
 	if deterministic_mitigation >= 0.98 or dodge_ev_mitigation >= 0.98:
 		errors.append("robot worst-case mitigation breaches the 0.98 immunity gate (det %.4f, dodge-EV %.4f)" % [deterministic_mitigation, dodge_ev_mitigation])
-	print("SCRUM-914 evidence: 100->%.1f, 5->%.1f, absorb20+def50 100->%.1f, dot10->%.1f, soldier 100->%.1f; worst-case mitigation det %.2f%%, dodge-EV %.2f%% (< 98%%)." % [
+	print("SCRUM-914 evidence: 100->%.1f, 5->%.1f, absorb20+raw_def0.5 100->%.1f, dot10->%.1f, soldier 100->%.1f; worst-case mitigation det %.2f%%, dodge-EV %.2f%% (< 98%%)." % [
 		big_hit, small_hit, ordered_hit, dot_hit, soldier_hit,
 		deterministic_mitigation * 100.0, dodge_ev_mitigation * 100.0])
 

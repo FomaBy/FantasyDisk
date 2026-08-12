@@ -36,6 +36,30 @@ const OFFER_SIZE := 3
 const SEEDED_OFFERS_PER_CLASS := 1000
 # Зеркало player.gd:3661 (устройства Инженера сбрасывают max_summons к базе).
 const ORACLE_ENGINEER_DEVICE_MODES := ["engineer_sentry_link", "engineer_orbit_drone"]
+# FAN-2474: принятый контракт считает митигацию из СЫРЫХ рейтингов
+# (effective_defense / effective_dodge), поэтому фикстура, изолирующая уворот или
+# защиту, обязана писать legacy-ключ И парный raw_*. Пока рантайм читает legacy,
+# одиночная raw-строка поведенчески инертна и её удаление не уронило бы свою
+# сюиту — этот ратчет и есть её детектор: любое расхождение legacy/raw в списке
+# ниже валит certifying-гейт с точным путём фикстуры.
+const DEFENSIVE_FIXTURES := [
+	"res://tests/boss_hazard_cap_gate.gd",
+	"res://tests/contact_damage_softcap_test.gd",
+	"res://tests/constellation_schema6_live_runtime_test.gd",
+	"res://tests/knight_kit_test.gd",
+	"res://tests/melee_unique_mechanics_test.gd",
+	"res://tests/meta_keystone_behavioral_smoke_test.gd",
+	"res://tests/meta_skill_tree_smoke_test.gd",
+	"res://tests/priest_kit_test.gd",
+	"res://tests/priest_sustain_softcap_test.gd",
+	"res://tests/robot_kit_test.gd",
+	"res://tests/runtime_smoke_combat_test.gd",
+	"res://tests/runtime_smoke_test.gd",
+	"res://tests/runtime_smoke_triggered_artifacts_test.gd",
+	"res://tests/thief_kit_test.gd",
+	"res://tests/ultimates/guard_prevention_resource_test.gd",
+	"res://tests/ultimates/mechanics/priest_live_test.gd",
+]
 
 var _failed := false
 var _holder: Node2D
@@ -273,8 +297,28 @@ func _check_live_path(character_id: String, weapon_id: String) -> void:
 	player.queue_free()
 
 
+# Считает ЗАПИСИ ключа в фикстуре: `dp["dodge"] = ...` и `{"dodge": ...}`.
+# `raw_dodge`/`raw_defense` под эти шаблоны не попадают (перед именем не кавычка).
+func _fixture_key_writes(source: String, key: String) -> int:
+	return source.count("[\"%s\"] =" % key) + source.count("\"%s\":" % key)
+
+
+func _verify_defensive_fixture_raw_writes() -> void:
+	for fixture_path in DEFENSIVE_FIXTURES:
+		var source := FileAccess.get_file_as_string(str(fixture_path))
+		if source.is_empty():
+			_fail("%s: фикстура не прочиталась, raw-контракт не проверен." % fixture_path)
+			continue
+		for attribute in ["dodge", "defense"]:
+			var legacy_writes := _fixture_key_writes(source, attribute)
+			var raw_writes := _fixture_key_writes(source, "raw_%s" % attribute)
+			if legacy_writes != raw_writes:
+				_fail("%s: %d записей '%s' против %d парных 'raw_%s' — фикстура снова изолирует митигацию только legacy-ключом." % [fixture_path, legacy_writes, attribute, raw_writes, attribute])
+
+
 func _initialize() -> void:
 	await process_frame
+	_verify_defensive_fixture_raw_writes()
 	_holder = Node2D.new()
 	_holder.name = "Fan1927ConsumabilityHolder"
 	root.add_child(_holder)

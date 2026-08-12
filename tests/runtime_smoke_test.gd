@@ -748,6 +748,7 @@ func _initialize() -> void:
 	# Dodge делает проверки урона недетерминированными; для damage-блока обнуляем уворот.
 	var damage_test_derived: Dictionary = player.get("derived_parameters")
 	damage_test_derived["dodge"] = 0.0
+	damage_test_derived["raw_dodge"] = 0.0
 	player.set("derived_parameters", damage_test_derived)
 
 	var hp_before_contact := float(player.get("health"))
@@ -4615,7 +4616,9 @@ func _test_unique_class_identity_patterns() -> void:
 	knight_weapon.set_process(false)
 	var knight_parameters: Dictionary = knight.get("derived_parameters")
 	knight_parameters["dodge"] = 0.0
+	knight_parameters["raw_dodge"] = 0.0
 	knight_parameters["defense"] = 0.0
+	knight_parameters["raw_defense"] = 0.0
 	knight_parameters["absorb"] = 0.0
 	knight.set("derived_parameters", knight_parameters)
 	var knight_enemy := enemy_scene.instantiate()
@@ -5677,7 +5680,14 @@ func _test_no_auto_player_movement_from_crit_or_dodge() -> void:
 		_fail("Expected critical weapon hooks to preserve player-controlled position.")
 		return
 
-	assassin.set("derived_parameters", {"dodge": 1.0, "defense": 0.0})
+	# Максимальный уворот через СЫРОЙ рейтинг: 2.0 упирается в кап 0.55 — ровно
+	# тот же шанс, что давал legacy-процент 1.0 после клампа в _current_dodge_chance.
+	assassin.set("derived_parameters", {
+		"raw_dodge": 2.0,
+		"dodge": ProgressionData.effective_dodge(2.0),
+		"raw_defense": 0.0,
+		"defense": 0.0,
+	})
 	var dodge_position_before: Vector2 = assassin.global_position
 	assassin.call("take_damage", 12.0)
 	await process_frame
@@ -7872,6 +7882,7 @@ func _test_economy_tiers_and_fab(main_scene: PackedScene) -> void:
 	var enemy_hp_before := float(thorn_enemy.get("health"))
 	var derived: Dictionary = t3_player.get("derived_parameters")
 	derived["dodge"] = 0.0
+	derived["raw_dodge"] = 0.0
 	t3_player.set("derived_parameters", derived)
 	t3_player.set("_damage_invulnerability_left", 0.0)
 	t3_player.call("take_damage", 10.0)
@@ -9861,6 +9872,7 @@ func _test_death_flow(main_scene: PackedScene) -> void:
 	# Dodge делает одиночный удар недетерминированным; для теста смерти обнуляем уворот.
 	var derived: Dictionary = player.get("derived_parameters")
 	derived["dodge"] = 0.0
+	derived["raw_dodge"] = 0.0
 	player.set("derived_parameters", derived)
 	var run_modifiers: Dictionary = player.get("run_modifiers")
 	run_modifiers["death_save"] = 0.0

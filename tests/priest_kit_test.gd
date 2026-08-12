@@ -96,8 +96,10 @@ func apply_knockback(_impulse: Vector2) -> void:
 func _neutralize_player(player: Node2D) -> void:
 	var dp: Dictionary = player.get("derived_parameters")
 	dp["dodge"] = 0.0
+	dp["raw_dodge"] = 0.0
 	dp["dodge_chance"] = 0.0
 	dp["defense"] = 0.0
+	dp["raw_defense"] = 0.0
 	dp["absorb"] = 0.0
 	dp["regeneration"] = 0.0
 	player.set("derived_parameters", dp)

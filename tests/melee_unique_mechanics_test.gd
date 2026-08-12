@@ -68,7 +68,9 @@ func _test_knight_tower_shield_counter_pack(errors: Array) -> void:
 	knight.call("configure_character", "knight", "tower_shield")
 	var params: Dictionary = knight.get("derived_parameters")
 	params["dodge"] = 0.0
+	params["raw_dodge"] = 0.0
 	params["defense"] = 0.0
+	params["raw_defense"] = 0.0
 	params["absorb"] = 0.0
 	knight.set("derived_parameters", params)
 	knight.set("_knight_counter_cooldown_left", 0.0)

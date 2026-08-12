@@ -202,7 +202,9 @@ func _knight_bench(weapon_id := "tower_shield") -> Dictionary:
 		equipped.set_process(false)
 	var params: Dictionary = knight.get("derived_parameters")
 	params["dodge"] = 0.0
+	params["raw_dodge"] = 0.0
 	params["defense"] = 0.0
+	params["raw_defense"] = 0.0
 	params["absorb"] = 0.0
 	knight.set("derived_parameters", params)
 	# Изоляция трейта от block/counter оружия (отдельный слой, свой тест ниже).
@@ -340,6 +342,7 @@ func _test_retaliation_no_class_leak_and_prevented(errors: Array) -> void:
 		soldier_weapon.set_process(false)
 	var params: Dictionary = soldier.get("derived_parameters")
 	params["dodge"] = 0.0
+	params["raw_dodge"] = 0.0
 	soldier.set("derived_parameters", params)
 	var attacker := _real_enemy(holder, soldier.global_position + Vector2(50.0, 0.0))
 	await process_frame

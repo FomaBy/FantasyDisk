@@ -55,6 +55,7 @@ func _initialize() -> void:
 
 	var damage_test_derived: Dictionary = player.get("derived_parameters")
 	damage_test_derived["dodge"] = 0.0
+	damage_test_derived["raw_dodge"] = 0.0
 	player.set("derived_parameters", damage_test_derived)
 
 	var contact_enemy := enemy_scene.instantiate()

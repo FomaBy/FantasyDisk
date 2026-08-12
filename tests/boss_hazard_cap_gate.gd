@@ -38,7 +38,9 @@ func _neutralize_mitigation(player: Node2D) -> void:
 	if dp == null:
 		dp = {}
 	dp["dodge"] = 0.0
+	dp["raw_dodge"] = 0.0
 	dp["defense"] = 0.0
+	dp["raw_defense"] = 0.0
 	dp["absorb"] = 0.0
 	player.set("derived_parameters", dp)
 	player.set("_damage_invulnerability_left", 0.0)

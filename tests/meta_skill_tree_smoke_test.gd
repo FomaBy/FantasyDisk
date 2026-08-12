@@ -1180,6 +1180,7 @@ func _test_semantic_keystone_runtime_835() -> void:
 	var shadow := await _make_conditional_player(holder, {"shadow_burst_invisibility_time": 2.0}, "assassin", "shadow_daggers", true)
 	var shadow_params := shadow.get("derived_parameters") as Dictionary
 	shadow_params["dodge"] = 0.0
+	shadow_params["raw_dodge"] = 0.0
 	var shadow_target := await _spawn_test_enemy(holder, shadow.global_position + Vector2(160.0, 0.0), 100.0, true)
 	shadow.set("health", shadow.get("max_health"))
 	if float(shadow.get("_assassin_crit_shadow_cooldown_left")) > 0.0:
@@ -1226,6 +1227,7 @@ func _test_semantic_keystone_runtime_835() -> void:
 	var bastion := await _make_conditional_player(holder, {"bastion_defense_bonus": 0.25, "bastion_taunt": 1.0}, "berserk", "sword", true)
 	var plain_params := plain.get("derived_parameters") as Dictionary
 	plain_params["dodge"] = 0.0
+	plain_params["raw_dodge"] = 0.0
 	plain.set("health", plain.get("max_health"))
 	bastion.set("health", bastion.get("max_health"))
 	bastion.set("velocity", Vector2.ZERO)
@@ -1237,6 +1239,7 @@ func _test_semantic_keystone_runtime_835() -> void:
 	# intentional runtime dodge only after that recalculation.
 	var bastion_params := bastion.get("derived_parameters") as Dictionary
 	bastion_params["dodge"] = 0.0
+	bastion_params["raw_dodge"] = 0.0
 	if float(plain.call("_current_dodge_chance")) > 0.0 or float(bastion.call("_current_dodge_chance")) > 0.0:
 		_fail("SCRUM-1028 Bastion defense comparison must neutralize random dodge on both fixtures.")
 		return
@@ -1555,7 +1558,9 @@ func _test_death_save_capstone() -> void:
 	player.call("apply_meta_skill_modifiers", Meta.skill_modifiers(state))
 	var derived: Dictionary = player.get("derived_parameters")
 	derived["dodge"] = 0.0
+	derived["raw_dodge"] = 0.0
 	derived["defense"] = 0.0
+	derived["raw_defense"] = 0.0
 	derived["absorb"] = 0.0
 	player.set("health", 5.0)
 	player.set("_damage_invulnerability_left", 0.0)

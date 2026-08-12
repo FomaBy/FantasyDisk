@@ -580,6 +580,7 @@ func _cleanup_player(player: Node) -> void:
 func _disable_random_damage_avoidance(player: Node) -> void:
 	var params: Dictionary = player.get("derived_parameters")
 	params["dodge"] = 0.0
+	params["raw_dodge"] = 0.0
 	player.set("derived_parameters", params)
 	player.set("_damage_invulnerability_left", 0.0)
 
