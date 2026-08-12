@@ -3604,7 +3604,7 @@ func _apply_weapon_scaling(weapon: Node) -> void:
 
 	if weapon.get("attack_range") != null:
 		var base_attack_range := float(weapon.get_meta("base_attack_range"))
-		weapon.set("attack_range", base_attack_range)
+		weapon.set("attack_range", base_attack_range * constellation_geometry)
 
 	if geometry_capabilities.has("aoe_radius"):
 		var radius_property := "aoe_radius" if weapon.get("aoe_radius") != null else "summon_aoe_radius"
