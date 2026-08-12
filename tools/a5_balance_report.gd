@@ -53,6 +53,27 @@ const LIVE_TELEMETRY_SCHEMA := "fan1511.runtime-telemetry.v2"
 const LIVE_TRACE_PREFIX := "fan1511"
 const FINAL_EXECUTION_SCHEMA := "fan2224.final-execution.v2"
 const FORMULA_LIVE_DISPOSITION_SCHEMA := "fan2224.formula-live-disposition.v2"
+# The report projections are a versioned public contract. The integrity suite
+# consumes this registry as schema authority, while independently rebuilding
+# every artifact cell and derived value from raw/runtime data.
+const A5_ARTIFACT_SCHEMA_V4 := {
+	"raw_schema": "fan2224.a5-balance.v4",
+	"csv_columns": [
+		{"name": "key", "field": "key"}, {"name": "class_id", "field": "class_id"}, {"name": "weapon_id", "field": "weapon_id"}, {"name": "level", "field": "level"},
+		{"name": "scenario", "field": "scenario"}, {"name": "scenario_label", "field": "scenario_label"}, {"name": "playable", "field": "playable"}, {"name": "attack_mode", "field": "attack_mode"},
+		{"name": "archetype", "field": "archetype"}, {"name": "axis", "field": "axis"}, {"name": "final_mechanic", "field": "final_mechanic"}, {"name": "playstyle", "field": "playstyle"},
+		{"name": "strengths", "field": "strengths"}, {"name": "weaknesses", "field": "weaknesses"}, {"name": "stat_delta", "field": "stat_delta", "canonical_json": true}, {"name": "solo_dpm", "field": "solo_dpm"},
+		{"name": "crowd_10_total_dpm", "field": "crowd_10_total_dpm"}, {"name": "crowd_10_per_target_dpm", "field": "crowd_10_per_target_dpm"}, {"name": "hp", "field": "hp"}, {"name": "defense", "field": "defense"},
+		{"name": "dodge", "field": "dodge"}, {"name": "absorb_flat", "field": "absorb_flat"}, {"name": "conditional_shield_capacity", "field": "conditional_shield_capacity"}, {"name": "regeneration_per_second", "field": "regeneration_per_second"},
+		{"name": "lifesteal_per_second", "field": "lifesteal_per_second"}, {"name": "mitigation", "field": "mitigation"}, {"name": "ehp", "field": "ehp"}, {"name": "ttd_seconds", "field": "ttd_seconds"},
+		{"name": "conditional_defense_factor", "field": "conditional_defense_factor"}, {"name": "pickup_radius", "field": "pickup_radius"}, {"name": "move_speed", "field": "move_speed"}, {"name": "healing_multiplier", "field": "healing_multiplier"},
+		{"name": "xp_multiplier", "field": "xp_multiplier"}, {"name": "money_multiplier", "field": "money_multiplier"}, {"name": "start_gold", "field": "start_gold"}, {"name": "ult_start_charge", "field": "ult_start_charge"},
+		{"name": "death_save", "field": "death_save"}, {"name": "solo_delta_abs", "field": "solo_dpm_delta_abs"}, {"name": "solo_delta_pct", "field": "solo_dpm_delta_pct"}, {"name": "crowd_delta_abs", "field": "crowd_10_total_dpm_delta_abs"},
+		{"name": "crowd_delta_pct", "field": "crowd_10_total_dpm_delta_pct"}, {"name": "ehp_delta_abs", "field": "ehp_delta_abs"}, {"name": "ehp_delta_pct", "field": "ehp_delta_pct"}, {"name": "ttd_delta_abs", "field": "ttd_seconds_delta_abs"},
+		{"name": "ttd_delta_pct", "field": "ttd_seconds_delta_pct"}, {"name": "atlas_delta", "field": "atlas_delta_summary"}, {"name": "measurement_method", "field": "measurement_method"}, {"name": "runs", "field": "runs"},
+		{"name": "solo_variance_dpm2", "field": "solo_variance_dpm2"}, {"name": "crowd_variance_dpm2", "field": "crowd_variance_dpm2"}, {"name": "formula_live_disposition", "field": "formula_live_disposition"}, {"name": "final_execution_payoff_kind", "field": "final_execution_payoff_kind"},
+	],
+}
 const FORMULA_LIVE_TOLERANCE_PCT := 35.0
 const FINAL_EXECUTION_SEEDS := [222401, 222402, 222403]
 const FINAL_EXECUTION_WARMUP_SECONDS := 2.0
@@ -4506,13 +4527,19 @@ static func render_csv(dataset: Dictionary) -> String:
 	# columns; a legacy dataset without them renders exactly as before.
 	var weapon_rows: Array = dataset.get("weapon_rows", [])
 	var with_dispositions := not weapon_rows.is_empty() and (weapon_rows[0] as Dictionary).has("formula_live_disposition")
-	lines.append("key,class_id,weapon_id,level,scenario,scenario_label,playable,attack_mode,archetype,axis,final_mechanic,playstyle,strengths,weaknesses,stat_delta,solo_dpm,crowd_10_total_dpm,crowd_10_per_target_dpm,hp,defense,dodge,absorb_flat,conditional_shield_capacity,regeneration_per_second,lifesteal_per_second,mitigation,ehp,ttd_seconds,conditional_defense_factor,pickup_radius,move_speed,healing_multiplier,xp_multiplier,money_multiplier,start_gold,ult_start_charge,death_save,solo_delta_abs,solo_delta_pct,crowd_delta_abs,crowd_delta_pct,ehp_delta_abs,ehp_delta_pct,ttd_delta_abs,ttd_delta_pct,atlas_delta,measurement_method,runs,solo_variance_dpm2,crowd_variance_dpm2" + (",formula_live_disposition,final_execution_payoff_kind" if with_dispositions else ""))
+	var columns: Array = (A5_ARTIFACT_SCHEMA_V4.get("csv_columns", []) as Array).duplicate(true)
+	if not with_dispositions:
+		columns.resize(columns.size() - 2)
+	var headers := PackedStringArray()
+	for column_value in columns:
+		headers.append(str((column_value as Dictionary).get("name", "")))
+	lines.append(",".join(headers))
 	for row in dataset["weapon_rows"]:
-		var cells := [row["key"], row["class_id"], row["weapon_id"], row["level"], row["scenario"], row["scenario_label"], row["playable"], row["attack_mode"], row["archetype"], row["axis"], row["final_mechanic"], row["playstyle"], row["strengths"], row["weaknesses"], JSON.stringify(row["stat_delta"], "", true, true), row["solo_dpm"], row["crowd_10_total_dpm"], row["crowd_10_per_target_dpm"], row["hp"], row["defense"], row["dodge"], row["absorb_flat"], row["conditional_shield_capacity"], row["regeneration_per_second"], row["lifesteal_per_second"], row["mitigation"], row["ehp"], row["ttd_seconds"], row["conditional_defense_factor"], row["pickup_radius"], row["move_speed"], row["healing_multiplier"], row["xp_multiplier"], row["money_multiplier"], row["start_gold"], row["ult_start_charge"], row["death_save"], row["solo_dpm_delta_abs"], row["solo_dpm_delta_pct"], row["crowd_10_total_dpm_delta_abs"], row["crowd_10_total_dpm_delta_pct"], row["ehp_delta_abs"], row["ehp_delta_pct"], row["ttd_seconds_delta_abs"], row["ttd_seconds_delta_pct"], row["atlas_delta_summary"], row["measurement_method"], row["runs"], row["solo_variance_dpm2"], row["crowd_variance_dpm2"]]
-		if with_dispositions:
-			cells.append_array([row["formula_live_disposition"], row["final_execution_payoff_kind"]])
 		var escaped := PackedStringArray()
-		for cell in cells:
+		for column_value in columns:
+			var column: Dictionary = column_value
+			var field := str(column.get("field", ""))
+			var cell: Variant = JSON.stringify(row[field], "", true, true) if bool(column.get("canonical_json", false)) else row[field]
 			escaped.append(_csv_cell(str(cell)))
 		lines.append(",".join(escaped))
 	return "\n".join(lines) + "\n"

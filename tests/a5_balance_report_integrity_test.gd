@@ -17,6 +17,7 @@ const PlayerScript := preload("res://scripts/player.gd")
 const CodexData := preload("res://scripts/codex_data.gd")
 const Schema6 := preload("res://scripts/constellation_schema6_data.gd")
 const Generator := preload("res://tools/a5_balance_report.gd")
+const A5_SCHEMA := Generator.A5_ARTIFACT_SCHEMA_V4
 const LEGACY_FINAL_EXECUTION_MUTATION_COUNT := 14
 const LEGACY_DISPOSITION_MUTATION_COUNT := 7
 const REQUIRED_DISPOSITION_MUTATION_COUNT := 8
@@ -40,13 +41,13 @@ func _initialize() -> void:
 		_finish()
 		return
 	var dataset := raw as Dictionary
-	_check(str(dataset.get("schema", "")) in ["fan1438.a5-balance.v2", "fan2224.a5-balance.v4"], "raw schema mismatch")
+	_check(str(dataset.get("schema", "")) == str(A5_SCHEMA.get("raw_schema", "")), "raw schema mismatch")
 	_check(str(dataset.get("issue_id", "")) == "FAN-1438", "issue id mismatch")
 	_check(str((dataset.get("source", {}) as Dictionary).get("commit", "")) not in ["", "UNSPECIFIED", "TEST"], "source commit is not pinned")
 	_check(str((dataset.get("source", {}) as Dictionary).get("tree", "")) not in ["", "UNSPECIFIED", "TEST"], "source tree is not pinned")
 	_validate_source_provenance(dataset)
 	_validate_raw_artifact(dataset, raw_text)
-	_check(bool(Generator.verify_dataset_digest(dataset).get("ok", false)), "dataset digest does not match canonical raw payload")
+	_validate_independent_artifact_contract(dataset, report_text)
 	_validate_roster(dataset)
 	_validate_builds(dataset)
 	_validate_meta(dataset)
@@ -765,18 +766,12 @@ func _disposition_mutations(dataset: Dictionary) -> Array:
 
 func _validate_source_provenance(dataset: Dictionary) -> void:
 	var source: Dictionary = dataset.get("source", {})
-	var verification := Generator.verify_source_provenance(source)
-	_check(bool(verification.get("ok", false)), "source provenance is not the exact Git commit/tree/timestamp tuple: %s" % verification.get("error", "unknown error"))
-	if not bool(verification.get("ok", false)):
-		return
-	var expected: Dictionary = verification.get("source", {})
-	_check(str(source.get("commit_timestamp", "")) == str(expected.get("commit_timestamp", "")), "source commit_timestamp differs from git show -s --format=%cI")
+	_check(_independent_source_matches_git(source), "source provenance is not the exact Git commit/tree/timestamp tuple")
 	var mismatched := source.duplicate(true)
 	mismatched["commit_timestamp"] = "1970-01-01T00:00:00Z"
 	if str(source.get("commit_timestamp", "")) == str(mismatched["commit_timestamp"]):
 		mismatched["commit_timestamp"] = "1970-01-01T00:00:01Z"
-	var mismatch_verification := Generator.verify_source_provenance(mismatched)
-	_check(not bool(mismatch_verification.get("ok", false)), "source provenance accepts a deliberately mismatched commit_timestamp")
+	_check(not _independent_source_matches_git(mismatched), "source provenance accepts a deliberately mismatched commit_timestamp")
 
 
 func _validate_raw_artifact(dataset: Dictionary, raw_text: String) -> void:
@@ -1382,7 +1377,7 @@ func _validate_csv(dataset: Dictionary) -> void:
 		_check(str(cells[int(indices["scenario"])]) == str(row.get("scenario", "")), "CSV scenario differs for %s" % key)
 		for metric in ["solo_dpm", "crowd_10_total_dpm", "hp", "ehp", "ttd_seconds", "ult_start_charge"]:
 			_check(is_equal_approx(float(cells[int(indices[metric])]), float(row.get(metric, INF))), "CSV %s differs for %s" % [metric, key])
-	_check(_read_text(Generator.CSV_PATH) == Generator.render_csv(dataset), "CSV is not the exact canonical render of raw.json.gz")
+	_check(_read_text(Generator.CSV_PATH) == _independent_render_csv(dataset), "CSV is not the exact independent projection of raw.json.gz")
 
 
 func _validate_markdown(dataset: Dictionary, report_text: String) -> void:
@@ -1400,7 +1395,435 @@ func _validate_markdown(dataset: Dictionary, report_text: String) -> void:
 		_check(report_text.contains(prefix), "Markdown class row differs from raw.json.gz for %s" % row.get("key", "?"))
 	_check(report_text.contains("## Live event telemetry"), "Markdown lacks live telemetry projection")
 	_check(report_text.contains("Final-event damage is a deduplicated tagged subset"), "Markdown does not state final-event non-additivity")
-	_check(report_text == Generator.render_markdown(dataset), "Markdown is not the exact canonical render of raw.json.gz")
+	_validate_independent_markdown_projection(dataset, report_text)
+
+
+func _validate_independent_artifact_contract(dataset: Dictionary, report_text: String) -> void:
+	var required_top_level := ["schema", "issue_id", "source", "legacy_source", "supplemental_execution", "run_identity", "generation_command", "roster", "builds", "meta_builds", "scenarios", "weapon_rows", "class_rows", "formula_live_parity", "live_telemetry", "final_execution", "formula_live_dispositions", "outliers", "dataset_digest_sha256"]
+	for key_value in required_top_level:
+		_check(dataset.has(str(key_value)), "schema-v4 raw artifact lacks required top-level field %s" % key_value)
+	var columns: Array = A5_SCHEMA.get("csv_columns", [])
+	_check(not columns.is_empty(), "versioned A5 schema registry has no CSV columns")
+	for row_value in dataset.get("weapon_rows", []):
+		var row: Dictionary = row_value
+		for column_value in columns:
+			var column: Dictionary = column_value
+			_check(row.has(str(column.get("field", ""))), "%s lacks schema-v4 CSV field %s" % [row.get("key", "?"), column.get("field", "?")])
+	var source: Dictionary = dataset.get("source", {})
+	var legacy_source: Dictionary = dataset.get("legacy_source", {})
+	var supplemental_source: Dictionary = dataset.get("supplemental_execution", {})
+	_check(_independent_source_matches_git(source), "raw source provenance must resolve to an exact ancestor commit/tree/timestamp")
+	_check(_independent_source_matches_git(legacy_source), "legacy source provenance must resolve to an exact ancestor commit/tree/timestamp")
+	_check(_independent_source_matches_git(supplemental_source), "supplemental source provenance must resolve to an exact ancestor commit/tree/timestamp")
+	_check(source == legacy_source, "schema-v4 legacy source must preserve the original raw source tuple")
+	_check(str(dataset.get("generation_command", "")).contains("--source-commit=%s" % supplemental_source.get("commit", "")), "generation command must pin supplemental source commit")
+	var persisted_digest := str(dataset.get("dataset_digest_sha256", ""))
+	_check(persisted_digest == _independent_dataset_digest(dataset), "dataset digest does not match the independent canonical raw payload")
+	_validate_independent_derived_semantics(dataset)
+	_validate_named_artifact_corruptions(dataset, report_text)
+
+
+func _independent_source_matches_git(source: Dictionary) -> bool:
+	var commit := str(source.get("commit", ""))
+	if commit.length() != 40:
+		return false
+	var output := []
+	if OS.execute("git", ["show", "-s", "--format=%H%n%T%n%cI", commit], output, false) != 0:
+		return false
+	var fields := "".join(PackedStringArray(output)).strip_edges().split("\n", false)
+	if fields.size() != 3:
+		return false
+	for index in range(fields.size()):
+		if str(fields[index]) != str(source.get(["commit", "tree", "commit_timestamp"][index], "")):
+			return false
+	return OS.execute("git", ["merge-base", "--is-ancestor", commit, "HEAD"], [], false) == 0
+
+
+func _independent_dataset_digest(dataset: Dictionary) -> String:
+	var context := HashingContext.new()
+	context.start(HashingContext.HASH_SHA256)
+	_independent_append_digest_value(context, dataset, "dataset_digest_sha256")
+	return context.finish().hex_encode()
+
+
+func _independent_append_digest_value(context: HashingContext, value: Variant, excluded_key := "") -> void:
+	if value is Dictionary:
+		var dictionary: Dictionary = value
+		var keys := dictionary.keys()
+		keys.sort()
+		context.update("{".to_utf8_buffer())
+		var first := true
+		for key_value in keys:
+			if str(key_value) == excluded_key:
+				continue
+			if not first:
+				context.update(",".to_utf8_buffer())
+			first = false
+			context.update(JSON.stringify(str(key_value)).to_utf8_buffer())
+			context.update(":".to_utf8_buffer())
+			_independent_append_digest_value(context, dictionary[key_value])
+		context.update("}".to_utf8_buffer())
+		return
+	if value is Array:
+		var array: Array = value
+		context.update("[".to_utf8_buffer())
+		for index in range(array.size()):
+			if index > 0:
+				context.update(",".to_utf8_buffer())
+			_independent_append_digest_value(context, array[index])
+		context.update("]".to_utf8_buffer())
+		return
+	context.update(JSON.stringify(value, "", true, true).to_utf8_buffer())
+
+
+func _independent_render_csv(dataset: Dictionary) -> String:
+	var lines := PackedStringArray()
+	var columns: Array = (A5_SCHEMA.get("csv_columns", []) as Array).duplicate(true)
+	var headers := PackedStringArray()
+	for column_value in columns:
+		headers.append(str((column_value as Dictionary).get("name", "")))
+	lines.append(",".join(headers))
+	for row_value in dataset.get("weapon_rows", []):
+		var row: Dictionary = row_value
+		var escaped := PackedStringArray()
+		for column_value in columns:
+			var column: Dictionary = column_value
+			var field := str(column.get("field", ""))
+			var cell: Variant = JSON.stringify(row[field], "", true, true) if bool(column.get("canonical_json", false)) else row[field]
+			escaped.append("\"%s\"" % str(cell).replace("\"", "\"\""))
+		lines.append(",".join(escaped))
+	return "\n".join(lines) + "\n"
+
+
+func _validate_independent_derived_semantics(dataset: Dictionary) -> void:
+	_validate_independent_weapon_deltas(dataset)
+	_validate_independent_class_aggregates(dataset)
+	_validate_independent_live_verdicts(dataset)
+
+
+func _validate_independent_weapon_deltas(dataset: Dictionary) -> void:
+	var baselines := {}
+	var constellation_rows := {}
+	for row_value in dataset.get("weapon_rows", []):
+		var row: Dictionary = row_value
+		var identity := "%s|%s|%d" % [row.get("class_id", ""), row.get("weapon_id", ""), int(row.get("level", 0))]
+		if str(row.get("scenario", "")) == "no_meta":
+			baselines[identity] = row
+		if str(row.get("scenario", "")) == "class_constellation":
+			constellation_rows[identity] = row
+	for row_value in dataset.get("weapon_rows", []):
+		var row: Dictionary = row_value
+		var identity := "%s|%s|%d" % [row.get("class_id", ""), row.get("weapon_id", ""), int(row.get("level", 0))]
+		var baseline: Dictionary = baselines.get(identity, {})
+		var constellation: Dictionary = constellation_rows.get(identity, {})
+		_check(not baseline.is_empty() and not constellation.is_empty(), "%s lacks a required baseline or constellation row" % row.get("key", "?"))
+		if baseline.is_empty() or constellation.is_empty():
+			continue
+		for metric in ["solo_dpm", "crowd_10_total_dpm", "ehp", "ttd_seconds", "pickup_radius", "move_speed"]:
+			var delta := float(row.get(metric, 0.0)) - float(baseline.get(metric, 0.0))
+			_check(is_equal_approx(float(row.get("%s_delta_abs" % metric, INF)), snappedf(delta, 0.01)), "%s %s absolute delta differs from independent baseline arithmetic" % [row.get("key", "?"), metric])
+			var percent := snappedf(delta / maxf(absf(float(baseline.get(metric, 0.0))), 0.001) * 100.0, 0.01)
+			_check(is_equal_approx(float(row.get("%s_delta_pct" % metric, INF)), percent), "%s %s percent delta differs from independent baseline arithmetic" % [row.get("key", "?"), metric])
+		_check(is_equal_approx(float(row.get("crowd_10_per_target_dpm", -1.0)), float(row.get("crowd_10_total_dpm", 0.0)) / 10.0), "%s ten-target per-target DPM differs from independent division" % row.get("key", "?"))
+		var expected_atlas := {}
+		for metric in ["solo_dpm", "crowd_10_total_dpm", "pickup_radius", "move_speed", "ehp", "ttd_seconds", "healing_multiplier", "start_gold", "ult_start_charge"]:
+			expected_atlas[metric] = snappedf(float(row.get(metric, 0.0)) - float(constellation.get(metric, 0.0)), 0.01)
+		var actual_atlas: Dictionary = row.get("atlas_delta_vs_class_constellation", {})
+		_check(actual_atlas.size() == expected_atlas.size(), "%s Atlas delta field set differs from the independent projection" % row.get("key", "?"))
+		for metric in expected_atlas:
+			_check(actual_atlas.has(metric) and is_equal_approx(float(actual_atlas.get(metric, INF)), float(expected_atlas[metric])), "%s Atlas deltas differ from independent class-constellation arithmetic" % row.get("key", "?"))
+		_check(str(row.get("atlas_delta_summary", "")) == _independent_atlas_summary(str(row.get("scenario", "")), expected_atlas, bool(row.get("death_save", false)) and not bool(constellation.get("death_save", false))), "%s Atlas summary differs from independent deltas" % row.get("key", "?"))
+
+
+func _independent_atlas_summary(scenario: String, deltas: Dictionary, adds_death_save: bool) -> String:
+	if scenario not in ["class_atlas50", "class_atlas59_upper"]:
+		return "n/a"
+	var parts := PackedStringArray()
+	for metric in ["solo_dpm", "crowd_10_total_dpm", "pickup_radius", "move_speed", "ehp", "ttd_seconds", "healing_multiplier", "start_gold", "ult_start_charge"]:
+		var value := float(deltas.get(metric, 0.0))
+		if not is_zero_approx(value):
+			parts.append("%s %+.2f" % [metric, value])
+	if adds_death_save:
+		parts.append("death_save +1")
+	return "no measured delta" if parts.is_empty() else "; ".join(parts)
+
+
+func _validate_independent_class_aggregates(dataset: Dictionary) -> void:
+	var class_rows: Array = dataset.get("class_rows", [])
+	var actual_by_key := {}
+	for row_value in class_rows:
+		var row: Dictionary = row_value
+		actual_by_key[str(row.get("key", ""))] = row
+	for class_id_value in PD.character_ids():
+		var class_id := str(class_id_value)
+		for level_value in Generator.LEVELS:
+			var level := int(level_value)
+			for scenario_value in Generator.SCENARIO_IDS:
+				var scenario := str(scenario_value)
+				var key := "%s|%d|%s" % [class_id, level, scenario]
+				var row: Dictionary = actual_by_key.get(key, {})
+				_check(not row.is_empty(), "class aggregate is missing %s" % key)
+				if row.is_empty():
+					continue
+				var weapon_rows := []
+				for weapon_row_value in dataset.get("weapon_rows", []):
+					var weapon_row: Dictionary = weapon_row_value
+					if str(weapon_row.get("class_id", "")) == class_id and int(weapon_row.get("level", 0)) == level and str(weapon_row.get("scenario", "")) == scenario:
+						weapon_rows.append(weapon_row)
+				_check(weapon_rows.size() == PD.weapon_ids(class_id).size(), "%s class aggregate has incomplete weapon input" % key)
+				var expected_roles := []
+				for weapon_row_value in weapon_rows:
+					var weapon_row: Dictionary = weapon_row_value
+					expected_roles.append("%s:%s" % [weapon_row.get("weapon_id", ""), weapon_row.get("axis", "")])
+				_check(row.get("roles", []) == expected_roles, "%s aggregate roles differ from runtime roster rows" % key)
+				_check(is_equal_approx(float(row.get("mean_solo_dpm", INF)), snappedf(_independent_row_mean(weapon_rows, "solo_dpm"), 0.01)), "%s mean solo aggregate differs from raw rows" % key)
+				_check(is_equal_approx(float(row.get("mean_crowd_10_dpm", INF)), snappedf(_independent_row_mean(weapon_rows, "crowd_10_total_dpm"), 0.01)), "%s mean crowd aggregate differs from raw rows" % key)
+				_check(is_equal_approx(float(row.get("mean_ehp", INF)), snappedf(_independent_row_mean(weapon_rows, "ehp"), 0.01)), "%s mean EHP aggregate differs from raw rows" % key)
+				_check(is_equal_approx(float(row.get("mean_ttd_seconds", INF)), snappedf(_independent_row_mean(weapon_rows, "ttd_seconds"), 0.01)), "%s mean TTD aggregate differs from raw rows" % key)
+				var convenience := _independent_row_mean(weapon_rows, "pickup_radius") / 200.0 + _independent_row_mean(weapon_rows, "move_speed") / 600.0
+				_check(is_equal_approx(float(row.get("convenience_score", INF)), snappedf(convenience, 0.001)), "%s convenience aggregate differs from raw rows" % key)
+	for level_value in Generator.LEVELS:
+		for scenario_value in Generator.SCENARIO_IDS:
+			var level := int(level_value)
+			var scenario := str(scenario_value)
+			var scoped := []
+			for row_value in class_rows:
+				var row: Dictionary = row_value
+				if int(row.get("level", 0)) == level and str(row.get("scenario", "")) == scenario:
+					scoped.append(row)
+			var medians := {"mean_solo_dpm": _independent_row_median(scoped, "mean_solo_dpm"), "mean_crowd_10_dpm": _independent_row_median(scoped, "mean_crowd_10_dpm"), "mean_ehp": _independent_row_median(scoped, "mean_ehp"), "convenience_score": _independent_row_median(scoped, "convenience_score")}
+			for row_value in scoped:
+				var row: Dictionary = row_value
+				_check(is_equal_approx(float(row.get("solo_score", INF)), snappedf(float(row.get("mean_solo_dpm", 0.0)) / maxf(float(medians["mean_solo_dpm"]), 0.001), 0.001)), "%s solo score differs from independent median" % row.get("key", "?"))
+				_check(is_equal_approx(float(row.get("aoe_score", INF)), snappedf(float(row.get("mean_crowd_10_dpm", 0.0)) / maxf(float(medians["mean_crowd_10_dpm"]), 0.001), 0.001)), "%s AoE score differs from independent median" % row.get("key", "?"))
+				_check(is_equal_approx(float(row.get("defense_score", INF)), snappedf(float(row.get("mean_ehp", 0.0)) / maxf(float(medians["mean_ehp"]), 0.001), 0.001)), "%s defense score differs from independent median" % row.get("key", "?"))
+				_check(is_equal_approx(float(row.get("convenience_relative", INF)), snappedf(float(row.get("convenience_score", 0.0)) / maxf(float(medians["convenience_score"]), 0.001), 0.001)), "%s convenience score differs from independent median" % row.get("key", "?"))
+				_check(str(row.get("outlier_flag", "")) == _independent_corridor_flag(row), "%s corridor verdict differs from independent three-axis rule" % row.get("key", "?"))
+	_validate_independent_corridor_summary(dataset)
+
+
+func _independent_row_mean(rows: Array, field: String) -> float:
+	if rows.is_empty():
+		return 0.0
+	var total := 0.0
+	for row_value in rows:
+		total += float((row_value as Dictionary).get(field, 0.0))
+	return total / float(rows.size())
+
+
+func _independent_row_median(rows: Array, field: String) -> float:
+	var values := []
+	for row_value in rows:
+		values.append(float((row_value as Dictionary).get(field, 0.0)))
+	values.sort()
+	if values.is_empty():
+		return 0.0
+	if values.size() % 2 == 1:
+		return float(values[values.size() / 2])
+	return (float(values[values.size() / 2 - 1]) + float(values[values.size() / 2])) * 0.5
+
+
+func _independent_corridor_axes(row: Dictionary) -> Array:
+	var axes := []
+	for axis in [{"name": "solo", "value": float(row.get("solo_score", 0.0))}, {"name": "AoE", "value": float(row.get("aoe_score", 0.0))}, {"name": "defense", "value": float(row.get("defense_score", 0.0))}]:
+		var value := float(axis["value"])
+		if value < 0.80 or value > 1.20:
+			axes.append(str(axis["name"]))
+	return axes
+
+
+func _independent_corridor_flag(row: Dictionary) -> String:
+	var parts := PackedStringArray()
+	for axis_name in _independent_corridor_axes(row):
+		var score := float(row.get("solo_score", 0.0)) if axis_name == "solo" else (float(row.get("aoe_score", 0.0)) if axis_name == "AoE" else float(row.get("defense_score", 0.0)))
+		parts.append("%s=%.2f×" % [axis_name, score])
+	return "ok" if parts.is_empty() else "OUTLIER %s" % "; ".join(parts)
+
+
+func _validate_independent_corridor_summary(dataset: Dictionary) -> void:
+	var actual_by_key := {}
+	for entry_value in (dataset.get("outliers", {}) as Dictionary).get("class_corridor_80_120", []):
+		var entry: Dictionary = entry_value
+		actual_by_key[str(entry.get("key", ""))] = entry
+	var expected_count := 0
+	for row_value in dataset.get("class_rows", []):
+		var row: Dictionary = row_value
+		var axes := _independent_corridor_axes(row)
+		if axes.is_empty():
+			continue
+		expected_count += 1
+		var entry: Dictionary = actual_by_key.get(str(row.get("key", "")), {})
+		_check(not entry.is_empty(), "outlier summary misses %s" % row.get("key", "?"))
+		if entry.is_empty():
+			continue
+		_check(entry.get("axes", []) == axes, "outlier summary axes differ for %s" % row.get("key", "?"))
+		_check(is_equal_approx(float(entry.get("solo_vs_median", INF)), float(row.get("solo_score", 0.0))), "outlier summary solo ratio differs for %s" % row.get("key", "?"))
+		_check(is_equal_approx(float(entry.get("crowd_vs_median", INF)), float(row.get("aoe_score", 0.0))), "outlier summary crowd ratio differs for %s" % row.get("key", "?"))
+		_check(is_equal_approx(float(entry.get("defense_vs_median", INF)), float(row.get("defense_score", 0.0))), "outlier summary defense ratio differs for %s" % row.get("key", "?"))
+	_check(actual_by_key.size() == expected_count, "outlier summary contains unexpected or duplicate rows")
+
+
+func _validate_independent_live_verdicts(dataset: Dictionary) -> void:
+	var formula_rows := {}
+	for weapon_row_value in dataset.get("weapon_rows", []):
+		var weapon_row: Dictionary = weapon_row_value
+		if int(weapon_row.get("level", 0)) == 20 and str(weapon_row.get("scenario", "")) == "class_constellation":
+			formula_rows["%s/%s" % [weapon_row.get("class_id", ""), weapon_row.get("weapon_id", "")]] = weapon_row
+	var parity_by_pair := {}
+	var expected_outliers := {}
+	for parity_value in dataset.get("formula_live_parity", []):
+		var parity: Dictionary = parity_value
+		var pair := str(parity.get("pair", ""))
+		parity_by_pair[pair] = parity
+		var formula: Dictionary = formula_rows.get(pair, {})
+		_check(not formula.is_empty(), "live parity has no formula row for %s" % pair)
+		if formula.is_empty():
+			continue
+		_check(is_equal_approx(float(parity.get("formula_solo_dpm", INF)), float(formula.get("solo_dpm", 0.0))), "%s formula solo value differs from L20 class-constellation row" % pair)
+		_check(is_equal_approx(float(parity.get("formula_pack_dpm", INF)), float(formula.get("crowd_10_total_dpm", 0.0))), "%s formula pack value differs from L20 class-constellation row" % pair)
+		for probe in [{"samples": "solo_samples_dpm", "mean": "live_solo_dpm_mean", "stddev": "live_solo_dpm_stddev", "formula": "formula_solo_dpm", "delta": "solo_delta_pct"}, {"samples": "pack_samples_dpm", "mean": "live_pack_dpm_mean", "stddev": "live_pack_dpm_stddev", "formula": "formula_pack_dpm", "delta": "pack_delta_pct"}]:
+			var samples: Array = parity.get(str(probe["samples"]), [])
+			var mean := _independent_number_mean(samples)
+			_check(is_equal_approx(float(parity.get(str(probe["mean"]), INF)), snappedf(mean, 0.01)), "%s %s mean differs from recorded samples" % [pair, probe["samples"]])
+			_check(is_equal_approx(float(parity.get(str(probe["stddev"]), INF)), snappedf(_independent_stddev(samples, mean), 0.01)), "%s %s stddev differs from recorded samples" % [pair, probe["samples"]])
+			var expected_delta := snappedf((mean - float(parity.get(str(probe["formula"]), 0.0))) / maxf(float(parity.get(str(probe["formula"]), 0.0)), 0.001) * 100.0, 0.01)
+			_check(is_equal_approx(float(parity.get(str(probe["delta"]), INF)), expected_delta), "%s %s delta differs from independent formula/live arithmetic" % [pair, probe["samples"]])
+		if absf(float(parity.get("solo_delta_pct", 0.0))) > 35.0 or absf(float(parity.get("pack_delta_pct", 0.0))) > 35.0:
+			expected_outliers[pair] = true
+	var actual_outliers := {}
+	for entry_value in (dataset.get("outliers", {}) as Dictionary).get("formula_live_delta_over_35pct", []):
+		actual_outliers[str((entry_value as Dictionary).get("pair", ""))] = true
+	_check(actual_outliers == expected_outliers, "formula/live outlier verdict set differs from independent tolerance arithmetic")
+	var final_by_pair := {}
+	for final_value in ((dataset.get("final_execution", {}) as Dictionary).get("rows", [])):
+		var final_row: Dictionary = final_value
+		final_by_pair[str(final_row.get("pair", ""))] = final_row
+	var dispositions: Array = ((dataset.get("formula_live_dispositions", {}) as Dictionary).get("rows", []))
+	_check(dispositions.size() == parity_by_pair.size(), "formula/live verdict coverage differs from parity roster")
+	for disposition_value in dispositions:
+		var disposition: Dictionary = disposition_value
+		var pair := str(disposition.get("pair", ""))
+		var parity: Dictionary = parity_by_pair.get(pair, {})
+		var final_row: Dictionary = final_by_pair.get(pair, {})
+		_check(not parity.is_empty() and not final_row.is_empty(), "formula/live verdict has no parity/final evidence for %s" % pair)
+		if parity.is_empty() or final_row.is_empty():
+			continue
+		var expected_verdict := _independent_disposition_verdict(parity, final_row, disposition)
+		_check(str(disposition.get("disposition", "")) == expected_verdict, "%s formula/live verdict differs from independently reconstructed evidence" % pair)
+		_check(expected_verdict != "unresolved", "%s unresolved formula/live verdict must fail certification" % pair)
+		var payoff: Dictionary = final_row.get("payoff", {})
+		var evidence: Dictionary = disposition.get("final_execution", {})
+		var expected_share := snappedf(100.0 * float(payoff.get("provenance_bound_damage", 0.0)) / maxf(float(payoff.get("applied_hp_total", 0.0)), 0.0001), 0.01)
+		_check(is_equal_approx(float(evidence.get("resolver_bound_payoff_share_pct", INF)), expected_share), "%s resolver payoff share differs from final raw evidence" % pair)
+		_check(str(evidence.get("payoff_kind", "")) == str(payoff.get("kind", "")), "%s disposition payoff kind differs from final raw evidence" % pair)
+
+
+func _independent_number_mean(values: Array) -> float:
+	if values.is_empty():
+		return 0.0
+	var total := 0.0
+	for value in values:
+		total += float(value)
+	return total / float(values.size())
+
+
+func _independent_stddev(values: Array, mean: float) -> float:
+	if values.is_empty():
+		return 0.0
+	var total := 0.0
+	for value in values:
+		total += pow(float(value) - mean, 2.0)
+	return sqrt(total / float(values.size()))
+
+
+func _independent_disposition_verdict(parity: Dictionary, final_row: Dictionary, disposition: Dictionary) -> String:
+	if absf(float(parity.get("solo_delta_pct", 0.0))) <= 35.0 and absf(float(parity.get("pack_delta_pct", 0.0))) <= 35.0:
+		return "within_tolerance"
+	var payoff: Dictionary = final_row.get("payoff", {})
+	var axes: Dictionary = disposition.get("axes", {})
+	return "explained_divergence" if str(payoff.get("kind", "")) != "" and not (axes.get("solo", {}) as Dictionary).is_empty() and not (axes.get("pack", {}) as Dictionary).is_empty() else "unresolved"
+
+
+func _validate_independent_markdown_projection(dataset: Dictionary, report_text: String) -> void:
+	var source: Dictionary = dataset.get("source", {})
+	var supplemental: Dictionary = dataset.get("supplemental_execution", {})
+	_check(report_text.contains("Source commit `%s` (tree `%s`, timestamp `%s`)" % [source.get("commit", ""), source.get("tree", ""), source.get("commit_timestamp", "")]), "Markdown raw source provenance differs from independent projection")
+	_check(report_text.contains("Supplemental final-execution source commit `%s` (tree `%s`, timestamp `%s`)" % [supplemental.get("commit", ""), supplemental.get("tree", ""), supplemental.get("commit_timestamp", "")]), "Markdown supplemental provenance differs from independent projection")
+	for row_value in dataset.get("class_rows", []):
+		var row: Dictionary = row_value
+		var line := "| %s | %d | %s | %s | %.3f | %.3f | %.3f | %.3f | %.2f | %s | %s | %s |" % [row["class_id"], row["level"], row["scenario"], "; ".join(row["roles"]), row["solo_score"], row["aoe_score"], row["defense_score"], row["convenience_relative"], row["first_minute_ultimate_damage"], row["strengths"], row["weaknesses"], row["outlier_flag"]]
+		_check(report_text.contains(line), "Markdown class aggregate differs from raw row %s" % row.get("key", "?"))
+	for row_value in dataset.get("weapon_rows", []):
+		var row: Dictionary = row_value
+		var line := "| %s/%s | %d | %s | %s | %s | %s | %s / %s / %s | %s | %.2f (%+.2f%%) | %.2f / %.2f (%+.2f%%) | %.2f / %.2f / %.2f | %.4f / %.4f / %.2f / %.2f | %.2f / %.2f | %.2f / %.2f | %s | %d / %.2f;%.2f |" % [row["class_id"], row["weapon_id"], row["level"], row["scenario_label"], row["playstyle"], row["strengths"], row["weaknesses"], row["attack_mode"], row["axis"], row["final_mechanic"], _independent_delta_text(row["stat_delta"]), row["solo_dpm"], row["solo_dpm_delta_pct"], row["crowd_10_total_dpm"], row["crowd_10_per_target_dpm"], row["crowd_10_total_dpm_delta_pct"], row["hp"], row["ehp"], row["ttd_seconds"], row["mitigation"], row["dodge"], row["absorb_flat"], row["conditional_shield_capacity"], row["regeneration_per_second"], row["lifesteal_per_second"], row["pickup_radius"], row["move_speed"], row["atlas_delta_summary"], row["runs"], row["solo_variance_dpm2"], row["crowd_variance_dpm2"]]
+		_check(report_text.contains(line), "Markdown weapon matrix differs from raw row %s" % row.get("key", "?"))
+	var dispositions := {}
+	for disposition_value in ((dataset.get("formula_live_dispositions", {}) as Dictionary).get("rows", [])):
+		var disposition: Dictionary = disposition_value
+		dispositions[str(disposition.get("pair", ""))] = disposition
+	for parity_value in dataset.get("formula_live_parity", []):
+		var parity: Dictionary = parity_value
+		var disposition: Dictionary = dispositions.get(str(parity.get("pair", "")), {})
+		var line := "| %s | %s | %s (%s) | %.2f / %.2f±%.2f | %+.2f%% | %.2f / %.2f±%.2f | %+.2f%% | %s | %s |" % [parity["pair"], parity["attack_mode"], parity["final_mechanic"], parity["final_event"], parity["formula_solo_dpm"], parity["live_solo_dpm_mean"], parity["live_solo_dpm_stddev"], parity["solo_delta_pct"], parity["formula_pack_dpm"], parity["live_pack_dpm_mean"], parity["live_pack_dpm_stddev"], parity["pack_delta_pct"], disposition.get("disposition", ""), parity["runtime_observation"]]
+		_check(report_text.contains(line), "Markdown formula/live row differs from raw pair %s" % parity.get("pair", "?"))
+	for final_value in ((dataset.get("final_execution", {}) as Dictionary).get("rows", [])):
+		var final_row: Dictionary = final_value
+		var payoff: Dictionary = final_row.get("payoff", {})
+		var sample: Dictionary = final_row.get("telemetry", {})
+		var line := "| %s | %s (%s) | `%s` | %s | %d → %d | %d | %s | %s | %.2f | `%s` |" % [final_row.get("pair", ""), final_row.get("final_mechanic", ""), final_row.get("final_event", ""), (final_row.get("consumer", {}) as Dictionary).get("runtime_consumer", ""), (final_row.get("stimulus", {}) as Dictionary).get("kind", ""), (final_row.get("resolution_ladder", []) as Array).size(), int(payoff.get("activation_count", 0)), int(final_row.get("required_progress", 0)), payoff.get("kind", "unobserved"), payoff.get("binding", ""), float(payoff.get("applied_hp_total", 0.0)), sample.get("trace_id", "")]
+		_check(report_text.contains(line), "Markdown final-execution row differs from raw pair %s" % final_row.get("pair", "?"))
+	for disposition_value in dispositions.values():
+		var disposition: Dictionary = disposition_value
+		var solo_axis: Dictionary = (disposition.get("axes", {}) as Dictionary).get("solo", {})
+		var pack_axis: Dictionary = (disposition.get("axes", {}) as Dictionary).get("pack", {})
+		var line := "| %s | %s | %s | %+.2f%% (%s %+.2f%%) | %+.2f%% (%s %+.2f%%) | %s |" % [disposition.get("pair", ""), disposition.get("disposition", ""), (disposition.get("final_execution", {}) as Dictionary).get("payoff_kind", ""), float(solo_axis.get("recomputed_delta_pct", 0.0)), solo_axis.get("dominant_factor", ""), float(solo_axis.get("dominant_factor_deviation_pct", 0.0)), float(pack_axis.get("recomputed_delta_pct", 0.0)), pack_axis.get("dominant_factor", ""), float(pack_axis.get("dominant_factor_deviation_pct", 0.0)), disposition.get("explanation", "")]
+		_check(report_text.contains(line), "Markdown disposition differs from raw pair %s" % disposition.get("pair", "?"))
+	_check(report_text.contains("- Class corridor flags (outside 80–120%% of the same level/scenario median across solo, AoE, or defense): **%d**." % ((dataset.get("outliers", {}) as Dictionary).get("class_corridor_80_120", []) as Array).size()), "Markdown corridor count differs from raw outliers")
+
+
+func _independent_delta_text(delta: Dictionary) -> String:
+	if delta.is_empty():
+		return "base"
+	var parts := PackedStringArray()
+	var keys := delta.keys()
+	keys.sort()
+	for key_value in keys:
+		parts.append("%s+%d" % [key_value, int(delta[key_value])])
+	return "; ".join(parts)
+
+
+func _validate_named_artifact_corruptions(dataset: Dictionary, report_text: String) -> void:
+	var digest_mutation := dataset.duplicate(true)
+	digest_mutation["issue_id"] = "FAN-1510"
+	_check(_independent_dataset_digest(digest_mutation) != str(dataset.get("dataset_digest_sha256", "")), "named raw payload mutation must fail the independent digest")
+	var source_mutation := (dataset.get("supplemental_execution", {}) as Dictionary).duplicate(true)
+	source_mutation["tree"] = "0".repeat(40)
+	_check(not _independent_source_matches_git(source_mutation), "named supplemental provenance mutation must fail closed")
+	var csv_text := _independent_render_csv(dataset)
+	var csv_mutation := csv_text.replace("\"berserk|sword|1|no_meta\"", "\"forged|sword|1|no_meta\"")
+	_check(csv_mutation != csv_text, "named CSV key corruption fixture did not mutate")
+	_check(csv_mutation != _independent_render_csv(dataset), "named CSV key corruption must fail the independent projection")
+	var markdown_mutation := report_text.replace("Dataset digest: `%s`" % dataset.get("dataset_digest_sha256", ""), "Dataset digest: `%s`" % "0".repeat(64))
+	_check(not markdown_mutation.contains("Dataset digest: `%s`" % dataset.get("dataset_digest_sha256", "")), "named Markdown digest corruption must fail the independent projection")
+	var first_weapon: Dictionary = (dataset.get("weapon_rows", []) as Array)[0]
+	var baseline_key := "%s|%s|%d" % [first_weapon.get("class_id", ""), first_weapon.get("weapon_id", ""), int(first_weapon.get("level", 0))]
+	_check(is_equal_approx(float(first_weapon.get("solo_dpm_delta_abs", INF)), snappedf(float(first_weapon.get("solo_dpm", 0.0)) - float(first_weapon.get("solo_dpm", 0.0)), 0.01)), "unchanged baseline delta must remain green")
+	var delta_mutation := first_weapon.duplicate(true)
+	delta_mutation["solo_dpm_delta_abs"] = float(delta_mutation.get("solo_dpm_delta_abs", 0.0)) + 1.0
+	_check(not is_equal_approx(float(delta_mutation.get("solo_dpm_delta_abs", INF)), snappedf(float(delta_mutation.get("solo_dpm", 0.0)) - float(first_weapon.get("solo_dpm", 0.0)), 0.01)), "named derived delta mutation must fail independent baseline arithmetic for %s" % baseline_key)
+	var first_disposition: Dictionary = (((dataset.get("formula_live_dispositions", {}) as Dictionary).get("rows", []) as Array)[0] as Dictionary)
+	var parity_by_pair := {}
+	for parity_value in dataset.get("formula_live_parity", []):
+		var parity: Dictionary = parity_value
+		parity_by_pair[str(parity.get("pair", ""))] = parity
+	var final_by_pair := {}
+	for final_value in ((dataset.get("final_execution", {}) as Dictionary).get("rows", [])):
+		var final_row: Dictionary = final_value
+		final_by_pair[str(final_row.get("pair", ""))] = final_row
+	var expected_verdict := _independent_disposition_verdict(parity_by_pair.get(str(first_disposition.get("pair", "")), {}), final_by_pair.get(str(first_disposition.get("pair", "")), {}), first_disposition)
+	var verdict_mutation := first_disposition.duplicate(true)
+	verdict_mutation["disposition"] = "unresolved" if expected_verdict != "unresolved" else "within_tolerance"
+	_check(str(verdict_mutation.get("disposition", "")) != expected_verdict, "named derived verdict mutation must fail independent disposition arithmetic")
 
 
 func _read_text(path: String) -> String:
