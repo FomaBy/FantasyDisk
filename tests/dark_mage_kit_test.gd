@@ -509,7 +509,24 @@ func _test_dark_decay_secondary_paths_unowned(errors: Array) -> void:
 	if float(dot_probe.get("health")) <= 0.0:
 		errors.append("universal DoT-tick secondary kill must not trigger Dark Decay (probe died)")
 
-	# (c) Позитивный контроль: owned weapon/ульта-style kill всё ещё квалифицирует
+	# (c) Meta-crit execute — отдельный direct secondary path с gameplay feedback,
+	# но без ownership. Его kill тоже не должен запускать Dark Decay.
+	var execute_victim := _spawn_real_enemy(holder, Vector2(700, 900), 10.0)
+	var execute_probe := _spawn_real_enemy(holder, Vector2(700 + trait_radius * 0.5, 900), 1.0)
+	await process_frame
+	var execute_rm: Dictionary = player.get("run_modifiers")
+	execute_rm["crit_execute_threshold"] = 1.0
+	player.call("_apply_meta_crit_execute", execute_victim, {"critical": true, "damage_type": "physical"})
+	if float(execute_victim.get("health")) > 0.0:
+		errors.append("setup: meta-crit execute must kill the eligible victim")
+	var execute_attr: Dictionary = execute_victim.get_meta("killing_hit_feedback") if execute_victim.has_meta("killing_hit_feedback") else {}
+	if bool(execute_attr.get("player_owned", false)):
+		errors.append("meta-crit execute kill must NOT be tagged player_owned")
+	player.call("on_enemy_killed", execute_victim)
+	if float(execute_probe.get("health")) <= 0.0:
+		errors.append("meta-crit execute secondary kill must not trigger Dark Decay (probe died)")
+
+	# (d) Позитивный контроль: owned weapon/ульта-style kill всё ещё квалифицирует
 	# распад — фикс не должен зарубить легитимную атрибуцию.
 	var owned_victim := _spawn_real_enemy(holder, Vector2(300, 900), 10.0)
 	var owned_probe := _spawn_real_enemy(holder, Vector2(300 + trait_radius * 0.5, 900), 1.0)
