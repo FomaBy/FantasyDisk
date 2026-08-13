@@ -1,0 +1,68 @@
+{
+  "issue": "FAN-2488",
+  "generator": "OpenAI Images API",
+  "generation_route": "user_selected_openai_images_api",
+  "helper": "skills/codex/fantasydisk-asset-generator/scripts/generate_asset.py",
+  "model": "gpt-image-2",
+  "quality": "high",
+  "requested_size": "2560x1440",
+  "output_format": "png",
+  "user_authorized_paid_api": true,
+  "pixel_lab_used": false,
+  "builtin_image_generator_used": false,
+  "credentials": "OPENAI_API_KEY read from the runtime environment by the helper; never printed, logged or committed",
+  "sources": [
+    {
+      "role": "initial_generation",
+      "file": "main_menu_030_openai_api_source.png",
+      "prompt_file": "prompt.txt",
+      "size": "2560x1440",
+      "color": "RGB",
+      "sha256": "3849390dc7aee3bf1413f93a42da5f8a3e67b657eb36bb758d9d10201680f444",
+      "status": "rejected",
+      "reason": "utility safe zone 2110,1091,175,116 landed on high-contrast masonry rubble (mean edge energy 17.01 vs image mean 9.72)"
+    },
+    {
+      "role": "accepted_generation_after_utility_zone_constraint",
+      "file": "main_menu_030_openai_api_accepted.png",
+      "prompt_file": "prompt_accepted.txt",
+      "size": "2560x1440",
+      "color": "RGB",
+      "sha256": "f8057689bb03f01f738f96a00ca42f6bc7d6a7be464658fde3fe1e6038c8ac9b",
+      "status": "accepted"
+    }
+  ],
+  "normalization": {
+    "aspect": "source is natively exact 16:9 at the runtime resolution, so the proportional 16:9 crop and the resize to 2560x1440 are identity operations",
+    "crop": "none required (2560x1440 is already exactly 16:9)",
+    "resize": "none required (source is already 2560x1440); no stretching applied",
+    "runtime_color": "RGB",
+    "retouching": "none; the accepted API output is byte-identical to the promoted runtime PNG"
+  },
+  "safe_zone_measurements": {
+    "method": "per-rect mean luminance, luminance stddev, mean Sobel-style edge energy and 99th luminance percentile on the accepted 2560x1440 source",
+    "image_mean_edge_energy": 9.89,
+    "zones": {
+      "title 299,257,480,180": {"luminance": 13.19, "luminance_stddev": 3.29, "edge_energy": 3.59, "p99_luminance": 24},
+      "actions 299,457,380,646": {"luminance": 22.65, "luminance_stddev": 5.24, "edge_energy": 3.63, "p99_luminance": 35},
+      "utility 2110,1091,175,116": {"luminance": 34.33, "luminance_stddev": 8.25, "edge_energy": 6.47, "p99_luminance": 51},
+      "left column x=0..900": {"luminance": 15.48, "luminance_stddev": 9.48, "edge_energy": 3.69, "p99_luminance": 43},
+      "focus band x=1400..2560": {"luminance": 49.08, "luminance_stddev": 34.49, "edge_energy": 15.92, "p99_luminance": 184}
+    }
+  },
+  "outputs": {
+    "runtime": "../../../../assets/backgrounds/main_menu_epic_battle_v3.png",
+    "runtime_sha256": "f8057689bb03f01f738f96a00ca42f6bc7d6a7be464658fde3fe1e6038c8ac9b",
+    "clean_preview": "../../previews/main_menu_030_mature_epic_api/main_menu_030_preview.png",
+    "clean_preview_sha256": "f8057689bb03f01f738f96a00ca42f6bc7d6a7be464658fde3fe1e6038c8ac9b",
+    "safe_zone_evidence": "../../previews/main_menu_030_mature_epic_api/main_menu_030_safe_zones.png",
+    "safe_zone_evidence_sha256": "4e022c7b28c17adb37ac97cb52e7342405450707ce971392a6ea276b2ec84ebc",
+    "runtime_capture_1280x720": "../../previews/main_menu_030_mature_epic_api/main_menu_030_runtime_1280x720.png",
+    "runtime_capture_1920x1080": "../../previews/main_menu_030_mature_epic_api/main_menu_030_runtime_1920x1080.png",
+    "runtime_capture_2560x1440": "../../previews/main_menu_030_mature_epic_api/main_menu_030_runtime_2560x1440.png",
+    "runtime_capture_1080x1920": "../../previews/main_menu_030_mature_epic_api/main_menu_030_runtime_1080x1920.png",
+    "capture_geometry_report": "../../previews/main_menu_030_mature_epic_api/capture_matrix.md",
+    "previous_runtime_backup": "../../backups/main_menu_030_mature_epic_api/main_menu_epic_battle_v3_pre_fan2488.png",
+    "previous_runtime_backup_sha256": "5ca67f60dda660518a16a5ae8d6fe510c01850f96f537c5f6b57936ee2477975"
+  }
+}

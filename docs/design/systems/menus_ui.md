@@ -718,21 +718,25 @@ Central-window screens use role-specific dark fantasy backdrops from `assets/bac
 Backdrops are full-rect `TextureRect` nodes with cover scaling and a readable shade layer. Route map and combat arena backgrounds remain separate systems.
 
 Main menu uses `assets/backgrounds/main_menu_epic_battle_v3.png` through
-`MAIN_MENU_BACKGROUND`. FAN-1097 replaces the composited FAN-1088 art with one
-cohesive 2560x1440 scene generated and corrected through the built-in OpenAI
-Image Generator in Codex: one unarmed barbarian stands on a basalt cliff above a
-large violet disk-shaped rift, backed by ruined spires and storm mountains. The
-focal art stays center-right/right, while the calm left button column and
-title-safe area remain free of key silhouettes; a targeted second pass also
-quieted the lower-right utility zone. The proportional cover-crop contains no
-baked UI text, buttons, frames, labels, logo, cursor or watermark. Built-in
-sources, both prompts, backup, mockup, responsive matrix and safe-zone evidence
-are tracked in
-`docs/design/mockups/fan1097_main_menu_openai_background/spec.md` and
-`docs/design/references/fan1097_main_menu_openai_background/manifest.json`.
-The former FAN-1088 runtime image is backed up under
-`docs/design/backups/fan1097_main_menu_openai_background/`; the FAN-1088 package
-remains historical provenance.
+`MAIN_MENU_BACKGROUND`. FAN-2488 replaces the FAN-1097 cliff scene with one
+cohesive mature 2560x1440 illustration generated through the explicitly
+user-selected paid OpenAI Images API route (`gpt-image-2`, `quality=high`) via
+`skills/codex/fantasydisk-asset-generator/scripts/generate_asset.py`: three adult
+weathered heroes stand on a shattered bastion before a colossal bone dragon,
+under a cracked obsidian disk split by a violet dimensional rift. The focal art
+and the strongest contrast stay center-right/right, while the title-safe rect
+`299,257,480,180`, the action column `299,457,380,646`, the lower-right utility
+rect `2110,1091,175,116` and the general left column `x=0..900` stay dark and
+low-detail; every live safe zone measures below the image-wide edge-energy mean.
+The proportional cover-crop contains no baked UI text, buttons, frames, labels,
+logo, cursor or watermark. Both API sources, both prompts, SHA-256 provenance,
+backup, clean preview, safe-zone overlay and the real 1280x720 / 1920x1080 /
+2560x1440 / 1080x1920 renderer captures are tracked in
+`docs/design/mockups/main_menu_030_mature_epic_api/spec.md` and
+`docs/design/references/main_menu_030_mature_epic_api/manifest.json`.
+The former FAN-1097 runtime image is backed up under
+`docs/design/backups/main_menu_030_mature_epic_api/`; the FAN-1088 and FAN-1097
+packages remain historical provenance.
 SCRUM-680 release refresh keeps the title as
 `assets/sprites/ui/menu_title/main_menu_title_fantasy_disk.png` (`960x360`,
 transparent, PixelLab crest source in
