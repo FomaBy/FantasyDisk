@@ -251,21 +251,26 @@ Act 2 начинается с бюджета boss Act 1 и достигает п
 
 Все 10 боевых фонов нарисованы в нативном 2560x1440. С SCRUM-518 арена увеличена до 4096x2304, поэтому `_spawn_arena_background` апскейлит фон под арену (scale ≈ 1.6) — фоны теперь слегка мылятся (ожидаемый компромисс ради простора; перерисовка набора под 4K вынесена в отдельную арт-задачу через `fantasydisk-asset-generator`). SCRUM-369 (2026-06-14) заменил весь набор через `fantasydisk-asset-generator`: `field_marsh`, `field_meadow`, `field_misty_marsh`, `field_ruined_courtyard`, `field_dusty_badlands`, `field_enchanted_meadow`, `field_ashen_rift`, `field_cursed_grove`, `field_dry_road`, `field_stone_garden`. Новый стиль — реалистичный D&D/dark fantasy top-down battlefield floor с богатым материалом по биомам, но приглушенной центральной зоной для читаемости героев, монстров, projectile/VFX и анимаций. `field_dry_road` и `field_stone_garden` теперь существуют как реальные PNG, поэтому live links из `ARENA_BACKGROUND_OPTIONS` больше не битые. QA previews: `docs/design/previews/arena_backgrounds_scrum369_contact.png`, `docs/design/previews/arena_backgrounds_scrum369_readability.png`.
 `main_menu_epic_battle_v3.png` используется стартовым экраном как активный фон
-главного меню. FAN-1097 заново собрал сцену как цельный 2560x1440 cinematic
-dark-fantasy key art через встроенный OpenAI Image Generator в Codex: один
-безоружный варвар стоит спиной на базальтовом утёсе над огромным фиолетовым
-disk-shaped dimensional rift, а руины и грозовой горный горизонт создают глубину.
-Фокус целиком вынесен в center-right/right; спокойная левая колонка под 6
-runtime-кнопок и title-safe область под `MainMenuTitleLabel` остаются без ключевых
-силуэтов, а lower-right utility zone локально приглушена. Фон не содержит baked
-UI, text, logo, buttons, frame, cursor или watermark; runtime texture path и UI
-wiring не менялись. Built-in source/targeted edit, оба prompt, backup, mockup,
-responsive previews и точные safe zones задокументированы в
-`docs/design/mockups/fan1097_main_menu_openai_background/spec.md` и
-`docs/design/references/fan1097_main_menu_openai_background/manifest.json`.
-Предыдущий FAN-1088 runtime фон сохранён в
-`docs/design/backups/fan1097_main_menu_openai_background/main_menu_epic_battle_v3_pre_fan1097.png`;
-FAN-1088 package остаётся историческим provenance.
+главного меню. FAN-2488 заменил сцену на взрослый кинематографический
+«Последний рубеж у Расколотого Диска»: цельная 2560x1440 hand-painted
+dark-fantasy key art, сгенерированная по явно выбранному пользователем платному
+OpenAI Images API route (`gpt-image-2`, `quality=high`) через репозиторный helper
+`skills/codex/fantasydisk-asset-generator/scripts/generate_asset.py`. Три
+взрослых закалённых героя стоят спиной на разрушенном бастионе перед колоссальным
+костяным драконом, а над долиной висит расколотый обсидиановый диск с фиолетовым
+dimensional rift. Фокус и максимальный контраст вынесены в center-right/right;
+title-safe область `299,257,480,180`, колонка действий `299,457,380,646`,
+lower-right utility zone `2110,1091,175,116` и общая левая колонка `x=0..900`
+остаются тёмными и низкодетальными — их edge energy ниже среднего по картинке.
+Фон не содержит baked UI, text, logo, buttons, frame, cursor или watermark;
+runtime texture path и UI wiring не менялись. Оба API source, оба prompt,
+провенанс с SHA-256, backup, clean preview, safe-zone overlay и реальные
+renderer captures на 1280x720, 1920x1080, 2560x1440 и 1080x1920 задокументированы
+в `docs/design/mockups/main_menu_030_mature_epic_api/spec.md` и
+`docs/design/references/main_menu_030_mature_epic_api/manifest.json`.
+Предыдущий FAN-1097 runtime фон сохранён в
+`docs/design/backups/main_menu_030_mature_epic_api/main_menu_epic_battle_v3_pre_fan2488.png`;
+FAN-1088 и FAN-1097 packages остаются историческим provenance.
 SCRUM-680 release refresh (2026-07-02) заменил runtime logo на PixelLab-based
 `assets/sprites/ui/menu_title/main_menu_title_fantasy_disk.png` (`960x360`,
 transparent; source/provenance `docs/design/references/main_menu_logo_release_fix/`)
