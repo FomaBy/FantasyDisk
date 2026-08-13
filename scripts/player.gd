@@ -14,6 +14,7 @@ signal guard_prevention_measured(event: Dictionary)
 const BERSERK_SPRITE := preload("res://assets/sprites/characters/berserk_unarmed.png")
 const BERSERK_ANIMATED_SPRITE := preload("res://assets/sprites/characters/berserk_walk_sheet_v2.png")
 const ProgressionData := preload("res://scripts/progression_data.gd")
+const DefensiveAttributeRuntime := preload("res://scripts/defensive_attribute_runtime.gd")
 const TARGET_QUERY := preload("res://scripts/combat_target_query.gd")
 const StatusEffects := preload("res://scripts/status_effects.gd")
 const TAKE_DAMAGE_CONTRACT := preload("res://scripts/take_damage_contract.gd")
@@ -1026,21 +1027,22 @@ func smoke_cloud_dodge_bonus() -> float:
 	return best_bonus
 
 
-# SCRUM-897: итоговый шанс уворота для ролла take_damage. Базовый dodge капится
-# обычным SURVIVABILITY_DODGE_CAP (0.55); бонус дым-облака добавляется ПОВЕРХ
-# капнутой базы и суммарно ограничен SMOKE_CLOUD_DODGE_CAP (0.90) — «~90% в дыму
+# SCRUM-897: итоговый шанс уворота для ролла take_damage. Базовый dodge следует
+# обычной strict asymptote SURVIVABILITY_DODGE_CAP (0.55); бонус дым-облака
+# добавляется поверх и суммарно ограничен SMOKE_CLOUD_DODGE_CAP (0.90) — «~90% в дыму
 # при тяжёлом dodge-билде», и только пока герой внутри облака.
 func _current_dodge_chance() -> float:
-	var dodge_chance := clampf(float(derived_parameters.get("dodge", 0.0)), 0.0, ProgressionData.SURVIVABILITY_DODGE_CAP)
+	var raw_dodge := DefensiveAttributeRuntime.raw_dodge_rating(derived_parameters)
+	if _assassin_veil_engaged():
+		raw_dodge += assassin_veil_dodge_bonus()
+	var dodge_chance := ProgressionData.effective_dodge(raw_dodge)
 	var smoke_cloud_bonus := smoke_cloud_dodge_bonus()
 	if smoke_cloud_bonus > 0.0:
 		dodge_chance = minf(dodge_chance + smoke_cloud_bonus, ProgressionData.SMOKE_CLOUD_DODGE_CAP)
 	# SCRUM-894 «Теневая завеса»: самоцентричная аура уворота Ассасина — бонус
 	# только пока враг внутри derived aura_radius; суммарный уворот класса
-	# по-прежнему ≤ SURVIVABILITY_DODGE_CAP (бессмертия нет). Классовые бонусы
+	# по-прежнему строго ниже SURVIVABILITY_DODGE_CAP (бессмертия нет). Классовые бонусы
 	# не пересекаются: дым — оружие Вора, завеса — trait Ассасина.
-	if _assassin_veil_engaged():
-		dodge_chance = clampf(dodge_chance + assassin_veil_dodge_bonus(), 0.0, ProgressionData.SURVIVABILITY_DODGE_CAP)
 	return dodge_chance
 
 
@@ -1063,8 +1065,8 @@ func take_damage(amount: float, _source := "", attacker: Node2D = null) -> bool:
 		return true
 
 	# SCRUM-897 + SCRUM-894: ролл уворота через _current_dodge_chance — базовый
-	# кап 0.55; в дым-облаке Вора бонус облака поверх (кап 0.90 только в дыму),
-	# «Теневая завеса» Ассасина — бонус под ближним прессингом (итог ≤ 0.55).
+	# асимптота 0.55; в дым-облаке Вора бонус облака поверх (кап 0.90 только в дыму),
+	# «Теневая завеса» Ассасина — бонус под ближним прессингом (итог < 0.55).
 	if randf() < _current_dodge_chance():
 		_show_dodge_popup()
 		_play_sfx("dodge")
@@ -1105,12 +1107,13 @@ func take_damage(amount: float, _source := "", attacker: Node2D = null) -> bool:
 				"incoming_amount": amount,
 				"constellation_ward_source": str(constellation_ward.get("source_id", "")),
 			})
-	var defense := clampf(float(derived_parameters.get("defense", 0.0)), 0.0, ProgressionData.SURVIVABILITY_DEFENSE_CAP)
+	var raw_defense := DefensiveAttributeRuntime.raw_defense_rating(derived_parameters)
 	if _stance_active and float(run_modifiers.get("bastion_defense_bonus", 0.0)) > 0.0:
-		defense = clampf(defense + float(run_modifiers.get("bastion_defense_bonus", 0.0)), 0.0, ProgressionData.SURVIVABILITY_DEFENSE_CAP)
-	# SCRUM-961 «Покров мученика»: на низком HP защита временно выше (общий кэп).
+		raw_defense += float(run_modifiers.get("bastion_defense_bonus", 0.0))
+	# SCRUM-961 «Покров мученика»: на низком HP защита временно выше по общей diminishing curve.
 	if _low_hp_active and float(run_modifiers.get("lowhp_defense_bonus", 0.0)) > 0.0:
-		defense = clampf(defense + float(run_modifiers.get("lowhp_defense_bonus", 0.0)), 0.0, ProgressionData.SURVIVABILITY_DEFENSE_CAP)
+		raw_defense += float(run_modifiers.get("lowhp_defense_bonus", 0.0))
+	var defense := ProgressionData.effective_defense(raw_defense)
 	# Поглощение плоско срезает часть удара до защиты, но после SCRUM-255
 	# гарантированно пропускает заметную долю мелких ударов.
 	var absorb := float(derived_parameters.get("absorb", 0.0))
@@ -1181,8 +1184,9 @@ func take_damage(amount: float, _source := "", attacker: Node2D = null) -> bool:
 # союзников). Бонус действует ТОЛЬКО под ближним прессингом — когда враг внутри
 # derived aura_radius (радиус растёт от единой области атаки, величина — от
 # support_multiplier через ProgressionData.class_veil_dodge_bonus с жёстким капом).
-# Итоговый шанс уворота всё равно зажат SURVIVABILITY_DODGE_CAP — бессмертия
-# на высоком доджe нет, дальние выстрелы без прессинга бонуса не получают.
+# Итоговый шанс уворота всё равно строго ниже asymptote
+# SURVIVABILITY_DODGE_CAP — бессмертия на высоком доджe нет, дальние выстрелы
+# без прессинга бонуса не получают.
 func current_dodge_chance() -> float:
 	return _current_dodge_chance()
 

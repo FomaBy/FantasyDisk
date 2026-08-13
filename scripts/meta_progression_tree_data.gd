@@ -253,6 +253,9 @@ const RAY_ATTR_PATTERN := [[0, 1, 0], [2, 3, 2], [1, 4, 5], [3, 5, 4]]
 # no_shop_wins}; Атлас использует аккаунт-метрики {codex_milestones, secret_boss,
 # achievement_milestones}. Текст условия генерится в _condition_text().
 
+# Schema-5 audit snapshot only: build_tree() and all runtime consumers read
+# SCHEMA6_DATA / data/meta/constellation_schema6.json. Kept solely for legacy
+# fixture auditing; it must never become a product constellation path.
 const CONSTELLATION_SPECS := {
 	"berserk": {
 		"core_title": "Сердце ярости",
@@ -882,7 +885,8 @@ static func _build_constellation(nodes: Array, index: Dictionary, entry_nodes: D
 		_connect(index, str(order_three_by_weapon.get(owning_weapon, core_id)), hidden_id)
 
 
-# Retained as inert source documentation until all schema-5 fixtures are removed.
+# Deprecated schema-5 reference builder. It has no caller: migration consumes
+# saved schema-5 state while every live graph is built from schema 6 above.
 static func _build_constellation_schema5_legacy(nodes: Array, index: Dictionary, entry_nodes: Dictionary, class_id: String, class_index: int) -> void:
 	var spec: Dictionary = CONSTELLATION_SPECS.get(class_id, {})
 	var layout: Array = CONSTELLATION_LAYOUT.get(class_id, [])

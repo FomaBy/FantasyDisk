@@ -39,7 +39,7 @@ const SCRUM_1021_EXPECTED_DEPENDENCIES := {
 	"health_point": ["endurance"],
 	"summon_amount": ["intelligence", "energy", "knowledge", "leadership"],
 	"regeneration": ["knowledge"],
-	"vampiric_amount": [],
+	"vampiric_amount": ["knowledge"],
 	"vampiric_chance": [],
 	"dot_damage": ["knowledge"],
 	"dot_speed": ["agility", "energy", "knowledge"],

@@ -34,6 +34,8 @@ const CROWD_CLEAR_ENEMY_HP := BalanceData.CROWD_CLEAR_ENEMY_HP
 const CROWD_CLEAR_CORRIDOR := BalanceData.CROWD_CLEAR_CORRIDOR
 const CROWD_CLEAR_SOLO_CORRIDOR := BalanceData.CROWD_CLEAR_SOLO_CORRIDOR
 const BOSS_HAZARD_MAX_HP_FRACTION := BalanceData.BOSS_HAZARD_MAX_HP_FRACTION  # FAN-1031 S2: кап зон/сламов босса долей max HP
+# Compatibility re-exports; BalanceData is the single live owner of these
+# defensive ceiling and diminishing-curve declarations.
 const SURVIVABILITY_DEFENSE_CAP := BalanceData.SURVIVABILITY_DEFENSE_CAP
 const SURVIVABILITY_DEFENSE_DIMINISH := BalanceData.SURVIVABILITY_DEFENSE_DIMINISH
 const SURVIVABILITY_DODGE_CAP := BalanceData.SURVIVABILITY_DODGE_CAP
@@ -44,7 +46,6 @@ const SURVIVABILITY_ABSORB_FLAT_DIMINISH := BalanceData.SURVIVABILITY_ABSORB_FLA
 const SURVIVABILITY_REGEN_FLAT_MULTIPLIER := BalanceData.SURVIVABILITY_REGEN_FLAT_MULTIPLIER
 const VAMPIRIC_CHANCE_CAP := BalanceData.VAMPIRIC_CHANCE_CAP
 const VAMPIRIC_DAMAGE_HEAL_RATIO := BalanceData.VAMPIRIC_DAMAGE_HEAL_RATIO
-const VAMPIRIC_BASE_HEAL_MULTIPLIER := BalanceData.VAMPIRIC_BASE_HEAL_MULTIPLIER
 const VAMPIRIC_HEAL_CAP_DEFAULT := BalanceData.VAMPIRIC_HEAL_CAP_DEFAULT
 const VAMPIRIC_HEAL_CAP_HARD := BalanceData.VAMPIRIC_HEAL_CAP_HARD
 const WEAPON_DRAIN_HEAL_MULTIPLIER := BalanceData.WEAPON_DRAIN_HEAL_MULTIPLIER
@@ -71,6 +72,8 @@ const XP_CURVE_FLAT := BalanceData.XP_CURVE_FLAT
 const DROP_CLASS_MULTIPLIERS := BalanceData.DROP_CLASS_MULTIPLIERS
 const COST_BY_TIER := BalanceData.COST_BY_TIER
 const TIER_WEIGHTS := BalanceData.TIER_WEIGHTS
+
+const DefensiveAttributeRuntime := preload("res://scripts/defensive_attribute_runtime.gd")  # FAN-2287: защита/уворот/поглощение/реген/вампиризм вынесены под line-ratchet, точки ниже — делегаторы
 
 # FAN-1891: снятые прогрессионные оси и геометрический контракт вынесены в
 # ModifiersData (FAN-2171, line-ratchet этого файла).
@@ -643,12 +646,6 @@ static func ultimate_config(character_id: String) -> Dictionary:
 	return ULTIMATE_CONFIGS.get(character_id, ULTIMATE_CONFIGS["berserk"]).duplicate(true)
 
 
-static func _diminishing_percent(raw_value: float, cap: float, curve: float) -> float:
-	var raw := maxf(raw_value, 0.0)
-	var softened := raw / (1.0 + raw * curve)
-	return clampf(softened, 0.0, cap)
-
-
 # SCRUM-503: diminishing returns на ЗАБЕГОВЫЙ боевой множитель. Сжимает ТОЛЬКО
 # избыток множителя над 1.0 по кривой excess/(1+excess*knee), клампит избыток к
 # (softcap-1.0) и возвращает 1.0 + сжатый_избыток. Тождественно при multiplier
@@ -691,27 +688,27 @@ static func _amplified_bonus_multiplier(multiplier: float, effectiveness: float)
 
 
 static func effective_defense(raw_defense: float) -> float:
-	return _diminishing_percent(raw_defense, SURVIVABILITY_DEFENSE_CAP, SURVIVABILITY_DEFENSE_DIMINISH)
+	return DefensiveAttributeRuntime.effective_defense(raw_defense)
 
 
 static func effective_dodge(raw_dodge: float) -> float:
-	return _diminishing_percent(raw_dodge, SURVIVABILITY_DODGE_CAP, SURVIVABILITY_DODGE_DIMINISH)
+	return DefensiveAttributeRuntime.effective_dodge(raw_dodge)
+
+
+static func raw_defense_for_effective(effective_defense_value: float) -> float:
+	return DefensiveAttributeRuntime.raw_defense_for_effective(effective_defense_value)
+
+
+static func raw_dodge_for_effective(effective_dodge_value: float) -> float:
+	return DefensiveAttributeRuntime.raw_dodge_for_effective(effective_dodge_value)
 
 
 static func effective_absorb(endurance: float, flat_absorb: float) -> float:
-	var base_absorb := maxf(endurance, 0.0) * 0.145  # SCRUM-526: 0.16→0.145, поджать базовый absorb стойкости (танк остаётся крепче fragile)
-	var positive_flat := maxf(flat_absorb, 0.0)
-	var negative_flat := minf(flat_absorb, 0.0)
-	var softened_flat := positive_flat / (1.0 + positive_flat * SURVIVABILITY_ABSORB_FLAT_DIMINISH)
-	return maxf(0.0, base_absorb + softened_flat + negative_flat)
+	return DefensiveAttributeRuntime.effective_absorb(endurance, flat_absorb)
 
 
 static func effective_regeneration(knowledge: float, flat_regeneration: float) -> float:
-	var positive_flat := maxf(flat_regeneration, 0.0) * SURVIVABILITY_REGEN_FLAT_MULTIPLIER
-	var negative_flat := minf(flat_regeneration, 0.0)
-	var regen_base := maxf(0.0, 0.16 + positive_flat + negative_flat)  # SCRUM-526: база реген 0.22→0.16
-	var knowledge_scale := 0.45 + maxf(knowledge, 0.0) / 12.0
-	return regen_base * knowledge_scale
+	return DefensiveAttributeRuntime.effective_regeneration(knowledge, flat_regeneration)
 
 
 # SCRUM-900 «Клятва чумного доктора»: реген класса с generic_sustain_blocked =
@@ -724,11 +721,15 @@ static func _class_gated_regeneration(character_id: String, knowledge: float, fl
 
 
 static func effective_vampiric_chance(raw_chance: float) -> float:
-	return clampf(raw_chance, 0.0, VAMPIRIC_CHANCE_CAP)
+	return DefensiveAttributeRuntime.effective_vampiric_chance(raw_chance)
+
+
+static func effective_vampiric_amount(knowledge: float, flat_amount: float) -> float:
+	return DefensiveAttributeRuntime.effective_vampiric_amount(knowledge, flat_amount)
 
 
 static func effective_vampiric_cap(raw_cap: float) -> float:
-	return clampf(raw_cap, 0.0, VAMPIRIC_HEAL_CAP_HARD)
+	return DefensiveAttributeRuntime.effective_vampiric_cap(raw_cap)
 
 
 # SCRUM-894: кап/diminish параметризованы под class trait «Хладнокровие»
@@ -914,7 +915,8 @@ static func class_crit_profile(character_id: String, ordinary_cap := CRIT_CHANCE
 # SCRUM-894 «Теневая завеса»: величина бонуса уворота самоцентричной ауры класса
 # (у классов без veil-записи — 0). Масштаб от support_multiplier, жёсткий кап
 # veil_dodge_cap; применяется Player.current_dodge_chance ТОЛЬКО при враге внутри
-# derived aura_radius; суммарный уворот всё равно ≤ SURVIVABILITY_DODGE_CAP.
+# derived aura_radius; суммарный уворот остаётся строго ниже
+# SURVIVABILITY_DODGE_CAP.
 static func class_veil_dodge_bonus(character_id: String, support_multiplier: float) -> float:
 	var trait_config: Dictionary = CLASS_TRAITS.get(character_id, {})
 	var base := float(trait_config.get("veil_dodge_bonus", 0.0))
@@ -2220,6 +2222,8 @@ static func derived_parameters(stats: Dictionary, run_modifiers: Dictionary, wea
 		# Друид считает свой радиус ауры от собственных support-атрибутов, но общий
 		# множитель области применяется ровно один раз — как и у остальной геометрии.
 		aura_radius = (base_area + leadership * 5.0 + float(stats.get("perception", 0.0)) * 0.80 + float(stats.get("energy", 0.0)) * 0.65 + float(stats.get("knowledge", 0.0)) * 0.45) * aoe_radius_multiplier
+	var raw_dodge := 0.02 + agility * 0.010 + float(run_modifiers.get("dodge_flat", 0.0)) + clampf(float(run_modifiers.get("flurry_tempo_dodge_bonus", 0.0)), 0.0, 0.20) * flurry_tempo_active
+	var raw_defense := 0.04 + endurance * 0.018 + defense_flat
 
 	return {
 		"damage": (physical_base * weapon_damage_multiplier * damage_multiplier + universal_damage_flat) * sandbox_damage_multiplier,
@@ -2229,8 +2233,10 @@ static func derived_parameters(stats: Dictionary, run_modifiers: Dictionary, wea
 		"crit_chance": effective_crit_chance(crit_chance_raw, float(crit_profile.get("cap", CRIT_CHANCE_CAP)), float(crit_profile.get("diminish", CRIT_CHANCE_DIMINISH))),
 		"crit_damage_multiplier": effective_crit_damage_multiplier(agility, crit_damage_flat),
 		"move_speed": (282.0 + agility * 6.2) * move_speed_multiplier,
-		"dodge": effective_dodge(0.02 + agility * 0.010 + float(run_modifiers.get("dodge_flat", 0.0)) + clampf(float(run_modifiers.get("flurry_tempo_dodge_bonus", 0.0)), 0.0, 0.20) * flurry_tempo_active),
-		"defense": effective_defense(0.04 + endurance * 0.018 + defense_flat),
+		"raw_dodge": raw_dodge,
+		"dodge": effective_dodge(raw_dodge),
+		"raw_defense": raw_defense,
+		"defense": effective_defense(raw_defense),
 		"health_point": (50.0 * endurance / 4.0 + max_health_flat) * max_health_multiplier,
 		"attack_range": float(weapon_config.get("attack_range", 240.0)),
 		"attack_area_multiplier": attack_area_multiplier,
@@ -2257,7 +2263,7 @@ static func derived_parameters(stats: Dictionary, run_modifiers: Dictionary, wea
 		# гейт Player._apply_reward_mods), с тем же knowledge-скейлом формулы.
 		"regeneration": _class_gated_regeneration(character_id, knowledge, regeneration_flat),
 		"vampiric_chance": effective_vampiric_chance(float(run_modifiers.get("vampiric_chance_flat", 0.0))),
-		"vampiric_amount": float(run_modifiers.get("vampiric_amount_flat", 0.0)) * VAMPIRIC_BASE_HEAL_MULTIPLIER,
+		"vampiric_amount": effective_vampiric_amount(knowledge, float(run_modifiers.get("vampiric_amount_flat", 0.0))),
 		# Усиливает классовую ульту: урон, радиус, длительность или число целей.
 		"ultimate_multiplier": 1.0 + energy * 0.02 + (strength + agility + intelligence + perception + knowledge + endurance + leadership) * 0.002 + float(run_modifiers.get("ultimate_flat", 0.0)),
 	}

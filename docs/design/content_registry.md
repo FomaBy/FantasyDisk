@@ -956,7 +956,14 @@ FAN-1887: канонический player-facing реестр прокачки �
 параметров (absorb, knockback, attack_range, range_multiplier, dot_speed,
 aura_radius, buff_power, projectile_speed, vampiric_chance) сохранены как
 ассеты для артефактных превью и legacy-редов, но эти параметры больше не
-являются самостоятельными выборами level-up/Shop/Codex/Hero Select.
+являются самостоятельными выборами level-up/Shop/Codex/Hero Select. Пять
+player-facing defensive choices: max_health, defense, dodge, regeneration и
+vampiric. Absorb и vampiric_chance — внутренние параметры: absorb пропускает
+≥42% удара, а сила вампиризма масштабируется Knowledge и общим
+heal-per-second budget.
+
+Обычный dodge остаётся строго ниже 0.55; smoke bomb Вора — отдельное
+достижимое исключение с суммарным пределом 0.90 только внутри живого облака.
 
 | ID | Игровое имя | Ассет |
 | --- | --- | --- |

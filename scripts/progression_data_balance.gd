@@ -222,9 +222,10 @@ const CROWD_CLEAR_SOLO_CORRIDOR := 0.20
 const BOSS_HAZARD_MAX_HP_FRACTION := 0.80
 
 const SURVIVABILITY_DEFENSE_CAP := 0.62
-const SURVIVABILITY_DEFENSE_DIMINISH := 0.55
+# Reciprocal curves make these safety values strict, unreachable asymptotes.
+const SURVIVABILITY_DEFENSE_DIMINISH := 1.0 / SURVIVABILITY_DEFENSE_CAP
 const SURVIVABILITY_DODGE_CAP := 0.55
-const SURVIVABILITY_DODGE_DIMINISH := 1.15
+const SURVIVABILITY_DODGE_DIMINISH := 1.0 / SURVIVABILITY_DODGE_CAP
 # SCRUM-897 «Дымовая Бомба»: потолок СУММАРНОГО шанса уворота внутри дым-облака
 # Вора (капнутый базовый dodge + бонус облака). Читается только пока герой стоит
 # в живом облаке (player.smoke_cloud_dodge_bonus); вне дыма действует обычный
@@ -239,12 +240,12 @@ const SMOKE_CLOUD_DODGE_CAP := 0.90
 const SURVIVABILITY_ABSORB_MIN_DAMAGE_FRACTION := 0.42
 const SURVIVABILITY_ABSORB_FLAT_DIMINISH := 0.11
 const SURVIVABILITY_REGEN_FLAT_MULTIPLIER := 0.35
-# SCRUM-526: оба канала вампиризма ослаблены. Стат-вампиризм: chance-cap 0.22→0.20,
-# damage-heal-ratio 0.035→0.025, base-heal-mult 0.55→0.48, per-second капы 1.4→1.1 и
-# 2.6→2.0. Оружейный drain: множитель 0.45→0.35.
+# SCRUM-526/FAN-2286: chance-cap 0.22→0.20, damage-heal-ratio 0.035→0.025,
+# per-second капы 1.4→1.1 и 2.6→2.0. Лечение от flat-вампиризма задаёт
+# ProgressionData.effective_vampiric_amount() через Knowledge; отдельного
+# base-heal multiplier больше нет. Оружейный drain: множитель 0.45→0.35.
 const VAMPIRIC_CHANCE_CAP := 0.20
 const VAMPIRIC_DAMAGE_HEAL_RATIO := 0.025
-const VAMPIRIC_BASE_HEAL_MULTIPLIER := 0.48
 const VAMPIRIC_HEAL_CAP_DEFAULT := 1.1
 const VAMPIRIC_HEAL_CAP_HARD := 2.0
 const WEAPON_DRAIN_HEAL_MULTIPLIER := 0.35

@@ -430,7 +430,7 @@ const CLASS_TRAITS := {
 		# аура уворота против ближнего прессинга (Player.current_dodge_chance:
 		# бонус только когда враг внутри объявленной области ауры; величина =
 		# veil_dodge_bonus × support_multiplier, кап veil_dodge_cap; суммарный уворот
-		# по-прежнему ≤ SURVIVABILITY_DODGE_CAP — бессмертия нет).
+		# по-прежнему строго ниже SURVIVABILITY_DODGE_CAP — бессмертия нет).
 		# Покрыто tests/assassin_kit_test.gd.
 		"id": "cold_blood",
 		"title": "Хладнокровие",

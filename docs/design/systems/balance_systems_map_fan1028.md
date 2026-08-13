@@ -30,10 +30,11 @@
 | HP | `(50×end/4 + flat) × mult` = **12.5×endurance, плоской базы НЕТ** | :2247 |
 | Крит-шанс | `raw = 0.04 + 0.0075×agi + 0.75×(флэты)` (CRIT_FLAT_EFFECTIVENESS=0.75 ✅ проверено, :2182); `eff = clamp(raw/(1+raw×0.45), 0, 0.55)` | :2190-2194,2242 |
 | Крит-урон | `clamp(1.30 + 0.055×agi + 0.75×flat, 1.0, 2.75)` | :771-775 |
-| Уворот | `raw = 0.02+0.010×agi+флэты; raw/(1+raw×1.15), cap 0.55` (дым Вора: сумма ≤0.90) | :725-726,2245 |
-| Защита | `raw = 0.04+0.018×end; raw/(1+raw×0.55), cap 0.62` | :721-722,2246 |
+| Уворот | `raw = 0.02+0.010×agi+флэты; raw/(1+raw×(1/0.55))`, строгая асимптота <0.55 (дым Вора: отдельный достижимый cap ≤0.90) | :725-726,2245 |
+| Защита | `raw = 0.04+0.018×end; raw/(1+raw×(1/0.62))`, строгая асимптота <0.62 | :721-722,2246 |
 | Absorb | `0.145×end + flat/(1+flat×0.11)`; в бою удар после absorb ≥42% исходного | :729-734; player.gd:1106 |
 | Реген | `max(0, 0.16+flat×0.35+minus) × (0.45+kno/12)`; у Доктора база отрезана | :737-751,2270 |
+| Вампиризм | chance ≤0.20; amount = `flat×(0.40+kno/50)`, после 1.5 — unbounded sqrt-tail; +2.5% dealt damage, бюджет 1.1/с (hard 2.0/с) | :746-756,2281-2282 |
 | DoT | `dot_damage = max(1, (4.0+0.65×kno+flat) × damage_multiplier)`; `dot_speed = max(0.45, 0.65+0.08×kno+0.015×ene+0.010×agi+flat)` | :2214,2253-2254 |
 | Move | `(282 + 6.2×agi) × mults` | :2244 |
 | Pickup | `(105 + 7×per) × trait(вор 1.85) + flat` | :2252 |
@@ -107,7 +108,7 @@ L1: hp×1.25, dmg×1.18, цены ×1.25. L2: hp×1.15, dmg×1.10, spawn×1.30, 
 2. **Снаряды shooter/mage/spitter** (базы 2.4/2.8/2.6) — **БЕЗ капа доли HP** (enemy_projectile.gd:62-63), полный dmg-скейл.
 3. **Элитные паттерны** (slam_wave df 2.0, shadow_strike 2.4 и т.д.) — кап 25% max HP.
 4. **Боссовые зоны/сламы/хазарды — кап 80% max HP за тик**: slam = contact×(1.5+0.22/фаза), rift zone = proj×(1.25+0.18/фаза), phase hazard = proj×(1.35+0.25/фаза) (boss.gd:773,731,1048); на st16 сырой урон остаётся **55-66 за зону**, но `enemy._hazard_hit` (enemy.gd:1801-1806) ограничивает его константой `BOSS_HAZARD_MAX_HP_FRACTION := 0.80` (progression_data_balance.gd:222). Для класса с 37.5 HP фактический максимум = **30.0 урона**, после тика с полного здоровья остаётся 7.5 HP — ваншота одним тиком нет. На L5 телеграфы ещё ×0.72.
-Защита игрока: i-frames 0.32с, dodge 0.55, defense 0.62, absorb-пол 42%.
+Защита игрока: i-frames 0.32с, ordinary dodge строго <0.55 (в дыму отдельный достижимый cap 0.90), defense строго <0.62, absorb-пол 42%.
 
 ### Условия боёв
 Обычный узел = «выживи таймер» `min(60+3×stage, 90) × asc_round_mult` (на L4 75-112.5с); элитка/босс = **kill-or-lose 300с фикс** (asc-множитель НЕ применяется; main.gd:25-29; combat_director.gd:1471-1479). Фазы босса 66%/33% (секретный 50%/25%), +фаза4 при 15% (L5), энрейдж при 35%.
@@ -213,7 +214,7 @@ L1: hp×1.25, dmg×1.18, цены ×1.25. L2: hp×1.15, dmg×1.10, spawn×1.30, 
 - **crowd-clear фикстура** — TARGET_COUNTS / ENEMY_HP / CCT-коридор / solo-коридор: [5,10,20] / 80.0 HP / ±30% / ±20% (progression_data_balance.gd:207-210)
 - **global_damage_balance_smoke** — combined-коридор CORRIDOR: 0.25 (±25%), анти-вакуум rows<9 (tests/global_damage_balance_smoke_test.gd:16,106)
 - **global_survivability_smoke** — MAX_TTD / MAX_MITIG / NET_DAMAGE_FLOOR: 600.0 с / 0.98 / 0.05 (tests/global_survivability_balance_smoke_test.gd:16-18)
-- **survivability caps** — DEFENSE_CAP / DEFENSE_DIMINISH / DODGE_CAP / DODGE_DIMINISH: 0.62 / 0.55 / 0.55 / 1.15 (progression_data_balance.gd:224-227)
+- **survivability asymptotes** — DEFENSE_CAP / DEFENSE_DIMINISH / DODGE_CAP / DODGE_DIMINISH: 0.62 / 1/0.62 / 0.55 / 1/0.55; значения принадлежат единому live source `progression_data_balance.gd`.
 - **berserk_dps_runaway_gate** — ДВА независимых вердикта, каждый со своим тегом в выводе (FAN-1729). `[ceiling]` — живой DPS lvl20-билда против MAX_IDEAL_20T / MAX_IDEAL_1T: 10000.0 / 1300.0 (tests/berserk_dps_runaway_gate.gd:69-70, ассерты :144-151); ловит геометрический и экспоненциальный runaway молота (×2+), исторический замер до пере-нерфа: 20t=13792 при старом потолке 40000 (docs/tasks/SCRUM-503_berserk_dps_runaway_softcap.md:133; лог build/qa/scrum503 под .gitignore и в git отсутствует). `[soft-cap]` — прямая проверка diminishing returns забеговых множителей (progression_data._soft_capped_run_multiplier) через публичную точку агрегации ProgressionData.derived_parameters (:27-31, блок :164-216): пробы фиксированные, функция чистая, поэтому проверка НЕ зависит ни от живого замера, ни от уровня DPS, ни от дрейфа контента. Разведены потому, что полное отключение soft-cap'а даёт лишь +14% к 20t — меньше запаса потолка над эталоном, и `[ceiling]` его принципиально не ловит
 - **pool_dot_runaway_gate** — MAX_POOL_IDEAL_20T / пары: 10000.0 / только chemist/acid_flask (tests/pool_dot_runaway_gate.gd:43, POOL_PAIRS :50-52). Актуальный факт на честной времябазе (окно по ИГРОВОМУ времени, FAN-1062): 6993..7803 (±6%, N=2), потолок = среднее ×~1.35 (tests/pool_dot_runaway_gate.gd:40-42). ИСТОРИЯ — все числа ниже сняты на СТАРОЙ фикс-кадровой времябазе (деление на номинал 8с раздувало DPS), с актуальными НЕ сравнивать: до фикса SCRUM-533 acid_flask≈112k (лог: 1039203 при коллизии), после ≈44k; одиночный прогон ≈43k PASS; прежний потолок 80000 (FAN-1034) калибровался от замера 67549 той же раздутой базы
 - **живой замер (все live-тесты)** — окно / кадровый лимит / HP болванки / уровень / сиды: WINDOW_SECONDS = 8.0 с ИГРОВОГО времени / MAX_MEASUREMENT_FRAMES = 2400 — страховка от зависания, а не окно у berserk-гейта и character_balance_csv.gd (berserk_dps_runaway_gate.gd:40-43, character_balance_csv.gd:30-33); у pool_dot_runaway_gate.gd страховка FRAMES * 2 = 960, в live_balance_simulation_test.gd окно до сих пор фикс-кадровое / 1e9 / lvl20 (19 левелапов + 6 артефактов, RARE_SLOT 5%, OFFER 3) / BASE_SEED=20260620 (+2/пару), live-sim SEED=20260613 (character_balance_csv.gd:30-40; live_balance_simulation_test.gd:19-24)
@@ -302,7 +303,7 @@ L1: hp×1.25, dmg×1.18, цены ×1.25. L2: hp×1.15, dmg×1.10, spawn×1.30, 
 - Мета-слой должен оставаться ограниченным: цель «каждый класс проходит на возвышении 1 и 5» нельзя решать раздуванием Guild Atlas/артефактов — гейты фиксируют account power <1.35, класс-вклад ≤18%, A5 enemy ≥1.5×; секретный босс A5 задуман как brutal capstone (TTK 2-4 мин у optimum) и не повод глобального баффа.
 - lvl1-baseline guard: стартовые run-множители = 1.0; усиление роста должно идти через level-up/Leadership-скейл (lvl20), не через стартовые числа — иначе ломается Base lvl1 коридор 0.982..1.010 и summon lvl1-капы (amulet ≤150, vial ≤215, sentry ≤155 по 20t).
 - Изоляция типов урона (SCRUM-524, damage_type_isolation_test): атрибут типа X влияет только на урон типа X; звуковая ось удалена SCRUM-898 (guitarist/druid = magic_damage) — не воскрешать sound_wave_damage из старых доков; QA-греп миграций обязан включать .tscn/.tres.
-- Крит-оверфлоу и dodge-капы связаны с гейтами бессмертия: assassin cap 1.0 работает только с overflow→crit_damage_flat (зажат 2.75); ситуативные dodge-бонусы (Теневая завеса) обязаны суммарно оставаться ≤ SURVIVABILITY_DODGE_CAP 0.55 — поднятие капов = прямой риск красного global_survivability.
+- Крит-оверфлоу и dodge-кривая связаны с гейтами бессмертия: assassin cap 1.0 работает только с overflow→crit_damage_flat (зажат 2.75); ситуативные dodge-бонусы (Теневая завеса) входят в raw до общей strict-asymptote <`SURVIVABILITY_DODGE_CAP 0.55`. Единственное исключение — отдельный smoke cap 0.90 Вора; поднятие этих порогов = прямой риск красного global_survivability.
 - Известные нерешённые хвосты для ребаланса: crowd-clear лаггеры +20-22% (doctor/restore_potion, druid amulet/raven, chemist vial) так и не подтянуты к цели ≤+15%; EHP-потолок танков (203/185) выше целевого band 1.9x; ~16 cap-pinned пар ждут output-нейтрального подъёма сырья; roster-проекция выживаемости 62/68 «low» никогда не была отработана.
 
 
