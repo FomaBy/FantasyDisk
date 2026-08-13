@@ -1337,7 +1337,11 @@ the dependencies of each axis's runtime parameters; removed axes are not
 presented as available attributes), and
 Russian display titles remain presentation-only. `ultimate_multiplier` lists
 all eight base characteristics; derived attributes with no direct base input
-(range/vampiric run modifiers) correctly expose an empty relation set.
+(e.g. range) correctly expose an empty relation set. The merged `vampiric` row is
+NOT one of them: its canonical parameter is `vampiric_amount` (FAN-2286 scales it
+with Knowledge, matching regeneration), so the row lists `Знание`; only the
+proc-chance component `vampiric_chance`, which never became a canonical
+parameter of any registry axis, keeps an empty base relation.
 SCRUM-1023 keeps the selected dossier title on a mockup-native resolution
 scale rather than the global readability boost: 15px at 1280x720, 22px at
 1920x1080, 29px at 2560x1440 and a 30px cap at 4K. This preserves the accepted

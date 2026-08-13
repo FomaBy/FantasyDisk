@@ -26,6 +26,10 @@ const SCRUM_956_SHOP_TITLES := {
 	"shop_weapon_cooldown": "Масло темпа",
 	"shop_artifact": "Пыльный артефакт",
 }
+# FAN-2293: player-facing health axes must ship the same "HP"-based unit
+# designation everywhere — a stray localized/empty unit would silently desync
+# max_health/regeneration/vampiric from the Codex and each other.
+const HEALTH_UNIT_AXES := ["max_health", "regeneration", "vampiric"]
 const SCRUM_1021_EXPECTED_DEPENDENCIES := {
 	"damage": ["strength"],
 	"magic_damage": ["intelligence"],
@@ -313,6 +317,7 @@ func _check_stat_split(errors: Array) -> void:
 		errors.append("attributes() пуст")
 	_check_stat_projection(characteristics, base_ids, "base", registry_ids, errors)
 	_check_stat_projection(attributes, registry_ids, "derived", base_ids, errors)
+	_check_attribute_units(attributes, errors)
 	if registry_ids.size() != 16:
 		errors.append("FAN-1887: player-facing атрибутов %d != 16" % registry_ids.size())
 	for removed_id in ["attack_range", "range_multiplier", "projectile_speed", "dot_speed", "aura_radius", "buff_power", "absorb", "knockback_power", "knockback_distance", "vampiric_chance", "magic_damage", "health_point", "crit_damage_multiplier", "vampiric_amount", "ultimate_multiplier"]:
@@ -367,3 +372,26 @@ func _check_stat_split(errors: Array) -> void:
 	var expected_compat := characteristics + attributes
 	if CodexData.stats() != expected_compat:
 		errors.append("stats() compatibility projection не равен characteristics + attributes")
+
+
+# FAN-2293: fail-closed locale gate on the `unit` field — every derived axis
+# must ship a real (non-empty, non-id, non-"null"/res://) unit, and the three
+# health-related axes must agree on the same "HP"-based designation instead of
+# silently drifting to a different/localized/empty string. No exceptions.
+func _check_attribute_units(attributes: Array, errors: Array) -> void:
+	var health_units := {}
+	for attribute in attributes:
+		var entry := attribute as Dictionary
+		var axis_id := str(entry.get("id", ""))
+		var unit := str(entry.get("unit", ""))
+		if not _player_text_ok(unit, axis_id):
+			errors.append("атрибут '%s': негодная единица измерения '%s'" % [axis_id, unit])
+			continue
+		if HEALTH_UNIT_AXES.has(axis_id):
+			health_units[axis_id] = unit
+	for axis_id in HEALTH_UNIT_AXES:
+		if not health_units.has(axis_id):
+			errors.append("FAN-2293: health axis '%s' отсутствует в attributes()" % axis_id)
+			continue
+		if not str(health_units[axis_id]).begins_with("HP"):
+			errors.append("FAN-2293: единица '%s' оси '%s' не использует согласованное обозначение здоровья 'HP'" % [health_units[axis_id], axis_id])
