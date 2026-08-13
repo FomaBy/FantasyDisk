@@ -608,11 +608,24 @@ func _test_dodge_veil(errors: Array) -> void:
 	mods["damage_multiplier"] = 1.0
 
 	# Никакого бессмертия: огромный dodge_flat всё ещё остаётся ниже асимптоты.
-	mods["dodge_flat"] = 10.0
+	# Оракул НЕЗАВИСИМ от derived_parameters.raw_dodge/dodge (вывод SUT) — raw_dodge
+	# считаем из известных входов теста (agility базы Ассасина + сам dodge_flat),
+	# иначе assert сверял бы SUT сам с собой и не поймал бы потерю dodge_flat из
+	# формулы (FAN-2434). EPS-tight сверка с effective_dodge(raw_dodge+veil_bonus)
+	# ловит потерю dodge_flat/подмену кривой; отдельный strict `< cap` (уже был,
+	# не ослаблен) ловит возврат к hard clamp — широкий интервал (0, cap) сам по
+	# себе принимал бы любое значение.
+	var agility := float(PD.base_stats("assassin").get("agility", 0.0))
+	var stacked_dodge_flat := 10.0
+	mods["dodge_flat"] = stacked_dodge_flat
 	player.call("_apply_stat_scaling", false, float(player.get("max_health")))
 	close_enemy.global_position = player.global_position + Vector2(60, 0)
 	await process_frame
+	var expected_stacked_raw := 0.02 + agility * 0.010 + stacked_dodge_flat
+	var expected_stacked := PD.effective_dodge(expected_stacked_raw + veil_bonus)
 	var stacked_chance := float(player.call("current_dodge_chance"))
+	if absf(stacked_chance - expected_stacked) > EPS:
+		errors.append("завеса: стек-уворот %.4f != effective_dodge(raw+bonus) %.4f (потеря dodge_flat или подмена кривой)" % [stacked_chance, expected_stacked])
 	if not (stacked_chance > 0.0 and stacked_chance < PD.SURVIVABILITY_DODGE_CAP):
 		errors.append("завеса: суммарный уворот %.4f нарушил strict asymptote %.2f" % [stacked_chance, PD.SURVIVABILITY_DODGE_CAP])
 	await _cleanup(holder)
