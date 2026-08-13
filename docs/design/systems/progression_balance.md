@@ -1466,6 +1466,32 @@ projection (`legacy HP-delta/raw duration`, `ledger/raw duration`,
 fresh executable oracle `f09f21ec`; это measurement repair, а не balance/config
 tuning.
 
+### FAN-1545 — gameplay ownership отделён от telemetry provenance
+
+Telemetry context (`telemetry_provenance_id`, source и phase) наблюдательный:
+`Player._apply_player_damage` передаёт caller-owned feedback без добавления
+`player_owned`. Поэтому канонический `Enemy.damage_applied` ledger остаётся
+полным, но Dark Mage `dark_decay` квалифицирует только gameplay-owned killing
+hit. Полный inventory rerouted secondary paths:
+
+- unowned Player paths: `trigger_assassin_crit_shadow`, `_deal_knight_counter_hit`,
+  `_trigger_thorn_reflect`, `_trigger_take_hit_pulse`, `_apply_meta_crit_execute`,
+  `_trigger_magic_enchant`, `_apply_dot_tick`, `_on_weapon_hit_echo`,
+  `on_enemy_killed` chain explosion и `_apply_heal_to_holy_damage`;
+- unowned Berserk melee extras: close bonus, wounded execute и follow-up splash
+  в `_apply_unique_melee_hit_effects` вызывают `take_damage(amount)` напрямую;
+- preserved owned paths: direct `ClassWeapon`/`BerserkWeapon` hit,
+  `Player._apply_ultimate_damage`, cursed-skull DoT `tick_feedback` и сам
+  `dark_decay` blast (с anti-recursion marker).
+
+`status_effects.gd`, `ally_minion.gd` и summon/projectile paths были audit-only:
+ни один из них не получает ownership из telemetry helper. Регресс
+`tests/dark_mage_kit_test.gd` исполняет thorn reflect, universal DoT и meta-crit
+execute как unowned kills, проверяет HP witness/absence Dark Decay, а также
+сохраняет owned positive control и anti-recursion. A5 parity сравнивает
+gameplay projection с immediate integration base отдельно от telemetry полей;
+никакой balance/config tuning этой правкой не допускается.
+
 ### FAN-2224 — final-execution evidence через production consumer
 
 FAN-2224 добавляет к неизменному 309-sample anchor отдельный supplemental
