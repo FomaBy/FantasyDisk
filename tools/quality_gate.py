@@ -69,6 +69,9 @@ INTEGRATION_CHANGED_REF = "origin/dev"
 PUSH_ERROR_FRAME_RE = re.compile(r"^[ \t]*at: push_error \(", re.MULTILINE)
 RAN_TESTS_RE = re.compile(r"^Ran (\d+) tests? in ", re.MULTILINE)
 PYTHON_TEST_PATTERN = "test_*.py"
+_WINDOWS_JOB_RUNNER_ARG = "--_quality-gate-windows-job-runner"
+_WINDOWS_JOB_HANDLE_ENV = "_QUALITY_GATE_WINDOWS_JOB_HANDLE"
+_WINDOWS_CLEANUP_TIMEOUT = 5.0
 
 CORE_CHANGED_TESTS = {
     "combat_target_query_cache_test",
@@ -595,15 +598,134 @@ def _godot_environment(
     return env
 
 
-def _terminate_process(process: subprocess.Popen[str]) -> None:
+def _create_windows_job() -> int:
+    import ctypes
+    from ctypes import wintypes
+
+    class _IoCounters(ctypes.Structure):
+        _fields_ = [
+            (name, ctypes.c_ulonglong)
+            for name in (
+                "ReadOperationCount",
+                "WriteOperationCount",
+                "OtherOperationCount",
+                "ReadTransferCount",
+                "WriteTransferCount",
+                "OtherTransferCount",
+            )
+        ]
+
+    class _BasicLimitInformation(ctypes.Structure):
+        _fields_ = [
+            ("PerProcessUserTimeLimit", ctypes.c_longlong),
+            ("PerJobUserTimeLimit", ctypes.c_longlong),
+            ("LimitFlags", wintypes.DWORD),
+            ("MinimumWorkingSetSize", ctypes.c_size_t),
+            ("MaximumWorkingSetSize", ctypes.c_size_t),
+            ("ActiveProcessLimit", wintypes.DWORD),
+            ("Affinity", ctypes.c_size_t),
+            ("PriorityClass", wintypes.DWORD),
+            ("SchedulingClass", wintypes.DWORD),
+        ]
+
+    class _ExtendedLimitInformation(ctypes.Structure):
+        _fields_ = [
+            ("BasicLimitInformation", _BasicLimitInformation),
+            ("IoInfo", _IoCounters),
+            ("ProcessMemoryLimit", ctypes.c_size_t),
+            ("JobMemoryLimit", ctypes.c_size_t),
+            ("PeakProcessMemoryUsed", ctypes.c_size_t),
+            ("PeakJobMemoryUsed", ctypes.c_size_t),
+        ]
+
+    kernel32 = ctypes.WinDLL("kernel32", use_last_error=True)
+    kernel32.CreateJobObjectW.argtypes = [wintypes.LPVOID, wintypes.LPCWSTR]
+    kernel32.CreateJobObjectW.restype = wintypes.HANDLE
+    kernel32.SetInformationJobObject.argtypes = [
+        wintypes.HANDLE,
+        ctypes.c_int,
+        wintypes.LPVOID,
+        wintypes.DWORD,
+    ]
+    kernel32.SetInformationJobObject.restype = wintypes.BOOL
+    kernel32.CloseHandle.argtypes = [wintypes.HANDLE]
+    kernel32.CloseHandle.restype = wintypes.BOOL
+
+    job = kernel32.CreateJobObjectW(None, None)
+    if not job:
+        raise ctypes.WinError(ctypes.get_last_error())
+    limits = _ExtendedLimitInformation()
+    limits.BasicLimitInformation.LimitFlags = 0x00002000  # KILL_ON_JOB_CLOSE
+    if not kernel32.SetInformationJobObject(
+        job, 9, ctypes.byref(limits), ctypes.sizeof(limits)
+    ):
+        error = ctypes.WinError(ctypes.get_last_error())
+        kernel32.CloseHandle(job)
+        raise error
+    return int(job)
+
+
+def _close_windows_handle(handle: int) -> None:
+    import ctypes
+    from ctypes import wintypes
+
+    kernel32 = ctypes.WinDLL("kernel32", use_last_error=True)
+    kernel32.CloseHandle.argtypes = [wintypes.HANDLE]
+    kernel32.CloseHandle.restype = wintypes.BOOL
+    if not kernel32.CloseHandle(handle):
+        raise ctypes.WinError(ctypes.get_last_error())
+
+
+def _run_in_windows_job(command: Sequence[str]) -> int:
+    import ctypes
+    from ctypes import wintypes
+
+    raw_handle = os.environ.pop(_WINDOWS_JOB_HANDLE_ENV, "")
+    try:
+        job = int(raw_handle)
+    except ValueError:
+        print("quality_gate: missing Windows job handle", file=sys.stderr, flush=True)
+        return 125
+
+    kernel32 = ctypes.WinDLL("kernel32", use_last_error=True)
+    kernel32.GetCurrentProcess.restype = wintypes.HANDLE
+    kernel32.AssignProcessToJobObject.argtypes = [wintypes.HANDLE, wintypes.HANDLE]
+    kernel32.AssignProcessToJobObject.restype = wintypes.BOOL
+    if not kernel32.AssignProcessToJobObject(job, kernel32.GetCurrentProcess()):
+        error = ctypes.WinError(ctypes.get_last_error())
+        _close_windows_handle(job)
+        print(
+            f"quality_gate: Windows job assignment failed: {error}",
+            file=sys.stderr,
+            flush=True,
+        )
+        return 125
+    _close_windows_handle(job)
+
+    try:
+        return subprocess.call(command, cwd=ROOT)
+    except OSError as error:
+        print(f"quality_gate: command launch failed: {error}", file=sys.stderr, flush=True)
+        return 125
+
+
+def _terminate_process(
+    process: subprocess.Popen[str], windows_job: int | None = None
+) -> None:
     try:
         if os.name == "nt":
-            subprocess.run(
-                ["taskkill", "/F", "/T", "/PID", str(process.pid)],
-                stdout=subprocess.DEVNULL,
-                stderr=subprocess.DEVNULL,
-                check=False,
-            )
+            # Popen.kill uses the retained process handle, not a recyclable PID.
+            if process.poll() is None:
+                process.kill()
+            if windows_job is not None:
+                import ctypes
+                from ctypes import wintypes
+
+                kernel32 = ctypes.WinDLL("kernel32", use_last_error=True)
+                kernel32.TerminateJobObject.argtypes = [wintypes.HANDLE, wintypes.UINT]
+                kernel32.TerminateJobObject.restype = wintypes.BOOL
+                if not kernel32.TerminateJobObject(windows_job, 124):
+                    raise ctypes.WinError(ctypes.get_last_error())
         else:
             os.killpg(process.pid, signal.SIGKILL)
     except ProcessLookupError:
@@ -626,12 +748,41 @@ def _run_captured(
         "stdout": subprocess.PIPE,
         "stderr": subprocess.STDOUT,
     }
+    windows_job: int | None = None
+    launch_command = command
     if os.name == "nt":
-        kwargs["creationflags"] = subprocess.CREATE_NEW_PROCESS_GROUP
+        windows_job = _create_windows_job()
+        runner_env = env.copy()
+        runner_env[_WINDOWS_JOB_HANDLE_ENV] = str(windows_job)
+        startupinfo = subprocess.STARTUPINFO()
+        startupinfo.lpAttributeList = {"handle_list": [windows_job]}
+        kwargs.update({
+            "env": runner_env,
+            "startupinfo": startupinfo,
+            "close_fds": True,
+            "creationflags": subprocess.CREATE_NEW_PROCESS_GROUP,
+        })
+        launch_command = [
+            sys.executable,
+            str(Path(__file__).resolve()),
+            _WINDOWS_JOB_RUNNER_ARG,
+            *command,
+        ]
+        os.set_handle_inheritable(windows_job, True)
     else:
         kwargs["start_new_session"] = True
-    process = subprocess.Popen(command, **kwargs)
-    if idle_timeout is None:
+    try:
+        try:
+            process = subprocess.Popen(launch_command, **kwargs)
+        finally:
+            if windows_job is not None:
+                os.set_handle_inheritable(windows_job, False)
+    except BaseException:
+        if windows_job is not None:
+            _close_windows_handle(windows_job)
+        raise
+
+    if idle_timeout is None and os.name != "nt":
         try:
             output, _ = process.communicate(timeout=timeout)
             return process.returncode, output, False
@@ -640,45 +791,63 @@ def _run_captured(
             output, _ = process.communicate()
             return 124, output, True
 
-    output_parts: list[str] = []
-    reader_done = threading.Event()
-    started = time.monotonic()
-    last_output_at = [started]
+    try:
+        output_parts: list[str] = []
+        reader_done = threading.Event()
+        started = time.monotonic()
+        last_output_at = [started]
 
-    def drain_output() -> None:
-        assert process.stdout is not None
+        def drain_output() -> None:
+            assert process.stdout is not None
+            try:
+                while True:
+                    chunk = process.stdout.readline()
+                    if not chunk:
+                        return
+                    output_parts.append(chunk)
+                    last_output_at[0] = time.monotonic()
+            except (OSError, ValueError):
+                pass
+            finally:
+                reader_done.set()
+
+        reader = threading.Thread(
+            target=drain_output, name="quality-output-reader", daemon=True
+        )
+        reader.start()
+        timed_out = False
+        while process.poll() is None or not reader_done.is_set():
+            now = time.monotonic()
+            if now - started >= timeout or (
+                idle_timeout is not None and now - last_output_at[0] >= idle_timeout
+            ):
+                timed_out = True
+                break
+            time.sleep(0.01)
+
+        if timed_out:
+            _terminate_process(process, windows_job)
         try:
-            while True:
-                chunk = process.stdout.readline()
-                if not chunk:
-                    return
-                output_parts.append(chunk)
-                last_output_at[0] = time.monotonic()
-        except (OSError, ValueError):
-            pass
-        finally:
-            reader_done.set()
-
-    reader = threading.Thread(target=drain_output, name="quality-output-reader", daemon=True)
-    reader.start()
-    timed_out = False
-    while process.poll() is None or not reader_done.is_set():
-        now = time.monotonic()
-        if now - started >= timeout or now - last_output_at[0] >= idle_timeout:
-            timed_out = True
-            break
-        time.sleep(0.01)
-
-    if timed_out:
-        _terminate_process(process)
-    process.wait()
-    # Never close a buffered stream while another thread may be in readline().
-    # A timed-out process group is killed above; its inherited descriptors then
-    # reach EOF and let the reader finish cleanly.
-    reader.join()
-    if process.stdout is not None:
-        process.stdout.close()
-    return (124 if timed_out else process.returncode), "".join(output_parts), timed_out
+            process.wait(timeout=_WINDOWS_CLEANUP_TIMEOUT if os.name == "nt" else None)
+        except subprocess.TimeoutExpired:
+            process.kill()
+            process.wait(timeout=_WINDOWS_CLEANUP_TIMEOUT)
+        # Never close a buffered stream while another thread may be in readline().
+        # A timed-out process group is killed above; its inherited descriptors then
+        # reach EOF and let the reader finish cleanly.
+        reader.join(timeout=_WINDOWS_CLEANUP_TIMEOUT if os.name == "nt" else None)
+        if reader.is_alive():
+            if process.stdout is not None:
+                process.stdout.close()
+            reader.join(timeout=_WINDOWS_CLEANUP_TIMEOUT)
+            if reader.is_alive():
+                raise RuntimeError("Windows job cleanup did not close the capture reader")
+        if process.stdout is not None:
+            process.stdout.close()
+        return (124 if timed_out else process.returncode), "".join(output_parts), timed_out
+    finally:
+        if windows_job is not None:
+            _close_windows_handle(windows_job)
 
 
 def fatal_output_signal(output: str) -> str:
@@ -1207,4 +1376,6 @@ def main(argv: Sequence[str] | None = None) -> int:
 
 
 if __name__ == "__main__":
+    if os.name == "nt" and len(sys.argv) > 1 and sys.argv[1] == _WINDOWS_JOB_RUNNER_ARG:
+        raise SystemExit(_run_in_windows_job(sys.argv[2:]))
     raise SystemExit(main())
