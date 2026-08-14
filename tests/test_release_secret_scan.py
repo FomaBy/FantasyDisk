@@ -54,7 +54,12 @@ class ReleaseSecretScanTests(unittest.TestCase):
             with zipfile.ZipFile(archive_path, "w", compression=zipfile.ZIP_DEFLATED) as archive:
                 archive.writestr("FantasyDisk.app/Contents/Resources/game.pck", b"noise" + self.webhook)
             findings = scanner.scan_paths([archive_path])
-            self.assertTrue(any("!FantasyDisk.app/Contents/Resources/game.pck" in str(path) for path, _kind in findings))
+            self.assertTrue(
+                any(
+                    "!FantasyDisk.app/Contents/Resources/game.pck" in path.as_posix()
+                    for path, _kind in findings
+                )
+            )
             self.assertTrue(any(kind == "raw-discord-webhook" for _path, kind in findings))
 
     def _assert_release_pipeline_order(self, script: str) -> None:

@@ -2893,7 +2893,7 @@ if "--export-release" in argv:
             ],
             check=True,
             capture_output=True,
-            text=True,
+            encoding="utf-8",
         )
 
     def build(
@@ -2919,7 +2919,7 @@ if "--export-release" in argv:
             cwd=repo,
             check=False,
             capture_output=True,
-            text=True,
+            encoding="utf-8",
             env=environment,
         )
 
@@ -2970,6 +2970,7 @@ if "--export-release" in argv:
                 with self.subTest(path=disposable):
                     self.assertFalse((repo / disposable).exists())
 
+    @unittest.skipIf(os.name == "nt", "Bash execution remains a POSIX/macOS gate")
     def test_presign_is_candidate_only_and_rejects_incomplete_invocations(self) -> None:
         with tempfile.TemporaryDirectory() as tmp:
             repo, sha = self.candidate_repository(tmp)
@@ -3002,6 +3003,7 @@ if "--export-release" in argv:
                     self.assertIn(expected, result.stdout)
                     self.assertNotIn("Worktree из", result.stdout)
 
+    @unittest.skipIf(os.name == "nt", "Bash execution remains a POSIX/macOS gate")
     def test_presign_rejects_a_missing_or_moved_candidate(self) -> None:
         with tempfile.TemporaryDirectory() as tmp:
             repo, sha = self.candidate_repository(tmp)
@@ -3024,6 +3026,7 @@ if "--export-release" in argv:
                     self.assertIn(expected, result.stdout)
                     self.assertNotIn("Worktree из", result.stdout)
 
+    @unittest.skipIf(os.name == "nt", "Bash execution remains a POSIX/macOS gate")
     def test_presign_does_not_weaken_the_normal_channel_gates(self) -> None:
         with tempfile.TemporaryDirectory() as tmp:
             repo, sha = self.candidate_repository(tmp)

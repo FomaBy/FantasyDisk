@@ -143,7 +143,7 @@ def _run_onboard(
         ["bash", str(script)],
         cwd=script.parents[1],
         env=_onboard_environment(script, home, path_prefix=path_prefix, extra=extra),
-        text=True,
+        encoding="utf-8",
         stdout=subprocess.PIPE,
         stderr=subprocess.STDOUT,
         check=False,
@@ -160,7 +160,7 @@ def _run_release_only(
         ["bash", str(script), "--release-only"],
         cwd=script.parents[1],
         env=_onboard_environment(script, home, extra=extra),
-        text=True,
+        encoding="utf-8",
         stdout=subprocess.PIPE,
         stderr=subprocess.STDOUT,
         check=False,
@@ -177,7 +177,7 @@ def _start_onboard(
         ["bash", str(script)],
         cwd=script.parents[1],
         env=_onboard_environment(script, home, extra=extra),
-        text=True,
+        encoding="utf-8",
         stdout=subprocess.PIPE,
         stderr=subprocess.STDOUT,
         start_new_session=True,
@@ -450,6 +450,7 @@ def _write_pre_fix_onboard(destination: Path) -> Path:
     return destination
 
 
+@unittest.skipIf(os.name == "nt", "release onboarding execution requires POSIX/Bash")
 class ReleaseSkillOnboardingTest(unittest.TestCase):
     def test_release_only_mode_isolated_from_unrelated_runtime_state(self) -> None:
         with tempfile.TemporaryDirectory(prefix="fantasydisk-release-only-") as raw:
@@ -489,7 +490,7 @@ class ReleaseSkillOnboardingTest(unittest.TestCase):
                     cwd=checkout,
                     check=True,
                     stdout=subprocess.PIPE,
-                    text=True,
+                    encoding="utf-8",
                 ).stdout,
             }
 
@@ -526,7 +527,7 @@ class ReleaseSkillOnboardingTest(unittest.TestCase):
                 cwd=checkout,
                 check=True,
                 stdout=subprocess.PIPE,
-                text=True,
+                encoding="utf-8",
             ).stdout
             self.assertEqual(hooks_after, before["hooks"])
 
@@ -546,7 +547,7 @@ class ReleaseSkillOnboardingTest(unittest.TestCase):
                 ],
                 cwd=checkout,
                 env=_onboard_environment(checkout / "scripts" / "onboard.sh", home),
-                text=True,
+                encoding="utf-8",
                 stdout=subprocess.PIPE,
                 stderr=subprocess.STDOUT,
                 check=False,
@@ -2098,7 +2099,7 @@ class ReleaseSkillOnboardingTest(unittest.TestCase):
                 check=False,
                 stdout=subprocess.PIPE,
                 stderr=subprocess.PIPE,
-                text=True,
+                encoding="utf-8",
             )
             self.assertEqual(fresh_process.returncode, 0, fresh_process.stderr)
 
