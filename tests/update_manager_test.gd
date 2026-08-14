@@ -69,6 +69,11 @@ func _check_manifest_contract() -> bool:
 	var validation: Dictionary = UPDATE_MANAGER.validate_manifest(manifest)
 	if not bool(validation.get("ok", false)):
 		return _fail("Valid manifest rejected: %s" % str(validation))
+	var manager := UPDATE_MANAGER.new()
+	if manager.manifest_url() != UPDATE_MANAGER.DEFAULT_MANIFEST_URL:
+		manager.free()
+		return _fail("Production manifest URL changed from the canonical default.")
+	manager.free()
 	var macos: Dictionary = UPDATE_MANAGER.asset_for_platform(manifest, "macOS")
 	var windows: Dictionary = UPDATE_MANAGER.asset_for_platform(manifest, "Windows")
 	if not bool(macos.get("ok", false)) or str((macos["asset"] as Dictionary).get("name", "")) != "FantasyDisk-0.2.4-macos.dmg":
@@ -82,6 +87,21 @@ func _check_manifest_contract() -> bool:
 	hostile["assets"]["windows"]["url"] = "https://example.com/FantasyDisk.exe"
 	if bool(UPDATE_MANAGER.validate_manifest(hostile).get("ok", true)):
 		return _fail("Untrusted installer URL was accepted.")
+	for hostile_url in [
+		"file:///tmp/FantasyDisk-0.2.4-windows-setup.exe",
+		"https://github.com/FomaBy/FantasyDisk-Releases/releases/download/v0.2.4/other.exe",
+		"https://github.com/FomaBy/FantasyDisk-Releases/releases/download/v0.2.4/FantasyDisk-0.2.4-windows-setup.exe/../other.exe",
+		"https://github.com/FomaBy/FantasyDisk-Releases/releases/download/v0.2.4/FantasyDisk-0.2.4-windows-setup.exe?stale=1",
+		"https://github.com/FomaBy/FantasyDisk-Releases/releases/download/v0.2.4/FantasyDisk-0.2.4-windows-setup.exe#fragment",
+	]:
+		var malformed_url := manifest.duplicate(true)
+		malformed_url["assets"]["windows"]["url"] = hostile_url
+		if bool(UPDATE_MANAGER.validate_manifest(malformed_url).get("ok", true)):
+			return _fail("Non-canonical installer URL was accepted: %s" % hostile_url)
+	var wrong_release := manifest.duplicate(true)
+	wrong_release["release_url"] = "https://github.com/FomaBy/FantasyDisk-Releases/releases/tag/v0.2.3"
+	if bool(UPDATE_MANAGER.validate_manifest(wrong_release).get("ok", true)):
+		return _fail("Mismatched release URL was accepted.")
 	var bad_hash := manifest.duplicate(true)
 	bad_hash["assets"]["macos"]["sha256"] = "not-a-hash"
 	if bool(UPDATE_MANAGER.validate_manifest(bad_hash).get("ok", true)):

@@ -82,7 +82,7 @@ func check_for_updates(manual := true) -> bool:
 		return false
 
 	var url := manifest_url()
-	if not _is_trusted_manifest_url(url):
+	if not _is_allowed_manifest_url(url):
 		_finish_check_error("Адрес обновлений не прошёл проверку безопасности.", manual)
 		return false
 
@@ -120,7 +120,7 @@ func download_installer() -> bool:
 		download_finished.emit(false, "", "Установлена актуальная версия.")
 		return false
 
-	var asset_result := asset_for_platform(latest_manifest, OS.get_name())
+	var asset_result := _current_platform_asset()
 	if not bool(asset_result.get("ok", false)):
 		download_finished.emit(false, "", str(asset_result.get("error", "Нет установщика для этой платформы.")))
 		return false
@@ -143,6 +143,8 @@ func download_installer() -> bool:
 		_set_state(STATE_VERIFIED, "Установщик уже загружен и проверен.")
 		download_finished.emit(true, downloaded_installer_path, last_message)
 		return true
+	_remove_file_if_present(_download_final_path)
+	downloaded_installer_path = ""
 
 	_download_request = HTTPRequest.new()
 	_download_request.name = "UpdateInstallerRequest"
@@ -171,30 +173,36 @@ func download_installer() -> bool:
 
 
 func launch_installer() -> bool:
-	if downloaded_installer_path == "" or not FileAccess.file_exists(downloaded_installer_path):
+	var asset_result := _current_platform_asset()
+	if not bool(asset_result.get("ok", false)):
+		_set_state(STATE_ERROR, "Данные проверенного установщика недействительны.")
+		return false
+	var asset: Dictionary = asset_result["asset"]
+	var expected_path := "%s/%s" % [UPDATE_DIR, str(asset["name"])]
+	var expected_size := int(asset["size"])
+	var expected_sha256 := str(asset["sha256"]).to_lower()
+	if downloaded_installer_path == "" or downloaded_installer_path != expected_path \
+			or not FileAccess.file_exists(downloaded_installer_path):
 		_set_state(STATE_ERROR, "Проверенный установщик не найден.")
 		return false
+	if _file_size(downloaded_installer_path) != expected_size \
+			or FileAccess.get_sha256(downloaded_installer_path).to_lower() != expected_sha256:
+		_remove_file_if_present(downloaded_installer_path)
+		downloaded_installer_path = ""
+		_set_state(STATE_ERROR, "Проверенный установщик больше не соответствует данным релиза.")
+		return false
 	var absolute_path := ProjectSettings.globalize_path(downloaded_installer_path)
-	var error := OK
-	match OS.get_name():
-		"Windows":
-			var pid := OS.create_process(absolute_path, PackedStringArray())
-			if pid <= 0:
-				error = ERR_CANT_FORK
-		"macOS":
-			error = OS.shell_open(absolute_path)
-		_:
-			error = OS.shell_open(str(latest_manifest.get("release_url", DEFAULT_RELEASE_URL)))
+	var error := _open_installer(absolute_path, str(latest_manifest.get("release_url", DEFAULT_RELEASE_URL)))
 	if error != OK:
 		_set_state(STATE_ERROR, "Не удалось открыть установщик. Откройте страницу релиза вручную.")
 		return false
-	_set_state(STATE_INSTALLER_OPENED, _installer_opened_message(OS.get_name()))
+	_set_state(STATE_INSTALLER_OPENED, _installer_opened_message(_platform_name()))
 	return true
 
 
 func open_release_page() -> bool:
 	var url := str(latest_manifest.get("release_url", DEFAULT_RELEASE_URL))
-	if not _is_trusted_release_url(url):
+	if not _is_allowed_release_url(url):
 		url = DEFAULT_RELEASE_URL
 	return OS.shell_open(url) == OK
 
@@ -210,7 +218,7 @@ func _on_manifest_request_completed(
 		_finish_check_error("Сервер обновлений недоступен. Проверьте интернет и повторите.", manual)
 		return
 	var parsed: Variant = JSON.parse_string(body.get_string_from_utf8())
-	var validation := validate_manifest(parsed)
+	var validation := _validate_manifest(parsed)
 	if not bool(validation.get("ok", false)):
 		_finish_check_error("Файл обновления повреждён: %s" % str(validation.get("error", "неизвестная ошибка")), manual)
 		return
@@ -317,6 +325,39 @@ func _file_size(path: String) -> int:
 	return size
 
 
+func _current_platform_asset() -> Dictionary:
+	var validation := _validate_manifest(latest_manifest)
+	if not bool(validation.get("ok", false)):
+		return {"ok": false, "error": "Данные обновления не прошли проверку безопасности."}
+	return asset_for_platform(validation["manifest"] as Dictionary, _platform_name())
+
+
+func _platform_name() -> String:
+	return OS.get_name()
+
+
+func _is_allowed_manifest_url(url: String) -> bool:
+	return _is_trusted_manifest_url(url)
+
+
+func _is_allowed_release_url(url: String) -> bool:
+	return _is_trusted_release_url(url)
+
+
+func _validate_manifest(raw: Variant) -> Dictionary:
+	return validate_manifest(raw)
+
+
+func _open_installer(absolute_path: String, release_url: String) -> int:
+	match OS.get_name():
+		"Windows":
+			return OK if OS.create_process(absolute_path, PackedStringArray()) > 0 else ERR_CANT_FORK
+		"macOS":
+			return OS.shell_open(absolute_path)
+		_:
+			return OS.shell_open(release_url)
+
+
 static func compare_versions(left: String, right: String) -> int:
 	var left_parts := _release_version_parts(left)
 	var right_parts := _release_version_parts(right)
@@ -360,7 +401,7 @@ static func validate_manifest(raw: Variant) -> Dictionary:
 			else "FantasyDisk-%s-windows-setup.exe" % version
 		if name != expected_name or name.get_file() != name:
 			return {"ok": false, "error": "некорректное имя assets.%s" % platform_key}
-		if not _is_trusted_release_download_url(str(asset.get("url", "")), version):
+		if not _is_trusted_release_download_url(str(asset.get("url", "")), version, name):
 			return {"ok": false, "error": "недоверенный URL assets.%s" % platform_key}
 		if not _is_sha256(str(asset.get("sha256", ""))):
 			return {"ok": false, "error": "некорректный SHA-256 assets.%s" % platform_key}
@@ -438,8 +479,8 @@ static func _is_trusted_release_url(url: String) -> bool:
 	return url.begins_with(TRUSTED_RELEASE_PREFIX)
 
 
-static func _is_trusted_release_download_url(url: String, version: String) -> bool:
-	return url.begins_with("https://github.com/FomaBy/FantasyDisk-Releases/releases/download/v%s/" % version)
+static func _is_trusted_release_download_url(url: String, version: String, name: String) -> bool:
+	return url == "https://github.com/FomaBy/FantasyDisk-Releases/releases/download/v%s/%s" % [version, name]
 
 
 static func macos_update_is_unsigned() -> bool:
