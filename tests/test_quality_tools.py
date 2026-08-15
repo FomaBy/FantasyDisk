@@ -370,6 +370,7 @@ class QualityGateTests(unittest.TestCase):
             "only run_gate uses gate_env; the import pre-pass owns its scrub inline",
         )
 
+    @unittest.skipUnless(shutil.which("bash"), "bash is not available on this host")
     def test_balance_import_prepass_scrubs_inherited_exclusive_flag(self) -> None:
         source = (ROOT / "tools" / "run_balance_validation.sh").read_text(
             encoding="utf-8"
@@ -391,6 +392,7 @@ class QualityGateTests(unittest.TestCase):
         with self.assertRaises(AssertionError):
             self.assertEqual(self._captured_shell_exclusive_flag("bash", unsanitized), "")
 
+    @unittest.skipUnless(shutil.which("bash"), "bash is not available on this host")
     def test_release_godot_helper_scrubs_inherited_exclusive_flag(self) -> None:
         source = (ROOT / "tools" / "build_release.sh").read_text(encoding="utf-8")
         match = re.search(

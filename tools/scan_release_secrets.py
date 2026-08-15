@@ -22,7 +22,6 @@ RAW_WEBHOOK_RE = re.compile(
 )
 BASE64_RUN_RE = re.compile(rb"[A-Za-z0-9+/]{12,}={0,2}")
 QUOTED_BASE64_RE = re.compile(rb"[\"']([A-Za-z0-9+/]{1,}={0,2})[\"']")
-MAX_JOINED_CHUNKS = 32
 MAX_CHUNK_GAP = 128
 MAX_ARCHIVE_ENTRY_BYTES = 1024 * 1024 * 1024
 MAX_ARCHIVE_TOTAL_BYTES = 4 * 1024 * 1024 * 1024
@@ -52,17 +51,37 @@ def finding_kinds(data: bytes) -> set[str]:
 
 
 def _scan_base64_runs(runs: list[tuple[int, int, bytes]], findings: set[str]) -> None:
-    for start, first in enumerate(runs):
-        combined = b""
-        previous_end = first[0]
-        for run_start, run_end, value in runs[start : start + MAX_JOINED_CHUNKS]:
-            if combined and run_start - previous_end > MAX_CHUNK_GAP:
-                break
-            combined += value.rstrip(b"=")
-            previous_end = run_end
-            if _contains_webhook(_decode_base64(combined)):
+    # Normalize the fragment stream: join every run (separators removed) into
+    # gap-bounded segments and scan each joined segment once, so fragmentation
+    # of any width is detected in linear time instead of joining a bounded
+    # number of fragment combinations.
+    # Fragments are collected into a list and joined once per segment; an
+    # incremental ``segment += value`` would copy the accumulated bytes on
+    # every fragment and turn the scan quadratic in the fragment count.
+    parts: list[bytes] = []
+    previous_end = 0
+    for run_start, run_end, value in runs:
+        if parts and run_start - previous_end > MAX_CHUNK_GAP:
+            if _joined_segment_contains_webhook(b"".join(parts)):
                 findings.add("base64-discord-webhook")
                 return
+            parts.clear()
+        parts.append(value.rstrip(b"="))
+        previous_end = run_end
+    if parts and _joined_segment_contains_webhook(b"".join(parts)):
+        findings.add("base64-discord-webhook")
+
+
+def _joined_segment_contains_webhook(segment: bytes) -> bool:
+    # The encoded secret may start at any position inside the joined segment,
+    # so decode each of the four Base64 block alignments; interior blocks then
+    # decode independently of any surrounding noise fragments.
+    for offset in range(min(4, len(segment))):
+        aligned = segment[offset:]
+        for candidate in (aligned, aligned[: len(aligned) // 4 * 4]):
+            if _contains_webhook(_decode_base64(candidate)):
+                return True
+    return False
 
 
 def _files(paths: Sequence[Path]) -> Iterable[Path]:

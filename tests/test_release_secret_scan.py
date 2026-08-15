@@ -3,6 +3,7 @@ from __future__ import annotations
 import base64
 import importlib.util
 import tempfile
+import time
 import unittest
 import zipfile
 from pathlib import Path
@@ -28,9 +29,32 @@ class ReleaseSecretScanTests(unittest.TestCase):
         self.assertIn("raw-discord-webhook", scanner.finding_kinds(b"prefix" + self.webhook))
         encoded = base64.b64encode(self.webhook)
         self.assertIn("base64-discord-webhook", scanner.finding_kinds(encoded))
-        chunks = [encoded[index:index + 5] for index in range(0, len(encoded), 5)]
-        split = b'"' + b'","'.join(chunks) + b'"'
-        self.assertIn("base64-discord-webhook", scanner.finding_kinds(split))
+        # Widths 2 and 1 exceed the former MAX_JOINED_CHUNKS = 32 join window
+        # (58 and 116 fragments), so they regress the bounded-join bypass.
+        for width in (1, 2, 5):
+            with self.subTest(width=width):
+                chunks = [encoded[index:index + width] for index in range(0, len(encoded), width)]
+                split = b'"' + b'","'.join(chunks) + b'"'
+                self.assertIn("base64-discord-webhook", scanner.finding_kinds(split))
+
+    def test_split_base64_scan_stays_linear_on_fragmented_input(self) -> None:
+        # A dense stream of short quoted fragments forms one gap-bounded
+        # segment; joining it with ``segment += value`` is quadratic in the
+        # fragment count (~125s for this 4 MiB input), while a single
+        # b"".join stays linear (~0.1s). The absolute budget sits orders of
+        # magnitude above the linear regime and below the quadratic one, so
+        # the test is not flaky on a slow host yet fails the quadratic join.
+        encoded = base64.b64encode(self.webhook)
+        secret_chunks = [encoded[index:index + 12] for index in range(0, len(encoded), 12)]
+        noise_count = (4 * 1024 * 1024) // 15  # 12-char chunk + quote/comma overhead
+        chunks = [b"A0b1C2d3E4f5"] * (noise_count // 2) + secret_chunks + [b"A0b1C2d3E4f5"] * (noise_count // 2)
+        payload = b'"' + b'","'.join(chunks) + b'"'
+        self.assertGreaterEqual(len(payload), 4 * 1024 * 1024)
+        started = time.perf_counter()
+        kinds = scanner.finding_kinds(payload)
+        elapsed = time.perf_counter() - started
+        self.assertIn("base64-discord-webhook", kinds)
+        self.assertLess(elapsed, 20.0)
 
     def test_safe_public_relay_url_and_random_binary_pass(self) -> None:
         safe = b"https://feedback.fantasydisk.example/v1/session\x00" + bytes(range(256))
@@ -54,7 +78,12 @@ class ReleaseSecretScanTests(unittest.TestCase):
             with zipfile.ZipFile(archive_path, "w", compression=zipfile.ZIP_DEFLATED) as archive:
                 archive.writestr("FantasyDisk.app/Contents/Resources/game.pck", b"noise" + self.webhook)
             findings = scanner.scan_paths([archive_path])
-            self.assertTrue(any("!FantasyDisk.app/Contents/Resources/game.pck" in str(path) for path, _kind in findings))
+            self.assertTrue(
+                any(
+                    "!FantasyDisk.app/Contents/Resources/game.pck" in path.as_posix()
+                    for path, _kind in findings
+                )
+            )
             self.assertTrue(any(kind == "raw-discord-webhook" for _path, kind in findings))
 
     def _assert_release_pipeline_order(self, script: str) -> None:
