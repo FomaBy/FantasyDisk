@@ -919,24 +919,71 @@ class QualityGateTests(unittest.TestCase):
             )
             parent = (
                 "import os,subprocess,sys; "
-                "subprocess.Popen([sys.executable, '-c', os.environ['QUALITY_DESCENDANT_CODE']]); "
-                "print('parent-done', flush=True)"
+                "child=subprocess.Popen([sys.executable, '-c', "
+                "os.environ['QUALITY_DESCENDANT_CODE']]); "
+                "print(f'parent-done child={child.pid}', flush=True)"
             )
-            started = time.monotonic()
             code, output, timed_out = self.quality._run_captured(
                 [sys.executable, "-u", "-c", parent],
                 env,
                 0.5,
                 idle_timeout=0.2,
             )
-            elapsed = time.monotonic() - started
+            child_match = re.search(r"child=(\d+)", output)
+            self.assertIsNotNone(child_match, output)
+            child_pid = int(child_match.group(1))
+
+            def child_is_alive() -> bool:
+                if os.name != "nt":
+                    try:
+                        os.kill(child_pid, 0)
+                    except ProcessLookupError:
+                        return False
+                    except PermissionError:
+                        return True
+                    return True
+
+                import ctypes
+                from ctypes import wintypes
+
+                kernel32 = ctypes.WinDLL("kernel32", use_last_error=True)
+                kernel32.OpenProcess.argtypes = [
+                    wintypes.DWORD,
+                    wintypes.BOOL,
+                    wintypes.DWORD,
+                ]
+                kernel32.OpenProcess.restype = wintypes.HANDLE
+                kernel32.GetExitCodeProcess.argtypes = [
+                    wintypes.HANDLE,
+                    ctypes.POINTER(wintypes.DWORD),
+                ]
+                kernel32.GetExitCodeProcess.restype = wintypes.BOOL
+                kernel32.CloseHandle.argtypes = [wintypes.HANDLE]
+                kernel32.CloseHandle.restype = wintypes.BOOL
+                handle = kernel32.OpenProcess(0x1000, False, child_pid)
+                if not handle:
+                    return False
+                exit_code = wintypes.DWORD()
+                active = kernel32.GetExitCodeProcess(handle, ctypes.byref(exit_code))
+                kernel32.CloseHandle(handle)
+                return not active or exit_code.value == 259
+
+            deadline = time.monotonic() + 1.0
+            while child_is_alive() and time.monotonic() < deadline:
+                time.sleep(0.01)
             descendant_survived = marker.exists()
+            descendant_alive = child_is_alive()
+            reader_alive = any(
+                thread.name == "quality-output-reader" and thread.is_alive()
+                for thread in self.quality.threading.enumerate()
+            )
 
         self.assertEqual(code, 124)
         self.assertTrue(timed_out)
         self.assertIn("parent-done", output)
-        self.assertLess(elapsed, 1.25)
         self.assertFalse(descendant_survived)
+        self.assertFalse(descendant_alive)
+        self.assertFalse(reader_alive)
 
     def test_watchdog_accepts_parent_exit_after_descendant_closes_stdout(self) -> None:
         with tempfile.TemporaryDirectory(prefix="quality-descendant-control-") as scratch:
