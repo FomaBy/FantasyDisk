@@ -744,7 +744,13 @@ def _run_captured(
     kwargs: dict = {
         "cwd": ROOT,
         "env": env,
-        "text": True,
+        # FAN-2648: decode like godot_gate does.  Godot always emits UTF-8,
+        # while text=True decodes with the locale codec in strict mode: on a
+        # non-UTF-8 Windows locale (cp1251) the first Cyrillic byte pair kills
+        # the drain thread with UnicodeDecodeError and silently truncates the
+        # captured output that the push_error/fatal verdicts read.
+        "encoding": "utf-8",
+        "errors": "replace",
         "stdout": subprocess.PIPE,
         "stderr": subprocess.STDOUT,
     }

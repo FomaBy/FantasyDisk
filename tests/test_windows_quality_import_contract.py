@@ -12,6 +12,7 @@ from __future__ import annotations
 import contextlib
 import importlib.util
 import io
+import os
 import sys
 import unittest
 from pathlib import Path
@@ -118,6 +119,29 @@ class WindowsImportCompletionContractTests(unittest.TestCase):
         self.assertEqual(result["status"], "failed")
         self.assertTrue(result["timed_out"])
         self.assertEqual(run_captured.call_count, 1)
+
+    def test_captured_output_survives_utf8_engine_text_on_any_locale(self) -> None:
+        # Godot prints UTF-8 (Cyrillic import progress on a Russian host).
+        # Locale-codec strict decoding used to kill the capture thread on the
+        # first such byte pair, truncating the output that the push_error and
+        # fatal-diagnostic verdicts read.  The marker after the Cyrillic line
+        # proves capture continues past it.
+        exit_code, output, timed_out = self.quality._run_captured(
+            [
+                sys.executable,
+                "-c",
+                "import sys;"
+                " sys.stdout.buffer.write("
+                "'Инициализация проекта\\n'.encode('utf-8'));"
+                " sys.stdout.buffer.write(b'MARKER-AFTER-UTF8\\n');"
+                " sys.stdout.buffer.flush()",
+            ],
+            os.environ.copy(),
+            120.0,
+        )
+        self.assertEqual(exit_code, 0, output)
+        self.assertFalse(timed_out)
+        self.assertIn("MARKER-AFTER-UTF8", output)
 
     def test_incomplete_cache_validation_fails_closed(self) -> None:
         missing = self.quality.IMPORT_CACHE_MISSING_MESSAGE
