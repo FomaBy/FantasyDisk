@@ -279,10 +279,14 @@ class LocalReleaseTests(unittest.TestCase):
         provenance = self.source_release / "CANDIDATE_PROVENANCE.json"
         provenance.write_text("{}\n", encoding="utf-8")
         original_is_symlink = Path.is_symlink
+        # materialize_package resolves source_release, so match the provenance
+        # file by its real path: on macOS the temporary root itself lives behind
+        # the /tmp -> /private/tmp symlink and a raw comparison never fires.
+        resolved_provenance = provenance.resolve()
         with mock.patch.object(
             Path,
             "is_symlink",
-            lambda path: path == provenance or original_is_symlink(path),
+            lambda path: path.resolve() == resolved_provenance or original_is_symlink(path),
         ):
             with self.assertRaisesRegex(local_release.LocalReleaseError, "unsafe pre-build provenance"):
                 with mock.patch.object(local_release.platform, "system", return_value="Linux"):
