@@ -84,7 +84,10 @@ class QualityStaticGuardTest(unittest.TestCase):
             fixture.parent.mkdir(parents=True)
             fixture.write_text("extends SceneTree\n", encoding="utf-8")
             errors = self.module.script_uid_errors(root, [path])
-            self.assertEqual(errors, [f"{path}: missing committed .uid sidecar"])
+            self.assertEqual(
+                [error.replace("\\", "/") for error in errors],
+                [f"{path}: missing committed .uid sidecar"],
+            )
 
     def test_accepts_script_with_committed_uid_sidecar(self):
         with tempfile.TemporaryDirectory() as tmp:
