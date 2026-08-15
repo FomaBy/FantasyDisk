@@ -1,0 +1,110 @@
+{
+  "ok": true,
+  "decision": "ready_for_image",
+  "errors": [],
+  "warnings": [],
+  "elements": [
+    {
+      "id": "poster",
+      "kind": "panel",
+      "rect": [
+        0,
+        0,
+        1350,
+        1350
+      ],
+      "ok": true,
+      "warnings": []
+    },
+    {
+      "id": "release",
+      "kind": "text",
+      "rect": [
+        92,
+        108,
+        378,
+        177
+      ],
+      "ok": true,
+      "warnings": [],
+      "fit_font_size": 56
+    },
+    {
+      "id": "brand",
+      "kind": "icon",
+      "rect": [
+        494,
+        108,
+        367,
+        177
+      ],
+      "ok": true,
+      "warnings": []
+    },
+    {
+      "id": "subtitle",
+      "kind": "text",
+      "rect": [
+        886,
+        108,
+        378,
+        177
+      ],
+      "ok": true,
+      "warnings": [],
+      "fit_font_size": 32
+    },
+    {
+      "id": "intro",
+      "kind": "text",
+      "rect": [
+        100,
+        340,
+        1150,
+        145
+      ],
+      "ok": true,
+      "warnings": [],
+      "fit_font_size": 33
+    },
+    {
+      "id": "left",
+      "kind": "text",
+      "rect": [
+        95,
+        550,
+        550,
+        510
+      ],
+      "ok": true,
+      "warnings": [],
+      "fit_font_size": 29
+    },
+    {
+      "id": "right",
+      "kind": "text",
+      "rect": [
+        705,
+        550,
+        550,
+        510
+      ],
+      "ok": true,
+      "warnings": [],
+      "fit_font_size": 29
+    },
+    {
+      "id": "footer",
+      "kind": "text",
+      "rect": [
+        100,
+        1110,
+        1150,
+        150
+      ],
+      "ok": true,
+      "warnings": [],
+      "fit_font_size": 27
+    }
+  ]
+}

@@ -1,6 +1,6 @@
 # FantasyDisk Current Game State
 
-Обновлено: 2026-08-10 (опубликован stable release 0.2.4; current macOS channel signed)
+Обновлено: 2026-08-13 (подготовлен release candidate 0.3.0; опубликован stable release 0.2.4; current macOS channel signed)
 
 Этот документ описывает то, что уже есть в текущей версии игры. Он нужен агентам и разработчикам как быстрый фактический снимок проекта перед изменениями в геймплее, балансе, UI, персонажах, врагах, прогрессии и ассетах.
 
@@ -29,6 +29,14 @@ Domain docs для подробностей по областям:
   binary-only `FomaBy/FantasyDisk-Releases`. Telegram снова доставляет игрокам
   poster, DMG, Windows Setup и SHA256SUMS; Discord публикует Telegram link.
   Игровой баланс и контент 0.2.4 не изменились относительно принятой версии 0.2.3.
+- Подготовленный, но ещё не опубликованный release candidate: `0.3.0`
+  (`config/version` уже `0.3.0`). Player-facing содержание — `CHANGELOG.md` и
+  `scripts/patch_notes_data.gd`: 51 ультимейт оружия вместо 17 классовых,
+  виджет ультимейта в боевом HUD, ручное прицеливание мышью и правым стиком,
+  вариативность ранних боёв маршрута, новый фон главного меню FAN-2488 и
+  подписанный/нотаризованный macOS-канал.
+  `main`, тег `v0.3.0`, публичный release и внешние каналы остаются
+  неизменными до терминального independent QA кандидата.
 - Основная рабочая платформа: macOS. Релизные платформы: macOS (DMG с ярлыком
   Applications) и Windows (x86_64 NSIS-инсталлер с embed_pck; отдельный zip/exe
   игрокам не публикуется).
@@ -1700,6 +1708,16 @@ Level Up отключает дополнительное readability-увели�
 `docs/design/previews/scrum985_level_up_cleanup/`.
 
 ## Ультимейты
+
+Ультимейт закреплён за парой класс/оружие, а не за классом: все 51 профиля
+(17 классов × 3 оружия) имеют `implementation_state=ready`, поэтому
+`WeaponUltimateResolver` выбирает `weapon_profile` для любого канонического
+выбора, а `legacy_class_fallback` остаётся только fail-closed веткой.
+Контракт каталога, реестра и оверлеев — `docs/design/systems/weapon_ultimates_contract.md`;
+экономика заряда — `docs/design/systems/weapon_ultimate_balance.md`; виджет
+боевого HUD — `docs/design/systems/ultimate_hud_widget.md`. Название и описание
+в HUD/Кодексе пока приходят из классового `ProgressionData.ultimate_config`, то
+есть текст общий для трёх оружий класса, тогда как исполняемый приём уже разный.
 
 У каждого из 17 игровых классов есть ultimate ability, описанная в `ProgressionData.ULTIMATE_CONFIGS` и показанная в Кодексе. Заряд копится от нанесенного и полученного урона до 100, масштабируется от Energy и активируется InputMap action `ultimate` (default R, ребиндится в настройках). После активации заряд сбрасывается. SCRUM-872/FAN-1064: накопленная шкала ПЕРСИСТИТ между любым количеством раундов/узлов, отдельных боёв и актов — заряд переносится через `run_player_snapshot` (`ultimate_charge` в `_store_player_snapshot`/`_restore_player_snapshot`, clamp по `ultimate_max_charge`); обнуление происходит только при активации ульты и при старте нового забега/смене персонажа. `tests/ultimate_charge_persist_test.gd` закрепляет в том числе перенос 100% из первого боя во второй и затем в третий. Активная ульта (timed overlay) между узлами не переносится.
 

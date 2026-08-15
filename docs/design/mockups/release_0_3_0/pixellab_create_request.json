@@ -1,0 +1,8 @@
+{
+  "tool": "create_image_pro",
+  "description": "A single full-bleed square dark-fantasy release poster background for a D&D style game. One continuous near-black stone and blackened-iron field. A single worn-gold dragon-forged ornamental border runs along the four outer edges only, with restrained corner ornaments, tiny crimson gems and a faint cold violet ember glow. The entire interior inside that border is one flat, dark, calm, uninterrupted surface: no inner panels, cards, boxes, sub-frames, dividers, ornaments, dragon heads, gems, seams, smoke, characters, weapons or bright highlights, because text will be placed over it later. No text, letters, numbers, runes, pseudo-text, glyphs, logo or watermark anywhere. Premium, elegant, epic, strict, restrained, not cluttered.",
+  "width": 512,
+  "height": 512,
+  "no_background": false,
+  "seed": 30302
+}
