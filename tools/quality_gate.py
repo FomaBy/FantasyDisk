@@ -744,7 +744,13 @@ def _run_captured(
     kwargs: dict = {
         "cwd": ROOT,
         "env": env,
-        "text": True,
+        # FAN-2648: decode like godot_gate does.  Godot always emits UTF-8,
+        # while text=True decodes with the locale codec in strict mode: on a
+        # non-UTF-8 Windows locale (cp1251) the first Cyrillic byte pair kills
+        # the drain thread with UnicodeDecodeError and silently truncates the
+        # captured output that the push_error/fatal verdicts read.
+        "encoding": "utf-8",
+        "errors": "replace",
         "stdout": subprocess.PIPE,
         "stderr": subprocess.STDOUT,
     }
@@ -868,24 +874,57 @@ def fatal_output_signal(output: str) -> str:
     return ""
 
 
-def run_godot_import(timeout: float) -> dict:
-    """Warm the shared project import cache without spending a suite's budget."""
-    started = time.monotonic()
-    with tempfile.TemporaryDirectory(prefix="fsd-import-") as scratch:
-        user_data = Path(scratch).resolve()
-        command = [
+def _import_prepass_commands(host_os: str | None = None) -> list[list[str]]:
+    """Ordered gated commands that warm and then validate the import cache."""
+    ensure = [
+        sys.executable,
+        str(GODOT_GATE),
+        "--headless",
+        "--path",
+        str(ROOT),
+        "--ensure-import-cache",
+    ]
+    if (os.name if host_os is None else host_os) != "nt":
+        return [ensure]
+    # FAN-2648: `--ensure-import-cache` imports via `--import --quit`, and that
+    # flag pair reproducibly crashes Godot 4.7 with 0xc0000005 on the native
+    # Windows runtime, while `--import` alone completes the import and exits
+    # cleanly.  Import through the gate passthrough first; the trailing ensure
+    # call then only proves the cache is complete without relaunching Godot.
+    # The ensure step must not carry `--import` itself, or godot_gate would
+    # skip its cache check and rubber-stamp an incomplete import.
+    return [
+        [
             sys.executable,
             str(GODOT_GATE),
             "--headless",
             "--path",
             str(ROOT),
-            "--ensure-import-cache",
-        ]
-        exit_code, output, timed_out = _run_captured(
-            command,
-            _godot_environment(user_data, exclusive=False),
-            timeout,
-        )
+            "--import",
+        ],
+        ensure,
+    ]
+
+
+def run_godot_import(timeout: float) -> dict:
+    """Warm the shared project import cache without spending a suite's budget."""
+    started = time.monotonic()
+    exit_code, output, timed_out = 0, "", False
+    with tempfile.TemporaryDirectory(prefix="fsd-import-") as scratch:
+        user_data = Path(scratch).resolve()
+        environment = _godot_environment(user_data, exclusive=False)
+        for command in _import_prepass_commands():
+            # Every step shares one bounded budget; a crash, nonzero exit or
+            # timeout is terminal and must not reach the next step.
+            budget = timeout - (time.monotonic() - started)
+            exit_code, step_output, timed_out = _run_captured(
+                command,
+                environment,
+                max(budget, 0.0),
+            )
+            output += step_output
+            if exit_code != 0 or timed_out:
+                break
     if IMPORT_CACHE_MISSING_MESSAGE in output:
         print(IMPORT_CACHE_MISSING_MESSAGE, flush=True)
     passed = exit_code == 0 and not timed_out
