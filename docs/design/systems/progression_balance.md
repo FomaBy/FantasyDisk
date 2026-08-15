@@ -2021,11 +2021,38 @@ Class-kit corridor использует один строгий контракт
 строки и raw summary получают результат из одного helper, поэтому перечисляют
 все сработавшие оси в стабильном порядке `solo`, `AoE`, `defense`.
 
+Два десятичных знака в class-ratio тексте (`outlier_flag`, `strengths`,
+`weaknesses`) печатает один formatter `Generator.format_class_ratio`, и он
+намеренно не проходит через `printf`. `%.2f` расходится между хостами на ties,
+точно представимых в binary (`1.625` → `1.62` на macOS half-even и `1.63` на
+Windows half-away), а `floor(value * 100.0 + 0.5)` ошибается на куда более
+частых десятичных ties, которые binary хранит чуть ниже границы (`1.015` и
+`1.035` лежат как `1.01499…` и `1.03499…`). Formatter сначала квантует значение
+на micro-сетку одним IEEE-умножением и `round`, и только потом переносит half-up
+в центы, поэтому политика десятичная, а не двоичная, и одинакова на macOS и
+Windows: `1.0149 → 1.01`, `1.015 → 1.02`, `1.035 → 1.04`, `1.625 → 1.63`,
+`0.995 → 1.00`, `-1.015 → -1.02`.
+
+Обновить этот текст в уже запиненном артефакте можно только прогоном
+`--mode=full --presentation-only --source-commit=<supplemental_execution.commit>`:
+он перечитывает anchored `raw.json.gz`, заново рендерит class-ratio текст из уже
+запиненных числовых scores и переписывает raw/report/CSV, не запуская live
+final-execution пробу. Обычный `--mode=full` эту пробу выполняет и меряет
+текущий checkout, поэтому он всегда перебазирует supplemental telemetry, если
+gameplay изменился после пина артефакта, — это отдельная регенерация, а не
+правка форматирования. Fail-closed: `--presentation-only` требует `--mode=full`
+и отказывается работать, если `--source-commit` не равен
+`supplemental_execution.commit` артефакта.
+
 Гейт: `tests/a5_balance_report_integrity_test.gd`. Он динамически проверяет
 полное декартово покрытие ростера, общие 19-точечные билды, расходы и связность
 Atlas 50/59, отсутствие ульты в weapon rows, class-kit строки, полное множество
 attack modes/final mechanics в live evidence и согласованность CSV/raw/Markdown,
-включая fail-closed совпадение corridor-флагов и summary по трём осям. Для
+включая fail-closed совпадение corridor-флагов и summary по трём осям. Class-ratio
+текст проверяется таблицей hand-computed литералов и независимым decimal-оракулом,
+который не вызывает `format_class_ratio` и не повторяет его арифметику; отдельный
+негативный контроль требует, чтобы в артефакте оставались ties, на которых
+`floor(value * 100.0 + 0.5)` расходится с политикой. Для
 telemetry gate отдельно реконструирует counters из trace и отвергает missing или
 duplicated events, неверную cardinality цели, подмену source/phase, а также
 рассинхронизацию count/damage final-event.

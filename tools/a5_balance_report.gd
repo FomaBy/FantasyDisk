@@ -193,6 +193,7 @@ var _source_tree := ""
 var _source_timestamp := ""
 var _observer_mode := "enabled"
 var _pair_filter := ""
+var _presentation_only := false
 var _holder: Node2D
 var _errors := PackedStringArray()
 
@@ -724,10 +725,14 @@ func _parse_args() -> void:
 			# Diagnostic filter for --mode=final_execution_probe only; an accepted
 			# artifact is never generated from a filtered roster.
 			_pair_filter = arg.trim_prefix("--pair=")
+		elif arg == "--presentation-only":
+			_presentation_only = true
 	if not ["formula", "full", "telemetry_probe", "observer_neutrality", "final_execution_probe"].has(_mode):
 		_errors.append("unsupported mode %s (expected formula, full, telemetry_probe, observer_neutrality, or final_execution_probe)" % _mode)
 	if _pair_filter != "" and _mode != "final_execution_probe":
 		_errors.append("--pair is a final_execution_probe diagnostic and cannot filter an accepted artifact")
+	if _presentation_only and _mode != "full":
+		_errors.append("--presentation-only republishes the anchored --mode=full artifact and has no meaning for mode %s" % _mode)
 
 
 func _run_representative_telemetry_probe() -> void:
@@ -1267,6 +1272,27 @@ func _enrich_anchored_full_dataset() -> Dictionary:
 		return {}
 	var class_ids: Array = (dataset.get("roster", {}) as Dictionary).get("class_ids", [])
 	var weapon_rows: Array = dataset.get("weapon_rows", [])
+	# FAN-2504: the anchored class rows keep their pinned numeric scores, but
+	# strengths/weaknesses/outlier_flag are a pure rendering of those scores, so
+	# the current formatter re-derives that text instead of carrying forward
+	# whatever an older run baked in.
+	for row_value in dataset.get("class_rows", []):
+		render_class_ratio_text(row_value as Dictionary)
+	if _presentation_only:
+		# FAN-2504: republish the anchored artifact's canonical text and nothing
+		# else. The final-execution probe below measures THIS checkout, so running
+		# it re-baselines supplemental telemetry against whatever gameplay landed
+		# since the artifact was pinned — a separate, separately reviewed
+		# regeneration, not a formatting fix. Pinning the run to the artifact's own
+		# supplemental commit keeps provenance byte-identical as well.
+		var pin := verify_presentation_pin(dataset, _source_commit)
+		if not bool(pin.get("ok", false)):
+			_errors.append(str(pin.get("error", "unknown presentation pin error")))
+			return {}
+		dataset.erase("dataset_digest_sha256")
+		dataset["dataset_digest_sha256"] = _sha256(JSON.stringify(dataset, "", true, true))
+		_validate_dataset(dataset)
+		return dataset
 	var final_execution := await _final_execution(class_ids)
 	var parity: Array = dataset.get("formula_live_parity", [])
 	var dispositions := _formula_live_dispositions(parity, final_execution, dataset.get("live_telemetry", {}))
@@ -1351,7 +1377,37 @@ static func verify_source_provenance(source: Dictionary) -> Dictionary:
 	for field in ["commit", "tree", "commit_timestamp"]:
 		if str(source.get(field, "")) != str(expected.get(field, "")):
 			return {"ok": false, "error": "source %s does not match its Git commit" % field}
+	# FAN-2511: resolving is not trusting. An accepted artifact may only publish
+	# provenance the checkout that certifies it actually descends from.
+	if not _git_is_ancestor(str(expected.get("commit", "")), "HEAD"):
+		return {"ok": false, "error": "source commit %s is not an ancestor of the certifying checkout" % str(expected.get("commit", ""))}
 	return {"ok": true, "source": expected}
+
+
+# FAN-2511: every provenance tuple an accepted artifact publishes, verified as a
+# set before a tracked output can be opened for writing. The anchored artifact is
+# untrusted input: --presentation-only pinned only its supplemental COMMIT and
+# republished the rest of the tuple verbatim, so a forged tree or timestamp reached
+# a rewritten artifact and was caught only by the integrity suite afterwards.
+static func verify_artifact_provenance(dataset: Dictionary) -> Dictionary:
+	var errors := PackedStringArray()
+	var provenance := verify_source_provenance(dataset.get("source", {}))
+	if not bool(provenance.get("ok", false)):
+		errors.append("source provenance verification failed: %s" % provenance.get("error", "unknown error"))
+	if dataset.has("supplemental_execution"):
+		var supplemental := verify_source_provenance(dataset.get("supplemental_execution", {}))
+		if not bool(supplemental.get("ok", false)):
+			errors.append("supplemental provenance verification failed: %s" % supplemental.get("error", "unknown error"))
+	return {"ok": errors.is_empty(), "errors": errors}
+
+
+# FAN-2504: --presentation-only republishes the anchored artifact's own pinned
+# numbers, so the run must be pinned to that artifact's own supplemental commit.
+static func verify_presentation_pin(dataset: Dictionary, source_commit: String) -> Dictionary:
+	var anchored_commit := str((dataset.get("supplemental_execution", {}) as Dictionary).get("commit", ""))
+	if source_commit != anchored_commit:
+		return {"ok": false, "error": "--presentation-only must pin --source-commit to the anchored supplemental commit %s" % anchored_commit}
+	return {"ok": true}
 
 
 static func _is_git_object_id(value: String) -> bool:
@@ -1722,16 +1778,40 @@ func _apply_class_relative_scores(rows: Array) -> void:
 				row["aoe_score"] = snappedf(float(row["mean_crowd_10_dpm"]) / maxf(crowd_median, 0.001), 0.001)
 				row["defense_score"] = snappedf(float(row["mean_ehp"]) / maxf(defense_median, 0.001), 0.001)
 				row["convenience_relative"] = snappedf(float(row["convenience_score"]) / maxf(convenience_median, 0.001), 0.001)
-				var ranked := [
-					{"name": "solo", "value": float(row["solo_score"])},
-					{"name": "AoE", "value": float(row["aoe_score"])},
-					{"name": "survival", "value": float(row["defense_score"])},
-					{"name": "convenience", "value": float(row["convenience_relative"])},
-				]
-				ranked.sort_custom(func(a, b): return float(a["value"]) > float(b["value"]))
-				row["strengths"] = "%s %.2f× and %s %.2f× roster median." % [ranked[0]["name"], ranked[0]["value"], ranked[1]["name"], ranked[1]["value"]]
-				row["weaknesses"] = "%s %.2f× and %s %.2f× roster median." % [ranked[3]["name"], ranked[3]["value"], ranked[2]["name"], ranked[2]["value"]]
-				row["outlier_flag"] = str(class_corridor_status(float(row["solo_score"]), float(row["aoe_score"]), float(row["defense_score"])).get("flag", "ok"))
+				render_class_ratio_text(row)
+
+
+# FAN-2504: every two-decimal class ratio goes through this one formatter, and it
+# deliberately never reaches printf. `%.2f` disagrees across hosts on ties that
+# are exactly representable in binary (1.625 → "1.62" under macOS half-even,
+# "1.63" under Windows half-away), and `floor(value * 100.0 + 0.5)` is wrong for
+# the far more common decimal ties that binary stores just below the boundary
+# (1.015 and 1.035 are held as 1.01499…/1.03499… and would round down). The value
+# is first quantized onto the micro grid — one IEEE multiply plus a round, which
+# is bit-identical on every host — and only then carried half-up into cents, so
+# the published policy is decimal, not binary: 1.0149 → "1.01", 1.015 → "1.02",
+# 1.035 → "1.04", 1.625 → "1.63", -1.015 → "-1.02".
+static func format_class_ratio(value: float) -> String:
+	var micro := int(round(absf(value) * 1000000.0))
+	var cents := (micro + 5000) / 10000
+	var text := "%d.%02d" % [cents / 100, cents % 100]
+	return text if value >= 0.0 or cents == 0 else "-%s" % text
+
+
+# FAN-2504: the single place `strengths`/`weaknesses`/`outlier_flag` text is
+# produced, so the anchored --mode=full pass can re-derive the canonical text
+# from a class row's already-pinned scores without recomputing any of them.
+static func render_class_ratio_text(row: Dictionary) -> void:
+	var ranked := [
+		{"name": "solo", "value": float(row["solo_score"])},
+		{"name": "AoE", "value": float(row["aoe_score"])},
+		{"name": "survival", "value": float(row["defense_score"])},
+		{"name": "convenience", "value": float(row["convenience_relative"])},
+	]
+	ranked.sort_custom(func(a, b): return float(a["value"]) > float(b["value"]))
+	row["strengths"] = "%s %s× and %s %s× roster median." % [ranked[0]["name"], format_class_ratio(float(ranked[0]["value"])), ranked[1]["name"], format_class_ratio(float(ranked[1]["value"]))]
+	row["weaknesses"] = "%s %s× and %s %s× roster median." % [ranked[3]["name"], format_class_ratio(float(ranked[3]["value"])), ranked[2]["name"], format_class_ratio(float(ranked[2]["value"]))]
+	row["outlier_flag"] = str(class_corridor_status(float(row["solo_score"]), float(row["aoe_score"]), float(row["defense_score"])).get("flag", "ok"))
 
 
 static func class_corridor_status(solo_score: float, aoe_score: float, defense_score: float) -> Dictionary:
@@ -1747,7 +1827,7 @@ static func class_corridor_status(solo_score: float, aoe_score: float, defense_s
 	var parts := PackedStringArray()
 	for axis_value in axes:
 		var axis: Dictionary = axis_value
-		parts.append("%s=%.2f×" % [axis["name"], axis["value"]])
+		parts.append("%s=%s×" % [axis["name"], format_class_ratio(float(axis["value"]))])
 	return {
 		"is_outlier": not axes.is_empty(),
 		"axes": axes,
@@ -3484,9 +3564,10 @@ func _outliers(class_rows: Array, parity: Array) -> Dictionary:
 
 
 func _validate_dataset(dataset: Dictionary) -> void:
-	var provenance := verify_source_provenance(dataset.get("source", {}))
+	var provenance := verify_artifact_provenance(dataset)
 	if not bool(provenance.get("ok", false)):
-		_errors.append("source provenance verification failed: %s" % provenance.get("error", "unknown error"))
+		for error_value in provenance.get("errors", []):
+			_errors.append(str(error_value))
 	var digest_verification := verify_dataset_digest(dataset)
 	if not bool(digest_verification.get("ok", false)):
 		_errors.append("dataset digest verification failed: %s" % digest_verification.get("error", "unknown error"))

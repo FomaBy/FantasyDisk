@@ -22,6 +22,15 @@ const LEGACY_FINAL_EXECUTION_MUTATION_COUNT := 14
 const LEGACY_DISPOSITION_MUTATION_COUNT := 7
 const REQUIRED_DISPOSITION_MUTATION_COUNT := 8
 const SHIPPED_FINAL_EXECUTION_MUTATION_COUNT := 6
+# FAN-2504: the axis labels the class-ratio sentences and corridor flags publish,
+# mapped back to the numeric class-row field each one renders.
+const CLASS_RATIO_AXIS_FIELDS := {
+	"solo": "solo_score",
+	"AoE": "aoe_score",
+	"survival": "defense_score",
+	"defense": "defense_score",
+	"convenience": "convenience_relative",
+}
 const ROBOT_REACTOR_PAIR := "robot/robot_reactor_core"
 const ROBOT_REACTOR_MECHANIC := "reactor_vent_cycle_pulse"
 const ROBOT_REACTOR_PULSE_RATIO := 0.40
@@ -57,6 +66,7 @@ func _initialize() -> void:
 	_check(str((dataset.get("source", {}) as Dictionary).get("commit", "")) not in ["", "UNSPECIFIED", "TEST"], "source commit is not pinned")
 	_check(str((dataset.get("source", {}) as Dictionary).get("tree", "")) not in ["", "UNSPECIFIED", "TEST"], "source tree is not pinned")
 	_validate_source_provenance(dataset)
+	_validate_supplemental_provenance_gate(dataset)
 	_validate_raw_artifact(dataset, raw_text)
 	_validate_independent_artifact_contract(dataset, report_text)
 	_validate_roster(dataset)
@@ -65,6 +75,7 @@ func _initialize() -> void:
 	_validate_weapon_rows(dataset)
 	_validate_class_rows(dataset)
 	_validate_class_corridor(dataset, report_text)
+	_validate_class_ratio_formatting(dataset)
 	_validate_class_ultimate_oracle(dataset)
 	_validate_live_coverage(dataset)
 	_validate_csv(dataset)
@@ -844,6 +855,51 @@ func _validate_source_provenance(dataset: Dictionary) -> void:
 	_check(not _independent_source_matches_git(mismatched), "source provenance accepts a deliberately mismatched commit_timestamp")
 
 
+# FAN-2511: --presentation-only republishes the anchored artifact's supplemental
+# tuple, and the artifact is untrusted input. A forged tree used to reach a
+# rewritten report because the generator compared only the commit string. Drive the
+# production gate the generator now runs before it opens any tracked output, and
+# re-hash the tracked artifacts after every refusal: a rejection that rewrote
+# anything is the same defect wearing a non-zero exit code.
+func _validate_supplemental_provenance_gate(dataset: Dictionary) -> void:
+	var supplemental: Dictionary = dataset.get("supplemental_execution", {})
+	var anchored_commit := str(supplemental.get("commit", ""))
+	var legacy_commit := str((dataset.get("source", {}) as Dictionary).get("commit", ""))
+	var baseline := _tracked_artifact_digests()
+	_check(bool(Generator.verify_artifact_provenance(dataset).get("ok", false)), "the shipped artifact provenance must still pass the production pre-write gate")
+	_check(bool(Generator.verify_presentation_pin(dataset, anchored_commit).get("ok", false)), "the anchored supplemental commit must still satisfy the presentation-only pin")
+	_check(legacy_commit != anchored_commit, "the mismatched-pin fixture needs a legacy commit distinct from the supplemental commit")
+	# Each forgery keeps every numeric, telemetry and legacy-source field of the
+	# shipped dataset — exactly the shape the rejected candidate published with a
+	# recomputed digest and a zeroed supplemental tree.
+	var forgeries := [
+		{"name": "forged supplemental tree", "field": "tree", "value": "0".repeat(40)},
+		{"name": "forged supplemental commit_timestamp", "field": "commit_timestamp", "value": "1970-01-01T00:00:00Z"},
+		{"name": "unresolvable supplemental commit", "field": "commit", "value": "0".repeat(40)},
+		{"name": "missing supplemental commit", "field": "commit", "value": ""},
+	]
+	for forgery_value in forgeries:
+		var forgery: Dictionary = forgery_value
+		var name := str(forgery["name"])
+		var mutation := dataset.duplicate(true)
+		var mutated_supplemental: Dictionary = mutation["supplemental_execution"]
+		mutated_supplemental[str(forgery["field"])] = forgery["value"]
+		_check(mutated_supplemental != supplemental, "%s fixture did not mutate the shipped tuple" % name)
+		var verdict := Generator.verify_artifact_provenance(mutation)
+		_check(not bool(verdict.get("ok", false)), "%s must fail the production pre-write gate" % name)
+		_check("; ".join(verdict.get("errors", [])).contains("supplemental provenance"), "%s must be rejected as supplemental provenance, not by an unrelated check" % name)
+		_check(_tracked_artifact_digests() == baseline, "%s rejection must leave the tracked A5 artifacts byte-identical" % name)
+	_check(not bool(Generator.verify_presentation_pin(dataset, legacy_commit).get("ok", false)), "a --source-commit that mismatches the anchored supplemental pin must fail before any write")
+	_check(_tracked_artifact_digests() == baseline, "mismatched-pin rejection must leave the tracked A5 artifacts byte-identical")
+
+
+func _tracked_artifact_digests() -> PackedStringArray:
+	var digests := PackedStringArray()
+	for path in [Generator.RAW_PATH, Generator.REPORT_PATH, Generator.CSV_PATH]:
+		digests.append(FileAccess.get_sha256(path))
+	return digests
+
+
 func _validate_raw_artifact(dataset: Dictionary, raw_text: String) -> void:
 	_check(not FileAccess.file_exists(Generator.LEGACY_RAW_PATH), "legacy uncompressed raw.json must not remain tracked")
 	_check(raw_text == JSON.stringify(dataset, "\t", true, true) + "\n", "decoded raw.json.gz is not canonical JSON serialization")
@@ -1072,6 +1128,74 @@ func _validate_class_corridor(dataset: Dictionary, report_text: String) -> void:
 			mutated_summary.remove_at(index)
 			break
 	_check(not bool(Generator.verify_class_corridor_artifacts(summary_mutation).get("ok", true)), "defense-only summary-count mutation must fail closed")
+
+
+# FAN-2504: the rejected FAN-2491 candidate rounded class ratios with
+# floor(value * 100.0 + 0.5) and shipped a test that recomputed the very same
+# expression, so implementation and oracle agreed on the same wrong text. Every
+# expectation below is a hand-computed literal of the documented decimal
+# half-up policy — never a value obtained from Generator — and the two ties the
+# old arithmetic gets wrong (1.015, 1.035) are covered explicitly alongside the
+# values immediately below and above them.
+func _validate_class_ratio_formatting(dataset: Dictionary) -> void:
+	for expectation in [
+		[1.014, "1.01"], [1.0149, "1.01"], [1.015, "1.02"], [1.0151, "1.02"], [1.016, "1.02"],
+		[1.034, "1.03"], [1.035, "1.04"], [1.036, "1.04"],
+		[1.624, "1.62"], [1.625, "1.63"], [1.626, "1.63"],
+		[0.855, "0.86"], [0.995, "1.00"], [1.095, "1.10"], [1.615, "1.62"],
+		[0.80, "0.80"], [1.20, "1.20"], [0.0, "0.00"], [-0.004, "0.00"],
+		[-1.0149, "-1.01"], [-1.015, "-1.02"], [-1.035, "-1.04"], [-1.625, "-1.63"],
+	]:
+		var value := float(expectation[0])
+		var expected := str(expectation[1])
+		_check(Generator.format_class_ratio(value) == expected, "%.4f must format as %s under the documented decimal half-up policy, got %s" % [value, expected, Generator.format_class_ratio(value)])
+	# The published surfaces must go through that formatter, not host printf:
+	# 1.625 is exactly representable, so "%.2f" still splits macOS ("1.62") from
+	# Windows ("1.63") wherever a call site was missed.
+	_check(str(Generator.class_corridor_status(1.625, 1.0, 1.0).get("flag", "")) == "OUTLIER solo=1.63×", "corridor flag must publish the 1.625 tie as 1.63× on every host, got: %s" % str(Generator.class_corridor_status(1.625, 1.0, 1.0).get("flag", "")))
+	_check(str(Generator.class_corridor_status(-1.015, 1.0, 1.0).get("flag", "")) == "OUTLIER solo=-1.02×", "corridor flag must round a negative tie away from zero, got: %s" % str(Generator.class_corridor_status(-1.015, 1.0, 1.0).get("flag", "")))
+	var multi_tie := Generator.class_corridor_status(1.625, 0.375, 1.615)
+	_check(_axis_names(multi_tie.get("axes", [])) == ["solo", "AoE", "defense"], "tie-valued multi-axis corridor status must keep solo/AoE/defense order")
+	_check(str(multi_tie.get("flag", "")) == "OUTLIER solo=1.63×; AoE=0.38×; defense=1.62×", "tie-valued multi-axis flag text must match the independent literals, got: %s" % str(multi_tie.get("flag", "")))
+	var ratio_pattern := RegEx.create_from_string("([A-Za-z]+)=?\\s?(-?[0-9]+\\.[0-9]{2})×")
+	for row_value in dataset.get("class_rows", []):
+		var row: Dictionary = row_value
+		for field in ["strengths", "weaknesses", "outlier_flag"]:
+			for regex_match in ratio_pattern.search_all(str(row.get(field, ""))):
+				var axis_field := str(CLASS_RATIO_AXIS_FIELDS.get(regex_match.get_string(1), ""))
+				_check(not axis_field.is_empty(), "%s %s names an unknown ratio axis %s" % [row.get("key", "?"), field, regex_match.get_string(1)])
+				if axis_field.is_empty():
+					continue
+				var expected_text := _oracle_two_decimals(float(row.get(axis_field, 0.0)))
+				_check(regex_match.get_string(2) == expected_text, "%s %s publishes %s for %s, independent decimal rounding says %s" % [row.get("key", "?"), field, regex_match.get_string(2), axis_field, expected_text])
+	# Negative control: the literals above have to be discriminating rather than
+	# tautological, so the shipped rows must still contain ties where the
+	# rejected arithmetic disagrees with the policy. Deleting those edge cases
+	# from the dataset turns this red instead of quietly weakening the suite.
+	var discriminating := 0
+	for row_value in dataset.get("class_rows", []):
+		var row: Dictionary = row_value
+		for axis_field in ["solo_score", "aoe_score", "defense_score", "convenience_relative"]:
+			var value := float(row.get(axis_field, 0.0))
+			var legacy_cents := int(floor(absf(value) * 100.0 + 0.5))
+			if "%d.%02d" % [legacy_cents / 100, legacy_cents % 100] != Generator.format_class_ratio(value):
+				discriminating += 1
+	_check(discriminating >= 2, "class rows must still carry the binary-inexact ties that separate decimal half-up from floor(value * 100 + 0.5); found %d" % discriminating)
+
+
+# FAN-2504: independent of Generator.format_class_ratio — it neither calls it nor
+# repeats its arithmetic. This renders the magnitude as decimal digits first (at
+# six decimals no host disagrees about these values) and only then rounds those
+# digits half-up with integer maths, while the generator decides entirely in
+# scaled integers without ever producing digits. A regression to either platform
+# "%.2f" or floor(value * 100.0 + 0.5) therefore disagrees with this oracle.
+func _oracle_two_decimals(value: float) -> String:
+	var digits := String.num(absf(value), 6).split(".")
+	# String.num strips trailing zeroes, so restore the fixed six-digit scale
+	# before the fraction can be read as an integer number of micro units.
+	var fraction := str(digits[1]).rpad(6, "0") if digits.size() > 1 else "000000"
+	var cents := int(str(digits[0])) * 100 + (int(fraction) + 5000) / 10000
+	return "%s%d.%02d" % ["-" if value < 0.0 and cents > 0 else "", cents / 100, cents % 100]
 
 
 func _strict_corridor_axes(row: Dictionary) -> Array:
@@ -1706,7 +1830,7 @@ func _independent_corridor_flag(row: Dictionary) -> String:
 	var parts := PackedStringArray()
 	for axis_name in _independent_corridor_axes(row):
 		var score := float(row.get("solo_score", 0.0)) if axis_name == "solo" else (float(row.get("aoe_score", 0.0)) if axis_name == "AoE" else float(row.get("defense_score", 0.0)))
-		parts.append("%s=%.2f×" % [axis_name, score])
+		parts.append("%s=%s×" % [axis_name, _oracle_two_decimals(score)])
 	return "ok" if parts.is_empty() else "OUTLIER %s" % "; ".join(parts)
 
 
