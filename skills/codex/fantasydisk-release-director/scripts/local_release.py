@@ -18,6 +18,7 @@ import platform
 import plistlib
 import re
 import shutil
+import stat
 import subprocess
 import sys
 import tarfile
@@ -105,7 +106,7 @@ def _run(
             command,
             cwd=cwd,
             check=True,
-            text=True,
+            encoding="utf-8",
             stdout=subprocess.PIPE,
             stderr=subprocess.PIPE,
             timeout=timeout,
@@ -423,20 +424,21 @@ def _extract_commit(
         ["git", "rev-parse", f"{resolved_commit}^{{tree}}"], cwd=repo_root
     ).stdout.strip().lower()
     destination.mkdir(parents=True, exist_ok=False)
-    with tempfile.NamedTemporaryFile(suffix=".tar") as handle:
+    with tempfile.TemporaryDirectory(prefix="fantasydisk-git-archive-") as temporary:
+        archive = Path(temporary) / "source.tar"
         try:
-            subprocess.run(
-                ["git", "archive", "--format=tar", resolved_commit],
-                cwd=repo_root,
-                check=True,
-                stdout=handle,
-                stderr=subprocess.PIPE,
-                timeout=120,
-            )
+            with archive.open("wb") as handle:
+                subprocess.run(
+                    ["git", "archive", "--format=tar", resolved_commit],
+                    cwd=repo_root,
+                    check=True,
+                    stdout=handle,
+                    stderr=subprocess.PIPE,
+                    timeout=120,
+                )
         except (OSError, subprocess.CalledProcessError, subprocess.TimeoutExpired) as exc:
             raise LocalReleaseError(f"cannot archive {source}") from exc
-        handle.flush()
-        with tarfile.open(handle.name, "r:") as bundle:
+        with tarfile.open(archive, "r:") as bundle:
             members = bundle.getmembers()
             for member in members:
                 pure = PurePosixPath(member.name)
@@ -906,15 +908,123 @@ def install_macos_from_dmg(
                     pass
 
 
+def _is_project_pointer(path: Path) -> bool:
+    try:
+        metadata = os.lstat(path)
+    except OSError:
+        return False
+    if platform.system() == "Windows":
+        return bool(
+            getattr(metadata, "st_file_attributes", 0)
+            & getattr(stat, "FILE_ATTRIBUTE_REPARSE_POINT", 0x400)
+        )
+    return path.is_symlink()
+
+
+def _project_pointer_target(
+    releases_root: Path, pointer: Path, version: str | None = None
+) -> Path:
+    if not _is_project_pointer(pointer):
+        raise LocalReleaseError(f"current-project is not a supported pointer: {pointer}")
+    try:
+        root = releases_root.resolve(strict=True)
+        target = pointer.resolve(strict=True)
+        relative = target.relative_to(root)
+    except (OSError, ValueError) as exc:
+        raise LocalReleaseError(
+            f"current-project has an unsafe, stale, or malformed target: {pointer}"
+        ) from exc
+    expected = Path(f"v{version}") / "godot-project" if version is not None else None
+    if (
+        len(relative.parts) != 2
+        or relative.name != "godot-project"
+        or not relative.parts[0].startswith("v")
+        or not is_valid_release_version(relative.parts[0][1:])
+        or (expected is not None and relative != expected)
+    ):
+        raise LocalReleaseError(f"current-project has an unexpected target: {target}")
+    return target
+
+
+def _create_project_pointer(pointer: Path, target: Path, relative_target: str) -> None:
+    if platform.system() != "Windows":
+        pointer.symlink_to(relative_target, target_is_directory=True)
+        return
+    environment = os.environ.copy()
+    environment["FANTASYDISK_JUNCTION_LINK"] = os.fspath(pointer)
+    environment["FANTASYDISK_JUNCTION_TARGET"] = os.fspath(target)
+    try:
+        subprocess.run(
+            [
+                "powershell.exe",
+                "-NoLogo",
+                "-NoProfile",
+                "-NonInteractive",
+                "-Command",
+                "$ErrorActionPreference='Stop'; "
+                "New-Item -ItemType Junction -Path $env:FANTASYDISK_JUNCTION_LINK "
+                "-Target $env:FANTASYDISK_JUNCTION_TARGET | Out-Null",
+            ],
+            check=True,
+            env=environment,
+            stdout=subprocess.DEVNULL,
+            stderr=subprocess.DEVNULL,
+            timeout=30,
+        )
+    except (OSError, subprocess.CalledProcessError, subprocess.TimeoutExpired) as exc:
+        raise LocalReleaseError(f"cannot create current-project junction: {pointer}") from exc
+
+
+def _remove_project_pointer(pointer: Path) -> None:
+    if not os.path.lexists(pointer):
+        return
+    if not _is_project_pointer(pointer):
+        raise LocalReleaseError(f"refusing to remove non-pointer path: {pointer}")
+    if platform.system() == "Windows":
+        pointer.rmdir()
+    else:
+        pointer.unlink()
+
+
 def _update_current_project(releases_root: Path, version: str) -> Path:
     current = releases_root / "current-project"
-    if current.exists() and not current.is_symlink():
-        raise LocalReleaseError(f"current-project exists and is not a symlink: {current}")
+    if os.path.lexists(current):
+        _project_pointer_target(releases_root, current)
+    relative_target = f"v{version}/godot-project"
+    target = releases_root / relative_target
+    try:
+        resolved_target = target.resolve(strict=True)
+        if resolved_target.relative_to(releases_root.resolve(strict=True)) != Path(relative_target):
+            raise ValueError
+    except (OSError, ValueError) as exc:
+        raise LocalReleaseError(f"current-project target is unsafe or missing: {target}") from exc
+
     temporary = releases_root / f".current-project.tmp.{os.getpid()}"
-    if temporary.exists() or temporary.is_symlink():
-        temporary.unlink()
-    temporary.symlink_to(f"v{version}/godot-project")
-    os.replace(temporary, current)
+    backup = releases_root / f".current-project.old.{os.getpid()}"
+    if os.path.lexists(temporary) or os.path.lexists(backup):
+        raise LocalReleaseError("stale current-project update path exists")
+
+    moved_old = False
+    try:
+        _create_project_pointer(temporary, resolved_target, relative_target)
+        _project_pointer_target(releases_root, temporary, version)
+        if platform.system() == "Windows" and os.path.lexists(current):
+            os.replace(current, backup)
+            moved_old = True
+        os.replace(temporary, current)
+        _project_pointer_target(releases_root, current, version)
+    except Exception:
+        if moved_old:
+            if os.path.lexists(current):
+                _remove_project_pointer(current)
+            if not os.path.lexists(current) and os.path.lexists(backup):
+                os.replace(backup, current)
+        raise
+    finally:
+        if os.path.lexists(temporary):
+            _remove_project_pointer(temporary)
+    if moved_old:
+        _remove_project_pointer(backup)
     return current
 
 
@@ -1030,8 +1140,10 @@ def verify_local_release(
     current = config.local_root / "releases" / "current-project"
     if not (config.local_root / "releases" / ".gdignore").is_file():
         raise LocalReleaseError("durable releases root is missing .gdignore")
-    if not current.is_symlink() or os.readlink(current) != f"v{version}/godot-project":
-        raise LocalReleaseError(f"current-project does not point to {tag}")
+    try:
+        _project_pointer_target(config.local_root / "releases", current, version)
+    except LocalReleaseError as exc:
+        raise LocalReleaseError(f"current-project does not point to {tag}: {exc}") from exc
     projects_content = (
         config.godot_projects_file.read_text(encoding="utf-8")
         if config.godot_projects_file.exists()
