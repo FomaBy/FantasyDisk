@@ -55,17 +55,20 @@ def _scan_base64_runs(runs: list[tuple[int, int, bytes]], findings: set[str]) ->
     # gap-bounded segments and scan each joined segment once, so fragmentation
     # of any width is detected in linear time instead of joining a bounded
     # number of fragment combinations.
-    segment = b""
+    # Fragments are collected into a list and joined once per segment; an
+    # incremental ``segment += value`` would copy the accumulated bytes on
+    # every fragment and turn the scan quadratic in the fragment count.
+    parts: list[bytes] = []
     previous_end = 0
     for run_start, run_end, value in runs:
-        if segment and run_start - previous_end > MAX_CHUNK_GAP:
-            if _joined_segment_contains_webhook(segment):
+        if parts and run_start - previous_end > MAX_CHUNK_GAP:
+            if _joined_segment_contains_webhook(b"".join(parts)):
                 findings.add("base64-discord-webhook")
                 return
-            segment = b""
-        segment += value.rstrip(b"=")
+            parts.clear()
+        parts.append(value.rstrip(b"="))
         previous_end = run_end
-    if segment and _joined_segment_contains_webhook(segment):
+    if parts and _joined_segment_contains_webhook(b"".join(parts)):
         findings.add("base64-discord-webhook")
 
 
