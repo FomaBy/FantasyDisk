@@ -36,6 +36,22 @@ Animator ownership описан в `docs/process/agent_role_boundaries_and_hando
   Those blocked characters stay on their already-valid live runtime packs until
   PixelLab exposes complete data; no legacy/manual fallback was used for refreshed
   source.
+- FAN-2606 (2026-08-17) reviewed the live Sniper pack that SCRUM-869 left in
+  place (SCRUM-433 source, PixelLab character
+  `74c4f7db-ed7f-4b6a-b9b3-bc18e417563c`) and rejected it: `south`,
+  `south-east`, `east` and `south-west` are clean, but `north-east`, `north`,
+  `north-west` and `west` break identity between move frames `02` and `03` —
+  the cloak and arm/shoulder gear appear or disappear mid-loop, so a 10 fps
+  walk flickers the silhouette ~1.7x per second. The defect is in the PixelLab
+  source rows, not in runtime normalization: canvas, `245` px visible height,
+  footline `y=479` and pivot `x≈255` are constant across all 56 frames, the
+  `.tres` maps every direction to its own textures with no mirror stand-in, and
+  Hero Select is unaffected because its preview cycles only the eight (clean)
+  idle frames. Fixing it needs regenerated PixelLab rows for those four
+  directions, i.e. an `art_assets` pass — not a runtime change. Evidence:
+  `tools/build_fan2606_sniper_animation_review.py`,
+  `tools/capture_fan2606_sniper_walk.gd`, sheets under
+  `docs/design/previews/fan2606_sniper_*`.
 - SCRUM-885 (2026-07-08) performs a focused Knight-only run through the same
   importer using PixelLab character `c1a7d633-7353-4861-aea3-8d937b601cba`
   (`FantasyDisk Knight PixelLab SCRUM-430 no-shield 2026-06-30`). It regenerated
