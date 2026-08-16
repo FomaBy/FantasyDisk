@@ -889,7 +889,11 @@ def publish(
     assert_owned_distribution_tag(repository, tag, release_commit)
     _assert_release_assets(repository, tag, files, draft=True)
     draft_verified_at = datetime.now(timezone.utc)
-    if isinstance(second_writer_proof, (str, os.PathLike)) and sys.stdin.isatty():
+    if (
+        isinstance(second_writer_proof, (str, os.PathLike))
+        and os.environ.get("FANTASYDISK_INTERACTIVE_PROOF_REFRESH") == "1"
+        and sys.stdin.isatty()
+    ):
         input(
             "Draft assets verified. Refresh the second writer inventory now, then press Enter: "
         )

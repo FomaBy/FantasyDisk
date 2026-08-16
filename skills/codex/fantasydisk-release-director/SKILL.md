@@ -271,6 +271,7 @@ dry-run, publish the allowlisted assets, and verify the page, latest manifest
 and installers without GitHub credentials:
 
 ```bash
+FANTASYDISK_INTERACTIVE_PROOF_REFRESH=1 \
 python3 skills/codex/fantasydisk-release-director/scripts/github_release_publish.py \
   --version <version> --dry-run
 python3 skills/codex/fantasydisk-release-director/scripts/github_release_publish.py \
