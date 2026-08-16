@@ -623,9 +623,11 @@ func take_damage(amount: float, feedback := {}) -> void:
 		# Награды/лут/счёт — сразу через сигнал, независимо от визуала смерти.
 		died.emit(self)
 		# SCRUM-379: если есть ЯВНАЯ full-frame death-анимация — проигрываем её до
-		# удаления; иначе прежний death-ghost fallback (rig-призрак).
+		# удаления; иначе прежний death-ghost fallback (rig-призрак). FAN-2519:
+		# наличие состояния резолвим через реестр — 8-направленные паки держат
+		# только направленные `death_<suffix>` строки без безнаправленного ряда.
 		var death_body := _full_frame_body()
-		if death_body != null and death_body.visible and death_body.sprite_frames != null and death_body.sprite_frames.has_animation("death"):
+		if death_body != null and death_body.visible and death_body.sprite_frames != null and FullFrameAnimationRegistry.has_state(death_body, "death"):
 			_play_full_frame_death_then_free(death_body)
 		else:
 			if rig != null and rig.has_method("spawn_death_ghost"):
@@ -794,8 +796,16 @@ func _play_full_frame_death_then_free(body: AnimatedSprite2D) -> void:
 		rig.visible = false
 	FullFrameAnimationRegistry.play_state(body, "death", Vector2.ZERO)
 	var frames := body.sprite_frames
-	var fps: float = maxf(frames.get_animation_speed("death"), 1.0)
-	var count: int = maxi(frames.get_frame_count("death"), 1)
+	# FAN-2519: длительность считаем по фактической резолвнутой death-строке
+	# (8-направленные паки играют `death_<suffix>` последнего ракурса); мету
+	# берём только если последний запрос действительно был death.
+	var death_row := "death"
+	if str(body.get_meta("last_requested_state", "")) == "death":
+		death_row = str(body.get_meta("last_resolved_state", "death"))
+	if not frames.has_animation(death_row):
+		death_row = "death"
+	var fps: float = maxf(frames.get_animation_speed(death_row), 1.0)
+	var count: int = maxi(frames.get_frame_count(death_row), 1)
 	var max_duration := 2.4 if was_boss else 1.2
 	var duration := clampf(float(count) / fps, 0.25, max_duration)
 	if not is_inside_tree():

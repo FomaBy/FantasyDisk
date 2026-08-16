@@ -141,6 +141,53 @@ Audit of the animation **runtime** loaders only (no art/motion/clip changes):
   `skeletal_rig_rest_det_smoke_test`; manifests preload part textures, smoke gates the
   string `source` path + `attack_part`/`torso` coverage).
 
+### Eight-direction non-player contract (FAN-2519)
+
+Runtime foundation for explicit eight-direction packs on non-player actors
+(monsters, elites, bosses, summons); live 0.3.x packs keep their existing
+west-facing/flip or `_left`/`_right` contracts until their 0.3.1 packs land.
+
+- **Direction naming** mirrors the player contract: octant suffixes `east`,
+  `south_east`, `south`, `south_west`, `west`, `north_west`, `north`,
+  `north_east` (clockwise from east), rows named `<state>_<suffix>`
+  (`move_north_east`, `attack_south`, `death_west`, `skill_shard_fan_east`,
+  `strike_<suffix>` for `<behavior>:<attack_id>:<phase>` elites). A zero
+  vector names `south` exactly like `player.gd`.
+- **Contract declaration**: registry config key `explicit_eight_directions:
+  true` (or owner meta `full_frame_explicit_eight_directions` for
+  scene-driven entities). `configure_entity_visual` lifts the flag onto the
+  animated body. A declared state must expose all eight directional rows;
+  `has_full_directional_rows(frames, state)` is the audit helper, and
+  `tests/full_frame_eight_direction_contract_test.gd` gates every registry
+  entry declaring the flag.
+- **Fallback policy**: directional rows resolve through the existing state
+  candidate ladder first. A missing directional row degrades to the
+  undirected row of the same state ladder — never to a horizontally-mirrored
+  stand-in (`flip_h` is forbidden on the whole contract) and never to another
+  actor's frames. Degradation is observable, not silent: the body carries
+  `directional_row_resolved` / `directional_fallback_used` metas alongside
+  the existing `last_requested_state` / `last_resolved_state` pair, plus
+  `last_resolved_direction_suffix` for QA captures.
+- **Last-facing persistence**: every non-zero direction passed to
+  `play_state` is normalized into `last_facing_direction` on the body; zero
+  directions reuse it (default west, matching west-facing sources). Enemies
+  therefore resolve `hit`/`death` (which pass `Vector2.ZERO`) to the last
+  movement facing. Horizontal `_left`/`_right` packs keep their stricter
+  memory (`last_horizontal_facing_right`): vertical inputs collapse to the
+  last horizontal facing.
+- **State transitions**: the resolver switches rows only on explicit caller
+  requests and never restarts an already-playing row (frame progress is
+  preserved), so gameplay timing, collision and AI behavior are untouched —
+  the registry remains a visual state bridge with no animation clock of its
+  own. Death one-shots and delayed frees stay owned by
+  `enemy.gd`/`ally_minion.gd`; both now measure death duration from the
+  resolved directional row and detect death availability through the
+  registry (`has_state`), which understands directional-only packs.
+- **Pause/cleanup**: the registry spawns no timers, tweens or helper nodes,
+  and the animated body inherits the actor's process mode — combat-world
+  pause freezes eight-direction visuals with their owner, and all resolver
+  state lives in body metas that die with the actor on death/despawn.
+
 ## Player Motion
 
 - FAN-1071 (2026-07-14) replaces the live playable footline dependency on
